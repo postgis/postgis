@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-14 02:04+0000\n"
+"POT-Creation-Date: 2022-09-19 22:09+0000\n"
 "PO-Revision-Date: 2022-05-12 13:42+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
@@ -2370,8 +2370,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If g1 and g2 are the same geometry, returns the line between the two "
-"vertices farthest apart in the geometry. This is a diameter of the circle "
-"computed by <xref linkend=\"ST_MinimumBoundingCircle\"/>"
+"vertices farthest apart in the geometry. The endpoints of the line lie on "
+"the circle computed by <xref linkend=\"ST_MinimumBoundingCircle\"/>."
 msgstr ""
 
 #. Tag: para
@@ -2415,7 +2415,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Longest line across a single geometry. The length of the line is equal to "
-"the Maximum Distance. The line is a diameter of the Minimum Bounding Circle."
+"the Maximum Distance. The endpoints of the line lie on the Minimum Bounding "
+"Circle."
 msgstr ""
 
 #. Tag: programlisting

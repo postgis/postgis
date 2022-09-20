@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-14 02:04+0000\n"
+"POT-Creation-Date: 2022-09-19 22:09+0000\n"
 "PO-Revision-Date: 2022-09-14 01:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -25,7 +25,8 @@ msgstr ""
 msgid ""
 "These functions compute measurements of distance, area and angles. There are "
 "also functions to compute geometry values determined by measurements."
-msgstr "この関数は、距離、面積、角度の測定値を計算します。測定値から決定されるジオメ"
+msgstr ""
+"この関数は、距離、面積、角度の測定値を計算します。測定値から決定されるジオメ"
 "トリ値を計算する関数もあります。"
 
 #. Tag: title
@@ -95,8 +96,8 @@ msgstr ""
 "ポリゴンジオメトリの面積を返します。ジオメトリ型では2次元のデカルト (平面)面"
 "積が、SRIDで指定した単位で計算されます。ジオグラフィ型では、デフォルトでは、"
 "面積は回転楕円体上にあるものとし、平方メートル単位で計算されます。より速いも"
-"のの精度が落ちる計算のために、 "
-"<varname>ST_Area(geog,false)</varname>で球面モデルを使った計算ができます。"
+"のの精度が落ちる計算のために、 <varname>ST_Area(geog,false)</varname>で球面モ"
+"デルを使った計算ができます。"
 
 #. Tag: para
 #: reference_measure.xml:41
@@ -113,8 +114,8 @@ msgid ""
 "advantage of the new feature."
 msgstr ""
 "Enhanced: 2.2.0 - 精度とロバスト性の向上のためにGeographicLibを使って回転楕円"
-"体面上での計測を行うようにしています。この新機能を使うには、Proj 4.9."
-"0以上が必要です。"
+"体面上での計測を行うようにしています。この新機能を使うには、Proj 4.9.0以上が"
+"必要です。"
 
 #. Tag: para
 #: reference_measure.xml:43 reference_measure.xml:409
@@ -353,8 +354,9 @@ msgid ""
 "linkend=\"ST_GeographyFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
 "linkend=\"ST_Transform\"/>"
 msgstr ""
-", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_GeographyFromText\""
-"/>, <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>"
+", <xref linkend=\"ST_GeomFromText\"/>, <xref "
+"linkend=\"ST_GeographyFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
+"linkend=\"ST_Transform\"/>"
 
 #. Tag: refname
 #: reference_measure.xml:78
@@ -383,10 +385,10 @@ msgstr ""
 "<funcprototype> <funcdef>float <function>ST_Azimuth</function></funcdef> "
 "<paramdef><type>geometry </type><parameter>origin</parameter></paramdef> "
 "<paramdef><type>geometry </type><parameter>target</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>float "
-"<function>ST_Azimuth</function></funcdef> <paramdef><type>geography "
-"</type><parameter>origin</parameter></paramdef> <paramdef><type>geography "
-"</type><parameter>target</parameter></paramdef> </funcprototype>"
+"funcprototype> <funcprototype> <funcdef>float <function>ST_Azimuth</"
+"function></funcdef> <paramdef><type>geography </type><parameter>origin</"
+"parameter></paramdef> <paramdef><type>geography </type><parameter>target</"
+"parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_measure.xml:99
@@ -399,11 +401,11 @@ msgid ""
 "Southeast = 3&#x03C0;/4; South = &#x03C0;; Southwest 5&#x03C0;/4; West = "
 "3&#x03C0;/2; Northwest = 7&#x03C0;/4."
 msgstr ""
-"原点から目標点に向いたラジアン単位の方位を返しますが、2点が一致する場合にはNU"
-"LLを返します。方位角は、Y軸 (ジオメトリ)または子午線北向き (ジオグラフィ)から"
-"時計回りに増えていきます。すなわち、北は0、北東は&#x03C0;/4、東は&#x03C0;/2、"
-"南東は3&#x03C0;/4、南は&#x03C0;、南西は5&#x03C0;/4、西は3&#x03C0;/2、北西は7&"
-"#x03C0;/4、となります。"
+"原点から目標点に向いたラジアン単位の方位を返しますが、2点が一致する場合には"
+"NULLを返します。方位角は、Y軸 (ジオメトリ)または子午線北向き (ジオグラフィ)か"
+"ら時計回りに増えていきます。すなわち、北は0、北東は&#x03C0;/4、東は"
+"&#x03C0;/2、南東は3&#x03C0;/4、南は&#x03C0;、南西は5&#x03C0;/4、西は"
+"3&#x03C0;/2、北西は7&#x03C0;/4、となります。"
 
 #. Tag: para
 #: reference_measure.xml:105
@@ -414,8 +416,8 @@ msgid ""
 "geodesic problem</ulink>."
 msgstr ""
 "ジオグラフィでは、方位角計算問題は<ulink url=\"https://en.wikipedia.org/wiki/"
-"Geodesics_on_an_ellipsoid\">inverse geodesic "
-"problem</ulink>として知られます。"
+"Geodesics_on_an_ellipsoid\">inverse geodesic problem</ulink>として知られま"
+"す。"
 
 #. Tag: para
 #: reference_measure.xml:107
@@ -427,8 +429,8 @@ msgid ""
 "<varname>degrees()</varname>."
 msgstr ""
 "方位角は参照ベクトルと一つのポイントとの間の角度と定義される数学的概念で、角"
-"度の単位はラジアンです。ラジアン単位の結果はPostgreSQL関数<varname>degrees()<"
-"/varname>で度に変換できます。"
+"度の単位はラジアンです。ラジアン単位の結果はPostgreSQL関数"
+"<varname>degrees()</varname>で度に変換できます。"
 
 #. Tag: para
 #: reference_measure.xml:110
@@ -440,10 +442,10 @@ msgid ""
 "trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions\">PostGIS wiki</ulink> "
 "for an implementation of this."
 msgstr ""
-"方位角は、垂直軸に沿ってシフトさせるには<xref linkend=\"ST_Translate\""
-"/>と併用します。実装については<ulink url=\"http://trac.osgeo.org/postgis/"
-"wiki/UsersWikiplpgsqlfunctions\">PostGIS "
-"wiki</ulink>内の関数<varname>upgis_lineshift()</varname>をご覧下さい。"
+"方位角は、垂直軸に沿ってシフトさせるには<xref linkend=\"ST_Translate\"/>と併"
+"用します。実装については<ulink url=\"http://trac.osgeo.org/postgis/wiki/"
+"UsersWikiplpgsqlfunctions\">PostGIS wiki</ulink>内の関数"
+"<varname>upgis_lineshift()</varname>をご覧下さい。"
 
 #. Tag: para
 #: reference_measure.xml:113
@@ -466,8 +468,8 @@ msgid ""
 "advantage of the new feature."
 msgstr ""
 "Enhanced: 2.2.0 - 精度とロバスト性の向上のためにGeographicLibを使って回転楕円"
-"体面上での計測を行うようにしています。この新機能を使うには、Proj 4.9."
-"0以上が必要です。"
+"体面上での計測を行うようにしています。この新機能を使うには、Proj 4.9.0以上が"
+"必要です。"
 
 #. Tag: para
 #: reference_measure.xml:120
@@ -488,10 +490,10 @@ msgid ""
 "------------------+------------------\n"
 " 42.2736890060937 | 222.273689006094"
 msgstr ""
-"SELECT degrees(ST_Azimuth( ST_Point(25, 45),  ST_Point(75, 100))) AS degA_B,"
-"\n"
-"       degrees(ST_Azimuth( ST_Point(75, 100), ST_Point(25, 45) )) AS degB_A;"
-"\n"
+"SELECT degrees(ST_Azimuth( ST_Point(25, 45),  ST_Point(75, 100))) AS "
+"degA_B,\n"
+"       degrees(ST_Azimuth( ST_Point(75, 100), ST_Point(25, 45) )) AS "
+"degB_A;\n"
 "\n"
 "      dega_b       |     degb_a\n"
 "------------------+------------------\n"
@@ -587,8 +589,8 @@ msgid ""
 "vectors S1-E1 and S2-E2, defined by the start and end points of the input "
 "lines"
 msgstr ""
-"<emphasis role=\"bold\">形式2:</emphasis> "
-"入力ラインで定義される始端と終端ベクトルS1-E1とS2-E2の間の角度を計算します。"
+"<emphasis role=\"bold\">形式2:</emphasis> 入力ラインで定義される始端と終端ベ"
+"クトルS1-E1とS2-E2の間の角度を計算します。"
 
 #. Tag: para
 #: reference_measure.xml:191
@@ -598,8 +600,8 @@ msgid ""
 "result can be converted to degrees using the PostgreSQL function "
 "<varname>degrees()</varname>."
 msgstr ""
-"結果は正の角度で0と2πラジアンの間です。ラジアンはPostgreSQL関数<varname>degre"
-"es()</varname>で度に変換できます。"
+"結果は正の角度で0と2πラジアンの間です。ラジアンはPostgreSQL関数"
+"<varname>degrees()</varname>で度に変換できます。"
 
 #. Tag: para
 #: reference_measure.xml:194
@@ -607,8 +609,8 @@ msgstr ""
 msgid ""
 "Note that <varname>ST_Angle(P1,P2,P3) = ST_Angle(P2,P1,P2,P3)</varname>."
 msgstr ""
-"<varname>ST_Angle(P1,P2,P3) = "
-"ST_Angle(P2,P1,P2,P3)</varname>となることに注意して下さい。"
+"<varname>ST_Angle(P1,P2,P3) = ST_Angle(P2,P1,P2,P3)</varname>となることに注意"
+"して下さい。"
 
 #. Tag: para
 #: reference_measure.xml:195
@@ -698,7 +700,8 @@ msgstr "ST_ClosestPoint"
 msgid ""
 "Returns the 2D point on g1 that is closest to g2. This is the first point of "
 "the shortest line from one geometry to the other."
-msgstr "g1上にある、g2と最近傍となる2次元ポイントを返します。これは、あるジオメトリか"
+msgstr ""
+"g1上にある、g2と最近傍となる2次元ポイントを返します。これは、あるジオメトリか"
 "ら他のジオメトリへの最短ラインの一つ目のポイントです。"
 
 #. Tag: funcprototype
@@ -722,8 +725,9 @@ msgid ""
 "between the geometries (as computed by <xref linkend=\"ST_ShortestLine\"/>)."
 msgstr ""
 "<varname>geom2</varname>と最近傍となる<varname>geom1</varname>上の2次元ポイン"
-"トを返します。これは、ジオメトリ間の最短ライン (<xref linkend="
-"\"ST_ShortestLine\"/>で生成されるものと同じです)の一つ目のポイントです。"
+"トを返します。これは、ジオメトリ間の最短ライン (<xref "
+"linkend=\"ST_ShortestLine\"/>で生成されるものと同じです)の一つ目のポイントで"
+"す。"
 
 #. Tag: para
 #: reference_measure.xml:248
@@ -750,9 +754,9 @@ msgid ""
 "The closest point for a Point and a LineString is the point itself. The "
 "closest point for a LineString and a Point is a point on the line."
 msgstr ""
-"ポイントとラインストリングの最近傍ポイントは引数で与えたポイントそのものです"
-"。ラインストリングとポイントの最近傍ポイントはラインストリング上のポイントで"
-"す。"
+"ポイントとラインストリングの最近傍ポイントは引数で与えたポイントそのもので"
+"す。ラインストリングとポイントの最近傍ポイントはラインストリング上のポイント"
+"です。"
 
 #. Tag: programlisting
 #: reference_measure.xml:264
@@ -822,7 +826,8 @@ msgstr "ST_3DClosestPoint"
 msgid ""
 "Returns the 3D point on g1 that is closest to g2. This is the first point of "
 "the 3D shortest line."
-msgstr "g1上の、g2に最も近い3次元ポイントを返します。これは3次元の最短ラインの始点で"
+msgstr ""
+"g1上の、g2に最も近い3次元ポイントを返します。これは3次元の最短ラインの始点で"
 "す。"
 
 #. Tag: funcprototype
@@ -1024,12 +1029,11 @@ msgstr ""
 "<funcprototype> <funcdef>float <function>ST_Distance</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>float "
-"<function>ST_Distance</function></funcdef> <paramdef><type>geography </type> "
-"<parameter>geog1</parameter></paramdef> <paramdef><type>geography </type> "
-"<parameter>geog2</parameter></paramdef> <paramdef choice=\"opt\""
-"><type>boolean </type> <parameter>use_spheroid=true</parameter></paramdef> "
-"</funcprototype>"
+"funcprototype> <funcprototype> <funcdef>float <function>ST_Distance</"
+"function></funcdef> <paramdef><type>geography </type> <parameter>geog1</"
+"parameter></paramdef> <paramdef><type>geography </type> <parameter>geog2</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>use_spheroid=true</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_measure.xml:393
@@ -1039,8 +1043,8 @@ msgid ""
 "(planar) distance between two geometries, in projected units (spatial ref "
 "units)."
 msgstr ""
-"<xref linkend=\"geometry\"/>型では、二つのジオメトリ間の2次元のデカルト "
-"(平面)距離の最小値を返します。単位は投影の単位 (空間参照系の単位)です。"
+"<xref linkend=\"geometry\"/>型では、二つのジオメトリ間の2次元のデカルト (平"
+"面)距離の最小値を返します。単位は投影の単位 (空間参照系の単位)です。"
 
 #. Tag: para
 #: reference_measure.xml:396
@@ -1052,8 +1056,8 @@ msgid ""
 "faster spherical calculation is used."
 msgstr ""
 "<xref linkend=\"geography\"/>型では、二つのジオグラフィ間の最小の測地距離を、"
-"メートル単位で返します。SRIDで決定される回転楕円体で計算します。<varname>use_"
-"spheroid</varname>がFALSEの場合には、球面が計算に使われます。"
+"メートル単位で返します。SRIDで決定される回転楕円体で計算します。"
+"<varname>use_spheroid</varname>がFALSEの場合には、球面が計算に使われます。"
 
 #. Tag: para
 #: reference_measure.xml:402
@@ -1133,9 +1137,9 @@ msgid ""
 "popular web maps). Although the value is off, nearby ones can be compared "
 "correctly, which makes it a good choice for algorithms like KNN or KMeans."
 msgstr ""
-"ジオメトリの例 - メートル単位 (SIRD: 3857, 一般的なWebマップのピクセルに比例)"
-"。値は正しくありませんが、近傍の比較は正しくでき、KNNやKMeansなどのアルゴリズ"
-"ムに適しています。"
+"ジオメトリの例 - メートル単位 (SIRD: 3857, 一般的なWebマップのピクセルに比"
+"例)。値は正しくありませんが、近傍の比較は正しくでき、KNNやKMeansなどのアルゴ"
+"リズムに適しています。"
 
 #. Tag: programlisting
 #: reference_measure.xml:421
@@ -1161,8 +1165,9 @@ msgstr ""
 msgid ""
 "Geometry example - units in meters (SRID: 3857 as above, but corrected by "
 "cos(lat) to account for distortion)"
-msgstr "ジオメトリの例 - メートル単位 (SRID:3857, "
-"上と同じですが、歪みを考慮してcos(lat)で修正しています)"
+msgstr ""
+"ジオメトリの例 - メートル単位 (SRID:3857, 上と同じですが、歪みを考慮して"
+"cos(lat)で修正しています)"
 
 #. Tag: programlisting
 #: reference_measure.xml:424
@@ -1190,7 +1195,8 @@ msgstr ""
 msgid ""
 "Geometry example - units in meters (SRID: 26986 Massachusetts state plane "
 "meters) (most accurate for Massachusetts)"
-msgstr "ジオメトリの例 - メートル単位 (SRID: 26986, マサチューセッツ州平面メートル) "
+msgstr ""
+"ジオメトリの例 - メートル単位 (SRID: 26986, マサチューセッツ州平面メートル) "
 "(マサチューセッツで最も精度が高い)"
 
 #. Tag: programlisting
@@ -1217,7 +1223,8 @@ msgstr ""
 msgid ""
 "Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) "
 "(least accurate)"
-msgstr "ジオメトリの例 - メートル単位 (SRID: 2163, 米国ナショナルアトラス正積図法) "
+msgstr ""
+"ジオメトリの例 - メートル単位 (SRID: 2163, 米国ナショナルアトラス正積図法) "
 "(最も精度が低い)"
 
 #. Tag: programlisting
@@ -1250,8 +1257,9 @@ msgstr "ジオグラフィの例"
 msgid ""
 "Same as geometry example but note units in meters - use sphere for slightly "
 "faster and less accurate computation."
-msgstr "ジオメトリの例と同じですが、メートル単位である点に注意して下さい - "
-"球面の使用で、わずかな速度向上と低精度の計算を行います。"
+msgstr ""
+"ジオメトリの例と同じですが、メートル単位である点に注意して下さい - 球面の使用"
+"で、わずかな速度向上と低精度の計算を行います。"
 
 #. Tag: programlisting
 #: reference_measure.xml:435
@@ -1307,7 +1315,8 @@ msgstr "ST_3DDistance"
 msgid ""
 "Returns the 3D cartesian minimum distance (based on spatial ref) between two "
 "geometries in projected units."
-msgstr "投影座標系の単位で、二つのジオメトリ間の3次元デカルト距離の最小値を返します "
+msgstr ""
+"投影座標系の単位で、二つのジオメトリ間の3次元デカルト距離の最小値を返します "
 "(空間参照系に基づきます)。"
 
 #. Tag: funcprototype
@@ -1328,7 +1337,8 @@ msgstr ""
 msgid ""
 "Returns the 3-dimensional minimum cartesian distance between two geometries "
 "in projected units (spatial ref units)."
-msgstr "投影座標系の単位で、二つのジオメトリ間の3次元デカルト距離の最小値を返します "
+msgstr ""
+"投影座標系の単位で、二つのジオメトリ間の3次元デカルト距離の最小値を返します "
 "(空間参照系に基づきます)。"
 
 #. Tag: para
@@ -1378,21 +1388,21 @@ msgid ""
 "------------------+-----------------\n"
 " 127.295059324629 | 126.66425605671"
 msgstr ""
-"-- ジオメトリの例 - メートル単位 (SRID: 2163, 米国ナショナルアトラス正積図法)"
-" (2次元のポイントとラインと比較される3次元のポイントとライン)\n"
+"-- ジオメトリの例 - メートル単位 (SRID: 2163, 米国ナショナルアトラス正積図"
+"法) (2次元のポイントとラインと比較される3次元のポイントとライン)\n"
 "-- ご注意: 現在は鉛直基準面に対応していません。Z値は変換されずに、最終の単位"
 "と同じ単位と推定されます。\n"
 "SELECT ST_3DDistance(\n"
-"                        ST_Transform('SRID=4326;POINT(-72.1235 42.3521 "
-"4)'::geometry,2163),\n"
+"                        ST_Transform('SRID=4326;POINT(-72.1235 42.3521 4)'::"
+"geometry,2163),\n"
 "                        ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45 "
 "15, -72.123 42.1546 20)'::geometry,2163)\n"
 "                ) As dist_3d,\n"
 "                ST_Distance(\n"
-"                        ST_Transform('SRID=4326;POINT(-72.1235 42."
-"3521)'::geometry,2163),\n"
-"                        ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -"
-"72.123 42.1546)'::geometry,2163)\n"
+"                        ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::"
+"geometry,2163),\n"
+"                        ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, "
+"-72.123 42.1546)'::geometry,2163)\n"
 "                ) As dist_2d;\n"
 "\n"
 "     dist_3d      |     dist_2d\n"
@@ -1451,7 +1461,8 @@ msgstr "ST_DistanceSphere"
 msgid ""
 "Returns minimum distance in meters between two lon/lat geometries using a "
 "spherical earth model."
-msgstr "球面の地球モデルを使って、二つの経度/緯度ジオメトリの最小距離をメートル単位で"
+msgstr ""
+"球面の地球モデルを使って、二つの経度/緯度ジオメトリの最小距離をメートル単位で"
 "返します。"
 
 #. Tag: funcprototype
@@ -1466,9 +1477,9 @@ msgid ""
 msgstr ""
 "<funcdef>float <function>ST_DistanceSphere</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomlonlatA</parameter></"
-"paramdef> <paramdef><type>geometry </type> "
-"<parameter>geomlonlatB</parameter></paramdef> <paramdef choice=\"opt\""
-"><type>float8 </type> <parameter>radius=6371008</parameter></paramdef>"
+"paramdef> <paramdef><type>geometry </type> <parameter>geomlonlatB</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>float8 </type> "
+"<parameter>radius=6371008</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:519
@@ -1541,11 +1552,10 @@ msgstr ""
 "4326) As geom) as foo;\n"
 "         dist_meters | dist_utm11_meters | dist_degrees | "
 "min_dist_line_point_meters\n"
-"        "
-"-------------+-------------------+--------------+----------------------------"
-"\n"
-"                70424.47 |          70438.00 |      0.72900 |"
-"                   65871.18"
+"        -------------+-------------------+--------------"
+"+----------------------------\n"
+"                70424.47 |          70438.00 |      0.72900 "
+"|                   65871.18"
 
 #. Tag: para
 #: reference_measure.xml:540
@@ -1565,7 +1575,8 @@ msgstr "ST_DistanceSpheroid"
 msgid ""
 "Returns the minimum distance between two lon/lat geometries using a "
 "spheroidal earth model."
-msgstr "回転楕円体面の地球モデルを使って、二つの経度/緯度ジオメトリの最小距離を返しま"
+msgstr ""
+"回転楕円体面の地球モデルを使って、二つの経度/緯度ジオメトリの最小距離を返しま"
 "す。"
 
 #. Tag: funcprototype
@@ -1580,10 +1591,9 @@ msgid ""
 msgstr ""
 "<funcdef>float <function>ST_DistanceSpheroid</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomlonlatA</parameter></"
-"paramdef> <paramdef><type>geometry </type> "
-"<parameter>geomlonlatB</parameter></paramdef> <paramdef choice=\"opt\""
-"><type>spheroid "
-"</type><parameter>measurement_spheroid=WGS84</parameter></paramdef>"
+"paramdef> <paramdef><type>geometry </type> <parameter>geomlonlatB</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>spheroid </"
+"type><parameter>measurement_spheroid=WGS84</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:566
@@ -1594,8 +1604,8 @@ msgid ""
 "linkend=\"ST_Length_Spheroid\"/>."
 msgstr ""
 "与えられた回転楕円体面の、二つの経度/緯度ジオメトリの最小距離をメートル単位で"
-"返します。回転楕円体面の詳細については<xref linkend=\"ST_Length_Spheroid\""
-"/>をご覧下さい。"
+"返します。回転楕円体面の詳細については<xref linkend=\"ST_Length_Spheroid\"/>"
+"をご覧下さい。"
 
 #. Tag: para
 #: reference_measure.xml:570
@@ -1603,14 +1613,16 @@ msgstr ""
 msgid ""
 "This function does not look at the SRID of the geometry. It assumes the "
 "geometry coordinates are based on the provided spheroid."
-msgstr "この関数はジオメトリのSRIDを見ません。ジオメトリの座標は与えられた回転楕円体"
+msgstr ""
+"この関数はジオメトリのSRIDを見ません。ジオメトリの座標は与えられた回転楕円体"
 "に基づくものと仮定します。"
 
 #. Tag: para
 #: reference_measure.xml:576
 #, no-c-format
 msgid "Changed: 2.2.0 In prior versions this was called ST_Distance_Spheroid"
-msgstr "Changed: 2.2.0 前の版ではこの関数はST_Distance_Sphereと呼ばれていました。"
+msgstr ""
+"Changed: 2.2.0 前の版ではこの関数はST_Distance_Sphereと呼ばれていました。"
 
 #. Tag: programlisting
 #: reference_measure.xml:583
@@ -1636,12 +1648,12 @@ msgid ""
 msgstr ""
 "SELECT round(CAST(\n"
 "                ST_DistanceSpheroid(ST_Centroid(geom), "
-"ST_GeomFromText('POINT(-118 38)',4326), 'SPHEROID[\"WGS 84\",6378137,298."
-"257223563]')\n"
+"ST_GeomFromText('POINT(-118 38)',4326), 'SPHEROID[\"WGS "
+"84\",6378137,298.257223563]')\n"
 "                        As numeric),2) As dist_meters_spheroid,\n"
 "                round(CAST(ST_DistanceSphere(ST_Centroid(geom), "
-"ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters_sphere,"
-"\n"
+"ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As "
+"dist_meters_sphere,\n"
 "round(CAST(ST_Distance(ST_Transform(ST_Centroid(geom),32611),\n"
 "                ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) "
 "As numeric),2) As dist_utm11_meters\n"
@@ -1856,10 +1868,10 @@ msgid ""
 "fraction."
 msgstr ""
 "この関数は実際に「離散ハウスドルフ距離」を計算します。これはジオメトリの離散"
-"ポイントにおけるハウスドルフ距離の計算を行ったものです。<parameter>densifyFra"
-"c</parameter>パラメータが指定された場合には、離散ハウスドルフ距離の計算の前に"
-"辺の密度を高くして、精度の高い結果が得られるようにします。個々の辺は、与えた"
-"割合に近い辺長で等分されます。"
+"ポイントにおけるハウスドルフ距離の計算を行ったものです。"
+"<parameter>densifyFrac</parameter>パラメータが指定された場合には、離散ハウス"
+"ドルフ距離の計算の前に辺の密度を高くして、精度の高い結果が得られるようにしま"
+"す。個々の辺は、与えた割合に近い辺長で等分されます。"
 
 #. Tag: para
 #: reference_measure.xml:711
@@ -1873,8 +1885,8 @@ msgid ""
 msgstr ""
 "このアルゴリズムは標準的なハウスドルフ距離と等価では*ありません*。しかし、使"
 "用可能な場面の大部分で正しくなる近似計算がなされています。重要なものに、それ"
-"ぞれが概ね平行で概ね等しい長さのラインストリングがあります。これはラインのマ"
-"ッチングに使える基準です。"
+"ぞれが概ね平行で概ね等しい長さのラインストリングがあります。これはラインの"
+"マッチングに使える基準です。"
 
 #. Tag: para
 #: reference_measure.xml:730
@@ -1912,8 +1924,9 @@ msgstr ""
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Hausdorff distance with "
 "densification."
-msgstr "<emphasis role=\"bold\">Example:</emphasis> "
-"高密度化したうえで求めたハウスドルフ距離。"
+msgstr ""
+"<emphasis role=\"bold\">Example:</emphasis> 高密度化したうえで求めたハウスド"
+"ルフ距離。"
 
 #. Tag: programlisting
 #: reference_measure.xml:738
@@ -1945,10 +1958,9 @@ msgid ""
 msgstr ""
 "<emphasis role=\"bold\">例:</emphasis> 個々の建物について、最もよく表現する区"
 "画を見つけます。最初に建物ジオメトリとインタセクトする区画を求めます。"
-"<code>DISTINCT "
-"ON</code>で、個々の建物が一回ずつしかリストに挙がらないことが保障されます。"
-"<code>ORDER BY .. "
-"ST_HausdorffDistance</code>で、最も建物に近い区画を選択します。"
+"<code>DISTINCT ON</code>で、個々の建物が一回ずつしかリストに挙がらないことが"
+"保障されます。<code>ORDER BY .. ST_HausdorffDistance</code>で、最も建物に近い"
+"区画を選択します。"
 
 #. Tag: programlisting
 #: reference_measure.xml:746
@@ -2009,10 +2021,10 @@ msgid ""
 "0 is returned; use <xref linkend=\"ST_Perimeter\"/> instead. The units of "
 "length is determined by the spatial reference system of the geometry."
 msgstr ""
-"ジオメトリ型: LINESTRING, MULTILINESTRING, ST_Curve, "
-"ST_MultiCurveの場合には2次元デカルト距離を返します。"
-"面ジオメトリでは0を返すので<xref linkend=\"ST_Perimeter\""
-"/>を代わりに使います。長さの単位はジオメトリの空間参照系で決まります。"
+"ジオメトリ型: LINESTRING, MULTILINESTRING, ST_Curve, ST_MultiCurveの場合には2"
+"次元デカルト距離を返します。面ジオメトリでは0を返すので<xref "
+"linkend=\"ST_Perimeter\"/>を代わりに使います。長さの単位はジオメトリの空間参"
+"照系で決まります。"
 
 #. Tag: para
 #: reference_measure.xml:782
@@ -2026,8 +2038,9 @@ msgid ""
 msgstr ""
 "ジオグラフィ型: 計算は逆測地問題を用いています。長さの単位はメートルです。"
 "PROJ 4.8.0以上をでPostGISをコンパイルしている場合には、回転楕円体面はSRIDで指"
-"定されたものとなり、それより前はWGS84となります。<varname>use_spheroid=false<"
-"/varname>とすると、計算は回転楕円体面でなく真球面で行います。"
+"定されたものとなり、それより前はWGS84となります。"
+"<varname>use_spheroid=false</varname>とすると、計算は回転楕円体面でなく真球面"
+"で行います。"
 
 #. Tag: para
 #: reference_measure.xml:787
@@ -2136,8 +2149,8 @@ msgstr ""
 "-- WGS84ラインストリングをメートル単位のマサチューセッツ州平面に変換\n"
 "SELECT ST_Length(\n"
 "        ST_Transform(\n"
-"                ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45, -"
-"72.1240 42.45666, -72.123 42.1546)'),\n"
+"                ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45, "
+"-72.1240 42.45666, -72.123 42.1546)'),\n"
 "                26986\n"
 "        )\n"
 ");\n"
@@ -2267,8 +2280,8 @@ msgid ""
 "length (same as ST_Length and ST_Length2D)"
 msgstr ""
 "LINESTRINGまたはMULTILINESTRINGの場合には、そのジオメトリの3次元長または2次元"
-"長を返します。2次元ラインでは2次元長を返します "
-"(ST_LengthとST_Length2Dと同じです)。"
+"長を返します。2次元ラインでは2次元長を返します (ST_LengthとST_Length2Dと同じ"
+"です)。"
 
 #. Tag: para
 #: reference_measure.xml:870
@@ -2327,7 +2340,8 @@ msgstr "ST_LengthSpheroid"
 #, no-c-format
 msgid ""
 "Returns the 2D or 3D length/perimeter of a lon/lat geometry on a spheroid."
-msgstr "回転楕円体面上の経度緯度のジオメトリの2次元または3次元の長さ/周長を返します。"
+msgstr ""
+"回転楕円体面上の経度緯度のジオメトリの2次元または3次元の長さ/周長を返します。"
 
 #. Tag: funcprototype
 #: reference_measure.xml:900
@@ -2351,7 +2365,8 @@ msgid ""
 "useful if the coordinates of the geometry are in longitude/latitude and a "
 "length is desired without reprojection. The spheroid is specified by a text "
 "value as follows:"
-msgstr "回転楕円体面上のジオメトリの周長を返します。この関数は、ジオメトリの座標が経"
+msgstr ""
+"回転楕円体面上のジオメトリの周長を返します。この関数は、ジオメトリの座標が経"
 "度/緯度で、投影変換なしで長さを求めたい場合に使います。"
 
 #. Tag: literallayout
@@ -2386,8 +2401,8 @@ msgid ""
 "Changed: 2.2.0 In prior versions this was called ST_Length_Spheroid and had "
 "the alias ST_3DLength_Spheroid"
 msgstr ""
-"Changed: 2.2.0 これより前の版では、これはST_Length_Spheroidと呼ばれ、ST_3DLen"
-"gth_Spheroidという別名を持っていました。"
+"Changed: 2.2.0 これより前の版では、これはST_Length_Spheroidと呼ばれ、"
+"ST_3DLength_Spheroidという別名を持っていました。"
 
 #. Tag: programlisting
 #: reference_measure.xml:928
@@ -2430,8 +2445,8 @@ msgstr ""
 "SELECT ST_LengthSpheroid( geom, sph_m ) As tot_len,\n"
 "ST_LengthSpheroid(ST_GeometryN(geom,1), sph_m) As len_line1,\n"
 "ST_LengthSpheroid(ST_GeometryN(geom,2), sph_m) As len_line2\n"
-"                          FROM (SELECT ST_GeomFromText('MULTILINESTRING((-"
-"118.584 38.374,-118.583 38.5),\n"
+"                          FROM (SELECT "
+"ST_GeomFromText('MULTILINESTRING((-118.584 38.374,-118.583 38.5),\n"
 "        (-71.05957 42.3589 , -71.061 43))') As geom,\n"
 "CAST('SPHEROID[\"GRS_1980\",6378137,298.257222101]' As spheroid) As sph_m)  "
 "as foo;\n"
@@ -2443,8 +2458,8 @@ msgstr ""
 "SELECT ST_LengthSpheroid( geom, sph_m ) As tot_len,\n"
 "ST_LengthSpheroid(ST_GeometryN(geom,1), sph_m) As len_line1,\n"
 "ST_LengthSpheroid(ST_GeometryN(geom,2), sph_m) As len_line2\n"
-"                          FROM (SELECT ST_GeomFromEWKT('MULTILINESTRING((-"
-"118.584 38.374 20,-118.583 38.5 30),\n"
+"                          FROM (SELECT "
+"ST_GeomFromEWKT('MULTILINESTRING((-118.584 38.374 20,-118.583 38.5 30),\n"
 "        (-71.05957 42.3589 75, -71.061 43 90))') As geom,\n"
 "CAST('SPHEROID[\"GRS_1980\",6378137,298.257222101]' As spheroid) As sph_m)  "
 "as foo;\n"
@@ -2491,8 +2506,8 @@ msgid ""
 "The line returned starts on <varname>g1</varname> and ends on <varname>g2</"
 "varname>."
 msgstr ""
-"二つのジオメトリのポイントで作られる2次元の最長ラインを返します。ラインは<var"
-"name>g1</varname>上から始まり、<varname>g2</varname>上で終わります。"
+"二つのジオメトリのポイントで作られる2次元の最長ラインを返します。ラインは"
+"<varname>g1</varname>上から始まり、<varname>g2</varname>上で終わります。"
 
 #. Tag: para
 #: reference_measure.xml:968
@@ -2503,20 +2518,17 @@ msgid ""
 "equal to the distance returned by <xref linkend=\"ST_MaxDistance\"/>."
 msgstr ""
 "最長ラインは常に二つの頂点となります。一つ以上の最長ラインが発見された場合に"
-"は、この関数は最初のものを返します。ラインの長さは<xref linkend="
-"\"ST_MaxDistance\"/>が返す距離と同じです。"
+"は、この関数は最初のものを返します。ラインの長さは<xref "
+"linkend=\"ST_MaxDistance\"/>が返す距離と同じです。"
 
 #. Tag: para
 #: reference_measure.xml:972
 #, no-c-format
 msgid ""
 "If g1 and g2 are the same geometry, returns the line between the two "
-"vertices farthest apart in the geometry. This is a diameter of the circle "
-"computed by <xref linkend=\"ST_MinimumBoundingCircle\"/>"
+"vertices farthest apart in the geometry. The endpoints of the line lie on "
+"the circle computed by <xref linkend=\"ST_MinimumBoundingCircle\"/>."
 msgstr ""
-"g1とg2が同じジオメトリの場合には、ジオメトリ内で最も離れた二つの頂点からなる"
-"ラインが返ります。これは<xref linkend=\"ST_MinimumBoundingCircle\""
-"/>で計算された円の直径です。"
 
 #. Tag: para
 #: reference_measure.xml:987
@@ -2571,9 +2583,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Longest line across a single geometry. The length of the line is equal to "
-"the Maximum Distance. The line is a diameter of the Minimum Bounding Circle."
-msgstr "一つのジオメトリを横切る最長のラインです。ラインの長さは最長距離と同じです。"
-"ラインは最小境界円の直径です。"
+"the Maximum Distance. The endpoints of the line lie on the Minimum Bounding "
+"Circle."
+msgstr ""
 
 #. Tag: programlisting
 #: reference_measure.xml:1015
@@ -2645,8 +2657,8 @@ msgid ""
 "returned by <xref linkend=\"ST_3DMaxDistance\"/>."
 msgstr ""
 "二つのジオメトリ間の3次元最長ラインを返します。該当が複数ある場合には最初の最"
-"長ラインを返します。返されるラインは、g1から始まりg2で終わります。"
-"ラインの3次元長は<xref linkend=\"ST_3DMaxDistance\"/>が返す距離と同じです。"
+"長ラインを返します。返されるラインは、g1から始まりg2で終わります。ラインの3次"
+"元長は<xref linkend=\"ST_3DMaxDistance\"/>が返す距離と同じです。"
 
 #. Tag: para
 #: reference_measure.xml:1070
@@ -2793,8 +2805,8 @@ msgid ""
 ">."
 msgstr ""
 "二つのジオメトリの2次元最長距離を空間参照系の単位で返します。最長距離は常に二"
-"つの頂点間で発生します。これは<xref linkend=\"ST_LongestLine\""
-"/>が返すラインの長さと同じです。"
+"つの頂点間で発生します。これは<xref linkend=\"ST_LongestLine\"/>が返すライン"
+"の長さと同じです。"
 
 #. Tag: para
 #: reference_measure.xml:1123
@@ -2802,7 +2814,8 @@ msgstr ""
 msgid ""
 "If g1 and g2 are the same geometry, returns the distance between the two "
 "vertices farthest apart in that geometry."
-msgstr "g1とg2が同じジオメトリであった場合には、そのジオメトリ内の最も遠くなる二つの"
+msgstr ""
+"g1とg2が同じジオメトリであった場合には、そのジオメトリ内の最も遠くなる二つの"
 "頂点間の距離を返します。"
 
 #. Tag: para
@@ -2825,13 +2838,13 @@ msgid ""
 "------------------\n"
 " 2.82842712474619"
 msgstr ""
-"SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 "
-")'::geometry);\n"
+"SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::"
+"geometry);\n"
 "-----------------\n"
 " 2\n"
 "\n"
-"SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 "
-")'::geometry);\n"
+"SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )'::"
+"geometry);\n"
 "------------------\n"
 " 2.82842712474619"
 
@@ -2875,8 +2888,9 @@ msgstr "ST_3DMaxDistance"
 msgid ""
 "Returns the 3D cartesian maximum distance (based on spatial ref) between two "
 "geometries in projected units."
-msgstr "二つのジオメトリ間の3次元最大デカルト距離 "
-"(空間参照系に基づく)を空間参照系の単位で返します。"
+msgstr ""
+"二つのジオメトリ間の3次元最大デカルト距離 (空間参照系に基づく)を空間参照系の"
+"単位で返します。"
 
 #. Tag: funcprototype
 #: reference_measure.xml:1155
@@ -2896,7 +2910,8 @@ msgstr ""
 msgid ""
 "Returns the 3-dimensional maximum cartesian distance between two geometries "
 "in projected units (spatial ref units)."
-msgstr "二つのジオメトリ間の3次元の最大デカルト距離を空間参照系の単位で返します。"
+msgstr ""
+"二つのジオメトリ間の3次元の最大デカルト距離を空間参照系の単位で返します。"
 
 #. Tag: programlisting
 #: reference_measure.xml:1184
@@ -2994,9 +3009,8 @@ msgstr ""
 "<xref linkend=\"ST_IsValid\"/> (ポリゴン)または<xref linkend=\"ST_IsSimple\"/"
 "> (ライン)に従って、ジオメトリは妥当性基準を満たせますが、そのうちの一つの頂"
 "点が短い距離だけ移動すると不正になります。これは、テキスト書式 (WKT, KML, "
-"GML, GeoJSON等)に変換する際の精度の損失や、"
-"倍精度浮動小数点座標値を使わない書式 (MapInfo "
-"TAB等)で発生する可能性があります。"
+"GML, GeoJSON等)に変換する際の精度の損失や、倍精度浮動小数点座標値を使わない書"
+"式 (MapInfo TAB等)で発生する可能性があります。"
 
 #. Tag: para
 #: reference_measure.xml:1220
@@ -3023,7 +3037,8 @@ msgstr "ジオメトリがクリアランスの最小値<varname>e</varname>を�
 msgid ""
 "No two distinct vertices in the geometry are closer than the distance "
 "<varname>e</varname>."
-msgstr "距離<varname>e</varname>より近くなるジオメトリ内の二つの個別の頂点はありませ"
+msgstr ""
+"距離<varname>e</varname>より近くなるジオメトリ内の二つの個別の頂点はありませ"
 "ん。"
 
 #. Tag: para
@@ -3032,7 +3047,8 @@ msgstr "距離<varname>e</varname>より近くなるジオメトリ内の二つ�
 msgid ""
 "No vertex is closer than <varname>e</varname> to a line segement of which it "
 "is not an endpoint."
-msgstr "終端となる辺を除いて、辺との距離が<varname>e</varname>より近い頂点は存在しま"
+msgstr ""
+"終端となる辺を除いて、辺との距離が<varname>e</varname>より近い頂点は存在しま"
 "せん。"
 
 #. Tag: para
@@ -3054,9 +3070,9 @@ msgid ""
 "linkend=\"ST_ReducePrecision\"/> can reduce coordinate precision while "
 "ensuring that polygonal geometry remains valid."
 msgstr ""
-"精度の損失による有効性の問題を回避するには、 <xref linkend="
-"\"ST_ReducePrecision\"/>を使うと、ポリゴンジオメトリの妥当性を確実に維持しつ"
-"つ座標値の精度を減らせられます。"
+"精度の損失による有効性の問題を回避するには、 <xref "
+"linkend=\"ST_ReducePrecision\"/>を使うと、ポリゴンジオメトリの妥当性を確実に"
+"維持しつつ座標値の精度を減らせられます。"
 
 #. Tag: para
 #: reference_measure.xml:1253
@@ -3120,8 +3136,8 @@ msgid ""
 "varname> is returned."
 msgstr ""
 "ジオメトリの最小クリアランスを示す、2点のラインストリングを返します。ジオメト"
-"リが最小クリアランスを持たない場合には、<varname>LINESTRING "
-"EMPTY</varname>が返ります。"
+"リが最小クリアランスを持たない場合には、<varname>LINESTRING EMPTY</varname>が"
+"返ります。"
 
 #. Tag: para
 #: reference_measure.xml:1300
@@ -3138,8 +3154,8 @@ msgid ""
 "-------------------------------\n"
 "LINESTRING(0.5 0.00032,0.5 0)"
 msgstr ""
-"SELECT ST_AsText(ST_MinimumClearanceLine('POLYGON ((0 0, 1 0, 1 1, 0.5 3.2e-"
-"4, 0 0))'));\n"
+"SELECT ST_AsText(ST_MinimumClearanceLine('POLYGON ((0 0, 1 0, 1 1, 0.5 "
+"3.2e-4, 0 0))'));\n"
 "-------------------------------\n"
 "LINESTRING(0.5 0.00032,0.5 0)"
 
@@ -3401,7 +3417,8 @@ msgstr "ST_Perimeter2D"
 msgid ""
 "Returns the 2D perimeter of a polygonal geometry. Alias for "
 "<varname>ST_Perimeter</varname>."
-msgstr "ポリゴンジオメトリの2次元周長を返します。<varname>ST_Perimeter</varname>の別"
+msgstr ""
+"ポリゴンジオメトリの2次元周長を返します。<varname>ST_Perimeter</varname>の別"
 "名です。"
 
 #. Tag: funcprototype
@@ -3548,7 +3565,8 @@ msgstr ""
 msgid ""
 "Returns a point projected from a start point along a geodesic using a given "
 "distance and azimuth (bearing). This is known as the direct geodesic problem."
-msgstr "始点から測地線に沿って与えられた距離と方位で算出されたポイントを返します。測"
+msgstr ""
+"始点から測地線に沿って与えられた距離と方位で算出されたポイントを返します。測"
 "地問題と言われるものです。"
 
 #. Tag: para
@@ -3568,8 +3586,8 @@ msgid ""
 "greater than 2&#x03C0; (360 degrees) are supported."
 msgstr ""
 "方位はラジアンで与えます。真北 (方位 0)から時計回りに増えます。 東は方位 "
-"&#x03C0;/2 (90度)、南は方位 &#x03C0; (180度)、西は方位 3&#x03C0;/2 "
-"(270度)です。負数と2&#x03C0; (360度)以上の値に対応しています。"
+"&#x03C0;/2 (90度)、南は方位 &#x03C0; (180度)、西は方位 3&#x03C0;/2 (270度)で"
+"す。負数と2&#x03C0; (360度)以上の値に対応しています。"
 
 #. Tag: para
 #: reference_measure.xml:1484
@@ -3592,8 +3610,8 @@ msgid ""
 "--------------------------------------------\n"
 " POINT(0.635231029125537 0.639472334729198)"
 msgstr ""
-"SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, radians(45.0)));"
-"\n"
+"SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, "
+"radians(45.0)));\n"
 "--------------------------------------------\n"
 " POINT(0.635231029125537 0.639472334729198)"
 
@@ -3644,12 +3662,12 @@ msgid ""
 "of the line is the same as <xref linkend=\"ST_Distance\"/> returns for g1 "
 "and g2."
 msgstr ""
-"二つのジオメトリの間の2次元の最短ラインを返します。返されるラインは<varname>g"
-"eom1</varname>内から始まり、<varname>geom2</varname>内で終わります。<varname>"
-"geom1</varname>と<varname>geom2</varname>がインタセクトしている場合には、結果"
-"はインタセクションするポイントを始点と終点にしたラインになります。"
-"ラインの長さは<xref linkend=\"ST_Distance\"/> "
-"でg1とg2を引数に取った時と同じになります。"
+"二つのジオメトリの間の2次元の最短ラインを返します。返されるラインは"
+"<varname>geom1</varname>内から始まり、<varname>geom2</varname>内で終わりま"
+"す。<varname>geom1</varname>と<varname>geom2</varname>がインタセクトしている"
+"場合には、結果はインタセクションするポイントを始点と終点にしたラインになりま"
+"す。ラインの長さは<xref linkend=\"ST_Distance\"/> でg1とg2を引数に取った時と"
+"同じになります。"
 
 #. Tag: para
 #: reference_measure.xml:1543
@@ -3698,8 +3716,8 @@ msgstr ""
 "         ST_Buffer('POINT(80 160)', 30)\n"
 "              ) ) AS llinewkt;\n"
 "-----------------\n"
-"LINESTRING(131.59149149528952 101.89887534906197,101.21320343559644 138."
-"78679656440357)"
+"LINESTRING(131.59149149528952 101.89887534906197,101.21320343559644 "
+"138.78679656440357)"
 
 #. Tag: para
 #: reference_measure.xml:1565
@@ -3883,6 +3901,25 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_LongestLine\"/>, "
 "<xref linkend=\"ST_ShortestLine\"/>, <xref linkend=\"ST_3DMaxDistance\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "If g1 and g2 are the same geometry, returns the line between the two "
+#~ "vertices farthest apart in the geometry. This is a diameter of the circle "
+#~ "computed by <xref linkend=\"ST_MinimumBoundingCircle\"/>"
+#~ msgstr ""
+#~ "g1とg2が同じジオメトリの場合には、ジオメトリ内で最も離れた二つの頂点からな"
+#~ "るラインが返ります。これは<xref linkend=\"ST_MinimumBoundingCircle\"/>で計"
+#~ "算された円の直径です。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Longest line across a single geometry. The length of the line is equal to "
+#~ "the Maximum Distance. The line is a diameter of the Minimum Bounding "
+#~ "Circle."
+#~ msgstr ""
+#~ "一つのジオメトリを横切る最長のラインです。ラインの長さは最長距離と同じで"
+#~ "す。ラインは最小境界円の直径です。"
 
 #, no-c-format
 #~ msgid "&sqlmm_compliant; SQL-MM ?"
