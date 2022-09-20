@@ -162,5 +162,8 @@ PERL = @PERL@
 
 VPATH = @srcdir@
 
+# TODO: fix this, if srcdir is set, install of .control file fails
+#srcdir = @srcdir@
+top_srcdir = @top_srcdir@
 top_builddir = @top_builddir@
 abs_topbuilddir=$(abspath $(top_builddir))
