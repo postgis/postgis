@@ -45,8 +45,10 @@ lwgeom_sfcgal_full_version()
 #if POSTGIS_SFCGAL_VERSION >= 10400
 	const char *version = sfcgal_full_version();
 #else
-	char *version = (char*)malloc(MAX_LENGTH_SFCGAL_FULL_VERSION);
-	snprintf(version, MAX_LENGTH_SFCGAL_FULL_VERSION, "SFCGAL=\"%s\" CGAL=\"Unknown\" Boost=\"Unknown\"", sfcgal_version());
+	char *version = (char*)lwalloc(MAX_LENGTH_SFCGAL_FULL_VERSION);
+	snprintf(version, MAX_LENGTH_SFCGAL_FULL_VERSION, 
+		"SFCGAL=\"%s\" CGAL=\"Unknown\" Boost=\"Unknown\"", 
+		sfcgal_version());
 #endif
 	return version;
 }
