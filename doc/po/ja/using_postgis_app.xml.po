@@ -7,21 +7,22 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2020-12-19 17:06+0000\n"
-"PO-Revision-Date: 2018-10-18 02:25+0000\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
-"ja/)\n"
+"PO-Revision-Date: 2022-09-08 03:55+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"using_postgis_appxml/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: title
 #: using_postgis_app.xml:3
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Building Applications"
-msgstr "PostGISを使う: アプリケーションを構築する"
+msgstr "アプリケーションのビルド"
 
 #. Tag: title
 #: using_postgis_app.xml:5
@@ -31,13 +32,13 @@ msgstr "MapServerを使う"
 
 #. Tag: para
 #: using_postgis_app.xml:7
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The Minnesota MapServer is an internet web-mapping server which conforms to "
 "the OpenGIS Web Map Service specification."
 msgstr ""
-"Minnesota MapServerはOpenGIS Web Mapping Server仕様を満たすウェブマッピング"
-"サーバです。"
+"Minnesota MapServer は、OpenGIS Web Map "
+"Service仕様に準拠したインターネットWebマッピングサーバです。"
 
 #. Tag: para
 #: using_postgis_app.xml:12
@@ -51,15 +52,15 @@ msgstr ""
 
 #. Tag: para
 #: using_postgis_app.xml:17
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The OpenGIS Web Map Service specification is at <ulink url=\"http://www."
 "opengeospatial.org/standards/wms\">http://www.opengeospatial.org/standards/"
 "wms</ulink>."
 msgstr ""
-"The OpenGIS Web Map Specificationは<ulink url=\"http://www.opengeospatial."
-"org/standards/wms\">http://www.opengeospatial.org/standards/wms</ulink>にあり"
-"ます。"
+"OpenGIS Web Map Serviceの仕様書は<ulink url=\"http://www.opengeospatial.org/"
+"standards/wms\">http://www.opengeospatial.org/standards/"
+"wms</ulink>にあります。"
 
 #. Tag: title
 #: using_postgis_app.xml:23
@@ -69,15 +70,15 @@ msgstr "基本的な使い方"
 
 #. Tag: para
 #: using_postgis_app.xml:25
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "To use PostGIS with MapServer, you need to know how to configure MapServer, "
 "which is beyond the scope of this documentation. This section covers "
 "specific PostGIS issues and configuration details."
 msgstr ""
-"MapServerでPostGISを使うには、MapServerのコンフィギュレーション方法についての"
-"知識が必要ですが、この文書の範囲外です。この節では、PostGIS特有の問題とコン"
-"フィギュレーション詳細について記載します。"
+"PostGISとMapServerとを併用するには、MapServerの設定方法を知る必要がありますが"
+"、本文書の範囲外です。本節では、PostGIS独特の問題と設定詳細について説明します"
+"。"
 
 #. Tag: para
 #: using_postgis_app.xml:30
@@ -99,7 +100,7 @@ msgstr "MapServer 3.5以上"
 
 #. Tag: para
 #: using_postgis_app.xml:42
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "MapServer accesses PostGIS/PostgreSQL data like any other PostgreSQL client, "
 "using the <filename>libpq</filename> interface. This means that MapServer "
@@ -107,11 +108,11 @@ msgid ""
 "and use PostGIS as a source of data. The faster the connection between the "
 "systems, the better."
 msgstr ""
-"MapServerは、他のクライアントのように、<filename>libpq</filename>インタフェー"
-"スを使って、PostGIS/PostgreSQLデータにアクセスします。よってMapServerは"
-"PostGISサーバにアクセスするネットワークを持つ計算機にインストールでき、"
-"PostGISをデータソースとして使用することができます。システム間の接続は速いほど"
-"良いです。"
+"MapServerは、他のPostgreSQLクライアントと同じくPostGIS/PostgreSQLデータにアク"
+"セスします。アクセスには<filename>libpq</filename>インタフェースを使います。"
+"つまり、MapServerは、PostGISサーバにアクセスするあらゆるネットワークに繋がっ"
+"ている計算機にインストールすることができ、PostGISをデータソースとして利用でき"
+"ます。システム間の接続が速いほど良くなります。"
 
 #. Tag: para
 #: using_postgis_app.xml:50
@@ -398,13 +399,12 @@ msgstr "EXPRESSION ([numlanes] &gt;= 6)"
 
 #. Tag: para
 #: using_postgis_app.xml:168
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The FILTER I use for my Shapefiles is not working for my PostGIS table of "
 "the same data."
-msgstr ""
-"シェープファイルで使っているFILTERが、同じデータを持つPostGISテーブルでは動作"
-"しません。"
+msgstr "シェープファイルに使用している FILTER "
+"が、同じデータを持つPostGISテーブルでは動作しません。"
 
 #. Tag: para
 #: using_postgis_app.xml:173
@@ -426,25 +426,25 @@ msgstr "FILTER \"type = 'highway' and numlanes &gt;= 4\""
 
 #. Tag: para
 #: using_postgis_app.xml:183
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "My PostGIS layer draws much slower than my Shapefile layer, is this normal?"
-msgstr ""
-"PostGISレイヤの描画がシェープファイルより遅くなりますが、これが普通なのでしょ"
-"うか?"
+msgstr "PostGISレイヤは、シェープファイルレイヤよりもはるかに遅く描画しますが、これは"
+"正常ですか?"
 
 #. Tag: para
 #: using_postgis_app.xml:188
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "In general, the more features you are drawing into a given map, the more "
 "likely it is that PostGIS will be slower than Shapefiles. For maps with "
 "relatively few features (100s), PostGIS will often be faster. For maps with "
 "high feature density (1000s), PostGIS will always be slower."
 msgstr ""
-"一般的に、地図に描画されるフィーチャーが多くなると、PostGISはシェープファイル"
-"より遅くなります。比較的少ないフィーチャー (100件台)ではPostGISの方が早く、"
-"フィーチャー密度が高くなる (1000件台)と、PostGISの方が遅くなります。"
+"一般に、与えられた地図に描画する地物が多いほど、PostGISはシェープファイルより"
+"遅くなる可能性が高くなります。相対的に地物が少ない "
+"(100個台)地図では、PostGISの方が速くなることがしばしばあります。地物が少多い "
+"(1000個台)地図では、PostGISは常に遅くなります。"
 
 #. Tag: para
 #: using_postgis_app.xml:194

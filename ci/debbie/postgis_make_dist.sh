@@ -2,15 +2,15 @@
 set -e
 ## begin variables passed in by jenkins
 
-export PG_VER=11
+export PG_VER=13
 # export PGPORT=8442
 export OS_BUILD=64
 # export POSTGIS_MAJOR_VERSION=2
 # export POSTGIS_MINOR_VERSION=2
 # export POSTGIS_MICRO_VERSION=0dev
 export PROJECTS=/var/lib/jenkins/workspace
-export GEOS_VER=3.9
-export GDAL_VER=3.0
+export GEOS_VER=3.10
+export GDAL_VER=3.4
 export WEB_DIR=/var/www/postgis_stuff
 export PATH="${PGPATH}/bin:$PATH"
 export LD_LIBRARY_PATH="${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}/lib:${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}/lib:${PGPATH}/lib"

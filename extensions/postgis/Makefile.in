@@ -135,10 +135,12 @@ sql/postgis_upgrade_for_extension.sql.in: sql/postgis_for_extension.sql ../../ut
 	$(PERL) @top_srcdir@/utils/create_upgrade.pl $< > $@
 
 sql/postgis_for_extension.sql: ../../postgis/postgis.sql.in ../../postgis_revision.h | sql
-	$(SQLPP) -I@builddir@/../../postgis $< | grep -v '^#' | \
+	$(SQLPP) -I@builddir@/../../postgis $< > $@.tmp
+	grep -v '^#' $@.tmp | \
 	$(PERL) -lpe \
 		"s'MODULE_PATHNAME'\$(MODULEPATH)'g" \
 		| $(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' > $@
+	rm $@.tmp
 
 sql/postgis_upgrade.sql: sql/postgis_upgrade_for_extension.sql | sql
 	$(PERL) -pe "s/BEGIN\;//g ; s/COMMIT\;//g; s/^(DROP .*)\;/SELECT postgis_extension_drop_if_exists('$(EXTENSION)', '\1');\n\1\;/" $< > $@
@@ -159,3 +161,9 @@ include $(PGXS)
 PERL = @PERL@
 
 VPATH = @srcdir@
+
+# TODO: fix this, if srcdir is set, install of .control file fails
+#srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+top_builddir = @top_builddir@
+abs_topbuilddir=$(abspath $(top_builddir))

@@ -35,21 +35,6 @@
 
 #include "../postgis_config.h"
 
-#if POSTGIS_PROJ_VERSION < 61
-
-/* For Proj 6.0 use of old API */
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
-
-#include "proj_api.h"
-typedef struct PJ
-{
-    projPJ pj_from;
-    projPJ pj_to;
-} PJ;
-
-typedef PJ LWPROJ;
-
-#else
 #include "proj.h"
 
 /* For PROJ6 we cache several extra values to avoid calls to proj_get_source_crs
@@ -64,15 +49,11 @@ typedef struct LWPROJ
     double source_semi_major_metre;
     double source_semi_minor_metre;
 } LWPROJ;
-#endif
 
-#if POSTGIS_PROJ_VERSION < 49
-/* Use the old (pre-2.2) geodesic functions */
-#undef PROJ_GEODESIC
-#else
+
+
 /* Enable new geodesic functions API */
 #define PROJ_GEODESIC
-#endif
 
 /**
 * @file liblwgeom.h
@@ -2460,25 +2441,12 @@ int lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outst
 int lwgeom_transform(LWGEOM *geom, LWPROJ* pj);
 int ptarray_transform(POINTARRAY *pa, LWPROJ* pj);
 
-#if POSTGIS_PROJ_VERSION < 61
-/**
- * Get a projection from a string representation
- *
- * Eg: "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
- */
-projPJ projpj_from_string(const char* txt);
-
-#else // POSTGIS_PROJ_VERSION >= 61
-
 /**
  * Allocate a new LWPROJ containing the reference to the PROJ's PJ
  * If extra_geography_data is true, it will generate the following values for
  * the source srs: is_latlong (geometric or not) and spheroid values
  */
 LWPROJ *lwproj_from_str(const char* str_in, const char* str_out);
-
-#endif
-
 
 /*******************************************************************************
  * GEOS-dependent extra functions on LWGEOM

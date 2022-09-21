@@ -4,7 +4,7 @@
   before_script:
     - apt-get update -qq && apt-get install -y
         bison flex
-        postgresql-11 postgresql-server-dev-11
+        postgresql-14 postgresql-server-dev-14
         build-essential autoconf libtool libcunit1-dev
         xsltproc docbook-xsl docbook-mathml dblatex
         libproj-dev libgdal-dev libgeos-dev libjson-c-dev
@@ -23,7 +23,7 @@
     - echo "SRCDIR is ${SRCDIR}"
     - mkdir /tmp/build && cd /tmp/build
     - echo "Build dir is ${PWD}"
-    - ${SRCDIR}/configure CFLAGS="-Wall -fno-omit-frame-pointer -Werror"
+    - ${SRCDIR}/configure --without-raster CFLAGS="-Wall -fno-omit-frame-pointer -Werror"
     - make
     - RUNTESTFLAGS=-v make check
     - RUNTESTFLAGS="-v --dumprestore" make check-regress
@@ -34,9 +34,9 @@
     - ${SRCDIR}/utils/check_distclean.sh
 
 test:
-  image: debian:buster
+  image: debian:bookworm
   <<: *build_definition
 
 test32:
-  image: i386/debian:buster
+  image: i386/debian:bookworm
   <<: *build_definition

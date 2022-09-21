@@ -908,28 +908,6 @@ pg_nd_stats_from_tuple(HeapTuple stats_tuple, int mode)
 	if ( mode == 2 ) stats_kind = STATISTIC_KIND_2D;
 
     /* Then read the geom status histogram from that */
-
-#if POSTGIS_PGSQL_VERSION < 100
-	{
-		float4 *floatptr;
-		int nvalues;
-
-		rv = get_attstatsslot(stats_tuple, 0, 0, stats_kind, InvalidOid,
-							NULL, NULL, NULL, &floatptr, &nvalues);
-
-		if ( ! rv ) {
-			POSTGIS_DEBUGF(2, "no slot of kind %d in stats tuple", stats_kind);
-			return NULL;
-		}
-
-		/* Clone the stats here so we can release the attstatsslot immediately */
-		nd_stats = palloc(sizeof(float) * nvalues);
-		memcpy(nd_stats, floatptr, sizeof(float) * nvalues);
-
-		/* Clean up */
-		free_attstatsslot(0, NULL, 0, floatptr, nvalues);
-	}
-#else /* PostgreSQL 10 or higher */
 	{
 		AttStatsSlot sslot;
 		rv = get_attstatsslot(&sslot, stats_tuple, stats_kind, InvalidOid,
@@ -945,8 +923,6 @@ pg_nd_stats_from_tuple(HeapTuple stats_tuple, int mode)
 
 		free_attstatsslot(&sslot);
 	}
-#endif
-
 	return nd_stats;
 }
 

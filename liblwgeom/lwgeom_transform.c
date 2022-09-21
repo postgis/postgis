@@ -46,112 +46,6 @@ to_dec(POINT4D *pt)
 
 /***************************************************************************/
 
-#if POSTGIS_PROJ_VERSION < 61
-
-static int
-point4d_transform(POINT4D *pt, LWPROJ *pj)
-{
-	POINT3D orig_pt = {pt->x, pt->y, pt->z}; /* Copy for error report*/
-
-	if (pj_is_latlong(pj->pj_from)) to_rad(pt) ;
-
-	LWDEBUGF(4, "transforming POINT(%f %f) from '%s' to '%s'",
-		 orig_pt.x, orig_pt.y, pj_get_def(pj->pj_from,0), pj_get_def(pj->pj_to,0));
-
-	if (pj_transform(pj->pj_from, pj->pj_to, 1, 0, &(pt->x), &(pt->y), &(pt->z)) != 0)
-	{
-		int pj_errno_val = *pj_get_errno_ref();
-		if (pj_errno_val == -38)
-		{
-			lwnotice("PostGIS was unable to transform the point because either no grid"
-				 " shift files were found, or the point does not lie within the "
-				 "range for which the grid shift is defined. Refer to the "
-				 "ST_Transform() section of the PostGIS manual for details on how "
-				 "to configure PostGIS to alter this behaviour.");
-			lwerror("transform: couldn't project point (%g %g %g): %s (%d)",
-				orig_pt.x, orig_pt.y, orig_pt.z,
-				pj_strerrno(pj_errno_val), pj_errno_val);
-		}
-		else
-		{
-			lwerror("transform: %s (%d)",
-				pj_strerrno(pj_errno_val), pj_errno_val);
-		}
-		return LW_FAILURE;
-	}
-
-	if (pj_is_latlong(pj->pj_to)) to_dec(pt);
-	return LW_SUCCESS;
-}
-
-/**
- * Transform given POINTARRAY
- * from inpj projection to outpj projection
- */
-int
-ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
-{
-	uint32_t i;
-	POINT4D p;
-
-	for ( i = 0; i < pa->npoints; i++ )
-	{
-		getPoint4d_p(pa, i, &p);
-		if ( ! point4d_transform(&p, pj) ) return LW_FAILURE;
-		ptarray_set_point4d(pa, i, &p);
-	}
-
-	return LW_SUCCESS;
-}
-
-int
-lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
-{
-	char *pj_errstr;
-	int rv;
-	LWPROJ pj;
-
-	pj.pj_from = projpj_from_string(instr);
-	if (!pj.pj_from)
-	{
-		pj_errstr = pj_strerrno(*pj_get_errno_ref());
-		if (!pj_errstr) pj_errstr = "";
-		lwerror("could not parse proj string '%s'", instr);
-		return LW_FAILURE;
-	}
-
-	pj.pj_to = projpj_from_string(outstr);
-	if (!pj.pj_to)
-	{
-		pj_free(pj.pj_from);
-		pj_errstr = pj_strerrno(*pj_get_errno_ref());
-		if (!pj_errstr) pj_errstr = "";
-		lwerror("could not parse proj string '%s'", outstr);
-		return LW_FAILURE;
-	}
-
-	rv = lwgeom_transform(geom, &pj);
-	pj_free(pj.pj_from);
-	pj_free(pj.pj_to);
-	return rv;
-}
-
-
-
-projPJ
-projpj_from_string(const char *str1)
-{
-	if (!str1 || str1[0] == '\0')
-	{
-		return NULL;
-	}
-	return pj_init_plus(str1);
-}
-
-/***************************************************************************/
-
-#else /* POSTGIS_PROJ_VERION >= 61 */
-
 LWPROJ *
 lwproj_from_str(const char* str_in, const char* str_out)
 {
@@ -345,8 +239,6 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 
 	return LW_SUCCESS;
 }
-
-#endif
 
 /**
  * Transform given LWGEOM geometry

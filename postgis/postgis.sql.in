@@ -3024,7 +3024,7 @@ BEGIN
 							SELECT 1 FROM pg_catalog.pg_class c
 							JOIN pg_catalog.pg_namespace n ON (c.relnamespace = n.oid )
 							WHERE n.nspname = 'tiger' AND c.relname = 'geocode_settings') )
-			THEN --}{
+			THEN --}{ -- the code is unpackaged
 				-- Force install in same schema as postgis
 				SELECT INTO var_schema n.nspname
 				  FROM pg_namespace n, pg_proc p
@@ -3048,36 +3048,16 @@ BEGIN
 				EXECUTE sql;
 			ELSE
 				RAISE DEBUG 'Skipping % (not in use)', rec.name;
-			END IF;
-		ELSE -- IF target_version != rec.installed_version THEN --}{
-			sql = '';
-			-- If logged in as super user
-			-- force an update regardless if at target version, no downgrade allowed
-			IF (SELECT usesuper FROM pg_user WHERE usename = CURRENT_USER)
-						AND pg_catalog.substring(target_version, '[0-9]+\.[0-9]+\.[0-9]+')
-								>= pg_catalog.substring(rec.installed_version, '[0-9]+\.[0-9]+\.[0-9]+') THEN
-					sql = format(
-						'UPDATE pg_catalog.pg_extension SET extversion = ''ANY'' WHERE extname = %1$L;'
-						'ALTER EXTENSION %1$I UPDATE TO %2$I',
-						rec.name, target_version
-				);
-			-- sandboxed users do standard upgrade
-			ELSIF pg_catalog.substring(target_version, '[0-9]+\.[0-9]+\.[0-9]+')
-								>= pg_catalog.substring(rec.installed_version, '[0-9]+\.[0-9]+\.[0-9]+') THEN
-				sql = format(
+			END IF; --}
+		ELSE -- The code is already packaged, upgrade it --}{
+			sql = format(
+				'ALTER EXTENSION %1$I UPDATE TO ANY;',
 				'ALTER EXTENSION %1$I UPDATE TO %2$I',
 				rec.name, target_version
 				);
-			END IF;
-			IF sql > '' THEN
-				RAISE NOTICE 'Updating extension % %',
-					rec.name, rec.installed_version;
-				RAISE DEBUG '%', sql;
-				EXECUTE sql;
-			ELSE
-				RAISE NOTICE 'Downgrade % from % to % not allowed',
-						rec.name, rec.installed_version, target_version;
-			END IF;
+			RAISE NOTICE 'Updating extension % %', rec.name, rec.installed_version;
+			RAISE DEBUG '%', sql;
+			EXECUTE sql;
 		END IF; --}
 
 	END LOOP; --}
@@ -4433,8 +4413,6 @@ CREATE OR REPLACE FUNCTION _ST_Equals(geom1 geometry, geom2 geometry)
 
 -----------------------------------------------------------------------------
 
-#if POSTGIS_PGSQL_VERSION >= 120
-
 -----------------------------------------------------------------------------
 -- Planner Support Functions
 -----------------------------------------------------------------------------
@@ -4576,107 +4554,6 @@ CREATE OR REPLACE FUNCTION ST_Equals(geom1 geometry, geom2 geometry)
 	SUPPORT postgis_index_supportfn
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
-
-#else
-
--- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION ST_LineCrossingDirection(line1 geometry, line2 geometry)
-	RETURNS integer AS
-	$$ SELECT CASE WHEN NOT $1 OPERATOR(@extschema@.&&) $2 THEN 0 ELSE @extschema@._ST_LineCrossingDirection($1,$2) END $$
-	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_DWithin(geom1 geometry, geom2 geometry, float8)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($2,$3) AND $2 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($1,$3) AND @extschema@._ST_DWithin($1, $2, $3)'
-	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Touches(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Touches($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Intersects(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Intersects($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Crosses(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Crosses($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Contains(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.~) $2 AND @extschema@._ST_Contains($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_CoveredBy(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.@) $2 AND @extschema@._ST_CoveredBy($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Covers(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.~) $2 AND @extschema@._ST_Covers($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
-
--- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION ST_ContainsProperly(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.~) $2 AND @extschema@._ST_ContainsProperly($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Within(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'SELECT $2 OPERATOR(@extschema@.~) $1 AND @extschema@._ST_Contains($2,$1)'
-	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Overlaps(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_Overlaps($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
-
-CREATE OR REPLACE FUNCTION ST_DFullyWithin(geom1 geometry, geom2 geometry, float8)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($2,$3) AND $2 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($1,$3) AND @extschema@._ST_DFullyWithin(@extschema@.ST_ConvexHull($1), @extschema@.ST_ConvexHull($2), $3)'
-	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
-
-CREATE OR REPLACE FUNCTION ST_3DDWithin(geom1 geometry, geom2 geometry,float8)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($2,$3) AND $2 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($1,$3) AND @extschema@._ST_3DDWithin($1, $2, $3)'
-	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
-
-CREATE OR REPLACE FUNCTION ST_3DDFullyWithin(geom1 geometry, geom2 geometry,float8)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($2,$3) AND $2 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($1,$3) AND @extschema@._ST_3DDFullyWithin($1, $2, $3)'
-	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
-
-CREATE OR REPLACE FUNCTION ST_3DIntersects(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_3DIntersects($1, $2)'
-	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
-
-CREATE OR REPLACE FUNCTION ST_OrderingEquals(GeometryA geometry, GeometryB geometry)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.~=) $2 AND @extschema@._ST_OrderingEquals($1, $2)'
-	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
-
--- Availability: 1.2.1
-CREATE OR REPLACE FUNCTION ST_Equals(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'SELECT $1 OPERATOR(@extschema@.~=) $2 AND @extschema@._ST_Equals($1,$2)'
-	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
-
-#endif
 
 -----------------------------------------------------------------------------
 

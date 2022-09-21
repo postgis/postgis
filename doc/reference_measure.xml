@@ -1254,7 +1254,7 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 		</para>
         <para>
         If g1 and g2 are the same geometry, returns the line between the two vertices farthest apart in the geometry.
-        This is a diameter of the circle computed by <xref linkend="ST_MinimumBoundingCircle"/>
+        The endpoints of the line lie on the circle computed by <xref linkend="ST_MinimumBoundingCircle"/>.
         </para>
 		<para>Availability: 1.5.0</para>
 
@@ -1306,7 +1306,7 @@ LINESTRING(20 10,105.3073372946034 186.95518130045156)
             </imageobject>
             <caption><para>Longest line across a single geometry.
             The length of the line is equal to the Maximum Distance.
-            The line is a diameter of the Minimum Bounding Circle.</para></caption>
+            The endpoints of the line lie on the Minimum Bounding Circle.</para></caption>
         </mediaobject>
         </informalfigure>
 <programlisting>

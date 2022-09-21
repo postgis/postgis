@@ -74,11 +74,7 @@ BEGIN
         FROM %1$I.edge
         WHERE left_face = $1 or right_face = $1
         ORDER BY
-#if POSTGIS_PGSQL_VERSION < 95
-          ST_Distance(geom, $2)
-#else
           geom <-> $2
-#endif
         LIMIT 1
       ),
       edgering AS (

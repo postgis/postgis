@@ -55,9 +55,7 @@ postgisConstants *POSTGIS_CONSTANTS = NULL;
 static Oid TypenameNspGetTypid(const char *typname, Oid nsp_oid)
 {
 	return GetSysCacheOid2(TYPENAMENSP,
-#if POSTGIS_PGSQL_VERSION >= 120
 	                       Anum_pg_type_oid,
-#endif
 	                       PointerGetDatum(typname),
 	                       ObjectIdGetDatum(nsp_oid));
 }
@@ -75,19 +73,11 @@ postgis_get_extension_schema(Oid ext_oid)
     HeapTuple   tuple;
     ScanKeyData entry[1];
 
-#if POSTGIS_PGSQL_VERSION < 120
-    Relation rel = heap_open(ExtensionRelationId, AccessShareLock);
-    ScanKeyInit(&entry[0],
-	    ObjectIdAttributeNumber,
-        BTEqualStrategyNumber, F_OIDEQ,
-        ObjectIdGetDatum(ext_oid));
-#else
     Relation rel = table_open(ExtensionRelationId, AccessShareLock);
     ScanKeyInit(&entry[0],
     	Anum_pg_extension_oid,
         BTEqualStrategyNumber, F_OIDEQ,
         ObjectIdGetDatum(ext_oid));
-#endif /* POSTGIS_PGSQL_VERSION */
 
     scandesc = systable_beginscan(rel, ExtensionOidIndexId, true,
                                   NULL, 1, entry);
@@ -102,11 +92,7 @@ postgis_get_extension_schema(Oid ext_oid)
 
     systable_endscan(scandesc);
 
-#if POSTGIS_PGSQL_VERSION < 120
-    heap_close(rel, AccessShareLock);
-#else
     table_close(rel, AccessShareLock);
-#endif
 
     return result;
 }
@@ -533,31 +519,6 @@ postgis_guc_find_option(const char *name)
 }
 
 
-#if POSTGIS_PGSQL_VERSION < 120
-Datum
-CallerFInfoFunctionCall3(PGFunction func, FmgrInfo *flinfo, Oid collation, Datum arg1, Datum arg2, Datum arg3)
-{
-	FunctionCallInfoData fcinfo;
-	Datum		result;
-
-	InitFunctionCallInfoData(fcinfo, flinfo, 3, collation, NULL, NULL);
-
-	fcinfo.arg[0] = arg1;
-	fcinfo.arg[1] = arg2;
-	fcinfo.arg[2] = arg3;
-	fcinfo.argnull[0] = false;
-	fcinfo.argnull[1] = false;
-	fcinfo.argnull[2] = false;
-
-	result = (*func) (&fcinfo);
-
-	/* Check for null result, since caller is clearly not expecting one */
-	if (fcinfo.isnull)
-		elog(ERROR, "function %p returned NULL", (void *) func);
-
-	return result;
-}
-#else
 /* PgSQL 12+ still lacks 3-argument version of these functions */
 Datum
 CallerFInfoFunctionCall3(PGFunction func, FmgrInfo *flinfo, Oid collation, Datum arg1, Datum arg2, Datum arg3)
@@ -582,4 +543,3 @@ CallerFInfoFunctionCall3(PGFunction func, FmgrInfo *flinfo, Oid collation, Datum
 
     return result;
 }
-#endif

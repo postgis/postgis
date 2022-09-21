@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2022-08-27 04:57+0000\n"
 "PO-Revision-Date: 2022-04-17 08:55+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Russian <https://weblate.osgeo.org/projects/postgis/"
@@ -14,9 +14,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
-"%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
 "X-Generator: Weblate 4.11.2\n"
 
 #. Tag: para
@@ -337,8 +337,8 @@ msgstr ""
 #: reference_validation.xml:192
 #, no-c-format
 msgid ""
-"Allowed <varname>flags</varname> are documented in <xref linkend="
-"\"ST_IsValidDetail\"/>."
+"Allowed <varname>flags</varname> are documented in <xref "
+"linkend=\"ST_IsValidDetail\"/>."
 msgstr ""
 
 #. Tag: para
@@ -478,8 +478,8 @@ msgstr ""
 msgid ""
 "The <varname>params</varname> argument can be used to supply an options "
 "string to select the method to use for building valid geometry. The options "
-"string is in the format \"method=linework|structure keepcollapsed=true|false"
-"\"."
+"string is in the format \"method=linework|structure keepcollapsed=true|"
+"false\"."
 msgstr ""
 
 #. Tag: para
@@ -537,7 +537,9 @@ msgstr ""
 #. Tag: para
 #: reference_validation.xml:291
 #, no-c-format
-msgid "Enhanced: 3.2.0, added algorithm options, 'linework' and 'structure'."
+msgid ""
+"Enhanced: 3.2.0, added algorithm options, 'linework' and 'structure' which "
+"requires GEOS &gt;= 3.10.0."
 msgstr ""
 
 #. Tag: para

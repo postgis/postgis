@@ -7,15 +7,16 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-02-13 18:12+0000\n"
-"PO-Revision-Date: 2022-01-11 01:06+0000\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
-"ja/)\n"
+"PO-Revision-Date: 2022-09-12 12:43+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"using_postgis_datamanxml/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: title
 #: using_postgis_dataman.xml:3
@@ -48,11 +49,15 @@ msgid ""
 "the PostgreSQL data types <link linkend=\"PostGIS_Geometry\">geometry</link> "
 "and <link linkend=\"PostGIS_Geography\">geography</link>."
 msgstr ""
-"Open Geospatial Consortium (OGC)は、地理空間データのモデルを提供するために"
-"<ulink url=\"https://www.ogc.org/standards/sfa\"><emphasis>Simple Features "
-"Access</emphasis></ulink> (SFA)標準を開発しました。これは、<emphasis role="
-"\"bold\">ジオメトリ (Geometry)</emphasis>の基本的な空間タイプを、空間解析処理"
-"実行のための操作や変換といった演算に沿って定義します。"
+"Open Geospatial Consortium (OGC)は、"
+"地理空間データのモデルを提供するために<ulink url=\"https://www.ogc.org/"
+"standards/sfa\"><emphasis>Simple Features Access</emphasis></ulink> "
+"(SFA)標準を開発しました。これは、<emphasis role=\"bold\">ジオメトリ (Geometry"
+")</emphasis>の基本的な空間タイプを、空間解析処理実行のための操作や変換といっ"
+"た演算に沿って定義します。PostGISは空間解析タスクを実現するためにOGCジオメト"
+"リモデル値をPostgreSQLデータ型の<link linkend=\"PostGIS_Geometry\""
+">geometry</link>、<link linkend=\"PostGIS_Geography\""
+">geography</link>として実装しています。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:21
@@ -74,24 +79,25 @@ msgid ""
 "<link linkend=\"PolyhedralSurface\">PolyhedralSurface</link>, <link linkend="
 "\"Triangle\">Triangle</link> and <link linkend=\"TIN\">TIN</link>."
 msgstr ""
-"ジオメトリは<emphasis>抽象的な</emphasis>タイプです。ジオメトリ値は複数ある"
-"<emphasis>具体的な</emphasis>サブタイプの一つに属します。サブタイプは様々な種"
-"類の様々な次元のジオメトリの形状を表現するものです。これらには<emphasis role="
+"ジオメトリは<emphasis>抽象的な</emphasis>タイプです。ジオメトリ値は複数ある<e"
+"mphasis>具体的な</emphasis>サブタイプの一つに属します。サブタイプは様々な種類"
+"の様々な次元のジオメトリの形状を表現するものです。これらには<emphasis role="
 "\"bold\">原子的な</emphasis>タイプである<link linkend=\"Point\">ポイント "
-"(Point)</link>、<link linkend=\"LineString\">ラインストリング (LineString)</"
-"link>、<link linkend=\"LinearRing\">リニアリング (LinearRing)</link>、<link "
-"linkend=\"Polygon\">ポリゴン (Polygon)</link>があります。また、<link linkend="
-"\"MultiPoint\">マルチポイント (MultiPoint)</link>、<link linkend="
-"\"MultiLineString\">マルチラインストリング (MultiLineString)</link>、<link "
-"linkend=\"MultiPolygon\">マルチポリゴン (MultiPolygon)</link>、<link linkend="
-"\"GeometryCollection\">ジオメトリコレクション (GeometryCollection)</link>の"
-"<emphasis role=\"bold\">コレクション (collection)</emphasis> (訳注: 「マルチ"
-"系」と書いている場合があります)タイプがあります。 <ulink url=\"https://"
-"portal.ogc.org/files/?artifact_id=25355\"><emphasis>Simple Features Access - "
-"Part 1: Common architecture v1.2.1</emphasis></ulink>では<link linkend="
-"\"PolyhedralSurface\">多面体サーフェス (PolyhedralSurface)</link>、<link "
-"linkend=\"Triangle\">三角形 (Triangle)</link>、<link linkend=\"TIN\">TIN</"
-"link>が追加されています。"
+"(Point)</link>、<link linkend=\"LineString\">ラインストリング "
+"(LineString)</link>、<link linkend=\"LinearRing\">リニアリング "
+"(LinearRing)</link>、<link linkend=\"Polygon\">ポリゴン "
+"(Polygon)</link>があります。また、<emphasis role=\"bold\">コレクション "
+"(collection)</emphasis> (訳注: 「マルチ系」と書いている場合があります)"
+"タイプの<link linkend=\"MultiPoint\">マルチポイント (MultiPoint)</link>、"
+"<link linkend=\"MultiLineString\">マルチラインストリング "
+"(MultiLineString)</link>、<link linkend=\"MultiPolygon\">マルチポリゴン "
+"(MultiPolygon)</link>、<link linkend=\"GeometryCollection\""
+">ジオメトリコレクション (GeometryCollection)</link>があります。 <ulink url="
+"\"https://portal.ogc.org/files/?artifact_id=25355\"><emphasis>Simple "
+"Features Access - Part 1: Common architecture v1.2.1</emphasis></"
+"ulink>では<link linkend=\"PolyhedralSurface\">多面体サーフェス "
+"(PolyhedralSurface)</link>、<link linkend=\"Triangle\">三角形 "
+"(Triangle)</link>、<link linkend=\"TIN\">TIN</link>が追加されています。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:42
@@ -146,14 +152,12 @@ msgid ""
 "no units assigned to its axes. See <xref linkend=\"spatial_ref_sys\"/>."
 msgstr ""
 "ジオメトリ値は、そのジオメトリが組み込まれている座標系を示す<emphasis role="
-"\"bold\">空間参照系</emphasis>に関連付けられます。空間参照系はジオメトリの"
-"SRID番号で識別されます。\n"
-"X軸とY軸の単位は空間参照系によって決まります。<emphasis role=\"bold\">平面</"
-"emphasis>参照系では伝統的にX座標値とY座標値が東、北をそれぞれ示します。"
-"<emphasis role=\"bold\">地理</emphasis>参照系では、経度と緯度を表現していま"
-"す。\n"
-"SRIDが0の場合には、軸の単位が無い、無限の直交平面を表します。<xref linkend="
-"\"spatial_ref_sys\"/>を参照して下さい。"
+"\"bold\">空間参照系</emphasis>に関連付けられます。空間参照系はジオメトリのSRI"
+"D番号で識別されます。X軸とY軸の単位は空間参照系によって決まります。<emphasis "
+"role=\"bold\">平面</emphasis>参照系では伝統的にX座標値とY座標値が東、北をそれ"
+"ぞれ示します。<emphasis role=\"bold\">地理</emphasis>参照系では、経度と緯度を"
+"表現しています。SRIDが0の場合には、軸の単位が無い、無限の直交平面を表します。"
+"<xref linkend=\"spatial_ref_sys\"/>を参照して下さい。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:71
@@ -1217,7 +1221,7 @@ msgstr ""
 "PostGISの拡張書式はOGC書式の上位互換であり、全ての妥当なOGC WKB/WKTは妥当な"
 "EWKB/EWKTでもあります。しかし、OGCがPostGISの定義と衝突する方法で書式を拡張し"
 "た場合には、将来的に書式を変更する可能性があります。ゆえに、この互換性に*頼る"
-"べきではありません*。"
+"べきではありません*!"
 
 #. Tag: para
 #: using_postgis_dataman.xml:500
@@ -2087,12 +2091,18 @@ msgid ""
 "computation. (Note: the OGC SF and SQL/MM have the same definitions for "
 "simple and valid.)"
 msgstr ""
+"PostGISはOpen Geospatial Consortium (OGC)のSimple Feature Specificationに準拠"
+"しています。この標準では、<emphasis>単純</emphasis>なジオメトリと<emphasis>妥"
+"当</emphasis>なジオメトリの概念が定義されています。これらの定義によって、"
+"Simple Featureのジオメトリモデルが一貫性があって、かつ明確な方法で空間オブジ"
+"ェクトを表現することができ、効率的な計算を助けます (OGC Simple FeatureとSQL/"
+"MMとにおいては、単純性と妥当性について同じ定義です)。"
 
 #. Tag: title
 #: using_postgis_dataman.xml:824
 #, no-c-format
 msgid "Simple Geometry"
-msgstr ""
+msgstr "単純ジオメトリ"
 
 #. Tag: para
 #: using_postgis_dataman.xml:826
@@ -2100,7 +2110,8 @@ msgstr ""
 msgid ""
 "A <emphasis>simple</emphasis> geometry is one that has no anomalous "
 "geometric points, such as self intersection or self tangency."
-msgstr ""
+msgstr "<emphasis>単純</emphasis>なジオメトリは、自己交差や自己接触といった異常な幾何"
+"学上のポイントを持たないジオメトリです。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:831
@@ -2120,8 +2131,8 @@ msgid ""
 "coordinates (<varname>POINT</varname>s) are equal (have identical coordinate "
 "values)."
 msgstr ""
-"<varname>MULTIPOINT</varname>は、二つの座標値 (<varname>POINT</varname>)が同"
-"じでないなら<emphasis>単純</emphasis>です。"
+"<varname>MULTIPOINT</varname>は、任意の二つの座標値 "
+"(<varname>POINT</varname>)が同じでないなら<emphasis>単純</emphasis>です。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:838
@@ -2132,6 +2143,9 @@ msgid ""
 "endpoints of a simple LineString are identical it is called "
 "<emphasis>closed</emphasis> and referred to as a Linear Ring."
 msgstr ""
+"<varname>LINESTRING</varname>は、同じポイントを二回通過しないものが<emphasis>"
+"単純</emphasis>です。単純なラインストリングの端点が同一の場合には、<emphasis>"
+"閉じている</emphasis>とされ、線形リングと呼ばれます。"
 
 #. Tag: emphasis
 #: using_postgis_dataman.xml:847
@@ -2142,6 +2156,11 @@ msgid ""
 "\">(b)</emphasis> and <emphasis role=\"bold\">(d)</emphasis> are not simple. "
 "<emphasis role=\"bold\">(c)</emphasis> is a closed Linear Ring."
 msgstr ""
+"<emphasis role=\"bold\">(a)</emphasis>と<emphasis role=\"bold\""
+">(c)</emphasis>は単純な<varname>LINESTRING</varname>です。<emphasis role="
+"\"bold\">(b)</emphasis>と<emphasis role=\"bold\""
+">(d)</emphasis>は単純ではありません。<emphasis role=\"bold\""
+">(c)</emphasis>は閉じた線形リングです。"
 
 #. Tag: emphasis
 #: using_postgis_dataman.xml:865
@@ -2175,6 +2194,9 @@ msgid ""
 "all of its elements are simple and the only intersection between any two "
 "elements occurs at points that are on the boundaries of both elements."
 msgstr ""
+"<varname>MULTILINESTRING</varname>は、要素が全て単純で、かつ、全ての要素同士"
+"のインタセクションが要素の境界上でのみ出現する場合には、<emphasis>単純</empha"
+"sis>です。"
 
 #. Tag: emphasis
 #: using_postgis_dataman.xml:915
@@ -2184,6 +2206,9 @@ msgid ""
 "emphasis> are simple <varname>MULTILINESTRING</varname>s. <emphasis role="
 "\"bold\">(g)</emphasis> is not simple."
 msgstr ""
+"<emphasis role=\"bold\">(e)</emphasis>と<emphasis role=\"bold\""
+">(f)</emphasis>は単純な<varname>MULTILINESTRING</varname>です。<emphasis "
+"role=\"bold\">(g)</emphasis>は単純ではありません。"
 
 #. Tag: emphasis
 #: using_postgis_dataman.xml:933
@@ -2210,6 +2235,8 @@ msgid ""
 "<varname>POLYGON</varname>s are formed from linear rings, so valid polygonal "
 "geometry is always <emphasis>simple</emphasis>."
 msgstr ""
+"<varname>POLYGON</varname>は線形リングから形成されるので、妥当なポリゴンジオ"
+"メトリは常に<emphasis>単純</emphasis>です。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:964
@@ -2217,7 +2244,8 @@ msgstr ""
 msgid ""
 "To test if a geometry is simple use the <xref linkend=\"ST_IsSimple\"/> "
 "function:"
-msgstr ""
+msgstr "ジオメトリが単純かどうかを試すには<xref linkend=\"ST_IsSimple\""
+"/>関数を使います。次のようにします。"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:967
@@ -2231,6 +2259,13 @@ msgid ""
 "----------+----------\n"
 " t        | f"
 msgstr ""
+"SELECT\n"
+"   ST_IsSimple('LINESTRING(0 0, 100 100)') AS straight,\n"
+"   ST_IsSimple('LINESTRING(0 0, 100 100, 100 0, 0 100)') AS crossing;\n"
+"\n"
+" straight | crossing\n"
+"----------+----------\n"
+" t        | f"
 
 #. Tag: para
 #: using_postgis_dataman.xml:969
@@ -2243,12 +2278,18 @@ msgid ""
 "and linear geometry can be made simple using <xref linkend=\"ST_UnaryUnion\"/"
 ">."
 msgstr ""
+"一般的にPostGIS関数は引数ジオメトリの単純性を求めていません。単純性は主にジオ"
+"メトリの妥当性を定義するための基礎として用いられます。"
+"空間データモデルによっては要件としていることもあります "
+"(たとえば、線形ネットワークはしばしばクロスを認めません)。"
+"マルチポイントと線形ジオメトリは<xref linkend=\"ST_UnaryUnion\""
+"/>を使って単純にできます。"
 
 #. Tag: title
 #: using_postgis_dataman.xml:978
 #, no-c-format
 msgid "Valid Geometry"
-msgstr ""
+msgstr "妥当なジオメトリ"
 
 #. Tag: para
 #: using_postgis_dataman.xml:980
@@ -2259,12 +2300,15 @@ msgid ""
 "Validity is defined by rules that allow polygonal geometry to model planar "
 "areas unambiguously."
 msgstr ""
+"ジオメトリの妥当性は主に2次元ジオメトリ (<varname>POLYGON</varname>と<varname"
+">MULTIPOLYGON</varname>)に適用されます。妥当性はポリゴンジオメトリが平面領域"
+"を明確にモデル化できる規則によって定義されます。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:986
 #, no-c-format
 msgid "A <varname>POLYGON</varname> is <emphasis>valid</emphasis> if:"
-msgstr ""
+msgstr "<varname>POLYGON</varname>は次の条件では<emphasis>妥当</emphasis>です。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:990
@@ -2276,25 +2320,31 @@ msgid ""
 "polygon holes must be represented as interior rings, rather than by the "
 "exterior ring self-touching (a so-called \"inverted hole\")."
 msgstr ""
+"ポリゴン境界リング (外側の殻リングと内側の穴リング)が<emphasis>単純</"
+"emphasis> (交差も自己接触もしていない)であること。これによりポリゴンは切断線"
+"、トゲ、循環を持つことができなくなります。これは、"
+"ポリゴンの穴を外側のリングの自己接触 (いわゆる \"inverted hole\" "
+"(逆穴))でなく、内側のリングとして表現されなけれならないことを意味します。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:997
 #, no-c-format
 msgid "boundary rings do not cross"
-msgstr ""
+msgstr "境界リングがクロスしないこと"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1000
 #, no-c-format
 msgid ""
 "boundary rings may touch at points but only as a tangent (i.e. not in a line)"
-msgstr ""
+msgstr "境界リングは点で接触したとしても接点として接触すること "
+"(線上にあってはなりません)"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1003
 #, no-c-format
 msgid "interior rings are contained in the exterior ring"
-msgstr ""
+msgstr "内側リングは外側リング内にあること"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1006
@@ -2302,7 +2352,8 @@ msgstr ""
 msgid ""
 "the polygon interior is simply connected (i.e. the rings must not touch in a "
 "way that splits the polygon into more than one part)"
-msgstr ""
+msgstr "ポリゴン内部は単純に接続されていること "
+"(リングはポリゴンを複数に分割するように接触してはなりません)"
 
 #. Tag: emphasis
 #: using_postgis_dataman.xml:1016
@@ -2313,6 +2364,10 @@ msgid ""
 "m)</emphasis> are invalid. <emphasis role=\"bold\">(j)</emphasis> can be "
 "represented as a valid <varname>MULTIPOLYGON</varname>."
 msgstr ""
+"<emphasis role=\"bold\">(h)</emphasis>と<emphasis role=\"bold\""
+">(i)</emphasis>は妥当な<varname>POLYGON</varname>です。<emphasis role=\"bold"
+"\">(j-m)</emphasis>は不正です。<emphasis role=\"bold\">(j)</emphasis>は妥当な"
+"<varname>MULTIPOLYGON</varname>として表すことができます。"
 
 #. Tag: emphasis
 #: using_postgis_dataman.xml:1035
@@ -2354,25 +2409,25 @@ msgstr "<emphasis>(m)</emphasis>"
 #: using_postgis_dataman.xml:1095
 #, no-c-format
 msgid "A <varname>MULTIPOLYGON</varname> is <emphasis>valid</emphasis> if:"
-msgstr ""
+msgstr "<varname>MULTIPOLYGON</varname>は次の条件では<emphasis>妥当</emphasis>です。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1099
 #, no-c-format
 msgid "its element <varname>POLYGON</varname>s are valid"
-msgstr ""
+msgstr "要素となる<varname>POLYGON</varname>が妥当であること"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1102
 #, no-c-format
 msgid "elements do not overlap (i.e. their interiors must not intersect)"
-msgstr ""
+msgstr "要素がオーバラップしない (内部同士がインタセクトしない)こと"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1105
 #, no-c-format
 msgid "elements touch only at points (i.e. not along a line)"
-msgstr ""
+msgstr "要素同士の接触が点でけである (線に沿って接触しない)こと"
 
 #. Tag: emphasis
 #: using_postgis_dataman.xml:1114
@@ -2382,6 +2437,9 @@ msgid ""
 "varname>. <emphasis role=\"bold\">(o)</emphasis> and <emphasis role=\"bold"
 "\">(p)</emphasis> are invalid."
 msgstr ""
+"<emphasis role=\"bold\""
+">(n)</emphasis>は妥当な<varname>MULTIPOLYGON</varname>です。<emphasis role="
+"\"bold\">(o)</emphasis>と<emphasis role=\"bold\">(p)</emphasis>は不正です。"
 
 #. Tag: emphasis
 #: using_postgis_dataman.xml:1130
@@ -2407,7 +2465,8 @@ msgstr "<emphasis>(p)</emphasis>"
 msgid ""
 "These rules mean that valid polygonal geometry is also <emphasis>simple</"
 "emphasis>."
-msgstr ""
+msgstr "これらの規則は妥当なポリゴンジオメトリも<emphasis>単純</emphasis>であることも"
+"示しています。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1161
@@ -2418,6 +2477,9 @@ msgid ""
 "equivalently, have at least two distinct points.) Note that non-simple (self-"
 "intersecting) lines are valid."
 msgstr ""
+"線ジオメトリについては、<varname>LINESTRING</varname>が少なくとも二つのポイン"
+"トを持ち、長さが0でない (少なくとも二つの異なるポイントを持つことと同じ)、と"
+"いうのが唯一の妥当性規則です。単純でない (自己交差がある)ラインは妥当です。"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:1167
@@ -2432,6 +2494,14 @@ msgid ""
 "-------------+----------+----------\n"
 " t           | f        | t"
 msgstr ""
+"SELECT\n"
+"   ST_IsValid('LINESTRING(0 0, 1 1)') AS len_nonzero,\n"
+"   ST_IsValid('LINESTRING(0 0, 0 0, 0 0)') AS len_zero,\n"
+"   ST_IsValid('LINESTRING(10 10, 150 150, 180 50, 20 130)') AS self_int;\n"
+"\n"
+" len_nonzero | len_zero | self_int\n"
+"-------------+----------+----------\n"
+" t           | f        | t"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1169
@@ -2439,13 +2509,14 @@ msgstr ""
 msgid ""
 "<varname>POINT</varname> and <varname>MULTIPOINT</varname> geometries have "
 "no validity rules."
-msgstr ""
+msgstr "<varname>POINT</varname>と<varname>MULTIPOINT</varname>は妥当性規則を持ってい"
+"ません。"
 
 #. Tag: title
 #: using_postgis_dataman.xml:1175
 #, no-c-format
 msgid "Managing Validity"
-msgstr ""
+msgstr "妥当性の管理"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1177
@@ -2456,6 +2527,10 @@ msgid ""
 "situations where the OGC validity rules are stricter than desired (examples "
 "of this are zero-length linestrings and polygons with inverted holes.)"
 msgstr ""
+"PostGISは妥当なジオメトリも不正なジオメトリも、生成も格納もできます。このため"
+"、不正なジオメトリを検出し、フラグを付け、訂正することができます。"
+"OGC妥当性規則が求める規則 (長さが0のラインストリングや逆穴を持つポリゴン等)よ"
+"りも厳格であることもあります。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1183
@@ -2472,6 +2547,14 @@ msgid ""
 "output if the inputs are valid. This allows PostGIS functions to be chained "
 "together safely."
 msgstr ""
+"PostGISが提供する関数の多くは、引数ジオメトリが妥当であるとの仮定によっていま"
+"す。たとえば、ポリゴンの外部に穴があるポリゴンの面積を計算しても意味がありま"
+"せんし、単純でない境界線からポリゴンを形成するのも意味がありません。妥当なジ"
+"オメトリ入力を仮定することで、トポロジ的に正しいことを確認する必要がなくなる"
+"ので、関数がより効率的に動作することができます (例外として、長さ0のラインと反"
+"転したポリゴンは一般的に正しく取り扱われます)。また、ほとんどのPostGIS関数は"
+"、入力ジオメトリが妥当な場合には、妥当なジオメトリ出力を生成します。これによ"
+"り、PostGIS関数を安全に連鎖させられます。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1196
@@ -2482,6 +2565,10 @@ msgid ""
 "that the function arguments are valid. If they are not, then consider using "
 "one of the techniques below to ensure the data you are processing is valid."
 msgstr ""
+"PostGIS関数を呼ぶときに予期しないエラーメッセージ (\"GEOS Intersection() "
+"threw an error!\"等)に遭遇する場合には、まず関数の引数が妥当かどうかを確認し"
+"ます。妥当でないなら、次に示す方法のいずれかによる、処理中のデータの妥当性の"
+"確認を検討して下さい。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1203
@@ -2492,6 +2579,10 @@ msgid ""
 "report this to the PostGIS project. The same is true if a PostGIS function "
 "returns an invalid geometry for valid input."
 msgstr ""
+"関数が妥当な入力でエラーを報告する場合には、PostGISまたは使用しているライブラ"
+"リの一つの中にエラーがあるのを発見することがありますが、その際はPostGISプロジ"
+"ェクトに報告して下さい。PostGIS関数が妥当な入力から不正なジオメトリを返す場合"
+"も同様です。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1210
@@ -2499,7 +2590,8 @@ msgstr ""
 msgid ""
 "To test if a geometry is valid use the <xref linkend=\"ST_IsValid\"/> "
 "function:"
-msgstr ""
+msgstr "ジオメトリが妥当かをテストするには<xref linkend=\"ST_IsValid\""
+"/>関数を使います。次のようにします。"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:1213
@@ -2509,6 +2601,9 @@ msgid ""
 "-----------------\n"
 " t"
 msgstr ""
+"SELECT ST_IsValid('POLYGON ((20 180, 180 180, 180 20, 20 20, 20 180))');\n"
+"-----------------\n"
+" t"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1214
@@ -2517,6 +2612,8 @@ msgid ""
 "Information about the nature and location of an geometry invalidity are "
 "provided by the <xref linkend=\"ST_IsValidDetail\"/> function:"
 msgstr ""
+"ジオメトリの不正性の性質と位置に関する情報は<xref linkend=\"ST_IsValidDetail"
+"\"/>関数で得られます。次のようにします。"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:1217
@@ -2530,6 +2627,13 @@ msgid ""
 "-------+-------------------+---------------------------------------------\n"
 " f     | Self-intersection | POINT(91.51162790697674 141.56976744186045)"
 msgstr ""
+"SELECT valid, reason, ST_AsText(location) AS location\n"
+"    FROM ST_IsValidDetail('POLYGON ((20 20, 120 190, 50 190, 170 50, 20 "
+"20))') AS t;\n"
+"\n"
+" valid |      reason       |                  location\n"
+"-------+-------------------+---------------------------------------------\n"
+" f     | Self-intersection | POINT(91.51162790697674 141.56976744186045)"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1219
@@ -2540,6 +2644,9 @@ msgid ""
 "(<code>ST_MakeValid</code> is a case of a spatial function that "
 "<emphasis>does</emphasis> allow invalid input!)"
 msgstr ""
+"不正なジオメトリを自動的に訂正することが望ましいような状況があります。"
+"その際は<xref linkend=\"ST_MakeValid\"/>関数を使います (<code>ST_MakeValid</c"
+"ode>は不正な入力を<emphasis>許す</emphasis>特別な関数です)。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1224
@@ -2550,6 +2657,10 @@ msgid ""
 "If you do not trust your data sources, you can enforce a validity check on "
 "your tables by adding a check constraint:"
 msgstr ""
+"複雑なジオメトリの不正性テストには多大なCPU時間を取ることになるため、デフォル"
+"トでは、ジオメトリのロード時にPostGISは妥当性の確認をしません。データソースが"
+"信用できない場合には、チェック制約を使って、テーブル上で妥当性を強制的に確認"
+"することができます。次のようにします。"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:1230
@@ -2578,6 +2689,10 @@ msgid ""
 "Reference System (CRS)) defines how geometry is referenced to locations on "
 "the Earth's surface. There are three types of SRS:"
 msgstr ""
+"<ulink url=\"https://en.wikipedia.org/wiki/Spatial_reference_system\""
+">空間参照系</ulink> (Spatial Reference System, SRS) (座標参照系、Coordinate "
+"Reference System, CRSとも呼ばれます)は、ジオメトリが地表上の位置をどのように"
+"参照するかを定義しています。SRSには次の通り三種あります。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1244
@@ -2586,6 +2701,8 @@ msgid ""
 "A <emphasis role=\"bold\">geodetic</emphasis> SRS uses angular coordinates "
 "(longitude and latitude) which map directly to the surface of the earth."
 msgstr ""
+"<emphasis role=\"bold\">測地</emphasis> (geodetic) 空間参照系は、"
+"地表に直接対応付けられる極座標系 (経度と緯度)を使います。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1247
@@ -2601,6 +2718,13 @@ msgid ""
 "limited in its area of applicability to avoid distortion and fit within the "
 "defined coordinate bounds."
 msgstr ""
+"<emphasis role=\"bold\">投影</emphasis> (projected)空間参照系は、回転楕円体面"
+"を「平面にする」ための数学的な投影変換を使います。距離、面積、角度といった量"
+"を直接計測することが可能な位置座標系です。この座標系はデカルト座標系ですので"
+"、原点と二つの直交軸 "
+"(通常は来北と東方向)が定義されています。個々の投影座標系は、定まった距離単位 "
+"(通常はメートルかフィート)を使います。投影座標系は、歪みを避けて定義された座"
+"標範囲に納めるために、適応範囲を制限してもいいことになっています。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1258
@@ -2610,6 +2734,8 @@ msgid ""
 "system which is not referenced to the earth's surface. In PostGIS this is "
 "specified by a SRID value of 0."
 msgstr ""
+"<emphasis role=\"bold\">局所</emphasis> (local)座標系は、地表への参照がないデ"
+"カルト座標系です。PostGISではSRID値を0に指定します。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1263
@@ -2621,6 +2747,11 @@ msgid ""
 "spatial systems) refers to SRS definitions using an integer identifier "
 "called a SRID."
 msgstr ""
+"使用されている空間参照系には多数の相違点があります。"
+"一般的空間参照系は欧州石油調査グループ (European Petroleum Survey Group)"
+"の<ulink url=\"http://www.epsg.org/\">EPSG "
+"database</ulink>で標準化されています。利便性向上のためPostGIS "
+"(と多くの空間系)はSRIDと呼ぶ整数を使って空間参照系の定義を参照します。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1272
@@ -2634,6 +2765,13 @@ msgid ""
 "\"EWKB_EWKT\">EWKT</link> format supports SRIDs with the <code>SRID=n;</"
 "code> prefix."
 msgstr ""
+"ジオメトリは、SRID値で空間参照系に関連付けられています。"
+"SRID値の取得には<xref linkend=\"ST_SRID\"/>を使います。"
+"ジオメトリのSRIDの設定には<xref linkend=\"ST_SetSRID\""
+"/>を使います。ジオメトリ構築関数の中には、SRIDを与えられるものもあります ("
+"<xref linkend=\"ST_Point\"/>や<xref linkend=\"ST_MakeEnvelope\"/>等)。<link "
+"linkend=\"EWKB_EWKT\""
+">EWKT</link>書式は<code>SRID=n;</code>を前置することでSRIDに対応できます。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1280
@@ -2647,6 +2785,13 @@ msgid ""
 "system using <xref linkend=\"ST_Transform\"/>. Geometry returned from "
 "functions has the same SRS as the input geometries."
 msgstr ""
+"二つのジオメトリを処理する空間関数 (<link linkend=\"Overlay_Functions\""
+">オーバレイ関数</link>や<link linkend=\"Spatial_Relationships\""
+">空間関係関数</link>等)では、"
+"入力ジオメトリが同じ空間参照系でなければなりません "
+"(同じSRID値を持たなければなりません)。ジオメトリデータは<xref linkend="
+"\"ST_Transform\"/>を使うと異なる空間参照系に変換できます。関数から返されるジ"
+"オメトリは入力ジオメトリと同じ空間参照系を持ちます。"
 
 #. Tag: title
 #: using_postgis_dataman.xml:1291
@@ -2663,6 +2808,9 @@ msgid ""
 "systems. It holds the numeric SRIDs and textual descriptions of the "
 "coordinate systems."
 msgstr ""
+"PostGISが使用する<varname>SPATIAL_REF_SYS</varname>テーブルは利用可能な空間参"
+"照系を定義するOGC準拠のデータベーステーブルです。このテーブルは、数値でSRIDを"
+"持ち、文字列で座標系の記述を持っています。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1299
@@ -2743,6 +2891,8 @@ msgid ""
 "The ID of the Spatial Reference System as defined by the Authority cited in "
 "the <varname>auth_name</varname>. In the case of EPSG, this is the EPSG code."
 msgstr ""
+"空間参照系のIDは<varname>auth_name</varname>に引用される機関によって定義され"
+"ます。ここがEPSGの場合には、これはEPSGコードです。"
 
 #. Tag: term
 #: using_postgis_dataman.xml:1336
@@ -2806,6 +2956,9 @@ msgid ""
 "opengeospatial.org/is/12-063r5/12-063r5.html\">Well-known text "
 "representation of coordinate reference systems</ulink>."
 msgstr ""
+"SRS WKTの詳細については、OGC標準の<ulink url=\"http://docs.opengeospatial."
+"org/is/12-063r5/12-063r5.html\">Well-known text representation of coordinate "
+"reference systems</ulink>をご覧下さい。"
 
 #. Tag: term
 #: using_postgis_dataman.xml:1351
@@ -3073,13 +3226,14 @@ msgid ""
 "third dimension as a measure. Similarly, 'POINTZM' requires four dimensional "
 "(XYZM) data."
 msgstr ""
-" <emphasis role=\"bold\">空間タイプ修飾子</emphasis>はカラムで許される形状と"
-"次元の種類を制約するものです。値は、対応している<link linkend=\"RefObject\">"
-"ジオメトリタイプ</link> (POINT, LINESTRING, POLYGON, MULTIPOINT, "
-"MULTILINESTRING, MULTIPOLYGON, GEOMETRYCOLLECTION等)なら全て可能です。空間タ"
-"イプ修飾子は、後置詞 Z, M, ZMを付け加えることで座標次元の制約に対応します。例"
-"えば、`LINESTRINGM`修飾子では、3次元で3番目がM軸となるラインストリングだけを"
-"許します。同様に、'POINTZM'では4次元 (XYZM)データが求められます。"
+"<emphasis role=\"bold\">空間タイプ修飾子</emphasis>はカラムで許される形状と次"
+"元の種類を制約するものです。値は、対応している<link linkend=\"RefObject\""
+">ジオメトリタイプ</link> (POINT, LINESTRING, POLYGON, MULTIPOINT, "
+"MULTILINESTRING, MULTIPOLYGON, "
+"GEOMETRYCOLLECTION等)なら全て可能です。空間タイプ修飾子は、後置詞 Z, M, ZMを"
+"付け加えることで座標次元の制約に対応します。例えば、`LINESTRINGM`修飾子では、"
+"3次元で3番目がM軸となるラインストリングだけを許します。同様に、"
+"'POINTZM'では4次元 (XYZM)データが求められます。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1460
@@ -3091,9 +3245,7 @@ msgid ""
 msgstr ""
 "<emphasis role=\"bold\">SRID修飾子</emphasis>は<link linkend="
 "\"spatial_ref_sys\">空間参照系</link>のSRIDを特定の数値に制約します。省略した"
-"場合には、デフォルトは0となります。\n"
-" restricts the <link linkend=\"spatial_ref_sys\">spatial reference system</"
-"link> SRID to a particular number. If omitted, the SRID defaults to 0."
+"場合には、デフォルトは0となります。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1469
@@ -3286,7 +3438,7 @@ msgstr "coord_dimension"
 #: using_postgis_dataman.xml:1540
 #, no-c-format
 msgid "The coordinate dimension (2, 3 or 4) of the column."
-msgstr "カラムの座標次元 (2, 3, 4)"
+msgstr "カラムの座標次元 (2, 3, 4)。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1548
@@ -3817,7 +3969,7 @@ msgstr ""
 #: using_postgis_dataman.xml:1650
 #, no-c-format
 msgid "(c|a|d|p) These are mutually exclusive options:"
-msgstr "(c|a|d|p) 相互に排他的なオプションです"
+msgstr "(c|a|d|p) 相互に排他的なオプションです。"
 
 #. Tag: term
 #: using_postgis_dataman.xml:1655
@@ -5338,8 +5490,9 @@ msgid ""
 "&lt;&lt;, &amp;&lt;, &amp;&gt;, &gt;&gt;, &lt;&lt;|, &amp;&lt;|, |&amp;&gt;, "
 "|&gt;&gt;, &amp;&amp;, @&gt;, &lt;@, and ~=, for 2-dimensional indexes,"
 msgstr ""
-"2次元インデックスについては &lt;&lt;, &amp;&lt;, &amp;&gt;, &gt;&gt;, &lt;"
-"&lt;|, &amp;&lt;|, |&amp;&gt;, |&gt;&gt;, &amp;&amp;, @&gt;, &lt;@, and ~= 。"
+"2次元インデックスについては &lt;&lt;, &amp;&lt;, &amp;&gt;, &gt;&gt;, "
+"&lt;&lt;|, &amp;&lt;|, |&amp;&gt;, |&gt;&gt;, &amp;&amp;, @&gt;, &lt;@, "
+"~=です。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:2348

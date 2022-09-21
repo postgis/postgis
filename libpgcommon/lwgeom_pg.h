@@ -253,10 +253,6 @@ void lwpgerror(const char *fmt, ...);
 void lwpgnotice(const char *fmt, ...);
 void lwpgwarning(const char *fmt, ...);
 
-#if POSTGIS_PGSQL_VERSION < 100
-Datum CallerFInfoFunctionCall1(PGFunction func, FmgrInfo *flinfo, Oid collation, Datum arg1);
-Datum CallerFInfoFunctionCall2(PGFunction func, FmgrInfo *flinfo, Oid collation, Datum arg1, Datum arg2);
-#endif
 Datum CallerFInfoFunctionCall3(PGFunction func, FmgrInfo *flinfo, Oid collation, Datum arg1, Datum arg2, Datum arg3);
 
 

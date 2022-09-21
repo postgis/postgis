@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-export PG_VER=11
+export PG_VER=13
 # export PGPORT=8442
 export OS_BUILD=64
 #this is passed in via postgis_make_dist.sh via jenkins
 #export reference=
 export PROJECTS=/var/lib/jenkins/workspace
-export GEOS_VER=3.9
-export GDAL_VER=3.0
+export GEOS_VER=3.10
+export GDAL_VER=3.4
 export WEB_DIR=/var/www/postgis_stuff
 export PGPATH=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}
 export PATH="${PGPATH}/bin:$PATH"

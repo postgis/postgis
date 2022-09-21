@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-01-31 10:53+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"PO-Revision-Date: 2022-09-08 03:55+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_managementxml/ja/>\n"
 "Language: ja\n"
@@ -16,19 +16,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: para
 #: reference_management.xml:5
 #, no-c-format
 msgid "These functions assist in defining tables containing geometry columns."
-msgstr ""
+msgstr "これらの関数は、ジオメトリカラムを含むテーブルの定義を支援します。"
 
 #. Tag: title
 #: reference_management.xml:10
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Table Management Functions"
-msgstr "管理関数"
+msgstr "テーブル管理関数"
 
 #. Tag: refname
 #: reference_management.xml:14
@@ -38,9 +38,9 @@ msgstr "AddGeometryColumn"
 
 #. Tag: refpurpose
 #: reference_management.xml:16
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Adds a geometry column to an existing table."
-msgstr "ジオメトリカラムを空間テーブルから除去します。"
+msgstr "ジオメトリカラムを既存のテーブルに追加します。"
 
 #. Tag: funcsynopsis
 #: reference_management.xml:20
@@ -571,17 +571,17 @@ msgstr ""
 #: reference_management.xml:285
 #, no-c-format
 msgid "Find_SRID"
-msgstr ""
+msgstr "Find_SRID"
 
 #. Tag: refpurpose
 #: reference_management.xml:287
 #, no-c-format
 msgid "Returns the SRID defined for a geometry column."
-msgstr ""
+msgstr "ジオメトリカラムで定義されているSRIDを返します。"
 
 #. Tag: funcprototype
 #: reference_management.xml:292
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>integer <function>Find_SRID</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>a_schema_name</parameter></"
@@ -591,9 +591,9 @@ msgid ""
 msgstr ""
 "<funcdef>integer <function>Find_SRID</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>a_schema_name</parameter></"
-"paramdef> <paramdef><type>varchar </type> <parameter>a_table_name</"
-"parameter></paramdef> <paramdef><type>varchar </type> "
-"<parameter>a_geomfield_name</parameter></paramdef>"
+"paramdef> <paramdef><type>varchar </type> "
+"<parameter>a_table_name</parameter></paramdef> <paramdef><type>varchar </"
+"type> <parameter>a_geomfield_name</parameter></paramdef>"
 
 #. Tag: para
 #: reference_management.xml:304
@@ -604,6 +604,9 @@ msgid ""
 "properly added (e.g. with the <xref linkend=\"AddGeometryColumn\"/> "
 "function), this function will not work."
 msgstr ""
+"指定したジオメトリカラムSRID整数値をGEOMETRY_COLUMNSテーブルの探索によって返"
+"します。ジオメトリカラムが正しく追加されていない (例: <xref linkend="
+"\"AddGeometryColumn\"/>関数)場合には、この関数は動作しません。"
 
 #. Tag: programlisting
 #: reference_management.xml:313
@@ -614,6 +617,10 @@ msgid ""
 "----------\n"
 "4269"
 msgstr ""
+"SELECT Find_SRID('public', 'tiger_us_state_2007', 'geom_4269');\n"
+"find_srid\n"
+"----------\n"
+"4269"
 
 #. Tag: refname
 #: reference_management.xml:327
@@ -627,7 +634,7 @@ msgstr "Populate_Geometry_Columns"
 msgid ""
 "Ensures geometry columns are defined with type modifiers or have appropriate "
 "spatial constraints."
-msgstr ""
+msgstr "ジオメトリカラムが型修飾子で定義されるか、適切な空間制約を持つようにします。"
 
 #. Tag: funcsynopsis
 #: reference_management.xml:333
@@ -651,18 +658,17 @@ msgstr ""
 
 #. Tag: para
 #: reference_management.xml:352
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Ensures geometry columns have appropriate type modifiers or spatial "
 "constraints to ensure they are registered correctly in the "
 "<varname>geometry_columns</varname> view. By default will convert all "
 "geometry columns with no type modifier to ones with type modifiers."
 msgstr ""
-"ジオメトリカラムが型修飾子で定義されるか、適切な制約を持つことを確実にしま"
-"す。ジオメトリカラムが<varname>geometry_columns</varname>に正しく登録されるこ"
-"とを確実にします。デフォルトでは、型修飾子によらないジオメトリカラムを型修飾"
-"子によるジオメトリカラムに変換します。以前の挙動にするには"
-"<varname>use_typmod=false</varname>とします。"
+"ジオメトリカラムが適切な型修飾子を持つか、<varname>geometry_columns</varname>"
+"ビュー内で正しく登録されていることを確実にするために空間制約を持つようにしま"
+"す。デフォルトでは、型修飾子を持たないすべてのジオメトリカラムを型修飾子を持"
+"つカラムに変換します。"
 
 #. Tag: para
 #: reference_management.xml:357
@@ -687,33 +693,36 @@ msgstr ""
 
 #. Tag: para
 #: reference_management.xml:365
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>enforce_dims_geom</varname> - ensures every geometry has the same "
 "dimension (see <xref linkend=\"ST_NDims\"/>)"
 msgstr ""
-"<varname>enforce_dims_the_geom</varname> - あらゆるジオメトリが同じ次元を持つ"
-"ことを確実にします (<xref linkend=\"ST_NDims\"/>をご覧下さい)"
+"<varname>enforce_dims_the_geom</varname> - "
+"あらゆるジオメトリが同じ次元を持つことを確実にします (<xref linkend="
+"\"ST_NDims\"/>をご覧下さい)"
 
 #. Tag: para
 #: reference_management.xml:371
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>enforce_geotype_geom</varname> - ensures every geometry is of the "
 "same type (see <xref linkend=\"GeometryType\"/>)"
 msgstr ""
-"<varname>enforce_geotype_the_geom</varname> - あらゆるジオメトリが同じ型を持"
-"つことを確実にします (<xref linkend=\"GeometryType\"/>をご覧下さい)"
+"<varname>enforce_geotype_the_geom</varname> - "
+"あらゆるジオメトリが同じ型を持つことを確実にします (<xref linkend="
+"\"GeometryType\"/>をご覧下さい)"
 
 #. Tag: para
 #: reference_management.xml:377
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>enforce_srid_geom</varname> - ensures every geometry is in the same "
 "projection (see <xref linkend=\"ST_SRID\"/>)"
 msgstr ""
-"<varname>enforce_srid_the_geom</varname> - あらゆるジオメトリが同じ投影法にな"
-"ることを確実にします (<xref linkend=\"ST_SRID\"/>をご覧下さい)"
+"<varname>enforce_srid_the_geom</varname> - "
+"あらゆるジオメトリが同じ投影法になることを確実にします (<xref linkend="
+"\"ST_SRID\"/>をご覧下さい)"
 
 #. Tag: para
 #: reference_management.xml:383
@@ -910,7 +919,8 @@ msgstr "UpdateGeometrySRID"
 msgid ""
 "Updates the SRID of all features in a geometry column, and the table "
 "metadata."
-msgstr ""
+msgstr "ジオメトリカラム内の全ての地物のSRIDを更新し、テーブルのメタデータを更新しま"
+"す。"
 
 #. Tag: funcsynopsis
 #: reference_management.xml:438
@@ -954,16 +964,17 @@ msgstr ""
 
 #. Tag: para
 #: reference_management.xml:492
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Updates the SRID of all features in a geometry column, updating constraints "
 "and reference in geometry_columns. If the column was enforced by a type "
 "definition, the type definition will be changed. Note: uses current_schema() "
 "on schema-aware pgsql installations if schema is not provided."
 msgstr ""
-"ジオメトリカラムの全てのフィーチャーのSRID、geometry_columnsメタデータとSRID"
-"テーブル制約を更新します。スキーマ対応版pgsqlでは、スキーマが提供されていない"
-"場合には、この関数はcurrent_schema()を使うことにご注意下さい。"
+"ジオメトリカラム内の全ての地物のSRIDを更新し、制約を更新し、geometry_columns"
+"の参照を更新します。カラムが型定義で強制されているなら、型定義は変更されます"
+"。ご注意: スキーマ対応版PostgreSQLでは、スキーマが提供されていない場合には、c"
+"urrent_schema()を使用します。"
 
 #. Tag: para
 #: reference_management.xml:504
@@ -972,6 +983,8 @@ msgid ""
 "Insert geometries into roads table with a SRID set already using <link "
 "linkend=\"ST_GeomFromEWKT\">EWKT format</link>:"
 msgstr ""
+"ジオメトリを、<link linkend=\"ST_GeomFromEWKT\""
+">EWKT書式</link>を使って、SRIDを持つ道路テーブルに挿入します。"
 
 #. Tag: programlisting
 #: reference_management.xml:505
@@ -982,15 +995,18 @@ msgid ""
 "SRID=4326;LINESTRING(10 10, 15 0)\n"
 "\\."
 msgstr ""
+"COPY roads (geom) FROM STDIN;\n"
+"SRID=4326;LINESTRING(0 0, 10 10)\n"
+"SRID=4326;LINESTRING(10 10, 15 0)\n"
+"\\."
 
 #. Tag: para
 #: reference_management.xml:507
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This will change the srid of the roads table to 4326 from whatever it was "
 "before:"
-msgstr ""
-"この関数は、以前のSRIDに関係なく、道路テーブルのSRIDを4326に変更します。"
+msgstr "これにより道路テーブルが、以前がどんなSRIDであっても、4326に変更されます。"
 
 #. Tag: programlisting
 #: reference_management.xml:508
@@ -1000,12 +1016,12 @@ msgstr "SELECT UpdateGeometrySRID('roads','geom',4326);"
 
 #. Tag: para
 #: reference_management.xml:510
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "The prior example is equivalent to this DDL statement:"
 msgstr ""
-"上述の例と、このDDL手続き (訳注: DDLはData Definition Languageの略で、データ"
-"構造の操作を行う言語を指し、この場合は CREATE TABLEやALTER TABLE等が該当しま"
-"す)とは同じです。"
+"上述の例と、次のDDL手続き (訳注: DDLはData Definition "
+"Languageの略で、データ構造の操作を行う言語を指し、この場合は CREATE "
+"TABLEやALTER TABLE等が該当します)とは同じです。"
 
 #. Tag: programlisting
 #: reference_management.xml:511
@@ -1021,16 +1037,16 @@ msgstr ""
 
 #. Tag: para
 #: reference_management.xml:513
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you got the projection wrong (or brought it in as unknown) in load and "
 "you wanted to transform to web mercator all in one shot you can do this with "
 "DDL but there is no equivalent PostGIS management function to do so in one "
 "go."
 msgstr ""
-"ロードデータの変換座標系が誤りである (またはunknownになっている)けれどもWebメ"
-"ルカトルに一度の処理で変換したい場合、DDLで実行可能ですが、PostGIS管理関数で"
-"は一度の処理ですむ等価なものはありません。"
+"ロードしたデータの変換座標系が誤りである (またはunknownになっている)けれどもW"
+"ebメルカトルに一度の処理で変換したい場合、DDLで実行可能ですが、PostGIS管理関"
+"数では一度の処理ですむ等価なものはありません。"
 
 #. Tag: programlisting
 #: reference_management.xml:515
@@ -1046,11 +1062,13 @@ msgstr ""
 
 #. Tag: para
 #: reference_management.xml:520
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
 "linkend=\"ST_GeomFromEWKT\"/>"
-msgstr ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>"
+msgstr ""
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
+"linkend=\"ST_GeomFromEWKT\"/>"
 
 #~ msgid ""
 #~ "Adds a geometry column to an existing table of attributes. By default "

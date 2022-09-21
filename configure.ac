@@ -505,9 +505,9 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   PGSQL_SHAREDIR=`"$PG_CONFIG" --sharedir`
 
   AC_MSG_RESULT([checking PostgreSQL version... $PGSQL_FULL_VERSION])
-  dnl Ensure that we are using PostgreSQL >= 11
-  if test $POSTGIS_PGSQL_VERSION -lt 110; then
-    AC_MSG_ERROR([PostGIS requires PostgreSQL >= 11])
+  dnl Ensure that we are using PostgreSQL >= 12
+  if test $POSTGIS_PGSQL_VERSION -lt 120; then
+    AC_MSG_ERROR([PostGIS requires PostgreSQL >= 12])
   fi
 
   HAVE_SPGIST=yes
@@ -925,9 +925,9 @@ AC_DEFINE_UNQUOTED([POSTGIS_PROJ_VERSION], [$POSTGIS_PROJ_VERSION], [PROJ librar
 AC_SUBST([POSTGIS_PROJ_VERSION])
 CPPFLAGS="$CPPFLAGS_SAVE"
 
-dnl Ensure that we are using PROJ >= 4.9.0 (requires pj_set_searchpath)
-if test ! "$POSTGIS_PROJ_VERSION" -ge 49; then
-	AC_MSG_ERROR([PostGIS requires PROJ >= 4.9.0])
+dnl Ensure that we are using PROJ >= 6.1.0 (requires pj_set_searchpath)
+if test ! "$POSTGIS_PROJ_VERSION" -ge 61; then
+	AC_MSG_ERROR([PostGIS requires PROJ >= 6.1.0])
 fi
 
 AC_SUBST([PROJ_CPPFLAGS])
@@ -1531,6 +1531,7 @@ if test "x$with_raster" != "xno"; then
 	AC_SUBST([RT_POSTGIS_SQL])
 
 	RT_MAKEFILE_LIST="
+		extensions/postgis_raster/Makefile \
 		raster/Makefile \
 		raster/rt_core/Makefile \
 		raster/rt_pg/Makefile \
@@ -1734,7 +1735,6 @@ dnl echo "TRANSLATIONS_MAKEFILE_LIST: ${TRANSLATIONS_MAKEFILE_LIST}"
 AC_CONFIG_FILES([GNUmakefile
    extensions/Makefile
    extensions/postgis/Makefile
-   extensions/postgis_raster/Makefile
    extensions/postgis_topology/Makefile
    extensions/postgis_tiger_geocoder/Makefile
    extensions/address_standardizer/Makefile

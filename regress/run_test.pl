@@ -243,6 +243,7 @@ psql -XtAc "
 	WHERE name = 'postgis'
 " template1
 `;
+chop $defextver;
 
 my $dbcount = @dblist;
 
@@ -1565,6 +1566,23 @@ sub prepare_spatial
 	return 1;
 }
 
+sub upgrade_extension_sql
+{
+    my ($extname, $from, $to) = @_;
+
+    my $sql = '';
+    if ( "${libver}" eq "${to}" ) {
+        if ( semver_lessthan($to, "3.3.0") ) {
+            $sql .= "ALTER EXTENSION $extname UPDATE TO '${to}next'; ";
+        } else {
+            $sql .= "ALTER EXTENSION $extname UPDATE TO 'ANY'; ";
+        }
+    }
+    $sql .= "ALTER EXTENSION $extname UPDATE TO '${to}'";
+
+    return $sql;
+}
+
 sub package_extension_sql
 {
 	my ($extname, $extver) = @_;
@@ -1642,7 +1660,7 @@ sub upgrade_spatial_extensions
       $OPT_UPGRADE_TO = $defextver;
     }
 
-    my $nextver = $OPT_UPGRADE_TO ? "${OPT_UPGRADE_TO}" : "${libver}next";
+    my $nextver = $OPT_UPGRADE_TO ? "${OPT_UPGRADE_TO}" : "${libver}";
 
     if ( $upgrade_via_function )
     {
@@ -1654,7 +1672,7 @@ sub upgrade_spatial_extensions
     }
     else
     {
-      $sql = "ALTER EXTENSION postgis UPDATE TO '${nextver}'";
+        $sql = upgrade_extension_sql('postgis', ${libver}, ${nextver});
     }
 
     print "Upgrading PostGIS in '${DB}' using: ${sql}\n" ;
@@ -1709,10 +1727,13 @@ sub upgrade_spatial_extensions
 
     if ( $OPT_WITH_RASTER && has_split_raster_ext(${nextver}) )
     {
-        my $sql = "ALTER EXTENSION postgis_raster UPDATE TO '${nextver}'";
+        my $sql;
 
         if ( $OPT_UPGRADE_FROM =~ /^unpackaged/ ) {
-					$sql = package_extension_sql('postgis_raster', ${nextver});
+            $sql = package_extension_sql('postgis_raster', ${nextver});
+        }
+        else {
+            $sql = upgrade_extension_sql('postgis_raster', ${libver}, ${nextver});
         }
 
         print "Upgrading PostGIS Raster in '${DB}' using: ${sql}\n" ;
@@ -1727,48 +1748,51 @@ sub upgrade_spatial_extensions
 
     if ( $OPT_WITH_TOPO )
     {
-      my $sql = "ALTER EXTENSION postgis_topology UPDATE TO '${nextver}'";
+        my $sql;
 
-			if ( $OPT_UPGRADE_FROM =~ /^unpackaged/ ) {
-				$sql = package_extension_sql('postgis_topology', ${nextver});
-			}
+        if ( $OPT_UPGRADE_FROM =~ /^unpackaged/ ) {
+            $sql = package_extension_sql('postgis_topology', ${nextver});
+        }
+        else {
+            $sql = upgrade_extension_sql('postgis_topology', ${libver}, ${nextver});
+        }
 
-      print "Upgrading PostGIS Topology in '${DB}' using: ${sql}\n";
+        print "Upgrading PostGIS Topology in '${DB}' using: ${sql}\n";
 
-      my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
-      my $rv = system($cmd);
-      if ( $rv ) {
-        fail "Error encountered updating EXTENSION POSTGIS_TOPOLOGY", $REGRESS_LOG;
-        die;
-      }
+        my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+        my $rv = system($cmd);
+        if ( $rv ) {
+            fail "Error encountered updating EXTENSION POSTGIS_TOPOLOGY", $REGRESS_LOG;
+            die;
+        }
     }
 
     if ( $OPT_WITH_SFCGAL )
     {
-			my $sql;
+        my $sql;
 
-			if ( $OPT_UPGRADE_FROM =~ /^unpackaged/ ) {
-				$sql = package_extension_sql('postgis_sfcgal', ${nextver});
-			}
-			elsif ( $OPT_UPGRADE_FROM && semver_lessthan($OPT_UPGRADE_FROM, "2.2.0") )
-			{
-				print "NOTICE: installing SFCGAL extension on upgrade "
-						. "as it was not available in version '$OPT_UPGRADE_FROM'\n";
-				$sql = "CREATE EXTENSION postgis_sfcgal VERSION '${nextver}'";
-			}
-			else
-			{
-				$sql = "ALTER EXTENSION postgis_sfcgal UPDATE TO '${nextver}'";
-			}
-      $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+        if ( $OPT_UPGRADE_FROM =~ /^unpackaged/ ) {
+            $sql = package_extension_sql('postgis_sfcgal', ${nextver});
+        }
+        elsif ( $OPT_UPGRADE_FROM && semver_lessthan($OPT_UPGRADE_FROM, "2.2.0") )
+        {
+            print "NOTICE: installing SFCGAL extension on upgrade "
+                . "as it was not available in version '$OPT_UPGRADE_FROM'\n";
+            $sql = "CREATE EXTENSION postgis_sfcgal VERSION '${nextver}'";
+        }
+        else
+        {
+            $sql = upgrade_extension_sql('postgis_sfcgal', ${libver}, ${nextver});
+        }
+        $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
 
-			print "Upgrading PostGIS SFCGAL in '${DB}' using: ${sql}\n" ;
+        print "Upgrading PostGIS SFCGAL in '${DB}' using: ${sql}\n" ;
 
-      $rv = system($cmd);
-      if ( $rv ) {
-        fail "Error encountered creating EXTENSION POSTGIS_SFCGAL", $REGRESS_LOG;
-        die;
-      }
+        $rv = system($cmd);
+        if ( $rv ) {
+            fail "Error encountered creating EXTENSION POSTGIS_SFCGAL", $REGRESS_LOG;
+            die;
+        }
     }
 
     return 1;

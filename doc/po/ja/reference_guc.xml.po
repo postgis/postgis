@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-03-28 21:21+0000\n"
+"PO-Revision-Date: 2022-09-09 12:50+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_gucxml/ja/>\n"
@@ -15,11 +15,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: para
 #: reference_guc.xml:5
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This section lists custom PostGIS Grand Unified Custom Variables (GUC). "
 "These can be set globally, by database, by session or by transaction. Best "
@@ -31,9 +31,9 @@ msgstr ""
 
 #. Tag: title
 #: reference_guc.xml:9
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Grand Unified Custom Variables (GUCs)"
-msgstr "PostGIS GUC (Grand Unified Custom)変数"
+msgstr "Grand Unified Custom変数 (GUC)"
 
 #. Tag: refname
 #: reference_guc.xml:13
@@ -297,9 +297,9 @@ msgid ""
 "<varname>DISABLE_ALL</varname> overrides all other values in "
 "<varname>postgis.gdal_enabled_drivers</varname>."
 msgstr ""
-"<varname>DISABLE_ALL</varname> 全てのGDALドライバを無効にします。これが出現す"
-"ると、 <varname>postgis.gdal_enabled_drivers</varname>にある他の全ての値を上"
-"書きします。"
+"<varname>DISABLE_ALL</varname> 全てのGDALドライバを無効にします。<varname>DIS"
+"ABLE_ALL</varname>は<varname>postgis."
+"gdal_enabled_drivers</varname>にある他の全ての値を上書きします。"
 
 #. Tag: para
 #: reference_guc.xml:118
@@ -355,7 +355,7 @@ msgstr ""
 #: reference_guc.xml:148
 #, no-c-format
 msgid "Set and reset <varname>postgis.gdal_enabled_drivers</varname>"
-msgstr " <varname>postgis.gdal_enabled_drivers</varname>の設定とリセット。"
+msgstr "<varname>postgis.gdal_enabled_drivers</varname>の設定とリセット。"
 
 #. Tag: para
 #: reference_guc.xml:150
@@ -373,15 +373,15 @@ msgstr ""
 
 #. Tag: para
 #: reference_guc.xml:153
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Sets default enabled drivers for all new connections to server. Requires "
 "super user access and PostgreSQL 9.4+. Also note that database, session, and "
 "user settings override this."
 msgstr ""
 "サーバへの全ての新規接続のための、有効なドライバのデフォルトを設定します。"
-"スーパーユーザ権限とPostgreSQL 9.4以上が必要です。データベース、セッション、"
-"ユーザ設定によって上書きされます。"
+"スーパーユーザ権限とPostgreSQL 9.4以上が必要です。データベース設定、セッショ"
+"ン設定、ユーザ設定によって上書きされます。"
 
 #. Tag: programlisting
 #: reference_guc.xml:155
@@ -481,15 +481,15 @@ msgstr ""
 
 #. Tag: para
 #: reference_guc.xml:198
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Even if <varname>postgis.enable_outdb_rasters</varname> is True, the GUC "
 "<varname>postgis.gdal_enabled_drivers</varname> determines the accessible "
 "raster formats."
 msgstr ""
-"<varname>postgis.enable_outdb_rasters</varname>がTrueであってでも、GUC "
-"<varname>postgis.enable_outdb_rasters</varname>は、アクセス可能なラスタ書式を"
-"判定します。"
+"<varname>postgis.enable_outdb_rasters</varname>がTRUEであってでも、GUC "
+"<varname>postgis."
+"gdal_enabled_drivers</varname>は、アクセス可能なラスタ書式を判定します。"
 
 #. Tag: para
 #: reference_guc.xml:204
@@ -503,11 +503,12 @@ msgstr ""
 
 #. Tag: para
 #: reference_guc.xml:215
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Set and reset <varname>postgis.enable_outdb_rasters</varname> for current "
 "session"
-msgstr "<varname>postgis.enable_outdb_rasters</varname>の設定とリセット。"
+msgstr "現在のセッションでの<varname>postgis."
+"enable_outdb_rasters</varname>の設定とリセット。"
 
 #. Tag: programlisting
 #: reference_guc.xml:217
@@ -527,13 +528,13 @@ msgstr ""
 #: reference_guc.xml:219
 #, no-c-format
 msgid "Set for specific database"
-msgstr ""
+msgstr "特定のデータベースに対する設定"
 
 #. Tag: programlisting
 #: reference_guc.xml:221
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ALTER DATABASE gisdb SET postgis.enable_outdb_rasters = true;"
-msgstr "ALTER DATABASE mygisdb SET postgis.backend = sfcgal;"
+msgstr "ALTER DATABASE gisdb SET postgis.enable_outdb_rasters = true;"
 
 #. Tag: para
 #: reference_guc.xml:223
@@ -541,7 +542,8 @@ msgstr "ALTER DATABASE mygisdb SET postgis.backend = sfcgal;"
 msgid ""
 "Setting for whole database cluster. You need to reconnect to the database "
 "for changes to take effect."
-msgstr ""
+msgstr "データベースクラスタ全体の設定。変更を有効にするには、データベースに再接続す"
+"る必要があります。"
 
 #. Tag: programlisting
 #: reference_guc.xml:224
@@ -552,22 +554,25 @@ msgid ""
 " --Reloads postgres conf\n"
 "SELECT pg_reload_conf();"
 msgstr ""
+"-- postgres.auto.confへの書き込み\n"
+"ALTER SYSTEM postgis.enable_outdb_rasters = true;\n"
+" --postgres confの再読み込み\n"
+"SELECT pg_reload_conf();"
 
 #. Tag: refname
 #: reference_guc.xml:239
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "postgis.gdal_config_options"
-msgstr "postgis.gdal_datapath"
+msgstr "postgis.gdal_config_options"
 
 #. Tag: refpurpose
 #: reference_guc.xml:240
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A string configuration to set options used when working with an out-db "
 "raster."
-msgstr ""
-"データベース外ラスタのバンドにアクセスできるようにする、真偽型のコンフィギュ"
-"レーションオプション。"
+msgstr "データベース外ラスタを操作する時に使用するオプションを設定するためのコンフィ"
+"ギュレーション。"
 
 #. Tag: para
 #: reference_guc.xml:247
@@ -579,6 +584,11 @@ msgid ""
 "allocates to local data cache, whether to read overviews, and what access "
 "keys to use for remote out-db data sources."
 msgstr ""
+"データベース外ラスタを操作する時に使用するオプションを設定するためのコンフィ"
+"ギュレーション。<ulink url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\""
+">Configuration options</ulink>によって、どれだけGDALがローカルデータキャッシ"
+"ュを確保するか、オーバビューを読むかどうか、リモートのデータベース外データソ"
+"ースを使う際のアクセスキー等を制御します。"
 
 #. Tag: para
 #: reference_guc.xml:251
@@ -588,9 +598,9 @@ msgstr "Availability: 3.2.0"
 
 #. Tag: para
 #: reference_guc.xml:257
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Set <varname>postgis.gdal_vsi_options</varname> for current session:"
-msgstr "<varname>postgis.enable_outdb_rasters</varname>の設定とリセット。"
+msgstr "現在のセッションでの<varname>postgis.gdal_vsi_options</varname>の設定:"
 
 #. Tag: programlisting
 #: reference_guc.xml:259
@@ -599,6 +609,8 @@ msgid ""
 "SET postgis.gdal_config_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx "
 "AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';"
 msgstr ""
+"SET postgis.gdal_config_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx "
+"AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';"
 
 #. Tag: para
 #: reference_guc.xml:261
@@ -608,6 +620,8 @@ msgid ""
 "<emphasis>current transaction</emphasis> using the <varname>LOCAL</varname> "
 "keyword:"
 msgstr ""
+"<varname>LOCAL</varname>キーワードを使う<emphasis>現在のトランザクション</emp"
+"hasis>のための<varname>postgis.gdal_vsi_options</varname>の設定:"
 
 #. Tag: programlisting
 #: reference_guc.xml:262
@@ -616,3 +630,5 @@ msgid ""
 "SET LOCAL postgis.gdal_config_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx "
 "AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';"
 msgstr ""
+"SET LOCAL postgis.gdal_config_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx "
+"AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';"

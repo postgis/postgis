@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-06-14 09:50+0000\n"
+"PO-Revision-Date: 2022-09-08 03:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_trajectoryxml/ja/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.12.2\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: para
 #: reference_trajectory.xml:5
@@ -26,24 +26,27 @@ msgid ""
 "temporal data can be modeled by using relative times (such as the epoch) as "
 "the measure values."
 msgstr ""
+"これらの関数はトラジェクトリで動作します。トラジェクトリは、M値が座標ごとに増"
+"加していく線形ジオメトリです。時空間データはM値を相対時間 "
+"(エポック等)としてモデル化できます。"
 
 #. Tag: title
 #: reference_trajectory.xml:12
 #, no-c-format
 msgid "Trajectory Functions"
-msgstr ""
+msgstr "トラジェクトリ関数"
 
 #. Tag: refname
 #: reference_trajectory.xml:17
 #, no-c-format
 msgid "ST_IsValidTrajectory"
-msgstr ""
+msgstr "ST_IsValidTrajectory"
 
 #. Tag: refpurpose
 #: reference_trajectory.xml:18
 #, no-c-format
 msgid "Tests if the geometry is a valid trajectory."
-msgstr ""
+msgstr "ジオメトリが妥当なトラジェクトリであるかどうかをテストします。"
 
 #. Tag: funcprototype
 #: reference_trajectory.xml:23
@@ -52,13 +55,15 @@ msgid ""
 "<funcdef>boolean <function>ST_IsValidTrajectory</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>line</parameter></paramdef>"
 msgstr ""
+"<funcdef>boolean <function>ST_IsValidTrajectory</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef>"
 
 #. Tag: title
 #: reference_trajectory.xml:31 reference_trajectory.xml:80
 #: reference_trajectory.xml:137 reference_trajectory.xml:191
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "説明"
 
 #. Tag: para
 #: reference_trajectory.xml:32
@@ -68,6 +73,9 @@ msgid ""
 "represented as a <varname>LINESTRING</varname> with measures (M values). The "
 "measure values must increase from each vertex to the next."
 msgstr ""
+"ジオメトリが妥当なトラジェクトリの符号化したものとなっているかをテストします"
+"。妥当なトラジェクトリは、M値 (Measure)を持つ<varname>LINESTRING</varname>で"
+"表現されます。M値は始点から順次増加していかなければなりません。"
 
 #. Tag: para
 #: reference_trajectory.xml:38
@@ -76,6 +84,8 @@ msgid ""
 "Valid trajectories are expected as input to spatio-temporal functions like "
 "<xref linkend=\"ST_ClosestPointOfApproach\"/>"
 msgstr ""
+"<xref linkend=\"ST_ClosestPointOfApproach\""
+"/>等の時空間関数は、妥当なトラジェクトリを入力値として期待します。"
 
 #. Tag: para
 #: reference_trajectory.xml:42 reference_trajectory.xml:97
@@ -96,7 +106,7 @@ msgstr "&Z_support;"
 #: reference_trajectory.xml:154 reference_trajectory.xml:208
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "例"
 
 #. Tag: programlisting
 #: reference_trajectory.xml:49
@@ -117,6 +127,20 @@ msgid ""
 "----------------------\n"
 " f"
 msgstr ""
+"-- 妥当なトラジェクトリ\n"
+"SELECT ST_IsValidTrajectory(ST_MakeLine(\n"
+"  ST_MakePointM(0,0,1),\n"
+"  ST_MakePointM(0,1,2))\n"
+");\n"
+" t\n"
+"\n"
+"-- 不正なトラジェクトリ\n"
+"SELECT ST_IsValidTrajectory(ST_MakeLine(ST_MakePointM(0,0,1), "
+"ST_MakePointM(0,1,0)));\n"
+"NOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)\n"
+" st_isvalidtrajectory\n"
+"----------------------\n"
+" f"
 
 #. Tag: title
 #: reference_trajectory.xml:53 reference_trajectory.xml:107
@@ -129,13 +153,13 @@ msgstr "関連情報"
 #: reference_trajectory.xml:63
 #, no-c-format
 msgid "ST_ClosestPointOfApproach"
-msgstr ""
+msgstr "ST_ClosestPointOfApproach"
 
 #. Tag: refpurpose
 #: reference_trajectory.xml:64
 #, no-c-format
 msgid "Returns a measure at the closest point of approach of two trajectories."
-msgstr ""
+msgstr "二つのトラジェクトリの最接近時の距離を返します。"
 
 #. Tag: funcprototype
 #: reference_trajectory.xml:71
@@ -145,6 +169,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>"
 msgstr ""
+"<funcdef>float8 <function>ST_ClosestPointOfApproach</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_trajectory.xml:82
@@ -152,7 +179,8 @@ msgstr ""
 msgid ""
 "Returns the smallest measure at which points interpolated along the given "
 "trajectories are at the smallest distance."
-msgstr ""
+msgstr "与えられたトラジェクトリに沿って補間された最小距離となる点のM値の最小値を返し"
+"ます。"
 
 #. Tag: para
 #: reference_trajectory.xml:86 reference_trajectory.xml:142
@@ -162,6 +190,8 @@ msgid ""
 "\"ST_IsValidTrajectory\"/>. Null is returned if the trajectories do not "
 "overlap in their M ranges."
 msgstr ""
+"妥当なトラジェクトリは<xref linkend=\"ST_IsValidTrajectory\"/>で確認できます"
+"。トラジェクトリのM値の範囲が重ならない場合にはNULLが返ります。"
 
 #. Tag: para
 #: reference_trajectory.xml:92
@@ -169,7 +199,8 @@ msgstr ""
 msgid ""
 "See <xref linkend=\"ST_LocateAlong\"/> for getting the actual points at the "
 "given measure."
-msgstr ""
+msgstr "与えられたM値における実際の点を得るには<xref linkend=\"ST_LocateAlong\""
+"/>を参照して下さい。"
 
 #. Tag: programlisting
 #: reference_trajectory.xml:103
@@ -201,6 +232,30 @@ msgid ""
 "-------------------------------+------------------\n"
 " 2015-05-26 10:45:31.034483+02 | 1.96036833151395"
 msgstr ""
+"-- 10:00から11:00まで移動する二つの物体の最接近する時刻を返します\n"
+"WITH inp AS ( SELECT\n"
+"  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,\n"
+"    extract(epoch from '2015-05-26 10:00'::timestamptz),\n"
+"    extract(epoch from '2015-05-26 11:00'::timestamptz)\n"
+"  ) a,\n"
+"  ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,\n"
+"    extract(epoch from '2015-05-26 10:00'::timestamptz),\n"
+"    extract(epoch from '2015-05-26 11:00'::timestamptz)\n"
+"  ) b\n"
+"), cpa AS (\n"
+"  SELECT ST_ClosestPointOfApproach(a,b) m FROM inp\n"
+"), points AS (\n"
+"  SELECT ST_Force3DZ(ST_GeometryN(ST_LocateAlong(a,m),1)) pa,\n"
+"         ST_Force3DZ(ST_GeometryN(ST_LocateAlong(b,m),1)) pb\n"
+"  FROM inp, cpa\n"
+")\n"
+"SELECT to_timestamp(m) t,\n"
+"       ST_Distance(pa,pb) distance\n"
+"FROM points, cpa;\n"
+"\n"
+"               t               |     distance\n"
+"-------------------------------+------------------\n"
+" 2015-05-26 10:45:31.034483+02 | 1.96036833151395"
 
 #. Tag: para
 #: reference_trajectory.xml:108
@@ -209,12 +264,14 @@ msgid ""
 ", <xref linkend=\"ST_DistanceCPA\"/>, <xref linkend=\"ST_LocateAlong\"/>, "
 "<xref linkend=\"ST_AddMeasure\"/>"
 msgstr ""
+", <xref linkend=\"ST_DistanceCPA\"/>, <xref linkend=\"ST_LocateAlong\"/>, "
+"<xref linkend=\"ST_AddMeasure\"/>"
 
 #. Tag: refname
 #: reference_trajectory.xml:120
 #, no-c-format
 msgid "ST_DistanceCPA"
-msgstr ""
+msgstr "ST_DistanceCPA"
 
 #. Tag: refpurpose
 #: reference_trajectory.xml:121
@@ -222,7 +279,7 @@ msgstr ""
 msgid ""
 "Returns the distance between the closest point of approach of two "
 "trajectories."
-msgstr ""
+msgstr "二つのトラジェクトリの最接近する時の距離を返します。"
 
 #. Tag: funcprototype
 #: reference_trajectory.xml:128
@@ -232,13 +289,16 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>"
 msgstr ""
+"<funcdef>float8 <function>ST_DistanceCPA</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_trajectory.xml:139
 #, no-c-format
 msgid ""
 "Returns the minimum distance two moving objects have ever been each other."
-msgstr ""
+msgstr "二つの移動体の相手までの距離の最小値を返します。"
 
 #. Tag: programlisting
 #: reference_trajectory.xml:155
@@ -262,6 +322,22 @@ msgid ""
 "------------------\n"
 " 1.96036833151395"
 msgstr ""
+"-- 10:00から11:00まで移動する二つの物体の最短距離を返します\n"
+"WITH inp AS ( SELECT\n"
+"  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,\n"
+"    extract(epoch from '2015-05-26 10:00'::timestamptz),\n"
+"    extract(epoch from '2015-05-26 11:00'::timestamptz)\n"
+"  ) a,\n"
+"  ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,\n"
+"    extract(epoch from '2015-05-26 10:00'::timestamptz),\n"
+"    extract(epoch from '2015-05-26 11:00'::timestamptz)\n"
+"  ) b\n"
+")\n"
+"SELECT ST_DistanceCPA(a,b) distance FROM inp;\n"
+"\n"
+"     distance\n"
+"------------------\n"
+" 1.96036833151395"
 
 #. Tag: para
 #: reference_trajectory.xml:160
@@ -270,12 +346,14 @@ msgid ""
 ", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
 "\"ST_AddMeasure\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
+"\"ST_AddMeasure\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
 
 #. Tag: refname
 #: reference_trajectory.xml:172
 #, no-c-format
 msgid "ST_CPAWithin"
-msgstr ""
+msgstr "ST_CPAWithin"
 
 #. Tag: refpurpose
 #: reference_trajectory.xml:173
@@ -283,7 +361,8 @@ msgstr ""
 msgid ""
 "Tests if the closest point of approach of two trajectories is within the "
 "specified distance."
-msgstr ""
+msgstr "二つのトラジェクトリの最接近時の距離が指定距離内であるかどうかをテストします"
+"。"
 
 #. Tag: funcprototype
 #: reference_trajectory.xml:181
@@ -294,6 +373,10 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef> "
 "<paramdef><type>float8 </type> <parameter>dist</parameter></paramdef>"
 msgstr ""
+"<funcdef>boolean <function>ST_CPAWithin</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef> "
+"<paramdef><type>float8 </type> <parameter>dist</parameter></paramdef>"
 
 #. Tag: para
 #: reference_trajectory.xml:193
@@ -301,7 +384,7 @@ msgstr ""
 msgid ""
 "Tests whether two moving objects have ever been closer than the specified "
 "distance."
-msgstr ""
+msgstr "二つの移動オブジェクトが指定距離より近づいているかどうかをテストします。"
 
 #. Tag: para
 #: reference_trajectory.xml:196
@@ -311,6 +394,9 @@ msgid ""
 "\"ST_IsValidTrajectory\"/>. False is returned if the trajectories do not "
 "overlap in their M ranges."
 msgstr ""
+"入力は<xref linkend=\"ST_IsValidTrajectory\"/>で確認された妥当なトラジェクト"
+"リでなければなりません。トラジェクトリのM値の範囲が重ならない場合にはFALSEを"
+"返します。"
 
 #. Tag: programlisting
 #: reference_trajectory.xml:209
@@ -332,6 +418,21 @@ msgid ""
 "--------------+------------------\n"
 " t            | 1.96521473776207"
 msgstr ""
+"WITH inp AS ( SELECT\n"
+"  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,\n"
+"    extract(epoch from '2015-05-26 10:00'::timestamptz),\n"
+"    extract(epoch from '2015-05-26 11:00'::timestamptz)\n"
+"  ) a,\n"
+"  ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,\n"
+"    extract(epoch from '2015-05-26 10:00'::timestamptz),\n"
+"    extract(epoch from '2015-05-26 11:00'::timestamptz)\n"
+"  ) b\n"
+")\n"
+"SELECT ST_CPAWithin(a,b,2), ST_DistanceCPA(a,b) distance FROM inp;\n"
+"\n"
+" st_cpawithin |     distance\n"
+"--------------+------------------\n"
+" t            | 1.96521473776207"
 
 #. Tag: para
 #: reference_trajectory.xml:215
@@ -340,3 +441,5 @@ msgid ""
 ", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
 "\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
+"\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"

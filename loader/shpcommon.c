@@ -13,6 +13,10 @@
 
 /* This file contains functions that are shared between the loader and dumper */
 
+#ifndef _GNU_SOURCE
+# define _GNU_SOURCE
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

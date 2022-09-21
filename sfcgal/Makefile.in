@@ -122,8 +122,10 @@ $(SQL_OBJS): ../postgis_config.h ../postgis_revision.h
 # and adding the version number
 # replace @extschema@. with nothing, this is only used as placeholder for extension install
 %.sql: %.sql.in
-	$(SQLPP) -I@top_builddir@/postgis $< | grep -v '^#' | \
+	$(SQLPP) -I@top_builddir@/postgis $< > $@.tmp
+	grep -v '^#' $@.tmp | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g;s'@extschema@\.''g" > $@
+	rm $@.tmp
 
 sfcgal_upgrade.sql.in: sfcgal.sql ../utils/create_upgrade.pl
 	$(PERL) @top_srcdir@/utils/create_upgrade.pl $< > $@
@@ -142,6 +144,7 @@ uninstall_sfcgal.sql: sfcgal.sql ../utils/create_undef.pl
 distclean: clean
 	rm -f Makefile
 	rm -f regress/Makefile
+	rm -f regress/tests.mk
 
 check-unit:
 

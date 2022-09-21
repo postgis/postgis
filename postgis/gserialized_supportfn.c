@@ -21,8 +21,6 @@
 
 #include "../postgis_config.h"
 
-#if POSTGIS_PGSQL_VERSION >= 120
-
 /* PostgreSQL */
 #include "postgres.h"
 #include "funcapi.h"
@@ -542,5 +540,3 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(ret);
 }
-
-#endif /* POSTGIS_PGSQL_VERSION >= 120 */

@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-25 19:29+0000\n"
-"PO-Revision-Date: 2022-03-11 05:52+0000\n"
+"PO-Revision-Date: 2022-09-19 04:04+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "administrationxml/fr/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: title
 #: administration.xml:3
@@ -144,7 +144,7 @@ msgstr ""
 #: administration.xml:39
 #, no-c-format
 msgid "Creating spatial databases"
-msgstr ""
+msgstr "Création de bases de données spatiales"
 
 #. Tag: title
 #: administration.xml:42

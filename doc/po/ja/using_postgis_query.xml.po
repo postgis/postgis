@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-05-03 02:58+0000\n"
-"PO-Revision-Date: 2022-04-02 01:21+0000\n"
+"PO-Revision-Date: 2022-09-12 12:43+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "using_postgis_queryxml/ja/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: title
 #: using_postgis_query.xml:3
@@ -56,7 +56,7 @@ msgstr ""
 
 #. Tag: title
 #: using_postgis_query.xml:21
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Dimensionally Extended 9-Intersection Model"
 msgstr "Dimensionally Extended 9-Intersection Model"
 
@@ -103,12 +103,15 @@ msgid ""
 "is the two endpoints. For <varname>POLYGON</varname>s, the boundary is the "
 "linework of the exterior and interior rings."
 msgstr ""
+"ジオメトリの境界は、一次元低いジオメトリです。<varname>POINT</varname>では、"
+"次元が0になり、境界は空集合です。<varname>LINESTRING</varname>の境界は二つの"
+"端点です。<varname>POLYGON</varname>の境界は、外環と内環の線です。"
 
 #. Tag: glossterm
 #: using_postgis_query.xml:52
 #, no-c-format
 msgid "<glossterm>Interior</glossterm>"
-msgstr ""
+msgstr "<glossterm>内部 (Interior)</glossterm>"
 
 #. Tag: para
 #: using_postgis_query.xml:55
@@ -120,12 +123,16 @@ msgid ""
 "between the endpoints. For <varname>POLYGON</varname>s, the interior is the "
 "areal surface inside the polygon."
 msgstr ""
+"ジオメトリの内部は、ジオメトリの境界以外のポイントです。<varname>POINT</varna"
+"me>では、内部はポイント自体です。<varname>LINESTRING</varname>の内部は端点の"
+"間のポイントの集合です。<varname>POLYGON</varname>の内部は、ポリゴン内部の面"
+"です。"
 
 #. Tag: glossterm
 #: using_postgis_query.xml:66
 #, no-c-format
 msgid "<glossterm>Exterior</glossterm>"
-msgstr ""
+msgstr "<glossterm>外部 (Exterior)</glossterm>"
 
 #. Tag: para
 #: using_postgis_query.xml:69
@@ -135,6 +142,9 @@ msgid ""
 "embedded; in other words, all points not in the interior or on the boundary "
 "of the geometry. It is a 2-dimensional non-closed surface."
 msgstr ""
+"ジオメトリの外部はジオメトリが組み込まれた空間の残りです。言い換えると、ジオ"
+"メトリの内部にも境界にもない点の全てです。これは2次元の閉じていない面になりま"
+"す。"
 
 #. Tag: para
 #: using_postgis_query.xml:78
@@ -147,6 +157,10 @@ msgid ""
 "dimensions can be formally represented in a 3x3 <emphasis role=\"bold"
 "\">intersection matrix</emphasis>."
 msgstr ""
+"<ulink url=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-"
+"Intersection Model</ulink> (DE-9IM)は、二つのジオメトリの空間関係を九つの交差"
+"の次元を指定することで記述します。交差次元は3×3の<emphasis role=\"bold\""
+">交差行列</emphasis>で正式に表現することができます。"
 
 #. Tag: para
 #: using_postgis_query.xml:85
@@ -159,30 +173,35 @@ msgid ""
 "dimension of a set <emphasis>s</emphasis> with the domain of <literal>{0,1,2,"
 "F}</literal>:"
 msgstr ""
+"ジオメトリ<emphasis>g</emphasis>に対する<emphasis>内部</emphasis>、<emphasis>"
+"境界</emphasis>、<emphasis>外部</emphasis>は<emphasis>I(g)</emphasis>、<empha"
+"sis>B(g)</emphasis>、<emphasis>E(g)</emphasis>と表記します。また、<emphasis>d"
+"im(s)</emphasis>は<emphasis>s</emphasis>の集合を<literal>{0,1,2,F}</literal>"
+"の値で示すます。"
 
 #. Tag: para
 #: using_postgis_query.xml:97
 #, no-c-format
 msgid "<literal>0</literal> =&gt; point"
-msgstr ""
+msgstr "<literal>0</literal> =&gt; 点"
 
 #. Tag: para
 #: using_postgis_query.xml:101
 #, no-c-format
 msgid "<literal>1</literal> =&gt; line"
-msgstr ""
+msgstr "<literal>1</literal> =&gt; 線"
 
 #. Tag: para
 #: using_postgis_query.xml:105
 #, no-c-format
 msgid "<literal>2</literal> =&gt; area"
-msgstr ""
+msgstr "<literal>2</literal> =&gt; 面"
 
 #. Tag: para
 #: using_postgis_query.xml:109
 #, no-c-format
 msgid "<literal>F</literal> =&gt; empty set"
-msgstr ""
+msgstr "<literal>F</literal> =&gt; 空集合"
 
 #. Tag: para
 #: using_postgis_query.xml:114
@@ -191,87 +210,89 @@ msgid ""
 "Using this notation, the intersection matrix for two geometries <emphasis>a</"
 "emphasis> and <emphasis>b</emphasis> is:"
 msgstr ""
+"この表記法を使うと、二つのジオメトリ<emphasis>a</emphasis>と<emphasis>b</emph"
+"asis>の交差行列は次の通りです。"
 
 #. Tag: emphasis
 #: using_postgis_query.xml:123 using_postgis_query.xml:131
 #: using_postgis_query.xml:182 using_postgis_query.xml:195
 #, no-c-format
 msgid "<emphasis role=\"bold\">Interior</emphasis>"
-msgstr ""
+msgstr "<emphasis role=\"bold\">内部 (Interior)</emphasis>"
 
 #. Tag: emphasis
 #: using_postgis_query.xml:124 using_postgis_query.xml:137
 #: using_postgis_query.xml:185 using_postgis_query.xml:218
 #, no-c-format
 msgid "<emphasis role=\"bold\">Boundary</emphasis>"
-msgstr ""
+msgstr "<emphasis role=\"bold\">境界 (Boundary)</emphasis>"
 
 #. Tag: emphasis
 #: using_postgis_query.xml:125 using_postgis_query.xml:143
 #: using_postgis_query.xml:188 using_postgis_query.xml:241
 #, no-c-format
 msgid "<emphasis role=\"bold\">Exterior</emphasis>"
-msgstr ""
+msgstr "<emphasis role=\"bold\">外部 (Exterior)</emphasis>"
 
 #. Tag: emphasis
 #: using_postgis_query.xml:132
 #, no-c-format
 msgid "dim( I(a) ∩ I(b) )"
-msgstr ""
+msgstr "dim( I(a) ∩ I(b) )"
 
 #. Tag: emphasis
 #: using_postgis_query.xml:133
 #, no-c-format
 msgid "dim( I(a) ∩ B(b) )"
-msgstr ""
+msgstr "dim( I(a) ∩ B(b) )"
 
 #. Tag: emphasis
 #: using_postgis_query.xml:134
 #, no-c-format
 msgid "dim( I(a) ∩ E(b) )"
-msgstr ""
+msgstr "dim( I(a) ∩ E(b) )"
 
 #. Tag: emphasis
 #: using_postgis_query.xml:138
 #, no-c-format
 msgid "dim( B(a) ∩ I(b) )"
-msgstr ""
+msgstr "dim( B(a) ∩ I(b) )"
 
 #. Tag: emphasis
 #: using_postgis_query.xml:139
 #, no-c-format
 msgid "dim( B(a) ∩ B(b) )"
-msgstr ""
+msgstr "dim( B(a) ∩ B(b) )"
 
 #. Tag: emphasis
 #: using_postgis_query.xml:140
 #, no-c-format
 msgid "dim( B(a) ∩ E(b) )"
-msgstr ""
+msgstr "dim( B(a) ∩ E(b) )"
 
 #. Tag: emphasis
 #: using_postgis_query.xml:144
 #, no-c-format
 msgid "dim( E(a) ∩ I(b) )"
-msgstr ""
+msgstr "dim( E(a) ∩ I(b) )"
 
 #. Tag: emphasis
 #: using_postgis_query.xml:145
 #, no-c-format
 msgid "dim( E(a) ∩ B(b) )"
-msgstr ""
+msgstr "dim( E(a) ∩ B(b) )"
 
 #. Tag: emphasis
 #: using_postgis_query.xml:146
 #, no-c-format
 msgid "dim( E(a) ∩ E(b) )"
-msgstr ""
+msgstr "dim( E(a) ∩ E(b) )"
 
 #. Tag: para
 #: using_postgis_query.xml:153
 #, no-c-format
 msgid "Visually, for two overlapping polygonal geometries, this looks like:"
-msgstr ""
+msgstr "二つのオーバラップするポリゴンについて可視化すると、次のようになります。"
 
 #. Tag: para
 #: using_postgis_query.xml:199
@@ -280,6 +301,8 @@ msgid ""
 "<emphasis>dim( I(a) ∩ I(b) ) = </emphasis><emphasis role=\"bold\">2</"
 "emphasis>"
 msgstr ""
+"<emphasis>dim( I(a) ∩ I(b) ) = </emphasis><emphasis role=\"bold\""
+">2</emphasis>"
 
 #. Tag: para
 #: using_postgis_query.xml:205
@@ -287,6 +310,7 @@ msgstr ""
 msgid ""
 "<emphasis>dim( I(a) ∩ B(b) = </emphasis><emphasis role=\"bold\">1</emphasis>"
 msgstr ""
+"<emphasis>dim( I(a) ∩ B(b) = </emphasis><emphasis role=\"bold\">1</emphasis>"
 
 #. Tag: para
 #: using_postgis_query.xml:211
@@ -295,6 +319,8 @@ msgid ""
 "<emphasis>dim( I(a) ∩ E(b) ) = </emphasis><emphasis role=\"bold\">2</"
 "emphasis>"
 msgstr ""
+"<emphasis>dim( I(a) ∩ E(b) ) = </emphasis><emphasis role=\"bold\""
+">2</emphasis>"
 
 #. Tag: para
 #: using_postgis_query.xml:222
@@ -303,6 +329,8 @@ msgid ""
 "<emphasis>dim( B(a) ∩ I(b) ) = </emphasis><emphasis role=\"bold\">1</"
 "emphasis>"
 msgstr ""
+"<emphasis>dim( B(a) ∩ I(b) ) = </emphasis><emphasis role=\"bold\""
+">1</emphasis>"
 
 #. Tag: para
 #: using_postgis_query.xml:228
@@ -311,6 +339,8 @@ msgid ""
 "<emphasis>dim( B(a) ∩ B(b) ) = </emphasis><emphasis role=\"bold\">0</"
 "emphasis>"
 msgstr ""
+"<emphasis>dim( B(a) ∩ B(b) ) = </emphasis><emphasis role=\"bold\""
+">0</emphasis>"
 
 #. Tag: para
 #: using_postgis_query.xml:234
@@ -319,6 +349,8 @@ msgid ""
 "<emphasis>dim( B(a) ∩ E(b) ) = </emphasis><emphasis role=\"bold\">1</"
 "emphasis>"
 msgstr ""
+"<emphasis>dim( B(a) ∩ E(b) ) = </emphasis><emphasis role=\"bold\""
+">1</emphasis>"
 
 #. Tag: para
 #: using_postgis_query.xml:245
@@ -327,6 +359,8 @@ msgid ""
 "<emphasis>dim( E(a) ∩ I(b) ) = </emphasis><emphasis role=\"bold\">2</"
 "emphasis>"
 msgstr ""
+"<emphasis>dim( E(a) ∩ I(b) ) = </emphasis><emphasis role=\"bold\""
+">2</emphasis>"
 
 #. Tag: para
 #: using_postgis_query.xml:251
@@ -335,6 +369,8 @@ msgid ""
 "<emphasis>dim( E(a) ∩ B(b) ) = </emphasis><emphasis role=\"bold\">1</"
 "emphasis>"
 msgstr ""
+"<emphasis>dim( E(a) ∩ B(b) ) = </emphasis><emphasis role=\"bold\""
+">1</emphasis>"
 
 #. Tag: para
 #: using_postgis_query.xml:257
@@ -342,6 +378,7 @@ msgstr ""
 msgid ""
 "<emphasis>dim( E(a) ∩ E(b) = </emphasis><emphasis role=\"bold\">2</emphasis>"
 msgstr ""
+"<emphasis>dim( E(a) ∩ E(b) = </emphasis><emphasis role=\"bold\">2</emphasis>"
 
 #. Tag: para
 #: using_postgis_query.xml:269
@@ -351,12 +388,14 @@ msgid ""
 "represented as the text string '<emphasis role=\"bold\">212101212</"
 "emphasis>'."
 msgstr ""
+"左から右に、上から下に読みます。交差行列の文字列表現は'<emphasis role=\"bold"
+"\">212101212</emphasis>'です。"
 
 #. Tag: para
 #: using_postgis_query.xml:272
 #, no-c-format
 msgid "For more information, refer to:"
-msgstr ""
+msgstr "詳細情報については次をご覧下さい。"
 
 #. Tag: para
 #: using_postgis_query.xml:276
@@ -366,24 +405,26 @@ msgid ""
 "Features Implementation Specification for SQL</ulink> (version 1.1, section "
 "2.1.13.2)"
 msgstr ""
+"<ulink url=\"http://www.opengeospatial.org/standards/sfs\">OpenGIS Simple "
+"Features Implementation Specification for SQL</ulink> (1.1版, 2.1.13.2節)"
 
 #. Tag: ulink
 #: using_postgis_query.xml:281
 #, no-c-format
 msgid "Wikipedia: Dimensionally Extended Nine-Intersection Model (DE-9IM)"
-msgstr ""
+msgstr "Wikipedia: Dimensionally Extended Nine-Intersection Model (DE-9IM)"
 
 #. Tag: ulink
 #: using_postgis_query.xml:285
 #, no-c-format
 msgid "GeoTools: Point Set Theory and the DE-9IM Matrix"
-msgstr ""
+msgstr "GeoTools: Point Set Theory and the DE-9IM Matrix"
 
 #. Tag: title
 #: using_postgis_query.xml:292
 #, no-c-format
 msgid "Named Spatial Relationships"
-msgstr ""
+msgstr "名前付き空間関係"
 
 #. Tag: para
 #: using_postgis_query.xml:294
@@ -399,6 +440,15 @@ msgid ""
 "\"ST_Covers\"/>, <xref linkend=\"ST_CoveredBy\"/>, and <xref linkend="
 "\"ST_ContainsProperly\"/>."
 msgstr ""
+"共通の空間関係を簡単に決定できるように、PGC "
+"SFSは<emphasis>名前付き空間関係述語</emphasis>の集合を定義しています。"
+"PostGISでは<xref linkend=\"ST_Contains\"/>、<xref linkend=\"ST_Crosses\"/>、"
+"<xref linkend=\"ST_Disjoint\"/>、<xref linkend=\"ST_Equals\"/>、<xref "
+"linkend=\"ST_Intersects\"/>、<xref linkend=\"ST_Overlaps\"/>、<xref linkend="
+"\"ST_Touches\"/>、<xref linkend=\"ST_Within\"/>が提供されています。"
+"非標準の空間関係述語<xref linkend=\"ST_Covers\"/>、<xref linkend="
+"\"ST_CoveredBy\"/>、<xref linkend=\"ST_ContainsProperly\""
+"/>も定義されています。"
 
 #. Tag: para
 #: using_postgis_query.xml:305
@@ -409,6 +459,10 @@ msgid ""
 "a spatial index if one is available, so there is no need to use the bounding "
 "box operator <code>&amp;&amp;</code> as well. For example:"
 msgstr ""
+"空間述語は通常SQLの<code>WHERE</code>節や<code>JOIN</code>節内で条件に使用さ"
+"れます。名前付き空間述語は、インデックスが有効なら自動的に空間インデックスを"
+"使うので、バウンディングボックス演算子<code>&amp;&amp;</code>を使う必要はあり"
+"ません。例えば次のようになります。"
 
 #. Tag: programlisting
 #: using_postgis_query.xml:311
@@ -417,6 +471,8 @@ msgid ""
 "SELECT city.name, state.name, city.geom\n"
 "FROM city JOIN state ON ST_Intersects(city.geom, state.geom);"
 msgstr ""
+"SELECT city.name, state.name, city.geom\n"
+"FROM city JOIN state ON ST_Intersects(city.geom, state.geom);"
 
 #. Tag: para
 #: using_postgis_query.xml:313
@@ -426,12 +482,14 @@ msgid ""
 "workshops/postgis-intro/spatial_relationships.html\">PostGIS Workshop.</"
 "ulink>"
 msgstr ""
+"詳細や図については<ulink url=\"https://postgis.net/workshops/postgis-intro/"
+"spatial_relationships.html\">PostGIS Workshop</ulink>をご覧下さい。"
 
 #. Tag: title
 #: using_postgis_query.xml:319
 #, no-c-format
 msgid "General Spatial Relationships"
-msgstr ""
+msgstr "一般的な空間関係"
 
 #. Tag: para
 #: using_postgis_query.xml:321
@@ -439,7 +497,8 @@ msgstr ""
 msgid ""
 "In some cases the named spatial relationships are insufficient to provide a "
 "desired spatial filter condition."
-msgstr ""
+msgstr "名前付き空間関係が求める空間フィルタ条件を与えるのに不十分となる場合がありま"
+"す。"
 
 #. Tag: para
 #: using_postgis_query.xml:331
@@ -452,6 +511,11 @@ msgid ""
 "filter, since for linear features it returns <varname>true</varname> only "
 "where they cross at a point."
 msgstr ""
+"例えば、道路ネットワークを表現する線データセットを考えてみます。"
+"点でなく線で交差する全ての道路の辺を識別しなければならないことがあります "
+"(ビジネスルールの検証のためならありえます)。この場合、<xref linkend="
+"\"ST_Crosses\"/>では、点で交差する場合しか<varname>true</varname>を返さないの"
+"で、必要な空間フィルタになりません。"
 
 #. Tag: para
 #: using_postgis_query.xml:339
@@ -465,12 +529,20 @@ msgid ""
 "<varname>GEOMETRYCOLLECTION</varname>s of <varname>[MULTI]POINT</varname>s, "
 "<varname>[MULTI]LINESTRING</varname>s, etc.)."
 msgstr ""
+"2ステップ解決法を示します。まず、"
+"空間的にインタセクトしている同路線の二本を抜き出し (<xref linkend="
+"\"ST_Intersects\"/>)、実際にインタセクトしている部分を計算 (<xref linkend="
+"\"ST_Intersection\"/>)します。次いで、インタセクトしている部分の<xref "
+"linkend=\"ST_GeometryType\"/>が<varname>LINESTRING</varname>' "
+"かどうかを確認します (<varname>[MULTI]POINT</varname>、<varname>[MULTI]LINEST"
+"RING</varname>等の<varname>GEOMETRYCOLLECTION</varname>を返す場合に適切に処理"
+"します)。"
 
 #. Tag: para
 #: using_postgis_query.xml:348
 #, no-c-format
 msgid "Clearly, a simpler and faster solution is desirable."
-msgstr ""
+msgstr "明らかに、より単純でより速い解法が望ましいです。"
 
 #. Tag: para
 #: using_postgis_query.xml:360
@@ -483,24 +555,28 @@ msgid ""
 "is within or on the boundary of the lake. It is possible to use a "
 "combination of spatial predicates to find the required features:"
 msgstr ""
+"二つ目の例では、湖の境界とインタセクトし、かつ終端が岸に上がっている波止場を"
+"見つけます。言い換えると、波止場が湖に含まれるが完全には含まれず、湖の境界線"
+"とインタセクトして、波止場の終端が確実に湖内または境界にある場合を指します。"
+"空間述語を併用すると求める地物を見つけることができます。"
 
 #. Tag: para
 #: using_postgis_query.xml:371
 #, no-c-format
 msgid "(lake, wharf) = TRUE"
-msgstr ""
+msgstr "(lake, wharf) = TRUE"
 
 #. Tag: para
 #: using_postgis_query.xml:375
 #, no-c-format
 msgid "(lake, wharf) = FALSE"
-msgstr ""
+msgstr "(lake, wharf) = FALSE"
 
 #. Tag: para
 #: using_postgis_query.xml:379
 #, no-c-format
 msgid "(<xref linkend=\"ST_Intersection\"/>(wharf, lake)) = 'LINESTRING'"
-msgstr ""
+msgstr "(<xref linkend=\"ST_Intersection\"/>(wharf, lake)) = 'LINESTRING'"
 
 #. Tag: para
 #: using_postgis_query.xml:384
@@ -510,12 +586,15 @@ msgid ""
 "linkend=\"ST_Boundary\"/>(wharf), <xref linkend=\"ST_Boundary\"/>(lake)))) = "
 "1"
 msgstr ""
+"(<xref linkend=\"ST_Multi\"/>(<xref linkend=\"ST_Intersection\"/>(<xref "
+"linkend=\"ST_Boundary\"/>(wharf), <xref linkend=\"ST_Boundary\"/>(lake)))) = "
+"1"
 
 #. Tag: para
 #: using_postgis_query.xml:387
 #, no-c-format
 msgid "... but needless to say, this is quite complicated."
-msgstr ""
+msgstr "… 言うまでもないですが非常に複雑ですね。"
 
 #. Tag: para
 #: using_postgis_query.xml:395
@@ -525,6 +604,9 @@ msgid ""
 "matrix. PostGIS provides the <xref linkend=\"ST_Relate\"/> function to do "
 "this:"
 msgstr ""
+"この要件は完全なDE-9IM交差行列の計算で満たすことができます。PostGISは、"
+"これを行う<xref linkend=\"ST_Relate\""
+"/>関数を提供しています。次のようにします。"
 
 #. Tag: programlisting
 #: using_postgis_query.xml:400
@@ -536,6 +618,11 @@ msgid ""
 "-----------\n"
 "1010F0212"
 msgstr ""
+"SELECT ST_Relate( 'LINESTRING (1 1, 5 5)',\n"
+"                  'POLYGON ((3 3, 3 7, 7 7, 7 3, 3 3))' );\n"
+"st_relate\n"
+"-----------\n"
+"1010F0212"
 
 #. Tag: para
 #: using_postgis_query.xml:402
@@ -546,6 +633,9 @@ msgid ""
 "representation augmented with the additional symbols <literal>{T,*}</"
 "literal>:"
 msgstr ""
+"特定の空間関係をテストするには、<emphasis role=\"bold\">交差行列パターン</emp"
+"hasis>を使います。これは、追加シンボル<literal>{T,*}</literal>で拡張された行"
+"列表現です。"
 
 #. Tag: para
 #: using_postgis_query.xml:410
@@ -554,12 +644,14 @@ msgid ""
 "<literal>T</literal> =&gt; intersection dimension is non-empty; i.e. is in "
 "<literal>{0,1,2}</literal>"
 msgstr ""
+"<literal>T</literal> =&gt; インタセクションの次元は空ではないという意味です。"
+"すなわち<literal>{0,1,2}</literal>のいずれかです。"
 
 #. Tag: para
 #: using_postgis_query.xml:415
 #, no-c-format
 msgid "<literal>*</literal> =&gt; don't care"
-msgstr ""
+msgstr "<literal>*</literal> =&gt; 何でも良い"
 
 #. Tag: para
 #: using_postgis_query.xml:419
@@ -572,6 +664,11 @@ msgid ""
 "matrix pattern specifying two lines intersecting in a line is '<emphasis "
 "role=\"bold\">1*1***1**</emphasis>':"
 msgstr ""
+"交差行列パターンを使って、特定の空間関係の評価がより簡潔な方法で可能です。"
+"交差行列パターンのテストに<xref linkend=\"ST_Relate\"/>と<xref linkend="
+"\"ST_RelateMatch\"/>を使うことができます。上に挙げた一つ目の例では、"
+"二つのラインがライン内部でインタセクトする交差行列パターンは'<emphasis role="
+"\"bold\">1*1***1**</emphasis>'となります。"
 
 #. Tag: programlisting
 #: using_postgis_query.xml:427
@@ -584,6 +681,12 @@ msgid ""
 "      AND a.geom &amp;&amp; b.geom\n"
 "      AND ST_Relate(a.geom, b.geom, '1*1***1**');"
 msgstr ""
+"-- ライン内でインタセクトする道路区間を見つける\n"
+"SELECT a.id\n"
+"FROM roads a, roads b\n"
+"WHERE a.id != b.id\n"
+"      AND a.geom &amp;&amp; b.geom\n"
+"      AND ST_Relate(a.geom, b.geom, '1*1***1**');"
 
 #. Tag: para
 #: using_postgis_query.xml:429
@@ -593,6 +696,9 @@ msgid ""
 "partly inside and partly outside a polygon is '<emphasis role=\"bold"
 "\">102101FF2</emphasis>':"
 msgstr ""
+"二つ目の例です。一本のラインが部分的にポリゴン内部とポリゴン外部とにある場合"
+"の交差行列パターンは '<emphasis role=\"bold\""
+">102101FF2</emphasis>'となります。"
 
 #. Tag: programlisting
 #: using_postgis_query.xml:433
@@ -604,12 +710,17 @@ msgid ""
 "WHERE a.geom &amp;&amp; b.geom\n"
 "      AND ST_Relate(a.geom, b.geom, '102101FF2');"
 msgstr ""
+"-- 一部が湖の水涯線上にある波止場を見つける\n"
+"SELECT a.lake_id, b.wharf_id\n"
+"FROM lakes a, wharfs b\n"
+"WHERE a.geom &amp;&amp; b.geom\n"
+"      AND ST_Relate(a.geom, b.geom, '102101FF2');"
 
 #. Tag: title
 #: using_postgis_query.xml:439
 #, no-c-format
 msgid "Using Spatial Indexes"
-msgstr ""
+msgstr "空間インデックスを使う"
 
 #. Tag: para
 #: using_postgis_query.xml:441
@@ -621,6 +732,10 @@ msgid ""
 "aware function must be used in a <code>WHERE</code> or <code>ON</code> "
 "clause of the query."
 msgstr ""
+"空間条件を使用するクエリを構築する時、最良の効果を得るには、"
+"空間インデックスが存在する場合に (<xref linkend=\"build-indexes\"/>参照)これ"
+"を確実に使用することが重要です。そのためには、<code>WHERE</code>節や<code>ON<"
+"/code>節で、空間演算子またはインデックス対応関数を使用しなければなりません。"
 
 #. Tag: para
 #: using_postgis_query.xml:447
@@ -633,6 +748,11 @@ msgid ""
 "\"geometry_distance_knn\"/>; see <xref linkend=\"operators-distance\"/> for "
 "the full list.)"
 msgstr ""
+"空間演算子には、バウンディングボックス演算子 (最もよく使われるのは<xref "
+"linkend=\"geometry_overlaps\"/>です。<xref linkend=\"operators-bbox\""
+"/>参照)、および近傍クエリで使用される距離演算子 (最もよく使われるのは<xref "
+"linkend=\"geometry_distance_knn\"/>です。<xref linkend=\"operators-distance\""
+"/>参照)が含まれます。"
 
 #. Tag: para
 #: using_postgis_query.xml:455
@@ -649,6 +769,16 @@ msgid ""
 "<xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DFullyWithin\"/>, <xref "
 "linkend=\"ST_3DDFullyWithin\"/>, and <xref linkend=\"ST_3DDWithin\"/> .)"
 msgstr ""
+"インデックス対応関数は、自動的にバウンディングボックス演算子を空間条件に追加"
+"します。インデックス対応関数は空間関係述語を含みます。空間関係述語には、"
+"<xref linkend=\"ST_Contains\"/>, <xref linkend=\"ST_ContainsProperly\"/>, "
+"<xref linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Covers\"/>, <xref "
+"linkend=\"ST_Crosses\"/>, <xref linkend=\"ST_Intersects\"/>, <xref linkend="
+"\"ST_Overlaps\"/>, <xref linkend=\"ST_Touches\"/>, <xref linkend=\"ST_Within"
+"\"/>, <xref linkend=\"ST_Within\"/>, <xref linkend=\"ST_3DIntersects\""
+"/>があり、距離述語には<xref linkend=\"ST_DWithin\"/>, <xref linkend="
+"\"ST_DFullyWithin\"/>, <xref linkend=\"ST_3DDFullyWithin\"/>, <xref linkend="
+"\"ST_3DDWithin\"/> があります。"
 
 #. Tag: para
 #: using_postgis_query.xml:476
@@ -658,6 +788,9 @@ msgid ""
 "emphasis> use indexes to optimize their operation. For example, the "
 "following query would be quite slow on a large table:"
 msgstr ""
+"<xref linkend=\"ST_Distance\"/>といった関数は、演算の最適化のためにはインデッ"
+"クスを<emphasis>使用しません</emphasis>。例えば、次のクエリは、大きなテーブル"
+"では非常に遅くなります。"
 
 #. Tag: programlisting
 #: using_postgis_query.xml:481
@@ -667,6 +800,9 @@ msgid ""
 "FROM geom_table\n"
 "WHERE ST_Distance( geom, 'SRID=312;POINT(100000 200000)' ) &lt; 100"
 msgstr ""
+"SELECT geom\n"
+"FROM geom_table\n"
+"WHERE ST_Distance( geom, 'SRID=312;POINT(100000 200000)' ) &lt; 100"
 
 #. Tag: para
 #: using_postgis_query.xml:483
@@ -678,6 +814,11 @@ msgid ""
 "specified point, ie. one <varname>ST_Distance()</varname> calculation is "
 "computed for <emphasis role=\"bold\">every</emphasis> row in the table."
 msgstr ""
+"このクエリは<code>geom_table</code>テーブル内の、(100000, 200000)のポイントか"
+"ら100単位内にある全てのジオメトリを選択します。テーブル内の個々のポイントと指"
+"定したポイントとの距離を計算しているため、非常に遅くなります。すなわち、1回の"
+"<varname>ST_Distance()</varname>の計算で、テーブルの<emphasis role=\"bold\""
+">全ての</emphasis>行について計算することになります。"
 
 #. Tag: para
 #: using_postgis_query.xml:489
@@ -686,6 +827,8 @@ msgid ""
 "The number of rows processed can be reduced substantially by using the index-"
 "aware function <xref linkend=\"ST_DWithin\"/>:"
 msgstr ""
+"インデックス対応関数<xref linkend=\"ST_DWithin\""
+"/>を使用すると、処理行数を実質的に減らすことができます。次のようにします。"
 
 #. Tag: programlisting
 #: using_postgis_query.xml:493
@@ -695,6 +838,9 @@ msgid ""
 "FROM geom_table\n"
 "WHERE ST_DWithin( geom, 'SRID=312;POINT(100000 200000)', 100 )"
 msgstr ""
+"SELECT geom\n"
+"FROM geom_table\n"
+"WHERE ST_DWithin( geom, 'SRID=312;POINT(100000 200000)', 100 )"
 
 #. Tag: para
 #: using_postgis_query.xml:495
@@ -711,6 +857,15 @@ msgid ""
 "required distance. The actual distance is then computed to confirm whether "
 "to include the record in the result set."
 msgstr ""
+"このクエリは、同じジオメトリを選択しますが、より効率的な方法を取ります。 <var"
+"name>ST_DWithin()</varname>が内部で<varname>&amp;&amp;</varname>演算子をクエ"
+"リジオメトリのバウンディングボックスを拡大したボックスで使うことによって可能"
+"となります。<code>geom</code>上に空間インデックスが存在するなら、クエリプラン"
+"ナは距離計算の前に対象行数を減らすためにインデックスを使えることを認識します"
+"。空間インデックスによって、バウンディングボックスが拡張された範囲とオーバラ"
+"ップするジオメトリだけを検索して、そのため、求めようとする距離内にある<emphas"
+"is>かも知れない</emphasis>ジオメトリを検索することができます。その後で、結果"
+"集合内のレコードを含めるかどうかを確認するための実際の距離計算が行われます。"
 
 #. Tag: para
 #: using_postgis_query.xml:509
@@ -719,12 +874,14 @@ msgid ""
 "For more information and examples see the <ulink url=\"https://postgis.net/"
 "workshops/postgis-intro/indexing.html\">PostGIS Workshop</ulink>."
 msgstr ""
+"詳細情報と例については<ulink url=\"https://postgis.net/workshops/"
+"postgis-intro/indexing.html\">PostGIS Workshop</ulink>をご覧下さい。"
 
 #. Tag: title
 #: using_postgis_query.xml:516
 #, no-c-format
 msgid "Examples of Spatial SQL"
-msgstr ""
+msgstr "空間SQLの例"
 
 #. Tag: para
 #: using_postgis_query.xml:518
@@ -734,6 +891,8 @@ msgid ""
 "table of polygonal municipality boundaries. The definition of the "
 "<varname>bc_roads</varname> table is:"
 msgstr ""
+"本節の例では、線の道路のテーブルとポリゴンの市区町村境界テーブルとを使います"
+"。<varname>bc_roads</varname>テーブルの定義は次の通りです。"
 
 #. Tag: programlisting
 #: using_postgis_query.xml:522
@@ -745,12 +904,17 @@ msgid ""
 "name      | character varying | Road Name\n"
 "geom      | geometry          | Location Geometry (Linestring)"
 msgstr ""
+"Column    | Type              | Description\n"
+"----------+-------------------+-------------------\n"
+"gid       | integer           | Unique ID\n"
+"name      | character varying | Road Name\n"
+"geom      | geometry          | Location Geometry (Linestring)"
 
 #. Tag: para
 #: using_postgis_query.xml:524
 #, no-c-format
 msgid "The definition of the <varname>bc_municipality</varname> table is:"
-msgstr ""
+msgstr "<varname>bc_municipality</varname>テーブルの定義は次の通りです。"
 
 #. Tag: programlisting
 #: using_postgis_query.xml:527
@@ -763,18 +927,24 @@ msgid ""
 "name     | character varying | City / Town Name\n"
 "geom     | geometry          | Location Geometry (Polygon)"
 msgstr ""
+"Column   | Type              | Description\n"
+"---------+-------------------+-------------------\n"
+"gid      | integer           | Unique ID\n"
+"code     | integer           | Unique ID\n"
+"name     | character varying | City / Town Name\n"
+"geom     | geometry          | Location Geometry (Polygon)"
 
 #. Tag: para
 #: using_postgis_query.xml:532
 #, no-c-format
 msgid "What is the total length of all roads, expressed in kilometers?"
-msgstr ""
+msgstr "道路の総延長はkm表記でいくらになるでしょう?"
 
 #. Tag: para
 #: using_postgis_query.xml:537
 #, no-c-format
 msgid "You can answer this question with a very simple piece of SQL:"
-msgstr ""
+msgstr "この問題は、次のようなとても単純なSQLで答えを得ることができます。"
 
 #. Tag: programlisting
 #: using_postgis_query.xml:540
@@ -786,12 +956,17 @@ msgid ""
 "------------------\n"
 "70842.1243039643"
 msgstr ""
+"SELECT sum(ST_Length(geom))/1000 AS km_roads FROM bc_roads;\n"
+"\n"
+"km_roads\n"
+"------------------\n"
+"70842.1243039643"
 
 #. Tag: para
 #: using_postgis_query.xml:546
 #, no-c-format
 msgid "How large is the city of Prince George, in hectares?"
-msgstr ""
+msgstr "プリンスジョージ市の大きさはha表記でいくらになるでしょう?"
 
 #. Tag: para
 #: using_postgis_query.xml:550
@@ -799,7 +974,8 @@ msgstr ""
 msgid ""
 "This query combines an attribute condition (on the municipality name) with a "
 "spatial calculation (of the polygon area):"
-msgstr ""
+msgstr "このクエリでは、属性条件 (municipality name, 自治体名)に "
+"(ポリゴン面積の)空間計算を併用しています。"
 
 #. Tag: programlisting
 #: using_postgis_query.xml:554
@@ -814,12 +990,20 @@ msgid ""
 "------------------\n"
 "32657.9103824927"
 msgstr ""
+"SELECT\n"
+"  ST_Area(geom)/10000 AS hectares\n"
+"FROM bc_municipality\n"
+"WHERE name = 'PRINCE GEORGE';\n"
+"\n"
+"hectares\n"
+"------------------\n"
+"32657.9103824927"
 
 #. Tag: para
 #: using_postgis_query.xml:560
 #, no-c-format
 msgid "What is the largest municipality in the province, by area?"
-msgstr ""
+msgstr "県内で最も大きな面積となる自治体はどこでしょう?"
 
 #. Tag: para
 #: using_postgis_query.xml:565
@@ -827,7 +1011,8 @@ msgstr ""
 msgid ""
 "This query uses a spatial measurement as an ordering value. There are "
 "several ways of approaching this problem, but the most efficient is below:"
-msgstr ""
+msgstr "このクエリでは、順序付けの値に空間計測関数を使っています。この問題に対しては"
+"複数の方法がありますが、最も効果的な方法は次の通りです。"
 
 #. Tag: programlisting
 #: using_postgis_query.xml:569
@@ -844,6 +1029,16 @@ msgid ""
 "---------------+-----------------\n"
 "TUMBLER RIDGE  | 155020.02556131"
 msgstr ""
+"SELECT\n"
+"  name,\n"
+"  ST_Area(geom)/10000 AS hectares\n"
+"FROM bc_municipality\n"
+"ORDER BY hectares DESC\n"
+"LIMIT 1;\n"
+"\n"
+"name           | hectares\n"
+"---------------+-----------------\n"
+"TUMBLER RIDGE  | 155020.02556131"
 
 #. Tag: para
 #: using_postgis_query.xml:571
@@ -856,12 +1051,18 @@ msgid ""
 "\" command we can easily select just the largest value without using an "
 "aggregate function like MAX()."
 msgstr ""
+"このクエリの答えを出すためには、全てのポリゴンの面積を求める必要があることに"
+"注意して下さい。このクエリを多く実行する場合、性能向上のためにテーブルにarea"
+"カラムを追加して、別のインデックスを追加することができるようにするのは、意義"
+"のあることです。結果を距離について降順に並べ替え、PostgreSQLの\"LIMIT"
+"\"コマンドを用いることで、max()のような集約関数を使わずに、簡単に最も大きい値"
+"を集約関数を得ることができます。"
 
 #. Tag: para
 #: using_postgis_query.xml:583
 #, no-c-format
 msgid "What is the length of roads fully contained within each municipality?"
-msgstr ""
+msgstr "各自治体内に含まれる道路の総延長はいくらでしょう?"
 
 #. Tag: para
 #: using_postgis_query.xml:588
@@ -872,6 +1073,10 @@ msgid ""
 "join condition (rather than the usual relational approach of joining on a "
 "common key):"
 msgstr ""
+"これは、二つのテーブルからデータを持ち込んで "
+"(結合して)いるので「空間結合」の例です。しかし、結合の条件として共通キーの上"
+"で接続するという普通のリレーションのやり方でなく空間インタラクション条件 "
+"(「含む」)を使っています。"
 
 #. Tag: programlisting
 #: using_postgis_query.xml:594
@@ -895,6 +1100,23 @@ msgid ""
 "PRINCE GEORGE               | 694.37554369147\n"
 "..."
 msgstr ""
+"SELECT\n"
+"  m.name,\n"
+"  sum(ST_Length(r.geom))/1000 as roads_km\n"
+"FROM bc_roads AS r\n"
+"JOIN bc_municipality AS m\n"
+"  ON ST_Contains(m.geom, r.geom)\n"
+"GROUP BY m.name\n"
+"ORDER BY roads_km;\n"
+"\n"
+"name                        | roads_km\n"
+"----------------------------+------------------\n"
+"SURREY                      | 1539.47553551242\n"
+"VANCOUVER                   | 1450.33093486576\n"
+"LANGLEY DISTRICT            | 833.793392535662\n"
+"BURNABY                     | 773.769091404338\n"
+"PRINCE GEORGE               | 694.37554369147\n"
+"..."
 
 #. Tag: para
 #: using_postgis_query.xml:596
@@ -905,12 +1127,16 @@ msgid ""
 "datsets (several thousand records on several hundred) the response can be "
 "very fast."
 msgstr ""
+"このクエリは、テーブル内の全ての道路の合計を最終結果 "
+"(この例での話ですが約250Kmの道です)にまとめられるので、少し時間がかかります。"
+"より小さいオーバレイ "
+"(数百の道路で数千のレコード)の場合、応答はもっと早くなりえます。"
 
 #. Tag: para
 #: using_postgis_query.xml:605
 #, no-c-format
 msgid "Create a new table with all the roads within the city of Prince George."
-msgstr ""
+msgstr "プリンスジョージ市内の全ての道路からなるテーブルを作ります。"
 
 #. Tag: para
 #: using_postgis_query.xml:610
@@ -922,6 +1148,10 @@ msgid ""
 "overlay is like a turbo-charged spatial join, and is useful for more exact "
 "analysis work:"
 msgstr ""
+"これは「オーバレイ」の例です。つまり、二つのテーブルを取得して、空間的に切り"
+"取られた結果からなる新しいテーブルを出力します。上で示した「空間結合」と違い"
+"、このクエリは実際に新しいジオメトリを生成します。生成されたオーバレイはター"
+"ボのかかった空間結合みたいなもので、より確かな解析作業に便利です。"
 
 #. Tag: programlisting
 #: using_postgis_query.xml:617
@@ -938,12 +1168,22 @@ msgid ""
 "WHERE\n"
 "  m.name = 'PRINCE GEORGE';"
 msgstr ""
+"CREATE TABLE pg_roads as\n"
+"SELECT\n"
+"  ST_Intersection(r.geom, m.geom) AS intersection_geom,\n"
+"  ST_Length(r.geom) AS rd_orig_length,\n"
+"  r.*\n"
+"FROM bc_roads AS r\n"
+"JOIN bc_municipality AS m\n"
+"  ON ST_Intersects(r.geom, m.geom)\n"
+"WHERE\n"
+"  m.name = 'PRINCE GEORGE';"
 
 #. Tag: para
 #: using_postgis_query.xml:623
 #, no-c-format
 msgid "What is the length in kilometers of \"Douglas St\" in Victoria?"
-msgstr ""
+msgstr "ビクトリア州の「ダグラス通り」の長さはkm表記でいくらになるでしょう?"
 
 #. Tag: programlisting
 #: using_postgis_query.xml:628
@@ -962,12 +1202,24 @@ msgid ""
 "------------------\n"
 "4.89151904172838"
 msgstr ""
+"SELECT\n"
+"  sum(ST_Length(r.geom))/1000 AS kilometers\n"
+"FROM bc_roads r\n"
+"JOIN bc_municipality m\n"
+"  ON ST_Intersects(m.geom, r.geom\n"
+"WHERE\n"
+"  r.name = 'Douglas St'\n"
+"  AND m.name = 'VICTORIA';\n"
+"\n"
+"kilometers\n"
+"------------------\n"
+"4.89151904172838"
 
 #. Tag: para
 #: using_postgis_query.xml:634
 #, no-c-format
 msgid "What is the largest municipality polygon that has a hole?"
-msgstr ""
+msgstr "穴を持つ自治体ポリゴンのうち最も大きいのはどれでしょう?"
 
 #. Tag: programlisting
 #: using_postgis_query.xml:639
@@ -982,3 +1234,11 @@ msgid ""
 "-----+--------------+------------------\n"
 "12   | SPALLUMCHEEN | 257374619.430216"
 msgstr ""
+"SELECT gid, name, ST_Area(geom) AS area\n"
+"FROM bc_municipality\n"
+"WHERE ST_NRings(geom) &gt; 1\n"
+"ORDER BY area DESC LIMIT 1;\n"
+"\n"
+"gid  | name         | area\n"
+"-----+--------------+------------------\n"
+"12   | SPALLUMCHEEN | 257374619.430216"

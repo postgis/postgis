@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-14 02:04+0000\n"
-"PO-Revision-Date: 2022-01-31 10:53+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"PO-Revision-Date: 2022-09-12 12:43+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_lrsxml/ja/>\n"
 "Language: ja\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: title
 #: reference_lrs.xml:3
@@ -153,6 +153,13 @@ msgid ""
 "----------------\n"
 " POINT(51.5974135047432 76.5974135047432)"
 msgstr ""
+"-- ラインに沿った20%位置\n"
+"\n"
+"SELECT ST_AsEWKT(  ST_LineInterpolatePoint(\n"
+"        'LINESTRING(25 50, 100 125, 150 190)',\n"
+"        0.2 ));\n"
+"----------------\n"
+" POINT(51.5974135047432 76.5974135047432)"
 
 #. Tag: para
 #: reference_lrs.xml:66
@@ -170,6 +177,11 @@ msgid ""
 "--------------------\n"
 " POINT(3.5 4.5 5.5)"
 msgstr ""
+"SELECT ST_AsEWKT(  ST_LineInterpolatePoint('\n"
+"        LINESTRING(1 2 3, 4 5 6, 6 7 8)',\n"
+"        0.5 ));\n"
+"--------------------\n"
+" POINT(3.5 4.5 5.5)"
 
 #. Tag: para
 #: reference_lrs.xml:69
@@ -187,6 +199,11 @@ msgid ""
 "------------\n"
 " POINT(3 4)"
 msgstr ""
+"SELECT ST_AsText( ST_LineInterpolatePoint( line.geom,\n"
+"                      ST_LineLocatePoint( line.geom, 'POINT(4 3)')))\n"
+"FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As geom) AS line;\n"
+"------------\n"
+" POINT(3 4)"
 
 #. Tag: title
 #: reference_lrs.xml:75 reference_lrs.xml:132 reference_lrs.xml:198
@@ -338,6 +355,11 @@ msgid ""
 "will be constructed (which is equivalent to <xref "
 "linkend=\"ST_LineInterpolatePoint\"/>.)"
 msgstr ""
+"ラインに沿った割合による間隔にある一つ以上の補間ポイントを返します。一つ目の"
+"引数はLINESTRINGでなければなりません。二つ目の引数はfloat8型の0から1の間の値"
+"でなければなりません。この値はライン長に対するポイント間隔の割合を示します。"
+"三つ目の引数がFALSEの場合には、一つ以下のポイントが構築されます (<xref "
+"linkend=\"ST_LineInterpolatePoint\"/>と同じです)。"
 
 #. Tag: para
 #: reference_lrs.xml:173
@@ -345,7 +367,8 @@ msgstr ""
 msgid ""
 "If the result has zero or one points, it is returned as a POINT. If it has "
 "two or more points, it is returned as a MULTIPOINT."
-msgstr ""
+msgstr "結果が0以上のポイントを持つ場合にはPOINTが返ります。二つ以上のポイントを持つ"
+"場合にはMULTIPOINTが返ります。"
 
 #. Tag: para
 #: reference_lrs.xml:179
@@ -363,7 +386,7 @@ msgstr "&M_support;"
 #: reference_lrs.xml:191
 #, no-c-format
 msgid "A LineString with points interpolated every 20%"
-msgstr ""
+msgstr "20%刻みで補間されたポイントを持つラインストリング"
 
 #. Tag: programlisting
 #: reference_lrs.xml:194
@@ -377,12 +400,19 @@ msgid ""
 "103.194827009486),(104.132163186446 130.37181214238),(127.066081593223 "
 "160.18590607119),(150 190))"
 msgstr ""
+"-- 2次元ラインに沿って20%ごとのポイントを返します\n"
+"SELECT ST_AsText(ST_LineInterpolatePoints('LINESTRING(25 50, 100 125, 150 "
+"190)', 0.20))\n"
+"----------------\n"
+" MULTIPOINT((51.5974135047432 76.5974135047432),(78.1948270094864 103."
+"194827009486),(104.132163186446 130.37181214238),(127.066081593223 160."
+"18590607119),(150 190))"
 
 #. Tag: para
 #: reference_lrs.xml:200
 #, no-c-format
 msgid ", <xref linkend=\"ST_LineLocatePoint\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LineLocatePoint\"/>"
 
 #. Tag: refname
 #: reference_lrs.xml:209
@@ -492,15 +522,11 @@ msgid ""
 "----------------\n"
 " POINT(3 4)"
 msgstr ""
-"-- ストリートに沿った、ストリート番号の点の、粗い探索です。\n"
-"-- なお、foo全体は住居の重心とストリートのように見えるダミーデータです。\n"
-"-- ST_DWithInで対象とする通りから大きく外れる住居を除外しています。\n"
-"--Rough approximation of finding the street number of a point along the "
-"street\n"
-"--Note the whole foo thing is just to generate dummy data that looks\n"
-"--like house centroids and street\n"
-"--We use ST_DWithin to exclude\n"
-"--houses too far away from the street to be considered on the street\n"
+"-- 特定の道路に沿った道路番号の探索にざっくりと似せたもの\n"
+"-- foo全体は建物中心点や道路のように見える\n"
+"-- ダミーデータを生成するためのものです\n"
+"-- 道路上について探索するので\n"
+"-- ST_DWithinを使って道路から遠くに離れた建物を除きます\n"
 "SELECT ST_AsText(house_loc) As as_text_house_loc,\n"
 "        startstreet_num +\n"
 "                CAST( (endstreet_num - startstreet_num)\n"
@@ -520,9 +546,9 @@ msgstr ""
 " POINT(2.02 3.09)  |         15\n"
 " POINT(3.03 4.12)  |         20\n"
 "\n"
-" -- ポイントまたは他のジオメトリへのライン上の最短点の探索\n"
-" SELECT ST_AsText(ST_LineInterpolatePoint(foo.the_line, "
-"ST_LineLocatePoint(foo.the_line, ST_GeomFromText('POINT(4 3)'))))\n"
+"-- ライン上の、ポイントや他のジオメトリへの最も近い点を見つける\n"
+" SELECT ST_AsText(ST_LineInterpolatePoint(foo.the_line, ST_LineLocatePoint("
+"foo.the_line, ST_GeomFromText('POINT(4 3)'))))\n"
 "FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As "
 "foo;\n"
 "   st_astext\n"
@@ -641,6 +667,12 @@ msgid ""
 "LINESTRING (45.17311810399485 45.74337011202746, 50 20, 90 80, "
 "112.97593050157862 49.36542599789519)"
 msgstr ""
+"SELECT ST_AsText(ST_LineSubstring( 'LINESTRING (20 180, 50 20, 90 80, 120 "
+"40, 180 150)', 0.333, 0.666));\n"
+"-----------------------------------------------------------------------------"
+"-------------------\n"
+"LINESTRING (45.17311810399485 45.74337011202746, 50 20, 90 80, "
+"112.97593050157862 49.36542599789519)"
 
 #. Tag: para
 #: reference_lrs.xml:319
@@ -657,6 +689,10 @@ msgid ""
 "------------------------------------------\n"
 " POINT(69.2846934853974 94.2846934853974)"
 msgstr ""
+"SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(25 50, 100 125, 150 190)', "
+"0.333, 0.333));\n"
+"------------------------------------------\n"
+" POINT(69.2846934853974 94.2846934853974)"
 
 #. Tag: para
 #: reference_lrs.xml:325
@@ -777,7 +813,8 @@ msgid ""
 "Returns the location(s) along a measured geometry that have the given "
 "measure values. The result is a Point or MultiPoint. Polygonal inputs are "
 "not supported."
-msgstr ""
+msgstr "M値を持つジオメトリに沿った位置を返します。結果はポイントまたはマルチポイント"
+"です。ポリゴン系入力には対応していません。"
 
 #. Tag: para
 #: reference_lrs.xml:367
@@ -787,12 +824,15 @@ msgid ""
 "or right of the input line by the specified distance. A positive offset will "
 "be to the left, and a negative one to the right."
 msgstr ""
+"<varname>offset</varname>が与えられた場合には、結果は、入力ラインの左または右"
+"に、指定された距離だけ移動します。正のオフセット値で左に、負の値で右にそれぞ"
+"れ移動します。"
 
 #. Tag: para
 #: reference_lrs.xml:371 reference_lrs.xml:534
 #, no-c-format
 msgid "Use this function only for linear geometries with an M component"
-msgstr ""
+msgstr "この関数は、M要素を持つライン系ジオメトリでのみ使います。"
 
 #. Tag: para
 #: reference_lrs.xml:373 reference_lrs.xml:427
@@ -822,7 +862,7 @@ msgstr "Changed: 2.0.0 以前の版ではST_Locate_Along_Measureと呼ばれて�
 #: reference_lrs.xml:379
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.13"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.13"
 
 #. Tag: programlisting
 #: reference_lrs.xml:385
@@ -836,6 +876,13 @@ msgid ""
 "----------------------------------\n"
 " MULTIPOINT M ((1 2 3),(9 4 3),(1 2 3))"
 msgstr ""
+"SELECT ST_AsText(\n"
+"  ST_LocateAlong(\n"
+"    'MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))'::geometry,\n"
+"    3 ));\n"
+"\n"
+"----------------------------------\n"
+" MULTIPOINT M ((1 2 3),(9 4 3),(1 2 3))"
 
 #. Tag: para
 #: reference_lrs.xml:391
@@ -844,6 +891,8 @@ msgid ""
 ", <xref linkend=\"ST_LocateBetweenElevations\"/>, <xref "
 "linkend=\"ST_InterpolatePoint\"/>"
 msgstr ""
+", <xref linkend=\"ST_LocateBetweenElevations\"/>, <xref linkend="
+"\"ST_InterpolatePoint\"/>"
 
 #. Tag: refname
 #: reference_lrs.xml:397
@@ -928,7 +977,7 @@ msgstr "Enhanced: 3.0.0 - POLYGON, TIN, TRIANGLEへの対応が追加されま�
 #: reference_lrs.xml:434
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1"
 
 #. Tag: programlisting
 #: reference_lrs.xml:440
@@ -942,13 +991,20 @@ msgid ""
 "------------------------------------------------------------------------\n"
 " GEOMETRYCOLLECTION M (LINESTRING M (1 2 3,3 4 2,9 4 3),POINT M (1 2 3))"
 msgstr ""
+"SELECT ST_AsText(\n"
+"  ST_LocateBetween(\n"
+"       'MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))':: geometry,"
+"\n"
+"       1.5, 3 ));\n"
+"------------------------------------------------------------------------\n"
+" GEOMETRYCOLLECTION M (LINESTRING M (1 2 3,3 4 2,9 4 3),POINT M (1 2 3))"
 
 #. Tag: para
 #: reference_lrs.xml:447
 #, no-c-format
 msgid ""
 "A LineString with the section between measures 2 and 8, offset to the left"
-msgstr ""
+msgstr "M値が2と8の間になる辺を持ち左にずれたラインストリング"
 
 #. Tag: programlisting
 #: reference_lrs.xml:451
@@ -969,6 +1025,20 @@ msgid ""
 "137.5954340631298,112.81899532549731 135.351656550512,115.6173761888606 "
 "132.49390095108848,145.31017306064817 95.37790486135405))"
 msgstr ""
+"SELECT ST_AsText( ST_LocateBetween(\n"
+"  ST_AddMeasure('LINESTRING (20 180, 50 20, 100 120, 180 20)', 0, 10),\n"
+"  2, 8,\n"
+"  20\n"
+"));\n"
+"------------------------------------------------------------------------\n"
+"MULTILINESTRING((54.49835019899045 104.53426957938231,58.70056060327303 "
+"82.12248075654186,69.16695286779743 103.05526528559065,82.11145618000168 "
+"128.94427190999915,84.24893681714357 132.32493442618113,87.01636951231555 "
+"135.21267035596549,90.30307285299679 137.49198684843182,93.97759758337769 "
+"139.07172433557758,97.89298381958797 139.8887023914453,101.89263860095893 "
+"139.9102465862721,105.81659870902816 139.13549527600819,109.50792827749828 "
+"137.5954340631298,112.81899532549731 135.351656550512,115.6173761888606 "
+"132.49390095108848,145.31017306064817 95.37790486135405))"
 
 #. Tag: para
 #: reference_lrs.xml:458
@@ -1010,7 +1080,7 @@ msgstr ""
 msgid ""
 "Returns a geometry (collection) with the portions of a geometry that lie in "
 "an elevation (Z) range."
-msgstr ""
+msgstr "標高 (Z値)範囲にある部分ジオメトリとなるジオメトリ (コレクション)を返します。"
 
 #. Tag: para
 #: reference_lrs.xml:490
@@ -1085,6 +1155,10 @@ msgid ""
 "parameter></paramdef> <paramdef><type>geometry </type> <parameter>point</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>float8 <function>ST_InterpolatePoint</function></funcdef> "
+"<paramdef><type>geometry </type> "
+"<parameter>linear_geom_with_measure</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>point</parameter></paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:531
@@ -1092,7 +1166,8 @@ msgstr ""
 msgid ""
 "Returns an interpolated measure value of a linear measured geometry at the "
 "location closest to the given point."
-msgstr ""
+msgstr "ライン系のM値を持つジオメトリについて、与えられたポイントに最も近い位置におけ"
+"るM値の補間値を返します。"
 
 #. Tag: para
 #: reference_lrs.xml:536
@@ -1108,6 +1183,9 @@ msgid ""
 " ---------------------\n"
 "         10"
 msgstr ""
+"SELECT ST_InterpolatePoint('LINESTRING M (0 0 0, 10 0 20)', 'POINT(5 5)');\n"
+" ---------------------\n"
+"         10"
 
 #. Tag: para
 #: reference_lrs.xml:550

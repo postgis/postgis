@@ -370,7 +370,7 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
     <para>Enhanced: 2.0.1, speed improvements</para>
     <para>Enhanced: 2.1.0, added support for GEOMETRYCOLLECTION and MULTIPOINT.</para>
     <para>Enhanced: 3.1.0, added removal of Coordinates with NaN values.</para>
-    <para>Enhanced: 3.2.0, added algorithm options, 'linework' and 'structure'.</para>
+    <para>Enhanced: 3.2.0, added algorithm options, 'linework' and 'structure' which requires GEOS &gt;= 3.10.0.</para>
 
     <para>&Z_support;</para>
 

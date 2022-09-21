@@ -1,6 +1,94 @@
 PostGIS 3.4.0dev
 xxxx/xx/xx
 
+* Breaking Changes *
+  - #5229, Drop support for Proj < 6.1 and PG 11 (Regina Obe)
+
+* New Features *
+  - New install-extension-upgrades command in postgis script (Sandro Santilli)
+
+* Enhancements *
+  - #5194, do not update system catalogs from postgis_extensions_upgrade (Sandro Santilli)
+  - #5092, reduce number of upgrade paths installed on system (Sandro Santilli)
+
+* Bug Fix *
+
+
+
+PostGIS 3.3.0
+2022/08/26
+
+This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 5.2+.
+Additional features are enabled if you are running GEOS 3.9+
+ST_MakeValid enhancements with 3.10+, ST_ConcaveHull and several other enhancements with GEOS 3.11+.
+Requires SFCGAL 1.4.1+ for ST_AlphaShape and ST_OptimalAlphaShape.
+
+The new --enable-lto flag improves math computations.  This new feature is disabled by default
+because on some platforms, causes compilation errors (BSD and MingW64 issues have been raised)
+
+Use below to enable it.
+
+ ./configure --enable-lto flag
+
+ * New features *
+  - #5116, Topology export/import scripts (Sandro Santilli)
+  - ST_Letters creates geometries that look like letters (Paul Ramsey)
+  - #5037, postgis_sfcgal: ST_3DConvexHull (Loïc Bartoletti)
+  - postgis_sfcgal: sfcgal_full_version - reports BOOST and CGAL version
+    (Loïc Bartoletti)
+  - GH659, MARC21/XML, ST_GeomFromMARC21, ST_AsMARC21 (Jim Jones)
+  - #5132, GH683, sfcgal: ST_3DUnion aggregate function (Sergei Shoulbakov)
+  - #5143, SFCGAL ST_AlphaShape and ST_OptimalAlphaShape
+           Requires SFCGAL 1.4.1+ (Loïc Bartoletti)
+  - #5162, ST_TriangulatePolygon with GEOS 3.11+ (Paul Ramsey, Martin Davis)
+  - #5162, ST_SimplifyPolygonHull with GEOS 3.11+ (Paul Ramsey, Martin Davis)
+  - #5183, topology.RemoveUnusedPrimitives (Sandro Santilli)
+
+ * Breaking changes *
+  - Drop support for PostgreSQL 9.6 and 10 (Regina Obe)
+  - Change output for WKT MULTIPOINT. All points now
+    wrapped in parens. (Even Roualt)
+  - GH674, geometry validation and fixing is disabled
+    for ST_DumpAsPolygons and ST_Polygon so it works faster
+    but might produce invalid polygons. (Aliaksandr Kalenik)
+
+ * Enhancements *
+  - #2861, Add index on topology.node(containing_face) speeding up
+    splitting and merging of faces (Sandro Santilli)
+  - #2083, Speed up ST_RemEdge topology functions adding index on
+    relation(element_id) and edge_data(abs_next*) (Sandro Santilli)
+  - #5118, Allow dropping topologies with missing topogeometry sequences
+    (Sandro Santilli)
+  - #5111, faster topology face MBR computation (Sandro Santilli)
+  - postgis_extensions_upgrade() support for upgrades from any PostGIS
+    version, including yet to be released ones (Sandro Santilli)
+  - #5040, add postgis_sfcgal_full_version (Loïc Bartoletti)
+  - GH655, GiST: balance the tree splits better in recursive calls (Darafei Praliaskouski)
+  - GH657, GiST: do not call no-op decompress function (Aliaksandr Kalenik)
+  - #4939, #5161, ST_LineMerge now has option to keep the directions of input linestrings,
+    useful when processing road graphs. Requires GEOS 3.11. (Sergei Shoulbakov)
+  - ST_ConcaveHull GEOS 3.11+ native implementation (Paul Ramsey, Martin Davis)
+  - ST_ConcaveHull GEOS 3.11+ polygon-respecting native implementation (Paul Ramsey, Martin Davis)
+  - #4574, GH678, #5121 Enable Link-Time Optimizations using --enable-lto (Sergei Shoulbakov)
+  - GH676, faster ST_Clip (Aliaksandr Kalenik)
+  - #5135, Fast GiST index build is enabled by default for PostgreSQL 15+ (Sergei Shoulbakov)
+  - #4939, #5161, ST_LineMerge now has option to keep the directions of input linestrings,
+    useful when processing road graphs. Requires GEOS 3.11. (Sergei Shoulbakov)
+  - #5158, pgtopo_import / pgtopo_export manpages (Sandro Santilli)
+  - #5170, add a optional max_rows_per_copy to -Y option to raster2pgsql to
+    control number of rows per copy statement.
+    Default to 50 when not specified (Regina Obe)
+  - GH698, support parallel aggregate for ST_Union (Sergei Shoulbakov)
+  - #5024, Update spatial_ref_sys as part of ALTER EXTENSION update postgis (Paul Ramsey)
+
+ * Bug Fix *
+   These are fixes not backported to older minors
+   - #4912, GiST: fix crash on STORAGE EXTERNAL for geography (Aliaksandr Kalenik)
+   - #5088, Memory corruption in mvt_agg_transfn (Victor Collod)
+   - #5137, resetting interrupt flags before query execution (Sergei Shoulbakov)
+   - #5148, ST_Clip is more robust to alignment of raster and clip geometry (Sergei Shoulbakov)
+   - #4932, Bug with geography ST_Intersects / ST_Distance (Paul Ramsey)
+   - #5089, ST_Reverse also reverses components of CompoundCurve (Paul Ramsey)
 
 PostGIS 3.3.0rc2
 2022/08/21
@@ -96,81 +184,6 @@ Changes since PostGIS 3.3.0alpha1
   - #5173 st_asflatgeobuf detoast crash (Paul Ramsey)
   - #4932, Bug with geography ST_Intersects / ST_Distance (Paul Ramsey)
   - #5114, pgsql2shp segfault with long or many truncated columns
-
-
-PostGIS 3.3.0dev
-2022/xx/xx
-
-This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 5.2+.
-Additional features are enabled if you are running GEOS 3.9+
-ST_MakeValid enhancements with 3.10+, ST_ConcaveHull and several other enhancements with GEOS 3.11+.
-
-The new --enable-lto flag improves math computations.  This new feature is disabled by default
-because on some platforms, causes compilation errors (BSD and MingW64 issues have been raised)
-
-Use below to enable it.
-
- ./configure --enable-lto flag
-
- * Breaking changes *
-  - Drop support for PostgreSQL 9.6 and 10 (Regina Obe)
-  - Change output for WKT MULTIPOINT. All points now
-    wrapped in parens. (Even Roualt)
-  - GH674, geometry validation and fixing is disabled
-    for ST_DumpAsPolygons and ST_Polygon so it works faster
-    but might produce invalid polygons. (Aliaksandr Kalenik)
-
- * Enhancements *
-  - #2861, Add index on topology.node(containing_face) speeding up
-    splitting and merging of faces (Sandro Santilli)
-  - #2083, Speed up ST_RemEdge topology functions adding index on
-    relation(element_id) and edge_data(abs_next*) (Sandro Santilli)
-  - #5118, Allow dropping topologies with missing topogeometry sequences
-    (Sandro Santilli)
-  - #5111, faster topology face MBR computation (Sandro Santilli)
-  - postgis_extensions_upgrade() support for upgrades from any PostGIS
-    version, including yet to be released ones (Sandro Santilli)
-  - #5040, add postgis_sfcgal_full_version (Loïc Bartoletti)
-  - GH655, GiST: balance the tree splits better in recursive calls (Darafei Praliaskouski)
-  - GH657, GiST: do not call no-op decompress function (Aliaksandr Kalenik)
-  - #4939, #5161, ST_LineMerge now has option to keep the directions of input linestrings,
-    useful when processing road graphs. Requires GEOS 3.11. (Sergei Shoulbakov)
-  - ST_ConcaveHull GEOS 3.11+ native implementation (Paul Ramsey, Martin Davis)
-  - ST_ConcaveHull GEOS 3.11+ polygon-respecting native implementation (Paul Ramsey, Martin Davis)
-  - #4574, GH678, #5121 Enable Link-Time Optimizations using --enable-lto (Sergei Shoulbakov)
-  - GH676, faster ST_Clip (Aliaksandr Kalenik)
-  - #5135, Fast GiST index build is enabled by default for PostgreSQL 15+ (Sergei Shoulbakov)
-  - #4939, #5161, ST_LineMerge now has option to keep the directions of input linestrings,
-    useful when processing road graphs. Requires GEOS 3.11. (Sergei Shoulbakov)
-  - #5158, pgtopo_import / pgtopo_export manpages (Sandro Santilli)
-  - #5170, add a optional max_rows_per_copy to -Y option to raster2pgsql to
-    control number of rows per copy statement.
-    Default to 50 when not specified (Regina Obe)
-  - GH698, support parallel aggregate for ST_Union (Sergei Shoulbakov)
-  - #5024, Update spatial_ref_sys as part of ALTER EXTENSION update postgis (Paul Ramsey)
-
-
- * New features *
-  - #5116, Topology export/import scripts (Sandro Santilli)
-  - ST_Letters creates geometries that look like letters (Paul Ramsey)
-  - #5037, postgis_sfcgal: ST_3DConvexHull (Loïc Bartoletti)
-  - postgis_sfcgal: sfcgal_full_version - reports BOOST and CGAL version
-    (Loïc Bartoletti)
-  - GH659, MARC21/XML, ST_GeomFromMARC21, ST_AsMARC21 (Jim Jones)
-  - #5132, GH683, sfcgal: ST_3DUnion aggregate function (Sergei Shoulbakov)
-  - #5143, SFCGAL ST_AlphaShape and ST_OptimalAlphaShape
-           Requires SFCGAL 1.4.1+ (Loïc Bartoletti)
-  - #5162, ST_TriangulatePolygon with GEOS 3.11+ (Paul Ramsey, Martin Davis)
-  - #5162, ST_SimplifyPolygonHull with GEOS 3.11+ (Paul Ramsey, Martin Davis)
-  - #5183, topology.RemoveUnusedPrimitives (Sandro Santilli)
-
- * Bug Fix *
-   - #4912, GiST: fix crash on STORAGE EXTERNAL for geography (Aliaksandr Kalenik)
-   - #5088, Memory corruption in mvt_agg_transfn (Victor Collod)
-   - #5137, resetting interrupt flags before query execution (Sergei Shoulbakov)
-   - #5148, ST_Clip is more robust to alignment of raster and clip geometry (Sergei Shoulbakov)
-   - #4932, Bug with geography ST_Intersects / ST_Distance (Paul Ramsey)
-   - #5089, ST_Reverse also reverses components of CompoundCurve (Paul Ramsey)
 
 
 PostGIS 3.3.0alpha1

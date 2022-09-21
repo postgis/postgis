@@ -337,25 +337,6 @@ pgis_geometry_clusterwithin_finalfn(PG_FUNCTION_ARGS)
 Datum
 PGISDirectFunctionCall1(PGFunction func, Datum arg1)
 {
-#if POSTGIS_PGSQL_VERSION < 120
-	FunctionCallInfoData fcinfo;
-	Datum           result;
-
-
-	InitFunctionCallInfoData(fcinfo, NULL, 1, InvalidOid, NULL, NULL);
-
-
-	fcinfo.arg[0] = arg1;
-	fcinfo.argnull[0] = false;
-
-	result = (*func) (&fcinfo);
-
-	/* Check for null result, returning a "NULL" Datum if indicated */
-	if (fcinfo.isnull)
-		return (Datum) 0;
-
-	return result;
-#else
 	LOCAL_FCINFO(fcinfo, 1);
 	Datum result;
 
@@ -371,7 +352,6 @@ PGISDirectFunctionCall1(PGFunction func, Datum arg1)
 		return (Datum)0;
 
 	return result;
-#endif /* POSTGIS_PGSQL_VERSION < 120 */
 }
 
 /**
@@ -381,25 +361,6 @@ PGISDirectFunctionCall1(PGFunction func, Datum arg1)
 Datum
 PGISDirectFunctionCall2(PGFunction func, Datum arg1, Datum arg2)
 {
-#if POSTGIS_PGSQL_VERSION < 120
-	FunctionCallInfoData fcinfo;
-	Datum           result;
-
-	InitFunctionCallInfoData(fcinfo, NULL, 2, InvalidOid, NULL, NULL);
-
-	fcinfo.arg[0] = arg1;
-	fcinfo.arg[1] = arg2;
-	fcinfo.argnull[0] = false;
-	fcinfo.argnull[1] = false;
-
-	result = (*func) (&fcinfo);
-
-	/* Check for null result, returning a "NULL" Datum if indicated */
-	if (fcinfo.isnull)
-		return (Datum) 0;
-
-	return result;
-#else
 	LOCAL_FCINFO(fcinfo, 2);
 	Datum result;
 
@@ -417,5 +378,4 @@ PGISDirectFunctionCall2(PGFunction func, Datum arg1, Datum arg2)
 		return (Datum)0;
 
 	return result;
-#endif /* POSTGIS_PGSQL_VERSION < 120 */
 }

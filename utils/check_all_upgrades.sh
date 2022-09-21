@@ -12,7 +12,7 @@ BUILDDIR=$PWD # TODO: allow override ?
 
 cd $(dirname $0)/..
 SRCDIR=$PWD # TODO: allow override ?
-cd -
+cd - > /dev/null
 
 
 if test "$1" = "-s"; then
@@ -176,9 +176,14 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
       test_label="${test_label} ($to_version)"
     fi
     compatible_upgrade "${test_label}" ${from_version} ${to_version} || continue
-    UPGRADE_FILE="${EXT}--${from_version}--${to_version}.sql"
-    if ! test -e ${UPGRADE_FILE}; then
-      echo "SKIP: ${test_label} ($UPGRADE_FILE is missing)"
+    path=$( psql -XAtc "
+        SELECT path
+        FROM pg_catalog.pg_extension_update_paths('${EXT}')
+        WHERE source = '${from_version}'
+        AND target = '${to_version}'
+    " )
+    if test -z "${path}"; then
+      echo "SKIP: ${test_label} (no upgrade path from ${from_version} to ${to_version} known by postgresql)"
       continue
     fi
     echo "Testing ${test_label}"
@@ -199,9 +204,14 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
       test_label="${test_label} ($to_version)"
     fi
     compatible_upgrade "${test_label}" ${majmin} ${to_version} || continue
-    UPGRADE_FILE="${EXT}--unpackaged--${to_version}.sql"
-    if ! test -e ${UPGRADE_FILE}; then
-      echo "SKIP: ${test_label} ($UPGRADE_FILE is missing)"
+    path=$( psql -XAtc "
+        SELECT path
+        FROM pg_catalog.pg_extension_update_paths('${EXT}')
+        WHERE source = 'unpackaged'
+        AND target = '${to_version}'
+    " )
+    if test -z "${path}"; then
+      echo "SKIP: ${test_label} (no upgrade path from unpackaged to ${to_version} known by postgresql)"
       continue
     fi
     echo "Testing ${test_label}"
@@ -216,7 +226,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
 
   # Check unpackaged->unpackaged upgrades
   CURRENTVERSION=`grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.'`
-  if test ${to_version} = "${CURRENTVERSION}"; then
+  if test "${to_version}" = "${CURRENTVERSION}"; then
     for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`
     do #{
       UPGRADE_PATH="unpackaged${majmin}--:auto"

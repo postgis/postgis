@@ -21,7 +21,7 @@ jobs:
         - { tag: pg15-clang-geos311-gdal35-proj90, mode: usan_clang }
         # - { tag: pg13-geos39-gdal31-proj71, mode: garden }
         - { tag: pg14-geos39-gdal33-proj71, mode: tests }
-        - { tag: pg14-clang-geosmain-gdal34-proj71, mode: usan_clang }
+        # - { tag: pg14-clang-geos39-gdal33-proj71, mode: usan_clang }
         #- { tag: pg13-geos39-gdal31-proj71, mode: tests }
         #- { tag: pg13-geos39-gdal31-proj71, mode: coverage }
         - { tag: pg13-geos39-gdal31-proj71, mode: usan_gcc }
@@ -30,7 +30,7 @@ jobs:
         # - { tag: latest, mode: tests }
         - { tag: pg13-geos38-gdal31-proj71, mode: tests }
         - { tag: pg12-geos37-gdal30-proj611, mode: tests }
-        - { tag: pg11-geos37-gdal24-proj52, mode: tests }
+        # - { tag: pg11-geos37-gdal24-proj52, mode: tests }
         # - { tag: pg10-geos36-gdal23-proj49, mode: tests }
         # - { tag: pg96-geos36-gdal22-proj49, mode: tests }
 
