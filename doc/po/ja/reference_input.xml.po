@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-09-26 03:46+0000\n"
-"PO-Revision-Date: 2022-09-09 12:50+0000\n"
+"PO-Revision-Date: 2022-09-27 07:04+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_inputxml/ja/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: para
 #: reference_input.xml:6
@@ -616,7 +616,7 @@ msgstr ""
 #: reference_input.xml:272
 #, no-c-format
 msgid "ST_GeomFromMARC21"
-msgstr ""
+msgstr "ST_GeomFromMARC21"
 
 #. Tag: refpurpose
 #: reference_input.xml:273
@@ -624,7 +624,7 @@ msgstr ""
 msgid ""
 "Takes MARC21/XML geographic data as input and returns a PostGIS geometry "
 "object."
-msgstr ""
+msgstr "MARC21/XML地理データを入力に取り、PostGISジオメトリオブジェクトを返します。"
 
 #. Tag: funcprototype
 #: reference_input.xml:278
@@ -633,6 +633,8 @@ msgid ""
 "<funcdef> geometry <function>ST_GeomFromMARC21</function> </funcdef> "
 "<paramdef> <type>text </type> <parameter>marcxml</parameter> </paramdef>"
 msgstr ""
+"<funcdef> geometry <function>ST_GeomFromMARC21</function> </funcdef> "
+"<paramdef> <type>text </type> <parameter>marcxml</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_input.xml:293
@@ -646,24 +648,31 @@ msgid ""
 "<varname>GEOMETRYCOLLECTION</varname> will be returned. It returns NULL if "
 "the MARC21/XML record does not contain any geographic data (datafield:034)."
 msgstr ""
+"この関数はMARC21/XMLデータからPostGISジオメトリを生成するものです。<varname>P"
+"OINT</varname>または<varname>POLYGON</varname>を含みます。同じMARC21/"
+"XMLデータで複数の地理データが存在する場合には、 "
+"<varname>MULTIPOINT</varname>または<varname>MULTIPOLYGON</varname> を返します"
+"。データにジオメトリタイプが混じっている場合には、<varname>GEOMETRYCOLLECTION"
+"</varname>を返します。MARC21/XMLデータに地理データ "
+"(データフィールド:034)を含まない場合にはNULLを返します。"
 
 #. Tag: para
 #: reference_input.xml:300
 #, no-c-format
 msgid "LOC MARC21/XML versions supported:"
-msgstr ""
+msgstr "対応するLOC MARC21/XMLのバージョンは次の通りです。"
 
 #. Tag: ulink
 #: reference_input.xml:304
 #, no-c-format
 msgid "MARC21/XML 1.1"
-msgstr ""
+msgstr "MARC21/XML 1.1"
 
 #. Tag: para
 #: reference_input.xml:309
 #, no-c-format
 msgid "Availability: 3.3.0, requires libxml2 2.6+"
-msgstr ""
+msgstr "Availability: 3.3.0 libxml2 2.6以上が必要です。"
 
 #. Tag: para
 #: reference_input.xml:312
@@ -674,6 +683,9 @@ msgid ""
 "coordinates, so this function will always return a geometry with "
 "<varname>SRID 0</varname>."
 msgstr ""
+"MARC21/XMLコード化地理数値データでは、今のところコード化した座標の空間参照系"
+"を記述する手段がないため、この関数は常に<varname>SRID "
+"0</varname>のジオメトリを返すことになります。"
 
 #. Tag: para
 #: reference_input.xml:319
@@ -681,7 +693,7 @@ msgstr ""
 msgid ""
 "Returned <varname>POLYGON</varname> geometries will always be clockwise "
 "oriented."
-msgstr ""
+msgstr "返される<varname>POLYGON</varname>ジオメトリは常に時計回り方向です。"
 
 #. Tag: para
 #: reference_input.xml:330
@@ -690,6 +702,8 @@ msgid ""
 "Converting MARC21/XML geographic data containing a single <varname>POINT</"
 "varname> encoded as <varname>hddd.dddddd</varname>"
 msgstr ""
+"<varname>POINT</varname>を一つ含み <varname>hddd."
+"dddddd</varname>でエンコードしたMARC21/XML地理データの変換"
 
 #. Tag: programlisting
 #: reference_input.xml:331
@@ -715,6 +729,25 @@ msgid ""
 "                POINT(-4.5 54.25)\n"
 "                (1 row)"
 msgstr ""
+"SELECT\n"
+"                ST_AsText(\n"
+"                    ST_GeomFromMARC21('<![CDATA[\n"
+"                        <record xmlns=\"http://www.loc.gov/MARC21/slim\">\n"
+"                            <leader>00000nz a2200000nc 4500</leader>\n"
+"                            <controlfield tag=\"001\""
+">040277569</controlfield>\n"
+"                            <datafield tag=\"034\" ind1=\" \" ind2=\" \">\n"
+"                                <subfield code=\"d\">W004.500000</subfield>\n"
+"                                <subfield code=\"e\">W004.500000</subfield>\n"
+"                                <subfield code=\"f\">N054.250000</subfield>\n"
+"                                <subfield code=\"g\">N054.250000</subfield>\n"
+"                            </datafield>\n"
+"                        </record>']]>));\n"
+"\n"
+"                st_astext\n"
+"                -------------------\n"
+"                POINT(-4.5 54.25)\n"
+"                (1 row)"
 
 #. Tag: para
 #: reference_input.xml:333
@@ -723,6 +756,8 @@ msgid ""
 "Converting MARC21/XML geographic data containing a single <varname>POLYGON</"
 "varname> encoded as <varname>hdddmmss</varname>"
 msgstr ""
+"<varname>POLYGON</varname>を一つ含み "
+"<varname>hdddmmss</varname>でエンコードしたMARC21/XML地理データの変換"
 
 #. Tag: programlisting
 #: reference_input.xml:335
@@ -752,6 +787,30 @@ msgid ""
 "52.65))\n"
 "                (1 row)"
 msgstr ""
+"SELECT\n"
+"                ST_AsText(\n"
+"                    ST_GeomFromMARC21('<![CDATA[\n"
+"                        <record xmlns=\"http://www.loc.gov/MARC21/slim\">\n"
+"                            <leader>01062cem a2200241 a 4500</leader>\n"
+"                            <controlfield tag=\"001\">   84696781 "
+"</controlfield>\n"
+"                            <datafield tag=\"034\" ind1=\"1\" ind2=\" \">\n"
+"                                <subfield code=\"a\">a</subfield>\n"
+"                                <subfield code=\"b\">50000</subfield>\n"
+"                                <subfield code=\"d\">E0130600</subfield>\n"
+"                                <subfield code=\"e\">E0133100</subfield>\n"
+"                                <subfield code=\"f\">N0523900</subfield>\n"
+"                                <subfield code=\"g\">N0522300</subfield>\n"
+"                            </datafield>\n"
+"                        </record>']]>));\n"
+"\n"
+"                st_astext\n"
+"                -------------------------------------------------------------"
+"----------------------------------------------------------\n"
+"                POLYGON((13.1 52.65,13.516666666666667 "
+"52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52."
+"65))\n"
+"                (1 row)"
 
 #. Tag: para
 #: reference_input.xml:337
@@ -760,6 +819,8 @@ msgid ""
 "Converting MARC21/XML geographic data containing a <varname>POLYGON</"
 "varname> and a <varname>POINT</varname>:"
 msgstr ""
+"<varname>POLYGON</varname>と<varname>POINT</varname>を含むMARC21/"
+"XML地理データの変換:"
 
 #. Tag: programlisting
 #: reference_input.xml:339
@@ -791,6 +852,34 @@ msgid ""
 "52.65)),POINT(-4.5 54.25))\n"
 "                (1 row)"
 msgstr ""
+"SELECT\n"
+"                ST_AsText(\n"
+"                    ST_GeomFromMARC21('<![CDATA[\n"
+"                <record xmlns=\"http://www.loc.gov/MARC21/slim\">\n"
+"                    <datafield tag=\"034\" ind1=\"1\" ind2=\" \">\n"
+"                        <subfield code=\"a\">a</subfield>\n"
+"                        <subfield code=\"b\">50000</subfield>\n"
+"                        <subfield code=\"d\">E0130600</subfield>\n"
+"                        <subfield code=\"e\">E0133100</subfield>\n"
+"                        <subfield code=\"f\">N0523900</subfield>\n"
+"                        <subfield code=\"g\">N0522300</subfield>\n"
+"                    </datafield>\n"
+"                    <datafield tag=\"034\" ind1=\" \" ind2=\" \">\n"
+"                        <subfield code=\"d\">W004.500000</subfield>\n"
+"                        <subfield code=\"e\">W004.500000</subfield>\n"
+"                        <subfield code=\"f\">N054.250000</subfield>\n"
+"                        <subfield code=\"g\">N054.250000</subfield>\n"
+"                    </datafield>\n"
+"                </record>']]>));\n"
+"                                                                             "
+"           st_astext\n"
+"                -------------------------------------------------------------"
+"-----------------------------------------------------------------------------"
+"-------------------\n"
+"                GEOMETRYCOLLECTION(POLYGON((13.1 52.65,13.516666666666667 "
+"52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52."
+"65)),POINT(-4.5 54.25))\n"
+"                (1 row)"
 
 #. Tag: refname
 #: reference_input.xml:353
