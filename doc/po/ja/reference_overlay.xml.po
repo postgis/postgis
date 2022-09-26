@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-09-26 03:46+0000\n"
-"PO-Revision-Date: 2022-09-08 03:55+0000\n"
+"PO-Revision-Date: 2022-09-27 07:04+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_overlayxml/ja/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: para
 #: reference_overlay.xml:5
@@ -847,6 +847,10 @@ msgid ""
 "components (the boundary) are used for splitting the input. The result "
 "geometry is always a collection."
 msgstr ""
+"この関数は（MULTI)POINT、(MULTI)LINESTRING、(MULTI)POLYGONの境界によるLINESTR"
+"INGの分割と、LINESTRINGによる(MULTI)POLYGONの分割に対応します。(MULTI)POLYGON"
+"を刃として使うとき、線要素 "
+"(境界)は入力の分割に使われます。結果ジオメトリは常にコレクションです。"
 
 #. Tag: para
 #: reference_overlay.xml:393
@@ -870,6 +874,10 @@ msgid ""
 "may be necessary to snap the input to the blade first, using <xref "
 "linkend=\"ST_Snap\"/> with a small tolerance."
 msgstr ""
+"入力と刃が数値の精度の問題でインタセクトしない場合には、入力が思ったように分"
+"割されない可能性があります。この状況を避けるには、先に、<xref linkend="
+"\"ST_Snap\""
+"/>に小さい許容値を与えて、入力を刃にスナップする必要があるかも知れません。"
 
 #. Tag: para
 #: reference_overlay.xml:406
@@ -900,7 +908,7 @@ msgstr ""
 #: reference_overlay.xml:413
 #, no-c-format
 msgid "Polygon split by a Line"
-msgstr ""
+msgstr "ラインによるポリゴンの分割"
 
 #. Tag: para
 #: reference_overlay.xml:425 reference_overlay.xml:459
@@ -930,6 +938,17 @@ msgid ""
 "            POLYGON(..))\n"
 ")"
 msgstr ""
+"SELECT ST_AsText( ST_Split(\n"
+"                ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50), -- circle\n"
+"                ST_MakeLine(ST_Point(10, 10),ST_Point(190, 190)) -- line\n"
+"    ));\n"
+"\n"
+"-- 結果 --\n"
+" GEOMETRYCOLLECTION(\n"
+"            POLYGON((150 90,149.039264020162 "
+"80.2454838991936,146.193976625564 70.8658283817455,..),\n"
+"            POLYGON(..))\n"
+")"
 
 #. Tag: para
 #: reference_overlay.xml:447
@@ -937,7 +956,8 @@ msgstr ""
 msgid ""
 "MultiLineString split by a Point, where the point lies exactly on both "
 "LineStrings."
-msgstr ""
+msgstr "ポイントが確実に両方のラインストリング上にある状態でのポイントによるマルチラ"
+"インストリングの分割。"
 
 #. Tag: programlisting
 #: reference_overlay.xml:480
@@ -956,6 +976,18 @@ msgid ""
 "    LINESTRING(30 30,100 90)\n"
 ")"
 msgstr ""
+"SELECT ST_AsText(ST_Split(\n"
+"    'MULTILINESTRING((10 10, 190 191), (15 15, 30 30, 100 90))',\n"
+"    ST_Point(30,30))) As split;\n"
+"\n"
+"split\n"
+"------\n"
+"GEOMETRYCOLLECTION(\n"
+"    LINESTRING(10 10,30 30),\n"
+"    LINESTRING(30 30,190 190),\n"
+"    LINESTRING(15 15,30 30),\n"
+"    LINESTRING(30 30,100 90)\n"
+")"
 
 #. Tag: para
 #: reference_overlay.xml:482
@@ -965,6 +997,9 @@ msgid ""
 "line. Shows using <xref linkend=\"ST_Snap\"/> to snap the line to the point "
 "to allow it to be split."
 msgstr ""
+"ポイントがライン上に無い場合のポイントによるラインストリングの分割。"
+"分割できるように<xref linkend=\"ST_Snap\""
+"/>を使用してラインをポイントにスナップしています。"
 
 #. Tag: programlisting
 #: reference_overlay.xml:485
@@ -985,12 +1020,26 @@ msgid ""
 " GEOMETRYCOLLECTION(LINESTRING(0 0,100 100)) | "
 "GEOMETRYCOLLECTION(LINESTRING(0 0,51 50),LINESTRING(51 50,100 100))"
 msgstr ""
+"WITH data AS (SELECT\n"
+"  'LINESTRING(0 0, 100 100)'::geometry AS line,\n"
+"  'POINT(51 50)':: geometry AS point\n"
+")\n"
+"SELECT ST_AsText( ST_Split(line, point)) AS no_split,\n"
+"       ST_AsText( ST_Split( ST_Snap(line, point, 1), point)) AS split\n"
+"       FROM data;\n"
+"\n"
+"                  no_split                   |"
+"                                split\n"
+"---------------------------------------------+-------------------------------"
+"--------------------------------------\n"
+" GEOMETRYCOLLECTION(LINESTRING(0 0,100 100)) | GEOMETRYCOLLECTION(LINESTRING("
+"0 0,51 50),LINESTRING(51 50,100 100))"
 
 #. Tag: para
 #: reference_overlay.xml:489
 #, no-c-format
 msgid ", <xref linkend=\"ST_Union\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Union\"/>"
 
 #. Tag: refname
 #: reference_overlay.xml:497
@@ -1299,6 +1348,8 @@ msgid ""
 ", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
 "linkend=\"ST_NPoints\"/>"
 msgstr ""
+", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
+"linkend=\"ST_NPoints\"/>"
 
 #. Tag: refname
 #: reference_overlay.xml:611
