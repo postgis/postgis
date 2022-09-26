@@ -3733,7 +3733,7 @@ Refer to <xref linkend="toTopoGeom" />.
 				</funcsynopsis>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>topoelementarray topoelement <function>GetTopoGeomElementArray</function></funcdef>
+					<funcdef>topoelementarray <function>GetTopoGeomElementArray</function></funcdef>
 					<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
