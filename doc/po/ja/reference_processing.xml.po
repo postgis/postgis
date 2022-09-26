@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-09-19 22:09+0000\n"
-"PO-Revision-Date: 2022-09-14 01:55+0000\n"
+"PO-Revision-Date: 2022-09-27 07:04+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_processingxml/ja/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: para
 #: reference_processing.xml:5
@@ -2512,7 +2512,8 @@ msgstr ""
 msgid ""
 "Use with <xref linkend=\"ST_Collect\"/> to get the minimum bounding circle "
 "of a set of geometries."
-msgstr ""
+msgstr "ジオメトリの集合の最小境界円を得るには<xref linkend=\"ST_Collect\""
+"/>と併用します。"
 
 #. Tag: para
 #: reference_processing.xml:1191 reference_processing.xml:1247
@@ -2521,6 +2522,8 @@ msgid ""
 "To compute two points lying on the mimimum circle (the \"maximum diameter\") "
 "use <xref linkend=\"ST_LongestLine\"/>."
 msgstr ""
+"最小円 (最大対角線)上の二つのポイントを計算するには<xref linkend="
+"\"ST_MinimumBoundingCircle\"/>を使います。"
 
 #. Tag: para
 #: reference_processing.xml:1194
@@ -2628,6 +2631,8 @@ msgid ""
 ", <xref linkend=\"ST_MinimumBoundingRadius\"/>, <xref "
 "linkend=\"ST_LongestLine\"/>"
 msgstr ""
+", <xref linkend=\"ST_MinimumBoundingRadius\"/>, <xref linkend="
+"\"ST_LongestLine\"/>"
 
 #. Tag: refname
 #: reference_processing.xml:1222
@@ -2698,6 +2703,8 @@ msgid ""
 ", <xref linkend=\"ST_MinimumBoundingCircle\"/>, <xref "
 "linkend=\"ST_LongestLine\"/>"
 msgstr ""
+", <xref linkend=\"ST_MinimumBoundingCircle\"/>, <xref linkend="
+"\"ST_LongestLine\"/>"
 
 #. Tag: refname
 #: reference_processing.xml:1267
