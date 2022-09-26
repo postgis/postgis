@@ -457,6 +457,8 @@ MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))
             <para>
             The function supports splitting a LineString by a (Multi)Point, (Multi)LineString or (Multi)Polygon boundary,
             or a (Multi)Polygon by a LineString.
+            When a (Multi)Polygon is used as as the blade, its linear components
+            (the boundary) are used for splitting the input.
             The result geometry is always a collection.
             </para>
 
@@ -466,21 +468,21 @@ MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))
             (although due to numerical rounding this may not be exactly the case).
             </para>
 
+            <note><para>
+            If the the input and blade do not intersect due to numerical precision issues,
+            the input may not be split as expected.
+            To avoid this situation it may be necessary
+            to snap the input to the blade first, using <xref linkend="ST_Snap"/> with a small tolerance.
+            </para></note>
+
             <para>Availability: 2.0.0 requires GEOS</para>
             <para>Enhanced: 2.2.0 support for splitting a line by a multiline, a multipoint or (multi)polygon boundary was introduced.</para>
             <para>Enhanced: 2.5.0 support for splitting a polygon by a multiline was introduced.</para>
 
-            <note><para>To improve the robustness of ST_Split it may be convenient to <xref linkend="ST_Snap"/> the input to the blade in advance using a very low tolerance. Otherwise the internally used coordinate grid may cause tolerance problems, where coordinates of input and blade do not fall onto each other and the input is not being split correctly (see <ulink url="http://trac.osgeo.org/postgis/ticket/2192">#2192</ulink>).</para></note>
-
-            <note><para>
-When a (Multi)Polygon is passed as as the blade, its linear components
-(the boundary) are used for cutting the input.
-            </para></note>
-
         </refsection>
         <refsection>
             <title>Examples</title>
-            <para>Polygon Cut by Line</para>
+            <para>Polygon split by a Line</para>
             <informaltable>
                 <tgroup cols="2">
                     <tbody>
@@ -514,29 +516,18 @@ When a (Multi)Polygon is passed as as the blade, its linear components
                 </tgroup>
             </informaltable>
             <programlisting>
--- this creates a geometry collection consisting of the 2 halves of the polygon
--- this is similar to the example we demonstrated in ST_BuildArea
-SELECT ST_Split(circle, line)
-FROM (SELECT
-    ST_MakeLine(ST_Point(10, 10),ST_Point(190, 190)) As line,
-    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
+SELECT ST_AsText( ST_Split(
+                ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50), -- circle
+                ST_MakeLine(ST_Point(10, 10),ST_Point(190, 190)) -- line
+    ));
 
 -- result --
- GEOMETRYCOLLECTION(POLYGON((150 90,149.039264020162 80.2454838991936,146.193976625564 70.8658283817455,..), POLYGON(..)))
-
--- To convert to individual polygons, you can use ST_Dump or ST_GeometryN
-SELECT ST_AsText((ST_Dump(ST_Split(circle, line))).geom) As wkt
-FROM (SELECT
-    ST_MakeLine(ST_Point(10, 10),ST_Point(190, 190)) As line,
-    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
-
--- result --
-wkt
----------------
-POLYGON((150 90,149.039264020162 80.2454838991936,..))
-POLYGON((60.1371179574584 60.1371179574584,58.4265193848728 62.2214883490198,53.8060233744357 ..))
+ GEOMETRYCOLLECTION(
+            POLYGON((150 90,149.039264020162 80.2454838991936,146.193976625564 70.8658283817455,..),
+            POLYGON(..))
+)
             </programlisting>
-            <para>Multilinestring Cut by point</para>
+            <para>MultiLineString split by a Point, where the point lies exactly on both LineStrings.</para>
             <informaltable>
                 <tgroup cols="2">
                     <tbody>
@@ -570,12 +561,11 @@ POLYGON((60.1371179574584 60.1371179574584,58.4265193848728 62.2214883490198,53.
                 </tgroup>
             </informaltable>
             <programlisting>
-SELECT ST_AsText(ST_Split(mline, pt)) As wktcut
-        FROM (SELECT
-    ST_GeomFromText('MULTILINESTRING((10 10, 190 190), (15 15, 30 30, 100 90))') As mline,
-    ST_Point(30,30) As pt) As foo;
+SELECT ST_AsText(ST_Split(
+    'MULTILINESTRING((10 10, 190 191), (15 15, 30 30, 100 90))',
+    ST_Point(30,30))) As split;
 
-wktcut
+split
 ------
 GEOMETRYCOLLECTION(
     LINESTRING(10 10,30 30),
@@ -584,17 +574,29 @@ GEOMETRYCOLLECTION(
     LINESTRING(30 30,100 90)
 )
             </programlisting>
+
+        <para>LineString split by a Point, where the point does not lie exactly on the line.
+        Shows using <xref linkend="ST_Snap"/> to snap the line to the point to allow it to be split.
+        </para>
+        <programlisting>
+WITH data AS (SELECT
+  'LINESTRING(0 0, 100 100)'::geometry AS line,
+  'POINT(51 50)':: geometry AS point
+)
+SELECT ST_AsText( ST_Split(line, point)) AS no_split,
+       ST_AsText( ST_Split( ST_Snap(line, point, 1), point)) AS split
+       FROM data;
+
+                  no_split                   |                                split
+---------------------------------------------+---------------------------------------------------------------------
+ GEOMETRYCOLLECTION(LINESTRING(0 0,100 100)) | GEOMETRYCOLLECTION(LINESTRING(0 0,51 50),LINESTRING(51 50,100 100))
+
+</programlisting>
         </refsection>
         <refsection>
         <title>See Also</title>
         <para>
-<xref linkend="ST_AsText" />,
-<xref linkend="ST_BuildArea" />,
-<xref linkend="ST_CollectionExtract" />,
-<xref linkend="ST_Dump" />,
-<xref linkend="ST_GeometryN" />,
-<xref linkend="ST_Subdivide" />,
-<xref linkend="ST_Union" />
+            <xref linkend="ST_Snap"/>, <xref linkend="ST_Union" />
         </para>
         </refsection>
     </refentry>
@@ -743,7 +745,6 @@ CREATE TABLE subdivided_geoms AS
       <refsection>
         <title>See Also</title>
         <para>
-<xref linkend="ST_AsText" />,
 <xref linkend="ST_ClipByBox2D" />,
 <xref linkend="ST_Segmentize" />,
 <xref linkend="ST_Split" />,
