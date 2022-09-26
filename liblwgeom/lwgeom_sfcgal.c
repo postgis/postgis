@@ -46,8 +46,8 @@ lwgeom_sfcgal_full_version()
 	const char *version = sfcgal_full_version();
 #else
 	char *version = (char*)lwalloc(MAX_LENGTH_SFCGAL_FULL_VERSION);
-	snprintf(version, MAX_LENGTH_SFCGAL_FULL_VERSION, 
-		"SFCGAL=\"%s\" CGAL=\"Unknown\" Boost=\"Unknown\"", 
+	snprintf(version, MAX_LENGTH_SFCGAL_FULL_VERSION,
+		"SFCGAL=\"%s\" CGAL=\"Unknown\" Boost=\"Unknown\"",
 		sfcgal_version());
 #endif
 	return version;
