@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-09-19 22:09+0000\n"
-"PO-Revision-Date: 2022-09-14 01:55+0000\n"
+"PO-Revision-Date: 2022-09-27 07:04+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_measurexml/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: para
 #: reference_measure.xml:5
@@ -2529,6 +2529,9 @@ msgid ""
 "vertices farthest apart in the geometry. The endpoints of the line lie on "
 "the circle computed by <xref linkend=\"ST_MinimumBoundingCircle\"/>."
 msgstr ""
+"g1とg2が同じジオメトリの場合には、ジオメトリで最も遠くに離れる2頂点を結ぶライ"
+"ンが返ります。このラインの端点は<xref linkend=\"ST_MinimumBoundingCircle\""
+"/>で計算された円の上に存在します。"
 
 #. Tag: para
 #: reference_measure.xml:987
@@ -2585,7 +2588,8 @@ msgid ""
 "Longest line across a single geometry. The length of the line is equal to "
 "the Maximum Distance. The endpoints of the line lie on the Minimum Bounding "
 "Circle."
-msgstr ""
+msgstr "一つのジオメトリを横切る最長のラインす。ラインの長さは最大距離と同じです。ラ"
+"インの端点は最小境界円上に存在します。"
 
 #. Tag: programlisting
 #: reference_measure.xml:1015
