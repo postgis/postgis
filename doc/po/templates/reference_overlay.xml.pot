@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-13 19:13+0000\n"
+"POT-Creation-Date: 2022-09-26 03:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -53,7 +53,7 @@ msgstr ""
 #. Tag: title
 #: reference_overlay.xml:31 reference_overlay.xml:80 reference_overlay.xml:192
 #: reference_overlay.xml:272 reference_overlay.xml:326
-#: reference_overlay.xml:384 reference_overlay.xml:512
+#: reference_overlay.xml:384 reference_overlay.xml:513
 #: reference_overlay.xml:629 reference_overlay.xml:721
 #: reference_overlay.xml:816
 #, no-c-format
@@ -71,14 +71,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:40 reference_overlay.xml:338 reference_overlay.xml:537
+#: reference_overlay.xml:40 reference_overlay.xml:338 reference_overlay.xml:538
 #: reference_overlay.xml:856
 #, no-c-format
 msgid "Performed by the GEOS module."
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:42 reference_overlay.xml:538
+#: reference_overlay.xml:42 reference_overlay.xml:539
 #, no-c-format
 msgid "Availability: 2.2.0"
 msgstr ""
@@ -86,7 +86,7 @@ msgstr ""
 #. Tag: title
 #: reference_overlay.xml:47 reference_overlay.xml:106 reference_overlay.xml:229
 #: reference_overlay.xml:293 reference_overlay.xml:347
-#: reference_overlay.xml:410 reference_overlay.xml:544
+#: reference_overlay.xml:412 reference_overlay.xml:545
 #: reference_overlay.xml:655 reference_overlay.xml:877
 #, no-c-format
 msgid "Examples"
@@ -103,7 +103,7 @@ msgstr ""
 #. Tag: title
 #: reference_overlay.xml:51 reference_overlay.xml:147 reference_overlay.xml:248
 #: reference_overlay.xml:300 reference_overlay.xml:359
-#: reference_overlay.xml:481 reference_overlay.xml:598
+#: reference_overlay.xml:488 reference_overlay.xml:599
 #: reference_overlay.xml:696 reference_overlay.xml:767
 #: reference_overlay.xml:888
 #, no-c-format
@@ -660,11 +660,13 @@ msgstr ""
 msgid ""
 "The function supports splitting a LineString by a (Multi)Point, "
 "(Multi)LineString or (Multi)Polygon boundary, or a (Multi)Polygon by a "
-"LineString. The result geometry is always a collection."
+"LineString. When a (Multi)Polygon is used as as the blade, its linear "
+"components (the boundary) are used for splitting the input. The result "
+"geometry is always a collection."
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:391
+#: reference_overlay.xml:393
 #, no-c-format
 msgid ""
 "This function is in a sense the opposite of <xref linkend=\"ST_Union\"/>. "
@@ -674,13 +676,23 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:397
+#: reference_overlay.xml:399
+#, no-c-format
+msgid ""
+"If the the input and blade do not intersect due to numerical precision "
+"issues, the input may not be split as expected. To avoid this situation it "
+"may be necessary to snap the input to the blade first, using <xref "
+"linkend=\"ST_Snap\"/> with a small tolerance."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:406
 #, no-c-format
 msgid "Availability: 2.0.0 requires GEOS"
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:398
+#: reference_overlay.xml:407
 #, no-c-format
 msgid ""
 "Enhanced: 2.2.0 support for splitting a line by a multiline, a multipoint or "
@@ -688,7 +700,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:399
+#: reference_overlay.xml:408
 #, no-c-format
 msgid ""
 "Enhanced: 2.5.0 support for splitting a polygon by a multiline was "
@@ -696,90 +708,57 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:401
+#: reference_overlay.xml:413
 #, no-c-format
-msgid ""
-"To improve the robustness of ST_Split it may be convenient to <xref "
-"linkend=\"ST_Snap\"/> the input to the blade in advance using a very low "
-"tolerance. Otherwise the internally used coordinate grid may cause tolerance "
-"problems, where coordinates of input and blade do not fall onto each other "
-"and the input is not being split correctly (see <ulink url=\"http://trac."
-"osgeo.org/postgis/ticket/2192\">#2192</ulink>)."
+msgid "Polygon split by a Line"
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:403
-#, no-c-format
-msgid ""
-"When a (Multi)Polygon is passed as as the blade, its linear components (the "
-"boundary) are used for cutting the input."
-msgstr ""
-
-#. Tag: para
-#: reference_overlay.xml:411
-#, no-c-format
-msgid "Polygon Cut by Line"
-msgstr ""
-
-#. Tag: para
-#: reference_overlay.xml:423 reference_overlay.xml:457
+#: reference_overlay.xml:425 reference_overlay.xml:459
 #, no-c-format
 msgid "Before Split"
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:435 reference_overlay.xml:469
+#: reference_overlay.xml:437 reference_overlay.xml:471
 #, no-c-format
 msgid "After split"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:444
+#: reference_overlay.xml:446
 #, no-c-format
 msgid ""
-"-- this creates a geometry collection consisting of the 2 halves of the "
-"polygon\n"
-"-- this is similar to the example we demonstrated in ST_BuildArea\n"
-"SELECT ST_Split(circle, line)\n"
-"FROM (SELECT\n"
-"    ST_MakeLine(ST_Point(10, 10),ST_Point(190, 190)) As line,\n"
-"    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;\n"
+"SELECT ST_AsText( ST_Split(\n"
+"                ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50), -- circle\n"
+"                ST_MakeLine(ST_Point(10, 10),ST_Point(190, 190)) -- line\n"
+"    ));\n"
 "\n"
 "-- result --\n"
-" GEOMETRYCOLLECTION(POLYGON((150 90,149.039264020162 "
-"80.2454838991936,146.193976625564 70.8658283817455,..), POLYGON(..)))\n"
-"\n"
-"-- To convert to individual polygons, you can use ST_Dump or ST_GeometryN\n"
-"SELECT ST_AsText((ST_Dump(ST_Split(circle, line))).geom) As wkt\n"
-"FROM (SELECT\n"
-"    ST_MakeLine(ST_Point(10, 10),ST_Point(190, 190)) As line,\n"
-"    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;\n"
-"\n"
-"-- result --\n"
-"wkt\n"
-"---------------\n"
-"POLYGON((150 90,149.039264020162 80.2454838991936,..))\n"
-"POLYGON((60.1371179574584 60.1371179574584,58.4265193848728 "
-"62.2214883490198,53.8060233744357 ..))"
+" GEOMETRYCOLLECTION(\n"
+"            POLYGON((150 90,149.039264020162 "
+"80.2454838991936,146.193976625564 70.8658283817455,..),\n"
+"            POLYGON(..))\n"
+")"
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:445
+#: reference_overlay.xml:447
 #, no-c-format
-msgid "Multilinestring Cut by point"
+msgid ""
+"MultiLineString split by a Point, where the point lies exactly on both "
+"LineStrings."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:478
+#: reference_overlay.xml:480
 #, no-c-format
 msgid ""
-"SELECT ST_AsText(ST_Split(mline, pt)) As wktcut\n"
-"        FROM (SELECT\n"
-"    ST_GeomFromText('MULTILINESTRING((10 10, 190 190), (15 15, 30 30, 100 "
-"90))') As mline,\n"
-"    ST_Point(30,30) As pt) As foo;\n"
+"SELECT ST_AsText(ST_Split(\n"
+"    'MULTILINESTRING((10 10, 190 191), (15 15, 30 30, 100 90))',\n"
+"    ST_Point(30,30))) As split;\n"
 "\n"
-"wktcut\n"
+"split\n"
 "------\n"
 "GEOMETRYCOLLECTION(\n"
 "    LINESTRING(10 10,30 30),\n"
@@ -793,25 +772,51 @@ msgstr ""
 #: reference_overlay.xml:482
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_BuildArea\"/>, <xref linkend=\"ST_CollectionExtract\"/"
-">, <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_GeometryN\"/>, <xref "
-"linkend=\"ST_Subdivide\"/>, <xref linkend=\"ST_Union\"/>"
+"LineString split by a Point, where the point does not lie exactly on the "
+"line. Shows using <xref linkend=\"ST_Snap\"/> to snap the line to the point "
+"to allow it to be split."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:485
+#, no-c-format
+msgid ""
+"WITH data AS (SELECT\n"
+"  'LINESTRING(0 0, 100 100)'::geometry AS line,\n"
+"  'POINT(51 50)':: geometry AS point\n"
+")\n"
+"SELECT ST_AsText( ST_Split(line, point)) AS no_split,\n"
+"       ST_AsText( ST_Split( ST_Snap(line, point, 1), point)) AS split\n"
+"       FROM data;\n"
+"\n"
+"                  no_split                   "
+"|                                split\n"
+"---------------------------------------------"
+"+---------------------------------------------------------------------\n"
+" GEOMETRYCOLLECTION(LINESTRING(0 0,100 100)) | "
+"GEOMETRYCOLLECTION(LINESTRING(0 0,51 50),LINESTRING(51 50,100 100))"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:489
+#, no-c-format
+msgid ", <xref linkend=\"ST_Union\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_overlay.xml:496
+#: reference_overlay.xml:497
 #, no-c-format
 msgid "ST_Subdivide"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_overlay.xml:497
+#: reference_overlay.xml:498
 #, no-c-format
 msgid "Computes a rectilinear subdivision of a geometry."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_overlay.xml:502
+#: reference_overlay.xml:503
 #, no-c-format
 msgid ""
 "<funcdef>setof geometry <function>ST_Subdivide</function></funcdef> "
@@ -822,7 +827,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:514
+#: reference_overlay.xml:515
 #, no-c-format
 msgid ""
 "Returns a set of geometries that are the result of dividing <varname>geom</"
@@ -831,7 +836,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:519
+#: reference_overlay.xml:520
 #, no-c-format
 msgid ""
 "<code>max_vertices</code> must be 5 or more, as 5 points are needed to "
@@ -840,7 +845,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:523
+#: reference_overlay.xml:524
 #, no-c-format
 msgid ""
 "Point-in-polygon and other spatial operations are normally faster for "
@@ -851,7 +856,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:530
+#: reference_overlay.xml:531
 #, no-c-format
 msgid ""
 "This is a <ulink url=\"https://www.postgresql.org/docs/current/queries-table-"
@@ -862,7 +867,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:539
+#: reference_overlay.xml:540
 #, no-c-format
 msgid ""
 "Enhanced: 2.5.0 reuses existing points on polygon split, vertex count is "
@@ -870,7 +875,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:540
+#: reference_overlay.xml:541
 #, no-c-format
 msgid ""
 "Enhanced: 3.1.0 accept a gridSize parameter, requires GEOS &gt;= 3.9.0 to "
@@ -878,7 +883,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:546
+#: reference_overlay.xml:547
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Subdivide a polygon into parts "
@@ -886,13 +891,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:556
+#: reference_overlay.xml:557
 #, no-c-format
 msgid "Subdivided to maximum 10 vertices"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:559
+#: reference_overlay.xml:560
 #, no-c-format
 msgid ""
 "SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt\n"
@@ -906,7 +911,7 @@ msgid ""
 msgstr ""
 
 #. Tag: screen
-#: reference_overlay.xml:560
+#: reference_overlay.xml:561
 #, no-c-format
 msgid ""
 "rn │                                                      wkt\n"
@@ -923,7 +928,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:562
+#: reference_overlay.xml:563
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Densify a long geography line "
@@ -932,13 +937,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:571
+#: reference_overlay.xml:572
 #, no-c-format
 msgid "The densified and split lines."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:574
+#: reference_overlay.xml:575
 #, no-c-format
 msgid ""
 "SELECT ST_AsText( ST_Subdivide(\n"
@@ -947,7 +952,7 @@ msgid ""
 msgstr ""
 
 #. Tag: screen
-#: reference_overlay.xml:575
+#: reference_overlay.xml:576
 #, no-c-format
 msgid ""
 "LINESTRING(0 0,0.487578359029357 5.57659056746196,0.984542144675897 "
@@ -968,7 +973,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:577
+#: reference_overlay.xml:578
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Subdivide the complex geometries "
@@ -978,7 +983,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:583
+#: reference_overlay.xml:584
 #, no-c-format
 msgid ""
 "WITH complex_areas_to_subdivide AS (\n"
@@ -993,7 +998,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:585
+#: reference_overlay.xml:586
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Create a new table containing "
@@ -1004,7 +1009,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:594
+#: reference_overlay.xml:595
 #, no-c-format
 msgid ""
 "CREATE TABLE subdivided_geoms AS\n"
@@ -1013,11 +1018,11 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:599
+#: reference_overlay.xml:600
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClipByBox2D\"/>, <xref linkend=\"ST_Segmentize\"/>, "
-"<xref linkend=\"ST_Split\"/>, <xref linkend=\"ST_NPoints\"/>"
+", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
+"linkend=\"ST_NPoints\"/>"
 msgstr ""
 
 #. Tag: refname
