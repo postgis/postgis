@@ -1491,10 +1491,10 @@ FROM (SELECT ST_GeomFromText('POLYGON ((40 170, 90 30, 180 100, 40 170))') AS a,
                 </para></listitem>
             <listitem><para><code>2</code>: <emphasis role="bold">Endpoint</emphasis> - all endpoints are in the Boundary.
                 </para></listitem>
-            <listitem><para><code>2</code>: <emphasis role="bold">MultivalentEndpoint</emphasis> - endpoints are in the Boundary if they occur more than once.
+            <listitem><para><code>3</code>: <emphasis role="bold">MultivalentEndpoint</emphasis> - endpoints are in the Boundary if they occur more than once.
                 In other words, the boundary is all the "attached" or "inner" endpoints (but not the "unattached/outer" ones).
                 </para></listitem>
-            <listitem><para><code>2</code>: <emphasis role="bold">MonovalentEndpoint</emphasis> - endpoints are in the Boundary if they occur only once.
+            <listitem><para><code>4</code>: <emphasis role="bold">MonovalentEndpoint</emphasis> - endpoints are in the Boundary if they occur only once.
                 In other words, the boundary is all the "unattached" or "outer" endpoints.
                 </para></listitem>
         </itemizedlist>
