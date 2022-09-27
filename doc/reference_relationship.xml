@@ -1480,10 +1480,23 @@ FROM (SELECT ST_GeomFromText('POLYGON ((40 170, 90 30, 180 100, 40 170))') AS a,
 
       <para><emphasis role="bold">Variant 3:</emphasis> Like variant 2,
             but allows specifying a <emphasis role="bold">Boundary Node Rule</emphasis>.
-            A boundary node rule allows finer control over whether geometry boundary points are
-            considered to lie in the DE-9IM Interior or Boundary.
-            The <varname>boundaryNodeRule</varname> code is:
-            1: OGC/MOD2, 2: Endpoint, 3: MultivalentEndpoint, 4: MonovalentEndpoint. </para>
+            A boundary node rule allows finer control over whether the endpoints of MultiLineStrings
+            are considered to lie in the DE-9IM Interior or Boundary.
+            The <varname>boundaryNodeRule</varname> values are:
+            </para>
+        <itemizedlist>
+            <listitem><para><code>1</code>: <emphasis role="bold">OGC-Mod2</emphasis> - line endpoints are in the Boundary if they occur an odd number of times.
+                This is the rule defined by the OGC SFS standard, and is the default for <function>ST_Relate</function>.
+                </para></listitem>
+            <listitem><para><code>2</code>: <emphasis role="bold">Endpoint</emphasis> - all endpoints are in the Boundary.
+                </para></listitem>
+            <listitem><para><code>2</code>: <emphasis role="bold">MultivalentEndpoint</emphasis> - endpoints are in the Boundary if they occur more than once.
+                In other words, the boundary is all the "attached" or "inner" endpoints (but not the "unattached/outer" ones).
+                </para></listitem>
+            <listitem><para><code>2</code>: <emphasis role="bold">MonovalentEndpoint</emphasis> - endpoints are in the Boundary if they occur only once.
+                In other words, the boundary is all the "unattached" or "outer" endpoints.
+                </para></listitem>
+        </itemizedlist>
 
       <para>This function is not in the OGC spec, but is implied. see s2.1.13.2</para>
       <para>&sfs_compliant; s2.1.1.2 // s2.1.13.3</para>
@@ -1529,16 +1542,42 @@ SELECT c.* , p.name As poly_name
     <programlisting>
 SELECT ST_Relate( 'POINT(1 2)',
                   ST_Buffer( 'POINT(1 2)', 2));
-st_relate
 -----------
 0FFFFF212
 
 SELECT ST_Relate( 'LINESTRING(1 2, 3 4)',
                   'LINESTRING(5 6, 7 8)' );
-st_relate
 -----------
 FF1FF0102
 </programlisting>
+
+<para>Using different Boundary Node Rules to compute the spatial relationship
+between a LineString and a MultiLineString with a duplicate endpoint <code>(3 3)</code>:
+</para>
+<itemizedlist>
+    <listitem><para>Using the <emphasis role="bold">OGC-Mod2</emphasis> rule (1)
+        the duplicate endpoint is in the <emphasis role="bold">interior</emphasis> of the MultiLineString,
+        so the DE-9IM matrix entry [aB:bI] is <code>0</code> and [aB:bB] is <code>F</code>.
+    </para></listitem>
+    <listitem><para>Using the <emphasis role="bold">Endpoint</emphasis> rule (2)
+        the duplicate endpoint is in the <emphasis role="bold">boundary</emphasis> of the MultiLineString,
+        so the DE-9IM matrix entry [aB:bI] is <code>F</code> and [aB:bB] is <code>0</code>.
+    </para></listitem>
+</itemizedlist>
+    <programlisting>
+WITH data AS (SELECT
+  'LINESTRING(1 1, 3 3)'::geometry AS a_line,
+  'MULTILINESTRING((3 3, 3 5), (3 3, 5 3))':: geometry AS b_multiline
+)
+SELECT ST_Relate( a_line, b_multiline, 1) AS bnr_mod2,
+       ST_Relate( a_line, b_multiline, 2) AS bnr_endpoint
+    FROM data;
+
+ bnr_mod2  | bnr_endpoint
+-----------+--------------
+ FF10F0102 | FF1F00102
+</programlisting>
+
 
   </refsection>
 
