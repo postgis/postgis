@@ -1066,7 +1066,8 @@ FROM (VALUES
 ('MULTILINESTRING((0 0, 1 1), EMPTY)'),
 ('MULTILINESTRING(EMPTY, EMPTY)'),
 (NULL),
-('POLYGON((0 0, 1 0, 1 1, 0 0))'),
+-- GEOS versions disagree on LineMerge for this polygon.
+-- ('POLYGON((0 0, 1 0, 1 1, 0 0))'),
 ('GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1))'),
 ('MULTILINESTRING EMPTY'),
 ('MULTILINESTRING((0 0, 0 0))')
