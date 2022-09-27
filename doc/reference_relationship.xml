@@ -1437,9 +1437,10 @@ FROM (SELECT ST_GeomFromText('POLYGON ((40 170, 90 30, 180 100, 40 170))') AS a,
             (e.g. <code>'FF1FF0102'</code>).
             </para>
             <para>
-            A specific kind of spatial relationships is evaluated by comparing the intersection
+            A specific kind of spatial relationship can be tested by matching the intersection
             matrix to an <emphasis>intersection matrix pattern</emphasis>.
-            A pattern can include the additional symbols 'T' and '*'.
+            Patterns can include the additional symbols 'T' (meaning "intersection is non-empty")
+            and '*' (meaning "any value").
             Common spatial relationships are provided by the named functions
             <xref linkend="ST_Contains" />, <xref linkend="ST_ContainsProperly" />,
             <xref linkend="ST_Covers" />, <xref linkend="ST_CoveredBy" />,
