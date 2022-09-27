@@ -482,7 +482,7 @@ MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))
         </refsection>
         <refsection>
             <title>Examples</title>
-            <para>Polygon split by a Line</para>
+            <para>Split a Polygon by a Line.</para>
             <informaltable>
                 <tgroup cols="2">
                     <tbody>
@@ -527,7 +527,7 @@ SELECT ST_AsText( ST_Split(
             POLYGON(..))
 )
             </programlisting>
-            <para>MultiLineString split by a Point, where the point lies exactly on both LineStrings.</para>
+            <para>Split a MultiLineString a Point, where the point lies exactly on both LineStrings elements.</para>
             <informaltable>
                 <tgroup cols="2">
                     <tbody>
@@ -575,7 +575,7 @@ GEOMETRYCOLLECTION(
 )
             </programlisting>
 
-        <para>LineString split by a Point, where the point does not lie exactly on the line.
+        <para>Split a LineString by a Point, where the point does not lie exactly on the line.
         Shows using <xref linkend="ST_Snap"/> to snap the line to the point to allow it to be split.
         </para>
         <programlisting>
@@ -583,14 +583,13 @@ WITH data AS (SELECT
   'LINESTRING(0 0, 100 100)'::geometry AS line,
   'POINT(51 50)':: geometry AS point
 )
-SELECT ST_AsText( ST_Split(line, point)) AS no_split,
-       ST_AsText( ST_Split( ST_Snap(line, point, 1), point)) AS split
+SELECT ST_AsText( ST_Split( ST_Snap(line, point, 1), point)) AS snapped_split,
+       ST_AsText( ST_Split(line, point)) AS not_snapped_not_split
        FROM data;
 
-                  no_split                   |                                split
----------------------------------------------+---------------------------------------------------------------------
- GEOMETRYCOLLECTION(LINESTRING(0 0,100 100)) | GEOMETRYCOLLECTION(LINESTRING(0 0,51 50),LINESTRING(51 50,100 100))
-
+                            snapped_split                            |            not_snapped_not_split
+---------------------------------------------------------------------+---------------------------------------------
+ GEOMETRYCOLLECTION(LINESTRING(0 0,51 50),LINESTRING(51 50,100 100)) | GEOMETRYCOLLECTION(LINESTRING(0 0,100 100))
 </programlisting>
         </refsection>
         <refsection>
