@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-09-19 22:09+0000\n"
-"PO-Revision-Date: 2022-09-21 07:04+0000\n"
+"PO-Revision-Date: 2022-09-27 07:04+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_relationshipxml/ja/>\n"
@@ -221,7 +221,8 @@ msgstr "ST_Contains"
 msgid ""
 "Tests if every point of B lies in A, and their interiors have a point in "
 "common"
-msgstr ""
+msgstr "Bの全てのポイントがA内にあり、かつ、双方の内部に共有点が存在するかどうかをテ"
+"ストします。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:76
@@ -244,6 +245,10 @@ msgid ""
 "equivalently, no points of B lie in the exterior of A), and the interiors of "
 "A and B have at least one point in common."
 msgstr ""
+"ジオメトリAがジオメトリBを含む場合にはTRUEを返します。AがBを含むというのは、"
+"Bのポイントの全てがAの内側 (つまりAの内部または境界)にあり (Aの外部にBのポイ"
+"ントが全くないとも言えます)、かつBの内部の少なくとも一つのポイントがAの内部に"
+"ある場合に限ります。"
 
 #. Tag: para
 #: reference_relationship.xml:97
@@ -256,6 +261,11 @@ msgid ""
 "<code>ST_Contains(B,A) = true</code>, then the two geometries must be "
 "topologically equal (<code>ST_Equals(A,B) = true</code>)."
 msgstr ""
+"包含関係は反射関係です。あらゆるジオメトリは自己を包含します (対照的に<xref "
+"linkend=\"ST_ContainsProperly\"/>述語内ではジオメトリは確実な包含には<emphasi"
+"s>なりません</emphasis>)。また、包含関係は非対称です。<code>ST_Contains(A,B) "
+"= true</code>かつ<code>ST_Contains(B,A) = true</code>の場合には、"
+"二つのジオメトリはトポロジ的に等価です (<code>ST_Equals(A,B) = true</code>)。"
 
 #. Tag: para
 #: reference_relationship.xml:104
@@ -264,6 +274,8 @@ msgid ""
 "ST_Contains is the converse of <xref linkend=\"ST_Within\"/>. So, "
 "<code>ST_Contains(A,B) = ST_Within(B,A)</code>."
 msgstr ""
+"ST_Containsは<xref linkend=\"ST_Within\"/>の反対です。<code>ST_Contains(A,B) "
+"= ST_Within(B,A)</code>となります。"
 
 #. Tag: para
 #: reference_relationship.xml:107
@@ -415,7 +427,8 @@ msgstr "<varname>POLYGON</varname> / <varname>POLYGON</varname>"
 msgid ""
 "<function>ST_Contains</function> returns <varname>FALSE</varname> in the "
 "following situations:"
-msgstr ""
+msgstr "次に示す状況では<function>ST_Contains</function>は<varname>FALSE</varname>を"
+"返します。"
 
 #. Tag: para
 #: reference_relationship.xml:202
@@ -431,12 +444,15 @@ msgid ""
 "returns <varname>FALSE</varname> in the following situations (whereas "
 "<function>ST_Covers</function> returns <varname>TRUE</varname>):"
 msgstr ""
+"次に示す状況にあっては、内部のインタセクトの状態のために (<function>ST_Covers"
+"</function>だと<varname>TRUE</varname>を返すのに)<function>ST_Contains</funct"
+"ion>は<varname>FALSE</varname>を返します。"
 
 #. Tag: para
 #: reference_relationship.xml:233
 #, no-c-format
 msgid "<varname>LINESTRING</varname> / <varname>POINT</varname>"
-msgstr ""
+msgstr "<varname>LINESTRING</varname> / <varname>POINT</varname>"
 
 #. Tag: programlisting
 #: reference_relationship.xml:251
@@ -534,7 +550,7 @@ msgstr "ST_ContainsProperly"
 #: reference_relationship.xml:264
 #, no-c-format
 msgid "Tests if every point of B lies in the interior of A"
-msgstr ""
+msgstr "Bの全てのポイントがAの内部にあるかをテストします。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:269
@@ -555,6 +571,8 @@ msgid ""
 "Returns <varname>true</varname> if every point of B lies inside A (or "
 "equivalently, no point of B lies in the the boundary or exterior of A)."
 msgstr ""
+"Bの全てのポイントがAの内側にある (もしくは、Aの外部にも境界にもBのポイントが"
+"無い)場合に<varname>TRUE</varname>を返します。"
 
 #. Tag: para
 #: reference_relationship.xml:287
@@ -583,6 +601,11 @@ msgid ""
 "out test geometries which lie fully inside the area. In these cases the "
 "intersection is known a priori to be exactly the original test geometry."
 msgstr ""
+"大きいポリゴンジオメトリでのジオメトリの集合のインタセクションを計算する際に"
+"この述語を使います。インタセクションはかなり遅いので、ContainsProperlyを使っ"
+"て、対象ジオメトリのうち全体が領域内にあるものを抜き出すことができ、効率的に"
+"なります。これらの場面では、インタセクションは確実に元の対象ジオメトリである"
+"ことが直感的に分かります。"
 
 #. Tag: para
 #: reference_relationship.xml:296
@@ -716,7 +739,7 @@ msgstr "ST_CoveredBy"
 #: reference_relationship.xml:331
 #, no-c-format
 msgid "Tests if every point of A lies in B"
-msgstr ""
+msgstr "Aの全てのポイントがB内にあるかをテストします。"
 
 #. Tag: funcsynopsis
 #: reference_relationship.xml:335
