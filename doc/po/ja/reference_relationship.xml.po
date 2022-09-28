@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-09-19 22:09+0000\n"
-"PO-Revision-Date: 2022-09-27 07:04+0000\n"
+"PO-Revision-Date: 2022-09-30 09:04+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_relationshipxml/ja/>\n"
@@ -288,6 +288,12 @@ msgid ""
 "spatial.html\">Subtleties of OGC Covers, Contains, Within</ulink>. The <xref "
 "linkend=\"ST_Covers\"/> predicate provides a more inclusive relationship."
 msgstr ""
+"内部が必ず共通の点を持たなければならないので、定義の微妙な点は、ポリゴンとラ"
+"インが境界であるラインとポイントを<emphasis>含まない</emphasis>ことです。詳細"
+"については、<ulink url=\"http://lin-ear-th-inking.blogspot.com/2007/06/"
+"subtleties-of-ogc-covers-spatial.html\">Subtleties of OGC Covers, Contains, "
+"Within</ulink>をご覧下さい。<xref linkend=\"ST_Covers\""
+"/>述語は、より包括的な関係を提供します。"
 
 #. Tag: para
 #: reference_relationship.xml:113
@@ -769,6 +775,10 @@ msgid ""
 "inside (i.e. intersects the interior or boundary of) Geometry/Geography B. "
 "Equivalently, tests that no point of A lies outside (in the exterior of) B."
 msgstr ""
+"ジオメトリ/ジオグラフィAの全ての点がジオメトリ/ジオグラフィBの内側にある (つ"
+"まりBの境界か内部とインタセクトする)場合に<varname>TRUE</varname>を返します。"
+"AにBの外側にある "
+"(Bの外部にある)点が無いかどうかをテストする、と言い換えられます。"
 
 #. Tag: para
 #: reference_relationship.xml:367
@@ -777,6 +787,8 @@ msgid ""
 "ST_CoveredBy is the converse of <xref linkend=\"ST_Covers\"/>. So, "
 "<code>ST_CoveredBy(A,B) = ST_Covers(B,A)</code>."
 msgstr ""
+"ST_CoveredByは<xref linkend=\"ST_Covers\""
+"/>の反対です。<code>ST_CoveredBy(A,B) = ST_Covers(B,A)</code>となります。"
 
 #. Tag: para
 #: reference_relationship.xml:370
@@ -786,6 +798,8 @@ msgid ""
 "linkend=\"ST_Within\"/>, since it has a simpler definition which does not "
 "have the quirk that \"boundaries are not within their geometry\"."
 msgstr ""
+"一般に、この関数は<xref linkend=\"ST_Within\"/>の代わりに使います。「境界がジ"
+"オメトリの内側に無い」という奇妙な言葉が定義に含まれないためです。"
 
 #. Tag: para
 #: reference_relationship.xml:374
@@ -861,7 +875,7 @@ msgstr "ST_Covers"
 #: reference_relationship.xml:408
 #, no-c-format
 msgid "Tests if every point of B lies in A"
-msgstr ""
+msgstr "Bの全ての点がA内にあるかをテストします。"
 
 #. Tag: funcsynopsis
 #: reference_relationship.xml:412
@@ -891,6 +905,9 @@ msgid ""
 "inside (i.e. intersects the interior or boundary of) Geometry/Geography A. "
 "Equivalently, tests that no point of B lies outside (in the exterior of) A."
 msgstr ""
+"ジオメトリ/ジオグラフィBの全てのポイントがジオメトリ/"
+"ジオグラフィAの内側にある (内部または境界とインタセクトする)場合に<varname>TR"
+"UE</varname>を返します。Aの外部にBの点が無いことと等価です。"
 
 #. Tag: para
 #: reference_relationship.xml:443
@@ -899,6 +916,8 @@ msgid ""
 "ST_Covers is the converse of <xref linkend=\"ST_CoveredBy\"/>. So, "
 "<code>ST_Covers(A,B) = ST_CoveredBy(B,A)</code>."
 msgstr ""
+"ST_Covers は<xref linkend=\"ST_CoveredBy\"/>の逆です。<code>ST_Covers(A,B) = "
+"ST_CoveredBy(B,A)</code>となります。"
 
 #. Tag: para
 #: reference_relationship.xml:446
@@ -908,6 +927,9 @@ msgid ""
 "linkend=\"ST_Contains\"/>, since it has a simpler definition which does not "
 "have the quirk that \"geometries do not contain their boundary\"."
 msgstr ""
+"一般に、この関数は<xref linkend=\"ST_Contains\"/>の代わりに使われるべきもので"
+"す。定義が「ジオメトリがその境界を含まない」という奇妙なものになっていないか"
+"らです。"
 
 #. Tag: para
 #: reference_relationship.xml:451
@@ -1037,7 +1059,8 @@ msgstr "ST_Crosses"
 #, no-c-format
 msgid ""
 "Tests if two geometries have some, but not all, interior points in common"
-msgstr ""
+msgstr "二つのジオメトリが内部に共有ポイントを持ち、かつそれだけにならないようになっ"
+"ているかテストします。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:497
@@ -1247,7 +1270,7 @@ msgstr "ST_Disjoint"
 #: reference_relationship.xml:656
 #, no-c-format
 msgid "Tests if two geometries have no points in common"
-msgstr ""
+msgstr "二つのジオメトリが共有点を持たないようになっているかテストします。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:660
@@ -1331,7 +1354,7 @@ msgstr "ST_Equals"
 #: reference_relationship.xml:712
 #, no-c-format
 msgid "Tests if two geometries include the same set of points"
-msgstr ""
+msgstr "二つのジオメトリが同じ点集合になっているかテストします。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:717
@@ -1439,7 +1462,8 @@ msgstr "ST_Intersects"
 #, no-c-format
 msgid ""
 "Tests if two geometries intersect (they have at least one point in common)"
-msgstr ""
+msgstr "二つのジオメトリがインタセクトしている "
+"(少なくとも一つの共有点がある)かどうかテストします。"
 
 #. Tag: funcsynopsis
 #: reference_relationship.xml:767
@@ -1681,7 +1705,7 @@ msgstr "ST_LineCrossingDirection"
 #: reference_relationship.xml:856
 #, no-c-format
 msgid "Returns a number indicating the crossing behavior of two LineStrings"
-msgstr ""
+msgstr "二つのラインストリングがどのように交差しているかを示す数字を返します。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:861
@@ -1930,7 +1954,8 @@ msgstr "ST_OrderingEquals"
 msgid ""
 "Tests if two geometries represent the same geometry and have points in the "
 "same directional order"
-msgstr ""
+msgstr "二つのジオメトリが同じジオメトリを表現し、かつ点の並び順が同じかどうかをテス"
+"トします。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:978
@@ -2040,7 +2065,8 @@ msgstr "ST_Overlaps"
 msgid ""
 "Tests if two geometries have the same dimension and intersect, but each has "
 "at least one point not in the other"
-msgstr ""
+msgstr "二つのジオメトリが同じ次元を持ち、インタセクトして、かつ相手と重ならない点少"
+"なくとも一つあるかをテストします。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:1021
@@ -2064,6 +2090,11 @@ msgid ""
 "equivalently, neither one covers the other). The overlaps relationship is "
 "symmetric and irreflexive."
 msgstr ""
+"ジオメトリAとBが「空間的にオーバラップする」場合にTRUEを返します。ジオメトリ"
+"が同じ次元で、内部のインタセクションも同じ次元で、"
+"少なくとも一つの点がもう一方の外側にある (一方がもう一方を覆っている状態でな"
+"いのと等価です)と、二つのジオメトリがオーバラップしていると言います。オーバラ"
+"ップの関係は、対称性があり、無反射性があります。"
 
 #. Tag: para
 #: reference_relationship.xml:1040
@@ -2683,7 +2714,8 @@ msgstr "ST_Touches"
 msgid ""
 "Tests if two geometries have at least one point in common, but their "
 "interiors do not intersect"
-msgstr ""
+msgstr "二つのジオメトリが少なくとも一つの共有点を持ち、かつ内部でインタセクトしてい"
+"ないようになっているかテストします。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:1335
@@ -2816,7 +2848,8 @@ msgstr "ST_Within"
 msgid ""
 "Tests if every point of A lies in B, and their interiors have a point in "
 "common"
-msgstr ""
+msgstr "Aの全てのポイントがB内にあり、かつ両方の内部が共有点を持つかどうかをテストし"
+"ます。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:1480
@@ -2839,6 +2872,9 @@ msgid ""
 "equivalently, no points of A lie in the exterior of B), and the interiors of "
 "A and B have at least one point in common."
 msgstr ""
+"ジオメトリAがジオメトリB内にある場合にTRUEを返します。Aの全ての点がBの内側 ("
+"内部または境界)にあり、Aの内部とBの内部に少なくとも一つの共有点がある場合に限"
+"って、AはB内にあると言います。"
 
 #. Tag: para
 #: reference_relationship.xml:1500
@@ -2846,7 +2882,7 @@ msgstr ""
 msgid ""
 "For this function to make sense, the source geometries must both be of the "
 "same coordinate projection, having the same SRID."
-msgstr ""
+msgstr "渡すジオメトリが両方とも同じSRIDでなければ、この関数は意味がありません。"
 
 #. Tag: para
 #: reference_relationship.xml:1504
@@ -2857,6 +2893,11 @@ msgid ""
 "<code>ST_Within(B,A) = true</code>, then the two geometries must be "
 "topologically equal (<code>ST_Equals(A,B) = true</code>)."
 msgstr ""
+"内にある、という関係性には反射性があります。全てのジオメトリは、自分の内にあ"
+"ると言えます。また、非対称性を持ちます。<code>ST_Within(A,B) = "
+"true</code>かつ<code>ST_Within(B,A) = true</code>の場合には、"
+"二つのジオメトリは必ずトポロジ的に等価 (<code>ST_Equals(A,B) = "
+"true</code>)になります。"
 
 #. Tag: para
 #: reference_relationship.xml:1508
@@ -2865,6 +2906,8 @@ msgid ""
 "ST_Within is the converse of <xref linkend=\"ST_Contains\"/>. So, "
 "<code>ST_Within(A,B) = ST_Contains(B,A)</code>."
 msgstr ""
+"ST_Withinは<xref linkend=\"ST_Contains\"/>の反対です。<code>ST_Within(A,B) = "
+"ST_Contains(B,A)</code>となります。"
 
 #. Tag: para
 #: reference_relationship.xml:1511
@@ -2878,6 +2921,12 @@ msgid ""
 "The <xref linkend=\"ST_CoveredBy\"/> predicate provides a more inclusive "
 "relationship."
 msgstr ""
+"内部が必ず共有点を持つので、定義は、ポリゴンまたはラインの境界上にあるライン"
+"またはポイントはジオメトリの内に<emphasis>ない</emphasis>という微妙なものにな"
+"ります。詳細については、<ulink url=\"http://lin-ear-th-inking.blogspot.com/"
+"2007/06/subtleties-of-ogc-covers-spatial.html\">Subtleties of OGC Covers, "
+"Contains, Within</ulink>をご覧下さい。<xref linkend=\"ST_CoveredBy\""
+"/>述語はより包括的な関係を提供します。"
 
 #. Tag: para
 #: reference_relationship.xml:1517
@@ -3478,7 +3527,7 @@ msgstr "ST_PointInsideCircle"
 #, no-c-format
 msgid ""
 "Tests if a point geometry is inside a circle defined by a center and radius"
-msgstr ""
+msgstr "ポイントジオメトリが中心と半径で定められた円の内側にあるかをテストします。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:1824
