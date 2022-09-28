@@ -1,10 +1,17 @@
+PostGIS 3.3.2
+xxxx/xx/xx
+
+* Bug Fix *
+  - #5248, Marc21 documentation missing (Regina Obe)
+  - #5420, ST_DumpPoints and ST_DumpSegments crash with empty polygon (Regina Obe)
+
+
 PostGIS 3.3.1
 2022/09/09
 
  * Bug Fix *
   - #5227, typo in ST_LineLocatePoint error message (Sandro Santilli)
   - #5231, PG15 no longer compiles because SQL/JSON removed PG upstream (Regina Obe)
-  - #5248, Marc21 documentation missing (Regina Obe)
 
 PostGIS 3.3.0
 2022/08/26
