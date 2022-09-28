@@ -71,3 +71,9 @@ FROM (
             )'::geometry AS geom
               ) AS g
      ) j;
+
+SELECT '#5240',  dp.path, ST_AsText(dp.geom)
+	FROM ( SELECT ST_GeomFromText('MULTIPOLYGON (((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)), EMPTY)', 4326) As the_geom ) As foo1, ST_DumpSegments(foo1.the_geom) AS dp;
+
+SELECT '#5240',  dp.path, ST_AsText(dp.geom)
+	FROM ( SELECT ST_GeomFromText('MULTIPOLYGON (EMPTY, ((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)) )', 4326) As the_geom ) As foo1, ST_DumpSegments(foo1.the_geom) AS dp;
