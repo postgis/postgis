@@ -338,7 +338,7 @@ EOF
 DO LANGUAGE 'plpgsql'
 \$postgis_proc_upgrade\$
 BEGIN
-  IF current_setting('server_version_num')::integer >= 120000
+  IF pg_catalog.current_setting('server_version_num')::integer >= 120000
   THEN
     EXECUTE \$postgis_proc_upgrade_parsed_def\$ $pg12_def \$postgis_proc_upgrade_parsed_def\$;
   ELSIF $last_updated > version_from_num OR (
