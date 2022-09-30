@@ -222,7 +222,7 @@ for EXTNAME in postgis postgis_raster postgis_topology postgis_sfcgal postgis_ti
 	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension/$EXTNAME--${POSTGIS_MICRO_VER}--${POSTGIS_MICRO_VER}next.sql
 
 	# special cases of ANY and next
-	cp extensions/$EXTNAME/sql/$EXTNAME--TEMPLATED--TO--ANY.sql >  ${PGPATHEDB}/share/extension/$EXTNAME--ANY--${POSTGIS_MINOR_MAX_VER}.sql
+	cp extensions/$EXTNAME/sql/$EXTNAME--TEMPLATED--TO--ANY.sql ${PGPATHEDB}/share/extension/$EXTNAME--ANY--${POSTGIS_MINOR_MAX_VER}.sql
 
 	if test "$EXTNAME" = "address_standardizer"; then #repeat for address_standardizer_data_us
 		cp extensions/$EXTNAME/sql/${EXTNAME}_data_us--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension
