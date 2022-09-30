@@ -128,7 +128,7 @@ endif
 	$(SQLPP) -I@top_builddir@/postgis/ $< > $@.tmp
 	grep -v '^#' $@.tmp | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g;s'@extschema@\.''g" > $@
-	rm $@.tmp
+	rm -f $@.tmp
 
 ../../liblwgeom/.libs/liblwgeom.a:
 	$(MAKE) -C ../../liblwgeom

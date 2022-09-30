@@ -188,7 +188,7 @@ $(XML_INPUTS_POT): $(srcdir)/po/templates/%.xml.pot: %.xml
       mv $@.tmp $@; \
     else \
       echo "$@ unchanged"; \
-      rm $@.tmp; \
+      rm -f $@.tmp; \
     fi; \
   else \
 	  $(XML2POT) $< > $@; \

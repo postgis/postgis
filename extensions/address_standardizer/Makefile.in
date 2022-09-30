@@ -68,7 +68,7 @@ sql/%.sql: %.sql.in | sql
 	$(SQLPP) -I@buiddir@/../libpgcommon $< > $@.tmp
 	grep -v '^#' $@.tmp | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" > $@
-	rm $@.tmp
+	rm -f $@.tmp
 
 %.control: %.control.in Makefile
 	cat $< \
