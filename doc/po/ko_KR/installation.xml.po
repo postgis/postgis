@@ -10,15 +10,16 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-08-08 04:50+0000\n"
-"PO-Revision-Date: 2018-07-22 02:56+0000\n"
-"Last-Translator: georgersilva <georger.silva@gmail.com>\n"
-"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
-"language/ko_KR/)\n"
+"PO-Revision-Date: 2022-10-02 02:04+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"Language-Team: Korean <https://weblate.osgeo.org/projects/postgis/"
+"installationxml/ko/>\n"
 "Language: ko_KR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: title
 #: installation.xml:3
@@ -42,11 +43,11 @@ msgstr "짧은 설명"
 #: installation.xml:11
 #, no-c-format
 msgid "To compile assuming you have all the dependencies in your search path:"
-msgstr "사용자의 검색 경로에 모든 의존성이 설정되어 있을 깨 컴파일하려면:"
+msgstr "사용자의 검색 경로에 모든 의존성이 설정되어 있을 때 컴파일하려면:"
 
 #. Tag: programlisting
 #: installation.xml:12
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "tar -xvfz postgis-&last_release_version;.tar.gz\n"
 "cd postgis-&last_release_version;\n"
@@ -54,7 +55,7 @@ msgid ""
 "make\n"
 "make install"
 msgstr ""
-"tar xvfz postgis-&last_release_version;.tar.gz\n"
+"tar -xvfz postgis-&last_release_version;.tar.gz\n"
 "cd postgis-&last_release_version;\n"
 "./configure\n"
 "make\n"
@@ -62,20 +63,21 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:13
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Once PostGIS is installed, it needs to be enabled (<xref "
 "linkend=\"create_spatial_db\"/>) or upgraded (<xref linkend=\"upgrading\"/>) "
 "in each individual database you want to use it in."
 msgstr ""
-"PostGIS가 설치되면, PostGIS를 사용하고자 하는 모든 데이터베이스 각각에서 활성"
-"화해야 합니다."
+"PostGIS가 설치되면, PostGIS를 사용하고자 하는 모든 데이터베이스 각각에서 "
+"활성화하거나 (<xref linkend=\"create_spatial_db\"/>)업그레이드(<xref linkend="
+"\"upgrading\"/>)해야 합니다."
 
 #. Tag: title
 #: installation.xml:23
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Compiling and Install from Source"
-msgstr "소스를 컴파일하고 설치하기: 상세 설명"
+msgstr "소스를 컴파일하고 설치하기"
 
 #. Tag: para
 #: installation.xml:26
@@ -85,8 +87,8 @@ msgid ""
 "many cases compilation is only necessary if you want the most bleeding edge "
 "versions or you are a package maintainer."
 msgstr ""
-"현재 많은 OS 시스템들이 PostgreSQL/PostGIS용 사전 구축된 패키지를 포함하고 있"
-"습니다. 많은 경우, 최첨단 버전이 필요하거나 패키지 관리자인 경우가 아니라면 "
+"현재 많은 OS 시스템들이 PostgreSQL/PostGIS용 사전 구축된 패키지를 포함하고 "
+"있습니다. 많은 경우, 최신 버전이 필요하거나 패키지 관리자인 경우가 아니라면 "
 "컴파일할 필요가 없습니다."
 
 #. Tag: para
