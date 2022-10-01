@@ -1,12 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
 # Florentin Drogeanu <drogeanu.florentin@gmail.com>, 2022.
+# Regina Obe <regina@arrival3d.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-13 19:13+0000\n"
-"PO-Revision-Date: 2022-08-16 23:55+0000\n"
-"Last-Translator: Florentin Drogeanu <drogeanu.florentin@gmail.com>\n"
+"PO-Revision-Date: 2022-10-02 02:04+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Romanian <https://weblate.osgeo.org/projects/postgis/"
 "administrationxml/ro/>\n"
 "Language: ro\n"
@@ -15,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: title
 #: administration.xml:3
@@ -118,7 +119,7 @@ msgstr "POSTGIS_GDAL_ENABLED_DRIVERS=\"GTiff PNG JPEG GIF XYZ\""
 
 #. Tag: para
 #: administration.xml:27
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "If you are on windows, do not quote the driver list"
 msgstr "Dacă sunteți pe Windows, nu citați lista de drivere"
 
