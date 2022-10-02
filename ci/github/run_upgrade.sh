@@ -19,7 +19,7 @@ export CUNIT_VALGRIND_FLAGS="--leak-check=full --error-exitcode=1"
 #bash ./ci/github/logbt --
 make -j
 #bash ./ci/github/logbt \ --
-make install
+sudo make install
 export POSTGIS_MAJOR_VERSION=`grep ^POSTGIS_MAJOR_VERSION Version.config | cut -d= -f2`
 export POSTGIS_MINOR_VERSION=`grep ^POSTGIS_MINOR_VERSION Version.config | cut -d= -f2`
 export POSTGIS_MICRO_VERSION=`grep ^POSTGIS_MICRO_VERSION Version.config | cut -d= -f2`
