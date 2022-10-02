@@ -3051,7 +3051,7 @@ BEGIN
 			END IF; --}
 		ELSE -- The code is already packaged, upgrade it --}{
 			sql = format(
-				'ALTER EXTENSION %1$I UPDATE TO ANY;',
+				'ALTER EXTENSION %1$I UPDATE TO "ANY";'
 				'ALTER EXTENSION %1$I UPDATE TO %2$I',
 				rec.name, target_version
 				);
