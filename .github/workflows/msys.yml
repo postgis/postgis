@@ -13,8 +13,8 @@ jobs:
         #fail-fast: false
         include:
           # mingw32 fail: addface
-          - { icon: '🟦', sys: mingw64 }
-          - { icon: '🟨', sys: ucrt64  } # Experimental!
+         # - { icon: '🟦', sys: mingw64 }
+         # - { icon: '🟨', sys: ucrt64  } # Experimental!
           - { icon: '🟧', sys: clang64 } # Experimental!
     defaults:
       run:
