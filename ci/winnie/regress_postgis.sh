@@ -202,6 +202,7 @@ if [ "$MAKE_EXTENSION" == "1" ]; then
 
 export POSTGIS_MINOR_VER=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 export POSTGIS_MINOR_MAX_VER="ANY"
+export POSTGIS_MICRO_VER=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}
 
 #export UPGRADE_VER_FILE="extensions/upgradeable_versions.mk"
 value=$(<extensions/upgradeable_versions.mk)
@@ -213,16 +214,12 @@ export WIN_RELEASED_VERSIONS="2.0.0 2.0.1 2.0.3 2.0.4 2.0.6 2.1.4 2.1.7 2.1.8 2.
 #echo "Versions are:  $UPGRADEABLE_VERSIONS"
 for EXTNAME in postgis postgis_raster postgis_topology postgis_sfcgal postgis_tiger_geocoder address_standardizer; do
 	cp extensions/$EXTNAME/sql/*  ${PGPATHEDB}/share/extension
-
-	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension/$EXTNAME--${POSTGIS_MINOR_MAX_VER}--${POSTGIS_MICRO_VER}.sql
-	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension/$EXTNAME--${POSTGIS_MICRO_VER}next--${POSTGIS_MICRO_VER}.sql
-	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension/$EXTNAME--${POSTGIS_MICRO_VER}--${POSTGIS_MICRO_VER}next.sql
+	cp extensions/$EXTNAME/sql/$EXTNAME--TEMPLATED--TO--ANY.sql  ${PGPATHEDB}/share/extension/$EXTNAME--$POSTGIS_MICRO_VER--${POSTGIS_MINOR_MAX_VER}.sql;
 
 	if test "$EXTNAME" = "address_standardizer"; then #repeat for address_standardizer_data_us
 		cp extensions/$EXTNAME/sql/${EXTNAME}_data_us--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension
-		cp extensions/postgis/sql/postgis--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension
-		cp extensions/$EXTNAME/sql/${EXTNAME}_data_us--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension/${EXTNAME}_data_us--${POSTGIS_MINOR_MAX_VER}--${POSTGIS_MICRO_VER}.sql
-		cp extensions/$EXTNAME/sql/${EXTNAME}_data_us--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension/${EXTNAME}_data_us--${POSTGIS_MICRO_VER}next--${POSTGIS_MICRO_VER}.sql
+		cp extensions//$EXTNAME/sql/${EXTNAME}_data_us--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension
+		cp extensions/$EXTNAME/sql/${EXTNAME}--TEMPLATED--TO--ANY.sql ${PGPATHEDB}/share/extension/${EXTNAME}_data_us--$POSTGIS_MICRO_VER--ANY.sql;
 	fi
 
 	for OLD_VERSION in $UPGRADEABLE_VERSIONS; do \
@@ -242,21 +239,22 @@ done
 
  make check RUNTESTFLAGS="--extension -v"
 
+## TODO: Put back after folder into main check setup #5254
  ##test address standardizer
- cd ${POSTGIS_SRC}
- cd extensions/address_standardizer
- make installcheck
+ #cd ${POSTGIS_SRC}
+ #cd extensions/address_standardizer
+ #make installcheck
 
  ##test tiger geocoder
- cd ${POSTGIS_SRC}
- cd extensions/postgis_tiger_geocoder
- make installcheck
+ #cd ${POSTGIS_SRC}
+ #cd extensions/postgis_tiger_geocoder
+ #make installcheck
  if [ "$?" != "0" ]; then
   exit $?
  fi
 fi
 
-if [ "$DUMP_RESTORE" = "1" ]; then
+if [ "$DUMP_RESTORE" == "1" ]; then
  echo "Dum restore test"
  make install
  make check RUNTESTFLAGS="-v --dumprestore"
