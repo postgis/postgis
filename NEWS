@@ -1,11 +1,13 @@
 PostGIS 3.2.4
-2022/09/xx
+2022/xx/xx
 
 * Bug Fixes *
   - #5227, typo in ST_LineLocatePoint error message (Sandro Santilli)
   - #5231, PG15 no longer compiles because SQL/JSON removed PG upstream (Regina Obe)
   - #5420, ST_DumpPoints and ST_DumpSegments crash with empty polygon (Regina Obe)
   - Add schema qual to upgrade util
+  - #5255, GH598, Remove forced static linking on shp2pgsql, pgsql2shp (Maxim Kochetkov)
+
 
 PostGIS 3.2.3
 2022/08/18
