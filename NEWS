@@ -7,6 +7,7 @@ PostGIS 3.2.4
   - #5420, ST_DumpPoints and ST_DumpSegments crash with empty polygon (Regina Obe)
   - Add schema qual to upgrade util
   - #5255, GH598, Remove forced static linking on shp2pgsql, pgsql2shp (Maxim Kochetkov)
+  - #5255, GH702, Remove forced static linking on raster2pgsql (Thomas Petazzoni)
 
 
 PostGIS 3.2.3
