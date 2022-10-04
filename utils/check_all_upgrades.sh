@@ -226,20 +226,8 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
     }
   done
 
-  CURRENTVERSION=`grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.'`
-  # Test current version to current version extension upgrade
-  UPGRADE_PATH="${CURRENTVERSION}--:auto!"
-  test_label="${EXT} extension-based upgrade ${UPGRADE_PATH}"
-  echo "Testing ${test_label}"
-  RUNTESTFLAGS="--extension -v --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-  make -C ${REGDIR} check && {
-    echo "PASS: ${test_label}"
-  } || {
-    echo "FAIL: ${test_label}"
-    failed
-  }
-
   # Check unpackaged->unpackaged upgrades
+  CURRENTVERSION=`grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.'`
   if test "${to_version}" = "${CURRENTVERSION}"; then
     for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`
     do #{

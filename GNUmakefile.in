@@ -14,6 +14,7 @@ HAVE_SFCGAL=@HAVE_SFCGAL@
 POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
+POSTGIS_FULL_VERSION=$(POSTGIS_MAJOR_VERSION).$(POSTGIS_MINOR_VERSION).$(POSTGIS_MICRO_VERSION)
 
 PERL = @PERL@
 top_srcdir = @top_srcdir@
@@ -68,23 +69,36 @@ check-no-trailing-blanks:
 installcheck: installcheck-base installcheck-upgrade
 
 installcheck-base:
+	# this includes packaged-extension self upgrade
 	$(MAKE) check-regress RUNTESTFLAGS="$(RUNTESTFLAGS) --extension"
 
-# only run upgrade test if RUNTESTFLAGS was not already doing that
-installcheck-upgrade: installcheck-upgrade-byfunc
-	if test -z `echo "$(RUNTESTFLAGS)" | grep -- --upgrade`; then \
-		$(MAKE) check-regress \
-			RUNTESTFLAGS="$(RUNTESTFLAGS) --extension \
-			--upgrade-path unpackaged--$(POSTGIS_MAJOR_VERSION).$(POSTGIS_MINOR_VERSION).$(POSTGIS_MICRO_VERSION)"; \
-	fi
+installcheck-upgrade-base:
+	$(MAKE) installcheck-base \
+			RUNTESTFLAGS="$(RUNTESTFLAGS) \
+			--upgrade"
 
-# only run upgrade test if RUNTESTFLAGS was not already doing that
-installcheck-upgrade-byfunc:
-	if test -z `echo "$(RUNTESTFLAGS)" | grep -- --upgrade`; then \
-		RUNTESTFLAGS="$(RUNTESTFLAGS) --extension \
-			--upgrade-path unpackaged--$(POSTGIS_MAJOR_VERSION).$(POSTGIS_MINOR_VERSION).$(POSTGIS_MICRO_VERSION)!" \
-			$(MAKE) check-regress; \
-	fi
+installcheck-upgrade:
+	$(MAKE) installcheck-upgrade-from-unpackaged
+	$(MAKE) installcheck-upgrade-from-unpackaged-by-func
+	$(MAKE) installcheck-upgrade-from-packaged-by-func
+
+
+installcheck-upgrade-from-unpackaged:
+	$(MAKE) installcheck-upgrade-base \
+			RUNTESTFLAGS="$(RUNTESTFLAGS) \
+			--upgrade-path unpackaged--$(POSTGIS_FULL_VERSION)"
+
+installcheck-upgrade-from-unpackaged-by-func:
+	$(MAKE) installcheck-upgrade-base \
+			RUNTESTFLAGS="$(RUNTESTFLAGS) \
+			--upgrade-path unpackaged--$(POSTGIS_FULL_VERSION)!"
+
+installcheck-upgrade-from-packaged-by-func:
+	$(MAKE) installcheck-upgrade-base \
+			RUNTESTFLAGS="$(RUNTESTFLAGS) \
+			--upgrade-path $(POSTGIS_FULL_VERSION)--$(POSTGIS_FULL_VERSION)!"
+
+
 
 distclean: distclean-local
 
