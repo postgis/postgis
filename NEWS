@@ -2,7 +2,7 @@ PostGIS 3.1.8dev
 YYYY/MM/DD
 
 * Bug Fixes
-  - ...
+  - Add schema qual to upgrade util
 
 PostGIS 3.1.7
 2022/08/18
