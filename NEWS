@@ -3,7 +3,7 @@ YYYY/MM/DD
 
 * Bug Fixes
   - Add schema qual to upgrade util
-  - #5420, ST_DumpPoints crash with empty polygon (Regina Obe)
+  - #5240, ST_DumpPoints crash with empty polygon (Regina Obe)
 
 PostGIS 3.1.7
 2022/08/18
