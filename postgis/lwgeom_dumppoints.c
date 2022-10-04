@@ -162,6 +162,7 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS) {
 			LWPOINT *lwpoint = NULL;
 			POINT4D	pt;
 
+			if ( !lwgeom_is_empty(lwgeom) ) {
 			/*
 			 * net result of switch should be to set lwpoint to the
 			 * next point to return, or leave at NULL if there
@@ -233,12 +234,13 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS) {
 				default:
 					ereport(ERROR, (errcode(ERRCODE_DATA_EXCEPTION),
 						errmsg("Invalid Geometry type %d passed to ST_DumpPoints()", lwgeom->type)));
+				}
 			}
 
 			/*
 			 * At this point, lwpoint is either NULL, in which case
 			 * we need to pop the geometry stack and get the next
-			 * geometry, if amy, or lwpoint is set and we construct
+			 * geometry, if any, or lwpoint is set and we construct
 			 * a record type with the integer array of geometry
 			 * indexes and the point number, and the actual point
 			 * geometry itself
