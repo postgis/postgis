@@ -14,6 +14,9 @@ cd $(dirname $0)/..
 SRCDIR=$PWD # TODO: allow override ?
 cd - > /dev/null
 
+# This is useful to run database queries
+export PGDATABASE=template1
+
 
 if test "$1" = "-s"; then
   EXIT_ON_FIRST_FAILURE=1
@@ -129,7 +132,6 @@ compatible_upgrade()
 to_version_param="$1"
 to_version=$to_version_param
 if expr $to_version : ':auto' >/dev/null; then
-  export PGDATABASE=template1
   to_version=`psql -XAtc "select default_version from pg_available_extensions where name = 'postgis'"` || exit 1
 elif expr $to_version : '.*!$' >/dev/null; then
   to_version=$(echo "${to_version}" | sed 's/\!$//')
@@ -183,7 +185,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
         FROM pg_catalog.pg_extension_update_paths('${EXT}')
         WHERE source = '${from_version}'
         AND target = '${to_version}'
-    " )
+    " ) || exit 1
     if test -z "${path}"; then
       echo "SKIP: ${test_label} (no upgrade path from ${from_version} to ${to_version} known by postgresql)"
       continue
@@ -211,7 +213,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
         FROM pg_catalog.pg_extension_update_paths('${EXT}')
         WHERE source = 'unpackaged'
         AND target = '${to_version}'
-    " )
+    " ) || exit 1
     if test -z "${path}"; then
       echo "SKIP: ${test_label} (no upgrade path from unpackaged to ${to_version} known by postgresql)"
       continue
