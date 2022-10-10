@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-09-19 22:09+0000\n"
-"PO-Revision-Date: 2022-05-12 13:42+0000\n"
-"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"PO-Revision-Date: 2022-10-11 22:30+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "reference_measurexml/de/>\n"
 "Language: de\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: para
 #: reference_measure.xml:5
@@ -142,9 +142,9 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 8.1.2, 9.5.3"
 #: reference_measure.xml:46 reference_measure.xml:317 reference_measure.xml:474
 #: reference_measure.xml:1061 reference_measure.xml:1175
 #: reference_measure.xml:1606
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&P_support;"
-msgstr "&P_support;"
+msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:47
@@ -764,9 +764,9 @@ msgstr ""
 #: reference_measure.xml:869 reference_measure.xml:922
 #: reference_measure.xml:1059 reference_measure.xml:1173
 #: reference_measure.xml:1425 reference_measure.xml:1604
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&Z_support;"
-msgstr "&Z_support;"
+msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:318 reference_measure.xml:477
