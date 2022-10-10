@@ -3,13 +3,14 @@
 # Translators:
 # Andreas Schild <andreas.schild@bfw.gv.at>, 2017,2019
 # Jürgen E. Fischer <jef@norbit.de>, 2018
+# Regina Obe <regina@arrival3d.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-14 02:04+0000\n"
-"PO-Revision-Date: 2022-05-12 13:42+0000\n"
-"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"PO-Revision-Date: 2022-10-11 22:30+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "reference_sfcgalxml/de/>\n"
 "Language: de\n"
@@ -17,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: para
 #: reference_sfcgal.xml:5
@@ -110,9 +111,9 @@ msgstr ""
 #: reference_sfcgal.xml:801 reference_sfcgal.xml:829 reference_sfcgal.xml:1033
 #: reference_sfcgal.xml:1059 reference_sfcgal.xml:1119
 #: reference_sfcgal.xml:1217
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&Z_support;"
-msgstr "&Z_support;"
+msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:41 reference_sfcgal.xml:76 reference_sfcgal.xml:110
@@ -121,9 +122,9 @@ msgstr "&Z_support;"
 #: reference_sfcgal.xml:746 reference_sfcgal.xml:774 reference_sfcgal.xml:802
 #: reference_sfcgal.xml:830 reference_sfcgal.xml:1060 reference_sfcgal.xml:1120
 #: reference_sfcgal.xml:1218
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&P_support;"
-msgstr "&P_support;"
+msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:42 reference_sfcgal.xml:77 reference_sfcgal.xml:111
@@ -132,9 +133,9 @@ msgstr "&P_support;"
 #: reference_sfcgal.xml:747 reference_sfcgal.xml:775 reference_sfcgal.xml:803
 #: reference_sfcgal.xml:831 reference_sfcgal.xml:1061 reference_sfcgal.xml:1121
 #: reference_sfcgal.xml:1219
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&T_support;"
-msgstr "&T_support;"
+msgstr ""
 
 #. Tag: title
 #: reference_sfcgal.xml:45 reference_sfcgal.xml:80 reference_sfcgal.xml:120
