@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-09-26 03:46+0000\n"
-"PO-Revision-Date: 2022-05-12 13:42+0000\n"
-"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"PO-Revision-Date: 2022-10-11 22:30+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "reference_inputxml/de/>\n"
 "Language: de\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: para
 #: reference_input.xml:6
@@ -481,9 +481,9 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:252 reference_input.xml:874 reference_input.xml:1119
 #: reference_input.xml:1291 reference_input.xml:1363 reference_input.xml:1409
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&Z_support;"
-msgstr "&Z_support;"
+msgstr ""
 
 #. Tag: para
 #: reference_input.xml:253 reference_input.xml:414 reference_input.xml:835
@@ -494,15 +494,15 @@ msgstr "&curve_support;"
 
 #. Tag: para
 #: reference_input.xml:254 reference_input.xml:876 reference_input.xml:1292
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&P_support;"
-msgstr "&P_support;"
+msgstr ""
 
 #. Tag: para
 #: reference_input.xml:255 reference_input.xml:877 reference_input.xml:1293
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&T_support;"
-msgstr "&T_support;"
+msgstr ""
 
 #. Tag: programlisting
 #: reference_input.xml:260
