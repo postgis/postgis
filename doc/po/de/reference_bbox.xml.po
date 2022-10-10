@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-04-16 08:20+0000\n"
-"PO-Revision-Date: 2022-05-12 13:42+0000\n"
-"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"PO-Revision-Date: 2022-10-11 22:30+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "reference_bboxxml/de/>\n"
 "Language: de\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: para
 #: reference_bbox.xml:5
@@ -96,16 +96,16 @@ msgstr ""
 #. Tag: para
 #: reference_bbox.xml:37 reference_bbox.xml:78 reference_bbox.xml:264
 #: reference_bbox.xml:319 reference_bbox.xml:373
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&P_support;"
-msgstr "&P_support;"
+msgstr ""
 
 #. Tag: para
 #: reference_bbox.xml:38 reference_bbox.xml:79 reference_bbox.xml:265
 #: reference_bbox.xml:320 reference_bbox.xml:374
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&T_support;"
-msgstr "&T_support;"
+msgstr ""
 
 #. Tag: title
 #: reference_bbox.xml:42 reference_bbox.xml:85 reference_bbox.xml:168
@@ -188,9 +188,9 @@ msgstr ""
 #: reference_bbox.xml:80 reference_bbox.xml:371 reference_bbox.xml:499
 #: reference_bbox.xml:544 reference_bbox.xml:589 reference_bbox.xml:634
 #: reference_bbox.xml:679 reference_bbox.xml:724
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&Z_support;"
-msgstr "&Z_support;"
+msgstr ""
 
 #. Tag: programlisting
 #: reference_bbox.xml:87
