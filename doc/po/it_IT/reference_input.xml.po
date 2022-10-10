@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-09-26 03:46+0000\n"
-"PO-Revision-Date: 2022-05-07 19:23+0000\n"
+"PO-Revision-Date: 2022-10-11 22:30+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_inputxml/it/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: para
 #: reference_input.xml:6
@@ -39,7 +39,7 @@ msgstr ""
 #: reference_input.xml:13
 #, no-c-format
 msgid "Well-Known Text (WKT)"
-msgstr ""
+msgstr "Well-Known Text (WKT)"
 
 #. Tag: refname
 #: reference_input.xml:17
