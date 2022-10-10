@@ -3,20 +3,22 @@
 # Translators:
 # Guy BARA <bara.guy@gmail.com>, 2014
 # Rodolphe Quiédeville <rodolphe@quiedeville.org>, 2013
+# Regina Obe <regina@arrival3d.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-08-27 04:57+0000\n"
-"PO-Revision-Date: 2021-11-28 22:22+0000\n"
-"Last-Translator: Regina Obe\n"
-"Language-Team: French (http://www.transifex.com/postgis/postgis/language/"
-"fr/)\n"
+"PO-Revision-Date: 2022-10-11 22:30+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
+"release_notesxml/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: title
 #: release_notes.xml:3
@@ -649,12 +651,18 @@ msgid ""
 "ST_MakeValid enhancements with 3.10+, numerouse additional enhancements with "
 "GEOS 3.11+."
 msgstr ""
+"Cette version nécessite PostgreSQL 11 ou supérieur, GEOS 3.6 ou supérieur, "
+"et Proj 5.2 ou supérieur. Des fonctionnalités supplémentaires sont actives "
+"avec GEOS 3.9+, des améliorations de ST_MakeValid avec GEOS 3.10+, et "
+"d'autres améliorations diverses avec GEOS 3.11+."
 
 #. Tag: para
 #: release_notes.xml:175 release_notes.xml:217
 #, no-c-format
 msgid "Requires SFCGAL 1.4.1+ for ST_AlphaShape and ST_OptimalAlphaShape."
 msgstr ""
+"Nécessite SFCGAL 1.4.1 ou supérieure pour ST_AlphaShape et "
+"ST_OptimalAlphaShape"
 
 #. Tag: para
 #: release_notes.xml:178 release_notes.xml:219
