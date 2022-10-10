@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-05-12 13:42+0000\n"
-"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"PO-Revision-Date: 2022-10-11 22:30+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "reference_transformationxml/de/>\n"
 "Language: de\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: para
 #: reference_transformation.xml:5
@@ -152,26 +152,26 @@ msgstr ""
 #: reference_transformation.xml:72 reference_transformation.xml:138
 #: reference_transformation.xml:185 reference_transformation.xml:233
 #: reference_transformation.xml:287 reference_transformation.xml:371
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&P_support;"
-msgstr "&P_support;"
+msgstr ""
 
 #. Tag: para
 #: reference_transformation.xml:73 reference_transformation.xml:139
 #: reference_transformation.xml:187 reference_transformation.xml:235
 #: reference_transformation.xml:288 reference_transformation.xml:374
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&T_support;"
-msgstr "&T_support;"
+msgstr ""
 
 #. Tag: para
 #: reference_transformation.xml:74 reference_transformation.xml:136
 #: reference_transformation.xml:186 reference_transformation.xml:234
 #: reference_transformation.xml:285 reference_transformation.xml:372
 #: reference_transformation.xml:427 reference_transformation.xml:484
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&Z_support;"
-msgstr "&Z_support;"
+msgstr ""
 
 #. Tag: para
 #: reference_transformation.xml:75 reference_transformation.xml:137
