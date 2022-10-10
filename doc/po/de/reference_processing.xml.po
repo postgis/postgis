@@ -3,13 +3,14 @@
 # Translators:
 # Andreas Schild <andreas.schild@bfw.gv.at>, 2017,2019-2020, 2022.
 # Jürgen E. Fischer <jef@norbit.de>, 2020
+# Regina Obe <regina@arrival3d.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-09-19 22:09+0000\n"
-"PO-Revision-Date: 2022-05-18 16:04+0000\n"
-"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"PO-Revision-Date: 2022-10-11 22:30+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "reference_processingxml/de/>\n"
 "Language: de\n"
@@ -17,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.12.2\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: para
 #: reference_processing.xml:5
@@ -1273,9 +1274,9 @@ msgstr ""
 #. Tag: para
 #: reference_processing.xml:678 reference_processing.xml:740
 #: reference_processing.xml:961 reference_processing.xml:1507
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&Z_support;"
-msgstr "&Z_support;"
+msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:690
@@ -1369,9 +1370,9 @@ msgstr "Verfügbarkeit: 2.1.0"
 
 #. Tag: para
 #: reference_processing.xml:741
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&T_support;"
-msgstr "&T_support;"
+msgstr ""
 
 #. Tag: title
 #: reference_processing.xml:745
