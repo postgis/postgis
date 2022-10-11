@@ -6,6 +6,7 @@ xxxx/xx/xx
 
 * New Features *
   - New install-extension-upgrades command in postgis script (Sandro Santilli)
+  - #5257, Remove MemoryContextContains use for PG16 (Regina Obe)
 
 * Enhancements *
   - #5194, do not update system catalogs from postgis_extensions_upgrade (Sandro Santilli)
