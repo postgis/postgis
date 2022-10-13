@@ -110,7 +110,6 @@ rt_util_gdal_resample_alg(const char *algname) {
 		return GRA_Max;
 	else if (strcmp(algname, "MIN") == 0)
 		return GRA_Min;
-	
 	return GRA_NearestNeighbour;
 }
 
