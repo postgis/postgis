@@ -9,7 +9,7 @@
 #
 # Copyright 2003-2022 Sandro Santilli <strk@kbt.io>
 # Copyright 2004-2012 Paul Ramsey <pramsey@cleverelephant.ca>
-# Copyright 2009-2011 Regina Obe <lr@pcorp.us>
+# Copyright 2009-2022 Regina Obe <lr@pcorp.us>
 # Copyright 2008-2010 Mark Cave-Ayland
 # Copyright 2008-2010 Kevin Neufeld <kneufeld.ca@gmail.com>
 # Copyright 2009-2010 Olivier Courtin <olivier.courtin@camptocamp.com>
@@ -227,31 +227,31 @@ endif
 postgis_comments.sql: xsl/postgis_comments.sql.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid --path $(srcdir) $<  postgis-out.xml > $@
 
-postgis_cheatsheet.html: xsl/postgis_cheatsheet.html.xsl $(XML_INPUTS)
+html/postgis_cheatsheet.html: xsl/postgis_cheatsheet.html.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
 
 raster_comments.sql: xsl/raster_comments.sql.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
 
-raster_cheatsheet.html: ./xsl/raster_cheatsheet.html.xsl $(XML_INPUTS)
+html/raster_cheatsheet.html: ./xsl/raster_cheatsheet.html.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
 
 topology_comments.sql: xsl/topology_comments.sql.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
 
-topology_cheatsheet.html: xsl/topology_cheatsheet.html.xsl $(XML_INPUTS)
+html/topology_cheatsheet.html: xsl/topology_cheatsheet.html.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
 
 sfcgal_comments.sql: xsl/sfcgal_comments.sql.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
 
-sfcgal_cheatsheet.html: xsl/sfcgal_cheatsheet.html.xsl $(XML_INPUTS)
+html/sfcgal_cheatsheet.html: xsl/sfcgal_cheatsheet.html.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
 
 tiger_geocoder_comments.sql: xsl/tiger_geocoder_comments.sql.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
 
-tiger_geocoder_cheatsheet.html: xsl/tiger_geocoder_cheatsheet.html.xsl $(XML_INPUTS)
+html/tiger_geocoder_cheatsheet.html: xsl/tiger_geocoder_cheatsheet.html.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
 
 postgis-out.xml: postgis.xml Makefile
@@ -372,7 +372,7 @@ else
 comments: postgis_comments.sql raster_comments.sql topology_comments.sql sfcgal_comments.sql tiger_geocoder_comments.sql
 endif
 
-cheatsheets: postgis_cheatsheet.html raster_cheatsheet.html topology_cheatsheet.html sfcgal_cheatsheet.html tiger_geocoder_cheatsheet.html
+cheatsheets: html/postgis_cheatsheet.html html/raster_cheatsheet.html html/topology_cheatsheet.html html/sfcgal_cheatsheet.html html/tiger_geocoder_cheatsheet.html
 
 ifneq ($(CAN_BUILD_COMMENTS),yes)
 comments-install:
