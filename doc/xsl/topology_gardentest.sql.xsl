@@ -8,7 +8,7 @@
 			using a garden variety of geometries.  Its intent is to flag major crashes.
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='testversion'>3.1.0</xsl:variable>
+	<xsl:variable name='testversion'>3.3.0</xsl:variable>
 	<xsl:variable name='fnexclude'>AddTopoGeometryColumn DropTopoGeometryColumn CreateTopology</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
 

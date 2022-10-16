@@ -45,9 +45,9 @@ if test -f utils/repo_revision.pl; then
 	perl utils/repo_revision.pl
 fi
 export VREV="`cat postgis_revision.h | awk '{print $3}'`"
-echo "SVN is ${VREV}"
+echo "VREV is ${VREV}"
 cd doc
-
+make cheatsheets
 
 
 #sed -e "s:</title>:</title><subtitle><subscript>SVN Revision (<emphasis>${POSTGIS_SVN_REVISION}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
