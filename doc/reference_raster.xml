@@ -2474,7 +2474,7 @@ FROM baz;
                 <funcsynopsis>
 
                     <funcprototype>
-                        <funcdef>SETOF raster <function>ST_Retile</function></funcdef>
+                        <funcdef>setof raster <function>ST_Retile</function></funcdef>
                         <paramdef><type>regclass </type> <parameter>tab</parameter></paramdef>
                         <paramdef><type>name </type> <parameter>col</parameter></paramdef>
                         <paramdef><type>geometry </type> <parameter>ext</parameter></paramdef>
@@ -7881,7 +7881,7 @@ rid | exclude_nodata | include_nodata
                 <funcsynopsis>
                     <funcprototype>
                         <funcdef>bigint <function>ST_CountAgg</function></funcdef>
-                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
                         <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
                         <paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
                         <paramdef><type>double precision </type> <parameter>sample_percent</parameter></paramdef>
@@ -7889,14 +7889,14 @@ rid | exclude_nodata | include_nodata
 
                     <funcprototype>
                         <funcdef>bigint <function>ST_CountAgg</function></funcdef>
-                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
                         <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
                         <paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
                     </funcprototype>
 
                     <funcprototype>
                         <funcdef>bigint <function>ST_CountAgg</function></funcdef>
-                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
                         <paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
                     </funcprototype>
 
@@ -7971,7 +7971,7 @@ FROM foo;
             <refsynopsisdiv>
                 <funcsynopsis>
                   <funcprototype>
-                    <funcdef>SETOF record <function>ST_Histogram</function></funcdef>
+                    <funcdef>setof record <function>ST_Histogram</function></funcdef>
                     <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
                     <paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
                     <paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
@@ -7981,7 +7981,7 @@ FROM foo;
                   </funcprototype>
 
                   <funcprototype>
-                    <funcdef>SETOF record <function>ST_Histogram</function></funcdef>
+                    <funcdef>setof record <function>ST_Histogram</function></funcdef>
                     <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
                     <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
                     <paramdef><type>integer </type> <parameter>bins</parameter></paramdef>
@@ -7990,7 +7990,7 @@ FROM foo;
                   </funcprototype>
 
                   <funcprototype>
-                    <funcdef>SETOF record <function>ST_Histogram</function></funcdef>
+                    <funcdef>setof record <function>ST_Histogram</function></funcdef>
                     <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
                     <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
                     <paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
@@ -7999,7 +7999,7 @@ FROM foo;
                   </funcprototype>
 
                   <funcprototype>
-                    <funcdef>SETOF record <function>ST_Histogram</function></funcdef>
+                    <funcdef>setof record <function>ST_Histogram</function></funcdef>
                     <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
                     <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
                     <paramdef><type>integer </type> <parameter>bins</parameter></paramdef>
@@ -8113,19 +8113,19 @@ FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
             <refsynopsisdiv>
                 <funcsynopsis>
                   <funcprototype>
-                    <funcdef>SETOF record <function>ST_Quantile</function></funcdef>
+                    <funcdef>setof record <function>ST_Quantile</function></funcdef>
                     <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
                     <paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
                     <paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
                     <paramdef choice="opt"><type>double precision[] </type> <parameter>quantiles=NULL</parameter></paramdef>
                   </funcprototype>
                   <funcprototype>
-                    <funcdef>SETOF record <function>ST_Quantile</function></funcdef>
+                    <funcdef>setof record <function>ST_Quantile</function></funcdef>
                     <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
                     <paramdef><type>double precision[] </type> <parameter>quantiles</parameter></paramdef>
                   </funcprototype>
                   <funcprototype>
-                    <funcdef>SETOF record <function>ST_Quantile</function></funcdef>
+                    <funcdef>setof record <function>ST_Quantile</function></funcdef>
                     <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
                     <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
                     <paramdef><type>double precision[] </type> <parameter>quantiles</parameter></paramdef>
@@ -8380,7 +8380,7 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
                 <funcsynopsis>
                     <funcprototype>
                         <funcdef>summarystats <function>ST_SummaryStatsAgg</function></funcdef>
-                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
                         <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
                         <paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
                         <paramdef><type>double precision </type> <parameter>sample_percent</parameter></paramdef>
@@ -8388,14 +8388,14 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 
                     <funcprototype>
                         <funcdef>summarystats <function>ST_SummaryStatsAgg</function></funcdef>
-                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
                         <paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
                         <paramdef><type>double precision </type> <parameter>sample_percent</parameter></paramdef>
                     </funcprototype>
 
                     <funcprototype>
                         <funcdef>summarystats <function>ST_SummaryStatsAgg</function></funcdef>
-                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
                         <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
                         <paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
                     </funcprototype>
@@ -8481,8 +8481,8 @@ FROM (
             <refsynopsisdiv>
                 <funcsynopsis>
                   <funcprototype>
-                    <funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
-                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <funcdef>record <function>ST_ValueCount</function></funcdef>
+                    <paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
                     <paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
                     <paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
                     <paramdef choice="opt"><type>double precision[] </type> <parameter>searchvalues=NULL</parameter></paramdef>
@@ -8491,8 +8491,8 @@ FROM (
                     <paramdef><type>integer </type> <parameter>OUT count</parameter></paramdef>
                   </funcprototype>
                   <funcprototype>
-                    <funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
-                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <funcdef>record <function>ST_ValueCount</function></funcdef>
+                    <paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
                     <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
                     <paramdef><type>double precision[] </type> <parameter>searchvalues</parameter></paramdef>
                     <paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
@@ -8500,8 +8500,8 @@ FROM (
                     <paramdef><type>integer </type> <parameter>OUT count</parameter></paramdef>
                   </funcprototype>
                   <funcprototype>
-                    <funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
-                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <funcdef>record <function>ST_ValueCount</function></funcdef>
+                    <paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
                     <paramdef><type>double precision[] </type> <parameter>searchvalues</parameter></paramdef>
                     <paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
                     <paramdef><type>double precision </type> <parameter>OUT value</parameter></paramdef>
@@ -8510,14 +8510,14 @@ FROM (
 
                   <funcprototype>
                     <funcdef>bigint <function>ST_ValueCount</function></funcdef>
-                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
                     <paramdef><type>double precision </type> <parameter>searchvalue</parameter></paramdef>
                     <paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
                   </funcprototype>
 
                   <funcprototype>
                     <funcdef>bigint <function>ST_ValueCount</function></funcdef>
-                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
                     <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
                     <paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
                     <paramdef><type>double precision </type> <parameter>searchvalue</parameter></paramdef>
@@ -8526,14 +8526,14 @@ FROM (
 
                   <funcprototype>
                     <funcdef>bigint <function>ST_ValueCount</function></funcdef>
-                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
                     <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
                     <paramdef><type>double precision </type> <parameter>searchvalue</parameter></paramdef>
                     <paramdef choice="opt"><type>double precision </type> <parameter>roundto=0</parameter></paramdef>
                   </funcprototype>
 
                   <funcprototype>
-                    <funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
+                    <funcdef>setof record <function>ST_ValueCount</function></funcdef>
                     <paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
                     <paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
                     <paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
@@ -8544,7 +8544,7 @@ FROM (
                     <paramdef><type>integer </type> <parameter>OUT count</parameter></paramdef>
                   </funcprototype>
                   <funcprototype>
-                    <funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
+                    <funcdef>setof record <function>ST_ValueCount</function></funcdef>
                     <paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
                     <paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
                     <paramdef><type>double precision[] </type> <parameter>searchvalues</parameter></paramdef>
@@ -8553,7 +8553,7 @@ FROM (
                     <paramdef><type>integer </type> <parameter>OUT count</parameter></paramdef>
                   </funcprototype>
                   <funcprototype>
-                    <funcdef>SETOF record <function>ST_ValueCount</function></funcdef>
+                    <funcdef>setof record <function>ST_ValueCount</function></funcdef>
                     <paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
                     <paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
                     <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
