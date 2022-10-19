@@ -22,7 +22,7 @@ jobs:
     steps:
       # see https://github.com/msys2/setup-msys2
     - name: checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: '${{ matrix.icon }} Setup MSYS2'
       uses: msys2/setup-msys2@v2
       with:
