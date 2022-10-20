@@ -112,4 +112,14 @@ stringbuffer_append_double(stringbuffer_t *s, double d, int precision)
 	stringbuffer_makeroom(s, OUT_MAX_BYTES_DOUBLE);
 	s->str_end += lwprint_double(d, precision, s->str_end);
 }
+
+inline static void
+stringbuffer_append_char(stringbuffer_t *s, char c)
+{
+	stringbuffer_makeroom(s, 1);
+	*(s->str_end) = c;
+	s->str_end++;
+}
+
+
 #endif /* _STRINGBUFFER_H */
