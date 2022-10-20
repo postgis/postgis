@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Initialize regression counters before preparing the database (Sandro Santilli)
  - Exercise mixed empty members in multipolygon garden tests (Regina Obe)
  - Generate aggregate support XML without reading its previous output (Sandro Santilli)
  - Ship the DE-9IM figures as PNG for PDF builds (Sandro Santilli)
