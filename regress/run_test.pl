@@ -1342,6 +1342,11 @@ sub create_spatial
     print "Creating database '$DB' \n";
 
     $rv = create_db();
+    if ( $rv )
+    {
+        fail "Error encountered creating database ${DB}", $REGRESS_LOG;
+        exit($FAIL);
+    }
 
     # Count database objects before installing anything
     $OBJ_COUNT_PRE = count_db_objects();
@@ -1354,7 +1359,7 @@ sub create_spatial
     {
         if ( ! $OPT_UPGRADE_FROM )
         {
-            prepare_spatial();
+            exit($FAIL) unless prepare_spatial();
             return;
         }
 
@@ -1367,7 +1372,7 @@ sub create_spatial
         {
             die "--upgrade-path without --extension is only supported with target :auto";
         }
-        prepare_spatial($1);
+        exit($FAIL) unless prepare_spatial($1);
     }
 }
 
@@ -1420,7 +1425,7 @@ sub prepare_spatial_extensions
 
 	if ( $OPT_UPGRADE_FROM ) {
 		if ( $OPT_UPGRADE_FROM =~ /^unpackaged(.*)/ ) {
-			prepare_spatial($1);
+			exit($FAIL) unless prepare_spatial($1);
 			return;
 		}
 		$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
@@ -1532,29 +1537,29 @@ sub prepare_spatial
 	print "Loading PostGIS into '${DB}' \n";
 
 	# Load postgis.sql into the database
-	load_sql_file("${scriptdir}/postgis.sql", 1);
-	load_sql_file("${scriptdir}/postgis_comments.sql", 0);
-	load_sql_file("${scriptdir}/spatial_ref_sys.sql", 0);
+	return 0 unless load_sql_file("${scriptdir}/postgis.sql", 1);
+	return 0 unless load_sql_file("${scriptdir}/postgis_comments.sql", 0);
+	return 0 unless load_sql_file("${scriptdir}/spatial_ref_sys.sql", 0);
 
 	if ( $OPT_WITH_TOPO )
 	{
 		print "Loading Topology into '${DB}'\n";
-		load_sql_file("${scriptdir}/topology.sql", 1);
-		load_sql_file("${scriptdir}/topology_comments.sql", 0);
+		return 0 unless load_sql_file("${scriptdir}/topology.sql", 1);
+		return 0 unless load_sql_file("${scriptdir}/topology_comments.sql", 0);
 	}
 
 	if ( $OPT_WITH_RASTER )
 	{
 		print "Loading Raster into '${DB}'\n";
-		load_sql_file("${scriptdir}/rtpostgis.sql", 1);
-		load_sql_file("${scriptdir}/raster_comments.sql", 0);
+		return 0 unless load_sql_file("${scriptdir}/rtpostgis.sql", 1);
+		return 0 unless load_sql_file("${scriptdir}/raster_comments.sql", 0);
 	}
 
 	if ( $OPT_WITH_SFCGAL )
 	{
 		print "Loading SFCGAL into '${DB}'\n";
-		load_sql_file("${scriptdir}/sfcgal.sql", 1);
-		load_sql_file("${scriptdir}/sfcgal_comments.sql", 0);
+		return 0 unless load_sql_file("${scriptdir}/sfcgal.sql", 1);
+		return 0 unless load_sql_file("${scriptdir}/sfcgal_comments.sql", 0);
 	}
 
 	return 1;
