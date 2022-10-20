@@ -8,12 +8,12 @@
 	 statements from postgis xml doc reference
      ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='postgis_version'>3.1</xsl:variable>
+	<xsl:variable name='postgis_version'>3.3</xsl:variable>
 	<xsl:variable name='new_tag'>Availability: <xsl:value-of select="$postgis_version" /></xsl:variable>
 	<xsl:variable name='enhanced_tag'>Enhanced: <xsl:value-of select="$postgis_version" /></xsl:variable>
 	<xsl:variable name='include_examples'>false</xsl:variable>
 	<xsl:variable name='output_purpose'>true</xsl:variable>
-	<xsl:variable name='linkstub'>http://postgis.net/docs/manual-dev/</xsl:variable>
+	<xsl:variable name='linkstub'>https://postgis.net/docs/manual-<xsl:value-of select="$postgis_version" />/</xsl:variable>
 <xsl:template match="/">
 	<xsl:text><![CDATA[<html><head><title>PostGIS SFCGAL Cheat Sheet</title>
 	<style type="text/css">

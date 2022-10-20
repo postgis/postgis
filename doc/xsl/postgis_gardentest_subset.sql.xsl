@@ -9,7 +9,7 @@
 			test more geometries but only against one function.  Useful for intro of new functions or comparing major changes from function of one version of PostGIS to the other
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='testversion'>2.1.0</xsl:variable>
+	<xsl:variable name='testversion'>3.3.0</xsl:variable>
 	<xsl:variable name="fninclude"><xsl:value-of select="$inputfninclude"/></xsl:variable>
 	<xsl:variable name='var_srid'>3395</xsl:variable>
 	<xsl:variable name='var_position'>1</xsl:variable>
@@ -73,12 +73,12 @@
 			CROSS JOIN generate_series(50,70, 20) As j
 			CROSS JOIN generate_series(1,2) As m
 			ORDER BY i, j, i+j+m, m, i*j*m)</pgis:gset>
-			
+
 		<pgis:gset ID='PolyhedralSurface' GeometryType='PolyhedralSurface'>(SELECT ST_GeomFromEWKT(
-'SRID=0;PolyhedralSurface( 
-((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),  
-((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),  
-((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) 
+'SRID=0;PolyhedralSurface(
+((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))
 )') )</pgis:gset>
 
 		<pgis:gset ID='GCSet3D' GeometryType='GEOMETRYCOLLECTIONZ' SkipUnary='1'>(SELECT ST_Collect(ST_Collect(ST_SetSRID(ST_MakePoint(i,j,m),4326),ST_SetSRID(ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_MakePoint(i+m,j,m),ST_MakePoint(j+m,i-m,m)),ST_MakePoint(i,j,m)),ST_MakePointM(i+m,j,m))),4326)))  As the_geom
@@ -146,7 +146,7 @@
 			UNION ALL SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom
 		)
 		</pgis:gset>
-		
+
 		<pgis:gset ID="SingleNULL" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
 		<pgis:gset ID="MultipleNULLs" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom FROM generate_series(1,4) As foo)</pgis:gset>
 
@@ -164,7 +164,7 @@
 				FROM generate_series(-10,50,10) As i
 					CROSS JOIN generate_series(40,70, 20) As j
 					ORDER BY i, j, i*j)</pgis:gset>
-	
+
 	</pgis:gardencrashers>
 
         <!-- We deal only with the reference chapter -->
@@ -200,7 +200,7 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 			<xsl:choose>
 			  <xsl:when test="contains(paramdef, 'geometry ')">
-			  
+
 	SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />';
 	BEGIN; <!-- If output is geometry show ewkt rep -->
 	SELECT ST_AsEWKT(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />))

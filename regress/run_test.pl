@@ -54,6 +54,15 @@ our $TOP_BUILDDIR = $ENV{"POSTGIS_TOP_BUILD_DIR"} || ${REGDIR} . '/..';
 our $sysdiff = !system("diff --strip-trailing-cr $0 $0 2> /dev/null");
 
 ##################################################################
+# Set up some global variables
+##################################################################
+
+my $RUN = 0;
+my $FAIL = 0;
+my $SKIP = 0;
+our $TEST = "";
+
+##################################################################
 # Parse command line opts
 ##################################################################
 
@@ -320,7 +329,7 @@ sub semver_lessthan
 
 if ( $OPT_UPGRADE )
 {
-	print "Upgrading from postgis $libver\n";
+    print "Upgrading from postgis $libver\n";
 
 	foreach my $hook (@OPT_HOOK_BEFORE_UPGRADE)
 	{
@@ -328,14 +337,14 @@ if ( $OPT_UPGRADE )
 		die unless load_sql_file($hook, 1);
 	}
 
-  if ( $OPT_EXTENSIONS )
-  {
-    upgrade_spatial_extensions();
-  }
-  else
-  {
-	  upgrade_spatial();
-  }
+    if ( $OPT_EXTENSIONS )
+    {
+        die unless upgrade_spatial_extensions();
+    }
+    else
+    {
+        die unless upgrade_spatial();
+    }
 
 	foreach my $hook (@OPT_HOOK_AFTER_UPGRADE)
 	{
@@ -343,13 +352,13 @@ if ( $OPT_UPGRADE )
 		die unless load_sql_file($hook, 1);
 	}
 
-  # Update libver
-  $libver = sql("select postgis_lib_version()");
+    # Update libver
+    $libver = sql("select postgis_lib_version()");
 }
 
 if ( $OPT_DUMPRESTORE )
 {
-  dump_restore();
+    die unless dump_restore();
 }
 
 
@@ -380,14 +389,6 @@ print "  PROJ: $projver\n" if $projver;
 print "  SFCGAL: $sfcgalver\n" if $sfcgalver;
 print "  GDAL: $gdalver\n" if $gdalver;
 
-
-##################################################################
-# Set up some global variables
-##################################################################
-my $RUN = 0;
-my $FAIL = 0;
-my $SKIP = 0;
-our $TEST = "";
 
 ##################################################################
 # Run the tests
@@ -1354,13 +1355,13 @@ sub create_spatial
 
     if ( $OPT_EXTENSIONS )
     {
-        prepare_spatial_extensions();
+        exit($FAIL) unless prepare_spatial_extensions();
     }
     else
     {
         if ( ! $OPT_UPGRADE_FROM )
         {
-            prepare_spatial();
+            exit($FAIL) unless prepare_spatial();
             return;
         }
 
@@ -1373,7 +1374,7 @@ sub create_spatial
         {
             die "--upgrade-path without --extension is only supported with target :auto";
         }
-        prepare_spatial($1);
+        exit($FAIL) unless prepare_spatial($1);
     }
 }
 
@@ -1419,15 +1420,14 @@ sub prepare_spatial_extensions
 	my $rv = system($cmd);
 	if ( $rv ) {
 	  fail "Error encountered creating target schema ${OPT_SCHEMA}", $REGRESS_LOG;
-	  die;
+	  return 0;
 	}
 
 	my $sql = "CREATE EXTENSION postgis";
 
 	if ( $OPT_UPGRADE_FROM ) {
 		if ( $OPT_UPGRADE_FROM =~ /^unpackaged(.*)/ ) {
-			prepare_spatial($1);
-			return;
+			return prepare_spatial($1);
 		}
 		$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
 	}
@@ -1439,9 +1439,9 @@ sub prepare_spatial_extensions
 	my $cmd = "psql $psql_opts -c \"". $sql . "\" $DB >> $REGRESS_LOG 2>&1";
 	my $rv = system($cmd);
 
-  if ( $rv ) {
-  	fail "Error encountered creating EXTENSION POSTGIS", $REGRESS_LOG;
-  	die;
+    if ( $rv ) {
+        fail "Error encountered creating EXTENSION POSTGIS", $REGRESS_LOG;
+        return 0;
 	}
 
 	if ( $OPT_WITH_TOPO )
@@ -1455,9 +1455,9 @@ sub prepare_spatial_extensions
 
  		$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
 		$rv = system($cmd);
-  	if ( $rv ) {
-  		fail "Error encountered creating EXTENSION POSTGIS_TOPOLOGY", $REGRESS_LOG;
-  		die;
+        if ( $rv ) {
+            fail "Error encountered creating EXTENSION POSTGIS_TOPOLOGY", $REGRESS_LOG;
+            return 0;
 		}
  	}
 
@@ -1472,9 +1472,9 @@ sub prepare_spatial_extensions
 
  		$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
 		$rv = system($cmd);
-  	if ( $rv ) {
-  		fail "Error encountered creating EXTENSION POSTGIS_TIGER_GEOCODER", $REGRESS_LOG;
-  		die;
+        if ( $rv ) {
+            fail "Error encountered creating EXTENSION POSTGIS_TIGER_GEOCODER", $REGRESS_LOG;
+            return 0;
 		}
  	}
 
@@ -1494,7 +1494,7 @@ sub prepare_spatial_extensions
 		$rv = system($cmd);
 		if ( $rv ) {
 			fail "Error encountered creating EXTENSION POSTGIS_RASTER", $REGRESS_LOG;
-			die;
+			return 0;
 		}
  	}
 
@@ -1520,7 +1520,7 @@ sub prepare_spatial_extensions
 			$rv = system($cmd);
 			if ( $rv ) {
 				fail "Error encountered creating EXTENSION POSTGIS_SFCGAL", $REGRESS_LOG;
-				die;
+				return 0;
 			}
 		}
 	}
@@ -1538,29 +1538,29 @@ sub prepare_spatial
 	print "Loading PostGIS into '${DB}' \n";
 
 	# Load postgis.sql into the database
-	load_sql_file("${scriptdir}/postgis.sql", 1);
-	load_sql_file("${scriptdir}/postgis_comments.sql", 0);
-	load_sql_file("${scriptdir}/spatial_ref_sys.sql", 0);
+	return 0 unless load_sql_file("${scriptdir}/postgis.sql", 1);
+	return 0 unless load_sql_file("${scriptdir}/postgis_comments.sql", 0);
+	return 0 unless load_sql_file("${scriptdir}/spatial_ref_sys.sql", 0);
 
 	if ( $OPT_WITH_TOPO )
 	{
 		print "Loading Topology into '${DB}'\n";
-		load_sql_file("${scriptdir}/topology.sql", 1);
-		load_sql_file("${scriptdir}/topology_comments.sql", 0);
+		return 0 unless load_sql_file("${scriptdir}/topology.sql", 1);
+		return 0 unless load_sql_file("${scriptdir}/topology_comments.sql", 0);
 	}
 
 	if ( $OPT_WITH_RASTER )
 	{
 		print "Loading Raster into '${DB}'\n";
-		load_sql_file("${scriptdir}/rtpostgis.sql", 1);
-		load_sql_file("${scriptdir}/raster_comments.sql", 0);
+		return 0 unless load_sql_file("${scriptdir}/rtpostgis.sql", 1);
+		return 0 unless load_sql_file("${scriptdir}/raster_comments.sql", 0);
 	}
 
 	if ( $OPT_WITH_SFCGAL )
 	{
 		print "Loading SFCGAL into '${DB}'\n";
-		load_sql_file("${scriptdir}/sfcgal.sql", 1);
-		load_sql_file("${scriptdir}/sfcgal_comments.sql", 0);
+		return 0 unless load_sql_file("${scriptdir}/sfcgal.sql", 1);
+		return 0 unless load_sql_file("${scriptdir}/sfcgal_comments.sql", 0);
 	}
 
 	return 1;
@@ -1604,27 +1604,27 @@ sub upgrade_spatial
 
     my $script = "${STAGED_SCRIPTS_DIR}/postgis_upgrade.sql";
     print "Upgrading core\n";
-    die unless load_sql_file($script, 1);
+    return 0 unless load_sql_file($script, 1);
 
     if ( $OPT_WITH_TOPO )
     {
         $script = "${STAGED_SCRIPTS_DIR}/topology_upgrade.sql";
         print "Upgrading topology\n";
-        die unless load_sql_file($script, 1);
+        return 0 unless load_sql_file($script, 1);
     }
 
     if ( $OPT_WITH_RASTER )
     {
         $script = "${STAGED_SCRIPTS_DIR}/rtpostgis_upgrade.sql";
         print "Upgrading raster\n";
-        die unless load_sql_file($script, 1);
+        return 0 unless load_sql_file($script, 1);
     }
 
     if ( $OPT_WITH_SFCGAL )
     {
         $script = "${STAGED_SCRIPTS_DIR}/sfcgal_upgrade.sql";
         print "Upgrading sfcgal\n";
-        die unless load_sql_file($script, 1);
+        return 0 unless load_sql_file($script, 1);
     }
 
     return 1;
@@ -1668,7 +1668,7 @@ sub upgrade_spatial_extensions
     }
     elsif ( $OPT_UPGRADE_FROM =~ /^unpackaged/ )
     {
-			$sql = package_extension_sql('postgis', ${nextver});
+        $sql = package_extension_sql('postgis', ${nextver});
     }
     else
     {
@@ -1682,7 +1682,7 @@ sub upgrade_spatial_extensions
     my $rv = system($cmd);
     if ( $rv ) {
       fail "Error encountered updating EXTENSION POSTGIS", $REGRESS_LOG;
-      die;
+      return 0;
     }
 
     # Handle raster split if coming from pre-split extension
@@ -1702,7 +1702,7 @@ sub upgrade_spatial_extensions
       my $rv = system($cmd);
       if ( $rv ) {
         fail "Error encountered creating EXTENSION POSTGIS_RASTER from unpackaged on upgrade", $REGRESS_LOG;
-        die;
+        return 0;
       }
 
       if ( ! $OPT_WITH_RASTER )
@@ -1714,7 +1714,7 @@ sub upgrade_spatial_extensions
         $rv = system($cmd);
         if ( $rv ) {
           fail "Error encountered dropping EXTENSION POSTGIS_RASTER on upgrade", $REGRESS_LOG;
-          die;
+          return 0;
         }
       }
     }
@@ -1742,7 +1742,7 @@ sub upgrade_spatial_extensions
         my $rv = system($cmd);
         if ( $rv ) {
           fail "Error encountered updating EXTENSION POSTGIS_RASTER", $REGRESS_LOG;
-          die;
+          return 0;
         }
     }
 
@@ -1763,7 +1763,7 @@ sub upgrade_spatial_extensions
         my $rv = system($cmd);
         if ( $rv ) {
             fail "Error encountered updating EXTENSION POSTGIS_TOPOLOGY", $REGRESS_LOG;
-            die;
+            return 0;
         }
     }
 
@@ -1791,7 +1791,7 @@ sub upgrade_spatial_extensions
         $rv = system($cmd);
         if ( $rv ) {
             fail "Error encountered creating EXTENSION POSTGIS_SFCGAL", $REGRESS_LOG;
-            die;
+            return 0;
         }
     }
 
@@ -1823,7 +1823,6 @@ sub drop_spatial_extensions
 {
     # ON_ERROR_STOP is used by psql to return non-0 on an error
     my $psql_opts="--no-psqlrc --variable ON_ERROR_STOP=true";
-    my $ok = 1;
     my ($cmd, $rv);
 
     if ( $OPT_WITH_TOPO )
@@ -1833,21 +1832,30 @@ sub drop_spatial_extensions
         #       http://trac.osgeo.org/postgis/ticket/2138
         $cmd = "psql $psql_opts -c \"DROP EXTENSION postgis_topology; DROP SCHEMA topology;\" $DB >> $REGRESS_LOG 2>&1";
         $rv = system($cmd);
-      	$ok = 0 if $rv;
+        if ( $rv ) {
+            fail "Error encountered dropping EXTENSION postgis_topology", $REGRESS_LOG;
+            return 0;
+        }
     }
 
     if ( $OPT_WITH_SFCGAL )
     {
         $cmd = "psql $psql_opts -c \"DROP EXTENSION postgis_sfcgal;\" $DB >> $REGRESS_LOG 2>&1";
         $rv = system($cmd);
-        $ok = 0 if $rv;
+        if ( $rv ) {
+            fail "Error encountered dropping EXTENSION postgis_sfcgal", $REGRESS_LOG;
+            return 0;
+        }
     }
 
     if ( $OPT_WITH_RASTER )
     {
         $cmd = "psql $psql_opts -c \"DROP EXTENSION IF EXISTS postgis_raster;\" $DB >> $REGRESS_LOG 2>&1";
         $rv = system($cmd);
-      	$ok = 0 if $rv;
+        if ( $rv ) {
+            fail "Error encountered dropping EXTENSION postgis_raster", $REGRESS_LOG;
+            return 0;
+        }
     }
     if ( $OPT_WITH_TIGER )
     {
@@ -1857,17 +1865,21 @@ sub drop_spatial_extensions
                 DROP SCHEMA IF EXISTS tiger_data;
                 \" $DB >> $REGRESS_LOG 2>&1";
         $rv = system($cmd);
-      	$ok = 0 if $rv;
+      	return 0 if $rv;
+        if ( $rv ) {
+            fail "Error encountered dropping EXTENSION postgis_tiger_geocoder", $REGRESS_LOG;
+            return 0;
+        }
     }
 
     $cmd = "psql $psql_opts -c \"DROP EXTENSION postgis\" $DB >> $REGRESS_LOG 2>&1";
     $rv = system($cmd);
     if ( $rv ) {
         fail "Error encountered dropping EXTENSION POSTGIS", $REGRESS_LOG;
-        die;
+      	return 0;
     }
 
-    return $ok;
+    return 1;
 }
 
 # Drop spatial from an existing database
@@ -1904,51 +1916,51 @@ sub uninstall_spatial
 # Dump and restore the database
 sub dump_restore
 {
-  my $DBDUMP = $TMPDIR . '/' . $DB . ".dump";
-  my $rv;
+    my $DBDUMP = $TMPDIR . '/' . $DB . ".dump";
+    my $rv;
 
 	print "Dumping and restoring database '${DB}'\n";
 
-  $rv = system("pg_dump -Fc -f${DBDUMP} ${DB} >> $REGRESS_LOG 2>&1");
-  if ( $rv ) {
-    fail("Could not dump ${DB}", $REGRESS_LOG);
-		die;
-  }
-
-  $rv = system("dropdb ${DB} >> $REGRESS_LOG 2>&1");
-  if ( $rv ) {
-    fail("Could not drop ${DB}", $REGRESS_LOG);
-		die;
-  }
-
-  $rv = create_db();
-  if ( $rv ) {
-    fail("Could not create ${DB}", $REGRESS_LOG);
-		die;
-  }
-
-  $rv = system("pg_restore -d ${DB} ${DBDUMP} >> $REGRESS_LOG 2>&1");
-  if ( $rv ) {
-    fail("Could not restore ${DB}", $REGRESS_LOG);
-    die;
-  }
-
-  if ( $OPT_WITH_TOPO )
-  {
-    # We need to re-add "topology" to the search_path as it is lost
-    # on dump/reload, see https://trac.osgeo.org/postgis/ticket/3454
-    my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
-    my $cmd = "psql $psql_opts -c \"SELECT topology.AddToSearchPath('topology')\" $DB >> $REGRESS_LOG 2>&1";
-    $rv = system($cmd);
+    $rv = system("pg_dump -Fc -f${DBDUMP} ${DB} >> $REGRESS_LOG 2>&1");
     if ( $rv ) {
-      fail("Error encountered adding topology to search path after restore", $REGRESS_LOG);
-      die;
+        fail("Could not dump ${DB}", $REGRESS_LOG);
+        return 0;
     }
-  }
 
-  unlink($DBDUMP);
+    $rv = system("dropdb ${DB} >> $REGRESS_LOG 2>&1");
+    if ( $rv ) {
+        fail("Could not drop db ${DB}", $REGRESS_LOG);
+        return 0;
+    }
 
-  return 1;
+    $rv = create_db();
+    if ( $rv ) {
+        fail("Could not create ${DB}", $REGRESS_LOG);
+        return 0;
+    }
+
+    $rv = system("pg_restore -d ${DB} ${DBDUMP} >> $REGRESS_LOG 2>&1");
+    if ( $rv ) {
+        fail("Could not restore ${DB}", $REGRESS_LOG);
+        return 0;
+    }
+
+    if ( $OPT_WITH_TOPO )
+    {
+        # We need to re-add "topology" to the search_path as it is lost
+        # on dump/reload, see https://trac.osgeo.org/postgis/ticket/3454
+        my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
+        my $cmd = "psql $psql_opts -c \"SELECT topology.AddToSearchPath('topology')\" $DB >> $REGRESS_LOG 2>&1";
+        $rv = system($cmd);
+        if ( $rv ) {
+            fail("Error encountered adding topology to search path after restore", $REGRESS_LOG);
+            return 0;
+        }
+    }
+
+    unlink($DBDUMP);
+
+    return 1;
 }
 
 sub diff
