@@ -8,12 +8,13 @@
 	 statements from postgis xml doc reference
      ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='postgis_version'>3.1</xsl:variable>
+	<xsl:variable name='postgis_version'>3.4</xsl:variable>
 	<xsl:variable name='new_tag'>Availability: <xsl:value-of select="$postgis_version" /></xsl:variable>
 	<xsl:variable name='enhanced_tag'>Enhanced: <xsl:value-of select="$postgis_version" /></xsl:variable>
 	<xsl:variable name='include_examples'>false</xsl:variable>
 	<xsl:variable name='output_purpose'>true</xsl:variable>
-	<xsl:variable name='linkstub'>http://postgis.net/docs/manual-dev/</xsl:variable>
+	<xsl:variable name='linkstub'>https://postgis.net/docs/manual-<xsl:value-of select="$postgis_version" />/</xsl:variable>
+
 <xsl:template match="/">
 	<xsl:text><![CDATA[<html><head><title>PostGIS Cheat Sheet</title>
 	<style type="text/css">
@@ -44,12 +45,12 @@ body {
 }
 
 #content_functions_left {
-	width:52%;
+	width:100%;
 	float: left;
 }
 
 #content_functions_right {
-	width: 45%;
+	width: 100%;
 	float: right;
 }
 
@@ -71,7 +72,7 @@ body {
 .example {
 	border: 1px solid #000;
 	margin: 4px;
-	width: 50%;
+	width: 100%;
 	float:left;
 }
 
@@ -118,13 +119,14 @@ code {font-size: 8pt}
 -->
 </style>
 	</head><body><h1 style='text-align:center'>PostGIS ]]></xsl:text> <xsl:value-of select="$postgis_version" /><xsl:text><![CDATA[ Cheatsheet</h1>]]></xsl:text>
-		<xsl:text><![CDATA[<span class='notes'>New in this release <sup>1</sup> Enhanced in this release <sup>2</sup> Requires GEOS 3.4 or higher<sup>g3.4</sup>    &nbsp;2.5/3D support<sup>3d</sup>&nbsp;SQL-MM<sup>mm</sup> &nbsp;Supports geography <sup>G</sup></span><div id="content_functions">]]></xsl:text>
+		<xsl:text><![CDATA[<span class='notes'>New in this release <sup>1</sup> Enhanced in this release <sup>2</sup> &nbsp;aggregate <sup>agg</sup> &nbsp;&nbsp;window function <sup>W</sup> &nbsp;Requires GEOS 3.9 or higher<sup>g3.9</sup>    &nbsp;2.5/3D support<sup>3d</sup>&nbsp;SQL-MM<sup>mm</sup> &nbsp;Supports geography <sup>G</sup></span><div id="content_functions">]]></xsl:text>
 			<xsl:apply-templates select="/book/chapter[@id='reference']" />
 			<xsl:text><![CDATA[</div>]]></xsl:text>
 			<xsl:text><![CDATA[<div id="content_examples">]]></xsl:text>
 			<!-- examples go here -->
 			<xsl:if test="$include_examples='true'">
-			<xsl:apply-templates select="/book/chapter[@id='reference']/sect1[count(//refentry//refsection//programlisting) &gt; 0]"  />
+			<xsl:apply-templates select="//chapter[@id='reference']/sect1[count(//refentry//refsection//programlisting) &gt; 0]"   />
+
 			</xsl:if>
 			<xsl:text><![CDATA[</div>]]></xsl:text>
 			<xsl:text><![CDATA[</body></html>]]></xsl:text>
@@ -137,7 +139,7 @@ code {font-size: 8pt}
     	<xsl:variable name="col_func_count"><xsl:value-of select="count(descendant::*//funcprototype) div 1.65" /></xsl:variable>
 
     <!--count(preceding-sibling::*/refentry/refsynopsisdiv/funcsynopsis/funcprototype)-->
-		<xsl:for-each select="sect1[count(//funcprototype) &gt; 0]">
+		<xsl:for-each select="sect1[count(//funcprototype) &gt; 0 and not( contains(@id,'sfcgal') )]">
 
 			<xsl:variable name="col_cur"><xsl:value-of select="count(current()//funcprototype) + count(preceding-sibling::*//funcprototype)"/></xsl:variable>
 
@@ -149,7 +151,7 @@ code {font-size: 8pt}
 			<xsl:text><![CDATA[<table class="section"><tr><th colspan="2">]]></xsl:text><xsl:value-of select="title" />
 				<!-- end of section header beginning of function list -->
 				<xsl:text><![CDATA[</th></tr>]]></xsl:text>
-			<xsl:for-each select="refentry">
+			<xsl:for-each select="current()//refentry">
 				<!-- add row for each function and alternate colors of rows -->
 				<!-- , hyperlink to online manual -->
 		 		<![CDATA[<tr]]> class="<xsl:choose><xsl:when test="position() mod 2 = 0">evenrow</xsl:when><xsl:otherwise>oddrow</xsl:otherwise></xsl:choose>" <![CDATA[><td colspan='2'><span class='func'>]]><xsl:text><![CDATA[<a href="]]></xsl:text><xsl:value-of select="$linkstub" /><xsl:value-of select="@id" />.html<xsl:text><![CDATA[" target="_blank">]]></xsl:text><xsl:value-of select="refnamediv/refname" /><xsl:text><![CDATA[</a>]]></xsl:text><![CDATA[</span>]]><xsl:if test="contains(.,$new_tag)"><![CDATA[<sup>1</sup> ]]></xsl:if>
@@ -157,7 +159,7 @@ code {font-size: 8pt}
 		 		<xsl:if test="contains(.,$enhanced_tag)"><![CDATA[<sup>2</sup> ]]></xsl:if>
 		 		<xsl:if test="contains(.,'implements the SQL/MM')"><![CDATA[<sup>mm</sup> ]]></xsl:if>
 		 		<xsl:if test="contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')"><![CDATA[<sup>G</sup>  ]]></xsl:if>
-		 		<xsl:if test="contains(.,'GEOS &gt;= 3.4')"><![CDATA[<sup>g3.4</sup> ]]></xsl:if>
+		 		<xsl:if test="contains(.,'GEOS &gt;= 3.9')"><![CDATA[<sup>g3.9</sup> ]]></xsl:if>
 		 		<xsl:if test="contains(.,'This function supports 3d')"><![CDATA[<sup>3d</sup> ]]></xsl:if>
 		 		<!-- if only one proto just dispaly it on first line -->
 		 		<xsl:if test="count(refsynopsisdiv/funcsynopsis/funcprototype) = 1">
@@ -167,7 +169,8 @@ code {font-size: 8pt}
 		 		<![CDATA[&nbsp;&nbsp;]]>
 		 		<xsl:if test="$output_purpose = 'true'"><xsl:value-of select="refnamediv/refpurpose" /></xsl:if>
 		 		<!-- output different proto arg combos -->
-		 		<xsl:if test="count(refsynopsisdiv/funcsynopsis/funcprototype) &gt; 1"><![CDATA[<span class='func_args'><ol>]]><xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype"><![CDATA[<li>]]><xsl:call-template name="list_in_params"><xsl:with-param name="func" select="." /></xsl:call-template><![CDATA[</li>]]></xsl:for-each>
+		 		<xsl:if test="count(refsynopsisdiv/funcsynopsis/funcprototype) &gt; 1"><![CDATA[<span class='func_args'><ol>]]><xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype"><![CDATA[<li>]]><xsl:call-template name="list_in_params"><xsl:with-param name="func" select="." /></xsl:call-template><xsl:if test=".//paramdef[contains(type,' set')] or .//paramdef[contains(type,'geography set')] or
+						.//paramdef[contains(type,'raster set')]"><![CDATA[<sup> agg</sup> ]]></xsl:if><xsl:if test=".//paramdef[contains(type,'winset')]"><![CDATA[ <sup>W</sup> ]]></xsl:if><![CDATA[</li>]]></xsl:for-each>
 		 		<![CDATA[</ol></span>]]></xsl:if>
 		 		<![CDATA[</td></tr>]]>
 		 		</xsl:for-each>

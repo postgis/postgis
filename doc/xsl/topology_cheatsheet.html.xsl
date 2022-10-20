@@ -8,12 +8,12 @@
 	 statements from postgis xml doc reference
      ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='postgis_version'>2.1</xsl:variable>
+	<xsl:variable name='postgis_version'>3.4</xsl:variable>
 	<xsl:variable name='new_tag'>Availability: <xsl:value-of select="$postgis_version" /></xsl:variable>
 	<xsl:variable name='enhanced_tag'>Enhanced: <xsl:value-of select="$postgis_version" /></xsl:variable>
 	<xsl:variable name='include_examples'>false</xsl:variable>
 	<xsl:variable name='output_purpose'>true</xsl:variable>
-	<xsl:variable name='linkstub'>http://postgis.net/docs/manual-dev/</xsl:variable>
+	<xsl:variable name='linkstub'>http://postgis.net/docs/manual-<xsl:value-of select="$postgis_version" />/</xsl:variable>
 <xsl:template match="/">
 	<xsl:text><![CDATA[<html><head><title>PostGIS Topology Cheat Sheet</title>
 	<style type="text/css">
@@ -56,7 +56,7 @@ body {
 	color: #fff;
 	background-color: #b63300;
 	font-size: 9.5pt;
-	
+
 }
 .section td {
 	font-family: Arial, sans-serif;
@@ -99,8 +99,8 @@ h1 {
 			<xsl:text><![CDATA[</div>]]></xsl:text>
 			<xsl:text><![CDATA[</body></html>]]></xsl:text>
 </xsl:template>
-			
-        
+
+
     <xsl:template match="chapter" name="function_list">
 		<xsl:for-each select="sect1">
 			<!--Beginning of section -->
@@ -111,7 +111,7 @@ h1 {
 			<xsl:for-each select="refentry">
 				<!-- add row for each function and alternate colors of rows -->
 				<!-- , hyperlink to online manual -->
-		 		<![CDATA[<tr]]> class="<xsl:choose><xsl:when test="position() mod 2 = 0">evenrow</xsl:when><xsl:otherwise>oddrow</xsl:otherwise></xsl:choose>" <![CDATA[><td colspan='2'><span class='func'>]]><xsl:text><![CDATA[<a href="]]></xsl:text><xsl:value-of select="$linkstub" /><xsl:value-of select="@id" />.html<xsl:text><![CDATA[" target="_blank">]]></xsl:text><xsl:value-of select="refnamediv/refname" /><xsl:text><![CDATA[</a>]]></xsl:text><![CDATA[</span>]]><xsl:if test="contains(.,$new_tag)"><![CDATA[<sup>1</sup> ]]></xsl:if> 
+		 		<![CDATA[<tr]]> class="<xsl:choose><xsl:when test="position() mod 2 = 0">evenrow</xsl:when><xsl:otherwise>oddrow</xsl:otherwise></xsl:choose>" <![CDATA[><td colspan='2'><span class='func'>]]><xsl:text><![CDATA[<a href="]]></xsl:text><xsl:value-of select="$linkstub" /><xsl:value-of select="@id" />.html<xsl:text><![CDATA[" target="_blank">]]></xsl:text><xsl:value-of select="refnamediv/refname" /><xsl:text><![CDATA[</a>]]></xsl:text><![CDATA[</span>]]><xsl:if test="contains(.,$new_tag)"><![CDATA[<sup>1</sup> ]]></xsl:if>
 		 		<!-- enhanced tag -->
 		 		<xsl:if test="contains(.,$enhanced_tag)"><![CDATA[<sup>2</sup> ]]></xsl:if>
 		 		<xsl:if test="contains(.,'implements the SQL/MM')"><![CDATA[<sup>mm</sup> ]]></xsl:if>
@@ -122,7 +122,7 @@ h1 {
 		 		<xsl:if test="count(refsynopsisdiv/funcsynopsis/funcprototype) = 1">
 		 			(<xsl:call-template name="list_in_params"><xsl:with-param name="func" select="refsynopsisdiv/funcsynopsis/funcprototype" /></xsl:call-template>)
 		 		</xsl:if>
-		 		
+
 		 		<![CDATA[&nbsp;&nbsp;]]>
 		 		<xsl:if test="$output_purpose = 'true'"><xsl:value-of select="refnamediv/refpurpose" /></xsl:if>
 		 		<!-- output different proto arg combos -->
@@ -134,7 +134,7 @@ h1 {
 		 	<![CDATA[</table>]]>
 		</xsl:for-each>
 	</xsl:template>
-	
+
 	 <xsl:template match="sect1[//refentry//refsection[contains(title,'Example')]]">
 	 		<!-- less than needed for converting html tags in listings so they are printable -->
 	 		<xsl:variable name="lt"><xsl:text><![CDATA[<]]></xsl:text></xsl:variable>
@@ -154,13 +154,13 @@ h1 {
 						<xsl:with-param name="replacement" select="'&amp;lt;'"/>
 					</xsl:call-template>
 				</xsl:variable>
-				
+
 				<xsl:variable name='listing'>
 					<xsl:call-template name="break">
 						<xsl:with-param name="text" select="$plainlisting" />
 					</xsl:call-template>
 				</xsl:variable>
-				
+
 
 
 				<!-- add row for each function and alternate colors of rows -->
@@ -170,11 +170,11 @@ h1 {
 		 	<![CDATA[</table>]]>
 		 	</xsl:if>
 		 	<!--close section -->
-		 
-		
+
+
 	</xsl:template>
-	
-<!--General replace macro hack to make up for the fact xsl 1.0 does not have a built in one.  
+
+<!--General replace macro hack to make up for the fact xsl 1.0 does not have a built in one.
 	Not needed for xsl 2.0 lifted from http://www.xml.com/pub/a/2002/06/05/transforming.html -->
 	<xsl:template name="globalReplace">
 	  <xsl:param name="outputString"/>
@@ -186,10 +186,10 @@ h1 {
 			"concat(substring-before($outputString,$target),
 				   $replacement)"/>
 		  <xsl:call-template name="globalReplace">
-			<xsl:with-param name="outputString" 
+			<xsl:with-param name="outputString"
 				 select="substring-after($outputString,$target)"/>
 			<xsl:with-param name="target" select="$target"/>
-			<xsl:with-param name="replacement" 
+			<xsl:with-param name="replacement"
 				 select="$replacement"/>
 		  </xsl:call-template>
 		</xsl:when>
@@ -198,7 +198,7 @@ h1 {
 		</xsl:otherwise>
 	  </xsl:choose>
 	</xsl:template>
-	
+
 <xsl:template name="break">
   <xsl:param name="text" select="."/>
   <xsl:choose>
@@ -206,8 +206,8 @@ h1 {
       <xsl:value-of select="substring-before($text, '&#xa;')"/>
       <![CDATA[<br/>]]>
       <xsl:call-template name="break">
-        <xsl:with-param 
-          name="text" 
+        <xsl:with-param
+          name="text"
           select="substring-after($text, '&#xa;')"
         />
       </xsl:call-template>
@@ -225,13 +225,13 @@ h1 {
 		<xsl:if test="count(paramdef/parameter)  &gt; 0"> </xsl:if>
 		<xsl:for-each select="paramdef">
 			<xsl:choose>
-				<xsl:when test="not( contains(parameter, 'OUT') )"> 
+				<xsl:when test="not( contains(parameter, 'OUT') )">
 					<xsl:value-of select="parameter" />
 					<xsl:if test="position()&lt;last()"><xsl:text>, </xsl:text></xsl:if>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:for-each>
-	</xsl:for-each>	
+	</xsl:for-each>
 </xsl:template>
 
 </xsl:stylesheet>
