@@ -54,6 +54,15 @@ our $TOP_BUILDDIR = $ENV{"POSTGIS_TOP_BUILD_DIR"} || ${REGDIR} . '/..';
 our $sysdiff = !system("diff --strip-trailing-cr $0 $0 2> /dev/null");
 
 ##################################################################
+# Set up some global variables
+##################################################################
+
+my $RUN = 0;
+my $FAIL = 0;
+my $SKIP = 0;
+our $TEST = "";
+
+##################################################################
 # Parse command line opts
 ##################################################################
 
@@ -380,14 +389,6 @@ print "  PROJ: $projver\n" if $projver;
 print "  SFCGAL: $sfcgalver\n" if $sfcgalver;
 print "  GDAL: $gdalver\n" if $gdalver;
 
-
-##################################################################
-# Set up some global variables
-##################################################################
-my $RUN = 0;
-my $FAIL = 0;
-my $SKIP = 0;
-our $TEST = "";
 
 ##################################################################
 # Run the tests
