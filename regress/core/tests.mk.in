@@ -87,6 +87,7 @@ TESTS += \
 	$(top_srcdir)/regress/core/regress_proj_adhoc \
 	$(top_srcdir)/regress/core/regress_proj_cache_overflow \
 	$(top_srcdir)/regress/core/regress_proj_4890 \
+	$(top_srcdir)/regress/core/regress_proj_pipeline \
 	$(top_srcdir)/regress/core/relate \
 	$(top_srcdir)/regress/core/remove_repeated_points \
 	$(top_srcdir)/regress/core/removepoint \

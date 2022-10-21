@@ -2876,6 +2876,30 @@ CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, from_proj text, to_srid i
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
+CREATE OR REPLACE FUNCTION postgis_transform_pipeline_geometry(geom geometry, pipeline text, forward boolean, to_srid integer)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','transform_pipeline_geom'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
+-- Availability: 3.4.0
+
+CREATE OR REPLACE FUNCTION ST_TransformPipeline(geom geometry, pipeline text, to_srid integer DEFAULT 0)
+	RETURNS geometry AS
+	'SELECT @extschema@.postgis_transform_pipeline_geometry($1, $2, TRUE, $3)'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
+-- Availability: 3.4.0
+
+CREATE OR REPLACE FUNCTION ST_InverseTransformPipeline(geom geometry, pipeline text, to_srid integer DEFAULT 0)
+	RETURNS geometry AS
+	'SELECT @extschema@.postgis_transform_pipeline_geometry($1, $2, FALSE, $3)'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
+-- Availability: 3.4.0
+
 -----------------------------------------------------------------------
 -- POSTGIS_VERSION()
 -----------------------------------------------------------------------
