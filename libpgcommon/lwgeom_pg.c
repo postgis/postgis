@@ -511,7 +511,7 @@ postgis_guc_find_option(const char *name)
 		 GetNumConfigOptions(),
 		 sizeof(struct config_generic *),
 		 postgis_guc_var_compare);
-#endif;
+#endif
 
 	/* Found nothing? Good */
 	if ( ! res ) return 0;
