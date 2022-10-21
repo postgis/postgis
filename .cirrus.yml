@@ -3,7 +3,7 @@ task:
   name: FreeBSD
   alias: test-freebsd
   env:
-    MAKE_FLAGS: -j 8
+    #MAKE_FLAGS: -j 8
 
   install_script:
     - sed -i.bak -e 's,pkg+http://pkg.FreeBSD.org/\${ABI}/quarterly,pkg+http://pkg.FreeBSD.org/\${ABI}/latest,' /etc/pkg/FreeBSD.conf
@@ -19,11 +19,11 @@ task:
     - service postgresql oneinitdb
     - service postgresql onestart
     - su postgres -c "createuser -s `whoami`"
-    - gmake -j8 || { service postgresql onestop; exit 1;}
-    - gmake -j8 check || { service postgresql onestop; exit 1;}
-    - gmake -j8 install || { service postgresql onestop; exit 1;}
-    - gmake -j8 check RUNTESTFLAGS="-v --extension" || { service postgresql onestop; exit 1;}
-    - gmake -j8 check RUNTESTFLAGS="-v --dumprestore" || { service postgresql onestop; exit 1;}
+    - gmake || { service postgresql onestop; exit 1;}
+    - gmake check || { service postgresql onestop; exit 1;}
+    - gmake install || { service postgresql onestop; exit 1;}
+    - gmake check RUNTESTFLAGS="-v --extension" || { service postgresql onestop; exit 1;}
+    - gmake check RUNTESTFLAGS="-v --dumprestore" || { service postgresql onestop; exit 1;}
     - service postgresql onestop
 
   freebsd_instance:
