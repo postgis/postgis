@@ -496,16 +496,22 @@ postgis_guc_find_option(const char *name)
 {
 	const char **key = &name;
 	struct config_generic **res;
+	int			numOpts;
+
 
 	/*
 	 * By equating const char ** with struct config_generic *, we are assuming
 	 * the name field is first in config_generic.
 	 */
+#if POSTGIS_PGSQL_VERSION >= 160
+	res = find_option(&key, false, true, ERROR);
+#else
 	res = (struct config_generic **) bsearch((void *) &key,
 		 (void *) get_guc_variables(),
 		 GetNumConfigOptions(),
 		 sizeof(struct config_generic *),
 		 postgis_guc_var_compare);
+#endif;
 
 	/* Found nothing? Good */
 	if ( ! res ) return 0;

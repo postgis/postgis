@@ -2054,7 +2054,8 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 		{
 			box = (BOX2DF *) DatumGetPointer(entryvec->vector[
 												commonEntries[i].index].key);
-			commonEntries[i].delta = Abs(box2df_penalty(leftBox, box) - box2df_penalty(rightBox, box));
+			/** PG!6 Abs was removed in favor of standard c lib **/
+			commonEntries[i].delta = fabs(box2df_penalty(leftBox, box) - box2df_penalty(rightBox, box));
 		}
 
 		/*
