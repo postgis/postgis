@@ -496,8 +496,6 @@ postgis_guc_find_option(const char *name)
 {
 	const char **key = &name;
 	struct config_generic **res;
-	int			numOpts;
-
 
 	/*
 	 * By equating const char ** with struct config_generic *, we are assuming
