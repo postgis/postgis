@@ -1549,22 +1549,22 @@ FROM mvtgeom;
 			<funcsynopsis>
 			  <funcprototype>
 				<funcdef>bytea <function>ST_AsTWKB</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>decimaldigits_xy=0</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>decimaldigits_z=0</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>decimaldigits_m=0</parameter></paramdef>
-				<paramdef><type>boolean </type> <parameter>include_sizes=false</parameter></paramdef>
-				<paramdef><type>boolean </type> <parameter>include_bounding boxes=false</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>prec=0</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>prec_z=0</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>prec_m=0</parameter></paramdef>
+				<paramdef><type>boolean </type> <parameter>with_sizes=false</parameter></paramdef>
+				<paramdef><type>boolean </type> <parameter>with_boxes=false</parameter></paramdef>
 			  </funcprototype>
 			  <funcprototype>
 				<funcdef>bytea <function>ST_AsTWKB</function></funcdef>
-				<paramdef><type>geometry[] </type> <parameter>geometries</parameter></paramdef>
-				<paramdef><type>bigint[] </type> <parameter>unique_ids</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>decimaldigits_xy=0</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>decimaldigits_z=0</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>decimaldigits_m=0</parameter></paramdef>
-				<paramdef><type>boolean </type> <parameter>include_sizes=false</parameter></paramdef>
-				<paramdef><type>boolean </type> <parameter>include_bounding_boxes=false</parameter></paramdef>
+				<paramdef><type>geometry[] </type> <parameter>geom</parameter></paramdef>
+				<paramdef><type>bigint[] </type> <parameter>ids</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>prec=0</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>prec_z=0</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>prec_m=0</parameter></paramdef>
+				<paramdef><type>boolean </type> <parameter>with_sizes=false</parameter></paramdef>
+				<paramdef><type>boolean </type> <parameter>with_boxes=false</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
