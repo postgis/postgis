@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 # Berrie64 is a 64-bit Rasberry Pi Arm managed by Bruce Rindahl
 ## BRANCH is passed in via jenkins which is set via gitea web hook
 #export BRANCH=618a67b1d6fc223dd5a4c0b02c824939f21dbd65
@@ -23,15 +24,10 @@ make check RUNTESTFLAGS="-v"
 make install
 
 make check RUNTESTFLAGS="-v --extension"
-if [ "$?" != "0" ]; then
-	err_status=$?
-fi
-
+err_status=$?
 
 make garden
-if [ "$?" != "0" ]; then
-	err_status=$?
-fi
+err_status=$?
 
 utils/check_all_upgrades.sh \
     `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
