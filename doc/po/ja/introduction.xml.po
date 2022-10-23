@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-04-16 08:20+0000\n"
+"POT-Creation-Date: 2022-10-23 01:21+0000\n"
 "PO-Revision-Date: 2022-09-01 02:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -137,8 +137,9 @@ msgstr "Darafei Praliaskouski"
 msgid ""
 "Index improvements, bug fixing and geometry/geography function improvements, "
 "SFCGAL, raster, GitHub curation, and bot maintenance."
-msgstr "インデックス改善、誤り修正とジオメトリ/ジオグラフィ関数の改善、SFCGAL、ラスタ"
-"、GitHubキュレーション、Botのメンテナンス。"
+msgstr ""
+"インデックス改善、誤り修正とジオメトリ/ジオグラフィ関数の改善、SFCGAL、ラス"
+"タ、GitHubキュレーション、Botのメンテナンス。"
 
 #. Tag: term
 #: introduction.xml:54
@@ -429,7 +430,8 @@ msgstr "Pierre Racine"
 msgid ""
 "Architect of PostGIS raster implementation. Raster overall architecture, "
 "prototyping, programming support"
-msgstr "PostGISラスタ実装の設計。ラスタ全体のアーキテクチャ、プロトタイプ作成、プログ"
+msgstr ""
+"PostGISラスタ実装の設計。ラスタ全体のアーキテクチャ、プロトタイプ作成、プログ"
 "ラミング補助"
 
 #. Tag: term
@@ -969,125 +971,131 @@ msgstr "Richard Greenwood"
 #. Tag: member
 #: introduction.xml:302
 #, no-c-format
+msgid "Robert Coup"
+msgstr ""
+
+#. Tag: member
+#: introduction.xml:303
+#, no-c-format
 msgid "Roger Crew"
 msgstr "Roger Crew"
 
 #. Tag: member
-#: introduction.xml:303
+#: introduction.xml:304
 #, no-c-format
 msgid "Ron Mayer"
 msgstr "Ron Mayer"
 
 #. Tag: member
-#: introduction.xml:304
+#: introduction.xml:305
 #, no-c-format
 msgid "Sebastiaan Couwenberg"
 msgstr "Sebastiaan Couwenberg"
 
 #. Tag: member
-#: introduction.xml:305
+#: introduction.xml:306
 #, no-c-format
 msgid "Sergei Shoulbakov"
 msgstr "Sergei Shoulbakov"
 
 #. Tag: member
-#: introduction.xml:306
+#: introduction.xml:307
 #, no-c-format
 msgid "Sergey Fedoseev"
 msgstr "Sergey Fedoseev"
 
 #. Tag: member
-#: introduction.xml:307
+#: introduction.xml:308
 #, no-c-format
 msgid "Shinichi Sugiyama"
 msgstr "Shinichi Sugiyama"
 
 #. Tag: member
-#: introduction.xml:308
+#: introduction.xml:309
 #, no-c-format
 msgid "Shoaib Burq"
 msgstr "Shoaib Burq"
 
 #. Tag: member
-#: introduction.xml:309
+#: introduction.xml:310
 #, no-c-format
 msgid "Silvio Grosso"
 msgstr "Silvio Grosso"
 
 #. Tag: member
-#: introduction.xml:310
+#: introduction.xml:311
 #, no-c-format
 msgid "Stefan Corneliu Petrea"
 msgstr "Stefan Corneliu Petrea"
 
 #. Tag: member
-#: introduction.xml:311
+#: introduction.xml:312
 #, no-c-format
 msgid "Steffen Macke"
 msgstr "Steffen Macke"
 
 #. Tag: member
-#: introduction.xml:312
+#: introduction.xml:313
 #, no-c-format
 msgid "Stepan Kuzmin"
 msgstr "Stepan Kuzmin"
 
 #. Tag: member
-#: introduction.xml:313
+#: introduction.xml:314
 #, no-c-format
 msgid "Stephen Frost"
 msgstr "Stephen Frost"
 
 #. Tag: member
-#: introduction.xml:314
+#: introduction.xml:315
 #, no-c-format
 msgid "Steven Ottens"
 msgstr "Steven Ottens"
 
 #. Tag: member
-#: introduction.xml:315
+#: introduction.xml:316
 #, no-c-format
 msgid "Talha Rizwan"
 msgstr "Talha Rizwan"
 
 #. Tag: member
-#: introduction.xml:316
+#: introduction.xml:317
 #, no-c-format
 msgid "Tom Glancy"
 msgstr "Tom Glancy"
 
 #. Tag: member
-#: introduction.xml:317
+#: introduction.xml:318
 #, no-c-format
 msgid "Tom van Tilburg"
 msgstr "Tom van Tilburg"
 
 #. Tag: member
-#: introduction.xml:318
+#: introduction.xml:319
 #, no-c-format
 msgid "Vincent Mora"
 msgstr "Vincent Mora"
 
 #. Tag: member
-#: introduction.xml:319
+#: introduction.xml:320
 #, no-c-format
 msgid "Vincent Picavet"
 msgstr "Vincent Picavet"
 
 #. Tag: member
-#: introduction.xml:320
+#: introduction.xml:321
 #, no-c-format
 msgid "Volf Tomáš"
 msgstr "Volf Tomáš"
 
 #. Tag: term
-#: introduction.xml:327
+#: introduction.xml:328
 #, no-c-format
 msgid "Corporate Sponsors"
 msgstr "企業"
 
 #. Tag: para
-#: introduction.xml:330
+#: introduction.xml:331
 #, no-c-format
 msgid ""
 "These are corporate entities that have contributed developer time, hosting, "
@@ -1097,271 +1105,271 @@ msgstr ""
 "供のいずれかの貢献をした企業です。アルファベット順:"
 
 #. Tag: ulink
-#: introduction.xml:333
+#: introduction.xml:334
 #, no-c-format
 msgid "Aiven"
 msgstr "Aiven"
 
 #. Tag: ulink
-#: introduction.xml:334
+#: introduction.xml:335
 #, no-c-format
 msgid "Arrival 3D"
 msgstr "Arrival 3D"
 
 #. Tag: ulink
-#: introduction.xml:335
+#: introduction.xml:336
 #, no-c-format
 msgid "Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it)"
 msgstr "Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it)"
 
 #. Tag: ulink
-#: introduction.xml:336
+#: introduction.xml:337
 #, no-c-format
 msgid "AusVet"
 msgstr "AusVet"
 
 #. Tag: simpara
-#: introduction.xml:337
+#: introduction.xml:338
 #, no-c-format
 msgid "Avencia"
 msgstr "Avencia"
 
 #. Tag: ulink
-#: introduction.xml:338
+#: introduction.xml:339
 #, no-c-format
 msgid "Azavea"
 msgstr "Azavea"
 
 #. Tag: ulink
-#: introduction.xml:339
+#: introduction.xml:340
 #, no-c-format
 msgid "Boundless"
 msgstr "Boundless"
 
 #. Tag: ulink
-#: introduction.xml:340
+#: introduction.xml:341
 #, no-c-format
 msgid "Cadcorp"
 msgstr "Cadcorp"
 
 #. Tag: ulink
-#: introduction.xml:341
+#: introduction.xml:342
 #, no-c-format
 msgid "Camptocamp"
 msgstr "Camptocamp"
 
 #. Tag: ulink
-#: introduction.xml:342
+#: introduction.xml:343
 #, no-c-format
 msgid "Carto"
 msgstr "Carto"
 
 #. Tag: ulink
-#: introduction.xml:343
+#: introduction.xml:344
 #, no-c-format
 msgid "Crunchy Data"
 msgstr "Crunchy Data"
 
 #. Tag: ulink
-#: introduction.xml:344
+#: introduction.xml:345
 #, no-c-format
 msgid "City of Boston (DND)"
 msgstr "ボストン市 (近隣地区開発局)"
 
 #. Tag: ulink
-#: introduction.xml:345
+#: introduction.xml:346
 #, no-c-format
 msgid "City of Helsinki"
 msgstr "ヘルシンキ市"
 
 #. Tag: ulink
-#: introduction.xml:346
+#: introduction.xml:347
 #, no-c-format
 msgid "Clever Elephant Solutions"
 msgstr "Clever Elephant Solutions"
 
 #. Tag: ulink
-#: introduction.xml:347
+#: introduction.xml:348
 #, no-c-format
 msgid "Cooperativa Alveo"
 msgstr "Cooperativa Alveo"
 
 #. Tag: ulink
-#: introduction.xml:348
+#: introduction.xml:349
 #, no-c-format
 msgid "Deimos Space"
 msgstr "Deimos Space"
 
 #. Tag: ulink
-#: introduction.xml:349
+#: introduction.xml:350
 #, no-c-format
 msgid "Faunalia"
 msgstr "Faunalia"
 
 #. Tag: ulink
-#: introduction.xml:350
+#: introduction.xml:351
 #, no-c-format
 msgid "Geographic Data BC"
 msgstr "Geographic Data BC"
 
 #. Tag: simpara
-#: introduction.xml:351
+#: introduction.xml:352
 #, no-c-format
 msgid "Hunter Systems Group"
 msgstr "Hunter Systems Group"
 
 #. Tag: ulink
-#: introduction.xml:352
+#: introduction.xml:353
 #, no-c-format
 msgid "ISciences, LLC"
 msgstr "ISciences, LLC"
 
 #. Tag: ulink
-#: introduction.xml:353
+#: introduction.xml:354
 #, no-c-format
 msgid "Kontur"
 msgstr "Kontur"
 
 #. Tag: ulink
-#: introduction.xml:354
+#: introduction.xml:355
 #, no-c-format
 msgid "Lidwala Consulting Engineers"
 msgstr "Lidwala Consulting Engineers"
 
 #. Tag: ulink
-#: introduction.xml:355
+#: introduction.xml:356
 #, no-c-format
 msgid "LISAsoft"
 msgstr "LISAsoft"
 
 #. Tag: simpara
-#: introduction.xml:356
+#: introduction.xml:357
 #, no-c-format
 msgid "Logical Tracking &amp; Tracing International AG"
 msgstr "Logical Tracking &amp; Tracing International AG"
 
 #. Tag: simpara
-#: introduction.xml:357
+#: introduction.xml:358
 #, no-c-format
 msgid "Maponics"
 msgstr "Maponics"
 
 #. Tag: ulink
-#: introduction.xml:358
+#: introduction.xml:359
 #, no-c-format
 msgid "Michigan Tech Research Institute"
 msgstr "ミシガン工科大学研究所"
 
 #. Tag: ulink
-#: introduction.xml:359
+#: introduction.xml:360
 #, no-c-format
 msgid "Natural Resources Canada"
 msgstr "カナダ天然資源省"
 
 #. Tag: simpara
-#: introduction.xml:360
+#: introduction.xml:361
 #, no-c-format
 msgid "Norwegian Forest and Landscape Institue"
 msgstr "ノルウェー森林景観研究所"
 
 #. Tag: ulink
-#: introduction.xml:361
+#: introduction.xml:362
 #, no-c-format
 msgid "Norwegian Institute of Bioeconomy Research (NIBIO)"
 msgstr "ノルウェー生物経済研究所 (NIBIO)"
 
 #. Tag: ulink
-#: introduction.xml:362
+#: introduction.xml:363
 #, no-c-format
 msgid "OSGeo"
 msgstr "OSGeo財団"
 
 #. Tag: ulink
-#: introduction.xml:363
+#: introduction.xml:364
 #, no-c-format
 msgid "Oslandia"
 msgstr "Oslandia"
 
 #. Tag: ulink
-#: introduction.xml:364
+#: introduction.xml:365
 #, no-c-format
 msgid "Palantir Technologies"
 msgstr "Palantir Technologies"
 
 #. Tag: ulink
-#: introduction.xml:365
+#: introduction.xml:366
 #, no-c-format
 msgid "Paragon Corporation"
 msgstr "Paragon Corporation"
 
 #. Tag: ulink
-#: introduction.xml:366
+#: introduction.xml:367
 #, no-c-format
 msgid "R3 GIS"
 msgstr "R3 GIS"
 
 #. Tag: ulink
-#: introduction.xml:367
+#: introduction.xml:368
 #, no-c-format
 msgid "Refractions Research"
 msgstr "Refractions Research"
 
 #. Tag: ulink
-#: introduction.xml:368
+#: introduction.xml:369
 #, no-c-format
 msgid "Regione Toscana - SITA"
 msgstr "トスカナ州- SITA"
 
 #. Tag: ulink
-#: introduction.xml:369
+#: introduction.xml:370
 #, no-c-format
 msgid "Safe Software"
 msgstr "Safe Software"
 
 #. Tag: simpara
-#: introduction.xml:370
+#: introduction.xml:371
 #, no-c-format
 msgid "Sirius Corporation plc"
 msgstr "Sirius Corporation plc"
 
 #. Tag: ulink
-#: introduction.xml:371
+#: introduction.xml:372
 #, no-c-format
 msgid "Stadt Uster"
 msgstr "ウスター市"
 
 #. Tag: ulink
-#: introduction.xml:372
+#: introduction.xml:373
 #, no-c-format
 msgid "UC Davis Center for Vectorborne Diseases"
 msgstr "カリフォルニア大デービス校節足動媒介感染症センター"
 
 #. Tag: ulink
-#: introduction.xml:373
+#: introduction.xml:374
 #, no-c-format
 msgid "Université Laval"
 msgstr "ラヴァル大学"
 
 #. Tag: ulink
-#: introduction.xml:374
+#: introduction.xml:375
 #, no-c-format
 msgid "U.S. Department of State (HIU)"
 msgstr "米国国務省 (人道情報部門)"
 
 #. Tag: ulink
-#: introduction.xml:375
+#: introduction.xml:376
 #, no-c-format
 msgid "Zonar Systems"
 msgstr "Zonar Systems"
 
 #. Tag: term
-#: introduction.xml:382
+#: introduction.xml:383
 #, no-c-format
 msgid "Crowd Funding Campaigns"
 msgstr "クラウドファンディングキャンペーン"
 
 #. Tag: para
-#: introduction.xml:385
+#: introduction.xml:386
 #, no-c-format
 msgid ""
 "Crowd funding campaigns are campaigns we run to get badly wanted features "
@@ -1380,12 +1388,12 @@ msgstr ""
 "能の集合に焦点があてられます。それぞれのスポンサーは、必要な資金提供のうち少"
 "しだけを提供し、十分な人/組織の寄付で、たくさんの助けになる作業に支払う基金を"
 "持ちます。他の多くの人が寄付に協力してくれそうな機能に関するアイデアがありま"
-"したら、<ulink url=\"https://lists.osgeo.org/mailman/listinfo/postgis-users"
-"\">PostGIS newsgroup</ulink>に、その考えを投稿して下さい。一緒に実現できま"
-"す。"
+"したら、<ulink url=\"https://lists.osgeo.org/mailman/listinfo/postgis-"
+"users\">PostGIS newsgroup</ulink>に、その考えを投稿して下さい。一緒に実現でき"
+"ます。"
 
 #. Tag: para
-#: introduction.xml:386
+#: introduction.xml:387
 #, no-c-format
 msgid ""
 "PostGIS 2.0.0 was the first release we tried this strategy. We used <ulink "
@@ -1396,40 +1404,41 @@ msgstr ""
 "pledgebank.com\">PledgeBank</ulink>を使い、2件のキャンペーンが成功しました。"
 
 #. Tag: para
-#: introduction.xml:387
+#: introduction.xml:388
 #, no-c-format
 msgid ""
-"<ulink url=\"http://www.pledgebank.com/postgistopology\"><emphasis role="
-"\"bold\">postgistopology</emphasis></ulink> - 10 plus sponsors each "
+"<ulink url=\"http://www.pledgebank.com/postgistopology\"><emphasis "
+"role=\"bold\">postgistopology</emphasis></ulink> - 10 plus sponsors each "
 "contributed $250 USD to build toTopoGeometry function and beef up topology "
 "support in 2.0.0. It happened."
 msgstr ""
-"<ulink url=\"http://www.pledgebank.com/postgistopology\"><emphasis role="
-"\"bold\">postgistopology</emphasis></ulink> - 10以上のスポンサーが"
+"<ulink url=\"http://www.pledgebank.com/postgistopology\"><emphasis "
+"role=\"bold\">postgistopology</emphasis></ulink> - 10以上のスポンサーが"
 "TopoGeometry機能の構築と2.0.0でのトポロジ対応強化とのために、それぞれ250米ド"
 "ルを寄付しました。"
 
 #. Tag: para
-#: introduction.xml:388
+#: introduction.xml:389
 #, no-c-format
 msgid ""
-"<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis role="
-"\"bold\">postgis64windows</emphasis></ulink> - 20 someodd sponsors each "
+"<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis "
+"role=\"bold\">postgis64windows</emphasis></ulink> - 20 someodd sponsors each "
 "contributed $100 USD to pay for the work needed to work out PostGIS 64-bit "
 "issues on windows. It happened."
 msgstr ""
-"<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis role="
-"\"bold\">postgis64windows</emphasis></ulink> - 20のスポンサーが、Windows上で"
-"のPostGIS 64ビット版に必要な作業のために、それぞれ100米ドルを寄付しました。"
+"<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis "
+"role=\"bold\">postgis64windows</emphasis></ulink> - 20のスポンサーが、Windows"
+"上でのPostGIS 64ビット版に必要な作業のために、それぞれ100米ドルを寄付しまし"
+"た。"
 
 #. Tag: term
-#: introduction.xml:393
+#: introduction.xml:394
 #, no-c-format
 msgid "Important Support Libraries"
 msgstr "重要なサポートライブラリ"
 
 #. Tag: para
-#: introduction.xml:396
+#: introduction.xml:397
 #, no-c-format
 msgid ""
 "The <ulink url=\"https://libgeos.org\">GEOS</ulink> geometry operations "
@@ -1437,7 +1446,7 @@ msgid ""
 msgstr "ジオメトリ演算ライブラ <ulink url=\"https://libgeos.org\">GEOS</ulink>"
 
 #. Tag: para
-#: introduction.xml:399
+#: introduction.xml:400
 #, no-c-format
 msgid ""
 "The <ulink url=\"https://gdal.org\">GDAL</ulink> Geospatial Data Abstraction "
@@ -1445,12 +1454,12 @@ msgid ""
 "2. In kind, improvements needed in GDAL to support PostGIS are contributed "
 "back to the GDAL project."
 msgstr ""
-"地理空間データ抽象化ライブラリ<ulink url=\"https://gdal.org\""
-">GDAL</ulink>は、PostGIS 2で導入されたラスタ機能の多くに使われています。また"
-"、GDALのPostGIS対応に必要な改善でGDALプロジェクトに貢献しています。"
+"地理空間データ抽象化ライブラリ<ulink url=\"https://gdal.org\">GDAL</ulink>"
+"は、PostGIS 2で導入されたラスタ機能の多くに使われています。また、GDALの"
+"PostGIS対応に必要な改善でGDALプロジェクトに貢献しています。"
 
 #. Tag: para
-#: introduction.xml:404
+#: introduction.xml:405
 #, no-c-format
 msgid ""
 "The <ulink url=\"https://www.proj4.org\">PROJ</ulink> cartographic "
@@ -1458,7 +1467,7 @@ msgid ""
 msgstr "地図投影ライブラリ<ulink url=\"https://www.proj4.org\">PROJ</ulink>"
 
 #. Tag: para
-#: introduction.xml:407
+#: introduction.xml:408
 #, no-c-format
 msgid ""
 "Last but not least, <ulink url=\"http://www.postgresql.org\">PostgreSQL</"
@@ -1466,10 +1475,10 @@ msgid ""
 "of PostGIS would not be possible without the extensibility, great query "
 "planner, GIST index, and plethora of SQL features provided by PostgreSQL."
 msgstr ""
-"最後ですがおろそかにできないのが<ulink url=\"http://www.postgresql.org"
-"\">PostgreSQL</ulink>です。PostGISはこの巨人に立っています。PostGISの速度と柔"
-"軟性は、PostgreSQLが提供する拡張性、優れたクエリプランナ、GiSTインデックス、"
-"多数のSQL機能があって初めて成り立ちます。"
+"最後ですがおろそかにできないのが<ulink url=\"http://www.postgresql."
+"org\">PostgreSQL</ulink>です。PostGISはこの巨人に立っています。PostGISの速度"
+"と柔軟性は、PostgreSQLが提供する拡張性、優れたクエリプランナ、GiSTインデック"
+"ス、多数のSQL機能があって初めて成り立ちます。"
 
 #~ msgid ""
 #~ "Raster development, integration with GDAL, raster loader, user support, "

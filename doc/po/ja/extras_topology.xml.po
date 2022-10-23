@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-22 01:55+0000\n"
+"POT-Creation-Date: 2022-10-23 01:21+0000\n"
 "PO-Revision-Date: 2022-09-27 07:04+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -1236,7 +1236,8 @@ msgstr ""
 msgid ""
 "List of possible errors, what they mean and what the returned ids represent "
 "are displayed below:"
-msgstr "エラーの一覧を示します。可能性のある、意味することろ、返されるid表現は次の通"
+msgstr ""
+"エラーの一覧を示します。可能性のある、意味することろ、返されるid表現は次の通"
 "りです:"
 
 #. Tag: entry
@@ -1475,7 +1476,8 @@ msgstr "不正なMBRキャッシュを持つフェイスの識別子。"
 msgid ""
 "Minimum bounding rectangle of a face does not match minimum bounding box of "
 "the collection of edges reporting the face on their sides."
-msgstr "フェイスの最小バウンディング四角形が、サイド上のフェイスを示すエッジのコレク"
+msgstr ""
+"フェイスの最小バウンディング四角形が、サイド上のフェイスを示すエッジのコレク"
 "ションの最小バウンディングボックスと合致しません。"
 
 #. Tag: entry
@@ -1501,15 +1503,17 @@ msgstr ""
 msgid ""
 "A ring of edges reporting a face on its exterior is contained in different "
 "face."
-msgstr "エッジの環が、外環のフェイスが異なるフェイスに含まれているフェイスを示します"
-"。"
+msgstr ""
+"エッジの環が、外環のフェイスが異なるフェイスに含まれているフェイスを示しま"
+"す。"
 
 #. Tag: entry
 #: extras_topology.xml:624
 #, no-c-format
 msgid "not-isolated node has not- containing_face"
-msgstr "not-isolated node has not- containing_face (訳注: "
-"非孤立ノードが非孤立フェイスを持っています)"
+msgstr ""
+"not-isolated node has not- containing_face (訳注: 非孤立ノードが非孤立フェイ"
+"スを持っています)"
 
 #. Tag: entry
 #: extras_topology.xml:625 extras_topology.xml:636
@@ -1523,15 +1527,17 @@ msgstr "はっきりしないノードの識別子。"
 msgid ""
 "A node which is reported as being on the boundary of one or more edges is "
 "indicating a containing face."
-msgstr "一つ以上のエッジの境界上にあると示された一つのノードが、そのノードを含んでい"
+msgstr ""
+"一つ以上のエッジの境界上にあると示された一つのノードが、そのノードを含んでい"
 "るフェイスを示しています。"
 
 #. Tag: entry
 #: extras_topology.xml:635
 #, no-c-format
 msgid "isolated node has containing_face"
-msgstr "isolated node has containing_face (訳注: "
-"孤立ノードがcontaining_faceを持っています)"
+msgstr ""
+"isolated node has containing_face (訳注: 孤立ノードがcontaining_faceを持って"
+"います)"
 
 #. Tag: entry
 #: extras_topology.xml:640
@@ -1539,7 +1545,8 @@ msgstr "isolated node has containing_face (訳注: "
 msgid ""
 "A node which is not reported as being on the boundary of any edges is "
 "lacking the indication of a containing face."
-msgstr "どのエッジの境界上にもないと報告されるノードが、それを含むフェイスが無いこと"
+msgstr ""
+"どのエッジの境界上にもないと報告されるノードが、それを含むフェイスが無いこと"
 "を示しています。"
 
 #. Tag: entry
@@ -1565,8 +1572,8 @@ msgid ""
 "linkend=\"GetFaceContainingPoint\"/>."
 msgstr ""
 "どのエッジの境界上にもないと報告されるノードが、そのノードを実際に含むフェイ"
-"スではないフェイスに含まれていることを示しています。<xref linkend="
-"\"GetFaceContainingPoint\"/>を参照して下さい。"
+"スではないフェイスに含まれていることを示しています。<xref "
+"linkend=\"GetFaceContainingPoint\"/>を参照して下さい。"
 
 #. Tag: entry
 #: extras_topology.xml:658
@@ -1592,7 +1599,8 @@ msgstr "符号付き識別子で次の右エッジを示します。"
 msgid ""
 "The edge indicated as the next edge encountered walking on the right side of "
 "an edge is wrong."
-msgstr "エッジの右側を進んで遭遇する次のエッジが間違っていることを示しています。"
+msgstr ""
+"エッジの右側を進んで遭遇する次のエッジが間違っていることを示しています。"
 
 #. Tag: entry
 #: extras_topology.xml:671
@@ -1612,7 +1620,8 @@ msgstr "符号付き識別子で次の左エッジを示します。"
 msgid ""
 "The edge indicated as the next edge encountered walking on the left side of "
 "an edge is wrong."
-msgstr "エッジの左側を進んで遭遇する次のエッジが間違っていることを示しています。"
+msgstr ""
+"エッジの左側を進んで遭遇する次のエッジが間違っていることを示しています。"
 
 #. Tag: entry
 #: extras_topology.xml:684
@@ -1626,7 +1635,8 @@ msgstr "mixed face labeling in ring (訳注: リング内のフェイスのラ�
 msgid ""
 "Edges in a ring indicate conflicting faces on the walking side. This is also "
 "known as a \"Side Location Conflict\"."
-msgstr "リング内のエッジが、進む側にあるフェイスが矛盾していることを示しています。こ"
+msgstr ""
+"リング内のエッジが、進む側にあるフェイスが矛盾していることを示しています。こ"
 "れは「サイドロケーションの矛盾」とも言われます。"
 
 #. Tag: entry
@@ -1641,8 +1651,9 @@ msgstr "non-closed ring (訳注: 閉じていないリング)"
 msgid ""
 "A ring of edges formed by following next_left_edge/next_right_edge "
 "attributes starts and ends on different nodes."
-msgstr "続くnext_left_edge/"
-"next_right_edge属性で形成されるエッジのリングの始点と終点が異なります。"
+msgstr ""
+"続くnext_left_edge/next_right_edge属性で形成されるエッジのリングの始点と終点"
+"が異なります。"
 
 #. Tag: entry
 #: extras_topology.xml:708
@@ -1887,8 +1898,9 @@ msgstr ""
 msgid ""
 "Takes a layer identifier or the identifier of a topology-related object and "
 "returns a topology.layer record."
-msgstr "トポロジ識別子またはトポロジ関連オブジェクトの識別子を取り、topology."
-"topologyレコードを返します。"
+msgstr ""
+"トポロジ識別子またはトポロジ関連オブジェクトの識別子を取り、topology.topology"
+"レコードを返します。"
 
 #. Tag: programlisting
 #: extras_topology.xml:884
@@ -3138,9 +3150,9 @@ msgid ""
 "change the underlying topology then an error is thrown."
 msgstr ""
 "全ての引数がNULLであるか、与えられたエッジがtopologyスキーマの<varname>edge</"
-"varname>テーブルにないか、<varname>acurve</varname>が<varname>LINESTRING</var"
-"name>でないか、変更で基になるトポロジが変わるか、のいずれかの場合には、エラー"
-"が投げられます。"
+"varname>テーブルにないか、<varname>acurve</varname>が<varname>LINESTRING</"
+"varname>でないか、変更で基になるトポロジが変わるか、のいずれかの場合には、エ"
+"ラーが投げられます。"
 
 #. Tag: para
 #: extras_topology.xml:1688
@@ -5154,7 +5166,8 @@ msgstr "RemoveUnusedPrimitives"
 msgid ""
 "Removes topology primitives which not needed to define existing TopoGeometry "
 "objects."
-msgstr "存在するTopoGeometryオブジェクトを定義するのに必要でないトポロジプリミティブ"
+msgstr ""
+"存在するTopoGeometryオブジェクトを定義するのに必要でないトポロジプリミティブ"
 "を削除します。"
 
 #. Tag: funcprototype
@@ -5179,8 +5192,8 @@ msgid ""
 "occupation."
 msgstr ""
 "存在するTopoGeometryオブジェクトを表現するのに厳密には必要でない全てのプリミ"
-"ティブ (nodes, edges, faces)を見つけ、これらを削除し、トポロジの妥当性 "
-"(エッジのリンク、フェイスのラベル)を維持します。"
+"ティブ (nodes, edges, faces)を見つけ、これらを削除し、トポロジの妥当性 (エッ"
+"ジのリンク、フェイスのラベル)を維持します。"
 
 #. Tag: para
 #: extras_topology.xml:2877
@@ -5190,9 +5203,9 @@ msgid ""
 "expanded to include merged faces (upon removing edges) or healed edges (upon "
 "removing nodes)."
 msgstr ""
-"新しいプリミティブ識別子が作られませんが、"
-"既存のプリミティブはフェイスのマージ (エッジの削除のため)や修復されたエッジ "
-"(ノードの削除のため)を含むために拡張されます。"
+"新しいプリミティブ識別子が作られませんが、既存のプリミティブはフェイスのマー"
+"ジ (エッジの削除のため)や修復されたエッジ (ノードの削除のため)を含むために拡"
+"張されます。"
 
 #. Tag: para
 #: extras_topology.xml:2883
@@ -6065,13 +6078,10 @@ msgstr ""
 #: extras_topology.xml:3318
 #, no-c-format
 msgid ""
-"<funcdef>topoelementarray topoelement <function>GetTopoGeomElementArray</"
-"function></funcdef> <paramdef><type>topogeometry </type> <parameter>tg</"
-"parameter></paramdef>"
+"<funcdef>topoelementarray <function>GetTopoGeomElementArray</function></"
+"funcdef> <paramdef><type>topogeometry </type> <parameter>tg</parameter></"
+"paramdef>"
 msgstr ""
-"<funcdef>topoelementarray topoelement <function>GetTopoGeomElementArray</"
-"function></funcdef> <paramdef><type>topogeometry </type> <parameter>tg</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:3328
@@ -6970,11 +6980,11 @@ msgid ""
 "databases so that parameter of your topology will need to be changes upon "
 "restoring it."
 msgstr ""
-"トポロジはテーブルの集合 (プリミティブで4テーブル、レイヤで任意数)と、"
-"メタデータテーブルのレコード (topology.topologyとtopology.layer)になっている"
-"ため、PostgreSQLの標準的なダンプ/レストアのツールでは問題があります。さらに、"
-"トポロジの識別子はデータベース間で同じではないため、トポロジのパラメータはレ"
-"ストア時に変更する必要があります。"
+"トポロジはテーブルの集合 (プリミティブで4テーブル、レイヤで任意数)と、メタ"
+"データテーブルのレコード (topology.topologyとtopology.layer)になっているた"
+"め、PostgreSQLの標準的なダンプ/レストアのツールでは問題があります。さらに、ト"
+"ポロジの識別子はデータベース間で同じではないため、トポロジのパラメータはレス"
+"トア時に変更する必要があります。"
 
 #. Tag: para
 #: extras_topology.xml:3737
@@ -7023,9 +7033,9 @@ msgid ""
 "switch."
 msgstr ""
 "デフォルトでは<filename>pgtopo_export</filename>はダンプファイルを標準出力に"
-"書くので、<filename>pgtopo_import</filename>にパイプで繋げたり、"
-"ファイルにリダイレクトする (端末への出力を止める)ことができます。出力ファイル"
-"名をコマンドラインスイッチ<code>-f</code>で指定することもできます。"
+"書くので、<filename>pgtopo_import</filename>にパイプで繋げたり、ファイルにリ"
+"ダイレクトする (端末への出力を止める)ことができます。出力ファイル名をコマンド"
+"ラインスイッチ<code>-f</code>で指定することもできます。"
 
 #. Tag: para
 #: extras_topology.xml:3761
@@ -7039,9 +7049,9 @@ msgid ""
 msgstr ""
 "デフォルトでは<filename>pgtopo_export</filename>は、指定されたトポロジに対し"
 "て定義されたレイヤの全てのダンプが含まれます。これは、必要なデータより多い場"
-"合もありますし、動作しない場合もあり "
-"(レイヤテーブルが複雑な依存関係を持っている場合)、この場合には<code>--skip-"
-"layers</code>スイッチでレイヤをスキップし、別々に処理することができます。"
+"合もありますし、動作しない場合もあり (レイヤテーブルが複雑な依存関係を持って"
+"いる場合)、この場合には<code>--skip-layers</code>スイッチでレイヤをスキップ"
+"し、別々に処理することができます。"
 
 #. Tag: para
 #: extras_topology.xml:3770
@@ -7050,8 +7060,8 @@ msgid ""
 "Invoking <filename>pgtopo_export</filename> with the <code>--help</code> (or "
 "<code>-h</code> for short) switch will always print short usage string."
 msgstr ""
-"<filename>pgtopo_export</filename>を<code>--help</code> (または短縮の<code>-h"
-"</code>)スイッチで実行すると、常に短い使用法文字列を印字します。"
+"<filename>pgtopo_export</filename>を<code>--help</code> (または短縮の<code>-"
+"h</code>)スイッチで実行すると、常に短い使用法文字列を印字します。"
 
 #. Tag: para
 #: extras_topology.xml:3777
@@ -7066,13 +7076,14 @@ msgid ""
 "optionall (if <code>--skip-layers</code> is not given) a custom-format "
 "PostgreSQL dump of tables reported as being layers of the given topology."
 msgstr ""
-"ダンプファイルフォーマットは、少なくともフォーマットバージョン情報を持つ<file"
-"name>pgtopo_dump_version</filename>ファイルを含む<filename>pgtopo_export</fil"
-"ename>ディレクトリの圧縮されたtarアーカイブです。バージョン<code>1</code>では"
-"、ディレクトリにはトポロジのプリミティブテーブル (node, edge_data, face, rela"
-"tion)、トポロジと関連レイヤのデータを持つタブ区切りCSVファイルが含まれ、任意"
-"で(<code>--skip-layers</code>が与えられない場合)与えられたトポロジのレイヤと"
-"して報告されたテーブルのPostgrfeSQLダンプのカスタムフォーマットも含まれます。"
+"ダンプファイルフォーマットは、少なくともフォーマットバージョン情報を持つ"
+"<filename>pgtopo_dump_version</filename>ファイルを含む"
+"<filename>pgtopo_export</filename>ディレクトリの圧縮されたtarアーカイブです。"
+"バージョン<code>1</code>では、ディレクトリにはトポロジのプリミティブテーブル "
+"(node, edge_data, face, relation)、トポロジと関連レイヤのデータを持つタブ区切"
+"りCSVファイルが含まれ、任意で(<code>--skip-layers</code>が与えられない場合)与"
+"えられたトポロジのレイヤとして報告されたテーブルのPostgrfeSQLダンプのカスタム"
+"フォーマットも含まれます。"
 
 #. Tag: title
 #: extras_topology.xml:3793
@@ -7101,9 +7112,9 @@ msgid ""
 "topology layers by properly linking all TopoGeometry values to their correct "
 "topology."
 msgstr ""
-"生成されたSQLには、与えられた名前でトポロジを生成し、プリミティブなデータをロ"
-"ードし、格納して、TopoGeometry値を確実に正しいトポロジに関連付けることで全て"
-"のトポロジレイヤを登録する手続きが含まれます。"
+"生成されたSQLには、与えられた名前でトポロジを生成し、プリミティブなデータを"
+"ロードし、格納して、TopoGeometry値を確実に正しいトポロジに関連付けることで全"
+"てのトポロジレイヤを登録する手続きが含まれます。"
 
 #. Tag: para
 #: extras_topology.xml:3811
@@ -7115,9 +7126,9 @@ msgid ""
 "an input filename with the <code>-f</code> commandline switch."
 msgstr ""
 "デフォルトでは<filename>pgtopo_import</filename>は標準入力からダンプを読むの"
-"で、<filename>pgtopo_export</filename>をパイプで繋げて併用することができます"
-"。入力ファイル名をコマンドラインスイッチ<code>-f</code>で指定することもできま"
-"す。"
+"で、<filename>pgtopo_export</filename>をパイプで繋げて併用することができま"
+"す。入力ファイル名をコマンドラインスイッチ<code>-f</code>で指定することもでき"
+"ます。"
 
 #. Tag: para
 #: extras_topology.xml:3819
@@ -7152,10 +7163,20 @@ msgid ""
 "AFTER resolving the naming conflicts or to link layers to a different "
 "topology (say a spatially-simplified version of the starting topology)."
 msgstr ""
-"ロードして、レイヤを名前付きトポロジにリンクするSQLは<code>--only-layers</cod"
-"e>スイッチで生成できます。これは、名前の競合を解決した*後に*レイヤをロードし"
-"たり、異なるトポロジのレイヤ (開始トポロジで空間的に単純化されたもの等が挙げ"
-"られます)にリンクするのに使えます。"
+"ロードして、レイヤを名前付きトポロジにリンクするSQLは<code>--only-layers</"
+"code>スイッチで生成できます。これは、名前の競合を解決した*後に*レイヤをロード"
+"したり、異なるトポロジのレイヤ (開始トポロジで空間的に単純化されたもの等が挙"
+"げられます)にリンクするのに使えます。"
+
+#, no-c-format
+#~ msgid ""
+#~ "<funcdef>topoelementarray topoelement <function>GetTopoGeomElementArray</"
+#~ "function></funcdef> <paramdef><type>topogeometry </type> <parameter>tg</"
+#~ "parameter></paramdef>"
+#~ msgstr ""
+#~ "<funcdef>topoelementarray topoelement <function>GetTopoGeomElementArray</"
+#~ "function></funcdef> <paramdef><type>topogeometry </type> <parameter>tg</"
+#~ "parameter></paramdef>"
 
 #, no-c-format
 #~ msgid ""

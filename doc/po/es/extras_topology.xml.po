@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-22 01:55+0000\n"
+"POT-Creation-Date: 2022-10-23 01:21+0000\n"
 "PO-Revision-Date: 2022-01-10 05:06+0000\n"
 "Last-Translator: jsanz <jsanz@osgeo.org>\n"
 "Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/"
@@ -5978,13 +5978,10 @@ msgstr ""
 #: extras_topology.xml:3318
 #, no-c-format
 msgid ""
-"<funcdef>topoelementarray topoelement <function>GetTopoGeomElementArray</"
-"function></funcdef> <paramdef><type>topogeometry </type> <parameter>tg</"
-"parameter></paramdef>"
+"<funcdef>topoelementarray <function>GetTopoGeomElementArray</function></"
+"funcdef> <paramdef><type>topogeometry </type> <parameter>tg</parameter></"
+"paramdef>"
 msgstr ""
-"<funcdef>topoelementarray topoelement <function>GetTopoGeomElementArray</"
-"function></funcdef> <paramdef><type>topogeometry </type> <parameter>tg</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:3328
@@ -7012,6 +7009,16 @@ msgid ""
 "AFTER resolving the naming conflicts or to link layers to a different "
 "topology (say a spatially-simplified version of the starting topology)."
 msgstr ""
+
+#, no-c-format
+#~ msgid ""
+#~ "<funcdef>topoelementarray topoelement <function>GetTopoGeomElementArray</"
+#~ "function></funcdef> <paramdef><type>topogeometry </type> <parameter>tg</"
+#~ "parameter></paramdef>"
+#~ msgstr ""
+#~ "<funcdef>topoelementarray topoelement <function>GetTopoGeomElementArray</"
+#~ "function></funcdef> <paramdef><type>topogeometry </type> <parameter>tg</"
+#~ "parameter></paramdef>"
 
 #, no-c-format
 #~ msgid ""
