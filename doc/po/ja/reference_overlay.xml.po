@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-10-23 01:21+0000\n"
-"PO-Revision-Date: 2022-09-27 07:04+0000\n"
+"PO-Revision-Date: 2022-10-25 01:30+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_overlayxml/ja/>\n"
@@ -908,7 +908,7 @@ msgstr ""
 #: reference_overlay.xml:413
 #, no-c-format
 msgid "Split a Polygon by a Line."
-msgstr ""
+msgstr "ラインでポリゴンを分割します。"
 
 #. Tag: para
 #: reference_overlay.xml:425 reference_overlay.xml:459
@@ -956,7 +956,8 @@ msgstr ""
 msgid ""
 "Split a MultiLineString a Point, where the point lies exactly on both "
 "LineStrings elements."
-msgstr ""
+msgstr "マルチラインストリングをポイントで分割しますが、ポイントは確実にラインストリ"
+"ングの要素の上に存在しています。"
 
 #. Tag: programlisting
 #: reference_overlay.xml:480
@@ -996,6 +997,8 @@ msgid ""
 "line. Shows using <xref linkend=\"ST_Snap\"/> to snap the line to the point "
 "to allow it to be split."
 msgstr ""
+"ラインストリングをライン上にないポイントで分割します。<xref linkend=\"ST_Snap"
+"\"/>を使ってラインをポイントにスナップして分割できるようにしています。"
 
 #. Tag: programlisting
 #: reference_overlay.xml:485
@@ -1017,6 +1020,21 @@ msgid ""
 " GEOMETRYCOLLECTION(LINESTRING(0 0,51 50),LINESTRING(51 50,100 100)) | "
 "GEOMETRYCOLLECTION(LINESTRING(0 0,100 100))"
 msgstr ""
+"WITH data AS (SELECT\n"
+"  'LINESTRING(0 0, 100 100)'::geometry AS line,\n"
+"  'POINT(51 50)':: geometry AS point\n"
+")\n"
+"SELECT ST_AsText( ST_Split( ST_Snap(line, point, 1), point)) AS "
+"snapped_split,\n"
+"       ST_AsText( ST_Split(line, point)) AS not_snapped_not_split\n"
+"       FROM data;\n"
+"\n"
+"                            snapped_split                            |"
+"            not_snapped_not_split\n"
+"---------------------------------------------------------------------+-------"
+"--------------------------------------\n"
+" GEOMETRYCOLLECTION(LINESTRING(0 0,51 50),LINESTRING(51 50,100 100)) | "
+"GEOMETRYCOLLECTION(LINESTRING(0 0,100 100))"
 
 #. Tag: para
 #: reference_overlay.xml:489
