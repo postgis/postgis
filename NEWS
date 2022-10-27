@@ -1,7 +1,7 @@
 PostGIS 3.1.8dev
 YYYY/MM/DD
 
-* Bug Fixes
+* Bug and Security Fixes
   - Add schema qual to upgrade util
   - #5240, ST_DumpPoints crash with empty polygon (Regina Obe)
   - #4648, Check function ownership at extension packaging time (Sandro Santilli)
