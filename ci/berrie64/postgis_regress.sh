@@ -16,7 +16,7 @@ echo $PATH
 cd ${WORKSPACE}/PostGIS_Worker_Run/label/${label}/$BRANCH
 
 sh autogen.sh
-./configure --with-pgconfig=${PGPATH}/bin/pg_config --with-geosconfig=${GEOS_PATH}/bin/geos-config --with-library-minor-version --enable-lto
+./configure --with-pgconfig=${PGPATH}/bin/pg_config --with-geosconfig=${GEOS_PATH}/bin/geos-config --with-library-minor-version --enable-lto --prefix=${PGPATH}/bin
 #make clean
 make
 export err_status=0
@@ -31,10 +31,8 @@ err_status=$?
 
 utils/check_all_upgrades.sh \
     `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
- if [ "$?" != "0" ]; then
-   err_status=$?
- fi
 
+err_status=$?
 
 if [ -d $PGDATA/postmaster.pid ] ; then
 	$PGCTL stop -D $PGDATA -s -m fast
