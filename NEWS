@@ -13,6 +13,7 @@ Proj 6.1+, and PostgreSQL 14+.
   - Add schema qual to upgrade util
   - #5255, GH598, Remove forced static linking on shp2pgsql, pgsql2shp (Maxim Kochetkov)
   - #5255, GH702, Remove forced static linking on raster2pgsql (Thomas Petazzoni)
+  - #4648, Check function ownership at extension packaging time (Sandro Santilli)
 
 
 PostGIS 3.2.3
