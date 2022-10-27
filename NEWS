@@ -8,6 +8,7 @@ xxxx/xx/xx
   - #5255, GH598, Remove forced static linking on shp2pgsql, pgsql2shp (Maxim Kochetkov)
   - #5255, GH702, Remove forced static linking on raster2pgsql (Thomas Petazzoni)
   - #4648, Check function ownership at extension packaging time (Sandro Santilli)
+  - #5241, Crash on ST_SnapToGrid with empty multis (Regina Obe)
 
 
 PostGIS 3.3.1
