@@ -19,3 +19,7 @@ WITH geom AS
     SELECT ST_SnapToGrid('POLYGON((0 0, 10 0, 10 10, 10.6 10, 10.5 10.5, 10 10, 0 10, 0 0))', 'POINT(0 0)', 10, 10, 10, 10) as g
 )
 Select ST_AsText(g) as geometry, postgis_getbbox(g) AS box from geom;
+
+-- #5241
+SELECT '#5241' AS t, ST_AsText(ST_SnapToGrid( ST_GeomFromText('MULTIPOLYGON (((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)), EMPTY)', 4326),  20.1, 20.1, 20.1, 20.1));
+SELECT '#5241' AS t, ST_AsText(ST_SnapToGrid( ST_GeomFromText('MULTIPOLYGON (((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)), EMPTY)', 4326), 0.2, 0.2, 0.2, 0.2));

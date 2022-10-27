@@ -1,3 +1,9 @@
+PostGIS 2.5.9
+xxxx/xx/xx
+ * Bug fixes *
+
+  - #5241, Crash on ST_SnapToGrid with empty multis (Regina Obe)
+
 PostGIS 2.5.8
 2022/08/17
 
