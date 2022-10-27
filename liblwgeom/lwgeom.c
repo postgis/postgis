@@ -2144,6 +2144,7 @@ void
 lwgeom_grid_in_place(LWGEOM *geom, const gridspec *grid)
 {
 	if (!geom) return;
+	if (lwgeom_is_empty(geom)) return;
 	switch ( geom->type )
 	{
 		case POINTTYPE:
