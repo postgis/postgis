@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-10-23 01:21+0000\n"
-"PO-Revision-Date: 2022-10-25 07:30+0000\n"
+"PO-Revision-Date: 2022-10-28 01:30+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_relationshipxml/ja/>\n"
@@ -2358,6 +2358,20 @@ msgid ""
 "\"Interior-Intersects\" has the DE-9IM pattern <code>T********</code>, which "
 "is not evaluated by any named predicate."
 msgstr ""
+"<emphasis>intersection matrix "
+"pattern</emphasis>で、特定の種類の空間関係のテストができます。"
+"パターンでは追加の文字 'T' (「インタセクションが空でない」という意味)と '*' ("
+"「値はなんでもいい」という意味)を使うことができます。一般的な空間関係について"
+"は、名前の付いた関数<xref linkend=\"ST_Contains\"/>, <xref linkend="
+"\"ST_ContainsProperly\"/>, <xref linkend=\"ST_Covers\"/>, <xref linkend="
+"\"ST_CoveredBy\"/>, <xref linkend=\"ST_Crosses\"/>, <xref linkend="
+"\"ST_Disjoint\"/>, <xref linkend=\"ST_Equals\"/>, <xref linkend="
+"\"ST_Intersects\"/>, <xref linkend=\"ST_Overlaps\"/>, <xref linkend="
+"\"ST_Touches\"/>, <xref linkend=\"ST_Within\"/>として提供されます。明示的なパ"
+"ターンを使うことで、インタセクト、クロス等の複数のテストを一回でできるように"
+"なります。また、名前のある空間関係関数を持たない空間関係のテストも可能になり"
+"ます。たとえば、「内部インタセクション」という空間関係は、名前の付いた空間関"
+"係関数では評価できませんが、<code>T********</code>のDE-9IMで評価できます。"
 
 #. Tag: para
 #: reference_relationship.xml:1198 reference_relationship.xml:1330
@@ -2427,6 +2441,12 @@ msgid ""
 "MultiLineStrings are considered to lie in the DE-9IM Interior or Boundary. "
 "The <varname>boundaryNodeRule</varname> values are:"
 msgstr ""
+"<emphasis role=\"bold\">三つ目の形式:</emphasis> 二つ目の形式と同じですが、"
+"<emphasis role=\"bold\""
+">境界ノード規則</emphasis>の指定ができる点が異なります。この規則によって"
+"、マルチラインストリングの端点がDE-9IMの内部または境界上にあると判定されるか"
+"どうかを細かく制御できます。<varname>boundaryNodeRule</varname>の値は次の通り"
+"です。"
 
 #. Tag: para
 #: reference_relationship.xml:1232
@@ -2445,6 +2465,8 @@ msgid ""
 "<code>2</code>: <emphasis role=\"bold\">Endpoint</emphasis> - all endpoints "
 "are in the Boundary."
 msgstr ""
+"<code>2</code>: <emphasis role=\"bold\">Endpoint</emphasis> - "
+"全ての端点は境界上にあります。"
 
 #. Tag: para
 #: reference_relationship.xml:1237
@@ -2565,6 +2587,15 @@ msgid ""
 "-----------\n"
 "FF1FF0102"
 msgstr ""
+"SELECT ST_Relate( 'POINT(1 2)',\n"
+"                  ST_Buffer( 'POINT(1 2)', 2));\n"
+"-----------\n"
+"0FFFFF212\n"
+"\n"
+"SELECT ST_Relate( 'LINESTRING(1 2, 3 4)',\n"
+"                  'LINESTRING(5 6, 7 8)' );\n"
+"-----------\n"
+"FF1FF0102"
 
 #. Tag: para
 #: reference_relationship.xml:1270
@@ -2574,6 +2605,9 @@ msgid ""
 "between a LineString and a MultiLineString with a duplicate endpoint "
 "<code>(3 3)</code>:"
 msgstr ""
+"異なる境界ノード規則を使って、"
+"端点が重複するLINESTRINGとMULTILINESTRING間の空間関係を計算します <code>(3 "
+"3)</code>:"
 
 #. Tag: para
 #: reference_relationship.xml:1274
@@ -2584,6 +2618,9 @@ msgid ""
 "MultiLineString, so the DE-9IM matrix entry [aB:bI] is <code>0</code> and "
 "[aB:bB] is <code>F</code>."
 msgstr ""
+"<emphasis role=\"bold\">OGC-Mod2</emphasis>規則 (1)を使うと、"
+"重複端点はMULTILINESTRINGの<emphasis role=\"bold\">内部</emphasis>になり、DE-"
+"9IM行列の [aB:bl]は<code>0</code>で、[aB:bB]は<code>F</code>です。"
 
 #. Tag: para
 #: reference_relationship.xml:1278
@@ -2594,6 +2631,9 @@ msgid ""
 "MultiLineString, so the DE-9IM matrix entry [aB:bI] is <code>F</code> and "
 "[aB:bB] is <code>0</code>."
 msgstr ""
+"<emphasis role=\"bold\">Endpoint</emphasis>規則 (2)を使うと、"
+"重複端点はMULTILINESTRINGの<emphasis role=\"bold\">境界</emphasis>となり、DE-"
+"9IM行列の[aB:bI]は<code>F</code>で、[aB:bB]は<code>0</code>です。"
 
 #. Tag: programlisting
 #: reference_relationship.xml:1283
@@ -2611,6 +2651,17 @@ msgid ""
 "-----------+--------------\n"
 " FF10F0102 | FF1F00102"
 msgstr ""
+"WITH data AS (SELECT\n"
+"  'LINESTRING(1 1, 3 3)'::geometry AS a_line,\n"
+"  'MULTILINESTRING((3 3, 3 5), (3 3, 5 3))':: geometry AS b_multiline\n"
+")\n"
+"SELECT ST_Relate( a_line, b_multiline, 1) AS bnr_mod2,\n"
+"       ST_Relate( a_line, b_multiline, 2) AS bnr_endpoint\n"
+"    FROM data;\n"
+"\n"
+" bnr_mod2  | bnr_endpoint\n"
+"-----------+--------------\n"
+" FF10F0102 | FF1F00102"
 
 #. Tag: para
 #: reference_relationship.xml:1292
