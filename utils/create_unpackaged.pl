@@ -339,8 +339,7 @@ BEGIN
 		SELECT
 			p.oid,
 			p.proowner,
-			e.extowner,
-			pg_catalog.pg_describe_object(d.classid, d.objid, 0) desc
+			e.extowner
 		FROM pg_catalog.pg_depend AS d
 			INNER JOIN pg_catalog.pg_extension AS e ON (d.refobjid = e.oid)
 			INNER JOIN pg_catalog.pg_proc AS p ON (d.objid = p.oid)
