@@ -219,3 +219,7 @@ t2175.3|1
 b4941|outer_ring|1
 b4941|inner_ring|1
 b4941|crossing_line|5
+b5081.0|E1
+b5081.1|t
+b5081|dangling_edges|1
+b5081|faces|1
