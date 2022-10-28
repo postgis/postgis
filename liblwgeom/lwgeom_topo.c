@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2015-2021 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2015-2022 Sandro Santilli <strk@kbt.io>
  *
  **********************************************************************/
 
@@ -5819,9 +5819,22 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     lwgeom_free(xset);
     xset = tmp;
 
+    /*
+     * Here we union the (linemerged) intersection with
+     * the difference (new lines)
+     */
+    LWDEBUG(1, "Unioning difference and (linemerged) intersection");
+    noded = lwgeom_union(diff, xset);
+    LWDEBUGG(1, noded, "Diff-Xset Unioned");
+    lwgeom_free(xset);
+    lwgeom_free(diff);
+
+    /* will not release the geoms array */
+    lwcollection_release(col);
+
     if ( input_was_closed )
     {{
-      LWLINE *scrolled = lwgeom_as_lwline(xset);
+      LWLINE *scrolled = lwgeom_as_lwline(noded);
       if (scrolled) {
         if ( lwline_is_closed(scrolled) ) {
           ptarray_scroll_in_place(scrolled->points, &originalStartPoint);
@@ -5836,18 +5849,6 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     }}
 
 
-    /*
-     * Here we union the (linemerged) intersection with
-     * the difference (new lines)
-     */
-    LWDEBUG(1, "Unioning difference and (linemerged) intersection");
-    noded = lwgeom_union(diff, xset);
-    LWDEBUGG(1, noded, "Diff-Xset Unioned");
-    lwgeom_free(xset);
-    lwgeom_free(diff);
-
-    /* will not release the geoms array */
-    lwcollection_release(col);
   }}
 
 
