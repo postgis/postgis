@@ -1,8 +1,8 @@
 export WORKSPACE=/home/jenkins/workspace
-export GEOS_VER=3.11.1
+export GEOS_VER=3.12.0
 
 export OS_BUILD=64
-export PG_VER=15
+export PG_VER=16
 export GEOS_PATH=${WORKSPACE}/geos/rel-${GEOS_VER}
 #export GEOS_PATH=~/geos/rel-${GEOS_VER}
 export PGPATH=${WORKSPACE}/pg/label/${label}/rel/pg${PG_VER}w${OS_BUILD}
