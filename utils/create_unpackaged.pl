@@ -147,7 +147,7 @@ sub add_if_not_exists
 	# in objects
 	die "Invalid characters in object definition: $obj" if $obj =~ /'/;
 
-	$obj =~ m/([^ ]*) (.*)/;
+	$obj =~ m/([^ ]*) (.*)/s; # can be multiline
 	my $type = $1;
 	my $sig = $2;
 
