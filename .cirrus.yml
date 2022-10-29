@@ -2,7 +2,7 @@ task:
   only_if: true
   name: FreeBSD
   alias: test-freebsd
-  env:
+  #env:
     #MAKE_FLAGS: -j 8
 
   install_script:
