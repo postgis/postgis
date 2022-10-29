@@ -5,6 +5,7 @@ YYYY/MM/DD
   - Add schema qual to upgrade util
   - #5240, ST_DumpPoints crash with empty polygon (Regina Obe)
   - #4648, Check function ownership at extension packaging time (Sandro Santilli)
+  - #5241, Crash on ST_SnapToGrid with empty multis (Regina Obe)
 
 PostGIS 3.1.7
 2022/08/18
