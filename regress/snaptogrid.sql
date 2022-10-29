@@ -22,4 +22,4 @@ Select ST_AsText(g) as geometry, postgis_getbbox(g) AS box from geom;
 
 -- #5241
 SELECT '#5241' AS t, ST_AsText(ST_SnapToGrid( ST_GeomFromText('MULTIPOLYGON (((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)), EMPTY)', 4326),  20.1, 20.1, 20.1, 20.1));
-SELECT '#5241' AS t, ST_AsText(ST_SnapToGrid( ST_GeomFromText('MULTIPOLYGON (((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)), EMPTY)', 4326), 0.2, 0.2, 0.2, 0.2));
+SELECT '#5241' AS t, ST_AsText(ST_SnapToGrid( ST_GeomFromText('MULTIPOLYGON (((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)), EMPTY)', 4326), 1, 1, 1, 1));
