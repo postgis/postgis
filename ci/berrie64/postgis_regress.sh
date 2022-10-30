@@ -21,7 +21,7 @@ export PGDATA=$PGPATH/data_${PGPORT}
 export PGHOST=localhost
 
 sh autogen.sh
-./configure --with-pgconfig=${PGPATH}/bin/pg_config --with-geosconfig=${GEOS_PATH}/bin/geos-config --with-library-minor-version
+./configure --with-pgconfig=${PGPATH}/bin/pg_config --with-library-minor-version
 #make clean
 make
 export err_status=0
