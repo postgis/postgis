@@ -14,7 +14,7 @@
     <refname>ST_InverseTransformPipeline</refname>
 
     <refpurpose>Return a new geometry with coordinates transformed to
-      a different spatial reference system using the reverse of a defined coordinate
+      a different spatial reference system using the inverse of a defined coordinate
       transformation pipeline.</refpurpose>
     </refnamediv>
 
