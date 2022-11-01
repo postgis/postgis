@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-10-23 01:21+0000\n"
-"PO-Revision-Date: 2022-09-12 12:43+0000\n"
+"PO-Revision-Date: 2022-11-01 14:52+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "using_postgis_datamanxml/ja/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: title
 #: using_postgis_dataman.xml:3
@@ -2794,6 +2794,13 @@ msgid ""
 "linkend=\"ST_TransformPipeline\"/>. Geometry returned from functions has the "
 "same SRS as the input geometries."
 msgstr ""
+"二つのジオメトリを処理する空間関数 (<link linkend=\"Overlay_Functions\""
+">オーバレイ関数</link> 、<link linkend=\"Spatial_Relationships\""
+">関係関数</link>など)の入力ジオメトリは、同じ空間参照系である "
+"(同じSRIDを持つ)必要があります。<xref linkend=\"ST_Transform\"/>や<xref "
+"linkend=\"ST_TransformPipeline\"/>を使うことで、ジオメトリデータを異なる空間"
+"参照系に変換できます。関数から返されるジオメトリは、入力ジオメトリと同じ空間"
+"参照系になります。"
 
 #. Tag: title
 #: using_postgis_dataman.xml:1291
