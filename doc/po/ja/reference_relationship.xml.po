@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-10-23 01:21+0000\n"
-"PO-Revision-Date: 2022-10-28 01:30+0000\n"
+"PO-Revision-Date: 2022-11-01 14:52+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_relationshipxml/ja/>\n"
@@ -2450,13 +2450,16 @@ msgstr ""
 
 #. Tag: para
 #: reference_relationship.xml:1232
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<code>1</code>: <emphasis role=\"bold\">OGC-Mod2</emphasis> - line endpoints "
 "are in the Boundary if they occur an odd number of times. This is the rule "
 "defined by the OGC SFS standard, and is the default for <function>ST_Relate</"
 "function>."
 msgstr ""
+"<code>1</code>: <emphasis role=\"bold\">OGC-Mod2</emphasis> - "
+"線の端点が奇数番目なら境界上にあるとみなします。これはOGC "
+"SFS標準で定義された規則で、<function>ST_Relate</function>のデフォルトです。"
 
 #. Tag: para
 #: reference_relationship.xml:1235
@@ -2470,22 +2473,29 @@ msgstr ""
 
 #. Tag: para
 #: reference_relationship.xml:1237
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<code>3</code>: <emphasis role=\"bold\">MultivalentEndpoint</emphasis> - "
 "endpoints are in the Boundary if they occur more than once. In other words, "
 "the boundary is all the \"attached\" or \"inner\" endpoints (but not the "
 "\"unattached/outer\" ones)."
 msgstr ""
+"<code>3</code>: <emphasis role=\"bold\">MultivalentEndpoint</emphasis> - 線の"
+"端点が境界線上にあるのが2回目以降の場合には、境界にあるとします。言い換えると"
+"、境界は「取り付けられた」または「内部の」端点 "
+"(「取り付けられてない」「外部の」端点ではない)です。"
 
 #. Tag: para
 #: reference_relationship.xml:1240
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<code>4</code>: <emphasis role=\"bold\">MonovalentEndpoint</emphasis> - "
 "endpoints are in the Boundary if they occur only once. In other words, the "
 "boundary is all the \"unattached\" or \"outer\" endpoints."
 msgstr ""
+"<code>4</code>: <emphasis role=\"bold\">MonovalentEndpoint</emphasis> - 線の"
+"端点が境界線上にあるのが1回目の場合に限って、境界にあるとします。言い換えると"
+"「属していない」または「外部」の端点です。"
 
 #. Tag: para
 #: reference_relationship.xml:1245
