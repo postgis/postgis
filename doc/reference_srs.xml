@@ -34,7 +34,7 @@
 
       <para>
       Return a new geometry with coordinates transformed to a different spatial reference system
-      using the reverse of a defined coordinate transformation pipeline.
+      using a defined coordinate transformation pipeline to go in the inverse direction.
       </para>
 
       <para> Refer to <xref linkend="ST_TransformPipeline" /> for details on writing a transformation pipeline.</para>

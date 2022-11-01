@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-10-23 01:21+0000\n"
+"POT-Creation-Date: 2022-11-01 14:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -32,17 +32,156 @@ msgstr ""
 #. Tag: refname
 #: reference_srs.xml:14
 #, no-c-format
-msgid "ST_SetSRID"
+msgid "ST_InverseTransformPipeline"
 msgstr ""
 
 #. Tag: refpurpose
 #: reference_srs.xml:16
 #, no-c-format
+msgid ""
+"Return a new geometry with coordinates transformed to a different spatial "
+"reference system using the inverse of a defined coordinate transformation "
+"pipeline."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_srs.xml:23
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_InverseTransformPipeline</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>pipeline</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>to_srid</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: title
+#: reference_srs.xml:33 reference_srs.xml:95 reference_srs.xml:142
+#: reference_srs.xml:206 reference_srs.xml:310
+#, no-c-format
+msgid "Description"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:35
+#, no-c-format
+msgid ""
+"Return a new geometry with coordinates transformed to a different spatial "
+"reference system using a defined coordinate transformation pipeline to go in "
+"the inverse direction."
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:40
+#, no-c-format
+msgid ""
+"Refer to <xref linkend=\"ST_TransformPipeline\"/> for details on writing a "
+"transformation pipeline."
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:42 reference_srs.xml:343
+#, no-c-format
+msgid "Availability: 3.4.0"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:44
+#, no-c-format
+msgid ""
+"The SRID of the input geometry is ignored, and the SRID of the output "
+"geometry will be set to zero unless a value is provided via the optional "
+"<varname>to_srid</varname> parameter. When using <xref "
+"linkend=\"ST_TransformPipeline\"/> the pipeline is executed in a forward "
+"direction. Using `ST_InverseTransformPipeline()` the pipeline is executed in "
+"the inverse direction."
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:50 reference_srs.xml:351
+#, no-c-format
+msgid ""
+"Transforms using pipelines are a specialised version of <xref "
+"linkend=\"ST_Transform\"/>. In most cases `ST_Transform` will choose the "
+"correct operations to convert between coordinate systems, and should be "
+"preferred."
+msgstr ""
+
+#. Tag: title
+#: reference_srs.xml:57 reference_srs.xml:111 reference_srs.xml:155
+#: reference_srs.xml:249 reference_srs.xml:358
+#, no-c-format
+msgid "Examples"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:58 reference_srs.xml:359
+#, no-c-format
+msgid "Change WGS 84 long lat to UTM 31N using the EPSG:16031 conversion"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_srs.xml:59
+#, no-c-format
+msgid ""
+"-- Inverse direction\n"
+"SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 "
+"5427937.523342293)'::geometry,\n"
+"  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;\n"
+"\n"
+"          wgs_geom\n"
+"----------------------------\n"
+" POINT(2 48.99999999999999)\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:61 reference_srs.xml:362
+#, no-c-format
+msgid "GDA2020 example."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_srs.xml:62
+#, no-c-format
+msgid ""
+"-- using ST_Transform with automatic selection of a conversion pipeline.\n"
+"SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, "
+"7844)) AS gda2020_auto;\n"
+"\n"
+"                 gda2020_auto\n"
+"-----------------------------------------------\n"
+" POINT(143.00000635638918 -36.999986706128176)\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: title
+#: reference_srs.xml:67 reference_srs.xml:119 reference_srs.xml:160
+#: reference_srs.xml:283 reference_srs.xml:368
+#, no-c-format
+msgid "See Also"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:69
+#, no-c-format
+msgid ", <xref linkend=\"ST_TransformPipeline\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_srs.xml:75
+#, no-c-format
+msgid "ST_SetSRID"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_srs.xml:77
+#, no-c-format
 msgid "Set the SRID on a geometry."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_srs.xml:21
+#: reference_srs.xml:82
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SetSRID</function></funcdef> "
@@ -50,15 +189,8 @@ msgid ""
 "<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
 msgstr ""
 
-#. Tag: title
-#: reference_srs.xml:34 reference_srs.xml:81 reference_srs.xml:145
-#: reference_srs.xml:256
-#, no-c-format
-msgid "Description"
-msgstr ""
-
 #. Tag: para
-#: reference_srs.xml:36
+#: reference_srs.xml:97
 #, no-c-format
 msgid ""
 "Sets the SRID on a geometry to a particular integer value. Useful in "
@@ -66,7 +198,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:40
+#: reference_srs.xml:101
 #, no-c-format
 msgid ""
 "This function does not transform the geometry coordinates in any way - it "
@@ -76,32 +208,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:45
+#: reference_srs.xml:106
 #, no-c-format
 msgid "&sfs_compliant;"
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:46 reference_srs.xml:89 reference_srs.xml:182
+#: reference_srs.xml:107 reference_srs.xml:150 reference_srs.xml:243
 #, no-c-format
 msgid "&curve_support;"
 msgstr ""
 
-#. Tag: title
-#: reference_srs.xml:50 reference_srs.xml:94 reference_srs.xml:188
-#: reference_srs.xml:303
-#, no-c-format
-msgid "Examples"
-msgstr ""
-
 #. Tag: para
-#: reference_srs.xml:51
+#: reference_srs.xml:112
 #, no-c-format
 msgid "-- Mark a point as WGS 84 long lat --"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_srs.xml:52
+#: reference_srs.xml:113
 #, no-c-format
 msgid ""
 "SELECT ST_SetSRID(ST_Point(-123.365556, 48.428611),4326) As wgs84long_lat;\n"
@@ -110,7 +235,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:53
+#: reference_srs.xml:114
 #, no-c-format
 msgid ""
 "-- Mark a point as WGS 84 long lat and then transform to web mercator "
@@ -118,7 +243,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_srs.xml:54
+#: reference_srs.xml:115
 #, no-c-format
 msgid ""
 "SELECT ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785) "
@@ -127,15 +252,8 @@ msgid ""
 "SRID=3785;POINT(-13732990.8753491 6178458.96425423)"
 msgstr ""
 
-#. Tag: title
-#: reference_srs.xml:58 reference_srs.xml:99 reference_srs.xml:222
-#: reference_srs.xml:313
-#, no-c-format
-msgid "See Also"
-msgstr ""
-
 #. Tag: para
-#: reference_srs.xml:60
+#: reference_srs.xml:121
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_SRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
@@ -143,19 +261,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_srs.xml:67
+#: reference_srs.xml:128
 #, no-c-format
 msgid "ST_SRID"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_srs.xml:68
+#: reference_srs.xml:129
 #, no-c-format
 msgid "Returns the spatial reference identifier for a geometry."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_srs.xml:73
+#: reference_srs.xml:134
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_SRID</function></funcdef> "
@@ -163,7 +281,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:83
+#: reference_srs.xml:144
 #, no-c-format
 msgid ""
 "Returns the spatial reference identifier for the ST_Geometry as defined in "
@@ -171,7 +289,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:84
+#: reference_srs.xml:145
 #, no-c-format
 msgid ""
 "spatial_ref_sys table is a table that catalogs all spatial reference systems "
@@ -181,19 +299,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:87
+#: reference_srs.xml:148
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.1"
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:88
+#: reference_srs.xml:149
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.5"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_srs.xml:96
+#: reference_srs.xml:157
 #, no-c-format
 msgid ""
 "SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));\n"
@@ -202,7 +320,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:101
+#: reference_srs.xml:162
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
@@ -210,13 +328,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_srs.xml:107
+#: reference_srs.xml:168
 #, no-c-format
 msgid "ST_Transform"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_srs.xml:109
+#: reference_srs.xml:170
 #, no-c-format
 msgid ""
 "Return a new geometry with coordinates transformed to a different spatial "
@@ -224,7 +342,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_srs.xml:114
+#: reference_srs.xml:175
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Transform</function></"
@@ -246,7 +364,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:147
+#: reference_srs.xml:208
 #, no-c-format
 msgid ""
 "Returns a new geometry with its coordinates transformed to a different "
@@ -263,7 +381,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:161
+#: reference_srs.xml:222
 #, no-c-format
 msgid ""
 "ST_Transform is often confused with <xref linkend=\"ST_SetSRID\"/>. "
@@ -273,7 +391,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:165
+#: reference_srs.xml:226
 #, no-c-format
 msgid ""
 "ST_Transform automatically selects a suitable conversion pipeline given the "
@@ -282,7 +400,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:169
+#: reference_srs.xml:230
 #, no-c-format
 msgid ""
 "Requires PostGIS be compiled with PROJ support. Use <xref "
@@ -291,7 +409,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:173
+#: reference_srs.xml:234
 #, no-c-format
 msgid ""
 "If using more than one transformation, it is useful to have a functional "
@@ -299,7 +417,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:177
+#: reference_srs.xml:238
 #, no-c-format
 msgid ""
 "Prior to 1.3.4, this function crashes if used with geometries that contain "
@@ -307,37 +425,37 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:179
+#: reference_srs.xml:240
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces was introduced."
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:180
+#: reference_srs.xml:241
 #, no-c-format
 msgid "Enhanced: 2.3.0 support for direct PROJ.4 text was introduced."
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:181
+#: reference_srs.xml:242
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.6"
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:183
+#: reference_srs.xml:244
 #, no-c-format
 msgid "&P_support;"
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:189
+#: reference_srs.xml:250
 #, no-c-format
 msgid "Change Massachusetts state plane US feet geometry to WGS 84 long lat"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_srs.xml:190
+#: reference_srs.xml:251
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 "
@@ -368,7 +486,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:191
+#: reference_srs.xml:252
 #, no-c-format
 msgid ""
 "Example of creating a partial functional index. For tables where you are not "
@@ -378,7 +496,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_srs.xml:193
+#: reference_srs.xml:254
 #, no-c-format
 msgid ""
 "CREATE INDEX idx_geom_26986_parcels\n"
@@ -389,14 +507,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:195
+#: reference_srs.xml:256
 #, no-c-format
 msgid ""
 "Examples of using PROJ.4 text to transform with custom spatial references."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_srs.xml:196
+#: reference_srs.xml:257
 #, no-c-format
 msgid ""
 "-- Find intersection of two polygons near the North pole, using a custom "
@@ -422,13 +540,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_srs.xml:200
+#: reference_srs.xml:261
 #, no-c-format
 msgid "Configuring transformation behavior"
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:201
+#: reference_srs.xml:262
 #, no-c-format
 msgid ""
 "Sometimes coordinate transformation involving a grid-shift can fail, for "
@@ -442,7 +560,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:211
+#: reference_srs.xml:272
 #, no-c-format
 msgid ""
 "For example, the proj4text parameter +datum=NAD87 is a shorthand form for "
@@ -450,13 +568,13 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_srs.xml:212
+#: reference_srs.xml:273
 #, no-c-format
 msgid "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat"
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:213
+#: reference_srs.xml:274
 #, no-c-format
 msgid ""
 "The @ prefix means no error is reported if the files are not present, but if "
@@ -465,7 +583,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:214
+#: reference_srs.xml:275
 #, no-c-format
 msgid ""
 "If, conversely, you wanted to ensure that at least the standard files were "
@@ -474,13 +592,13 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_srs.xml:215
+#: reference_srs.xml:276
 #, no-c-format
 msgid "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null"
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:216
+#: reference_srs.xml:277
 #, no-c-format
 msgid ""
 "The null grid shift file is a valid grid shift file covering the whole world "
@@ -490,7 +608,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_srs.xml:217
+#: reference_srs.xml:278
 #, no-c-format
 msgid ""
 "UPDATE spatial_ref_sys SET proj4text = '+proj=longlat +ellps=clrk66 "
@@ -499,7 +617,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:224
+#: reference_srs.xml:285
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>, <xref "
@@ -507,13 +625,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_srs.xml:230
+#: reference_srs.xml:291
 #, no-c-format
 msgid "ST_TransformPipeline"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_srs.xml:232
+#: reference_srs.xml:293
 #, no-c-format
 msgid ""
 "<refpurpose>Return a new geometry with coordinates transformed to a "
@@ -521,24 +639,19 @@ msgid ""
 "pipeline.</refpurpose>"
 msgstr ""
 
-#. Tag: funcsynopsis
-#: reference_srs.xml:238
+#. Tag: funcprototype
+#: reference_srs.xml:300
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry <function>ST_TransformPipeline</function></"
-"funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>pipeline</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>to_srid</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_InverseTransformPipeline</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<funcdef>geometry <function>ST_TransformPipeline</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
 "<paramdef><type>text </type> <parameter>pipeline</parameter></paramdef> "
 "<paramdef choice=\"opt\"><type>integer </type> <parameter>to_srid</"
-"parameter></paramdef> </funcprototype>"
+"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:258
+#: reference_srs.xml:312
 #, no-c-format
 msgid ""
 "<para>Return a new geometry with coordinates transformed to a different "
@@ -547,7 +660,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:263
+#: reference_srs.xml:317
 #, no-c-format
 msgid ""
 "Transformation pipelines are defined using any of the following string "
@@ -555,7 +668,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:267
+#: reference_srs.xml:321
 #, no-c-format
 msgid ""
 "<varname>urn:ogc:def:coordinateOperation:AUTHORITY::CODE</varname>. Note "
@@ -564,7 +677,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:275
+#: reference_srs.xml:329
 #, no-c-format
 msgid ""
 "A PROJ pipeline string of the form: <varname>+proj=pipeline ...</varname>. "
@@ -574,7 +687,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:283
+#: reference_srs.xml:337
 #, no-c-format
 msgid ""
 "Concatenated operations of the form: <varname>urn:ogc:def:"
@@ -583,35 +696,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_srs.xml:290
+#: reference_srs.xml:345
 #, no-c-format
 msgid ""
 "The SRID of the input geometry is ignored, and the SRID of the output "
 "geometry will be set to zero unless a value is provided via the optional "
 "<varname>to_srid</varname> parameter. When using `ST_TransformPipeline()` "
-"the pipeline is executed in a forward direction. Using "
-"`ST_InverseTransformPipeline()` the pipeline is executed in the inverse "
-"direction."
-msgstr ""
-
-#. Tag: para
-#: reference_srs.xml:296
-#, no-c-format
-msgid ""
-"Transforms using pipelines are a specialised version of <xref "
-"linkend=\"ST_Transform\"/>. In most cases `ST_Transform` will choose the "
-"correct operations to convert between coordinate systems, and should be "
-"preferred."
-msgstr ""
-
-#. Tag: para
-#: reference_srs.xml:304
-#, no-c-format
-msgid "Change WGS 84 long lat to UTM 31N using the EPSG:16031 conversion"
+"the pipeline is executed in a forward direction. Using <xref "
+"linkend=\"ST_InverseTransformPipeline\"/> the pipeline is executed in the "
+"inverse direction."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_srs.xml:305
+#: reference_srs.xml:360
 #, no-c-format
 msgid ""
 "-- Forward direction\n"
@@ -634,14 +731,8 @@ msgid ""
 "(1 row)"
 msgstr ""
 
-#. Tag: para
-#: reference_srs.xml:307
-#, no-c-format
-msgid "GDA2020 example."
-msgstr ""
-
 #. Tag: programlisting
-#: reference_srs.xml:308
+#: reference_srs.xml:363
 #, no-c-format
 msgid ""
 "-- using ST_Transform with automatic selection of a conversion pipeline.\n"
@@ -678,4 +769,10 @@ msgid ""
 "----------------------------------------------\n"
 " POINT(143.0000063280214 -36.999986718287545)\n"
 "(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:370
+#, no-c-format
+msgid ", <xref linkend=\"ST_InverseTransformPipeline\"/>"
 msgstr ""
