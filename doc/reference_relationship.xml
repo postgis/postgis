@@ -794,7 +794,8 @@ WHERE ST_Crosses(roads.geom, highways.geom);</programlisting>
       <para>Performed by the GEOS module</para>
       <note>
         <para>This function call does not use indexes. A negated <xref linkend="ST_Intersects" /> predicate
-          can be used as a more performant alternative that uses indexes.</para>
+          can be used as a more performant alternative that uses indexes:
+          <code>ST_Disjoint(A,B) = NOT ST_Intersects(A,B)</code></para>
 
       </note>
       <note>
