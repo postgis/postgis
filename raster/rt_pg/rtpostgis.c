@@ -452,11 +452,8 @@ rt_pg_vsi_check_options(char **newval, void **extra, GucSource source)
 
 static char *gdal_datapath = NULL;
 static char *gdal_vsi_options = NULL;
-extern char *gdal_enabled_drivers;
-extern bool enable_outdb_rasters;
-
-char *gdal_enabled_drivers = NULL;
-bool enable_outdb_rasters = false;
+static char *gdal_enabled_drivers = NULL;
+static bool enable_outdb_rasters = false;
 
 /* ---------------------------------------------------------------- */
 /*  Useful variables                                                */
