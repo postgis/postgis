@@ -6,7 +6,7 @@ xxxx/xx/xx
 
 * New Features *
   - New install-extension-upgrades command in postgis script (Sandro Santilli)
-  - #5257, #5261, Support changes for PG16 (Regina Obe)
+  - #5257, #5261, #5277, Support changes for PostgreSQL 16 (Regina Obe)
   - #5006, GH705, ST_Transform: Support PROJ pipelines (Robert Coup, Koordinates)
 
 * Enhancements *
