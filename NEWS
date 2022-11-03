@@ -12,6 +12,7 @@ xxxx/xx/xx
   - #5081, Fix error in topology import of self-intersecting rings (Sandro Santilli)
   - #5234, Fix 2.5d topology building regression (Sandro Santilli)
   - #5280, Handle load of dbase character fields with no width specified (Regina Obe)
+  - #5264, Fix topology install on Alpine (Louis Descoteaux)
 
 
 PostGIS 3.3.1
