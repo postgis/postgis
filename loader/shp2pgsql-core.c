@@ -1363,9 +1363,10 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 			/* First output the raw field type string */
 			stringbuffer_aprintf(sb, "%s", state->pgfieldtypes[j]);
 
-			/* Some types do have typmods though... */
-			if (!strcmp("varchar", state->pgfieldtypes[j]))
-				stringbuffer_aprintf(sb, "(%d)", state->widths[j]);
+			/* Some types do have typmods */
+			/* Apply width typmod for varchar if there is positive width **/
+			if (!strcmp("varchar", state->pgfieldtypes[j]) && state->widths[j] > 0)
+					stringbuffer_aprintf(sb, "(%d)", state->widths[j]);
 
 			if (!strcmp("numeric", state->pgfieldtypes[j]))
 			{
