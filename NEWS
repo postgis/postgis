@@ -17,6 +17,7 @@ Proj 6.1+, and PostgreSQL 14+.
   - #5241, Crash on ST_SnapToGrid with empty multis (Regina Obe)
   - #5081, Fix error in topology import of self-intersecting rings (Sandro Santilli)
   - #5234, Fix 2.5d topology building regression (Sandro Santilli)
+  - #5280, Handle load of dbase character fields with no width specified (Regina Obe)
 
 
 PostGIS 3.2.3
