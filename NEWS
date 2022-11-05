@@ -1,5 +1,5 @@
 PostGIS 3.3.2
-xxxx/xx/xx
+2022/11/xx
 
 * Bug Fix *
   - #5248, Marc21 documentation missing (Regina Obe)
@@ -13,6 +13,7 @@ xxxx/xx/xx
   - #5234, Fix 2.5d topology building regression (Sandro Santilli)
   - #5280, Handle load of dbase character fields with no width specified (Regina Obe)
   - #5264, Fix topology install on Alpine (Louis Descoteaux)
+  - #5244, postgis_tiger_geocoder update for TIGER 2022 (Regina Obe)
 
 
 PostGIS 3.3.1
