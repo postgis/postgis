@@ -162,83 +162,85 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS) {
 			LWPOINT *lwpoint = NULL;
 			POINT4D	pt;
 
-			/*
-			 * net result of switch should be to set lwpoint to the
-			 * next point to return, or leave at NULL if there
-			 * are no more points in the geometry
-			 */
-			switch(lwgeom->type) {
-				case TRIANGLETYPE:
-					tri = lwgeom_as_lwtriangle(lwgeom);
-					if (state->pt == 0) {
-						state->path[state->pathlen++] = Int32GetDatum(state->ring+1);
-					}
-					if (state->pt <= 3) {
-						getPoint4d_p(tri->points, state->pt, &pt);
-						lwpoint = lwpoint_make(tri->srid,
-								FLAGS_GET_Z(tri->points->flags),
-								FLAGS_GET_M(tri->points->flags),
-								&pt);
-					}
-					if (state->pt > 3) {
-						state->pathlen--;
-					}
-					break;
-				case POLYGONTYPE:
-					poly = lwgeom_as_lwpoly(lwgeom);
-					if (state->pt == poly->rings[state->ring]->npoints) {
-						state->pt = 0;
-						state->ring++;
-						state->pathlen--;
-					}
-					if (state->pt == 0 && state->ring < poly->nrings) {
-						/* handle new ring */
-						state->path[state->pathlen] = Int32GetDatum(state->ring+1);
-						state->pathlen++;
-					}
-				       	if (state->ring == poly->nrings) {
-					} else {
-					/* TODO should be able to directly get the point
-					 * into the point array of a fixed lwpoint
-					 */
-					/* can't get the point directly from the ptarray because
-					 * it might be aligned wrong, so at least one memcpy
-					 * seems unavoidable
-					 * It might be possible to pass it directly to gserialized
-					 * depending how that works, it might effectively be gserialized
-					 * though a brief look at the code indicates not
-					 */
-						getPoint4d_p(poly->rings[state->ring], state->pt, &pt);
-						lwpoint = lwpoint_make(poly->srid,
-								FLAGS_GET_Z(poly->rings[state->ring]->flags),
-								FLAGS_GET_M(poly->rings[state->ring]->flags),
-								&pt);
-					}
-					break;
-				case POINTTYPE:
-					if (state->pt == 0) lwpoint = lwgeom_as_lwpoint(lwgeom);
-					break;
-				case LINETYPE:
-					line = lwgeom_as_lwline(lwgeom);
-					if (line->points && state->pt <= line->points->npoints) {
-						lwpoint = lwline_get_lwpoint((LWLINE*)lwgeom, state->pt);
-					}
-					break;
-				case CIRCSTRINGTYPE:
-					circ = lwgeom_as_lwcircstring(lwgeom);
-					if (circ->points && state->pt <= circ->points->npoints) {
-						lwpoint = lwcircstring_get_lwpoint((LWCIRCSTRING*)lwgeom, state->pt);
-					}
-					break;
-				default:
-					ereport(ERROR, (errcode(ERRCODE_DATA_EXCEPTION),
-						errmsg("Invalid Geometry type %d passed to ST_DumpPoints()", lwgeom->type)));
+			if ( !lwgeom_is_empty(lwgeom) ) {
+				/*
+				* net result of switch should be to set lwpoint to the
+				* next point to return, or leave at NULL if there
+				* are no more points in the geometry
+				*/
+				switch(lwgeom->type) {
+					case TRIANGLETYPE:
+						tri = lwgeom_as_lwtriangle(lwgeom);
+						if (state->pt == 0) {
+							state->path[state->pathlen++] = Int32GetDatum(state->ring+1);
+						}
+						if (state->pt <= 3) {
+							getPoint4d_p(tri->points, state->pt, &pt);
+							lwpoint = lwpoint_make(tri->srid,
+									FLAGS_GET_Z(tri->points->flags),
+									FLAGS_GET_M(tri->points->flags),
+									&pt);
+						}
+						if (state->pt > 3) {
+							state->pathlen--;
+						}
+						break;
+					case POLYGONTYPE:
+						poly = lwgeom_as_lwpoly(lwgeom);
+						if (state->pt == poly->rings[state->ring]->npoints) {
+							state->pt = 0;
+							state->ring++;
+							state->pathlen--;
+						}
+						if (state->pt == 0 && state->ring < poly->nrings) {
+							/* handle new ring */
+							state->path[state->pathlen] = Int32GetDatum(state->ring+1);
+							state->pathlen++;
+						}
+									if (state->ring == poly->nrings) {
+						} else {
+						/* TODO should be able to directly get the point
+						* into the point array of a fixed lwpoint
+						*/
+						/* can't get the point directly from the ptarray because
+						* it might be aligned wrong, so at least one memcpy
+						* seems unavoidable
+						* It might be possible to pass it directly to gserialized
+						* depending how that works, it might effectively be gserialized
+						* though a brief look at the code indicates not
+						*/
+							getPoint4d_p(poly->rings[state->ring], state->pt, &pt);
+							lwpoint = lwpoint_make(poly->srid,
+									FLAGS_GET_Z(poly->rings[state->ring]->flags),
+									FLAGS_GET_M(poly->rings[state->ring]->flags),
+									&pt);
+						}
+						break;
+					case POINTTYPE:
+						if (state->pt == 0) lwpoint = lwgeom_as_lwpoint(lwgeom);
+						break;
+					case LINETYPE:
+						line = lwgeom_as_lwline(lwgeom);
+						if (line->points && state->pt <= line->points->npoints) {
+							lwpoint = lwline_get_lwpoint((LWLINE*)lwgeom, state->pt);
+						}
+						break;
+					case CIRCSTRINGTYPE:
+						circ = lwgeom_as_lwcircstring(lwgeom);
+						if (circ->points && state->pt <= circ->points->npoints) {
+							lwpoint = lwcircstring_get_lwpoint((LWCIRCSTRING*)lwgeom, state->pt);
+						}
+						break;
+					default:
+						ereport(ERROR, (errcode(ERRCODE_DATA_EXCEPTION),
+							errmsg("Invalid Geometry type %d passed to ST_DumpPoints()", lwgeom->type)));
+				}
 			}
 
 			/*
 			 * At this point, lwpoint is either NULL, in which case
 			 * we need to pop the geometry stack and get the next
-			 * geometry, if amy, or lwpoint is set and we construct
+			 * geometry, if any, or lwpoint is set and we construct
 			 * a record type with the integer array of geometry
 			 * indexes and the point number, and the actual point
 			 * geometry itself
