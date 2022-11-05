@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS tiger.tabblock20
     awater double precision,
     intptlat character varying(11) ,
     intptlon character varying(12) ,
-    the_geom geometry(MultiPolygon,4269),
+    the_geom geometry(MultiPolygon,4269), housing float, pop float,
     CONSTRAINT pk_tabblock20 PRIMARY KEY (geoid)
 );
 
@@ -142,6 +142,9 @@ ALTER TABLE tiger.faces ADD IF NOT EXISTS blkgrpce20 varchar(1);
 ALTER TABLE tiger.faces ADD IF NOT EXISTS blockce20  varchar(4);
 ALTER TABLE tiger.faces ADD IF NOT EXISTS countyfp20 varchar(3);
 ALTER TABLE tiger.faces ADD IF NOT EXISTS statefp20 varchar(2);
+
+ALTER TABLE tiger.tabblock20 ADD IF NOT EXISTS housing float;
+ALTER TABLE tiger.tabblock20 ADD IF NOT EXISTS pop float;
 
 
 -- Helper function that generates script to drop all tables in a particular schema for a particular table
@@ -288,15 +291,6 @@ VALUES(10, 'tract', 'tract', true, false, true,false, 'c',
 	${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"', ARRAY['gid']);
 
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process, columns_exclude )
-VALUES(11, 'tabblock', 'tabblock10', false, false, true,false, 'c',
-'${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_${lookup_name}(CONSTRAINT pk_${state_abbrev}_${lookup_name} PRIMARY KEY (tabblock_id)) INHERITS(tiger.${lookup_name});" ',
-'${psql} -c "ALTER TABLE ${staging_schema}.${state_abbrev}_${table_name} RENAME geoid10 TO tabblock_id;
-SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}'')); "
-${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
-${psql} -c "CREATE INDEX ${data_schema}_${state_abbrev}_${lookup_name}_the_geom_gist ON ${data_schema}.${state_abbrev}_${lookup_name} USING gist(the_geom);"
-${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_${lookup_name};"', '{gid, uatyp10, uatype, suffix1ce}'::text[]);
-
-INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process, columns_exclude )
 VALUES(11, 'tabblock20', 'tabblock20', true, false, true,false, 'c',
 '${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_${lookup_name}(CONSTRAINT pk_${state_abbrev}_${lookup_name} PRIMARY KEY (geoid)) INHERITS(tiger.${lookup_name});" ',
 '${psql} -c "SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}'')); "
@@ -367,7 +361,7 @@ VALUES(6, 'faces', 'faces', true, true, false,false, 'c',
       , 'cousubfp00', 'submcdfp00', 'conctyfp00', 'placefp00', 'aiannhfp00', 'aiannhce00',
        'comptyp00', 'trsubfp00', 'trsubce00', 'anrcfp00', 'elsdlea00', 'scsdlea00',
        'unsdlea00', 'uace00', 'cd108fp', 'sldust00', 'sldlst00', 'vtdst00', 'zcta5ce00',
-       'tazce00', 'ugace00', 'puma5ce00','vtdst10','tazce10','uace10','puma5ce10','tazce', 'uace', 'vtdst',  'zcta5ce10', 'puma5ce', 'ugace10','pumace10', 'estatefp', 'ugace', 'blockce']);
+       'tazce00', 'ugace00', 'puma5ce00','vtdst10','tazce10','uace10','puma5ce10','tazce', 'uace', 'vtdst',  'zcta5ce10', 'puma5ce', 'ugace10','pumace10', 'estatefp', 'ugace', 'blockce', 'pumace20', 'sdadmlea']);
 
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process, columns_exclude )
 VALUES(7, 'featnames', 'featnames', true, true, false,false, 'a',
