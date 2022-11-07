@@ -229,6 +229,7 @@ cp loader/pgsql2shp.exe ${RELDIR}/${RELVERDIR}/bin
 cp loader/.libs/pgsql2shp.exe ${RELDIR}/${RELVERDIR}/bin
 cp loader/shp2pgsql-gui.exe ${RELDIR}/${RELVERDIR}/bin/postgisgui
 cp loader/.libs/shp2pgsql-gui.exe ${RELDIR}/${RELVERDIR}/bin/postgisgui
+cp topology/loader/* ${RELDIR}/${RELVERDIR}/bin
 
 #cp liblwgeom/.libs/*.dll ${RELDIR}/${RELVERDIR}/bin/postgisgui
 
@@ -297,11 +298,11 @@ fi;
 if [ -f ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/gdal_depends.txt ]; then
 	cat $verfile ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/gdal_depends.txt > $verfile
 fi
-#echo "PAGC ADDRESS STANDARDIZER: http://sourceforge.net/p/pagc/code/HEAD/tree/branches/sew-refactor/postgresql " >> $verfile
+
 cd ${RELDIR}
 zip -r $package ${RELVERDIR}
 md5sum $package > ${package}.md5
-#scp $package robe@www.refractions.net:${DWN}/${REL_PGVER}/buildbot/${RELVERDIR}.zip
+
 cp $package ${PROJECTS}/postgis/win_web/download/windows/pg${REL_PGVER}/buildbot
 cp ${package}.md5 ${PROJECTS}/postgis/win_web/download/windows/pg${REL_PGVER}/buildbot
 cd ${POSTGIS_SRC}
