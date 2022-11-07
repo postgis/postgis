@@ -80,6 +80,9 @@ LIBTOOL := @LIBTOOL@
 
 include $(PGXS)
 
+# Set bindir _after_ the include of PGXS
+bindir = @bindir@
+
 # Set PERL _after_ the include of PGXS
 PERL=@PERL@
 
