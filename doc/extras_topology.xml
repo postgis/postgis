@@ -393,6 +393,54 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 				<para><xref linkend="DropTopoGeometryColumn"/></para>
 			</refsection>
 		</refentry>
+		<refentry id="RenameTopology">
+			<refnamediv>
+				<refname>RenameTopology</refname>
+				<refpurpose>Renames a topology</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>varchar <function>RenameTopology</function></funcdef>
+						<paramdef><type>varchar </type> <parameter>old_name</parameter></paramdef>
+						<paramdef><type>varchar </type> <parameter>new_name</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Renames a topology schema updating its metadata record in
+topology.topology.
+		</para>
+
+                <!-- use this format if new function -->
+                <para>Availability: 3.4.0</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<para>
+This example renames a topology from <varname>topo_stage</varname> to
+<varname>topo_prod</varname>.
+				</para>
+				<programlisting>SELECT topology.RenameTopology('topo_stage', 'topo_prod');</programlisting>
+
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+
+				<para>>
+                    <xref linkend="CopyTopology" />
+                </para>
+			</refsection>
+		</refentry>
 		<refentry id="DropTopoGeometryColumn">
 			<refnamediv>
 				<refname>DropTopoGeometryColumn</refname>
@@ -1156,7 +1204,11 @@ This example makes a backup of a topology called ma_topo
 			<refsection>
 				<title>See Also</title>
 
-				<para><xref linkend="spatial_ref_sys"/>, <xref linkend="CreateTopology" /></para>
+				<para>
+                    <xref linkend="spatial_ref_sys"/>,
+                    <xref linkend="CreateTopology" />,
+                    <xref linkend="RenameTopology" />
+                </para>
 			</refsection>
 		</refentry>
 
