@@ -138,7 +138,7 @@ COPY ( SELECT
   node_id,
   geom,
   containing_face
-FROM ${TOPONAME}.node ) TO STDOUT;
+FROM "${TOPONAME}".node ) TO STDOUT;
 EOF
 
 # Edges
@@ -156,7 +156,7 @@ COPY ( SELECT
   left_face,
   right_face,
   geom
-FROM ${TOPONAME}.edge_data ) TO STDOUT;
+FROM "${TOPONAME}".edge_data ) TO STDOUT;
 EOF
 
 # Faces
@@ -165,13 +165,13 @@ echo "Exporting face..." >&4
 COPY ( SELECT
   face_id,
   mbr
-FROM ${TOPONAME}.face WHERE face_id != 0 ) TO STDOUT;
+FROM "${TOPONAME}".face WHERE face_id != 0 ) TO STDOUT;
 EOF
 
 # Relation
 echo "Exporting relation..." >&4
   cat <<EOF | psql --set ON_ERROR_STOP=1 -XtA > ${DUMPDIR}/relation || exit 1
-COPY ( SELECT * FROM ${TOPONAME}.relation ) TO STDOUT;
+COPY ( SELECT * FROM "${TOPONAME}".relation ) TO STDOUT;
 EOF
 
 if test "$SKIP_LAYERS" = "no"; then # {
