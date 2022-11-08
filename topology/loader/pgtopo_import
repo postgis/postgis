@@ -156,21 +156,21 @@ EOF
   #################################################
   cat <<EOF
     SELECT pg_catalog.setval(
-      '${TOPONAME}.node_node_id_seq',
+      '"${TOPONAME}".node_node_id_seq',
       max(node_id),
       true
     )
     FROM "${TOPONAME}".node;
 
     SELECT pg_catalog.setval(
-      '${TOPONAME}.edge_data_edge_id_seq',
+      '"${TOPONAME}".edge_data_edge_id_seq',
       max(edge_id),
       true
     )
     FROM "${TOPONAME}".edge_data;
 
     SELECT pg_catalog.setval(
-      '${TOPONAME}.face_face_id_seq',
+      '"${TOPONAME}".face_face_id_seq',
       NULLIF(max(face_id), 0),
       true
     )
@@ -242,7 +242,7 @@ BEGIN
   -- Create and initialize layer's topogeometry sequence
   CREATE SEQUENCE "${TOPONAME}".topogeo_s_${id};
   PERFORM pg_catalog.setval(
-    '${TOPONAME}.topogeo_s_${id}',
+    '"${TOPONAME}".topogeo_s_${id}',
     max(id("${column}")),
     true
   )
@@ -282,7 +282,7 @@ EOF
   #################################################
   cat <<EOF
   SELECT pg_catalog.setval(
-    '${TOPONAME}.layer_id_seq',
+    '"${TOPONAME}".layer_id_seq',
     max(l.layer_id),
     true
   )

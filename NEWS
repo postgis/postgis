@@ -14,6 +14,7 @@ PostGIS 3.3.2
   - #5280, Handle load of dbase character fields with no width specified (Regina Obe)
   - #5264, Fix topology install on Alpine (Louis Descoteaux)
   - #5244, postgis_tiger_geocoder update for TIGER 2022 (Regina Obe)
+  - #5285, Fix import/export of topologies with names needing quotes (Sandro Santilli)
 
 
 PostGIS 3.3.1
