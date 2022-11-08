@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Update TIGER geocoder installation instructions and the GEOS link (Regina Obe)
  - #5278, Free address standardizer rules once after allocation failure (Regina Obe)
  - Correct the ST_AlphaShape documentation examples (Regina Obe)
  - Correct the explanation of alpha and holes in ST_AlphaShape (Martin Davis)

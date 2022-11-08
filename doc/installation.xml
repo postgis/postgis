@@ -721,7 +721,6 @@ Installing using `unpackaged` was removed in PostgreSQL 13, so you are advised t
 CREATE EXTENSION postgis FROM unpackaged;
 CREATE EXTENSION postgis_raster FROM unpackaged;
 CREATE EXTENSION postgis_topology FROM unpackaged;
-CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;
 </programlisting>
 
 	</sect2>
@@ -1116,49 +1115,6 @@ vacuum (analyze, verbose) tiger.zip_state;
 vacuum (analyze, verbose) tiger.zip_state_loc;</programlisting>
 			</listitem>
 		</orderedlist>
-		<sect3 id="convert_tiger_geocoder_extension"><title>Converting a Tiger Geocoder Regular Install to Extension Model</title>
-			<para>If you installed the tiger geocoder without using the extension model, you can convert to the extension model as follows:</para>
-			<orderedlist>
-				<listitem><para>Follow instructions in <xref linkend="upgrade_tiger_geocoder" /> for the non-extension model upgrade.</para></listitem>
-				<listitem><para>Connect to your database with psql or pgAdmin and run the following command:</para>
-					<programlisting>CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;</programlisting>
-				</listitem>
-			</orderedlist>
-		</sect3>
-
-	</sect2>
-	<sect2 id="install_tiger_geocoder">
-		<title>Tiger Geocoder Enabling your PostGIS database: Not Using Extensions</title>
-		<para>
-		  First install PostGIS using the prior instructions.
-		</para>
-
-		<para>
-		  If you don't have an extras folder, download <ulink url="&postgis_download_url;">&postgis_download_url;</ulink>
-		</para>
-
-		<para>
-		  <command>tar xvfz postgis-&last_release_version;.tar.gz</command>
-		</para>
-
-		<para>
-		  <command>cd postgis-&last_release_version;/extras/tiger_geocoder</command>
-		</para>
-
-		<para>Edit the <filename>tiger_loader_2015.sql</filename> (or latest loader file you find, unless you want to load different year) to the paths of your executables server etc or alternatively you can update the <varname>loader_platform</varname> table once installed. If you don't edit this file or the <varname>loader_platform</varname> table, it will just contain common case locations of items and you'll have to edit the generated script after the fact when you run the  <xref linkend="Loader_Generate_Nation_Script" /> and <xref linkend="Loader_Generate_Script" />  SQL functions.
-		 </para>
-		<para>If you are installing Tiger geocoder for the first time edit either the <filename>create_geocode.bat</filename> script If you are on windows
-			or the <filename>create_geocode.sh</filename> if you are on Linux/Unix/Mac OSX with your PostgreSQL specific settings and run the corresponding script from the commandline. </para>
-
-
-		<para>Verify that you now have a <varname>tiger</varname> schema in your database and that it is part of your database search_path.  If it is not, add it with a command something along the line of: <programlisting>ALTER DATABASE geocoder SET search_path=public, tiger;</programlisting></para>
-		<para>The normalizing address functionality works more or less without any data except for tricky addresses.  Run this test and verify things look like this:
-			<programlisting>SELECT pprint_addy(normalize_address('202 East Fremont Street, Las Vegas, Nevada 89101')) As pretty_address;
-pretty_address
----------------------------------------
-202 E Fremont St, Las Vegas, NV 89101
-			</programlisting>
-		</para>
 	</sect2>
 	<sect2 id="tiger_pagc_address_standardizing"><title>Using Address Standardizer Extension with Tiger geocoder</title>
 			<para>One of the many complaints of folks is the address normalizer function <xref linkend="Normalize_Address" /> function that normalizes an address for prepping before geocoding.  The normalizer is far from perfect and trying to patch its imperfectness takes a vast amount of resources.  As such we have integrated with another
