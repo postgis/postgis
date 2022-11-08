@@ -1,0 +1,75 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2022 Sandro Santilli <strk@kbt.io>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+--{
+--  RenameTopoGeometryColumn(regclass, old_colname, new_colname)
+--
+-- Rename a TopoGeometry column in a table.
+-- Returns the new topology.layer record
+--
+-- Availability: 3.4.0
+--
+CREATE OR REPLACE FUNCTION topology.RenameTopoGeometryColumn(layer_table regclass, feature_column name, new_name name)
+  RETURNS topology.layer
+AS
+$$
+DECLARE
+  layer topology.layer;
+  sql text;
+BEGIN
+
+  layer := topology.FindLayer(layer_table, feature_column);
+  IF layer IS NULL THEN
+    RAISE EXCEPTION 'Layer %.% does not exist', layer_table, feature_column;
+  END IF;
+
+  --
+  -- Rename TopoGeometry column
+  --
+  sql := format('ALTER TABLE %s RENAME %I to %I',
+    layer_table, feature_column, new_name);
+  EXECUTE sql;
+
+  -- Update topology.layer record
+
+  -- Temporarely disable integrity check
+  ALTER TABLE topology.layer DISABLE TRIGGER layer_integrity_checks;
+
+  sql := format(
+      'UPDATE topology.layer SET feature_column = %L '
+      'WHERE topology_id = $1 and layer_id = $2',
+      new_name
+  );
+  EXECUTE sql USING layer.topology_id, layer.layer_id;
+
+  -- Re-enable integrity check
+  -- TODO: tweak layer_integrity_checks to allow this
+  ALTER TABLE topology.layer ENABLE TRIGGER layer_integrity_checks;
+
+  --
+  -- Rename constraints on TopoGeom column
+  --
+  sql := format(
+    'ALTER TABLE %s RENAME CONSTRAINT '
+    '"check_topogeom_%s" TO "check_topogeom_%s"',
+    layer_table, feature_column, new_name
+  );
+  EXECUTE sql;
+
+  layer.feature_column = new_name;
+  RETURN layer;
+END;
+$$
+LANGUAGE 'plpgsql' VOLATILE;
+--} RenameTopoGeometryColumn
+

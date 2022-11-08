@@ -353,6 +353,56 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 				</para>
 			</refsection>
 		</refentry>
+	    <refentry id="RenameTopoGeometryColumn">
+			<refnamediv>
+				<refname>RenameTopoGeometryColumn</refname>
+				<refpurpose>Renames a topogeometry column</refpurpose>
+			</refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                     <funcprototype>
+                        <funcdef>topology.layer <function>RenameTopoGeometryColumn</function></funcdef>
+                        <paramdef><type>regclass </type>
+                        <parameter>layer_table</parameter></paramdef>
+                        <paramdef><type>name </type>
+                        <parameter>feature_column</parameter></paramdef>
+                        <paramdef><type>name </type>
+                        <parameter>new_name</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+This function changes the name of an existing TopoGeometry column
+ensuring metadata information about it is updated accordingly.
+                </para>
+
+                <!-- use this format if new function -->
+                <para>Availability: 3.4.0</para>
+
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+SELECT topology.RenameTopoGeometryColumn('public.parcels', 'topogeom', 'tgeom');
+                </programlisting>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+
+				<para>
+				  <xref linkend="AddTopoGeometryColumn"/>,
+				  <xref linkend="RenameTopology"/>
+				</para>
+			</refsection>
+		</refentry>
 		<refentry id="DropTopology">
 			<refnamediv>
 				<refname>DropTopology</refname>
@@ -437,7 +487,8 @@ This example renames a topology from <varname>topo_stage</varname> to
 				<title>See Also</title>
 
 				<para>>
-                    <xref linkend="CopyTopology" />
+                    <xref linkend="CopyTopology" />,
+                    <xref linkend="RenameTopoGeometryColumn" />
                 </para>
 			</refsection>
 		</refentry>

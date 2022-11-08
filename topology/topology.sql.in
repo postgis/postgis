@@ -1410,6 +1410,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --general management --
 #include "sql/manage/ManageHelper.sql.in"
 #include "sql/manage/AddTopoGeometryColumn.sql.in"
+#include "sql/manage/RenameTopoGeometryColumn.sql.in"
 #include "sql/manage/CreateTopology.sql.in"
 #include "sql/manage/TopologySummary.sql.in"
 #include "sql/manage/CopyTopology.sql.in"
