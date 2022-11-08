@@ -51,8 +51,8 @@ in each individual database you want to use it in.
 	<para>
 	  Refer to the PostgreSQL installation guides if you haven't already
 	  installed PostgreSQL.
-	  <ulink url="http://www.postgresql.org">
-		http://www.postgresql.org
+	  <ulink url="https://www.postgresql.org">
+		https://www.postgresql.org
 	  </ulink>
 	  .
 	</para>
@@ -171,7 +171,7 @@ sh autogen.sh
 
 	  <listitem>
 		<para>
-		  Proj reprojection library. Proj 4.9 or above is required.
+		  Proj reprojection library. Proj 6.1 or above is required.
 			The Proj library is used to provide coordinate reprojection support within
 		  PostGIS. Proj is available for download from
 		  <ulink url="https://proj.org/">
@@ -183,9 +183,9 @@ sh autogen.sh
 
 	  <listitem>
 		<para>
-		  GEOS geometry library, version 3.6 or greater, but GEOS 3.9+ is required to take full advantage of all the new functions and features. GEOS is available for download from
-		  <ulink url="http://trac.osgeo.org/geos/">
-			http://trac.osgeo.org/geos/
+		  GEOS geometry library, version 3.6 or greater, but GEOS 3.11+ is required to take full advantage of all the new functions and features. GEOS is available for download from
+		  <ulink url="https://libgeos.org/">
+			https://libgeos.org
 		  </ulink>.
 		</para>
 	  </listitem>
@@ -246,7 +246,7 @@ sh autogen.sh
 
 	  <listitem>
 		<para>
-			SFCGAL, version 1.3.1 (or higher), 1.4.1 or higher is recommended. SFCGAL can be used to provide additional 2D and 3D advanced analysis functions to PostGIS cf <xref linkend="reference_sfcgal" />. And also allow to use SFCGAL rather than GEOS for some 2D functions provided by both backends (like ST_Intersection or ST_Area, for instance). A PostgreSQL configuration variable <code>postgis.backend</code> allow end user to control which backend he want to use if SFCGAL is installed (GEOS by default). Nota: SFCGAL 1.2 require at least CGAL 4.3 and Boost 1.54 (cf: <ulink url="https://oslandia.gitlab.io/SFCGAL/dev.html">https://oslandia.gitlab.io/SFCGAL/dev.html</ulink>)
+			SFCGAL, version 1.3.1 (or higher), 1.4.1 or higher is recommended and required to be able to use all functionality. SFCGAL can be used to provide additional 2D and 3D advanced analysis functions to PostGIS cf <xref linkend="reference_sfcgal" />. And also allow to use SFCGAL rather than GEOS for some 2D functions provided by both backends (like ST_Intersection or ST_Area, for instance). A PostgreSQL configuration variable <code>postgis.backend</code> allow end user to control which backend he want to use if SFCGAL is installed (GEOS by default). Nota: SFCGAL 1.2 require at least CGAL 4.3 and Boost 1.54 (cf: <ulink url="https://oslandia.gitlab.io/SFCGAL/dev.html">https://oslandia.gitlab.io/SFCGAL/dev.html</ulink>)
 
 		  <ulink url="https://gitlab.com/Oslandia/SFCGAL/">https://gitlab.com/Oslandia/SFCGAL/</ulink>.
 		</para>
@@ -1011,14 +1011,13 @@ but you can download the latest at: <ulink url="http://www.pcre.org">http://www.
 	</sect1>
 
   <sect1 id="loading_extras_tiger_geocoder">
-	<title>Installing, Upgrading Tiger Geocoder and loading data</title>
+	<title>Installing, Upgrading Tiger Geocoder, and loading data</title>
 
 	<para>Extras like Tiger geocoder may not be packaged in your PostGIS distribution. If you are missing the tiger geocoder extension or want a newer version than what your install comes with, then use
 	the <filename>share/extension/postgis_tiger_geocoder.*</filename> files from the packages in <ulink url="http://postgis.net/windows_downloads/">Windows Unreleased Versions</ulink> section for your version of PostgreSQL.
 	Although these packages are for windows, the postgis_tiger_geocoder extension files will work on any OS since the extension is an SQL/plpgsql only extension.</para>
 	<sect2 id="install_tiger_geocoder_extension">
 		<title>Tiger Geocoder Enabling your PostGIS database: Using Extension</title>
-		<para>If you are using PostgreSQL 9.1+ and PostGIS 2.1+, you can take advantage of the new extension model for installing tiger geocoder. To do so:</para>
 		<orderedlist>
 			<listitem><para>First get binaries for PostGIS 2.1+ or compile and install as usual.  This should install the necessary extension files as well for tiger geocoder.</para></listitem>
 			<listitem><para>Connect to your database via psql or pgAdmin or some other tool and run the following SQL commands.  Note that if you are installing in a database that already has postgis, you don't need to do the first step.  If you have <varname>fuzzystrmatch</varname> extension already installed, you don't need to do the second step either.</para>
@@ -1041,7 +1040,7 @@ ALTER EXTENSION postgis_tiger_geocoder UPDATE;</programlisting>
 ---------+------------+------------------+-------
 	   1 | Devonshire | Pl               | 02109</screen></para>
 			</listitem>
-			<listitem><para>Create a new record in <varname>tiger.loader_platform</varname> table with the paths of your executables and server. </para>
+			<listitem id="tiger_geocoder_loading_data"><para>Create a new record in <varname>tiger.loader_platform</varname> table with the paths of your executables and server. </para>
 				<para>So for example to create a profile called debbie that follows <code>sh</code> convention. You would do:</para>
 				<programlisting>INSERT INTO tiger.loader_platform(os, declare_sect, pgbin, wget, unzip_command, psql, path_sep,
 		   loader, environ_set_command, county_process_command)
@@ -1088,9 +1087,9 @@ sh nation_script_load.sh</programlisting>
 </screen>
       </listitem>
 
-			<listitem><para>By default the tables corresponding to <varname>bg</varname>, <varname>tract</varname>, <varname>tabblock</varname> are not loaded. These tables are not used by the geocoder but are used by folks for population statistics.
+			<listitem><para>By default the tables corresponding to <varname>bg</varname>, <varname>tract</varname>, <varname>tabblock20</varname> are not loaded. These tables are not used by the geocoder but are used by folks for population statistics.
 			 If you wish to load them as part of your state loads, run the following statement to enable them.</para>
-				<programlisting>UPDATE tiger.loader_lookuptables SET load = true WHERE load = false AND lookup_name IN('tract', 'bg', 'tabblock');</programlisting>
+				<programlisting>UPDATE tiger.loader_lookuptables SET load = true WHERE load = false AND lookup_name IN('tract', 'bg', 'tabblock20');</programlisting>
 				<para>Alternatively you can load just these tables after loading state data using the <xref linkend="Loader_Generate_Census_Script" /></para></listitem>
 
 			<listitem><para>For each state you want to load data for, generate a state script <xref linkend="Loader_Generate_Script" />.</para><warning><para>DO NOT Generate the state script until you have already loaded the nation data, because the state script utilizes county list loaded by nation script.</para></warning></listitem>
@@ -1116,49 +1115,7 @@ vacuum (analyze, verbose) tiger.zip_state;
 vacuum (analyze, verbose) tiger.zip_state_loc;</programlisting>
 			</listitem>
 		</orderedlist>
-		<sect3 id="convert_tiger_geocoder_extension"><title>Converting a Tiger Geocoder Regular Install to Extension Model</title>
-			<para>If you installed the tiger geocoder without using the extension model, you can convert to the extension model as follows:</para>
-			<orderedlist>
-				<listitem><para>Follow instructions in <xref linkend="upgrade_tiger_geocoder" /> for the non-extension model upgrade.</para></listitem>
-				<listitem><para>Connect to your database with psql or pgAdmin and run the following command:</para>
-					<programlisting>CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;</programlisting>
-				</listitem>
-			</orderedlist>
-		</sect3>
 
-	</sect2>
-	<sect2 id="install_tiger_geocoder">
-		<title>Tiger Geocoder Enabling your PostGIS database: Not Using Extensions</title>
-		<para>
-		  First install PostGIS using the prior instructions.
-		</para>
-
-		<para>
-		  If you don't have an extras folder, download <ulink url="&postgis_download_url;">&postgis_download_url;</ulink>
-		</para>
-
-		<para>
-		  <command>tar xvfz postgis-&last_release_version;.tar.gz</command>
-		</para>
-
-		<para>
-		  <command>cd postgis-&last_release_version;/extras/tiger_geocoder</command>
-		</para>
-
-		<para>Edit the <filename>tiger_loader_2015.sql</filename> (or latest loader file you find, unless you want to load different year) to the paths of your executables server etc or alternatively you can update the <varname>loader_platform</varname> table once installed. If you don't edit this file or the <varname>loader_platform</varname> table, it will just contain common case locations of items and you'll have to edit the generated script after the fact when you run the  <xref linkend="Loader_Generate_Nation_Script" /> and <xref linkend="Loader_Generate_Script" />  SQL functions.
-		 </para>
-		<para>If you are installing Tiger geocoder for the first time edit either the <filename>create_geocode.bat</filename> script If you are on windows
-			or the <filename>create_geocode.sh</filename> if you are on Linux/Unix/Mac OSX with your PostgreSQL specific settings and run the corresponding script from the commandline. </para>
-
-
-		<para>Verify that you now have a <varname>tiger</varname> schema in your database and that it is part of your database search_path.  If it is not, add it with a command something along the line of: <programlisting>ALTER DATABASE geocoder SET search_path=public, tiger;</programlisting></para>
-		<para>The normalizing address functionality works more or less without any data except for tricky addresses.  Run this test and verify things look like this:
-			<programlisting>SELECT pprint_addy(normalize_address('202 East Fremont Street, Las Vegas, Nevada 89101')) As pretty_address;
-pretty_address
----------------------------------------
-202 E Fremont St, Las Vegas, NV 89101
-			</programlisting>
-		</para>
 	</sect2>
 	<sect2 id="tiger_pagc_address_standardizing"><title>Using Address Standardizer Extension with Tiger geocoder</title>
 			<para>One of the many complaints of folks is the address normalizer function <xref linkend="Normalize_Address" /> function that normalizes an address for prepping before geocoding.  The normalizer is far from perfect and trying to patch its imperfectness takes a vast amount of resources.  As such we have integrated with another
@@ -1166,9 +1123,8 @@ pretty_address
 
 			<para>Once you install this extension in the same database as you have installed <code>postgis_tiger_geocoder</code>, then the <xref linkend="Pagc_Normalize_Address" /> can be used instead of <xref linkend="Normalize_Address" />. This extension is tiger agnostic, so can be used with other data sources such as international addresses. The tiger geocoder extension does come packaged with its own custom versions of <xref linkend="rulestab" /> ( <code>tiger.pagc_rules</code>) , <xref linkend="gaztab" /> (<code>tiger.pagc_gaz</code>), and <xref linkend="lextab" /> (<code>tiger.pagc_lex</code>).  These you can add and update to improve your standardizing experience for your own needs.</para>
 	</sect2>
-	<sect2 id="tiger_geocoder_loading_data">
-		<title>Loading Tiger Data</title>
-		<para>The instructions for loading data are available in a more detailed form  in the <filename>extras/tiger_geocoder/tiger_2011/README</filename>.  This just includes the general steps.</para>
+	<sect2 id="tiger_geocoder_required_tools">
+		<title>Required tools for tiger data loading</title>
 		<para>The load process downloads data from the census website for the respective nation files, states requested, extracts the files, and then loads each state into its own separate
 		set of state tables.  Each state table inherits from the tables defined in <varname>tiger</varname> schema so that its sufficient to just query those tables to access all the data and drop a set of state tables at any time using the <xref linkend="Drop_State_Tables_Generate_Script" /> if you need to reload a state or just don't need a state anymore.</para>
 		<para>In order to be able to load data you'll need the following tools:</para>
@@ -1183,7 +1139,7 @@ pretty_address
 			</listitem>
 		</itemizedlist>
 		<para>If you are upgrading from tiger_2010, you'll need to first generate and run <xref linkend="Drop_Nation_Tables_Generate_Script" />. Before you load any state data, you need to load the nation wide data which you do with  <xref linkend="Loader_Generate_Nation_Script" />. Which will
-		generate a loader script for you.   <xref linkend="Loader_Generate_Nation_Script" /> is a one-time step that should be done for upgrading (from 2010) and for new installs.</para>
+		generate a loader script for you.   <xref linkend="Loader_Generate_Nation_Script" /> is a one-time step that should be done for upgrading (from a prior year tiger census data) and for new installs.</para>
 		<para>To load state data refer to <xref linkend="Loader_Generate_Script" /> to generate a data load script for your platform for the states you desire.
 			Note that you can install these piecemeal. You don't have to load all the states you want all at once.  You can load them as you need them.</para>
 
@@ -1192,33 +1148,11 @@ pretty_address
 		<para>To test that things are working as they should, try to run a geocode on an address in your state using <xref linkend="Geocode" /> </para>
 	</sect2>
 	<sect2 id="upgrade_tiger_geocoder">
-		<title>Upgrading your Tiger Geocoder Install</title>
-		<para>
-		  If you have Tiger Geocoder packaged with 2.0+ already installed, you can upgrade the functions at any time even from an interim tar ball if there are fixes you badly need.  This will only work for Tiger geocoder not installed with extensions.
-		</para>
-
-		<para>
-		  If you don't have an extras folder, download <ulink url="&postgis_download_url;">&postgis_download_url;</ulink>
-		</para>
-
-		<para>
-		  <command>tar xvfz postgis-&last_release_version;.tar.gz</command>
-		</para>
-
-		<para>
-		  <command>cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2011</command>
-		</para>
-
-		<para>Locate the  <filename>upgrade_geocoder.bat</filename> script If you are on windows
-			or the <filename>upgrade_geocoder.sh</filename> if you are on Linux/Unix/Mac OSX.  Edit the file to have your postgis database credentials.</para>
-
-		<para>If you are upgrading from 2010 or 2011, make sure to unremark out the loader script line so you get the latest script for loading 2012 data.</para>
-		<para>
-			Then run th corresponding script from the commandline.
-		</para>
-
+		<title>Upgrading your Tiger Geocoder Install and Data</title>
+        <para>First upgrade your postgis_tiger_geocoder extension as follows:</para>
+        <programlisting>ALTER EXTENSION postgis_tiger_geocoder UPDATE;</programlisting>
 		<para>Next drop all nation tables and load up the new ones. Generate a drop script with this SQL statement as detailed in <xref linkend="Drop_Nation_Tables_Generate_Script" /></para>
-			<programlisting>SELECT drop_nation_tables_generate_script();</programlisting>
+		<programlisting>SELECT drop_nation_tables_generate_script();</programlisting>
 		<para>Run the generated drop SQL statements.</para>
 		<para>Generate a nation load script with this SELECT statement as detailed in <xref linkend="Loader_Generate_Nation_Script" /></para>
 		<para><emphasis role="bold">For windows</emphasis></para>
@@ -1226,7 +1160,7 @@ pretty_address
 		<para><emphasis role="bold">For unix/linux</emphasis></para>
 		<programlisting>SELECT loader_generate_nation_script('sh');</programlisting>
 		<para>Refer to <xref linkend="tiger_geocoder_loading_data" /> for instructions on how to run the generate script. This only needs to be done once.</para>
-		<note><para>You can have a mix of 2010/2011 state tables and can upgrade each state separately.  Before you upgrade a state to 2011, you first need to drop the 2010 tables for that state using <xref linkend="Drop_State_Tables_Generate_Script" />.</para></note>
+		<note><para>You can have a mix of different year state tables and can upgrade each state separately.  Before you upgrade a state you first need to drop the prior year state tables for that state using <xref linkend="Drop_State_Tables_Generate_Script" />.</para></note>
 	</sect2>
 
   </sect1>
