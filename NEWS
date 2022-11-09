@@ -15,6 +15,7 @@ PostGIS 3.3.2
   - #5264, Fix topology install on Alpine (Louis Descoteaux)
   - #5244, postgis_tiger_geocoder update for TIGER 2022 (Regina Obe)
   - #5285, Fix import/export of topologies with names needing quotes (Sandro Santilli)
+  - #4988, SFCGAL specify name of unknown type when SFCGAL can't process (Regina Obe)
 
 
 PostGIS 3.3.1
