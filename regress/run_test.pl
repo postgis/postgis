@@ -142,7 +142,10 @@ sub findOrDie
 
 # Prepend scripts' build dirs to path
 # TODO: make this conditional ?
-$ENV{PATH} = $TOP_BUILDDIR . '/loader:' . $TOP_BUILDDIR .  '/raster/loader:' . $ENV{PATH};
+$ENV{PATH} = $TOP_BUILDDIR . '/loader:' .
+             $TOP_BUILDDIR . '/raster/loader:' .
+             $TOP_BUILDDIR . '/utils:' .
+             $ENV{PATH};
 
 our $SHP2PGSQL;
 sub shp2pgsql
@@ -163,6 +166,12 @@ sub raster2pgsql
 {
     $RASTER2PGSQL = findOrDie 'raster2pgsql', @_ unless defined($RASTER2PGSQL);
     return $RASTER2PGSQL;
+}
+
+our $POSTGIS_RESTORE;
+sub postgis_restore
+{
+    $POSTGIS_RESTORE = findOrDie 'postgis_restore.pl', @_ unless defined($POSTGIS_RESTORE);
 }
 
 if ( $OPT_UPGRADE_PATH )
@@ -366,34 +375,59 @@ if ( $OPT_UPGRADE )
 {
     print "Upgrading from postgis $libver\n";
 
-	foreach my $hook (@OPT_HOOK_BEFORE_UPGRADE)
-	{
-		print "Running before-upgrade-script $hook\n";
-		die unless load_sql_file($hook, 1);
-	}
-
-    if ( $OPT_EXTENSIONS )
+    foreach my $hook (@OPT_HOOK_BEFORE_UPGRADE)
     {
-        die unless upgrade_spatial_extensions();
+        print "Running before-upgrade-script $hook\n";
+        die unless load_sql_file($hook, 1);
     }
-    else
-    {
-        die unless upgrade_spatial();
-    }
-
-	foreach my $hook (@OPT_HOOK_AFTER_UPGRADE)
-	{
-		print "Running after-upgrade-script $hook\n";
-		die unless load_sql_file($hook, 1);
-	}
-
-    # Update libver
-    $libver = sql("select postgis_lib_version()");
 }
 
 if ( $OPT_DUMPRESTORE )
 {
-    die unless dump_restore();
+    my $DBDUMP = dump_db();
+    die unless defined $DBDUMP;
+
+    print "Dropping db '${DB}'\n";
+    my $rv = system("dropdb ${DB} >> $REGRESS_LOG 2>&1");
+    if ( $rv ) {
+        fail("Could not drop ${DB}", $REGRESS_LOG);
+        die;
+    }
+
+    print "Creating spatial db '${DB}'\n";
+    undef($OPT_UPGRADE_FROM); # to directly prepare the target
+    $rv = create_spatial();
+    if ( ! $rv ) {
+        fail("Could not create spatial db ${DB}", $REGRESS_LOG);
+        die;
+    }
+    die unless restore_db($DBDUMP);
+
+    unlink($DBDUMP);
+}
+
+if ( $OPT_UPGRADE )
+{
+    unless ( $OPT_DUMPRESTORE )
+    {
+        if ( $OPT_EXTENSIONS )
+        {
+            die unless upgrade_spatial_extensions();
+        }
+        else
+        {
+            die unless upgrade_spatial();
+        }
+    }
+
+    foreach my $hook (@OPT_HOOK_AFTER_UPGRADE)
+    {
+        print "Running after-upgrade-script $hook\n";
+        die unless load_sql_file($hook, 1);
+    }
+
+    # Update libver
+    $libver = sql("select postgis_lib_version()");
 }
 
 ##################################################################
@@ -632,7 +666,8 @@ Options:
                        an exclamation mark (ie: ":auto!" or "3.0.0!") to
                        request upgrade via postgis_extensions_upgrade()
                        if available.
-  --dumprestore   dump and restore spatially-enabled db before running tests
+  --dumprestore   dump and (after upgrade, if --upgrade is given)
+                  restore spatially-enabled db before running tests
   --nodrop        do not drop the regression database on exit
   --schema        where to install/find PostGIS (relocatable) PostGIS
                   (defaults to "public")
@@ -1414,7 +1449,7 @@ sub create_spatial
         if ( ! $OPT_UPGRADE_FROM )
         {
             exit($FAIL) unless prepare_spatial();
-            return;
+            return 1;
         }
 
         if ( $OPT_UPGRADE_FROM !~ /^unpackaged(.*)/ )
@@ -1428,6 +1463,8 @@ sub create_spatial
         }
         exit($FAIL) unless prepare_spatial($1);
     }
+
+    return 1;
 }
 
 
@@ -1966,33 +2003,36 @@ sub uninstall_spatial
 	return 1;
 }
 
-# Dump and restore the database
-sub dump_restore
+# Dump the database, return dump filename
+sub dump_db
 {
-    my $DBDUMP = $TMPDIR . '/' . $DB . ".dump";
     my $rv;
+    my $DBDUMP = $TMPDIR . '/' . $DB . '.dump';
 
-	print "Dumping and restoring database '${DB}'\n";
+    print "Dumping database '${DB}'\n";
 
     $rv = system("pg_dump -Fc -f${DBDUMP} ${DB} >> $REGRESS_LOG 2>&1");
     if ( $rv ) {
         fail("Could not dump ${DB}", $REGRESS_LOG);
-        return 0;
+        return undef;
     }
+    return ${DBDUMP};
+}
 
-    $rv = system("dropdb ${DB} >> $REGRESS_LOG 2>&1");
-    if ( $rv ) {
-        fail("Could not drop db ${DB}", $REGRESS_LOG);
-        return 0;
+# Restore the dump file passed as first argument
+sub restore_db
+{
+    my $rv;
+    my $DBDUMP = shift;
+
+    if ( $OPT_EXTENSIONS ) {
+        print "Restoring database '${DB}' using pg_restore\n";
+        $rv = system("pg_restore -d ${DB} ${DBDUMP} >> $REGRESS_LOG 2>&1");
+    } else {
+        print "Restoring database '${DB}' using postgis_restore.pl\n";
+        my $cmd = postgis_restore() . " ${DBDUMP} | psql --set ON_ERROR_STOP=1 -X ${DB} >> $REGRESS_LOG 2>&1";
+        $rv = system($cmd);
     }
-
-    $rv = create_db();
-    if ( $rv ) {
-        fail("Could not create ${DB}", $REGRESS_LOG);
-        return 0;
-    }
-
-    $rv = system("pg_restore -d ${DB} ${DBDUMP} >> $REGRESS_LOG 2>&1");
     if ( $rv ) {
         fail("Could not restore ${DB}", $REGRESS_LOG);
         return 0;
@@ -2011,11 +2051,10 @@ sub dump_restore
         }
     }
 
-    unlink($DBDUMP);
-
     return 1;
 }
 
+# Dump and restore the database
 sub diff
 {
 	my ($expected_file, $obtained_file) = @_;
