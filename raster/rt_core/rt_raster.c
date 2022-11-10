@@ -2824,129 +2824,29 @@ rt_raster_gdal_rasterize(
 		_dim[0] == 0 &&
 		_dim[1] == 0
 	) {
-		int result;
-		LWPOLY *epoly = NULL;
-		LWGEOM *lwgeom = NULL;
-		GEOSGeometry *egeom = NULL;
-		GEOSGeometry *geom = NULL;
-
-		RASTER_DEBUG(3, "Testing geometry is properly contained by extent");
-
-		/*
-			see if geometry is properly contained by extent
-			all parts of geometry lies within extent
-		*/
-
-		/* initialize GEOS */
-		initGEOS(rtinfo, lwgeom_geos_error);
-
-		/* convert envelope to geometry */
-		RASTER_DEBUG(4, "Converting envelope to geometry");
-		epoly = rt_util_envelope_to_lwpoly(extent);
-		if (epoly == NULL) {
-			rterror("rt_raster_gdal_rasterize: Could not create envelope's geometry to test if geometry is properly contained by extent");
-
-			OGR_G_DestroyGeometry(src_geom);
-			_rti_rasterize_arg_destroy(arg);
-			/* OGRCleanupAll(); */
-
-			return NULL;
-		}
-
-		egeom = (GEOSGeometry *) LWGEOM2GEOS(lwpoly_as_lwgeom(epoly), 0);
-		lwpoly_free(epoly);
-
-		/* convert WKB to geometry */
-		RASTER_DEBUG(4, "Converting WKB to geometry");
-		lwgeom = lwgeom_from_wkb(wkb, wkb_len, LW_PARSER_CHECK_NONE);
-		geom = (GEOSGeometry *) LWGEOM2GEOS(lwgeom, 0);
-		lwgeom_free(lwgeom);
-
-		result = GEOSRelatePattern(egeom, geom, "T**FF*FF*");
-		GEOSGeom_destroy(geom);
-		GEOSGeom_destroy(egeom);
-
-		if (result == 2) {
-			rterror("rt_raster_gdal_rasterize: Could not test if geometry is properly contained by extent for geometry within extent");
-
-			OGR_G_DestroyGeometry(src_geom);
-			_rti_rasterize_arg_destroy(arg);
-			/* OGRCleanupAll(); */
-
-			return NULL;
-		}
-
-		/* geometry NOT properly contained by extent */
-		if (!result) {
 
 #if POSTGIS_GDAL_VERSION > 18
 
-			/* check alignment flag: grid_xw */
-			if (
-				(NULL == ul_xw && NULL == ul_yw) &&
-				(NULL != grid_xw && NULL != grid_yw) &&
-				FLT_NEQ(*grid_xw, extent.MinX)
-			) {
-				/* do nothing */
-				RASTER_DEBUG(3, "Skipping extent adjustment on X-axis due to upcoming alignment");
-			}
-			else {
-				RASTER_DEBUG(3, "Adjusting extent for GDAL > 1.8 by half the scale on X-axis");
-				extent.MinX -= (_scale[0] / 2.);
-				extent.MaxX += (_scale[0] / 2.);
-			}
+		RASTER_DEBUG(3, "Adjusting extent for GDAL > 1.8 by half the scale on X-axis");
+		extent.MinX -= (_scale[0] / 2.);
+		extent.MaxX += (_scale[0] / 2.);
 
-			/* check alignment flag: grid_yw */
-			if (
-				(NULL == ul_xw && NULL == ul_yw) &&
-				(NULL != grid_xw && NULL != grid_yw) &&
-				FLT_NEQ(*grid_yw, extent.MaxY)
-			) {
-				/* do nothing */
-				RASTER_DEBUG(3, "Skipping extent adjustment on Y-axis due to upcoming alignment");
-			}
-			else {
-				RASTER_DEBUG(3, "Adjusting extent for GDAL > 1.8 by half the scale on Y-axis");
-				extent.MinY -= (_scale[1] / 2.);
-				extent.MaxY += (_scale[1] / 2.);
-			}
+		RASTER_DEBUG(3, "Adjusting extent for GDAL > 1.8 by half the scale on Y-axis");
+		extent.MinY -= (_scale[1] / 2.);
+		extent.MaxY += (_scale[1] / 2.);
 
 #else
 
-			/* check alignment flag: grid_xw */
-			if (
-				(NULL == ul_xw && NULL == ul_yw) &&
-				(NULL != grid_xw && NULL != grid_yw) &&
-				FLT_NEQ(*grid_xw, extent.MinX)
-			) {
-				/* do nothing */
-				RASTER_DEBUG(3, "Skipping extent adjustment on X-axis due to upcoming alignment");
-			}
-			else {
-				RASTER_DEBUG(3, "Adjusting extent for GDAL <= 1.8 by the scale on X-axis");
-				extent.MinX -= _scale[0];
-				extent.MaxX += _scale[0];
-			}
+		RASTER_DEBUG(3, "Adjusting extent for GDAL <= 1.8 by the scale on X-axis");
+		extent.MinX -= _scale[0];
+		extent.MaxX += _scale[0];
 
-
-			/* check alignment flag: grid_yw */
-			if (
-				(NULL == ul_xw && NULL == ul_yw) &&
-				(NULL != grid_xw && NULL != grid_yw) &&
-				FLT_NEQ(*grid_yw, extent.MaxY)
-			) {
-				/* do nothing */
-				RASTER_DEBUG(3, "Skipping extent adjustment on Y-axis due to upcoming alignment");
-			}
-			else {
-				RASTER_DEBUG(3, "Adjusting extent for GDAL <= 1.8 by the scale on Y-axis");
-				extent.MinY -= _scale[1];
-				extent.MaxY += _scale[1];
-			}
+		RASTER_DEBUG(3, "Adjusting extent for GDAL <= 1.8 by the scale on Y-axis");
+		extent.MinY -= _scale[1];
+		extent.MaxY += _scale[1];
 
 #endif
 
-		}
 
 		RASTER_DEBUGF(3, "Adjusted extent: %f, %f, %f, %f",
 			extent.MinX, extent.MinY, extent.MaxX, extent.MaxY);
