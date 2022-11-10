@@ -92,5 +92,11 @@ check-regress: topo_predicates.sql load_topology.sql load_topology-4326.sql $(TE
 	$(PERL) ../../regress/run_test.pl --topology $(RUNTESTFLAGS) $(TESTS)
 	# only run upgrade test if RUNTESTFLAGS was not already doing that
 	if echo "$(RUNTESTFLAGS)" | grep -vq -- --upgrade; then \
-		$(PERL) ../../regress/run_test.pl --upgrade --topology $(RUNTESTFLAGS) $(TESTS); \
+		$(PERL) ../../regress/run_test.pl \
+			--upgrade \
+			--topology \
+			--before-upgrade-script regress/hooks/hook-before-upgrade-topology.sql \
+			--after-upgrade-script regress/hooks/hook-after-upgrade-topology.sql \
+			$(RUNTESTFLAGS) \
+			$(TESTS); \
 	fi
