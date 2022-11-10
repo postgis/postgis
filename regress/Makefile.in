@@ -305,8 +305,17 @@ staged-install: staged-install-raster staged-install-topology
 	#$(MAKE) -C ../loader REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
 
 test check: staged-install
-	$(PERL) run_test.pl $(RUNTESTFLAGS) $(SFCGALTESTFLAGS) $(TESTS) && \
-	$(PERL) run_test.pl --upgrade $(RUNTESTFLAGS) $(SFCGALTESTFLAGS) $(TESTS)
+	$(PERL) run_test.pl $(RUNTESTFLAGS) $(SFCGALTESTFLAGS) $(TESTS)
+	# only run upgrade test if RUNTESTFLAGS was not already doing that
+	if echo "$(RUNTESTFLAGS)" | grep -vq -- --upgrade; then \
+		$(PERL) run_test.pl \
+			--upgrade \
+			--before-upgrade-script hooks/hook-before-upgrade.sql \
+			--after-upgrade-script hooks/hook-after-upgrade.sql \
+			$(RUNTESTFLAGS) \
+			$(SFCGALTESTFLAGS) \
+			$(TESTS); \
+	fi
 
 garden:
 	createdb postgis_garden
