@@ -9,6 +9,7 @@ YYYY/MM/DD
   - #5234, Fix 2.5d topology building regression (Sandro Santilli)
   - #5280, shp2pgsql: Handle load of dbase character fields with no width
            specified (Regina Obe)
+  - #5084, Bad rasterization of linestring (Gilles Vuidel)
 
 PostGIS 3.0.7
 2022/08/18
