@@ -6,6 +6,7 @@ PostGIS 2.5.9
   - #5280, shp2pgsql: Handle load of dbase character fields with no width
            specified (Regina Obe)
   - #5240, ST_DumpPoints crash with empty polygon (Regina Obe)
+  - #5084, Bad rasterization of linestring (Gilles Vuidel)
 
 PostGIS 2.5.8
 2022/08/17
