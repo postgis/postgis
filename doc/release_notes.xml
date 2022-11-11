@@ -3,6 +3,19 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+      <title>PostGIS 2.5.9</title>
+      <para>Release Date: 2022/11/11</para>
+      <para>This release works for PostgreSQL 9.4-12 and is the End-Of-Life release
+of the PostGIS 2.5 series.</para>
+      <simplesect>
+          <title>Bug fixes</title>
+          <para><ulink url="https://trac.osgeo.org/postgis/ticket/5241">5241</ulink>, Crash on ST_SnapToGrid with empty multis (Regina Obe)</para>
+          <para><ulink url="https://trac.osgeo.org/postgis/ticket/5280">5280</ulink>, shp2pgsql: Handle load of dbase character fields with no width specified (Regina Obe)</para>
+          <para><ulink url="https://trac.osgeo.org/postgis/ticket/5240">5240</ulink>, ST_DumpPoints crash with empty polygon (Regina Obe)</para>
+          <para><ulink url="https://trac.osgeo.org/postgis/ticket/5084">5084</ulink>, Bad rasterization of linestring (Gilles Vuidel)</para>
+      </simplesect>
+    </sect1>
+    <sect1>
       <title>PostGIS 2.5.8</title>
       <para>Release Date: 2022/08/18</para>
       <simplesect>

@@ -1,5 +1,8 @@
 PostGIS 2.5.9
-2022/11/xx
+2022/11/11
+This release works for PostgreSQL 9.4 thru PostgreSQL 12 and is the End-Of-Life release
+of the PostGIS 2.5 series.
+
  * Bug fixes *
 
   - #5241, Crash on ST_SnapToGrid with empty multis (Regina Obe)
