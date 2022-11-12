@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-Date: 2022-07-18
+Date: 2022-11-11
 
 Versioning Scheme
 -----------------
@@ -126,7 +126,7 @@ Release procedure
   - Copy tarball, pdf, md5, doc-html via ssh/sftp upload.osgeo.org/postgis/ source and docs folders.
     Verify it shows on https://download.osgeo.org/postgis
 
-    - PostGIS doc release versioned doc - http://postgis.net/documentation/
+    - PostGIS doc release versioned doc - https://postgis.net/documentation/
     - On postgis.net server, change /etc/nginx/sites-enabled/postgis.net (Versionless URL line )
          - nginx -t #to confirm you didn't breat the config
          - service nginx reload
