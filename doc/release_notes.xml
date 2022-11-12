@@ -2,7 +2,25 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
-
+    <sect1>
+        <title>Release 3.0.8</title>
+        <para>Release date: 2022/11/11</para>
+        <para>This is a bug and security release. This version requires PostgreSQL 9.5+-13 and GEOS &gt;= 3.6+
+              Additional features and enhancements enabled if you are running Proj6+, PostgreSQL 12+, and GEOS 3.8</para>
+        <simplesect>
+              <title>Bug Fixes and Enhancements</title>
+              <para>- [security] Add schema qual to upgrade util (Regina Obe)</para>
+              <para><ulink url="https://trac.osgeo.org/postgis/ticket/5240">5240</ulink>, ST_DumpPoints crash with empty polygon (Regina Obe)</para>
+              <para><ulink url="https://trac.osgeo.org/postgis/ticket/4648">4648</ulink>, [security] Check function ownership at extension
+           packaging time (Sandro Santilli)
+           Thanks to Sven Klemm (Timescale) for the report</para>
+              <para><ulink url="https://trac.osgeo.org/postgis/ticket/5241">5241</ulink>, Crash on ST_SnapToGrid with empty multis (Regina Obe)</para>
+              <para><ulink url="https://trac.osgeo.org/postgis/ticket/5234">5234</ulink>, Fix 2.5d topology building regression (Sandro Santilli)</para>
+              <para><ulink url="https://trac.osgeo.org/postgis/ticket/5280">5280</ulink>, shp2pgsql: Handle load of dbase character fields with no width
+           specified (Regina Obe)</para>
+              <para><ulink url="https://trac.osgeo.org/postgis/ticket/5084">5084</ulink>, Bad rasterization of linestring (Gilles Vuidel)</para>
+        </simplesect>
+    </sect1>
     <sect1>
         <title>Release 3.0.7</title>
         <para>Release date: 2022/08/18</para>
