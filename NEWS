@@ -1,10 +1,11 @@
-PostGIS 3.1.8dev
-YYYY/MM/DD
+PostGIS 3.1.8
+2022/11/12
 
 * Bug and Security Fixes
-  - Add schema qual to upgrade util
+  - [security] Add schema qual to upgrade util (Regina Obe)
   - #5240, ST_DumpPoints crash with empty polygon (Regina Obe)
-  - #4648, Check function ownership at extension packaging time (Sandro Santilli)
+  - #4648, [security] Check function ownership at extension packaging time (Sandro Santilli)
+    Thanks to Sven Klemm (Timescale) for the report
   - #5241, Crash on ST_SnapToGrid with empty multis (Regina Obe)
   - #5234, Fix 2.5d topology building regression (Sandro Santilli)
   - #5280, Handle load of dbase character fields with no width specified (Regina Obe)
