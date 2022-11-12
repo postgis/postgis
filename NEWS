@@ -1,19 +1,20 @@
 PostGIS 3.2.4
-2022/11/xx
+2022/11/12
 
 This version requires PostgreSQL 9.6-15, GEOS 3.6 or higher, and Proj 4.9+
 Additional features are enabled if you are running GEOS 3.9+
  (and ST_MakeValid enhancements with 3.10+),
 Proj 6.1+, and PostgreSQL 14+.
 
-* Bug Fixes *
+* Bug and Security Fixes *
   - #5227, typo in ST_LineLocatePoint error message (Sandro Santilli)
   - #5231, PG15 no longer compiles because SQL/JSON removed PG upstream (Regina Obe)
   - #5420, ST_DumpPoints and ST_DumpSegments crash with empty polygon (Regina Obe)
-  - Add schema qual to upgrade util
+  - [security] Add schema qual to upgrade util (Regina Obe)
   - #5255, GH598, Remove forced static linking on shp2pgsql, pgsql2shp (Maxim Kochetkov)
   - #5255, GH702, Remove forced static linking on raster2pgsql (Thomas Petazzoni)
-  - #4648, Check function ownership at extension packaging time (Sandro Santilli)
+  - #4648, [security] Check function ownership at extension packaging time (Sandro Santilli)
+            Thanks to Sven Klemm (Timescale) for the report
   - #5241, Crash on ST_SnapToGrid with empty multis (Regina Obe)
   - #5081, Fix error in topology import of self-intersecting rings (Sandro Santilli)
   - #5234, Fix 2.5d topology building regression (Sandro Santilli)
