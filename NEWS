@@ -1,6 +1,6 @@
 PostGIS 3.3.2
 2022/11/12
-This version requires PostgreSQL 11-15, GEOS 3.6 or higher, and Proj 4.9+
+This version requires PostgreSQL 11-15, GEOS 3.6 or higher, and Proj 5.2+
 Additional features are enabled if you are running GEOS 3.9+
  (and ST_MakeValid enhancements with 3.10+),
 Proj 6.1+, and PostgreSQL 15+.
