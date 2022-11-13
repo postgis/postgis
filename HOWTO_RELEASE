@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-Date: 2022-08-08
+Date: 2022-11-13
 
 Versioning Scheme
 -----------------
@@ -112,7 +112,7 @@ Release procedure
      $ git tag -a $rev -m "Tagged release $rev"
      $ git push osgeo --tags
 
-  - Take tar ball and md5 from http://postgis.net/stuff/
+  - Take tar ball and md5 from https://postgis.net/stuff/
      (You might need to wait a few minutes to see it)
      If impatient check status of job - https://debbie.postgis.net/job/PostGIS_Make_Dist/
      If it fails, sh make_dist.sh $rev)
@@ -121,7 +121,7 @@ Release procedure
   - Test generated tarball (including extension upgrade)
   - Copy tarball, md5, pdf, doc-html to https://upload.osgeo.org/postgis/ .
 
-  - PostGIS doc release versioned doc - http://postgis.net/documentation/
+  - PostGIS doc release versioned doc - https://postgis.net/documentation/
     - On postgis.net server, change /etc/nginx/sites-enabled/postgis.net (Versionless URL line )
          - nginx -t #to confirm you didn't break the config
          - service nginx reload
