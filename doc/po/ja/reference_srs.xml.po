@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-11-01 14:51+0000\n"
-"PO-Revision-Date: 2022-10-25 07:30+0000\n"
+"PO-Revision-Date: 2022-11-15 04:30+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_srsxml/ja/>\n"
@@ -37,7 +37,7 @@ msgstr "空間参照系関数"
 #: reference_srs.xml:14
 #, no-c-format
 msgid "ST_InverseTransformPipeline"
-msgstr ""
+msgstr "ST_InverseTransformPipeline"
 
 #. Tag: refpurpose
 #: reference_srs.xml:16
@@ -46,7 +46,8 @@ msgid ""
 "Return a new geometry with coordinates transformed to a different spatial "
 "reference system using the inverse of a defined coordinate transformation "
 "pipeline."
-msgstr ""
+msgstr "定義した座標変換パイプラインの逆変換を使って、異なる空間参照系に座標値を変換"
+"した新しいジオメトリを返します。"
 
 #. Tag: funcprototype
 #: reference_srs.xml:23
@@ -58,6 +59,11 @@ msgid ""
 "<paramdef choice=\"opt\"><type>integer </type> <parameter>to_srid</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_InverseTransformPipeline</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>pipeline</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>to_srid</parameter></paramdef>"
 
 #. Tag: title
 #: reference_srs.xml:33 reference_srs.xml:95 reference_srs.xml:142
@@ -73,7 +79,8 @@ msgid ""
 "Return a new geometry with coordinates transformed to a different spatial "
 "reference system using a defined coordinate transformation pipeline to go in "
 "the inverse direction."
-msgstr ""
+msgstr "定義した座標変換パイプラインの逆方向への変換を使って、異なる空間参照系に座標"
+"値を変換した新しいジオメトリを返します。"
 
 #. Tag: para
 #: reference_srs.xml:40
@@ -81,13 +88,14 @@ msgstr ""
 msgid ""
 "Refer to <xref linkend=\"ST_TransformPipeline\"/> for details on writing a "
 "transformation pipeline."
-msgstr ""
+msgstr "変換パイプラインの記述に関する詳細については<xref linkend="
+"\"ST_TransformPipeline\"/>を参照して下さい。"
 
 #. Tag: para
 #: reference_srs.xml:42 reference_srs.xml:343
 #, no-c-format
 msgid "Availability: 3.4.0"
-msgstr ""
+msgstr "Availability: 3.4.0"
 
 #. Tag: para
 #: reference_srs.xml:44
@@ -100,6 +108,11 @@ msgid ""
 "direction. Using `ST_InverseTransformPipeline()` the pipeline is executed in "
 "the inverse direction."
 msgstr ""
+"入力ジオメトリのSRIDは無視され、任意パラメータ <varname>to_srid</varname> "
+"から値が提供されていない場合には出力ジオメトリのSRIDは0に設定されます。<xref "
+"linkend=\"ST_TransformPipeline\"/>を使うときには、パイプラインが順方向に実行"
+"されます。`ST_InverseTransformPipeline()`を使うと、パイプラインは逆方向に実行"
+"されます。"
 
 #. Tag: para
 #: reference_srs.xml:50 reference_srs.xml:351
@@ -141,6 +154,15 @@ msgid ""
 " POINT(2 48.99999999999999)\n"
 "(1 row)"
 msgstr ""
+"-- 逆方向\n"
+"SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937"
+".523342293)'::geometry,\n"
+"  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;\n"
+"\n"
+"          wgs_geom\n"
+"----------------------------\n"
+" POINT(2 48.99999999999999)\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_srs.xml:61 reference_srs.xml:362
@@ -161,6 +183,14 @@ msgid ""
 " POINT(143.00000635638918 -36.999986706128176)\n"
 "(1 row)"
 msgstr ""
+"-- 変換パイプラインの自動選択でST_Transformを使用します\n"
+"SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, "
+"7844)) AS gda2020_auto;\n"
+"\n"
+"                 gda2020_auto\n"
+"-----------------------------------------------\n"
+" POINT(143.00000635638918 -36.999986706128176)\n"
+"(1 row)"
 
 #. Tag: title
 #: reference_srs.xml:67 reference_srs.xml:119 reference_srs.xml:160
@@ -173,7 +203,7 @@ msgstr "関連情報"
 #: reference_srs.xml:69
 #, no-c-format
 msgid ", <xref linkend=\"ST_TransformPipeline\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_TransformPipeline\"/>"
 
 #. Tag: refname
 #: reference_srs.xml:75
@@ -803,6 +833,11 @@ msgid ""
 "<paramdef choice=\"opt\"><type>integer </type> <parameter>to_srid</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_TransformPipeline</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>pipeline</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>to_srid</parameter></paramdef>"
 
 #. Tag: para
 #: reference_srs.xml:312
@@ -870,6 +905,11 @@ msgid ""
 "linkend=\"ST_InverseTransformPipeline\"/> the pipeline is executed in the "
 "inverse direction."
 msgstr ""
+"入力ジオメトリのSRIDは無視され、任意パラメータ <varname>to_srid</varname> か"
+"ら値が提供されていない場合には出力ジオメトリのSRIDは0に設定されます。`ST_Tran"
+"sformPipeline()`を使うときには、パイプラインが順方向に実行されます。<xref "
+"linkend=\"ST_InverseTransformPipeline\""
+"/>を使うと、パイプラインは逆方向に実行されます。"
 
 #. Tag: programlisting
 #: reference_srs.xml:360
@@ -991,7 +1031,7 @@ msgstr ""
 #: reference_srs.xml:370
 #, no-c-format
 msgid ", <xref linkend=\"ST_InverseTransformPipeline\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_InverseTransformPipeline\"/>"
 
 #, no-c-format
 #~ msgid ""
