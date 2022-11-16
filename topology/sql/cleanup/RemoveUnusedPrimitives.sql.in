@@ -580,7 +580,7 @@ BEGIN
       removable_nodes_of_degree_2_in_bbox AS (
         SELECT
           n.node_id,
-          array_agg(e.edge_id) edges
+          array_agg(e.edge_id ORDER BY e.edge_id) edges
         FROM
           unused_connected_nodes_in_bbox n,
           %1$I.edge e
@@ -612,15 +612,22 @@ BEGIN
           )
           GROUP BY n.node_id, r.layer_id, r.topogeo_id
           HAVING count(DISTINCT abs(r.element_id)) != 2
+      ),
+      valid_heals AS (
+        SELECT
+          node_id,
+          edges
+        FROM removable_nodes_of_degree_2_in_bbox
+        WHERE node_id NOT IN (
+          SELECT node_id FROM breaking_heals
+        )
       )
       SELECT
-        node_id,
+        array_agg(node_id) connecting_nodes,
         edges[1] edge1,
         edges[2] edge2
-      FROM removable_nodes_of_degree_2_in_bbox
-      WHERE node_id NOT IN (
-        SELECT node_id FROM breaking_heals
-      )
+      FROM valid_heals
+      GROUP BY edges
     $$,
     topo.name
   );
@@ -634,8 +641,8 @@ BEGIN
     edge1 := COALESCE( (edgeMap -> rec.edge1::text)::int, rec.edge1);
     edge2 := COALESCE( (edgeMap -> rec.edge2::text)::int, rec.edge2);
 
-    RAISE DEBUG 'Should heal edges % (now %) and % (now %) bound by node %',
-      rec.edge1, edge1, rec.edge2, edge2, rec.node_id;
+    RAISE DEBUG 'Should heal edges % (now %) and % (now %) bound by nodes %',
+      rec.edge1, edge1, rec.edge2, edge2, rec.connecting_nodes;
 
     IF edge1 = edge2 THEN
       -- Nothing to merge here, continue
@@ -646,16 +653,16 @@ BEGIN
     BEGIN
       -- TODO: replace ST_ModEdgeHeal loop with a faster direct deletion and healing
       removedNode := topology.ST_ModEdgeHeal(topo.name, edge1, edge2);
-      IF rec.node_id != removedNode THEN
+      IF NOT removedNode = ANY ( rec.connecting_nodes ) THEN
         RAISE EXCEPTION 'Healing of edges % and % was reported '
-                        'to remove node % while we expected % instead',
-                        edge1, edge2, removedNode, rec.node_id;
+                        'to remove node % while we expected any of % instead',
+                        edge1, edge2, removedNode, rec.connecting_nodes;
       END IF;
       RAISE DEBUG 'Edge % merged into %, dropping node %', edge2, edge1, removedNode;
       ok := 1;
     EXCEPTION WHEN OTHERS
     THEN
-      RAISE WARNING 'Edges % and % joined by node % could not be healed: %', edge1, edge2, rec.node_id, SQLERRM;
+      RAISE WARNING 'Edges % and % joined by node % could not be healed: %', edge1, edge2, rec.connecting_nodes, SQLERRM;
     END;
     IF ok THEN
       -- edge2 was now renamed to edge1, update map
