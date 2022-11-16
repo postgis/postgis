@@ -4425,9 +4425,9 @@ The dump file format is a compressed tar archive of a
 at least a <filename>pgtopo_dump_version</filename> file with
 format version info. As of version <code>1</code> the directory
 contains tab-delimited CSV files with data of the topology
-primitive tables (node, edge_data, face, relation), of the
-topology and layer records associated with it, and optionall
-(if <code>--skip-layers</code> is not given) a custom-format
+primitive tables (node, edge_data, face, relation), the
+topology and layer records associated with it and
+(unless <code>--skip-layers</code> is given) a custom-format
 PostgreSQL dump of tables reported as being layers of the given
 topology.
         </para>
