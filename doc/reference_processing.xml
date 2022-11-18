@@ -619,8 +619,8 @@ POINT(0.5 1)
           <funcprototype>
             <funcdef>geometry <function>ST_ChaikinSmoothing</function></funcdef>
             <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-            <paramdef><type>integer</type> <parameter>nIterations = 1</parameter></paramdef>
-            <paramdef><type>boolean</type> <parameter>preserveEndPoints = false</parameter></paramdef>
+            <paramdef choice="opt"><type>integer</type> <parameter>nIterations = 1</parameter></paramdef>
+            <paramdef choice="opt"><type>boolean</type> <parameter>preserveEndPoints = false</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
@@ -877,8 +877,8 @@ Returns the Delaunay triangulation of the vertices of a geometry.
               <funcprototype>
                 <funcdef>geometry <function>ST_DelaunayTriangles</function></funcdef>
                 <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-                <paramdef><type>float </type> <parameter>tolerance</parameter></paramdef>
-                <paramdef><type>int4 </type> <parameter>flags</parameter></paramdef>
+                <paramdef choice="opt"><type>float </type> <parameter>tolerance = 0.0</parameter></paramdef>
+                <paramdef choice="opt"><type>int4 </type> <parameter>flags = 0</parameter></paramdef>
               </funcprototype>
             </funcsynopsis>
         </refsynopsisdiv>
@@ -887,13 +887,18 @@ Returns the Delaunay triangulation of the vertices of a geometry.
             <title>Description</title>
 
             <para>
-Return the <ulink
-url="http://en.wikipedia.org/wiki/Delaunay_triangulation">Delaunay
-triangulation</ulink> of the vertices of the input geometry.
-Output is a COLLECTION of polygons (for flags=0) or a MULTILINESTRING
-(for flags=1) or TIN (for flags=2).  The tolerance, if any, is used to snap input vertices
-together.
-            </para>
+Computes the <ulink url="http://en.wikipedia.org/wiki/Delaunay_triangulation">Delaunay triangulation</ulink>
+of the vertices of the input geometry.
+The optional <varname>tolerance</varname> can be used to snap nearby input vertices together,
+which can improve robustness in some situations.
+The output is determined by the <varname>flags</varname> code:
+</para>
+        <itemizedlist>
+            <listitem><para> <code>0</code> - a GEOMETRYCOLLECTION of triangular POLGONs (default) </para></listitem>
+            <listitem><para> <code>1</code> - a MULTILINESTRING of the edges of the triangulation </para></listitem>
+            <listitem><para> <code>2</code> - A TIN of the triangulation </para></listitem>
+        </itemizedlist>
+
             <para>Performed by the GEOS module.</para>
             <para>Availability: 2.1.0</para>
             <para>&Z_support;</para>
@@ -901,7 +906,7 @@ together.
 
         </refsection>
               <refsection>
-        <title>2D Examples</title>
+        <title>Examples</title>
             <informaltable>
                   <tgroup cols="1">
                     <tbody>
@@ -993,18 +998,21 @@ POLYGON((154 14,150 14,154 6,154 14))
         </tbody>
     </tgroup>
 </informaltable>
-      </refsection>
-      <refsection>
-            <title>Example 1</title>
+
+<para>Example using vertices with Z values.</para>
             <programlisting>-- 3D multipoint --
 SELECT ST_AsText(ST_DelaunayTriangles(ST_GeomFromText(
-'MULTIPOINT Z(14 14 10,
-150 14 100,34 6 25, 20 10 150)'))) As wkt;
+         'MULTIPOINT Z(14 14 10, 150 14 100,34 6 25, 20 10 150)'))) As wkt;
 
 -----wkt----
 GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
  ,POLYGON Z ((14 14 10,34 6 25,150 14 100,14 14 10)))</programlisting>
         </refsection>
+
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_VoronoiPolygons" />, <xref linkend="ST_VoronoiLines" /> </para>
+      </refsection>
     </refentry>
 
     <refentry id="ST_FilterByM">
@@ -1085,7 +1093,7 @@ FROM (SELECT  ST_SetEffectiveArea('LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geo
             <funcdef>geometry <function>ST_GeneratePoints</function></funcdef>
             <paramdef> <type>geometry</type> <parameter>g</parameter> </paramdef>
             <paramdef> <type>integer</type> <parameter>npoints</parameter> </paramdef>
-            <paramdef> <type>integer</type> <parameter>seed</parameter> </paramdef>
+            <paramdef> <type>integer</type> <parameter>seed = 0</parameter> </paramdef>
           </funcprototype>
 
         </funcsynopsis>
@@ -1097,7 +1105,7 @@ FROM (SELECT  ST_SetEffectiveArea('LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geo
         <para>
             ST_GeneratePoints generates a given number of pseudo-random points
             which lie within the input area.
-            The optional <code>seed</code> is used to regenerate a deterministic sequence of points,
+            The optional <varname>seed</varname> is used to regenerate a deterministic sequence of points,
             and must be greater than zero.
         </para>
 
@@ -2696,16 +2704,13 @@ SELECT ST_AsText(
           <funcprototype>
             <funcdef>geometry <function>ST_VoronoiLines</function></funcdef>
             <paramdef>
-                <parameter>g1</parameter>
-                <type>geometry</type>
+                <type>geometry</type> <parameter>geom</parameter>
             </paramdef>
             <paramdef choice="opt">
-                <parameter>tolerance</parameter>
-                <type>float8</type>
+                <type>float8</type> <parameter>tolerance = 0.0</parameter>
             </paramdef>
             <paramdef choice="opt">
-                <parameter>extend_to</parameter>
-                <type>geometry</type>
+                <type>geometry</type> <parameter>extend_to = NULL</parameter>
             </paramdef>
           </funcprototype>
 
@@ -2715,19 +2720,21 @@ SELECT ST_AsText(
       <refsection>
         <title>Description</title>
         <para>
-            ST_VoronoiLines computes a two-dimensional <ulink url="https://en.wikipedia.org/wiki/Voronoi_diagram">Voronoi diagram</ulink> from the vertices of
-            the supplied geometry and returns the boundaries between cells in that diagram as a MultiLineString.
-            Returns null if input geometry is null. Returns an empty geometry collection if the input geometry contains only one vertex. Returns an empty geometry collection if the extend_to envelope has zero area.
+            Computes a two-dimensional <ulink url="https://en.wikipedia.org/wiki/Voronoi_diagram">Voronoi diagram</ulink> from the vertices of
+            the supplied geometry and returns the boundaries between cells in the diagram as a MultiLineString.
+            Returns null if input geometry is null. Returns an empty geometry collection if the input geometry contains only one vertex.
+            Returns an empty geometry collection if the <varname>extend_to</varname> envelope has zero area.
         </para>
         <para>
             Optional parameters:
             <itemizedlist>
                 <listitem>
-                    <para> 'tolerance' : The distance within which vertices will be considered equivalent.  Robustness of the algorithm can be improved by supplying a nonzero tolerance distance.  (default = 0.0)</para>
+                    <para> <varname>tolerance</varname>: The distance within which vertices will be considered equivalent.  Robustness of the algorithm can be improved by supplying a nonzero tolerance distance.  (default = 0.0)</para>
                 </listitem>
                 <listitem>
-                    <para>'extend_to' : If a geometry is supplied as the "extend_to" parameter, the diagram will be extended to cover the envelope of the "extend_to" geometry, unless
-                        that envelope is smaller than the default envelope (default = NULL, default envelope is boundingbox of input geometry extended by about 50% in each direction).</para>
+                    <para> <varname>extend_to</varname>: If present, the diagram is extended to cover the envelope of the supplied geometry,
+                    unless smaller than the default envelope (default = NULL, default envelope is the bounding box of the input expanded by about 50%).
+                    </para>
                 </listitem>
             </itemizedlist>
         </para>
@@ -2738,28 +2745,23 @@ SELECT ST_AsText(
       <!-- Examples -->
       <refsection>
         <title>Examples</title>
-        <informaltable>
-          <tgroup cols="1">
-            <tbody>
-             <row>
-                <entry><para><informalfigure>
-                    <mediaobject>
-                      <imageobject>
-                        <imagedata fileref="images/st_voronoi03.png" />
-                      </imageobject>
-                      <caption><para>Voronoi lines with tolerance of 30 units</para></caption>
-                    </mediaobject>
-                  </informalfigure>
-                    <programlisting>SELECT ST_VoronoiLines(geom, 30) As geom
-FROM (SELECT 'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::geometry As geom ) As g</programlisting>
+
+        <informalfigure>
+            <mediaobject>
+                <imageobject>
+                <imagedata fileref="images/st_voronoi03.png" />
+                </imageobject>
+                <caption><para>Voronoi diagram lines, with tolerance of 30 units</para></caption>
+            </mediaobject>
+        </informalfigure>
+        <programlisting>
+SELECT ST_VoronoiLines(
+            'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::geometry,
+            30) AS geom;
+</programlisting>
 <screen> -- ST_AsText output
 MULTILINESTRING((135.555555555556 270,36.8181818181818 92.2727272727273),(36.8181818181818 92.2727272727273,-110 43.3333333333333),(230 -45.7142857142858,36.8181818181818 92.2727272727273))
 </screen>
-                </para></entry>
-              </row>
-        </tbody>
-        </tgroup>
-        </informaltable>
 
       </refsection>
 
@@ -2769,8 +2771,7 @@ MULTILINESTRING((135.555555555556 270,36.8181818181818 92.2727272727273),(36.818
 
         <para>
             <xref linkend="ST_DelaunayTriangles" />,
-            <xref linkend="ST_VoronoiPolygons" />,
-            <xref linkend="ST_Collect" />
+            <xref linkend="ST_VoronoiPolygons" />
         </para>
       </refsection>
     </refentry>
@@ -2787,16 +2788,13 @@ MULTILINESTRING((135.555555555556 270,36.8181818181818 92.2727272727273),(36.818
           <funcprototype>
             <funcdef>geometry <function>ST_VoronoiPolygons</function></funcdef>
             <paramdef>
-                <parameter>g1</parameter>
-                <type>geometry</type>
+                <type>geometry</type> <parameter>geom</parameter>
             </paramdef>
             <paramdef choice="opt">
-                <parameter>tolerance</parameter>
-                <type>float8</type>
+                <type>float8</type> <parameter>tolerance = 0.0</parameter>
             </paramdef>
             <paramdef choice="opt">
-                <parameter>extend_to</parameter>
-                <type>geometry</type>
+                <type>geometry</type> <parameter>extend_to = NULL</parameter>
             </paramdef>
           </funcprototype>
 
@@ -2807,20 +2805,22 @@ MULTILINESTRING((135.555555555556 270,36.8181818181818 92.2727272727273),(36.818
         <title>Description</title>
 
         <para>
-            ST_VoronoiPolygons computes a two-dimensional <ulink url="https://en.wikipedia.org/wiki/Voronoi_diagram">Voronoi diagram</ulink> from the vertices of
-            the supplied geometry.  The result is a GeometryCollection of Polygons that covers an envelope larger than the extent of the input vertices.
-            Returns null if input geometry is null. Returns an empty geometry collection if the input geometry contains only one vertex. Returns an empty geometry collection if the extend_to envelope has zero area.
+            Computes a two-dimensional <ulink url="https://en.wikipedia.org/wiki/Voronoi_diagram">Voronoi diagram</ulink> from the vertices of
+            the supplied geometry.
+            The result is a GEOMETRYCOLLECTION of POLYGONs that covers an envelope larger than the extent of the input vertices.
+            Returns null if input geometry is null. Returns an empty geometry collection if the input geometry contains only one vertex.
+            Returns an empty geometry collection if the <varname>extend_to</varname> envelope has zero area.
         </para>
 
         <para>
             Optional parameters:
             <itemizedlist>
                 <listitem>
-                    <para> 'tolerance' : The distance within which vertices will be considered equivalent.  Robustness of the algorithm can be improved by supplying a nonzero tolerance distance.  (default = 0.0)</para>
+                    <para> <varname>tolerance</varname>: The distance within which vertices will be considered equivalent.  Robustness of the algorithm can be improved by supplying a nonzero tolerance distance.  (default = 0.0) </para>
                 </listitem>
                 <listitem>
-                    <para>'extend_to' : If a geometry is supplied as the "extend_to" parameter, the diagram will be extended to cover the envelope of the "extend_to" geometry, unless
-                        that envelope is smaller than the default envelope (default = NULL, default envelope is boundingbox of input geometry extended by about 50% in each direction).
+                    <para> <varname>extend_to</varname>: If present, the diagram is extended to cover the envelope of the supplied geometry,
+                    unless smaller than the default envelope (default = NULL, default envelope is the bounding box of the input expanded by about 50%).
                     </para>
                 </listitem>
             </itemizedlist>
@@ -2832,68 +2832,45 @@ MULTILINESTRING((135.555555555556 270,36.8181818181818 92.2727272727273),(36.818
       <!-- Examples -->
       <refsection>
         <title>Examples</title>
-        <informaltable>
-          <tgroup cols="1">
-            <tbody>
-              <row>
-                <entry>
-                    <para><informalfigure>
-                    <mediaobject>
-                      <imageobject>
-                        <imagedata fileref="images/st_voronoi01.png" />
-                      </imageobject>
-                      <caption><para>Points overlaid on top of Voronoi diagram</para></caption>
-                    </mediaobject>
-                    </informalfigure>
-                    <programlisting>SELECT
-    ST_VoronoiPolygons(geom) As geom
-FROM (SELECT 'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::geometry As geom ) As g;</programlisting>
+
+        <informalfigure>
+            <mediaobject>
+                <imageobject>
+                <imagedata fileref="images/st_voronoi01.png" />
+                </imageobject>
+                <caption><para>Points overlaid on top of Voronoi diagram</para></caption>
+            </mediaobject>
+        </informalfigure>
+<programlisting>
+SELECT ST_VoronoiPolygons(
+                'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::geometry
+            ) AS geom;
+</programlisting>
 <screen> -- ST_AsText output
 GEOMETRYCOLLECTION(POLYGON((-110 43.3333333333333,-110 270,100.5 270,59.3478260869565 132.826086956522,36.8181818181818 92.2727272727273,-110 43.3333333333333)),
 POLYGON((55 -90,-110 -90,-110 43.3333333333333,36.8181818181818 92.2727272727273,55 79.2857142857143,55 -90)),
 POLYGON((230 47.5,230 -20.7142857142857,55 79.2857142857143,36.8181818181818 92.2727272727273,59.3478260869565 132.826086956522,230 47.5)),POLYGON((230 -20.7142857142857,230 -90,55 -90,55 79.2857142857143,230 -20.7142857142857)),
 POLYGON((100.5 270,230 270,230 47.5,59.3478260869565 132.826086956522,100.5 270)))
 </screen>
-                    </para>
-                </entry>
-            </row>
-            <row>
-                <entry><para><informalfigure>
-                    <mediaobject>
-                      <imageobject>
-                        <imagedata fileref="images/st_voronoi02.png" />
-                      </imageobject>
-                      <caption><para>Voronoi with tolerance of 30 units</para></caption>
-                    </mediaobject>
-                  </informalfigure>
-                    <programlisting>SELECT ST_VoronoiPolygons(geom, 30) As geom
-FROM (SELECT 'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::geometry As geom ) As g;</programlisting>
+
+        <informalfigure>
+            <mediaobject>
+                <imageobject>
+                <imagedata fileref="images/st_voronoi02.png" />
+                </imageobject>
+                <caption><para>Voronoi diagram, with tolerance of 30 units</para></caption>
+            </mediaobject>
+            </informalfigure>
+<programlisting>
+SELECT ST_VoronoiPolygons(
+            'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::geometry,
+            30) AS geom;
+</programlisting>
 <screen> -- ST_AsText output
 GEOMETRYCOLLECTION(POLYGON((-110 43.3333333333333,-110 270,100.5 270,59.3478260869565 132.826086956522,36.8181818181818 92.2727272727273,-110 43.3333333333333)),
 POLYGON((230 47.5,230 -45.7142857142858,36.8181818181818 92.2727272727273,59.3478260869565 132.826086956522,230 47.5)),POLYGON((230 -45.7142857142858,230 -90,-110 -90,-110 43.3333333333333,36.8181818181818 92.2727272727273,230 -45.7142857142858)),
 POLYGON((100.5 270,230 270,230 47.5,59.3478260869565 132.826086956522,100.5 270)))
 </screen>
-                </para></entry>
-              </row>
-             <row>
-                <entry><para><informalfigure>
-                    <mediaobject>
-                      <imageobject>
-                        <imagedata fileref="images/st_voronoi03.png" />
-                      </imageobject>
-                      <caption><para>Voronoi with tolerance of 30 units as MultiLineString</para></caption>
-                    </mediaobject>
-                  </informalfigure>
-                    <programlisting>SELECT ST_VoronoiLines(geom, 30) As geom
-FROM (SELECT 'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::geometry As geom ) As g</programlisting>
-<screen> -- ST_AsText output
-MULTILINESTRING((135.555555555556 270,36.8181818181818 92.2727272727273),(36.8181818181818 92.2727272727273,-110 43.3333333333333),(230 -45.7142857142858,36.8181818181818 92.2727272727273))
-</screen>
-                </para></entry>
-              </row>
-        </tbody>
-        </tgroup>
-        </informaltable>
 
       </refsection>
 
@@ -2903,8 +2880,7 @@ MULTILINESTRING((135.555555555556 270,36.8181818181818 92.2727272727273),(36.818
 
         <para>
             <xref linkend="ST_DelaunayTriangles" />,
-            <xref linkend="ST_VoronoiLines" />,
-            <xref linkend="ST_Collect" />
+            <xref linkend="ST_VoronoiLines" />
         </para>
       </refsection>
     </refentry>
