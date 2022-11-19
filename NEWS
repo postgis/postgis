@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Document the convex hull bound of ST_DelaunayTriangles (Martin Davis)
  - Correct spelling in the English function reference (Mike Taves)
  - Document the GTK version required by the shapefile loader GUI (Sandro Santilli)
  - Report the invalid values supplied to clustering functions (Sandro Santilli)
