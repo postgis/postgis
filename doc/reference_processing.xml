@@ -890,11 +890,12 @@ Returns the Delaunay triangulation of the vertices of a geometry.
 Computes the <ulink url="http://en.wikipedia.org/wiki/Delaunay_triangulation">Delaunay triangulation</ulink>
 of the vertices of the input geometry.
 The optional <varname>tolerance</varname> can be used to snap nearby input vertices together,
-which can improve robustness in some situations.
-The output is determined by the <varname>flags</varname> code:
+which improves robustness in some situations.
+The result geometry is bounded by the convex hull of the input vertices.
+The result geometry representation is determined by the <varname>flags</varname> code:
 </para>
         <itemizedlist>
-            <listitem><para> <code>0</code> - a GEOMETRYCOLLECTION of triangular POLGONs (default) </para></listitem>
+            <listitem><para> <code>0</code> - a GEOMETRYCOLLECTION of triangular POLYGONs (default) </para></listitem>
             <listitem><para> <code>1</code> - a MULTILINESTRING of the edges of the triangulation </para></listitem>
             <listitem><para> <code>2</code> - A TIN of the triangulation </para></listitem>
         </itemizedlist>
@@ -1011,7 +1012,10 @@ GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
 
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_VoronoiPolygons" />, <xref linkend="ST_VoronoiLines" /> </para>
+        <para><xref linkend="ST_VoronoiPolygons" />,
+            <xref linkend="ST_VoronoiLines" />,
+            <xref linkend="ST_ConvexHull" />
+        </para>
       </refsection>
     </refentry>
 
