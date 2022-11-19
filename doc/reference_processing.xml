@@ -890,6 +890,7 @@ Returns the Delaunay triangulation of the vertices of a geometry.
 Return the <ulink
 url="http://en.wikipedia.org/wiki/Delaunay_triangulation">Delaunay
 triangulation</ulink> of the vertices of the input geometry.
+The result geometry is bounded by the convex hull of the input vertices.
 Output is a COLLECTION of polygons (for flags=0) or a MULTILINESTRING
 (for flags=1) or TIN (for flags=2).  The tolerance, if any, is used to snap input vertices
 together.
