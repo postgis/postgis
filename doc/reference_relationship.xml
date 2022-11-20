@@ -1138,30 +1138,9 @@ FROM (SELECT
         -2 |         2
 </programlisting>
 
-      <para><emphasis role="bold">Example:</emphasis>
-      LINE MULTICROSS END LEFT and LINE MULTICROSS END RIGHT
+<para><emphasis role="bold">Example:</emphasis>
+      Finds all streets that cross
       </para>
-      <informalfigure>
-        <mediaobject>
-          <imageobject>
-          <imagedata fileref="images/st_linecrossingdirection02.png" />
-          </imageobject>
-            <caption><para>Blue: Line A;  Green: Line B</para></caption>
-        </mediaobject>
-        </informalfigure>
-        <programlisting>
-SELECT ST_LineCrossingDirection(lineA, lineB) As A_cross_B,
-       ST_LineCrossingDirection(lineB, lineA) As B_cross_A
-FROM (SELECT
-  ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As lineA,
-  ST_GeomFromText('LINESTRING (171 154, 20 140, 71 74, 2.99 90.16)') As lineB
-) As foo;
-
- A_cross_B | B_cross_A
------------+-----------
-         2 |        -2
-</programlisting>
-
 <programlisting>
 SELECT s1.gid, s2.gid, ST_LineCrossingDirection(s1.geom, s2.geom)
   FROM streets s1 CROSS JOIN streets s2
