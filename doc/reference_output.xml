@@ -1844,16 +1844,26 @@ x3dfrag
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return a GeoHash representation (<ulink url="http://en.wikipedia.org/wiki/Geohash">http://en.wikipedia.org/wiki/Geohash</ulink>) of the geometry. A GeoHash encodes a point into a text form that is sortable and searchable based on prefixing.  A shorter GeoHash is a less precise representation of a point.  It can also be thought of as a box, that contains the actual point.</para>
+		<para>Computes a <ulink url="http://en.wikipedia.org/wiki/Geohash">GeoHash</ulink> representation of a geometry.
+        A GeoHash encodes a geometry into a text form that is sortable and searchable based on prefixing.
+        The GeoHash code maps to a cell in the hierarchical GeoHash grid that contains the geographic extent (box) of the geometry.
+        A shorter (less precise) GeoHash code maps to a larger cell containing the geometry.
+        </para>
 
-		<para>If no <varname>maxchars</varname> is specified ST_GeoHash returns a GeoHash based on full precision of the input geometry type. Points return a GeoHash with 20 characters of precision (about enough to hold the full double precision of the input). Other types return a GeoHash with a variable amount of precision, based on the size of the feature. Larger features are represented with less precision, smaller features with more precision. The idea is that the box implied by the GeoHash will always contain the input feature.</para>
+		<para>If <varname>maxchars</varname> is not specified, the returned GeoHash code is for the smallest cell containing the input geometry.
+        Points return a GeoHash with 20 characters of precision (about enough to hold the full double precision of the input).
+        Other types may return a GeoHash with less precision, based on the extent of the geometry.
+        Larger geometries are represented with less precision, smaller ones with more precision.
+        The cell mapped to by the GeoHash code always contains the input feature.</para>
 
-		<para>If <varname>maxchars</varname> is specified ST_GeoHash returns a GeoHash with at most that many characters so a possibly lower precision representation of the input geometry. For non-points, the starting point of the calculation is the center of the bounding box of the geometry.</para>
+		<para>If <varname>maxchars</varname> is specified the returned GeoHash code has at most that many characters.
+        It maps to a (possibly) lower precision representation of the input geometry.
+        For non-points, the starting point of the calculation is the center of the bounding box of the geometry.</para>
 
 		<para>Availability: 1.4.0</para>
 
 		<note>
-			<para>ST_GeoHash will not work with geometries that are not in geographic (lon/lat) coordinates.</para>
+			<para>ST_GeoHash requires input geometry to be in geographic (lon/lat) coordinates.</para>
 		</note>
 
 		<para>&curve_support;</para>
@@ -1861,24 +1871,31 @@ x3dfrag
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting><![CDATA[SELECT ST_GeoHash(ST_SetSRID(ST_Point(-126,48),4326));
+		<programlisting><![CDATA[SELECT ST_GeoHash( ST_Point(-126,48) );
 
 	 st_geohash
 ----------------------
  c0w3hf1s70w3hf1s70w3
 
-SELECT ST_GeoHash(ST_SetSRID(ST_Point(-126,48),4326),5);
+SELECT ST_GeoHash( ST_Point(-126,48), 5);
 
  st_geohash
 ------------
  c0w3h
+
+-- This line contains the point, so the GeoHash is a prefix of the point code
+SELECT ST_GeoHash('LINESTRING(-126 48, -126.1 48.1)'::geometry);
+
+ st_geohash
+------------
+ c0w3
 		]]>
 		</programlisting>
 	  </refsection>
 	 <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromGeoHash" /></para>
+		<para><xref linkend="ST_GeomFromGeoHash" />, <xref linkend="ST_PointFromGeoHash" />, <xref linkend="ST_Box2dFromGeoHash" /></para>
 	  </refsection>
 	</refentry>
 
