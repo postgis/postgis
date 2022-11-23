@@ -1845,16 +1845,20 @@ x3dfrag
 		<title>Description</title>
 
 		<para>Computes a <ulink url="http://en.wikipedia.org/wiki/Geohash">GeoHash</ulink> representation of a geometry.
-        A GeoHash encodes a geometry into a text form that is sortable and searchable based on prefixing.
-        The GeoHash code maps to a cell in the hierarchical GeoHash grid that contains the geographic extent (box) of the geometry.
-        A shorter (less precise) GeoHash code maps to a larger cell containing the geometry.
+        A GeoHash encodes a geographic Point into a text form that is sortable and searchable based on prefixing.
+        A shorter GeoHash is a less precise representation of a point.
+        It can be thought of as a box that contains the point.
+        </para>
+
+        <para>Non-point geometry values with non-zero extent can also be mapped to GeoHash codes.
+        The precision of the code depends on the geographic extent of the geometry.
         </para>
 
 		<para>If <varname>maxchars</varname> is not specified, the returned GeoHash code is for the smallest cell containing the input geometry.
         Points return a GeoHash with 20 characters of precision (about enough to hold the full double precision of the input).
-        Other types may return a GeoHash with less precision, based on the extent of the geometry.
+        Other geometric types may return a GeoHash with less precision, depending on the extent of the geometry.
         Larger geometries are represented with less precision, smaller ones with more precision.
-        The cell mapped to by the GeoHash code always contains the input feature.</para>
+        The box determined by the GeoHash code always contains the input feature.</para>
 
 		<para>If <varname>maxchars</varname> is specified the returned GeoHash code has at most that many characters.
         It maps to a (possibly) lower precision representation of the input geometry.
