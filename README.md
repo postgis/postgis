@@ -17,6 +17,15 @@ Actual readme is [here](README.postgis).
 ## Official code repository, issue tracker and wiki:
 https://trac.osgeo.org/postgis/
 
+## Translations
+We are using [Weblate software](https://weblate.org) for translation.  If you want to help out, log into [OSGeo Weblate](https://weblate.osgeo.org/projects/postgis/).
+
+If you don't already have an OSGeo account, [you can get one here](https://id.osgeo.org/ldap/create). An OSGeo account will allow you to participate in translating both the PostGIS workshop and PostGIS documentation and also submit bug tickets.
+
+<a href="https://weblate.osgeo.org/engage/postgis/">
+<img src="https://weblate.osgeo.org/widgets/postgis/-/287x66-grey.png" alt="Translation status" />
+</a>
+
 ## Official chat room:
 
 Official chat room is the [#postgis:osgeo.org](https://matrix.to/#/#postgis:osgeo.org)
