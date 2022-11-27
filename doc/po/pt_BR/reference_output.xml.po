@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-10-23 01:21+0000\n"
+"POT-Creation-Date: 2022-11-27 05:42+0000\n"
 "PO-Revision-Date: 2021-11-28 22:06+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -156,7 +156,7 @@ msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_output.xml:74 reference_output.xml:160 reference_output.xml:249
-#: reference_output.xml:315 reference_output.xml:368 reference_output.xml:1452
+#: reference_output.xml:315 reference_output.xml:368 reference_output.xml:1466
 #, no-c-format
 msgid "&curve_support;"
 msgstr "&curve_support;"
@@ -181,7 +181,7 @@ msgstr "&T_support;"
 #: reference_output.xml:509 reference_output.xml:616 reference_output.xml:845
 #: reference_output.xml:901 reference_output.xml:989 reference_output.xml:1059
 #: reference_output.xml:1160 reference_output.xml:1217
-#: reference_output.xml:1266 reference_output.xml:1456
+#: reference_output.xml:1266 reference_output.xml:1470
 #, no-c-format
 msgid "Examples"
 msgstr "Examples"
@@ -233,7 +233,7 @@ msgstr ""
 #: reference_output.xml:330 reference_output.xml:424 reference_output.xml:639
 #: reference_output.xml:774 reference_output.xml:849 reference_output.xml:1002
 #: reference_output.xml:1069 reference_output.xml:1166
-#: reference_output.xml:1275 reference_output.xml:1460
+#: reference_output.xml:1275 reference_output.xml:1474
 #, no-c-format
 msgid "See Also"
 msgstr "Veja também."
@@ -3508,88 +3508,148 @@ msgstr ""
 #: reference_output.xml:1440
 #, no-c-format
 msgid ""
-"Return a GeoHash representation (<ulink url=\"http://en.wikipedia.org/wiki/"
-"Geohash\">http://en.wikipedia.org/wiki/Geohash</ulink>) of the geometry. A "
-"GeoHash encodes a point into a text form that is sortable and searchable "
-"based on prefixing. A shorter GeoHash is a less precise representation of a "
-"point. It can also be thought of as a box, that contains the actual point."
+"Computes a <ulink url=\"http://en.wikipedia.org/wiki/Geohash\">GeoHash</"
+"ulink> representation of a geometry. A GeoHash encodes a geographic Point "
+"into a text form that is sortable and searchable based on prefixing. A "
+"shorter GeoHash is a less precise representation of a point. It can be "
+"thought of as a box that contains the point."
 msgstr ""
-"Retorna uma representação GeoHash (<ulink url=\"http://en.wikipedia.org/wiki/"
-"Geohash\">http://en.wikipedia.org/wiki/Geohash</ulink>) da geometria. Uma "
-"GeoHash codifica um ponto dentro de uma forma de texto que é classificável e "
-"pesquisável baseado em prefixos. Um GeoHash menor é uma representação menos "
-"precisa de um ponto. Pode ser pensado como uma caixa que contém o ponto "
-"atual. "
-
-#. Tag: para
-#: reference_output.xml:1442
-#, no-c-format
-msgid ""
-"If no <varname>maxchars</varname> is specified ST_GeoHash returns a GeoHash "
-"based on full precision of the input geometry type. Points return a GeoHash "
-"with 20 characters of precision (about enough to hold the full double "
-"precision of the input). Other types return a GeoHash with a variable amount "
-"of precision, based on the size of the feature. Larger features are "
-"represented with less precision, smaller features with more precision. The "
-"idea is that the box implied by the GeoHash will always contain the input "
-"feature."
-msgstr ""
-"Se nenhum <varname>maxchars</varname> é especificado, ST_GeoHash retorna um "
-"GeoHash baseado na precisão completa do tipo de geometria de entrada. Os "
-"pontos retornam um GeoHash com 20 caracteres de precisão (o suficiente para "
-"segurar a precisão dupla da entrada). Or outros tipos retornam um GeoHash "
-"com uma quantidade de precisão variável, baseada no tamanho da "
-"característica. Traços maiores são representados com menos precisão, traços "
-"menores com mais precisão. A ideia é que a caixa sugerida pelo GeoHash "
-"sempre conterá o traço de entrada. "
-
-#. Tag: para
-#: reference_output.xml:1444
-#, no-c-format
-msgid ""
-"If <varname>maxchars</varname> is specified ST_GeoHash returns a GeoHash "
-"with at most that many characters so a possibly lower precision "
-"representation of the input geometry. For non-points, the starting point of "
-"the calculation is the center of the bounding box of the geometry."
-msgstr ""
-"Se <varname>maxchars</varname> está especificado, ST_GeoHash retorna um "
-"GeoHash com no máximo muitos caracteres, então uma representação de precisão "
-"menor da geometria de entrada. Para não pontos, o ponto de início do cálculo "
-"é o centro da caixa limitadora da geometria. "
 
 #. Tag: para
 #: reference_output.xml:1446
+#, no-c-format
+msgid ""
+"Non-point geometry values with non-zero extent can also be mapped to GeoHash "
+"codes. The precision of the code depends on the geographic extent of the "
+"geometry."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1450
+#, no-c-format
+msgid ""
+"If <varname>maxchars</varname> is not specified, the returned GeoHash code "
+"is for the smallest cell containing the input geometry. Points return a "
+"GeoHash with 20 characters of precision (about enough to hold the full "
+"double precision of the input). Other geometric types may return a GeoHash "
+"with less precision, depending on the extent of the geometry. Larger "
+"geometries are represented with less precision, smaller ones with more "
+"precision. The box determined by the GeoHash code always contains the input "
+"feature."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1456
+#, no-c-format
+msgid ""
+"If <varname>maxchars</varname> is specified the returned GeoHash code has at "
+"most that many characters. It maps to a (possibly) lower precision "
+"representation of the input geometry. For non-points, the starting point of "
+"the calculation is the center of the bounding box of the geometry."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1460
 #, no-c-format
 msgid "Availability: 1.4.0"
 msgstr "Disponibilidade: 1.4.0"
 
 #. Tag: para
-#: reference_output.xml:1449
+#: reference_output.xml:1463
 #, no-c-format
 msgid ""
-"ST_GeoHash will not work with geometries that are not in geographic (lon/"
-"lat) coordinates."
+"ST_GeoHash requires input geometry to be in geographic (lon/lat) coordinates."
 msgstr ""
-"ST_GeoHash não funcionará com geometrias que não estão nas coordenadas "
-"geográficas (lon/lat)."
 
 #. Tag: programlisting
-#: reference_output.xml:1457
+#: reference_output.xml:1471
 #, no-c-format
 msgid ""
-"<![CDATA[SELECT ST_GeoHash(ST_SetSRID(ST_Point(-126,48),4326));\n"
+"<![CDATA[SELECT ST_GeoHash( ST_Point(-126,48) );\n"
 "\n"
 "         st_geohash\n"
 "----------------------\n"
 " c0w3hf1s70w3hf1s70w3\n"
 "\n"
-"SELECT ST_GeoHash(ST_SetSRID(ST_Point(-126,48),4326),5);\n"
+"SELECT ST_GeoHash( ST_Point(-126,48), 5);\n"
 "\n"
 " st_geohash\n"
 "------------\n"
 " c0w3h\n"
+"\n"
+"-- This line contains the point, so the GeoHash is a prefix of the point "
+"code\n"
+"SELECT ST_GeoHash('LINESTRING(-126 48, -126.1 48.1)'::geometry);\n"
+"\n"
+" st_geohash\n"
+"------------\n"
+" c0w3\n"
 "                ]]>"
 msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1476
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_PointFromGeoHash\"/>, <xref "
+"linkend=\"ST_Box2dFromGeoHash\"/>"
+msgstr ""
+
+#, no-c-format
+#~ msgid ""
+#~ "Return a GeoHash representation (<ulink url=\"http://en.wikipedia.org/"
+#~ "wiki/Geohash\">http://en.wikipedia.org/wiki/Geohash</ulink>) of the "
+#~ "geometry. A GeoHash encodes a point into a text form that is sortable and "
+#~ "searchable based on prefixing. A shorter GeoHash is a less precise "
+#~ "representation of a point. It can also be thought of as a box, that "
+#~ "contains the actual point."
+#~ msgstr ""
+#~ "Retorna uma representação GeoHash (<ulink url=\"http://en.wikipedia.org/"
+#~ "wiki/Geohash\">http://en.wikipedia.org/wiki/Geohash</ulink>) da "
+#~ "geometria. Uma GeoHash codifica um ponto dentro de uma forma de texto que "
+#~ "é classificável e pesquisável baseado em prefixos. Um GeoHash menor é uma "
+#~ "representação menos precisa de um ponto. Pode ser pensado como uma caixa "
+#~ "que contém o ponto atual. "
+
+#, no-c-format
+#~ msgid ""
+#~ "If no <varname>maxchars</varname> is specified ST_GeoHash returns a "
+#~ "GeoHash based on full precision of the input geometry type. Points return "
+#~ "a GeoHash with 20 characters of precision (about enough to hold the full "
+#~ "double precision of the input). Other types return a GeoHash with a "
+#~ "variable amount of precision, based on the size of the feature. Larger "
+#~ "features are represented with less precision, smaller features with more "
+#~ "precision. The idea is that the box implied by the GeoHash will always "
+#~ "contain the input feature."
+#~ msgstr ""
+#~ "Se nenhum <varname>maxchars</varname> é especificado, ST_GeoHash retorna "
+#~ "um GeoHash baseado na precisão completa do tipo de geometria de entrada. "
+#~ "Os pontos retornam um GeoHash com 20 caracteres de precisão (o suficiente "
+#~ "para segurar a precisão dupla da entrada). Or outros tipos retornam um "
+#~ "GeoHash com uma quantidade de precisão variável, baseada no tamanho da "
+#~ "característica. Traços maiores são representados com menos precisão, "
+#~ "traços menores com mais precisão. A ideia é que a caixa sugerida pelo "
+#~ "GeoHash sempre conterá o traço de entrada. "
+
+#, no-c-format
+#~ msgid ""
+#~ "If <varname>maxchars</varname> is specified ST_GeoHash returns a GeoHash "
+#~ "with at most that many characters so a possibly lower precision "
+#~ "representation of the input geometry. For non-points, the starting point "
+#~ "of the calculation is the center of the bounding box of the geometry."
+#~ msgstr ""
+#~ "Se <varname>maxchars</varname> está especificado, ST_GeoHash retorna um "
+#~ "GeoHash com no máximo muitos caracteres, então uma representação de "
+#~ "precisão menor da geometria de entrada. Para não pontos, o ponto de "
+#~ "início do cálculo é o centro da caixa limitadora da geometria. "
+
+#, no-c-format
+#~ msgid ""
+#~ "ST_GeoHash will not work with geometries that are not in geographic (lon/"
+#~ "lat) coordinates."
+#~ msgstr ""
+#~ "ST_GeoHash não funcionará com geometrias que não estão nas coordenadas "
+#~ "geográficas (lon/lat)."
 
 #, no-c-format
 #~ msgid ""

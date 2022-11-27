@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-08-08 04:50+0000\n"
+"POT-Creation-Date: 2022-11-27 05:42+0000\n"
 "PO-Revision-Date: 2022-09-01 02:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -94,26 +94,18 @@ msgstr ""
 msgid ""
 "This section includes general compilation instructions, if you are compiling "
 "for Windows etc or another OS, you may find additional more detailed help at "
-"<ulink url=\"http://trac.osgeo.org/postgis/wiki/UsersWikiInstall\">PostGIS "
+"<ulink url=\"https://trac.osgeo.org/postgis/wiki/UsersWikiInstall\">PostGIS "
 "User contributed compile guides</ulink> and <ulink url=\"http://trac.osgeo."
 "org/postgis/wiki/DevWikiMain\">PostGIS Dev Wiki</ulink>."
 msgstr ""
-"本節では、一般的なコンパイル手順を示します。Windows用や他のOS用等にコンパイル"
-"するなら、<ulink url=\"http://trac.osgeo.org/postgis/wiki/"
-"UsersWikiInstall\">PostGIS User contributed compile guides</ulink>や<ulink "
-"url=\"http://trac.osgeo.org/postgis/wiki/DevWikiMain\">PostGIS Dev Wiki</"
-"ulink>で、より詳細な助けが見つかるかも知れません。"
 
 #. Tag: para
 #: installation.xml:33
 #, no-c-format
 msgid ""
-"Pre-Built Packages for various OS are listed in <ulink url=\"http://trac."
+"Pre-Built Packages for various OS are listed in <ulink url=\"https://trac."
 "osgeo.org/postgis/wiki/UsersWikiPackages\">PostGIS Pre-built Packages</ulink>"
 msgstr ""
-"多くのOS用のビルド済みパッケージの一覧は<ulink url=\"http://trac.osgeo.org/"
-"postgis/wiki/UsersWikiPackages\">PostGIS Pre-built Packages</ulink>にありま"
-"す。"
 
 #. Tag: para
 #: installation.xml:34
@@ -144,23 +136,20 @@ msgid ""
 "against PostgreSQL versions &min_postgres_version; - &max_postgres_version;. "
 "Earlier versions of PostgreSQL are <emphasis>not</emphasis> supported."
 msgstr ""
-"PostGISモジュールは、PostgreSQLバックエンドサーバの拡張です。PostGIS &last_re"
-"lease_version;では、コンパイルのために、完全なPostgreSQLサーバヘッダが<emphas"
-"is>必要です</emphasis>。PostgreSQL &min_postgres_version; - &max_postgres_ver"
-"sion;の間でビルドできます。古い版のPostgreSQLは<emphasis>サポートされません</"
-"emphasis>。"
+"PostGISモジュールは、PostgreSQLバックエンドサーバの拡張です。PostGIS "
+"&last_release_version;では、コンパイルのために、完全なPostgreSQLサーバヘッダ"
+"が<emphasis>必要です</emphasis>。PostgreSQL &min_postgres_version; - "
+"&max_postgres_version;の間でビルドできます。古い版のPostgreSQLは<emphasis>サ"
+"ポートされません</emphasis>。"
 
 #. Tag: para
 #: installation.xml:47
 #, no-c-format
 msgid ""
 "Refer to the PostgreSQL installation guides if you haven't already installed "
-"PostgreSQL. <ulink url=\"http://www.postgresql.org\"> http://www.postgresql."
-"org </ulink> ."
+"PostgreSQL. <ulink url=\"https://www.postgresql.org\"> https://www."
+"postgresql.org </ulink> ."
 msgstr ""
-"PostgreSQLをインストールしていないならPostgreSQLインストールガイドを参照して"
-"下さい。<ulink url=\"http://www.postgresql.org/\">http://www.postgresql.org/"
-"</ulink>にあります。"
 
 #. Tag: para
 #: installation.xml:57
@@ -305,27 +294,19 @@ msgstr "必須"
 msgid ""
 "PostgreSQL &min_postgres_version; - &max_postgres_version;. A complete "
 "installation of PostgreSQL (including server headers) is required. "
-"PostgreSQL is available from <ulink url=\"http://www.postgresql.org\"> "
+"PostgreSQL is available from <ulink url=\"https://www.postgresql.org\"> "
 "http://www.postgresql.org </ulink> ."
 msgstr ""
-"PostgreSQL &min_postgres_version; - &max_postgres_version;。"
-"PostgreSQLの完全なインストール (サーバヘッダを含む)が必要です。"
-"PostgreSQLは<ulink url=\"http://www.postgresql.org/\"> http://www.postgresql."
-"org/</ulink>にあります。"
 
 #. Tag: para
 #: installation.xml:140
 #, no-c-format
 msgid ""
 "For a full PostgreSQL / PostGIS support matrix and PostGIS/GEOS support "
-"matrix refer to <ulink url=\"http://trac.osgeo.org/postgis/wiki/"
-"UsersWikiPostgreSQLPostGIS\">http://trac.osgeo.org/postgis/wiki/"
+"matrix refer to <ulink url=\"https://trac.osgeo.org/postgis/wiki/"
+"UsersWikiPostgreSQLPostGIS\">https://trac.osgeo.org/postgis/wiki/"
 "UsersWikiPostgreSQLPostGIS</ulink>"
 msgstr ""
-"完全なPosgreSQL/PostGIS対応表とPostGIS/GEOS対応表については<ulink "
-"url=\"http://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS\">http://"
-"trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS</ulink>をご覧くださ"
-"い。"
 
 #. Tag: para
 #: installation.xml:146
@@ -359,27 +340,21 @@ msgstr ""
 #: installation.xml:164
 #, no-c-format
 msgid ""
-"Proj reprojection library. Proj 4.9 or above is required. The Proj library "
+"Proj reprojection library. Proj 6.1 or above is required. The Proj library "
 "is used to provide coordinate reprojection support within PostGIS. Proj is "
 "available for download from <ulink url=\"https://proj.org/\"> https://proj."
 "org/ </ulink> ."
 msgstr ""
-"投影変換ライブラリProj。Proj 4.9以上が必要です。Projライブラリは、PostGISの座"
-"標系投影変換機能に使われます。Projは<ulink url=\"https://proj.org/\"> "
-"https://proj.org/ </ulink>からダウンロードできます。"
 
 #. Tag: para
 #: installation.xml:176
 #, no-c-format
 msgid ""
-"GEOS geometry library, version 3.6 or greater, but GEOS 3.9+ is required to "
+"GEOS geometry library, version 3.6 or greater, but GEOS 3.11+ is required to "
 "take full advantage of all the new functions and features. GEOS is available "
-"for download from <ulink url=\"http://trac.osgeo.org/geos/\"> http://trac."
-"osgeo.org/geos/ </ulink>."
+"for download from <ulink url=\"https://libgeos.org/\"> https://libgeos.org </"
+"ulink>."
 msgstr ""
-"ジオメトリライブラリGEOS、3.6版以降が必要ですが、新しい関数と機能の最大限に活"
-"用するためには3.9以上をお勧めします。GEOSは<ulink url=\"http://trac.osgeo."
-"org/geos/\"> http://trac.osgeo.org/geos/ </ulink>からダウンロード可能です。"
 
 #. Tag: para
 #: installation.xml:184
@@ -390,10 +365,10 @@ msgid ""
 "download from <ulink url=\"https://gitlab.gnome.org/GNOME/libxml2/-/"
 "releases\">https://gitlab.gnome.org/GNOME/libxml2/-/releases</ulink>."
 msgstr ""
-"LibXML2, 2.5.x以上。現在は、LibXML2はインポート関数 "
-"(ST_GeomFromGMLとST_GeomFromKML)で使われています。LibXML2は<ulink url=\"https"
-"://gitlab.gnome.org/GNOME/libxml2/-/releases\">https://gitlab.gnome.org/"
-"GNOME/libxml2/-/releases</ulink>からダウンロードできます。"
+"LibXML2, 2.5.x以上。現在は、LibXML2はインポート関数 (ST_GeomFromGMLと"
+"ST_GeomFromKML)で使われています。LibXML2は<ulink url=\"https://gitlab.gnome."
+"org/GNOME/libxml2/-/releases\">https://gitlab.gnome.org/GNOME/libxml2/-/"
+"releases</ulink>からダウンロードできます。"
 
 #. Tag: para
 #: installation.xml:191
@@ -418,8 +393,8 @@ msgid ""
 "download.html</ulink>."
 msgstr ""
 "GDAL, version 2以上が必要で以上が好ましいです。ラスタ機能に必要です。<ulink "
-"url=\"https://gdal.org/download.html\">https://gdal.org/download."
-"html</ulink>。"
+"url=\"https://gdal.org/download.html\">https://gdal.org/download.html</"
+"ulink>。"
 
 #. Tag: para
 #: installation.xml:207
@@ -466,30 +441,19 @@ msgstr ""
 #: installation.xml:239
 #, no-c-format
 msgid ""
-"SFCGAL, version 1.3.1 (or higher), 1.4.1 or higher is recommended. SFCGAL "
-"can be used to provide additional 2D and 3D advanced analysis functions to "
-"PostGIS cf <xref linkend=\"reference_sfcgal\"/>. And also allow to use "
-"SFCGAL rather than GEOS for some 2D functions provided by both backends "
-"(like ST_Intersection or ST_Area, for instance). A PostgreSQL configuration "
-"variable <code>postgis.backend</code> allow end user to control which "
-"backend he want to use if SFCGAL is installed (GEOS by default). Nota: "
-"SFCGAL 1.2 require at least CGAL 4.3 and Boost 1.54 (cf: <ulink "
-"url=\"https://oslandia.gitlab.io/SFCGAL/dev.html\">https://oslandia.gitlab."
-"io/SFCGAL/dev.html</ulink>) <ulink url=\"https://gitlab.com/Oslandia/SFCGAL/"
-"\">https://gitlab.com/Oslandia/SFCGAL/</ulink>."
+"SFCGAL, version 1.3.1 (or higher), 1.4.1 or higher is recommended and "
+"required to be able to use all functionality. SFCGAL can be used to provide "
+"additional 2D and 3D advanced analysis functions to PostGIS cf <xref "
+"linkend=\"reference_sfcgal\"/>. And also allow to use SFCGAL rather than "
+"GEOS for some 2D functions provided by both backends (like ST_Intersection "
+"or ST_Area, for instance). A PostgreSQL configuration variable <code>postgis."
+"backend</code> allow end user to control which backend he want to use if "
+"SFCGAL is installed (GEOS by default). Nota: SFCGAL 1.2 require at least "
+"CGAL 4.3 and Boost 1.54 (cf: <ulink url=\"https://oslandia.gitlab.io/SFCGAL/"
+"dev.html\">https://oslandia.gitlab.io/SFCGAL/dev.html</ulink>) <ulink "
+"url=\"https://gitlab.com/Oslandia/SFCGAL/\">https://gitlab.com/Oslandia/"
+"SFCGAL/</ulink>."
 msgstr ""
-"SFCGAL, 1.3.1以上、1.4.1以上が推奨されます。SFCGALは追加的な2次元と3次元の高"
-"度な解析機能をPostGISに提供します。<xref linkend=\"reference_sfcgal\""
-"/>を参照して下さい。両方のバックエンドから提供される2次元関数 (たとえばST_Int"
-"ersectionやST_Areaなど)でGEOSでなくSFCGALを使うこともできます。SFCGALがインス"
-"トールされている場合には、PostgreSQLの<code>postgis."
-"backend</code>コンフィギュレーション値で、"
-"エンドユーザがどのバックエンドを使うかを制御することができます "
-"(デフォルトはGEOS)。ご注意: SFCGAL 1.2には少なくともCGAL 4.3とBoost "
-"1.54が必要です (<ulink url=\"https://oslandia.gitlab.io/SFCGAL/dev.html\""
-">https://oslandia.gitlab.io/SFCGAL/dev.html</ulink>参照)。<ulink url=\"https"
-"://gitlab.com/Oslandia/SFCGAL/\">https://gitlab.com/Oslandia/SFCGAL/"
-"</ulink>。"
 
 #. Tag: para
 #: installation.xml:247
@@ -2041,8 +2005,8 @@ msgstr "sudo perl -MCPAN -e \"install Regexp::Assemble\""
 #. Tag: title
 #: installation.xml:813
 #, no-c-format
-msgid "Installing, Upgrading Tiger Geocoder and loading data"
-msgstr "Tigerジオコーダのインストールとアップグレードとデータロード"
+msgid "Installing, Upgrading Tiger Geocoder, and loading data"
+msgstr ""
 
 #. Tag: para
 #: installation.xml:815
@@ -2074,18 +2038,7 @@ msgstr ""
 "TigerジオコーダをPostGISデータベースで有効にする: エクステンションを使用"
 
 #. Tag: para
-#: installation.xml:820
-#, no-c-format
-msgid ""
-"If you are using PostgreSQL 9.1+ and PostGIS 2.1+, you can take advantage of "
-"the new extension model for installing tiger geocoder. To do so:"
-msgstr ""
-"PostgreSQL 9.1以上とPostGIS 2.1.0を使用している場合は、Tigerジオコーダのイン"
-"ストールで、新しいエクステンションモデルの利点を得ることができます。次のよう"
-"にします。"
-
-#. Tag: para
-#: installation.xml:822
+#: installation.xml:821
 #, no-c-format
 msgid ""
 "First get binaries for PostGIS 2.1+ or compile and install as usual. This "
@@ -2096,7 +2049,7 @@ msgstr ""
 "イルがインストールされます。"
 
 #. Tag: para
-#: installation.xml:823
+#: installation.xml:822
 #, no-c-format
 msgid ""
 "Connect to your database via psql or pgAdmin or some other tool and run the "
@@ -2111,7 +2064,7 @@ msgstr ""
 "トールされている場合は、二つ目の手順は不要です。"
 
 #. Tag: programlisting
-#: installation.xml:824
+#: installation.xml:823
 #, no-c-format
 msgid ""
 "CREATE EXTENSION postgis;\n"
@@ -2129,7 +2082,7 @@ msgstr ""
 "CREATE EXTENSION address_standardizer;"
 
 #. Tag: para
-#: installation.xml:826
+#: installation.xml:825
 #, no-c-format
 msgid ""
 "If you already have postgis_tiger_geocoder extension installed, and just "
@@ -2139,7 +2092,7 @@ msgstr ""
 "新するだけの場合には、次を実行します。"
 
 #. Tag: programlisting
-#: installation.xml:827
+#: installation.xml:826
 #, no-c-format
 msgid ""
 "ALTER EXTENSION postgis UPDATE;\n"
@@ -2149,7 +2102,7 @@ msgstr ""
 "ALTER EXTENSION postgis_tiger_geocoder UPDATE;"
 
 #. Tag: para
-#: installation.xml:828
+#: installation.xml:827
 #, no-c-format
 msgid ""
 "If you made custom entries or changes to <varname>tiger.loader_platform</"
@@ -2161,7 +2114,7 @@ msgstr ""
 "プデートしなければならないことがあります。"
 
 #. Tag: para
-#: installation.xml:830
+#: installation.xml:829
 #, no-c-format
 msgid ""
 "To confirm your install is working correctly, run this sql in your database:"
@@ -2170,7 +2123,7 @@ msgstr ""
 "次のSQLを実行します。"
 
 #. Tag: programlisting
-#: installation.xml:831
+#: installation.xml:830
 #, no-c-format
 msgid ""
 "SELECT na.address, na.streetname,na.streettypeabbrev, na.zip\n"
@@ -2180,13 +2133,13 @@ msgstr ""
 "        FROM normalize_address('1 Devonshire Place, Boston, MA 02109') AS na;"
 
 #. Tag: para
-#: installation.xml:832
+#: installation.xml:831
 #, no-c-format
 msgid "Which should output"
 msgstr "出力は次のようになります。"
 
 #. Tag: screen
-#: installation.xml:833
+#: installation.xml:832
 #, no-c-format
 msgid ""
 "address | streetname | streettypeabbrev |  zip\n"
@@ -2198,7 +2151,7 @@ msgstr ""
 "           1 | Devonshire | Pl               | 02109"
 
 #. Tag: para
-#: installation.xml:835
+#: installation.xml:834
 #, no-c-format
 msgid ""
 "Create a new record in <varname>tiger.loader_platform</varname> table with "
@@ -2208,7 +2161,7 @@ msgstr ""
 "スを持つ新しいレコードを生成します。"
 
 #. Tag: para
-#: installation.xml:836
+#: installation.xml:835
 #, no-c-format
 msgid ""
 "So for example to create a profile called debbie that follows <code>sh</"
@@ -2218,7 +2171,7 @@ msgstr ""
 "て、次のコマンドを実行します。"
 
 #. Tag: programlisting
-#: installation.xml:837
+#: installation.xml:836
 #, no-c-format
 msgid ""
 "INSERT INTO tiger.loader_platform(os, declare_sect, pgbin, wget, "
@@ -2238,7 +2191,7 @@ msgstr ""
 "  WHERE os = 'sh';"
 
 #. Tag: para
-#: installation.xml:838
+#: installation.xml:837
 #, no-c-format
 msgid ""
 "And then edit the paths in the <emphasis>declare_sect</emphasis> column to "
@@ -2248,7 +2201,7 @@ msgstr ""
 "pg, unzip, shp2pgsql, psql他のパス位置に適応するようにします。"
 
 #. Tag: para
-#: installation.xml:840
+#: installation.xml:839
 #, no-c-format
 msgid ""
 "If you don't edit this <varname>loader_platform</varname> table, it will "
@@ -2260,7 +2213,7 @@ msgstr ""
 "ればなりません。"
 
 #. Tag: para
-#: installation.xml:842
+#: installation.xml:841
 #, no-c-format
 msgid ""
 "As of PostGIS 2.4.1 the Zip code-5 digit tabulation area <varname>zcta5</"
@@ -2277,13 +2230,13 @@ msgstr ""
 "には使わないためです。"
 
 #. Tag: para
-#: installation.xml:844
+#: installation.xml:843
 #, no-c-format
 msgid "To enable it, do the following:"
 msgstr "有効にするには、次のようにします。"
 
 #. Tag: programlisting
-#: installation.xml:845
+#: installation.xml:844
 #, no-c-format
 msgid ""
 "UPDATE tiger.loader_lookuptables SET load = true WHERE table_name = "
@@ -2293,7 +2246,7 @@ msgstr ""
 "'zcta520';"
 
 #. Tag: para
-#: installation.xml:846
+#: installation.xml:845
 #, no-c-format
 msgid ""
 "If present the <xref linkend=\"Geocode\"/> function can use it if a boundary "
@@ -2307,7 +2260,7 @@ msgstr ""
 "ばしば高速道路での逆ジオコーディングで発生します)、これを使います。"
 
 #. Tag: para
-#: installation.xml:849
+#: installation.xml:848
 #, no-c-format
 msgid ""
 "Create a folder called <filename>gisdata</filename> on root of server or "
@@ -2326,7 +2279,7 @@ msgstr ""
 "を編集します。"
 
 #. Tag: para
-#: installation.xml:851
+#: installation.xml:850
 #, no-c-format
 msgid ""
 "Create a folder called temp in the <filename>gisdata</filename> folder or "
@@ -2338,7 +2291,7 @@ msgstr ""
 "ダウンロードしたTigerデータを展開する場所です。"
 
 #. Tag: para
-#: installation.xml:853
+#: installation.xml:852
 #, no-c-format
 msgid ""
 "Then run the <xref linkend=\"Loader_Generate_Nation_Script\"/> SQL function "
@@ -2351,7 +2304,7 @@ msgstr ""
 "します。"
 
 #. Tag: programlisting
-#: installation.xml:854
+#: installation.xml:853
 #, no-c-format
 msgid ""
 "psql -c \"SELECT Loader_Generate_Nation_Script('debbie')\" -d geocoder -tA "
@@ -2361,13 +2314,13 @@ msgstr ""
 "> /gisdata/nation_script_load.sh"
 
 #. Tag: para
-#: installation.xml:857
+#: installation.xml:856
 #, no-c-format
 msgid "Run the generated nation load commandline scripts."
 msgstr "生成された国データをロードするコマンドラインスクリプトを実行します。"
 
 #. Tag: programlisting
-#: installation.xml:858
+#: installation.xml:857
 #, no-c-format
 msgid ""
 "cd /gisdata\n"
@@ -2377,7 +2330,7 @@ msgstr ""
 "sh nation_script_load.sh"
 
 #. Tag: para
-#: installation.xml:861
+#: installation.xml:860
 #, no-c-format
 msgid ""
 "After you are done running the nation script, you should have three tables "
@@ -2389,13 +2342,13 @@ msgstr ""
 "ます。"
 
 #. Tag: programlisting
-#: installation.xml:862
+#: installation.xml:861
 #, no-c-format
 msgid "SELECT count(*) FROM tiger_data.county_all;"
 msgstr "SELECT count(*) FROM tiger_data.county_all;"
 
 #. Tag: screen
-#: installation.xml:863
+#: installation.xml:862
 #, no-c-format
 msgid ""
 "count\n"
@@ -2409,13 +2362,13 @@ msgstr ""
 "(1 row)"
 
 #. Tag: programlisting
-#: installation.xml:864
+#: installation.xml:863
 #, no-c-format
 msgid "SELECT count(*) FROM tiger_data.state_all;"
 msgstr "SELECT count(*) FROM tiger_data.state_all;"
 
 #. Tag: screen
-#: installation.xml:865
+#: installation.xml:864
 #, no-c-format
 msgid ""
 "count\n"
@@ -2429,32 +2382,26 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: installation.xml:868
+#: installation.xml:867
 #, no-c-format
 msgid ""
 "By default the tables corresponding to <varname>bg</varname>, "
-"<varname>tract</varname>, <varname>tabblock</varname> are not loaded. These "
-"tables are not used by the geocoder but are used by folks for population "
-"statistics. If you wish to load them as part of your state loads, run the "
-"following statement to enable them."
+"<varname>tract</varname>, <varname>tabblock20</varname> are not loaded. "
+"These tables are not used by the geocoder but are used by folks for "
+"population statistics. If you wish to load them as part of your state loads, "
+"run the following statement to enable them."
 msgstr ""
-"デフォルトでは<varname>bg</varname>, <varname>tract</varname>, "
-"<varname>tabblock</varname>に対応するテーブルはロードされません。ジオコーダは"
-"これらのテーブルを使いませんが、一般に、人口統計に使います。州データのロード"
-"の一部としてロードするには、次の手続きを実行して有効にします。"
 
 #. Tag: programlisting
-#: installation.xml:870
+#: installation.xml:869
 #, no-c-format
 msgid ""
 "UPDATE tiger.loader_lookuptables SET load = true WHERE load = false AND "
-"lookup_name IN('tract', 'bg', 'tabblock');"
+"lookup_name IN('tract', 'bg', 'tabblock20');"
 msgstr ""
-"UPDATE tiger.loader_lookuptables SET load = true WHERE load = false AND "
-"lookup_name IN('tract', 'bg', 'tabblock');"
 
 #. Tag: para
-#: installation.xml:871
+#: installation.xml:870
 #, no-c-format
 msgid ""
 "Alternatively you can load just these tables after loading state data using "
@@ -2464,7 +2411,7 @@ msgstr ""
 "をロードした後に、これらのテーブルだけをロードできます。"
 
 #. Tag: para
-#: installation.xml:873
+#: installation.xml:872
 #, no-c-format
 msgid ""
 "For each state you want to load data for, generate a state script <xref "
@@ -2474,7 +2421,7 @@ msgstr ""
 "スクリプトを作ります。"
 
 #. Tag: para
-#: installation.xml:873
+#: installation.xml:872
 #, no-c-format
 msgid ""
 "DO NOT Generate the state script until you have already loaded the nation "
@@ -2484,7 +2431,7 @@ msgstr ""
 "トは国スクリプトでロードされる国リストを利用するためです。"
 
 #. Tag: programlisting
-#: installation.xml:875
+#: installation.xml:874
 #, no-c-format
 msgid ""
 "psql -c \"SELECT Loader_Generate_Script(ARRAY['MA'], 'debbie')\" -d geocoder "
@@ -2494,13 +2441,13 @@ msgstr ""
 "-tA > /gisdata/ma_load.sh"
 
 #. Tag: para
-#: installation.xml:877
+#: installation.xml:876
 #, no-c-format
 msgid "Run the generated commandline scripts."
 msgstr "生成されたコマンドラインスクリプトを実行します。"
 
 #. Tag: programlisting
-#: installation.xml:878
+#: installation.xml:877
 #, no-c-format
 msgid ""
 "cd /gisdata\n"
@@ -2510,7 +2457,7 @@ msgstr ""
 "sh ma_load.sh"
 
 #. Tag: para
-#: installation.xml:880
+#: installation.xml:879
 #, no-c-format
 msgid ""
 "After you are done loading all data or at a stopping point, it's a good idea "
@@ -2521,7 +2468,7 @@ msgstr ""
 "です。"
 
 #. Tag: programlisting
-#: installation.xml:881
+#: installation.xml:880
 #, no-c-format
 msgid ""
 "SELECT install_missing_indexes();\n"
@@ -2551,169 +2498,14 @@ msgstr ""
 "vacuum (analyze, verbose) tiger.zip_state_loc;"
 
 #. Tag: title
-#: installation.xml:884
-#, no-c-format
-msgid "Converting a Tiger Geocoder Regular Install to Extension Model"
-msgstr "Tigerジオコーダ通常インストールのエクステンションモデルへの変換"
-
-#. Tag: para
 #: installation.xml:885
-#, no-c-format
-msgid ""
-"If you installed the tiger geocoder without using the extension model, you "
-"can convert to the extension model as follows:"
-msgstr ""
-"エクステンションモデルを使わずにTigerジオコーダをインストールしている場合に、"
-"次のようにして、エクステンションモデルに変換できます。"
-
-#. Tag: para
-#: installation.xml:887
-#, no-c-format
-msgid ""
-"Follow instructions in <xref linkend=\"upgrade_tiger_geocoder\"/> for the "
-"non-extension model upgrade."
-msgstr ""
-"<xref linkend=\"upgrade_tiger_geocoder\" />の指示に従って非エクステンションモ"
-"デルのアップグレードを行います。"
-
-#. Tag: para
-#: installation.xml:888
-#, no-c-format
-msgid ""
-"Connect to your database with psql or pgAdmin and run the following command:"
-msgstr "psqlまたはpgAdminでデータベースに接続して、次のコマンドを実行します。"
-
-#. Tag: programlisting
-#: installation.xml:889
-#, no-c-format
-msgid "CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;"
-msgstr "CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;"
-
-#. Tag: title
-#: installation.xml:896
-#, no-c-format
-msgid "Tiger Geocoder Enabling your PostGIS database: Not Using Extensions"
-msgstr ""
-"TigerジオコーダをPostGISデータベースで有効にする: エクステンション不使用"
-
-#. Tag: para
-#: installation.xml:897
-#, no-c-format
-msgid "First install PostGIS using the prior instructions."
-msgstr "まず、上述の手順でPostGISをインストールします。"
-
-#. Tag: para
-#: installation.xml:901 installation.xml:961
-#, no-c-format
-msgid ""
-"If you don't have an extras folder, download <ulink "
-"url=\"&postgis_download_url;\">&postgis_download_url;</ulink>"
-msgstr ""
-"extrasフォルダが無い場合、<ulink url=\"&postgis_download_url;"
-"\">&postgis_download_url;</ulink>をダウンロードします。"
-
-#. Tag: command
-#: installation.xml:906 installation.xml:966
-#, no-c-format
-msgid "tar xvfz postgis-&last_release_version;.tar.gz"
-msgstr "tar xvfz postgis-&last_release_version;.tar.gz"
-
-#. Tag: command
-#: installation.xml:910
-#, no-c-format
-msgid "cd postgis-&last_release_version;/extras/tiger_geocoder"
-msgstr "cd postgis-&last_release_version;/extras/tiger_geocoder"
-
-#. Tag: para
-#: installation.xml:913
-#, no-c-format
-msgid ""
-"Edit the <filename>tiger_loader_2015.sql</filename> (or latest loader file "
-"you find, unless you want to load different year) to the paths of your "
-"executables server etc or alternatively you can update the "
-"<varname>loader_platform</varname> table once installed. If you don't edit "
-"this file or the <varname>loader_platform</varname> table, it will just "
-"contain common case locations of items and you'll have to edit the generated "
-"script after the fact when you run the <xref "
-"linkend=\"Loader_Generate_Nation_Script\"/> and <xref "
-"linkend=\"Loader_Generate_Script\"/> SQL functions."
-msgstr ""
-"<filename>tiger_loader_2015.sql</filename> (違う年のものをロードしたくないな"
-"らば最新のローダファイル)をあなたの実行サーバ等のパスに編集します。もしくは"
-"<varname>loader_platform</varname>がインストールされた後に一度これを更新しま"
-"す。このファイルも<varname>loader_platform</varname>も編集しない場合には、一"
-"般的なアイテムの位置を持っているだけなので、<xref "
-"linkend=\"Loader_Generate_Nation_Script\"/>と<xref "
-"linkend=\"Loader_Generate_Script\"/>を実行した後に、生成されたスクリプトを編"
-"集しなければなりません。"
-
-#. Tag: para
-#: installation.xml:915
-#, no-c-format
-msgid ""
-"If you are installing Tiger geocoder for the first time edit either the "
-"<filename>create_geocode.bat</filename> script If you are on windows or the "
-"<filename>create_geocode.sh</filename> if you are on Linux/Unix/Mac OSX with "
-"your PostgreSQL specific settings and run the corresponding script from the "
-"commandline."
-msgstr ""
-"初めてTigerジオコーダをインストールする場合は、Windowsでは"
-"<filename>create_geocode.bat</filename>を、またLinux/Unix/Mac OSXでは"
-"<filename>create_geocode.sh</filename>を、使用するPostgreSQLにとって独自の設"
-"定に変更したうえで、コマンドラインから対応するスクリプトを実行します。"
-
-#. Tag: para
-#: installation.xml:919
-#, no-c-format
-msgid ""
-"Verify that you now have a <varname>tiger</varname> schema in your database "
-"and that it is part of your database search_path. If it is not, add it with "
-"a command something along the line of:"
-msgstr ""
-"データベースに<varname>tiger</varname>スキーマがあることを確認します。もし無"
-"い場合は、次の行を参考に、コマンドを実行します。"
-
-#. Tag: programlisting
-#: installation.xml:919
-#, no-c-format
-msgid "ALTER DATABASE geocoder SET search_path=public, tiger;"
-msgstr "ALTER DATABASE geocoder SET search_path=public, tiger;"
-
-#. Tag: para
-#: installation.xml:920
-#, no-c-format
-msgid ""
-"The normalizing address functionality works more or less without any data "
-"except for tricky addresses. Run this test and verify things look like this:"
-msgstr ""
-"住所正規化機能は、トリッキーな住所を除いて、大体データなしで動作します。テス"
-"トを実行して次のように見えることを確認して下さい。"
-
-#. Tag: programlisting
-#: installation.xml:921
-#, no-c-format
-msgid ""
-"SELECT pprint_addy(normalize_address('202 East Fremont Street, Las Vegas, "
-"Nevada 89101')) As pretty_address;\n"
-"pretty_address\n"
-"---------------------------------------\n"
-"202 E Fremont St, Las Vegas, NV 89101"
-msgstr ""
-"SELECT pprint_addy(normalize_address('202 East Fremont Street, Las Vegas, "
-"Nevada 89101')) As pretty_address;\n"
-"pretty_address\n"
-"---------------------------------------\n"
-"202 E Fremont St, Las Vegas, NV 89101"
-
-#. Tag: title
-#: installation.xml:924
 #, no-c-format
 msgid "Using Address Standardizer Extension with Tiger geocoder"
 msgstr ""
 "TigerジオコーダをPostGISデータベースで有効にする: エクステンションを使用"
 
 #. Tag: para
-#: installation.xml:925
+#: installation.xml:886
 #, no-c-format
 msgid ""
 "One of the many complaints of folks is the address normalizer function <xref "
@@ -2734,7 +2526,7 @@ msgstr ""
 "ションをコンパイルし、使用するデータベースにインストールします。"
 
 #. Tag: para
-#: installation.xml:928
+#: installation.xml:889
 #, no-c-format
 msgid ""
 "Once you install this extension in the same database as you have installed "
@@ -2759,24 +2551,13 @@ msgstr ""
 "の改善のために追加や更新ができます。"
 
 #. Tag: title
-#: installation.xml:931
+#: installation.xml:892
 #, no-c-format
-msgid "Loading Tiger Data"
-msgstr "Tigerデータのロード"
-
-#. Tag: para
-#: installation.xml:932
-#, no-c-format
-msgid ""
-"The instructions for loading data are available in a more detailed form in "
-"the <filename>extras/tiger_geocoder/tiger_2011/README</filename>. This just "
-"includes the general steps."
+msgid "Required tools for tiger data loading"
 msgstr ""
-"データロードの説明の詳細は<filename>extras/tiger_geocoder/tiger_2011/README</"
-"filename>にあります。これは一般的な手順を示しています。"
 
 #. Tag: para
-#: installation.xml:933
+#: installation.xml:893
 #, no-c-format
 msgid ""
 "The load process downloads data from the census website for the respective "
@@ -2798,19 +2579,19 @@ msgstr ""
 "削除するクエリを出すことができます。"
 
 #. Tag: para
-#: installation.xml:935
+#: installation.xml:895
 #, no-c-format
 msgid "In order to be able to load data you'll need the following tools:"
 msgstr "データのロードを可能にするためには次のツールが必要です。"
 
 #. Tag: para
-#: installation.xml:937
+#: installation.xml:897
 #, no-c-format
 msgid "A tool to unzip the zip files from census website."
 msgstr "センサスウェブサイトから取得するZIPファイルを展開するツール。"
 
 #. Tag: para
-#: installation.xml:938
+#: installation.xml:898
 #, no-c-format
 msgid ""
 "For Unix like systems: <varname>unzip</varname> executable which is usually "
@@ -2820,7 +2601,7 @@ msgstr ""
 "どのUnix系プラットフォームで既にインストールされています。"
 
 #. Tag: para
-#: installation.xml:939
+#: installation.xml:899
 #, no-c-format
 msgid ""
 "For Windows, 7-zip which is a free compress/uncompress tool you can download "
@@ -2830,7 +2611,7 @@ msgstr ""
 "org/</ulink>からダウンロードできる無償の圧縮解凍ツールです。"
 
 #. Tag: para
-#: installation.xml:941
+#: installation.xml:901
 #, no-c-format
 msgid ""
 "<filename>shp2pgsql</filename> commandline which is installed by default "
@@ -2840,7 +2621,7 @@ msgstr ""
 "ンストールされます。"
 
 #. Tag: para
-#: installation.xml:942
+#: installation.xml:902
 #, no-c-format
 msgid ""
 "<filename>wget</filename> which is a web grabber tool usually installed on "
@@ -2850,7 +2631,7 @@ msgstr ""
 "トールされている、ウェブ取得ツールです。"
 
 #. Tag: para
-#: installation.xml:943
+#: installation.xml:903
 #, no-c-format
 msgid ""
 "If you are on windows, you can get pre-compiled binaries from <ulink "
@@ -2862,7 +2643,7 @@ msgstr ""
 "wget.htm</ulink>から取得できます。"
 
 #. Tag: para
-#: installation.xml:946
+#: installation.xml:906
 #, no-c-format
 msgid ""
 "If you are upgrading from tiger_2010, you'll need to first generate and run "
@@ -2870,18 +2651,12 @@ msgid ""
 "state data, you need to load the nation wide data which you do with <xref "
 "linkend=\"Loader_Generate_Nation_Script\"/>. Which will generate a loader "
 "script for you. <xref linkend=\"Loader_Generate_Nation_Script\"/> is a one-"
-"time step that should be done for upgrading (from 2010) and for new installs."
+"time step that should be done for upgrading (from a prior year tiger census "
+"data) and for new installs."
 msgstr ""
-"tiger_2010からアップグレードする場合には、最初に<xref "
-"linkend=\"Drop_Nation_Tables_Generate_Script\"/>を生成、実行する必要がありま"
-"す。州データをロードする前に、<xref "
-"linkend=\"Loader_Generate_Nation_Script\"/>で国データをロードする必要がありま"
-"す。これによって、環境に合ったローダスクリプトが生成されます。<xref "
-"linkend=\"Loader_Generate_Nation_Script\"/>は、一度の操作で、(2010からの)アッ"
-"プグレードと、新しいインストールが行われます。"
 
 #. Tag: para
-#: installation.xml:948
+#: installation.xml:908
 #, no-c-format
 msgid ""
 "To load state data refer to <xref linkend=\"Loader_Generate_Script\"/> to "
@@ -2896,7 +2671,7 @@ msgstr ""
 "要なだけダウンロードできます。"
 
 #. Tag: para
-#: installation.xml:951
+#: installation.xml:911
 #, no-c-format
 msgid ""
 "After the states you desire have been loaded, make sure to run the: "
@@ -2908,7 +2683,7 @@ msgstr ""
 "programlisting>を実行するようにして下さい。"
 
 #. Tag: para
-#: installation.xml:953
+#: installation.xml:913
 #, no-c-format
 msgid ""
 "To test that things are working as they should, try to run a geocode on an "
@@ -2918,61 +2693,25 @@ msgstr ""
 "る州の中の住所についてジオコーダを実行してみます。"
 
 #. Tag: title
-#: installation.xml:956
+#: installation.xml:916
 #, no-c-format
-msgid "Upgrading your Tiger Geocoder Install"
-msgstr "Tigerジオコーダのアップグレード"
-
-#. Tag: para
-#: installation.xml:957
-#, no-c-format
-msgid ""
-"If you have Tiger Geocoder packaged with 2.0+ already installed, you can "
-"upgrade the functions at any time even from an interim tar ball if there are "
-"fixes you badly need. This will only work for Tiger geocoder not installed "
-"with extensions."
+msgid "Upgrading your Tiger Geocoder Install and Data"
 msgstr ""
-"2.0以上に含まれるTigerジオコーダがインストールされている場合には、どうしても"
-"必要な訂正があるときは、いつでも臨時のアーカイブファイルからでも機能のアップ"
-"グレードができます。 これは、エクステンションでインストールされていないTiger"
-"ジオコーダで動作します。"
-
-#. Tag: command
-#: installation.xml:970
-#, no-c-format
-msgid "cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2011"
-msgstr "cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2011"
 
 #. Tag: para
-#: installation.xml:973
+#: installation.xml:917
 #, no-c-format
-msgid ""
-"Locate the <filename>upgrade_geocoder.bat</filename> script If you are on "
-"windows or the <filename>upgrade_geocoder.sh</filename> if you are on Linux/"
-"Unix/Mac OSX. Edit the file to have your postgis database credentials."
+msgid "First upgrade your postgis_tiger_geocoder extension as follows:"
 msgstr ""
-"Windowsの場合は<filename>upgrade_geocoder.bat</filename>スクリプト、Linux/"
-"Unix/MacOS Xの場合は<filename>upgrade_geocoder.sh</filename>スクリプトの位置"
-"を特定します。 PostGISデータベースの資格情報を持つように編集します。"
 
-#. Tag: para
-#: installation.xml:976
+#. Tag: programlisting
+#: installation.xml:918
 #, no-c-format
-msgid ""
-"If you are upgrading from 2010 or 2011, make sure to unremark out the loader "
-"script line so you get the latest script for loading 2012 data."
+msgid "ALTER EXTENSION postgis_tiger_geocoder UPDATE;"
 msgstr ""
-"2010または2011からアップグレードする場合には、確実にローダスクリプトのコメン"
-"トアウトを消すと、2012データのロードのための最新のスクリプトを得ます。"
 
 #. Tag: para
-#: installation.xml:977
-#, no-c-format
-msgid "Then run th corresponding script from the commandline."
-msgstr "対応するスクリプトをコマンドラインから実行します。"
-
-#. Tag: para
-#: installation.xml:981
+#: installation.xml:919
 #, no-c-format
 msgid ""
 "Next drop all nation tables and load up the new ones. Generate a drop script "
@@ -2984,19 +2723,19 @@ msgstr ""
 "テートメントを使った削除スクリプトを生成します。"
 
 #. Tag: programlisting
-#: installation.xml:982
+#: installation.xml:920
 #, no-c-format
 msgid "SELECT drop_nation_tables_generate_script();"
 msgstr "SELECT drop_nation_tables_generate_script();"
 
 #. Tag: para
-#: installation.xml:983
+#: installation.xml:921
 #, no-c-format
 msgid "Run the generated drop SQL statements."
 msgstr "生成した削除SQLステートメントを実行します。"
 
 #. Tag: para
-#: installation.xml:984
+#: installation.xml:922
 #, no-c-format
 msgid ""
 "Generate a nation load script with this SELECT statement as detailed in "
@@ -3006,31 +2745,31 @@ msgstr ""
 "ステートメントを使った削除スクリプトを生成します。"
 
 #. Tag: emphasis
-#: installation.xml:985
+#: installation.xml:923
 #, no-c-format
 msgid "For windows"
 msgstr "Windows向け"
 
 #. Tag: programlisting
-#: installation.xml:986
+#: installation.xml:924
 #, no-c-format
 msgid "SELECT loader_generate_nation_script('windows');"
 msgstr "SELECT loader_generate_nation_script('windows');"
 
 #. Tag: emphasis
-#: installation.xml:987
+#: installation.xml:925
 #, no-c-format
 msgid "For unix/linux"
 msgstr "Unix/Linux向け"
 
 #. Tag: programlisting
-#: installation.xml:988
+#: installation.xml:926
 #, no-c-format
 msgid "SELECT loader_generate_nation_script('sh');"
 msgstr "SELECT loader_generate_nation_script('sh');"
 
 #. Tag: para
-#: installation.xml:989
+#: installation.xml:927
 #, no-c-format
 msgid ""
 "Refer to <xref linkend=\"tiger_geocoder_loading_data\"/> for instructions on "
@@ -3041,27 +2780,23 @@ msgstr ""
 "する必要があります。"
 
 #. Tag: para
-#: installation.xml:990
+#: installation.xml:928
 #, no-c-format
 msgid ""
-"You can have a mix of 2010/2011 state tables and can upgrade each state "
-"separately. Before you upgrade a state to 2011, you first need to drop the "
-"2010 tables for that state using <xref "
+"You can have a mix of different year state tables and can upgrade each state "
+"separately. Before you upgrade a state you first need to drop the prior year "
+"state tables for that state using <xref "
 "linkend=\"Drop_State_Tables_Generate_Script\"/>."
 msgstr ""
-"2010/2011州テーブルを混在させることができ、それぞれの州について個別にアップグ"
-"レードできます。2011にアップグレードする前に、まず、<xref "
-"linkend=\"Drop_State_Tables_Generate_Script\"/>を使って、2010州テーブルを削除"
-"します。"
 
 #. Tag: title
-#: installation.xml:997
+#: installation.xml:935
 #, no-c-format
 msgid "Common Problems during installation"
 msgstr "共通の問題"
 
 #. Tag: para
-#: installation.xml:998
+#: installation.xml:936
 #, no-c-format
 msgid ""
 "There are several things to check when your installation or upgrade doesn't "
@@ -3071,7 +2806,7 @@ msgstr ""
 "かあります。"
 
 #. Tag: para
-#: installation.xml:1005
+#: installation.xml:943
 #, no-c-format
 msgid ""
 "Check that you have installed PostgreSQL &min_postgres_version; or newer, "
@@ -3094,13 +2829,13 @@ msgstr ""
 "エリを実行して下さい。"
 
 #. Tag: programlisting
-#: installation.xml:1018
+#: installation.xml:956
 #, no-c-format
 msgid "SELECT version();"
 msgstr "SELECT version();"
 
 #. Tag: para
-#: installation.xml:1020
+#: installation.xml:958
 #, no-c-format
 msgid ""
 "If you are running an RPM based distribution, you can check for the "
@@ -3112,7 +2847,7 @@ msgstr ""
 "<command>rpm -qa | grep postgresql</command>でチェックできます。"
 
 #. Tag: para
-#: installation.xml:1028
+#: installation.xml:966
 #, no-c-format
 msgid ""
 "If your upgrade fails, make sure you are restoring into a database that "
@@ -3122,13 +2857,13 @@ msgstr ""
 "にリストアしているか確認して下さい。"
 
 #. Tag: programlisting
-#: installation.xml:1029
+#: installation.xml:967
 #, no-c-format
 msgid "SELECT postgis_full_version();"
 msgstr "SELECT postgis_full_version();"
 
 #. Tag: para
-#: installation.xml:1033
+#: installation.xml:971
 #, no-c-format
 msgid ""
 "Also check that configure has correctly detected the location and version of "
@@ -3138,7 +2873,7 @@ msgstr ""
 "ストール先を検出したかチェックして下さい。"
 
 #. Tag: para
-#: installation.xml:1040
+#: installation.xml:978
 #, no-c-format
 msgid ""
 "The output from configure is used to generate the <filename>postgis_config."
@@ -3150,6 +2885,360 @@ msgstr ""
 "れます。<varname>POSTGIS_PGSQL_VERSION</varname>、"
 "<varname>POSTGIS_PROJ_VERSION</varname>および<varname>POSTGIS_GEOS_VERSION</"
 "varname>変数が正しくセットされたかをチェックして下さい。"
+
+#, no-c-format
+#~ msgid ""
+#~ "This section includes general compilation instructions, if you are "
+#~ "compiling for Windows etc or another OS, you may find additional more "
+#~ "detailed help at <ulink url=\"http://trac.osgeo.org/postgis/wiki/"
+#~ "UsersWikiInstall\">PostGIS User contributed compile guides</ulink> and "
+#~ "<ulink url=\"http://trac.osgeo.org/postgis/wiki/DevWikiMain\">PostGIS Dev "
+#~ "Wiki</ulink>."
+#~ msgstr ""
+#~ "本節では、一般的なコンパイル手順を示します。Windows用や他のOS用等にコンパ"
+#~ "イルするなら、<ulink url=\"http://trac.osgeo.org/postgis/wiki/"
+#~ "UsersWikiInstall\">PostGIS User contributed compile guides</ulink>や"
+#~ "<ulink url=\"http://trac.osgeo.org/postgis/wiki/DevWikiMain\">PostGIS Dev "
+#~ "Wiki</ulink>で、より詳細な助けが見つかるかも知れません。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Pre-Built Packages for various OS are listed in <ulink url=\"http://trac."
+#~ "osgeo.org/postgis/wiki/UsersWikiPackages\">PostGIS Pre-built Packages</"
+#~ "ulink>"
+#~ msgstr ""
+#~ "多くのOS用のビルド済みパッケージの一覧は<ulink url=\"http://trac.osgeo."
+#~ "org/postgis/wiki/UsersWikiPackages\">PostGIS Pre-built Packages</ulink>に"
+#~ "あります。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Refer to the PostgreSQL installation guides if you haven't already "
+#~ "installed PostgreSQL. <ulink url=\"http://www.postgresql.org\"> http://"
+#~ "www.postgresql.org </ulink> ."
+#~ msgstr ""
+#~ "PostgreSQLをインストールしていないならPostgreSQLインストールガイドを参照し"
+#~ "て下さい。<ulink url=\"http://www.postgresql.org/\">http://www.postgresql."
+#~ "org/</ulink>にあります。"
+
+#, no-c-format
+#~ msgid ""
+#~ "PostgreSQL &min_postgres_version; - &max_postgres_version;. A complete "
+#~ "installation of PostgreSQL (including server headers) is required. "
+#~ "PostgreSQL is available from <ulink url=\"http://www.postgresql.org\"> "
+#~ "http://www.postgresql.org </ulink> ."
+#~ msgstr ""
+#~ "PostgreSQL &min_postgres_version; - &max_postgres_version;。PostgreSQLの完"
+#~ "全なインストール (サーバヘッダを含む)が必要です。PostgreSQLは<ulink "
+#~ "url=\"http://www.postgresql.org/\"> http://www.postgresql.org/</ulink>にあ"
+#~ "ります。"
+
+#, no-c-format
+#~ msgid ""
+#~ "For a full PostgreSQL / PostGIS support matrix and PostGIS/GEOS support "
+#~ "matrix refer to <ulink url=\"http://trac.osgeo.org/postgis/wiki/"
+#~ "UsersWikiPostgreSQLPostGIS\">http://trac.osgeo.org/postgis/wiki/"
+#~ "UsersWikiPostgreSQLPostGIS</ulink>"
+#~ msgstr ""
+#~ "完全なPosgreSQL/PostGIS対応表とPostGIS/GEOS対応表については<ulink "
+#~ "url=\"http://trac.osgeo.org/postgis/wiki/"
+#~ "UsersWikiPostgreSQLPostGIS\">http://trac.osgeo.org/postgis/wiki/"
+#~ "UsersWikiPostgreSQLPostGIS</ulink>をご覧ください。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Proj reprojection library. Proj 4.9 or above is required. The Proj "
+#~ "library is used to provide coordinate reprojection support within "
+#~ "PostGIS. Proj is available for download from <ulink url=\"https://proj."
+#~ "org/\"> https://proj.org/ </ulink> ."
+#~ msgstr ""
+#~ "投影変換ライブラリProj。Proj 4.9以上が必要です。Projライブラリは、PostGIS"
+#~ "の座標系投影変換機能に使われます。Projは<ulink url=\"https://proj.org/\"> "
+#~ "https://proj.org/ </ulink>からダウンロードできます。"
+
+#, no-c-format
+#~ msgid ""
+#~ "GEOS geometry library, version 3.6 or greater, but GEOS 3.9+ is required "
+#~ "to take full advantage of all the new functions and features. GEOS is "
+#~ "available for download from <ulink url=\"http://trac.osgeo.org/geos/\"> "
+#~ "http://trac.osgeo.org/geos/ </ulink>."
+#~ msgstr ""
+#~ "ジオメトリライブラリGEOS、3.6版以降が必要ですが、新しい関数と機能の最大限"
+#~ "に活用するためには3.9以上をお勧めします。GEOSは<ulink url=\"http://trac."
+#~ "osgeo.org/geos/\"> http://trac.osgeo.org/geos/ </ulink>からダウンロード可"
+#~ "能です。"
+
+#, no-c-format
+#~ msgid ""
+#~ "SFCGAL, version 1.3.1 (or higher), 1.4.1 or higher is recommended. SFCGAL "
+#~ "can be used to provide additional 2D and 3D advanced analysis functions "
+#~ "to PostGIS cf <xref linkend=\"reference_sfcgal\"/>. And also allow to use "
+#~ "SFCGAL rather than GEOS for some 2D functions provided by both backends "
+#~ "(like ST_Intersection or ST_Area, for instance). A PostgreSQL "
+#~ "configuration variable <code>postgis.backend</code> allow end user to "
+#~ "control which backend he want to use if SFCGAL is installed (GEOS by "
+#~ "default). Nota: SFCGAL 1.2 require at least CGAL 4.3 and Boost 1.54 (cf: "
+#~ "<ulink url=\"https://oslandia.gitlab.io/SFCGAL/dev.html\">https://"
+#~ "oslandia.gitlab.io/SFCGAL/dev.html</ulink>) <ulink url=\"https://gitlab."
+#~ "com/Oslandia/SFCGAL/\">https://gitlab.com/Oslandia/SFCGAL/</ulink>."
+#~ msgstr ""
+#~ "SFCGAL, 1.3.1以上、1.4.1以上が推奨されます。SFCGALは追加的な2次元と3次元の"
+#~ "高度な解析機能をPostGISに提供します。<xref linkend=\"reference_sfcgal\"/>"
+#~ "を参照して下さい。両方のバックエンドから提供される2次元関数 (たとえば"
+#~ "ST_IntersectionやST_Areaなど)でGEOSでなくSFCGALを使うこともできます。"
+#~ "SFCGALがインストールされている場合には、PostgreSQLの<code>postgis."
+#~ "backend</code>コンフィギュレーション値で、エンドユーザがどのバックエンドを"
+#~ "使うかを制御することができます (デフォルトはGEOS)。ご注意: SFCGAL 1.2には"
+#~ "少なくともCGAL 4.3とBoost 1.54が必要です (<ulink url=\"https://oslandia."
+#~ "gitlab.io/SFCGAL/dev.html\">https://oslandia.gitlab.io/SFCGAL/dev.html</"
+#~ "ulink>参照)。<ulink url=\"https://gitlab.com/Oslandia/SFCGAL/\">https://"
+#~ "gitlab.com/Oslandia/SFCGAL/</ulink>。"
+
+#, no-c-format
+#~ msgid "Installing, Upgrading Tiger Geocoder and loading data"
+#~ msgstr "Tigerジオコーダのインストールとアップグレードとデータロード"
+
+#, no-c-format
+#~ msgid ""
+#~ "If you are using PostgreSQL 9.1+ and PostGIS 2.1+, you can take advantage "
+#~ "of the new extension model for installing tiger geocoder. To do so:"
+#~ msgstr ""
+#~ "PostgreSQL 9.1以上とPostGIS 2.1.0を使用している場合は、Tigerジオコーダのイ"
+#~ "ンストールで、新しいエクステンションモデルの利点を得ることができます。次の"
+#~ "ようにします。"
+
+#, no-c-format
+#~ msgid ""
+#~ "By default the tables corresponding to <varname>bg</varname>, "
+#~ "<varname>tract</varname>, <varname>tabblock</varname> are not loaded. "
+#~ "These tables are not used by the geocoder but are used by folks for "
+#~ "population statistics. If you wish to load them as part of your state "
+#~ "loads, run the following statement to enable them."
+#~ msgstr ""
+#~ "デフォルトでは<varname>bg</varname>, <varname>tract</varname>, "
+#~ "<varname>tabblock</varname>に対応するテーブルはロードされません。ジオコー"
+#~ "ダはこれらのテーブルを使いませんが、一般に、人口統計に使います。州データの"
+#~ "ロードの一部としてロードするには、次の手続きを実行して有効にします。"
+
+#, no-c-format
+#~ msgid ""
+#~ "UPDATE tiger.loader_lookuptables SET load = true WHERE load = false AND "
+#~ "lookup_name IN('tract', 'bg', 'tabblock');"
+#~ msgstr ""
+#~ "UPDATE tiger.loader_lookuptables SET load = true WHERE load = false AND "
+#~ "lookup_name IN('tract', 'bg', 'tabblock');"
+
+#, no-c-format
+#~ msgid "Converting a Tiger Geocoder Regular Install to Extension Model"
+#~ msgstr "Tigerジオコーダ通常インストールのエクステンションモデルへの変換"
+
+#, no-c-format
+#~ msgid ""
+#~ "If you installed the tiger geocoder without using the extension model, "
+#~ "you can convert to the extension model as follows:"
+#~ msgstr ""
+#~ "エクステンションモデルを使わずにTigerジオコーダをインストールしている場合"
+#~ "に、次のようにして、エクステンションモデルに変換できます。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Follow instructions in <xref linkend=\"upgrade_tiger_geocoder\"/> for the "
+#~ "non-extension model upgrade."
+#~ msgstr ""
+#~ "<xref linkend=\"upgrade_tiger_geocoder\" />の指示に従って非エクステンショ"
+#~ "ンモデルのアップグレードを行います。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Connect to your database with psql or pgAdmin and run the following "
+#~ "command:"
+#~ msgstr ""
+#~ "psqlまたはpgAdminでデータベースに接続して、次のコマンドを実行します。"
+
+#, no-c-format
+#~ msgid "CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;"
+#~ msgstr "CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;"
+
+#, no-c-format
+#~ msgid "Tiger Geocoder Enabling your PostGIS database: Not Using Extensions"
+#~ msgstr ""
+#~ "TigerジオコーダをPostGISデータベースで有効にする: エクステンション不使用"
+
+#, no-c-format
+#~ msgid "First install PostGIS using the prior instructions."
+#~ msgstr "まず、上述の手順でPostGISをインストールします。"
+
+#, no-c-format
+#~ msgid ""
+#~ "If you don't have an extras folder, download <ulink "
+#~ "url=\"&postgis_download_url;\">&postgis_download_url;</ulink>"
+#~ msgstr ""
+#~ "extrasフォルダが無い場合、<ulink url=\"&postgis_download_url;"
+#~ "\">&postgis_download_url;</ulink>をダウンロードします。"
+
+#, no-c-format
+#~ msgid "tar xvfz postgis-&last_release_version;.tar.gz"
+#~ msgstr "tar xvfz postgis-&last_release_version;.tar.gz"
+
+#, no-c-format
+#~ msgid "cd postgis-&last_release_version;/extras/tiger_geocoder"
+#~ msgstr "cd postgis-&last_release_version;/extras/tiger_geocoder"
+
+#, no-c-format
+#~ msgid ""
+#~ "Edit the <filename>tiger_loader_2015.sql</filename> (or latest loader "
+#~ "file you find, unless you want to load different year) to the paths of "
+#~ "your executables server etc or alternatively you can update the "
+#~ "<varname>loader_platform</varname> table once installed. If you don't "
+#~ "edit this file or the <varname>loader_platform</varname> table, it will "
+#~ "just contain common case locations of items and you'll have to edit the "
+#~ "generated script after the fact when you run the <xref "
+#~ "linkend=\"Loader_Generate_Nation_Script\"/> and <xref "
+#~ "linkend=\"Loader_Generate_Script\"/> SQL functions."
+#~ msgstr ""
+#~ "<filename>tiger_loader_2015.sql</filename> (違う年のものをロードしたくない"
+#~ "ならば最新のローダファイル)をあなたの実行サーバ等のパスに編集します。もし"
+#~ "くは<varname>loader_platform</varname>がインストールされた後に一度これを更"
+#~ "新します。このファイルも<varname>loader_platform</varname>も編集しない場合"
+#~ "には、一般的なアイテムの位置を持っているだけなので、<xref "
+#~ "linkend=\"Loader_Generate_Nation_Script\"/>と<xref "
+#~ "linkend=\"Loader_Generate_Script\"/>を実行した後に、生成されたスクリプトを"
+#~ "編集しなければなりません。"
+
+#, no-c-format
+#~ msgid ""
+#~ "If you are installing Tiger geocoder for the first time edit either the "
+#~ "<filename>create_geocode.bat</filename> script If you are on windows or "
+#~ "the <filename>create_geocode.sh</filename> if you are on Linux/Unix/Mac "
+#~ "OSX with your PostgreSQL specific settings and run the corresponding "
+#~ "script from the commandline."
+#~ msgstr ""
+#~ "初めてTigerジオコーダをインストールする場合は、Windowsでは"
+#~ "<filename>create_geocode.bat</filename>を、またLinux/Unix/Mac OSXでは"
+#~ "<filename>create_geocode.sh</filename>を、使用するPostgreSQLにとって独自の"
+#~ "設定に変更したうえで、コマンドラインから対応するスクリプトを実行します。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Verify that you now have a <varname>tiger</varname> schema in your "
+#~ "database and that it is part of your database search_path. If it is not, "
+#~ "add it with a command something along the line of:"
+#~ msgstr ""
+#~ "データベースに<varname>tiger</varname>スキーマがあることを確認します。もし"
+#~ "無い場合は、次の行を参考に、コマンドを実行します。"
+
+#, no-c-format
+#~ msgid "ALTER DATABASE geocoder SET search_path=public, tiger;"
+#~ msgstr "ALTER DATABASE geocoder SET search_path=public, tiger;"
+
+#, no-c-format
+#~ msgid ""
+#~ "The normalizing address functionality works more or less without any data "
+#~ "except for tricky addresses. Run this test and verify things look like "
+#~ "this:"
+#~ msgstr ""
+#~ "住所正規化機能は、トリッキーな住所を除いて、大体データなしで動作します。テ"
+#~ "ストを実行して次のように見えることを確認して下さい。"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT pprint_addy(normalize_address('202 East Fremont Street, Las Vegas, "
+#~ "Nevada 89101')) As pretty_address;\n"
+#~ "pretty_address\n"
+#~ "---------------------------------------\n"
+#~ "202 E Fremont St, Las Vegas, NV 89101"
+#~ msgstr ""
+#~ "SELECT pprint_addy(normalize_address('202 East Fremont Street, Las Vegas, "
+#~ "Nevada 89101')) As pretty_address;\n"
+#~ "pretty_address\n"
+#~ "---------------------------------------\n"
+#~ "202 E Fremont St, Las Vegas, NV 89101"
+
+#, no-c-format
+#~ msgid "Loading Tiger Data"
+#~ msgstr "Tigerデータのロード"
+
+#, no-c-format
+#~ msgid ""
+#~ "The instructions for loading data are available in a more detailed form "
+#~ "in the <filename>extras/tiger_geocoder/tiger_2011/README</filename>. This "
+#~ "just includes the general steps."
+#~ msgstr ""
+#~ "データロードの説明の詳細は<filename>extras/tiger_geocoder/tiger_2011/"
+#~ "README</filename>にあります。これは一般的な手順を示しています。"
+
+#, no-c-format
+#~ msgid ""
+#~ "If you are upgrading from tiger_2010, you'll need to first generate and "
+#~ "run <xref linkend=\"Drop_Nation_Tables_Generate_Script\"/>. Before you "
+#~ "load any state data, you need to load the nation wide data which you do "
+#~ "with <xref linkend=\"Loader_Generate_Nation_Script\"/>. Which will "
+#~ "generate a loader script for you. <xref "
+#~ "linkend=\"Loader_Generate_Nation_Script\"/> is a one-time step that "
+#~ "should be done for upgrading (from 2010) and for new installs."
+#~ msgstr ""
+#~ "tiger_2010からアップグレードする場合には、最初に<xref "
+#~ "linkend=\"Drop_Nation_Tables_Generate_Script\"/>を生成、実行する必要があり"
+#~ "ます。州データをロードする前に、<xref "
+#~ "linkend=\"Loader_Generate_Nation_Script\"/>で国データをロードする必要があ"
+#~ "ります。これによって、環境に合ったローダスクリプトが生成されます。<xref "
+#~ "linkend=\"Loader_Generate_Nation_Script\"/>は、一度の操作で、(2010からの)"
+#~ "アップグレードと、新しいインストールが行われます。"
+
+#, no-c-format
+#~ msgid "Upgrading your Tiger Geocoder Install"
+#~ msgstr "Tigerジオコーダのアップグレード"
+
+#, no-c-format
+#~ msgid ""
+#~ "If you have Tiger Geocoder packaged with 2.0+ already installed, you can "
+#~ "upgrade the functions at any time even from an interim tar ball if there "
+#~ "are fixes you badly need. This will only work for Tiger geocoder not "
+#~ "installed with extensions."
+#~ msgstr ""
+#~ "2.0以上に含まれるTigerジオコーダがインストールされている場合には、どうして"
+#~ "も必要な訂正があるときは、いつでも臨時のアーカイブファイルからでも機能の"
+#~ "アップグレードができます。 これは、エクステンションでインストールされてい"
+#~ "ないTigerジオコーダで動作します。"
+
+#, no-c-format
+#~ msgid "cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2011"
+#~ msgstr "cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2011"
+
+#, no-c-format
+#~ msgid ""
+#~ "Locate the <filename>upgrade_geocoder.bat</filename> script If you are on "
+#~ "windows or the <filename>upgrade_geocoder.sh</filename> if you are on "
+#~ "Linux/Unix/Mac OSX. Edit the file to have your postgis database "
+#~ "credentials."
+#~ msgstr ""
+#~ "Windowsの場合は<filename>upgrade_geocoder.bat</filename>スクリプト、Linux/"
+#~ "Unix/MacOS Xの場合は<filename>upgrade_geocoder.sh</filename>スクリプトの位"
+#~ "置を特定します。 PostGISデータベースの資格情報を持つように編集します。"
+
+#, no-c-format
+#~ msgid ""
+#~ "If you are upgrading from 2010 or 2011, make sure to unremark out the "
+#~ "loader script line so you get the latest script for loading 2012 data."
+#~ msgstr ""
+#~ "2010または2011からアップグレードする場合には、確実にローダスクリプトのコメ"
+#~ "ントアウトを消すと、2012データのロードのための最新のスクリプトを得ます。"
+
+#, no-c-format
+#~ msgid "Then run th corresponding script from the commandline."
+#~ msgstr "対応するスクリプトをコマンドラインから実行します。"
+
+#, no-c-format
+#~ msgid ""
+#~ "You can have a mix of 2010/2011 state tables and can upgrade each state "
+#~ "separately. Before you upgrade a state to 2011, you first need to drop "
+#~ "the 2010 tables for that state using <xref "
+#~ "linkend=\"Drop_State_Tables_Generate_Script\"/>."
+#~ msgstr ""
+#~ "2010/2011州テーブルを混在させることができ、それぞれの州について個別にアッ"
+#~ "プグレードできます。2011にアップグレードする前に、まず、<xref "
+#~ "linkend=\"Drop_State_Tables_Generate_Script\"/>を使って、2010州テーブルを"
+#~ "削除します。"
 
 #, no-c-format
 #~ msgid ""
