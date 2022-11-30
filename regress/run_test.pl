@@ -161,9 +161,6 @@ $PGOPTIONS .= " -c client_min_messages=NOTICE";
 $PGOPTIONS .= " -c extra_float_digits=0";
 $ENV{"PGOPTIONS"} = $PGOPTIONS;
 
-# Bring the path info in
-my $PATH = $ENV{"PATH"}; # this is useless
-
 # Calculate the regression directory locations
 my $STAGED_INSTALL_DIR = $TOP_BUILDDIR . "/regress/00-regress-install";
 my $STAGED_SCRIPTS_DIR = $STAGED_INSTALL_DIR . "/share/contrib/postgis";
@@ -174,8 +171,6 @@ my $OBJ_COUNT_POST = 0;
 ##################################################################
 # Check that we have the executables we need
 ##################################################################
-
-print "PATH is $PATH\n";
 
 foreach my $exec ( ($SHP2PGSQL, $PGSQL2SHP) )
 {
