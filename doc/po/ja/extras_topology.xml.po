@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-11-27 05:42+0000\n"
-"PO-Revision-Date: 2022-10-25 07:30+0000\n"
+"PO-Revision-Date: 2022-12-01 09:40+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "extras_topologyxml/ja/>\n"
@@ -860,13 +860,13 @@ msgstr ""
 #: extras_topology.xml:314
 #, no-c-format
 msgid "RenameTopoGeometryColumn"
-msgstr ""
+msgstr "RenameTopoGeometryColumn"
 
 #. Tag: refpurpose
 #: extras_topology.xml:315
 #, no-c-format
 msgid "Renames a topogeometry column"
-msgstr ""
+msgstr "TopoGeometryカラムの名前を変更します"
 
 #. Tag: funcprototype
 #: extras_topology.xml:320
@@ -878,6 +878,11 @@ msgid ""
 "<parameter>feature_column</parameter></paramdef> <paramdef><type>name </"
 "type> <parameter>new_name</parameter></paramdef>"
 msgstr ""
+"<funcdef>topology.layer <function>RenameTopoGeometryColumn</function></"
+"funcdef> <paramdef><type>regclass </type> "
+"<parameter>layer_table</parameter></paramdef> <paramdef><type>name </type> "
+"<parameter>feature_column</parameter></paramdef> <paramdef><type>name </"
+"type> <parameter>new_name</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:335
@@ -885,13 +890,14 @@ msgstr ""
 msgid ""
 "This function changes the name of an existing TopoGeometry column ensuring "
 "metadata information about it is updated accordingly."
-msgstr ""
+msgstr "この関数は存在するTopoGeometryカラムの名前を変更します。この際、メタデータ情"
+"報が適切に更新されるようにします。"
 
 #. Tag: para
 #: extras_topology.xml:341 extras_topology.xml:425
 #, no-c-format
 msgid "Availability: 3.4.0"
-msgstr ""
+msgstr "Availability: 3.4.0"
 
 #. Tag: programlisting
 #: extras_topology.xml:347
@@ -900,12 +906,14 @@ msgid ""
 "SELECT topology.RenameTopoGeometryColumn('public.parcels', 'topogeom', "
 "'tgeom');"
 msgstr ""
+"SELECT topology.RenameTopoGeometryColumn('public.parcels', 'topogeom', "
+"'tgeom');"
 
 #. Tag: para
 #: extras_topology.xml:354
 #, no-c-format
 msgid ", <xref linkend=\"RenameTopology\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RenameTopology\"/>"
 
 #. Tag: refname
 #: extras_topology.xml:362
@@ -973,13 +981,13 @@ msgstr "SELECT topology.DropTopology('ma_topo');"
 #: extras_topology.xml:402
 #, no-c-format
 msgid "RenameTopology"
-msgstr ""
+msgstr "RenameTopology"
 
 #. Tag: refpurpose
 #: extras_topology.xml:403
 #, no-c-format
 msgid "Renames a topology"
-msgstr ""
+msgstr "トポロジ名を変更します"
 
 #. Tag: funcprototype
 #: extras_topology.xml:408
@@ -989,13 +997,17 @@ msgid ""
 "<paramdef><type>varchar </type> <parameter>old_name</parameter></paramdef> "
 "<paramdef><type>varchar </type> <parameter>new_name</parameter></paramdef>"
 msgstr ""
+"<funcdef>varchar <function>RenameTopology</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>old_name</parameter></paramdef> "
+"<paramdef><type>varchar </type> <parameter>new_name</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:419
 #, no-c-format
 msgid ""
 "Renames a topology schema updating its metadata record in topology.topology."
-msgstr ""
+msgstr "トポロジのスキーマ名を変更して、topology."
+"topologyにあるメタデータのレコードを更新します。"
 
 #. Tag: para
 #: extras_topology.xml:431
@@ -1004,12 +1016,14 @@ msgid ""
 "This example renames a topology from <varname>topo_stage</varname> to "
 "<varname>topo_prod</varname>."
 msgstr ""
+"この例ではトポロジ名を<varname>topo_stage</varname>から<varname>topo_prod</va"
+"rname>に変更します。"
 
 #. Tag: programlisting
 #: extras_topology.xml:435
 #, no-c-format
 msgid "SELECT topology.RenameTopology('topo_stage', 'topo_prod');"
-msgstr ""
+msgstr "SELECT topology.RenameTopology('topo_stage', 'topo_prod');"
 
 #. Tag: para
 #: extras_topology.xml:443
@@ -1018,6 +1032,8 @@ msgid ""
 "> <xref linkend=\"CopyTopology\"/>, <xref "
 "linkend=\"RenameTopoGeometryColumn\"/>"
 msgstr ""
+"> <xref linkend=\"CopyTopology\"/>, <xref linkend=\"RenameTopoGeometryColumn"
+"\"/>"
 
 #. Tag: refname
 #: extras_topology.xml:451
@@ -2304,6 +2320,7 @@ msgstr "SELECT topology.CopyTopology('ma_topo', 'ma_topo_bakup');"
 msgid ""
 ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"RenameTopology\"/>"
 msgstr ""
+", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"RenameTopology\"/>"
 
 #. Tag: refname
 #: extras_topology.xml:1162
