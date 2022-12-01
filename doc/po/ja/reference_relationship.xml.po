@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-11-27 05:42+0000\n"
-"PO-Revision-Date: 2022-11-01 14:52+0000\n"
+"PO-Revision-Date: 2022-12-01 10:30+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_relationshipxml/ja/>\n"
@@ -1309,6 +1309,9 @@ msgid ""
 "alternative that uses indexes: <code>ST_Disjoint(A,B) = NOT ST_Intersects(A,"
 "B)</code>"
 msgstr ""
+"この関数呼び出しはインデックスを使いません。<xref linkend=\"ST_Intersects\"/>"
+"の否定には、インデックスを使用する、より効率の良い選択肢を使うことができます:"
+" <code>ST_Disjoint(A,B) = NOT ST_Intersects(A,B)</code>"
 
 #. Tag: para
 #: reference_relationship.xml:694
@@ -1914,7 +1917,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Finds all streets that cross"
-msgstr ""
+msgstr "<emphasis role=\"bold\">例:</emphasis> 全てのクロスするストリートを見つける"
 
 #. Tag: programlisting
 #: reference_relationship.xml:952
