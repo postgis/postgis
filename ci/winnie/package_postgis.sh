@@ -222,11 +222,8 @@ cp utils/*.pl ${RELDIR}/${RELVERDIR}/utils
 
 cp raster/loader/.libs/raster2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
 cp liblwgeom/.libs/*.dll ${RELDIR}/${RELVERDIR}/bin
-cp loader/shp2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
 cp loader/.libs/shp2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
-cp loader/pgsql2shp.exe ${RELDIR}/${RELVERDIR}/bin
 cp loader/.libs/pgsql2shp.exe ${RELDIR}/${RELVERDIR}/bin
-cp loader/shp2pgsql-gui.exe ${RELDIR}/${RELVERDIR}/bin/postgisgui
 cp loader/.libs/shp2pgsql-gui.exe ${RELDIR}/${RELVERDIR}/bin/postgisgui
 cp topology/loader/* ${RELDIR}/${RELVERDIR}/bin
 
