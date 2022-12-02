@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-11-27 05:42+0000\n"
-"PO-Revision-Date: 2022-12-02 03:53+0000\n"
+"PO-Revision-Date: 2022-12-03 06:30+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_outputxml/ja/>\n"
@@ -4014,6 +4014,11 @@ msgid ""
 "shorter GeoHash is a less precise representation of a point. It can be "
 "thought of as a box that contains the point."
 msgstr ""
+"ジオメトリの<ulink url=\"https://ja.wikipedia.org/wiki/"
+"%E3%82%B8%E3%82%AA%E3%83%8F%E3%83%83%E3%82%B7%E3%83%A5\">ジオハッシュ</ulink>"
+"表現を計算します。ジオハッシュは地理座標系のポイントを、前置に基づいく文字列"
+"で、ソート可能かつ検索可能です。短いジオハッシュではポイントは低精度に表現さ"
+"れています。ポイントを含むボックスと考えることができます。"
 
 #. Tag: para
 #: reference_output.xml:1446
@@ -4022,7 +4027,8 @@ msgid ""
 "Non-point geometry values with non-zero extent can also be mapped to GeoHash "
 "codes. The precision of the code depends on the geographic extent of the "
 "geometry."
-msgstr ""
+msgstr "0でない範囲を持つ、ポイントでないジオメトリ値はジオハッシュコードに対応付けで"
+"きます。コードの精度はジオメトリの地理範囲に依存します。"
 
 #. Tag: para
 #: reference_output.xml:1450
@@ -4037,6 +4043,13 @@ msgid ""
 "precision. The box determined by the GeoHash code always contains the input "
 "feature."
 msgstr ""
+"<varname>maxchars</varname>が指定されていない場合には、返されるジオハッシュコ"
+"ードは、入力ジオメトリを含む最も小さいセルです。ポイントでは、20文字の精度 ("
+"入力の完全な倍精度浮動小数点数の保持十分です)ジオハッシュを返します。他のジオ"
+"メトリタイプでは、より低い精度のジオハッシュを返しますが、精度はジオメトリの"
+"範囲に依存します。大きいジオメトリは低い精度となり、小さいジオメトリは高い精"
+"度になります。ジオハッシュコードで決まるボックスは常に入力入力地物を含んでい"
+"ます。"
 
 #. Tag: para
 #: reference_output.xml:1456
@@ -4047,6 +4060,10 @@ msgid ""
 "representation of the input geometry. For non-points, the starting point of "
 "the calculation is the center of the bounding box of the geometry."
 msgstr ""
+"<varname>maxchars</varname>が指定された場合には、この値は、返されるジオハッシ"
+"ュコードの最大文字数になります。入力ジオメトリは(おそらく)より低い精度で表現"
+"されます。ポイントでない場合には、計算の最初のポイントはジオメトリのバウンダ"
+"リボックスの中心となります。"
 
 #. Tag: para
 #: reference_output.xml:1460
@@ -4059,7 +4076,7 @@ msgstr "Availability: 1.4.0"
 #, no-c-format
 msgid ""
 "ST_GeoHash requires input geometry to be in geographic (lon/lat) coordinates."
-msgstr ""
+msgstr "ST_GeoHashの入力ジオメトリは、地理座標系 (経度/緯度)でなければなりません。"
 
 #. Tag: programlisting
 #: reference_output.xml:1471
@@ -4086,6 +4103,26 @@ msgid ""
 " c0w3\n"
 "                ]]>"
 msgstr ""
+"<![CDATA[SELECT ST_GeoHash( ST_Point(-126,48) );\n"
+"\n"
+"         st_geohash\n"
+"----------------------\n"
+" c0w3hf1s70w3hf1s70w3\n"
+"\n"
+"SELECT ST_GeoHash( ST_Point(-126,48), 5);\n"
+"\n"
+" st_geohash\n"
+"------------\n"
+" c0w3h\n"
+"\n"
+"-- このラインにはポイントが含まれているので、"
+"GeoHashはポイントコードを前置します\n"
+"SELECT ST_GeoHash('LINESTRING(-126 48, -126.1 48.1)'::geometry);\n"
+"\n"
+" st_geohash\n"
+"------------\n"
+" c0w3\n"
+"                ]]>"
 
 #. Tag: para
 #: reference_output.xml:1476
