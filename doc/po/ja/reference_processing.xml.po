@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-11-27 05:42+0000\n"
-"PO-Revision-Date: 2022-10-25 07:30+0000\n"
+"PO-Revision-Date: 2022-12-02 03:53+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_processingxml/ja/>\n"
@@ -1023,6 +1023,11 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>boolean</type> "
 "<parameter>preserveEndPoints = false</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_ChaikinSmoothing</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer</type> <parameter>nIterations = "
+"1</parameter></paramdef> <paramdef choice=\"opt\"><type>boolean</type> "
+"<parameter>preserveEndPoints = false</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:511
@@ -1598,6 +1603,11 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>int4 </type> "
 "<parameter>flags = 0</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_DelaunayTriangles</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>float </type> <parameter>tolerance = 0."
+"0</parameter></paramdef> <paramdef choice=\"opt\"><type>int4 </type> "
+"<parameter>flags = 0</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:730
@@ -1611,24 +1621,30 @@ msgid ""
 "vertices. The result geometry representation is determined by the "
 "<varname>flags</varname> code:"
 msgstr ""
+"入力ジオメトリの頂点の<ulink url=\"http://en.wikipedia.org/wiki/"
+"Delaunay_triangulation\">ドロネー三角形</ulink>を計算します。任意引数<varname"
+">tolerance</varname>は、入力頂点が近いとスナップする際に使います。ロバスト性"
+"が増すことがあります。結果ジオメトリの境界は入力頂点の凸包と同じになります。"
+"結果ジオメトリの表現は、次に示す<varname>flags</varname>コードによって変わり"
+"ます。"
 
 #. Tag: para
 #: reference_processing.xml:739
 #, no-c-format
 msgid "<code>0</code> - a GEOMETRYCOLLECTION of triangular POLYGONs (default)"
-msgstr ""
+msgstr "<code>0</code> - 三角形のPOLYGONからなるGEOMETRYCOLLECTION (デフォルト)"
 
 #. Tag: para
 #: reference_processing.xml:740
 #, no-c-format
 msgid "<code>1</code> - a MULTILINESTRING of the edges of the triangulation"
-msgstr ""
+msgstr "<code>1</code> - 三角形の辺のMULTILINESTRING"
 
 #. Tag: para
 #: reference_processing.xml:741
 #, no-c-format
 msgid "<code>2</code> - A TIN of the triangulation"
-msgstr ""
+msgstr "<code>2</code> - 三角形のTIN"
 
 #. Tag: para
 #: reference_processing.xml:745
@@ -1782,7 +1798,7 @@ msgstr ""
 #: reference_processing.xml:803
 #, no-c-format
 msgid "Example using vertices with Z values."
-msgstr ""
+msgstr "Z値を持つ頂点を使う例。"
 
 #. Tag: programlisting
 #: reference_processing.xml:804
@@ -1796,6 +1812,13 @@ msgid ""
 "GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))\n"
 " ,POLYGON Z ((14 14 10,34 6 25,150 14 100,14 14 10)))"
 msgstr ""
+"-- 3D multipoint --\n"
+"SELECT ST_AsText(ST_DelaunayTriangles(ST_GeomFromText(\n"
+"         'MULTIPOINT Z(14 14 10, 150 14 100,34 6 25, 20 10 150)'))) As wkt;\n"
+"\n"
+"-- wkt --\n"
+"GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))\n"
+" ,POLYGON Z ((14 14 10,34 6 25,150 14 100,14 14 10)))"
 
 #. Tag: para
 #: reference_processing.xml:809
@@ -1803,6 +1826,7 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_ConvexHull\"/>"
 msgstr ""
+", <xref linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_ConvexHull\"/>"
 
 #. Tag: refname
 #: reference_processing.xml:818
@@ -1943,6 +1967,14 @@ msgid ""
 "<parameter>npoints</parameter> </paramdef> <paramdef> <type>integer</type> "
 "<parameter>seed = 0</parameter> </paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_GeneratePoints</function></"
+"funcdef> <paramdef> <parameter>g</parameter> <type>geometry</type> </"
+"paramdef> <paramdef> <parameter>npoints</parameter> <type>integer</type> </"
+"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_GeneratePoints</function></funcdef> <paramdef> <type>geometry</"
+"type> <parameter>g</parameter> </paramdef> <paramdef> <type>integer</type> "
+"<parameter>npoints</parameter> </paramdef> <paramdef> <type>integer</type> "
+"<parameter>seed = 0</parameter> </paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_processing.xml:896
@@ -1952,6 +1984,9 @@ msgid ""
 "within the input area. The optional <varname>seed</varname> is used to "
 "regenerate a deterministic sequence of points, and must be greater than zero."
 msgstr ""
+"ST_GeneratePointsは、入力エリア内に、与えられた数の疑似乱数によってポイントを"
+"生成します。決定的な点列を生成する場合には任意パラメータ<varname>seed</varnam"
+"e>を使います。この際、0より大きい数を指定します。"
 
 #. Tag: para
 #: reference_processing.xml:903 reference_processing.xml:972
@@ -4574,6 +4609,11 @@ msgid ""
 "paramdef> <paramdef choice=\"opt\"> <type>geometry</type> "
 "<parameter>extend_to = NULL</parameter> </paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_VoronoiLines</function></funcdef> <paramdef> "
+"<type>geometry</type> <parameter>geom</parameter> </paramdef> <paramdef "
+"choice=\"opt\"> <type>float8</type> <parameter>tolerance = 0.0</parameter> </"
+"paramdef> <paramdef choice=\"opt\"> <type>geometry</type> "
+"<parameter>extend_to = NULL</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:2185
@@ -4587,6 +4627,11 @@ msgid ""
 "an empty geometry collection if the <varname>extend_to</varname> envelope "
 "has zero area."
 msgstr ""
+"与えられたジオメトリの頂点から2次元<ulink url=\"https://ja.wikipedia.org/"
+"wiki/ボロノイ図\">ボロノイ図</ulink>を生成し、ボロノイ図のサイト間の境界をMUL"
+"TILIESTRINGで返します。入力ジオメトリがNULLの場合にはNULLを返します。入力ジオ"
+"メトリの頂点が一つの場合には空ジオメトリを返します。<varname>extend_to</varna"
+"me>で作られるエンベロープの面積が0の場合には空ジオメトリを返します。"
 
 #. Tag: para
 #: reference_processing.xml:2191 reference_processing.xml:2272
@@ -4602,6 +4647,9 @@ msgid ""
 "considered equivalent. Robustness of the algorithm can be improved by "
 "supplying a nonzero tolerance distance. (default = 0.0)"
 msgstr ""
+"<varname>tolerance</varname>: 複数の頂点を同一のものと捉える距離。"
+"0でない値を許容距離として与えるとアルゴリズムのロバスト性が改善します "
+"(デフォルトは0.0)。"
 
 #. Tag: para
 #: reference_processing.xml:2198 reference_processing.xml:2279
@@ -4612,12 +4660,17 @@ msgid ""
 "envelope (default = NULL, default envelope is the bounding box of the input "
 "expanded by about 50%)."
 msgstr ""
+"<varname>extend_to</varname>: これが与えられている場合には、与えられたジオメ"
+"トリのエンベロープを覆うように図が拡張されます。"
+"デフォルト値以上でないと有効ではありません (デフォルトはNULLで、デフォルトの"
+"エンベロープは入力ジオメトリのバウンディングボックスから50%拡張したものです)"
+"。"
 
 #. Tag: para
 #: reference_processing.xml:2217
 #, no-c-format
 msgid "Voronoi diagram lines, with tolerance of 30 units"
-msgstr ""
+msgstr "30単位の許容距離を持つボロノイ図のライン"
 
 #. Tag: programlisting
 #: reference_processing.xml:2220
@@ -4627,6 +4680,9 @@ msgid ""
 "            'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::geometry,\n"
 "            30) AS geom;"
 msgstr ""
+"SELECT ST_VoronoiLines(\n"
+"            'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::geometry,\n"
+"            30) AS geom;"
 
 #. Tag: screen
 #: reference_processing.xml:2221
@@ -4646,7 +4702,7 @@ msgstr ""
 #: reference_processing.xml:2229
 #, no-c-format
 msgid ", <xref linkend=\"ST_VoronoiPolygons\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_VoronoiPolygons\"/>"
 
 #. Tag: refname
 #: reference_processing.xml:2238
@@ -4670,6 +4726,11 @@ msgid ""
 "parameter> </paramdef> <paramdef choice=\"opt\"> <type>geometry</type> "
 "<parameter>extend_to = NULL</parameter> </paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_VoronoiPolygons</function></funcdef> "
+"<paramdef> <type>geometry</type> <parameter>geom</parameter> </paramdef> "
+"<paramdef choice=\"opt\"> <type>float8</type> <parameter>tolerance = 0.0</"
+"parameter> </paramdef> <paramdef choice=\"opt\"> <type>geometry</type> "
+"<parameter>extend_to = NULL</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:2264
@@ -4683,6 +4744,12 @@ msgid ""
 "contains only one vertex. Returns an empty geometry collection if the "
 "<varname>extend_to</varname> envelope has zero area."
 msgstr ""
+"与えられたジオメトリの頂点から2次元<ulink url=\"https://ja.wikipedia.org/"
+"wiki/ボロノイ図\">ボロノイ図</ulink>を生成します。結果はPOLYGONのGEOMETRYCOLL"
+"ECTIONで、、入力の頂点の範囲以上のエンベロープを覆います。入力ジオメトリがNUL"
+"Lの場合にはNULLを返します。入力ジオメトリの頂点が一つの場合には空ジオメトリを"
+"返します。<varname>extend_to</varname>で作られるエンベロープの面積が0の場合に"
+"は空ジオメトリを返します。"
 
 #. Tag: para
 #: reference_processing.xml:2298
@@ -4699,6 +4766,10 @@ msgid ""
 "geometry\n"
 "            ) AS geom;"
 msgstr ""
+"SELECT ST_VoronoiPolygons(\n"
+"                'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::"
+"geometry\n"
+"            ) AS geom;"
 
 #. Tag: screen
 #: reference_processing.xml:2302
@@ -4734,7 +4805,7 @@ msgstr ""
 #: reference_processing.xml:2309
 #, no-c-format
 msgid "Voronoi diagram, with tolerance of 30 units"
-msgstr ""
+msgstr "許容距離30単位のボロノイ図"
 
 #. Tag: programlisting
 #: reference_processing.xml:2312
@@ -4744,6 +4815,9 @@ msgid ""
 "            'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::geometry,\n"
 "            30) AS geom;"
 msgstr ""
+"SELECT ST_VoronoiPolygons(\n"
+"            'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::geometry,\n"
+"            30) AS geom;"
 
 #. Tag: screen
 #: reference_processing.xml:2313
@@ -4775,7 +4849,7 @@ msgstr ""
 #: reference_processing.xml:2321
 #, no-c-format
 msgid ", <xref linkend=\"ST_VoronoiLines\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_VoronoiLines\"/>"
 
 #, no-c-format
 #~ msgid ""
