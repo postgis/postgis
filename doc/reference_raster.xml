@@ -6939,7 +6939,7 @@ FROM (
 
                 <para>Resample a raster by adjusting only its scale (or pixel size). New pixel values are computed using one of the following resampling algorithms:</para>
 
-                <itemizedlist mark='bullet'>
+                <para><itemizedlist mark='bullet'>
                     <listitem>NearestNeighbor (english or american spelling)</listitem>
                     <listitem>Bilinear</listitem>
                     <listitem>Cubic</listitem>
@@ -6947,7 +6947,7 @@ FROM (
                     <listitem>Lanczos</listitem>
                     <listitem>Max</listitem>
                     <listitem>Min</listitem>
-                </itemizedlist>
+                </itemizedlist></para>
 
                 <para>The default is NearestNeighbor which is the fastest but results in the worst interpolation.</para>
 
