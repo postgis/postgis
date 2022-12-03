@@ -6939,15 +6939,15 @@ FROM (
 
                 <para>Resample a raster by adjusting only its scale (or pixel size). New pixel values are computed using one of the following resampling algorithms:</para>
 
-                <list type="bullet">
-                    <item>NearestNeighbor (english or american spelling)</item>
-                    <item>Bilinear</item>
-                    <item>Cubic</item>
-                    <item>CubicSpline</item>
-                    <item>Lanczos</item>
-                    <item>Max</item>
-                    <item>Min</item>
-                </list>
+                <itemizedlist mark='bullet'>
+                    <listitem>NearestNeighbor (english or american spelling)</listitem>
+                    <listitem>Bilinear</listitem>
+                    <listitem>Cubic</listitem>
+                    <listitem>CubicSpline</listitem>
+                    <listitem>Lanczos</listitem>
+                    <listitem>Max</listitem>
+                    <listitem>Min</listitem>
+                </itemizedlist>
 
                 <para>The default is NearestNeighbor which is the fastest but results in the worst interpolation.</para>
 
@@ -6963,6 +6963,7 @@ FROM (
 
                 <para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
                 <para>Changed: 3.4.0 max and min resampling options added</para>
+                <para>Changed: 2.1.0 Works on rasters with no SRID</para>
             </refsection>
 
             <refsection>

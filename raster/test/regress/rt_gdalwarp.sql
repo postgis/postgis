@@ -450,7 +450,7 @@ INSERT INTO raster_gdalwarp_dst (rid, rast) VALUES (
 		0, 0,
 		'Min', 0
 	) FROM raster_gdalwarp_src)
-), ;
+) ;
 
 -- ST_Transform
 INSERT INTO raster_gdalwarp_dst (rid, rast) VALUES (

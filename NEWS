@@ -10,6 +10,7 @@ xxxx/xx/xx
   - #5006, GH705, ST_Transform: Support PROJ pipelines (Robert Coup, Koordinates)
   - #5283, RenameTopology (Sandro Santilli)
   - #5286, RenameTopoGeometryColumn (Sandro Santilli)
+  - GH703, Add min/max resampling as options (Christian Schroeder)
 
 * Enhancements *
   - #5194, do not update system catalogs from postgis_extensions_upgrade (Sandro Santilli)
