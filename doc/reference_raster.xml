@@ -6867,7 +6867,7 @@ WHERE rid = 2;
                     </para>
                 </note>
                 <para>Availability: 2.0.0 Requires GDAL 1.6.1+</para>
-                <para>Changed: 3.4.0 max and min resampling options added</para>
+                <para>Enhanced: 3.4.0 max and min resampling options added</para>
             </refsection>
 
             <refsection>
@@ -6962,7 +6962,7 @@ FROM (
                 <note><para>ST_Rescale is different from <xref linkend="RT_ST_SetScale" /> in that ST_SetScale do not resample the raster to match the raster extent. ST_SetScale only changes the metadata (or georeference) of the raster to correct an originally mis-specified scaling. ST_Rescale results in a raster having different width and height computed to fit the geographic extent of the input raster. ST_SetScale do not modify the width, nor the height of the raster.</para></note>
 
                 <para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
-                <para>Changed: 3.4.0 max and min resampling options added</para>
+                <para>Enhanced: 3.4.0 max and min resampling options added</para>
                 <para>Changed: 2.1.0 Works on rasters with no SRID</para>
             </refsection>
 
