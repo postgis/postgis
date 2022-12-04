@@ -6846,15 +6846,15 @@ WHERE rid = 2;
 
                 <para>New pixel values are computed using one of the following resampling algorithms:</para>
 
-                <list type="bullet">
-                    <item>NearestNeighbor (english or american spelling)</item>
-                    <item>Bilinear</item>
-                    <item>Cubic</item>
-                    <item>CubicSpline</item>
-                    <item>Lanczos</item>
-                    <item>Max</item>
-                    <item>Min</item>
-                </list>
+                <para><itemizedlist mark='bullet'>
+                    <listitem><para>NearestNeighbor (english or american spelling)</para></listitem>
+                    <listitem><para>Bilinear</para></listitem>
+                    <listitem><para>Cubic</para></listitem>
+                    <listitem><para>CubicSpline</para></listitem>
+                    <listitem><para>Lanczos</para></listitem>
+                    <listitem><para>Max</para></listitem>
+                    <listitem><para>Min</para></listitem>
+                </itemizedlist></para>
 
                 <para>The default is NearestNeighbor which is the fastest but results in the worst interpolation.</para>
                 <para>
