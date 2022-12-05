@@ -47,6 +47,7 @@ stringbuffer_t;
 extern stringbuffer_t *stringbuffer_create_with_size(size_t size);
 extern stringbuffer_t *stringbuffer_create(void);
 extern void stringbuffer_init(stringbuffer_t *s);
+extern void stringbuffer_init_varlena(stringbuffer_t *s);
 extern void stringbuffer_release(stringbuffer_t *s);
 extern void stringbuffer_destroy(stringbuffer_t *sb);
 extern void stringbuffer_clear(stringbuffer_t *sb);
@@ -56,6 +57,7 @@ extern int stringbuffer_aprintf(stringbuffer_t *sb, const char *fmt, ...);
 extern const char *stringbuffer_getstring(stringbuffer_t *sb);
 extern char *stringbuffer_getstringcopy(stringbuffer_t *sb);
 extern lwvarlena_t *stringbuffer_getvarlenacopy(stringbuffer_t *s);
+extern lwvarlena_t * stringbuffer_getvarlena(stringbuffer_t *s);
 extern int stringbuffer_getlength(stringbuffer_t *sb);
 extern char stringbuffer_lastchar(stringbuffer_t *s);
 extern int stringbuffer_trim_trailing_white(stringbuffer_t *s);
@@ -112,4 +114,14 @@ stringbuffer_append_double(stringbuffer_t *s, double d, int precision)
 	stringbuffer_makeroom(s, OUT_MAX_BYTES_DOUBLE);
 	s->str_end += lwprint_double(d, precision, s->str_end);
 }
+
+inline static void
+stringbuffer_append_char(stringbuffer_t *s, char c)
+{
+	stringbuffer_makeroom(s, 1);
+	*(s->str_end) = c;
+	s->str_end++;
+}
+
+
 #endif /* _STRINGBUFFER_H */
