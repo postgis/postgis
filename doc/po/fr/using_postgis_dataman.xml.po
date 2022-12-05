@@ -9,33 +9,34 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-10-23 01:21+0000\n"
-"PO-Revision-Date: 2021-11-28 22:31+0000\n"
-"Last-Translator: Regina Obe\n"
-"Language-Team: French (http://www.transifex.com/postgis/postgis/language/"
-"fr/)\n"
+"PO-Revision-Date: 2022-12-06 10:30+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
+"Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
+"using_postgis_datamanxml/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: title
 #: using_postgis_dataman.xml:3
 #, no-c-format
 msgid "Data Management"
-msgstr ""
+msgstr "Gestion des données"
 
 #. Tag: title
 #: using_postgis_dataman.xml:6
 #, no-c-format
 msgid "Spatial Data Model"
-msgstr ""
+msgstr "Modèle de données spatiales"
 
 #. Tag: title
 #: using_postgis_dataman.xml:9
 #, no-c-format
 msgid "OGC Geometry"
-msgstr ""
+msgstr "Géométrie OGC"
 
 #. Tag: para
 #: using_postgis_dataman.xml:11
@@ -50,6 +51,14 @@ msgid ""
 "the PostgreSQL data types <link linkend=\"PostGIS_Geometry\">geometry</link> "
 "and <link linkend=\"PostGIS_Geography\">geography</link>."
 msgstr ""
+"L'Open Geospatial Consortium (OGC) a développé le standard <ulink url=\"https"
+"://www.ogc.org/standards/sfa\"><emphasis>Simple Features Access</emphasis></"
+"ulink> (SFA) pour fournir un modèle de données géospatiales. Ce standard "
+"définit le type spatial <emphasis role=\"bold\">Geometry</emphasis>, ainsi "
+"que les opérations pour manipuler et transformer des géométries, et "
+"permettre des tâches d'analyses spatiales. PostGIS implémente le modèle OGC "
+"Geometry sous forme de types PostgreSQL <link linkend=\"PostGIS_Geometry\""
+">geometry</link> et <link linkend=\"PostGIS_Geography\">geography</link>."
 
 #. Tag: para
 #: using_postgis_dataman.xml:21
@@ -73,6 +82,21 @@ msgid ""
 "linkend=\"PolyhedralSurface\">PolyhedralSurface</link>, <link "
 "linkend=\"Triangle\">Triangle</link> and <link linkend=\"TIN\">TIN</link>."
 msgstr ""
+"Geometry est un type <emphasis>abstrait</emphasis>. Les valeurs géométriques "
+"utilisent les sous-types <emphasis>concrets</emphasis>, qui représentent les "
+"diverses formes géométriques. Ces types incluent les types <emphasis role="
+"\"bold\">atomiques</emphasis> <link linkend=\"Point\">Point</link>, <link "
+"linkend=\"LineString\">LineString</link>, <link linkend=\"LinearRing\""
+">LinearRing</link> et <link linkend=\"Polygon\">Polygon</link>, ainsi que "
+"les types de <emphasis role=\"bold\">collections</emphasis> <link linkend="
+"\"MultiPoint\">MultiPoint</link>, <link linkend=\"MultiLineString\""
+">MultiLineString</link>, <link linkend=\"MultiPolygon\">MultiPolygon</link> "
+"et <link linkend=\"GeometryCollection\">GeometryCollection</link>. Le "
+"standard <ulink url=\"https://portal.ogc.org/files/?artifact_id=25355\""
+"><emphasis>Simple Features Access - Part 1: Common architecture v1.2."
+"1</emphasis></ulink> ajoute les sous-types pour les structures <link linkend="
+"\"PolyhedralSurface\">PolyhedralSurface</link>, <link linkend=\"Triangle\""
+">Triangle</link> et <link linkend=\"TIN\">TIN</link>."
 
 #. Tag: para
 #: using_postgis_dataman.xml:42
@@ -87,6 +111,14 @@ msgid ""
 "points specified by a single coordinate, and line segments by two "
 "coordinates."
 msgstr ""
+"Geometry représente des formes dans le plan cartésien en 2 dimensions. Les "
+"types PolyhedralSurface, Triangle, et TIN peuvent également représenter des "
+"formes en 3 dimensions. La taille et la localisation des formes sont "
+"spécifiées par leurs <emphasis role=\"bold\">coordonnées</emphasis>. Chaque "
+"coordonnées a une <emphasis role=\"bold\">dimension</emphasis> X et une Y, "
+"qui déterminent sa position sur le plan. Les formes sont construites à "
+"partir de points ou de segments. Les points sont spécifiés par une seul "
+"coordonnée ; les segments par deux coordonnées."
 
 #. Tag: para
 #: using_postgis_dataman.xml:50
@@ -100,6 +132,14 @@ msgid ""
 "dimension</emphasis> is 3D; if it has both Z and M the coordinate dimension "
 "is 4D."
 msgstr ""
+"Les coordonnées peuvent inclure des valeurs pour les dimensions optionnelles "
+"Z et M. La dimension Z est souvent utilisée pour représenter l'élévation. La "
+"dimension M contient une mesure, qui représente par exemple le temps ou une "
+"distance. Si la dimension Z ou M est présente pour une valeur géométrique, "
+"elle doit être définie pour tous les points de la géométrie. Si une "
+"géométrie a une dimension Z ou M, la <emphasis role=\"bold\">dimension de la "
+"coordonnée</emphasis> est 3D ; si elle a à la fois les dimension Z et M, la "
+"dimension de la coordonnée est 4D."
 
 #. Tag: para
 #: using_postgis_dataman.xml:58
@@ -115,6 +155,17 @@ msgid ""
 "longitude and latitude. SRID 0 represents an infinite Cartesian plane with "
 "no units assigned to its axes. See <xref linkend=\"spatial_ref_sys\"/>."
 msgstr ""
+"Les valeurs géométriques sont associées à un <emphasis role=\"bold\">système "
+"de coordonnées de référence</emphasis> (SCR, ou en anglais spatial reference "
+"system, SRS), qui indique dans quel système de coordonnées les valeurs sont "
+"définies. Le SCR est identifié par un identifiant appelé SRID. Les unités "
+"sur les axes X et Y sont déterminées par ce système de coordonnées de "
+"référence. Dans un système <emphasis role=\"bold\">planaire</emphasis>, les "
+"coordonnées X et Y représentent les distances respectivement selon l'Est et "
+"le Nord. Dans un système <emphasis role=\"bold\">géodésique</emphasis> elles "
+"représentent la longitude et la latitude. L'identifiant SRID 0 représente un "
+"plan cartésien infini, sans unité sur ses axes. Voir <xref linkend="
+"\"spatial_ref_sys\"/>."
 
 #. Tag: para
 #: using_postgis_dataman.xml:71
@@ -125,6 +176,11 @@ msgid ""
 "and polygonal types have dimension 2. Collections have the dimension of the "
 "maximum element dimension."
 msgstr ""
+"La <emphasis role=\"bold\">dimension</emphasis> d'une géométrie est une "
+"propriété des types géométriques. Les types Point ont une dimension 0, les "
+"types linéaires ont une dimension 1, et les types polygonaux ont une "
+"dimension 2. Les collections ont la dimension de leur élément de plus grande "
+"dimension."
 
 #. Tag: para
 #: using_postgis_dataman.xml:77
@@ -134,6 +190,9 @@ msgid ""
 "values contain no vertices (for atomic geometry types) or no elements (for "
 "collections)."
 msgstr ""
+"Une valeur géométrique peut être <emphasis role=\"bold\">vide</emphasis>. "
+"Une valeur vide ne contient aucun vertex (pour les types de géométriques "
+"atomiques) ou aucun élément (pour les collections)."
 
 #. Tag: para
 #: using_postgis_dataman.xml:82
@@ -146,6 +205,13 @@ msgid ""
 "of a geometry. It is an efficient way to represent a geometry's extent in "
 "coordinate space and to check whether two geometries interact."
 msgstr ""
+"Une propriété important des valeurs géométriques est leur <emphasis role="
+"\"bold\">emprise</emphasis> spatiale (extent en anglais) ou leur <emphasis "
+"role=\"bold\">boîte englobante</emphasis> (bounding box en anglais), que le "
+"modèle OGC nomme <emphasis role=\"bold\">enveloppe</emphasis> (envelope). La "
+"boîte englobante est la boîte 2D ou 3D qui contient les coordonnées d'une "
+"géométrie. C'est une façon efficace de représenter l'emprise d'une géométrie "
+"dans un espace et de tester comment deux géométries interagissent."
 
 #. Tag: para
 #: using_postgis_dataman.xml:90
@@ -159,6 +225,15 @@ msgid ""
 "closed, so they always contain their boundary. The boundary is a geometry of "
 "dimension one less than that of the geometry itself."
 msgstr ""
+"Le modèle de géométrie permet d'évaluer les relations topologiques, telles "
+"que décrites dans <xref linkend=\"DE-9IM\"/>. Pour supporter cela, les "
+"concepts de <emphasis role=\"bold\">intérieur</emphasis> (interior en "
+"anglais), <emphasis role=\"bold\">frontière</emphasis> (boundary en anglais) "
+"et <emphasis role=\"bold\">extérieur</emphasis> (exterior en anglais) sont "
+"définis pour tous les types de géométries. Les géométries sont "
+"topologiquement fermées, donc elle contiennent toujours leur frontière. La "
+"dimension de la géométrie de la frontière est la dimension de la géométrie "
+"moins un."
 
 #. Tag: para
 #: using_postgis_dataman.xml:101
@@ -171,12 +246,19 @@ msgid ""
 "storing and manipulating invalid geometry values. This allows detecting and "
 "fixing them if needed. See <xref linkend=\"OGC_Validity\"/>"
 msgstr ""
+"Le modèle de géométrie OGC définie des règles de validité pour chaque type "
+"géométrique. Ces règles permettent de s'assurer que les valeurs géométriques "
+"représentent des situations réalistes (e.g. il est possible de définir un "
+"polygone avec un trou à l'extérieur, mais cela n'a pas de sens au niveau "
+"géométrique, et est donc invalide). PostGIS permet de stocker et de "
+"manipuler des valeurs géométriques invalides, ceci permet de les détecter et "
+"de les corriger si besoin. Voir <xref linkend=\"OGC_Validity\"/>"
 
 #. Tag: title
 #: using_postgis_dataman.xml:112
 #, no-c-format
 msgid "Point"
-msgstr ""
+msgstr "Point"
 
 #. Tag: para
 #: using_postgis_dataman.xml:113
@@ -185,6 +267,8 @@ msgid ""
 "A Point is a 0-dimensional geometry that represents a single location in "
 "coordinate space."
 msgstr ""
+"Un objet de type Point est une géométrie de dimension 0, qui représente un "
+"seul point dans l'espace."
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:114
@@ -194,12 +278,15 @@ msgid ""
 "POINT Z (1 2 3)\n"
 "POINT ZM (1 2 3 4)"
 msgstr ""
+"POINT (1 2)\n"
+"POINT Z (1 2 3)\n"
+"POINT ZM (1 2 3 4)"
 
 #. Tag: title
 #: using_postgis_dataman.xml:118
 #, no-c-format
 msgid "LineString"
-msgstr ""
+msgstr "LineString"
 
 #. Tag: para
 #: using_postgis_dataman.xml:119
@@ -214,18 +301,27 @@ msgid ""
 "end points are the same. A LineString is <emphasis role=\"bold\">simple</"
 "emphasis> if it does not self-intersect."
 msgstr ""
+"Le type LineString est une ligne, de dimension 1, formée par une séquence de "
+"segments linéaires contigus. Chaque segment est défini par deux points, "
+"l'extrémité d'un segment étant le point de départ du segment suivant. Un "
+"LineString valide au sens OGC a soit zéro, soit deux points ou plus, mais "
+"PostGIS permet d'avoir des LineStrings avec un seul point. LineStrings "
+"peuvent se croiser (auto-intersection). Un LineString peut être <emphasis "
+"role=\"bold\">fermé</emphasis> si les points de début et fin sont les mêmes. "
+"Un LineString est dit <emphasis role=\"bold\">simple</emphasis> s'il ne s"
+"'auto-intersecte pas."
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:128
 #, no-c-format
 msgid "LINESTRING (1 2, 3 4, 5 6)"
-msgstr ""
+msgstr "LINESTRING (1 2, 3 4, 5 6)"
 
 #. Tag: title
 #: using_postgis_dataman.xml:132
 #, no-c-format
 msgid "LinearRing"
-msgstr ""
+msgstr "LinearRing"
 
 #. Tag: para
 #: using_postgis_dataman.xml:133
@@ -234,18 +330,21 @@ msgid ""
 "A LinearRing is a LineString which is both closed and simple. The first and "
 "last points must be equal, and the line must not self-intersect."
 msgstr ""
+"Le type LinearRing définit un LineString qui est à la fois fermé et simple. "
+"Autrement dit, le premier et dernier points doivent être égaux, et la ligne "
+"ne doit pas s'auto-intersecter."
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:135
 #, no-c-format
 msgid "LINEARRING (0 0 0, 4 0 0, 4 4 0, 0 4 0, 0 0 0)"
-msgstr ""
+msgstr "LINEARRING (0 0 0, 4 0 0, 4 4 0, 0 4 0, 0 0 0)"
 
 #. Tag: title
 #: using_postgis_dataman.xml:139
 #, no-c-format
 msgid "Polygon"
-msgstr ""
+msgstr "Polygon"
 
 #. Tag: para
 #: using_postgis_dataman.xml:140
@@ -255,6 +354,10 @@ msgid ""
 "boundary (the shell) and zero or more interior boundaries (holes). Each "
 "boundary is a <link linkend=\"LinearRing\">LinearRing</link>."
 msgstr ""
+"Un polygone, de type Polygon est une région d'un plan, de dimension 2, "
+"délimité par une frontière extérieure (la coquille, shell en anglais) et "
+"zéro, une ou plusieurs frontières intérieures (trous, holes en anglais). "
+"Chaque frontière est un <link linkend=\"LinearRing\">LinearRing</link>."
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:145
@@ -262,30 +365,31 @@ msgstr ""
 msgid ""
 "POLYGON ((0 0 0,4 0 0,4 4 0,0 4 0,0 0 0),(1 1 0,2 1 0,2 2 0,1 2 0,1 1 0))"
 msgstr ""
+"POLYGON ((0 0 0,4 0 0,4 4 0,0 4 0,0 0 0),(1 1 0,2 1 0,2 2 0,1 2 0,1 1 0))"
 
 #. Tag: title
 #: using_postgis_dataman.xml:149
 #, no-c-format
 msgid "MultiPoint"
-msgstr ""
+msgstr "MultiPoint"
 
 #. Tag: para
 #: using_postgis_dataman.xml:150
 #, no-c-format
 msgid "A MultiPoint is a collection of Points."
-msgstr ""
+msgstr "Le type MultiPoint est une collection de Points."
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:151
 #, no-c-format
 msgid "MULTIPOINT ( (0 0), (1 2) )"
-msgstr ""
+msgstr "MULTIPOINT ( (0 0), (1 2) )"
 
 #. Tag: title
 #: using_postgis_dataman.xml:155
 #, no-c-format
 msgid "MultiLineString"
-msgstr ""
+msgstr "MultiLineString"
 
 #. Tag: para
 #: using_postgis_dataman.xml:156
@@ -294,18 +398,20 @@ msgid ""
 "A MultiLineString is a collection of LineStrings. A MultiLineString is "
 "closed if each of its elements is closed."
 msgstr ""
+"Le type MultiLineString est une collection de LineStrings. Un "
+"MultiLineString est fermé si tous ses éléments sont fermés."
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:159
 #, no-c-format
 msgid "MULTILINESTRING ( (0 0,1 1,1 2), (2 3,3 2,5 4) )"
-msgstr ""
+msgstr "MULTILINESTRING ( (0 0,1 1,1 2), (2 3,3 2,5 4) )"
 
 #. Tag: title
 #: using_postgis_dataman.xml:163
 #, no-c-format
 msgid "MultiPolygon"
-msgstr ""
+msgstr "MultiPolygon"
 
 #. Tag: para
 #: using_postgis_dataman.xml:164
@@ -314,18 +420,21 @@ msgid ""
 "A MultiPolygon is a collection of non-overlapping, non-adjacent Polygons. "
 "Polygons in the collection may touch only at a finite number of points."
 msgstr ""
+"Un MultiPolygon est une collection de Polygons, non superposés et non "
+"adjacents. Les polygones de la collection peuvent se toucher, mais "
+"uniquement en un nombre fini de points."
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:167
 #, no-c-format
 msgid "MULTIPOLYGON (((1 5, 5 5, 5 1, 1 1, 1 5)), ((6 5, 9 1, 6 1, 6 5)))"
-msgstr ""
+msgstr "MULTIPOLYGON (((1 5, 5 5, 5 1, 1 1, 1 5)), ((6 5, 9 1, 6 1, 6 5)))"
 
 #. Tag: title
 #: using_postgis_dataman.xml:171
 #, no-c-format
 msgid "GeometryCollection"
-msgstr ""
+msgstr "GeometryCollection"
 
 #. Tag: para
 #: using_postgis_dataman.xml:172
@@ -333,18 +442,20 @@ msgstr ""
 msgid ""
 "A GeometryCollection is a heterogeneous (mixed) collection of geometries."
 msgstr ""
+"Le type GeometryCollection représente une collection hétérogène de "
+"géométries (i.e. de types différents)."
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:173
 #, no-c-format
 msgid "GEOMETRYCOLLECTION ( POINT(2 3), LINESTRING(2 3, 3 4))"
-msgstr ""
+msgstr "GEOMETRYCOLLECTION ( POINT(2 3), LINESTRING(2 3, 3 4))"
 
 #. Tag: title
 #: using_postgis_dataman.xml:177
 #, no-c-format
 msgid "PolyhedralSurface"
-msgstr ""
+msgstr "PolyhedralSurface"
 
 #. Tag: para
 #: using_postgis_dataman.xml:178
@@ -354,6 +465,10 @@ msgid ""
 "share some edges. Each patch is a planar Polygon. If the Polygon coordinates "
 "have Z ordinates then the surface is 3-dimensional."
 msgstr ""
+"Le type PolyhedralSurface modélise une surface polyédrique, sous la forme "
+"d'une collection de faces qui partagent des arêtes. Chaque face est un "
+"Polygon plan. Si les coordonnées du Polygon ont une dimension Z, alors la "
+"surface est de dimension 3."
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:181
@@ -367,12 +482,19 @@ msgid ""
 "  ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),\n"
 "  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )"
 msgstr ""
+"POLYHEDRALSURFACE Z (\n"
+"  ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"  ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),\n"
+"  ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"  ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),\n"
+"  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )"
 
 #. Tag: title
 #: using_postgis_dataman.xml:185
 #, no-c-format
 msgid "Triangle"
-msgstr ""
+msgstr "Triangle"
 
 #. Tag: para
 #: using_postgis_dataman.xml:186
@@ -382,6 +504,9 @@ msgid ""
 "Because a Triangle is a polygon it is specified by four coordinates, with "
 "the first and fourth being equal."
 msgstr ""
+"Un Triangle est un polygone définit par trois sommets non colinéaires. Un "
+"Triangle étant un Polygon, et donc est fermé, il est définit par quatre "
+"coordonnées, la première et la dernière étant égales."
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:190
@@ -393,7 +518,7 @@ msgstr "TRIANGLE ((0 0, 0 9, 9 0, 0 0))"
 #: using_postgis_dataman.xml:194
 #, no-c-format
 msgid "<title>TIN</title>"
-msgstr ""
+msgstr "<title>TIN</title>"
 
 #. Tag: para
 #: using_postgis_dataman.xml:195
@@ -404,6 +529,10 @@ msgid ""
 "wikipedia.org/wiki/Triangulated_irregular_network\">Triangulated Irregular "
 "Network</ulink>."
 msgstr ""
+"Un TIN est une collection de <link linkend=\"Triangle\">Triangle</link>s non "
+"superposés, représentant un réseau irrégulier triangulé (<ulink url=\"https"
+"://en.wikipedia.org/wiki/Triangulated_irregular_network\">Triangulated "
+"Irregular Network</ulink>)."
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:199
@@ -411,6 +540,7 @@ msgstr ""
 msgid ""
 "TIN Z ( ((0 0 0, 0 0 1, 0 1 0, 0 0 0)), ((0 0 0, 0 1 0, 1 1 0, 0 0 0)) )"
 msgstr ""
+"TIN Z ( ((0 0 0, 0 0 1, 0 1 0, 0 0 0)), ((0 0 0, 0 1 0, 1 1 0, 0 0 0)) )"
 
 #. Tag: title
 #: using_postgis_dataman.xml:206
@@ -585,7 +715,7 @@ msgstr ""
 #: using_postgis_dataman.xml:281
 #, no-c-format
 msgid "WKT and WKB"
-msgstr ""
+msgstr "WKT et WKB"
 
 #. Tag: para
 #: using_postgis_dataman.xml:283
@@ -596,6 +726,10 @@ msgid ""
 "Both WKT and WKB include information about the type of the object and the "
 "coordinates which define it."
 msgstr ""
+"La spécification OGC SFA définit deux formats pour représenter des valeurs "
+"géométriques : Well-Known Text (WKT) et Well-Known Binary (WKB). Ces deux "
+"formats incluent les informations sur le type d'objet et sur les coordonnées "
+"qui le définissent."
 
 #. Tag: para
 #: using_postgis_dataman.xml:288
@@ -604,6 +738,9 @@ msgid ""
 "Well-Known Text (WKT) provides a standard textual representation of spatial "
 "data. Examples of WKT representations of spatial objects are:"
 msgstr ""
+"Well-Known Text (WKT) fournit un standard pour représenter de façon "
+"textuelle des données spatiales. Voici quelques exemples de représentations "
+"WKT :"
 
 #. Tag: para
 #: using_postgis_dataman.xml:293
@@ -615,19 +752,19 @@ msgstr "POINT(0 0)"
 #: using_postgis_dataman.xml:297
 #, no-c-format
 msgid "POINT Z (0 0 0)"
-msgstr ""
+msgstr "POINT Z (0 0 0)"
 
 #. Tag: para
 #: using_postgis_dataman.xml:301
 #, no-c-format
 msgid "POINT ZM (0 0 0 0)"
-msgstr ""
+msgstr "POINT ZM (0 0 0 0)"
 
 #. Tag: para
 #: using_postgis_dataman.xml:305
 #, no-c-format
 msgid "POINT EMPTY"
-msgstr ""
+msgstr "POINT EMPTY"
 
 #. Tag: para
 #: using_postgis_dataman.xml:309
@@ -639,7 +776,7 @@ msgstr "LINESTRING(0 0,1 1,1 2)"
 #: using_postgis_dataman.xml:313
 #, no-c-format
 msgid "LINESTRING EMPTY"
-msgstr ""
+msgstr "LINESTRING EMPTY"
 
 #. Tag: para
 #: using_postgis_dataman.xml:317
@@ -657,13 +794,13 @@ msgstr "MULTIPOINT((0 0),(1 2))"
 #: using_postgis_dataman.xml:325
 #, no-c-format
 msgid "MULTIPOINT Z ((0 0 0),(1 2 3))"
-msgstr ""
+msgstr "MULTIPOINT Z ((0 0 0),(1 2 3))"
 
 #. Tag: para
 #: using_postgis_dataman.xml:329
 #, no-c-format
 msgid "MULTIPOINT EMPTY"
-msgstr ""
+msgstr "MULTIPOINT EMPTY"
 
 #. Tag: para
 #: using_postgis_dataman.xml:333
@@ -691,7 +828,7 @@ msgstr "GEOMETRYCOLLECTION(POINT(2 3),LINESTRING(2 3,3 4))"
 #: using_postgis_dataman.xml:346
 #, no-c-format
 msgid "GEOMETRYCOLLECTION EMPTY"
-msgstr ""
+msgstr "GEOMETRYCOLLECTION EMPTY"
 
 #. Tag: para
 #: using_postgis_dataman.xml:350
@@ -700,6 +837,8 @@ msgid ""
 "Input and output of WKT is provided by the functions <xref "
 "linkend=\"ST_AsText\"/> and <xref linkend=\"ST_GeomFromText\"/>:"
 msgstr ""
+"Des méthodes d'entrée/sortie en WKT sont fournies via les fonctions <xref "
+"linkend=\"ST_AsText\"/> et <xref linkend=\"ST_GeomFromText\"/> :"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:353
@@ -708,6 +847,8 @@ msgid ""
 "text WKT = ST_AsText(geometry);\n"
 "geometry = ST_GeomFromText(text WKT, SRID);"
 msgstr ""
+"text WKT = ST_AsText(geometry);\n"
+"geometry = ST_GeomFromText(text WKT, SRID);"
 
 #. Tag: para
 #: using_postgis_dataman.xml:355
@@ -716,6 +857,8 @@ msgid ""
 "For example, a statement to create and insert a spatial object from WKT and "
 "a SRID is:"
 msgstr ""
+"Par exemple, une requête pour créer et insérer une objet spatial sous forme "
+"de WKT et avec un SRID :"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:357
@@ -724,6 +867,8 @@ msgid ""
 "INSERT INTO geotable ( geom, name )\n"
 "  VALUES ( ST_GeomFromText('POINT(-126.4 45.32)', 312), 'A Place');"
 msgstr ""
+"INSERT INTO geotable ( geom, nom )\n"
+"  VALUES ( ST_GeomFromText('POINT(-126.4 45.32)', 312), 'Un lieu');"
 
 #. Tag: para
 #: using_postgis_dataman.xml:359
@@ -733,24 +878,27 @@ msgid ""
 "of spatial data as binary data (arrays of bytes). Examples of the WKB "
 "representations of spatial objects are:"
 msgstr ""
+"Well-Known Binary (WKB) fournit un moyen portable et sans perte de précision "
+"pour représenter des données spatiales sous la forme de données binaires ("
+"tableau d'octets). Voici quelques exemples de représentations WKB :"
 
 #. Tag: para
 #: using_postgis_dataman.xml:365
 #, no-c-format
 msgid "WKT: POINT(1 1)"
-msgstr ""
+msgstr "WKT : POINT(1 1)"
 
 #. Tag: para
 #: using_postgis_dataman.xml:366
 #, no-c-format
 msgid "WKB: 0101000000000000000000F03F000000000000F03"
-msgstr ""
+msgstr "WKB : 0101000000000000000000F03F000000000000F03"
 
 #. Tag: para
 #: using_postgis_dataman.xml:370
 #, no-c-format
 msgid "WKT: LINESTRING (2 2, 9 9)"
-msgstr ""
+msgstr "WKT : LINESTRING (2 2, 9 9)"
 
 #. Tag: para
 #: using_postgis_dataman.xml:371
@@ -759,6 +907,8 @@ msgid ""
 "WKB: "
 "0102000000020000000000000000000040000000000000004000000000000022400000000000002240"
 msgstr ""
+"WKB : 01020000000200000000000000000000400000000000000040000000000000224000000"
+"00000002240"
 
 #. Tag: para
 #: using_postgis_dataman.xml:375
@@ -767,6 +917,8 @@ msgid ""
 "Input and output of WKB is provided by the functions <xref "
 "linkend=\"ST_AsBinary\"/> and <xref linkend=\"ST_GeomFromWKB\"/>:"
 msgstr ""
+"Des méthodes d'entrée/sortie en WKB sont fournies via les fonctions <xref "
+"linkend=\"ST_AsBinary\"/> et <xref linkend=\"ST_GeomFromWKB\"/> :"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:378
@@ -775,6 +927,8 @@ msgid ""
 "bytea WKB = ST_AsBinary(geometry);\n"
 "geometry = ST_GeomFromWKB(bytea WKB, SRID);"
 msgstr ""
+"bytea WKB = ST_AsBinary(geometry);\n"
+"geometry = ST_GeomFromWKB(bytea WKB, SRID);"
 
 #. Tag: para
 #: using_postgis_dataman.xml:380
@@ -782,6 +936,8 @@ msgstr ""
 msgid ""
 "For example, a statement to create and insert a spatial object from WKB is:"
 msgstr ""
+"Par exemple, une requête pour créer et insérer une objet spatial sous forme "
+"de WKB :"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:383
@@ -791,12 +947,15 @@ msgid ""
 "  VALUES ( ST_GeomFromWKB('\\x0101000000000000000000f03f000000000000f03f', "
 "312), 'A Place');"
 msgstr ""
+"INSERT INTO geotable ( geom, nom )\n"
+"  VALUES ( ST_GeomFromWKB('\\x0101000000000000000000f03f000000000000f03f', "
+"312), 'Un lieu');"
 
 #. Tag: title
 #: using_postgis_dataman.xml:389
 #, no-c-format
 msgid "Geometry Data Type"
-msgstr ""
+msgstr "Type de données Geometry"
 
 #. Tag: para
 #: using_postgis_dataman.xml:391
@@ -809,6 +968,12 @@ msgid ""
 "allows modelling spatial features as rows of tables defined with a column of "
 "type <varname>geometry</varname>."
 msgstr ""
+"PostGIS implémente le modèle Simple Features de l'OGC via un type PostgreSQL "
+"<varname>geometry</varname>. Ce type représente tous les sous-types de "
+"géométries en utilisant un type interne (voir <xref linkend=\"GeometryType\"/"
+"> et <xref linkend=\"ST_GeometryType\"/>). Cela permet de modéliser les "
+"entités spatiales comme lignes de tables qui contiennent une colonne de type "
+"<varname>geometry</varname>."
 
 #. Tag: para
 #: using_postgis_dataman.xml:399
@@ -823,6 +988,15 @@ msgid ""
 "emphasis></ulink> (SFS) specification, as well many others. See <xref "
 "linkend=\"reference\"/> for the full list of functions."
 msgstr ""
+"Le type <varname>geometry</varname> est <emphasis>opaque</emphasis>, ce qui "
+"veut dire que tout accès est fait en appelant des fonctions sur les valeurs "
+"géométriques. Des fonctions permettent la création d'objets géométriques, "
+"l'accès et la mise à jour des champs internes, ainsi que le calcul de "
+"nouvelles valeurs géométriques. PostGIS supporte toutes les fonctions "
+"spécifiées par la spécification OGC <ulink url=\"https://portal.ogc.org/"
+"files/?artifact_id=25354\"><emphasis>Simple feature access - Part 2: SQL "
+"option</emphasis></ulink> (SFS), ainsi que de nombreuses autres. voir <xref "
+"linkend=\"reference\"/> pour une liste complète des fonctions disponibles."
 
 #. Tag: para
 #: using_postgis_dataman.xml:410
@@ -833,6 +1007,11 @@ msgid ""
 "temporal part of the standard was never developed. Instead it can be "
 "interpreted as \"Spatial Type\"."
 msgstr ""
+"PostGIS respecte le standard SFA en préfixant toutes les fonctions spatiales "
+"par \"ST_\". Initialement, cela voulait dire \"Spatial and Temporal\" ("
+"Spatial et Temporel), mais l'aspect temporel du standard n'a pas été "
+"développé. À la place, ceci peut être interprété comme \"Spatial Type\" ("
+"Type Spatial)."
 
 #. Tag: para
 #: using_postgis_dataman.xml:417
@@ -843,6 +1022,11 @@ msgid ""
 "for insertion into the database (it may be defaulted to 0). See <xref "
 "linkend=\"ST_SRID\"/> and <xref linkend=\"spatial_ref_sys\"/>"
 msgstr ""
+"La standard SFA spécifie que les objets spatiaux doivent inclure un "
+"identifiant de système de coordonnées de référence (SRID). Ce SRID est "
+"obligatoire lors de la création d'objets spatiaux pour l'insertion dans la "
+"base de données (mais peut être défini par défaut à 0). Voir <xref linkend="
+"\"ST_SRID\"/> et <xref linkend=\"spatial_ref_sys\"/>"
 
 #. Tag: para
 #: using_postgis_dataman.xml:422
@@ -852,12 +1036,16 @@ msgid ""
 "indexes, and spatial operators to use them. See <xref linkend=\"build-"
 "indexes\"/> and <xref linkend=\"using-query-indexes\"/> for details."
 msgstr ""
+"Pour optimiser les requêtes sur les géométries, PostGIS définit plusieurs "
+"types d'index spatiaux, ainsi que des opérateurs spatiaux pour les utiliser. "
+"Voir <xref linkend=\"build-indexes\"/> et <xref linkend=\"using-query-"
+"indexes\"/> pour plus d'informations."
 
 #. Tag: title
 #: using_postgis_dataman.xml:428
 #, no-c-format
 msgid "PostGIS EWKB and EWKT"
-msgstr ""
+msgstr "PostGIS EWKB et EWKT"
 
 #. Tag: para
 #: using_postgis_dataman.xml:430
@@ -869,6 +1057,11 @@ msgid ""
 "support for 3D (ZYZ) and measured (XYM and XYZM) coordinates, but still does "
 "not include the SRID value."
 msgstr ""
+"Les spécifications OGC SFA ne supportaient initialement que les géométries "
+"2D, et le SRID de la géométrie n'est pas inclut dans les représentations "
+"d'entrée/sortie. La spécification OGC SFA 1.2.1 (qui est alignée avec le "
+"standard ISO 19125) ajoute le support pour la 3D (ZYZ) et les mesures (XYM "
+"et XYZM), mais n'inclut toujours pas la valeur du SRID."
 
 #. Tag: para
 #: using_postgis_dataman.xml:436
@@ -879,6 +1072,12 @@ msgid ""
 "SRID information. Including all geometry information allows PostGIS to use "
 "EWKB as the format of record (e.g. in DUMP files)."
 msgstr ""
+"À cause de ces limitations, PostGIS définit les formats étendus EWKB (("
+"Extended Well-Known Binary) et EWKT (Extended Well-Known Text). Ils "
+"supportent la 3D (XYZ et XYM) et 4D (XYZM) et incluent l'information de "
+"SRID. Le format EWKB incluant toutes les informations de la géométrie, cela "
+"permet à PostGIS d'utiliser ce format pour les enregistrements (e.g. dans "
+"les fichiers DUMP)."
 
 #. Tag: para
 #: using_postgis_dataman.xml:442
@@ -891,6 +1090,14 @@ msgid ""
 "<varname>::geometry</varname>. For output, the canonical form for binary is "
 "EWKB, and for text it is HEXEWKB (hex-encoded EWKB)."
 msgstr ""
+"EWKB et EWKT sont utilisés pour les \"formes canoniques\" des objets "
+"spatiaux de PostGIS. En tant qu'entrée, la forme canonique pour les données "
+"binaires est EWKB ; pour les données textuelles EWKB et EWKT sont tous deux "
+"acceptés. Cela permet de créer des valeurs géométriques en transtypant une "
+"valeur textuelle en HEXEWKB ou EWKT vers une valeur géométrique en utilisant "
+"<varname>::geometry</varname>. Pour la sortie, la forme canonique pour les "
+"données binaires est EWKB et HEXEWKB (hex-encoded EWKB) pour les données "
+"textuelles."
 
 #. Tag: para
 #: using_postgis_dataman.xml:451
@@ -899,6 +1106,9 @@ msgid ""
 "For example this statement creates a geometry by casting from an EWKT text "
 "value, and outputs it using the canonical form of HEXEWKB:"
 msgstr ""
+"Par exemple, cette requête créé une géométrie en transtypant depuis une "
+"chaîne de caractères contenant du EKWT, et retourne sa valeur sous sa forme "
+"canonique en HEXEWKB :"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:454
@@ -909,66 +1119,70 @@ msgid ""
 "  ----------------------------------------------------\n"
 "  01010000200400000000000000000000000000000000000000"
 msgstr ""
+"SELECT 'SRID=4;POINT(0 0)'::geometry;\n"
+"  geometry\n"
+"  ----------------------------------------------------\n"
+"  01010000200400000000000000000000000000000000000000"
 
 #. Tag: para
 #: using_postgis_dataman.xml:456
 #, no-c-format
 msgid "PostGIS EWKT output has a few differences to OGC WKT:"
-msgstr ""
+msgstr "La sortie PostGIS EWKT a quelques différences avec le OGC WKT :"
 
 #. Tag: para
 #: using_postgis_dataman.xml:460
 #, no-c-format
 msgid "For 3DZ geometries the Z qualifier is omitted:"
-msgstr ""
+msgstr "Pour les géométries 3DZ, le qualificatif Z est omis :"
 
 #. Tag: para
 #: using_postgis_dataman.xml:461
 #, no-c-format
 msgid "OGC: POINT Z (1 2 3)"
-msgstr ""
+msgstr "OGC : POINT Z (1 2 3)"
 
 #. Tag: para
 #: using_postgis_dataman.xml:462
 #, no-c-format
 msgid "EWKT: POINT (1 2 3)"
-msgstr ""
+msgstr "EWKT : POINT (1 2 3)"
 
 #. Tag: para
 #: using_postgis_dataman.xml:465
 #, no-c-format
 msgid "For 3DM geometries the M qualifier is included:"
-msgstr ""
+msgstr "Pour les géométries 3DM, le qualificatif M est inclus :"
 
 #. Tag: para
 #: using_postgis_dataman.xml:466
 #, no-c-format
 msgid "OGC: POINT M (1 2 3)"
-msgstr ""
+msgstr "OGC : POINT M (1 2 3)"
 
 #. Tag: para
 #: using_postgis_dataman.xml:467
 #, no-c-format
 msgid "EWKT: POINTM (1 2 3)"
-msgstr ""
+msgstr "EWKT : POINTM (1 2 3)"
 
 #. Tag: para
 #: using_postgis_dataman.xml:470
 #, no-c-format
 msgid "For 4D geometries the ZM qualifier is omitted:"
-msgstr ""
+msgstr "Pour les géométries 4D, le qualificatif ZM est omis :"
 
 #. Tag: para
 #: using_postgis_dataman.xml:471
 #, no-c-format
 msgid "OGC: POINT ZM (1 2 3 4)"
-msgstr ""
+msgstr "OGC : POINT ZM (1 2 3 4)"
 
 #. Tag: para
 #: using_postgis_dataman.xml:472
 #, no-c-format
 msgid "EWKT: POINT (1 2 3 4)"
-msgstr ""
+msgstr "EWKT : POINT (1 2 3 4)"
 
 #. Tag: para
 #: using_postgis_dataman.xml:476
@@ -977,24 +1191,26 @@ msgid ""
 "EWKT avoids over-specifying dimensionality and the inconsistencies that can "
 "occur with the OGC/ISO format, such as:"
 msgstr ""
+"EWKT évite de sur-spécifier les dimensions et ainsi éviter les "
+"inconsistances possibles avec le format OGC/ISO, comme :"
 
 #. Tag: para
 #: using_postgis_dataman.xml:482
 #, no-c-format
 msgid "POINT ZM (1 1)"
-msgstr ""
+msgstr "POINT ZM (1 1)"
 
 #. Tag: para
 #: using_postgis_dataman.xml:485
 #, no-c-format
 msgid "POINT ZM (1 1 1)"
-msgstr ""
+msgstr "POINT ZM (1 1 1)"
 
 #. Tag: para
 #: using_postgis_dataman.xml:488
 #, no-c-format
 msgid "POINT (1 1 1 1)"
-msgstr ""
+msgstr "POINT (1 1 1 1)"
 
 #. Tag: para
 #: using_postgis_dataman.xml:493
@@ -1005,12 +1221,19 @@ msgid ""
 "the future, if the OGC extends a format in a way that conflicts with the "
 "PosGIS definition. Thus you SHOULD NOT rely on this compatibility!"
 msgstr ""
+"Les formats étendus PostGIS sont des sur-ensembles des formats OGC, donc les "
+"représentations valides WKB/WKT sont aussi des représentations EWKB/EWKT "
+"valides. Cependant, cela pourrait changer à l'avenir, si l'OGC définit un "
+"format qui rentrerait en conflit avec la définition de PosGIS. Vous ne "
+"devriez donc PAS vous appuyer sur cette compatibilité !"
 
 #. Tag: para
 #: using_postgis_dataman.xml:500
 #, no-c-format
 msgid "Examples of the EWKT text representation of spatial objects are:"
 msgstr ""
+"Voici quelques exemples de représentations d'objets spatiaux sous forme EWKT "
+":"
 
 #. Tag: para
 #: using_postgis_dataman.xml:504
@@ -1022,7 +1245,7 @@ msgstr "POINT(0 0 0) -- XYZ"
 #: using_postgis_dataman.xml:508
 #, no-c-format
 msgid "SRID=32632;POINT(0 0) -- XY with SRID"
-msgstr "SRID=32632;POINT(0 0) -- XY with SRID"
+msgstr "SRID=32632;POINT(0 0) -- XY avec SRID"
 
 #. Tag: para
 #: using_postgis_dataman.xml:512
@@ -1111,6 +1334,7 @@ msgid ""
 "Input and output using these formats is available using the following "
 "functions:"
 msgstr ""
+"Des méthodes d'entrée/sortie sont fournies via les fonctions suivantes :"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:564
@@ -1121,6 +1345,10 @@ msgid ""
 "geometry = ST_GeomFromEWKB(bytea EWKB);\n"
 "geometry = ST_GeomFromEWKT(text EWKT);"
 msgstr ""
+"bytea EWKB = ST_AsEWKB(geometry);\n"
+"text EWKT = ST_AsEWKT(geometry);\n"
+"geometry = ST_GeomFromEWKB(bytea EWKB);\n"
+"geometry = ST_GeomFromEWKT(text EWKT);"
 
 #. Tag: para
 #: using_postgis_dataman.xml:566
@@ -1129,6 +1357,8 @@ msgid ""
 "For example, a statement to create and insert a PostGIS spatial object using "
 "EWKT is:"
 msgstr ""
+"Par exemple, une requête pour créer et insérer une objet spatial sous forme "
+"de EWKT :"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:568
@@ -1137,12 +1367,14 @@ msgid ""
 "INSERT INTO geotable ( geom, name )\n"
 "  VALUES ( ST_GeomFromEWKT('SRID=312;POINTM(-126.4 45.32 15)'), 'A Place' )"
 msgstr ""
+"INSERT INTO geotable ( geom, nom )\n"
+"  VALUES ( ST_GeomFromEWKT('SRID=312;POINTM(-126.4 45.32 15)'), 'Un lieu' )"
 
 #. Tag: title
 #: using_postgis_dataman.xml:575
 #, no-c-format
 msgid "Geography Data Type"
-msgstr ""
+msgstr "Type de données Geography"
 
 #. Tag: para
 #: using_postgis_dataman.xml:577
@@ -1153,6 +1385,11 @@ msgid ""
 "called \"geodetic\" coordinates, or \"lat/lon\", or \"lon/lat\"). Geographic "
 "coordinates are spherical coordinates expressed in angular units (degrees)."
 msgstr ""
+"Le type de données PostGIS <varname>geography</varname> permet le support "
+"des entités spatiales utilisant un système de coordonnées géographique ("
+"parfois appelé géodésique, ou \"latitude/longitude\" ou \"longitude/"
+"latitude\"). Les coordonnées géographiques sont des coordonnées sphériques, "
+"exprimées en unités d'angle (degrés)."
 
 #. Tag: para
 #: using_postgis_dataman.xml:579
@@ -1165,6 +1402,12 @@ msgid ""
 "simpler to implement and faster to execute, but also makes them inaccurate "
 "for data on the spheroidal surface of the earth."
 msgstr ""
+"Le type geometry de PostGIS est lié à un plan. Ainsi, le chemin le plus "
+"court entre deux points sur un plan est la ligne droite. Les fonctions sur "
+"les types geometry (aires, distances, intersections, etc.) sont donc "
+"calculées en utilisant des lignes droites et les mathématiques cartésiennes. "
+"Cela permet des implémentations plus faciles et plus rapides à exécuter, "
+"mais cela devient imprécis lorsque la rotondité de la Terre entre en jeu."
 
 #. Tag: para
 #: using_postgis_dataman.xml:587
@@ -1176,6 +1419,12 @@ msgid ""
 "using arcs on the sphere. By taking the spheroidal shape of the world into "
 "account, the functions provide more accurate results."
 msgstr ""
+"Le type PostGIS geography repose sur un modèle sphérique. Le chemin le plus "
+"court entre deux points sur une sphère est l'arc de cercle. Les fonctions "
+"sur les types geography (aires, distances, intersections, etc.) sont donc "
+"calculées en utilisant des arcs de cercle sur une sphère. En prenant en "
+"compte la rotondité de la Terre, ces fonctions permettent d'avoir une "
+"meilleure précision."
 
 #. Tag: para
 #: using_postgis_dataman.xml:592
@@ -1187,6 +1436,12 @@ msgid ""
 "will expand. As a workaround one can convert back and forth between geometry "
 "and geography types."
 msgstr ""
+"Les mathématiques utilisées pour les calculs étant plus compliquées, moins "
+"de fonctions sont définies pour le type geography que pour le type geometry. "
+"De nouveaux algorithmes sont ajoutés au fur et à mesure des versions de "
+"PostGIS, donc le support du type geography s'étend petit à petit. Si une "
+"fonction n'est pas disponible, il est toutefois possible de convertir un "
+"type geography en geometry puis vice-versa."
 
 #. Tag: para
 #: using_postgis_dataman.xml:596
@@ -1200,6 +1455,13 @@ msgid ""
 "your own custom geodetic spatial reference system as described in <xref "
 "linkend=\"user-spatial-ref-sys\"/>."
 msgstr ""
+"Comme le type geometry, les données géographiques sont liées à un "
+"identifiant de système de coordonnées de référence (SRID). Tout système "
+"géodésique (reposant sur longitude/latitude) peut être utilisé, tant qu'il "
+"défini dans la table <varname>spatial_ref_sys</varname>. (Avant PostGIS 2.2, "
+"le type geography ne supportait que le SCR WGS 84 (SRID:4326)). Vous pouvez "
+"ajouter votre propre SCR géodésique, comme décrit dans <xref linkend=\"user-"
+"spatial-ref-sys\"/>."
 
 #. Tag: para
 #: using_postgis_dataman.xml:602
@@ -1210,12 +1472,17 @@ msgid ""
 ">, <xref linkend=\"ST_Perimeter\"/>, <xref linkend=\"ST_Area\"/>) and for "
 "the distance argument of <xref linkend=\"ST_DWithin\"/> are in meters."
 msgstr ""
+"Pour tous les systèmes de coordonnées de référence, les unités des valeurs "
+"retournées par les fonctions de mesure (e.g. <xref linkend=\"ST_Distance\"/"
+">, <xref linkend=\"ST_Length\"/>, <xref linkend=\"ST_Perimeter\"/>, <xref "
+"linkend=\"ST_Area\"/>) et le paramètre de distance de <xref linkend="
+"\"ST_DWithin\"/> sont en mètres."
 
 #. Tag: title
 #: using_postgis_dataman.xml:607
 #, no-c-format
 msgid "Creating Geography Tables"
-msgstr ""
+msgstr "Création de tables géographiques"
 
 #. Tag: para
 #: using_postgis_dataman.xml:609
@@ -1227,6 +1494,12 @@ msgid ""
 "varname>. The following example creates a table with a geography column "
 "storing 2D LineStrings in the WGS84 geodetic coordinate system (SRID 4326):"
 msgstr ""
+"Vous pouvez créer une table pour stocker des données géographiques en "
+"utilisant la requête SQL <ulink url=\"https://www.postgresql.org/docs/"
+"current/sql-createtable.html\">CREATE TABLE</ulink>, avec une colonne de "
+"type <varname>geography</varname>. L'exemple suivant créé une table avec une "
+"colonne géographique pour stocker des lignes 2D dans un SCR géodésique WGS84 "
+"(SRID 4326) :"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:615
@@ -1238,12 +1511,17 @@ msgid ""
 "    location geography(POINT,4326)\n"
 "  );"
 msgstr ""
+"CREATE TABLE global_points (\n"
+"    id SERIAL PRIMARY KEY,\n"
+"    name VARCHAR(64),\n"
+"    location geography(POINT,4326)\n"
+"  );"
 
 #. Tag: para
 #: using_postgis_dataman.xml:617
 #, no-c-format
 msgid "The geography type supports two optional type modifiers:"
-msgstr ""
+msgstr "Le type geography supporte deux modificateurs de type :"
 
 #. Tag: para
 #: using_postgis_dataman.xml:621
@@ -1259,6 +1537,15 @@ msgid ""
 "third dimension as a measure. Similarly, 'POINTZM' requires four dimensional "
 "(XYZM) data."
 msgstr ""
+"le modificateur de type spatial restreint le type de formes et dimensions de "
+"la colonne. Les valeurs permises pour le type spatial sont : POINT, "
+"LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, MULTIPOLYGON, "
+"GEOMETRYCOLLECTION. Le type geography ne supporte pas les CURVEs, TINS, ni "
+"POLYHEDRALSURFACEs. Le modificateur permet de restreindre la dimension, en "
+"ajoutant les suffixes : Z, M ou ZM. Par exemple, un modificateur "
+"'LINESTRINGM' permet uniquement de stocker des LineStrings en 3D, et traite "
+"la troisième dimension comme une mesure. De façon similaire, 'POINTZM' "
+"limite aux données 4D (XYZM)."
 
 #. Tag: para
 #: using_postgis_dataman.xml:630
@@ -1268,12 +1555,15 @@ msgid ""
 "particular number. If omitted, the SRID defaults to 4326 (WGS84 geodetic), "
 "and all calculations are performed using WGS84."
 msgstr ""
+"le modificateur SRID restreint à un SCR spécifique. Si omis, le SRID 4326 ("
+"WGS84 géodésique) est utilisé, et tous les calculs sont effectués en "
+"utilisant WGS84."
 
 #. Tag: para
 #: using_postgis_dataman.xml:638
 #, no-c-format
 msgid "Examples of creating tables with geography columns:"
-msgstr ""
+msgstr "Exemples de création de tables utilisant des colonnes géographiques :"
 
 #. Tag: para
 #: using_postgis_dataman.xml:641
@@ -1282,12 +1572,14 @@ msgid ""
 "Create a table with 2D POINT geography with the default SRID 4326 (WGS84 "
 "long/lat):"
 msgstr ""
+"Création d'une table avec une géographie POINT 2D avec le SRID par défaut "
+"4326 (WGS84 longitude/latitude) :"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:642
 #, no-c-format
 msgid "CREATE TABLE ptgeogwgs(gid serial PRIMARY KEY, geog geography(POINT) );"
-msgstr ""
+msgstr "CREATE TABLE ptgeogwgs(gid serial PRIMARY KEY, geog geography(POINT) );"
 
 #. Tag: para
 #: using_postgis_dataman.xml:645
@@ -3996,7 +4288,7 @@ msgstr ""
 #, no-c-format
 msgid "CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometryfield] );"
 msgstr ""
-"CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometryfield] );"
+"CREATE INDEX [nom_index] ON [nom_table] USING GIST ( [colonne_geometrique] );"
 
 #. Tag: para
 #: using_postgis_dataman.xml:2162
@@ -4013,7 +4305,7 @@ msgid ""
 "CREATE INDEX [indexname] ON [tablename] USING GIST ([geometryfield] "
 "gist_geometry_ops_nd);"
 msgstr ""
-"CREATE INDEX [indexname] ON [tablename] USING GIST ([geometryfield] "
+"CREATE INDEX [nom_index] ON [nom_table] USING GIST ([colonne_geometrie] "
 "gist_geometry_ops_nd);"
 
 #. Tag: para
