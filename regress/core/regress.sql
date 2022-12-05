@@ -341,7 +341,7 @@ ORDER BY 2;
 
 -- Make sure all postgis functions are owned by the
 -- same role as postgis_lib_version
-SELECT DISTINCT 'unexpected ownership', proname || ':' || proowner::regrole
+SELECT DISTINCT 'unexpected ownership', oid::regprocedure,  proowner::regrole
 FROM pg_proc
 WHERE (
 	probin like '%postgis%'
@@ -359,6 +359,19 @@ AND proowner !=
 )
 ORDER BY 2;
 
+-- Make sure all postgis functions are SECURITY INVOKER
+SELECT DISTINCT 'unexpected security definer', oid::regprocedure, prosecdef
+FROM pg_proc
+WHERE (
+	probin like '%postgis%'
+  OR (
+		probin is null and
+		oid::regprocedure::text like 'st\_%' or
+		oid::regprocedure::text like 'postgis_%'
+	)
+)
+AND prosecdef
+ORDER BY oid;
 
 SELECT 'UNEXPECTED', postgis_full_version()
 	WHERE postgis_full_version() LIKE '%UNPACKAGED%'

@@ -1,0 +1,43 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2022 Sandro Santilli <strk@kbt.io>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+--{
+-- RenameTopology(old_name, new_name)
+--
+-- Renames a topology, returns new name.
+--
+CREATE OR REPLACE FUNCTION topology.RenameTopology(old_name varchar, new_name varchar)
+RETURNS varchar
+AS
+$BODY$
+DECLARE
+  sql text;
+BEGIN
+
+  sql := format(
+    'ALTER SCHEMA %I RENAME TO %I',
+    old_name, new_name
+  );
+  EXECUTE sql;
+
+  sql := format(
+    'UPDATE topology.topology SET name = %L WHERE name = %L',
+    new_name, old_name
+  );
+  EXECUTE sql;
+
+  RETURN new_name;
+END
+$BODY$
+LANGUAGE 'plpgsql' VOLATILE STRICT;
+--
+--} RenameTopology

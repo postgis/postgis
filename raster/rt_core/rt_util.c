@@ -106,7 +106,10 @@ rt_util_gdal_resample_alg(const char *algname) {
 		return GRA_Cubic;
 	else if (strcmp(algname, "LANCZOS") == 0)
 		return GRA_Lanczos;
-
+	else if (strcmp(algname, "MAX") == 0)
+		return GRA_Max;
+	else if (strcmp(algname, "MIN") == 0)
+		return GRA_Min;
 	return GRA_NearestNeighbour;
 }
 

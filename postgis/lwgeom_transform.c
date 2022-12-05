@@ -34,6 +34,7 @@
 
 Datum transform(PG_FUNCTION_ARGS);
 Datum transform_geom(PG_FUNCTION_ARGS);
+Datum transform_pipeline_geom(PG_FUNCTION_ARGS);
 Datum postgis_proj_version(PG_FUNCTION_ARGS);
 Datum LWGEOM_asKML(PG_FUNCTION_ARGS);
 
@@ -129,6 +130,51 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	rv = lwgeom_transform_from_str(geom, input_srs, output_srs);
 	pfree(input_srs);
 	pfree(output_srs);
+
+	if (rv == LW_FAILURE)
+	{
+		elog(ERROR, "coordinate transformation failed");
+		PG_RETURN_NULL();
+	}
+
+	/* Re-compute bbox if input had one (COMPUTE_BBOX TAINTING) */
+	geom->srid = result_srid;
+	if (geom->bbox)
+		lwgeom_refresh_bbox(geom);
+
+	gser_result = geometry_serialize(geom);
+	lwgeom_free(geom);
+	PG_FREE_IF_COPY(gser, 0);
+
+	PG_RETURN_POINTER(gser_result); /* new geometry */
+}
+
+
+/**
+ * transform_pipeline_geom( GEOMETRY, TEXT (input proj pipeline),
+ *	BOOL (is forward), INT (output srid)
+ */
+PG_FUNCTION_INFO_V1(transform_pipeline_geom);
+Datum transform_pipeline_geom(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *gser, *gser_result=NULL;
+	LWGEOM *geom;
+	char *input_pipeline;
+	bool is_forward;
+	int32 result_srid;
+	int rv;
+
+	/* Take a copy, since we will be altering the coordinates */
+	gser = PG_GETARG_GSERIALIZED_P_COPY(0);
+
+	/* Convert from text to cstring for libproj */
+	input_pipeline = text_to_cstring(PG_GETARG_TEXT_P(1));
+	is_forward = PG_GETARG_BOOL(2);
+	result_srid = PG_GETARG_INT32(3);
+
+	geom = lwgeom_from_gserialized(gser);
+	rv = lwgeom_transform_pipeline(geom, input_pipeline, is_forward);
+	pfree(input_pipeline);
 
 	if (rv == LW_FAILURE)
 	{

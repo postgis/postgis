@@ -434,7 +434,23 @@ INSERT INTO raster_gdalwarp_dst (rid, rast) VALUES (
 		NULL::raster,
 		FALSE
 	) FROM raster_gdalwarp_src)
-);
+), (
+	1.26, (SELECT ST_Resample(
+		rast,
+		500., 500.,
+		NULL, NULL,
+		0, 0,
+		'Max', 0
+	) FROM raster_gdalwarp_src)
+), (
+	1.27, (SELECT ST_Resample(
+		rast,
+		500., 500.,
+		NULL, NULL,
+		0, 0,
+		'Min', 0
+	) FROM raster_gdalwarp_src)
+) ;
 
 -- ST_Transform
 INSERT INTO raster_gdalwarp_dst (rid, rast) VALUES (
@@ -546,6 +562,18 @@ INSERT INTO raster_gdalwarp_dst (rid, rast) VALUES (
 		rast,
 		150, 125,
 		'Cubic'
+	) FROM raster_gdalwarp_src)
+), (
+	3.7, (SELECT ST_Rescale(
+		rast,
+		150, 125,
+		'Max', 0
+	) FROM raster_gdalwarp_src)
+), (
+	3.8, (SELECT ST_Rescale(
+		rast,
+		150, 125,
+		'Min', 0
 	) FROM raster_gdalwarp_src)
 );
 

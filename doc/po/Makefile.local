@@ -6,6 +6,9 @@ local-all: local-html comments
 local-html: symlinks
 	$(MAKE) html
 
+local-cheatsheets: symlinks
+	$(MAKE) cheatsheets
+
 local-pdf: symlinks
 	$(MAKE) pdf
 

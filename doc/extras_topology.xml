@@ -353,6 +353,56 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 				</para>
 			</refsection>
 		</refentry>
+	    <refentry id="RenameTopoGeometryColumn">
+			<refnamediv>
+				<refname>RenameTopoGeometryColumn</refname>
+				<refpurpose>Renames a topogeometry column</refpurpose>
+			</refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                     <funcprototype>
+                        <funcdef>topology.layer <function>RenameTopoGeometryColumn</function></funcdef>
+                        <paramdef><type>regclass </type>
+                        <parameter>layer_table</parameter></paramdef>
+                        <paramdef><type>name </type>
+                        <parameter>feature_column</parameter></paramdef>
+                        <paramdef><type>name </type>
+                        <parameter>new_name</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+This function changes the name of an existing TopoGeometry column
+ensuring metadata information about it is updated accordingly.
+                </para>
+
+                <!-- use this format if new function -->
+                <para>Availability: 3.4.0</para>
+
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+SELECT topology.RenameTopoGeometryColumn('public.parcels', 'topogeom', 'tgeom');
+                </programlisting>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+
+				<para>
+				  <xref linkend="AddTopoGeometryColumn"/>,
+				  <xref linkend="RenameTopology"/>
+				</para>
+			</refsection>
+		</refentry>
 		<refentry id="DropTopology">
 			<refnamediv>
 				<refname>DropTopology</refname>
@@ -391,6 +441,55 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 				<title>See Also</title>
 
 				<para><xref linkend="DropTopoGeometryColumn"/></para>
+			</refsection>
+		</refentry>
+		<refentry id="RenameTopology">
+			<refnamediv>
+				<refname>RenameTopology</refname>
+				<refpurpose>Renames a topology</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>varchar <function>RenameTopology</function></funcdef>
+						<paramdef><type>varchar </type> <parameter>old_name</parameter></paramdef>
+						<paramdef><type>varchar </type> <parameter>new_name</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Renames a topology schema updating its metadata record in
+topology.topology.
+		</para>
+
+                <!-- use this format if new function -->
+                <para>Availability: 3.4.0</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<para>
+This example renames a topology from <varname>topo_stage</varname> to
+<varname>topo_prod</varname>.
+				</para>
+				<programlisting>SELECT topology.RenameTopology('topo_stage', 'topo_prod');</programlisting>
+
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+
+				<para>>
+                    <xref linkend="CopyTopology" />,
+                    <xref linkend="RenameTopoGeometryColumn" />
+                </para>
 			</refsection>
 		</refentry>
 		<refentry id="DropTopoGeometryColumn">
@@ -1156,7 +1255,11 @@ This example makes a backup of a topology called ma_topo
 			<refsection>
 				<title>See Also</title>
 
-				<para><xref linkend="spatial_ref_sys"/>, <xref linkend="CreateTopology" /></para>
+				<para>
+                    <xref linkend="spatial_ref_sys"/>,
+                    <xref linkend="CreateTopology" />,
+                    <xref linkend="RenameTopology" />
+                </para>
 			</refsection>
 		</refentry>
 
@@ -4322,9 +4425,9 @@ The dump file format is a compressed tar archive of a
 at least a <filename>pgtopo_dump_version</filename> file with
 format version info. As of version <code>1</code> the directory
 contains tab-delimited CSV files with data of the topology
-primitive tables (node, edge_data, face, relation), of the
-topology and layer records associated with it, and optionall
-(if <code>--skip-layers</code> is not given) a custom-format
+primitive tables (node, edge_data, face, relation), the
+topology and layer records associated with it and
+(unless <code>--skip-layers</code> is given) a custom-format
 PostgreSQL dump of tables reported as being layers of the given
 topology.
         </para>

@@ -111,9 +111,45 @@ lwproj_from_str(const char* str_in, const char* str_out)
 	/* Allocate and populate return value */
 	LWPROJ *lp = lwalloc(sizeof(LWPROJ));
 	lp->pj = pj_norm; /* Caller is going to have to explicitly proj_destroy this */
+	lp->pipeline_is_forward = true;
 	lp->source_is_latlong = source_is_latlong;
 	lp->source_semi_major_metre = semi_major_metre;
 	lp->source_semi_minor_metre = semi_minor_metre;
+	return lp;
+}
+
+LWPROJ *
+lwproj_from_str_pipeline(const char* str_pipeline, bool is_forward)
+{
+	/* Usable inputs? */
+	if (!str_pipeline)
+		return NULL;
+
+	PJ* pj = proj_create(PJ_DEFAULT_CTX, str_pipeline);
+	if (!pj)
+		return NULL;
+
+	/* check we have a transform, not a crs */
+	if (proj_is_crs(pj))
+		return NULL;
+
+	/* Add in an axis swap if necessary */
+	PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX, pj);
+	if (!pj_norm)
+		pj_norm = pj;
+	/* Swap is not a copy of input? Clean up input */
+	else if (pj != pj_norm)
+		proj_destroy(pj);
+
+	/* Allocate and populate return value */
+	LWPROJ *lp = lwalloc(sizeof(LWPROJ));
+	lp->pj = pj_norm; /* Caller is going to have to explicitly proj_destroy this */
+	lp->pipeline_is_forward = is_forward;
+
+	/* this is stuff for geography calculations; doesn't matter here */
+	lp->source_is_latlong = LW_FALSE;
+	lp->source_semi_major_metre = DBL_MAX;
+	lp->source_semi_minor_metre = DBL_MAX;
 	return lp;
 }
 
@@ -148,6 +184,28 @@ lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 }
 
 int
+lwgeom_transform_pipeline(LWGEOM *geom, const char* pipelinestr, bool is_forward)
+{
+	LWPROJ *lp = lwproj_from_str_pipeline(pipelinestr, is_forward);
+	if (!lp)
+	{
+		PJ *pj_in = proj_create(PJ_DEFAULT_CTX, pipelinestr);
+		if (!pj_in)
+		{
+			proj_errno_reset(NULL);
+			lwerror("could not parse coordinate operation '%s'", pipelinestr);
+		}
+		proj_destroy(pj_in);
+		lwerror("%s: Failed to transform", __func__);
+		return LW_FAILURE;
+	}
+	int ret = lwgeom_transform(geom, lp);
+	proj_destroy(lp->pj);
+	lwfree(lp);
+	return ret;
+}
+
+int
 ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 {
 	uint32_t i;
@@ -158,13 +216,16 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 	int has_z = ptarray_has_z(pa);
 	double *pa_double = (double*)(pa->serialized_pointlist);
 
+	PJ_DIRECTION direction = pj->pipeline_is_forward ? PJ_FWD : PJ_INV;
+
 	/* Convert to radians if necessary */
-	if (proj_angular_input(pj->pj, PJ_FWD))
+	if (proj_angular_input(pj->pj, direction))
 	{
 		for (i = 0; i < pa->npoints; i++)
 		{
 			getPoint4d_p(pa, i, &p);
 			to_rad(&p);
+			ptarray_set_point4d(pa, i, &p);
 		}
 	}
 
@@ -174,7 +235,7 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 		PJ_XYZT v = {pa_double[0], pa_double[1], has_z ? pa_double[2] : 0.0, 0.0};
 		PJ_COORD c;
 		c.xyzt = v;
-		PJ_COORD t = proj_trans(pj->pj, PJ_FWD, c);
+		PJ_COORD t = proj_trans(pj->pj, direction, c);
 
 		int pj_errno_val = proj_errno_reset(pj->pj);
 		if (pj_errno_val)
@@ -198,7 +259,7 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 		 */
 
 		n_converted = proj_trans_generic(pj->pj,
-						 PJ_FWD,
+						 direction,
 						 pa_double,
 						 point_size,
 						 n_points, /* X */
@@ -228,12 +289,13 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 	}
 
 	/* Convert radians to degrees if necessary */
-	if (proj_angular_output(pj->pj, PJ_FWD))
+	if (proj_angular_output(pj->pj, direction))
 	{
 		for (i = 0; i < pa->npoints; i++)
 		{
 			getPoint4d_p(pa, i, &p);
 			to_dec(&p);
+			ptarray_set_point4d(pa, i, &p);
 		}
 	}
 

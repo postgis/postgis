@@ -6844,10 +6844,19 @@ WHERE rid = 2;
                     Resample a raster using a specified resampling algorithm, new dimensions (width &amp; height), a grid corner (gridx &amp; gridy) and a set of raster georeferencing attributes (scalex, scaley, skewx &amp; skewy) defined or borrowed from another raster. If using a reference raster, the two rasters must have the same SRID.
                 </para>
 
-                <para>
-                    New pixel values are computed using the NearestNeighbor (English or American spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. Default is NearestNeighbor which is the fastest but produce the worst interpolation.
-                </para>
+                <para>New pixel values are computed using one of the following resampling algorithms:</para>
 
+                <para><itemizedlist mark='bullet'>
+                    <listitem><para>NearestNeighbor (english or american spelling)</para></listitem>
+                    <listitem><para>Bilinear</para></listitem>
+                    <listitem><para>Cubic</para></listitem>
+                    <listitem><para>CubicSpline</para></listitem>
+                    <listitem><para>Lanczos</para></listitem>
+                    <listitem><para>Max</para></listitem>
+                    <listitem><para>Min</para></listitem>
+                </itemizedlist></para>
+
+                <para>The default is NearestNeighbor which is the fastest but results in the worst interpolation.</para>
                 <para>
                     A maxerror percent of 0.125 is used if no <varname>maxerr</varname> is specified.
                 </para>
@@ -6858,7 +6867,7 @@ WHERE rid = 2;
                     </para>
                 </note>
                 <para>Availability: 2.0.0 Requires GDAL 1.6.1+</para>
-                <para>Changed: 2.1.0 Parameter srid removed. Variants with a reference raster no longer applies the reference raster's SRID. Use ST_Transform() to reproject raster. Works on rasters with no SRID.</para>
+                <para>Enhanced: 3.4.0 max and min resampling options added</para>
             </refsection>
 
             <refsection>
@@ -6899,7 +6908,7 @@ FROM (
         <refentry id="RT_ST_Rescale">
             <refnamediv>
                 <refname>ST_Rescale</refname>
-                <refpurpose>Resample a raster by adjusting only its scale (or pixel size). New pixel values are computed using the NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. Default is NearestNeighbor.
+                <refpurpose>Resample a raster by adjusting only its scale (or pixel size). New pixel values are computed using the NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline, Lanczos, Max or Min resampling algorithm. Default is NearestNeighbor.
                     </refpurpose>
             </refnamediv>
 
@@ -6928,7 +6937,19 @@ FROM (
             <refsection>
                 <title>Description</title>
 
-                <para>Resample a raster by adjusting only its scale (or pixel size). New pixel values are computed using the NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. The default is NearestNeighbor which is the fastest but results in the worst interpolation.</para>
+                <para>Resample a raster by adjusting only its scale (or pixel size). New pixel values are computed using one of the following resampling algorithms:</para>
+
+                <para><itemizedlist mark='bullet'>
+                    <listitem><para>NearestNeighbor (english or american spelling)</para></listitem>
+                    <listitem><para>Bilinear</para></listitem>
+                    <listitem><para>Cubic</para></listitem>
+                    <listitem><para>CubicSpline</para></listitem>
+                    <listitem><para>Lanczos</para></listitem>
+                    <listitem><para>Max</para></listitem>
+                    <listitem><para>Min</para></listitem>
+                </itemizedlist></para>
+
+                <para>The default is NearestNeighbor which is the fastest but results in the worst interpolation.</para>
 
                 <para><varname>scalex</varname> and <varname>scaley</varname> define the new pixel size. scaley must often be negative to get well oriented raster.</para>
 
@@ -6941,6 +6962,7 @@ FROM (
                 <note><para>ST_Rescale is different from <xref linkend="RT_ST_SetScale" /> in that ST_SetScale do not resample the raster to match the raster extent. ST_SetScale only changes the metadata (or georeference) of the raster to correct an originally mis-specified scaling. ST_Rescale results in a raster having different width and height computed to fit the geographic extent of the input raster. ST_SetScale do not modify the width, nor the height of the raster.</para></note>
 
                 <para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
+                <para>Enhanced: 3.4.0 max and min resampling options added</para>
                 <para>Changed: 2.1.0 Works on rasters with no SRID</para>
             </refsection>
 

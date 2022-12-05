@@ -21,6 +21,9 @@
 
 #include "../postgis_config.h"
 
+#define _GNU_SOURCE /* for vasprintf */
+#include <stdio.h>
+
 #include "pgsql2shp-core.h"
 
 /* Solaris9 does not provide stdint.h */

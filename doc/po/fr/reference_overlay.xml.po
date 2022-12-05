@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-09-26 03:46+0000\n"
+"POT-Creation-Date: 2022-10-23 01:21+0000\n"
 "PO-Revision-Date: 2022-02-13 18:28+0000\n"
 "Last-Translator: H Santanna <delazj@gmail.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -713,7 +713,7 @@ msgstr ""
 #. Tag: para
 #: reference_overlay.xml:413
 #, no-c-format
-msgid "Polygon split by a Line"
+msgid "Split a Polygon by a Line."
 msgstr ""
 
 #. Tag: para
@@ -749,8 +749,8 @@ msgstr ""
 #: reference_overlay.xml:447
 #, no-c-format
 msgid ""
-"MultiLineString split by a Point, where the point lies exactly on both "
-"LineStrings."
+"Split a MultiLineString a Point, where the point lies exactly on both "
+"LineStrings elements."
 msgstr ""
 
 #. Tag: programlisting
@@ -775,7 +775,7 @@ msgstr ""
 #: reference_overlay.xml:482
 #, no-c-format
 msgid ""
-"LineString split by a Point, where the point does not lie exactly on the "
+"Split a LineString by a Point, where the point does not lie exactly on the "
 "line. Shows using <xref linkend=\"ST_Snap\"/> to snap the line to the point "
 "to allow it to be split."
 msgstr ""
@@ -788,16 +788,17 @@ msgid ""
 "  'LINESTRING(0 0, 100 100)'::geometry AS line,\n"
 "  'POINT(51 50)':: geometry AS point\n"
 ")\n"
-"SELECT ST_AsText( ST_Split(line, point)) AS no_split,\n"
-"       ST_AsText( ST_Split( ST_Snap(line, point, 1), point)) AS split\n"
+"SELECT ST_AsText( ST_Split( ST_Snap(line, point, 1), point)) AS "
+"snapped_split,\n"
+"       ST_AsText( ST_Split(line, point)) AS not_snapped_not_split\n"
 "       FROM data;\n"
 "\n"
-"                  no_split                   "
-"|                                split\n"
-"---------------------------------------------"
-"+---------------------------------------------------------------------\n"
-" GEOMETRYCOLLECTION(LINESTRING(0 0,100 100)) | "
-"GEOMETRYCOLLECTION(LINESTRING(0 0,51 50),LINESTRING(51 50,100 100))"
+"                            snapped_split                            "
+"|            not_snapped_not_split\n"
+"---------------------------------------------------------------------"
+"+---------------------------------------------\n"
+" GEOMETRYCOLLECTION(LINESTRING(0 0,51 50),LINESTRING(51 50,100 100)) | "
+"GEOMETRYCOLLECTION(LINESTRING(0 0,100 100))"
 msgstr ""
 
 #. Tag: para

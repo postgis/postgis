@@ -16,13 +16,14 @@
 # Vincent Picavet <vincent.ml@oslandia.com>, 2014
 # H Santanna <delazj@gmail.com>, 2022.
 # Regina Obe <regina@arrival3d.com>, 2022.
+# Thomas Muguet <thomas.muguet@oslandia.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2022-03-11 05:52+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2022-12-03 06:30+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/faqxml/fr/>"
 "\n"
 "Language: fr\n"
@@ -30,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: title
 #: faq.xml:3
@@ -56,6 +57,10 @@ msgid ""
 "packaged data as well as intro to working with OpenGeo Suite. It is probably "
 "the best tutorial on PostGIS."
 msgstr ""
+"Un guide étape par étape est disponible, <ulink url=\"http://postgis.net/"
+"workshops/postgis-intro/\">Introduction to PostGIS</ulink>. Il inclut un "
+"ensemble de données ainsi qu'une introduction à l'utilisation de la suite "
+"OpenGeo. C'est probablement le meilleur tutoriel sur PostGIS."
 
 #. Tag: para
 #: faq.xml:13
@@ -128,10 +133,9 @@ msgid ""
 "\"gist\" Error occurred. This worked fine in PostGIS 1.5."
 msgstr ""
 "Lorsque je charge des données OpenStreetMap avec osm2pgsql, je reçois une "
-"erreur : \n"
-"ERROR: operator class \"gist_geometry_ops\" does not exist for access method "
-"\"gist\" Error occurred.\n"
-"Tout marchait correctement avec PostGIS 1.5."
+"erreur : ERROR: operator class \"gist_geometry_ops\" does not exist for "
+"access method \"gist\" Error occurred. Tout marchait correctement avec "
+"PostGIS 1.5."
 
 #. Tag: para
 #: faq.xml:40
@@ -237,7 +241,7 @@ msgid ""
 "OpenJump, Safe FME, and some other tools?"
 msgstr ""
 "J'utilise PostgreSQL 9.0 et je ne peux plus accéder à la géométries de mes "
-"objets dans OpenJump, Safe FME ou tout autre logiciel"
+"objets dans OpenJump, Safe FME ou tout autre logiciel. Comment faire ?"
 
 #. Tag: para
 #: faq.xml:60
@@ -333,8 +337,8 @@ msgid ""
 "SELECT somefield FROM mytable WHERE geom IS NULL;"
 msgstr ""
 "-- Cela ne devrait retourner aucun résultat si tous les champs geom sont "
-"renseignés dans\n"
-"SELECT le_champ FROM ma_table WHERE geom IS NULL"
+"renseignés\n"
+"SELECT le_champ FROM ma_table WHERE geom IS NULL;"
 
 #. Tag: programlisting
 #: faq.xml:87
@@ -457,10 +461,9 @@ msgid ""
 msgstr ""
 "J'ai d'autres questions plus avancées sur le type geography, comme la taille "
 "d'une région géographique que je peux mettre dans une colonne geography pour "
-"continuer à avoir des requêtes performantes. Ou bien s'il y a des "
-"limitations, comme aux pôles, ou si toutes les données doivent tenir dans un "
-"hémisphère (comme dans SQL server 2008), ou bien sur la vitesse d'exécution, "
-"etc."
+"continuer à avoir des requêtes performantes. Y a-t-il des limitations, comme "
+"aux pôles, ou si toutes les données doivent tenir dans un hémisphère (comme "
+"dans SQL server 2008), ou bien sur la vitesse d'exécution, etc. ?"
 
 #. Tag: para
 #: faq.xml:137
@@ -512,6 +515,8 @@ msgid ""
 "CREATE TABLE gtest (id serial primary key, name varchar(20), geom "
 "geometry(LINESTRING));"
 msgstr ""
+"CREATE TABLE gtest (id serial primary key, name varchar(20), geom "
+"geometry(LINESTRING));"
 
 #. Tag: para
 #: faq.xml:158
@@ -523,7 +528,8 @@ msgid ""
 msgstr ""
 "Si la définition d'une colonne de géométrie échoue, vous n'avez probablement "
 "pas chargé les fonctions et les objets de PostGIS dans la base de données, "
-"ou vous utilisez une version de PostGIS antérieure à la 2.0. Voir "
+"ou vous utilisez une version de PostGIS antérieure à la 2.0. Voir <xref "
+"linkend=\"PGInstall\"/>."
 
 #. Tag: para
 #: faq.xml:162
@@ -535,7 +541,7 @@ msgid ""
 msgstr ""
 "Puis, vous pouvez insérer une géométrie dans la table en utilisant une "
 "requête SQL insert. L'objet SIG lui même est formaté en utilisant le format "
-"\"well-known text\" de l'OpenGIS Consortium."
+"\"well-known text\" de l'OpenGIS Consortium :"
 
 #. Tag: programlisting
 #: faq.xml:166
@@ -624,8 +630,8 @@ msgid ""
 msgstr ""
 "Pour les requêtes spatiales, il y a deux problèmes qui sont important à "
 "garder à l'esprit lors de la construction de vos requêtes : y a t'il un "
-"index spatial que vous pouvez utiliser et faîtes vous des calculs couteux "
-"sur un grand nombre de géométries. "
+"index spatial que vous pouvez utiliser et faîtes vous des calculs coûteux "
+"sur un grand nombre de géométries."
 
 #. Tag: para
 #: faq.xml:195
@@ -638,10 +644,10 @@ msgid ""
 "make queries much much faster."
 msgstr ""
 "En général, vous voulez utiliser l'\"opérateur intersects\" (&amp;&amp;) qui "
-"test si la boîte englobante de l'entité intersecte. La raison de l'utilité "
+"teste si la boîte englobante de l'entité intersecte. La raison de l'utilité "
 "de l'opérateur &amp;&amp; est que si un index spatial est disponible pour "
 "accélérer le test, l'opérateur &amp;&amp; l'utilisera. Cela rend les "
-"requêtes beaucoup plus rapide."
+"requêtes beaucoup plus rapides."
 
 #. Tag: para
 #: faq.xml:202
@@ -673,6 +679,10 @@ msgid ""
 "WHERE\n"
 "  ST_Contains(geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 msgstr ""
+"SELECT id, geom\n"
+"FROM thetable\n"
+"WHERE\n"
+"  ST_Contains(geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 
 #. Tag: para
 #: faq.xml:216
@@ -764,7 +774,7 @@ msgid ""
 "UPDATE_GEOMETRY_STATS()</command> command."
 msgstr ""
 "Pour PostgreSQL 7.4.x et antérieur, lancez la commande <command>SELECT "
-"UPDATE_GEOMETRY_STATS()</command>"
+"UPDATE_GEOMETRY_STATS()</command>."
 
 #. Tag: para
 #: faq.xml:254
@@ -799,7 +809,7 @@ msgstr ""
 "est comparable. Les R-Tree PostgreSQL ont deux limitations qui les rendent "
 "inintéressants pour une utilisation avec des objets SIG (notez que ces "
 "limitations sont dues à l'implémentation native des R-Tree dans PostgreSQL, "
-"pas au concept de R-Tree en général):"
+"pas au concept de R-Tree en général) :"
 
 #. Tag: para
 #: faq.xml:271
@@ -947,12 +957,19 @@ msgid ""
 "The below projects a geometry to NAD 83 long lat. The below will only work "
 "if the srid of geom is not -1 (not undefined spatial ref)"
 msgstr ""
+"Pour effectuer une reprojection, les systèmes de coordonnées source et "
+"destination doivent être définis dans la table SPATIAL_REF_SYS, et les "
+"géométries à reprojeter doivent déjà avoir un SRID défini. Si c'est le cas, "
+"reprojeter consiste simplement à spécifier le SRID de destination souhaité. "
+"La ligne suivante reprojete une géométrie vers NAD 83 long lat. Ceci ne "
+"marchera que si le SRID de geom n'est pas -1 (c'est-à-dire si la SRID est "
+"bien défini)"
 
 #. Tag: programlisting
 #: faq.xml:348
 #, no-c-format
 msgid "SELECT ST_Transform(geom,4269) FROM geotable;"
-msgstr ""
+msgstr "SELECT ST_Transform(geom,4269) FROM geotable;"
 
 #. Tag: para
 #: faq.xml:354
@@ -985,6 +1002,9 @@ msgid ""
 "                                SELECT count(gid) FROM geotable WHERE geom "
 "IS NULL;"
 msgstr ""
+"--Pour vérifier le nombre de géométries qui sont manquantes\n"
+"                                SELECT count(gid) FROM geotable WHERE geom "
+"IS NULL;"
 
 #. Tag: para
 #: faq.xml:367
@@ -1008,7 +1028,7 @@ msgstr ""
 "Cela arrive généralement dans deux configurations. Votre géométrie est "
 "invalide -- vérifier avec <xref linkend=\"ST_IsValid\"/> ou vous pensez que "
 "vos géométries s'intersectent du fait que ST_AsText tronque les chiffres et "
-"vous avez après de nombreuses décimales qui ne sont pas affichées. "
+"vous avez après de nombreuses décimales qui ne sont pas affichées."
 
 #. Tag: para
 #: faq.xml:379
@@ -1031,6 +1051,11 @@ msgid ""
 "distributed using the GPL? No. Similarly your software can use a PostgreSQL/"
 "PostGIS database as much as it wants and be under any license you like."
 msgstr ""
+"Presque assurément, non. Comme exemple, considérez une base de données "
+"Oracle fonctionnant sous Linux. Linux est GPL, Oracle ne l'est pas : est-ce "
+"qu'un Oracle tournant sous Linux doit être distribué en GPL ? Non. De façon "
+"similaire, votre logiciel peut utiliser une base de données PostgreSQL/"
+"PostGIS et utiliser la licence que vous souhaitez."
 
 #. Tag: para
 #: faq.xml:384
@@ -1045,6 +1070,14 @@ msgid ""
 "<emphasis>publish</emphasis> your source code, only that you share it with "
 "people you give binaries to."
 msgstr ""
+"La seule exception est si vous modifiez le code source de PostGIS, et que "
+"<emphasis>vous distribuez votre version modifiée</emphasis> de PostGIS. Dans "
+"ce cas, vous devez partager le code de votre version modifiée de PostGIS ("
+"mais pas le code de vos applications qui l'utilisent). Même dans ce cas, "
+"vous n'avez que l'obligation de distribuer le code source aux personnes à "
+"qui vous distribuez les binaires. La licence GPL ne vous oblige pas à "
+"<emphasis>publier</emphasis> votre code source, seulement à le partager "
+"auprès de ceux à qui vous donnez les binaires."
 
 #. Tag: para
 #: faq.xml:385
@@ -1055,6 +1088,9 @@ msgid ""
 "PostGIS already: using CGAL does not make PostGIS any more GPL than it was "
 "to start with."
 msgstr ""
+"Ceci est aussi valable si vous utilisez PostGIS avec les fonctionnalités "
+"optionnelles basées sur CGAL. Certaines parties de CGAL sont GPL, mais comme "
+"PostGIS l'est aussi, utiliser CGAL n'introduit pas plus de conditions."
 
 #. Tag: para
 #: faq.xml:391
@@ -1063,12 +1099,14 @@ msgid ""
 "Why are the results of overlay operations and spatial predicates sometimes "
 "inconsistent?"
 msgstr ""
+"Pourquoi les résultats des opérations de superposition et des prédicats "
+"spatiaux sont parfois inconsistants ?"
 
 #. Tag: para
 #: faq.xml:395
 #, no-c-format
 msgid "This is usually presented as a specific case, such as"
-msgstr ""
+msgstr "Ceci arrive la plupart du temps dans des cas spécifiques comme"
 
 #. Tag: para
 #: faq.xml:399
@@ -1076,12 +1114,15 @@ msgstr ""
 msgid ""
 "Why is <varname>ST_Contains( A, ST_Intersection(A, B) )</varname> false ?"
 msgstr ""
+"Pourquoi <varname>ST_Contains( A, ST_Intersection(A, B) )</varname> est faux "
+"?"
 
 #. Tag: para
 #: faq.xml:402
 #, no-c-format
 msgid "Why is <varname>ST_Contains( ST_Union(A, B), A ) )</varname> false ?"
 msgstr ""
+"Pourquoi <varname>ST_Contains( ST_Union(A, B), A ) )</varname> est faux ?"
 
 #. Tag: para
 #: faq.xml:405
@@ -1089,6 +1130,8 @@ msgstr ""
 msgid ""
 "Why is <varname>ST_Union( A, ST_Difference(A, B) )</varname> not equal to A ?"
 msgstr ""
+"Pourquoi <varname>ST_Union( A, ST_Difference(A, B) )</varname> n'est pas "
+"égal à A ?"
 
 #. Tag: para
 #: faq.xml:408
@@ -1097,6 +1140,8 @@ msgid ""
 "Why does <varname>ST_Difference(A, B)</varname> intersect the interior of "
 "<varname>B</varname> ?"
 msgstr ""
+"Pourquoi <varname>ST_Difference(A, B)</varname> intersecte l'intérieur de "
+"<varname>B</varname> ?"
 
 #. Tag: para
 #: faq.xml:412
@@ -1108,6 +1153,11 @@ msgid ""
 "inaccuracies occur, which cause results of different operations to be "
 "slightly inconsistent."
 msgstr ""
+"La raison est que PostGIS représente les géométries et effectue les calculs "
+"en utilisant des nombres flottants de précision finie. Ceci donne "
+"l'impression d'utiliser des nombres réels, mais ce n'est qu'une impression. "
+"Inévitablement, de petites imprécisions peuvent arriver, ce qui conduit à ce "
+"que les résultats de certaines opérations deviennent légèrement incohérentes."
 
 #. Tag: para
 #: faq.xml:417
@@ -1118,6 +1168,10 @@ msgid ""
 "errors from occurring. These minor alterations also may produce computed "
 "results which are not fully consistent."
 msgstr ""
+"De plus, les opérations PostGIS contiennent des logiques de prévention "
+"d'erreur, qui peuvent très légèrement altérer les géométries d'entrée pour "
+"garantir la robustesse. Ces altérations mineures peuvent également produire "
+"des résultats partiellement inconsistants."
 
 #. Tag: para
 #: faq.xml:422
@@ -1128,3 +1182,8 @@ msgid ""
 "Instead, consider using an area or distance-based tolerance in geometric "
 "comparisons."
 msgstr ""
+"La différence dans les résultats devrait toujours être très petite. Mais les "
+"requêtes ne doivent pas exiger une consistance parfaite lors de "
+"l'utilisation des résultats de superposition. À la place, il faut mieux "
+"utiliser une tolérance sur la surface ou sur la distance dans les "
+"comparaisons géométriques."

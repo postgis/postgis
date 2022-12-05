@@ -467,3 +467,37 @@ AND NOT ST_Equals(
     )
   );
 SELECT NULL FROM topology.DropTopology('b4941');
+
+-- See https://trac.osgeo.org/postgis/ticket/5081
+SELECT NULL FROM CreateTopology('b5081');
+SELECT 'b5081.0', 'E' || TopoGeo_addLinestring('b5081', $$
+  LINESTRING(0 0, 10 10,10 -10,0 0)
+$$);
+
+SELECT 'b5081.1', count(*) > 1 FROM (
+  SELECT TopoGeo_addLinestring('b5081', $$
+    LINESTRING(
+      -10 0,
+      0 0, 10 10,10 -10,0 0,
+      -10 0
+    )
+  $$)
+) foo;
+SELECT 'b5081', 'dangling_edges', count(*)
+  FROM b5081.edge
+  WHERE left_face = right_face;
+SELECT 'b5081', 'faces', count(*)
+  FROM b5081.face
+  WHERE face_id > 0;
+SELECT NULL FROM topology.DropTopology('b5081');
+
+-- See https://trac.osgeo.org/postgis/ticket/5234
+BEGIN;
+SELECT NULL FROM topology.createtopology('b5234', 0, 0, TRUE);
+SELECT 'b5234.0', count(*) FROM
+TopoGeo_addLinestring('b5234',
+  'LINESTRING(0 0 0, 10 0 1, 10 10 3)', 0);
+SELECT 'b5234.1', count(*) FROM
+TopoGeo_addLinestring('b5234',
+  'LINESTRING(10 10 3, 5 0 0.8)', 0);
+ROLLBACK;

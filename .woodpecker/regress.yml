@@ -1,0 +1,13 @@
+matrix:
+  PG_VERSION:
+    - 15
+    - 14
+    - 12
+
+pipeline:
+  build:
+    group: build
+    image: docker.osgeo.org/postgis/build-test:trisquel3
+    commands:
+      - sh autogen.sh
+      - PGVER=${PG_VERSION} sh ci/dronie/postgis_regress.sh

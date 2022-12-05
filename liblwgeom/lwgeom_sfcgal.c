@@ -583,7 +583,7 @@ LWGEOM2SFCGAL(const LWGEOM *geom)
 	break;
 
 	default:
-		lwerror("LWGEOM2SFCGAL: Unknown geometry type !");
+		lwerror("LWGEOM2SFCGAL: Unsupported geometry type %s !", lwtype_name(geom->type));
 		return NULL;
 	}
 }

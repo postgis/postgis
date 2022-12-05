@@ -22,28 +22,9 @@ steps:
       - ./autogen.sh
     depends_on: [ clone ]
 
-  - name: build-12
-    image: *test-image
-    pull: never
-    commands:
-      - PGVER=12 sh ci/dronie/postgis_regress.sh
-    depends_on: [ autogen ]
-
   - name: build-13
     image: *test-image
     pull: never
     commands:
       - PGVER=13 sh ci/dronie/postgis_regress.sh
-    depends_on: [ autogen ]
-
-  - name: build-docs
-    image: *test-image
-    pull: never
-    commands:
-      - mkdir -p build-docs && cd build-docs
-      - ../configure
-      - make docs
-      - make -C doc check
-      - make docs-localized
-      - make -C doc/ check-localized
     depends_on: [ autogen ]

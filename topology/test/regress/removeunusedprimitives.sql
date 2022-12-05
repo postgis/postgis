@@ -204,6 +204,24 @@ SELECT 't6', 'clean', topology.RemoveUnusedPrimitives('city_data');
 SELECT 't6', 'changed', * FROM features.check_changed_features();
 SELECT 't6', 'invalidity', * FROM topology.ValidateTopology('city_data');
 
+
+-- See https://trac.osgeo.org/postgis/ticket/5289
+SELECT NULL FROM (
+  SELECT toTopoGeom(
+    ST_MakeLine(
+      ST_EndPoint( ST_GeometryN(feature,1) ),
+      ST_StartPoint( ST_GeometryN(feature,1) )
+    ),
+    feature
+  ) FROM features.city_streets WHERE feature_name = 'R2'
+) foo;
+UPDATE features.city_streets SET geom = feature::geometry
+WHERE feature_name = 'R2';
+SELECT '#5289', 'clean', topology.RemoveUnusedPrimitives('city_data');
+SELECT '#5289', 'changed', * FROM features.check_changed_features();
+SELECT '#5289', 'invalidity', * FROM topology.ValidateTopology('city_data');
+
+
 -- Cleanup
 SELECT NULL FROM DropTopology('city_data');
 DROP SCHEMA features CASCADE;
