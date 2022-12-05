@@ -6,13 +6,14 @@
 # Vincent Picavet <vincent.ml@oslandia.com>, 2014
 # Vincent Picavet <vincent.ml@oslandia.com>, 2014
 # Regina Obe <regina@arrival3d.com>, 2022.
+# Thomas Muguet <thomas.muguet@oslandia.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-05-03 02:58+0000\n"
-"PO-Revision-Date: 2022-04-17 08:55+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2022-12-06 10:30+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_editorxml/fr/>\n"
 "Language: fr\n"
@@ -20,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: para
 #: reference_editor.xml:5
@@ -949,8 +950,7 @@ msgstr ""
 #: reference_editor.xml:672 reference_editor.xml:812
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces was introduced."
-msgstr ""
-"Amélioration: la version 2.0.0 introduit le support des surfaces Polyédrique."
+msgstr "Amélioration : 2.0.0 introduction du support des surfaces polyédriques."
 
 #. Tag: para
 #: reference_editor.xml:403
@@ -2385,7 +2385,7 @@ msgstr ""
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced."
 msgstr ""
-"Amélioration: 2.0.0 introduction du support TIN et surfaces polyhédriques "
+"Amélioration : 2.0.0 introduction du support TIN et surfaces polyédriques."
 
 #. Tag: para
 #: reference_editor.xml:1385
