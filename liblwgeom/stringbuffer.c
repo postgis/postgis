@@ -56,6 +56,15 @@ stringbuffer_init(stringbuffer_t *s)
 	stringbuffer_init_with_size(s, STRINGBUFFER_STARTSIZE);
 }
 
+void
+stringbuffer_init_varlena(stringbuffer_t *s)
+{
+	stringbuffer_init_with_size(s, STRINGBUFFER_STARTSIZE + LWVARHDRSZ);
+	/* Zero out LWVARHDRSZ bytes at the front of the buffer */
+	stringbuffer_append_len(s, "\0\0\0\0\0\0\0\0", LWVARHDRSZ);
+}
+
+
 /**
 * Allocate a new stringbuffer_t. Use stringbuffer_destroy to free.
 */
@@ -128,6 +137,14 @@ stringbuffer_getstringcopy(stringbuffer_t *s)
 	memcpy(str, s->str_start, size);
 	str[size - 1] = '\0';
 	return str;
+}
+
+lwvarlena_t *
+stringbuffer_getvarlena(stringbuffer_t *s)
+{
+	lwvarlena_t *output = (lwvarlena_t *)(s->str_start);
+	LWSIZE_SET(output->size, (s->str_end - s->str_start));
+	return output;
 }
 
 lwvarlena_t *

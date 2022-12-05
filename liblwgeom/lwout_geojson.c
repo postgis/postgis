@@ -380,7 +380,6 @@ lwgeom_to_geojson(const LWGEOM *geom, const char *srs, int precision, int has_bb
 	GBOX static_bbox = {0};
 	geojson_opts opts;
 	stringbuffer_t sb;
-	lwvarlena_t *output;
 
 	memset(&opts, 0, sizeof(opts));
 	opts.precision = precision;
@@ -398,14 +397,11 @@ lwgeom_to_geojson(const LWGEOM *geom, const char *srs, int precision, int has_bb
 	/* To avoid taking a copy of the output, we make */
 	/* space for the VARLENA header before starting to */
 	/* serialize the geom */
-	stringbuffer_init(&sb);
-	for (uint32_t i = 0; i < LWVARHDRSZ; i++)
-		stringbuffer_append_char(&sb, '\0');
+	stringbuffer_init_varlena(&sb);
+	/* Now serialize the geometry */
 	asgeojson_geometry(&sb, geom, &opts);
 	/* Leave the initially allocated buffer in place */
 	/* and write the varlena_t metadata into the slot we */
 	/* left at the start */
-	output = (lwvarlena_t *)(sb.str_start);
-	LWSIZE_SET(output->size, sb.str_end - sb.str_start);
-	return output;
+	return stringbuffer_getvarlena(&sb);
 }
