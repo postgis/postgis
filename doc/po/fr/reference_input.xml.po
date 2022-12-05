@@ -6,20 +6,21 @@
 # Thomas Gratier <thomas_gratier@yahoo.fr>, 2019
 # Nicolas Ribot <nicolas.ribot@gmail.com>, 2019
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-09-26 03:46+0000\n"
-"PO-Revision-Date: 2019-08-03 21:25+0000\n"
-"Last-Translator: Nicolas Ribot <nicolas.ribot@gmail.com>, 2019\n"
-"Language-Team: French (https://www.transifex.com/postgis/teams/3227/fr/)\n"
+"PO-Revision-Date: 2022-12-06 10:30+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
+"Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
+"reference_inputxml/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: para
 #: reference_input.xml:6
@@ -464,7 +465,7 @@ msgstr ""
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced."
 msgstr ""
-"Amélioration: 2.0.0 introduction du support TIN et surfaces polyhédriques "
+"Amélioration : 2.0.0 introduction du support TIN et surfaces polyédriques."
 
 #. Tag: para
 #: reference_input.xml:252 reference_input.xml:874 reference_input.xml:1119
@@ -2632,7 +2633,7 @@ msgstr ""
 #: reference_input.xml:1316
 #, no-c-format
 msgid "Examples - Polyhedral Surface"
-msgstr "Exemple - Surface Polyhédrique"
+msgstr "Exemple - Surface Polyédrique"
 
 #. Tag: programlisting
 #: reference_input.xml:1317
