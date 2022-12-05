@@ -95,7 +95,7 @@ static void
 asgeojson_srs(stringbuffer_t *sb, const geojson_opts *opts)
 {
 	if (!opts->srs) return;
-	stringbuffer_append(sb, "\"crs\":{\"type\":\"name\",");
+	stringbuffer_append_len(sb, "\"crs\":{\"type\":\"name\",", 21);
 	stringbuffer_aprintf(sb, "\"properties\":{\"name\":\"%s\"}},", opts->srs);
 	return;
 }
@@ -386,7 +386,6 @@ lwgeom_to_geojson(const LWGEOM *geom, const char *srs, int precision, int has_bb
 	opts.precision = precision;
 	opts.hasz = FLAGS_GET_Z(geom->flags);
 	opts.srs = srs;
-	stringbuffer_init(&sb);
 
 	if (has_bbox)
 	{
@@ -396,9 +395,11 @@ lwgeom_to_geojson(const LWGEOM *geom, const char *srs, int precision, int has_bb
 		opts.bbox = &static_bbox;
 	}
 
+	stringbuffer_init(&sb);
+	for (uint32_t i = 0; i < LWVARHDRSZ; i++)
+		stringbuffer_append_char(&sb, '\0');
 	asgeojson_geometry(&sb, geom, &opts);
-
-	output = stringbuffer_getvarlenacopy(&sb);
-	stringbuffer_release(&sb);
+	output = (lwvarlena_t *)(sb.str_start);
+	LWSIZE_SET(output->size, sb.str_end - sb.str_start);
 	return output;
 }
