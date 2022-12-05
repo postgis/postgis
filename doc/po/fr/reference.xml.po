@@ -4,20 +4,22 @@
 # Nicolas Ribot <nicolas.ribot@gmail.com>, 2013
 # Vincent Picavet <vincent.ml@oslandia.com>, 2013
 # Vincent Picavet <vincent.ml@oslandia.com>, 2013
+# Thomas Muguet <thomas.muguet@oslandia.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2020-12-19 17:06+0000\n"
-"PO-Revision-Date: 2015-09-29 12:24+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
-"Language-Team: French (http://www.transifex.com/postgis/postgis/language/"
-"fr/)\n"
+"PO-Revision-Date: 2022-12-06 10:30+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
+"Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
+"referencexml/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: title
 #: reference.xml:3
@@ -55,8 +57,8 @@ msgstr ""
 "été renommées en utilisant le préfixe des types spatiaux (ST, pour Spatial "
 "Type). Les anciennes fonctions, toujours disponibles, ne sont pas listées ci-"
 "après si leur équivalent est disponible. Les fonctions non préfixées par ST, "
-"qui ne sont pas listées dans cette documentation sont dépréciées et seront "
-"supprimées des prochaines version de PostGIS. IL NE FAUT PLUS LES UTILISER. "
+"qui ne sont pas listées dans cette documentation, sont dépréciées et seront "
+"supprimées des prochaines version de PostGIS. IL NE FAUT PLUS LES UTILISER."
 
 #. Tag: chapter
 #: reference.xml:16
@@ -71,3 +73,11 @@ msgid ""
 "&reference_transaction; &reference_version; &reference_guc; "
 "&reference_troubleshooting;"
 msgstr ""
+"&reference_type; &reference_management; &reference_constructor; "
+"&reference_accessor; &reference_editor; &reference_validation; "
+"&reference_srs; &reference_input; &reference_output; &reference_operator; "
+"&reference_relationship; &reference_measure; &reference_overlay; "
+"&reference_processing; &reference_transformation; &reference_cluster; "
+"&reference_bbox; &reference_lrs; &reference_trajectory; &reference_sfcgal; "
+"&reference_transaction; &reference_version; &reference_guc; "
+"&reference_troubleshooting;"
