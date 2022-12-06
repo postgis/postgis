@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-10-23 01:21+0000\n"
-"PO-Revision-Date: 2022-12-06 10:30+0000\n"
+"PO-Revision-Date: 2022-12-07 13:30+0000\n"
 "Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "using_postgis_datamanxml/fr/>\n"
@@ -1586,6 +1586,7 @@ msgstr "CREATE TABLE ptgeogwgs(gid serial PRIMARY KEY, geog geography(POINT) );"
 #, no-c-format
 msgid "Create a table with 2D POINT geography in NAD83 longlat:"
 msgstr ""
+"Création d'une table avec une géographie POINT 2D dans le CRS NAD83 longlat :"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:646
@@ -1594,12 +1595,16 @@ msgid ""
 "CREATE TABLE ptgeognad83(gid serial PRIMARY KEY, geog "
 "geography(POINT,4269) );"
 msgstr ""
+"CREATE TABLE ptgeognad83(gid serial PRIMARY KEY, geog geography(POINT,4269) "
+");"
 
 #. Tag: para
 #: using_postgis_dataman.xml:649
 #, no-c-format
 msgid "Create a table with 3D (XYZ) POINTs and an explicit SRID of 4326:"
 msgstr ""
+"Création d'une table avec une géographie POINT 3D (XYZ) avec le SCR "
+"explicite 4326 :"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:650
@@ -1608,12 +1613,16 @@ msgid ""
 "CREATE TABLE ptzgeogwgs84(gid serial PRIMARY KEY, geog "
 "geography(POINTZ,4326) );"
 msgstr ""
+"CREATE TABLE ptzgeogwgs84(gid serial PRIMARY KEY, geog geography(POINTZ,4326)"
+" );"
 
 #. Tag: para
 #: using_postgis_dataman.xml:653
 #, no-c-format
 msgid "Create a table with 2D LINESTRING geography with the default SRID 4326:"
 msgstr ""
+"Création d'une table avec une géographie LINESTRING 2D avec le SRID par "
+"défaut 4326 :"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:654
@@ -1621,6 +1630,7 @@ msgstr ""
 msgid ""
 "CREATE TABLE lgeog(gid serial PRIMARY KEY, geog geography(LINESTRING) );"
 msgstr ""
+"CREATE TABLE lgeog(gid serial PRIMARY KEY, geog geography(LINESTRING) );"
 
 #. Tag: para
 #: using_postgis_dataman.xml:657
@@ -1629,6 +1639,8 @@ msgid ""
 "Create a table with 2D POLYGON geography with the SRID 4267 (NAD 1927 long "
 "lat):"
 msgstr ""
+"Création d'une table avec une géographie POLYGON 2D avec le SRC 4267 (NAD "
+"1927 long lat) :"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:658
@@ -1637,6 +1649,8 @@ msgid ""
 "CREATE TABLE lgeognad27(gid serial PRIMARY KEY, geog "
 "geography(POLYGON,4267) );"
 msgstr ""
+"CREATE TABLE lgeognad27(gid serial PRIMARY KEY, geog geography(POLYGON,4267) "
+");"
 
 #. Tag: para
 #: using_postgis_dataman.xml:676
@@ -1646,12 +1660,16 @@ msgid ""
 "system view. You can query the <varname>geography_columns</varname> view and "
 "see that the table is listed:"
 msgstr ""
+"Les colonnes géographiques sont enregistrées dans la vue système "
+"<varname>geography_columns</varname>. Vous pouvez effectuer un requête sur "
+"la vue <varname>geography_columns</varname> et vérifier que la table est "
+"bien listée :"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:679
 #, no-c-format
 msgid "SELECT * FROM geography_columns;"
-msgstr ""
+msgstr "SELECT * FROM geography_columns;"
 
 #. Tag: para
 #: using_postgis_dataman.xml:681
@@ -1661,6 +1679,10 @@ msgid ""
 "will note that the column type is GEOGRAPHY and create an appropriate sphere-"
 "based index instead of the usual planar index used for GEOMETRY."
 msgstr ""
+"La création d'index spatiaux sur les colonnes de type geography fonctionne "
+"de la même manière qu'avec le type geometry. PostGIS va prendre en compte "
+"que le type de la colonne est GEOGRAPHY et créer un index sphérique au lieu "
+"d'un index planaire utilisé pour GEOMETRY."
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:684
@@ -1669,12 +1691,14 @@ msgid ""
 "-- Index the test table with a spherical index\n"
 "CREATE INDEX global_points_gix ON global_points USING GIST ( location );"
 msgstr ""
+"-- Indexe la table test avec un index spherique\n"
+"CREATE INDEX global_points_gix ON global_points USING GIST ( location );"
 
 #. Tag: title
 #: using_postgis_dataman.xml:689
 #, no-c-format
 msgid "Using Geography Tables"
-msgstr ""
+msgstr "Utilisation des tables géographiques"
 
 #. Tag: para
 #: using_postgis_dataman.xml:691
@@ -1685,6 +1709,11 @@ msgid ""
 "<link linkend=\"EWKB_EWKT\">EWKT and EWKB</link> formats can also be used to "
 "specify geography values."
 msgstr ""
+"Vous pouvez insérer des données dans des tables géographiques de la même "
+"façon qu'avec les géométries. Les données géométriques seront "
+"automatiquement transtypées en type geography si le SRID des données est "
+"4326. Les formats <link linkend=\"EWKB_EWKT\">EWKT et EWKB</link> peuvent "
+"aussi être utilisés pour spécifier les valeurs géographiques."
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:696
@@ -1698,6 +1727,13 @@ msgid ""
 "INSERT INTO global_points (name, location) VALUES ('London', 'SRID=4326;"
 "POINT(0 49)');"
 msgstr ""
+"-- Ajoute quelques donnees dans la table de test\n"
+"INSERT INTO global_points (name, location) VALUES ('Town', 'SRID=4326;POINT(-"
+"110 30)');\n"
+"INSERT INTO global_points (name, location) VALUES ('Forest', "
+"'SRID=4326;POINT(-109 29)');\n"
+"INSERT INTO global_points (name, location) VALUES ('London', "
+"'SRID=4326;POINT(0 49)');"
 
 #. Tag: para
 #: using_postgis_dataman.xml:698
@@ -1707,6 +1743,9 @@ msgid ""
 "<varname>spatial_ref_sys</varname> table may be specified as a geography "
 "SRID. Non-geodetic coordinate systems raise an error if used."
 msgstr ""
+"Tout CRS géodésique (longitude/latitude) disponible dans la table "
+"<varname>spatial_ref_sys</varname> peut être utilisé comme SRID d'une "
+"géographie. L'utilisation d'un CRS non géodésique provoquera une erreur."
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:703
@@ -1718,6 +1757,11 @@ msgid ""
 "----------------------------------------------------\n"
 " 0101000020AD1000000000000000C05EC00000000000004140"
 msgstr ""
+"-- NAD 83 lon/lat\n"
+"SELECT 'SRID=4269;POINT(-123 34)'::geography;\n"
+"                    geography\n"
+"----------------------------------------------------\n"
+" 0101000020AD1000000000000000C05EC00000000000004140"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:705
@@ -1729,6 +1773,11 @@ msgid ""
 "----------------------------------------------------\n"
 " 0101000020AB1000000000000000C05EC00000000000004140"
 msgstr ""
+"-- NAD27 lon/lat\n"
+"SELECT 'SRID=4267;POINT(-123 34)'::geography;\n"
+"                    geography\n"
+"----------------------------------------------------\n"
+" 0101000020AB1000000000000000C05EC00000000000004140"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:707
@@ -1740,6 +1789,11 @@ msgid ""
 "\n"
 "ERROR:  Only lon/lat coordinate systems are supported in geography."
 msgstr ""
+"-- NAD83 UTM zone meters - renvoie une erreur car c'est une projection "
+"planaire metrique\n"
+"SELECT 'SRID=26910;POINT(-123 34)'::geography;\n"
+"\n"
+"ERROR:  Only lon/lat coordinate systems are supported in geography."
 
 #. Tag: para
 #: using_postgis_dataman.xml:709
@@ -1749,6 +1803,9 @@ msgid ""
 "should be expressed in meters, and return values should be expected in "
 "meters (or square meters for areas)."
 msgstr ""
+"Les requêtes et les fonctions de mesure utilisent le mètre comme unité. Les "
+"paramètres de distance doivent être exprimés en mètres, et les valeurs de "
+"retours seront également en mètres (ou en mètres carré pour les surfaces)."
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:711
@@ -1758,6 +1815,9 @@ msgid ""
 "SELECT name FROM global_points WHERE ST_DWithin(location, 'SRID=4326;"
 "POINT(-110 29)'::geography, 1000000);"
 msgstr ""
+"-- Une requete de distance en utilisant 1000km de tolerance\n"
+"SELECT name FROM global_points WHERE ST_DWithin(location, 'SRID=4326;POINT(-"
+"110 29)'::geography, 1000000);"
 
 #. Tag: para
 #: using_postgis_dataman.xml:714
@@ -1768,6 +1828,11 @@ msgid ""
 "47.606, 0.0 51.5)) comes to Reykjavik (POINT(-21.96 64.15)) (<ulink "
 "url=\"http://gc.kls2.com/cgi-bin/gc?PATH=SEA-LHR\">map the route</ulink>)."
 msgstr ""
+"Vous pouvez vérifier la puissance des géographies en calculant à quel point "
+"un avion s'approche de Reykjavik (POINT(-21.96 64.15)) lors d'un trajet en "
+"arc de cercle depuis Seattle à Londres (LINESTRING(-122.33 47.606, 0.0 51.5))"
+" (<ulink url=\"http://gc.kls2.com/cgi-bin/gc?PATH=SEA-LHR\">voir la "
+"route</ulink>)."
 
 #. Tag: para
 #: using_postgis_dataman.xml:720
@@ -1777,6 +1842,8 @@ msgid ""
 "the sphere between Reykjavik and the great circle flight path between "
 "Seattle and London."
 msgstr ""
+"Le type geography donne la plus petite distance réelle de 122,235 km sur la "
+"sphère entre Reykjavik et l'arc de cercle entre Seattle et Londres."
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:723
@@ -1789,6 +1856,12 @@ msgid ""
 "-----------------\n"
 " 122235.23815667"
 msgstr ""
+"-- Calcul de distance en utilisant GEOGRAPHY\n"
+"SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geography, "
+"'POINT(-21.96 64.15)'::geography);\n"
+"   st_distance\n"
+"-----------------\n"
+" 122235.23815667"
 
 #. Tag: para
 #: using_postgis_dataman.xml:725
@@ -1800,6 +1873,12 @@ msgid ""
 "the result doesn't correspond to any true angular difference between the "
 "points, so even calling them \"degrees\" is inaccurate."
 msgstr ""
+"Le type geometry quant à lui calcule la distance cartésienne entre Reykjavik "
+"et la ligne droite entre Seattle et Londres, telle qu'elle serait tracée sur "
+"un plan. Cette distance n'a pas de sens réel, d'autant que l'unité du "
+"résultat est techniquement en degrés, mais que le résultat ne correspond à "
+"aucune différence angulaire entre les points, donc même considérer le "
+"résultat comme des degrés serait faux."
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:732
@@ -1812,12 +1891,18 @@ msgid ""
 "--------------------\n"
 " 13.342271221453624"
 msgstr ""
+"-- Calcul de distance en utilisant GEOMETRY\n"
+"SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-"
+"21.96 64.15)'::geometry);\n"
+"      st_distance\n"
+"--------------------\n"
+" 13.342271221453624"
 
 #. Tag: title
 #: using_postgis_dataman.xml:737
 #, no-c-format
 msgid "When to use the Geography data type"
-msgstr ""
+msgstr "Quand utiliser le type de données Geography"
 
 #. Tag: para
 #: using_postgis_dataman.xml:738
@@ -1828,6 +1913,10 @@ msgid ""
 "than there are on GEOMETRY; those functions that are defined take more CPU "
 "time to execute."
 msgstr ""
+"Le type de données geography permet de stocker des données en utilisant les "
+"coordonnées longitude/latitude, mais cela a un prix : il y a moins de "
+"fonctions disponibles sur le type GEOGRAPHY que sur le type GEOMETRY, et les "
+"fonctions disponibles prendront plus de temps CPU pour s'exécuter."
 
 #. Tag: para
 #: using_postgis_dataman.xml:739
@@ -1837,6 +1926,10 @@ msgid ""
 "of the application you are building. Will your data span the globe or a "
 "large continental area, or is it local to a state, county or municipality?"
 msgstr ""
+"Le type de données à choisir devrait être déterminé par la zone de travail "
+"de l'application que vous construisez. Est-ce que vos données s'étendront "
+"sur l'ensemble du globe ou sur un continent, ou bien est-ce qu'elle seront "
+"locales, comme une région, un département ou une ville ?"
 
 #. Tag: para
 #: using_postgis_dataman.xml:741
@@ -1846,6 +1939,9 @@ msgid ""
 "appropriate projection and using GEOMETRY is the best solution, in terms of "
 "performance and functionality available."
 msgstr ""
+"Si vous données sont limitées à une petite zone, utiliser un SCR adéquat et "
+"le type GEOMETRY est la meilleure solution, à la fois en terme de "
+"performances que de fonctionnalités disponibles."
 
 #. Tag: para
 #: using_postgis_dataman.xml:742
@@ -1856,6 +1952,11 @@ msgid ""
 "projection details. You store your data in longitude/latitude, and use the "
 "functions that have been defined on GEOGRAPHY."
 msgstr ""
+"Si vos données s'étendent sur le monde entier ou couvrent un continent, le "
+"type GEOGRAPHY peut vous permettre de construire votre application sans trop "
+"vous soucier des projections. Vous pouvez stocker vos données en utilisant "
+"les coordonnées longitude/latitude, et utiliser les fonctions définies sur "
+"les GEOGRAPHY."
 
 #. Tag: para
 #: using_postgis_dataman.xml:744
@@ -1866,6 +1967,11 @@ msgid ""
 "GEOGRAPHY, then it might be easier for you to use GEOGRAPHY than GEOMETRY. "
 "Simply load your data up as longitude/latitude and go from there."
 msgstr ""
+"Si vous n'êtes pas à l'aise avec les projections, que vous ne souhaitez pas "
+"approfondir le sujet, et que vous êtes prêts à accepter les limitations sur "
+"les fonctionnalités offertes par GEOGRAPHY, alors ce peut être plus facile "
+"d'utiliser GEOGRAPHY au lieu de GEOMETRY. Chargez vos données en longitude/"
+"latitude et partez de là."
 
 #. Tag: para
 #: using_postgis_dataman.xml:747
@@ -1876,18 +1982,22 @@ msgid ""
 "description of Geography functions, refer to <xref "
 "linkend=\"PostGIS_GeographyFunctions\"/>"
 msgstr ""
+"Référez-vous à <xref linkend=\"PostGIS_TypeFunctionMatrix\"/> pour comparer "
+"les supports Geography et Geometry. Pour avoir un résumé des fonctions "
+"géographiques disponibles, référez-vous à <xref linkend="
+"\"PostGIS_GeographyFunctions\"/>"
 
 #. Tag: title
 #: using_postgis_dataman.xml:753
 #, no-c-format
 msgid "Geography Advanced FAQ"
-msgstr ""
+msgstr "FAQ Geography avancée"
 
 #. Tag: para
 #: using_postgis_dataman.xml:757
 #, no-c-format
 msgid "Do you calculate on the sphere or the spheroid?"
-msgstr ""
+msgstr "Les calculs sont-ils faits sur la sphère ou sur la sphéroïde ?"
 
 #. Tag: para
 #: using_postgis_dataman.xml:761
@@ -1899,6 +2009,11 @@ msgid ""
 "spheroidal calculations will be more accurate than any calculation done on a "
 "projected plane."
 msgstr ""
+"Par défaut, tous les calculs sur les distances et les surfaces sont "
+"effectués sur la sphéroïde. Les résultats des calculs sur les petites zones "
+"devraient coïncider avec les résultats des calculs planaire en utilisant les "
+"projections locales adéquates. Sur de plus grandes zones, les calculs "
+"sphéroïdaux seront plus précis que ceux effectués sur un plan projeté."
 
 #. Tag: para
 #: using_postgis_dataman.xml:764
@@ -1908,12 +2023,16 @@ msgid ""
 "by setting a final boolean parameter to 'FALSE'. This will somewhat speed up "
 "calculations, particularly for cases where the geometries are very simple."
 msgstr ""
+"Toutes les fonctions géographiques ont une option pour calculer sur une "
+"sphère, en passant comme tout dernier paramètre booléen 'FALSE'. Ceci "
+"améliorera les performances des calculs, en particulier pour les géométries "
+"très simples."
 
 #. Tag: para
 #: using_postgis_dataman.xml:770
 #, no-c-format
 msgid "What about the date-line and the poles?"
-msgstr ""
+msgstr "Qu'en est-il de la ligne de changement de date et des pôles ?"
 
 #. Tag: para
 #: using_postgis_dataman.xml:774
@@ -1924,6 +2043,10 @@ msgid ""
 "dateline is, from a calculation point of view, no different from any other "
 "shape."
 msgstr ""
+"Tous les calculs omettent les concepts de ligne de changement de date et de "
+"pôles. Les coordonnées étant sphériques (longitude/latitude), une forme "
+"traversant la ligne de changement de date n'est, d'un point de vue calculs, "
+"pas différente de toute autre forme."
 
 #. Tag: para
 #: using_postgis_dataman.xml:782
