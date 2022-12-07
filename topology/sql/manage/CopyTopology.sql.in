@@ -77,7 +77,12 @@ BEGIN
   EXECUTE sql;
 
   -- Copy layers and their TopoGeometry sequences
-  FOR rec IN SELECT * FROM topology.layer WHERE topology_id = oldtopo_id
+  -- and their TopoGeometry definitions, from primitives
+  -- to hierarchical
+  FOR rec IN
+    SELECT * FROM topology.layer
+    WHERE topology_id = oldtopo_id
+    ORDER BY COALESCE(child_id, 0), layer_id
   LOOP
     INSERT INTO topology.layer (topology_id, layer_id, feature_type,
       level, child_id, schema_name, table_name, feature_column)
@@ -98,17 +103,19 @@ BEGIN
       rec.layer_id,
       atopology
     );
-  END LOOP;
 
-  -- Copy TopoGeometry definitions
-  EXECUTE format(
-    $$
-      INSERT INTO %1$I.relation
-      SELECT * FROM %2$I.relation
-    $$,
-    newtopo,
-    atopology
-  );
+    -- Copy TopoGeometry definitions
+    EXECUTE format(
+      $$
+        INSERT INTO %1$I.relation
+        SELECT * FROM %2$I.relation
+        WHERE layer_id = $1
+      $$,
+      newtopo,
+      atopology
+    ) USING rec.layer_id;
+
+  END LOOP;
 
   RETURN newtopo_id;
 END

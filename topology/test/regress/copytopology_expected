@@ -3,11 +3,14 @@ t
 nodes|22
 edges|24
 faces|10
-relations|39
-layers|3
+relations|50
+layers|6
 1|CITY_data_UP_down|LAYER1|
 2|CITY_data_UP_down|LAYER2|
 3|CITY_data_UP_down|LAYER3|
+4|CITY_data_UP_down|LAYER4|
+5|CITY_data_UP_down|LAYER5|
+6|CITY_data_UP_down|LAYER6|
 "CITY_data_UP_down".node_node_id_seq|22|t
 "CITY_data_UP_down".edge_data_edge_id_seq|26|t
 "CITY_data_UP_down".face_face_id_seq|9|t
@@ -15,9 +18,10 @@ layers|3
 "CITY_data_UP_down".topogeo_s_1|9|t
 "CITY_data_UP_down".topogeo_s_2|8|t
 "CITY_data_UP_down".topogeo_s_3|8|t
-Topology 'CITY_data_UP_down' dropped
-Topology 'city_data' dropped
+#5298|t
 #2184.1|t
 #2184.2|1
 #2184.3|t
 #2184.4|t|t
+Topology 'CITY_data_UP_down' dropped
+Topology 'city_data' dropped
