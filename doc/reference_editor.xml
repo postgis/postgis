@@ -1767,7 +1767,7 @@ LINESTRING(0 0,1 1,0 0,3 3,4 4)
 		  </refsection>
 	</refentry>
 
-    <refentry id="ST_Shift_Longitude">
+    <refentry id="ST_ShiftLongitude">
       <refnamediv>
         <refname>ST_ShiftLongitude</refname>
 
@@ -1900,7 +1900,7 @@ select ST_WrapX(geom, -30, 360);
       <!-- Optionally add a "See Also" section -->
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_Shift_Longitude" /></para>
+        <para><xref linkend="ST_ShiftLongitude" /></para>
       </refsection>
     </refentry>
 
