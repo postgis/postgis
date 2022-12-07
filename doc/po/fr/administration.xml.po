@@ -1,13 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # H Santanna <delazj@gmail.com>, 2022.
 # Regina Obe <regina@arrival3d.com>, 2022.
+# Thomas Muguet <thomas.muguet@oslandia.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-25 19:29+0000\n"
-"PO-Revision-Date: 2022-09-19 04:04+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2022-12-06 10:30+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "administrationxml/fr/>\n"
 "Language: fr\n"
@@ -27,7 +28,7 @@ msgstr "Administration de PostGIS"
 #: administration.xml:3
 #, no-c-format
 msgid "&database_tuning;"
-msgstr ""
+msgstr "&database_tuning;"
 
 #. Tag: title
 #: administration.xml:9
@@ -56,6 +57,13 @@ msgid ""
 "For PostGIS 2.2, you can use the more cross-platform approach of setting the "
 "corresponding <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
+"À partir de PostGIS 2.1.3, tous les pilotes raster, et la prise en charge "
+"des rasters hors-connexion (out-of-db) est désactivé par défaut. Pour les "
+"activer, vous devez définir les variables d'environnement suivantes dans "
+"l'environnement du serveur : <varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> "
+"and <varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname>. Depuis PostGIS 2.2, "
+"vous pouvez utiliser la méthode plus générique en définissant les <xref "
+"linkend=\"PostGIS_GUC\"/> correspondantes."
 
 #. Tag: para
 #: administration.xml:19
@@ -74,6 +82,8 @@ msgstr "POSTGIS_ENABLE_OUTDB_RASTERS=1"
 #, no-c-format
 msgid "Any other setting or no setting at all will disable out of db rasters."
 msgstr ""
+"Si la variable a n'importe quelle autre valeur, ou si elle n'a pas de "
+"valeur, le support du raster hors-connexion sera désactivé."
 
 #. Tag: para
 #: administration.xml:22
@@ -82,12 +92,14 @@ msgid ""
 "In order to enable all GDAL drivers available in your GDAL install, set this "
 "environment variable as follows"
 msgstr ""
+"Pour utiliser tous les pilotes GDAL disponibles dans votre installation "
+"GDAL, définissez la variable d'environnement via"
 
 #. Tag: programlisting
 #: administration.xml:23
 #, no-c-format
 msgid "POSTGIS_GDAL_ENABLED_DRIVERS=ENABLE_ALL"
-msgstr ""
+msgstr "POSTGIS_GDAL_ENABLED_DRIVERS=ENABLE_ALL"
 
 #. Tag: para
 #: administration.xml:24
@@ -96,18 +108,22 @@ msgid ""
 "If you want to only enable specific drivers, set your environment variable "
 "as follows:"
 msgstr ""
+"Si vous souhaitez activer une liste de pilotes spécifiques, définissez la "
+"variable d'environnement via :"
 
 #. Tag: programlisting
 #: administration.xml:25
 #, no-c-format
 msgid "POSTGIS_GDAL_ENABLED_DRIVERS=\"GTiff PNG JPEG GIF XYZ\""
-msgstr ""
+msgstr "POSTGIS_GDAL_ENABLED_DRIVERS=\"GTiff PNG JPEG GIF XYZ\""
 
 #. Tag: para
 #: administration.xml:27
 #, no-c-format
 msgid "If you are on windows, do not quote the driver list"
 msgstr ""
+"Si vous êtes sous Windows, ne pas mettre de guillemets autour de la liste "
+"des pilotes"
 
 #. Tag: para
 #: administration.xml:29
@@ -119,6 +135,13 @@ msgid ""
 "<replaceable>main</replaceable>/environment</filename> where 10 refers to "
 "version of PostgreSQL and main refers to the cluster."
 msgstr ""
+"La définition des variables d'environnement dépend de votre système "
+"d'exploitation. Sous Ubuntu ou Debian avec PostgreSQL installé via apt-"
+"postgresql, la méthode conseillée est d'éditer le fichier de configuration "
+"<filename>/etc/postgresql/"
+"<replaceable>10</replaceable>/<replaceable>main</replaceable>/environment</"
+"filename> où 10 est la version de PostgreSQL et main est le groupe de bases "
+"de données (cluster)."
 
 #. Tag: para
 #: administration.xml:32
@@ -139,6 +162,8 @@ msgid ""
 "After you set the environment variables, you'll need to restart your "
 "PostgreSQL service for the changes to take effect."
 msgstr ""
+"Après avoir changé les variables d'environnement, vous devrez redémarrer le "
+"service PostgreSQL pour prendre en compte les changements."
 
 #. Tag: title
 #: administration.xml:39
@@ -150,7 +175,7 @@ msgstr "Création de bases de données spatiales"
 #: administration.xml:42
 #, no-c-format
 msgid "Spatially enable database using EXTENSION"
-msgstr ""
+msgstr "Base de données spatiale en utilisant EXTENSION"
 
 #. Tag: para
 #: administration.xml:44
@@ -160,6 +185,9 @@ msgid ""
 "extensions/postgis modules, you can turn a database into a spatial one using "
 "the EXTENSION mechanism."
 msgstr ""
+"Si vous utilisez PostgreSQL 9.1+ et avez compilé et installé les modules "
+"extensions/postgis, vous pouvez transformer une base de données en base de "
+"données spatiale en utilisant le mécanisme EXTENSION."
 
 #. Tag: para
 #: administration.xml:49
@@ -169,6 +197,9 @@ msgid ""
 "the functions and comments. Raster and topology are packaged as a separate "
 "extension."
 msgstr ""
+"L'extension cœur postgis inclus le support des types geometry et geography, "
+"la table spatial_ref_sys ainsi que toutes les fonctions et commentaires. Les "
+"supports de raster et topologie sont fournis par des extensions dédiées."
 
 #. Tag: para
 #: administration.xml:55
@@ -176,6 +207,8 @@ msgstr ""
 msgid ""
 "Run the following SQL snippet in the database you want to enable spatially:"
 msgstr ""
+"Exécutez les requêtes SQL suivantes dans la base de données où vous "
+"souhaitez activer le support spatial :"
 
 #. Tag: programlisting
 #: administration.xml:57
@@ -186,12 +219,16 @@ msgid ""
 "      CREATE EXTENSION postgis_raster; -- OPTIONAL\n"
 "      CREATE EXTENSION postgis_topology; -- OPTIONAL"
 msgstr ""
+"CREATE EXTENSION IF NOT EXISTS plpgsql;\n"
+"      CREATE EXTENSION postgis;\n"
+"      CREATE EXTENSION postgis_raster; -- OPTIONNEL\n"
+"      CREATE EXTENSION postgis_topology; -- OPTIONNEL"
 
 #. Tag: title
 #: administration.xml:63
 #, no-c-format
 msgid "Spatially enable database without using EXTENSION (discouraged)"
-msgstr ""
+msgstr "Base de données spatiale sans utiliser EXTENSION (non recommandé)"
 
 #. Tag: para
 #: administration.xml:65
@@ -201,6 +238,10 @@ msgid ""
 "installed in the PostgreSQL extension directory (for example during testing, "
 "development or in a restricted environment)."
 msgstr ""
+"Cette méthode n'est en générale nécessaire que si vous ne pouvez pas ou ne "
+"voulez pas que PostGIS soit installé dans le répertoire des extensions "
+"PostgreSQL (par exemple pour des tests, du développement, ou dans un "
+"environnement restreint)."
 
 #. Tag: para
 #: administration.xml:70
@@ -210,6 +251,10 @@ msgid ""
 "by loading the various sql files located in <filename>[prefix]/share/"
 "contrib</filename> as specified during the build phase."
 msgstr ""
+"L'ajout des objets et définitions des fonctions PostGIS dans votre base de "
+"données se fait en chargeant plusieurs fichiers sql présents dans "
+"<filename>[prefix]/share/contrib</filename>, cet emplacement est celui qui a "
+"été défini durant la phase de compilation."
 
 #. Tag: para
 #: administration.xml:77
@@ -220,6 +265,10 @@ msgid ""
 "objects are in the <filename>rtpostgis.sql</filename> script. Topology "
 "objects are in the <filename>topology.sql</filename> script."
 msgstr ""
+"Les objets au cœur de PostGIS (types geometry et geography, et les fonctions "
+"associées) sont dans le script <filename>postgis.sql</filename>. Les objets "
+"raster sont dans le script <filename>rtpostgis.sql</filename>. Les objets de "
+"topologie sont dans le script <filename>topology.sql</filename>."
 
 #. Tag: para
 #: administration.xml:85
@@ -230,6 +279,11 @@ msgid ""
 "populate the <varname>spatial_ref_sys</varname> table. This will permit you "
 "to perform ST_Transform() operations on geometries."
 msgstr ""
+"Pour avoir la liste complète des définitions des systèmes de coordonnées "
+"EPSG, vous pouvez aussi charger le script <filename>spatial_ref_sys.sql</"
+"filename> pour remplir la table <varname>spatial_ref_sys</varname>. Cela "
+"permettre d'utiliser la fonction ST_Transform() pour effectuer des "
+"reprojections sur les géométries."
 
 #. Tag: para
 #: administration.xml:92
@@ -240,12 +294,16 @@ msgid ""
 "by simply typing <command>\\dd [function_name]</command> from a "
 "<command>psql</command> terminal window."
 msgstr ""
+"Si vous souhaitez ajouter les commentaires sur les fonctions PostGIS, vous "
+"pouvez les trouver dans le script <filename>postgis_comments.sql</filename>. "
+"Vous pouvez accéder aux commentaires d'une fonction en tapant <command>\\dd "
+"[nom_de_la_fonction]</command> depuis un terminal <command>psql</command>."
 
 #. Tag: para
 #: administration.xml:99
 #, no-c-format
 msgid "Run the following Shell commands in your terminal:"
-msgstr ""
+msgstr "Exécutez les commandes Shell suivantes dans votre terminal :"
 
 #. Tag: programlisting
 #: administration.xml:101
@@ -267,12 +325,27 @@ msgid ""
 "    psql -d ${DB} -f ${SCRIPTSDIR}/topology.sql\n"
 "    psql -d ${DB} -f ${SCRIPTSDIR}/topology_comments.sql # OPTIONAL"
 msgstr ""
+"DB=[ma_bdd_spatiale]\n"
+"    SCRIPTSDIR=`pg_config --sharedir`/contrib/postgis-&last_minor_version;/\n"
+"\n"
+"    # Objets coeur\n"
+"    psql -d ${DB} -f ${SCRIPTSDIR}/postgis.sql\n"
+"    psql -d ${DB} -f ${SCRIPTSDIR}/spatial_ref_sys.sql\n"
+"    psql -d ${DB} -f ${SCRIPTSDIR}/postgis_comments.sql # OPTIONNEL\n"
+"\n"
+"    # Support raster (OPTIONNEL)\n"
+"    psql -d ${DB} -f ${SCRIPTSDIR}/rtpostgis.sql\n"
+"    psql -d ${DB} -f ${SCRIPTSDIR}/raster_comments.sql # OPTIONNEL\n"
+"\n"
+"    # Support topologies (OPTIONNEL)\n"
+"    psql -d ${DB} -f ${SCRIPTSDIR}/topology.sql\n"
+"    psql -d ${DB} -f ${SCRIPTSDIR}/topology_comments.sql # OPTIONNEL"
 
 #. Tag: title
 #: administration.xml:107
 #, no-c-format
 msgid "Create a spatially-enabled database from a template"
-msgstr ""
+msgstr "Base de données spatiale depuis un modèle"
 
 #. Tag: para
 #: administration.xml:109
@@ -287,30 +360,38 @@ msgid ""
 "the database user must have been granted the privilege to create new "
 "databases."
 msgstr ""
+"Certaines distributions de PostGIS (en particulier l'installateur Win32 pour "
+"PostGIS &gt;= 1.1.5) chargent les fonctions PostGIS dans la base de données "
+"de modèle (template) <varname>template_postgis</varname>. Si la base de "
+"données <varname>template_postgis</varname> existe sur votre installation "
+"PostgreSQL, il est alors possible pour vos utilisateurs et/ou applications "
+"de créer des bases de données spatiales en utilisant une seule ligne de "
+"commande. A noter que dans les deux cas, l'utilisateur sql doit avoir les "
+"permissions pour créer de nouvelles bases de données."
 
 #. Tag: para
 #: administration.xml:120
 #, no-c-format
 msgid "From the shell:"
-msgstr ""
+msgstr "Depuis un shell :"
 
 #. Tag: programlisting
 #: administration.xml:124
 #, no-c-format
 msgid "# createdb -T template_postgis my_spatial_db"
-msgstr ""
+msgstr "# createdb -T template_postgis ma_bdd_spatiale"
 
 #. Tag: para
 #: administration.xml:126
 #, no-c-format
 msgid "From SQL:"
-msgstr ""
+msgstr "En SQL :"
 
 #. Tag: programlisting
 #: administration.xml:130
 #, no-c-format
 msgid "postgres=# CREATE DATABASE my_spatial_db TEMPLATE=template_postgis"
-msgstr ""
+msgstr "postgres=# CREATE DATABASE ma_bdd_spatiale TEMPLATE=template_postgis"
 
 #. Tag: title
 #: administration.xml:136
