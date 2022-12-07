@@ -3,6 +3,7 @@ YYYY/MM/DD
 
 * Bug Fixes *
   - #5289, Fix misleading message about doubly connected edges healing (Sandro Santilli)
+  - #5298, Fix CopyTopology exception with hierarchical layers (Sandro Santilli)
 
 PostGIS 3.3.2
 2022/11/12
