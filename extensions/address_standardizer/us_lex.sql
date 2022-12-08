@@ -1894,6 +1894,7 @@ INSERT INTO us_lex (seq, word, stdword, token) VALUES (1, 'PH', 'PENTHOUSE', 17)
 INSERT INTO us_lex (seq, word, stdword, token) VALUES (2, 'PH', 'PATH', 2);
 INSERT INTO us_lex (seq, word, stdword, token) VALUES (1, 'PIECE', 'PIECE', 16);
 INSERT INTO us_lex (seq, word, stdword, token) VALUES (2, 'PIECE', 'PIECE', 17);
+INSERT INTO us_lex (seq, word, stdword, token) VALUES (1, 'PIECE', 'PIECE', 1);
 INSERT INTO us_lex (seq, word, stdword, token) VALUES (1, 'PIER', 'PIER', 16);
 INSERT INTO us_lex (seq, word, stdword, token) VALUES (2, 'PIER', 'PIER', 1);
 INSERT INTO us_lex (seq, word, stdword, token) VALUES (3, 'PIER', 'PIER', 24);
@@ -1940,6 +1941,7 @@ INSERT INTO us_lex (seq, word, stdword, token) VALUES (1, 'PO DRAWER', 'POST OFF
 INSERT INTO us_lex (seq, word, stdword, token) VALUES (1, 'POB', 'POST OFFICE BOX', 14);
 INSERT INTO us_lex (seq, word, stdword, token) VALUES (1, 'POBOX', 'POST OFFICE BOX', 14);
 INSERT INTO us_lex (seq, word, stdword, token) VALUES (1, 'POINT', 'POINT', 1);
+INSERT INTO us_lex (seq, word, stdword, token) VALUES (2, 'POINT', 'POINT', 2);
 INSERT INTO us_lex (seq, word, stdword, token) VALUES (1, 'PORT', 'PORT', 1);
 INSERT INTO us_lex (seq, word, stdword, token) VALUES (2, 'PORT', 'PORT', 2);
 INSERT INTO us_lex (seq, word, stdword, token) VALUES (1, 'POST BOX', 'POST OFFICE BOX', 14);
