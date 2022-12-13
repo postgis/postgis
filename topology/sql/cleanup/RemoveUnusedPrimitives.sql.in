@@ -580,7 +580,11 @@ BEGIN
       removable_nodes_of_degree_2_in_bbox AS (
         SELECT
           n.node_id,
-          array_agg(e.edge_id ORDER BY e.edge_id) edges
+          array_agg(
+            e.edge_id
+            -- order to make cleanup outcome predictable
+            ORDER BY e.edge_id
+          ) edges
         FROM
           unused_connected_nodes_in_bbox n,
           %1$I.edge e
@@ -590,6 +594,8 @@ BEGIN
           )
         GROUP BY n.node_id
         HAVING count(e.edge_id) = 2
+        -- Do not consider nodes used by closed edges as removable
+        AND NOT 't' = ANY( array_agg(e.start_node = e.end_node) )
       ),
       breaking_heals AS (
         SELECT
