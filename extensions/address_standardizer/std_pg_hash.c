@@ -565,7 +565,7 @@ static int parse_rule(char *buf, int *rule)
     TRGT = DatumGetInt32(binval);
 
 #define GET_TEXT_FROM_TUPLE(TRGT,WHICH) \
-    TRGT = DatumGetCString(SPI_getvalue(tuple, tupdesc, WHICH));
+    TRGT = SPI_getvalue(tuple, tupdesc, WHICH);
 
 
 static int fetch_lex_columns(SPITupleTable *tuptable, lex_columns_t *lex_cols)

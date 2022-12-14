@@ -166,6 +166,7 @@ sfcgal/regress/tests.mk
 sfcgal/*.sql
 sfcgal/sfcgal_upgrade.sql.in
 *.so
+*.dylib
 st_*.png
 .svn
 topology/Makefile
