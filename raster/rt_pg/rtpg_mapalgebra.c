@@ -6007,9 +6007,9 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
 
     /* pass the nodata mode into the user function */
 #if POSTGIS_PGSQL_VERSION < 120
-    cbdata.arg[1] = CStringGetDatum(txtCallbackParam);
+    cbdata.arg[1] = PointerGetDatum(txtCallbackParam);
 #else
-    cbdata->args[1].value = CStringGetDatum(txtCallbackParam);
+    cbdata->args[1].value = PointerGetDatum(txtCallbackParam);
 #endif
 
     strFromText = text_to_cstring(txtNodataMode);

@@ -2477,8 +2477,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 		HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
 	}
 
-	patt =  DatumGetCString(DirectFunctionCall1(textout,
-	                        PointerGetDatum(PG_GETARG_DATUM(2))));
+	patt =  DatumGetCString(DirectFunctionCall1(textout, PG_GETARG_DATUM(2)));
 
 	/*
 	** Need to make sure 't' and 'f' are upper-case before handing to GEOS
