@@ -425,7 +425,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			fsec_t fsec;
 			int tzp;
 			TimestampTz dttz;
-#if POSTGIS_PGSQL_VERSION < 160
+#if POSTGIS_PGSQL_VERSION >= 160
 			DateTimeErrorExtra extra;
 #endif
 			if (offset + sizeof(len) > size)
@@ -436,10 +436,10 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			memcpy(buf, (const char *) data + offset, len);
 			ParseDateTime((const char *) buf, workbuf, sizeof(workbuf), field, ftype, MAXDATEFIELDS, &nf);
 
-#if POSTGIS_PGSQL_VERSION < 160
-			DecodeDateTime(field, ftype, nf, &dtype, tm, &fsec, &tzp);
-#else
+#if POSTGIS_PGSQL_VERSION >= 160
 			DecodeDateTime(field, ftype, nf, &dtype, tm, &fsec, &tzp, &extra);
+#else
+			DecodeDateTime(field, ftype, nf, &dtype, tm, &fsec, &tzp);
 #endif
 			tm2timestamp(tm, fsec, &tzp, &dttz);
 			values[ci] = TimestampTzGetDatum(dttz);
