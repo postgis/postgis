@@ -349,11 +349,21 @@ cmp_int (const void *a, const void *b)
 * The difference between the fourth and first quintile values,
 * the "inter-quintile range"
 */
+// static int
+// range_quintile(int *vals, int nvals)
+// {
+// 	qsort(vals, nvals, sizeof(int), cmp_int);
+// 	return vals[4*nvals/5] - vals[nvals/5];
+// }
+
+/**
+* Lowest and highest bin values
+*/
 static int
-range_quintile(int *vals, int nvals)
+range_full(int *vals, int nvals)
 {
 	qsort(vals, nvals, sizeof(int), cmp_int);
-	return vals[4*nvals/5] - vals[nvals/5];
+	return vals[nvals-1] - vals[0];
 }
 
 /**
@@ -523,28 +533,28 @@ nd_stats_to_json(const ND_STATS *nd_stats)
 * Caller is responsible for freeing.
 * Currently only prints first two dimensions.
 */
-// static char*
-// nd_stats_to_grid(const ND_STATS *stats)
-// {
-//  char *rv;
-//  int j, k;
-//  int sizex = (int)roundf(stats->size[0]);
-//  int sizey = (int)roundf(stats->size[1]);
-//  stringbuffer_t *sb = stringbuffer_create();
-//
-//  for ( k = 0; k < sizey; k++ )
-//  {
-//      for ( j = 0; j < sizex; j++ )
-//      {
-//          stringbuffer_aprintf(sb, "%3d ", (int)roundf(stats->value[j + k*sizex]));
-//      }
-//      stringbuffer_append(sb,  "\n");
-//  }
-//
-//  rv = stringbuffer_getstringcopy(sb);
-//  stringbuffer_destroy(sb);
-//  return rv;
-// }
+static char*
+nd_stats_to_grid(const ND_STATS *stats)
+{
+ char *rv;
+ int j, k;
+ int sizex = (int)roundf(stats->size[0]);
+ int sizey = (int)roundf(stats->size[1]);
+ stringbuffer_t *sb = stringbuffer_create();
+
+ for ( k = 0; k < sizey; k++ )
+ {
+     for ( j = 0; j < sizex; j++ )
+     {
+         stringbuffer_aprintf(sb, "%3d ", (int)roundf(stats->value[j + k*sizex]));
+     }
+     stringbuffer_append(sb,  "\n");
+ }
+
+ rv = stringbuffer_getstringcopy(sb);
+ stringbuffer_destroy(sb);
+ return rv;
+}
 
 
 /** Expand the bounds of target to include source */
@@ -760,7 +770,8 @@ nd_box_ratio(const ND_BOX *b1, const ND_BOX *b2, int ndims)
 }
 
 /* How many bins shall we use in figuring out the distribution? */
-#define NUM_BINS 50
+#define MAX_NUM_BINS 50
+#define BIN_MIN_SIZE 10
 
 /**
 * Calculate how much a set of boxes is homogenously distributed
@@ -781,7 +792,7 @@ static int
 nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *extent, int ndims, double *distribution)
 {
 	int d, i, k, range;
-	int counts[NUM_BINS];
+	int *counts;
 	double smin, smax;   /* Spatial min, spatial max */
 	double swidth;       /* Spatial width of dimension */
 #if POSTGIS_DEBUG_LEVEL >= 3
@@ -790,11 +801,15 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 	int   bmin, bmax;   /* Bin min, bin max */
 	const ND_BOX *ndb;
 
+	int num_bins = Min(Max(2, num_boxes/BIN_MIN_SIZE), MAX_NUM_BINS);
+	counts = palloc0(num_bins * sizeof(int));
+
 	/* For each dimension... */
 	for ( d = 0; d < ndims; d++ )
 	{
 		/* Initialize counts for this dimension */
-		memset(counts, 0, sizeof(counts));
+		memset(counts, 0, num_bins * sizeof(int));
+
 
 		smin = extent->min[d];
 		smax = extent->max[d];
@@ -832,12 +847,12 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 			}
 
 			/* What bins does this range correspond to? */
-			bmin = floor(NUM_BINS * minoffset / swidth);
-			bmax = floor(NUM_BINS * maxoffset / swidth);
+			bmin = floor(num_bins * minoffset / swidth);
+			bmax = floor(num_bins * maxoffset / swidth);
 
 			/* Should only happen when maxoffset==swidth */
-			if (bmax >= NUM_BINS)
-				bmax = NUM_BINS-1;
+			if (bmax >= num_bins)
+				bmax = num_bins-1;
 
 			POSTGIS_DEBUGF(4, " dimension %d, feature %d: bin %d to bin %d", d, i, bmin, bmax);
 
@@ -850,11 +865,12 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 		}
 
 		/* How dispersed is the distribution of features across bins? */
-		range = range_quintile(counts, NUM_BINS);
+		// range = range_quintile(counts, num_bins);
+		range = range_full(counts, num_bins);
 
 #if POSTGIS_DEBUG_LEVEL >= 3
-		average = avg(counts, NUM_BINS);
-		sdev = stddev(counts, NUM_BINS);
+		average = avg(counts, num_bins);
+		sdev = stddev(counts, num_bins);
 		sdev_ratio = sdev/average;
 
 		POSTGIS_DEBUGF(3, " dimension %d: range = %d", d, range);
@@ -865,6 +881,8 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 
 		distribution[d] = range;
 	}
+
+	pfree(counts);
 
 	return true;
 }
@@ -1494,16 +1512,15 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 	}
 
 	/*
-	 * We'll build a histogram having stats->attr->attstattarget cells
-	 * on each side,  within reason... we'll use ndims*10000 as the
-	 * maximum number of cells.
+	 * We'll build a histogram having stats->attr->attstattarget
+	 * (default 100) cells on each side,  within reason...
+	 * we'll use ndims*100000 as the maximum number of cells.
 	 * Also, if we're sampling a relatively small table, we'll try to ensure that
-	 * we have an average of 5 features for each cell so the histogram isn't
-	 * so sparse.
+	 * we have a smaller grid.
 	 */
 	histo_cells_target = (int)pow((double)(stats->attr->attstattarget), (double)ndims);
-	histo_cells_target = Min(histo_cells_target, ndims * 10000);
-	histo_cells_target = Min(histo_cells_target, (int)(total_rows/5));
+	histo_cells_target = Min(histo_cells_target, ndims * 100000);
+	histo_cells_target = Min(histo_cells_target, (int)(10 * ndims * total_rows));
 	POSTGIS_DEBUGF(3, " stats->attr->attstattarget: %d", stats->attr->attstattarget);
 	POSTGIS_DEBUGF(3, " target # of histogram cells: %d", histo_cells_target);
 
@@ -1961,6 +1978,8 @@ estimate_selectivity(const GBOX *box, const ND_STATS *nd_stats, int mode)
 	POSTGIS_DEBUGF(3, " nd_stats->extent: %s", nd_box_to_json(&(nd_stats->extent), nd_stats->ndims));
 	POSTGIS_DEBUGF(3, " nd_box: %s", nd_box_to_json(&(nd_box), gbox_ndims(box)));
 
+	// elog(DEBUG1, "out histogram:\n%s", nd_stats_to_grid(nd_stats));
+
 	/*
 	 * Search box completely misses histogram extent?
 	 * We have to intersect in all N dimensions or else we have
@@ -2065,10 +2084,12 @@ Datum _postgis_gserialized_stats(PG_FUNCTION_ARGS)
 		elog(ERROR, "stats for \"%s.%s\" do not exist", get_rel_name(table_oid), text_to_cstring(att_text));
 
 	/* Convert to JSON */
+	elog(DEBUG1, "stats grid:\n%s", nd_stats_to_grid(nd_stats));
 	str = nd_stats_to_json(nd_stats);
 	json = cstring_to_text(str);
 	pfree(str);
 	pfree(nd_stats);
+
 	PG_RETURN_TEXT_P(json);
 }
 
