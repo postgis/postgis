@@ -5904,7 +5904,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
     memcpy((void *)VARDATA(txtCallbackParam), (void *)VARDATA(txtNodataMode), VARSIZE(txtNodataMode) - VARHDRSZ);
 
     /* pass the nodata mode into the user function */
-    cbdata->args[1].value = CStringGetDatum(txtCallbackParam);
+    cbdata->args[1].value = PointerGetDatum(txtCallbackParam);
 
     strFromText = text_to_cstring(txtNodataMode);
     strFromText = rtpg_strtoupper(strFromText);

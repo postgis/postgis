@@ -372,7 +372,7 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_2d(PG_FUNCTION_ARGS)
 
 	/* Fill the output */
 	out->hasPrefix = true;
-	out->prefixDatum = BoxPGetDatum(centroid);
+	out->prefixDatum = PointerGetDatum(centroid);
 
 	out->nNodes = 16;
 	out->nodeLabels = NULL; /* We don't need node labels. */
@@ -564,7 +564,7 @@ PGDLLEXPORT Datum gserialized_spgist_leaf_consistent_2d(PG_FUNCTION_ARGS)
 	int i;
 
 	/* Quick sanity check on entry key. */
-	if (DatumGetPointer(key) == NULL)
+	if (key == NULL)
 	{
 		POSTGIS_DEBUG(4, "[SPGIST] null index entry, returning false");
 		PG_RETURN_BOOL(false); /* NULL entry! */

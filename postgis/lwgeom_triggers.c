@@ -110,8 +110,7 @@ Datum cache_bbox(PG_FUNCTION_ARGS)
 
 	if ( ! isnull )
 	{
-		out = PointerGetDatum(DirectFunctionCall1(LWGEOM_addBBOX, in));
-
+		out = DirectFunctionCall1(LWGEOM_addBBOX, in);
 		rettuple = SPI_modifytuple(trigdata->tg_relation, rettuple,
 		                           1, &attno, &out, NULL);
 	}
