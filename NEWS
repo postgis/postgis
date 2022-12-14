@@ -16,6 +16,7 @@ xxxx/xx/xx
   - #5194, do not update system catalogs from postgis_extensions_upgrade (Sandro Santilli)
   - #5092, reduce number of upgrade paths installed on system (Sandro Santilli)
   - #635, honour --bindir (and --prefix) configure switch for executables (Sandro Santilli)
+  - Honour --mandir (and --prefix) configure switch for man pages install path (Sandro Santilli)
 
 * Bug Fix *
 
