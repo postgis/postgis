@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Correct the topology import command in the manual page (Sandro Santilli)
  - Correct the spelling of topology in the topology manual (Martin Davis)
  - Avoid a duplicate rule warning when building SFCGAL (Sandro Santilli)
  - Include stylesheet dependencies when building the aggregate support matrix (Sandro Santilli)
