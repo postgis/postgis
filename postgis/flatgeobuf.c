@@ -425,7 +425,9 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			fsec_t fsec;
 			int tzp;
 			TimestampTz dttz;
+#if POSTGIS_PGSQL_VERSION < 160
 			DateTimeErrorExtra extra;
+#endif
 			if (offset + sizeof(len) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for string value");
 			memcpy(&len, data + offset, sizeof(uint32_t));
@@ -433,7 +435,12 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			buf = palloc0(len + 1);
 			memcpy(buf, (const char *) data + offset, len);
 			ParseDateTime((const char *) buf, workbuf, sizeof(workbuf), field, ftype, MAXDATEFIELDS, &nf);
+
+#if POSTGIS_PGSQL_VERSION < 160
+			DecodeDateTime(field, ftype, nf, &dtype, tm, &fsec, &tzp);
+#else
 			DecodeDateTime(field, ftype, nf, &dtype, tm, &fsec, &tzp, &extra);
+#endif
 			tm2timestamp(tm, fsec, &tzp, &dttz);
 			values[ci] = TimestampTzGetDatum(dttz);
 			offset += len;
