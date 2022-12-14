@@ -349,11 +349,21 @@ cmp_int (const void *a, const void *b)
 * The difference between the fourth and first quintile values,
 * the "inter-quintile range"
 */
+// static int
+// range_quintile(int *vals, int nvals)
+// {
+// 	qsort(vals, nvals, sizeof(int), cmp_int);
+// 	return vals[4*nvals/5] - vals[nvals/5];
+// }
+
+/**
+* Lowest and highest bin values
+*/
 static int
-range_quintile(int *vals, int nvals)
+range_full(int *vals, int nvals)
 {
 	qsort(vals, nvals, sizeof(int), cmp_int);
-	return vals[4*nvals/5] - vals[nvals/5];
+	return vals[nvals-1] - vals[0];
 }
 
 /**
@@ -855,7 +865,8 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 		}
 
 		/* How dispersed is the distribution of features across bins? */
-		range = range_quintile(counts, num_bins);
+		// range = range_quintile(counts, num_bins);
+		range = range_full(counts, num_bins);
 
 #if POSTGIS_DEBUG_LEVEL >= 3
 		average = avg(counts, num_bins);
@@ -1501,9 +1512,9 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 	}
 
 	/*
-	 * We'll build a histogram having stats->attr->attstattarget cells
-	 * on each side,  within reason... we'll use ndims*10000 as the
-	 * maximum number of cells.
+	 * We'll build a histogram having stats->attr->attstattarget
+	 * (default 100) cells on each side,  within reason...
+	 * we'll use ndims*100000 as the maximum number of cells.
 	 * Also, if we're sampling a relatively small table, we'll try to ensure that
 	 * we have a smaller grid.
 	 */
