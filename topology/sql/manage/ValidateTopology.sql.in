@@ -867,18 +867,18 @@ BEGIN
   -- Check for faces w/out edges
   RAISE NOTICE 'Checking for faces without edges';
   FOR rec IN
-    SELECT face_id as id1
-    FROM face
-    WHERE face_id > 0
+    SELECT f.face_id as id1
+    FROM face f
+    LEFT JOIN edge_data e ON (
+      f.face_id = e.left_face OR
+      f.face_id = e.right_face
+    )
+    WHERE f.face_id > 0
     AND (
       bbox IS NULL
       OR mbr && bbox
     )
-    EXCEPT (
-      SELECT left_face FROM edge
-      UNION
-      SELECT right_face FROM edge
-    )
+    AND e.edge_id IS NULL
   LOOP --{
     retrec.error = 'face without edges';
     retrec.id1 = rec.id1;
