@@ -683,6 +683,7 @@ CREATE OR REPLACE FUNCTION geometry_within(geom1 geometry, geom2 geometry)
 	_COST_DEFAULT;
 
 -- Availability: 0.1.0
+-- Changed: 3.4.0 changed to use selectivity estimates for contains and covers
 CREATE OPERATOR @ (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_within,
 	COMMUTATOR = '~',
@@ -691,6 +692,7 @@ CREATE OPERATOR @ (
 );
 
 -- Availability: 0.1.0
+-- Changed: 3.4.0 changed to use selectivity estimates for contains and covers
 CREATE OPERATOR ~ (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_contains,
 	COMMUTATOR = '@',
