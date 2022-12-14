@@ -1453,11 +1453,11 @@ fallbackSplit(GistEntryVector *entryvec, GIST_SPLITVEC *v)
 
 	if (v->spl_ldatum_exists)
 		adjustBox(unionL, (BOX2DF *) DatumGetPointer(v->spl_ldatum));
-	v->spl_ldatum = BoxPGetDatum(unionL);
+	v->spl_ldatum = PointerGetDatum(unionL);
 
 	if (v->spl_rdatum_exists)
 		adjustBox(unionR, (BOX2DF *) DatumGetPointer(v->spl_rdatum));
-	v->spl_rdatum = BoxPGetDatum(unionR);
+	v->spl_rdatum = PointerGetDatum(unionR);
 
 	v->spl_ldatum_exists = v->spl_rdatum_exists = false;
 }
@@ -2054,7 +2054,7 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 		{
 			box = (BOX2DF *) DatumGetPointer(entryvec->vector[
 												commonEntries[i].index].key);
-			commonEntries[i].delta = Abs(box2df_penalty(leftBox, box) - box2df_penalty(rightBox, box));
+			commonEntries[i].delta = fabs(box2df_penalty(leftBox, box) - box2df_penalty(rightBox, box));
 		}
 
 		/*

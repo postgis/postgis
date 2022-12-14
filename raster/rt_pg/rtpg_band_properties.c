@@ -31,8 +31,6 @@
 #define _LARGEFILE64_SOURCE 1
 
 #include <postgres.h>
-#include <fmgr.h>
-#include <funcapi.h>
 #include <utils/builtins.h> /* for text_to_cstring() */
 #include "utils/lsyscache.h" /* for get_typlenbyvalalign */
 #include "utils/array.h" /* for ArrayType */

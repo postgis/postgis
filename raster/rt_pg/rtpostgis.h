@@ -36,7 +36,15 @@
 #undef PACKAGE_TARNAME
 #undef PACKAGE_VERSION
 
+#include "postgres.h"
+#include "fmgr.h"
+#include "funcapi.h"
+
 #include "librtcore.h"
+
+#if POSTGIS_PGSQL_VERSION >= 160
+#include "varatt.h"
+#endif
 
 /* Debugging macros */
 #if POSTGIS_DEBUG_LEVEL > 0

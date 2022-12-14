@@ -35,7 +35,15 @@ SELECT ST_AsText(ST_Union(geom)) FROM geoms;
 
 TRUNCATE TABLE geoms;
 
-SET force_parallel_mode = on;
+/** PG16 force_parallel_mode was renamed to debug_parallel_query, thus the need for this procedure **/
+CREATE OR REPLACE PROCEDURE p_force_parellel_mode(param_state text) language plpgsql AS
+$$
+BEGIN
+	UPDATE pg_settings SET setting = param_state WHERE name IN('debug_parallel_query','force_parallel_mode');
+END;
+$$;
+
+CALL p_force_parellel_mode('on');
 SET parallel_setup_cost = 0;
 SET parallel_tuple_cost = 0;
 SET min_parallel_table_scan_size = 0;
@@ -67,3 +75,5 @@ SELECT ST_AsText(ST_Union(geom)) FROM geoms;
 
 
 DROP TABLE geoms;
+CALL p_force_parellel_mode('off');
+DROP PROCEDURE IF EXISTS p_force_parellel_mode(text);

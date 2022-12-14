@@ -115,7 +115,12 @@ static Oid
 postgis_get_full_version_schema()
 {
 	const char* proname = "postgis_full_version";
+	#if POSTGIS_PGSQL_VERSION < 160
 	List* names = stringToQualifiedNameList(proname);
+	#else
+	List* names = stringToQualifiedNameList(proname, NULL);
+	#endif
+
 	#if POSTGIS_PGSQL_VERSION < 140
 	FuncCandidateList clist = FuncnameGetCandidates(names, -1, NIL, false, false, false);
 	#else
@@ -515,11 +520,15 @@ postgis_guc_find_option(const char *name)
 	 * By equating const char ** with struct config_generic *, we are assuming
 	 * the name field is first in config_generic.
 	 */
+#if POSTGIS_PGSQL_VERSION >= 160
+	res = (struct config_generic **) find_option((void *) &key, false, true, ERROR);
+#else
 	res = (struct config_generic **) bsearch((void *) &key,
 		 (void *) get_guc_variables(),
 		 GetNumConfigOptions(),
 		 sizeof(struct config_generic *),
 		 postgis_guc_var_compare);
+#endif
 
 	/* Found nothing? Good */
 	if ( ! res ) return 0;
