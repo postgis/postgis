@@ -27,6 +27,7 @@ srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 builddir = @builddir@
 top_builddir = @top_builddir@
+mandir = @mandir@
 
 POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
@@ -97,7 +98,6 @@ DBTOEPUB=dbtoepub
 
 # Directories for postgresql subdirectories
 PGSQL_DOCDIR=@PGSQL_DOCDIR@
-PGSQL_MANDIR=@PGSQL_MANDIR@
 PGSQL_SHAREDIR=@PGSQL_SHAREDIR@
 
 BUILD_TARGET =
@@ -392,16 +392,16 @@ comments-uninstall:
 	$(MAKE) -f Makefile.comments uninstall
 
 man-install: man/shp2pgsql.1 man/pgsql2shp.1 man/pgtopo_export.1 man/pgtopo_import.1
-	mkdir -p $(DESTDIR)$(PGSQL_MANDIR)/man1
+	mkdir -p $(DESTDIR)$(mandir)/man1
 	for f in $^; do \
-		$(INSTALL_DATA) $$f $(DESTDIR)$(PGSQL_MANDIR)/man1/`basename $$f`; \
+		$(INSTALL_DATA) $$f $(DESTDIR)$(mandir)/man1/`basename $$f`; \
 	done
 
 man-uninstall:
-	rm -f $(DESTDIR)$(PGSQL_MANDIR)/man1/shp2pgsql.1
-	rm -f $(DESTDIR)$(PGSQL_MANDIR)/man1/pgsql2shp.1
-	rm -f $(DESTDIR)$(PGSQL_MANDIR)/man1/pgtopo_export.1
-	rm -f $(DESTDIR)$(PGSQL_MANDIR)/man1/pgtopo_import.1
+	rm -f $(DESTDIR)$(mandir)/man1/shp2pgsql.1
+	rm -f $(DESTDIR)$(mandir)/man1/pgsql2shp.1
+	rm -f $(DESTDIR)$(mandir)/man1/pgtopo_export.1
+	rm -f $(DESTDIR)$(mandir)/man1/pgtopo_import.1
 
 docs-install: html/postgis.html html/style.css
 	mkdir -p $(DESTDIR)$(PGSQL_DOCDIR)/postgis/images
