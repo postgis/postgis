@@ -1508,7 +1508,7 @@ gserialized_gist_picksplit_constructsplit(GIST_SPLITVEC *v,
 		}
 		else
 		{
-			float p1, p2;
+			float p1 = 0.0, p2 = 0.0;
 			GISTENTRY oldUnion, addon;
 
 			gistentryinit(oldUnion,
