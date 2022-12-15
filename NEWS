@@ -18,6 +18,7 @@ xxxx/xx/xx
   - #635, honour --bindir (and --prefix) configure switch for executables (Sandro Santilli)
   - Honour --mandir (and --prefix) configure switch for man pages install path (Sandro Santilli)
   - Speed up check of topology faces without edges (Sandro Santilli)
+  - Speed up coincident nodes check in topology validation  (Sandro Santilli)
 
 * Bug Fix *
 

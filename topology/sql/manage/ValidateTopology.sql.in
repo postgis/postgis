@@ -649,7 +649,7 @@ BEGIN
       node a,
       node b
     WHERE a.node_id < b.node_id
-    AND ST_DWithin(a.geom, b.geom, 0) -- NOTE: see #1625 and #1789
+    AND a.geom = b.geom
     AND (
       bbox IS NULL
       OR (
