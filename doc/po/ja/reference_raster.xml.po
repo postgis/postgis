@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-04 00:50+0000\n"
-"PO-Revision-Date: 2022-10-25 07:30+0000\n"
+"PO-Revision-Date: 2022-12-20 02:03+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_rasterxml/ja/>\n"
@@ -12299,49 +12299,49 @@ msgstr ""
 msgid ""
 "New pixel values are computed using one of the following resampling "
 "algorithms:"
-msgstr ""
+msgstr "新しいピクセル値は次のリサンプリングアルゴリズムの一つを使って計算されます:"
 
 #. Tag: para
 #: reference_raster.xml:4814 reference_raster.xml:4888
 #, no-c-format
 msgid "NearestNeighbor (english or american spelling)"
-msgstr ""
+msgstr "NearestNeighbor (最近傍補間、英語又は米式綴り方)"
 
 #. Tag: para
 #: reference_raster.xml:4815 reference_raster.xml:4889
 #, no-c-format
 msgid "Bilinear"
-msgstr ""
+msgstr "Bilinear (双線形補間)"
 
 #. Tag: para
 #: reference_raster.xml:4816 reference_raster.xml:4890
 #, no-c-format
 msgid "Cubic"
-msgstr ""
+msgstr "Cubic (3次補完)"
 
 #. Tag: para
 #: reference_raster.xml:4817 reference_raster.xml:4891
 #, no-c-format
 msgid "CubicSpline"
-msgstr ""
+msgstr "CubicSpline (3次スプライン補完)"
 
 #. Tag: para
 #: reference_raster.xml:4818 reference_raster.xml:4892
 #, no-c-format
 msgid "Lanczos"
-msgstr ""
+msgstr "Lanczos (ランチョス補間)"
 
 #. Tag: para
 #: reference_raster.xml:4819 reference_raster.xml:4893
 #, no-c-format
 msgid "<para>Max</para>"
-msgstr ""
+msgstr "<para>Max (最大)</para>"
 
 #. Tag: para
 #: reference_raster.xml:4820 reference_raster.xml:4894
 #, no-c-format
 msgid "<para>Min</para>"
-msgstr ""
+msgstr "<para>Min (最小)</para>"
 
 #. Tag: para
 #: reference_raster.xml:4823 reference_raster.xml:4897
@@ -12349,7 +12349,8 @@ msgstr ""
 msgid ""
 "The default is NearestNeighbor which is the fastest but results in the worst "
 "interpolation."
-msgstr ""
+msgstr "デフォルトはNearestNeighbor "
+"(最近傍補間)です。最も実行速度が速いですが、結果の補間が最も悪くなります。"
 
 #. Tag: para
 #: reference_raster.xml:4824
@@ -12382,7 +12383,7 @@ msgstr "Availability: 2.0.0 GDAL 1.6.1以上が必要です。"
 #: reference_raster.xml:4834 reference_raster.xml:4910
 #, no-c-format
 msgid "Enhanced: 3.4.0 max and min resampling options added"
-msgstr ""
+msgstr "Enhanced: 3.4.0 リサンプリング選択肢に最大と最小を追加"
 
 #. Tag: programlisting
 #: reference_raster.xml:4840
@@ -12450,6 +12451,11 @@ msgid ""
 "spelling), Bilinear, Cubic, CubicSpline, Lanczos, Max or Min resampling "
 "algorithm. Default is NearestNeighbor."
 msgstr ""
+"スケール (ピクセルサイズ)だけを調整するリサンプリングを行います。"
+"新しいピクセル値のリサンプリングアルゴリズムとして最近傍補間 ("
+"'NearestNeighbor' (英語または米式綴り方))、双線形補間 ('Bilinear')、3次補間 "
+"('Cubic')、3次スプライン補間 ('CubicSpline')、ランチョス補間 "
+"('Lanczos')を用います。デフォルトは最近傍補間です。"
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:4861
@@ -12491,7 +12497,8 @@ msgstr ""
 msgid ""
 "Resample a raster by adjusting only its scale (or pixel size). New pixel "
 "values are computed using one of the following resampling algorithms:"
-msgstr ""
+msgstr "スケール (またはピクセルサイズ)だけを調整するリサンプリングを行います。新しい"
+"ピクセル値は次のリサンプリングアルゴリズム使って計算されます:"
 
 #. Tag: para
 #: reference_raster.xml:4899
