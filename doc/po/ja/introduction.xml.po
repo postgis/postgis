@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-04 00:50+0000\n"
-"PO-Revision-Date: 2022-10-25 01:30+0000\n"
+"PO-Revision-Date: 2022-12-20 02:03+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "introductionxml/ja/>\n"
@@ -582,7 +582,7 @@ msgstr "Charlie Savage"
 #: introduction.xml:237
 #, no-c-format
 msgid "Christian Schroeder"
-msgstr ""
+msgstr "Christian Schroeder"
 
 #. Tag: member
 #: introduction.xml:238
