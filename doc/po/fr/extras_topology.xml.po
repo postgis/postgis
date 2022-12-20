@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-11-27 05:42+0000\n"
+"POT-Creation-Date: 2022-12-20 01:55+0000\n"
 "PO-Revision-Date: 2022-02-13 18:28+0000\n"
 "Last-Translator: H Santanna <delazj@gmail.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -674,7 +674,8 @@ msgstr ""
 #: extras_topology.xml:286
 #, no-c-format
 msgid ""
-"Valid <varname>feature_type</varname>s are: POINT, LINE, POLYGON, COLLECTION"
+"Valid <varname>feature_type</varname>s are: POINT, MULTIPOINT, LINE, "
+"MULTILINE, POLYGON, MULTIPOLYGON, COLLECTION"
 msgstr ""
 
 #. Tag: para

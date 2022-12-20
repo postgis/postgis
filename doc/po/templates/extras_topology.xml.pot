@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-11-27 05:42+0000\n"
+"POT-Creation-Date: 2022-12-20 01:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -634,7 +634,8 @@ msgstr ""
 #: extras_topology.xml:286
 #, no-c-format
 msgid ""
-"Valid <varname>feature_type</varname>s are: POINT, LINE, POLYGON, COLLECTION"
+"Valid <varname>feature_type</varname>s are: POINT, MULTIPOINT, LINE, "
+"MULTILINE, POLYGON, MULTIPOLYGON, COLLECTION"
 msgstr ""
 
 #. Tag: para

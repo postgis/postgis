@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-11-27 05:42+0000\n"
+"POT-Creation-Date: 2022-12-20 01:55+0000\n"
 "PO-Revision-Date: 2022-12-01 10:30+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -793,10 +793,9 @@ msgstr ""
 #: extras_topology.xml:286
 #, no-c-format
 msgid ""
-"Valid <varname>feature_type</varname>s are: POINT, LINE, POLYGON, COLLECTION"
+"Valid <varname>feature_type</varname>s are: POINT, MULTIPOINT, LINE, "
+"MULTILINE, POLYGON, MULTIPOLYGON, COLLECTION"
 msgstr ""
-"妥当な<varname>feature_type</varname>は、POINT, LINE, POLYGON, COLLECTIONで"
-"す。"
 
 #. Tag: para
 #: extras_topology.xml:289 extras_topology.xml:383 extras_topology.xml:474
@@ -879,8 +878,8 @@ msgid ""
 "type> <parameter>new_name</parameter></paramdef>"
 msgstr ""
 "<funcdef>topology.layer <function>RenameTopoGeometryColumn</function></"
-"funcdef> <paramdef><type>regclass </type> "
-"<parameter>layer_table</parameter></paramdef> <paramdef><type>name </type> "
+"funcdef> <paramdef><type>regclass </type> <parameter>layer_table</"
+"parameter></paramdef> <paramdef><type>name </type> "
 "<parameter>feature_column</parameter></paramdef> <paramdef><type>name </"
 "type> <parameter>new_name</parameter></paramdef>"
 
@@ -890,7 +889,8 @@ msgstr ""
 msgid ""
 "This function changes the name of an existing TopoGeometry column ensuring "
 "metadata information about it is updated accordingly."
-msgstr "この関数は存在するTopoGeometryカラムの名前を変更します。この際、メタデータ情"
+msgstr ""
+"この関数は存在するTopoGeometryカラムの名前を変更します。この際、メタデータ情"
 "報が適切に更新されるようにします。"
 
 #. Tag: para
@@ -1006,8 +1006,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Renames a topology schema updating its metadata record in topology.topology."
-msgstr "トポロジのスキーマ名を変更して、topology."
-"topologyにあるメタデータのレコードを更新します。"
+msgstr ""
+"トポロジのスキーマ名を変更して、topology.topologyにあるメタデータのレコードを"
+"更新します。"
 
 #. Tag: para
 #: extras_topology.xml:431
@@ -1016,8 +1017,8 @@ msgid ""
 "This example renames a topology from <varname>topo_stage</varname> to "
 "<varname>topo_prod</varname>."
 msgstr ""
-"この例ではトポロジ名を<varname>topo_stage</varname>から<varname>topo_prod</va"
-"rname>に変更します。"
+"この例ではトポロジ名を<varname>topo_stage</varname>から<varname>topo_prod</"
+"varname>に変更します。"
 
 #. Tag: programlisting
 #: extras_topology.xml:435
@@ -1032,8 +1033,8 @@ msgid ""
 "> <xref linkend=\"CopyTopology\"/>, <xref "
 "linkend=\"RenameTopoGeometryColumn\"/>"
 msgstr ""
-"> <xref linkend=\"CopyTopology\"/>, <xref linkend=\"RenameTopoGeometryColumn"
-"\"/>"
+"> <xref linkend=\"CopyTopology\"/>, <xref "
+"linkend=\"RenameTopoGeometryColumn\"/>"
 
 #. Tag: refname
 #: extras_topology.xml:451
@@ -7206,14 +7207,14 @@ msgid ""
 "<code>--skip-layers</code> is given) a custom-format PostgreSQL dump of "
 "tables reported as being layers of the given topology."
 msgstr ""
-"ダンプファイルフォーマットは、少なくともフォーマットバージョン情報を持つ<file"
-"name>pgtopo_dump_version</filename>ファイルを含む<filename>pgtopo_export</fil"
-"ename>ディレクトリの圧縮されたtarアーカイブです。バージョン<code>1</code>では"
-"、ディレクトリにはトポロジのプリミティブテーブル (node, edge_data, face, rela"
-"tion)と、プリミティブと関連付けられたトポロジとレイヤとを持つタブ区切りCSVフ"
-"ァイルが含まれ、(<code>--skip-layers</code>が与えられない場合)与えられたトポ"
-"ロジのレイヤとして報告されたテーブルのPostgrfeSQLダンプのカスタムフォーマット"
-"も含まれます。"
+"ダンプファイルフォーマットは、少なくともフォーマットバージョン情報を持つ"
+"<filename>pgtopo_dump_version</filename>ファイルを含む"
+"<filename>pgtopo_export</filename>ディレクトリの圧縮されたtarアーカイブです。"
+"バージョン<code>1</code>では、ディレクトリにはトポロジのプリミティブテーブル "
+"(node, edge_data, face, relation)と、プリミティブと関連付けられたトポロジとレ"
+"イヤとを持つタブ区切りCSVファイルが含まれ、(<code>--skip-layers</code>が与え"
+"られない場合)与えられたトポロジのレイヤとして報告されたテーブルのPostgrfeSQL"
+"ダンプのカスタムフォーマットも含まれます。"
 
 #. Tag: title
 #: extras_topology.xml:3894
@@ -7297,6 +7298,14 @@ msgstr ""
 "code>スイッチで生成できます。これは、名前の競合を解決した*後に*レイヤをロード"
 "したり、異なるトポロジのレイヤ (開始トポロジで空間的に単純化されたもの等が挙"
 "げられます)にリンクするのに使えます。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Valid <varname>feature_type</varname>s are: POINT, LINE, POLYGON, "
+#~ "COLLECTION"
+#~ msgstr ""
+#~ "妥当な<varname>feature_type</varname>は、POINT, LINE, POLYGON, COLLECTION"
+#~ "です。"
 
 #, no-c-format
 #~ msgid ""

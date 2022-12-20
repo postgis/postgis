@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-11-27 05:42+0000\n"
+"POT-Creation-Date: 2022-12-20 01:55+0000\n"
 "PO-Revision-Date: 2021-11-28 21:13+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -810,9 +810,9 @@ msgstr ""
 #: extras_topology.xml:286
 #, no-c-format
 msgid ""
-"Valid <varname>feature_type</varname>s are: POINT, LINE, POLYGON, COLLECTION"
+"Valid <varname>feature_type</varname>s are: POINT, MULTIPOINT, LINE, "
+"MULTILINE, POLYGON, MULTIPOLYGON, COLLECTION"
 msgstr ""
-"<varname>feature_type</varname>s válidos são: PONTO, LINHA, POLÍGONO, COLEÇÃO"
 
 #. Tag: para
 #: extras_topology.xml:289 extras_topology.xml:383 extras_topology.xml:474
@@ -6896,6 +6896,14 @@ msgid ""
 "AFTER resolving the naming conflicts or to link layers to a different "
 "topology (say a spatially-simplified version of the starting topology)."
 msgstr ""
+
+#, no-c-format
+#~ msgid ""
+#~ "Valid <varname>feature_type</varname>s are: POINT, LINE, POLYGON, "
+#~ "COLLECTION"
+#~ msgstr ""
+#~ "<varname>feature_type</varname>s válidos são: PONTO, LINHA, POLÍGONO, "
+#~ "COLEÇÃO"
 
 #, no-c-format
 #~ msgid ""
