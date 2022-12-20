@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-10-11 22:30+0000\n"
+"PO-Revision-Date: 2022-12-20 16:51+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "extras_address_standardizerxml/fr/>\n"
@@ -595,7 +595,7 @@ msgstr ""
 #: extras_address_standardizer.xml:207
 #, no-c-format
 msgid "MIXED"
-msgstr ""
+msgstr "MÉLANGÉ"
 
 #. Tag: para
 #: extras_address_standardizer.xml:209
@@ -703,7 +703,7 @@ msgstr ""
 #: extras_address_standardizer.xml:266
 #, no-c-format
 msgid "DIRECT"
-msgstr ""
+msgstr "DIRECT"
 
 #. Tag: para
 #: extras_address_standardizer.xml:268
