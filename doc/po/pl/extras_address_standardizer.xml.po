@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-03-11 05:52+0000\n"
+"PO-Revision-Date: 2022-12-20 16:51+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Polish <https://weblate.osgeo.org/projects/postgis/"
 "extras_address_standardizerxml/pl/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n"
 "%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n"
 "%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: title
 #: extras_address_standardizer.xml:3
@@ -704,7 +704,7 @@ msgstr ""
 #: extras_address_standardizer.xml:266
 #, no-c-format
 msgid "DIRECT"
-msgstr ""
+msgstr "BEZPOŚREDNIE"
 
 #. Tag: para
 #: extras_address_standardizer.xml:268
