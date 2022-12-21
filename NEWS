@@ -5,6 +5,7 @@ xxxx/xx/xx
   - #5229, Drop support for Proj < 6.1 and PG 11 (Regina Obe)
 
 * New Features *
+  - #5306, expose version of GEOS at compile time (Sandro Santilli)
   - New install-extension-upgrades command in postgis script (Sandro Santilli)
   - #5257, #5261, #5277, Support changes for PostgreSQL 16 (Regina Obe)
   - #5006, GH705, ST_Transform: Support PROJ pipelines (Robert Coup, Koordinates)

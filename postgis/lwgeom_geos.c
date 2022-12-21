@@ -91,6 +91,7 @@ Datum isring(PG_FUNCTION_ARGS);
 Datum pointonsurface(PG_FUNCTION_ARGS);
 Datum GEOSnoop(PG_FUNCTION_ARGS);
 Datum postgis_geos_version(PG_FUNCTION_ARGS);
+Datum postgis_geos_compiled_version(PG_FUNCTION_ARGS);
 Datum centroid(PG_FUNCTION_ARGS);
 Datum polygonize_garray(PG_FUNCTION_ARGS);
 Datum clusterintersecting_garray(PG_FUNCTION_ARGS);
@@ -121,6 +122,15 @@ Datum postgis_geos_version(PG_FUNCTION_ARGS)
 	text *result = cstring_to_text(ver);
 	PG_RETURN_POINTER(result);
 }
+
+PG_FUNCTION_INFO_V1(postgis_geos_compiled_version);
+Datum postgis_geos_compiled_version(PG_FUNCTION_ARGS)
+{
+	const char *ver = lwgeom_geos_compiled_version();
+	text *result = cstring_to_text(ver);
+	PG_RETURN_POINTER(result);
+}
+
 
 static char
 is_poly(const GSERIALIZED* g)

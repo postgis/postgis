@@ -2951,6 +2951,11 @@ CREATE OR REPLACE FUNCTION postgis_geos_version() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE;
 
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION postgis_geos_compiled_version() RETURNS text
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c' IMMUTABLE;
+
 --- Availability: 3.1.0
 CREATE OR REPLACE FUNCTION postgis_lib_revision() RETURNS text
 	AS 'MODULE_PATHNAME'
@@ -3099,6 +3104,7 @@ END
 $$ LANGUAGE plpgsql VOLATILE;
 
 -- Changed: 3.0.0
+-- Changed: 3.4.0 to include geos compiled version
 CREATE OR REPLACE FUNCTION postgis_full_version() RETURNS text
 AS $$
 DECLARE
@@ -3106,6 +3112,7 @@ DECLARE
 	librev text;
 	projver text;
 	geosver text;
+	geosver_compiled text;
 	sfcgalver text;
 	gdalver text := NULL;
 	libxmlver text;
@@ -3128,6 +3135,7 @@ BEGIN
 	SELECT @extschema@.postgis_lib_version() INTO libver;
 	SELECT @extschema@.postgis_proj_version() INTO projver;
 	SELECT @extschema@.postgis_geos_version() INTO geosver;
+	SELECT @extschema@.postgis_geos_compiled_version() INTO geosver_compiled;
 	SELECT @extschema@.postgis_libjson_version() INTO json_lib_ver;
 	SELECT @extschema@.postgis_libprotobuf_version() INTO protobuf_lib_ver;
 	SELECT @extschema@.postgis_wagyu_version() INTO wagyu_lib_ver;
@@ -3214,6 +3222,10 @@ BEGIN
 
 	IF  geosver IS NOT NULL THEN
 		fullver = fullver || ' GEOS="' || geosver || '"';
+		IF (string_to_array(geosver, '.'))[1:2] != (string_to_array(geosver_compiled, '.'))[1:2]
+		THEN
+			fullver = format('%s (compiled against GEOS %s)', fullver, geosver_compiled);
+		END IF;
 	END IF;
 
 	IF  sfcgalver IS NOT NULL THEN
