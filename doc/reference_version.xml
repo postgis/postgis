@@ -180,6 +180,53 @@ GDAL="GDAL 2.3.2, released 2018/09/21" LIBXML="2.9.9" LIBJSON="0.13.1" LIBPROTOB
 	  </refsection>
 	</refentry>
 
+	<refentry id="PostGIS_GEOS_Compiled_Version">
+	  <refnamediv>
+		<refname>PostGIS_GEOS_Compiled_Version</refname>
+
+		<refpurpose>Returns the version number of the GEOS
+		library against which PostGIS was built.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>PostGIS_GEOS_Compiled_Version</function></funcdef>
+
+			<paramdef></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the version number of the GEOS library, or
+		against which PostGIS was built.</para>
+
+		<para>Availability: 3.4.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT PostGIS_GEOS_Compiled_Version();
+ postgis_geos_compiled_version
+-------------------------------
+ 3.8.0
+(1 row)</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para>
+<xref linkend="PostGIS_GEOS_Version" />,
+<xref linkend="PostGIS_Full_Version" />
+        </para>
+	  </refsection>
+	</refentry>
+
 	<refentry id="PostGIS_Liblwgeom_Version">
 	  <refnamediv>
 		<refname>PostGIS_Liblwgeom_Version</refname>
