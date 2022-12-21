@@ -39,6 +39,20 @@ LWTIN* lwtin_from_geos(const GEOSGeometry* geom, uint8_t want3d);
 #define LWGEOM_GEOS_ERRMSG_MAXSIZE 256
 char lwgeom_geos_errmsg[LWGEOM_GEOS_ERRMSG_MAXSIZE];
 
+const char *
+lwgeom_geos_compiled_version()
+{
+	static char ver[64];
+	sprintf(
+		ver,
+		"%d.%d.%d",
+		(POSTGIS_GEOS_VERSION/10000),
+		((POSTGIS_GEOS_VERSION%10000)/100),
+		((POSTGIS_GEOS_VERSION)%100)
+	);
+	return ver;
+}
+
 extern void
 lwgeom_geos_error(const char* fmt, ...)
 {
@@ -50,6 +64,16 @@ lwgeom_geos_error(const char* fmt, ...)
 		lwgeom_geos_errmsg[LWGEOM_GEOS_ERRMSG_MAXSIZE - 1] = '\0';
 
 	va_end(ap);
+}
+
+void
+lwgeom_geos_error_minversion(const char *functionality, const char *minver)
+{
+	lwerror(
+		"%s requires a build against GEOS-%s or higher,"
+		" this version of PostGIS was built against version %s",
+		functionality, minver, lwgeom_geos_compiled_version()
+	);
 }
 
 /* Destroy any non-null GEOSGeometry* pointers passed as arguments */
@@ -726,7 +750,7 @@ lwgeom_intersection_prec(const LWGEOM* geom1, const LWGEOM* geom2, double prec)
 
 	if ( prec >= 0) {
 #if POSTGIS_GEOS_VERSION < 30900
-		lwerror("Fixed-precision intersection requires GEOS-3.9 or higher");
+		lwgeom_geos_error_minversion("Fixed-precision intersection", "3.9");
 		GEOS_FREE_AND_FAIL(g1, g2);
 		return NULL;
 #else
@@ -774,7 +798,7 @@ lwgeom_linemerge_directed(const LWGEOM* geom, int directed)
 	if (directed)
 	{
 #if POSTGIS_GEOS_VERSION < 31100
-		lwerror("Directed line merging requires GEOS-3.11 or higher");
+		lwgeom_geos_error_minversion("Directed line merging", "3.11");
 		GEOS_FREE_AND_FAIL(g1);
 		return NULL;
 #else
@@ -823,7 +847,7 @@ lwgeom_unaryunion_prec(const LWGEOM* geom, double prec)
 
 	if ( prec >= 0) {
 #if POSTGIS_GEOS_VERSION < 30900
-		lwerror("Fixed-precision union requires GEOS-3.9 or higher");
+		lwgeom_geos_error_minversion("Fixed-precision unary union", "3.9");
 		GEOS_FREE_AND_FAIL(g1);
 		return NULL;
 #else
@@ -875,7 +899,7 @@ lwgeom_difference_prec(const LWGEOM* geom1, const LWGEOM* geom2, double prec)
 
 	if ( prec >= 0) {
 #if POSTGIS_GEOS_VERSION < 30900
-		lwerror("Fixed-precision difference requires GEOS-3.9 or higher");
+		lwgeom_geos_error_minversion("Fixed-precision difference", "3.9");
 		GEOS_FREE_AND_FAIL(g1, g2);
 		return NULL;
 #else
@@ -926,7 +950,7 @@ lwgeom_symdifference_prec(const LWGEOM* geom1, const LWGEOM* geom2, double prec)
 
 	if ( prec >= 0) {
 #if POSTGIS_GEOS_VERSION < 30900
-		lwerror("Fixed-precision difference requires GEOS-3.9 or higher");
+		lwgeom_geos_error_minversion("Fixed-precision symdifference", "3.9");
 		GEOS_FREE_AND_FAIL(g1, g2);
 		return NULL;
 #else
@@ -985,7 +1009,7 @@ LWGEOM*
 lwgeom_reduceprecision(const LWGEOM* geom, double gridSize)
 {
 #if POSTGIS_GEOS_VERSION < 30900
-	lwerror("Precision reduction requires GEOS-3.9 or higher");
+	lwgeom_geos_error_minversion("Precision reduction", "3.9");
 	return NULL;
 #else
 
@@ -1079,7 +1103,7 @@ lwgeom_union_prec(const LWGEOM* geom1, const LWGEOM* geom2, double gridSize)
 
 	if ( gridSize >= 0) {
 #if POSTGIS_GEOS_VERSION < 30900
-		lwerror("Fixed-precision union requires GEOS-3.9 or higher");
+		lwgeom_geos_error_minversion("Fixed-precision union", "3.9");
 		GEOS_FREE_AND_FAIL(g1, g2);
 		return NULL;
 #else

@@ -2369,6 +2369,7 @@ extern LWGEOM* lwcurve_linearize(const LWGEOM *geom, double tol, LW_LINEARIZE_TO
 
 /** Return GEOS version string (not to be freed) */
 const char* lwgeom_geos_version(void);
+const char* lwgeom_geos_compiled_version(void);
 
 /** Convert an LWGEOM to a GEOS Geometry and convert back -- for debug only */
 LWGEOM* lwgeom_geos_noop(const LWGEOM *geom) ;
