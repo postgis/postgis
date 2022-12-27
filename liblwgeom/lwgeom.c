@@ -2505,37 +2505,34 @@ lwgeom_is_trajectory(const LWGEOM *geom)
 	return lwline_is_trajectory((LWLINE*)geom);
 }
 
-static uint8_t
-bits_for_precision(int32_t significant_digits)
-{
-	int32_t bits_needed = ceil(significant_digits / log10(2));
-
-	if (bits_needed > 52)
-	{
-		return 52;
-	}
-	else if (bits_needed < 1)
-	{
-		return 1;
-	}
-
-	return bits_needed;
-}
+#define STATIC_ASSERT(COND,MSG) typedef char static_assertion_##MSG[(COND)?1:-1]
+STATIC_ASSERT(sizeof(double) == sizeof(uint64_t),this_should_be_true);
 
 static double trim_preserve_decimal_digits(double d, int32_t decimal_digits)
 {
-	if (d == 0)
-		return 0;
-
-	int digits_left_of_decimal = (int) (1 + log10(fabs(d)));
-	uint8_t bits_needed = bits_for_precision(decimal_digits + digits_left_of_decimal);
-	uint64_t mask = 0xffffffffffffffffULL << (52 - bits_needed);
 	uint64_t dint = 0;
-	size_t dsz = sizeof(d) < sizeof(dint) ? sizeof(d) : sizeof(dint);
+	memcpy(&dint, &d, sizeof(double));
+	/* Extract the exponent from the IEEE 754 integer representation, which */
+	/* corresponds to floor(log2(fabs(d))) */
+	const int exponent = (int)((dint >> 52) & 2047) - 1023;
+	/* (x * 851 + 255) / 256 == 1 + (int)(x * log2(10)) for x in [0,30] */
+	int bits_needed = 1 + exponent + (decimal_digits * 851 + 255) / 256;
+	/* for negative values, (x * 851 + 255) / 256 == (int)(x * log2(10)), so */
+	/* substract one */
+	if (decimal_digits < 0)
+		bits_needed --;
 
-	memcpy(&dint, &d, dsz);
+	/* This will also handle NaN and Inf since exponent = 1023, and thus for */
+	/* reasonable decimal_digits values bits_needed will be > 52 */
+	if (bits_needed >= 52)
+	{
+		return d;
+	}
+	if (bits_needed < 1 )
+		bits_needed = 1;
+	const uint64_t mask = 0xffffffffffffffffULL << (52 - bits_needed);
 	dint &= mask;
-	memcpy(&d, &dint, dsz);
+	memcpy(&d, &dint, sizeof(double));
 	return d;
 }
 
