@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-20 01:55+0000\n"
-"PO-Revision-Date: 2022-12-01 10:30+0000\n"
+"PO-Revision-Date: 2022-12-27 09:30+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "extras_topologyxml/ja/>\n"
@@ -796,6 +796,8 @@ msgid ""
 "Valid <varname>feature_type</varname>s are: POINT, MULTIPOINT, LINE, "
 "MULTILINE, POLYGON, MULTIPOLYGON, COLLECTION"
 msgstr ""
+"妥当な<varname>feature_type</varname>: POINT, MULTIPOINT, LINE, MULTILINE, "
+"POLYGON, MULTIPOLYGON, COLLECTION"
 
 #. Tag: para
 #: extras_topology.xml:289 extras_topology.xml:383 extras_topology.xml:474
