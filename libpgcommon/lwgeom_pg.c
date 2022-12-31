@@ -101,7 +101,13 @@ static Oid
 postgis_get_full_version_schema()
 {
 	const char* proname = "postgis_full_version";
+
+	#if POSTGIS_PGSQL_VERSION < 160
 	List* names = stringToQualifiedNameList(proname);
+	#else
+	List* names = stringToQualifiedNameList(proname, NULL);
+	#endif
+
 	#if POSTGIS_PGSQL_VERSION < 140
 	FuncCandidateList clist = FuncnameGetCandidates(names, -1, NIL, false, false, false);
 	#else
