@@ -20,6 +20,7 @@ xxxx/xx/xx
   - Honour --mandir (and --prefix) configure switch for man pages install path (Sandro Santilli)
   - Speed up check of topology faces without edges (Sandro Santilli)
   - Speed up coincident nodes check in topology validation  (Sandro Santilli)
+  - GH718, ST_QuantizeCoordinates(): speed-up implementation (Even Rouault)
 
 * Bug Fix *
 
