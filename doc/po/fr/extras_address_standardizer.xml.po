@@ -3,13 +3,14 @@
 # Translators:
 # Nicolas Roelandt <roelandtn.pro@gmail.com>, 2022.
 # Regina Obe <regina@arrival3d.com>, 2022.
+# Vincent Bre <vincent.bre@oslandia.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-12-20 16:51+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "extras_address_standardizerxml/fr/>\n"
 "Language: fr\n"
@@ -153,7 +154,7 @@ msgstr ""
 #: extras_address_standardizer.xml:45
 #, no-c-format
 msgid "stdaddr"
-msgstr ""
+msgstr "stdaddr"
 
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:46
@@ -194,7 +195,7 @@ msgstr ""
 #: extras_address_standardizer.xml:655
 #, no-c-format
 msgid "&address_standardizer_required;"
-msgstr ""
+msgstr "&address_standardizer_required;"
 
 #. Tag: term
 #: extras_address_standardizer.xml:55
@@ -256,7 +257,7 @@ msgstr ""
 #: extras_address_standardizer.xml:73 extras_address_standardizer.xml:408
 #, no-c-format
 msgid "pretype"
-msgstr ""
+msgstr "pretype"
 
 #. Tag: para
 #: extras_address_standardizer.xml:75 extras_address_standardizer.xml:410
@@ -280,7 +281,7 @@ msgstr ""
 #: extras_address_standardizer.xml:83 extras_address_standardizer.xml:418
 #, no-c-format
 msgid "suftype"
-msgstr ""
+msgstr "suftype"
 
 #. Tag: para
 #: extras_address_standardizer.xml:85 extras_address_standardizer.xml:420
@@ -295,7 +296,7 @@ msgstr ""
 #: extras_address_standardizer.xml:88 extras_address_standardizer.xml:423
 #, no-c-format
 msgid "sufdir"
-msgstr ""
+msgstr "sufdir"
 
 #. Tag: para
 #: extras_address_standardizer.xml:90 extras_address_standardizer.xml:425
@@ -310,7 +311,7 @@ msgstr ""
 #: extras_address_standardizer.xml:93
 #, no-c-format
 msgid "ruralroute"
-msgstr ""
+msgstr "route rurale"
 
 #. Tag: para
 #: extras_address_standardizer.xml:95
@@ -1199,7 +1200,7 @@ msgstr ""
 #: extras_address_standardizer.xml:508 extras_address_standardizer.xml:549
 #, no-c-format
 msgid "stdword"
-msgstr ""
+msgstr "stdword"
 
 #. Tag: para
 #: extras_address_standardizer.xml:510 extras_address_standardizer.xml:551
@@ -1272,7 +1273,7 @@ msgstr ""
 #: extras_address_standardizer.xml:570
 #, no-c-format
 msgid "parse_address"
-msgstr ""
+msgstr "parse_address"
 
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:572
@@ -1388,7 +1389,7 @@ msgstr "Voir aussi"
 #: extras_address_standardizer.xml:619
 #, no-c-format
 msgid "standardize_address"
-msgstr ""
+msgstr "normaliser_adresse"
 
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:621
