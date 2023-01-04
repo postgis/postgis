@@ -7,13 +7,14 @@
 # Vincent Picavet <vincent.ml@oslandia.com>, 2014
 # Regina Obe <regina@arrival3d.com>, 2022.
 # Thomas Muguet <thomas.muguet@oslandia.com>, 2022.
+# Vincent Bre <vincent.bre@oslandia.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-05-03 02:58+0000\n"
-"PO-Revision-Date: 2022-12-06 10:30+0000\n"
-"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
+"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_editorxml/fr/>\n"
 "Language: fr\n"
