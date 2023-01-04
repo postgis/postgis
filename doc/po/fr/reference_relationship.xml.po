@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-11-27 05:42+0000\n"
-"PO-Revision-Date: 2022-02-13 18:28+0000\n"
-"Last-Translator: H Santanna <delazj@gmail.com>\n"
+"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_relationshipxml/fr/>\n"
 "Language: fr\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: para
 #: reference_relationship.xml:5
@@ -72,7 +72,7 @@ msgstr ""
 #: reference_relationship.xml:1857
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 #. Tag: para
 #: reference_relationship.xml:38
@@ -109,20 +109,20 @@ msgstr ""
 #: reference_relationship.xml:1682
 #, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_relationship.xml:49 reference_relationship.xml:1623
 #: reference_relationship.xml:1684
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #: reference_relationship.xml:50 reference_relationship.xml:838
 #, no-c-format
 msgid "&T_support;"
-msgstr ""
+msgstr "&T_support;"
 
 #. Tag: para
 #: reference_relationship.xml:51
@@ -331,7 +331,7 @@ msgstr ""
 #: reference_relationship.xml:1871
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "Exemples"
 
 #. Tag: para
 #: reference_relationship.xml:139
@@ -1277,7 +1277,7 @@ msgstr ""
 #: reference_relationship.xml:836
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: programlisting
 #: reference_relationship.xml:842
@@ -1598,7 +1598,7 @@ msgstr ""
 #: reference_relationship.xml:1006
 #, no-c-format
 msgid "ST_Overlaps"
-msgstr ""
+msgstr "ST_Overlaps"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:1008
@@ -2251,7 +2251,7 @@ msgstr ""
 #: reference_relationship.xml:1495
 #, no-c-format
 msgid "ST_Within"
-msgstr ""
+msgstr "ST_Within"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:1497
@@ -2520,7 +2520,7 @@ msgstr ""
 #: reference_relationship.xml:1704
 #, no-c-format
 msgid "ST_DFullyWithin"
-msgstr ""
+msgstr "ST_DFullyWithin"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:1706
