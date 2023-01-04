@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-11-27 05:42+0000\n"
-"PO-Revision-Date: 2022-12-06 10:30+0000\n"
-"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
+"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_outputxml/fr/>\n"
 "Language: fr\n"
@@ -38,7 +38,7 @@ msgstr ""
 #: reference_output.xml:13
 #, no-c-format
 msgid "Well-Known Text (WKT)"
-msgstr ""
+msgstr "Well-Known Text (WKT)"
 
 #. Tag: refname
 #: reference_output.xml:17
@@ -1974,7 +1974,7 @@ msgstr ""
 #: reference_output.xml:974
 #, no-c-format
 msgid "Availability: 3.3.0"
-msgstr ""
+msgstr "Disponibilité : 3.3.0"
 
 #. Tag: para
 #: reference_output.xml:977
