@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-13 19:13+0000\n"
-"PO-Revision-Date: 2022-02-13 18:28+0000\n"
-"Last-Translator: H Santanna <delazj@gmail.com>\n"
+"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_versionxml/fr/>\n"
 "Language: fr\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: para
 #: reference_version.xml:5
@@ -60,7 +60,7 @@ msgstr ""
 #: reference_version.xml:510 reference_version.xml:556
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 #. Tag: para
 #: reference_version.xml:35
@@ -105,7 +105,7 @@ msgstr ""
 #: reference_version.xml:525 reference_version.xml:562
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "Exemples"
 
 #. Tag: programlisting
 #: reference_version.xml:54
@@ -323,7 +323,7 @@ msgstr ""
 #: reference_version.xml:226
 #, no-c-format
 msgid "Availability: 1.5"
-msgstr ""
+msgstr "Disponibilité : 1.5"
 
 #. Tag: programlisting
 #: reference_version.xml:232
