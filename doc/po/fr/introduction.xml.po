@@ -7,13 +7,14 @@
 # Vincent Picavet <vincent.ml@oslandia.com>, 2013
 # Vincent Picavet <vincent.ml@oslandia.com>, 2013
 # Thomas Muguet <thomas.muguet@oslandia.com>, 2022.
+# Vincent Bre <vincent.bre@oslandia.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-04 00:50+0000\n"
-"PO-Revision-Date: 2022-12-03 06:30+0000\n"
-"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
+"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "introductionxml/fr/>\n"
 "Language: fr\n"
@@ -606,7 +607,7 @@ msgstr "Charlie Savage"
 #: introduction.xml:237
 #, no-c-format
 msgid "Christian Schroeder"
-msgstr ""
+msgstr "Christian Schroeder"
 
 #. Tag: member
 #: introduction.xml:238
