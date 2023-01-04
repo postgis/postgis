@@ -4,13 +4,14 @@
 # Guy BARA <bara.guy@gmail.com>, 2014
 # Rodolphe Quiédeville <rodolphe@quiedeville.org>, 2013
 # Regina Obe <regina@arrival3d.com>, 2022.
+# Vincent Bre <vincent.bre@oslandia.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-08-27 04:57+0000\n"
-"PO-Revision-Date: 2022-10-11 22:30+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "release_notesxml/fr/>\n"
 "Language: fr\n"
@@ -634,13 +635,13 @@ msgstr ""
 #: release_notes.xml:170
 #, no-c-format
 msgid "PostGIS 3.3.0beta1"
-msgstr ""
+msgstr "PostGIS 3.3.0beta1"
 
 #. Tag: para
 #: release_notes.xml:171
 #, no-c-format
 msgid "2022/07/03"
-msgstr ""
+msgstr "2022/07/03"
 
 #. Tag: para
 #: release_notes.xml:172
