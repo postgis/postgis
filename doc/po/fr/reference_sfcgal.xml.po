@@ -3,13 +3,14 @@
 # Translators:
 # Vincent Picavet <vincent.ml@oslandia.com>, 2013
 # Vincent Picavet <vincent.ml@oslandia.com>, 2013
+# Vincent Bre <vincent.bre@oslandia.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-14 02:04+0000\n"
-"PO-Revision-Date: 2022-04-17 08:55+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_sfcgalxml/fr/>\n"
 "Language: fr\n"
@@ -17,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: para
 #: reference_sfcgal.xml:5
@@ -178,7 +179,7 @@ msgstr ""
 #: reference_sfcgal.xml:73 reference_sfcgal.xml:145
 #, no-c-format
 msgid "Availability: 3.3.0"
-msgstr ""
+msgstr "Disponibilité : 3.3.0"
 
 #. Tag: refname
 #: reference_sfcgal.xml:89
@@ -214,7 +215,7 @@ msgstr ""
 #: reference_sfcgal.xml:1124
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "Exemples"
 
 #. Tag: para
 #: reference_sfcgal.xml:115
@@ -518,7 +519,7 @@ msgstr ""
 #: reference_sfcgal.xml:799 reference_sfcgal.xml:827 reference_sfcgal.xml:1215
 #, no-c-format
 msgid "Availability: 2.2.0"
-msgstr ""
+msgstr "Disponibilité : 2.2.0"
 
 #. Tag: para
 #: reference_sfcgal.xml:294
@@ -876,7 +877,7 @@ msgstr ""
 #: reference_sfcgal.xml:588
 #, no-c-format
 msgid "Availability: 3.0.0"
-msgstr ""
+msgstr "Disponibilité : 3.0.0"
 
 #. Tag: para
 #: reference_sfcgal.xml:602
