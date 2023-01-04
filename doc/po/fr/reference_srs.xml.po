@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-11-01 14:51+0000\n"
-"PO-Revision-Date: 2022-12-06 10:30+0000\n"
-"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
+"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_srsxml/fr/>\n"
 "Language: fr\n"
@@ -62,7 +62,7 @@ msgstr ""
 #: reference_srs.xml:206 reference_srs.xml:310
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 #. Tag: para
 #: reference_srs.xml:35
@@ -114,7 +114,7 @@ msgstr ""
 #: reference_srs.xml:249 reference_srs.xml:358
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "Exemples"
 
 #. Tag: para
 #: reference_srs.xml:58 reference_srs.xml:359
@@ -219,7 +219,7 @@ msgstr ""
 #: reference_srs.xml:107 reference_srs.xml:150 reference_srs.xml:243
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: para
 #: reference_srs.xml:112
@@ -448,7 +448,7 @@ msgstr ""
 #: reference_srs.xml:244
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #: reference_srs.xml:250
