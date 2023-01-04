@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-02-13 18:28+0000\n"
-"Last-Translator: H Santanna <delazj@gmail.com>\n"
+"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_troubleshootingxml/fr/>\n"
 "Language: fr\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: para
 #: reference_troubleshooting.xml:5
@@ -46,7 +46,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_troubleshooting.xml:21
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>PostGIS_AddBBox</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
@@ -59,7 +59,7 @@ msgstr ""
 #: reference_troubleshooting.xml:124
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 #. Tag: para
 #: reference_troubleshooting.xml:31
@@ -84,14 +84,14 @@ msgstr ""
 #: reference_troubleshooting.xml:129
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: title
 #: reference_troubleshooting.xml:45 reference_troubleshooting.xml:93
 #: reference_troubleshooting.xml:134
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "Exemples"
 
 #. Tag: programlisting
 #: reference_troubleshooting.xml:47
@@ -101,6 +101,9 @@ msgid ""
 " SET geom =  PostGIS_AddBBox(geom)\n"
 " WHERE PostGIS_HasBBox(geom) = false;"
 msgstr ""
+"UPDATE sometable\n"
+" SET geom =  PostGIS_AddBBox(geom)\n"
+" WHERE PostGIS_HasBBox(geom) = false ;"
 
 #. Tag: title
 #: reference_troubleshooting.xml:52 reference_troubleshooting.xml:100
@@ -177,6 +180,19 @@ msgid ""
 " SET geom =  PostGIS_AddBBox(geom)\n"
 " WHERE Not PostGIS_HasBBOX(geom);"
 msgstr ""
+"-- Cet exemple supprime les emprises lorsque l'emprise mise en cache est "
+"incorrecte\n"
+"-- Le fait de forcer ST_AsBinary avant d'appliquer Box2D provoque un "
+"recalcul de l'emprise, et \n"
+"-- Box2D appliquée à la géométrie de la table renvoie toujours l'emprise "
+"mise en cache.\n"
+"UPDATE sometable\n"
+" SET the_geom =  PostGIS_DropBBox(the_geom)\n"
+" WHERE Not (Box2D(ST_AsBinary(the_geom)) = Box2D(the_geom));\n"
+"\n"
+" UPDATE sometable\n"
+" SET the_geom =  PostGIS_AddBBox(the_geom)\n"
+" WHERE Not PostGIS_HasBBOX(the_geom);"
 
 #. Tag: para
 #: reference_troubleshooting.xml:102
@@ -220,6 +236,8 @@ msgid ""
 "SELECT geom\n"
 "FROM sometable WHERE PostGIS_HasBBox(geom) = false;"
 msgstr ""
+"SELECT the_geom\n"
+"FROM sometable WHERE PostGIS_HasBBox(the_geom) = false ;"
 
 #. Tag: para
 #: reference_troubleshooting.xml:143
