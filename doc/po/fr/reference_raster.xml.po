@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-04 00:50+0000\n"
-"PO-Revision-Date: 2022-04-29 12:55+0000\n"
-"Last-Translator: bartoletti <lbartoletti@tuxfamily.org>\n"
+"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_rasterxml/fr/>\n"
 "Language: fr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: title
 #: reference_raster.xml:3
@@ -242,7 +242,7 @@ msgstr ""
 #: reference_raster.xml:11706
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 #. Tag: para
 #: reference_raster.xml:31
@@ -526,7 +526,7 @@ msgstr ""
 #: reference_raster.xml:192
 #, no-c-format
 msgid "automatic"
-msgstr ""
+msgstr "automatique"
 
 #. Tag: refname
 #: reference_raster.xml:207
@@ -1317,7 +1317,7 @@ msgstr ""
 #: reference_raster.xml:11732
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "Exemples"
 
 #. Tag: programlisting
 #: reference_raster.xml:721
@@ -2379,7 +2379,7 @@ msgstr ""
 #: reference_raster.xml:5899
 #, no-c-format
 msgid "Availability: 2.2.0"
-msgstr ""
+msgstr "Disponibilité : 2.2.0"
 
 #. Tag: para
 #: reference_raster.xml:1290
@@ -18085,7 +18085,7 @@ msgstr ""
 #: reference_raster.xml:10170
 #, no-c-format
 msgid "ST_Polygon"
-msgstr ""
+msgstr "ST_Polygon"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10171
@@ -18267,7 +18267,7 @@ msgstr ""
 #: reference_raster.xml:10277
 #, no-c-format
 msgid "&amp;&lt;"
-msgstr ""
+msgstr "&amp;&lt;"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10279
@@ -18322,7 +18322,7 @@ msgstr ""
 #: reference_raster.xml:10321
 #, no-c-format
 msgid "&amp;&gt;"
-msgstr ""
+msgstr "&amp;&gt;"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10323
@@ -18360,6 +18360,8 @@ msgid ""
 "This operand will make use of any indexes that may be available on the "
 "geometries."
 msgstr ""
+"Cette opérande utilisera tous les index qui peuvent être disponibles sur les "
+"géométries."
 
 #. Tag: programlisting
 #: reference_raster.xml:10360
@@ -18385,7 +18387,7 @@ msgstr ""
 #: reference_raster.xml:10366
 #, no-c-format
 msgid "&#61;"
-msgstr ""
+msgstr "&#61;"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10368
@@ -18428,7 +18430,7 @@ msgstr ""
 #: reference_raster.xml:10414
 #, no-c-format
 msgid "<refname>@</refname>"
-msgstr ""
+msgstr "<refname>@</refname>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10416
@@ -18484,13 +18486,15 @@ msgstr ""
 #: reference_raster.xml:10482
 #, no-c-format
 msgid "<refname>~=</refname>"
-msgstr ""
+msgstr "<refname>~=</refname>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10484
 #, no-c-format
 msgid "Returns <varname>TRUE</varname> if A's bounding box is the same as B's."
 msgstr ""
+"Renvoie <varname>TRUE</varname> si la boîte de délimitation de A est la même "
+"que celle de B."
 
 #. Tag: funcprototype
 #: reference_raster.xml:10489
@@ -18536,7 +18540,7 @@ msgstr ""
 #: reference_raster.xml:10534
 #, no-c-format
 msgid "<refname>~</refname>"
-msgstr ""
+msgstr "<refname>~</refname>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10536
@@ -19123,7 +19127,7 @@ msgstr ""
 #: reference_raster.xml:11154
 #, no-c-format
 msgid "ST_Overlaps"
-msgstr ""
+msgstr "ST_Overlaps"
 
 #. Tag: refpurpose
 #: reference_raster.xml:11155
@@ -19263,7 +19267,7 @@ msgstr ""
 #: reference_raster.xml:11314
 #, no-c-format
 msgid "ST_SameAlignment"
-msgstr ""
+msgstr "ST_SameAlignment"
 
 #. Tag: refpurpose
 #: reference_raster.xml:11316
@@ -19467,7 +19471,7 @@ msgstr ""
 #: reference_raster.xml:11472
 #, no-c-format
 msgid "ST_Within"
-msgstr ""
+msgstr "ST_Within"
 
 #. Tag: refpurpose
 #: reference_raster.xml:11473
@@ -19645,7 +19649,7 @@ msgstr ""
 #: reference_raster.xml:11654
 #, no-c-format
 msgid "ST_DFullyWithin"
-msgstr ""
+msgstr "ST_DFullyWithin"
 
 #. Tag: refpurpose
 #: reference_raster.xml:11655
