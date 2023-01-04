@@ -7,13 +7,14 @@
 # Vincent Picavet <vincent.ml@oslandia.com>, 2013
 # Vincent Picavet <vincent.ml@oslandia.com>, 2013
 # H Santanna <delazj@gmail.com>, 2022.
+# Vincent Bre <vincent.bre@oslandia.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-20 01:55+0000\n"
-"PO-Revision-Date: 2022-02-13 18:28+0000\n"
-"Last-Translator: H Santanna <delazj@gmail.com>\n"
+"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "extras_topologyxml/fr/>\n"
 "Language: fr\n"
@@ -21,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: title
 #: extras_topology.xml:3
@@ -3868,7 +3869,7 @@ msgstr ""
 #: extras_topology.xml:2708
 #, no-c-format
 msgid "Polygonize"
-msgstr ""
+msgstr "Polygoniser"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2709
@@ -4332,7 +4333,7 @@ msgstr ""
 #: extras_topology.xml:2984
 #, no-c-format
 msgid "Availability: 3.3.0"
-msgstr ""
+msgstr "Disponibilité : 3.3.0"
 
 #. Tag: para
 #: extras_topology.xml:2989
