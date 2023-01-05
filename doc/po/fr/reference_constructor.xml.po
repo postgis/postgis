@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-08-27 04:57+0000\n"
-"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_constructorxml/fr/>\n"
@@ -488,7 +488,7 @@ msgstr ""
 #: reference_constructor.xml:160
 #, no-c-format
 msgid "Availability: 1.5"
-msgstr "Disponibilité : 1.5"
+msgstr "Disponibilité : 1.5"
 
 #. Tag: para
 #: reference_constructor.xml:161
