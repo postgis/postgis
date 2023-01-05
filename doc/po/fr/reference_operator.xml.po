@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_operatorxml/fr/>\n"
@@ -552,7 +552,7 @@ msgstr ""
 #: reference_operator.xml:308
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr "Disponibilité : Version 2.0.0"
+msgstr "Disponibilité : 2.0.0"
 
 #. Tag: para
 #: reference_operator.xml:311 reference_operator.xml:373
