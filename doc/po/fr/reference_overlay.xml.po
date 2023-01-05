@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-10-23 01:21+0000\n"
-"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_overlayxml/fr/>\n"
@@ -78,7 +78,7 @@ msgstr ""
 #: reference_overlay.xml:856
 #, no-c-format
 msgid "Performed by the GEOS module."
-msgstr ""
+msgstr "Effectué par le module GEOS."
 
 #. Tag: para
 #: reference_overlay.xml:42 reference_overlay.xml:539
@@ -176,7 +176,7 @@ msgstr ""
 #: reference_overlay.xml:96 reference_overlay.xml:217 reference_overlay.xml:643
 #, no-c-format
 msgid "Performed by the GEOS module"
-msgstr ""
+msgstr "Effectué par le module GEOS"
 
 #. Tag: para
 #: reference_overlay.xml:97 reference_overlay.xml:219 reference_overlay.xml:645
@@ -583,7 +583,7 @@ msgstr "&Z_support;"
 #: reference_overlay.xml:339 reference_overlay.xml:760
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr ""
+msgstr "Disponibilité : 2.0.0"
 
 #. Tag: para
 #: reference_overlay.xml:341
