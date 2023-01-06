@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2020-12-19 17:06+0000\n"
-"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "using_postgis_appxml/fr/>\n"
@@ -32,13 +32,13 @@ msgstr "Utiliser MapServer"
 
 #. Tag: para
 #: using_postgis_app.xml:7
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The Minnesota MapServer is an internet web-mapping server which conforms to "
 "the OpenGIS Web Map Service specification."
 msgstr ""
-"MapServer est un serveur cartographique web conforme aux spécifications "
-"définies par l'OpenGIS"
+"Le Minnesota MapServer est un serveur de cartographie Web conforme à la "
+"spécification OpenGIS Web Map Service."
 
 #. Tag: para
 #: using_postgis_app.xml:12
@@ -67,7 +67,7 @@ msgstr "Utilisation basique"
 
 #. Tag: para
 #: using_postgis_app.xml:25
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "To use PostGIS with MapServer, you need to know how to configure MapServer, "
 "which is beyond the scope of this documentation. This section covers "
@@ -98,7 +98,7 @@ msgstr "La version 3.5 - ou plus récente - de MapServer."
 
 #. Tag: para
 #: using_postgis_app.xml:42
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "MapServer accesses PostGIS/PostgreSQL data like any other PostgreSQL client, "
 "using the <filename>libpq</filename> interface. This means that MapServer "
@@ -110,7 +110,7 @@ msgstr ""
 "<filename>libpq</filename> comme n'importe quel autre client PostgreSQL. "
 "Cela signifie que pour utiliser PostGIS, MapServer peut être installé sur "
 "n'importe quelle machine disposant d'un accès internet au serveur PostGIS. "
-"Plus la connection entre les deux systèmes est rapide et meilleur seront les "
+"Plus la connexion entre les deux systèmes est rapide et meilleur seront les "
 "performances."
 
 #. Tag: para
@@ -129,7 +129,7 @@ msgstr "Dans votre fichier MapFIle, ajoutez une couche PostGIS. Par exemple :"
 
 #. Tag: programlisting
 #: using_postgis_app.xml:58
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "LAYER\n"
 "  CONNECTIONTYPE postgis\n"
@@ -163,7 +163,7 @@ msgstr ""
 "LAYER\n"
 "CONNECTIONTYPE postgis\n"
 "NAME \"widehighways\" \n"
-"# Connection à la base de données\n"
+"# Connexion à la base de données\n"
 "CONNECTION \"user=dbuser dbname=gisdatabase host=bigserver\"\n"
 "PROCESSING \"CLOSE_CONNECTION=DEFER\"\n"
 "# Récupère les informations géographiques de la colonne 'geom' de la table "
@@ -174,8 +174,8 @@ msgstr ""
 "# Seule les routes principales seront affichées \n"
 "FILTER \"type = 'highway' and numlanes &gt;= 4\" \n"
 "CLASS \n"
-"# Le trait représentant les routes importantes sera plus claires et large de "
-"2 pixels\n"
+"# Le trait représentant les routes importantes sera plus clair et large de 2 "
+"pixels\n"
 "EXPRESSION ([numlanes] &gt;= 6) \n"
 "STYLE\n"
 "COLOR 255 22 22 \n"
@@ -184,7 +184,7 @@ msgstr ""
 "END \n"
 "CLASS \n"
 "# Toute les autres seront dessinées en couleur sombre avec un trait d'1 "
-"pixel d'paisseur\n"
+"pixel d'épaisseur\n"
 "EXPRESSION ([numlanes] &lt; 6) \n"
 "STYLE\n"
 "COLOR 205 92 82\n"
@@ -314,7 +314,7 @@ msgstr ""
 msgid ""
 "CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometrycolumn] );"
 msgstr ""
-"CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometrycolumn] );"
+"CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometrycolumn] ) ;"
 
 #. Tag: para
 #: using_postgis_app.xml:135
@@ -412,13 +412,13 @@ msgstr ""
 
 #. Tag: programlisting
 #: using_postgis_app.xml:198
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "postgis# CREATE INDEX geotable_gix ON geotable USING GIST ( geocolumn );\n"
 "postgis# VACUUM ANALYZE;"
 msgstr ""
-"postgis# CREATE INDEX geotable_gix ON geotable USING GIST ( geocolumn );\n"
-"postgis# VACUUM ANALYZE;"
+"postgis# CREATE INDEX geotable_gix ON geotable USING GIST ( geocolumn ) ;\n"
+"postgis# VACUUM ANALYZE ;"
 
 #. Tag: para
 #: using_postgis_app.xml:204
@@ -461,8 +461,8 @@ msgid ""
 "Can I use \"geography\" columns (new in PostGIS 1.5) as a source for "
 "MapServer layers?"
 msgstr ""
-"Est-il possible avec MapServer d'utiliser le type de données \"geography"
-"\" (nouveauté de la version 1.5 de PostGIS) comme couche de données ?  "
+"Puis-je utiliser les colonnes \"géographie\" (nouveau dans PostGIS 1.5) "
+"comme source pour les couches MapServer ?"
 
 #. Tag: para
 #: using_postgis_app.xml:229
@@ -484,7 +484,7 @@ msgstr "DATA \"geog FROM geogtable USING SRID=4326 USING UNIQUE gid\""
 #: using_postgis_app.xml:244
 #, no-c-format
 msgid "Advanced Usage"
-msgstr "Usage avancé "
+msgstr "Usage avancé"
 
 #. Tag: para
 #: using_postgis_app.xml:246
