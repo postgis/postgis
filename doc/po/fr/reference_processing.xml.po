@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-11-27 05:42+0000\n"
-"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_processingxml/fr/>\n"
@@ -235,7 +235,7 @@ msgstr ""
 #: reference_processing.xml:2285
 #, no-c-format
 msgid "Performed by the GEOS module."
-msgstr ""
+msgstr "Effectué par le module GEOS."
 
 #. Tag: para
 #: reference_processing.xml:119 reference_processing.xml:676
@@ -588,7 +588,7 @@ msgstr ""
 #: reference_processing.xml:321 reference_processing.xml:1045
 #, no-c-format
 msgid "Availability: 1.1.0"
-msgstr "Disponibilité: 1.1.0"
+msgstr "Disponibilité : 1.1.0"
 
 #. Tag: para
 #: reference_processing.xml:335
@@ -854,7 +854,7 @@ msgstr ""
 #: reference_processing.xml:1303
 #, no-c-format
 msgid "Availability: 2.5.0"
-msgstr ""
+msgstr "Disponibilité : 2.5.0"
 
 #. Tag: para
 #: reference_processing.xml:528
@@ -978,7 +978,7 @@ msgstr ""
 #: reference_processing.xml:595 reference_processing.xml:1758
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr "Disponibilité: 2.0.0"
+msgstr "Disponibilité : 2.0.0"
 
 #. Tag: para
 #: reference_processing.xml:596
@@ -1157,7 +1157,7 @@ msgstr ""
 #: reference_processing.xml:674
 #, no-c-format
 msgid "Performed by the GEOS module"
-msgstr "Réalisé par le module GEOS"
+msgstr "Effectué par le module GEOS"
 
 #. Tag: para
 #: reference_processing.xml:677
@@ -1274,7 +1274,7 @@ msgstr ""
 #: reference_processing.xml:745
 #, no-c-format
 msgid "Availability: 2.1.0"
-msgstr "Disponibilité: 2.1.0"
+msgstr "Disponibilité : 2.1.0"
 
 #. Tag: para
 #: reference_processing.xml:747
@@ -1528,7 +1528,7 @@ msgstr ""
 #: reference_processing.xml:2205 reference_processing.xml:2286
 #, no-c-format
 msgid "Availability: 2.3.0"
-msgstr ""
+msgstr "Disponibilité : 2.3.0"
 
 #. Tag: para
 #: reference_processing.xml:904
@@ -1989,7 +1989,7 @@ msgstr ""
 #: reference_processing.xml:1210
 #, no-c-format
 msgid "Availability: 1.4.0"
-msgstr "Disponibilité: 1.4.0"
+msgstr "Disponibilité : 1.4.0"
 
 #. Tag: programlisting
 #: reference_processing.xml:1216
@@ -2632,7 +2632,7 @@ msgstr ""
 #: reference_processing.xml:1648
 #, no-c-format
 msgid "Availability: 1.0.0RC1"
-msgstr "Disponibilité: 1.0.0RC1"
+msgstr "Disponibilité : 1.0.0RC1"
 
 #. Tag: title
 #: reference_processing.xml:1652
@@ -2989,7 +2989,7 @@ msgstr ""
 #: reference_processing.xml:1852
 #, no-c-format
 msgid "Availability: 1.2.2"
-msgstr ""
+msgstr "Disponibilité : 1.2.2"
 
 #. Tag: para
 #: reference_processing.xml:1857
