@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-09-19 22:09+0000\n"
-"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_measurexml/fr/>\n"
@@ -118,7 +118,7 @@ msgstr ""
 #: reference_measure.xml:44 reference_measure.xml:401
 #, no-c-format
 msgid "&sfs_compliant;"
-msgstr ""
+msgstr "&sfs_compliant;"
 
 #. Tag: para
 #: reference_measure.xml:45
@@ -281,14 +281,14 @@ msgstr "Voir aussi"
 
 #. Tag: para
 #: reference_measure.xml:72
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_GeomFromText\"/>, <xref "
 "linkend=\"ST_GeographyFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
 "linkend=\"ST_Transform\"/>"
 msgstr ""
-", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Length_Spheroid\"/"
-">, <xref linkend=\"ST_Perimeter\"/>, <xref linkend=\"ST_Transform\"/>"
+", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_GeographyFromText\""
+"/>, <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>"
 
 #. Tag: refname
 #: reference_measure.xml:78
@@ -361,7 +361,7 @@ msgstr ""
 #: reference_measure.xml:113
 #, no-c-format
 msgid "Availability: 1.1.0"
-msgstr ""
+msgstr "Disponibilité : 1.1.0"
 
 #. Tag: para
 #: reference_measure.xml:114
@@ -425,9 +425,9 @@ msgstr ""
 
 #. Tag: refname
 #: reference_measure.xml:160
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_Angle"
-msgstr "ST_Area"
+msgstr "ST_Angle"
 
 #. Tag: refpurpose
 #: reference_measure.xml:162
@@ -438,7 +438,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_measure.xml:165
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>float <function>ST_Angle</function></funcdef> "
 "<paramdef><type>geometry </type><parameter>point1</parameter></paramdef> "
@@ -450,13 +450,16 @@ msgid ""
 "type><parameter>line1</parameter></paramdef> <paramdef><type>geometry </"
 "type><parameter>line2</parameter></paramdef> </funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>float <function>ST_Azimuth</function></funcdef> "
-"<paramdef><type>geometry </type><parameter>pointA</parameter></paramdef> "
-"<paramdef><type>geometry </type><parameter>pointB</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>float <function>ST_Azimuth</"
-"function></funcdef> <paramdef><type>geography </type><parameter>pointA</"
-"parameter></paramdef> <paramdef><type>geography </type><parameter>pointB</"
-"parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>float <function>ST_Angle</function></funcdef> "
+"<paramdef><type>geometry </type><parameter>point1</parameter></paramdef> "
+"<paramdef><type>geometry </type><parameter>point2</parameter></paramdef> "
+"<paramdef><type>geometry </type><parameter>point3</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>geometry "
+"</type><parameter>point4</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>float <function>ST_Angle</function></funcdef> "
+"<paramdef><type>geometry </type><parameter>line1</parameter></paramdef> "
+"<paramdef><type>geometry </type><parameter>line2</parameter></paramdef> "
+"</funcprototype>"
 
 #. Tag: para
 #: reference_measure.xml:183
@@ -500,9 +503,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:195
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 2.5.0"
-msgstr "Disponibilité: 2.0.0"
+msgstr "Disponibilité : 2.5.0"
 
 #. Tag: para
 #: reference_measure.xml:201
@@ -547,7 +550,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_measure.xml:208
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT degrees( ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, "
 "0.2 0.5, 1 0)') );\n"
@@ -556,12 +559,12 @@ msgid ""
 "--------------\n"
 "           45"
 msgstr ""
-"postgis=# SELECT st_hausdorffdistance('LINESTRING (130 0, 0 0, 0 150)'::"
-"geometry, 'LINESTRING (10 10, 10 150, 130 10)'::geometry, 0.5);\n"
-" st_hausdorffdistance\n"
-" ----------------------\n"
-"                                        70\n"
-"(1 row)"
+"SELECT degrees( ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, "
+"0.2 0.5, 1 0)') ) ;\n"
+"\n"
+"      degrees\n"
+"--------------\n"
+"           45"
 
 #. Tag: refname
 #: reference_measure.xml:221
@@ -609,7 +612,7 @@ msgstr ""
 #: reference_measure.xml:1533
 #, no-c-format
 msgid "Availability: 1.5.0"
-msgstr ""
+msgstr "Disponibilité : 1.5.0"
 
 #. Tag: para
 #: reference_measure.xml:260
@@ -709,7 +712,7 @@ msgstr "&Z_support;"
 #: reference_measure.xml:1483 reference_measure.xml:1602
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr "Disponibilité: 2.0.0"
+msgstr "Disponibilité : 2.0.0"
 
 #. Tag: para
 #: reference_measure.xml:319 reference_measure.xml:1058
@@ -729,7 +732,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_measure.xml:329
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,\n"
 "                ST_AsEWKT(ST_ClosestPoint(line,pt)) As cp2d_line_pt\n"
@@ -748,18 +751,18 @@ msgid ""
 msgstr ""
 "SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt, \n"
 "                ST_AsEWKT(ST_ClosestPoint(line,pt)) As cp2d_line_pt\n"
-"        FROM (SELECT 'POINT(100 100 30)'::geometry As pt, \n"
+"        FROM (SELECT 'POINT(100 100 30)' ::geometry As pt, \n"
 "                        'LINESTRING (20 80 20, 98 190 1, 110 180 3, 50 75 "
-"1000)'::geometry As line\n"
-"                ) As foo;\n"
+"1000)' ::geometry As line\n"
+"                ) As foo ;\n"
 "        \n"
 "                \n"
-" cp3d_line_pt                                                                        "
-"|               cp2d_line_pt\n"
-"-----------------------------------------------------------"
-"+------------------------------------------\n"
-" POINT(54.6993798867619 128.935022917228 11.5475869506606) | "
-"POINT(73.0769230769231 115.384615384615)"
+" cp3d_line_pt                                                                "
+"        |               cp2d_line_pt\n"
+"-----------------------------------------------------------+-----------------"
+"-------------------------\n"
+" POINT(54.6993798867619 128.935022917228 11.5475869506606) | POINT("
+"73.0769230769231 115.384615384615)"
 
 #. Tag: para
 #: reference_measure.xml:333
@@ -769,7 +772,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_measure.xml:334
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,\n"
 "                ST_AsEWKT(ST_ClosestPoint(line,pt)) As cp2d_line_pt\n"
@@ -785,10 +788,11 @@ msgid ""
 msgstr ""
 "SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt, \n"
 "                ST_AsEWKT(ST_ClosestPoint(line,pt)) As cp2d_line_pt\n"
-"        FROM (SELECT 'MULTIPOINT(100 100 30, 50 74 1000)'::geometry As pt, \n"
+"        FROM (SELECT 'MULTIPOINT(100 100 30, 50 74 1000)' ::geometry As pt, "
+"\n"
 "                        'LINESTRING (20 80 20, 98 190 1, 110 180 3, 50 75 "
-"900)'::geometry As line\n"
-"                ) As foo;\n"
+"900)' ::geometry As line\n"
+"                ) As foo ;\n"
 "        \n"
 "                \n"
 "                       cp3d_line_pt                        | cp2d_line_pt\n"
@@ -803,7 +807,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_measure.xml:339
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_3DClosestPoint(poly, mline)) As cp3d,\n"
 "    ST_AsEWKT(ST_ClosestPoint(poly, mline)) As cp2d\n"
@@ -822,7 +826,7 @@ msgstr ""
 "50 60 5, 100 100 5, 175 150 5))') As poly,\n"
 "                ST_GeomFromEWKT('MULTILINESTRING((175 155 2, 20 40 20, 50 60 "
 "-2, 125 100 1, 175 155 1),\n"
-"                (1 10 2, 5 20 1))') As mline ) As foo;\n"
+"                (1 10 2, 5 20 1))') As mline ) As foo ;\n"
 "                   cp3d                    |     cp2d\n"
 "-------------------------------------------+--------------\n"
 " POINT(39.993580415989 54.1889925532825 5) | POINT(20 40)"
@@ -851,7 +855,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_measure.xml:362
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>float <function>ST_Distance</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
@@ -862,14 +866,15 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>use_spheroid=true</parameter></paramdef> </funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>float <function>ST_HausdorffDistance</function></"
-"funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>g2</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>float "
-"<function>ST_HausdorffDistance</function></funcdef> <paramdef><type>geometry "
-"</type> <parameter>g1</parameter></paramdef> <paramdef><type>geometry </"
-"type> <parameter>g2</parameter></paramdef> <paramdef><type>float</type> "
-"<parameter>densifyFrac</parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>float <function>ST_Distance</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>float "
+"<function>ST_Distance</function></funcdef> <paramdef><type>geography </type> "
+"<parameter>geog1</parameter></paramdef> <paramdef><type>geography </type> "
+"<parameter>geog2</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>use_spheroid=true</parameter></paramdef> "
+"</funcprototype>"
 
 #. Tag: para
 #: reference_measure.xml:393
@@ -1065,17 +1070,17 @@ msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:440
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DistanceSphere\"/>, "
 "<xref linkend=\"ST_Distance_Spheroid\"/>, <xref linkend=\"ST_MaxDistance\"/"
 ">, <xref linkend=\"ST_HausdorffDistance\"/>, <xref "
 "linkend=\"ST_FrechetDistance\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ""
-", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_Contains\"/>, <xref "
-"linkend=\"ST_Covers\"/>, <xref linkend=\"ST_CoveredBy\"/>, <xref "
-"linkend=\"ST_Equals\"/>, <xref linkend=\"ST_Relate\"/>, <xref "
-"linkend=\"ST_Within\"/>"
+", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DistanceSphere\"/>, "
+"<xref linkend=\"ST_Distance_Spheroid\"/>, <xref linkend=\"ST_MaxDistance\"/"
+">, <xref linkend=\"ST_HausdorffDistance\"/>, <xref linkend="
+"\"ST_FrechetDistance\"/>, <xref linkend=\"ST_Transform\"/>"
 
 #. Tag: refname
 #: reference_measure.xml:447
@@ -1159,7 +1164,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_measure.xml:486
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Multilinestring and polygon both 3d and 2d distance\n"
 "-- Same example as 3D closest point example\n"
@@ -1173,16 +1178,17 @@ msgid ""
 "-------------------+--------\n"
 " 0.716635696066337 |      0"
 msgstr ""
-"SELECT ST_AsEWKT(ST_3DLongestLine(poly, mline)) As lol3d,\n"
-"    ST_AsEWKT(ST_LongestLine(poly, mline)) As lol2d \n"
-"        FROM (SELECT  ST_GeomFromEWKT('POLYGON((175 150 5, 20 40 5, 35 45 5, "
-"50 60 5, 100 100 5, 175 150 5))') As poly,\n"
-"                ST_GeomFromEWKT('MULTILINESTRING((175 155 2, 20 40 20, 50 60 "
-"-2, 125 100 1, 175 155 1),\n"
-"                (1 10 2, 5 20 1))') As mline ) As foo;\n"
-"            lol3d             |          lol2d\n"
-"------------------------------+--------------------------\n"
-" LINESTRING(175 150 5,1 10 2) | LINESTRING(175 150,1 10)"
+"-- Distance multilinestring et polygone à la fois 3d et 2d\n"
+"-- Même exemple que l'exemple du point le plus proche en 3D\n"
+"SELECT ST_3DDistance(poly, mline) As dist3d,\n"
+"    ST_Distance(poly, mline) As dist2d\n"
+"        FROM (SELECT  'POLYGON((175 150 5, 20 40 5, 35 45 5, 50 60 5, 100 "
+"100 5, 175 150 5))'::geometry as poly,\n"
+"               'MULTILINESTRING((175 155 2, 20 40 20, 50 60 -2, 125 100 1, "
+"175 155 1), (1 10 2, 5 20 1))'::geometry as mline) as foo ;\n"
+"      dist3d       | dist2d\n"
+"-------------------+--------\n"
+" 0.716635696066337 |      0"
 
 #. Tag: para
 #: reference_measure.xml:492
@@ -1356,9 +1362,9 @@ msgstr ""
 
 #. Tag: refname
 #: reference_measure.xml:597
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_FrechetDistance"
-msgstr "ST_Distance"
+msgstr "ST_FrechetDistance"
 
 #. Tag: refpurpose
 #: reference_measure.xml:599
@@ -1368,7 +1374,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_measure.xml:604
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>float <function>ST_FrechetDistance</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
@@ -1376,11 +1382,11 @@ msgid ""
 "<paramdef><type>float</type> <parameter>densifyFrac = -1</parameter></"
 "paramdef>"
 msgstr ""
-"<funcdef>boolean <function>ST_DFullyWithin</function></funcdef> "
+"<funcdef>float <function>ST_FrechetDistance</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef> "
-"<paramdef><type>double precision </type> <parameter>distance</parameter></"
-"paramdef>"
+"<paramdef><type>float</type> <parameter>densifyFrac = "
+"-1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:622
@@ -1434,17 +1440,17 @@ msgstr ""
 #: reference_measure.xml:640 reference_measure.xml:1299
 #, no-c-format
 msgid "Performed by the GEOS module."
-msgstr ""
+msgstr "Effectué par le module GEOS."
 
 #. Tag: para
 #: reference_measure.xml:641
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 2.4.0 - requires GEOS &gt;= 3.7.0"
-msgstr "Disponibilité: 2.0.0"
+msgstr "Disponibilité : 2.4.0 - nécessite GEOS &gt;= 3.7.0"
 
 #. Tag: programlisting
 #: reference_measure.xml:647
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "postgres=# SELECT st_frechetdistance('LINESTRING (0 0, 100 0)'::geometry, "
 "'LINESTRING (0 0, 50 50, 100 0)'::geometry);\n"
@@ -1453,8 +1459,8 @@ msgid ""
 "   70.7106781186548\n"
 "(1 row)"
 msgstr ""
-"postgis=# SELECT st_hausdorffdistance('LINESTRING (130 0, 0 0, 0 150)'::"
-"geometry, 'LINESTRING (10 10, 10 150, 130 10)'::geometry, 0.5);\n"
+"postgis=# SELECT st_hausdorffdistance('LINESTRING (130 0, 0 0, 0 150)' ::"
+"geometry, 'LINESTRING (10 10, 10 150, 130 10)' ::geometry, 0.5) ;\n"
 " st_hausdorffdistance\n"
 " ----------------------\n"
 "                                        70\n"
@@ -1462,7 +1468,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_measure.xml:648
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT st_frechetdistance('LINESTRING (0 0, 100 0)'::geometry, 'LINESTRING "
 "(0 0, 50 50, 100 0)'::geometry, 0.5);\n"
@@ -1471,8 +1477,8 @@ msgid ""
 "                 50\n"
 "(1 row)"
 msgstr ""
-"postgis=# SELECT st_hausdorffdistance('LINESTRING (130 0, 0 0, 0 150)'::"
-"geometry, 'LINESTRING (10 10, 10 150, 130 10)'::geometry, 0.5);\n"
+"postgis=# SELECT st_hausdorffdistance('LINESTRING (130 0, 0 0, 0 150)' ::"
+"geometry, 'LINESTRING (10 10, 10 150, 130 10)' ::geometry, 0.5) ;\n"
 " st_hausdorffdistance\n"
 " ----------------------\n"
 "                                        70\n"
@@ -1888,7 +1894,7 @@ msgid ""
 msgstr ""
 "SELECT ST_3DLength(ST_GeomFromText('LINESTRING(743238 2967416 1,743238 "
 "2967450 1,743265 2967450 3,\n"
-"743265.625 2967416 3,743238 2967416 3)',2249));\n"
+"743265.625 2967416 3,743238 2967416 3)',2249)) ;\n"
 "ST_3DLength\n"
 "-----------\n"
 "122.704716741457"
@@ -1914,17 +1920,17 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_measure.xml:900
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>float <function>ST_LengthSpheroid</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>a_geometry</parameter></"
 "paramdef> <paramdef><type>spheroid </type> <parameter>a_spheroid</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>float <function>ST_Length2D_Spheroid</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
-"paramdef> <paramdef><type>spheroid </type> <parameter>a_spheroid</"
-"parameter></paramdef>"
+"<funcdef>float <function>ST_LengthSpheroid</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_geometry</parameter></"
+"paramdef> <paramdef><type>spheroid </type> "
+"<parameter>a_spheroid</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:911
@@ -1945,9 +1951,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:917
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "For example:"
-msgstr "Exemples"
+msgstr "Par exemple :"
 
 #. Tag: literallayout
 #: reference_measure.xml:918
@@ -1959,7 +1965,7 @@ msgstr ""
 #: reference_measure.xml:920
 #, no-c-format
 msgid "Availability: 1.2.2"
-msgstr ""
+msgstr "Disponibilité : 1.2.2"
 
 #. Tag: para
 #: reference_measure.xml:921
@@ -2172,7 +2178,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_measure.xml:1071
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_3DLongestLine(line,pt)) AS lol3d_line_pt,\n"
 "                ST_AsEWKT(ST_LongestLine(line,pt)) As lol2d_line_pt\n"
@@ -2191,7 +2197,7 @@ msgstr ""
 "        FROM (SELECT 'POINT(100 100 30)'::geometry As pt, \n"
 "                        'LINESTRING (20 80 20, 98 190 1, 110 180 3, 50 75 "
 "1000)'::geometry As line\n"
-"                ) As foo;\n"
+"                ) As foo ;\n"
 "        \n"
 "                \n"
 "           lol3d_line_pt           |       lol2d_line_pt\n"
@@ -2206,7 +2212,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_measure.xml:1076
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_3DLongestLine(line,pt)) AS lol3d_line_pt,\n"
 "                ST_AsEWKT(ST_LongestLine(line,pt)) As lol2d_line_pt\n"
@@ -2225,7 +2231,7 @@ msgstr ""
 "        FROM (SELECT 'MULTIPOINT(100 100 30, 50 74 1000)'::geometry As pt, \n"
 "                        'LINESTRING (20 80 20, 98 190 1, 110 180 3, 50 75 "
 "900)'::geometry As line\n"
-"                ) As foo;\n"
+"                ) As foo ;\n"
 "        \n"
 "                \n"
 "          lol3d_line_pt          |      lol2d_line_pt\n"
@@ -2240,7 +2246,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_measure.xml:1081
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_3DLongestLine(poly, mline)) As lol3d,\n"
 "    ST_AsEWKT(ST_LongestLine(poly, mline)) As lol2d\n"
@@ -2259,7 +2265,7 @@ msgstr ""
 "50 60 5, 100 100 5, 175 150 5))') As poly,\n"
 "                ST_GeomFromEWKT('MULTILINESTRING((175 155 2, 20 40 20, 50 60 "
 "-2, 125 100 1, 175 155 1),\n"
-"                (1 10 2, 5 20 1))') As mline ) As foo;\n"
+"                (1 10 2, 5 20 1))') As mline ) As foo ;\n"
 "            lol3d             |          lol2d\n"
 "------------------------------+--------------------------\n"
 " LINESTRING(175 150 5,1 10 2) | LINESTRING(175 150,1 10)"
@@ -2447,13 +2453,13 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_measure.xml:1202
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>float <function>ST_MinimumClearance</function></funcdef> "
 "<paramdef><type>geometry </type><parameter>g</parameter></paramdef>"
 msgstr ""
-"<funcdef>float <function>ST_Perimeter2D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+"<funcdef>float <function>ST_MinimumClearance</function></funcdef> "
+"<paramdef><type>geometry </type><parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:1212
@@ -2519,9 +2525,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:1253
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 2.3.0"
-msgstr "Disponibilité: 2.0.0"
+msgstr "Disponibilité : 2.3.0"
 
 #. Tag: programlisting
 #: reference_measure.xml:1259
@@ -2535,13 +2541,13 @@ msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:1266
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_IsValid\"/>, <xref "
 "linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
-", <xref linkend=\"ST_Crosses\"/>, <xref linkend=\"ST_Dimension\"/>, <xref "
-"linkend=\"ST_Intersects\"/>"
+", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_IsValid\"/>, <xref "
+"linkend=\"ST_ReducePrecision\"/>"
 
 #. Tag: refname
 #: reference_measure.xml:1277
@@ -2558,13 +2564,13 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_measure.xml:1283
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>Geometry <function>ST_MinimumClearanceLine</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_PointOnSurface</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
+"<funcdef>Geometry <function>ST_MinimumClearanceLine</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:1294
@@ -2703,14 +2709,14 @@ msgid ""
 msgstr ""
 "SELECT ST_Perimeter(ST_GeomFromText('POLYGON((743238 2967416,743238 "
 "2967450,743265 2967450,\n"
-"743265.625 2967416,743238 2967416))', 2249));\n"
+"743265.625 2967416,743238 2967416))', 2249)) ;\n"
 "st_perimeter\n"
 "---------\n"
 " 122.630744000095\n"
 "(1 row)\n"
 "\n"
-"SELECT ST_Perimeter(ST_GeomFromText('MULTIPOLYGON(((763104.471273676 "
-"2949418.44119003,\n"
+"SELECT ST_Perimeter(ST_GeomFromText('MULTIPOLYGON(((763104.471273676 2949418."
+"44119003,\n"
 "763104.477769673 2949418.42538203,\n"
 "763104.189609677 2949418.22343004,763104.471273676 2949418.44119003)),\n"
 "((763104.471273676 2949418.44119003,763095.804579742 2949436.33850239,\n"
@@ -2720,7 +2726,7 @@ msgstr ""
 "762990.568508415 2949535.06640477,762986.710889563 2949539.61421415,\n"
 "763117.237897679 2949709.50493431,763235.236617789 2949617.95619822,\n"
 "763287.718121842 2949562.20592617,763111.553321674 2949423.91664605,\n"
-"763104.471273676 2949418.44119003)))', 2249));\n"
+"763104.471273676 2949418.44119003)))', 2249)) ;\n"
 "st_perimeter\n"
 "---------\n"
 " 845.227713366825\n"
@@ -2876,7 +2882,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_measure.xml:1434
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_3DPerimeter(geom), ST_Perimeter2d(geom), ST_Perimeter(geom) FROM\n"
 "                        (SELECT ST_GeomFromEWKT('SRID=2249;POLYGON((743238 "
@@ -2889,9 +2895,9 @@ msgid ""
 msgstr ""
 "SELECT ST_3DPerimeter(the_geom), ST_Perimeter2d(the_geom), "
 "ST_Perimeter(the_geom) FROM\n"
-"                        (SELECT ST_GeomFromEWKT('SRID=2249;POLYGON((743238 "
+"                        (SELECT ST_GeomFromEWKT('SRID=2249 ;POLYGON((743238 "
 "2967416 2,743238 2967450 1,\n"
-"743265.625 2967416 1,743238 2967416 2))') As the_geom) As foo;\n"
+"743265.625 2967416 1,743238 2967416 2))') As the_geom) As foo ;\n"
 "\n"
 "  ST_3DPerimeter  |  st_perimeter2d  |   st_perimeter\n"
 "------------------+------------------+------------------\n"
@@ -3108,7 +3114,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_measure.xml:1616
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,\n"
 "                ST_AsEWKT(ST_ShortestLine(line,pt)) As shl2d_line_pt\n"
@@ -3130,15 +3136,15 @@ msgstr ""
 "        FROM (SELECT 'POINT(100 100 30)'::geometry As pt, \n"
 "                        'LINESTRING (20 80 20, 98 190 1, 110 180 3, 50 75 "
 "1000)'::geometry As line\n"
-"                ) As foo;\n"
+"                ) As foo ;\n"
 "        \n"
 "                \n"
-" shl3d_line_pt                                                                                         "
-"|               shl2d_line_pt\n"
-"----------------------------------------------------------------------------"
-"+------------------------------------------------------\n"
-" LINESTRING(54.6993798867619 128.935022917228 11.5475869506606,100 100 30)  "
-"| LINESTRING(73.0769230769231 115.384615384615,100 100)"
+" shl3d_line_pt                                                               "
+"                          |               shl2d_line_pt\n"
+"----------------------------------------------------------------------------+"
+"------------------------------------------------------\n"
+" LINESTRING(54.6993798867619 128.935022917228 11.5475869506606,100 100 30)  |"
+" LINESTRING(73.0769230769231 115.384615384615,100 100)"
 
 #. Tag: para
 #: reference_measure.xml:1620
@@ -3148,7 +3154,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_measure.xml:1621
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,\n"
 "                ST_AsEWKT(ST_ShortestLine(line,pt)) As shl2d_line_pt\n"
@@ -3170,13 +3176,13 @@ msgstr ""
 "        FROM (SELECT 'MULTIPOINT(100 100 30, 50 74 1000)'::geometry As pt, \n"
 "                        'LINESTRING (20 80 20, 98 190 1, 110 180 3, 50 75 "
 "900)'::geometry As line\n"
-"                ) As foo;\n"
+"                ) As foo ;\n"
 "        \n"
 "                \n"
 "                       shl3d_line_pt                                       | "
 "shl2d_line_pt\n"
-"---------------------------------------------------------------------------"
-"+------------------------\n"
+"---------------------------------------------------------------------------+-"
+"-----------------------\n"
 " LINESTRING(54.6993798867619 128.935022917228 11.5475869506606,100 100 30) | "
 "LINESTRING(50 75,50 74)"
 
@@ -3188,7 +3194,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_measure.xml:1626
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_3DShortestLine(poly, mline)) As shl3d,\n"
 "    ST_AsEWKT(ST_ShortestLine(poly, mline)) As shl2d\n"
@@ -3210,11 +3216,11 @@ msgstr ""
 "50 60 5, 100 100 5, 175 150 5))') As poly,\n"
 "                ST_GeomFromEWKT('MULTILINESTRING((175 155 2, 20 40 20, 50 60 "
 "-2, 125 100 1, 175 155 1),\n"
-"                (1 10 2, 5 20 1))') As mline ) As foo;\n"
-"                   shl3d                                                                           "
-"|     shl2d\n"
-"---------------------------------------------------------------------------------------------------"
-"+------------------------\n"
+"                (1 10 2, 5 20 1))') As mline ) As foo ;\n"
+"                   shl3d                                                     "
+"                      |     shl2d\n"
+"-----------------------------------------------------------------------------"
+"----------------------+------------------------\n"
 " LINESTRING(39.993580415989 54.1889925532825 5,40.4078575708294 "
 "53.6052383805529 5.03423778139177) | LINESTRING(20 40,20 40)"
 
