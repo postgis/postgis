@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "extras_historytablexml/fr/>\n"
@@ -131,7 +131,7 @@ msgstr ""
 #: extras_historytable.xml:31
 #, no-c-format
 msgid "SELECT * FROM roads_history WHERE roads_pk = 111;"
-msgstr "SELECT * FROM roads_history WHERE roads_pk = 111;"
+msgstr "SELECT * FROM roads_history WHERE roads_pk = 111 ;"
 
 #. Tag: para
 #: extras_historytable.xml:33
@@ -190,7 +190,7 @@ msgstr ""
 #: extras_historytable.xml:58 extras_historytable.xml:100
 #, no-c-format
 msgid "Availability: 1.5.0"
-msgstr "Disponibilité: 1.5.0"
+msgstr "Disponibilité : 1.5.0"
 
 #. Tag: title
 #: extras_historytable.xml:63 extras_historytable.xml:105
@@ -202,7 +202,7 @@ msgstr "Exemples"
 #: extras_historytable.xml:65
 #, no-c-format
 msgid "SELECT postgis_install_history();"
-msgstr "SELECT postgis_install_history();"
+msgstr "SELECT postgis_install_history() ;"
 
 #. Tag: title
 #: extras_historytable.xml:71 extras_historytable.xml:113
