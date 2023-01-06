@@ -17,13 +17,14 @@
 # H Santanna <delazj@gmail.com>, 2022.
 # Regina Obe <regina@arrival3d.com>, 2022.
 # Thomas Muguet <thomas.muguet@oslandia.com>, 2022.
+# Vincent Bre <vincent.bre@oslandia.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2022-12-03 06:30+0000\n"
-"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/faqxml/fr/>"
 "\n"
 "Language: fr\n"
@@ -643,11 +644,11 @@ msgid ""
 "speed up the test, the &amp;&amp; operator will make use of this. This can "
 "make queries much much faster."
 msgstr ""
-"En général, vous voulez utiliser l'\"opérateur intersects\" (&amp;&amp;) qui "
-"teste si la boîte englobante de l'entité intersecte. La raison de l'utilité "
-"de l'opérateur &amp;&amp; est que si un index spatial est disponible pour "
-"accélérer le test, l'opérateur &amp;&amp; l'utilisera. Cela rend les "
-"requêtes beaucoup plus rapides."
+"En général, vous voudrez utiliser l'opérateur \"intersects\" (&amp;&amp ;) "
+"qui teste si les boîtes de délimitation des caractéristiques se croisent. La "
+"raison pour laquelle l'opérateur &amp;&amp ; est utile est que si un index "
+"spatial est disponible pour accélérer le test, l'opérateur &amp;&amp ; s'en "
+"servira. Cela peut rendre les requêtes beaucoup plus rapides."
 
 #. Tag: para
 #: faq.xml:202
@@ -720,7 +721,7 @@ msgstr ""
 msgid ""
 "CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometrycolumn] );"
 msgstr ""
-"CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometrycolumn] );"
+"CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometrycolumn] ) ;"
 
 #. Tag: para
 #: faq.xml:230
