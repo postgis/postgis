@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-11-27 05:42+0000\n"
-"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_relationshipxml/fr/>\n"
@@ -102,7 +102,7 @@ msgstr ""
 #: reference_relationship.xml:1626 reference_relationship.xml:1681
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr ""
+msgstr "Disponibilité : 2.0.0"
 
 #. Tag: para
 #: reference_relationship.xml:47 reference_relationship.xml:1621
@@ -261,7 +261,7 @@ msgstr ""
 #: reference_relationship.xml:1325 reference_relationship.xml:1542
 #, no-c-format
 msgid "Performed by the GEOS module"
-msgstr ""
+msgstr "Effectué par le module GEOS"
 
 #. Tag: para
 #: reference_relationship.xml:117 reference_relationship.xml:821
@@ -521,13 +521,13 @@ msgstr ""
 #: reference_relationship.xml:303
 #, no-c-format
 msgid "Performed by the GEOS module."
-msgstr ""
+msgstr "Effectué par le module GEOS."
 
 #. Tag: para
 #: reference_relationship.xml:304
 #, no-c-format
 msgid "Availability: 1.4.0"
-msgstr ""
+msgstr "Disponibilité : 1.4.0"
 
 #. Tag: programlisting
 #: reference_relationship.xml:318
@@ -642,7 +642,7 @@ msgstr ""
 #: reference_relationship.xml:385 reference_relationship.xml:466
 #, no-c-format
 msgid "Availability: 1.2.2"
-msgstr ""
+msgstr "Disponibilité : 1.2.2"
 
 #. Tag: para
 #: reference_relationship.xml:390 reference_relationship.xml:471
@@ -757,7 +757,7 @@ msgstr ""
 #: reference_relationship.xml:465
 #, no-c-format
 msgid "Availability: 1.5 - support for geography was introduced."
-msgstr ""
+msgstr "Disponibilité : 1.5 - le support de la geography a été introduit."
 
 #. Tag: para
 #: reference_relationship.xml:476
@@ -1416,7 +1416,7 @@ msgstr ""
 #: reference_relationship.xml:904
 #, no-c-format
 msgid "Availability: 1.4"
-msgstr ""
+msgstr "Disponibilité : 1.4"
 
 #. Tag: para
 #: reference_relationship.xml:910
@@ -1922,7 +1922,7 @@ msgstr ""
 #: reference_relationship.xml:1239
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.25"
-msgstr ""
+msgstr "&sqlmm_compliant ; SQL-MM 3 : 5.1.25"
 
 #. Tag: para
 #: reference_relationship.xml:1241
@@ -2554,7 +2554,7 @@ msgstr ""
 #: reference_relationship.xml:1737
 #, no-c-format
 msgid "Availability: 1.5.0"
-msgstr ""
+msgstr "Disponibilité : 1.5.0"
 
 #. Tag: programlisting
 #: reference_relationship.xml:1742
@@ -2652,7 +2652,7 @@ msgstr ""
 #: reference_relationship.xml:1814
 #, no-c-format
 msgid "&sfs_compliant;"
-msgstr ""
+msgstr "&sfs_compliant;"
 
 #. Tag: para
 #: reference_relationship.xml:1815
