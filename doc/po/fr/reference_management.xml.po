@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_managementxml/fr/>\n"
@@ -29,9 +29,9 @@ msgstr ""
 
 #. Tag: title
 #: reference_management.xml:10
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Table Management Functions"
-msgstr "Fonctions de gestion"
+msgstr "Fonctions de gestion des tables"
 
 #. Tag: refname
 #: reference_management.xml:14
@@ -41,9 +41,9 @@ msgstr "AddGeometryColumn"
 
 #. Tag: refpurpose
 #: reference_management.xml:16
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Adds a geometry column to an existing table."
-msgstr "Supprime une colonne géométrique d'une table spatiale."
+msgstr "Ajoute une colonne de géométrie à une table existante."
 
 #. Tag: funcsynopsis
 #: reference_management.xml:20
@@ -129,9 +129,9 @@ msgid ""
 "invalid."
 msgstr ""
 "Ajoute une colonne géométrique à une table attributaire existante. "
-"<varname>schema_name</varname> est le nom du schéma de la table.\n"
+"<varname>schema_name</varname> est le nom du schéma de la table. "
 "<varname>srid</varname> est un entier positif présent dans la table "
-"SPATIAL_REF_SYS.  <varname>type</varname> est le type de géométrie en texte, "
+"SPATIAL_REF_SYS. <varname>type</varname> est le type de géométrie en texte, "
 "par exemple 'POLYGON' ou 'MULTILINESTRING'. Une erreur est renvoyée si le "
 "schéma n'existe pas (ou n'est pas visible dans le search_path courant) ou si "
 "le SRID, type de géométrie ou dimension est invalide."
@@ -147,12 +147,12 @@ msgid ""
 "column with this function is now equivalent to: <code>ALTER TABLE some_table "
 "ADD COLUMN geom geometry(Point,4326);</code>"
 msgstr ""
-"Changement: 2.0.0 Cette fonction ne met plus à jour geometry_columns "
+"Changement : 2.0.0 Cette fonction ne met plus à jour geometry_columns "
 "maintenant que geometry_columns est une vue basée sur le catalogue système. "
 "Par défaut, elle ne créée plus de contraintes mais utilise le modificateur "
 "de type de PostgreSQL. Ainsi, par exemple, créer une colonne de type POINT "
-"WGS84 est désormais équivalent à: <code>ALTER TABLE some_table ADD COLUMN "
-"geom geometry(Point,4326);</code>"
+"WGS84 est désormais équivalent à : <code>ALTER TABLE some_table ADD COLUMN "
+"geom geometry(Point,4326) ;</code>"
 
 #. Tag: para
 #: reference_management.xml:112
@@ -161,7 +161,7 @@ msgid ""
 "Changed: 2.0.0 If you require the old behavior of constraints use the "
 "default <varname>use_typmod</varname>, but set it to false."
 msgstr ""
-"Changement: 2.0.0 Si l'ancien mécanisme basé sur les contraintes est "
+"Changement : 2.0.0 Si l'ancien mécanisme basé sur les contraintes est "
 "nécessaire, utiliser le paramètre <varname>use_typmod</varname> avec la "
 "valeur false."
 
@@ -178,7 +178,7 @@ msgid ""
 "registered correctly in geometry_columns. Refer to <xref linkend="
 "\"Manual_Register_Spatial_Column\"/>."
 msgstr ""
-"Changement: 2.0.0 Les vues ne peuvent plus être enregistrées dans "
+"Changement : 2.0.0 Les vues ne peuvent plus être enregistrées dans "
 "geometry_columns. Cependant, les vues construites à partir de tables "
 "contenant des géométries définies avec le modificateur de type et "
 "n'utilisant pas de fonctions d'encapsulation seront enregistrées dans la vue "
@@ -215,7 +215,7 @@ msgid ""
 "Enhanced: 2.0.0 use_typmod argument introduced. Defaults to creating typmod "
 "geometry column instead of constraint-based."
 msgstr ""
-"Amélioration: 2.0.0 introduction du paramètre use_typmod. Le comportement "
+"Amélioration : 2.0.0 introduction du paramètre use_typmod. Le comportement "
 "par défaut est de créer une colonne géométrique avec modificateur de type au "
 "lieu de contraintes sur la colonne."
 
@@ -369,7 +369,7 @@ msgid ""
 "need to match the f_table_schema field of the table's row in the "
 "geometry_columns table."
 msgstr ""
-"Supprime une colonne géométrique d'une table spatiale. Note: schema_name "
+"Supprime une colonne géométrique d'une table spatiale. Note : schema_name "
 "doit correspondre au champ f_table_schema de la table geometry_columns."
 
 #. Tag: para
@@ -381,9 +381,9 @@ msgid ""
 "can drop a geometry column like any other table column using <code>ALTER "
 "TABLE</code>"
 msgstr ""
-"Changement: 2.0.0 Function assurant la rétro compatibilité. Maintenant que "
+"Changement : 2.0.0 Fonction assurant la rétro compatibilité. Maintenant que "
 "geometry_columns est une vue basée sur les catalogues du système, la colonne "
-"géométrique peut etre supprimée d'une table comme tout autre colonne en "
+"géométrique peut être supprimée d'une table comme tout autre colonne en "
 "utilisant <code>ALTER TABLE</code>"
 
 #. Tag: programlisting
@@ -457,7 +457,7 @@ msgid ""
 "current_schema() on schema-aware pgsql installations if schema is not "
 "provided."
 msgstr ""
-"Supprime une table et toutes ces références dans geometry_columns. Note: "
+"Supprime une table et toutes ces références dans geometry_columns. Note : "
 "utilise la fonction current_schema() sur les installations PostgreSQL le "
 "supportant, si le schéma n'est pas fourni."
 
@@ -470,7 +470,7 @@ msgid ""
 "can drop a table with geometry columns like any other table using <code>DROP "
 "TABLE</code>"
 msgstr ""
-"Changement: 2.0.0 Function assurant la rétro compatibilité. Maintenant que "
+"Changement : 2.0.0 Function assurant la rétro compatibilité. Maintenant que "
 "geometry_columns est une vue basée sur les catalogues du système, une table "
 "spatiale peut etre supprimée comme tout autre table en utilisant <code>ALTER "
 "TABLE</code>"
@@ -511,7 +511,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_management.xml:292
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>integer <function>Find_SRID</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>a_schema_name</parameter></"
@@ -521,9 +521,9 @@ msgid ""
 msgstr ""
 "<funcdef>integer <function>Find_SRID</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>a_schema_name</parameter></"
-"paramdef> <paramdef><type>varchar </type> <parameter>a_table_name</"
-"parameter></paramdef> <paramdef><type>varchar </type> "
-"<parameter>a_geomfield_name</parameter></paramdef>"
+"paramdef> <paramdef><type>varchar </type> "
+"<parameter>a_table_name</parameter></paramdef> <paramdef><type>varchar </"
+"type> <parameter>a_geomfield_name</parameter></paramdef>"
 
 #. Tag: para
 #: reference_management.xml:304
@@ -581,19 +581,18 @@ msgstr ""
 
 #. Tag: para
 #: reference_management.xml:352
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Ensures geometry columns have appropriate type modifiers or spatial "
 "constraints to ensure they are registered correctly in the "
 "<varname>geometry_columns</varname> view. By default will convert all "
 "geometry columns with no type modifier to ones with type modifiers."
 msgstr ""
-"S'assure que les colonnes géométriques sont définies avec un modificateur de "
-"type ou dispose des contraintes nécessaires. Garantit un enregistrement "
-"correct dans la vue <varname>geometry_columns</varname>. Par défaut, "
-"convertit toutes les colonnes géométriques sans modificateur de type en "
-"colonnes avec modificateurs. Pour conserver l'ancien mécanisme, mettre  "
-"<varname>use_typmod=false</varname>"
+"S'assure que les colonnes géométriques ont des modificateurs de type ou des "
+"contraintes spatiales appropriés pour garantir qu'elles sont enregistrées "
+"correctement dans la vue <varname>geometry_columns</varname>. Par défaut, "
+"convertira toutes les colonnes géométriques sans modificateur de type en "
+"colonnes avec modificateur de type."
 
 #. Tag: para
 #: reference_management.xml:357
@@ -611,40 +610,40 @@ msgstr ""
 "Pour conserver la rétro compatibilité et pour des besoins particuliers comme "
 "par exemple des tables héritées ayant des types géométriques différents, "
 "l'ancien mécanisme est toujours supporté. Si ce mécanisme est nécessaire, le "
-"nouveau paramètre optionnel doit être mis à false: "
+"nouveau paramètre optionnel doit être mis à false : "
 "<varname>use_typmod=false</varname>. Avec cette valeur, la colonne "
 "géométrique sera créée sans modificateur de type mais 3 contraintes seront "
 "définies. Cela signifie concrètement que chaque colonne géométrique de la "
-"table aura au moins 3 contraintes:"
+"table aura au moins 3 contraintes :"
 
 #. Tag: para
 #: reference_management.xml:365
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>enforce_dims_geom</varname> - ensures every geometry has the same "
 "dimension (see <xref linkend=\"ST_NDims\"/>)"
 msgstr ""
-"<varname>enforce_dims_the_geom</varname> - ensures every geometry has the "
-"same dimension (see <xref linkend=\"ST_NDims\"/>)"
+"<varname>enforce_dims_geom</varname> - garantit que chaque géométrie a la "
+"même dimension (voir <xref linkend=\"ST_NDims\"/>)"
 
 #. Tag: para
 #: reference_management.xml:371
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>enforce_geotype_geom</varname> - ensures every geometry is of the "
 "same type (see <xref linkend=\"GeometryType\"/>)"
 msgstr ""
-"<varname>enforce_geotype_the_geom</varname> - ensures every geometry is of "
-"the same type (see <xref linkend=\"GeometryType\"/>)"
+"<varname>enforce_geotype_geom</varname> - garantit que chaque géométrie est "
+"du même type (voir <xref linkend=\"GeometryType\"/>)"
 
 #. Tag: para
 #: reference_management.xml:377
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>enforce_srid_geom</varname> - ensures every geometry is in the same "
 "projection (see <xref linkend=\"ST_SRID\"/>)"
 msgstr ""
-"<varname>enforce_srid_the_geom</varname> - s'assure que toutes les  "
+"<varname>enforce_srid_the_geom</varname> - s'assure que toutes les "
 "géométries sont dans la même projection (see <xref linkend=\"ST_SRID\"/>)"
 
 #. Tag: para
@@ -673,11 +672,11 @@ msgid ""
 "<varname>geometry_columns</varname> table, but nothing is done to enforce "
 "constraints."
 msgstr ""
-"Si un identifiant de vue <varname>oid</varname> est fourni, comme pour un "
-"oid de table, cette fonction tente de déterminer le SRID, la dimension et le "
-"type géométrique de toutes les colonnes géométriques de la vue, insérant les "
-"informations correspondantes dans la table geometry_columns. Rien n'est fait "
-"concernant les contraintes."
+"Si le <varname>oid</varname> d'une vue est fourni, comme avec un oid de "
+"table, cette fonction essaie de déterminer le srid, la dimension et le type "
+"de toutes les géométries de la vue, en insérant les entrées appropriées dans "
+"la table <varname>geometry_columns</varname>, mais rien n'est fait pour "
+"appliquer les contraintes."
 
 #. Tag: para
 #: reference_management.xml:396
@@ -698,13 +697,13 @@ msgstr ""
 "un résumé montrant le nombre de colonnes géométriques identifiées dans la "
 "base et le nombre inséré dans la table <varname>geometry_columns</varname>. "
 "La version avec paramètres renvoie juste le nombre de lignes insérées dans "
-"la table <varname>geometry_columns</varname> "
+"la table <varname>geometry_columns</varname> ."
 
 #. Tag: para
 #: reference_management.xml:404
 #, no-c-format
 msgid "Availability: 1.4.0"
-msgstr "Disponibilité: 1.4.0"
+msgstr "Disponibilité : 1.4.0"
 
 #. Tag: para
 #: reference_management.xml:405
@@ -715,7 +714,7 @@ msgid ""
 "behavior instead by using the new <varname>use_typmod</varname> and setting "
 "it to false."
 msgstr ""
-"Changement: 2.0.0 Par défaut, utilise les modificateurs de type au lieu de "
+"Changement : 2.0.0 Par défaut, utilise les modificateurs de type au lieu de "
 "contraintes de vérification pour contraindre les types géométriques. Le "
 "comportement basé sur les contraintes peut être activé en mettant le nouveau "
 "paramètre <varname>use_typmod</varname> à false."
@@ -728,9 +727,9 @@ msgid ""
 "introduced that allows controlling if columns are created with typmodifiers "
 "or with check constraints."
 msgstr ""
-"Amélioration: 2.0.0 L'argument optionnel <varname>use_typmod</varname> a été "
-"introduit pour controler si les colonnes sont créés avec des modificateurs "
-"de type ou des contraintes de vérification."
+"Amélioration : 2.0.0 L'argument optionnel <varname>use_typmod</varname> a "
+"été introduit pour controler si les colonnes sont créés avec des "
+"modificateurs de type ou des contraintes de vérification."
 
 #. Tag: programlisting
 #: reference_management.xml:413
@@ -846,7 +845,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_management.xml:492
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Updates the SRID of all features in a geometry column, updating constraints "
 "and reference in geometry_columns. If the column was enforced by a type "
@@ -854,8 +853,8 @@ msgid ""
 "on schema-aware pgsql installations if schema is not provided."
 msgstr ""
 "Met à jour le SRID de tous les objets d'une colonne géométrique et met à "
-"jour les métadonnées de geometry_columns et la contrainte sur le SRID. Note: "
-"utilise la fonction current_schema() sur les installations PostgreSQL le "
+"jour les métadonnées de geometry_columns et la contrainte sur le SRID. Note :"
+" utilise la fonction current_schema() sur les installations PostgreSQL le "
 "supportant, si le schéma n'est pas fourni."
 
 #. Tag: para
@@ -878,25 +877,25 @@ msgstr ""
 
 #. Tag: para
 #: reference_management.xml:507
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This will change the srid of the roads table to 4326 from whatever it was "
 "before:"
 msgstr ""
 "Cela va changer le srid de la table roads à 4326 quelle que soit sa valeur "
-"avant"
+"avant :"
 
 #. Tag: programlisting
 #: reference_management.xml:508
 #, no-c-format
 msgid "SELECT UpdateGeometrySRID('roads','geom',4326);"
-msgstr "SELECT UpdateGeometrySRID('roads','geom',4326);"
+msgstr "SELECT UpdateGeometrySRID('roads','geom',4326) ;"
 
 #. Tag: para
 #: reference_management.xml:510
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "The prior example is equivalent to this DDL statement:"
-msgstr "L'exemple précédent est équivalent à cette requête DDL"
+msgstr "L'exemple précédent est équivalent à cette requête DDL :"
 
 #. Tag: programlisting
 #: reference_management.xml:511
@@ -909,18 +908,17 @@ msgstr ""
 
 #. Tag: para
 #: reference_management.xml:513
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you got the projection wrong (or brought it in as unknown) in load and "
 "you wanted to transform to web mercator all in one shot you can do this with "
 "DDL but there is no equivalent PostGIS management function to do so in one "
 "go."
 msgstr ""
-"Si vous vous êtes trompé dans la projection lors du chargement ( ou vous "
-"l'avez insérée comme étant inconnue) et que vous voulez la transformer en "
-"web mercator en une seule action vous pouvez faire ceci avec des DDL, mais "
-"il n'y a aucun équivalent PostGIS dans les fonctions de gestion pour faire "
-"ceci en une seule étape."
+"Si vous vous êtes trompé de projection (ou si vous l'avez introduite en tant "
+"qu'inconnue) dans le chargement et que vous voulez transformer en mercator "
+"web en une seule fois, vous pouvez le faire avec DDL mais il n'y a pas de "
+"fonction de gestion PostGIS équivalente pour le faire en une seule fois."
 
 #. Tag: programlisting
 #: reference_management.xml:515
@@ -933,11 +931,13 @@ msgstr ""
 
 #. Tag: para
 #: reference_management.xml:520
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
 "linkend=\"ST_GeomFromEWKT\"/>"
-msgstr ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>"
+msgstr ""
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
+"linkend=\"ST_GeomFromEWKT\"/>"
 
 #~ msgid ""
 #~ "Adds a geometry column to an existing table of attributes. By default "
