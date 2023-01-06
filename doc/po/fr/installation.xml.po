@@ -16,8 +16,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-11-27 05:42+0000\n"
-"PO-Revision-Date: 2022-12-03 06:30+0000\n"
-"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "installationxml/fr/>\n"
 "Language: fr\n"
@@ -2895,7 +2895,7 @@ msgstr "Pour windows"
 #: installation.xml:924
 #, no-c-format
 msgid "SELECT loader_generate_nation_script('windows');"
-msgstr "SELECT loader_generate_nation_script('windows');"
+msgstr "SELECT loader_generate_nation_script('windows') ;"
 
 #. Tag: emphasis
 #: installation.xml:925
@@ -2907,7 +2907,7 @@ msgstr "Pour unix/linux"
 #: installation.xml:926
 #, no-c-format
 msgid "SELECT loader_generate_nation_script('sh');"
-msgstr "SELECT loader_generate_nation_script('sh');"
+msgstr "SELECT loader_generate_nation_script('sh') ;"
 
 #. Tag: para
 #: installation.xml:927
