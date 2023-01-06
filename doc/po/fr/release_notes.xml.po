@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-08-27 04:57+0000\n"
-"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "release_notesxml/fr/>\n"
@@ -663,7 +663,7 @@ msgstr ""
 msgid "Requires SFCGAL 1.4.1+ for ST_AlphaShape and ST_OptimalAlphaShape."
 msgstr ""
 "Nécessite SFCGAL 1.4.1 ou supérieure pour ST_AlphaShape et "
-"ST_OptimalAlphaShape"
+"ST_OptimalAlphaShape."
 
 #. Tag: para
 #: release_notes.xml:178 release_notes.xml:219
