@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-05-03 02:58+0000\n"
-"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_editorxml/fr/>\n"
@@ -104,7 +104,7 @@ msgstr ""
 #: reference_editor.xml:42 reference_editor.xml:1159 reference_editor.xml:1338
 #, no-c-format
 msgid "Availability: 1.1.0"
-msgstr "Disponibilité: 1.1.0"
+msgstr "Disponibilité : 1.1.0"
 
 #. Tag: para
 #: reference_editor.xml:43 reference_editor.xml:279 reference_editor.xml:321
@@ -298,7 +298,7 @@ msgstr ""
 #: reference_editor.xml:120
 #, no-c-format
 msgid "Availability: 1.5.0"
-msgstr "Disponibilité: 1.5.0"
+msgstr "Disponibilité : 1.5.0"
 
 #. Tag: para
 #: reference_editor.xml:122
@@ -447,7 +447,7 @@ msgstr ""
 #: reference_editor.xml:187 reference_editor.xml:357 reference_editor.xml:1617
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr "Disponibilité: 2.0.0"
+msgstr "Disponibilité : 2.0.0"
 
 #. Tag: para
 #: reference_editor.xml:193
@@ -825,7 +825,7 @@ msgstr ""
 #: reference_editor.xml:320
 #, no-c-format
 msgid "Availability: 3.2.0"
-msgstr ""
+msgstr "Disponibilité : 3.2.0"
 
 #. Tag: para
 #: reference_editor.xml:322 reference_editor.xml:360 reference_editor.xml:637
@@ -1281,7 +1281,7 @@ msgstr ""
 #: reference_editor.xml:635 reference_editor.xml:732
 #, no-c-format
 msgid "Availability: 2.4.0"
-msgstr ""
+msgstr "Disponibilité : 2.4.0"
 
 #. Tag: para
 #: reference_editor.xml:642 reference_editor.xml:739
@@ -1723,7 +1723,7 @@ msgstr ""
 #: reference_editor.xml:990
 #, no-c-format
 msgid "Availability: 2.3.0"
-msgstr ""
+msgstr "Disponibilité : 2.3.0"
 
 #. Tag: programlisting
 #: reference_editor.xml:997
@@ -1813,7 +1813,7 @@ msgstr ""
 #: reference_editor.xml:1077
 #, no-c-format
 msgid "Availability: 2.5.0"
-msgstr ""
+msgstr "Disponibilité : 2.5.0"
 
 #. Tag: title
 #: reference_editor.xml:1080
@@ -2188,7 +2188,7 @@ msgstr ""
 #: reference_editor.xml:1295
 #, no-c-format
 msgid "Availability: 1.2.2"
-msgstr ""
+msgstr "Disponibilité : 1.2.2"
 
 #. Tag: para
 #: reference_editor.xml:1296
@@ -2586,7 +2586,7 @@ msgstr ""
 #: reference_editor.xml:1535
 #, no-c-format
 msgid "Availability: 1.0.0RC1"
-msgstr "Disponibilité: 1.0.0RC1"
+msgstr "Disponibilité : 1.0.0RC1"
 
 #. Tag: para
 #: reference_editor.xml:1536
@@ -2712,7 +2712,7 @@ msgstr ""
 #: reference_editor.xml:1616
 #, no-c-format
 msgid "Performed by the GEOS module."
-msgstr ""
+msgstr "Effectué par le module GEOS."
 
 #. Tag: para
 #: reference_editor.xml:1634
