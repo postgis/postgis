@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-11-01 14:51+0000\n"
-"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_srsxml/fr/>\n"
@@ -213,7 +213,7 @@ msgstr ""
 #: reference_srs.xml:106
 #, no-c-format
 msgid "&sfs_compliant;"
-msgstr ""
+msgstr "&sfs_compliant;"
 
 #. Tag: para
 #: reference_srs.xml:107 reference_srs.xml:150 reference_srs.xml:243
@@ -304,7 +304,7 @@ msgstr ""
 #: reference_srs.xml:148
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.1"
-msgstr ""
+msgstr "&sfs_compliant; s2.1.1.1"
 
 #. Tag: para
 #: reference_srs.xml:149
