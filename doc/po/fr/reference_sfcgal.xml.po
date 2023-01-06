@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-14 02:04+0000\n"
-"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_sfcgalxml/fr/>\n"
@@ -88,7 +88,7 @@ msgstr ""
 #: reference_sfcgal.xml:1117
 #, no-c-format
 msgid "Availability: 2.1.0"
-msgstr ""
+msgstr "Disponibilité : 2.1.0"
 
 #. Tag: para
 #: reference_sfcgal.xml:39 reference_sfcgal.xml:74 reference_sfcgal.xml:107
@@ -259,9 +259,9 @@ msgstr ""
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:130
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Computes the 3D convex hull of a geometry."
-msgstr "Calcule un squelette (straight skeleton) à partir d'une géométrie"
+msgstr "Calcule l'enveloppe convexe 3D d'une géométrie."
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:135
@@ -855,14 +855,15 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:571
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ConstrainedDelaunayTriangles</function></"
 "funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
 "paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Tesselate</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+"<funcdef>geometry <function>ST_ConstrainedDelaunayTriangles</function></"
+"funcdef> <paramdef><type>geometry </type> "
+"<parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_sfcgal.xml:581
