@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-20 01:55+0000\n"
-"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "extras_topologyxml/fr/>\n"
@@ -38,7 +38,7 @@ msgid ""
 "objects such as faces, edges and nodes."
 msgstr ""
 "Les types et fonctions topologiques de PostGIS sont utilisés pour gérer les "
-"objets topologiques tels que les faces, les arêtes et les des noeuds. "
+"objets topologiques tels que les faces, les arêtes et les des noeuds."
 
 #. Tag: para
 #: extras_topology.xml:5
@@ -141,7 +141,7 @@ msgstr ""
 "Cette section liste les types de données de PostgreSQL installés par "
 "\"PostGIS Topology\". Notez que nous décrivons leurs comportements de "
 "transtypage, ce qui est très important en particulièrement lorsque l'on "
-"définit ses propres fonctions. "
+"définit ses propres fonctions."
 
 #. Tag: title
 #: extras_topology.xml:29
@@ -291,7 +291,7 @@ msgid ""
 "data type"
 msgstr ""
 "Cette section liste les transtypages autorisés pour ce type de donnée, "
-"qu'ils soient automatiques ou bien explicites ."
+"qu'ils soient automatiques ou bien explicites"
 
 #. Tag: entry
 #: extras_topology.xml:89
@@ -969,7 +969,7 @@ msgstr ""
 #: extras_topology.xml:515
 #, no-c-format
 msgid "Availability: 2.3.0"
-msgstr ""
+msgstr "Disponibilité : 2.3.0"
 
 #. Tag: programlisting
 #: extras_topology.xml:521
@@ -1054,7 +1054,7 @@ msgstr ""
 #: extras_topology.xml:3183 extras_topology.xml:3481 extras_topology.xml:3632
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr "Disponibilité: 2.0.0"
+msgstr "Disponibilité : 2.0.0"
 
 #. Tag: programlisting
 #: extras_topology.xml:560
@@ -1593,7 +1593,7 @@ msgstr ""
 #: extras_topology.xml:2299 extras_topology.xml:3525
 #, no-c-format
 msgid "Availability: 3.2.0"
-msgstr ""
+msgstr "Disponibilité : 3.2.0"
 
 #. Tag: refname
 #: extras_topology.xml:880
@@ -2713,7 +2713,7 @@ msgstr ""
 #: extras_topology.xml:1797 extras_topology.xml:3744 extras_topology.xml:3797
 #, no-c-format
 msgid "Availability: 1.1.0"
-msgstr "Disponibilité: 1.1.0"
+msgstr "Disponibilité : 1.1.0"
 
 #. Tag: para
 #: extras_topology.xml:1800
@@ -3201,7 +3201,7 @@ msgstr ""
 #: extras_topology.xml:2943
 #, no-c-format
 msgid "Performed by the GEOS module."
-msgstr ""
+msgstr "Effectué par le module GEOS."
 
 #. Tag: para
 #: extras_topology.xml:2202 extras_topology.xml:2345
@@ -4277,7 +4277,7 @@ msgstr ""
 #: extras_topology.xml:2944 extras_topology.xml:3692
 #, no-c-format
 msgid "Availability: 2.1.0"
-msgstr "Disponibilité: 2.1.0"
+msgstr "Disponibilité : 2.1.0"
 
 #. Tag: para
 #: extras_topology.xml:2949
