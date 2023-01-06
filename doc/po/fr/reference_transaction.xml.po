@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_transactionxml/fr/>\n"
@@ -20,37 +20,37 @@ msgstr ""
 
 #. Tag: para
 #: reference_transaction.xml:6
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "These functions implement a row locking mechanism to support long "
 "transactions. They are provided primarily for implementors of the <ulink url="
 "\"http://www.opengeospatial.org/standards/wfs\">Web Feature Service</ulink> "
 "specification."
 msgstr ""
-"Ce module et les fonctions pl/pgsql associées ont été implémentées pour "
-"fournir le support du verrouillage long, requis par la spécification <ulink "
-"url=\"http://www.opengeospatial.org/standards/wfs\">Web Feature Service</"
-"ulink>."
+"Ces fonctions mettent en œuvre un mécanisme de verrouillage des lignes pour "
+"prendre en charge les transactions longues. Elles sont fournies "
+"principalement pour les implémenteurs de la spécification <ulink url=\"http"
+"://www.opengeospatial.org/standards/wfs\">Web Feature Service</ulink>."
 
 #. Tag: title
 #: reference_transaction.xml:13
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Long Transaction Support"
 msgstr "Support des transactions longues"
 
 #. Tag: para
 #: reference_transaction.xml:16
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "For the locking mechanism to operate correctly the <emphasis role=\"bold"
 "\">serializable</emphasis> <ulink url=\"http://www.postgresql.org/docs/"
 "current/static/transaction-iso.html\"> transaction isolation level</ulink> "
 "must be used."
 msgstr ""
-"Les utilisateurs doivent activer le niveau de transaction <ulink url="
-"\"http://www.postgresql.org/docs/current/static/transaction-iso.html"
-"\">serializable transaction</ulink> sinon les mécanismes de verrouillage ne "
-"fonctionneront pas."
+"Pour que le mécanisme de verrouillage fonctionne correctement, le <emphasis "
+"role=\"bold\">sérialisable</emphasis> <ulink url=\"http://www.postgresql.org/"
+"docs/current/static/transaction-iso.html\"> niveau d'isolation de la "
+"transaction</ulink> doit être utilisé."
 
 #. Tag: refname
 #: reference_transaction.xml:24
@@ -60,7 +60,7 @@ msgstr "AddAuth"
 
 #. Tag: refpurpose
 #: reference_transaction.xml:26
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<refpurpose>Adds an authorization token to be used in the current "
 "transaction.</refpurpose>"
@@ -88,13 +88,13 @@ msgstr "Description"
 
 #. Tag: para
 #: reference_transaction.xml:41
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<para>Adds an authorization token to be used in the current transaction.</"
 "para>"
 msgstr ""
-"<para>Ajoute un jeton d'autorisation à utiliser dans la transaction courante."
-"</para>"
+"<para>Ajoute un jeton d'autorisation à utiliser dans la transaction "
+"courante.</para>"
 
 #. Tag: para
 #: reference_transaction.xml:43
@@ -103,6 +103,8 @@ msgid ""
 "Adds the current transaction identifier and authorization token to a "
 "temporary table called <varname>temp_lock_have_table</varname>."
 msgstr ""
+"Ajoute l'identifiant de la transaction en cours et le jeton d'autorisation à "
+"une table temporaire appelée <varname>temp_lock_have_table</varname>."
 
 #. Tag: para
 #: reference_transaction.xml:46 reference_transaction.xml:98
@@ -122,7 +124,7 @@ msgstr "Exemples"
 
 #. Tag: programlisting
 #: reference_transaction.xml:52
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT LockRow('towns', '353', 'priscilla');\n"
 "                BEGIN TRANSACTION;\n"
@@ -136,16 +138,16 @@ msgid ""
 "                ERROR:  UPDATE where \"gid\" = '353' requires authorization "
 "'priscilla'"
 msgstr ""
-"SELECT LockRow('towns', '353', 'priscilla');\n"
-"                BEGIN TRANSACTION;\n"
-"                        SELECT AddAuth('joey');\n"
+"SELECT LockRow('towns', '353', 'priscilla') ;\n"
+"                BEGIN TRANSACTION ;\n"
+"                        SELECT AddAuth('joey') ;\n"
 "                        UPDATE towns SET the_geom = "
-"ST_Translate(the_geom,2,2) WHERE gid = 353;\n"
-"                COMMIT;\n"
+"ST_Translate(the_geom,2,2) WHERE gid = 353 ;\n"
+"                COMMIT ;\n"
 "\n"
 "\n"
 "                ---Error--\n"
-"                ERROR:  UPDATE where \"gid\" = '353' requires authorization "
+"                ERROR :  UPDATE where \"gid\" = '353' requires authorization "
 "'priscilla'"
 
 #. Tag: title
@@ -164,7 +166,7 @@ msgstr "CheckAuth"
 
 #. Tag: refpurpose
 #: reference_transaction.xml:67
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Creates a trigger on a table to prevent/allow updates and deletes of rows "
 "based on authorization token."
@@ -197,7 +199,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_transaction.xml:90
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Creates trigger on a table to prevent/allow updates and deletes of rows "
 "based on an authorization token. Identify rows using &lt;rowid_col&gt; "
@@ -205,8 +207,8 @@ msgid ""
 msgstr ""
 "Crée un déclencheur sur une table pour empêcher/autoriser les mises à jour "
 "(UPDATE) et les suppressions (DELETE) de lignes en se basant sur le jeton "
-"d'autorisation. Identifie les lignes en utilisant la colonne &lt;"
-"rowid_col&gt; ."
+"d'autorisation. Identifie les lignes en utilisant la colonne "
+"&lt;rowid_col&gt; ."
 
 #. Tag: para
 #: reference_transaction.xml:93
@@ -243,7 +245,7 @@ msgid ""
 "                        ------\n"
 "                        0"
 msgstr ""
-"SELECT CheckAuth('public', 'towns', 'gid');\n"
+"SELECT CheckAuth('public', 'towns', 'gid') ;\n"
 "                        result\n"
 "                        ------\n"
 "                        0"
@@ -256,9 +258,9 @@ msgstr "DisableLongTransactions"
 
 #. Tag: refpurpose
 #: reference_transaction.xml:121
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Disables long transaction support."
-msgstr "DisableLongTransactions"
+msgstr "Désactive le support des transactions longues."
 
 #. Tag: funcprototype
 #: reference_transaction.xml:126
@@ -272,14 +274,14 @@ msgstr ""
 
 #. Tag: para
 #: reference_transaction.xml:136
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Disables long transaction support. This function removes the long "
 "transaction support metadata tables, and drops all triggers attached to lock-"
 "checked tables."
 msgstr ""
-"Désactive le support des transactions longues. Cette fonction supprime "
-"les tables de métadonnées du support de transactions longues, et supprime "
+"Désactive le support des transactions longues. Cette fonction supprime les "
+"tables de métadonnées du support de transactions longues, et supprime "
 "également tous les déclencheurs attachés aux tables pour lesquelles il y a "
 "une vérification de verrou."
 
@@ -292,7 +294,7 @@ msgid ""
 "<varname>checkauthtrigger</varname>"
 msgstr ""
 "Supprime la table de métadonnées nommée <varname>authorization_table</"
-"varname> et la vue nommée  <varname>authorized_tables</varname> ainsi que "
+"varname> et la vue nommée <varname>authorized_tables</varname> ainsi que "
 "tous les déclencheurs nommés <varname>checkauthtrigger</varname>"
 
 #. Tag: programlisting
@@ -303,7 +305,7 @@ msgid ""
 "--result--\n"
 "Long transactions support disabled"
 msgstr ""
-"SELECT DisableLongTransactions();\n"
+"SELECT DisableLongTransactions() ;\n"
 "--result--\n"
 "Long transactions support disabled"
 
@@ -315,9 +317,9 @@ msgstr "EnableLongTransactions"
 
 #. Tag: refpurpose
 #: reference_transaction.xml:165
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Enables long transaction support."
-msgstr "EnableLongTransactions"
+msgstr "Active le support des transactions longues."
 
 #. Tag: funcprototype
 #: reference_transaction.xml:170
@@ -331,16 +333,15 @@ msgstr ""
 
 #. Tag: para
 #: reference_transaction.xml:180
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Enables long transaction support. This function creates the required "
 "metadata tables. It must be called once before using the other functions in "
 "this section. Calling it twice is harmless."
 msgstr ""
-"Active le support des transactions longues. Cette fonction crée les "
-"tables de métadonnées nécessaires. Elle doit être appelée une fois avant "
-"d'utiliser les autres fonctions de cette section. L'appeler deux fois ou "
-"plus n'a aucun effet."
+"Active le support des transactions longues. Cette fonction crée les tables "
+"de métadonnées requises. Elle doit être appelée une fois avant d'utiliser "
+"les autres fonctions de cette section. L'appeler deux fois est inoffensif."
 
 #. Tag: para
 #: reference_transaction.xml:185
@@ -360,8 +361,8 @@ msgid ""
 "--result--\n"
 "Long transactions support enabled"
 msgstr ""
-"SELECT EnableLongTransactions();\n"
-"--result--\n"
+"SELECT EnableLongTransactions() ;\n"
+"--résultat--\n"
 "Long transactions support enabled"
 
 #. Tag: refname
@@ -372,10 +373,9 @@ msgstr "LockRow"
 
 #. Tag: refpurpose
 #: reference_transaction.xml:210
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Sets lock/authorization for a row in a table."
-msgstr ""
-"Active le vérouillage/l'autorisation pour une ligne spécifique de la table"
+msgstr "Définit le verrouillage/autorisation pour une ligne dans une table."
 
 #. Tag: funcsynopsis
 #: reference_transaction.xml:214
@@ -417,7 +417,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_transaction.xml:245
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Sets lock/authorization for a specific row in a table. "
 "<varname>an_auth_token</varname> is a text value. <varname>expire_dt</"
@@ -425,10 +425,11 @@ msgid ""
 "emphasis>. Returns 1 if lock has been assigned, 0 otherwise (i.e. row is "
 "already locked by another auth.)"
 msgstr ""
-"Active le vérouillage/l'autorisation pour la ligne spécifique dans la table  "
-"&lt;authid&gt; est une valeur textuelle,  &lt;expires&gt; est un timestamp "
-"(date+heure) qui vaut par défaut now()+1hour, Retourne 1 si le verrou a été "
-"assigné, sinon 0 (déjà verrouillé par une autre autorisation)"
+"Définit le verrouillage/autorisation pour une ligne spécifique dans une "
+"table. <varname>an_auth_token</varname> est une valeur texte. "
+"<varname>expire_dt</varname> est un timestamp qui a pour valeur par défaut "
+"<emphasis>now() + 1 heure</emphasis>. Renvoie 1 si le verrou a été attribué, "
+"0 sinon (c'est-à-dire que la rangée est déjà verrouillée par une autre auth.)"
 
 #. Tag: programlisting
 #: reference_transaction.xml:259
@@ -445,13 +446,13 @@ msgid ""
 "-------\n"
 "0"
 msgstr ""
-"SELECT LockRow('public', 'towns', '2', 'joey');\n"
+"SELECT LockRow('public', 'towns', '2', 'joey') ;\n"
 "LockRow\n"
 "-------\n"
 "1\n"
 "\n"
 "--Joey has already locked the record and Priscilla is out of luck\n"
-"SELECT LockRow('public', 'towns', '2', 'priscilla');\n"
+"SELECT LockRow('public', 'towns', '2', 'priscilla') ;\n"
 "LockRow\n"
 "-------\n"
 "0"
@@ -466,7 +467,7 @@ msgstr "UnlockRows"
 #: reference_transaction.xml:274
 #, no-c-format
 msgid "Removes all locks held by an authorization token."
-msgstr ""
+msgstr "Supprime tous les verrous détenus par un jeton d'autorisation."
 
 #. Tag: funcprototype
 #: reference_transaction.xml:280
@@ -480,13 +481,13 @@ msgstr ""
 
 #. Tag: para
 #: reference_transaction.xml:290
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Removes all locks held by specified authorization token. Returns the number "
 "of locks released."
 msgstr ""
-"Supprime tous les verrous que possède l'autorisation spécifiée. "
-"Retourne le nombre de verrous supprimés."
+"Supprime tous les verrous détenus par le jeton d'autorisation spécifié. "
+"Renvoie le nombre de verrous libérés."
 
 #. Tag: programlisting
 #: reference_transaction.xml:300
@@ -499,9 +500,9 @@ msgid ""
 "                ------------\n"
 "                2"
 msgstr ""
-"SELECT LockRow('towns', '353', 'priscilla');\n"
-"                SELECT LockRow('towns', '2', 'priscilla');\n"
-"                SELECT UnLockRows('priscilla');\n"
+"SELECT LockRow('towns', '353', 'priscilla') ;\n"
+"                SELECT LockRow('towns', '2', 'priscilla') ;\n"
+"                SELECT UnLockRows('priscilla') ;\n"
 "                UnLockRows\n"
 "                ------------\n"
 "                2"
