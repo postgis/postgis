@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_exceptionxml/fr/>\n"
@@ -47,7 +47,7 @@ msgstr "PostGIS_AddBBox"
 #: reference_exception.xml:11
 #, no-c-format
 msgid "Add bounding box to the geometry."
-msgstr "Ajoute une bounding box à la géométrie"
+msgstr "Ajoute une bounding box à la géométrie."
 
 #. Tag: funcprototype
 #: reference_exception.xml:16
@@ -220,11 +220,11 @@ msgstr ""
 "mise en cache.\n"
 "UPDATE sometable\n"
 " SET the_geom =  PostGIS_DropBBox(the_geom)\n"
-" WHERE Not (Box2D(ST_AsBinary(the_geom)) = Box2D(the_geom));\n"
+" WHERE Not (Box2D(ST_AsBinary(the_geom)) = Box2D(the_geom)) ;\n"
 "\n"
 " UPDATE sometable\n"
 " SET the_geom =  PostGIS_AddBBox(the_geom)\n"
-" WHERE Not PostGIS_HasBBOX(the_geom);"
+" WHERE Not PostGIS_HasBBOX(the_geom) ;"
 
 #. Tag: para
 #: reference_exception.xml:97
@@ -242,7 +242,7 @@ msgstr "PostGIS_HasBBox"
 #: reference_exception.xml:106
 #, no-c-format
 msgid "Returns TRUE if the bbox of this geometry is cached, FALSE otherwise."
-msgstr "Renvoie TRUE si la bbox de cette géométrie est en cache, sinon FALSE "
+msgstr "Renvoie TRUE si la bbox de cette géométrie est en cache, sinon FALSE."
 
 #. Tag: funcprototype
 #: reference_exception.xml:111
