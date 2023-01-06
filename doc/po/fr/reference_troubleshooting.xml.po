@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_troubleshootingxml/fr/>\n"
@@ -42,7 +42,7 @@ msgstr ""
 #: reference_troubleshooting.xml:16
 #, no-c-format
 msgid "Add bounding box to the geometry."
-msgstr ""
+msgstr "Ajoute une bounding box à la géométrie."
 
 #. Tag: funcprototype
 #: reference_troubleshooting.xml:21
@@ -137,6 +137,8 @@ msgid ""
 "<funcdef>geometry <function>PostGIS_DropBBox</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>PostGIS_DropBBox</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_troubleshooting.xml:77
@@ -188,11 +190,11 @@ msgstr ""
 "mise en cache.\n"
 "UPDATE sometable\n"
 " SET the_geom =  PostGIS_DropBBox(the_geom)\n"
-" WHERE Not (Box2D(ST_AsBinary(the_geom)) = Box2D(the_geom));\n"
+" WHERE Not (Box2D(ST_AsBinary(the_geom)) = Box2D(the_geom)) ;\n"
 "\n"
 " UPDATE sometable\n"
 " SET the_geom =  PostGIS_AddBBox(the_geom)\n"
-" WHERE Not PostGIS_HasBBOX(the_geom);"
+" WHERE Not PostGIS_HasBBOX(the_geom) ;"
 
 #. Tag: para
 #: reference_troubleshooting.xml:102
@@ -204,13 +206,13 @@ msgstr ""
 #: reference_troubleshooting.xml:109
 #, no-c-format
 msgid "PostGIS_HasBBox"
-msgstr ""
+msgstr "PostGIS_HasBBox"
 
 #. Tag: refpurpose
 #: reference_troubleshooting.xml:111
 #, no-c-format
 msgid "Returns TRUE if the bbox of this geometry is cached, FALSE otherwise."
-msgstr ""
+msgstr "Renvoie TRUE si la bbox de cette géométrie est en cache, sinon FALSE."
 
 #. Tag: funcprototype
 #: reference_troubleshooting.xml:116
@@ -219,6 +221,8 @@ msgid ""
 "<funcdef>boolean <function>PostGIS_HasBBox</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>boolean <function>PostGIS_HasBBox</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_troubleshooting.xml:126
