@@ -4,20 +4,22 @@
 # Arnaud Vandecasteele <arnaud.sig@gmail.com>, 2013
 # juliep <julie.pierson@cnrs.fr>, 2013
 # juliep <julie.pierson@cnrs.fr>, 2013
+# Vincent Bre <vincent.bre@oslandia.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2018-07-22 03:18+0000\n"
-"Last-Translator: georgersilva <georger.silva@gmail.com>\n"
-"Language-Team: French (http://www.transifex.com/postgis/postgis/language/"
-"fr/)\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
+"Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
+"faq_rasterxml/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: title
 #: faq_raster.xml:3
@@ -29,7 +31,7 @@ msgstr "Foire Aux Questions PostGIS Raster"
 #: faq_raster.xml:8
 #, no-c-format
 msgid "Where can I find out more about the PostGIS Raster Project?"
-msgstr "Où puis-je en apprendre d'avantage sur le Projet PostGis Raster?"
+msgstr "Où puis-je en apprendre d'avantage sur le Projet PostGis Raster ?"
 
 #. Tag: para
 #: faq_raster.xml:12
@@ -49,7 +51,7 @@ msgid ""
 "invention?"
 msgstr ""
 "Existe-t-il des livres ou tutoriels pour débuter avec cette merveilleuse "
-"invention?"
+"invention ?"
 
 #. Tag: para
 #: faq_raster.xml:22
@@ -85,7 +87,7 @@ msgstr ""
 #: faq_raster.xml:36
 #, no-c-format
 msgid "How do I install Raster support in my PostGIS database?"
-msgstr "Comment installer le support Raster dans ma base de données PostGIS?"
+msgstr "Comment installer le support Raster dans ma base de données PostGIS ?"
 
 #. Tag: para
 #: faq_raster.xml:40
@@ -140,8 +142,8 @@ msgid ""
 "ulink>."
 msgstr ""
 "Tous les formats supportés par la bibliothèque GDAL. Ces formats sont "
-"décrits sur la page <ulink url=\"http://www.gdal.org/formats_list.html"
-"\">GDAL File Formats</ulink>"
+"décrits sur la page <ulink url=\"http://www.gdal.org/formats_list.html\""
+">GDAL File Formats</ulink>."
 
 #. Tag: para
 #: faq_raster.xml:62
@@ -152,7 +154,7 @@ msgid ""
 msgstr ""
 "Il se peut que votre installation de GDAL ne supporte pas tous les formats. "
 "Pour vérifier les formats supportés par votre installation, vous pouvez "
-"utiliser "
+"utiliser"
 
 #. Tag: programlisting
 #: faq_raster.xml:63
@@ -230,7 +232,7 @@ msgstr "gdalinfo --formats"
 msgid "To get a summary about your raster via GDAL use gdalinfo:"
 msgstr ""
 "Afin d'obtenir un résumé de votre raster avec GDAL, vous pouvez utiliser la "
-"commande gdalinfo:"
+"commande gdalinfo :"
 
 #. Tag: programlisting
 #: faq_raster.xml:88
@@ -252,7 +254,7 @@ msgstr ""
 "Pour exporter des données d'un format à un autre, utilisez la commande "
 "gdal_translate. L'exemple ci-dessous transforme toutes les données d'une "
 "table en une image au format PNG et dont la taille sera de 10% par rapport à "
-"l'originale.   "
+"l'originale."
 
 #. Tag: para
 #: faq_raster.xml:93
@@ -266,13 +268,13 @@ msgstr ""
 "En fonction du type de bande et le type de pixel du format d'export "
 "certaines transformations pourraient ne pas fonctionner . Par exemple, les "
 "band de type chiffre à virgule et les entiers 32 bits non signés seront "
-"difficilement transformables en JPG ou autres. "
+"difficilement transformables en JPG ou autres."
 
 #. Tag: para
 #: faq_raster.xml:96
 #, no-c-format
 msgid "Here is an example simple translation"
-msgstr "Voici un exemple de transformation "
+msgstr "Voici un exemple de transformation"
 
 #. Tag: programlisting
 #: faq_raster.xml:97
@@ -387,7 +389,7 @@ msgstr ""
 
 #. Tag: para
 #: faq_raster.xml:137
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "First you need GDAL 1.7 or higher compiled with PostGIS raster support. GDAL "
 "3 or above is preferred since many issues have been fixed in 1.8 and more "
@@ -546,7 +548,7 @@ msgid ""
 msgstr ""
 "SELECT rast\n"
 "FROM my_raster\n"
-"WHERE ST_Intersects(rast, 'SRID=4326;POINT(-10 10)');"
+"WHERE ST_Intersects(rast, 'SRID=4326 ;POINT(-10 10)') ;"
 
 #. Tag: para
 #: faq_raster.xml:177
@@ -584,8 +586,9 @@ msgid ""
 "i/\">Oracle GeoRaster and PostGIS Raster: First impressions </ulink>"
 msgstr ""
 "Pour une discussion plus approfondie à ce sujet, vous pouvez consulter "
-"<ulink url=\"http://gis4free.wordpress.com/2010/07/19/oracle-georaster-part-"
-"i/\">Oracle GeoRaster and PostGIS Raster: First impressions </ulink>"
+"<ulink url=\"http ://gis4free.wordpress.com/2010/07/19/"
+"oracle-georaster-part-i/\">Oracle GeoRaster and PostGIS Raster : First "
+"impressions </ulink>"
 
 #. Tag: para
 #: faq_raster.xml:189
