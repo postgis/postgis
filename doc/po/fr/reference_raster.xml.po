@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-04 00:50+0000\n"
-"PO-Revision-Date: 2023-01-05 06:13+0000\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_rasterxml/fr/>\n"
@@ -61,7 +61,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:13
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "CREATE TABLE dummy_rast(rid integer, rast raster);\n"
 "INSERT INTO dummy_rast(rid, rast)\n"
@@ -98,7 +98,7 @@ msgid ""
 "'EFCF9FBFDFEFEFDFCFAFEFEFE04004E627AADD16076B4F9FE6370A9F5FE59637AB0E54F58617087040046566487A1506CA2E3FA5A6CAFFBFE4D566DA4CB3E454C5665')::"
 "raster);"
 msgstr ""
-"CREATE TABLE dummy_rast(rid integer, rast raster);\n"
+"CREATE TABLE dummy_rast(rid integer, rast raster) ;\n"
 "INSERT INTO dummy_rast(rid, rast)\n"
 "VALUES (1,\n"
 "('01' -- little endian (uint8 ndr)\n"
@@ -124,14 +124,14 @@ msgstr ""
 "'0A00' -- width (uint16 10)\n"
 "||\n"
 "'1400' -- height (uint16 20)\n"
-")::raster\n"
+") ::raster\n"
 "),\n"
-"-- Raster: 5 x 5 pixels, 3 bands, PT_8BUI pixel type, NODATA = 0\n"
+"-- Raster : 5 x 5 pixels, 3 bands, PT_8BUI pixel type, NODATA = 0\n"
 "(2,  ('01000003009A9999999999A93F9A9999999999A9BF000000E02B274A' ||\n"
-"'41000000007719564100000000000000000000000000000000FFFFFFFF050005000400FDFEFDFEFEFDFEFEFDF9FAFEF' "
-"||\n"
-"'EFCF9FBFDFEFEFDFCFAFEFEFE04004E627AADD16076B4F9FE6370A9F5FE59637AB0E54F58617087040046566487A1506CA2E3FA5A6CAFFBFE4D566DA4CB3E454C5665')::"
-"raster);"
+"'41000000007719564100000000000000000000000000000000FFFFFFFF050005000400FDFEFD"
+"FEFEFDFEFEFDF9FAFEF' ||\n"
+"'EFCF9FBFDFEFEFDFCFAFEFEFE04004E627AADD16076B4F9FE6370A9F5FE59637AB0E54F58617"
+"087040046566487A1506CA2E3FA5A6CAFFBFE4D566DA4CB3E454C5665') ::raster) ;"
 
 #. Tag: para
 #: reference_raster.xml:17
@@ -503,12 +503,14 @@ msgid ""
 "This section lists the automatic as well as explicit casts allowed for this "
 "data type"
 msgstr ""
+"Cette section liste les transtypages autorisés pour ce type de donnée, "
+"qu'ils soient automatiques ou bien explicites"
 
 #. Tag: entry
 #: reference_raster.xml:187
 #, no-c-format
 msgid "Cast To"
-msgstr ""
+msgstr "Transtypage vers"
 
 #. Tag: entry
 #: reference_raster.xml:188
@@ -645,8 +647,8 @@ msgid ""
 "SELECT ROW(2, '0-100:1-10, 101-500:11-150,501 - 10000: 151-254', '8BUI', "
 "255)::reclassarg;"
 msgstr ""
-"SELECT ROW(2, '0-100:1-10, 101-500:11-150,501 - 10000: 151-254', '8BUI', "
-"255)::reclassarg;"
+"SELECT ROW(2, '0-100 :1-10, 101-500 :11-150,501 - 10000 : 151-254', '8BUI', "
+"255) ::reclassarg ;"
 
 #. Tag: title
 #: reference_raster.xml:241
@@ -658,7 +660,7 @@ msgstr ""
 #: reference_raster.xml:242
 #, no-c-format
 msgid "SELECT ROW(1, '0-100]:0, (100-255:1', '1BB', NULL)::reclassarg;"
-msgstr "SELECT ROW(1, '0-100]:0, (100-255:1', '1BB', NULL)::reclassarg;"
+msgstr "SELECT ROW(1, '0-100] :0, (100-255 :1', '1BB', NULL) ::reclassarg ;"
 
 #. Tag: refname
 #: reference_raster.xml:252
@@ -828,7 +830,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:408
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>AddRasterConstraints</function></"
 "funcdef> <paramdef><type>name </type> <parameter>rasttable</parameter></"
@@ -889,54 +891,55 @@ msgstr ""
 "<funcprototype> <funcdef>boolean <function>AddRasterConstraints</function></"
 "funcdef> <paramdef><type>name </type> <parameter>rasttable</parameter></"
 "paramdef> <paramdef><type>name </type> <parameter>rastcolumn</parameter></"
-"paramdef> <paramdef><type>boolean </type> <parameter>srid</parameter></"
-"paramdef> <paramdef><type>boolean </type> <parameter>scale_x</parameter></"
-"paramdef> <paramdef><type>boolean </type> <parameter>scale_y</parameter></"
-"paramdef> <paramdef><type>boolean </type> <parameter>blocksize_x</"
-"parameter></paramdef> <paramdef><type>boolean </type> "
-"<parameter>blocksize_y</parameter></paramdef> <paramdef><type>boolean </"
-"type> <parameter>same_alignment</parameter></paramdef> "
-"<paramdef><type>boolean </type> <parameter>regular_blocking</parameter></"
 "paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>num_bands=true</parameter> </paramdef> <paramdef "
-"choice=\"opt\"><type>boolean </type> <parameter>pixel_types=true</parameter> "
-"</paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>nodata_values=true</parameter> </paramdef> <paramdef "
-"choice=\"opt\"><type>boolean </type> <parameter>out_db=true</parameter> </"
+"<parameter>srid=true</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>scale_x=true</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>scale_y=true</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>blocksize_x=true</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>blocksize_y=true</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>same_alignment=true</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>regular_blocking=false</parameter></paramdef> <paramdef choice="
+"\"opt\"><type>boolean </type> <parameter>num_bands=true</parameter> </"
 "paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>pixel_types=true</parameter> </paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>nodata_values=true</parameter> </paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> <parameter>out_db=true</"
+"parameter> </paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>extent=true</parameter> </paramdef> </funcprototype> "
 "<funcprototype> <funcdef>boolean <function>AddRasterConstraints</function></"
 "funcdef> <paramdef><type>name </type> <parameter>rasttable</parameter></"
 "paramdef> <paramdef><type>name </type> <parameter>rastcolumn</parameter></"
-"paramdef> <paramdef><type>text[] </type> <parameter>VARIADIC constraints</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>boolean "
+"paramdef> <paramdef><type>text[] </type> <parameter>VARIADIC "
+"constraints</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>boolean <function>AddRasterConstraints</function></funcdef> "
+"<paramdef><type>name </type> <parameter>rastschema</parameter></paramdef> "
+"<paramdef><type>name </type> <parameter>rasttable</parameter></paramdef> "
+"<paramdef><type>name </type> <parameter>rastcolumn</parameter></paramdef> "
+"<paramdef><type>text[] </type> <parameter>VARIADIC constraints</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>boolean "
 "<function>AddRasterConstraints</function></funcdef> <paramdef><type>name </"
 "type> <parameter>rastschema</parameter></paramdef> <paramdef><type>name </"
 "type> <parameter>rasttable</parameter></paramdef> <paramdef><type>name </"
-"type> <parameter>rastcolumn</parameter></paramdef> <paramdef><type>text[] </"
-"type> <parameter>VARIADIC constraints</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>boolean "
-"<function>AddRasterConstraints</function></funcdef> <paramdef><type>name </"
-"type> <parameter>rastschema</parameter></paramdef> <paramdef><type>name </"
-"type> <parameter>rasttable</parameter></paramdef> <paramdef><type>name </"
-"type> <parameter>rastcolumn</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>boolean </type> <parameter>srid=true</parameter></"
+"type> <parameter>rastcolumn</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>srid=true</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>boolean </type> <parameter>scale_x=true</parameter></"
 "paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>scale_x=true</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>boolean </type> <parameter>scale_y=true</parameter></"
+"<parameter>scale_y=true</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>blocksize_x=true</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>blocksize_y=true</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>same_alignment=true</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>regular_blocking=false</parameter></paramdef> <paramdef choice="
+"\"opt\"><type>boolean </type> <parameter>num_bands=true</parameter></"
 "paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>blocksize_x=true</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>boolean </type> <parameter>blocksize_y=true</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>same_alignment=true</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>boolean </type> <parameter>regular_blocking=false</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>num_bands=true</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>boolean </type> <parameter>pixel_types=true</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>nodata_values=true</parameter> </paramdef> <paramdef "
-"choice=\"opt\"><type>boolean </type> <parameter>out_db=true</parameter> </"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>pixel_types=true</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>nodata_values=true</parameter> </paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> <parameter>out_db=true</"
+"parameter> </paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>extent=true</parameter> </paramdef> </funcprototype>"
 
 #. Tag: para
@@ -1077,7 +1080,7 @@ msgstr ""
 #: reference_raster.xml:10588 reference_raster.xml:11407
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr ""
+msgstr "Disponibilité : 2.0.0"
 
 #. Tag: title
 #: reference_raster.xml:571
@@ -1619,7 +1622,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_raster.xml:990
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>setof record <function>ST_GDALDrivers</function></funcdef> "
 "<paramdef><type>integer </type> <parameter>OUT idx</parameter></paramdef> "
@@ -1634,8 +1637,10 @@ msgstr ""
 "<paramdef><type>integer </type> <parameter>OUT idx</parameter></paramdef> "
 "<paramdef><type>text </type> <parameter>OUT short_name</parameter></"
 "paramdef> <paramdef><type>text </type> <parameter>OUT long_name</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>OUT create_options</"
-"parameter></paramdef>"
+"paramdef> <paramdef><type>text </type> <parameter>OUT can_read</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>OUT can_write</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>OUT "
+"create_options</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:1005
@@ -2010,7 +2015,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_raster.xml:1044
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>setof record <function>ST_Contour</function></funcdef> "
 "<paramdef><type>raster </type><parameter>rast</parameter></paramdef> "
@@ -2021,12 +2026,15 @@ msgid ""
 "precision[] </type><parameter>fixed_levels</parameter></paramdef> "
 "<paramdef><type>boolean </type><parameter>polygonize</parameter></paramdef>"
 msgstr ""
-"<funcdef>setof record <function>ST_GDALDrivers</function></funcdef> "
-"<paramdef><type>integer </type> <parameter>OUT idx</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>OUT short_name</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>OUT long_name</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>OUT create_options</"
-"parameter></paramdef>"
+"<funcdef>setof record <function>ST_Contour</function></funcdef> "
+"<paramdef><type>raster </type><parameter>rast</parameter></paramdef> "
+"<paramdef><type>integer </type><parameter>bandnumber</parameter></paramdef> "
+"<paramdef><type>double precision "
+"</type><parameter>level_interval</parameter></paramdef> "
+"<paramdef><type>double precision </type><parameter>level_base</parameter></"
+"paramdef> <paramdef><type>double precision[] "
+"</type><parameter>fixed_levels</parameter></paramdef> "
+"<paramdef><type>boolean </type><parameter>polygonize</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:1059
@@ -2105,7 +2113,7 @@ msgstr ""
 #: reference_raster.xml:3948 reference_raster.xml:3991
 #, no-c-format
 msgid "Availability: 3.2.0"
-msgstr ""
+msgstr "Disponibilité : 3.2.0"
 
 #. Tag: title
 #: reference_raster.xml:1090 reference_raster.xml:1178
@@ -2143,7 +2151,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_raster.xml:1117
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>raster <function>ST_InterpolateRaster</function></funcdef> "
 "<paramdef><type>geometry </type><parameter>input_points</parameter></"
@@ -2152,12 +2160,13 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>integer </"
 "type><parameter>template_band_num=1</parameter></paramdef>"
 msgstr ""
-"<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>format</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text[] </type> <parameter>options=NULL</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>srid=sameassource</parameter></paramdef>"
+"<funcdef>raster <function>ST_InterpolateRaster</function></funcdef> "
+"<paramdef><type>geometry </type><parameter>input_points</parameter></"
+"paramdef> <paramdef><type>text "
+"</type><parameter>algorithm_options</parameter></paramdef> "
+"<paramdef><type>raster </type><parameter>template</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer "
+"</type><parameter>template_band_num=1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:1130
@@ -2319,7 +2328,7 @@ msgstr ""
 #: reference_raster.xml:11635 reference_raster.xml:11728
 #, no-c-format
 msgid "Availability: 2.1.0"
-msgstr ""
+msgstr "Disponibilité : 2.1.0"
 
 #. Tag: refname
 #: reference_raster.xml:1248
@@ -3361,7 +3370,7 @@ msgstr ""
 #: reference_raster.xml:1770
 #, no-c-format
 msgid "Availability: 2.4.0"
-msgstr ""
+msgstr "Disponibilité : 2.4.0"
 
 #. Tag: title
 #: reference_raster.xml:1774 reference_raster.xml:8757
@@ -5412,7 +5421,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:3047
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>(1) record <function>ST_BandMetaData</function></"
 "funcdef> <paramdef><type>raster </type><parameter>rast</parameter></"
@@ -5423,14 +5432,14 @@ msgid ""
 "choice=\"opt\"><type>integer[] </type><parameter>band</parameter></paramdef> "
 "</funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>raster <function>ST_SetScale</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>xy</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>raster <function>ST_SetScale</"
-"function></funcdef> <paramdef><type>raster </type> <parameter>rast</"
-"parameter></paramdef> <paramdef><type>float8 </type> <parameter>x</"
-"parameter></paramdef> <paramdef><type>float8 </type> <parameter>y</"
-"parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>(1) record <function>ST_BandMetaData</function></"
+"funcdef> <paramdef><type>raster </type><parameter>rast</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>integer "
+"</type><parameter>band=1</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>(2) record <function>ST_BandMetaData</function></"
+"funcdef> <paramdef><type>raster </type><parameter>rast</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>integer[] "
+"</type><parameter>band</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:3064
@@ -5781,17 +5790,17 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_raster.xml:3243
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>bigint <function>ST_BandFileSize</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
 "<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>text <function>ST_BandPixelType</function></funcdef> "
+"<funcdef>bigint <function>ST_BandFileSize</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
-"parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>bandnum=1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:3254
@@ -5817,7 +5826,7 @@ msgstr ""
 #: reference_raster.xml:6241 reference_raster.xml:7107
 #, no-c-format
 msgid "Availability: 2.5.0"
-msgstr ""
+msgstr "Disponibilité : 2.5.0"
 
 #. Tag: programlisting
 #: reference_raster.xml:3265
@@ -5846,17 +5855,17 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_raster.xml:3279
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>bigint <function>ST_BandFileTimestamp</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
 "<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>text <function>ST_BandPixelType</function></funcdef> "
+"<funcdef>bigint <function>ST_BandFileTimestamp</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
-"parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>bandnum=1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:3290
@@ -6024,13 +6033,13 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_raster.xml:3388
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_MinPossibleValue</function></funcdef> "
 "<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>"
 msgstr ""
-"<funcdef>integer <function>ST_Width</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
+"<funcdef>integer <function>ST_MinPossibleValue</function></funcdef> "
+"<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:3397
@@ -6367,7 +6376,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_raster.xml:3614
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>setof record <function>ST_PixelAsPoints</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
@@ -6375,10 +6384,11 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
 msgstr ""
-"<funcdef>setof record <function>ST_PixelAsPolygons</function></funcdef> "
+"<funcdef>setof record <function>ST_PixelAsPoints</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>band=1</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> "
 "<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
 
 #. Tag: para
@@ -6452,7 +6462,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_raster.xml:3669
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_PixelAsCentroid</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
@@ -6461,8 +6471,8 @@ msgid ""
 msgstr ""
 "<funcdef>geometry <function>ST_PixelAsCentroid</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>"
+"<paramdef><type>integer </type> <parameter>x</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>y</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:3680
@@ -6518,7 +6528,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_raster.xml:3713
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>setof record <function>ST_PixelAsCentroids</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
@@ -6526,10 +6536,11 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_PixelAsCentroids</function></funcdef> "
+"<funcdef>setof record <function>ST_PixelAsCentroids</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>band=1</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> "
 "<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
 
 #. Tag: para
@@ -6608,7 +6619,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:3767
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>double precision <function>ST_Value</function></"
 "funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
@@ -6643,23 +6654,25 @@ msgstr ""
 "<parameter>exclude_nodata_value=true</parameter></paramdef> </funcprototype> "
 "<funcprototype> <funcdef>double precision <function>ST_Value</function></"
 "funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>bandnum</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>band</parameter></"
 "paramdef> <paramdef><type>geometry </type> <parameter>pt</parameter></"
 "paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=true</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>double precision <function>ST_Value</function></"
-"funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>columnx</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>rowy</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=true</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>double precision <function>ST_Value</function></"
-"funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>bandnum</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>columnx</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>rowy</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=true</parameter></paramdef> </funcprototype>"
+"<parameter>exclude_nodata_value=true</parameter></paramdef> <paramdef choice="
+"\"opt\"><type>text </type> <parameter>resample='nearest'</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>double precision "
+"<function>ST_Value</function></funcdef> <paramdef><type>raster </type> "
+"<parameter>rast</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>x</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>y</parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </"
+"type> <parameter>exclude_nodata_value=true</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>double precision "
+"<function>ST_Value</function></funcdef> <paramdef><type>raster </type> "
+"<parameter>rast</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>band</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>x</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>y</parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </"
+"type> <parameter>exclude_nodata_value=true</parameter></paramdef> "
+"</funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:3803
@@ -7087,7 +7100,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_raster.xml:3932
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SetZ</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
@@ -7096,12 +7109,12 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
 "<parameter>band=1</parameter></paramdef>"
 msgstr ""
-"<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef> "
+"<funcdef>geometry <function>ST_SetZ</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>format</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text[] </type> <parameter>options=NULL</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>srid=sameassource</parameter></paramdef>"
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text </type> "
+"<parameter>resample=nearest</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>integer </type> <parameter>band=1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:3945 reference_raster.xml:3988
@@ -7165,9 +7178,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:3959
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetM\"/>"
-msgstr ", <xref linkend=\"RT_ST_SummaryStatsAgg\"/>"
+msgstr ", <xref linkend=\"RT_ST_SetM\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:3969
@@ -7177,7 +7190,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_raster.xml:3975
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SetM</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
@@ -7186,12 +7199,12 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
 "<parameter>band=1</parameter></paramdef>"
 msgstr ""
-"<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef> "
+"<funcdef>geometry <function>ST_SetM</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>format</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text[] </type> <parameter>options=NULL</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>srid=sameassource</parameter></paramdef>"
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text </type> "
+"<parameter>resample=nearest</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>integer </type> <parameter>band=1</parameter></paramdef>"
 
 #. Tag: programlisting
 #: reference_raster.xml:3996
@@ -7235,9 +7248,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:4002
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetZ\"/>"
-msgstr ", <xref linkend=\"RT_ST_SummaryStatsAgg\"/>"
+msgstr ", <xref linkend=\"RT_ST_SetZ\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:4011
@@ -8589,13 +8602,13 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_raster.xml:4549
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>raster <function>ST_SetRotation</function></funcdef> "
 "<paramdef><type>raster</type> <parameter>rast</parameter></paramdef> "
 "<paramdef><type>float8</type> <parameter>rotation</parameter></paramdef>"
 msgstr ""
-"<funcdef>float8 <function>ST_SetRotation</function></funcdef> "
+"<funcdef>raster <function>ST_SetRotation</function></funcdef> "
 "<paramdef><type>raster</type> <parameter>rast</parameter></paramdef> "
 "<paramdef><type>float8</type> <parameter>rotation</parameter></paramdef>"
 
@@ -8944,7 +8957,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:4757
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>raster <function>ST_Resample</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
@@ -8995,44 +9008,45 @@ msgstr ""
 "<paramdef><type>integer </type> <parameter>width</parameter></paramdef> "
 "<paramdef><type>integer </type> <parameter>height</parameter></paramdef> "
 "<paramdef choice=\"opt\"><type>double precision </type> "
-"<parameter>gridx=NULL</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>double precision </type> <parameter>gridy=NULL</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>double precision </"
-"type> <parameter>skewx=0</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>double precision </type> <parameter>skewy=0</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>algorithm=NearestNeighbor</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>double precision </type> <parameter>maxerr=0.125</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>raster "
+"<parameter>gridx=NULL</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>double precision </type> "
+"<parameter>skewx=0</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>double precision </type> <parameter>skewy=0</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text </type> "
+"<parameter>algorithm=NearestNeighbor</parameter></paramdef> <paramdef choice="
+"\"opt\"><type>double precision </type> <parameter>maxerr=0.125</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>raster "
 "<function>ST_Resample</function></funcdef> <paramdef><type>raster </type> "
 "<parameter>rast</parameter></paramdef> <paramdef choice=\"opt\"><type>double "
 "precision </type> <parameter>scalex=0</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>double precision </type> <parameter>scaley=0</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>double precision </"
-"type> <parameter>gridx=NULL</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>double precision </type> <parameter>gridy=NULL</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>double precision </"
-"type> <parameter>skewx=0</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>double precision </type> <parameter>skewy=0</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>algorithm=NearestNeighbor</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>double precision </type> <parameter>maxerr=0.125</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>raster "
-"<function>ST_Resample</function></funcdef> <paramdef><type>raster </type> "
-"<parameter>rast</parameter></paramdef> <paramdef><type>raster </type> "
-"<parameter>ref</parameter></paramdef> <paramdef choice=\"opt\"><type>text </"
-"type> <parameter>algorithm=NearestNeighbor</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>double precision </type> <parameter>maxerr=0.125</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
+"choice=\"opt\"><type>double precision </type> "
+"<parameter>scaley=0</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>double precision </type> "
+"<parameter>gridy=NULL</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>double precision </type> <parameter>skewx=0</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>double precision </type> "
+"<parameter>skewy=0</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>double precision </type> "
+"<parameter>maxerr=0.125</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>raster <function>ST_Resample</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>raster </type> <parameter>ref</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text </type> "
+"<parameter>algorithm=NearestNeighbor</parameter></paramdef> <paramdef choice="
+"\"opt\"><type>double precision </type> <parameter>maxerr=0.125</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>usescale=true</parameter></paramdef> </funcprototype> "
 "<funcprototype> <funcdef>raster <function>ST_Resample</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
 "<paramdef><type>raster </type> <parameter>ref</parameter></paramdef> "
 "<paramdef><type>boolean </type> <parameter>usescale</parameter></paramdef> "
 "<paramdef choice=\"opt\"><type>text </type> "
-"<parameter>algorithm=NearestNeighbor</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>double precision </type> <parameter>maxerr=0.125</"
-"parameter></paramdef> </funcprototype>"
+"<parameter>algorithm=NearestNeighbor</parameter></paramdef> <paramdef choice="
+"\"opt\"><type>double precision </type> <parameter>maxerr=0.125</parameter></"
+"paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:4807
@@ -10166,7 +10180,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_raster.xml:5403
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>raster <function>ST_SetBandPath</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
@@ -10176,12 +10190,13 @@ msgid ""
 "<paramdef choice=\"opt\"><type>boolean </type> <parameter>force=false</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef> "
+"<funcdef>raster <function>ST_SetBandPath</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>format</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text[] </type> <parameter>options=NULL</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>srid=sameassource</parameter></paramdef>"
+"<paramdef><type>integer </type> <parameter>band</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>outdbpath</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>outdbindex</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>force=false</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:5417
@@ -10268,9 +10283,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:5441
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetBandIndex\"/>"
-msgstr ", <xref linkend=\"RT_ST_SummaryStatsAgg\"/>"
+msgstr ", <xref linkend=\"RT_ST_SetBandIndex\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:5451
@@ -10286,7 +10301,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_raster.xml:5457
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>raster <function>ST_SetBandIndex</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
@@ -10295,12 +10310,12 @@ msgid ""
 "<paramdef choice=\"opt\"><type>boolean </type> <parameter>force=false</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef> "
+"<funcdef>raster <function>ST_SetBandIndex</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>format</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text[] </type> <parameter>options=NULL</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>srid=sameassource</parameter></paramdef>"
+"<paramdef><type>integer </type> <parameter>band</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>outdbindex</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>force=false</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:5470
@@ -10377,9 +10392,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:5494
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetBandPath\"/>"
-msgstr ", <xref linkend=\"RT_ST_SummaryStatsAgg\"/>"
+msgstr ", <xref linkend=\"RT_ST_SetBandPath\"/>"
 
 #. Tag: title
 #: reference_raster.xml:5505
@@ -10404,7 +10419,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:5514
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>bigint <function>ST_Count</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
@@ -10416,15 +10431,15 @@ msgid ""
 "<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></"
 "paramdef> </funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>boolean <function>ST_BandIsNoData</function></"
-"funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>band</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>forceChecking=true</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>boolean <function>ST_BandIsNoData</function></"
-"funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>forceChecking=true</parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>bigint <function>ST_Count</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>nband=1</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>bigint "
+"<function>ST_Count</function></funcdef> <paramdef><type>raster </type> "
+"<parameter>rast</parameter></paramdef> <paramdef><type>boolean </type> "
+"<parameter>exclude_nodata_value</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:5532
@@ -10589,7 +10604,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:5622
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>SETOF record <function>ST_Histogram</function></"
 "funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
@@ -10621,38 +10636,36 @@ msgid ""
 "parameter></paramdef> <paramdef><type>boolean </type> <parameter>right</"
 "parameter></paramdef> </funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>double precision[][] <function>ST_Neighborhood</"
-"function></funcdef> <paramdef><type>raster </type> <parameter>rast</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>bandnum</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>columnX</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>rowY</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>distanceX</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>distanceY</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=true</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>double precision[][] <function>ST_Neighborhood</"
-"function></funcdef> <paramdef><type>raster </type> <parameter>rast</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>columnX</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>rowY</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>distanceX</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>distanceY</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=true</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>double precision[][] <function>ST_Neighborhood</"
-"function></funcdef> <paramdef><type>raster </type> <parameter>rast</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>bandnum</"
-"parameter></paramdef> <paramdef><type>geometry </type> <parameter>pt</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>distanceX</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>distanceY</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=true</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>double precision[][] <function>ST_Neighborhood</"
-"function></funcdef> <paramdef><type>raster </type> <parameter>rast</"
-"parameter></paramdef> <paramdef><type>geometry </type> <parameter>pt</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>distanceX</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>distanceY</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=true</parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>SETOF record <function>ST_Histogram</function></"
+"funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>nband=1</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>bins=autocomputed</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>double precision[] </type> <parameter>width=NULL</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>right=false</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>SETOF record <function>ST_Histogram</function></"
+"funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>nband</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>bins</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>double precision[] </type> "
+"<parameter>width=NULL</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>right=false</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>SETOF record "
+"<function>ST_Histogram</function></funcdef> <paramdef><type>raster </type> "
+"<parameter>rast</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>nband</parameter></paramdef> <paramdef><type>boolean </type> "
+"<parameter>exclude_nodata_value</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>bins</parameter></paramdef> "
+"<paramdef><type>boolean </type> <parameter>right</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>SETOF record "
+"<function>ST_Histogram</function></funcdef> <paramdef><type>raster </type> "
+"<parameter>rast</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>nband</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>bins</parameter></paramdef> <paramdef><type>boolean </type> "
+"<parameter>right</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:5664
@@ -10833,7 +10846,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:5714
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>SETOF record <function>ST_Quantile</function></"
 "funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
@@ -10877,57 +10890,44 @@ msgid ""
 msgstr ""
 "<funcprototype> <funcdef>SETOF record <function>ST_Quantile</function></"
 "funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>nband=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=true</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>double precision[] </type> <parameter>quantiles=NULL</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>SETOF record "
-"<function>ST_Quantile</function></funcdef> <paramdef><type>raster </type> "
-"<parameter>rast</parameter></paramdef> <paramdef><type>double precision[] </"
-"type> <parameter>quantiles</parameter></paramdef> </funcprototype> "
+"paramdef> <paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>nband=1</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>double precision[] </type> "
+"<parameter>quantiles=NULL</parameter></paramdef> </funcprototype> "
 "<funcprototype> <funcdef>SETOF record <function>ST_Quantile</function></"
 "funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>nband</parameter></"
-"paramdef> <paramdef><type>double precision[] </type> <parameter>quantiles</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>double "
-"precision <function>ST_Quantile</function></funcdef> <paramdef><type>raster "
-"</type> <parameter>rast</parameter></paramdef> <paramdef><type>double "
-"precision </type> <parameter>quantile</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>double precision "
+"paramdef> <paramdef><type>double precision[] </type> "
+"<parameter>quantiles</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>SETOF record <function>ST_Quantile</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>nband</parameter></paramdef> "
+"<paramdef><type>double precision[] </type> <parameter>quantiles</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>double precision "
 "<function>ST_Quantile</function></funcdef> <paramdef><type>raster </type> "
-"<parameter>rast</parameter></paramdef> <paramdef><type>boolean </type> "
-"<parameter>exclude_nodata_value</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>double precision </type> <parameter>quantile=NULL</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>double "
-"precision <function>ST_Quantile</function></funcdef> <paramdef><type>raster "
-"</type> <parameter>rast</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>nband</parameter></paramdef> <paramdef><type>double "
-"precision </type> <parameter>quantile</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>double precision "
+"<parameter>rast</parameter></paramdef> <paramdef><type>double precision </"
+"type> <parameter>quantile</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>double precision <function>ST_Quantile</function></"
+"funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
+"paramdef> <paramdef><type>boolean </type> "
+"<parameter>exclude_nodata_value</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>double precision </type> <parameter>quantile=NULL</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>double precision "
 "<function>ST_Quantile</function></funcdef> <paramdef><type>raster </type> "
 "<parameter>rast</parameter></paramdef> <paramdef><type>integer </type> "
-"<parameter>nband</parameter></paramdef> <paramdef><type>boolean </type> "
+"<parameter>nband</parameter></paramdef> <paramdef><type>double precision </"
+"type> <parameter>quantile</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>double precision <function>ST_Quantile</function></"
+"funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>nband</parameter></"
+"paramdef> <paramdef><type>boolean </type> "
 "<parameter>exclude_nodata_value</parameter></paramdef> "
 "<paramdef><type>double precision </type> <parameter>quantile</parameter></"
 "paramdef> </funcprototype> <funcprototype> <funcdef>double precision "
 "<function>ST_Quantile</function></funcdef> <paramdef><type>raster </type> "
 "<parameter>rast</parameter></paramdef> <paramdef><type>integer </type> "
 "<parameter>nband</parameter></paramdef> <paramdef><type>double precision </"
-"type> <parameter>quantile</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>SETOF record <function>ST_Quantile</function></"
-"funcdef> <paramdef><type>text </type> <parameter>rastertable</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>rastercolumn</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>nband=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=true</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>double precision[] </type> <parameter>quantiles=NULL</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>SETOF record "
-"<function>ST_Quantile</function></funcdef> <paramdef><type>text </type> "
-"<parameter>rastertable</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>rastercolumn</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>nband</parameter></paramdef> <paramdef><type>double "
-"precision[] </type> <parameter>quantiles</parameter></paramdef> </"
-"funcprototype>"
+"type> <parameter>quantile</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:5769
@@ -11044,7 +11044,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:5800
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>summarystats <function>ST_SummaryStats</function></"
 "funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
@@ -11055,14 +11055,15 @@ msgid ""
 "<parameter>nband</parameter></paramdef> <paramdef><type>boolean </type> "
 "<parameter>exclude_nodata_value</parameter></paramdef> </funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>raster <function>ST_SetScale</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>xy</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>raster <function>ST_SetScale</"
-"function></funcdef> <paramdef><type>raster </type> <parameter>rast</"
-"parameter></paramdef> <paramdef><type>float8 </type> <parameter>x</"
-"parameter></paramdef> <paramdef><type>float8 </type> <parameter>y</"
-"parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>summarystats <function>ST_SummaryStats</function></"
+"funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
+"paramdef> <paramdef><type>boolean </type> "
+"<parameter>exclude_nodata_value</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>summarystats <function>ST_SummaryStats</function></"
+"funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>nband</parameter></"
+"paramdef> <paramdef><type>boolean </type> "
+"<parameter>exclude_nodata_value</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:5819 reference_raster.xml:5893
@@ -11683,13 +11684,13 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_raster.xml:6071
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>raster <function>ST_RastFromWKB</function></funcdef> "
 "<paramdef><type>bytea </type> <parameter>wkb</parameter></paramdef>"
 msgstr ""
-"<funcdef>raster <function>ST_Union</function></funcdef> "
-"<paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>"
+"<funcdef>raster <function>ST_RastFromWKB</function></funcdef> "
+"<paramdef><type>bytea </type> <parameter>wkb</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:6081
@@ -11742,13 +11743,13 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_raster.xml:6114
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>raster <function>ST_RastFromHexWKB</function></funcdef> "
 "<paramdef><type>text </type> <parameter>wkb</parameter></paramdef>"
 msgstr ""
-"<funcdef>raster <function>ST_Union</function></funcdef> "
-"<paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>"
+"<funcdef>raster <function>ST_RastFromHexWKB</function></funcdef> "
+"<paramdef><type>text </type> <parameter>wkb</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:6124
@@ -11804,7 +11805,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:6161
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>bytea <function>ST_AsBinary</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
@@ -11815,15 +11816,14 @@ msgid ""
 "choice=\"opt\"><type>boolean </type> <parameter>outasin=FALSE</parameter></"
 "paramdef> </funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>boolean <function>ST_BandIsNoData</function></"
-"funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>band</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>forceChecking=true</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>boolean <function>ST_BandIsNoData</function></"
-"funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>forceChecking=true</parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>bytea <function>ST_AsBinary</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>outasin=FALSE</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>bytea <function>ST_AsWKB</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>outasin=FALSE</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:6178
@@ -11879,9 +11879,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:6205
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"RT_ST_AsHexWKB\"/>"
-msgstr ", <xref linkend=\"RT_ST_SummaryStatsAgg\"/>"
+msgstr ", <xref linkend=\"RT_ST_AsHexWKB\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:6214
@@ -11897,17 +11897,17 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_raster.xml:6220
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>bytea <function>ST_AsHexWKB</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
 "<paramdef choice=\"opt\"><type>boolean </type> <parameter>outasin=FALSE</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>text <function>ST_GeoReference</function></funcdef> "
+"<funcdef>bytea <function>ST_AsHexWKB</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>format=GDAL</"
-"parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>outasin=FALSE</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:6231
@@ -11941,9 +11941,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:6253
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"RT_ST_AsBinary\"/>"
-msgstr ", <xref linkend=\"RT_ST_SummaryStatsAgg\"/>"
+msgstr ", <xref linkend=\"RT_ST_AsBinary\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:6263
@@ -13064,7 +13064,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_raster.xml:7075
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>(1) raster <function>ST_Grayscale</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
@@ -13075,26 +13075,28 @@ msgid ""
 "paramdef> <paramdef choice=\"opt\"><type>text </type> "
 "<parameter>extenttype=INTERSECTION</parameter></paramdef>"
 msgstr ""
-"<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef> "
+"<funcdef>(1) raster <function>ST_Grayscale</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>format</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text[] </type> <parameter>options=NULL</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>srid=sameassource</parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>redband=1</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>integer </type> <parameter>greenband=2</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>blueband=3</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>"
 
 #. Tag: funcprototype
 #: reference_raster.xml:7086
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>(2) raster <function>ST_Grayscale</function></funcdef> "
 "<paramdef><type>rastbandarg[] </type> <parameter>rastbandargset</parameter></"
 "paramdef> <paramdef choice=\"opt\"><type>text </type> "
 "<parameter>extenttype=INTERSECTION</parameter></paramdef>"
 msgstr ""
-"<funcdef>text <function>ST_GeoReference</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>format=GDAL</"
-"parameter></paramdef>"
+"<funcdef>(2) raster <function>ST_Grayscale</function></funcdef> "
+"<paramdef><type>rastbandarg[] </type> <parameter>rastbandargset</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>text </type> "
+"<parameter>extenttype=INTERSECTION</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:7097
@@ -13197,7 +13199,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:7179
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>setof geomval <function>ST_Intersection</function></"
 "funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></"
@@ -13249,8 +13251,8 @@ msgstr ""
 "paramdef> </funcprototype> <funcprototype> <funcdef>setof geomval "
 "<function>ST_Intersection</function></funcdef> <paramdef><type>raster </"
 "type> <parameter>rast</parameter></paramdef> <paramdef><type>integer </type> "
-"<parameter>band_num</parameter></paramdef> <paramdef><type>geometry </type> "
-"<parameter>geom</parameter></paramdef> </funcprototype> <funcprototype> "
+"<parameter>band</parameter></paramdef> <paramdef><type>geometry </type> "
+"<parameter>geomin</parameter></paramdef> </funcprototype> <funcprototype> "
 "<funcdef>raster <function>ST_Intersection</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef> "
 "<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef> "
@@ -13259,24 +13261,24 @@ msgstr ""
 "<function>ST_Intersection</function></funcdef> <paramdef><type>raster </"
 "type> <parameter>rast1</parameter></paramdef> <paramdef><type>raster </type> "
 "<parameter>rast2</parameter></paramdef> <paramdef choice=\"opt\"><type>text "
-"</type> <parameter>returnband='BOTH'</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>double precision[] </type> <parameter>nodataval=NULL</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>raster "
+"</type> <parameter>returnband</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>double precision[] </type> <parameter>nodataval</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>raster "
 "<function>ST_Intersection</function></funcdef> <paramdef><type>raster </"
 "type> <parameter>rast1</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>band_num1</parameter></paramdef> <paramdef><type>raster </"
-"type> <parameter>rast2</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>band_num2</parameter></paramdef> <paramdef><type>double "
-"precision[] </type> <parameter>nodataval</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>raster <function>ST_Intersection</"
-"function></funcdef> <paramdef><type>raster </type> <parameter>rast1</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>band_num1</"
-"parameter></paramdef> <paramdef><type>raster </type> <parameter>rast2</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>band_num2</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>returnband='BOTH'</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>double precision[] </type> <parameter>nodataval=NULL</"
-"parameter></paramdef> </funcprototype>"
+"type> <parameter>band1</parameter></paramdef> <paramdef><type>raster </type> "
+"<parameter>rast2</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>band2</parameter></paramdef> <paramdef><type>double precision[] </"
+"type> <parameter>nodataval</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>raster <function>ST_Intersection</function></"
+"funcdef> <paramdef><type>raster </type> <parameter>rast1</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>band1</parameter></"
+"paramdef> <paramdef><type>raster </type> <parameter>rast2</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>band2</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>text </type> "
+"<parameter>returnband</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>double precision[] </type> <parameter>nodataval</parameter></"
+"paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:7239
@@ -13469,7 +13471,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:7317
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>raster <function>ST_MapAlgebra</function></funcdef> "
 "<paramdef><type>rastbandarg[] </type> <parameter>rastbandargset</parameter></"
@@ -13542,57 +13544,70 @@ msgid ""
 msgstr ""
 "<funcprototype> <funcdef>raster <function>ST_MapAlgebra</function></funcdef> "
 "<paramdef><type>rastbandarg[] </type> <parameter>rastbandargset</parameter></"
-"paramdef> <paramdef><type>regprocedure </type> <parameter>callbackfunc</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>pixeltype=NULL</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text </type> <parameter>extenttype=INTERSECTION</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>raster </type> "
-"<parameter>customextent=NULL</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer </type> <parameter>distancex=0</parameter></"
+"paramdef> <paramdef><type>regprocedure </type> "
+"<parameter>callbackfunc</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>text </type> <parameter>pixeltype=NULL</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text </type> "
+"<parameter>extenttype=INTERSECTION</parameter></paramdef> <paramdef choice="
+"\"opt\"><type>raster </type> <parameter>customextent=NULL</parameter></"
 "paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>distancey=0</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text[] </type> <parameter>VARIADIC userargs=NULL</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>raster "
-"<function>ST_MapAlgebra</function></funcdef> <paramdef><type>raster </type> "
-"<parameter>rast</parameter></paramdef> <paramdef><type>integer[] </type> "
-"<parameter>nband</parameter></paramdef> <paramdef><type>regprocedure </type> "
-"<parameter>callbackfunc</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text </type> <parameter>pixeltype=NULL</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>extenttype=FIRST</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>raster </type> <parameter>customextent=NULL</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>distancex=0</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer </type> <parameter>distancey=0</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text[] </type> <parameter>VARIADIC "
+"<parameter>distancex=0</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>integer </type> <parameter>distancey=0</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text[] </type> <parameter>VARIADIC "
 "userargs=NULL</parameter></paramdef> </funcprototype> <funcprototype> "
 "<funcdef>raster <function>ST_MapAlgebra</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>nband</parameter></paramdef> "
+"<paramdef><type>integer[] </type> <parameter>nband</parameter></paramdef> "
 "<paramdef><type>regprocedure </type> <parameter>callbackfunc</parameter></"
 "paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>pixeltype=NULL</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text </type> <parameter>extenttype=FIRST</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>raster </type> "
-"<parameter>customextent=NULL</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer </type> <parameter>distancex=0</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>distancey=0</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text[] </type> <parameter>VARIADIC userargs=NULL</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>raster "
+"<parameter>pixeltype=NULL</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>text </type> <parameter>extenttype=FIRST</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>raster </type> "
+"<parameter>customextent=NULL</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>integer </type> <parameter>distancex=0</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>distancey=0</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>text[] </type> <parameter>VARIADIC userargs=NULL</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>raster "
 "<function>ST_MapAlgebra</function></funcdef> <paramdef><type>raster </type> "
-"<parameter>rast1</parameter></paramdef> <paramdef><type>integer </type> "
-"<parameter>nband1</parameter></paramdef> <paramdef><type>raster </type> "
-"<parameter>rast2</parameter></paramdef> <paramdef><type>integer </type> "
-"<parameter>nband2</parameter></paramdef> <paramdef><type>regprocedure </"
-"type> <parameter>callbackfunc</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text </type> <parameter>pixeltype=NULL</parameter></"
+"<parameter>rast</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>nband</parameter></paramdef> <paramdef><type>regprocedure </type> "
+"<parameter>callbackfunc</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>text </type> <parameter>pixeltype=NULL</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text </type> "
+"<parameter>extenttype=FIRST</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>raster </type> <parameter>customextent=NULL</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>distancex=0</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>integer </type> <parameter>distancey=0</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text[] </type> <parameter>VARIADIC "
+"userargs=NULL</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>raster <function>ST_MapAlgebra</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>nband1</parameter></paramdef> "
+"<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>nband2</parameter></paramdef> "
+"<paramdef><type>regprocedure </type> <parameter>callbackfunc</parameter></"
 "paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>extenttype=INTERSECTION</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>raster </type> <parameter>customextent=NULL</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>distancex=0</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer </type> <parameter>distancey=0</parameter></"
+"<parameter>pixeltype=NULL</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>text </type> <parameter>extenttype=INTERSECTION</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>raster </type> "
+"<parameter>customextent=NULL</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>integer </type> <parameter>distancex=0</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>distancey=0</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>text[] </type> <parameter>VARIADIC userargs=NULL</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>raster "
+"<function>ST_MapAlgebra</function></funcdef> <paramdef><type>raster</type> "
+"<parameter>rast</parameter></paramdef> <paramdef><type>integer</type> "
+"<parameter>nband</parameter></paramdef> <paramdef><type>regprocedure </type> "
+"<parameter>callbackfunc</parameter></paramdef> <paramdef><type>float8[] </"
+"type> <parameter>mask</parameter></paramdef> <paramdef><type>boolean </type> "
+"<parameter>weighted</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>text </type> <parameter>pixeltype=NULL</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text </type> "
+"<parameter>extenttype=INTERSECTION</parameter></paramdef> <paramdef choice="
+"\"opt\"><type>raster </type> <parameter>customextent=NULL</parameter></"
 "paramdef> <paramdef choice=\"opt\"><type>text[] </type> <parameter>VARIADIC "
 "userargs=NULL</parameter></paramdef> </funcprototype>"
 
@@ -16163,7 +16178,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:8795
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>raster <function>ST_Union</function></funcdef> "
 "<paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef> "
@@ -16183,28 +16198,24 @@ msgid ""
 "<parameter>nband</parameter></paramdef> <paramdef><type>text</type> "
 "<parameter>uniontype</parameter></paramdef> </funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>bytea <function>ST_AsJPEG</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text[] </type> <parameter>options=NULL</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>bytea "
-"<function>ST_AsJPEG</function></funcdef> <paramdef><type>raster </type> "
-"<parameter>rast</parameter></paramdef> <paramdef><type>integer </type> "
-"<parameter>nband</parameter></paramdef> <paramdef><type>integer </type> "
-"<parameter>quality</parameter></paramdef> </funcprototype> <funcprototype> "
-"<funcdef>bytea <function>ST_AsJPEG</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>nband</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text[] </type> <parameter>options=NULL</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>bytea "
-"<function>ST_AsJPEG</function></funcdef> <paramdef><type>raster </type> "
-"<parameter>rast</parameter></paramdef> <paramdef><type>integer[] </type> "
-"<parameter>nbands</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text[] </type> <parameter>options=NULL</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>bytea "
-"<function>ST_AsJPEG</function></funcdef> <paramdef><type>raster </type> "
-"<parameter>rast</parameter></paramdef> <paramdef><type>integer[] </type> "
-"<parameter>nbands</parameter></paramdef> <paramdef><type>integer </type> "
-"<parameter>quality</parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>raster <function>ST_Union</function></funcdef> "
+"<paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>raster "
+"<function>ST_Union</function></funcdef> <paramdef><type>setof raster </type> "
+"<parameter>rast</parameter></paramdef> <paramdef><type>unionarg[] </type> "
+"<parameter>unionargset</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>raster <function>ST_Union</function></funcdef> "
+"<paramdef><type>setof raster</type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>integer</type> <parameter>nband</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>raster "
+"<function>ST_Union</function></funcdef> <paramdef><type>setof raster</type> "
+"<parameter>rast</parameter></paramdef> <paramdef><type>text</type> "
+"<parameter>uniontype</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>raster <function>ST_Union</function></funcdef> "
+"<paramdef><type>setof raster</type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>integer</type> <parameter>nband</parameter></paramdef> "
+"<paramdef><type>text</type> <parameter>uniontype</parameter></paramdef> "
+"</funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:8831
