@@ -3,26 +3,28 @@
 # Translators:
 # geojs, 2014
 # Guy BARA <bara.guy@gmail.com>, 2014
+# Vincent Bre <vincent.bre@oslandia.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2014-10-20 15:58+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
-"Language-Team: French (http://www.transifex.com/projects/p/postgis/language/"
-"fr/)\n"
+"PO-Revision-Date: 2023-01-06 15:50+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
+"Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
+"performance_tipsxml/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: title
 #: performance_tips.xml:3
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Performance Tips"
-msgstr "Astuces de performances"
+msgstr "Conseils sur les performances"
 
 #. Tag: title
 #: performance_tips.xml:6
@@ -38,7 +40,7 @@ msgstr "Description du problème"
 
 #. Tag: para
 #: performance_tips.xml:11
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Current PostgreSQL versions (including 9.6) suffer from a query optimizer "
 "weakness regarding TOAST tables. TOAST tables are a kind of \"extension room"
@@ -59,7 +61,7 @@ msgstr ""
 
 #. Tag: para
 #: performance_tips.xml:19
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The problem appears if you happen to have a table with rather large "
 "geometries, but not too many rows of them (like a table containing the "
@@ -78,7 +80,7 @@ msgstr ""
 
 #. Tag: para
 #: performance_tips.xml:26
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Now issue a query where you use the geometry operator &amp;&amp; to search "
 "for a bounding box that matches only very few of those rows. Now the query "
@@ -89,10 +91,10 @@ msgid ""
 "geometry from disk to compare the bounding boxes, thus reading all TOAST "
 "pages, too."
 msgstr ""
-"Maintenant émettre une requête en utilisant l'opérateur de géométrie &amp;"
-"&amp; pour rechercher une boîte englobante qui correspond que très peu de "
-"ces lignes. Maintenant l'optimiseur de requêtes voit que la table n'a que 3 "
-"pages et 80 lignes. Il estime qu'une analyse séquentielle sur une telle "
+"Maintenant émettre une requête en utilisant l'opérateur de géométrie "
+"&amp;&amp; pour rechercher une boîte englobante qui correspond que très peu "
+"de ces lignes. Maintenant l'optimiseur de requêtes voit que la table n'a que "
+"3 pages et 80 lignes. Il estime qu'une analyse séquentielle sur une telle "
 "petite table est beaucoup plus rapide que d'utiliser un index. Et alors il "
 "décide d'ignorer l'index GIST. Habituellement, cette estimation est "
 "correcte. Mais dans notre cas, l'opérateur &amp;&amp; doit aller chercher "
@@ -101,7 +103,7 @@ msgstr ""
 
 #. Tag: para
 #: performance_tips.xml:35
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "To see whether your suffer from this issue, use the \"EXPLAIN ANALYZE\" "
 "postgresql command. For more information and the technical details, you can "
@@ -110,11 +112,12 @@ msgid ""
 "\">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</"
 "ulink>"
 msgstr ""
-"Pour voir si votre souffrent de ce bogue, utilisez la commande \"EXPLAIN "
-"ANALYZE\" de postgresql. Pour plus d'informations et détails techniques, "
-"vous pouvez lire le fil sur la liste de diffusion des performances de "
-"postgres: http://archives.postgresql.org/pgsql-performance/2005-02/msg00030."
-"php"
+"Pour voir si vous souffrez de ce problème, utilisez la commande postgresql "
+"\"EXPLAIN ANALYZE\". Pour plus d'informations et les détails techniques, "
+"vous pouvez lire le fil de discussion sur la liste de diffusion sur les "
+"performances de PostgreSQL : <ulink url=\"http ://archives.postgresql.org/"
+"pgsql-performance/2005-02/msg00030.php\">http ://archives.postgresql.org/"
+"pgsql-performance/2005-02/msg00030.php</ulink>"
 
 #. Tag: para
 #: performance_tips.xml:41
@@ -124,6 +127,9 @@ msgid ""
 "postgis-devel/2017-June/026209.html\">https://lists.osgeo.org/pipermail/"
 "postgis-devel/2017-June/026209.html</ulink>"
 msgstr ""
+"et un fil d'actualités plus récent sur PostGIS <ulink url=\"https://lists."
+"osgeo.org/pipermail/postgis-devel/2017-June/026209.html\">https://lists.osgeo"
+".org/pipermail/postgis-devel/2017-June/026209.html</ulink>"
 
 #. Tag: title
 #: performance_tips.xml:45
@@ -140,7 +146,7 @@ msgid ""
 msgstr ""
 "Les personnes de PostgreSQL essayent de résoudre ce problème en faisant "
 "l'estimation de la requête TOAST-courant. Pour l'instant, voici deux "
-"solutions:"
+"solutions :"
 
 #. Tag: para
 #: performance_tips.xml:50
@@ -174,19 +180,19 @@ msgstr ""
 "La deuxième solution consiste à faire le balayage séquentielle aussi vite "
 "que le planificateur de requêtes pense. Ceci peut être réalisé en créant une "
 "colonne supplémentaire qui \"cache\" la bbox, et contre cette "
-"correspondance. Dans notre exemple, les commandes sont comme:"
+"correspondance. Dans notre exemple, les commandes sont comme :"
 
 #. Tag: programlisting
 #: performance_tips.xml:63
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT "
 "AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\n"
 "UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(geom));"
 msgstr ""
-"SELECT "
-"AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2'); \n"
-"UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(the_geom));"
+"SELECT AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2') ;"
+" \n"
+"UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(the_geom)) ;"
 
 #. Tag: para
 #: performance_tips.xml:65
@@ -195,12 +201,12 @@ msgid ""
 "Now change your query to use the &amp;&amp; operator against bbox instead of "
 "geom_column, like:"
 msgstr ""
-"Maintenant changez votre requête pour utiliser l'opérateur &amp;&amp; \n"
-"face à la bbox au lieu de la geom_column, comme:"
+"Modifiez maintenant votre requête pour utiliser l'opérateur &amp ;&amp ; "
+"contre bbox au lieu de geom_column, comme suit :"
 
 #. Tag: programlisting
 #: performance_tips.xml:68
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT geom_column\n"
 "FROM mytable\n"
@@ -208,7 +214,7 @@ msgid ""
 msgstr ""
 "SELECT geom_column \n"
 "FROM mytable \n"
-"WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
+"WHERE bbox &amp ;&amp ; ST_SetSRID('BOX3D(0 0,1 1)' ::box3d,4326) ;"
 
 #. Tag: para
 #: performance_tips.xml:70
@@ -229,7 +235,7 @@ msgstr ""
 #: performance_tips.xml:79
 #, no-c-format
 msgid "CLUSTERing on geometry indices"
-msgstr "CLUSTER d'index  géométriques"
+msgstr "CLUSTER d'index géométriques"
 
 #. Tag: para
 #: performance_tips.xml:81
@@ -249,12 +255,12 @@ msgstr ""
 "index est utilisé pour la majorité des requêtes, PostgreSQL offre la "
 "commande CLUSTER. Cette commande réorganise physiquement toutes les lignes "
 "de données dans le même ordre que les critères de l'index, ce qui donne deux "
-"avantages de performance: d'abord, pour des analyses d'intervalle de "
+"avantages de performance : d'abord, pour des analyses d'intervalle de "
 "l'index, le nombre de recherche sur la table de données est considérablement "
 "réduit. Deuxièmement, si votre jeu de travail se concentre à quelques petits "
 "intervalles sur les index, vous avez une mise en cache plus efficace parce "
-"que les lignes de données sont dispersées sur moins de pages de données. "
-"(N'hésitez pas à lire la documentation de la commande CLUSTER du manuel "
+"que les lignes de données sont dispersées sur moins de pages de données. ("
+"N'hésitez pas à lire la documentation de la commande CLUSTER du manuel "
 "PostgreSQL à ce stade)"
 
 #. Tag: para
@@ -267,21 +273,21 @@ msgid ""
 msgstr ""
 "Cependant, PostgreSQL ne permet actuellement pas le clustering sur les index "
 "GIST de PostGIS car les indices GIST ignorent les valeurs NULL, vous obtenez "
-"un message d'erreur comme:"
+"un message d'erreur comme :"
 
 #. Tag: programlisting
 #: performance_tips.xml:95
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "lwgeom=# CLUSTER my_geom_index ON my_table;\n"
 "ERROR: cannot cluster when index access method does not handle null values\n"
 "HINT: You may be able to work around this by marking column \"geom\" NOT "
 "NULL."
 msgstr ""
-"lwgeom=# CLUSTER my_geom_index ON my_table; \n"
-"ERROR: cannot cluster when index access method does not handle null values\n"
-"HINT: You may be able to work around this by marking column \"the_geom\" NOT "
-"NULL."
+"lwgeom=# CLUSTER my_geom_index ON my_table ; \n"
+"ERROR : cannot cluster when index access method does not handle null values\n"
+"HINT : You may be able to work around this by marking column \"the_geom\" "
+"NOT NULL."
 
 #. Tag: para
 #: performance_tips.xml:97
@@ -291,16 +297,16 @@ msgid ""
 "a \"not null\" constraint to the table:"
 msgstr ""
 "Comme le message d'ASTUCES vous le dit, on peut contourner cette lacune en "
-"ajoutant une contrainte \"not null\" à la table:"
+"ajoutant une contrainte \"not null\" à la table :"
 
 #. Tag: programlisting
 #: performance_tips.xml:100
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "lwgeom=# ALTER TABLE my_table ALTER COLUMN geom SET not null;\n"
 "ALTER TABLE"
 msgstr ""
-"lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null; \n"
+"lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null ; \n"
 "ALTER TABLE"
 
 #. Tag: para
@@ -335,16 +341,23 @@ msgid ""
 "avoid this overhead, it may be feasible to pre-drop those additional "
 "dimensions once and forever:"
 msgstr ""
+"Il arrive parfois que vous ayez des données 3D ou 4D dans votre table, mais "
+"que vous y accédiez toujours à l'aide des fonctions ST_AsText() ou "
+"ST_AsBinary() conformes à OpenGIS qui ne produisent que des géométries 2D. "
+"Pour ce faire, elles appellent en interne la fonction ST_Force2D(), qui "
+"introduit une surcharge importante pour les géométries de grande taille. "
+"Pour éviter cette surcharge, il peut être possible de pré-déposer ces "
+"dimensions supplémentaires une fois pour toutes :"
 
 #. Tag: programlisting
 #: performance_tips.xml:118
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "UPDATE mytable SET geom = ST_Force2D(geom);\n"
 "VACUUM FULL ANALYZE mytable;"
 msgstr ""
-"UPDATE mytable SET the_geom = ST_Force2D(the_geom); \n"
-"VACUUM FULL ANALYZE mytable;"
+"UPDATE mytable SET the_geom = ST_Force2D(the_geom) ; \n"
+"VACUUM FULL ANALYZE mytable ;"
 
 #. Tag: para
 #: performance_tips.xml:120
@@ -363,7 +376,7 @@ msgstr ""
 
 #. Tag: para
 #: performance_tips.xml:126
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "In case of large tables, it may be wise to divide this UPDATE into smaller "
 "portions by constraining the UPDATE to a part of the table via a WHERE "
@@ -376,10 +389,10 @@ msgstr ""
 "En cas de grandes tables, il peut être judicieux de diviser cette mise à "
 "jour en petites portions en restreignant l'UPDATE à une partie de la table "
 "via une clause WHERE et votre clé primaire ou d'un autre critère, et "
-"exécutant un simple «VACUUM»; entre votre mises à jour. Cela réduit "
+"exécutant un simple «VACUUM» ; entre votre mises à jour. Cela réduit "
 "considérablement le besoin d'espace disque temporaire. En outre, si vous "
 "avez des données géométriques de dimension mixte, restreindre la mise à jour "
-"en \"WHERE dimension(the_geom)&gt;2\" saute la ré-écriture des géométries "
+"en \"WHERE dimension(the_geom)&gt ;2\" saute la ré-écriture des géométries "
 "qui sont déjà en 2D."
 
 #~ msgid "Tuning your configuration"
