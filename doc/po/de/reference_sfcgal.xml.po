@@ -3,13 +3,13 @@
 # Translators:
 # Andreas Schild <andreas.schild@bfw.gv.at>, 2017,2019
 # Jürgen E. Fischer <jef@norbit.de>, 2018
-# Regina Obe <regina@arrival3d.com>, 2022.
+# Regina Obe <regina@arrival3d.com>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-14 02:04+0000\n"
-"PO-Revision-Date: 2022-10-11 22:30+0000\n"
+"PO-Revision-Date: 2023-01-09 04:42+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "reference_sfcgalxml/de/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.15\n"
 
 #. Tag: para
 #: reference_sfcgal.xml:5
@@ -113,7 +113,7 @@ msgstr ""
 #: reference_sfcgal.xml:1217
 #, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_sfcgal.xml:41 reference_sfcgal.xml:76 reference_sfcgal.xml:110
@@ -124,7 +124,7 @@ msgstr ""
 #: reference_sfcgal.xml:1218
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #: reference_sfcgal.xml:42 reference_sfcgal.xml:77 reference_sfcgal.xml:111
@@ -135,7 +135,7 @@ msgstr ""
 #: reference_sfcgal.xml:1219
 #, no-c-format
 msgid "&T_support;"
-msgstr ""
+msgstr "&T_support;"
 
 #. Tag: title
 #: reference_sfcgal.xml:45 reference_sfcgal.xml:80 reference_sfcgal.xml:120
