@@ -3,13 +3,13 @@
 # Translators:
 # Andreas Schild <andreas.schild@bfw.gv.at>, 2017-2019, 2022.
 # Jürgen E. Fischer <jef@norbit.de>, 2018
-# Regina Obe <regina@arrival3d.com>, 2022.
+# Regina Obe <regina@arrival3d.com>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-05-03 02:58+0000\n"
-"PO-Revision-Date: 2022-10-11 22:30+0000\n"
+"PO-Revision-Date: 2023-01-09 04:42+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "reference_editorxml/de/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.15\n"
 
 #. Tag: para
 #: reference_editor.xml:5
@@ -114,7 +114,7 @@ msgstr "Verfügbarkeit: 1.1.0"
 #: reference_editor.xml:1538 reference_editor.xml:1733
 #, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: title
 #: reference_editor.xml:47 reference_editor.xml:131 reference_editor.xml:192
@@ -917,14 +917,14 @@ msgstr ""
 #: reference_editor.xml:1386 reference_editor.xml:1735
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #: reference_editor.xml:362 reference_editor.xml:772 reference_editor.xml:1387
 #: reference_editor.xml:1736
 #, no-c-format
 msgid "&T_support;"
-msgstr ""
+msgstr "&T_support;"
 
 #. Tag: title
 #: reference_editor.xml:366 reference_editor.xml:1740
