@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-10-11 22:30+0000\n"
+"PO-Revision-Date: 2023-01-09 04:42+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "reference_transformationxml/de/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.15\n"
 
 #. Tag: para
 #: reference_transformation.xml:5
@@ -154,7 +154,7 @@ msgstr ""
 #: reference_transformation.xml:287 reference_transformation.xml:371
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #: reference_transformation.xml:73 reference_transformation.xml:139
@@ -162,7 +162,7 @@ msgstr ""
 #: reference_transformation.xml:288 reference_transformation.xml:374
 #, no-c-format
 msgid "&T_support;"
-msgstr ""
+msgstr "&T_support;"
 
 #. Tag: para
 #: reference_transformation.xml:74 reference_transformation.xml:136
@@ -171,7 +171,7 @@ msgstr ""
 #: reference_transformation.xml:427 reference_transformation.xml:484
 #, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_transformation.xml:75 reference_transformation.xml:137
