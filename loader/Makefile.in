@@ -147,6 +147,7 @@ ifdef gtk_build
 endif
 	$(LIBTOOL) --mode=install $(INSTALL) $(PGSQL2SHP-CLI) "$(DESTDIR)$(bindir)/$(PGSQL2SHP-CLI)"
 	$(LIBTOOL) --mode=install $(INSTALL) $(SHP2PGSQL-CLI) "$(DESTDIR)$(bindir)/$(SHP2PGSQL-CLI)"
+	$(LIBTOOL) --mode=install $(INSTALL) $(POSTGIS-CLI) "$(DESTDIR)$(bindir)/$(POSTGIS-CLI)"
 
 uninstall-desktop:
 ifdef gtk_build
