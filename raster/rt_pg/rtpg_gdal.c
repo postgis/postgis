@@ -28,8 +28,6 @@
  */
 
 #include <postgres.h>
-#include <fmgr.h>
-#include <funcapi.h> /* for SRF */
 #include <utils/builtins.h> /* for text_to_cstring() */
 #include <access/htup_details.h> /* for heap_form_tuple() */
 #include <utils/lsyscache.h> /* for get_typlenbyvalalign */

@@ -1,0 +1,10 @@
+NOTICE:  Too few points in geometry component at or near point 0 0
+#4011|ST_LineString|LINESTRING(0 0,1 1)|f|t
+#4011|ST_LineString|MULTILINESTRING((0 0,1 1),(1 1,2 2))|f|t
+#4011|ST_LineString|MULTILINESTRING((0 0,1 1),EMPTY)|f|t
+#4011|ST_MultiLineString|MULTILINESTRING(EMPTY,EMPTY)|t|t
+#4011||||
+#4011|ST_LineString|POLYGON((0 0,1 0,1 1,0 0))|f|t
+#4011|ST_LineString|GEOMETRYCOLLECTION(LINESTRING(0 0,1 1))|f|t
+#4011|ST_MultiLineString|MULTILINESTRING EMPTY|t|t
+#4011|ST_GeometryCollection|MULTILINESTRING((0 0,0 0))|f|f
