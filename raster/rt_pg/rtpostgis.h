@@ -40,11 +40,11 @@
 #include "fmgr.h"
 #include "funcapi.h"
 
+#include "librtcore.h"
+
 #if POSTGIS_PGSQL_VERSION >= 160
 #include "varatt.h"
 #endif
-
-#include "librtcore.h"
 
 /* Debugging macros */
 #if POSTGIS_DEBUG_LEVEL > 0

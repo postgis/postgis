@@ -24,12 +24,13 @@
 #include "utils/memutils.h"
 #include "utils/syscache.h"
 
+#include "liblwgeom.h"
+#include "pgsql_compat.h"
+
 #if POSTGIS_PGSQL_VERSION >= 160
 #include "varatt.h"
 #endif
 
-#include "liblwgeom.h"
-#include "pgsql_compat.h"
 
 
 /****************************************************************************************/
