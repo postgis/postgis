@@ -56,7 +56,7 @@ jobs:
       run: |
         echo "/tmp/logbt-coredumps/core.%p.%E" | sudo tee /proc/sys/kernel/core_pattern
         ci_env=`bash .github/codecov_env.bash`
-        docker run $ci_env --name pgtest-${GITHUB_RUN_NUMBER} pgtest
+        docker run -e RUNTESTFLAGS=-v $ci_env --name pgtest-${GITHUB_RUN_NUMBER} pgtest
 
     - name: 'Clean Up Image'
       if: ${{ success() }}
