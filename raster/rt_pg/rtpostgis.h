@@ -38,6 +38,10 @@
 
 #include "librtcore.h"
 
+#if POSTGIS_PGSQL_VERSION > 150
+#include "varatt.h"
+#endif
+
 /* Debugging macros */
 #if POSTGIS_DEBUG_LEVEL > 0
 

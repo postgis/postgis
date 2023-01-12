@@ -27,6 +27,9 @@
 #include "liblwgeom.h"
 #include "pgsql_compat.h"
 
+#if POSTGIS_PGSQL_VERSION > 150
+#include "varatt.h"
+#endif
 
 /****************************************************************************************/
 
