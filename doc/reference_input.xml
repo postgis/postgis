@@ -315,7 +315,7 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_GeomFromEWKT" /></para>
+		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_GeomFromText" /></para>
 	  </refsection>
 	</refentry>
 
