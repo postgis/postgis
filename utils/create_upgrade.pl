@@ -360,11 +360,30 @@ EOF
         my $opleft = 'unknown';
         my $opright = 'unknown';
         my $def = $_;
+        my $subcomment = '';
+        my @subobjects; # minversion, attribute, value
         while(<INPUT>)
         {
+            if (/^\s*\-\-/)
+            {
+                $subcomment .= $_;
+                next;
+            }
+
             $def .= $_;
             $opleft = $1 if (/leftarg\s*=\s*(\w+)\s*,/i);
             $opright = $1 if (/rightarg\s*=\s*(\w+)\s*,/i);
+
+            # Support changing restrict selectivity at later versions
+            if (/\s+(RESTRICT|JOIN)\s*=\s*([^,\n]+)/)
+            {
+                my $last_updated = parse_last_updated($subcomment);
+                if ($last_updated)
+                {
+                    push @subobjects, [$last_updated, $1, $2];
+                }
+            }
+
             last if /\);/;
         }
         my $opsig = $opleft . " " . $opname . " " . $opright;
@@ -379,8 +398,6 @@ EOF
 DO LANGUAGE 'plpgsql'
 \$postgis_proc_upgrade\$
 BEGIN
-  --IF $last_updated > version_from_num FROM _postgis_upgrade_info()
-    --We trust presence of operator rather than version info
     IF NOT EXISTS (
         SELECT o.oprname
         FROM
@@ -396,11 +413,31 @@ BEGIN
             tr.typname = '$opright'
     )
     THEN
-    EXECUTE \$postgis_proc_upgrade_parsed_def\$ $def \$postgis_proc_upgrade_parsed_def\$;
-  END IF;
+$def
+EOF
+
+        my $ELSE="ELSE -- version_from >= $last_updated";
+        for my $subobj (@subobjects)
+        {
+            my $last_updated = @{$subobj}[0];
+            my $attr = @{$subobj}[1];
+            my $val = @{$subobj}[2];
+            print <<"EOF";
+    ${ELSE}
+    -- Last Updated: ${last_updated}
+    IF $last_updated > version_from_num FROM _postgis_upgrade_info() THEN
+        ALTER OPERATOR ${opname} ( $opleft, $opright ) SET ( ${attr} = ${val} );
+    END IF;
+EOF
+            $ELSE="";
+        }
+
+        print <<"EOF";
+  END IF; -- version_from >= $last_updated
 END
 \$postgis_proc_upgrade\$;
 EOF
+
     }
 
     # Always output create ore replace view (see ticket #1097)
