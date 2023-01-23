@@ -1,8 +1,8 @@
 -- Make example data
 
-SELECT 'restrict',
+SELECT
 	format('%s %s %s', o.oprleft::regtype, o.oprname, o.oprright::regtype),
-	o.oprrest
+	o.oprrest, o.oprjoin
 FROM pg_operator o, pg_type t
 WHERE o.oprname IN
 	-- Shall we have more of these ?

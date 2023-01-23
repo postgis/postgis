@@ -1,8 +1,8 @@
-restrict|geography && geography|gserialized_gist_sel_nd
-restrict|geometry && geometry|gserialized_gist_sel_2d
-restrict|geometry &&& geometry|gserialized_gist_sel_nd
-restrict|geometry @ geometry|gserialized_gist_sel_2d
-restrict|geometry ~ geometry|gserialized_gist_sel_2d
+geography && geography|gserialized_gist_sel_nd|gserialized_gist_joinsel_nd
+geometry && geometry|gserialized_gist_sel_2d|gserialized_gist_joinsel_2d
+geometry &&& geometry|gserialized_gist_sel_nd|gserialized_gist_joinsel_nd
+geometry @ geometry|gserialized_gist_sel_2d|gserialized_gist_joinsel_2d
+geometry ~ geometry|gserialized_gist_sel_2d|gserialized_gist_joinsel_2d
 ERROR:  stats for "no_stats.g" do not exist
 ERROR:  stats for "no_stats.g" do not exist
 ERROR:  stats for "no_stats.g" do not exist
