@@ -1922,7 +1922,7 @@ msgstr ""
 #: reference_relationship.xml:1239
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.25"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 5.1.25"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 5.1.25"
 
 #. Tag: para
 #: reference_relationship.xml:1241

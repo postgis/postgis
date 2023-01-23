@@ -1482,7 +1482,7 @@ msgstr ""
 #: reference_constructor.xml:513
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.2"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 6.1.2"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 6.1.2"
 
 #. Tag: title
 #: reference_constructor.xml:519
@@ -1869,7 +1869,7 @@ msgstr "&sfs_compliant;"
 #: reference_constructor.xml:700
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.3.2"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 8.3.2"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 8.3.2"
 
 #. Tag: para
 #: reference_constructor.xml:708

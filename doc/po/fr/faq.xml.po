@@ -644,10 +644,10 @@ msgid ""
 "speed up the test, the &amp;&amp; operator will make use of this. This can "
 "make queries much much faster."
 msgstr ""
-"En général, vous voudrez utiliser l'opérateur \"intersects\" (&amp;&amp ;) "
+"En général, vous voudrez utiliser l'opérateur \"intersects\" (&amp;&amp;) "
 "qui teste si les boîtes de délimitation des caractéristiques se croisent. La "
-"raison pour laquelle l'opérateur &amp;&amp ; est utile est que si un index "
-"spatial est disponible pour accélérer le test, l'opérateur &amp;&amp ; s'en "
+"raison pour laquelle l'opérateur &amp;&amp; est utile est que si un index "
+"spatial est disponible pour accélérer le test, l'opérateur &amp;&amp; s'en "
 "servira. Cela peut rendre les requêtes beaucoup plus rapides."
 
 #. Tag: para

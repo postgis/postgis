@@ -403,7 +403,7 @@ msgstr "&sfs_compliant; s2.1.1.1"
 #: reference_output.xml:159
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.25"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 5.1.25"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 5.1.25"
 
 #. Tag: programlisting
 #: reference_output.xml:166
@@ -651,7 +651,7 @@ msgstr ""
 #: reference_output.xml:248
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.37"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 5.1.37"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 5.1.37"
 
 #. Tag: programlisting
 #: reference_output.xml:259
@@ -1053,7 +1053,7 @@ msgid ""
 "</script>\n"
 "        ]]>"
 msgstr ""
-"< ![CDATA[<script type=\"text/javascript\" src=\"http ://maps.googleapis.com/"
+"<![CDATA[<script type=\"text/javascript\" src=\"http ://maps.googleapis.com/"
 "maps/api/js ?libraries=geometry\"></script>\n"
 "<script type=\"text/javascript\">\n"
 "         flightPath = new google.maps.Polyline({\n"

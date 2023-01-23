@@ -1383,8 +1383,8 @@ msgid ""
 "&amp;&amp;."
 msgstr ""
 "Cet opérande n'utilisera PAS les index qui peuvent être disponibles sur les "
-"géométries. Pour un test d'égalité exact assisté par index, combinez &#61 ; "
-"avec &amp;&amp ;."
+"géométries. Pour un test d'égalité exact assisté par index, combinez &#61; "
+"avec &amp;&amp;."
 
 #. Tag: para
 #: reference_operator.xml:857
@@ -2710,7 +2710,7 @@ msgid ""
 "true nearest neighbors. First a CTE query using the index-assisted KNN, then "
 "an exact query to get correct ordering:"
 msgstr ""
-"Pour les utilisateurs utilisant PostgreSQL &lt ; 9.5, utilisez une requête "
+"Pour les utilisateurs utilisant PostgreSQL &lt; 9.5, utilisez une requête "
 "hybride pour trouver les vrais plus proches voisins. D'abord une requête CTE "
 "utilisant le KNN assisté par index, puis une requête exacte pour obtenir "
 "l'ordre correct :"
@@ -2965,8 +2965,8 @@ msgid ""
 "(ST_GeomFromText('POINT(1 2)') &lt;#&gt; geom) instead of g1.geom &lt;#&gt;."
 msgstr ""
 "L'index n'intervient que si l'une des géométries est une constante, par "
-"exemple ORDER BY (ST_GeomFromText('POINT(1 2)') &lt;#&gt ; geom) au lieu de "
-"g1.geom &lt;#&gt ;."
+"exemple ORDER BY (ST_GeomFromText('POINT(1 2)') &lt;#&gt; geom) au lieu de "
+"g1.geom &lt;#&gt;."
 
 #. Tag: para
 #: reference_operator.xml:1778
@@ -3162,8 +3162,8 @@ msgid ""
 "&lt;&lt;#&gt;&gt;."
 msgstr ""
 "L'index n'intervient que si l'une des géométries est une constante, par "
-"exemple ORDER BY (ST_GeomFromText('POINT(1 2)') &lt;&lt;#&gt;&gt ; geom) au "
-"lieu de g1.geom &lt;&lt;#&gt;&gt ;."
+"exemple ORDER BY (ST_GeomFromText('POINT(1 2)') &lt;&lt;#&gt;&gt; geom) au "
+"lieu de g1.geom &lt;&lt;#&gt;&gt;."
 
 #. Tag: para
 #: reference_operator.xml:1907

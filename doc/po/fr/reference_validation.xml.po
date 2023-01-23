@@ -145,7 +145,7 @@ msgstr "&sfs_compliant;"
 #: reference_validation.xml:67
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.9"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 5.1.9"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 5.1.9"
 
 #. Tag: para
 #: reference_validation.xml:70
@@ -349,15 +349,15 @@ msgstr ""
 "        FROM generate_series(-4,6) x1\n"
 "        CROSS JOIN generate_series(2,5) y1\n"
 "        CROSS JOIN generate_series(1,8) z1\n"
-"        WHERE x1 &gt ; y1*0.5 AND z1 &lt ; x1*y1) As e\n"
+"        WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e\n"
 "        INNER JOIN (SELECT "
 "ST_Translate(ST_ExteriorRing(ST_Buffer(ST_Point(x1*10,y1), z1)),y1*1, z1*2) "
 "As line\n"
 "        FROM generate_series(-3,6) x1\n"
 "        CROSS JOIN generate_series(2,5) y1\n"
 "        CROSS JOIN generate_series(1,10) z1\n"
-"        WHERE x1 &gt ; y1*0.75 AND z1 &lt ; x1*y1) As f\n"
-"ON (ST_Area(e.buff) &gt ; 78 AND ST_Contains(e.buff, f.line))\n"
+"        WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f\n"
+"ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))\n"
 "GROUP BY gid, e.buff) As quintuplet_experiment\n"
 "WHERE ST_IsValid(geom) = false\n"
 "ORDER BY gid\n"

@@ -616,7 +616,7 @@ msgstr "Alias SQL/MM pour la fonction <xref linkend=\"ST_NDims\"/>"
 #: reference_accessor.xml:240
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.3"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 5.1.3"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 5.1.3"
 
 #. Tag: programlisting
 #: reference_accessor.xml:251
@@ -685,7 +685,7 @@ msgstr ""
 #: reference_accessor.xml:290
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.2"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 5.1.2"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 5.1.2"
 
 #. Tag: para
 #: reference_accessor.xml:291
@@ -1510,7 +1510,7 @@ msgstr ""
 #: reference_accessor.xml:601
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.4"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 7.1.4"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 7.1.4"
 
 #. Tag: para
 #: reference_accessor.xml:605
@@ -1804,7 +1804,7 @@ msgstr "&sfs_compliant; 2.1.5.1"
 #: reference_accessor.xml:726
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.2.3, 8.3.3"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 8.2.3, 8.3.3"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 8.2.3, 8.3.3"
 
 #. Tag: programlisting
 #: reference_accessor.xml:733
@@ -1935,7 +1935,7 @@ msgstr ""
 #: reference_accessor.xml:782
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 9.1.5"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 9.1.5"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 9.1.5"
 
 #. Tag: programlisting
 #: reference_accessor.xml:794
@@ -2071,7 +2071,7 @@ msgstr "Amélioration : 2.0.0 introduction du support des surfaces polyédriques
 #: reference_accessor.xml:831
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.4"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 5.1.4"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 5.1.4"
 
 #. Tag: programlisting
 #: reference_accessor.xml:840
@@ -2221,7 +2221,7 @@ msgstr ""
 #: reference_accessor.xml:928
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.2.6, 8.3.5"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 8.2.6, 8.3.5"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 8.2.6, 8.3.5"
 
 #. Tag: programlisting
 #: reference_accessor.xml:937
@@ -2294,7 +2294,7 @@ msgstr ""
 #: reference_accessor.xml:981
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.5, 9.3.3"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 7.1.5, 9.3.3"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 7.1.5, 9.3.3"
 
 #. Tag: para
 #: reference_accessor.xml:983
@@ -2590,7 +2590,7 @@ msgstr ""
 #: reference_accessor.xml:1096
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.7"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 5.1.7"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 5.1.7"
 
 #. Tag: para
 #: reference_accessor.xml:1098
@@ -2815,7 +2815,7 @@ msgstr ""
 #: reference_accessor.xml:1278
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.6"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 7.1.6"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 7.1.6"
 
 #. Tag: para
 #: reference_accessor.xml:1280
@@ -2927,7 +2927,7 @@ msgstr ""
 #: reference_accessor.xml:1331
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.8"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 5.1.8"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 5.1.8"
 
 #. Tag: programlisting
 #: reference_accessor.xml:1339
@@ -3344,7 +3344,7 @@ msgstr ""
 #: reference_accessor.xml:1576
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 9.1.4"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 9.1.4"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 9.1.4"
 
 #. Tag: programlisting
 #: reference_accessor.xml:1586
@@ -3406,7 +3406,7 @@ msgstr ""
 #: reference_accessor.xml:1618
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.2.5"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 8.2.5"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 8.2.5"
 
 #. Tag: para
 #: reference_accessor.xml:1619
@@ -3560,7 +3560,7 @@ msgstr ""
 #: reference_accessor.xml:1721
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.2.4"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 7.2.4"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 7.2.4"
 
 #. Tag: programlisting
 #: reference_accessor.xml:1727
@@ -3715,7 +3715,7 @@ msgstr ""
 #: reference_accessor.xml:1829
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.2.5, 7.3.5"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 7.2.5, 7.3.5"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 7.2.5, 7.3.5"
 
 #. Tag: para
 #: reference_accessor.xml:1832
@@ -3878,7 +3878,7 @@ msgstr ""
 #: reference_accessor.xml:1939
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.3"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 7.1.3"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 7.1.3"
 
 #. Tag: para
 #: reference_accessor.xml:1944
@@ -4167,7 +4167,7 @@ msgstr ""
 #: reference_accessor.xml:2079
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.3"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 6.1.3"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 6.1.3"
 
 #. Tag: programlisting
 #: reference_accessor.xml:2087
@@ -4253,7 +4253,7 @@ msgstr ""
 #: reference_accessor.xml:2124
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.4"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 6.1.4"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 6.1.4"
 
 #. Tag: programlisting
 #: reference_accessor.xml:2132
