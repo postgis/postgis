@@ -8,7 +8,7 @@
 			using a garden variety of rasters.  Its intent is to flag major crashes.
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='testversion'>3.3.0</xsl:variable>
+	<xsl:variable name='testversion'>3.4.0</xsl:variable>
 	<xsl:variable name='fnexclude'>AddRasterColumn AddRasterConstraints DropRasterConstraints DropRasterColumn DropRasterTable</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
 
@@ -31,7 +31,7 @@
 	<xsl:variable name='var_rastercolumn'>'rast'</xsl:variable>
 	<xsl:variable name='var_rastertable'>'pgis_rgarden_1bb'</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
-	<xsl:variable name='var_logtable'>raster_garden_log33</xsl:variable>
+	<xsl:variable name='var_logtable'>raster_garden_log34</xsl:variable>
 	<xsl:variable name='var_pixeltypes'>{8BUI,1BB}</xsl:variable>
 	<xsl:variable name='var_pixelvalues'>{255,0}</xsl:variable>
 	<xsl:variable name='var_algorithm'>'Lanczos'</xsl:variable>
@@ -67,6 +67,10 @@
 
 		<pgis:gset ID="SingleNULL" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
 		<pgis:gset ID="MultipleNULLs" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom FROM generate_series(1,4) As foo)</pgis:gset>
+
+		<pgis:gset ID="Infinite Polygons" GeometryType="POLYGON" createtable="true">(SELECT '0106000020E61000000100000001030000000100000005000000000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F'::geometry  AS the_geom
+		)
+		</pgis:gset>
 	</pgis:gardens>
 	<!--changed all to no skew so they pass the world tests -->
 	<pgis:pixeltypes>

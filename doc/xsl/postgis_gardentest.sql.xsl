@@ -33,7 +33,7 @@
 	<xsl:variable name='var_matrix'>'FF1FF0102'</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
 	<xsl:variable name='var_geom_name'>the_geom</xsl:variable>
-	<xsl:variable name='var_logtable'>postgis_garden_log33</xsl:variable>
+	<xsl:variable name='var_logtable'>postgis_garden_log34</xsl:variable>
 	<xsl:variable name='var_logupdatesql'>UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp()
 		FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
 		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;</xsl:variable>
@@ -269,6 +269,25 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 			UNION ALL SELECT ST_MakePolygon(ST_GeomFromText('LINESTRING(1 2, 1 2,1 2, 1 2, 3 2, 1 2)',4326)) As the_geom
 		)
 		</pgis:gset>
+		<pgis:gset ID="Infinite Polygons" GeometryType="POLYGON" createtable="true">(SELECT '0106000020E61000000100000001030000000100000005000000000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F'::geometry  AS the_geom
+		)
+		</pgis:gset>
+
+		<pgis:gset ID="Infinite 3D Polygons" GeometryType="POLYGON" createtable="true">(SELECT '01060000A0E61000000100000001030000800100000005000000000000000000F07F000000000000F07F000000000000F03F000000000000F07F000000000000F07F000000000000F03F000000000000F07F000000000000F07F000000000000F03F000000000000F07F000000000000F07F000000000000F03F000000000000F07F000000000000F07F000000000000F03F'::geometry  AS the_geom
+		)
+		</pgis:gset>
+
+		<pgis:gset ID="Infinite Linestrings" GeometryType="LINESTRING" createtable="true">(SELECT '0102000020E610000005000000000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F'::geometry  AS the_geom
+		)
+		</pgis:gset>
+
+		<pgis:gset ID="Infinite Point" GeometryType="POINT" createtable="true">(SELECT '0101000020E6100000000000000000F07F000000000000F07F'::geometry AS the_geom )
+		</pgis:gset>
+
+		<pgis:gset ID="Infinite MultiPoint" GeometryType="MULTIPOINT" createtable="true">(SELECT
+		'0104000020E6100000050000000101000000000000000000F07F000000000000F07F0101000000000000000000F07F000000000000F07F0101000000000000000000F07F000000000000F07F0101000000000000000000F07F000000000000F07F0101000000000000000000F07F000000000000F07F'::geometry AS the_geom )
+		</pgis:gset>
+
 	<!-- TODO: Finish off MULTI list -->
 	</pgis:gardens>
 	<!--This is just a placeholder to hold geometries that will crash server when hitting against some functions
