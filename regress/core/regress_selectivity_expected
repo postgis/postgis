@@ -1,3 +1,8 @@
+restrict|geography && geography|gserialized_gist_sel_nd
+restrict|geometry && geometry|gserialized_gist_sel_2d
+restrict|geometry &&& geometry|gserialized_gist_sel_nd
+restrict|geometry @ geometry|contsel
+restrict|geometry ~ geometry|contsel
 ERROR:  stats for "no_stats.g" do not exist
 ERROR:  stats for "no_stats.g" do not exist
 ERROR:  stats for "no_stats.g" do not exist

@@ -1,5 +1,22 @@
 -- Make example data
 
+SELECT 'restrict',
+	format('%s %s %s', o.oprleft::regtype, o.oprname, o.oprright::regtype),
+	o.oprrest
+FROM pg_operator o, pg_type t
+WHERE o.oprname IN
+	-- Shall we have more of these ?
+	( '&&', '&&&', '@', '~' )
+AND o.oprleft = t.oid
+AND o.oprright = t.oid
+AND t.typname IN
+	-- raster and topology intentionally left out
+	-- as they'd belong in a different test
+	( 'geometry', 'geography' )
+ORDER BY oprname, oprleft::regtype::text, oprright::regtype::text
+;
+
+
 CREATE TABLE regular_overdots_ab (
     a integer,
     b integer
