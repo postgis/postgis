@@ -683,18 +683,24 @@ CREATE OR REPLACE FUNCTION geometry_within(geom1 geometry, geom2 geometry)
 	_COST_DEFAULT;
 
 -- Availability: 0.1.0
+-- Updated: 3.4.0 changed to use selectivity estimates
 CREATE OPERATOR @ (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_within,
 	COMMUTATOR = '~',
+	-- Updated: 3.4.0 to use selectivity estimator
 	RESTRICT = gserialized_gist_sel_2d,
+	-- Updated: 3.4.0 to use join selectivity estimator
 	JOIN = gserialized_gist_joinsel_2d
 );
 
 -- Availability: 0.1.0
+-- Updated: 3.4.0 changed to use selectivity estimates
 CREATE OPERATOR ~ (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_contains,
 	COMMUTATOR = '@',
+	-- Updated: 3.4.0 to use specialized selectivity estimator
 	RESTRICT = gserialized_gist_sel_2d,
+	-- Updated: 3.4.0 to use join specialized selectivity estimator
 	JOIN = gserialized_gist_joinsel_2d
 );
 
