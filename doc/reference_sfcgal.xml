@@ -483,7 +483,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 	  <refnamediv>
 		<refname>ST_AlphaShape</refname>
 
-		<refpurpose>Computes a possible concave geometry using the CGAL Alpha Shapes algorithm.</refpurpose>
+		<refpurpose>Computes an Alpha-shape enclosing a geometry</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -500,13 +500,29 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 	  <refsection>
             <title>Description</title>
 
-            <para>Assume we are given a set S of points in 2D [...] and we would like to have something like "the shape formed by these points". This is quite a vague notion and there are probably many possible interpretations, the α-shape being one of them. Alpha shapes can be used for shape reconstruction from a dense unorganized set of data points. Indeed, an α-shape is demarcated by a frontier, which is a linear approximation of the original shape [1].
-            [1] F. Bernardini and C. Bajaj. Sampling and reconstructing manifolds using alpha-shapes. Technical Report CSD-TR-97-013, Dept. Comput. Sci., Purdue Univ., West Lafayette, IN, 1997.
+            <para>Computes the
+            <ulink url="https://en.wikipedia.org/wiki/Alpha_shape">Alpha-Shape</ulink>
+             of the points in a geometry,
+            which is a polygonal geometry enclosing all the points in the input.
+            The "closeness of fit" of the result is controlled by the <parameter>alpha</parameter> parameter,
+            which can have values from 0 to infinity.
+            Smaller alpha value produce more concave results.
+            Alpha values greater than some (usually large) value produce the convex hull of the input.
+            </para>
+            <note><para>
+            Following the CGAL implementation, the alpha value is the <emphasis>square</emphasis> of the radius of the disc used
+            in the Alpha-Shape algorithm to "erode" the Delaunay Triangulation of the input points.
+            See <ulink url="https://doc.cgal.org/latest/Alpha_shapes_2/index.html#Chapter_2D_Alpha_Shapes">CGAL Alpha-Shapes</ulink>
+            for more information.
+            This is different to the orignal definition of alpha-shapes,
+            which defines alpha as the radius of the eroding disc.
+            </para></note>
 
-            Source:  <ulink url="https://doc.cgal.org/latest/Alpha_shapes_2/index.html#Chapter_2D_Alpha_Shapes">CGAL ALpha Shapes</ulink>
-
-            This function compute the concave hull of a set of geometry, but using CGAL and a different algorithm than ST_ConcaveHull performed by the GEOS module.
-            See : <ulink url="http://lin-ear-th-inking.blogspot.com/2022/01/concave-hulls-in-jts.html">Concave Hulls in JTS</ulink></para>
+            <para>The computed alpha-shape will not contain holes unless the optional <varname>allow_holes</varname> argument is specified as true.
+            </para>
+            <para>
+            This function effectively computes a concave hull of a geometry, but using CGAL and a different algorithm than <xref linkend="ST_ConcaveHull" />.
+            </para>
 
 		<para>Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1.</para>
 		<para>&sfcgal_required;</para>
@@ -520,7 +536,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
         <imageobject>
           <imagedata fileref="images/st_alphashape01.png" />
         </imageobject>
-        <caption><para>Concave Hull of a MultiPoint (same example As ST_OptimalAlphaShape)</para></caption>
+        <caption><para>Alpha-shape of a MultiPoint (same example As <xref linkend="ST_OptimalAlphaShape" />)</para></caption>
       </mediaobject>
     </informalfigure>
          <programlisting>SELECT ST_AsText(ST_AlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
@@ -539,7 +555,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
             <imageobject>
             <imagedata fileref="images/st_alphashape02.png" />
             </imageobject>
-            <caption><para>Concave Hull of a MultiPoint, allowing holes (same example as ST_OptimalAlphaShape)</para></caption>
+            <caption><para>Alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="ST_OptimalAlphaShape" />)</para></caption>
         </mediaobject>
         </informalfigure>
             <programlisting>SELECT ST_AsText(ST_AlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
@@ -557,7 +573,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
             <imageobject>
             <imagedata fileref="images/st_alphashape03.png" />
             </imageobject>
-            <caption><para>Concave Hull of a MultiPoint, allowing holes (same example as ST_ConcaveHull)</para></caption>
+            <caption><para>Alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="ST_ConcaveHull" />)</para></caption>
         </mediaobject>
         </informalfigure>
             <programlisting>SELECT ST_AlphaShape(
@@ -1060,16 +1076,16 @@ MULTIPOLYGON(
 	  <refnamediv>
 		<refname>ST_OptimalAlphaShape</refname>
 
-		<refpurpose>Computes a possible concave geometry using the CGAL Alpha Shapes algorithm after have computed the "optimal" alpha value.</refpurpose>
+		<refpurpose>Computes an Alpha-shape enclosing a geometry using an "optimal" alpha value.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>geometry<function>ST_OptimalAlphaShape</function></funcdef>
-			<paramdef><type>geometry</type> <parameter>param_geom</parameter></paramdef>
+			<funcdef>geometry <function>ST_OptimalAlphaShape</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
                         <paramdef choice="opt"><type>boolean </type> <parameter>allow_holes = false</parameter></paramdef>
-                        <paramdef choice="opt"><type>integer </type> <parameter>nb_components</parameter></paramdef>
+                        <paramdef choice="opt"><type>integer </type> <parameter>nb_components = 1</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -1077,12 +1093,21 @@ MULTIPOLYGON(
 	  <refsection>
          <title>Description</title>
 
-         <para>Computes the "optimal" alpha-shapes of the set of geometry.
-
-            CGAL can automatically find the optimal value of alpha. This version uses it to find an "optimal" alpha-shape.
-            The result is a single polygon. It will not contain holes unless the optional <varname>param_allow_holes</varname> argument is specified as true.
-
-            The result will be generated such that the number of solid component of the alpha shape is equal to or smaller than <varname>param_nb_components</varname>.</para>
+         <para>Computes the "optimal" alpha-shape of the points in a geometry.
+            The alpha-shape is computed using a value of α chosen so that:
+            </para>
+        <orderedlist>
+            <listitem>
+                <para>the number of polygon elements is equal to or smaller than <varname>nb_components</varname>
+                    (which defaults to 1)</para>
+            </listitem>
+            <listitem>
+                <para>all input points are contained in the shape</para>
+            </listitem>
+        </orderedlist>
+        <para>
+            The result will not contain holes unless the optional <varname>allow_holes</varname> argument is specified as true.
+            </para>
 
 		<para>Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1.</para>
 		<para>&sfcgal_required;</para>
@@ -1096,7 +1121,7 @@ MULTIPOLYGON(
                 <imageobject>
                 <imagedata fileref="images/st_optimalalphashape01.png" />
                 </imageobject>
-                <caption><para>Concave Hull of a MultiPoint (same example as ST_AlphaShape)</para></caption>
+                <caption><para>Optimal alpha-shape of a MultiPoint (same example as <xref linkend="ST_AlphaShape" />)</para></caption>
             </mediaobject>
             </informalfigure>
                 <programlisting>SELECT ST_AsText(ST_OptimalAlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
@@ -1116,7 +1141,7 @@ MULTIPOLYGON(
                 <imageobject>
                 <imagedata fileref="images/st_optimalalphashape02.png" />
                 </imageobject>
-                <caption><para>Concave Hull of a MultiPoint, allowing holes (same example as ST_AlphaShape)</para></caption>
+                <caption><para>Optimal alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="ST_AlphaShape" />)</para></caption>
             </mediaobject>
             </informalfigure>
                 <programlisting>SELECT ST_AsText(ST_OptimalAlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
