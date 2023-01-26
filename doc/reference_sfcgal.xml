@@ -498,31 +498,34 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 	  </refsynopsisdiv>
 
 	  <refsection>
-            <title>Description</title>
+        <title>Description</title>
 
-            <para>Computes the
-            <ulink url="https://en.wikipedia.org/wiki/Alpha_shape">Alpha-Shape</ulink>
-             of the points in a geometry,
-            which is a polygonal geometry enclosing all the points in the input.
-            The "closeness of fit" of the result is controlled by the <parameter>alpha</parameter> parameter,
-            which can have values from 0 to infinity.
-            Smaller alpha value produce more concave results.
-            Alpha values greater than some (usually large) value produce the convex hull of the input.
-            </para>
-            <note><para>
-            Following the CGAL implementation, the alpha value is the <emphasis>square</emphasis> of the radius of the disc used
-            in the Alpha-Shape algorithm to "erode" the Delaunay Triangulation of the input points.
-            See <ulink url="https://doc.cgal.org/latest/Alpha_shapes_2/index.html#Chapter_2D_Alpha_Shapes">CGAL Alpha-Shapes</ulink>
-            for more information.
-            This is different to the orignal definition of alpha-shapes,
-            which defines alpha as the radius of the eroding disc.
-            </para></note>
+        <para>Computes the
+        <ulink url="https://en.wikipedia.org/wiki/Alpha_shape">Alpha-Shape</ulink>
+            of the points in a geometry.
+        An alpha-shape is a polygonal geometry enclosing all the points in the input.
+        The "closeness of fit" of the result is controlled by the <varname>alpha</varname> parameter,
+        which can have values from 0 to infinity.
+        Smaller alpha values produce more concave results.
+        Alpha values greater than some data-dependent value produce the convex hull of the input.
+        </para>
 
-            <para>The computed alpha-shape will not contain holes unless the optional <varname>allow_holes</varname> argument is specified as true.
-            </para>
-            <para>
-            This function effectively computes a concave hull of a geometry, but using CGAL and a different algorithm than <xref linkend="ST_ConcaveHull" />.
-            </para>
+        <note><para>
+        Following the CGAL implementation, the alpha value is the <emphasis>square</emphasis> of the radius of the disc used
+        in the Alpha-Shape algorithm to "erode" the Delaunay Triangulation of the input points.
+        See <ulink url="https://doc.cgal.org/latest/Alpha_shapes_2/index.html#Chapter_2D_Alpha_Shapes">CGAL Alpha-Shapes</ulink>
+        for more information.
+        This is different from the original definition of alpha-shapes,
+        which defines alpha as the radius of the eroding disc.
+        </para></note>
+
+        <para>The computed shape does not contain holes unless the optional <varname>allow_holes</varname> argument is specified as true.
+        </para>
+
+        <para>
+        This function effectively computes a concave hull of a geometry in a similar way to <xref linkend="ST_ConcaveHull" />,
+        but uses CGAL and a different algorithm.
+        </para>
 
 		<para>Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1.</para>
 		<para>&sfcgal_required;</para>
