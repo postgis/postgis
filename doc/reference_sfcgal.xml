@@ -498,15 +498,34 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 	  </refsynopsisdiv>
 
 	  <refsection>
-            <title>Description</title>
+        <title>Description</title>
 
-            <para>Assume we are given a set S of points in 2D [...] and we would like to have something like "the shape formed by these points". This is quite a vague notion and there are probably many possible interpretations, the α-shape being one of them. Alpha shapes can be used for shape reconstruction from a dense unorganized set of data points. Indeed, an α-shape is demarcated by a frontier, which is a linear approximation of the original shape [1].
-            [1] F. Bernardini and C. Bajaj. Sampling and reconstructing manifolds using alpha-shapes. Technical Report CSD-TR-97-013, Dept. Comput. Sci., Purdue Univ., West Lafayette, IN, 1997.
+        <para>Computes the
+        <ulink url="https://en.wikipedia.org/wiki/Alpha_shape">Alpha-Shape</ulink>
+            of the points in a geometry.
+        An alpha-shape is a polygonal geometry enclosing all the points in the input.
+        The "closeness of fit" of the result is controlled by the <varname>alpha</varname> parameter,
+        which can have values from 0 to infinity.
+        Smaller alpha values produce more concave results.
+        Alpha values greater than some data-dependent value produce the convex hull of the input.
+        </para>
 
-            Source:  <ulink url="https://doc.cgal.org/latest/Alpha_shapes_2/index.html#Chapter_2D_Alpha_Shapes">CGAL ALpha Shapes</ulink>
+        <note><para>
+        Following the CGAL implementation, the alpha value is the <emphasis>square</emphasis> of the radius of the disc used
+        in the Alpha-Shape algorithm to "erode" the Delaunay Triangulation of the input points.
+        See <ulink url="https://doc.cgal.org/latest/Alpha_shapes_2/index.html#Chapter_2D_Alpha_Shapes">CGAL Alpha-Shapes</ulink>
+        for more information.
+        This is different from the original definition of alpha-shapes,
+        which defines alpha as the radius of the eroding disc.
+        </para></note>
 
-            This function compute the concave hull of a set of geometry, but using CGAL and a different algorithm than ST_ConcaveHull performed by the GEOS module.
-            See : <ulink url="http://lin-ear-th-inking.blogspot.com/2022/01/concave-hulls-in-jts.html">Concave Hulls in JTS</ulink></para>
+        <para>The computed shape does not contain holes unless the optional <varname>allow_holes</varname> argument is specified as true.
+        </para>
+
+        <para>
+        This function effectively computes a concave hull of a geometry in a similar way to <xref linkend="ST_ConcaveHull" />,
+        but uses CGAL and a different algorithm.
+        </para>
 
 		<para>Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1.</para>
 		<para>&sfcgal_required;</para>
