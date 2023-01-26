@@ -34,1923 +34,1064 @@
 #include <string.h>
 #include "liblwgeom_internal.h"
 #include "liblwgeom.h"
+#include "stringbuffer.h"
 
-static size_t asgml2_point_size(const LWPOINT *point, const char *srs, int precision, const char *prefix);
-static lwvarlena_t *asgml2_point(const LWPOINT *point, const char *srs, int precision, const char *prefix);
-static size_t asgml2_line_size(const LWLINE *line, const char *srs, int precision, const char *prefix);
-static lwvarlena_t *asgml2_line(const LWLINE *line, const char *srs, int precision, const char *prefix);
-static size_t asgml2_poly_size(const LWPOLY *poly, const char *srs, int precision, const char *prefix);
-static lwvarlena_t *asgml2_poly(const LWPOLY *poly, const char *srs, int precision, const char *prefix);
-static size_t asgml2_multi_size(const LWCOLLECTION *col, const char *srs, int precision, const char *prefix);
-static lwvarlena_t *asgml2_multi(const LWCOLLECTION *col, const char *srs, int precision, const char *prefix);
-static size_t asgml2_collection_size(const LWCOLLECTION *col, const char *srs, int precision, const char *prefix);
-static lwvarlena_t *asgml2_collection(const LWCOLLECTION *col, const char *srs, int precision, const char *prefix);
-static size_t pointArray_toGML2(POINTARRAY *pa, char *buf, int precision);
-
-static size_t asgml3_point_size(const LWPOINT *point, const char *srs, int precision, int opts, const char *prefix, const char *id);
-static lwvarlena_t *
-asgml3_point(const LWPOINT *point, const char *srs, int precision, int opts, const char *prefix, const char *id);
-static size_t asgml3_line_size(const LWLINE *line, const char *srs, int precision, int opts, const char *prefix, const char *id);
-static lwvarlena_t *
-asgml3_line(const LWLINE *line, const char *srs, int precision, int opts, const char *prefix, const char *id);
-static lwvarlena_t *asgml3_circstring(const LWCIRCSTRING *circ,
-				      const char *srs,
-				      int precision,
-				      int opts,
-				      const char *prefix,
-				      const char *id);
-static size_t asgml3_poly_size(const LWPOLY *poly, const char *srs, int precision, int opts, const char *prefix, const char *id);
-static lwvarlena_t *asgml3_poly(const LWPOLY *poly,
-				const char *srs,
-				int precision,
-				int opts,
-				int is_patch,
-				const char *prefix,
-				const char *id);
-static lwvarlena_t *
-asgml3_curvepoly(const LWCURVEPOLY *poly, const char *srs, int precision, int opts, const char *prefix, const char *id);
-static size_t asgml3_triangle_size(const LWTRIANGLE *triangle, const char *srs, int precision, int opts, const char *prefix, const char *id);
-static lwvarlena_t *asgml3_triangle(const LWTRIANGLE *triangle,
-				    const char *srs,
-				    int precision,
-				    int opts,
-				    const char *prefix,
-				    const char *id);
-static size_t asgml3_multi_size(const LWCOLLECTION *col, const char *srs, int precision, int opts, const char *prefix, const char *id);
-static lwvarlena_t *
-asgml3_multi(const LWCOLLECTION *col, const char *srs, int precision, int opts, const char *prefix, const char *id);
-static lwvarlena_t *
-asgml3_psurface(const LWPSURFACE *psur, const char *srs, int precision, int opts, const char *prefix, const char *id);
-static lwvarlena_t *
-asgml3_tin(const LWTIN *tin, const char *srs, int precision, int opts, const char *prefix, const char *id);
-static size_t asgml3_collection_size(const LWCOLLECTION *col, const char *srs, int precision, int opts, const char *prefix, const char *id);
-static lwvarlena_t *asgml3_collection(const LWCOLLECTION *col,
-				      const char *srs,
-				      int precision,
-				      int opts,
-				      const char *prefix,
-				      const char *id);
-static lwvarlena_t *
-asgml3_compound(const LWCOMPOUND *col, const char *srs, int precision, int opts, const char *prefix, const char *id);
-static lwvarlena_t *
-asgml3_multicurve(const LWMCURVE *cur, const char *srs, int precision, int opts, const char *prefix, const char *id);
-static lwvarlena_t *asgml3_multisurface(const LWMSURFACE *sur,
-					const char *srs,
-					int precision,
-					int opts,
-					const char *prefix,
-					const char *id);
-static size_t pointArray_toGML3(POINTARRAY *pa, char *buf, int precision, int opts);
-
-
-static size_t pointArray_GMLsize(POINTARRAY *pa, int precision);
-
-static lwvarlena_t *
-gbox_to_gml2(const GBOX *bbox, const char *srs, int precision, const char *prefix)
+typedef struct
 {
-	int size;
-	POINT4D pt;
-	POINTARRAY *pa;
-	char *ptr, *output;
-	size_t prefixlen = strlen(prefix);
+	const char *srs;
+	int precision;
+	int opts;
+	int is_patch;
+	const char *prefix;
+	const char *id;
+} GML_Options;
 
-	if ( ! bbox )
+
+static void
+asgml2_ptarray(stringbuffer_t* sb, const POINTARRAY *pa, const GML_Options* opts)
+{
+	uint32_t i;
+	if ( ! FLAGS_GET_Z(pa->flags) )
 	{
-		size = ( sizeof("<Box>/") + (prefixlen*2) ) * 2;
-		if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
-
-		lwvarlena_t *v = lwalloc(size + LWVARHDRSZ);
-		ptr = output = v->data;
-
-		ptr += sprintf(ptr, "<%sBox", prefix);
-
-		if ( srs ) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-
-		ptr += sprintf(ptr, "/>");
-
-		LWSIZE_SET(v->size, ptr - output + LWVARHDRSZ);
-
-		return v;
+		for (i=0; i<pa->npoints; i++)
+		{
+			const POINT2D *pt = getPoint2d_cp(pa, i);
+			if (i) stringbuffer_append_char(sb, ' ');
+			stringbuffer_append_double(sb, pt->x, opts->precision);
+			stringbuffer_append_char(sb, ',');
+			stringbuffer_append_double(sb, pt->y, opts->precision);
+		}
 	}
-
-	pa = ptarray_construct_empty(FLAGS_GET_Z(bbox->flags), 0, 2);
-
-	pt.x = bbox->xmin;
-	pt.y = bbox->ymin;
-	if (FLAGS_GET_Z(bbox->flags)) pt.z = bbox->zmin;
-	ptarray_append_point(pa, &pt, LW_TRUE);
-
-	pt.x = bbox->xmax;
-	pt.y = bbox->ymax;
-	if (FLAGS_GET_Z(bbox->flags)) pt.z = bbox->zmax;
-	ptarray_append_point(pa, &pt, LW_TRUE);
-
-	size = pointArray_GMLsize(pa, precision);
-	size += ( sizeof("<Box><coordinates>/") + (prefixlen*2) ) * 2;
-	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
-
-	lwvarlena_t *v = lwalloc(size + LWVARHDRSZ);
-	ptr = output = v->data;
-
-	if ( srs ) ptr += sprintf(ptr, "<%sBox srsName=\"%s\">", prefix, srs);
-	else       ptr += sprintf(ptr, "<%sBox>", prefix);
-
-	ptr += sprintf(ptr, "<%scoordinates>", prefix);
-	ptr += pointArray_toGML2(pa, ptr, precision);
-	ptr += sprintf(ptr, "</%scoordinates></%sBox>", prefix, prefix);
-
-	ptarray_free(pa);
-	LWSIZE_SET(v->size, ptr - output + LWVARHDRSZ);
-
-	return v;
+	else
+	{
+		for (i=0; i<pa->npoints; i++)
+		{
+			const POINT3D *pt = getPoint3d_cp(pa, i);
+			if (i) stringbuffer_append_char(sb, ' ');
+			stringbuffer_append_double(sb, pt->x, opts->precision);
+			stringbuffer_append_char(sb, ',');
+			stringbuffer_append_double(sb, pt->y, opts->precision);
+			stringbuffer_append_char(sb, ',');
+			stringbuffer_append_double(sb, pt->z, opts->precision);
+		}
+	}
 }
 
-static lwvarlena_t *
-gbox_to_gml3(const GBOX *bbox, const char *srs, int precision, int opts, const char *prefix)
+
+static void
+asgml2_gbox(stringbuffer_t* sb, const GBOX *bbox, const GML_Options* opts)
 {
-	int size;
-	POINT4D pt;
-	POINTARRAY *pa;
-	char *ptr, *output;
-	size_t prefixlen = strlen(prefix);
-	int dimension = 2;
-
-	if ( ! bbox )
+	if (!bbox)
 	{
-		size = ( sizeof("<Envelope>/") + (prefixlen*2) ) * 2;
-		if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
+		stringbuffer_aprintf(sb, "<%sBox", opts->prefix);
+		if (opts->srs) stringbuffer_aprintf(sb, " srsName=\"%s\"", opts->srs);
+		stringbuffer_append(sb, "/>");
+		return;
+	}
+	else
+	{
+		POINT4D pt = { bbox->xmin, bbox->ymin, bbox->zmin, 0.0 };
+		POINTARRAY *pa = ptarray_construct_empty(FLAGS_GET_Z(bbox->flags), 0, 2);
+		ptarray_append_point(pa, &pt, LW_TRUE);
+		pt.x = bbox->xmax; pt.y = bbox->ymax; pt.z = bbox->zmax;
+		ptarray_append_point(pa, &pt, LW_TRUE);
 
-		lwvarlena_t *v = lwalloc(size + LWVARHDRSZ);
-		ptr = output = v->data;
+		if (opts->srs) stringbuffer_aprintf(sb, "<%sBox srsName=\"%s\">", opts->prefix, opts->srs);
+		else     stringbuffer_aprintf(sb, "<%sBox>", opts->prefix);
 
-		ptr += sprintf(ptr, "<%sEnvelope", prefix);
-		if ( srs ) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
+		stringbuffer_aprintf(sb, "<%scoordinates>", opts->prefix);
+		asgml2_ptarray(sb, pa, opts);
+		stringbuffer_aprintf(sb, "</%scoordinates>", opts->prefix);
+		stringbuffer_aprintf(sb, "</%sBox>", opts->prefix);
 
-		ptr += sprintf(ptr, "/>");
+		ptarray_free(pa);
+	}
+}
 
-		LWSIZE_SET(v->size, ptr - output + LWVARHDRSZ);
-		return v;
+static void
+asgml3_ptarray(stringbuffer_t* sb, const POINTARRAY *pa, const GML_Options* opts)
+{
+	uint32_t i;
+	if ( ! FLAGS_GET_Z(pa->flags) )
+	{
+		for (i=0; i<pa->npoints; i++)
+		{
+			const POINT2D *pt = getPoint2d_cp(pa, i);
+			if (i) stringbuffer_append_char(sb, ' ');
+			if (IS_DEGREE(opts->opts))
+			{
+				stringbuffer_append_double(sb, pt->y, opts->precision);
+				stringbuffer_append_char(sb, ' ');
+				stringbuffer_append_double(sb, pt->x, opts->precision);
+			}
+			else
+			{
+				stringbuffer_append_double(sb, pt->x, opts->precision);
+				stringbuffer_append_char(sb, ' ');
+				stringbuffer_append_double(sb, pt->y, opts->precision);
+			}
+		}
+	}
+	else
+	{
+		for (i=0; i<pa->npoints; i++)
+		{
+			const POINT3D *pt = getPoint3d_cp(pa, i);
+			if (i) stringbuffer_append_char(sb, ' ');
+			if (IS_DEGREE(opts->opts))
+			{
+				stringbuffer_append_double(sb, pt->y, opts->precision);
+				stringbuffer_append_char(sb, ' ');
+				stringbuffer_append_double(sb, pt->x, opts->precision);
+				stringbuffer_append_char(sb, ' ');
+				stringbuffer_append_double(sb, pt->z, opts->precision);
+			}
+			else
+			{
+				stringbuffer_append_double(sb, pt->x, opts->precision);
+				stringbuffer_append_char(sb, ' ');
+				stringbuffer_append_double(sb, pt->y, opts->precision);
+				stringbuffer_append_char(sb, ' ');
+				stringbuffer_append_double(sb, pt->z, opts->precision);
+			}
+		}
+	}
+}
+
+
+static void
+asgml3_gbox(stringbuffer_t* sb, const GBOX *bbox, const GML_Options* opts)
+{
+	if (!bbox)
+	{
+		stringbuffer_aprintf(sb, "<%sEnvelope", opts->prefix);
+		if (opts->srs) stringbuffer_aprintf(sb, " srsName=\"%s\"", opts->srs);
+		stringbuffer_append(sb, "/>");
+		return;
+	}
+	else
+	{
+		int dimension = FLAGS_GET_Z(bbox->flags) ? 3 : 2;
+
+		POINTARRAY *pa = ptarray_construct_empty(FLAGS_GET_Z(bbox->flags), 0, 1);
+		POINT4D pt = { bbox->xmin, bbox->ymin, bbox->zmin, 0.0 };
+		ptarray_append_point(pa, &pt, LW_TRUE);
+
+		stringbuffer_aprintf(sb, "<%sEnvelope", opts->prefix);
+		if (opts->srs) stringbuffer_aprintf(sb, " srsName=\"%s\"", opts->srs);
+		if (IS_DIMS(opts->opts)) stringbuffer_aprintf(sb, " srsDimension=\"%d\"", dimension);
+		stringbuffer_append(sb, ">");
+
+		stringbuffer_aprintf(sb, "<%slowerCorner>", opts->prefix);
+		asgml3_ptarray(sb, pa, opts);
+		stringbuffer_aprintf(sb, "</%slowerCorner>", opts->prefix);
+
+		pt.x = bbox->xmax; pt.y = bbox->ymax; pt.z =bbox->zmax;
+		ptarray_remove_point(pa, 0);
+		ptarray_append_point(pa, &pt, LW_TRUE);
+
+		stringbuffer_aprintf(sb, "<%supperCorner>", opts->prefix);
+		asgml3_ptarray(sb, pa, opts);
+		stringbuffer_aprintf(sb, "</%supperCorner>", opts->prefix);
+
+		stringbuffer_aprintf(sb, "</%sEnvelope>", opts->prefix);
+		ptarray_free(pa);
+	}
+}
+
+static void
+asgml2_point(stringbuffer_t* sb, const LWPOINT *point, const GML_Options* opts)
+{
+
+	stringbuffer_aprintf(sb, "<%sPoint", opts->prefix);
+	if (opts->srs) stringbuffer_aprintf(sb, " srsName=\"%s\"", opts->srs);
+	if (lwpoint_is_empty(point))
+	{
+		stringbuffer_append(sb, "/>");
+		return;
+	}
+	stringbuffer_append(sb, ">");
+	stringbuffer_aprintf(sb, "<%scoordinates>", opts->prefix);
+	asgml2_ptarray(sb, point->point, opts);
+	stringbuffer_aprintf(sb, "</%scoordinates>", opts->prefix);
+	stringbuffer_aprintf(sb, "</%sPoint>", opts->prefix);
+}
+
+static void
+asgml2_line(stringbuffer_t* sb, const LWLINE *line, const GML_Options* opts)
+{
+	stringbuffer_aprintf(sb, "<%sLineString", opts->prefix);
+	if (opts->srs) stringbuffer_aprintf(sb, " srsName=\"%s\"", opts->srs);
+
+	if (lwline_is_empty(line))
+	{
+		stringbuffer_append(sb, "/>");
+		return;
+	}
+	stringbuffer_append(sb, ">");
+
+	stringbuffer_aprintf(sb, "<%scoordinates>", opts->prefix);
+	asgml2_ptarray(sb, line->points, opts);
+	stringbuffer_aprintf(sb, "</%scoordinates>", opts->prefix);
+	stringbuffer_aprintf(sb, "</%sLineString>", opts->prefix);
+}
+
+static void
+asgml2_poly(stringbuffer_t* sb, const LWPOLY *poly, const GML_Options* opts)
+{
+	uint32_t i;
+
+	stringbuffer_aprintf(sb, "<%sPolygon", opts->prefix);
+	if (opts->srs) stringbuffer_aprintf(sb, " srsName=\"%s\"", opts->srs);
+	if (lwpoly_is_empty(poly))
+	{
+		stringbuffer_append(sb, "/>");
+		return;
+	}
+	stringbuffer_append(sb, ">");
+	stringbuffer_aprintf(sb, "<%souterBoundaryIs>", opts->prefix);
+	stringbuffer_aprintf(sb, "<%sLinearRing>", opts->prefix);
+	stringbuffer_aprintf(sb, "<%scoordinates>", opts->prefix);
+	asgml2_ptarray(sb, poly->rings[0], opts);
+	stringbuffer_aprintf(sb, "</%scoordinates>", opts->prefix);
+	stringbuffer_aprintf(sb, "</%sLinearRing>", opts->prefix);
+	stringbuffer_aprintf(sb, "</%souterBoundaryIs>", opts->prefix);
+	for (i=1; i<poly->nrings; i++)
+	{
+		stringbuffer_aprintf(sb, "<%sinnerBoundaryIs>", opts->prefix);
+		stringbuffer_aprintf(sb, "<%sLinearRing>", opts->prefix);
+		stringbuffer_aprintf(sb, "<%scoordinates>", opts->prefix);
+		asgml2_ptarray(sb, poly->rings[i], opts);
+		stringbuffer_aprintf(sb, "</%scoordinates>", opts->prefix);
+		stringbuffer_aprintf(sb, "</%sLinearRing>", opts->prefix);
+		stringbuffer_aprintf(sb, "</%sinnerBoundaryIs>", opts->prefix);
+	}
+	stringbuffer_aprintf(sb, "</%sPolygon>", opts->prefix);
+}
+
+static void
+asgml2_multi(stringbuffer_t* sb, const LWCOLLECTION *col, const GML_Options* opts)
+{
+	uint32_t i;
+	const char* gmltype = "";
+	int type = col->type;
+
+	/* Subgeoms don't get an SRS */
+	GML_Options subopts = *opts;
+	subopts.srs = 0;
+
+	if 	    (type == MULTIPOINTTYPE)   gmltype = "MultiPoint";
+	else if (type == MULTILINETYPE)	   gmltype = "MultiLineString";
+	else if (type == MULTIPOLYGONTYPE) gmltype = "MultiPolygon";
+
+	/* Open outmost tag */
+	stringbuffer_aprintf(sb, "<%s%s", opts->prefix, gmltype);
+	if (opts->srs) stringbuffer_aprintf(sb, " srsName=\"%s\"", opts->srs);
+
+	if (!col->ngeoms)
+	{
+		stringbuffer_append(sb, "/>");
+		return;
+	}
+	stringbuffer_append(sb, ">");
+
+	for (i=0; i<col->ngeoms; i++)
+	{
+		LWGEOM* subgeom = col->geoms[i];
+		if (subgeom->type == POINTTYPE)
+		{
+			stringbuffer_aprintf(sb, "<%spointMember>", opts->prefix);
+			asgml2_point(sb, (LWPOINT*)subgeom, &subopts);
+			stringbuffer_aprintf(sb, "</%spointMember>", opts->prefix);
+		}
+		else if (subgeom->type == LINETYPE)
+		{
+			stringbuffer_aprintf(sb, "<%slineStringMember>", opts->prefix);
+			asgml2_line(sb, (LWLINE*)subgeom, &subopts);
+			stringbuffer_aprintf(sb, "</%slineStringMember>", opts->prefix);
+		}
+		else if (subgeom->type == POLYGONTYPE)
+		{
+			stringbuffer_aprintf(sb, "<%spolygonMember>", opts->prefix);
+			asgml2_poly(sb, (LWPOLY*)subgeom, &subopts);
+			stringbuffer_aprintf(sb, "</%spolygonMember>", opts->prefix);
+		}
 	}
 
-	if (FLAGS_GET_Z(bbox->flags)) dimension = 3;
+	/* Close outmost tag */
+	stringbuffer_aprintf(sb, "</%s%s>", opts->prefix, gmltype);
+}
 
-	pa = ptarray_construct_empty(FLAGS_GET_Z(bbox->flags), 0, 1);
+static void
+asgml2_collection(stringbuffer_t* sb, const LWCOLLECTION *col, const GML_Options* opts)
+{
+	uint32_t i;
+	LWGEOM *subgeom;
 
-	pt.x = bbox->xmin;
-	pt.y = bbox->ymin;
-	if (FLAGS_GET_Z(bbox->flags)) pt.z = bbox->zmin;
-	ptarray_append_point(pa, &pt, LW_TRUE);
+	/* Subgeoms don't get an SRS */
+	GML_Options subopts = *opts;
+	subopts.srs = 0;
 
-	size = pointArray_GMLsize(pa, precision) * 2;
-	size += ( sizeof("<Envelope><lowerCorner><upperCorner>//") + (prefixlen*3) ) * 2;
-	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
-	if ( IS_DIMS(opts) ) size += sizeof(" srsDimension=. .");
+	/* Open outmost tag */
+	stringbuffer_aprintf(sb, "<%sMultiGeometry", opts->prefix);
+	if (opts->srs) stringbuffer_aprintf(sb, " srsName=\"%s\"", opts->srs);
 
-	lwvarlena_t *v = lwalloc(size + LWVARHDRSZ);
-	ptr = output = v->data;
+	if (!col->ngeoms)
+	{
+		stringbuffer_append(sb, "/>");
+		return;
+	}
+	stringbuffer_append(sb, ">");
 
-	ptr += sprintf(ptr, "<%sEnvelope", prefix);
-	if ( srs ) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-	if ( IS_DIMS(opts) ) ptr += sprintf(ptr, " srsDimension=\"%d\"", dimension);
-	ptr += sprintf(ptr, ">");
+	for (i=0; i<col->ngeoms; i++)
+	{
+		subgeom = col->geoms[i];
+		stringbuffer_aprintf(sb, "<%sgeometryMember>", opts->prefix);
+		switch (subgeom->type)
+		{
+			case POINTTYPE:
+				asgml2_point(sb, (LWPOINT*)subgeom, &subopts);
+				break;
+			case LINETYPE:
+				asgml2_line(sb, (LWLINE*)subgeom, &subopts);;
+				break;
+			case POLYGONTYPE:
+				asgml2_poly(sb, (LWPOLY*)subgeom, &subopts);
+				break;
+			case MULTIPOINTTYPE:
+			case MULTILINETYPE:
+			case MULTIPOLYGONTYPE:
+				asgml2_multi(sb, (LWCOLLECTION*)subgeom, &subopts);
+				break;
+			case COLLECTIONTYPE:
+				asgml2_collection(sb, (LWCOLLECTION*)subgeom, &subopts);
+				break;
+		}
+		stringbuffer_aprintf(sb, "</%sgeometryMember>", opts->prefix);
+	}
+	stringbuffer_aprintf(sb, "</%sMultiGeometry>", opts->prefix);
+}
 
-	ptr += sprintf(ptr, "<%slowerCorner>", prefix);
-	ptr += pointArray_toGML3(pa, ptr, precision, opts);
-	ptr += sprintf(ptr, "</%slowerCorner>", prefix);
 
-	ptarray_remove_point(pa, 0);
-	pt.x = bbox->xmax;
-	pt.y = bbox->ymax;
-	if (FLAGS_GET_Z(bbox->flags)) pt.z = bbox->zmax;
-	ptarray_append_point(pa, &pt, LW_TRUE);
 
-	ptr += sprintf(ptr, "<%supperCorner>", prefix);
-	ptr += pointArray_toGML3(pa, ptr, precision, opts);
-	ptr += sprintf(ptr, "</%supperCorner>", prefix);
+static void
+asgml3_point(stringbuffer_t* sb, const LWPOINT *point, const GML_Options* opts)
+{
+	int dimension = FLAGS_GET_Z(point->flags) ? 3 : 2;
 
-	ptr += sprintf(ptr, "</%sEnvelope>", prefix);
+	stringbuffer_aprintf(sb, "<%sPoint", opts->prefix);
+	if (opts->srs) stringbuffer_aprintf(sb, " srsName=\"%s\"", opts->srs);
+	if (opts->id)  stringbuffer_aprintf(sb, " %sid=\"%s\"", opts->prefix, opts->id);
+	if (lwpoint_is_empty(point))
+	{
+		stringbuffer_append(sb, "/>");
+		return;
+	}
 
-	ptarray_free(pa);
+	stringbuffer_append(sb, ">");
+	if (IS_DIMS(opts->opts))
+		stringbuffer_aprintf(sb, "<%spos srsDimension=\"%d\">", opts->prefix, dimension);
+	else
+		stringbuffer_aprintf(sb, "<%spos>", opts->prefix);
+	asgml3_ptarray(sb, point->point, opts);
+	stringbuffer_aprintf(sb, "</%spos></%sPoint>", opts->prefix, opts->prefix);
+}
 
-	LWSIZE_SET(v->size, ptr - output + LWVARHDRSZ);
-	return v;
+static void
+asgml3_line(stringbuffer_t* sb, const LWLINE *line, const GML_Options* opts)
+{
+	int dimension = FLAGS_GET_Z(line->flags) ? 3 : 2;
+	int shortline = (opts->opts & LW_GML_SHORTLINE);
+
+	if (shortline)
+	{
+		stringbuffer_aprintf(sb, "<%sLineString", opts->prefix);
+	}
+	else
+	{
+		stringbuffer_aprintf(sb, "<%sCurve", opts->prefix);
+	}
+
+	if (opts->srs) stringbuffer_aprintf(sb, " srsName=\"%s\"", opts->srs);
+	if (opts->id)  stringbuffer_aprintf(sb, " %sid=\"%s\"", opts->prefix, opts->id);
+
+	if (lwline_is_empty(line))
+	{
+		stringbuffer_append(sb, "/>");
+		return;
+	}
+	stringbuffer_append(sb, ">");
+
+	if (!shortline)
+	{
+		stringbuffer_aprintf(sb, "<%ssegments>", opts->prefix);
+		stringbuffer_aprintf(sb, "<%sLineStringSegment>", opts->prefix);
+	}
+
+	if (IS_DIMS(opts->opts))
+	{
+		stringbuffer_aprintf(sb, "<%sposList srsDimension=\"%d\">", opts->prefix, dimension);
+	}
+	else
+	{
+		stringbuffer_aprintf(sb, "<%sposList>", opts->prefix);
+	}
+
+	asgml3_ptarray(sb, line->points, opts);
+	stringbuffer_aprintf(sb, "</%sposList>", opts->prefix);
+
+	if (shortline)
+	{
+		stringbuffer_aprintf(sb, "</%sLineString>", opts->prefix);
+	}
+	else
+	{
+		stringbuffer_aprintf(sb, "</%sLineStringSegment>", opts->prefix);
+		stringbuffer_aprintf(sb, "</%ssegments>", opts->prefix);
+		stringbuffer_aprintf(sb, "</%sCurve>", opts->prefix);
+	}
+}
+
+static void
+asgml3_poly(stringbuffer_t* sb, const LWPOLY *poly, const GML_Options* opts)
+{
+	uint32_t i;
+	int dimension = FLAGS_GET_Z(poly->flags) ? 3 : 2;
+
+	stringbuffer_aprintf(sb,
+		opts->is_patch ? "<%sPolygonPatch" : "<%sPolygon",
+		opts->prefix);
+
+	if (opts->srs) stringbuffer_aprintf(sb, " srsName=\"%s\"", opts->srs);
+	if (opts->id)  stringbuffer_aprintf(sb, " %sid=\"%s\"", opts->prefix, opts->id);
+
+	if (lwpoly_is_empty(poly))
+	{
+		stringbuffer_append(sb, "/>");
+		return;
+	}
+	stringbuffer_append(sb, ">");
+
+	stringbuffer_aprintf(sb, "<%sexterior>", opts->prefix);
+	stringbuffer_aprintf(sb, "<%sLinearRing>", opts->prefix);
+	if (IS_DIMS(opts->opts))
+		stringbuffer_aprintf(sb, "<%sposList srsDimension=\"%d\">", opts->prefix, dimension);
+	else
+		stringbuffer_aprintf(sb, "<%sposList>", opts->prefix);
+
+	asgml3_ptarray(sb, poly->rings[0], opts);
+	stringbuffer_aprintf(sb, "</%sposList>", opts->prefix);
+	stringbuffer_aprintf(sb, "</%sLinearRing>", opts->prefix);
+	stringbuffer_aprintf(sb, "</%sexterior>", opts->prefix);
+	for (i=1; i<poly->nrings; i++)
+	{
+		stringbuffer_aprintf(sb, "<%sinterior>", opts->prefix);
+		stringbuffer_aprintf(sb, "<%sLinearRing>", opts->prefix);
+		if (IS_DIMS(opts->opts))
+			stringbuffer_aprintf(sb, "<%sposList srsDimension=\"%d\">", opts->prefix, dimension);
+		else
+			stringbuffer_aprintf(sb, "<%sposList>", opts->prefix);
+		asgml3_ptarray(sb, poly->rings[i], opts);
+		stringbuffer_aprintf(sb, "</%sposList>", opts->prefix);
+		stringbuffer_aprintf(sb, "</%sLinearRing>", opts->prefix);
+		stringbuffer_aprintf(sb, "</%sinterior>", opts->prefix);
+	}
+
+	stringbuffer_aprintf(sb,
+		opts->is_patch ? "</%sPolygonPatch>" : "</%sPolygon>",
+		opts->prefix);
+}
+
+
+static void
+asgml3_circstring(stringbuffer_t* sb, const LWCIRCSTRING *circ, const GML_Options* opts)
+{
+	int dimension = FLAGS_GET_Z(circ->flags) ? 3 : 2;
+
+	stringbuffer_aprintf(sb, "<%sCurve", opts->prefix);
+	if (opts->srs)
+	{
+		stringbuffer_aprintf(sb, " srsName=\"%s\"", opts->srs);
+	}
+	if (opts->id)
+	{
+		stringbuffer_aprintf(sb, " %sid=\"%s\"", opts->prefix, opts->id);
+	}
+	stringbuffer_append(sb, ">");
+	stringbuffer_aprintf(sb, "<%ssegments>", opts->prefix);
+	stringbuffer_aprintf(sb, "<%sArcString>", opts->prefix);
+	stringbuffer_aprintf(sb, "<%sposList", opts->prefix);
+
+	if (IS_DIMS(opts->opts))
+	{
+		stringbuffer_aprintf(sb, " srsDimension=\"%d\"", dimension);
+	}
+	stringbuffer_append(sb, ">");
+
+	asgml3_ptarray(sb, circ->points, opts);
+
+	stringbuffer_aprintf(sb, "</%sposList>", opts->prefix);
+	stringbuffer_aprintf(sb, "</%sArcString>", opts->prefix);
+	stringbuffer_aprintf(sb, "</%ssegments>", opts->prefix);
+	stringbuffer_aprintf(sb, "</%sCurve>", opts->prefix);
+}
+
+static void
+asgml3_compound(stringbuffer_t* sb, const LWCOMPOUND *col, const GML_Options* opts)
+{
+	LWGEOM *subgeom;
+	uint32_t i;
+	int dimension = FLAGS_GET_Z(col->flags) ? 3 : 2;
+
+	stringbuffer_aprintf(sb, "<%sCurve", opts->prefix);
+	if (opts->srs) stringbuffer_aprintf(sb, " srsName=\"%s\"", opts->srs);
+	if (opts->id) stringbuffer_aprintf(sb, " %sid=\"%s\"", opts->prefix, opts->id);
+	stringbuffer_append(sb, ">");
+	stringbuffer_aprintf(sb, "<%ssegments>", opts->prefix);
+
+	for (i = 0; i < col->ngeoms; ++i)
+	{
+		subgeom = col->geoms[i];
+
+		if (subgeom->type != LINETYPE && subgeom->type != CIRCSTRINGTYPE)
+			continue;
+
+		if (subgeom->type == LINETYPE)
+		{
+			stringbuffer_aprintf(sb, "<%sLineStringSegment>", opts->prefix);
+			stringbuffer_aprintf(sb, "<%sposList", opts->prefix);
+			if (IS_DIMS(opts->opts))
+				stringbuffer_aprintf(sb, " srsDimension=\"%d\"", dimension);
+
+			stringbuffer_append(sb, ">");
+			asgml3_ptarray(sb, ((LWCIRCSTRING*)subgeom)->points, opts);
+			stringbuffer_aprintf(sb, "</%sposList>", opts->prefix);
+			stringbuffer_aprintf(sb, "</%sLineStringSegment>", opts->prefix);
+		}
+		else if( subgeom->type == CIRCSTRINGTYPE )
+		{
+			stringbuffer_aprintf(sb, "<%sArcString>", opts->prefix);
+			stringbuffer_aprintf(sb, "<%sposList", opts->prefix);
+			if (IS_DIMS(opts->opts))
+			{
+				stringbuffer_aprintf(sb, " srsDimension=\"%d\"", dimension);
+			}
+			stringbuffer_append(sb, ">");
+			asgml3_ptarray(sb, ((LWLINE*)subgeom)->points, opts);
+			stringbuffer_aprintf(sb, "</%sposList>", opts->prefix);
+			stringbuffer_aprintf(sb, "</%sArcString>", opts->prefix);
+		}
+	}
+	stringbuffer_aprintf(sb, "</%ssegments>", opts->prefix);
+	stringbuffer_aprintf(sb, "</%sCurve>", opts->prefix);
+}
+
+static void
+asgml3_curvepoly(stringbuffer_t* sb, const LWCURVEPOLY* poly, const GML_Options* opts)
+{
+	uint32_t i;
+	LWGEOM* subgeom;
+	int dimension = FLAGS_GET_Z(poly->flags) ? 3 : 2;
+
+	/* Subgeoms don't get an SRS */
+	GML_Options subopts = *opts;
+	subopts.srs = 0;
+
+	stringbuffer_aprintf(sb, "<%sPolygon", opts->prefix);
+	if (opts->srs)
+	{
+		stringbuffer_aprintf(sb, " srsName=\"%s\"", opts->srs);
+	}
+	if (opts->id)
+	{
+		stringbuffer_aprintf(sb, " %sid=\"%s\"", opts->prefix, opts->id);
+	}
+	stringbuffer_append(sb, ">");
+
+	for (i = 0; i < poly->nrings; ++i)
+	{
+		stringbuffer_aprintf(sb,
+			i ? "<%sinterior>" : "<%sexterior>",
+			opts->prefix);
+
+		subgeom = poly->rings[i];
+		if (subgeom->type == LINETYPE)
+		{
+			stringbuffer_aprintf(sb, "<%sLinearRing>", opts->prefix);
+			stringbuffer_aprintf(sb, "<%sposList", opts->prefix);
+			if (IS_DIMS(opts->opts))
+			{
+				stringbuffer_aprintf(sb, " srsDimension=\"%d\"", dimension);
+			}
+			stringbuffer_append(sb, ">");
+			asgml3_ptarray(sb, ((LWLINE*)subgeom)->points, opts);
+			stringbuffer_aprintf(sb, "</%sposList>", opts->prefix);
+			stringbuffer_aprintf(sb, "</%sLinearRing>", opts->prefix);
+		}
+		else if (subgeom->type == CIRCSTRINGTYPE)
+		{
+			stringbuffer_aprintf(sb, "<%sRing>", opts->prefix);
+			stringbuffer_aprintf(sb, "<%scurveMember>", opts->prefix);
+			asgml3_circstring(sb, (LWCIRCSTRING*)subgeom, &subopts);
+			stringbuffer_aprintf(sb, "</%scurveMember>", opts->prefix);
+			stringbuffer_aprintf(sb, "</%sRing>", opts->prefix);
+		}
+		else if (subgeom->type == COMPOUNDTYPE)
+		{
+			stringbuffer_aprintf(sb, "<%sRing>", opts->prefix);
+			stringbuffer_aprintf(sb, "<%scurveMember>", opts->prefix);
+			asgml3_compound(sb, (LWCOMPOUND*)subgeom, &subopts);
+			stringbuffer_aprintf(sb, "</%scurveMember>", opts->prefix);
+			stringbuffer_aprintf(sb, "</%sRing>", opts->prefix);
+		}
+
+		stringbuffer_aprintf(sb,
+			i ? "</%sinterior>" : "</%sexterior>",
+			opts->prefix);
+	}
+	stringbuffer_aprintf(sb, "</%sPolygon>", opts->prefix);
+}
+
+static void
+asgml3_triangle(stringbuffer_t* sb, const LWTRIANGLE *triangle, const GML_Options* opts)
+{
+	int dimension = FLAGS_GET_Z(triangle->flags) ? 3 : 2;
+
+	stringbuffer_aprintf(sb, "<%sTriangle", opts->prefix);
+	if (opts->srs) stringbuffer_aprintf(sb, " srsName=\"%s\"", opts->srs);
+	if (opts->id)  stringbuffer_aprintf(sb, " %sid=\"%s\"", opts->prefix, opts->id);
+	stringbuffer_append(sb, ">");
+
+	stringbuffer_aprintf(sb, "<%sexterior>", opts->prefix);
+	stringbuffer_aprintf(sb, "<%sLinearRing>", opts->prefix);
+	if (IS_DIMS(opts->opts))
+		stringbuffer_aprintf(sb, "<%sposList srsDimension=\"%d\">", opts->prefix, dimension);
+	else
+		stringbuffer_aprintf(sb, "<%sposList>", opts->prefix);
+
+	asgml3_ptarray(sb, triangle->points, opts);
+	stringbuffer_aprintf(sb, "</%sposList>", opts->prefix);
+	stringbuffer_aprintf(sb, "</%sLinearRing>", opts->prefix);
+	stringbuffer_aprintf(sb, "</%sexterior>", opts->prefix);
+
+	stringbuffer_aprintf(sb, "</%sTriangle>", opts->prefix);
+}
+
+
+static void
+asgml3_multi(stringbuffer_t* sb, const LWCOLLECTION *col, const GML_Options* opts)
+{
+	int type = col->type;
+	uint32_t i;
+	LWGEOM *subgeom;
+	/* Subgeoms don't get an SRS */
+	GML_Options subopts = *opts;
+	subopts.srs = 0;
+
+	const char* gmltype = "";
+
+	if 	    (type == MULTIPOINTTYPE)   gmltype = "MultiPoint";
+	else if (type == MULTILINETYPE)    gmltype = "MultiCurve";
+	else if (type == MULTIPOLYGONTYPE) gmltype = "MultiSurface";
+
+	/* Open outmost tag */
+	stringbuffer_aprintf(sb, "<%s%s", opts->prefix, gmltype);
+	if (opts->srs) stringbuffer_aprintf(sb, " srsName=\"%s\"", opts->srs);
+	if (opts->id)  stringbuffer_aprintf(sb, " %sid=\"%s\"", opts->prefix, opts->id);
+
+	if (!col->ngeoms)
+	{
+		stringbuffer_append(sb, "/>");
+		return;
+	}
+	stringbuffer_append(sb, ">");
+
+	for (i=0; i<col->ngeoms; i++)
+	{
+		subgeom = col->geoms[i];
+		if (subgeom->type == POINTTYPE)
+		{
+			stringbuffer_aprintf(sb, "<%spointMember>", opts->prefix);
+			asgml3_point(sb, (LWPOINT*)subgeom, &subopts);
+			stringbuffer_aprintf(sb, "</%spointMember>", opts->prefix);
+		}
+		else if (subgeom->type == LINETYPE)
+		{
+			stringbuffer_aprintf(sb, "<%scurveMember>", opts->prefix);
+			asgml3_line(sb, (LWLINE*)subgeom, &subopts);
+			stringbuffer_aprintf(sb, "</%scurveMember>", opts->prefix);
+		}
+		else if (subgeom->type == POLYGONTYPE)
+		{
+			stringbuffer_aprintf(sb, "<%ssurfaceMember>", opts->prefix);
+			asgml3_poly(sb, (LWPOLY*)subgeom, &subopts);
+			stringbuffer_aprintf(sb, "</%ssurfaceMember>", opts->prefix);
+		}
+	}
+
+	/* Close outmost tag */
+	stringbuffer_aprintf(sb, "</%s%s>", opts->prefix, gmltype);
+}
+
+/*
+ * Don't call this with single-geoms inspected!
+ */
+static void
+asgml3_tin(stringbuffer_t* sb, const LWTIN *tin, const GML_Options* opts)
+{
+	uint32_t i;
+
+	/* Subgeoms don't get an SRS */
+	GML_Options subopts = *opts;
+	subopts.srs = 0;
+
+	/* Open outmost tag */
+	stringbuffer_aprintf(sb, "<%sTin", opts->prefix);
+	if (opts->srs)
+		stringbuffer_aprintf(sb, " srsName=\"%s\"", opts->srs);
+	if (opts->id)
+		stringbuffer_aprintf(sb, " %sid=\"%s\"", opts->prefix, opts->id);
+	stringbuffer_append(sb, ">");
+
+	stringbuffer_aprintf(sb, "<%strianglePatches>", opts->prefix);
+	for (i=0; i<tin->ngeoms; i++)
+	{
+		asgml3_triangle(sb, tin->geoms[i], &subopts);
+	}
+
+	/* Close outmost tag */
+	stringbuffer_aprintf(sb, "</%strianglePatches>", opts->prefix);
+	stringbuffer_aprintf(sb, "</%sTin>", opts->prefix);
+}
+
+static void
+asgml3_psurface(stringbuffer_t* sb, const LWPSURFACE *psur, const GML_Options* opts)
+{
+	uint32_t i;
+
+	/* Subgeoms don't get an SRS */
+	GML_Options subopts = *opts;
+	subopts.srs = 0;
+	subopts.is_patch = 1;
+
+	/* Open outmost tag */
+	stringbuffer_aprintf(sb, "<%sPolyhedralSurface", opts->prefix);
+	if (opts->srs)
+		stringbuffer_aprintf(sb, " srsName=\"%s\"", opts->srs);
+	if (opts->id)
+		stringbuffer_aprintf(sb, " %sid=\"%s\"", opts->prefix, opts->id);
+	stringbuffer_append(sb, ">");
+	stringbuffer_aprintf(sb, "<%spolygonPatches>", opts->prefix);
+
+	for (i=0; i<psur->ngeoms; i++)
+	{
+		asgml3_poly(sb, psur->geoms[i], &subopts);
+	}
+
+	/* Close outmost tag */
+	stringbuffer_aprintf(sb, "</%spolygonPatches>", opts->prefix);
+	stringbuffer_aprintf(sb, "</%sPolyhedralSurface>", opts->prefix);
+}
+
+
+static void
+asgml3_collection(stringbuffer_t* sb, const LWCOLLECTION *col, const GML_Options* opts)
+{
+	uint32_t i;
+	LWGEOM *subgeom;
+
+	/* Subgeoms don't get an SRS */
+	GML_Options subopts = *opts;
+	subopts.srs = 0;
+
+	/* Open outmost tag */
+	stringbuffer_aprintf(sb, "<%sMultiGeometry", opts->prefix);
+	if (opts->srs) stringbuffer_aprintf(sb, " srsName=\"%s\"", opts->srs);
+	if (opts->id)  stringbuffer_aprintf(sb, " %sid=\"%s\"", opts->prefix, opts->id);
+
+	if (!col->ngeoms)
+	{
+		stringbuffer_append(sb, "/>");
+		return;
+	}
+	stringbuffer_append(sb, ">");
+
+	for (i=0; i<col->ngeoms; i++)
+	{
+		subgeom = col->geoms[i];
+		stringbuffer_aprintf(sb, "<%sgeometryMember>", opts->prefix);
+
+		switch (subgeom->type)
+		{
+			case POINTTYPE:
+				asgml3_point(sb, (LWPOINT*)subgeom, &subopts);
+				break;
+			case LINETYPE:
+				asgml3_line(sb, (LWLINE*)subgeom, &subopts);
+				break;
+			case POLYGONTYPE:
+				asgml3_poly(sb, (LWPOLY*)subgeom, &subopts);
+				break;
+			case MULTIPOINTTYPE:
+			case MULTILINETYPE:
+			case MULTIPOLYGONTYPE:
+				asgml3_multi(sb, (LWCOLLECTION*)subgeom, &subopts);
+				break;
+			case COLLECTIONTYPE:
+				asgml3_collection(sb, (LWCOLLECTION*)subgeom, &subopts);
+				break;
+			default:
+				lwerror("asgml3_collection: unknown geometry type");
+		}
+		stringbuffer_aprintf(sb, "</%sgeometryMember>", opts->prefix);
+	}
+
+	/* Close outmost tag */
+	stringbuffer_aprintf(sb, "</%sMultiGeometry>", opts->prefix);
+}
+
+static void
+asgml3_multicurve(stringbuffer_t*sb, const LWMCURVE* cur, const GML_Options* opts)
+{
+	LWGEOM* subgeom;
+	uint32_t i;
+
+	stringbuffer_aprintf(sb, "<%sMultiCurve", opts->prefix);
+	if (opts->srs)
+	{
+		stringbuffer_aprintf(sb, " srsName=\"%s\"", opts->srs);
+	}
+	if (opts->id)
+	{
+		stringbuffer_aprintf(sb, " %sid=\"%s\"", opts->prefix, opts->id);
+	}
+	stringbuffer_append(sb, ">");
+
+	for (i = 0; i < cur->ngeoms; ++i)
+	{
+		stringbuffer_aprintf(sb, "<%scurveMember>", opts->prefix);
+		subgeom = cur->geoms[i];
+		if (subgeom->type == LINETYPE)
+		{
+			asgml3_line(sb, (LWLINE*)subgeom, opts);
+		}
+		else if (subgeom->type == CIRCSTRINGTYPE)
+		{
+			asgml3_circstring(sb, (LWCIRCSTRING*)subgeom, opts);
+		}
+		else if (subgeom->type == COMPOUNDTYPE)
+		{
+			asgml3_compound(sb, (LWCOMPOUND*)subgeom, opts);
+		}
+		stringbuffer_aprintf(sb, "</%scurveMember>", opts->prefix);
+	}
+	stringbuffer_aprintf(sb, "</%sMultiCurve>", opts->prefix);
+}
+
+
+static void
+asgml3_multisurface(stringbuffer_t* sb, const LWMSURFACE *sur, const GML_Options* opts)
+{
+	uint32_t i;
+	LWGEOM* subgeom;
+
+	stringbuffer_aprintf(sb, "<%sMultiSurface", opts->prefix);
+	if (opts->srs) stringbuffer_aprintf(sb, " srsName=\"%s\"", opts->srs);
+	if (opts->id)  stringbuffer_aprintf(sb, " %sid=\"%s\"", opts->prefix, opts->id);
+
+	stringbuffer_append(sb, ">");
+
+	for (i = 0; i < sur->ngeoms; ++i)
+	{
+		subgeom = sur->geoms[i];
+		if (subgeom->type == POLYGONTYPE)
+		{
+			asgml3_poly(sb, (LWPOLY*)sur->geoms[i], opts);
+		}
+		else if (subgeom->type == CURVEPOLYTYPE)
+		{
+			asgml3_curvepoly(sb, (LWCURVEPOLY*)sur->geoms[i], opts);
+		}
+	}
+	stringbuffer_aprintf(sb, "</%sMultiSurface>", opts->prefix);
+}
+
+extern lwvarlena_t *
+lwgeom_to_gml2(const LWGEOM *geom, const char *srs, int precision, const char *prefix)
+{
+	stringbuffer_t sb;
+
+	/* Initialize options */
+	GML_Options gmlopts;
+	memset(&gmlopts, 0, sizeof(gmlopts));
+	gmlopts.srs = srs;
+	gmlopts.precision = precision;
+	gmlopts.prefix = prefix;
+
+	/* Return null for empty (#1377) */
+	if (lwgeom_is_empty(geom))
+		return NULL;
+
+	stringbuffer_init_varlena(&sb);
+
+	switch (geom->type)
+	{
+	case POINTTYPE:
+		asgml2_point(&sb, (LWPOINT*)geom, &gmlopts);
+		break;
+
+	case LINETYPE:
+		asgml2_line(&sb, (LWLINE*)geom, &gmlopts);
+		break;
+
+	case POLYGONTYPE:
+		asgml2_poly(&sb, (LWPOLY*)geom, &gmlopts);
+		break;
+
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+		asgml2_multi(&sb, (LWCOLLECTION*)geom, &gmlopts);
+		break;
+
+	case COLLECTIONTYPE:
+		asgml2_collection(&sb, (LWCOLLECTION*)geom, &gmlopts);
+		break;
+
+	case TRIANGLETYPE:
+	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
+		lwerror("Cannot convert %s to GML2. Try ST_AsGML(3, <geometry>) to generate GML3.", lwtype_name(geom->type));
+		stringbuffer_release(&sb);
+		return NULL;
+
+	default:
+		lwerror("lwgeom_to_gml2: '%s' geometry type not supported", lwtype_name(geom->type));
+		stringbuffer_release(&sb);
+		return NULL;
+	}
+
+	return stringbuffer_getvarlena(&sb);
+}
+
+extern lwvarlena_t *
+lwgeom_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix, const char *id)
+{
+	stringbuffer_t sb;
+
+	/* Initialize options */
+	GML_Options gmlopts;
+	memset(&gmlopts, 0, sizeof(gmlopts));
+	gmlopts.srs = srs;
+	gmlopts.precision = precision;
+	gmlopts.opts = opts;
+	gmlopts.prefix = prefix;
+	gmlopts.id = id;
+
+	/* Return null for empty (#1377) */
+	if (lwgeom_is_empty(geom))
+		return NULL;
+
+	stringbuffer_init_varlena(&sb);
+
+	switch (geom->type)
+	{
+	case POINTTYPE:
+		asgml3_point(&sb, (LWPOINT*)geom, &gmlopts);
+		break;
+
+	case LINETYPE:
+		asgml3_line(&sb, (LWLINE*)geom, &gmlopts);
+		break;
+
+	case CIRCSTRINGTYPE:
+		asgml3_circstring(&sb, (LWCIRCSTRING*)geom, &gmlopts );
+		break;
+
+	case POLYGONTYPE:
+		asgml3_poly(&sb, (LWPOLY*)geom, &gmlopts);
+		break;
+
+	case CURVEPOLYTYPE:
+		asgml3_curvepoly(&sb, (LWCURVEPOLY*)geom, &gmlopts);
+		break;
+
+	case TRIANGLETYPE:
+		asgml3_triangle(&sb, (LWTRIANGLE*)geom, &gmlopts);
+		break;
+
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+		asgml3_multi(&sb, (LWCOLLECTION*)geom, &gmlopts);
+		break;
+
+	case POLYHEDRALSURFACETYPE:
+		asgml3_psurface(&sb, (LWPSURFACE*)geom, &gmlopts);
+		break;
+
+	case TINTYPE:
+		asgml3_tin(&sb, (LWTIN*)geom, &gmlopts);
+		break;
+
+	case COLLECTIONTYPE:
+		asgml3_collection(&sb, (LWCOLLECTION*)geom, &gmlopts);
+		break;
+
+	case COMPOUNDTYPE:
+		asgml3_compound(&sb, (LWCOMPOUND*)geom, &gmlopts );
+		break;
+
+	case MULTICURVETYPE:
+		asgml3_multicurve(&sb, (LWMCURVE*)geom, &gmlopts );
+		break;
+
+	case MULTISURFACETYPE:
+		asgml3_multisurface(&sb, (LWMSURFACE*)geom, &gmlopts );
+		break;
+
+	default:
+		lwerror("lwgeom_to_gml3: '%s' geometry type not supported", lwtype_name(geom->type));
+		stringbuffer_release(&sb);
+		return NULL;
+	}
+
+	return stringbuffer_getvarlena(&sb);
 }
 
 extern lwvarlena_t *
 lwgeom_extent_to_gml2(const LWGEOM *geom, const char *srs, int precision, const char *prefix)
 {
 	const GBOX* bbox = lwgeom_get_bbox(geom);
-	return gbox_to_gml2(bbox, srs, precision, prefix);
+	stringbuffer_t sb;
+
+	/* Initialize options */
+	GML_Options gmlopts;
+	memset(&gmlopts, 0, sizeof(gmlopts));
+	gmlopts.srs = srs;
+	gmlopts.precision = precision;
+	gmlopts.prefix = prefix;
+
+	stringbuffer_init_varlena(&sb);
+	asgml2_gbox(&sb, bbox, &gmlopts);
+	return stringbuffer_getvarlena(&sb);
 }
 
 extern lwvarlena_t *
 lwgeom_extent_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix)
 {
 	const GBOX* bbox = lwgeom_get_bbox(geom);
-	return gbox_to_gml3(bbox, srs, precision, opts, prefix);
-}
-
-
-/**
- *  @brief VERSION GML 2
- *  	takes a GEOMETRY and returns a GML2 representation
- */
-extern lwvarlena_t *
-lwgeom_to_gml2(const LWGEOM *geom, const char *srs, int precision, const char *prefix)
-{
-	int type = geom->type;
-
-	/* Return null for empty (#1377) */
-	if ( lwgeom_is_empty(geom) )
-		return NULL;
-
-	switch (type)
-	{
-	case POINTTYPE:
-		return asgml2_point((LWPOINT*)geom, srs, precision, prefix);
-
-	case LINETYPE:
-		return asgml2_line((LWLINE*)geom, srs, precision, prefix);
-
-	case POLYGONTYPE:
-		return asgml2_poly((LWPOLY*)geom, srs, precision, prefix);
-
-	case MULTIPOINTTYPE:
-	case MULTILINETYPE:
-	case MULTIPOLYGONTYPE:
-		return asgml2_multi((LWCOLLECTION*)geom, srs, precision, prefix);
-
-	case COLLECTIONTYPE:
-		return asgml2_collection((LWCOLLECTION*)geom, srs, precision, prefix);
-
-	case TRIANGLETYPE:
-	case POLYHEDRALSURFACETYPE:
-	case TINTYPE:
-		lwerror("Cannot convert %s to GML2. Try ST_AsGML(3, <geometry>) to generate GML3.", lwtype_name(type));
-		return NULL;
-
-	default:
-		lwerror("lwgeom_to_gml2: '%s' geometry type not supported", lwtype_name(type));
-		return NULL;
-	}
-}
-
-static size_t
-asgml2_point_size(const LWPOINT *point, const char *srs, int precision, const char* prefix)
-{
-	int size;
-	size_t prefixlen = strlen(prefix);
-
-	size = pointArray_GMLsize(point->point, precision);
-	size += ( sizeof("<point><coordinates>/") + (prefixlen*2) ) * 2;
-	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
-	return size;
-}
-
-static size_t
-asgml2_point_buf(const LWPOINT *point, const char *srs, char *output, int precision, const char* prefix)
-{
-	char *ptr = output;
-
-	ptr += sprintf(ptr, "<%sPoint", prefix);
-	if ( srs ) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-	if ( lwpoint_is_empty(point) )
-	{
-		ptr += sprintf(ptr, "/>");
-		return (ptr-output);
-	}
-	ptr += sprintf(ptr, ">");
-	ptr += sprintf(ptr, "<%scoordinates>", prefix);
-	ptr += pointArray_toGML2(point->point, ptr, precision);
-	ptr += sprintf(ptr, "</%scoordinates></%sPoint>", prefix, prefix);
-
-	return (ptr-output);
-}
-
-static lwvarlena_t *
-asgml2_point(const LWPOINT *point, const char *srs, int precision, const char *prefix)
-{
-	int size = asgml2_point_size(point, srs, precision, prefix);
-	lwvarlena_t *output = lwalloc(LWVARHDRSZ + size);
-	size = asgml2_point_buf(point, srs, output->data, precision, prefix);
-	LWSIZE_SET(output->size, size + LWVARHDRSZ);
-	return output;
-}
-
-static size_t
-asgml2_line_size(const LWLINE *line, const char *srs, int precision, const char *prefix)
-{
-	int size;
-	size_t prefixlen = strlen(prefix);
-
-	size = pointArray_GMLsize(line->points, precision);
-	size += ( sizeof("<linestring><coordinates>/") + (prefixlen*2) ) * 2;
-	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
-	return size;
-}
-
-static size_t
-asgml2_line_buf(const LWLINE *line, const char *srs, char *output, int precision,
-                const char *prefix)
-{
-	char *ptr=output;
-
-	ptr += sprintf(ptr, "<%sLineString", prefix);
-	if ( srs ) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-
-	if ( lwline_is_empty(line) )
-	{
-		ptr += sprintf(ptr, "/>");
-		return (ptr-output);
-	}
-	ptr += sprintf(ptr, ">");
-
-	ptr += sprintf(ptr, "<%scoordinates>", prefix);
-	ptr += pointArray_toGML2(line->points, ptr, precision);
-	ptr += sprintf(ptr, "</%scoordinates></%sLineString>", prefix, prefix);
-
-	return (ptr-output);
-}
-
-static lwvarlena_t *
-asgml2_line(const LWLINE *line, const char *srs, int precision, const char *prefix)
-{
-	int size = asgml2_line_size(line, srs, precision, prefix);
-	lwvarlena_t *output = lwalloc(LWVARHDRSZ + size);
-	size = asgml2_line_buf(line, srs, output->data, precision, prefix);
-	LWSIZE_SET(output->size, size + LWVARHDRSZ);
-	return output;
-}
-
-static size_t
-asgml2_poly_size(const LWPOLY *poly, const char *srs, int precision, const char *prefix)
-{
-	size_t size;
-	uint32_t i;
-	size_t prefixlen = strlen(prefix);
-
-	size = sizeof("<polygon></polygon>") + prefixlen*2;
-	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
-	if ( lwpoly_is_empty(poly) )
-		return size;
-	size += ( sizeof("<outerboundaryis><linearring><coordinates>/") + ( prefixlen*3) ) * 2;
-	size += ( sizeof("<innerboundaryis><linearring><coordinates>/") + ( prefixlen*2) ) * 2 * poly->nrings;
-
-	for (i=0; i<poly->nrings; i++)
-		size += pointArray_GMLsize(poly->rings[i], precision);
-
-	return size;
-}
-
-static size_t
-asgml2_poly_buf(const LWPOLY *poly, const char *srs, char *output, int precision,
-                const char *prefix)
-{
-	uint32_t i;
-	char *ptr=output;
-
-	ptr += sprintf(ptr, "<%sPolygon", prefix);
-	if ( srs ) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-	if ( lwpoly_is_empty(poly) )
-	{
-		ptr += sprintf(ptr, "/>");
-		return (ptr-output);
-	}
-	ptr += sprintf(ptr, ">");
-	ptr += sprintf(ptr, "<%souterBoundaryIs><%sLinearRing><%scoordinates>",
-	               prefix, prefix, prefix);
-	ptr += pointArray_toGML2(poly->rings[0], ptr, precision);
-	ptr += sprintf(ptr, "</%scoordinates></%sLinearRing></%souterBoundaryIs>", prefix, prefix, prefix);
-	for (i=1; i<poly->nrings; i++)
-	{
-		ptr += sprintf(ptr, "<%sinnerBoundaryIs><%sLinearRing><%scoordinates>", prefix, prefix, prefix);
-		ptr += pointArray_toGML2(poly->rings[i], ptr, precision);
-		ptr += sprintf(ptr, "</%scoordinates></%sLinearRing></%sinnerBoundaryIs>", prefix, prefix, prefix);
-	}
-	ptr += sprintf(ptr, "</%sPolygon>", prefix);
-
-	return (ptr-output);
-}
-
-static lwvarlena_t *
-asgml2_poly(const LWPOLY *poly, const char *srs, int precision, const char *prefix)
-{
-	int size = asgml2_poly_size(poly, srs, precision, prefix);
-	lwvarlena_t *output = lwalloc(LWVARHDRSZ + size);
-	size = asgml2_poly_buf(poly, srs, output->data, precision, prefix);
-	LWSIZE_SET(output->size, size + LWVARHDRSZ);
-	return output;
-}
-
-/*
- * Compute max size required for GML version of this
- * inspected geometry. Will recurse when needed.
- * Don't call this with single-geoms inspected.
- */
-static size_t
-asgml2_multi_size(const LWCOLLECTION *col, const char *srs, int precision,
-                  const char *prefix)
-{
-	uint32_t i;
-	size_t size;
-	size_t prefixlen = strlen(prefix);
-	LWGEOM *subgeom;
-
-	/* the longest possible multi version */
-	size = sizeof("<MultiLineString></MultiLineString>");
-	size += 2*prefixlen;
-
-	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
-
-	for (i=0; i<col->ngeoms; i++)
-	{
-		subgeom = col->geoms[i];
-		if (subgeom->type == POINTTYPE)
-		{
-			size += ( sizeof("<pointMember>/") + prefixlen ) * 2;
-			size += asgml2_point_size((LWPOINT*)subgeom, 0, precision, prefix);
-		}
-		else if (subgeom->type == LINETYPE)
-		{
-			size += ( sizeof("<lineStringMember>/") + prefixlen ) * 2;
-			size += asgml2_line_size((LWLINE*)subgeom, 0, precision, prefix);
-		}
-		else if (subgeom->type == POLYGONTYPE)
-		{
-			size += ( sizeof("<polygonMember>/") + prefixlen ) * 2;
-			size += asgml2_poly_size((LWPOLY*)subgeom, 0, precision, prefix);
-		}
-	}
-
-	return size;
-}
-
-/*
- * Don't call this with single-geoms inspected!
- */
-static size_t
-asgml2_multi_buf(const LWCOLLECTION *col, const char *srs, char *output,
-                 int precision, const char *prefix)
-{
-	int type = col->type;
-	char *ptr, *gmltype;
-	uint32_t i;
-	LWGEOM *subgeom;
-
-	ptr = output;
-	gmltype="";
-
-	if 	(type == MULTIPOINTTYPE)   gmltype = "MultiPoint";
-	else if (type == MULTILINETYPE)	   gmltype = "MultiLineString";
-	else if (type == MULTIPOLYGONTYPE) gmltype = "MultiPolygon";
-
-	/* Open outmost tag */
-	ptr += sprintf(ptr, "<%s%s", prefix, gmltype);
-	if ( srs ) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-
-	if (!col->ngeoms)
-	{
-		ptr += sprintf(ptr, "/>");
-		return (ptr-output);
-	}
-	ptr += sprintf(ptr, ">");
-
-	for (i=0; i<col->ngeoms; i++)
-	{
-		subgeom = col->geoms[i];
-		if (subgeom->type == POINTTYPE)
-		{
-			ptr += sprintf(ptr, "<%spointMember>", prefix);
-			ptr += asgml2_point_buf((LWPOINT*)subgeom, 0, ptr, precision, prefix);
-			ptr += sprintf(ptr, "</%spointMember>", prefix);
-		}
-		else if (subgeom->type == LINETYPE)
-		{
-			ptr += sprintf(ptr, "<%slineStringMember>", prefix);
-			ptr += asgml2_line_buf((LWLINE*)subgeom, 0, ptr, precision, prefix);
-			ptr += sprintf(ptr, "</%slineStringMember>", prefix);
-		}
-		else if (subgeom->type == POLYGONTYPE)
-		{
-			ptr += sprintf(ptr, "<%spolygonMember>", prefix);
-			ptr += asgml2_poly_buf((LWPOLY*)subgeom, 0, ptr, precision, prefix);
-			ptr += sprintf(ptr, "</%spolygonMember>", prefix);
-		}
-	}
-
-	/* Close outmost tag */
-	ptr += sprintf(ptr, "</%s%s>", prefix, gmltype);
-
-	return (ptr-output);
-}
-
-/*
- * Don't call this with single-geoms inspected!
- */
-static lwvarlena_t *
-asgml2_multi(const LWCOLLECTION *col, const char *srs, int precision, const char *prefix)
-{
-	int size = asgml2_multi_size(col, srs, precision, prefix);
-	lwvarlena_t *output = lwalloc(LWVARHDRSZ + size);
-	size = asgml2_multi_buf(col, srs, output->data, precision, prefix);
-	LWSIZE_SET(output->size, size + LWVARHDRSZ);
-	return output;
-}
-
-
-/*
- * Don't call this with single-geoms!
- */
-static size_t
-asgml2_collection_size(const LWCOLLECTION *col, const char *srs, int precision,
-                       const char *prefix)
-{
-	uint32_t i;
-	size_t size;
-	size_t prefixlen = strlen(prefix);
-	LWGEOM *subgeom;
-
-	size = sizeof("<MultiGeometry></MultiGeometry>");
-	size += (prefixlen * 2);
-
-	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
-
-	for (i=0; i<col->ngeoms; i++)
-	{
-		subgeom = col->geoms[i];
-
-		size += ( sizeof("<geometryMember>/") + prefixlen ) * 2;
-		if ( subgeom->type == POINTTYPE)
-		{
-			size += asgml2_point_size((LWPOINT*)subgeom, 0, precision, prefix);
-		}
-		else if ( subgeom->type == LINETYPE)
-		{
-			size += asgml2_line_size((LWLINE*)subgeom, 0, precision, prefix);
-		}
-		else if ( subgeom->type == POLYGONTYPE)
-		{
-			size += asgml2_poly_size((LWPOLY*)subgeom, 0, precision, prefix);
-		}
-		else if ( lwgeom_is_collection(subgeom) )
-		{
-			size += asgml2_collection_size((LWCOLLECTION*)subgeom, 0, precision, prefix);
-		}
-		else
-			lwerror("asgml2_collection_size: Unable to process geometry type!");
-	}
-
-
-	return size;
-}
-
-/*
- * Don't call this with single-geoms inspected!
- */
-static size_t
-asgml2_collection_buf(const LWCOLLECTION *col, const char *srs, char *output, int precision, const char *prefix)
-{
-	char *ptr;
-	uint32_t i;
-	LWGEOM *subgeom;
-
-	ptr = output;
-
-	/* Open outmost tag */
-	ptr += sprintf(ptr, "<%sMultiGeometry", prefix);
-	if ( srs ) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-
-	if (!col->ngeoms)
-	{
-		ptr += sprintf(ptr, "/>");
-		return (ptr-output);
-	}
-	ptr += sprintf(ptr, ">");
-
-	for (i=0; i<col->ngeoms; i++)
-	{
-		subgeom = col->geoms[i];
-
-		ptr += sprintf(ptr, "<%sgeometryMember>", prefix);
-		if (subgeom->type == POINTTYPE)
-		{
-			ptr += asgml2_point_buf((LWPOINT*)subgeom, 0, ptr, precision, prefix);
-		}
-		else if (subgeom->type == LINETYPE)
-		{
-			ptr += asgml2_line_buf((LWLINE*)subgeom, 0, ptr, precision, prefix);
-		}
-		else if (subgeom->type == POLYGONTYPE)
-		{
-			ptr += asgml2_poly_buf((LWPOLY*)subgeom, 0, ptr, precision, prefix);
-		}
-		else if (lwgeom_is_collection(subgeom))
-		{
-			if (subgeom->type == COLLECTIONTYPE)
-				ptr += asgml2_collection_buf((LWCOLLECTION*)subgeom, 0, ptr, precision, prefix);
-			else
-				ptr += asgml2_multi_buf((LWCOLLECTION*)subgeom, 0, ptr, precision, prefix);
-		}
-		ptr += sprintf(ptr, "</%sgeometryMember>", prefix);
-	}
-
-	/* Close outmost tag */
-	ptr += sprintf(ptr, "</%sMultiGeometry>", prefix);
-
-	return (ptr-output);
-}
-
-/*
- * Don't call this with single-geoms inspected!
- */
-static lwvarlena_t *
-asgml2_collection(const LWCOLLECTION *col, const char *srs, int precision, const char *prefix)
-{
-	int size = asgml2_collection_size(col, srs, precision, prefix);
-	lwvarlena_t *output = lwalloc(LWVARHDRSZ + size);
-	size = asgml2_collection_buf(col, srs, output->data, precision, prefix);
-	LWSIZE_SET(output->size, size + LWVARHDRSZ);
-	return output;
-}
-
-
-static size_t
-pointArray_toGML2(POINTARRAY *pa, char *output, int precision)
-{
-	uint32_t i;
-	char *ptr;
-	char x[OUT_DOUBLE_BUFFER_SIZE];
-	char y[OUT_DOUBLE_BUFFER_SIZE];
-	char z[OUT_DOUBLE_BUFFER_SIZE];
-
-	ptr = output;
-
-	if ( ! FLAGS_GET_Z(pa->flags) )
-	{
-		for (i=0; i<pa->npoints; i++)
-		{
-			const POINT2D *pt;
-			pt = getPoint2d_cp(pa, i);
-
-			lwprint_double(pt->x, precision, x);
-			lwprint_double(pt->y, precision, y);
-
-			if ( i ) ptr += sprintf(ptr, " ");
-			ptr += sprintf(ptr, "%s,%s", x, y);
-		}
-	}
-	else
-	{
-		for (i=0; i<pa->npoints; i++)
-		{
-			const POINT3D *pt = getPoint3d_cp(pa, i);
-			lwprint_double(pt->x, precision, x);
-			lwprint_double(pt->y, precision, y);
-			lwprint_double(pt->z, precision, z);
-
-			if ( i ) ptr += sprintf(ptr, " ");
-			ptr += sprintf(ptr, "%s,%s,%s", x, y, z);
-		}
-	}
-
-	return ptr-output;
-}
-
-
-/*
- * VERSION GML 3.1.1
- */
-
-
-/* takes a GEOMETRY and returns a GML representation */
-extern lwvarlena_t *
-lwgeom_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	int type = geom->type;
-
-	/* Return null for empty (#1377) */
-	if ( lwgeom_is_empty(geom) )
-		return NULL;
-
-	switch (type)
-	{
-	case POINTTYPE:
-		return asgml3_point((LWPOINT*)geom, srs, precision, opts, prefix, id);
-
-	case LINETYPE:
-		return asgml3_line((LWLINE*)geom, srs, precision, opts, prefix, id);
-
-	case CIRCSTRINGTYPE:
-		return asgml3_circstring((LWCIRCSTRING*)geom, srs, precision, opts, prefix, id );
-
-	case POLYGONTYPE:
-		return asgml3_poly((LWPOLY*)geom, srs, precision, opts, 0, prefix, id);
-
-	case CURVEPOLYTYPE:
-		return asgml3_curvepoly((LWCURVEPOLY*)geom, srs, precision, opts, prefix, id);
-
-	case TRIANGLETYPE:
-		return asgml3_triangle((LWTRIANGLE*)geom, srs, precision, opts, prefix, id);
-
-	case MULTIPOINTTYPE:
-	case MULTILINETYPE:
-	case MULTIPOLYGONTYPE:
-		return asgml3_multi((LWCOLLECTION*)geom, srs, precision, opts, prefix, id);
-
-	case POLYHEDRALSURFACETYPE:
-		return asgml3_psurface((LWPSURFACE*)geom, srs, precision, opts, prefix, id);
-
-	case TINTYPE:
-		return asgml3_tin((LWTIN*)geom, srs, precision, opts, prefix, id);
-
-	case COLLECTIONTYPE:
-		return asgml3_collection((LWCOLLECTION*)geom, srs, precision, opts, prefix, id);
-
-	case COMPOUNDTYPE:
-		return asgml3_compound( (LWCOMPOUND*)geom, srs, precision, opts, prefix, id );
-
-	case MULTICURVETYPE:
-		return asgml3_multicurve( (LWMCURVE*)geom, srs, precision, opts, prefix, id );
-
-	case MULTISURFACETYPE:
-		return asgml3_multisurface( (LWMSURFACE*)geom, srs, precision, opts, prefix, id );
-
-	default:
-		lwerror("lwgeom_to_gml3: '%s' geometry type not supported", lwtype_name(type));
-		return NULL;
-	}
-}
-
-static size_t
-asgml3_point_size(const LWPOINT *point, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	int size;
-	size_t prefixlen = strlen(prefix);
-
-	size = pointArray_GMLsize(point->point, precision);
-	size += ( sizeof("<point><pos>/") + (prefixlen*2) ) * 2;
-	if (srs) size += strlen(srs) + sizeof(" srsName=..");
-	if (id)  size += strlen(id) + strlen(prefix) + sizeof(" id=..");
-	if (IS_DIMS(opts)) size += sizeof(" srsDimension='x'");
-	return size;
-}
-
-static size_t
-asgml3_point_buf(const LWPOINT *point, const char *srs, char *output, int precision, int opts, const char *prefix, const char *id)
-{
-	char *ptr = output;
-	int dimension=2;
-
-	if (FLAGS_GET_Z(point->flags)) dimension = 3;
-
-	ptr += sprintf(ptr, "<%sPoint", prefix);
-	if ( srs ) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-	if ( id )  ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id);
-	if ( lwpoint_is_empty(point) )
-	{
-		ptr += sprintf(ptr, "/>");
-		return (ptr-output);
-	}
-
-	ptr += sprintf(ptr, ">");
-	if (IS_DIMS(opts)) ptr += sprintf(ptr, "<%spos srsDimension=\"%d\">", prefix, dimension);
-	else         ptr += sprintf(ptr, "<%spos>", prefix);
-	ptr += pointArray_toGML3(point->point, ptr, precision, opts);
-	ptr += sprintf(ptr, "</%spos></%sPoint>", prefix, prefix);
-
-	return (ptr-output);
-}
-
-static lwvarlena_t *
-asgml3_point(const LWPOINT *point, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	size_t size = asgml3_point_size(point, srs, precision, opts, prefix, id);
-	lwvarlena_t *output = lwalloc(LWVARHDRSZ + size);
-	size = asgml3_point_buf(point, srs, output->data, precision, opts, prefix, id);
-	LWSIZE_SET(output->size, size + LWVARHDRSZ);
-	return output;
-}
-
-
-static size_t
-asgml3_line_size(const LWLINE *line, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	int size;
-	size_t prefixlen = strlen(prefix);
-
-	size = pointArray_GMLsize(line->points, precision);
-	if ( opts & LW_GML_SHORTLINE )
-	{
-		size += (
-		            sizeof("<LineString><posList>/") +
-		            ( prefixlen * 2 )
-		        ) * 2;
-	}
-	else
-	{
-		size += (
-		            sizeof("<Curve><segments><LineStringSegment><posList>/") +
-		            ( prefixlen * 4 )
-		        ) * 2;
-	}
-	if (srs) size += strlen(srs) + sizeof(" srsName=..");
-	if (id)  size += strlen(id) + strlen(prefix) + sizeof(" id=..");
-	if (IS_DIMS(opts)) size += sizeof(" srsDimension='x'");
-	return size;
-}
-
-static size_t
-asgml3_line_buf(const LWLINE *line, const char *srs, char *output, int precision, int opts, const char *prefix, const char *id)
-{
-	char *ptr=output;
-	int dimension=2;
-	int shortline = ( opts & LW_GML_SHORTLINE );
-
-	if (FLAGS_GET_Z(line->flags)) dimension = 3;
-
-	if ( shortline )
-	{
-		ptr += sprintf(ptr, "<%sLineString", prefix);
-	}
-	else
-	{
-		ptr += sprintf(ptr, "<%sCurve", prefix);
-	}
-
-	if (srs) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-	if (id)  ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id);
-
-	if ( lwline_is_empty(line) )
-	{
-		ptr += sprintf(ptr, "/>");
-		return (ptr-output);
-	}
-	ptr += sprintf(ptr, ">");
-
-	if ( ! shortline )
-	{
-		ptr += sprintf(ptr, "<%ssegments>", prefix);
-		ptr += sprintf(ptr, "<%sLineStringSegment>", prefix);
-	}
-
-	if (IS_DIMS(opts))
-	{
-		ptr += sprintf(ptr, "<%sposList srsDimension=\"%d\">",
-		               prefix, dimension);
-	}
-	else
-	{
-		ptr += sprintf(ptr, "<%sposList>", prefix);
-	}
-
-	ptr += pointArray_toGML3(line->points, ptr, precision, opts);
-
-	ptr += sprintf(ptr, "</%sposList>", prefix);
-
-	if ( shortline )
-	{
-		ptr += sprintf(ptr, "</%sLineString>", prefix);
-	}
-	else
-	{
-		ptr += sprintf(ptr, "</%sLineStringSegment>", prefix);
-		ptr += sprintf(ptr, "</%ssegments>", prefix);
-		ptr += sprintf(ptr, "</%sCurve>", prefix);
-	}
-
-	return (ptr-output);
-}
-
-static lwvarlena_t *
-asgml3_line(const LWLINE *line, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	size_t size = asgml3_line_size(line, srs, precision, opts, prefix, id);
-	lwvarlena_t *output = lwalloc(LWVARHDRSZ + size);
-	size = asgml3_line_buf(line, srs, output->data, precision, opts, prefix, id);
-	LWSIZE_SET(output->size, size + LWVARHDRSZ);
-	return output;
-}
-
-
-static size_t
-asgml3_circstring_size(const LWCIRCSTRING *circ, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	int size = pointArray_GMLsize( circ->points, precision );
-	size_t prefixlen = strlen(prefix);
-	size += 2 * ( sizeof( "<Curve><segments>/" ) + 2 * prefixlen );
-	size += 2 * ( sizeof( "<ArcString><posList>/" ) + 2 * prefixlen );
-	if (srs) size += strlen(srs) + sizeof(" srsName=..");
-	if (id)  size += strlen(id) + strlen(prefix) + sizeof(" id=..");
-	if (IS_DIMS(opts)) size += sizeof(" srsDimension='x'");
-	return size;
-}
-
-static size_t
-asgml3_circstring_buf(const LWCIRCSTRING *circ, const char *srs, char *output, int precision, int opts, const char *prefix, const char *id)
-{
-	char* ptr = output;
-	int dimension=2;
-
-	if (FLAGS_GET_Z(circ->flags))
-	{
-		dimension = 3;
-	}
-
-	ptr += sprintf(ptr, "<%sCurve", prefix);
-	if (srs)
-	{
-		ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-	}
-	if (id)
-	{
-		ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id);
-	}
-	ptr += sprintf(ptr, ">");
-	ptr += sprintf(ptr, "<%ssegments>", prefix);
-	ptr += sprintf(ptr, "<%sArcString>", prefix);
-	ptr += sprintf(ptr, "<%sposList", prefix);
-
-	if (IS_DIMS(opts))
-	{
-		ptr += sprintf(ptr, " srsDimension=\"%d\"", dimension);
-	}
-	ptr += sprintf(ptr, ">");
-
-	ptr += pointArray_toGML3(circ->points, ptr, precision, opts);
-	ptr += sprintf(ptr, "</%sposList>", prefix);
-	ptr += sprintf(ptr, "</%sArcString>", prefix);
-	ptr += sprintf(ptr, "</%ssegments>", prefix);
-	ptr += sprintf(ptr, "</%sCurve>", prefix);
-	return (ptr-output);
-}
-
-static lwvarlena_t *
-asgml3_circstring(const LWCIRCSTRING *circ,
-		  const char *srs,
-		  int precision,
-		  int opts,
-		  const char *prefix,
-		  const char *id)
-{
-	size_t size = asgml3_circstring_size(circ, srs, precision, opts, prefix, id);
-	lwvarlena_t *output = lwalloc(LWVARHDRSZ + size);
-	size = asgml3_circstring_buf(circ, srs, output->data, precision, opts, prefix, id);
-	LWSIZE_SET(output->size, size + LWVARHDRSZ);
-	return output;
-}
-
-
-static size_t
-asgml3_poly_size(const LWPOLY *poly, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	size_t size;
-	size_t prefixlen = strlen(prefix);
-	uint32_t i;
-
-	size = ( sizeof("<PolygonPatch><exterior><LinearRing>///") + (prefixlen*3) ) * 2;
-	size += ( sizeof("<interior><LinearRing>//") + (prefixlen*2) ) * 2 * (poly->nrings - 1);
-	size += ( sizeof("<posList></posList>") + (prefixlen*2) ) * poly->nrings;
-	if (srs) size += strlen(srs) + sizeof(" srsName=..");
-	if (id)  size += strlen(id) + strlen(prefix) + sizeof(" id=..");
-	if (IS_DIMS(opts)) size += sizeof(" srsDimension='x'") * poly->nrings;
-
-	for (i=0; i<poly->nrings; i++)
-		size += pointArray_GMLsize(poly->rings[i], precision);
-
-	return size;
-}
-
-static size_t
-asgml3_poly_buf(const LWPOLY *poly, const char *srs, char *output, int precision, int opts, int is_patch, const char *prefix, const char *id)
-{
-	uint32_t i;
-	char *ptr=output;
-	int dimension=2;
-
-	if (FLAGS_GET_Z(poly->flags)) dimension = 3;
-	if (is_patch)
-	{
-		ptr += sprintf(ptr, "<%sPolygonPatch", prefix);
-
-	}
-	else
-	{
-		ptr += sprintf(ptr, "<%sPolygon", prefix);
-	}
-
-	if (srs) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-	if (id)  ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id);
-
-	if ( lwpoly_is_empty(poly) )
-	{
-		ptr += sprintf(ptr, "/>");
-		return (ptr-output);
-	}
-	ptr += sprintf(ptr, ">");
-
-	ptr += sprintf(ptr, "<%sexterior><%sLinearRing>", prefix, prefix);
-	if (IS_DIMS(opts)) ptr += sprintf(ptr, "<%sposList srsDimension=\"%d\">", prefix, dimension);
-	else         ptr += sprintf(ptr, "<%sposList>", prefix);
-
-	ptr += pointArray_toGML3(poly->rings[0], ptr, precision, opts);
-	ptr += sprintf(ptr, "</%sposList></%sLinearRing></%sexterior>",
-	               prefix, prefix, prefix);
-	for (i=1; i<poly->nrings; i++)
-	{
-		ptr += sprintf(ptr, "<%sinterior><%sLinearRing>", prefix, prefix);
-		if (IS_DIMS(opts)) ptr += sprintf(ptr, "<%sposList srsDimension=\"%d\">", prefix, dimension);
-		else         ptr += sprintf(ptr, "<%sposList>", prefix);
-		ptr += pointArray_toGML3(poly->rings[i], ptr, precision, opts);
-		ptr += sprintf(ptr, "</%sposList></%sLinearRing></%sinterior>",
-		               prefix, prefix, prefix);
-	}
-	if (is_patch) ptr += sprintf(ptr, "</%sPolygonPatch>", prefix);
-	else ptr += sprintf(ptr, "</%sPolygon>", prefix);
-
-	return (ptr-output);
-}
-
-static lwvarlena_t *
-asgml3_poly(const LWPOLY *poly,
-	    const char *srs,
-	    int precision,
-	    int opts,
-	    int is_patch,
-	    const char *prefix,
-	    const char *id)
-{
-	size_t size = asgml3_poly_size(poly, srs, precision, opts, prefix, id);
-	lwvarlena_t *output = lwalloc(LWVARHDRSZ + size);
-	size = asgml3_poly_buf(poly, srs, output->data, precision, opts, is_patch, prefix, id);
-	LWSIZE_SET(output->size, size + LWVARHDRSZ);
-	return output;
-}
-
-static size_t
-asgml3_compound_size(const LWCOMPOUND *col, const char *srs, int precision, int opts, const char *prefix, const char *id )
-{
-	uint32_t i;
-	size_t size;
-	LWGEOM *subgeom;
-	size_t prefixlen = strlen(prefix);
-
-	size = ( sizeof( "<Curve></Curve>" ) + 2 * prefixlen );
-
-	if (srs) size += strlen(srs) + sizeof(" srsName=..");
-	if (id)  size += strlen(id) + strlen(prefix) + sizeof(" id=..");
-
-	size += ( sizeof("<segments></segments>") + 2 * prefixlen );
-
-	for(i= 0; i < col->ngeoms; ++i )
-	{
-		subgeom = col->geoms[i];
-		if ( subgeom->type == LINETYPE )
-		{
-
-			size += sizeof( "<LineStringSegment></LineStringSegment" ) + 2 * prefixlen;
-			size += sizeof( "<posList></posList" ) + 2 * prefixlen;
-			size += pointArray_GMLsize( ((LWLINE*)subgeom)->points, precision );
-		}
-		else if( subgeom->type == CIRCSTRINGTYPE )
-		{
-			size += sizeof( "<ArcString><posList></ArcString></posList>") + 4 * prefixlen;
-			size += pointArray_GMLsize( ((LWCIRCSTRING*)subgeom)->points, precision );
-		}
-		else
-		{
-			continue;
-		}
-		if (IS_DIMS(opts))
-		{
-			size += sizeof(" srsDimension='x'");
-		}
-	}
-	return size;
-}
-
-static size_t
-asgml3_compound_buf(const LWCOMPOUND *col, const char *srs, char *output, int precision, int opts, const char *prefix, const char *id)
-{
-	LWGEOM *subgeom;
-	uint32_t i;
-	char* ptr = output;
-	int dimension=2;
-
-	if (FLAGS_GET_Z(col->flags))
-	{
-		dimension = 3;
-	}
-
-	ptr += sprintf( ptr, "<%sCurve", prefix );
-	if (srs)
-	{
-		ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-	}
-	if (id)
-	{
-		ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id );
-	}
-	ptr += sprintf( ptr, ">" );
-	ptr += sprintf( ptr, "<%ssegments>", prefix );
-
-	for( i = 0; i < col->ngeoms; ++i )
-	{
-		subgeom = col->geoms[i];
-		if( subgeom->type != LINETYPE && subgeom->type != CIRCSTRINGTYPE )
-		{
-			continue;
-		}
-
-		if ( subgeom->type == LINETYPE )
-		{
-			ptr += sprintf( ptr, "<%sLineStringSegment><%sposList", prefix, prefix );
-			if (IS_DIMS(opts))
-			{
-				ptr += sprintf(ptr, " srsDimension=\"%d\"", dimension);
-			}
-			ptr += sprintf(ptr, ">");
-			ptr += pointArray_toGML3(((LWCIRCSTRING*)subgeom)->points, ptr, precision, opts);
-			ptr += sprintf( ptr, "</%sposList></%sLineStringSegment>", prefix, prefix );
-		}
-		else if( subgeom->type == CIRCSTRINGTYPE )
-		{
-			ptr += sprintf( ptr, "<%sArcString><%sposList" , prefix, prefix );
-			if (IS_DIMS(opts))
-			{
-				ptr += sprintf(ptr, " srsDimension=\"%d\"", dimension);
-			}
-			ptr += sprintf(ptr, ">");
-			ptr += pointArray_toGML3(((LWLINE*)subgeom)->points, ptr, precision, opts);
-			ptr += sprintf( ptr, "</%sposList></%sArcString>", prefix, prefix );
-		}
-	}
-
-	ptr += sprintf( ptr, "</%ssegments>", prefix );
-	ptr += sprintf( ptr, "</%sCurve>", prefix );
-	return ( ptr - output );
-}
-
-static lwvarlena_t *
-asgml3_compound(const LWCOMPOUND *col, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	size_t size = asgml3_compound_size(col, srs, precision, opts, prefix, id);
-	lwvarlena_t *output = lwalloc(LWVARHDRSZ + size);
-	size = asgml3_compound_buf(col, srs, output->data, precision, opts, prefix, id);
-	LWSIZE_SET(output->size, size + LWVARHDRSZ);
-	return output;
-}
-
-static size_t asgml3_curvepoly_size(const LWCURVEPOLY* poly, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	size_t prefixlen = strlen(prefix);
-	LWGEOM* subgeom;
-	size_t size = sizeof( "<Polygon></Polygon" ) + 2 * prefixlen;
-	if (srs) size += strlen(srs) + sizeof(" srsName=..");
-	if (id)  size += strlen(id) + strlen(prefix) + sizeof(" id=..");
-	uint32_t i;
-
-	for( i = 0; i < poly->nrings; ++i )
-	{
-		if( i == 0 )
-		{
-			size += sizeof( "<exterior></exterior>" ) + 2 * prefixlen;
-		}
-		else
-		{
-			size += sizeof( "<interior></interior>" ) + 2 * prefixlen;
-		}
-		subgeom = poly->rings[i];
-
-		if ( subgeom->type == LINETYPE )
-		{
-			size += sizeof("<LinearRing></LinearRing>") + 2 * prefixlen;
-			size += sizeof("<posList></posList") + 2 * prefixlen;
-			if (IS_DIMS(opts))
-			{
-				size += sizeof(" srsDimension='x'");
-			}
-			size += pointArray_GMLsize( ((LWLINE*)subgeom)->points, precision );
-		}
-		else if( subgeom->type == CIRCSTRINGTYPE )
-		{
-			size += sizeof("<Ring></Ring>") + 2 * prefixlen;
-			size += sizeof("<CurveMember></CurveMember>") + 2 * prefixlen;
-			size += asgml3_circstring_size((LWCIRCSTRING*)subgeom, srs, precision, opts, prefix, id);
-		}
-		else if( subgeom->type == COMPOUNDTYPE )
-		{
-			size += sizeof("<Ring></Ring>") + 2 * prefixlen;
-			size += sizeof("<curveMember></curveMember>") + 2 * prefixlen;
-			size += asgml3_compound_size( (LWCOMPOUND*)subgeom, srs, precision, opts, prefix, id );
-		}
-	}
-	return size;
-}
-
-static size_t asgml3_curvepoly_buf(const LWCURVEPOLY* poly, const char *srs, char *output, int precision, int opts, const char *prefix, const char *id)
-{
-	uint32_t i;
-	LWGEOM* subgeom;
-	char *ptr=output;
-	int dimension=2;
-
-	if (FLAGS_GET_Z(poly->flags))
-	{
-		dimension = 3;
-	}
-
-	ptr += sprintf( ptr, "<%sPolygon", prefix );
-	if (srs)
-	{
-		ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-	}
-	if (id)
-	{
-		ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id );
-	}
-	ptr += sprintf(ptr, ">");
-
-	for( i = 0; i < poly->nrings; ++i )
-	{
-		if( i == 0 )
-		{
-			ptr += sprintf( ptr, "<%sexterior>", prefix);
-		}
-		else
-		{
-			ptr += sprintf( ptr, "<%sinterior>", prefix);
-		}
-
-		subgeom = poly->rings[i];
-		if ( subgeom->type == LINETYPE )
-		{
-			ptr += sprintf( ptr, "<%sLinearRing>", prefix );
-			ptr += sprintf( ptr, "<%sposList", prefix );
-			if (IS_DIMS(opts))
-			{
-				ptr += sprintf(ptr, " srsDimension=\"%d\"", dimension);
-			}
-			ptr += sprintf( ptr, ">" );
-			ptr += pointArray_toGML3(((LWLINE*)subgeom)->points, ptr, precision, opts);
-			ptr += sprintf( ptr, "</%sposList>", prefix );
-			ptr += sprintf( ptr, "</%sLinearRing>", prefix );
-		}
-		else if( subgeom->type == CIRCSTRINGTYPE )
-		{
-			ptr += sprintf( ptr, "<%sRing>", prefix );
-			ptr += sprintf( ptr, "<%scurveMember>", prefix );
-			ptr += asgml3_circstring_buf( (LWCIRCSTRING*)subgeom, srs, ptr, precision, opts, prefix, id );
-			ptr += sprintf( ptr, "</%scurveMember>", prefix );
-			ptr += sprintf( ptr, "</%sRing>", prefix );
-		}
-		else if( subgeom->type == COMPOUNDTYPE )
-		{
-			ptr += sprintf( ptr, "<%sRing>", prefix );
-			ptr += sprintf( ptr, "<%scurveMember>", prefix );
-			ptr += asgml3_compound_buf( (LWCOMPOUND*)subgeom, srs, ptr, precision, opts, prefix, id );
-			ptr += sprintf( ptr, "</%scurveMember>", prefix );
-			ptr += sprintf( ptr, "</%sRing>", prefix );
-		}
-
-		if( i == 0 )
-		{
-			ptr += sprintf( ptr, "</%sexterior>", prefix);
-		}
-		else
-		{
-			ptr += sprintf( ptr, "</%sinterior>", prefix);
-		}
-	}
-
-	ptr += sprintf( ptr, "</%sPolygon>", prefix );
-	return (ptr - output);
-}
-
-static lwvarlena_t *
-asgml3_curvepoly(const LWCURVEPOLY *poly, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	size_t size = asgml3_curvepoly_size(poly, srs, precision, opts, prefix, id);
-	lwvarlena_t *output = lwalloc(LWVARHDRSZ + size);
-	size = asgml3_curvepoly_buf(poly, srs, output->data, precision, opts, prefix, id);
-	LWSIZE_SET(output->size, size + LWVARHDRSZ);
-	return output;
-}
-
-
-static size_t
-asgml3_triangle_size(const LWTRIANGLE *triangle, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	size_t size;
-	size_t prefixlen = strlen(prefix);
-
-	size =  ( sizeof("<Triangle><exterior><LinearRing>///") + (prefixlen*3) ) * 2;
-	size +=   sizeof("<posList></posList>") + (prefixlen*2);
-	if (srs) size += strlen(srs) + sizeof(" srsName=..");
-	if (id)  size += strlen(prefix) + strlen(id) + sizeof(" id=..");
-	if (IS_DIMS(opts)) size += sizeof(" srsDimension='x'");
-
-	size += pointArray_GMLsize(triangle->points, precision);
-
-	return size;
-}
-
-static size_t
-asgml3_triangle_buf(const LWTRIANGLE *triangle, const char *srs, char *output, int precision, int opts, const char *prefix, const char *id)
-{
-	char *ptr=output;
-	int dimension=2;
-
-	if (FLAGS_GET_Z(triangle->flags)) dimension = 3;
-	ptr += sprintf(ptr, "<%sTriangle", prefix);
-	if (srs) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-	if (id)  ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id);
-	ptr += sprintf(ptr, ">");
-
-	ptr += sprintf(ptr, "<%sexterior><%sLinearRing>", prefix, prefix);
-	if (IS_DIMS(opts)) ptr += sprintf(ptr, "<%sposList srsDimension=\"%d\">", prefix, dimension);
-	else         ptr += sprintf(ptr, "<%sposList>", prefix);
-
-	ptr += pointArray_toGML3(triangle->points, ptr, precision, opts);
-	ptr += sprintf(ptr, "</%sposList></%sLinearRing></%sexterior>",
-	               prefix, prefix, prefix);
-
-	ptr += sprintf(ptr, "</%sTriangle>", prefix);
-
-	return (ptr-output);
-}
-
-static lwvarlena_t *
-asgml3_triangle(const LWTRIANGLE *triangle,
-		const char *srs,
-		int precision,
-		int opts,
-		const char *prefix,
-		const char *id)
-{
-	size_t size = asgml3_triangle_size(triangle, srs, precision, opts, prefix, id);
-	lwvarlena_t *output = lwalloc(LWVARHDRSZ + size);
-	size = asgml3_triangle_buf(triangle, srs, output->data, precision, opts, prefix, id);
-	LWSIZE_SET(output->size, size + LWVARHDRSZ);
-	return output;
-}
-
-
-/*
- * Compute max size required for GML version of this
- * inspected geometry. Will recurse when needed.
- * Don't call this with single-geoms inspected.
- */
-static size_t
-asgml3_multi_size(const LWCOLLECTION *col, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	uint32_t i;
-	size_t size;
-	size_t prefixlen = strlen(prefix);
-	LWGEOM *subgeom;
-
-	/* the longest possible multi version */
-	size = sizeof("<MultiLineString></MultiLineString>") + prefixlen*2;
-
-	if (srs) size += strlen(srs) + sizeof(" srsName=..");
-	if (id)  size += strlen(id) + strlen(prefix) + sizeof(" id=..");
-
-	for (i=0; i<col->ngeoms; i++)
-	{
-		subgeom = col->geoms[i];
-		if (subgeom->type == POINTTYPE)
-		{
-			size += ( sizeof("<pointMember>/") + prefixlen ) * 2;
-			size += asgml3_point_size((LWPOINT*)subgeom, 0, precision, opts, prefix, id);
-		}
-		else if (subgeom->type == LINETYPE)
-		{
-			size += ( sizeof("<curveMember>/") + prefixlen ) * 2;
-			size += asgml3_line_size((LWLINE*)subgeom, 0, precision, opts, prefix, id);
-		}
-		else if (subgeom->type == POLYGONTYPE)
-		{
-			size += ( sizeof("<surfaceMember>/") + prefixlen ) * 2;
-			size += asgml3_poly_size((LWPOLY*)subgeom, 0, precision, opts, prefix, id);
-		}
-	}
-
-	return size;
-}
-
-/*
- * Don't call this with single-geoms inspected!
- */
-static size_t
-asgml3_multi_buf(const LWCOLLECTION *col, const char *srs, char *output, int precision, int opts, const char *prefix, const char *id)
-{
-	int type = col->type;
-	char *ptr, *gmltype;
-	uint32_t i;
-	LWGEOM *subgeom;
-
-	ptr = output;
-	gmltype="";
-
-	if 	(type == MULTIPOINTTYPE)   gmltype = "MultiPoint";
-	else if (type == MULTILINETYPE)    gmltype = "MultiCurve";
-	else if (type == MULTIPOLYGONTYPE) gmltype = "MultiSurface";
-
-	/* Open outmost tag */
-	ptr += sprintf(ptr, "<%s%s", prefix, gmltype);
-	if (srs) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-	if (id)  ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id);
-
-	if (!col->ngeoms)
-	{
-		ptr += sprintf(ptr, "/>");
-		return (ptr-output);
-	}
-	ptr += sprintf(ptr, ">");
-
-	for (i=0; i<col->ngeoms; i++)
-	{
-		subgeom = col->geoms[i];
-		if (subgeom->type == POINTTYPE)
-		{
-			ptr += sprintf(ptr, "<%spointMember>", prefix);
-			ptr += asgml3_point_buf((LWPOINT*)subgeom, 0, ptr, precision, opts, prefix, id);
-			ptr += sprintf(ptr, "</%spointMember>", prefix);
-		}
-		else if (subgeom->type == LINETYPE)
-		{
-			ptr += sprintf(ptr, "<%scurveMember>", prefix);
-			ptr += asgml3_line_buf((LWLINE*)subgeom, 0, ptr, precision, opts, prefix, id);
-			ptr += sprintf(ptr, "</%scurveMember>", prefix);
-		}
-		else if (subgeom->type == POLYGONTYPE)
-		{
-			ptr += sprintf(ptr, "<%ssurfaceMember>", prefix);
-			ptr += asgml3_poly_buf((LWPOLY*)subgeom, 0, ptr, precision, opts, 0, prefix, id);
-			ptr += sprintf(ptr, "</%ssurfaceMember>", prefix);
-		}
-	}
-
-	/* Close outmost tag */
-	ptr += sprintf(ptr, "</%s%s>", prefix, gmltype);
-
-	return (ptr-output);
-}
-
-/*
- * Don't call this with single-geoms inspected!
- */
-static lwvarlena_t *
-asgml3_multi(const LWCOLLECTION *col, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	size_t size = asgml3_multi_size(col, srs, precision, opts, prefix, id);
-	lwvarlena_t *output = lwalloc(LWVARHDRSZ + size);
-	size = asgml3_multi_buf(col, srs, output->data, precision, opts, prefix, id);
-	LWSIZE_SET(output->size, size + LWVARHDRSZ);
-	return output;
-}
-
-
-static size_t
-asgml3_psurface_size(const LWPSURFACE *psur, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	uint32_t i;
-	size_t size;
-	size_t prefixlen = strlen(prefix);
-
-	size = (sizeof("<PolyhedralSurface><polygonPatches>/") + prefixlen*2) * 2;
-	if (srs) size += strlen(srs) + sizeof(" srsName=..");
-	if (id)  size += strlen(id) + strlen(prefix) + sizeof(" id=..");
-
-	for (i=0; i<psur->ngeoms; i++)
-	{
-		size += asgml3_poly_size(psur->geoms[i], 0, precision, opts, prefix, id);
-	}
-
-	return size;
-}
-
-
-/*
- * Don't call this with single-geoms inspected!
- */
-static size_t
-asgml3_psurface_buf(const LWPSURFACE *psur, const char *srs, char *output, int precision, int opts, const char *prefix, const char *id)
-{
-	char *ptr;
-	uint32_t i;
-
-	ptr = output;
-
-	/* Open outmost tag */
-	ptr += sprintf(ptr, "<%sPolyhedralSurface", prefix);
-	if (srs) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-	if (id)  ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id);
-	ptr += sprintf(ptr, "><%spolygonPatches>", prefix);
-
-	for (i=0; i<psur->ngeoms; i++)
-	{
-		ptr += asgml3_poly_buf(psur->geoms[i], 0, ptr, precision, opts, 1, prefix, id);
-	}
-
-	/* Close outmost tag */
-	ptr += sprintf(ptr, "</%spolygonPatches></%sPolyhedralSurface>",
-	               prefix, prefix);
-
-	return (ptr-output);
-}
-
-/*
- * Don't call this with single-geoms inspected!
- */
-static lwvarlena_t *
-asgml3_psurface(const LWPSURFACE *psur, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	size_t size = asgml3_psurface_size(psur, srs, precision, opts, prefix, id);
-	lwvarlena_t *output = lwalloc(LWVARHDRSZ + size);
-	size = asgml3_psurface_buf(psur, srs, output->data, precision, opts, prefix, id);
-	LWSIZE_SET(output->size, size + LWVARHDRSZ);
-	return output;
-}
-
-
-static size_t
-asgml3_tin_size(const LWTIN *tin, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	uint32_t i;
-	size_t size;
-	size_t prefixlen = strlen(prefix);
-
-	size = (sizeof("<Tin><trianglePatches>/") + prefixlen*2) * 2;
-	if (srs) size += strlen(srs) + sizeof(" srsName=..");
-	if (id)  size += strlen(id) + strlen(prefix) + sizeof(" id=..");
-
-	for (i=0; i<tin->ngeoms; i++)
-	{
-		size += asgml3_triangle_size(tin->geoms[i], 0, precision, opts, prefix, id);
-	}
-
-	return size;
-}
-
-
-/*
- * Don't call this with single-geoms inspected!
- */
-static size_t
-asgml3_tin_buf(const LWTIN *tin, const char *srs, char *output, int precision, int opts, const char *prefix, const char *id)
-{
-	char *ptr;
-	uint32_t i;
-
-	ptr = output;
-
-	/* Open outmost tag */
-	ptr += sprintf(ptr, "<%sTin", prefix);
-	if (srs) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-	if (id)  ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id);
-	else	 ptr += sprintf(ptr, "><%strianglePatches>", prefix);
-
-	for (i=0; i<tin->ngeoms; i++)
-	{
-		ptr += asgml3_triangle_buf(tin->geoms[i], 0, ptr, precision,
-		                           opts, prefix, id);
-	}
-
-	/* Close outmost tag */
-	ptr += sprintf(ptr, "</%strianglePatches></%sTin>", prefix, prefix);
-
-	return (ptr-output);
-}
-
-/*
- * Don't call this with single-geoms inspected!
- */
-static lwvarlena_t *
-asgml3_tin(const LWTIN *tin, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	size_t size = asgml3_tin_size(tin, srs, precision, opts, prefix, id);
-	lwvarlena_t *output = lwalloc(LWVARHDRSZ + size);
-	size = asgml3_tin_buf(tin, srs, output->data, precision, opts, prefix, id);
-	LWSIZE_SET(output->size, size + LWVARHDRSZ);
-	return output;
-}
-
-static size_t
-asgml3_collection_size(const LWCOLLECTION *col, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	uint32_t i;
-	size_t size;
-	size_t prefixlen = strlen(prefix);
-	LWGEOM *subgeom;
-
-	size = sizeof("<MultiGeometry></MultiGeometry>") + prefixlen*2;
-
-	if (srs) size += strlen(srs) + sizeof(" srsName=..");
-	if (id)  size += strlen(id) + strlen(prefix) + sizeof(" id=..");
-
-	for (i=0; i<col->ngeoms; i++)
-	{
-		subgeom = col->geoms[i];
-		size += ( sizeof("<geometryMember>/") + prefixlen ) * 2;
-		if ( subgeom->type == POINTTYPE )
-		{
-			size += asgml3_point_size((LWPOINT*)subgeom, 0, precision, opts, prefix, id);
-		}
-		else if ( subgeom->type == LINETYPE )
-		{
-			size += asgml3_line_size((LWLINE*)subgeom, 0, precision, opts, prefix, id);
-		}
-		else if ( subgeom->type == POLYGONTYPE )
-		{
-			size += asgml3_poly_size((LWPOLY*)subgeom, 0, precision, opts, prefix, id);
-		}
-		else if ( lwgeom_is_collection(subgeom) )
-		{
-			size += asgml3_multi_size((LWCOLLECTION*)subgeom, 0, precision, opts, prefix, id);
-		}
-		else
-			lwerror("asgml3_collection_size: unknown geometry type");
-	}
-
-	return size;
-}
-
-static size_t
-asgml3_collection_buf(const LWCOLLECTION *col, const char *srs, char *output, int precision, int opts, const char *prefix, const char *id)
-{
-	char *ptr;
-	uint32_t i;
-	LWGEOM *subgeom;
-
-	ptr = output;
-
-	/* Open outmost tag */
-	ptr += sprintf(ptr, "<%sMultiGeometry", prefix);
-	if (srs) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-	if (id)  ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id);
-
-	if (!col->ngeoms)
-	{
-		ptr += sprintf(ptr, "/>");
-		return (ptr-output);
-	}
-	ptr += sprintf(ptr, ">");
-
-	for (i=0; i<col->ngeoms; i++)
-	{
-		subgeom = col->geoms[i];
-		ptr += sprintf(ptr, "<%sgeometryMember>", prefix);
-		if ( subgeom->type == POINTTYPE )
-		{
-			ptr += asgml3_point_buf((LWPOINT*)subgeom, 0, ptr, precision, opts, prefix, id);
-		}
-		else if ( subgeom->type == LINETYPE )
-		{
-			ptr += asgml3_line_buf((LWLINE*)subgeom, 0, ptr, precision, opts, prefix, id);
-		}
-		else if ( subgeom->type == POLYGONTYPE )
-		{
-			ptr += asgml3_poly_buf((LWPOLY*)subgeom, 0, ptr, precision, opts, 0, prefix, id);
-		}
-		else if ( lwgeom_is_collection(subgeom) )
-		{
-			if ( subgeom->type == COLLECTIONTYPE )
-				ptr += asgml3_collection_buf((LWCOLLECTION*)subgeom, 0, ptr, precision, opts, prefix, id);
-			else
-				ptr += asgml3_multi_buf((LWCOLLECTION*)subgeom, 0, ptr, precision, opts, prefix, id);
-		}
-		else
-			lwerror("asgml3_collection_buf: unknown geometry type");
-
-		ptr += sprintf(ptr, "</%sgeometryMember>", prefix);
-	}
-
-	/* Close outmost tag */
-	ptr += sprintf(ptr, "</%sMultiGeometry>", prefix);
-
-	return (ptr-output);
-}
-
-/*
- * Don't call this with single-geoms inspected!
- */
-static lwvarlena_t *
-asgml3_collection(const LWCOLLECTION *col, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	size_t size = asgml3_collection_size(col, srs, precision, opts, prefix, id);
-	lwvarlena_t *output = lwalloc(LWVARHDRSZ + size);
-	size = asgml3_collection_buf(col, srs, output->data, precision, opts, prefix, id);
-	LWSIZE_SET(output->size, size + LWVARHDRSZ);
-	return output;
-}
-
-static size_t asgml3_multicurve_size( const LWMCURVE* cur, const char *srs, int precision, int opts, const char *prefix, const char *id )
-{
-	size_t prefixlen = strlen(prefix);
-	size_t size = sizeof( "<MultiCurve></MultiCurve>" ) + 2 * prefixlen;
-	if (srs) size += strlen(srs) + sizeof(" srsName=..");
-	if (id)  size += strlen(id) + strlen(prefix) + sizeof(" id=..");
-	LWGEOM* subgeom;
-	uint32_t i;
-
-	for( i = 0; i < cur->ngeoms; ++i )
-	{
-		size += sizeof( "<curveMember></curveMember>" ) + 2 * prefixlen;
-		subgeom = cur->geoms[i];
-		if ( subgeom->type == LINETYPE )
-		{
-			size += asgml3_line_size( (LWLINE*)subgeom, srs, precision, opts, prefix, id );
-		}
-		else if( subgeom->type == CIRCSTRINGTYPE )
-		{
-			size += asgml3_circstring_size( (LWCIRCSTRING*)subgeom, srs, precision, opts, prefix, id );
-		}
-		else if( subgeom->type == COMPOUNDTYPE )
-		{
-			size += asgml3_compound_size( (LWCOMPOUND*)subgeom, srs, precision, opts, prefix, id );
-		}
-	}
-	return size;
-}
-
-static size_t asgml3_multicurve_buf( const LWMCURVE* cur, const char *srs, char *output, int precision, int opts, const char *prefix, const char *id )
-{
-	char* ptr = output;
-	LWGEOM* subgeom;
-	uint32_t i;
-
-	ptr += sprintf(ptr, "<%sMultiCurve", prefix );
-	if (srs)
-	{
-		ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-	}
-	if (id)
-	{
-		ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id );
-	}
-	ptr += sprintf( ptr, ">");
-
-	for( i = 0; i < cur->ngeoms; ++i )
-	{
-		ptr += sprintf(ptr, "<%scurveMember>", prefix );
-		subgeom = cur->geoms[i];
-		if ( subgeom->type == LINETYPE )
-		{
-			ptr += asgml3_line_buf( (LWLINE*)subgeom, srs, ptr, precision, opts, prefix, id );
-		}
-		else if( subgeom->type == CIRCSTRINGTYPE )
-		{
-			ptr += asgml3_circstring_buf( (LWCIRCSTRING*)subgeom, srs, ptr, precision, opts, prefix, id );
-		}
-		else if( subgeom->type == COMPOUNDTYPE )
-		{
-			ptr += asgml3_compound_buf( (LWCOMPOUND*)subgeom, srs, ptr, precision, opts, prefix, id );
-		}
-		ptr += sprintf(ptr, "</%scurveMember>", prefix );
-	}
-	ptr += sprintf(ptr, "</%sMultiCurve>", prefix );
-	return (ptr - output);
-}
-
-static lwvarlena_t *
-asgml3_multicurve(const LWMCURVE *cur, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	size_t size = asgml3_multicurve_size(cur, srs, precision, opts, prefix, id);
-	lwvarlena_t *output = lwalloc(LWVARHDRSZ + size);
-	size = asgml3_multicurve_buf(cur, srs, output->data, precision, opts, prefix, id);
-	LWSIZE_SET(output->size, size + LWVARHDRSZ);
-	return output;
-}
-
-static size_t asgml3_multisurface_size(const LWMSURFACE *sur, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	size_t prefixlen = strlen(prefix);
-	size_t size = sizeof( "<MultiSurface></MultiSurface>" ) + 2 * prefixlen;
-	if (srs) size += strlen(srs) + sizeof(" srsName=..");
-	if (id)  size += strlen(id) + strlen(prefix) + sizeof(" id=..");
-	LWGEOM* subgeom;
-	uint32_t i;
-
-	for( i = 0; i < sur->ngeoms; ++i )
-	{
-		subgeom = sur->geoms[i];
-		if( subgeom->type == POLYGONTYPE )
-		{
-			size += asgml3_poly_size( (LWPOLY*)sur->geoms[i], srs, precision, opts, prefix, id );
-		}
-		else if( subgeom->type == CURVEPOLYTYPE )
-		{
-			size += asgml3_curvepoly_size( (LWCURVEPOLY*)sur->geoms[i], srs, precision, opts, prefix, id );
-		}
-	}
-	return size;
-}
-
-static size_t asgml3_multisurface_buf(const LWMSURFACE *sur, const char *srs, char *output, int precision, int opts, const char *prefix, const char *id)
-{
-	char* ptr = output;
-	uint32_t i;
-	LWGEOM* subgeom;
-
-	ptr += sprintf( ptr, "<%sMultiSurface", prefix );
-	if (srs)
-	{
-		ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-	}
-	if (id)
-	{
-		ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id );
-	}
-	ptr += sprintf( ptr, ">" );
-
-	for( i = 0; i < sur->ngeoms; ++i )
-	{
-		subgeom = sur->geoms[i];
-		if( subgeom->type == POLYGONTYPE )
-		{
-			ptr += asgml3_poly_buf( (LWPOLY*)sur->geoms[i], srs, ptr, precision, opts, 0, prefix, id );
-		}
-		else if( subgeom->type == CURVEPOLYTYPE )
-		{
-			ptr += asgml3_curvepoly_buf( (LWCURVEPOLY*)sur->geoms[i], srs, ptr, precision, opts, prefix, id );
-		}
-	}
-	ptr += sprintf( ptr, "</%sMultiSurface>", prefix );
-	return ptr - output;
-}
-
-static lwvarlena_t *
-asgml3_multisurface(const LWMSURFACE *sur, const char *srs, int precision, int opts, const char *prefix, const char *id)
-{
-	size_t size = asgml3_multisurface_size(sur, srs, precision, opts, prefix, id);
-	lwvarlena_t *output = lwalloc(LWVARHDRSZ + size);
-	size = asgml3_multisurface_buf(sur, srs, output->data, precision, opts, prefix, id);
-	LWSIZE_SET(output->size, size + LWVARHDRSZ);
-	return output;
-}
-
-
-/* In GML3, inside <posList> or <pos>, coordinates are separated by a space separator
- * In GML3 also, lat/lon are reversed for geocentric data
- */
-static size_t
-pointArray_toGML3(POINTARRAY *pa, char *output, int precision, int opts)
-{
-	uint32_t i;
-	char *ptr;
-	char x[OUT_DOUBLE_BUFFER_SIZE];
-	char y[OUT_DOUBLE_BUFFER_SIZE];
-	char z[OUT_DOUBLE_BUFFER_SIZE];
-
-	ptr = output;
-
-	if ( ! FLAGS_GET_Z(pa->flags) )
-	{
-		for (i=0; i<pa->npoints; i++)
-		{
-			const POINT2D *pt;
-			pt = getPoint2d_cp(pa, i);
-			lwprint_double(pt->x, precision, x);
-			lwprint_double(pt->y, precision, y);
-
-			if ( i ) ptr += sprintf(ptr, " ");
-			if (IS_DEGREE(opts))
-				ptr += sprintf(ptr, "%s %s", y, x);
-			else
-				ptr += sprintf(ptr, "%s %s", x, y);
-		}
-	}
-	else
-	{
-		for (i=0; i<pa->npoints; i++)
-		{
-			const POINT3D *pt = getPoint3d_cp(pa, i);
-
-			lwprint_double(pt->x, precision, x);
-			lwprint_double(pt->y, precision, y);
-			lwprint_double(pt->z, precision, z);
-
-			if ( i ) ptr += sprintf(ptr, " ");
-			if (IS_DEGREE(opts))
-				ptr += sprintf(ptr, "%s %s %s", y, x, z);
-			else
-				ptr += sprintf(ptr, "%s %s %s", x, y, z);
-		}
-	}
-
-	return ptr-output;
-}
-
-
-
-/*
- * Returns maximum size of rendered pointarray in bytes.
- */
-static size_t
-pointArray_GMLsize(POINTARRAY *pa, int precision)
-{
-	if (FLAGS_NDIMS(pa->flags) == 2)
-		return (OUT_MAX_BYTES_DOUBLE + precision + sizeof(", ")) * 2 * pa->npoints;
-
-	return (OUT_MAX_BYTES_DOUBLE + precision + sizeof(", ")) * 3 * pa->npoints;
+	stringbuffer_t sb;
+
+	/* Initialize options */
+	GML_Options gmlopts;
+	memset(&gmlopts, 0, sizeof(gmlopts));
+	gmlopts.srs = srs;
+	gmlopts.precision = precision;
+	gmlopts.opts = opts;
+	gmlopts.prefix = prefix;
+
+	stringbuffer_init_varlena(&sb);
+	asgml3_gbox(&sb, bbox, &gmlopts);
+	return stringbuffer_getvarlena(&sb);
 }
