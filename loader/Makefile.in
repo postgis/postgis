@@ -32,7 +32,7 @@ LIBTOOL = @LIBTOOL@
 LDFLAGS = @LDFLAGS@
 
 # Filenames with extension as determined by the OS
-POSTGIS-CLI=postgis@EXESUFFIX@
+POSTGIS-CLI=postgis
 PGSQL2SHP-CLI=pgsql2shp@EXESUFFIX@
 SHP2PGSQL-CLI=shp2pgsql@EXESUFFIX@
 SHP2PGSQL-GUI=shp2pgsql-gui@EXESUFFIX@
