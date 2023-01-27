@@ -15,7 +15,7 @@
 
 		<refpurpose>
 Packages and upgrades PostGIS extensions (e.g. postgis_raster,
-postgis_topology, postgis_sfcgal) to latest available version.
+postgis_topology, postgis_sfcgal) to given or latest version.
     </refpurpose>
 	  </refnamediv>
 
@@ -23,8 +23,7 @@ postgis_topology, postgis_sfcgal) to latest available version.
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>text <function>PostGIS_Extensions_Upgrade</function></funcdef>
-
-			<paramdef></paramdef>
+			<paramdef choice="opt"><type>text</type> <parameter>target_version=null</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -33,7 +32,7 @@ postgis_topology, postgis_sfcgal) to latest available version.
 		<title>Description</title>
 
 		<para>Packages and upgrades PostGIS extensions
-		to latest version. Only extensions you have installed in the
+		to given or latest version. Only extensions you have installed in the
     database will be packaged and upgraded if needed.
 		Reports full PostGIS version and build configuration infos after.
     This is short-hand for doing multiple CREATE EXTENSION .. FROM
@@ -43,6 +42,7 @@ postgis_topology, postgis_sfcgal) to latest available version.
 
 		<para>Availability: 2.5.0</para>
 		<note>
+			<para>Changed: 3.4.0 to add target_version argument.</para>
             <para>Changed: 3.3.0 support for upgrades from any PostGIS version. Does not work on all systems.</para>
 			<para>Changed: 3.0.0 to repackage loose extensions and support postgis_raster.</para>
 		</note>

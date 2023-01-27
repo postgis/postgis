@@ -1659,7 +1659,8 @@ sub upgrade_spatial_extensions
 
     if ( $upgrade_via_function )
     {
-      $sql = "SELECT postgis_extensions_upgrade()";
+        # TODO: pass ${nextver} if supported by OPT_UPGRADE_FROM ?
+        $sql = "SELECT postgis_extensions_upgrade()";
     }
     elsif ( $OPT_UPGRADE_FROM =~ /^unpackaged/ )
     {
