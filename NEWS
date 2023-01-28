@@ -20,6 +20,8 @@ YYYY/MM/DD
   - #5344, Include topology id sequence state in dumps (Sandro Santilli)
   - #5288, ST_LineCrossingDirection multi-cross error (Paul Ramsey)
   - #5347, _ST_BestSRID crashes on ARM with infinite geometries (Regina Obe)
+  - #5331, [postgis_tiger_geocoder] reverse_geocode, prefer addressable ranges
+          (Regina Obe, Locance)
 
 
 PostGIS 3.3.2

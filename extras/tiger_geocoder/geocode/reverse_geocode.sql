@@ -1,6 +1,6 @@
  /***
  *
- * Copyright (C) 2011-2017 Regina Obe and Leo Hsu (Paragon Corporation)
+ * Copyright (C) 2011-2023 Regina Obe and Leo Hsu (Paragon Corporation)
  **/
 -- This function given a point try to determine the approximate street address (norm_addy form)
 -- and array of cross streets, as well as interpolated points along the streets
@@ -136,7 +136,11 @@ BEGIN
 
 	    -- for numbered street/road use var_rating_highway to determine whether to prefer numbered or not (0 no pref, 1 prefer numbered, 2 prefer named)
 		var_stmt := var_stmt || ' CASE $1 WHEN 0 THEN 0  WHEN 1 THEN CASE WHEN foo.fullname ~ ''[0-9]+'' THEN 0 ELSE 1 END ELSE CASE WHEN foo.fullname > '''' AND NOT (foo.fullname ~ ''[0-9]+'') THEN 0 ELSE 1 END END ';
-		var_stmt := var_stmt || ',  foo.fullname ASC NULLS LAST, dist LIMIT 50) As f ORDER BY f.dist, CASE WHEN fullname > '''' THEN 0 ELSE 1 END '; --don't bother penalizing for distance if less than 20 meters
+
+		-- penalize ranges with no street name or no address range if there are others with addresses within 70 meters
+		var_stmt := var_stmt || ',  foo.fullname ASC NULLS LAST, dist LIMIT 50) As f
+		ORDER BY CASE WHEN f.dist < 70 THEN 0 ELSE f.dist END, CASE WHEN fullname > '''' THEN 0 ELSE 1 END,
+			CASE WHEN f.fromhn IS NOT NULL THEN 0 ELSE 1 END, f.dist ';
 
 	IF var_debug = true THEN
 	    RAISE NOTICE 'Statement 1: %', replace(var_stmt, '$1', var_rating_highway::text);
