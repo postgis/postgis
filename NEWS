@@ -23,6 +23,8 @@ Proj 6.1+, and PostgreSQL 14+.
   - #5347, _ST_BestSRID crashes on ARM with infinite geometries (Regina Obe)
   - #5363, Make ST_ClusterDBScan interruptable (Paul Ramsey)
   - #5378, ST_Buffer(geography) drops SRID (Paul Ramsey)
+  - #5331, [postgis_tiger_geocoder] reverse_geocode, prefer addressable ranges
+           (Regina Obe, Locance)
 
 
 PostGIS 3.2.4
