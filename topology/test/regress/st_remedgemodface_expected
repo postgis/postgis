@@ -194,3 +194,4 @@ RM(11)|P3|t
 RM(11)|P4|t
 RM(11)|P5|t
 Topology 'city_data' dropped
+ERROR:  #5106 threw: corrupted topology: no face have face_id=1 (left face for edge 1)
