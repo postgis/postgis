@@ -4049,7 +4049,7 @@ _lwt_RemEdge( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, int modFace )
       if ( ! box1 ) {
         i = edge->face_left;
         _lwt_release_edges(edge, 1);
-        _lwt_release_faces(faces, nfaces);
+        if ( nfaces ) _lwt_release_faces(faces, nfaces);
         lwerror("corrupted topology: no face have face_id=%"
                 LWTFMT_ELEMID " (left face for edge %"
                 LWTFMT_ELEMID ")", i, edge_id);
@@ -4058,7 +4058,7 @@ _lwt_RemEdge( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, int modFace )
       if ( ! box2 ) {
         i = edge->face_right;
         _lwt_release_edges(edge, 1);
-        _lwt_release_faces(faces, nfaces);
+        if ( nfaces ) _lwt_release_faces(faces, nfaces);
         lwerror("corrupted topology: no face have face_id=%"
                 LWTFMT_ELEMID " (right face for edge %"
                 LWTFMT_ELEMID ")", i, edge_id);
