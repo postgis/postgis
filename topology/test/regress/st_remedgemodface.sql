@@ -414,7 +414,40 @@ DROP SCHEMA features CASCADE;
 -------------------------------------------------------------------------
 -------------------------------------------------------------------------
 
--- clean up
+
+-------------------------------------------------------------------------
+-- Test for https://trac.osgeo.org/postgis/ticket/5106
+-------------------------------------------------------------------------
+
+BEGIN;
+SELECT NULL FROM topology.CreateTopology('t5106');
+INSERT INTO t5106.node VALUES ( 1, NULL, 'POINT(0 0)' );
+-- Cannot reference non-existing faces w/out dropping
+-- these constraints
+ALTER TABLE t5106.edge_data DROP constraint left_face_exists;
+ALTER TABLE t5106.edge_data DROP constraint right_face_exists;
+INSERT INTO t5106.edge VALUES
+(
+	1, -- edge_id
+	1, 1, -- start/end node
+	1, -1, -- next left/right edge
+	1, 2, -- left/right faces (different, both non-0 and non existent)
+  'LINESTRING(0 0,10 0,10 10,0 0)'
+);
+DO $BODY$
+BEGIN
+	PERFORM ST_RemEdgeModFace('t5106', 1);
+	RAISE EXCEPTION '#5106 failed throwing an exception';
+EXCEPTION WHEN OTHERS THEN
+	RAISE EXCEPTION '#5106 threw: %', SQLERRM;
+END;
+$BODY$ LANGUAGE 'plpgsql';
+ROLLBACK;
+
+----------------------------
+-- Clean up
+----------------------------
+
 DROP FUNCTION save_edges();
 DROP FUNCTION check_edges(text);
 DROP FUNCTION save_faces();
