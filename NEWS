@@ -10,6 +10,7 @@ YYYY/MM/DD
   - #5299, Corrections to address_standardizer_data_us lex (Regina Obe)
   - #5106, Fix segfault in ST_RemEdgeNewFace/ST_RemEdgeModFace
            when no edge side-faces are found (Sandro Santilli)
+  - #5329, Fix downgrade protection introduced in 3.3.0 (Sandro Santilli)
 
 PostGIS 3.3.2
 2022/11/12
