@@ -191,9 +191,6 @@ config.status: configure
 ChangeLog:
 	git log --pretty --numstat --summary | git2cl > ChangeLog
 
-raster-post-install-check:
-	$(MAKE) -C raster post-install-check
-
 raster-sql:
 	$(MAKE) -C raster rtpostgis.sql
 
