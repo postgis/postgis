@@ -1718,6 +1718,10 @@ then
     AC_SUBST([EXTENSIONS])
 fi
 
+INSTALL_EXTENSION_UPGRADES=yes
+AC_ARG_ENABLE([extension-upgrades-install], AS_HELP_STRING([--disable-extension-upgrades-install], [Disable automatic install of extension upgrade scripts]),
+	[INSTALL_EXTENSION_UPGRADES=$enableval])
+AC_SUBST([INSTALL_EXTENSION_UPGRADES])
 
 dnl ===========================================================================
 dnl Output the relevant files
@@ -1734,6 +1738,7 @@ dnl echo "TRANSLATIONS_MAKEFILE_LIST: ${TRANSLATIONS_MAKEFILE_LIST}"
 
 AC_CONFIG_FILES([GNUmakefile
    extensions/Makefile
+   extensions/upgrade-paths-rules.mk
    extensions/postgis/Makefile
    extensions/postgis_topology/Makefile
    extensions/postgis_tiger_geocoder/Makefile
@@ -1789,7 +1794,6 @@ AC_MSG_RESULT([ -------------- Additional Info ------------- ])
 if test "x$LIBINCLUDEMINORVERSION" = "xyes"; then
   AC_MSG_RESULT([  POSTGIS lib file includes minor:   ENABLED])
 fi
-
 if test "x$INTERRUPTTESTS" = "xyes"; then
   AC_MSG_RESULT([  Interrupt Tests:   ENABLED])
 else
@@ -1829,6 +1833,15 @@ AC_MSG_RESULT([  Perl:                 ${PERL}])
 
 AC_MSG_RESULT()
 AC_MSG_RESULT([ --------------- Extensions --------------- ])
+if test "x$EXTENSIONS" = "xextensions"; then
+    if test "x$INSTALL_EXTENSION_UPGRADES" = "xyes"; then
+        AC_MSG_RESULT([  PostgreSQL EXTENSION support:       enabled])
+    else
+        AC_MSG_RESULT([  PostgreSQL EXTENSION support:       enabled (manual install of upgrade paths)])
+    fi
+else
+    AC_MSG_RESULT([  PostgreSQL EXTENSION support:       disabled])
+fi
 if test "x$RASTER" = "xraster"; then
     AC_MSG_RESULT([  PostGIS Raster:                     enabled])
 else

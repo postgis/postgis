@@ -205,7 +205,7 @@ sql/tiger_geocoder_upgrade_minor.sql:  sql/tiger_geocoder_minor.sql.in | sql
 #only extension files
 EXTRA_CLEAN += $(wildcard expected/*--*.out)
 
-include @srcdir@/../upgrade-paths-rules.mk
+include ../upgrade-paths-rules.mk
 
 distclean: clean
 	rm Makefile
