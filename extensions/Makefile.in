@@ -25,7 +25,7 @@ ifeq (@ADDRESS_STANDARDIZER@,address_standardizer)
 	SUBDIRS += address_standardizer
 endif
 
-all clean distclean install uninstall installcheck:
+all clean distclean install uninstall installcheck install-extension-upgrades-from-known-versions:
 	for DIR in $(SUBDIRS); do \
 		echo "---- Making $@ in $${DIR}"; \
 		$(MAKE) -C "$${DIR}" $@ || exit 1; \

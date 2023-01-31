@@ -30,6 +30,11 @@ all install uninstall noop clean distclean check-unit:
 		echo "PostGIS was built successfully. Ready to install."; \
 	fi
 
+ifneq (@EXTENSIONS@,)
+install-extension-upgrades-from-known-versions:
+	$(MAKE) -C extensions/ $@
+endif
+
 all: postgis_revision.h
 
 ifeq (@LIBLWGEOM_ONLY@,no)
