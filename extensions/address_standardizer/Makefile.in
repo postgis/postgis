@@ -121,17 +121,20 @@ sql/$(EXTENSION)_data_us--ANY--$(EXTVERSION).sql: sql/$(EXTENSION)_data_us--$(EX
 
 include @srcdir@/../upgrade-paths-rules.mk
 
-install: install-upgrade-paths-data-us
-# address_standardizer is already defined, we have to additionally create
-# the upgrade path scripts for address_standardizer_data_us
-install-upgrade-paths-data-us:
-	tpl='$(EXTENSION)_data_us--ANY--$(EXTVERSION).sql'; \
-	$(INSTALL_DATA) sql/$${tpl} "$(EXTDIR)/$${tpl}"; \
-	ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)_data_us--$(EXTVERSION)--$(EXTVERSION)next.sql; \
-	ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql; \
-	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
-		ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)_data_us--$$OLD_VERSION--$(EXTVERSION).sql; \
+# TODO: fix this by moving data in their own directories
+ifeq ($(EXTENSION_DATA_INSTALL),)
+LANGUAGES = us
+install-upgrade-paths: install-upgrade-paths-data
+install-extension-upgrades-from-known-versions: install-extension-upgrades-from-known-versions-data
+install-upgrade-paths-data install-extension-upgrades-from-known-versions-data:
+	TARGET=`echo $@ | sed 's/-data$$//'`; \
+	for lang in $(LANGUAGES); do \
+		EXTENSION_DATA_INSTALL=1 \
+		$(MAKE) $${TARGET} \
+		EXTENSION=$(EXTENSION)_data_$${lang} \
+		|| exit 1; \
 	done
+endif
 
 mk-st-regexp: mk-st-regexp.pl
 	$(PERL) -c mk-st-regexp.pl

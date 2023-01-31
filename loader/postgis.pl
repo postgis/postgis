@@ -33,6 +33,7 @@ Commands:
 
 my %SUPPORTED_EXTENSIONS = (
 	'address_standardizer' => 1,
+	'address_standardizer_data_us' => 1,
 	'postgis' => 1,
 	'postgis_raster' => 1,
 	'postgis_sfcgal' => 1,
