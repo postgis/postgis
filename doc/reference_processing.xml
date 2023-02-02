@@ -627,33 +627,78 @@ POINT(0.5 1)
 
       <refsection>
         <title>Description</title>
-        <para> Returns a "smoothed" version of the given geometry using the Chaikin algorithm.
-        See <ulink url="http://www.idav.ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-Algorithm.html">Chaikins-Algorithm</ulink> for an explanation of the process.
-        For each iteration the number of vertex points will double.
-        The function puts new vertex points at 1/4 of the line before and after each point and removes the original point.
-        To reduce the number of points use one of the simplification functions on the result.
-        The new points gets interpolated values for all included dimensions, also z and m.</para>
-        <para>Second argument, number of iterations is limited to max 5 iterations</para>
-        <para>Note third argument is only valid for polygons, and will be ignored for linestrings</para>
-        <para>This function handles 3D and the third dimension will affect the result.</para>
-        <note><para>Note that returned geometry will get more points than the original.
-                To reduce the number of points again use one of the simplification functions on the result.
-                (see <xref linkend="ST_Simplify" /> and <xref linkend="ST_SimplifyVW" />)</para></note>
+        <para>Smoothes a geometry using
+        <ulink url="http://www.idav.ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-Algorithm.html">Chaikin's algorithm</ulink>.
+        The degree of smoothing is controlled by the <varname>nIterations</varname> parameter
+        (which is limited to a maximum of 5 iterations).
+        On each iteration, each vertex is replaced by two vertices placed at 1/4 of the length of the line segments before and after the vertex.
+        </para>
+
+        <note><para>The number of vertices doubles with each iteration,
+                so the result geometry may have many more points than the input.
+                To reduce the number of points use a simplification function on the result
+                (see <xref linkend="ST_Simplify" /> and <xref linkend="ST_SimplifyVW" />).</para></note>
+
+        <para>The <varname>preserveEndPoints</varname> parameter is valid only for polygons; it is ignored for linestrings.</para>
+
+        <para>The result has interpolated values for the Z and M dimenions when present.</para>
+
+        <para>&Z_support;</para>
         <para>Availability: 2.5.0</para>
       </refsection>
 
           <refsection>
             <title>Examples</title>
-            <para>A triangle is smoothed</para>
+            <para>Smoothing a triangle:</para>
                 <programlisting>
-select ST_AsText(ST_ChaikinSmoothing(geom)) smoothed
-FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) As foo;
-┌───────────────────────────────────────────┐
-│                 smoothed                  │
-├───────────────────────────────────────────┤
-│ POLYGON((2 2,6 6,6 10,2 14,0 12,0 4,2 2)) │
-└───────────────────────────────────────────┘
-                </programlisting>
+SELECT ST_AsText(ST_ChaikinSmoothing(geom)) smoothed
+FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) AS foo;
+
+                 smoothed
+───────────────────────────────────────────
+ POLYGON((2 2,6 6,6 10,2 14,0 12,0 4,2 2))
+</programlisting>
+
+    <informaltable>
+      <tgroup cols="3">
+      <tbody>
+        <row>
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_chaikinsmoothing01.png" />
+            </imageobject>
+            <caption><para>nIterations = 1</para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_chaikinsmoothing02.png" />
+            </imageobject>
+            <caption><para>nIterations = 2</para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_chaikinsmoothing03.png" />
+            </imageobject>
+            <caption><para>nIterations = 3</para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </informaltable>
+           <para>Smoothing a polygon using 1, 2 and 3 iterations:</para>
+                <programlisting>
+SELECT ST_ChaikinSmoothing(
+            'POLYGON ((20 20, 60 90, 10 150, 100 190, 190 160, 130 120, 190 50, 140 70, 120 10, 90 60, 20 20))',
+            generate_series(1, 3) );
+</programlisting>
           </refsection>
           <refsection>
             <title>See Also</title>
