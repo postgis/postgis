@@ -65,6 +65,8 @@ IMAGES= \
 	../images/st_contains08.png \
 	../images/st_concavehull01.png \
 	../images/st_concavehull02.png \
+	../images/st_concavehull03.png \
+	../images/st_concavehull04.png \
 	../images/st_convexhull01.png \
 	../images/st_crosses01.png \
 	../images/st_crosses02.png \

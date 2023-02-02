@@ -764,6 +764,47 @@ POLYGON ((43 69, 50 84, 57 100, 63 118, 68 133, 74 149, 81 164, 88 180, 101 180,
     </programlisting>
 </para>
 
+    <informaltable>
+      <tgroup cols="2">
+      <tbody>
+        <row>
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_concavehull03.png" />
+            </imageobject>
+
+            <caption><para><varname>polygon_hull</varname></para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_concavehull04.png" />
+            </imageobject>
+
+            <caption><para><varname>points_hull</varname></para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </informaltable>
+
+<para>Comparing a concave hull of a Polygon to the concave hull of the constituent points.
+The hull respects the boundary of the polygon, whereas the points-based hull does not.
+</para>
+
+<programlisting>
+WITH data(geom) AS (VALUES
+   ('POLYGON ((10 90, 39 85, 61 79, 50 90, 80 80, 95 55, 25 60, 90 45, 70 16, 63 38, 60 10, 50 30, 43 27, 30 10, 20 20, 10 90))'::geometry)
+)
+SELECT  ST_ConcaveHull( geom,            0.1) AS polygon_hull,
+        ST_ConcaveHull( ST_Points(geom), 0.1) AS points_hull
+    FROM data;
+</programlisting>
+
 <para>Using with ST_Collect to compute the concave hull of a geometry set.</para>
 
 <programlisting>
