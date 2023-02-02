@@ -627,19 +627,25 @@ POINT(0.5 1)
 
       <refsection>
         <title>Description</title>
-        <para>Smoothes a geometry using
+        <para>Smoothes a linear or polygonal geometry using
         <ulink url="http://www.idav.ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-Algorithm.html">Chaikin's algorithm</ulink>.
-        The degree of smoothing is controlled by the <varname>nIterations</varname> parameter
-        (which is limited to a maximum of 5 iterations).
-        On each iteration, each vertex is replaced by two vertices placed at 1/4 of the length of the line segments before and after the vertex.
+        The degree of smoothing is controlled by the <varname>nIterations</varname> parameter.
+        On each iteration, each interior vertex is replaced
+        by two vertices located at 1/4 of the length of the line segments before and after the vertex.
+        A reasonable degree of smoothing is provided by 3 iterations; the maximum is limited to 5.
+        </para>
+
+        <para>If <varname>preserveEndPoints</varname> is true, the endpoints of Polygon rings are not smoothed.
+        The endpoints of LineStrings are always preserved.
         </para>
 
         <note><para>The number of vertices doubles with each iteration,
-                so the result geometry may have many more points than the input.
-                To reduce the number of points use a simplification function on the result
-                (see <xref linkend="ST_Simplify" /> and <xref linkend="ST_SimplifyVW" />).</para></note>
+            so the result geometry may have many more points than the input.
+            To reduce the number of points use a simplification function on the result
+            (see <xref linkend="ST_Simplify" />, <xref linkend="ST_SimplifyPreserveTopology" />
+            and <xref linkend="ST_SimplifyVW" />).
+        </para></note>
 
-        <para>The <varname>preserveEndPoints</varname> parameter is valid only for polygons; it is ignored for linestrings.</para>
 
         <para>The result has interpolated values for the Z and M dimenions when present.</para>
 
@@ -659,6 +665,7 @@ FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) AS foo;
  POLYGON((2 2,6 6,6 10,2 14,0 12,0 4,2 2))
 </programlisting>
 
+    <para>Smoothing a Polygon using 1, 2 and 3 iterations:</para>
     <informaltable>
       <tgroup cols="3">
       <tbody>
@@ -693,16 +700,57 @@ FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) AS foo;
       </tbody>
       </tgroup>
     </informaltable>
-           <para>Smoothing a polygon using 1, 2 and 3 iterations:</para>
                 <programlisting>
 SELECT ST_ChaikinSmoothing(
             'POLYGON ((20 20, 60 90, 10 150, 100 190, 190 160, 130 120, 190 50, 140 70, 120 10, 90 60, 20 20))',
             generate_series(1, 3) );
 </programlisting>
+
+    <para>Smoothing a LineString using 1, 2 and 3 iterations:</para>
+    <informaltable>
+      <tgroup cols="3">
+      <tbody>
+        <row>
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_chaikinsmoothing04.png" />
+            </imageobject>
+            <caption><para>nIterations = 1</para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_chaikinsmoothing05.png" />
+            </imageobject>
+            <caption><para>nIterations = 2</para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+
+        <entry><para><informalfigure>
+          <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_chaikinsmoothing06.png" />
+            </imageobject>
+            <caption><para>nIterations = 3</para></caption>
+          </mediaobject>
+          </informalfigure></para></entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </informaltable>
+                <programlisting>
+SELECT ST_ChaikinSmoothing(
+            'LINESTRING (10 140, 80 130, 100 190, 190 150, 140 20, 120 120, 50 30, 30 100)',
+            generate_series(1, 3) );
+</programlisting>
+
           </refsection>
           <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_Simplify" />, <xref linkend="ST_SimplifyVW" /></para>
+            <para><xref linkend="ST_Simplify" />, <xref linkend="ST_SimplifyPreserveTopology" />, <xref linkend="ST_SimplifyVW" /></para>
           </refsection>
     </refentry>
 
