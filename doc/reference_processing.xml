@@ -665,7 +665,7 @@ FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) As foo;
     <refentry id="ST_ConcaveHull">
       <refnamediv>
         <refname>ST_ConcaveHull</refname>
-        <refpurpose>Computes a possibly concave geometry that encloses all input geometry vertices</refpurpose>
+        <refpurpose>Computes a possibly concave geometry that contains all input geometry vertices</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -682,38 +682,40 @@ FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) As foo;
       <refsection>
         <title>Description</title>
 
-        <para>A concave hull of a geometry is a possibly concave
-        geometry that encloses the vertices of the input geometry.
+        <para>A concave hull is a (usually) concave geometry which contains the input,
+        and whose vertices are a subset of the input vertices.
         In the general case the concave hull is a Polygon.
-        The polygon will not contain holes unless the optional <varname>param_allow_holes</varname>
-        argument is specified as true.
         The concave hull of two or more collinear points is a two-point LineString.
         The concave hull of one or more identical points is a Point.
+        The polygon will not contain holes unless the optional <varname>param_allow_holes</varname>
+        argument is specified as true.
         </para>
 
         <para>One can think of a concave hull as "shrink-wrapping" a set of points.
         This is different to the <link linkend="ST_ConvexHull">convex hull</link>,
         which is more like wrapping a rubber band around the points.
-        The concave hull generally has a smaller area
+        A concave hull generally has a smaller area
         and represents a more natural boundary for the input points.
-        Like the convex hull, the vertices of a concave hull are a subset of the input points,
-        and all other input points are contained within it.</para>
+        </para>
 
         <para>The <varname>param_pctconvex</varname> controls the concaveness of the computed hull.
         A value of 1 produces the convex hull.
-        A value of 0 produces a hull of maximum concaveness (but still a single polygon).
         Values between 1 and 0 produce hulls of increasing concaveness.
+        A value of 0 produces a hull with maximum concaveness (but still a single polygon).
         Choosing a suitable value depends on the nature of the input data,
         but often values between 0.3 and 0.1 produce reasonable results.
         </para>
 
-        <para>Technically, the <varname>param_pctconvex</varname> determines a length as a fraction of the difference between
+        <note><para>
+        Technically, the <varname>param_pctconvex</varname> determines a length as a fraction of the difference between
         the longest and shortest edges in the Delaunay Triangulation of the input points.
         Edges longer than this length are "eroded" from the triangulation.
         The triangles remaining form the concave hull.
-        </para>
+        </para></note>
 
-        <para>For point and linear inputs, the hull will enclose all the points of the inputs. For polygonal inputs, the hull will enclose all the points of the input <emphasis>and also</emphasis> all the areas covered by the input. If you want a point-wise hull of a polygonal input, convert it to points first, using <xref linkend="ST_Points" />.</para>
+        <para>For point and linear inputs, the hull will enclose all the points of the inputs.
+        For polygonal inputs, the hull will enclose all the points of the input <emphasis>and also</emphasis> all the areas covered by the input.
+        If you want a point-wise hull of a polygonal input, convert it to points first using <xref linkend="ST_Points" />.</para>
 
        <para>This is not an aggregate function.
         To compute the concave hull of a set of geometries use <xref linkend="ST_Collect" />

@@ -503,8 +503,14 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
         <para>Computes the
         <ulink url="https://en.wikipedia.org/wiki/Alpha_shape">Alpha-Shape</ulink>
             of the points in a geometry.
-        An alpha-shape is a polygonal geometry enclosing all the points in the input.
-        The "closeness of fit" of the result is controlled by the <varname>alpha</varname> parameter,
+        An alpha-shape is a (usually) concave polygonal geometry which contains all the vertices of the input,
+        and whose vertices are a subset of the input vertices.
+        An alpha-shape provides a closer fit to the shape of the input
+        than the shape produced by the <link linkend="ST_ConvexHull">convex hull</link>.
+        </para>
+
+        <para>
+        The "closeness of fit" is controlled by the <varname>alpha</varname> parameter,
         which can have values from 0 to infinity.
         Smaller alpha values produce more concave results.
         Alpha values greater than some data-dependent value produce the convex hull of the input.
