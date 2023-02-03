@@ -4333,7 +4333,7 @@ two topogeometries intersect.
           <!-- optionally mention that this function uses indexes if appropriate -->
           <note>
             <para>This function not supported for topogeometries that are geometry collections.  It also can not compare topogeometries from different topologies.
-            Also not currently supported for hierarchichal topogeometries (topogeometries composed of other topogeometries).</para>
+            Also not currently supported for hierarchical topogeometries (topogeometries composed of other topogeometries).</para>
           </note>
           <!-- use this format if new function -->
         <para>Availability: 1.1.0 </para>
