@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - #5332, Send PROJ diagnostics to the PostgreSQL debug log (Paul Ramsey)
  - Initialize regression counters before preparing the database (Sandro Santilli)
  - Exercise mixed empty members in multipolygon garden tests (Regina Obe)
  - Generate aggregate support XML without reading its previous output (Sandro Santilli)
