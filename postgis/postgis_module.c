@@ -59,6 +59,21 @@ static ExecutorStart_hook_type onExecutorStartPrev = NULL;
 static void onExecutorStart(QueryDesc *queryDesc, int eflags);
 
 /*
+* Pass proj error message out via the PostgreSQL logging
+* system instead of letting them default into the
+* stderr.
+*/
+#if POSTGIS_PROJ_VERSION > 50
+#include "proj.h"
+
+static void
+pjLogFunction(void* data, int logLevel, const char* message)
+{
+	elog(DEBUG1, "libproj threw an exception (%d): %s", logLevel, message);
+}
+#endif
+
+/*
  * Module load callback
  */
 void _PG_init(void);
@@ -74,6 +89,11 @@ _PG_init(void)
 
   /* install PostgreSQL handlers */
   pg_install_lwgeom_handlers();
+
+  /* pass proj messages through the pgsql error handler */
+#if POSTGIS_PROJ_VERSION > 50
+  proj_log_func(NULL, NULL, pjLogFunction);
+#endif
 
   /* setup hooks */
   onExecutorStartPrev = ExecutorStart_hook;
