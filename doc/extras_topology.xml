@@ -1185,7 +1185,7 @@ ANALYZE themselves, to use updated statistics.
 
                 <!-- use this format if new function -->
                 <para>Availability: 1.1</para>
-                <para>Enhanched: 2.0 added the signature accepting hasZ</para>
+                <para>Enhanced: 2.0 added the signature accepting hasZ</para>
 			</refsection>
 
 
