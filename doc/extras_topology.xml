@@ -1855,7 +1855,7 @@ Updates all existing joined edges and relationships accordingly.
 		            </para>
 
                 <para>
-Refuses to remove an edge partecipating in the definition of an
+Refuses to remove an edge participating in the definition of an
 existing TopoGeometry.
 Refuses to heal two faces if any TopoGeometry is defined by only
 one of them (and not the other).
