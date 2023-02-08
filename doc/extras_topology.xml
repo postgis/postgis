@@ -1843,11 +1843,11 @@ delete one of the them and modify the other to take the space of both.
                 <title>Description</title>
 
                 <para>
-Removes an edge and, if the removed edge separated two faces,
-delete one of the them and modify the other to take the space of both.
-Preferentially keeps the face on the right, to be symmetric with
-ST_AddEdgeModFace also keeping it.
-Returns the id of the face remaining in place of the removed edge.
+Removes an edge, and if the removed edge separated two faces,
+delete one of the faces and modifies the other face to covers the space of both.
+Preferentially keeps the face on the right, to be consistent with
+<xref linkend="ST_AddEdgeModFace"/>.
+Returns the id of the face which is preserved.
 		            </para>
 
                 <para>
