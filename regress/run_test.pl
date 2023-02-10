@@ -16,7 +16,6 @@
 use File::Basename;
 use File::Temp 'tempdir';
 use Time::HiRes qw(time);
-#use File::Which;
 use File::Copy;
 use File::Path;
 use Cwd 'abs_path';
@@ -89,7 +88,7 @@ our $VERBOSE = 0;
 our $OPT_SCHEMA = 'public';
 
 GetOptions (
-	'verbose' => \$VERBOSE,
+	'verbose+' => \$VERBOSE,
 	'clean' => \$OPT_CLEAN,
 	'nodrop' => \$OPT_NODROP,
 	'upgrade' => \$OPT_UPGRADE,
@@ -115,9 +114,52 @@ if ( @ARGV < 1 )
 	usage();
 }
 
-our $SHP2PGSQL = $TOP_BUILDDIR . "/loader/shp2pgsql";
-our $PGSQL2SHP = $TOP_BUILDDIR . "/loader/pgsql2shp";
-our $RASTER2PGSQL = $TOP_BUILDDIR . "/raster/loader/raster2pgsql";
+sub findOrDie
+{
+    my $exec = shift;
+    my $verbose = shift;
+    printf "Checking for %s ... ", $exec if $verbose;
+    foreach my $d ( split /:/, $ENV{PATH} )
+    {
+        my $path = $d . '/' . $exec;
+        if ( -x $path ) {
+            if ( $verbose ) {
+                print "found";
+                print " ($path)" if $verbose gt 1;
+                print "\n";
+            }
+            return $path
+        }
+    }
+    print STDERR "Unable to find $exec executable.\n";
+    print STDERR "PATH is " . $ENV{"PATH"} . "\n";
+    die "HINT: use POSTGIS_TOP_BUILD_DIR env or --build-dir switch the specify top build dir.\n";
+}
+
+# Prepend scripts' build dirs to path
+# TODO: make this conditional ?
+$ENV{PATH} = $TOP_BUILDDIR . '/loader:' . $TOP_BUILDDIR .  '/raster/loader:' . $ENV{PATH};
+
+our $SHP2PGSQL;
+sub shp2pgsql
+{
+    $SHP2PGSQL = findOrDie 'shp2pgsql', @_ unless defined($SHP2PGSQL);
+    return $SHP2PGSQL;
+}
+
+our $PGSQL2SHP;
+sub pgsql2shp
+{
+    $PGSQL2SHP = findOrDie 'pgsql2shp', @_ unless defined($PGSQL2SHP);
+    return $PGSQL2SHP;
+}
+
+our $RASTER2PGSQL;
+sub raster2pgsql
+{
+    $RASTER2PGSQL = findOrDie 'raster2pgsql', @_ unless defined($RASTER2PGSQL);
+    return $RASTER2PGSQL;
+}
 
 if ( $OPT_UPGRADE_PATH )
 {
@@ -169,38 +211,22 @@ my $OBJ_COUNT_PRE = 0;
 my $OBJ_COUNT_POST = 0;
 
 ##################################################################
-# Check that we have the executables we need
+# Set up the temporary directory
 ##################################################################
 
-foreach my $exec ( ($SHP2PGSQL, $PGSQL2SHP) )
+# Pre-flight to check if we need
+# to find shp2pgsql/pgsql2shp/raster2pgsql
+foreach $TEST (@ARGV)
 {
-	printf "Checking for %s ... ", basename($exec);
-	if ( -x $exec )
-	{
-		print "found\n";
-	}
-	else
-	{
-		print "failed\n";
-		print STDERR "Unable to find $exec executable.\n";
-		print STDERR "TOP_BUILDDIR is ${TOP_BUILDDIR}\n";
-		die "HINT: use POSTGIS_TOP_BUILD_DIR env or --build-dir switch the specify top build dir.\n";
-	}
-
-}
-
-if ( $OPT_WITH_RASTER )
-{
-	print "Checking for raster2pgsql ... ";
-	if ( -x $RASTER2PGSQL )
-	{
-		print "found\n";
-	}
-	else
-	{
-		print "failed\n";
-		die "Unable to find raster2pgsql executable.\n";
-	}
+    if ( -r "${TEST}.dbf" )
+    {
+        shp2pgsql($VERBOSE);
+        pgsql2shp($VERBOSE);
+    }
+    elsif ( -r "${TEST}.tif" )
+    {
+        raster2pgsql($VERBOSE);
+    }
 }
 
 ##################################################################
@@ -227,7 +253,7 @@ mkpath $TMPDIR; # make sure tmp dir exists
 my $REGRESS_LOG = "${TMPDIR}/regress_log";
 
 # Report
-print "TMPDIR is $TMPDIR\n";
+print "TMPDIR is $TMPDIR\n" if $VERBOSE gt 1;
 
 ##################################################################
 # Prepare the database
@@ -289,6 +315,16 @@ if ( ! $libver )
 	exit(1);
 }
 
+sub staged_scripts_dir
+{
+    unless ( -d $STAGED_SCRIPTS_DIR ) {
+        print STDERR "Unable to find $STAGED_SCRIPTS_DIR directory.\n";
+        print STDERR "TOP_BUILDDIR is $TOP_BUILDDIR.\n";
+        die "HINT: use POSTGIS_TOP_BUILD_DIR env or --build-dir switch the specify top build dir.\n";
+    }
+    $STAGED_SCRIPTS_DIR;
+}
+
 sub scriptdir
 {
 	my ( $version, $systemwide ) = @_;
@@ -300,7 +336,7 @@ sub scriptdir
 		chop $scriptdir;
 		$scriptdir .= "/contrib/postgis-" . $pgis_majmin;
 	} else {
-		$scriptdir = $STAGED_SCRIPTS_DIR;
+		$scriptdir = staged_scripts_dir()
 	}
 	#print "XXX: scriptdir: $scriptdir\n";
 	return $scriptdir;
@@ -355,7 +391,6 @@ if ( $OPT_DUMPRESTORE )
 {
     die unless dump_restore();
 }
-
 
 ##################################################################
 # Report PostGIS environment
@@ -890,7 +925,7 @@ sub run_loader_and_check_output
 	{
 		show_progress();
 		# Produce the output SQL file.
-		$cmd = "$SHP2PGSQL $loader_options -g the_geom ${TEST}.shp $tblname > $outfile 2> $errfile";
+		$cmd = shp2pgsql() . " $loader_options -g the_geom ${TEST}.shp $tblname > $outfile 2> $errfile";
 		$rv = system($cmd);
 
 		if ( $rv )
@@ -956,7 +991,7 @@ sub run_dumper_and_check_output
 	if ( $run_always || -r $expected_shp_file )
 	{
 		show_progress();
-		$cmd = "${PGSQL2SHP} -f ${TMPDIR}/dumper $DB $tblname > $errfile 2>&1";
+		$cmd = pgsql2shp() . " -f ${TMPDIR}/dumper $DB $tblname > $errfile 2>&1";
 		$rv = system($cmd);
 
 		if ( $rv )
@@ -1023,7 +1058,7 @@ sub run_raster_loader_and_check_output
 		show_progress();
 
 		# Produce the output SQL file.
-		$cmd = "$RASTER2PGSQL $loader_options $raster_file $tblname > $outfile 2> $errfile";
+		$cmd = raster2pgsql() . " $loader_options $raster_file $tblname > $outfile 2> $errfile";
 		$rv = system($cmd);
 
 		if ( $rv )
@@ -1193,7 +1228,7 @@ sub run_dumper_test
   chomp(@dumplines);
   my $dumpstring = shift @dumplines;
   @dumplines = map { local $_ = $_; s/{regdir}/$REGDIR/; $_ } @dumplines;
-  my @cmd = ("${PGSQL2SHP}", "-f", ${shpfile});
+  my @cmd = ( pgsql2shp(), "-f", ${shpfile});
   push @cmd, @dumplines;
   push @cmd, ${DB};
   push @cmd, $dumpstring;

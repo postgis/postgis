@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-14 02:04+0000\n"
+"POT-Creation-Date: 2023-02-10 06:01+0000\n"
 "PO-Revision-Date: 2022-10-25 07:30+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -39,8 +39,8 @@ msgid ""
 "To enable the functions use <code>create extension postgis_sfcgal</code>."
 msgstr ""
 "このライブラリのインストール手順はSFCGALサイト (<ulink url=\"http://www."
-"sfcgal.org\">http://www.sfcgal.org</ulink>)にあります。"
-"機能を有効にするには<code>create extension postgis_sfcgal</code>とします。"
+"sfcgal.org\">http://www.sfcgal.org</ulink>)にあります。機能を有効にするには"
+"<code>create extension postgis_sfcgal</code>とします。"
 
 #. Tag: title
 #: reference_sfcgal.xml:16
@@ -69,12 +69,12 @@ msgstr "text <function>postgis_sfcgal_version</function>"
 #. Tag: title
 #: reference_sfcgal.xml:34 reference_sfcgal.xml:69 reference_sfcgal.xml:104
 #: reference_sfcgal.xml:143 reference_sfcgal.xml:193 reference_sfcgal.xml:270
-#: reference_sfcgal.xml:349 reference_sfcgal.xml:436 reference_sfcgal.xml:514
-#: reference_sfcgal.xml:579 reference_sfcgal.xml:649 reference_sfcgal.xml:741
-#: reference_sfcgal.xml:769 reference_sfcgal.xml:797 reference_sfcgal.xml:825
-#: reference_sfcgal.xml:855 reference_sfcgal.xml:961 reference_sfcgal.xml:1027
-#: reference_sfcgal.xml:1055 reference_sfcgal.xml:1115
-#: reference_sfcgal.xml:1213
+#: reference_sfcgal.xml:349 reference_sfcgal.xml:436 reference_sfcgal.xml:539
+#: reference_sfcgal.xml:604 reference_sfcgal.xml:674 reference_sfcgal.xml:766
+#: reference_sfcgal.xml:794 reference_sfcgal.xml:822 reference_sfcgal.xml:850
+#: reference_sfcgal.xml:880 reference_sfcgal.xml:986 reference_sfcgal.xml:1061
+#: reference_sfcgal.xml:1089 reference_sfcgal.xml:1149
+#: reference_sfcgal.xml:1247
 #, no-c-format
 msgid "Description"
 msgstr "説明"
@@ -87,9 +87,9 @@ msgstr "<para>使用しているSFCGALのバージョンを返します</para>"
 
 #. Tag: para
 #: reference_sfcgal.xml:38 reference_sfcgal.xml:106 reference_sfcgal.xml:195
-#: reference_sfcgal.xml:651 reference_sfcgal.xml:743 reference_sfcgal.xml:864
-#: reference_sfcgal.xml:1031 reference_sfcgal.xml:1057
-#: reference_sfcgal.xml:1117
+#: reference_sfcgal.xml:676 reference_sfcgal.xml:768 reference_sfcgal.xml:889
+#: reference_sfcgal.xml:1065 reference_sfcgal.xml:1091
+#: reference_sfcgal.xml:1151
 #, no-c-format
 msgid "Availability: 2.1.0"
 msgstr "Availability: 2.1.0"
@@ -97,12 +97,12 @@ msgstr "Availability: 2.1.0"
 #. Tag: para
 #: reference_sfcgal.xml:39 reference_sfcgal.xml:74 reference_sfcgal.xml:107
 #: reference_sfcgal.xml:146 reference_sfcgal.xml:196 reference_sfcgal.xml:273
-#: reference_sfcgal.xml:354 reference_sfcgal.xml:447 reference_sfcgal.xml:524
-#: reference_sfcgal.xml:587 reference_sfcgal.xml:652 reference_sfcgal.xml:744
-#: reference_sfcgal.xml:772 reference_sfcgal.xml:800 reference_sfcgal.xml:828
-#: reference_sfcgal.xml:865 reference_sfcgal.xml:971 reference_sfcgal.xml:1032
-#: reference_sfcgal.xml:1058 reference_sfcgal.xml:1118
-#: reference_sfcgal.xml:1216
+#: reference_sfcgal.xml:354 reference_sfcgal.xml:472 reference_sfcgal.xml:549
+#: reference_sfcgal.xml:612 reference_sfcgal.xml:677 reference_sfcgal.xml:769
+#: reference_sfcgal.xml:797 reference_sfcgal.xml:825 reference_sfcgal.xml:853
+#: reference_sfcgal.xml:890 reference_sfcgal.xml:1005 reference_sfcgal.xml:1066
+#: reference_sfcgal.xml:1092 reference_sfcgal.xml:1152
+#: reference_sfcgal.xml:1250
 #, no-c-format
 msgid "&sfcgal_required;"
 msgstr "&sfcgal_required;"
@@ -110,11 +110,11 @@ msgstr "&sfcgal_required;"
 #. Tag: para
 #: reference_sfcgal.xml:40 reference_sfcgal.xml:75 reference_sfcgal.xml:109
 #: reference_sfcgal.xml:147 reference_sfcgal.xml:198 reference_sfcgal.xml:275
-#: reference_sfcgal.xml:356 reference_sfcgal.xml:525 reference_sfcgal.xml:589
-#: reference_sfcgal.xml:653 reference_sfcgal.xml:745 reference_sfcgal.xml:773
-#: reference_sfcgal.xml:801 reference_sfcgal.xml:829 reference_sfcgal.xml:1033
-#: reference_sfcgal.xml:1059 reference_sfcgal.xml:1119
-#: reference_sfcgal.xml:1217
+#: reference_sfcgal.xml:356 reference_sfcgal.xml:550 reference_sfcgal.xml:614
+#: reference_sfcgal.xml:678 reference_sfcgal.xml:770 reference_sfcgal.xml:798
+#: reference_sfcgal.xml:826 reference_sfcgal.xml:854 reference_sfcgal.xml:1067
+#: reference_sfcgal.xml:1093 reference_sfcgal.xml:1153
+#: reference_sfcgal.xml:1251
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
@@ -122,10 +122,10 @@ msgstr "&Z_support;"
 #. Tag: para
 #: reference_sfcgal.xml:41 reference_sfcgal.xml:76 reference_sfcgal.xml:110
 #: reference_sfcgal.xml:148 reference_sfcgal.xml:199 reference_sfcgal.xml:276
-#: reference_sfcgal.xml:357 reference_sfcgal.xml:526 reference_sfcgal.xml:654
-#: reference_sfcgal.xml:746 reference_sfcgal.xml:774 reference_sfcgal.xml:802
-#: reference_sfcgal.xml:830 reference_sfcgal.xml:1060 reference_sfcgal.xml:1120
-#: reference_sfcgal.xml:1218
+#: reference_sfcgal.xml:357 reference_sfcgal.xml:551 reference_sfcgal.xml:679
+#: reference_sfcgal.xml:771 reference_sfcgal.xml:799 reference_sfcgal.xml:827
+#: reference_sfcgal.xml:855 reference_sfcgal.xml:1094 reference_sfcgal.xml:1154
+#: reference_sfcgal.xml:1252
 #, no-c-format
 msgid "&P_support;"
 msgstr "&P_support;"
@@ -133,10 +133,10 @@ msgstr "&P_support;"
 #. Tag: para
 #: reference_sfcgal.xml:42 reference_sfcgal.xml:77 reference_sfcgal.xml:111
 #: reference_sfcgal.xml:149 reference_sfcgal.xml:200 reference_sfcgal.xml:277
-#: reference_sfcgal.xml:358 reference_sfcgal.xml:527 reference_sfcgal.xml:655
-#: reference_sfcgal.xml:747 reference_sfcgal.xml:775 reference_sfcgal.xml:803
-#: reference_sfcgal.xml:831 reference_sfcgal.xml:1061 reference_sfcgal.xml:1121
-#: reference_sfcgal.xml:1219
+#: reference_sfcgal.xml:358 reference_sfcgal.xml:552 reference_sfcgal.xml:680
+#: reference_sfcgal.xml:772 reference_sfcgal.xml:800 reference_sfcgal.xml:828
+#: reference_sfcgal.xml:856 reference_sfcgal.xml:1095 reference_sfcgal.xml:1155
+#: reference_sfcgal.xml:1253
 #, no-c-format
 msgid "&T_support;"
 msgstr "&T_support;"
@@ -144,9 +144,9 @@ msgstr "&T_support;"
 #. Tag: title
 #: reference_sfcgal.xml:45 reference_sfcgal.xml:80 reference_sfcgal.xml:120
 #: reference_sfcgal.xml:170 reference_sfcgal.xml:317 reference_sfcgal.xml:407
-#: reference_sfcgal.xml:491 reference_sfcgal.xml:553 reference_sfcgal.xml:623
-#: reference_sfcgal.xml:718 reference_sfcgal.xml:1004 reference_sfcgal.xml:1188
-#: reference_sfcgal.xml:1231
+#: reference_sfcgal.xml:516 reference_sfcgal.xml:578 reference_sfcgal.xml:648
+#: reference_sfcgal.xml:743 reference_sfcgal.xml:1038 reference_sfcgal.xml:1222
+#: reference_sfcgal.xml:1265
 #, no-c-format
 msgid "See Also"
 msgstr "関連情報"
@@ -163,7 +163,8 @@ msgstr "postgis_sfcgal_full_version"
 msgid ""
 "<refpurpose>Returns the full version of SFCGAL in use including CGAL and "
 "Boost versions</refpurpose>"
-msgstr "<refpurpose>CGALとBoostのバージョンを含む、使用しているSFCGALの完全なバージョ"
+msgstr ""
+"<refpurpose>CGALとBoostのバージョンを含む、使用しているSFCGALの完全なバージョ"
 "ンを返します</refpurpose>"
 
 #. Tag: funcdef
@@ -178,7 +179,8 @@ msgstr "text <function>postgis_sfcgal_full_version</function>"
 msgid ""
 "<para>Returns the full version of SFCGAL in use including CGAL and Boost "
 "versions</para>"
-msgstr "<para>CGALとBoostのバージョンを含む、使用しているSFCGALの完全なバージョンを返"
+msgstr ""
+"<para>CGALとBoostのバージョンを含む、使用しているSFCGALの完全なバージョンを返"
 "します</para>"
 
 #. Tag: para
@@ -217,10 +219,10 @@ msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 8.1, 10.5"
 
 #. Tag: title
 #: reference_sfcgal.xml:114 reference_sfcgal.xml:153 reference_sfcgal.xml:204
-#: reference_sfcgal.xml:281 reference_sfcgal.xml:371 reference_sfcgal.xml:451
-#: reference_sfcgal.xml:530 reference_sfcgal.xml:592 reference_sfcgal.xml:658
-#: reference_sfcgal.xml:868 reference_sfcgal.xml:975 reference_sfcgal.xml:1064
-#: reference_sfcgal.xml:1124
+#: reference_sfcgal.xml:281 reference_sfcgal.xml:371 reference_sfcgal.xml:476
+#: reference_sfcgal.xml:555 reference_sfcgal.xml:617 reference_sfcgal.xml:683
+#: reference_sfcgal.xml:893 reference_sfcgal.xml:1009 reference_sfcgal.xml:1098
+#: reference_sfcgal.xml:1158
 #, no-c-format
 msgid "Examples"
 msgstr "例"
@@ -233,8 +235,8 @@ msgid ""
 "not solid. It therefore has surface area. Once converted to a solid, no area."
 msgstr ""
 "ご注意: デフォルトでは、WKTから生成されたPolyhedralSurfaceは面ジオメトリで、"
-"立体ではありません。サーフェス面を持ちます。立体に変換すると、面を持ちません"
-"。"
+"立体ではありません。サーフェス面を持ちます。立体に変換すると、面を持ちませ"
+"ん。"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:116
@@ -317,10 +319,10 @@ msgid ""
 "6,6 3 5)),((0 0 5,9 5 3,6 3 5,0 0 5)),((9 5 3,5 7 5,5 7 6,9 5 3)),((1 5 3,5 "
 "7 5,9 5 3,1 5 3)))"
 msgstr ""
-"POLYHEDRALSURFACE Z (((1 5 3,9 5 3,0 0 5,1 5 3)),((1 5 3,0 0 5,5 7 6,1 5 "
-"3)),((5 7 6,5 7 5,1 5 3,5 7 6)),((0 0 5,6 3 5,5 7 6,0 0 5)),((6 3 5,9 5 3,5 "
-"7 6,6 3 5)),((0 0 5,9 5 3,6 3 5,0 0 5)),((9 5 3,5 7 5,5 7 6,9 5 3)),((1 5 "
-"3,5 7 5,9 5 3,1 5 3)))"
+"POLYHEDRALSURFACE Z (((1 5 3,9 5 3,0 0 5,1 5 3)),((1 5 3,0 0 5,5 7 6,1 5 3)),"
+"((5 7 6,5 7 5,1 5 3,5 7 6)),((0 0 5,6 3 5,5 7 6,0 0 5)),((6 3 5,9 5 3,5 7 "
+"6,6 3 5)),((0 0 5,9 5 3,6 3 5,0 0 5)),((9 5 3,5 7 5,5 7 6,9 5 3)),((1 5 3,5 "
+"7 5,9 5 3,1 5 3)))"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:157
@@ -388,7 +390,7 @@ msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1"
 
 #. Tag: para
 #: reference_sfcgal.xml:205 reference_sfcgal.xml:282 reference_sfcgal.xml:372
-#: reference_sfcgal.xml:659
+#: reference_sfcgal.xml:684
 #, no-c-format
 msgid ""
 "3D images were generated using PostGIS <xref linkend=\"ST_AsX3D\"/> and "
@@ -396,8 +398,8 @@ msgid ""
 "Javascript rendering library</ulink>."
 msgstr ""
 "PostGIS関数<xref linkend=\"ST_AsX3D\"/>を使って3次元イメージを生成し、<ulink "
-"url=\"http://www.x3dom.org\">X3Dom HTML Javascript redering "
-"library</ulink>を使ってHTMLでの描画を行います。"
+"url=\"http://www.x3dom.org\">X3Dom HTML Javascript redering library</ulink>を"
+"使ってHTMLでの描画を行います。"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:211 reference_sfcgal.xml:288 reference_sfcgal.xml:378
@@ -525,8 +527,8 @@ msgid ""
 "geometry,10,1),0,0,30),\n"
 " ST_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),2,0,10) ));"
 msgstr ""
-"SELECT ST_AsText(ST_3DIntersection( ST_Extrude(ST_Buffer('POINT(10 "
-"20)'::geometry,10,1),0,0,30),\n"
+"SELECT ST_AsText(ST_3DIntersection( ST_Extrude(ST_Buffer('POINT(10 20)'::"
+"geometry,10,1),0,0,30),\n"
 " ST_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),2,0,10) ));"
 
 #. Tag: screen
@@ -573,21 +575,21 @@ msgstr ""
 "        ((20 20 0,9.99999999999995 30 0,16.6666666666667 23.3333333333333 "
 "10,20 20 0)),\n"
 "        ((10 10 0,9.99999999999995 30 0,20 20 0,10 10 0)),((13.3333333333333 "
-"13.3333333333333 10,12 12 10,10 10 0,13.3333333333333 13.3333333333333 10)),"
-"\n"
-"        ((12 28 10,12 12 10,13.3333333333333 13.3333333333333 10,12 28 10)),"
-"\n"
+"13.3333333333333 10,12 12 10,10 10 0,13.3333333333333 13.3333333333333 "
+"10)),\n"
+"        ((12 28 10,12 12 10,13.3333333333333 13.3333333333333 10,12 28 "
+"10)),\n"
 "        ((16.6666666666667 23.3333333333333 10,9.99999999999995 30 0,12 28 "
 "10,16.6666666666667 23.3333333333333 10)),\n"
 "        ((10 10 0,0 20 0,9.99999999999995 30 0,10 10 0)),\n"
 "        ((12 12 10,11 11 10,10 10 0,12 12 10)),((12 28 10,11 11 10,12 12 "
 "10,12 28 10)),\n"
-"        ((9.99999999999995 30 0,11 29 10,12 28 10,9.99999999999995 30 0)),(("
-"0 20 0,2 20 10,9.99999999999995 30 0,0 20 0)),\n"
+"        ((9.99999999999995 30 0,11 29 10,12 28 10,9.99999999999995 30 0)),"
+"((0 20 0,2 20 10,9.99999999999995 30 0,0 20 0)),\n"
 "        ((10 10 0,2 20 10,0 20 0,10 10 0)),((11 11 10,2 20 10,10 10 0,11 11 "
 "10)),((12 28 10,11 29 10,11 11 10,12 28 10)),\n"
-"        ((9.99999999999995 30 0,2 20 10,11 29 10,9.99999999999995 30 0)),(("
-"11 11 10,11 29 10,2 20 10,11 11 10)))"
+"        ((9.99999999999995 30 0,2 20 10,11 29 10,9.99999999999995 30 0)),"
+"((11 11 10,11 29 10,2 20 10,11 11 10)))"
 
 #. Tag: refname
 #: reference_sfcgal.xml:254
@@ -620,8 +622,8 @@ msgid "Returns that part of geom1 that is not part of geom2."
 msgstr "geom2に含まれないgeom1の一部を返します。"
 
 #. Tag: para
-#: reference_sfcgal.xml:272 reference_sfcgal.xml:352 reference_sfcgal.xml:523
-#: reference_sfcgal.xml:799 reference_sfcgal.xml:827 reference_sfcgal.xml:1215
+#: reference_sfcgal.xml:272 reference_sfcgal.xml:352 reference_sfcgal.xml:548
+#: reference_sfcgal.xml:824 reference_sfcgal.xml:852 reference_sfcgal.xml:1249
 #, no-c-format
 msgid "Availability: 2.2.0"
 msgstr "Availability: 2.2.0"
@@ -691,9 +693,9 @@ msgstr ""
 "<funcprototype> <funcdef>geometry <function>ST_3DUnion</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
 "<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_3DUnion</function></funcdef> <paramdef><type>geometry set</"
-"type> <parameter>g1field</parameter></paramdef> </funcprototype>"
+"funcprototype> <funcprototype> <funcdef>geometry <function>ST_3DUnion</"
+"function></funcdef> <paramdef><type>geometry set</type> <parameter>g1field</"
+"parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_sfcgal.xml:353
@@ -712,9 +714,9 @@ msgid ""
 "do and like most aggregates, it also ignores NULL geometries."
 msgstr ""
 "<emphasis role=\"bold\">集約関数形式:</emphasis> ジオメトリの集合を3次元結合"
-"したジオメトリを返します。ST_3DUnion()関数は、PostgreSQL用語で言うところの「"
-"集約関数」です。つまり、SUM()やMEAN()と同じ方法で複数のデータ行の操作を行い、"
-"他の集約関数と同じようにNULLジオメトリを無視します。"
+"したジオメトリを返します。ST_3DUnion()関数は、PostgreSQL用語で言うところの"
+"「集約関数」です。つまり、SUM()やMEAN()と同じ方法で複数のデータ行の操作を行"
+"い、他の集約関数と同じようにNULLジオメトリを無視します。"
 
 #. Tag: para
 #: reference_sfcgal.xml:384
@@ -763,9 +765,8 @@ msgstr "ST_AlphaShape"
 #. Tag: refpurpose
 #: reference_sfcgal.xml:421
 #, no-c-format
-msgid ""
-"Computes a possible concave geometry using the CGAL Alpha Shapes algorithm."
-msgstr "CGALアルファシェイプアルゴリズムを使って可能な凹ジオメトリを計算します。"
+msgid "Computes an Alpha-shape enclosing a geometry"
+msgstr ""
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:426
@@ -787,48 +788,70 @@ msgstr ""
 #: reference_sfcgal.xml:438
 #, no-c-format
 msgid ""
-"Assume we are given a set S of points in 2D [...] and we would like to have "
-"something like \"the shape formed by these points\". This is quite a vague "
-"notion and there are probably many possible interpretations, the α-shape "
-"being one of them. Alpha shapes can be used for shape reconstruction from a "
-"dense unorganized set of data points. Indeed, an α-shape is demarcated by a "
-"frontier, which is a linear approximation of the original shape [1]. [1] F. "
-"Bernardini and C. Bajaj. Sampling and reconstructing manifolds using alpha-"
-"shapes. Technical Report CSD-TR-97-013, Dept. Comput. Sci., Purdue Univ., "
-"West Lafayette, IN, 1997. Source: <ulink url=\"https://doc.cgal.org/latest/"
-"Alpha_shapes_2/index.html#Chapter_2D_Alpha_Shapes\">CGAL ALpha Shapes</"
-"ulink> This function compute the concave hull of a set of geometry, but "
-"using CGAL and a different algorithm than ST_ConcaveHull performed by the "
-"GEOS module. See : <ulink url=\"http://lin-ear-th-inking.blogspot."
-"com/2022/01/concave-hulls-in-jts.html\">Concave Hulls in JTS</ulink>"
+"Computes the <ulink url=\"https://en.wikipedia.org/wiki/Alpha_shape\">Alpha-"
+"Shape</ulink> of the points in a geometry. An alpha-shape is a (usually) "
+"concave polygonal geometry which contains all the vertices of the input, and "
+"whose vertices are a subset of the input vertices. An alpha-shape provides a "
+"closer fit to the shape of the input than the shape produced by the <link "
+"linkend=\"ST_ConvexHull\">convex hull</link>."
 msgstr ""
-"非常にあいまいな概念であり、解釈できる種類が多くある可能性が大きいです。アル"
-"ファシェイプはそのうちの一つです。アルファシェイプは、高密度の組織化されてい"
-"ないデータのポイントから形状を再構築するのに使えます。事実、アルファシェイプ"
-"は、元の形状の線形近似である境界線とは大きく異なります [1]。[1] F. "
-"Bernardini and C. Bajaj. Sampling and reconstructing manifolds using alpha-"
-"shapes. Technical Report CSD-TR-97-013, Dept. Comput. Sci., Purdue Univ., "
-"West Lafayette, IN, 1997. 出典: <ulink url=\"https://doc.cgal.org/latest/"
-"Alpha_shapes_2/index.html#Chapter_2D_Alpha_Shapes\">CGAL ALpha Shapes</"
-"ulink> この関数は、ジオメトリ集合の凹包を計算します。が、CGALを使って、GEOSに"
-"よるST_ConcaveHullとは異なるアルゴリズムを使います。参照: <ulink url=\"http"
-"://lin-ear-th-inking.blogspot.com/2022/01/concave-hulls-in-jts.html\""
-">Concave Hulls in JTS</ulink>"
 
 #. Tag: para
-#: reference_sfcgal.xml:446 reference_sfcgal.xml:970
+#: reference_sfcgal.xml:447
+#, no-c-format
+msgid ""
+"The \"closeness of fit\" is controlled by the <varname>alpha</varname> "
+"parameter, which can have values from 0 to infinity. Smaller alpha values "
+"produce more concave results. Alpha values greater than some data-dependent "
+"value produce the convex hull of the input."
+msgstr ""
+
+#. Tag: para
+#: reference_sfcgal.xml:454
+#, no-c-format
+msgid ""
+"Following the CGAL implementation, the alpha value is the <emphasis>square</"
+"emphasis> of the radius of the disc used in the Alpha-Shape algorithm to "
+"\"erode\" the Delaunay Triangulation of the input points. See <ulink "
+"url=\"https://doc.cgal.org/latest/Alpha_shapes_2/index."
+"html#Chapter_2D_Alpha_Shapes\">CGAL Alpha-Shapes</ulink> for more "
+"information. This is different from the original definition of alpha-shapes, "
+"which defines alpha as the radius of the eroding disc."
+msgstr ""
+
+#. Tag: para
+#: reference_sfcgal.xml:463
+#, no-c-format
+msgid ""
+"The computed shape does not contain holes unless the optional "
+"<varname>allow_holes</varname> argument is specified as true."
+msgstr ""
+
+#. Tag: para
+#: reference_sfcgal.xml:466
+#, no-c-format
+msgid ""
+"This function effectively computes a concave hull of a geometry in a similar "
+"way to <xref linkend=\"ST_ConcaveHull\"/>, but uses CGAL and a different "
+"algorithm."
+msgstr ""
+
+#. Tag: para
+#: reference_sfcgal.xml:471 reference_sfcgal.xml:1004
 #, no-c-format
 msgid "Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1."
 msgstr "Availability: 3.3.0 - SFCGAL &gt;= 1.4.1 が必要です。"
 
 #. Tag: para
-#: reference_sfcgal.xml:458
+#: reference_sfcgal.xml:483
 #, no-c-format
-msgid "Concave Hull of a MultiPoint (same example As ST_OptimalAlphaShape)"
-msgstr "マルチポイントの凹包 (ST_OptimalAlphaShapeの例と同じ)"
+msgid ""
+"Alpha-shape of a MultiPoint (same example As <xref "
+"linkend=\"ST_OptimalAlphaShape\"/>)"
+msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:461
+#: reference_sfcgal.xml:486
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_AlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),"
@@ -846,8 +869,8 @@ msgid ""
 "19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::"
 "geometry,80.2));"
 msgstr ""
-"SELECT ST_AsText(ST_AlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),("
-"91 50),(81 70),\n"
+"SELECT ST_AsText(ST_AlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),"
+"(91 50),(81 70),\n"
 "                (88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 "
 "42),(77 67),(90 30),(36 61),(32 65),\n"
 "                (81 47),(88 58),(68 73),(49 95),(81 60),(87 50),\n"
@@ -858,11 +881,11 @@ msgstr ""
 "                (80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 "
 "42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),\n"
 "                (36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 "
-"19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry,80."
-"2));"
+"19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::"
+"geometry,80.2));"
 
 #. Tag: screen
-#: reference_sfcgal.xml:462
+#: reference_sfcgal.xml:487
 #, no-c-format
 msgid ""
 "POLYGON((89 53,91 50,87 42,90 30,88 29,84 19,78 16,73 16,65 16,53 18,43 "
@@ -876,15 +899,15 @@ msgstr ""
 "95,76 88,75 84,83 72,85 71,88 58,89 53))"
 
 #. Tag: para
-#: reference_sfcgal.xml:470
+#: reference_sfcgal.xml:495
 #, no-c-format
 msgid ""
-"Concave Hull of a MultiPoint, allowing holes (same example as "
-"ST_OptimalAlphaShape)"
-msgstr "マルチポイントで穴を許す凹包(ST_OptimalAlphaShapeと同じ)"
+"Alpha-shape of a MultiPoint, allowing holes (same example as <xref "
+"linkend=\"ST_OptimalAlphaShape\"/>)"
+msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:473
+#: reference_sfcgal.xml:498
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_AlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),"
@@ -901,10 +924,10 @@ msgid ""
 "19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry, "
 "100.1,true))"
 msgstr ""
-"SELECT ST_AsText(ST_AlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),("
-"91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 "
-"42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),("
-"87 50),\n"
+"SELECT ST_AsText(ST_AlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),"
+"(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 "
+"42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),"
+"(87 50),\n"
 "                (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 "
 "40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),\n"
 "                (75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 "
@@ -912,11 +935,11 @@ msgstr ""
 "                (80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 "
 "42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),\n"
 "                (36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 "
-"19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry, 100."
-"1,true))"
+"19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry, "
+"100.1,true))"
 
 #. Tag: screen
-#: reference_sfcgal.xml:474
+#: reference_sfcgal.xml:499
 #, no-c-format
 msgid ""
 "POLYGON((89 53,91 50,87 42,90 30,88 29,84 19,78 16,73 16,65 16,53 18,43 "
@@ -934,14 +957,15 @@ msgstr ""
 "54,81 47,78 43,76 27,62 22,54 32,48 34,44 42,38 46,36 61))"
 
 #. Tag: para
-#: reference_sfcgal.xml:483
+#: reference_sfcgal.xml:508
 #, no-c-format
 msgid ""
-"Concave Hull of a MultiPoint, allowing holes (same example as ST_ConcaveHull)"
-msgstr "マルチポイントで穴を許す凹包(ST_ConcaveHullと同じ)"
+"Alpha-shape of a MultiPoint, allowing holes (same example as <xref "
+"linkend=\"ST_ConcaveHull\"/>)"
+msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:486
+#: reference_sfcgal.xml:511
 #, no-c-format
 msgid ""
 "SELECT ST_AlphaShape(\n"
@@ -965,19 +989,19 @@ msgstr ""
 "49), (52 36), (46 20), (37 20), (26 20), (32 36), (39 55), (43 69), (50 84), "
 "(57 100), (63 118), (68 133), (74 149), (81 164), (88 180), (101 180), (112 "
 "180), (119 164), (126 149), (132 131), (139 113), (143 100), (150 84), (157 "
-"69), (163 51), (168 36), (174 20), (163 20), (150 20), (143 36), (139 49), ("
-"132 64), (99 151), (92 138), (88 124), (81 109), (74 93), (70 82), (83 82), ("
-"99 82), (112 82), (126 82), (121 96), (114 109), (110 122), (103 138), (99 "
-"151), (34 27), (43 31), (48 44), (46 58), (52 73), (63 73), (61 84), (72 71)"
-", (90 69), (101 76), (123 71), (141 62), (166 27), (150 33), (159 36), (146 "
-"44), (154 53), (152 62), (146 73), (134 76), (143 82), (141 91), (130 98), ("
-"126 104), (132 113), (128 127), (117 122), (112 133), (119 144), (108 147), ("
-"119 153), (110 171), (103 164), (92 171), (86 160), (88 142), (79 140), (72 "
-"124), (83 131), (79 118), (68 113), (63 102), (68 93), (35 45))'::"
+"69), (163 51), (168 36), (174 20), (163 20), (150 20), (143 36), (139 49), "
+"(132 64), (99 151), (92 138), (88 124), (81 109), (74 93), (70 82), (83 82), "
+"(99 82), (112 82), (126 82), (121 96), (114 109), (110 122), (103 138), (99 "
+"151), (34 27), (43 31), (48 44), (46 58), (52 73), (63 73), (61 84), (72 "
+"71), (90 69), (101 76), (123 71), (141 62), (166 27), (150 33), (159 36), "
+"(146 44), (154 53), (152 62), (146 73), (134 76), (143 82), (141 91), (130 "
+"98), (126 104), (132 113), (128 127), (117 122), (112 133), (119 144), (108 "
+"147), (119 153), (110 171), (103 164), (92 171), (86 160), (88 142), (79 "
+"140), (72 124), (83 131), (79 118), (68 113), (63 102), (68 93), (35 45))'::"
 "geometry,102.2, true);"
 
 #. Tag: screen
-#: reference_sfcgal.xml:487
+#: reference_sfcgal.xml:512
 #, no-c-format
 msgid ""
 "POLYGON((134 80,136 75,130 63,135 45,132 44,126 28,117 24,110 24,98 24,80 "
@@ -995,25 +1019,25 @@ msgstr ""
 "106,125 96,132 87,134 80))"
 
 #. Tag: para
-#: reference_sfcgal.xml:492
+#: reference_sfcgal.xml:517
 #, no-c-format
 msgid ", <xref linkend=\"ST_OptimalAlphaShape\"/>"
 msgstr ", <xref linkend=\"ST_OptimalAlphaShape\"/>"
 
 #. Tag: refname
-#: reference_sfcgal.xml:499
+#: reference_sfcgal.xml:524
 #, no-c-format
 msgid "ST_ApproximateMedialAxis"
 msgstr "ST_ApproximateMedialAxis"
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:501
+#: reference_sfcgal.xml:526
 #, no-c-format
 msgid "Compute the approximate medial axis of an areal geometry."
 msgstr "面ジオメトリの近似的な中心軸を計算します。"
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:506
+#: reference_sfcgal.xml:531
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ApproximateMedialAxis</function></funcdef> "
@@ -1023,7 +1047,7 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
-#: reference_sfcgal.xml:516
+#: reference_sfcgal.xml:541
 #, no-c-format
 msgid ""
 "Return an approximate medial axis for the areal input based on its straight "
@@ -1032,11 +1056,11 @@ msgid ""
 "ST_StraightSkeleton (slower case)."
 msgstr ""
 "ストレートスケルトンを基に、入力された面の近似的な中心軸を返します。可能な版 "
-"(1.2.0以上)でビルドすると、SFCGAL独自APIを使います。"
-"そうでない場合はST_StraightSkeleton (遅い)のラップとなります。"
+"(1.2.0以上)でビルドすると、SFCGAL独自APIを使います。そうでない場合は"
+"ST_StraightSkeleton (遅い)のラップとなります。"
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:531
+#: reference_sfcgal.xml:556
 #, no-c-format
 msgid ""
 "SELECT ST_ApproximateMedialAxis(ST_GeomFromText('POLYGON (( 190 190, 10 190, "
@@ -1046,26 +1070,26 @@ msgstr ""
 "10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));"
 
 #. Tag: para
-#: reference_sfcgal.xml:542
+#: reference_sfcgal.xml:567
 #, no-c-format
 msgid "A polygon and its approximate medial axis"
 msgstr "ポリゴンと近似的な中心軸"
 
 #. Tag: refname
-#: reference_sfcgal.xml:562
+#: reference_sfcgal.xml:587
 #, no-c-format
 msgid "ST_ConstrainedDelaunayTriangles"
 msgstr "ST_ConstrainedDelaunayTriangles"
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:564
+#: reference_sfcgal.xml:589
 #, no-c-format
 msgid ""
 "Return a constrained Delaunay triangulation around the given input geometry."
 msgstr "入力ジオメトリの周りの制約付きドロネー三角形を返します。"
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:571
+#: reference_sfcgal.xml:596
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ConstrainedDelaunayTriangles</function></"
@@ -1073,11 +1097,11 @@ msgid ""
 "paramdef>"
 msgstr ""
 "<funcdef>geometry <function>ST_ConstrainedDelaunayTriangles</function></"
-"funcdef> <paramdef><type>geometry </type> "
-"<parameter>g1</parameter></paramdef>"
+"funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
+"paramdef>"
 
 #. Tag: para
-#: reference_sfcgal.xml:581
+#: reference_sfcgal.xml:606
 #, no-c-format
 msgid ""
 "Return a <ulink url=\"https://en.wikipedia.org/wiki/"
@@ -1089,19 +1113,19 @@ msgstr ""
 "triangulation</ulink>)を返します。出力はTINです。"
 
 #. Tag: para
-#: reference_sfcgal.xml:588
+#: reference_sfcgal.xml:613
 #, no-c-format
 msgid "Availability: 3.0.0"
 msgstr "Availability: 3.0.0"
 
 #. Tag: para
-#: reference_sfcgal.xml:602
+#: reference_sfcgal.xml:627
 #, no-c-format
 msgid "ST_ConstrainedDelaunayTriangles of 2 polygons"
 msgstr "二つのポリゴンのST_ConstrainedDelaunayTriangles"
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:605
+#: reference_sfcgal.xml:630
 #, no-c-format
 msgid ""
 "select ST_ConstrainedDelaunayTriangles(\n"
@@ -1114,20 +1138,20 @@ msgid ""
 msgstr ""
 "select ST_ConstrainedDelaunayTriangles(\n"
 "               ST_Union(\n"
-"                       'POLYGON((175 150, 20 40, 50 60, 125 100, 175 "
-"150))'::geometry,\n"
+"                       'POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'::"
+"geometry,\n"
 "                       ST_Buffer('POINT(110 170)'::geometry, 20)\n"
 "                   )\n"
 "           );"
 
 #. Tag: para
-#: reference_sfcgal.xml:612
+#: reference_sfcgal.xml:637
 #, no-c-format
 msgid "of 2 polygons. Triangle edges cross polygon boundaries."
 msgstr "二つのポリゴン。三角形の辺はポリゴンの境界にクロスしています。"
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:615
+#: reference_sfcgal.xml:640
 #, no-c-format
 msgid ""
 "select ST_DelaunayTriangles(\n"
@@ -1140,14 +1164,14 @@ msgid ""
 msgstr ""
 "select ST_DelaunayTriangles(\n"
 "               ST_Union(\n"
-"                       'POLYGON((175 150, 20 40, 50 60, 125 100, 175 "
-"150))'::geometry,\n"
+"                       'POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'::"
+"geometry,\n"
 "                       ST_Buffer('POINT(110 170)'::geometry, 20)\n"
 "                   )\n"
 "           );"
 
 #. Tag: para
-#: reference_sfcgal.xml:624
+#: reference_sfcgal.xml:649
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Tesselate\"/>, <xref linkend=\"ST_ConcaveHull\"/>, "
@@ -1157,19 +1181,19 @@ msgstr ""
 "<xref linkend=\"ST_Dump\"/>"
 
 #. Tag: refname
-#: reference_sfcgal.xml:631
+#: reference_sfcgal.xml:656
 #, no-c-format
 msgid "ST_Extrude"
 msgstr "ST_Extrude"
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:633
+#: reference_sfcgal.xml:658
 #, no-c-format
 msgid "Extrude a surface to a related volume"
 msgstr "関連するボリュームにサーフェスを押し出します。"
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:638
+#: reference_sfcgal.xml:663
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Extrude</function></funcdef> "
@@ -1185,7 +1209,7 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>z</parameter></paramdef>"
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:666
+#: reference_sfcgal.xml:691
 #, no-c-format
 msgid ""
 "SELECT ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
@@ -1195,13 +1219,13 @@ msgstr ""
 "  50, 'quad_segs=2'),0,0,30);"
 
 #. Tag: para
-#: reference_sfcgal.xml:672
+#: reference_sfcgal.xml:697
 #, no-c-format
 msgid "Original octagon formed from buffering point"
 msgstr "ポイントのバッファから形成された元の八角形"
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:677
+#: reference_sfcgal.xml:702
 #, no-c-format
 msgid ""
 "ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
@@ -1211,25 +1235,25 @@ msgstr ""
 " 50, 'quad_segs=2'),0,0,30);"
 
 #. Tag: para
-#: reference_sfcgal.xml:683
+#: reference_sfcgal.xml:708
 #, no-c-format
 msgid "Hexagon extruded 30 units along Z produces a PolyhedralSurfaceZ"
 msgstr "Z方向に30単位押し出して得たPolyhedralSurfaceZ"
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:691
+#: reference_sfcgal.xml:716
 #, no-c-format
 msgid "SELECT ST_GeomFromText('LINESTRING(50 50, 100 90, 95 150)')"
 msgstr "SELECT ST_GeomFromText('LINESTRING(50 50, 100 90, 95 150)')"
 
 #. Tag: para
-#: reference_sfcgal.xml:697
+#: reference_sfcgal.xml:722
 #, no-c-format
 msgid "Original linestring"
 msgstr "元のラインストリング"
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:702
+#: reference_sfcgal.xml:727
 #, no-c-format
 msgid ""
 "SELECT ST_Extrude(\n"
@@ -1239,25 +1263,25 @@ msgstr ""
 " ST_GeomFromText('LINESTRING(50 50, 100 90, 95 150)'),0,0,10));"
 
 #. Tag: para
-#: reference_sfcgal.xml:708
+#: reference_sfcgal.xml:733
 #, no-c-format
 msgid "LineString Extruded along Z produces a PolyhedralSurfaceZ"
 msgstr "ラインストリングをZ方向に押し出したPolyhedralSurfaceZ"
 
 #. Tag: refname
-#: reference_sfcgal.xml:726
+#: reference_sfcgal.xml:751
 #, no-c-format
 msgid "ST_ForceLHR"
 msgstr "ST_ForceLHR"
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:728
+#: reference_sfcgal.xml:753
 #, no-c-format
 msgid "Force LHR orientation"
 msgstr "LHR (Left Hand Rule)方向に強制します。"
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:733
+#: reference_sfcgal.xml:758
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ForceLHR</function></funcdef> "
@@ -1267,19 +1291,19 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: refname
-#: reference_sfcgal.xml:754
+#: reference_sfcgal.xml:779
 #, no-c-format
 msgid "ST_IsPlanar"
 msgstr "ST_IsPlanar"
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:756
+#: reference_sfcgal.xml:781
 #, no-c-format
 msgid "Check if a surface is or not planar"
 msgstr "サーフェスが平面であるかないかをチェックします。"
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:761
+#: reference_sfcgal.xml:786
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_IsPlanar</function></funcdef> "
@@ -1289,28 +1313,30 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
-#: reference_sfcgal.xml:771
+#: reference_sfcgal.xml:796
 #, no-c-format
 msgid ""
 "Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left "
 "out in 2.1 release."
-msgstr "Availability: 2.2.0: これは2.1.0のマニュアルに記述されていましたが、2."
-"1版では偶然に外れてしまいました。"
+msgstr ""
+"Availability: 2.2.0: これは2.1.0のマニュアルに記述されていましたが、2.1版では"
+"偶然に外れてしまいました。"
 
 #. Tag: refname
-#: reference_sfcgal.xml:782
+#: reference_sfcgal.xml:807
 #, no-c-format
 msgid "ST_IsSolid"
 msgstr "ST_IsSolid"
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:784
+#: reference_sfcgal.xml:809
 #, no-c-format
 msgid "Test if the geometry is a solid. No validity check is performed."
-msgstr "ジオメトリが立体であるかどうかをテストします。妥当性チェックは行いません。"
+msgstr ""
+"ジオメトリが立体であるかどうかをテストします。妥当性チェックは行いません。"
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:789
+#: reference_sfcgal.xml:814
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_IsSolid</function></funcdef> "
@@ -1320,13 +1346,13 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
 
 #. Tag: refname
-#: reference_sfcgal.xml:810
+#: reference_sfcgal.xml:835
 #, no-c-format
 msgid "ST_MakeSolid"
 msgstr "ST_MakeSolid"
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:812
+#: reference_sfcgal.xml:837
 #, no-c-format
 msgid ""
 "Cast the geometry into a solid. No check is performed. To obtain a valid "
@@ -1337,7 +1363,7 @@ msgstr ""
 "入力ジオメトリは閉じた多面体サーフェスか閉じたTINでなければなりません。"
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:817
+#: reference_sfcgal.xml:842
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MakeSolid</function></funcdef> "
@@ -1347,19 +1373,19 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
 
 #. Tag: refname
-#: reference_sfcgal.xml:839
+#: reference_sfcgal.xml:864
 #, no-c-format
 msgid "ST_MinkowskiSum"
 msgstr "ST_MinkowskiSum"
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:841
+#: reference_sfcgal.xml:866
 #, no-c-format
 msgid "Performs Minkowski sum"
 msgstr "ミンコフスキー和を求めます。"
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:846
+#: reference_sfcgal.xml:871
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MinkowskiSum</function></funcdef> "
@@ -1371,16 +1397,17 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
 
 #. Tag: para
-#: reference_sfcgal.xml:857
+#: reference_sfcgal.xml:882
 #, no-c-format
 msgid ""
 "This function performs a 2D minkowski sum of a point, line or polygon with a "
 "polygon."
-msgstr "ポリゴンと、ポイント、ライン、ポリゴンのいずれかとの2次元のミンコフスキー和を"
+msgstr ""
+"ポリゴンと、ポイント、ライン、ポリゴンのいずれかとの2次元のミンコフスキー和を"
 "計算します。"
 
 #. Tag: para
-#: reference_sfcgal.xml:858
+#: reference_sfcgal.xml:883
 #, no-c-format
 msgid ""
 "A minkowski sum of two geometries A and B is the set of all points that are "
@@ -1388,13 +1415,13 @@ msgid ""
 "planning and computer-aided design. More details on <ulink url=\"https://en."
 "wikipedia.org/wiki/Minkowski_addition\">Wikipedia Minkowski addition</ulink>."
 msgstr ""
-"二つのジオメトリAとBのミンコフスキー和はAとBのあらゆるポイントの和の集合です"
-"。ミンコフスキー和は、しばしば動作計画とCADで使われます。"
-"より詳細な情報について<ulink url=\"https://en.wikipedia.org/wiki/"
+"二つのジオメトリAとBのミンコフスキー和はAとBのあらゆるポイントの和の集合で"
+"す。ミンコフスキー和は、しばしば動作計画とCADで使われます。より詳細な情報につ"
+"いて<ulink url=\"https://en.wikipedia.org/wiki/"
 "Minkowski_addition\">Wikipedia Minkowski addition</ulink>をご覧ください。"
 
 #. Tag: para
-#: reference_sfcgal.xml:859
+#: reference_sfcgal.xml:884
 #, no-c-format
 msgid ""
 "The first parameter can be any 2D geometry (point, linestring, polygon). If "
@@ -1407,7 +1434,7 @@ msgstr ""
 "無効と考えられます。二つ目の引数は2次元ポリゴンでなければなりません。"
 
 #. Tag: para
-#: reference_sfcgal.xml:861
+#: reference_sfcgal.xml:886
 #, no-c-format
 msgid ""
 "Implementation utilizes <ulink url=\"http://doc.cgal.org/latest/"
@@ -1417,28 +1444,29 @@ msgstr ""
 "Minkowskisum</ulink>を利用して実装しています。"
 
 #. Tag: para
-#: reference_sfcgal.xml:869
+#: reference_sfcgal.xml:894
 #, no-c-format
 msgid ""
 "Minkowski Sum of Linestring and circle polygon where Linestring cuts thru "
 "the circle"
-msgstr "ラインストリングと円ポリゴンであって、ラインストリングがポリゴンを横切るミン"
+msgstr ""
+"ラインストリングと円ポリゴンであって、ラインストリングがポリゴンを横切るミン"
 "コフスキー和"
 
 #. Tag: para
-#: reference_sfcgal.xml:881 reference_sfcgal.xml:916
+#: reference_sfcgal.xml:906 reference_sfcgal.xml:941
 #, no-c-format
 msgid "Before Summing"
 msgstr "ミンコフスキー和を実行する前"
 
 #. Tag: para
-#: reference_sfcgal.xml:893
+#: reference_sfcgal.xml:918
 #, no-c-format
 msgid "After summing"
 msgstr "ミンコフスキー和実行後"
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:902
+#: reference_sfcgal.xml:927
 #, no-c-format
 msgid ""
 "SELECT ST_MinkowskiSum(line, circle))\n"
@@ -1482,8 +1510,8 @@ msgstr ""
 "128.786796564404,174.944088369076 133.332893009412,177.716385975339 "
 "138.519497029047,179.423558412097 144.147290339516,180 150,179.423558412097 "
 "155.852709660484,177.716385975339 161.480502970953,174.944088369076 "
-"166.667106990588,171.213203435596 171.213203435596,166.667106990588 174."
-"944088369076,\n"
+"166.667106990588,171.213203435596 171.213203435596,166.667106990588 "
+"174.944088369076,\n"
 "161.480502970953 177.716385975339,155.852709660484 179.423558412097,150 "
 "180,144.147290339516 179.423558412097,138.519497029047 "
 "177.716385975339,133.332893009412 174.944088369076,128.786796564403 "
@@ -1492,20 +1520,20 @@ msgstr ""
 "65.8527096604838,30 59.9999999999999)))"
 
 #. Tag: para
-#: reference_sfcgal.xml:904
+#: reference_sfcgal.xml:929
 #, no-c-format
 msgid "Minkowski Sum of a polygon and multipoint"
 msgstr "ポリゴンとマルチポイントとのミンコフスキー和"
 
 #. Tag: para
-#: reference_sfcgal.xml:928
+#: reference_sfcgal.xml:953
 #, no-c-format
 msgid ""
 "After summing: polygon is duplicated and translated to position of points"
 msgstr "ミンコフスキー和実行後: 重複ポリゴンが生成されポイントの位置に移動"
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:937
+#: reference_sfcgal.xml:962
 #, no-c-format
 msgid ""
 "SELECT ST_MinkowskiSum(mp, poly)\n"
@@ -1533,63 +1561,70 @@ msgstr ""
 "    )"
 
 #. Tag: refname
-#: reference_sfcgal.xml:944
+#: reference_sfcgal.xml:969
 #, no-c-format
 msgid "ST_OptimalAlphaShape"
 msgstr "ST_OptimalAlphaShape"
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:946
+#: reference_sfcgal.xml:971
 #, no-c-format
 msgid ""
-"Computes a possible concave geometry using the CGAL Alpha Shapes algorithm "
-"after have computed the \"optimal\" alpha value."
-msgstr "「最適な」アルファ値を計算した後にCGALアルファシェイプアルゴリズムを使って可"
-"能な凹ジオメトリを計算します。"
+"Computes an Alpha-shape enclosing a geometry using an \"optimal\" alpha "
+"value."
+msgstr ""
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:951
+#: reference_sfcgal.xml:976
 #, no-c-format
 msgid ""
-"<funcdef>geometry<function>ST_OptimalAlphaShape</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>param_geom</parameter></paramdef> "
+"<funcdef>geometry <function>ST_OptimalAlphaShape</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
 "<paramdef choice=\"opt\"><type>boolean </type> <parameter>allow_holes = "
 "false</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>nb_components</parameter></paramdef>"
+"<parameter>nb_components = 1</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry<function>ST_OptimalAlphaShape</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>param_geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>boolean </type> <parameter>allow_holes = "
-"false</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>nb_components</parameter></paramdef>"
 
 #. Tag: para
-#: reference_sfcgal.xml:963
+#: reference_sfcgal.xml:988
 #, no-c-format
 msgid ""
-"Computes the \"optimal\" alpha-shapes of the set of geometry. CGAL can "
-"automatically find the optimal value of alpha. This version uses it to find "
-"an \"optimal\" alpha-shape. The result is a single polygon. It will not "
-"contain holes unless the optional <varname>param_allow_holes</varname> "
-"argument is specified as true. The result will be generated such that the "
-"number of solid component of the alpha shape is equal to or smaller than "
-"<varname>param_nb_components</varname>."
+"Computes the \"optimal\" alpha-shape of the points in a geometry. The alpha-"
+"shape is computed using a value of α chosen so that:"
 msgstr ""
-"ジオメトリ集合の「最適な」アルファシェイプを計算します。CGALは自動的に最適な"
-"アルファ値を得ることができます。このバージョンでは、得られたアルファ値から「"
-"最適な」アルファシェイプを得ます。結果は単一ポリゴンです。任意パラメータ<varn"
-"ame>param_allow_holes</varname>をTRUEに指定しない限りは、穴は含みません。アル"
-"ファシェイプの要素数が<varname>param_nb_components</varname>以下になるよう結"
-"果が生成されます。"
 
 #. Tag: para
-#: reference_sfcgal.xml:982
+#: reference_sfcgal.xml:993
 #, no-c-format
-msgid "Concave Hull of a MultiPoint (same example as ST_AlphaShape)"
-msgstr "マルチポイントの凹包 (ST_AlphaShapeと同じ例)"
+msgid ""
+"the number of polygon elements is equal to or smaller than "
+"<varname>nb_components</varname> (which defaults to 1)"
+msgstr ""
+
+#. Tag: para
+#: reference_sfcgal.xml:997
+#, no-c-format
+msgid "all input points are contained in the shape"
+msgstr ""
+
+#. Tag: para
+#: reference_sfcgal.xml:1000
+#, no-c-format
+msgid ""
+"The result will not contain holes unless the optional <varname>allow_holes</"
+"varname> argument is specified as true."
+msgstr ""
+
+#. Tag: para
+#: reference_sfcgal.xml:1016
+#, no-c-format
+msgid ""
+"Optimal alpha-shape of a MultiPoint (same example as <xref "
+"linkend=\"ST_AlphaShape\"/>)"
+msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:985
+#: reference_sfcgal.xml:1019
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OptimalAlphaShape('MULTIPOINT((63 84),(76 88),(68 73),"
@@ -1606,8 +1641,8 @@ msgid ""
 "                (36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 "
 "19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry));"
 msgstr ""
-"SELECT ST_AsText(ST_OptimalAlphaShape('MULTIPOINT((63 84),(76 88),(68 73),("
-"53 18),(91 50),(81 70),\n"
+"SELECT ST_AsText(ST_OptimalAlphaShape('MULTIPOINT((63 84),(76 88),(68 73),"
+"(53 18),(91 50),(81 70),\n"
 "                (88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 "
 "42),(77 67),(90 30),(36 61),(32 65),\n"
 "                (81 47),(88 58),(68 73),(49 95),(81 60),(87 50),\n"
@@ -1621,7 +1656,7 @@ msgstr ""
 "19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry));"
 
 #. Tag: screen
-#: reference_sfcgal.xml:986
+#: reference_sfcgal.xml:1020
 #, no-c-format
 msgid ""
 "POLYGON((89 53,91 50,87 42,90 30,88 29,84 19,78 16,73 16,65 16,53 18,43 "
@@ -1637,14 +1672,15 @@ msgstr ""
 "58,89 53))"
 
 #. Tag: para
-#: reference_sfcgal.xml:995
+#: reference_sfcgal.xml:1029
 #, no-c-format
 msgid ""
-"Concave Hull of a MultiPoint, allowing holes (same example as ST_AlphaShape)"
-msgstr "マルチポイントで穴を許す凹包 (ST_AlphaShapeと同じ例)"
+"Optimal alpha-shape of a MultiPoint, allowing holes (same example as <xref "
+"linkend=\"ST_AlphaShape\"/>)"
+msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:998
+#: reference_sfcgal.xml:1032
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OptimalAlphaShape('MULTIPOINT((63 84),(76 88),(68 73),"
@@ -1661,10 +1697,10 @@ msgid ""
 "19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry, "
 "allow_holes => true));"
 msgstr ""
-"SELECT ST_AsText(ST_OptimalAlphaShape('MULTIPOINT((63 84),(76 88),(68 73),("
-"53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 "
-"87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),("
-"81 60),(87 50),\n"
+"SELECT ST_AsText(ST_OptimalAlphaShape('MULTIPOINT((63 84),(76 88),(68 73),"
+"(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 "
+"87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),"
+"(81 60),(87 50),\n"
 "                (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 "
 "40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),\n"
 "                (75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 "
@@ -1676,7 +1712,7 @@ msgstr ""
 "allow_holes => true));"
 
 #. Tag: screen
-#: reference_sfcgal.xml:999
+#: reference_sfcgal.xml:1033
 #, no-c-format
 msgid ""
 "POLYGON((89 53,91 50,87 42,90 30,88 29,84 19,78 16,73 16,65 16,53 18,43 "
@@ -1694,25 +1730,25 @@ msgstr ""
 "46,36 61))"
 
 #. Tag: para
-#: reference_sfcgal.xml:1005
+#: reference_sfcgal.xml:1039
 #, no-c-format
 msgid ", <xref linkend=\"ST_AlphaShape\"/>"
 msgstr ", <xref linkend=\"ST_AlphaShape\"/>"
 
 #. Tag: refname
-#: reference_sfcgal.xml:1012
+#: reference_sfcgal.xml:1046
 #, no-c-format
 msgid "ST_Orientation"
 msgstr "ST_Orientation"
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:1014
+#: reference_sfcgal.xml:1048
 #, no-c-format
 msgid "Determine surface orientation"
 msgstr "サーフェスの方向を判定します。"
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:1019
+#: reference_sfcgal.xml:1053
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_Orientation</function></funcdef> "
@@ -1722,28 +1758,29 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
-#: reference_sfcgal.xml:1029
+#: reference_sfcgal.xml:1063
 #, no-c-format
 msgid ""
 "The function only applies to polygons. It returns -1 if the polygon is "
 "counterclockwise oriented and 1 if the polygon is clockwise oriented."
-msgstr "この関数はポリゴンのみ受け付けます。ポリゴンが反時計回りなら-1を返し、時計回"
+msgstr ""
+"この関数はポリゴンのみ受け付けます。ポリゴンが反時計回りなら-1を返し、時計回"
 "りなら1を返します。"
 
 #. Tag: refname
-#: reference_sfcgal.xml:1040
+#: reference_sfcgal.xml:1074
 #, no-c-format
 msgid "ST_StraightSkeleton"
 msgstr "ST_StraightSkeleton"
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:1042
+#: reference_sfcgal.xml:1076
 #, no-c-format
 msgid "Compute a straight skeleton from a geometry"
 msgstr "ジオメトリからストレートスケルトンを計算します。"
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:1047
+#: reference_sfcgal.xml:1081
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_StraightSkeleton</function></funcdef> "
@@ -1753,7 +1790,7 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:1065
+#: reference_sfcgal.xml:1099
 #, no-c-format
 msgid ""
 "SELECT ST_StraightSkeleton(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 "
@@ -1763,34 +1800,35 @@ msgstr ""
 "10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));"
 
 #. Tag: para
-#: reference_sfcgal.xml:1076 reference_sfcgal.xml:1163
+#: reference_sfcgal.xml:1110 reference_sfcgal.xml:1197
 #, no-c-format
 msgid "Original polygon"
 msgstr "元のポリゴン"
 
 #. Tag: para
-#: reference_sfcgal.xml:1085
+#: reference_sfcgal.xml:1119
 #, no-c-format
 msgid "Straight Skeleton of polygon"
 msgstr "ポリゴンのストレートスケルトン"
 
 #. Tag: refname
-#: reference_sfcgal.xml:1100
+#: reference_sfcgal.xml:1134
 #, no-c-format
 msgid "ST_Tesselate"
 msgstr "ST_Tesselate"
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:1102
+#: reference_sfcgal.xml:1136
 #, no-c-format
 msgid ""
 "Perform surface Tesselation of a polygon or polyhedralsurface and returns as "
 "a TIN or collection of TINS"
-msgstr "ポリゴンまたは多面体サーフェスのテッセレーションを計算し、TINまたはTINコレク"
+msgstr ""
+"ポリゴンまたは多面体サーフェスのテッセレーションを計算し、TINまたはTINコレク"
 "ションを返します。"
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:1107
+#: reference_sfcgal.xml:1141
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Tesselate</function></funcdef> "
@@ -1800,17 +1838,17 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
-#: reference_sfcgal.xml:1116
+#: reference_sfcgal.xml:1150
 #, no-c-format
 msgid ""
 "Takes as input a surface such a MULTI(POLYGON) or POLYHEDRALSURFACE and "
 "returns a TIN representation via the process of tessellation using triangles."
 msgstr ""
-"(MULTI)POLYGONまたはPOLYHEDRALSURFACEのような面を入力に取り、三角形を使ったテ"
-"ッセレーション処理を通してTIN表現を返します。"
+"(MULTI)POLYGONまたはPOLYHEDRALSURFACEのような面を入力に取り、三角形を使った"
+"テッセレーション処理を通してTIN表現を返します。"
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:1130
+#: reference_sfcgal.xml:1164
 #, no-c-format
 msgid ""
 "SELECT ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 "
@@ -1830,13 +1868,13 @@ msgstr ""
 "1, 0 1 1, 0 0 1)) )');"
 
 #. Tag: para
-#: reference_sfcgal.xml:1136
+#: reference_sfcgal.xml:1170
 #, no-c-format
 msgid "Original Cube"
 msgstr "元の立方体"
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:1141
+#: reference_sfcgal.xml:1175
 #, no-c-format
 msgid ""
 "SELECT ST_Tesselate(ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 "
@@ -1856,13 +1894,13 @@ msgstr ""
 "0 0 1)) )'));"
 
 #. Tag: para
-#: reference_sfcgal.xml:1142
+#: reference_sfcgal.xml:1176
 #, no-c-format
 msgid "ST_AsText output:"
 msgstr "ST_AsTextの出力:"
 
 #. Tag: screen
-#: reference_sfcgal.xml:1143
+#: reference_sfcgal.xml:1177
 #, no-c-format
 msgid ""
 "TIN Z (((0 0 0,0 0 1,0 1 1,0 0 0)),((0 1 0,0 0 0,0 1 1,0 1 0)),\n"
@@ -1882,13 +1920,13 @@ msgstr ""
 "        ((0 1 1,1 0 1,1 1 1,0 1 1)),((0 1 1,0 0 1,1 0 1,0 1 1)))"
 
 #. Tag: para
-#: reference_sfcgal.xml:1149
+#: reference_sfcgal.xml:1183
 #, no-c-format
 msgid "Tesselated Cube with triangles colored"
 msgstr "彩色した三角形によるテッセレーションを施した立方体"
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:1157
+#: reference_sfcgal.xml:1191
 #, no-c-format
 msgid ""
 "SELECT 'POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, "
@@ -1898,7 +1936,7 @@ msgstr ""
 "10 190 ))'::geometry;"
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:1168
+#: reference_sfcgal.xml:1202
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -1910,13 +1948,13 @@ msgstr ""
 "160, 120 190, 10 190 ))'::geometry);"
 
 #. Tag: para
-#: reference_sfcgal.xml:1170
+#: reference_sfcgal.xml:1204
 #, no-c-format
 msgid "ST_AsText output"
 msgstr "ST_AsTextの出力:"
 
 #. Tag: screen
-#: reference_sfcgal.xml:1171
+#: reference_sfcgal.xml:1205
 #, no-c-format
 msgid ""
 "TIN(((80 130,50 160,80 70,80 130)),((50 160,10 190,10 70,50 160)),\n"
@@ -1928,33 +1966,34 @@ msgstr ""
 " ((120 190,10 190,50 160,120 190)))"
 
 #. Tag: para
-#: reference_sfcgal.xml:1177
+#: reference_sfcgal.xml:1211
 #, no-c-format
 msgid "Tesselated Polygon"
 msgstr "テッセレーションを施したポリゴン"
 
 #. Tag: para
-#: reference_sfcgal.xml:1190
+#: reference_sfcgal.xml:1224
 #, no-c-format
 msgid ", <xref linkend=\"ST_DelaunayTriangles\"/>"
 msgstr ", <xref linkend=\"ST_DelaunayTriangles\"/>"
 
 #. Tag: refname
-#: reference_sfcgal.xml:1198
+#: reference_sfcgal.xml:1232
 #, no-c-format
 msgid "ST_Volume"
 msgstr "ST_Volume"
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:1200
+#: reference_sfcgal.xml:1234
 #, no-c-format
 msgid ""
 "Computes the volume of a 3D solid. If applied to surface (even closed) "
 "geometries will return 0."
-msgstr "3次元立体の体積を計算します。面ジオメトリは (閉じていても)0を返します。"
+msgstr ""
+"3次元立体の体積を計算します。面ジオメトリは (閉じていても)0を返します。"
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:1205
+#: reference_sfcgal.xml:1239
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_Volume</function></funcdef> "
@@ -1964,19 +2003,19 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
 
 #. Tag: para
-#: reference_sfcgal.xml:1220
+#: reference_sfcgal.xml:1254
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as ST_3DVolume)"
 msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (ST_3DVolumeと同じ)"
 
 #. Tag: title
-#: reference_sfcgal.xml:1224
+#: reference_sfcgal.xml:1258
 #, no-c-format
 msgid "Example"
 msgstr "例"
 
 #. Tag: para
-#: reference_sfcgal.xml:1225
+#: reference_sfcgal.xml:1259
 #, no-c-format
 msgid ""
 "When closed surfaces are created with WKT, they are treated as areal rather "
@@ -1984,12 +2023,12 @@ msgid ""
 "linkend=\"ST_MakeSolid\"/>. Areal geometries have no volume. Here is an "
 "example to demonstrate."
 msgstr ""
-"WKTで閉じた面を生成した時、それは立体でなく面として扱われるます。"
-"立体にするには<xref linkend=\"ST_MakeSolid\""
-"/>を使います。面ジオメトリは堆積を持ちません。例を挙げます。"
+"WKTで閉じた面を生成した時、それは立体でなく面として扱われるます。立体にするに"
+"は<xref linkend=\"ST_MakeSolid\"/>を使います。面ジオメトリは堆積を持ちませ"
+"ん。例を挙げます。"
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:1227
+#: reference_sfcgal.xml:1261
 #, no-c-format
 msgid ""
 "SELECT ST_Volume(geom) As cube_surface_vol,\n"
@@ -2019,10 +2058,115 @@ msgstr ""
 "                0 |                 1"
 
 #. Tag: para
-#: reference_sfcgal.xml:1233
+#: reference_sfcgal.xml:1267
 #, no-c-format
 msgid ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
 msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "Computes a possible concave geometry using the CGAL Alpha Shapes "
+#~ "algorithm."
+#~ msgstr ""
+#~ "CGALアルファシェイプアルゴリズムを使って可能な凹ジオメトリを計算します。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Assume we are given a set S of points in 2D [...] and we would like to "
+#~ "have something like \"the shape formed by these points\". This is quite a "
+#~ "vague notion and there are probably many possible interpretations, the α-"
+#~ "shape being one of them. Alpha shapes can be used for shape "
+#~ "reconstruction from a dense unorganized set of data points. Indeed, an α-"
+#~ "shape is demarcated by a frontier, which is a linear approximation of the "
+#~ "original shape [1]. [1] F. Bernardini and C. Bajaj. Sampling and "
+#~ "reconstructing manifolds using alpha-shapes. Technical Report CSD-"
+#~ "TR-97-013, Dept. Comput. Sci., Purdue Univ., West Lafayette, IN, 1997. "
+#~ "Source: <ulink url=\"https://doc.cgal.org/latest/Alpha_shapes_2/index."
+#~ "html#Chapter_2D_Alpha_Shapes\">CGAL ALpha Shapes</ulink> This function "
+#~ "compute the concave hull of a set of geometry, but using CGAL and a "
+#~ "different algorithm than ST_ConcaveHull performed by the GEOS module. "
+#~ "See : <ulink url=\"http://lin-ear-th-inking.blogspot.com/2022/01/concave-"
+#~ "hulls-in-jts.html\">Concave Hulls in JTS</ulink>"
+#~ msgstr ""
+#~ "非常にあいまいな概念であり、解釈できる種類が多くある可能性が大きいです。ア"
+#~ "ルファシェイプはそのうちの一つです。アルファシェイプは、高密度の組織化され"
+#~ "ていないデータのポイントから形状を再構築するのに使えます。事実、アルファ"
+#~ "シェイプは、元の形状の線形近似である境界線とは大きく異なります [1]。[1] "
+#~ "F. Bernardini and C. Bajaj. Sampling and reconstructing manifolds using "
+#~ "alpha-shapes. Technical Report CSD-TR-97-013, Dept. Comput. Sci., Purdue "
+#~ "Univ., West Lafayette, IN, 1997. 出典: <ulink url=\"https://doc.cgal.org/"
+#~ "latest/Alpha_shapes_2/index.html#Chapter_2D_Alpha_Shapes\">CGAL ALpha "
+#~ "Shapes</ulink> この関数は、ジオメトリ集合の凹包を計算します。が、CGALを"
+#~ "使って、GEOSによるST_ConcaveHullとは異なるアルゴリズムを使います。参照: "
+#~ "<ulink url=\"http://lin-ear-th-inking.blogspot.com/2022/01/concave-hulls-"
+#~ "in-jts.html\">Concave Hulls in JTS</ulink>"
+
+#, no-c-format
+#~ msgid "Concave Hull of a MultiPoint (same example As ST_OptimalAlphaShape)"
+#~ msgstr "マルチポイントの凹包 (ST_OptimalAlphaShapeの例と同じ)"
+
+#, no-c-format
+#~ msgid ""
+#~ "Concave Hull of a MultiPoint, allowing holes (same example as "
+#~ "ST_OptimalAlphaShape)"
+#~ msgstr "マルチポイントで穴を許す凹包(ST_OptimalAlphaShapeと同じ)"
+
+#, no-c-format
+#~ msgid ""
+#~ "Concave Hull of a MultiPoint, allowing holes (same example as "
+#~ "ST_ConcaveHull)"
+#~ msgstr "マルチポイントで穴を許す凹包(ST_ConcaveHullと同じ)"
+
+#, no-c-format
+#~ msgid ""
+#~ "Computes a possible concave geometry using the CGAL Alpha Shapes "
+#~ "algorithm after have computed the \"optimal\" alpha value."
+#~ msgstr ""
+#~ "「最適な」アルファ値を計算した後にCGALアルファシェイプアルゴリズムを使って"
+#~ "可能な凹ジオメトリを計算します。"
+
+#, no-c-format
+#~ msgid ""
+#~ "<funcdef>geometry<function>ST_OptimalAlphaShape</function></funcdef> "
+#~ "<paramdef><type>geometry</type> <parameter>param_geom</parameter></"
+#~ "paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
+#~ "<parameter>allow_holes = false</parameter></paramdef> <paramdef "
+#~ "choice=\"opt\"><type>integer </type> <parameter>nb_components</"
+#~ "parameter></paramdef>"
+#~ msgstr ""
+#~ "<funcdef>geometry<function>ST_OptimalAlphaShape</function></funcdef> "
+#~ "<paramdef><type>geometry</type> <parameter>param_geom</parameter></"
+#~ "paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
+#~ "<parameter>allow_holes = false</parameter></paramdef> <paramdef "
+#~ "choice=\"opt\"><type>integer </type> <parameter>nb_components</"
+#~ "parameter></paramdef>"
+
+#, no-c-format
+#~ msgid ""
+#~ "Computes the \"optimal\" alpha-shapes of the set of geometry. CGAL can "
+#~ "automatically find the optimal value of alpha. This version uses it to "
+#~ "find an \"optimal\" alpha-shape. The result is a single polygon. It will "
+#~ "not contain holes unless the optional <varname>param_allow_holes</"
+#~ "varname> argument is specified as true. The result will be generated such "
+#~ "that the number of solid component of the alpha shape is equal to or "
+#~ "smaller than <varname>param_nb_components</varname>."
+#~ msgstr ""
+#~ "ジオメトリ集合の「最適な」アルファシェイプを計算します。CGALは自動的に最適"
+#~ "なアルファ値を得ることができます。このバージョンでは、得られたアルファ値か"
+#~ "ら「最適な」アルファシェイプを得ます。結果は単一ポリゴンです。任意パラメー"
+#~ "タ<varname>param_allow_holes</varname>をTRUEに指定しない限りは、穴は含みま"
+#~ "せん。アルファシェイプの要素数が<varname>param_nb_components</varname>以下"
+#~ "になるよう結果が生成されます。"
+
+#, no-c-format
+#~ msgid "Concave Hull of a MultiPoint (same example as ST_AlphaShape)"
+#~ msgstr "マルチポイントの凹包 (ST_AlphaShapeと同じ例)"
+
+#, no-c-format
+#~ msgid ""
+#~ "Concave Hull of a MultiPoint, allowing holes (same example as "
+#~ "ST_AlphaShape)"
+#~ msgstr "マルチポイントで穴を許す凹包 (ST_AlphaShapeと同じ例)"
 
 #, fuzzy
 #~ msgid ""
