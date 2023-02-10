@@ -898,6 +898,12 @@ extern const GBOX *lwgeom_get_bbox(const LWGEOM *lwgeom);
 */
 extern int lwgeom_is_collection(const LWGEOM *lwgeom);
 
+/**
+* Check if a LWGEOM has any non-finite (NaN or Inf) coordinates.
+*/
+extern int lwgeom_isfinite(const LWGEOM *lwgeom);
+
+
 /******************************************************************/
 /* Functions that work on type numbers */
 
