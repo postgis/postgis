@@ -77,6 +77,8 @@ my $OPT_WITH_SFCGAL = 0;
 my $OPT_EXPECT = 0;
 my $OPT_EXTENSIONS = 0;
 my @OPT_HOOK_AFTER_CREATE;
+my @OPT_HOOK_BEFORE_TEST;
+my @OPT_HOOK_AFTER_TEST;
 my @OPT_HOOK_BEFORE_UNINSTALL;
 my @OPT_HOOK_BEFORE_UPGRADE;
 my @OPT_HOOK_AFTER_UPGRADE;
@@ -104,7 +106,9 @@ GetOptions (
 	'schema=s' => \$OPT_SCHEMA,
 	'build-dir=s' => \$TOP_BUILDDIR,
 	'after-create-script=s' => \@OPT_HOOK_AFTER_CREATE,
+	'after-test-script=s' => \@OPT_HOOK_AFTER_TEST,
 	'before-uninstall-script=s' => \@OPT_HOOK_BEFORE_UNINSTALL,
+	'before-test-script=s' => \@OPT_HOOK_BEFORE_TEST,
 	'before-upgrade-script=s' => \@OPT_HOOK_BEFORE_UPGRADE,
 	'after-upgrade-script=s' => \@OPT_HOOK_AFTER_UPGRADE
 	);
@@ -461,6 +465,12 @@ foreach $TEST (@ARGV)
 	# catch a common mistake (strip trailing .sql)
 	$TEST =~ s/.sql$//;
 
+	foreach my $hook (@OPT_HOOK_BEFORE_TEST)
+	{
+		print "  Running before-test-script $hook\n" if $VERBOSE > 1;
+		die unless load_sql_file($hook, 1);
+	}
+
 	start_test($TEST);
 	$TEST_OBJ_COUNT_PRE = count_postgis_objects();
 
@@ -541,6 +551,12 @@ foreach $TEST (@ARGV)
 	if ( $TEST_OBJ_COUNT_POST != $TEST_OBJ_COUNT_PRE )
 	{
 		fail("PostGIS object count pre-test ($TEST_OBJ_COUNT_POST) != post-test ($TEST_OBJ_COUNT_PRE)");
+	}
+
+	foreach my $hook (@OPT_HOOK_AFTER_TEST)
+	{
+		print "  Running after-test-script $hook\n" if $VERBOSE > 1;
+		die unless load_sql_file($hook, 1);
 	}
 
 }
@@ -641,6 +657,12 @@ Options:
                   (multiple switches supported, to be run in given order)
   --after-upgrade-script <path>
                   script to load after upgrade
+                  (multiple switches supported, to be run in given order)
+  --before-test-script <path>
+                  script to load before each test run
+                  (multiple switches supported, to be run in given order)
+  --after-test-script <path>
+                  script to load after each test run
                   (multiple switches supported, to be run in given order)
 };
 
