@@ -463,8 +463,7 @@ SELECT topology.RenameTopoGeometryColumn('public.parcels', 'topogeom', 'tgeom');
                 <title>Description</title>
 
                 <para>
-Renames a topology schema updating its metadata record in
-topology.topology.
+Renames a topology schema, updating its metadata record in the <varname>topology.topology</varname> table.
 		</para>
 
                 <!-- use this format if new function -->
@@ -475,8 +474,7 @@ topology.topology.
 			<refsection>
 				<title>Examples</title>
 				<para>
-This example renames a topology from <varname>topo_stage</varname> to
-<varname>topo_prod</varname>.
+Rename a topology from <varname>topo_stage</varname> to <varname>topo_prod</varname>.
 				</para>
 				<programlisting>SELECT topology.RenameTopology('topo_stage', 'topo_prod');</programlisting>
 
@@ -486,7 +484,7 @@ This example renames a topology from <varname>topo_stage</varname> to
 			<refsection>
 				<title>See Also</title>
 
-				<para>>
+				<para>
                     <xref linkend="CopyTopology" />,
                     <xref linkend="RenameTopoGeometryColumn" />
                 </para>
@@ -1141,7 +1139,7 @@ ANALYZE themselves, to use updated statistics.
 		<refentry id="CreateTopology">
 			<refnamediv>
 				<refname>CreateTopology</refname>
-				<refpurpose>Creates a new topology schema and registers this new schema in the topology.topology table.</refpurpose>
+				<refpurpose>Creates a new topology schema and registers it in the topology.topology table.</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
@@ -1177,26 +1175,38 @@ ANALYZE themselves, to use updated statistics.
 			<refsection>
                 <title>Description</title>
 
-                <para>Creates a new schema with name <varname>topology_name</varname> consisting of tables (<varname>edge_data</varname>,<varname>face</varname>,<varname>node</varname>, <varname>relation</varname>
-                    and registers this new topology in the topology.topology table. It returns the id of the topology in the topology table. The srid is the spatial reference identified as
-                defined in spatial_ref_sys table for that topology.  Topologies must be uniquely named.  The tolerance is measured in the units of the spatial reference system.  If the tolerance (<varname>prec</varname>) is not specified defaults to 0.</para>
+                <para>Creates a new topology schema with name <varname>topology_name</varname>
+                and registers it in the <varname>topology.topology</varname> table.
+				Topologies must be uniquely named.
+				The topology tables (<varname>edge_data</varname>, <varname>face</varname>, <varname>node</varname>,and <varname>relation</varname> are created in the schema.
+				It returns the id of the topology.
+				</para>
 
-                <para>This is similar to the SQL/MM <xref linkend="ST_InitTopoGeo" /> but a bit more functional.  <varname>hasz</varname> defaults to false if not specified.</para>
+ 				<para>The <varname>srid</varname> is the <link linkend="spatial_ref_sys">spatial reference system</link> SRID for the topology.
+				</para>
+
+				<para>The tolerance <varname>prec</varname> is measured in the units of the spatial reference system.
+				The tolerance defaults to 0.
+				</para>
+
+				<para><varname>hasz</varname> defaults to false if not specified. </para>
+
+                <para>This is similar to the SQL/MM <xref linkend="ST_InitTopoGeo" /> but has more functionality.</para>
 
                 <!-- use this format if new function -->
                 <para>Availability: 1.1</para>
-                <para>Enhanched: 2.0 added the signature accepting hasZ</para>
+                <para>Enhanced: 2.0 added the signature accepting hasZ</para>
 			</refsection>
 
 
 			<refsection>
 				<title>Examples</title>
-				<para>This example creates a new schema called ma_topo that will store edges, faces, and relations in Massachusetts State Plane meters.
-					The tolerance represents 1/2 meter since the spatial reference system is a meter based spatial reference system</para>
-				<programlisting>SELECT topology.CreateTopology('ma_topo',26986, 0.5);</programlisting>
+				<para>Create a topology schema called <varname>ma_topo</varname> that stores edges and nodes in Massachusetts State Plane-meters (SRID = 26986).
+					The tolerance represents 0.5 meters since the spatial reference system is meter-based.</para>
+				<programlisting>SELECT topology.CreateTopology('ma_topo', 26986, 0.5);</programlisting>
 
-				<para>Create Rhode Island topology in State Plane ft</para>
-<programlisting>SELECT topology.CreateTopology('ri_topo',3438) As topoid;
+				<para>Create a topology for Rhode Island called <varname>ri_topo</varname> in spatial reference system State Plane-feet (SRID = 3438)</para>
+<programlisting>SELECT topology.CreateTopology('ri_topo', 3438) AS topoid;
 topoid
 ------
 2</programlisting>
@@ -1213,7 +1223,7 @@ topoid
 		<refentry id="CopyTopology">
 			<refnamediv>
 				<refname>CopyTopology</refname>
-				<refpurpose>Makes a copy of a topology structure (nodes, edges, faces, layers and TopoGeometries).</refpurpose>
+				<refpurpose>Makes a copy of a topology (nodes, edges, faces, layers and TopoGeometries) into a new schema</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
@@ -1230,11 +1240,14 @@ topoid
                 <title>Description</title>
 
                 <para>
-Creates a new topology with name <varname>new_topology_name</varname> and SRID and precision taken from <varname>existing_topology_name</varname>, copies all nodes, edges and faces in there, copies layers and their TopoGeometries too.
+Creates a new topology with name <varname>new_name</varname>, with SRID and precision copied from <varname>existing_topology_name</varname>
+The nodes, edges and faces in <varname>existing_topology_name</varname> are copied into the new topology,
+as well as Layers and their associated TopoGeometries.
 		</para>
 
                 <note><para>
-The new rows in topology.layer will contain synthesized values for schema_name, table_name and feature_column. This is because the TopoGeometry will only exist as a definition but won't be available in any user-level table yet.
+The new rows in the <varname>topology.layer</varname> table contain synthetic values for schema_name, table_name and feature_column.
+This is because the TopoGeometry objects exist only as a definition and are not yet available in a user-defined table.
 		</para></note>
 
                 <!-- use this format if new function -->
@@ -1245,9 +1258,9 @@ The new rows in topology.layer will contain synthesized values for schema_name, 
 			<refsection>
 				<title>Examples</title>
 				<para>
-This example makes a backup of a topology called ma_topo
+Make a backup of a topology called <varname>ma_topo</varname>.
 				</para>
-				<programlisting>SELECT topology.CopyTopology('ma_topo', 'ma_topo_bakup');</programlisting>
+				<programlisting>SELECT topology.CopyTopology('ma_topo', 'ma_topo_backup');</programlisting>
 
 			</refsection>
 
@@ -1266,7 +1279,7 @@ This example makes a backup of a topology called ma_topo
 		<refentry id="ST_InitTopoGeo">
 			<refnamediv>
 				<refname>ST_InitTopoGeo</refname>
-				<refpurpose>Creates a new topology schema and registers this new schema in the topology.topology table and details summary of process.</refpurpose>
+				<refpurpose>Creates a new topology schema and registers it in the topology.topology table.</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
@@ -1281,7 +1294,9 @@ This example makes a backup of a topology called ma_topo
 			<refsection>
                 <title>Description</title>
 
-                <para>This is an SQL-MM equivalent of CreateTopology but lacks the spatial reference and tolerance options of CreateTopology and outputs a text description of creation instead of topology id.</para>
+                <para>This is the SQL-MM equivalent of <xref linkend="CreateTopology"/>.
+                It lacks options for spatial reference system and tolerance.
+                it returns a text description of the topology creation, instead of the topology id.</para>
 
                 <!-- use this format if new function -->
                 <para>Availability: 1.1</para>
@@ -1824,8 +1839,8 @@ name is invalid then an error is thrown.
 				<refname>ST_RemEdgeModFace</refname>
 
 				<refpurpose>
-Removes an edge and, if the removed edge separated two faces,
-delete one of the them and modify the other to take the space of both.
+Removes an edge, and if the edge separates two faces
+deletes one face and modifies the other face to cover the space of both.
         </refpurpose>
 			</refnamediv>
 
@@ -1843,11 +1858,11 @@ delete one of the them and modify the other to take the space of both.
                 <title>Description</title>
 
                 <para>
-Removes an edge and, if the removed edge separated two faces,
-delete one of the them and modify the other to take the space of both.
-Preferentially keeps the face on the right, to be symmetric with
-ST_AddEdgeModFace also keeping it.
-Returns the id of the face remaining in place of the removed edge.
+Removes an edge, and if the removed edge separates two faces
+deletes one face and modifies the other face to cover the space of both.
+Preferentially keeps the face on the right, to be consistent with
+<xref linkend="ST_AddEdgeModFace"/>.
+Returns the id of the face which is preserved.
 		            </para>
 
                 <para>
@@ -1855,7 +1870,7 @@ Updates all existing joined edges and relationships accordingly.
 		            </para>
 
                 <para>
-Refuses to remove an edge partecipating in the definition of an
+Refuses to remove an edge participating in the definition of an
 existing TopoGeometry.
 Refuses to heal two faces if any TopoGeometry is defined by only
 one of them (and not the other).
