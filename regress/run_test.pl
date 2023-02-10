@@ -16,7 +16,6 @@
 use File::Basename;
 use File::Temp 'tempdir';
 use Time::HiRes qw(time);
-use File::Which;
 use File::Copy;
 use File::Path;
 use Cwd 'abs_path';
@@ -118,17 +117,20 @@ if ( @ARGV < 1 )
 sub findOrDie
 {
     my $exec = shift;
-    my $path = which $exec;
 	printf "Checking for %s ... ", $exec;
-    if ( defined($path) ) {
-		print "found ($path)\n";
+    #my $path = which $exec;
+    foreach my $d ( split /:/, $ENV{PATH} )
+    {
+        my $path = $d . '/' . $exec;
+        if ( -x $path ) {
+		    print "found ($path)\n";
+            return $path;
+        }
     }
-    else {
-		print "failed\n";
-		print STDERR "Unable to find $exec executable.\n";
-		print STDERR "PATH is " . $ENV{"PATH"} . "\n";
-		die "HINT: use POSTGIS_TOP_BUILD_DIR env or --build-dir switch the specify top build dir.\n";
-    };
+    print "failed\n";
+    print STDERR "Unable to find $exec executable.\n";
+    print STDERR "PATH is " . $ENV{"PATH"} . "\n";
+    die "HINT: use POSTGIS_TOP_BUILD_DIR env or --build-dir switch the specify top build dir.\n";
 }
 
 # Prepend scripts' build dirs to path
