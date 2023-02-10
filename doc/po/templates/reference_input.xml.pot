@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-09-26 03:46+0000\n"
+"POT-Creation-Date: 2023-02-10 06:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -490,8 +490,7 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:266
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
+msgid ", <xref linkend=\"ST_GeomFromText\"/>"
 msgstr ""
 
 #. Tag: refname
