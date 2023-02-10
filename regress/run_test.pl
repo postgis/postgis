@@ -48,7 +48,7 @@ BEGIN {
 ##################################################################
 
 our $DB = $ENV{"POSTGIS_REGRESS_DB"} || "postgis_reg";
-our $REGDIR = abs_path(dirname($0));
+our $REGDIR = $ENV{"POSTGIS_REGRESS_DIR"} || abs_path(dirname($0));
 our $TOP_BUILDDIR = $ENV{"POSTGIS_TOP_BUILD_DIR"} || ${REGDIR} . '/..';
 our $sysdiff = !system("diff --strip-trailing-cr $0 $0 2> /dev/null");
 
