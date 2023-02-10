@@ -16,7 +16,7 @@
 use File::Basename;
 use File::Temp 'tempdir';
 use Time::HiRes qw(time);
-#use File::Which;
+use File::Which;
 use File::Copy;
 use File::Path;
 use Cwd 'abs_path';
@@ -115,9 +115,29 @@ if ( @ARGV < 1 )
 	usage();
 }
 
-our $SHP2PGSQL = $TOP_BUILDDIR . "/loader/shp2pgsql";
-our $PGSQL2SHP = $TOP_BUILDDIR . "/loader/pgsql2shp";
-our $RASTER2PGSQL = $TOP_BUILDDIR . "/raster/loader/raster2pgsql";
+sub findOrDie
+{
+    my $exec = shift;
+    my $path = which $exec;
+	printf "Checking for %s ... ", $exec;
+    if ( defined($path) ) {
+		print "found ($path)\n";
+    }
+    else {
+		print "failed\n";
+		print STDERR "Unable to find $exec executable.\n";
+		print STDERR "PATH is " . $ENV{"PATH"} . "\n";
+		die "HINT: use POSTGIS_TOP_BUILD_DIR env or --build-dir switch the specify top build dir.\n";
+    };
+}
+
+# Prepend scripts' build dirs to path
+# TODO: make this conditional ?
+$ENV{PATH} = $TOP_BUILDDIR . '/loader:' . $TOP_BUILDDIR .  '/raster/loader:' . $ENV{PATH};
+
+our $SHP2PGSQL = findOrDie 'shp2pgsql';
+our $PGSQL2SHP = findOrDie 'pgsql2shp';
+our $RASTER2PGSQL = findOrDie 'raster2pgsql' if ( $OPT_WITH_RASTER );
 
 if ( $OPT_UPGRADE_PATH )
 {
@@ -167,41 +187,6 @@ my $STAGED_SCRIPTS_DIR = $STAGED_INSTALL_DIR . "/share/contrib/postgis";
 
 my $OBJ_COUNT_PRE = 0;
 my $OBJ_COUNT_POST = 0;
-
-##################################################################
-# Check that we have the executables we need
-##################################################################
-
-foreach my $exec ( ($SHP2PGSQL, $PGSQL2SHP) )
-{
-	printf "Checking for %s ... ", basename($exec);
-	if ( -x $exec )
-	{
-		print "found\n";
-	}
-	else
-	{
-		print "failed\n";
-		print STDERR "Unable to find $exec executable.\n";
-		print STDERR "TOP_BUILDDIR is ${TOP_BUILDDIR}\n";
-		die "HINT: use POSTGIS_TOP_BUILD_DIR env or --build-dir switch the specify top build dir.\n";
-	}
-
-}
-
-if ( $OPT_WITH_RASTER )
-{
-	print "Checking for raster2pgsql ... ";
-	if ( -x $RASTER2PGSQL )
-	{
-		print "found\n";
-	}
-	else
-	{
-		print "failed\n";
-		die "Unable to find raster2pgsql executable.\n";
-	}
-}
 
 ##################################################################
 # Set up the temporary directory
@@ -289,6 +274,16 @@ if ( ! $libver )
 	exit(1);
 }
 
+sub staged_scripts_dir
+{
+    unless ( -d $STAGED_SCRIPTS_DIR ) {
+        print STDERR "Unable to find $STAGED_SCRIPTS_DIR directory.\n";
+        print STDERR "TOP_BUILDDIR is $TOP_BUILDDIR.\n";
+        die "HINT: use POSTGIS_TOP_BUILD_DIR env or --build-dir switch the specify top build dir.\n";
+    }
+    $STAGED_SCRIPTS_DIR;
+}
+
 sub scriptdir
 {
 	my ( $version, $systemwide ) = @_;
@@ -300,7 +295,7 @@ sub scriptdir
 		chop $scriptdir;
 		$scriptdir .= "/contrib/postgis-" . $pgis_majmin;
 	} else {
-		$scriptdir = $STAGED_SCRIPTS_DIR;
+		$scriptdir = staged_scripts_dir()
 	}
 	#print "XXX: scriptdir: $scriptdir\n";
 	return $scriptdir;
