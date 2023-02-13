@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-02-10 06:01+0000\n"
-"PO-Revision-Date: 2022-10-25 07:30+0000\n"
+"PO-Revision-Date: 2023-02-14 02:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_versionxml/ja/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.15.2\n"
 
 #. Tag: para
 #: reference_version.xml:5
@@ -42,6 +42,9 @@ msgid ""
 "Packages and upgrades PostGIS extensions (e.g. postgis_raster, "
 "postgis_topology, postgis_sfcgal) to given or latest version."
 msgstr ""
+"PostGISエクステンション (例: postgis_raster, postgis_topology, postgis_sfcgal"
+")について、指定したバージョンまたは最新版にパッケージ化し、アップグレードしま"
+"す。"
 
 #. Tag: funcprototype
 #: reference_version.xml:24
@@ -51,6 +54,9 @@ msgid ""
 "<paramdef choice=\"opt\"><type>text</type> <parameter>target_version=null</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>text <function>PostGIS_Extensions_Upgrade</function></funcdef> "
+"<paramdef choice=\"opt\"><type>text</type> "
+"<parameter>target_version=null</parameter></paramdef>"
 
 #. Tag: title
 #: reference_version.xml:32 reference_version.xml:93 reference_version.xml:140
@@ -76,6 +82,15 @@ msgid ""
 "tries to upgrade extensions postgis, postgis_raster, postgis_sfcgal, "
 "postgis_topology, and postgis_tiger_geocoder."
 msgstr ""
+"PostGISエクステンションについて、指定したバージョンまたは最新版にパッケージ化"
+"し、アップグレードします。データベースにインストールしたエクステンションだけ"
+"がパッケージ化、アップグレードする必要があるなら、そのようにできます。完全なP"
+"ostGISバージョンとビルド時のコンフィギュレーション情報とが後で報告されます。"
+"これは、PostGISエクステンションごとに、CREATE EXTENSION . "
+"FROMのパッケージの取消、ALTER EXTENSION .."
+"とUPDATEとの複数回の実行の省略版です。現在はpostgis, postgis_raster, "
+"postgis_sfcgal, postgis_topology, "
+"postgis_tiger_geocoderだけのアップグレードを試みます。"
 
 #. Tag: para
 #: reference_version.xml:43
@@ -87,7 +102,7 @@ msgstr "Availability: 2.5.0"
 #: reference_version.xml:45
 #, no-c-format
 msgid "Changed: 3.4.0 to add target_version argument."
-msgstr ""
+msgstr "Changed: 3.4.0 target_version引数が追加されました。"
 
 #. Tag: para
 #: reference_version.xml:46
@@ -318,7 +333,7 @@ msgstr ""
 #: reference_version.xml:165
 #, no-c-format
 msgid "PostGIS_GEOS_Compiled_Version"
-msgstr ""
+msgstr "PostGIS_GEOS_Compiled_Version"
 
 #. Tag: refpurpose
 #: reference_version.xml:167
@@ -326,7 +341,7 @@ msgstr ""
 msgid ""
 "Returns the version number of the GEOS library against which PostGIS was "
 "built."
-msgstr ""
+msgstr "PostGISのビルドに使われたGEOSライブラリのバージョン番号を返します。"
 
 #. Tag: funcprototype
 #: reference_version.xml:173
@@ -335,6 +350,8 @@ msgid ""
 "<funcdef>text <function>PostGIS_GEOS_Compiled_Version</function></funcdef> "
 "<paramdef></paramdef>"
 msgstr ""
+"<funcdef>text <function>PostGIS_GEOS_Compiled_Version</function></funcdef> "
+"<paramdef></paramdef>"
 
 #. Tag: para
 #: reference_version.xml:184
@@ -342,13 +359,14 @@ msgstr ""
 msgid ""
 "Returns the version number of the GEOS library, or against which PostGIS was "
 "built."
-msgstr ""
+msgstr "GEOSライブラリのバージョン番号、またはPostGISのビルドに使ったバージョン番号を"
+"返します。"
 
 #. Tag: para
 #: reference_version.xml:187
 #, no-c-format
 msgid "Availability: 3.4.0"
-msgstr ""
+msgstr "Availability: 3.4.0"
 
 #. Tag: programlisting
 #: reference_version.xml:193
@@ -360,12 +378,17 @@ msgid ""
 " 3.8.0\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_GEOS_Compiled_Version();\n"
+" postgis_geos_compiled_version\n"
+"-------------------------------\n"
+" 3.8.0\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_version.xml:199
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_Full_Version\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"PostGIS_Full_Version\"/>"
 
 #. Tag: refname
 #: reference_version.xml:208
