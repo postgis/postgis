@@ -12,6 +12,7 @@ YYYY/MM/DD
            when no edge side-faces are found (Sandro Santilli)
   - #5329, Fix downgrade protection introduced in 3.3.0 (Sandro Santilli)
   - #5332, Keep proj errors from percolating into PgSQL log (Paul Ramsey)
+  - #5313, Fix memory access issue in ST_InterpolateRaster (Paul Ramsey)
 
 
 PostGIS 3.3.2
