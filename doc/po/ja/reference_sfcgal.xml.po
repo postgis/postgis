@@ -2,13 +2,13 @@
 #
 # Translators:
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016
-# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-02-10 06:01+0000\n"
-"PO-Revision-Date: 2022-10-25 07:30+0000\n"
+"PO-Revision-Date: 2023-02-14 02:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_sfcgalxml/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.15.2\n"
 
 #. Tag: para
 #: reference_sfcgal.xml:5
@@ -766,7 +766,7 @@ msgstr "ST_AlphaShape"
 #: reference_sfcgal.xml:421
 #, no-c-format
 msgid "Computes an Alpha-shape enclosing a geometry"
-msgstr ""
+msgstr "ジオメトリを囲むアルファシェイプを計算します。"
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:426
@@ -795,6 +795,12 @@ msgid ""
 "closer fit to the shape of the input than the shape produced by the <link "
 "linkend=\"ST_ConvexHull\">convex hull</link>."
 msgstr ""
+"ジオメトリのポイントの<ulink url=\"https://ja.wikipedia.org/wiki/"
+"%E3%82%A2%E3%83%AB%E3%83%95%E3%82%A1%E3%82%B7%E3%82%A7%E3%82%A4%E3%83%97\""
+">アルファシェイプ</ulink>を計算します。アルファシェイプは (通常は)入力の頂点"
+"を全て含む凹ポリゴンジオメトリで、このジオメトリの頂点は入力頂点の部分集合で"
+"す。アルファシェイプは入力ジオメトリのシェイプを<link linkend=\"ST_ConvexHull"
+"\">凸包</link>で生成されるシェイプよりも適合したものにします。"
 
 #. Tag: para
 #: reference_sfcgal.xml:447
@@ -805,6 +811,9 @@ msgid ""
 "produce more concave results. Alpha values greater than some data-dependent "
 "value produce the convex hull of the input."
 msgstr ""
+"「適合度」は<varname>alpha</varname>パラメータで制御します。このパラメータは0"
+"から無限大の数を取ります。小さいα値では凹が増える結果になりますα値がデータ依"
+"存の値より大きいと入力の凸包が生成されます。"
 
 #. Tag: para
 #: reference_sfcgal.xml:454
@@ -818,6 +827,11 @@ msgid ""
 "information. This is different from the original definition of alpha-shapes, "
 "which defines alpha as the radius of the eroding disc."
 msgstr ""
+"CGAL実装に従うと、α値は、アルファシェイプアルゴリズムで、入力ジオメトリのドロ"
+"ネー三角形を侵食するために使われる円の半径の<emphasis>2乗</emphasis>です。"
+"詳細情報については<ulink url=\"https://doc.cgal.org/latest/Alpha_shapes_2/"
+"index.html#Chapter_2D_Alpha_Shapes\">CGAL Alpha-Shapes</ulink>をご覧下さい。"
+"元のアルファシェイプの定義と違います。元はα値を侵食円の半径と定義しています。"
 
 #. Tag: para
 #: reference_sfcgal.xml:463
@@ -825,7 +839,8 @@ msgstr ""
 msgid ""
 "The computed shape does not contain holes unless the optional "
 "<varname>allow_holes</varname> argument is specified as true."
-msgstr ""
+msgstr "計算されたシェイプは<varname>allow_holes</varname>をTRUEに設定しない限りは穴"
+"を持ちません。"
 
 #. Tag: para
 #: reference_sfcgal.xml:466
@@ -835,6 +850,8 @@ msgid ""
 "way to <xref linkend=\"ST_ConcaveHull\"/>, but uses CGAL and a different "
 "algorithm."
 msgstr ""
+"この関数はジオメトリの凹包を<xref linkend=\"ST_ConcaveHull\""
+"/>と似た方法で効率的に計算しますが、CGALや異なるアルゴリズムを使います。"
 
 #. Tag: para
 #: reference_sfcgal.xml:471 reference_sfcgal.xml:1004
@@ -848,7 +865,8 @@ msgstr "Availability: 3.3.0 - SFCGAL &gt;= 1.4.1 が必要です。"
 msgid ""
 "Alpha-shape of a MultiPoint (same example As <xref "
 "linkend=\"ST_OptimalAlphaShape\"/>)"
-msgstr ""
+msgstr "マルチポイントのアルファシェイプ (<xref linkend=\"ST_OptimalAlphaShape\""
+"/>と同じ)"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:486
@@ -904,7 +922,8 @@ msgstr ""
 msgid ""
 "Alpha-shape of a MultiPoint, allowing holes (same example as <xref "
 "linkend=\"ST_OptimalAlphaShape\"/>)"
-msgstr ""
+msgstr "マルチポイントのアルファシェイプで穴を許す (<xref linkend="
+"\"ST_OptimalAlphaShape\"/>と同じ)"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:498
@@ -962,7 +981,8 @@ msgstr ""
 msgid ""
 "Alpha-shape of a MultiPoint, allowing holes (same example as <xref "
 "linkend=\"ST_ConcaveHull\"/>)"
-msgstr ""
+msgstr "マルチポイントのアルファシェイプで穴を許す (<xref linkend=\"ST_ConcaveHull\""
+"/>と同じ)"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:511
@@ -1572,7 +1592,7 @@ msgstr "ST_OptimalAlphaShape"
 msgid ""
 "Computes an Alpha-shape enclosing a geometry using an \"optimal\" alpha "
 "value."
-msgstr ""
+msgstr "「最適」アルファ値を使ってジオメトリを囲むアルファシェイプを計算します。"
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:976
@@ -1584,6 +1604,11 @@ msgid ""
 "false</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
 "<parameter>nb_components = 1</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_OptimalAlphaShape</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> <parameter>allow_holes = "
+"false</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>nb_components = 1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_sfcgal.xml:988
@@ -1591,7 +1616,8 @@ msgstr ""
 msgid ""
 "Computes the \"optimal\" alpha-shape of the points in a geometry. The alpha-"
 "shape is computed using a value of α chosen so that:"
-msgstr ""
+msgstr "ジオメトリのポイントの「最適」のアルファシェイプを計算します。アルファシェイ"
+"プは次に示す項目のようになるよう選択されたα値を使います:"
 
 #. Tag: para
 #: reference_sfcgal.xml:993
@@ -1599,13 +1625,14 @@ msgstr ""
 msgid ""
 "the number of polygon elements is equal to or smaller than "
 "<varname>nb_components</varname> (which defaults to 1)"
-msgstr ""
+msgstr "ポリゴン要素数は<varname>nb_components</varname>以下になります "
+"(デフォルトは1です)"
 
 #. Tag: para
 #: reference_sfcgal.xml:997
 #, no-c-format
 msgid "all input points are contained in the shape"
-msgstr ""
+msgstr "全ての入力ポイントはシェイプの中に含まれます"
 
 #. Tag: para
 #: reference_sfcgal.xml:1000
@@ -1613,7 +1640,8 @@ msgstr ""
 msgid ""
 "The result will not contain holes unless the optional <varname>allow_holes</"
 "varname> argument is specified as true."
-msgstr ""
+msgstr "任意引数<varname>allow_holes</varname>にTRUEが設定されていない限りは、結果に"
+"は穴が含まれません。"
 
 #. Tag: para
 #: reference_sfcgal.xml:1016
@@ -1621,7 +1649,8 @@ msgstr ""
 msgid ""
 "Optimal alpha-shape of a MultiPoint (same example as <xref "
 "linkend=\"ST_AlphaShape\"/>)"
-msgstr ""
+msgstr "マルチポイントの最適アルファシェイプ (<xref linkend=\"ST_AlphaShape\""
+"/>と同じ)"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:1019
@@ -1677,7 +1706,8 @@ msgstr ""
 msgid ""
 "Optimal alpha-shape of a MultiPoint, allowing holes (same example as <xref "
 "linkend=\"ST_AlphaShape\"/>)"
-msgstr ""
+msgstr "マルチポイントの最適アルファシェイプで穴を許す (<xref linkend=\"ST_AlphaShape"
+"\"/>と同じ)"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:1032
