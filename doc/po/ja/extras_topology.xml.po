@@ -3,13 +3,13 @@
 # Translators:
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016-2018
 # Sandro Santilli <strk@kbt.io>, 2022.
-# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-02-10 06:01+0000\n"
-"PO-Revision-Date: 2022-12-27 09:30+0000\n"
+"PO-Revision-Date: 2023-02-14 02:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "extras_topologyxml/ja/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.15.2\n"
 
 #. Tag: title
 #: extras_topology.xml:3
@@ -1010,6 +1010,8 @@ msgid ""
 "Renames a topology schema, updating its metadata record in the "
 "<varname>topology.topology</varname> table."
 msgstr ""
+"トポロジスキーマの名前を変更し、<varname>topology."
+"topology</varname>テーブルに格納されているメタデータを更新します。"
 
 #. Tag: para
 #: extras_topology.xml:430
@@ -1018,6 +1020,8 @@ msgid ""
 "Rename a topology from <varname>topo_stage</varname> to <varname>topo_prod</"
 "varname>."
 msgstr ""
+"<varname>topo_stage</varname>から<varname>topo_prod</varname>にトポロジ名を変"
+"更します。"
 
 #. Tag: programlisting
 #: extras_topology.xml:433
@@ -1029,7 +1033,7 @@ msgstr "SELECT topology.RenameTopology('topo_stage', 'topo_prod');"
 #: extras_topology.xml:441
 #, no-c-format
 msgid ", <xref linkend=\"RenameTopoGeometryColumn\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RenameTopoGeometryColumn\"/>"
 
 #. Tag: refname
 #: extras_topology.xml:449
@@ -2111,7 +2115,7 @@ msgstr "CreateTopology"
 msgid ""
 "Creates a new topology schema and registers it in the topology.topology "
 "table."
-msgstr ""
+msgstr "新しいトポロジスキーマを生成し、topology.topologyテーブルに登録します。"
 
 #. Tag: funcsynopsis
 #: extras_topology.xml:1043
@@ -2165,6 +2169,11 @@ msgid ""
 "<varname>face</varname>, <varname>node</varname>,and <varname>relation</"
 "varname> are created in the schema. It returns the id of the topology."
 msgstr ""
+"<varname>topology_name</varname>という名前でトポロジスキーマを新たに生成し、<"
+"varname>topology.topology</varname>テーブルに登録します。トポロジ名は一意でな"
+"ければなりません。トポロジテーブル (<varname>edge_data</varname>, "
+"<varname>face</varname>, <varname>node</varname>, <varname>relation</varname>"
+")は、このスキーマ内に生成されます。トポロジのIDを返します。"
 
 #. Tag: para
 #: extras_topology.xml:1082
@@ -2173,6 +2182,8 @@ msgid ""
 "The <varname>srid</varname> is the <link linkend=\"spatial_ref_sys\">spatial "
 "reference system</link> SRID for the topology."
 msgstr ""
+"<varname>srid</varname>は、このトポロジの<link linkend=\"spatial_ref_sys\""
+">空間参照系</link>のSRIDです。"
 
 #. Tag: para
 #: extras_topology.xml:1085
@@ -2180,13 +2191,14 @@ msgstr ""
 msgid ""
 "The tolerance <varname>prec</varname> is measured in the units of the "
 "spatial reference system. The tolerance defaults to 0."
-msgstr ""
+msgstr "許容値<varname>prec</varname>は空間参照系の単位で計測されます。許容値はデフォ"
+"ルトでは0.0です。"
 
 #. Tag: para
 #: extras_topology.xml:1089
 #, no-c-format
 msgid "<varname>hasz</varname> defaults to false if not specified."
-msgstr ""
+msgstr "<varname>hasz</varname>を指定しない場合のデフォルトはFALSEです。"
 
 #. Tag: para
 #: extras_topology.xml:1091
@@ -2194,13 +2206,14 @@ msgstr ""
 msgid ""
 "This is similar to the SQL/MM <xref linkend=\"ST_InitTopoGeo\"/> but has "
 "more functionality."
-msgstr ""
+msgstr "これはSQL/MMの<xref linkend=\"ST_InitTopoGeo\""
+"/>に似ていますが、より高機能です。"
 
 #. Tag: para
 #: extras_topology.xml:1095
 #, no-c-format
 msgid "Enhanced: 2.0 added the signature accepting hasZ"
-msgstr ""
+msgstr "Enhanched: 2.0 hasZを受け付ける形式の追加"
 
 #. Tag: para
 #: extras_topology.xml:1101
@@ -2210,12 +2223,15 @@ msgid ""
 "and nodes in Massachusetts State Plane-meters (SRID = 26986). The tolerance "
 "represents 0.5 meters since the spatial reference system is meter-based."
 msgstr ""
+"<varname>ma_topo</varname>という名前のトポロジスキーマを生成します。"
+"これはマサチューセッツ州メートル平面 (SRID 26986)でエッジとノードを保存するこ"
+"ととします。空間参照系の単位がメートルなので、許容値は0.5メートルとなります。"
 
 #. Tag: programlisting
 #: extras_topology.xml:1103
 #, no-c-format
 msgid "SELECT topology.CreateTopology('ma_topo', 26986, 0.5);"
-msgstr ""
+msgstr "SELECT topology.CreateTopology('ma_topo', 26986, 0.5);"
 
 #. Tag: para
 #: extras_topology.xml:1105
@@ -2224,6 +2240,8 @@ msgid ""
 "Create a topology for Rhode Island called <varname>ri_topo</varname> in "
 "spatial reference system State Plane-feet (SRID = 3438)"
 msgstr ""
+"<varname>ri_topo</varname>という名前の、空間参照系をフィート平面 (SRID = "
+"3438)としたロードアイランドのトポロジの生成"
 
 #. Tag: programlisting
 #: extras_topology.xml:1106
@@ -2234,6 +2252,10 @@ msgid ""
 "------\n"
 "2"
 msgstr ""
+"SELECT topology.CreateTopology('ri_topo', 3438) AS topoid;\n"
+"topoid\n"
+"------\n"
+"2"
 
 #. Tag: para
 #: extras_topology.xml:1113
@@ -2255,7 +2277,8 @@ msgstr "CopyTopology"
 msgid ""
 "Makes a copy of a topology (nodes, edges, faces, layers and TopoGeometries) "
 "into a new schema"
-msgstr ""
+msgstr "トポロジ (ノード、エッジ、フェイス、レイヤとTopoGeometry)の新しいスキーマに複"
+"写します。"
 
 #. Tag: funcprototype
 #: extras_topology.xml:1125
@@ -2280,6 +2303,10 @@ msgid ""
 "edges and faces in <varname>existing_topology_name</varname> are copied into "
 "the new topology, as well as Layers and their associated TopoGeometries."
 msgstr ""
+"<varname>new_name</varname>という名前のトポロジを作成しますが、SRIDと精度は<v"
+"arname>existing_topology_name</varname>から複写します。<varname>existing_topo"
+"logy_name</varname>のノード、エッジ、フェイスと、レイヤとそれに関連付けられた"
+"TopoGeometryは、新しいトポロジに複写されます。"
 
 #. Tag: para
 #: extras_topology.xml:1142
@@ -2290,18 +2317,22 @@ msgid ""
 "because the TopoGeometry objects exist only as a definition and are not yet "
 "available in a user-defined table."
 msgstr ""
+"<varname>topology.layer</varname>テーブルの新しい行にはschema_name, "
+"table_name, feature_columnの値の合成値が含まれます。TopoGeometryオブジェクト"
+"は定義だけが存在するのであって、ユーザ定義テーブルで使用できる状態にないから"
+"です。"
 
 #. Tag: para
 #: extras_topology.xml:1154
 #, no-c-format
 msgid "Make a backup of a topology called <varname>ma_topo</varname>."
-msgstr ""
+msgstr "<varname>ma_topo</varname>という名前のトポロジのバックアップを作成します。"
 
 #. Tag: programlisting
 #: extras_topology.xml:1157
 #, no-c-format
 msgid "SELECT topology.CopyTopology('ma_topo', 'ma_topo_backup');"
-msgstr ""
+msgstr "SELECT topology.CopyTopology('ma_topo', 'ma_topo_backup');"
 
 #. Tag: para
 #: extras_topology.xml:1165
@@ -2337,6 +2368,9 @@ msgid ""
 "lacks options for spatial reference system and tolerance. it returns a text "
 "description of the topology creation, instead of the topology id."
 msgstr ""
+"<xref linkend=\"CreateTopology\"/>のSQL/MM相当の関数です。空間参照系と許容値"
+"の任意引数がありません。トポロジIDでなくトポロジ生成の文字列による説明が返さ"
+"れます。"
 
 #. Tag: para
 #: extras_topology.xml:1197
@@ -3147,6 +3181,8 @@ msgid ""
 "Removes an edge, and if the edge separates two faces deletes one face and "
 "modifies the other face to cover the space of both."
 msgstr ""
+"エッジを削除します。削除されるエッジが二つのフェイスを分割していたなら、一方"
+"のフェイスを削除し、もう一方のフェイスを両方の空間を覆うように編集します。"
 
 #. Tag: funcprototype
 #: extras_topology.xml:1715
@@ -3170,6 +3206,10 @@ msgid ""
 "linkend=\"ST_AddEdgeModFace\"/>. Returns the id of the face which is "
 "preserved."
 msgstr ""
+"エッジを削除します。削除されるエッジが二つのフェイスを分割していたなら、一方"
+"のフェイスを削除し、もう一方のフェイスを両方の空間を覆うように編集します。右"
+"側のフェイスを優先的に保持します。これは<xref linkend=\"ST_AddEdgeModFace\""
+"/>と一致します。残ったフェイスのIDを返します。"
 
 #. Tag: para
 #: extras_topology.xml:1753
@@ -7035,6 +7075,9 @@ msgid ""
 "topologies. Also not currently supported for hierarchical topogeometries "
 "(topogeometries composed of other topogeometries)."
 msgstr ""
+"この関数はジオメトリコレクションのTopoGeometryに対応していません。異なるトポ"
+"ロジからなるTopoGeometryとの比較もできません。また、現在のところ、"
+"階層TopoGeometry (他のTopoGeometryからなるTopoGeometry)に対応していません。"
 
 #. Tag: title
 #: extras_topology.xml:3836
