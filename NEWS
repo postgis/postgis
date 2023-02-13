@@ -9,6 +9,8 @@ Proj 6.1+, and PostgreSQL 14+.
 * Bug Fixes *
   - #5106, Fix segfault in ST_RemEdgeNewFace/ST_RemEdgeModFace
            when no edge side-faces are found (Sandro Santilli)
+  - #5313, Fix memory access issue in ST_InterpolateRaster (Paul Ramsey)
+
 
 PostGIS 3.2.4
 2022/11/12
