@@ -672,7 +672,7 @@ Datum RASTER_InterpolateRaster(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	double *xcoords, *ycoords, *zcoords;
 
-	GSERIALIZED *gser = (GSERIALIZED*)PG_GETARG_POINTER(0);
+	GSERIALIZED *gser = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	/* Z value is required to drive the grid heights */
 	if (!gserialized_has_z(gser))
