@@ -4,13 +4,13 @@
 # Regina Obe, 2017
 # Regina Obe, 2017
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2017
-# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-02-10 06:01+0000\n"
-"PO-Revision-Date: 2022-12-14 07:30+0000\n"
+"PO-Revision-Date: 2023-02-14 02:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_processingxml/ja/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.15.2\n"
 
 #. Tag: para
 #: reference_processing.xml:5
@@ -1041,6 +1041,12 @@ msgid ""
 "the line segments before and after the vertex. A reasonable degree of "
 "smoothing is provided by 3 iterations; the maximum is limited to 5."
 msgstr ""
+"<ulink url=\"http://www.idav.ucdavis.edu/education/CAGDNotes/"
+"Chaikins-Algorithm/Chaikins-Algorithm.html\">チャイキンのアルゴリズム</ulink>"
+"を使ってラインまたはポリゴンのジオメトリの平滑化を行います。平滑化の度合いは<"
+"varname>nIterations</varname>パラメータで制御します。繰り返しごとに、各々の内"
+"部の頂点は、頂点を挟む辺の上で、長さが1/4となる位置の二つの頂点に置き換えます"
+"。平滑化の合理的な度合いは3回反復です。最大値は5に制限されています。"
 
 #. Tag: para
 #: reference_processing.xml:519
@@ -1049,6 +1055,8 @@ msgid ""
 "If <varname>preserveEndPoints</varname> is true, the endpoints of Polygon "
 "rings are not smoothed. The endpoints of LineStrings are always preserved."
 msgstr ""
+"<varname>preserveEndPoints</varname>がTRUEの場合には、ポリゴンの環の終端が平"
+"滑化されません。ラインストリングの終端は常に保存されます。"
 
 #. Tag: para
 #: reference_processing.xml:523
@@ -1060,13 +1068,18 @@ msgid ""
 ">, <xref linkend=\"ST_SimplifyPreserveTopology\"/> and <xref "
 "linkend=\"ST_SimplifyVW\"/>)."
 msgstr ""
+"頂点数は繰り返し回数の2倍です。結果ジオメトリは入力ジオメトリより多くのポイン"
+"トを含むことになります。ポイント数を減らすには、"
+"結果に対して単純化関数を実行します (<xref linkend=\"ST_Simplify\"/>, <xref "
+"linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_SimplifyVW\""
+"/>を参照して下さい)。"
 
 #. Tag: para
 #: reference_processing.xml:531
 #, no-c-format
 msgid ""
 "The result has interpolated values for the Z and M dimenions when present."
-msgstr ""
+msgstr "結果には、Z値とM値が存在する場合には、これらの補間値が入ります。"
 
 #. Tag: para
 #: reference_processing.xml:533 reference_processing.xml:800
@@ -1087,7 +1100,7 @@ msgstr "Availability: 2.5.0"
 #: reference_processing.xml:539
 #, no-c-format
 msgid "Smoothing a triangle:"
-msgstr ""
+msgstr "三角形の平滑化:"
 
 #. Tag: programlisting
 #: reference_processing.xml:540
@@ -1100,30 +1113,36 @@ msgid ""
 "───────────────────────────────────────────\n"
 " POLYGON((2 2,6 6,6 10,2 14,0 12,0 4,2 2))"
 msgstr ""
+"SELECT ST_AsText(ST_ChaikinSmoothing(geom)) smoothed\n"
+"FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) AS foo;\n"
+"\n"
+"                 smoothed\n"
+"───────────────────────────────────────────\n"
+" POLYGON((2 2,6 6,6 10,2 14,0 12,0 4,2 2))"
 
 #. Tag: para
 #: reference_processing.xml:542
 #, no-c-format
 msgid "Smoothing a Polygon using 1, 2 and 3 iterations:"
-msgstr ""
+msgstr "1, 2, 3反復を使ったポリゴンの平滑化:"
 
 #. Tag: para
 #: reference_processing.xml:552 reference_processing.xml:589
 #, no-c-format
 msgid "nIterations = 1"
-msgstr ""
+msgstr "nIterations = 1"
 
 #. Tag: para
 #: reference_processing.xml:561 reference_processing.xml:598
 #, no-c-format
 msgid "nIterations = 2"
-msgstr ""
+msgstr "nIterations = 2"
 
 #. Tag: para
 #: reference_processing.xml:570 reference_processing.xml:607
 #, no-c-format
 msgid "nIterations = 3"
-msgstr ""
+msgstr "nIterations = 3"
 
 #. Tag: programlisting
 #: reference_processing.xml:577
@@ -1134,12 +1153,16 @@ msgid ""
 "50, 140 70, 120 10, 90 60, 20 20))',\n"
 "            generate_series(1, 3) );"
 msgstr ""
+"SELECT ST_ChaikinSmoothing(\n"
+"            'POLYGON ((20 20, 60 90, 10 150, 100 190, 190 160, 130 120, 190 "
+"50, 140 70, 120 10, 90 60, 20 20))',\n"
+"            generate_series(1, 3) );"
 
 #. Tag: para
 #: reference_processing.xml:579
 #, no-c-format
 msgid "Smoothing a LineString using 1, 2 and 3 iterations:"
-msgstr ""
+msgstr "1, 2, 3反復を使ったラインストリングの平滑化:"
 
 #. Tag: programlisting
 #: reference_processing.xml:614
@@ -1150,6 +1173,10 @@ msgid ""
 "50 30, 30 100)',\n"
 "            generate_series(1, 3) );"
 msgstr ""
+"SELECT ST_ChaikinSmoothing(\n"
+"            'LINESTRING (10 140, 80 130, 100 190, 190 150, 140 20, 120 120, "
+"50 30, 30 100)',\n"
+"            generate_series(1, 3) );"
 
 #. Tag: para
 #: reference_processing.xml:619
@@ -1158,6 +1185,8 @@ msgid ""
 ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref "
 "linkend=\"ST_SimplifyVW\"/>"
 msgstr ""
+", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
+"\"ST_SimplifyVW\"/>"
 
 #. Tag: refname
 #: reference_processing.xml:626
@@ -1171,7 +1200,7 @@ msgstr "ST_ConcaveHull"
 msgid ""
 "Computes a possibly concave geometry that contains all input geometry "
 "vertices"
-msgstr ""
+msgstr "全ての入力ジオメトリの頂点を含む凹ジオメトリを計算します。"
 
 #. Tag: funcprototype
 #: reference_processing.xml:632
@@ -1200,6 +1229,11 @@ msgid ""
 "is a Point. The polygon will not contain holes unless the optional "
 "<varname>param_allow_holes</varname> argument is specified as true."
 msgstr ""
+"凹包は (通常は)入力ジオメトリを包含する凹ジオメトリで、凹ジオメトリの頂点は入"
+"力頂点の部分集合です。一般的に凹包はポリゴンです。二つ以上の同一線上の点の凹"
+"包は2点のラインストリングです。一つ以上の同一点の凹包はポイントです。 <varnam"
+"e>param_allow_holes</varname>引数ににTRUEを与えない限りポリゴンは穴を持ちませ"
+"ん。"
 
 #. Tag: para
 #: reference_processing.xml:653
@@ -1211,6 +1245,9 @@ msgid ""
 "generally has a smaller area and represents a more natural boundary for the "
 "input points."
 msgstr ""
+"凹包はジオメトリの集合を「真空パック」したジオメトリと考えることができます。"
+"輪ゴムで囲うのに似ている<link linkend=\"ST_ConvexHull\">凸包</link>と違います"
+"。凹包は一般的に面積が小さく、また入力ポイントからなる境界が自然になります。"
 
 #. Tag: para
 #: reference_processing.xml:660
@@ -1223,6 +1260,10 @@ msgid ""
 "depends on the nature of the input data, but often values between 0.3 and "
 "0.1 produce reasonable results."
 msgstr ""
+"<varname>param_pctconvex</varname>は計算される凹包の凹度を制御するためのもの"
+"です。1では凸包になります。1から0に変化させると凹度が増加していきます。"
+"0では最大の凹度の凹包になります (ただし単一ポリゴンのままです)。適切な値は入"
+"力データ固有のものですが、多くの場合0.3と0.1の間が適正な結果となります。"
 
 #. Tag: para
 #: reference_processing.xml:668
@@ -1249,6 +1290,11 @@ msgid ""
 "you want a point-wise hull of a polygonal input, convert it to points first "
 "using <xref linkend=\"ST_Points\"/>."
 msgstr ""
+"ポイントとラインの入力では、凹包は入力ポイントをポイントとラインの入力では、"
+"凹包は全ての入力ポイントを包みます。ポリゴン入力では、凹包は全ての入力ポイン"
+"トを含み、<emphasis>なおかつ</emphasis>入力ポリゴンが及ぶ全ての面を含みます。"
+"ポリゴン入力でもポイントとして計算した凹包が欲しい場合には、<xref linkend="
+"\"ST_Points\"/>を使って、まずポイントに変換して下さい。"
 
 #. Tag: para
 #: reference_processing.xml:679
@@ -1420,13 +1466,13 @@ msgstr ""
 #: reference_processing.xml:724
 #, no-c-format
 msgid "polygon_hull"
-msgstr ""
+msgstr "polygon_hull"
 
 #. Tag: varname
 #: reference_processing.xml:734
 #, no-c-format
 msgid "points_hull"
-msgstr ""
+msgstr "points_hull"
 
 #. Tag: para
 #: reference_processing.xml:742
@@ -1435,7 +1481,8 @@ msgid ""
 "Comparing a concave hull of a Polygon to the concave hull of the constituent "
 "points. The hull respects the boundary of the polygon, whereas the points-"
 "based hull does not."
-msgstr ""
+msgstr "ポリゴンの凹包と構成ポイントの凹包との比較。凹包はポリゴンの境界を考慮します"
+"が、ポイントを基にした凹包では考慮されません。"
 
 #. Tag: programlisting
 #: reference_processing.xml:746
@@ -1449,6 +1496,13 @@ msgid ""
 "        ST_ConcaveHull( ST_Points(geom), 0.1) AS points_hull\n"
 "    FROM data;"
 msgstr ""
+"WITH data(geom) AS (VALUES\n"
+"   ('POLYGON ((10 90, 39 85, 61 79, 50 90, 80 80, 95 55, 25 60, 90 45, 70 "
+"16, 63 38, 60 10, 50 30, 43 27, 30 10, 20 20, 10 90))'::geometry)\n"
+")\n"
+"SELECT  ST_ConcaveHull( geom,            0.1) AS polygon_hull,\n"
+"        ST_ConcaveHull( ST_Points(geom), 0.1) AS points_hull\n"
+"    FROM data;"
 
 #. Tag: para
 #: reference_processing.xml:748
