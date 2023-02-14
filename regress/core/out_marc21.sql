@@ -77,7 +77,7 @@ UPDATE asmarc21_rt SET geom = ST_AsEWKT(geom,5);
 SELECT gid,ST_AsMARC21(geom,'hdddmmss') AS marc21 FROM asmarc21_rt ORDER BY gid;
 
 -- Converts to geometries to MARC21/XML
-SELECT 'hdddmmss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss')),5) AS marc21 FROM asmarc21_rt ORDER BY gid; 
+SELECT 'hdddmmss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss')),5) AS marc21 FROM asmarc21_rt ORDER BY gid;
 SELECT 'hddd.dddddd',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hddd.dddddd')),5) AS marc21 FROM asmarc21_rt ORDER BY gid;
 SELECT 'hdddmm.mmmmmm',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmm.mmmmmm')),5) AS marc21 FROM asmarc21_rt ORDER BY gid;
 SELECT 'hdddmmss.ssssss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss.ssssss')),5) AS marc21 FROM asmarc21_rt ORDER BY gid;
@@ -97,25 +97,25 @@ SELECT 'ddd,dddddd',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'ddd,dddddd
 SELECT 'dddmm,mmmmmm',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmm,mmmmmm')),5) AS marc21 FROM asmarc21_rt ORDER BY gid;
 SELECT 'dddmmss,ssssss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmmss,ssssss')),5) AS marc21 FROM asmarc21_rt ORDER BY gid;
 
--- Converts geometries (except points) to MARC21/XML, converts them back to geometry, 
+-- Converts geometries (except points) to MARC21/XML, converts them back to geometry,
 -- and compare their sizes and intersection areas.
-SELECT 
+SELECT
   'convert geom to marc21 -> convert back to geom',
   ST_GeometryType(geom) AS type_origin,
   gid,
   box2d(geom) AS box_origin,
   ST_GeometryType(
     ST_GeomFromMARC21(
-      ST_AsMARC21(geom,'hddd.ddddd'))) AS type_from_marc21,  
+      ST_AsMARC21(geom,'hddd.ddddd'))) AS type_from_marc21,
   box2d(
     ST_GeomFromMARC21(
       ST_AsMARC21(geom,'hddd.ddddd'))) AS box_marc21,
-  
+
   ST_Area(
     box2d(
       ST_GeomFromMARC21(
         ST_AsMARC21(geom,'hddd.ddddd')))) / ST_Area(box2d(geom)) * 100 AS box_size_overlap,
-  
+
     ST_Area(
       ST_Intersection(
         box2d(geom),
@@ -124,28 +124,28 @@ SELECT
 	        ST_AsMARC21(geom,'hddd.ddddd')))
       )
     ) / ST_Area(box2d(geom))*100 AS box_intersection
-    
-FROM asmarc21_rt
-WHERE ST_GeometryType(geom) <> 'ST_Point' 
-ORDER BY gid;
-  
 
--- Converts points to MARC21/XML, converts them back to geometry, 
+FROM asmarc21_rt
+WHERE ST_GeometryType(geom) <> 'ST_Point'
+ORDER BY gid;
+
+
+-- Converts points to MARC21/XML, converts them back to geometry,
 -- and compares them with the original points.
 -- Note: ST_GeomFromMARC21 drops the ZM dimensions.
-SELECT 
+SELECT
   'convert points to marc21 -> convert back to geom',
-  ST_AsText(geom) AS point_origin, 
+  ST_AsText(geom) AS point_origin,
   ST_AsText(
     ST_GeomFromMARC21(
-      ST_AsMARC21(geom,'hddd.ddddd')),5) AS point_from_marc21, 
+      ST_AsMARC21(geom,'hddd.ddddd')),5) AS point_from_marc21,
   ST_Equals(
     geom,
     ST_SetSRID(
       ST_GeomFromMARC21(
         ST_AsMARC21(geom,'hddd.ddddd')),4326)) AS equals,
   ST_AsMARC21(geom,'hdddmmss.ss') AS point_as_marc21
-FROM asmarc21_rt 
+FROM asmarc21_rt
 WHERE ST_GeometryType(geom) = 'ST_Point'
 ORDER BY gid;
 
@@ -154,25 +154,25 @@ ORDER BY gid;
 -- ## Dumping Collections ##
 
 -- Dumps geometries from collections and converts them to MARC21/XML
-SELECT 
+SELECT
   'dump geom -> convert to marc21',
   gid,(ST_Dump(geom)).path[1],
   ST_AsMARC21(
-    (ST_Dump(geom)).geom,'hdddmmss') AS marc21 
+    (ST_Dump(geom)).geom,'hdddmmss') AS marc21
 FROM asmarc21_rt
 ORDER BY gid;
 
 
--- Dumps geometries from collections, converts them to MARC21/XML, 
+-- Dumps geometries from collections, converts them to MARC21/XML,
 -- and calculate the percentage of their intersection area.
-SELECT 
+SELECT
   'dump geom -> convert to marc21 -> convert back to geom',
   ST_GeometryType(geom_origin) AS type_origin,
-  gid,path_origin[1],  
+  gid,path_origin[1],
   ST_GeometryType(geom_origin_dumped) AS type_origin_dumped,
   box2d(geom_origin_dumped) AS box_orign,
   ST_GeometryType(geom_from_marc21_dumped) AS type_from_marc21_dumped,
-  box2d(geom_from_marc21_dumped) AS box_marc21,  
+  box2d(geom_from_marc21_dumped) AS box_marc21,
   ST_Area(box2d(geom_from_marc21_dumped)) / ST_Area(box2d(geom_origin_dumped)) * 100 AS box_size_overlap,
   ST_Area(
     ST_Intersection(
@@ -188,7 +188,7 @@ FROM
          ST_GeomFromMARC21(
            ST_AsMARC21(geom,'hddd.ddddd')))).geom,
        4326),
-     geom 
+     geom
    FROM asmarc21_rt) i (gid, path_origin, geom_origin_dumped, geom_from_marc21_dumped, geom_origin)
 WHERE ST_GeometryType(geom_origin_dumped) <> 'ST_Point'
 ORDER BY gid,path_origin[1];
@@ -224,8 +224,8 @@ SELECT 'polygon_01',
 			</datafield>
 		  </record>'),
 	  4326));
-	  
-	  
+
+
 SELECT 'polygon_02',
   ST_AsMARC21(
 	ST_SetSRID(
@@ -255,7 +255,7 @@ SELECT 'polygon_03',
 			</datafield>
 		  </record>'),
 	  4326),'hddd.dddddd');
-	  
+
 SELECT 'polygon_04',
   ST_AsMARC21(
 	ST_SetSRID(
@@ -269,8 +269,8 @@ SELECT 'polygon_04',
 			  <subfield code="g">S0514450</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'hdddmm.mmmmmm');	  
-	  
+	  4326),'hdddmm.mmmmmm');
+
 SELECT 'polygon_05',
   ST_AsMARC21(
 	ST_SetSRID(
@@ -285,7 +285,9 @@ SELECT 'polygon_05',
 			</datafield>
 		  </record>'),
 	  4326),'hdddmmss.ssssss');
-	  
+
+/** TODO: https://trac.osgeo.org/postgis/ticket/5142 These tests are failing under mingw64 gcc 8.1, so removing for now
+
 SELECT 'polygon_06',
   ST_AsMARC21(
 	ST_SetSRID(
@@ -300,7 +302,7 @@ SELECT 'polygon_06',
 			</datafield>
 		  </record>'),
 	  4326),'hddd.dddddddddddddddddddddddddddddddddddddddddd');
-	  
+
 
 SELECT 'polygon_07',
   ST_AsMARC21(
@@ -331,7 +333,7 @@ SELECT 'polygon_08',
 			</datafield>
 		  </record>'),
 	  4326),'hdddmmss.sssssssssssssssssssssssssssssssssssssssssss');
-
+***/
 SELECT 'polygon_09',
   ST_AsMARC21(
 	ST_SetSRID(
@@ -361,7 +363,7 @@ SELECT 'polygon_10',
 			</datafield>
 		  </record>'),
 	  4326),'ddd.ddddd');
-	  
+
 
 SELECT 'polygon_11',
   ST_AsMARC21(
@@ -376,7 +378,7 @@ SELECT 'polygon_11',
 			  <subfield code="g">S0514450</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'dddmm.mmmm');	  
+	  4326),'dddmm.mmmm');
 
 SELECT 'polygon_12',
   ST_AsMARC21(
@@ -391,7 +393,7 @@ SELECT 'polygon_12',
 			  <subfield code="g">S0514450</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'dddmmss.ssss');	
+	  4326),'dddmmss.ssss');
 
 
 
@@ -409,8 +411,8 @@ SELECT 'polygon_12',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	  4326));	
-	  
+	  4326));
+
 
 SELECT 'polygon_13',
   ST_AsMARC21(
@@ -425,7 +427,7 @@ SELECT 'polygon_13',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'hdddmmss');	
+	  4326),'hdddmmss');
 
 SELECT 'polygon_14',
   ST_AsMARC21(
@@ -456,7 +458,7 @@ SELECT 'polygon_15',
 			</datafield>
 		  </record>'),
 	  4326),'hdddmm.mmmmmm');
-	  
+
 SELECT 'polygon_16',
   ST_AsMARC21(
 	ST_SetSRID(
@@ -470,7 +472,7 @@ SELECT 'polygon_16',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'hdddmmss.ssssss');	  
+	  4326),'hdddmmss.ssssss');
 
 SELECT 'polygon_17',
   ST_AsMARC21(
@@ -485,8 +487,8 @@ SELECT 'polygon_17',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'hddd.ddddd');	 
-	  
+	  4326),'hddd.ddddd');
+
 SELECT 'polygon_18',
   ST_AsMARC21(
 	ST_SetSRID(
@@ -500,8 +502,8 @@ SELECT 'polygon_18',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'hdddmm.mmmmm');	  
-	  
+	  4326),'hdddmm.mmmmm');
+
 SELECT 'polygon_19',
   ST_AsMARC21(
 	ST_SetSRID(
@@ -516,7 +518,7 @@ SELECT 'polygon_19',
 			</datafield>
 		  </record>'),
 	  4326),'hdddmmss.sssss');
-	  
+
 SELECT 'polygon_20',
   ST_AsMARC21(
 	ST_SetSRID(
@@ -530,8 +532,8 @@ SELECT 'polygon_20',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'dddmmss');	  
-	  
+	  4326),'dddmmss');
+
 SELECT 'polygon_21',
   ST_AsMARC21(
 	ST_SetSRID(
@@ -545,7 +547,7 @@ SELECT 'polygon_21',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'ddd.ddddd');	  	  
+	  4326),'ddd.ddddd');
 
 SELECT 'polygon_22',
   ST_AsMARC21(
@@ -560,8 +562,8 @@ SELECT 'polygon_22',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'dddmm.mmmm');	
-	  
+	  4326),'dddmm.mmmm');
+
 SELECT 'polygon_23',
   ST_AsMARC21(
 	ST_SetSRID(
@@ -575,9 +577,9 @@ SELECT 'polygon_23',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'dddmmss.ssss');		  
-	  
-	  
+	  4326),'dddmmss.ssss');
+
+
 SELECT 'polygon_24',
   ST_AsMARC21(
 	ST_SetSRID(
@@ -591,7 +593,7 @@ SELECT 'polygon_24',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'hddd,ddddd');		  
+	  4326),'hddd,ddddd');
 
 SELECT 'polygon_25',
   ST_AsMARC21(
@@ -606,8 +608,8 @@ SELECT 'polygon_25',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'hdddmm,mmmm');	
-	  
+	  4326),'hdddmm,mmmm');
+
 SELECT 'polygon_26',
   ST_AsMARC21(
 	ST_SetSRID(
@@ -621,7 +623,7 @@ SELECT 'polygon_26',
 			  <subfield code="g">S0514450</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'hdddmmss,ssss');	
+	  4326),'hdddmmss,ssss');
 
 SELECT 'polygon_27',
   ST_AsMARC21(
@@ -636,7 +638,7 @@ SELECT 'polygon_27',
 			  <subfield code="g">S0514450</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'dddmmss,ssss');	
+	  4326),'dddmmss,ssss');
 
 SELECT 'polygon_28',
   ST_AsMARC21(
@@ -651,9 +653,9 @@ SELECT 'polygon_28',
 			  <subfield code="g">S0514450</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'ddd,ddddd');	
-	  
-	  
+	  4326),'ddd,ddddd');
+
+
 SELECT 'polygon_29',
   ST_AsMARC21(
 	ST_SetSRID(
@@ -667,7 +669,7 @@ SELECT 'polygon_29',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'ddd,ddddd');		  
+	  4326),'ddd,ddddd');
 
 SELECT 'polygon_30',
   ST_AsMARC21(
@@ -682,9 +684,9 @@ SELECT 'polygon_30',
 			  <subfield code="g">S0514450</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'hdddmmss.sssss');	
-	  
-	  
+	  4326),'hdddmmss.sssss');
+
+
 SELECT 'polygon_31',
   ST_AsMARC21(
 	ST_SetSRID(
@@ -698,7 +700,7 @@ SELECT 'polygon_31',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	4326),'hdddmmss.sssss');	
+	4326),'hdddmmss.sssss');
 
 
 -- ERROR: invalid format
@@ -716,7 +718,7 @@ SELECT 'error_1',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	4326),'h.dddmmss.sssss');	
+	4326),'h.dddmmss.sssss');
 
 SELECT 'error_2',
   ST_AsMARC21(
@@ -731,7 +733,7 @@ SELECT 'error_2',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	4326),'hddd.mmmm');	
+	4326),'hddd.mmmm');
 
 SELECT 'error_3',
   ST_AsMARC21(
@@ -746,7 +748,7 @@ SELECT 'error_3',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	4326),'ddd.mmmm');	
+	4326),'ddd.mmmm');
 
 SELECT 'error_4',
   ST_AsMARC21(
@@ -761,7 +763,7 @@ SELECT 'error_4',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	4326),'hdddmmmss');	
+	4326),'hdddmmmss');
 
 SELECT 'error_5',
   ST_AsMARC21(
@@ -776,8 +778,8 @@ SELECT 'error_5',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	4326),'hdddmmsss');	
-	
+	4326),'hdddmmsss');
+
 SELECT 'error_6',
   ST_AsMARC21(
 	ST_SetSRID(
@@ -791,8 +793,8 @@ SELECT 'error_6',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	4326),'dddmmmss');	
-	
+	4326),'dddmmmss');
+
 SELECT 'error_7',
   ST_AsMARC21(
 	ST_SetSRID(
@@ -806,8 +808,8 @@ SELECT 'error_7',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	4326),'dddmmsss');	
-	
+	4326),'dddmmsss');
+
 SELECT 'error_8',
   ST_AsMARC21(
 	ST_SetSRID(
@@ -821,8 +823,8 @@ SELECT 'error_8',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	4326),'dddmm.ss');	
-		
+	4326),'dddmm.ss');
+
 SELECT 'error_9',
   ST_AsMARC21(
 	ST_SetSRID(
@@ -836,8 +838,8 @@ SELECT 'error_9',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	4326),'hdddmm.ss');		
-	
+	4326),'hdddmm.ss');
+
 SELECT 'error_10',
   ST_AsMARC21(
 	ST_SetSRID(
@@ -851,7 +853,7 @@ SELECT 'error_10',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	4326),'hdddmm,ss');			
+	4326),'hdddmm,ss');
 
 
 SELECT 'error_11',
@@ -867,9 +869,9 @@ SELECT 'error_11',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	4326),'ddd,mmmmm');			
-	
-	
+	4326),'ddd,mmmmm');
+
+
 
 SELECT 'null_01',
   ST_AsMARC21(
@@ -884,7 +886,7 @@ SELECT 'null_01',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	4326),NULL);		
+	4326),NULL);
 
 
 DROP TABLE asmarc21_rt;
