@@ -63,7 +63,7 @@ static void onExecutorStart(QueryDesc *queryDesc, int eflags);
 * system instead of letting them default into the
 * stderr.
 */
-#if POSTGIS_PROJ_VERSION > 50
+#if POSTGIS_PROJ_VERSION > 60
 #include "proj.h"
 
 static void
@@ -91,7 +91,7 @@ _PG_init(void)
   pg_install_lwgeom_handlers();
 
   /* pass proj messages through the pgsql error handler */
-#if POSTGIS_PROJ_VERSION > 50
+#if POSTGIS_PROJ_VERSION > 60
   proj_log_func(NULL, NULL, pjLogFunction);
 #endif
 
