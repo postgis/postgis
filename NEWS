@@ -10,7 +10,8 @@ Proj 6.1+, and PostgreSQL 14+.
   - #5106, Fix segfault in ST_RemEdgeNewFace/ST_RemEdgeModFace
            when no edge side-faces are found (Sandro Santilli)
   - #5313, Fix memory access issue in ST_InterpolateRaster (Paul Ramsey)
-
+  - #5338, Dump/Restore of raster table fails on
+           enforce_coverage_tile_rast constraint (Regina Obe)
 
 PostGIS 3.2.4
 2022/11/12
