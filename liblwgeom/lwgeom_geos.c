@@ -437,7 +437,7 @@ LWGEOM2GEOS(const LWGEOM* lwgeom, uint8_t autofix)
 	GEOSGeom g, shell;
 	GEOSGeom* geoms = NULL;
 	uint32_t ngeoms, i, j;
-	int geostype;
+	int is_empty = LW_FALSE;
 #if LWDEBUG_LEVEL >= 4
 	char* wkt;
 #endif
@@ -459,144 +459,156 @@ LWGEOM2GEOS(const LWGEOM* lwgeom, uint8_t autofix)
 		return g;
 	}
 
-	LWPOINT* lwp = NULL;
-	LWPOLY* lwpoly = NULL;
-	LWLINE* lwl = NULL;
-	LWCOLLECTION* lwc = NULL;
+	is_empty = lwgeom_is_empty(lwgeom);
 
 	switch (lwgeom->type)
 	{
-	case POINTTYPE:
-		lwp = (LWPOINT*)lwgeom;
-
-		if (lwgeom_is_empty(lwgeom))
-			g = GEOSGeom_createEmptyPoint();
-		else
+		case POINTTYPE:
 		{
-#if POSTGIS_GEOS_VERSION < 30800
-			sq = ptarray_to_GEOSCoordSeq(lwp->point, 0);
-			g = GEOSGeom_createPoint(sq);
-#else
-			if (lwgeom_has_z(lwgeom))
-			{
-				sq = ptarray_to_GEOSCoordSeq(lwp->point, 0);
-				g = GEOSGeom_createPoint(sq);
-			}
+			if (is_empty)
+				g = GEOSGeom_createEmptyPoint();
 			else
 			{
-				const POINT2D* p = getPoint2d_cp(lwp->point, 0);
-				g = GEOSGeom_createPointFromXY(p->x, p->y);
+				LWPOINT* lwp = (LWPOINT*)lwgeom;
+	#if POSTGIS_GEOS_VERSION < 30800
+				sq = ptarray_to_GEOSCoordSeq(lwp->point, 0);
+				g = GEOSGeom_createPoint(sq);
+	#else
+				if (lwgeom_has_z(lwgeom))
+				{
+					sq = ptarray_to_GEOSCoordSeq(lwp->point, 0);
+					g = GEOSGeom_createPoint(sq);
+				}
+				else
+				{
+					const POINT2D* p = getPoint2d_cp(lwp->point, 0);
+					g = GEOSGeom_createPointFromXY(p->x, p->y);
+				}
+	#endif
 			}
-#endif
+			if (!g) return NULL;
+			break;
 		}
-		if (!g) return NULL;
-		break;
 
-	case LINETYPE:
-		lwl = (LWLINE*)lwgeom;
-		/* TODO: if (autofix) */
-		if (lwl->points->npoints == 1)
+		case LINETYPE:
 		{
-			/* Duplicate point, to make geos-friendly */
-			lwl->points = ptarray_addPoint(lwl->points,
-						       getPoint_internal(lwl->points, 0),
-						       FLAGS_NDIMS(lwl->points->flags),
-						       lwl->points->npoints);
+			if (is_empty)
+				g = GEOSGeom_createEmptyLineString();
+			else
+			{
+				LWLINE* lwl = (LWLINE*)lwgeom;
+				/* TODO: if (autofix) */
+				if (lwl->points->npoints == 1)
+				{
+					/* Duplicate point, to make geos-friendly */
+					lwl->points = ptarray_addPoint(lwl->points,
+								       getPoint_internal(lwl->points, 0),
+								       FLAGS_NDIMS(lwl->points->flags),
+								       lwl->points->npoints);
+				}
+				sq = ptarray_to_GEOSCoordSeq(lwl->points, 0);
+				g = GEOSGeom_createLineString(sq);
+			}
+			if (!g) return NULL;
+			break;
 		}
-		sq = ptarray_to_GEOSCoordSeq(lwl->points, 0);
-		g = GEOSGeom_createLineString(sq);
-		if (!g) return NULL;
-		break;
 
-	case POLYGONTYPE:
-		lwpoly = (LWPOLY*)lwgeom;
-		if (lwgeom_is_empty(lwgeom))
-			g = GEOSGeom_createEmptyPolygon();
-		else
+		case POLYGONTYPE:
 		{
-			shell = ptarray_to_GEOSLinearRing(lwpoly->rings[0], autofix);
-			if (!shell) return NULL;
-			ngeoms = lwpoly->nrings - 1;
+			LWPOLY* lwpoly = (LWPOLY*)lwgeom;
+			if (is_empty)
+				g = GEOSGeom_createEmptyPolygon();
+			else
+			{
+				shell = ptarray_to_GEOSLinearRing(lwpoly->rings[0], autofix);
+				if (!shell) return NULL;
+				ngeoms = lwpoly->nrings - 1;
+				if (ngeoms > 0) geoms = lwalloc(sizeof(GEOSGeom) * ngeoms);
+
+				for (i = 1; i < lwpoly->nrings; i++)
+				{
+					geoms[i - 1] = ptarray_to_GEOSLinearRing(lwpoly->rings[i], autofix);
+					if (!geoms[i - 1])
+					{
+						uint32_t k;
+						for (k = 0; k < i - 1; k++)
+							GEOSGeom_destroy(geoms[k]);
+						lwfree(geoms);
+						GEOSGeom_destroy(shell);
+						return NULL;
+					}
+				}
+				g = GEOSGeom_createPolygon(shell, geoms, ngeoms);
+				if (geoms) lwfree(geoms);
+			}
+			if (!g) return NULL;
+			break;
+		}
+
+		case TRIANGLETYPE:
+		{
+			if (is_empty)
+				g = GEOSGeom_createEmptyPolygon();
+			else
+			{
+				LWTRIANGLE *lwt = (LWTRIANGLE *)lwgeom;
+				shell = ptarray_to_GEOSLinearRing(lwt->points, autofix);
+				if (!shell) return NULL;
+				g = GEOSGeom_createPolygon(shell, NULL, 0);
+			}
+			if (!g) return NULL;
+			break;
+		}
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case TINTYPE:
+		case COLLECTIONTYPE:
+		{
+			int geostype;
+			if (lwgeom->type == MULTIPOINTTYPE)
+				geostype = GEOS_MULTIPOINT;
+			else if (lwgeom->type == MULTILINETYPE)
+				geostype = GEOS_MULTILINESTRING;
+			else if (lwgeom->type == MULTIPOLYGONTYPE)
+				geostype = GEOS_MULTIPOLYGON;
+			else
+				geostype = GEOS_GEOMETRYCOLLECTION;
+
+			LWCOLLECTION* lwc = (LWCOLLECTION*)lwgeom;
+
+			ngeoms = lwc->ngeoms;
 			if (ngeoms > 0) geoms = lwalloc(sizeof(GEOSGeom) * ngeoms);
 
-			for (i = 1; i < lwpoly->nrings; i++)
+			j = 0;
+			for (i = 0; i < ngeoms; ++i)
 			{
-				geoms[i - 1] = ptarray_to_GEOSLinearRing(lwpoly->rings[i], autofix);
-				if (!geoms[i - 1])
+				GEOSGeometry* g;
+
+				/* if (lwgeom_is_empty(lwc->geoms[i])) continue; */
+
+				g = LWGEOM2GEOS(lwc->geoms[i], 0);
+				if (!g)
 				{
 					uint32_t k;
-					for (k = 0; k < i - 1; k++)
+					for (k = 0; k < j; k++)
 						GEOSGeom_destroy(geoms[k]);
 					lwfree(geoms);
-					GEOSGeom_destroy(shell);
 					return NULL;
 				}
+				geoms[j++] = g;
 			}
-			g = GEOSGeom_createPolygon(shell, geoms, ngeoms);
-			if (geoms) lwfree(geoms);
+			g = GEOSGeom_createCollection(geostype, geoms, j);
+			if (ngeoms > 0) lwfree(geoms);
+			if (!g) return NULL;
+			break;
 		}
-		if (!g) return NULL;
-		break;
 
-	case TRIANGLETYPE:
-		if (lwgeom_is_empty(lwgeom))
-			g = GEOSGeom_createEmptyPolygon();
-		else
+		default:
 		{
-			LWTRIANGLE *lwt = (LWTRIANGLE *)lwgeom;
-			shell = ptarray_to_GEOSLinearRing(lwt->points, autofix);
-			if (!shell)
-				return NULL;
-			g = GEOSGeom_createPolygon(shell, NULL, 0);
-		}
-		if (!g)
+			lwerror("Unknown geometry type: %d - %s", lwgeom->type, lwtype_name(lwgeom->type));
 			return NULL;
-		break;
-	case MULTIPOINTTYPE:
-	case MULTILINETYPE:
-	case MULTIPOLYGONTYPE:
-	case TINTYPE:
-	case COLLECTIONTYPE:
-		if (lwgeom->type == MULTIPOINTTYPE)
-			geostype = GEOS_MULTIPOINT;
-		else if (lwgeom->type == MULTILINETYPE)
-			geostype = GEOS_MULTILINESTRING;
-		else if (lwgeom->type == MULTIPOLYGONTYPE)
-			geostype = GEOS_MULTIPOLYGON;
-		else
-			geostype = GEOS_GEOMETRYCOLLECTION;
-
-		lwc = (LWCOLLECTION*)lwgeom;
-
-		ngeoms = lwc->ngeoms;
-		if (ngeoms > 0) geoms = lwalloc(sizeof(GEOSGeom) * ngeoms);
-
-		j = 0;
-		for (i = 0; i < ngeoms; ++i)
-		{
-			GEOSGeometry* g;
-
-			/* if (lwgeom_is_empty(lwc->geoms[i])) continue; */
-
-			g = LWGEOM2GEOS(lwc->geoms[i], 0);
-			if (!g)
-			{
-				uint32_t k;
-				for (k = 0; k < j; k++)
-					GEOSGeom_destroy(geoms[k]);
-				lwfree(geoms);
-				return NULL;
-			}
-			geoms[j++] = g;
 		}
-		g = GEOSGeom_createCollection(geostype, geoms, j);
-		if (ngeoms > 0) lwfree(geoms);
-		if (!g) return NULL;
-		break;
-
-	default:
-		lwerror("Unknown geometry type: %d - %s", lwgeom->type, lwtype_name(lwgeom->type));
-		return NULL;
 	}
 
 	GEOSSetSRID(g, lwgeom->srid);
@@ -604,7 +616,7 @@ LWGEOM2GEOS(const LWGEOM* lwgeom, uint8_t autofix)
 #if LWDEBUG_LEVEL >= 4
 	wkt = GEOSGeomToWKT(g);
 	LWDEBUGF(4, "LWGEOM2GEOS: GEOSGeom: %s", wkt);
-	free(wkt);
+	GEOSFree(wkt);
 #endif
 
 	return g;
