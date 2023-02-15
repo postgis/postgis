@@ -6215,7 +6215,7 @@ CREATE OR REPLACE FUNCTION st_samealignment(
 	ulx2 double precision, uly2 double precision, scalex2 double precision, scaley2 double precision, skewx2 double precision, skewy2 double precision
 )
 	RETURNS boolean
-	AS $$ SELECT st_samealignment(st_makeemptyraster(1, 1, $1, $2, $3, $4, $5, $6), st_makeemptyraster(1, 1, $7, $8, $9, $10, $11, $12)) $$
+	AS $$ SELECT @extschema@.st_samealignment(@extschema@.st_makeemptyraster(1, 1, $1, $2, $3, $4, $5, $6), @extschema@.st_makeemptyraster(1, 1, $7, $8, $9, $10, $11, $12)) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.1.0
@@ -6290,16 +6290,16 @@ CREATE OR REPLACE FUNCTION st_iscoveragetile(rast raster, coverage raster, tilew
 		tile integer[];
 		edge integer[];
 	BEGIN
-		IF NOT ST_SameAlignment(rast, coverage) THEN
+		IF NOT @extschema@.ST_SameAlignment(rast, coverage) THEN
 			RAISE NOTICE 'Raster and coverage are not aligned';
 			RETURN FALSE;
 		END IF;
 
-		_rastmeta := ST_Metadata(rast);
-		_covmeta := ST_Metadata(coverage);
+		_rastmeta := @extschema@.ST_Metadata(rast);
+		_covmeta := @extschema@.ST_Metadata(coverage);
 
 		-- get coverage grid coordinates of upper-left of rast
-		cr := ST_WorldToRasterCoord(coverage, _rastmeta.upperleftx, _rastmeta.upperlefty);
+		cr := @extschema@.ST_WorldToRasterCoord(coverage, _rastmeta.upperleftx, _rastmeta.upperlefty);
 
 		-- rast is not part of coverage
 		IF

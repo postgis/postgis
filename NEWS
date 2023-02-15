@@ -2,6 +2,8 @@ PostGIS 3.0.9dev
 xxxx/xx/xx
 
 * Bug Fixes *
+  - #5338, Dump/Restore of raster table fails on
+  		     enforce_coverage_tile_rast constraint (Regina Obe)
 
 PostGIS 3.0.8
 2022/11/11
