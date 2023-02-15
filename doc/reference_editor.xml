@@ -1645,7 +1645,7 @@ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
 		<refnamediv>
 			<refname>ST_Segmentize</refname>
 
-			<refpurpose>Return a modified geometry/geography having no segment longer than the
+			<refpurpose>Returns a modified geometry/geography having no segment longer than a
 			given distance.</refpurpose>
 		</refnamediv>
 
@@ -1667,40 +1667,81 @@ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
 		<refsection>
 			<title>Description</title>
 
-			<para>Returns a modified geometry having no segment longer than the
-			given <varname>max_segment_length</varname>.  Distance computation is performed in 2d
-			only. For geometry, length units are in units of spatial reference.  For geography, units are in meters.</para>
+			<para>Returns a modified geometry/geography having no segment longer than
+			<varname>max_segment_length</varname>.
+            Length is computed in 2D.
+            Segments are always split into equal-length subsegments.
+            </para>
+            <itemizedlist>
+                <listitem><para>For geometry, the maximum length is in the units of the spatial reference system.
+                </para></listitem>
+
+                <listitem><para>For geography, the maximum length is in meters.
+                Distances are computed on the sphere.
+                Added vertices are created along the spherical great-circle arcs
+                defined by segment endpoints.
+                </para></listitem>
+            </itemizedlist>
+
+			<note><para>This only shortens long segments.
+            It does not lengthen segments shorter than the maximum length.
+            </para></note>
+
+            <warning><para>For inputs containing long segments,
+            specifying a relatively short <varname>max_segment_length</varname>
+            can cause a very large number of vertices to be added.
+            This can happen unintentionally if the argument is specified accidentally as a number of segments,
+            rather than a maximum length.
+            </para></warning>
+
 			<para>Availability: 1.2.2</para>
-			<para>Enhanced: 3.0.0 Segmentize geometry now uses equal length segments</para>
-			<para>Enhanced: 2.3.0 Segmentize geography now uses equal length segments</para>
+			<para>Enhanced: 3.0.0 Segmentize geometry now produces equal-length subsegments</para>
+			<para>Enhanced: 2.3.0 Segmentize geography now produces equal-length subsegments</para>
 			<para>Enhanced: 2.1.0 support for geography was introduced.</para>
-			<para>Changed: 2.1.0 As a result of the introduction of geography support: The construct <code>SELECT ST_Segmentize('LINESTRING(1 2, 3 4)',0.5);</code> will result in ambiguous function error.  You need to have properly typed object e.g. a geometry/geography column, use ST_GeomFromText, ST_GeogFromText or
-				<code>SELECT ST_Segmentize('LINESTRING(1 2, 3 4)'::geometry,0.5);</code></para>
-			<note><para>This will only increase segments.  It will not lengthen segments shorter than
-			max length</para></note>
+			<para>Changed: 2.1.0 As a result of the introduction of geography support,
+            the usage <code>ST_Segmentize('LINESTRING(1 2, 3 4)', 0.5)</code> causes an ambiguous function error.
+            The input needs to be properly typed as a geometry or geography.
+            Use ST_GeomFromText, ST_GeogFromText or a cast to the required type
+			(e.g. <code>ST_Segmentize('LINESTRING(1 2, 3 4)'::geometry, 0.5) )</code></para>
 		</refsection>
 
 		<refsection>
 			<title>Examples</title>
 
+            <para>Segmentizing a line.  Long segments are split evenly, and short segments are not split.</para>
 			<programlisting>SELECT ST_AsText(ST_Segmentize(
-ST_GeomFromText('MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45 -33,-46 -32))')
-		,5)
-);
-st_astext
---------------------------------------------------------------------------------------------------
-MULTILINESTRING((-29 -27,-30 -29.7,-34.886615700134 -30.758766735029,-36 -31,
--40.8809353009198 -32.0846522890933,-45 -33),
-(-45 -33,-46 -32))
-(1 row)
+    'MULTILINESTRING((0 0, 0 1, 0 9),(1 10, 1 18))'::geometry,
+	5 ) );
+---------------------------------------------------
+MULTILINESTRING((0 0,0 1,0 5,0 9),(1 10,1 14,1 18))
+</programlisting>
 
-SELECT ST_AsText(ST_Segmentize(ST_GeomFromText('POLYGON((-29 28, -30 40, -29 28))'),10));
-st_astext
------------------------
-POLYGON((-29 28,-29.8304547985374 37.9654575824488,-30 40,-29.1695452014626 30.0345424175512,-29 28))
-(1 row)
+            <para>Segmentizing a polygon:</para>
+<programlisting>
+SELECT ST_AsText(
+        ST_Segmentize(('POLYGON((0 0, 0 8, 30 0, 0 0))'::geometry), 10));
+-------------------------------------------------------
+POLYGON((0 0,0 8,7.5 6,15 4,22.5 2,30 0,20 0,10 0,0 0))
+</programlisting>
 
-			</programlisting>
+            <para>Segmentizing a geographic line, using a maximum segment length of 3000 kilometers.
+            Vertices are added along the great-circle arc connecting the endpoints.
+            </para>
+<programlisting>
+SELECT ST_AsText(
+        ST_Segmentize(('LINESTRING (0 0, 60 60)'::geography), 2000000));
+-------------------------------------------------------------
+LINESTRING(0 0,4.252632294621186 8.43596525986862,8.69579947419404 16.824093489701564,13.550465473227048 25.107950473646188,19.1066053508691 33.21091076089908,25.779290201459894 41.01711439406505,34.188839517966954 48.337222885886,45.238153936612264 54.84733442373889,60 60)
+</programlisting>
+			<informalfigure>
+			  <mediaobject>
+				<imageobject>
+				  <imagedata fileref="images/st_segmentize01.png" />
+				</imageobject>
+				<caption><para>A geographic line segmentized along a great circle arc</para></caption>
+			  </mediaobject>
+			</informalfigure>
+
 		</refsection>
 		<refsection>
 			<title>See Also</title>

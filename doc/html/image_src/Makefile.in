@@ -154,6 +154,7 @@ IMAGES= \
 	../images/st_pointonsurface03.png \
 	../images/st_pointonsurface04.png \
 	../images/st_triangulatepolygon01.png \
+	../images/st_segmentize01.png \
 	../images/st_sharedpaths01.png \
 	../images/st_sharedpaths02.png \
 	../images/st_shortestline01.png \
