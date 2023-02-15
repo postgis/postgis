@@ -26,7 +26,7 @@
 			<funcprototype>
 			  <funcdef>float <function>ST_Area</function></funcdef>
 				<paramdef><type>geography </type><parameter>geog</parameter></paramdef>
-				<paramdef choice="opt"><type>boolean </type><parameter>use_spheroid=true</parameter></paramdef>
+				<paramdef choice="opt"><type>boolean </type><parameter>use_spheroid = true</parameter></paramdef>
 			</funcprototype>
 		  </funcsynopsis>
 		</refsynopsisdiv>
@@ -493,7 +493,7 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 			<parameter>geog2</parameter></paramdef>
 
 			<paramdef choice="opt"><type>boolean </type>
-			<parameter>use_spheroid=true</parameter></paramdef>
+			<parameter>use_spheroid = true</parameter></paramdef>
 		  </funcprototype>
 
 		</funcsynopsis>
@@ -989,7 +989,7 @@ SELECT DISTINCT ON (buildings.gid) buildings.gid, parcels.parcel_id
 			<funcprototype>
 			  <funcdef>float <function>ST_Length</function></funcdef>
 				<paramdef><type>geography </type><parameter>geog</parameter></paramdef>
-				<paramdef choice="opt"><type>boolean </type><parameter>use_spheroid=true</parameter></paramdef>
+				<paramdef choice="opt"><type>boolean </type><parameter>use_spheroid = true</parameter></paramdef>
 			</funcprototype>
 		  </funcsynopsis>
 		</refsynopsisdiv>
@@ -1002,7 +1002,7 @@ SELECT DISTINCT ON (buildings.gid) buildings.gid, parcels.parcel_id
 				spatial reference system of the geometry.</para>
 			<para>For geography types: computation is performed using the inverse geodesic calculation. Units of length are in meters.
 				If PostGIS is compiled with PROJ version 4.8.0 or later, the spheroid is specified by the SRID, otherwise it is exclusive to WGS84.
-				If <varname>use_spheroid=false</varname>, then the calculation is based on a sphere instead of a spheroid.
+				If <varname>use_spheroid = false</varname>, then the calculation is based on a sphere instead of a spheroid.
 				</para>
 
 			<para>Currently for geometry this is an alias for ST_Length2D, but this may change to support higher dimensions.</para>
@@ -1699,7 +1699,7 @@ LINESTRING(0.5 0.00032,0.5 0)
 			<funcprototype>
 			  <funcdef>float <function>ST_Perimeter</function></funcdef>
 				<paramdef><type>geography </type><parameter>geog</parameter></paramdef>
-				<paramdef choice="opt"><type>boolean </type><parameter>use_spheroid=true</parameter></paramdef>
+				<paramdef choice="opt"><type>boolean </type><parameter>use_spheroid = true</parameter></paramdef>
 			</funcprototype>
 		  </funcsynopsis>
 		</refsynopsisdiv>
@@ -1711,7 +1711,7 @@ LINESTRING(0.5 0.00032,0.5 0)
 				spatial reference system of the geometry.</para>
 			<para>For geography types, the calculations are performed using the inverse geodesic problem, where perimeter units are in meters.
 				If PostGIS is compiled with PROJ version 4.8.0 or later, the spheroid is specified by the SRID, otherwise it is exclusive to WGS84.
-				If <varname>use_spheroid=false</varname>, then calculations will approximate a sphere instead of a spheroid.</para>
+				If <varname>use_spheroid = false</varname>, then calculations will approximate a sphere instead of a spheroid.</para>
 
 			<para>Currently this is an alias for ST_Perimeter2D, but this may change to support higher dimensions.</para>
 
