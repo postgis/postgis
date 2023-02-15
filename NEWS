@@ -13,6 +13,8 @@ YYYY/MM/DD
   - #5329, Fix downgrade protection introduced in 3.3.0 (Sandro Santilli)
   - #5332, Keep proj errors from percolating into PgSQL log (Paul Ramsey)
   - #5313, Fix memory access issue in ST_InterpolateRaster (Paul Ramsey)
+  - #5338, Dump/Restore of raster table fails on
+           enforce_coverage_tile_rast constraint (Regina Obe)
 
 
 PostGIS 3.3.2
