@@ -2176,8 +2176,8 @@ ST_DWithin(
     (have the same SRID).</para>
 
     <para>For <type>geography</type>: units are in meters and distance measurement
-    defaults to <varname>use_spheroid</varname>=true.
-        For faster evaluation use <varname>use_spheroid</varname>=false to measure on the sphere.
+    defaults to <varname>use_spheroid = true</varname>.
+    For faster evaluation use <varname>use_spheroid = false</varname> to measure on the sphere.
     </para>
 
     <note><para>Use <xref linkend="ST_3DDWithin"/> for 3D geometries.</para></note>
