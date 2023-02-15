@@ -5811,7 +5811,7 @@ CREATE OR REPLACE FUNCTION st_samealignment(
 	ulx2 double precision, uly2 double precision, scalex2 double precision, scaley2 double precision, skewx2 double precision, skewy2 double precision
 )
 	RETURNS boolean
-	AS $$ SELECT st_samealignment(st_makeemptyraster(1, 1, $1, $2, $3, $4, $5, $6), st_makeemptyraster(1, 1, $7, $8, $9, $10, $11, $12)) $$
+	AS $$ SELECT @extschema@.st_samealignment(@extschema@.st_makeemptyraster(1, 1, $1, $2, $3, $4, $5, $6), @extschema@.st_makeemptyraster(1, 1, $7, $8, $9, $10, $11, $12)) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.1.0
@@ -5835,11 +5835,11 @@ CREATE OR REPLACE FUNCTION _st_samealignment_transfn(agg agg_samealignment, rast
 			agg.aligned := NULL;
 		ELSE
 			IF agg.refraster IS NULL THEN
-				m := ST_Metadata(rast);
-				agg.refraster := ST_MakeEmptyRaster(1, 1, m.upperleftx, m.upperlefty, m.scalex, m.scaley, m.skewx, m.skewy, m.srid);
+				m := @extschema@.ST_Metadata(rast);
+				agg.refraster := @extschema@.ST_MakeEmptyRaster(1, 1, m.upperleftx, m.upperlefty, m.scalex, m.scaley, m.skewx, m.skewy, m.srid);
 				agg.aligned := TRUE;
 			ELSIF agg.aligned IS TRUE THEN
-				agg.aligned := ST_SameAlignment(agg.refraster, rast);
+				agg.aligned := @extschema@.ST_SameAlignment(agg.refraster, rast);
 			END IF;
 		END IF;
 		RETURN agg;
@@ -5884,16 +5884,16 @@ CREATE OR REPLACE FUNCTION st_iscoveragetile(rast raster, coverage raster, tilew
 		tile integer[];
 		edge integer[];
 	BEGIN
-		IF NOT ST_SameAlignment(rast, coverage) THEN
+		IF NOT @extschema@.ST_SameAlignment(rast, coverage) THEN
 			RAISE NOTICE 'Raster and coverage are not aligned';
 			RETURN FALSE;
 		END IF;
 
-		_rastmeta := ST_Metadata(rast);
-		_covmeta := ST_Metadata(coverage);
+		_rastmeta := @extschema@.ST_Metadata(rast);
+		_covmeta := @extschema@.ST_Metadata(coverage);
 
 		-- get coverage grid coordinates of upper-left of rast
-		cr := ST_WorldToRasterCoord(coverage, _rastmeta.upperleftx, _rastmeta.upperlefty);
+		cr := @extschema@.ST_WorldToRasterCoord(coverage, _rastmeta.upperleftx, _rastmeta.upperlefty);
 
 		-- rast is not part of coverage
 		IF
@@ -6846,7 +6846,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_srid(rastschema name, rasttabl
 
 		sql := 'ALTER TABLE ' || fqtn
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
-			|| ' CHECK (st_srid('
+			|| ' CHECK (@extschema@.st_srid('
 			|| quote_ident($3)
 			|| ') = ' || attr || ')';
 
@@ -6931,7 +6931,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_scale(rastschema name, rasttab
 
 		sql := 'ALTER TABLE ' || fqtn
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
-			|| ' CHECK (round(st_scale' || $4 || '('
+			|| ' CHECK (round(@extschema@.st_scale' || $4 || '('
 			|| quote_ident($3)
 			|| ')::numeric, 10) = round(' || text(attr) || '::numeric, 10))';
 		RETURN  @extschema@._add_raster_constraint(cn, sql);
@@ -7159,7 +7159,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_alignment(rastschema name, ras
 
 		sql := 'ALTER TABLE ' || fqtn ||
 			' ADD CONSTRAINT ' || quote_ident(cn) ||
-			' CHECK (st_samealignment(' || quote_ident($3) || ', ''' || attr || '''::raster))';
+			' CHECK (@extschema@.st_samealignment(' || quote_ident($3) || ', ''' || attr || '''::raster))';
 		RETURN  @extschema@._add_raster_constraint(cn, sql);
 	END;
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
@@ -7321,7 +7321,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_coverage_tile(rastschema name,
 
 		sql := 'ALTER TABLE ' || fqtn ||
 			' ADD CONSTRAINT ' || quote_ident(cn) ||
-			' CHECK (st_iscoveragetile(' || quote_ident($3) || ', ''' || _covrast || '''::raster, ' || _tilewidth || ', ' || _tileheight || '))';
+			' CHECK (@extschema@.st_iscoveragetile(' || quote_ident($3) || ', ''' || _covrast || '''::raster, ' || _tilewidth || ', ' || _tileheight || '))';
 		RETURN  @extschema@._add_raster_constraint(cn, sql);
 	END;
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
@@ -7453,7 +7453,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_pixel_types(rastschema name, 
 
 CREATE OR REPLACE FUNCTION _raster_constraint_pixel_types(rast raster)
 	RETURNS text[] AS
-	$$ SELECT array_agg(pixeltype)::text[] FROM  @extschema@.ST_BandMetaData($1, ARRAY[]::int[]); $$
+	$$ SELECT pg_catalog.array_agg(pixeltype)::text[] FROM  @extschema@.ST_BandMetaData($1, ARRAY[]::int[]); $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION _add_raster_constraint_pixel_types(rastschema name, rasttable name, rastcolumn name)
@@ -7541,7 +7541,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_nodata_values(rastschema name
 -- Changed: 2.2.0
 CREATE OR REPLACE FUNCTION _raster_constraint_nodata_values(rast raster)
 	RETURNS numeric[] AS
-	$$ SELECT array_agg(round(nodatavalue::numeric, 10))::numeric[] FROM @extschema@.ST_BandMetaData($1, ARRAY[]::int[]); $$
+	$$ SELECT pg_catalog.array_agg(pg_catalog.round(nodatavalue::numeric, 10))::numeric[] FROM @extschema@.ST_BandMetaData($1, ARRAY[]::int[]); $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
 CREATE OR REPLACE FUNCTION _add_raster_constraint_nodata_values(rastschema name, rasttable name, rastcolumn name)
@@ -7632,7 +7632,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_out_db(rastschema name, rastt
 
 CREATE OR REPLACE FUNCTION _raster_constraint_out_db(rast raster)
 	RETURNS boolean[] AS
-	$$ SELECT array_agg(isoutdb)::boolean[] FROM @extschema@.ST_BandMetaData($1, ARRAY[]::int[]); $$
+	$$ SELECT pg_catalog.array_agg(isoutdb)::boolean[] FROM @extschema@.ST_BandMetaData($1, ARRAY[]::int[]); $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
 CREATE OR REPLACE FUNCTION _add_raster_constraint_out_db(rastschema name, rasttable name, rastcolumn name)
