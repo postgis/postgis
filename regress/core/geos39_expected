@@ -8,3 +8,4 @@ mic-cte|POINT(49.512 49.512)
 rp-1|POINT(1.4 19.3)
 rp-2|POINT(1 19)
 rp-3|POINT(0 20)
+ERROR:  Geometry contains invalid coordinates

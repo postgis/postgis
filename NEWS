@@ -15,6 +15,7 @@ YYYY/MM/DD
   - #5313, Fix memory access issue in ST_InterpolateRaster (Paul Ramsey)
   - #5338, Dump/Restore of raster table fails on
            enforce_coverage_tile_rast constraint (Regina Obe)
+  - #5315, #5318, #5319 crashes on infinite coordinates (Regina Obe)
 
 
 PostGIS 3.3.2
