@@ -77,6 +77,10 @@ AND (
 		SELECT typoutput
 		FROM pg_type
 		WHERE typname IN ( 'geometry', 'geography', 'raster' )
+			UNION ALL
+		SELECT typmodout
+		FROM pg_type
+		WHERE typname IN ( 'geometry', 'geography', 'raster' )
 	)
 );
 
