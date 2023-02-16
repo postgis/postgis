@@ -4,7 +4,7 @@
   before_script:
     - apt-get update -qq && apt-get install -y
         bison flex
-        postgresql-14 postgresql-server-dev-14
+        postgresql-15 postgresql-server-dev-15
         build-essential autoconf libtool libcunit1-dev
         xsltproc docbook-xsl docbook-mathml dblatex
         libproj-dev libgdal-dev libgeos-dev libjson-c-dev
