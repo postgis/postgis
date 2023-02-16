@@ -397,6 +397,13 @@ Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS)
 		double width, height, size, tolerance;
 		GBOX gbox;
 		int gtype;
+		LWGEOM *lwg;
+		lwg = lwgeom_from_gserialized(geom);
+		if (!lwgeom_isfinite(lwg))
+		{
+			lwpgerror("Geometry contains invalid coordinates");
+			PG_RETURN_NULL();
+		}
 
 		if (!gserialized_get_gbox_p(geom, &gbox))
 			PG_RETURN_NULL();
@@ -976,6 +983,14 @@ Datum buffer(PG_FUNCTION_ARGS)
 		        gserialized_get_srid(geom1),
 		        0, 0)); // buffer wouldn't give back z or m anyway
 		PG_RETURN_POINTER(geometry_serialize(lwg));
+	}
+
+	lwg = lwgeom_from_gserialized(geom1);
+
+	if (!lwgeom_isfinite(lwg))
+	{
+		lwpgerror("Geometry contains invalid coordinates");
+		PG_RETURN_NULL();
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);

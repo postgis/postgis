@@ -2444,6 +2444,7 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 
 	lwg = lwgeom_from_gserialized(pglwg1);
 	line = lwgeom_as_lwline(lwg);
+
 	if (!line)
 	{
 		elog(ERROR, "First argument must be a LINESTRING");
@@ -2452,6 +2453,12 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 
 	if ( line->points->npoints < 1 ) 	{
 		elog(ERROR, "Line has no points");
+		PG_RETURN_NULL();
+	}
+
+	if (!lwgeom_isfinite(lwg))
+	{
+		elog(ERROR, "Geometry contains invalid coordinate");
 		PG_RETURN_NULL();
 	}
 
