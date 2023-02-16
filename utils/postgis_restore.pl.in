@@ -392,6 +392,7 @@ sub linesignature {
   $line =~ s/TABLE DATA/TABLEDATA/;
   $line =~ s/SHELL TYPE/SHELLTYPE/;
   $line =~ s/PROCEDURAL LANGUAGE/PROCEDURALLANGUAGE/;
+  $line =~ s/SEQUENCE SET/SEQUENCE_SET/;
 
   if( $line =~ /^(\d+)\; (\d+) (\d+) FK (\w+) (\w+) (.*) (\w*)/ ) {
     $sig = "FK " . $4 . " " . $6;
@@ -2804,9 +2805,7 @@ SHELLTYPE geometry
 SHELLTYPE gidx
 SHELLTYPE raster
 SHELLTYPE spheroid
-TABLEDATA layer
 TABLEDATA spatial_ref_sys
-TABLEDATA topology
 TABLE layer
 TABLE spatial_ref_sys
 TABLE topology
