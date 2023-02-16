@@ -707,7 +707,7 @@ sub fail
 	{
 		printf(" failed (%s)\n", $msg);
 	}
-	elsif ( $VERBOSE == 1 )
+	elsif ( $VERBOSE )
 	{
 		printf(" failed (%s: %s)\n", $msg, $log);
 		print "-----------------------------------------------------------------------------\n";
