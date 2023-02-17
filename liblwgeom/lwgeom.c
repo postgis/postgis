@@ -2524,3 +2524,29 @@ void lwgeom_trim_bits_in_place(LWGEOM* geom, int32_t prec_x, int32_t prec_y, int
 
 	lwpointiterator_destroy(it);
 }
+
+int
+lwgeom_isfinite(const LWGEOM *lwgeom)
+{
+	LWPOINTITERATOR* it = lwpointiterator_create(lwgeom);
+	int hasz = lwgeom_has_z(lwgeom);
+	int hasm = lwgeom_has_m(lwgeom);
+
+	while (lwpointiterator_has_next(it))
+	{
+		POINT4D p;
+		lwpointiterator_next(it, &p);
+		int finite = isfinite(p.x) &&
+			isfinite(p.y) &&
+			(hasz ? isfinite(p.z) : 1) &&
+			(hasm ? isfinite(p.m) : 1);
+
+		if (!finite)
+		{
+			lwpointiterator_destroy(it);
+			return LW_FALSE;
+		}
+	}
+	lwpointiterator_destroy(it);
+	return LW_TRUE;
+}
