@@ -394,6 +394,7 @@ Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS)
 			lwpgerror("Geometry contains invalid coordinates");
 			PG_RETURN_NULL();
 		}
+		lwgeom_free(lwg);
 
 		if (!gserialized_get_gbox_p(geom, &gbox))
 			PG_RETURN_NULL();
@@ -1007,6 +1008,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 		lwpgerror("Geometry contains invalid coordinates");
 		PG_RETURN_NULL();
 	}
+	lwgeom_free(lwg);
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
