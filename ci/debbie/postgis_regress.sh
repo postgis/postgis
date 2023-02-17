@@ -103,7 +103,7 @@ fi
 
 if [ "$DUMP_RESTORE" = "1" ]; then
  echo "Dum restore test"
- make check RUNTESTFLAGS="$RUNTESTFLAGS --dumprestore"
+ make check RUNTESTFLAGS="$RUNTESTFLAGS --dumprestore --extension"
  if [ "$?" != "0" ]; then
   exit $?
  fi
