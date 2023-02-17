@@ -386,6 +386,14 @@ Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS)
 		double width, height, size, tolerance;
 		GBOX gbox;
 		int gtype;
+		LWGEOM *lwg;
+		lwg = lwgeom_from_gserialized(geom);
+		if (!lwgeom_isfinite(lwg))
+		{
+			lwpgerror("Geometry contains invalid coordinates");
+			PG_RETURN_NULL();
+		}
+		lwgeom_free(lwg);
 
 		if (!gserialized_get_gbox_p(geom, &gbox))
 			PG_RETURN_NULL();
@@ -964,23 +972,32 @@ Datum convexhull(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(topologypreservesimplify);
 Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED	*geom1;
+	GSERIALIZED	*gs1;
+	LWGEOM *lwg1;
 	double	tolerance;
 	GEOSGeometry *g1, *g3;
 	GSERIALIZED *result;
 	uint32_t type;
 
-	geom1 = PG_GETARG_GSERIALIZED_P(0);
+	gs1 = PG_GETARG_GSERIALIZED_P(0);
 	tolerance = PG_GETARG_FLOAT8(1);
+	lwg1 = lwgeom_from_gserialized(gs1);
 
 	/* Empty.Simplify() == Empty */
-	type = gserialized_get_type(geom1);
-	if ( gserialized_is_empty(geom1) || type == TINTYPE || type == TRIANGLETYPE )
-		PG_RETURN_POINTER(geom1);
+	type = lwgeom_get_type(lwg1);
+	if (lwgeom_is_empty(lwg1) || type == TINTYPE || type == TRIANGLETYPE)
+		PG_RETURN_POINTER(gs1);
+
+	if (!lwgeom_isfinite(lwg1))
+	{
+		lwpgerror("Geometry contains invalid coordinates");
+		PG_RETURN_NULL();
+	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
-	g1 = POSTGIS2GEOS(geom1);
+	g1 = LWGEOM2GEOS(lwg1, LW_TRUE);
+	lwgeom_free(lwg1);
 	if (!g1)
 		HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 
@@ -991,9 +1008,9 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
 
-	GEOSSetSRID(g3, gserialized_get_srid(geom1));
+	GEOSSetSRID(g3, gserialized_get_srid(gs1));
 
-	result = GEOS2POSTGIS(g3, gserialized_has_z(geom1));
+	result = GEOS2POSTGIS(g3, gserialized_has_z(gs1));
 	GEOSGeom_destroy(g3);
 
 	if (!result)
@@ -1002,7 +1019,7 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); /* never get here */
 	}
 
-	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(gs1, 0);
 	PG_RETURN_POINTER(result);
 }
 
@@ -1055,6 +1072,15 @@ Datum buffer(PG_FUNCTION_ARGS)
 		        0, 0)); // buffer wouldn't give back z or m anyway
 		PG_RETURN_POINTER(geometry_serialize(lwg));
 	}
+
+	lwg = lwgeom_from_gserialized(geom1);
+
+	if (!lwgeom_isfinite(lwg))
+	{
+		lwpgerror("Geometry contains invalid coordinates");
+		PG_RETURN_NULL();
+	}
+	lwgeom_free(lwg);
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
