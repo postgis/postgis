@@ -1280,6 +1280,31 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 CREATE CAST (topology.TopoGeometry AS Geometry) WITH FUNCTION topology.Geometry(topology.TopoGeometry) AS IMPLICIT;
 
 --{
+-- TopoElement(TopoGeometry)
+--
+-- Construct a TopoElement from a TopoGeometry.
+--
+-- Availability: 3.4.0
+-- }{
+CREATE OR REPLACE FUNCTION topology.TopoElement(topo topology.TopoGeometry)
+    RETURNS topology.TopoElement
+    LANGUAGE sql
+    COST 1
+    IMMUTABLE PARALLEL SAFE
+AS  $$SELECT ARRAY[topo.id,topo.layer_id]::topology.topoelement;$$;
+--} TopoElement(TopoGeometry)
+
+--{
+-- TopoGeometry(int[])
+--
+-- Cast a TopoGeometry to a TopoElement.
+--
+-- Availability: 3.4.0
+-- }{
+CREATE CAST (topogeometry AS int[]) WITH FUNCTION TopoElement(topogeometry) AS ASSIGNMENT;
+--} TopoGeometry(int[])
+
+--{
 --  DropTopology(name)
 --
 -- Drops a topology schema getting rid of every dependent object.

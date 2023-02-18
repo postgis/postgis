@@ -7,9 +7,7 @@
 Vincent Picavet provides a good synopsis and overview of what is Topology,
 how is it used, and various FOSS4G tools that support it in <ulink
 url="https://gitlab.com/Oslandia/documentation/presentations/-/blob/master/2012/pgconf_eu_2012/pgconfeu2012_vincent_picavet_postgis_topology.pdf"
->
-PostGIS Topology PGConf EU 2012
-</ulink>.
+>PostGIS Topology PGConf EU 2012</ulink>.
     </para>
     <para>An example of a topologically based GIS database is the <ulink url="https://www.census.gov/geo/maps-data/data/tiger.html">US Census Topologically Integrated Geographic Encoding and Referencing System (TIGER)</ulink> database. If you want to experiment with PostGIS topology and need some data, check out <xref linkend="Topology_Load_Tiger" />.</para>
 	<para>The PostGIS topology module has existed in prior versions of PostGIS but was never part of the Official PostGIS documentation.
@@ -3608,6 +3606,49 @@ SELECT ST_GetFaceGeometry('topo_boston_test', f.face_id)
 				<para><xref linkend="topoelement"/>, <xref linkend="topoelementarray"/></para>
 			</refsection>
           </refentry>
+
+        <refentry id="TopoElement">
+			<refnamediv>
+				<refname>TopoElement</refname>
+				<refpurpose>Converts a topogeometry to a topoelement.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>topoelement <function>TopoElement</function></funcdef>
+					<paramdef><type>topogeometry </type> <parameter>topo</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+                <para>Converts a <xref linkend="topogeometry" /> to a <xref linkend="topoelement" />.</para>
+                <!-- use this format if new function -->
+                <para>Availability: 3.4.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<para>This is a full self-contained workflow</para>
+				<programlisting>-- do this if you don't have a topology setup already
+-- Creates topology not allowing any tolerance
+SELECT TopoElement(topo)
+FROM neighborhoods;</programlisting>
+
+				<programlisting>-- using as cast
+SELECT topology.TopoElementArray_Agg(topo::topoelement)
+FROM neighborhoods
+GROUP BY city;</programlisting>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+        <para><xref linkend="TopoElementArray_Agg" />, <xref linkend="topogeometry" />, <xref linkend="topoelement" /></para>
+			</refsection>
+		</refentry>
 	</sect1>
 
 	<sect1 id="TopoGeometry_Editors">
