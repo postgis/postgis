@@ -166,3 +166,6 @@ SELECT 'pgcast_06',ST_AsText('((0,0),(0,1),(1,1),(1,0))'::polygon::geometry);
 -- Precision
 SELECT 'text_precision_01', ST_AsText(GeomFromEWKT('SRID=4326;POINT(111.1111111 1.1111111)'));
 SELECT 'text_precision_02', ST_AsText(GeomFromEWKT('SRID=4326;POINT(111.1111111 1.1111111)'),2);
+
+-- infinite latlon https://trac.osgeo.org/postgis/ticket/5342
+SELECT '#5342' As ticket, ST_AsLatLonText('0101000020E6100000000000000000F07F000000000000F07F'::geometry);
