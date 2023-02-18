@@ -173,3 +173,6 @@ SELECT 'text_precision_02', ST_AsText(GeomFromEWKT('SRID=4326;POINT(111.1111111 
 SELECT 'EWKT_' || i, ST_AsEWKT('SRID=4326;POINT(12345678.123456789 1)'::geometry, i)
 FROM generate_series(0, 20) AS t(i)
 ORDER BY i;
+
+-- infinite latlon https://trac.osgeo.org/postgis/ticket/5342
+SELECT '#5342' As ticket, ST_AsLatLonText('0101000020E6100000000000000000F07F000000000000F07F'::geometry);

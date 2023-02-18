@@ -236,6 +236,11 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
     PG_RETURN_NULL();
   }
 
+	if (!lwgeom_isfinite(lwgeom)) {
+    lwpgerror("ST_AsLatLonText: invalid coordinate");
+    PG_RETURN_NULL();
+  }
+
 	format_str = text_to_cstring(format_text);
   assert(format_str != NULL);
 
