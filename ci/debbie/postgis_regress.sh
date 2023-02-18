@@ -14,7 +14,7 @@ set -e
 # export SFCGAL_VER=1.3
 export MAKE_GARDEN=0
 export MAKE_EXTENSION=1
-export DUMP_RESTORE=1
+export DUMP_RESTORE=0
 export MAKE_LOGBT=0
 export NO_SFCGAL=0
 export MAKE_UPGRADE=1
