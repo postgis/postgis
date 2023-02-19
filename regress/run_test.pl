@@ -394,13 +394,21 @@ if ( $OPT_DUMPRESTORE )
         die;
     }
 
-    print "Creating spatial db '${DB}'\n";
-    undef($OPT_UPGRADE_FROM); # to directly prepare the target
-    $rv = create_spatial();
+    print "Creating db '${DB}'\n";
+    $rv = create_db();
     if ( ! $rv ) {
-        fail("Could not create spatial db ${DB}", $REGRESS_LOG);
+        fail("Could not create db ${DB}", $REGRESS_LOG);
         die;
     }
+
+    # Extension based spatial db do not need the target
+    # database to be prepared in any way, script based
+    # spatial db requires being prepared.
+    if ( not $OPT_EXTENSIONS )
+    {
+        die unless prepare_spatial();
+    }
+
     die unless restore_db($DBDUMP);
 
     unlink($DBDUMP);
@@ -1427,7 +1435,7 @@ sub count_postgis_objects
 sub create_db
 {
 	my $createcmd = "createdb --encoding=UTF-8 --template=template0 --lc-collate=C $DB > $REGRESS_LOG";
-	return system($createcmd);
+	return not system($createcmd);
 }
 
 sub create_spatial
