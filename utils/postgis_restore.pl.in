@@ -482,6 +482,15 @@ clamp_srid
 # Here are all the signatures we want to skip.
 #
 __END__
+COMMENT FUNCTION st_subdivide(geom geometry, maxvertices integer)
+FUNCTION pgis_geometry_union_finalfn(internal)
+FUNCTION st_clusterkmeans(geometry, integer)
+FUNCTION st_force3d(geometry)
+FUNCTION st_force3dm(geometry)
+FUNCTION st_force3dz(geometry)
+FUNCTION st_force4d(geometry)
+FUNCTION st_subdivide(geometry, integer)
+FUNCTION st_tileenvelope(integer, integer, integer, geometry)
 AGGREGATE accum(geometry)
 AGGREGATE accum_old(geometry)
 AGGREGATE collect(geometry)
