@@ -824,6 +824,7 @@ COMMENT FUNCTION st_clip(rast raster, nband integer[], geom geometry, nodataval 
 COMMENT FUNCTION st_closestpoint(geom1 geometry, geom2 geometry)
 COMMENT FUNCTION st_closestpointofapproach(geometry, geometry)
 COMMENT FUNCTION st_clusterdbscan(geometry, eps double precision, minpoints integer)
+COMMENT FUNCTION st_clusterkmeans(geom geometry, k integer)
 COMMENT FUNCTION st_clusterkmeans(geom geometry, k integer, max_radius double precision)
 COMMENT FUNCTION st_collect(geom1 geometry, geom2 geometry)
 COMMENT FUNCTION st_collect(geometry[])
