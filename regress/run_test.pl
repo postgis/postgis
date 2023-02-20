@@ -371,17 +371,6 @@ sub semver_lessthan
 	return @bcomp ? 1 : 0;
 }
 
-if ( $OPT_UPGRADE )
-{
-    print "Upgrading from postgis $libver\n";
-
-    foreach my $hook (@OPT_HOOK_BEFORE_UPGRADE)
-    {
-        print "Running before-upgrade-script $hook\n";
-        die unless load_sql_file($hook, 1);
-    }
-}
-
 if ( $OPT_DUMPRESTORE )
 {
     my $DBDUMP = dump_db();
@@ -401,21 +390,24 @@ if ( $OPT_DUMPRESTORE )
         die;
     }
 
-    # Extension based spatial db do not need the target
-    # database to be prepared in any way, script based
-    # spatial db requires being prepared.
-    if ( not $OPT_EXTENSIONS )
-    {
-        die unless prepare_spatial();
-    }
-
     die unless restore_db($DBDUMP);
+
+    # Update libver
+    $libver = sql("select postgis_lib_version()");
 
     unlink($DBDUMP);
 }
 
 if ( $OPT_UPGRADE )
 {
+    print "Upgrading from postgis $libver\n";
+
+    foreach my $hook (@OPT_HOOK_BEFORE_UPGRADE)
+    {
+        print "Running before-upgrade-script $hook\n";
+        die unless load_sql_file($hook, 1);
+    }
+
     unless ( $OPT_DUMPRESTORE )
     {
         if ( $OPT_EXTENSIONS )
@@ -2034,7 +2026,19 @@ sub restore_db
     my $rv;
     my $DBDUMP = shift;
 
-    if ( $OPT_EXTENSIONS ) {
+    # If the dump is NOT extension based
+    # we need to prepare the target
+    if ( $OPT_UPGRADE_FROM =~ /^unpackaged/ || ! $OPT_EXTENSIONS )
+    {
+        if ( $OPT_EXTENSIONS ) {
+            undef($OPT_UPGRADE_FROM); # to directly prepare the target
+            die unless prepare_spatial_extensions();
+        } else {
+            die unless prepare_spatial();
+        }
+    }
+
+    if ( $OPT_EXTENSIONS && ! $OPT_UPGRADE_FROM =~ /^unpackaged/ ) {
         print "Restoring database '${DB}' using pg_restore\n";
         $rv = system("pg_restore -d ${DB} ${DBDUMP} >> $REGRESS_LOG 2>&1");
     } else {
