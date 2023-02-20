@@ -49,7 +49,9 @@ BEGIN {
 
 our $DB = $ENV{"POSTGIS_REGRESS_DB"} || "postgis_reg";
 our $REGDIR = $ENV{"POSTGIS_REGRESS_DIR"} || abs_path(dirname($0));
-our $TOP_BUILDDIR = $ENV{"POSTGIS_TOP_BUILD_DIR"} || ${REGDIR} . '/..';
+our $TOP_SOURCEDIR = ${REGDIR} . '/..';
+our $ABS_TOP_SOURCEDIR = abs_path(${TOP_SOURCEDIR});
+our $TOP_BUILDDIR = $ENV{"POSTGIS_TOP_BUILD_DIR"} || ${TOP_SOURCEDIR};
 our $sysdiff = !system("diff --strip-trailing-cr $0 $0 2> /dev/null");
 
 ##################################################################
@@ -707,6 +709,12 @@ Options:
 sub start_test
 {
     my $test = shift;
+    my $abstest = abs_path($test);
+    if ( defined($abstest) )
+    {
+        $test = $abstest;
+    }
+    $test =~ s|${ABS_TOP_SOURCEDIR}/||;
     print " $test ";
 	$RUN++;
     show_progress();
