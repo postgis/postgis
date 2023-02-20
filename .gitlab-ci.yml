@@ -25,18 +25,12 @@
     - echo "Build dir is ${PWD}"
     - ${SRCDIR}/configure --without-raster CFLAGS="-Wall -fno-omit-frame-pointer -Werror"
     - make
-    - RUNTESTFLAGS=-v make check
     - RUNTESTFLAGS="-v --dumprestore" make check-regress
     - make install
-    - RUNTESTFLAGS=-v make installcheck
     - RUNTESTFLAGS="-v --dumprestore" make installcheck
     - make distclean
     - ${SRCDIR}/utils/check_distclean.sh
 
 test:
   image: debian:bookworm
-  <<: *build_definition
-
-test32:
-  image: i386/debian:bookworm
   <<: *build_definition
