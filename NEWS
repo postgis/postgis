@@ -14,6 +14,7 @@ Proj 6.1+, and PostgreSQL 14+.
            enforce_coverage_tile_rast constraint (Regina Obe)
   - #5315, #5318, #5319, #5320, #5342 crashes on infinite coordinates
           (Regina Obe, Paul Ramsey)
+  - #5344, Include topology id sequence state in dumps (Sandro Santilli)
 
 PostGIS 3.2.4
 2022/11/12
