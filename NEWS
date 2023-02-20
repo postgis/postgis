@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Skip comments on the retired two-argument cluster function (Sandro Santilli)
  - Skip obsolete installed function signatures when restoring older dumps (Sandro Santilli)
  - Stop generating SQL when the preprocessor fails (Sandro Santilli)
  - #5251, Remove the GEOS-dependent polygon case from the LineMerge regression (Regina Obe)
