@@ -1,2 +1,3 @@
+SELECT pg_catalog.pg_extension_config_dump('topology.topology_id_seq', '');
 SELECT pg_catalog.pg_extension_config_dump('topology.topology', '');
 SELECT pg_catalog.pg_extension_config_dump('topology.layer', '');
