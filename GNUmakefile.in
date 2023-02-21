@@ -29,8 +29,10 @@ all install uninstall noop clean distclean check-unit:
 	@if test x"$@" = xall; then \
 		echo "PostGIS was built successfully. Ready to install."; \
 	fi
-ifneq (@INSTALL_EXTENSION_UPGRADES@,yes)
 ifneq (@EXTENSIONS@,)
+ifeq (@INSTALL_EXTENSION_UPGRADES@, yes)
+	$(MAKE) install-extension-upgrades-from-known-versions
+else
 	@if test x"$@" = xinstall; then \
 		echo; \
 		echo "PostGIS extensions installed, upgrade scripts retained."; \

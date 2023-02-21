@@ -1738,7 +1738,6 @@ dnl echo "TRANSLATIONS_MAKEFILE_LIST: ${TRANSLATIONS_MAKEFILE_LIST}"
 
 AC_CONFIG_FILES([GNUmakefile
    extensions/Makefile
-   extensions/upgrade-paths-rules.mk
    extensions/postgis/Makefile
    extensions/postgis_topology/Makefile
    extensions/postgis_tiger_geocoder/Makefile

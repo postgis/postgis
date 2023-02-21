@@ -94,7 +94,7 @@ sql/sfcgal_upgrade_minor.sql: ../postgis_extension_helper.sql sql/sfcgal_upgrade
 sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: $(EXTENSION_UPGRADE_SCRIPTS)
 	cat $(EXTENSION_UPGRADE_SCRIPTS) > $@
 
-include ../upgrade-paths-rules.mk
+include @srcdir@/../upgrade-paths-rules.mk
 
 distclean: clean
 	rm Makefile

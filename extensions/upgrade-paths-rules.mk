@@ -23,9 +23,6 @@ install-upgrade-paths: tag-as-any
 	$(INSTALL_DATA) sql/$${tpl} "$(EXTDIR)/$${tpl}"; \
 	$(INSTALL_DATA) "sql/$(TAG_UPGRADE)" "$(EXTDIR)/$(TAG_UPGRADE)"; \
 	ln -fs "$(TAG_UPGRADE)" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)--ANY.sql;
-ifeq (@INSTALL_EXTENSION_UPGRADES@,yes)
-	$(MAKE) install-extension-upgrades-from-known-versions
-endif
 
 install-extension-upgrades-from-known-versions:
 	$(PERL) $(top_srcdir)/loader/postgis.pl \

@@ -99,7 +99,7 @@ sql/topology_upgrade.sql:  ../../topology/topology_upgrade.sql | sql
 sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: $(EXTENSION_UPGRADE_SCRIPTS)
 	cat $^ > $@
 
-include ../upgrade-paths-rules.mk
+include @srcdir@/../upgrade-paths-rules.mk
 
 distclean: clean
 	rm Makefile

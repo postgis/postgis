@@ -119,7 +119,7 @@ sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: $(EXTENSION_UPGRADE_SCRIPTS)
 sql/$(EXTENSION)_data_us--ANY--$(EXTVERSION).sql: sql/$(EXTENSION)_data_us--$(EXTVERSION).sql | sql
 	cat $^ > $@
 
-include ../upgrade-paths-rules.mk
+include @srcdir@/../upgrade-paths-rules.mk
 
 # TODO: fix this by moving data in their own directories
 ifeq ($(EXTENSION_DATA_INSTALL),)
