@@ -410,16 +410,13 @@ if ( $OPT_UPGRADE )
         die unless load_sql_file($hook, 1);
     }
 
-    unless ( $OPT_DUMPRESTORE )
+    if ( $OPT_EXTENSIONS )
     {
-        if ( $OPT_EXTENSIONS )
-        {
-            die unless upgrade_spatial_extensions();
-        }
-        else
-        {
-            die unless upgrade_spatial();
-        }
+        die unless upgrade_spatial_extensions();
+    }
+    else
+    {
+        die unless upgrade_spatial();
     }
 
     foreach my $hook (@OPT_HOOK_AFTER_UPGRADE)
