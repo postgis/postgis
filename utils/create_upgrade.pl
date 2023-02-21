@@ -280,7 +280,7 @@ EOF
     }
 
     # This code handles casts by dropping and recreating them.
-    if (/^create cast\s+\(\s*(\w+)\s+as\s+(\w+)\)/i)
+    if (/^create cast\s+\(\s*([^\s]+)\s+as\s+([^)]+)\)/i)
     {
         my $type1 = $1;
         my $type2 = $2;
