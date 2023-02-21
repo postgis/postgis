@@ -17,6 +17,8 @@
 --
 -- Type returned by ValidateTopology
 --
+-- Availability: 1.1.0
+--
 CREATE TYPE topology.ValidateTopology_ReturnType AS (
   error varchar,
   id1 integer,
