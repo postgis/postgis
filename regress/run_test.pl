@@ -79,6 +79,8 @@ my $OPT_WITH_SFCGAL = 0;
 my $OPT_EXPECT = 0;
 my $OPT_EXTENSIONS = 0;
 my @OPT_HOOK_AFTER_CREATE;
+my @OPT_HOOK_AFTER_RESTORE;
+my @OPT_HOOK_BEFORE_DUMP;
 my @OPT_HOOK_BEFORE_TEST;
 my @OPT_HOOK_AFTER_TEST;
 my @OPT_HOOK_BEFORE_UNINSTALL;
@@ -112,7 +114,9 @@ GetOptions (
 	'before-uninstall-script=s' => \@OPT_HOOK_BEFORE_UNINSTALL,
 	'before-test-script=s' => \@OPT_HOOK_BEFORE_TEST,
 	'before-upgrade-script=s' => \@OPT_HOOK_BEFORE_UPGRADE,
-	'after-upgrade-script=s' => \@OPT_HOOK_AFTER_UPGRADE
+	'before-dump-script=s' => \@OPT_HOOK_BEFORE_DUMP,
+	'after-upgrade-script=s' => \@OPT_HOOK_AFTER_UPGRADE,
+	'after-restore-script=s' => \@OPT_HOOK_AFTER_RESTORE
 	);
 
 if ( @ARGV < 1 )
@@ -685,6 +689,12 @@ Options:
                   (multiple switches supported, to be run in given order)
   --before-uninstall-script <path>
                   script to load before spatial extension uninstall
+                  (multiple switches supported, to be run in given order)
+  --before-dump-script <path>
+                  script to load before dump, if --dumprestore is given
+                  (multiple switches supported, to be run in given order)
+  --after-restore-script <path>
+                  script to load after restore, if --dumprestore is given
                   (multiple switches supported, to be run in given order)
   --before-upgrade-script <path>
                   script to load before upgrade
@@ -2015,6 +2025,12 @@ sub dump_db
     my $rv;
     my $DBDUMP = $TMPDIR . '/' . $DB . '.dump';
 
+    foreach my $hook (@OPT_HOOK_BEFORE_DUMP)
+    {
+        print "Running before-dump-script $hook\n";
+        die unless load_sql_file($hook, 1);
+    }
+
     print "Dumping database '${DB}'\n";
 
     $rv = system("pg_dump -Fc -f${DBDUMP} ${DB} >> $REGRESS_LOG 2>&1");
@@ -2030,20 +2046,20 @@ sub restore_db
 {
     my $rv;
     my $DBDUMP = shift;
+    my $ext_dump = $OPT_EXTENSIONS && $OPT_UPGRADE_FROM !~ /^unpackaged/;
 
-    # If the dump is NOT extension based
+    # If dump is not from extension-based database
     # we need to prepare the target
-    if ( $OPT_UPGRADE_FROM =~ /^unpackaged/ || ! $OPT_EXTENSIONS )
+    unless ( $ext_dump )
     {
-        if ( $OPT_EXTENSIONS ) {
-            undef($OPT_UPGRADE_FROM); # to directly prepare the target
-            die unless prepare_spatial_extensions();
-        } else {
-            die unless prepare_spatial();
+		if ( $OPT_UPGRADE_FROM =~ /^unpackaged(.*)/ ) {
+			die unless prepare_spatial($1);
+		} else {
+			die unless prepare_spatial();
         }
     }
 
-    if ( $OPT_EXTENSIONS && ! $OPT_UPGRADE_FROM =~ /^unpackaged/ ) {
+    if ( $ext_dump ) {
         print "Restoring database '${DB}' using pg_restore\n";
         $rv = system("pg_restore -d ${DB} ${DBDUMP} >> $REGRESS_LOG 2>&1");
     } else {
@@ -2067,6 +2083,12 @@ sub restore_db
             fail("Error encountered adding topology to search path after restore", $REGRESS_LOG);
             return 0;
         }
+    }
+
+    foreach my $hook (@OPT_HOOK_AFTER_RESTORE)
+    {
+        print "Running after-restore-script $hook\n";
+        die unless load_sql_file($hook, 1);
     }
 
     return 1;
