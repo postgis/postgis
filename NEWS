@@ -14,6 +14,7 @@ xxxx/xx/xx
   - #5283, RenameTopology (Sandro Santilli)
   - #5286, RenameTopoGeometryColumn (Sandro Santilli)
   - GH703, Add min/max resampling as options (Christian Schroeder)
+  - #5336, topogeometry cast to topoelement support (Regina Obe)
 
 * Enhancements *
   - #5194, do not update system catalogs from postgis_extensions_upgrade (Sandro Santilli)
