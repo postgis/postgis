@@ -235,7 +235,7 @@ EOF
         print $def;
     }
 
-    if (/^create type (\w+)/i)
+    if (/^create type ([\w.]+)/i)
     {
         my $newtype = $1;
         my $def .= $_;
