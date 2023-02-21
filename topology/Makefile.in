@@ -114,7 +114,7 @@ endif
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" > $@
 	rm -f $@.tmp
 
-topology_upgrade.sql.in:  topology.sql ../../utils/create_upgrade.pl
+topology_upgrade.sql.in:  topology.sql ../utils/create_upgrade.pl
 	$(PERL) @top_srcdir@/utils/create_upgrade.pl $< > $@
 	#$(PERL) -0777 -ne 's/^(CREATE|ALTER) (CAST|OPERATOR|TYPE|TABLE|SCHEMA|DOMAIN|TRIGGER).*?;//msg;print;' $< > $@
 
