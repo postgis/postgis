@@ -190,6 +190,8 @@
 
 #include "sqldefines.h"
 
+-- INSTALL VERSION: POSTGIS_LIB_VERSION
+
 CREATE SCHEMA topology;
 COMMENT ON SCHEMA topology IS 'PostGIS Topology schema';
 
