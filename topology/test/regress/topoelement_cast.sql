@@ -13,33 +13,47 @@ SELECT NULL FROM AddTopoGeometryColumn('tt', 'tt', 'f_hier_point', 'g', 'POINT',
 
 -- populate base
 INSERT INTO tt.f_point(lbl,g)
-SELECT x::text||y::text, ToTopoGeom( ST_Point(x,y,4326), 'tt', l.layer_id )
-FROM generate_series(50,60, 10) AS x CROSS JOIN generate_series(10,90, 20) AS y
-    CROSS JOIN (SELECT l.layer_id
-                    FROM topology.layer AS l WHERE l.table_name = 'f_point' AND l.schema_name = 'tt' AND l.feature_column = 'g'
-               ) AS l;
+SELECT
+  x::text||y::text,
+  topology.toTopoGeom(
+    ST_Point(x,y,4326),
+    'tt',
+    layer_id(findLayer('tt','f_point', 'g'))
+  )
+FROM generate_series(50,60, 10) AS x
+CROSS JOIN generate_series(70,90, 20) AS y;
 
 -- populate hierarchy, cast
 INSERT INTO  tt.f_hier_point(lbl, g)
-SELECT left(f.lbl,2) AS lbl, CreateTopoGeom('tt',1, l.layer_id, TopoElementArray_agg(f.g::topology.topoelement ORDER BY f.lbl) )
-FROM  tt.f_point AS f CROSS JOIN
-    (SELECT l.layer_id FROM topology.layer AS l WHERE l.table_name = 'f_hier_point' AND l.schema_name = 'tt' AND l.feature_column = 'g' ) AS l
-GROUP BY l.layer_id, left(f.lbl,2);
-
-SELECT ST_AsText(g::geometry)
-FROM tt.f_hier_point;
+SELECT
+  format('bycast:%s', left(f.lbl,2)),
+  createTopoGeom(
+    'tt',
+    1,
+    layer_id(findLayer('tt','f_hier_point', 'g')),
+    TopoElementArray_agg( f.g::topology.topoelement ORDER BY f.lbl)
+  )
+FROM  tt.f_point AS f
+GROUP BY left(f.lbl,2);
 
 -- using FUNCTION
 
 -- populate hierarchy
 INSERT INTO  tt.f_hier_point(lbl, g)
-SELECT 'all' AS lbl, CreateTopoGeom('tt',1, l.layer_id, TopoElementArray_agg(topology.topoelement(f.g) ORDER BY f.lbl) )
-FROM  tt.f_point AS f CROSS JOIN
-    (SELECT l.layer_id FROM topology.layer AS l WHERE l.table_name = 'f_hier_point' AND l.schema_name = 'tt' AND l.feature_column = 'g' ) AS l
-GROUP BY l.layer_id;
+SELECT
+  format('byfunc:%s', right(f.lbl,2)),
+  createTopoGeom(
+    'tt',
+    1,
+    layer_id(findLayer('tt','f_hier_point', 'g')),
+    TopoElementArray_agg( f.g::topology.topoelement ORDER BY f.lbl)
+  )
+FROM  tt.f_point AS f
+GROUP BY right(f.lbl,2);
 
-SELECT ST_AsText(g::geometry)
-FROM tt.f_hier_point WHERE lbl = 'all';
+SELECT 't1', lbl, ST_AsText(g::geometry)
+FROM tt.f_hier_point
+ORDER BY lbl;
 
 -- Cleanup
 SELECT NULL FROM DropTopology('tt');
