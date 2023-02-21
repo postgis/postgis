@@ -1705,7 +1705,10 @@ sub package_extension_sql
 # Upgrade an existing database (soft upgrade)
 sub upgrade_spatial
 {
-    print "Upgrading PostGIS in '${DB}' \n" ;
+    my $version = shift;
+    my $scriptdir = scriptdir($version);
+
+    print "Upgrading PostGIS in '${DB}' using scripts from $scriptdir\n" ;
 
     my $script = "${STAGED_SCRIPTS_DIR}/postgis_upgrade.sql";
     print "Upgrading core\n";
