@@ -31,7 +31,9 @@ all install uninstall noop clean distclean check-unit:
 	fi
 ifneq (@EXTENSIONS@,)
 ifeq (@INSTALL_EXTENSION_UPGRADES@, yes)
-	$(MAKE) install-extension-upgrades-from-known-versions
+	@if test x"$@" = xinstall; then \
+		$(MAKE) install-extension-upgrades-from-known-versions; \
+	fi
 else
 	@if test x"$@" = xinstall; then \
 		echo; \
