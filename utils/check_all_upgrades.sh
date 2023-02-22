@@ -33,10 +33,11 @@ fi
 mkdir -p ${TMPDIR}
 cleanup()
 {
+  echo "Cleaning up"
   rm -rf ${TMPDIR}
 }
 
-trap 'cleanup' 0
+trap 'cleanup' EXIT
 
 
 # Return -1, 1 or 0 if the first version
@@ -71,7 +72,7 @@ semver_compare()
 failed()
 {
   failures=$((failures+1))
-  if test $EXIT_ON_FIRST_FAILURE != 0 -a $failures != 0; then
+  if test $EXIT_ON_FIRST_FAILURE != 0; then
     exit $failures
   fi
 }
@@ -129,10 +130,22 @@ compatible_upgrade()
   return 0
 }
 
+report_missing_versions()
+{
+  if test -n "${MISSING_EXT_UPGRADES}"; then
+    echo "INFO: missing upgrade scripts: ${MISSING_EXT_UPGRADES}"
+    echo "HINT: use 'postgis install-extension-upgrades' to install them"
+  fi
+  cleanup
+}
+
+
 to_version_param="$1"
 to_version=$to_version_param
 if expr $to_version : ':auto' >/dev/null; then
   to_version=`psql -XAtc "select default_version from pg_available_extensions where name = 'postgis'"` || exit 1
+  MISSING_EXT_UPGRADES=
+  trap report_missing_versions EXIT
 elif expr $to_version : '.*!$' >/dev/null; then
   to_version=$(echo "${to_version}" | sed 's/\!$//')
 fi
@@ -188,6 +201,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
     " ) || exit 1
     if test -z "${path}"; then
       echo "SKIP: ${test_label} (no upgrade path from ${from_version} to ${to_version} known by postgresql)"
+      MISSING_EXT_UPGRADES="${from_version} ${MISSING_EXT_UPGRADES}"
       continue
     fi
     echo "Testing ${test_label}"
