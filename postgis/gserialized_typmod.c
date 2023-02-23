@@ -162,6 +162,23 @@ GSERIALIZED* postgis_valid_typmod(GSERIALIZED *gser, int32_t typmod)
 		            errmsg("Geometry SRID (%d) does not match column SRID (%d)", geom_srid, typmod_srid) ));
 	}
 
+	/* Typmod has a preference for MULTI* geometry type */
+	/* and geometry is the singleton type. */
+	if ( typmod_type > 0 && typmod_type == lwtype_multitype(geom_type) )
+	{
+		/* Promote the singleton to equivalent multi */
+		LWGEOM *geom = lwgeom_from_gserialized(gser);
+		LWGEOM *mgeom = lwgeom_as_multi(geom);
+		GSERIALIZED *mgser = gserialized_is_geodetic(gser) ?
+		                     geography_serialize(mgeom) :
+		                     geometry_serialize(mgeom);
+		/* Count on caller memory context cleaning up dangling gserialized */
+		gser = mgser;
+		geom_type = gserialized_get_type(gser);
+		lwgeom_free(geom);
+		lwgeom_free(mgeom);
+	}
+
 	/* Typmod has a preference for geometry type. */
 	if ( typmod_type > 0 &&
 	        /* GEOMETRYCOLLECTION column can hold any kind of collection */

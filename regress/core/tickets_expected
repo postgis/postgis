@@ -147,13 +147,15 @@ NOTICE:  Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRA
 <#1320>
 #1320.geog.1|MULTIPOLYGON|4326
 #1320.geom.1|MULTIPOLYGON|4326
-ERROR:  Geometry type (Polygon) does not match column type (MultiPolygon)
-ERROR:  Geometry type (Polygon) does not match column type (MultiPolygon)
+#1320.geog.2|MULTIPOLYGON|4326
 #1320.geog.2|MULTIPOLYGON|4326
 #1320.geom.2|MULTIPOLYGON|4326
-ERROR:  Geometry type (Polygon) does not match column type (MultiPolygon)
-ERROR:  Geometry type (Polygon) does not match column type (MultiPolygon)
+#1320.geom.2|MULTIPOLYGON|4326
 #1320.geog.3|MULTIPOLYGON|4326
+#1320.geog.3|MULTIPOLYGON|4326
+#1320.geog.3|MULTIPOLYGON|4326
+#1320.geom.3|MULTIPOLYGON|4326
+#1320.geom.3|MULTIPOLYGON|4326
 #1320.geom.3|MULTIPOLYGON|4326
 </#1320>
 #1344|25
