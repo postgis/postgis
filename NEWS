@@ -24,6 +24,7 @@ xxxx/xx/xx
   - Speed up check of topology faces without edges (Sandro Santilli)
   - Speed up coincident nodes check in topology validation  (Sandro Santilli)
   - GH718, ST_QuantizeCoordinates(): speed-up implementation (Even Rouault)
+  - Repair spatial planner stats to use computed selectivity for contains/within queries (Paul Ramsey)
 
 * Bug Fix *
 
