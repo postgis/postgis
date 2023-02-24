@@ -1890,6 +1890,13 @@ CREATE OR REPLACE FUNCTION ST_ClusterWithinWin (geometry, tolerance float8)
 	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
 	_COST_HIGH;
 
+-- Availability: 3.4
+CREATE OR REPLACE FUNCTION ST_ClusterIntersectingWin (geometry)
+	RETURNS int
+	AS 'MODULE_PATHNAME', 'ST_ClusterIntersectingWin'
+	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
+	_COST_HIGH;
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_LineMerge(geometry)
 	RETURNS geometry
