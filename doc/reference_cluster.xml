@@ -155,7 +155,7 @@ GROUP BY cid;
       <refnamediv>
         <refname>ST_ClusterIntersectingWin</refname>
 
-        <refpurpose>Windowing function that builds clusters of all geometries that intersect. It is possible to traverse all geometries in a cluster without leaving the cluster.</refpurpose>
+        <refpurpose>Window function that returns a cluster id for each input geometry, clustering input geometries into connected sets.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -181,10 +181,10 @@ GROUP BY cid;
 WITH testdata AS (
   SELECT id, geom::geometry FROM (
   VALUES  (1, 'LINESTRING (0 0, 1 1)'),
-		      (2, 'LINESTRING (5 5, 4 4)'),
-		      (3, 'LINESTRING (6 6, 7 7)'),
-		      (4, 'LINESTRING (0 0, -1 -1)'),
-		      (5, 'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))')) AS t(id, geom)
+          (2, 'LINESTRING (5 5, 4 4)'),
+          (3, 'LINESTRING (6 6, 7 7)'),
+          (4, 'LINESTRING (0 0, -1 -1)'),
+          (5, 'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))')) AS t(id, geom)
 )
 SELECT id, 
   ST_AsText(geom), 
@@ -218,7 +218,7 @@ FROM testdata;
       <refnamediv>
         <refname>ST_ClusterIntersecting</refname>
 
-        <refpurpose>Aggregate function that clusters the input geometries into connected sets.</refpurpose>
+        <refpurpose>Aggregate function that clusters input geometries into connected sets.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -419,7 +419,7 @@ from
       <refnamediv>
         <refname>ST_ClusterWithin</refname>
 
-        <refpurpose>Aggregate function that clusters the input geometries by separation distance.</refpurpose>
+        <refpurpose>Aggregate function that clusters input geometries by separation distance.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -479,7 +479,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
       <refnamediv>
         <refname>ST_ClusterWithinWin</refname>
 
-        <refpurpose>Aggregate function that clusters the input geometries by separation distance.</refpurpose>
+        <refpurpose>Window function that returns a cluster id for each input geometry, clustering using separation distance.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
