@@ -1883,6 +1883,13 @@ CREATE OR REPLACE FUNCTION ST_ClusterDBSCAN (geometry, eps float8, minpoints int
 	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
 	_COST_HIGH;
 
+-- Availability: 3.4
+CREATE OR REPLACE FUNCTION ST_ClusterWithinWin (geometry, tolerance float8)
+	RETURNS int
+	AS 'MODULE_PATHNAME', 'ST_ClusterWithinWin'
+	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
+	_COST_HIGH;
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_LineMerge(geometry)
 	RETURNS geometry

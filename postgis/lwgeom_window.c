@@ -39,6 +39,7 @@
 
 extern Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS);
 extern Datum ST_ClusterKMeans(PG_FUNCTION_ARGS);
+extern Datum ST_ClusterWithinWin(PG_FUNCTION_ARGS);
 
 typedef struct {
 	bool	isdone;
@@ -168,6 +169,84 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 
 	PG_RETURN_INT32(context->cluster_assignments[row].cluster_id);
 }
+
+
+
+
+PG_FUNCTION_INFO_V1(ST_ClusterWithinWin);
+Datum ST_ClusterWithinWin(PG_FUNCTION_ARGS)
+{
+	WindowObject win_obj = PG_WINDOW_OBJECT();
+	uint32_t row = WinGetCurrentPosition(win_obj);
+	uint32_t ngeoms = WinGetPartitionRowCount(win_obj);
+	size_t context_sz = sizeof(dbscan_context) + ngeoms * sizeof(dbscan_cluster_result);
+	dbscan_context* context = WinGetPartitionLocalMemory(win_obj, context_sz);
+
+	if (row == 0) /* beginning of the partition; do all of the work now */
+	{
+		uint32_t i;
+		uint32_t* result_ids;
+		LWGEOM** geoms;
+		UNIONFIND* uf;
+		bool tolerance_is_null;
+		double tolerance = DatumGetFloat8(WinGetFuncArgCurrent(win_obj, 1, &tolerance_is_null));
+
+		/* Validate input parameters */
+		if (tolerance_is_null || tolerance < 0)
+		{
+			lwpgerror("Tolerance must be a positive number", tolerance);
+			PG_RETURN_NULL();
+		}
+
+		context->is_error = LW_TRUE; /* until proven otherwise */
+
+		geoms = lwalloc(ngeoms * sizeof(LWGEOM*));
+		uf = UF_create(ngeoms);
+		for (i = 0; i < ngeoms; i++)
+		{
+			bool geom_is_null;
+			geoms[i] = read_lwgeom_from_partition(win_obj, i, &geom_is_null);
+			context->cluster_assignments[i].is_null = geom_is_null;
+
+			if (!geoms[i]) 
+			{
+				lwpgerror("Error reading geometry.");
+				PG_RETURN_NULL();
+			}
+		}
+
+		if (union_dbscan(geoms, ngeoms, uf, tolerance, 1, NULL) == LW_SUCCESS)
+			context->is_error = LW_FALSE;
+
+		for (i = 0; i < ngeoms; i++)
+		{
+			lwgeom_free(geoms[i]);
+		}
+		lwfree(geoms);
+
+		if (context->is_error)
+		{
+			UF_destroy(uf);
+			lwpgerror("Error during clustering");
+			PG_RETURN_NULL();
+		}
+
+		result_ids = UF_get_collapsed_cluster_ids(uf, NULL);
+		for (i = 0; i < ngeoms; i++)
+		{
+			context->cluster_assignments[i].cluster_id = result_ids[i];
+		}
+
+		lwfree(result_ids);
+		UF_destroy(uf);
+	}
+
+	if (context->cluster_assignments[row].is_null)
+		PG_RETURN_NULL();
+
+	PG_RETURN_INT32(context->cluster_assignments[row].cluster_id);
+}
+
 
 PG_FUNCTION_INFO_V1(ST_ClusterKMeans);
 Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
