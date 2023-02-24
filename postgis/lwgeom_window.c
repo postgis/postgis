@@ -244,7 +244,7 @@ Datum ST_ClusterWithinWin(PG_FUNCTION_ARGS)
 			geoms[i] = read_lwgeom_from_partition(win_obj, i, &geom_is_null);
 			context->clusters[i].is_null = geom_is_null;
 
-			if (!geoms[i]) 
+			if (!geoms[i])
 			{
 				lwpgerror("Error reading geometry.");
 				PG_RETURN_NULL();
@@ -301,7 +301,7 @@ Datum ST_ClusterIntersectingWin(PG_FUNCTION_ARGS)
 		UNIONFIND* uf = UF_create(ngeoms);
 
 		context->is_error = LW_TRUE; /* until proven otherwise */
-		
+
 		initGEOS(lwpgnotice, lwgeom_geos_error);
 
 		for (i = 0; i < ngeoms; i++)
@@ -310,7 +310,7 @@ Datum ST_ClusterIntersectingWin(PG_FUNCTION_ARGS)
 			geoms[i] = read_geos_from_partition(win_obj, i, &geom_is_null);
 			context->clusters[i].is_null = geom_is_null;
 
-			if (!geoms[i]) 
+			if (!geoms[i])
 			{
 				lwpgerror("Error reading geometry.");
 				PG_RETURN_NULL();
