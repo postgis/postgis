@@ -70,6 +70,7 @@
 	  </para></note>
 
       <para>Availability: 2.3.0</para>
+      <para>&curve_support;</para>
     </refsection>
 
     <refsection>
@@ -438,6 +439,7 @@ from
         <para>ST_ClusterWithin is an aggregate function that returns an array of GeometryCollections, where each GeometryCollection represents a set of geometries separated by no more than the specified distance.  (Distances are Cartesian distances in the units of the SRID.)</para>
 
         <para>Availability: 2.2.0</para>
+        <para>&curve_support;</para>
       </refsection>
 
       <refsection>
@@ -497,6 +499,8 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
         </para>
 
         <para>Availability: 3.4.0</para>
+        <para>&curve_support;</para>
+
       </refsection>
 
       <refsection>
