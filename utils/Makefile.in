@@ -47,10 +47,9 @@ DROP_FILES = \
   $(top_srcdir)/postgis/postgis_before_upgrade.sql
 
 postgis_restore_data.hardcoded: postgis_restore.pl.in
-	tac $< \
-		| sed '/^__END__/q' \
-		| grep -v '^__END__' \
-    > $@
+	sed -e '1,/^__END__/d' $< \
+		| sort -u \
+		> $@
 
 postgis_restore_data.generated: $(DROP_FILES)
 	grep '^DROP FUNCTION IF EXISTS' $(DROP_FILES) | \
