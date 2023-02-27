@@ -22,6 +22,7 @@ INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
 SRID_MAXIMUM = @SRID_MAX@
 SRID_USER_MAXIMUM = @SRID_USR_MAX@
+PERL = @PERL@
 
 VPATH := @srcdir@
 
@@ -73,20 +74,8 @@ postgis_restore_data.hardcoded: postgis_restore.pl.in Makefile
 		| sort -u \
 		> $@
 
-postgis_restore_data.generated: $(DROP_FILES) Makefile
-	grep '^DROP FUNCTION IF EXISTS' $(DROP_FILES) | \
-    cut -d: -f2 | sed 's/^DROP FUNCTION IF EXISTS //' | \
-    sed 's/ *, */,/g' | \
-    sed 's/ *( */(/g' | \
-    sed 's/ *) */)/g' | \
-    tr '[A-Z]' '[a-z]' | \
-    sed 's/topology\.//g' | \
-    sed 's/varchar/character varying/g' | \
-    sed 's/float8/double precision/g' | \
-    sed 's/\<int\>/integer/g' | \
-    sed 's/\<int4\>/integer/g' | \
-    sed 's/\<int8\>/bigint/g' | \
-    sed 's/\(.*\); *\(--.*\)\?/FUNCTION \1/' \
+postgis_restore_data.generated: $(DROP_FILES) Makefile create_skip_signatures.pl
+	$(PERL) @top_srcdir@/utils/create_skip_signatures.pl $(DROP_FILES) \
 		| sort \
 		> $@
 
