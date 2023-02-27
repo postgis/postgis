@@ -21,7 +21,7 @@ eval "exec perl -w $0 $@"
 	if (0);
 
 
-($#ARGV == 1) || die "Usage: perl create_undef.pl <postgis.sql> <pgsql_version #>\nCreates a new SQL script to delete all the PostGIS functions.\n";
+($#ARGV == 1) || die "Usage: perl $0 <postgis.sql> <pgsql_version #>\nCreates a new SQL script to delete all the PostGIS functions.\n";
 
 # drops are in the following order:
 # - Views

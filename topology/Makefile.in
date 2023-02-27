@@ -156,8 +156,8 @@ topology.sql: \
 	../postgis/sqldefines.h \
 	../postgis_revision.h
 
-uninstall_topology.sql: topology.sql ../utils/create_undef.pl
-	$(PERL) @top_srcdir@/utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
+uninstall_topology.sql: topology.sql ../utils/create_uninstall.pl
+	$(PERL) @top_srcdir@/utils/create_uninstall.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 
 check-unit:
 

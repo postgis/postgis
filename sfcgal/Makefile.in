@@ -135,11 +135,11 @@ sfcgal_upgrade.sql: sfcgal_before_upgrade.sql sfcgal_upgrade.sql.in sfcgal_after
 	cat $^ >> $@
 	echo "COMMIT;" >> $@
 
-uninstall_sfcgal_legacy.sql: sfcgal_legacy.sql ../utils/create_undef.pl
-	$(PERL) @top_srcdir@/utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
+uninstall_sfcgal_legacy.sql: sfcgal_legacy.sql ../utils/create_uninstall.pl
+	$(PERL) @top_srcdir@/utils/create_uninstall.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 
-uninstall_sfcgal.sql: sfcgal.sql ../utils/create_undef.pl
-	$(PERL) @top_srcdir@/utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
+uninstall_sfcgal.sql: sfcgal.sql ../utils/create_uninstall.pl
+	$(PERL) @top_srcdir@/utils/create_uninstall.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 
 distclean: clean
 	rm -f Makefile

@@ -256,11 +256,11 @@ $(SQL_OBJS): ../postgis_config.h ../postgis_revision.h
 
 #postgis.sql.in: sqldefines.h long_xact.sql.in.c geography.sql.in.c
 
-uninstall_postgis.sql: postgis.sql ../utils/create_undef.pl
-	$(PERL) @top_srcdir@/utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
+uninstall_postgis.sql: postgis.sql ../utils/create_uninstall.pl
+	$(PERL) @top_srcdir@/utils/create_uninstall.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 
-uninstall_legacy.sql: legacy.sql ../utils/create_undef.pl
-	$(PERL) @top_srcdir@/utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
+uninstall_legacy.sql: legacy.sql ../utils/create_uninstall.pl
+	$(PERL) @top_srcdir@/utils/create_uninstall.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 
 distclean: clean
 	rm -f Makefile

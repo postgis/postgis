@@ -22,8 +22,8 @@ Requires:	postgresql, geos, proj
 PostGIS adds support for geographic objects to the PostgreSQL object-relational
 database. In effect, PostGIS "spatially enables" the PostgreSQL server,
 allowing it to be used as a backend spatial database for geographic information
-systems (GIS), much like ESRI's SDE or Oracle's Spatial extension. PostGIS 
-follows the OpenGIS "Simple Features Specification for SQL" and has been 
+systems (GIS), much like ESRI's SDE or Oracle's Spatial extension. PostGIS
+follows the OpenGIS "Simple Features Specification for SQL" and has been
 certified as compliant with the "Types and Functions" profile.
 
 %if %javabuild
@@ -62,7 +62,7 @@ The postgis-utils package provides the utilities for PostGIS.
 %patch2 -p0
 
 %build
-%configure 
+%configure
 make %{?_smp_mflags} LPATH=`pg_config --pkglibdir` shlib="%{name}.so"
 
 %if %javabuild
@@ -111,7 +111,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
-%doc COPYING CREDITS NEWS TODO README.%{name} TODO doc/html loader/README.* doc/%{name}.xml  doc/ZMSgeoms.txt 
+%doc COPYING CREDITS NEWS TODO README.%{name} TODO doc/html loader/README.* doc/%{name}.xml  doc/ZMSgeoms.txt
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/pgsql/liblwgeom.so*
 %{_datadir}/pgsql/contrib/*.sql
@@ -135,7 +135,7 @@ rm -rf %{buildroot}
 %attr(755,root,root) %{_datadir}/%{name}/test_estimation.pl
 %attr(755,root,root) %{_datadir}/%{name}/profile_intersects.pl
 %attr(755,root,root) %{_datadir}/%{name}/test_joinestimation.pl
-%attr(644,root,root) %{_datadir}/%{name}/create_undef.pl
+%attr(644,root,root) %{_datadir}/%{name}/create_uninstall.pl
 %attr(644,root,root) %{_datadir}/%{name}/%{name}_proc_upgrade.pl
 %attr(644,root,root) %{_datadir}/%{name}/%{name}_restore.pl
 %endif
@@ -162,7 +162,7 @@ rm -rf %{buildroot}
 - Fixed all build errors except jdbc (so, defaulted to 0)
 - Added new files under %%utils
 - Removed postgis-jdbc2-makefile.patch (applied to -head)
-                                                                                                    
+
 * Tue Sep 27 2005 - Devrim GUNDUZ <devrim@gunduz.org>
 - Update to 1.0.4
 
