@@ -804,29 +804,45 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	int empty2 = LW_FALSE;
 	double xwidth, ywidth;
 	POINT2D center;
-	Datum d1 = PG_GETARG_DATUM(0);
+	LWGEOM *lwgeom;
 
 	/* Get our geometry objects loaded into memory. */
-	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(d1);
+	g1 = PG_GETARG_GSERIALIZED_P(0);
 	/* Synchronize our box types */
 	gbox1.flags = gserialized_get_lwflags(g1);
 	/* Calculate if the geometry is empty. */
 	empty1 = gserialized_is_empty(g1);
+
+	/* Convert g1 to LWGEOM type */
+	lwgeom = lwgeom_from_gserialized(g1);
+
 	/* Calculate a geocentric bounds for the objects */
 	if ( ! empty1 && gserialized_get_gbox_p(g1, &gbox1) == LW_FAILURE )
 		elog(ERROR, "Error in geography_bestsrid calling gserialized_get_gbox_p(g1, &gbox1)");
 
 	POSTGIS_DEBUGF(4, "calculated gbox = %s", gbox_to_string(&gbox1));
 
+	if ( !lwgeom_isfinite(lwgeom) ) {
+		elog(ERROR, "Error in geography_bestsrid calling with infinite coordinate geographies");
+	}
+	lwgeom_free(lwgeom);
+
 	/* If we have a unique second argument, fill in all the necessary variables. */
 	if (PG_NARGS() > 1)
 	{
-		Datum d2 = PG_GETARG_DATUM(1);
-		g2 = (GSERIALIZED*)PG_DETOAST_DATUM(d2);
+		g2 = PG_GETARG_GSERIALIZED_P(1);
 		gbox2.flags = gserialized_get_lwflags(g2);
 		empty2 = gserialized_is_empty(g2);
 		if ( ! empty2 && gserialized_get_gbox_p(g2, &gbox2) == LW_FAILURE )
 			elog(ERROR, "Error in geography_bestsrid calling gserialized_get_gbox_p(g2, &gbox2)");
+
+		/* Convert g2 to LWGEOM type */
+		lwgeom = lwgeom_from_gserialized(g2);
+
+		if ( !lwgeom_isfinite(lwgeom) ) {
+			elog(ERROR, "Error in geography_bestsrid calling with second arg infinite coordinate geographies");
+		}
+		lwgeom_free(lwgeom);
 	}
 	/*
 	** If no unique second argument, copying the box for the first

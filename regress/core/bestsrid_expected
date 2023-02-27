@@ -125,3 +125,8 @@
 -180|-60|999160
 180|-60|999160
 world|999000
+NOTICE:  Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY
+ERROR:  Error in geography_bestsrid calling with infinite coordinate geographies
+NOTICE:  Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY at character 33
+NOTICE:  Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY at character 257
+ERROR:  Error in geography_bestsrid calling with infinite coordinate geographies
