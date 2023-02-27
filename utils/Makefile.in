@@ -11,20 +11,17 @@
 # *
 # **********************************************************************
 
-# Separate PGXS-enabled Makefile for documentation installation (it is
-# not possible to merge into the main Makefile as has been done for
-# the shapefile loader)
-
-MODULE_doc=postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
-MODULEDIR=contrib/$(MODULE_doc)
-
-# Files to be copied to the contrib/ directory
-DATA_built=postgis_restore.pl
-
-# PGXS information
-PG_CONFIG := @PG_CONFIG@
-PGXS := @PGXS@
-include $(PGXS)
+top_builddir = @top_builddir@
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+datadir = @datadir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+bindir = @bindir@
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+SRID_MAXIMUM = @SRID_MAX@
+SRID_USER_MAXIMUM = @SRID_USR_MAX@
 
 VPATH := @srcdir@
 
@@ -41,10 +38,7 @@ SCRIPTS = \
 	test_estimation.pl \
 	test_joinestimation.pl
 
-SRID_MAXIMUM = @SRID_MAX@
-SRID_USER_MAXIMUM = @SRID_USR_MAX@
-
-all: postgis_restore.pl
+all: $(SCRIPTS_built)
 
 DROP_FILES = \
   ../raster/rt_pg/rtpostgis_upgrade_cleanup.sql.in \
@@ -70,14 +64,25 @@ update-restore:
 	cat postgis_restore.pl.in | sed '/^__END__/q' > postgis_restore.pl.in.new
 	cat postgis_restore_data | sort -u >> postgis_restore.pl.in.new
 	mv postgis_restore.pl.in.new postgis_restore.pl.in
-	rm -f postgis_restore_data
 
 postgis_restore.pl: postgis_restore.pl.in
 	sed 's,@SRID_MAXIMUM@,$(SRID_MAXIMUM),g;s,@SRID_USER_MAXIMUM@,$(SRID_USER_MAXIMUM),' $< >$@
 	chmod +x $@
+
+clean:
+	rm -f $(SCRIPTS_built) postgis_restore_data
 
 distclean: clean
 	rm -f Makefile
 
 # And there's nothing to check
 check check-unit check-regress:
+
+installdir:
+	@mkdir -p $(DESTDIR)$(bindir)
+
+uninstall:
+	rm -f $(addprefix '$(DESTDIR)$(bindir)'/, $(SCRIPTS_built))
+
+install: installdir $(SCRIPTS_built)
+	$(INSTALL) $(SCRIPTS_built) '$(DESTDIR)$(bindir)/'
