@@ -41,29 +41,53 @@ SCRIPTS = \
 all: $(SCRIPTS_built)
 
 DROP_FILES = \
-  $(top_srcdir)/raster/rt_pg/rtpostgis_upgrade_cleanup.sql.in \
-  $(top_srcdir)/raster/rt_pg/rtpostgis_drop.sql.in \
-  $(top_srcdir)/postgis/postgis_after_upgrade.sql \
-  $(top_srcdir)/postgis/postgis_before_upgrade.sql
+	$(top_srcdir)/raster/rt_pg/rtpostgis_upgrade_cleanup.sql.in \
+	$(top_srcdir)/raster/rt_pg/rtpostgis_drop.sql.in \
+	$(top_srcdir)/postgis/postgis_after_upgrade.sql \
+	$(top_srcdir)/postgis/postgis_before_upgrade.sql \
+	$(top_srcdir)/topology/topology_after_upgrade.sql.in \
+	$(top_srcdir)/topology/topology_before_upgrade.sql.in \
+	$(top_builddir)/postgis/uninstall_postgis.sql \
+	$(top_builddir)/postgis/uninstall_legacy.sql \
+	$(top_builddir)/sfcgal/uninstall_sfcgal.sql \
+	$(top_builddir)/raster/rt_pg/uninstall_rtpostgis.sql \
+	$(top_builddir)/topology/uninstall_topology.sql
 
-postgis_restore_data.hardcoded: postgis_restore.pl.in
+$(top_builddir)/postgis/uninstall_postgis.sql:
+	$(MAKE) -C ../postgis uninstall_postgis.sql
+
+$(top_builddir)/postgis/uninstall_legacy.sql:
+	$(MAKE) -C ../postgis uninstall_legacy.sql
+
+$(top_builddir)/sfcgal/uninstall_sfcgal.sql:
+	$(MAKE) -C ../sfcgal uninstall_sfcgal.sql
+
+$(top_builddir)/raster/rt_pg/uninstall_rtpostgis.sql:
+	$(MAKE) -C ../raster/rt_pg uninstall_rtpostgis.sql
+
+$(top_builddir)/topology/uninstall_topology.sql:
+	$(MAKE) -C ../topology/ uninstall_topology.sql
+
+postgis_restore_data.hardcoded: postgis_restore.pl.in Makefile
 	sed -e '1,/^__END__/d' $< \
 		| sort -u \
 		> $@
 
-postgis_restore_data.generated: $(DROP_FILES)
+postgis_restore_data.generated: $(DROP_FILES) Makefile
 	grep '^DROP FUNCTION IF EXISTS' $(DROP_FILES) | \
     cut -d: -f2 | sed 's/^DROP FUNCTION IF EXISTS //' | \
     sed 's/ *, */,/g' | \
     sed 's/ *( */(/g' | \
     sed 's/ *) */)/g' | \
     tr '[A-Z]' '[a-z]' | \
+    sed 's/topology\.//g' | \
     sed 's/varchar/character varying/g' | \
     sed 's/float8/double precision/g' | \
     sed 's/\<int\>/integer/g' | \
     sed 's/\<int4\>/integer/g' | \
     sed 's/\<int8\>/bigint/g' | \
     sed 's/\(.*\); *\(--.*\)\?/FUNCTION \1/' \
+		| sort \
 		> $@
 
 postgis_restore.pl: postgis_restore.pl.in postgis_restore_data.hardcoded postgis_restore_data.generated Makefile
