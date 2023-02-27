@@ -41,14 +41,18 @@ SCRIPTS = \
 all: $(SCRIPTS_built)
 
 DROP_FILES = \
-  ../raster/rt_pg/rtpostgis_upgrade_cleanup.sql.in \
-  ../raster/rt_pg/rtpostgis_drop.sql.in \
-  ../postgis/postgis_after_upgrade.sql \
-  ../postgis/postgis_before_upgrade.sql
+  $(top_srcdir)/raster/rt_pg/rtpostgis_upgrade_cleanup.sql.in \
+  $(top_srcdir)/raster/rt_pg/rtpostgis_drop.sql.in \
+  $(top_srcdir)/postgis/postgis_after_upgrade.sql \
+  $(top_srcdir)/postgis/postgis_before_upgrade.sql
 
-update-restore:
-	tac postgis_restore.pl.in | sed '/^__END__/q' | grep -v '^__END__' \
-    > postgis_restore_data
+postgis_restore_data.hardcoded: postgis_restore.pl.in
+	tac $< \
+		| sed '/^__END__/q' \
+		| grep -v '^__END__' \
+    > $@
+
+postgis_restore_data.generated: $(DROP_FILES)
 	grep '^DROP FUNCTION IF EXISTS' $(DROP_FILES) | \
     cut -d: -f2 | sed 's/^DROP FUNCTION IF EXISTS //' | \
     sed 's/ *, */,/g' | \
@@ -60,17 +64,20 @@ update-restore:
     sed 's/\<int\>/integer/g' | \
     sed 's/\<int4\>/integer/g' | \
     sed 's/\<int8\>/bigint/g' | \
-    sed 's/\(.*\); *\(--.*\)\?/FUNCTION \1/' >> postgis_restore_data
-	cat postgis_restore.pl.in | sed '/^__END__/q' > postgis_restore.pl.in.new
-	cat postgis_restore_data | sort -u >> postgis_restore.pl.in.new
-	mv postgis_restore.pl.in.new postgis_restore.pl.in
+    sed 's/\(.*\); *\(--.*\)\?/FUNCTION \1/' \
+		> $@
 
-postgis_restore.pl: postgis_restore.pl.in
-	sed 's,@SRID_MAXIMUM@,$(SRID_MAXIMUM),g;s,@SRID_USER_MAXIMUM@,$(SRID_USER_MAXIMUM),' $< >$@
+postgis_restore.pl: postgis_restore.pl.in postgis_restore_data.hardcoded postgis_restore_data.generated Makefile
+	cat $< \
+		| sed '/^__END__/q' \
+		| sed 's,@SRID_MAXIMUM@,$(SRID_MAXIMUM),g;s,@SRID_USER_MAXIMUM@,$(SRID_USER_MAXIMUM),' \
+		> postgis_restore.pl
+	cat postgis_restore_data.hardcoded postgis_restore_data.generated \
+		| sort -u >> postgis_restore.pl
 	chmod +x $@
 
 clean:
-	rm -f $(SCRIPTS_built) postgis_restore_data
+	rm -f $(SCRIPTS_built) postgis_restore_data.generated postgis_restore_data.hardcoded
 
 distclean: clean
 	rm -f Makefile
