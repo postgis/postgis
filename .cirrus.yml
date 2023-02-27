@@ -23,7 +23,7 @@ task:
     - gmake check || { service postgresql onestop; exit 1;}
     - gmake install || { service postgresql onestop; exit 1;}
     - gmake check RUNTESTFLAGS="-v --extension" || { service postgresql onestop; exit 1;}
-    - gmake check RUNTESTFLAGS="-v --dumprestore" || { service postgresql onestop; exit 1;}
+    - gmake check RUNTESTFLAGS="-v --extension --dumprestore" || { service postgresql onestop; exit 1;}
     - service postgresql onestop
 
   freebsd_instance:
