@@ -783,6 +783,7 @@ AC_ARG_WITH([sfcgal],
 	[with_sfcgal=auto])
 
 
+POSTGIS_SFCGAL_VERSION="0"
 if test "x$with_sfcgal" != "xno"; then
   if test "x$with_sfcgal" = "xyes" -o "x$with_sfcgal" = "xauto"; then
 	  AC_PATH_PROG([SFCGAL_CONFIG], [sfcgal-config], [])
@@ -799,7 +800,6 @@ if test "x$with_sfcgal" != "xno"; then
 		SFCGAL_NUMERIC_MINOR_VERSION=`printf "%02d" $SFCGAL_MINOR_VERSION`
 		POSTGIS_SFCGAL_VERSION="$SFCGAL_MAJOR_VERSION$SFCGAL_NUMERIC_MINOR_VERSION$SFCGAL_NUMERIC_PATCH_VERSION"
 		AC_DEFINE_UNQUOTED([POSTGIS_SFCGAL_VERSION], [$POSTGIS_SFCGAL_VERSION], [SFCGAL library version at build time])
-		AC_SUBST([POSTGIS_SFCGAL_VERSION])
 
 		SFCGAL_STATIC=`$SFCGAL_CONFIG --static`
 		if test "x$SFCGAL_STATIC" = "xON"; then
@@ -808,7 +808,7 @@ if test "x$with_sfcgal" != "xno"; then
       SFCGAL="sfcgal"
 			HAVE_SFCGAL="yes"
       AC_DEFINE([HAVE_SFCGAL], [1], [Define to 1 if sfcgal is being built])
-	    SFCGAL_MAKEFILE_LIST="sfcgal/Makefile sfcgal/regress/Makefile sfcgal/regress/tests.mk extensions/postgis_sfcgal/Makefile"
+	    SFCGAL_MAKEFILE_LIST="sfcgal/regress/Makefile sfcgal/regress/tests.mk extensions/postgis_sfcgal/Makefile"
 		fi
 		if test ! "$POSTGIS_SFCGAL_VERSION" -ge 10301; then
 			AC_MSG_ERROR([PostGIS requires SFCGAL >= 1.3.1 (found $SFCGAL_VERSION)])
@@ -820,6 +820,7 @@ if test "x$with_sfcgal" != "xno"; then
 	fi
 fi
 
+AC_SUBST([POSTGIS_SFCGAL_VERSION])
 AC_SUBST([SFCGAL_VERSION])
 AC_SUBST([SFCGAL_CPPFLAGS])
 AC_SUBST([SFCGAL_LDFLAGS])
@@ -1749,6 +1750,7 @@ AC_CONFIG_FILES([GNUmakefile
    libpgcommon/cunit/Makefile
    postgis/Makefile
    postgis/sqldefines.h
+   sfcgal/Makefile
    $SFCGAL_MAKEFILE_LIST
    loader/Makefile
    loader/cunit/Makefile

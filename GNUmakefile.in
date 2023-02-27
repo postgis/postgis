@@ -133,6 +133,10 @@ distclean-local: clean-local
 		$(MAKE) -C raster/rt_pg distclean; \
 		rm -f raster/Makefile; \
 	fi
+	if test -z "@SFCGAL@"; then \
+		$(MAKE) -C sfcgal distclean; \
+		rm -f raster/Makefile; \
+	fi
 
 maintainer-clean-local: distclean-local
 	rm -f configure
