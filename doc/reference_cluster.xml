@@ -162,7 +162,7 @@ GROUP BY cid;
         <funcsynopsis>
           <funcprototype>
             <funcdef>integer <function>ST_ClusterIntersectingWin</function></funcdef>
-            <paramdef><type>geometry</type> <parameter>g</parameter></paramdef>
+            <paramdef><type>geometry winset </type> <parameter>geom</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
@@ -473,8 +473,6 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
 
     </refentry>
 
-
-
   <refentry id="ST_ClusterWithinWin">
       <refnamediv>
         <refname>ST_ClusterWithinWin</refname>
@@ -486,7 +484,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
         <funcsynopsis>
           <funcprototype>
             <funcdef>integer <function>ST_ClusterWithinWin</function></funcdef>
-            <paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+            <paramdef><type>geometry winset </type> <parameter>geom</parameter></paramdef>
             <paramdef><type>float8 </type> <parameter>distance</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
