@@ -10,7 +10,7 @@
 	<xsl:output method="text" />
 	<xsl:variable name='testversion'>3.4.0</xsl:variable>
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
-	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
+	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable ST_AsSVG</xsl:variable>
 	<!--This is just a place holder to state functions not supported or tested separately -->
 
 	<xsl:variable name='var_srid'>3395</xsl:variable>
@@ -257,6 +257,12 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 		<pgis:gset ID="Empty Geometry Collection" GeometryType="GEOMETRY" createtable="false">
 		 (SELECT ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326) As the_geom )
 		</pgis:gset>
+
+		<pgis:gset ID="Geometry Collection with Empty Point" GeometryType="GEOMETRY" createtable="false">
+		 (SELECT ST_GeomFromText('GEOMETRYCOLLECTION (POINT EMPTY, LINESTRING (0 0, 1 1))',4326) As the_geom )
+		</pgis:gset>
+
+
 
 		<pgis:gset ID="Single NULL" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
 		<pgis:gset ID="Multiple NULLs" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom FROM generate_series(1,4) As foo)</pgis:gset>
