@@ -62,6 +62,24 @@ sub strip_argument_names {
 	return @out;
 }
 
+sub canonicalize_args {
+	my @args = @_;
+	my @out;
+	foreach ( @args )
+	{
+		my $a = $_;
+		$a =~ s/varchar/character varying/g;
+		$a =~ s/float8/double precision/g;
+		$a =~ s/\bint\b/integer/g;
+		$a =~ s/\bint4\b/integer/g;
+		$a =~ s/\bint8\b/bigint/g;
+		$a =~ s/\bchar\b/character/g;
+		$a =~ s/\bbool\b/boolean/g;
+		push @out, $a;
+	}
+	return @out;
+}
+
 while (<>)
 {
 	#print "XXX 0 $_";
@@ -73,6 +91,28 @@ while (<>)
 		$t =~ s/topology\.//g;
 		print "COMMENT TYPE $t\n";
 		print "TYPE $t\n";
+	}
+
+	# aggregate signature
+	if ( /^DROP AGGREGATE IF EXISTS\s+(.*)\((.*)\)/ )
+	{
+		my $name = lc($1);
+		my $args = lc($2);
+
+		s/^\s+//, s/\s+$// for $name;
+		$name =~ s/topology\.//g;
+
+		$args =~ s/topology\.//g;
+		my @args = split('\s*,\s*', $args);
+		@args = canonicalize_args(@args);
+
+		print "COMMENT AGGREGATE $name(" . join(', ', @args) . ")\n";
+
+		# For *aggregate* signature we are supposed to strip
+		# also argument names, which aint easy
+		my @unnamed_args = strip_argument_names(@args);
+
+		print "AGGREGATE $name(" . join(', ', @unnamed_args) . ")\n";
 	}
 
 	# Function signature
@@ -90,21 +130,14 @@ while (<>)
 
 		$line = lc($line);
 		$line =~ s/topology\.//g;
-		$line =~ s/varchar/character varying/g;
-		$line =~ s/float8/double precision/g;
-		$line =~ s/\bint\b/integer/g;
-		$line =~ s/\bint4\b/integer/g;
-		$line =~ s/\bint8\b/bigint/g;
-		$line =~ s/\bchar\b/character/g;
 
 		$line =~ m/ *([^\( ]*) *\((.*)\)/ or die "Unexpected DROP FUNCTION syntax: $origline";
 
 		my $name = lc($1);
-
 		my $args = lc($2);
-		s/^\s+//, s/\s+$// for $args;
-		#$args =~ s/\s*,\s*/,/g;
+
 		my @args = split('\s*,\s*', $args);
+		@args = canonicalize_args(@args);
 
 		print "COMMENT FUNCTION $name(" . join(', ', @args) .")\n";
 
