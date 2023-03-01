@@ -783,21 +783,6 @@ COMMENT FUNCTION st_worldtorastercoord(rast raster, pt geometry, OUT columnx int
 COMMENT FUNCTION updaterastersrid(schema_name name, table_name name, column_name name, new_srid integer)
 COMMENT FUNCTION updaterastersrid(table_name name, column_name name, new_srid integer)
 COMMENT SCHEMA topology
-COMMENT TYPE addbandarg
-COMMENT TYPE box2d
-COMMENT TYPE box3d
-COMMENT TYPE geography
-COMMENT TYPE geometry
-COMMENT TYPE geometry_dump
-COMMENT TYPE geomval
-COMMENT TYPE getfaceedges_returntype
-COMMENT TYPE rastbandarg
-COMMENT TYPE raster
-COMMENT TYPE reclassarg
-COMMENT TYPE summarystats
-COMMENT TYPE topogeometry
-COMMENT TYPE unionarg
-COMMENT TYPE validatetopology_returntype
 CONSTRAINT layer layer_pkey
 CONSTRAINT layer layer_schema_name_table_name_feature_column_key
 CONSTRAINT spatial_ref_sys spatial_ref_sys_pkey
@@ -1022,27 +1007,6 @@ TABLE layer
 TABLE spatial_ref_sys
 TABLE topology
 TRIGGER layer layer_integrity_checks
-TYPE addbandarg
-TYPE agg_count
-TYPE agg_samealignment
-TYPE box2d
-TYPE box2df
-TYPE box3d
-TYPE geography
-TYPE geometry
-TYPE geometry_dump
-TYPE geomval
-TYPE getfaceedges_returntype
-TYPE gidx
-TYPE rastbandarg
-TYPE raster
-TYPE reclassarg
-TYPE spheroid
-TYPE summarystats
-TYPE topogeometry
-TYPE unionarg
-TYPE validatetopology_returntype
-TYPE valid_detail
 VIEW geography_columns
 VIEW geometry_columns
 VIEW raster_columns

@@ -66,8 +66,17 @@ while (<>)
 {
 	#print "XXX 0 $_";
 
+	# type signature
+	if ( /^DROP TYPE IF EXISTS\s\s*([^\s]*)/ )
+	{
+		my $t = lc($1);
+		$t =~ s/topology\.//g;
+		print "COMMENT TYPE $t\n";
+		print "TYPE $t\n";
+	}
+
 	# Function signature
-	if ( /^DROP FUNCTION IF EXISTS/ )
+	elsif ( /^DROP FUNCTION IF EXISTS/ )
 	{
 		my $origline = $_;
 		my $line = $origline;
