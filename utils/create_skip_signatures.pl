@@ -95,6 +95,7 @@ while (<>)
 		$line =~ s/\bint\b/integer/g;
 		$line =~ s/\bint4\b/integer/g;
 		$line =~ s/\bint8\b/bigint/g;
+		$line =~ s/\bchar\b/character/g;
 
 		$line =~ m/ *([^\( ]*) *\((.*)\)/ or die "Unexpected DROP FUNCTION syntax: $origline";
 
@@ -102,8 +103,8 @@ while (<>)
 
 		my $args = lc($2);
 		s/^\s+//, s/\s+$// for $args;
-    $args =~ s/ *, */,/g;
-		my @args = split(',', $args);
+		#$args =~ s/\s*,\s*/,/g;
+		my @args = split('\s*,\s*', $args);
 
 		print "COMMENT FUNCTION $name(" . join(', ', @args) .")\n";
 
