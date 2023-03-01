@@ -497,7 +497,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
 
         <para>ST_ClusterWithinWin is a window function that returns an integer for each input geometry, where the integer the cluster number the geometry is a member of. Clusters represent a set of input geometries separated by no more than the specified distance. (Distances are Cartesian distances in the units of the SRID.)
         </para>
-
+        <para>ST_ClusterWithinWin is equivalent to running <xref linkend="ST_ClusterDBSCAN" /> with a `minpoints` of zero.</para>
         <para>Availability: 3.4.0</para>
         <para>&curve_support;</para>
 
