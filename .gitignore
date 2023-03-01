@@ -17,6 +17,7 @@ aclocal.m4
 autom4te.cache/
 build/
 build-aux/
+config
 config.log
 config.guess
 config.sub

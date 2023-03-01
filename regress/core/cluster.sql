@@ -15,6 +15,14 @@ SELECT 't2', ST_AsText(unnest(ST_ClusterIntersecting(array_agg(geom ORDER BY id)
 SELECT 't3', ST_AsText(unnest(ST_ClusterWithin(geom, 1.4 ORDER BY id))) FROM cluster_inputs;
 SELECT 't4', ST_AsText(unnest(ST_ClusterWithin(array_agg(geom ORDER BY id), 1.5))) FROM cluster_inputs;
 
+SELECT 't5', id, ST_AsText(geom), 
+  ST_ClusterWithinWin(geom, 1.4) OVER () AS cluster
+  FROM cluster_inputs;
+
+SELECT 't6', id, ST_AsText(geom), 
+  ST_ClusterIntersectingWin(geom) OVER () AS cluster
+  FROM cluster_inputs;
+
 -- tests for ST_DBSCAN
 
 CREATE TEMPORARY TABLE dbscan_inputs (id int, geom geometry);

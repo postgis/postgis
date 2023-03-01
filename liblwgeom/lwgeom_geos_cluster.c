@@ -50,7 +50,6 @@ struct STRTree
 
 static struct STRTree make_strtree(void** geoms, uint32_t num_geoms, char is_lwgeom);
 static void destroy_strtree(struct STRTree * tree);
-static int union_intersecting_pairs(GEOSGeometry** geoms, uint32_t num_geoms, UNIONFIND* uf);
 static int combine_geometries(UNIONFIND* uf, void** geoms, uint32_t num_geoms, void*** clustersGeoms, uint32_t* num_clusters, char is_lwgeom);
 
 /* Make a minimal GEOSGeometry* whose Envelope covers the same 2D extent as
@@ -155,7 +154,7 @@ query_accumulate(void* item, void* userdata)
 }
 
 /* Identify intersecting geometries and mark them as being in the same set */
-static int
+int
 union_intersecting_pairs(GEOSGeometry** geoms, uint32_t num_geoms, UNIONFIND* uf)
 {
 	uint32_t p, i;

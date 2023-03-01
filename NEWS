@@ -16,6 +16,7 @@ xxxx/xx/xx
   - GH703, Add min/max resampling as options (Christian Schroeder)
   - #5336, topogeometry cast to topoelement support (Regina Obe)
   - Allow singleton geometry to be inserted into Geometry(Multi*) columns (Paul Ramsey)
+  - GH721, New window-based ST_ClusterWithinWin and ST_ClusterIntersectingWin (Paul Ramsey)
 
 * Enhancements *
   - #5194, do not update system catalogs from postgis_extensions_upgrade (Sandro Santilli)
