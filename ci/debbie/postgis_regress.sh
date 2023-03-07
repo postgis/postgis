@@ -37,9 +37,6 @@ export PGIS_REG_TMPDIR=${WORKSPACE}/tmp/${POSTGIS_MAJOR_VERSION}_${POSTGIS_MINOR
 #otherwise the attempt to drop the database, sometimes happens when pg is in middle of start
 for i in {0..60}; do psql -c 'select;' && break; sleep 0.5; done
 
-export POSTGIS_REGRESS_DB="postgis_reg" # FIXME: tweak to avoid clashes
-psql -c "DROP DATABASE IF EXISTS $POSTGIS_REGRESS_DB"
-
 echo $PGPORT
 echo ${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 
