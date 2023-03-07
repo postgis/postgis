@@ -7306,8 +7306,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_coverage_tile(rastschema name,
 		BEGIN
 			_covrast := @extschema@.ST_AsRaster(_covextent, _scalex, _scaley, '8BUI', 1, 0, NULL, NULL, _skewx, _skewy);
 			IF _covrast IS NULL THEN
-				RAISE NOTICE 'Unable to create coverage raster. Cannot add coverage tile constraint: % (%)',
-          SQLERRM, SQLSTATE;
+				RAISE NOTICE 'Unable to create coverage raster: ST_AsRaster returned NULL.';
 				RETURN FALSE;
 			END IF;
 
