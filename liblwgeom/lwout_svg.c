@@ -395,17 +395,21 @@ static size_t
 assvg_collection_size(const LWCOLLECTION *col, int relative, int precision)
 {
 	uint32_t i = 0;
+	uint32_t n = 0;
 	size_t size=0;
 	const LWGEOM *subgeom;
 
 	for (i=0; i<col->ngeoms; i++)
 	{
 		subgeom = col->geoms[i];
+		if (lwgeom_is_empty(subgeom))
+			continue;
 		size += assvg_geom_size(subgeom, relative, precision);
+		n++;
 	}
 
-	if ( i ) /* We have some geometries, so add space for delimiters. */
-		size += sizeof(";") * --i;
+	if (n)
+		size += sizeof(";") * (n - 1);
 
 	if (size == 0) size++; /* GEOMETRYCOLLECTION EMPTY, space for null terminator */
 
@@ -416,16 +420,20 @@ static size_t
 assvg_collection_buf(const LWCOLLECTION *col, char *output, int relative, int precision)
 {
 	uint32_t i;
+	uint32_t n = 0;
 	char *ptr=output;
 	const LWGEOM *subgeom;
 
 	/* EMPTY GEOMETRYCOLLECTION */
-	if (col->ngeoms == 0) *ptr = '\0';
+	*ptr = '\0';
 
 	for (i=0; i<col->ngeoms; i++)
 	{
-		if (i) ptr += sprintf(ptr, ";");
 		subgeom = col->geoms[i];
+		if (lwgeom_is_empty(subgeom))
+			continue;
+		if (n++)
+			ptr += sprintf(ptr, ";");
 		ptr += assvg_geom_buf(subgeom, ptr, relative, precision);
 	}
 

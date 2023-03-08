@@ -1518,3 +1518,5 @@ SELECT '#5571', ST_GeneratePoints(
 ) IS NOT NULL;
 
 SELECT '#5597', ST_AsGeoJSON(r.*) from (values (null::geometry)) as r(geom);
+
+SELECT '#5350',  ST_AsSVG(ST_GeomFromText('GEOMETRYCOLLECTION (POINT EMPTY, LINESTRING (0 0, 1 1))',4326), 3, 5 );
