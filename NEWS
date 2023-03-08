@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - #5350, Skip empty members when serializing SVG geometry collections (Regina Obe)
  - #5527, Report invalid composite arguments in ST_FromFlatGeobuf (Paul Ramsey)
  - Preserve views depending on ST_Slope across raster upgrades (Sandro Santilli)
  - Preserve views depending on ST_Intersects across raster upgrades (Sandro Santilli)
