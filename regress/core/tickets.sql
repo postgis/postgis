@@ -1454,6 +1454,9 @@ SELECT
 -- https://trac.osgeo.org/postgis/ticket/5151
 SELECT '#5151', ST_SetPoint(ST_GeomFromText('LINESTRING EMPTY',4326), 1, ST_GeomFromText('POINT(40 50)',4326)) As result;
 
+-- https://trac.osgeo.org/postgis/ticket/5350
+SELECT '#5350',  ST_AsSVG(ST_GeomFromText('GEOMETRYCOLLECTION (POINT EMPTY, LINESTRING (0 0, 1 1))',4326), 3, 5 );
+
 -- https://trac.osgeo.org/postgis/ticket/5139
 SET client_min_messages TO ERROR;
 DROP TABLE IF EXISTS a;

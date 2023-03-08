@@ -128,14 +128,15 @@ assvg_point(stringbuffer_t* sb, const LWPOINT *point, int circle, int precision)
 {
 	char sx[OUT_DOUBLE_BUFFER_SIZE];
 	char sy[OUT_DOUBLE_BUFFER_SIZE];
+	if ( !lwgeom_is_empty((LWGEOM*)point) ){
+		const POINT2D* pt = getPoint2d_cp(point->point, 0);
+		lwprint_double(pt->x, precision, sx);
+		lwprint_double(-(pt->y), precision, sy);
 
-	const POINT2D* pt = getPoint2d_cp(point->point, 0);
-	lwprint_double(pt->x, precision, sx);
-	lwprint_double(-(pt->y), precision, sy);
-
-	stringbuffer_aprintf(sb,
-		circle ? "x=\"%s\" y=\"%s\"" : "cx=\"%s\" cy=\"%s\"",
-		sx, sy);
+		stringbuffer_aprintf(sb,
+			circle ? "x=\"%s\" y=\"%s\"" : "cx=\"%s\" cy=\"%s\"",
+			sx, sy);
+	}
 }
 
 
@@ -224,7 +225,7 @@ assvg_multipolygon(stringbuffer_t* sb, const LWMPOLY *mpoly, int relative, int p
 static void
 assvg_collection(stringbuffer_t* sb, const LWCOLLECTION *col, int relative, int precision)
 {
-	uint32_t i;
+	uint32_t i; uint32_t j = 0;
 	const LWGEOM *subgeom;
 
 	/* EMPTY GEOMETRYCOLLECTION */
@@ -232,9 +233,15 @@ assvg_collection(stringbuffer_t* sb, const LWCOLLECTION *col, int relative, int 
 
 	for (i = 0; i<col->ngeoms; i++)
 	{
-		if (i) stringbuffer_append(sb, ";");
 		subgeom = col->geoms[i];
-		assvg_geom(sb, subgeom, relative, precision);
+		if (!lwgeom_is_empty(subgeom) ){
+			/** Note the j is to prevent adding a ;
+			 * if the first geometry is empty, but subsequent aren't
+			 **/
+			if (j) stringbuffer_append(sb, ";");
+			j++;
+			assvg_geom(sb, subgeom, relative, precision);
+		}
 	}
 
 }
