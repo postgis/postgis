@@ -479,6 +479,11 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 	if ( pa1->npoints < 2 || pa2->npoints < 2 )
 		return LINE_NO_CROSS;
 
+	/* Zero length lines don't have a side. */
+	if ( ptarray_length_2d(pa1) == 0 || ptarray_length_2d(pa2) == 0 )
+		return LINE_NO_CROSS;
+
+
 #if POSTGIS_DEBUG_LEVEL >= 4
 	geom_ewkt = lwgeom_to_ewkt((LWGEOM*)l1);
 	LWDEBUGF(4, "l1 = %s", geom_ewkt);
@@ -523,7 +528,7 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 				LWDEBUG(4,"this_cross == SEG_CROSS_RIGHT");
 				cross_right++;
 				if ( ! first_cross )
-					first_cross = SEG_CROSS_LEFT;
+					first_cross = SEG_CROSS_RIGHT;
 			}
 
 			/*
