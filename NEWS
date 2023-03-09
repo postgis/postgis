@@ -15,6 +15,8 @@ Proj 6.1+, and PostgreSQL 14+.
   - #5315, #5318, #5319, #5320, #5342 crashes on infinite coordinates
           (Regina Obe, Paul Ramsey)
   - #5344, Include topology id sequence state in dumps (Sandro Santilli)
+  - #5288, ST_LineCrossingDirection multi-cross error (Paul Ramsey)
+
 
 PostGIS 3.2.4
 2022/11/12
