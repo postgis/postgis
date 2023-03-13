@@ -183,9 +183,9 @@ sh autogen.sh
 
 	  <listitem>
 		<para>
-		  GEOS geometry library, version 3.6 or greater, but GEOS 3.9+ is required to take full advantage of all the new functions and features. GEOS is available for download from
-		  <ulink url="http://trac.osgeo.org/geos/">
-			http://trac.osgeo.org/geos/
+		  GEOS geometry library, version 3.6 or greater, but GEOS 3.11+ is required to take full advantage of all the new functions and features. GEOS is available for download from
+		  <ulink url="https://libgeos.org">
+			https://libgeos.org/
 		  </ulink>.
 		</para>
 	  </listitem>
