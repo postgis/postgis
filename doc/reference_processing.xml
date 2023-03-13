@@ -2794,7 +2794,7 @@ LINESTRING M (5 2 3.40282346638529e+38,3 8 29,6 20 1.5,7 25 49.5,10 10 3.4028234
         and covering it exactly, with the maximum total interior angle over all possible triangulations.
         It provides the "best quality" triangulation of the polygon.</para>
 
-        <para>Availability: 3.3.0</para>
+        <para>Availability: 3.3.0 - requires GEOS &gt;= 3.11.0</para>
       </refsection>
 
           <refsection>
