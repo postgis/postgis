@@ -200,6 +200,7 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 		}
 
 		lwfree(result_ids);
+		lwfree(is_in_cluster);
 		UF_destroy(uf);
 	}
 
