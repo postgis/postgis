@@ -3,13 +3,13 @@
 # Translators:
 # David Martinez Morata, 2013
 # David Martinez Morata, 2013
-# Regina Obe <regina@arrival3d.com>, 2022.
+# Regina Obe <regina@arrival3d.com>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-02-10 06:01+0000\n"
-"PO-Revision-Date: 2022-05-14 06:14+0000\n"
+"PO-Revision-Date: 2023-03-26 22:37+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/"
 "introductionxml/es/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.12.2\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: introduction.xml:3
@@ -583,21 +583,21 @@ msgstr ""
 
 #. Tag: member
 #: introduction.xml:243
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "David Garnier"
-msgstr "David Zwarg"
+msgstr ""
 
 #. Tag: member
 #: introduction.xml:244
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "David Skea"
-msgstr "David Zwarg"
+msgstr ""
 
 #. Tag: member
 #: introduction.xml:245
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "David Techer"
-msgstr "David Zwarg"
+msgstr ""
 
 #. Tag: member
 #: introduction.xml:246
