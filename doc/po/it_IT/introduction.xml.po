@@ -7,13 +7,14 @@
 # Sandro Santilli <strk@kbt.io>, 2014
 # Sandro Santilli <strk@kbt.io>, 2014
 # Stefano Costa <steko@iosa.it>, 2013
+# Regina Obe <regina@arrival3d.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-02-10 06:01+0000\n"
-"PO-Revision-Date: 2022-01-12 22:41+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"PO-Revision-Date: 2023-03-26 22:37+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "introductionxml/it/>\n"
 "Language: it_IT\n"
@@ -21,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: introduction.xml:3
@@ -606,21 +607,21 @@ msgstr ""
 
 #. Tag: member
 #: introduction.xml:243
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "David Garnier"
-msgstr "David Zwarg"
+msgstr ""
 
 #. Tag: member
 #: introduction.xml:244
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "David Skea"
-msgstr "David Zwarg"
+msgstr ""
 
 #. Tag: member
 #: introduction.xml:245
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "David Techer"
-msgstr "David Zwarg"
+msgstr ""
 
 #. Tag: member
 #: introduction.xml:246
