@@ -1,12 +1,12 @@
 # SOME DESCRIPTIVE TITLE.
 # Chen <onsummer@foxmail.com>, 2022.
-# Regina Obe <regina@arrival3d.com>, 2022.
+# Regina Obe <regina@arrival3d.com>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-25 19:29+0000\n"
-"PO-Revision-Date: 2022-12-20 16:51+0000\n"
+"PO-Revision-Date: 2023-03-26 22:37+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/administrationxml/zh_Hans/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: administration.xml:3
@@ -41,7 +41,7 @@ msgstr ""
 msgid ""
 "If you enabled raster support you may want to read below how to properly "
 "configure it."
-msgstr ""
+msgstr "如果启用了栅格支持，则可能需要阅读以下如何正确配置它。"
 
 #. Tag: para
 #: administration.xml:16
@@ -59,7 +59,7 @@ msgstr ""
 #: administration.xml:19
 #, no-c-format
 msgid "If you want to enable offline raster:"
-msgstr ""
+msgstr "如果要启用离线栅格:"
 
 #. Tag: programlisting
 #: administration.xml:20
