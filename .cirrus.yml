@@ -20,7 +20,7 @@ task:
     - service postgresql onestart
     - su postgres -c "createuser -s `whoami`"
     - gmake || { service postgresql onestop; exit 1;}
-    - gmake check || { service postgresql onestop; exit 1;}
+    - gmake check RUNTESTFLAGS="-v" || { service postgresql onestop; exit 1;}
     - gmake install || { service postgresql onestop; exit 1;}
     - gmake check RUNTESTFLAGS="-v --extension" || { service postgresql onestop; exit 1;}
     - gmake check RUNTESTFLAGS="-v --extension --dumprestore" || { service postgresql onestop; exit 1;}
