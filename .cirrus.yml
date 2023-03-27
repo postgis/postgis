@@ -9,6 +9,8 @@ task:
     - sed -i.bak -e 's,pkg+http://pkg.FreeBSD.org/\${ABI}/quarterly,pkg+http://pkg.FreeBSD.org/\${ABI}/latest,' /etc/pkg/FreeBSD.conf
     - ASSUME_ALWAYS_YES=yes pkg bootstrap -f
     - pkg install -y bison postgresql13-server gmake libxml2 autoconf automake libtool pkgconf iconv pcre proj gdal sfcgal geos libxslt cunit protobuf-c json-c postgresql13-contrib
+    - projsync --system-directory --source-id us_noaa
+    - projsync --system-directory --source-id ch_swisstopo
 
   patch_script:
     # will be removed
