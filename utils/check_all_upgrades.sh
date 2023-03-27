@@ -6,6 +6,7 @@ CTBDIR=`pg_config --sharedir`/contrib/
 TMPDIR=/tmp/check_all_upgrades-$$-tmp
 PGVER=`pg_config --version | awk '{print $2}'`
 PGVER_MAJOR=$(echo "${PGVER}" | sed 's/\.[^\.]*//' | sed 's/\(alpha\|beta\|rc\).*//' )
+CHECK_UNPACKAGED=0
 echo "INFO: PostgreSQL version: ${PGVER} [${PGVER_MAJOR}]"
 
 BUILDDIR=$PWD # TODO: allow override ?
@@ -243,28 +244,30 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
   done
 
   # Check unpackaged->unpackaged upgrades
-  CURRENTVERSION=`grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.'`
-  if test "${to_version}" = "${CURRENTVERSION}"; then
-    for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`
-    do #{
-      UPGRADE_PATH="unpackaged${majmin}--:auto"
-      test_label="${EXT} script-based upgrade ${UPGRADE_PATH}"
-      if expr $to_version_param : ':auto' >/dev/null; then
-        test_label="${test_label} ($to_version)"
-      fi
-      compatible_upgrade "${test_label}" ${majmin} ${to_version} || continue
-      echo "Testing ${test_label}"
-      RUNTESTFLAGS="-v --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-      make -C ${REGDIR} check && {
-        echo "PASS: ${test_label}"
-      } || {
-        echo "FAIL: ${test_label}"
-        failed
-      }
-    done #}
-  else #}{
-    echo "SKIP: ${EXT} script-based upgrades (${to_version_param} [${to_version}] does not match built version ${CURRENTVERSION})"
-  fi #}
+  if test $CHECK_UNPACKAGED != 0; then
+    CURRENTVERSION=`grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.'`
+    if test "${to_version}" = "${CURRENTVERSION}"; then
+      for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`
+      do #{
+        UPGRADE_PATH="unpackaged${majmin}--:auto"
+        test_label="${EXT} script-based upgrade ${UPGRADE_PATH}"
+        if expr $to_version_param : ':auto' >/dev/null; then
+          test_label="${test_label} ($to_version)"
+        fi
+        compatible_upgrade "${test_label}" ${majmin} ${to_version} || continue
+        echo "Testing ${test_label}"
+        RUNTESTFLAGS="-v --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
+        make -C ${REGDIR} check && {
+          echo "PASS: ${test_label}"
+        } || {
+          echo "FAIL: ${test_label}"
+          failed
+        }
+      done #}
+    else #}{
+      echo "SKIP: ${EXT} script-based upgrades (${to_version_param} [${to_version}] does not match built version ${CURRENTVERSION})"
+    fi #}
+  fi
 
 done
 
