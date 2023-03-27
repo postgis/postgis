@@ -9,6 +9,8 @@ task:
     - sed -i.bak -e 's,pkg+http://pkg.FreeBSD.org/\${ABI}/quarterly,pkg+http://pkg.FreeBSD.org/\${ABI}/latest,' /etc/pkg/FreeBSD.conf
     - ASSUME_ALWAYS_YES=yes pkg bootstrap -f
     - pkg install -y bison postgresql13-server gmake libxml2 autoconf automake libtool pkgconf iconv pcre proj gdal sfcgal geos libxslt cunit protobuf-c json-c postgresql13-contrib
+    - projsync --system-directory --source-id us_noaa
+    - projsync --system-directory --source-id ch_swisstopo
 
   patch_script:
     # will be removed
@@ -20,7 +22,7 @@ task:
     - service postgresql onestart
     - su postgres -c "createuser -s `whoami`"
     - gmake -j8 || { service postgresql onestop; exit 1;}
-    - gmake -j8 check || { service postgresql onestop; exit 1;}
+    - gmake -j8 check RUNTESTFLAGS="-v" || { service postgresql onestop; exit 1;}
     - gmake -j8 install || { service postgresql onestop; exit 1;}
     - gmake -j8 check RUNTESTFLAGS="-v --extension" || { service postgresql onestop; exit 1;}
     - gmake -j8 check RUNTESTFLAGS="-v --dumprestore" || { service postgresql onestop; exit 1;}
