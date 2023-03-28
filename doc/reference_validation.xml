@@ -341,6 +341,7 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
     The <varname>params</varname> argument can be used to supply an options
     string to select the method to use for building valid geometry.
     The options string is in the format "method=linework|structure keepcollapsed=true|false".
+    If no "params" argument is provided, the "linework" algorithm will be used as the default.
     </para>
 
     <para>The "method" key has two values.</para>
