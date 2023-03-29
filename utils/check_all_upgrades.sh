@@ -216,32 +216,34 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
   done
 
   # Check unpackaged->extension upgrades
-  for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`; do
-    UPGRADE_PATH="unpackaged${majmin}--${to_version_param}"
-    test_label="${EXT} extension upgrade ${UPGRADE_PATH}"
-    if expr $to_version_param : ':auto' >/dev/null; then
-      test_label="${test_label} ($to_version)"
-    fi
-    compatible_upgrade "${test_label}" ${majmin} ${to_version} || continue
-    path=$( psql -XAtc "
-        SELECT path
-        FROM pg_catalog.pg_extension_update_paths('${EXT}')
-        WHERE source = 'unpackaged'
-        AND target = '${to_version}'
-    " ) || exit 1
-    if test -z "${path}"; then
-      echo "SKIP: ${test_label} (no upgrade path from unpackaged to ${to_version} known by postgresql)"
-      continue
-    fi
-    echo "Testing ${test_label}"
-    RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-    make -C ${REGDIR} check && {
-      echo "PASS: ${test_label}"
-    } || {
-      echo "FAIL: ${test_label}"
-      failed
-    }
-  done
+  if test $CHECK_UNPACKAGED != 0; then
+    for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`; do
+      UPGRADE_PATH="unpackaged${majmin}--${to_version_param}"
+      test_label="${EXT} extension upgrade ${UPGRADE_PATH}"
+      if expr $to_version_param : ':auto' >/dev/null; then
+        test_label="${test_label} ($to_version)"
+      fi
+      compatible_upgrade "${test_label}" ${majmin} ${to_version} || continue
+      path=$( psql -XAtc "
+          SELECT path
+          FROM pg_catalog.pg_extension_update_paths('${EXT}')
+          WHERE source = 'unpackaged'
+          AND target = '${to_version}'
+      " ) || exit 1
+      if test -z "${path}"; then
+        echo "SKIP: ${test_label} (no upgrade path from unpackaged to ${to_version} known by postgresql)"
+        continue
+      fi
+      echo "Testing ${test_label}"
+      RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
+      make -C ${REGDIR} check && {
+        echo "PASS: ${test_label}"
+      } || {
+        echo "FAIL: ${test_label}"
+        failed
+      }
+    done
+  fi
 
   # Check unpackaged->unpackaged upgrades
   if test $CHECK_UNPACKAGED != 0; then
