@@ -265,6 +265,9 @@ dbscan_update_context(GEOSSTRtree* tree, struct QueryContext* cxt, LWGEOM** geom
 	cxt->num_items_found = 0;
 
 	GEOSGeometry* query_envelope;
+
+	LW_ON_INTERRUPT(return LW_FAILURE);
+
 	if (geoms[p]->type == POINTTYPE)
 	{
 		const POINT2D* pt = getPoint2d_cp(lwgeom_as_lwpoint(geoms[p])->point, 0);
@@ -346,10 +349,16 @@ union_dbscan_minpoints_1(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, doub
 
 	for (p = 0; p < num_geoms; p++)
 	{
+		int rv = LW_SUCCESS;
 		if (lwgeom_is_empty(geoms[p]))
 			continue;
 
-		dbscan_update_context(tree.tree, &cxt, geoms, p, eps);
+		rv = dbscan_update_context(tree.tree, &cxt, geoms, p, eps);
+		if (rv == LW_FAILURE)
+		{
+			destroy_strtree(&tree);
+			return LW_FAILURE;
+		}
 		for (i = 0; i < cxt.num_items_found; i++)
 		{
 			uint32_t q = *((uint32_t*) cxt.items_found[i]);
@@ -421,11 +430,17 @@ union_dbscan_general(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double e
 	for (p = 0; p < num_geoms; p++)
 	{
 		uint32_t num_neighbors = 0;
+		int rv;
 
 		if (lwgeom_is_empty(geoms[p]))
 			continue;
 
-		dbscan_update_context(tree.tree, &cxt, geoms, p, eps);
+		rv = dbscan_update_context(tree.tree, &cxt, geoms, p, eps);
+		if (rv == LW_FAILURE)
+		{
+			destroy_strtree(&tree);
+			return LW_FAILURE;
+		}
 
 		/* We didn't find enough points to do anything, even if they are all within eps. */
 		if (cxt.num_items_found < min_points)
