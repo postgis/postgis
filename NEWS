@@ -17,6 +17,8 @@ Proj 6.1+, and PostgreSQL 14+.
   - #5344, Include topology id sequence state in dumps (Sandro Santilli)
   - #5288, ST_LineCrossingDirection multi-cross error (Paul Ramsey)
   - #5347, _ST_BestSRID crashes on ARM with infinite geometries (Regina Obe)
+  - #5363, Make ST_ClusterDBScan interruptable (Paul Ramsey)
+
 
 PostGIS 3.2.4
 2022/11/12
