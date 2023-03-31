@@ -22,6 +22,7 @@ YYYY/MM/DD
   - #5347, _ST_BestSRID crashes on ARM with infinite geometries (Regina Obe)
   - #5331, [postgis_tiger_geocoder] reverse_geocode, prefer addressable ranges
           (Regina Obe, Locance)
+  - #5363, Make ST_ClusterDBScan interruptable (Paul Ramsey)
 
 
 PostGIS 3.3.2
