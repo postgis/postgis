@@ -33,7 +33,7 @@
                 <title>Breaking Changes</title>
                 <para>Drop support for PostgreSQL 9.6 and 10 (Regina Obe)</para>
                 <para>Change output for WKT MULTIPOINT. All points now
-                    wrapped in parens. (Even Roualt)</para>
+                    wrapped in parens. (Even Rouault)</para>
                 <para><ulink url="https://github.com/postgis/postgis/pull/674">GH 674</ulink>, geometry validation and fixing is disabled
                 for ST_DumpAsPolygons and ST_Polygon so it works faster
                 but might produce invalid polygons. (Aliaksandr Kalenik)</para>
