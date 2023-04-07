@@ -136,6 +136,7 @@ while (<>)
 		my $name = $1;
 		my $args = $2;
 		$args =~ s/\s*$//; # trim trailing blanks
+		$args =~ s/^\s*//; # trim leading blanks
 
 		my @args = split('\s*,\s*', $args);
 		@args = canonicalize_args(@args);
