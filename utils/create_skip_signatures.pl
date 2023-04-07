@@ -133,8 +133,9 @@ while (<>)
 
 		$line =~ m/ *([^\( ]*) *\((.*)\)/ or die "Unexpected DROP FUNCTION syntax: $origline";
 
-		my $name = lc($1);
-		my $args = lc($2);
+		my $name = $1;
+		my $args = $2;
+		$args =~ s/\s*$//; # trim trailing blanks
 
 		my @args = split('\s*,\s*', $args);
 		@args = canonicalize_args(@args);
