@@ -15,6 +15,8 @@
 
 #include "../postgis_config.h"
 
+#include <math.h> /* for isnan */
+
 #include "shp2pgsql-core.h"
 #include "../liblwgeom/liblwgeom.h"
 #include "../liblwgeom/lwgeom_log.h" /* for LWDEBUG macros */
