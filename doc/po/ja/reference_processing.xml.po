@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-02-10 06:01+0000\n"
+"POT-Creation-Date: 2023-04-10 06:16+0000\n"
 "PO-Revision-Date: 2023-02-14 02:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -827,14 +827,8 @@ msgid ""
 "funcprototype> <funcprototype> <funcdef>geography <function>ST_Centroid</"
 "function></funcdef> <paramdef><type>geography </type> <parameter>g1</"
 "parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>use_spheroid=true</parameter></paramdef> </funcprototype>"
+"<parameter>use_spheroid = true</parameter></paramdef> </funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>geometry <function>ST_Centroid</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geography <function>ST_Centroid</"
-"function></funcdef> <paramdef><type>geography </type> <parameter>g1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>use_spheroid=true</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_processing.xml:391
@@ -1041,12 +1035,12 @@ msgid ""
 "the line segments before and after the vertex. A reasonable degree of "
 "smoothing is provided by 3 iterations; the maximum is limited to 5."
 msgstr ""
-"<ulink url=\"http://www.idav.ucdavis.edu/education/CAGDNotes/"
-"Chaikins-Algorithm/Chaikins-Algorithm.html\">チャイキンのアルゴリズム</ulink>"
-"を使ってラインまたはポリゴンのジオメトリの平滑化を行います。平滑化の度合いは<"
-"varname>nIterations</varname>パラメータで制御します。繰り返しごとに、各々の内"
-"部の頂点は、頂点を挟む辺の上で、長さが1/4となる位置の二つの頂点に置き換えます"
-"。平滑化の合理的な度合いは3回反復です。最大値は5に制限されています。"
+"<ulink url=\"http://www.idav.ucdavis.edu/education/CAGDNotes/Chaikins-"
+"Algorithm/Chaikins-Algorithm.html\">チャイキンのアルゴリズム</ulink>を使って"
+"ラインまたはポリゴンのジオメトリの平滑化を行います。平滑化の度合いは"
+"<varname>nIterations</varname>パラメータで制御します。繰り返しごとに、各々の"
+"内部の頂点は、頂点を挟む辺の上で、長さが1/4となる位置の二つの頂点に置き換えま"
+"す。平滑化の合理的な度合いは3回反復です。最大値は5に制限されています。"
 
 #. Tag: para
 #: reference_processing.xml:519
@@ -1069,10 +1063,10 @@ msgid ""
 "linkend=\"ST_SimplifyVW\"/>)."
 msgstr ""
 "頂点数は繰り返し回数の2倍です。結果ジオメトリは入力ジオメトリより多くのポイン"
-"トを含むことになります。ポイント数を減らすには、"
-"結果に対して単純化関数を実行します (<xref linkend=\"ST_Simplify\"/>, <xref "
-"linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_SimplifyVW\""
-"/>を参照して下さい)。"
+"トを含むことになります。ポイント数を減らすには、結果に対して単純化関数を実行"
+"します (<xref linkend=\"ST_Simplify\"/>, <xref "
+"linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_SimplifyVW\"/>"
+"を参照して下さい)。"
 
 #. Tag: para
 #: reference_processing.xml:531
@@ -1185,8 +1179,8 @@ msgid ""
 ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref "
 "linkend=\"ST_SimplifyVW\"/>"
 msgstr ""
-", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
-"\"ST_SimplifyVW\"/>"
+", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref "
+"linkend=\"ST_SimplifyVW\"/>"
 
 #. Tag: refname
 #: reference_processing.xml:626
@@ -1231,9 +1225,9 @@ msgid ""
 msgstr ""
 "凹包は (通常は)入力ジオメトリを包含する凹ジオメトリで、凹ジオメトリの頂点は入"
 "力頂点の部分集合です。一般的に凹包はポリゴンです。二つ以上の同一線上の点の凹"
-"包は2点のラインストリングです。一つ以上の同一点の凹包はポイントです。 <varnam"
-"e>param_allow_holes</varname>引数ににTRUEを与えない限りポリゴンは穴を持ちませ"
-"ん。"
+"包は2点のラインストリングです。一つ以上の同一点の凹包はポイントです。 "
+"<varname>param_allow_holes</varname>引数ににTRUEを与えない限りポリゴンは穴を"
+"持ちません。"
 
 #. Tag: para
 #: reference_processing.xml:653
@@ -1246,8 +1240,9 @@ msgid ""
 "input points."
 msgstr ""
 "凹包はジオメトリの集合を「真空パック」したジオメトリと考えることができます。"
-"輪ゴムで囲うのに似ている<link linkend=\"ST_ConvexHull\">凸包</link>と違います"
-"。凹包は一般的に面積が小さく、また入力ポイントからなる境界が自然になります。"
+"輪ゴムで囲うのに似ている<link linkend=\"ST_ConvexHull\">凸包</link>と違いま"
+"す。凹包は一般的に面積が小さく、また入力ポイントからなる境界が自然になりま"
+"す。"
 
 #. Tag: para
 #: reference_processing.xml:660
@@ -1261,9 +1256,9 @@ msgid ""
 "0.1 produce reasonable results."
 msgstr ""
 "<varname>param_pctconvex</varname>は計算される凹包の凹度を制御するためのもの"
-"です。1では凸包になります。1から0に変化させると凹度が増加していきます。"
-"0では最大の凹度の凹包になります (ただし単一ポリゴンのままです)。適切な値は入"
-"力データ固有のものですが、多くの場合0.3と0.1の間が適正な結果となります。"
+"です。1では凸包になります。1から0に変化させると凹度が増加していきます。0では"
+"最大の凹度の凹包になります (ただし単一ポリゴンのままです)。適切な値は入力デー"
+"タ固有のものですが、多くの場合0.3と0.1の間が適正な結果となります。"
 
 #. Tag: para
 #: reference_processing.xml:668
@@ -1293,8 +1288,8 @@ msgstr ""
 "ポイントとラインの入力では、凹包は入力ポイントをポイントとラインの入力では、"
 "凹包は全ての入力ポイントを包みます。ポリゴン入力では、凹包は全ての入力ポイン"
 "トを含み、<emphasis>なおかつ</emphasis>入力ポリゴンが及ぶ全ての面を含みます。"
-"ポリゴン入力でもポイントとして計算した凹包が欲しい場合には、<xref linkend="
-"\"ST_Points\"/>を使って、まずポイントに変換して下さい。"
+"ポリゴン入力でもポイントとして計算した凹包が欲しい場合には、<xref "
+"linkend=\"ST_Points\"/>を使って、まずポイントに変換して下さい。"
 
 #. Tag: para
 #: reference_processing.xml:679
@@ -1481,7 +1476,8 @@ msgid ""
 "Comparing a concave hull of a Polygon to the concave hull of the constituent "
 "points. The hull respects the boundary of the polygon, whereas the points-"
 "based hull does not."
-msgstr "ポリゴンの凹包と構成ポイントの凹包との比較。凹包はポリゴンの境界を考慮します"
+msgstr ""
+"ポリゴンの凹包と構成ポイントの凹包との比較。凹包はポリゴンの境界を考慮します"
 "が、ポイントを基にした凹包では考慮されません。"
 
 #. Tag: programlisting
@@ -4243,7 +4239,7 @@ msgstr ""
 "います。"
 
 #. Tag: para
-#: reference_processing.xml:2077
+#: reference_processing.xml:2077 reference_processing.xml:2252
 #, no-c-format
 msgid "Availability: 3.3.0 - requires GEOS &gt;= 3.11.0"
 msgstr "Availability: 3.3.0 - GEOS &gt;= 3.11.0 が必要です。"
@@ -4609,12 +4605,6 @@ msgstr ""
 "の集合で、ポリゴンを確実に覆い、内角和が考えられる三角分割の中で最大になりま"
 "す。この関数によって、ポリゴンの「最高品質」の三角分割が得られます。"
 
-#. Tag: para
-#: reference_processing.xml:2252
-#, no-c-format
-msgid "Availability: 3.3.0"
-msgstr "Availability: 3.3.0"
-
 #. Tag: title
 #: reference_processing.xml:2256 reference_processing.xml:2261
 #, no-c-format
@@ -4958,6 +4948,28 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_VoronoiLines\"/>"
 msgstr ", <xref linkend=\"ST_VoronoiLines\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "<funcprototype> <funcdef>geometry <function>ST_Centroid</function></"
+#~ "funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
+#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geography "
+#~ "<function>ST_Centroid</function></funcdef> <paramdef><type>geography </"
+#~ "type> <parameter>g1</parameter></paramdef> <paramdef "
+#~ "choice=\"opt\"><type>boolean </type> <parameter>use_spheroid=true</"
+#~ "parameter></paramdef> </funcprototype>"
+#~ msgstr ""
+#~ "<funcprototype> <funcdef>geometry <function>ST_Centroid</function></"
+#~ "funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
+#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geography "
+#~ "<function>ST_Centroid</function></funcdef> <paramdef><type>geography </"
+#~ "type> <parameter>g1</parameter></paramdef> <paramdef "
+#~ "choice=\"opt\"><type>boolean </type> <parameter>use_spheroid=true</"
+#~ "parameter></paramdef> </funcprototype>"
+
+#, no-c-format
+#~ msgid "Availability: 3.3.0"
+#~ msgstr "Availability: 3.3.0"
 
 #, no-c-format
 #~ msgid ""

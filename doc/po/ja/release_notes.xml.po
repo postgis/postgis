@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-08-27 04:57+0000\n"
+"POT-Creation-Date: 2023-04-10 06:16+0000\n"
 "PO-Revision-Date: 2022-09-14 01:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -54,10 +54,9 @@ msgid ""
 "ST_OptimalAlphaShape."
 msgstr ""
 "このバージョンにはPostgreSQL 11以上、GEOS 3.6以上、Proj 5.2以上が必要です。"
-"GEOS 3.9以上で追加機能が有効になり、GEOS 3."
-"10以上でST_MakeValidの機能強化が有効になり、GEOS 3."
-"11以上で多数の機能強化が追加されます。"
-"ST_AlphaShapeとST_OptimalAlphaShapeにはSFCGAL 1.4.1以上が必要です。"
+"GEOS 3.9以上で追加機能が有効になり、GEOS 3.10以上でST_MakeValidの機能強化が有"
+"効になり、GEOS 3.11以上で多数の機能強化が追加されます。ST_AlphaShapeと"
+"ST_OptimalAlphaShapeにはSFCGAL 1.4.1以上が必要です。"
 
 #. Tag: para
 #: release_notes.xml:12
@@ -67,8 +66,8 @@ msgid ""
 "posts/2022-07-01-geos-3-11-0-released/\">GEOS 3.11.0 release notes</ulink>"
 msgstr ""
 "ご注意: GEOS 3.11.0は最近リリースされました。<ulink url=\"https://libgeos."
-"org/posts/2022-07-01-geos-3-11-0-released/\">GEOS 3.11.0 release "
-"notes</ulink>に詳細があります。"
+"org/posts/2022-07-01-geos-3-11-0-released/\">GEOS 3.11.0 release notes</"
+"ulink>に詳細があります。"
 
 #. Tag: para
 #: release_notes.xml:13
@@ -78,9 +77,9 @@ msgid ""
 "This new feature is disabled by default because on some platforms, causes "
 "compilation errors (BSD and MingW64 issues have been raised)"
 msgstr ""
-"新規フラグの --enable-lto で、数学計算を改善します。ただし、"
-"プラットフォームによってはコンパイルエラーが発生する (BSDとMingW64で問題が発"
-"生しています)ため、この機能はデフォルトでは無効になっています。"
+"新規フラグの --enable-lto で、数学計算を改善します。ただし、プラットフォーム"
+"によってはコンパイルエラーが発生する (BSDとMingW64で問題が発生しています)た"
+"め、この機能はデフォルトでは無効になっています。"
 
 #. Tag: title
 #: release_notes.xml:17 release_notes.xml:197 release_notes.xml:258
@@ -97,8 +96,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5116\">5116</ulink>, "
 "Topology export/import scripts (Sandro Santilli)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5116\">5116</ulink>, "
-"トポロジのエクスポート/インポート用スクリプト (Sandro Santilliさん)"
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5116\">5116</ulink>, トポ"
+"ロジのエクスポート/インポート用スクリプト (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:19 release_notes.xml:260
@@ -178,8 +177,8 @@ msgid ""
 "ST_SimplifyPolygonHull with GEOS 3.11+ (Paul Ramsey, Martin Davis)"
 msgstr ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5162\">5162</ulink>, "
-"ST_SimplifyPolygonHull GEOS 3.11以上が必要 (Paul Ramseyさん, Martin "
-"Davisさん)"
+"ST_SimplifyPolygonHull GEOS 3.11以上が必要 (Paul Ramseyさん, Martin Davisさ"
+"ん)"
 
 #. Tag: para
 #: release_notes.xml:29 release_notes.xml:155
@@ -205,14 +204,12 @@ msgid "Drop support for PostgreSQL 9.6 and 10 (Regina Obe)"
 msgstr "PostgreSQL 9.6と10への対応を終了します (Regina Obeさん)"
 
 #. Tag: para
-#: release_notes.xml:35 release_notes.xml:229
+#: release_notes.xml:35
 #, no-c-format
 msgid ""
 "Change output for WKT MULTIPOINT. All points now wrapped in parens. (Even "
-"Roualt)"
-msgstr "WKT "
-"MULTOPOINTの出力を変更しました。全ての点が括弧で括られるようになりました。("
-"Even Roualtさん)"
+"Rouault)"
+msgstr ""
 
 #. Tag: para
 #: release_notes.xml:37
@@ -225,8 +222,8 @@ msgid ""
 msgstr ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/674\">GH 674</ulink>, "
 "ST_DumpAsPolygonsとST_Polygonのジオメトリの妥当性評価と修正は無効になってて、"
-"動作速度は早くなりますが不正なポリゴンが生成される可能性があります ("
-"Aliaksandr Kalenikさん)"
+"動作速度は早くなりますが不正なポリゴンが生成される可能性があります "
+"(Aliaksandr Kalenikさん)"
 
 #. Tag: title
 #: release_notes.xml:43 release_notes.xml:159 release_notes.xml:185
@@ -252,8 +249,8 @@ msgid ""
 "faces (Sandro Santilli)"
 msgstr ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/2861\">2861</ulink>, "
-"topology.node(containing_face)へのインデックスの追加で、"
-"フェイスの分割とマージが早くなりました (Sandro Santilliさん)"
+"topology.node(containing_face)へのインデックスの追加で、フェイスの分割とマー"
+"ジが早くなりました (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:46
@@ -263,10 +260,9 @@ msgid ""
 "Speed up ST_RemEdge topology functions adding index on relation(element_id) "
 "and edge_data(abs_next*) (Sandro Santilli)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/2083\">2083</ulink>, "
-"リレーション (element_id)とエッジデータ (abs_next*)"
-"のインデックスを追加することによるトポロジ関数のST_RemEdgeの高速化 (Sandro "
-"Santilliさん)"
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/2083\">2083</ulink>, リ"
+"レーション (element_id)とエッジデータ (abs_next*)のインデックスを追加すること"
+"によるトポロジ関数のST_RemEdgeの高速化 (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:48
@@ -287,8 +283,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5111\">5111</ulink>, "
 "faster topology face MBR computation (Sandro Santilli)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5111\">5111</ulink>, "
-"トポロジのフェイスのMBRのより速い計算 (Sandro Santilliさん)"
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5111\">5111</ulink>, トポ"
+"ロジのフェイスのMBRのより速い計算 (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:51 release_notes.xml:245
@@ -297,9 +293,8 @@ msgid ""
 "postgis_extensions_upgrade() support for upgrades from any PostGIS version, "
 "including yet to be released ones (Sandro Santilli)"
 msgstr ""
-"postgis_extensions_upgrade()で、"
-"リリース前を含むどのPostGISバージョンからでも対応できるようになりました ("
-"Sandro Santilliさん)"
+"postgis_extensions_upgrade()で、リリース前を含むどのPostGISバージョンからでも"
+"対応できるようになりました (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:53
@@ -342,16 +337,17 @@ msgid ""
 "useful when processing road graphs. Requires GEOS 3.11. (Sergei Shoulbakov)"
 msgstr ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/4939\">4939</ulink>, "
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5161\">5161</ulink>, ST_Li"
-"neMergeに、道路のグラフ処理の際に使用する、入力ラインストリングの方向を保持す"
-"るオプションの追加。GEOS 3.11が必要 (Sergei Shoulbakovさん)"
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5161\">5161</ulink>, "
+"ST_LineMergeに、道路のグラフ処理の際に使用する、入力ラインストリングの方向を"
+"保持するオプションの追加。GEOS 3.11が必要 (Sergei Shoulbakovさん)"
 
 #. Tag: para
 #: release_notes.xml:58 release_notes.xml:251
 #, no-c-format
 msgid ""
 "ST_ConcaveHull GEOS 3.11+ native implementation (Paul Ramsey, Martin Davis)"
-msgstr "GEOS 3.11以上でのST_ConcaveHullの直接使用 (Paul Ramseyさん, Martin Davisさん)"
+msgstr ""
+"GEOS 3.11以上でのST_ConcaveHullの直接使用 (Paul Ramseyさん, Martin Davisさん)"
 
 #. Tag: para
 #: release_notes.xml:59 release_notes.xml:192
@@ -374,8 +370,8 @@ msgid ""
 msgstr ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/4574\">4574</ulink>, "
 "<ulink url=\"https://github.com/postgis/postgis/pull/678\">GH 678</ulink>, "
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5121\">5121</ulink> "
-"--enable-lto でリンク時間最適化を有効にできます (Sergei Shoulbakovさん)"
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5121\">5121</ulink> --"
+"enable-lto でリンク時間最適化を有効にできます (Sergei Shoulbakovさん)"
 
 #. Tag: para
 #: release_notes.xml:61
@@ -394,9 +390,9 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5135\">5135</ulink>, Fast "
 "GiST index build is enabled by default for PostgreSQL 15+ (Sergei Shoulbakov)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5135\">5135</ulink>, "
-"高速GiSTインデックス構築はPostgreSQL 15以上ではデフォルトで有効になりました ("
-"Sergei Shoulbakovさん)"
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5135\">5135</ulink>, 高速"
+"GiSTインデックス構築はPostgreSQL 15以上ではデフォルトで有効になりました "
+"(Sergei Shoulbakovさん)"
 
 #. Tag: para
 #: release_notes.xml:65 release_notes.xml:186
@@ -416,10 +412,10 @@ msgid ""
 "a optional max_rows_per_copy to -Y option to raster2pgsql to control number "
 "of rows per copy statement. Default to 50 when not specified (Regina Obe)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5170\">5170</ulink>, raste"
-"r2pgsqlの-Yオプションで使用する、COPYステートメントあたりの行数を制御するパラ"
-"メータmax_rows_per_copyの追加。指定していない場合のデフォルトは50 (Regina "
-"Obeさん)"
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5170\">5170</ulink>, "
+"raster2pgsqlの-Yオプションで使用する、COPYステートメントあたりの行数を制御す"
+"るパラメータmax_rows_per_copyの追加。指定していない場合のデフォルトは50 "
+"(Regina Obeさん)"
 
 #. Tag: para
 #: release_notes.xml:69
@@ -440,8 +436,8 @@ msgid ""
 "Ramsey)"
 msgstr ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5024\">5024</ulink>, "
-"spatial_ref_sysの更新を ALTER EXTENSION update postgis の一部にしました ("
-"Paul Ramseyさん)"
+"spatial_ref_sysの更新を ALTER EXTENSION update postgis の一部にしました "
+"(Paul Ramseyさん)"
 
 #. Tag: title
 #: release_notes.xml:74 release_notes.xml:97 release_notes.xml:118
@@ -461,8 +457,9 @@ msgstr "誤り訂正"
 #: release_notes.xml:75
 #, no-c-format
 msgid "These are fixes issues in prior minors not backported"
-msgstr "これらは、バックポートされていない前のマイナーバージョンで修正された問題です"
-"。"
+msgstr ""
+"これらは、バックポートされていない前のマイナーバージョンで修正された問題で"
+"す。"
 
 #. Tag: para
 #: release_notes.xml:76
@@ -471,8 +468,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/4912\">4912</ulink>, "
 "GiST: fix crash on STORAGE EXTERNAL for geography (Aliaksandr Kalenik)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/4912\">4912</ulink>, GiST:"
-" ジオグラフィでのSTORAGE EXTERNALでクラッシュするのを修正 (Aliaksandr "
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/4912\">4912</ulink>, "
+"GiST: ジオグラフィでのSTORAGE EXTERNALでクラッシュするのを修正 (Aliaksandr "
 "Kalenikさん)"
 
 #. Tag: para
@@ -492,8 +489,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5137\">5137</ulink>, "
 "resetting interrupt flags before query execution (Sergei Shoulbakov)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5137\">5137</ulink>, "
-"クエリ実行前の割り込みフラグのリセット (Sergei Shoulbakovさん)"
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5137\">5137</ulink>, クエ"
+"リ実行前の割り込みフラグのリセット (Sergei Shoulbakovさん)"
 
 #. Tag: para
 #: release_notes.xml:79
@@ -503,9 +500,9 @@ msgid ""
 "ST_Clip is more robust to alignment of raster and clip geometry (Sergei "
 "Shoulbakov)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5148\">5148</ulink>, ST_Cl"
-"ipがラスタのアラインメントとジオメトリ抜き出しに対してよりロバストになりまし"
-"た (Sergei Shoulbakovさん)"
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5148\">5148</ulink>, "
+"ST_Clipがラスタのアラインメントとジオメトリ抜き出しに対してよりロバストになり"
+"ました (Sergei Shoulbakovさん)"
 
 #. Tag: para
 #: release_notes.xml:80 release_notes.xml:206
@@ -514,8 +511,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/4932\">4932</ulink>, Bug "
 "with geography ST_Intersects / ST_Distance (Paul Ramsey)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/4932\">4932</ulink>, "
-"ジオグラフィ版のST_Intersects / ST_Distanceの問題 (Paul Ramseyさん)"
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/4932\">4932</ulink>, ジオ"
+"グラフィ版のST_Intersects / ST_Distanceの問題 (Paul Ramseyさん)"
 
 #. Tag: para
 #: release_notes.xml:81 release_notes.xml:98
@@ -549,8 +546,8 @@ msgid ""
 "notes</ulink>"
 msgstr ""
 "ご注意: GEOS 3.11.0は最近リリースされました。<ulink url=\"https://libgeos."
-"org/posts/2022-07-01-geos-3-11-0-released/\">GEOS 3.11.0 release "
-"notes</ulink>に詳細があります。"
+"org/posts/2022-07-01-geos-3-11-0-released/\">GEOS 3.11.0 release notes</"
+"ulink>に詳細があります。"
 
 #. Tag: para
 #: release_notes.xml:94 release_notes.xml:112 release_notes.xml:147
@@ -560,9 +557,9 @@ msgid ""
 "feature is disabled by default because on some platforms, causes compilation "
 "errors (BSD and MingW64 issues have been raised)"
 msgstr ""
-"新規フラグの --enable-lto で、数学計算を改善します。ただし、"
-"プラットフォームによってはコンパイルエラーが発生する (BSDとMingW64で問題が発"
-"生しています)ため、この機能はデフォルトでは無効になっています。"
+"新規フラグの --enable-lto で、数学計算を改善します。ただし、プラットフォーム"
+"によってはコンパイルエラーが発生する (BSDとMingW64で問題が発生しています)た"
+"め、この機能はデフォルトでは無効になっています。"
 
 #. Tag: para
 #: release_notes.xml:99
@@ -571,9 +568,9 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5181\">5181</ulink>, "
 "Reset proj error state after failed parse (Paul Ramsey)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5181\">5181</ulink>, "
-"Projの文字列解析に失敗した後にエラー状態をリセットするようにしました (Paul "
-"Ramseyさん)"
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5181\">5181</ulink>, Proj"
+"の文字列解析に失敗した後にエラー状態をリセットするようにしました (Paul Ramsey"
+"さん)"
 
 #. Tag: para
 #: release_notes.xml:100
@@ -582,9 +579,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5171\">5171</ulink>, "
 "Short circuit geodesic distance when inputs equal (Paul Ramsey)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5171\">5171</ulink>, "
-"測地線距離の計算で入力が同じ時に計算を省略するようになりました (Paul "
-"Ramseyさん)"
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5171\">5171</ulink>, 測地"
+"線距離の計算で入力が同じ時に計算を省略するようになりました (Paul Ramseyさん)"
 
 #. Tag: title
 #: release_notes.xml:104
@@ -609,10 +605,9 @@ msgid ""
 "ST_OptimalAlphaShape."
 msgstr ""
 "このバージョンにはPostgreSQL 11以上、GEOS 3.6以上、Proj 5.2以上が必要です。"
-"GEOS 3.9以上で追加機能が有効になり、GEOS 3."
-"10以上でST_MakeValidの機能強化が有効になり、GEOS 3."
-"11以上で多数の機能強化が追加されます。"
-"ST_AlphaShapeとST_OptimalAlphaShapeにはSFCGAL 1.4.1以上が必要です。"
+"GEOS 3.9以上で追加機能が有効になり、GEOS 3.10以上でST_MakeValidの機能強化が有"
+"効になり、GEOS 3.11以上で多数の機能強化が追加されます。ST_AlphaShapeと"
+"ST_OptimalAlphaShapeにはSFCGAL 1.4.1以上が必要です。"
 
 #. Tag: para
 #: release_notes.xml:114 release_notes.xml:149 release_notes.xml:181
@@ -641,8 +636,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5154\">5154</ulink>, "
 "raster ST_Value is undercosted (Regina Obe)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5154\">5154</ulink>, "
-"ラスタ版ST_Valueのコストが小さい (Regina Obeさん)"
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5154\">5154</ulink>, ラス"
+"タ版ST_Valueのコストが小さい (Regina Obeさん)"
 
 #. Tag: para
 #: release_notes.xml:120
@@ -652,9 +647,9 @@ msgid ""
 "Revise minimum_bounding_circle Cunit test to be tolerant of small 32-bit "
 "floating point differences (Regina Obe)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5157\">5157</ulink>, minim"
-"um_bounding_circleのCunitテストを小さい32ビット浮動小数点数の差を許容するよう"
-"改訂 (Regina Obeさん)"
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5157\">5157</ulink>, "
+"minimum_bounding_circleのCunitテストを小さい32ビット浮動小数点数の差を許容す"
+"るよう改訂 (Regina Obeさん)"
 
 #. Tag: para
 #: release_notes.xml:123
@@ -663,8 +658,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5191\">5191</ulink>, "
 "Functions should use integer instead of int4 (Regina Obe)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5191\">5191</ulink>, "
-"関数はint4でなくintegerを使うべき (Regina Obeさん)"
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5191\">5191</ulink>, 関数"
+"はint4でなくintegerを使うべき (Regina Obeさん)"
 
 #. Tag: para
 #: release_notes.xml:124
@@ -675,8 +670,8 @@ msgid ""
 "ST_AsGML are also parallel unsafe (Regina Obe, Paul Ramsey)"
 msgstr ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5139\">5139</ulink>, "
-"to_jsonb、ST_AsGeoJSONとST_AsGMLが並列安全でない (Regina Obe, Paul "
-"Ramseyさん)"
+"to_jsonb、ST_AsGeoJSONとST_AsGMLが並列安全でない (Regina Obe, Paul Ramseyさ"
+"ん)"
 
 #. Tag: para
 #: release_notes.xml:127
@@ -698,8 +693,8 @@ msgid ""
 "#5196 Change address_standardizer and postgis_tiger_geocoder CREATE "
 "EXTENSION to use CREATE instead of CREATE OR REPLACE. (Regina Obe)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5195\">5195</ulink>, #"
-"5196 address_standardizerとpostgis_tiger_geocoderのCREATE EXTENSIONでCREATE "
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5195\">5195</ulink>, "
+"#5196 address_standardizerとpostgis_tiger_geocoderのCREATE EXTENSIONでCREATE "
 "OR REPLACEからCREATEに変更 (Regina Obeさん)"
 
 #. Tag: para
@@ -709,8 +704,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5202\">5202</ulink>, "
 "Guard against downgrade (Sandro Santilli)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5202\">5202</ulink>, "
-"ダウングレードに対する保護 (Sandro Santilliさん)"
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5202\">5202</ulink>, ダウ"
+"ングレードに対する保護 (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:134
@@ -767,8 +762,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5179\">5179</ulink>, "
 "pgsql2shp syntax error on big-endian (Bas Couwenberg)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5179\">5179</ulink>, "
-"ビッグエンディアンでpgsql2shpが構文エラーを出す (Bas Couwenbergさん)"
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5179\">5179</ulink>, ビッ"
+"グエンディアンでpgsql2shpが構文エラーを出す (Bas Couwenbergさん)"
 
 #. Tag: title
 #: release_notes.xml:170
@@ -792,15 +787,15 @@ msgid ""
 "GEOS 3.11+."
 msgstr ""
 "このバージョンにはPostgreSQL 11以上、GEOS 3.6以上、Proj 5.2以上が必要です。"
-"GEOS 3.9以上で追加機能が有効になり、GEOS 3."
-"10以上でST_MakeValidの機能強化が有効になり、GEOS 3."
-"11以上で多数の機能強化が追加されます。"
+"GEOS 3.9以上で追加機能が有効になり、GEOS 3.10以上でST_MakeValidの機能強化が有"
+"効になり、GEOS 3.11以上で多数の機能強化が追加されます。"
 
 #. Tag: para
 #: release_notes.xml:175 release_notes.xml:217
 #, no-c-format
 msgid "Requires SFCGAL 1.4.1+ for ST_AlphaShape and ST_OptimalAlphaShape."
-msgstr "ST_AlphaShapeとST_OptimalAlphaShapeのためにSFCGAL 1.4.1以上が必要です。"
+msgstr ""
+"ST_AlphaShapeとST_OptimalAlphaShapeのためにSFCGAL 1.4.1以上が必要です。"
 
 #. Tag: para
 #: release_notes.xml:178 release_notes.xml:219
@@ -810,9 +805,9 @@ msgid ""
 "disabled by default because on some platforms, causes compilation errors "
 "(BSD and MingW64 issues have been raised)"
 msgstr ""
-"新規フラグの --enable-lto で、数学計算を改善します。ただし、"
-"プラットフォームによってはコンパイルエラーが発生する (BSDとMingW64で問題が発"
-"生しています)ため、この機能はデフォルトでは無効になっています。"
+"新規フラグの --enable-lto で、数学計算を改善します。ただし、プラットフォーム"
+"によってはコンパイルエラーが発生する (BSDとMingW64で問題が発生しています)た"
+"め、この機能はデフォルトでは無効になっています。"
 
 #. Tag: para
 #: release_notes.xml:193
@@ -883,10 +878,9 @@ msgid ""
 "with 3.10+, ST_ConcaveHull native GEOS implementation with GEOS 3.11+"
 msgstr ""
 "このバージョンでは、PostgreSQL 11以上、GEOS 3.6以上、Proj 4.9以上が必要です。"
-"GEOS 3.9以上で追加機能 "
-"(多数の処理関数の精度機能)が有効になります。ST_MakesValidの機能強化には3."
-"10以上が必要です。ST_ConcaveHullのGEOS実装の直接使用はGEOS 3."
-"11以上が必要です。"
+"GEOS 3.9以上で追加機能 (多数の処理関数の精度機能)が有効になります。"
+"ST_MakesValidの機能強化には3.10以上が必要です。ST_ConcaveHullのGEOS実装の直接"
+"使用はGEOS 3.11以上が必要です。"
 
 #. Tag: title
 #: release_notes.xml:227 release_notes.xml:299 release_notes.xml:488
@@ -894,6 +888,16 @@ msgstr ""
 #, no-c-format
 msgid "Breaking changes"
 msgstr "大幅な変更"
+
+#. Tag: para
+#: release_notes.xml:229
+#, no-c-format
+msgid ""
+"Change output for WKT MULTIPOINT. All points now wrapped in parens. (Even "
+"Roualt)"
+msgstr ""
+"WKT MULTOPOINTの出力を変更しました。全ての点が括弧で括られるようになりまし"
+"た。(Even Roualtさん)"
 
 #. Tag: para
 #: release_notes.xml:231
@@ -904,8 +908,8 @@ msgid ""
 "(Aliaksandr Kalenik)"
 msgstr ""
 "GH674, ST_DumpAsPolygonsとST_Polygonにおけるジオメトリ評価と修正が無効になり"
-"ました。速度は工場しますが、無効なポリゴンが生成される可能性があります。("
-"Aliaksandr Kalenikさん)"
+"ました。速度は工場しますが、無効なポリゴンが生成される可能性があります。"
+"(Aliaksandr Kalenikさん)"
 
 #. Tag: para
 #: release_notes.xml:238
@@ -914,8 +918,8 @@ msgid ""
 "2861, Add index on topology.node(containing_face) speeding up splitting and "
 "merging of faces (Sandro Santilli)"
 msgstr ""
-"2861, フェイスの分割とマージを高速にするtopology.node(containing_face)"
-"へのインデックスを追加しました (Sandro Santilliさん)"
+"2861, フェイスの分割とマージを高速にするtopology.node(containing_face)へのイ"
+"ンデックスを追加しました (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:240
@@ -924,9 +928,8 @@ msgid ""
 "2083, Speed up ST_RemEdge topology functions adding index on "
 "relation(element_id) and edge_data(abs_next*) (Sandro Santilli)"
 msgstr ""
-"2083, relation(element_id)とedge_data(abs_next*)"
-"へのインデックス追加でトポロジ関数ST_RemEdgeを高速化しました (Sandro "
-"Santilliさん)"
+"2083, relation(element_id)とedge_data(abs_next*)へのインデックス追加でトポロ"
+"ジ関数ST_RemEdgeを高速化しました (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:242
@@ -934,14 +937,16 @@ msgstr ""
 msgid ""
 "5118, Allow dropping topologies with missing topogeometry sequences (Sandro "
 "Santilli)"
-msgstr "5118, トポジオメトリのシーケンスジェネレータが欠落しているトポロジの削除を可"
+msgstr ""
+"5118, トポジオメトリのシーケンスジェネレータが欠落しているトポロジの削除を可"
 "能にしました (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:244
 #, no-c-format
 msgid "5111, faster topology face MBR computation (Sandro Santilli)"
-msgstr "5111, トポロジでのMBRフェイスの計算が速くなりました (Sandro Santilliさん)"
+msgstr ""
+"5111, トポロジでのMBRフェイスの計算が速くなりました (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:247
@@ -955,15 +960,17 @@ msgstr "5040, postgis_sfcgal_full_versionを追加しました (Loïc Bartoletti
 msgid ""
 "GH655, GiST: balance the tree splits better in recursive calls (Darafei "
 "Praliaskouski)"
-msgstr "GH655, GiST: 再起呼出しでより良いバランス木分割を行うようにしました (Darafei "
+msgstr ""
+"GH655, GiST: 再起呼出しでより良いバランス木分割を行うようにしました (Darafei "
 "Praliaskouskiさん)"
 
 #. Tag: para
 #: release_notes.xml:249
 #, no-c-format
 msgid "GH657, GiST: do not call no-op decompress function (Aliaksandr Kalenik)"
-msgstr "GH657, GiST: 実行しない解凍関数を呼ばないようにしました (Aliaksandr "
-"Kalenikさん)"
+msgstr ""
+"GH657, GiST: 実行しない解凍関数を呼ばないようにしました (Aliaksandr Kalenikさ"
+"ん)"
 
 #. Tag: para
 #: release_notes.xml:250
@@ -971,9 +978,8 @@ msgstr "GH657, GiST: 実行しない解凍関数を呼ばないようにしま�
 msgid ""
 "4912, GiST: fix crash on STORAGE EXTERNAL for geography (Aliaksandr Kalenik)"
 msgstr ""
-"4912, GiST: ジオグラフィ用のカラムでSTORAGE "
-"EXTERNALと指定されたものを使うとクラッシュする問題を修正 (Aliaksandr "
-"Kalenikさん)"
+"4912, GiST: ジオグラフィ用のカラムでSTORAGE EXTERNALと指定されたものを使うと"
+"クラッシュする問題を修正 (Aliaksandr Kalenikさん)"
 
 #. Tag: para
 #: release_notes.xml:252
@@ -982,8 +988,8 @@ msgid ""
 "4574, GH678, #5121 Enable Link-Time Optimizations using --enable-lto (Sergei "
 "Shoulbakov)"
 msgstr ""
-"4574, GH678, #5121 --enable-"
-"ltoを使用することでリンク時最適化を可能にしました (Sergei Shoulbakov)"
+"4574, GH678, #5121 --enable-ltoを使用することでリンク時最適化を可能にしまし"
+"た (Sergei Shoulbakov)"
 
 #. Tag: para
 #: release_notes.xml:253
@@ -998,9 +1004,8 @@ msgid ""
 "5135, Fast GiST index build is enabled by default for PostgreSQL 15+ (Sergei "
 "Shoulbakov)"
 msgstr ""
-"5135, PostgreSQL "
-"15以上ではデフォルトでGiSTインデックス高速構築が有効になりました (Sergei "
-"Shoulbakovさん)"
+"5135, PostgreSQL 15以上ではデフォルトでGiSTインデックス高速構築が有効になりま"
+"した (Sergei Shoulbakovさん)"
 
 #. Tag: para
 #: release_notes.xml:259
@@ -1018,7 +1023,8 @@ msgstr "5037, postgis_sfcgal: ST_3DConvexHull (Loïc Bartolettiさん)"
 #: release_notes.xml:264
 #, no-c-format
 msgid "GH659, MARC21/XML, ST_GeomFromMARC21, ST_AsMARC21 (Jim Jones)"
-msgstr "GH659, MARC21/XMLの入出力関数ST_GeomFromMARC21, ST_AsMARC21 (Jim Jonesさん)"
+msgstr ""
+"GH659, MARC21/XMLの入出力関数ST_GeomFromMARC21, ST_AsMARC21 (Jim Jonesさん)"
 
 #. Tag: para
 #: release_notes.xml:265
@@ -1030,7 +1036,8 @@ msgstr "5132, GH683, sfcgal: ST_3DUnion集約関数 (Sergei Shoulbakovさん)"
 #: release_notes.xml:266
 #, no-c-format
 msgid "5143, SFCGAL ST_AlphaShape and ST_OptimalAlphaShape (Loïc Bartoletti)"
-msgstr "5143, SFCGALのST_AlphaShapeとST_OptimalAlphaShape (Loïc Bartolettiさん)"
+msgstr ""
+"5143, SFCGALのST_AlphaShapeとST_OptimalAlphaShape (Loïc Bartolettiさん)"
 
 #. Tag: para
 #: release_notes.xml:271
@@ -1045,9 +1052,8 @@ msgid ""
 "5123, Support for PostgreSQL 15 - PG15 now exposes json types and functions, "
 "do not include for PG15+ (Regina Obe)"
 msgstr ""
-"5123, PostgreSQL 15対応 - PostgreSQL "
-"15では、JSON型とJSON関数を公開しているので、インクルードしません (Regina "
-"Obeさん)"
+"5123, PostgreSQL 15対応 - PostgreSQL 15では、JSON型とJSON関数を公開しているの"
+"で、インクルードしません (Regina Obeさん)"
 
 #. Tag: para
 #: release_notes.xml:274
@@ -1060,7 +1066,8 @@ msgstr "5088, メmvt_agg_transfnでのモリ破損 (Victor Collodさん)"
 #, no-c-format
 msgid ""
 "5137, resetting interrupt flags before query execution (Sergei Shoulbakov)"
-msgstr "5137, クエリ実行前に割り込みフラグをリセットするようにしました (Sergei "
+msgstr ""
+"5137, クエリ実行前に割り込みフラグをリセットするようにしました (Sergei "
 "Shoulbakovさん)"
 
 #. Tag: para
@@ -1070,8 +1077,8 @@ msgid ""
 "5148, ST_Clip is more robust to alignment of raster and clip geometry "
 "(Sergei Shoulbakov)"
 msgstr ""
-"5148, ST_Clipがラスタのアラインメントとジオメトリのクリップに関して、"
-"よりロバストになりました (Sergei Shoulbakovさん)"
+"5148, ST_Clipがラスタのアラインメントとジオメトリのクリップに関して、よりロバ"
+"ストになりました (Sergei Shoulbakovさん)"
 
 #. Tag: title
 #: release_notes.xml:281
@@ -3232,8 +3239,9 @@ msgstr ""
 msgid ""
 "4153, ST_Segmentize now splits segments proportionally (Darafei "
 "Praliaskouski)."
-msgstr "4153, ST_Segmentizeは現在は線分を比例して分割します。 (Darafei "
-"Praliaskouskiさん)"
+msgstr ""
+"4153, ST_Segmentizeは現在は線分を比例して分割します。 (Darafei Praliaskouski"
+"さん)"
 
 #. Tag: para
 #: release_notes.xml:830
@@ -5175,8 +5183,9 @@ msgstr ""
 msgid ""
 "#3844, Make = operator a strict equality test, and &lt; &gt; to rough "
 "\"spatial sorting\""
-msgstr "#3844, Make =演算子を厳密な等価性テストにし、&lt; "
-"&gt;を荒い「空間ソート」にしました"
+msgstr ""
+"#3844, Make =演算子を厳密な等価性テストにし、&lt; &gt;を荒い「空間ソート」に"
+"しました"
 
 #. Tag: para
 #: release_notes.xml:1286
@@ -6288,10 +6297,10 @@ msgid ""
 "based centroid (&lt;&lt;-&gt;&gt;) n-D distance operators (Sandro Santilli / "
 "Boundless)"
 msgstr ""
-"<ulink url=\"http://trac.osgeo.org/postgis/ticket/3040\"><ulink url=\"http"
-"://trac.osgeo.org/postgis/ticket/3040\">#3040</ulink></ulink>, "
-"重心に基づくKNN GiSTインデックス (&lt;&lt;-&gt;&gt;) n次元距離演算子 (Sandro "
-"Santilliさん / Boundless)"
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/3040\"><ulink url=\"http://"
+"trac.osgeo.org/postgis/ticket/3040\">#3040</ulink></ulink>, 重心に基づくKNN "
+"GiSTインデックス (&lt;&lt;-&gt;&gt;) n次元距離演算子 (Sandro Santilliさん / "
+"Boundless)"
 
 #. Tag: para
 #: release_notes.xml:1531
@@ -8878,8 +8887,8 @@ msgid ""
 "TopologySummary output now includes unregistered layers and a count of "
 "missing TopoGeometry objects from their natural layer."
 msgstr ""
-"TopologySummary出力に登録されていないレイヤとレイヤから欠落しているTopoGeomet"
-"ryオブジェクトの個数が含まれるようになりました。"
+"TopologySummary出力に登録されていないレイヤとレイヤから欠落している"
+"TopoGeometryオブジェクトの個数が含まれるようになりました。"
 
 #. Tag: para
 #: release_notes.xml:1962
@@ -9279,8 +9288,8 @@ msgid ""
 "<ulink url=\"http://trac.osgeo.org/postgis/ticket/2215\">#2215</ulink>, "
 "Fixed raster exclusion constraint for conflicting name of implicit index"
 msgstr ""
-"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2215\">#2215</ulink>, "
-"ラスタ除外制約で発生する暗黙のインデックスの名前の衝突の訂正"
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2215\">#2215</ulink>, ラス"
+"タ除外制約で発生する暗黙のインデックスの名前の衝突の訂正"
 
 #. Tag: para
 #: release_notes.xml:2016
@@ -10628,8 +10637,8 @@ msgid ""
 "<ulink url=\"http://trac.osgeo.org/postgis/ticket/1786\">#1786</ulink>, "
 "improved build dependencies"
 msgstr ""
-"<ulink url=\"http://trac.osgeo.org/postgis/ticket/1786\">#1786</ulink>, "
-"ビルドの依存関係を改善"
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/1786\">#1786</ulink>, ビル"
+"ドの依存関係を改善"
 
 #. Tag: para
 #: release_notes.xml:2248
@@ -11064,7 +11073,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "pgsql2shp conversion from predefined list (Loic Dachary / Mark Cave-Ayland)"
-msgstr "pgsql2shpの事前に定義されたリストからの変換 (Loic Dacharyさん / Mark Cave-"
+msgstr ""
+"pgsql2shpの事前に定義されたリストからの変換 (Loic Dacharyさん / Mark Cave-"
 "Aylandさん)"
 
 #. Tag: para
@@ -11309,8 +11319,8 @@ msgid ""
 "<ulink url=\"http://trac.osgeo.org/postgis/ticket/1184\">#1184</ulink>, "
 "honour DESTDIR in documentation Makefile (Bryce L Nordgren)"
 msgstr ""
-"<ulink url=\"http://trac.osgeo.org/postgis/ticket/1184\">#1184</ulink>, "
-"文書用MakefileでDESTDIRを尊重するように訂正 (Bryce L Nordgrenさん)"
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/1184\">#1184</ulink>, 文書"
+"用MakefileでDESTDIRを尊重するように訂正 (Bryce L Nordgrenさん)"
 
 #. Tag: para
 #: release_notes.xml:2381
@@ -12453,8 +12463,8 @@ msgid ""
 "ST_MinimumBoundingCircle() -- returns the smallest circle polygon that can "
 "encompass a geometry (Bruce Rindahl)"
 msgstr ""
-"ST_MinimumBoundingCircle() --"
-"包含する円ポリゴンをより小さくできるようにしました (Bruce Rindahlさん)"
+"ST_MinimumBoundingCircle() --包含する円ポリゴンをより小さくできるようにしまし"
+"た (Bruce Rindahlさん)"
 
 #. Tag: para
 #: release_notes.xml:2592
@@ -13523,7 +13533,8 @@ msgstr "./configureスクリプトをよりポータブルにしました"
 #: release_notes.xml:3065
 #, no-c-format
 msgid "Changed ./run_test script to have more sane default behaviour"
-msgstr "./run_testスクリプトを、デフォルトの振る舞いがより健全になるよう変更しました"
+msgstr ""
+"./run_testスクリプトを、デフォルトの振る舞いがより健全になるよう変更しました"
 
 #. Tag: title
 #: release_notes.xml:3071
@@ -14005,8 +14016,9 @@ msgstr "若干の誤り訂正と改善があります"
 msgid ""
 "If you are upgrading from release 1.0.3 or later you <emphasis>DO NOT</"
 "emphasis> need a dump/reload."
-msgstr "1.0."
-"3以降から更新する場合には、ダンプ/リロードは<emphasis>不要です</emphasis>。"
+msgstr ""
+"1.0.3以降から更新する場合には、ダンプ/リロードは<emphasis>不要です</"
+"emphasis>。"
 
 #. Tag: para
 #: release_notes.xml:3317
@@ -14214,7 +14226,8 @@ msgstr ""
 msgid ""
 "If you are upgrading from release 1.0.3 you <emphasis>DO NOT</emphasis> need "
 "a dump/reload."
-msgstr "1.0.3から更新する場合には、ダンプ/リロードは<emphasis>不要です</emphasis>。"
+msgstr ""
+"1.0.3から更新する場合には、ダンプ/リロードは<emphasis>不要です</emphasis>。"
 
 #. Tag: para
 #: release_notes.xml:3437
@@ -14439,8 +14452,9 @@ msgstr "リリース日: 2005/07/04"
 msgid ""
 "If you are upgrading from release 1.0.0RC6 or up you <emphasis>DO NOT</"
 "emphasis> need a dump/reload."
-msgstr "1.0."
-"0RC6から更新する場合には、ダンプ/リロードは<emphasis>不要です</emphasis>。"
+msgstr ""
+"1.0.0RC6から更新する場合には、ダンプ/リロードは<emphasis>不要です</"
+"emphasis>。"
 
 #. Tag: para
 #: release_notes.xml:3541 release_notes.xml:3581
@@ -14607,8 +14621,9 @@ msgstr ""
 msgid ""
 "If you are upgrading from release 1.0.0RC6 you <emphasis>DO NOT</emphasis> "
 "need a dump/reload."
-msgstr "1.0."
-"0RC6から更新する場合には、ダンプ/リロードは<emphasis>不要です</emphasis>。"
+msgstr ""
+"1.0.0RC6から更新する場合には、ダンプ/リロードは<emphasis>不要です</"
+"emphasis>。"
 
 #. Tag: para
 #: release_notes.xml:3633 release_notes.xml:3724
@@ -14774,14 +14789,16 @@ msgstr "1.0.0の5番目のリリース候補、若干の誤り訂正と改善が
 msgid ""
 "If you are upgrading from release 1.0.0RC4 you <emphasis>DO NOT</emphasis> "
 "need a dump/reload."
-msgstr "1.0."
-"0RC4から更新する場合には、ダンプ/リロードは<emphasis>不要です</emphasis>。"
+msgstr ""
+"1.0.0RC4から更新する場合には、ダンプ/リロードは<emphasis>不要です</"
+"emphasis>。"
 
 #. Tag: para
 #: release_notes.xml:3732
 #, no-c-format
 msgid "BUGFIX (segfaulting) in box3d computation (yes, another!)."
-msgstr "box3d計算の問題 (セグメンテーションフォールト)の訂正 (ほかにもあります)"
+msgstr ""
+"box3d計算の問題 (セグメンテーションフォールト)の訂正 (ほかにもあります)"
 
 #. Tag: para
 #: release_notes.xml:3735

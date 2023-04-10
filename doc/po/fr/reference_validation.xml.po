@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-08-27 04:57+0000\n"
+"POT-Creation-Date: 2023-04-10 06:16+0000\n"
 "PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -62,10 +62,10 @@ msgid ""
 msgstr ""
 "<funcprototype> <funcdef>boolean <function>ST_IsValid</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>boolean "
-"<function>ST_IsValid</function></funcdef> <paramdef><type>geometry </type> "
-"<parameter>g</parameter></paramdef> <paramdef><type>integer </type> "
-"<parameter>flags</parameter></paramdef> </funcprototype>"
+"funcprototype> <funcprototype> <funcdef>boolean <function>ST_IsValid</"
+"function></funcdef> <paramdef><type>geometry </type> <parameter>g</"
+"parameter></paramdef> <paramdef><type>integer </type> <parameter>flags</"
+"parameter></paramdef> </funcprototype>"
 
 #. Tag: title
 #: reference_validation.xml:42 reference_validation.xml:115
@@ -123,7 +123,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_validation.xml:61 reference_validation.xml:142
-#: reference_validation.xml:195 reference_validation.xml:285
+#: reference_validation.xml:195 reference_validation.xml:286
 #, no-c-format
 msgid "Performed by the GEOS module."
 msgstr "Effectué par le module GEOS."
@@ -159,8 +159,8 @@ msgstr ""
 
 #. Tag: title
 #: reference_validation.xml:80 reference_validation.xml:147
-#: reference_validation.xml:200 reference_validation.xml:297
-#: reference_validation.xml:360
+#: reference_validation.xml:200 reference_validation.xml:298
+#: reference_validation.xml:361
 #, no-c-format
 msgid "Examples"
 msgstr "Exemples"
@@ -189,7 +189,7 @@ msgstr ""
 
 #. Tag: title
 #: reference_validation.xml:86 reference_validation.xml:154
-#: reference_validation.xml:208 reference_validation.xml:364
+#: reference_validation.xml:208 reference_validation.xml:365
 #, no-c-format
 msgid "See Also"
 msgstr "Voir aussi"
@@ -229,8 +229,8 @@ msgid ""
 msgstr ""
 "<funcdef>valid_detail <function>ST_IsValidDetail</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>flags</parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>flags</parameter></"
+"paramdef>"
 
 #. Tag: para
 #: reference_validation.xml:117
@@ -290,7 +290,7 @@ msgstr ""
 "que cela n'est pas valide selon le modèle OGC."
 
 #. Tag: para
-#: reference_validation.xml:143 reference_validation.xml:287
+#: reference_validation.xml:143 reference_validation.xml:288
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr "Disponibilité : 2.0.0"
@@ -344,8 +344,8 @@ msgstr ""
 "FROM\n"
 "(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As geom, "
 "gid\n"
-"FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*"
-"1000 As gid\n"
+"FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + "
+"z1*1000 As gid\n"
 "        FROM generate_series(-4,6) x1\n"
 "        CROSS JOIN generate_series(2,5) y1\n"
 "        CROSS JOIN generate_series(1,8) z1\n"
@@ -442,8 +442,8 @@ msgid ""
 "Allowed <varname>flags</varname> are documented in <xref "
 "linkend=\"ST_IsValidDetail\"/>."
 msgstr ""
-"Les <varname>flags</varname> autorisés sont documentés dans <xref linkend="
-"\"ST_IsValidDetail\"/>."
+"Les <varname>flags</varname> autorisés sont documentés dans <xref "
+"linkend=\"ST_IsValidDetail\"/>."
 
 #. Tag: para
 #: reference_validation.xml:196
@@ -524,8 +524,8 @@ msgstr ""
 "FROM\n"
 "(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As geom, "
 "gid\n"
-"FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*"
-"1000 As gid\n"
+"FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + "
+"z1*1000 As gid\n"
 "        FROM generate_series(-4,6) x1\n"
 "        CROSS JOIN generate_series(2,5) y1\n"
 "        CROSS JOIN generate_series(1,8) z1\n"
@@ -644,21 +644,18 @@ msgid ""
 "The <varname>params</varname> argument can be used to supply an options "
 "string to select the method to use for building valid geometry. The options "
 "string is in the format \"method=linework|structure keepcollapsed=true|"
-"false\"."
+"false\". If no \"params\" argument is provided, the \"linework\" algorithm "
+"will be used as the default."
 msgstr ""
-"L'argument <varname>params</varname> peut être utilisé pour fournir une "
-"chaîne d'options permettant de sélectionner la méthode à utiliser pour "
-"construire une géométrie valide. La chaîne d'options est au format \"method"
-"=linework|structure keepcollapsed=true|false\"."
 
 #. Tag: para
-#: reference_validation.xml:264
+#: reference_validation.xml:265
 #, no-c-format
 msgid "The \"method\" key has two values."
 msgstr "La clé \"method\" a deux valeurs."
 
 #. Tag: para
-#: reference_validation.xml:268
+#: reference_validation.xml:269
 #, no-c-format
 msgid ""
 "\"linework\" is the original algorithm, and builds valid geometries by first "
@@ -670,7 +667,7 @@ msgstr ""
 "ensemble, puis en construisant une sortie de valeur à partir du linework."
 
 #. Tag: para
-#: reference_validation.xml:273
+#: reference_validation.xml:274
 #, no-c-format
 msgid ""
 "\"structure\" is an algorithm that distinguishes between interior and "
@@ -682,7 +679,7 @@ msgstr ""
 "extérieurs, puis en différenciant tous les anneaux intérieurs."
 
 #. Tag: para
-#: reference_validation.xml:279
+#: reference_validation.xml:280
 #, no-c-format
 msgid ""
 "The \"keepcollapsed\" key is only valid for the \"structure\" algorithm, and "
@@ -690,32 +687,33 @@ msgid ""
 "components that collapse to a lower dimensionality, for example a one-point "
 "linestring would be dropped."
 msgstr ""
-"La clé \"keepcollapsed\" est uniquement valable pour l'algorithme \"structure"
-"\" et prend la valeur \"true\" ou \"false\". Lorsqu'elle est définie sur "
-"\"false\", les composants géométriques qui se réduisent à une dimension "
-"inférieure, par exemple une ligne à un point, sont abandonnés."
+"La clé \"keepcollapsed\" est uniquement valable pour l'algorithme "
+"\"structure\" et prend la valeur \"true\" ou \"false\". Lorsqu'elle est "
+"définie sur \"false\", les composants géométriques qui se réduisent à une "
+"dimension inférieure, par exemple une ligne à un point, sont abandonnés."
 
 #. Tag: para
-#: reference_validation.xml:288
+#: reference_validation.xml:289
 #, no-c-format
 msgid "Enhanced: 2.0.1, speed improvements"
 msgstr "Amélioré : 2.0.1, améliorations de la vitesse"
 
 #. Tag: para
-#: reference_validation.xml:289
+#: reference_validation.xml:290
 #, no-c-format
 msgid "Enhanced: 2.1.0, added support for GEOMETRYCOLLECTION and MULTIPOINT."
 msgstr ""
 "Amélioration : 2.1.0, ajout du support pour GEOMETRYCOLLECTION et MULTIPOINT."
 
 #. Tag: para
-#: reference_validation.xml:290
+#: reference_validation.xml:291
 #, no-c-format
 msgid "Enhanced: 3.1.0, added removal of Coordinates with NaN values."
-msgstr "Amélioration : 3.1.0, suppression des coordonnées avec des valeurs NaN."
+msgstr ""
+"Amélioration : 3.1.0, suppression des coordonnées avec des valeurs NaN."
 
 #. Tag: para
-#: reference_validation.xml:291
+#: reference_validation.xml:292
 #, no-c-format
 msgid ""
 "Enhanced: 3.2.0, added algorithm options, 'linework' and 'structure' which "
@@ -725,32 +723,32 @@ msgstr ""
 "'structure' qui nécessite GEOS &gt;= 3.10.0."
 
 #. Tag: para
-#: reference_validation.xml:293
+#: reference_validation.xml:294
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
 #. Tag: para
-#: reference_validation.xml:307
+#: reference_validation.xml:308
 #, no-c-format
 msgid "before_geom: MULTIPOLYGON of 2 overlapping polygons"
 msgstr "before_geom : MULTIPOLYGON de 2 polygones qui se superposent"
 
 #. Tag: para
-#: reference_validation.xml:315
+#: reference_validation.xml:316
 #, no-c-format
 msgid "after_geom: MULTIPOLYGON of 4 non-overlapping polygons"
 msgstr "after_geom : MULTIPOLYGON de 4 polygones qui ne se superposent pas"
 
 #. Tag: para
-#: reference_validation.xml:324
+#: reference_validation.xml:325
 #, no-c-format
 msgid "after_geom_structure: MULTIPOLYGON of 1 non-overlapping polygon"
 msgstr ""
 "after_geom_structure : MULTIPOLYGON de 1 polygone qui ne se chevauche pas"
 
 #. Tag: programlisting
-#: reference_validation.xml:328
+#: reference_validation.xml:329
 #, no-c-format
 msgid ""
 "SELECT f.geom AS before_geom, ST_MakeValid(f.geom) AS after_geom, "
@@ -774,30 +772,30 @@ msgstr ""
 "((150 90,149 80,146 71,142 62,135 55,128 48,119 44,110 41,100 40,\n"
 "90 41,81 44,72 48,65 55,58 62,54 71,51 80,50 90,51 100,\n"
 "54 109,58 118,65 125,72 132,81 136,90 139,100 140,110 139,\n"
-"119 136,128 132,135 125,142 118,146 109,149 100,150 90)))'::geometry AS geom)"
-" AS f ;"
+"119 136,128 132,135 125,142 118,146 109,149 100,150 90)))'::geometry AS "
+"geom) AS f ;"
 
 #. Tag: para
-#: reference_validation.xml:337
+#: reference_validation.xml:338
 #, no-c-format
 msgid "before_geom: MULTIPOLYGON of 6 overlapping polygons"
 msgstr "before_geom : MULTIPOLYGON de 6 polygones qui se superposent"
 
 #. Tag: para
-#: reference_validation.xml:343
+#: reference_validation.xml:344
 #, no-c-format
 msgid "after_geom: MULTIPOLYGON of 14 Non-overlapping polygons"
 msgstr "after_geom : MULTIPOLYGON de 14 polygones qui ne se superposent pas"
 
 #. Tag: para
-#: reference_validation.xml:349
+#: reference_validation.xml:350
 #, no-c-format
 msgid "after_geom_structure: MULTIPOLYGON of 1 Non-overlapping polygon"
 msgstr ""
 "after_geom_structure : MULTIPOLYGON de 1 polygone qui ne se chevauche pas"
 
 #. Tag: programlisting
-#: reference_validation.xml:352
+#: reference_validation.xml:353
 #, no-c-format
 msgid ""
 "SELECT c.geom AS before_geom,\n"
@@ -835,7 +833,7 @@ msgstr ""
 "178,141 150)))'::geometry AS geom) AS c ;"
 
 #. Tag: programlisting
-#: reference_validation.xml:361
+#: reference_validation.xml:362
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_MakeValid(\n"
@@ -877,9 +875,21 @@ msgstr ""
 " LINESTRING EMPTY"
 
 #. Tag: para
-#: reference_validation.xml:365
+#: reference_validation.xml:366
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_CollectionExtract\"/>"
 msgstr ""
 ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_CollectionExtract\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "The <varname>params</varname> argument can be used to supply an options "
+#~ "string to select the method to use for building valid geometry. The "
+#~ "options string is in the format \"method=linework|structure "
+#~ "keepcollapsed=true|false\"."
+#~ msgstr ""
+#~ "L'argument <varname>params</varname> peut être utilisé pour fournir une "
+#~ "chaîne d'options permettant de sélectionner la méthode à utiliser pour "
+#~ "construire une géométrie valide. La chaîne d'options est au format "
+#~ "\"method=linework|structure keepcollapsed=true|false\"."

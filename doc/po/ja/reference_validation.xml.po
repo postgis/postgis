@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-08-27 04:57+0000\n"
+"POT-Creation-Date: 2023-04-10 06:16+0000\n"
 "PO-Revision-Date: 2022-10-25 07:30+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -26,9 +26,9 @@ msgid ""
 "invalidity. There is also a function to create a valid geometry out of an "
 "invalid one."
 msgstr ""
-"これらの関数は、ジオメトリがOGC SFS標準として妥当かどうかをテストします。また"
-"、不正となった場合の種類と位置に関する情報の提供も行います。不正なジオメトリ"
-"から妥当なジオメトリを生成する機能もあります。"
+"これらの関数は、ジオメトリがOGC SFS標準として妥当かどうかをテストします。ま"
+"た、不正となった場合の種類と位置に関する情報の提供も行います。不正なジオメト"
+"リから妥当なジオメトリを生成する機能もあります。"
 
 #. Tag: title
 #: reference_validation.xml:15
@@ -61,10 +61,10 @@ msgid ""
 msgstr ""
 "<funcprototype> <funcdef>boolean <function>ST_IsValid</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>boolean "
-"<function>ST_IsValid</function></funcdef> <paramdef><type>geometry </type> "
-"<parameter>g</parameter></paramdef> <paramdef><type>integer </type> "
-"<parameter>flags</parameter></paramdef> </funcprototype>"
+"funcprototype> <funcprototype> <funcdef>boolean <function>ST_IsValid</"
+"function></funcdef> <paramdef><type>geometry </type> <parameter>g</"
+"parameter></paramdef> <paramdef><type>integer </type> <parameter>flags</"
+"parameter></paramdef> </funcprototype>"
 
 #. Tag: title
 #: reference_validation.xml:42 reference_validation.xml:115
@@ -82,9 +82,9 @@ msgid ""
 "only tested in 2 dimensions. For geometries that are invalid, a PostgreSQL "
 "NOTICE is emitted providing details of why it is not valid."
 msgstr ""
-"ST_Geometry値が整形式であり、2次元で妥当かどうかをOGC規則に沿ってテストします"
-"。3次元と4次元のジオメトリでは、評価は2次元で行います。ジオメトリが不正なら、"
-"PostgreSQL NOTICEが出力され、不正である理由の詳細が示されます。"
+"ST_Geometry値が整形式であり、2次元で妥当かどうかをOGC規則に沿ってテストしま"
+"す。3次元と4次元のジオメトリでは、評価は2次元で行います。ジオメトリが不正な"
+"ら、PostgreSQL NOTICEが出力され、不正である理由の詳細が示されます。"
 
 #. Tag: para
 #: reference_validation.xml:49
@@ -103,8 +103,9 @@ msgstr ""
 msgid ""
 "For more information on the definition of geometry validity, refer to <xref "
 "linkend=\"OGC_Validity\"/>"
-msgstr "ジオメトリ評価に関する詳細情報については<xref linkend=\"OGC_Validity\""
-"/>を参照してください。"
+msgstr ""
+"ジオメトリ評価に関する詳細情報については<xref linkend=\"OGC_Validity\"/>を参"
+"照してください。"
 
 #. Tag: para
 #: reference_validation.xml:58
@@ -112,11 +113,12 @@ msgstr "ジオメトリ評価に関する詳細情報については<xref linken
 msgid ""
 "SQL-MM defines the result of ST_IsValid(NULL) to be 0, while PostGIS returns "
 "NULL."
-msgstr "SQL-MMでは、ST_IsValid(NULL)は0を返しますが、PostGISではNULLを返します。"
+msgstr ""
+"SQL-MMでは、ST_IsValid(NULL)は0を返しますが、PostGISではNULLを返します。"
 
 #. Tag: para
 #: reference_validation.xml:61 reference_validation.xml:142
-#: reference_validation.xml:195 reference_validation.xml:285
+#: reference_validation.xml:195 reference_validation.xml:286
 #, no-c-format
 msgid "Performed by the GEOS module."
 msgstr "GEOSモジュールで実現しています。"
@@ -145,13 +147,14 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.9"
 msgid ""
 "Neither OGC-SFS nor SQL-MM specifications include a flag argument for "
 "ST_IsValid. The flag is a PostGIS extension."
-msgstr "OGC-SFSもSQL-MMもST_IsValidでフラグ引数を含む仕様になっていません。フラグはPo"
-"stGIS独自拡張です。"
+msgstr ""
+"OGC-SFSもSQL-MMもST_IsValidでフラグ引数を含む仕様になっていません。フラグは"
+"PostGIS独自拡張です。"
 
 #. Tag: title
 #: reference_validation.xml:80 reference_validation.xml:147
-#: reference_validation.xml:200 reference_validation.xml:297
-#: reference_validation.xml:360
+#: reference_validation.xml:200 reference_validation.xml:298
+#: reference_validation.xml:361
 #, no-c-format
 msgid "Examples"
 msgstr "例"
@@ -180,7 +183,7 @@ msgstr ""
 
 #. Tag: title
 #: reference_validation.xml:86 reference_validation.xml:154
-#: reference_validation.xml:208 reference_validation.xml:364
+#: reference_validation.xml:208 reference_validation.xml:365
 #, no-c-format
 msgid "See Also"
 msgstr "関連情報"
@@ -205,8 +208,9 @@ msgstr "ST_IsValidDetail"
 msgid ""
 "Returns a <varname>valid_detail</varname> row stating if a geometry is valid "
 "or if not a reason and a location."
-msgstr "ジオメトリが妥当か、妥当でないなら理由と位置をそれぞれ示す<varname>valid_deta"
-"il</varname>行を返します。"
+msgstr ""
+"ジオメトリが妥当か、妥当でないなら理由と位置をそれぞれ示す"
+"<varname>valid_detail</varname>行を返します。"
 
 #. Tag: funcprototype
 #: reference_validation.xml:106
@@ -219,8 +223,8 @@ msgid ""
 msgstr ""
 "<funcdef>valid_detail <function>ST_IsValidDetail</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>flags</parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>flags</parameter></"
+"paramdef>"
 
 #. Tag: para
 #: reference_validation.xml:117
@@ -231,10 +235,9 @@ msgid ""
 "(<varname>reason</varname>) stating a reason why it is invalid and a "
 "geometry (<varname>location</varname>) pointing out where it is invalid."
 msgstr ""
-"<varname>valid_detail</varname>行を返します。これには、"
-"ジオメトリが妥当かどうかを示す真偽値 (<varname>valid</varname>)、"
-"不正である理由を示す文字列 (<varname>reason</varname>)、"
-"不正である位置を指摘するジオメトリ "
+"<varname>valid_detail</varname>行を返します。これには、ジオメトリが妥当かどう"
+"かを示す真偽値 (<varname>valid</varname>)、不正である理由を示す文字列 "
+"(<varname>reason</varname>)、不正である位置を指摘するジオメトリ "
 "(<varname>location</varname>)からなります。"
 
 #. Tag: para
@@ -254,7 +257,8 @@ msgstr ""
 msgid ""
 "The optional <varname>flags</varname> parameter is a bitfield. It can have "
 "the following values:"
-msgstr "任意パラメータ<varname>flags</varname>はビットフィールドです。次の値を持つこ"
+msgstr ""
+"任意パラメータ<varname>flags</varname>はビットフィールドです。次の値を持つこ"
 "とができます。"
 
 #. Tag: para
@@ -277,7 +281,7 @@ msgstr ""
 "では不正とされることに注意してください。"
 
 #. Tag: para
-#: reference_validation.xml:143 reference_validation.xml:287
+#: reference_validation.xml:143 reference_validation.xml:288
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr "Availability: 2.0.0"
@@ -331,8 +335,8 @@ msgstr ""
 "FROM\n"
 "(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As geom, "
 "gid\n"
-"FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*"
-"1000 As gid\n"
+"FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + "
+"z1*1000 As gid\n"
 "        FROM generate_series(-4,6) x1\n"
 "        CROSS JOIN generate_series(2,5) y1\n"
 "        CROSS JOIN generate_series(1,8) z1\n"
@@ -414,8 +418,9 @@ msgstr "ジオメトリが妥当かどうか、不正な場合はその理由を
 msgid ""
 "Useful in combination with <xref linkend=\"ST_IsValid\"/> to generate a "
 "detailed report of invalid geometries and reasons."
-msgstr "不正なジオメトリと理由の詳細報告を生成するのに、<xref linkend=\"ST_IsValid\""
-"/>と併用します。"
+msgstr ""
+"不正なジオメトリと理由の詳細報告を生成するのに、<xref linkend=\"ST_IsValid\"/"
+">と併用します。"
 
 #. Tag: para
 #: reference_validation.xml:192
@@ -424,8 +429,8 @@ msgid ""
 "Allowed <varname>flags</varname> are documented in <xref "
 "linkend=\"ST_IsValidDetail\"/>."
 msgstr ""
-"許される<varname>flags</varname>は、 <xref linkend=\"ST_IsValidDetail\""
-"/>にあります。"
+"許される<varname>flags</varname>は、 <xref linkend=\"ST_IsValidDetail\"/>にあ"
+"ります。"
 
 #. Tag: para
 #: reference_validation.xml:196
@@ -506,8 +511,8 @@ msgstr ""
 "FROM\n"
 "(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As geom, "
 "gid\n"
-"FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*"
-"1000 As gid\n"
+"FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + "
+"z1*1000 As gid\n"
 "        FROM generate_series(-4,6) x1\n"
 "        CROSS JOIN generate_series(2,5) y1\n"
 "        CROSS JOIN generate_series(1,8) z1\n"
@@ -555,7 +560,8 @@ msgstr "ST_MakeValid"
 #: reference_validation.xml:217
 #, no-c-format
 msgid "Attempts to make an invalid geometry valid without losing vertices."
-msgstr "頂点を失うことなしに不正なジオメトリを妥当なジオメトリにしようと試みます。"
+msgstr ""
+"頂点を失うことなしに不正なジオメトリを妥当なジオメトリにしようと試みます。"
 
 #. Tag: funcsynopsis
 #: reference_validation.xml:221
@@ -582,7 +588,8 @@ msgid ""
 "The function attempts to create a valid representation of a given invalid "
 "geometry without losing any of the input vertices. Valid geometries are "
 "returned unchanged."
-msgstr "与えられた不正なジオメトリを、入力ジオメトリの頂点を捨てずに、妥当な表現で生"
+msgstr ""
+"与えられた不正なジオメトリを、入力ジオメトリの頂点を捨てずに、妥当な表現で生"
 "成しようとします。妥当なジオメトリは変更せずに返します。"
 
 #. Tag: para
@@ -611,7 +618,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Single polygons may become multi-geometries in case of self-intersections."
-msgstr "単一ポリゴンは、自己インタセクトがある場合には、マルチポリゴンになります。"
+msgstr ""
+"単一ポリゴンは、自己インタセクトがある場合には、マルチポリゴンになります。"
 
 #. Tag: para
 #: reference_validation.xml:258
@@ -620,20 +628,18 @@ msgid ""
 "The <varname>params</varname> argument can be used to supply an options "
 "string to select the method to use for building valid geometry. The options "
 "string is in the format \"method=linework|structure keepcollapsed=true|"
-"false\"."
+"false\". If no \"params\" argument is provided, the \"linework\" algorithm "
+"will be used as the default."
 msgstr ""
-"<varname>params</varname>引数は、妥当なジオメトリの構築に使用する手法を選択す"
-"るための追加文字列を与えるために使われます。追加文字列は\"method=linework|"
-"structure keepcollapsed=true|false\"の書式です。"
 
 #. Tag: para
-#: reference_validation.xml:264
+#: reference_validation.xml:265
 #, no-c-format
 msgid "The \"method\" key has two values."
 msgstr "\"method\"キーに対して取り得る値は二つあります。"
 
 #. Tag: para
-#: reference_validation.xml:268
+#: reference_validation.xml:269
 #, no-c-format
 msgid ""
 "\"linework\" is the original algorithm, and builds valid geometries by first "
@@ -644,17 +650,18 @@ msgstr ""
 "ノードを生成して、そこから妥当なジオメトリを構築します。"
 
 #. Tag: para
-#: reference_validation.xml:273
+#: reference_validation.xml:274
 #, no-c-format
 msgid ""
 "\"structure\" is an algorithm that distinguishes between interior and "
 "exterior rings, building new geometry by unioning exterior rings, and then "
 "differencing all interior rings."
-msgstr "\"structure\"は、リングの内と外の間を識別して、外リングを結合し、全ての内リン"
+msgstr ""
+"\"structure\"は、リングの内と外の間を識別して、外リングを結合し、全ての内リン"
 "グとの差を取ることで新しいジオメトリを構築します。"
 
 #. Tag: para
-#: reference_validation.xml:279
+#: reference_validation.xml:280
 #, no-c-format
 msgid ""
 "The \"keepcollapsed\" key is only valid for the \"structure\" algorithm, and "
@@ -662,65 +669,65 @@ msgid ""
 "components that collapse to a lower dimensionality, for example a one-point "
 "linestring would be dropped."
 msgstr ""
-"\"keepcollapsed\"キーは\"structure\"アルゴリズムでのみ有効です。\"true"
-"\"または\"false\"を取ります。\"false\"が指定された場合には"
-"、1点のLINESTRING等のような低い次元に崩壊したジオメトリ要素が出てきます。"
+"\"keepcollapsed\"キーは\"structure\"アルゴリズムでのみ有効です。\"true\"また"
+"は\"false\"を取ります。\"false\"が指定された場合には、1点のLINESTRING等のよう"
+"な低い次元に崩壊したジオメトリ要素が出てきます。"
 
 #. Tag: para
-#: reference_validation.xml:288
+#: reference_validation.xml:289
 #, no-c-format
 msgid "Enhanced: 2.0.1, speed improvements"
 msgstr "Enhanced: 2.0.1 速度の改善"
 
 #. Tag: para
-#: reference_validation.xml:289
+#: reference_validation.xml:290
 #, no-c-format
 msgid "Enhanced: 2.1.0, added support for GEOMETRYCOLLECTION and MULTIPOINT."
 msgstr "Enhanced: 2.1.0 GEOMETRYCOLLECTIONとMULTIPOINTの対応の追加"
 
 #. Tag: para
-#: reference_validation.xml:290
+#: reference_validation.xml:291
 #, no-c-format
 msgid "Enhanced: 3.1.0, added removal of Coordinates with NaN values."
 msgstr "Enhanced: 3.1.0 NaN値を持つ座標の削除が追加されました。"
 
 #. Tag: para
-#: reference_validation.xml:291
+#: reference_validation.xml:292
 #, no-c-format
 msgid ""
 "Enhanced: 3.2.0, added algorithm options, 'linework' and 'structure' which "
 "requires GEOS &gt;= 3.10.0."
 msgstr ""
-"Enhanced: 3.2.0, "
-"アルゴリズムに関する任意パラメータ'linework'と'structure'が追加されました。"
-"GEOS 3.10.0以上が必要です。"
+"Enhanced: 3.2.0, アルゴリズムに関する任意パラメータ'linework'と'structure'が"
+"追加されました。GEOS 3.10.0以上が必要です。"
 
 #. Tag: para
-#: reference_validation.xml:293
+#: reference_validation.xml:294
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
 #. Tag: para
-#: reference_validation.xml:307
+#: reference_validation.xml:308
 #, no-c-format
 msgid "before_geom: MULTIPOLYGON of 2 overlapping polygons"
 msgstr "before_geom: 二つのオーバラップしているポリゴンからなるマルチポリゴン"
 
 #. Tag: para
-#: reference_validation.xml:315
+#: reference_validation.xml:316
 #, no-c-format
 msgid "after_geom: MULTIPOLYGON of 4 non-overlapping polygons"
 msgstr "after_geom: 4 つのオーバーラップしないポリゴンのマルチポリゴン"
 
 #. Tag: para
-#: reference_validation.xml:324
+#: reference_validation.xml:325
 #, no-c-format
 msgid "after_geom_structure: MULTIPOLYGON of 1 non-overlapping polygon"
-msgstr "after_geom_structure: 一つのオーバラップしないポリゴンからなるマルチポリゴン"
+msgstr ""
+"after_geom_structure: 一つのオーバラップしないポリゴンからなるマルチポリゴン"
 
 #. Tag: programlisting
-#: reference_validation.xml:328
+#: reference_validation.xml:329
 #, no-c-format
 msgid ""
 "SELECT f.geom AS before_geom, ST_MakeValid(f.geom) AS after_geom, "
@@ -744,29 +751,30 @@ msgstr ""
 "((150 90,149 80,146 71,142 62,135 55,128 48,119 44,110 41,100 40,\n"
 "90 41,81 44,72 48,65 55,58 62,54 71,51 80,50 90,51 100,\n"
 "54 109,58 118,65 125,72 132,81 136,90 139,100 140,110 139,\n"
-"119 136,128 132,135 125,142 118,146 109,149 100,150 90)))'::geometry AS geom)"
-" AS f;"
+"119 136,128 132,135 125,142 118,146 109,149 100,150 90)))'::geometry AS "
+"geom) AS f;"
 
 #. Tag: para
-#: reference_validation.xml:337
+#: reference_validation.xml:338
 #, no-c-format
 msgid "before_geom: MULTIPOLYGON of 6 overlapping polygons"
 msgstr "before_geom: 六つのオーバラップしているポリゴンからなるマルチポリゴン"
 
 #. Tag: para
-#: reference_validation.xml:343
+#: reference_validation.xml:344
 #, no-c-format
 msgid "after_geom: MULTIPOLYGON of 14 Non-overlapping polygons"
 msgstr "after_geom: 14個のオーバラップしていないポリゴンからなるマルチポリゴン"
 
 #. Tag: para
-#: reference_validation.xml:349
+#: reference_validation.xml:350
 #, no-c-format
 msgid "after_geom_structure: MULTIPOLYGON of 1 Non-overlapping polygon"
-msgstr "after_geom_structure: 一つのオーバラップしないポリゴンからなるマルチポリゴン"
+msgstr ""
+"after_geom_structure: 一つのオーバラップしないポリゴンからなるマルチポリゴン"
 
 #. Tag: programlisting
-#: reference_validation.xml:352
+#: reference_validation.xml:353
 #, no-c-format
 msgid ""
 "SELECT c.geom AS before_geom,\n"
@@ -804,7 +812,7 @@ msgstr ""
 "178,141 150)))'::geometry AS geom) AS c;"
 
 #. Tag: programlisting
-#: reference_validation.xml:361
+#: reference_validation.xml:362
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_MakeValid(\n"
@@ -846,9 +854,20 @@ msgstr ""
 " LINESTRING EMPTY"
 
 #. Tag: para
-#: reference_validation.xml:365
+#: reference_validation.xml:366
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_CollectionExtract\"/>"
 msgstr ""
 ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_CollectionExtract\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "The <varname>params</varname> argument can be used to supply an options "
+#~ "string to select the method to use for building valid geometry. The "
+#~ "options string is in the format \"method=linework|structure "
+#~ "keepcollapsed=true|false\"."
+#~ msgstr ""
+#~ "<varname>params</varname>引数は、妥当なジオメトリの構築に使用する手法を選"
+#~ "択するための追加文字列を与えるために使われます。追加文字列は"
+#~ "\"method=linework|structure keepcollapsed=true|false\"の書式です。"

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-08-27 04:57+0000\n"
+"POT-Creation-Date: 2023-04-10 06:16+0000\n"
 "PO-Revision-Date: 2023-01-09 04:42+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Russian <https://weblate.osgeo.org/projects/postgis/"
@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || ("
-"n%100>=11 && n%100<=14)? 2 : 3);\n"
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
 "X-Generator: Weblate 4.15\n"
 
 #. Tag: para
@@ -103,7 +103,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_validation.xml:61 reference_validation.xml:142
-#: reference_validation.xml:195 reference_validation.xml:285
+#: reference_validation.xml:195 reference_validation.xml:286
 #, no-c-format
 msgid "Performed by the GEOS module."
 msgstr ""
@@ -136,8 +136,8 @@ msgstr ""
 
 #. Tag: title
 #: reference_validation.xml:80 reference_validation.xml:147
-#: reference_validation.xml:200 reference_validation.xml:297
-#: reference_validation.xml:360
+#: reference_validation.xml:200 reference_validation.xml:298
+#: reference_validation.xml:361
 #, no-c-format
 msgid "Examples"
 msgstr "Примеры"
@@ -158,7 +158,7 @@ msgstr ""
 
 #. Tag: title
 #: reference_validation.xml:86 reference_validation.xml:154
-#: reference_validation.xml:208 reference_validation.xml:364
+#: reference_validation.xml:208 reference_validation.xml:365
 #, no-c-format
 msgid "See Also"
 msgstr ""
@@ -238,7 +238,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:143 reference_validation.xml:287
+#: reference_validation.xml:143 reference_validation.xml:288
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr ""
@@ -479,17 +479,18 @@ msgid ""
 "The <varname>params</varname> argument can be used to supply an options "
 "string to select the method to use for building valid geometry. The options "
 "string is in the format \"method=linework|structure keepcollapsed=true|"
-"false\"."
+"false\". If no \"params\" argument is provided, the \"linework\" algorithm "
+"will be used as the default."
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:264
+#: reference_validation.xml:265
 #, no-c-format
 msgid "The \"method\" key has two values."
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:268
+#: reference_validation.xml:269
 #, no-c-format
 msgid ""
 "\"linework\" is the original algorithm, and builds valid geometries by first "
@@ -498,7 +499,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:273
+#: reference_validation.xml:274
 #, no-c-format
 msgid ""
 "\"structure\" is an algorithm that distinguishes between interior and "
@@ -507,7 +508,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:279
+#: reference_validation.xml:280
 #, no-c-format
 msgid ""
 "The \"keepcollapsed\" key is only valid for the \"structure\" algorithm, and "
@@ -517,25 +518,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:288
+#: reference_validation.xml:289
 #, no-c-format
 msgid "Enhanced: 2.0.1, speed improvements"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:289
+#: reference_validation.xml:290
 #, no-c-format
 msgid "Enhanced: 2.1.0, added support for GEOMETRYCOLLECTION and MULTIPOINT."
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:290
+#: reference_validation.xml:291
 #, no-c-format
 msgid "Enhanced: 3.1.0, added removal of Coordinates with NaN values."
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:291
+#: reference_validation.xml:292
 #, no-c-format
 msgid ""
 "Enhanced: 3.2.0, added algorithm options, 'linework' and 'structure' which "
@@ -543,31 +544,31 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:293
+#: reference_validation.xml:294
 #, no-c-format
 msgid "&Z_support;"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:307
+#: reference_validation.xml:308
 #, no-c-format
 msgid "before_geom: MULTIPOLYGON of 2 overlapping polygons"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:315
+#: reference_validation.xml:316
 #, no-c-format
 msgid "after_geom: MULTIPOLYGON of 4 non-overlapping polygons"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:324
+#: reference_validation.xml:325
 #, no-c-format
 msgid "after_geom_structure: MULTIPOLYGON of 1 non-overlapping polygon"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_validation.xml:328
+#: reference_validation.xml:329
 #, no-c-format
 msgid ""
 "SELECT f.geom AS before_geom, ST_MakeValid(f.geom) AS after_geom, "
@@ -584,25 +585,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:337
+#: reference_validation.xml:338
 #, no-c-format
 msgid "before_geom: MULTIPOLYGON of 6 overlapping polygons"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:343
+#: reference_validation.xml:344
 #, no-c-format
 msgid "after_geom: MULTIPOLYGON of 14 Non-overlapping polygons"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:349
+#: reference_validation.xml:350
 #, no-c-format
 msgid "after_geom_structure: MULTIPOLYGON of 1 Non-overlapping polygon"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_validation.xml:352
+#: reference_validation.xml:353
 #, no-c-format
 msgid ""
 "SELECT c.geom AS before_geom,\n"
@@ -624,7 +625,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_validation.xml:361
+#: reference_validation.xml:362
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_MakeValid(\n"
@@ -648,7 +649,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:365
+#: reference_validation.xml:366
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_CollectionExtract\"/>"

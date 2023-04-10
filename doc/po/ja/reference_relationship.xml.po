@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-11-27 05:42+0000\n"
+"POT-Creation-Date: 2023-04-10 06:16+0000\n"
 "PO-Revision-Date: 2022-12-27 09:30+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -1310,8 +1310,8 @@ msgid ""
 "B)</code>"
 msgstr ""
 "この関数呼び出しはインデックスを使いません。<xref linkend=\"ST_Intersects\"/>"
-"の否定には、インデックスを使用する、より効率の良い選択肢を使うことができます:"
-" <code>ST_Disjoint(A,B) = NOT ST_Intersects(A,B)</code>"
+"の否定には、インデックスを使用する、より効率の良い選択肢を使うことができま"
+"す: <code>ST_Disjoint(A,B) = NOT ST_Intersects(A,B)</code>"
 
 #. Tag: para
 #: reference_relationship.xml:694
@@ -1917,7 +1917,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Finds all streets that cross"
-msgstr "<emphasis role=\"bold\">例:</emphasis> 全てのクロスするストリートを見つける"
+msgstr ""
+"<emphasis role=\"bold\">例:</emphasis> 全てのクロスするストリートを見つける"
 
 #. Tag: programlisting
 #: reference_relationship.xml:952
@@ -2442,9 +2443,9 @@ msgid ""
 "defined by the OGC SFS standard, and is the default for <function>ST_Relate</"
 "function>."
 msgstr ""
-"<code>1</code>: <emphasis role=\"bold\">OGC-Mod2</emphasis> - "
-"線の端点が奇数回出現する場合に境界内にあるとします。これはOGC "
-"SFS標準で定義された規則で、<function>ST_Relate</function>のデフォルトです。"
+"<code>1</code>: <emphasis role=\"bold\">OGC-Mod2</emphasis> - 線の端点が奇数"
+"回出現する場合に境界内にあるとします。これはOGC SFS標準で定義された規則で、"
+"<function>ST_Relate</function>のデフォルトです。"
 
 #. Tag: para
 #: reference_relationship.xml:1227
@@ -2467,8 +2468,8 @@ msgid ""
 msgstr ""
 "<code>3</code>: <emphasis role=\"bold\">MultivalentEndpoint</emphasis> - 端点"
 "が2回以上出現する場合に境界内にあるとします。言い換えると、境界は全ての「接続"
-"された」または「内部の」端点です "
-"(「接続していない」や「外部の」端点ではない)。"
+"された」または「内部の」端点です (「接続していない」や「外部の」端点ではな"
+"い)。"
 
 #. Tag: para
 #: reference_relationship.xml:1232
@@ -3463,12 +3464,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "For <type>geography</type>: units are in meters and distance measurement "
-"defaults to <varname>use_spheroid</varname>=true. For faster evaluation use "
-"<varname>use_spheroid</varname>=false to measure on the sphere."
+"defaults to <varname>use_spheroid = true</varname>. For faster evaluation "
+"use <varname>use_spheroid = false</varname> to measure on the sphere."
 msgstr ""
-"<type>geography</type>: 単位はメートルで、距離の測定の既定値は"
-"<varname>use_spheroid</varname>=trueです。より高速な評価のために、"
-"<varname>use_spheroid</varname>=falseとして球面で測定します。"
 
 #. Tag: para
 #: reference_relationship.xml:1806
@@ -3697,6 +3695,16 @@ msgstr ""
 " st_pointinsidecircle\n"
 "------------------------\n"
 " t"
+
+#, no-c-format
+#~ msgid ""
+#~ "For <type>geography</type>: units are in meters and distance measurement "
+#~ "defaults to <varname>use_spheroid</varname>=true. For faster evaluation "
+#~ "use <varname>use_spheroid</varname>=false to measure on the sphere."
+#~ msgstr ""
+#~ "<type>geography</type>: 単位はメートルで、距離の測定の既定値は"
+#~ "<varname>use_spheroid</varname>=trueです。より高速な評価のために、"
+#~ "<varname>use_spheroid</varname>=falseとして球面で測定します。"
 
 #, no-c-format
 #~ msgid "This function call does not use indexes"
