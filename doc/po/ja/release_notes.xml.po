@@ -2,13 +2,13 @@
 #
 # Translators:
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2017-2019
-# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-04-10 06:16+0000\n"
-"PO-Revision-Date: 2022-09-14 01:55+0000\n"
+"PO-Revision-Date: 2023-04-12 10:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "release_notesxml/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: release_notes.xml:3
@@ -209,7 +209,9 @@ msgstr "PostgreSQL 9.6と10への対応を終了します (Regina Obeさん)"
 msgid ""
 "Change output for WKT MULTIPOINT. All points now wrapped in parens. (Even "
 "Rouault)"
-msgstr ""
+msgstr "WKT "
+"MULTOPOINTの出力を変更しました。全ての点が丸括弧で括られるようになりました。("
+"Even Roualtさん)"
 
 #. Tag: para
 #: release_notes.xml:37
