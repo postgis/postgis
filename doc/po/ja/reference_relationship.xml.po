@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-04-10 06:16+0000\n"
-"PO-Revision-Date: 2022-12-27 09:30+0000\n"
+"PO-Revision-Date: 2023-04-12 10:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_relationshipxml/ja/>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: para
 #: reference_relationship.xml:5
@@ -3467,6 +3467,10 @@ msgid ""
 "defaults to <varname>use_spheroid = true</varname>. For faster evaluation "
 "use <varname>use_spheroid = false</varname> to measure on the sphere."
 msgstr ""
+"<type>geography</type>: 単位はメートルで、"
+"距離の測定の既定値は<varname>use_spheroid = "
+"true</varname>です。より高速な評価のために、<varname>use_spheroid = "
+"false</varname>として球面で測定します。"
 
 #. Tag: para
 #: reference_relationship.xml:1806
