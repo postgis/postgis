@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-04-10 06:16+0000\n"
-"PO-Revision-Date: 2022-10-25 07:30+0000\n"
+"PO-Revision-Date: 2023-04-12 10:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_measurexml/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: para
 #: reference_measure.xml:5
@@ -58,6 +58,12 @@ msgid ""
 "paramdef> <paramdef choice=\"opt\"><type>boolean </"
 "type><parameter>use_spheroid = true</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>float <function>ST_Area</function></funcdef> "
+"<paramdef><type>geometry </type><parameter>g1</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>float <function>ST_Area</function></"
+"funcdef> <paramdef><type>geography </type><parameter>geog</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>boolean </"
+"type><parameter>use_spheroid = true</parameter></paramdef> </funcprototype>"
 
 #. Tag: title
 #: reference_measure.xml:34 reference_measure.xml:97 reference_measure.xml:181
@@ -1020,6 +1026,15 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>use_spheroid = true</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>float <function>ST_Distance</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>float "
+"<function>ST_Distance</function></funcdef> <paramdef><type>geography </type> "
+"<parameter>geog1</parameter></paramdef> <paramdef><type>geography </type> "
+"<parameter>geog2</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>use_spheroid = true</parameter></paramdef> "
+"</funcprototype>"
 
 #. Tag: para
 #: reference_measure.xml:393
@@ -1990,6 +2005,13 @@ msgid ""
 "choice=\"opt\"><type>boolean </type><parameter>use_spheroid = true</"
 "parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>float <function>ST_Length</function></funcdef> "
+"<paramdef><type>geometry </type><parameter>a_2dlinestring</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>float "
+"<function>ST_Length</function></funcdef> <paramdef><type>geography "
+"</type><parameter>geog</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type><parameter>use_spheroid = true</parameter></paramdef> "
+"</funcprototype>"
 
 #. Tag: para
 #: reference_measure.xml:778
@@ -2015,6 +2037,10 @@ msgid ""
 "is exclusive to WGS84. If <varname>use_spheroid = false</varname>, then the "
 "calculation is based on a sphere instead of a spheroid."
 msgstr ""
+"ジオグラフィ型: 計算は逆測地問題を用いています。長さの単位はメートルです。"
+"PROJ 4.8.0以上でPostGISをコンパイルしている場合には、回転楕円体面はSRIDで指定"
+"されたものとなり、それより前はWGS84となります。<varname>use_spheroid = "
+"false</varname>とすると、計算は回転楕円体面でなく真球面で行います。"
 
 #. Tag: para
 #: reference_measure.xml:787
@@ -3162,6 +3188,13 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </"
 "type><parameter>use_spheroid = true</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>float <function>ST_Perimeter</function></funcdef> "
+"<paramdef><type>geometry </type><parameter>g1</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>float "
+"<function>ST_Perimeter</function></funcdef> <paramdef><type>geography "
+"</type><parameter>geog</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type><parameter>use_spheroid = true</parameter></paramdef> "
+"</funcprototype>"
 
 #. Tag: para
 #: reference_measure.xml:1337
@@ -3188,6 +3221,11 @@ msgid ""
 "SRID, otherwise it is exclusive to WGS84. If <varname>use_spheroid = false</"
 "varname>, then calculations will approximate a sphere instead of a spheroid."
 msgstr ""
+"ジオグラフィに対しては、測地線の逆測地問題を使って計算し、長さの単位はメート"
+"ルです。PostGISをPROJ 4.8.0以上でコンパイルしているなら、回転楕円体面はSRIDで"
+"指定されたものですが、そうでなければ、WGS84に限定されます。"
+"<varname>use_spheroid = "
+"false</varname>とすると、回転楕円体面でなく近似する球面で計算します。"
 
 #. Tag: para
 #: reference_measure.xml:1344
