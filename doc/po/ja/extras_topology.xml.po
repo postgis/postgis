@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-04-10 06:16+0000\n"
-"PO-Revision-Date: 2023-02-14 02:23+0000\n"
+"PO-Revision-Date: 2023-04-12 10:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "extras_topologyxml/ja/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.15.2\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: extras_topology.xml:3
@@ -60,6 +60,11 @@ msgid ""
 "master/2012/pgconf_eu_2012/pgconfeu2012_vincent_picavet_postgis_topology."
 "pdf\">PostGIS Topology PGConf EU 2012</ulink>."
 msgstr ""
+"Vincent Picavetさんはトポロジとは何か、どのように使われるか、および、"
+"対応するFOSS4Gツールに関する良い概略説明を <ulink url=\"https://gitlab.com/"
+"Oslandia/documentation/presentations/-/blob/master/2012/pgconf_eu_2012/"
+"pgconfeu2012_vincent_picavet_postgis_topology.pdf\">PostGIS Topology PGConf "
+"EU 2012</ulink>で出しています。"
 
 #. Tag: para
 #: extras_topology.xml:11
@@ -5900,7 +5905,7 @@ msgstr ", <xref linkend=\"topoelementarray\"/>"
 #: extras_topology.xml:3213
 #, no-c-format
 msgid "Converts a topogeometry to a topoelement."
-msgstr ""
+msgstr "TopoGeometryをTopoElementに変換します。"
 
 #. Tag: funcprototype
 #: extras_topology.xml:3218
@@ -5909,6 +5914,8 @@ msgid ""
 "<funcdef>topoelement <function>TopoElement</function></funcdef> "
 "<paramdef><type>topogeometry </type> <parameter>topo</parameter></paramdef>"
 msgstr ""
+"<funcdef>topoelement <function>TopoElement</function></funcdef> "
+"<paramdef><type>topogeometry </type> <parameter>topo</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:3227
@@ -5916,7 +5923,8 @@ msgstr ""
 msgid ""
 "Converts a <xref linkend=\"topogeometry\"/> to a <xref "
 "linkend=\"topoelement\"/>."
-msgstr ""
+msgstr "<xref linkend=\"topogeometry\"/>を<xref linkend=\"topoelement\""
+"/>に変換します。"
 
 #. Tag: programlisting
 #: extras_topology.xml:3235
@@ -5927,6 +5935,10 @@ msgid ""
 "SELECT TopoElement(topo)\n"
 "FROM neighborhoods;"
 msgstr ""
+"-- トポロジをセットアップしてえいない場合には次を実行します\n"
+"-- 許容範囲を許さないトポロジを生成します\n"
+"SELECT TopoElement(topo)\n"
+"FROM neighborhoods;"
 
 #. Tag: programlisting
 #: extras_topology.xml:3237
@@ -5937,12 +5949,16 @@ msgid ""
 "FROM neighborhoods\n"
 "GROUP BY city;"
 msgstr ""
+"-- キャストを使用\n"
+"SELECT topology.TopoElementArray_Agg(topo::topoelement)\n"
+"FROM neighborhoods\n"
+"GROUP BY city;"
 
 #. Tag: para
 #: extras_topology.xml:3243
 #, no-c-format
 msgid ", <xref linkend=\"topogeometry\"/>, <xref linkend=\"topoelement\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"topogeometry\"/>, <xref linkend=\"topoelement\"/>"
 
 #. Tag: para
 #: extras_topology.xml:3251
