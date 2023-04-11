@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-04-10 06:16+0000\n"
-"PO-Revision-Date: 2022-10-25 07:30+0000\n"
+"PO-Revision-Date: 2023-04-12 10:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_validationxml/ja/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: para
 #: reference_validation.xml:7
@@ -631,6 +631,10 @@ msgid ""
 "false\". If no \"params\" argument is provided, the \"linework\" algorithm "
 "will be used as the default."
 msgstr ""
+"<varname>params</varname>引数は、妥当なジオメトリを構築するために使うメソッド"
+"を選択するための任意文字列を与えるのに使えます。任意文字列は\"method"
+"=linework|structure keepcollapsed=true|false\"という書式に従います。\"params"
+"\"引数が無い場合には、\"linework\"アルゴリズムがデフォルトとして使われます。"
 
 #. Tag: para
 #: reference_validation.xml:265
