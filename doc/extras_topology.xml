@@ -3949,7 +3949,7 @@ Refer to <xref linkend="toTopoGeom" />.
 			<refsection>
                 <title>Description</title>
 
-                <para>Returns a set of element_id,element_type (topoelements) for a given topogeometry object in <varname>toponame</varname> schema.</para>
+                <para>Returns a set of element_id,element_type (topoelements) corresponding to primitive topology elements <xref linkend="topoelement"/> (1: nodes, 2: edges, 3: faces) that a given topogeometry object in <varname>toponame</varname> schema is composed of.</para>
                 <para>tg_id is the topogeometry id of the topogeometry object in the topology in the layer denoted by <varname>layer_id</varname> in the topology.layer table.</para>
 
                 <!-- use this format if new function -->
