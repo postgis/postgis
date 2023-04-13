@@ -4,13 +4,13 @@
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016
 # Sandro Santilli <strk@kbt.io>, 2022.
 # Regina Obe <regina@arrival3d.com>, 2022.
-# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-04-10 06:16+0000\n"
-"PO-Revision-Date: 2022-10-25 07:30+0000\n"
+"PO-Revision-Date: 2023-04-14 03:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_editorxml/ja/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: para
 #: reference_editor.xml:5
@@ -2847,7 +2847,8 @@ msgstr "ST_Segmentize"
 msgid ""
 "Returns a modified geometry/geography having no segment longer than a given "
 "distance."
-msgstr ""
+msgstr "与えた長さを超える線分を持たないよう変更したジオメトリ/ジオグラフィを返します"
+"。"
 
 #. Tag: funcsynopsis
 #: reference_editor.xml:1275
@@ -2877,6 +2878,9 @@ msgid ""
 "<varname>max_segment_length</varname>. Length is computed in 2D. Segments "
 "are always split into equal-length subsegments."
 msgstr ""
+"<varname>max_segment_length</varname>を超える長さの線分を持たないよう変更した"
+"ジオメトリ/ジオグラフィを返します。長さは2次元で計算されます。線分は常に等長"
+"の線分に分割されます。"
 
 #. Tag: para
 #: reference_editor.xml:1298
@@ -2884,7 +2888,7 @@ msgstr ""
 msgid ""
 "For geometry, the maximum length is in the units of the spatial reference "
 "system."
-msgstr ""
+msgstr "ジオメトリについては、最大長の単位は空間参照系の単位です。"
 
 #. Tag: para
 #: reference_editor.xml:1301
@@ -2894,6 +2898,8 @@ msgid ""
 "the sphere. Added vertices are created along the spherical great-circle arcs "
 "defined by segment endpoints."
 msgstr ""
+"ジオグラフィについては、最大長の単位はメートルです。距離は球面で計算します。"
+"追加される頂点は、線分の端点間で定まる球面の大円弧に沿うように作られます。"
 
 #. Tag: para
 #: reference_editor.xml:1308
@@ -2901,7 +2907,8 @@ msgstr ""
 msgid ""
 "This only shortens long segments. It does not lengthen segments shorter than "
 "the maximum length."
-msgstr ""
+msgstr "この関数は長い線分を短くするだけです。最大長より短い線分を長くすることはしま"
+"せん。"
 
 #. Tag: para
 #: reference_editor.xml:1312
@@ -2912,6 +2919,10 @@ msgid ""
 "vertices to be added. This can happen unintentionally if the argument is "
 "specified accidentally as a number of segments, rather than a maximum length."
 msgstr ""
+"長い線分を含む入力では、比較的短い <varname>max_segment_length</varname> を指"
+"定すると、非常に多くの頂点が追加される可能性があります。これは、引数が最大長"
+"ではなく線分数として誤って指定された場合に、意図せずに発生する可能性がありま"
+"す。"
 
 #. Tag: para
 #: reference_editor.xml:1319
@@ -2924,14 +2935,14 @@ msgstr "Availability: 1.2.2"
 #, no-c-format
 msgid ""
 "Enhanced: 3.0.0 Segmentize geometry now produces equal-length subsegments"
-msgstr ""
+msgstr "Enhanced: 3.0.0 ジオメトリの分割において、現在は、同じ長さに分割しています"
 
 #. Tag: para
 #: reference_editor.xml:1321
 #, no-c-format
 msgid ""
 "Enhanced: 2.3.0 Segmentize geography now produces equal-length subsegments"
-msgstr ""
+msgstr "Enhanced: 2.3.0 ジオグラフィの分割において、現在は、同じ長さに分割しています"
 
 #. Tag: para
 #: reference_editor.xml:1322
@@ -2950,6 +2961,11 @@ msgid ""
 "type (e.g. <code>ST_Segmentize('LINESTRING(1 2, 3 4)'::geometry, 0.5) )</"
 "code>"
 msgstr ""
+"Changed: 2.1.0 ジオグラフィ対応の導入の結果、<code>ST_Segmentize('LINESTRING("
+"1 2, 3 4)', 0.5)</code>とすると、あいまい関数エラーが発生します。入力ではジオ"
+"メトリかジオグラフィかを確実に指定する必要があります。ST_GeomFromText、ST_Geo"
+"gFromText、使いたい型へのキャスト (例: <code>ST_Segmentize('LINESTRING(1 2, "
+"3 4)'::geometry, 0.5) )</code>を行います"
 
 #. Tag: para
 #: reference_editor.xml:1333
@@ -2957,7 +2973,7 @@ msgstr ""
 msgid ""
 "Segmentizing a line. Long segments are split evenly, and short segments are "
 "not split."
-msgstr ""
+msgstr "ラインの分割。長い線分は均等に分割され、短い線分は分割されません。"
 
 #. Tag: programlisting
 #: reference_editor.xml:1334
@@ -2969,12 +2985,17 @@ msgid ""
 "---------------------------------------------------\n"
 "MULTILINESTRING((0 0,0 1,0 5,0 9),(1 10,1 14,1 18))"
 msgstr ""
+"SELECT ST_AsText(ST_Segmentize(\n"
+"    'MULTILINESTRING((0 0, 0 1, 0 9),(1 10, 1 18))'::geometry,\n"
+"        5 ) );\n"
+"---------------------------------------------------\n"
+"MULTILINESTRING((0 0,0 1,0 5,0 9),(1 10,1 14,1 18))"
 
 #. Tag: para
 #: reference_editor.xml:1336
 #, no-c-format
 msgid "Segmentizing a polygon:"
-msgstr ""
+msgstr "ポリゴンの分割:"
 
 #. Tag: programlisting
 #: reference_editor.xml:1337
@@ -2985,6 +3006,10 @@ msgid ""
 "-------------------------------------------------------\n"
 "POLYGON((0 0,0 8,7.5 6,15 4,22.5 2,30 0,20 0,10 0,0 0))"
 msgstr ""
+"SELECT ST_AsText(\n"
+"        ST_Segmentize(('POLYGON((0 0, 0 8, 30 0, 0 0))'::geometry), 10));\n"
+"-------------------------------------------------------\n"
+"POLYGON((0 0,0 8,7.5 6,15 4,22.5 2,30 0,20 0,10 0,0 0))"
 
 #. Tag: para
 #: reference_editor.xml:1339
@@ -2993,7 +3018,8 @@ msgid ""
 "Segmentizing a geographic line, using a maximum segment length of 2000 "
 "kilometers. Vertices are added along the great-circle arc connecting the "
 "endpoints."
-msgstr ""
+msgstr "2000キロメートルの最大線分長を使ったジオグラフィのラインの分割。頂点は、端点"
+"間をつなぐ大円弧に沿って追加されます。"
 
 #. Tag: programlisting
 #: reference_editor.xml:1342
@@ -3007,12 +3033,19 @@ msgid ""
 "33.21091076089908,25.779290201459894 41.01711439406505,34.188839517966954 "
 "48.337222885886,45.238153936612264 54.84733442373889,60 60)"
 msgstr ""
+"SELECT ST_AsText(\n"
+"        ST_Segmentize(('LINESTRING (0 0, 60 60)'::geography), 2000000));\n"
+"-------------------------------------------------------------\n"
+"LINESTRING(0 0,4.252632294621186 8.43596525986862,8.69579947419404 "
+"16.824093489701564,13.550465473227048 25.107950473646188,19.1066053508691 "
+"33.21091076089908,25.779290201459894 41.01711439406505,34.188839517966954 "
+"48.337222885886,45.238153936612264 54.84733442373889,60 60)"
 
 #. Tag: para
 #: reference_editor.xml:1348
 #, no-c-format
 msgid "A geographic line segmentized along a great circle arc"
-msgstr ""
+msgstr "大円弧に沿って細分化されたジオグラフィのライン"
 
 #. Tag: refname
 #: reference_editor.xml:1361
