@@ -761,7 +761,7 @@ PostGIS 2.5.2
            (Darafei Praliaskouski, Arthur Lesuisse, Andrew Gierth, Raúl Marín)
   - #4262, Document MULTISURFACE compatibility of ST_LineToCurve (Steven Ottens)
   - #4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)
-  - #4276, ST_AsGeoJSON documentation refresh (Darafei Praliaskouski)￼
+  - #4276, ST_AsGeoJSON documentation refresh (Darafei Praliaskouski)
   - #4273, Tighter parsing of WKT (Paul Ramsey)
   - #4292, ST_AsMVT: parse JSON numeric values with decimals as doubles (Raúl Marín)
   - #4300, ST_AsMVTGeom: Always return the simplest geometry (Raúl Marín)
