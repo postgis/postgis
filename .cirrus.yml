@@ -38,7 +38,7 @@ task:
     - name: 13.1-RELEASE
       freebsd_instance:
         image_family: freebsd-13-1
-    - name: 12.3-RELEASE
-      freebsd_instance:
-        image_family: freebsd-12-3
+   # - name: 12.3-RELEASE
+   #   freebsd_instance:
+   #     image_family: freebsd-12-3
 
