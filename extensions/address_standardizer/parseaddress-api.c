@@ -331,7 +331,7 @@ ADDRESS *parseaddress(HHash *stH, char *s, int *reterr)
     rc = match((char *)regx, s, ovect, 0);
     if (rc <= 0) {
         /* look for state specific regex */
-        mi++;
+        mi = mi + 1;
         regx = (char *) get_state_regex(ret->st);
         if (regx)
             rc = match((char *)regx, s, ovect, 0);

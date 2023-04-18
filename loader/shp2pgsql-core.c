@@ -659,7 +659,7 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 		polyring = Outer[pi];
 		while (polyring)
 		{
-			ring_total++;
+			ring_total = ring_total + 1;
 			polyring = polyring->next;
 		}
 
@@ -689,7 +689,7 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 			lwpoly_add_ring(lwpoly, pa);
 
 			polyring = polyring->next;
-			ring_index++;
+			ring_index = ring_index + 1;
 		}
 
 		/* Generate the LWGEOM */
