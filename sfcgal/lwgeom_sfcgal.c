@@ -423,6 +423,34 @@ sfcgal_straight_skeleton(PG_FUNCTION_ARGS)
 	sfcgal_geometry_t *geom;
 	sfcgal_geometry_t *result;
 	srid_t srid;
+	int distance_in_m;
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	distance_in_m = PG_GETARG_BOOL(1);
+	srid = gserialized_get_srid(input);
+	geom = POSTGIS2SFCGALGeometry(input);
+	PG_FREE_IF_COPY(input, 0);
+
+	if (distance_in_m)
+		result = sfcgal_geometry_straight_skeleton_distance_in_m(geom);
+	else
+		result = sfcgal_geometry_straight_skeleton(geom);
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_straight_skeleton_distance_in_m);
+Datum sfcgal_straight_skeleton_distance_in_m(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom;
+	sfcgal_geometry_t *result;
+	srid_t srid;
 
 	sfcgal_postgis_init();
 
@@ -431,7 +459,7 @@ sfcgal_straight_skeleton(PG_FUNCTION_ARGS)
 	geom = POSTGIS2SFCGALGeometry(input);
 	PG_FREE_IF_COPY(input, 0);
 
-	result = sfcgal_geometry_straight_skeleton(geom);
+	result = sfcgal_geometry_straight_skeleton_distance_in_m(geom);
 	sfcgal_geometry_delete(geom);
 
 	output = SFCGALGeometry2POSTGIS(result, 0, srid);
