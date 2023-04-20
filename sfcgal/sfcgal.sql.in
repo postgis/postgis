@@ -115,6 +115,13 @@ CREATE OR REPLACE FUNCTION ST_MinkowskiSum(geometry, geometry)
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_StraightSkeletonDistanceInM(geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME','sfcgal_straight_skeleton_distance_in_m'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_StraightSkeleton(geometry)
        RETURNS geometry
