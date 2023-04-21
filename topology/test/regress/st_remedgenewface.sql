@@ -32,15 +32,23 @@ BEGIN
   sql2 := 'node_id, containing_face
   		FROM orig_node_summary';
 
-  q := '(' ||
-          'SELECT ' || quote_literal(lbl) || ',''+'' as op,' || sql1 ||
-          ' EXCEPT ' ||
-          'SELECT ' || quote_literal(lbl) || ',''+'',' || sql2 ||
-          ') UNION ( ' ||
-          'SELECT ' || quote_literal(lbl) || ',''-'',' || sql2 ||
-          ' EXCEPT ' ||
-          'SELECT ' || quote_literal(lbl) || ',''-'',' || sql1 ||
-       ') ORDER BY node_id, op';
+  q := format(
+    $SQL$
+      (
+          SELECT %1$L, '+' as op, %2$s
+            EXCEPT
+          SELECT %1$L, '+', %3$s
+      ) UNION ALL (
+          SELECT %1$L, '-', %3$s
+            EXCEPT
+          SELECT %1$L, '-', %2$s
+      )
+      ORDER BY node_id, op
+    $SQL$,
+    lbl,
+    sql1,
+    sql2
+  );
 
   RAISE DEBUG '%', q;
 
@@ -78,15 +86,23 @@ BEGIN
   		next_left_edge, next_right_edge, left_face, right_face
   		FROM orig_edge_summary';
 
-  q := '(' ||
-          'SELECT ' || quote_literal(lbl) || ',''+'' as op,' || sql1 ||
-          ' EXCEPT ' ||
-          'SELECT ' || quote_literal(lbl) || ',''+'',' || sql2 ||
-          ') UNION ( ' ||
-          'SELECT ' || quote_literal(lbl) || ',''-'',' || sql2 ||
-          ' EXCEPT ' ||
-          'SELECT ' || quote_literal(lbl) || ',''-'',' || sql1 ||
-       ') order by edge_id, op';
+  q := format(
+    $SQL$
+      (
+          SELECT %1$L, '+' as op, %2$s
+            EXCEPT
+          SELECT %1$L, '+', %3$s
+      ) UNION ALL (
+          SELECT %1$L, '-', %3$s
+            EXCEPT
+          SELECT %1$L, '-', %2$s
+      )
+      ORDER BY edge_id, op
+    $SQL$,
+    lbl,
+    sql1,
+    sql2
+  );
 
   RAISE DEBUG '%', q;
 
@@ -116,15 +132,24 @@ BEGIN
   sql1 := 'face_id, ST_AsEWKT(mbr) FROM city_data.face';
   sql2 := 'face_id, ST_AsEWKT(mbr) FROM orig_face_summary';
 
-  q := '(' ||
-          'SELECT ' || quote_literal(lbl) || ',''+'' as op,' || sql1 ||
-          ' EXCEPT ' ||
-          'SELECT ' || quote_literal(lbl) || ',''+'',' || sql2 ||
-          ') UNION ( ' ||
-          'SELECT ' || quote_literal(lbl) || ',''-'',' || sql2 ||
-          ' EXCEPT ' ||
-          'SELECT ' || quote_literal(lbl) || ',''-'',' || sql1 ||
-       ') ORDER BY face_id, op';
+  q := format(
+    $SQL$
+      (
+          SELECT %1$L, '+' as op, %2$s
+            EXCEPT
+          SELECT %1$L, '+', %3$s
+      ) UNION ALL (
+          SELECT %1$L, '-' as op, %3$s
+            EXCEPT
+          SELECT %1$L, '-' as op, %2$s
+      )
+      ORDER BY face_id, op
+    $SQL$,
+    lbl,
+    sql1,
+    sql2
+  );
+
 
   RAISE DEBUG '%', q;
 
