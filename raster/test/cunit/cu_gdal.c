@@ -158,7 +158,7 @@ static void test_gdal_polygonize() {
 	double total_area = 0;
 	double total_val = 0;
 	rt_geomval gv = NULL;
-	LWGEOM *gexpected, *gobserved;
+	LWGEOM *gobserved;
 	//char *wkt = NULL;
 	gexpected = lwgeom_from_wkt("POLYGON((3 1,3 2,2 2,2 3,1 3,1 6,2 6,2 7,3 7,3 8,5 8,5 6,3 6,3 3,4 3,5 3,5 1,3 1))",
 				   LW_PARSER_CHECK_NONE);
