@@ -133,13 +133,17 @@ ptarray_from_SFCGAL(const sfcgal_geometry_t *geom, int want3d)
 	POINT4D point;
 	uint32_t i, npoints;
 	POINTARRAY *pa = NULL;
+	int is_3d;
+	int is_measured = 0;
 
 	assert(geom);
 
-	int is_3d = sfcgal_geometry_is_3d(geom);
+	is_3d = sfcgal_geometry_is_3d(geom);
+
 #if POSTGIS_SFCGAL_VERSION >= 10308
-	int is_measured = sfcgal_geometry_is_measured(geom);
+	is_measured = sfcgal_geometry_is_measured(geom);
 #endif
+
 	switch (sfcgal_geometry_type_id(geom))
 	{
 	case SFCGAL_TYPE_POINT:
@@ -152,10 +156,10 @@ ptarray_from_SFCGAL(const sfcgal_geometry_t *geom, int want3d)
 			point.z = sfcgal_point_z(geom);
 		else if (want3d)
 			point.z = 0.0;
-#if POSTGIS_SFCGAL_VERSION >= 10308
+
 		if (is_measured)
 			point.m = sfcgal_point_m(geom);
-#endif
+
 		ptarray_set_point4d(pa, 0, &point);
 	}
 	break;
@@ -175,10 +179,10 @@ ptarray_from_SFCGAL(const sfcgal_geometry_t *geom, int want3d)
 				point.z = sfcgal_point_z(pt);
 			else if (want3d)
 				point.z = 0.0;
-#if POSTGIS_SFCGAL_VERSION >= 10308
+
 			if (is_measured)
 				point.m = sfcgal_point_m(pt);
-#endif
+
 			ptarray_set_point4d(pa, i, &point);
 		}
 	}
@@ -198,10 +202,10 @@ ptarray_from_SFCGAL(const sfcgal_geometry_t *geom, int want3d)
 				point.z = sfcgal_point_z(pt);
 			else if (want3d)
 				point.z = 0.0;
-#if POSTGIS_SFCGAL_VERSION >= 10308
+
 			if (is_measured)
 				point.m = sfcgal_point_m(pt);
-#endif
+
 			ptarray_set_point4d(pa, i, &point);
 		}
 	}
