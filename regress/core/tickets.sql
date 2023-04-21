@@ -907,13 +907,14 @@ SELECT '#3300', ST_AsText(ST_SnapToGrid(Box2D('CURVEPOLYGON(CIRCULARSTRING(-71.0
 SELECT '#3355',  ST_Intersects(
          'LINESTRING(124.983539 1.419224,91.181596 29.647798)'::geography
        , ST_Segmentize('LINESTRING(124.983539 1.419224,91.181596 29.647798)'::geography, 47487290)::geography);
-
+/** NOTE: change seems crazy but PG16s ordering of parenthesis is different from prior versions
+so to accomodate had to add and remove superfluous spaces **/
 SELECT '#3356', ST_Summary(wkt::geometry) As wkt_geom,
    ST_Summary(wkt::geography) As wkt_geog,
    ST_Summary(wkt::geometry::geography) As geom_geog
 FROM (VALUES (
-     'LINESTRING(124.983539 1.419224,91.181596 29.647798)'::text ),
- ('LINESTRING(124.983539 1.419224,91.181596 29.647798, 91.28 29.647)'::text  ) ) As f(wkt)
+     'LINESTRING(124.983539 1.419224,91.181596 29.647798 )'::text ),
+ ('LINESTRING(124.983539 1.419224,91.181596 29.647798,91.28 29.647)'::text  ) ) As f(wkt)
 ORDER BY wkt;
 
 SELECT '#3367', ST_AsText(ST_RemoveRepeatedPoints('POLYGON EMPTY'::geometry));
@@ -1465,7 +1466,26 @@ SELECT x AS id, ST_Point(40000 + 10000, -100000 , 27700) AS geom
 FROM generate_series(1,1000000) AS x ;
 
 set max_parallel_workers_per_gather=3;
-set force_parallel_mode=on;
+/** PG16 force_parallel_mode was renamed to debug_parallel_query, thus the need for this conditional **/
+CREATE OR REPLACE PROCEDURE p_force_parellel_mode(param_state text) language plpgsql AS
+$$
+BEGIN
+	IF (_postgis_pgsql_version())::integer < 160 THEN
+		IF param_state = 'on' THEN
+			SET force_parallel_mode=on;
+		ELSE
+			SET force_parallel_mode=off;
+		END IF;
+	ELSE
+		IF param_state = 'on' THEN
+			SET debug_parallel_query=on;
+		ELSE
+			SET debug_parallel_query=off;
+		END IF;
+	END IF;
+END;
+$$;
+CALL p_force_parellel_mode('on');
 DROP TABLE IF EXISTS object_list_temp;
 WITH object_list AS (
 	SELECT '#5139'::text AS t, id, to_jsonb(geom) AS json_data
@@ -1479,10 +1499,12 @@ SELECT t, id FROM object_list_temp ORDER BY id;
 DROP TABLE IF EXISTS object_list_temp;
 DROP TABLE IF EXISTS a;
 reset max_parallel_workers_per_gather;
-reset force_parallel_mode;
+CALL p_force_parellel_mode('off');
 
 SET client_min_messages TO NOTICE;
 -- https://trac.osgeo.org/postgis/ticket/5315
 SELECT '#5315', ST_Buffer('0106000020E86400000100000001030000000100000005000000000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F'::geometry, 1);
 
 SELECT '#5320', ST_SimplifyPreserveTopology('0106000020E86400000100000001030000000100000005000000000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F000000000000F07F'::geometry, 1);
+
+DROP PROCEDURE IF EXISTS p_force_parellel_mode(text);
