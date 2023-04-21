@@ -285,6 +285,10 @@ psql -tAc "
 " template1
 `));
 
+my $pgvernum = `
+psql -tAc "SELECT current_setting('server_version_num')" template1
+`;
+
 my $defextver = `
 psql -XtAc "
 	SELECT default_version
@@ -323,7 +327,6 @@ else
 	}
 }
 
-my $pgvernum = sql("SELECT current_setting('server_version_num')");
 my $libver = sql("select postgis_lib_version()");
 
 if ( ! $libver )
@@ -1441,7 +1444,11 @@ sub count_postgis_objects
 ##################################################################
 sub create_db
 {
-	my $createcmd = "createdb --encoding=UTF-8 --template=template0 --lc-collate=C $DB > $REGRESS_LOG";
+	my $createcmd = "createdb --encoding=UTF-8 --template=template0 --lc-collate=C";
+	if ( $pgvernum ge 150000 ) {
+		$createcmd .= " --locale=C --locale-provider=libc"
+	}
+	$createcmd .= " $DB > $REGRESS_LOG";
 	return not system($createcmd);
 }
 
