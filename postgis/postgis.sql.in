@@ -1911,6 +1911,14 @@ CREATE OR REPLACE FUNCTION ST_LineMerge(geometry, boolean)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_CoverageSimplify (geom geometry, tolerance float8, boundary integer)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_CoverageSimplify'
+	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
+	_COST_HIGH;
+
 -----------------------------------------------------------------------------
 -- Affine transforms
 -----------------------------------------------------------------------------
@@ -6506,6 +6514,22 @@ CREATE OR REPLACE FUNCTION ST_SimplifyPolygonHull(geom geometry, vertex_fraction
 	LANGUAGE 'c' IMMUTABLE STRICT
 	PARALLEL SAFE
 	_COST_HIGH;
+
+
+
+
+----------------------------------------------------------------------- Polygonal coverage functions
+-- Availability: 3.4.0
+---------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION ST_CoverageUnion(geom geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_CoverageUnion'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	PARALLEL SAFE
+	_COST_HIGH;
+
+
 
 
 #if POSTGIS_GEOS_VERSION >= 31100

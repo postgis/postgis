@@ -307,16 +307,14 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY* pa, uint8_t fix_ring)
 		sq = GEOSCoordSeq_copyFromBuffer((const double*) pa->serialized_pointlist, pa->npoints, FLAGS_GET_Z(pa->flags), FLAGS_GET_M(pa->flags));
 		if (!sq)
 		{
-			lwerror("Error creating GEOS Coordinate Sequence");
-			return NULL;
+			GEOS_FAIL();
 		}
 		return sq;
 	}
 #endif
-        if (!(sq = GEOSCoordSeq_create(pa->npoints + append_points, dims)))
+	if (!(sq = GEOSCoordSeq_create(pa->npoints + append_points, dims)))
 	{
-		lwerror("Error creating GEOS Coordinate Sequence");
-		return NULL;
+		GEOS_FAIL();
 	}
 
 	for (i = 0; i < pa->npoints; i++)

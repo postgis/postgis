@@ -49,4 +49,20 @@ Datum ST_3DDistance(PG_FUNCTION_ARGS);
 
 uint32_t array_nelems_not_null(ArrayType* array);
 
+
+/* Return NULL on GEOS error
+ *
+ * Prints error message only if it was not for interruption, in which
+ * case we let PostgreSQL deal with the error.
+ */
+#define HANDLE_GEOS_ERROR(label) \
+	{ \
+		if (strstr(lwgeom_geos_errmsg, "InterruptedException")) \
+			ereport(ERROR, \
+				(errcode(ERRCODE_QUERY_CANCELED), errmsg("canceling statement due to user request"))); \
+		else \
+			lwpgerror("%s: %s", (label), lwgeom_geos_errmsg); \
+		PG_RETURN_NULL(); \
+	}
+
 #endif /* LWGEOM_GEOS_H_ */

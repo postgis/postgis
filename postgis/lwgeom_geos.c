@@ -46,20 +46,7 @@
 #include "lwgeom_accum.h"
 
 
-/* Return NULL on GEOS error
- *
- * Prints error message only if it was not for interruption, in which
- * case we let PostgreSQL deal with the error.
- */
-#define HANDLE_GEOS_ERROR(label) \
-	{ \
-		if (strstr(lwgeom_geos_errmsg, "InterruptedException")) \
-			ereport(ERROR, \
-				(errcode(ERRCODE_QUERY_CANCELED), errmsg("canceling statement due to user request"))); \
-		else \
-			lwpgerror("%s: %s", (label), lwgeom_geos_errmsg); \
-		PG_RETURN_NULL(); \
-	}
+
 
 /*
 ** Prototypes for SQL-bound functions
@@ -3588,4 +3575,51 @@ Datum ST_OrientedEnvelope(PG_FUNCTION_ARGS)
 
 	PG_FREE_IF_COPY(input, 0);
 	PG_RETURN_POINTER(result);
+}
+
+
+/******************************************
+ *
+ * ST_CoverageUnion
+ *
+ ******************************************/
+Datum ST_CoverageUnion(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_CoverageUnion);
+Datum ST_CoverageUnion(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 30800
+	lwpgerror("The GEOS version this PostGIS binary "
+		"was compiled against (%d) doesn't support "
+		"'GEOSCoverageUnion' function (3.8.0+ required)",
+		POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+
+#else /* POSTGIS_GEOS_VERSION >= 30800 */
+
+	GSERIALIZED* input;
+	GSERIALIZED* result;
+	GEOSGeometry* input_geos;
+	GEOSGeometry* result_geos;
+	int32_t srid;
+
+	initGEOS(lwpgnotice, lwgeom_geos_error);
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(input);
+	input_geos = POSTGIS2GEOS(input);
+	if (!input_geos)
+		HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
+
+	result_geos = GEOSCoverageUnion(input_geos);
+	GEOSGeom_destroy(input_geos);
+	if (!result_geos)
+		HANDLE_GEOS_ERROR("Error computing oriented envelope");
+
+	GEOSSetSRID(result_geos, srid);
+	result = GEOS2POSTGIS(result_geos, LW_FALSE);
+	GEOSGeom_destroy(result_geos);
+
+	PG_FREE_IF_COPY(input, 0);
+	PG_RETURN_POINTER(result);
+#endif
 }

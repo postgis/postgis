@@ -37,10 +37,6 @@
 #include "lwgeom_log.h"
 #include "lwgeom_pg.h"
 
-extern Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS);
-extern Datum ST_ClusterKMeans(PG_FUNCTION_ARGS);
-extern Datum ST_ClusterWithinWin(PG_FUNCTION_ARGS);
-extern Datum ST_ClusterIntersectingWin(PG_FUNCTION_ARGS);
 
 typedef struct {
 	bool	isdone;
@@ -117,6 +113,8 @@ read_geos_from_partition(WindowObject win_obj, uint32_t i, bool* is_null)
 	}
 	return gg;
 }
+
+extern Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_ClusterDBSCAN);
 Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 {
@@ -209,7 +207,7 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(context->clusters[row].cluster_id);
 }
 
-
+extern Datum ST_ClusterWithinWin(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_ClusterWithinWin);
 Datum ST_ClusterWithinWin(PG_FUNCTION_ARGS)
 {
@@ -285,6 +283,7 @@ Datum ST_ClusterWithinWin(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(context->clusters[row].cluster_id);
 }
 
+extern Datum ST_ClusterIntersectingWin(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_ClusterIntersectingWin);
 Datum ST_ClusterIntersectingWin(PG_FUNCTION_ARGS)
 {
@@ -350,6 +349,7 @@ Datum ST_ClusterIntersectingWin(PG_FUNCTION_ARGS)
 }
 
 
+extern Datum ST_ClusterKMeans(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_ClusterKMeans);
 Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 {
@@ -451,3 +451,279 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 	curpos = WinGetCurrentPosition(winobj);
 	PG_RETURN_INT32(context->result[curpos]);
 }
+
+
+/********************************************************************************/
+
+
+typedef struct {
+	bool	isdone;
+	bool	isnull;
+	LWCOLLECTION *geom;
+	int64   idx[0];
+	/* variable length */
+} coverage_context;
+
+
+static coverage_context *
+fetch_coverage_context(WindowObject winobj, int64 rowcount)
+{
+	size_t ctx_size = sizeof(coverage_context) + rowcount * sizeof(int64);
+	coverage_context *ctx = (coverage_context*) WinGetPartitionLocalMemory(
+		winobj, ctx_size);
+	return ctx;
+}
+
+static void destroy_geoms(GEOSGeometry **geoms, uint32 ngeoms)
+{
+	if (!geoms) return;
+	if (!ngeoms) return;
+	for (uint32 i = 0; i < ngeoms; i++)
+	{
+		if(geoms[i])
+			GEOSGeom_destroy(geoms[i]);
+	}
+}
+
+static GEOSGeometry*
+read_partition_into_collection (
+	WindowObject winobj,
+	coverage_context* context)
+{
+	int64 rowcount = WinGetPartitionRowCount(winobj);
+	GEOSGeometry* geos;
+	GEOSGeometry** geoms;
+	uint32 i, ngeoms = 0, gtype;
+
+	/* Read in all the geometries in this partition */
+	geoms = palloc(rowcount * sizeof(GEOSGeometry*));
+	for (i = 0; i < rowcount; i++)
+	{
+		GSERIALIZED* gser;
+		bool isnull, isout;
+		Datum d;
+
+		d = WinGetFuncArgInPartition(winobj, 0, i,
+				WINDOW_SEEK_HEAD, false, &isnull, &isout);
+
+		/* Note NULL inputs and move on */
+		if (isnull)
+		{
+			context->idx[i] = -1;
+			continue;
+		}
+
+		gser = (GSERIALIZED*)PG_DETOAST_DATUM(d);
+		gtype = gserialized_get_type(gser);
+
+		/* Note non-polygonal inputs */
+		if (gtype != MULTIPOLYGONTYPE && gtype != POLYGONTYPE)
+		{
+			context->idx[i] = -1;
+			continue;
+		}
+
+		geos = POSTGIS2GEOS(gser);
+		if (!geos)
+		{
+			context->idx[i] = -1;
+			continue;
+		}
+
+		context->idx[i] = ngeoms;
+		geoms[ngeoms] = geos;
+		ngeoms = ngeoms + 1;
+	}
+
+	geos = GEOSGeom_createCollection(
+		GEOS_GEOMETRYCOLLECTION,
+		geoms, ngeoms);
+
+	if (!geos)
+	{
+		destroy_geoms(geoms, ngeoms);
+		return NULL;
+	}
+
+	pfree(geoms);
+	return geos;
+}
+
+
+enum {
+	COVERAGE_SIMPLIFY = 0,
+	COVERAGE_ISVALID = 1
+};
+
+static Datum run_coverage_function(PG_FUNCTION_ARGS, int mode)
+{
+	WindowObject winobj = PG_WINDOW_OBJECT();
+	int64 curpos = WinGetCurrentPosition(winobj);
+	int64 rowcount = WinGetPartitionRowCount(winobj);
+	coverage_context *context = fetch_coverage_context(winobj, rowcount);
+	GSERIALIZED* result;
+	MemoryContext uppercontext = fcinfo->flinfo->fn_mcxt;
+	MemoryContext oldcontext;
+
+	if (!context->isdone)
+	{
+		bool isnull;
+		double tolerance = 0.0;
+		uint32 preserveBoundary = 0;
+		GEOSGeometry *simplified;
+		GEOSGeometry *input;
+		Datum d;
+
+		if (!fcinfo->flinfo)
+			elog(ERROR, "%s: Could not find upper context", __func__);
+
+		if (rowcount == 0)
+		{
+			context->isdone = true;
+			context->isnull = true;
+			PG_RETURN_NULL();
+		}
+
+		/* Figure out the largest tolerance we are called with */
+		d = WinGetFuncArgCurrent(winobj, 1, &isnull);
+		if (!isnull)
+			tolerance = DatumGetFloat8(d);
+
+		/* If at any time we are asked to preserve boundary, do that */
+		if (mode == COVERAGE_SIMPLIFY)
+		{
+			d = WinGetFuncArgCurrent(winobj, 2, &isnull);
+			if (!isnull)
+				preserveBoundary = DatumGetInt32(d);
+		}
+
+		initGEOS(lwnotice, lwgeom_geos_error);
+
+		input = read_partition_into_collection(winobj, context);
+		if (!input)
+			HANDLE_GEOS_ERROR("Failed to create collection");
+
+		if (mode == COVERAGE_SIMPLIFY)
+		{
+			simplified = GEOSCoverageSimplifyVW(input, tolerance, preserveBoundary);
+		}
+		else if (mode == COVERAGE_ISVALID)
+		{
+			GEOSCoverageIsValid(input, tolerance, &simplified);
+		}
+		else
+		{
+			elog(ERROR, "never get here");
+		}
+
+		GEOSGeom_destroy(input);
+
+		if (!simplified)
+		{
+			HANDLE_GEOS_ERROR("Failed to simplify collection");
+		}
+
+		oldcontext = MemoryContextSwitchTo(uppercontext);
+		context->geom = (LWCOLLECTION *) GEOS2LWGEOM(simplified, GEOSHasZ(simplified));
+		MemoryContextSwitchTo(oldcontext);
+		GEOSGeom_destroy(simplified);
+
+		context->isdone = true;
+	}
+
+	/* Bomb out of any errors */
+	if (context->isnull)
+		PG_RETURN_NULL();
+
+	/* Propogate the null entries */
+	if (context->idx[curpos] < 0)
+		PG_RETURN_NULL();
+
+	oldcontext = MemoryContextSwitchTo(uppercontext);
+	result = geometry_serialize(lwcollection_getsubgeom(context->geom, context->idx[curpos]));
+	MemoryContextSwitchTo(oldcontext);
+
+	/* When at the end of the partition, release the */
+	/* simplified collection we have been reading. */
+	if (curpos == rowcount - 1)
+		lwcollection_free(context->geom);
+
+	PG_RETURN_POINTER(result);
+}
+
+extern Datum ST_CoverageSimplify(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_CoverageSimplify);
+Datum ST_CoverageSimplify(PG_FUNCTION_ARGS)
+{
+	PG_RETURN_DATUM(run_coverage_function(fcinfo, COVERAGE_SIMPLIFY));
+}
+
+extern Datum ST_CoverageIsValid(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_CoverageIsValid);
+Datum ST_CoverageIsValid(PG_FUNCTION_ARGS)
+{
+	PG_RETURN_DATUM(run_coverage_function(fcinfo, COVERAGE_ISVALID));
+}
+
+
+
+
+#if 0
+CREATE TABLE p (geom geometry, id integer);
+
+INSERT INTO p VALUES (
+'POLYGON(( 0 0,10 0,10.1 5,10 10,0 10,0 0))',
+1
+);
+INSERT INTO p VALUES (
+'POLYGON((10 0,20 0,20 10,10 10,10.1 5,10 0))',
+1
+);
+
+INSERT INTO p VALUES (
+'POLYGON(( 0 0,10 0,10.1 5,10 10,0 10,0 0))',
+2
+);
+INSERT INTO p VALUES (
+'POLYGON((10 0,20 0,20 10,10 10,10.1 5,10 0))',
+2
+);
+INSERT INTO p VALUES (null, 2);
+
+SELECT id, ST_AsText(GEOM), ST_AsText(ST_CoverageSimplify(geom, 1, 0) over (partition by id)) from p;
+SELECT id, ST_AsText(GEOM), ST_AsText(ST_CoverageSimplify(geom, 1, 0) over ()) from p;
+
+DROP TABLE q;
+CREATE TABLE q (id integer, geom geometry);
+INSERT INTO q VALUES (1, null);
+INSERT INTO q VALUES (1, null);
+
+INSERT INTO q VALUES (2,
+'POLYGON(( 0 0,10 0,10.1 5,10 10,0 10,0 0))'
+);
+INSERT INTO q VALUES (2,
+'POLYGON((10 0,20 0,20 10,10 10,10.1 5,10 0))'
+);
+INSERT INTO q VALUES (2,
+'POLYGON EMPTY'
+);
+SELECT id, ST_AsText(GEOM), ST_AsText(ST_CoverageSimplify(geom, 1, 0) over ()) from q;
+
+
+#endif
+
+
+// extern GEOSGeometry GEOS_DLL *GEOSCoverageUnion(
+//	 const GEOSGeometry *g);
+
+// extern int GEOSCoverageIsValid(
+//     const GEOSGeometry* input,
+//     double gapWidth,
+//     GEOSGeometry** invalidEdges);
+
+// extern GEOSGeometry GEOS_DLL * GEOSCoverageSimplifyVW(
+//     const GEOSGeometry* input,
+//     double tolerance,
+//     int preserveBoundary);
+
+
