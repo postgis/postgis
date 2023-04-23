@@ -251,7 +251,8 @@ void state_combine(UnionState *state1, UnionState *state2)
 	if (list1 != NIL && list2 != NIL)
 	{
 		state1->list = list_concat(list1, list2);
-		list_free(list2);
+
+		//list_free(list2);
 		state1->size += state2->size;
 	}
 	else if (list2 != NIL)
