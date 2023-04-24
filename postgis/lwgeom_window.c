@@ -457,26 +457,12 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
  * GEOS Coverage Functions
  */
 
-#if POSTGIS_GEOS_VERSION >= 31200
 
-typedef struct {
-	bool	isdone;
-	bool	isnull;
-	LWCOLLECTION *geom;
-	int64   idx[0];
-	/* variable length */
-} coverage_context;
-
-
-static coverage_context *
-coverage_context_fetch(WindowObject winobj, int64 rowcount)
-{
-	size_t ctx_size = sizeof(coverage_context) + rowcount * sizeof(int64);
-	coverage_context *ctx = (coverage_context*) WinGetPartitionLocalMemory(
-		winobj, ctx_size);
-	return ctx;
-}
-
+#if POSTGIS_GEOS_VERSION >= 30800
+/*
+ * For CoverageUnion and CoverageSimplify, clean up
+ * the start of a collection if things fail in mid-stream.
+ */
 static void
 coverage_destroy_geoms(GEOSGeometry **geoms, uint32 ngeoms)
 {
@@ -488,7 +474,41 @@ coverage_destroy_geoms(GEOSGeometry **geoms, uint32 ngeoms)
 			GEOSGeom_destroy(geoms[i]);
 	}
 }
+#endif
 
+#if POSTGIS_GEOS_VERSION >= 31200
+
+/*
+ * For CoverageIsValid and CoverageSimplify, maintain context
+ * of unioned output and the position of the resultant in that
+ * output relative to the index of the input geometries.
+ */
+typedef struct {
+	bool	isdone;
+	bool	isnull;
+	LWCOLLECTION *geom;
+	int64   idx[0];
+	/* variable length */
+} coverage_context;
+
+/*
+ * For CoverageIsValid and CoverageSimplify, read the context
+ * out of the WindowObject.
+ */
+static coverage_context *
+coverage_context_fetch(WindowObject winobj, int64 rowcount)
+{
+	size_t ctx_size = sizeof(coverage_context) + rowcount * sizeof(int64);
+	coverage_context *ctx = (coverage_context*) WinGetPartitionLocalMemory(
+		winobj, ctx_size);
+	return ctx;
+}
+
+/*
+ * For CoverageIsValid and CoverageSimplify, read all the
+ * geometries in this partition and form a GEOS geometry
+ * collection out of them.
+ */
 static GEOSGeometry*
 coverage_read_partition_into_collection(
 	WindowObject winobj,
@@ -558,6 +578,13 @@ coverage_read_partition_into_collection(
 }
 
 
+/*
+ * The coverage_window_calculation function is just
+ * the shared machinery of the two window functions
+ * CoverageIsValid and CoverageSimplify which are almost
+ * the same except the GEOS function they call. That
+ * operating mode is controlled with this enumeration.
+ */
 enum {
 	COVERAGE_SIMPLIFY = 0,
 	COVERAGE_ISVALID = 1
