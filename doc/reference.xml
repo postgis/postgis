@@ -30,6 +30,7 @@
   &reference_measure;
   &reference_overlay;
   &reference_processing;
+  &reference_coverage;
   &reference_transformation;
   &reference_cluster;
   &reference_bbox;
