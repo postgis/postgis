@@ -455,8 +455,15 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 
 /********************************************************************************
  * GEOS Coverage Functions
+ *
+ * The GEOS "coverage" support is a set of functions for working with
+ * "implicit coverages". That is, collections of polygonal geometry
+ * that have perfectly shared edges. Since perfectly matched edges are
+ * fast to detect, "building a coverage" on these inputs is fast, so
+ * operations like edge simplification and so on can include the "build"
+ * step with relatively low cost.
+ *
  */
-
 
 #if POSTGIS_GEOS_VERSION >= 30800
 /*
@@ -528,8 +535,18 @@ coverage_read_partition_into_collection(
 		bool isempty, ispolygonal;
 		Datum d;
 
+		/* Read geometry in first argument */
 		d = WinGetFuncArgInPartition(winobj, 0, i,
 				WINDOW_SEEK_HEAD, false, &isnull, &isout);
+
+		/*
+		 * The input to the GEOS function will be smaller than
+		 * the input to this window, since we will not feed
+		 * GEOS nulls or empties. So we need to maintain a
+		 * map (context->idx) from the window position of the
+		 * input to the GEOS position, so we can put the
+		 * right result in the output stream.
+		 */
 
 		/* Skip NULL inputs and move on */
 		if (isnull)
@@ -541,7 +558,7 @@ coverage_read_partition_into_collection(
 		gser = (GSERIALIZED*)PG_DETOAST_DATUM(d);
 		gtype = gserialized_get_type(gser);
 		isempty = gserialized_is_empty(gser);
-		ispolygonal = gtype != MULTIPOLYGONTYPE && gtype != POLYGONTYPE;
+		ispolygonal = (gtype == MULTIPOLYGONTYPE) || (gtype == POLYGONTYPE);
 
 		/* Skip empty or non-polygonal inputs */
 		if (isempty || !ispolygonal)
@@ -563,10 +580,21 @@ coverage_read_partition_into_collection(
 		ngeoms = ngeoms + 1;
 	}
 
+	/*
+	 * Create the GEOS input collection! The new
+	 * collection takes ownership of the input GEOSGeometry
+	 * objects, leaving just the ngeoms array, which
+	 * will be cleaned up on function exit.
+	 */
 	geos = GEOSGeom_createCollection(
 		GEOS_GEOMETRYCOLLECTION,
 		geoms, ngeoms);
 
+	/*
+	 * If the creation failed, the objects will still be
+	 * hanging around, so clean them up first. Should
+	 * never happen, really.
+	 */
 	if (!geos)
 	{
 		coverage_destroy_geoms(geoms, ngeoms);
@@ -590,6 +618,11 @@ enum {
 	COVERAGE_ISVALID = 1
 };
 
+/*
+ * This calculation is shared by both coverage operations
+ * since they have the same pattern of "consume collection,
+ * return collection", and are both window functions.
+ */
 static Datum
 coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 {
@@ -607,7 +640,7 @@ coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 		bool isnull;
 		double tolerance = 0.0;
 		uint32 preserveBoundary = 0;
-		GEOSGeometry *simplified;
+		GEOSGeometry *output;
 		GEOSGeometry *input;
 		Datum d;
 
@@ -621,12 +654,13 @@ coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 			PG_RETURN_NULL();
 		}
 
-		/* Figure out the largest tolerance we are called with */
+		/* Get the tolerance argument from second postition */
 		d = WinGetFuncArgCurrent(winobj, 1, &isnull);
 		if (!isnull)
 			tolerance = DatumGetFloat8(d);
 
-		/* If at any time we are asked to preserve boundary, do that */
+		/* The third position "preserve boundary" argument */
+		/* is only for the simplify mode */
 		if (mode == COVERAGE_SIMPLIFY)
 		{
 			d = WinGetFuncArgCurrent(winobj, 2, &isnull);
@@ -640,30 +674,31 @@ coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 		if (!input)
 			HANDLE_GEOS_ERROR("Failed to create collection");
 
+		/* Run the correct GEOS function for the calling mode */
 		if (mode == COVERAGE_SIMPLIFY)
 		{
-			simplified = GEOSCoverageSimplifyVW(input, tolerance, preserveBoundary);
+			output = GEOSCoverageSimplifyVW(input, tolerance, preserveBoundary);
 		}
 		else if (mode == COVERAGE_ISVALID)
 		{
-			GEOSCoverageIsValid(input, tolerance, &simplified);
+			GEOSCoverageIsValid(input, tolerance, &output);
 		}
 		else
 		{
-			elog(ERROR, "never get here");
+			elog(ERROR, "Unknown mode, never get here");
 		}
 
 		GEOSGeom_destroy(input);
 
-		if (!simplified)
+		if (!output)
 		{
-			HANDLE_GEOS_ERROR("Failed to simplify collection");
+			HANDLE_GEOS_ERROR("Failed to process collection");
 		}
 
 		oldcontext = MemoryContextSwitchTo(uppercontext);
-		context->geom = (LWCOLLECTION *) GEOS2LWGEOM(simplified, GEOSHasZ(simplified));
+		context->geom = (LWCOLLECTION *) GEOS2LWGEOM(output, GEOSHasZ(output));
 		MemoryContextSwitchTo(oldcontext);
-		GEOSGeom_destroy(simplified);
+		GEOSGeom_destroy(output);
 
 		context->isdone = true;
 	}
@@ -676,6 +711,16 @@ coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 	if (context->idx[curpos] < 0)
 		PG_RETURN_NULL();
 
+	/*
+	 * Geometry serialization is not const-safe! (we
+	 * generage bounding boxes on demand) so we need
+	 * to make sure we have a persistent context when
+	 * we call the serialization, lest we create dangling
+	 * pointers in the object. It's possible we could
+	 * ignore them, skip the manual lwcollection_free
+	 * and let the aggcontext deletion take
+	 * care of the memory.
+	 */
 	oldcontext = MemoryContextSwitchTo(uppercontext);
 	subgeom = lwcollection_getsubgeom(context->geom, context->idx[curpos]);
 	if (mode == COVERAGE_ISVALID && lwgeom_is_empty(subgeom))
@@ -693,12 +738,10 @@ coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 	if (curpos == rowcount - 1)
 		lwcollection_free(context->geom);
 
-	if (result) {
-		PG_RETURN_POINTER(result);
-	}
-	else {
-		PG_RETURN_NULL();
-	}
+	if (!result) PG_RETURN_NULL();
+
+	PG_RETURN_POINTER(result);
+
 }
 #endif /* POSTGIS_GEOS_VERSION >= 31200 */
 
