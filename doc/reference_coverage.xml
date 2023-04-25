@@ -60,16 +60,16 @@ SELECT id, ST_AsText(ST_CoverageIsValid(geom) OVER ())
       <title>See Also</title>
       <para>
         <xref linkend="ST_CoverageUnion" />,
-        <xref linkend="ST_CoverageSimplifyVW" />
+        <xref linkend="ST_CoverageSimplify" />
       </para>
     </refsection>
 
   </refentry>
 
 
-  <refentry id="ST_CoverageSimplifyVW">
+  <refentry id="ST_CoverageSimplify">
     <refnamediv>
-      <refname>ST_CoverageSimplifyVW</refname>
+      <refname>ST_CoverageSimplify</refname>
 
       <refpurpose>Window function that simplifies the edges of an implicit coverage formed by a set of polygons, applying the Visvalingam–Whyatt algorithm to the edges.</refpurpose>
     </refnamediv>
@@ -77,7 +77,7 @@ SELECT id, ST_AsText(ST_CoverageIsValid(geom) OVER ())
     <refsynopsisdiv>
       <funcsynopsis>
         <funcprototype>
-          <funcdef>geometry <function>ST_CoverageSimplifyVW</function></funcdef>
+          <funcdef>geometry <function>ST_CoverageSimplify</function></funcdef>
           <paramdef><type>geometry winset </type>
             <parameter>geom</parameter></paramdef>
           <paramdef><type>float8 </type>
@@ -176,7 +176,7 @@ SELECT ST_AsText(ST_CoverageUnion(geom))
     <refsection>
       <title>See Also</title>
       <para>
-        <xref linkend="ST_CoverageSimplifyVW" />,
+        <xref linkend="ST_CoverageSimplify" />,
         <xref linkend="ST_CoverageIsValid" />
       </para>
     </refsection>
