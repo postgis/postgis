@@ -713,7 +713,7 @@ coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 
 	/*
 	 * Geometry serialization is not const-safe! (we
-	 * generage bounding boxes on demand) so we need
+	 * calculate bounding boxes on demand) so we need
 	 * to make sure we have a persistent context when
 	 * we call the serialization, lest we create dangling
 	 * pointers in the object. It's possible we could
