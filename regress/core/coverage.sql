@@ -14,9 +14,7 @@ FROM coverage GROUP BY id;
 
 INSERT INTO coverage VALUES
 (1, 1, 'MULTIPOLYGON(((0 0,10 0,10.1 5,10 10,0 10,0 0)))'),
-(1, 2, 'POLYGON((10 0,20 0,20 10,10 10,10.1 5,10 0))'),
-(1, 3, NULL),
-(1, 4, 'POLYGON EMPTY');
+(1, 2, 'POLYGON((10 0,20 0,20 10,10 10,10.1 5,10 0))');
 
 SELECT 'one partition a' AS test,
   id, seq, ST_AsText(GEOM) AS input,
@@ -25,26 +23,38 @@ SELECT 'one partition a' AS test,
 FROM coverage
 ORDER BY id, seq;
 
-SELECT 'one partition b' AS test,
-  id, ST_Area(ST_CoverageUnion(GEOM))
-FROM coverage GROUP BY id ORDER BY id;
-
 -- Add another partition
-INSERT INTO coverage
-  SELECT id+1, seq, geom FROM coverage;
+INSERT INTO coverage VALUES
+(2, 1, 'MULTIPOLYGON(((0 0,10 0,10.1 5,10 10,0 10,0 0)))'),
+(2, 2, 'POLYGON((10 0,20 0,20 10,10 10,10.1 5,10 0))'),
+(2, 3, NULL);
 
 SELECT 'two partition a' AS test,
-  id, seq, ST_AsText(GEOM) AS input,
+  id, seq, ST_AsText(geom) AS input,
   ST_AsText(ST_CoverageIsValid(geom) OVER (partition by id)) AS invalid,
   ST_AsText(ST_CoverageSimplify(geom, 1.0) OVER (partition by id)) AS simple
 FROM coverage
 ORDER BY id, seq;
 
-SELECT 'two partition b' AS test,
-  id, ST_Area(ST_CoverageUnion(GEOM))
+-- Add another partition
+INSERT INTO coverage VALUES
+(3, 1, 'POLYGON EMPTY'),
+(3, 2, NULL);
+
+SELECT 'three partition a' AS test,
+  id, seq, ST_AsText(geom) AS input,
+  ST_AsText(ST_CoverageIsValid(geom) OVER (partition by id)) AS invalid,
+  ST_AsText(ST_CoverageSimplify(geom, 1.0) OVER (partition by id)) AS simple
+FROM coverage
+ORDER BY id, seq;
+
+SELECT 'three partition b' AS test,
+  id, ST_Area(ST_CoverageUnion(geom))
 FROM coverage GROUP BY id ORDER BY id;
 
 DROP TABLE coverage;
+
+------------------------------------------------------------------------
 
 WITH squares AS (
   SELECT *

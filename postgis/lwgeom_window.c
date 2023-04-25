@@ -638,11 +638,11 @@ coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 	if (!context->isdone)
 	{
 		bool isnull;
+		Datum d;
 		double tolerance = 0.0;
 		uint32 preserveBoundary = 0;
-		GEOSGeometry *output;
-		GEOSGeometry *input;
-		Datum d;
+		GEOSGeometry *output = NULL;
+		GEOSGeometry *input = NULL;
 
 		if (!fcinfo->flinfo)
 			elog(ERROR, "%s: Could not find upper context", __func__);

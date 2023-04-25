@@ -1,18 +1,20 @@
 one partition a|1|1|MULTIPOLYGON(((0 0,10 0,10.1 5,10 10,0 10,0 0)))||MULTIPOLYGON(((10 0,10 10,0 10,0 0,10 0)))
 one partition a|1|2|POLYGON((10 0,20 0,20 10,10 10,10.1 5,10 0))||POLYGON((10 0,20 0,20 10,10 10,10 0))
-one partition a|1|3|||
-one partition a|1|4|POLYGON EMPTY||
-one partition b|1|200
 two partition a|1|1|MULTIPOLYGON(((0 0,10 0,10.1 5,10 10,0 10,0 0)))||MULTIPOLYGON(((10 0,10 10,0 10,0 0,10 0)))
 two partition a|1|2|POLYGON((10 0,20 0,20 10,10 10,10.1 5,10 0))||POLYGON((10 0,20 0,20 10,10 10,10 0))
-two partition a|1|3|||
-two partition a|1|4|POLYGON EMPTY||
 two partition a|2|1|MULTIPOLYGON(((0 0,10 0,10.1 5,10 10,0 10,0 0)))||MULTIPOLYGON(((10 0,10 10,0 10,0 0,10 0)))
 two partition a|2|2|POLYGON((10 0,20 0,20 10,10 10,10.1 5,10 0))||POLYGON((10 0,20 0,20 10,10 10,10 0))
 two partition a|2|3|||
-two partition a|2|4|POLYGON EMPTY||
-two partition b|1|200
-two partition b|2|200
+three partition a|1|1|MULTIPOLYGON(((0 0,10 0,10.1 5,10 10,0 10,0 0)))||MULTIPOLYGON(((10 0,10 10,0 10,0 0,10 0)))
+three partition a|1|2|POLYGON((10 0,20 0,20 10,10 10,10.1 5,10 0))||POLYGON((10 0,20 0,20 10,10 10,10 0))
+three partition a|2|1|MULTIPOLYGON(((0 0,10 0,10.1 5,10 10,0 10,0 0)))||MULTIPOLYGON(((10 0,10 10,0 10,0 0,10 0)))
+three partition a|2|2|POLYGON((10 0,20 0,20 10,10 10,10.1 5,10 0))||POLYGON((10 0,20 0,20 10,10 10,10 0))
+three partition a|2|3|||
+three partition a|3|1|POLYGON EMPTY||
+three partition a|3|2|||
+three partition b|1|200
+three partition b|2|200
+three partition b|3|
 grid lanes|0|110000
 grid lanes|1|110000
 grid lanes|2|110000
