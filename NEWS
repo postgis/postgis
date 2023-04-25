@@ -23,8 +23,8 @@ YYYY/MM/DD
   - #5331, [postgis_tiger_geocoder] reverse_geocode, prefer addressable ranges
           (Regina Obe, Locance)
   - #5363, Make ST_ClusterDBScan interruptable (Paul Ramsey)
-  - #5257, #5261, #5277, #5308, #5374, Support for PG16
-          (Paul Ramsey, Regina Obe, Sandro Santilli)
+  - #5257, #5261, #5277, #5304, #5308, #5374, Support for PG16
+          (Paul Ramsey, Regina Obe, Sandro , Laurenz Albe)
   - #5371, ST_Union segfaults (PG 11-12) (Regina Obe)
 
 
