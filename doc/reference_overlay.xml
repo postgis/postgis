@@ -392,6 +392,11 @@ The resulting linework is dissolved (duplicate lines are removed).
 
         <para>This is a good way to create fully-noded linework suitable for use as input to <xref linkend="ST_Polygonize" />.</para>
 
+        <para><xref linkend="ST_UnaryUnion" /> can also be used to node and dissolve linework.
+        It provides an option to specify a gridSize, which can provide simpler and more robust output.
+        See also <xref linkend="ST_Union" /> for an aggregate variant.
+        </para>
+
         <para>&Z_support;</para>
         <para>Performed by the GEOS module.</para>
         <para>Availability: 2.0.0</para>
@@ -431,7 +436,7 @@ MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))
         <title>See Also</title>
 
         <para>
-            <xref linkend="ST_UnaryUnion" />
+            <xref linkend="ST_UnaryUnion" />, <xref linkend="ST_Union" />
         </para>
       </refsection>
     </refentry>
@@ -904,8 +909,8 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
         Another use of this function is to node and dissolve a collection of
         linestrings which cross or overlap
         to make them <link linkend="Simple_Geometry">simple</link>.
-        (To add nodes but not dissolve duplicate linework
-        use <xref linkend="ST_Node" />.)
+        (<xref linkend="ST_Node" /> also does this,
+        but it does not provide the <code>gridSize</code> option.)
         </para>
 
         <para>
