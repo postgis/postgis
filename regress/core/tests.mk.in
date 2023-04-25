@@ -179,6 +179,11 @@ else
 		$(top_srcdir)/regress/core/concave_hull
 endif
 
+ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 31200),1)
+	TESTS += \
+		$(top_srcdir)/regress/core/coverage
+endif
+
 ifeq ($(INTERRUPTTESTS),yes)
 	# Allow CI servers to configure --with-interrupt-tests
 	TESTS += \
