@@ -32,7 +32,7 @@
 
       <para>Collects all the polygons in the window partition and then checks whether they form a "clean coverage", in which no polygons have any overlap, all vertices on shared edges are identical, and no gaps between polygons exist smaller than the tolerance value.</para>
       <para>If polygons are found that are not clean relative to their neighbors, the problematic edges will be returned as MULTILINESTRING. For clean polygons the return value will be a NULL. Any non-polygonal or empty geometries on the input will be generate NULL returns.</para>
-      <para>Availability: 3.4.0</para>
+      <para>Availability: 3.4.0 - requires GEOS &gt;= 3.12.0</para>
     </refsection>
 
     <refsection>
@@ -94,7 +94,7 @@ SELECT id, ST_AsText(ST_CoverageIsValid(geom) OVER ())
       <para>Collects all the polygons in the window partition, and forms a polgyonal coverage by looking for shared edges between the polygons. Once coverage is formed, the shared edges are simplified using the <ulink url="https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm">Visvalingam–Whyatt algorithm</ulink>. For clean polygonal coverage inputs, this will result in a simplification that is consistent between polygons, and retains the coverage property for the outputs.</para>
       <para>For invalid coverage inputs, non-shared edges are ignored, and only shared edges are simplified.</para>
       <para>To only simplify the "internal" edges of the set of polygons (those that are shared by two polytons) set the "simplifyBoundary" parameter to 1.</para>
-      <para>Availability: 3.4.0</para>
+      <para>Availability: 3.4.0 - requires GEOS &gt;= 3.12.0</para>
 
     </refsection>
 
@@ -151,7 +151,7 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 1.0) OVER ())
 
       <para>When the input are a polygonal coverage, the function will provide a high speed merge of adjacent polygons in the aggregation set. This function only works with inputs that are coverages: no overlaps, all shared edges identical down to the vertex level. See <xref linkend="ST_CoverageIsValid" /> for a way to test that a set of polygons are a valid polygonal coverage.</para>
 
-      <para>Availability: 3.4.0</para>
+      <para>Availability: 3.4.0 - requires GEOS &gt;= 3.12.0</para>
     </refsection>
 
     <refsection>
