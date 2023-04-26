@@ -102,6 +102,7 @@ FROM (
       <para>Collects all the polygons in the window partition, and forms a polgyonal coverage by looking for shared edges between the polygons. Once coverage is formed, the shared edges are simplified using the <ulink url="https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm">Visvalingam–Whyatt algorithm</ulink>. For clean polygonal coverage inputs, this will result in a simplification that is consistent between polygons, and retains the coverage property for the outputs.</para>
       <para>For invalid coverage inputs, non-shared edges are ignored, and only shared edges are simplified.</para>
       <para>To only simplify the "internal" edges of the set of polygons (those that are shared by two polytons) set the "simplifyBoundary" parameter to 1.</para>
+      <note><para>You must ensure that your coverage is valid before running simplification or you may get unexpected results in the output, such as boundary intersections or non-shared boundaries where you thought there were shared boundaries.</para></note>
       <para>Availability: 3.4.0 - requires GEOS &gt;= 3.12.0</para>
 
     </refsection>
@@ -158,6 +159,8 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 1.0) OVER ())
       <title>Description</title>
 
       <para>When the input are a polygonal coverage, the function will provide a high speed merge of adjacent polygons in the aggregation set. This function only works with inputs that are coverages: no overlaps, all shared edges identical down to the vertex level. See <xref linkend="ST_CoverageIsValid" /> for a way to test that a set of polygons are a valid polygonal coverage.</para>
+
+      <note><para>You must ensure that your coverage is valid before running simplification or you may get unexpected results in the output, such as unmerged inputs returning as multipolygons.</para></note>
 
       <para>Availability: 3.4.0 - requires GEOS &gt;= 3.12.0</para>
     </refsection>
