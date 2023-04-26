@@ -138,10 +138,10 @@ cp ${PGPATHEDB}/bin/libpq.dll  $outdir/bin/postgisgui
 cp ${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/bin/libicon*.dll $outdir/bin/postgisgui
 cp ${PGPATHEDB}/bin/libintl*.dll $outdir/bin/postgisgui
 
-cp ${PGPATHEDB}/bin/ssleay32.dll $outdir/bin/postgisgui
-cp ${PGPATHEDB}/bin/libeay32.dll $outdir/bin/postgisgui
-cp ${PGPATHEDB}/bin/libcrypto-1_1-x64.dll $outdir/bin/postgisgui
-cp ${PGPATHEDB}/bin/libssl-1_1-x64.dll $outdir/bin/postgisgui
+#cp ${PGPATHEDB}/bin/ssleay32.dll $outdir/bin/postgisgui
+#cp ${PGPATHEDB}/bin/libeay32.dll $outdir/bin/postgisgui
+#cp ${PGPATHEDB}/bin/libcrypto-1_1-x64.dll $outdir/bin/postgisgui
+#cp ${PGPATHEDB}/bin/libssl-1_1-x64.dll $outdir/bin/postgisgui
 
 #pg 15 is shipping with newer ssl
 cp ${PGPATHEDB}/bin/libcrypto-3-x64.dll $outdir/bin/postgisgui
@@ -159,9 +159,13 @@ cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/lib/gtk-2.0 $outdir/bin/postgisgui/
 cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/lib/*.dll $outdir/bin/postgisgui/lib
 cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/lib/gdk-pixbuf-2.0 $outdir/bin/postgisgui/lib
 
-
+# old proj < 8
 cp ${PROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/share/proj/* $outdir/share/contrib/postgis-${POSTGIS_MINOR_VER}/proj
 cp ${PROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
+
+# new proj >= 8 folder prefixed with proj
+cp ${PROJECTS}/proj/rel-proj-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/share/proj/* $outdir/share/contrib/postgis-${POSTGIS_MINOR_VER}/proj
+cp ${PROJECTS}/proj/rel-proj-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
 cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
 
 cp ${PROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
