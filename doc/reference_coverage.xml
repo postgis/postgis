@@ -56,11 +56,10 @@ SELECT id, ST_AsText(ST_CoverageIsValid(geom) OVER ())
       </programlisting>
 
       <programlisting>-- Test entire table for validity
-SELECT bool_and(valid) AS all_valid
-FROM (
-  SELECT ST_CoverageIsValid(geom) OVER () IS NULL AS valid
-  FROM coverage
-) a;
+SELECT true = ALL (
+    SELECT ST_CoverageIsValid(geom) OVER () IS NULL
+    FROM coverage
+    );
       </programlisting>
     </refsection>
 
