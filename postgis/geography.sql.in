@@ -642,55 +642,6 @@ CREATE OR REPLACE FUNCTION _ST_BestSRID(geography)
 	_COST_LOW;
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8)
-	RETURNS geography
-	AS 'SELECT @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Buffer(@extschema@.ST_Transform(@extschema@.geometry($1), @extschema@._ST_BestSRID($1)), $2), 4326))'
-	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
-
--- Availability: 2.3.x
-CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8, integer)
-	RETURNS geography
-	AS 'SELECT @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Buffer(@extschema@.ST_Transform(@extschema@.geometry($1), @extschema@._ST_BestSRID($1)), $2, $3), 4326))'
-	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
-
--- Availability: 2.3.x
-CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8, text)
-	RETURNS geography
-	AS 'SELECT @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Buffer(@extschema@.ST_Transform(@extschema@.geometry($1), @extschema@._ST_BestSRID($1)), $2, $3), 4326))'
-	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
-
--- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
-CREATE OR REPLACE FUNCTION ST_Buffer(text, float8)
-	RETURNS geometry AS
-	$$ SELECT @extschema@.ST_Buffer($1::@extschema@.geometry, $2);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
-
--- Availability: 2.3.x
-CREATE OR REPLACE FUNCTION ST_Buffer(text, float8, integer)
-	RETURNS geometry AS
-	$$ SELECT @extschema@.ST_Buffer($1::@extschema@.geometry, $2, $3);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
-
--- Availability: 2.3.x
-CREATE OR REPLACE FUNCTION ST_Buffer(text, float8, text)
-	RETURNS geometry AS
-	$$ SELECT @extschema@.ST_Buffer($1::@extschema@.geometry, $2, $3);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
-
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_Intersection(geography, geography)
-	RETURNS geography
-	AS 'SELECT @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Intersection(@extschema@.ST_Transform(@extschema@.geometry($1), @extschema@._ST_BestSRID($1, $2)), @extschema@.ST_Transform(@extschema@.geometry($2), @extschema@._ST_BestSRID($1, $2))), 4326))'
-	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
-
--- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
-CREATE OR REPLACE FUNCTION ST_Intersection(text, text)
-	RETURNS geometry AS
-	$$ SELECT @extschema@.ST_Intersection($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	_COST_HIGH;
-
--- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_AsBinary(geography)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME','LWGEOM_asBinary'
@@ -832,6 +783,55 @@ CREATE OR REPLACE FUNCTION ST_Intersects(geog1 geography, geog2 geography)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8)
+	RETURNS geography
+	AS 'SELECT @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Buffer(@extschema@.ST_Transform(@extschema@.geometry($1), @extschema@._ST_BestSRID($1)), $2), @extschema@.ST_SRID($1)))'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 2.3.x
+CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8, integer)
+	RETURNS geography
+	AS 'SELECT @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Buffer(@extschema@.ST_Transform(@extschema@.geometry($1), @extschema@._ST_BestSRID($1)), $2, $3), @extschema@.ST_SRID($1)))'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 2.3.x
+CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8, text)
+	RETURNS geography
+	AS 'SELECT @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Buffer(@extschema@.ST_Transform(@extschema@.geometry($1), @extschema@._ST_BestSRID($1)), $2, $3), @extschema@.ST_SRID($1)))'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
+CREATE OR REPLACE FUNCTION ST_Buffer(text, float8)
+	RETURNS geometry AS
+	$$ SELECT @extschema@.ST_Buffer($1::@extschema@.geometry, $2);  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 2.3.x
+CREATE OR REPLACE FUNCTION ST_Buffer(text, float8, integer)
+	RETURNS geometry AS
+	$$ SELECT @extschema@.ST_Buffer($1::@extschema@.geometry, $2, $3);  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 2.3.x
+CREATE OR REPLACE FUNCTION ST_Buffer(text, float8, text)
+	RETURNS geometry AS
+	$$ SELECT @extschema@.ST_Buffer($1::@extschema@.geometry, $2, $3);  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_Intersection(geography, geography)
+	RETURNS geography
+	AS 'SELECT @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Intersection(@extschema@.ST_Transform(@extschema@.geometry($1), @extschema@._ST_BestSRID($1, $2)), @extschema@.ST_Transform(@extschema@.geometry($2), @extschema@._ST_BestSRID($1, $2))), @extschema@.ST_SRID($1)))'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
+CREATE OR REPLACE FUNCTION ST_Intersection(text, text)
+	RETURNS geometry AS
+	$$ SELECT @extschema@.ST_Intersection($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Covers(text, text)
 	RETURNS boolean AS
@@ -858,4 +858,5 @@ CREATE OR REPLACE FUNCTION ST_Intersects(text, text)
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -----------------------------------------------------------------------------
+
 
