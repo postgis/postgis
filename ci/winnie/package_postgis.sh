@@ -159,9 +159,13 @@ cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/lib/gtk-2.0 $outdir/bin/postgisgui/
 cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/lib/*.dll $outdir/bin/postgisgui/lib
 cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/lib/gdk-pixbuf-2.0 $outdir/bin/postgisgui/lib
 
-
+# old proj < 8
 cp ${PROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/share/proj/* $outdir/share/contrib/postgis-${POSTGIS_MINOR_VER}/proj
 cp ${PROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
+
+# new proj >= 8 folder prefixed with proj
+cp ${PROJECTS}/proj/rel-proj-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/share/proj/* $outdir/share/contrib/postgis-${POSTGIS_MINOR_VER}/proj
+cp ${PROJECTS}/proj/rel-proj-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
 cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
 
 cp ${PROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
@@ -308,7 +312,7 @@ fi
 cd ${RELDIR}
 zip -r $package ${RELVERDIR}
 md5sum $package > ${package}.md5
-#scp $package robe@www.refractions.net:${DWN}/${REL_PGVER}/buildbot/${RELVERDIR}.zip
+
 cp $package ${PROJECTS}/postgis/win_web/download/windows/pg${REL_PGVER}/buildbot
 cp ${package}.md5 ${PROJECTS}/postgis/win_web/download/windows/pg${REL_PGVER}/buildbot
 cd ${POSTGIS_SRC}
