@@ -766,9 +766,9 @@ Datum ST_CoverageSimplify(PG_FUNCTION_ARGS)
 }
 
 
-extern Datum ST_CoverageIsValid(PG_FUNCTION_ARGS);
-PG_FUNCTION_INFO_V1(ST_CoverageIsValid);
-Datum ST_CoverageIsValid(PG_FUNCTION_ARGS)
+extern Datum ST_CoverageInvalidLocations(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_CoverageInvalidLocations);
+Datum ST_CoverageInvalidLocations(PG_FUNCTION_ARGS)
 {
 #if POSTGIS_GEOS_VERSION < 31200
 

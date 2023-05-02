@@ -8,9 +8,9 @@
 
   <title>Coverages</title>
 
-  <refentry id="ST_CoverageIsValid">
+  <refentry id="ST_CoverageInvalidLocations">
     <refnamediv>
-      <refname>ST_CoverageIsValid</refname>
+      <refname>ST_CoverageInvalidLocations</refname>
 
       <refpurpose>Window function that evaluates a set of polygons in the window partition to determine if they form a valid polygonal coverage.</refpurpose>
     </refnamediv>
@@ -18,7 +18,7 @@
     <refsynopsisdiv>
       <funcsynopsis>
         <funcprototype>
-          <funcdef>geometry <function>ST_CoverageIsValid</function></funcdef>
+          <funcdef>geometry <function>ST_CoverageInvalidLocations</function></funcdef>
           <paramdef><type>geometry winset </type>
             <parameter>geom</parameter></paramdef>
           <paramdef><type>float8 </type>
@@ -45,7 +45,7 @@ INSERT INTO coverage VALUES
   (2, 'POLYGON((10 0, 20 0, 20 10, 10 10, 10.05 5, 10 0))'),
   (3, 'POLYGON((20 0, 30 0, 30 10, 20 10, 20 0))');
 
-SELECT id, ST_AsText(ST_CoverageIsValid(geom) OVER ())
+SELECT id, ST_AsText(ST_CoverageInvalidLocations(geom) OVER ())
   FROM coverage;
 
  id |           st_astext
@@ -57,7 +57,7 @@ SELECT id, ST_AsText(ST_CoverageIsValid(geom) OVER ())
 
       <programlisting>-- Test entire table for validity
 SELECT true = ALL (
-    SELECT ST_CoverageIsValid(geom) OVER () IS NULL
+    SELECT ST_CoverageInvalidLocations(geom) OVER () IS NULL
     FROM coverage
     );
       </programlisting>
@@ -131,7 +131,7 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 1.0) OVER ())
       <title>See Also</title>
       <para>
         <xref linkend="ST_CoverageUnion" />,
-        <xref linkend="ST_CoverageIsValid" />
+        <xref linkend="ST_CoverageInvalidLocations" />
       </para>
     </refsection>
 
@@ -157,7 +157,7 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 1.0) OVER ())
     <refsection>
       <title>Description</title>
 
-      <para>When the input are a polygonal coverage, the function will provide a high speed merge of adjacent polygons in the aggregation set. This function only works with inputs that are coverages: no overlaps, all shared edges identical down to the vertex level. See <xref linkend="ST_CoverageIsValid" /> for a way to test that a set of polygons are a valid polygonal coverage.</para>
+      <para>When the input are a polygonal coverage, the function will provide a high speed merge of adjacent polygons in the aggregation set. This function only works with inputs that are coverages: no overlaps, all shared edges identical down to the vertex level. See <xref linkend="ST_CoverageInvalidLocations" /> for a way to test that a set of polygons are a valid polygonal coverage.</para>
 
       <note><para>You must ensure that your coverage is valid before running simplification or you may get unexpected results in the output, such as unmerged inputs returning as multipolygons.</para></note>
 
@@ -187,7 +187,7 @@ SELECT ST_AsText(ST_CoverageUnion(geom))
       <title>See Also</title>
       <para>
         <xref linkend="ST_CoverageSimplify" />,
-        <xref linkend="ST_CoverageIsValid" />
+        <xref linkend="ST_CoverageInvalidLocations" />
       </para>
     </refsection>
 
