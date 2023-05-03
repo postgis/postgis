@@ -161,7 +161,7 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 1.0) OVER ())
 
       <note><para>You must ensure that your coverage is valid before running simplification or you may get unexpected results in the output, such as unmerged inputs returning as multipolygons.</para></note>
 
-      <para>Availability: 3.4.0 - requires GEOS &gt;= 3.12.0</para>
+      <para>Availability: 3.4.0 - requires GEOS &gt;= 3.8.0</para>
     </refsection>
 
     <refsection>
