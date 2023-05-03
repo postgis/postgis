@@ -1911,6 +1911,7 @@ CREATE OR REPLACE FUNCTION ST_LineMerge(geometry, boolean)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
+
 -----------------------------------------------------------------------------
 -- Affine transforms
 -----------------------------------------------------------------------------
@@ -4192,6 +4193,13 @@ CREATE OR REPLACE FUNCTION pgis_geometry_makeline_finalfn(internal)
 	LANGUAGE 'c' PARALLEL SAFE
 	_COST_MEDIUM;
 
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION pgis_geometry_coverageunion_finalfn(internal)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c' PARALLEL SAFE
+	_COST_MEDIUM;
+
 -- Availability: 3.3.0
 CREATE OR REPLACE FUNCTION pgis_geometry_union_parallel_transfn(internal, geometry)
 	RETURNS internal
@@ -4318,6 +4326,40 @@ CREATE AGGREGATE ST_MakeLine (geometry) (
 	parallel = safe,
 	FINALFUNC = pgis_geometry_makeline_finalfn
 	);
+
+
+-----------------------------------------------------------------------
+-- Polygonal coverage functions
+---------------------------------------------------------------------
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_CoverageUnion (geometry[])
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_CoverageUnion'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
+-- Availability: 3.4.0
+CREATE AGGREGATE ST_CoverageUnion (geometry) (
+	SFUNC = pgis_geometry_accum_transfn,
+	STYPE = internal,
+	PARALLEL = safe,
+	FINALFUNC = pgis_geometry_coverageunion_finalfn
+	);
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_CoverageSimplify (geom geometry, tolerance float8, simplifyBoundary boolean default true)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_CoverageSimplify'
+	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
+	_COST_HIGH;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_CoverageInvalidLocations (geom geometry, tolerance float8 default 0.0)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_CoverageInvalidLocations'
+	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
+	_COST_HIGH;
 
 --------------------------------------------------------------------------------
 

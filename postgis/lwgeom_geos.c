@@ -46,20 +46,7 @@
 #include "lwgeom_accum.h"
 
 
-/* Return NULL on GEOS error
- *
- * Prints error message only if it was not for interruption, in which
- * case we let PostgreSQL deal with the error.
- */
-#define HANDLE_GEOS_ERROR(label) \
-	{ \
-		if (strstr(lwgeom_geos_errmsg, "InterruptedException")) \
-			ereport(ERROR, \
-				(errcode(ERRCODE_QUERY_CANCELED), errmsg("canceling statement due to user request"))); \
-		else \
-			lwpgerror("%s: %s", (label), lwgeom_geos_errmsg); \
-		PG_RETURN_NULL(); \
-	}
+
 
 /*
 ** Prototypes for SQL-bound functions
@@ -3589,3 +3576,6 @@ Datum ST_OrientedEnvelope(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(input, 0);
 	PG_RETURN_POINTER(result);
 }
+
+
+

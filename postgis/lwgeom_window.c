@@ -37,10 +37,6 @@
 #include "lwgeom_log.h"
 #include "lwgeom_pg.h"
 
-extern Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS);
-extern Datum ST_ClusterKMeans(PG_FUNCTION_ARGS);
-extern Datum ST_ClusterWithinWin(PG_FUNCTION_ARGS);
-extern Datum ST_ClusterIntersectingWin(PG_FUNCTION_ARGS);
 
 typedef struct {
 	bool	isdone;
@@ -117,6 +113,8 @@ read_geos_from_partition(WindowObject win_obj, uint32_t i, bool* is_null)
 	}
 	return gg;
 }
+
+extern Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_ClusterDBSCAN);
 Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 {
@@ -209,7 +207,7 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(context->clusters[row].cluster_id);
 }
 
-
+extern Datum ST_ClusterWithinWin(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_ClusterWithinWin);
 Datum ST_ClusterWithinWin(PG_FUNCTION_ARGS)
 {
@@ -285,6 +283,7 @@ Datum ST_ClusterWithinWin(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(context->clusters[row].cluster_id);
 }
 
+extern Datum ST_ClusterIntersectingWin(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_ClusterIntersectingWin);
 Datum ST_ClusterIntersectingWin(PG_FUNCTION_ARGS)
 {
@@ -350,6 +349,7 @@ Datum ST_ClusterIntersectingWin(PG_FUNCTION_ARGS)
 }
 
 
+extern Datum ST_ClusterKMeans(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_ClusterKMeans);
 Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 {
@@ -451,3 +451,423 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 	curpos = WinGetCurrentPosition(winobj);
 	PG_RETURN_INT32(context->result[curpos]);
 }
+
+
+/********************************************************************************
+ * GEOS Coverage Functions
+ *
+ * The GEOS "coverage" support is a set of functions for working with
+ * "implicit coverages". That is, collections of polygonal geometry
+ * that have perfectly shared edges. Since perfectly matched edges are
+ * fast to detect, "building a coverage" on these inputs is fast, so
+ * operations like edge simplification and so on can include the "build"
+ * step with relatively low cost.
+ *
+ */
+
+#if POSTGIS_GEOS_VERSION >= 30800
+/*
+ * For CoverageUnion and CoverageSimplify, clean up
+ * the start of a collection if things fail in mid-stream.
+ */
+static void
+coverage_destroy_geoms(GEOSGeometry **geoms, uint32 ngeoms)
+{
+	if (!geoms) return;
+	if (!ngeoms) return;
+	for (uint32 i = 0; i < ngeoms; i++)
+	{
+		if(geoms[i])
+			GEOSGeom_destroy(geoms[i]);
+	}
+}
+#endif
+
+#if POSTGIS_GEOS_VERSION >= 31200
+
+/*
+ * For CoverageIsValid and CoverageSimplify, maintain context
+ * of unioned output and the position of the resultant in that
+ * output relative to the index of the input geometries.
+ */
+typedef struct {
+	bool	isdone;
+	bool	isnull;
+	LWCOLLECTION *geom;
+	int64   idx[0];
+	/* variable length */
+} coverage_context;
+
+/*
+ * For CoverageIsValid and CoverageSimplify, read the context
+ * out of the WindowObject.
+ */
+static coverage_context *
+coverage_context_fetch(WindowObject winobj, int64 rowcount)
+{
+	size_t ctx_size = sizeof(coverage_context) + rowcount * sizeof(int64);
+	coverage_context *ctx = (coverage_context*) WinGetPartitionLocalMemory(
+		winobj, ctx_size);
+	return ctx;
+}
+
+/*
+ * For CoverageIsValid and CoverageSimplify, read all the
+ * geometries in this partition and form a GEOS geometry
+ * collection out of them.
+ */
+static GEOSGeometry*
+coverage_read_partition_into_collection(
+	WindowObject winobj,
+	coverage_context* context)
+{
+	int64 rowcount = WinGetPartitionRowCount(winobj);
+	GEOSGeometry* geos;
+	GEOSGeometry** geoms;
+	uint32 i, ngeoms = 0, gtype;
+
+	/* Read in all the geometries in this partition */
+	geoms = palloc(rowcount * sizeof(GEOSGeometry*));
+	for (i = 0; i < rowcount; i++)
+	{
+		GSERIALIZED* gser;
+		bool isnull, isout;
+		bool isempty, ispolygonal;
+		Datum d;
+
+		/* Read geometry in first argument */
+		d = WinGetFuncArgInPartition(winobj, 0, i,
+				WINDOW_SEEK_HEAD, false, &isnull, &isout);
+
+		/*
+		 * The input to the GEOS function will be smaller than
+		 * the input to this window, since we will not feed
+		 * GEOS nulls or empties. So we need to maintain a
+		 * map (context->idx) from the window position of the
+		 * input to the GEOS position, so we can put the
+		 * right result in the output stream.
+		 */
+
+		/* Skip NULL inputs and move on */
+		if (isnull)
+		{
+			context->idx[i] = -1;
+			continue;
+		}
+
+		gser = (GSERIALIZED*)PG_DETOAST_DATUM(d);
+		gtype = gserialized_get_type(gser);
+		isempty = gserialized_is_empty(gser);
+		ispolygonal = (gtype == MULTIPOLYGONTYPE) || (gtype == POLYGONTYPE);
+
+		/* Skip empty or non-polygonal inputs */
+		if (isempty || !ispolygonal)
+		{
+			context->idx[i] = -1;
+			continue;
+		}
+
+		/* Skip failed inputs */
+		geos = POSTGIS2GEOS(gser);
+		if (!geos)
+		{
+			context->idx[i] = -1;
+			continue;
+		}
+
+		context->idx[i] = ngeoms;
+		geoms[ngeoms] = geos;
+		ngeoms = ngeoms + 1;
+	}
+
+	/*
+	 * Create the GEOS input collection! The new
+	 * collection takes ownership of the input GEOSGeometry
+	 * objects, leaving just the ngeoms array, which
+	 * will be cleaned up on function exit.
+	 */
+	geos = GEOSGeom_createCollection(
+		GEOS_GEOMETRYCOLLECTION,
+		geoms, ngeoms);
+
+	/*
+	 * If the creation failed, the objects will still be
+	 * hanging around, so clean them up first. Should
+	 * never happen, really.
+	 */
+	if (!geos)
+	{
+		coverage_destroy_geoms(geoms, ngeoms);
+		return NULL;
+	}
+
+	pfree(geoms);
+	return geos;
+}
+
+
+/*
+ * The coverage_window_calculation function is just
+ * the shared machinery of the two window functions
+ * CoverageIsValid and CoverageSimplify which are almost
+ * the same except the GEOS function they call. That
+ * operating mode is controlled with this enumeration.
+ */
+enum {
+	COVERAGE_SIMPLIFY = 0,
+	COVERAGE_ISVALID = 1
+};
+
+/*
+ * This calculation is shared by both coverage operations
+ * since they have the same pattern of "consume collection,
+ * return collection", and are both window functions.
+ */
+static Datum
+coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
+{
+	WindowObject winobj = PG_WINDOW_OBJECT();
+	int64 curpos = WinGetCurrentPosition(winobj);
+	int64 rowcount = WinGetPartitionRowCount(winobj);
+	coverage_context *context = coverage_context_fetch(winobj, rowcount);
+	GSERIALIZED* result;
+	MemoryContext uppercontext = fcinfo->flinfo->fn_mcxt;
+	MemoryContext oldcontext;
+	const LWGEOM* subgeom;
+
+	if (!context->isdone)
+	{
+		bool isnull;
+		Datum d;
+		double tolerance = 0.0;
+		bool simplifyBoundary = true;
+		GEOSGeometry *output = NULL;
+		GEOSGeometry *input = NULL;
+
+		if (!fcinfo->flinfo)
+			elog(ERROR, "%s: Could not find upper context", __func__);
+
+		if (rowcount == 0)
+		{
+			context->isdone = true;
+			context->isnull = true;
+			PG_RETURN_NULL();
+		}
+
+		/* Get the tolerance argument from second postition */
+		d = WinGetFuncArgCurrent(winobj, 1, &isnull);
+		if (!isnull)
+			tolerance = DatumGetFloat8(d);
+
+		/* The third position "preserve boundary" argument */
+		/* is only for the simplify mode */
+		if (mode == COVERAGE_SIMPLIFY)
+		{
+			d = WinGetFuncArgCurrent(winobj, 2, &isnull);
+			if (!isnull)
+				simplifyBoundary = DatumGetBool(d);
+		}
+
+		initGEOS(lwnotice, lwgeom_geos_error);
+
+		input = coverage_read_partition_into_collection(winobj, context);
+		if (!input)
+			HANDLE_GEOS_ERROR("Failed to create collection");
+
+		/* Run the correct GEOS function for the calling mode */
+		if (mode == COVERAGE_SIMPLIFY)
+		{
+			/* GEOSCoverageSimplifyVW is "preserveBoundary" so we invert simplifyBoundary */
+			output = GEOSCoverageSimplifyVW(input, tolerance, !simplifyBoundary);
+		}
+		else if (mode == COVERAGE_ISVALID)
+		{
+			GEOSCoverageIsValid(input, tolerance, &output);
+		}
+		else
+		{
+			elog(ERROR, "Unknown mode, never get here");
+		}
+
+		GEOSGeom_destroy(input);
+
+		if (!output)
+		{
+			HANDLE_GEOS_ERROR("Failed to process collection");
+		}
+
+		oldcontext = MemoryContextSwitchTo(uppercontext);
+		context->geom = (LWCOLLECTION *) GEOS2LWGEOM(output, GEOSHasZ(output));
+		MemoryContextSwitchTo(oldcontext);
+		GEOSGeom_destroy(output);
+
+		context->isdone = true;
+	}
+
+	/* Bomb out of any errors */
+	if (context->isnull)
+		PG_RETURN_NULL();
+
+	/* Propogate the null entries */
+	if (context->idx[curpos] < 0)
+		PG_RETURN_NULL();
+
+	/*
+	 * Geometry serialization is not const-safe! (we
+	 * calculate bounding boxes on demand) so we need
+	 * to make sure we have a persistent context when
+	 * we call the serialization, lest we create dangling
+	 * pointers in the object. It's possible we could
+	 * ignore them, skip the manual lwcollection_free
+	 * and let the aggcontext deletion take
+	 * care of the memory.
+	 */
+	oldcontext = MemoryContextSwitchTo(uppercontext);
+	subgeom = lwcollection_getsubgeom(context->geom, context->idx[curpos]);
+	if (mode == COVERAGE_ISVALID && lwgeom_is_empty(subgeom))
+	{
+		result = NULL;
+	}
+	else
+	{
+		result = geometry_serialize((LWGEOM*)subgeom);
+	}
+	MemoryContextSwitchTo(oldcontext);
+
+	/* When at the end of the partition, release the */
+	/* simplified collection we have been reading. */
+	if (curpos == rowcount - 1)
+		lwcollection_free(context->geom);
+
+	if (!result) PG_RETURN_NULL();
+
+	PG_RETURN_POINTER(result);
+
+}
+#endif /* POSTGIS_GEOS_VERSION >= 31200 */
+
+
+extern Datum ST_CoverageSimplify(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_CoverageSimplify);
+Datum ST_CoverageSimplify(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 31200
+
+	lwpgerror("The GEOS version this PostGIS binary "
+		"was compiled against (%d) doesn't support "
+		"'GEOSCoverageSimplifyVW' function (3.12.0+ required)",
+		POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+
+#else /* POSTGIS_GEOS_VERSION >= 31200 */
+
+	return coverage_window_calculation(fcinfo, COVERAGE_SIMPLIFY);
+
+#endif
+}
+
+
+extern Datum ST_CoverageInvalidLocations(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_CoverageInvalidLocations);
+Datum ST_CoverageInvalidLocations(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 31200
+
+	lwpgerror("The GEOS version this PostGIS binary "
+		"was compiled against (%d) doesn't support "
+		"'GEOSCoverageIsValid' function (3.12.0+ required)",
+		POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+
+#else /* POSTGIS_GEOS_VERSION >= 31200 */
+
+	return coverage_window_calculation(fcinfo, COVERAGE_ISVALID);
+
+#endif
+}
+
+/**********************************************************************
+ * ST_CoverageUnion(geometry[])
+ *
+ */
+
+Datum ST_CoverageUnion(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_CoverageUnion);
+Datum ST_CoverageUnion(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 30800
+	lwpgerror("The GEOS version this PostGIS binary "
+		"was compiled against (%d) doesn't support "
+		"'GEOSCoverageUnion' function (3.8.0+ required)",
+		POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+
+#else /* POSTGIS_GEOS_VERSION >= 30800 */
+
+	GSERIALIZED *result = NULL;
+
+	Datum value;
+	bool isnull;
+
+	GEOSGeometry **geoms = NULL;
+	GEOSGeometry *geos = NULL;
+	GEOSGeometry *geos_result = NULL;
+	uint32 ngeoms = 0;
+
+	ArrayType *array = PG_GETARG_ARRAYTYPE_P(0);
+	uint32 nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+	ArrayIterator iterator = array_create_iterator(array, 0, NULL);
+
+	/* Return null on 0-elements input array */
+	if (nelems == 0)
+		PG_RETURN_NULL();
+
+	/* Convert all geometries into GEOSGeometry array */
+	geoms = palloc(sizeof(GEOSGeometry *) * nelems);
+
+	initGEOS(lwpgnotice, lwgeom_geos_error);
+
+	while (array_iterate(iterator, &value, &isnull))
+	{
+		GSERIALIZED *gser;
+		/* Omit nulls */
+		if (isnull) continue;
+
+		/* Omit empty */
+		gser = (GSERIALIZED *)DatumGetPointer(value);
+		if (gserialized_is_empty(gser)) continue;
+
+		/* Omit unconvertable */
+		geos = POSTGIS2GEOS(gser);
+		if (!geos) continue;
+
+		geoms[ngeoms++] = geos;
+	}
+	array_free_iterator(iterator);
+
+	if (ngeoms == 0)
+		PG_RETURN_NULL();
+
+	geos = GEOSGeom_createCollection(
+		GEOS_GEOMETRYCOLLECTION,
+		geoms, ngeoms);
+
+	if (!geos)
+	{
+		coverage_destroy_geoms(geoms, ngeoms);
+		HANDLE_GEOS_ERROR("Geometry could not be converted");
+	}
+
+	geos_result = GEOSCoverageUnion(geos);
+	GEOSGeom_destroy(geos);
+	if (!geos_result)
+		HANDLE_GEOS_ERROR("Error computing coverage union");
+
+	result = GEOS2POSTGIS(geos_result, LW_FALSE);
+	GEOSGeom_destroy(geos_result);
+
+	PG_RETURN_POINTER(result);
+#endif
+}
+
+
