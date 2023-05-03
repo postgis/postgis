@@ -4348,7 +4348,7 @@ CREATE AGGREGATE ST_CoverageUnion (geometry) (
 	);
 
 -- Availability: 3.4.0
-CREATE OR REPLACE FUNCTION ST_CoverageSimplify (geom geometry, tolerance float8, boundary integer default 0)
+CREATE OR REPLACE FUNCTION ST_CoverageSimplify (geom geometry, tolerance float8, simplifyBoundary boolean default true)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_CoverageSimplify'
 	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE

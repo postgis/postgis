@@ -2,7 +2,7 @@
 <sect1 id="Coverage">
   <sect1info>
     <abstract>
-      <para>These functions operate on collections of polygonal geometry that form "implicit coverages" in which any edges shared by the polygons match exactly. These implicit coverages are fast to compute, and can be operated on with window functions, which retain the implicit topology inside the window partition while altering the edges.</para>
+      <para>These functions operate on collections of polygonal geometry that form "implicit coverages" in which any edges shared by the polygons match exactly. These implicit coverages are fast to process, and can be operated on with window functions, which retain the implicit topology inside the window partition while altering the edges.</para>
     </abstract>
   </sect1info>
 
@@ -31,7 +31,7 @@
       <title>Description</title>
 
       <para>Collects all the polygons in the window partition and then checks whether they form a "clean coverage", in which no polygons have any overlap, all vertices on shared edges are identical, and no gaps between polygons exist smaller than the tolerance value.</para>
-      <para>If polygons are found that are not clean relative to their neighbors, the problematic edges will be returned as MULTILINESTRING. For clean polygons the return value will be a NULL. Any non-polygonal or empty geometries on the input will be generate NULL returns.</para>
+      <para>where polygons do not form a valid coverage, the problematic edges will be returned as MULTILINESTRING. For clean polygons the return value will be a NULL. Any non-polygonal or empty geometries on the input will be generate NULL returns.</para>
       <para>Availability: 3.4.0 - requires GEOS &gt;= 3.12.0</para>
     </refsection>
 
@@ -89,8 +89,8 @@ SELECT true = ALL (
             <parameter>geom</parameter></paramdef>
           <paramdef><type>float8 </type>
             <parameter>tolerance</parameter></paramdef>
-          <paramdef choice="opt"><type>integer </type>
-            <parameter>simplifyBoundary=0</parameter></paramdef>
+          <paramdef choice="opt"><type>boolean </type>
+            <parameter>simplifyBoundary=true</parameter></paramdef>
         </funcprototype>
       </funcsynopsis>
     </refsynopsisdiv>
@@ -98,9 +98,9 @@ SELECT true = ALL (
     <refsection>
       <title>Description</title>
 
-      <para>Collects all the polygons in the window partition, and forms a polgyonal coverage by looking for shared edges between the polygons. Once coverage is formed, the shared edges are simplified using the <ulink url="https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm">Visvalingam–Whyatt algorithm</ulink>. For clean polygonal coverage inputs, this will result in a simplification that is consistent between polygons, and retains the coverage property for the outputs.</para>
+      <para>Simplifies shared edges of a polygonal coverage using the <ulink url="https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm">Visvalingam–Whyatt algorithm</ulink>. For clean polygonal coverage inputs, this will result in a simplification that is consistent between polygons, and retains the coverage property for the outputs.</para>
       <para>For invalid coverage inputs, non-shared edges are ignored, and only shared edges are simplified.</para>
-      <para>To only simplify the "internal" edges of the set of polygons (those that are shared by two polytons) set the "simplifyBoundary" parameter to 1.</para>
+      <para>To only simplify the "internal" edges of the set of polygons (those that are shared by two polygons) set the "simplifyBoundary" parameter to false.</para>
       <note><para>You must ensure that your coverage is valid before running simplification or you may get unexpected results in the output, such as boundary intersections or non-shared boundaries where you thought there were shared boundaries.</para></note>
       <para>Availability: 3.4.0 - requires GEOS &gt;= 3.12.0</para>
 
@@ -141,7 +141,7 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 1.0) OVER ())
     <refnamediv>
       <refname>ST_CoverageUnion</refname>
 
-      <refpurpose>Simplifies the edges of an implicit coverage formed by a set of polygons, applying the Visvalingam–Whyatt algorithm to the edges.</refpurpose>
+      <refpurpose>Removes adjacent edges in a polygonal coverage, thereby unioning neighboring polygons.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -157,7 +157,7 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 1.0) OVER ())
     <refsection>
       <title>Description</title>
 
-      <para>When the input are a polygonal coverage, the function will provide a high speed merge of adjacent polygons in the aggregation set. This function only works with inputs that are coverages: no overlaps, all shared edges identical down to the vertex level. See <xref linkend="ST_CoverageInvalidLocations" /> for a way to test that a set of polygons are a valid polygonal coverage.</para>
+      <para>When the inputs are a polygonal coverage, the function will provide a high speed union of adjacent polygons in the aggregation set. This function only works with inputs that are coverages: no overlaps, all shared edges identical down to the vertex level. See <xref linkend="ST_CoverageInvalidLocations" /> for a way to test that a set of polygons are a valid polygonal coverage.</para>
 
       <note><para>You must ensure that your coverage is valid before running simplification or you may get unexpected results in the output, such as unmerged inputs returning as multipolygons.</para></note>
 

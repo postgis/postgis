@@ -640,7 +640,7 @@ coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 		bool isnull;
 		Datum d;
 		double tolerance = 0.0;
-		uint32 preserveBoundary = 0;
+		bool simplifyBoundary = true;
 		GEOSGeometry *output = NULL;
 		GEOSGeometry *input = NULL;
 
@@ -665,7 +665,7 @@ coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 		{
 			d = WinGetFuncArgCurrent(winobj, 2, &isnull);
 			if (!isnull)
-				preserveBoundary = DatumGetInt32(d);
+				simplifyBoundary = DatumGetBool(d);
 		}
 
 		initGEOS(lwnotice, lwgeom_geos_error);
@@ -677,7 +677,8 @@ coverage_window_calculation(PG_FUNCTION_ARGS, int mode)
 		/* Run the correct GEOS function for the calling mode */
 		if (mode == COVERAGE_SIMPLIFY)
 		{
-			output = GEOSCoverageSimplifyVW(input, tolerance, preserveBoundary);
+			/* GEOSCoverageSimplifyVW is "preserveBoundary" so we invert simplifyBoundary */
+			output = GEOSCoverageSimplifyVW(input, tolerance, !simplifyBoundary);
 		}
 		else if (mode == COVERAGE_ISVALID)
 		{
