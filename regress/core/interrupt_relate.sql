@@ -1,3 +1,5 @@
+set client_min_messages to WARNING;
+
 CREATE TEMPORARY TABLE _time AS SELECT now() t;
 
 CREATE FUNCTION _timecheck(label text, tolerated interval) RETURNS text
@@ -50,7 +52,9 @@ SELECT _timecheck('crosses', '200ms');
 select ST_Equals(g,st_reverse(g)) from _inputs WHERE id = 1; -- 6+ seconds
 SELECT _timecheck('equals', '200ms');
 
-select ST_Intersects(g,g) from _inputs WHERE id = 1; -- 6+ seconds
+-- NOTE: intersects became very fast, so we segmentize
+--       input to make it slower
+select ST_Intersects(g,ST_Segmentize(g,1e-4)) from _inputs WHERE id = 1; -- 6+ seconds
 SELECT _timecheck('intersects', '200ms');
 
 select ST_Overlaps(g,g) from _inputs WHERE id = 1; -- 6+ seconds
@@ -60,3 +64,4 @@ select ST_Relate(g,g) from _inputs WHERE id = 1; -- 6+ seconds
 SELECT _timecheck('relate', '200ms');
 
 DROP FUNCTION _timecheck(text, interval);
+DROP TABLE _inputs;
