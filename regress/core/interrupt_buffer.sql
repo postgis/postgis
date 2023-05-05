@@ -10,14 +10,6 @@ BEGIN
 	-- posssible time
   lap := now()-t FROM _time;
 
-  UPDATE _time SET t = clock_timestamp();
-
-	-- Increase tolerated value based on some machine-dependent
-	-- timing. This code uses the time it took to update a temporary
-	-- table but we could use something more meaningful, maybe
-	-- finding it in a GUC or something set by a pre-hook
-	tolerated = tolerated + (clock_timestamp()-now());
-
   IF lap <= tolerated THEN
 		ret := format(
 			'%s interrupted on time',
@@ -29,6 +21,8 @@ BEGIN
 			label, lap, tolerated
 		);
   END IF;
+
+  UPDATE _time SET t = clock_timestamp();
 
   RETURN ret;
 END;
@@ -44,9 +38,9 @@ SELECT 1::int as id, ST_Collect(g) g FROM (
  ) foo
 ;
 
--- Run ST_Buffer once to ensure libary is loaded before
--- taking the time
---SELECT NULL FROM ST_NPoints(ST_Buffer('POINT(0 0)'::geometry, 3, 1));
+-- Run ST_Buffer once to ensure the libary is loaded
+-- before taking the start time
+SELECT NULL FROM ST_Buffer('POINT(0 0)'::geometry, 3, 1);
 
 CREATE TEMPORARY TABLE _time AS SELECT now() t;
 
