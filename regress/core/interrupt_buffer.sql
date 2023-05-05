@@ -1,3 +1,5 @@
+set client_min_messages to WARNING;
+
 CREATE TEMP TABLE _inputs AS
 SELECT 1::int as id, ST_Collect(g) g FROM (
  SELECT ST_MakeLine(

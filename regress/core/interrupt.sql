@@ -1,5 +1,5 @@
 -- liblwgeom interruption
-set client_min_messages to NOTICE;
+set client_min_messages to WARNING;
 
 \i :regdir/utils/timecheck.sql
 
