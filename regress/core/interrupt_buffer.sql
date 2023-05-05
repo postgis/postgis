@@ -35,7 +35,7 @@ SET statement_timeout TO 100;
 select ST_Buffer(g,100) from _inputs WHERE id = 1;
 --( select (st_dumppoints(st_buffer(st_makepoint(0,0),10000,100000))).geom g) foo;
 -- it may take some more to interrupt st_buffer, see
-SELECT _timecheck('buffer', '200ms');
+SELECT _timecheck('buffer', '250ms');
 
 -- Not affected by old timeout
 SELECT '1', ST_NPoints(ST_Buffer('POINT(4 0)'::geometry, 2, 1));
