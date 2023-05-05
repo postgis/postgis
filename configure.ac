@@ -1362,11 +1362,11 @@ AC_SUBST([TOPOLOGY])
 dnl ====================================
 dnl interrupt tests
 dnl ====================================
-INTERRUPTTESTS="no"
+INTERRUPTTESTS="yes"
 AC_ARG_WITH([interrupt-tests],
-    [AS_HELP_STRING([--with-interrupt-tests],
-                    [Enable the interrupt tests])],
-    [INTERRUPTTESTS="yes"], [])
+    [AS_HELP_STRING([--without-interrupt-tests],
+                    [Disable the interrupt tests])],
+    [INTERRUPTTESTS="yes"], [INTERRUPTTEST="no"])
 
 if test "x$with_interrupt_tests" = "xno"; then
     INTERRUPTTESTS="no"
