@@ -44,8 +44,11 @@ SELECT 1::int as id, ST_Collect(g) g FROM (
  ) foo
 ;
 
-CREATE TEMPORARY TABLE _time AS SELECT now() t;
+-- Run ST_Buffer once to ensure libary is loaded before
+-- taking the time
+--SELECT NULL FROM ST_NPoints(ST_Buffer('POINT(0 0)'::geometry, 3, 1));
 
+CREATE TEMPORARY TABLE _time AS SELECT now() t;
 
 -----------------
 -- ST_Buffer

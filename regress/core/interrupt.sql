@@ -1,21 +1,36 @@
 -- liblwgeom interruption
 
-CREATE TEMPORARY TABLE _time AS SELECT now() t;
-
 CREATE FUNCTION _timecheck(label text, tolerated interval) RETURNS text
 AS $$
 DECLARE
   ret TEXT;
   lap INTERVAL;
 BEGIN
+	-- We use now() here to get the time at the
+	-- start of the transaction, which started when
+	-- this function was called, so the earliest
+	-- posssible time
   lap := now()-t FROM _time;
-  IF lap <= tolerated THEN ret := label || ' interrupted on time';
-  ELSE ret := label || ' interrupted late: ' || lap;
+
+  IF lap <= tolerated THEN
+		ret := format(
+			'%s interrupted on time',
+			label
+		);
+  ELSE
+		ret := format(
+			'%s interrupted late: %s (%s tolerated)',
+			label, lap, tolerated
+		);
   END IF;
-  UPDATE _time SET t = now();
+
+  UPDATE _time SET t = clock_timestamp();
+
   RETURN ret;
 END;
 $$ LANGUAGE 'plpgsql' VOLATILE;
+
+CREATE TEMPORARY TABLE _time AS SELECT now() t;
 
 -----------------
 -- ST_Segmentize
