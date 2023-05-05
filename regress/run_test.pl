@@ -329,6 +329,28 @@ else
 
 my $libver = sql("select postgis_lib_version()");
 
+sub compute_executor_slow_factor
+{
+    my $ms_to_fetch_full_version = sql(<<EOF
+        CREATE TEMP TABLE _start AS SELECT clock_timestamp() c;
+        SELECT FROM postgis_full_version();
+        SELECT EXTRACT(milliseconds FROM clock_timestamp()-c)
+             FROM _start;
+EOF
+    );
+    my $default_ms_to_fetch_full_version = 10;
+    my $test_executor_slow_factor = 1;
+    if ( $ms_to_fetch_full_version gt $default_ms_to_fetch_full_version )
+    {
+        $test_executor_slow_factor = $ms_to_fetch_full_version / $default_ms_to_fetch_full_version;
+    }
+    #
+    print "Executor slow factor: $test_executor_slow_factor ($ms_to_fetch_full_version ms to fetch full version)\n";
+    sql("ALTER DATABASE $DB SET test.executor_slow_factor = $test_executor_slow_factor");
+}
+
+compute_executor_slow_factor;
+
 if ( ! $libver )
 {
 	`dropdb $DB`;
