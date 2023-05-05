@@ -1,16 +1,35 @@
-CREATE TEMPORARY TABLE _time AS SELECT now() t;
-
 CREATE FUNCTION _timecheck(label text, tolerated interval) RETURNS text
 AS $$
 DECLARE
   ret TEXT;
   lap INTERVAL;
 BEGIN
+	-- We use now() here to get the time at the
+	-- start of the transaction, which started when
+	-- this function was called, so the earliest
+	-- posssible time
   lap := now()-t FROM _time;
-  IF lap <= tolerated THEN ret := label || ' interrupted on time';
-  ELSE ret := label || ' interrupted late: ' || lap;
+
+  UPDATE _time SET t = clock_timestamp();
+
+	-- Increase tolerated value based on some machine-dependent
+	-- timing. This code uses the time it took to update a temporary
+	-- table but we could use something more meaningful, maybe
+	-- finding it in a GUC or something set by a pre-hook
+	tolerated = tolerated + (clock_timestamp()-now());
+
+  IF lap <= tolerated THEN
+		ret := format(
+			'%s interrupted on time',
+			label
+		);
+  ELSE
+		ret := format(
+			'%s interrupted late: %s (%s tolerated)',
+			label, lap, tolerated
+		);
   END IF;
-  UPDATE _time SET t = now();
+
   RETURN ret;
 END;
 $$ LANGUAGE 'plpgsql' VOLATILE;
@@ -25,13 +44,15 @@ SELECT 1::int as id, ST_Collect(g) g FROM (
  ) foo
 ;
 
-UPDATE _time SET t = now(); -- reset time as creating tables spends some
+CREATE TEMPORARY TABLE _time AS SELECT now() t;
+
 
 -----------------
 -- ST_Buffer
 -----------------
 
 SET statement_timeout TO 100;
+
 select ST_Buffer(g,100) from _inputs WHERE id = 1;
 --( select (st_dumppoints(st_buffer(st_makepoint(0,0),10000,100000))).geom g) foo;
 -- it may take some more to interrupt st_buffer, see
