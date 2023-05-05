@@ -2,7 +2,9 @@
 <sect1 id="Coverage">
   <sect1info>
     <abstract>
-      <para>These functions operate on collections of polygonal geometry that form "implicit coverages" in which any edges shared by the polygons match exactly. These implicit coverages are fast to process, and can be operated on with window functions, which retain the implicit topology inside the window partition while altering the edges.</para>
+      <para>These functions operate on sets of polygonal geometry that form "implicit coverages".
+      To form a valid coverage polygons must not overlap, and the vertices of adjacent edges must match exactly.
+      Coverages are fast to process, and can be operated on with window functions, which retain the coverage topology inside the window partition while altering the edges.</para>
     </abstract>
   </sect1info>
 
@@ -12,7 +14,7 @@
     <refnamediv>
       <refname>ST_CoverageInvalidLocations</refname>
 
-      <refpurpose>Window function that determines if a set of polygons form a valid polygonal coverage.</refpurpose>
+      <refpurpose>Window function that finds locations where polygons fail to form a valid coverage.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -31,7 +33,7 @@
       <title>Description</title>
 
       <para>Checks if the polygons in the window partition form a valid polygonal coverage,
-      and returns linear indicators showing the location of invalid edges in each polygon.
+      and returns linear indicators showing the location of invalid edges (if any) in each polygon.
       </para>
       <para>A set of polygons is a valid coverage if the following conditions hold:
         </para>
@@ -45,7 +47,7 @@
             </para></listitem>
       </itemizedlist>
 
-      <para>As a window function, a value is returned for every input polygon.
+      <para>As a window function a value is returned for every input polygon.
       For polygons which violate one or more of the validity conditions the return value is a MULTILINESTRING containing the problematic edges.
       Valid polygons return the value NULL.
       Non-polygonal or empty geometries also produce NULL values.</para>
@@ -103,7 +105,7 @@ SELECT true = ALL (
     <refnamediv>
       <refname>ST_CoverageSimplify</refname>
 
-      <refpurpose>Window function that simplifies the edges of an implicit polygonal coverage, using the Visvalingam–Whyatt algorithm.</refpurpose>
+      <refpurpose>Window function that simplifies the edges of a polygonal coverage.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -124,9 +126,11 @@ SELECT true = ALL (
       <title>Description</title>
 
       <para>A window function which simplifies the edges of polygons in a polygonal coverage using the <ulink url="https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm">Visvalingam–Whyatt algorithm</ulink>.
-      For inputs forming a valid polygonal coverage the simplified outputs are consisent along shared edges, and still form a valid coverage.</para>
+      The simplified outputs are consisent along shared edges, and still form a valid coverage.</para>
+      <note><para>If the input is not a valid coverage there may be unexpected artifacts in the output (such as boundary intersections, or separated boundaries which appeared to be shared).
+      Use <xref linkend="ST_CoverageInvalidLocations" /> to determine if a coverage is valid.
+      </para></note>
       <para>To simplify only the "internal" edges of the coverage (those that are shared by two polygons) set the <parameter>simplifyBoundary</parameter> parameter to false.</para>
-      <note><para>If the input is not a valid coverage there may be unexpected artifacts in the output (such as boundary intersections, or separated boundaries which appeared to be shared).</para></note>
       <para>Availability: 3.4.0 - requires GEOS &gt;= 3.12.0</para>
 
     </refsection>
@@ -155,7 +159,6 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 1.0) OVER ())
     <refsection>
       <title>See Also</title>
       <para>
-        <xref linkend="ST_CoverageUnion" />,
         <xref linkend="ST_CoverageInvalidLocations" />
       </para>
     </refsection>
@@ -166,7 +169,7 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 1.0) OVER ())
     <refnamediv>
       <refname>ST_CoverageUnion</refname>
 
-      <refpurpose>Unions a set of polygons forming a coverage by removing shared edges.</refpurpose>
+      <refpurpose>Computes the union of a set of polygons forming a coverage by removing shared edges.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -182,10 +185,15 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 1.0) OVER ())
     <refsection>
       <title>Description</title>
 
-      <para>An aggregate function which performs a high-speed union of a set of polygons forming a polygonal coverage.
-      This function only works with inputs that are coverages: no overlaps, and all shared edges identical down to the vertex level. See <xref linkend="ST_CoverageInvalidLocations" /> for a way to test that a set of polygons are a valid polygonal coverage.</para>
+      <para>An aggregate function which unions a set of polygons forming a polygonal coverage.
+      The result is a polygonal geometry covering the same area as the coverage.
+      This function produces the same result as <xref linkend="ST_Union" />,
+      but uses the coverage structure to compute the union much faster.
+      </para>
 
-      <note><para>If the input is not a valid coverage there may be unexpected artifacts in the output (such as unmerged or overlapping polygons).</para></note>
+      <note><para>If the input is not a valid coverage there may be unexpected artifacts in the output (such as unmerged or overlapping polygons).
+            Use <xref linkend="ST_CoverageInvalidLocations" /> to determine if a coverage is valid.
+      </para></note>
 
       <para>Availability: 3.4.0 - requires GEOS &gt;= 3.8.0</para>
     </refsection>
@@ -212,8 +220,8 @@ SELECT ST_AsText(ST_CoverageUnion(geom))
     <refsection>
       <title>See Also</title>
       <para>
-        <xref linkend="ST_CoverageSimplify" />,
-        <xref linkend="ST_CoverageInvalidLocations" />
+        <xref linkend="ST_CoverageInvalidLocations" />,
+        <xref linkend="ST_Union" />
       </para>
     </refsection>
 
