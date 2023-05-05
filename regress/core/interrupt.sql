@@ -1,4 +1,5 @@
 -- liblwgeom interruption
+set client_min_messages to NOTICE;
 
 CREATE FUNCTION _timecheck(label text, tolerated interval) RETURNS text
 AS $$
