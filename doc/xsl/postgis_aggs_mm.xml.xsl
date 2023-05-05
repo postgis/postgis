@@ -20,7 +20,7 @@
 		<title>PostGIS Special Functions Index</title>
 		<sect1 id="PostGIS_Aggregate_Functions">
 			<title>PostGIS Aggregate Functions</title>
-			<para>The functions given below are spatial aggregate functions provided with PostGIS that can be used just like any other sql aggregate function such as sum, average.</para>
+			<para>The functions below are spatial aggregate functions that are used in the same way as SQL aggregate function such as <code>sum</code> and <code>average</code>.</para>
 			<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 			<xsl:for-each select='//refentry'>
@@ -47,7 +47,7 @@
 
 		<sect1 id="PostGIS_Window_Functions">
 			<title>PostGIS Window Functions</title>
-			<para>The functions given below are spatial window functions provided with PostGIS that can be used just like any other sql window function such as row_numer(), lead(), lag(). All these require an SQL OVER() clause.</para>
+			<para>The functions below are spatial window functions that are used in the same way as SQL window functions such as <code>row_number()</code>, <code>lead()</code>, and <code>lag()</code>. They must be followed by an <code>OVER()</code> clause.</para>
             <xsl:if test="//funcprototype[contains(paramdef/type,' winset')]">
 			<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
