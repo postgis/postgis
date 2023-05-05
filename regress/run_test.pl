@@ -346,7 +346,7 @@ EOF
     }
     #
     print "Executor slow factor: $test_executor_slow_factor ($ms_to_fetch_full_version ms to fetch full version)\n";
-    sql("ALTER DATABASE $DB SET test.executor_slow_factor = $test_executor_slow_factor");
+    sql("ALTER DATABASE \"$DB\" SET test.executor_slow_factor = $test_executor_slow_factor");
 }
 
 compute_executor_slow_factor;
