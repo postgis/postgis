@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-04-10 06:16+0000\n"
+"POT-Creation-Date: 2023-05-04 20:31+0000\n"
 "PO-Revision-Date: 2022-01-10 05:06+0000\n"
 "Last-Translator: jsanz <jsanz@osgeo.org>\n"
 "Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/"
@@ -6170,11 +6170,11 @@ msgstr ""
 #: extras_topology.xml:3527
 #, no-c-format
 msgid ""
-"Returns a set of element_id,element_type (topoelements) for a given "
-"topogeometry object in <varname>toponame</varname> schema."
+"Returns a set of element_id,element_type (topoelements) corresponding to "
+"primitive topology elements <xref linkend=\"topoelement\"/> (1: nodes, 2: "
+"edges, 3: faces) that a given topogeometry object in <varname>toponame</"
+"varname> schema is composed of."
 msgstr ""
-"Devuelve un conjunto de element_id, element_type (topoelements) para un "
-"objeto topogeometry dado en el esquema <varname>toponame</varname>."
 
 #. Tag: para
 #: extras_topology.xml:3544
@@ -7117,6 +7117,14 @@ msgid ""
 "AFTER resolving the naming conflicts or to link layers to a different "
 "topology (say a spatially-simplified version of the starting topology)."
 msgstr ""
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a set of element_id,element_type (topoelements) for a given "
+#~ "topogeometry object in <varname>toponame</varname> schema."
+#~ msgstr ""
+#~ "Devuelve un conjunto de element_id, element_type (topoelements) para un "
+#~ "objeto topogeometry dado en el esquema <varname>toponame</varname>."
 
 #, no-c-format
 #~ msgid ""

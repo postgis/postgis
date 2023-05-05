@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-04-10 06:16+0000\n"
+"POT-Creation-Date: 2023-05-04 20:31+0000\n"
 "PO-Revision-Date: 2023-04-12 10:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -60,9 +60,9 @@ msgid ""
 "master/2012/pgconf_eu_2012/pgconfeu2012_vincent_picavet_postgis_topology."
 "pdf\">PostGIS Topology PGConf EU 2012</ulink>."
 msgstr ""
-"Vincent Picavetさんはトポロジとは何か、どのように使われるか、および、"
-"対応するFOSS4Gツールに関する良い概略説明を <ulink url=\"https://gitlab.com/"
-"Oslandia/documentation/presentations/-/blob/master/2012/pgconf_eu_2012/"
+"Vincent Picavetさんはトポロジとは何か、どのように使われるか、および、対応する"
+"FOSS4Gツールに関する良い概略説明を <ulink url=\"https://gitlab.com/Oslandia/"
+"documentation/presentations/-/blob/master/2012/pgconf_eu_2012/"
 "pgconfeu2012_vincent_picavet_postgis_topology.pdf\">PostGIS Topology PGConf "
 "EU 2012</ulink>で出しています。"
 
@@ -5923,8 +5923,9 @@ msgstr ""
 msgid ""
 "Converts a <xref linkend=\"topogeometry\"/> to a <xref "
 "linkend=\"topoelement\"/>."
-msgstr "<xref linkend=\"topogeometry\"/>を<xref linkend=\"topoelement\""
-"/>に変換します。"
+msgstr ""
+"<xref linkend=\"topogeometry\"/>を<xref linkend=\"topoelement\"/>に変換しま"
+"す。"
 
 #. Tag: programlisting
 #: extras_topology.xml:3235
@@ -6349,11 +6350,11 @@ msgstr ""
 #: extras_topology.xml:3527
 #, no-c-format
 msgid ""
-"Returns a set of element_id,element_type (topoelements) for a given "
-"topogeometry object in <varname>toponame</varname> schema."
+"Returns a set of element_id,element_type (topoelements) corresponding to "
+"primitive topology elements <xref linkend=\"topoelement\"/> (1: nodes, 2: "
+"edges, 3: faces) that a given topogeometry object in <varname>toponame</"
+"varname> schema is composed of."
 msgstr ""
-"<varname>toponame</varname>スキーマ内の、与えられたTopoGeometryのelement_idと"
-"element_type (topoelements)の集合を返します。"
 
 #. Tag: para
 #: extras_topology.xml:3544
@@ -7360,6 +7361,14 @@ msgstr ""
 "code>スイッチで生成できます。これは、名前の競合を解決した*後に*レイヤをロード"
 "したり、異なるトポロジのレイヤ (開始トポロジで空間的に単純化されたもの等が挙"
 "げられます)にリンクするのに使えます。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a set of element_id,element_type (topoelements) for a given "
+#~ "topogeometry object in <varname>toponame</varname> schema."
+#~ msgstr ""
+#~ "<varname>toponame</varname>スキーマ内の、与えられたTopoGeometryの"
+#~ "element_idとelement_type (topoelements)の集合を返します。"
 
 #, no-c-format
 #~ msgid ""

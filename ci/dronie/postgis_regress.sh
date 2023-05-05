@@ -16,7 +16,9 @@ SRCDIR=$PWD
 BUILDDIR=/tmp/postgis-build/${PGVER}
 mkdir -p "${BUILDDIR}"
 cd "${BUILDDIR}"
-${SRCDIR}/configure CFLAGS="-O2 -Wall -fno-omit-frame-pointer -Werror" --without-interrupt-tests --enable-lto
+${SRCDIR}/configure \
+  CFLAGS="-O2 -Wall -fno-omit-frame-pointer -Werror" \
+  --enable-lto
 make -j
 
 # we should maybe wait for postgresql service to startup here...
