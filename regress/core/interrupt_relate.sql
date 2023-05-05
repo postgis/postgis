@@ -1,31 +1,5 @@
 set client_min_messages to WARNING;
 
-CREATE FUNCTION _timecheck(label text, tolerated interval) RETURNS text
-AS $$
-DECLARE
-  ret TEXT;
-  lap INTERVAL;
-BEGIN
-  lap := now()-t FROM _time;
-
-  IF lap <= tolerated THEN
-		ret := format(
-			'%s interrupted on time',
-			label
-		);
-  ELSE
-		ret := format(
-			'%s interrupted late: %s (%s tolerated)',
-			label, lap, tolerated
-		);
-  END IF;
-
-  UPDATE _time SET t = clock_timestamp();
-
-  RETURN ret;
-END;
-$$ LANGUAGE 'plpgsql' VOLATILE;
-
 CREATE TEMP TABLE _inputs AS
 SELECT 1::int as id, ST_Collect(g) g FROM (
  SELECT ST_MakeLine(
@@ -36,7 +10,7 @@ SELECT 1::int as id, ST_Collect(g) g FROM (
  ) foo
 ;
 
-CREATE TEMPORARY TABLE _time AS SELECT now() t;
+\i :regdir/utils/timecheck.sql
 
 -----------------------------
 -- IM9 based predicates
