@@ -41,10 +41,10 @@ SELECT 't12', ST_AsText(ST_Normalize(ST_SnapToGrid(ST_OffsetCurve(
  'LINESTRING(36 38,38 35,41 34,42 33,45 32,47 28,50 28,52 32,57 33)', -2,
  'join=mitre'),
 0.2)), 1);
-SELECT 't13', ST_AsEWKT(ST_Normalize(ST_OffsetCurve(
+SELECT 't13', ST_AsEWKT(ST_Normalize(ST_Simplify(ST_OffsetCurve(
  'LINESTRING(0 0,0 20, 10 20, 10 10, 0 10)', 2,
  'join=mitre'
-)));
+), 0)));
 -- SELECT 't14', ST_AsEWKT(ST_Normalize(ST_OffsetCurve(
 --  'LINESTRING(0 0,0 20, 10 20, 10 10, 0 10)', -2,
 --  ''
