@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-04-10 06:16+0000\n"
-"PO-Revision-Date: 2023-01-06 15:50+0000\n"
+"PO-Revision-Date: 2023-05-10 15:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_validationxml/fr/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: para
 #: reference_validation.xml:7
@@ -647,6 +647,11 @@ msgid ""
 "false\". If no \"params\" argument is provided, the \"linework\" algorithm "
 "will be used as the default."
 msgstr ""
+"L'argument <varname>params</varname> peut être utilisé pour fournir une "
+"chaîne d'options permettant de sélectionner la méthode à utiliser pour "
+"construire une géométrie valide. La chaîne d'options est au format \"method"
+"=linework|structure keepcollapsed=true|false\". Si aucun argument \"params\" "
+"n'est fourni, l'algorithme \"linework\" sera utilisé par défaut."
 
 #. Tag: para
 #: reference_validation.xml:265
