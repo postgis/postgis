@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2020-12-19 17:06+0000\n"
-"PO-Revision-Date: 2023-01-06 15:50+0000\n"
+"PO-Revision-Date: 2023-05-10 15:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "using_postgis_appxml/fr/>\n"
@@ -16,13 +16,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: using_postgis_app.xml:3
 #, no-c-format
 msgid "Building Applications"
-msgstr ""
+msgstr "Construire des applications"
 
 #. Tag: title
 #: using_postgis_app.xml:5
@@ -58,6 +58,9 @@ msgid ""
 "opengeospatial.org/standards/wms\">http://www.opengeospatial.org/standards/"
 "wms</ulink>."
 msgstr ""
+"La spécification du service de cartographie Web d'OpenGIS est disponible à "
+"l'adresse <ulink url=\"http://www.opengeospatial.org/standards/wms\""
+">http://www.opengeospatial.org/standards/wms</ulink>."
 
 #. Tag: title
 #: using_postgis_app.xml:23
@@ -120,6 +123,8 @@ msgid ""
 "Compile and install MapServer, with whatever options you desire, including "
 "the \"--with-postgis\" configuration option."
 msgstr ""
+"Compilez et installez MapServer, avec les options que vous souhaitez, y "
+"compris l'option de configuration \"--with-postgis\"."
 
 #. Tag: para
 #: using_postgis_app.xml:55
@@ -197,6 +202,8 @@ msgstr ""
 #, no-c-format
 msgid "In the example above, the PostGIS-specific directives are as follows:"
 msgstr ""
+"Dans l'exemple ci-dessus, les directives spécifiques à PostGIS sont les "
+"suivantes :"
 
 #. Tag: term
 #: using_postgis_app.xml:65
@@ -224,6 +231,9 @@ msgid ""
 "standard set of keys and values like this (with the default values in &lt;"
 "&gt;):"
 msgstr ""
+"La connexion à la base de données est régie par une \"chaîne de connexion\" "
+"qui est un ensemble standard de clés et de valeurs comme ceci (avec les "
+"valeurs par défaut dans &lt ;&gt ;) :"
 
 #. Tag: para
 #: using_postgis_app.xml:80
@@ -232,6 +242,8 @@ msgid ""
 "user=&lt;username&gt; password=&lt;password&gt; dbname=&lt;username&gt; "
 "hostname=&lt;server&gt; port=&lt;5432&gt;"
 msgstr ""
+"user=&lt;username&gt; password=&lt;password&gt; dbname=&lt;username&gt; "
+"hostname=&lt;server&gt; port=&lt;5432&gt;"
 
 #. Tag: para
 #: using_postgis_app.xml:84
@@ -241,6 +253,9 @@ msgid ""
 "can be omitted. At a minimum you will generally supply the database name and "
 "username to connect with."
 msgstr ""
+"Une chaîne de connexion vide est toujours valide, et toutes les paires clé/"
+"valeur peuvent être omises. Au minimum, vous devez fournir le nom de la base "
+"de données et le nom d'utilisateur avec lesquels vous devez vous connecter."
 
 #. Tag: term
 #: using_postgis_app.xml:92
@@ -258,6 +273,11 @@ msgid ""
 "the column and the primary key is the table primary key (or any other "
 "uniquely-valued column with an index)."
 msgstr ""
+"La forme de ce paramètre est \"&lt;geocolumn&gt ; from &lt;tablename&gt ; "
+"using srid=&lt;srid&gt ; using unique &lt;primary key&gt ;\" où la colonne "
+"est la colonne spatiale à rendre dans la carte, le SRID est le SRID utilisé "
+"par la colonne et la clé primaire est la clé primaire de la table (ou toute "
+"autre colonne à valeur unique avec un index)."
 
 #. Tag: para
 #: using_postgis_app.xml:99
@@ -267,6 +287,10 @@ msgid ""
 "will automatically determine the correct values if possible, but at the cost "
 "of running a few extra queries on the server for each map draw."
 msgstr ""
+"Vous pouvez omettre les clauses \"using srid\" et \"using unique\" et "
+"MapServer déterminera automatiquement les valeurs correctes si possible, "
+"mais au prix de quelques requêtes supplémentaires sur le serveur pour chaque "
+"dessin de carte."
 
 #. Tag: term
 #: using_postgis_app.xml:106
@@ -284,6 +308,11 @@ msgid ""
 "performance-tips.html\">MapServer PostGIS Performance Tips</ulink> for a "
 "more detailed explanation."
 msgstr ""
+"L'ajout d'une CLOSE_CONNECTION=DEFER en cas de couches multiples permet de "
+"réutiliser les connexions existantes au lieu de les fermer. Cela améliore la "
+"vitesse. Reportez-vous à <ulink url=\"http://blog.cleverelephant.ca/2008/10/"
+"mapserverpostgis-performance-tips.html\">MapServer PostGIS Performance Tips</"
+"ulink> pour une explication plus détaillée."
 
 #. Tag: term
 #: using_postgis_app.xml:115
@@ -299,6 +328,10 @@ msgid ""
 "following the \"WHERE\" keyword in a SQL query. So, for example, to render "
 "only roads with 6 or more lanes, use a filter of \"num_lanes &gt;= 6\"."
 msgstr ""
+"Le filtre doit être une chaîne SQL valide correspondant à la logique qui "
+"suit normalement le mot clé \"WHERE\" dans une requête SQL. Ainsi, par "
+"exemple, pour afficher uniquement les routes comportant 6 voies ou plus, "
+"utilisez le filtre \"num_lanes &gt;= 6\"."
 
 #. Tag: para
 #: using_postgis_app.xml:128
@@ -307,6 +340,8 @@ msgid ""
 "In your spatial database, ensure you have spatial (GiST) indexes built for "
 "any the layers you will be drawing."
 msgstr ""
+"Dans votre base de données spatiale, assurez-vous que vous avez construit "
+"des index spatiaux (GiST) pour toutes les couches que vous allez dessiner."
 
 #. Tag: programlisting
 #: using_postgis_app.xml:131
@@ -323,6 +358,8 @@ msgid ""
 "If you will be querying your layers using MapServer you will also need to "
 "use the \"using unique\" clause in your DATA statement."
 msgstr ""
+"Si vous souhaitez interroger vos couches à l'aide de MapServer, vous devrez "
+"également utiliser la clause \"using unique\" dans votre déclaration DATA."
 
 #. Tag: para
 #: using_postgis_app.xml:138
@@ -333,6 +370,11 @@ msgid ""
 "specify in order to provide these unique identifiers. Using the table "
 "primary key is the best practice."
 msgstr ""
+"MapServer a besoin d'identifiants uniques pour chaque enregistrement spatial "
+"lorsqu'il effectue des requêtes, et le module PostGIS de MapServer utilise "
+"la valeur unique que vous spécifiez afin de fournir ces identifiants "
+"uniques. L'utilisation de la clé primaire de la table est la meilleure "
+"pratique."
 
 #. Tag: title
 #: using_postgis_app.xml:147
@@ -347,6 +389,9 @@ msgid ""
 "When I use an <varname>EXPRESSION</varname> in my map file, the condition "
 "never returns as true, even though I know the values exist in my table."
 msgstr ""
+"Lorsque j'utilise une <varname>EXPRESSION</varname> dans mon fichier map, la "
+"condition ne revient jamais comme vraie, même si je sais que les valeurs "
+"existent dans ma table."
 
 #. Tag: para
 #: using_postgis_app.xml:158
@@ -355,6 +400,8 @@ msgid ""
 "Unlike shape files, PostGIS field names have to be referenced in EXPRESSIONS "
 "using <emphasis>lower case</emphasis>."
 msgstr ""
+"Contrairement aux fichiers shape, les noms de champs PostGIS doivent être "
+"référencés dans EXPRESSIONS en utilisant des <emphasis>minuscules</emphasis>."
 
 #. Tag: programlisting
 #: using_postgis_app.xml:162
@@ -369,6 +416,8 @@ msgid ""
 "The FILTER I use for my Shapefiles is not working for my PostGIS table of "
 "the same data."
 msgstr ""
+"Le FILTRE que j'utilise pour mes Shapefiles ne fonctionne pas pour ma table "
+"PostGIS avec les mêmes données."
 
 #. Tag: para
 #: using_postgis_app.xml:173
@@ -378,6 +427,9 @@ msgid ""
 "appended to the SQL statement the PostGIS connector generates for drawing "
 "layers in MapServer)."
 msgstr ""
+"Contrairement aux fichiers shape, les filtres pour les couches PostGIS "
+"utilisent la syntaxe SQL (ils sont ajoutés à l'instruction SQL que le "
+"connecteur PostGIS génère pour dessiner les couches dans MapServer)."
 
 #. Tag: programlisting
 #: using_postgis_app.xml:177
@@ -391,6 +443,8 @@ msgstr "FILTER \"type = 'highway' and numlanes &gt;= 4\""
 msgid ""
 "My PostGIS layer draws much slower than my Shapefile layer, is this normal?"
 msgstr ""
+"Ma couche PostGIS se dessine beaucoup plus lentement que ma couche "
+"Shapefile, est-ce normal ?"
 
 #. Tag: para
 #: using_postgis_app.xml:188
@@ -401,6 +455,11 @@ msgid ""
 "relatively few features (100s), PostGIS will often be faster. For maps with "
 "high feature density (1000s), PostGIS will always be slower."
 msgstr ""
+"En général, plus vous dessinez d'éléments dans une carte donnée, plus il est "
+"probable que PostGIS soit plus lent que Shapefiles. Pour les cartes "
+"comportant relativement peu d'éléments (quelques centaines), PostGIS sera "
+"souvent plus rapide. Pour les cartes à forte densité d'éléments (des "
+"milliers), PostGIS sera toujours plus lent."
 
 #. Tag: para
 #: using_postgis_app.xml:194
@@ -409,6 +468,9 @@ msgid ""
 "If you are finding substantial draw performance problems, it is possible "
 "that you have not built a spatial index on your table."
 msgstr ""
+"Si vous rencontrez d'importants problèmes de performances en matière de "
+"dessin, il est possible que vous n'ayez pas créé d'index spatial sur votre "
+"table."
 
 #. Tag: programlisting
 #: using_postgis_app.xml:198
@@ -447,6 +509,9 @@ msgid ""
 "You can specify what unique key for mapserver to use with the <varname>USING "
 "UNIQUE</varname> clause in your <varname>DATA</varname> line:"
 msgstr ""
+"Vous pouvez spécifier la clé unique que mapserver doit utiliser avec la "
+"clause <varname>USING UNIQUE</varname> dans votre ligne <varname>DATA</"
+"varname> :"
 
 #. Tag: programlisting
 #: using_postgis_app.xml:217
@@ -473,6 +538,11 @@ msgid ""
 "\"using srid=4326\" clause in your <varname>DATA</varname> statement. "
 "Everything else works exactly the same as with geometry."
 msgstr ""
+"Oui ! MapServer considère que les colonnes géographiques sont identiques aux "
+"colonnes géométriques, mais qu'elles utilisent toujours un SRID égal à 4326. "
+"Assurez-vous simplement d'inclure une clause \"using srid=4326\" dans votre "
+"déclaration <varname>DATA</varname>. Tout le reste fonctionne exactement de "
+"la même manière qu'avec la géométrie."
 
 #. Tag: programlisting
 #: using_postgis_app.xml:234
@@ -499,6 +569,14 @@ msgid ""
 "The <varname>USING</varname> clause can provide mapserver with these two "
 "pieces of information as follows:"
 msgstr ""
+"La clause pseudo-SQL <varname>USING</varname> est utilisée pour ajouter "
+"certaines informations afin d'aider mapserver à comprendre les résultats de "
+"requêtes plus complexes. Plus précisément, lorsqu'une vue ou une sous-"
+"sélection est utilisée comme table source (ce qui se trouve à droite de "
+"\"FROM\" dans une définition de <varname>DATA</varname>), il est plus "
+"difficile pour mapserver de déterminer automatiquement un identifiant unique "
+"pour chaque ligne ainsi que le SRID pour la table. La clause <varname>USING</"
+"varname> peut fournir à mapserver ces deux informations comme suit :"
 
 #. Tag: programlisting
 #: using_postgis_app.xml:255
@@ -514,6 +592,15 @@ msgid ""
 "  ON table1.id = table2.id\n"
 ") AS new_table USING UNIQUE gid USING SRID=4326\""
 msgstr ""
+"DATA \"geom FROM (\n"
+"  SELECT\n"
+"    table1.geom AS geom,\n"
+"    table1.gid AS gid,\n"
+"    table2.data AS data\n"
+"  FROM table1\n"
+"  LEFT JOIN table2\n"
+"  ON table1.id = table2.id\n"
+") AS new_table USING UNIQUE gid USING SRID=4326\""
 
 #. Tag: term
 #: using_postgis_app.xml:259
@@ -534,6 +621,16 @@ msgid ""
 "explicitly select nee of the table's primary key values for this purpose, or "
 "any other column which is guaranteed to be unique for the result set."
 msgstr ""
+"MapServer a besoin d'un identifiant unique pour chaque ligne afin "
+"d'identifier la ligne lors des requêtes. Normalement, il s'agit de la clé "
+"primaire des tables du système. Cependant, les vues et les sous-sélections "
+"n'ont pas automatiquement une colonne unique connue. Si vous souhaitez "
+"utiliser la fonctionnalité de requête de MapServer, vous devez vous assurer "
+"que votre vue ou votre sous-sélection comprend une colonne à valeur unique "
+"et la déclarer avec <varname>USING UNIQUE</varname>. Par exemple, vous "
+"pouvez sélectionner explicitement l'une des valeurs de la clé primaire de la "
+"table à cette fin, ou toute autre colonne dont l'unicité est garantie pour "
+"l'ensemble des résultats."
 
 #. Tag: para
 #: using_postgis_app.xml:273
@@ -543,6 +640,10 @@ msgid ""
 "about the map features in that location. Don't confuse \"map queries\" with "
 "the SQL query in a <varname>DATA</varname> definition."
 msgstr ""
+"\"Interroger une carte\" est l'action de cliquer sur une carte pour demander "
+"des informations sur les caractéristiques de la carte à cet endroit. Ne "
+"confondez pas les \"requêtes cartographiques\" avec la requête SQL contenue "
+"dans une définition de <varname>DATA</varname>."
 
 #. Tag: term
 #: using_postgis_app.xml:282
@@ -562,6 +663,13 @@ msgid ""
 "SRID=</varname> option allows the correct SRID to be specified in the "
 "<varname>DATA</varname> definition."
 msgstr ""
+"PostGIS a besoin de savoir quel système de référencement spatial est utilisé "
+"par les géométries afin de renvoyer les données correctes à MapServer. "
+"Normalement, il est possible de trouver cette information dans la table "
+"\"geometry_columns\" de la base de données PostGIS, mais ce n'est pas "
+"possible pour les tables qui sont créées à la volée, telles que les sous-"
+"sélections et les vues. L'option <varname>USING SRID=</varname> permet donc "
+"de spécifier le SRID correct dans la définition de <varname>DATA</varname>."
 
 #. Tag: title
 #: using_postgis_app.xml:300
@@ -576,6 +684,8 @@ msgid ""
 "Lets start with a simple example and work our way up. Consider the following "
 "MapServer layer definition:"
 msgstr ""
+"Commençons par un exemple simple et progressons. Considérons la définition "
+"suivante de la couche MapServer :"
 
 #. Tag: programlisting
 #: using_postgis_app.xml:305
@@ -595,6 +705,19 @@ msgid ""
 "  END\n"
 "END"
 msgstr ""
+"LAYER\n"
+"  CONNECTIONTYPE postgis\n"
+"  NAME \"roads\"\n"
+"  CONNECTION \"user=theuser password=thepass dbname=thedb host=theserver\"\n"
+"  DATA \"geom from roads\"\n"
+"  STATUS ON\n"
+"  TYPE LINE\n"
+"  CLASS\n"
+"    STYLE\n"
+"      COLOR 0 0 0\n"
+"    END\n"
+"  END\n"
+"END"
 
 #. Tag: para
 #: using_postgis_app.xml:307
@@ -603,6 +726,8 @@ msgid ""
 "This layer will display all the road geometries in the roads table as black "
 "lines."
 msgstr ""
+"Cette couche affiche toutes les géométries routières de la table des routes "
+"sous forme de lignes noires."
 
 #. Tag: para
 #: using_postgis_app.xml:310
@@ -611,6 +736,9 @@ msgid ""
 "Now lets say we want to show only the highways until we get zoomed in to at "
 "least a 1:100000 scale - the next two layers will achieve this effect:"
 msgstr ""
+"Supposons maintenant que nous voulions n'afficher que les autoroutes jusqu'à "
+"ce que nous fassions un zoom avant à une échelle d'au moins 1:100000 - les "
+"deux couches suivantes permettront d'obtenir cet effet :"
 
 #. Tag: programlisting
 #: using_postgis_app.xml:314
@@ -652,6 +780,41 @@ msgid ""
 "  END\n"
 "END"
 msgstr ""
+"LAYER\n"
+"  CONNECTIONTYPE postgis\n"
+"  CONNECTION \"user=theuser password=thepass dbname=thedb host=theserver\"\n"
+"  PROCESSING \"CLOSE_CONNECTION=DEFER\"\n"
+"  DATA \"geom from roads\"\n"
+"  MINSCALE 100000\n"
+"  STATUS ON\n"
+"  TYPE LINE\n"
+"  FILTER \"road_type = 'highway'\"\n"
+"  CLASS\n"
+"    COLOR 0 0 0\n"
+"  END\n"
+"END\n"
+"LAYER\n"
+"  CONNECTIONTYPE postgis\n"
+"  CONNECTION \"user=theuser password=thepass dbname=thedb host=theserver\"\n"
+"  PROCESSING \"CLOSE_CONNECTION=DEFER\"\n"
+"  DATA \"geom from roads\"\n"
+"  MAXSCALE 100000\n"
+"  STATUS ON\n"
+"  TYPE LINE\n"
+"  CLASSITEM road_type\n"
+"  CLASS\n"
+"    EXPRESSION \"highway\"\n"
+"    STYLE\n"
+"      WIDTH 2\n"
+"      COLOR 255 0 0\n"
+"    END\n"
+"  END\n"
+"  CLASS\n"
+"    STYLE\n"
+"      COLOR 0 0 0\n"
+"    END\n"
+"  END\n"
+"END"
 
 #. Tag: para
 #: using_postgis_app.xml:316
@@ -662,6 +825,10 @@ msgid ""
 "<varname>FILTER</varname> option causes only roads of type \"highway\" to be "
 "displayed."
 msgstr ""
+"La première couche est utilisée lorsque l'échelle est supérieure à 1:100000, "
+"et affiche uniquement les routes de type \"autoroute\" sous forme de lignes "
+"noires. L'option <varname>FILTER</varname> permet de n'afficher que les "
+"routes de type \"highway\"."
 
 #. Tag: para
 #: using_postgis_app.xml:321
@@ -671,6 +838,9 @@ msgid ""
 "display highways as double-thick red lines, and other roads as regular black "
 "lines."
 msgstr ""
+"La deuxième couche est utilisée lorsque l'échelle est inférieure à 1:100000, "
+"et affiche les autoroutes sous forme de lignes rouges à double épaisseur, et "
+"les autres routes sous forme de lignes noires normales."
 
 #. Tag: para
 #: using_postgis_app.xml:325
@@ -681,6 +851,11 @@ msgid ""
 "simple. Suppose that the name of the road is stored in another table (for "
 "whatever reason) and we need to do a join to get it and label our roads."
 msgstr ""
+"Nous avons donc réalisé plusieurs choses intéressantes en utilisant "
+"uniquement les fonctionnalités de MapServer, mais notre instruction SQL "
+"<varname>DATA</varname> est restée simple. Supposons que le nom de la route "
+"soit stocké dans une autre table (pour une raison quelconque) et que nous "
+"devions effectuer une jointure pour l'obtenir et étiqueter nos routes."
 
 #. Tag: programlisting
 #: using_postgis_app.xml:331
@@ -708,6 +883,27 @@ msgid ""
 "  END\n"
 "END"
 msgstr ""
+"LAYER\n"
+"  CONNECTIONTYPE postgis\n"
+"  CONNECTION \"user=theuser password=thepass dbname=thedb host=theserver\"\n"
+"  DATA \"geom FROM (SELECT roads.gid AS gid, roads.geom AS geom,\n"
+"        road_names.name as name FROM roads LEFT JOIN road_names ON\n"
+"        roads.road_name_id = road_names.road_name_id)\n"
+"        AS named_roads USING UNIQUE gid USING SRID=4326\"\n"
+"  MAXSCALE 20000\n"
+"  STATUS ON\n"
+"  TYPE ANNOTATION\n"
+"  LABELITEM name\n"
+"  CLASS\n"
+"    LABEL\n"
+"      ANGLE auto\n"
+"      SIZE 8\n"
+"      COLOR 0 192 0\n"
+"      TYPE truetype\n"
+"      FONT arial\n"
+"    END\n"
+"  END\n"
+"END"
 
 #. Tag: para
 #: using_postgis_app.xml:333
@@ -717,6 +913,10 @@ msgid ""
 "down to 1:20000 or less. It also demonstrates how to use an SQL join in a "
 "<varname>DATA</varname> definition."
 msgstr ""
+"Cette couche d'annotation ajoute des étiquettes vertes à toutes les routes "
+"lorsque l'échelle est réduite à 1:20000 ou moins. Elle montre également "
+"comment utiliser une jointure SQL dans une définition "
+"<varname>DATA</varname>."
 
 #. Tag: title
 #: using_postgis_app.xml:340
@@ -734,6 +934,11 @@ msgid ""
 "\"postgis.jar\" file must be in your CLASSPATH along with the \"postgresql."
 "jar\" JDBC driver package."
 msgstr ""
+"Les clients Java peuvent accéder aux objets \"géométrie\" de PostGIS dans la "
+"base de données PostgreSQL, soit directement sous forme de représentations "
+"textuelles, soit en utilisant les objets d'extension JDBC fournis avec "
+"PostGIS. Pour utiliser les objets d'extension, le fichier \"postgis.jar\" "
+"doit figurer dans votre CLASSPATH avec le pilote JDBC \"postgresql.jar\"."
 
 #. Tag: programlisting
 #: using_postgis_app.xml:348
@@ -791,6 +996,58 @@ msgid ""
 "}\n"
 "}"
 msgstr ""
+"import java.sql.* ;\n"
+"import java.util.* ;\n"
+"import java.lang.* ;\n"
+"import org.postgis.* ;\n"
+"\n"
+"public class JavaGIS {\n"
+"\n"
+"public static void main(String[] args) {\n"
+"\n"
+"  java.sql.Connection conn ;\n"
+"\n"
+"  try {\n"
+"    /*\n"
+"    * Charger le pilote JDBC et établir une connexion.\n"
+"    */\n"
+"    Class.forName(\"org.postgresql.Driver\") ;\n"
+"    String url = \"jdbc :postgresql ://localhost :5432/database\" ;\n"
+"    conn = DriverManager.getConnection(url, \"postgres\", \"\") ;\n"
+"    /*\n"
+"    * Ajouter les types de géométrie à la connexion. Notez que vous\n"
+"    * devez adapter la connexion à l'implémentation de connexion spécifique "
+"à pgsql\n"
+"    * avant d'appeler la méthode addDataType().\n"
+"    */\n"
+"    ((org.postgresql.PGConnection)conn).addDataType(\"geometry\",Class."
+"forName(\"org.postgis.PGgeometry\")) ;\n"
+"    ((org.postgresql.PGConnection)conn).addDataType(\"box3d\",Class.forName("
+"\"org.postgis.PGbox3d\")) ;\n"
+"    /*\n"
+"    * Créer une instruction et exécuter une requête de sélection..\n"
+"    */\n"
+"    Statement s = conn.createStatement() ;\n"
+"    ResultSet r = s.executeQuery(\"select geom,id from geomtable\") ;\n"
+"    while( r.next() ) {\n"
+"      /*\n"
+"      * Récupérer la géométrie en tant qu'objet, puis la convertir en type "
+"de géométrie.\n"
+"      * Imprimer les choses.\n"
+"      */\n"
+"      PGgeometry geom = (PGgeometry)r.getObject(1) ;\n"
+"      int id = r.getInt(2) ;\n"
+"      System.out.println(\"Row \" + id + \" :\") ;\n"
+"      System.out.println(geom.toString()) ;\n"
+"    }\n"
+"    s.close() ;\n"
+"    conn.close() ;\n"
+"  }\n"
+"catch( Exception e ) {\n"
+"  e.printStackTrace() ;\n"
+"  }\n"
+"}\n"
+"}"
 
 #. Tag: para
 #: using_postgis_app.xml:350
@@ -801,6 +1058,10 @@ msgid ""
 "depending on the type: Point, LineString, Polygon, MultiPoint, "
 "MultiLineString, MultiPolygon."
 msgstr ""
+"L'objet \"PGgeometry\" est un objet enveloppant qui contient un objet "
+"géométrique topologique spécifique (sous-classes de la classe abstraite "
+"\"Geometry\") en fonction du type : Point, LineString, Polygon, MultiPoint, "
+"MultiLineString, MultiPolygon."
 
 #. Tag: programlisting
 #: using_postgis_app.xml:355
@@ -820,6 +1081,19 @@ msgid ""
 "  }\n"
 "}"
 msgstr ""
+"PGgeometry geom = (PGgeometry)r.getObject(1);\n"
+"if( geom.getType() == Geometry.POLYGON ) {\n"
+"  Polygon pl = (Polygon)geom.getGeometry();\n"
+"  for( int r = 0; r &lt; pl.numRings(); r++) {\n"
+"    LinearRing rng = pl.getRing(r);\n"
+"    System.out.println(\"Ring: \" + r);\n"
+"    for( int p = 0; p &lt; rng.numPoints(); p++ ) {\n"
+"      Point pt = rng.getPoint(p);\n"
+"      System.out.println(\"Point: \" + p);\n"
+"      System.out.println(pt.toString());\n"
+"    }\n"
+"  }\n"
+"}"
 
 #. Tag: para
 #: using_postgis_app.xml:357
@@ -828,6 +1102,8 @@ msgid ""
 "The JavaDoc for the extension objects provides a reference for the various "
 "data accessor functions in the geometric objects."
 msgstr ""
+"La JavaDoc des objets d'extension fournit une référence pour les différentes "
+"fonctions d'accès aux données dans les objets géométriques."
 
 #. Tag: title
 #: using_postgis_app.xml:362
@@ -846,10 +1122,10 @@ msgstr "<para>...</para>"
 #: using_postgis_app.xml:367
 #, no-c-format
 msgid "Text Cursors"
-msgstr ""
+msgstr "Curseurs de texte"
 
 #. Tag: title
 #: using_postgis_app.xml:373
 #, no-c-format
 msgid "Binary Cursors"
-msgstr ""
+msgstr "Curseurs binaires"
