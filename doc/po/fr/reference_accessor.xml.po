@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-14 02:04+0000\n"
-"PO-Revision-Date: 2023-05-10 15:08+0000\n"
+"PO-Revision-Date: 2023-05-11 09:07+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_accessorxml/fr/>\n"
@@ -1358,6 +1358,52 @@ msgid ""
 " {6,1,5} | POINT(0 0 1)\n"
 "(30 rows)"
 msgstr ""
+"-- Cube à surface polyédrique --\n"
+"SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
+"  FROM\n"
+"    (SELECT\n"
+"       ST_DumpPoints(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 "
+"1, 0 1 0, 0 0 0)),\n"
+"((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),"
+"\n"
+"((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) "
+")') ) AS gdump\n"
+"    ) AS g ;\n"
+"-- résultat --\n"
+"  path   |     wkt\n"
+"---------+--------------\n"
+" {1,1,1} | POINT(0 0 0)\n"
+" {1,1,2} | POINT(0 0 1)\n"
+" {1,1,3} | POINT(0 1 1)\n"
+" {1,1,4} | POINT(0 1 0)\n"
+" {1,1,5} | POINT(0 0 0)\n"
+" {2,1,1} | POINT(0 0 0)\n"
+" {2,1,2} | POINT(0 1 0)\n"
+" {2,1,3} | POINT(1 1 0)\n"
+" {2,1,4} | POINT(1 0 0)\n"
+" {2,1,5} | POINT(0 0 0)\n"
+" {3,1,1} | POINT(0 0 0)\n"
+" {3,1,2} | POINT(1 0 0)\n"
+" {3,1,3} | POINT(1 0 1)\n"
+" {3,1,4} | POINT(0 0 1)\n"
+" {3,1,5} | POINT(0 0 0)\n"
+" {4,1,1} | POINT(1 1 0)\n"
+" {4,1,2} | POINT(1 1 1)\n"
+" {4,1,3} | POINT(1 0 1)\n"
+" {4,1,4} | POINT(1 0 0)\n"
+" {4,1,5} | POINT(1 1 0)\n"
+" {5,1,1} | POINT(0 1 0)\n"
+" {5,1,2} | POINT(0 1 1)\n"
+" {5,1,3} | POINT(1 1 1)\n"
+" {5,1,4} | POINT(1 1 0)\n"
+" {5,1,5} | POINT(0 1 0)\n"
+" {6,1,1} | POINT(0 0 1)\n"
+" {6,1,2} | POINT(1 0 1)\n"
+" {6,1,3} | POINT(1 1 1)\n"
+" {6,1,4} | POINT(0 1 1)\n"
+" {6,1,5} | POINT(0 0 1)\n"
+"(30 lignes)"
 
 #. Tag: programlisting
 #: reference_accessor.xml:446
@@ -1382,6 +1428,24 @@ msgid ""
 " {3}  | POINT(9 0)\n"
 " {4}  | POINT(0 0)"
 msgstr ""
+"-- Triangle --\n"
+"SELECT (g.gdump).path, ST_AsText((g.gdump).geom) as wkt\n"
+"  FROM\n"
+"    (SELECT\n"
+"       ST_DumpPoints( ST_GeomFromEWKT('TRIANGLE ((\n"
+"                0 0,\n"
+"                0 9,\n"
+"                9 0,\n"
+"                0 0\n"
+"            ))') ) AS gdump\n"
+"    ) AS g ;\n"
+"-- résultat --\n"
+" path |    wkt\n"
+"------+------------\n"
+" {1}  | POINT(0 0)\n"
+" {2}  | POINT(0 9)\n"
+" {3}  | POINT(9 0)\n"
+" {4}  | POINT(0 0)"
 
 #. Tag: programlisting
 #: reference_accessor.xml:447
@@ -1417,6 +1481,35 @@ msgid ""
 " {2,1,4} | POINT(0 0 0)\n"
 "(8 rows)"
 msgstr ""
+"-- TIN --\n"
+"SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
+"  FROM\n"
+"    (SELECT\n"
+"       ST_DumpPoints( ST_GeomFromEWKT('TIN (((\n"
+"                0 0 0,\n"
+"                0 0 1,\n"
+"                0 1 0,\n"
+"                0 0 0\n"
+"            )), ((\n"
+"                0 0 0,\n"
+"                0 1 0,\n"
+"                1 1 0,\n"
+"                0 0 0\n"
+"            ))\n"
+"            )') ) AS gdump\n"
+"    ) AS g ;\n"
+"-- résultat --\n"
+"  path   |     wkt\n"
+"---------+--------------\n"
+" {1,1,1} | POINT(0 0 0)\n"
+" {1,1,2} | POINT(0 0 1)\n"
+" {1,1,3} | POINT(0 1 0)\n"
+" {1,1,4} | POINT(0 0 0)\n"
+" {2,1,1} | POINT(0 0 0)\n"
+" {2,1,2} | POINT(0 1 0)\n"
+" {2,1,3} | POINT(1 1 0)\n"
+" {2,1,4} | POINT(0 0 0)\n"
+"(8 lignes)"
 
 #. Tag: para
 #: reference_accessor.xml:451
@@ -1464,6 +1557,10 @@ msgid ""
 "geometry (<parameter>geom</parameter> field) and an array of integers "
 "(<parameter>path</parameter> field)."
 msgstr ""
+"Une fonction de retour d'ensemble (SRF) qui extrait les segments d'une "
+"géométrie. Elle renvoie un ensemble de <xref linkend=\"geometry_dump\"/> "
+"lignes, chacune contenant une géométrie (champ <parameter>geom</parameter>) "
+"et un tableau d'entiers (champ <parameter>path</parameter>)."
 
 #. Tag: para
 #: reference_accessor.xml:482
@@ -1489,6 +1586,16 @@ msgid ""
 "number (1 is outer; inner rings follow) and <varname>j</varname> is the "
 "segment start point position in the ring."
 msgstr ""
+"le champ <parameter>path</parameter> (un <varname>integer[]</varname>) est "
+"un index énumérant les positions des points de départ des segments dans les "
+"éléments de la géométrie fournie. Les indices sont basés sur 1. Par exemple, "
+"pour un <varname>LINESTRING</varname>, les chemins sont <varname>{i}</"
+"varname> où <varname>i</varname> est le <varname>nième</varname> point de "
+"départ du segment dans le <varname>LINESTRING</varname>. Pour un "
+"<varname>POLYGONE</varname>, les chemins sont <varname>{i,j}</varname> où "
+"<varname>i</varname> est le numéro de l'anneau (1 est l'anneau extérieur ; "
+"les anneaux intérieurs suivent) et <varname>j</varname> est la position du "
+"point de départ du segment dans l'anneau."
 
 #. Tag: para
 #: reference_accessor.xml:500
@@ -1519,6 +1626,24 @@ msgid ""
 " {2,1,3} │ LINESTRING(7 7,5 5)\n"
 "(5 rows)"
 msgstr ""
+"SELECT path, ST_AsText(geom)\n"
+"FROM (\n"
+"    SELECT (ST_DumpSegments(g.geom)).*\n"
+"    FROM (SELECT 'GEOMETRYCOLLECTION(\n"
+"    LINESTRING(1 1, 3 3, 4 4),\n"
+"    POLYGON((5 5, 6 6, 7 7, 5 5))\n"
+")' ::geometry AS geom\n"
+"        ) AS g\n"
+") j ;\n"
+"\n"
+"  path   │      st_astext\n"
+"---------------------------------\n"
+" {1,1}   │ LINESTRING(1 1,3 3)\n"
+" {1,2}   │ LINESTRING(3 3,4 4)\n"
+" {2,1,1} │ LINESTRING(5 5,6 6)\n"
+" {2,1,2} │ LINESTRING(6 6,7 7)\n"
+" {2,1,3} │ LINESTRING(7 7,5 5)\n"
+"(5 lignes)"
 
 #. Tag: title
 #: reference_accessor.xml:511
@@ -1550,6 +1675,25 @@ msgid ""
 " {1,3} │ LINESTRING(9 0,0 0)\n"
 "(3 rows)"
 msgstr ""
+"-- Triangle --\n"
+"SELECT path, ST_AsText(geom)\n"
+"FROM (\n"
+"    SELECT (ST_DumpSegments(g.geom)).*\n"
+"    FROM (SELECT 'TRIANGLE((\n"
+"        0 0,\n"
+"        0 9,\n"
+"        9 0,\n"
+"        0 0\n"
+"    ))' ::geometry AS geom\n"
+"        ) AS g\n"
+") j ;\n"
+"\n"
+" path  │      st_astext\n"
+" ---------------------------------\n"
+" {1,1} │ LINESTRING(0 0,0 9)\n"
+" {1,2} │ LINESTRING(0 9,9 0)\n"
+" {1,3} │ LINESTRING(9 0,0 0)\n"
+"(3 lignes)"
 
 #. Tag: programlisting
 #: reference_accessor.xml:513
@@ -1584,6 +1728,34 @@ msgid ""
 " {2,1,3} │ LINESTRING(1 1 0,0 0 0)\n"
 "(6 rows)"
 msgstr ""
+"-- TIN --\n"
+"SELECT path, ST_AsEWKT(geom)\n"
+"FROM (\n"
+"    SELECT (ST_DumpSegments(g.geom)).*\n"
+"    FROM (SELECT 'TIN(((\n"
+"        0 0 0,\n"
+"        0 0 1,\n"
+"        0 1 0,\n"
+"        0 0 0\n"
+"    )), ((\n"
+"        0 0 0,\n"
+"        0 1 0,\n"
+"        1 1 0,\n"
+"        0 0 0\n"
+"    ))\n"
+"    )' ::geometry AS geom\n"
+"        ) AS g\n"
+") j ;\n"
+"\n"
+"  path   │        st_asewkt\n"
+"  ---------------------------------\n"
+" {1,1,1} │ LINESTRING(0 0 0,0 0 1)\n"
+" {1,1,2} │ LINESTRING(0 0 1,0 1 0)\n"
+" {1,1,3} │ LINESTRING(0 1 0,0 0 0)\n"
+" {2,1,1} │ LINESTRING(0 0 0,0 1 0)\n"
+" {2,1,2} │ LINESTRING(0 1 0,1 1 0)\n"
+" {2,1,3} │ LINESTRING(1 1 0,0 0 0)\n"
+"(6 lignes)"
 
 #. Tag: para
 #: reference_accessor.xml:517
@@ -1608,6 +1780,8 @@ msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the exterior and "
 "interior rings of a Polygon."
 msgstr ""
+"Renvoie un ensemble de lignes <varname>geometry_dump</varname> pour les "
+"anneaux extérieurs et intérieurs d'un polygone."
 
 #. Tag: funcprototype
 #: reference_accessor.xml:532
@@ -1628,6 +1802,10 @@ msgid ""
 "geometry (<parameter>geom</parameter> field) and an array of integers "
 "(<parameter>path</parameter> field)."
 msgstr ""
+"Une fonction de retour d'ensemble (SRF) qui extrait les anneaux d'un "
+"polygone. Elle renvoie un ensemble de <xref linkend=\"geometry_dump\"/> "
+"lignes, chacune contenant une géométrie (champ <parameter>geom</parameter>) "
+"et un tableau d'entiers (champ <parameter>path</parameter>)."
 
 #. Tag: para
 #: reference_accessor.xml:547
@@ -1638,6 +1816,10 @@ msgid ""
 "the polygon ring index. The exterior ring (shell) has index 0. The interior "
 "rings (holes) have indices of 1 and higher."
 msgstr ""
+"Une fonction de retour d'ensemble (SRF) qui extrait les anneaux d'un "
+"polygone. Elle renvoie un ensemble de <xref linkend=\"geometry_dump\"/> "
+"lignes, chacune contenant une géométrie (champ <parameter>geom</parameter>) "
+"et un tableau d'entiers (champ <parameter>path</parameter>)."
 
 #. Tag: para
 #: reference_accessor.xml:553
@@ -1652,13 +1834,13 @@ msgstr ""
 #: reference_accessor.xml:554
 #, no-c-format
 msgid "Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher."
-msgstr ""
+msgstr "Disponibilité : PostGIS 1.1.3. Nécessite PostgreSQL 7.3 ou plus."
 
 #. Tag: para
 #: reference_accessor.xml:561
 #, no-c-format
 msgid "General form of query."
-msgstr ""
+msgstr "Forme générale de la requête."
 
 #. Tag: programlisting
 #: reference_accessor.xml:562
@@ -1668,12 +1850,15 @@ msgid ""
 "          (ST_DumpRings(polyTable.geom)).geom As geom\n"
 "FROM polyTable;"
 msgstr ""
+"SELECT polyTable.field1, polyTable.field1,\n"
+"          (ST_DumpRings(polyTable.geom)).geom As geom\n"
+"FROM polyTable ;"
 
 #. Tag: para
 #: reference_accessor.xml:563
 #, no-c-format
 msgid "A polygon with a single hole."
-msgstr ""
+msgstr "Un polygone avec un seul trou."
 
 #. Tag: programlisting
 #: reference_accessor.xml:564
@@ -1704,6 +1889,30 @@ msgid ""
 "          |          -8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 "
 "1))"
 msgstr ""
+"SELECT path, ST_AsEWKT(geom) As geom\n"
+"        FROM ST_DumpRings(\n"
+"                ST_GeomFromEWKT('POLYGON((-8149064 5133092 1,-8149064 "
+"5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,-8148941 "
+"5132466 1,-8148924 5132394 1,\n"
+"                -8148903 5132210 1,-8148930 5131967 1,-8148992 5131978 1,-"
+"8149237 5132093 1,-8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,\n"
+"                -8150305 5132788 1,-8149064 5133092 1),\n"
+"                (-8149362 5132394 1,-8149446 5132501 1,-8149548 5132597 1,-"
+"8149695 5132675 1,-8149362 5132394 1))')\n"
+"                )  as foo ;\n"
+" path |                                            geom\n"
+"-----------------------------------------------------------------------------"
+"-----------------------------------\n"
+"  {0} | POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-"
+"8148972 5132767 1,-8148958 5132508 1,\n"
+"          |          -8148941 5132466 1,-8148924 5132394 1,\n"
+"          |          -8148903 5132210 1,-8148930 5131967 1,\n"
+"          |          -8148992 5131978 1,-8149237 5132093 1,\n"
+"          |          -8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 "
+"1,-8150305 5132788 1,-8149064 5133092 1))\n"
+"  {1} | POLYGON((-8149362 5132394 1,-8149446 5132501 1,\n"
+"          |          -8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 "
+"1))"
 
 #. Tag: para
 #: reference_accessor.xml:571
@@ -1783,7 +1992,7 @@ msgstr ""
 #: reference_accessor.xml:616
 #, no-c-format
 msgid "End point of a LineString"
-msgstr ""
+msgstr "Point final d'une ligne"
 
 #. Tag: programlisting
 #: reference_accessor.xml:617
@@ -1795,12 +2004,17 @@ msgid ""
 "------------\n"
 " POINT(3 3)"
 msgstr ""
+"postgis=# SELECT ST_AsText(ST_EndPoint('LINESTRING(1 1, 2 2, 3 3)' "
+"::geometry)) ;\n"
+" st_astext\n"
+"------------\n"
+" POINT(3 3)"
 
 #. Tag: para
 #: reference_accessor.xml:619
 #, no-c-format
 msgid "End point of a non-LineString is NULL"
-msgstr ""
+msgstr "Le point final d'une ligne qui n'en est pas une est NULL"
 
 #. Tag: programlisting
 #: reference_accessor.xml:620
@@ -1811,12 +2025,16 @@ msgid ""
 "----------\n"
 " t"
 msgstr ""
+"SELECT ST_EndPoint('POINT(1 1)' ::geometry) IS NULL AS is_null ;\n"
+"  is_null\n"
+"----------\n"
+" t"
 
 #. Tag: para
 #: reference_accessor.xml:622
 #, no-c-format
 msgid "End point of a 3D LineString"
-msgstr ""
+msgstr "Point final d'une ligne 3D"
 
 #. Tag: programlisting
 #: reference_accessor.xml:623
@@ -1828,6 +2046,11 @@ msgid ""
 "--------------\n"
 " POINT(0 0 5)"
 msgstr ""
+"--3d endpoint\n"
+"SELECT ST_AsEWKT(ST_EndPoint('LINESTRING(1 1 2, 1 2 3, 0 0 5)')) ;\n"
+"  st_asewkt\n"
+"--------------\n"
+" POINT(0 0 5)"
 
 #. Tag: para
 #: reference_accessor.xml:625
@@ -1845,6 +2068,11 @@ msgid ""
 "------------\n"
 " POINT(6 3)"
 msgstr ""
+"SELECT ST_AsText(ST_EndPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 6 "
+"3)' ::geometry)) ;\n"
+" st_astext\n"
+"------------\n"
+" POINT(6 3)"
 
 #. Tag: para
 #: reference_accessor.xml:632
@@ -1930,7 +2158,7 @@ msgstr "&sfs_compliant; s2.1.1.1"
 #: reference_accessor.xml:673
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.19"
-msgstr ""
+msgstr "&sqlmm_compliant ; SQL-MM 3 : 5.1.19"
 
 #. Tag: programlisting
 #: reference_accessor.xml:679
@@ -1970,12 +2198,45 @@ msgid ""
 "\n"
 "<!-- TODO: Fix examples to reflect new behavior -->"
 msgstr ""
+"SELECT ST_AsText(ST_Envelope('POINT(1 3)' ::geometry)) ;\n"
+" st_astext\n"
+"------------\n"
+" POINT(1 3)\n"
+"(1 row)\n"
+"\n"
+"\n"
+"SELECT ST_AsText(ST_Envelope('LINESTRING(0 0, 1 3)' ::geometry)) ;\n"
+"                   st_astext\n"
+"--------------------------------\n"
+" POLYGON((0 0,0 3,1 3,1 0,0 0))\n"
+"(1 row)\n"
+"\n"
+"\n"
+"SELECT ST_AsText(ST_Envelope('POLYGON((0 0, 0 1, 1.0000001 1, 1.0000001 0, 0 "
+"0))' ::geometry)) ;\n"
+"                                                  st_astext\n"
+"--------------------------------------------------------------\n"
+" POLYGON((0 0,0 1,1.00000011920929 1,1.00000011920929 0,0 0))\n"
+"(1 row)\n"
+"SELECT ST_AsText(ST_Envelope('POLYGON((0 0, 0 1, 1.0000000001 1, "
+"1.0000000001 0, 0 0))' ::geometry)) ;\n"
+"                                                  st_astext\n"
+"--------------------------------------------------------------\n"
+" POLYGON((0 0,0 1,1.00000011920929 1,1.00000011920929 0,0 0))\n"
+"(1 row)\n"
+"\n"
+"SELECT Box3D(geom), Box2D(geom), ST_AsText(ST_Envelope(geom)) As "
+"envelopewkt\n"
+"        FROM (SELECT 'POLYGON((0 0, 0 1000012333334.34545678, 1.0000001 1, "
+"1.0000001 0, 0 0))' ::geometry As geom) As foo ;\n"
+"\n"
+"< !-- TODO : Corriger les exemples pour refléter le nouveau comportement  -->"
 
 #. Tag: para
 #: reference_accessor.xml:685
 #, no-c-format
 msgid "Envelope of a point and linestring."
-msgstr ""
+msgstr "Enveloppe d'un point et d'une ligne."
 
 #. Tag: programlisting
 #: reference_accessor.xml:688
@@ -1990,12 +2251,20 @@ msgid ""
 "-----------\n"
 "POLYGON((20 75,20 150,125 150,125 75,20 75))"
 msgstr ""
+"SELECT ST_AsText(ST_Envelope(\n"
+"                ST_Collect(\n"
+"                        ST_GeomFromText('LINESTRING(55 75,125 150)'),\n"
+"                                ST_Point(20, 80))\n"
+"                                )) As wktenv ;\n"
+"wktenv\n"
+"-----------\n"
+"POLYGON((20 75,20 150,125 150,125 75,20 75))"
 
 #. Tag: para
 #: reference_accessor.xml:693
 #, no-c-format
 msgid ", <xref linkend=\"Box3D\"/>, <xref linkend=\"ST_OrientedEnvelope\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"Box3D\"/>, <xref linkend=\"ST_OrientedEnvelope\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:699
@@ -2007,7 +2276,7 @@ msgstr "ST_ExteriorRing"
 #: reference_accessor.xml:701
 #, no-c-format
 msgid "Returns a LineString representing the exterior ring of a Polygon."
-msgstr ""
+msgstr "Renvoie une ligne représentant l'anneau extérieur d'un polygone."
 
 #. Tag: funcprototype
 #: reference_accessor.xml:706
@@ -2214,6 +2483,32 @@ msgid ""
 "FROM sometable CROSS JOIN generate_series(1,100) n\n"
 "WHERE n &lt;= ST_NumGeometries(geom);"
 msgstr ""
+"-- Extraction d'un sous-ensemble de points à partir d'un multipoint 3D\n"
+"SELECT n, ST_AsEWKT(ST_GeometryN(geom, n)) As geomewkt\n"
+"FROM (\n"
+"VALUES (ST_GeomFromEWKT('MULTIPOINT((1 2 7), (3 4 7), (5 6 7), (8 9 10))') ),"
+"\n"
+"( ST_GeomFromEWKT('MULTICURVE(CIRCULARSTRING(2.5 2.5,4.5 2.5, 3.5 3.5), (10 "
+"11, 12 11))') )\n"
+"        )As foo(geom)\n"
+"        CROSS JOIN generate_series(1,100) n\n"
+"WHERE n &lt ;= ST_NumGeometries(geom) ;\n"
+"\n"
+" n |               geomewkt\n"
+"---+-----------------------------------------\n"
+" 1 | POINT(1 2 7)\n"
+" 2 | POINT(3 4 7)\n"
+" 3 | POINT(5 6 7)\n"
+" 4 | POINT(8 9 10)\n"
+" 1 | CIRCULARSTRING(2.5 2.5,4.5 2.5,3.5 3.5)\n"
+" 2 | LINESTRING(10 11,12 11)\n"
+"\n"
+"\n"
+"-- Extraction de toutes les géométries (utile pour attribuer un identifiant)"
+"\n"
+"SELECT gid, n, ST_GeometryN(geom, n)\n"
+"FROM sometable CROSS JOIN generate_series(1,100) n\n"
+"WHERE n &lt ;= ST_NumGeometries(geom) ;"
 
 #. Tag: programlisting
 #: reference_accessor.xml:798
@@ -2235,6 +2530,21 @@ msgid ""
 "------------------------------------------\n"
 " POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0))"
 msgstr ""
+"-- Exemple de surface polyédrique\n"
+"-- Décomposer une surface polyédrique en ses faces\n"
+"SELECT ST_AsEWKT(ST_GeometryN(p_geom,3)) As geom_ewkt\n"
+"  FROM (SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(\n"
+"((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),\n"
+"((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),\n"
+"((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))\n"
+")')  AS p_geom )  AS a ;\n"
+"\n"
+"                geom_ewkt\n"
+"------------------------------------------\n"
+" POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0))"
 
 #. Tag: programlisting
 #: reference_accessor.xml:800
@@ -2262,6 +2572,27 @@ msgid ""
 "-------------------------------------\n"
 " TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
 msgstr ""
+"-- TIN --\n"
+"SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt\n"
+"  FROM\n"
+"    (SELECT\n"
+"       ST_GeomFromEWKT('TIN (((\n"
+"                0 0 0,\n"
+"                0 0 1,\n"
+"                0 1 0,\n"
+"                0 0 0\n"
+"            )), ((\n"
+"                0 0 0,\n"
+"                0 1 0,\n"
+"                1 1 0,\n"
+"                0 0 0\n"
+"            ))\n"
+"            )')  AS geom\n"
+"    ) AS g ;\n"
+"-- résultat --\n"
+"                 wkt\n"
+"-------------------------------------\n"
+" TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
 
 #. Tag: para
 #: reference_accessor.xml:807 reference_accessor.xml:1692
@@ -2348,6 +2679,15 @@ msgid ""
 "                        --result\n"
 "                        ST_PolyhedralSurface"
 msgstr ""
+"SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 "
+"1 1, 0 1 0, 0 0 0)),\n"
+"                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 "
+"1, 0 0 1, 0 0 0)),\n"
+"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 "
+"1, 0 1 1, 0 0 1)) )')) ;\n"
+"                        -- résultat\n"
+"                        ST_PolyhedralSurface"
 
 #. Tag: programlisting
 #: reference_accessor.xml:846
@@ -2373,18 +2713,37 @@ msgid ""
 "--------\n"
 " ST_Tin"
 msgstr ""
+"SELECT ST_GeometryType(geom) as result\n"
+"  FROM\n"
+"    (SELECT\n"
+"       ST_GeomFromEWKT('TIN (((\n"
+"                0 0 0,\n"
+"                0 0 1,\n"
+"                0 1 0,\n"
+"                0 0 0\n"
+"            )), ((\n"
+"                0 0 0,\n"
+"                0 1 0,\n"
+"                1 1 0,\n"
+"                0 0 0\n"
+"            ))\n"
+"            )')  AS geom\n"
+"    ) AS g ;\n"
+" result\n"
+"--------\n"
+" ST_Tin"
 
 #. Tag: refname
 #: reference_accessor.xml:857
 #, no-c-format
 msgid "ST_HasArc"
-msgstr ""
+msgstr "ST_HasArc"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:859
 #, no-c-format
 msgid "Tests if a geometry contains a circular arc"
-msgstr ""
+msgstr "Teste si une géométrie contient un arc de cercle"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:864
@@ -2421,6 +2780,11 @@ msgid ""
 "                --------\n"
 "                t"
 msgstr ""
+"SELECT ST_HasArc(ST_Collect('LINESTRING(1 2, 3 4, 5 6)', 'CIRCULARSTRING(1 "
+"1, 2 3, 4 5, 6 7, 5 6)')) ;\n"
+"                st_hasarc\n"
+"                --------\n"
+"                t"
 
 #. Tag: para
 #: reference_accessor.xml:892
@@ -2438,7 +2802,7 @@ msgstr "ST_InteriorRingN"
 #: reference_accessor.xml:900
 #, no-c-format
 msgid "Returns the Nth interior ring (hole) of a Polygon."
-msgstr ""
+msgstr "Renvoie le Nième anneau intérieur (trou) d'un polygone."
 
 #. Tag: funcprototype
 #: reference_accessor.xml:905
@@ -2662,6 +3026,31 @@ msgid ""
 "-------------\n"
 " f"
 msgstr ""
+"-- Un cube --\n"
+"                SELECT ST_IsClosed(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 "
+"0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 "
+"1, 0 0 1, 0 0 0)),\n"
+"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 "
+"1, 0 1 1, 0 0 1)) )')) ;\n"
+"\n"
+" st_isclosed\n"
+"-------------\n"
+" t\n"
+"\n"
+"\n"
+" -- Même cube mais avec un côté en moins --\n"
+" SELECT ST_IsClosed(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 "
+"1, 0 1 0, 0 0 0)),\n"
+"                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 "
+"1, 0 0 1, 0 0 0)),\n"
+"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)) )')) ;\n"
+"\n"
+" st_isclosed\n"
+"-------------\n"
+" f"
 
 #. Tag: refname
 #: reference_accessor.xml:1017
@@ -2800,7 +3189,7 @@ msgstr "ST_IsEmpty"
 #: reference_accessor.xml:1072
 #, no-c-format
 msgid "Tests if a geometry is empty."
-msgstr ""
+msgstr "Teste si une géométrie est vide."
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1078
@@ -2924,7 +3313,7 @@ msgstr ""
 #: reference_accessor.xml:1113
 #, no-c-format
 msgid "ST_IsPolygonCCW"
-msgstr ""
+msgstr "ST_IsPolygonCCW"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1116
@@ -2933,6 +3322,9 @@ msgid ""
 "Tests if Polygons have exterior rings oriented counter-clockwise and "
 "interior rings oriented clockwise."
 msgstr ""
+"Teste si les polygones ont des anneaux extérieurs orientés dans le sens "
+"inverse des aiguilles d'une montre et des anneaux intérieurs orientés dans "
+"le sens des aiguilles d'une montre."
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1122
@@ -2941,6 +3333,8 @@ msgid ""
 "<funcdef> boolean <function>ST_IsPolygonCCW</function> </funcdef> <paramdef> "
 "<type>geometry</type> <parameter>geom</parameter> </paramdef>"
 msgstr ""
+"<funcdef> boolean <function>ST_IsPolygonCCW</function> </funcdef> <paramdef> "
+"<type>geometry</type> <parameter>geom</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1138
@@ -2950,12 +3344,15 @@ msgid ""
 "clockwise orientation for their exterior ring, and a clockwise direction for "
 "all interior rings."
 msgstr ""
+"Renvoie un résultat positif si tous les composants polygonaux de la "
+"géométrie en entrée utilisent une orientation anti-horaire pour leur anneau "
+"extérieur et une orientation horaire pour tous les anneaux intérieurs."
 
 #. Tag: para
 #: reference_accessor.xml:1144 reference_accessor.xml:1214
 #, no-c-format
 msgid "Returns true if the geometry has no polygonal components."
-msgstr ""
+msgstr "Retourne vrai si la géométrie n'a pas de composants polygonaux."
 
 #. Tag: para
 #: reference_accessor.xml:1149 reference_accessor.xml:1219
@@ -2965,6 +3362,9 @@ msgid ""
 "still get a true return by passing a single closed linestring no matter its "
 "orientation."
 msgstr ""
+"Les lignes fermées ne sont pas considérées comme des composants polygonaux, "
+"de sorte que vous obtiendrez toujours un retour vrai en passant une seule "
+"ligne fermée, quelle que soit son orientation."
 
 #. Tag: para
 #: reference_accessor.xml:1157 reference_accessor.xml:1227
@@ -2975,6 +3375,10 @@ msgid ""
 "an exterior ring) then both ST_IsPolygonCW and ST_IsPolygonCCW will return "
 "false."
 msgstr ""
+"Si une géométrie polygonale n'utilise pas l'orientation inversée pour les "
+"anneaux intérieurs (c'est-à-dire si un ou plusieurs anneaux intérieurs sont "
+"orientés dans la même direction qu'un anneau extérieur), ST_IsPolygonCW et "
+"ST_IsPolygonCCW renvoient tous deux la valeur false."
 
 #. Tag: para
 #: reference_accessor.xml:1165 reference_accessor.xml:1235
@@ -2988,12 +3392,13 @@ msgstr "Disponibilité : 2.4.0"
 msgid ""
 ", <xref linkend=\"ST_ForcePolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 msgstr ""
+", <xref linkend=\"ST_ForcePolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:1183
 #, no-c-format
 msgid "ST_IsPolygonCW"
-msgstr ""
+msgstr "ST_IsPolygonCW"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1186
@@ -3002,6 +3407,9 @@ msgid ""
 "Tests if Polygons have exterior rings oriented clockwise and interior rings "
 "oriented counter-clockwise."
 msgstr ""
+"Teste si les polygones ont des anneaux extérieurs orientés dans le sens des "
+"aiguilles d'une montre et des anneaux intérieurs orientés dans le sens "
+"inverse des aiguilles d'une montre."
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1192
@@ -3010,6 +3418,8 @@ msgid ""
 "<funcdef> boolean <function>ST_IsPolygonCW</function> </funcdef> <paramdef> "
 "<type>geometry</type> <parameter>geom</parameter> </paramdef>"
 msgstr ""
+"<funcdef> boolean <function>ST_IsPolygonCW</function> </funcdef> <paramdef> "
+"<type>geometry</type> <parameter>geom</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1208
@@ -3019,6 +3429,10 @@ msgid ""
 "clockwise orientation for their exterior ring, and a counter-clockwise "
 "direction for all interior rings."
 msgstr ""
+"Renvoie un résultat positif si tous les composants polygonaux de la "
+"géométrie d'entrée utilisent une orientation dans le sens des aiguilles "
+"d'une montre pour leur anneau extérieur, et dans le sens inverse des "
+"aiguilles d'une montre pour tous les anneaux intérieurs."
 
 #. Tag: refname
 #: reference_accessor.xml:1252
@@ -3030,7 +3444,7 @@ msgstr "ST_IsRing"
 #: reference_accessor.xml:1254
 #, no-c-format
 msgid "Tests if a LineString is closed and simple."
-msgstr ""
+msgstr "Teste si une ligne est fermée et simple."
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1259
