@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2023-01-23 23:42+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2023-05-10 15:08+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_troubleshootingxml/fr/>\n"
 "Language: fr\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.15\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: para
 #: reference_troubleshooting.xml:5
@@ -25,18 +25,22 @@ msgid ""
 "data. They are only needed if the geometry data is corrupted in some way, "
 "which should never happen under normal circumstances."
 msgstr ""
+"Ces fonctions sont des utilitaires de dépannage et de réparation des données "
+"géométriques. Elles ne sont nécessaires que si les données géométriques sont "
+"corrompues d'une manière ou d'une autre, ce qui ne devrait jamais se "
+"produire dans des circonstances normales."
 
 #. Tag: title
 #: reference_troubleshooting.xml:10
 #, no-c-format
 msgid "Troubleshooting Functions"
-msgstr ""
+msgstr "Fonctions de dépannage"
 
 #. Tag: refname
 #: reference_troubleshooting.xml:14
 #, no-c-format
 msgid "PostGIS_AddBBox"
-msgstr ""
+msgstr "PostGIS_AddBBox"
 
 #. Tag: refpurpose
 #: reference_troubleshooting.xml:16
@@ -68,6 +72,9 @@ msgid ""
 "Add bounding box to the geometry. This would make bounding box based queries "
 "faster, but will increase the size of the geometry."
 msgstr ""
+"Ajouter une boîte de délimitation à la géométrie. Cela rendrait les requêtes "
+"basées sur la boîte de délimitation plus rapides, mais augmenterait la "
+"taille de la géométrie."
 
 #. Tag: para
 #: reference_troubleshooting.xml:36
@@ -78,6 +85,12 @@ msgid ""
 "you have an old install that is lacking bounding boxes. Then you need to "
 "drop the old and readd."
 msgstr ""
+"Les boîtes de délimitation sont automatiquement ajoutées aux géométries, de "
+"sorte qu'en général, cela n'est pas nécessaire, à moins que la boîte de "
+"délimitation générée ne soit corrompue d'une manière ou d'une autre ou que "
+"vous ayez une ancienne installation qui ne contient pas les boîtes de "
+"délimitation. Dans ce cas, vous devez supprimer l'ancienne et ajouter la "
+"nouvelle."
 
 #. Tag: para
 #: reference_troubleshooting.xml:40 reference_troubleshooting.xml:88
@@ -116,7 +129,7 @@ msgstr "Voir aussi"
 #: reference_troubleshooting.xml:54
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_HasBBox\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"PostGIS_HasBBox\"/>"
 
 #. Tag: refname
 #: reference_troubleshooting.xml:60
@@ -128,7 +141,7 @@ msgstr "PostGIS_DropBBox"
 #: reference_troubleshooting.xml:62
 #, no-c-format
 msgid "Drop the bounding box cache from the geometry."
-msgstr ""
+msgstr "Supprime le cache de la boîte de délimitation de la géométrie."
 
 #. Tag: funcprototype
 #: reference_troubleshooting.xml:67
@@ -137,6 +150,8 @@ msgid ""
 "<funcdef>geometry <function>PostGIS_DropBBox</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>PostGIS_DropBBox</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_troubleshooting.xml:77
@@ -148,6 +163,13 @@ msgid ""
 "when your ST_Intersects and other relation queries leave out geometries that "
 "rightfully should return true."
 msgstr ""
+"Supprime le cache de la boîte de délimitation de la géométrie. Cela réduit "
+"la taille de la géométrie, mais rend les requêtes basées sur les boîtes de "
+"délimitation plus lentes. Elle est également utilisée pour supprimer une "
+"boîte de délimitation corrompue. Un signe révélateur d'une boîte de "
+"délimitation corrompue dans le cache est lorsque vos ST_Intersects et autres "
+"requêtes de relations laissent de côté des géométries qui devraient "
+"légitimement renvoyer un résultat vrai."
 
 #. Tag: para
 #: reference_troubleshooting.xml:82
@@ -162,6 +184,19 @@ msgid ""
 "version without a dump reload will not correct already corrupted boxes. So "
 "one can manually correct using below and readd the bbox or do a dump reload."
 msgstr ""
+"Les boîtes de délimitation sont automatiquement ajoutées aux géométries et "
+"améliorent la vitesse des requêtes. En général, cela n'est donc pas "
+"nécessaire, sauf si le boîte de délimitation générée est corrompue d'une "
+"manière ou d'une autre ou si vous avez une ancienne installation qui ne "
+"contient pas de boîtes de délimitation. Dans ce cas, il est nécessaire de "
+"supprimer l'ancienne installation et de la remplacer par une nouvelle. Ce "
+"type de corruption a été observé dans les séries 8.3-8.3.6 où les bboxes "
+"mises en cache n'étaient pas toujours recalculées lorsqu'une géométrie "
+"changeait et lors des mises à jour vers une version plus récente où le dump "
+"non rechargé ne corrigeait pas les bboxes déjà corrompues. La mise à jour "
+"vers une version plus récente sans rechargement du dump ne corrigera pas les "
+"boîtes déjà corrompues. Il est donc possible de corriger manuellement en "
+"utilisant la méthode ci-dessous et de lire la bbox ou de recharger le dump."
 
 #. Tag: programlisting
 #: reference_troubleshooting.xml:95
@@ -198,7 +233,7 @@ msgstr ""
 #: reference_troubleshooting.xml:102
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_HasBBox\"/>, <xref linkend=\"Box2D\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"PostGIS_HasBBox\"/>, <xref linkend=\"Box2D\"/>"
 
 #. Tag: refname
 #: reference_troubleshooting.xml:109
@@ -230,6 +265,9 @@ msgid ""
 "<xref linkend=\"PostGIS_AddBBox\"/> and <xref linkend=\"PostGIS_DropBBox\"/> "
 "to control caching."
 msgstr ""
+"Renvoie TRUE si la boîte de délimitation de cette géométrie est mise en "
+"cache, FALSE dans le cas contraire. Utilisez <xref linkend=\"PostGIS_AddBBox"
+"\"/> et <xref linkend=\"PostGIS_DropBBox\"/> pour contrôler la mise en cache."
 
 #. Tag: programlisting
 #: reference_troubleshooting.xml:136
@@ -245,4 +283,4 @@ msgstr ""
 #: reference_troubleshooting.xml:143
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_DropBBox\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"PostGIS_DropBBox\"/>"
