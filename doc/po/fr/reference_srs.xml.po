@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-11-01 14:51+0000\n"
-"PO-Revision-Date: 2023-01-06 15:50+0000\n"
+"PO-Revision-Date: 2023-05-10 15:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_srsxml/fr/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: para
 #: reference_srs.xml:5
@@ -85,7 +85,7 @@ msgstr ""
 #: reference_srs.xml:42 reference_srs.xml:343
 #, no-c-format
 msgid "Availability: 3.4.0"
-msgstr ""
+msgstr "Disponibilité : 3.4.0"
 
 #. Tag: para
 #: reference_srs.xml:44
@@ -425,6 +425,9 @@ msgid ""
 "Prior to 1.3.4, this function crashes if used with geometries that contain "
 "CURVES. This is fixed in 1.3.4+"
 msgstr ""
+"Avant la version 1.3.4, cette fonction se bloquait si elle était utilisée "
+"avec des géométries contenant des CURVES. Ce problème est corrigé dans la "
+"version 1.3.4+"
 
 #. Tag: para
 #: reference_srs.xml:240
