@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-02-10 06:01+0000\n"
-"PO-Revision-Date: 2023-01-06 15:50+0000\n"
+"PO-Revision-Date: 2023-05-10 15:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_versionxml/fr/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: para
 #: reference_version.xml:5
@@ -44,6 +44,8 @@ msgid ""
 "Packages and upgrades PostGIS extensions (e.g. postgis_raster, "
 "postgis_topology, postgis_sfcgal) to given or latest version."
 msgstr ""
+"Packages et mises à jour des extensions PostGIS (par exemple postgis_raster, "
+"postgis_topology, postgis_sfcgal) vers la version donnée ou la plus récente."
 
 #. Tag: funcprototype
 #: reference_version.xml:24
@@ -53,6 +55,9 @@ msgid ""
 "<paramdef choice=\"opt\"><type>text</type> <parameter>target_version=null</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>text <function>PostGIS_Extensions_Upgrade</function></funcdef> "
+"<paramdef choice=\"opt\"><type>text</type> "
+"<parameter>target_version=null</parameter></paramdef>"
 
 #. Tag: title
 #: reference_version.xml:32 reference_version.xml:93 reference_version.xml:140
@@ -78,6 +83,15 @@ msgid ""
 "tries to upgrade extensions postgis, postgis_raster, postgis_sfcgal, "
 "postgis_topology, and postgis_tiger_geocoder."
 msgstr ""
+"Packages et mises à jour des extensions PostGIS vers la version donnée ou la "
+"plus récente. Seules les extensions que vous avez installées dans la base de "
+"données seront packagées et mises à jour si nécessaire. Rapporte la version "
+"complète de PostGIS et les informations sur la configuration de la "
+"compilation. C'est un raccourci pour faire plusieurs CREATE EXTENSION ... "
+"FROM non packagée et ALTER EXTENSION ... UPDATE pour chaque extension "
+"PostGIS. Actuellement, il n'essaie de mettre à jour que les extensions "
+"postgis, postgis_raster, postgis_sfcgal, postgis_topology, et "
+"postgis_tiger_geocoder."
 
 #. Tag: para
 #: reference_version.xml:43
@@ -89,7 +103,7 @@ msgstr "Disponibilité : 2.5.0"
 #: reference_version.xml:45
 #, no-c-format
 msgid "Changed: 3.4.0 to add target_version argument."
-msgstr ""
+msgstr "Modifié : 3.4.0 pour ajouter l'argument target_version."
 
 #. Tag: para
 #: reference_version.xml:46
@@ -323,7 +337,7 @@ msgstr ""
 #: reference_version.xml:165
 #, no-c-format
 msgid "PostGIS_GEOS_Compiled_Version"
-msgstr ""
+msgstr "PostGIS_GEOS_Compiled_Version"
 
 #. Tag: refpurpose
 #: reference_version.xml:167
@@ -332,6 +346,8 @@ msgid ""
 "Returns the version number of the GEOS library against which PostGIS was "
 "built."
 msgstr ""
+"Renvoie le numéro de version de la librairie GEOS avec laquelle PostGIS a "
+"été construit."
 
 #. Tag: funcprototype
 #: reference_version.xml:173
@@ -340,6 +356,8 @@ msgid ""
 "<funcdef>text <function>PostGIS_GEOS_Compiled_Version</function></funcdef> "
 "<paramdef></paramdef>"
 msgstr ""
+"<funcdef>text <function>PostGIS_GEOS_Compiled_Version</function></funcdef> "
+"<paramdef></paramdef>"
 
 #. Tag: para
 #: reference_version.xml:184
@@ -348,12 +366,14 @@ msgid ""
 "Returns the version number of the GEOS library, or against which PostGIS was "
 "built."
 msgstr ""
+"Renvoie le numéro de version de la librairie GEOS, ou par rapport à laquelle "
+"PostGIS a été construit."
 
 #. Tag: para
 #: reference_version.xml:187
 #, no-c-format
 msgid "Availability: 3.4.0"
-msgstr ""
+msgstr "Disponibilité : 3.4.0"
 
 #. Tag: programlisting
 #: reference_version.xml:193
@@ -365,12 +385,17 @@ msgid ""
 " 3.8.0\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_GEOS_Compiled_Version() ;\n"
+" postgis_geos_compiled_version\n"
+"-------------------------------\n"
+" 3.8.0\n"
+"(1 ligne)"
 
 #. Tag: para
 #: reference_version.xml:199
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_Full_Version\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"PostGIS_Full_Version\"/>"
 
 #. Tag: refname
 #: reference_version.xml:208
