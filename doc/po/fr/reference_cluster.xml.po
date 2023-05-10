@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-04-10 06:16+0000\n"
-"PO-Revision-Date: 2023-01-06 15:50+0000\n"
+"PO-Revision-Date: 2023-05-10 15:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_clusterxml/fr/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: para
 #: reference_cluster.xml:5
@@ -165,7 +165,7 @@ msgstr "Disponibilité : 2.3.0"
 #: reference_cluster.xml:73 reference_cluster.xml:330 reference_cluster.xml:374
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: title
 #: reference_cluster.xml:77 reference_cluster.xml:147 reference_cluster.xml:188
@@ -311,12 +311,15 @@ msgid ""
 "linkend=\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterWithin\"/> "
 "<xref linkend=\"ST_ClusterIntersectingWin\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend="
+"\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterWithin\"/> <xref "
+"linkend=\"ST_ClusterIntersectingWin\"/>"
 
 #. Tag: refname
 #: reference_cluster.xml:124
 #, no-c-format
 msgid "ST_ClusterIntersectingWin"
-msgstr ""
+msgstr "ST_ClusterIntersectingWin"
 
 #. Tag: refpurpose
 #: reference_cluster.xml:126
@@ -325,6 +328,8 @@ msgid ""
 "Window function that returns a cluster id for each input geometry, "
 "clustering input geometries into connected sets."
 msgstr ""
+"Fonction Window qui renvoie un identifiant de cluster pour chaque géométrie "
+"en entrée, en regroupant les géométries en entrée en ensembles connectés."
 
 #. Tag: funcprototype
 #: reference_cluster.xml:131
@@ -334,6 +339,9 @@ msgid ""
 "<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
 "paramdef>"
 msgstr ""
+"<funcdef>integer <function>ST_ClusterIntersectingWin</function></funcdef> "
+"<paramdef><type>geometry winset </type> "
+"<parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_cluster.xml:141
@@ -345,12 +353,17 @@ msgid ""
 "the cluster number that the geometry argument participates in, or null for "
 "null inputs."
 msgstr ""
+"ST_ClusterIntersectingWin est une fonction Window qui construit des clusters "
+"de géométries qui s'intersectent. Il est possible de parcourir toutes les "
+"géométries d'un cluster sans le quitter. La valeur de retour est le numéro "
+"de cluster à laquelle participe l'argument géométrie, ou null pour les "
+"entrées nulles."
 
 #. Tag: para
 #: reference_cluster.xml:143 reference_cluster.xml:373
 #, no-c-format
 msgid "Availability: 3.4.0"
-msgstr ""
+msgstr "Disponibilité : 3.4.0"
 
 #. Tag: programlisting
 #: reference_cluster.xml:148
@@ -377,6 +390,26 @@ msgid ""
 "  4 | LINESTRING(0 0,-1 -1)          |       0\n"
 "  5 | POLYGON((0 0,4 0,4 4,0 4,0 0)) |       0"
 msgstr ""
+"WITH testdata AS (\n"
+"  SELECT id, geom : :geometry FROM (\n"
+"  VALUES  (1, 'LINESTRING (0 0, 1 1)'),\n"
+"          (2, 'LINESTRING (5 5, 4 4)'),\n"
+"          (3, 'LINESTRING (6 6, 7 7)'),\n"
+"          (4, 'LINESTRING (0 0, -1 -1)'),\n"
+"          (5, 'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))')) AS t(id, geom)\n"
+")\n"
+"SELECT id, \n"
+"  ST_AsText(geom), \n"
+"  ST_ClusterIntersectingWin(geom) OVER () AS cluster \n"
+"FROM testdata ;\n"
+"\n"
+" id |           st_astext            | cluster \n"
+"----+--------------------------------+---------\n"
+"  1 | LINESTRING(0 0,1 1)            |       0\n"
+"  2 | LINESTRING(5 5,4 4)            |       0\n"
+"  3 | LINESTRING(6 6,7 7)            |       1\n"
+"  4 | LINESTRING(0 0,-1 -1)          |       0\n"
+"  5 | POLYGON((0 0,4 0,4 4,0 4,0 0)) |       0"
 
 #. Tag: para
 #: reference_cluster.xml:152
@@ -386,6 +419,9 @@ msgid ""
 "linkend=\"ST_ClusterWithinWin\"/> <xref linkend=\"ST_ClusterWithin\"/> <xref "
 "linkend=\"ST_ClusterIntersecting\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend=\"ST_ClusterWithinWin\""
+"/> <xref linkend=\"ST_ClusterWithin\"/> <xref linkend="
+"\"ST_ClusterIntersecting\"/>"
 
 #. Tag: refname
 #: reference_cluster.xml:165
@@ -398,6 +434,8 @@ msgstr "ST_ClusterIntersecting"
 #, no-c-format
 msgid "Aggregate function that clusters input geometries into connected sets."
 msgstr ""
+"Fonction d'agrégation qui regroupe les géométries en entrée en ensembles "
+"connectés."
 
 #. Tag: funcprototype
 #: reference_cluster.xml:172
@@ -448,6 +486,22 @@ msgid ""
 "-1),POLYGON((0 0,4 0,4 4,0 4,0 0)))\n"
 "GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))"
 msgstr ""
+"WITH testdata AS\n"
+"  (SELECT unnest(ARRAY['LINESTRING (0 0, 1 1)' ::geometry,\n"
+"           'LINESTRING (5 5, 4 4)' ::geometry,\n"
+"           'LINESTRING (6 6, 7 7)' ::geometry,\n"
+"           'LINESTRING (0 0, -1 -1)' ::geometry,\n"
+"           'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))' ::geometry]) AS geom)\n"
+"\n"
+"SELECT ST_AsText(unnest(ST_ClusterIntersecting(geom))) FROM testdata ;\n"
+"\n"
+"-- résultat\n"
+"\n"
+"st_astext\n"
+"---------\n"
+"GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 "
+"-1),POLYGON((0 0,4 0,4 4,0 4,0 0)))\n"
+"GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))"
 
 #. Tag: para
 #: reference_cluster.xml:193
@@ -456,6 +510,8 @@ msgid ""
 ", <xref linkend=\"ST_ClusterKMeans\"/>, <xref "
 "linkend=\"ST_ClusterWithinWin\"/> <xref linkend=\"ST_ClusterWithin\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend=\"ST_ClusterWithinWin\""
+"/> <xref linkend=\"ST_ClusterWithin\"/>"
 
 #. Tag: refname
 #: reference_cluster.xml:211
@@ -719,6 +775,10 @@ msgid ""
 ">, <xref linkend=\"ST_ClusterWithin\"/>, <xref linkend=\"ST_Subdivide\"/>, "
 "<xref linkend=\"ST_Force_3D\"/>, <xref linkend=\"ST_Force_4D\"/>,"
 msgstr ""
+", <xref linkend=\"ST_ClusterIntersectingWin\"/>, <xref linkend="
+"\"ST_ClusterWithinWin\"/>, <xref linkend=\"ST_ClusterIntersecting\"/>, <xref "
+"linkend=\"ST_ClusterWithin\"/>, <xref linkend=\"ST_Subdivide\"/>, <xref "
+"linkend=\"ST_Force_3D\"/>, <xref linkend=\"ST_Force_4D\"/>,"
 
 #. Tag: refname
 #: reference_cluster.xml:309
@@ -732,6 +792,8 @@ msgstr "ST_ClusterWithin"
 msgid ""
 "Aggregate function that clusters input geometries by separation distance."
 msgstr ""
+"Fonction d'agrégation qui regroupe les géométries en entrée en fonction de "
+"la distance de séparation."
 
 #. Tag: funcprototype
 #: reference_cluster.xml:316
@@ -807,12 +869,15 @@ msgid ""
 "linkend=\"ST_ClusterIntersectingWin\"/>, <xref "
 "linkend=\"ST_ClusterWithinWin\"/>, <xref linkend=\"ST_ClusterIntersecting\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend="
+"\"ST_ClusterIntersectingWin\"/>, <xref linkend=\"ST_ClusterWithinWin\"/>, "
+"<xref linkend=\"ST_ClusterIntersecting\"/>"
 
 #. Tag: refname
 #: reference_cluster.xml:352
 #, no-c-format
 msgid "ST_ClusterWithinWin"
-msgstr ""
+msgstr "ST_ClusterWithinWin"
 
 #. Tag: refpurpose
 #: reference_cluster.xml:354
@@ -821,6 +886,8 @@ msgid ""
 "Window function that returns a cluster id for each input geometry, "
 "clustering using separation distance."
 msgstr ""
+"Fonction Window qui renvoie un identifiant de cluster pour chaque géométrie "
+"en entrée, regroupement en utilisant la distance de séparation."
 
 #. Tag: funcprototype
 #: reference_cluster.xml:359
@@ -831,6 +898,10 @@ msgid ""
 "paramdef> <paramdef><type>float8 </type> <parameter>distance</parameter></"
 "paramdef>"
 msgstr ""
+"<funcdef>integer <function>ST_ClusterWithinWin</function></funcdef> "
+"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
+"paramdef> <paramdef><type>float8 </type> "
+"<parameter>distance</parameter></paramdef>"
 
 #. Tag: para
 #: reference_cluster.xml:370
@@ -842,6 +913,11 @@ msgid ""
 "than the specified distance. (Distances are Cartesian distances in the units "
 "of the SRID.)"
 msgstr ""
+"ST_ClusterWithinWin est une fonction Window qui renvoie un nombre entier "
+"pour chaque géométrie en entrée, où l'entier est le numéro de cluster dont "
+"la géométrie est membre. Les clusters représentent un ensemble de géométries "
+"en entrée séparées au maximum par la distance spécifiée. (Les distances sont "
+"des distances cartésiennes dans les unités du SRID)."
 
 #. Tag: para
 #: reference_cluster.xml:372
@@ -850,6 +926,8 @@ msgid ""
 "ST_ClusterWithinWin is equivalent to running <xref "
 "linkend=\"ST_ClusterDBSCAN\"/> with a `minpoints` of zero."
 msgstr ""
+"ST_ClusterWithinWin est équivalent à l'exécution de <xref linkend="
+"\"ST_ClusterDBSCAN\"/> avec un `minpoints` de zéro."
 
 #. Tag: programlisting
 #: reference_cluster.xml:380
@@ -877,6 +955,27 @@ msgid ""
 "  4 | LINESTRING(0 0,-1 -1)          |       0\n"
 "  5 | POLYGON((0 0,4 0,4 4,0 4,0 0)) |       0"
 msgstr ""
+"WITH testdata AS (\n"
+"  SELECT id, geom ::geometry FROM (\n"
+"  VALUES  (1, 'LINESTRING (0 0, 1 1)'),\n"
+"          (2, 'LINESTRING (5 5, 4 4)'),\n"
+"          (3, 'LINESTRING (6 6, 7 7)'),\n"
+"          (4, 'LINESTRING (0 0, -1 -1)'),\n"
+"          (5, 'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))')) AS t(id, geom)\n"
+")\n"
+"SELECT id, \n"
+"  ST_AsText(geom), \n"
+"  ST_ClusterWithinWin(geom, 1.4) OVER () AS cluster \n"
+"FROM testdata ;\n"
+"\n"
+"\n"
+" id |           st_astext            | cluster \n"
+"----+--------------------------------+---------\n"
+"  1 | LINESTRING(0 0,1 1)            |       0\n"
+"  2 | LINESTRING(5 5,4 4)            |       0\n"
+"  3 | LINESTRING(6 6,7 7)            |       1\n"
+"  4 | LINESTRING(0 0,-1 -1)          |       0\n"
+"  5 | POLYGON((0 0,4 0,4 4,0 4,0 0)) |       0"
 
 #. Tag: para
 #: reference_cluster.xml:384
@@ -886,6 +985,9 @@ msgid ""
 "linkend=\"ST_ClusterIntersectingWin\"/>, <xref linkend=\"ST_ClusterWithin\"/"
 ">, <xref linkend=\"ST_ClusterIntersecting\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend="
+"\"ST_ClusterIntersectingWin\"/>, <xref linkend=\"ST_ClusterWithin\"/>, <xref "
+"linkend=\"ST_ClusterIntersecting\"/>"
 
 #, no-c-format
 #~ msgid ""
