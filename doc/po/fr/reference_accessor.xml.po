@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-14 02:04+0000\n"
-"PO-Revision-Date: 2023-01-06 15:50+0000\n"
+"PO-Revision-Date: 2023-05-10 15:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_accessorxml/fr/>\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: reference_accessor.xml:4
@@ -241,6 +241,15 @@ msgid ""
 "                        --result\n"
 "                        POLYHEDRALSURFACE"
 msgstr ""
+"SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 "
+"1 1, 0 1 0, 0 0 0)),\n"
+"                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 "
+"1, 0 0 1, 0 0 0)),\n"
+"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 "
+"1, 0 1 1, 0 0 1)) )')) ;\n"
+"                        -- résultat\n"
+"                        POLYHEDRALSURFACE"
 
 #. Tag: programlisting
 #: reference_accessor.xml:52
@@ -266,6 +275,25 @@ msgid ""
 "--------\n"
 " TIN"
 msgstr ""
+"SELECT GeometryType(geom) as result\n"
+"  FROM\n"
+"    (SELECT\n"
+"       ST_GeomFromEWKT('TIN (((\n"
+"                0 0 0,\n"
+"                0 0 1,\n"
+"                0 1 0,\n"
+"                0 0 0\n"
+"            )), ((\n"
+"                0 0 0,\n"
+"                0 1 0,\n"
+"                1 1 0,\n"
+"                0 0 0\n"
+"            ))\n"
+"            )')  AS geom\n"
+"    ) AS g ;\n"
+" result\n"
+"--------\n"
+" TIN"
 
 #. Tag: title
 #: reference_accessor.xml:57 reference_accessor.xml:139
@@ -359,7 +387,7 @@ msgstr "&sfs_compliant; OGC SPEC s2.1.1.1"
 #: reference_accessor.xml:94
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.17"
-msgstr ""
+msgstr "&sqlmm_compliant ; SQL-MM IEC 13249-3 : 5.1.17"
 
 #. Tag: para
 #: reference_accessor.xml:96
@@ -373,12 +401,14 @@ msgstr "Amélioration : 2.1.0 introduction du support pour Triangle"
 msgid ""
 "Changed: 3.2.0 support for TIN, does not use geos, does not linearize curves"
 msgstr ""
+"Modifié : 3.2.0 support pour TIN, n'utilise pas geos, ne linéarise pas les "
+"courbes"
 
 #. Tag: para
 #: reference_accessor.xml:112
 #, no-c-format
 msgid "Linestring with boundary points overlaid"
-msgstr ""
+msgstr "Ligne avec les points de démarcation superposés"
 
 #. Tag: programlisting
 #: reference_accessor.xml:115
@@ -399,12 +429,14 @@ msgid ""
 "-- ST_AsText output\n"
 "MULTIPOINT((100 150),(160 170))"
 msgstr ""
+"-- ST_AsText output\n"
+"MULTIPOINT((100 150),(160 170))"
 
 #. Tag: para
 #: reference_accessor.xml:124
 #, no-c-format
 msgid "polygon holes with boundary multilinestring"
-msgstr ""
+msgstr "trous de polygone avec une multi-lignes en limite"
 
 #. Tag: programlisting
 #: reference_accessor.xml:127
@@ -417,6 +449,12 @@ msgid ""
 "        ( 70 40, 100 50, 120 80, 80 110, 50 90, 70 40 ))'::geometry As geom) "
 "As f;"
 msgstr ""
+"SELECT ST_Boundary(geom)\n"
+"FROM (SELECT\n"
+"'POLYGON (( 10 130, 50 190, 110 190, 140 150, 150 80, 100 10, 20 40, 10 130 "
+"),\n"
+"        ( 70 40, 100 50, 120 80, 80 110, 50 90, 70 40 ))' ::geometry As geom)"
+" As f ;"
 
 #. Tag: screen
 #: reference_accessor.xml:128
@@ -426,6 +464,9 @@ msgid ""
 "MULTILINESTRING((10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 130),\n"
 "        (70 40,100 50,120 80,80 110,50 90,70 40))"
 msgstr ""
+"-- ST_AsText output\n"
+"MULTILINESTRING((10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 130),\n"
+"        (70 40,100 50,120 80,80 110,50 90,70 40))"
 
 #. Tag: programlisting
 #: reference_accessor.xml:136
@@ -459,6 +500,33 @@ msgid ""
 "----------\n"
 "MULTIPOINT((-1 1 1),(1 1 0.75))"
 msgstr ""
+"SELECT ST_AsText(ST_Boundary(ST_GeomFromText('LINESTRING(1 1,0 0, -1 1)'))) ;"
+"\n"
+"st_astext\n"
+"-----------\n"
+"MULTIPOINT((1 1),(-1 1))\n"
+"\n"
+"SELECT ST_AsText(ST_Boundary(ST_GeomFromText('POLYGON((1 1,0 0, -1 1, 1 "
+"1))'))) ;\n"
+"st_astext\n"
+"----------\n"
+"LINESTRING(1 1,0 0,-1 1,1 1)\n"
+"\n"
+"-- En utilisant un polygone 3D\n"
+"SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('POLYGON((1 1 1,0 0 1, -1 1 1, "
+"1 1 1))'))) ;\n"
+"\n"
+"st_asewkt\n"
+"-----------------------------------\n"
+"LINESTRING(1 1 1,0 0 1,-1 1 1,1 1 1)\n"
+"\n"
+"-- En utilisant une multi-ligne 3D\n"
+"SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('MULTILINESTRING((1 1 1,0 0 "
+"0.5, -1 1 1),(1 1 0.5,0 0 0.5, -1 1 0.5, 1 1 0.5) )'))) ;\n"
+"\n"
+"st_asewkt\n"
+"----------\n"
+"MULTIPOINT((-1 1 1),(1 1 0.75))"
 
 #. Tag: para
 #: reference_accessor.xml:141
@@ -504,6 +572,11 @@ msgid ""
 "each dimension in its start point and the maximum values in its end point. "
 "If the input geometry is empty, the diagonal line is a LINESTRING EMPTY."
 msgstr ""
+"Renvoie la diagonale de la boîte de délimitation de la géométrie fournie "
+"sous la forme d'une LineString. La diagonale est une LineString à 2 points "
+"avec les valeurs minimales de chaque dimension dans son point de départ et "
+"les valeurs maximales dans son point d'arrivée. Si la géométrie d'entrée est "
+"vide, la diagonale est une LINESTRING EMPTY."
 
 #. Tag: para
 #: reference_accessor.xml:173
@@ -515,6 +588,12 @@ msgid ""
 "either case, the bounding box of the returned diagonal line always covers "
 "the input geometry."
 msgstr ""
+"Le paramètre facultatif <varname>fits</varname> spécifie si le meilleur "
+"ajustement est nécessaire. S'il est faux, la diagonale d'une boîte de "
+"délimitation un peu plus grande peut être acceptée (ce qui est plus rapide à "
+"calculer pour les géométries comportant de nombreux sommets). Dans les deux "
+"cas, la boîte de délimitation de la ligne diagonale renvoyée couvre toujours "
+"la géométrie d'entrée."
 
 #. Tag: para
 #: reference_accessor.xml:181
@@ -523,6 +602,8 @@ msgid ""
 "The returned geometry retains the SRID and dimensionality (Z and M presence) "
 "of the input geometry."
 msgstr ""
+"La géométrie renvoyée conserve le SRID et la dimensionnalité (présence Z et "
+"M) de la géométrie en entrée."
 
 #. Tag: para
 #: reference_accessor.xml:186
@@ -532,6 +613,9 @@ msgid ""
 "will be formally invalid (no interior). The result is still topologically "
 "valid."
 msgstr ""
+"Dans les cas dégénérés (c'est-à-dire un seul sommet dans l'entrée), la ligne "
+"retournée sera formellement invalide (pas d'intérieur). Le résultat est "
+"toujours topologiquement valide."
 
 #. Tag: para
 #: reference_accessor.xml:192
@@ -725,7 +809,7 @@ msgstr ""
 #: reference_accessor.xml:311
 #, no-c-format
 msgid "ST_Dump"
-msgstr ""
+msgstr "ST_Dump"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:312
@@ -734,6 +818,8 @@ msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the components of "
 "a geometry."
 msgstr ""
+"Renvoie un ensemble de lignes <varname>geometry_dump</varname> pour les "
+"composants d'une géométrie."
 
 #. Tag: funcprototype
 #: reference_accessor.xml:317
@@ -754,6 +840,10 @@ msgid ""
 "a geometry (<parameter>geom</parameter> field) and an array of integers "
 "(<parameter>path</parameter> field)."
 msgstr ""
+"Une fonction de retour d'ensemble (SRF) qui extrait les composants d'une "
+"géométrie. Elle renvoie un ensemble de <xref linkend=\"geometry_dump\"/> "
+"lignes, chacune contenant une géométrie (champ <parameter>geom</parameter>) "
+"et un tableau d'entiers (champ <parameter>path</parameter>)."
 
 #. Tag: para
 #: reference_accessor.xml:333
@@ -766,6 +856,12 @@ msgid ""
 "<parameter>path</parameter> denotes the position of the component inside the "
 "collection."
 msgstr ""
+"Pour un type de géométrie atomique (POINT, LINESTRING, POLYGONE), un seul "
+"enregistrement est renvoyé avec un tableau <parameter>path</parameter> vide "
+"et la géométrie en entrée en tant que <parameter>geom</parameter>. Pour une "
+"collection ou une géométrie multiple, un enregistrement est renvoyé pour "
+"chacun des composants de la collection, et le <parameter>path</parameter> "
+"indique la position du composant à l'intérieur de la collection."
 
 #. Tag: para
 #: reference_accessor.xml:340
@@ -775,12 +871,16 @@ msgid ""
 "linkend=\"ST_Collect\"/> / GROUP BY, in that it creates new rows. For "
 "example it can be use to expand MULTIPOLYGONS into POLYGONS."
 msgstr ""
+"ST_Dump est utile pour développer les géométries. C'est l'inverse d'un <xref "
+"linkend=\"ST_Collect\"/> / GROUP BY, en ce sens qu'il crée de nouvelles "
+"lignes. Par exemple, il peut être utilisé pour développer les MULTIPOLYGONES "
+"en POLYGONES."
 
 #. Tag: para
 #: reference_accessor.xml:345
 #, no-c-format
 msgid "Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or higher."
-msgstr ""
+msgstr "Disponibilité : PostGIS 1.0.0RC1. Nécessite PostgreSQL 7.3 ou plus."
 
 #. Tag: para
 #: reference_accessor.xml:347 reference_accessor.xml:1494
@@ -789,6 +889,9 @@ msgid ""
 "Prior to 1.3.4, this function crashes if used with geometries that contain "
 "CURVES. This is fixed in 1.3.4+"
 msgstr ""
+"Avant la version 1.3.4, cette fonction se bloquait si elle était utilisée "
+"avec des géométries contenant des CURVES. Ce problème est corrigé dans la "
+"version 1.3.4+"
 
 #. Tag: title
 #: reference_accessor.xml:356 reference_accessor.xml:792
@@ -817,6 +920,22 @@ msgid ""
 " LINESTRING(1 0,0 1)         | f\n"
 "(2 rows)"
 msgstr ""
+"SELECT sometable.field1, sometable.field1,\n"
+"      (ST_Dump(sometable.geom)).geom AS geom\n"
+"FROM sometable ;\n"
+"\n"
+"-- Décomposer une courbe composée en ses lignes et ses chaînes circulaires "
+"constitutives\n"
+"SELECT ST_AsEWKT(a.geom), ST_HasArc(a.geom)\n"
+"  FROM ( SELECT (ST_Dump(p_geom)).geom AS geom\n"
+"         FROM (SELECT ST_GeomFromEWKT('COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 "
+"1, 1 0),(1 0, 0 1))') AS p_geom) AS b\n"
+"        ) AS a ;\n"
+"          st_asewkt          | st_hasarc\n"
+"-----------------------------+----------\n"
+" CIRCULARSTRING(0 0,1 1,1 0) | t\n"
+" LINESTRING(1 0,0 1)         | f\n"
+"(2 rows)"
 
 #. Tag: title
 #: reference_accessor.xml:359 reference_accessor.xml:444
@@ -849,6 +968,25 @@ msgid ""
 "    5 | POLYGON((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0))\n"
 "    6 | POLYGON((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))"
 msgstr ""
+"-- Exemple de surface polyédrique\n"
+"-- Décomposer une surface polyédrique en ses faces\n"
+"SELECT (a.p_geom).path[1] As path, ST_AsEWKT((a.p_geom).geom) As geom_ewkt\n"
+"  FROM (SELECT ST_Dump(ST_GeomFromEWKT('POLYHEDRALSURFACE(\n"
+"((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0))"
+", ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))"
+"\n"
+")') ) AS p_geom )  AS a ;\n"
+"\n"
+" path | geom_ewkt\n"
+"------+------------------------------------------\n"
+"    1 | POLYGONE((0 0 0,0 0 1,0 1 1,0 1 0,0 0))\n"
+"    2 | POLYGONE((0 0 0,0 1 0,1 1 0,1 0 0,0 0))\n"
+"    3 | POLYGONE((0 0 0,1 0 0,1 0 1,0 0 1,0 0))\n"
+"    4 | POLYGONE((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0))\n"
+"    5 | POLYGONE((0 1 0,0 1 1,1 1,1 1 0,0 1 0))\n"
+"    6 | POLYGONE((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))"
 
 #. Tag: programlisting
 #: reference_accessor.xml:362
@@ -877,6 +1015,28 @@ msgid ""
 " {1}  | TRIANGLE((0 0 0,0 0 1,0 1 0,0 0 0))\n"
 " {2}  | TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
 msgstr ""
+"-- TIN --\n"
+"SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
+"  FROM\n"
+"    (SELECT\n"
+"       ST_Dump( ST_GeomFromEWKT('TIN (((\n"
+"                0 0 0,\n"
+"                0 0 1,\n"
+"                0 1 0,\n"
+"                0 0 0\n"
+"            )), ((\n"
+"                0 0 0,\n"
+"                0 1 0,\n"
+"                1 1 0,\n"
+"                0 0 0\n"
+"            ))\n"
+"            )') ) AS gdump\n"
+"    ) AS g ;\n"
+"-- résultat --\n"
+" path |                 wkt\n"
+"------+-------------------------------------\n"
+" {1}  | TRIANGLE((0 0 0,0 0 1,0 1 0,0 0 0))\n"
+" {2}  | TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
 
 #. Tag: para
 #: reference_accessor.xml:366
@@ -923,6 +1083,11 @@ msgid ""
 "containing a geometry (<parameter>geom</parameter> field) and an array of "
 "integers (<parameter>path</parameter> field)."
 msgstr ""
+"Une fonction de retour d'ensemble (SRF) qui extrait les coordonnées (sommets)"
+" d'une géométrie. Elle renvoie un ensemble de <xref linkend=\"geometry_dump\""
+"/> lignes, chacune contenant une géométrie (champ "
+"<parameter>geom</parameter>) et un tableau d'entiers (champ "
+"<parameter>path</parameter>)."
 
 #. Tag: para
 #: reference_accessor.xml:396
@@ -931,6 +1096,8 @@ msgid ""
 "the <parameter>geom</parameter> field <varname>POINT</varname>s represent "
 "the coordinates of the supplied geometry."
 msgstr ""
+"le champ <parameter>geom</parameter> <varname>POINT</varname> représente les "
+"coordonnées de la géométrie fournie."
 
 #. Tag: para
 #: reference_accessor.xml:401
@@ -946,6 +1113,15 @@ msgid ""
 "(1 is outer; inner rings follow) and <varname>j</varname> is the coordinate "
 "position in the ring."
 msgstr ""
+"le champ <parameter>path</parameter> (un <varname>integer[]</varname>) est "
+"un index énumérant les positions des coordonnées dans les éléments de la "
+"géométrie fournie. Les indices sont basés sur 1. Par exemple, pour un "
+"<varname>LINESTRING</varname>, les chemins sont <varname>{i}</varname> où "
+"<varname>i</varname> est la <varname>nième</varname> coordonnée dans le "
+"<varname>LINESTRING</varname>. Pour un <varname>POLYGONE</varname>, les "
+"chemins sont <varname>{i,j}</varname> où <varname>i</varname> est le numéro "
+"de l'anneau (1 est l'anneau extérieur ; les anneaux intérieurs suivent) et "
+"<varname>j</varname> est la position de la coordonnée dans l'anneau."
 
 #. Tag: para
 #: reference_accessor.xml:414
@@ -954,12 +1130,14 @@ msgid ""
 "To obtain a single geometry containing the coordinates use <xref "
 "linkend=\"ST_Points\"/>."
 msgstr ""
+"Pour obtenir une géométrie unique contenant les coordonnées, utilisez <xref "
+"linkend=\"ST_Points\"/>."
 
 #. Tag: para
 #: reference_accessor.xml:418
 #, no-c-format
 msgid "Enhanced: 2.1.0 Faster speed. Reimplemented as native-C."
-msgstr ""
+msgstr "Amélioré : 2.1.0 Vitesse plus rapide. Réimplémentation en C natif."
 
 #. Tag: para
 #: reference_accessor.xml:420
@@ -971,7 +1149,7 @@ msgstr "Disponibilité : 1.5.0"
 #: reference_accessor.xml:427
 #, no-c-format
 msgid "Classic Explode a Table of LineStrings into nodes"
-msgstr ""
+msgstr "Classique Éclater un tableau de lignes en nœuds"
 
 #. Tag: programlisting
 #: reference_accessor.xml:428
@@ -995,6 +1173,23 @@ msgid ""
 "       2 |     2 | POINT(5 6)\n"
 "       2 |     3 | POINT(9 10)"
 msgstr ""
+"SELECT edge_id, (dp).path[1] As index, ST_AsText((dp).geom) As wktnode\n"
+"FROM (SELECT 1 As edge_id\n"
+"        , ST_DumpPoints(ST_GeomFromText('LINESTRING(1 2, 3 4, 10 10)')) AS "
+"dp\n"
+"     UNION ALL\n"
+"     SELECT 2 As edge_id\n"
+"        , ST_DumpPoints(ST_GeomFromText('LINESTRING(3 5, 5 6, 9 10)')) AS "
+"dp\n"
+"   ) As foo ;\n"
+" edge_id | index |    wktnode\n"
+"---------+-------+--------------\n"
+"       1 |     1 | POINT(1 2)\n"
+"       1 |     2 | POINT(3 4)\n"
+"       1 |     3 | POINT(10 10)\n"
+"       2 |     1 | POINT(3 5)\n"
+"       2 |     2 | POINT(5 6)\n"
+"       2 |     3 | POINT(9 10)"
 
 #. Tag: title
 #: reference_accessor.xml:431 reference_accessor.xml:506
@@ -1059,6 +1254,58 @@ msgid ""
 " {5,2,1,4} | POINT(5 4)\n"
 "(29 rows)"
 msgstr ""
+"SELECT path, ST_AsText(geom)\n"
+"FROM (\n"
+"  SELECT (ST_DumpPoints(g.geom)).*\n"
+"  FROM\n"
+"    (SELECT\n"
+"       'GEOMETRYCOLLECTION(\n"
+"          POINT ( 0 1 ),\n"
+"          LINESTRING ( 0 3, 3 4 ),\n"
+"          POLYGON (( 2 0, 2 3, 0 2, 2 0 )),\n"
+"          POLYGON (( 3 0, 3 3, 6 3, 6 0, 3 0 ),\n"
+"                   ( 5 1, 4 2, 5 2, 5 1 )),\n"
+"          MULTIPOLYGON (\n"
+"                  (( 0 5, 0 8, 4 8, 4 5, 0 5 ),\n"
+"                   ( 1 6, 3 6, 2 7, 1 6 )),\n"
+"                  (( 5 4, 5 8, 6 7, 5 4 ))\n"
+"          )\n"
+"        )' ::geometry AS geom\n"
+"    ) AS g\n"
+"  ) j ;\n"
+"\n"
+"   path    | st_astext\n"
+"-----------+------------\n"
+" {1,1}     | POINT(0 1)\n"
+" {2,1}     | POINT(0 3)\n"
+" {2,2}     | POINT(3 4)\n"
+" {3,1,1}   | POINT(2 0)\n"
+" {3,1,2}   | POINT(2 3)\n"
+" {3,1,3}   | POINT(0 2)\n"
+" {3,1,4}   | POINT(2 0)\n"
+" {4,1,1}   | POINT(3 0)\n"
+" {4,1,2}   | POINT(3 3)\n"
+" {4,1,3}   | POINT(6 3)\n"
+" {4,1,4}   | POINT(6 0)\n"
+" {4,1,5}   | POINT(3 0)\n"
+" {4,2,1}   | POINT(5 1)\n"
+" {4,2,2}   | POINT(4 2)\n"
+" {4,2,3}   | POINT(5 2)\n"
+" {4,2,4}   | POINT(5 1)\n"
+" {5,1,1,1} | POINT(0 5)\n"
+" {5,1,1,2} | POINT(0 8)\n"
+" {5,1,1,3} | POINT(4 8)\n"
+" {5,1,1,4} | POINT(4 5)\n"
+" {5,1,1,5} | POINT(0 5)\n"
+" {5,1,2,1} | POINT(1 6)\n"
+" {5,1,2,2} | POINT(3 6)\n"
+" {5,1,2,3} | POINT(2 7)\n"
+" {5,1,2,4} | POINT(1 6)\n"
+" {5,2,1,1} | POINT(5 4)\n"
+" {5,2,1,2} | POINT(5 8)\n"
+" {5,2,1,3} | POINT(6 7)\n"
+" {5,2,1,4} | POINT(5 4)\n"
+"(29 rows)"
 
 #. Tag: programlisting
 #: reference_accessor.xml:445
