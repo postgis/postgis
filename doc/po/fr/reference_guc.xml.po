@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2023-01-06 15:50+0000\n"
+"PO-Revision-Date: 2023-05-12 10:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_gucxml/fr/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: para
 #: reference_guc.xml:5
@@ -243,6 +243,8 @@ msgid ""
 "A configuration option to set the enabled GDAL drivers in the PostGIS "
 "environment. Affects the GDAL configuration variable GDAL_SKIP."
 msgstr ""
+"Option de configuration permettant de définir les drivers GDAL activés dans "
+"l'environnement PostGIS. Affecte la variable de configuration GDAL GDAL_SKIP."
 
 #. Tag: para
 #: reference_guc.xml:97
@@ -253,6 +255,11 @@ msgid ""
 "can be set in PostgreSQL's configuration file: postgresql.conf. It can also "
 "be set by connection or transaction."
 msgstr ""
+"Option de configuration permettant de définir les drivers GDAL activés dans "
+"l'environnement PostGIS. Affecte la variable de configuration GDAL "
+"GDAL_SKIP. Cette option peut être définie dans le fichier de configuration "
+"de PostgreSQL : postgresql.conf. Elle peut également être définie par "
+"connexion ou transaction."
 
 #. Tag: para
 #: reference_guc.xml:101
@@ -263,6 +270,10 @@ msgid ""
 "<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> with the list of enabled "
 "drivers to the process starting PostgreSQL."
 msgstr ""
+"La valeur initiale de <varname>postgis.gdal_enabled_drivers</varname> peut "
+"aussi être définie en passant la variable d'environnement "
+"<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> avec la liste des drivers "
+"activés au processus de démarrage de PostgreSQL."
 
 #. Tag: para
 #: reference_guc.xml:105
@@ -273,6 +284,11 @@ msgid ""
 "gdal.org/formats_list.html\">GDAL Raster Formats</ulink>. Multiple drivers "
 "can be specified by putting a space between each driver."
 msgstr ""
+"Les drivers GDAL activés peuvent être spécifiés par leur nom abrégé ou leur "
+"code. Les noms courts ou les codes des drivers sont disponibles sur <ulink "
+"url=\"http://www.gdal.org/formats_list.html\">GDAL Raster Formats</ulink>. "
+"Il est possible de spécifier plusieurs drivers en insérant un espace entre "
+"chacun d'eux."
 
 #. Tag: para
 #: reference_guc.xml:110
@@ -281,6 +297,8 @@ msgid ""
 "There are three special codes available for <varname>postgis."
 "gdal_enabled_drivers</varname>. The codes are case-sensitive."
 msgstr ""
+"Trois codes spéciaux sont disponibles pour <varname>postgis."
+"gdal_enabled_drivers</varname>. Les codes sont sensibles à la casse."
 
 #. Tag: para
 #: reference_guc.xml:115
@@ -290,12 +308,15 @@ msgid ""
 "<varname>DISABLE_ALL</varname> overrides all other values in "
 "<varname>postgis.gdal_enabled_drivers</varname>."
 msgstr ""
+"<varname>DISABLE_ALL</varname> désactive tous les drivers GDAL. S'il est "
+"présent, <varname>DISABLE_ALL</varname> remplace toutes les autres valeurs "
+"de <varname>postgis.gdal_enabled_drivers</varname>."
 
 #. Tag: para
 #: reference_guc.xml:118
 #, no-c-format
 msgid "<varname>ENABLE_ALL</varname> enables all GDAL drivers."
-msgstr ""
+msgstr "<varname>ENABLE_ALL</varname> active tous les drivers GDAL."
 
 #. Tag: para
 #: reference_guc.xml:121
@@ -304,6 +325,8 @@ msgid ""
 "<varname>VSICURL</varname> enables GDAL's <varname>/vsicurl/</varname> "
 "virtual file system."
 msgstr ""
+"<varname>VSICURL</varname> active le système de fichiers virtuels <varname>/"
+"vsicurl/</varname> de GDAL."
 
 #. Tag: para
 #: reference_guc.xml:125
@@ -313,6 +336,10 @@ msgid ""
 "attempts to use out-db rasters, ST_FromGDALRaster(), ST_AsGDALRaster(), "
 "ST_AsTIFF(), ST_AsJPEG() and ST_AsPNG() will result in error messages."
 msgstr ""
+"Lorsque <varname>postgis.gdal_enabled_drivers</varname> est défini sur "
+"DISABLE_ALL, les tentatives d'utilisation des rasters out-db, "
+"ST_FromGDALRaster(), ST_AsGDALRaster(), ST_AsTIFF(), ST_AsJPEG() et "
+"ST_AsPNG() se traduisent par des messages d'erreur."
 
 #. Tag: para
 #: reference_guc.xml:131
@@ -321,6 +348,8 @@ msgid ""
 "In the standard PostGIS installation, <varname>postgis.gdal_enabled_drivers</"
 "varname> is set to DISABLE_ALL."
 msgstr ""
+"Dans l'installation standard de PostGIS, <varname>postgis."
+"gdal_enabled_drivers</varname> est défini sur DISABLE_ALL."
 
 #. Tag: para
 #: reference_guc.xml:137
@@ -330,18 +359,23 @@ msgid ""
 "\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
 "ulink>."
 msgstr ""
+"Des informations supplémentaires sur GDAL_SKIP sont disponibles sur le site "
+"GDAL <ulink url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\""
+">Configuration Options</ulink>."
 
 #. Tag: para
 #: reference_guc.xml:148
 #, no-c-format
 msgid "Set and reset <varname>postgis.gdal_enabled_drivers</varname>"
 msgstr ""
+"Définir et réinitialiser <varname>postgis.gdal_enabled_drivers</varname>"
 
 #. Tag: para
 #: reference_guc.xml:150
 #, no-c-format
 msgid "Sets backend for all new connections to database"
 msgstr ""
+"Définit le backend pour toutes les nouvelles connexions à la base de données"
 
 #. Tag: programlisting
 #: reference_guc.xml:151
@@ -349,6 +383,7 @@ msgstr ""
 msgid ""
 "ALTER DATABASE mygisdb SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';"
 msgstr ""
+"ALTER DATABASE mygisdb SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG' ;"
 
 #. Tag: para
 #: reference_guc.xml:153
@@ -358,6 +393,10 @@ msgid ""
 "super user access and PostgreSQL 9.4+. Also note that database, session, and "
 "user settings override this."
 msgstr ""
+"Définit les drivers activés par défaut pour toutes les nouvelles connexions "
+"au serveur. Nécessite un accès super utilisateur et PostgreSQL 9.4+. Notez "
+"également que les paramètres de la base de données, de la session et de "
+"l'utilisateur sont prioritaires."
 
 #. Tag: programlisting
 #: reference_guc.xml:155
@@ -366,6 +405,8 @@ msgid ""
 "ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\n"
 "SELECT pg_reload_conf();"
 msgstr ""
+"ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG' ;\n"
+"SELECT pg_reload_conf() ;"
 
 #. Tag: programlisting
 #: reference_guc.xml:157
@@ -374,12 +415,14 @@ msgid ""
 "SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\n"
 "SET postgis.gdal_enabled_drivers = default;"
 msgstr ""
+"SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG' ;\n"
+"SET postgis.gdal_enabled_drivers = default ;"
 
 #. Tag: para
 #: reference_guc.xml:159
 #, no-c-format
 msgid "Enable all GDAL Drivers"
-msgstr ""
+msgstr "Activer tous les drivers GDAL"
 
 #. Tag: programlisting
 #: reference_guc.xml:160
@@ -391,7 +434,7 @@ msgstr "SET postgis.gdal_enabled_drivers = 'ENABLE_ALL' ;"
 #: reference_guc.xml:162
 #, no-c-format
 msgid "Disable all GDAL Drivers"
-msgstr ""
+msgstr "Désactiver tous les drivers GDAL"
 
 #. Tag: programlisting
 #: reference_guc.xml:163
@@ -407,6 +450,9 @@ msgid ""
 "<xref linkend=\"RT_ST_AsPNG\"/>, <xref linkend=\"RT_ST_AsJPEG\"/>, <xref "
 "linkend=\"postgis_enable_outdb_rasters\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_AsTIFF\"/>, "
+"<xref linkend=\"RT_ST_AsPNG\"/>, <xref linkend=\"RT_ST_AsJPEG\"/>, <xref "
+"linkend=\"postgis_enable_outdb_rasters\"/>"
 
 #. Tag: refname
 #: reference_guc.xml:181
@@ -419,6 +465,8 @@ msgstr "postgis.enable_outdb_rasters"
 #, no-c-format
 msgid "A boolean configuration option to enable access to out-db raster bands."
 msgstr ""
+"Une option de configuration booléenne pour permettre l'accès aux bandes "
+"matricielles de out-db."
 
 #. Tag: para
 #: reference_guc.xml:189
@@ -428,6 +476,10 @@ msgid ""
 "option can be set in PostgreSQL's configuration file: postgresql.conf. It "
 "can also be set by connection or transaction."
 msgstr ""
+"Une option de configuration booléenne pour permettre l'accès aux bandes "
+"matricielles de out-db. Cette option peut être définie dans le fichier de "
+"configuration de PostgreSQL : postgresql.conf. Elle peut également être "
+"définie par connexion ou transaction."
 
 #. Tag: para
 #: reference_guc.xml:193
@@ -438,6 +490,10 @@ msgid ""
 "<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> with a non-zero value to the "
 "process starting PostgreSQL."
 msgstr ""
+"La valeur initiale de <varname>postgis.enable_outdb_rasters</varname> peut "
+"également être définie en passant la variable d'environnement "
+"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> avec une valeur non nulle au "
+"processus de démarrage de PostgreSQL."
 
 #. Tag: para
 #: reference_guc.xml:198
@@ -447,6 +503,9 @@ msgid ""
 "<varname>postgis.gdal_enabled_drivers</varname> determines the accessible "
 "raster formats."
 msgstr ""
+"Même si <varname>postgis.enable_outdb_rasters</varname> est True, le GUC "
+"<varname>postgis.gdal_enabled_drivers</varname> détermine les formats raster "
+"accessibles."
 
 #. Tag: para
 #: reference_guc.xml:204
@@ -455,6 +514,8 @@ msgid ""
 "In the standard PostGIS installation, <varname>postgis.enable_outdb_rasters</"
 "varname> is set to False."
 msgstr ""
+"Dans l'installation standard de PostGIS, <varname>postgis."
+"enable_outdb_rasters</varname> est défini sur False."
 
 #. Tag: para
 #: reference_guc.xml:215
@@ -484,7 +545,7 @@ msgstr ""
 #: reference_guc.xml:219
 #, no-c-format
 msgid "Set for specific database"
-msgstr ""
+msgstr "Défini pour une base de données spécifique"
 
 #. Tag: programlisting
 #: reference_guc.xml:221
@@ -499,6 +560,9 @@ msgid ""
 "Setting for whole database cluster. You need to reconnect to the database "
 "for changes to take effect."
 msgstr ""
+"Paramètres pour l'ensemble du cluster de bases de données. Vous devez vous "
+"reconnecter à la base de données pour que les modifications soient prises en "
+"compte."
 
 #. Tag: programlisting
 #: reference_guc.xml:224
@@ -509,6 +573,10 @@ msgid ""
 " --Reloads postgres conf\n"
 "SELECT pg_reload_conf();"
 msgstr ""
+"-- Ecrit dans le fichier postgres.auto.conf\n"
+"ALTER SYSTEM postgis.enable_outdb_rasters = true ;\n"
+" -- Recharge postgres conf\n"
+"SELECT pg_reload_conf() ;"
 
 #. Tag: refname
 #: reference_guc.xml:239
@@ -523,6 +591,8 @@ msgid ""
 "A string configuration to set options used when working with an out-db "
 "raster."
 msgstr ""
+"Une chaîne de configuration pour définir les options utilisées lors de "
+"l'utilisation d'un raster out-db."
 
 #. Tag: para
 #: reference_guc.xml:247
@@ -534,6 +604,12 @@ msgid ""
 "allocates to local data cache, whether to read overviews, and what access "
 "keys to use for remote out-db data sources."
 msgstr ""
+"Une chaîne de configuration pour définir les options utilisées lors de "
+"l'utilisation d'un raster out-db. <ulink url=\"http://trac.osgeo.org/gdal/"
+"wiki/ConfigOptions\">Les options de configuration</ulink> contrôlent des "
+"éléments tels que l'espace alloué par GDAL au cache des données locales, la "
+"lecture ou non des aperçus et les clés d'accès à utiliser pour les sources "
+"de données out-db distantes."
 
 #. Tag: para
 #: reference_guc.xml:251
@@ -556,6 +632,8 @@ msgid ""
 "SET postgis.gdal_config_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx "
 "AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';"
 msgstr ""
+"SET postgis.gdal_config_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx "
+"AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy' ;"
 
 #. Tag: para
 #: reference_guc.xml:261
@@ -565,6 +643,9 @@ msgid ""
 "<emphasis>current transaction</emphasis> using the <varname>LOCAL</varname> "
 "keyword:"
 msgstr ""
+"Définissez <varname>postgis.gdal_vsi_options</varname> uniquement pour la "
+"<emphasis>transaction courante</emphasis> en utilisant le mot clé "
+"<varname>LOCAL</varname> :"
 
 #. Tag: programlisting
 #: reference_guc.xml:262
@@ -573,3 +654,5 @@ msgid ""
 "SET LOCAL postgis.gdal_config_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx "
 "AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';"
 msgstr ""
+"SET LOCAL postgis.gdal_config_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx "
+"AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy' ;"
