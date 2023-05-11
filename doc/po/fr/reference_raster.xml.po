@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-04 00:50+0000\n"
-"PO-Revision-Date: 2023-01-06 15:50+0000\n"
+"PO-Revision-Date: 2023-05-12 10:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_rasterxml/fr/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: reference_raster.xml:3
@@ -4069,7 +4069,7 @@ msgstr ""
 #: reference_raster.xml:2142
 #, no-c-format
 msgid "ST_MemSize"
-msgstr ""
+msgstr "ST_MemSize"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2144
@@ -4118,6 +4118,7 @@ msgid ""
 "pg_total_relation_size - includes, the table, the toasted tables, and the "
 "indexes."
 msgstr ""
+"pg_total_relation_size - comprend la table, les tables toasted et les index."
 
 #. Tag: programlisting
 #: reference_raster.xml:2173
@@ -17659,7 +17660,7 @@ msgstr ""
 #: reference_raster.xml:9939
 #, no-c-format
 msgid "Box3D"
-msgstr ""
+msgstr "Box3D"
 
 #. Tag: refpurpose
 #: reference_raster.xml:9940
@@ -19032,7 +19033,7 @@ msgstr ""
 #: reference_raster.xml:11024
 #, no-c-format
 msgid "ST_Intersects"
-msgstr ""
+msgstr "ST_Intersects"
 
 #. Tag: refpurpose
 #: reference_raster.xml:11025
