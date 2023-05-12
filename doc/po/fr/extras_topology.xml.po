@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-04 20:31+0000\n"
-"PO-Revision-Date: 2023-05-10 15:08+0000\n"
+"PO-Revision-Date: 2023-05-12 13:00+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "extras_topologyxml/fr/>\n"
@@ -1517,7 +1517,7 @@ msgstr ""
 #: extras_topology.xml:818
 #, no-c-format
 msgid "Availability: 1.0.0"
-msgstr ""
+msgstr "Disponibilité : 1.0.0"
 
 #. Tag: para
 #: extras_topology.xml:820
@@ -5146,7 +5146,7 @@ msgstr ""
 #: extras_topology.xml:3555
 #, no-c-format
 msgid "ST_SRID"
-msgstr ""
+msgstr "ST_SRID"
 
 #. Tag: refpurpose
 #: extras_topology.xml:3556
@@ -5169,6 +5169,8 @@ msgid ""
 "Returns the spatial reference identifier for the ST_Geometry as defined in "
 "spatial_ref_sys table. <xref linkend=\"spatial_ref_sys\"/>"
 msgstr ""
+"Renvoie l'identifiant de référence spatiale pour la ST_Geometry tel que "
+"défini dans la table spatial_ref_sys. <xref linkend=\"spatial_ref_sys\"/>"
 
 #. Tag: para
 #: extras_topology.xml:3572
@@ -5179,6 +5181,11 @@ msgid ""
 "system to another. So verifying you have the right spatial reference system "
 "identifier is important if you plan to ever transform your geometries."
 msgstr ""
+"La table spatial_ref_sys est une table qui répertorie tous les systèmes de "
+"référence spatiale connus de PostGIS et qui est utilisée pour les "
+"transformations d'un système de référence spatiale à un autre. Il est donc "
+"important de vérifier que vous disposez du bon identifiant de système de "
+"référence spatiale si vous envisagez de transformer vos géométries."
 
 #. Tag: para
 #: extras_topology.xml:3576
