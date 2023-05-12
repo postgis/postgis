@@ -1,0 +1,12 @@
+pipeline:
+  build:
+    image: docker.osgeo.org/postgis/build-test:trisquel3
+    when:
+      path: "doc/*"
+    commands:
+      - ./autogen.sh
+      - ./configure
+      - make docs
+      - make -C doc check
+      - make docs-localized
+      - make -C doc/ check-localized
