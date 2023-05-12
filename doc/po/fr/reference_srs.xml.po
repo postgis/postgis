@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-11-01 14:51+0000\n"
-"PO-Revision-Date: 2023-05-10 15:08+0000\n"
+"PO-Revision-Date: 2023-05-12 13:00+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_srsxml/fr/>\n"
@@ -24,18 +24,20 @@ msgid ""
 "These functions work with the Spatial Reference System of geometries as "
 "defined in the <varname>spatial_ref_sys</varname> table."
 msgstr ""
+"Ces fonctions fonctionnent avec le système de référence spatiale des "
+"géométries défini dans la table <varname>spatial_ref_sys</varname>."
 
 #. Tag: title
 #: reference_srs.xml:10
 #, no-c-format
 msgid "Spatial Reference System Functions"
-msgstr ""
+msgstr "Fonctions des systèmes de référence spatiale"
 
 #. Tag: refname
 #: reference_srs.xml:14
 #, no-c-format
 msgid "ST_InverseTransformPipeline"
-msgstr ""
+msgstr "ST_InverseTransformPipeline"
 
 #. Tag: refpurpose
 #: reference_srs.xml:16
@@ -45,6 +47,9 @@ msgid ""
 "reference system using the inverse of a defined coordinate transformation "
 "pipeline."
 msgstr ""
+"Renvoie une nouvelle géométrie dont les coordonnées ont été transformées "
+"dans un système de référence spatial différent en utilisant l'inverse d'un "
+"pipeline de transformation de coordonnées défini."
 
 #. Tag: funcprototype
 #: reference_srs.xml:23
@@ -56,6 +61,11 @@ msgid ""
 "<paramdef choice=\"opt\"><type>integer </type> <parameter>to_srid</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_InverseTransformPipeline</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>pipeline</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>to_srid</parameter></paramdef>"
 
 #. Tag: title
 #: reference_srs.xml:33 reference_srs.xml:95 reference_srs.xml:142
@@ -72,6 +82,9 @@ msgid ""
 "reference system using a defined coordinate transformation pipeline to go in "
 "the inverse direction."
 msgstr ""
+"Renvoie une nouvelle géométrie dont les coordonnées ont été transformées "
+"dans un système de référence spatial différent à l'aide d'un pipeline de "
+"transformation de coordonnées défini pour aller dans la direction inverse."
 
 #. Tag: para
 #: reference_srs.xml:40
@@ -80,6 +93,8 @@ msgid ""
 "Refer to <xref linkend=\"ST_TransformPipeline\"/> for details on writing a "
 "transformation pipeline."
 msgstr ""
+"Voir <xref linkend=\"ST_TransformPipeline\"/> pour plus de détails sur "
+"l'écriture d'un pipeline de transformation."
 
 #. Tag: para
 #: reference_srs.xml:42 reference_srs.xml:343
@@ -98,6 +113,12 @@ msgid ""
 "direction. Using `ST_InverseTransformPipeline()` the pipeline is executed in "
 "the inverse direction."
 msgstr ""
+"Le SRID de la géométrie en entrée est ignoré et le SRID de la géométrie de "
+"sortie sera mis à zéro à moins qu'une valeur ne soit fournie via le "
+"paramètre facultatif <varname>to_srid</varname>. Lors de l'utilisation de "
+"<xref linkend=\"ST_TransformPipeline\"/>, le pipeline est exécuté dans le "
+"sens direct. En utilisant `ST_InverseTransformPipeline()`, le pipeline est "
+"exécuté dans le sens inverse."
 
 #. Tag: para
 #: reference_srs.xml:50 reference_srs.xml:351
@@ -108,6 +129,10 @@ msgid ""
 "correct operations to convert between coordinate systems, and should be "
 "preferred."
 msgstr ""
+"Les transformations utilisant des pipelines sont une version spéciale de "
+"<xref linkend=\"ST_Transform\"/>. Dans la plupart des cas, `ST_Transform` "
+"choisira les opérations correctes pour convertir entre les systèmes de "
+"coordonnées, et devrait être préféré."
 
 #. Tag: title
 #: reference_srs.xml:57 reference_srs.xml:111 reference_srs.xml:155
@@ -121,6 +146,7 @@ msgstr "Exemples"
 #, no-c-format
 msgid "Change WGS 84 long lat to UTM 31N using the EPSG:16031 conversion"
 msgstr ""
+"Changer WGS 84 long lat en UTM 31N en utilisant la conversion EPSG:16031"
 
 #. Tag: programlisting
 #: reference_srs.xml:59
@@ -136,12 +162,21 @@ msgid ""
 " POINT(2 48.99999999999999)\n"
 "(1 row)"
 msgstr ""
+"-- Inverser la direction\n"
+"SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937"
+".523342293)'::geometry,\n"
+"  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;\n"
+"\n"
+"          wgs_geom\n"
+"----------------------------\n"
+" POINT(2 48.99999999999999)\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_srs.xml:61 reference_srs.xml:362
 #, no-c-format
 msgid "GDA2020 example."
-msgstr ""
+msgstr "Exemple GDA2020."
 
 #. Tag: programlisting
 #: reference_srs.xml:62
@@ -156,6 +191,15 @@ msgid ""
 " POINT(143.00000635638918 -36.999986706128176)\n"
 "(1 row)"
 msgstr ""
+"-- en utilisant ST_Transform avec sélection automatique d'un pipeline de "
+"conversion.\n"
+"SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0) ::geometry, "
+"7844)) AS gda2020_auto ;\n"
+"\n"
+"                 gda2020_auto\n"
+"-----------------------------------------------\n"
+" POINT(143.00000635638918 -36.999986706128176)\n"
+"(1 row)"
 
 #. Tag: title
 #: reference_srs.xml:67 reference_srs.xml:119 reference_srs.xml:160
@@ -168,19 +212,19 @@ msgstr "Voir aussi"
 #: reference_srs.xml:69
 #, no-c-format
 msgid ", <xref linkend=\"ST_TransformPipeline\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_TransformPipeline\"/>"
 
 #. Tag: refname
 #: reference_srs.xml:75
 #, no-c-format
 msgid "ST_SetSRID"
-msgstr ""
+msgstr "ST_SetSRID"
 
 #. Tag: refpurpose
 #: reference_srs.xml:77
 #, no-c-format
 msgid "Set the SRID on a geometry."
-msgstr ""
+msgstr "Définir le SRID d'une géométrie."
 
 #. Tag: funcprototype
 #: reference_srs.xml:82
@@ -190,6 +234,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
 "<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_SetSRID</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
 
 #. Tag: para
 #: reference_srs.xml:97
@@ -198,6 +245,8 @@ msgid ""
 "Sets the SRID on a geometry to a particular integer value. Useful in "
 "constructing bounding boxes for queries."
 msgstr ""
+"Définit le SRID d'une géométrie à une valeur entière particulière. Utile "
+"pour construire des boîtes de délimitation pour les requêtes."
 
 #. Tag: para
 #: reference_srs.xml:101
@@ -208,6 +257,11 @@ msgid ""
 "is assumed to be in. Use <xref linkend=\"ST_Transform\"/> if you want to "
 "transform the geometry into a new projection."
 msgstr ""
+"Cette fonction ne transforme en aucune façon les coordonnées de la géométrie "
+"- elle définit simplement les métadonnées définissant le système de "
+"référence spatiale dans lequel la géométrie est supposée se trouver. "
+"Utilisez <xref linkend=\"ST_Transform\"/> si vous souhaitez transformer la "
+"géométrie dans une nouvelle projection."
 
 #. Tag: para
 #: reference_srs.xml:106
@@ -225,7 +279,7 @@ msgstr "&curve_support;"
 #: reference_srs.xml:112
 #, no-c-format
 msgid "-- Mark a point as WGS 84 long lat --"
-msgstr ""
+msgstr "-- Marquer un point comme WGS 84 long lat --"
 
 #. Tag: programlisting
 #: reference_srs.xml:113
@@ -235,6 +289,9 @@ msgid ""
 "-- the ewkt representation (wrap with ST_AsEWKT) -\n"
 "SRID=4326;POINT(-123.365556 48.428611)"
 msgstr ""
+"SELECT ST_SetSRID(ST_Point(-123.365556, 48.428611),4326) As wgs84long_lat ;\n"
+"-- la représentation ewkt (avec ST_AsEWKT) -\n"
+"SRID=4326 ;POINT(-123.365556 48.428611)"
 
 #. Tag: para
 #: reference_srs.xml:114
@@ -243,6 +300,8 @@ msgid ""
 "-- Mark a point as WGS 84 long lat and then transform to web mercator "
 "(Spherical Mercator) --"
 msgstr ""
+"-- Marquer un point comme WGS 84 long lat puis le transformer en mercator "
+"web (Mercator Sphérique) --"
 
 #. Tag: programlisting
 #: reference_srs.xml:115
@@ -253,6 +312,10 @@ msgid ""
 "-- the ewkt representation (wrap with ST_AsEWKT) -\n"
 "SRID=3785;POINT(-13732990.8753491 6178458.96425423)"
 msgstr ""
+"SELECT ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785) "
+"As spere_merc;\n"
+"-- la représentation ewkt (avec ST_AsEWKT) -\n"
+"SRID=3785;POINT(-13732990.8753491 6178458.96425423)"
 
 #. Tag: para
 #: reference_srs.xml:121
@@ -261,18 +324,20 @@ msgid ""
 ", <xref linkend=\"ST_SRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
 "linkend=\"UpdateGeometrySRID\"/>"
 msgstr ""
+", <xref linkend=\"ST_SRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
+"linkend=\"UpdateGeometrySRID\"/>"
 
 #. Tag: refname
 #: reference_srs.xml:128
 #, no-c-format
 msgid "ST_SRID"
-msgstr ""
+msgstr "ST_SRID"
 
 #. Tag: refpurpose
 #: reference_srs.xml:129
 #, no-c-format
 msgid "Returns the spatial reference identifier for a geometry."
-msgstr ""
+msgstr "Renvoie l'identifiant de référence spatiale d'une géométrie."
 
 #. Tag: funcprototype
 #: reference_srs.xml:134
@@ -281,6 +346,8 @@ msgid ""
 "<funcdef>integer <function>ST_SRID</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 msgstr ""
+"<funcdef>integer <function>ST_SRID</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_srs.xml:144
@@ -289,6 +356,8 @@ msgid ""
 "Returns the spatial reference identifier for the ST_Geometry as defined in "
 "spatial_ref_sys table. <xref linkend=\"spatial_ref_sys\"/>"
 msgstr ""
+"Renvoie l'identifiant de référence spatiale pour la ST_Geometry tel que "
+"défini dans la table spatial_ref_sys. <xref linkend=\"spatial_ref_sys\"/>"
 
 #. Tag: para
 #: reference_srs.xml:145
@@ -299,6 +368,11 @@ msgid ""
 "system to another. So verifying you have the right spatial reference system "
 "identifier is important if you plan to ever transform your geometries."
 msgstr ""
+"La table spatial_ref_sys est une table qui répertorie tous les systèmes de "
+"référence spatiale connus de PostGIS et qui est utilisée pour les "
+"transformations d'un système de référence spatiale à un autre. Il est donc "
+"important de vérifier que vous disposez du bon identifiant de système de "
+"référence spatiale si vous envisagez de transformer vos géométries."
 
 #. Tag: para
 #: reference_srs.xml:148
@@ -310,7 +384,7 @@ msgstr "&sfs_compliant; s2.1.1.1"
 #: reference_srs.xml:149
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.5"
-msgstr ""
+msgstr "&sqlmm_compliant ; SQL-MM 3 : 5.1.5"
 
 #. Tag: programlisting
 #: reference_srs.xml:157
@@ -320,6 +394,9 @@ msgid ""
 "    --result\n"
 "    4326"
 msgstr ""
+"SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326)) ;\n"
+"    -- résultat\n"
+"    4326"
 
 #. Tag: para
 #: reference_srs.xml:162
@@ -328,12 +405,14 @@ msgid ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
 "linkend=\"RT_ST_SRID\"/>, <xref linkend=\"TG_ST_SRID\"/>"
 msgstr ""
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
+"linkend=\"RT_ST_SRID\"/>, <xref linkend=\"TG_ST_SRID\"/>"
 
 #. Tag: refname
 #: reference_srs.xml:168
 #, no-c-format
 msgid "ST_Transform"
-msgstr ""
+msgstr "ST_Transform"
 
 #. Tag: refpurpose
 #: reference_srs.xml:170
@@ -342,6 +421,8 @@ msgid ""
 "Return a new geometry with coordinates transformed to a different spatial "
 "reference system."
 msgstr ""
+"Renvoie une nouvelle géométrie dont les coordonnées ont été transformées "
+"dans un système de référence spatial différent."
 
 #. Tag: funcsynopsis
 #: reference_srs.xml:175
@@ -364,6 +445,22 @@ msgid ""
 "parameter></paramdef> <paramdef><type>integer </type> <parameter>to_srid</"
 "parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_Transform</function></"
+"funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_Transform</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>geom</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>to_proj</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>geometry <function>ST_Transform</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>from_proj</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>to_proj</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_Transform</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>geom</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>from_proj</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>to_srid</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_srs.xml:208
@@ -381,6 +478,18 @@ msgid ""
 "functions with <varname>from_proj</varname>, input geometries must have a "
 "defined SRID."
 msgstr ""
+"Renvoie une nouvelle géométrie dont les coordonnées ont été transformées "
+"dans un système de référence spatiale différent. La référence spatiale de "
+"destination <varname>to_srid</varname> peut être identifiée par un paramètre "
+"entier SRID valide (c'est-à-dire qu'elle doit exister dans la table "
+"<varname>spatial_ref_sys</varname>). Il est également possible d'utiliser "
+"une référence spatiale définie comme une chaîne PROJ.4 pour "
+"<varname>to_proj</varname> et/ou <varname>from_proj</varname>, mais ces "
+"méthodes ne sont pas optimisées. Si le système de référence spatiale de "
+"destination est exprimé avec une chaîne PROJ.4 au lieu d'un SRID, le SRID de "
+"la géométrie de sortie sera mis à zéro. A l'exception des fonctions avec "
+"<varname>from_proj</varname>, les géométries d'entrée doivent avoir un SRID "
+"défini."
 
 #. Tag: para
 #: reference_srs.xml:222
@@ -391,6 +500,10 @@ msgid ""
 "reference system to another, while ST_SetSRID() simply changes the SRID "
 "identifier of the geometry."
 msgstr ""
+"ST_Transform est souvent confondu avec <xref linkend=\"ST_SetSRID\"/>. "
+"ST_Transform modifie en fait les coordonnées d'une géométrie d'un système de "
+"référence spatiale à un autre, tandis que ST_SetSRID() modifie simplement "
+"l'identifiant SRID de la géométrie."
 
 #. Tag: para
 #: reference_srs.xml:226
@@ -400,6 +513,10 @@ msgid ""
 "source and target spatial reference systems. To use a specific conversion "
 "method, use <xref linkend=\"ST_TransformPipeline\"/>."
 msgstr ""
+"ST_Transform sélectionne automatiquement un pipeline de conversion approprié "
+"en fonction des systèmes de référence spatiale source et cible. Pour "
+"utiliser une méthode de conversion spécifique, utilisez <xref linkend="
+"\"ST_TransformPipeline\"/>."
 
 #. Tag: para
 #: reference_srs.xml:230
@@ -409,6 +526,9 @@ msgid ""
 "linkend=\"PostGIS_Full_Version\"/> to confirm you have PROJ support compiled "
 "in."
 msgstr ""
+"PostGIS doit être compilé avec le support PROJ. Utilisez <xref linkend="
+"\"PostGIS_Full_Version\"/> pour confirmer que vous avez compilé le support "
+"PROJ."
 
 #. Tag: para
 #: reference_srs.xml:234
@@ -417,6 +537,9 @@ msgid ""
 "If using more than one transformation, it is useful to have a functional "
 "index on the commonly used transformations to take advantage of index usage."
 msgstr ""
+"Si l'on utilise plus d'une transformation, il est utile de disposer d'un "
+"index fonctionnel sur les transformations les plus couramment utilisées afin "
+"de tirer parti de l'utilisation de l'index."
 
 #. Tag: para
 #: reference_srs.xml:238
@@ -440,12 +563,14 @@ msgstr "Amélioration : 2.0.0 introduction du support des surfaces polyédriques
 #, no-c-format
 msgid "Enhanced: 2.3.0 support for direct PROJ.4 text was introduced."
 msgstr ""
+"Amélioration : la version 2.3.0 a introduit la prise en charge du texte "
+"PROJ.4 direct."
 
 #. Tag: para
 #: reference_srs.xml:242
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.6"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.6"
 
 #. Tag: para
 #: reference_srs.xml:244
@@ -458,6 +583,8 @@ msgstr "&P_support;"
 #, no-c-format
 msgid "Change Massachusetts state plane US feet geometry to WGS 84 long lat"
 msgstr ""
+"Changer la géométrie des pieds US du plan de l'État du Massachusetts en WGS "
+"84 long lat"
 
 #. Tag: programlisting
 #: reference_srs.xml:251
@@ -489,6 +616,32 @@ msgid ""
 " -71.1775844305465 42.3903826677917 3,\n"
 " -71.1775825927231 42.3902893647987 3,-71.1776848522251 42.3902896512902 4)"
 msgstr ""
+"SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 "
+"2967416,743238 2967450,\n"
+"  743265 2967450,743265.625 2967416,743238 2967416))',2249),4326)) As "
+"wgs_geom ;\n"
+"\n"
+" wgs_geom\n"
+"---------------------------\n"
+" POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 42."
+"3903829478009,\n"
+"-71.1775844305465 42.3903826677917,-71.1775825927231 42.3902893647987,-71."
+"177684\n"
+"8522251 42.3902896512902)) ;\n"
+"(1 row)\n"
+"\n"
+"-- exemple de ligne circulaire 3D\n"
+"SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;CIRCULARSTRING("
+"743238 2967416 1,743238 2967450 2,743265 2967450 3,743265.625 2967416 "
+"3,743238 2967416 4)'),4326)) ;\n"
+"\n"
+"         st_asewkt\n"
+"-----------------------------------------------------------------------------"
+"---------\n"
+" SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 1,-"
+"71.1776843766326 42.3903829478009 2,\n"
+" -71.1775844305465 42.3903826677917 3,\n"
+" -71.1775825927231 42.3902893647987 3,-71.1776848522251 42.3902896512902 4)"
 
 #. Tag: para
 #: reference_srs.xml:252
@@ -499,6 +652,11 @@ msgid ""
 "that leaves out null geometries which will both conserve space and make your "
 "index smaller and more efficient."
 msgstr ""
+"Exemple de création d'un index fonctionnel partiel. Pour les tables dont "
+"vous n'êtes pas sûr que toutes les géométries seront renseignées, il est "
+"préférable d'utiliser un index partiel qui laisse de côté les géométries "
+"nulles, ce qui permet à la fois de conserver de l'espace et de rendre votre "
+"index plus petit et plus efficace."
 
 #. Tag: programlisting
 #: reference_srs.xml:254
@@ -510,6 +668,11 @@ msgid ""
 "  (ST_Transform(geom, 26986))\n"
 "  WHERE geom IS NOT NULL;"
 msgstr ""
+"CREATE INDEX idx_geom_26986_parcels\n"
+"  ON parcels\n"
+"  USING gist\n"
+"  (ST_Transform(geom, 26986))\n"
+"  WHERE geom IS NOT NULL ;"
 
 #. Tag: para
 #: reference_srs.xml:256
@@ -517,6 +680,8 @@ msgstr ""
 msgid ""
 "Examples of using PROJ.4 text to transform with custom spatial references."
 msgstr ""
+"Exemples d'utilisation du texte PROJ.4 pour transformer avec des références "
+"spatiales personnalisées."
 
 #. Tag: programlisting
 #: reference_srs.xml:257
@@ -543,12 +708,33 @@ msgid ""
 "  POLYGON((-170 74.053793645338,-141 73.4268621378904,-141 68,-170 68,-170 "
 "74.053793645338))"
 msgstr ""
+"-- Trouver l'intersection de deux polygones près du pôle Nord, en utilisant "
+"une projection Gnomic personnalisée\n"
+"-- Voir http://boundlessgeo.com/2012/02/flattening-the-peel/\n"
+" WITH data AS (\n"
+"   SELECT\n"
+"     ST_GeomFromText('POLYGON((170 50,170 72,-130 72,-130 50,170 50))', 4326)"
+" AS p1,\n"
+"     ST_GeomFromText('POLYGON((-170 68,-170 90,-141 90,-141 68,-170 68))', "
+"4326) AS p2,\n"
+"     '+proj=gnom +ellps=WGS84 +lat_0=70 +lon_0=-160 +no_defs'::text AS gnom\n"
+" )\n"
+" SELECT ST_AsText(\n"
+"   ST_Transform(\n"
+"     ST_Intersection(ST_Transform(p1, gnom), ST_Transform(p2, gnom)),\n"
+"   gnom, 4326))\n"
+" FROM données ;\n"
+"                                          st_astext\n"
+" ----------------------------------------------------------------------------"
+"----\n"
+"  POLYGON((-170 74.053793645338,-141 73.4268621378904,-141 68,-170 68,-170 74"
+".053793645338))"
 
 #. Tag: title
 #: reference_srs.xml:261
 #, no-c-format
 msgid "Configuring transformation behavior"
-msgstr ""
+msgstr "Configurer le comportement de transformation"
 
 #. Tag: para
 #: reference_srs.xml:262
@@ -563,6 +749,15 @@ msgid ""
 "<varname>proj4text</varname> value within the <varname>spatial_ref_sys</"
 "varname> table."
 msgstr ""
+"Parfois, la transformation de coordonnées impliquant un décalage de grille "
+"peut échouer, par exemple si PROJ.4 n'a pas été construit avec des fichiers "
+"de décalage de grille ou si la coordonnée ne se trouve pas dans la plage "
+"pour laquelle le décalage de grille est défini. Par défaut, PostGIS génère "
+"une erreur si un fichier de décalage de grille n'est pas présent, mais ce "
+"comportement peut être configuré pour chaque SRID, soit en testant "
+"différentes valeurs <varname>to_proj</varname> de texte PROJ.4, soit en "
+"modifiant la valeur <varname>proj4text</varname> dans la table "
+"<varname>spatial_ref_sys</varname>."
 
 #. Tag: para
 #: reference_srs.xml:272
@@ -571,12 +766,14 @@ msgid ""
 "For example, the proj4text parameter +datum=NAD87 is a shorthand form for "
 "the following +nadgrids parameter:"
 msgstr ""
+"Par exemple, le paramètre proj4text +datum=NAD87 est une forme abrégée du "
+"paramètre +nadgrids suivant :"
 
 #. Tag: programlisting
 #: reference_srs.xml:273
 #, no-c-format
 msgid "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat"
-msgstr ""
+msgstr "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat"
 
 #. Tag: para
 #: reference_srs.xml:274
@@ -586,6 +783,10 @@ msgid ""
 "the end of the list is reached with no file having been appropriate (ie. "
 "found and overlapping) then an error is issued."
 msgstr ""
+"Le préfixe @ signifie qu'aucune erreur n'est signalée si les fichiers ne "
+"sont pas présents, mais si la fin de la liste est atteinte sans qu'aucun "
+"fichier n'ait été approprié (c'est-à-dire trouvé et se chevauchant), une "
+"erreur est émise."
 
 #. Tag: para
 #: reference_srs.xml:275
@@ -595,12 +796,15 @@ msgid ""
 "present, but that if all files were scanned without a hit a null "
 "transformation is applied you could use:"
 msgstr ""
+"Si, à l'inverse, vous voulez vous assurer qu'au moins les fichiers standard "
+"sont présents, mais que si tous les fichiers ont été analysés sans résultat, "
+"une transformation nulle est appliquée, vous pouvez utiliser :"
 
 #. Tag: programlisting
 #: reference_srs.xml:276
 #, no-c-format
 msgid "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null"
-msgstr ""
+msgstr "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null"
 
 #. Tag: para
 #: reference_srs.xml:277
@@ -611,6 +815,11 @@ msgid ""
 "PostGIS so that transformations to SRID 4267 that didn't lie within the "
 "correct range did not throw an ERROR, you would use the following:"
 msgstr ""
+"Le fichier de décalage de grille nul est un fichier de décalage de grille "
+"valide couvrant le monde entier et n'appliquant aucun décalage. Ainsi, pour "
+"un exemple complet, si vous vouliez modifier PostGIS de manière à ce que les "
+"transformations du SRID 4267 qui ne se situent pas dans la plage correcte "
+"n'entraînent pas d'ERREUR, vous utiliseriez ce qui suit :"
 
 #. Tag: programlisting
 #: reference_srs.xml:278
@@ -620,6 +829,9 @@ msgid ""
 "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null +no_defs' WHERE srid "
 "= 4267;"
 msgstr ""
+"UPDATE spatial_ref_sys SET proj4text = '+proj=longlat +ellps=clrk66 "
+"+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null +no_defs' WHERE srid "
+"= 4267 ;"
 
 #. Tag: para
 #: reference_srs.xml:285
@@ -628,12 +840,14 @@ msgid ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>, <xref "
 "linkend=\"UpdateGeometrySRID\"/>, <xref linkend=\"ST_TransformPipeline\"/>"
 msgstr ""
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>, <xref linkend="
+"\"UpdateGeometrySRID\"/>, <xref linkend=\"ST_TransformPipeline\"/>"
 
 #. Tag: refname
 #: reference_srs.xml:291
 #, no-c-format
 msgid "ST_TransformPipeline"
-msgstr ""
+msgstr "ST_TransformPipeline"
 
 #. Tag: refpurpose
 #: reference_srs.xml:293
@@ -643,6 +857,9 @@ msgid ""
 "different spatial reference system using a defined coordinate transformation "
 "pipeline.</refpurpose>"
 msgstr ""
+"<refpurpose>Retourner une nouvelle géométrie avec des coordonnées "
+"transformées dans un système de référence spatial différent à l'aide d'un "
+"pipeline de transformation de coordonnées défini.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_srs.xml:300
@@ -654,6 +871,11 @@ msgid ""
 "<paramdef choice=\"opt\"><type>integer </type> <parameter>to_srid</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_TransformPipeline</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>pipeline</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>to_srid</parameter></paramdef>"
 
 #. Tag: para
 #: reference_srs.xml:312
@@ -663,6 +885,9 @@ msgid ""
 "spatial reference system using a defined coordinate transformation pipeline."
 "</para>"
 msgstr ""
+"<para>Retourner une nouvelle géométrie dont les coordonnées ont été "
+"transformées dans un système de référence spatial différent à l'aide d'un "
+"pipeline de transformation de coordonnées défini.</para>"
 
 #. Tag: para
 #: reference_srs.xml:317
@@ -671,6 +896,8 @@ msgid ""
 "Transformation pipelines are defined using any of the following string "
 "formats:"
 msgstr ""
+"Les pipelines de transformation sont définis à l'aide de l'un des formats de "
+"texte suivants :"
 
 #. Tag: para
 #: reference_srs.xml:321
@@ -680,6 +907,10 @@ msgid ""
 "that a simple <varname>EPSG:CODE</varname> string does not uniquely identify "
 "a coordinate operation: the same EPSG code can be used for a CRS definition."
 msgstr ""
+"<varname>urn:ogc:def:coordinateOperation:AUTHORITY::CODE</varname>. Notez "
+"qu'une simple chaîne de caractère <varname>EPSG:CODE</varname> n'identifie "
+"pas de manière unique une opération de coordonnées : le même code EPSG peut "
+"être utilisé pour une définition CRS."
 
 #. Tag: para
 #: reference_srs.xml:329
@@ -690,6 +921,10 @@ msgid ""
 "caller will need to add an additional pipeline step, or remove "
 "<varname>axisswap</varname> steps."
 msgstr ""
+"Une chaîne de caractères de pipeline PROJ de la forme : <varname>+"
+"proj=pipeline ...</varname>. La normalisation automatique des axes ne sera "
+"pas appliquée et, si nécessaire, l'appelant devra ajouter une étape de "
+"pipeline supplémentaire ou supprimer les étapes <varname>axisswap</varname>."
 
 #. Tag: para
 #: reference_srs.xml:337
@@ -699,6 +934,8 @@ msgid ""
 "coordinateOperation,coordinateOperation:EPSG::3895,coordinateOperation:"
 "EPSG::1618</varname>."
 msgstr ""
+"Opérations concaténées de la forme : <varname>urn:ogc:def:coordinateOperation"
+",coordinateOperation:EPSG::3895,coordinateOperation:EPSG::1618</varname>."
 
 #. Tag: para
 #: reference_srs.xml:345
@@ -711,6 +948,12 @@ msgid ""
 "linkend=\"ST_InverseTransformPipeline\"/> the pipeline is executed in the "
 "inverse direction."
 msgstr ""
+"Le SRID de la géométrie d'entrée est ignoré, et le SRID de la géométrie de "
+"sortie sera mis à zéro à moins qu'une valeur ne soit fournie via le "
+"paramètre optionnel <varname>to_srid</varname>. Lors de l'utilisation de "
+"`ST_TransformPipeline()`, le pipeline est exécuté dans la direction avant. "
+"En utilisant <xref linkend=\"ST_InverseTransformPipeline\"/> le pipeline est "
+"exécuté dans le sens inverse."
 
 #. Tag: programlisting
 #: reference_srs.xml:360
@@ -735,6 +978,24 @@ msgid ""
 " POINT(2 48.99999999999999)\n"
 "(1 row)"
 msgstr ""
+"-- Direction vers l'avant\n"
+"SELECT ST_AsText(ST_TransformPipeline('SRID=4326;POINT(2 49)'::geometry,\n"
+"  'urn:ogc:def:coordinateOperation:EPSG::16031') AS utm_geom);\n"
+"\n"
+"                  utm_geom\n"
+"--------------------------------------------\n"
+" POINT(426857.9877165967 5427937.523342293)\n"
+"(1 row)\n"
+"\n"
+"-- Direction inverse\n"
+"SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937"
+".523342293)'::geometry,\n"
+"  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;\n"
+"\n"
+"          wgs_geom\n"
+"----------------------------\n"
+" POINT(2 48.99999999999999)\n"
+"(1 row)"
 
 #. Tag: programlisting
 #: reference_srs.xml:363
@@ -775,9 +1036,45 @@ msgid ""
 " POINT(143.0000063280214 -36.999986718287545)\n"
 "(1 row)"
 msgstr ""
+"-- en utilisant ST_Transform avec sélection automatique d'un pipeline de "
+"conversion.\n"
+"SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, "
+"7844)) AS gda2020_auto;\n"
+"\n"
+"                 gda2020_auto\n"
+"-----------------------------------------------\n"
+" POINT(143.00000635638918 -36.999986706128176)\n"
+"(1 row)\n"
+"\n"
+"-- using a defined conversion (EPSG:8447)\n"
+"SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37."
+"0)'::geometry,\n"
+"  'urn:ogc:def:coordinateOperation:EPSG::8447')) AS gda2020_code;\n"
+"\n"
+"                   gda2020_code\n"
+"----------------------------------------------\n"
+" POINT(143.0000063280214 -36.999986718287545)\n"
+"(1 row)\n"
+"\n"
+"-- en utilisant une définition de pipeline PROJ correspondant à EPSG:8447, "
+"telle que renvoyée par\n"
+"-- 'projinfo -s EPSG:4939 -t EPSG:7844'.\n"
+"-- NOTE : toute étape 'axisswap' doit être supprimée.\n"
+"SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37."
+"0)'::geometry,\n"
+"  '+proj=pipeline\n"
+"   +step +proj=unitconvert +xy_in=deg +xy_out=rad\n"
+"   +step +proj=hgridshift "
+"+grids=au_icsm_GDA94_GDA2020_conformal_and_distortion.tif\n"
+"   +step +proj=unitconvert +xy_in=rad +xy_out=deg')) AS gda2020_pipeline;\n"
+"\n"
+"                   gda2020_pipeline\n"
+"----------------------------------------------\n"
+" POINT(143.0000063280214 -36.999986718287545)\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_srs.xml:370
 #, no-c-format
 msgid ", <xref linkend=\"ST_InverseTransformPipeline\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_InverseTransformPipeline\"/>"
