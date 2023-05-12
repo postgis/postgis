@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2023-01-06 15:50+0000\n"
+"PO-Revision-Date: 2023-05-12 10:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "extras_historytablexml/fr/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: extras_historytable.xml:3
@@ -39,6 +39,14 @@ msgid ""
 "trail of what changes have been made, by whom, and what the past state of "
 "the data is?"
 msgstr ""
+"Supposons que vous disposiez d'une table de données représentant l'état "
+"actuel d'une entité géographique particulière. Une table de parcelles, une "
+"table de routes, une table d'arbres fruitiers, etc. En général, les outils "
+"SIG considèrent une table comme une entité unique dans laquelle ils peuvent "
+"mettre à jour, insérer et supprimer des lignes. Comment permettre aux outils "
+"SIG courants de travailler avec vos données, tout en conservant une piste "
+"d'audit des modifications effectuées, par qui et quel est l'état antérieur "
+"des données ?"
 
 #. Tag: para
 #: extras_historytable.xml:10
@@ -47,6 +55,8 @@ msgid ""
 "This <varname>history_table</varname> extra module provides some utility "
 "functions for creating and maintaining history."
 msgstr ""
+"Ce module supplémentaire <varname>history_table</varname> fournit quelques "
+"fonctions utilitaires pour la création et la gestion de l'historique."
 
 #. Tag: para
 #: extras_historytable.xml:14
@@ -57,6 +67,10 @@ msgid ""
 "plpgsql and located in the <varname>extras/history_table</varname> of "
 "PostGIS source tar balls and source repository."
 msgstr ""
+"Le <varname>history_table</varname> a également été intégré dans PostGIS "
+"1.5, mais a été ajouté à la documentation dans PostGIS 2.0. Ce paquetage est "
+"écrit en plpgsql et se trouve dans le <varname>extras/history_table</"
+"varname> du dépôt source de PostGIS et dans les archives tar du dépôt source."
 
 #. Tag: para
 #: extras_historytable.xml:15
@@ -66,6 +80,9 @@ msgid ""
 "side table, which contains all the columns of the parent table, and the "
 "following additional columns:"
 msgstr ""
+"Si vous avez une table \"routes\", ce module maintiendra une table "
+"secondaire \"roads_history\", qui contient toutes les colonnes de la table "
+"parent, ainsi que les colonnes supplémentaires suivantes :"
 
 #. Tag: programlisting
 #: extras_historytable.xml:16
@@ -79,6 +96,13 @@ msgid ""
 "\"current_user\"()\n"
 " current_version | text                        | not null"
 msgstr ""
+"history_id      | integer                     | not null default\n"
+" date_added      | timestamp without time zone | not null default now()\n"
+" date_deleted    | timestamp without time zone |\n"
+" last_operation  | character varying(30)       | not null\n"
+" active_user     | character varying(90)       | not null default "
+"\"current_user\"()\n"
+" current_version | text                        | not null"
 
 #. Tag: para
 #: extras_historytable.xml:20
@@ -126,6 +150,8 @@ msgid ""
 "With this information maintained, it is possible to retrieve the history of "
 "any record in the roads table:"
 msgstr ""
+"Grâce à ces informations, il est possible de retrouver l'historique de "
+"n'importe quel enregistrement de la table des routes :"
 
 #. Tag: programlisting
 #: extras_historytable.xml:31
@@ -138,6 +164,8 @@ msgstr "SELECT * FROM roads_history WHERE roads_pk = 111 ;"
 #, no-c-format
 msgid "Or, to retrieve a view of the roads table at any point in the past:"
 msgstr ""
+"Ou pour obtenir une vue de la table des routes à n'importe quel moment dans "
+"le passé :"
 
 #. Tag: programlisting
 #: extras_historytable.xml:34
@@ -147,6 +175,9 @@ msgid ""
 "    WHERE date_added &lt; 'January 1, 2001' AND\n"
 "        ( date_deleted &gt;= 'January 1, 2001' OR date_deleted IS NULL );"
 msgstr ""
+"SELECT * FROM roads_history\n"
+"    WHERE date_added &lt ; 'January 1, 2001' AND\n"
+"        ( date_deleted &gt ;= 'January 1, 2001' OR date_deleted IS NULL ) ;"
 
 #. Tag: refname
 #: extras_historytable.xml:38
@@ -161,6 +192,8 @@ msgid ""
 "Creates a table that will hold some interesting values for managing history "
 "tables."
 msgstr ""
+"Crée une table qui contiendra des valeurs intéressantes pour la gestion des "
+"tables d'historique."
 
 #. Tag: funcprototype
 #: extras_historytable.xml:44
@@ -185,6 +218,9 @@ msgid ""
 "Creates a table that will hold some interesting values for managing history "
 "tables. Creates a table called <varname>historic_information</varname>"
 msgstr ""
+"Crée une table qui contiendra des valeurs intéressantes pour la gestion des "
+"tables d'historique. Crée une table appelée "
+"<varname>historic_information</varname>"
 
 #. Tag: para
 #: extras_historytable.xml:58 extras_historytable.xml:100
@@ -224,6 +260,9 @@ msgid ""
 "adds in side line history table and insert, update, delete rules on the "
 "table."
 msgstr ""
+"Enregistre une table dans la table history_information pour le suivi et "
+"ajoute également une table d'historique de ligne latérale et des règles "
+"d'insertion, de mise à jour et de suppression sur la table."
 
 #. Tag: funcprototype
 #: extras_historytable.xml:83
@@ -247,6 +286,12 @@ msgid ""
 "insert, update, delete rules on the table. Any inserts,updates,deletes of "
 "the geometry are recorded in the history table."
 msgstr ""
+"Enregistre une table dans la table history_information pour le suivi et "
+"ajoute également en ligne latérale une table history portant le même nom que "
+"la table mais préfixée par <varname>history</varname> dans le même schéma "
+"que la table d'origine. Instaure des règles d'insertion, de mise à jour et "
+"de suppression pour la table. Toutes les insertions, mises à jour et "
+"suppressions de la géométrie sont enregistrées dans la table d'historique."
 
 #. Tag: para
 #: extras_historytable.xml:97
@@ -256,6 +301,10 @@ msgid ""
 "<varname>geometry_columns</varname> and fails if the geometry column is not "
 "present in <varname>geometry_columns</varname> table."
 msgstr ""
+"Cette fonction repose actuellement sur l'enregistrement d'une colonne "
+"géométrique dans <varname>geometry_columns</varname> et échoue si la colonne "
+"géométrique n'est pas présente dans la table "
+"<varname>geometry_columns</varname>."
 
 #. Tag: programlisting
 #: extras_historytable.xml:107
@@ -282,3 +331,24 @@ msgid ""
 "------------------------+----------------+-----------------\n"
 " 2011-02-07 12:44:36.92 | INSERT         | 2"
 msgstr ""
+"CREATE TABLE roads(gid SERIAL PRIMARY KEY, road_name varchar(150)) ;\n"
+"SELECT AddGeometryColumn('roads', 'geom', 26986, 'LINESTRING', 2) ;\n"
+"\n"
+"SELECT postgis_enable_history('public', 'roads', 'geom') As register_table ;"
+"\n"
+"register_table\n"
+"--------------\n"
+"t\n"
+"\n"
+"INSERT INTO roads(road_name, geom)\n"
+"  VALUES('Test Street', ST_GeomFromText('LINESTRING(231660.5 832170,231647 "
+"832202,231627.5 832250.5)',26986)) ;\n"
+"\n"
+"-- check transaction detail --\n"
+"SELECT date_added, last_operation, current_version\n"
+"FROM roads_history\n"
+"WHERE road_name = 'Test Street' ORDER BY date_added DESC ;\n"
+"\n"
+"       date_added       | last_operation | current_version\n"
+"------------------------+----------------+-----------------\n"
+" 2011-02-07 12 :44 :36.92 | INSERT         | 2"
