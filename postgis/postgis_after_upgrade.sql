@@ -191,7 +191,7 @@ DROP FUNCTION IF EXISTS _ST_DistanceRectTree(g1 geometry, g2 geometry);
 DROP FUNCTION IF EXISTS _ST_DistanceRectTreeCached(g1 geometry, g2 geometry);
 
 -- Deplicative signatures removed
-DROP FUNCTION IF EXISTS ST_Distance(geography, geography);
+DROP FUNCTION IF EXISTS ST_Distance(geography, geography); -- dropped in PostGIS-3.0 (r17300 aka ce70e4906)
 DROP FUNCTION IF EXISTS ST_Distance(geography, geography, float8, boolean);
 DROP FUNCTION IF EXISTS ST_Buffer(geometry, float8, cstring);
 DROP FUNCTION IF EXISTS ST_IsValidDetail(geometry);

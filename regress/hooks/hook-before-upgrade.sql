@@ -81,3 +81,12 @@ CREATE VIEW upgrade_view_test_clusterkmeans AS
 SELECT
 	ST_ClusterKMeans(g1, 1) OVER ()
 FROM upgrade_test;
+
+-- This view uses ST_Distance signatures, available since 1.5.0
+-- NOTE: 3.0.0 changed them to use default arguments
+-- See https://trac.osgeo.org/postgis/ticket/5380
+CREATE VIEW upgrade_view_test_distance AS
+SELECT
+	ST_Distance(g2, g2) geog_dist1,
+	ST_Distance(g2, g2, true) geog_dist2
+FROM upgrade_test;

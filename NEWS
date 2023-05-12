@@ -2,6 +2,8 @@ PostGIS 3.1.9dev
 xxxx/xx/xx
 
 * Bug Fixes
+  - #5380, Fix 2.5 upgrades with views using geography based ST_Distance
+           (Sandro Santilli)
   - #5338, Dump/Restore of raster table fails on
            enforce_coverage_tile_rast constraint (Regina Obe)
   - #5315, #5318, #5319, #5320, #5342 crashes on infinite coordinates
