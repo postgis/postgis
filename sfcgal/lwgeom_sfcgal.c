@@ -733,3 +733,131 @@ Datum sfcgal_optimalalphashape(PG_FUNCTION_ARGS)
 #endif
 }
 
+PG_FUNCTION_INFO_V1(sfcgal_ymonotonepartition);
+Datum sfcgal_ymonotonepartition(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 10500
+  lwpgerror("The SFCGAL version this PostGIS binary "
+	          "was compiled against (%d) doesn't support "
+	          "'sfcgal_y_monotone_partition_2' function (1.5.0+ required)",
+	          POSTGIS_SFCGAL_VERSION);
+	          PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 10500 */
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom;
+	sfcgal_geometry_t *result;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(input);
+	geom = POSTGIS2SFCGALGeometry(input);
+	PG_FREE_IF_COPY(input, 0);
+
+	result = sfcgal_y_monotone_partition_2(geom);
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_approxconvexpartition);
+Datum sfcgal_approxconvexpartition(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 10500
+  lwpgerror("The SFCGAL version this PostGIS binary "
+	          "was compiled against (%d) doesn't support "
+	          "'sfcgal_approx_convex_partition_2' function (1.5.0+ required)",
+	          POSTGIS_SFCGAL_VERSION);
+	          PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 10500 */
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom;
+	sfcgal_geometry_t *result;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(input);
+	geom = POSTGIS2SFCGALGeometry(input);
+	PG_FREE_IF_COPY(input, 0);
+
+	result = sfcgal_approx_convex_partition_2(geom);
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_greeneapproxconvexpartition);
+Datum sfcgal_greeneapproxconvexpartition(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 10500
+  lwpgerror("The SFCGAL version this PostGIS binary "
+	          "was compiled against (%d) doesn't support "
+	          "'sfcgal_greene_approx_convex_partition_2' function (1.5.0+ required)",
+	          POSTGIS_SFCGAL_VERSION);
+	          PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 10500 */
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom;
+	sfcgal_geometry_t *result;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(input);
+	geom = POSTGIS2SFCGALGeometry(input);
+	PG_FREE_IF_COPY(input, 0);
+
+	result = sfcgal_greene_approx_convex_partition_2(geom);
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_optimalconvexpartition);
+Datum sfcgal_optimalconvexpartition(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 10500
+  lwpgerror("The SFCGAL version this PostGIS binary "
+	          "was compiled against (%d) doesn't support "
+	          "'sfcgal_optimal_convex_partition_2' function (1.5.0+ required)",
+	          POSTGIS_SFCGAL_VERSION);
+	          PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 10500 */
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom;
+	sfcgal_geometry_t *result;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(input);
+	geom = POSTGIS2SFCGALGeometry(input);
+	PG_FREE_IF_COPY(input, 0);
+
+	result = sfcgal_optimal_convex_partition_2(geom);
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+

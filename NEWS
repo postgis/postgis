@@ -1,6 +1,8 @@
 PostGIS 3.5.0dev
 xxxx/xx/xx
 
+To take advantage of all SFCGAL featurs, SFCGAL 1.5.0+ is needed.
+
 * Breaking Changes *
 
   - #5546, TopoGeometry <> TopoGeometry is now ambiguous, to get
@@ -24,6 +26,7 @@ xxxx/xx/xx
   - #5055, add explicit <> geometry operator to prevent non-unique
            error with <> and != (Paul Ramsey)
   - Add ST_HasZ/ST_HasM (Loïc Bartoletti)
+  - postgis_sfcgal: ST_YMonotonePartition, ST_ApproxConvexPartition, ST_GreeneApproxConvexPartition and ST_OptimalConvexPartition (Loïc Bartoletti)
 
 * Enhancements *
 

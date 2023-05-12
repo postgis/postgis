@@ -1433,5 +1433,218 @@ MULTIPOLYGON(
 
 	</refentry>
 
+    <refentry xml:id="ST_YMonotonePartition">
+	  <refnamediv>
+		<refname>ST_YMonotonePartition</refname>
 
+		<refpurpose>Computes y-monotone partition of the polygon geometry</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_YMonotonePartition</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+        <title>Description</title>
+
+          <para>Computes y-monotone partition of the polygon geometry.
+          </para>
+
+        <note><para>
+        A partition of a polygon P is a set of polygons such that the interiors of the polygons do not intersect and the union of the polygons is equal to the interior of the original polygon P.
+        A y-monotone polygon is a polygon whose vertices v1,…,vn can be divided into two chains v1,…,vk and vk,…,vn,v1, such that any horizontal line intersects either chain at most once. This algorithm does not guarantee a bound on the number of polygons produced with respect to the optimal number.
+        </para></note>
+
+
+		<para>Availability: 3.4.0 - requires SFCGAL &gt;= 1.5.0.</para>
+		<para>&sfcgal_required;</para>
+	  </refsection>
+
+	  <refsection>
+	      <title>Examples</title>
+<para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_ymonotonepartition01.png" />
+        </imageobject>
+        <caption><para>Y-Monotone Partition (same example As <xref linkend="ST_ApproxConvexPartition" />,  <xref linkend="ST_GreeneApproxConvexPartition" /> and <xref linkend="ST_OptimalConvexPartition" />)</para></caption>
+      </mediaobject>
+    </informalfigure>
+         <programlisting>SELECT ST_AsText(ST_YMonotonePartition('POLYGON((391 374, 240 431, 252 340, 374 320, 289 214, 134 390, 68 186, 154 259, 161 107, 435 108, 208 148, 295 160, 421 212, 441 303, 391 374))'::geometry));</programlisting>
+          <screen>GEOMETRYCOLLECTION(POLYGON((134 390,68 186,154 259,134 390)),POLYGON((289 214,134 390,154 259,161 107,435 108,208 148,295 160,421 212,289 214)),POLYGON((391 374,240 431,252 340,374 320,289 214,421 212,441 303,391 374)))</screen>
+        </para>
+	  </refsection>
+      <refsection>
+		<title>See Also</title>
+                <para><xref linkend="ST_ApproxConvexPartition" />, <xref linkend="ST_GreeneApproxConvexPartition" />, <xref linkend="ST_OptimalConvexPartition" /></para>
+	  </refsection>
+
+	</refentry>
+
+<refentry xml:id="ST_ApproxConvexPartition">
+	  <refnamediv>
+		<refname>ST_ApproxConvexPartition</refname>
+
+		<refpurpose>Computes approximal convex partition of the polygon geometry</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_ApproxConvexPartition</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+        <title>Description</title>
+
+          <para>Computes approximal convex partition of the polygon geometry (using a triangulation).
+          </para>
+
+        <note><para>
+        A partition of a polygon P is a set of polygons such that the interiors of the polygons do not intersect and the union of the polygons is equal to the interior of the original polygon P.
+        ST_ApproxConvexPartition and ST_GreeneApproxConvexPartition functions produce approximately optimal convex partitions. Both these functions produce convex decompositions by first decomposing the polygon into simpler polygons; ST_ApproxConvexPartition uses a triangulation and ST_GreeneApproxConvexPartition a monotone partition. These two functions both guarantee that they will produce no more than four times the optimal number of convex pieces but they differ in their runtime complexities. Though the triangulation-based approximation algorithm often results in fewer convex pieces, this is not always the case.
+        </para></note>
+
+
+		<para>Availability: 3.4.0 - requires SFCGAL &gt;= 1.5.0.</para>
+		<para>&sfcgal_required;</para>
+	  </refsection>
+
+	  <refsection>
+	      <title>Examples</title>
+<para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_approxconvexpartition01.png" />
+        </imageobject>
+        <caption><para>Approximal Convex Partition (same example As <xref linkend="ST_YMonotonePartition" />,  <xref linkend="ST_GreeneApproxConvexPartition" /> and <xref linkend="ST_OptimalConvexPartition" />)</para></caption>
+      </mediaobject>
+    </informalfigure>
+         <programlisting>SELECT ST_AsText(ST_ApproxConvexPartition('POLYGON((391 374, 240 431, 252 340, 374 320, 289 214, 134 390, 68 186, 154 259, 161 107, 435 108, 208 148, 295 160, 421 212, 441 303, 391 374))'::geometry));</programlisting>
+          <screen>GEOMETRYCOLLECTION(POLYGON((391 374,240 431,252 340,374 320,391 374)),POLYGON((134 390,68 186,154 259,134 390)),POLYGON((289 214,134 390,154 259,289 214)),POLYGON((161 107,435 108,208 148,161 107)),POLYGON((154 259,161 107,208 148,154 259)),POLYGON((289 214,154 259,208 148,295 160,289 214)),POLYGON((374 320,289 214,295 160,421 212,374 320)),POLYGON((391 374,374 320,421 212,441 303,391 374)))</screen>
+        </para>
+	  </refsection>
+      <refsection>
+		<title>See Also</title>
+                <para><xref linkend="ST_YMonotonePartition" />, <xref linkend="ST_GreeneApproxConvexPartition" />, <xref linkend="ST_OptimalConvexPartition" /></para>
+	  </refsection>
+
+	</refentry>
+<refentry xml:id="ST_GreeneApproxConvexPartition">
+	  <refnamediv>
+		<refname>ST_GreeneApproxConvexPartition</refname>
+
+		<refpurpose>Computes approximal convex partition of the polygon geometry</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GreeneApproxConvexPartition</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+        <title>Description</title>
+
+          <para>Computes approximal monotone convex partition of the polygon geometry.
+          </para>
+
+        <note><para>
+        A partition of a polygon P is a set of polygons such that the interiors of the polygons do not intersect and the union of the polygons is equal to the interior of the original polygon P.
+        ST_ApproxConvexPartition and ST_GreeneApproxConvexPartition functions produce approximately optimal convex partitions. Both these functions produce convex decompositions by first decomposing the polygon into simpler polygons; ST_ApproxConvexPartition uses a triangulation and ST_GreeneApproxConvexPartition a monotone partition. These two functions both guarantee that they will produce no more than four times the optimal number of convex pieces but they differ in their runtime complexities. Though the triangulation-based approximation algorithm often results in fewer convex pieces, this is not always the case.
+        </para></note>
+
+
+		<para>Availability: 3.4.0 - requires SFCGAL &gt;= 1.5.0.</para>
+		<para>&sfcgal_required;</para>
+	  </refsection>
+
+	  <refsection>
+	      <title>Examples</title>
+<para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_greeneapproxconvexpartition01.png" />
+        </imageobject>
+        <caption><para>Greene Approximal Convex Partition (same example As <xref linkend="ST_YMonotonePartition" />,  <xref linkend="ST_ApproxConvexPartition" /> and <xref linkend="ST_OptimalConvexPartition" />)</para></caption>
+      </mediaobject>
+    </informalfigure>
+         <programlisting>SELECT ST_AsText(ST_GreeneApproxConvexPartition('POLYGON((391 374, 240 431, 252 340, 374 320, 289 214, 134 390, 68 186, 154 259, 161 107, 435 108, 208 148, 295 160, 421 212, 441 303, 391 374))'::geometry));</programlisting>
+          <screen>GEOMETRYCOLLECTION(POLYGON((134 390,68 186,154 259,134 390)),POLYGON((161 107,435 108,208 148,161 107)),POLYGON((208 148,295 160,421 212,289 214,208 148)),POLYGON((154 259,161 107,208 148,154 259)),POLYGON((289 214,134 390,154 259,208 148,289 214)),POLYGON((374 320,289 214,421 212,374 320)),POLYGON((374 320,421 212,441 303,391 374,374 320)),POLYGON((391 374,240 431,252 340,374 320,391 374)))</screen>
+        </para>
+	  </refsection>
+      <refsection>
+		<title>See Also</title>
+                <para><xref linkend="ST_YMonotonePartition" />, <xref linkend="ST_ApproxConvexPartition" />, <xref linkend="ST_OptimalConvexPartition" /></para>
+	  </refsection>
+
+  </refentry>
+
+  <refentry xml:id="ST_OptimalConvexPartition">
+	  <refnamediv>
+		<refname>ST_OptimalConvexPartition</refname>
+
+		<refpurpose>Computes an optimal convex partition of the polygon geometry</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_OptimalConvexPartition</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+        <title>Description</title>
+
+          <para>Computes an optimal convex partition of the polygon geometry.
+          </para>
+
+        <note><para>
+        A partition of a polygon P is a set of polygons such that the interiors of the polygons do not intersect and the union of the polygons is equal to the interior of the original polygon P.
+        ST_OptimalConvexPartition produces a partition that is optimal in the number of pieces.
+        </para></note>
+
+
+		<para>Availability: 3.4.0 - requires SFCGAL &gt;= 1.5.0.</para>
+		<para>&sfcgal_required;</para>
+	  </refsection>
+
+	  <refsection>
+	      <title>Examples</title>
+<para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_optimalconvexpartition01.png" />
+        </imageobject>
+        <caption><para>Optimal Convex Partition (same example As <xref linkend="ST_YMonotonePartition" />,  <xref linkend="ST_ApproxConvexPartition" /> and <xref linkend="ST_GreeneApproxConvexPartition" />)</para></caption>
+      </mediaobject>
+    </informalfigure>
+         <programlisting>SELECT ST_AsText(ST_OptimalConvexPartition('POLYGON((391 374, 240 431, 252 340, 374 320, 289 214, 134 390, 68 186, 154 259, 161 107, 435 108, 208 148, 295 160, 421 212, 441 303, 391 374))'::geometry));</programlisting>
+          <screen>GEOMETRYCOLLECTION(POLYGON((391 374,240 431,252 340,374 320,391 374)),POLYGON((134 390,68 186,154 259,134 390)),POLYGON((161 107,435 108,208 148,161 107)),POLYGON((154 259,161 107,208 148,154 259)),POLYGON((289 214,134 390,154 259,208 148,295 160,289 214)),POLYGON((374 320,289 214,295 160,421 212,441 303,374 320)),POLYGON((391 374,374 320,441 303,391 374)))</screen>
+        </para>
+	  </refsection>
+      <refsection>
+		<title>See Also</title>
+                <para><xref linkend="ST_YMonotonePartition" />, <xref linkend="ST_ApproxConvexPartition" />, <xref linkend="ST_GreeneApproxConvexPartition" /></para>
+	  </refsection>
+
+	</refentry>
 </section>

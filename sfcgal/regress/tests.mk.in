@@ -21,3 +21,8 @@ ifeq ($(shell expr "$(POSTGIS_SFCGAL_VERSION)" ">=" 10401),1)
 	TESTS += \
 		$(top_srcdir)/sfcgal/regress/alphashape.sql
 endif
+
+ifeq ($(shell expr "$(POSTGIS_SFCGAL_VERSION)" ">=" 10500),1)
+	TESTS += \
+		$(top_srcdir)/sfcgal/regress/partition.sql
+endif

@@ -189,3 +189,36 @@ CREATE OR REPLACE FUNCTION ST_OptimalAlphaShape(g1 geometry, allow_holes boolean
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 COMMIT;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_YMonotonePartition(g1 geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME', 'sfcgal_ymonotonepartition'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+COMMIT;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_ApproxConvexPartition(g1 geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME', 'sfcgal_approxconvexpartition'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+COMMIT;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_GreeneApproxConvexPartition(g1 geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME', 'sfcgal_greeneapproxconvexpartition'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+COMMIT;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_OptimalConvexPartition(g1 geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME', 'sfcgal_optimalconvexpartition'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+COMMIT;
+
