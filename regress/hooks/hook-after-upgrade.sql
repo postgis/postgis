@@ -20,6 +20,9 @@ DROP FUNCTION IF EXISTS st_difference_deprecated_by_postgis_301(geometry,geometr
 DROP FUNCTION IF EXISTS st_symdifference_deprecated_by_postgis_301(geometry,geometry);
 DROP FUNCTION IF EXISTS st_unaryunion_deprecated_by_postgis_301(geometry);
 DROP FUNCTION IF EXISTS st_subdivide_deprecated_by_postgis_301(geometry,integer);
+DROP FUNCTION IF EXISTS st_askml_deprecated_by_postgis_200(geometry,integer);
+DROP FUNCTION IF EXISTS st_askml_deprecated_by_postgis_200(geography,integer);
 DROP FUNCTION IF EXISTS st_dwithin_deprecated_by_postgis_300(geography,geography,float8);
 DROP FUNCTION IF EXISTS st_dwithin_deprecated_by_postgis_300(text,text,float8);
 DROP FUNCTION IF EXISTS st_clusterkmeans_deprecated_by_postgis_302(geometry,integer);
+DROP FUNCTION IF EXISTS st_distance_deprecated_by_postgis_300(geography,geography);
