@@ -491,6 +491,7 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(text)
 -- Availability: 1.5.0
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
+-- Replaces ST_Distance(geography, geography) deprecated in 3.0.0
 CREATE OR REPLACE FUNCTION ST_Distance(geog1 geography, geog2 geography, use_spheroid boolean DEFAULT true)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','geography_distance'

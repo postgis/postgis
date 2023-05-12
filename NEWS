@@ -2,6 +2,8 @@ PostGIS 3.3.3dev
 YYYY/MM/DD
 
 * Bug Fixes *
+  - #5380, Fix 2.5 upgrades with views using geography based ST_Distance
+           (Sandro Santilli)
   - #5303, Don't try removing closed edges endpoint from
            RemoveUnusedPrimitives (Sandro Santilli)
   - #5289, Fix misleading message in RemoveUnusedPrimitives about
