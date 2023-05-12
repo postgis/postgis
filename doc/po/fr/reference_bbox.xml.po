@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-04-16 08:20+0000\n"
-"PO-Revision-Date: 2023-05-10 15:08+0000\n"
+"PO-Revision-Date: 2023-05-12 10:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_bboxxml/fr/>\n"
@@ -24,30 +24,33 @@ msgid ""
 "These functions produce or operate on bounding boxes. They can also provide "
 "and accept geometry values, by using automatic or explicit casts."
 msgstr ""
+"Ces fonctions produisent ou utilisent des boîtes de délimitation. Elles "
+"peuvent également fournir et accepter des valeurs géométriques, en utilisant "
+"des transformations automatiques ou explicites."
 
 #. Tag: para
 #: reference_bbox.xml:8
 #, no-c-format
 msgid "See also <xref linkend=\"PostGIS_BoxFunctions\"/>."
-msgstr ""
+msgstr "Voir aussi <xref linkend=\"PostGIS_BoxFunctions\"/>."
 
 #. Tag: title
 #: reference_bbox.xml:12
 #, no-c-format
 msgid "Bounding Box Functions"
-msgstr ""
+msgstr "Fonctions des boîtes de délimitation"
 
 #. Tag: refname
 #: reference_bbox.xml:16
 #, no-c-format
 msgid "Box2D"
-msgstr ""
+msgstr "Box2D"
 
 #. Tag: refpurpose
 #: reference_bbox.xml:18
 #, no-c-format
 msgid "Returns a BOX2D representing the 2D extent of a geometry."
-msgstr ""
+msgstr "Renvoie une BOX2D représentant l'étendue 2D d'une géométrie."
 
 #. Tag: funcprototype
 #: reference_bbox.xml:23
@@ -56,6 +59,8 @@ msgid ""
 "<funcdef>box2d <function>Box2D</function></funcdef> <paramdef><type>geometry "
 "</type> <parameter>geom</parameter></paramdef>"
 msgstr ""
+"<funcdef>box2d <function>Box2D</function></funcdef> <paramdef><type>geometry "
+"</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: title
 #: reference_bbox.xml:31 reference_bbox.xml:73 reference_bbox.xml:133
@@ -74,6 +79,8 @@ msgid ""
 "Returns a <xref linkend=\"box2d_type\"/> representing the 2D extent of the "
 "geometry."
 msgstr ""
+"Renvoie une <xref linkend=\"box2d_type\"/> représentant l'étendue 2D de la "
+"géométrie."
 
 #. Tag: para
 #: reference_bbox.xml:35 reference_bbox.xml:76 reference_bbox.xml:261
@@ -129,6 +136,11 @@ msgid ""
 "---------\n"
 "BOX(1 2,5 6)"
 msgstr ""
+"SELECT Box2D(ST_GeomFromText('LINESTRING(1 2, 3 4, 5 6)')) ;\n"
+"\n"
+"box2d\n"
+"---------\n"
+"BOX(1 2,5 6)"
 
 #. Tag: programlisting
 #: reference_bbox.xml:45
@@ -141,6 +153,12 @@ msgid ""
 "--------\n"
 "BOX(220186.984375 150406,220288.25 150506.140625)"
 msgstr ""
+"SELECT Box2D(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 "
+"150505,220227 150406)')) ;\n"
+"\n"
+"box2d\n"
+"--------\n"
+"BOX(220186.984375 150406,220288.25 150506.140625)"
 
 #. Tag: title
 #: reference_bbox.xml:50 reference_bbox.xml:93 reference_bbox.xml:175
@@ -162,13 +180,13 @@ msgstr ", <xref linkend=\"ST_GeomFromText\"/>"
 #: reference_bbox.xml:58
 #, no-c-format
 msgid "Box3D"
-msgstr ""
+msgstr "Box3D"
 
 #. Tag: refpurpose
 #: reference_bbox.xml:60
 #, no-c-format
 msgid "Returns a BOX3D representing the 3D extent of a geometry."
-msgstr ""
+msgstr "Renvoie une BOX3D représentant l'étendue 3D d'une géométrie."
 
 #. Tag: funcprototype
 #: reference_bbox.xml:65
@@ -177,6 +195,8 @@ msgid ""
 "<funcdef>box3d <function>Box3D</function></funcdef> <paramdef><type>geometry "
 "</type> <parameter>geom</parameter></paramdef>"
 msgstr ""
+"<funcdef>box3d <function>Box3D</function></funcdef> <paramdef><type>geometry "
+"</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_bbox.xml:75
@@ -185,6 +205,8 @@ msgid ""
 "Returns a <xref linkend=\"box3d_type\"/> representing the 3D extent of the "
 "geometry."
 msgstr ""
+"Renvoie une <xref linkend=\"box3d_type\"/> représentant l'étendue 3D de la "
+"géométrie."
 
 #. Tag: para
 #: reference_bbox.xml:80 reference_bbox.xml:371 reference_bbox.xml:499
@@ -204,6 +226,11 @@ msgid ""
 "---------\n"
 "BOX3D(1 2 3,5 6 5)"
 msgstr ""
+"SELECT Box3D(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 5, 5 6 5)')) ;\n"
+"\n"
+"Box3d\n"
+"---------\n"
+"BOX3D(1 2 3,5 6 5)"
 
 #. Tag: programlisting
 #: reference_bbox.xml:88
@@ -216,24 +243,30 @@ msgid ""
 "--------\n"
 "BOX3D(220227 150406 1,220268 150415 1)"
 msgstr ""
+"SELECT Box3D(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
+"1,220227 150406 1)')) ;\n"
+"\n"
+"Box3d\n"
+"--------\n"
+"BOX3D(220227 150406 1,220268 150415 1)"
 
 #. Tag: para
 #: reference_bbox.xml:95
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeomFromEWKT\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_GeomFromEWKT\"/>"
 
 #. Tag: refname
 #: reference_bbox.xml:101
 #, no-c-format
 msgid "ST_EstimatedExtent"
-msgstr ""
+msgstr "ST_EstimatedExtent"
 
 #. Tag: refpurpose
 #: reference_bbox.xml:103
 #, no-c-format
 msgid "Returns the estimated extent of a spatial table."
-msgstr ""
+msgstr "Renvoie l'étendue estimée d'une table spatiale."
 
 #. Tag: funcsynopsis
 #: reference_bbox.xml:107
@@ -254,6 +287,21 @@ msgid ""
 "type> <parameter>table_name</parameter></paramdef> <paramdef><type>text </"
 "type> <parameter>geocolumn_name</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>box2d <function>ST_EstimatedExtent</function></"
+"funcdef> <paramdef><type>text </type> <parameter>schema_name</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>table_name</parameter></"
+"paramdef> <paramdef><type>text </type> "
+"<parameter>geocolumn_name</parameter></paramdef> <paramdef><type>boolean </"
+"type> <parameter>parent_only</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>box2d <function>ST_EstimatedExtent</function></"
+"funcdef> <paramdef><type>text </type> <parameter>schema_name</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>table_name</parameter></"
+"paramdef> <paramdef><type>text </type> "
+"<parameter>geocolumn_name</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>box2d <function>ST_EstimatedExtent</function></"
+"funcdef> <paramdef><type>text </type> <parameter>table_name</parameter></"
+"paramdef> <paramdef><type>text </type> "
+"<parameter>geocolumn_name</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_bbox.xml:135
@@ -265,6 +313,12 @@ msgid ""
 "faster than computing the exact extent of the table using <xref linkend="
 "\"ST_Extent\"/> or <xref linkend=\"ST_3DExtent\"/>."
 msgstr ""
+"Renvoie l'étendue estimée d'une table spatiale sous la forme d'une <xref "
+"linkend=\"box2d_type\"/>. Le schéma actuel est utilisé s'il n'est pas "
+"spécifié. L'étendue estimée est tirée des statistiques de la colonne "
+"géométrique. Cette méthode est généralement plus rapide que le calcul de "
+"l'étendue exacte de la table à l'aide de <xref linkend=\"ST_Extent\"/> ou "
+"<xref linkend=\"ST_3DExtent\"/>."
 
 #. Tag: para
 #: reference_bbox.xml:141
@@ -275,6 +329,11 @@ msgid ""
 "set to TRUE, only statistics for the given table are used and child tables "
 "are ignored."
 msgstr ""
+"Le comportement par défaut est d'utiliser également les statistiques "
+"collectées à partir des tables enfants (tables avec INHERITS) si elles sont "
+"disponibles. Si <varname>parent_only</varname> est défini à VRAI, seules les "
+"statistiques de la table donnée sont utilisées et les tables enfants sont "
+"ignorées."
 
 #. Tag: para
 #: reference_bbox.xml:147
@@ -285,6 +344,10 @@ msgid ""
 "statistics are gathered by running <code>update_geometry_stats()</code> and "
 "the result extent is exact."
 msgstr ""
+"Pour PostgreSQL &gt;= 8.0.0 les statistiques sont collectées par VACUUM "
+"ANALYZE et l'étendue du résultat sera d'environ 95% de l'étendue réelle. "
+"Pour PostgreSQL &lt; 8.0.0 les statistiques sont collectées en exécutant "
+"<code>update_geometry_stats()</code> et l'étendue du résultat sera exacte."
 
 #. Tag: para
 #: reference_bbox.xml:154
