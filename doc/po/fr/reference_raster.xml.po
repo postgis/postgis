@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-04 00:50+0000\n"
-"PO-Revision-Date: 2023-05-12 10:08+0000\n"
+"PO-Revision-Date: 2023-05-12 13:00+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_rasterxml/fr/>\n"
@@ -4942,7 +4942,7 @@ msgstr ""
 #: reference_raster.xml:2699
 #, no-c-format
 msgid "ST_SRID"
-msgstr ""
+msgstr "ST_SRID"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2700
@@ -8847,7 +8847,7 @@ msgstr ""
 #: reference_raster.xml:4672
 #, no-c-format
 msgid "ST_SetSRID"
-msgstr ""
+msgstr "ST_SetSRID"
 
 #. Tag: refpurpose
 #: reference_raster.xml:4674
@@ -9757,7 +9757,7 @@ msgstr ""
 #: reference_raster.xml:5155
 #, no-c-format
 msgid "ST_Transform"
-msgstr ""
+msgstr "ST_Transform"
 
 #. Tag: refpurpose
 #: reference_raster.xml:5156
