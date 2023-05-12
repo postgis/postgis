@@ -6,6 +6,7 @@ DROP VIEW IF EXISTS upgrade_view_test_force_dims;
 DROP VIEW IF EXISTS upgrade_view_test_askml;
 DROP VIEW IF EXISTS upgrade_view_test_dwithin;
 DROP VIEW IF EXISTS upgrade_view_test_clusterkmeans;
+DROP VIEW IF EXISTS upgrade_view_test_distance;
 DROP TABLE upgrade_test;
 
 -- Drop functions deprecated on upgrade
