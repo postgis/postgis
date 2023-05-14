@@ -2,13 +2,13 @@
 #
 # Translators:
 # Sandro Santilli <strk@kbt.io>, 2022.
-# Regina Obe <regina@arrival3d.com>, 2022.
+# Regina Obe <regina@arrival3d.com>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-12-20 16:51+0000\n"
+"PO-Revision-Date: 2023-05-14 05:08+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "extras_address_standardizerxml/it/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: extras_address_standardizer.xml:3
