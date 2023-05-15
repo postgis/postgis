@@ -192,7 +192,6 @@ that makes use of any spatial indexes that are available on the geometries.">
   &performance_tips;
   &using_postgis_app;
   &reference;
-  &faq;
   &extras_topology;
   &using_raster_dataman;
   &reference_raster;
