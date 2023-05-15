@@ -714,7 +714,7 @@ msgstr ""
 "SELECT a.id\n"
 "FROM roads a, roads b\n"
 "WHERE a.id != b.id\n"
-"      AND a.geom &amp ;&amp ; b.geom\n"
+"      AND a.geom &amp;&amp; b.geom\n"
 "      AND ST_Relate(a.geom, b.geom, '1*1***1**') ;"
 
 #. Tag: para
@@ -742,7 +742,7 @@ msgstr ""
 "-- Trouver des quais en partie sur les rives d'un lac\n"
 "SELECT a.lake_id, b.wharf_id\n"
 "FROM lakes a, wharfs b\n"
-"WHERE a.geom &amp ;&amp ; b.geom\n"
+"WHERE a.geom &amp;&amp; b.geom\n"
 "      AND ST_Relate(a.geom, b.geom, '102101FF2') ;"
 
 #. Tag: title

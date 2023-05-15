@@ -384,7 +384,7 @@ msgstr "&sfs_compliant; s2.1.1.1"
 #: reference_srs.xml:149
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.5"
-msgstr "&sqlmm_compliant ; SQL-MM 3 : 5.1.5"
+msgstr "&sqlmm_compliant; SQL-MM 3 : 5.1.5"
 
 #. Tag: programlisting
 #: reference_srs.xml:157

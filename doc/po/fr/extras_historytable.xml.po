@@ -176,8 +176,8 @@ msgid ""
 "        ( date_deleted &gt;= 'January 1, 2001' OR date_deleted IS NULL );"
 msgstr ""
 "SELECT * FROM roads_history\n"
-"    WHERE date_added &lt ; 'January 1, 2001' AND\n"
-"        ( date_deleted &gt ;= 'January 1, 2001' OR date_deleted IS NULL ) ;"
+"    WHERE date_added &lt; 'January 1, 2001' AND\n"
+"        ( date_deleted &gt;= 'January 1, 2001' OR date_deleted IS NULL ) ;"
 
 #. Tag: refname
 #: extras_historytable.xml:38

@@ -233,7 +233,7 @@ msgid ""
 msgstr ""
 "La connexion à la base de données est régie par une \"chaîne de connexion\" "
 "qui est un ensemble standard de clés et de valeurs comme ceci (avec les "
-"valeurs par défaut dans &lt ;&gt ;) :"
+"valeurs par défaut dans &lt;&gt;) :"
 
 #. Tag: para
 #: using_postgis_app.xml:80
