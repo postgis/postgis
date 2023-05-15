@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-04 00:50+0000\n"
-"PO-Revision-Date: 2023-05-12 13:00+0000\n"
+"PO-Revision-Date: 2023-05-15 16:32+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_rasterxml/fr/>\n"
@@ -9459,7 +9459,7 @@ msgstr ""
 #: reference_raster.xml:4998
 #, no-c-format
 msgid "ST_SnapToGrid"
-msgstr ""
+msgstr "ST_SnapToGrid"
 
 #. Tag: refpurpose
 #: reference_raster.xml:4999
