@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-04 20:31+0000\n"
-"PO-Revision-Date: 2023-05-12 13:00+0000\n"
+"PO-Revision-Date: 2023-05-15 11:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "extras_topologyxml/fr/>\n"
@@ -2040,7 +2040,7 @@ msgstr ""
 #: extras_topology.xml:3151
 #, no-c-format
 msgid "Availability: 2.0"
-msgstr ""
+msgstr "Disponibilité : 2.0"
 
 #. Tag: para
 #: extras_topology.xml:1244
