@@ -121,7 +121,6 @@ XML_SOURCES = \
 	extras_topology.xml \
 	extras.xml \
 	faq_raster.xml \
-	faq.xml \
 	installation.xml \
 	administration.xml \
 	database_tuning.xml \
