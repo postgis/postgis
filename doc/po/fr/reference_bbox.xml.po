@@ -939,7 +939,7 @@ msgstr ""
 "égale de l'atlas national des États-Unis).\n"
 "SELECT feature_id, feature_name, geom\n"
 "FROM features\n"
-"WHERE geom &amp;&amp ; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439."
+"WHERE geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439."
 "5625),\n"
 "        ST_Point(-987121.375 ,529933.1875)),2163)"
 

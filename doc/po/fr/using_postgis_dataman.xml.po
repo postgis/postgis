@@ -4796,7 +4796,7 @@ msgid ""
 "the comparison feature or a GEOMETRY. When you specify a GEOMETRY, however, "
 "its bounding box will be used for the comparison."
 msgstr ""
-"Lorsque vous utilisez l'opérateur \"&amp;&amp ;\", vous pouvez spécifier "
+"Lorsque vous utilisez l'opérateur \"&amp;&amp;\", vous pouvez spécifier "
 "soit une BOX3D comme élément de comparaison, soit une GEOMETRY. Toutefois, "
 "lorsque vous spécifiez une GEOMETRY, c'est sa boîte de délimitation qui sera "
 "utilisée pour la comparaison."
@@ -5758,7 +5758,7 @@ msgid ""
 "&lt;&lt;, &amp;&lt;, &amp;&gt;, &gt;&gt;, &lt;&lt;|, &amp;&lt;|, |&amp;&gt;, "
 "|&gt;&gt;, &amp;&amp;, @&gt;, &lt;@, and ~=, for 2-dimensional indexes,"
 msgstr ""
-"&lt;&lt ;, &amp;&lt ;, &amp;&gt;, &gt;&gt;, &lt;&lt;|, &amp;&lt;|, |&amp;"
+"&lt;&lt;, &amp;&lt;, &amp;&gt;, &gt;&gt;, &lt;&lt;|, &amp;&lt;|, |&amp;"
 "&gt;, |&gt;&gt;, &amp;&amp;, @&gt;, &lt;@, et ~=, pour les index à 2 "
 "dimensions,"
 
@@ -5767,7 +5767,7 @@ msgstr ""
 #, no-c-format
 msgid "&amp;/&amp;, ~==, @&gt;&gt;, and &lt;&lt;@, for 3-dimensional indexes."
 msgstr ""
-"&amp;/&amp ;, ~==, @&gt;&gt;, et &lt;&lt;@, pour les index à 3 dimensions."
+"&amp;/&amp;, ~==, @&gt;&gt;, et &lt;&lt;@, pour les index à 3 dimensions."
 
 #. Tag: para
 #: using_postgis_dataman.xml:2350
