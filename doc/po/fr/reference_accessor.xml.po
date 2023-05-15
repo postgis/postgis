@@ -2230,7 +2230,7 @@ msgstr ""
 "        FROM (SELECT 'POLYGON((0 0, 0 1000012333334.34545678, 1.0000001 1, "
 "1.0000001 0, 0 0))' ::geometry As geom) As foo ;\n"
 "\n"
-"< !-- TODO : Corriger les exemples pour refléter le nouveau comportement  -->"
+"<!-- TODO : Corriger les exemples pour refléter le nouveau comportement  -->"
 
 #. Tag: para
 #: reference_accessor.xml:685
