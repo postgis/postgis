@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2023-05-15 08:43+0000\n"
+"PO-Revision-Date: 2023-05-15 11:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_transformationxml/fr/>\n"
@@ -930,6 +930,16 @@ msgid ""
 "<parameter>deltay</parameter></paramdef> <paramdef><type>float </type> "
 "<parameter>deltaz</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_Translate</function></"
+"funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
+"paramdef> <paramdef><type>float </type> <parameter>deltax</parameter></"
+"paramdef> <paramdef><type>float </type> <parameter>deltay</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_Translate</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>g1</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>deltax</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>deltay</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>deltaz</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_transformation.xml:421
@@ -939,6 +949,11 @@ msgid ""
 "delta z units. Units are based on the units defined in spatial reference "
 "(SRID) for this geometry."
 msgstr ""
+"Renvoie une nouvelle géométrie dont les coordonnées sont des unités de "
+"translation delta x,delta y,delta z. Les unités sont basées sur les unités "
+"définies dans la référence spatiale (SRID) pour cette géométrie. Les unités "
+"sont basées sur les unités définies dans la référence spatiale (SRID) pour "
+"cette géométrie."
 
 #. Tag: para
 #: reference_transformation.xml:426
@@ -950,7 +965,7 @@ msgstr "Disponibilité : 1.2.2"
 #: reference_transformation.xml:433
 #, no-c-format
 msgid "Move a point 1 degree longitude"
-msgstr ""
+msgstr "Déplacer un point de 1 degré de longitude"
 
 #. Tag: programlisting
 #: reference_transformation.xml:434
@@ -963,12 +978,19 @@ msgid ""
 "        ---------------------\n"
 "        POINT(-70.01 42.37)"
 msgstr ""
+"SELECT ST_AsText(ST_Translate(ST_GeomFromText('POINT(-71.01 42."
+"37)',4326),1,0)) As wgs_transgeomtxt ;\n"
+"\n"
+"        wgs_transgeomtxt\n"
+"        ---------------------\n"
+"        POINT(-70.01 42.37)"
 
 #. Tag: para
 #: reference_transformation.xml:435
 #, no-c-format
 msgid "Move a linestring 1 degree longitude and 1/2 degree latitude"
 msgstr ""
+"Déplacer une ligne d'un degré de longitude et d'un demi-degré de latitude"
 
 #. Tag: programlisting
 #: reference_transformation.xml:436
@@ -980,12 +1002,17 @@ msgid ""
 "        ---------------------------------------\n"
 "        LINESTRING(-70.01 42.87,-70.11 42.88)"
 msgstr ""
+"SELECT ST_AsText(ST_Translate(ST_GeomFromText('LINESTRING(-71.01 42.37,-"
+"71.11 42.38)',4326),1,0.5)) As wgs_transgeomtxt;\n"
+"                   wgs_transgeomtxt\n"
+"        ---------------------------------------\n"
+"        LINESTRING(-70.01 42.87,-70.11 42.88)"
 
 #. Tag: para
 #: reference_transformation.xml:437
 #, no-c-format
 msgid "Move a 3d point"
-msgstr ""
+msgstr "Déplacer un point 3D"
 
 #. Tag: programlisting
 #: reference_transformation.xml:438
@@ -996,12 +1023,16 @@ msgid ""
 "        ---------\n"
 "        POINT(5 12 3)"
 msgstr ""
+"SELECT ST_AsEWKT(ST_Translate(CAST('POINT(0 0 0)' As geometry), 5, 12,3));\n"
+"        st_asewkt\n"
+"        ---------\n"
+"        POINT(5 12 3)"
 
 #. Tag: para
 #: reference_transformation.xml:439
 #, no-c-format
 msgid "Move a curve and a point"
-msgstr ""
+msgstr "Déplacer une courbe et un point"
 
 #. Tag: programlisting
 #: reference_transformation.xml:440
@@ -1014,24 +1045,34 @@ msgid ""
 " GEOMETRYCOLLECTION(CURVEPOLYGON(CIRCULARSTRING(5 5,4.12 2.878,2 2,-0.121 "
 "7.1213,7 9,9 11,5 5)),POINT(2 5))"
 msgstr ""
+"SELECT ST_AsText(ST_Translate(ST_Collect('CURVEPOLYGON(CIRCULARSTRING(4 "
+"3,3.12 0.878,1 0,-1.121 5.1213,6 7, 8 9,4 3))','POINT(1 3)'),1,2));\n"
+"                                                                             "
+"                                    st_astext\n"
+"-----------------------------------------------------------------------------"
+"-------------------------------\n"
+" GEOMETRYCOLLECTION(CURVEPOLYGON(CIRCULARSTRING(5 5,4.12 2.878,2 2,-0.121 "
+"7.1213,7 9,9 11,5 5)),POINT(2 5))"
 
 #. Tag: para
 #: reference_transformation.xml:446
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/>"
 
 #. Tag: refname
 #: reference_transformation.xml:452
 #, no-c-format
 msgid "ST_TransScale"
-msgstr ""
+msgstr "ST_TransScale"
 
 #. Tag: refpurpose
 #: reference_transformation.xml:454
 #, no-c-format
 msgid "Translates and scales a geometry by given offsets and factors."
 msgstr ""
+"Traduit et met à l'échelle une géométrie en fonction des paramètres offset "
+"et factor spécifiés."
 
 #. Tag: funcprototype
 #: reference_transformation.xml:459
@@ -1044,6 +1085,12 @@ msgid ""
 "<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_TransScale</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>deltaX</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>deltaY</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>"
 
 #. Tag: para
 #: reference_transformation.xml:473
@@ -1052,6 +1099,8 @@ msgid ""
 "Translates the geometry using the deltaX and deltaY args, then scales it "
 "using the XFactor, YFactor args, working in 2D only."
 msgstr ""
+"Traduit la géométrie à l'aide des paramètres deltaX et deltaY, puis la met à "
+"l'échelle à l'aide des paramètres XFactor et YFactor, uniquement en 2D."
 
 #. Tag: para
 #: reference_transformation.xml:476
@@ -1061,6 +1110,9 @@ msgid ""
 "hand for <code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0, 0, 0, 1, "
 "deltaX*XFactor, deltaY*YFactor, 0)</code>."
 msgstr ""
+"<code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code> est un "
+"raccourci pour <code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0, 0, 0, 1, "
+"deltaX*XFactor, deltaY*YFactor, 0)</code>."
 
 #. Tag: programlisting
 #: reference_transformation.xml:492
@@ -1082,9 +1134,26 @@ msgid ""
 " CURVEPOLYGON(CIRCULARSTRING(714 2276,711.363961030679 2267.51471862576,705 "
 "2264,698.636038969321 2284.48528137424,714 2276))"
 msgstr ""
+"SELECT ST_AsEWKT(ST_TransScale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), "
+"0.5, 1, 1, 2));\n"
+"                  st_asewkt\n"
+"-----------------------------\n"
+" LINESTRING(1.5 6 3,1.5 4 1)\n"
+"\n"
+"\n"
+"-- Zone tampon sur un point pour obtenir une approximation d'un cercle, "
+"convertir en courbe puis traduire 1,2 et mettre à l'échelle 3,4\n"
+"  SELECT ST_AsText(ST_Transscale(ST_LineToCurve(ST_Buffer('POINT(234 567)', "
+"3)),1,2,3,4));\n"
+"                                                                             "
+"                                     st_astext\n"
+"-----------------------------------------------------------------------------"
+"-------------------------------------------------\n"
+" CURVEPOLYGON(CIRCULARSTRING(714 2276,711.363961030679 2267.51471862576,705 "
+"2264,698.636038969321 2284.48528137424,714 2276))"
 
 #. Tag: para
 #: reference_transformation.xml:499
 #, no-c-format
 msgid ", <xref linkend=\"ST_Translate\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Translate\"/>"
