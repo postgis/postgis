@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-04-10 06:16+0000\n"
-"PO-Revision-Date: 2023-01-06 15:50+0000\n"
+"PO-Revision-Date: 2023-05-15 15:33+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_editorxml/fr/>\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: para
 #: reference_editor.xml:5
@@ -31,24 +31,26 @@ msgid ""
 "These functions create modified geometries by changing type, structure or "
 "vertices."
 msgstr ""
+"Ces fonctions créent des géométries modifiées en changeant le type, la "
+"structure ou les sommets."
 
 #. Tag: title
 #: reference_editor.xml:10
 #, no-c-format
 msgid "Geometry Editors"
-msgstr ""
+msgstr "Éditeurs de géométrie"
 
 #. Tag: refname
 #: reference_editor.xml:14
 #, no-c-format
 msgid "ST_AddPoint"
-msgstr ""
+msgstr "ST_AddPoint"
 
 #. Tag: refpurpose
 #: reference_editor.xml:15
 #, no-c-format
 msgid "Add a point to a LineString."
-msgstr ""
+msgstr "Ajoute un point à une LineString."
 
 #. Tag: funcprototype
 #: reference_editor.xml:19
@@ -72,6 +74,11 @@ msgid ""
 "<paramdef><type>integer</type> <parameter>position = -1</parameter></"
 "paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_AddPoint</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>point</parameter></paramdef> "
+"<paramdef><type>integer</type> <parameter>position = "
+"-1</parameter></paramdef>"
 
 #. Tag: title
 #: reference_editor.xml:36 reference_editor.xml:92 reference_editor.xml:168
@@ -99,6 +106,10 @@ msgid ""
 "parameter is omitted or is -1 the point is appended to the end of the "
 "LineString."
 msgstr ""
+"Ajoute un point à une LineString avant l'index <parameter>position</"
+"parameter> (en utilisant un index basé sur 0). Si le paramètre "
+"<parameter>position</parameter> est omis ou vaut -1, le point est ajouté à "
+"la fin de la LineString."
 
 #. Tag: para
 #: reference_editor.xml:42 reference_editor.xml:1159 reference_editor.xml:1381
@@ -139,7 +150,7 @@ msgstr "Exemples"
 #: reference_editor.xml:49
 #, no-c-format
 msgid "Add a point to the end of a 3D line"
-msgstr ""
+msgstr "Ajouter un point à la fin d'une ligne 3D"
 
 #. Tag: programlisting
 #: reference_editor.xml:50
@@ -152,6 +163,12 @@ msgid ""
 "    ----------\n"
 "    LINESTRING(0 0 1,1 1 1,1 2 3)"
 msgstr ""
+"SELECT ST_AsEWKT(ST_AddPoint('LINESTRING(0 0 1, 1 1 1)', ST_MakePoint(1, 2, "
+"3)));\n"
+"\n"
+"    st_asewkt\n"
+"    ----------\n"
+"    LINESTRING(0 0 1,1 1 1,1 2 3)"
 
 #. Tag: para
 #: reference_editor.xml:52
@@ -160,6 +177,9 @@ msgid ""
 "Guarantee all lines in a table are closed by adding the start point of each "
 "line to the end of the line only for those that are not closed."
 msgstr ""
+"Garantir que toutes les lignes d'une table sont fermées en ajoutant le point "
+"de départ de chaque ligne à la fin de la ligne uniquement pour celles qui ne "
+"sont pas fermées."
 
 #. Tag: programlisting
 #: reference_editor.xml:56
@@ -170,6 +190,10 @@ msgid ""
 "FROM sometable\n"
 "WHERE ST_IsClosed(geom) = false;"
 msgstr ""
+"UPDATE sometable\n"
+"SET geom = ST_AddPoint(geom, ST_StartPoint(geom))\n"
+"FROM sometable\n"
+"WHERE ST_IsClosed(geom) = false;"
 
 #. Tag: title
 #: reference_editor.xml:60 reference_editor.xml:142 reference_editor.xml:209
@@ -198,7 +222,7 @@ msgstr ", <xref linkend=\"ST_SetPoint\"/>"
 #: reference_editor.xml:68
 #, no-c-format
 msgid "ST_CollectionExtract"
-msgstr ""
+msgstr "ST_CollectionExtract"
 
 #. Tag: refpurpose
 #: reference_editor.xml:70
@@ -207,6 +231,8 @@ msgid ""
 "Given a geometry collection, returns a multi-geometry containing only "
 "elements of a specified type."
 msgstr ""
+"Pour une collection de géométries spécifiée, renvoie une multi-géométrie "
+"contenant uniquement des éléments d'un type spécifié."
 
 #. Tag: funcprototype
 #: reference_editor.xml:77
@@ -215,6 +241,8 @@ msgid ""
 "<funcdef>geometry <function>ST_CollectionExtract</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_CollectionExtract</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>"
 
 #. Tag: funcprototype
 #: reference_editor.xml:83
@@ -235,6 +263,8 @@ msgstr ""
 #, no-c-format
 msgid "Given a geometry collection, returns a homogeneous multi-geometry."
 msgstr ""
+"Pour une collection de géométries spécifiée, renvoie une multi-géométrie "
+"homogène."
 
 #. Tag: para
 #: reference_editor.xml:96
@@ -244,6 +274,10 @@ msgid ""
 "geometry containing only geometries of the highest dimension. So polygons "
 "are preferred over lines, which are preferred over points."
 msgstr ""
+"Si le <parameter>type</parameter> n'est pas spécifié, il renvoie une multi-"
+"géométrie contenant uniquement des géométries de la dimension la plus "
+"élevée. Les polygones sont donc préférés aux lignes, qui sont préférées aux "
+"points."
 
 #. Tag: para
 #: reference_editor.xml:99
@@ -254,24 +288,28 @@ msgid ""
 "an EMPTY geometry is returned. Only points, lines and polygons are "
 "supported. The type numbers are:"
 msgstr ""
+"Si le <parameter>type</parameter> est spécifié, renvoie une multi-géométrie "
+"contenant uniquement ce type. S'il n'y a pas de sous-géométrie du bon type, "
+"une géométrie VIDE est renvoyée. Seuls les points, les lignes et les "
+"polygones sont pris en charge. Les numéros de type sont les suivants :"
 
 #. Tag: para
 #: reference_editor.xml:103
 #, no-c-format
 msgid "1 == POINT"
-msgstr ""
+msgstr "1 == POINT"
 
 #. Tag: para
 #: reference_editor.xml:104
 #, no-c-format
 msgid "2 == LINESTRING"
-msgstr ""
+msgstr "2 == LINESTRING"
 
 #. Tag: para
 #: reference_editor.xml:105
 #, no-c-format
 msgid "3 == POLYGON"
-msgstr ""
+msgstr "3 == POLYGON"
 
 #. Tag: para
 #: reference_editor.xml:108
@@ -282,6 +320,10 @@ msgid ""
 "of the specified type. If required, these can be converted to multi-"
 "geometries using <xref linkend=\"ST_Multi\"/>."
 msgstr ""
+"Pour les entrées de géométrie atomique, la géométrie est restituée inchangée "
+"si le type d'entrée correspond au type demandé. Sinon, le résultat est une "
+"géométrie VIDE du type spécifié. Si nécessaire, ces géométries peuvent être "
+"converties en géométries multiples en utilisant <xref linkend=\"ST_Multi\"/>."
 
 #. Tag: para
 #: reference_editor.xml:114
@@ -293,6 +335,12 @@ msgid ""
 "result.) This situation can be checked with <xref linkend=\"ST_IsValid\"/> "
 "and repaired with <xref linkend=\"ST_MakeValid\"/>."
 msgstr ""
+"La validité des résultats MultiPolygon n'est pas vérifiée. Si les composants "
+"du polygone sont adjacents ou se chevauchent, le résultat ne sera pas "
+"valide. (Par exemple, cela peut se produire lorsque cette fonction est "
+"appliquée à un résultat <xref linkend=\"ST_Split\"/>). Cette situation peut "
+"être vérifiée avec <xref linkend=\"ST_IsValid\"/> et réparée avec <xref "
+"linkend=\"ST_MakeValid\"/>."
 
 #. Tag: para
 #: reference_editor.xml:120
@@ -309,12 +357,17 @@ msgid ""
 "2.0.0 non-matching single geometries return an EMPTY result of the requested "
 "type."
 msgstr ""
+"Avant la version 1.5.3, cette fonction renvoyait les entrées atomiques "
+"inchangées, quel que soit leur type. Dans la version 1.5.3, les géométries "
+"simples non correspondantes renvoyaient un résultat NULL. Dans la version "
+"2.0.0, les géométries simples non correspondantes renvoient un résultat VIDE "
+"du type demandé."
 
 #. Tag: para
 #: reference_editor.xml:132
 #, no-c-format
 msgid "Extract highest-dimension type:"
-msgstr ""
+msgstr "Extraire le type de dimension le plus élevé :"
 
 #. Tag: programlisting
 #: reference_editor.xml:133
@@ -326,12 +379,17 @@ msgid ""
 "    ---------------\n"
 "    MULTILINESTRING((1 1, 2 2))"
 msgstr ""
+"SELECT ST_AsText(ST_CollectionExtract(\n"
+"        'GEOMETRYCOLLECTION( POINT(0 0), LINESTRING(1 1, 2 2) )'));\n"
+"    st_astext\n"
+"    ---------------\n"
+"    MULTILINESTRING((1 1, 2 2))"
 
 #. Tag: para
 #: reference_editor.xml:135
 #, no-c-format
 msgid "Extract points (type 1 == POINT):"
-msgstr ""
+msgstr "Extraire des points (type 1 == POINT) :"
 
 #. Tag: programlisting
 #: reference_editor.xml:136
@@ -344,12 +402,18 @@ msgid ""
 "    ---------------\n"
 "    MULTIPOINT((0 0))"
 msgstr ""
+"SELECT ST_AsText(ST_CollectionExtract(\n"
+"        'GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))',\n"
+"        1 ));\n"
+"    st_astext\n"
+"    ---------------\n"
+"    MULTIPOINT((0 0))"
 
 #. Tag: para
 #: reference_editor.xml:138
 #, no-c-format
 msgid "Extract lines (type 2 == LINESTRING):"
-msgstr ""
+msgstr "Extraire des lignes (type 2 == LINESTRING) :"
 
 #. Tag: programlisting
 #: reference_editor.xml:139
@@ -363,6 +427,13 @@ msgid ""
 "    ---------------\n"
 "    MULTILINESTRING((0 0, 1 1), (2 2, 3 3))"
 msgstr ""
+"SELECT ST_AsText(ST_CollectionExtract(\n"
+"        'GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 0, 1 "
+"1)),LINESTRING(2 2, 3 3))',\n"
+"        2 ));\n"
+"    st_astext\n"
+"    ---------------\n"
+"    MULTILINESTRING((0 0, 1 1), (2 2, 3 3))"
 
 #. Tag: para
 #: reference_editor.xml:143 reference_editor.xml:210
@@ -371,18 +442,21 @@ msgid ""
 ", <xref linkend=\"ST_Multi\"/>, <xref linkend=\"ST_IsValid\"/>, <xref "
 "linkend=\"ST_MakeValid\"/>"
 msgstr ""
+", <xref linkend=\"ST_Multi\"/>, <xref linkend=\"ST_IsValid\"/>, <xref "
+"linkend=\"ST_MakeValid\"/>"
 
 #. Tag: refname
 #: reference_editor.xml:151
 #, no-c-format
 msgid "ST_CollectionHomogenize"
-msgstr ""
+msgstr "ST_CollectionHomogenize"
 
 #. Tag: refpurpose
 #: reference_editor.xml:153
 #, no-c-format
 msgid "Returns the simplest representation of a geometry collection."
 msgstr ""
+"Renvoie la représentation la plus simple d'une collection de géométries."
 
 #. Tag: funcprototype
 #: reference_editor.xml:160
@@ -401,6 +475,8 @@ msgid ""
 "Given a geometry collection, returns the \"simplest\" representation of the "
 "contents."
 msgstr ""
+"Pour une collection de géométries spécifiée, renvoie la représentation la "
+"plus simple du contenu."
 
 #. Tag: para
 #: reference_editor.xml:174
@@ -409,6 +485,8 @@ msgid ""
 "Homogeneous (uniform) collections are returned as the appropriate multi-"
 "geometry."
 msgstr ""
+"Les collections homogènes (uniformes) sont renvoyées sous la forme de la "
+"multi-géométrie appropriée."
 
 #. Tag: para
 #: reference_editor.xml:175
@@ -417,6 +495,8 @@ msgid ""
 "Heterogeneous (mixed) collections are flattened into a single "
 "GeometryCollection."
 msgstr ""
+"Les collections hétérogènes (mixtes) sont écrasées en une seule "
+"GeometryCollection."
 
 #. Tag: para
 #: reference_editor.xml:176
@@ -424,6 +504,8 @@ msgstr ""
 msgid ""
 "Collections containing a single atomic element are returned as that element."
 msgstr ""
+"Les collections contenant un seul élément atomique sont renvoyées sous la "
+"forme de cet élément."
 
 #. Tag: para
 #: reference_editor.xml:177
@@ -432,6 +514,9 @@ msgid ""
 "Atomic geometries are returned unchanged. If required, these can be "
 "converted to a multi-geometry using <xref linkend=\"ST_Multi\"/>."
 msgstr ""
+"Les géométries atomiques sont renvoyées telles quelles. Si nécessaire, elles "
+"peuvent être converties en une géométrie multiple en utilisant <xref linkend="
+"\"ST_Multi\"/>."
 
 #. Tag: para
 #: reference_editor.xml:181
@@ -442,6 +527,10 @@ msgid ""
 "invalid MultiPolygon. This situation can be checked with <xref "
 "linkend=\"ST_IsValid\"/> and repaired with <xref linkend=\"ST_MakeValid\"/>."
 msgstr ""
+"Cette fonction ne garantit pas la validité du résultat. En particulier, une "
+"collection contenant des polygones adjacents ou se chevauchant créera un "
+"MultiPolygon invalide. Cette situation peut être vérifiée avec <xref linkend="
+"\"ST_IsValid\"/> et réparée avec <xref linkend=\"ST_MakeValid\"/>."
 
 #. Tag: para
 #: reference_editor.xml:187 reference_editor.xml:357 reference_editor.xml:1660
@@ -453,7 +542,7 @@ msgstr "Disponibilité : 2.0.0"
 #: reference_editor.xml:193
 #, no-c-format
 msgid "Single-element collection converted to an atomic geometry"
-msgstr ""
+msgstr "Collection d'un seul élément convertie en géométrie atomique"
 
 #. Tag: programlisting
 #: reference_editor.xml:194
@@ -466,12 +555,19 @@ msgid ""
 "        ------------\n"
 "        POINT(0 0)"
 msgstr ""
+"SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0))'));"
+"\n"
+"\n"
+"        st_astext\n"
+"        ------------\n"
+"        POINT(0 0)"
 
 #. Tag: para
 #: reference_editor.xml:196
 #, no-c-format
 msgid "Nested single-element collection converted to an atomic geometry:"
 msgstr ""
+"Collection imbriquée d'éléments simples convertie en géométrie atomique :"
 
 #. Tag: programlisting
 #: reference_editor.xml:197
@@ -484,12 +580,18 @@ msgid ""
 "        ------------\n"
 "        POINT(0 0)"
 msgstr ""
+"SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(MULTIPOINT((0 "
+"0)))'));\n"
+"\n"
+"        st_astext\n"
+"        ------------\n"
+"        POINT(0 0)"
 
 #. Tag: para
 #: reference_editor.xml:199
 #, no-c-format
 msgid "Collection converted to a multi-geometry:"
-msgstr ""
+msgstr "Collection convertie en une géométrie multiple :"
 
 #. Tag: programlisting
 #: reference_editor.xml:200
@@ -502,12 +604,18 @@ msgid ""
 "        ---------------------\n"
 "        MULTIPOINT((0 0),(1 1))"
 msgstr ""
+"SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 "
+"0),POINT(1 1))'));\n"
+"\n"
+"        st_astext\n"
+"        ---------------------\n"
+"        MULTIPOINT((0 0),(1 1))"
 
 #. Tag: para
 #: reference_editor.xml:202
 #, no-c-format
 msgid "Nested heterogeneous collection flattened to a GeometryCollection:"
-msgstr ""
+msgstr "Collection hétérogène imbriquée écrasée en une GeometryCollection :"
 
 #. Tag: programlisting
 #: reference_editor.xml:203
@@ -520,12 +628,18 @@ msgid ""
 "        ---------------------\n"
 "        GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(1 1,2 2))"
 msgstr ""
+"SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0), "
+"GEOMETRYCOLLECTION( LINESTRING(1 1, 2 2)))'));\n"
+"\n"
+"        st_astext\n"
+"        ---------------------\n"
+"        GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(1 1,2 2))"
 
 #. Tag: para
 #: reference_editor.xml:205
 #, no-c-format
 msgid "Collection of Polygons converted to an (invalid) MultiPolygon:"
-msgstr ""
+msgstr "Collection de polygones convertis en un MultiPolygon (non valide) :"
 
 #. Tag: programlisting
 #: reference_editor.xml:206
@@ -540,18 +654,27 @@ msgid ""
 "        MULTIPOLYGON(((10 50,50 50,50 10,10 10,10 50)),((90 50,90 10,50 "
 "10,50 50,90 50)))"
 msgstr ""
+"SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION (POLYGON ((10 "
+"50, 50 50, 50 10, 10 10, 10 50)), POLYGON ((90 50, 90 10, 50 10, 50 50, 90 "
+"50)))'));\n"
+"\n"
+"        st_astext\n"
+"        ---------------------\n"
+"        MULTIPOLYGON(((10 50,50 50,50 10,10 10,10 50)),((90 50,90 10,50 "
+"10,50 50,90 50)))"
 
 #. Tag: refname
 #: reference_editor.xml:217
 #, no-c-format
 msgid "ST_CurveToLine"
-msgstr ""
+msgstr "ST_CurveToLine"
 
 #. Tag: refpurpose
 #: reference_editor.xml:219
 #, no-c-format
 msgid "Converts a geometry containing curves to a linear geometry."
 msgstr ""
+"Convertit une géométrie contenant des courbes en une géométrie linéaire."
 
 #. Tag: funcprototype
 #: reference_editor.xml:224
@@ -564,6 +687,12 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>integer</type> "
 "<parameter>flags</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_CurveToLine</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>curveGeom</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer</type> "
+"<parameter>tolerance_type</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>integer</type> <parameter>flags</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:237
@@ -573,6 +702,9 @@ msgid ""
 "or MULTISURFACE to MULTIPOLYGON. Useful for outputting to devices that can't "
 "support CIRCULARSTRING geometry types"
 msgstr ""
+"Convertit une CIRCULAR STRING en LINESTRING régulière ou CURVEPOLYGON en "
+"POLYGON ou MULTISURFACE en MULTIPOLYGON. Utile pour les sorties vers des "
+"appareils qui ne supportent pas les types de géométrie CIRCULARSTRING"
 
 #. Tag: para
 #: reference_editor.xml:239
@@ -582,6 +714,10 @@ msgid ""
 "segment is converted into a linear approximation using the given `tolerance` "
 "and options (32 segments per quadrant and no options by default)."
 msgstr ""
+"Convertit une géométrie donnée en une géométrie linéaire. Chaque géométrie "
+"ou segment courbe est converti en une approximation linéaire en utilisant la "
+"`tolérance` et les options données (32 segments par quadrant et aucune "
+"option par défaut)."
 
 #. Tag: para
 #: reference_editor.xml:244
@@ -590,36 +726,45 @@ msgid ""
 "The 'tolerance_type' argument determines interpretation of the `tolerance` "
 "argument. It can take the following values:"
 msgstr ""
+"L'argument 'tolerance_type' détermine l'interprétation de l'argument "
+"`tolerance`. Il peut prendre les valeurs suivantes :"
 
 #. Tag: para
 #: reference_editor.xml:249
 #, no-c-format
 msgid "0 (default): Tolerance is max segments per quadrant."
 msgstr ""
+"0 (par défaut) : La tolérance est le nombre maximum de segments par quadrant."
 
 #. Tag: para
 #: reference_editor.xml:252
 #, no-c-format
 msgid "1: Tolerance is max-deviation of line from curve, in source units."
 msgstr ""
+"1 : La tolérance est l'écart maximal de la ligne par rapport à la courbe, en "
+"unités de source."
 
 #. Tag: para
 #: reference_editor.xml:255
 #, no-c-format
 msgid "2: Tolerance is max-angle, in radians, between generating radii."
 msgstr ""
+"2 : La tolérance est l'angle maximal, en radians, entre les rayons "
+"générateurs."
 
 #. Tag: para
 #: reference_editor.xml:260
 #, no-c-format
 msgid "The 'flags' argument is a bitfield. 0 by default. Supported bits are:"
 msgstr ""
+"L'argument 'flags' est un champ de bits. 0 par défaut. Les bits supportés "
+"sont :"
 
 #. Tag: para
 #: reference_editor.xml:265
 #, no-c-format
 msgid "1: Symmetric (orientation idependent) output."
-msgstr ""
+msgstr "1 : Sortie symétrique (indépendante de l'orientation)."
 
 #. Tag: para
 #: reference_editor.xml:268
@@ -628,12 +773,15 @@ msgid ""
 "2: Retain angle, avoids reducing angles (segment lengths) when producing "
 "symmetric output. Has no effect when Symmetric flag is off."
 msgstr ""
+"2 : Conserver l'angle, évite de réduire les angles (longueur des segments) "
+"lors de la production d'une sortie symétrique. N'a aucun effet lorsque "
+"l'indicateur de symétrie est désactivé."
 
 #. Tag: para
 #: reference_editor.xml:273 reference_editor.xml:903
 #, no-c-format
 msgid "Availability: 1.3.0"
-msgstr ""
+msgstr "Disponibilité : 1.3.0"
 
 #. Tag: para
 #: reference_editor.xml:274
@@ -642,6 +790,8 @@ msgid ""
 "Enhanced: 2.4.0 added support for max-deviation and max-angle tolerance, and "
 "for symmetric output."
 msgstr ""
+"Amélioration : 2.4.0 a ajouté la prise en charge de la tolérance de l'écart "
+"maximal et de l'angle maximal, ainsi que de la sortie symétrique."
 
 #. Tag: para
 #: reference_editor.xml:275
@@ -650,6 +800,8 @@ msgid ""
 "Enhanced: 3.0.0 implemented a minimum number of segments per linearized arc "
 "to prevent topological collapse."
 msgstr ""
+"Amélioration : la version 3.0.0 a mis en place un nombre minimum de segments "
+"par arc linéarisé afin d'éviter une rupture topologique."
 
 #. Tag: para
 #: reference_editor.xml:277
@@ -661,7 +813,7 @@ msgstr "&sfs_compliant;"
 #: reference_editor.xml:278
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.7"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.7"
 
 #. Tag: para
 #: reference_editor.xml:280 reference_editor.xml:358 reference_editor.xml:404
@@ -791,18 +943,137 @@ msgid ""
 " LINESTRING(0 0,50 -86.6025403784438,150 -86.6025403784439,200 "
 "-1.1331077795296e-13,200 0)"
 msgstr ""
+"SELECT ST_AsText(ST_CurveToLine(ST_GeomFromText('CIRCULARSTRING(220268 "
+"150415,220227 150505,220227 150406)')));\n"
+"\n"
+"-- Résultat --\n"
+" LINESTRING(220268 150415,220269.95064912 150416.539364228,220271.823415575 "
+"150418.17258804,220273.613787707 150419.895736857,\n"
+" 220275.317452352 150421.704659462,220276.930305234 "
+"150423.594998003,220278.448460847 150425.562198489,\n"
+" 220279.868261823 150427.60152176,220281.186287736 "
+"150429.708054909,220282.399363347 150431.876723113,\n"
+" 220283.50456625 150434.10230186,220284.499233914 "
+"150436.379429536,220285.380970099 150438.702620341,220286.147650624 150441."
+"066277505,\n"
+" 220286.797428488 150443.464706771,220287.328738321 "
+"150445.892130112,220287.740300149 150448.342699654,\n"
+" 220288.031122486 150450.810511759,220288.200504713 "
+"150453.289621251,220288.248038775 150455.77405574,\n"
+" 220288.173610157 150458.257830005,220287.977398166 "
+"150460.734960415,220287.659875492 150463.199479347,\n"
+" 220287.221807076 150465.64544956,220286.664248262 "
+"150468.066978495,220285.988542259 150470.458232479,220285.196316903 150472."
+"81345077,\n"
+" 220284.289480732 150475.126959442,220283.270218395 "
+"150477.39318505,220282.140985384 150479.606668057,\n"
+" 220280.90450212 150481.762075989,220279.5637474 "
+"150483.85421628,220278.12195122 150485.87804878,\n"
+" 220276.582586992 150487.828697901,220274.949363179 "
+"150489.701464356,220273.226214362 150491.491836488,\n"
+" 220271.417291757 150493.195501133,220269.526953216 "
+"150494.808354014,220267.559752731 150496.326509628,\n"
+" 220265.520429459 150497.746310603,220263.41389631 "
+"150499.064336517,220261.245228106 150500.277412127,\n"
+" 220259.019649359 150501.38261503,220256.742521683 "
+"150502.377282695,220254.419330878 150503.259018879,\n"
+" 220252.055673714 150504.025699404,220249.657244448 "
+"150504.675477269,220247.229821107 150505.206787101,\n"
+" 220244.779251566 150505.61834893,220242.311439461 "
+"150505.909171266,220239.832329968 150506.078553494,\n"
+" 220237.347895479 150506.126087555,220234.864121215 "
+"150506.051658938,220232.386990804 150505.855446946,\n"
+" 220229.922471872 150505.537924272,220227.47650166 "
+"150505.099855856,220225.054972724 150504.542297043,\n"
+" 220222.663718741 150503.86659104,220220.308500449 150503.074365683,\n"
+" 220217.994991777 150502.167529512,220215.72876617 150501.148267175,\n"
+" 220213.515283163 150500.019034164,220211.35987523 150498.7825509,\n"
+" 220209.267734939 150497.441796181,220207.243902439 150496,\n"
+" 220205.293253319 150494.460635772,220203.420486864 "
+"150492.82741196,220201.630114732 150491.104263143,\n"
+" 220199.926450087 150489.295340538,220198.313597205 "
+"150487.405001997,220196.795441592 150485.437801511,\n"
+" 220195.375640616 150483.39847824,220194.057614703 "
+"150481.291945091,220192.844539092 150479.123276887,220191.739336189 150476."
+"89769814,\n"
+" 220190.744668525 150474.620570464,220189.86293234 "
+"150472.297379659,220189.096251815 150469.933722495,\n"
+" 220188.446473951 150467.535293229,220187.915164118 "
+"150465.107869888,220187.50360229 150462.657300346,\n"
+" 220187.212779953 150460.189488241,220187.043397726 "
+"150457.710378749,220186.995863664 150455.22594426,\n"
+" 220187.070292282 150452.742169995,220187.266504273 "
+"150450.265039585,220187.584026947 150447.800520653,\n"
+" 220188.022095363 150445.35455044,220188.579654177 "
+"150442.933021505,220189.25536018 150440.541767521,\n"
+" 220190.047585536 150438.18654923,220190.954421707 "
+"150435.873040558,220191.973684044 150433.60681495,\n"
+" 220193.102917055 150431.393331943,220194.339400319 "
+"150429.237924011,220195.680155039 150427.14578372,220197.12195122 150425."
+"12195122,\n"
+" 220198.661315447 150423.171302099,220200.29453926 "
+"150421.298535644,220202.017688077 150419.508163512,220203.826610682 150417."
+"804498867,\n"
+" 220205.716949223 150416.191645986,220207.684149708 "
+"150414.673490372,220209.72347298 150413.253689397,220211.830006129 150411."
+"935663483,\n"
+" 220213.998674333 150410.722587873,220216.22425308 "
+"150409.61738497,220218.501380756 150408.622717305,220220.824571561 150407."
+"740981121,\n"
+" 220223.188228725 150406.974300596,220225.586657991 150406.324522731,220227 "
+"150406)\n"
+"\n"
+"-- Exemple 3D\n"
+"SELECT ST_AsEWKT(ST_CurveToLine(ST_GeomFromEWKT('CIRCULARSTRING(220268 "
+"150415 1,220227 150505 2,220227 150406 3)')));\n"
+"Sortie\n"
+"------\n"
+" LINESTRING(220268 150415 1,220269.95064912 150416.539364228 1.0181172856673,"
+"\n"
+" 220271.823415575 150418.17258804 1.03623457133459,220273.613787707 "
+"150419.895736857 1.05435185700189,....AD INFINITUM ....\n"
+"    220225.586657991 150406.324522731 1.32611114201132,220227 150406 3)\n"
+"\n"
+"-- utiliser seulement 2 segments pour obtenir un quart de cercle "
+"approximatif\n"
+"SELECT ST_AsText(ST_CurveToLine(ST_GeomFromText('CIRCULARSTRING(220268 "
+"150415,220227 150505,220227 150406)'),2));\n"
+"st_astext\n"
+"------------------------------\n"
+" LINESTRING(220268 150415,220287.740300149 150448.342699654,220278.12195122 "
+"150485.87804878,\n"
+" 220244.779251566 150505.61834893,220207.243902439 150496,220187.50360229 "
+"150462.657300346,\n"
+" 220197.12195122 150425.12195122,220227 150406)\n"
+"\n"
+"-- S'assurer que la ligne approximative ne s'éloigne pas de plus de 20 "
+"unités \n"
+"-- de la courbe originale, et faire en sorte que le résultat soit neutre du "
+"point de vue de la direction\n"
+"SELECT ST_AsText(ST_CurveToLine(\n"
+" 'CIRCULARSTRING(0 0,100 -100,200 0)'::geometry,\n"
+"    20, -- Tolérance\n"
+"    1, -- Above correspond à la distance maximale entre la courbe et la "
+"ligne\n"
+"    1  -- Indicateur de symétrie\n"
+"));\n"
+"st_astext\n"
+"-----------------------------------------------------------------------------"
+"--------------\n"
+" LINESTRING(0 0,50 -86.6025403784438,150 -86.6025403784439,200 -1."
+"1331077795296e-13,200 0)"
 
 #. Tag: refname
 #: reference_editor.xml:300
 #, no-c-format
 msgid "ST_Scroll"
-msgstr ""
+msgstr "ST_Scroll"
 
 #. Tag: refpurpose
 #: reference_editor.xml:301
 #, no-c-format
 msgid "Change start point of a closed LineString."
-msgstr ""
+msgstr "Modifier le point de départ d'une LineString fermée."
 
 #. Tag: funcprototype
 #: reference_editor.xml:305
@@ -812,6 +1083,9 @@ msgid ""
 "<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
 "<paramdef><type>geometry</type> <parameter>point</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Scroll</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>point</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:316
@@ -820,6 +1094,8 @@ msgid ""
 "Changes the start/end point of a closed LineString to the given vertex "
 "<parameter>point</parameter>."
 msgstr ""
+"Modifie le point de départ/fin d'une LineString fermée en fonction du sommet "
+"<parameter>point</parameter> donné."
 
 #. Tag: para
 #: reference_editor.xml:320
@@ -838,7 +1114,7 @@ msgstr "&M_support;"
 #: reference_editor.xml:328
 #, no-c-format
 msgid "Make e closed line start at its 3rd vertex"
-msgstr ""
+msgstr "Faire partir une ligne fermée de son 3ème sommet"
 
 #. Tag: programlisting
 #: reference_editor.xml:329
@@ -851,18 +1127,24 @@ msgid ""
 "----------\n"
 "SRID=4326;LINESTRING(5 5 4 2,0 0 0 1,10 0 2 0,5 5 4 2)"
 msgstr ""
+"SELECT ST_AsEWKT(ST_Scroll('SRID=4326;LINESTRING(0 0 0 1, 10 0 2 0, 5 5 4 "
+"2,0 0 0 1)', 'POINT(5 5 4 2)'));\n"
+"\n"
+"st_asewkt\n"
+"----------\n"
+"SRID=4326;LINESTRING(5 5 4 2,0 0 0 1,10 0 2 0,5 5 4 2)"
 
 #. Tag: refname
 #: reference_editor.xml:340
 #, no-c-format
 msgid "ST_FlipCoordinates"
-msgstr ""
+msgstr "ST_FlipCoordinates"
 
 #. Tag: refpurpose
 #: reference_editor.xml:341
 #, no-c-format
 msgid "Returns a version of a geometry with X and Y axis flipped."
-msgstr ""
+msgstr "Renvoie une version d'une géométrie dont les axes X et Y sont inversés."
 
 #. Tag: funcprototype
 #: reference_editor.xml:346
@@ -882,6 +1164,9 @@ msgid ""
 "for fixing geometries which contain coordinates expressed as latitude/"
 "longitude (Y,X)."
 msgstr ""
+"Renvoie une version de la géométrie donnée avec les axes X et Y inversés. "
+"Utile pour fixer les géométries qui contiennent des coordonnées exprimées en "
+"latitude/longitude (Y,X)."
 
 #. Tag: para
 #: reference_editor.xml:361 reference_editor.xml:405 reference_editor.xml:449
@@ -916,18 +1201,24 @@ msgid ""
 "POINT(2 1)\n"
 "         ]]>"
 msgstr ""
+"<![CDATA[\n"
+"SELECT ST_AsEWKT(ST_FlipCoordinates(GeomFromEWKT('POINT(1 2)')));\n"
+" st_asewkt\n"
+"------------\n"
+"POINT(2 1)\n"
+"         ]]>"
 
 #. Tag: refname
 #: reference_editor.xml:380
 #, no-c-format
 msgid "ST_Force2D"
-msgstr ""
+msgstr "ST_Force2D"
 
 #. Tag: refpurpose
 #: reference_editor.xml:382
 #, no-c-format
 msgid "Force the geometries into a \"2-dimensional mode\"."
-msgstr ""
+msgstr "Forcer les géométries à passer en \"mode bidimensionnel\"."
 
 #. Tag: funcprototype
 #: reference_editor.xml:387
@@ -936,6 +1227,8 @@ msgid ""
 "<funcdef>geometry <function>ST_Force2D</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Force2D</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:397
@@ -945,6 +1238,10 @@ msgid ""
 "representations will only have the X and Y coordinates. This is useful for "
 "force OGC-compliant output (since OGC only specifies 2-D geometries)."
 msgstr ""
+"Force les géométries à passer en \"mode bidimensionnel\", de sorte que "
+"toutes les représentations de sortie n'auront que les coordonnées X et Y. "
+"Ceci est utile pour forcer une sortie conforme à l'OGC (puisque l'OGC ne "
+"spécifie que des géométries à 2 dimensions)."
 
 #. Tag: para
 #: reference_editor.xml:402 reference_editor.xml:446 reference_editor.xml:491
@@ -958,7 +1255,7 @@ msgstr ""
 #: reference_editor.xml:403
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_2D."
-msgstr ""
+msgstr "Modifié : 2.1.0. Jusqu'à la version 2.0.x, elle s'appelait ST_Force_2D."
 
 #. Tag: programlisting
 #: reference_editor.xml:413
@@ -977,18 +1274,30 @@ msgid ""
 "----------------------------------------------\n"
 " POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))"
 msgstr ""
+"SELECT ST_AsEWKT(ST_Force2D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 "
+"5 2, 6 7 2, 5 6 2)')));\n"
+"                st_asewkt\n"
+"-------------------------------------\n"
+"CIRCULARSTRING(1 1,2 3,4 5,6 7,5 6)\n"
+"\n"
+"SELECT  ST_AsEWKT(ST_Force2D('POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 "
+"2,1 3 2,1 1 2))'));\n"
+"\n"
+"                                  st_asewkt\n"
+"----------------------------------------------\n"
+" POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))"
 
 #. Tag: refname
 #: reference_editor.xml:426
 #, no-c-format
 msgid "ST_Force3D"
-msgstr ""
+msgstr "ST_Force3D"
 
 #. Tag: refpurpose
 #: reference_editor.xml:428
 #, no-c-format
 msgid "Force the geometries into XYZ mode. This is an alias for ST_Force3DZ."
-msgstr ""
+msgstr "Force les géométries en mode XYZ. Il s'agit d'un alias de ST_Force3DZ."
 
 #. Tag: funcprototype
 #: reference_editor.xml:433
@@ -998,6 +1307,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
 "<paramdef><type>float </type> <parameter>Zvalue = 0.0</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Force3D</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>Zvalue = 0.0</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:444
@@ -1007,18 +1319,23 @@ msgid ""
 "geometry has no Z component, then a <parameter>Zvalue</parameter> Z "
 "coordinate is tacked on."
 msgstr ""
+"Force les géométries en mode XYZ. Il s'agit d'un alias de ST_Force3DZ. Si "
+"une géométrie n'a pas de composante Z, une <parameter>Zvalue</parameter> "
+"coordonnée Z est ajoutée."
 
 #. Tag: para
 #: reference_editor.xml:447
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3D."
-msgstr ""
+msgstr "Modifié : 2.1.0. Jusqu'à la version 2.0.x, elle s'appelait ST_Force_3D."
 
 #. Tag: para
 #: reference_editor.xml:448 reference_editor.xml:493
 #, no-c-format
 msgid "Changed: 3.1.0. Added support for supplying a non-zero Z value."
 msgstr ""
+"Modifié : 3.1.0. Ajout de la prise en charge pour pouvoir passer une valeur "
+"Z non nulle."
 
 #. Tag: programlisting
 #: reference_editor.xml:458
@@ -1040,6 +1357,20 @@ msgid ""
 "--------------------------------------------------------------\n"
 " POLYGON((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))"
 msgstr ""
+"-- Rien ne se passe dans une géométrie déjà en 3D\n"
+"                SELECT ST_AsEWKT(ST_Force3D(ST_GeomFromEWKT('CIRCULARSTRING("
+"1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));\n"
+"                                   st_asewkt\n"
+"-----------------------------------------------\n"
+" CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)\n"
+"\n"
+"\n"
+"SELECT  ST_AsEWKT(ST_Force3D('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 "
+"1))'));\n"
+"\n"
+"                                                 st_asewkt\n"
+"--------------------------------------------------------------\n"
+" POLYGON((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))"
 
 #. Tag: para
 #: reference_editor.xml:465
@@ -1048,18 +1379,20 @@ msgid ""
 ", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
 "linkend=\"ST_Force_3DZ\"/>"
 msgstr ""
+", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
+"linkend=\"ST_Force_3DZ\"/>"
 
 #. Tag: refname
 #: reference_editor.xml:471
 #, no-c-format
 msgid "ST_Force3DZ"
-msgstr ""
+msgstr "ST_Force3DZ"
 
 #. Tag: refpurpose
 #: reference_editor.xml:473
 #, no-c-format
 msgid "Force the geometries into XYZ mode."
-msgstr ""
+msgstr "Forcer les géométries en mode XYZ."
 
 #. Tag: funcprototype
 #: reference_editor.xml:478
@@ -1069,6 +1402,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
 "<paramdef><type>float </type> <parameter>Zvalue = 0.0</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Force3DZ</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>Zvalue = 0.0</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:489
@@ -1077,12 +1413,15 @@ msgid ""
 "Forces the geometries into XYZ mode. If a geometry has no Z component, then "
 "a <parameter>Zvalue</parameter> Z coordinate is tacked on."
 msgstr ""
+"Force les géométries à passer en mode XYZ. Si une géométrie n'a pas de "
+"composante Z, une <parameter>Zvalue</parameter> coordonnée Z est ajoutée."
 
 #. Tag: para
 #: reference_editor.xml:492
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3DZ."
 msgstr ""
+"Modifié : 2.1.0. Jusqu'à la version 2.0.x, elle s'appelait ST_Force_3DZ."
 
 #. Tag: programlisting
 #: reference_editor.xml:503
@@ -1103,6 +1442,20 @@ msgid ""
 "--------------------------------------------------------------\n"
 " POLYGON((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))"
 msgstr ""
+"-- Rien ne se passe dans une géométrie déjà en 3D\n"
+"SELECT ST_AsEWKT(ST_Force3DZ(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 "
+"5 2, 6 7 2, 5 6 2)')));\n"
+"                                   st_asewkt\n"
+"-----------------------------------------------\n"
+" CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)\n"
+"\n"
+"\n"
+"SELECT  ST_AsEWKT(ST_Force3DZ('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 "
+"1))'));\n"
+"\n"
+"                                                 st_asewkt\n"
+"--------------------------------------------------------------\n"
+" POLYGON((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))"
 
 #. Tag: para
 #: reference_editor.xml:510 reference_editor.xml:597
@@ -1111,18 +1464,20 @@ msgid ""
 ", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
 "linkend=\"ST_Force_3D\"/>"
 msgstr ""
+", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
+"linkend=\"ST_Force_3D\"/>"
 
 #. Tag: refname
 #: reference_editor.xml:516
 #, no-c-format
 msgid "ST_Force3DM"
-msgstr ""
+msgstr "ST_Force3DM"
 
 #. Tag: refpurpose
 #: reference_editor.xml:518
 #, no-c-format
 msgid "Force the geometries into XYM mode."
-msgstr ""
+msgstr "Forcer les géométries en mode XYM."
 
 #. Tag: funcprototype
 #: reference_editor.xml:523
@@ -1132,6 +1487,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
 "<paramdef><type>float </type> <parameter>Mvalue = 0.0</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Force3DM</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>Mvalue = 0.0</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:534
@@ -1141,18 +1499,24 @@ msgid ""
 "a <parameter>Mvalue</parameter> M coordinate is tacked on. If it has a Z "
 "component, then Z is removed"
 msgstr ""
+"Force les géométries à passer en mode XYM. Si une géométrie n'a pas de "
+"composante M, une <parameter>Mvalue</parameter> coordonnée M est ajoutée. Si "
+"la géométrie a une composante Z, la coordonnée Z est supprimée"
 
 #. Tag: para
 #: reference_editor.xml:537
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3DM."
 msgstr ""
+"Modifié : 2.1.0. Jusqu'à la version 2.0.x, elle s'appelait ST_Force_3DM."
 
 #. Tag: para
 #: reference_editor.xml:538
 #, no-c-format
 msgid "Changed: 3.1.0. Added support for supplying a non-zero M value."
 msgstr ""
+"Modifié : 3.1.0. Ajout de la prise en charge de pouvoir passer une valeur M "
+"non nulle."
 
 #. Tag: programlisting
 #: reference_editor.xml:546
@@ -1173,6 +1537,20 @@ msgid ""
 "---------------------------------------------------------------\n"
 " POLYGONM((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))"
 msgstr ""
+"-- Rien ne se passe dans une géométrie déjà en 3D\n"
+"SELECT ST_AsEWKT(ST_Force3DM(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 "
+"5 2, 6 7 2, 5 6 2)')));\n"
+"                                   st_asewkt\n"
+"------------------------------------------------\n"
+" CIRCULARSTRINGM(1 1 0,2 3 0,4 5 0,6 7 0,5 6 0)\n"
+"\n"
+"\n"
+"SELECT  ST_AsEWKT(ST_Force3DM('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 "
+"1,1 3 1,1 1 1))'));\n"
+"\n"
+"                                                  st_asewkt\n"
+"---------------------------------------------------------------\n"
+" POLYGONM((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))"
 
 #. Tag: para
 #: reference_editor.xml:553 reference_editor.xml:694
@@ -1181,18 +1559,20 @@ msgid ""
 ", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
 "linkend=\"ST_Force_3D\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
 msgstr ""
+", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
+"linkend=\"ST_Force_3D\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
 
 #. Tag: refname
 #: reference_editor.xml:559
 #, no-c-format
 msgid "ST_Force4D"
-msgstr ""
+msgstr "ST_Force4D"
 
 #. Tag: refpurpose
 #: reference_editor.xml:561
 #, no-c-format
 msgid "Force the geometries into XYZM mode."
-msgstr ""
+msgstr "Forcer les géométries en mode XYZM."
 
 #. Tag: funcprototype
 #: reference_editor.xml:566
@@ -1203,6 +1583,10 @@ msgid ""
 "<paramdef><type>float </type> <parameter>Zvalue = 0.0</parameter></paramdef> "
 "<paramdef><type>float </type> <parameter>Mvalue = 0.0</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Force4D</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>Zvalue = 0.0</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>Mvalue = 0.0</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:578
@@ -1212,18 +1596,23 @@ msgid ""
 "<parameter>Mvalue</parameter> is tacked on for missing Z and M dimensions, "
 "respectively."
 msgstr ""
+"Force les géométries en mode XYZM. <parameter>Zvalue</parameter> et "
+"<parameter>Mvalue</parameter> sont ajoutés pour les dimensions Z et M "
+"manquantes, respectivement."
 
 #. Tag: para
 #: reference_editor.xml:580
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_4D."
-msgstr ""
+msgstr "Modifié : 2.1.0. Jusqu'à la version 2.0.x, elle s'appelait ST_Force_4D."
 
 #. Tag: para
 #: reference_editor.xml:581
 #, no-c-format
 msgid "Changed: 3.1.0. Added support for supplying non-zero Z and M values."
 msgstr ""
+"Modifié : 3.1.0. Ajout de la prise en charge de pouvoir passer des valeurs Z "
+"et M non nulles."
 
 #. Tag: programlisting
 #: reference_editor.xml:590
@@ -1246,12 +1635,30 @@ msgid ""
 " MULTILINESTRING((0 0 0 1,0 5 0 2,5 0 0 3,0 0 0 4),(1 1 0 1,3 1 0 1,1 3 0 "
 "1,1 1 0 1))"
 msgstr ""
+"-- Rien ne se passe avec une géométrie déjà en 3D\n"
+"SELECT ST_AsEWKT(ST_Force4D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 "
+"5 2, 6 7 2, 5 6 2)')));\n"
+"                                                st_asewkt\n"
+"---------------------------------------------------------\n"
+" CIRCULARSTRING(1 1 2 0,2 3 2 0,4 5 2 0,6 7 2 0,5 6 2 0)\n"
+"\n"
+"\n"
+"\n"
+"SELECT  ST_AsEWKT(ST_Force4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 "
+"1 1,3 1 1,1 3 1,1 1 1))'));\n"
+"\n"
+"                                                                          "
+"st_asewkt\n"
+"-----------------------------------------------------------------------------"
+"---------\n"
+" MULTILINESTRING((0 0 0 1,0 5 0 2,5 0 0 3,0 0 0 4),(1 1 0 1,3 1 0 1,1 3 0 "
+"1,1 1 0 1))"
 
 #. Tag: refname
 #: reference_editor.xml:603
 #, no-c-format
 msgid "ST_ForcePolygonCCW"
-msgstr ""
+msgstr "ST_ForcePolygonCCW"
 
 #. Tag: refpurpose
 #: reference_editor.xml:606
@@ -1260,6 +1667,9 @@ msgid ""
 "Orients all exterior rings counter-clockwise and all interior rings "
 "clockwise."
 msgstr ""
+"Oriente tous les anneaux extérieurs dans le sens inverse des aiguilles d'une "
+"montre et tous les anneaux intérieurs dans le sens des aiguilles d'une "
+"montre."
 
 #. Tag: funcprototype
 #: reference_editor.xml:613
@@ -1268,6 +1678,8 @@ msgid ""
 "<funcdef> geometry <function>ST_ForcePolygonCCW</function> </funcdef> "
 "<paramdef> <type>geometry</type> <parameter>geom</parameter> </paramdef>"
 msgstr ""
+"<funcdef> geometry <function>ST_ForcePolygonCCW</function> </funcdef> "
+"<paramdef> <type>geometry</type> <parameter>geom</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:629
@@ -1277,6 +1689,10 @@ msgid ""
 "exterior ring, and a clockwise orientation for their interior rings. Non-"
 "polygonal geometries are returned unchanged."
 msgstr ""
+"Force les (Multi)Polygones à utiliser une orientation dans le sens inverse "
+"des aiguilles d'une montre pour leur anneau extérieur, et une orientation "
+"dans le sens des aiguilles d'une montre pour leurs anneaux intérieurs. Les "
+"géométries non polygonales sont renvoyées inchangées."
 
 #. Tag: para
 #: reference_editor.xml:635 reference_editor.xml:732
@@ -1290,18 +1706,19 @@ msgstr "Disponibilité : 2.4.0"
 msgid ""
 ", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 msgstr ""
+", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 
 #. Tag: refname
 #: reference_editor.xml:652
 #, no-c-format
 msgid "ST_ForceCollection"
-msgstr ""
+msgstr "ST_ForceCollection"
 
 #. Tag: refpurpose
 #: reference_editor.xml:654
 #, no-c-format
 msgid "Convert the geometry into a GEOMETRYCOLLECTION."
-msgstr ""
+msgstr "Convertir la géométrie en une GEOMETRYCOLLECTION."
 
 #. Tag: funcprototype
 #: reference_editor.xml:659
@@ -1310,6 +1727,8 @@ msgid ""
 "<funcdef>geometry <function>ST_ForceCollection</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_ForceCollection</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:669
@@ -1318,6 +1737,8 @@ msgid ""
 "Converts the geometry into a GEOMETRYCOLLECTION. This is useful for "
 "simplifying the WKB representation."
 msgstr ""
+"Convertit la géométrie en une GEOMETRYCOLLECTION. Ceci est utile pour "
+"simplifier la représentation WKB."
 
 #. Tag: para
 #: reference_editor.xml:673
@@ -1326,12 +1747,16 @@ msgid ""
 "Availability: 1.2.2, prior to 1.3.4 this function will crash with Curves. "
 "This is fixed in 1.3.4+"
 msgstr ""
+"Disponibilité : 1.2.2, avant la version 1.3.4 cette fonction plante avec les "
+"courbes. Ceci est corrigé dans la version 1.3.4+"
 
 #. Tag: para
 #: reference_editor.xml:674
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_Collection."
 msgstr ""
+"Modifié : 2.1.0. Jusqu'à la version 2.0.x, cette fonction était appelée "
+"ST_Force_Collection."
 
 #. Tag: programlisting
 #: reference_editor.xml:685
@@ -1354,6 +1779,26 @@ msgid ""
 "150406))\n"
 "(1 row)"
 msgstr ""
+"SELECT  ST_AsEWKT(ST_ForceCollection('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 "
+"1,3 1 1,1 3 1,1 1 1))'));\n"
+"\n"
+"                                                                   "
+"st_asewkt\n"
+"-----------------------------------------------------------------------------"
+"-----\n"
+" GEOMETRYCOLLECTION(POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 "
+"1)))\n"
+"\n"
+"\n"
+"  SELECT ST_AsText(ST_ForceCollection('CIRCULARSTRING(220227 150406,2220227 "
+"150407,220227 150406)'));\n"
+"                                                                   "
+"st_astext\n"
+"-----------------------------------------------------------------------------"
+"---\n"
+" GEOMETRYCOLLECTION(CIRCULARSTRING(220227 150406,2220227 150407,220227 "
+"150406))\n"
+"(1 row)"
 
 #. Tag: programlisting
 #: reference_editor.xml:687
@@ -1379,12 +1824,33 @@ msgid ""
 "  POLYGON((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))\n"
 ")"
 msgstr ""
+"-- exemple avec un polyhèdre--\n"
+"SELECT ST_AsEWKT(ST_ForceCollection('POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 "
+"1 0,0 0 0)),\n"
+" ((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),\n"
+" ((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),\n"
+" ((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),\n"
+" ((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),\n"
+" ((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)))'))\n"
+"\n"
+"                                                                   "
+"st_asewkt\n"
+"-----------------------------------------------------------------------------"
+"-----\n"
+"GEOMETRYCOLLECTION(\n"
+"  POLYGON((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),\n"
+"  POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),\n"
+"  POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),\n"
+"  POLYGON((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),\n"
+"  POLYGON((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),\n"
+"  POLYGON((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))\n"
+")"
 
 #. Tag: refname
 #: reference_editor.xml:700
 #, no-c-format
 msgid "ST_ForcePolygonCW"
-msgstr ""
+msgstr "ST_ForcePolygonCW"
 
 #. Tag: refpurpose
 #: reference_editor.xml:703
@@ -1393,6 +1859,9 @@ msgid ""
 "Orients all exterior rings clockwise and all interior rings counter-"
 "clockwise."
 msgstr ""
+"Oriente tous les anneaux extérieurs dans le sens des aiguilles d'une montre "
+"et tous les anneaux intérieurs dans le sens inverse des aiguilles d'une "
+"montre."
 
 #. Tag: funcprototype
 #: reference_editor.xml:710
@@ -1401,6 +1870,8 @@ msgid ""
 "<funcdef> geometry <function>ST_ForcePolygonCW</function> </funcdef> "
 "<paramdef> <type>geometry</type> <parameter>geom</parameter> </paramdef>"
 msgstr ""
+"<funcdef> geometry <function>ST_ForcePolygonCW</function> </funcdef> "
+"<paramdef> <type>geometry</type> <parameter>geom</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:726
@@ -1410,6 +1881,10 @@ msgid ""
 "ring, and a counter-clockwise orientation for their interior rings. Non-"
 "polygonal geometries are returned unchanged."
 msgstr ""
+"Force les (Multi)Polygones à utiliser une orientation dans le sens des "
+"aiguilles d'une montre pour leur anneau extérieur, et une orientation dans "
+"le sens inverse des aiguilles d'une montre pour leurs anneaux intérieurs. "
+"Les géométries non polygonales sont renvoyées inchangées."
 
 #. Tag: refname
 #: reference_editor.xml:749
