@@ -563,7 +563,7 @@ msgstr "Si vous obtenez un message d'erreur du type :"
 #: administration.xml:175
 #, no-c-format
 msgid "No migration path defined for … to &last_release_version;"
-msgstr "Pas de chemin de migration défini pour ... vers &last_release_version ;"
+msgstr "Pas de chemin de migration défini pour ... vers &last_release_version;"
 
 #. Tag: para
 #: administration.xml:176
@@ -590,7 +590,7 @@ msgid ""
 "Version \"&last_release_version;\" of extension \"postgis\" is already "
 "installed"
 msgstr ""
-"La version \"&last_release_version ;\" de l'extension \"postgis\" est déjà "
+"La version \"&last_release_version;\" de l'extension \"postgis\" est déjà "
 "installée"
 
 #. Tag: para
