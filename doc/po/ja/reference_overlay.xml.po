@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-04 20:32+0000\n"
-"PO-Revision-Date: 2022-10-25 07:30+0000\n"
+"PO-Revision-Date: 2023-05-15 08:43+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_overlayxml/ja/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: para
 #: reference_overlay.xml:5
@@ -737,6 +737,9 @@ msgid ""
 "specify a gridSize, which can provide simpler and more robust output. See "
 "also <xref linkend=\"ST_Union\"/> for an aggregate variant."
 msgstr ""
+"も、ラインのノード追加とディゾルブに使うことができます。gridSizeを指定する任"
+"意引数を与えると、より単純かつよりロバストな出力が得られます。"
+"集約関数版については<xref linkend=\"ST_Union\"/>をご覧下さい。"
 
 #. Tag: para
 #: reference_overlay.xml:342
@@ -1538,6 +1541,12 @@ msgid ""
 "linkend=\"Simple_Geometry\">simple</link>. (<xref linkend=\"ST_Node\"/> also "
 "does this, but it does not provide the <code>gridSize</code> option.)"
 msgstr ""
+"この関数は、他に、"
+"クロスやオーバラップするラインストリングのコレクションを<link linkend="
+"\"Simple_Geometry\">単純</"
+"link>にするためのノード追加とディソルブに使われます (<xref linkend=\"ST_Node"
+"\"/> も同様のことを行いますが、任意引数<code>gridSize</code>を与えることがで"
+"きません。)"
 
 #. Tag: para
 #: reference_overlay.xml:749
