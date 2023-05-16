@@ -2,13 +2,13 @@
 #
 # Translators:
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016-2017
-# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2022-03-28 21:21+0000\n"
+"PO-Revision-Date: 2023-05-17 03:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/faqxml/"
 "ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: faq.xml:3
@@ -146,7 +146,7 @@ msgstr ""
 "古いアプリケーションには、処理の一部として、テーブルやインデクスを生成する際"
 "に、明示的に演算子クラス名を参照しているものがありました。デフォルトの2次元イ"
 "ンデクスが欲しい場合には重要ではありません。エラーが内容に管理するために、イ"
-"ンデクス生成を次に示す悪い例から良い例に変えて下さい。"
+"ンデックス生成を次に示す悪い例から良い例に変えて下さい。"
 
 #. Tag: para
 #: faq.xml:42
@@ -208,11 +208,11 @@ msgid ""
 "in the future when you need to upgrade again."
 msgstr ""
 "不幸にもgist_geometry_opsがハードコーディングされていて変更不可なコンパイルさ"
-"れたコードを突きつけられているなら、PostGIS 2.0.2以上に同梱されている"
-"<filename>legacy_gist.sql</filename>を使用して、古いクラスを生成することがで"
-"きます。しかしながら、この方法を使う場合は、後ほどインデクスを削除して、演算"
-"子クラスを指定せずに再生成させるべきです。将来再びアップデートする必要がある"
-"時に泣いてしまうことを抑制します。"
+"れたコードを突きつけられているなら、PostGIS 2.0."
+"2以上に同梱されている<filename>legacy_gist.sql</filename>を使用して、古いクラ"
+"スを生成することができます。しかしながら、この方法を使う場合は、後ほどインデ"
+"ックスを削除して、演算子クラスを指定せずに再生成させるべきです。将来再びアッ"
+"プデートする必要がある時に泣いてしまうことを抑制します。"
 
 #. Tag: para
 #: faq.xml:56
@@ -585,7 +585,7 @@ msgid ""
 "and, are you doing expensive calculations on a large number of geometries."
 msgstr ""
 "空間クエリでは、クエリを作成する際に心を平静に保つための重要な二つの問題があ"
-"ります。 一つは、使用することができる空間インデクスがあるか、です。もう一つ"
+"ります。 一つは、使用することができる空間インデックスがあるか、です。もう一つ"
 "は、多数のジオメトリを相手に計算量の多い計算を行っているか、です。"
 
 #. Tag: para
@@ -598,11 +598,11 @@ msgid ""
 "speed up the test, the &amp;&amp; operator will make use of this. This can "
 "make queries much much faster."
 msgstr ""
-"一般的に、フィーチャーのバウンディングボックスがインタセクト (交差)しているか"
-"をテストするインタセクト演算子 (&amp;&amp;)を使います。&amp;&amp;演算子が便利"
-"な理由は、速度向上のために空間インデクスが付けられているなら、&amp;&amp;演算"
-"子は空間インデクスを使うからです。これによって、クエリの速度はとてもとても速"
-"くなります。"
+"一般的に、フィーチャーのバウンディングボックスがインタセクト (交差)"
+"しているかをテストするインタセクト演算子 (&amp;&amp;)を使います。&amp;&amp;演"
+"算子が便利な理由は、速度向上のために空間インデックスが付けられているなら、&am"
+"p;&amp;演算子は空間インデックスを使うからです。これによって、クエリの速度はと"
+"てもとても速くなります。"
 
 #. Tag: para
 #: faq.xml:202
@@ -616,12 +616,12 @@ msgid ""
 "condition of interest. The spatial functions are then use to test the "
 "condition exactly."
 msgstr ""
-"また、検索結果をより狭めるために、Distance(), ST_Intersects(), "
-"ST_Contains(), ST_Within() などといった空間関数を使うことでしょう。ほとんどの"
-"空間クエリは、インデクスのテストと空間関数のテストを含みます。インデクスのテ"
-"ストで返ってくるタプルを、求める条件に<emphasis>合致するかもしれない</"
-"emphasis>タプルのみとして、タプルの数を制限します。それから、空間関数で確実な"
-"条件のテストを行います。"
+"また、検索結果をより狭めるために、Distance(), ST_Intersects(), ST_Contains()"
+", ST_Within() などといった空間関数を使うことでしょう。ほとんどの空間クエリは"
+"、インデックスのテストと空間関数のテストを含みます。インデックスのテストで返"
+"ってくるタプルを、求める条件に<emphasis>合致するかもしれない</emphasis>タプル"
+"のみとして、タプルの数を制限します。それから、空間関数で確実な条件のテストを"
+"行います。"
 
 #. Tag: programlisting
 #: faq.xml:210
@@ -652,8 +652,8 @@ msgid ""
 "important."
 msgstr ""
 "大きなテーブルの速いクエリは、空間データベースの<emphasis>レゾンデートル</"
-"emphasis> (トランザクションサポートもそうですが)で、良いインデクスは重要で"
-"す。"
+"emphasis> "
+"(トランザクションサポートもそうですが)で、良いインデックスは重要です。"
 
 #. Tag: para
 #: faq.xml:224
@@ -662,17 +662,16 @@ msgid ""
 "To build a spatial index on a table with a <varname>geometry</varname> "
 "column, use the \"CREATE INDEX\" function as follows:"
 msgstr ""
-"<varname>geometry</varname>カラムを持つテーブルでの空間インデクスの構築"
-"は、\"CREATE INDEX\"を使って、次のようにします。"
+"<varname>geometry</varname>カラムを持つテーブルでの空間インデックスの構築は、"
+"\"CREATE INDEX\"を使って、次のようにします。"
 
 #. Tag: programlisting
 #: faq.xml:228
 #, no-c-format
 msgid ""
 "CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometrycolumn] );"
-msgstr ""
-"CREATE INDEX [インデクス名] ON [テーブル名] USING GIST ( [ジオメトリカラ"
-"ム] );"
+msgstr "CREATE INDEX [インデックス名] ON [テーブル名] USING GIST ( [ジオメトリカラム]"
+" );"
 
 #. Tag: para
 #: faq.xml:230
@@ -681,8 +680,8 @@ msgid ""
 "The \"USING GIST\" option tells the server to use a GiST (Generalized Search "
 "Tree) index."
 msgstr ""
-"\"USING GIST\"オプションによって、サーバにGiST (Generalized Search Tree)イン"
-"デクスを作るよう指示が渡ります。"
+"\"USING GIST\"オプションによって、サーバにGiST (Generalized Search "
+"Tree)インデックスを作るよう指示が渡ります。"
 
 #. Tag: para
 #: faq.xml:234
@@ -691,8 +690,8 @@ msgid ""
 "GiST indexes are assumed to be lossy. Lossy indexes uses a proxy object (in "
 "the spatial case, a bounding box) for building the index."
 msgstr ""
-"GiSTインデクスは、不可逆であると仮定します。不可逆インデクスの構築には、代理"
-"オブジェクト (空間インデクスの場合はバウンディングボックス)を使います。"
+"GiSTインデックスは、不可逆であると仮定します。不可逆インデックスの構築には、"
+"代理オブジェクト (空間インデックスの場合はバウンディングボックス)を使います。"
 
 #. Tag: para
 #: faq.xml:239
@@ -702,9 +701,9 @@ msgid ""
 "information about your index to make rational decisions about when to use "
 "it. To do this, you have to \"gather statistics\" on your geometry tables."
 msgstr ""
-"PostgreSQLのクエリプランナがインデクスを作るべきかについて合理的な決定を行う"
-"よう、十分な情報を確実に持てるようにすべきです。そのために、ジオメトリテーブ"
-"ル上で\"gather statistics\"を実行しなければなりません。"
+"PostgreSQLのクエリプランナがインデックスを作るべきかについて合理的な決定を行"
+"うよう、十分な情報を確実に持てるようにすべきです。そのために、"
+"ジオメトリテーブル上で\"gather statistics\"を実行しなければなりません。"
 
 #. Tag: para
 #: faq.xml:244
@@ -730,7 +729,7 @@ msgstr ""
 #: faq.xml:254
 #, no-c-format
 msgid "Why aren't PostgreSQL R-Tree indexes supported?"
-msgstr "なぜPostgreSQLのR木インデクス機能を持たないのですか?"
+msgstr "なぜPostgreSQLのR木インデックス機能を持たないのですか?"
 
 #. Tag: para
 #: faq.xml:258
@@ -740,9 +739,9 @@ msgid ""
 "PostgreSQL R-Trees have been completely discarded since version 0.6, and "
 "spatial indexing is provided with an R-Tree-over-GiST scheme."
 msgstr ""
-"PostGISの、かつての版では、PostgreSQLのR木インデクスを使っていましたが、0.6版"
-"でPostgreSQLのR木は完全に捨てて、R-Tree-over-GiSTスキームによる空間インデクス"
-"を提供しています。"
+"PostGISの、かつての版では、PostgreSQLのR木インデックスを使っていましたが、0."
+"6版でPostgreSQLのR木は完全に捨てて、R-Tree-over-"
+"GiSTスキームによる空間インデックスを提供しています。"
 
 #. Tag: para
 #: faq.xml:263
@@ -767,9 +766,9 @@ msgid ""
 "in size. GiST indexes can, using the \"lossy\" trick of substituting the "
 "bounding box for the feature itself."
 msgstr ""
-"PostgreSQLのR木インデクスは、8K以上のサイズのフィーチャーは扱えません。GiSTイ"
-"ンデクスはフィーチャー自体の代わりにバウンディングボックスを用いる「不可逆」"
-"トリックを使っているので扱うことができます。"
+"PostgreSQLのR木インデックスは、8K以上のサイズのフィーチャーは扱えません。GiST"
+"インデックスはフィーチャー自体の代わりにバウンディングボックスを用いる「不可"
+"逆」トリックを使っているので扱うことができます。"
 
 #. Tag: para
 #: faq.xml:278
@@ -777,9 +776,8 @@ msgstr ""
 msgid ""
 "R-Tree indexes in PostgreSQL are not \"null safe\", so building an index on "
 "a geometry column which contains null geometries will fail."
-msgstr ""
-"PostgreSQLのR木インデクスは「NULLセーフ」ではなく、NULLジオメトリを含むジオメ"
-"トリカラムではインデクス作成に失敗します。"
+msgstr "PostgreSQLのR木インデックスは「NULLセーフ」ではなく、NULLジオメトリを含むジオ"
+"メトリカラムではインデックス作成に失敗します。"
 
 #. Tag: para
 #: faq.xml:288
@@ -841,8 +839,8 @@ msgid ""
 msgstr ""
 "データベースを最も効果的に使うには、半径検索とバウンディングボックス検索を組"
 "み合わせた半径検索を行うのが最も良いです。バウンディングボックス検索で空間イ"
-"ンデクスを使用するので、半径検索が適用されるサブセットへのアクセスが早くなり"
-"ます。"
+"ンデックスを使用するので、半径検索が適用されるサブセットへのアクセスが早くな"
+"ります。"
 
 #. Tag: para
 #: faq.xml:321
@@ -853,10 +851,10 @@ msgid ""
 "search rectangle large enough to enclose the distance radius, then "
 "performing an exact distance search on the indexed subset of results."
 msgstr ""
-"<varname>ST_DWithin(geometry, geometry, distance)</varname>関数は、インデクス"
-"付きの距離検索を実行する手軽な方法です。この関数は、距離半径を十分に含む大き"
-"さの検索矩形を作成して、 インデクス付きの結果サブセットに対して確実な距離検索"
-"を行います。"
+"<varname>ST_DWithin(geometry, geometry, distance)</varname>関数は、インデック"
+"ス付きの距離検索を実行する手軽な方法です。この関数は、距離半径を十分に含む大"
+"きさの検索矩形を作成して、インデックス付きの結果サブセットに対して確実な距離"
+"検索を行います。"
 
 #. Tag: para
 #: faq.xml:327
