@@ -1,13 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
 #
 # Translators:
-# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-06-14 09:50+0000\n"
+"PO-Revision-Date: 2023-05-17 03:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "performance_tipsxml/ja/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.12.2\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: performance_tips.xml:3
@@ -88,11 +88,11 @@ msgstr ""
 "ここで、ジオメトリ演算子の&amp;&amp;を使って、ほとんどマッチしないようなバウ"
 "ンダリボックスを検索するクエリを出してみます。クエリオプティマイザにはテーブ"
 "ルは3ページ80行しかないように見えます。オプティマイザは、小さなテーブルを順に"
-"走査する方がインデクスを使うよりも早いと見積もります。そして、GiSTインデクス"
-"は無視すると決めます。通常なら、この見積もりは正しいです。しかし、この場合は"
-"&amp;&amp;演算子が全てのジオメトリをディスクから呼び出してバウンディングボッ"
-"クスと比較しなければならなくなり、ゆえに、全てのTOASTページもまた呼び出す必要"
-"があります。"
+"走査する方がインデックスを使うよりも早いと見積もります。そして、GiSTインデッ"
+"クスは無視すると決めます。通常なら、この見積もりは正しいです。しかし、この場"
+"合は&amp;&amp;演算子が全てのジオメトリをディスクから呼び出してバウンディング"
+"ボックスと比較しなければならなくなり、ゆえに、全てのTOASTページもまた呼び出す"
+"必要があります。"
 
 #. Tag: para
 #: performance_tips.xml:35
@@ -150,13 +150,13 @@ msgid ""
 "every connection, and it causes the query planner to make misestimations in "
 "other cases, so you should \"SET enable_seqscan TO on;\" after the query."
 msgstr ""
-"一つは、クエリプランナにインデクスの使用を強制することです。クエリを発行する"
-"前に\"SET enable_seqscan TO off;\"をサーバに送信します。これは基本的にクエリ"
-"プランナに対して可能な限り順に走査することを避けるよう強制します。そのため"
-"GiSTインデクスを通常使うようになります。しかし、このフラグは接続するたびに設"
-"定しなければならず、他のケースにおいてはクエリプランナに誤った見積もりをさせ"
-"ることになるので、 \"SET enable_seqscan TO on;\"をクエリの後に送信すべきで"
-"す。"
+"一つは、クエリプランナにインデックスの使用を強制することです。"
+"クエリを発行する前に\"SET enable_seqscan TO off;\"をサーバに送信します。これ"
+"は基本的にクエリプランナに対して可能な限り順に走査することを避けるよう強制し"
+"ます。そのためGiSTインデックスを通常使うようになります。しかし、このフラグは"
+"接続するたびに設定しなければならず、他のケースにおいてはクエリプランナに誤っ"
+"た見積もりをさせることになるので、 \"SET enable_seqscan TO on;"
+"\"をクエリの後に送信すべきです。"
 
 #. Tag: para
 #: performance_tips.xml:58
@@ -224,7 +224,7 @@ msgstr ""
 #: performance_tips.xml:79
 #, no-c-format
 msgid "CLUSTERing on geometry indices"
-msgstr "ジオメトリインデクスでCLUSTERを実行する"
+msgstr "ジオメトリインデックスでCLUSTERを実行する"
 
 #. Tag: para
 #: performance_tips.xml:81
@@ -240,14 +240,14 @@ msgid ""
 "data pages. (Feel invited to read the CLUSTER command documentation from the "
 "PostgreSQL manual at this point.)"
 msgstr ""
-"読み込むことがほとんどで、かつほとんどのクエリでひとつのインデクスを使うよう"
-"なテーブルのために、PostgreSQLはCLUSTERコマンドを提供しています。このコマンド"
-"は、全てのデータ行を、インデクス基準にあわせて物理的に再整理するので、二つの"
-"性能の利点を生みます。一つは、インデックスの範囲走査のために、データテーブル"
-"のシーク回数が劇的に減少することです。もう一つは、いくつかの小さなインデック"
-"ス間隔に集中する場合には、データ行が分布するデータページがより少なくなること"
-"で、より効率的なキャッシュを持つことです (この点は、PostgreSQLマニュアルのCLU"
-"STERコマンドのドキュメントを読むように仕向けられていると感じて下さい)。"
+"読み込むことがほとんどで、かつほとんどのクエリでひとつのインデックスを使うよ"
+"うなテーブルのために、PostgreSQLはCLUSTERコマンドを提供しています。このコマン"
+"ドは、全てのデータ行を、インデックス基準にあわせて物理的に再整理するので、二"
+"つの性能の利点を生みます。一つは、インデックスの範囲走査のために、データテー"
+"ブルのシーク回数が劇的に減少することです。もう一つは、いくつかの小さなインデ"
+"ックス間隔に集中する場合には、データ行が分布するデータページがより少なくなる"
+"ことで、より効率的なキャッシュを持つことです (この点は、PostgreSQLマニュアル"
+"のCLUSTERコマンドのドキュメントを読むように仕向けられていると感じて下さい)。"
 
 #. Tag: para
 #: performance_tips.xml:91
@@ -257,8 +257,8 @@ msgid ""
 "indices because GIST indices simply ignores NULL values, you get an error "
 "message like:"
 msgstr ""
-"しかし、GiSTインデクスは単純にNULL値を無視するため現在のところPostGISのGiSTイ"
-"ンデクスのクラスタリングはできず、次のようなエラーメッセージを得ます。"
+"しかし、GiSTインデックスは単純にNULL値を無視するため現在のところPostGISのGiST"
+"インデックスのクラスタリングはできず、次のようなエラーメッセージを得ます。"
 
 #. Tag: programlisting
 #: performance_tips.xml:95
@@ -272,7 +272,7 @@ msgstr ""
 "lwgeom=# CLUSTER my_geom_index ON my_table;\n"
 "ERROR: cannot cluster when index access method does not handle null values\n"
 "(エラー: "
-"インデクスアクセスメソッドがNULL値を扱わない場合クラスタ化できません)\n"
+"インデックスアクセスメソッドがNULL値を扱わない場合クラスタ化できません)\n"
 "HINT: You may be able to work around this by marking column \"geom\" NOT "
 "NULL.\n"
 "(ヒント: 列\"the_geom\"をNOT "
