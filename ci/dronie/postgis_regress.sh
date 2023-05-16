@@ -8,7 +8,10 @@ export PGPORT=`grep ^port /etc/postgresql/$PGVER/main/postgresql.conf | awk '{pr
 export PATH=/usr/lib/postgresql/$PGVER/bin:$PATH
 psql --version
 ./autogen.sh
-./configure CFLAGS="-O2 -Wall -fno-omit-frame-pointer -Werror" --without-interrupt-tests
+./configure \
+  CFLAGS="-O2 -Wall -fno-omit-frame-pointer -Werror" \
+  --without-interrupt-tests \
+  --with-library-minor-version
 make clean
 make -j
 # we should maybe wait for postgresql service to startup here...
