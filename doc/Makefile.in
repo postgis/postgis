@@ -420,9 +420,9 @@ uninstall: comments-uninstall
 ifeq ($(XSLTPROC),)
 garden: requirements_not_met_xsltproc
 else
-garden:	xsl/postgis_gardentest.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) -o postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql xsl/postgis_gardentest.sql.xsl postgis-out.xml
-	$(XSLTPROC) -o raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql xsl/raster_gardentest.sql.xsl postgis-out.xml
+garden: $(srcdir)/xsl/postgis_gardentest.sql.xsl $(srcdir)/xsl/raster_gardentest.sql.xsl postgis-out.xml
+	$(XSLTPROC) -o postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql --path $(srcdir) $(srcdir)/xsl/postgis_gardentest.sql.xsl postgis-out.xml
+	$(XSLTPROC) -o raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql --path $(srcdir) $(srcdir)/xsl/raster_gardentest.sql.xsl postgis-out.xml
 endif
 
 
