@@ -7,6 +7,8 @@ Additional features are enabled if you are running GEOS 3.9+
 Proj 6.1+, and PostgreSQL 14+.
 
 * Bug Fixes *
+  - #5384, Fix crash in ST_AsGML when given id is longer than given prefix
+           (Sandro Santilli)
   - #5380, Fix 2.5 upgrades with views using geography based ST_Distance
            (Sandro Santilli)
   - #5106, Fix segfault in ST_RemEdgeNewFace/ST_RemEdgeModFace

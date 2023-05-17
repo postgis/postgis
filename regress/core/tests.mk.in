@@ -65,6 +65,7 @@ TESTS += \
 	$(topsrcdir)/regress/core/out_flatgeobuf \
 	$(topsrcdir)/regress/core/out_geometry \
 	$(topsrcdir)/regress/core/out_geography \
+	$(topsrcdir)/regress/core/out_gml \
 	$(topsrcdir)/regress/core/polygonize \
 	$(topsrcdir)/regress/core/polyhedralsurface \
 	$(topsrcdir)/regress/core/postgis_type_name \
