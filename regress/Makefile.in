@@ -23,6 +23,12 @@ POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
 
+# To use a custom database name, run:
+#
+#    make garden GARDENDB=custom_db_name
+#
+GARDENDB=postgis_garden
+
 # Where we put our regression installation
 # See https://trac.osgeo.org/postgis/ticket/5066
 ifeq ($(MINGWBUILD),1)
@@ -94,16 +100,16 @@ staged-install:
 	$(PERL) -pi -e 's,\$$libdir,$(REGRESS_INSTALLDIR)/lib,g' $(REGRESS_INSTALLDIR)/share/contrib/postgis/*.sql
 
 garden: staged-install
-	createdb postgis_garden
-	psql -qX -v ON_ERROR_STOP=true -d postgis_garden < $(REGRESS_INSTALLDIR)/share/contrib/postgis/postgis.sql
-	psql -qX -v ON_ERROR_STOP=true -d postgis_garden < $(REGRESS_INSTALLDIR)/share/contrib/postgis/spatial_ref_sys.sql
-	psql -qX -v ON_ERROR_STOP=true -d postgis_garden < $(REGRESS_INSTALLDIR)/share/contrib/postgis/rtpostgis.sql
+	createdb $(GARDENDB)
+	psql -qX -v ON_ERROR_STOP=true -d $(GARDENDB) < $(REGRESS_INSTALLDIR)/share/contrib/postgis/postgis.sql
+	psql -qX -v ON_ERROR_STOP=true -d $(GARDENDB) < $(REGRESS_INSTALLDIR)/share/contrib/postgis/spatial_ref_sys.sql
+	psql -qX -v ON_ERROR_STOP=true -d $(GARDENDB) < $(REGRESS_INSTALLDIR)/share/contrib/postgis/rtpostgis.sql
 	@echo '-------------------------------------------------'
 	@echo 'Regression tests in progress (it will take time)'
 	@echo 'Result output: ./regress/postgis_garden_result.txt'
 	@echo '-------------------------------------------------'
-	psql -X -ad postgis_garden < ../doc/postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql > postgis_garden_result.txt 2>&1
+	psql -X -ad $(GARDENDB) < ../doc/postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql > postgis_garden_result.txt 2>&1
 	tail postgis_garden_result.txt
-	psql -X -ad postgis_garden < ../doc/raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql > raster_garden_result.txt 2>&1
+	psql -X -ad $(GARDENDB) < ../doc/raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql > raster_garden_result.txt 2>&1
 	tail raster_garden_result.txt
-	#dropdb postgis_garden
+	#dropdb $(GARDENDB)
