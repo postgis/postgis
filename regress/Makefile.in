@@ -95,7 +95,6 @@ staged-install:
 
 garden: staged-install
 	createdb postgis_garden
-	createlang plpgsql postgis_garden || true #tolerate an error here
 	psql -qX -v ON_ERROR_STOP=true -d postgis_garden < $(REGRESS_INSTALLDIR)/share/contrib/postgis/postgis.sql
 	psql -qX -v ON_ERROR_STOP=true -d postgis_garden < $(REGRESS_INSTALLDIR)/share/contrib/postgis/spatial_ref_sys.sql
 	psql -qX -v ON_ERROR_STOP=true -d postgis_garden < $(REGRESS_INSTALLDIR)/share/contrib/postgis/rtpostgis.sql
