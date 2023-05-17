@@ -2,6 +2,9 @@ PostGIS 3.0.9dev
 xxxx/xx/xx
 
 * Bug Fixes *
+
+  - #5384, Fix crash in ST_AsGML when given id is longer than given prefix
+           (Sandro Santilli)
   - #5338, Dump/Restore of raster table fails on
            enforce_coverage_tile_rast constraint (Regina Obe)
   - #5315, #5319, #5320, #5342 crashes on infinite coordinates

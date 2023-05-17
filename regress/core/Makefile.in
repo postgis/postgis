@@ -105,6 +105,7 @@ TESTS = \
 	orientation \
 	out_geometry \
 	out_geography \
+	out_gml \
 	polygonize \
 	polyhedralsurface \
 	postgis_type_name \
