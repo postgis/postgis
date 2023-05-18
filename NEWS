@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Avoid a duplicate rule warning when building SFCGAL (Sandro Santilli)
  - Include stylesheet dependencies when building the aggregate support matrix (Sandro Santilli)
  - Add text alternatives to the icons in the function support matrix (Sandro Santilli)
  - Fail documentation image generation when the rendering command fails (Sandro Santilli)
