@@ -135,7 +135,7 @@ distclean-local: clean-local
 	fi
 	if test -z "@SFCGAL@"; then \
 		$(MAKE) -C sfcgal distclean; \
-		rm -f raster/Makefile; \
+		rm -f sfcgal/Makefile; \
 	fi
 
 maintainer-clean-local: distclean-local
