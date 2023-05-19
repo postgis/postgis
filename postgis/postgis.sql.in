@@ -2872,6 +2872,65 @@ CREATE OR REPLACE FUNCTION postgis_transform_geometry(geom geometry, text, text,
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
 
+------------------------------------------------------------------------
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION postgis_srs_codes(auth_name text)
+	RETURNS SETOF TEXT
+	AS 'MODULE_PATHNAME', 'postgis_srs_codes'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION postgis_srs(auth_name text, auth_srid text)
+	RETURNS TABLE(
+		auth_name TEXT,
+		auth_srid TEXT,
+		srname TEXT,
+		srtext TEXT,
+		proj4text TEXT,
+		point_sw GEOMETRY,
+		point_ne GEOMETRY
+		)
+	AS 'MODULE_PATHNAME', 'postgis_srs_entry'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION postgis_srs_all()
+	RETURNS TABLE(
+		auth_name TEXT,
+		auth_srid TEXT,
+		srname TEXT,
+		srtext TEXT,
+		proj4text TEXT,
+		point_sw GEOMETRY,
+		point_ne GEOMETRY
+		)
+	AS 'MODULE_PATHNAME', 'postgis_srs_entry_all'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION postgis_srs_search(
+		bounds geometry,
+		authname text DEFAULT 'EPSG')
+	RETURNS TABLE(
+		auth_name TEXT,
+		auth_srid TEXT,
+		srname TEXT,
+		srtext TEXT,
+		proj4text TEXT,
+		point_sw GEOMETRY,
+		point_ne GEOMETRY
+		)
+	AS 'MODULE_PATHNAME', 'postgis_srs_search'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
+
+------------------------------------------------------------------------
+
 -- PostGIS equivalent of old function: transform(geometry,integer)
 CREATE OR REPLACE FUNCTION ST_Transform(geometry,integer)
 	RETURNS geometry

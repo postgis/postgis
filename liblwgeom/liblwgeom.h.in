@@ -2452,6 +2452,7 @@ int lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outst
  */
 int lwgeom_transform(LWGEOM *geom, LWPROJ* pj);
 int ptarray_transform(POINTARRAY *pa, LWPROJ* pj);
+int box3d_transform(GBOX *box, LWPROJ *pj);
 
 /**
  * Allocate a new LWPROJ containing the reference to the PROJ's PJ
