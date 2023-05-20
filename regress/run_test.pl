@@ -78,6 +78,7 @@ my $OPT_WITH_RASTER = 0;
 my $OPT_WITH_SFCGAL = 0;
 my $OPT_EXPECT = 0;
 my $OPT_EXTENSIONS = 0;
+my $OPT_LEGACY = 0;
 my @OPT_HOOK_AFTER_CREATE;
 my @OPT_HOOK_AFTER_RESTORE;
 my @OPT_HOOK_BEFORE_DUMP;
@@ -107,6 +108,7 @@ GetOptions (
 	'sfcgal' => \$OPT_WITH_SFCGAL,
 	'expect' => \$OPT_EXPECT,
 	'extensions' => \$OPT_EXTENSIONS,
+	'legacy' => \$OPT_LEGACY,
 	'schema=s' => \$OPT_SCHEMA,
 	'build-dir=s' => \$TOP_BUILDDIR,
 	'after-create-script=s' => \@OPT_HOOK_AFTER_CREATE,
@@ -700,12 +702,13 @@ Options:
   --schema        where to install/find PostGIS (relocatable) PostGIS
                   (defaults to "public")
   --raster        load also raster extension
-  --tiger      		load also tiger_geocoder extension
+  --tiger         load also tiger_geocoder extension
   --topology      load also topology extension
   --sfcgal        use also sfcgal backend
   --clean         cleanup test logs on exit
   --expect        save obtained output as expected
   --extension     load using extensions
+  --legacy        load also legacy scripts
   --build-dir <path>
                   specify where to find the top build dir of PostGIS,
                   to find binaries and scripts
@@ -1675,6 +1678,11 @@ sub prepare_spatial
 	return 0 unless load_sql_file("${scriptdir}/postgis.sql", 1);
 	return 0 unless load_sql_file("${scriptdir}/postgis_comments.sql", 0);
 	return 0 unless load_sql_file("${scriptdir}/spatial_ref_sys.sql", 0);
+	if ( $OPT_LEGACY )
+	{
+		print "Loading legacy.sql from $scriptdir\n";
+		return 0 unless load_sql_file("${scriptdir}/legacy.sql", 0);
+	}
 
 	if ( $OPT_WITH_TOPO )
 	{
@@ -1951,6 +1959,10 @@ sub drop_spatial
 	if ( $OPT_WITH_SFCGAL )
 	{
 		load_sql_file("${STAGED_SCRIPTS_DIR}/uninstall_sfcgal.sql");
+	}
+	if ( $OPT_LEGACY )
+	{
+		load_sql_file("${STAGED_SCRIPTS_DIR}/uninstall_legacy.sql");
 	}
 	load_sql_file("${STAGED_SCRIPTS_DIR}/uninstall_postgis.sql");
 
