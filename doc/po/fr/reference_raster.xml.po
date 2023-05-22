@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-04 00:50+0000\n"
-"PO-Revision-Date: 2023-05-15 16:32+0000\n"
+"PO-Revision-Date: 2023-05-23 02:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_rasterxml/fr/>\n"
@@ -13187,7 +13187,7 @@ msgstr ""
 #: reference_raster.xml:7174
 #, no-c-format
 msgid "ST_Intersection"
-msgstr ""
+msgstr "ST_Intersection"
 
 #. Tag: refpurpose
 #: reference_raster.xml:7175
@@ -16167,7 +16167,7 @@ msgstr ""
 #: reference_raster.xml:8790
 #, no-c-format
 msgid "ST_Union"
-msgstr ""
+msgstr "ST_Union"
 
 #. Tag: refpurpose
 #: reference_raster.xml:8791
