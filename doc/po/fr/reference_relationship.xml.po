@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-04-10 06:16+0000\n"
-"PO-Revision-Date: 2023-05-15 08:43+0000\n"
+"PO-Revision-Date: 2023-05-23 02:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_relationshipxml/fr/>\n"
@@ -134,7 +134,7 @@ msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1"
 #: reference_relationship.xml:54 reference_relationship.xml:841
 #, no-c-format
 msgid "Geometry Examples"
-msgstr ""
+msgstr "Exemples de géométrie"
 
 #. Tag: programlisting
 #: reference_relationship.xml:55
@@ -1311,7 +1311,7 @@ msgstr ""
 #: reference_relationship.xml:845
 #, no-c-format
 msgid "Geography Examples"
-msgstr ""
+msgstr "Exemples géographiques"
 
 #. Tag: programlisting
 #: reference_relationship.xml:846
