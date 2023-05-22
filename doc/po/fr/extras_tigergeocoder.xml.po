@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2023-01-06 15:50+0000\n"
+"PO-Revision-Date: 2023-05-23 02:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "extras_tigergeocoderxml/fr/>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:6
@@ -31,6 +31,10 @@ msgid ""
 "Encoding and Referencing system ) / Line and Master Address database export</"
 "ulink> released by the US Census Bureau."
 msgstr ""
+"Un géocodeur basé sur plpgsql écrit pour fonctionner avec le <ulink url="
+"\"http://www.census.gov/geo/www/tiger/\">TIGER (Topologically Integrated "
+"Geographic Encoding and Referencing system ) / Line and Master Address "
+"database export</ulink> publié par le US Census Bureau."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:7
@@ -39,6 +43,9 @@ msgid ""
 "There are four components to the geocoder: the data loader functions, the "
 "address normalizer, the address geocoder, and the reverse geocoder."
 msgstr ""
+"Le géocodeur se compose de quatre éléments : les fonctions de chargement des "
+"données, le normalisateur d'adresses, le géocodeur d'adresses et le "
+"géocodeur inverse."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:8
@@ -48,6 +55,9 @@ msgid ""
 "functions are applicable and can be adapted to work with other country "
 "address and road networks."
 msgstr ""
+"Bien qu'il soit conçu spécifiquement pour les États-Unis, un grand nombre de "
+"concepts et de fonctions sont applicables et peuvent être adaptés pour "
+"fonctionner avec les adresses et les réseaux routiers d'autres pays."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:9
@@ -58,6 +68,11 @@ msgid ""
 "suffixes, states, various control tables for managing data load, and "
 "skeleton base tables from which all the tiger loaded tables inherit from."
 msgstr ""
+"Le script construit un schéma appelé <varname>tiger</varname> pour héberger "
+"toutes les fonctions liées au tiger, les données de référence réutilisables "
+"telles que les préfixes de type de route, les suffixes, les états, diverses "
+"tables de contrôle pour gérer le chargement des données, et les tables de "
+"base squelettiques dont héritent toutes les tables chargées par le tiger."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:10
@@ -72,6 +87,15 @@ msgid ""
 "<varname>faces</varname>, <varname>edges</varname>, etc located in the "
 "<varname>tiger schema</varname>."
 msgstr ""
+"Un autre schéma appelé <varname>tiger_data</varname> est également créé. Il "
+"contient toutes les données de recensement pour chaque État que le chargeur "
+"télécharge à partir du site du recensement et charge dans la base de "
+"données. Dans le modèle actuel, chaque ensemble de tables d'État est préfixé "
+"par le code de l'État, par exemple <varname>ma_addr</varname>, "
+"<varname>ma_edges</varname> etc. avec des contraintes pour appliquer "
+"uniquement les données de l'État. Chacune de ces tables hérite des tables "
+"<varname>addr</varname>, <varname>faces</varname>, <varname>edges</varname>, "
+"etc. situées dans le <varname>tiger schema</varname>."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:12
@@ -83,6 +107,12 @@ msgid ""
 "schema for each state, as long as all the tables inherit from the tables in "
 "the <varname>tiger</varname> schema."
 msgstr ""
+"Toutes les fonctions de géocodage ne font référence qu'aux tables de base, "
+"de sorte qu'il n'est pas nécessaire que le schéma de données s'appelle "
+"<varname>tiger_data</varname> ou que les données ne puissent pas être "
+"subdivisées en d'autres schémas - par exemple un schéma différent pour "
+"chaque État, tant que toutes les tables héritent des tables du schéma "
+"<varname>tiger</varname>."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:16
@@ -92,6 +122,9 @@ msgid ""
 "load data using it, refer to <xref linkend=\"install_tiger_geocoder_extension"
 "\"/>."
 msgstr ""
+"Pour savoir comment activer l'extension dans votre base de données et "
+"charger des données à l'aide de celle-ci, consultez <xref linkend="
+"\"install_tiger_geocoder_extension\"/>."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:19
@@ -105,6 +138,13 @@ msgid ""
 "have data from tiger_2010 and want to replace with tiger_2015, refer to "
 "<xref linkend=\"upgrade_tiger_geocoder\"/>"
 msgstr ""
+"Si vous utilisez tiger geocoder (tiger_2010), vous pouvez mettre à jour les "
+"scripts en utilisant les scripts upgrade_geocoder.bat / .sh dans extras/"
+"tiger. Un changement majeur entre <varname>tiger_2010</varname> et "
+"<varname>tiger_2011+</varname> est que les tables <varname>county</varname> "
+"et <varname>state</varname> ne sont plus ventilées par état. Si vous avez "
+"des données provenant de tiger_2010 et que vous souhaitez les remplacer par "
+"tiger_2015, consultez <xref linkend=\"upgrade_tiger_geocoder\"/>"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:26
@@ -113,6 +153,8 @@ msgid ""
 "New in PostGIS 2.2.0 release is support for Tiger 2015 data and inclusion of "
 "Address Standardizer as part of PostGIS."
 msgstr ""
+"Les nouveautés de la version 2.2.0 de PostGIS sont la prise en charge des "
+"données Tiger 2015 et l'intégration d'Address Standardizer dans PostGIS."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:27
@@ -122,6 +164,10 @@ msgid ""
 "PostgreSQL extension model if you are running PostgreSQL 9.1+. Refer to "
 "<xref linkend=\"install_tiger_geocoder_extension\"/> for details."
 msgstr ""
+"La nouveauté de la version 2.1.0 de PostGIS est la possibilité d'installer "
+"le géocodeur tiger avec le modèle d'extension PostgreSQL si vous utilisez "
+"PostgreSQL 9.1+. Référez-vous à <xref linkend="
+"\"install_tiger_geocoder_extension\"/> pour plus de détails."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:30
@@ -132,12 +178,16 @@ msgid ""
 "<xref linkend=\"installing_pagc_address_standardizer\"/> for compile and "
 "installation instructions."
 msgstr ""
+"Le <xref linkend=\"Pagc_Normalize_Address\"/> remplace directement le <xref "
+"linkend=\"Normalize_Address\"/> intégré. Référez-vous à <xref linkend="
+"\"installing_pagc_address_standardizer\"/> pour les instructions de "
+"compilation et d'installation."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:34
 #, no-c-format
 msgid "Design:"
-msgstr ""
+msgstr "Conception :"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:35
@@ -149,6 +199,12 @@ msgid ""
 "the given address and likeliness of the location. The higher the rating "
 "number the worse the result."
 msgstr ""
+"L'objectif de ce projet est de construire un géocodeur entièrement "
+"fonctionnel capable de traiter une chaîne d'adresses arbitraires aux États-"
+"Unis et, à l'aide des données normalisées du recensement TIGER, de produire "
+"une géométrie de points et une évaluation reflétant la localisation de "
+"l'adresse donnée et la vraisemblance de la localisation. Plus l'indice est "
+"élevé, plus le résultat est mauvais."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:37
@@ -158,6 +214,9 @@ msgid ""
 "is useful for deriving the street address and cross streets of a GPS "
 "location."
 msgstr ""
+"La fonction <varname>reverse_geocode</varname>, introduite dans PostGIS "
+"2.0.0, est utile pour dériver l'adresse de la rue et les rues transversales "
+"d'une position GPS."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:38
@@ -167,6 +226,9 @@ msgid ""
 "and use, and should be easily installable and usable on all platforms "
 "supported by PostGIS."
 msgstr ""
+"Le géocodeur doit être simple à installer et à utiliser pour toute personne "
+"familiarisée avec PostGIS, et doit être facilement installable et utilisable "
+"sur toutes les plateformes supportées par PostGIS."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:39
@@ -175,6 +237,8 @@ msgid ""
 "It should be robust enough to function properly despite formatting and "
 "spelling errors."
 msgstr ""
+"Il doit être suffisamment robuste pour fonctionner correctement malgré les "
+"erreurs de formatage et d'orthographe."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:40
@@ -183,6 +247,9 @@ msgid ""
 "It should be extensible enough to be used with future data updates, or "
 "alternate data sources with a minimum of coding changes."
 msgstr ""
+"Il doit être suffisamment extensible pour pouvoir être utilisé avec de "
+"futures mises à jour de données ou d'autres sources de données avec un "
+"minimum de changements de codage."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:42
@@ -191,12 +258,14 @@ msgid ""
 "The <varname>tiger</varname> schema must be added to the database search "
 "path for the functions to work properly."
 msgstr ""
+"Le schéma <varname>tiger</varname> doit être ajouté au search path de la "
+"base de données pour que les fonctions fonctionnent correctement."
 
 #. Tag: title
 #: extras_tigergeocoder.xml:46
 #, no-c-format
 msgid "Tiger Geocoder"
-msgstr ""
+msgstr "Géocodeur Tiger"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:48
@@ -205,6 +274,9 @@ msgid ""
 "There are a couple other open source geocoders for PostGIS, that unlike "
 "tiger geocoder have the advantage of multi-country geocoding support"
 msgstr ""
+"Il existe quelques autres géocodeurs open source pour PostGIS qui, "
+"contrairement au géocodeur Tiger, présentent l'avantage de prendre en charge "
+"le géocodage multi-pays"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:50
@@ -219,6 +291,15 @@ msgid ""
 "a pure SQL interface like the tiger geocoder, or if a good deal of the logic "
 "is implemented in the web interface."
 msgstr ""
+"<ulink url=\"http://wiki.openstreetmap.org/wiki/Nominatim\">Nominatim</"
+"ulink> utilise les données formatées de OpenStreetMap gazeteer. Il nécessite "
+"osm2pgsql pour charger les données, PostgreSQL 8.4+ et PostGIS 1.5+ pour "
+"fonctionner. Il est présenté sous la forme d'une interface webservice et "
+"semble conçu pour être appelé en tant que webservice. Tout comme le tiger "
+"geocoder, il possède à la fois un géocodeur et un géocodeur inversé. La "
+"documentation n'indique pas clairement s'il dispose d'une interface SQL pure "
+"comme le géocodeur tiger, ou si une grande partie de la logique est "
+"implémentée dans l'interface web."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:53
@@ -231,12 +312,20 @@ msgid ""
 "relies on Java 1.5, Servlet apps, Solr. GisGraphy is cross-platform and also "
 "has a reverse geocoder among some other neat features."
 msgstr ""
+"<ulink url=\"http://www.gisgraphy.com/\">GIS Graphy</ulink> utilise "
+"également PostGIS et, comme Nominatim, fonctionne avec des données "
+"OpenStreetMap (OSM). Il est livré avec un chargeur pour charger les données "
+"OSM et, comme Nominatim, il est capable de géocoder d'autres pays que les "
+"États-Unis. Tout comme Nominatim, il fonctionne comme un service web et "
+"s'appuie sur Java 1.5, Servlet apps, Solr. GisGraphy est multiplateforme et "
+"dispose également d'un géocodeur inversé parmi d'autres fonctionnalités "
+"intéressantes."
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:58
 #, no-c-format
 msgid "Drop_Indexes_Generate_Script"
-msgstr ""
+msgstr "Drop_Indexes_Generate_Script"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:60
@@ -246,6 +335,10 @@ msgid ""
 "indexes on tiger schema and user specified schema. Defaults schema to "
 "<varname>tiger_data</varname> if no schema is specified.</refpurpose>"
 msgstr ""
+"<refpurpose>Génère un script qui supprime toutes les clés non primaires et "
+"les index non uniques sur le schéma tiger et le schéma spécifié par "
+"l'utilisateur. Le schéma par défaut est <varname>tiger_data</varname> si "
+"aucun schéma n'est spécifié.</refpurpose>"
 
 #. Tag: funcprototype
 #: extras_tigergeocoder.xml:65
@@ -281,6 +374,10 @@ msgid ""
 "indexes on tiger schema and user specified schema. Defaults schema to "
 "<varname>tiger_data</varname> if no schema is specified.</para>"
 msgstr ""
+"<para>Génère un script qui supprime toutes les clés non primaires et les "
+"index non uniques sur le schéma tiger et le schéma spécifié par "
+"l'utilisateur. Le schéma par défaut est <varname>tiger_data</varname> si "
+"aucun schéma n'est spécifié.</para>"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:76
@@ -290,6 +387,10 @@ msgid ""
 "or take up unnecessary space. Use in combination with <xref linkend="
 "\"Install_Missing_Indexes\"/> to add just the indexes used by the geocoder."
 msgstr ""
+"Ceci est utile pour minimiser le gonflement de l'index qui peut perturber le "
+"planificateur de requêtes ou prendre de l'espace inutilement. A utiliser en "
+"combinaison avec <xref linkend=\"Install_Missing_Indexes\"/> pour ajouter "
+"uniquement les index utilisés par le géocodeur."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:79 extras_tigergeocoder.xml:163
@@ -351,6 +452,40 @@ msgid ""
 ":\n"
 ":"
 msgstr ""
+"SELECT drop_indexes_generate_script() As actionsql;\n"
+"actionsql\n"
+"---------------------------------------------------------\n"
+"DROP INDEX tiger.idx_tiger_countysub_lookup_lower_name;\n"
+"DROP INDEX tiger.idx_tiger_edges_countyfp;\n"
+"DROP INDEX tiger.idx_tiger_faces_countyfp;\n"
+"DROP INDEX tiger.tiger_place_the_geom_gist;\n"
+"DROP INDEX tiger.tiger_edges_the_geom_gist;\n"
+"DROP INDEX tiger.tiger_state_the_geom_gist;\n"
+"DROP INDEX tiger.idx_tiger_addr_least_address;\n"
+"DROP INDEX tiger.idx_tiger_addr_tlid;\n"
+"DROP INDEX tiger.idx_tiger_addr_zip;\n"
+"DROP INDEX tiger.idx_tiger_county_countyfp;\n"
+"DROP INDEX tiger.idx_tiger_county_lookup_lower_name;\n"
+"DROP INDEX tiger.idx_tiger_county_lookup_snd_name;\n"
+"DROP INDEX tiger.idx_tiger_county_lower_name;\n"
+"DROP INDEX tiger.idx_tiger_county_snd_name;\n"
+"DROP INDEX tiger.idx_tiger_county_the_geom_gist;\n"
+"DROP INDEX tiger.idx_tiger_countysub_lookup_snd_name;\n"
+"DROP INDEX tiger.idx_tiger_cousub_countyfp;\n"
+"DROP INDEX tiger.idx_tiger_cousub_cousubfp;\n"
+"DROP INDEX tiger.idx_tiger_cousub_lower_name;\n"
+"DROP INDEX tiger.idx_tiger_cousub_snd_name;\n"
+"DROP INDEX tiger.idx_tiger_cousub_the_geom_gist;\n"
+"DROP INDEX tiger_data.idx_tiger_data_ma_addr_least_address;\n"
+"DROP INDEX tiger_data.idx_tiger_data_ma_addr_tlid;\n"
+"DROP INDEX tiger_data.idx_tiger_data_ma_addr_zip;\n"
+"DROP INDEX tiger_data.idx_tiger_data_ma_county_countyfp;\n"
+"DROP INDEX tiger_data.idx_tiger_data_ma_county_lookup_lower_name;\n"
+"DROP INDEX tiger_data.idx_tiger_data_ma_county_lookup_snd_name;\n"
+"DROP INDEX tiger_data.idx_tiger_data_ma_county_lower_name;\n"
+"DROP INDEX tiger_data.idx_tiger_data_ma_county_snd_name;\n"
+":\n"
+":"
 
 #. Tag: title
 #: extras_tigergeocoder.xml:93 extras_tigergeocoder.xml:134
@@ -370,13 +505,13 @@ msgstr "Voir aussi"
 #: extras_tigergeocoder.xml:94 extras_tigergeocoder.xml:429
 #, no-c-format
 msgid ", <xref linkend=\"Missing_Indexes_Generate_Script\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"Missing_Indexes_Generate_Script\"/>"
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:100
 #, no-c-format
 msgid "Drop_Nation_Tables_Generate_Script"
-msgstr ""
+msgstr "Drop_Nation_Tables_Generate_Script"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:102
@@ -386,6 +521,10 @@ msgid ""
 "with <varname>county_all</varname>, <varname>state_all</varname> or state "
 "code followed by <varname>county</varname> or <varname>state</varname>."
 msgstr ""
+"Génère un script qui supprime toutes les tables du schéma spécifié qui "
+"commencent par <varname>county_all</varname>, <varname>state_all</varname> "
+"ou code d'état suivi de <varname>county</varname> ou "
+"<varname>state</varname>."
 
 #. Tag: funcprototype
 #: extras_tigergeocoder.xml:107
@@ -395,6 +534,9 @@ msgid ""
 "funcdef> <paramdef choice=\"opt\"><type>text </type> "
 "<parameter>param_schema=tiger_data</parameter></paramdef>"
 msgstr ""
+"<funcdef>text <function>Drop_Nation_Tables_Generate_Script</function></"
+"funcdef> <paramdef choice=\"opt\"><type>text </type> "
+"<parameter>param_schema=tiger_data</parameter></paramdef>"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:117
@@ -406,6 +548,11 @@ msgid ""
 "is needed if you are upgrading from <varname>tiger_2010</varname> to "
 "<varname>tiger_2011</varname> data."
 msgstr ""
+"Génère un script qui supprime toutes les tables du schéma spécifié qui "
+"commencent par <varname>county_all</varname>, <varname>state_all</varname> "
+"ou code d'état suivi de <varname>county</varname> ou <varname>state</"
+"varname>. Ceci est nécessaire si vous mettez à jour les données de "
+"<varname>tiger_2010</varname> vers <varname>tiger_2011</varname>."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:120 extras_tigergeocoder.xml:326
@@ -426,12 +573,18 @@ msgid ""
 "DROP TABLE tiger_data.ma_county;\n"
 "DROP TABLE tiger_data.ma_state;"
 msgstr ""
+"SELECT drop_nation_tables_generate_script();\n"
+"DROP TABLE tiger_data.county_all;\n"
+"DROP TABLE tiger_data.county_all_lookup;\n"
+"DROP TABLE tiger_data.state_all;\n"
+"DROP TABLE tiger_data.ma_county;\n"
+"DROP TABLE tiger_data.ma_state;"
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:141
 #, no-c-format
 msgid "Drop_State_Tables_Generate_Script"
-msgstr ""
+msgstr "Drop_State_Tables_Generate_Script"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:143
@@ -441,6 +594,9 @@ msgid ""
 "prefixed with the state abbreviation. Defaults schema to "
 "<varname>tiger_data</varname> if no schema is specified."
 msgstr ""
+"Génère un script qui supprime toutes les tables du schéma spécifié qui sont "
+"préfixées par l'abréviation de l'état. La valeur par défaut du schéma est "
+"<varname>tiger_data</varname> si aucun schéma n'est spécifié."
 
 #. Tag: funcprototype
 #: extras_tigergeocoder.xml:148
@@ -466,6 +622,11 @@ msgid ""
 "useful for dropping tables of a state just before you reload a state in case "
 "something went wrong during your previous load."
 msgstr ""
+"Génère un script qui supprime toutes les tables du schéma spécifié qui sont "
+"préfixées par l'abréviation de l'état. Le schéma par défaut est "
+"<varname>tiger_data</varname> si aucun schéma n'est spécifié. Cette fonction "
+"est utile pour supprimer les tables d'un état juste avant de le recharger, "
+"au cas où quelque chose se serait mal passé lors du chargement précédent."
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:171
@@ -485,12 +646,25 @@ msgid ""
 "DROP TABLE tiger_data.pa_zip_state;\n"
 "DROP TABLE tiger_data.pa_zip_state_loc;"
 msgstr ""
+"SELECT drop_state_tables_generate_script('PA');\n"
+"DROP TABLE tiger_data.pa_addr;\n"
+"DROP TABLE tiger_data.pa_county;\n"
+"DROP TABLE tiger_data.pa_county_lookup;\n"
+"DROP TABLE tiger_data.pa_cousub;\n"
+"DROP TABLE tiger_data.pa_edges;\n"
+"DROP TABLE tiger_data.pa_faces;\n"
+"DROP TABLE tiger_data.pa_featnames;\n"
+"DROP TABLE tiger_data.pa_place;\n"
+"DROP TABLE tiger_data.pa_state;\n"
+"DROP TABLE tiger_data.pa_zip_lookup_base;\n"
+"DROP TABLE tiger_data.pa_zip_state;\n"
+"DROP TABLE tiger_data.pa_zip_state_loc;"
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:183
 #, no-c-format
 msgid "Geocode"
-msgstr ""
+msgstr "Géocode"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:185
@@ -503,6 +677,13 @@ msgid ""
 "pass in maximum results, defaults to 10, and restrict_region (defaults to "
 "NULL)"
 msgstr ""
+"Prend une adresse sous forme de chaîne de caractères (ou autre adresse "
+"normalisée) et produit un ensemble de lieux possibles comprenant une "
+"géométrie de point en NAD 83 long lat, une adresse normalisée pour chacun "
+"d'entre eux et l'évaluation. Plus la note est basse, plus la correspondance "
+"est probable. Les résultats sont triés par ordre décroissant. Il est "
+"possible d'indiquer en option le nombre maximum de résultats (10 par défaut) "
+"et la restriction de la région (NULL par défaut)"
 
 #. Tag: funcsynopsis
 #: extras_tigergeocoder.xml:190
@@ -561,6 +742,18 @@ msgid ""
 "to offset 10 meters from center-line off to side (L/R) of street address is "
 "located on."
 msgstr ""
+"Prend une adresse sous forme de chaîne de caractères (ou une adresse déjà "
+"normalisée) et produit un ensemble de lieux possibles comprenant une "
+"géométrie de point en NAD 83 long lat, une <varname>adresse_normalisée</"
+"varname> (addy) pour chacun d'entre eux, et l'évaluation. Plus la note est "
+"basse, plus la correspondance est probable. Les résultats sont triés en "
+"fonction de la note la plus basse. Utilise les données du tiger (edges, "
+"faces, addr), la correspondance floue de PostgreSQL (soundex, levenshtein) "
+"et les fonctions d'interpolation de lignes de PostGIS pour interpoler "
+"l'adresse le long des bords du tigre. Plus la note est élevée, moins le "
+"géocodage a de chances d'être correct. Par défaut, le point géocodé est "
+"décalé de 10 mètres par rapport à la ligne centrale du côté (L/R) de la rue "
+"où se trouve l'adresse."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:219
@@ -572,13 +765,19 @@ msgid ""
 "<varname>max_results</varname> useful for specifying number of best results "
 "or just returning the best result."
 msgstr ""
+"Amélioration : 2.0.0 pour prendre en charge les données structurées Tiger "
+"2010 et révision de certaines logiques pour améliorer la vitesse et la "
+"précision du géocodage, et pour décaler le point de la ligne centrale vers "
+"le côté de la rue où se trouve l'adresse. Le nouveau paramètre "
+"<varname>max_results</varname> permet de spécifier le nombre de meilleurs "
+"résultats ou de renvoyer uniquement le meilleur résultat."
 
 #. Tag: title
 #: extras_tigergeocoder.xml:225 extras_tigergeocoder.xml:288
 #: extras_tigergeocoder.xml:377
 #, no-c-format
 msgid "Examples: Basic"
-msgstr ""
+msgstr "Exemples : De base"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:226
@@ -588,12 +787,15 @@ msgid ""
 "machine with 2GB ram running PostgreSQL 9.1rc1/PostGIS 2.0 loaded with all "
 "of MA,MN,CA, RI state Tiger data loaded."
 msgstr ""
+"Les exemples de temps ci-dessous ont été calculés sur une machine Windows 7 "
+"à un processeur 3.0 GHZ avec 2 Go de mémoire vive, PostgreSQL 9.1rc1/PostGIS "
+"2.0 avec toutes les données de MA, MN, CA, RI State Tiger."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:227
 #, no-c-format
 msgid "Exact matches are faster to compute (61ms)"
-msgstr ""
+msgstr "Les correspondances exactes sont calculées plus rapidement (61 ms)"
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:228
@@ -611,6 +813,17 @@ msgid ""
 "      0 | -71.0557505845646 | 42.35897920691 |   75 | State  | St   | Boston "
 "| MA | 02109"
 msgstr ""
+"SELECT g.rating, ST_X(g.geomout) As lon, ST_Y(g.geomout) As lat,\n"
+"    (addy).address As stno, (addy).streetname As street,\n"
+"    (addy).streettypeabbrev As styp, (addy).location As city, (addy)."
+"stateabbrev As st,(addy).zip\n"
+"    FROM geocode('75 State Street, Boston MA 02109', 1) As g;\n"
+" rating |        lon        |      lat       | stno | street | styp |  city  "
+"| st |  zip\n"
+"--------+-------------------+----------------+------+--------+------+--------"
+"+----+-------\n"
+"      0 | -71.0557505845646 | 42.35897920691 |   75 | State  | St   | Boston "
+"| MA | 02109"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:229
@@ -618,6 +831,8 @@ msgstr ""
 msgid ""
 "Even if zip is not passed in the geocoder can guess (took about 122-150 ms)"
 msgstr ""
+"Même si le code postal n'est pas transmis, le géocodeur peut deviner (cela a "
+"pris environ 122-150 ms)"
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:230
@@ -635,6 +850,17 @@ msgid ""
 "      1 | POINT(-71.05528 42.36316) |  226 | Hanover | St   | Boston | MA | "
 "02113"
 msgstr ""
+"SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat,\n"
+"    (addy).address As stno, (addy).streetname As street,\n"
+"    (addy).streettypeabbrev As styp, (addy).location As city, (addy)."
+"stateabbrev As st,(addy).zip\n"
+"    FROM geocode('226 Hanover Street, Boston, MA',1) As g;\n"
+" rating |         wktlonlat         | stno | street  | styp |  city  | st |  "
+"zip\n"
+"--------+---------------------------+------+---------+------+--------+----+--"
+"-----\n"
+"      1 | POINT(-71.05528 42.36316) |  226 | Hanover | St   | Boston | MA | "
+"02113"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:231
@@ -643,6 +869,8 @@ msgid ""
 "Can handle misspellings and provides more than one possible solution with "
 "ratings and takes longer (500ms)."
 msgstr ""
+"Peut gérer les fautes d'orthographe et propose plusieurs solutions possibles "
+"avec des évaluations, mais prend plus de temps (500 ms)."
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:232
@@ -660,6 +888,17 @@ msgid ""
 "     70 | POINT(-71.06466 42.35114) |   31 | Stuart | St   | Boston | MA | "
 "02116"
 msgstr ""
+"SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat,\n"
+"    (addy).address As stno, (addy).streetname As street,\n"
+"    (addy).streettypeabbrev As styp, (addy).location As city, (addy)."
+"stateabbrev As st,(addy).zip\n"
+"    FROM geocode('31 - 37 Stewart Street, Boston, MA 02116',1) As g;\n"
+" rating |         wktlonlat         | stno | street | styp |  city  | st |  "
+"zip\n"
+"--------+---------------------------+------+--------+------+--------+----+---"
+"----\n"
+"     70 | POINT(-71.06466 42.35114) |   31 | Stuart | St   | Boston | MA | "
+"02116"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:234
@@ -669,6 +908,9 @@ msgid ""
 "<varname>max_results=1</varname>. Only process those not yet geocoded (have "
 "no rating)."
 msgstr ""
+"Utilisation pour effectuer un géocodage par lots d'adresses. Le plus simple "
+"est de mettre <varname>max_results=1</varname>. Ne traiter que les adresses "
+"qui n'ont pas encore été géocodées (qui n'ont pas d'évaluation)."
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:235
@@ -720,12 +962,60 @@ msgid ""
 "| Willowbrook, KS 67502                     |    108\n"
 "(3 rows)"
 msgstr ""
+"CREATE TABLE addresses_to_geocode(addid serial PRIMARY KEY, address text,\n"
+"        lon numeric, lat numeric, new_address text, rating integer);\n"
+"\n"
+"INSERT INTO addresses_to_geocode(address)\n"
+"VALUES ('529 Main Street, Boston MA, 02129'),\n"
+" ('77 Massachusetts Avenue, Cambridge, MA 02139'),\n"
+" ('25 Wizard of Oz, Walaford, KS 99912323'),\n"
+" ('26 Capen Street, Medford, MA'),\n"
+" ('124 Mount Auburn St, Cambridge, Massachusetts 02138'),\n"
+" ('950 Main Street, Worcester, MA 01610');\n"
+"\n"
+"-- ne mettre à jour que les 3 premières adresses (323-704 ms - il y a des "
+"effets de cache et de mémoire partagée, donc le premier géocode que vous "
+"faites est toujours plus lent) --\n"
+"-- pour un grand nombre d'adresses, il n'est pas souhaitable de les mettre à "
+"jour toutes en même temps\n"
+"-- puisque l'ensemble du géocode doit être validé en une seule fois\n"
+"-- Pour cet exemple, nous rejoignons avec LEFT JOIN\n"
+"-- et nous fixons la note à -1 si aucune correspondance n'a été trouvée\n"
+"-- pour s'assurer de ne pas regeocoder une mauvaise adresse\n"
+"UPDATE addresses_to_geocode\n"
+"  SET  (rating, new_address, lon, lat)\n"
+"    = ( COALESCE(g.rating,-1), pprint_addy(g.addy),\n"
+"       ST_X(g.geomout)::numeric(8,5), ST_Y(g.geomout)::numeric(8,5) )\n"
+"FROM (SELECT addid, address\n"
+"    FROM addresses_to_geocode\n"
+"    WHERE rating IS NULL ORDER BY addid LIMIT 3) As a\n"
+"    LEFT JOIN LATERAL geocode(a.address,1) As g ON true\n"
+"WHERE a.addid = addresses_to_geocode.addid;\n"
+"\n"
+"résultat\n"
+"-----\n"
+"Requête retournée avec succès : 3 lignes affectées, 480 ms de temps "
+"d'exécution.\n"
+"\n"
+"SELECT * FROM addresses_to_geocode WHERE rating is not null;\n"
+"\n"
+" addid |                   address                    |    lon    |   lat    "
+"|                new_address                | rating\n"
+"-------+----------------------------------------------+-----------+----------"
+"+-------------------------------------------+--------\n"
+"     1 | 529 Main Street, Boston MA, 02129            | -71.07177 | 42.38357 "
+"| 529 Main St, Boston, MA 02129             |      0\n"
+"     2 | 77 Massachusetts Avenue, Cambridge, MA 02139 | -71.09396 | 42.35961 "
+"| 77 Massachusetts Ave, Cambridge, MA 02139 |      0\n"
+"     3 | 25 Wizard of Oz, Walaford, KS 99912323       | -97.92913 | 38.12717 "
+"| Willowbrook, KS 67502                     |    108\n"
+"(3 rows)"
 
 #. Tag: title
 #: extras_tigergeocoder.xml:238
 #, no-c-format
 msgid "Examples: Using Geometry filter"
-msgstr ""
+msgstr "Exemples : Utilisation du filtre de géométrie"
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:239
@@ -753,6 +1043,27 @@ msgid ""
 "\n"
 "Time: 622.939 ms"
 msgstr ""
+"SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat,\n"
+"    (addy).address As stno, (addy).streetname As street,\n"
+"    (addy).streettypeabbrev As styp,\n"
+"    (addy).location As city, (addy).stateabbrev As st,(addy).zip\n"
+"  FROM geocode('100 Federal Street, MA',\n"
+"        3,\n"
+"        (SELECT ST_Union(the_geom)\n"
+"            FROM place WHERE statefp = '25' AND name = 'Lynn')::geometry\n"
+"        ) As g;\n"
+"\n"
+" rating |         wktlonlat         | stno | street  | styp | city | st |  "
+"zip\n"
+"--------+---------------------------+------+---------+------+------+----+----"
+"---\n"
+"      7 | POINT(-70.96796 42.4659)  |  100 | Federal | St   | Lynn | MA | "
+"01905\n"
+"     16 | POINT(-70.96786 42.46853) | NULL | Federal | St   | Lynn | MA | "
+"01905\n"
+"(2 rows)\n"
+"\n"
+"Time: 622.939 ms"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:245
@@ -762,12 +1073,15 @@ msgid ""
 "linkend=\"ST_SnapToGrid\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y"
 "\"/>"
 msgstr ""
+", <xref linkend=\"Pprint_Addy\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
+"linkend=\"ST_SnapToGrid\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\""
+"/>"
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:252
 #, no-c-format
 msgid "Geocode_Intersection"
-msgstr ""
+msgstr "Geocode_Intersection"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:254
@@ -782,6 +1096,15 @@ msgid ""
 "10. Uses Tiger data (edges, faces, addr), PostgreSQL fuzzy string matching "
 "(soundex, levenshtein)."
 msgstr ""
+"Prend 2 rues qui s'intersectent et un état, une ville, un code postal, et "
+"produit un ensemble d'emplacements possibles sur la première rue croisée qui "
+"est à l'intersection, comprend également un \"geomout\" comme emplacement du "
+"point en NAD 83 long lat, une <varname>adresse_normalisée</varname> (addy) "
+"pour chaque emplacement, et l'évaluation. Plus la note est basse, plus la "
+"correspondance est probable. Les résultats sont triés en fonction de la note "
+"la plus basse. Il est possible d'indiquer le nombre maximum de résultats, la "
+"valeur par défaut étant de 10. Utilise les données Tiger (edges, faces, addr)"
+", la correspondance floue de PostgreSQL (soundex, levenshtein)."
 
 #. Tag: funcprototype
 #: extras_tigergeocoder.xml:259
@@ -826,6 +1149,18 @@ msgid ""
 "sorted by lowest rating first. Uses Tiger data (edges,faces,addr), "
 "PostgreSQL fuzzy string matching (soundex,levenshtein)"
 msgstr ""
+"Prend 2 rues qui s'intersectent et un état, une ville, un code postal, et "
+"produit un ensemble d'emplacements possibles sur la première rue croisée qui "
+"est à l'intersection, comprend également une géométrie de point dans NAD 83 "
+"long lat, une adresse normalisée pour chaque emplacement, et la cote. Plus "
+"la note est basse, plus la correspondance est probable. Les résultats sont "
+"triés par ordre décroissant. Il est possible d'indiquer le nombre maximum de "
+"résultats, la valeur par défaut étant de 10. Retourne "
+"<varname>adresse_normalisée</varname> (addy) pour chaque, \"geomout\" comme "
+"emplacement du point en nad 83 long lat, et la note. Plus la note est basse, "
+"plus la correspondance est probable. Les résultats sont triés en fonction de "
+"la note la plus basse. Utilise les données Tiger (bords, visages, adresses), "
+"la correspondance floue de PostgreSQL (soundex, levenshtein)"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:289
@@ -835,6 +1170,10 @@ msgid ""
 "machine with 2GB ram running PostgreSQL 9.0/PostGIS 1.5 loaded with all of "
 "MA state Tiger data loaded. Currently a bit slow (3000 ms)"
 msgstr ""
+"Les exemples de temps ci-dessous sont basés sur une machine Windows 7 à un "
+"processeur 3.0 GHZ avec 2 Go de mémoire vive, avec PostgreSQL 9.0/PostGIS "
+"1.5 et toutes les données de MA State Tiger chargées. Actuellement un peu "
+"lent (3000 ms)"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:290
@@ -843,6 +1182,8 @@ msgid ""
 "Testing on Windows 2003 64-bit 8GB on PostGIS 2.0 PostgreSQL 64-bit Tiger "
 "2011 data loaded -- (41ms)"
 msgstr ""
+"Test sur Windows 2003 64-bit 8GB sur PostGIS 2.0 PostgreSQL 64-bit Tiger "
+"2011 données chargées -- (41ms)"
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:291
@@ -855,6 +1196,12 @@ msgid ""
 "----------------------------------+----------------------------+--------\n"
 "98 Haverford St, Boston, MA 02130 | POINT(-71.101375 42.31376) |      0"
 msgstr ""
+"SELECT pprint_addy(addy), st_astext(geomout),rating\n"
+"            FROM geocode_intersection( 'Haverford St','Germania St', 'MA', "
+"'Boston', '02130',1);\n"
+"           pprint_addy            |         st_astext          | rating\n"
+"----------------------------------+----------------------------+--------\n"
+"98 Haverford St, Boston, MA 02130 | POINT(-71.101375 42.31376) |      0"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:292
@@ -863,6 +1210,9 @@ msgid ""
 "Even if zip is not passed in the geocoder can guess (took about 3500 ms on "
 "the windows 7 box), on the windows 2003 64-bit 741 ms"
 msgstr ""
+"Même si le code postal n'est pas transmis, le géocodeur peut deviner (cela a "
+"pris environ 3500 ms sur la boîte Windows 7), sur la boîte Windows 2003 64-"
+"bit 741 ms"
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:293
@@ -876,18 +1226,25 @@ msgid ""
 " 98 Weld Ave, Boston, MA 02119 | POINT(-71.099 42.314234) |      3\n"
 " 99 Weld Ave, Boston, MA 02119 | POINT(-71.099 42.314234) |      3"
 msgstr ""
+"SELECT pprint_addy(addy), st_astext(geomout),rating\n"
+"                FROM geocode_intersection('Weld', 'School', 'MA', 'Boston');"
+"\n"
+"          pprint_addy          |        st_astext         | rating\n"
+"-------------------------------+--------------------------+--------\n"
+" 98 Weld Ave, Boston, MA 02119 | POINT(-71.099 42.314234) |      3\n"
+" 99 Weld Ave, Boston, MA 02119 | POINT(-71.099 42.314234) |      3"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:299
 #, no-c-format
 msgid ", <xref linkend=\"Pprint_Addy\"/>, <xref linkend=\"ST_AsText\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"Pprint_Addy\"/>, <xref linkend=\"ST_AsText\"/>"
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:305
 #, no-c-format
 msgid "Get_Geocode_Setting"
-msgstr ""
+msgstr "Get_Geocode_Setting"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:307
@@ -895,6 +1252,8 @@ msgstr ""
 msgid ""
 "Returns value of specific setting stored in tiger.geocode_settings table."
 msgstr ""
+"Renvoie la valeur d'un paramètre spécifique stocké dans la table tiger."
+"geocode_settings."
 
 #. Tag: funcprototype
 #: extras_tigergeocoder.xml:312
@@ -914,6 +1273,10 @@ msgid ""
 "Settings allow you to toggle debugging of functions. Later plans will be to "
 "control rating with settings. Current list of settings are as follows:"
 msgstr ""
+"Renvoie la valeur d'un paramètre spécifique stocké dans la table "
+"tiger.geocode_settings. Les paramètres permettent d'activer le débogage des "
+"fonctions. Plus tard, il sera possible de contrôler la notation à l'aide des "
+"paramètres. La liste actuelle des paramètres est la suivante :"
 
 #. Tag: screen
 #: extras_tigergeocoder.xml:323
@@ -945,6 +1308,32 @@ msgid ""
 "                                                                 instead of "
 "tiger normalize_address built one"
 msgstr ""
+"name              | setting |  unit   | category  |"
+"                                                             short_desc\n"
+"--------------------------------+---------+---------+-----------+------------"
+"-----------------------------------------------------------------------------"
+"-------------------------------------\n"
+" debug_geocode_address          | false   | boolean | debug     | outputs "
+"debug information in notice log such as queries when geocode_address is "
+"called if true\n"
+" debug_geocode_intersection     | false   | boolean | debug     | outputs "
+"debug information in notice log such as queries when geocode_intersection is "
+"called if true\n"
+" debug_normalize_address        | false   | boolean | debug     | outputs "
+"debug information in notice log such as queries and intermediate expressions "
+"when normalize_address is called if true\n"
+" debug_reverse_geocode          | false   | boolean | debug     | if true, "
+"outputs debug information in notice log such as queries and intermediate "
+"expressions when reverse_geocode\n"
+" reverse_geocode_numbered_roads | 0       | integer | rating    | For state "
+"and county highways, 0 - no preference in name,\n"
+"                                                                  1 - prefer "
+"the numbered highway name, 2 - prefer local state/county name\n"
+" use_pagc_address_parser        | false   | boolean | normalize | If set to "
+"true, will try to use the address_standardizer extension (via "
+"pagc_normalize_address)\n"
+"                                                                 instead of "
+"tiger normalize_address built one"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:325
@@ -954,12 +1343,16 @@ msgid ""
 "geocode_settings_default. Use customized settingsa are in geocode_settings "
 "and only contain those that have been set by user."
 msgstr ""
+"Modifié : 2.2.0 : les paramètres par défaut sont désormais conservés dans "
+"une table appelée geocode_settings_default. Les paramètres personnalisés "
+"sont dans geocode_settings et ne contiennent que ceux qui ont été définis "
+"par l'utilisateur."
 
 #. Tag: title
 #: extras_tigergeocoder.xml:332 extras_tigergeocoder.xml:1046
 #, no-c-format
 msgid "Example return debugging setting"
-msgstr ""
+msgstr "Exemple de paramétrage du débogage de retour"
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:333
@@ -970,12 +1363,16 @@ msgid ""
 "---------\n"
 "false"
 msgstr ""
+"SELECT get_geocode_setting('debug_geocode_address) As result;\n"
+"result\n"
+"---------\n"
+"false"
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:345
 #, no-c-format
 msgid "Get_Tract"
-msgstr ""
+msgstr "Get_Tract"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:347
@@ -984,6 +1381,8 @@ msgid ""
 "Returns census tract or field from tract table of where the geometry is "
 "located. Default to returning short name of tract."
 msgstr ""
+"Renvoie le secteur de recensement ou le champ de la table des secteurs où se "
+"trouve la géométrie. Par défaut, le nom court du secteur est renvoyé."
 
 #. Tag: funcprototype
 #: extras_tigergeocoder.xml:352
@@ -1006,6 +1405,9 @@ msgid ""
 "Given a geometry will return the census tract location of that geometry. NAD "
 "83 long lat is assumed if no spatial ref sys is specified."
 msgstr ""
+"Une géométrie donnée renvoie la localisation du secteur de recensement de "
+"cette géométrie. Le NAD 83 long lat est supposé si aucun système de "
+"référence spatiale n'est spécifié."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:364
@@ -1016,6 +1418,10 @@ msgid ""
 "as well as bg, and tabblock using the <xref linkend="
 "\"Loader_Generate_Census_Script\"/> script."
 msgstr ""
+"Cette fonction utilise le recensement <varname>tract</varname> qui n'est pas "
+"chargé par défaut. Si vous avez déjà chargé votre table d'état, vous pouvez "
+"charger tract ainsi que bg, et tabblock en utilisant le script <xref linkend="
+"\"Loader_Generate_Census_Script\"/>."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:366
@@ -1024,6 +1430,8 @@ msgid ""
 "If you have not loaded your state data yet and want these additional tables "
 "loaded, do the following"
 msgstr ""
+"Si vous n'avez pas encore chargé les données de votre État et que vous "
+"souhaitez charger ces tableaux supplémentaires, procédez comme suit"
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:367
@@ -1032,6 +1440,8 @@ msgid ""
 "UPDATE tiger.loader_lookuptables SET load = true WHERE load = false AND "
 "lookup_name IN('tract', 'bg', 'tabblock');"
 msgstr ""
+"UPDATE tiger.loader_lookuptables SET load = true WHERE load = false AND "
+"lookup_name IN('tract', 'bg', 'tabblock') ;"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:368
@@ -1039,6 +1449,7 @@ msgstr ""
 msgid ""
 "then they will be included by the <xref linkend=\"Loader_Generate_Script\"/>."
 msgstr ""
+"alors ils seront inclus par le <xref linkend=\"Loader_Generate_Script\"/>."
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:378
@@ -1049,6 +1460,10 @@ msgid ""
 "---------\n"
 "1203.01"
 msgstr ""
+"SELECT get_tract(ST_Point(-71.101375, 42.31376) ) As tract_name;\n"
+"tract_name\n"
+"---------\n"
+"1203.01"
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:379
@@ -1060,18 +1475,24 @@ msgid ""
 "---------\n"
 "25025120301"
 msgstr ""
+"-- celui-ci renvoie le geoid du tiger\n"
+"SELECT get_tract(ST_Point(-71.101375, 42.31376), 'tract_id' ) sous la forme "
+"tract_id ;\n"
+"tract_id\n"
+"---------\n"
+"25025120301"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:385
 #, no-c-format
 msgid "<para>></para>"
-msgstr ""
+msgstr "<para>></para>"
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:391
 #, no-c-format
 msgid "Install_Missing_Indexes"
-msgstr ""
+msgstr "Install_Missing_Indexes"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:393
@@ -1080,6 +1501,9 @@ msgid ""
 "Finds all tables with key columns used in geocoder joins and filter "
 "conditions that are missing used indexes on those columns and will add them."
 msgstr ""
+"Recherche toutes les tables dont les colonnes clés sont utilisées dans les "
+"jointures du géocodeur et les conditions de filtrage qui n'ont pas d'index "
+"utilisés sur ces colonnes et les ajoute."
 
 #. Tag: funcprototype
 #: extras_tigergeocoder.xml:398
@@ -1105,6 +1529,17 @@ msgid ""
 "generating the create index script, also executes it. It is called as part "
 "of the <filename>update_geocode.sql</filename> upgrade script."
 msgstr ""
+"Recherche toutes les tables dans les schémas <varname>tiger</varname> et "
+"<varname>tiger_data</varname> avec des colonnes clés utilisées dans les "
+"jointures et les filtres du géocodeur qui n'ont pas d'index sur ces colonnes "
+"et produira le DDL SQL pour définir l'index pour ces tables et exécutera "
+"ensuite le script généré. Il s'agit d'une fonction d'aide qui ajoute de "
+"nouveaux index nécessaires pour rendre les requêtes plus rapides et qui "
+"peuvent avoir été manquants au cours du processus de chargement. Cette "
+"fonction accompagne <xref linkend=\"Missing_Indexes_Generate_Script\"/> qui, "
+"en plus de générer le script de création d'index, l'exécute également. Elle "
+"est appelée dans le cadre du script de mise à niveau <filename>update_geocode"
+".sql</filename>."
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:422
@@ -1115,12 +1550,16 @@ msgid ""
 "-------------------------\n"
 " t"
 msgstr ""
+"SELECT install_missing_indexes();\n"
+"         install_missing_indexes\n"
+"-------------------------\n"
+" t"
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:435
 #, no-c-format
 msgid "Loader_Generate_Census_Script"
-msgstr ""
+msgstr "Loader_Generate_Census_Script"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:437
@@ -1131,6 +1570,11 @@ msgid ""
 "stage and load into <varname>tiger_data</varname> schema. Each state script "
 "is returned as a separate record."
 msgstr ""
+"Génère un script shell pour la plate-forme spécifiée et les états spécifiés "
+"qui téléchargera les tables de données Tiger census state tract, bg et "
+"tabblocks, les structurera et les chargera dans le schéma "
+"<varname>tiger_data</varname>. Chaque script d'état est renvoyé sous la "
+"forme d'un enregistrement distinct."
 
 #. Tag: funcprototype
 #: extras_tigergeocoder.xml:442
@@ -1154,6 +1598,11 @@ msgid ""
 "stage and load into <varname>tiger_data</varname> schema. Each state script "
 "is returned as a separate record."
 msgstr ""
+"Génère un script shell pour la plate-forme spécifiée et les états spécifiés, "
+"qui téléchargera les données de recensement Tiger <varname>tract</varname>, "
+"les tables de données <varname>bg</varname> et <varname>tabblocks</varname>, "
+"les étapes et le chargement dans le schéma <varname>tiger_data</varname>. "
+"Chaque script d'état est renvoyé sous la forme d'un enregistrement distinct."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:454
@@ -1164,6 +1613,10 @@ msgid ""
 "data. Note the smallest unit it does is a whole state. It will only process "
 "the files in the staging and temp folders."
 msgstr ""
+"Il utilise unzip sous Linux (7-zip sous Windows par défaut) et wget pour "
+"effectuer le téléchargement. Il utilise <xref linkend=\"shp2pgsql_usage\"/> "
+"pour charger les données. Notez que la plus petite unité qu'il traite est un "
+"état entier. Il ne traitera que les fichiers des dossiers staging et temp."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:456 extras_tigergeocoder.xml:514
@@ -1172,6 +1625,9 @@ msgid ""
 "It uses the following control tables to control the process and different OS "
 "shell syntax variations."
 msgstr ""
+"Il utilise les tables de contrôle suivantes pour contrôler le processus et "
+"les différentes variations syntaxiques de l'interpréteur de commandes du "
+"système d'exploitation."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:460 extras_tigergeocoder.xml:518
@@ -1181,6 +1637,9 @@ msgid ""
 "<varname>loader_variables</varname> keeps track of various variables such as "
 "census site, year, data and staging schemas"
 msgstr ""
+"<varname>loader_variables</varname> garde la trace de diverses variables "
+"telles que le site de recensement, l'année, les données et les schémas "
+"d'étape"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:463 extras_tigergeocoder.xml:521
@@ -1190,6 +1649,9 @@ msgid ""
 "the various executables are located. Comes with windows and linux. More can "
 "be added."
 msgstr ""
+"<varname>loader_platform</varname> profils des différentes plates-formes et "
+"de l'emplacement des différents exécutables. Livré avec windows et linux. "
+"D'autres peuvent être ajoutés."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:466 extras_tigergeocoder.xml:524
@@ -1203,6 +1665,13 @@ msgid ""
 "from a table in the tiger schema. e.g. creates <varname>tiger_data.ma_faces</"
 "varname> which inherits from <varname>tiger.faces</varname>"
 msgstr ""
+"<varname>loader_lookuptables</varname> chaque enregistrement définit un type "
+"de table (state, county), s'il faut y traiter les enregistrements et comment "
+"les charger. Définit les étapes d'importation des données, de structuration "
+"des données, d'ajout et de suppression de colonnes, d'index et de "
+"contraintes pour chaque table. Chaque table est préfixée par l'état et "
+"hérite d'une table du schéma tigre. Par exemple, crée <varname>tiger_data."
+"ma_faces</varname> qui hérite de <varname>tiger.faces</varname>"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:470
@@ -1212,6 +1681,9 @@ msgid ""
 "2.0.0 alpha5, you'll need to run this on the states you have already done to "
 "get these additional tables."
 msgstr ""
+"inclut cette logique, mais si vous avez installé tiger geocoder avant "
+"PostGIS 2.0.0 alpha5, vous devrez l'exécuter sur les états que vous avez "
+"déjà faits pour obtenir ces tables supplémentaires."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:477
@@ -1220,6 +1692,8 @@ msgid ""
 "Generate script to load up data for select states in Windows shell script "
 "format."
 msgstr ""
+"Générer un script pour charger des données pour des états sélectionnés dans "
+"le format d'un script shell Windows."
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:478
@@ -1265,12 +1739,51 @@ msgid ""
 "(statefp = '25');\"\n"
 ":"
 msgstr ""
+"SELECT loader_generate_census_script(ARRAY['MA'], 'windows');\n"
+"-- résultat --\n"
+"set STATEDIR=\"\\gisdata\\www2.census.gov\\geo\\pvs\\tiger2010st"
+"\\25_Massachusetts\"\n"
+"set TMPDIR=\\gisdata\\temp\\\n"
+"set UNZIPTOOL=\"C:\\Program Files\\7-Zip\\7z.exe\"\n"
+"set WGETTOOL=\"C:\\wget\\wget.exe\"\n"
+"set PGBIN=C:\\projects\\pg\\pg91win\\bin\\\n"
+"set PGPORT=5432\n"
+"set PGHOST=localhost\n"
+"set PGUSER=postgres\n"
+"set PGPASSWORD=yourpasswordhere\n"
+"set PGDATABASE=tiger_postgis20\n"
+"set PSQL=\"%PGBIN%psql\"\n"
+"set SHP2PGSQL=\"%PGBIN%shp2pgsql\"\n"
+"cd \\gisdata\n"
+"\n"
+"%WGETTOOL% http://www2.census.gov/geo/pvs/tiger2010st/25_Massachusetts/25/ "
+"--no-parent --relative --accept=*bg10.zip,*tract10.zip,*tabblock10.zip --"
+"mirror --reject=html\n"
+"del %TMPDIR%\\*.* /Q\n"
+"%PSQL% -c \"DROP SCHEMA tiger_staging CASCADE;\"\n"
+"%PSQL% -c \"CREATE SCHEMA tiger_staging;\"\n"
+"cd %STATEDIR%\n"
+"for /r %%z in (*.zip) do %UNZIPTOOL% e %%z  -o%TMPDIR%\n"
+"cd %TMPDIR%\n"
+"%PSQL% -c \"CREATE TABLE tiger_data.MA_tract(CONSTRAINT pk_MA_tract PRIMARY "
+"KEY (tract_id) ) INHERITS(tiger.tract); \"\n"
+"%SHP2PGSQL% -c -s 4269 -g the_geom   -W \"latin1\" tl_2010_25_tract10.dbf "
+"tiger_staging.ma_tract10 | %PSQL%\n"
+"%PSQL% -c \"ALTER TABLE tiger_staging.MA_tract10 RENAME geoid10 TO tract_id;"
+"  SELECT loader_load_staged_data(lower('MA_tract10'), lower('MA_tract')); \""
+"\n"
+"%PSQL% -c \"CREATE INDEX tiger_data_MA_tract_the_geom_gist ON "
+"tiger_data.MA_tract USING gist(the_geom);\"\n"
+"%PSQL% -c \"VACUUM ANALYZE tiger_data.MA_tract;\"\n"
+"%PSQL% -c \"ALTER TABLE tiger_data.MA_tract ADD CONSTRAINT chk_statefp CHECK "
+"(statefp = '25');\"\n"
+":"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:479 extras_tigergeocoder.xml:541
 #, no-c-format
 msgid "Generate sh script"
-msgstr ""
+msgstr "Générer le script sh"
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:480
@@ -1301,12 +1814,36 @@ msgid ""
 ":\n"
 ":"
 msgstr ""
+"STATEDIR=\"/gisdata/www2.census.gov/geo/pvs/tiger2010st/25_Massachusetts\"\n"
+"TMPDIR=\"/gisdata/temp/\"\n"
+"UNZIPTOOL=unzip\n"
+"WGETTOOL=\"/usr/bin/wget\"\n"
+"export PGBIN=/usr/pgsql-9.0/bin\n"
+"export PGPORT=5432\n"
+"export PGHOST=localhost\n"
+"export PGUSER=postgres\n"
+"export PGPASSWORD=yourpasswordhere\n"
+"export PGDATABASE=geocoder\n"
+"PSQL=${PGBIN}/psql\n"
+"SHP2PGSQL=${PGBIN}/shp2pgsql\n"
+"cd /gisdata\n"
+"\n"
+"wget http://www2.census.gov/geo/pvs/tiger2010st/25_Massachusetts/25/ --no-"
+"parent --relative --accept=*bg10.zip,*tract10.zip,*tabblock10.zip --mirror "
+"--reject=html\n"
+"rm -f ${TMPDIR}/*.*\n"
+"${PSQL} -c \"DROP SCHEMA tiger_staging CASCADE;\"\n"
+"${PSQL} -c \"CREATE SCHEMA tiger_staging;\"\n"
+"cd $STATEDIR\n"
+"for z in *.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done\n"
+":\n"
+":"
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:493
 #, no-c-format
 msgid "Loader_Generate_Script"
-msgstr ""
+msgstr "Loader_Generate_Script"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:495
@@ -1318,6 +1855,12 @@ msgid ""
 "version supports Tiger 2010 structural changes and also loads census tract, "
 "block groups, and blocks tables."
 msgstr ""
+"Génère un script shell pour la plateforme spécifiée et les états spécifiés "
+"qui téléchargera les données Tiger, les structurera et les chargera dans le "
+"schéma <varname>tiger_data</varname>. Chaque script d'état est renvoyé sous "
+"la forme d'un enregistrement séparé. La dernière version prend en charge les "
+"modifications structurelles de Tiger 2010 et charge également les tableaux "
+"de secteurs de recensement, de groupes d'îlots et d'îlots."
 
 #. Tag: funcprototype
 #: extras_tigergeocoder.xml:500
@@ -1339,6 +1882,10 @@ msgid ""
 "that will download Tiger data, stage and load into <varname>tiger_data</"
 "varname> schema. Each state script is returned as a separate record."
 msgstr ""
+"Génère un script shell pour la plateforme spécifiée et les états spécifiés "
+"qui téléchargera les données Tiger, les structurera et les chargera dans le "
+"schéma <varname>tiger_data</varname>. Chaque script d'état est renvoyé sous "
+"la forme d'un enregistrement séparé."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:512
@@ -1350,6 +1897,11 @@ msgid ""
 "this by downloading the files yourself. It will only process the files in "
 "the staging and temp folders."
 msgstr ""
+"Il utilise unzip sous Linux (7-zip sous Windows par défaut) et wget pour "
+"effectuer le téléchargement. Il utilise <xref linkend=\"shp2pgsql_usage\"/> "
+"pour charger les données. Notez que la plus petite unité qu'il traite est un "
+"état entier, mais vous pouvez l'écraser en téléchargeant les fichiers vous-"
+"même. Il ne traitera que les fichiers des dossiers staging et temp."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:527
@@ -1358,6 +1910,9 @@ msgid ""
 "Availability: 2.0.0 to support Tiger 2010 structured data and load census "
 "tract (tract), block groups (bg), and blocks (tabblocks) tables ."
 msgstr ""
+"Disponibilité : 2.0.0 pour prendre en charge les données structurées de "
+"Tiger 2010 et charger les tableaux de secteurs de recensement (tract), de "
+"groupes d'îlots (bg) et d'îlots (tabblocks)."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:528
@@ -1368,6 +1923,10 @@ msgid ""
 "&gt; Query Editor - &gt; Max. characters per column</emphasis> to larger "
 "than 50000 characters."
 msgstr ""
+"Si vous utilisez pgAdmin 3, sachez que par défaut pgAdmin 3 tronque les "
+"textes longs. Pour corriger cela, modifiez <emphasis>Fichier -&gt; Options "
+"-&gt; Outil de requête -&gt; Editeur de requête -&gt; Caractères max. par "
+"colonne</emphasis> à plus de 50000 caractères."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:537
@@ -1376,6 +1935,9 @@ msgid ""
 "Using psql where gistest is your database and <filename>/gisdata/data_load."
 "sh</filename> is the file to create with the shell commands to run."
 msgstr ""
+"En utilisant psql où gistest est votre base de données et <filename>/gisdata/"
+"data_load.sh</filename> est le fichier à créer avec les commandes shell à "
+"exécuter."
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:538
@@ -1385,6 +1947,9 @@ msgid ""
 " -c \"SELECT Loader_Generate_Script(ARRAY['MA'], 'gistest')\" > /gisdata/"
 "data_load.sh;]]>"
 msgstr ""
+"<![CDATA[psql -U postgres -h localhost -d gistest -A -t \\\n"
+" -c \"SELECT Loader_Generate_Script(ARRAY['MA'], 'gistest')\" > /gisdata/"
+"data_load.sh;]]>"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:539
@@ -1392,6 +1957,8 @@ msgstr ""
 msgid ""
 "Generate script to load up data for 2 states in Windows shell script format."
 msgstr ""
+"Générer un script pour charger des données pour 2 états dans le format d'un "
+"script shell Windows."
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:540
@@ -1419,6 +1986,27 @@ msgid ""
 ":\n"
 ":"
 msgstr ""
+"SELECT loader_generate_script(ARRAY['MA','RI'], 'windows') AS result;\n"
+"-- result --\n"
+"set TMPDIR=\\gisdata\\temp\\\n"
+"set UNZIPTOOL=\"C:\\Program Files\\7-Zip\\7z.exe\"\n"
+"set WGETTOOL=\"C:\\wget\\wget.exe\"\n"
+"set PGBIN=C:\\Program Files\\PostgreSQL\\9.4\\bin\\\n"
+"set PGPORT=5432\n"
+"set PGHOST=localhost\n"
+"set PGUSER=postgres\n"
+"set PGPASSWORD=yourpasswordhere\n"
+"set PGDATABASE=geocoder\n"
+"set PSQL=\"%PGBIN%psql\"\n"
+"set SHP2PGSQL=\"%PGBIN%shp2pgsql\"\n"
+"cd \\gisdata\n"
+"\n"
+"cd \\gisdata\n"
+"%WGETTOOL% ftp://ftp2.census.gov/geo/tiger/TIGER2015/PLACE/tl_*_25_* --no-"
+"parent --relative --recursive --level=2 --accept=zip --mirror --reject=html\n"
+"cd \\gisdata/ftp2.census.gov/geo/tiger/TIGER2015/PLACE\n"
+":\n"
+":"
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:542
@@ -1449,6 +2037,30 @@ msgid ""
 ":\n"
 ":"
 msgstr ""
+"SELECT loader_generate_script(ARRAY['MA','RI'], 'sh') AS result;\n"
+"-- résultat --\n"
+"TMPDIR=\"/gisdata/temp/\"\n"
+"UNZIPTOOL=unzip\n"
+"WGETTOOL=\"/usr/bin/wget\"\n"
+"export PGBIN=/usr/lib/postgresql/9.4/bin\n"
+"-- variables utilisées par psql: https://www.postgresql.org/docs/current/"
+"static/libpq-envars.html\n"
+"export PGPORT=5432\n"
+"export PGHOST=localhost\n"
+"export PGUSER=postgres\n"
+"export PGPASSWORD=yourpasswordhere\n"
+"export PGDATABASE=geocoder\n"
+"PSQL=${PGBIN}/psql\n"
+"SHP2PGSQL=${PGBIN}/shp2pgsql\n"
+"cd /gisdata\n"
+"\n"
+"cd /gisdata\n"
+"wget ftp://ftp2.census.gov/geo/tiger/TIGER2015/PLACE/tl_*_25_* --no-parent --"
+"relative --recursive --level=2 --accept=zip --mirror --reject=html\n"
+"cd /gisdata/ftp2.census.gov/geo/tiger/TIGER2015/PLACE\n"
+"rm -f ${TMPDIR}/*.*\n"
+":\n"
+":"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:549
@@ -1457,12 +2069,14 @@ msgid ""
 ", <xref linkend=\"Loader_Generate_Nation_Script\"/>, <xref linkend="
 "\"Drop_State_Tables_Generate_Script\"/>"
 msgstr ""
+", <xref linkend=\"Loader_Generate_Nation_Script\"/>, <xref linkend="
+"\"Drop_State_Tables_Generate_Script\"/>"
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:555
 #, no-c-format
 msgid "Loader_Generate_Nation_Script"
-msgstr ""
+msgstr "Loader_Generate_Nation_Script"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:557
@@ -1471,6 +2085,8 @@ msgid ""
 "Generates a shell script for the specified platform that loads in the county "
 "and state lookup tables."
 msgstr ""
+"Génère un script shell pour la plate-forme spécifiée qui charge les données "
+"dans les tables county et state."
 
 #. Tag: funcprototype
 #: extras_tigergeocoder.xml:562
@@ -1493,6 +2109,12 @@ msgid ""
 "<varname>county_lookup</varname>, <varname>state</varname> tables in "
 "<varname>tiger</varname> schema."
 msgstr ""
+"Génère un script shell pour la plate-forme spécifiée qui charge les tables "
+"<varname>county_all</varname>, <varname>county_all_lookup</varname>, "
+"<varname>state_all</varname> dans le schéma <varname>tiger_data</varname>. "
+"Elles héritent respectivement des tables <varname>county</varname>, "
+"<varname>county_lookup</varname>, <varname>state</varname> dans le schéma "
+"<varname>tiger</varname>."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:573
@@ -1501,6 +2123,9 @@ msgid ""
 "It uses unzip on Linux (7-zip on Windows by default) and wget to do the "
 "downloading. It uses <xref linkend=\"shp2pgsql_usage\"/> to load in the data."
 msgstr ""
+"Il utilise unzip sous Linux (7-zip sous Windows par défaut) et wget pour "
+"effectuer le téléchargement. Il utilise <xref linkend=\"shp2pgsql_usage\"/> "
+"pour charger les données."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:574
@@ -1511,6 +2136,11 @@ msgid ""
 "loader_lookuptables</varname> to control the process and different OS shell "
 "syntax variations."
 msgstr ""
+"Il utilise les tables de contrôle suivantes <varname>tiger.loader_platform</"
+"varname>, <varname>tiger.loader_variables</varname> et <varname>tiger."
+"loader_lookuptables</varname> pour contrôler le processus et les différentes "
+"variations syntaxiques de l'interpréteur de commandes du système "
+"d'exploitation."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:581
@@ -1520,6 +2150,9 @@ msgid ""
 "the various executables are located. Comes with windows and linux/unix. More "
 "can be added."
 msgstr ""
+"<varname>loader_platform</varname> profils des différentes plates-formes et "
+"de l'emplacement des différents exécutables. Fourni avec windows et linux/"
+"unix. D'autres peuvent être ajoutés."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:587
@@ -1529,6 +2162,10 @@ msgid ""
 "when enabled, zcta5 data is loaded as a single table called zcta5_all as "
 "part of the nation script load."
 msgstr ""
+"Amélioré : 2.4.1 L'étape de chargement de la zone de tabulation du code "
+"postal 5 (zcta5) a été corrigée et, lorsqu'elle est activée, les données "
+"zcta5 sont chargées sous la forme d'une table unique appelée zcta5_all dans "
+"le cadre du chargement du script de la nation."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:589
@@ -1537,6 +2174,8 @@ msgid ""
 "If you want zip code 5 tabulation area (zcta5) to be included in your nation "
 "script load, do the following:"
 msgstr ""
+"Si vous souhaitez que la zone de tabulation du code postal 5 (zcta5) soit "
+"incluse dans le chargement de votre script nation, procédez comme suit :"
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:589
@@ -1545,6 +2184,8 @@ msgid ""
 "UPDATE tiger.loader_lookuptables SET load = true WHERE table_name = "
 "'zcta510';"
 msgstr ""
+"UPDATE tiger.loader_lookuptables SET load = true WHERE table_name = "
+"'zcta510';"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:590
@@ -1555,12 +2196,17 @@ msgid ""
 "load generate and run drop statements <xref linkend="
 "\"Drop_Nation_Tables_Generate_Script\"/> before you run this script."
 msgstr ""
+"Si vous utilisiez la version <varname>tiger_2010</varname> et que vous "
+"souhaitez recharger en tant qu'état avec des données tiger plus récentes, "
+"vous devrez, pour le tout premier chargement, générer et exécuter des "
+"instructions de dépôt <xref linkend=\"Drop_Nation_Tables_Generate_Script\"/> "
+"avant d'exécuter ce script."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:597
 #, no-c-format
 msgid "Generate script script to load nation data Windows."
-msgstr ""
+msgstr "Générer un script pour charger les données de la nation sur Windows."
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:598
@@ -1573,6 +2219,7 @@ msgstr "SELECT loader_generate_nation_script('windows') ;"
 #, no-c-format
 msgid "Generate script to load up data for Linux/Unix systems."
 msgstr ""
+"Générer un script pour charger les données pour les systèmes Linux/Unix."
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:600
@@ -1584,13 +2231,13 @@ msgstr "SELECT loader_generate_nation_script('sh') ;"
 #: extras_tigergeocoder.xml:606
 #, no-c-format
 msgid ", <xref linkend=\"Drop_Nation_Tables_Generate_Script\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"Drop_Nation_Tables_Generate_Script\"/>"
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:612
 #, no-c-format
 msgid "Missing_Indexes_Generate_Script"
-msgstr ""
+msgstr "Missing_Indexes_Generate_Script"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:614
@@ -1600,6 +2247,9 @@ msgid ""
 "indexes on those columns and will output the SQL DDL to define the index for "
 "those tables."
 msgstr ""
+"Recherche toutes les tables dont les colonnes clés sont utilisées dans les "
+"jointures du géocodeur et qui n'ont pas d'index sur ces colonnes, et génère "
+"le DDL SQL permettant de définir l'index pour ces tables."
 
 #. Tag: funcprototype
 #: extras_tigergeocoder.xml:620
@@ -1624,6 +2274,16 @@ msgid ""
 "indexes being used. If this function outputs nothing, it means all your "
 "tables have what we think are the key indexes already in place."
 msgstr ""
+"Trouve toutes les tables dans les schémas <varname>tiger</varname> et "
+"<varname>tiger_data</varname> avec des colonnes clés utilisées dans les "
+"jointures du géocodeur qui n'ont pas d'index sur ces colonnes et produira le "
+"DDL SQL pour définir l'index pour ces tables. Il s'agit d'une fonction "
+"d'aide qui ajoute de nouveaux index nécessaires pour rendre les requêtes "
+"plus rapides et qui peuvent avoir été manquants au cours du processus de "
+"chargement. Au fur et à mesure de l'amélioration du géocodeur, cette "
+"fonction sera mise à jour pour prendre en compte les nouveaux index "
+"utilisés. Si cette fonction ne produit rien, cela signifie que toutes vos "
+"tables ont ce que nous pensons être les index clés déjà en place."
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:644
@@ -1649,18 +2309,38 @@ msgid ""
 "CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING "
 "btree(countyfp);"
 msgstr ""
+"SELECT missing_indexes_generate_script();\n"
+"-- sortie : Cette opération a été effectuée sur une base de données créée "
+"avant que de nombreuses corrections n'aient été apportées au script de "
+"chargement ---\n"
+"CREATE INDEX idx_tiger_county_countyfp ON tiger.county USING btree(countyfp);"
+"\n"
+"CREATE INDEX idx_tiger_cousub_countyfp ON tiger.cousub USING btree(countyfp);"
+"\n"
+"CREATE INDEX idx_tiger_edges_tfidr ON tiger.edges USING btree(tfidr);\n"
+"CREATE INDEX idx_tiger_edges_tfidl ON tiger.edges USING btree(tfidl);\n"
+"CREATE INDEX idx_tiger_zip_lookup_all_zip ON tiger.zip_lookup_all USING "
+"btree(zip);\n"
+"CREATE INDEX idx_tiger_data_ma_county_countyfp ON tiger_data.ma_county USING "
+"btree(countyfp);\n"
+"CREATE INDEX idx_tiger_data_ma_cousub_countyfp ON tiger_data.ma_cousub USING "
+"btree(countyfp);\n"
+"CREATE INDEX idx_tiger_data_ma_edges_countyfp ON tiger_data.ma_edges USING "
+"btree(countyfp);\n"
+"CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING "
+"btree(countyfp);"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:651
 #, no-c-format
 msgid ", <xref linkend=\"Install_Missing_Indexes\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"Install_Missing_Indexes\"/>"
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:657
 #, no-c-format
 msgid "Normalize_Address"
-msgstr ""
+msgstr "Normalize_Address"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:659
@@ -1672,6 +2352,12 @@ msgid ""
 "just the lookup data packaged with the tiger_geocoder (no need for tiger "
 "census data)."
 msgstr ""
+"Étant donné une adresse textuelle, cette fonction renvoie un type composite "
+"<varname>norm_addy</varname> qui contient le suffixe de la route, le préfixe "
+"et le type normalisé, la rue, le nom de la rue, etc. divisés en champs "
+"distincts. Cette fonction fonctionne uniquement avec les données de "
+"recherche fournies avec le géocodeur tiger (pas besoin pour les données de "
+"recensement tiger)."
 
 #. Tag: funcprototype
 #: extras_tigergeocoder.xml:665
@@ -1693,6 +2379,12 @@ msgid ""
 "geocoding process to get all addresses into normalized postal form. No other "
 "data is required aside from what is packaged with the geocoder."
 msgstr ""
+"Étant donné une adresse textuelle, cette fonction renvoie un type composite "
+"<varname>norm_addy</varname> qui contient le suffixe de la route, le préfixe "
+"et le type normalisé, la rue, le nom de la rue, etc. divisés en champs "
+"distincts. Il s'agit de la première étape du processus de géocodage visant à "
+"normaliser toutes les adresses sous forme postale. Aucune autre donnée n'est "
+"nécessaire en dehors de celles fournies avec le géocodeur."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:677
@@ -1705,6 +2397,13 @@ msgid ""
 "abbreviations or alternative namings to the various lookup tables in the "
 "<varname>tiger</varname> schema."
 msgstr ""
+"Cette fonction utilise simplement les différentes tables de recherche "
+"direction/état/suffixe préchargées avec le géocodeur tiger et situées dans "
+"le schéma <varname>tiger</varname>, de sorte qu'il n'est pas nécessaire de "
+"télécharger les données de recensement tiger ou d'autres données "
+"supplémentaires pour l'utiliser. Il se peut que vous ayez besoin d'ajouter "
+"des abréviations ou des noms alternatifs aux différentes tables de recherche "
+"du schéma <varname>tiger</varname>."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:679 extras_tigergeocoder.xml:765
@@ -1713,6 +2412,8 @@ msgid ""
 "It uses various control lookup tables located in <varname>tiger</varname> "
 "schema to normalize the input address."
 msgstr ""
+"Il utilise diverses tables de contrôle situées dans le schéma "
+"<varname>tiger</varname> pour normaliser l'adresse d'entrée."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:680 extras_tigergeocoder.xml:766
@@ -1722,6 +2423,9 @@ msgid ""
 "function in this order where () indicates a field required by the geocoder, "
 "[] indicates an optional field:"
 msgstr ""
+"Les champs de l'objet de type <varname>norm_addy</varname> renvoyés par "
+"cette fonction dans cet ordre où () indique un champ requis par le "
+"géocodeur, [] indique un champ optionnel :"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:681
@@ -1731,6 +2435,9 @@ msgid ""
 "[internal] [location] [stateAbbrev] [zip] [parsed] [zip4] "
 "[address_alphanumeric]"
 msgstr ""
+"(address) [predirAbbrev] (streetName) [streetTypeAbbrev] [postdirAbbrev] "
+"[internal] [location] [stateAbbrev] [zip] [parsed] [zip4] "
+"[address_alphanumeric]"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:682 extras_tigergeocoder.xml:774
@@ -1739,12 +2446,14 @@ msgid ""
 "Enhanced: 2.4.0 norm_addy object includes additional fields zip4 and "
 "address_alphanumeric."
 msgstr ""
+"Amélioré : 2.4.0 L'objet norm_addy comprend des champs supplémentaires zip4 "
+"et address_alphanumeric."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:685 extras_tigergeocoder.xml:777
 #, no-c-format
 msgid "<varname>address</varname> is an integer: The street number"
-msgstr ""
+msgstr "<varname>address</varname> est un nombre entier : Le numéro de la rue"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:688 extras_tigergeocoder.xml:780
@@ -1754,12 +2463,15 @@ msgid ""
 "as N, S, E, W etc. These are controlled using the <varname>direction_lookup</"
 "varname> table."
 msgstr ""
+"<varname>predirAbbrev</varname> est varchar : Préfixe directionnel de la "
+"route tel que N, S, E, W, etc. Ces préfixes sont contrôlés à l'aide de la "
+"table <varname>direction_lookup</varname>."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:691 extras_tigergeocoder.xml:783
 #, no-c-format
 msgid "<varname>streetName</varname> varchar"
-msgstr ""
+msgstr "<varname>streetName</varname> varchar"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:694 extras_tigergeocoder.xml:786
@@ -1769,6 +2481,9 @@ msgid ""
 "type: e.g. St, Ave, Cir. These are controlled using the "
 "<varname>street_type_lookup</varname> table."
 msgstr ""
+"<varname>streetTypeAbbrev</varname> varchar version abrégée du type de rue : "
+"par exemple St, Ave, Cir. Ceux-ci sont contrôlés à l'aide de la table "
+"<varname>street_type_lookup</varname>."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:697 extras_tigergeocoder.xml:789
@@ -1778,6 +2493,9 @@ msgid ""
 "road N, S, E, W etc. These are controlled using the "
 "<varname>direction_lookup</varname> table."
 msgstr ""
+"<varname>postdirAbbrev</varname> varchar abrégé directionnel suffixe de la "
+"route N, S, E, W etc. Elles sont contrôlées à l'aide de la table "
+"<varname>direction_lookup</varname>."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:700 extras_tigergeocoder.xml:792
@@ -1786,6 +2504,8 @@ msgid ""
 "<varname>internal</varname> varchar internal address such as an apartment or "
 "suite number."
 msgstr ""
+"<varname>internal</varname> varchar adresse interne telle qu'un numéro "
+"d'appartement ou de suite."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:703 extras_tigergeocoder.xml:795
@@ -1793,6 +2513,7 @@ msgstr ""
 msgid ""
 "<varname>location</varname> varchar usually a city or governing province."
 msgstr ""
+"<varname>location</varname> varchar généralement une ville ou une province."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:706 extras_tigergeocoder.xml:798
@@ -1801,12 +2522,16 @@ msgid ""
 "<varname>stateAbbrev</varname> varchar two character US State. e.g MA, NY, "
 "MI. These are controlled by the <varname>state_lookup</varname> table."
 msgstr ""
+"<varname>stateAbbrev</varname> varchar deux caractères État américain, par "
+"exemple MA, NY, MI. Ceux-ci sont contrôlés par la table "
+"<varname>state_lookup</varname>."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:709 extras_tigergeocoder.xml:801
 #, no-c-format
 msgid "<varname>zip</varname> varchar 5-digit zipcode. e.g. 02109."
 msgstr ""
+"<varname>zip</varname> varchar Code postal à 5 chiffres, par exemple 02109."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:712 extras_tigergeocoder.xml:804
@@ -1816,6 +2541,9 @@ msgid ""
 "normalize process. The normalize_address function sets this to true before "
 "returning the address."
 msgstr ""
+"<varname>parsed</varname> booléen - indique si l'adresse a été formée à "
+"partir du processus de normalisation. La fonction normalize_address fixe "
+"cette valeur à true avant de renvoyer l'adresse."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:715 extras_tigergeocoder.xml:807
@@ -1824,6 +2552,8 @@ msgid ""
 "<varname>zip4</varname> last 4 digits of a 9 digit zip code. Availability: "
 "PostGIS 2.4.0."
 msgstr ""
+"<varname>zip4</varname> 4 derniers chiffres d'un code postal à 9 chiffres. "
+"Disponibilité : PostGIS 2.4.0."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:718 extras_tigergeocoder.xml:810
@@ -1833,6 +2563,10 @@ msgid ""
 "alpha characters like 17R. Parsing of this is better using <xref linkend="
 "\"Pagc_Normalize_Address\"/> function. Availability: PostGIS 2.4.0."
 msgstr ""
+"<varname>address_alphanumeric</varname> Numéro de rue complet, même s'il "
+"contient des caractères alpha comme 17R. Il est préférable d'utiliser la "
+"fonction <xref linkend=\"Pagc_Normalize_Address\"/>. Disponibilité : PostGIS "
+"2.4.0."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:727
@@ -1841,6 +2575,8 @@ msgid ""
 "Output select fields. Use <xref linkend=\"Pprint_Addy\"/> if you want a "
 "pretty textual output."
 msgstr ""
+"Sortie des champs de sélection. Utilisez <xref linkend=\"Pprint_Addy\"/> si "
+"vous souhaitez une sortie textuelle."
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:728
@@ -1861,18 +2597,32 @@ msgid ""
 " 77 Massachusetts Avenue, Cambridge, MA 02139        | Massachusetts | Ave\n"
 " 25 Wizard of Oz, Walaford, KS 99912323              | Wizard of Oz  |"
 msgstr ""
+"SELECT address As orig, (g.na).streetname, (g.na).streettypeabbrev\n"
+" FROM (SELECT address, normalize_address(address) As na\n"
+"        FROM addresses_to_geocode) As g;\n"
+"\n"
+"                        orig                         |  streetname   | "
+"streettypeabbrev\n"
+"-----------------------------------------------------+---------------+-------"
+"-----------\n"
+" 28 Capen Street, Medford, MA                        | Capen         | St\n"
+" 124 Mount Auburn St, Cambridge, Massachusetts 02138 | Mount Auburn  | St\n"
+" 950 Main Street, Worcester, MA 01610                | Main          | St\n"
+" 529 Main Street, Boston MA, 02129                   | Main          | St\n"
+" 77 Massachusetts Avenue, Cambridge, MA 02139        | Massachusetts | Ave\n"
+" 25 Wizard of Oz, Walaford, KS 99912323              | Wizard of Oz  |"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:737
 #, no-c-format
 msgid ", <xref linkend=\"Pprint_Addy\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"Pprint_Addy\"/>"
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:743
 #, no-c-format
 msgid "Pagc_Normalize_Address"
-msgstr ""
+msgstr "Pagc_Normalize_Address"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:745
@@ -1884,6 +2634,12 @@ msgid ""
 "just the lookup data packaged with the tiger_geocoder (no need for tiger "
 "census data). Requires address_standardizer extension."
 msgstr ""
+"Étant donné une adresse textuelle, cette fonction renvoie un type composite "
+"<varname>norm_addy</varname> qui contient le suffixe de la route, le préfixe "
+"et le type normalisé, la rue, le nom de la rue, etc. divisés en champs "
+"distincts. Cette fonction fonctionne uniquement avec les données de "
+"recherche fournies avec le géocodeur tiger (pas besoin pour les données de "
+"recensement tiger). Nécessite l'extension address_standardizer."
 
 #. Tag: funcprototype
 #: extras_tigergeocoder.xml:751
@@ -1892,6 +2648,8 @@ msgid ""
 "<funcdef>norm_addy <function>pagc_normalize_address</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>in_address</parameter></paramdef>"
 msgstr ""
+"<funcdef>norm_addy <function>pagc_normalize_address</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>in_address</parameter></paramdef>"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:763
@@ -1904,6 +2662,13 @@ msgid ""
 "alternative namings to the various lookup tables in the <varname>tiger</"
 "varname> schema."
 msgstr ""
+"Cette fonction utilise simplement les diverses tables de recherche pagc_* "
+"préchargées avec le géocodeur tiger et situées dans le schéma "
+"<varname>tiger</varname>, de sorte qu'il n'est pas nécessaire de télécharger "
+"les données de recensement tiger ou d'autres données supplémentaires pour "
+"l'utiliser. Il se peut que vous ayez besoin d'ajouter des abréviations ou "
+"des noms alternatifs aux différentes tables de recherche du schéma "
+"<varname>tiger</varname>."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:767
@@ -1912,6 +2677,8 @@ msgid ""
 "There are slight variations in casing and formatting over the <xref linkend="
 "\"Normalize_Address\"/>."
 msgstr ""
+"Il existe de légères variations dans la casse et le formatage des <xref "
+"linkend=\"Normalize_Address\"/>."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:769
@@ -1926,6 +2693,8 @@ msgid ""
 "(address) [predirAbbrev] (streetName) [streetTypeAbbrev] [postdirAbbrev] "
 "[internal] [location] [stateAbbrev] [zip]"
 msgstr ""
+"(address) [predirAbbrev] (streetName) [streetTypeAbbrev] [postdirAbbrev] "
+"[internal] [location] [stateAbbrev] [zip]"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:771
@@ -1935,18 +2704,22 @@ msgid ""
 "bit richer than norm_addy since its designed to support international "
 "addresses (including country). standardaddr equivalent fields are:"
 msgstr ""
+"Le standardaddr natif de l'extension address_standardizer est pour l'instant "
+"un peu plus riche que norm_addy puisqu'il est conçu pour prendre en charge "
+"les adresses internationales (y compris le pays). Les champs équivalents au "
+"standardaddr sont :"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:772
 #, no-c-format
 msgid "house_num,predir, name, suftype, sufdir, unit, city, state, postcode"
-msgstr ""
+msgstr "house_num,predir, name, suftype, sufdir, unit, city, state, postcode"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:818
 #, no-c-format
 msgid "Single call example"
-msgstr ""
+msgstr "Exemple d'appel unique"
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:819
@@ -1964,6 +2737,17 @@ msgid ""
 "    9000 | E            | ROO        | ST               |               | "
 "SUITE 999 | SPRINGFIELD | CO          |     | t"
 msgstr ""
+"SELECT addy.*\n"
+"FROM pagc_normalize_address('9000 E ROO ST STE 999, Springfield, CO') AS "
+"addy;\n"
+"\n"
+"\n"
+" address | predirabbrev | streetname | streettypeabbrev | postdirabbrev | "
+"internal  |  location   | stateabbrev | zip | parsed\n"
+"---------+--------------+------------+------------------+---------------+----"
+"-------+-------------+-------------+-----+--------\n"
+"    9000 | E            | ROO        | ST               |               | "
+"SUITE 999 | SPRINGFIELD | CO          |     | t"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:821
@@ -1978,6 +2762,15 @@ msgid ""
 "linkend=\"Normalize_Address\"/> that uses data created in <xref linkend="
 "\"Geocode\"/>."
 msgstr ""
+"Appel par lots. Il y a actuellement des problèmes de vitesse avec la façon "
+"dont postgis_tiger_geocoder mobilise l'address_standardizer. Ces problèmes "
+"seront résolus dans les prochaines éditions. Pour les contourner, si vous "
+"avez besoin de rapidité pour le géocodage par lots pour appeler la "
+"génération d'un normaddy en mode batch, nous vous encourageons à appeler "
+"directement la fonction address_standardizer standardize_address comme "
+"indiqué ci-dessous qui est un exercice similaire à ce que nous avons fait "
+"dans <xref linkend=\"Normalize_Address\"/> qui utilise les données créées "
+"dans <xref linkend=\"Geocode\"/>."
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:825
@@ -2004,18 +2797,38 @@ msgid ""
 " 124 Mount Auburn St, Cambridge, Massachusetts 02138 | MOUNT AUBURN  | ST\n"
 " 950 Main Street, Worcester, MA 01610                | MAIN          | ST"
 msgstr ""
+"WITH g AS (SELECT address, ROW((sa).house_num, (sa).predir, (sa).name\n"
+"  , (sa).suftype, (sa).sufdir, (sa).unit , (sa).city, (sa).state, (sa)."
+"postcode, true)::norm_addy As na\n"
+" FROM (SELECT address, standardize_address('tiger.pagc_lex'\n"
+"       , 'tiger.pagc_gaz'\n"
+"       , 'tiger.pagc_rules', address) As sa\n"
+"        FROM addresses_to_geocode) As g)\n"
+"SELECT address As orig, (g.na).streetname, (g.na).streettypeabbrev\n"
+" FROM  g;\n"
+"\n"
+" orig                                                |  streetname   | "
+"streettypeabbrev\n"
+"-----------------------------------------------------+---------------+-------"
+"-----------\n"
+" 529 Main Street, Boston MA, 02129                   | MAIN          | ST\n"
+" 77 Massachusetts Avenue, Cambridge, MA 02139        | MASSACHUSETTS | AVE\n"
+" 25 Wizard of Oz, Walaford, KS 99912323              | WIZARD OF     |\n"
+" 26 Capen Street, Medford, MA                        | CAPEN         | ST\n"
+" 124 Mount Auburn St, Cambridge, Massachusetts 02138 | MOUNT AUBURN  | ST\n"
+" 950 Main Street, Worcester, MA 01610                | MAIN          | ST"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:830
 #, no-c-format
 msgid ", <xref linkend=\"Geocode\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"Geocode\"/>"
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:836
 #, no-c-format
 msgid "Pprint_Addy"
-msgstr ""
+msgstr "Pprint_Addy"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:838
@@ -2025,6 +2838,9 @@ msgid ""
 "print representation of it. Usually used in conjunction with "
 "normalize_address."
 msgstr ""
+"Étant donné un objet de type composite <varname>norm_addy</varname>, renvoie "
+"une jolie représentation de celui-ci. Généralement utilisé en conjonction "
+"avec normalize_address."
 
 #. Tag: funcprototype
 #: extras_tigergeocoder.xml:843
@@ -2044,18 +2860,23 @@ msgid ""
 "print representation of it. No other data is required aside from what is "
 "packaged with the geocoder."
 msgstr ""
+"Étant donné un objet de type composite <varname>norm_addy</varname>, il "
+"renvoie une jolie représentation de cet objet. Aucune autre donnée n'est "
+"nécessaire en dehors de celles fournies avec le géocodeur."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:854
 #, no-c-format
 msgid "Usually used in conjunction with <xref linkend=\"Normalize_Address\"/>."
 msgstr ""
+"Généralement utilisé en conjonction avec <xref linkend=\"Normalize_Address\""
+"/>."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:862
 #, no-c-format
 msgid "Pretty print a single address"
-msgstr ""
+msgstr "Jolie représentation d'une adresse unique"
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:863
@@ -2077,7 +2898,7 @@ msgstr ""
 #: extras_tigergeocoder.xml:865
 #, no-c-format
 msgid "Pretty print address a table of addresses"
-msgstr ""
+msgstr "Jolie représentation d'adresses à partir d'une table d'adresses"
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:866
@@ -2102,12 +2923,30 @@ msgid ""
 " 950 Main Street, Worcester, MA 01610                | 950 Main St, "
 "Worcester, MA 01610"
 msgstr ""
+"SELECT address As orig, pprint_addy(normalize_address(address)) As "
+"pretty_address\n"
+"        FROM addresses_to_geocode;\n"
+"\n"
+"                        orig                         |              "
+"pretty_address\n"
+"-----------------------------------------------------+-----------------------"
+"--------------------\n"
+" 529 Main Street, Boston MA, 02129                   | 529 Main St, Boston "
+"MA, 02129\n"
+" 77 Massachusetts Avenue, Cambridge, MA 02139        | 77 Massachusetts Ave, "
+"Cambridge, MA 02139\n"
+" 28 Capen Street, Medford, MA                        | 28 Capen St, Medford, "
+"MA\n"
+" 124 Mount Auburn St, Cambridge, Massachusetts 02138 | 124 Mount Auburn St, "
+"Cambridge, MA 02138\n"
+" 950 Main Street, Worcester, MA 01610                | 950 Main St, "
+"Worcester, MA 01610"
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:879
 #, no-c-format
 msgid "Reverse_Geocode"
-msgstr ""
+msgstr "Reverse_Geocode"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:881
@@ -2118,6 +2957,10 @@ msgid ""
 "cross streets. If include_strnum_range = true, includes the street range in "
 "the cross streets."
 msgstr ""
+"Prend un point géométrique dans un système spatial connu et renvoie un "
+"enregistrement contenant un tableau d'adresses théoriquement possibles et un "
+"tableau de rues transversales. Si include_strnum_range = true, la plage de "
+"rues est incluse dans les rues transversales."
 
 #. Tag: funcprototype
 #: extras_tigergeocoder.xml:886
@@ -2152,6 +2995,13 @@ msgid ""
 "Addresses are sorted according to which road a point is closest to so first "
 "address is most likely the right one."
 msgstr ""
+"Prend un point géométrique dans un réf spatial connu et renvoie un "
+"enregistrement contenant un tableau d'adresses théoriquement possibles et un "
+"tableau de rues transversales. Si include_strnum_range = true, la plage de "
+"rues est incluse dans les rues transversales. include_strnum_range prend par "
+"défaut la valeur false s'il n'est pas fourni. Les adresses sont triées en "
+"fonction de la route dont le point est le plus proche, de sorte que la "
+"première adresse est très probablement la bonne."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:903
@@ -2168,6 +3018,17 @@ msgid ""
 "taking up a good chunk of the street range and the rest of the buildings are "
 "clustered at the end."
 msgstr ""
+"Pourquoi parle-t-on d'adresses théoriques plutôt que d'adresses réelles ? "
+"Les données Tiger ne contiennent pas d'adresses réelles, mais seulement des "
+"tranches de rues. L'adresse théorique est donc une adresse interpolée sur la "
+"base de l'étendue des rues. Par exemple, l'interpolation d'une de mes "
+"adresses donne 26 Court St. et 26 Court Sq. alors que le 26 Court Sq. "
+"n'existe pas. Cela s'explique par le fait qu'un point peut se trouver à "
+"l'angle de deux rues et que la logique interpole donc le long des deux rues. "
+"La logique suppose également que les adresses sont également espacées le "
+"long d'une rue, ce qui est bien sûr faux puisqu'un bâtiment municipal peut "
+"occuper une bonne partie de la rue et que le reste des bâtiments est "
+"regroupé à l'extrémité."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:908
@@ -2177,12 +3038,15 @@ msgid ""
 "covering the region of this point, then hmm you will get a record filled "
 "with NULLS."
 msgstr ""
+"Note : Hmm cette fonction repose sur les données Tiger. Si vous n'avez pas "
+"chargé de données couvrant la région de ce point, vous obtiendrez un "
+"enregistrement rempli de NULLS."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:909
 #, no-c-format
 msgid "Returned elements of the record are as follows:"
-msgstr ""
+msgstr "Les éléments renvoyés de l'enregistrement sont les suivants :"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:912
@@ -2192,6 +3056,9 @@ msgid ""
 "points on the street closest to the input point. There are as many points as "
 "there are addresses."
 msgstr ""
+"<varname>intpt</varname> est un tableau de points : Il s'agit des points de "
+"la ligne centrale de la rue les plus proches du point d'entrée. Il y a "
+"autant de points que d'adresses."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:915
@@ -2203,6 +3070,12 @@ msgid ""
 "in the case when a point is at the corner of 2 or 3 streets, or the point is "
 "somewhere on the road and not off to the side."
 msgstr ""
+"<varname>addy</varname> est un tableau de norm_addy (adresses normalisées) : "
+"Il s'agit d'un tableau d'adresses possibles correspondant au point d'entrée. "
+"La première adresse du tableau est la plus probable. En général, il ne "
+"devrait y en avoir qu'une seule, sauf dans le cas où un point se trouve à "
+"l'angle de deux ou trois rues, ou si le point se trouve quelque part sur la "
+"route et non sur le côté."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:919
@@ -2212,6 +3085,9 @@ msgid ""
 "the street) (streets that intersect or are the street the point is projected "
 "to be on)."
 msgstr ""
+"<varname>street</varname> un tableau de varchar : Il s'agit des rues "
+"transversales (ou de la rue) (rues qui croisent ou sont la rue sur laquelle "
+"le point est projeté)."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:923
@@ -2222,6 +3098,11 @@ msgid ""
 "loaded. Refer to <xref linkend=\"Loader_Generate_Nation_Script\"/> for "
 "details on loading zcta5 data."
 msgstr ""
+"Amélioration : 2.4.1 si le jeu de données optionnel zcta5 est chargé, la "
+"fonction reverse_geocode peut résoudre l'état et le code postal même si les "
+"données spécifiques à l'état ne sont pas chargées. Voir <xref linkend="
+"\"Loader_Generate_Nation_Script\"/> pour plus de détails sur le chargement "
+"des données zcta5."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:931
@@ -2232,6 +3113,12 @@ msgid ""
 "that although we don't have 3 streets, PostgreSQL will just return null for "
 "entries above our upper bound so safe to use. This includes street ranges"
 msgstr ""
+"Exemple d'un point situé à l'angle de deux rues, mais le plus proche d'une "
+"seule. C'est l'emplacement approximatif du MIT : 77 Massachusetts Ave, "
+"Cambridge, MA 02139 Notez que bien que nous n'ayons pas 3 rues, PostgreSQL "
+"retournera simplement null pour les entrées supérieures à notre limite "
+"supérieure, ce qui permet de l'utiliser en toute sécurité. Cela inclut les "
+"plages de rues"
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:933
@@ -2252,6 +3139,20 @@ msgid ""
 " 67 Massachusetts Ave, Cambridge, MA 02139 |     |     | 67 - 127 "
 "Massachusetts Ave,32 - 88 Vassar St"
 msgstr ""
+"SELECT pprint_addy(r.addy[1]) As st1, pprint_addy(r.addy[2]) As st2, "
+"pprint_addy(r.addy[3]) As st3,\n"
+"            array_to_string(r.street, ',') As cross_streets\n"
+"        FROM reverse_geocode(ST_GeomFromText('POINT(-71.093902 42."
+"359446)',4269),true) As r;\n"
+"\n"
+" result\n"
+" ------\n"
+"      st1                                  | st2 | st3 |               "
+"cross_streets\n"
+"-------------------------------------------+-----+-----+---------------------"
+"-------------------------\n"
+" 67 Massachusetts Ave, Cambridge, MA 02139 |     |     | 67 - 127 "
+"Massachusetts Ave,32 - 88 Vassar St"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:935
@@ -2261,6 +3162,10 @@ msgid ""
 "picked a location really really close to a corner of 2 streets thus could be "
 "known by two different addresses."
 msgstr ""
+"Ici, nous avons choisi de ne pas inclure les plages d'adresses pour les rues "
+"transversales et nous avons choisi un emplacement vraiment très proche d'un "
+"coin de deux rues, qui pourrait donc être connu sous deux adresses "
+"différentes."
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:937
@@ -2280,6 +3185,19 @@ msgid ""
 " 5 Bradford St, Boston, MA 02118 | 49 Waltham St, Boston, MA 02118 |     | "
 "Waltham St"
 msgstr ""
+"SELECT pprint_addy(r.addy[1]) As st1, pprint_addy(r.addy[2]) As st2,\n"
+"pprint_addy(r.addy[3]) As st3, array_to_string(r.street, ',') As cross_str\n"
+"FROM reverse_geocode(ST_GeomFromText('POINT(-71.06941 42.34225)',4269)) As r;"
+"\n"
+"\n"
+"result\n"
+"--------\n"
+"               st1               |               st2               | st3 | "
+"cross_str\n"
+"---------------------------------+---------------------------------+-----+---"
+"---------------------\n"
+" 5 Bradford St, Boston, MA 02118 | 49 Waltham St, Boston, MA 02118 |     | "
+"Waltham St"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:939
@@ -2288,6 +3206,9 @@ msgid ""
 "For this one we reuse our geocoded example from <xref linkend=\"Geocode\"/> "
 "and we only want the primary address and at most 2 cross streets."
 msgstr ""
+"Pour celui-ci, nous réutilisons notre exemple géocodé de <xref linkend="
+"\"Geocode\"/> et nous ne voulons que l'adresse principale et au plus deux "
+"rues transversales."
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:940
@@ -2314,6 +3235,26 @@ msgid ""
 " 950 Main Street, Worcester, MA 01610                | -71.82368 | 42.24956 "
 "| 3 Maywood St, Worcester, MA 01603         | Main St         | Maywood Pl"
 msgstr ""
+"SELECT actual_addr, lon, lat, pprint_addy((rg).addy[1]) As int_addr1,\n"
+"    (rg).street[1] As cross1, (rg).street[2] As cross2\n"
+"FROM (SELECT address As actual_addr, lon, lat,\n"
+"    reverse_geocode( ST_SetSRID(ST_Point(lon,lat),4326) ) As rg\n"
+"    FROM addresses_to_geocode WHERE rating > -1) As foo;\n"
+"\n"
+"                     actual_addr                     |    lon    |   lat    |"
+"                 int_addr1                 |     cross1      |   cross2\n"
+"-----------------------------------------------------+-----------+----------+"
+"-------------------------------------------+-----------------+------------\n"
+" 529 Main Street, Boston MA, 02129                   | -71.07181 | 42.38359 |"
+" 527 Main St, Boston, MA 02129             | Medford St      |\n"
+" 77 Massachusetts Avenue, Cambridge, MA 02139        | -71.09428 | 42.35988 |"
+" 77 Massachusetts Ave, Cambridge, MA 02139 | Vassar St       |\n"
+" 26 Capen Street, Medford, MA                        | -71.12377 | 42.41101 |"
+" 9 Edison Ave, Medford, MA 02155           | Capen St        | Tesla Ave\n"
+" 124 Mount Auburn St, Cambridge, Massachusetts 02138 | -71.12304 | 42.37328 |"
+" 3 University Rd, Cambridge, MA 02138      | Mount Auburn St |\n"
+" 950 Main Street, Worcester, MA 01610                | -71.82368 | 42.24956 |"
+" 3 Maywood St, Worcester, MA 01603         | Main St         | Maywood Pl"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:947
@@ -2322,12 +3263,14 @@ msgid ""
 ", <xref linkend=\"Geocode\"/>, <xref linkend=\"Loader_Generate_Nation_Script"
 "\"/>"
 msgstr ""
+", <xref linkend=\"Geocode\"/>, <xref linkend=\"Loader_Generate_Nation_Script"
+"\"/>"
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:953
 #, no-c-format
 msgid "Topology_Load_Tiger"
-msgstr ""
+msgstr "Topology_Load_Tiger"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:955
@@ -2337,6 +3280,9 @@ msgid ""
 "transforming the tiger data to spatial reference of the topology and "
 "snapping to the precision tolerance of the topology."
 msgstr ""
+"Charge une région définie de données tiger dans une topologie PostGIS et "
+"transforme les données tiger en référence spatiale de la topologie et en "
+"s'adaptant à la tolérance de précision de la topologie."
 
 #. Tag: funcprototype
 #: extras_tigergeocoder.xml:961
@@ -2366,6 +3312,14 @@ msgid ""
 "future be more easily reconciled with tiger data. Returns summary details "
 "about the process."
 msgstr ""
+"Charge une région définie de données tigrées dans une topologie PostGIS. Les "
+"faces, les nœuds et les arêtes sont transformés dans le système de référence "
+"spatiale de la topologie cible et les points sont adaptés à la tolérance de "
+"la topologie cible. Les faces, les nœuds et les arêtes créés conservent les "
+"mêmes identifiants que les faces, les nœuds et les arêtes des données Tiger "
+"d'origine, de sorte que les ensembles de données puissent à l'avenir être "
+"plus facilement réconciliés avec les données Tiger. Renvoie un résumé des "
+"détails du processus."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:976
@@ -2375,6 +3329,10 @@ msgid ""
 "the newly formed polygons to follow the center lines of streets and for the "
 "resulting polygons not to overlap."
 msgstr ""
+"Cela peut s'avérer utile, par exemple, pour les données de redécoupage, "
+"lorsque les polygones nouvellement formés doivent suivre les lignes "
+"centrales des rues et que les polygones résultants ne doivent pas se "
+"chevaucher."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:978
@@ -2387,6 +3345,12 @@ msgid ""
 "records will be created. This function will also fail if you have not "
 "created a topology using the topology functions."
 msgstr ""
+"Cette fonction repose sur les données Tiger ainsi que sur l'installation du "
+"module topologique PostGIS. Pour plus d'informations, voir <xref linkend="
+"\"Topology\"/> et <xref linkend=\"installation_configuration\"/>. Si vous "
+"n'avez pas chargé de données couvrant la région concernée, aucun "
+"enregistrement topologique ne sera créé. Cette fonction échouera également "
+"si vous n'avez pas créé de topologie à l'aide des fonctions de topologie."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:980
@@ -2397,12 +3361,17 @@ msgid ""
 "the situation you may want to increase or lower the precision if you get "
 "topology validation failures."
 msgstr ""
+"La plupart des erreurs de validation de la topologie sont dues à des "
+"problèmes de tolérance : après la transformation, les points des arêtes ne "
+"s'alignent pas tout à fait ou ne se chevauchent pas. Pour remédier à cette "
+"situation, vous pouvez augmenter ou réduire la précision si vous obtenez des "
+"échecs de validation de la topologie."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:982
 #, no-c-format
 msgid "Required arguments:"
-msgstr ""
+msgstr "Arguments requis :"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:985
@@ -2411,6 +3380,8 @@ msgid ""
 "<varname>topo_name</varname> The name of an existing PostGIS topology to "
 "load data into."
 msgstr ""
+"<varname>topo_name</varname> Le nom d'une topologie PostGIS existante dans "
+"laquelle charger les données."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:988
@@ -2421,6 +3392,11 @@ msgid ""
 "is to have several more. This is the table to look into to define the region "
 "bounds. e.g <varname>tiger.place</varname>, <varname>tiger.county</varname>"
 msgstr ""
+"<varname>region_type</varname> Type de région délimitée. Actuellement, seuls "
+"<varname>place</varname> et <varname>county</varname> sont pris en charge. "
+"Il est prévu d'en avoir plusieurs autres. Il s'agit de la table à consulter "
+"pour définir les limites de la région, par exemple <varname>tiger.place</"
+"varname>, <varname>tiger.county</varname>"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:991
@@ -2432,12 +3408,17 @@ msgid ""
 "county it is the <varname>cntyidfp</varname> column in <varname>tiger."
 "county</varname>"
 msgstr ""
+"<varname>region_id</varname> C'est ce que TIGER appelle le geoid. Il s'agit "
+"de l'identifiant unique de la région dans la table. Pour la table place, il "
+"s'agit de la colonne <varname>plcidfp</varname> dans <varname>tiger.place</"
+"varname>. Pour la table county, il s'agit de la colonne <varname>cntyidfp</"
+"varname> dans <varname>tiger.county</varname>"
 
 #. Tag: title
 #: extras_tigergeocoder.xml:1000
 #, no-c-format
 msgid "Example: Boston, Massachusetts Topology"
-msgstr ""
+msgstr "Exemple : Boston, Massachusetts Topologie"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:1001
@@ -2447,6 +3428,9 @@ msgid ""
 "with tolerance 0.25 feet and then load in Boston city tiger faces, edges, "
 "nodes."
 msgstr ""
+"Créez une topologie pour Boston, Massachusetts dans Mass State Plane Feet "
+"(2249) avec une tolérance de 0,25 pied, puis chargez dans Boston city tiger "
+"faces, edges, nodes."
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:1003
@@ -2478,12 +3462,37 @@ msgid ""
 "       error       |   id1    |    id2\n"
 "-------------------+----------+-----------"
 msgstr ""
+"SELECT topology.CreateTopology('topo_boston', 2249, 0.25);\n"
+"createtopology\n"
+"--------------\n"
+"   15\n"
+"-- 60 902 ms ~ 1 minute sur un ordinateur Windows 7 avec la version 9.1 ("
+"avec 5 états de données tiger chargés)\n"
+"SELECT tiger.topology_load_tiger('topo_boston', 'place', '2507000');\n"
+"-- topology_loader_tiger --\n"
+"29722 edges holding in temporary. 11108 faces added. 1875 edges of faces "
+"added.  20576 nodes added.\n"
+"19962 nodes contained in a face.  0 edge start end corrected.  31597 edges "
+"added.\n"
+"\n"
+"-- 41 ms --\n"
+"SELECT topology.TopologySummary('topo_boston');\n"
+" -- topologysummary--\n"
+"Topology topo_boston (15), SRID 2249, precision 0.25\n"
+"20576 nodes, 31597 edges, 11109 faces, 0 topogeoms in 0 layers\n"
+"\n"
+"-- 28 797 ms pour la validation, mais aucune erreur n'a été renvoyée --\n"
+"SELECT * FROM\n"
+"    topology.ValidateTopology('topo_boston');\n"
+"\n"
+"       error       |   id1    |    id2\n"
+"-------------------+----------+-----------"
 
 #. Tag: title
 #: extras_tigergeocoder.xml:1007
 #, no-c-format
 msgid "Example: Suffolk, Massachusetts Topology"
-msgstr ""
+msgstr "Exemple : Suffolk, Massachusetts Topologie"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:1008
@@ -2493,6 +3502,9 @@ msgid ""
 "(26986) with tolerance 0.25 meters and then load in Suffolk county tiger "
 "faces, edges, nodes."
 msgstr ""
+"Créez une topologie pour Suffolk, Mass State Plane Meters (26986) avec une "
+"tolérance de 0,25 mètre, puis chargez dans le schéma tiger du comté de "
+"Suffolk les faces, edges, nodes."
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:1010
@@ -2528,6 +3540,35 @@ msgid ""
 " edge crosses node | 81064553 |  85728168\n"
 " edge crosses node | 81064553 |  85733413"
 msgstr ""
+"SELECT topology.CreateTopology('topo_suffolk', 26986, 0.25);\n"
+"-- cela a pris 56 275 ms ~ 1 minute sur Windows 7 32-bit avec 5 états tiger "
+"chargés\n"
+"-- a dû être rechargé après le chargement de Boston\n"
+"SELECT tiger.topology_load_tiger('topo_suffolk', 'county', '25025');\n"
+"-- topology_loader_tiger --\n"
+" 36003 edges holding in temporary. 13518 faces added. 2172 edges of faces "
+"added.\n"
+" 24761 nodes added.  24075 nodes contained in a face.  0 edge start end "
+"corrected.  38175 edges added.\n"
+"-- 31 ms --\n"
+"SELECT topology.TopologySummary('topo_suffolk');\n"
+" -- topologysummary--\n"
+" Topology topo_suffolk (14), SRID 26986, precision 0.25\n"
+"24761 nodes, 38175 edges, 13519 faces, 0 topogeoms in 0 layers\n"
+"\n"
+"-- 33,606 ms pour valider --\n"
+"SELECT * FROM\n"
+"    topology.ValidateTopology('topo_suffolk');\n"
+"\n"
+"       error       |   id1    |    id2\n"
+"-------------------+----------+-----------\n"
+" coincident nodes  | 81045651 |  81064553\n"
+" edge crosses node | 81045651 |  85737793\n"
+" edge crosses node | 81045651 |  85742215\n"
+" edge crosses node | 81045651 | 620628939\n"
+" edge crosses node | 81064553 |  85697815\n"
+" edge crosses node | 81064553 |  85728168\n"
+" edge crosses node | 81064553 |  85733413"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:1014
@@ -2536,18 +3577,21 @@ msgid ""
 ", <xref linkend=\"CreateTopoGeom\"/>, <xref linkend=\"TopologySummary\"/>, "
 "<xref linkend=\"ValidateTopology\"/>"
 msgstr ""
+", <xref linkend=\"CreateTopoGeom\"/>, <xref linkend=\"TopologySummary\"/>, "
+"<xref linkend=\"ValidateTopology\"/>"
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:1020
 #, no-c-format
 msgid "Set_Geocode_Setting"
-msgstr ""
+msgstr "Set_Geocode_Setting"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:1022
 #, no-c-format
 msgid "Sets a setting that affects behavior of geocoder functions."
 msgstr ""
+"Définit un paramètre qui affecte le comportement des fonctions du géocodeur."
 
 #. Tag: funcprototype
 #: extras_tigergeocoder.xml:1027
@@ -2570,6 +3614,11 @@ msgid ""
 "plans will be to control rating with settings. Current list of settings are "
 "listed in <xref linkend=\"Get_Geocode_Setting\"/>."
 msgstr ""
+"Définit la valeur d'un paramètre spécifique stocké dans la table "
+"<varname>tiger.geocode_settings</varname>. Les paramètres permettent "
+"d'activer le débogage des fonctions. Plus tard, il sera envisagé de "
+"contrôler la notation à l'aide de paramètres. La liste actuelle des "
+"paramètres est listée dans <xref linkend=\"Get_Geocode_Setting\"/>."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:1047
@@ -2578,6 +3627,8 @@ msgid ""
 "If you run <xref linkend=\"Geocode\"/> when this function is true, the "
 "NOTICE log will output timing and queries."
 msgstr ""
+"Si vous exécutez <xref linkend=\"Geocode\"/> alors que cette fonction est "
+"vraie, le journal NOTICE indiquera le temps et les requêtes."
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:1048
@@ -2588,3 +3639,7 @@ msgid ""
 "---------\n"
 "true"
 msgstr ""
+"SELECT set_geocode_setting('debug_geocode_address', 'true') As result;\n"
+"result\n"
+"---------\n"
+"true"
