@@ -740,7 +740,12 @@ select ST_DelaunayTriangles(
 	  </refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_DelaunayTriangles" />,  <xref linkend="ST_Tesselate" />, <xref linkend="ST_ConcaveHull" />, <xref linkend="ST_Dump" />
+			<para>
+				<xref linkend="ST_DelaunayTriangles" />,
+				<xref linkend="ST_TriangulatePolygon" />,
+				<xref linkend="ST_Tesselate" />,
+				<xref linkend="ST_ConcaveHull" />,
+				<xref linkend="ST_Dump" />
 			</para>
 		</refsection>
 	</refentry>
