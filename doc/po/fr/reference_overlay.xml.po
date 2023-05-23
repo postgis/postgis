@@ -240,7 +240,7 @@ msgid ""
 "&Z_support; However, the result is computed using XY only. The result Z "
 "values are copied, averaged or interpolated."
 msgstr ""
-"&Z_support ; Cependant, le résultat est calculé en utilisant uniquement XY. "
+"&Z_support; Cependant, le résultat est calculé en utilisant uniquement XY. "
 "Les valeurs Z résultantes sont copiées, moyennées ou interpolées."
 
 #. Tag: para
@@ -1807,7 +1807,7 @@ msgid ""
 "&sqlmm_compliant; SQL-MM 3: 5.1.19 the z-index (elevation) when polygons are "
 "involved."
 msgstr ""
-"&sqlmm_compliant ; SQL-MM 3 : 5.1.19 l'indice z (élévation) lorsque des "
+"&sqlmm_compliant; SQL-MM 3 : 5.1.19 l'indice z (élévation) lorsque des "
 "polygones sont impliqués."
 
 #. Tag: para

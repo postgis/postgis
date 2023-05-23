@@ -3694,8 +3694,8 @@ msgstr ""
 "L'azimut (également appelé cap ou relèvement) est indiqué en radians. Il est "
 "mesuré dans le sens des aiguilles d'une montre à partir du vrai nord (azimut "
 "zéro). L'est correspond à l'azimut &#x03C0;/2 (90 degrés) ; le sud à "
-"l'azimut &#x03C0 ; (180 degrés) ; l'ouest à l'azimut 3&#x03C0;/2 (270 degrés)"
-". Les valeurs d'azimut négatives et les valeurs supérieures à 2&#x03C0 ; ("
+"l'azimut &#x03C0; (180 degrés) ; l'ouest à l'azimut 3&#x03C0;/2 (270 degrés)"
+". Les valeurs d'azimut négatives et les valeurs supérieures à 2&#x03C0; ("
 "360 degrés) sont prises en charge."
 
 #. Tag: para
