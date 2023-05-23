@@ -30,6 +30,7 @@
 
 #include "../postgis_config.h"
 #include "liblwgeom.h"
+#include "lwgeodetic.h"
 #include "lwgeom_transform.h"
 
 
@@ -282,7 +283,7 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 struct srs_entry {
 	text* auth_name;
 	text* auth_code;
-	text* srs_name;
+	double sort;
 };
 
 struct srs_data {
@@ -291,6 +292,16 @@ struct srs_data {
 	uint32_t capacity;
 	uint32_t current_entry;
 };
+
+static int
+srs_entry_cmp (const void *a, const void *b)
+{
+	const struct srs_entry *entry_a = (const struct srs_entry*)(a);
+	const struct srs_entry *entry_b = (const struct srs_entry*)(b);
+	if      (entry_a->sort < entry_b->sort) return -1;
+	else if (entry_a->sort > entry_b->sort) return 1;
+	else return 0;
+}
 
 static Datum
 srs_tuple_from_entry(const struct srs_entry* entry, TupleDesc tuple_desc)
@@ -448,15 +459,14 @@ srs_find_planar(const char *auth_name, const LWGEOM *bounds, struct srs_data *st
 		box3d_transform(&gbox, pj);
 	}
 
-    params->west_lon_degree = gbox.xmin;
-    params->south_lat_degree = gbox.ymin;
-    params->east_lon_degree = gbox.xmax;
-    params->north_lat_degree = gbox.ymax;
+	params->west_lon_degree = gbox.xmin;
+	params->south_lat_degree = gbox.ymin;
+	params->east_lon_degree = gbox.xmax;
+	params->north_lat_degree = gbox.ymax;
 
 	crs_list = crs_list_ptr = proj_get_crs_info_list_from_database(
 	                            ctx, auth_name, params, &crs_count);
 
-	/* TODO, sort this list in order of smallest area of interest */
 	/* TODO, throw out really huge / dumb areas? */
 
 	while (crs_list && *crs_list)
@@ -464,16 +474,28 @@ srs_find_planar(const char *auth_name, const LWGEOM *bounds, struct srs_data *st
 		/* Read current crs and move forward one entry */
 		PROJ_CRS_INFO *crs = *crs_list++;
 
+		/* Read the corners of the CRS area of use */
+		double area;
+		double height = crs->north_lat_degree - crs->south_lat_degree;
+		double width = crs->east_lon_degree - crs->west_lon_degree;
+		if (width < 0.0)
+			width = 360 - (crs->west_lon_degree - crs->east_lon_degree);
+		area = width * height;
+
 		/* Ensure there is space in the entry list */
 		srs_state_memcheck(state);
 
 		/* Write the entry into the entry list and increment */
 		state->entries[state->num_entries].auth_name = cstring_to_text(crs->auth_name);
 		state->entries[state->num_entries].auth_code = cstring_to_text(crs->code);
+		state->entries[state->num_entries].sort = area;
 		state->num_entries++;
 	}
 
-	proj_crs_info_list_destroy(crs_list);
+	/* Put the list of entries into order of area size, smallest to largest */
+	qsort(state->entries, state->num_entries, sizeof(struct srs_data), srs_entry_cmp);
+
+	proj_crs_info_list_destroy(crs_list_ptr);
 	proj_get_crs_list_parameters_destroy(params);
 }
 #endif
@@ -650,11 +672,6 @@ Datum postgis_srs_codes(PG_FUNCTION_ARGS)
  * Search for projections given extent and (optional) auth_name
  * returns TABLE(auth_name, auth_srid, srtext, proj4text, point_sw, point_ne)
  */
-
-// 	static void
-// srs_find_planar(const char *auth_name, const LWGEOM *bounds, struct srs_data *state)
-// xxxxx
-
 Datum postgis_srs_search(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(postgis_srs_search);
 Datum postgis_srs_search(PG_FUNCTION_ARGS)
