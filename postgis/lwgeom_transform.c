@@ -447,7 +447,10 @@ srs_find_planar(const char *auth_name, const LWGEOM *bounds, struct srs_data *st
 	params->crs_area_of_use_contains_bbox = true;
 	params->bbox_valid = true;
 	params->allow_deprecated = false;
+
+#if POSTGIS_PROJ_VERSION >= 81
 	params->celestial_body_name = "Earth";
+#endif
 
 	if (srid_from != srid_to)
 	{
