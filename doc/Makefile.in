@@ -122,8 +122,6 @@ XML_SOURCES = \
 	extras_tigergeocoder.xml \
 	extras_topology.xml \
 	extras.xml \
-	faq_raster.xml \
-	faq.xml \
 	installation.xml \
 	administration.xml \
 	database_tuning.xml \
@@ -160,7 +158,6 @@ XML_SOURCES = \
 	reference.xml \
 	release_notes.xml \
 	reporting.xml \
-	using_postgis_app.xml \
 	using_postgis_dataman.xml \
 	using_postgis_query.xml \
 	using_raster_dataman.xml

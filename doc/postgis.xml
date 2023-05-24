@@ -22,10 +22,8 @@
 <!ENTITY using_postgis_dataman SYSTEM "using_postgis_dataman.xml">
 <!ENTITY using_postgis_query SYSTEM "using_postgis_query.xml">
 <!ENTITY using_raster_dataman SYSTEM "using_raster_dataman.xml">
-<!ENTITY using_postgis_app SYSTEM "using_postgis_app.xml">
 <!ENTITY performance_tips SYSTEM "performance_tips.xml">
 <!ENTITY database_tuning SYSTEM "database_tuning.xml">
-<!ENTITY faq SYSTEM "faq.xml">
 <!ENTITY reference SYSTEM "reference.xml">
 <!ENTITY postgis_aggs_mm SYSTEM "postgis_aggs_mm.xml">
 <!ENTITY reporting SYSTEM "reporting.xml">
@@ -57,7 +55,6 @@
 <!ENTITY reference_validation SYSTEM "reference_validation.xml">
 <!ENTITY reference_version SYSTEM "reference_version.xml">
 <!ENTITY reference_raster SYSTEM "reference_raster.xml">
-<!ENTITY faq_raster SYSTEM "faq_raster.xml">
 <!ENTITY extras SYSTEM "extras.xml">
 <!ENTITY extras_topology SYSTEM "extras_topology.xml">
 <!ENTITY extras_tigergeocoder SYSTEM "extras_tigergeocoder.xml">
@@ -191,13 +188,10 @@ that makes use of any spatial indexes that are available on the geometries.">
   &using_postgis_dataman;
   &using_postgis_query;
   &performance_tips;
-  &using_postgis_app;
   &reference;
-  &faq;
   &extras_topology;
   &using_raster_dataman;
   &reference_raster;
-  &faq_raster;
   &extras;
   &postgis_aggs_mm;
   &reporting;

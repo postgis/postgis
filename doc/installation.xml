@@ -254,7 +254,7 @@ sh autogen.sh
 
 	 <listitem>
 			<para>
-				In order to build the <xref linkend="Address_Standardizer" /> you will also need PCRE <ulink url="http://www.pcre.org">http://www.pcre.org</ulink> (which generally is already installed on nix systems).  <code>Regex::Assemble</code> perl CPAN package is only needed if you want to rebuild the data encoded in <filename>parseaddress-stcities.h</filename>.
+				In order to build the <xref linkend="Address_Standardizer" /> you will also need PCRE <ulink url="http://www.pcre.org">http://www.pcre.org</ulink> (which generally is already installed on nix systems).
 				<xref linkend="Address_Standardizer" /> will automatically be built if it detects a PCRE library, or you pass in a valid <varname>--with-pcre-dir=/path/to/pcre</varname> during configure.
 			</para>
 		</listitem>
@@ -1002,12 +1002,6 @@ but you can download the latest at: <ulink url="http://www.pcre.org">http://www.
 -----+------------------------+--------+-------+-------
  1   | Devonshire Place PH301 | Boston | MA    | 02109</screen>
 
-        <sect2><title>Installing Regex::Assemble</title>
-            <para>Perl Regex:Assemble is no longer needed for compiling address_standardizer extension since the files it generates are part of the source tree.  However if you need to edit the <filename>usps-st-city-orig.txt</filename> or <filename>usps-st-city-orig.txt usps-st-city-adds.tx</filename>, you need to rebuild <filename>parseaddress-stcities.h</filename> which does require Regex:Assemble.</para>
-            <programlisting>cpan Regexp::Assemble</programlisting>
-            <para>or if you are on Ubuntu / Debian you might need to do</para>
-            <programlisting>sudo perl -MCPAN -e "install Regexp::Assemble"</programlisting>
-        </sect2>
 	</sect1>
 
   <sect1 id="loading_extras_tiger_geocoder">
@@ -1017,9 +1011,9 @@ but you can download the latest at: <ulink url="http://www.pcre.org">http://www.
 	the <filename>share/extension/postgis_tiger_geocoder.*</filename> files from the packages in <ulink url="http://postgis.net/windows_downloads/">Windows Unreleased Versions</ulink> section for your version of PostgreSQL.
 	Although these packages are for windows, the postgis_tiger_geocoder extension files will work on any OS since the extension is an SQL/plpgsql only extension.</para>
 	<sect2 id="install_tiger_geocoder_extension">
-		<title>Tiger Geocoder Enabling your PostGIS database: Using Extension</title>
+		<title>Tiger Geocoder Enabling your PostGIS database</title>
 		<orderedlist>
-			<listitem><para>First get binaries for PostGIS 2.1+ or compile and install as usual.  This should install the necessary extension files as well for tiger geocoder.</para></listitem>
+			<listitem><para>These directions assume your PostgreSQL installation already has the postgis_tiger_geocoder extension installed.</para></listitem>
 			<listitem><para>Connect to your database via psql or pgAdmin or some other tool and run the following SQL commands.  Note that if you are installing in a database that already has postgis, you don't need to do the first step.  If you have <varname>fuzzystrmatch</varname> extension already installed, you don't need to do the second step either.</para>
 			<para><programlisting>CREATE EXTENSION postgis;
 CREATE EXTENSION fuzzystrmatch;

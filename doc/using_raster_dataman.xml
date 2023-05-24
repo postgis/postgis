@@ -6,23 +6,71 @@
     <para>For most use cases, you will create PostGIS rasters by loading existing raster files using the packaged <varname>raster2pgsql</varname> raster loader.</para>
 
     <sect2 id="RT_Raster_Loader">
-	<title>Using raster2pgsql to load rasters</title>
-    <para>
-        The <varname>raster2pgsql</varname> is a raster loader executable that loads GDAL supported raster formats into sql suitable for loading into a PostGIS raster table.
-        It is capable of loading folders of raster files as well as creating overviews of rasters. </para>
-    <para>Since the raster2pgsql is compiled as part of PostGIS most often (unless you compile your own GDAL library), the raster types supported
-	by the executable will be the same as those compiled in the GDAL dependency library.  To get a list of raster types your particular raster2pgsql supports use the <varname>-G</varname> switch.  These should be the same as those provided by your PostGIS install documented here  <xref linkend="RT_ST_GDALDrivers" /> if you are using the same GDAL library for both.</para>
+  	<title>Using raster2pgsql to load rasters</title>
+
+    <para>The <varname>raster2pgsql</varname> is a raster loader executable that loads GDAL supported raster formats into SQL suitable for loading into a PostGIS raster table. It is capable of loading folders of raster files as well as creating overviews of rasters. </para>
+
+    <para>Since the raster2pgsql is compiled as part of PostGIS most often (unless you compile your own GDAL library), the raster types supported by the executable will be the same as those compiled in the GDAL dependency library.  To get a list of raster types your particular <varname>raster2pgsql</varname> supports use the <varname>-G</varname> switch.</para>
+
     <note>
-	<para>The older version of this tool was a python script.  The executable has replaced the python script.  If you still find the need for the Python script
-        Examples of the python one can be found at <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">GDAL PostGIS Raster Driver Usage</ulink>.
-        Please note that the raster2pgsql python script may not work with future versions of PostGIS raster and is no longer supported.
-        </para></note>
+      <para>When creating overviews of a specific factor from a set of rasters that are aligned, it is possible for the overviews to not align.  Visit <ulink url="http://trac.osgeo.org/postgis/ticket/1764">http://trac.osgeo.org/postgis/ticket/1764</ulink> for an example where the overviews do not align.</para>
+    </note>
 
-	<note><para>When creating overviews of a specific factor from a set of rasters that are aligned, it is possible for the overviews to not align.  Visit <ulink url="http://trac.osgeo.org/postgis/ticket/1764">http://trac.osgeo.org/postgis/ticket/1764</ulink> for an example where the overviews do not align.</para></note>
+    <sect3>
+      <title>Example Usage</title>
 
-    <para>EXAMPLE USAGE:
-	<programlisting>raster2pgsql <varname>raster_options_go_here</varname> <varname>raster_file</varname> <varname>someschema</varname>.<varname>sometable</varname> &gt; out.sql</programlisting>
-    </para>
+    <para>An example session using the loader to create an input file and uploading it chunked in 100x100 tiles might look like this:</para>
+
+    <programlisting># -s use srid 4326
+# -I create spatial index
+# -C use standard raster constraints
+# -M vacuum analyze after load
+# *.tif load all these files
+# -F include a filename column in the raster table
+# -t tile the output 100x100
+# public.demelevation load into this table
+raster2pgsql -s 4326 -I -C -M -F -t 100x100 *.tif public.demelevation > elev.sql
+
+# -d connect to this database
+# -f read this file after connecting
+psql -d gisdb -f elev.sql</programlisting>
+
+    <note>
+      <para>If you do not specify the schema as part of the target table name, the table will be created in the default schema of the database or user you are connecting with.</para>
+    </note>
+
+    <para>A conversion and upload can be done all in one step using UNIX pipes:</para>
+
+    <programlisting>raster2pgsql -s 4326 -I -C -M *.tif -F -t 100x100 public.demelevation | psql -d gisdb</programlisting>
+
+    <para>Load rasters Massachusetts state plane meters aerial tiles
+  into a schema called <varname>aerial</varname> and create a full view, 2 and 4 level overview tables, use copy mode for inserting (no intermediary file just straight to db), and -e don't force everything in a transaction (good if you want to see data in tables right away without waiting).  Break up the rasters into 128x128 pixel tiles and apply raster constraints. Use copy mode instead of table insert. (-F) Include a field called filename to hold the name of the file the tiles were cut from.</para>
+    <programlisting>raster2pgsql -I -C -e -Y -F -s 26986 -t 128x128  -l 2,4 bostonaerials2008/*.jpg aerials.boston | psql -U postgres -d gisdb -h localhost -p 5432</programlisting>
+
+    <programlisting>--get a list of raster types supported:
+raster2pgsql -G</programlisting>
+
+<para>The -G commands outputs a list something like </para>
+<screen>
+Available GDAL raster formats:
+  Virtual Raster
+  GeoTIFF
+  National Imagery Transmission Format
+  Raster Product Format TOC format
+  ECRG TOC format
+  Erdas Imagine Images (.img)
+  CEOS SAR Image
+  CEOS Image
+  ...
+  Arc/Info Export E00 GRID
+  ZMap Plus Grid
+  NOAA NGS Geoid Height Grids</screen>
+
+    </sect3>
+
+    <sect3>
+      <title>raster2pgsql options</title>
+
     <variablelist>
          <varlistentry>
           <term>-?</term>
@@ -312,123 +360,12 @@
             <listitem><para>Specify version of output format.  Default  is 0.  Only 0 is supported at this time.</para></listitem>
         </varlistentry>
     </variablelist>
-    <para>An example session using the loader to create an input file and uploading it chunked in 100x100 tiles might look like this:</para>
-    <note><para>You can leave the schema name out e.g <varname>demelevation</varname> instead of <varname>public.demelevation</varname> and
-    the raster table will be created in the default schema of the database or user</para></note>
-    <programlisting>raster2pgsql -s 4326 -I -C -M *.tif -F -t 100x100 public.demelevation > elev.sql
-psql -d gisdb -f elev.sql</programlisting>
 
-    <para>A conversion and upload can be done all in one step using UNIX pipes:</para>
+    </sect3>
 
-    <programlisting>raster2pgsql -s 4326 -I -C -M *.tif -F -t 100x100 public.demelevation | psql -d gisdb</programlisting>
 
-    <para>Load rasters Massachusetts state plane meters aerial tiles
-	into a schema called <varname>aerial</varname> and create a full view, 2 and 4 level overview tables, use copy mode for inserting (no intermediary file just straight to db), and -e don't force everything in a transaction (good if you want to see data in tables right away without waiting).  Break up the rasters into 128x128 pixel tiles and apply raster constraints. Use copy mode instead of table insert. (-F) Include a field called filename to hold the name of the file the tiles were cut from.</para>
-    <programlisting>raster2pgsql -I -C -e -Y -F -s 26986 -t 128x128  -l 2,4 bostonaerials2008/*.jpg aerials.boston | psql -U postgres -d gisdb -h localhost -p 5432</programlisting>
 
-    <programlisting>--get a list of raster types supported:
-raster2pgsql -G</programlisting>
 
-<para>The -G commands outputs a list something like </para>
-<screen>
-Available GDAL raster formats:
-  Virtual Raster
-  GeoTIFF
-  National Imagery Transmission Format
-  Raster Product Format TOC format
-  ECRG TOC format
-  Erdas Imagine Images (.img)
-  CEOS SAR Image
-  CEOS Image
-  JAXA PALSAR Product Reader (Level 1.1/1.5)
-  Ground-based SAR Applications Testbed File Format (.gff)
-  ELAS
-  Arc/Info Binary Grid
-  Arc/Info ASCII Grid
-  GRASS ASCII Grid
-  SDTS Raster
-  DTED Elevation Raster
-  Portable Network Graphics
-  JPEG JFIF
-  In Memory Raster
-  Japanese DEM (.mem)
-  Graphics Interchange Format (.gif)
-  Graphics Interchange Format (.gif)
-  Envisat Image Format
-  Maptech BSB Nautical Charts
-  X11 PixMap Format
-  MS Windows Device Independent Bitmap
-  SPOT DIMAP
-  AirSAR Polarimetric Image
-  RadarSat 2 XML Product
-  PCIDSK Database File
-  PCRaster Raster File
-  ILWIS Raster Map
-  SGI Image File Format 1.0
-  SRTMHGT File Format
-  Leveller heightfield
-  Terragen heightfield
-  USGS Astrogeology ISIS cube (Version 3)
-  USGS Astrogeology ISIS cube (Version 2)
-  NASA Planetary Data System
-  EarthWatch .TIL
-  ERMapper .ers Labelled
-  NOAA Polar Orbiter Level 1b Data Set
-  FIT Image
-  GRIdded Binary (.grb)
-  Raster Matrix Format
-  EUMETSAT Archive native (.nat)
-  Idrisi Raster A.1
-  Intergraph Raster
-  Golden Software ASCII Grid (.grd)
-  Golden Software Binary Grid (.grd)
-  Golden Software 7 Binary Grid (.grd)
-  COSAR Annotated Binary Matrix (TerraSAR-X)
-  TerraSAR-X Product
-  DRDC COASP SAR Processor Raster
-  R Object Data Store
-  Portable Pixmap Format (netpbm)
-  USGS DOQ (Old Style)
-  USGS DOQ (New Style)
-  ENVI .hdr Labelled
-  ESRI .hdr Labelled
-  Generic Binary (.hdr Labelled)
-  PCI .aux Labelled
-  Vexcel MFF Raster
-  Vexcel MFF2 (HKV) Raster
-  Fuji BAS Scanner Image
-  GSC Geogrid
-  EOSAT FAST Format
-  VTP .bt (Binary Terrain) 1.3 Format
-  Erdas .LAN/.GIS
-  Convair PolGASP
-  Image Data and Analysis
-  NLAPS Data Format
-  Erdas Imagine Raw
-  DIPEx
-  FARSITE v.4 Landscape File (.lcp)
-  NOAA Vertical Datum .GTX
-  NADCON .los/.las Datum Grid Shift
-  NTv2 Datum Grid Shift
-  ACE2
-  Snow Data Assimilation System
-  Swedish Grid RIK (.rik)
-  USGS Optional ASCII DEM (and CDED)
-  GeoSoft Grid Exchange Format
-  Northwood Numeric Grid Format .grd/.tab
-  Northwood Classified Grid Format .grc/.tab
-  ARC Digitized Raster Graphics
-  Standard Raster Product (ASRP/USRP)
-  Magellan topo (.blx)
-  SAGA GIS Binary Grid (.sdat)
-  Kml Super Overlay
-  ASCII Gridded XYZ
-  HF2/HFZ heightfield raster
-  OziExplorer Image File
-  USGS LULC Composite Theme Grid
-  Arc/Info Export E00 GRID
-  ZMap Plus Grid
-  NOAA NGS Geoid Height Grids</screen>
     </sect2>
     <sect2 id="RT_Creating_Rasters">
 	<title>Creating rasters using PostGIS raster functions</title>
