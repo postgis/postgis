@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-04 00:50+0000\n"
-"PO-Revision-Date: 2023-05-23 02:08+0000\n"
+"PO-Revision-Date: 2023-05-25 11:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_rasterxml/fr/>\n"
@@ -2086,7 +2086,7 @@ msgstr ""
 #: reference_raster.xml:1078
 #, no-c-format
 msgid "<term>id</term>"
-msgstr ""
+msgstr "<term>id</term>"
 
 #. Tag: para
 #: reference_raster.xml:1079
@@ -18596,7 +18596,7 @@ msgstr ""
 #: reference_raster.xml:10605
 #, no-c-format
 msgid "ST_Contains"
-msgstr ""
+msgstr "ST_Contains"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10606
@@ -18709,7 +18709,7 @@ msgstr ""
 #: reference_raster.xml:10694
 #, no-c-format
 msgid "ST_ContainsProperly"
-msgstr ""
+msgstr "ST_ContainsProperly"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10695
@@ -18792,7 +18792,7 @@ msgstr ""
 #: reference_raster.xml:10779
 #, no-c-format
 msgid "ST_Covers"
-msgstr ""
+msgstr "ST_Covers"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10780
@@ -18867,7 +18867,7 @@ msgstr ""
 #: reference_raster.xml:10860
 #, no-c-format
 msgid "ST_CoveredBy"
-msgstr ""
+msgstr "ST_CoveredBy"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10861
@@ -18942,7 +18942,7 @@ msgstr ""
 #: reference_raster.xml:10941
 #, no-c-format
 msgid "ST_Disjoint"
-msgstr ""
+msgstr "ST_Disjoint"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10942
@@ -19208,7 +19208,7 @@ msgstr ""
 #: reference_raster.xml:11234
 #, no-c-format
 msgid "ST_Touches"
-msgstr ""
+msgstr "ST_Touches"
 
 #. Tag: refpurpose
 #: reference_raster.xml:11235
@@ -19572,7 +19572,7 @@ msgstr ""
 #: reference_raster.xml:11561
 #, no-c-format
 msgid "ST_DWithin"
-msgstr ""
+msgstr "ST_DWithin"
 
 #. Tag: refpurpose
 #: reference_raster.xml:11562
