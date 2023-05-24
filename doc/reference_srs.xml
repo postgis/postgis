@@ -609,6 +609,7 @@ point_ne  | 0101000020E610000085EB51B81E855CC0E17A14AE47014E40
         <funcsynopsis>
             <funcprototype>
                 <funcdef>setof record <function>postgis_srs_all</function></funcdef>
+                <void/>
             </funcprototype>
         </funcsynopsis>
     </refsynopsisdiv>
