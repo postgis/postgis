@@ -31,6 +31,8 @@ YYYY/MM/DD
           (Paul Ramsey, Regina Obe, Sandro , Laurenz Albe)
   - #5371, ST_Union segfaults (PG 11-12) (Regina Obe)
   - #5378, ST_Buffer(geography) drops SRID (Paul Ramsey)
+  - #5388, [postgis_tiger_geocoder] Fix faces table tiger_gload,
+           caused census rerelease of faces data (Regina Obe)
 
 
 PostGIS 3.3.2
