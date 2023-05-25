@@ -206,6 +206,27 @@ lwgeom_transform_pipeline(LWGEOM *geom, const char* pipelinestr, bool is_forward
 }
 
 int
+box3d_transform(GBOX *gbox, LWPROJ *pj)
+{
+	POINT4D pt;
+	POINTARRAY *pa = ptarray_construct(0, 0, 4);
+	pt = (POINT4D){gbox->xmin, gbox->ymin, 0, 0};
+	ptarray_set_point4d(pa, 0, &pt);
+
+	pt = (POINT4D){gbox->xmax, gbox->ymin, 0, 0};
+	ptarray_set_point4d(pa, 1, &pt);
+
+	pt = (POINT4D){gbox->xmax, gbox->ymax, 0, 0};
+	ptarray_set_point4d(pa, 2, &pt);
+
+	pt = (POINT4D){gbox->xmin, gbox->ymax, 0, 0};
+	ptarray_set_point4d(pa, 3, &pt);
+
+	ptarray_transform(pa, pj);
+	return ptarray_calculate_gbox_cartesian(pa, gbox);
+}
+
+int
 ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 {
 	uint32_t i;
