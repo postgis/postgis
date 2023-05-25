@@ -5,49 +5,49 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ming 64gcc81\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-05-04 20:32+0000\n"
+"POT-Creation-Date: 2023-05-25 20:53+0000\n"
 "PO-Revision-Date: 2023-05-04 20:32+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Tag: para
 #: reference_coverage.xml:5
 #, no-c-format
 msgid ""
-"These functions operate on collections of polygonal geometry that form "
-"\"implicit coverages\" in which any edges shared by the polygons match "
-"exactly. These implicit coverages are fast to process, and can be operated "
-"on with window functions, which retain the implicit topology inside the "
-"window partition while altering the edges."
+"These functions operate on sets of polygonal geometry that form \"implicit "
+"coverages\". To form a valid coverage polygons must not overlap, and the "
+"vertices of adjacent edges must match exactly. Coverages are fast to "
+"process, and can be operated on with window functions, which retain the "
+"coverage topology inside the window partition while altering the edges."
 msgstr ""
 
 #. Tag: title
-#: reference_coverage.xml:9
+#: reference_coverage.xml:11
 #, no-c-format
 msgid "Coverages"
 msgstr ""
 
 #. Tag: refname
-#: reference_coverage.xml:13
+#: reference_coverage.xml:15
 #, no-c-format
 msgid "ST_CoverageInvalidLocations"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_coverage.xml:15
+#: reference_coverage.xml:17
 #, no-c-format
 msgid ""
-"Window function that determines if a set of polygons form a valid polygonal "
+"Window function that finds locations where polygons fail to form a valid "
 "coverage."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_coverage.xml:20
+#: reference_coverage.xml:22
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_CoverageInvalidLocations</function></funcdef> "
@@ -57,29 +57,29 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_coverage.xml:31 reference_coverage.xml:104
-#: reference_coverage.xml:148
+#: reference_coverage.xml:33 reference_coverage.xml:106
+#: reference_coverage.xml:151
 #, no-c-format
 msgid "Description"
 msgstr ""
 
 #. Tag: para
-#: reference_coverage.xml:33
+#: reference_coverage.xml:35
 #, no-c-format
 msgid ""
 "Checks if the polygons in the window partition form a valid polygonal "
 "coverage, and returns linear indicators showing the location of invalid "
-"edges in each polygon."
+"edges (if any) in each polygon."
 msgstr ""
 
 #. Tag: para
-#: reference_coverage.xml:36
+#: reference_coverage.xml:38
 #, no-c-format
 msgid "A set of polygons is a valid coverage if the following conditions hold:"
 msgstr ""
 
 #. Tag: para
-#: reference_coverage.xml:40
+#: reference_coverage.xml:42
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Non-overlapping</emphasis> - polygons do not overlap "
@@ -87,7 +87,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_coverage.xml:43
+#: reference_coverage.xml:45
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Edge-Matched</emphasis> - vertices along shared "
@@ -95,10 +95,10 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_coverage.xml:48
+#: reference_coverage.xml:50
 #, no-c-format
 msgid ""
-"As a window function, a value is returned for every input polygon. For "
+"As a window function a value is returned for every input polygon. For "
 "polygons which violate one or more of the validity conditions the return "
 "value is a MULTILINESTRING containing the problematic edges. Valid polygons "
 "return the value NULL. Non-polygonal or empty geometries also produce NULL "
@@ -106,7 +106,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_coverage.xml:53
+#: reference_coverage.xml:55
 #, no-c-format
 msgid ""
 "The conditions allow a valid coverage to contain holes (gaps between "
@@ -117,20 +117,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_coverage.xml:60 reference_coverage.xml:110
+#: reference_coverage.xml:62 reference_coverage.xml:114
 #, no-c-format
 msgid "Availability: 3.4.0 - requires GEOS &gt;= 3.12.0"
 msgstr ""
 
 #. Tag: title
-#: reference_coverage.xml:64 reference_coverage.xml:115
-#: reference_coverage.xml:159
+#: reference_coverage.xml:66 reference_coverage.xml:119
+#: reference_coverage.xml:167
 #, no-c-format
 msgid "Examples"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_coverage.xml:66
+#: reference_coverage.xml:68
 #, no-c-format
 msgid ""
 "CREATE TABLE coverage (id integer, geom geometry);\n"
@@ -151,7 +151,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_coverage.xml:68
+#: reference_coverage.xml:70
 #, no-c-format
 msgid ""
 "-- Test entire table for validity\n"
@@ -162,34 +162,32 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_coverage.xml:72 reference_coverage.xml:121
-#: reference_coverage.xml:165
+#: reference_coverage.xml:74 reference_coverage.xml:125
+#: reference_coverage.xml:173
 #, no-c-format
 msgid "See Also"
 msgstr ""
 
 #. Tag: para
-#: reference_coverage.xml:73
+#: reference_coverage.xml:75
 #, no-c-format
 msgid ", <xref linkend=\"ST_CoverageSimplify\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_coverage.xml:84
+#: reference_coverage.xml:86
 #, no-c-format
 msgid "ST_CoverageSimplify"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_coverage.xml:86
+#: reference_coverage.xml:88
 #, no-c-format
-msgid ""
-"Window function that simplifies the edges of an implicit polygonal coverage, "
-"using the Visvalingam–Whyatt algorithm."
+msgid "Window function that simplifies the edges of a polygonal coverage."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_coverage.xml:91
+#: reference_coverage.xml:93
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_CoverageSimplify</function></funcdef> "
@@ -200,18 +198,28 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_coverage.xml:106
+#: reference_coverage.xml:108
 #, no-c-format
 msgid ""
 "A window function which simplifies the edges of polygons in a polygonal "
 "coverage using the <ulink url=\"https://en.wikipedia.org/wiki/"
 "Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–Whyatt algorithm</ulink>. "
-"For inputs forming a valid polygonal coverage the simplified outputs are "
-"consisent along shared edges, and still form a valid coverage."
+"The simplified outputs are consisent along shared edges, and still form a "
+"valid coverage."
 msgstr ""
 
 #. Tag: para
-#: reference_coverage.xml:108
+#: reference_coverage.xml:110
+#, no-c-format
+msgid ""
+"If the input is not a valid coverage there may be unexpected artifacts in "
+"the output (such as boundary intersections, or separated boundaries which "
+"appeared to be shared). Use <xref linkend=\"ST_CoverageInvalidLocations\"/> "
+"to determine if a coverage is valid."
+msgstr ""
+
+#. Tag: para
+#: reference_coverage.xml:113
 #, no-c-format
 msgid ""
 "To simplify only the \"internal\" edges of the coverage (those that are "
@@ -219,17 +227,8 @@ msgid ""
 "parameter to false."
 msgstr ""
 
-#. Tag: para
-#: reference_coverage.xml:109
-#, no-c-format
-msgid ""
-"If the input is not a valid coverage there may be unexpected artifacts in "
-"the output (such as boundary intersections, or separated boundaries which "
-"appeared to be shared)."
-msgstr ""
-
 #. Tag: programlisting
-#: reference_coverage.xml:117
+#: reference_coverage.xml:121
 #, no-c-format
 msgid ""
 "CREATE TABLE coverage (id integer, geom geometry);\n"
@@ -249,26 +248,22 @@ msgid ""
 "  3 | POLYGON((20 0,30 0,30 10,20 10,20 0))"
 msgstr ""
 
-#. Tag: para
-#: reference_coverage.xml:122 reference_coverage.xml:166
-#, no-c-format
-msgid ", <xref linkend=\"ST_CoverageInvalidLocations\"/>"
-msgstr ""
-
 #. Tag: refname
-#: reference_coverage.xml:132
+#: reference_coverage.xml:135
 #, no-c-format
 msgid "ST_CoverageUnion"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_coverage.xml:134
+#: reference_coverage.xml:137
 #, no-c-format
-msgid "Unions a set of polygons forming a coverage by removing shared edges."
+msgid ""
+"Computes the union of a set of polygons forming a coverage by removing "
+"shared edges."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_coverage.xml:139
+#: reference_coverage.xml:142
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_CoverageUnion</function></funcdef> "
@@ -276,32 +271,34 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_coverage.xml:150
-#, no-c-format
-msgid ""
-"An aggregate function which performs a high-speed union of a set of polygons "
-"forming a polygonal coverage. This function only works with inputs that are "
-"coverages: no overlaps, and all shared edges identical down to the vertex "
-"level. See <xref linkend=\"ST_CoverageInvalidLocations\"/> for a way to test "
-"that a set of polygons are a valid polygonal coverage."
-msgstr ""
-
-#. Tag: para
 #: reference_coverage.xml:153
 #, no-c-format
 msgid ""
-"If the input is not a valid coverage there may be unexpected artifacts in "
-"the output (such as unmerged or overlapping polygons)."
+"An aggregate function which unions a set of polygons forming a polygonal "
+"coverage. The result is a polygonal geometry covering the same area as the "
+"coverage. This function produces the same result as <xref "
+"linkend=\"ST_Union\"/>, but uses the coverage structure to compute the union "
+"much faster."
 msgstr ""
 
 #. Tag: para
-#: reference_coverage.xml:155
+#: reference_coverage.xml:159
+#, no-c-format
+msgid ""
+"If the input is not a valid coverage there may be unexpected artifacts in "
+"the output (such as unmerged or overlapping polygons). Use <xref "
+"linkend=\"ST_CoverageInvalidLocations\"/> to determine if a coverage is "
+"valid."
+msgstr ""
+
+#. Tag: para
+#: reference_coverage.xml:163
 #, no-c-format
 msgid "Availability: 3.4.0 - requires GEOS &gt;= 3.8.0"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_coverage.xml:161
+#: reference_coverage.xml:169
 #, no-c-format
 msgid ""
 "CREATE TABLE coverage (id integer, geom geometry);\n"
@@ -317,4 +314,10 @@ msgid ""
 "                        st_astext\n"
 "----------------------------------------------------------\n"
 " POLYGON((0 0,0 10,10 10,20 10,30 10,30 0,20 0,10 0,0 0))"
+msgstr ""
+
+#. Tag: para
+#: reference_coverage.xml:174
+#, no-c-format
+msgid ", <xref linkend=\"ST_Union\"/>"
 msgstr ""

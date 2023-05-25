@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ming 64gcc81\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-05-04 20:32+0000\n"
+"POT-Creation-Date: 2023-05-25 20:53+0000\n"
 "PO-Revision-Date: 2023-05-15 11:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -22,41 +22,35 @@ msgstr ""
 #: reference_coverage.xml:5
 #, no-c-format
 msgid ""
-"These functions operate on collections of polygonal geometry that form "
-"\"implicit coverages\" in which any edges shared by the polygons match "
-"exactly. These implicit coverages are fast to process, and can be operated "
-"on with window functions, which retain the implicit topology inside the "
-"window partition while altering the edges."
+"These functions operate on sets of polygonal geometry that form \"implicit "
+"coverages\". To form a valid coverage polygons must not overlap, and the "
+"vertices of adjacent edges must match exactly. Coverages are fast to "
+"process, and can be operated on with window functions, which retain the "
+"coverage topology inside the window partition while altering the edges."
 msgstr ""
-"これらの関数は、ポリゴンが共有するエッジの全てが確実に合致する「暗黙のカバレ"
-"ッジ」を形成するポリゴンジオメトリのコレクション上で動作します。これらの暗黙"
-"のカバレッジは処理が速く、ウィンドウ関数で操作できます。ウィンドウ関数は、エ"
-"ッジを変更しながら、ウィンドウパーティション内の暗黙的なトポロジを保持します"
-"。"
 
 #. Tag: title
-#: reference_coverage.xml:9
+#: reference_coverage.xml:11
 #, no-c-format
 msgid "Coverages"
 msgstr "カバレッジ"
 
 #. Tag: refname
-#: reference_coverage.xml:13
+#: reference_coverage.xml:15
 #, no-c-format
 msgid "ST_CoverageInvalidLocations"
 msgstr "ST_CoverageInvalidLocations"
 
 #. Tag: refpurpose
-#: reference_coverage.xml:15
+#: reference_coverage.xml:17
 #, no-c-format
 msgid ""
-"Window function that determines if a set of polygons form a valid polygonal "
+"Window function that finds locations where polygons fail to form a valid "
 "coverage."
-msgstr "ポリゴン集合が妥当なポリゴンカバレッジを形成するかどうかを決定するウィンドウ"
-"関数です。"
+msgstr ""
 
 #. Tag: funcprototype
-#: reference_coverage.xml:20
+#: reference_coverage.xml:22
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_CoverageInvalidLocations</function></funcdef> "
@@ -66,68 +60,63 @@ msgid ""
 msgstr ""
 "<funcdef>geometry <function>ST_CoverageInvalidLocations</function></funcdef> "
 "<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>tolerance = "
-"0</parameter></paramdef>"
+"paramdef> <paramdef><type>float8 </type> <parameter>tolerance = 0</"
+"parameter></paramdef>"
 
 #. Tag: title
-#: reference_coverage.xml:31 reference_coverage.xml:104
-#: reference_coverage.xml:148
+#: reference_coverage.xml:33 reference_coverage.xml:106
+#: reference_coverage.xml:151
 #, no-c-format
 msgid "Description"
 msgstr "説明"
 
 #. Tag: para
-#: reference_coverage.xml:33
+#: reference_coverage.xml:35
 #, no-c-format
 msgid ""
 "Checks if the polygons in the window partition form a valid polygonal "
 "coverage, and returns linear indicators showing the location of invalid "
-"edges in each polygon."
+"edges (if any) in each polygon."
 msgstr ""
-"ウィンドウパーティション内のポリゴンが妥当なポリゴンカバレッジを形成するかを"
-"チェックし、ポリゴンごとに不正なエッジの位置を示す線形の情報を返します。"
 
 #. Tag: para
-#: reference_coverage.xml:36
+#: reference_coverage.xml:38
 #, no-c-format
 msgid "A set of polygons is a valid coverage if the following conditions hold:"
 msgstr "次の条件を満たすなら、ポリゴンの集合は妥当なカバレッジです:"
 
 #. Tag: para
-#: reference_coverage.xml:40
+#: reference_coverage.xml:42
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Non-overlapping</emphasis> - polygons do not overlap "
 "(their interiors do not intersect)"
 msgstr ""
-"<emphasis role=\"bold\">オーバラップなし</emphasis> - "
-"ポリゴン同士がオーバラップしない (ポリゴンの内部でインタセクトしない)"
+"<emphasis role=\"bold\">オーバラップなし</emphasis> - ポリゴン同士がオーバ"
+"ラップしない (ポリゴンの内部でインタセクトしない)"
 
 #. Tag: para
-#: reference_coverage.xml:43
+#: reference_coverage.xml:45
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Edge-Matched</emphasis> - vertices along shared "
 "edges are identical"
-msgstr "<emphasis role=\"bold\">エッジ一致</emphasis> - 共有エッジに沿った頂点が同一"
+msgstr ""
+"<emphasis role=\"bold\">エッジ一致</emphasis> - 共有エッジに沿った頂点が同一"
 
 #. Tag: para
-#: reference_coverage.xml:48
+#: reference_coverage.xml:50
 #, no-c-format
 msgid ""
-"As a window function, a value is returned for every input polygon. For "
+"As a window function a value is returned for every input polygon. For "
 "polygons which violate one or more of the validity conditions the return "
 "value is a MULTILINESTRING containing the problematic edges. Valid polygons "
 "return the value NULL. Non-polygonal or empty geometries also produce NULL "
 "values."
 msgstr ""
-"ウィンドウ関数として、全ての入力ポリゴンに対して値が返されます。評価条件違反"
-"が一つ以上あるポリゴンでは、問題のあるエッジを含むMULTILINESTRINGを返します。"
-"妥当なポリゴンでは、NULLが返ります。非ポリゴンまたは空ジオメトリでもNULL値が"
-"返されます。"
 
 #. Tag: para
-#: reference_coverage.xml:53
+#: reference_coverage.xml:55
 #, no-c-format
 msgid ""
 "The conditions allow a valid coverage to contain holes (gaps between "
@@ -136,27 +125,27 @@ msgid ""
 "parameter> parameter is specified with a non-zero distance, edges forming "
 "narrower gaps will also be returned as invalid."
 msgstr ""
-"この条件では、周囲のポリゴンがエッジ一致になっている限りは、"
-"妥当なカバレッジは穴 (ポリゴン間の隙間)を含むことができます。しかしながら、非"
-"常に小さい隙間は、望まれないものとされることがしばしばあります。<parameter>to"
-"lerance</parameter>パラメタが0でない距離で指定されている場合には、小さい隙間"
-"を形成するエッジば不正なものとして返されます。"
+"この条件では、周囲のポリゴンがエッジ一致になっている限りは、妥当なカバレッジ"
+"は穴 (ポリゴン間の隙間)を含むことができます。しかしながら、非常に小さい隙間"
+"は、望まれないものとされることがしばしばあります。<parameter>tolerance</"
+"parameter>パラメタが0でない距離で指定されている場合には、小さい隙間を形成する"
+"エッジば不正なものとして返されます。"
 
 #. Tag: para
-#: reference_coverage.xml:60 reference_coverage.xml:110
+#: reference_coverage.xml:62 reference_coverage.xml:114
 #, no-c-format
 msgid "Availability: 3.4.0 - requires GEOS &gt;= 3.12.0"
 msgstr "Availability: 3.4.0 - GEOS 3.12.0以上が必要です"
 
 #. Tag: title
-#: reference_coverage.xml:64 reference_coverage.xml:115
-#: reference_coverage.xml:159
+#: reference_coverage.xml:66 reference_coverage.xml:119
+#: reference_coverage.xml:167
 #, no-c-format
 msgid "Examples"
 msgstr "例"
 
 #. Tag: programlisting
-#: reference_coverage.xml:66
+#: reference_coverage.xml:68
 #, no-c-format
 msgid ""
 "CREATE TABLE coverage (id integer, geom geometry);\n"
@@ -192,7 +181,7 @@ msgstr ""
 "  3 |"
 
 #. Tag: programlisting
-#: reference_coverage.xml:68
+#: reference_coverage.xml:70
 #, no-c-format
 msgid ""
 "-- Test entire table for validity\n"
@@ -208,35 +197,32 @@ msgstr ""
 "    );"
 
 #. Tag: title
-#: reference_coverage.xml:72 reference_coverage.xml:121
-#: reference_coverage.xml:165
+#: reference_coverage.xml:74 reference_coverage.xml:125
+#: reference_coverage.xml:173
 #, no-c-format
 msgid "See Also"
 msgstr "関連情報"
 
 #. Tag: para
-#: reference_coverage.xml:73
+#: reference_coverage.xml:75
 #, no-c-format
 msgid ", <xref linkend=\"ST_CoverageSimplify\"/>"
 msgstr ", <xref linkend=\"ST_CoverageSimplify\"/>"
 
 #. Tag: refname
-#: reference_coverage.xml:84
+#: reference_coverage.xml:86
 #, no-c-format
 msgid "ST_CoverageSimplify"
 msgstr "ST_CoverageSimplify"
 
 #. Tag: refpurpose
-#: reference_coverage.xml:86
+#: reference_coverage.xml:88
 #, no-c-format
-msgid ""
-"Window function that simplifies the edges of an implicit polygonal coverage, "
-"using the Visvalingam–Whyatt algorithm."
-msgstr "暗黙のポリゴンカバレッジのエッジを簡略化するウィンドウ関数です。Visvalingam–W"
-"hyattアルゴリズムを使います。"
+msgid "Window function that simplifies the edges of a polygonal coverage."
+msgstr ""
 
 #. Tag: funcprototype
-#: reference_coverage.xml:91
+#: reference_coverage.xml:93
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_CoverageSimplify</function></funcdef> "
@@ -252,23 +238,28 @@ msgstr ""
 "<parameter>simplifyBoundary = true</parameter></paramdef>"
 
 #. Tag: para
-#: reference_coverage.xml:106
+#: reference_coverage.xml:108
 #, no-c-format
 msgid ""
 "A window function which simplifies the edges of polygons in a polygonal "
 "coverage using the <ulink url=\"https://en.wikipedia.org/wiki/"
 "Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–Whyatt algorithm</ulink>. "
-"For inputs forming a valid polygonal coverage the simplified outputs are "
-"consisent along shared edges, and still form a valid coverage."
+"The simplified outputs are consisent along shared edges, and still form a "
+"valid coverage."
 msgstr ""
-"<ulink url=\"https://en.wikipedia.org/wiki/Visvalingam%E2%80%"
-"93Whyatt_algorithm\">Visvalingam–Whyatt algorithm</ulink>を使って、ポリゴンカ"
-"バレッジ内のポリゴンのエッジを簡略化するウィンドウ関数です。妥当なポリゴンカ"
-"バレッジを形成する入力では、簡略化した出力は共有エッジに沿って一致していて、"
-"妥当なカバレッジを形成します。"
 
 #. Tag: para
-#: reference_coverage.xml:108
+#: reference_coverage.xml:110
+#, no-c-format
+msgid ""
+"If the input is not a valid coverage there may be unexpected artifacts in "
+"the output (such as boundary intersections, or separated boundaries which "
+"appeared to be shared). Use <xref linkend=\"ST_CoverageInvalidLocations\"/> "
+"to determine if a coverage is valid."
+msgstr ""
+
+#. Tag: para
+#: reference_coverage.xml:113
 #, no-c-format
 msgid ""
 "To simplify only the \"internal\" edges of the coverage (those that are "
@@ -278,19 +269,8 @@ msgstr ""
 "カバレッジの「内部の」エッジ (二つのポリゴンに共有されている)だけを単純化する"
 "には、<parameter>simplifyBoundary</parameter>パラメタをFALSEに設定します。"
 
-#. Tag: para
-#: reference_coverage.xml:109
-#, no-c-format
-msgid ""
-"If the input is not a valid coverage there may be unexpected artifacts in "
-"the output (such as boundary intersections, or separated boundaries which "
-"appeared to be shared)."
-msgstr ""
-"入力が妥当なカバレッジでない場合には、出力に予期しない遺物 (共有されているよ"
-"うに見える境界のインタセクトまたは分離)が存在するかも知れません。"
-
 #. Tag: programlisting
-#: reference_coverage.xml:117
+#: reference_coverage.xml:121
 #, no-c-format
 msgid ""
 "CREATE TABLE coverage (id integer, geom geometry);\n"
@@ -324,27 +304,23 @@ msgstr ""
 "  1 | POLYGON((10 0,10 10,0 10,0 0,10 0))\n"
 "  2 | POLYGON((10 0,20 0,20 10,10 10,10 0))\n"
 "  3 | POLYGON((20 0,30 0,30 10,20 10,20 0))"
-
-#. Tag: para
-#: reference_coverage.xml:122 reference_coverage.xml:166
-#, no-c-format
-msgid ", <xref linkend=\"ST_CoverageInvalidLocations\"/>"
-msgstr ", <xref linkend=\"ST_CoverageInvalidLocations\"/>"
 
 #. Tag: refname
-#: reference_coverage.xml:132
+#: reference_coverage.xml:135
 #, no-c-format
 msgid "ST_CoverageUnion"
 msgstr "ST_CoverageUnion"
 
 #. Tag: refpurpose
-#: reference_coverage.xml:134
+#: reference_coverage.xml:137
 #, no-c-format
-msgid "Unions a set of polygons forming a coverage by removing shared edges."
-msgstr "カバレッジを形成するポリゴンの集合を、共有エッジを削除することで結合します。"
+msgid ""
+"Computes the union of a set of polygons forming a coverage by removing "
+"shared edges."
+msgstr ""
 
 #. Tag: funcprototype
-#: reference_coverage.xml:139
+#: reference_coverage.xml:142
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_CoverageUnion</function></funcdef> "
@@ -352,41 +328,36 @@ msgid ""
 msgstr ""
 "<funcdef>geometry <function>ST_CoverageUnion</function></funcdef> "
 "<paramdef><type>geometry set</type> <parameter>geom</parameter></paramdef>"
-
-#. Tag: para
-#: reference_coverage.xml:150
-#, no-c-format
-msgid ""
-"An aggregate function which performs a high-speed union of a set of polygons "
-"forming a polygonal coverage. This function only works with inputs that are "
-"coverages: no overlaps, and all shared edges identical down to the vertex "
-"level. See <xref linkend=\"ST_CoverageInvalidLocations\"/> for a way to test "
-"that a set of polygons are a valid polygonal coverage."
-msgstr ""
-"ポリゴンカバレッジを形成するポリゴン集合の高速結合を実行する集約関数です。"
-"この関数が動作するのは入力がカバレッジである (オーバラップなし、かつ全ての共"
-"有エッジが頂点レベルまで同一)の場合です。ポリゴン集合が妥当なポリゴンカバレッ"
-"ジであるかどうかをテストする方法については、<xref linkend="
-"\"ST_CoverageInvalidLocations\"/>をご覧下さい。"
 
 #. Tag: para
 #: reference_coverage.xml:153
 #, no-c-format
 msgid ""
-"If the input is not a valid coverage there may be unexpected artifacts in "
-"the output (such as unmerged or overlapping polygons)."
+"An aggregate function which unions a set of polygons forming a polygonal "
+"coverage. The result is a polygonal geometry covering the same area as the "
+"coverage. This function produces the same result as <xref "
+"linkend=\"ST_Union\"/>, but uses the coverage structure to compute the union "
+"much faster."
 msgstr ""
-"入力が妥当なカバレッジである場合には、出力に予期しない遺物 (マージされていな"
-"いポリゴンやオーバラップしていないポリゴンなど)が存在するかも知れません。"
 
 #. Tag: para
-#: reference_coverage.xml:155
+#: reference_coverage.xml:159
+#, no-c-format
+msgid ""
+"If the input is not a valid coverage there may be unexpected artifacts in "
+"the output (such as unmerged or overlapping polygons). Use <xref "
+"linkend=\"ST_CoverageInvalidLocations\"/> to determine if a coverage is "
+"valid."
+msgstr ""
+
+#. Tag: para
+#: reference_coverage.xml:163
 #, no-c-format
 msgid "Availability: 3.4.0 - requires GEOS &gt;= 3.8.0"
 msgstr "Availability: 3.4.0 - GEOS 3.8.0以上が必要です"
 
 #. Tag: programlisting
-#: reference_coverage.xml:161
+#: reference_coverage.xml:169
 #, no-c-format
 msgid ""
 "CREATE TABLE coverage (id integer, geom geometry);\n"
@@ -416,3 +387,119 @@ msgstr ""
 "                        st_astext\n"
 "----------------------------------------------------------\n"
 " POLYGON((0 0,0 10,10 10,20 10,30 10,30 0,20 0,10 0,0 0))"
+
+#. Tag: para
+#: reference_coverage.xml:174
+#, no-c-format
+msgid ", <xref linkend=\"ST_Union\"/>"
+msgstr ""
+
+#, no-c-format
+#~ msgid ""
+#~ "These functions operate on collections of polygonal geometry that form "
+#~ "\"implicit coverages\" in which any edges shared by the polygons match "
+#~ "exactly. These implicit coverages are fast to process, and can be "
+#~ "operated on with window functions, which retain the implicit topology "
+#~ "inside the window partition while altering the edges."
+#~ msgstr ""
+#~ "これらの関数は、ポリゴンが共有するエッジの全てが確実に合致する「暗黙のカバ"
+#~ "レッジ」を形成するポリゴンジオメトリのコレクション上で動作します。これらの"
+#~ "暗黙のカバレッジは処理が速く、ウィンドウ関数で操作できます。ウィンドウ関数"
+#~ "は、エッジを変更しながら、ウィンドウパーティション内の暗黙的なトポロジを保"
+#~ "持します。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Window function that determines if a set of polygons form a valid "
+#~ "polygonal coverage."
+#~ msgstr ""
+#~ "ポリゴン集合が妥当なポリゴンカバレッジを形成するかどうかを決定するウィンド"
+#~ "ウ関数です。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Checks if the polygons in the window partition form a valid polygonal "
+#~ "coverage, and returns linear indicators showing the location of invalid "
+#~ "edges in each polygon."
+#~ msgstr ""
+#~ "ウィンドウパーティション内のポリゴンが妥当なポリゴンカバレッジを形成するか"
+#~ "をチェックし、ポリゴンごとに不正なエッジの位置を示す線形の情報を返します。"
+
+#, no-c-format
+#~ msgid ""
+#~ "As a window function, a value is returned for every input polygon. For "
+#~ "polygons which violate one or more of the validity conditions the return "
+#~ "value is a MULTILINESTRING containing the problematic edges. Valid "
+#~ "polygons return the value NULL. Non-polygonal or empty geometries also "
+#~ "produce NULL values."
+#~ msgstr ""
+#~ "ウィンドウ関数として、全ての入力ポリゴンに対して値が返されます。評価条件違"
+#~ "反が一つ以上あるポリゴンでは、問題のあるエッジを含むMULTILINESTRINGを返し"
+#~ "ます。妥当なポリゴンでは、NULLが返ります。非ポリゴンまたは空ジオメトリでも"
+#~ "NULL値が返されます。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Window function that simplifies the edges of an implicit polygonal "
+#~ "coverage, using the Visvalingam–Whyatt algorithm."
+#~ msgstr ""
+#~ "暗黙のポリゴンカバレッジのエッジを簡略化するウィンドウ関数です。"
+#~ "Visvalingam–Whyattアルゴリズムを使います。"
+
+#, no-c-format
+#~ msgid ""
+#~ "A window function which simplifies the edges of polygons in a polygonal "
+#~ "coverage using the <ulink url=\"https://en.wikipedia.org/wiki/"
+#~ "Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–Whyatt algorithm</"
+#~ "ulink>. For inputs forming a valid polygonal coverage the simplified "
+#~ "outputs are consisent along shared edges, and still form a valid coverage."
+#~ msgstr ""
+#~ "<ulink url=\"https://en.wikipedia.org/wiki/"
+#~ "Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–Whyatt algorithm</"
+#~ "ulink>を使って、ポリゴンカバレッジ内のポリゴンのエッジを簡略化するウィンド"
+#~ "ウ関数です。妥当なポリゴンカバレッジを形成する入力では、簡略化した出力は共"
+#~ "有エッジに沿って一致していて、妥当なカバレッジを形成します。"
+
+#, no-c-format
+#~ msgid ""
+#~ "If the input is not a valid coverage there may be unexpected artifacts in "
+#~ "the output (such as boundary intersections, or separated boundaries which "
+#~ "appeared to be shared)."
+#~ msgstr ""
+#~ "入力が妥当なカバレッジでない場合には、出力に予期しない遺物 (共有されている"
+#~ "ように見える境界のインタセクトまたは分離)が存在するかも知れません。"
+
+#, no-c-format
+#~ msgid ", <xref linkend=\"ST_CoverageInvalidLocations\"/>"
+#~ msgstr ", <xref linkend=\"ST_CoverageInvalidLocations\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "Unions a set of polygons forming a coverage by removing shared edges."
+#~ msgstr ""
+#~ "カバレッジを形成するポリゴンの集合を、共有エッジを削除することで結合しま"
+#~ "す。"
+
+#, no-c-format
+#~ msgid ""
+#~ "An aggregate function which performs a high-speed union of a set of "
+#~ "polygons forming a polygonal coverage. This function only works with "
+#~ "inputs that are coverages: no overlaps, and all shared edges identical "
+#~ "down to the vertex level. See <xref "
+#~ "linkend=\"ST_CoverageInvalidLocations\"/> for a way to test that a set of "
+#~ "polygons are a valid polygonal coverage."
+#~ msgstr ""
+#~ "ポリゴンカバレッジを形成するポリゴン集合の高速結合を実行する集約関数です。"
+#~ "この関数が動作するのは入力がカバレッジである (オーバラップなし、かつ全ての"
+#~ "共有エッジが頂点レベルまで同一)の場合です。ポリゴン集合が妥当なポリゴンカ"
+#~ "バレッジであるかどうかをテストする方法については、<xref "
+#~ "linkend=\"ST_CoverageInvalidLocations\"/>をご覧下さい。"
+
+#, no-c-format
+#~ msgid ""
+#~ "If the input is not a valid coverage there may be unexpected artifacts in "
+#~ "the output (such as unmerged or overlapping polygons)."
+#~ msgstr ""
+#~ "入力が妥当なカバレッジである場合には、出力に予期しない遺物 (マージされてい"
+#~ "ないポリゴンやオーバラップしていないポリゴンなど)が存在するかも知れませ"
+#~ "ん。"

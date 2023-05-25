@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-01-25 19:29+0000\n"
+"POT-Creation-Date: 2023-05-25 20:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -265,57 +265,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: administration.xml:107
-#, no-c-format
-msgid "Create a spatially-enabled database from a template"
-msgstr ""
-
-#. Tag: para
 #: administration.xml:109
-#, no-c-format
-msgid ""
-"Some packaged distributions of PostGIS (in particular the Win32 installers "
-"for PostGIS &gt;= 1.1.5) load the PostGIS functions into a template database "
-"called <varname>template_postgis</varname>. If the "
-"<varname>template_postgis</varname> database exists in your PostgreSQL "
-"installation then it is possible for users and/or applications to create "
-"spatially-enabled databases using a single command. Note that in both cases, "
-"the database user must have been granted the privilege to create new "
-"databases."
-msgstr ""
-
-#. Tag: para
-#: administration.xml:120
-#, no-c-format
-msgid "From the shell:"
-msgstr ""
-
-#. Tag: programlisting
-#: administration.xml:124
-#, no-c-format
-msgid "# createdb -T template_postgis my_spatial_db"
-msgstr ""
-
-#. Tag: para
-#: administration.xml:126
-#, no-c-format
-msgid "From SQL:"
-msgstr ""
-
-#. Tag: programlisting
-#: administration.xml:130
-#, no-c-format
-msgid "postgres=# CREATE DATABASE my_spatial_db TEMPLATE=template_postgis"
-msgstr ""
-
-#. Tag: title
-#: administration.xml:136
 #, no-c-format
 msgid "Upgrading spatial databases"
 msgstr ""
 
 #. Tag: para
-#: administration.xml:138
+#: administration.xml:111
 #, no-c-format
 msgid ""
 "Upgrading existing spatial databases can be tricky as it requires "
@@ -323,7 +279,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:143
+#: administration.xml:116
 #, no-c-format
 msgid ""
 "Unfortunately not all definitions can be easily replaced in a live database, "
@@ -331,7 +287,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:148
+#: administration.xml:121
 #, no-c-format
 msgid ""
 "PostGIS provides a SOFT UPGRADE procedure for minor or bugfix releases, and "
@@ -339,7 +295,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:153
+#: administration.xml:126
 #, no-c-format
 msgid ""
 "Before attempting to upgrade PostGIS, it is always worth to backup your "
@@ -348,13 +304,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: administration.xml:160
+#: administration.xml:133
 #, no-c-format
 msgid "Soft upgrade"
 msgstr ""
 
 #. Tag: para
-#: administration.xml:162
+#: administration.xml:135
 #, no-c-format
 msgid ""
 "If you installed your database using extensions, you'll need to upgrade "
@@ -364,13 +320,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: administration.xml:164
+#: administration.xml:137
 #, no-c-format
 msgid "Soft Upgrade 9.1+ using extensions"
 msgstr ""
 
 #. Tag: para
-#: administration.xml:165
+#: administration.xml:138
 #, no-c-format
 msgid ""
 "If you originally installed PostGIS with extensions, then you need to "
@@ -379,28 +335,28 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:166
+#: administration.xml:139
 #, no-c-format
 msgid ""
-"If you are running PostGIS 3 or above, then you should use the <xref linkend="
-"\"PostGIS_Extensions_Upgrade\"/> function to upgrade to the latest version "
-"you have installed."
+"If you are running PostGIS 3 or above, then you should use the <xref "
+"linkend=\"PostGIS_Extensions_Upgrade\"/> function to upgrade to the latest "
+"version you have installed."
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:167
+#: administration.xml:140
 #, no-c-format
 msgid "SELECT postgis_extensions_upgrade();"
 msgstr ""
 
 #. Tag: para
-#: administration.xml:169
+#: administration.xml:142
 #, no-c-format
 msgid "If you are running PostGIS 2.5 or lower, then do the following:"
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:170
+#: administration.xml:143
 #, no-c-format
 msgid ""
 "ALTER EXTENSION postgis UPDATE;\n"
@@ -410,7 +366,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:172
+#: administration.xml:145
 #, no-c-format
 msgid ""
 "If you have multiple versions of PostGIS installed, and you don't want to "
@@ -418,7 +374,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:173
+#: administration.xml:146
 #, no-c-format
 msgid ""
 "ALTER EXTENSION postgis UPDATE TO \"&last_release_version;\";\n"
@@ -426,19 +382,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:174
+#: administration.xml:147
 #, no-c-format
 msgid "If you get an error notice something like:"
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:175
+#: administration.xml:148
 #, no-c-format
 msgid "No migration path defined for … to &last_release_version;"
 msgstr ""
 
 #. Tag: para
-#: administration.xml:176
+#: administration.xml:149
 #, no-c-format
 msgid ""
 "Then you'll need to backup your database, create a fresh one as described in "
@@ -447,13 +403,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:177
+#: administration.xml:150
 #, no-c-format
 msgid "If you get a notice message like:"
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:178
+#: administration.xml:151
 #, no-c-format
 msgid ""
 "Version \"&last_release_version;\" of extension \"postgis\" is already "
@@ -461,7 +417,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:179
+#: administration.xml:152
 #, no-c-format
 msgid ""
 "Then everything is already up to date and you can safely ignore it. "
@@ -472,7 +428,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:185
+#: administration.xml:158
 #, no-c-format
 msgid ""
 "ALTER EXTENSION postgis UPDATE TO \"&last_release_version;next\";\n"
@@ -480,7 +436,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:186
+#: administration.xml:159
 #, no-c-format
 msgid ""
 "If you installed PostGIS originally without a version specified, you can "
@@ -490,7 +446,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:190
+#: administration.xml:163
 #, no-c-format
 msgid ""
 "If you are upgrading PostGIS extension from a version prior to 3.0.0, you "
@@ -499,19 +455,19 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:192
+#: administration.xml:165
 #, no-c-format
 msgid "DROP EXTENSION postgis_raster;"
 msgstr ""
 
 #. Tag: title
-#: administration.xml:198
+#: administration.xml:171
 #, no-c-format
 msgid "Soft Upgrade Pre 9.1+ or without extensions"
 msgstr ""
 
 #. Tag: para
-#: administration.xml:200
+#: administration.xml:173
 #, no-c-format
 msgid ""
 "This section applies only to those who installed PostGIS not using "
@@ -520,13 +476,13 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:204
+#: administration.xml:177
 #, no-c-format
 msgid "can't drop … because postgis extension depends on it"
 msgstr ""
 
 #. Tag: para
-#: administration.xml:206
+#: administration.xml:179
 #, no-c-format
 msgid ""
 "NOTE: if you are moving from PostGIS 1.* to PostGIS 2.* or from PostGIS 2.* "
@@ -535,7 +491,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:212
+#: administration.xml:185
 #, no-c-format
 msgid ""
 "After compiling and installing (make install) you should find a set of "
@@ -544,7 +500,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:219
+#: administration.xml:192
 #, no-c-format
 msgid ""
 "ls `pg_config --sharedir`/contrib/postgis-&last_release_version;/*_upgrade."
@@ -552,7 +508,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:221
+#: administration.xml:194
 #, no-c-format
 msgid ""
 "Load them all in turn, starting from <filename>postgis_upgrade.sql</"
@@ -560,13 +516,13 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:225
+#: administration.xml:198
 #, no-c-format
 msgid "psql -f postgis_upgrade.sql -d your_spatial_database"
 msgstr ""
 
 #. Tag: para
-#: administration.xml:227
+#: administration.xml:200
 #, no-c-format
 msgid ""
 "The same procedure applies to raster, topology and sfcgal extensions, with "
@@ -576,37 +532,37 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:236
+#: administration.xml:209
 #, no-c-format
 msgid "psql -f rtpostgis_upgrade.sql -d your_spatial_database"
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:237
+#: administration.xml:210
 #, no-c-format
 msgid "psql -f topology_upgrade.sql -d your_spatial_database"
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:238
+#: administration.xml:211
 #, no-c-format
 msgid "psql -f sfcgal_upgrade.sql -d your_spatial_database"
 msgstr ""
 
 #. Tag: para
-#: administration.xml:240
+#: administration.xml:213
 #, no-c-format
 msgid "You are advised to switch to an extension based install by running"
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:241
+#: administration.xml:214
 #, no-c-format
 msgid "psql -c \"SELECT postgis_extensions_upgrade();\""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:244
+#: administration.xml:217
 #, no-c-format
 msgid ""
 "If you can't find the <filename>postgis_upgrade.sql</filename> specific for "
@@ -615,7 +571,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:253
+#: administration.xml:226
 #, no-c-format
 msgid ""
 "The <xref linkend=\"PostGIS_Full_Version\"/> function should inform you "
@@ -624,13 +580,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: administration.xml:263
+#: administration.xml:236
 #, no-c-format
 msgid "Hard upgrade"
 msgstr ""
 
 #. Tag: para
-#: administration.xml:265
+#: administration.xml:238
 #, no-c-format
 msgid ""
 "By HARD UPGRADE we mean full dump/reload of postgis-enabled databases. You "
@@ -641,7 +597,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:274
+#: administration.xml:247
 #, no-c-format
 msgid ""
 "The dump/reload process is assisted by the postgis_restore.pl script which "
@@ -652,22 +608,22 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:283
+#: administration.xml:256
 #, no-c-format
 msgid ""
-"Supplementary instructions for windows users are available at <ulink url="
-"\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows Hard "
+"Supplementary instructions for windows users are available at <ulink "
+"url=\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows Hard "
 "upgrade</ulink>."
 msgstr ""
 
 #. Tag: para
-#: administration.xml:286
+#: administration.xml:259
 #, no-c-format
 msgid "The Procedure is as follows:"
 msgstr ""
 
 #. Tag: para
-#: administration.xml:294
+#: administration.xml:267
 #, no-c-format
 msgid ""
 "Create a \"custom-format\" dump of the database you want to upgrade (let's "
@@ -677,7 +633,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:302
+#: administration.xml:275
 #, no-c-format
 msgid ""
 "pg_dump -h localhost -p 5432 -U postgres -Fc -b -v -f \"/somepath/olddb."
@@ -685,17 +641,17 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:308
+#: administration.xml:281
 #, no-c-format
 msgid ""
 "Do a fresh install of PostGIS in a new database -- we'll refer to this "
-"database as <varname>newdb</varname>. Please refer to <xref linkend="
-"\"create_new_db\"/> and <xref linkend=\"create_new_db_extensions\"/> for "
-"instructions on how to do this."
+"database as <varname>newdb</varname>. Please refer to <xref "
+"linkend=\"create_new_db\"/> and <xref linkend=\"create_new_db_extensions\"/> "
+"for instructions on how to do this."
 msgstr ""
 
 #. Tag: para
-#: administration.xml:315
+#: administration.xml:288
 #, no-c-format
 msgid ""
 "The spatial_ref_sys entries found in your dump will be restored, but they "
@@ -706,7 +662,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:325
+#: administration.xml:298
 #, no-c-format
 msgid ""
 "If your database is really old or you know you've been using long deprecated "
@@ -719,7 +675,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:341
+#: administration.xml:314
 #, no-c-format
 msgid ""
 "Restore your backup into your fresh <varname>newdb</varname> database using "
@@ -728,7 +684,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:349
+#: administration.xml:322
 #, no-c-format
 msgid ""
 "perl utils/postgis_restore.pl \"/somepath/olddb.backup\" | psql -h localhost "
@@ -736,13 +692,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:355
+#: administration.xml:328
 #, no-c-format
 msgid "Errors may arise in the following cases:"
 msgstr ""
 
 #. Tag: para
-#: administration.xml:361
+#: administration.xml:334
 #, no-c-format
 msgid ""
 "Some of your views or functions make use of deprecated PostGIS objects. In "
@@ -755,7 +711,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:373
+#: administration.xml:346
 #, no-c-format
 msgid ""
 "Some custom records of spatial_ref_sys in dump file have an invalid SRID "
@@ -769,7 +725,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:387
+#: administration.xml:360
 #, no-c-format
 msgid ""
 "In order to fix this you should copy your custom SRS to a SRID with a valid "
@@ -780,13 +736,13 @@ msgid ""
 "spatial_ref_sys_srid_check check (srid &gt; 0 AND srid &lt; 999000 );</"
 "programlisting> <programlisting>ALTER TABLE spatial_ref_sys ADD PRIMARY "
 "KEY(srid));</programlisting> If you are upgrading an old database containing "
-"french <ulink url=\"https://en.wikipedia.org/wiki/Institut_g"
-"%C3%A9ographique_national\"> IGN </ulink> cartography, you will have "
-"probably SRIDs out of range and you will see, when importing your database, "
-"issues like this : <programlisting> WARNING: SRID 310642222 converted to "
-"999175 (in reserved zone)</programlisting> In this case, you can try "
-"following steps : first throw out completely the IGN from the sql which is "
-"resulting from postgis_restore.pl. So, after having run : "
+"french <ulink url=\"https://en.wikipedia.org/wiki/"
+"Institut_g%C3%A9ographique_national\"> IGN </ulink> cartography, you will "
+"have probably SRIDs out of range and you will see, when importing your "
+"database, issues like this : <programlisting> WARNING: SRID 310642222 "
+"converted to 999175 (in reserved zone)</programlisting> In this case, you "
+"can try following steps : first throw out completely the IGN from the sql "
+"which is resulting from postgis_restore.pl. So, after having run : "
 "<programlisting>perl utils/postgis_restore.pl \"/somepath/olddb.backup\" > "
 "olddb.sql</programlisting> run this command : <programlisting>grep -v IGNF "
 "olddb.sql > olddb-without-IGN.sql</programlisting> Create then your newdb, "
@@ -797,7 +753,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:424
+#: administration.xml:397
 #, no-c-format
 msgid ""
 "psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  2> "

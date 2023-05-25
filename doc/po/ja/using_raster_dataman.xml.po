@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-13 19:13+0000\n"
+"POT-Creation-Date: 2023-05-25 20:53+0000\n"
 "PO-Revision-Date: 2022-09-12 12:43+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -49,17 +49,14 @@ msgid "Using raster2pgsql to load rasters"
 msgstr "raster2pgsqlを使ってラスタをロードする"
 
 #. Tag: para
-#: using_raster_dataman.xml:10
+#: using_raster_dataman.xml:11
 #, no-c-format
 msgid ""
 "The <varname>raster2pgsql</varname> is a raster loader executable that loads "
-"GDAL supported raster formats into sql suitable for loading into a PostGIS "
+"GDAL supported raster formats into SQL suitable for loading into a PostGIS "
 "raster table. It is capable of loading folders of raster files as well as "
 "creating overviews of rasters."
 msgstr ""
-"<varname>raster2pgsql</varname>は、GDALがサポートするラスタ書式をPostGISラス"
-"タテーブルにロードするのに適切なSQLにするバイナリファイルです。ラスタのオーバ"
-"ビューの生成だけでなく、ラスタファイルのフォルダのロードも可能です。"
 
 #. Tag: para
 #: using_raster_dataman.xml:13
@@ -68,38 +65,12 @@ msgid ""
 "Since the raster2pgsql is compiled as part of PostGIS most often (unless you "
 "compile your own GDAL library), the raster types supported by the executable "
 "will be the same as those compiled in the GDAL dependency library. To get a "
-"list of raster types your particular raster2pgsql supports use the <varname>-"
-"G</varname> switch. These should be the same as those provided by your "
-"PostGIS install documented here <xref linkend=\"RT_ST_GDALDrivers\"/> if you "
-"are using the same GDAL library for both."
+"list of raster types your particular <varname>raster2pgsql</varname> "
+"supports use the <varname>-G</varname> switch."
 msgstr ""
-"raster2pgsqlは、多くの場合 (別のGDALライブラリをコンパイルしていない場合)、"
-"PostGISの一部としてコンパイルされるので、実行ファイルがサポートするラスタタイ"
-"プは依存ライブラリGDALでコンパイルされたものと同じになります。raster2pgsqlが"
-"対応するラスタタイプの一覧を得るには、<varname>-G</varname>スイッチを使いま"
-"す。同じGDALライブラリを使っている場合には、<xref "
-"linkend=\"RT_ST_GDALDrivers\"/>で示される,、インストールしたPostGISが提供する"
-"ものと同じです。"
 
 #. Tag: para
 #: using_raster_dataman.xml:16
-#, no-c-format
-msgid ""
-"The older version of this tool was a python script. The executable has "
-"replaced the python script. If you still find the need for the Python script "
-"Examples of the python one can be found at <ulink url=\"http://trac.osgeo."
-"org/gdal/wiki/frmts_wtkraster.html\">GDAL PostGIS Raster Driver Usage</"
-"ulink>. Please note that the raster2pgsql python script may not work with "
-"future versions of PostGIS raster and is no longer supported."
-msgstr ""
-"このツールの古い版では、Pythonスクリプトでした。実行ファイルに置き換えられて"
-"います。Pythonスクリプトが必要な場合は、 <ulink url=\"http://trac.osgeo.org/"
-"gdal/wiki/frmts_wtkraster.html\">GDAL PostGIS Raster Driver Usage</ulink>に、"
-"Pythonの例があります。raster2pgsqlのPythonスクリプトは、今後のPostGIS raster"
-"では動作しないかも知れませんし、サポートされませんので、ご注意ください。"
-
-#. Tag: para
-#: using_raster_dataman.xml:21
 #, no-c-format
 msgid ""
 "When creating overviews of a specific factor from a set of rasters that are "
@@ -113,491 +84,14 @@ msgstr ""
 "postgis/ticket/1764\">http://trac.osgeo.org/postgis/ticket/1764</ulink>をご覧"
 "下さい。"
 
-#. Tag: para
-#: using_raster_dataman.xml:23
+#. Tag: title
+#: using_raster_dataman.xml:20
 #, no-c-format
-msgid "EXAMPLE USAGE:"
-msgstr "使用例:"
-
-#. Tag: programlisting
-#: using_raster_dataman.xml:24
-#, no-c-format
-msgid ""
-"raster2pgsql <varname>raster_options_go_here</varname> <varname>raster_file</"
-"varname> <varname>someschema</varname>.<varname>sometable</varname> &gt; out."
-"sql"
+msgid "Example Usage"
 msgstr ""
-"raster2pgsql <varname>raster_options_go_here</varname> <varname>raster_file</"
-"varname> <varname>someschema</varname>.<varname>sometable</varname> &gt; out."
-"sql"
-
-#. Tag: term
-#: using_raster_dataman.xml:28
-#, no-c-format
-msgid "<term>-?</term>"
-msgstr "<term>-?</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:30
-#, no-c-format
-msgid ""
-"Display help screen. Help will also display if you don't pass in any "
-"arguments."
-msgstr "ヘルプを表示します。引数を全く指定しない場合にも表示されます。"
-
-#. Tag: term
-#: using_raster_dataman.xml:37
-#, no-c-format
-msgid "<term>-G</term>"
-msgstr "<term>-G</term>"
-
-#. Tag: para
-#: using_raster_dataman.xml:39
-#, no-c-format
-msgid "Print the supported raster formats."
-msgstr "サポートされているラスタ書式を印字します。"
-
-#. Tag: term
-#: using_raster_dataman.xml:46
-#, no-c-format
-msgid "(c|a|d|p) These are mutually exclusive options:"
-msgstr "(c|a|d|p) 相互に排他的なオプションです。"
-
-#. Tag: term
-#: using_raster_dataman.xml:51
-#, no-c-format
-msgid "<term>-c</term>"
-msgstr "<term>-c</term>"
-
-#. Tag: para
-#: using_raster_dataman.xml:53
-#, no-c-format
-msgid ""
-"Create new table and populate it with raster(s), <emphasis>this is the "
-"default mode</emphasis>"
-msgstr ""
-"新しいテーブルを生成し、ラスタを入れます。<emphasis>これがデフォルトモードで"
-"す</emphasis>。"
-
-#. Tag: term
-#: using_raster_dataman.xml:60
-#, no-c-format
-msgid "<term>-a</term>"
-msgstr "<term>-a</term>"
-
-#. Tag: para
-#: using_raster_dataman.xml:62
-#, no-c-format
-msgid "Append raster(s) to an existing table."
-msgstr "既存のテーブルにラスタを追加します。"
-
-#. Tag: term
-#: using_raster_dataman.xml:69
-#, no-c-format
-msgid "<term>-d</term>"
-msgstr "<term>-d</term>"
-
-#. Tag: para
-#: using_raster_dataman.xml:71
-#, no-c-format
-msgid "Drop table, create new one and populate it with raster(s)"
-msgstr "テーブルを削除し、新しいテーブルを生成し、ラスタを入れます。"
-
-#. Tag: term
-#: using_raster_dataman.xml:78
-#, no-c-format
-msgid "<term>-p</term>"
-msgstr "<term>-p</term>"
-
-#. Tag: para
-#: using_raster_dataman.xml:80
-#, no-c-format
-msgid "Prepare mode, only create the table."
-msgstr "準備モード、テーブルを作るだけです。"
-
-#. Tag: term
-#: using_raster_dataman.xml:91
-#, no-c-format
-msgid ""
-"Raster processing: Applying constraints for proper registering in raster "
-"catalogs"
-msgstr "ラスタ処理: ラスタカタログに適切に登録するための制約の適用"
-
-#. Tag: term
-#: using_raster_dataman.xml:96
-#, no-c-format
-msgid "<term>-C</term>"
-msgstr "<term>-C</term>"
-
-#. Tag: para
-#: using_raster_dataman.xml:98
-#, no-c-format
-msgid ""
-"Apply raster constraints -- srid, pixelsize etc. to ensure raster is "
-"properly registered in <varname>raster_columns</varname> view."
-msgstr ""
-"SRIDやピクセルサイズ等のラスタ制約を適用して、<varname>raster_columns</"
-"varname>ビューで適切な登録ができるようにします。"
-
-#. Tag: term
-#: using_raster_dataman.xml:104
-#, no-c-format
-msgid "<term>-x</term>"
-msgstr "<term>-x</term>"
-
-#. Tag: para
-#: using_raster_dataman.xml:106
-#, no-c-format
-msgid ""
-"Disable setting the max extent constraint. Only applied if -C flag is also "
-"used."
-msgstr ""
-"制約の最大範囲を無効にします。-Cフラグが使われている場合のみ適用されます。"
-
-#. Tag: term
-#: using_raster_dataman.xml:112
-#, no-c-format
-msgid "<term>-r</term>"
-msgstr "<term>-r</term>"
-
-#. Tag: para
-#: using_raster_dataman.xml:114
-#, no-c-format
-msgid ""
-"Set the constraints (spatially unique and coverage tile) for regular "
-"blocking. Only applied if -C flag is also used."
-msgstr ""
-"正規ブロック制約 (空間的に一意で網羅タイル)を適用します。-Cフラグが使用されて"
-"いる場合のみ適用されます。"
-
-#. Tag: term
-#: using_raster_dataman.xml:125
-#, no-c-format
-msgid ""
-"Raster processing: Optional parameters used to manipulate input raster "
-"dataset"
-msgstr "ラスタ処理: 入力ラスタデータセットの操作に使われる追加的なパラメータ"
-
-#. Tag: term
-#: using_raster_dataman.xml:130
-#, no-c-format
-msgid "-s &lt;SRID&gt;"
-msgstr "-s &lt;SRID&gt;"
-
-#. Tag: para
-#: using_raster_dataman.xml:132
-#, no-c-format
-msgid ""
-"Assign output raster with specified SRID. If not provided or is zero, "
-"raster's metadata will be checked to determine an appropriate SRID."
-msgstr ""
-"出力ラスタを指定されたSRIDにします。 指定しないか0を指定した場合、ラスタのメ"
-"タデータに対して、適切なSRIDを決定するためのチェックを行います。"
-
-#. Tag: term
-#: using_raster_dataman.xml:139
-#, no-c-format
-msgid "-b BAND"
-msgstr "-b BAND"
-
-#. Tag: para
-#: using_raster_dataman.xml:141
-#, no-c-format
-msgid ""
-"Index (1-based) of band to extract from raster. For more than one band "
-"index, separate with comma (,). If unspecified, all bands of raster will be "
-"extracted."
-msgstr ""
-"ラスタから抽出するバンドのインデクス (1始まり)。1より多いバンドを抽出するに"
-"は、コンマ(,)で区切ります。指定しない場合、全てのバンドが抽出されます。"
-
-#. Tag: term
-#: using_raster_dataman.xml:149
-#, no-c-format
-msgid "-t TILE_SIZE"
-msgstr "-t TILE_SIZE"
-
-#. Tag: para
-#: using_raster_dataman.xml:151
-#, no-c-format
-msgid ""
-"Cut raster into tiles to be inserted one per table row. <varname>TILE_SIZE</"
-"varname> is expressed as WIDTHxHEIGHT or set to the value \"auto\" to allow "
-"the loader to compute an appropriate tile size using the first raster and "
-"applied to all rasters."
-msgstr ""
-"行毎に挿入するラスタを切断します。<varname>TILE_SIZE</varname>は、「幅x高さ」"
-"で表現しますが、\"auto\"を指定すると、最初のラスタを使って適切なタイルサイズ"
-"が計算され、全てのラスタに適用されます。"
-
-#. Tag: term
-#: using_raster_dataman.xml:158
-#, no-c-format
-msgid "<term>-P</term>"
-msgstr "<term>-P</term>"
-
-#. Tag: para
-#: using_raster_dataman.xml:160
-#, no-c-format
-msgid ""
-"Pad right-most and bottom-most tiles to guarantee that all tiles have the "
-"same width and height."
-msgstr ""
-"全てのタイルが同じ幅と高さを持つことを保証するために、右端、下端のタイルに詰"
-"め物を施します。"
-
-#. Tag: term
-#: using_raster_dataman.xml:170
-#, no-c-format
-msgid "-R, --register"
-msgstr "-R, --register"
-
-#. Tag: para
-#: using_raster_dataman.xml:172
-#, no-c-format
-msgid "Register the raster as a filesystem (out-db) raster."
-msgstr "ファイルシステム (データベース外)ラスタとして、ラスタを登録します。"
-
-#. Tag: para
-#: using_raster_dataman.xml:173
-#, no-c-format
-msgid ""
-"Only the metadata of the raster and path location to the raster is stored in "
-"the database (not the pixels)."
-msgstr ""
-"データベースには、ラスタのメタデータとラスタのファイルパスのみ格納されます "
-"(ピクセルは格納されません)。"
-
-#. Tag: term
-#: using_raster_dataman.xml:178
-#, no-c-format
-msgid "<code>-l</code> <varname>OVERVIEW_FACTOR</varname>"
-msgstr "<code>-l</code> <varname>OVERVIEW_FACTOR</varname>"
-
-#. Tag: para
-#: using_raster_dataman.xml:179
-#, no-c-format
-msgid ""
-"Create overview of the raster. For more than one factor, separate with "
-"comma(,). Overview table name follows the pattern o_<varname>overview "
-"factor</varname>_<varname>table</varname>, where <varname>overview factor</"
-"varname> is a placeholder for numerical overview factor and <varname>table</"
-"varname> is replaced with the base table name. Created overview is stored in "
-"the database and is not affected by -R. Note that your generated sql file "
-"will contain both the main table and overview tables."
-msgstr ""
-"ラスタのオーバビューを生成します。一つより多い係数を用いる場合は、コンマ (,) "
-"で区切ります。オーバビューのテーブル名はo_<varname>overview factor</"
-"varname>_<varname>table</varname>となります。<varname>overview factor</"
-"varname>にはオーバビュー係数が入り、<varname>table</varname>には基底テーブル"
-"名が入ります。生成されるオーバビューはデータベースに格納され、-Rは無視されま"
-"す。生成されたSQLファイルは元データのテーブルとオーバビューテーブルの両方を含"
-"むことに注意して下さい。"
-
-#. Tag: term
-#: using_raster_dataman.xml:187
-#, no-c-format
-msgid "-N <varname>NODATA</varname>"
-msgstr "-N <varname>NODATA</varname>"
-
-#. Tag: para
-#: using_raster_dataman.xml:189
-#, no-c-format
-msgid "NODATA value to use on bands without a NODATA value."
-msgstr "NODATA値を持たないバンドで使用するNODATA値を設定します。"
-
-#. Tag: term
-#: using_raster_dataman.xml:201
-#, no-c-format
-msgid "Optional parameters used to manipulate database objects"
-msgstr "テータベースオブジェクトの操作に使われる追加的なパラメータ"
-
-#. Tag: term
-#: using_raster_dataman.xml:206
-#, no-c-format
-msgid "-f COLUMN"
-msgstr "-f COLUMN"
-
-#. Tag: para
-#: using_raster_dataman.xml:208
-#, no-c-format
-msgid "Specify name of destination raster column, default is 'rast'"
-msgstr "出力先ラスタカラムの名前を指定します。デフォルトは'rast'です。"
-
-#. Tag: term
-#: using_raster_dataman.xml:214
-#, no-c-format
-msgid "<term>-F</term>"
-msgstr "<term>-F</term>"
-
-#. Tag: para
-#: using_raster_dataman.xml:216
-#, no-c-format
-msgid "Add a column with the name of the file"
-msgstr "ファイル名でカラムを追加します。"
-
-#. Tag: term
-#: using_raster_dataman.xml:221
-#, no-c-format
-msgid "-n COLUMN"
-msgstr "-n COLUMN"
-
-#. Tag: para
-#: using_raster_dataman.xml:223
-#, no-c-format
-msgid "Specify the name of the filename column. Implies -F."
-msgstr "ファイル名カラムの名前を指定します。-Fを暗に含みます。"
-
-#. Tag: term
-#: using_raster_dataman.xml:228
-#, no-c-format
-msgid "<term>-q</term>"
-msgstr "<term>-q</term>"
-
-#. Tag: para
-#: using_raster_dataman.xml:230
-#, no-c-format
-msgid "Wrap PostgreSQL identifiers in quotes."
-msgstr "PostgreSQL識別子に引用符を付けます。"
-
-#. Tag: term
-#: using_raster_dataman.xml:235
-#, no-c-format
-msgid "<term>-I</term>"
-msgstr "<term>-I</term>"
-
-#. Tag: para
-#: using_raster_dataman.xml:237
-#, no-c-format
-msgid "Create a GiST index on the raster column."
-msgstr "ラスタカラムにGiSTインデクスを生成します。"
-
-#. Tag: term
-#: using_raster_dataman.xml:244
-#, no-c-format
-msgid "<term>-M</term>"
-msgstr "<term>-M</term>"
-
-#. Tag: para
-#: using_raster_dataman.xml:246
-#, no-c-format
-msgid "Vacuum analyze the raster table."
-msgstr "ラスタテーブルにvacuum analyzeを行います。"
-
-#. Tag: term
-#: using_raster_dataman.xml:254
-#, no-c-format
-msgid "<term>-k</term>"
-msgstr "<term>-k</term>"
-
-#. Tag: para
-#: using_raster_dataman.xml:256
-#, no-c-format
-msgid ""
-"Keeps empty tiles and skips NODATA value checks for each raster band. Note "
-"you save time in checking, but could end up with far more junk rows in your "
-"database and those junk rows are not marked as empty tiles."
-msgstr ""
-"空タイルを保持してラスタバンドごとのNODATA値のチェックを省きます。チェック時"
-"間を抑えることになりますが、データベース内の不要な行がずっと増えて、これらの"
-"行が空タイルとされないことに注意して下さい。"
-
-#. Tag: term
-#: using_raster_dataman.xml:265
-#, no-c-format
-msgid "-T <varname>tablespace</varname>"
-msgstr "-T <varname>tablespace</varname>"
-
-#. Tag: para
-#: using_raster_dataman.xml:267
-#, no-c-format
-msgid ""
-"Specify the tablespace for the new table. Note that indices (including the "
-"primary key) will still use the default tablespace unless the -X flag is "
-"also used."
-msgstr ""
-"生成されるテーブルのテーブルスペースを指定します。-Xフラグを併用しない場合に"
-"は、インデクス (主キーを含む)はデフォルトのテーブルスペースを使用することにご"
-"注意ください。"
-
-#. Tag: term
-#: using_raster_dataman.xml:276
-#, no-c-format
-msgid "-X <varname>tablespace</varname>"
-msgstr "-X <varname>tablespace</varname>"
-
-#. Tag: para
-#: using_raster_dataman.xml:278
-#, no-c-format
-msgid ""
-"Specify the tablespace for the table's new index. This applies to the "
-"primary key and the spatial index if the -I flag is used."
-msgstr ""
-"テーブルの新しいインデクスに使うテーブル空間を指定します。主キーに適用され、-"
-"Iフラグがある場合においては空間インデクスにも適用されます。"
-
-#. Tag: term
-#: using_raster_dataman.xml:287
-#, no-c-format
-msgid "-Y <varname>max_rows_per_copy=50</varname>"
-msgstr "-Y <varname>max_rows_per_copy=50</varname>"
-
-#. Tag: para
-#: using_raster_dataman.xml:289
-#, no-c-format
-msgid ""
-"Use copy statements instead of insert statements. Optionally specify "
-"<varname>max_rows_per_copy</varname>; default 50 when not specified."
-msgstr ""
-"COPYステートメントを使い、INSERTを使いません。任意で<varname>max_rows_per_cop"
-"y</varname>を指定します。指定しない場合のデフォルト値は50です。"
-
-#. Tag: term
-#: using_raster_dataman.xml:301
-#, no-c-format
-msgid "<term>-e</term>"
-msgstr "<term>-e</term>"
-
-#. Tag: para
-#: using_raster_dataman.xml:302
-#, no-c-format
-msgid "Execute each statement individually, do not use a transaction."
-msgstr "ステートメント毎に実行して、トランザクションを使用しないようにします。"
-
-#. Tag: term
-#: using_raster_dataman.xml:306
-#, no-c-format
-msgid "-E ENDIAN"
-msgstr "-E ENDIAN"
-
-#. Tag: para
-#: using_raster_dataman.xml:307
-#, no-c-format
-msgid ""
-"Control endianness of generated binary output of raster; specify 0 for XDR "
-"and 1 for NDR (default); only NDR output is supported now"
-msgstr ""
-"生成されるラスタのバイナリ出力のエンディアンを制御します。XDR (訳注: ビッグエ"
-"ンディアン)の場合は0を、NDR (訳注:リトルエンディアン)の場合は1を、それぞれ指"
-"定します。デフォルトは1です。現時点ではNDR出力のみサポートします。"
-
-#. Tag: term
-#: using_raster_dataman.xml:311
-#, no-c-format
-msgid "-V <varname>version</varname>"
-msgstr "-V <varname>version</varname>"
-
-#. Tag: para
-#: using_raster_dataman.xml:312
-#, no-c-format
-msgid ""
-"Specify version of output format. Default is 0. Only 0 is supported at this "
-"time."
-msgstr ""
-"出力書式の版を指定します。デフォルトは0です。現時点では0のみサポートします。"
-
-#. Tag: para
-#: using_raster_dataman.xml:315
+#: using_raster_dataman.xml:22
 #, no-c-format
 msgid ""
 "An example session using the loader to create an input file and uploading it "
@@ -606,38 +100,43 @@ msgstr ""
 "ローダを用いて入力ファイルを100x100のタイルで生成して、データベースにアップ"
 "ロードする例は、次の通りです。"
 
-#. Tag: para
-#: using_raster_dataman.xml:316
-#, no-c-format
-msgid ""
-"You can leave the schema name out e.g <varname>demelevation</varname> "
-"instead of <varname>public.demelevation</varname> and the raster table will "
-"be created in the default schema of the database or user"
-msgstr ""
-"<varname>public.demelevation</varname>でなく<varname>demelevation</varname> "
-"というようにスキーマ名を外すことができます。この場合、ラスタテーブルはデータ"
-"ベースまたユーザの指定するデフォルトのスキーマに生成されます。"
-
 #. Tag: programlisting
-#: using_raster_dataman.xml:318
+#: using_raster_dataman.xml:24
 #, no-c-format
 msgid ""
-"raster2pgsql -s 4326 -I -C -M *.tif -F -t 100x100 public.demelevation > elev."
+"# -s use srid 4326\n"
+"# -I create spatial index\n"
+"# -C use standard raster constraints\n"
+"# -M vacuum analyze after load\n"
+"# *.tif load all these files\n"
+"# -F include a filename column in the raster table\n"
+"# -t tile the output 100x100\n"
+"# public.demelevation load into this table\n"
+"raster2pgsql -s 4326 -I -C -M -F -t 100x100 *.tif public.demelevation > elev."
 "sql\n"
+"\n"
+"# -d connect to this database\n"
+"# -f read this file after connecting\n"
 "psql -d gisdb -f elev.sql"
 msgstr ""
-"raster2pgsql -s 4326 -I -C -M *.tif -F -t 100x100 public.demelevation > elev."
-"sql\n"
-"psql -d gisdb -f elev.sql"
 
 #. Tag: para
-#: using_raster_dataman.xml:320
+#: using_raster_dataman.xml:27
+#, no-c-format
+msgid ""
+"If you do not specify the schema as part of the target table name, the table "
+"will be created in the default schema of the database or user you are "
+"connecting with."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:30
 #, no-c-format
 msgid "A conversion and upload can be done all in one step using UNIX pipes:"
 msgstr "変換とアップロードはUNIXのパイプを使うと一回で実行できます。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:322
+#: using_raster_dataman.xml:32
 #, no-c-format
 msgid ""
 "raster2pgsql -s 4326 -I -C -M *.tif -F -t 100x100 public.demelevation | psql "
@@ -647,7 +146,7 @@ msgstr ""
 "-d gisdb"
 
 #. Tag: para
-#: using_raster_dataman.xml:324
+#: using_raster_dataman.xml:34
 #, no-c-format
 msgid ""
 "Load rasters Massachusetts state plane meters aerial tiles into a schema "
@@ -668,7 +167,7 @@ msgstr ""
 "ます。-Fで、カラム名をタイル切り出し元ファイルのファイル名にします。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:326
+#: using_raster_dataman.xml:36
 #, no-c-format
 msgid ""
 "raster2pgsql -I -C -e -Y -F -s 26986 -t 128x128  -l 2,4 bostonaerials2008/*."
@@ -678,7 +177,7 @@ msgstr ""
 "jpg aerials.boston | psql -U postgres -d gisdb -h localhost -p 5432"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:328
+#: using_raster_dataman.xml:38
 #, no-c-format
 msgid ""
 "--get a list of raster types supported:\n"
@@ -688,13 +187,13 @@ msgstr ""
 "raster2pgsql -G"
 
 #. Tag: para
-#: using_raster_dataman.xml:330
+#: using_raster_dataman.xml:40
 #, no-c-format
 msgid "The -G commands outputs a list something like"
 msgstr "-Gコマンドの出力は次のようになります。"
 
 #. Tag: screen
-#: using_raster_dataman.xml:331
+#: using_raster_dataman.xml:41
 #, no-c-format
 msgid ""
 "Available GDAL raster formats:\n"
@@ -706,203 +205,492 @@ msgid ""
 "  Erdas Imagine Images (.img)\n"
 "  CEOS SAR Image\n"
 "  CEOS Image\n"
-"  JAXA PALSAR Product Reader (Level 1.1/1.5)\n"
-"  Ground-based SAR Applications Testbed File Format (.gff)\n"
-"  ELAS\n"
-"  Arc/Info Binary Grid\n"
-"  Arc/Info ASCII Grid\n"
-"  GRASS ASCII Grid\n"
-"  SDTS Raster\n"
-"  DTED Elevation Raster\n"
-"  Portable Network Graphics\n"
-"  JPEG JFIF\n"
-"  In Memory Raster\n"
-"  Japanese DEM (.mem)\n"
-"  Graphics Interchange Format (.gif)\n"
-"  Graphics Interchange Format (.gif)\n"
-"  Envisat Image Format\n"
-"  Maptech BSB Nautical Charts\n"
-"  X11 PixMap Format\n"
-"  MS Windows Device Independent Bitmap\n"
-"  SPOT DIMAP\n"
-"  AirSAR Polarimetric Image\n"
-"  RadarSat 2 XML Product\n"
-"  PCIDSK Database File\n"
-"  PCRaster Raster File\n"
-"  ILWIS Raster Map\n"
-"  SGI Image File Format 1.0\n"
-"  SRTMHGT File Format\n"
-"  Leveller heightfield\n"
-"  Terragen heightfield\n"
-"  USGS Astrogeology ISIS cube (Version 3)\n"
-"  USGS Astrogeology ISIS cube (Version 2)\n"
-"  NASA Planetary Data System\n"
-"  EarthWatch .TIL\n"
-"  ERMapper .ers Labelled\n"
-"  NOAA Polar Orbiter Level 1b Data Set\n"
-"  FIT Image\n"
-"  GRIdded Binary (.grb)\n"
-"  Raster Matrix Format\n"
-"  EUMETSAT Archive native (.nat)\n"
-"  Idrisi Raster A.1\n"
-"  Intergraph Raster\n"
-"  Golden Software ASCII Grid (.grd)\n"
-"  Golden Software Binary Grid (.grd)\n"
-"  Golden Software 7 Binary Grid (.grd)\n"
-"  COSAR Annotated Binary Matrix (TerraSAR-X)\n"
-"  TerraSAR-X Product\n"
-"  DRDC COASP SAR Processor Raster\n"
-"  R Object Data Store\n"
-"  Portable Pixmap Format (netpbm)\n"
-"  USGS DOQ (Old Style)\n"
-"  USGS DOQ (New Style)\n"
-"  ENVI .hdr Labelled\n"
-"  ESRI .hdr Labelled\n"
-"  Generic Binary (.hdr Labelled)\n"
-"  PCI .aux Labelled\n"
-"  Vexcel MFF Raster\n"
-"  Vexcel MFF2 (HKV) Raster\n"
-"  Fuji BAS Scanner Image\n"
-"  GSC Geogrid\n"
-"  EOSAT FAST Format\n"
-"  VTP .bt (Binary Terrain) 1.3 Format\n"
-"  Erdas .LAN/.GIS\n"
-"  Convair PolGASP\n"
-"  Image Data and Analysis\n"
-"  NLAPS Data Format\n"
-"  Erdas Imagine Raw\n"
-"  DIPEx\n"
-"  FARSITE v.4 Landscape File (.lcp)\n"
-"  NOAA Vertical Datum .GTX\n"
-"  NADCON .los/.las Datum Grid Shift\n"
-"  NTv2 Datum Grid Shift\n"
-"  ACE2\n"
-"  Snow Data Assimilation System\n"
-"  Swedish Grid RIK (.rik)\n"
-"  USGS Optional ASCII DEM (and CDED)\n"
-"  GeoSoft Grid Exchange Format\n"
-"  Northwood Numeric Grid Format .grd/.tab\n"
-"  Northwood Classified Grid Format .grc/.tab\n"
-"  ARC Digitized Raster Graphics\n"
-"  Standard Raster Product (ASRP/USRP)\n"
-"  Magellan topo (.blx)\n"
-"  SAGA GIS Binary Grid (.sdat)\n"
-"  Kml Super Overlay\n"
-"  ASCII Gridded XYZ\n"
-"  HF2/HFZ heightfield raster\n"
-"  OziExplorer Image File\n"
-"  USGS LULC Composite Theme Grid\n"
+"  ...\n"
 "  Arc/Info Export E00 GRID\n"
 "  ZMap Plus Grid\n"
 "  NOAA NGS Geoid Height Grids"
 msgstr ""
-"Available GDAL raster formats:\n"
-"  Virtual Raster\n"
-"  GeoTIFF\n"
-"  National Imagery Transmission Format\n"
-"  Raster Product Format TOC format\n"
-"  ECRG TOC format\n"
-"  Erdas Imagine Images (.img)\n"
-"  CEOS SAR Image\n"
-"  CEOS Image\n"
-"  JAXA PALSAR Product Reader (Level 1.1/1.5)\n"
-"  Ground-based SAR Applications Testbed File Format (.gff)\n"
-"  ELAS\n"
-"  Arc/Info Binary Grid\n"
-"  Arc/Info ASCII Grid\n"
-"  GRASS ASCII Grid\n"
-"  SDTS Raster\n"
-"  DTED Elevation Raster\n"
-"  Portable Network Graphics\n"
-"  JPEG JFIF\n"
-"  In Memory Raster\n"
-"  Japanese DEM (.mem)\n"
-"  Graphics Interchange Format (.gif)\n"
-"  Graphics Interchange Format (.gif)\n"
-"  Envisat Image Format\n"
-"  Maptech BSB Nautical Charts\n"
-"  X11 PixMap Format\n"
-"  MS Windows Device Independent Bitmap\n"
-"  SPOT DIMAP\n"
-"  AirSAR Polarimetric Image\n"
-"  RadarSat 2 XML Product\n"
-"  PCIDSK Database File\n"
-"  PCRaster Raster File\n"
-"  ILWIS Raster Map\n"
-"  SGI Image File Format 1.0\n"
-"  SRTMHGT File Format\n"
-"  Leveller heightfield\n"
-"  Terragen heightfield\n"
-"  USGS Astrogeology ISIS cube (Version 3)\n"
-"  USGS Astrogeology ISIS cube (Version 2)\n"
-"  NASA Planetary Data System\n"
-"  EarthWatch .TIL\n"
-"  ERMapper .ers Labelled\n"
-"  NOAA Polar Orbiter Level 1b Data Set\n"
-"  FIT Image\n"
-"  GRIdded Binary (.grb)\n"
-"  Raster Matrix Format\n"
-"  EUMETSAT Archive native (.nat)\n"
-"  Idrisi Raster A.1\n"
-"  Intergraph Raster\n"
-"  Golden Software ASCII Grid (.grd)\n"
-"  Golden Software Binary Grid (.grd)\n"
-"  Golden Software 7 Binary Grid (.grd)\n"
-"  COSAR Annotated Binary Matrix (TerraSAR-X)\n"
-"  TerraSAR-X Product\n"
-"  DRDC COASP SAR Processor Raster\n"
-"  R Object Data Store\n"
-"  Portable Pixmap Format (netpbm)\n"
-"  USGS DOQ (Old Style)\n"
-"  USGS DOQ (New Style)\n"
-"  ENVI .hdr Labelled\n"
-"  ESRI .hdr Labelled\n"
-"  Generic Binary (.hdr Labelled)\n"
-"  PCI .aux Labelled\n"
-"  Vexcel MFF Raster\n"
-"  Vexcel MFF2 (HKV) Raster\n"
-"  Fuji BAS Scanner Image\n"
-"  GSC Geogrid\n"
-"  EOSAT FAST Format\n"
-"  VTP .bt (Binary Terrain) 1.3 Format\n"
-"  Erdas .LAN/.GIS\n"
-"  Convair PolGASP\n"
-"  Image Data and Analysis\n"
-"  NLAPS Data Format\n"
-"  Erdas Imagine Raw\n"
-"  DIPEx\n"
-"  FARSITE v.4 Landscape File (.lcp)\n"
-"  NOAA Vertical Datum .GTX\n"
-"  NADCON .los/.las Datum Grid Shift\n"
-"  NTv2 Datum Grid Shift\n"
-"  ACE2\n"
-"  Snow Data Assimilation System\n"
-"  Swedish Grid RIK (.rik)\n"
-"  USGS Optional ASCII DEM (and CDED)\n"
-"  GeoSoft Grid Exchange Format\n"
-"  Northwood Numeric Grid Format .grd/.tab\n"
-"  Northwood Classified Grid Format .grc/.tab\n"
-"  ARC Digitized Raster Graphics\n"
-"  Standard Raster Product (ASRP/USRP)\n"
-"  Magellan topo (.blx)\n"
-"  SAGA GIS Binary Grid (.sdat)\n"
-"  Kml Super Overlay\n"
-"  ASCII Gridded XYZ\n"
-"  HF2/HFZ heightfield raster\n"
-"  OziExplorer Image File\n"
-"  USGS LULC Composite Theme Grid\n"
-"  Arc/Info Export E00 GRID\n"
-"  ZMap Plus Grid\n"
-"  NOAA NGS Geoid Height Grids"
 
 #. Tag: title
+#: using_raster_dataman.xml:46
+#, no-c-format
+msgid "raster2pgsql options"
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:50
+#, no-c-format
+msgid "<term>-?</term>"
+msgstr "<term>-?</term>"
+
+#. Tag: para
+#: using_raster_dataman.xml:52
+#, no-c-format
+msgid ""
+"Display help screen. Help will also display if you don't pass in any "
+"arguments."
+msgstr "ヘルプを表示します。引数を全く指定しない場合にも表示されます。"
+
+#. Tag: term
+#: using_raster_dataman.xml:59
+#, no-c-format
+msgid "<term>-G</term>"
+msgstr "<term>-G</term>"
+
+#. Tag: para
+#: using_raster_dataman.xml:61
+#, no-c-format
+msgid "Print the supported raster formats."
+msgstr "サポートされているラスタ書式を印字します。"
+
+#. Tag: term
+#: using_raster_dataman.xml:68
+#, no-c-format
+msgid "(c|a|d|p) These are mutually exclusive options:"
+msgstr "(c|a|d|p) 相互に排他的なオプションです。"
+
+#. Tag: term
+#: using_raster_dataman.xml:73
+#, no-c-format
+msgid "<term>-c</term>"
+msgstr "<term>-c</term>"
+
+#. Tag: para
+#: using_raster_dataman.xml:75
+#, no-c-format
+msgid ""
+"Create new table and populate it with raster(s), <emphasis>this is the "
+"default mode</emphasis>"
+msgstr ""
+"新しいテーブルを生成し、ラスタを入れます。<emphasis>これがデフォルトモードで"
+"す</emphasis>。"
+
+#. Tag: term
+#: using_raster_dataman.xml:82
+#, no-c-format
+msgid "<term>-a</term>"
+msgstr "<term>-a</term>"
+
+#. Tag: para
+#: using_raster_dataman.xml:84
+#, no-c-format
+msgid "Append raster(s) to an existing table."
+msgstr "既存のテーブルにラスタを追加します。"
+
+#. Tag: term
+#: using_raster_dataman.xml:91
+#, no-c-format
+msgid "<term>-d</term>"
+msgstr "<term>-d</term>"
+
+#. Tag: para
+#: using_raster_dataman.xml:93
+#, no-c-format
+msgid "Drop table, create new one and populate it with raster(s)"
+msgstr "テーブルを削除し、新しいテーブルを生成し、ラスタを入れます。"
+
+#. Tag: term
+#: using_raster_dataman.xml:100
+#, no-c-format
+msgid "<term>-p</term>"
+msgstr "<term>-p</term>"
+
+#. Tag: para
+#: using_raster_dataman.xml:102
+#, no-c-format
+msgid "Prepare mode, only create the table."
+msgstr "準備モード、テーブルを作るだけです。"
+
+#. Tag: term
+#: using_raster_dataman.xml:113
+#, no-c-format
+msgid ""
+"Raster processing: Applying constraints for proper registering in raster "
+"catalogs"
+msgstr "ラスタ処理: ラスタカタログに適切に登録するための制約の適用"
+
+#. Tag: term
+#: using_raster_dataman.xml:118
+#, no-c-format
+msgid "<term>-C</term>"
+msgstr "<term>-C</term>"
+
+#. Tag: para
+#: using_raster_dataman.xml:120
+#, no-c-format
+msgid ""
+"Apply raster constraints -- srid, pixelsize etc. to ensure raster is "
+"properly registered in <varname>raster_columns</varname> view."
+msgstr ""
+"SRIDやピクセルサイズ等のラスタ制約を適用して、<varname>raster_columns</"
+"varname>ビューで適切な登録ができるようにします。"
+
+#. Tag: term
+#: using_raster_dataman.xml:126
+#, no-c-format
+msgid "<term>-x</term>"
+msgstr "<term>-x</term>"
+
+#. Tag: para
+#: using_raster_dataman.xml:128
+#, no-c-format
+msgid ""
+"Disable setting the max extent constraint. Only applied if -C flag is also "
+"used."
+msgstr ""
+"制約の最大範囲を無効にします。-Cフラグが使われている場合のみ適用されます。"
+
+#. Tag: term
+#: using_raster_dataman.xml:134
+#, no-c-format
+msgid "<term>-r</term>"
+msgstr "<term>-r</term>"
+
+#. Tag: para
+#: using_raster_dataman.xml:136
+#, no-c-format
+msgid ""
+"Set the constraints (spatially unique and coverage tile) for regular "
+"blocking. Only applied if -C flag is also used."
+msgstr ""
+"正規ブロック制約 (空間的に一意で網羅タイル)を適用します。-Cフラグが使用されて"
+"いる場合のみ適用されます。"
+
+#. Tag: term
+#: using_raster_dataman.xml:147
+#, no-c-format
+msgid ""
+"Raster processing: Optional parameters used to manipulate input raster "
+"dataset"
+msgstr "ラスタ処理: 入力ラスタデータセットの操作に使われる追加的なパラメータ"
+
+#. Tag: term
+#: using_raster_dataman.xml:152
+#, no-c-format
+msgid "-s &lt;SRID&gt;"
+msgstr "-s &lt;SRID&gt;"
+
+#. Tag: para
+#: using_raster_dataman.xml:154
+#, no-c-format
+msgid ""
+"Assign output raster with specified SRID. If not provided or is zero, "
+"raster's metadata will be checked to determine an appropriate SRID."
+msgstr ""
+"出力ラスタを指定されたSRIDにします。 指定しないか0を指定した場合、ラスタのメ"
+"タデータに対して、適切なSRIDを決定するためのチェックを行います。"
+
+#. Tag: term
+#: using_raster_dataman.xml:161
+#, no-c-format
+msgid "-b BAND"
+msgstr "-b BAND"
+
+#. Tag: para
+#: using_raster_dataman.xml:163
+#, no-c-format
+msgid ""
+"Index (1-based) of band to extract from raster. For more than one band "
+"index, separate with comma (,). If unspecified, all bands of raster will be "
+"extracted."
+msgstr ""
+"ラスタから抽出するバンドのインデクス (1始まり)。1より多いバンドを抽出するに"
+"は、コンマ(,)で区切ります。指定しない場合、全てのバンドが抽出されます。"
+
+#. Tag: term
+#: using_raster_dataman.xml:171
+#, no-c-format
+msgid "-t TILE_SIZE"
+msgstr "-t TILE_SIZE"
+
+#. Tag: para
+#: using_raster_dataman.xml:173
+#, no-c-format
+msgid ""
+"Cut raster into tiles to be inserted one per table row. <varname>TILE_SIZE</"
+"varname> is expressed as WIDTHxHEIGHT or set to the value \"auto\" to allow "
+"the loader to compute an appropriate tile size using the first raster and "
+"applied to all rasters."
+msgstr ""
+"行毎に挿入するラスタを切断します。<varname>TILE_SIZE</varname>は、「幅x高さ」"
+"で表現しますが、\"auto\"を指定すると、最初のラスタを使って適切なタイルサイズ"
+"が計算され、全てのラスタに適用されます。"
+
+#. Tag: term
+#: using_raster_dataman.xml:180
+#, no-c-format
+msgid "<term>-P</term>"
+msgstr "<term>-P</term>"
+
+#. Tag: para
+#: using_raster_dataman.xml:182
+#, no-c-format
+msgid ""
+"Pad right-most and bottom-most tiles to guarantee that all tiles have the "
+"same width and height."
+msgstr ""
+"全てのタイルが同じ幅と高さを持つことを保証するために、右端、下端のタイルに詰"
+"め物を施します。"
+
+#. Tag: term
+#: using_raster_dataman.xml:192
+#, no-c-format
+msgid "-R, --register"
+msgstr "-R, --register"
+
+#. Tag: para
+#: using_raster_dataman.xml:194
+#, no-c-format
+msgid "Register the raster as a filesystem (out-db) raster."
+msgstr "ファイルシステム (データベース外)ラスタとして、ラスタを登録します。"
+
+#. Tag: para
+#: using_raster_dataman.xml:195
+#, no-c-format
+msgid ""
+"Only the metadata of the raster and path location to the raster is stored in "
+"the database (not the pixels)."
+msgstr ""
+"データベースには、ラスタのメタデータとラスタのファイルパスのみ格納されます "
+"(ピクセルは格納されません)。"
+
+#. Tag: term
+#: using_raster_dataman.xml:200
+#, no-c-format
+msgid "<code>-l</code> <varname>OVERVIEW_FACTOR</varname>"
+msgstr "<code>-l</code> <varname>OVERVIEW_FACTOR</varname>"
+
+#. Tag: para
+#: using_raster_dataman.xml:201
+#, no-c-format
+msgid ""
+"Create overview of the raster. For more than one factor, separate with "
+"comma(,). Overview table name follows the pattern o_<varname>overview "
+"factor</varname>_<varname>table</varname>, where <varname>overview factor</"
+"varname> is a placeholder for numerical overview factor and <varname>table</"
+"varname> is replaced with the base table name. Created overview is stored in "
+"the database and is not affected by -R. Note that your generated sql file "
+"will contain both the main table and overview tables."
+msgstr ""
+"ラスタのオーバビューを生成します。一つより多い係数を用いる場合は、コンマ (,) "
+"で区切ります。オーバビューのテーブル名はo_<varname>overview factor</"
+"varname>_<varname>table</varname>となります。<varname>overview factor</"
+"varname>にはオーバビュー係数が入り、<varname>table</varname>には基底テーブル"
+"名が入ります。生成されるオーバビューはデータベースに格納され、-Rは無視されま"
+"す。生成されたSQLファイルは元データのテーブルとオーバビューテーブルの両方を含"
+"むことに注意して下さい。"
+
+#. Tag: term
+#: using_raster_dataman.xml:209
+#, no-c-format
+msgid "-N <varname>NODATA</varname>"
+msgstr "-N <varname>NODATA</varname>"
+
+#. Tag: para
+#: using_raster_dataman.xml:211
+#, no-c-format
+msgid "NODATA value to use on bands without a NODATA value."
+msgstr "NODATA値を持たないバンドで使用するNODATA値を設定します。"
+
+#. Tag: term
+#: using_raster_dataman.xml:223
+#, no-c-format
+msgid "Optional parameters used to manipulate database objects"
+msgstr "テータベースオブジェクトの操作に使われる追加的なパラメータ"
+
+#. Tag: term
+#: using_raster_dataman.xml:228
+#, no-c-format
+msgid "-f COLUMN"
+msgstr "-f COLUMN"
+
+#. Tag: para
+#: using_raster_dataman.xml:230
+#, no-c-format
+msgid "Specify name of destination raster column, default is 'rast'"
+msgstr "出力先ラスタカラムの名前を指定します。デフォルトは'rast'です。"
+
+#. Tag: term
+#: using_raster_dataman.xml:236
+#, no-c-format
+msgid "<term>-F</term>"
+msgstr "<term>-F</term>"
+
+#. Tag: para
+#: using_raster_dataman.xml:238
+#, no-c-format
+msgid "Add a column with the name of the file"
+msgstr "ファイル名でカラムを追加します。"
+
+#. Tag: term
+#: using_raster_dataman.xml:243
+#, no-c-format
+msgid "-n COLUMN"
+msgstr "-n COLUMN"
+
+#. Tag: para
+#: using_raster_dataman.xml:245
+#, no-c-format
+msgid "Specify the name of the filename column. Implies -F."
+msgstr "ファイル名カラムの名前を指定します。-Fを暗に含みます。"
+
+#. Tag: term
+#: using_raster_dataman.xml:250
+#, no-c-format
+msgid "<term>-q</term>"
+msgstr "<term>-q</term>"
+
+#. Tag: para
+#: using_raster_dataman.xml:252
+#, no-c-format
+msgid "Wrap PostgreSQL identifiers in quotes."
+msgstr "PostgreSQL識別子に引用符を付けます。"
+
+#. Tag: term
+#: using_raster_dataman.xml:257
+#, no-c-format
+msgid "<term>-I</term>"
+msgstr "<term>-I</term>"
+
+#. Tag: para
+#: using_raster_dataman.xml:259
+#, no-c-format
+msgid "Create a GiST index on the raster column."
+msgstr "ラスタカラムにGiSTインデクスを生成します。"
+
+#. Tag: term
+#: using_raster_dataman.xml:266
+#, no-c-format
+msgid "<term>-M</term>"
+msgstr "<term>-M</term>"
+
+#. Tag: para
+#: using_raster_dataman.xml:268
+#, no-c-format
+msgid "Vacuum analyze the raster table."
+msgstr "ラスタテーブルにvacuum analyzeを行います。"
+
+#. Tag: term
+#: using_raster_dataman.xml:276
+#, no-c-format
+msgid "<term>-k</term>"
+msgstr "<term>-k</term>"
+
+#. Tag: para
+#: using_raster_dataman.xml:278
+#, no-c-format
+msgid ""
+"Keeps empty tiles and skips NODATA value checks for each raster band. Note "
+"you save time in checking, but could end up with far more junk rows in your "
+"database and those junk rows are not marked as empty tiles."
+msgstr ""
+"空タイルを保持してラスタバンドごとのNODATA値のチェックを省きます。チェック時"
+"間を抑えることになりますが、データベース内の不要な行がずっと増えて、これらの"
+"行が空タイルとされないことに注意して下さい。"
+
+#. Tag: term
+#: using_raster_dataman.xml:287
+#, no-c-format
+msgid "-T <varname>tablespace</varname>"
+msgstr "-T <varname>tablespace</varname>"
+
+#. Tag: para
+#: using_raster_dataman.xml:289
+#, no-c-format
+msgid ""
+"Specify the tablespace for the new table. Note that indices (including the "
+"primary key) will still use the default tablespace unless the -X flag is "
+"also used."
+msgstr ""
+"生成されるテーブルのテーブルスペースを指定します。-Xフラグを併用しない場合に"
+"は、インデクス (主キーを含む)はデフォルトのテーブルスペースを使用することにご"
+"注意ください。"
+
+#. Tag: term
+#: using_raster_dataman.xml:298
+#, no-c-format
+msgid "-X <varname>tablespace</varname>"
+msgstr "-X <varname>tablespace</varname>"
+
+#. Tag: para
+#: using_raster_dataman.xml:300
+#, no-c-format
+msgid ""
+"Specify the tablespace for the table's new index. This applies to the "
+"primary key and the spatial index if the -I flag is used."
+msgstr ""
+"テーブルの新しいインデクスに使うテーブル空間を指定します。主キーに適用され、-"
+"Iフラグがある場合においては空間インデクスにも適用されます。"
+
+#. Tag: term
+#: using_raster_dataman.xml:309
+#, no-c-format
+msgid "-Y <varname>max_rows_per_copy=50</varname>"
+msgstr "-Y <varname>max_rows_per_copy=50</varname>"
+
+#. Tag: para
+#: using_raster_dataman.xml:311
+#, no-c-format
+msgid ""
+"Use copy statements instead of insert statements. Optionally specify "
+"<varname>max_rows_per_copy</varname>; default 50 when not specified."
+msgstr ""
+"COPYステートメントを使い、INSERTを使いません。任意で"
+"<varname>max_rows_per_copy</varname>を指定します。指定しない場合のデフォルト"
+"値は50です。"
+
+#. Tag: term
+#: using_raster_dataman.xml:323
+#, no-c-format
+msgid "<term>-e</term>"
+msgstr "<term>-e</term>"
+
+#. Tag: para
+#: using_raster_dataman.xml:324
+#, no-c-format
+msgid "Execute each statement individually, do not use a transaction."
+msgstr "ステートメント毎に実行して、トランザクションを使用しないようにします。"
+
+#. Tag: term
+#: using_raster_dataman.xml:328
+#, no-c-format
+msgid "-E ENDIAN"
+msgstr "-E ENDIAN"
+
+#. Tag: para
+#: using_raster_dataman.xml:329
+#, no-c-format
+msgid ""
+"Control endianness of generated binary output of raster; specify 0 for XDR "
+"and 1 for NDR (default); only NDR output is supported now"
+msgstr ""
+"生成されるラスタのバイナリ出力のエンディアンを制御します。XDR (訳注: ビッグエ"
+"ンディアン)の場合は0を、NDR (訳注:リトルエンディアン)の場合は1を、それぞれ指"
+"定します。デフォルトは1です。現時点ではNDR出力のみサポートします。"
+
+#. Tag: term
+#: using_raster_dataman.xml:333
+#, no-c-format
+msgid "-V <varname>version</varname>"
+msgstr "-V <varname>version</varname>"
+
+#. Tag: para
 #: using_raster_dataman.xml:334
+#, no-c-format
+msgid ""
+"Specify version of output format. Default is 0. Only 0 is supported at this "
+"time."
+msgstr ""
+"出力書式の版を指定します。デフォルトは0です。現時点では0のみサポートします。"
+
+#. Tag: title
+#: using_raster_dataman.xml:345
 #, no-c-format
 msgid "Creating rasters using PostGIS raster functions"
 msgstr "PostGISラスタ関数を用いたラスタの生成"
 
 #. Tag: para
-#: using_raster_dataman.xml:335
+#: using_raster_dataman.xml:346
 #, no-c-format
 msgid ""
 "On many occasions, you'll want to create rasters and raster tables right in "
@@ -913,7 +701,7 @@ msgstr ""
 "行うための関数が多数あります。一般的な手順は次の通りです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:337
+#: using_raster_dataman.xml:348
 #, no-c-format
 msgid ""
 "Create a table with a raster column to hold the new raster records which can "
@@ -923,13 +711,13 @@ msgstr ""
 "行します。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:338
+#: using_raster_dataman.xml:349
 #, no-c-format
 msgid "CREATE TABLE myrasters(rid serial primary key, rast raster);"
 msgstr "CREATE TABLE myrasters(rid serial primary key, rast raster);"
 
 #. Tag: para
-#: using_raster_dataman.xml:341
+#: using_raster_dataman.xml:352
 #, no-c-format
 msgid ""
 "There are many functions to help with that goal. If you are creating rasters "
@@ -942,7 +730,7 @@ msgstr ""
 "linkend=\"RT_ST_AddBand\"/>を順次実行して作業を開始します。"
 
 #. Tag: para
-#: using_raster_dataman.xml:343
+#: using_raster_dataman.xml:354
 #, no-c-format
 msgid ""
 "You can also create rasters from geometries. To achieve that you'll want to "
@@ -957,7 +745,7 @@ msgstr ""
 "数を組み合わせる場合もあります。"
 
 #. Tag: para
-#: using_raster_dataman.xml:345
+#: using_raster_dataman.xml:356
 #, no-c-format
 msgid ""
 "There are even many more options for creating new raster tables from "
@@ -969,7 +757,7 @@ msgstr ""
 "投影法のラスタテーブルを生成します。"
 
 #. Tag: para
-#: using_raster_dataman.xml:347
+#: using_raster_dataman.xml:358
 #, no-c-format
 msgid ""
 "Once you are done populating your table initially, you'll want to create a "
@@ -979,7 +767,7 @@ msgstr ""
 "なるでしょう。次のようにします。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:348
+#: using_raster_dataman.xml:359
 #, no-c-format
 msgid ""
 "CREATE INDEX myrasters_rast_st_convexhull_idx ON myrasters USING "
@@ -989,7 +777,7 @@ msgstr ""
 "gist( ST_ConvexHull(rast) );"
 
 #. Tag: para
-#: using_raster_dataman.xml:349
+#: using_raster_dataman.xml:360
 #, no-c-format
 msgid ""
 "Note the use of <xref linkend=\"RT_ST_ConvexHull\"/> since most raster "
@@ -999,7 +787,7 @@ msgstr ""
 "のラスタ演算子はラスタの凸包を元にしています。"
 
 #. Tag: para
-#: using_raster_dataman.xml:350
+#: using_raster_dataman.xml:361
 #, no-c-format
 msgid ""
 "Pre-2.0 versions of PostGIS raster were based on the envelop rather than the "
@@ -1011,7 +799,7 @@ msgstr ""
 "を削除して、凸包を元にしたインデクスに置き換えます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:351
+#: using_raster_dataman.xml:362
 #, no-c-format
 msgid ""
 "Apply raster constraints using <xref linkend=\"RT_AddRasterConstraints\"/>"
@@ -1019,13 +807,13 @@ msgstr ""
 "<xref linkend=\"RT_AddRasterConstraints\"/>を用いてラスタ制約を適用します。"
 
 #. Tag: title
-#: using_raster_dataman.xml:356
+#: using_raster_dataman.xml:367
 #, no-c-format
 msgid "Using \"out db\" cloud rasters"
 msgstr "「データベース外」クラウドラスタの使用"
 
 #. Tag: para
-#: using_raster_dataman.xml:357
+#: using_raster_dataman.xml:368
 #, no-c-format
 msgid ""
 "The <varname>raster2pgsql</varname> tool uses GDAL to access raster data, "
@@ -1041,7 +829,7 @@ msgstr ""
 "能の利点を享受することができます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:361
+#: using_raster_dataman.xml:372
 #, no-c-format
 msgid ""
 "Efficient use of cloud stored rasters requires the use of a \"cloud "
@@ -1059,7 +847,7 @@ msgstr ""
 "ロードするためです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:364
+#: using_raster_dataman.xml:375
 #, no-c-format
 msgid ""
 "First, load your raster into the cloud storage of your choice. Once it is "
@@ -1078,7 +866,7 @@ msgstr ""
 "emphasis>ます。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:367
+#: using_raster_dataman.xml:378
 #, no-c-format
 msgid ""
 "AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxxxxxxx \\\n"
@@ -1104,7 +892,7 @@ msgstr ""
 "  | psql your_db"
 
 #. Tag: para
-#: using_raster_dataman.xml:368
+#: using_raster_dataman.xml:379
 #, no-c-format
 msgid ""
 "Once the table is loaded, you need to give the database permission to read "
@@ -1118,7 +906,7 @@ msgstr ""
 "す。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:371
+#: using_raster_dataman.xml:382
 #, no-c-format
 msgid ""
 "SET postgis.enable_outdb_rasters = true;\n"
@@ -1128,7 +916,7 @@ msgstr ""
 "SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';"
 
 #. Tag: para
-#: using_raster_dataman.xml:372
+#: using_raster_dataman.xml:383
 #, no-c-format
 msgid ""
 "To make the changes sticky, set them directly on your database. You will "
@@ -1138,7 +926,7 @@ msgstr ""
 "が必要です。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:375
+#: using_raster_dataman.xml:386
 #, no-c-format
 msgid ""
 "ALTER DATABASE your_db SET postgis.enable_outdb_rasters = true;\n"
@@ -1148,7 +936,7 @@ msgstr ""
 "ALTER DATABASE your_db SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';"
 
 #. Tag: para
-#: using_raster_dataman.xml:376
+#: using_raster_dataman.xml:387
 #, no-c-format
 msgid ""
 "For non-public rasters, you may have to provide access keys to read from the "
@@ -1165,7 +953,7 @@ msgstr ""
 "区切ることで、複数のオプションを設定できることに注意してください。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:379
+#: using_raster_dataman.xml:390
 #, no-c-format
 msgid ""
 "SET postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxxxxxxx\n"
@@ -1175,7 +963,7 @@ msgstr ""
 "AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';"
 
 #. Tag: para
-#: using_raster_dataman.xml:380
+#: using_raster_dataman.xml:391
 #, no-c-format
 msgid ""
 "Once you have the data loaded and permissions set you can interact with the "
@@ -1189,13 +977,13 @@ msgstr ""
 "す。"
 
 #. Tag: title
-#: using_raster_dataman.xml:386
+#: using_raster_dataman.xml:397
 #, no-c-format
 msgid "Raster Catalogs"
 msgstr "ラスタカタログ"
 
 #. Tag: para
-#: using_raster_dataman.xml:387
+#: using_raster_dataman.xml:398
 #, no-c-format
 msgid ""
 "There are two raster catalog views that come packaged with PostGIS. Both "
@@ -1209,7 +997,7 @@ msgstr ""
 "ません。"
 
 #. Tag: para
-#: using_raster_dataman.xml:391
+#: using_raster_dataman.xml:402
 #, no-c-format
 msgid ""
 "<varname>raster_columns</varname> this view catalogs all the raster table "
@@ -1219,7 +1007,7 @@ msgstr ""
 "スタテーブルカラムのカタログです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:394
+#: using_raster_dataman.xml:405
 #, no-c-format
 msgid ""
 "<varname>raster_overviews</varname> this view catalogs all the raster table "
@@ -1232,13 +1020,13 @@ msgstr ""
 "テーブルは、ロード時に<varname>-l</varname>を指定した時に生成されます。"
 
 #. Tag: title
-#: using_raster_dataman.xml:398
+#: using_raster_dataman.xml:409
 #, no-c-format
 msgid "Raster Columns Catalog"
 msgstr "ラスタカラムカタログ"
 
 #. Tag: para
-#: using_raster_dataman.xml:399
+#: using_raster_dataman.xml:410
 #, no-c-format
 msgid ""
 "The <varname>raster_columns</varname> is a catalog of all raster table "
@@ -1254,7 +1042,7 @@ msgstr ""
 "あります。"
 
 #. Tag: para
-#: using_raster_dataman.xml:401
+#: using_raster_dataman.xml:412
 #, no-c-format
 msgid ""
 "If you created your tables not with the loader or forgot to specify the "
@@ -1269,7 +1057,7 @@ msgstr ""
 "の情報を登録します。"
 
 #. Tag: para
-#: using_raster_dataman.xml:406
+#: using_raster_dataman.xml:417
 #, no-c-format
 msgid ""
 "<varname>r_table_catalog</varname> The database the table is in. This will "
@@ -1279,7 +1067,7 @@ msgstr ""
 "常に現在のデータベースを読みます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:409
+#: using_raster_dataman.xml:420
 #, no-c-format
 msgid ""
 "<varname>r_table_schema</varname> The database schema the raster table "
@@ -1289,13 +1077,13 @@ msgstr ""
 "です。"
 
 #. Tag: para
-#: using_raster_dataman.xml:412
+#: using_raster_dataman.xml:423
 #, no-c-format
 msgid "<varname>r_table_name</varname> raster table"
 msgstr "<varname>r_table_name</varname> ラスタテーブルです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:415
+#: using_raster_dataman.xml:426
 #, no-c-format
 msgid ""
 "<varname>r_raster_column</varname> the column in the <varname>r_table_name</"
@@ -1310,7 +1098,7 @@ msgstr ""
 "ム毎に複数回出現するテーブルを持つことができます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:418
+#: using_raster_dataman.xml:429
 #, no-c-format
 msgid ""
 "<varname>srid</varname> The spatial reference identifier of the raster. "
@@ -1320,7 +1108,7 @@ msgstr ""
 "linkend=\"spatial_ref_sys\"/>にあるエントリであるべきです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:421
+#: using_raster_dataman.xml:432
 #, no-c-format
 msgid ""
 "<varname>scale_x</varname> The scaling between geometric spatial coordinates "
@@ -1334,7 +1122,7 @@ msgstr ""
 "linkend=\"RT_ST_ScaleX\"/>を参照してください。"
 
 #. Tag: para
-#: using_raster_dataman.xml:424
+#: using_raster_dataman.xml:435
 #, no-c-format
 msgid ""
 "<varname>scale_y</varname> The scaling between geometric spatial coordinates "
@@ -1344,12 +1132,12 @@ msgid ""
 "details."
 msgstr ""
 "<varname>scale_y</varname> 地理空間座標とピクセルの間の拡大縮小係数です。これ"
-"は、ラスタカラムのすべてのタイルが同じ<varname>scale_y</varname>を持ち、<varn"
-"ame>scale_y</varname>の制約が適用されている場合のみ出現します。"
-"詳細情報については<xref linkend=\"RT_ST_ScaleY\"/>を参照してください。"
+"は、ラスタカラムのすべてのタイルが同じ<varname>scale_y</varname>を持ち、"
+"<varname>scale_y</varname>の制約が適用されている場合のみ出現します。詳細情報"
+"については<xref linkend=\"RT_ST_ScaleY\"/>を参照してください。"
 
 #. Tag: para
-#: using_raster_dataman.xml:427
+#: using_raster_dataman.xml:438
 #, no-c-format
 msgid ""
 "<varname>blocksize_x</varname> The width (number of pixels across) of each "
@@ -1359,7 +1147,7 @@ msgstr ""
 "す。詳細情報については<xref linkend=\"RT_ST_Width\"/>を参照してください。"
 
 #. Tag: para
-#: using_raster_dataman.xml:430
+#: using_raster_dataman.xml:441
 #, no-c-format
 msgid ""
 "<varname>blocksize_y</varname> The width (number of pixels down) of each "
@@ -1369,7 +1157,7 @@ msgstr ""
 "す。詳細情報については<xref linkend=\"RT_ST_Height\" />を参照してください。"
 
 #. Tag: para
-#: using_raster_dataman.xml:433
+#: using_raster_dataman.xml:444
 #, no-c-format
 msgid ""
 "<varname>same_alignment</varname> A boolean that is true if all the raster "
@@ -1381,7 +1169,7 @@ msgstr ""
 "linkend=\"RT_ST_SameAlignment\"/>を参照してください。"
 
 #. Tag: para
-#: using_raster_dataman.xml:436
+#: using_raster_dataman.xml:447
 #, no-c-format
 msgid ""
 "<varname>regular_blocking</varname> If the raster column has the spatially "
@@ -1392,16 +1180,17 @@ msgstr ""
 "タイルの制約を持つなら、TRUEとなります。その他の場合はFALSEになります。。"
 
 #. Tag: para
-#: using_raster_dataman.xml:439
+#: using_raster_dataman.xml:450
 #, no-c-format
 msgid ""
 "<varname>num_bands</varname> The number of bands in each tile of your raster "
 "set. This is the same information as what is provided by"
-msgstr "<varname>num_bands</varname> "
-"ラスタ集合のタイルごとのバンド数。これは次の関数で得られる情報と同じです。"
+msgstr ""
+"<varname>num_bands</varname> ラスタ集合のタイルごとのバンド数。これは次の関数"
+"で得られる情報と同じです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:442
+#: using_raster_dataman.xml:453
 #, no-c-format
 msgid ""
 "<varname>pixel_types</varname> An array defining the pixel type for each "
@@ -1414,7 +1203,7 @@ msgstr ""
 "linkend=\"RT_ST_BandPixelType\"/>で定義されるピクセルタイプの一つを取ります。"
 
 #. Tag: para
-#: using_raster_dataman.xml:445
+#: using_raster_dataman.xml:456
 #, no-c-format
 msgid ""
 "<varname>nodata_values</varname> An array of double precision numbers "
@@ -1430,7 +1219,7 @@ msgstr ""
 "<xref linkend=\"RT_ST_BandNoDataValue\"/>で得られる情報と似ています。"
 
 #. Tag: para
-#: using_raster_dataman.xml:448
+#: using_raster_dataman.xml:459
 #, no-c-format
 msgid ""
 "<varname>out_db</varname> An array of boolean flags indicating if the raster "
@@ -1441,7 +1230,7 @@ msgstr ""
 "かを示す真偽値の配列です。この配列の添え字はバンド番号と同じです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:451
+#: using_raster_dataman.xml:462
 #, no-c-format
 msgid ""
 "<varname>extent</varname> This is the extent of all the raster rows in your "
@@ -1456,7 +1245,7 @@ msgstr ""
 "linkend=\"RT_AddRasterConstraints\"/>で制約を再適用します。"
 
 #. Tag: para
-#: using_raster_dataman.xml:454
+#: using_raster_dataman.xml:465
 #, no-c-format
 msgid ""
 "<varname>spatial_index</varname> A boolean that is true if raster column has "
@@ -1466,13 +1255,13 @@ msgstr ""
 "値です。"
 
 #. Tag: title
-#: using_raster_dataman.xml:459
+#: using_raster_dataman.xml:470
 #, no-c-format
 msgid "Raster Overviews"
 msgstr "ラスタオーバビュー"
 
 #. Tag: para
-#: using_raster_dataman.xml:460
+#: using_raster_dataman.xml:471
 #, no-c-format
 msgid ""
 "<varname>raster_overviews</varname> catalogs information about raster table "
@@ -1496,7 +1285,7 @@ msgstr ""
 "linkend=\"RT_AddOverviewConstraints\"/>を使うと手動で生成できます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:461
+#: using_raster_dataman.xml:472
 #, no-c-format
 msgid ""
 "Overview tables contain the same constraints as other raster tables as well "
@@ -1506,7 +1295,7 @@ msgstr ""
 "制約となる追加情報があります。"
 
 #. Tag: para
-#: using_raster_dataman.xml:462
+#: using_raster_dataman.xml:473
 #, no-c-format
 msgid ""
 "The information in <varname>raster_overviews</varname> does not duplicate "
@@ -1523,13 +1312,13 @@ msgstr ""
 "することができます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:463
+#: using_raster_dataman.xml:474
 #, no-c-format
 msgid "Two main reasons for overviews are:"
 msgstr "オーバビューの主たる理由は次の二つです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:465
+#: using_raster_dataman.xml:476
 #, no-c-format
 msgid ""
 "Low resolution representation of the core tables commonly used for fast "
@@ -1539,7 +1328,7 @@ msgstr ""
 "般的に使われます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:466
+#: using_raster_dataman.xml:477
 #, no-c-format
 msgid ""
 "Computations are generally faster to do on them than their higher resolution "
@@ -1553,7 +1342,7 @@ msgstr ""
 "かな計算には十分でありえます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:469
+#: using_raster_dataman.xml:480
 #, no-c-format
 msgid ""
 "The <varname>raster_overviews</varname> catalog contains the following "
@@ -1562,7 +1351,7 @@ msgstr ""
 "<varname>raster_overviews</varname>カタログには、次の情報のカラムがあります。"
 
 #. Tag: para
-#: using_raster_dataman.xml:472
+#: using_raster_dataman.xml:483
 #, no-c-format
 msgid ""
 "<varname>o_table_catalog</varname> The database the overview table is in. "
@@ -1572,7 +1361,7 @@ msgstr ""
 "です。常に現在のデータベースを読みます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:475
+#: using_raster_dataman.xml:486
 #, no-c-format
 msgid ""
 "<varname>o_table_schema</varname> The database schema the overview raster "
@@ -1582,13 +1371,13 @@ msgstr ""
 "ベーススキーマです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:478
+#: using_raster_dataman.xml:489
 #, no-c-format
 msgid "<varname>o_table_name</varname> raster overview table name"
 msgstr "<varname>o_table_name</varname> ラスタオーバビューテーブル名です。"
 
 #. Tag: para
-#: using_raster_dataman.xml:481
+#: using_raster_dataman.xml:492
 #, no-c-format
 msgid ""
 "<varname>o_raster_column</varname> the raster column in the overview table."
@@ -1596,7 +1385,7 @@ msgstr ""
 "<varname>o_raster_column</varname> オーバビューテーブル内のラスタカラムです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:485
+#: using_raster_dataman.xml:496
 #, no-c-format
 msgid ""
 "<varname>r_table_catalog</varname> The database the raster table that this "
@@ -1606,7 +1395,7 @@ msgstr ""
 "データベースです。常に現在のデータベースを読みます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:488
+#: using_raster_dataman.xml:499
 #, no-c-format
 msgid ""
 "<varname>r_table_schema</varname> The database schema the raster table that "
@@ -1616,7 +1405,7 @@ msgstr ""
 "属するデータベーススキーマです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:491
+#: using_raster_dataman.xml:502
 #, no-c-format
 msgid ""
 "<varname>r_table_name</varname> raster table that this overview services."
@@ -1625,7 +1414,7 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#: using_raster_dataman.xml:494
+#: using_raster_dataman.xml:505
 #, no-c-format
 msgid ""
 "<varname>r_raster_column</varname> the raster column that this overview "
@@ -1635,7 +1424,7 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#: using_raster_dataman.xml:497
+#: using_raster_dataman.xml:508
 #, no-c-format
 msgid ""
 "<varname>overview_factor</varname> - this is the pyramid level of the "
@@ -1668,13 +1457,13 @@ msgstr ""
 "る点に注意して下さい。"
 
 #. Tag: title
-#: using_raster_dataman.xml:509
+#: using_raster_dataman.xml:520
 #, no-c-format
 msgid "Building Custom Applications with PostGIS Raster"
 msgstr "PostGISラスタを使ったカスタムアプリケーションの構築"
 
 #. Tag: para
-#: using_raster_dataman.xml:510
+#: using_raster_dataman.xml:521
 #, no-c-format
 msgid ""
 "The fact that PostGIS raster provides you with SQL functions to render "
@@ -1695,14 +1484,14 @@ msgstr ""
 "節で示す通り、多種多様な言語を使用できます。"
 
 #. Tag: title
-#: using_raster_dataman.xml:513
+#: using_raster_dataman.xml:524
 #, no-c-format
 msgid ""
 "PHP Example Outputting using ST_AsPNG in concert with other raster functions"
 msgstr "ST_AsPNG を他の関数とあわせて使った PHP 出力例"
 
 #. Tag: para
-#: using_raster_dataman.xml:514
+#: using_raster_dataman.xml:525
 #, no-c-format
 msgid ""
 "In this section, we'll demonstrate how to use the PHP PostgreSQL driver and "
@@ -1715,7 +1504,7 @@ msgstr ""
 "タの1、2、3バンドを出力する方法を示します。"
 
 #. Tag: para
-#: using_raster_dataman.xml:517 using_raster_dataman.xml:529
+#: using_raster_dataman.xml:528 using_raster_dataman.xml:540
 #, no-c-format
 msgid ""
 "The sample query demonstrates how to combine a whole bunch of raster "
@@ -1732,7 +1521,7 @@ msgstr ""
 "スタ関数群全体をまとめる方法を示します。"
 
 #. Tag: para
-#: using_raster_dataman.xml:520
+#: using_raster_dataman.xml:531
 #, no-c-format
 msgid ""
 "You would call the below using <programlisting>http://mywebserver/"
@@ -1744,7 +1533,7 @@ msgstr ""
 "像を取得するものです。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:521
+#: using_raster_dataman.xml:532
 #, no-c-format
 msgid ""
 "<![CDATA[<?php\n"
@@ -1808,7 +1597,7 @@ msgstr ""
 "?>]]>"
 
 #. Tag: title
-#: using_raster_dataman.xml:524
+#: using_raster_dataman.xml:535
 #, no-c-format
 msgid ""
 "ASP.NET C# Example Outputting using ST_AsPNG in concert with other raster "
@@ -1816,7 +1605,7 @@ msgid ""
 msgstr "ST_AsPNGを他の関数とあわせて使ったASP.NET C#出力例"
 
 #. Tag: para
-#: using_raster_dataman.xml:525
+#: using_raster_dataman.xml:536
 #, no-c-format
 msgid ""
 "In this section, we'll demonstrate how to use Npgsql PostgreSQL .NET driver "
@@ -1829,7 +1618,7 @@ msgstr ""
 "ができるように、ラスタの1、2、3バンドを出力する方法を示します。"
 
 #. Tag: para
-#: using_raster_dataman.xml:528
+#: using_raster_dataman.xml:539
 #, no-c-format
 msgid ""
 "You will need the npgsql .NET PostgreSQL driver for this exercise which you "
@@ -1843,7 +1632,7 @@ msgstr ""
 "フォルダに入れるだけでうまくいきます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:532
+#: using_raster_dataman.xml:543
 #, no-c-format
 msgid ""
 "This is same example as <xref linkend=\"RT_PHP_Output\"/> except implemented "
@@ -1853,7 +1642,7 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#: using_raster_dataman.xml:533
+#: using_raster_dataman.xml:544
 #, no-c-format
 msgid ""
 "You would call the below using <programlisting>http://mywebserver/TestRaster."
@@ -1865,7 +1654,7 @@ msgstr ""
 "像を取得します。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:534
+#: using_raster_dataman.xml:545
 #, no-c-format
 msgid ""
 "-- web.config connection string section --\n"
@@ -1883,7 +1672,7 @@ msgstr ""
 "</connectionStrings>]]>"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:535
+#: using_raster_dataman.xml:546
 #, no-c-format
 msgid ""
 "// Code for TestRaster.ashx\n"
@@ -2025,13 +1814,13 @@ msgstr ""
 "}]]>"
 
 #. Tag: title
-#: using_raster_dataman.xml:538
+#: using_raster_dataman.xml:549
 #, no-c-format
 msgid "Java console app that outputs raster query as Image file"
 msgstr "rasterクエリを画像ファイルで出力するJavaコンソールアプリケーション"
 
 #. Tag: para
-#: using_raster_dataman.xml:539
+#: using_raster_dataman.xml:550
 #, no-c-format
 msgid ""
 "This is a simple java console app that takes a query that returns one image "
@@ -2041,7 +1830,7 @@ msgstr ""
 "コンソールアプリケーションです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:540
+#: using_raster_dataman.xml:551
 #, no-c-format
 msgid ""
 "You can download the latest PostgreSQL JDBC drivers from <ulink url=\"http://"
@@ -2053,13 +1842,13 @@ msgstr ""
 "ロードできます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:541
+#: using_raster_dataman.xml:552
 #, no-c-format
 msgid "You can compile the following code using a command something like:"
 msgstr "あとで示すコードをコンパイルします。コマンドは次の通りです。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:542
+#: using_raster_dataman.xml:553
 #, no-c-format
 msgid ""
 "set env CLASSPATH .:..\\postgresql-9.0-801.jdbc4.jar\n"
@@ -2071,13 +1860,13 @@ msgstr ""
 "jar cfm SaveQueryImage.jar Manifest.txt *.class"
 
 #. Tag: para
-#: using_raster_dataman.xml:543
+#: using_raster_dataman.xml:554
 #, no-c-format
 msgid "And call it from the command-line with something like"
 msgstr "次のようにコマンドラインから呼び出します。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:544
+#: using_raster_dataman.xml:555
 #, no-c-format
 msgid ""
 "java -jar SaveQueryImage.jar \"SELECT "
@@ -2089,7 +1878,7 @@ msgstr ""
 "'8BUI',100));\" \"test.png\""
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:545
+#: using_raster_dataman.xml:556
 #, no-c-format
 msgid ""
 "-- Manifest.txt --\n"
@@ -2101,7 +1890,7 @@ msgstr ""
 "Main-Class: SaveQueryImage]]>"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:546
+#: using_raster_dataman.xml:557
 #, no-c-format
 msgid ""
 "// Code for SaveQueryImage.java\n"
@@ -2229,13 +2018,13 @@ msgstr ""
 "}]]>"
 
 #. Tag: title
-#: using_raster_dataman.xml:550
+#: using_raster_dataman.xml:561
 #, no-c-format
 msgid "Use PLPython to dump out images via SQL"
 msgstr "PLPython を使って SQL を介して画像をダンプする"
 
 #. Tag: para
-#: using_raster_dataman.xml:551
+#: using_raster_dataman.xml:562
 #, no-c-format
 msgid ""
 "This is a plpython stored function that creates a file in the server "
@@ -2246,7 +2035,7 @@ msgstr ""
 "関数です。plpythonが必要です。plpythonuとplpython3uの両方が正しく動作します。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:553
+#: using_raster_dataman.xml:564
 #, no-c-format
 msgid ""
 "<![CDATA[CREATE OR REPLACE FUNCTION write_file (param_bytes bytea, "
@@ -2268,7 +2057,7 @@ msgstr ""
 "$$ LANGUAGE plpythonu;]]>"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:554
+#: using_raster_dataman.xml:565
 #, no-c-format
 msgid ""
 "--write out 5 images to the PostgreSQL server in varying sizes\n"
@@ -2307,13 +2096,13 @@ msgstr ""
 " C:/temp/slices5.png"
 
 #. Tag: title
-#: using_raster_dataman.xml:557
+#: using_raster_dataman.xml:568
 #, no-c-format
 msgid "Outputting Rasters with PSQL"
 msgstr "PSQLでラスタを出力する"
 
 #. Tag: para
-#: using_raster_dataman.xml:558
+#: using_raster_dataman.xml:569
 #, no-c-format
 msgid ""
 "Sadly PSQL doesn't have easy to use built-in functionality for outputting "
@@ -2327,7 +2116,7 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#: using_raster_dataman.xml:560
+#: using_raster_dataman.xml:571
 #, no-c-format
 msgid ""
 "Unlike the python approach, this approach creates the file on your local "
@@ -2335,7 +2124,7 @@ msgid ""
 msgstr "この方法はPythonの場合と違い、ローカル機にファイルが生成されます。"
 
 #. Tag: screen
-#: using_raster_dataman.xml:561
+#: using_raster_dataman.xml:572
 #, no-c-format
 msgid ""
 "SELECT oid, lowrite(lo_open(oid, 131072), png) As num_bytes\n"
@@ -2373,6 +2162,287 @@ msgstr ""
 "\n"
 "-- db上のラージオブジェクトストレージからファイルを削除します\n"
 "SELECT lo_unlink(2630819);"
+
+#, no-c-format
+#~ msgid ""
+#~ "The <varname>raster2pgsql</varname> is a raster loader executable that "
+#~ "loads GDAL supported raster formats into sql suitable for loading into a "
+#~ "PostGIS raster table. It is capable of loading folders of raster files as "
+#~ "well as creating overviews of rasters."
+#~ msgstr ""
+#~ "<varname>raster2pgsql</varname>は、GDALがサポートするラスタ書式をPostGISラ"
+#~ "スタテーブルにロードするのに適切なSQLにするバイナリファイルです。ラスタの"
+#~ "オーバビューの生成だけでなく、ラスタファイルのフォルダのロードも可能です。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Since the raster2pgsql is compiled as part of PostGIS most often (unless "
+#~ "you compile your own GDAL library), the raster types supported by the "
+#~ "executable will be the same as those compiled in the GDAL dependency "
+#~ "library. To get a list of raster types your particular raster2pgsql "
+#~ "supports use the <varname>-G</varname> switch. These should be the same "
+#~ "as those provided by your PostGIS install documented here <xref "
+#~ "linkend=\"RT_ST_GDALDrivers\"/> if you are using the same GDAL library "
+#~ "for both."
+#~ msgstr ""
+#~ "raster2pgsqlは、多くの場合 (別のGDALライブラリをコンパイルしていない場"
+#~ "合)、PostGISの一部としてコンパイルされるので、実行ファイルがサポートするラ"
+#~ "スタタイプは依存ライブラリGDALでコンパイルされたものと同じになります。"
+#~ "raster2pgsqlが対応するラスタタイプの一覧を得るには、<varname>-G</varname>"
+#~ "スイッチを使います。同じGDALライブラリを使っている場合には、<xref "
+#~ "linkend=\"RT_ST_GDALDrivers\"/>で示される,、インストールしたPostGISが提供"
+#~ "するものと同じです。"
+
+#, no-c-format
+#~ msgid ""
+#~ "The older version of this tool was a python script. The executable has "
+#~ "replaced the python script. If you still find the need for the Python "
+#~ "script Examples of the python one can be found at <ulink url=\"http://"
+#~ "trac.osgeo.org/gdal/wiki/frmts_wtkraster.html\">GDAL PostGIS Raster "
+#~ "Driver Usage</ulink>. Please note that the raster2pgsql python script may "
+#~ "not work with future versions of PostGIS raster and is no longer "
+#~ "supported."
+#~ msgstr ""
+#~ "このツールの古い版では、Pythonスクリプトでした。実行ファイルに置き換えられ"
+#~ "ています。Pythonスクリプトが必要な場合は、 <ulink url=\"http://trac.osgeo."
+#~ "org/gdal/wiki/frmts_wtkraster.html\">GDAL PostGIS Raster Driver Usage</"
+#~ "ulink>に、Pythonの例があります。raster2pgsqlのPythonスクリプトは、今後の"
+#~ "PostGIS rasterでは動作しないかも知れませんし、サポートされませんので、ご注"
+#~ "意ください。"
+
+#, no-c-format
+#~ msgid "EXAMPLE USAGE:"
+#~ msgstr "使用例:"
+
+#, no-c-format
+#~ msgid ""
+#~ "raster2pgsql <varname>raster_options_go_here</varname> "
+#~ "<varname>raster_file</varname> <varname>someschema</varname>."
+#~ "<varname>sometable</varname> &gt; out.sql"
+#~ msgstr ""
+#~ "raster2pgsql <varname>raster_options_go_here</varname> "
+#~ "<varname>raster_file</varname> <varname>someschema</varname>."
+#~ "<varname>sometable</varname> &gt; out.sql"
+
+#, no-c-format
+#~ msgid ""
+#~ "You can leave the schema name out e.g <varname>demelevation</varname> "
+#~ "instead of <varname>public.demelevation</varname> and the raster table "
+#~ "will be created in the default schema of the database or user"
+#~ msgstr ""
+#~ "<varname>public.demelevation</varname>でなく<varname>demelevation</"
+#~ "varname> というようにスキーマ名を外すことができます。この場合、ラスタテー"
+#~ "ブルはデータベースまたユーザの指定するデフォルトのスキーマに生成されます。"
+
+#, no-c-format
+#~ msgid ""
+#~ "raster2pgsql -s 4326 -I -C -M *.tif -F -t 100x100 public.demelevation > "
+#~ "elev.sql\n"
+#~ "psql -d gisdb -f elev.sql"
+#~ msgstr ""
+#~ "raster2pgsql -s 4326 -I -C -M *.tif -F -t 100x100 public.demelevation > "
+#~ "elev.sql\n"
+#~ "psql -d gisdb -f elev.sql"
+
+#, no-c-format
+#~ msgid ""
+#~ "Available GDAL raster formats:\n"
+#~ "  Virtual Raster\n"
+#~ "  GeoTIFF\n"
+#~ "  National Imagery Transmission Format\n"
+#~ "  Raster Product Format TOC format\n"
+#~ "  ECRG TOC format\n"
+#~ "  Erdas Imagine Images (.img)\n"
+#~ "  CEOS SAR Image\n"
+#~ "  CEOS Image\n"
+#~ "  JAXA PALSAR Product Reader (Level 1.1/1.5)\n"
+#~ "  Ground-based SAR Applications Testbed File Format (.gff)\n"
+#~ "  ELAS\n"
+#~ "  Arc/Info Binary Grid\n"
+#~ "  Arc/Info ASCII Grid\n"
+#~ "  GRASS ASCII Grid\n"
+#~ "  SDTS Raster\n"
+#~ "  DTED Elevation Raster\n"
+#~ "  Portable Network Graphics\n"
+#~ "  JPEG JFIF\n"
+#~ "  In Memory Raster\n"
+#~ "  Japanese DEM (.mem)\n"
+#~ "  Graphics Interchange Format (.gif)\n"
+#~ "  Graphics Interchange Format (.gif)\n"
+#~ "  Envisat Image Format\n"
+#~ "  Maptech BSB Nautical Charts\n"
+#~ "  X11 PixMap Format\n"
+#~ "  MS Windows Device Independent Bitmap\n"
+#~ "  SPOT DIMAP\n"
+#~ "  AirSAR Polarimetric Image\n"
+#~ "  RadarSat 2 XML Product\n"
+#~ "  PCIDSK Database File\n"
+#~ "  PCRaster Raster File\n"
+#~ "  ILWIS Raster Map\n"
+#~ "  SGI Image File Format 1.0\n"
+#~ "  SRTMHGT File Format\n"
+#~ "  Leveller heightfield\n"
+#~ "  Terragen heightfield\n"
+#~ "  USGS Astrogeology ISIS cube (Version 3)\n"
+#~ "  USGS Astrogeology ISIS cube (Version 2)\n"
+#~ "  NASA Planetary Data System\n"
+#~ "  EarthWatch .TIL\n"
+#~ "  ERMapper .ers Labelled\n"
+#~ "  NOAA Polar Orbiter Level 1b Data Set\n"
+#~ "  FIT Image\n"
+#~ "  GRIdded Binary (.grb)\n"
+#~ "  Raster Matrix Format\n"
+#~ "  EUMETSAT Archive native (.nat)\n"
+#~ "  Idrisi Raster A.1\n"
+#~ "  Intergraph Raster\n"
+#~ "  Golden Software ASCII Grid (.grd)\n"
+#~ "  Golden Software Binary Grid (.grd)\n"
+#~ "  Golden Software 7 Binary Grid (.grd)\n"
+#~ "  COSAR Annotated Binary Matrix (TerraSAR-X)\n"
+#~ "  TerraSAR-X Product\n"
+#~ "  DRDC COASP SAR Processor Raster\n"
+#~ "  R Object Data Store\n"
+#~ "  Portable Pixmap Format (netpbm)\n"
+#~ "  USGS DOQ (Old Style)\n"
+#~ "  USGS DOQ (New Style)\n"
+#~ "  ENVI .hdr Labelled\n"
+#~ "  ESRI .hdr Labelled\n"
+#~ "  Generic Binary (.hdr Labelled)\n"
+#~ "  PCI .aux Labelled\n"
+#~ "  Vexcel MFF Raster\n"
+#~ "  Vexcel MFF2 (HKV) Raster\n"
+#~ "  Fuji BAS Scanner Image\n"
+#~ "  GSC Geogrid\n"
+#~ "  EOSAT FAST Format\n"
+#~ "  VTP .bt (Binary Terrain) 1.3 Format\n"
+#~ "  Erdas .LAN/.GIS\n"
+#~ "  Convair PolGASP\n"
+#~ "  Image Data and Analysis\n"
+#~ "  NLAPS Data Format\n"
+#~ "  Erdas Imagine Raw\n"
+#~ "  DIPEx\n"
+#~ "  FARSITE v.4 Landscape File (.lcp)\n"
+#~ "  NOAA Vertical Datum .GTX\n"
+#~ "  NADCON .los/.las Datum Grid Shift\n"
+#~ "  NTv2 Datum Grid Shift\n"
+#~ "  ACE2\n"
+#~ "  Snow Data Assimilation System\n"
+#~ "  Swedish Grid RIK (.rik)\n"
+#~ "  USGS Optional ASCII DEM (and CDED)\n"
+#~ "  GeoSoft Grid Exchange Format\n"
+#~ "  Northwood Numeric Grid Format .grd/.tab\n"
+#~ "  Northwood Classified Grid Format .grc/.tab\n"
+#~ "  ARC Digitized Raster Graphics\n"
+#~ "  Standard Raster Product (ASRP/USRP)\n"
+#~ "  Magellan topo (.blx)\n"
+#~ "  SAGA GIS Binary Grid (.sdat)\n"
+#~ "  Kml Super Overlay\n"
+#~ "  ASCII Gridded XYZ\n"
+#~ "  HF2/HFZ heightfield raster\n"
+#~ "  OziExplorer Image File\n"
+#~ "  USGS LULC Composite Theme Grid\n"
+#~ "  Arc/Info Export E00 GRID\n"
+#~ "  ZMap Plus Grid\n"
+#~ "  NOAA NGS Geoid Height Grids"
+#~ msgstr ""
+#~ "Available GDAL raster formats:\n"
+#~ "  Virtual Raster\n"
+#~ "  GeoTIFF\n"
+#~ "  National Imagery Transmission Format\n"
+#~ "  Raster Product Format TOC format\n"
+#~ "  ECRG TOC format\n"
+#~ "  Erdas Imagine Images (.img)\n"
+#~ "  CEOS SAR Image\n"
+#~ "  CEOS Image\n"
+#~ "  JAXA PALSAR Product Reader (Level 1.1/1.5)\n"
+#~ "  Ground-based SAR Applications Testbed File Format (.gff)\n"
+#~ "  ELAS\n"
+#~ "  Arc/Info Binary Grid\n"
+#~ "  Arc/Info ASCII Grid\n"
+#~ "  GRASS ASCII Grid\n"
+#~ "  SDTS Raster\n"
+#~ "  DTED Elevation Raster\n"
+#~ "  Portable Network Graphics\n"
+#~ "  JPEG JFIF\n"
+#~ "  In Memory Raster\n"
+#~ "  Japanese DEM (.mem)\n"
+#~ "  Graphics Interchange Format (.gif)\n"
+#~ "  Graphics Interchange Format (.gif)\n"
+#~ "  Envisat Image Format\n"
+#~ "  Maptech BSB Nautical Charts\n"
+#~ "  X11 PixMap Format\n"
+#~ "  MS Windows Device Independent Bitmap\n"
+#~ "  SPOT DIMAP\n"
+#~ "  AirSAR Polarimetric Image\n"
+#~ "  RadarSat 2 XML Product\n"
+#~ "  PCIDSK Database File\n"
+#~ "  PCRaster Raster File\n"
+#~ "  ILWIS Raster Map\n"
+#~ "  SGI Image File Format 1.0\n"
+#~ "  SRTMHGT File Format\n"
+#~ "  Leveller heightfield\n"
+#~ "  Terragen heightfield\n"
+#~ "  USGS Astrogeology ISIS cube (Version 3)\n"
+#~ "  USGS Astrogeology ISIS cube (Version 2)\n"
+#~ "  NASA Planetary Data System\n"
+#~ "  EarthWatch .TIL\n"
+#~ "  ERMapper .ers Labelled\n"
+#~ "  NOAA Polar Orbiter Level 1b Data Set\n"
+#~ "  FIT Image\n"
+#~ "  GRIdded Binary (.grb)\n"
+#~ "  Raster Matrix Format\n"
+#~ "  EUMETSAT Archive native (.nat)\n"
+#~ "  Idrisi Raster A.1\n"
+#~ "  Intergraph Raster\n"
+#~ "  Golden Software ASCII Grid (.grd)\n"
+#~ "  Golden Software Binary Grid (.grd)\n"
+#~ "  Golden Software 7 Binary Grid (.grd)\n"
+#~ "  COSAR Annotated Binary Matrix (TerraSAR-X)\n"
+#~ "  TerraSAR-X Product\n"
+#~ "  DRDC COASP SAR Processor Raster\n"
+#~ "  R Object Data Store\n"
+#~ "  Portable Pixmap Format (netpbm)\n"
+#~ "  USGS DOQ (Old Style)\n"
+#~ "  USGS DOQ (New Style)\n"
+#~ "  ENVI .hdr Labelled\n"
+#~ "  ESRI .hdr Labelled\n"
+#~ "  Generic Binary (.hdr Labelled)\n"
+#~ "  PCI .aux Labelled\n"
+#~ "  Vexcel MFF Raster\n"
+#~ "  Vexcel MFF2 (HKV) Raster\n"
+#~ "  Fuji BAS Scanner Image\n"
+#~ "  GSC Geogrid\n"
+#~ "  EOSAT FAST Format\n"
+#~ "  VTP .bt (Binary Terrain) 1.3 Format\n"
+#~ "  Erdas .LAN/.GIS\n"
+#~ "  Convair PolGASP\n"
+#~ "  Image Data and Analysis\n"
+#~ "  NLAPS Data Format\n"
+#~ "  Erdas Imagine Raw\n"
+#~ "  DIPEx\n"
+#~ "  FARSITE v.4 Landscape File (.lcp)\n"
+#~ "  NOAA Vertical Datum .GTX\n"
+#~ "  NADCON .los/.las Datum Grid Shift\n"
+#~ "  NTv2 Datum Grid Shift\n"
+#~ "  ACE2\n"
+#~ "  Snow Data Assimilation System\n"
+#~ "  Swedish Grid RIK (.rik)\n"
+#~ "  USGS Optional ASCII DEM (and CDED)\n"
+#~ "  GeoSoft Grid Exchange Format\n"
+#~ "  Northwood Numeric Grid Format .grd/.tab\n"
+#~ "  Northwood Classified Grid Format .grc/.tab\n"
+#~ "  ARC Digitized Raster Graphics\n"
+#~ "  Standard Raster Product (ASRP/USRP)\n"
+#~ "  Magellan topo (.blx)\n"
+#~ "  SAGA GIS Binary Grid (.sdat)\n"
+#~ "  Kml Super Overlay\n"
+#~ "  ASCII Gridded XYZ\n"
+#~ "  HF2/HFZ heightfield raster\n"
+#~ "  OziExplorer Image File\n"
+#~ "  USGS LULC Composite Theme Grid\n"
+#~ "  Arc/Info Export E00 GRID\n"
+#~ "  ZMap Plus Grid\n"
+#~ "  NOAA NGS Geoid Height Grids"
 
 #~ msgid "Skip NODATA value checks for each raster band."
 #~ msgstr "バンドごとのNODATA値のチェックを省略します。"

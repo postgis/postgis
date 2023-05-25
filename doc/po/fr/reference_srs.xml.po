@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-11-01 14:51+0000\n"
+"POT-Creation-Date: 2023-05-25 20:53+0000\n"
 "PO-Revision-Date: 2023-05-12 13:00+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -64,12 +64,13 @@ msgstr ""
 "<funcdef>geometry <function>ST_InverseTransformPipeline</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
 "<paramdef><type>text </type> <parameter>pipeline</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>to_srid</parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>to_srid</"
+"parameter></paramdef>"
 
 #. Tag: title
 #: reference_srs.xml:33 reference_srs.xml:95 reference_srs.xml:142
-#: reference_srs.xml:206 reference_srs.xml:310
+#: reference_srs.xml:206 reference_srs.xml:310 reference_srs.xml:392
+#: reference_srs.xml:434 reference_srs.xml:475 reference_srs.xml:519
 #, no-c-format
 msgid "Description"
 msgstr "Description"
@@ -97,7 +98,8 @@ msgstr ""
 "l'écriture d'un pipeline de transformation."
 
 #. Tag: para
-#: reference_srs.xml:42 reference_srs.xml:343
+#: reference_srs.xml:42 reference_srs.xml:343 reference_srs.xml:396
+#: reference_srs.xml:438 reference_srs.xml:479 reference_srs.xml:526
 #, no-c-format
 msgid "Availability: 3.4.0"
 msgstr "Disponibilité : 3.4.0"
@@ -136,7 +138,8 @@ msgstr ""
 
 #. Tag: title
 #: reference_srs.xml:57 reference_srs.xml:111 reference_srs.xml:155
-#: reference_srs.xml:249 reference_srs.xml:358
+#: reference_srs.xml:249 reference_srs.xml:358 reference_srs.xml:402
+#: reference_srs.xml:444 reference_srs.xml:485 reference_srs.xml:532
 #, no-c-format
 msgid "Examples"
 msgstr "Exemples"
@@ -163,8 +166,8 @@ msgid ""
 "(1 row)"
 msgstr ""
 "-- Inverser la direction\n"
-"SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937"
-".523342293)'::geometry,\n"
+"SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 "
+"5427937.523342293)'::geometry,\n"
 "  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;\n"
 "\n"
 "          wgs_geom\n"
@@ -203,7 +206,8 @@ msgstr ""
 
 #. Tag: title
 #: reference_srs.xml:67 reference_srs.xml:119 reference_srs.xml:160
-#: reference_srs.xml:283 reference_srs.xml:368
+#: reference_srs.xml:283 reference_srs.xml:368 reference_srs.xml:409
+#: reference_srs.xml:451 reference_srs.xml:492 reference_srs.xml:544
 #, no-c-format
 msgid "See Also"
 msgstr "Voir aussi"
@@ -456,11 +460,11 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
 "<paramdef><type>text </type> <parameter>from_proj</parameter></paramdef> "
 "<paramdef><type>text </type> <parameter>to_proj</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_Transform</function></funcdef> <paramdef><type>geometry </type> "
-"<parameter>geom</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>from_proj</parameter></paramdef> <paramdef><type>integer </type> "
-"<parameter>to_srid</parameter></paramdef> </funcprototype>"
+"funcprototype> <funcprototype> <funcdef>geometry <function>ST_Transform</"
+"function></funcdef> <paramdef><type>geometry </type> <parameter>geom</"
+"parameter></paramdef> <paramdef><type>text </type> <parameter>from_proj</"
+"parameter></paramdef> <paramdef><type>integer </type> <parameter>to_srid</"
+"parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_srs.xml:208
@@ -515,8 +519,8 @@ msgid ""
 msgstr ""
 "ST_Transform sélectionne automatiquement un pipeline de conversion approprié "
 "en fonction des systèmes de référence spatiale source et cible. Pour "
-"utiliser une méthode de conversion spécifique, utilisez <xref linkend="
-"\"ST_TransformPipeline\"/>."
+"utiliser une méthode de conversion spécifique, utilisez <xref "
+"linkend=\"ST_TransformPipeline\"/>."
 
 #. Tag: para
 #: reference_srs.xml:230
@@ -526,9 +530,9 @@ msgid ""
 "linkend=\"PostGIS_Full_Version\"/> to confirm you have PROJ support compiled "
 "in."
 msgstr ""
-"PostGIS doit être compilé avec le support PROJ. Utilisez <xref linkend="
-"\"PostGIS_Full_Version\"/> pour confirmer que vous avez compilé le support "
-"PROJ."
+"PostGIS doit être compilé avec le support PROJ. Utilisez <xref "
+"linkend=\"PostGIS_Full_Version\"/> pour confirmer que vous avez compilé le "
+"support PROJ."
 
 #. Tag: para
 #: reference_srs.xml:234
@@ -556,7 +560,8 @@ msgstr ""
 #: reference_srs.xml:240
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces was introduced."
-msgstr "Amélioration : 2.0.0 introduction du support des surfaces polyédriques."
+msgstr ""
+"Amélioration : 2.0.0 introduction du support des surfaces polyédriques."
 
 #. Tag: para
 #: reference_srs.xml:241
@@ -623,23 +628,22 @@ msgstr ""
 "\n"
 " wgs_geom\n"
 "---------------------------\n"
-" POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 42."
-"3903829478009,\n"
-"-71.1775844305465 42.3903826677917,-71.1775825927231 42.3902893647987,-71."
-"177684\n"
+" POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 "
+"42.3903829478009,\n"
+"-71.1775844305465 42.3903826677917,-71.1775825927231 "
+"42.3902893647987,-71.177684\n"
 "8522251 42.3902896512902)) ;\n"
 "(1 row)\n"
 "\n"
 "-- exemple de ligne circulaire 3D\n"
-"SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;CIRCULARSTRING("
-"743238 2967416 1,743238 2967450 2,743265 2967450 3,743265.625 2967416 "
-"3,743238 2967416 4)'),4326)) ;\n"
+"SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;"
+"CIRCULARSTRING(743238 2967416 1,743238 2967450 2,743265 2967450 3,743265.625 "
+"2967416 3,743238 2967416 4)'),4326)) ;\n"
 "\n"
 "         st_asewkt\n"
-"-----------------------------------------------------------------------------"
-"---------\n"
-" SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 1,-"
-"71.1776843766326 42.3903829478009 2,\n"
+"--------------------------------------------------------------------------------------\n"
+" SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 "
+"1,-71.1776843766326 42.3903829478009 2,\n"
 " -71.1775844305465 42.3903826677917 3,\n"
 " -71.1775825927231 42.3902893647987 3,-71.1776848522251 42.3902896512902 4)"
 
@@ -713,8 +717,8 @@ msgstr ""
 "-- Voir http://boundlessgeo.com/2012/02/flattening-the-peel/\n"
 " WITH data AS (\n"
 "   SELECT\n"
-"     ST_GeomFromText('POLYGON((170 50,170 72,-130 72,-130 50,170 50))', 4326)"
-" AS p1,\n"
+"     ST_GeomFromText('POLYGON((170 50,170 72,-130 72,-130 50,170 50))', "
+"4326) AS p1,\n"
 "     ST_GeomFromText('POLYGON((-170 68,-170 90,-141 90,-141 68,-170 68))', "
 "4326) AS p2,\n"
 "     '+proj=gnom +ellps=WGS84 +lat_0=70 +lon_0=-160 +no_defs'::text AS gnom\n"
@@ -725,10 +729,9 @@ msgstr ""
 "   gnom, 4326))\n"
 " FROM données ;\n"
 "                                          st_astext\n"
-" ----------------------------------------------------------------------------"
-"----\n"
-"  POLYGON((-170 74.053793645338,-141 73.4268621378904,-141 68,-170 68,-170 74"
-".053793645338))"
+" --------------------------------------------------------------------------------\n"
+"  POLYGON((-170 74.053793645338,-141 73.4268621378904,-141 68,-170 68,-170 "
+"74.053793645338))"
 
 #. Tag: title
 #: reference_srs.xml:261
@@ -840,8 +843,8 @@ msgid ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>, <xref "
 "linkend=\"UpdateGeometrySRID\"/>, <xref linkend=\"ST_TransformPipeline\"/>"
 msgstr ""
-", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>, <xref linkend="
-"\"UpdateGeometrySRID\"/>, <xref linkend=\"ST_TransformPipeline\"/>"
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>, <xref "
+"linkend=\"UpdateGeometrySRID\"/>, <xref linkend=\"ST_TransformPipeline\"/>"
 
 #. Tag: refname
 #: reference_srs.xml:291
@@ -874,8 +877,8 @@ msgstr ""
 "<funcdef>geometry <function>ST_TransformPipeline</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
 "<paramdef><type>text </type> <parameter>pipeline</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>to_srid</parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>to_srid</"
+"parameter></paramdef>"
 
 #. Tag: para
 #: reference_srs.xml:312
@@ -921,10 +924,11 @@ msgid ""
 "caller will need to add an additional pipeline step, or remove "
 "<varname>axisswap</varname> steps."
 msgstr ""
-"Une chaîne de caractères de pipeline PROJ de la forme : <varname>+"
-"proj=pipeline ...</varname>. La normalisation automatique des axes ne sera "
-"pas appliquée et, si nécessaire, l'appelant devra ajouter une étape de "
-"pipeline supplémentaire ou supprimer les étapes <varname>axisswap</varname>."
+"Une chaîne de caractères de pipeline PROJ de la forme : "
+"<varname>+proj=pipeline ...</varname>. La normalisation automatique des axes "
+"ne sera pas appliquée et, si nécessaire, l'appelant devra ajouter une étape "
+"de pipeline supplémentaire ou supprimer les étapes <varname>axisswap</"
+"varname>."
 
 #. Tag: para
 #: reference_srs.xml:337
@@ -934,8 +938,9 @@ msgid ""
 "coordinateOperation,coordinateOperation:EPSG::3895,coordinateOperation:"
 "EPSG::1618</varname>."
 msgstr ""
-"Opérations concaténées de la forme : <varname>urn:ogc:def:coordinateOperation"
-",coordinateOperation:EPSG::3895,coordinateOperation:EPSG::1618</varname>."
+"Opérations concaténées de la forme : <varname>urn:ogc:def:"
+"coordinateOperation,coordinateOperation:EPSG::3895,coordinateOperation:"
+"EPSG::1618</varname>."
 
 #. Tag: para
 #: reference_srs.xml:345
@@ -988,8 +993,8 @@ msgstr ""
 "(1 row)\n"
 "\n"
 "-- Direction inverse\n"
-"SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937"
-".523342293)'::geometry,\n"
+"SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 "
+"5427937.523342293)'::geometry,\n"
 "  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;\n"
 "\n"
 "          wgs_geom\n"
@@ -1047,8 +1052,8 @@ msgstr ""
 "(1 row)\n"
 "\n"
 "-- using a defined conversion (EPSG:8447)\n"
-"SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37."
-"0)'::geometry,\n"
+"SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::"
+"geometry,\n"
 "  'urn:ogc:def:coordinateOperation:EPSG::8447')) AS gda2020_code;\n"
 "\n"
 "                   gda2020_code\n"
@@ -1060,8 +1065,8 @@ msgstr ""
 "telle que renvoyée par\n"
 "-- 'projinfo -s EPSG:4939 -t EPSG:7844'.\n"
 "-- NOTE : toute étape 'axisswap' doit être supprimée.\n"
-"SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37."
-"0)'::geometry,\n"
+"SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::"
+"geometry,\n"
 "  '+proj=pipeline\n"
 "   +step +proj=unitconvert +xy_in=deg +xy_out=rad\n"
 "   +step +proj=hgridshift "
@@ -1078,3 +1083,292 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_InverseTransformPipeline\"/>"
 msgstr ", <xref linkend=\"ST_InverseTransformPipeline\"/>"
+
+#. Tag: refname
+#: reference_srs.xml:377
+#, no-c-format
+msgid "postgis_srs_codes"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_srs.xml:379
+#, no-c-format
+msgid "Return the list of SRS codes associated with the given authority."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_srs.xml:384
+#, no-c-format
+msgid ""
+"<funcdef>setof text <function>postgis_srs_codes</function></funcdef> "
+"<paramdef><type>text </type> <parameter>auth_name</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:394
+#, no-c-format
+msgid ""
+"Returns a set of all <varname>auth_srid</varname> for the given "
+"<varname>auth_name</varname>."
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:397 reference_srs.xml:439 reference_srs.xml:480
+#: reference_srs.xml:527
+#, no-c-format
+msgid "Proj version 6+"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:403
+#, no-c-format
+msgid "List the first ten codes associated with the EPSG authority."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_srs.xml:404
+#, no-c-format
+msgid ""
+"SELECT * FROM postgis_srs_codes('EPSG') LIMIT 10;\n"
+"\n"
+" postgis_srs_codes\n"
+"-------------------\n"
+" 2000\n"
+" 20004\n"
+" 20005\n"
+" 20006\n"
+" 20007\n"
+" 20008\n"
+" 20009\n"
+" 2001\n"
+" 20010\n"
+" 20011"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:410 reference_srs.xml:452
+#, no-c-format
+msgid ""
+", <xref linkend=\"postgis_srs_all\"/>, <xref linkend=\"postgis_srs_search\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_srs.xml:418
+#, no-c-format
+msgid "postgis_srs"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_srs.xml:420
+#, no-c-format
+msgid "Return a metadata record for the requested authority and srid."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_srs.xml:425
+#, no-c-format
+msgid ""
+"<funcdef>setof record <function>postgis_srs</function></funcdef> "
+"<paramdef><type>text </type> <parameter>auth_name</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>auth_srid</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:436
+#, no-c-format
+msgid ""
+"Returns a metadata record for the requested <varname>auth_srid</varname> for "
+"the given <varname>auth_name</varname>. The record will have the "
+"<varname>auth_name</varname>, <varname>auth_srid</varname>, <varname>srname</"
+"varname>, <varname>srtext</varname>, <varname>proj4text</varname>, and the "
+"corners of the area of usage, <varname>point_sw</varname> and "
+"<varname>point_ne</varname>."
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:445
+#, no-c-format
+msgid "Get the metadata for EPSG:3005."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_srs.xml:446
+#, no-c-format
+msgid ""
+"SELECT * FROM postgis_srs('EPSG', '3005');\n"
+"\n"
+"auth_name | EPSG\n"
+"auth_srid | 3005\n"
+"srname    | NAD83 / BC Albers\n"
+"srtext    | PROJCS[\"NAD83 / BC Albers\", ... ]]\n"
+"proj4text | +proj=aea +lat_0=45 +lon_0=-126 +lat_1=50 +lat_2=58.5 "
+"+x_0=1000000 +y_0=0 +datum=NAD83 +units=m +no_defs +type=crs\n"
+"point_sw  | 0101000020E6100000E17A14AE476161C00000000000204840\n"
+"point_ne  | 0101000020E610000085EB51B81E855CC0E17A14AE47014E40"
+msgstr ""
+
+#. Tag: refname
+#: reference_srs.xml:460
+#, no-c-format
+msgid "postgis_srs_all"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_srs.xml:462
+#, no-c-format
+msgid ""
+"Return metadata records for every spatial reference system in the underlying "
+"Proj database."
+msgstr ""
+
+#. Tag: funcdef
+#: reference_srs.xml:468
+#, no-c-format
+msgid "setof record <function>postgis_srs_all</function>"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:477
+#, no-c-format
+msgid ""
+"Returns a set of all metadata records in the underlying Proj database. The "
+"records will have the <varname>auth_name</varname>, <varname>auth_srid</"
+"varname>, <varname>srname</varname>, <varname>srtext</varname>, "
+"<varname>proj4text</varname>, and the corners of the area of usage, "
+"<varname>point_sw</varname> and <varname>point_ne</varname>."
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:486
+#, no-c-format
+msgid "Get the first 10 metadata records from the Proj database."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_srs.xml:487
+#, no-c-format
+msgid ""
+"SELECT auth_name, auth_srid, srname FROM postgis_srs_all() LIMIT 10;\n"
+"\n"
+" auth_name | auth_srid |                  srname\n"
+"-----------+-----------+------------------------------------------\n"
+" EPSG      | 2000      | Anguilla 1957 / British West Indies Grid\n"
+" EPSG      | 20004     | Pulkovo 1995 / Gauss-Kruger zone 4\n"
+" EPSG      | 20005     | Pulkovo 1995 / Gauss-Kruger zone 5\n"
+" EPSG      | 20006     | Pulkovo 1995 / Gauss-Kruger zone 6\n"
+" EPSG      | 20007     | Pulkovo 1995 / Gauss-Kruger zone 7\n"
+" EPSG      | 20008     | Pulkovo 1995 / Gauss-Kruger zone 8\n"
+" EPSG      | 20009     | Pulkovo 1995 / Gauss-Kruger zone 9\n"
+" EPSG      | 2001      | Antigua 1943 / British West Indies Grid\n"
+" EPSG      | 20010     | Pulkovo 1995 / Gauss-Kruger zone 10\n"
+" EPSG      | 20011     | Pulkovo 1995 / Gauss-Kruger zone 11"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:493
+#, no-c-format
+msgid ""
+", <xref linkend=\"postgis_srs\"/>, <xref linkend=\"postgis_srs_search\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_srs.xml:503
+#, no-c-format
+msgid "postgis_srs_search"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_srs.xml:505
+#, no-c-format
+msgid ""
+"Return metadata records for projected coordinate systems that have areas of "
+"useage that fully contain the bounds parameter."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_srs.xml:510
+#, no-c-format
+msgid ""
+"<funcdef>setof record <function>postgis_srs_search</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>bounds</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text </type> <parameter>auth_name=EPSG</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:521
+#, no-c-format
+msgid ""
+"Return a set of metadata records for projected coordinate systems that have "
+"areas of useage that fully contain the bounds parameter. Each record will "
+"have the <varname>auth_name</varname>, <varname>auth_srid</varname>, "
+"<varname>srname</varname>, <varname>srtext</varname>, <varname>proj4text</"
+"varname>, and the corners of the area of usage, <varname>point_sw</varname> "
+"and <varname>point_ne</varname>."
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:524
+#, no-c-format
+msgid ""
+"The search only looks for projected coordinate systems, and is intended for "
+"users to explore the possible systems that work for the extent of their data."
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:533
+#, no-c-format
+msgid "Search for projected coordinate systems in Louisiana."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_srs.xml:534
+#, no-c-format
+msgid ""
+"SELECT auth_name, auth_srid, srname,\n"
+"  ST_AsText(point_sw) AS point_sw,\n"
+"  ST_AsText(point_ne) AS point_ne\n"
+"FROM postgis_srs_search('SRID=4326;LINESTRING(-90 30, -91 31)')\n"
+"LIMIT 3;\n"
+"\n"
+" auth_name | auth_srid |                srname                |      "
+"point_sw       |      point_ne\n"
+"-----------+-----------+--------------------------------------"
+"+---------------------+---------------------\n"
+" EPSG      | 2801      | NAD83(HARN) / Louisiana South        | POINT(-93.94 "
+"28.85) | POINT(-88.75 31.07)\n"
+" EPSG      | 3452      | NAD83 / Louisiana South (ftUS)       | POINT(-93.94 "
+"28.85) | POINT(-88.75 31.07)\n"
+" EPSG      | 3457      | NAD83(HARN) / Louisiana South (ftUS) | POINT(-93.94 "
+"28.85) | POINT(-88.75 31.07)"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:536
+#, no-c-format
+msgid ""
+"Scan a table for max extent and find projected coordinate systems that might "
+"suit."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_srs.xml:538
+#, no-c-format
+msgid ""
+"WITH ext AS (\n"
+"  SELECT ST_Extent(geom) AS geom, Max(ST_SRID(geom)) AS srid\n"
+"  FROM foo\n"
+")\n"
+"SELECT auth_name, auth_srid, srname,\n"
+"  ST_AsText(point_sw) AS point_sw,\n"
+"  ST_AsText(point_ne) AS point_ne\n"
+"FROM ext\n"
+"CROSS JOIN postgis_srs_search(ST_SetSRID(ext.geom, ext.srid))\n"
+"LIMIT 3;"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:545
+#, no-c-format
+msgid ", <xref linkend=\"postgis_srs_all\"/>, <xref linkend=\"postgis_srs\"/>"
+msgstr ""
