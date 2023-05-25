@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-04-10 06:16+0000\n"
-"PO-Revision-Date: 2023-05-23 02:08+0000\n"
+"PO-Revision-Date: 2023-05-25 11:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_processingxml/fr/>\n"
@@ -28,18 +28,20 @@ msgid ""
 "These functions compute geometric constructions, or alter geometry size or "
 "shape."
 msgstr ""
+"Ces fonctions permettent de calculer des constructions géométriques ou de "
+"modifier la taille ou la forme d'une géométrie."
 
 #. Tag: title
 #: reference_processing.xml:11
 #, no-c-format
 msgid "Geometry Processing"
-msgstr ""
+msgstr "Traitement des géométries"
 
 #. Tag: refname
 #: reference_processing.xml:15
 #, no-c-format
 msgid "ST_Buffer"
-msgstr ""
+msgstr "ST_Buffer"
 
 #. Tag: refpurpose
 #: reference_processing.xml:17
@@ -48,6 +50,8 @@ msgid ""
 "Computes a geometry covering all points within a given distance from a "
 "geometry."
 msgstr ""
+"Calcule une géométrie couvrant tous les points situés à une distance donnée "
+"d'une géométrie."
 
 #. Tag: funcsynopsis
 #: reference_processing.xml:23
@@ -75,6 +79,27 @@ msgid ""
 "type> <parameter>num_seg_quarter_circle</parameter></paramdef> </"
 "funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_Buffer</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>radius_of_buffer</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>text </type> "
+"<parameter>buffer_style_parameters = ''</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_Buffer</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>g1</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>radius_of_buffer</parameter></paramdef> <paramdef><type>integer </"
+"type> <parameter>num_seg_quarter_circle</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geography "
+"<function>ST_Buffer</function></funcdef> <paramdef><type>geography </type> "
+"<parameter>g1</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>radius_of_buffer</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>text </type> <parameter>buffer_style_parameters</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>geography "
+"<function>ST_Buffer</function></funcdef> <paramdef><type>geography </type> "
+"<parameter>g1</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>radius_of_buffer</parameter></paramdef> <paramdef><type>integer </"
+"type> <parameter>num_seg_quarter_circle</parameter></paramdef> "
+"</funcprototype>"
 
 #. Tag: title
 #: reference_processing.xml:57 reference_processing.xml:307
@@ -106,6 +131,12 @@ msgid ""
 "returned. For points and lines negative distances always return empty "
 "results."
 msgstr ""
+"Calcule un POLYGONE ou un MULTIPOLYGONE représentant tous les points dont la "
+"distance par rapport à une geometry/geography est inférieure ou égale à une "
+"distance donnée. Une distance négative rétrécit la géométrie au lieu de "
+"l'étendre. Une distance négative peut réduire complètement un polygone, "
+"auquel cas POLYGON EMPTY est renvoyé. Pour les points et les lignes, les "
+"distances négatives renvoient toujours des résultats vides."
 
 #. Tag: para
 #: reference_processing.xml:65
@@ -115,6 +146,9 @@ msgid ""
 "Reference System of the geometry. For geography, the distance is specified "
 "in meters."
 msgstr ""
+"Pour les types geometry, la distance est spécifiée dans les unités du "
+"système de référence spatiale de la géométrie. Pour les types geography, la "
+"distance est spécifiée en mètres."
 
 #. Tag: para
 #: reference_processing.xml:69
@@ -126,6 +160,12 @@ msgid ""
 "style can be specifed by providing a list of blank-separated key=value pairs "
 "as follows:"
 msgstr ""
+"Le troisième paramètre facultatif contrôle la précision et le style du "
+"tampon. La précision des arcs de cercle dans le tampon est spécifiée en tant "
+"que nombre de segments de ligne utilisés pour approximer un quart de cercle ("
+"la valeur par défaut est de 8). Le style du tampon peut être spécifié en "
+"fournissant une liste de paires clé=valeur séparées par des blancs, comme "
+"suit :"
 
 #. Tag: para
 #: reference_processing.xml:76
@@ -134,6 +174,8 @@ msgid ""
 "'quad_segs=#' : number of line segments used to approximate a quarter circle "
 "(default is 8)."
 msgstr ""
+"'quad_segs=#' : nombre de segments de ligne utilisés pour approximer un "
+"quart de cercle (8 par défaut)."
 
 #. Tag: para
 #: reference_processing.xml:79
@@ -142,6 +184,8 @@ msgid ""
 "'endcap=round|flat|square' : endcap style (defaults to \"round\"). 'butt' is "
 "accepted as a synonym for 'flat'."
 msgstr ""
+"'endcap=round|flat|square' : style d'endcap (la valeur par défaut est \"round"
+"\"). 'butt' est accepté comme synonyme de 'flat'."
 
 #. Tag: para
 #: reference_processing.xml:82
@@ -150,6 +194,8 @@ msgid ""
 "'join=round|mitre|bevel' : join style (defaults to \"round\"). 'miter' is "
 "accepted as a synonym for 'mitre'."
 msgstr ""
+"'join=round|mitre|bevel' : style de jointure (la valeur par défaut est "
+"\"round\"). 'miter' est accepté comme synonyme de 'mitre'."
 
 #. Tag: para
 #: reference_processing.xml:85
@@ -158,6 +204,9 @@ msgid ""
 "'mitre_limit=#.#' : mitre ratio limit (only affects mitered join style). "
 "'miter_limit' is accepted as a synonym for 'mitre_limit'."
 msgstr ""
+"'mitre_limit=#.#' : limite du rapport d'angle (n'affecte que le style "
+"d'assemblage en angle). 'miter_limit' est accepté comme synonyme de "
+"'mitre_limit'."
 
 #. Tag: para
 #: reference_processing.xml:88
@@ -168,6 +217,11 @@ msgid ""
 "This is only applicable to LINESTRING geometry and does not affect POINT or "
 "POLYGON geometries. By default end caps are square."
 msgstr ""
+"side=both|left|right' : 'left' ou 'right' effectue une mise en mémoire "
+"tampon unilatérale sur la géométrie, le côté mis en mémoire tampon étant "
+"relatif à la direction de la ligne. Ceci ne s'applique qu'à la géométrie "
+"LINESTRING et n'affecte pas les géométries POINT ou POLYGONE. Par défaut, "
+"les embouts sont carrés."
 
 #. Tag: para
 #: reference_processing.xml:94
