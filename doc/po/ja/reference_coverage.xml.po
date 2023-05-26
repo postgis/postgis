@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: ming 64gcc81\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-25 20:53+0000\n"
-"PO-Revision-Date: 2023-05-15 11:08+0000\n"
+"PO-Revision-Date: 2023-05-26 05:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_coverage/ja/>\n"
@@ -392,7 +392,7 @@ msgstr ""
 #: reference_coverage.xml:174
 #, no-c-format
 msgid ", <xref linkend=\"ST_Union\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Union\"/>"
 
 #, no-c-format
 #~ msgid ""
