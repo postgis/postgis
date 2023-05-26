@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-25 20:53+0000\n"
-"PO-Revision-Date: 2022-12-01 10:30+0000\n"
+"PO-Revision-Date: 2023-05-26 05:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "installationxml/ja/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: installation.xml:3
@@ -502,6 +502,12 @@ msgid ""
 "a PCRE library, or you pass in a valid <varname>--with-pcre-dir=/path/to/"
 "pcre</varname> during configure."
 msgstr ""
+"<xref linkend=\"Address_Standardizer\"/>をビルドするには、PCRE <ulink url="
+"\"http://www.pcre.org\">http://www.pcre.org</ulink> "
+"(通常はnixシステムにはインストールされています)も必要です。"
+"PCREライブラリを検出したら<xref linkend=\"Address_Standardizer\""
+"/>は自動でビルドされます。もしくは、コンフィギュアの際に有効な<varname"
+">--with-pcre-dir=/path/to/pcre</varname>を指定します。"
 
 #. Tag: para
 #: installation.xml:254
@@ -2018,7 +2024,7 @@ msgstr ""
 #: installation.xml:813
 #, no-c-format
 msgid "Tiger Geocoder Enabling your PostGIS database"
-msgstr ""
+msgstr "TigerジオコーダをPostGISデータベースで有効にする"
 
 #. Tag: para
 #: installation.xml:815
@@ -2027,6 +2033,8 @@ msgid ""
 "These directions assume your PostgreSQL installation already has the "
 "postgis_tiger_geocoder extension installed."
 msgstr ""
+"ここの説明では、お手持ちのPostgreSQLにpostgis_tiger_geocoderエクステンション"
+"がインストールされていると仮定します。"
 
 #. Tag: para
 #: installation.xml:816
@@ -2336,6 +2344,10 @@ msgid ""
 "  3235\n"
 "(1 row)"
 msgstr ""
+"count\n"
+"-------\n"
+"  3235\n"
+"(1 row)"
 
 #. Tag: programlisting
 #: installation.xml:857
