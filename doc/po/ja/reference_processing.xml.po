@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-25 20:53+0000\n"
-"PO-Revision-Date: 2023-05-15 11:08+0000\n"
+"PO-Revision-Date: 2023-05-27 06:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_processingxml/ja/>\n"
@@ -1925,6 +1925,9 @@ msgid ""
 "linkend=\"ST_ConstrainedDelaunayTriangles\"/>, <xref "
 "linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_ConvexHull\"/>"
 msgstr ""
+", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref linkend="
+"\"ST_ConstrainedDelaunayTriangles\"/>, <xref linkend=\"ST_VoronoiLines\"/>, "
+"<xref linkend=\"ST_ConvexHull\"/>"
 
 #. Tag: refname
 #: reference_processing.xml:942
@@ -2873,7 +2876,7 @@ msgstr ""
 #: reference_processing.xml:1427
 #, no-c-format
 msgid "Availability: 2.5.0, requires GEOS &gt;= 3.6.0"
-msgstr ""
+msgstr "Availability: 2.5.0, GEOS 3.6.0以上が必要です"
 
 #. Tag: programlisting
 #: reference_processing.xml:1434
