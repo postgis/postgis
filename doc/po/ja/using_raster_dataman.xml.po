@@ -2,13 +2,13 @@
 #
 # Translators:
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016
-# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-25 20:53+0000\n"
-"PO-Revision-Date: 2022-09-12 12:43+0000\n"
+"PO-Revision-Date: 2023-05-27 06:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "using_raster_datamanxml/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: using_raster_dataman.xml:3
@@ -57,6 +57,9 @@ msgid ""
 "raster table. It is capable of loading folders of raster files as well as "
 "creating overviews of rasters."
 msgstr ""
+"<varname>raster2pgsql</varname>は、GDALがサポートするラスタ書式をPostGISラス"
+"タテーブルにロードするのに適切なSQLにする実行ファイルです。ラスタのオーバビュ"
+"ーの生成だけでなく、ラスタファイルのフォルダのロードも可能です。"
 
 #. Tag: para
 #: using_raster_dataman.xml:13
@@ -68,6 +71,11 @@ msgid ""
 "list of raster types your particular <varname>raster2pgsql</varname> "
 "supports use the <varname>-G</varname> switch."
 msgstr ""
+"かなり多くの場合、(ご自分のGDALライブラリをコンパイルしない限り) raster2pgsql"
+"はPostGISの一部としてコンパイルされるので、実行ファイルがサポートするラスタタ"
+"イプはGDALの依存ライブラリでコンパイルされたものと同じになります。お手持ちの<"
+"varname>raster2pgsql</varname>がサポートするラスタタイプの一覧は、<varname>-G"
+"</varname>スイッチで見ることができます。"
 
 #. Tag: para
 #: using_raster_dataman.xml:16
@@ -88,7 +96,7 @@ msgstr ""
 #: using_raster_dataman.xml:20
 #, no-c-format
 msgid "Example Usage"
-msgstr ""
+msgstr "使用例"
 
 #. Tag: para
 #: using_raster_dataman.xml:22
@@ -119,6 +127,20 @@ msgid ""
 "# -f read this file after connecting\n"
 "psql -d gisdb -f elev.sql"
 msgstr ""
+"# -s SRID 4326を使用します\n"
+"# -I 空間インデックスを作ります\n"
+"# -C 標準的なラスタ制約を使用します\n"
+"# -M ロード後vacuum analyzeを実行します\n"
+"# *.tif 該当する全てのファイルをロードします\n"
+"# -F ラスタテーブルにfilenameカラムを入れます\n"
+"# -t 100x100のタイル出力にします\n"
+"# public.demelevation このテーブルにロードします\n"
+"raster2pgsql -s 4326 -I -C -M -F -t 100x100 *.tif public.demelevation > elev."
+"sql\n"
+"\n"
+"# -d このデータベースに接続します\n"
+"# -f ロード後にこのファイルを読み込みます\n"
+"psql -d gisdb -f elev.sql"
 
 #. Tag: para
 #: using_raster_dataman.xml:27
@@ -128,6 +150,8 @@ msgid ""
 "will be created in the default schema of the database or user you are "
 "connecting with."
 msgstr ""
+"対象テーブル名の一部としてスキーマを指定しない場合には、テーブルはデータベー"
+"スのデフォルトスキーマ内かユーザが接続しているスキーマ内に作られます。"
 
 #. Tag: para
 #: using_raster_dataman.xml:30
@@ -210,12 +234,25 @@ msgid ""
 "  ZMap Plus Grid\n"
 "  NOAA NGS Geoid Height Grids"
 msgstr ""
+"Available GDAL raster formats:\n"
+"  Virtual Raster\n"
+"  GeoTIFF\n"
+"  National Imagery Transmission Format\n"
+"  Raster Product Format TOC format\n"
+"  ECRG TOC format\n"
+"  Erdas Imagine Images (.img)\n"
+"  CEOS SAR Image\n"
+"  CEOS Image\n"
+"  ...\n"
+"  Arc/Info Export E00 GRID\n"
+"  ZMap Plus Grid\n"
+"  NOAA NGS Geoid Height Grids"
 
 #. Tag: title
 #: using_raster_dataman.xml:46
 #, no-c-format
 msgid "raster2pgsql options"
-msgstr ""
+msgstr "raster2pgsqlオプション"
 
 #. Tag: term
 #: using_raster_dataman.xml:50
