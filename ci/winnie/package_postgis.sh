@@ -18,13 +18,13 @@ if  [[ "${OVERRIDE}" == '' ]] ; then
 	export PROJ_VER=7.2.1
 	export SFCGAL_VER=1.4.1
 	export CGAL_VER=5.3
-	export ICON_VER=1.16
-	export ZLIB_VER=1.2.11
+	export ICON_VER=1.17
+	export ZLIB_VER=1.2.13
   export PROTOBUF_VER=3.2.0
 	export PROTOBUFC_VER=1.2.1
-	export JSON_VER=0.12
+	export JSON_VER=0.16
 	export PROJSO=libproj-19.dll
-	export CURL_VER=7.73
+	export CURL_VER=8.0.1
 fi;
 
 export PROTOBUF_VER=3.2.0
@@ -39,20 +39,20 @@ fi;
 echo "ICON_VER ${ICON_VER}"
 
 if  [[ "${CURL_VER}" == '' ]] ; then
-  export CURL_VER=7.73
+  export CURL_VER=8.0.1
 fi;
 
 echo "CURL_VER ${CURL_VER}"
 
 #set to something even if override is on but not set
 if  [[ "${ZLIB_VER}" == '' ]] ; then
-  export ZLIB_VER=1.2.11
+  export ZLIB_VER=1.2.13
 fi;
 
 
 #set to something even if override is on but not set
 if  [[ "${LIBXML_VER}" == '' ]] ; then
-  export LIBXML_VER=2.9.9
+  export LIBXML_VER=2.9.14
 fi;
 
 #set to something even if override is on but not set
@@ -166,6 +166,10 @@ cp ${PROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
 # new proj >= 8 folder prefixed with proj
 cp ${PROJECTS}/proj/rel-proj-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/share/proj/* $outdir/share/contrib/postgis-${POSTGIS_MINOR_VER}/proj
 cp ${PROJECTS}/proj/rel-proj-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
+#start shipping the projsync
+cp ${PROJECTS}/proj/rel-proj-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin/projsync.exe $outdir/bin
+
+
 cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
 
 cp ${PROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui

@@ -10,30 +10,30 @@ if  [[ "${OVERRIDE}" == '' ]] ; then
 	export ZLIB_VER=1.2.11
   export PROTOBUF_VER=3.2.0
 	export PROTOBUFC_VER=1.2.1
-	export JSON_VER=0.12
+	export JSON_VER=0.1
 	export PROJSO=libproj-19.dll
 fi;
 
 export PROTOBUF_VER=3.2.0
 export PROTOBUFC_VER=1.2.1
-export JSON_VER=0.12
+export JSON_VER=0.16
 export PCRE_VER=8.33
 
 if  [[ "${ICON_VER}" == '' ]] ; then
-  export ICON_VER=1.16
+  export ICON_VER=1.17
 fi;
 
 echo "ICON_VER ${ICON_VER}"
 
 #set to something even if override is on but not set
 if  [[ "${ZLIB_VER}" == '' ]] ; then
-  export ZLIB_VER=1.2.11
+  export ZLIB_VER=1.2.13
 fi;
 
 
 #set to something even if override is on but not set
 if  [[ "${LIBXML_VER}" == '' ]] ; then
-  export LIBXML_VER=2.9.9
+  export LIBXML_VER=2.9.14
 fi;
 
 #set to something even if override is on but not set
