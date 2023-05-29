@@ -3,6 +3,34 @@
   <title>Appendix</title>
    <subtitle>Release Notes</subtitle>
     <sect1>
+        <title>PostGIS 3.2.5</title>
+        <para>2023/05/29</para>
+        <para>This version requires PostgreSQL 9.6-15, GEOS 3.6 or higher, and Proj 4.9+
+        Additional features are enabled if you are running GEOS 3.9+
+        (and ST_MakeValid enhancements with 3.10+),
+        Proj 6.1+, and PostgreSQL 14+.</para>
+        <simplesect>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5384">5384</ulink>, Fix crash in ST_AsGML when given id is longer than given prefix
+                    (Sandro Santilli</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5380">5380</ulink>, Fix 2.5 upgrades with views using geography based ST_Distance
+                    (Sandro Santilli)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5106">5106</ulink>, Fix segfault in ST_RemEdgeNewFace/ST_RemEdgeModFace
+                    when no edge side-faces are found (Sandro Santilli)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5313">5313</ulink>, Fix memory access issue in ST_InterpolateRaster (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5338">5338</ulink>, Dump/Restore of raster table fails on
+                    enforce_coverage_tile_rast constraint (Regina Obe)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5315">5315</ulink>, #5318, #5319, #5320, #5342 crashes on infinite coordinates
+                    (Regina Obe, Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5344">5344</ulink>, Include topology id sequence state in dumps (Sandro Santilli)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5288">5288</ulink>, ST_LineCrossingDirection multi-cross error (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5347">5347</ulink>, _ST_BestSRID crashes on ARM with infinite geometries (Regina Obe)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5363">5363</ulink>, Make ST_ClusterDBScan interruptable (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5378">5378</ulink>, ST_Buffer(geography) drops SRID (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5331">5331</ulink>, [postgis_tiger_geocoder] reverse_geocode, prefer addressable ranges
+                    (Regina Obe, Locance)</para>
+        </simplesect>
+    </sect1>
+    <sect1>
         <title>PostGIS 3.2.4</title>
         <para>2022/11/12</para>
             <para>This version requires PostgreSQL 9.6-15, GEOS 3.6 or higher, and Proj 4.9+
