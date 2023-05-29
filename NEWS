@@ -1,5 +1,5 @@
-PostGIS 3.1.9dev
-xxxx/xx/xx
+PostGIS 3.1.9
+2023/05/28
 
 * Bug Fixes
   - #5384, Fix crash in ST_AsGML when given id is longer than given prefix
