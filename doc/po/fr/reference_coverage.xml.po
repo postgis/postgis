@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: ming 64gcc81\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-25 20:53+0000\n"
-"PO-Revision-Date: 2023-05-12 10:08+0000\n"
+"PO-Revision-Date: 2023-05-29 09:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_coverage/fr/>\n"
@@ -28,6 +28,13 @@ msgid ""
 "process, and can be operated on with window functions, which retain the "
 "coverage topology inside the window partition while altering the edges."
 msgstr ""
+"Ces fonctions opèrent sur des ensembles de géométries polygonales qui "
+"forment des \"couvertures implicites\". Pour former une couverture valide, "
+"les polygones ne doivent pas se chevaucher et les sommets des arêtes "
+"adjacentes doivent correspondre exactement. Les couvertures sont rapides à "
+"traiter et peuvent être exploitées avec des fonctions window, qui conservent "
+"la topologie de la couverture à l'intérieur de la partition de la fenêtre "
+"tout en modifiant les arêtes."
 
 #. Tag: title
 #: reference_coverage.xml:11
@@ -48,6 +55,8 @@ msgid ""
 "Window function that finds locations where polygons fail to form a valid "
 "coverage."
 msgstr ""
+"Fonction window qui trouve les endroits où les polygones ne forment pas une "
+"couverture valide."
 
 #. Tag: funcprototype
 #: reference_coverage.xml:22
@@ -78,6 +87,9 @@ msgid ""
 "coverage, and returns linear indicators showing the location of invalid "
 "edges (if any) in each polygon."
 msgstr ""
+"Vérifie si les polygones de la partition de la fonction window forment une "
+"couverture polygonale valide et renvoie des indicateurs linéaires montrant "
+"l'emplacement des arêtes non valides (le cas échéant) dans chaque polygone."
 
 #. Tag: para
 #: reference_coverage.xml:38
@@ -117,6 +129,12 @@ msgid ""
 "return the value NULL. Non-polygonal or empty geometries also produce NULL "
 "values."
 msgstr ""
+"En tant que fonction window, une valeur est renvoyée pour chaque polygone "
+"d'entrée. Pour les polygones qui ne respectent pas une ou plusieurs des "
+"conditions de validité, la valeur renvoyée est un MULTILINESTRING contenant "
+"les arêtes problématiques. Les polygones valides renvoient la valeur NULL. "
+"Les géométries non polygonales ou vides produisent également des valeurs "
+"NULL."
 
 #. Tag: para
 #: reference_coverage.xml:55
@@ -223,7 +241,7 @@ msgstr "ST_CoverageSimplify"
 #: reference_coverage.xml:88
 #, no-c-format
 msgid "Window function that simplifies the edges of a polygonal coverage."
-msgstr ""
+msgstr "Fonction window qui simplifie les bords d'une couverture polygonale."
 
 #. Tag: funcprototype
 #: reference_coverage.xml:93
@@ -251,6 +269,11 @@ msgid ""
 "The simplified outputs are consisent along shared edges, and still form a "
 "valid coverage."
 msgstr ""
+"Une fonction de fenêtre qui simplifie les bords des polygones dans une "
+"couverture polygonale à l'aide de l'algorithme <ulink url=\"https://en."
+"wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam-"
+"Whyatt</ulink>. Les sorties simplifiées sont cohérentes le long des arêtes "
+"communes et forment toujours une couverture valide."
 
 #. Tag: para
 #: reference_coverage.xml:110
@@ -261,6 +284,11 @@ msgid ""
 "appeared to be shared). Use <xref linkend=\"ST_CoverageInvalidLocations\"/> "
 "to determine if a coverage is valid."
 msgstr ""
+"Si l'entrée n'est pas une couverture valide, il peut y avoir des artefacts "
+"inattendus dans la sortie (tels que des intersections de limites, ou des "
+"limites séparées qui semblaient être partagées). Utilisez <xref linkend="
+"\"ST_CoverageInvalidLocations\"/> pour déterminer si une couverture est "
+"valide."
 
 #. Tag: para
 #: reference_coverage.xml:113
@@ -323,6 +351,8 @@ msgid ""
 "Computes the union of a set of polygons forming a coverage by removing "
 "shared edges."
 msgstr ""
+"Calcule l'union d'un ensemble de polygones formant une couverture en "
+"supprimant les arêtes communes."
 
 #. Tag: funcprototype
 #: reference_coverage.xml:142
@@ -344,6 +374,11 @@ msgid ""
 "linkend=\"ST_Union\"/>, but uses the coverage structure to compute the union "
 "much faster."
 msgstr ""
+"Une fonction agrégée qui réunit un ensemble de polygones formant une "
+"couverture polygonale. Le résultat est une géométrie polygonale couvrant la "
+"même zone que la couverture. Cette fonction produit le même résultat que "
+"<xref linkend=\"ST_Union\"/>, mais utilise la structure de la couverture "
+"pour calculer l'union beaucoup plus rapidement."
 
 #. Tag: para
 #: reference_coverage.xml:159
@@ -354,6 +389,10 @@ msgid ""
 "linkend=\"ST_CoverageInvalidLocations\"/> to determine if a coverage is "
 "valid."
 msgstr ""
+"Si l'entrée n'est pas une couverture valide, il peut y avoir des artefacts "
+"inattendus dans la sortie (tels que des polygones non fusionnés ou se "
+"chevauchant). Utilisez <xref linkend=\"ST_CoverageInvalidLocations\"/> pour "
+"déterminer si une couverture est valide."
 
 #. Tag: para
 #: reference_coverage.xml:163
@@ -397,7 +436,7 @@ msgstr ""
 #: reference_coverage.xml:174
 #, no-c-format
 msgid ", <xref linkend=\"ST_Union\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Union\"/>"
 
 #, no-c-format
 #~ msgid ""
