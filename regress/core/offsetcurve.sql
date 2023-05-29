@@ -13,7 +13,7 @@ SELECT 't5b', ST_AsEWKT(ST_Normalize(ST_OffsetCurve(
  'SRID=42;LINESTRING(0 0, 10 0, 10 10)', 10)));
 SELECT 't6', ST_AsEWKT(ST_Normalize(ST_SnapToGrid(ST_OffsetCurve(
  'SRID=42;LINESTRING(0 0, 10 0, 10 10)', -10,
- 'quad_segs=2'),1)));
+ 'quad_segs=8'),1)));
 SELECT 't7', ST_AsEWKT(ST_Normalize(ST_OffsetCurve(
  'SRID=42;LINESTRING(0 0, 10 0, 10 10)', -10,
  'join=bevel'))
