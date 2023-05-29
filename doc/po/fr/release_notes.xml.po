@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-25 20:53+0000\n"
-"PO-Revision-Date: 2023-05-23 02:08+0000\n"
+"PO-Revision-Date: 2023-05-29 11:46+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "release_notesxml/fr/>\n"
@@ -37,13 +37,13 @@ msgstr "Notes de version"
 #: release_notes.xml:6
 #, no-c-format
 msgid "PostGIS 3.3.0"
-msgstr ""
+msgstr "PostGIS 3.3.0"
 
 #. Tag: para
 #: release_notes.xml:7
 #, no-c-format
 msgid "2022/08/26"
-msgstr ""
+msgstr "2022/08/26"
 
 #. Tag: para
 #: release_notes.xml:8 release_notes.xml:88
@@ -55,6 +55,11 @@ msgid ""
 "GEOS 3.11+. Requires SFCGAL 1.4.1+ for ST_AlphaShape and "
 "ST_OptimalAlphaShape."
 msgstr ""
+"Cette version nécessite PostgreSQL 11 ou plus, GEOS 3.6 ou plus, et Proj 5.2+"
+". Des fonctionnalités supplémentaires sont activées si vous utilisez GEOS 3."
+"9+. Améliorations de ST_MakeValid avec 3.10+, nombreuses améliorations "
+"supplémentaires avec GEOS 3.11+. Requiert SFCGAL 1.4.1+ pour ST_AlphaShape "
+"et ST_OptimalAlphaShape."
 
 #. Tag: para
 #: release_notes.xml:12
@@ -63,6 +68,8 @@ msgid ""
 "NOTE: GEOS 3.11.0 details at <ulink url=\"https://libgeos.org/"
 "posts/2022-07-01-geos-3-11-0-released/\">GEOS 3.11.0 release notes</ulink>"
 msgstr ""
+"NOTE : GEOS 3.11.0 détails à <ulink url=\"https://libgeos.org/posts/"
+"2022-07-01-geos-3-11-0-released/\">GEOS 3.11.0 release notes</ulink>"
 
 #. Tag: para
 #: release_notes.xml:13
@@ -72,6 +79,10 @@ msgid ""
 "This new feature is disabled by default because on some platforms, causes "
 "compilation errors (BSD and MingW64 issues have been raised)"
 msgstr ""
+"La nouvelle option --enable-lto améliore la vitesse des calculs "
+"mathématiques. Cette nouvelle fonctionnalité est désactivée par défaut car, "
+"sur certaines plateformes, elle provoque des erreurs de compilation (les "
+"problèmes BSD et MingW64 ont été soulevés)"
 
 #. Tag: title
 #: release_notes.xml:17 release_notes.xml:197 release_notes.xml:258
@@ -79,7 +90,7 @@ msgstr ""
 #: release_notes.xml:738
 #, no-c-format
 msgid "New features"
-msgstr ""
+msgstr "Nouvelles fonctionnalités"
 
 #. Tag: para
 #: release_notes.xml:18
@@ -88,12 +99,15 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5116\">5116</ulink>, "
 "Topology export/import scripts (Sandro Santilli)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5116\">5116</ulink>, "
+"Scripts d'exportation/importation de topologie (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:19 release_notes.xml:260
 #, no-c-format
 msgid "ST_Letters creates geometries that look like letters (Paul Ramsey)"
 msgstr ""
+"ST_Letters crée des géométries qui ressemblent à des lettres (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:20
@@ -102,6 +116,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5037\">5037</ulink>, "
 "postgis_sfcgal: ST_3DConvexHull (Loïc Bartoletti)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5037\">5037</ulink>, "
+"postgis_sfcgal : ST_3DConvexHull (Loïc Bartoletti)"
 
 #. Tag: para
 #: release_notes.xml:21 release_notes.xml:262
@@ -110,6 +126,8 @@ msgid ""
 "postgis_sfcgal: sfcgal_full_version - reports BOOST and CGAL version (Loïc "
 "Bartoletti)"
 msgstr ""
+"postgis_sfcgal : sfcgal_full_version - rapporte les versions BOOST et CGAL ("
+"Loïc Bartoletti)"
 
 #. Tag: para
 #: release_notes.xml:23
@@ -118,6 +136,8 @@ msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/659\">GH 659</ulink>, "
 "MARC21/XML, ST_GeomFromMARC21, ST_AsMARC21 (Jim Jones)"
 msgstr ""
+"<ulink url=\"https://github.com/postgis/postgis/pull/659\">GH 659</ulink>, "
+"MARC21/XML, ST_GeomFromMARC21, ST_AsMARC21 (Jim Jones)"
 
 #. Tag: para
 #: release_notes.xml:24
@@ -127,6 +147,9 @@ msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/683\">GH 683</ulink>, "
 "sfcgal: ST_3DUnion aggregate function (Sergei Shoulbakov)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5132\">5132</ulink>, "
+"<ulink url=\"https://github.com/postgis/postgis/pull/683\">GH 683</ulink>, "
+"sfcgal : Fonction d'agrégation ST_3DUnion (Sergei Shoulbakov)"
 
 #. Tag: para
 #: release_notes.xml:25
@@ -136,6 +159,9 @@ msgid ""
 "SFCGAL ST_AlphaShape and ST_OptimalAlphaShape Requires SFCGAL 1.4.1+ (Loïc "
 "Bartoletti)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5143\">5143</ulink>, "
+"SFCGAL ST_AlphaShape et ST_OptimalAlphaShape Nécessite SFCGAL 1.4.1+ (Loïc "
+"Bartoletti)"
 
 #. Tag: para
 #: release_notes.xml:27 release_notes.xml:200
@@ -144,6 +170,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5162\">5162</ulink>, "
 "ST_TriangulatePolygon with GEOS 3.11+ (Paul Ramsey, Martin Davis)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5162\">5162</ulink>, "
+"ST_TriangulatePolygon avec GEOS 3.11+ (Paul Ramsey, Martin Davis)"
 
 #. Tag: para
 #: release_notes.xml:28
@@ -152,6 +180,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5162\">5162</ulink>, "
 "ST_SimplifyPolygonHull with GEOS 3.11+ (Paul Ramsey, Martin Davis)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5162\">5162</ulink>, "
+"ST_SimplifyPolygonHull avec GEOS 3.11+ (Paul Ramsey, Martin Davis)"
 
 #. Tag: para
 #: release_notes.xml:29 release_notes.xml:155
@@ -160,19 +190,21 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5183\">5183</ulink>, "
 "topology.RemoveUnusedPrimitives (Sandro Santilli)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5183\">5183</ulink>, "
+"topology.RemoveUnusedPrimitives (Sandro Santilli)"
 
 #. Tag: title
 #: release_notes.xml:33 release_notes.xml:728 release_notes.xml:788
 #: release_notes.xml:1076 release_notes.xml:1289
 #, no-c-format
 msgid "Breaking Changes"
-msgstr ""
+msgstr "Changements avec rupture"
 
 #. Tag: para
 #: release_notes.xml:34 release_notes.xml:228
 #, no-c-format
 msgid "Drop support for PostgreSQL 9.6 and 10 (Regina Obe)"
-msgstr ""
+msgstr "Suppression du support de PostgreSQL 9.6 et 10 (Regina Obe)"
 
 #. Tag: para
 #: release_notes.xml:35
@@ -181,6 +213,8 @@ msgid ""
 "Change output for WKT MULTIPOINT. All points now wrapped in parens. (Even "
 "Rouault)"
 msgstr ""
+"Modification de la sortie pour WKT MULTIPOINT. Tous les points sont "
+"maintenant \"wrappés\" dans des parens. (Even Rouault)"
 
 #. Tag: para
 #: release_notes.xml:37
@@ -191,6 +225,10 @@ msgid ""
 "ST_Polygon so it works faster but might produce invalid polygons. "
 "(Aliaksandr Kalenik)"
 msgstr ""
+"<ulink url=\"https://github.com/postgis/postgis/pull/674\">GH 674</ulink>, "
+"la validation et la fixation de la géométrie sont désactivées pour "
+"ST_DumpAsPolygons et ST_Polygon, ce qui accélère le processus mais peut "
+"produire des polygones invalides. (Aliaksandr Kalenik)"
 
 #. Tag: title
 #: release_notes.xml:43 release_notes.xml:159 release_notes.xml:185
@@ -205,7 +243,7 @@ msgstr ""
 #: release_notes.xml:2590
 #, no-c-format
 msgid "Enhancements"
-msgstr ""
+msgstr "Améliorations"
 
 #. Tag: para
 #: release_notes.xml:44
@@ -215,6 +253,9 @@ msgid ""
 "index on topology.node(containing_face) speeding up splitting and merging of "
 "faces (Sandro Santilli)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/2861\">2861</ulink>, "
+"Ajout d'un index sur topology.node(containing_face) accélérant la division "
+"et la fusion des faces (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:46
@@ -224,6 +265,9 @@ msgid ""
 "Speed up ST_RemEdge topology functions adding index on relation(element_id) "
 "and edge_data(abs_next*) (Sandro Santilli)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/2083\">2083</ulink>, "
+"Accélération des fonctions topologiques ST_RemEdge en ajoutant un index sur "
+"relation(element_id) et edge_data(abs_next*) (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:48
@@ -233,6 +277,9 @@ msgid ""
 "Allow dropping topologies with missing topogeometry sequences (Sandro "
 "Santilli)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5118\">5118</ulink>, "
+"Permettre l'abandon des topologies avec des séquences topogéométriques "
+"manquantes (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:50
@@ -241,6 +288,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5111\">5111</ulink>, "
 "faster topology face MBR computation (Sandro Santilli)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5111\">5111</ulink>, "
+"calcul plus rapide du MBR de la face topologique (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:51 release_notes.xml:245
@@ -249,6 +298,9 @@ msgid ""
 "postgis_extensions_upgrade() support for upgrades from any PostGIS version, "
 "including yet to be released ones (Sandro Santilli)"
 msgstr ""
+"postgis_extensions_upgrade() support des mises à jour à partir de n'importe "
+"quelle version de PostGIS, y compris celles qui n'ont pas encore été "
+"publiées (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:53
@@ -257,6 +309,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5040\">5040</ulink>, add "
 "postgis_sfcgal_full_version (Loïc Bartoletti)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5040\">5040</ulink>, "
+"ajout de postgis_sfcgal_full_version (Loïc Bartoletti)"
 
 #. Tag: para
 #: release_notes.xml:54
@@ -266,6 +320,9 @@ msgid ""
 "GiST: balance the tree splits better in recursive calls (Darafei "
 "Praliaskouski)"
 msgstr ""
+"<ulink url=\"https://github.com/postgis/postgis/pull/655\">GH 655</ulink>, "
+"GiST : mieux équilibrer les divisions de l'arbre dans les appels récursifs ("
+"Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:55
@@ -274,6 +331,8 @@ msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/657\">GH 657</ulink>, "
 "GiST: do not call no-op decompress function (Aliaksandr Kalenik)"
 msgstr ""
+"<ulink url=\"https://github.com/postgis/postgis/pull/657\">GH 657</ulink>, "
+"GiST : ne pas appeler la fonction de décompression no-op (Aliaksandr Kalenik)"
 
 #. Tag: para
 #: release_notes.xml:56 release_notes.xml:63 release_notes.xml:190
@@ -284,6 +343,11 @@ msgid ""
 "ST_LineMerge now has option to keep the directions of input linestrings, "
 "useful when processing road graphs. Requires GEOS 3.11. (Sergei Shoulbakov)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/4939\">4939</ulink>, "
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5161\">5161</ulink>, "
+"ST_LineMerge a maintenant l'option de garder les directions des lignes "
+"d'entrée, utile lors du traitement des graphes routiers. Nécessite GEOS "
+"3.11. (Sergei Shoulbakov)"
 
 #. Tag: para
 #: release_notes.xml:58 release_notes.xml:251
@@ -291,6 +355,8 @@ msgstr ""
 msgid ""
 "ST_ConcaveHull GEOS 3.11+ native implementation (Paul Ramsey, Martin Davis)"
 msgstr ""
+"ST_ConcaveHull implémentation native dans GEOS 3.11+ (Paul Ramsey, Martin "
+"Davis)"
 
 #. Tag: para
 #: release_notes.xml:59 release_notes.xml:192
@@ -299,6 +365,8 @@ msgid ""
 "ST_ConcaveHull GEOS 3.11+ polygon-respecting native implementation (Paul "
 "Ramsey, Martin Davis)"
 msgstr ""
+"ST_ConcaveHull GEOS 3.11+ implémentation native respectant les polygones ("
+"Paul Ramsey, Martin Davis)"
 
 #. Tag: para
 #: release_notes.xml:60
@@ -309,6 +377,11 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5121\">5121</ulink> "
 "Enable Link-Time Optimizations using --enable-lto (Sergei Shoulbakov)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/4574\">4574</ulink>, "
+"<ulink url=\"https://github.com/postgis/postgis/pull/678\">GH 678</ulink>, "
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5121\">5121</ulink> "
+"Activer les optimisations du temps de liaison en utilisant --enable-lto ("
+"Sergei Shoulbakov)"
 
 #. Tag: para
 #: release_notes.xml:61
@@ -317,6 +390,8 @@ msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/676\">GH 676</ulink>, "
 "faster ST_Clip (Aliaksandr Kalenik)"
 msgstr ""
+"<ulink url=\"https://github.com/postgis/postgis/pull/676\">GH 676</ulink>, "
+"accélération de ST_Clip (Aliaksandr Kalenik)"
 
 #. Tag: para
 #: release_notes.xml:62
@@ -325,6 +400,9 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5135\">5135</ulink>, Fast "
 "GiST index build is enabled by default for PostgreSQL 15+ (Sergei Shoulbakov)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5135\">5135</ulink>, La "
+"construction rapide d'index GiST est activée par défaut pour PostgreSQL 15+ ("
+"Sergei Shoulbakov)"
 
 #. Tag: para
 #: release_notes.xml:65 release_notes.xml:186
@@ -333,6 +411,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5158\">5158</ulink>, "
 "pgtopo_import / pgtopo_export manpages (Sandro Santilli)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5158\">5158</ulink>, "
+"pages de manuel pgtopo_import / pgtopo_export (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:66 release_notes.xml:187
@@ -342,6 +422,10 @@ msgid ""
 "a optional max_rows_per_copy to -Y option to raster2pgsql to control number "
 "of rows per copy statement. Default to 50 when not specified (Regina Obe)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5170\">5170</ulink>, "
+"ajout d'une option max_rows_per_copy à l'option -Y de raster2pgsql pour "
+"contrôler le nombre de lignes par déclaration de copy. La valeur par défaut "
+"est 50 si elle n'est pas spécifiée (Regina Obe)"
 
 #. Tag: para
 #: release_notes.xml:69
@@ -350,6 +434,8 @@ msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/698\">GH 698</ulink>, "
 "support parallel aggregate for ST_Union (Sergei Shoulbakov)"
 msgstr ""
+"<ulink url=\"https://github.com/postgis/postgis/pull/698\">GH 698</ulink>, "
+"support des agrégats parallèles pour ST_Union (Sergei Shoulbakov)"
 
 #. Tag: para
 #: release_notes.xml:70
@@ -359,6 +445,9 @@ msgid ""
 "Update spatial_ref_sys as part of ALTER EXTENSION update postgis (Paul "
 "Ramsey)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5024\">5024</ulink>, Mise "
+"à jour de spatial_ref_sys dans le cadre de la mise à jour de ALTER EXTENSION "
+"postgis (Paul Ramsey)"
 
 #. Tag: title
 #: release_notes.xml:74 release_notes.xml:97 release_notes.xml:118
@@ -379,6 +468,8 @@ msgstr "Correctifs"
 #, no-c-format
 msgid "These are fixes issues in prior minors not backported"
 msgstr ""
+"Il s'agit de corrections de problèmes survenus dans des versions mineures "
+"antérieures qui n'ont pas été rétroportés"
 
 #. Tag: para
 #: release_notes.xml:76
@@ -387,6 +478,9 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/4912\">4912</ulink>, "
 "GiST: fix crash on STORAGE EXTERNAL for geography (Aliaksandr Kalenik)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/4912\">4912</ulink>, GiST "
+": correction d'un crash sur STORAGE EXTERNAL pour le type geography ("
+"Aliaksandr Kalenik)"
 
 #. Tag: para
 #: release_notes.xml:77
@@ -395,6 +489,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5088\">5088</ulink>, "
 "Memory corruption in mvt_agg_transfn (Victor Collod)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5088\">5088</ulink>, "
+"Corruption de mémoire dans mvt_agg_transfn (Victor Collod)"
 
 #. Tag: para
 #: release_notes.xml:78
@@ -403,6 +499,9 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5137\">5137</ulink>, "
 "resetting interrupt flags before query execution (Sergei Shoulbakov)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5137\">5137</ulink>, "
+"réinitialisation des indicateurs d'interruption avant l'exécution de la "
+"requête (Sergei Shoulbakov)"
 
 #. Tag: para
 #: release_notes.xml:79
@@ -412,6 +511,9 @@ msgid ""
 "ST_Clip is more robust to alignment of raster and clip geometry (Sergei "
 "Shoulbakov)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5148\">5148</ulink>, "
+"ST_Clip est plus robuste à l'alignement du raster et au découpage de la "
+"géométrie (Sergei Shoulbakov)"
 
 #. Tag: para
 #: release_notes.xml:80 release_notes.xml:206
@@ -420,6 +522,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/4932\">4932</ulink>, Bug "
 "with geography ST_Intersects / ST_Distance (Paul Ramsey)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/4932\">4932</ulink>, Bug "
+"avec le type geography ST_Intersects / ST_Distance (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:81 release_notes.xml:98
@@ -428,18 +532,20 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5089\">5089</ulink>, "
 "ST_Reverse also reverses components of CompoundCurve (Paul Ramsey)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5089\">5089</ulink>, "
+"ST_Reverse inverse également les composantes de CompoundCurve (Paul Ramsey)"
 
 #. Tag: title
 #: release_notes.xml:86
 #, no-c-format
 msgid "PostGIS 3.3.0rc2"
-msgstr ""
+msgstr "PostGIS 3.3.0rc2"
 
 #. Tag: para
 #: release_notes.xml:87
 #, no-c-format
 msgid "2022/08/22"
-msgstr ""
+msgstr "2022/08/22"
 
 #. Tag: para
 #: release_notes.xml:92 release_notes.xml:110 release_notes.xml:145
@@ -450,6 +556,9 @@ msgid ""
 "libgeos.org/posts/2022-07-01-geos-3-11-0-released/\">GEOS 3.11.0 release "
 "notes</ulink>"
 msgstr ""
+"NOTE : GEOS 3.11.0 a été récemment publié, détails sur <ulink url=\"https"
+"://libgeos.org/posts/2022-07-01-geos-3-11-0-released/\">GEOS 3.11.0 release "
+"notes</ulink>"
 
 #. Tag: para
 #: release_notes.xml:94 release_notes.xml:112 release_notes.xml:147
@@ -459,6 +568,10 @@ msgid ""
 "feature is disabled by default because on some platforms, causes compilation "
 "errors (BSD and MingW64 issues have been raised)"
 msgstr ""
+"La nouvelle option --enable-lto améliore la vitesse des calculs "
+"mathématiques. Cette nouvelle fonctionnalité est désactivée par défaut car, "
+"sur certaines plates-formes, elle provoque des erreurs de compilation (les "
+"problèmes BSD et MingW64 ont été soulevés)"
 
 #. Tag: para
 #: release_notes.xml:99
@@ -467,6 +580,9 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5181\">5181</ulink>, "
 "Reset proj error state after failed parse (Paul Ramsey)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5181\">5181</ulink>, "
+"Réinitialiser l'état d'erreur du projet après l'échec de l'analyse (Paul "
+"Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:100
@@ -475,18 +591,21 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5171\">5171</ulink>, "
 "Short circuit geodesic distance when inputs equal (Paul Ramsey)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5171\">5171</ulink>, "
+"Distance géodésique en circuit court lorsque les entrées sont égales (Paul "
+"Ramsey)"
 
 #. Tag: title
 #: release_notes.xml:104
 #, no-c-format
 msgid "PostGIS 3.3.0rc1"
-msgstr ""
+msgstr "PostGIS 3.3.0rc1"
 
 #. Tag: para
 #: release_notes.xml:105
 #, no-c-format
 msgid "2022/08/08"
-msgstr ""
+msgstr "2022/08/08"
 
 #. Tag: para
 #: release_notes.xml:106 release_notes.xml:141
@@ -498,26 +617,31 @@ msgid ""
 "GEOS 3.11+. Requires SFCGAL 1.4.1+ for ST_AlphaShape and "
 "ST_OptimalAlphaShape."
 msgstr ""
+"Cette version nécessite PostgreSQL 11 ou plus, GEOS 3.6 ou plus, et Proj 5.2+"
+". Des fonctionnalités supplémentaires sont activées si vous utilisez GEOS 3."
+"9+. Améliorations de ST_MakeValid avec 3.10+, nombreuses améliorations "
+"supplémentaires avec GEOS 3.11+. Requiert SFCGAL 1.4.1+ pour ST_AlphaShape "
+"et ST_OptimalAlphaShape."
 
 #. Tag: para
 #: release_notes.xml:114 release_notes.xml:149 release_notes.xml:181
 #: release_notes.xml:222
 #, no-c-format
 msgid "Use below to enable it."
-msgstr ""
+msgstr "Utilisez le lien ci-dessous pour l'activer."
 
 #. Tag: programlisting
 #: release_notes.xml:115 release_notes.xml:150 release_notes.xml:182
 #: release_notes.xml:223
 #, no-c-format
 msgid "./configure --enable-lto"
-msgstr ""
+msgstr "./configure --enable-lto"
 
 #. Tag: para
 #: release_notes.xml:116
 #, no-c-format
 msgid "Changes since PostGIS 3.3.0beta2:"
-msgstr ""
+msgstr "Changements depuis PostGIS 3.3.0beta2 :"
 
 #. Tag: para
 #: release_notes.xml:119
@@ -526,6 +650,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5154\">5154</ulink>, "
 "raster ST_Value is undercosted (Regina Obe)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5154\">5154</ulink>, "
+"raster ST_Value est sous-coté (Regina Obe)"
 
 #. Tag: para
 #: release_notes.xml:120
@@ -535,6 +661,9 @@ msgid ""
 "Revise minimum_bounding_circle Cunit test to be tolerant of small 32-bit "
 "floating point differences (Regina Obe)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5157\">5157</ulink>, "
+"Révision du test Cunit minimum_bounding_circle pour être tolérant aux "
+"petites différences de virgule flottante 32 bits (Regina Obe)"
 
 #. Tag: para
 #: release_notes.xml:123
@@ -543,6 +672,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5191\">5191</ulink>, "
 "Functions should use integer instead of int4 (Regina Obe)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5191\">5191</ulink>, Les "
+"fonctions devraient utiliser integer au lieu de int4 (Regina Obe)"
 
 #. Tag: para
 #: release_notes.xml:124
@@ -552,6 +683,9 @@ msgid ""
 "PostGIS causes to_jsonb to no longer be parallel safe, ST_AsGeoJSON and "
 "ST_AsGML are also parallel unsafe (Regina Obe, Paul Ramsey)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5139\">5139</ulink>, "
+"PostGIS fait que to_jsonb n'est plus sûr en parallèle, ST_AsGeoJSON et "
+"ST_AsGML ne sont également pas sûrs en parallèle (Regina Obe, Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:127
@@ -561,6 +695,10 @@ msgid ""
 "Ensure that additional operators are not appended when the function and "
 "opfamily disagree about dimensionality (Paul Ramsey)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5025\">5025</ulink>, "
+"S'assurer que des opérateurs supplémentaires ne sont pas ajoutés lorsque la "
+"fonction et les fonctions relatives (opfamily) ne sont pas d'accord sur la "
+"dimensionnalité (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:130
@@ -570,6 +708,9 @@ msgid ""
 "#5196 Change address_standardizer and postgis_tiger_geocoder CREATE "
 "EXTENSION to use CREATE instead of CREATE OR REPLACE. (Regina Obe)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5195\">5195</ulink>, #"
+"5196 Modifier address_standardizer et postgis_tiger_geocoder CREATE "
+"EXTENSION pour utiliser CREATE au lieu de CREATE OR REPLACE. (Regina Obe)"
 
 #. Tag: para
 #: release_notes.xml:133
@@ -578,6 +719,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5202\">5202</ulink>, "
 "Guard against downgrade (Sandro Santilli)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5202\">5202</ulink>, "
+"Surveiller les rétrogradations (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:134
