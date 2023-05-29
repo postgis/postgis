@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-25 20:53+0000\n"
-"PO-Revision-Date: 2023-01-06 15:50+0000\n"
+"PO-Revision-Date: 2023-05-29 09:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "installationxml/fr/>\n"
@@ -25,7 +25,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: installation.xml:3
@@ -529,6 +529,12 @@ msgid ""
 "a PCRE library, or you pass in a valid <varname>--with-pcre-dir=/path/to/"
 "pcre</varname> during configure."
 msgstr ""
+"Pour compiler <xref linkend=\"Address_Standardizer\"/>, vous aurez également "
+"besoin de PCRE <ulink url=\"http://www.pcre.org\">http://www.pcre.org</"
+"ulink> (qui est généralement déjà installé sur les systèmes nix). <xref "
+"linkend=\"Address_Standardizer\"/> sera automatiquement compilé s'il détecte "
+"une bibliothèque PCRE, ou si vous passez un <varname>--with-pcre-dir=/path/"
+"to/pcre</varname> valide pendant la configuration."
 
 #. Tag: para
 #: installation.xml:254
@@ -2091,7 +2097,7 @@ msgstr ""
 #: installation.xml:813
 #, no-c-format
 msgid "Tiger Geocoder Enabling your PostGIS database"
-msgstr ""
+msgstr "Tiger Geocoder Activation de votre base de données PostGIS"
 
 #. Tag: para
 #: installation.xml:815
@@ -2100,6 +2106,8 @@ msgid ""
 "These directions assume your PostgreSQL installation already has the "
 "postgis_tiger_geocoder extension installed."
 msgstr ""
+"Ces instructions supposent que l'extension postgis_tiger_geocoder soit déjà "
+"installée dans votre installation PostgreSQL."
 
 #. Tag: para
 #: installation.xml:816
@@ -2415,6 +2423,10 @@ msgid ""
 "  3235\n"
 "(1 row)"
 msgstr ""
+"count\n"
+"-------\n"
+"  3235\n"
+"(1 row)"
 
 #. Tag: programlisting
 #: installation.xml:857
