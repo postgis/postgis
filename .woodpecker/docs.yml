@@ -1,8 +1,6 @@
 pipeline:
   build:
     image: docker.osgeo.org/postgis/build-test:trisquel3
-    when:
-      path: "doc/*"
     commands:
       - ./autogen.sh
       - PGVER=12 ./configure
