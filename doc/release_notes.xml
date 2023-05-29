@@ -7,7 +7,7 @@
         <para>This release works with PostgreSQL 9.6-14.</para>
         <simplesect>
             <title>Bug Fixes</title>
-                <para>Release date: 2023/05/28</para>
+                <para>Release date: 2023/05/29</para>
                 <para><ulink url="https://trac.osgeo.org/postgis/ticket/5384">5384</ulink>, Fix crash in ST_AsGML when given id is longer than given prefix
                         (Sandro Santilli)</para>
                 <para><ulink url="https://trac.osgeo.org/postgis/ticket/5380">5380</ulink>, Fix 2.5 upgrades with views using geography based ST_Distance
