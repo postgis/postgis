@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-25 20:53+0000\n"
-"PO-Revision-Date: 2023-05-12 13:00+0000\n"
+"PO-Revision-Date: 2023-05-29 09:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_srsxml/fr/>\n"
@@ -1088,13 +1088,13 @@ msgstr ", <xref linkend=\"ST_InverseTransformPipeline\"/>"
 #: reference_srs.xml:377
 #, no-c-format
 msgid "postgis_srs_codes"
-msgstr ""
+msgstr "postgis_srs_codes"
 
 #. Tag: refpurpose
 #: reference_srs.xml:379
 #, no-c-format
 msgid "Return the list of SRS codes associated with the given authority."
-msgstr ""
+msgstr "Renvoie la liste des codes SRS associés à l'autorité donnée."
 
 #. Tag: funcprototype
 #: reference_srs.xml:384
@@ -1103,6 +1103,8 @@ msgid ""
 "<funcdef>setof text <function>postgis_srs_codes</function></funcdef> "
 "<paramdef><type>text </type> <parameter>auth_name</parameter></paramdef>"
 msgstr ""
+"<funcdef>setof text <function>postgis_srs_codes</function></funcdef> "
+"<paramdef><type>text </type> <parameter>auth_name</parameter></paramdef>"
 
 #. Tag: para
 #: reference_srs.xml:394
@@ -1111,19 +1113,21 @@ msgid ""
 "Returns a set of all <varname>auth_srid</varname> for the given "
 "<varname>auth_name</varname>."
 msgstr ""
+"Renvoie un ensemble de tous les <varname>auth_srid</varname> pour le "
+"<varname>auth_name</varname> donné."
 
 #. Tag: para
 #: reference_srs.xml:397 reference_srs.xml:439 reference_srs.xml:480
 #: reference_srs.xml:527
 #, no-c-format
 msgid "Proj version 6+"
-msgstr ""
+msgstr "Proj version 6+"
 
 #. Tag: para
 #: reference_srs.xml:403
 #, no-c-format
 msgid "List the first ten codes associated with the EPSG authority."
-msgstr ""
+msgstr "Indiquez les dix premiers codes associés à l'autorité EPSG."
 
 #. Tag: programlisting
 #: reference_srs.xml:404
@@ -1144,6 +1148,20 @@ msgid ""
 " 20010\n"
 " 20011"
 msgstr ""
+"SELECT * FROM postgis_srs_codes('EPSG') LIMIT 10;\n"
+"\n"
+" postgis_srs_codes\n"
+"-------------------\n"
+" 2000\n"
+" 20004\n"
+" 20005\n"
+" 20006\n"
+" 20007\n"
+" 20008\n"
+" 20009\n"
+" 2001\n"
+" 20010\n"
+" 20011"
 
 #. Tag: para
 #: reference_srs.xml:410 reference_srs.xml:452
@@ -1151,18 +1169,19 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"postgis_srs_all\"/>, <xref linkend=\"postgis_srs_search\"/>"
 msgstr ""
+", <xref linkend=\"postgis_srs_all\"/>, <xref linkend=\"postgis_srs_search\"/>"
 
 #. Tag: refname
 #: reference_srs.xml:418
 #, no-c-format
 msgid "postgis_srs"
-msgstr ""
+msgstr "postgis_srs"
 
 #. Tag: refpurpose
 #: reference_srs.xml:420
 #, no-c-format
 msgid "Return a metadata record for the requested authority and srid."
-msgstr ""
+msgstr "Renvoyer une fiche de métadonnées pour l'autorité et le srid demandés."
 
 #. Tag: funcprototype
 #: reference_srs.xml:425
@@ -1172,6 +1191,9 @@ msgid ""
 "<paramdef><type>text </type> <parameter>auth_name</parameter></paramdef> "
 "<paramdef><type>text </type> <parameter>auth_srid</parameter></paramdef>"
 msgstr ""
+"<funcdef>setof record <function>postgis_srs</function></funcdef> "
+"<paramdef><type>text </type> <parameter>auth_name</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>auth_srid</parameter></paramdef>"
 
 #. Tag: para
 #: reference_srs.xml:436
@@ -1184,12 +1206,19 @@ msgid ""
 "corners of the area of usage, <varname>point_sw</varname> and "
 "<varname>point_ne</varname>."
 msgstr ""
+"Renvoie un enregistrement de métadonnées pour le <varname>auth_srid</"
+"varname> demandé pour le <varname>auth_name</varname> donné. "
+"L'enregistrement contiendra les éléments suivants : <varname>auth_name</"
+"varname>, <varname>auth_srid</varname>, <varname>srname</varname>, "
+"<varname>srtext</varname>, <varname>proj4text</varname>, et les angles de la "
+"zone d'utilisation, <varname>point_sw</varname> et "
+"<varname>point_ne</varname>."
 
 #. Tag: para
 #: reference_srs.xml:445
 #, no-c-format
 msgid "Get the metadata for EPSG:3005."
-msgstr ""
+msgstr "Obtenir les métadonnées pour EPSG:3005."
 
 #. Tag: programlisting
 #: reference_srs.xml:446
@@ -1206,12 +1235,22 @@ msgid ""
 "point_sw  | 0101000020E6100000E17A14AE476161C00000000000204840\n"
 "point_ne  | 0101000020E610000085EB51B81E855CC0E17A14AE47014E40"
 msgstr ""
+"SELECT * FROM postgis_srs('EPSG', '3005');\n"
+"\n"
+"auth_name | EPSG\n"
+"auth_srid | 3005\n"
+"srname    | NAD83 / BC Albers\n"
+"srtext    | PROJCS[\"NAD83 / BC Albers\", ... ]]\n"
+"proj4text | +proj=aea +lat_0=45 +lon_0=-126 +lat_1=50 +lat_2=58.5 +"
+"x_0=1000000 +y_0=0 +datum=NAD83 +units=m +no_defs +type=crs\n"
+"point_sw  | 0101000020E6100000E17A14AE476161C00000000000204840\n"
+"point_ne  | 0101000020E610000085EB51B81E855CC0E17A14AE47014E40"
 
 #. Tag: refname
 #: reference_srs.xml:460
 #, no-c-format
 msgid "postgis_srs_all"
-msgstr ""
+msgstr "postgis_srs_all"
 
 #. Tag: refpurpose
 #: reference_srs.xml:462
@@ -1220,12 +1259,14 @@ msgid ""
 "Return metadata records for every spatial reference system in the underlying "
 "Proj database."
 msgstr ""
+"Renvoie des enregistrements de métadonnées pour chaque système de référence "
+"spatiale dans la base de données Proj sous-jacente."
 
 #. Tag: funcdef
 #: reference_srs.xml:468
 #, no-c-format
 msgid "setof record <function>postgis_srs_all</function>"
-msgstr ""
+msgstr "setof record <function>postgis_srs_all</function>"
 
 #. Tag: para
 #: reference_srs.xml:477
@@ -1237,12 +1278,20 @@ msgid ""
 "<varname>proj4text</varname>, and the corners of the area of usage, "
 "<varname>point_sw</varname> and <varname>point_ne</varname>."
 msgstr ""
+"Renvoie un ensemble d'enregistrements de métadonnées dans la base de données "
+"Proj sous-jacente. Les enregistrements auront le <varname>auth_name</"
+"varname>, <varname>auth_srid</varname>, <varname>srname</varname>, "
+"<varname>srtext</varname>, <varname>proj4text</varname>, et les angles de la "
+"zone d'utilisation, <varname>point_sw</varname> et "
+"<varname>point_ne</varname>."
 
 #. Tag: para
 #: reference_srs.xml:486
 #, no-c-format
 msgid "Get the first 10 metadata records from the Proj database."
 msgstr ""
+"Obtenir les 10 premiers enregistrements de métadonnées de la base de données "
+"Proj."
 
 #. Tag: programlisting
 #: reference_srs.xml:487
@@ -1263,6 +1312,20 @@ msgid ""
 " EPSG      | 20010     | Pulkovo 1995 / Gauss-Kruger zone 10\n"
 " EPSG      | 20011     | Pulkovo 1995 / Gauss-Kruger zone 11"
 msgstr ""
+"SELECT auth_name, auth_srid, srname FROM postgis_srs_all() LIMIT 10;\n"
+"\n"
+" auth_name | auth_srid |                  srname\n"
+"-----------+-----------+------------------------------------------\n"
+" EPSG      | 2000      | Anguilla 1957 / British West Indies Grid\n"
+" EPSG      | 20004     | Pulkovo 1995 / Gauss-Kruger zone 4\n"
+" EPSG      | 20005     | Pulkovo 1995 / Gauss-Kruger zone 5\n"
+" EPSG      | 20006     | Pulkovo 1995 / Gauss-Kruger zone 6\n"
+" EPSG      | 20007     | Pulkovo 1995 / Gauss-Kruger zone 7\n"
+" EPSG      | 20008     | Pulkovo 1995 / Gauss-Kruger zone 8\n"
+" EPSG      | 20009     | Pulkovo 1995 / Gauss-Kruger zone 9\n"
+" EPSG      | 2001      | Antigua 1943 / British West Indies Grid\n"
+" EPSG      | 20010     | Pulkovo 1995 / Gauss-Kruger zone 10\n"
+" EPSG      | 20011     | Pulkovo 1995 / Gauss-Kruger zone 11"
 
 #. Tag: para
 #: reference_srs.xml:493
@@ -1270,12 +1333,13 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"postgis_srs\"/>, <xref linkend=\"postgis_srs_search\"/>"
 msgstr ""
+", <xref linkend=\"postgis_srs\"/>, <xref linkend=\"postgis_srs_search\"/>"
 
 #. Tag: refname
 #: reference_srs.xml:503
 #, no-c-format
 msgid "postgis_srs_search"
-msgstr ""
+msgstr "postgis_srs_search"
 
 #. Tag: refpurpose
 #: reference_srs.xml:505
@@ -1284,6 +1348,9 @@ msgid ""
 "Return metadata records for projected coordinate systems that have areas of "
 "useage that fully contain the bounds parameter."
 msgstr ""
+"Renvoyer les enregistrements de métadonnées pour les systèmes de coordonnées "
+"projetées dont les zones d'utilisation contiennent entièrement le paramètre "
+"bounds."
 
 #. Tag: funcprototype
 #: reference_srs.xml:510
@@ -1294,6 +1361,10 @@ msgid ""
 "<paramdef choice=\"opt\"><type>text </type> <parameter>auth_name=EPSG</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>setof record <function>postgis_srs_search</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>bounds</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text </type> "
+"<parameter>auth_name=EPSG</parameter></paramdef>"
 
 #. Tag: para
 #: reference_srs.xml:521
@@ -1306,6 +1377,13 @@ msgid ""
 "varname>, and the corners of the area of usage, <varname>point_sw</varname> "
 "and <varname>point_ne</varname>."
 msgstr ""
+"Renvoie un ensemble d'enregistrements de métadonnées pour les systèmes de "
+"coordonnées projetées dont les zones d'utilisation contiennent entièrement "
+"le paramètre bounds. Chaque enregistrement contiendra le <varname>auth_name</"
+"varname>, <varname>auth_srid</varname>, <varname>srname</varname>, "
+"<varname>srtext</varname>, <varname>proj4text</varname>, et les angles de la "
+"zone d'utilisation, <varname>point_sw</varname> et "
+"<varname>point_ne</varname>."
 
 #. Tag: para
 #: reference_srs.xml:524
@@ -1314,12 +1392,15 @@ msgid ""
 "The search only looks for projected coordinate systems, and is intended for "
 "users to explore the possible systems that work for the extent of their data."
 msgstr ""
+"La recherche ne porte que sur les systèmes de coordonnées projetées et vise "
+"à permettre aux utilisateurs d'explorer les systèmes possibles en fonction "
+"de l'étendue de leurs données."
 
 #. Tag: para
 #: reference_srs.xml:533
 #, no-c-format
 msgid "Search for projected coordinate systems in Louisiana."
-msgstr ""
+msgstr "Recherche de systèmes de coordonnées projetées en Louisiane."
 
 #. Tag: programlisting
 #: reference_srs.xml:534
@@ -1342,6 +1423,22 @@ msgid ""
 " EPSG      | 3457      | NAD83(HARN) / Louisiana South (ftUS) | POINT(-93.94 "
 "28.85) | POINT(-88.75 31.07)"
 msgstr ""
+"SELECT auth_name, auth_srid, srname,\n"
+"  ST_AsText(point_sw) AS point_sw,\n"
+"  ST_AsText(point_ne) AS point_ne\n"
+"FROM postgis_srs_search('SRID=4326;LINESTRING(-90 30, -91 31)')\n"
+"LIMIT 3;\n"
+"\n"
+" auth_name | auth_srid |                srname                |      "
+"point_sw       |      point_ne\n"
+"-----------+-----------+--------------------------------------+--------------"
+"-------+---------------------\n"
+" EPSG      | 2801      | NAD83(HARN) / Louisiana South        | POINT(-93.94 "
+"28.85) | POINT(-88.75 31.07)\n"
+" EPSG      | 3452      | NAD83 / Louisiana South (ftUS)       | POINT(-93.94 "
+"28.85) | POINT(-88.75 31.07)\n"
+" EPSG      | 3457      | NAD83(HARN) / Louisiana South (ftUS) | POINT(-93.94 "
+"28.85) | POINT(-88.75 31.07)"
 
 #. Tag: para
 #: reference_srs.xml:536
@@ -1350,6 +1447,8 @@ msgid ""
 "Scan a table for max extent and find projected coordinate systems that might "
 "suit."
 msgstr ""
+"Examinez une table pour connaître l'étendue maximale et trouvez les systèmes "
+"de coordonnées projetées qui pourraient convenir."
 
 #. Tag: programlisting
 #: reference_srs.xml:538
@@ -1366,9 +1465,19 @@ msgid ""
 "CROSS JOIN postgis_srs_search(ST_SetSRID(ext.geom, ext.srid))\n"
 "LIMIT 3;"
 msgstr ""
+"WITH ext AS (\n"
+"  SELECT ST_Extent(geom) AS geom, Max(ST_SRID(geom)) AS srid\n"
+"  FROM foo\n"
+")\n"
+"SELECT auth_name, auth_srid, srname,\n"
+"  ST_AsText(point_sw) AS point_sw,\n"
+"  ST_AsText(point_ne) AS point_ne\n"
+"FROM ext\n"
+"CROSS JOIN postgis_srs_search(ST_SetSRID(ext.geom, ext.srid))\n"
+"LIMIT 3;"
 
 #. Tag: para
 #: reference_srs.xml:545
 #, no-c-format
 msgid ", <xref linkend=\"postgis_srs_all\"/>, <xref linkend=\"postgis_srs\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"postgis_srs_all\"/>, <xref linkend=\"postgis_srs\"/>"
