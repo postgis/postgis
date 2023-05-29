@@ -1,7 +1,7 @@
-PostGIS 3.3.3dev
-YYYY/MM/DD
+PostGIS 3.3.3
+2023/05/29
 
-* Bug Fixes *
+* Bug Fixes and Enhancements *
   - #5384, Fix crash in ST_AsGML when given id is longer than given prefix
            (Sandro Santilli)
   - #5380, Fix 2.5 upgrades with views using geography based ST_Distance
