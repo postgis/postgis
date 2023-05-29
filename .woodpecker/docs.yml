@@ -5,7 +5,7 @@ pipeline:
       path: "doc/*"
     commands:
       - ./autogen.sh
-      - ./configure
+      - PGVER=12 ./configure
       - make docs
       - make -C doc check
       - make docs-localized
