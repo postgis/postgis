@@ -1,6 +1,6 @@
-t1|t
-t2|t
-t3|t
-t4|t
-t5|t
-t6|t
+t1|
+t2|POLYGON EMPTY
+t3|32611
+t4|LINESTRING(-1 -1,2 2)
+t5|POINT(0.9625 2)
+t6|POLYGON((-1.12 -0.84,2.88 2.16,3 2,-1 -1,-1.12 -0.84))
