@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-25 20:53+0000\n"
-"PO-Revision-Date: 2023-05-29 11:46+0000\n"
+"PO-Revision-Date: 2023-05-31 15:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "release_notesxml/fr/>\n"
@@ -729,24 +729,26 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5104\">5104</ulink>, "
 "postgis_extensions_upgrade() fails with pgextwlist (Regina Obe)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5104\">5104</ulink>, "
+"postgis_extensions_upgrade() échoue avec pgextwlist (Regina Obe)"
 
 #. Tag: title
 #: release_notes.xml:139
 #, no-c-format
 msgid "PostGIS 3.3.0beta2"
-msgstr ""
+msgstr "PostGIS 3.3.0beta2"
 
 #. Tag: para
 #: release_notes.xml:140
 #, no-c-format
 msgid "2022/07/13"
-msgstr ""
+msgstr "2022/07/13"
 
 #. Tag: para
 #: release_notes.xml:151
 #, no-c-format
 msgid "Changes since PostGIS 3.3.0beta1:"
-msgstr ""
+msgstr "Changements depuis PostGIS 3.3.0beta1 :"
 
 #. Tag: title
 #: release_notes.xml:154 release_notes.xml:690 release_notes.xml:770
@@ -756,7 +758,7 @@ msgstr ""
 #: release_notes.xml:2507 release_notes.xml:2571 release_notes.xml:2868
 #, no-c-format
 msgid "New Features"
-msgstr ""
+msgstr "Nouvelles fonctionnalités"
 
 #. Tag: para
 #: release_notes.xml:160
@@ -765,6 +767,8 @@ msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/698\">GH698</ulink>, "
 "support parallel aggregate for ST_Union (Sergei Shoulbakov)"
 msgstr ""
+"<ulink url=\"https://github.com/postgis/postgis/pull/698\">GH698</ulink>, "
+"support des agrégats parallèles pour ST_Union (Sergei Shoulbakov)"
 
 #. Tag: para
 #: release_notes.xml:165
@@ -773,6 +777,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5179\">5179</ulink>, "
 "pgsql2shp syntax error on big-endian (Bas Couwenberg)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5179\">5179</ulink>, "
+"erreur de syntaxe pgsql2shp sur big-endian (Bas Couwenberg)"
 
 #. Tag: title
 #: release_notes.xml:170
@@ -816,6 +822,10 @@ msgid ""
 "disabled by default because on some platforms, causes compilation errors "
 "(BSD and MingW64 issues have been raised)"
 msgstr ""
+"Le nouvel indicateur --enable-lto améliore les calculs mathématiques. Cette "
+"nouvelle fonctionnalité est désactivée par défaut car sur certaines "
+"plateformes, elle provoque des erreurs de compilation (les problèmes BSD et "
+"MingW64 ont été soulevés)"
 
 #. Tag: para
 #: release_notes.xml:193
@@ -824,6 +834,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5039\">5039</ulink>, "
 "postgis_tiger_geocoder TIGER 2021 (Regina Obe)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5039\">5039</ulink>, "
+"postgis_tiger_geocoder TIGER 2021 (Regina Obe)"
 
 #. Tag: para
 #: release_notes.xml:198
@@ -832,12 +844,14 @@ msgid ""
 "><ulink url=\"https://trac.osgeo.org/postgis/ticket/5169\">5169</ulink>, "
 "ST_SimplifyPolygonHull (requires GEOS 3.11) (Paul Ramsey, Martin Davis)"
 msgstr ""
+"><ulink url=\"https://trac.osgeo.org/postgis/ticket/5169\">5169</ulink>, "
+"ST_SimplifyPolygonHull (nécessite GEOS 3.11) (Paul Ramsey, Martin Davis)"
 
 #. Tag: title
 #: release_notes.xml:204 release_notes.xml:270
 #, no-c-format
 msgid "Bug Fix"
-msgstr ""
+msgstr "Correction de bug"
 
 #. Tag: para
 #: release_notes.xml:205
@@ -846,6 +860,8 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5173\">5173</ulink> "
 "st_asflatgeobuf detoast crash (Paul Ramsey)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5173\">5173</ulink> "
+"st_asflatgeobuf detoast crash (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:207
@@ -854,18 +870,20 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5114\">5114</ulink>, "
 "pgsql2shp segfault with long or many truncated columns"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5114\">5114</ulink>, "
+"pgsql2shp segfault avec des colonnes longues ou tronquées"
 
 #. Tag: title
 #: release_notes.xml:212
 #, no-c-format
 msgid "PostGIS 3.3.0alpha1"
-msgstr ""
+msgstr "PostGIS 3.3.0alpha1"
 
 #. Tag: para
 #: release_notes.xml:213
 #, no-c-format
 msgid "2022/05/21"
-msgstr ""
+msgstr "2022/05/21"
 
 #. Tag: para
 #: release_notes.xml:214
@@ -876,13 +894,18 @@ msgid ""
 "(precision feature of many processing functions) ST_MakeValid enhancements "
 "with 3.10+, ST_ConcaveHull native GEOS implementation with GEOS 3.11+"
 msgstr ""
+"Cette version nécessite PostgreSQL 11 ou plus, GEOS 3.6 ou plus, et Proj 4.9+"
+". Des fonctionnalités supplémentaires sont activées si vous utilisez GEOS 3."
+"9+ (précision de nombreuses fonctions de traitement) ST_MakeValid "
+"améliorations avec 3.10+, ST_ConcaveHull implémentation native GEOS avec "
+"GEOS 3.11+"
 
 #. Tag: title
 #: release_notes.xml:227 release_notes.xml:299 release_notes.xml:488
 #: release_notes.xml:579 release_notes.xml:613
 #, no-c-format
 msgid "Breaking changes"
-msgstr ""
+msgstr "Changements avec rupture"
 
 #. Tag: para
 #: release_notes.xml:229
@@ -891,6 +914,8 @@ msgid ""
 "Change output for WKT MULTIPOINT. All points now wrapped in parens. (Even "
 "Roualt)"
 msgstr ""
+"Modification de la sortie pour WKT MULTIPOINT. Tous les points sont "
+"maintenant wrappés dans des parents. (Even Rouault)"
 
 #. Tag: para
 #: release_notes.xml:231
@@ -900,6 +925,9 @@ msgid ""
 "ST_Polygon so it works faster but might produce invalid polygons. "
 "(Aliaksandr Kalenik)"
 msgstr ""
+"GH674, la validation et la fixation de la géométrie sont désactivées pour "
+"ST_DumpAsPolygons et ST_Polygon, ce qui accélère le processus mais peut "
+"produire des polygones invalides. (Aliaksandr Kalenik)"
 
 #. Tag: para
 #: release_notes.xml:238
@@ -908,6 +936,8 @@ msgid ""
 "2861, Add index on topology.node(containing_face) speeding up splitting and "
 "merging of faces (Sandro Santilli)"
 msgstr ""
+"2861, Ajout d'un index sur topology.node(containing_face) pour accélérer la "
+"division et la fusion des faces (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:240
@@ -916,6 +946,8 @@ msgid ""
 "2083, Speed up ST_RemEdge topology functions adding index on "
 "relation(element_id) and edge_data(abs_next*) (Sandro Santilli)"
 msgstr ""
+"2083, Accélération des fonctions topologiques ST_RemEdge en ajoutant un "
+"index sur relation(element_id) et edge_data(abs_next*) (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:242
@@ -924,18 +956,22 @@ msgid ""
 "5118, Allow dropping topologies with missing topogeometry sequences (Sandro "
 "Santilli)"
 msgstr ""
+"5118, Permettre l'abandon des topologies avec des séquences topogeometry "
+"manquantes (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:244
 #, no-c-format
 msgid "5111, faster topology face MBR computation (Sandro Santilli)"
 msgstr ""
+"5111, calcul plus rapide du MBR (Minimum Bounding Rectangle) face à la "
+"topologie (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:247
 #, no-c-format
 msgid "5040, add postgis_sfcgal_full_version (Loïc Bartoletti)"
-msgstr ""
+msgstr "5040, ajout de postgis_sfcgal_full_version (Loïc Bartoletti)"
 
 #. Tag: para
 #: release_notes.xml:248
@@ -944,12 +980,16 @@ msgid ""
 "GH655, GiST: balance the tree splits better in recursive calls (Darafei "
 "Praliaskouski)"
 msgstr ""
+"GH655, GiST : mieux équilibrer les divisions de l'arbre dans les appels "
+"récursifs (Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:249
 #, no-c-format
 msgid "GH657, GiST: do not call no-op decompress function (Aliaksandr Kalenik)"
 msgstr ""
+"GH657, GiST : ne pas appeler la fonction de décompression no-op (Aliaksandr "
+"Kalenik)"
 
 #. Tag: para
 #: release_notes.xml:250
@@ -957,6 +997,8 @@ msgstr ""
 msgid ""
 "4912, GiST: fix crash on STORAGE EXTERNAL for geography (Aliaksandr Kalenik)"
 msgstr ""
+"4912, GiST : correction d'un crash sur STORAGE EXTERNAL pour le type "
+"geography (Aliaksandr Kalenik)"
 
 #. Tag: para
 #: release_notes.xml:252
@@ -965,12 +1007,14 @@ msgid ""
 "4574, GH678, #5121 Enable Link-Time Optimizations using --enable-lto (Sergei "
 "Shoulbakov)"
 msgstr ""
+"4574, GH678, #5121 Activer les optimisations du temps de liaison en "
+"utilisant --enable-lto (Sergei Shoulbakov)"
 
 #. Tag: para
 #: release_notes.xml:253
 #, no-c-format
 msgid "GH676, faster ST_Clip (Aliaksandr Kalenik)"
-msgstr ""
+msgstr "GH676, ST_Clip plus rapide (Aliaksandr Kalenik)"
 
 #. Tag: para
 #: release_notes.xml:254
@@ -979,42 +1023,45 @@ msgid ""
 "5135, Fast GiST index build is enabled by default for PostgreSQL 15+ (Sergei "
 "Shoulbakov)"
 msgstr ""
+"5135, La construction rapide d'index GiST est activée par défaut pour "
+"PostgreSQL 15+ (Sergei Shoulbakov)"
 
 #. Tag: para
 #: release_notes.xml:259
 #, no-c-format
 msgid "5116, Topology export/import scripts (Sandro Santilli)"
-msgstr ""
+msgstr "5116, Scripts d'import/export de topologie (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:261
 #, no-c-format
 msgid "5037, postgis_sfcgal: ST_3DConvexHull (Loïc Bartoletti)"
-msgstr ""
+msgstr "5037, postgis_sfcgal: ST_3DConvexHull (Loïc Bartoletti)"
 
 #. Tag: para
 #: release_notes.xml:264
 #, no-c-format
 msgid "GH659, MARC21/XML, ST_GeomFromMARC21, ST_AsMARC21 (Jim Jones)"
-msgstr ""
+msgstr "GH659, MARC21/XML, ST_GeomFromMARC21, ST_AsMARC21 (Jim Jones)"
 
 #. Tag: para
 #: release_notes.xml:265
 #, no-c-format
 msgid "5132, GH683, sfcgal: ST_3DUnion aggregate function (Sergei Shoulbakov)"
 msgstr ""
+"5132, GH683, sfcgal: ST_3DUnion fonction d'agrégation (Sergei Shoulbakov)"
 
 #. Tag: para
 #: release_notes.xml:266
 #, no-c-format
 msgid "5143, SFCGAL ST_AlphaShape and ST_OptimalAlphaShape (Loïc Bartoletti)"
-msgstr ""
+msgstr "5143, SFCGAL ST_AlphaShape et ST_OptimalAlphaShape (Loïc Bartoletti)"
 
 #. Tag: para
 #: release_notes.xml:271
 #, no-c-format
 msgid "5100, Support for PostgreSQL 15 (atoi removal) (Laurenz Albe)"
-msgstr ""
+msgstr "5100, Support de PostgreSQL 15 (suppression d'atoi) (Laurenz Albe)"
 
 #. Tag: para
 #: release_notes.xml:272
@@ -1023,12 +1070,14 @@ msgid ""
 "5123, Support for PostgreSQL 15 - PG15 now exposes json types and functions, "
 "do not include for PG15+ (Regina Obe)"
 msgstr ""
+"5123, Support pour PostgreSQL 15 - PG15 expose maintenant les types et "
+"fonctions json, ne pas inclure pour PG15+ (Regina Obe)"
 
 #. Tag: para
 #: release_notes.xml:274
 #, no-c-format
 msgid "5088, Memory corruption in mvt_agg_transfn (Victor Collod)"
-msgstr ""
+msgstr "5088, Corruption de mémoire dans mvt_agg_transfn (Victor Collod)"
 
 #. Tag: para
 #: release_notes.xml:275
@@ -1036,6 +1085,8 @@ msgstr ""
 msgid ""
 "5137, resetting interrupt flags before query execution (Sergei Shoulbakov)"
 msgstr ""
+"5137, réinitialisation des indicateurs d'interruption avant l'exécution de "
+"la requête (Sergei Shoulbakov)"
 
 #. Tag: para
 #: release_notes.xml:276
@@ -1044,18 +1095,20 @@ msgid ""
 "5148, ST_Clip is more robust to alignment of raster and clip geometry "
 "(Sergei Shoulbakov)"
 msgstr ""
+"5148, ST_Clip est plus robuste à l'alignement de la géométrie du raster et "
+"au découpage de celui-ci (Sergei Shoulbakov)"
 
 #. Tag: title
 #: release_notes.xml:281
 #, no-c-format
 msgid "PostGIS 3.2.0 (Olivier Courtin Edition)"
-msgstr ""
+msgstr "PostGIS 3.2.0 (Olivier Courtin Edition)"
 
 #. Tag: para
 #: release_notes.xml:282
 #, no-c-format
 msgid "2021/12/18"
-msgstr ""
+msgstr "2021/12/18"
 
 #. Tag: para
 #: release_notes.xml:283 release_notes.xml:397 release_notes.xml:458
@@ -1065,6 +1118,10 @@ msgid ""
 "4.9+ Additional features are enabled if you are running GEOS 3.9+ (and "
 "ST_MakeValid enhancements with 3.10+), Proj 6.1+, and PostgreSQL 14+."
 msgstr ""
+"Cette version nécessite PostgreSQL 9.6 ou plus, GEOS 3.6 ou plus, et Proj 4."
+"9+ Des fonctionnalités supplémentaires sont activées si vous utilisez GEOS 3."
+"9+ (et les améliorations ST_MakeValid avec 3.10+), Proj 6.1+, et PostgreSQL "
+"14+."
 
 #. Tag: para
 #: release_notes.xml:287 release_notes.xml:401
@@ -1075,6 +1132,11 @@ msgid ""
 "user testing as to the true impact of real-world queries. If you are running "
 "PG14+, you can reenable it by doing:"
 msgstr ""
+"En raison de la dégradation des performances des requêtes avec la nouvelle "
+"version de l'index rapide de PG14, nous avons décidé de désactiver la "
+"fonctionnalité par défaut jusqu'à ce que nous obtenions plus de tests de la "
+"part des utilisateurs quant à l'impact réel des requêtes dans le monde réel. "
+"Si vous utilisez PG14+, vous pouvez la réactiver en procédant comme suit :"
 
 #. Tag: programlisting
 #: release_notes.xml:293
@@ -1084,12 +1146,15 @@ msgid ""
 "            ADD FUNCTION 11 (geometry)\n"
 "            geometry_gist_sortsupport_2d (internal);"
 msgstr ""
+"ALTER OPERATOR FAMILY gist_geometry_ops_2d USING gist\n"
+"            ADD FUNCTION 11 (geometry)\n"
+"            geometry_gist_sortsupport_2d (internal);"
 
 #. Tag: para
 #: release_notes.xml:294 release_notes.xml:409
 #, no-c-format
 msgid "To revert the change:"
-msgstr ""
+msgstr "Pour annuler la modification :"
 
 #. Tag: programlisting
 #: release_notes.xml:295
@@ -1098,12 +1163,14 @@ msgid ""
 "ALTER OPERATOR FAMILY gist_geometry_ops_2d using gist\n"
 "        DROP FUNCTION 11 (geometry);"
 msgstr ""
+"ALTER OPERATOR FAMILY gist_geometry_ops_2d using gist\n"
+"        DROP FUNCTION 11 (geometry);"
 
 #. Tag: para
 #: release_notes.xml:296 release_notes.xml:412
 #, no-c-format
 msgid "and then reindex your gist indexes"
-msgstr ""
+msgstr "puis réindexez vos index gist"
 
 #. Tag: para
 #: release_notes.xml:300
@@ -1112,6 +1179,8 @@ msgid ""
 "5008, Empty geometries are not reported as being within Infinite distance by "
 "ST_DWithin (Sandro Santilli)"
 msgstr ""
+"5008, Les géométries vides ne sont pas signalées comme étant à distance "
+"infinie par ST_DWithin (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:302
@@ -1120,6 +1189,9 @@ msgid ""
 "4824, Removed <code>--without-wagyu</code> build option. Using Wagyu is now "
 "mandatory to build with MVT support."
 msgstr ""
+"4824, Suppression de l'option de construction <code>--without-wagyu</code>. "
+"L'utilisation de Wagyu est maintenant obligatoire pour construire avec le "
+"support MVT."
 
 #. Tag: para
 #: release_notes.xml:303
@@ -1128,6 +1200,8 @@ msgid ""
 "4933, topology.GetFaceByPoint will not work with topologies having invalid "
 "edge linking."
 msgstr ""
+"4933, topology.GetFaceByPoint ne fonctionnera pas avec les topologies dont "
+"la liaison des arêtes n'est pas valide."
 
 #. Tag: para
 #: release_notes.xml:304
@@ -1136,6 +1210,8 @@ msgid ""
 "4981, ST_StartPoint support any geometry. No longer returns null for non-"
 "linestrings."
 msgstr ""
+"4981, ST_StartPoint supporte toute géométrie. Ne renvoie plus null pour les "
+"objets non linéaires."
 
 #. Tag: para
 #: release_notes.xml:305
@@ -1145,12 +1221,16 @@ msgid ""
 "scale close to target extent. If you need previous simplifying behaviour, "
 "you can ST_Simplify the geometry in advance. (Darafei Praliaskouski)"
 msgstr ""
+"4149, ST_AsMVTGeom préserve maintenant plus de détails de la géométrie "
+"originale à une échelle proche de l'étendue cible. Si vous avez besoin du "
+"comportement de simplification précédent, vous pouvez utiliser ST_Simplify "
+"sur la géométrie à l'avance. (Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:308
 #, no-c-format
 msgid "- Proj 4.9 or higher is required"
-msgstr ""
+msgstr "- Proj 4.9 ou plus est nécessaire"
 
 #. Tag: para
 #: release_notes.xml:309 release_notes.xml:466
@@ -1159,12 +1239,14 @@ msgid ""
 "5000, Turn off Window support in ST_AsMVT aggregate as no real use-case for "
 "it and it crashes with random input (Paul Ramsey)"
 msgstr ""
+"5000, Désactiver le support des Window dans l'agrégat ST_AsMVT car il n'y a "
+"pas d'utilité réelle et il plante avec des entrées aléatoires (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:316 release_notes.xml:479
 #, no-c-format
 msgid "4997, FlatGeobuf format input/output (Björn Harrtell)"
-msgstr ""
+msgstr "4997, Entrée/sortie du format FlatGeobuf (Björn Harrtell)"
 
 #. Tag: para
 #: release_notes.xml:317
@@ -1172,6 +1254,8 @@ msgstr ""
 msgid ""
 "4575, GRANT SELECT on topology metadata tables to PUBLIC (Sandro Santilli)"
 msgstr ""
+"4575, GRANT SELECT sur les tables de métadonnées topologiques à PUBLIC ("
+"Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:318
@@ -1180,6 +1264,8 @@ msgid ""
 "2592, Do not allow CreateTopology to define topologies with SRID &lt; 0 "
 "(Sandro Santilli)"
 msgstr ""
+"2592, Ne pas autoriser CreateTopology à définir des topologies avec SRID &lt;"
+" 0 (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:320
@@ -1187,6 +1273,8 @@ msgstr ""
 msgid ""
 "3232, Prevent moving an isolated node to different face (Sandro Santilli)"
 msgstr ""
+"3232, Empêcher le déplacement d'un noeud isolé vers une autre face (Sandro "
+"Santilli)"
 
 #. Tag: para
 #: release_notes.xml:322
@@ -1195,6 +1283,8 @@ msgid ""
 "- Consider collection TopoGeometries while editing topology primitives. "
 "(Sandro Santilli)"
 msgstr ""
+"- Considérer la collection TopoGeometries lors de l'édition des primitives "
+"topologiques. (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:324
@@ -1203,6 +1293,8 @@ msgid ""
 "3248, Prevent removing isolated edges if used in a TopoGeometry (Sandro "
 "Santilli)"
 msgstr ""
+"3248, Empêcher la suppression des arêtes isolées si elles sont utilisées "
+"dans une TopoGeometry (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:326
@@ -1211,6 +1303,8 @@ msgid ""
 "3231, Prevent removing isolated nodes if used in a TopoGeometry (Sandro "
 "Santilli)"
 msgstr ""
+"3231, Empêcher la suppression des noeuds isolés s'ils sont utilisés dans une "
+"TopoGeometry (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:328
@@ -1219,6 +1313,8 @@ msgid ""
 "3239, Prevent headling topology edges if the connecting node is used in the "
 "definition of a TopoGeometry (Sandro Santilli)"
 msgstr ""
+"3239, Empêcher \"headling\" des arêtes topologiques si le noeud de connexion "
+"est utilisé dans la définition d'une TopoGeometry (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:330
@@ -1227,12 +1323,16 @@ msgid ""
 "4950, Speed up checking containing_face for nodes in ValidateTopology "
 "(Sandro Santilli)"
 msgstr ""
+"4950, Accélérer la vérification de containing_face pour les noeuds dans "
+"ValidateTopology (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:332
 #, no-c-format
 msgid "4945, Multi-shell face check in ValidateTopology (Sandro Santilli)"
 msgstr ""
+"4945, Vérification des faces multi-enveloppes dans ValidateTopology (Sandro "
+"Santilli)"
 
 #. Tag: para
 #: release_notes.xml:333
@@ -1240,24 +1340,30 @@ msgstr ""
 msgid ""
 "4944, Side-location conflict check in ValidateTopology (Sandro Santilli)"
 msgstr ""
+"4944, Vérification des conflits d'emplacement latéral dans ValidateTopology ("
+"Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:334
 #, no-c-format
 msgid "3042, ValidateTopology check for edge linking (Sandro Santilli)"
 msgstr ""
+"3042, Vérification de ValidateTopology pour la liaison des arêtes (Sandro "
+"Santilli)"
 
 #. Tag: para
 #: release_notes.xml:335
 #, no-c-format
 msgid "3276, ValidateTopology check for face's mbr (Sandro Santilli)"
 msgstr ""
+"3276, Vérification de ValidateTopology pour la mbr (minimum bounding "
+"rectangle) de la face (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:336
 #, no-c-format
 msgid "4936, Bounding box limited ValidateTopology (Sandro Santilli)"
-msgstr ""
+msgstr "4936, Boîte de délimitation limitée ValidateTopology (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:337
@@ -1265,6 +1371,8 @@ msgstr ""
 msgid ""
 "4933, Speed up topology building in presence of big faces (Sandro Santilli)"
 msgstr ""
+"4933, Accélérer la construction de la topologie en présence de grandes faces "
+"(Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:338
@@ -1272,6 +1380,8 @@ msgstr ""
 msgid ""
 "3233, ValidateTopology check for node's containing_face (Sandro Santilli)"
 msgstr ""
+"3233, ValidateTopology vérification de la containing_face du noeud (Sandro "
+"Santilli)"
 
 #. Tag: para
 #: release_notes.xml:339
@@ -1280,12 +1390,14 @@ msgid ""
 "4830, ValidateTopology check for edges side face containment (Sandro "
 "Santilli)"
 msgstr ""
+"4830, ValidateTopology vérification du confinement des faces latérales des "
+"arêtes (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:341
 #, no-c-format
 msgid "4827, Allow NaN coordinates in WKT input (Paul Ramsey)"
-msgstr ""
+msgstr "4827, Autoriser les coordonnées NaN dans les entrées WKT (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:342
@@ -1293,6 +1405,8 @@ msgstr ""
 msgid ""
 "- ST_Value() accepts resample parameter to add bilinear option (Paul Ramsey)"
 msgstr ""
+"- ST_Value() accepte le paramètre resample pour ajouter l'option bilinéaire ("
+"Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:343
@@ -1301,6 +1415,8 @@ msgid ""
 "3778, #4401, ST_Boundary now works for TIN and does not linearize curves "
 "(Aliaksandr Kalenik)"
 msgstr ""
+"3778, #4401, ST_Boundary fonctionne maintenant pour TIN et ne linéarise pas "
+"les courbes (Aliaksandr Kalenik)"
 
 #. Tag: para
 #: release_notes.xml:344
@@ -1309,6 +1425,8 @@ msgid ""
 "4881, #4884, Store sign of edge_id for lineal TopoGeometry in relation table "
 "to retain direction (Sandro Santilli)"
 msgstr ""
+"4881, #4884, Stocker le signe du edge_id pour la TopoGeometry linéaire dans "
+"la table des relations pour conserver la direction (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:346
@@ -1317,6 +1435,8 @@ msgid ""
 "4628, Add an option to disable ANALYZE when loading shapefiles (Stefan "
 "Corneliu Petrea)"
 msgstr ""
+"4628, Ajout d'une option pour désactiver ANALYZE lors du chargement des "
+"shapefiles (Stefan Corneliu Petrea)"
 
 #. Tag: para
 #: release_notes.xml:347
@@ -1325,18 +1445,24 @@ msgid ""
 "4924, Faster ST_RemoveRepeatedPoints on large multipoints, O(NlogN) instead "
 "of O(N^2) (Aliaksandr Kalenik, Darafei Praliaskouski)"
 msgstr ""
+"4924, ST_RemoveRepeatedPoints plus rapide sur les grands multipoints, "
+"O(NlogN) au lieu de O(N^2) (Aliaksandr Kalenik, Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:349
 #, no-c-format
 msgid "4925, fix ST_DumpPoints to not overlook points (Aliaksandr Kalenik)"
 msgstr ""
+"4925, correction de ST_DumpPoints pour ne pas négliger les points ("
+"Aliaksandr Kalenik)"
 
 #. Tag: para
 #: release_notes.xml:350
 #, no-c-format
 msgid "- ST_SRID(topogeometry) override, to speedup lookups (Sandro Santilli)"
 msgstr ""
+"- ST_SRID(topogeometry) outrepassé, pour accélérer les recherches (Sandro "
+"Santilli)"
 
 #. Tag: para
 #: release_notes.xml:351
@@ -1345,6 +1471,8 @@ msgid ""
 "2175, Avoid creating additional nodes when adding same closed line to "
 "topology (Sandro Santilli)"
 msgstr ""
+"2175, Eviter de créer des noeuds supplémentaires lors de l'ajout d'une même "
+"ligne fermée à la topologie (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:353
@@ -1353,6 +1481,8 @@ msgid ""
 "4974, Upgrade path for address_standardizer_data_us (Jan Katins of Aiven, "
 "Regina Obe)"
 msgstr ""
+"4974, Mise à jour du chemin pour address_standardizer_data_us (Jan Katins of "
+"Aiven, Regina Obe)"
 
 #. Tag: para
 #: release_notes.xml:355
@@ -1360,18 +1490,21 @@ msgstr ""
 msgid ""
 "4975, PostGIS upgrade change to not use temp tables (Jan Katins of Aiven)"
 msgstr ""
+"4975, Changement de la mise à jour de PostGIS pour ne pas utiliser les "
+"tables temporaires (Jan Katins de Aiven)"
 
 #. Tag: para
 #: release_notes.xml:356
 #, no-c-format
 msgid "4981, ST_StartPoint support any geometry (Aliaksandr Kalenik)"
 msgstr ""
+"4981, ST_StartPoint supporte n'importe quelle géométrie (Aliaksandr Kalenik)"
 
 #. Tag: para
 #: release_notes.xml:357
 #, no-c-format
 msgid "4799, Include srs in GeoJSON where it exists in spatial_ref_sys."
-msgstr ""
+msgstr "4799, Inclure srs dans GeoJSON lorsqu'il existe dans spatial_ref_sys."
 
 #. Tag: para
 #: release_notes.xml:358
@@ -1381,6 +1514,9 @@ msgid ""
 "sorting method. (Han Wang, Aliaksandr Kalenik, Darafei Praliaskouski, "
 "Giuseppe Broccolo)"
 msgstr ""
+"4986, Les index GIST sur Postgres 14 sont maintenant créés plus rapidement "
+"en utilisant la méthode de tri de Hilbert. (Han Wang, Aliaksandr Kalenik, "
+"Darafei Praliaskouski, Giuseppe Broccolo)"
 
 #. Tag: para
 #: release_notes.xml:360
@@ -1389,6 +1525,8 @@ msgid ""
 "4949, Use proj_normalize_for_visualization to hand \"axis swap\" decisions "
 "(Paul Ramsey)"
 msgstr ""
+"4949, Utiliser proj_normalize_for_visualization pour gérer les décisions de "
+"\"axis swap\" (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:361
@@ -1397,60 +1535,68 @@ msgid ""
 "- GH647, ST_PixelAsCentroids, ST_PixelAsCentroid reimplemented on top of a C "
 "function (Sergei Shoulbakov)"
 msgstr ""
+"- GH647, ST_PixelAsCentroids, ST_PixelAsCentroid réimplémenté au dessus "
+"d'une fonction C (Sergei Shoulbakov)"
 
 #. Tag: para
 #: release_notes.xml:362
 #, no-c-format
 msgid "- GH648, ST_AsMVTGeom now uses faster clipping (Aliaksandr Kalenik)"
 msgstr ""
+"- GH648, ST_AsMVTGeom utilise maintenant un découpage plus rapide ("
+"Aliaksandr Kalenik)"
 
 #. Tag: para
 #: release_notes.xml:363 release_notes.xml:448
 #, no-c-format
 msgid "5018, pgsql2shp basic support for WITH CTE clause (Regina Obe)"
-msgstr ""
+msgstr "5018, pgsql2shp support de base pour la clause WITH CTE (Regina Obe)"
 
 #. Tag: para
 #: release_notes.xml:364 release_notes.xml:449
 #, no-c-format
 msgid "5019, address_standardizer: Add support for pcre2 (Paul Ramsey)"
-msgstr ""
+msgstr "5019, address_standardizer : Ajout du support pour pcre2 (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:369
 #, no-c-format
 msgid "4923, topology.ValidateTopologyRelation (Sandro Santilli)"
-msgstr ""
+msgstr "4923, topology.ValidateTopologyRelation (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:370
 #, no-c-format
 msgid "4933, topology.GetFaceContainingPoint (Sandro Santilli)"
-msgstr ""
+msgstr "4933, topology.GetFaceContainingPoint (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:371
 #, no-c-format
 msgid "2175, ST_Scroll (Sandro Santilli)"
-msgstr ""
+msgstr "2175, ST_Scroll (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:372
 #, no-c-format
 msgid "4841, FindTopology to quickly get a topology record (Sandro Santilli)"
 msgstr ""
+"4841, FindTopology pour obtenir rapidement un enregistrement de topologie ("
+"Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:373
 #, no-c-format
 msgid "4869, FindLayer to quickly get a layer record (Sandro Santilli)"
 msgstr ""
+"4869, FindLayer pour obtenir rapidement un enregistrement de couche (Sandro "
+"Santilli)"
 
 #. Tag: para
 #: release_notes.xml:374
 #, no-c-format
 msgid "4851, TopoGeom_addTopoGeom function (Sandro Santilli)"
-msgstr ""
+msgstr "4851, Fonction TopoGeom_addTopoGeom (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:375 release_notes.xml:551
@@ -1459,6 +1605,8 @@ msgid ""
 "ST_MakeValid(geometry, options) allows alternative validity building "
 "algorithms with GEOS 3.10 (Paul Ramsey)"
 msgstr ""
+"ST_MakeValid(geometry, options) permet des algorithmes alternatifs de "
+"construction de validité avec GEOS 3.10 (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:377 release_notes.xml:553
@@ -1468,6 +1616,10 @@ msgid ""
 "of a number of algorithms (inverse weighted distance, average, etc) using "
 "algorithms from GDAL (Paul Ramsey)"
 msgstr ""
+"ST_InterpolateRaster() remplit les cellules raster entre les points "
+"d'échantillonnage en utilisant l'un des nombreux algorithmes (distance "
+"pondérée inverse, moyenne, etc.) en utilisant les algorithmes de GDAL (Paul "
+"Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:381 release_notes.xml:557
@@ -1476,6 +1628,8 @@ msgid ""
 "ST_Contour() generates contour lines from raster values using algorithms "
 "from GDAL (Paul Ramsey)"
 msgstr ""
+"ST_Contour() génère des courbes de niveau à partir de valeurs raster en "
+"utilisant des algorithmes de GDAL (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:383 release_notes.xml:559
@@ -1484,6 +1638,8 @@ msgid ""
 "ST_SetZ()/ST_SetM() fills in z/m coordinates of a geometry using data read "
 "from a raster (Paul Ramsey)"
 msgstr ""
+"ST_SetZ()/ST_SetM() remplit les coordonnées z/m d'une géométrie en utilisant "
+"des données lues à partir d'un raster (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:385 release_notes.xml:561
@@ -1492,6 +1648,9 @@ msgid ""
 "New postgis.gdal_vsi_options GUC allows out-db rasters on VSI network "
 "services to be accessed with authentication keys, etc. (Paul Ramsey)"
 msgstr ""
+"Le nouveau GUC postgis.gdal_vsi_options permet d'accéder aux rasters out-db "
+"sur les services réseau VSI avec des clés d'authentification, etc. (Paul "
+"Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:387 release_notes.xml:563
@@ -1500,6 +1659,8 @@ msgid ""
 "ST_DumpSegments returns a set of segments of input geometry (Aliaksandr "
 "Kalenik)"
 msgstr ""
+"ST_DumpSegments renvoie un ensemble de segments de la géométrie d'entrée ("
+"Aliaksandr Kalenik)"
 
 #. Tag: para
 #: release_notes.xml:388
@@ -1508,6 +1669,8 @@ msgid ""
 "4859, ST_Point, ST_PointZ, ST_PointM, ST_PointZM, constructors with SRID "
 "parameter (Paul Ramsey)"
 msgstr ""
+"4859, ST_Point, ST_PointZ, ST_PointM, ST_PointZM, constructeurs avec "
+"paramètre SRID (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:390
@@ -1517,18 +1680,21 @@ msgid ""
 "not sure what is the number of clusters but you know what the size of "
 "clusters should be. (Darafei Praliaskouski)"
 msgstr ""
+"4808, ST_ClusterKMeans supporte maintenant l'argument max_radius. Utilisez-"
+"le lorsque vous n'êtes pas sûr du nombre de clusters mais que vous "
+"connaissez leur taille. (Darafei Praliaskouski)"
 
 #. Tag: title
 #: release_notes.xml:395
 #, no-c-format
 msgid "PostGIS 3.2.0beta3"
-msgstr ""
+msgstr "PostGIS 3.2.0beta3"
 
 #. Tag: para
 #: release_notes.xml:396
 #, no-c-format
 msgid "2021/12/04"
-msgstr ""
+msgstr "2021/12/04"
 
 #. Tag: programlisting
 #: release_notes.xml:408
@@ -1538,6 +1704,9 @@ msgid ""
 "        ADD FUNCTION 11 (geometry)\n"
 "        geometry_gist_sortsupport_2d (internal);"
 msgstr ""
+"ALTER OPERATOR FAMILY gist_geometry_ops_2d USING gist\n"
+"        ADD FUNCTION 11 (geometry)\n"
+"        geometry_gist_sortsupport_2d (internal);"
 
 #. Tag: programlisting
 #: release_notes.xml:410
@@ -1546,36 +1715,39 @@ msgid ""
 "ALTER OPERATOR FAMILY gist_geometry_ops_2d using gist\n"
 "     DROP FUNCTION 11 (geometry);"
 msgstr ""
+"ALTER OPERATOR FAMILY gist_geometry_ops_2d using gist\n"
+"     DROP FUNCTION 11 (geometry);"
 
 #. Tag: para
 #: release_notes.xml:414
 #, no-c-format
 msgid "Changes since PostGIS 3.2.0beta2 release:"
-msgstr ""
+msgstr "Changements depuis la sortie de PostGIS 3.2.0beta2 :"
 
 #. Tag: title
 #: release_notes.xml:416 release_notes.xml:438
 #, no-c-format
 msgid "Breaking changes / fixes"
-msgstr ""
+msgstr "Changements avec rupture / corrections"
 
 #. Tag: para
 #: release_notes.xml:417
 #, no-c-format
 msgid "5028, ST_AsFlatGeobuf crashes on mixed geometry input (Björn Harrtell)"
-msgstr ""
+msgstr "5028, ST_AsFlatGeobuf plante sur une géométrie mixte (Björn Harrtell)"
 
 #. Tag: para
 #: release_notes.xml:419
 #, no-c-format
 msgid "5029, ST_AsFlatGeobuf indexed output corruption (Björn Harrtell)"
 msgstr ""
+"5029, Corruption de la sortie indexée de ST_AsFlatGeobuf (Björn Harrtell)"
 
 #. Tag: para
 #: release_notes.xml:421
 #, no-c-format
 msgid "5014, Crash on ST_TableFromFlatGeobuf (Björn Harrtell)"
-msgstr ""
+msgstr "5014, Crash sur ST_TableFromFlatGeobuf (Björn Harrtell)"
 
 #. Tag: para
 #: release_notes.xml:422
@@ -1583,24 +1755,27 @@ msgstr ""
 msgid ""
 "Rename ST_TableFromFlatGeobuf to ST_FromFlatGeobufToTable (Björn Harrtell)"
 msgstr ""
+"Renommer ST_TableFromFlatGeobuf en ST_FromFlatGeobufToTable (Björn Harrtell)"
 
 #. Tag: para
 #: release_notes.xml:424
 #, no-c-format
 msgid "PG14 fast index building disabled by default. (Paul Ramsey)"
 msgstr ""
+"La construction rapide de l'index de PG14 est désactivée par défaut. (Paul "
+"Ramsey)"
 
 #. Tag: title
 #: release_notes.xml:429
 #, no-c-format
 msgid "Release 3.2.0beta2"
-msgstr ""
+msgstr "Version 3.2.0beta2"
 
 #. Tag: para
 #: release_notes.xml:430
 #, no-c-format
 msgid "Release date: 2021/11/26"
-msgstr ""
+msgstr "Date de sortie : 2021/11/26"
 
 #. Tag: para
 #: release_notes.xml:431
@@ -1611,12 +1786,16 @@ msgid ""
 "ST_MakeValid enhancements with 3.10+), Proj 6.1+, and PostgreSQL 14+. "
 "Changes since PostGIS 3.2.0beta1 release:"
 msgstr ""
+"Cette version nécessite PostgreSQL 9.6 ou plus, GEOS 3.6 ou plus, et Proj 4."
+"9+ Des fonctionnalités supplémentaires sont activées si vous utilisez GEOS 3."
+"9+ (et les améliorations ST_MakeValid avec 3.10+), Proj 6.1+, et PostgreSQL "
+"14+. Changements depuis la version 3.2.0beta1 de PostGIS :"
 
 #. Tag: para
 #: release_notes.xml:439
 #, no-c-format
 msgid "5016, loader (shp2pgsq): Respect LDFLAGS (Greg Troxel)"
-msgstr ""
+msgstr "5016, chargeur (shp2pgsql) : Respecter LDFLAGS (Greg Troxel)"
 
 #. Tag: para
 #: release_notes.xml:440
@@ -1625,6 +1804,8 @@ msgid ""
 "5005, ST_AsFlatGeoBuf crashes on tables when geometry column is not the "
 "first column (Björn Harrtell)"
 msgstr ""
+"5005, ST_AsFlatGeoBuf plante sur les tables lorsque la colonne de géométrie "
+"n'est pas la première colonne (Björn Harrtell)"
 
 #. Tag: para
 #: release_notes.xml:442
@@ -1633,12 +1814,16 @@ msgid ""
 "5017, topology.ValidateTopology error relation \"shell_check\" already "
 "exists (Sandro Santilli)"
 msgstr ""
+"5017, erreur topology.ValidateTopology la relation \"shell_check\" existe "
+"déjà (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:450
 #, no-c-format
 msgid "GH647, ST_AsMVTGeom now uses faster clipping (Aliaksandr Kalenik)"
 msgstr ""
+"GH647, ST_AsMVTGeom utilise maintenant un découpage plus rapide (Aliaksandr "
+"Kalenik)"
 
 #. Tag: para
 #: release_notes.xml:451
@@ -1647,24 +1832,26 @@ msgid ""
 "GH648, ST_PixelAsCentroids, ST_PixelAsCentroid reimplemented on top of a C "
 "function (Sergei Shoulbakov)"
 msgstr ""
+"GH648, ST_PixelAsCentroids, ST_PixelAsCentroid réimplémenté au dessus d'une "
+"fonction C (Sergei Shoulbakov)"
 
 #. Tag: title
 #: release_notes.xml:456
 #, no-c-format
 msgid "Release 3.2.0beta1"
-msgstr ""
+msgstr "Version 3.2.0beta1"
 
 #. Tag: para
 #: release_notes.xml:457
 #, no-c-format
 msgid "Release date: 2021/10/23"
-msgstr ""
+msgstr "Date de sortie : 2021/10/23"
 
 #. Tag: title
 #: release_notes.xml:463
 #, no-c-format
 msgid "Bug Fixes and Breaking Changes"
-msgstr ""
+msgstr "Corrections de bug et changements avec rupture"
 
 #. Tag: para
 #: release_notes.xml:464
@@ -1672,6 +1859,8 @@ msgstr ""
 msgid ""
 "5012, Clean regress against released GEOS 3.10.0 (Regina Obe, Paul Ramsey)"
 msgstr ""
+"5012, Régression propre par rapport à la version 3.10.0 de GEOS (Regina Obe, "
+"Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:469
@@ -1679,12 +1868,13 @@ msgstr ""
 msgid ""
 "4994, shp2pgsql is sometimes missing the INSERT statements (Sandro Santilli)"
 msgstr ""
+"4994, shp2pgsql manque parfois les instructions INSERT (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:471
 #, no-c-format
 msgid "4990, getfacecontainingpoint fails on i386 (Sandro Santilli)"
-msgstr ""
+msgstr "4990, getfacecontainingpoint échoue sur i386 (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:472
@@ -1693,6 +1883,8 @@ msgid ""
 "5008, Have ST_DWithin with EMPTY operand always return false (Sandro "
 "Santilli)"
 msgstr ""
+"5008, Faire en sorte que ST_DWithin avec l'opérande EMPTY renvoie toujours "
+"false (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:474
@@ -1700,18 +1892,20 @@ msgstr ""
 msgid ""
 "5002, liblwgeom should build with warning flags by default (Sandro Santilli)"
 msgstr ""
+"5002, liblwgeom devrait se construire avec des indicateurs d'avertissement "
+"par défaut (Sandro Santilli)"
 
 #. Tag: title
 #: release_notes.xml:483
 #, no-c-format
 msgid "Release 3.2.0alpha1"
-msgstr ""
+msgstr "Version 3.2.0alpha1"
 
 #. Tag: para
 #: release_notes.xml:484
 #, no-c-format
 msgid "Release date: 2021/09/10"
-msgstr ""
+msgstr "Date de sortie : 2021/09/10"
 
 #. Tag: para
 #: release_notes.xml:485
@@ -1721,6 +1915,9 @@ msgid ""
 "4.9 or higher Additional features are enabled if you are running GEOS 3.9+ "
 "(more with GEOS 3.10+), Proj 6.1+, or PostgreSQL 14+."
 msgstr ""
+"Cette version nécessite PostgreSQL 9.6 ou plus, GEOS 3.6 ou plus, et Proj "
+"4.9 ou plus Des fonctionnalités supplémentaires sont activées si vous "
+"utilisez GEOS 3.9+ (plus avec GEOS 3.10+), Proj 6.1+, ou PostgreSQL 14+."
 
 #. Tag: para
 #: release_notes.xml:489
@@ -1729,6 +1926,9 @@ msgid ""
 "#4824, Removed `--without-wagyu` build option. Using Wagyu is now mandatory "
 "to build with MVT support."
 msgstr ""
+"#4824, Suppression de l'option de compilation `--without-wagyu`. "
+"L'utilisation de Wagyu est maintenant obligatoire pour construire avec le "
+"support MVT."
 
 #. Tag: para
 #: release_notes.xml:490
