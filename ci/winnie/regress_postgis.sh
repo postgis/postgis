@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.11.0
+	export GEOS_VER=3.11.2
 	export GDAL_VER=3.4.2
 	export PROJ_VER=7.2.1
 	export SFCGAL_VER=1.4.1
@@ -10,7 +10,7 @@ if  [[ "${OVERRIDE}" == '' ]] ; then
 	export ZLIB_VER=1.2.11
   export PROTOBUF_VER=3.2.0
 	export PROTOBUFC_VER=1.2.1
-	export JSON_VER=0.1
+	export JSON_VER=0.16
 	export PROJSO=libproj-19.dll
 fi;
 
