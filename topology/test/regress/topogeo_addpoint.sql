@@ -64,3 +64,10 @@ SELECT 'tt2033', 'N' || topogeo_addpoint('t', 'POINT(0.2 1 1)', 0.5);
 SELECT 'tt2033', 'NC', node_id, ST_AsText(geom) FROM t.node ORDER BY node_id;
 SELECT 'tt2033.end' || DropTopology('t');
 
+-- See https://trac.osgeo.org/postgis/ticket/5394
+SELECT NULL FROM CreateTopology ('t');
+SELECT 'tt5394', 'E1', TopoGeo_addLinestring('t', 'LINESTRING(5.803580945500557 59.26346622,5.8035802635 59.263465501)' );
+SELECT 'tt5394', 'E2', TopoGeo_addLinestring('t', 'LINESTRING(5.8035802635 59.263465501,5.8035809455 59.26346622,5.803580945500557 59.26346622)' );
+SELECT 'tt5394', 'V', * FROM ValidateTopology('t');
+SELECT 'tt5394', 'N', TopoGeo_addPoint( 't', 'POINT(5.803646305 59.263416658000004)' );
+SELECT NULL FROM DropTopology('t');
