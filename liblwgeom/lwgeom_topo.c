@@ -43,6 +43,12 @@
 # define LWTFMT_ELEMID PRId64
 #endif
 
+/* This is a non-tolerance based 2d equality for points
+ * whereas the p2d_same function is tolerance based
+ * TODO: move in higher headers ?
+ */
+#define P2D_SAME_STRICT(a,b) ((a)->x == (b)->x && (a)->y == (b)->y)
+
 /*********************************************************************
  *
  * Backend iface
@@ -1425,7 +1431,7 @@ _lwt_FirstDistinctVertex2D(const POINTARRAY* pa, POINT2D *ref, int from, int dir
   {
     LWDEBUGF(1, "testing point %d", i);
     getPoint2d_p(pa, i, op); /* pick next point */
-    if ( p2d_same(op, &fp) ) continue; /* equal to startpoint */
+    if ( P2D_SAME_STRICT(op,&fp) ) continue; /* equal to startpoint */
     /* this is a good one, neither same of start nor of end point */
     return 1; /* found */
   }
@@ -1575,7 +1581,7 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
       }
       LWDEBUGF(1, "edge %" LWTFMT_ELEMID
                   " starts on node %" LWTFMT_ELEMID
-                  ", edgeend is %g,%g-%g,%g",
+                  ", edgeend is [%.15g %.15g,%.15g %.15g]",
                   edge->edge_id, node, p1.x, p1.y, p2.x, p2.y);
       if ( ! azimuth_pt_pt(&p1, &p2, &az) ) {{
         LWT_ELEMID id = edge->edge_id;
@@ -1587,7 +1593,7 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
       }}
       azdif = az - data->myaz;
       LWDEBUGF(1, "azimuth of edge %" LWTFMT_ELEMID
-                  ": %g (diff: %g)", edge->edge_id, az, azdif);
+                  ": %.15g (diff: %.15g)", edge->edge_id, az, azdif);
 
       if ( azdif < 0 ) azdif += 2 * M_PI;
       if ( minaz == -1 ) {
@@ -1636,7 +1642,7 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
         return -1;
       }
       LWDEBUGF(1, "edge %" LWTFMT_ELEMID " ends on node %" LWTFMT_ELEMID
-                  ", edgeend is %g,%g-%g,%g",
+                  ", edgeend is [%.15g %.15g,%.15g %.15g]",
                   edge->edge_id, node, p1.x, p1.y, p2.x, p2.y);
       if ( ! azimuth_pt_pt(&p1, &p2, &az) ) {{
         LWT_ELEMID id = edge->edge_id;
@@ -1648,7 +1654,7 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
       }}
       azdif = az - data->myaz;
       LWDEBUGF(1, "azimuth of edge %" LWTFMT_ELEMID
-                  ": %g (diff: %g)", edge->edge_id, az, azdif);
+                  ": %.15g (diff: %.15g)", edge->edge_id, az, azdif);
       if ( azdif < 0 ) azdif += 2 * M_PI;
       if ( minaz == -1 ) {
         minaz = maxaz = azdif;
