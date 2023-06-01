@@ -1450,7 +1450,7 @@ _lwt_FirstDistinctVertex2D(const POINTARRAY* pa, POINT2D *ref, int from, int dir
   {
     LWDEBUGF(1, "testing point %d", i);
     getPoint2d_p(pa, i, op); /* pick next point */
-    if ( p2d_same(op, &fp) ) continue; /* equal to startpoint */
+    if (op->x == fp.x && op->y == fp.y) continue; /* equal to startpoint */
     /* this is a good one, neither same of start nor of end point */
     return 1; /* found */
   }

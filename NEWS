@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - #5394, Preserve distinct vertices in topology edge direction calculations (Sandro Santilli)
  - #5782, Improve the precision of point-to-line distance comparisons (Sandro Santilli)
  - #5118, Clean up the topology relation when a layer sequence is missing (Sandro Santilli)
  - Repopulate topology layers when standard_conforming_strings is off (Sandro Santilli)
