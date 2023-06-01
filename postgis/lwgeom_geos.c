@@ -53,10 +53,7 @@
  */
 #define HANDLE_GEOS_ERROR(label) \
 	{ \
-		if (strstr(lwgeom_geos_errmsg, "InterruptedException")) \
-			ereport(ERROR, \
-				(errcode(ERRCODE_QUERY_CANCELED), errmsg("canceling statement due to user request"))); \
-		else \
+		if (!strstr(lwgeom_geos_errmsg, "InterruptedException")) \
 			lwpgerror("%s: %s", (label), lwgeom_geos_errmsg); \
 		PG_RETURN_NULL(); \
 	}
