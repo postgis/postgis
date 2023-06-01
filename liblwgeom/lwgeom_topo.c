@@ -864,7 +864,7 @@ lwt_AddIsoEdge( LWT_TOPOLOGY* topo, LWT_ELEMID startNode,
         /* l) Check that start point of acurve match start node geoms. */
         getPoint2d_p(geom->points, 0, &p1);
         getPoint2d_p(n->geom->point, 0, &p2);
-        if ( ! p2d_same(&p1, &p2) )
+        if ( ! P2D_SAME_STRICT(&p1, &p2) )
         {
           _lwt_release_nodes(endpoints, num_nodes);
           lwerror("SQL/MM Spatial exception - "
@@ -877,7 +877,7 @@ lwt_AddIsoEdge( LWT_TOPOLOGY* topo, LWT_ELEMID startNode,
         /* m) Check that end point of acurve match end node geoms. */
         getPoint2d_p(geom->points, geom->points->npoints-1, &p1);
         getPoint2d_p(n->geom->point, 0, &p2);
-        if ( ! p2d_same(&p1, &p2) )
+        if ( ! P2D_SAME_STRICT(&p1, &p2) )
         {
           _lwt_release_nodes(endpoints, num_nodes);
           lwerror("SQL/MM Spatial exception - "
@@ -1738,8 +1738,8 @@ _lwt_GetInteriorEdgePoint(const LWLINE* edge, POINT2D* ip)
   for (i=1; i<pa->npoints-1; ++i)
   {
     getPoint2d_p(pa, i, &tp); /* pick next point */
-    if ( p2d_same(&tp, &fp) ) continue; /* equal to startpoint */
-    if ( p2d_same(&tp, &lp) ) continue; /* equal to endpoint */
+    if ( P2D_SAME_STRICT(&tp, &fp) ) continue; /* equal to startpoint */
+    if ( P2D_SAME_STRICT(&tp, &lp) ) continue; /* equal to endpoint */
     /* this is a good one, neither same of start nor of end point */
     *ip = tp;
     return 1; /* found */
@@ -1749,7 +1749,7 @@ _lwt_GetInteriorEdgePoint(const LWLINE* edge, POINT2D* ip)
 
   /* interpolate if start point != end point */
 
-  if ( p2d_same(&fp, &lp) ) return 0; /* no distinct points in edge */
+  if ( P2D_SAME_STRICT(&fp, &lp) ) return 0; /* no distinct points in edge */
 
   ip->x = fp.x + ( (lp.x - fp.x) * 0.5 );
   ip->y = fp.y + ( (lp.y - fp.y) * 0.5 );
@@ -2424,7 +2424,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
     {
       pa = start_node_geom->point;
       getPoint2d_p(pa, 0, &pn);
-      if ( ! p2d_same(&pn, &p1) )
+      if ( ! P2D_SAME_STRICT(&pn, &p1) )
       {
         if ( num_nodes ) _lwt_release_nodes(endpoints, num_nodes);
         lwerror("SQL/MM Spatial exception"
@@ -2445,7 +2445,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
     {
       pa = end_node_geom->point;
       getPoint2d_p(pa, 0, &pn);
-      if ( ! p2d_same(&pn, &p2) )
+      if ( ! P2D_SAME_STRICT(&pn, &p2) )
       {
         if ( num_nodes ) _lwt_release_nodes(endpoints, num_nodes);
         lwerror("SQL/MM Spatial exception"
@@ -2962,9 +2962,9 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
     LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " 'first' point is %g,%g",
                 isoe->edge_id, p2.x, p2.y);
     LWDEBUGF(1, "Rings's 'from' point is still %g,%g", p1.x, p1.y);
-    if ( p2d_same(&p1, &p2) )
+    if ( P2D_SAME_STRICT(&p1, &p2) )
     {
-      LWDEBUG(1, "p2d_same(p1,p2) returned true");
+      LWDEBUG(1, "P2D_SAME_STRICT(p1,p2) returned true");
       LWDEBUGF(1, "First point of edge %" LWTFMT_ELEMID
                   " matches ring vertex %d", isoe->edge_id, from);
       /* first point matches, let's check next non-equal one */
@@ -2974,12 +2974,12 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
         LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " 'next' point %d is %g,%g",
                     isoe->edge_id, j, p2.x, p2.y);
         /* we won't check duplicated edge points */
-        if ( p2d_same(&p1, &p2) ) continue;
+        if ( P2D_SAME_STRICT(&p1, &p2) ) continue;
         /* we assume there are no duplicated points in ring */
         getPoint2d_p(ring, from+1, &pt);
         LWDEBUGF(1, "Ring's point %d is %g,%g",
                     from+1, pt.x, pt.y);
-        match = p2d_same(&pt, &p2);
+        match = P2D_SAME_STRICT(&pt, &p2);
         break; /* we want to check a single non-equal next vertex */
       }
 #if POSTGIS_DEBUG_LEVEL > 0
@@ -3000,7 +3000,7 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
       getPoint2d_p(epa, epa->npoints-1, &p2);
       LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " 'last' point is %g,%g",
                   isoe->edge_id, p2.x, p2.y);
-      if ( p2d_same(&p1, &p2) )
+      if ( P2D_SAME_STRICT(&p1, &p2) )
       {
         LWDEBUGF(1, "Last point of edge %" LWTFMT_ELEMID
                     " matches ring vertex %d", isoe->edge_id, from);
@@ -3011,12 +3011,12 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
           LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " 'prev' point %d is %g,%g",
                       isoe->edge_id, epa->npoints - j, p2.x, p2.y);
           /* we won't check duplicated edge points */
-          if ( p2d_same(&p1, &p2) ) continue;
+          if ( P2D_SAME_STRICT(&p1, &p2) ) continue;
           /* we assume there are no duplicated points in ring */
           getPoint2d_p(ring, from+1, &pt);
           LWDEBUGF(1, "Ring's point %d is %g,%g",
                       from+1, pt.x, pt.y);
-          match = p2d_same(&pt, &p2);
+          match = P2D_SAME_STRICT(&pt, &p2);
           break; /* we want to check a single non-equal next vertex */
         }
       }
@@ -3281,7 +3281,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
    */
   getPoint2d_p(oldedge->geom->points, 0, &p1);
   getPoint2d_p(geom->points, 0, &pt);
-  if ( ! p2d_same(&p1, &pt) )
+  if ( ! P2D_SAME_STRICT(&p1, &pt) )
   {
     _lwt_release_edges(oldedge, 1);
     lwerror("SQL/MM Spatial exception - "
@@ -3307,7 +3307,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
     return -1;
   }
   getPoint2d_p(geom->points, geom->points->npoints-1, &pt);
-  if ( ! p2d_same(&pt, &p2) )
+  if ( ! P2D_SAME_STRICT(&pt, &p2) )
   {
     _lwt_release_edges(oldedge, 1);
     lwerror("SQL/MM Spatial exception - "
