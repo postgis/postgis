@@ -22,14 +22,16 @@ if  [[ "${OVERRIDE}" == '' ]] ; then
 	export ZLIB_VER=1.2.13
   export PROTOBUF_VER=3.2.0
 	export PROTOBUFC_VER=1.2.1
-	export JSON_VER=0.16
+	export JSON_VER=0.12
 	export PROJSO=libproj-19.dll
 	export CURL_VER=8.0.1
 fi;
 
 export PROTOBUF_VER=3.2.0
 export PROTOBUFC_VER=1.2.1
-export JSON_VER=0.12
+if  [[ "${JSON_VER}" == '' ]] ; then
+  export JSON_VER=0.12
+fi;
 export PCRE_VER=8.33
 
 if  [[ "${ICON_VER}" == '' ]] ; then

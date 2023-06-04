@@ -253,14 +253,14 @@ done
  make check RUNTESTFLAGS="--extension -v"
 
  ##test address standardizer
- #cd ${POSTGIS_SRC}
- #cd extensions/address_standardizer
- #make installcheck
+ cd ${POSTGIS_SRC}
+ cd extensions/address_standardizer
+ make installcheck
 
  ##test tiger geocoder
- #cd ${POSTGIS_SRC}
- #cd extensions/postgis_tiger_geocoder
- #make installcheck
+ cd ${POSTGIS_SRC}
+ cd extensions/postgis_tiger_geocoder
+ make installcheck
  if [ "$?" != "0" ]; then
   exit $?
  fi
