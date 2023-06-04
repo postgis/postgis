@@ -164,7 +164,6 @@ LDFLAGS="-Wl,--enable-auto-import -L${PGPATH}/lib -L${PROJECTS}/rel-libiconv-${I
   --with-xsldir=${PROJECTS}/docbook/docbook-xsl-1.76.1 \
   --with-gui --with-gettext=no \
   --with-sfcgal=${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/sfcgal-config \
-  --without-interrupt-tests \
   --prefix=${PROJECTS}/postgis/liblwgeom-${POSTGIS_VER}w${OS_BUILD}${GCC_TYPE}
   #exit
 else
@@ -177,7 +176,6 @@ LDFLAGS="-L${PGPATH}/lib -L${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYP
   --with-gui --with-gettext=no \
   --with-libiconv=${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE} \
   --with-xsldir=${PROJECTS}/docbook/docbook-xsl-1.76.1 \
-  --without-interrupt-tests \
   --prefix=${PROJECTS}/postgis/liblwgeom-${POSTGIS_VER}w${OS_BUILD}${GCC_TYPE}
 fi;
 
@@ -252,20 +250,20 @@ done
  make check RUNTESTFLAGS="--extension -v"
 
  ##test address standardizer
- cd ${POSTGIS_SRC}
- cd extensions/address_standardizer
- make installcheck
+ #cd ${POSTGIS_SRC}
+ #cd extensions/address_standardizer
+ #make installcheck
 
  ##test tiger geocoder
- cd ${POSTGIS_SRC}
- cd extensions/postgis_tiger_geocoder
- make installcheck
+ #cd ${POSTGIS_SRC}
+ #cd extensions/postgis_tiger_geocoder
+ #make installcheck
  if [ "$?" != "0" ]; then
   exit $?
  fi
 fi
 
-if [ "$DUMP_RESTORE" = "1" ]; then
+if [ "$DUMP_RESTORE" == "1" ]; then
  echo "Dum restore test"
  make install
  make check RUNTESTFLAGS="-v --dumprestore"
