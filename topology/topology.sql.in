@@ -1466,5 +1466,7 @@ GRANT SELECT ON topology.topology TO PUBLIC;
 GRANT SELECT ON topology.layer TO PUBLIC;
 -- See https://trac.osgeo.org/postgis/ticket/5124
 GRANT USAGE ON SCHEMA topology TO PUBLIC;
+-- See https://trac.osgeo.org/postgis/ticket/5395
+GRANT SELECT ON ALL SEQUENCES IN SCHEMA topology TO PUBLIC;
 
 COMMIT;
