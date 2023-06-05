@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-25 20:53+0000\n"
-"PO-Revision-Date: 2023-04-12 10:08+0000\n"
+"PO-Revision-Date: 2023-06-05 11:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "release_notesxml/ja/>\n"
@@ -5879,7 +5879,7 @@ msgstr ""
 #: release_notes.xml:1461
 #, no-c-format
 msgid "#3490, Raster data restore issues, materialized views."
-msgstr ""
+msgstr "#3490, ラスタデータのリストア問題、マテリアライズドビュー。"
 
 #. Tag: para
 #: release_notes.xml:1462
@@ -10795,6 +10795,11 @@ msgid ""
 "were built with deprecated functions. If you restore you may need to rebuild "
 "table constraints with populate_geometry_columns()."
 msgstr ""
+"-- 非推奨関数を使っている場合には、アプリケーションを変更して下さい。変更しな"
+"いと得た結果に苦しむことになります。文書が無い関数は、サポートから外れる関数"
+"か内部関数です。古いテーブルの制約で、非推奨関数を使っているものがあります。"
+"再格納した際にpopulate_geometry_columns()でテーブルの制約の再構築を行わないと"
+"いけないことがあります。"
 
 #. Tag: para
 #: release_notes.xml:2290
