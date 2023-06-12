@@ -63,15 +63,19 @@ debug_standardize_address(PG_FUNCTION_ARGS)
     char                *rultab;
     char                *micro;
     char                *macro;
-    //Datum                result;
     STDADDR             *stdaddr;
-    char               **values;
 	int k;
     char rule_in[100];
 	char rule_out[100];
 	char temp[10];
     int stz_no , n ;
-	//SEG *rseg;
+	DEF *__def__ ;
+    STZ **__stz_list__;
+	STAND_PARAM *ms;
+	STZ_PARAM *__stz_info__ ;
+	int lex_pos;
+	int started;
+	STZ *__cur_stz__;
 	StringInfo	result  = makeStringInfo();
 
 	elog(DEBUG2, "Start %s", __func__);
@@ -90,8 +94,8 @@ debug_standardize_address(PG_FUNCTION_ARGS)
 	else {
 		ADDRESS             *paddr;
 		HHash               *stH;
-		stH = (HHash *) palloc0(sizeof(HHash));
 		int                  err;
+		stH = (HHash *) palloc0(sizeof(HHash));
 		if (!stH) {
 			elog(ERROR, "%s: Failed to allocate memory for hash!", __func__);
 			return -1;
@@ -151,21 +155,16 @@ debug_standardize_address(PG_FUNCTION_ARGS)
     if (!std)
         elog(ERROR, "%s failed to create the address standardizer object!",  __func__);
 
-	//output_rule_statistics( std->pagc_p->rules, std->err_p );
-	STAND_PARAM *ms = std->misc_stand;
 	elog(DEBUG2, "%s: calling std_standardize_mm('%s', '%s')", __func__ , micro, macro);
     stdaddr = std_standardize_mm( std, micro, macro, 0 );
+
+	ms = std->misc_stand;
+	__stz_info__ = ms->stz_info ;
 	elog(DEBUG2, "%s back from fetch_stdaddr",  __func__);
 
-	DEF *__def__ ;
-    STZ **__stz_list__;
-
-	STZ_PARAM *__stz_info__ = ms->stz_info ;
-
-	int lex_pos;
 	elog(DEBUG2, "Input tokenization candidates:\n");
 	appendStringInfoString(result, "\"input_tokens\":[");
-	int started = 0;
+	started = 0;
 	for (lex_pos = FIRST_LEX_POS;lex_pos < ms->LexNum;lex_pos ++)
 	{
 
@@ -202,9 +201,7 @@ debug_standardize_address(PG_FUNCTION_ARGS)
 		strcpy(rule_in, "");
 		strcpy(rule_out, "");
 
-		STZ *__cur_stz__ = __stz_list__[stz_no] ;
-
-		KW *ruleref = __cur_stz__->build_key;
+		__cur_stz__ = __stz_list__[stz_no] ;
 		elog( DEBUG2, "Raw standardization %d with score %f:\n" , ( stz_no  ) , __cur_stz__->score ) ;
 		appendStringInfo(result, "{\"score\": %f,", __cur_stz__->score);
 		appendStringInfo(result, "\"raw_score\": %f,", __cur_stz__->raw_score);

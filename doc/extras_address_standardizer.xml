@@ -594,6 +594,29 @@ into includes in the future for easier maintenance.</para></listitem>
             <para>For single line addresses use just <varname>micro</varname></para>
             <para>For two line address A <varname>micro</varname> consisting of standard first line of postal address e.g. <code>house_num street</code>, and a macro consisting of standard postal second line of an address e.g <code>city, state postal_code country</code>.</para>
 
+            <para>Elements returned in the json document are </para>
+            <variablelist>
+						<varlistentry>
+                            <term>input_tokens</term>
+                            <listitem>
+                                <para>For each word in the input address, returns the position of the word,
+                                    token categorization of the word, and the standard word it is mapped too.
+                                    Note that for some input words, you might get back multiple records because some inputs can be categorized
+                                    as more than one thing. </para>
+                            </listitem>
+						</varlistentry>
+						<varlistentry><term>rules</term>
+							<listitem>
+								<para>The set of rules matching the input and the corresponding score for each. The first rule (highest scoring) is
+                                what is used for standardization</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry><term>stdaddr</term>
+							<listitem>
+								<para>The standardized address elements that would be returned when running <xref id="standardize_address" /></para>
+							</listitem>
+						</varlistentry>
+				</variablelist>
             <!-- use this format if new function -->
         <para>Availability: 3.4.0</para>
         <para>&address_standardizer_required;</para>
@@ -605,82 +628,41 @@ into includes in the future for easier maintenance.</para></listitem>
             <para>Using address_standardizer_data_us extension</para>
             <programlisting>CREATE EXTENSION address_standardizer_data_us; -- only needs to be done once</programlisting>
 
-        <para>Variant 1: Single line address.  This doesn't work well with non-US addresses</para>
-        <programlisting>SELECT s::jsonb
-            FROM debug_standardize_address('us_lex',
-                'us_gaz', 'us_rules', 'One Devonshire Place, PH 301, Boston, MA 02109') AS s;</programlisting>
-            <screen><![CDATA[{
-  "macro": "Boston,MA,02109,US,",
-  "micro": "One Devonshire Place, PH 301",
-  "rules": [
-    {
-      "no": 0,
-      "score": 0.87625,
-      "raw_score": 0.87625,
-      "rule_string": "0 1 2 17 0 -1 1 5 6 17 17",
-      "rule_tokens": [
-        {
-          "pos": 0,
-          "input-word": "ONE",
-          "input-token": "NUMBER",
-          "mapped-word": "1",
-          "output-token": "HOUSE",
-          "input-token-code": 0,
-          "output-token-code": 1
-        },
-        {
-          "pos": 1,
-          "input-word": "DEVONSHIRE",
-          "input-token": "WORD",
-          "mapped-word": "DEVONSHIRE",
-          "output-token": "STREET",
-          "input-token-code": 1,
-          "output-token-code": 5
-        },
-        :
-      ]
-    },
-        :
-      ]
-    }
-  ],
-  "stdaddr": {
-    "box": null,
-    "city": "BOSTON",
-    "name": "DEVONSHIRE",
-    "qual": null,
-    "unit": "# PENTHOUSE 301",
-    "extra": null,
-    "state": "MASSACHUSETTS",
-    "predir": null,
-    "sufdir": null,
-    "country": "USA",
-    "pretype": null,
-    "suftype": "PLACE",
-    "building": null,
-    "postcode": "02109",
-    "house_num": "1",
-    "ruralroute": null
-  },
-  "input_tokens": [
-    {
-      "pos": 0,
-      "word": "ONE",
-      "token": "NUMBER",
-      "stdword": "1",
-      "token-code": 0
-    },
-    {
-      "pos": 0,
-      "word": "ONE",
-      "token": "WORD",
-      "stdword": "1",
-      "token-code": 1
-    },
-	:
-  ]
-}
-}]]></screen>
+        <para>Variant 1: Single line address and returning the input tokens</para>
+        <programlisting><![CDATA[SELECT it->>'pos' AS position, it->>'word' AS word, it->>'stdword' AS standardized_word,
+            it->>'token' AS token, it->>'token-code' AS token_code
+    FROM jsonb(
+            debug_standardize_address('us_lex',
+                'us_gaz', 'us_rules', 'One Devonshire Place, PH 301, Boston, MA 02109')
+                 ) AS s, jsonb_array_elements(s->'input_tokens') AS it;]]></programlisting>
+            <screen>position |    word    | standardized_word | token  | token_code
+----------+------------+-------------------+--------+------------
+ 0        | ONE        | 1                 | NUMBER | 0
+ 0        | ONE        | 1                 | WORD   | 1
+ 1        | DEVONSHIRE | DEVONSHIRE        | WORD   | 1
+ 2        | PLACE      | PLACE             | TYPE   | 2
+ 3        | PH         | PATH              | TYPE   | 2
+ 3        | PH         | PENTHOUSE         | UNITT  | 17
+ 4        | 301        | 301               | NUMBER | 0
+(7 rows)</screen>
+
+        <para>Variant 2: Multi line address and returning first rule input mappings and score</para>
+        <programlisting><![CDATA[SELECT (s->'rules'->0->>'score')::numeric AS score, it->>'pos' AS position,
+        it->>'input-word' AS word, it->>'input-token' AS input_token, it->>'mapped-word' AS standardized_word,
+            it->>'output-token' AS output_token
+    FROM jsonb(
+            debug_standardize_address('us_lex',
+                'us_gaz', 'us_rules', 'One Devonshire Place, PH 301', 'Boston, MA 02109')
+                 ) AS s, jsonb_array_elements(s->'rules'->0->'rule_tokens') AS it;]]></programlisting>
+            <screen> score   | position |    word    | input_token | standardized_word | output_token
+----------+----------+------------+-------------+-------------------+--------------
+ 0.876250 | 0        | ONE        | NUMBER      | 1                 | HOUSE
+ 0.876250 | 1        | DEVONSHIRE | WORD        | DEVONSHIRE        | STREET
+ 0.876250 | 2        | PLACE      | TYPE        | PLACE             | SUFTYP
+ 0.876250 | 3        | PH         | UNITT       | PENTHOUSE         | UNITT
+ 0.876250 | 4        | 301        | NUMBER      | 301               | UNITT
+(5 rows)
+</screen>
 
         </refsection>
 
