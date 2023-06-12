@@ -613,7 +613,7 @@ into includes in the future for easier maintenance.</para></listitem>
 						</varlistentry>
 						<varlistentry><term>stdaddr</term>
 							<listitem>
-								<para>The standardized address elements that would be returned when running <linkend id="standardize_address" /></para>
+								<para>The standardized address elements <xref linkend="stdaddr" /> that would be returned when running <xref linkend id="standardize_address" /></para>
 							</listitem>
 						</varlistentry>
 				</variablelist>
