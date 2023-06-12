@@ -565,33 +565,160 @@ into includes in the future for easier maintenance.</para></listitem>
   </sect2>
 
   <sect2 id="Address_Standardizer_Functions"><title>Address Standardizer Functions</title>
-		<refentry id="parse_address">
-		<refnamediv>
-			<refname>parse_address</refname>
 
-			<refpurpose>Takes a 1 line address and breaks into parts</refpurpose>
-		</refnamediv>
+        <refentry id="debug_standardize_address">
+        <refnamediv>
+            <refname>debug_standardize_address</refname>
 
-		<refsynopsisdiv>
-			<funcsynopsis>
-				 <funcprototype>
-					<funcdef>record <function>parse_address</function></funcdef>
-					<paramdef><type>text </type> <parameter>address</parameter></paramdef>
-				</funcprototype>
+            <refpurpose>Returns a json formatted text listing the parse tokens and standardizations</refpurpose>
+        </refnamediv>
 
-			</funcsynopsis>
-		</refsynopsisdiv>
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>text <function>debug_standardize_address</function></funcdef>
+                    <paramdef><type>text </type> <parameter>lextab</parameter></paramdef>
+                    <paramdef><type>text </type> <parameter>gaztab</parameter></paramdef>
+                    <paramdef><type>text </type> <parameter>rultab</parameter></paramdef>
+                    <paramdef><type>text </type> <parameter>micro</parameter></paramdef>
+                    <paramdef choice="opt"><type>text </type> <parameter>macro=NULL</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
 
-		<refsection>
-			<title>Description</title>
+        <refsection>
+            <title>Description</title>
 
-			<para>Returns takes an address as input, and returns a record output consisting of fields <emphasis>num</emphasis>, <emphasis>street</emphasis>, <emphasis>street2</emphasis>,
-			<emphasis>address1</emphasis>, <emphasis>city</emphasis>, <emphasis>state</emphasis>, <emphasis>zip</emphasis>, <emphasis>zipplus</emphasis>, <emphasis>country</emphasis>.</para>
+            <para>This is a function for debugging address standardizer rules and lex/gaz mappings.  It returns a json formatted text that includes the matching rules, mapping of tokens, and best standardized address <xref linkend="stdaddr" /> form of an input address utilizing <xref linkend="lextab" /> table name, <xref linkend="gaztab" />, and <xref linkend="rulestab" /> table names and an address.</para>
 
-			<!-- use this format if new function -->
-		<para>Availability: 2.2.0</para>
-		<para>&address_standardizer_required;</para>
-		</refsection>
+            <para>For single line addresses use just <varname>micro</varname></para>
+            <para>For two line address A <varname>micro</varname> consisting of standard first line of postal address e.g. <code>house_num street</code>, and a macro consisting of standard postal second line of an address e.g <code>city, state postal_code country</code>.</para>
+
+            <!-- use this format if new function -->
+        <para>Availability: 3.4.0</para>
+        <para>&address_standardizer_required;</para>
+        </refsection>
+
+
+        <refsection>
+            <title>Examples</title>
+            <para>Using address_standardizer_data_us extension</para>
+            <programlisting>CREATE EXTENSION address_standardizer_data_us; -- only needs to be done once</programlisting>
+
+        <para>Variant 1: Single line address.  This doesn't work well with non-US addresses</para>
+        <programlisting>SELECT s::jsonb
+            FROM debug_standardize_address('us_lex',
+                'us_gaz', 'us_rules', 'One Devonshire Place, PH 301, Boston, MA 02109') AS s;</programlisting>
+            <screen><![CDATA[{
+  "macro": "Boston,MA,02109,US,",
+  "micro": "One Devonshire Place, PH 301",
+  "rules": [
+    {
+      "no": 0,
+      "score": 0.87625,
+      "raw_score": 0.87625,
+      "rule_string": "0 1 2 17 0 -1 1 5 6 17 17",
+      "rule_tokens": [
+        {
+          "pos": 0,
+          "input-word": "ONE",
+          "input-token": "NUMBER",
+          "mapped-word": "1",
+          "output-token": "HOUSE",
+          "input-token-code": 0,
+          "output-token-code": 1
+        },
+        {
+          "pos": 1,
+          "input-word": "DEVONSHIRE",
+          "input-token": "WORD",
+          "mapped-word": "DEVONSHIRE",
+          "output-token": "STREET",
+          "input-token-code": 1,
+          "output-token-code": 5
+        },
+        :
+      ]
+    },
+        :
+      ]
+    }
+  ],
+  "stdaddr": {
+    "box": null,
+    "city": "BOSTON",
+    "name": "DEVONSHIRE",
+    "qual": null,
+    "unit": "# PENTHOUSE 301",
+    "extra": null,
+    "state": "MASSACHUSETTS",
+    "predir": null,
+    "sufdir": null,
+    "country": "USA",
+    "pretype": null,
+    "suftype": "PLACE",
+    "building": null,
+    "postcode": "02109",
+    "house_num": "1",
+    "ruralroute": null
+  },
+  "input_tokens": [
+    {
+      "pos": 0,
+      "word": "ONE",
+      "token": "NUMBER",
+      "stdword": "1",
+      "token-code": 0
+    },
+    {
+      "pos": 0,
+      "word": "ONE",
+      "token": "WORD",
+      "stdword": "1",
+      "token-code": 1
+    },
+	:
+  ]
+}
+}]]></screen>
+
+        </refsection>
+
+        <!-- Optionally add a "See Also" section -->
+        <refsection>
+            <title>See Also</title>
+
+            <para><xref linkend="stdaddr" />, <xref linkend="rulestab" />, <xref linkend="lextab" />, <xref linkend="gaztab" />, <xref linkend="Pagc_Normalize_Address" /></para>
+        </refsection>
+        </refentry>
+
+        <refentry id="parse_address">
+        <refnamediv>
+            <refname>parse_address</refname>
+
+            <refpurpose>Takes a 1 line address and breaks into parts</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                    <funcprototype>
+                    <funcdef>record <function>parse_address</function></funcdef>
+                    <paramdef><type>text </type> <parameter>address</parameter></paramdef>
+                </funcprototype>
+
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <para>Returns takes an address as input, and returns a record output consisting of fields <emphasis>num</emphasis>, <emphasis>street</emphasis>, <emphasis>street2</emphasis>,
+            <emphasis>address1</emphasis>, <emphasis>city</emphasis>, <emphasis>state</emphasis>, <emphasis>zip</emphasis>, <emphasis>zipplus</emphasis>, <emphasis>country</emphasis>.</para>
+
+            <!-- use this format if new function -->
+        <para>Availability: 2.2.0</para>
+        <para>&address_standardizer_required;</para>
+        </refsection>
 
 
 		<refsection>

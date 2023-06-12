@@ -3,6 +3,17 @@
 -- Author: Stephen Woodbridge <woodbri@imaptools.com>
 ---------------------------------------------------------------------
 
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION debug_standardize_address(
+        lextab text,
+        gaztab text,
+        rultab text,
+        micro text,
+        macro text DEFAULT NULL )
+    RETURNS text
+    AS  'MODULE_PATHNAME', 'debug_standardize_address'
+    LANGUAGE 'c' IMMUTABLE COST 200;
+
 CREATE OR REPLACE FUNCTION standardize_address(
         lextab text,
         gaztab text,
