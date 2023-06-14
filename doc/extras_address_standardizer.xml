@@ -600,7 +600,7 @@ into includes in the future for easier maintenance.</para></listitem>
                             <term>input_tokens</term>
                             <listitem>
                                 <para>For each word in the input address, returns the position of the word,
-                                    token categorization of the word, and the standard word it is mapped too.
+                                    token categorization of the word, and the standard word it is mapped to.
                                     Note that for some input words, you might get back multiple records because some inputs can be categorized
                                     as more than one thing. </para>
                             </listitem>
