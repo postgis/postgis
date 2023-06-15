@@ -4,13 +4,14 @@
 # Nicolas Roelandt <roelandtn.pro@gmail.com>, 2022.
 # Regina Obe <regina@arrival3d.com>, 2022.
 # Vincent Bre <vincent.bre@oslandia.com>, 2023.
+# Thomas Muguet <thomas.muguet@oslandia.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-06-14 01:01+0000\n"
-"PO-Revision-Date: 2023-05-25 11:08+0000\n"
-"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
+"PO-Revision-Date: 2023-06-16 08:08+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "extras_address_standardizerxml/fr/>\n"
 "Language: fr\n"
@@ -192,7 +193,7 @@ msgstr "Types de normalisateurs d'adresses"
 #: extras_address_standardizer.xml:45
 #, no-c-format
 msgid "<refname>stdaddr</refname>"
-msgstr ""
+msgstr "<refname>stdaddr</refname>"
 
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:46
@@ -1496,7 +1497,7 @@ msgstr "Fonctions Address Standardizer"
 #: extras_address_standardizer.xml:571
 #, no-c-format
 msgid "debug_standardize_address"
-msgstr ""
+msgstr "debug_standardize_address"
 
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:573
@@ -1504,6 +1505,8 @@ msgstr ""
 msgid ""
 "Returns a json formatted text listing the parse tokens and standardizations"
 msgstr ""
+"Retourne une chaîne au format json avec les jetons d'entrée et les "
+"normalisations"
 
 #. Tag: funcprototype
 #: extras_address_standardizer.xml:578
@@ -1517,6 +1520,13 @@ msgid ""
 "<paramdef choice=\"opt\"><type>text </type> <parameter>macro=NULL</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>text <function>debug_standardize_address</function></funcdef> "
+"<paramdef><type>text </type> <parameter>lextab</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>gaztab</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>rultab</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>micro</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text </type> "
+"<parameter>macro=NULL</parameter></paramdef>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:592
@@ -1529,12 +1539,18 @@ msgid ""
 "<xref linkend=\"gaztab\"/>, and <xref linkend=\"rulestab\"/> table names and "
 "an address."
 msgstr ""
+"Ceci est une fonction pour déboguer les règles de normalisation des adresses "
+"et les correspondances lex/gaz. Cette fonction retourne une chaîne au format "
+"json qui inclut les règles correspondantes, la correspondance des jetons "
+"d'entrées et la meilleure adresse normalisée selon <xref linkend=\"stdaddr\"/"
+">, en utilisant les tables <xref linkend=\"lextab\"/>, <xref linkend=\"gaztab"
+"\"/> et <xref linkend=\"rulestab\"/>, ainsi qu'une adresse."
 
 #. Tag: para
 #: extras_address_standardizer.xml:594
 #, no-c-format
 msgid "For single line addresses use just <varname>micro</varname>"
-msgstr ""
+msgstr "Pour une adresse sur une seule ligne, utiliser <varname>micro</varname>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:595
@@ -1545,18 +1561,22 @@ msgid ""
 "consisting of standard postal second line of an address e.g <code>city, "
 "state postal_code country</code>."
 msgstr ""
+"Pour une adresse sur deux lignes, utiliser <varname>micro</varname> pour la "
+"première ligne standard d'une adresse postale par exemple <code>house_num "
+"street</code>, et macro pour la deuxième ligne postale standard de "
+"l'adresse, par exemple <code>city, state postal_code country</code>."
 
 #. Tag: para
 #: extras_address_standardizer.xml:597
 #, no-c-format
 msgid "Elements returned in the json document are"
-msgstr ""
+msgstr "Les éléments retournées dans le document json sont"
 
 #. Tag: term
 #: extras_address_standardizer.xml:600
 #, no-c-format
 msgid "input_tokens"
-msgstr ""
+msgstr "input_tokens"
 
 #. Tag: para
 #: extras_address_standardizer.xml:602
@@ -1567,12 +1587,17 @@ msgid ""
 "for some input words, you might get back multiple records because some "
 "inputs can be categorized as more than one thing."
 msgstr ""
+"Pour chaque mot de l'adresse d'entrée, retourne la position du mot, la "
+"catégorisation du jeton correspondant au mot, et le mot standard "
+"correspondant. A noter que pour certains mots d'entrée, vous pouvez obtenir "
+"plusieurs enregistrements car certaines entrées peuvent correspondre à "
+"plusieurs catégories à la fois."
 
 #. Tag: term
 #: extras_address_standardizer.xml:608
 #, no-c-format
 msgid "rules"
-msgstr ""
+msgstr "rules"
 
 #. Tag: para
 #: extras_address_standardizer.xml:610
@@ -1581,12 +1606,15 @@ msgid ""
 "The set of rules matching the input and the corresponding score for each. "
 "The first rule (highest scoring) is what is used for standardization"
 msgstr ""
+"L'ensemble des règles correspondant à l'entrée, et le score de "
+"correspondance pour chacune. La première règle (avec le plus haut score) est "
+"celle utilisée pour la normalisation"
 
 #. Tag: term
 #: extras_address_standardizer.xml:614
 #, no-c-format
 msgid "<term>stdaddr</term>"
-msgstr ""
+msgstr "<term>stdaddr</term>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:616
@@ -1595,12 +1623,14 @@ msgid ""
 "The standardized address elements <xref linkend=\"stdaddr\"/> that would be "
 "returned when running <xref linkend=\"standardize_address\"/>"
 msgstr ""
+"Les éléments de l'adresse normalisée <xref linkend=\"stdaddr\"/>, qui "
+"seraient retournés par <xref linkend=\"standardize_address\"/>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:621
 #, no-c-format
 msgid "Availability: 3.4.0"
-msgstr ""
+msgstr "Disponibilité : 3.4.0"
 
 #. Tag: title
 #: extras_address_standardizer.xml:627 extras_address_standardizer.xml:679
@@ -1628,6 +1658,8 @@ msgstr ""
 #, no-c-format
 msgid "Variant 1: Single line address and returning the input tokens"
 msgstr ""
+"Variante 1 : prend une adresse sur une seule ligne et retourne les jetons "
+"d'entrée"
 
 #. Tag: programlisting
 #: extras_address_standardizer.xml:632
@@ -1642,6 +1674,14 @@ msgid ""
 "MA 02109')\n"
 "                 ) AS s, jsonb_array_elements(s->'input_tokens') AS it;]]>"
 msgstr ""
+"<![CDATA[SELECT it->>'pos' AS position, it->>'word' AS word, it->>'stdword' "
+"AS standardized_word,\n"
+"            it->>'token' AS token, it->>'token-code' AS token_code\n"
+"    FROM jsonb(\n"
+"            debug_standardize_address('us_lex',\n"
+"                'us_gaz', 'us_rules', 'One Devonshire Place, PH 301, Boston, "
+"MA 02109')\n"
+"                 ) AS s, jsonb_array_elements(s->'input_tokens') AS it;]]>"
 
 #. Tag: screen
 #: extras_address_standardizer.xml:633
@@ -1658,6 +1698,16 @@ msgid ""
 " 4        | 301        | 301               | NUMBER | 0\n"
 "(7 rows)"
 msgstr ""
+"position |    word    | standardized_word | token  | token_code\n"
+"----------+------------+-------------------+--------+------------\n"
+" 0        | ONE        | 1                 | NUMBER | 0\n"
+" 0        | ONE        | 1                 | WORD   | 1\n"
+" 1        | DEVONSHIRE | DEVONSHIRE        | WORD   | 1\n"
+" 2        | PLACE      | PLACE             | TYPE   | 2\n"
+" 3        | PH         | PATH              | TYPE   | 2\n"
+" 3        | PH         | PENTHOUSE         | UNITT  | 17\n"
+" 4        | 301        | 301               | NUMBER | 0\n"
+"(7 rows)"
 
 #. Tag: para
 #: extras_address_standardizer.xml:635
@@ -1666,6 +1716,8 @@ msgid ""
 "Variant 2: Multi line address and returning first rule input mappings and "
 "score"
 msgstr ""
+"Variante 2 : Adresse en deux parties et retourne la première règle de "
+"correspondance et son score"
 
 #. Tag: programlisting
 #: extras_address_standardizer.xml:636
@@ -1683,6 +1735,17 @@ msgid ""
 "                 ) AS s, jsonb_array_elements(s->'rules'->0->'rule_tokens') "
 "AS it;]]>"
 msgstr ""
+"<![CDATA[SELECT (s->'rules'->0->>'score')::numeric AS score, it->>'pos' AS "
+"position,\n"
+"        it->>'input-word' AS word, it->>'input-token' AS input_token, it"
+"->>'mapped-word' AS standardized_word,\n"
+"            it->>'output-token' AS output_token\n"
+"    FROM jsonb(\n"
+"            debug_standardize_address('us_lex',\n"
+"                'us_gaz', 'us_rules', 'One Devonshire Place, PH 301', "
+"'Boston, MA 02109')\n"
+"                 ) AS s, jsonb_array_elements(s->'rules'->0->'rule_tokens') "
+"AS it;]]>"
 
 #. Tag: screen
 #: extras_address_standardizer.xml:637
@@ -1701,6 +1764,18 @@ msgid ""
 " 0.876250 | 4        | 301        | NUMBER      | 301               | UNITT\n"
 "(5 rows)"
 msgstr ""
+"score   | position |    word    | input_token | standardized_word | "
+"output_token\n"
+"----------+----------+------------+-------------+-------------------+--------"
+"------\n"
+" 0.876250 | 0        | ONE        | NUMBER      | 1                 | HOUSE\n"
+" 0.876250 | 1        | DEVONSHIRE | WORD        | DEVONSHIRE        | "
+"STREET\n"
+" 0.876250 | 2        | PLACE      | TYPE        | PLACE             | "
+"SUFTYP\n"
+" 0.876250 | 3        | PH         | UNITT       | PENTHOUSE         | UNITT\n"
+" 0.876250 | 4        | 301        | NUMBER      | 301               | UNITT\n"
+"(5 rows)"
 
 #. Tag: title
 #: extras_address_standardizer.xml:643 extras_address_standardizer.xml:692
