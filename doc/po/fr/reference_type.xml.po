@@ -3,13 +3,14 @@
 # Translators:
 # Nicolas Ribot <nicolas.ribot@gmail.com>, 2013
 # Vincent Bre <vincent.bre@oslandia.com>, 2023.
+# Thomas Muguet <thomas.muguet@oslandia.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2023-01-06 15:50+0000\n"
-"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
+"PO-Revision-Date: 2023-06-16 08:08+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_typexml/fr/>\n"
 "Language: fr\n"
@@ -17,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: para
 #: reference_type.xml:5
@@ -150,7 +151,7 @@ msgstr ""
 #: reference_type.xml:237
 #, no-c-format
 msgid "Casting Behavior"
-msgstr "Comportement du transtypage"
+msgstr "Transtypages"
 
 #. Tag: para
 #: reference_type.xml:51 reference_type.xml:98 reference_type.xml:144
