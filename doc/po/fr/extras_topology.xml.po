@@ -8,13 +8,14 @@
 # Vincent Picavet <vincent.ml@oslandia.com>, 2013
 # H Santanna <delazj@gmail.com>, 2022.
 # Vincent Bre <vincent.bre@oslandia.com>, 2023.
+# Thomas Muguet <thomas.muguet@oslandia.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-04 20:31+0000\n"
-"PO-Revision-Date: 2023-05-31 15:08+0000\n"
-"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
+"PO-Revision-Date: 2023-06-16 08:08+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "extras_topologyxml/fr/>\n"
 "Language: fr\n"
@@ -315,7 +316,7 @@ msgstr ""
 #: extras_topology.xml:81
 #, no-c-format
 msgid "Casting Behavior"
-msgstr "Comportement du transtypage"
+msgstr "Transtypages"
 
 #. Tag: para
 #: extras_topology.xml:82
@@ -343,7 +344,7 @@ msgstr "Comportement"
 #: extras_topology.xml:91
 #, no-c-format
 msgid "geometry"
-msgstr "géométrie"
+msgstr "geometry"
 
 #. Tag: entry
 #: extras_topology.xml:92
