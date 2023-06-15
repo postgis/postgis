@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-04 00:50+0000\n"
-"PO-Revision-Date: 2023-05-29 09:08+0000\n"
-"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
+"PO-Revision-Date: 2023-06-16 08:08+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_rasterxml/fr/>\n"
 "Language: fr\n"
@@ -23,7 +23,7 @@ msgstr ""
 #: reference_raster.xml:3
 #, no-c-format
 msgid "Raster Reference"
-msgstr ""
+msgstr "Référence Raster"
 
 #. Tag: para
 #: reference_raster.xml:5
@@ -34,6 +34,11 @@ msgid ""
 "are other functions which are required support functions to the raster "
 "objects which are not of use to a general user."
 msgstr ""
+"Les fonctions mentionnées ci-dessous sont celles qu'un utilisateur typique "
+"de PostGIS Raster sera amené à utiliser et qui sont disponibles dans PostGIS "
+"Raster. D'autres fonctions sont également définies, requises en interne pour "
+"le support des objets rasters, mais ne sont pas destinées à être utilisées "
+"par le grand public."
 
 #. Tag: para
 #: reference_raster.xml:9
@@ -42,6 +47,8 @@ msgid ""
 "<varname>raster</varname> is a new PostGIS type for storing and analyzing "
 "raster data."
 msgstr ""
+"<varname>raster</varname> est un nouveau type PostGIS pour stocker et "
+"analyser les données raster."
 
 #. Tag: para
 #: reference_raster.xml:10
@@ -50,6 +57,8 @@ msgid ""
 "For loading rasters from raster files please refer to <xref "
 "linkend=\"RT_Loading_Rasters\"/>"
 msgstr ""
+"Pour charger des rasters depuis des fichiers, voir <xref linkend="
+"\"RT_Loading_Rasters\"/>"
 
 #. Tag: para
 #: reference_raster.xml:12
@@ -58,6 +67,8 @@ msgid ""
 "For the examples in this reference we will be using a raster table of dummy "
 "rasters - Formed with the following code"
 msgstr ""
+"Pour les exemples dans cette section, nous utiliserons une table de rasters "
+"fictifs, créée via la requête suivante"
 
 #. Tag: programlisting
 #: reference_raster.xml:13
@@ -140,18 +151,20 @@ msgid ""
 "This section lists the PostgreSQL data types specifically created to support "
 "raster functionality."
 msgstr ""
+"Cette section liste les types de données PostgreSQL créés pour supporter les "
+"fonctionnalités raster."
 
 #. Tag: title
 #: reference_raster.xml:20
 #, no-c-format
 msgid "Raster Support Data types"
-msgstr ""
+msgstr "Types de données pour la prise en charge raster"
 
 #. Tag: refname
 #: reference_raster.xml:24
 #, no-c-format
 msgid "geomval"
-msgstr ""
+msgstr "geomval"
 
 #. Tag: refpurpose
 #: reference_raster.xml:25
@@ -160,6 +173,9 @@ msgid ""
 "A spatial datatype with two fields - geom (holding a geometry object) and "
 "val (holding a double precision pixel value from a raster band)."
 msgstr ""
+"Un type spatial comportant deux champs : geom (stockant un objet géométrique)"
+" et val (stockant la valeur du pixel en double précision depuis une bande du "
+"raster)."
 
 #. Tag: title
 #: reference_raster.xml:30 reference_raster.xml:49 reference_raster.xml:121
@@ -254,6 +270,12 @@ msgid ""
 "by the ST_DumpAsPolygon and Raster intersection family of functions as an "
 "output type to explode a raster band into geometry polygons."
 msgstr ""
+"geomval est un type composite, comprenant un objet géométrique dans le champ "
+".geom et val, une valeur en double précision qui représente la valeur du "
+"pixel à un emplacement spécifique d'une bande raster. Ce type est utilisé "
+"par la fonction ST_DumpAsPolygon et la famille de fonctions d'intersection "
+"Raster, en tant que type de sortie pour éclater une bande raster en "
+"polygones."
 
 #. Tag: title
 #: reference_raster.xml:37 reference_raster.xml:107 reference_raster.xml:157
@@ -348,6 +370,9 @@ msgid ""
 "<refpurpose>A composite type used as input into the ST_AddBand function "
 "defining the attributes and initial value of the new band.</refpurpose>"
 msgstr ""
+"<refpurpose>Un type composite utilisé comme entrée pour la fonction "
+"ST_AddBand pour définir les attributs et la valeur initiale d'une nouvelle "
+"bande.</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:50
@@ -356,6 +381,8 @@ msgid ""
 "<para>A composite type used as input into the ST_AddBand function defining "
 "the attributes and initial value of the new band.</para>"
 msgstr ""
+"<para>Un type composite utilisé comme entrée pour la fonction ST_AddBand "
+"pour définir les attributs et la valeur initiale d'une nouvelle bande.</para>"
 
 #. Tag: term
 #: reference_raster.xml:55
@@ -371,6 +398,8 @@ msgid ""
 "amongst the raster's bands. If NULL, the new band will be added at the end "
 "of the raster's bands."
 msgstr ""
+"Indice (basé sur 1) où insérer la nouvelle bande dans la liste des bandes du "
+"raster. Si NULL, la nouvelle bande sera ajoutée en dernière position."
 
 #. Tag: term
 #: reference_raster.xml:67
@@ -385,6 +414,8 @@ msgid ""
 "Pixel type of the new band. One of defined pixel types as described in <xref "
 "linkend=\"RT_ST_BandPixelType\"/>."
 msgstr ""
+"Type de pixel pour la nouvelle bande. Doit être un des types de pixels "
+"définis, tels que décrits dans <xref linkend=\"RT_ST_BandPixelType\"/>."
 
 #. Tag: term
 #: reference_raster.xml:79
@@ -396,7 +427,7 @@ msgstr "<parameter>initialvalue </parameter> <type>double precision</type>"
 #: reference_raster.xml:84
 #, no-c-format
 msgid "Initial value that all pixels of new band will be set to."
-msgstr ""
+msgstr "Valeur initiale pour tous les pixels de la nouvelle bande."
 
 #. Tag: term
 #: reference_raster.xml:91
@@ -411,12 +442,14 @@ msgid ""
 "NODATA value of the new band. If NULL, the new band will not have a NODATA "
 "value assigned."
 msgstr ""
+"Valeur NODATA pour la nouvelle bande. Si NULL, la nouvelle bande n'aura pas "
+"de valeur NODATA attribuée."
 
 #. Tag: refname
 #: reference_raster.xml:116
 #, no-c-format
 msgid "rastbandarg"
-msgstr ""
+msgstr "rastbandarg"
 
 #. Tag: refpurpose
 #: reference_raster.xml:117
@@ -425,6 +458,8 @@ msgid ""
 "<refpurpose>A composite type for use when needing to express a raster and a "
 "band index of that raster.</refpurpose>"
 msgstr ""
+"<refpurpose>Un type composite pour représenter à la fois un raster et un "
+"indice d'une bande de ce raster.</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:122
@@ -433,6 +468,8 @@ msgid ""
 "<para>A composite type for use when needing to express a raster and a band "
 "index of that raster.</para>"
 msgstr ""
+"<para>Un type composite pour représenter à la fois un raster et un indice "
+"d'une bande de ce raster.</para>"
 
 #. Tag: term
 #: reference_raster.xml:128
@@ -444,7 +481,7 @@ msgstr "<parameter>rast </parameter> <type>raster</type>"
 #: reference_raster.xml:133
 #, no-c-format
 msgid "The raster in question/"
-msgstr ""
+msgstr "Le raster en question"
 
 #. Tag: term
 #: reference_raster.xml:140 reference_raster.xml:360
@@ -456,19 +493,19 @@ msgstr "<parameter>nband </parameter> <type>integer</type>"
 #: reference_raster.xml:145
 #, no-c-format
 msgid "1-based value indicating the band of raster"
-msgstr ""
+msgstr "Indice (basé sur 1) de la bande du raster"
 
 #. Tag: refname
 #: reference_raster.xml:166
 #, no-c-format
 msgid "raster"
-msgstr ""
+msgstr "raster"
 
 #. Tag: refpurpose
 #: reference_raster.xml:167
 #, no-c-format
 msgid "raster spatial data type."
-msgstr ""
+msgstr "Type de données raster spatial."
 
 #. Tag: para
 #: reference_raster.xml:172
@@ -479,6 +516,11 @@ msgid ""
 "1 or more bands each having a set of pixel values. Rasters can be "
 "georeferenced."
 msgstr ""
+"raster est le type de données spatial pour représenter les données rasters, "
+"telles qu'importées depuis des fichiers JPEGs, TIFFs, PNGs, modèles "
+"d'élévation numérique. Chaque raster a une ou plusieurs bandes, chacune "
+"correspondant à un ensemble de valeurs de pixels. Les rasters peuvent être "
+"géo-référencés."
 
 #. Tag: para
 #: reference_raster.xml:175
@@ -489,12 +531,17 @@ msgid ""
 "linkend=\"RT_ST_ConvexHull\"/> of the raster. This auto casting may be "
 "removed in the near future so don't rely on it."
 msgstr ""
+"PostGIS doit être compilé avec le support GDAL. Actuellement, les rasters "
+"peuvent être implicitement convertis en type geometry, mais la conversion "
+"retourne un <xref linkend=\"RT_ST_ConvexHull\"/> du raster. Ce transtypage "
+"implicite peut être supprimé dans le futur proche et ne devrait pas être "
+"utilisé."
 
 #. Tag: title
 #: reference_raster.xml:181
 #, no-c-format
 msgid "Casting Behavior"
-msgstr ""
+msgstr "Transtypages"
 
 #. Tag: para
 #: reference_raster.xml:182
@@ -522,7 +569,7 @@ msgstr "Comportement"
 #: reference_raster.xml:191
 #, no-c-format
 msgid "geometry"
-msgstr ""
+msgstr "geometry"
 
 #. Tag: entry
 #: reference_raster.xml:192
@@ -534,7 +581,7 @@ msgstr "automatique"
 #: reference_raster.xml:207
 #, no-c-format
 msgid "reclassarg"
-msgstr ""
+msgstr "reclassarg"
 
 #. Tag: refpurpose
 #: reference_raster.xml:208
@@ -543,6 +590,8 @@ msgid ""
 "<refpurpose>A composite type used as input into the ST_Reclass function "
 "defining the behavior of reclassification.</refpurpose>"
 msgstr ""
+"<refpurpose>Un type composite utilisé comme entrée pour la fonction "
+"ST_Reclass pour définir le comportement de la reclassification.</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:212
@@ -551,6 +600,8 @@ msgid ""
 "<para>A composite type used as input into the ST_Reclass function defining "
 "the behavior of reclassification.</para>"
 msgstr ""
+"<para>Un type composite utilisé comme entrée pour la fonction ST_Reclass "
+"pour définir le comportement de la reclassification.</para>"
 
 #. Tag: term
 #: reference_raster.xml:215
@@ -562,7 +613,7 @@ msgstr "<parameter>nband </parameter><type>integer</type>"
 #: reference_raster.xml:216
 #, no-c-format
 msgid "The band number of band to reclassify."
-msgstr ""
+msgstr "L'indice de bande à reclassifier."
 
 #. Tag: term
 #: reference_raster.xml:219
@@ -579,6 +630,11 @@ msgid ""
 "values. ( means &gt;, ) means less than, ] &lt; or equal, [ means &gt; or "
 "equal"
 msgstr ""
+"Expression des classes, sous forme de correspondance range:map_range séparés "
+"par des virgules pour définir les correspondances entre les anciennes "
+"valeurs de la bande et la nouvelle valeur. ( signifie plus grand que, ) "
+"signifie plus petit que, ] signifie inférieur ou égal, [ signifie supérieur "
+"ou égal"
 
 #. Tag: programlisting
 #: reference_raster.xml:221
@@ -604,7 +660,7 @@ msgstr ""
 #: reference_raster.xml:222
 #, no-c-format
 msgid "( notation is optional so a-b means the same as (a-b)"
-msgstr ""
+msgstr "La notation ( est facultative : a-b est équivalent à (a-b)"
 
 #. Tag: term
 #: reference_raster.xml:227
@@ -619,6 +675,8 @@ msgid ""
 "One of defined pixel types as described in <xref "
 "linkend=\"RT_ST_BandPixelType\"/>"
 msgstr ""
+"Un des types de pixels définis, tels que décrits dans <xref linkend="
+"\"RT_ST_BandPixelType\"/>"
 
 #. Tag: term
 #: reference_raster.xml:231
@@ -633,12 +691,14 @@ msgid ""
 "Value to treat as no data. For image outputs that support transparency, "
 "these will be blank."
 msgstr ""
+"Valeur à utiliser comme NODATA. Pour les formats d'images supportant la "
+"transparence, ces pixels seront transparents."
 
 #. Tag: title
 #: reference_raster.xml:237
 #, no-c-format
 msgid "Example: Reclassify band 2 as an 8BUI where 255 is nodata value"
-msgstr ""
+msgstr "Exemple : Reclassifier la bande 2 en 8BUI avec 255 comme valeur NODATA"
 
 #. Tag: programlisting
 #: reference_raster.xml:238
@@ -654,7 +714,7 @@ msgstr ""
 #: reference_raster.xml:241
 #, no-c-format
 msgid "Example: Reclassify band 1 as an 1BB and no nodata value defined"
-msgstr ""
+msgstr "Exemple : Reclassifier la bande 1 en 1BB sans valeur NODATA"
 
 #. Tag: programlisting
 #: reference_raster.xml:242
@@ -666,7 +726,7 @@ msgstr "SELECT ROW(1, '0-100] :0, (100-255 :1', '1BB', NULL) ::reclassarg�
 #: reference_raster.xml:252
 #, no-c-format
 msgid "summarystats"
-msgstr ""
+msgstr "summarystats"
 
 #. Tag: refpurpose
 #: reference_raster.xml:253
@@ -675,6 +735,8 @@ msgid ""
 "A composite type returned by the ST_SummaryStats and ST_SummaryStatsAgg "
 "functions."
 msgstr ""
+"Un type composite retournée par les fonctions ST_SummaryStats et "
+"ST_SummaryStatsAgg."
 
 #. Tag: para
 #: reference_raster.xml:258
@@ -683,6 +745,8 @@ msgid ""
 "A composite type returned by the <xref linkend=\"RT_ST_SummaryStats\"/> and "
 "<xref linkend=\"RT_ST_SummaryStatsAgg\"/> functions."
 msgstr ""
+"Un type composite retournée par les fonctions <xref linkend="
+"\"RT_ST_SummaryStats\"/> et <xref linkend=\"RT_ST_SummaryStatsAgg\"/>."
 
 #. Tag: term
 #: reference_raster.xml:263
@@ -694,7 +758,7 @@ msgstr "<parameter>count </parameter> <type>integer</type>"
 #: reference_raster.xml:268
 #, no-c-format
 msgid "Number of pixels counted for the summary statistics."
-msgstr ""
+msgstr "Nombre de pixels comptabilisés pour les résumés statistiques."
 
 #. Tag: term
 #: reference_raster.xml:275
@@ -706,7 +770,7 @@ msgstr "<parameter>sum </parameter> <type>double precision</type>"
 #: reference_raster.xml:280
 #, no-c-format
 msgid "Sum of all counted pixel values."
-msgstr ""
+msgstr "Somme des valeurs de tous les pixels comptabilisés."
 
 #. Tag: term
 #: reference_raster.xml:287
@@ -718,7 +782,7 @@ msgstr "<parameter>mean </parameter> <type>double precision</type>"
 #: reference_raster.xml:292
 #, no-c-format
 msgid "Arithmetic mean of all counted pixel values."
-msgstr ""
+msgstr "Moyenne arithmétique des valeurs de tous les pixels comptabilisés."
 
 #. Tag: term
 #: reference_raster.xml:299
@@ -730,7 +794,7 @@ msgstr "<parameter>stddev </parameter> <type>double precision</type>"
 #: reference_raster.xml:304
 #, no-c-format
 msgid "Standard deviation of all counted pixel values."
-msgstr ""
+msgstr "Écart type des valeurs de tous les pixels comptabilisés."
 
 #. Tag: term
 #: reference_raster.xml:311
@@ -742,7 +806,7 @@ msgstr "<parameter>min </parameter> <type>double precision</type>"
 #: reference_raster.xml:316
 #, no-c-format
 msgid "Minimum value of counted pixel values."
-msgstr ""
+msgstr "Minimum des valeurs de tous les pixels comptabilisés."
 
 #. Tag: term
 #: reference_raster.xml:323
@@ -754,7 +818,7 @@ msgstr "<parameter>max </parameter> <type>double precision</type>"
 #: reference_raster.xml:328
 #, no-c-format
 msgid "Maximum value of counted pixel values."
-msgstr ""
+msgstr "Maximum des valeurs de tous les pixels comptabilisés."
 
 #. Tag: para
 #: reference_raster.xml:341
@@ -766,7 +830,7 @@ msgstr ", <xref linkend=\"RT_ST_SummaryStatsAgg\"/>"
 #: reference_raster.xml:349
 #, no-c-format
 msgid "unionarg"
-msgstr ""
+msgstr "unionarg"
 
 #. Tag: refpurpose
 #: reference_raster.xml:350
@@ -776,6 +840,9 @@ msgid ""
 "defining the bands to be processed and behavior of the UNION operation.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Un type composite utilisé comme entrée de la fonction ST_Union "
+"pour définir les bandes à traiter et le comportement de l'opération "
+"d'union.</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:355
@@ -784,12 +851,16 @@ msgid ""
 "<para>A composite type used as input into the ST_Union function defining the "
 "bands to be processed and behavior of the UNION operation.</para>"
 msgstr ""
+"<para>Un type composite utilisé comme entrée de la fonction ST_Union pour "
+"définir les bandes à traiter et le comportement de l'opération "
+"d'union.</para>"
 
 #. Tag: para
 #: reference_raster.xml:365
 #, no-c-format
 msgid "1-based value indicating the band of each input raster to be processed."
 msgstr ""
+"Indice (basé sur 1) indiquant la bande de chaque raster d'entrée à traiter."
 
 #. Tag: term
 #: reference_raster.xml:372
@@ -804,12 +875,14 @@ msgid ""
 "Type of UNION operation. One of defined types as described in <xref "
 "linkend=\"RT_ST_Union\"/>."
 msgstr ""
+"Type de l'opération d'union. Doit être un des types définis, tels que "
+"décrits dans <xref linkend=\"RT_ST_Union\"/>."
 
 #. Tag: title
 #: reference_raster.xml:399
 #, no-c-format
 msgid "Raster Management"
-msgstr ""
+msgstr "Gestion raster"
 
 #. Tag: refname
 #: reference_raster.xml:402
@@ -827,6 +900,12 @@ msgid ""
 "loaded with data for the constraints to be inferred. Returns true if the "
 "constraint setting was accomplished and issues a notice otherwise."
 msgstr ""
+"Ajoute des contraintes raster à une table pour une colonne spécifique pour "
+"contraindre le système de référence spatial, l'échelle, la taille des blocs, "
+"l'alignement, le nombre de bandes, le type de pixels, la contrainte "
+"d'unicité spatiale. La table doit être chargée avec des données pour que les "
+"contraintes puissent être inférées. Retourne true si les contraintes ont été "
+"ajoutées, ou émet une notice sinon."
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:408
@@ -952,6 +1031,11 @@ msgid ""
 "resides in. The <varname>srid</varname> must be an integer value reference "
 "to an entry in the SPATIAL_REF_SYS table."
 msgstr ""
+"Génère des contraintes pour une colonne raster, qui peuvent être utilisées "
+"pour afficher des informations depuis le catalogue raster "
+"<varname>raster_columns</varname>. <varname>rastschema</varname> est le nom "
+"du schéma de la table. <varname>srid</varname> doit être un entier défini "
+"dans la table SPATIAL_REF_SYS."
 
 #. Tag: para
 #: reference_raster.xml:542
@@ -960,6 +1044,8 @@ msgid ""
 "<varname>raster2pgsql</varname> loader uses this function to register raster "
 "tables"
 msgstr ""
+"Le chargeur de rasters <varname>raster2pgsql</varname> utilise cette "
+"fonction pour enregistrer les tables raster"
 
 #. Tag: para
 #: reference_raster.xml:543
@@ -968,12 +1054,14 @@ msgid ""
 "Valid constraint names to pass in: refer to <xref "
 "linkend=\"RT_Raster_Columns\"/> for more details."
 msgstr ""
+"Noms de contraintes à passer en arguments : se référer à <xref linkend="
+"\"RT_Raster_Columns\"/> pour plus de détails."
 
 #. Tag: para
 #: reference_raster.xml:545
 #, no-c-format
 msgid "<varname>blocksize</varname> sets both X and Y blocksize"
-msgstr ""
+msgstr "<varname>blocksize</varname> défini la largeur en X et en Y"
 
 #. Tag: para
 #: reference_raster.xml:546
@@ -981,6 +1069,8 @@ msgstr ""
 msgid ""
 "<varname>blocksize_x</varname> sets X tile (width in pixels of each tile)"
 msgstr ""
+"<varname>blocksize_x</varname> défini la largeur (nombre de pixels) de "
+"chaque tuile raster"
 
 #. Tag: para
 #: reference_raster.xml:547
@@ -988,6 +1078,8 @@ msgstr ""
 msgid ""
 "<varname>blocksize_y</varname> sets Y tile (height in pixels of each tile)"
 msgstr ""
+"<varname>blocksize_y</varname> défini la hauteur (nombre de pixels vers le "
+"bas) de chaque tuile raster"
 
 #. Tag: para
 #: reference_raster.xml:548
@@ -996,12 +1088,14 @@ msgid ""
 "<varname>extent</varname> computes extent of whole table and applys "
 "constraint all rasters must be within that extent"
 msgstr ""
+"<varname>extent</varname> calcule l'étendue de l'ensemble de la table et "
+"contraint tous les rasters à être inclus dans cette étendue"
 
 #. Tag: para
 #: reference_raster.xml:550
 #, no-c-format
 msgid "<varname>num_bands</varname> number of bands"
-msgstr ""
+msgstr "<varname>num_bands</varname> nombre de bandes"
 
 #. Tag: para
 #: reference_raster.xml:551
@@ -1010,6 +1104,8 @@ msgid ""
 "<varname>pixel_types</varname> reads array of pixel types for each band "
 "ensure all band n have same pixel type"
 msgstr ""
+"<varname>pixel_types</varname> tableau de types de pixels pour chaque bande -"
+" contraint chaque bande n au même type de pixels"
 
 #. Tag: para
 #: reference_raster.xml:552
@@ -1019,6 +1115,9 @@ msgid ""
 "can be spatially the same) and coverage tile (raster is aligned to a "
 "coverage) constraints"
 msgstr ""
+"<varname>regular_blocking</varname> défini les contraintes d'unité spatiale ("
+"deux rasters ne peuvent pas être spatialement identiques) et de couverture "
+"de tuiles (raster est aligné sur une couverture)"
 
 #. Tag: para
 #: reference_raster.xml:553
@@ -1028,18 +1127,23 @@ msgid ""
 "meaning any two tiles you compare will return true for. Refer to <xref "
 "linkend=\"RT_ST_SameAlignment\"/>."
 msgstr ""
+"<varname>same_alignment</varname> garantie que toutes les tuiles ont le même "
+"alignement. Comparer n'importe quel couple de tuiles retournera true. Voir "
+"<xref linkend=\"RT_ST_SameAlignment\"/> pour plus de détails."
 
 #. Tag: para
 #: reference_raster.xml:554
 #, no-c-format
 msgid "<varname>srid</varname> ensures all have same srid"
-msgstr ""
+msgstr "<varname>srid</varname> garantie que tous les rasters ont le même srid"
 
 #. Tag: para
 #: reference_raster.xml:555
 #, no-c-format
 msgid "More -- any listed as inputs into the above functions"
 msgstr ""
+"Plus -- n'importe quelle contrainte listée parmi les arguments des fonctions "
+"décrites ci-dessus"
 
 #. Tag: para
 #: reference_raster.xml:558
@@ -1049,6 +1153,9 @@ msgid ""
 "table. As such for it to work, you must create the raster column first and "
 "then load it with data."
 msgstr ""
+"Cette fonction infère les contraintes depuis les données déjà présentes dans "
+"la table. Ainsi, vous devez d'abord créer la colonne raster et charger des "
+"données dedans avant de pouvoir utiliser cette fonction."
 
 #. Tag: para
 #: reference_raster.xml:563
@@ -1058,6 +1165,10 @@ msgid ""
 "constraints, you may want to run the DropRasterConstraints if the extent of "
 "your data has changed."
 msgstr ""
+"Si vous avez besoin de charger plus de données dans la table après avoir "
+"défini les contraintes, vous pourrez avoir besoin d'exécuter la fonction "
+"DropRasterConstraints avant le chargement, en particulier si l'étendue des "
+"données est modifiée."
 
 #. Tag: para
 #: reference_raster.xml:567 reference_raster.xml:716 reference_raster.xml:792
@@ -1087,6 +1198,8 @@ msgstr "Disponibilité : 2.0.0"
 #, no-c-format
 msgid "Examples: Apply all possible constraints on column based on data"
 msgstr ""
+"Exemples : Appliquer toutes les contraintes possibles à partir des données "
+"présentes"
 
 #. Tag: programlisting
 #: reference_raster.xml:573
@@ -1113,12 +1226,32 @@ msgid ""
 " 4326 |       2 |       2 |        1000 |        1000 |         1 | "
 "{8BSI}      | {0}"
 msgstr ""
+"CREATE TABLE myrasters(rid SERIAL primary key, rast raster);\n"
+"INSERT INTO myrasters(rast)\n"
+"SELECT ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0.3, -0.3, 2, 2, 0, 0,4326)"
+", 1, '8BSI'::text, -129, NULL);\n"
+"\n"
+"SELECT AddRasterConstraints('myrasters'::name, 'rast'::name);\n"
+"\n"
+"\n"
+"-- verification des contraintes depuis la vue raster_columns --\n"
+"SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, "
+"pixel_types, nodata_values\n"
+"    FROM raster_columns\n"
+"    WHERE r_table_name = 'myrasters';\n"
+"\n"
+" srid | scale_x | scale_y | blocksize_x | blocksize_y | num_bands | "
+"pixel_types| nodata_values\n"
+"------+---------+---------+-------------+-------------+-----------+----------"
+"---+---------------\n"
+" 4326 |       2 |       2 |        1000 |        1000 |         1 | {8BSI}"
+"      | {0}"
 
 #. Tag: title
 #: reference_raster.xml:577
 #, no-c-format
 msgid "Examples: Apply single constraint"
-msgstr ""
+msgstr "Exemples : Appliquer une seule contrainte"
 
 #. Tag: programlisting
 #: reference_raster.xml:579
@@ -1136,6 +1269,17 @@ msgid ""
 "NOTICE:  Adding blocksize-X constraint\n"
 "NOTICE:  Adding blocksize-Y constraint"
 msgstr ""
+"CREATE TABLE public.myrasters2(rid SERIAL primary key, rast raster);\n"
+"INSERT INTO myrasters2(rast)\n"
+"SELECT ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0.3, -0.3, 2, 2, 0, 0,4326)"
+", 1, '8BSI'::text, -129, NULL);\n"
+"\n"
+"SELECT AddRasterConstraints('public'::name, 'myrasters2'::name, 'rast'::"
+"name,'regular_blocking', 'blocksize');\n"
+"-- on a des notices --\n"
+"NOTICE:  Adding regular blocking constraint\n"
+"NOTICE:  Adding blocksize-X constraint\n"
+"NOTICE:  Adding blocksize-Y constraint"
 
 #. Tag: para
 #: reference_raster.xml:585
@@ -1145,12 +1289,15 @@ msgid ""
 ">, <xref linkend=\"RT_DropRasterConstraints\"/>, <xref "
 "linkend=\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_AddBand\"/>, <xref linkend=\"RT_ST_MakeEmptyRaster\"/"
+">, <xref linkend=\"RT_DropRasterConstraints\"/>, <xref linkend="
+"\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:591
 #, no-c-format
 msgid "DropRasterConstraints"
-msgstr ""
+msgstr "DropRasterConstraints"
 
 #. Tag: refpurpose
 #: reference_raster.xml:593
@@ -1159,6 +1306,9 @@ msgid ""
 "Drops PostGIS raster constraints that refer to a raster table column. Useful "
 "if you need to reload data or update your raster column data."
 msgstr ""
+"Supprime des contraintes raster PostGIS raster sur une colonne raster d'une "
+"table. Utile pour recharger des données ou mettre à jour les données d'une "
+"colonne raster."
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:597
@@ -1212,6 +1362,53 @@ msgid ""
 "paramdef> <paramdef><type>text[] </type> <parameter>constraints</parameter></"
 "paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>boolean <function>DropRasterConstraints</function></"
+"funcdef> <paramdef><type>name </type> <parameter>rasttable</parameter></"
+"paramdef> <paramdef><type>name </type> <parameter>rastcolumn</parameter></"
+"paramdef> <paramdef><type>boolean </type> <parameter>srid</parameter></"
+"paramdef> <paramdef><type>boolean </type> <parameter>scale_x</parameter></"
+"paramdef> <paramdef><type>boolean </type> <parameter>scale_y</parameter></"
+"paramdef> <paramdef><type>boolean </type> "
+"<parameter>blocksize_x</parameter></paramdef> <paramdef><type>boolean </"
+"type> <parameter>blocksize_y</parameter></paramdef> <paramdef><type>boolean "
+"</type> <parameter>same_alignment</parameter></paramdef> "
+"<paramdef><type>boolean </type> <parameter>regular_blocking</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>num_bands=true</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>pixel_types=true</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>nodata_values=true</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>out_db=true</parameter> </paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>extent=true</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>boolean <function>DropRasterConstraints</function></"
+"funcdef> <paramdef><type>name </type> <parameter>rastschema</parameter></"
+"paramdef> <paramdef><type>name </type> <parameter>rasttable</parameter></"
+"paramdef> <paramdef><type>name </type> <parameter>rastcolumn</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>srid=true</parameter></paramdef> <paramdef><type>boolean </type> "
+"<parameter>scale_x=true</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>scale_y=true</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>blocksize_x=true</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>blocksize_y=true</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>same_alignment=true</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>boolean </type> <parameter>regular_blocking=false</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>num_bands=true</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>pixel_types=true</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>nodata_values=true</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>out_db=true</parameter> </paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>extent=true</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>boolean <function>DropRasterConstraints</function></"
+"funcdef> <paramdef><type>name </type> <parameter>rastschema</parameter></"
+"paramdef> <paramdef><type>name </type> <parameter>rasttable</parameter></"
+"paramdef> <paramdef><type>name </type> <parameter>rastcolumn</parameter></"
+"paramdef> <paramdef><type>text[] </type> <parameter>constraints</parameter></"
+"paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:710
@@ -1222,18 +1419,23 @@ msgid ""
 "need to load more data or update your raster column data. You do not need to "
 "do this if you want to get rid of a raster table or a raster column."
 msgstr ""
+"Supprime des contraintes raster PostGIS ajoutées via <xref linkend="
+"\"RT_AddRasterConstraints\"/> sur une colonne raster d'une table. Utile pour "
+"recharger des données ou mettre à jour les données d'une colonne raster. "
+"Vous n'avez pas besoin d'appeler cette fonction si vous voulez supprimer une "
+"table raster ou une colonne raster."
 
 #. Tag: para
 #: reference_raster.xml:712
 #, no-c-format
 msgid "To drop a raster table use the standard"
-msgstr ""
+msgstr "Pour supprimer une table raster, utilisez la requête classique"
 
 #. Tag: programlisting
 #: reference_raster.xml:712
 #, no-c-format
 msgid "DROP TABLE mytable"
-msgstr ""
+msgstr "DROP TABLE mytable"
 
 #. Tag: para
 #: reference_raster.xml:713
@@ -1242,12 +1444,14 @@ msgid ""
 "To drop just a raster column and leave the rest of the table, use standard "
 "SQL"
 msgstr ""
+"Pour supprimer une colonne raster et garder le reste de la table intacte, "
+"utilisez la requête classique"
 
 #. Tag: programlisting
 #: reference_raster.xml:713
 #, no-c-format
 msgid "ALTER TABLE mytable DROP COLUMN rast"
-msgstr ""
+msgstr "ALTER TABLE mytable DROP COLUMN rast"
 
 #. Tag: para
 #: reference_raster.xml:714
@@ -1259,6 +1463,11 @@ msgid ""
 "<varname>raster_columns</varname> catalog, but there will be no other "
 "information about it aside from the column name and table."
 msgstr ""
+"La table disparaîtra du catalogue <varname>raster_columns</varname> si la "
+"colonne ou la table est supprimée. Si seulement les contraintes ont été "
+"supprimées, la colonne raster sera toujours listée dans le catalogue "
+"<varname>raster_columns</varname>, mais il n'y aura pas d'autre information "
+"que les noms de la colonne et de la table."
 
 #. Tag: title
 #: reference_raster.xml:719 reference_raster.xml:796 reference_raster.xml:893
@@ -1343,18 +1552,34 @@ msgid ""
 "    0 |         |         |             |             |           "
 "|             |"
 msgstr ""
+"SELECT DropRasterConstraints ('myrasters','rast');\n"
+"----RESULTAT ---\n"
+"t\n"
+"\n"
+"-- verification des contraintes ddepuis la vue raster_columns --\n"
+"SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, "
+"pixel_types, nodata_values\n"
+"    FROM raster_columns\n"
+"    WHERE r_table_name = 'myrasters';\n"
+"\n"
+" srid | scale_x | scale_y | blocksize_x | blocksize_y | num_bands | "
+"pixel_types| nodata_values\n"
+"------+---------+---------+-------------+-------------+-----------+----------"
+"---+---------------\n"
+"    0 |         |         |             |             |           |"
+"             |"
 
 #. Tag: refname
 #: reference_raster.xml:732
 #, no-c-format
 msgid "AddOverviewConstraints"
-msgstr ""
+msgstr "AddOverviewConstraints"
 
 #. Tag: refpurpose
 #: reference_raster.xml:734
 #, no-c-format
 msgid "Tag a raster column as being an overview of another."
-msgstr ""
+msgstr "Marque une colonne raster comme étant un aperçu d'une autre colonne."
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:738
@@ -1376,6 +1601,22 @@ msgid ""
 "<parameter>refcolumn</parameter></paramdef> <paramdef><type>int </type> "
 "<parameter>ovfactor</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>boolean "
+"<function>AddOverviewConstraints</function></funcdef> <paramdef><type>name </"
+"type> <parameter>ovschema</parameter></paramdef> <paramdef><type>name </"
+"type> <parameter>ovtable</parameter></paramdef> <paramdef><type>name </type> "
+"<parameter>ovcolumn</parameter></paramdef> <paramdef><type>name </type> "
+"<parameter>refschema</parameter></paramdef> <paramdef><type>name </type> "
+"<parameter>reftable</parameter></paramdef> <paramdef><type>name </type> "
+"<parameter>refcolumn</parameter></paramdef> <paramdef><type>int </type> "
+"<parameter>ovfactor</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>boolean <function>AddOverviewConstraints</function></funcdef> "
+"<paramdef><type>name </type> <parameter>ovtable</parameter></paramdef> "
+"<paramdef><type>name </type> <parameter>ovcolumn</parameter></paramdef> "
+"<paramdef><type>name </type> <parameter>reftable</parameter></paramdef> "
+"<paramdef><type>name </type> <parameter>refcolumn</parameter></paramdef> "
+"<paramdef><type>int </type> <parameter>ovfactor</parameter></paramdef> "
+"</funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:778
@@ -1384,6 +1625,9 @@ msgid ""
 "Adds constraints on a raster column that are used to display information in "
 "the <varname>raster_overviews</varname> raster catalog."
 msgstr ""
+"Ajoute des contraintes sur une colonne raster, qui peuvent être utilisées "
+"pour afficher des informations depuis le catalogue raster "
+"<varname>raster_overviews</varname>."
 
 #. Tag: para
 #: reference_raster.xml:782
@@ -1392,6 +1636,9 @@ msgid ""
 "The <varname>ovfactor</varname> parameter represents the scale multiplier in "
 "the overview column: higher overview factors have lower resolution."
 msgstr ""
+"La paramètre <varname>ovfactor</varname> représente le facture de "
+"multiplication d'échelle pour la colonne d'aperçu : plus le facteur d'aperçu "
+"est élevé, plus résolution est basse."
 
 #. Tag: para
 #: reference_raster.xml:786
@@ -1401,6 +1648,9 @@ msgid ""
 "parameters are omitted, the first table found scanning the "
 "<varname>search_path</varname> will be used."
 msgstr ""
+"Si les paramètres <varname>ovschema</varname> et <varname>refschema</"
+"varname> sont omis, la première table trouvée lors du scan de "
+"<varname>search_path</varname> sera utilisée."
 
 #. Tag: programlisting
 #: reference_raster.xml:798
@@ -1430,6 +1680,29 @@ msgid ""
 " res2 | r2 | res1 | r1 | 2\n"
 "(1 row)"
 msgstr ""
+"CREATE TABLE res1 AS SELECT\n"
+"ST_AddBand(\n"
+"  ST_MakeEmptyRaster(1000, 1000, 0, 0, 2),\n"
+"  1, '8BSI'::text, -129, NULL\n"
+") r1;\n"
+"\n"
+"CREATE TABLE res2 AS SELECT\n"
+"ST_AddBand(\n"
+"  ST_MakeEmptyRaster(500, 500, 0, 0, 4),\n"
+"  1, '8BSI'::text, -129, NULL\n"
+") r2;\n"
+"\n"
+"SELECT AddOverviewConstraints('res2', 'r2', 'res1', 'r1', 2);\n"
+"\n"
+"-- verification de la prise en compte depuis la vue raster_overviews --\n"
+"SELECT o_table_name ot, o_raster_column oc,\n"
+"       r_table_name rt, r_raster_column rc,\n"
+"       overview_factor f\n"
+"FROM raster_overviews WHERE o_table_name = 'res2';\n"
+"  ot  | oc |  rt  | rc | f\n"
+"------+----+------+----+---\n"
+" res2 | r2 | res1 | r1 | 2\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_raster.xml:804
@@ -1438,18 +1711,20 @@ msgid ""
 ", <xref linkend=\"RT_DropOverviewConstraints\"/>, <xref "
 "linkend=\"RT_CreateOverview\"/>, <xref linkend=\"RT_AddRasterConstraints\"/>"
 msgstr ""
+", <xref linkend=\"RT_DropOverviewConstraints\"/>, <xref linkend="
+"\"RT_CreateOverview\"/>, <xref linkend=\"RT_AddRasterConstraints\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:815
 #, no-c-format
 msgid "DropOverviewConstraints"
-msgstr ""
+msgstr "DropOverviewConstraints"
 
 #. Tag: refpurpose
 #: reference_raster.xml:817
 #, no-c-format
 msgid "Untag a raster column from being an overview of another."
-msgstr ""
+msgstr "Supprime les contraintes d'aperçu de la colonne."
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:821
@@ -1464,6 +1739,15 @@ msgid ""
 "</type> <parameter>ovtable</parameter></paramdef> <paramdef><type>name </"
 "type> <parameter>ovcolumn</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>boolean "
+"<function>DropOverviewConstraints</function></funcdef> <paramdef><type>name "
+"</type> <parameter>ovschema</parameter></paramdef> <paramdef><type>name </"
+"type> <parameter>ovtable</parameter></paramdef> <paramdef><type>name </type> "
+"<parameter>ovcolumn</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>boolean <function>DropOverviewConstraints</function></funcdef> "
+"<paramdef><type>name </type> <parameter>ovtable</parameter></paramdef> "
+"<paramdef><type>name </type> <parameter>ovcolumn</parameter></paramdef> "
+"</funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:847
@@ -1473,6 +1757,9 @@ msgid ""
 "overview of another in the <varname>raster_overviews</varname> raster "
 "catalog."
 msgstr ""
+"Supprime dans le catalogue raster <varname>raster_overviews</varname> les "
+"contraintes raster de la colonne indiquant que c'est un aperçu une autre "
+"colonne."
 
 #. Tag: para
 #: reference_raster.xml:852
@@ -1481,6 +1768,8 @@ msgid ""
 "When the <varname>ovschema</varname> parameter is omitted, the first table "
 "found scanning the <varname>search_path</varname> will be used."
 msgstr ""
+"Si le paramètre <varname>ovschema</varname> est omis, la première table "
+"trouvée lors du scan de <varname>search_path</varname> sera utilisée."
 
 #. Tag: para
 #: reference_raster.xml:864
@@ -1489,18 +1778,20 @@ msgid ""
 ", <xref linkend=\"RT_AddOverviewConstraints\"/>, <xref "
 "linkend=\"RT_DropRasterConstraints\"/>"
 msgstr ""
+", <xref linkend=\"RT_AddOverviewConstraints\"/>, <xref linkend="
+"\"RT_DropRasterConstraints\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:874
 #, no-c-format
 msgid "PostGIS_GDAL_Version"
-msgstr ""
+msgstr "PostGIS_GDAL_Version"
 
 #. Tag: refpurpose
 #: reference_raster.xml:875
 #, no-c-format
 msgid "Reports the version of the GDAL library in use by PostGIS."
-msgstr ""
+msgstr "Retourne la version de la bibliothèque GDAL utilisée par PostGIS."
 
 #. Tag: funcprototype
 #: reference_raster.xml:880
@@ -1509,6 +1800,8 @@ msgid ""
 "<funcdef>text <function>PostGIS_GDAL_Version</function></funcdef> "
 "<paramdef></paramdef>"
 msgstr ""
+"<funcdef>text <function>PostGIS_GDAL_Version</function></funcdef> "
+"<paramdef></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:889
@@ -1517,6 +1810,9 @@ msgid ""
 "Reports the version of the GDAL library in use by PostGIS. Will also check "
 "and report if GDAL can find its data files."
 msgstr ""
+"Retourne la version de la bibliothèque GDAL utilisée par PostGIS. Vérifie "
+"également si GDAL peut accéder à ses fichiers de données et reportera une "
+"erreur si ce n'est pas le cas."
 
 #. Tag: programlisting
 #: reference_raster.xml:894
@@ -1527,18 +1823,22 @@ msgid ""
 "-----------------------------------\n"
 " GDAL 1.11dev, released 2013/04/13"
 msgstr ""
+"SELECT PostGIS_GDAL_Version();\n"
+"       postgis_gdal_version\n"
+"-----------------------------------\n"
+" GDAL 1.11dev, released 2013/04/13"
 
 #. Tag: refname
 #: reference_raster.xml:907
 #, no-c-format
 msgid "PostGIS_Raster_Lib_Build_Date"
-msgstr ""
+msgstr "PostGIS_Raster_Lib_Build_Date"
 
 #. Tag: refpurpose
 #: reference_raster.xml:909
 #, no-c-format
 msgid "Reports full raster library build date."
-msgstr ""
+msgstr "Retourne la date de compilation de la bibliothèque raster."
 
 #. Tag: funcprototype
 #: reference_raster.xml:914
@@ -1554,7 +1854,7 @@ msgstr ""
 #: reference_raster.xml:925
 #, no-c-format
 msgid "Reports raster build date"
-msgstr ""
+msgstr "Retourne la date de compilation de la bibliothèque raster"
 
 #. Tag: programlisting
 #: reference_raster.xml:931
@@ -1565,12 +1865,16 @@ msgid ""
 "-----------------------------\n"
 "2010-04-28 21:15:10"
 msgstr ""
+"SELECT PostGIS_Raster_Lib_Build_Date();\n"
+"postgis_raster_lib_build_date\n"
+"-----------------------------\n"
+"2010-04-28 21:15:10"
 
 #. Tag: refname
 #: reference_raster.xml:943
 #, no-c-format
 msgid "PostGIS_Raster_Lib_Version"
-msgstr ""
+msgstr "PostGIS_Raster_Lib_Version"
 
 #. Tag: refpurpose
 #: reference_raster.xml:945
@@ -1579,6 +1883,8 @@ msgid ""
 "<refpurpose>Reports full raster version and build configuration infos.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Retourne la version complète de la bibliothèque raster et les "
+"informations sur la configuration de la compilation.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_raster.xml:951
@@ -1595,6 +1901,8 @@ msgstr ""
 #, no-c-format
 msgid "<para>Reports full raster version and build configuration infos.</para>"
 msgstr ""
+"<para>Retourne la version complète de la bibliothèque raster et les "
+"informations sur la configuration de la compilation.</para>"
 
 #. Tag: programlisting
 #: reference_raster.xml:969
@@ -1605,12 +1913,16 @@ msgid ""
 "-----------------------------\n"
 " 2.0.0"
 msgstr ""
+"SELECT PostGIS_Raster_Lib_Version();\n"
+"postgis_raster_lib_version\n"
+"-----------------------------\n"
+" 2.0.0"
 
 #. Tag: refname
 #: reference_raster.xml:983
 #, no-c-format
 msgid "ST_GDALDrivers"
-msgstr ""
+msgstr "ST_GDALDrivers"
 
 #. Tag: refpurpose
 #: reference_raster.xml:985
@@ -1619,6 +1931,8 @@ msgid ""
 "Returns a list of raster formats supported by PostGIS through GDAL. Only "
 "those formats with can_write=True can be used by ST_AsGDALRaster"
 msgstr ""
+"Retourne la liste des formats raster supportés par PostGIS via GDAL. Seuls "
+"les formats avec can_write=True peuvent être utilisés par ST_AsGDALRaster"
 
 #. Tag: funcprototype
 #: reference_raster.xml:990
@@ -1655,12 +1969,21 @@ msgid ""
 "varname>, <varname>description</varname> and set of <varname>VALUE</varname> "
 "for each creator option for the specific driver."
 msgstr ""
+"Retourne la liste des formats raster supportés par GDAL, sous forme "
+"short_name, long_name et creator. Vous pouvez utiliser short_name comme "
+"paramètre <varname>format</varname> pour <xref linkend=\"RT_ST_AsGDALRaster\""
+"/>. Les options peuvent varier selon les drivers compilés dans votre "
+"bibliothèque libgdal. <varname>create_options</varname> retourne un XML "
+"contenant un ensemble de CreationOptionList/Option avec comme attribut name "
+"et comme attributs optionnels <varname>type</varname> et "
+"<varname>description</varname>, ainsi qu'un ensemble de <varname>VALUE</"
+"varname> pour chaque option de création pour ce driver."
 
 #. Tag: para
 #: reference_raster.xml:1010
 #, no-c-format
 msgid "Changed: 2.5.0 - add can_read and can_write columns."
-msgstr ""
+msgstr "Changement : 2.5.0 - ajout des colonnes can_read et can_write."
 
 #. Tag: para
 #: reference_raster.xml:1011
@@ -1669,6 +1992,8 @@ msgid ""
 "Changed: 2.0.6, 2.1.3 - by default no drivers are enabled, unless GUC or "
 "Environment variable gdal_enabled_drivers is set."
 msgstr ""
+"Changement : 2.0.6, 2.1.3 - aucun driver n'est activé par défaut, sauf si la "
+"variable GUC ou d'environnement gdal_enabled_drivers est définie."
 
 #. Tag: para
 #: reference_raster.xml:1012 reference_raster.xml:1613
@@ -1676,13 +2001,13 @@ msgstr ""
 #: reference_raster.xml:6500 reference_raster.xml:6580
 #, no-c-format
 msgid "Availability: 2.0.0 - requires GDAL &gt;= 1.6.0."
-msgstr ""
+msgstr "Disponibilité : 2.0.0 - nécessite GDAL &gt;= 1.6.0."
 
 #. Tag: title
 #: reference_raster.xml:1017
 #, no-c-format
 msgid "Examples: List of Drivers"
-msgstr ""
+msgstr "Exemples : Liste des drivers"
 
 #. Tag: programlisting
 #: reference_raster.xml:1019
@@ -1804,12 +2129,127 @@ msgid ""
 " ZMap            | ZMap Plus "
 "Grid                                              | t"
 msgstr ""
+"SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';\n"
+"SELECT short_name, long_name, can_write\n"
+"FROM st_gdaldrivers()\n"
+"ORDER BY short_name;\n"
+"\n"
+"   short_name    |                          "
+"long_name                          | can_write\n"
+"-----------------+-----------------------------------------------------------"
+"--+-----------\n"
+" AAIGrid         | Arc/Info ASCII "
+"Grid                                         | t\n"
+" ACE2            | "
+"ACE2                                                        | f\n"
+" ADRG            | ARC Digitized Raster "
+"Graphics                               | f\n"
+" AIG             | Arc/Info Binary "
+"Grid                                        | f\n"
+" AirSAR          | AirSAR Polarimetric "
+"Image                                   | f\n"
+" ARG             | Azavea Raster Grid "
+"format                                   | t\n"
+" BAG             | Bathymetry Attributed "
+"Grid                                  | f\n"
+" BIGGIF          | Graphics Interchange Format (.gif)"
+"                          | f\n"
+" BLX             | Magellan topo (.blx)"
+"                                        | t\n"
+" BMP             | MS Windows Device Independent "
+"Bitmap                        | f\n"
+" BSB             | Maptech BSB Nautical "
+"Charts                                 | f\n"
+" PAux            | PCI .aux "
+"Labelled                                           | f\n"
+" PCIDSK          | PCIDSK Database "
+"File                                        | f\n"
+" PCRaster        | PCRaster Raster "
+"File                                        | f\n"
+" PDF             | Geospatial "
+"PDF                                              | f\n"
+" PDS             | NASA Planetary Data "
+"System                                  | f\n"
+" PDS4            | NASA Planetary Data System "
+"4                                | t\n"
+" PLMOSAIC        | Planet Labs Mosaics "
+"API                                     | f\n"
+" PLSCENES        | Planet Labs Scenes "
+"API                                      | f\n"
+" PNG             | Portable Network "
+"Graphics                                   | t\n"
+" PNM             | Portable Pixmap Format (netpbm)"
+"                             | f\n"
+" PRF             | Racurs PHOTOMOD "
+"PRF                                         | f\n"
+" R               | R Object Data "
+"Store                                         | t\n"
+" Rasterlite      | "
+"Rasterlite                                                  | t\n"
+" RDA             | DigitalGlobe Raster Data Access "
+"driver                      | f\n"
+" RIK             | Swedish Grid RIK (.rik)"
+"                                     | f\n"
+" RMF             | Raster Matrix "
+"Format                                        | f\n"
+" ROI_PAC         | ROI_PAC "
+"raster                                              | f\n"
+" RPFTOC          | Raster Product Format TOC "
+"format                            | f\n"
+" RRASTER         | R "
+"Raster                                                    | f\n"
+" RS2             | RadarSat 2 XML "
+"Product                                      | f\n"
+" RST             | Idrisi Raster "
+"A.1                                           | t\n"
+" SAFE            | Sentinel-1 SAR SAFE "
+"Product                                 | f\n"
+" SAGA            | SAGA GIS Binary Grid (.sdat, .sg-grd-z)"
+"                     | t\n"
+" SAR_CEOS        | CEOS SAR "
+"Image                                              | f\n"
+" SDTS            | SDTS "
+"Raster                                                 | f\n"
+" SENTINEL2       | Sentinel "
+"2                                                  | f\n"
+" SGI             | SGI Image File Format "
+"1.0                                   | f\n"
+" SNODAS          | Snow Data Assimilation "
+"System                               | f\n"
+" SRP             | Standard Raster Product (ASRP/USRP)"
+"                         | f\n"
+" SRTMHGT         | SRTMHGT File "
+"Format                                         | t\n"
+" Terragen        | Terragen "
+"heightfield                                        | f\n"
+" TIL             | EarthWatch ."
+"TIL                                             | f\n"
+" TSX             | TerraSAR-X "
+"Product                                          | f\n"
+" USGSDEM         | USGS Optional ASCII DEM (and CDED)"
+"                          | t\n"
+" VICAR           | MIPL VICAR "
+"file                                             | f\n"
+" VRT             | Virtual "
+"Raster                                              | t\n"
+" WCS             | OGC Web Coverage "
+"Service                                    | f\n"
+" WMS             | OGC Web Map "
+"Service                                         | t\n"
+" WMTS            | OGC Web Map Tile "
+"Service                                    | t\n"
+" XPM             | X11 PixMap "
+"Format                                           | t\n"
+" XYZ             | ASCII Gridded "
+"XYZ                                           | t\n"
+" ZMap            | ZMap Plus "
+"Grid                                              | t"
 
 #. Tag: title
 #: reference_raster.xml:1021
 #, no-c-format
 msgid "Example: List of options for each driver"
-msgstr ""
+msgstr "Exemple : Liste des options pour chaque driver"
 
 #. Tag: programlisting
 #: reference_raster.xml:1022
@@ -1842,6 +2282,33 @@ msgid ""
 " THUMBNAIL_HEIGHT   | int     | Forced thumbnail height\n"
 "(9 rows)"
 msgstr ""
+"-- Recupere en sortie un XML des options de creation pour le driver JPEG  --"
+"\n"
+"-- Note: vous pouvez utiliser ces options de creation comme parametre "
+"options de la fonction ST_AsGDALRaster\n"
+"SELECT (xpath('@name', g.opt))[1]::text As oname,\n"
+"       (xpath('@type', g.opt))[1]::text As otype,\n"
+"       (xpath('@description', g.opt))[1]::text As descrip\n"
+"FROM (SELECT unnest(xpath('/CreationOptionList/Option', create_options::xml))"
+" As opt\n"
+"FROM  st_gdaldrivers()\n"
+"WHERE short_name = 'JPEG') As g;\n"
+"\n"
+"       oname        |  otype  |      descrip\n"
+"--------------------+---------+----------------------------------------------"
+"---\n"
+" PROGRESSIVE        | boolean | whether to generate a progressive JPEG\n"
+" QUALITY            | int     | good=100, bad=0, default=75\n"
+" WORLDFILE          | boolean | whether to geneate a worldfile\n"
+" INTERNAL_MASK      | boolean | whether to generate a validity mask\n"
+" COMMENT            | string  | Comment\n"
+" SOURCE_ICC_PROFILE | string  | ICC profile encoded in Base64\n"
+" EXIF_THUMBNAIL     | boolean | whether to generate an EXIF "
+"thumbnail(overview).\n"
+"                                By default its max dimension will be 128\n"
+" THUMBNAIL_WIDTH    | int     | Forced thumbnail width\n"
+" THUMBNAIL_HEIGHT   | int     | Forced thumbnail height\n"
+"(9 rows)"
 
 #. Tag: programlisting
 #: reference_raster.xml:1024
@@ -1988,6 +2455,146 @@ msgid ""
 "dataset (CreateCopy())             |\n"
 "(19 rows)"
 msgstr ""
+"-- Sortie XML brute des options de creation pour GeoTiff --\n"
+"SELECT create_options\n"
+"FROM st_gdaldrivers()\n"
+"WHERE short_name = 'GTiff';\n"
+"\n"
+"<![CDATA[<CreationOptionList>\n"
+"    <Option name=\"COMPRESS\" type=\"string-select\">\n"
+"        <Value>NONE</Value>\n"
+"        <Value>LZW</Value>\n"
+"        <Value>PACKBITS</Value>\n"
+"        <Value>JPEG</Value>\n"
+"        <Value>CCITTRLE</Value>\n"
+"        <Value>CCITTFAX3</Value>\n"
+"        <Value>CCITTFAX4</Value>\n"
+"        <Value>DEFLATE</Value>\n"
+"    </Option>\n"
+"    <Option name=\"PREDICTOR\" type=\"int\" description=\"Predictor Type\"/>"
+"\n"
+"    <Option name=\"JPEG_QUALITY\" type=\"int\" description=\"JPEG quality 1-"
+"100\" default=\"75\"/>\n"
+"    <Option name=\"ZLEVEL\" type=\"int\" description=\"DEFLATE compression "
+"level 1-9\" default=\"6\"/>\n"
+"    <Option name=\"NBITS\" type=\"int\" description=\"BITS for sub-byte "
+"files (1-7), sub-uint16 (9-15), sub-uint32 (17-31)\"/>\n"
+"    <Option name=\"INTERLEAVE\" type=\"string-select\" default=\"PIXEL\">\n"
+"        <Value>BAND</Value>\n"
+"        <Value>PIXEL</Value>\n"
+"    </Option>\n"
+"    <Option name=\"TILED\" type=\"boolean\" description=\"Switch to tiled "
+"format\"/>\n"
+"    <Option name=\"TFW\" type=\"boolean\" description=\"Write out world "
+"file\"/>\n"
+"    <Option name=\"RPB\" type=\"boolean\" description=\"Write out .RPB (RPC) "
+"file\"/>\n"
+"    <Option name=\"BLOCKXSIZE\" type=\"int\" description=\"Tile Width\"/>\n"
+"    <Option name=\"BLOCKYSIZE\" type=\"int\" description=\"Tile/Strip "
+"Height\"/>\n"
+"    <Option name=\"PHOTOMETRIC\" type=\"string-select\">\n"
+"        <Value>MINISBLACK</Value>\n"
+"        <Value>MINISWHITE</Value>\n"
+"        <Value>PALETTE</Value>\n"
+"        <Value>RGB</Value>\n"
+"        <Value>CMYK</Value>\n"
+"        <Value>YCBCR</Value>\n"
+"        <Value>CIELAB</Value>\n"
+"        <Value>ICCLAB</Value>\n"
+"        <Value>ITULAB</Value>\n"
+"    </Option>\n"
+"    <Option name=\"SPARSE_OK\" type=\"boolean\" description=\"Can newly "
+"created files have missing blocks?\" default=\"FALSE\"/>\n"
+"    <Option name=\"ALPHA\" type=\"boolean\" description=\"Mark first "
+"extrasample as being alpha\"/>\n"
+"    <Option name=\"PROFILE\" type=\"string-select\" default=\"GDALGeoTIFF\">"
+"\n"
+"        <Value>GDALGeoTIFF</Value>\n"
+"        <Value>GeoTIFF</Value>\n"
+"        <Value>BASELINE</Value>\n"
+"    </Option>\n"
+"    <Option name=\"PIXELTYPE\" type=\"string-select\">\n"
+"        <Value>DEFAULT</Value>\n"
+"        <Value>SIGNEDBYTE</Value>\n"
+"    </Option>\n"
+"    <Option name=\"BIGTIFF\" type=\"string-select\" description=\"Force "
+"creation of BigTIFF file\">\n"
+"        <Value>YES</Value>\n"
+"        <Value>NO</Value>\n"
+"        <Value>IF_NEEDED</Value>\n"
+"        <Value>IF_SAFER</Value>\n"
+"    </Option>\n"
+"    <Option name=\"ENDIANNESS\" type=\"string-select\" default=\"NATIVE\" "
+"description=\"Force endianness of created file. For DEBUG purpose mostly\">\n"
+"        <Value>NATIVE</Value>\n"
+"        <Value>INVERTED</Value>\n"
+"        <Value>LITTLE</Value>\n"
+"        <Value>BIG</Value>\n"
+"    </Option>\n"
+"    <Option name=\"COPY_SRC_OVERVIEWS\" type=\"boolean\" default=\"NO\" "
+"description=\"Force copy of overviews of source dataset (CreateCopy())\"/>\n"
+"</CreationOptionList>]]>\n"
+"\n"
+"-- Sortie des options de creation pour GeoTiff sous forme de table --\n"
+"SELECT (xpath('@name', g.opt))[1]::text As oname,\n"
+"       (xpath('@type', g.opt))[1]::text As otype,\n"
+"       (xpath('@description', g.opt))[1]::text As descrip,\n"
+"       array_to_string(xpath('Value/text()', g.opt),', ') As vals\n"
+"FROM (SELECT unnest(xpath('/CreationOptionList/Option', create_options::xml))"
+" As opt\n"
+"FROM  st_gdaldrivers()\n"
+"WHERE short_name = 'GTiff') As g;\n"
+"\n"
+"       oname        |     otype     |                               "
+"descrip                                |                                   "
+"vals\n"
+"--------------------+---------------+----------------------------------------"
+"------------------------------+----------------------------------------------"
+"-----------------------------\n"
+" COMPRESS           | string-select |"
+"                                                                      | "
+"NONE, LZW, PACKBITS, JPEG, CCITTRLE, CCITTFAX3, CCITTFAX4, DEFLATE\n"
+" PREDICTOR          | int           | Predictor "
+"Type                                                       |\n"
+" JPEG_QUALITY       | int           | JPEG quality 1-"
+"100                                                   |\n"
+" ZLEVEL             | int           | DEFLATE compression level 1-"
+"9                                        |\n"
+" NBITS              | int           | BITS for sub-byte files (1-7), sub-"
+"uint16 (9-15), sub-uint32 (17-31) |\n"
+" INTERLEAVE         | string-select |"
+"                                                                      | "
+"BAND, PIXEL\n"
+" TILED              | boolean       | Switch to tiled "
+"format                                               |\n"
+" TFW                | boolean       | Write out world "
+"file                                                 |\n"
+" RPB                | boolean       | Write out .RPB (RPC) "
+"file                                            |\n"
+" BLOCKXSIZE         | int           | Tile "
+"Width                                                           |\n"
+" BLOCKYSIZE         | int           | Tile/Strip "
+"Height                                                    |\n"
+" PHOTOMETRIC        | string-select |"
+"                                                                      | "
+"MINISBLACK, MINISWHITE, PALETTE, RGB, CMYK, YCBCR, CIELAB, ICCLAB, ITULAB\n"
+" SPARSE_OK          | boolean       | Can newly created files have missing "
+"blocks?                         |\n"
+" ALPHA              | boolean       | Mark first extrasample as being "
+"alpha                                |\n"
+" PROFILE            | string-select |"
+"                                                                      | "
+"GDALGeoTIFF, GeoTIFF, BASELINE\n"
+" PIXELTYPE          | string-select |"
+"                                                                      | "
+"DEFAULT, SIGNEDBYTE\n"
+" BIGTIFF            | string-select | Force creation of BigTIFF "
+"file                                       | YES, NO, IF_NEEDED, IF_SAFER\n"
+" ENDIANNESS         | string-select | Force endianness of created file. For "
+"DEBUG purpose mostly           | NATIVE, INVERTED, LITTLE, BIG\n"
+" COPY_SRC_OVERVIEWS | boolean       | Force copy of overviews of source "
+"dataset (CreateCopy())             |\n"
+"(19 rows)"
 
 #. Tag: para
 #: reference_raster.xml:1030
@@ -1996,12 +2603,14 @@ msgid ""
 ", <xref linkend=\"ST_SRID\"/>, <xref "
 "linkend=\"postgis_gdal_enabled_drivers\"/>"
 msgstr ""
+", <xref linkend=\"ST_SRID\"/>, <xref linkend=\"postgis_gdal_enabled_drivers\""
+"/>"
 
 #. Tag: refname
 #: reference_raster.xml:1036
 #, no-c-format
 msgid "ST_Contour"
-msgstr ""
+msgstr "ST_Contour"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1038
@@ -2012,6 +2621,11 @@ msgid ""
 "highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
 "contouring algorithm</ulink>.</refpurpose>"
 msgstr ""
+"<refpurpose>Génère un ensemble de courbes de niveau vectorielles depuis la "
+"bande raster spécifiée, en utilisant <ulink url=\"https://gdal.org/api/"
+"gdal_alg.html?highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBand"
+"HPv12CSLConstList16GDALProgressFuncPv\">l'algorithme de contour "
+"GDAL</ulink>.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_raster.xml:1044
@@ -2045,6 +2659,10 @@ msgid ""
 "highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
 "contouring algorithm</ulink>.</para>"
 msgstr ""
+"<para>Génère un ensemble de courbes de niveau vectorielles depuis la bande "
+"raster spécifiée, en utilisant <ulink url=\"https://gdal.org/api/gdal_alg."
+"html?highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLC"
+"onstList16GDALProgressFuncPv\">l'algorithme de contour GDAL</ulink>.</para>"
 
 #. Tag: para
 #: reference_raster.xml:1062
@@ -2054,6 +2672,9 @@ msgid ""
 "<varname>level_interval</varname> and <varname>level_base</varname> "
 "parameters are ignored."
 msgstr ""
+"Si le paramètre <varname>fixed_levels</varname> est un tableau non vide, les "
+"paramètres <varname>level_interval</varname> et <varname>level_base</"
+"varname> sont ignorés."
 
 #. Tag: para
 #: reference_raster.xml:1066
@@ -2063,24 +2684,29 @@ msgid ""
 "<link linkend=\"ST_Polygonize\">ST_Polygonize</link> function to convert "
 "contours into polygons."
 msgstr ""
+"Le paramètre <varname>polygonize</varname> n'a pour l'instant aucun effet. "
+"Utilisez la fonction <link linkend=\"ST_Polygonize\">ST_Polygonize</link> "
+"pour convertir les contours en polygones."
 
 #. Tag: para
 #: reference_raster.xml:1071
 #, no-c-format
 msgid "Return values are a set of records with the following attributes:"
 msgstr ""
+"La valeur de retour est un ensemble de résultats avec les attributs suivants "
+":"
 
 #. Tag: term
 #: reference_raster.xml:1075
 #, no-c-format
 msgid "geom"
-msgstr ""
+msgstr "geom"
 
 #. Tag: para
 #: reference_raster.xml:1076
 #, no-c-format
 msgid "The geometry of the contour line."
-msgstr ""
+msgstr "La géométrie de la ligne de contour."
 
 #. Tag: term
 #: reference_raster.xml:1078
@@ -2092,13 +2718,13 @@ msgstr "<term>id</term>"
 #: reference_raster.xml:1079
 #, no-c-format
 msgid "A unique identifier given to the contour line by GDAL."
-msgstr ""
+msgstr "Un identifiant unique de la ligne de contour, déterminée par GDAL."
 
 #. Tag: term
 #: reference_raster.xml:1081
 #, no-c-format
 msgid "value"
-msgstr ""
+msgstr "value"
 
 #. Tag: para
 #: reference_raster.xml:1082
@@ -2107,6 +2733,8 @@ msgid ""
 "The raster value the line represents. For an elevation DEM input, this would "
 "be the elevation of the output contour."
 msgstr ""
+"La valeur raster représentée par la ligne. Pour un modèle numérique de "
+"terrain, la valeur correspond à l'élévation du contour."
 
 #. Tag: para
 #: reference_raster.xml:1085 reference_raster.xml:1173
@@ -2133,12 +2761,18 @@ msgid ""
 "SELECT st_astext(geom), id, value\n"
 "FROM c;"
 msgstr ""
+"WITH c AS (\n"
+"SELECT (ST_Contour(rast, 1, fixed_levels => ARRAY[100.0, 200.0, 300.0])).*\n"
+"FROM dem_grid WHERE rid = 1\n"
+")\n"
+"SELECT st_astext(geom), id, value\n"
+"FROM c;"
 
 #. Tag: refname
 #: reference_raster.xml:1107
 #, no-c-format
 msgid "ST_InterpolateRaster"
-msgstr ""
+msgstr "ST_InterpolateRaster"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1109
@@ -2148,6 +2782,9 @@ msgid ""
 "the X- and Y-values to position the points on the grid and the Z-value of "
 "the points as the surface elevation."
 msgstr ""
+"Interpole une surface quadrillée à partir d'un ensemble de points 3-d, en "
+"utilisant les coordonnées X et Y des points sur la grille et la coordonnée Z "
+"des points pour l'élévation des points."
 
 #. Tag: funcprototype
 #: reference_raster.xml:1117
@@ -2183,18 +2820,28 @@ msgid ""
 "are calculated, see the <ulink url=\"https://gdal.org/tutorials/"
 "gdal_grid_tut.html\">GDAL grid tutorial</ulink>."
 msgstr ""
+"Interpole une surface quadrillée à partir d'un ensemble de points 3-d, en "
+"utilisant les coordonnées X et Y des points sur la grille et la coordonnée Z "
+"des points pour l'élévation des points. 5 algorithmes d'interpolations sont "
+"disponibles : inverse de la distance, inverse de la distance avec plus "
+"proche voisin, moyenne mobile, plus proche voisin, et interpolation "
+"linéaire. Voir <ulink url=\"https://gdal.org/programs/gdal_grid.html"
+"#interpolation-algorithms\">gdal_grid documentation</ulink> pour plus de "
+"détails sur ces algorithmes et leurs paramètres. Pour plus d'informations "
+"sur le calcul des interpolations, voir le <ulink url=\"https://gdal.org/"
+"tutorials/gdal_grid_tut.html\">tutorial GDAL grid</ulink>."
 
 #. Tag: para
 #: reference_raster.xml:1144
 #, no-c-format
 msgid "Input parameters are:"
-msgstr ""
+msgstr "Les paramètres d'entrée sont :"
 
 #. Tag: term
 #: reference_raster.xml:1148
 #, no-c-format
 msgid "input_points"
-msgstr ""
+msgstr "input_points"
 
 #. Tag: para
 #: reference_raster.xml:1149
@@ -2203,12 +2850,14 @@ msgid ""
 "The points to drive the interpolation. Any geometry with Z-values is "
 "acceptable, all points in the input will be used."
 msgstr ""
+"Les points pour effectuer l'interpolation. Toute géometrie avec une "
+"dimension Z est acceptée ; tous les points de la géométrie seront utilisés."
 
 #. Tag: term
 #: reference_raster.xml:1153
 #, no-c-format
 msgid "algorithm_options"
-msgstr ""
+msgstr "algorithm_options"
 
 #. Tag: para
 #: reference_raster.xml:1154
@@ -2219,12 +2868,17 @@ msgid ""
 "algorithms\">gdal_grid</ulink>. For example, for an inverse-distance "
 "interpolation with a smoothing of 2, you would use \"invdist:smoothing=2.0\""
 msgstr ""
+"Une chaîne définissant l'algorithme et ses options, au format utilisable par "
+"<ulink url=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
+"algorithms\">gdal_grid</ulink>. Par exemple, pour une interpolation en "
+"inverse de la distance avec un lissage de 2, la valeur sera \"invdist"
+":smoothing=2.0\""
 
 #. Tag: term
 #: reference_raster.xml:1160
 #, no-c-format
 msgid "template"
-msgstr ""
+msgstr "template"
 
 #. Tag: para
 #: reference_raster.xml:1161
@@ -2234,12 +2888,15 @@ msgid ""
 "height, pixel size, spatial extent and pixel type will be read from this "
 "template."
 msgstr ""
+"Un gabarit raster pour la création du raster de sortie. Les largeur, "
+"hauteur, taille des pixels, étendue spatiale et type des pixels seront "
+"définis à partir de ce gabarit."
 
 #. Tag: term
 #: reference_raster.xml:1166
 #, no-c-format
 msgid "template_band_num"
-msgstr ""
+msgstr "template_band_num"
 
 #. Tag: para
 #: reference_raster.xml:1167
@@ -2248,6 +2905,8 @@ msgid ""
 "By default the first band in the template raster is used to drive the output "
 "raster, but that can be adjusted with this parameter."
 msgstr ""
+"Indice de la bande raster du gabarit raster à utiliser ; par défaut, la "
+"première bande sera utilisée."
 
 #. Tag: programlisting
 #: reference_raster.xml:1180
@@ -2261,18 +2920,26 @@ msgid ""
 "'16BSI')\n"
 ")"
 msgstr ""
+"SELECT ST_InterpolateRaster(\n"
+"    'MULTIPOINT(10.5 9.5 1000, 11.5 8.5 1000, 10.5 8.5 500, 11.5 9.5 "
+"500)'::geometry,\n"
+"    'invdist:smoothing:2.0',\n"
+"    ST_AddBand(ST_MakeEmptyRaster(200, 400, 10, 10, 0.01, -0.005, 0, 0), "
+"'16BSI')\n"
+")"
 
 #. Tag: refname
 #: reference_raster.xml:1196
 #, no-c-format
 msgid "UpdateRasterSRID"
-msgstr ""
+msgstr "UpdateRasterSRID"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1197
 #, no-c-format
 msgid "Change the SRID of all rasters in the user-specified column and table."
 msgstr ""
+"Change le SRID de tous les rasters dans la table et colonne en paramètres."
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:1203
@@ -2289,6 +2956,16 @@ msgid ""
 "<parameter>column_name</parameter></paramdef> <paramdef><type>integer </"
 "type> <parameter>new_srid</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>raster <function>UpdateRasterSRID</function></"
+"funcdef> <paramdef><type>name </type> <parameter>schema_name</parameter></"
+"paramdef> <paramdef><type>name </type> <parameter>table_name</parameter></"
+"paramdef> <paramdef><type>name </type> <parameter>column_name</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>new_srid</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>raster "
+"<function>UpdateRasterSRID</function></funcdef> <paramdef><type>name </type> "
+"<parameter>table_name</parameter></paramdef> <paramdef><type>name </type> "
+"<parameter>column_name</parameter></paramdef> <paramdef><type>integer </"
+"type> <parameter>new_srid</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:1226
@@ -2298,6 +2975,9 @@ msgid ""
 "function will drop all appropriate column constraints (extent, alignment and "
 "SRID) before changing the SRID of the specified column's rasters."
 msgstr ""
+"Change le SRID de tous les rasters dans la table et colonne en paramètres. "
+"Cette fonction supprimera toutes les contraintes nécessaires (étendue, "
+"alignement et SRID) avant de changer le SRID de la colonne raster."
 
 #. Tag: para
 #: reference_raster.xml:1231
@@ -2306,6 +2986,8 @@ msgid ""
 "The data (band pixel values) of the rasters are not touched by this "
 "function. Only the raster's metadata is changed."
 msgstr ""
+"Les données (les valeurs des pixels) des rasters ne sont pas changées par "
+"cette fonction. Seules les métadonnées du rasters sont modifiées."
 
 #. Tag: para
 #: reference_raster.xml:1236 reference_raster.xml:1906
@@ -2334,13 +3016,13 @@ msgstr "Disponibilité : 2.1.0"
 #: reference_raster.xml:1248
 #, no-c-format
 msgid "ST_CreateOverview"
-msgstr ""
+msgstr "ST_CreateOverview"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1249
 #, no-c-format
 msgid "Create an reduced resolution version of a given raster coverage."
-msgstr ""
+msgstr "Créé une version à plus faible résolution d'une colonne raster."
 
 #. Tag: funcprototype
 #: reference_raster.xml:1257
@@ -2353,6 +3035,12 @@ msgid ""
 "<paramdef choice=\"opt\"><type>text </type> "
 "<parameter>algo='NearestNeighbor'</parameter></paramdef>"
 msgstr ""
+"<funcdef>regclass <function>ST_CreateOverview</function></funcdef> "
+"<paramdef><type>regclass </type> <parameter>tab</parameter></paramdef> "
+"<paramdef><type>name </type> <parameter>col</parameter></paramdef> "
+"<paramdef><type>int </type> <parameter>factor</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text </type> "
+"<parameter>algo='NearestNeighbor'</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:1271
@@ -2363,6 +3051,10 @@ msgid ""
 "extent with a lower resolution (pixel size will be 1/<varname>factor</"
 "varname> of the original in both directions)."
 msgstr ""
+"Créé une table d'aperçu avec les tuiles rééchantillonnées depuis la table "
+"source. Les tuiles de sortie auront la même taille que les tuiles d'entrées "
+"et couvriront la même étendue, mais avec une résolution plus faible (la "
+"taille d'un pixel sera 1/<varname>factor</varname> dans les deux directions)."
 
 #. Tag: para
 #: reference_raster.xml:1278
@@ -2371,6 +3063,8 @@ msgid ""
 "The overview table will be made available in the <varname>raster_overviews</"
 "varname> catalog and will have raster constraints enforced."
 msgstr ""
+"La table d'aperçu sera disponible dans le catalogue "
+"<varname>raster_overviews</varname> avec les contraintes rasters ajoutées."
 
 #. Tag: para
 #: reference_raster.xml:1284 reference_raster.xml:1965
@@ -2381,6 +3075,10 @@ msgid ""
 "'CubicSpline', and 'Lanczos'. Refer to: <ulink url=\"http://www.gdal.org/"
 "gdalwarp.html\">GDAL Warp resampling methods</ulink> for more details."
 msgstr ""
+"Les algorithmes disponibles sont : 'NearestNeighbor' (plus proche voisin), "
+"'Bilinear' (Bilinéaire), 'Cubic' (Cubique), 'CubicSpline' (Cubique Spline) "
+"et 'Lanczos'. Voir <ulink url=\"http://www.gdal.org/gdalwarp.html\">GDAL "
+"Warp resampling methods</ulink> pour plus de détails."
 
 #. Tag: para
 #: reference_raster.xml:1286 reference_raster.xml:1967
@@ -2394,7 +3092,7 @@ msgstr "Disponibilité : 2.2.0"
 #: reference_raster.xml:1290
 #, no-c-format
 msgid "Output to generally better quality but slower to product format"
-msgstr ""
+msgstr "Sortie de meilleure qualité en général, mais plus lent à générer"
 
 #. Tag: programlisting
 #: reference_raster.xml:1291
@@ -2402,18 +3100,19 @@ msgstr ""
 msgid ""
 "SELECT ST_CreateOverview('mydata.mytable'::regclass, 'rast', 2, 'Lanczos');"
 msgstr ""
+"SELECT ST_CreateOverview('mydata.mytable'::regclass, 'rast', 2, 'Lanczos');"
 
 #. Tag: para
 #: reference_raster.xml:1293
 #, no-c-format
 msgid "Output to faster to process default nearest neighbor"
-msgstr ""
+msgstr "Sortie plus rapide, via la méthode de plus proche voisin"
 
 #. Tag: programlisting
 #: reference_raster.xml:1294
 #, no-c-format
 msgid "SELECT ST_CreateOverview('mydata.mytable'::regclass, 'rast', 2);"
-msgstr ""
+msgstr "SELECT ST_CreateOverview('mydata.mytable'::regclass, 'rast', 2);"
 
 #. Tag: para
 #: reference_raster.xml:1299
@@ -2423,18 +3122,20 @@ msgid ""
 "linkend=\"RT_AddRasterConstraints\"/>, <xref linkend=\"RT_Raster_Overviews\"/"
 ">"
 msgstr ""
+", <xref linkend=\"RT_AddOverviewConstraints\"/>, <xref linkend="
+"\"RT_AddRasterConstraints\"/>, <xref linkend=\"RT_Raster_Overviews\"/>"
 
 #. Tag: title
 #: reference_raster.xml:1310
 #, no-c-format
 msgid "Raster Constructors"
-msgstr ""
+msgstr "Constructeurs de raster"
 
 #. Tag: refname
 #: reference_raster.xml:1314
 #, no-c-format
 msgid "ST_AddBand"
-msgstr ""
+msgstr "ST_AddBand"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1315
@@ -2444,6 +3145,9 @@ msgid ""
 "value in the given index location. If no index is specified, the band is "
 "added to the end."
 msgstr ""
+"Retourne un raster avec la/les nouvelle(s) bande(s) ajouté(s) à un index "
+"donné, de type et valeur initiale donnés. Si aucun index n'est spécifié, la "
+"bande est ajoutée à la fin."
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:1321
@@ -2495,6 +3199,52 @@ msgid ""
 "paramdef> <paramdef choice=\"opt\"><type>double precision </type> "
 "<parameter>nodataval=NULL</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>(1) raster <function>ST_AddBand</function></"
+"funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
+"paramdef> <paramdef><type>addbandarg[] </type> "
+"<parameter>addbandargset</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>(2) raster <function>ST_AddBand</function></"
+"funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>index</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>pixeltype</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>double precision </type> "
+"<parameter>initialvalue=0</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>double precision </type> <parameter>nodataval=NULL</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>(3) raster "
+"<function>ST_AddBand</function></funcdef> <paramdef><type>raster </type> "
+"<parameter>rast</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>pixeltype</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>double precision </type> <parameter>initialvalue=0</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>double precision </type> "
+"<parameter>nodataval=NULL</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>(4) raster <function>ST_AddBand</function></"
+"funcdef> <paramdef><type>raster </type> <parameter>torast</parameter></"
+"paramdef> <paramdef><type>raster </type> <parameter>fromrast</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>fromband=1</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>integer </type> <parameter>torastindex=at_end</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>(5) raster "
+"<function>ST_AddBand</function></funcdef> <paramdef><type>raster </type> "
+"<parameter>torast</parameter></paramdef> <paramdef><type>raster[] </type> "
+"<parameter>fromrasts</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>integer </type> <parameter>fromband=1</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>torastindex=at_end</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>(6) raster <function>ST_AddBand</function></"
+"funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>index</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>outdbfile</parameter></"
+"paramdef> <paramdef><type>integer[] </type> "
+"<parameter>outdbindex</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>double precision </type> <parameter>nodataval=NULL</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>(7) raster "
+"<function>ST_AddBand</function></funcdef> <paramdef><type>raster </type> "
+"<parameter>rast</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>outdbfile</parameter></paramdef> <paramdef><type>integer[] </"
+"type> <parameter>outdbindex</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>integer </type> <parameter>index=at_end</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>double precision </type> "
+"<parameter>nodataval=NULL</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:1386
@@ -2510,6 +3260,16 @@ msgid ""
 "is specified, then the initial value is set to the highest value allowed by "
 "the pixel type."
 msgstr ""
+"Retourne un raster avec la nouvelle bande ajoutée à l'index donné, de type, "
+"valeur initiale et valeur nodata donnés. Si aucun index n'est spécifié, la "
+"bande est ajoutée à la fin. Si le paramètre <varname>fromband</varname> "
+"n'est pas spécifié, la bande 1 est utilisée. Le type de pixel est une chaîne "
+"contenant un des types de pixels tels que décrits dans <xref linkend="
+"\"RT_ST_BandPixelType\"/>. Si un index existant est spécifié, alors toutes "
+"les bandes ayant un index plus grand ou égal auront leur index incrémenté de "
+"1. Si la valeur initiale donnée est plus grande que le maximum autorisé pour "
+"le type de pixel spécifié, alors la valeur initiale sera la valeur maximale "
+"autorisée pour le type de pixel."
 
 #. Tag: para
 #: reference_raster.xml:1390
@@ -2520,6 +3280,10 @@ msgid ""
 "at the time when the band described by that addbandarg is being added to the "
 "raster. See the Multiple New Bands example below."
 msgstr ""
+"Pour la variante acceptant un tableau de <xref linkend=\"addbandarg\"/> en "
+"paramètre (Variante 1), un index spécifique au paramètre addbandarg est "
+"relative au raster au moment où la bande décrite par ce paramètre addbandarg "
+"est ajoutée au raster. Voir l'exemple Multiples nouvelles bandes ci-dessous."
 
 #. Tag: para
 #: reference_raster.xml:1394
@@ -2529,6 +3293,9 @@ msgid ""
 "<varname>torast</varname> is NULL then the <varname>fromband</varname> band "
 "of each raster in the array is accumulated into a new raster."
 msgstr ""
+"Pour la variante acceptant un tableau de rasters (Variante 5), si "
+"<varname>torast</varname> est NULL, alors la bande <varname>fromband</"
+"varname> de chaque raster est accumulée dans le nouveau raster."
 
 #. Tag: para
 #: reference_raster.xml:1398
@@ -2538,24 +3305,28 @@ msgid ""
 "the value must include the full path to the raster file. The file must also "
 "be accessible to the postgres server process."
 msgstr ""
+"Pour les variantes acceptant un paramètre <varname>outdbfile</varname> ("
+"Variantes 6 et 7), la valeur doit correspondre au chemin complet vers le "
+"fichier raster. Ce fichier doit être accessible par le processus du serveur "
+"postgres."
 
 #. Tag: para
 #: reference_raster.xml:1402
 #, no-c-format
 msgid "Enhanced: 2.1.0 support for addbandarg added."
-msgstr ""
+msgstr "Amélioration : 2.1.0 ajout du paramètre addbandarg."
 
 #. Tag: para
 #: reference_raster.xml:1403
 #, no-c-format
 msgid "Enhanced: 2.1.0 support for new out-db bands added."
-msgstr ""
+msgstr "Amélioration : 2.1.0 introduction du support des bandes out-db."
 
 #. Tag: title
 #: reference_raster.xml:1407
 #, no-c-format
 msgid "Examples: Single New Band"
-msgstr ""
+msgstr "Exemples : Nouvelle bande"
 
 #. Tag: programlisting
 #: reference_raster.xml:1409
@@ -2567,6 +3338,11 @@ msgid ""
 "    SET rast = ST_AddBand(rast,'8BUI'::text,200)\n"
 "WHERE rid = 1;"
 msgstr ""
+"-- Ajoute une nouvelle bande de type 8 bit unsigned integer avec des pixels "
+"initialises a 200\n"
+"UPDATE dummy_rast\n"
+"    SET rast = ST_AddBand(rast,'8BUI'::text,200)\n"
+"WHERE rid = 1;"
 
 #. Tag: programlisting
 #: reference_raster.xml:1411
@@ -2608,16 +3384,53 @@ msgid ""
 "          0 |          0 |   100 |    100 |      1 |     -1 |     0 |     0 "
 "|   0 |        2"
 msgstr ""
+"-- Cree un raster vide de 100x100px, avec 0 en haut à gauche et à droite, "
+"ajoute 2 bandes (bande 1 est booleen 0/1, bande 2 peut contenir les valeurs "
+"0-15)\n"
+"-- utilise addbandargs\n"
+"INSERT INTO dummy_rast(rid,rast)\n"
+"    VALUES(10, ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 1, -1, 0, 0, 0),"
+"\n"
+"    ARRAY[\n"
+"        ROW(1, '1BB'::text, 0, NULL),\n"
+"        ROW(2, '4BUI'::text, 0, NULL)\n"
+"            ]::addbandarg[]\n"
+"     )\n"
+"    );\n"
+"\n"
+"-- affiche les metadonnees des bandes du raster pour verifier que tout est "
+"OK --\n"
+"SELECT  (bmd).*\n"
+"FROM (SELECT ST_BandMetaData(rast,generate_series(1,2)) As bmd\n"
+"    FROM dummy_rast WHERE rid = 10) AS foo;\n"
+" --result --\n"
+" pixeltype | nodatavalue | isoutdb | path\n"
+"-----------+----------------+-------------+---------+------\n"
+" 1BB       |             | f       |\n"
+" 4BUI      |             | f       |\n"
+"\n"
+"\n"
+"-- affiche les metadonnees du raster -\n"
+"SELECT  (rmd).width, (rmd).height, (rmd).numbands\n"
+"FROM (SELECT ST_MetaData(rast) As rmd\n"
+"    FROM dummy_rast WHERE rid = 10) AS foo;\n"
+"-- result --\n"
+" upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy |"
+" srid | numbands\n"
+"------------+------------+-------+--------+------------+------------+-------+"
+"-------+------+----------\n"
+"          0 |          0 |   100 |    100 |      1 |     -1 |     0 |     0 |"
+"   0 |        2"
 
 #. Tag: title
 #: reference_raster.xml:1415
 #, no-c-format
 msgid "Examples: Multiple New Bands"
-msgstr ""
+msgstr "Exemples : Multiples nouvelles bandes"
 
 #. Tag: programlisting
 #: reference_raster.xml:1417
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "SELECT\n"
 "    *\n"
@@ -2641,6 +3454,27 @@ msgid ""
 "       3 | 32BUI     |          12 | f       |\n"
 "       4 | 16BUI     |           2 | f       |"
 msgstr ""
+"SELECT\n"
+"    *\n"
+"FROM ST_BandMetadata(\n"
+"    ST_AddBand(\n"
+"        ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),\n"
+"        ARRAY[\n"
+"            ROW(NULL, '8BUI', 255, 0),\n"
+"            ROW(NULL, '16BUI', 1, 2),\n"
+"            ROW(2, '32BUI', 100, 12),\n"
+"            ROW(2, '32BF', 3.14, -1)\n"
+"        ]::addbandarg[]\n"
+"    ),\n"
+"    ARRAY[]::integer[]\n"
+");\n"
+"\n"
+" bandnum | pixeltype | nodatavalue | isoutdb | path\n"
+"---------+-----------+-------------+---------+------\n"
+"       1 | 8BUI      |           0 | f       |\n"
+"       2 | 32BF      |          -1 | f       |\n"
+"       3 | 32BUI     |          12 | f       |\n"
+"       4 | 16BUI     |           2 | f       |"
 
 #. Tag: programlisting
 #: reference_raster.xml:1419
@@ -2661,12 +3495,27 @@ msgid ""
 "FROM mice_studies\n"
 "GROUP BY mouse;"
 msgstr ""
+"-- Aggrege la premiere bande de la table dans un seul raster\n"
+"-- avec autant de bandes qu'il y a de test_types et autant de lignes ("
+"nouveaux rasters) que de souris\n"
+"-- NOTE: ORDER BY test_type est supporte qu'a partir de PostgreSQL 9.0+\n"
+"-- pour 8.4 et en-deca, en general il suffit d'ordonner dans un subselect ("
+"mais non garanti)\n"
+"-- Le raster resultant aura une bande pour chaque test_type par ordre "
+"alphabetique\n"
+"-- Pour les amoureux des souris : aucune souris n'a ete blessee dans cet "
+"exercice\n"
+"SELECT\n"
+"    mouse,\n"
+"    ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1) As rast\n"
+"FROM mice_studies\n"
+"GROUP BY mouse;"
 
 #. Tag: title
 #: reference_raster.xml:1423
 #, no-c-format
 msgid "Examples: New Out-db band"
-msgstr ""
+msgstr "Exemples : Nouvelle bande Out-db"
 
 #. Tag: programlisting
 #: reference_raster.xml:1424
@@ -2690,6 +3539,23 @@ msgid ""
 "tif\n"
 "       3 | 8BUI      |             | t       | /home/raster/mytestraster.tif"
 msgstr ""
+"SELECT\n"
+"    *\n"
+"FROM ST_BandMetadata(\n"
+"    ST_AddBand(\n"
+"        ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),\n"
+"        '/home/raster/mytestraster.tif'::text, NULL::int[]\n"
+"    ),\n"
+"    ARRAY[]::integer[]\n"
+");\n"
+"\n"
+" bandnum | pixeltype | nodatavalue | isoutdb | path\n"
+"---------+-----------+-------------+---------+------\n"
+"       1 | 8BUI      |             | t       | /home/raster/mytestraster."
+"tif\n"
+"       2 | 8BUI      |             | t       | /home/raster/mytestraster."
+"tif\n"
+"       3 | 8BUI      |             | t       | /home/raster/mytestraster.tif"
 
 #. Tag: para
 #: reference_raster.xml:1429
@@ -2699,18 +3565,21 @@ msgid ""
 "linkend=\"RT_ST_MakeEmptyRaster\"/>, <xref linkend=\"RT_ST_MetaData\"/>, "
 "<xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_Reclass\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_BandPixelType\"/>, <xref linkend="
+"\"RT_ST_MakeEmptyRaster\"/>, <xref linkend=\"RT_ST_MetaData\"/>, <xref "
+"linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_Reclass\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:1442
 #, no-c-format
 msgid "ST_AsRaster"
-msgstr ""
+msgstr "ST_AsRaster"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1443
 #, no-c-format
 msgid "Converts a PostGIS geometry to a PostGIS raster."
-msgstr ""
+msgstr "Convertit une géométrie PostGIS en un raster PostGIS."
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:1447
@@ -3016,6 +3885,9 @@ msgid ""
 "three groups of possibilities for setting the alignment and pixelsize of the "
 "resulting raster."
 msgstr ""
+"Convertit une géométrie PostGIS en un raster PostGIS. Les nombreuses "
+"variantes permettent trois groupes de possibilités pour définir l'alignement "
+"et la taille des pixels du raster en sortie."
 
 #. Tag: para
 #: reference_raster.xml:1597
@@ -3028,6 +3900,12 @@ msgid ""
 "reference raster by joining the table containing the geometry with the table "
 "containing the reference raster."
 msgstr ""
+"Le premier groupe, constitué des deux premières variantes, produit un raster "
+"avec le même alignement (<varname>scalex</varname>, <varname>scaley</"
+"varname>, <varname>gridx</varname> et <varname>gridy</varname>), le même "
+"type de pixels et la même valeur nodata que le raster donné en référence. En "
+"général, vous passerez cette référence en faisant une jointure entre la "
+"table contenant la géométrie avec la table contenant le raster de référence."
 
 #. Tag: para
 #: reference_raster.xml:1599
@@ -3042,6 +3920,15 @@ msgid ""
 "<varname>scalex</varname> &amp; <varname>scaley</varname> arguments to "
 "double precision so that PostgreSQL choose the right variant."
 msgstr ""
+"Le second groupe, composé de quatre variantes, vous permettent de spécifier "
+"les dimensions du raster via les paramètres de taille de pixel "
+"(<varname>scalex</varname> &amp; <varname>scaley</varname> et "
+"<varname>skewx</varname> &amp; <varname>skewy</varname>). Les dimensions "
+"<varname>width</varname> &amp; <varname>height</varname> du raster résultant "
+"seront ajustés pour s'adapter à l'étendu de la géométrie. Dans la plupart "
+"des cas, vous devrez transtyper les paramètres <varname>scalex</varname> "
+"&amp; <varname>scaley</varname> de integer à double precision pour que "
+"PostgreSQL choisisse la variante correcte."
 
 #. Tag: para
 #: reference_raster.xml:1601
@@ -3054,6 +3941,12 @@ msgid ""
 "<varname>skewx</varname> &amp; <varname>skewy</varname>) of the resulting "
 "raster will be adjusted to fit the extent of the geometry."
 msgstr ""
+"Le troisième groupe, composé de quatre variantes, vous permettent de "
+"spécifier les dimensions du raster directement (<varname>width</varname> "
+"&amp; <varname>height</varname>). Les paramètres de taille de pixel "
+"(<varname>scalex</varname> &amp; <varname>scaley</varname> et "
+"<varname>skewx</varname> &amp; <varname>skewy</varname>) du raster résultant "
+"seront ajustés pour s'adapter à l'étendue de la géométrie."
 
 #. Tag: para
 #: reference_raster.xml:1603
@@ -3065,6 +3958,11 @@ msgid ""
 "upper left corner (<varname>upperleftx</varname> &amp; <varname>upperlefty</"
 "varname>)."
 msgstr ""
+"Les deux premières variantes des deux derniers groupes vous permettent de "
+"spécifier l'alignement avec un coin arbitraire de la grille d'alignement "
+"(<varname>gridx</varname> &amp; <varname>gridy</varname>) et les deux "
+"dernières variantes via le coin haut-gauche (<varname>upperleftx</varname> "
+"&amp; <varname>upperlefty</varname>)."
 
 #. Tag: para
 #: reference_raster.xml:1605
@@ -3077,6 +3975,12 @@ msgid ""
 "(<varname>nodataval</varname>). If not provided pixeltyped defaults to 8BUI, "
 "values to 1 and nodataval to 0."
 msgstr ""
+"Chaque groupe de variantes permet de produire un raster à une ou plusieurs "
+"bandes. Pour plusieurs bandes, vous devez fournir un tableau de types de "
+"pixels (<varname>pixeltype[]</varname>), un tableau de valeurs initiales "
+"(<varname>value</varname>) et un tableau de valeurs nodata "
+"(<varname>nodataval</varname>). Si non fournis, pixeltype est par défaut à "
+"8BUI, value à 1 et nodataval à 0."
 
 #. Tag: para
 #: reference_raster.xml:1607
@@ -3087,6 +3991,10 @@ msgid ""
 "this case the resulting raster will get the same SRID as the reference "
 "raster."
 msgstr ""
+"Le raster en sortie aura le même système de référence spatial que la "
+"géométrie source, sauf pour les variantes utilisant un raster de référence. "
+"Dans ce cas, le raster en sortie aura le même SRID que le raster de "
+"référence."
 
 #. Tag: para
 #: reference_raster.xml:1609
@@ -3097,6 +4005,10 @@ msgid ""
 "touched by lines or polygons will be burned. Not just those on the line "
 "render path, or whose center point is within the polygon."
 msgstr ""
+"Le paramètre optionnel <varname>touched</varname> est par défaut à false et "
+"correspond à l'option GDAL ALL_TOUCHED, qui détermine si les pixels touchés "
+"par des lignes ou polygones seront mis à jour, et pas seulement ceux sur le "
+"chemin de la ligne ou dont le point central est dans le polygone."
 
 #. Tag: para
 #: reference_raster.xml:1611
@@ -3107,6 +4019,10 @@ msgid ""
 "linkend=\"RT_ST_AsPNG\"/> and other <xref linkend=\"RT_ST_AsGDALRaster\"/> "
 "family of functions."
 msgstr ""
+"Ceci est particulièrement utile pour le rendu de JPEGs et de PNGs "
+"directement depuis la base de données en utilisant une combinaison de <xref "
+"linkend=\"RT_ST_AsPNG\"/> et des fonctions de la famille de <xref linkend="
+"\"RT_ST_AsGDALRaster\"/>."
 
 #. Tag: para
 #: reference_raster.xml:1615
@@ -3115,18 +4031,21 @@ msgid ""
 "Not yet capable of rendering complex geometry types such as curves, TINS, "
 "and PolyhedralSurfaces, but should be able too once GDAL can."
 msgstr ""
+"Pas encore en mesure de faire le rendu de géométries complexes comme les "
+"CURVES, TIN et PolyhedralSurfaces, mais cela devrait être le cas lorsque "
+"GDAL le supportera."
 
 #. Tag: title
 #: reference_raster.xml:1620
 #, no-c-format
 msgid "Examples: Output geometries as PNG files"
-msgstr ""
+msgstr "Exemples : Rendu de géométries en fichiers PNG"
 
 #. Tag: para
 #: reference_raster.xml:1626
 #, no-c-format
 msgid "black circle"
-msgstr ""
+msgstr "cercle noir"
 
 #. Tag: programlisting
 #: reference_raster.xml:1629
@@ -3135,12 +4054,14 @@ msgid ""
 "-- this will output a black circle taking up 150 x 150 pixels --\n"
 "SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150));"
 msgstr ""
+"-- retourne un cercle noir de 150 x 150 pixels --\n"
+"SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150));"
 
 #. Tag: para
 #: reference_raster.xml:1636
 #, no-c-format
 msgid "example from buffer rendered with just PostGIS"
-msgstr ""
+msgstr "exemple d'un buffer rendu via PostGIS"
 
 #. Tag: programlisting
 #: reference_raster.xml:1640
@@ -3155,6 +4076,15 @@ msgid ""
 "            200,200,ARRAY['8BUI', '8BUI', '8BUI'], ARRAY[118,154,118], "
 "ARRAY[0,0,0]));"
 msgstr ""
+"-- les bandes raster correspondent aux bandes RGB - (118,154,118) - teal  --"
+"\n"
+"SELECT ST_AsPNG(\n"
+"    ST_AsRaster(\n"
+"        ST_Buffer(\n"
+"            ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'), "
+"10,'join=bevel'),\n"
+"            200,200,ARRAY['8BUI', '8BUI', '8BUI'], ARRAY[118,154,118], "
+"ARRAY[0,0,0]));"
 
 #. Tag: para
 #: reference_raster.xml:1646
@@ -3164,12 +4094,15 @@ msgid ""
 "<xref linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_AsPNG\"/>, "
 "<xref linkend=\"RT_ST_AsJPEG\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 msgstr ""
+", <xref linkend=\"ST_Buffer\"/>, <xref linkend=\"RT_ST_GDALDrivers\"/>, "
+"<xref linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_AsPNG\"/>, "
+"<xref linkend=\"RT_ST_AsJPEG\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:1652
 #, no-c-format
 msgid "ST_Band"
-msgstr ""
+msgstr "ST_Band"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1653
@@ -3178,6 +4111,9 @@ msgid ""
 "Returns one or more bands of an existing raster as a new raster. Useful for "
 "building new rasters from existing rasters."
 msgstr ""
+"Retourne une ou plusieurs bandes d'un raster existant en tant que nouveau "
+"raster. Utile pour construire de nouveaux rasters à partir de rasters "
+"existants."
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:1657
@@ -3196,6 +4132,18 @@ msgid ""
 "paramdef> <paramdef choice=\"opt\"><type>character </type> "
 "<parameter>delimiter=,</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>raster <function>ST_Band</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer[] </type> <parameter>nbands = "
+"ARRAY[1]</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>raster <function>ST_Band</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>nband</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>raster <function>ST_Band</function></"
+"funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>nbands</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>character </type> "
+"<parameter>delimiter=,</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:1682
@@ -3208,6 +4156,13 @@ msgid ""
 "bands are returned. Used as a helper function in various functions such as "
 "for deleting a band."
 msgstr ""
+"Retourne une ou plusieurs bandes d'un raster existant en tant que nouveau "
+"raster. Utile pour construire de nouveaux rasters à partir de rasters "
+"existants ou pour exporter certaines bandes d'un raster, ou pour réarranger "
+"l'ordre des bandes d'un raster. Si aucune bande n'est spécifiée, ou si "
+"aucune des bandes spécifiées n'existent dans le raster, alors toutes les "
+"bandes sont retournées. Cette fonction est utilisée en interne par diverses "
+"fonctions, comme pour supprimer une bande."
 
 #. Tag: para
 #: reference_raster.xml:1684
@@ -3221,6 +4176,14 @@ msgid ""
 "<code>ST_Band(rast, '{1,2,3}'::int[]);</code> since the <code>text</code> "
 "list of bands form may be removed in future versions of PostGIS."
 msgstr ""
+"Pour les variantes avec le paramètre <code>nbands</code> en texte, le "
+"délimiteur par défaut est <code>,</code>, il faut donc passer par exemple "
+"<code>'1,2,3'</code>. Pour utiliser un autre délimiteur, utilisez le "
+"paramètre delimiter : <code>ST_Band(rast, '1@2@3', '@')</code>. Néanmoins, "
+"pour utiliser plusieurs bandes, nous encourageons fortement d'utiliser la "
+"variante avec le paramètre de type tableau (e.g. <code>ST_Band(rast, "
+"'{1,2,3}'::int[]);</code>); la variante avec la liste de bandes en "
+"<code>text</code> peut être supprimée des prochaines versions de PostGIS."
 
 #. Tag: programlisting
 #: reference_raster.xml:1692
@@ -3240,6 +4203,19 @@ msgid ""
 "-------+------+-------+------\n"
 "     1 | 8BUI |     1 | 2BUI"
 msgstr ""
+"-- Cree 2 nouveaux rasters : un contenant la bande 1 de dummy et le second "
+"contenant la bande 2 de dummy et reclassifiee en 2BUI\n"
+"SELECT ST_NumBands(rast1) As numb1, ST_BandPixelType(rast1) As pix1,\n"
+" ST_NumBands(rast2) As numb2,  ST_BandPixelType(rast2) As pix2\n"
+"FROM (\n"
+"    SELECT ST_Band(rast) As rast1, ST_Reclass(ST_Band(rast,3), '100-200):1, "
+"[200-254:2', '2BUI') As rast2\n"
+"        FROM dummy_rast\n"
+"        WHERE rid = 2) As foo;\n"
+"\n"
+" numb1 | pix1 | numb2 | pix2\n"
+"-------+------+-------+------\n"
+"     1 | 8BUI |     1 | 2BUI"
 
 #. Tag: programlisting
 #: reference_raster.xml:1694
@@ -3258,24 +4234,36 @@ msgid ""
 "    FROM dummy_rast\n"
 "WHERE rid=2;"
 msgstr ""
+"-- Retourne les bandes 2 et 3, en utilisant le transtypage en tableau\n"
+"SELECT ST_NumBands(ST_Band(rast, '{2,3}'::int[])) As num_bands\n"
+"    FROM dummy_rast WHERE rid=2;\n"
+"\n"
+"num_bands\n"
+"----------\n"
+"2\n"
+"\n"
+"-- Retourne les bandes 2 et 3, en utilisant un tableau\n"
+"SELECT ST_NumBands(ST_Band(rast, ARRAY[2,3])) As num_bands\n"
+"    FROM dummy_rast\n"
+"WHERE rid=2;"
 
 #. Tag: para
 #: reference_raster.xml:1704
 #, no-c-format
 msgid "original (column rast)"
-msgstr ""
+msgstr "originale (colonne rast)"
 
 #. Tag: para
 #: reference_raster.xml:1713
 #, no-c-format
 msgid "dupe_band"
-msgstr ""
+msgstr "dupe_band"
 
 #. Tag: para
 #: reference_raster.xml:1722
 #, no-c-format
 msgid "sing_band"
-msgstr ""
+msgstr "sing_band"
 
 #. Tag: programlisting
 #: reference_raster.xml:1730
@@ -3288,6 +4276,13 @@ msgid ""
 "FROM samples.than_chunked\n"
 "WHERE rid=35;"
 msgstr ""
+"-- Cree un nouveau raster avec la bande 2 de l'original et la bande 1 "
+"repetee deux fois,\n"
+"-- et un autre raster avec seulement la bande 3\n"
+"SELECT rast, ST_Band(rast, ARRAY[2,1,1]) As dupe_band,\n"
+"    ST_Band(rast, 3) As sing_band\n"
+"FROM samples.than_chunked\n"
+"WHERE rid=35;"
 
 #. Tag: para
 #: reference_raster.xml:1736
@@ -3296,18 +4291,20 @@ msgid ""
 ", <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_Reclass\"/>, "
 "<xref linkend=\"RT_reference\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_Reclass\"/>, "
+"<xref linkend=\"RT_reference\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:1742
 #, no-c-format
 msgid "ST_MakeEmptyCoverage"
-msgstr ""
+msgstr "ST_MakeEmptyCoverage"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1743
 #, no-c-format
 msgid "Cover georeferenced area with a grid of empty raster tiles."
-msgstr ""
+msgstr "Couvre une zone géo-référencée avec une grille raster de tuiles vides."
 
 #. Tag: funcprototype
 #: reference_raster.xml:1748
@@ -3356,6 +4353,15 @@ msgid ""
 "<varname>scalex</varname>, <varname>upperlefty</varname> + <varname>height</"
 "varname> * <varname>scaley</varname>)."
 msgstr ""
+"Créé un ensemble de tuiles rasters via <xref linkend=\"RT_ST_MakeEmptyRaster"
+"\"/>. La dimension de la grille est définie par <varname>width</varname> "
+"&amp; <varname>height</varname>. La dimension des tuiles est définie par "
+"<varname>tilewidth</varname> &amp; <varname>tileheight</varname>. La zone "
+"géo-référencée couverte démarre au coin supérieur gauche "
+"(<varname>upperleftx</varname>, <varname>upperlefty</varname>) jusqu'au coin "
+"inférieur droit (<varname>upperleftx</varname> + <varname>width</varname> * "
+"<varname>scalex</varname>, <varname>upperlefty</varname> + <varname>height</"
+"varname> * <varname>scaley</varname>)."
 
 #. Tag: para
 #: reference_raster.xml:1769
@@ -3365,6 +4371,9 @@ msgid ""
 "positive. So lower right corner will have a lower y value and higher x value "
 "than the upper left corner."
 msgstr ""
+"A noter que scaley est généralement négatif pour les rasters, alors que "
+"scalex est généralement positif. Le coin inférieur droit aura une valeur Y "
+"inférieure et une valeur X supérieure au coin supérieur gauche."
 
 #. Tag: para
 #: reference_raster.xml:1770
@@ -3376,7 +4385,7 @@ msgstr "Disponibilité : 2.4.0"
 #: reference_raster.xml:1774 reference_raster.xml:8757
 #, no-c-format
 msgid "Examples Basic"
-msgstr ""
+msgstr "Exemples de base"
 
 #. Tag: para
 #: reference_raster.xml:1775
@@ -3385,6 +4394,8 @@ msgid ""
 "Create 16 tiles in a 4x4 grid to cover the WGS84 area from upper left corner "
 "(22, 77) to lower right corner (55, 33)."
 msgstr ""
+"Créer 16 tuiles de 1x1px dans une grille 4x4 pour couvrir une zone WGS84 du "
+"coin supérieur gauche (22, 77) jusqu'au coin inférieur droit (55, 33)."
 
 #. Tag: programlisting
 #: reference_raster.xml:1776
@@ -3429,12 +4440,51 @@ msgid ""
 "      46.75 |          0 |     1 |      1 |   8.25 |    -11 |     0 |     0 "
 "| 4326 |        0]]>"
 msgstr ""
+"<![CDATA[SELECT (ST_MetaData(tile)).* FROM ST_MakeEmptyCoverage(1, 1, 4, 4, "
+"22, 33, (55 - 22)/(4)::float, (33 - 77)/(4)::float, 0., 0., 4326) tile;\n"
+"\n"
+" upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy |"
+" srid | numbands\n"
+"-----------------------------------------------------------------------------"
+"--------\n"
+"         22 |         33 |     1 |      1 |   8.25 |    -11 |     0 |     0 |"
+" 4326 |        0\n"
+"      30.25 |         33 |     1 |      1 |   8.25 |    -11 |     0 |     0 |"
+" 4326 |        0\n"
+"       38.5 |         33 |     1 |      1 |   8.25 |    -11 |     0 |     0 |"
+" 4326 |        0\n"
+"      46.75 |         33 |     1 |      1 |   8.25 |    -11 |     0 |     0 |"
+" 4326 |        0\n"
+"         22 |         22 |     1 |      1 |   8.25 |    -11 |     0 |     0 |"
+" 4326 |        0\n"
+"      30.25 |         22 |     1 |      1 |   8.25 |    -11 |     0 |     0 |"
+" 4326 |        0\n"
+"       38.5 |         22 |     1 |      1 |   8.25 |    -11 |     0 |     0 |"
+" 4326 |        0\n"
+"      46.75 |         22 |     1 |      1 |   8.25 |    -11 |     0 |     0 |"
+" 4326 |        0\n"
+"         22 |         11 |     1 |      1 |   8.25 |    -11 |     0 |     0 |"
+" 4326 |        0\n"
+"      30.25 |         11 |     1 |      1 |   8.25 |    -11 |     0 |     0 |"
+" 4326 |        0\n"
+"       38.5 |         11 |     1 |      1 |   8.25 |    -11 |     0 |     0 |"
+" 4326 |        0\n"
+"      46.75 |         11 |     1 |      1 |   8.25 |    -11 |     0 |     0 |"
+" 4326 |        0\n"
+"         22 |          0 |     1 |      1 |   8.25 |    -11 |     0 |     0 |"
+" 4326 |        0\n"
+"      30.25 |          0 |     1 |      1 |   8.25 |    -11 |     0 |     0 |"
+" 4326 |        0\n"
+"       38.5 |          0 |     1 |      1 |   8.25 |    -11 |     0 |     0 |"
+" 4326 |        0\n"
+"      46.75 |          0 |     1 |      1 |   8.25 |    -11 |     0 |     0 |"
+" 4326 |        0]]>"
 
 #. Tag: refname
 #: reference_raster.xml:1789
 #, no-c-format
 msgid "ST_MakeEmptyRaster"
-msgstr ""
+msgstr "ST_MakeEmptyRaster"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1790
@@ -3446,6 +4496,12 @@ msgid ""
 "a new raster with the same size, alignment and SRID. If srid is left out, "
 "the spatial ref is set to unknown (0)."
 msgstr ""
+"Retourne un raster vide (sans aucune bande) de dimension donnée (width &amp; "
+"height), de coin supérieur gauche à X et Y, de paramètres de taille de pixel "
+"données (scalex, scaley, skewx &amp; skewy) et de système de référence "
+"spatial (srid) donné. Si un raster est spécifié, retourne un nouveau raster "
+"de même taille, alignement et SRID. Si srid n'est pas spécifié, le système "
+"de référence spatial est défini à inconnu (0)."
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:1794
@@ -3502,6 +4558,10 @@ msgid ""
 "X (upperleftx), upper left Y (upperlefty), pixel size and rotation (scalex, "
 "scaley, skewx &amp; skewy) and reference system (srid)."
 msgstr ""
+"Retourne un raster vide (sans aucune bande) de dimension donnée (width &amp; "
+"height), géo-référencé via le coin supérieur gauche (upperleftx &amp; "
+"upperlefty), via les paramètres de taille de pixel données (scalex, scaley, "
+"skewx &amp; skewy) et via le système de référence spatial (srid) donné."
 
 #. Tag: para
 #: reference_raster.xml:1827
@@ -3511,6 +4571,10 @@ msgid ""
 "(pixelsize). scalex is set to this argument and scaley is set to the "
 "negative value of this argument. skewx and skewy are set to 0."
 msgstr ""
+"La dernière variante utilise un seul paramètre pour spécifier la taille des "
+"pixels (pixelsize). scalex est défini à la valeur de ce paramètre et scaley "
+"est défini à la valeur négative de ce paramètre. skewx et skewy sont définis "
+"à 0."
 
 #. Tag: para
 #: reference_raster.xml:1829
@@ -3519,6 +4583,8 @@ msgid ""
 "If an existing raster is passed in, it returns a new raster with the same "
 "meta data settings (without the bands)."
 msgstr ""
+"Si un raster existant est spécifié, retourne un nouveau raster avec les "
+"mêmes métadonnées (sans aucune bande)."
 
 #. Tag: para
 #: reference_raster.xml:1831
@@ -3529,6 +4595,10 @@ msgid ""
 "linkend=\"RT_ST_AddBand\"/> to define bands and <xref "
 "linkend=\"RT_ST_SetValue\"/> to set initial pixel values."
 msgstr ""
+"Si aucun srid n'est spécifié, la valeur 0 est utilisée. Après avoir créé un "
+"raster vide, vous voudrez probablement ajouter des bandes ou l'éditer. Voir "
+"<xref linkend=\"RT_ST_AddBand\"/> pour définir des bandes et <xref linkend="
+"\"RT_ST_SetValue\"/> pour initialiser des valeurs."
 
 #. Tag: programlisting
 #: reference_raster.xml:1838
@@ -3559,6 +4629,30 @@ msgid ""
 "   4 |     0.0005 |     0.0005 |   100 |    100 |          1 |          1 "
 "|    0  |     0 | 4326 |        0"
 msgstr ""
+"INSERT INTO dummy_rast(rid,rast)\n"
+"VALUES(3, ST_MakeEmptyRaster( 100, 100, 0.0005, 0.0005, 1, 1, 0, 0, 4326) );"
+"\n"
+"\n"
+"--utilise un raster existant comme gabarit pour le nouveau raster\n"
+"INSERT INTO dummy_rast(rid,rast)\n"
+"SELECT 4, ST_MakeEmptyRaster(rast)\n"
+"FROM dummy_rast WHERE rid = 3;\n"
+"\n"
+"-- affiche les metadonnes du nouveau raster\n"
+"SELECT rid, (md).*\n"
+"FROM (SELECT rid, ST_MetaData(rast) As md\n"
+"    FROM dummy_rast\n"
+"    WHERE rid IN(3,4)) As foo;\n"
+"\n"
+"-- resultat --\n"
+" rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | "
+"skewy | srid | numbands\n"
+"-----+------------+------------+-------+--------+------------+------------+--"
+"-----+-------+------+----------\n"
+"   3 |     0.0005 |     0.0005 |   100 |    100 |          1 |          1 |"
+"    0  |     0 | 4326 |        0\n"
+"   4 |     0.0005 |     0.0005 |   100 |    100 |          1 |          1 |"
+"    0  |     0 | 4326 |        0"
 
 #. Tag: para
 #: reference_raster.xml:1844
@@ -3568,12 +4662,15 @@ msgid ""
 "<xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_SetValue\"/>, <xref "
 "linkend=\"RT_ST_SkewX\"/>, , <xref linkend=\"RT_ST_SkewY\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_MetaData\"/>, <xref linkend=\"RT_ST_ScaleX\"/>, "
+"<xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_SetValue\"/>, <xref "
+"linkend=\"RT_ST_SkewX\"/>, , <xref linkend=\"RT_ST_SkewY\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:1851
 #, no-c-format
 msgid "ST_Tile"
-msgstr ""
+msgstr "ST_Tile"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1852
@@ -3582,6 +4679,9 @@ msgid ""
 "<refpurpose>Returns a set of rasters resulting from the split of the input "
 "raster based upon the desired dimensions of the output rasters.</refpurpose>"
 msgstr ""
+"<refpurpose>Retourne un ensemble de rasters issus de la division d'un raster "
+"d'entrée selon les dimensions spécifiées pour les rasters de "
+"sortie.</refpurpose>"
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:1856
@@ -3613,6 +4713,31 @@ msgid ""
 "choice=\"opt\"><type>double precision </type> <parameter>nodataval=NULL</"
 "parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>setof raster <function>ST_Tile</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>int[] </type> <parameter>nband</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>width</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>height</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>padwithnodata=FALSE</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>double precision </type> <parameter>nodataval=NULL</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>setof raster "
+"<function>ST_Tile</function></funcdef> <paramdef><type>raster </type> "
+"<parameter>rast</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>nband</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>width</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>height</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>padwithnodata=FALSE</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>double precision </type> "
+"<parameter>nodataval=NULL</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>setof raster <function>ST_Tile</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>width</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>height</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>padwithnodata=FALSE</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>double precision </type> <parameter>nodataval=NULL</parameter></"
+"paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:1892
@@ -3621,6 +4746,8 @@ msgid ""
 "<para>Returns a set of rasters resulting from the split of the input raster "
 "based upon the desired dimensions of the output rasters.</para>"
 msgstr ""
+"<para>Retourne un ensemble de rasters issus de la division d'un raster "
+"d'entrée selon les dimensions spécifiées pour les rasters de sortie.</para>"
 
 #. Tag: para
 #: reference_raster.xml:1896
@@ -3633,6 +4760,12 @@ msgid ""
 "NODATA values. If raster band(s) do not have NODATA value(s) specified, one "
 "can be specified by setting <varname>nodataval</varname>."
 msgstr ""
+"Si <varname>padwithnodata</varname> est FALSE, les tuiles des bords droits "
+"et bas peuvent avoir des dimensions différentes du reste des tuiles. Si "
+"<varname>padwithnodata</varname> est TRUE, toutes les tuiles auront les "
+"mêmes dimensions, potentiellement avec les tuiles des bords complétées par "
+"la valeur NODATA. Si la bande raster n'a pas de valeur NODATA définie, cette "
+"valeur peut être spécifiée via le paramètre <varname>nodataval</varname>."
 
 #. Tag: para
 #: reference_raster.xml:1901
@@ -3641,6 +4774,8 @@ msgid ""
 "If a specified band of the input raster is out-of-db, the corresponding band "
 "in the output rasters will also be out-of-db."
 msgstr ""
+"Si une bande spécifiée du raster d'entrée est out-of-db, la bande "
+"correspondant dans les rasters de sortie sera aussi out-of-db."
 
 #. Tag: programlisting
 #: reference_raster.xml:1912
@@ -3698,6 +4833,57 @@ msgid ""
 " (2,\"{{90,90,90},{90,90,90},{90,90,90}}\")\n"
 "(18 rows)"
 msgstr ""
+"WITH foo AS (\n"
+"    SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, "
+"0), 1, '8BUI', 1, 0), 2, '8BUI', 10, 0) AS rast UNION ALL\n"
+"    SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 3, 0, 1, -1, 0, 0, "
+"0), 1, '8BUI', 2, 0), 2, '8BUI', 20, 0) AS rast UNION ALL\n"
+"    SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 6, 0, 1, -1, 0, 0, "
+"0), 1, '8BUI', 3, 0), 2, '8BUI', 30, 0) AS rast UNION ALL\n"
+"\n"
+"    SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, -3, 1, -1, 0, "
+"0, 0), 1, '8BUI', 4, 0), 2, '8BUI', 40, 0) AS rast UNION ALL\n"
+"    SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 3, -3, 1, -1, 0, "
+"0, 0), 1, '8BUI', 5, 0), 2, '8BUI', 50, 0) AS rast UNION ALL\n"
+"    SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 6, -3, 1, -1, 0, "
+"0, 0), 1, '8BUI', 6, 0), 2, '8BUI', 60, 0) AS rast UNION ALL\n"
+"\n"
+"    SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, -6, 1, -1, 0, "
+"0, 0), 1, '8BUI', 7, 0), 2, '8BUI', 70, 0) AS rast UNION ALL\n"
+"    SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 3, -6, 1, -1, 0, "
+"0, 0), 1, '8BUI', 8, 0), 2, '8BUI', 80, 0) AS rast UNION ALL\n"
+"    SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 6, -6, 1, -1, 0, "
+"0, 0), 1, '8BUI', 9, 0), 2, '8BUI', 90, 0) AS rast\n"
+"), bar AS (\n"
+"    SELECT ST_Union(rast) AS rast FROM foo\n"
+"), baz AS (\n"
+"    SELECT ST_Tile(rast, 3, 3, TRUE) AS rast FROM bar\n"
+")\n"
+"SELECT\n"
+"    ST_DumpValues(rast)\n"
+"FROM baz;\n"
+"\n"
+"              st_dumpvalues\n"
+"------------------------------------------\n"
+" (1,\"{{1,1,1},{1,1,1},{1,1,1}}\")\n"
+" (2,\"{{10,10,10},{10,10,10},{10,10,10}}\")\n"
+" (1,\"{{2,2,2},{2,2,2},{2,2,2}}\")\n"
+" (2,\"{{20,20,20},{20,20,20},{20,20,20}}\")\n"
+" (1,\"{{3,3,3},{3,3,3},{3,3,3}}\")\n"
+" (2,\"{{30,30,30},{30,30,30},{30,30,30}}\")\n"
+" (1,\"{{4,4,4},{4,4,4},{4,4,4}}\")\n"
+" (2,\"{{40,40,40},{40,40,40},{40,40,40}}\")\n"
+" (1,\"{{5,5,5},{5,5,5},{5,5,5}}\")\n"
+" (2,\"{{50,50,50},{50,50,50},{50,50,50}}\")\n"
+" (1,\"{{6,6,6},{6,6,6},{6,6,6}}\")\n"
+" (2,\"{{60,60,60},{60,60,60},{60,60,60}}\")\n"
+" (1,\"{{7,7,7},{7,7,7},{7,7,7}}\")\n"
+" (2,\"{{70,70,70},{70,70,70},{70,70,70}}\")\n"
+" (1,\"{{8,8,8},{8,8,8},{8,8,8}}\")\n"
+" (2,\"{{80,80,80},{80,80,80},{80,80,80}}\")\n"
+" (1,\"{{9,9,9},{9,9,9},{9,9,9}}\")\n"
+" (2,\"{{90,90,90},{90,90,90},{90,90,90}}\")\n"
+"(18 rows)"
 
 #. Tag: programlisting
 #: reference_raster.xml:1914
@@ -3746,18 +4932,60 @@ msgid ""
 " (1,\"{{90,90,90},{90,90,90},{90,90,90}}\")\n"
 "(9 rows)"
 msgstr ""
+"WITH foo AS (\n"
+"    SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, "
+"0), 1, '8BUI', 1, 0), 2, '8BUI', 10, 0) AS rast UNION ALL\n"
+"    SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 3, 0, 1, -1, 0, 0, "
+"0), 1, '8BUI', 2, 0), 2, '8BUI', 20, 0) AS rast UNION ALL\n"
+"    SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 6, 0, 1, -1, 0, 0, "
+"0), 1, '8BUI', 3, 0), 2, '8BUI', 30, 0) AS rast UNION ALL\n"
+"\n"
+"    SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, -3, 1, -1, 0, "
+"0, 0), 1, '8BUI', 4, 0), 2, '8BUI', 40, 0) AS rast UNION ALL\n"
+"    SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 3, -3, 1, -1, 0, "
+"0, 0), 1, '8BUI', 5, 0), 2, '8BUI', 50, 0) AS rast UNION ALL\n"
+"    SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 6, -3, 1, -1, 0, "
+"0, 0), 1, '8BUI', 6, 0), 2, '8BUI', 60, 0) AS rast UNION ALL\n"
+"\n"
+"    SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, -6, 1, -1, 0, "
+"0, 0), 1, '8BUI', 7, 0), 2, '8BUI', 70, 0) AS rast UNION ALL\n"
+"    SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 3, -6, 1, -1, 0, "
+"0, 0), 1, '8BUI', 8, 0), 2, '8BUI', 80, 0) AS rast UNION ALL\n"
+"    SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 6, -6, 1, -1, 0, "
+"0, 0), 1, '8BUI', 9, 0), 2, '8BUI', 90, 0) AS rast\n"
+"), bar AS (\n"
+"    SELECT ST_Union(rast) AS rast FROM foo\n"
+"), baz AS (\n"
+"    SELECT ST_Tile(rast, 3, 3, 2) AS rast FROM bar\n"
+")\n"
+"SELECT\n"
+"    ST_DumpValues(rast)\n"
+"FROM baz;\n"
+"\n"
+"              st_dumpvalues\n"
+"------------------------------------------\n"
+" (1,\"{{10,10,10},{10,10,10},{10,10,10}}\")\n"
+" (1,\"{{20,20,20},{20,20,20},{20,20,20}}\")\n"
+" (1,\"{{30,30,30},{30,30,30},{30,30,30}}\")\n"
+" (1,\"{{40,40,40},{40,40,40},{40,40,40}}\")\n"
+" (1,\"{{50,50,50},{50,50,50},{50,50,50}}\")\n"
+" (1,\"{{60,60,60},{60,60,60},{60,60,60}}\")\n"
+" (1,\"{{70,70,70},{70,70,70},{70,70,70}}\")\n"
+" (1,\"{{80,80,80},{80,80,80},{80,80,80}}\")\n"
+" (1,\"{{90,90,90},{90,90,90},{90,90,90}}\")\n"
+"(9 rows)"
 
 #. Tag: para
 #: reference_raster.xml:1920
 #, no-c-format
 msgid ", <xref linkend=\"RT_Retile\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_Retile\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:1930
 #, no-c-format
 msgid "ST_Retile"
-msgstr ""
+msgstr "ST_Retile"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1931
@@ -3765,6 +4993,8 @@ msgstr ""
 msgid ""
 "Return a set of configured tiles from an arbitrarily tiled raster coverage."
 msgstr ""
+"Retourne un ensemble de tuiles configurées à partir d'une couverture raster "
+"composée de tuiles arbitraires."
 
 #. Tag: funcprototype
 #: reference_raster.xml:1939
@@ -3781,6 +5011,16 @@ msgid ""
 "choice=\"opt\"><type>text </type> <parameter>algo='NearestNeighbor'</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>SETOF raster <function>ST_Retile</function></funcdef> "
+"<paramdef><type>regclass </type> <parameter>tab</parameter></paramdef> "
+"<paramdef><type>name </type> <parameter>col</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>ext</parameter></paramdef> "
+"<paramdef><type>float8 </type> <parameter>sfx</parameter></paramdef> "
+"<paramdef><type>float8 </type> <parameter>sfy</parameter></paramdef> "
+"<paramdef><type>int </type> <parameter>tw</parameter></paramdef> "
+"<paramdef><type>int </type> <parameter>th</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>text </type> "
+"<parameter>algo='NearestNeighbor'</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:1957
@@ -3792,18 +5032,23 @@ msgid ""
 "data coming from the specified raster coverage (<varname>tab</varname>, "
 "<varname>col</varname>)."
 msgstr ""
+"Retourne un ensemble de tuiles ayant l'échelle spécifiée (<varname>sfx</"
+"varname>, <varname>sfy</varname>), de taille maximale (<varname>tw</"
+"varname>, <varname>th</varname>) et couvrant l'étendue spécifiée "
+"(<varname>ext</varname>), et avec les données provenant de la couverture "
+"raster spécifiée (<varname>tab</varname>, <varname>col</varname>)."
 
 #. Tag: refname
 #: reference_raster.xml:1981
 #, no-c-format
 msgid "ST_FromGDALRaster"
-msgstr ""
+msgstr "ST_FromGDALRaster"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1982
 #, no-c-format
 msgid "Returns a raster from a supported GDAL raster file."
-msgstr ""
+msgstr "Retourne un raster depuis un fichier raster supporté par GDAL."
 
 #. Tag: funcprototype
 #: reference_raster.xml:1987
@@ -3814,6 +5059,10 @@ msgid ""
 "<paramdef choice=\"opt\"><type>integer </type> <parameter>srid=NULL</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>raster <function>ST_FromGDALRaster</function></funcdef> "
+"<paramdef><type>bytea </type> <parameter>gdaldata</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>srid=NULL</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:1999
@@ -3822,6 +5071,9 @@ msgid ""
 "Returns a raster from a supported GDAL raster file. <varname>gdaldata</"
 "varname> is of type bytea and should be the contents of the GDAL raster file."
 msgstr ""
+"Retourne un raster depuis un fichier raster supporté par GDAL. Le paramètre "
+"<varname>gdaldata</varname> de type bytea est le contenu du fichier raster "
+"GDAL."
 
 #. Tag: para
 #: reference_raster.xml:2003
@@ -3831,6 +5083,9 @@ msgid ""
 "assign the SRID from the GDAL raster. If <varname>srid</varname> is "
 "provided, the value provided will override any automatically assigned SRID."
 msgstr ""
+"Si <varname>srid</varname> est NULL, la fonction essaye de déterminer le "
+"SRID depuis le raster GDAL. Si <varname>srid</varname> est spécifié, la "
+"valeur spécifiée écrase tout SRID déterminé automatiquement."
 
 #. Tag: programlisting
 #: reference_raster.xml:2013
@@ -3865,6 +5120,34 @@ msgid ""
 "(4,12,3,0,3,3)\n"
 "(2 rows)"
 msgstr ""
+"WITH foo AS (\n"
+"    SELECT ST_AsPNG(ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, "
+"2, 0, 0, 0.1, -0.1, 0, 0, 4326), 1, '8BUI', 1, 0), 2, '8BUI', 2, 0), 3, "
+"'8BUI', 3, 0)) AS png\n"
+"),\n"
+"bar AS (\n"
+"    SELECT 1 AS rid, ST_FromGDALRaster(png) AS rast FROM foo\n"
+"    UNION ALL\n"
+"    SELECT 2 AS rid, ST_FromGDALRaster(png, 3310) AS rast FROM foo\n"
+")\n"
+"SELECT\n"
+"    rid,\n"
+"    ST_Metadata(rast) AS metadata,\n"
+"    ST_SummaryStats(rast, 1) AS stats1,\n"
+"    ST_SummaryStats(rast, 2) AS stats2,\n"
+"    ST_SummaryStats(rast, 3) AS stats3\n"
+"FROM bar\n"
+"ORDER BY rid;\n"
+"\n"
+" rid |         metadata          |    stats1     |    stats2     |     "
+"stats3\n"
+"-----+---------------------------+---------------+---------------+-----------"
+"-----\n"
+"   1 | (0,0,2,2,1,-1,0,0,0,3)    | (4,4,1,0,1,1) | (4,8,2,0,2,2) | "
+"(4,12,3,0,3,3)\n"
+"   2 | (0,0,2,2,1,-1,0,0,3310,3) | (4,4,1,0,1,1) | (4,8,2,0,2,2) | "
+"(4,12,3,0,3,3)\n"
+"(2 rows)"
 
 #. Tag: title
 #: reference_raster.xml:2028
