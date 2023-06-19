@@ -82,7 +82,7 @@ BEGIN
       edgering AS (
         SELECT *
         FROM
-          GetRingEdges(
+          topology.GetRingEdges(
             %1$L,
             (SELECT ring_id FROM leftmost_edge)
           )
