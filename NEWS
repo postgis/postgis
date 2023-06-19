@@ -4,7 +4,8 @@ YYYY/MM/DD
 * Bug Fixes and Enhancements *
   - #5394, Improve robustness of finding distinct vertices in topology edges
            (Sandro Santilli)
-
+  - #5403, Fix ValidateTopology(bbox) without topology in search_path
+           (Sandro Santilli).
 
 PostGIS 3.3.3
 2023/05/29

@@ -183,5 +183,17 @@ SELECT '#5105.unexpected_invalidities', * FROM ValidateTopology('t5105');
 --       to form O-O figures
 ROLLBACK;
 
+-- See https://trac.osgeo.org/postgis/ticket/5403
+BEGIN;
+SET search_path TO public;
+SELECT NULL FROM topology.CreateTopology('t5403');
+SELECT '#5403.0', topology.TopoGeo_addPolygon('t5403',
+  'POLYGON((0 0, 5 10,10 0,0 0),(2 2,8 2,5 8,2 2))');
+SELECT '#5403.1', * FROM topology.ValidateTopology(
+  't5403',
+  ST_MakeEnvelope(2,2,4,4)
+);
+ROLLBACK;
+
 SELECT NULL FROM topology.DropTopology('city_data');
 
