@@ -2,6 +2,7 @@ pipeline:
   build:
     image: docker.osgeo.org/postgis/build-test:trisquel3
     commands:
+      - export PATH=/usr/lib/postgresql/12/bin:$PATH
       - ./autogen.sh
       - PGVER=12 ./configure
       - make docs
