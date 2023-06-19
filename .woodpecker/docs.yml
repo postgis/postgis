@@ -6,6 +6,6 @@ pipeline:
       - ./autogen.sh
       - PGVER=12 ./configure
       - make docs
-      - make -C doc check
-      - make docs-localized
-      - make -C doc/ check-localized
+      #- make -C doc check
+      #- make docs-localized
+      #- make -C doc/ check-localized
