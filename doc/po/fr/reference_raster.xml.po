@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-04 00:50+0000\n"
-"PO-Revision-Date: 2023-06-16 08:08+0000\n"
+"PO-Revision-Date: 2023-06-19 15:31+0000\n"
 "Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_rasterxml/fr/>\n"
@@ -3430,7 +3430,7 @@ msgstr "Exemples : Multiples nouvelles bandes"
 
 #. Tag: programlisting
 #: reference_raster.xml:1417
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "    *\n"
@@ -5153,13 +5153,13 @@ msgstr ""
 #: reference_raster.xml:2028
 #, no-c-format
 msgid "Raster Accessors"
-msgstr ""
+msgstr "Fonctions d'accès aux rasters"
 
 #. Tag: refname
 #: reference_raster.xml:2032
 #, no-c-format
 msgid "ST_GeoReference"
-msgstr ""
+msgstr "ST_GeoReference"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2033
@@ -5168,6 +5168,8 @@ msgid ""
 "Returns the georeference meta data in GDAL or ESRI format as commonly seen "
 "in a world file. Default is GDAL."
 msgstr ""
+"Retourne les méta-données de géo-référencement au format GDAL (par défaut) "
+"ou ESRI, tel qu'utilisé généralement dans les fichiers world file."
 
 #. Tag: funcprototype
 #: reference_raster.xml:2038
@@ -5192,18 +5194,22 @@ msgid ""
 "World_file\">world file</ulink>. Default is GDAL if no type specified. type "
 "is string 'GDAL' or 'ESRI'."
 msgstr ""
+"Retourne les méta-données de géo-référencement au format GDAL ou ESRI, tel "
+"qu'utilisé généralement dans les fichiers <ulink url=\"https://fr.wikipedia."
+"org/wiki/World_file\">world file</ulink>. Si aucun type n'est spécifié, "
+"utilise le format GDAL par défaut. type est une chaîne 'GDAL' ou 'ESRI'."
 
 #. Tag: para
 #: reference_raster.xml:2051 reference_raster.xml:4513
 #, no-c-format
 msgid "Difference between format representations is as follows:"
-msgstr ""
+msgstr "La différence entre les représentations de format est la suivante :"
 
 #. Tag: para
 #: reference_raster.xml:2052 reference_raster.xml:4514
 #, no-c-format
 msgid "<varname>GDAL</varname>:"
-msgstr ""
+msgstr "<varname>GDAL</varname> :"
 
 #. Tag: programlisting
 #: reference_raster.xml:2053
@@ -5216,12 +5222,18 @@ msgid ""
 "upperleftx\n"
 "upperlefty"
 msgstr ""
+"scalex\n"
+"skewy\n"
+"skewx\n"
+"scaley\n"
+"upperleftx\n"
+"upperlefty"
 
 #. Tag: para
 #: reference_raster.xml:2054 reference_raster.xml:4516
 #, no-c-format
 msgid "<varname>ESRI</varname>:"
-msgstr ""
+msgstr "<varname>ESRI</varname> :"
 
 #. Tag: programlisting
 #: reference_raster.xml:2055
@@ -5234,6 +5246,12 @@ msgid ""
 "upperleftx + scalex*0.5\n"
 "upperlefty + scaley*0.5"
 msgstr ""
+"scalex\n"
+"skewy\n"
+"skewx\n"
+"scaley\n"
+"upperleftx + scalex*0.5\n"
+"upperlefty + scaley*0.5"
 
 #. Tag: programlisting
 #: reference_raster.xml:2061
@@ -5252,24 +5270,36 @@ msgid ""
 " 1.5000000000 : 0.5000000000\n"
 " 2.0000000000 : 0.5000000000"
 msgstr ""
+"SELECT ST_GeoReference(rast, 'ESRI') As esri_ref, ST_GeoReference(rast, "
+"'GDAL') As gdal_ref\n"
+" FROM dummy_rast WHERE rid=1;\n"
+"\n"
+"   esri_ref   |   gdal_ref\n"
+"--------------+--------------\n"
+" 2.0000000000 | 2.0000000000\n"
+" 0.0000000000 : 0.0000000000\n"
+" 0.0000000000 : 0.0000000000\n"
+" 3.0000000000 : 3.0000000000\n"
+" 1.5000000000 : 0.5000000000\n"
+" 2.0000000000 : 0.5000000000"
 
 #. Tag: para
 #: reference_raster.xml:2066
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:2072
 #, no-c-format
 msgid "ST_Height"
-msgstr ""
+msgstr "ST_Height"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2073
 #, no-c-format
 msgid "Returns the height of the raster in pixels."
-msgstr ""
+msgstr "Retourne la hauteur du raster en pixels."
 
 #. Tag: funcprototype
 #: reference_raster.xml:2078
@@ -5285,7 +5315,7 @@ msgstr ""
 #: reference_raster.xml:2088
 #, no-c-format
 msgid "Returns the height of the raster."
-msgstr ""
+msgstr "Retourne la hauteur du raster en pixels."
 
 #. Tag: programlisting
 #: reference_raster.xml:2094
@@ -5299,12 +5329,19 @@ msgid ""
 "   1 |         20\n"
 "   2 |          5"
 msgstr ""
+"SELECT rid, ST_Height(rast) As rastheight\n"
+"FROM dummy_rast;\n"
+"\n"
+" rid | rastheight\n"
+"-----+------------\n"
+"   1 |         20\n"
+"   2 |          5"
 
 #. Tag: refname
 #: reference_raster.xml:2106
 #, no-c-format
 msgid "ST_IsEmpty"
-msgstr ""
+msgstr "ST_IsEmpty"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2107
@@ -5313,6 +5350,8 @@ msgid ""
 "<refpurpose>Returns true if the raster is empty (width = 0 and height = 0). "
 "Otherwise, returns false.</refpurpose>"
 msgstr ""
+"<refpurpose>Retourne true si le raster est vide (largeur = 0 et hauteur = 0)"
+". Sinon, retourne false.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_raster.xml:2112
@@ -5331,6 +5370,8 @@ msgid ""
 "<para>Returns true if the raster is empty (width = 0 and height = 0). "
 "Otherwise, returns false.</para>"
 msgstr ""
+"<para>Retourne true si le raster est vide (largeur = 0 et hauteur = 0). "
+"Sinon, retourne false.</para>"
 
 #. Tag: programlisting
 #: reference_raster.xml:2130
@@ -5347,6 +5388,16 @@ msgid ""
 "-----------+\n"
 "t          |"
 msgstr ""
+"SELECT ST_IsEmpty(ST_MakeEmptyRaster(100, 100, 0, 0, 0, 0, 0, 0))\n"
+"st_isempty |\n"
+"-----------+\n"
+"f          |\n"
+"\n"
+"\n"
+"SELECT ST_IsEmpty(ST_MakeEmptyRaster(0, 0, 0, 0, 0, 0, 0, 0))\n"
+"st_isempty |\n"
+"-----------+\n"
+"t          |"
 
 #. Tag: refname
 #: reference_raster.xml:2142
@@ -5361,6 +5412,7 @@ msgid ""
 "<refpurpose>Returns the amount of space (in bytes) the raster takes.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Retourne l'espace utilisé par le raster (en octets).</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_raster.xml:2149
@@ -5369,12 +5421,14 @@ msgid ""
 "<funcdef>integer <function>ST_MemSize</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
 msgstr ""
+"<funcdef>integer <function>ST_MemSize</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:2159
 #, no-c-format
 msgid "<para>Returns the amount of space (in bytes) the raster takes.</para>"
-msgstr ""
+msgstr "<para>Retourne l'espace utilisé par le raster (en octets).</para>"
 
 #. Tag: para
 #: reference_raster.xml:2160
@@ -5383,6 +5437,8 @@ msgid ""
 "This is a nice compliment to PostgreSQL built in functions pg_column_size, "
 "pg_size_pretty, pg_relation_size, pg_total_relation_size."
 msgstr ""
+"Cette fonction est un bon complément aux fonctions PostgreSQL natives "
+"pg_column_size, pg_size_pretty, pg_relation_size, pg_total_relation_size."
 
 #. Tag: para
 #: reference_raster.xml:2161
@@ -5393,6 +5449,11 @@ msgid ""
 "table contribution and large geometries are stored in TOAST tables. "
 "pg_column_size might return lower because it returns the compressed size."
 msgstr ""
+"pg_relation_size qui donne la taille en octets d'une table peut renvoyer une "
+"taille en octets inférieure à ST_MemSize. Cela est dû au fait que "
+"pg_relation_size n'ajoute pas la contribution des tables toasted et que les "
+"grandes géométries sont stockées dans les tables TOAST. pg_column_size peut "
+"retourner une valeur inférieure parce qu'elle retourne la taille compressée."
 
 #. Tag: para
 #: reference_raster.xml:2163
@@ -5414,12 +5475,18 @@ msgid ""
 "        --------\n"
 "        22568"
 msgstr ""
+"SELECT ST_MemSize(ST_AsRaster(ST_Buffer(ST_Point(1,5),10,1000),150, 150, "
+"'8BUI')) As rast_mem;\n"
+"\n"
+"        rast_mem\n"
+"        --------\n"
+"        22568"
 
 #. Tag: refname
 #: reference_raster.xml:2186
 #, no-c-format
 msgid "ST_MetaData"
-msgstr ""
+msgstr "ST_MetaData"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2187
@@ -5428,6 +5495,8 @@ msgid ""
 "Returns basic meta data about a raster object such as pixel size, rotation "
 "(skew), upper, lower left, etc."
 msgstr ""
+"Retourne les méta-données de base de l'objet raster : taille des pixels, "
+"rotation, coin haut/bas gauche, etc."
 
 #. Tag: funcprototype
 #: reference_raster.xml:2192
@@ -5447,6 +5516,10 @@ msgid ""
 "(skew), upper, lower left, etc. Columns returned: upperleftx | upperlefty | "
 "width | height | scalex | scaley | skewx | skewy | srid | numbands"
 msgstr ""
+"Retourne les méta-données de base de l'objet raster : taille des pixels, "
+"rotation, coin haut/bas gauche, etc. Les colonnes retournées sont : "
+"upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | "
+"srid | numbands"
 
 #. Tag: programlisting
 #: reference_raster.xml:2209
@@ -5465,18 +5538,30 @@ msgid ""
 "   2 | 3427927.75 |    5793244 |     5 |      5 |   0.05 |  -0.05 |     0 "
 "|     0 |    0 |        3"
 msgstr ""
+"SELECT rid, (foo.md).*\n"
+" FROM (SELECT rid, ST_MetaData(rast) As md\n"
+"FROM dummy_rast) As foo;\n"
+"\n"
+" rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | "
+"skewy | srid | numbands\n"
+" ----+------------+------------+-------+--------+--------+-----------+-------"
+"+-------+------+-------\n"
+"   1 |        0.5 |        0.5 |    10 |     20 |      2 |      3 |     0 |"
+"     0 |    0 |        0\n"
+"   2 | 3427927.75 |    5793244 |     5 |      5 |   0.05 |  -0.05 |     0 |"
+"     0 |    0 |        3"
 
 #. Tag: para
 #: reference_raster.xml:2215 reference_raster.xml:5347
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_NumBands\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_NumBands\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:2221
 #, no-c-format
 msgid "ST_NumBands"
-msgstr ""
+msgstr "ST_NumBands"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2222
@@ -5484,6 +5569,7 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns the number of bands in the raster object.</refpurpose>"
 msgstr ""
+"<refpurpose>Retourne le nombre de bandes de l'objet raster.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_raster.xml:2227
@@ -5499,7 +5585,7 @@ msgstr ""
 #: reference_raster.xml:2237
 #, no-c-format
 msgid "<para>Returns the number of bands in the raster object.</para>"
-msgstr ""
+msgstr "<para>Retourne le nombre de bandes de l'objet raster.</para>"
 
 #. Tag: programlisting
 #: reference_raster.xml:2243
@@ -5513,12 +5599,19 @@ msgid ""
 "  1 |        0\n"
 "  2 |        3"
 msgstr ""
+"SELECT rid, ST_NumBands(rast) As numbands\n"
+"FROM dummy_rast;\n"
+"\n"
+"rid | numbands\n"
+"----+----------\n"
+"  1 |        0\n"
+"  2 |        3"
 
 #. Tag: refname
 #: reference_raster.xml:2255
 #, no-c-format
 msgid "ST_PixelHeight"
-msgstr ""
+msgstr "ST_PixelHeight"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2256
@@ -5526,6 +5619,7 @@ msgstr ""
 msgid ""
 "Returns the pixel height in geometric units of the spatial reference system."
 msgstr ""
+"Retourne la hauteur d'un pixel, dans l'unité du système de référence spatial."
 
 #. Tag: funcprototype
 #: reference_raster.xml:2261
@@ -5545,6 +5639,10 @@ msgid ""
 "system. In the common case where there is no skew, the pixel height is just "
 "the scale ratio between geometric coordinates and raster pixels."
 msgstr ""
+"Retourne la hauteur d'un pixel, dans l'unité du système de référence "
+"spatial. Dans le cas général où il n'y a pas d'obliquité (skew), la hauteur "
+"d'un pixel est simplement l'échelle entre les coordonnées géométriques et "
+"les pixels rasters."
 
 #. Tag: para
 #: reference_raster.xml:2273
@@ -5553,12 +5651,14 @@ msgid ""
 "Refer to <xref linkend=\"RT_ST_PixelWidth\"/> for a diagrammatic "
 "visualization of the relationship."
 msgstr ""
+"Voir <xref linkend=\"RT_ST_PixelWidth\"/> pour une représentation "
+"schématique de la relation."
 
 #. Tag: title
 #: reference_raster.xml:2277 reference_raster.xml:2337
 #, no-c-format
 msgid "Examples: Rasters with no skew"
-msgstr ""
+msgstr "Exemples : Rasters sans obliquité (skew)"
 
 #. Tag: programlisting
 #: reference_raster.xml:2279
@@ -5575,12 +5675,22 @@ msgid ""
 "         20 |         3 |      2 |      3 |     0 |        0\n"
 "          5 |      0.05 |   0.05 |  -0.05 |     0 |        0"
 msgstr ""
+"SELECT ST_Height(rast) As rastheight, ST_PixelHeight(rast) As pixheight,\n"
+" ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) As "
+"skewx,\n"
+"        ST_SkewY(rast) As skewy\n"
+"FROM dummy_rast;\n"
+"\n"
+" rastheight | pixheight | scalex | scaley | skewx | skewy\n"
+"------------+-----------+--------+--------+-------+----------\n"
+"         20 |         3 |      2 |      3 |     0 |        0\n"
+"          5 |      0.05 |   0.05 |  -0.05 |     0 |        0"
 
 #. Tag: title
 #: reference_raster.xml:2284 reference_raster.xml:2344
 #, no-c-format
 msgid "Examples: Rasters with skew different than 0"
-msgstr ""
+msgstr "Exemples : Rasters avec obliquité (skew) différent de 0"
 
 #. Tag: programlisting
 #: reference_raster.xml:2286
@@ -5598,6 +5708,17 @@ msgid ""
 "        20 |  3.04138126514911 |      2 |      3 |   0.5 |      0.5\n"
 "         5 | 0.502493781056044 |   0.05 |  -0.05 |   0.5 |      0.5"
 msgstr ""
+"SELECT ST_Height(rast) As rastheight, ST_PixelHeight(rast) As pixheight,\n"
+" ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) As "
+"skewx,\n"
+"        ST_SkewY(rast) As skewy\n"
+"FROM (SELECT ST_SetSKew(rast,0.5,0.5) As rast\n"
+"        FROM dummy_rast) As skewed;\n"
+"\n"
+"rastheight |     pixheight     | scalex | scaley | skewx | skewy\n"
+"-----------+-------------------+--------+--------+-------+----------\n"
+"        20 |  3.04138126514911 |      2 |      3 |   0.5 |      0.5\n"
+"         5 | 0.502493781056044 |   0.05 |  -0.05 |   0.5 |      0.5"
 
 #. Tag: para
 #: reference_raster.xml:2293 reference_raster.xml:2353
@@ -5607,12 +5728,14 @@ msgid ""
 ", <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, <xref "
 "linkend=\"RT_ST_SkewX\"/>, <xref linkend=\"RT_ST_SkewY\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, <xref "
+"linkend=\"RT_ST_SkewX\"/>, <xref linkend=\"RT_ST_SkewY\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:2305
 #, no-c-format
 msgid "ST_PixelWidth"
-msgstr ""
+msgstr "ST_PixelWidth"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2306
@@ -5620,6 +5743,7 @@ msgstr ""
 msgid ""
 "Returns the pixel width in geometric units of the spatial reference system."
 msgstr ""
+"Retourne la largeur d'un pixel, dans l'unité du système de référence spatial."
 
 #. Tag: funcprototype
 #: reference_raster.xml:2311
@@ -5639,24 +5763,28 @@ msgid ""
 "system. In the common case where there is no skew, the pixel width is just "
 "the scale ratio between geometric coordinates and raster pixels."
 msgstr ""
+"Retourne la largeur d'un pixel, dans l'unité du système de référence "
+"spatial. Dans le cas général où il n'y a pas d'obliquité (skew), la largeur "
+"d'un pixel est simplement l'échelle entre les coordonnées géométriques et "
+"les pixels rasters."
 
 #. Tag: para
 #: reference_raster.xml:2323
 #, no-c-format
 msgid "The following diagram demonstrates the relationship:"
-msgstr ""
+msgstr "Le diagramme suivant illustre cette relation :"
 
 #. Tag: para
 #: reference_raster.xml:2330
 #, no-c-format
 msgid "Pixel Width: Pixel size in the i direction"
-msgstr ""
+msgstr "Largeur du pixel : taille du pixel dans la direction i"
 
 #. Tag: para
 #: reference_raster.xml:2330
 #, no-c-format
 msgid "Pixel Height: Pixel size in the j direction"
-msgstr ""
+msgstr "Hauteur du pixel : taille du pixel dans la direction j"
 
 #. Tag: programlisting
 #: reference_raster.xml:2339
@@ -5673,6 +5801,16 @@ msgid ""
 "    10 |        2 |      2 |      3 |     0 |        0\n"
 "     5 |     0.05 |   0.05 |  -0.05 |     0 |        0"
 msgstr ""
+"SELECT ST_Width(rast) As rastwidth, ST_PixelWidth(rast) As pixwidth,\n"
+"    ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) As "
+"skewx,\n"
+"    ST_SkewY(rast) As skewy\n"
+"    FROM dummy_rast;\n"
+"\n"
+"    rastwidth | pixwidth | scalex | scaley | skewx | skewy\n"
+"    -----------+----------+--------+--------+-------+----------\n"
+"    10 |        2 |      2 |      3 |     0 |        0\n"
+"     5 |     0.05 |   0.05 |  -0.05 |     0 |        0"
 
 #. Tag: programlisting
 #: reference_raster.xml:2346
@@ -5690,12 +5828,23 @@ msgid ""
 "    10 |  2.06155281280883 |      2 |      3 |   0.5 |      0.5\n"
 "     5 | 0.502493781056044 |   0.05 |  -0.05 |   0.5 |      0.5"
 msgstr ""
+"SELECT ST_Width(rast) As rastwidth, ST_PixelWidth(rast) As pixwidth,\n"
+"    ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) As "
+"skewx,\n"
+"    ST_SkewY(rast) As skewy\n"
+"    FROM (SELECT ST_SetSkew(rast,0.5,0.5) As rast\n"
+"    FROM dummy_rast) As skewed;\n"
+"\n"
+"    rastwidth |     pixwidth      | scalex | scaley | skewx | skewy\n"
+"    -----------+-------------------+--------+--------+-------+----------\n"
+"    10 |  2.06155281280883 |      2 |      3 |   0.5 |      0.5\n"
+"     5 | 0.502493781056044 |   0.05 |  -0.05 |   0.5 |      0.5"
 
 #. Tag: refname
 #: reference_raster.xml:2359
 #, no-c-format
 msgid "ST_ScaleX"
-msgstr ""
+msgstr "ST_ScaleX"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2360
@@ -5704,6 +5853,8 @@ msgid ""
 "Returns the X component of the pixel width in units of coordinate reference "
 "system."
 msgstr ""
+"Renvoie la composante X de la largeur du pixel dans l'unité du système de "
+"référence spatial."
 
 #. Tag: funcprototype
 #: reference_raster.xml:2365
@@ -5723,12 +5874,17 @@ msgid ""
 "system. Refer to <ulink url=\"http://en.wikipedia.org/wiki/"
 "World_file\">World File</ulink> for more details."
 msgstr ""
+"Renvoie la composante X de la largeur du pixel dans l'unité du système de "
+"référence spatial. Voir <ulink url=\"https://fr.wikipedia.org/wiki/"
+"World_file\">World File</ulink> pour plus de détails."
 
 #. Tag: para
 #: reference_raster.xml:2377
 #, no-c-format
 msgid "Changed: 2.0.0. In WKTRaster versions this was called ST_PixelSizeX."
 msgstr ""
+"Changement : 2.0.0. Dans les versions WKTRaster, cette fonction était "
+"appelée ST_PixelSizeX."
 
 #. Tag: programlisting
 #: reference_raster.xml:2383
@@ -5742,12 +5898,19 @@ msgid ""
 "   1 |            2\n"
 "   2 |         0.05"
 msgstr ""
+"SELECT rid, ST_ScaleX(rast) As rastpixwidth\n"
+"FROM dummy_rast;\n"
+"\n"
+" rid | rastpixwidth\n"
+"-----+--------------\n"
+"   1 |            2\n"
+"   2 |         0.05"
 
 #. Tag: refname
 #: reference_raster.xml:2396
 #, no-c-format
 msgid "ST_ScaleY"
-msgstr ""
+msgstr "ST_ScaleY"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2397
@@ -5756,6 +5919,8 @@ msgid ""
 "Returns the Y component of the pixel height in units of coordinate reference "
 "system."
 msgstr ""
+"Renvoie la composante Y de la hauteur du pixel dans l'unité du système de "
+"référence spatial."
 
 #. Tag: funcprototype
 #: reference_raster.xml:2402
@@ -5775,12 +5940,17 @@ msgid ""
 "system. May be negative. Refer to <ulink url=\"http://en.wikipedia.org/wiki/"
 "World_file\">World File</ulink> for more details."
 msgstr ""
+"Renvoie la composante Y de la hauteur du pixel dans l'unité du système de "
+"référence spatial. Peut être négative. Voir <ulink url=\"https://fr.wikipedia"
+".org/wiki/World_file\">World File</ulink> pour plus de détails."
 
 #. Tag: para
 #: reference_raster.xml:2415
 #, no-c-format
 msgid "Changed: 2.0.0. In WKTRaster versions this was called ST_PixelSizeY."
 msgstr ""
+"Changement : 2.0.0. Dans les versions WKTRaster, cette fonction était "
+"appelée ST_PixelSizeY."
 
 #. Tag: programlisting
 #: reference_raster.xml:2421
@@ -5794,12 +5964,19 @@ msgid ""
 "   1 |             3\n"
 "   2 |         -0.05"
 msgstr ""
+"SELECT rid, ST_ScaleY(rast) As rastpixheight\n"
+"FROM dummy_rast;\n"
+"\n"
+" rid | rastpixheight\n"
+"-----+---------------\n"
+"   1 |             3\n"
+"   2 |         -0.05"
 
 #. Tag: refname
 #: reference_raster.xml:2434
 #, no-c-format
 msgid "ST_RasterToWorldCoord"
-msgstr ""
+msgstr "ST_RasterToWorldCoord"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2435
@@ -5808,6 +5985,9 @@ msgid ""
 "Returns the raster's upper left corner as geometric X and Y (longitude and "
 "latitude) given a column and row. Column and row starts at 1."
 msgstr ""
+"Retourne le coin supérieur gauche du raster, sous forme de coordonnées X et "
+"Y (longitude et latitude) d'un colonne et d'une ligne. Les numéros de "
+"colonne et de ligne commencent à 1."
 
 #. Tag: funcprototype
 #: reference_raster.xml:2440
@@ -5818,6 +5998,10 @@ msgid ""
 "<paramdef><type>integer </type> <parameter>xcolumn</parameter></paramdef> "
 "<paramdef><type>integer </type> <parameter>yrow</parameter></paramdef>"
 msgstr ""
+"<funcdef>record <function>ST_RasterToWorldCoord</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>xcolumn</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>yrow</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:2452
@@ -5831,6 +6015,13 @@ msgid ""
 "the raster assuming the raster's grid is applicable outside the raster's "
 "bounds."
 msgstr ""
+"Retourne le coin supérieur gauche du raster, sous forme de coordonnées X et "
+"Y (longitude et latitude) d'un colonne et d'une ligne. Les valeurs X et Y "
+"retournées sont dans l'unité du système de référence spatial du raster géo-"
+"référencé. Les numéros de colonne et de ligne commencent à 1, mais si l'un "
+"des deux paramètres est 0, un nombre négatif ou supérieur à la dimension du "
+"raster, la fonction retourne des coordonnées en dehors du raster, en "
+"supposant que la grille du raster est applicable en dehors de son étendue."
 
 #. Tag: programlisting
 #: reference_raster.xml:2464
@@ -5848,6 +6039,17 @@ msgid ""
 "   1 |        0.5 |      0.5 |       2.5 |        3.5\n"
 "   2 | 3427927.75 |  5793244 | 3427927.8 | 5793243.95"
 msgstr ""
+"-- non-skewed raster\n"
+"SELECT\n"
+"    rid,\n"
+"    (ST_RasterToWorldCoord(rast,1, 1)).*,\n"
+"    (ST_RasterToWorldCoord(rast,2, 2)).*\n"
+"FROM dummy_rast\n"
+"\n"
+" rid | longitude  | latitude | longitude |  latitude\n"
+"-----+------------+----------+-----------+------------\n"
+"   1 |        0.5 |      0.5 |       2.5 |        3.5\n"
+"   2 | 3427927.75 |  5793244 | 3427927.8 | 5793243.95"
 
 #. Tag: programlisting
 #: reference_raster.xml:2466
@@ -5870,6 +6072,22 @@ msgid ""
 "   1 |        0.5 |      0.5 |     203.5 |       6.5\n"
 "   2 | 3427927.75 |  5793244 | 3428128.8 | 5793243.9"
 msgstr ""
+"-- skewed raster\n"
+"SELECT\n"
+"    rid,\n"
+"    (ST_RasterToWorldCoord(rast, 1, 1)).*,\n"
+"    (ST_RasterToWorldCoord(rast, 2, 3)).*\n"
+"FROM (\n"
+"    SELECT\n"
+"        rid,\n"
+"        ST_SetSkew(rast, 100.5, 0) As rast\n"
+"    FROM dummy_rast\n"
+") As foo\n"
+"\n"
+" rid | longitude  | latitude | longitude | latitude\n"
+"-----+------------+----------+-----------+-----------\n"
+"   1 |        0.5 |      0.5 |     203.5 |       6.5\n"
+"   2 | 3427927.75 |  5793244 | 3428128.8 | 5793243.9"
 
 #. Tag: para
 #: reference_raster.xml:2473
@@ -5878,12 +6096,14 @@ msgid ""
 ", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref "
 "linkend=\"RT_ST_SetSkew\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref linkend="
+"\"RT_ST_SetSkew\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:2483
 #, no-c-format
 msgid "ST_RasterToWorldCoordX"
-msgstr ""
+msgstr "ST_RasterToWorldCoordX"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2484
@@ -5892,6 +6112,8 @@ msgid ""
 "Returns the geometric X coordinate upper left of a raster, column and row. "
 "Numbering of columns and rows starts at 1."
 msgstr ""
+"Retourne la coordonnée X du coin supérieur gauche du raster à column et row. "
+"Les numéros de colonne et de ligne commencent à 1."
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:2489
@@ -5906,6 +6128,14 @@ msgid ""
 "type> <parameter>xcolumn</parameter></paramdef> <paramdef><type>integer </"
 "type> <parameter>yrow</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>float8 <function>ST_RasterToWorldCoordX</function></"
+"funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>xcolumn</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>float8 "
+"<function>ST_RasterToWorldCoordX</function></funcdef> <paramdef><type>raster "
+"</type> <parameter>rast</parameter></paramdef> <paramdef><type>integer </"
+"type> <parameter>xcolumn</parameter></paramdef> <paramdef><type>integer </"
+"type> <parameter>yrow</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:2507
@@ -5918,6 +6148,13 @@ msgid ""
 "or right with the assumption that the skew and pixel sizes are same as "
 "selected raster."
 msgstr ""
+"Retourne la coordonnée X du coin supérieur gauche du raster à column et row "
+"dans l'unité du système de référence spatial du raster géo-référencé. Les "
+"numéros de colonne et de ligne commencent à 1, mais si l'un des deux "
+"paramètres est 0, un nombre négatif ou supérieur à la dimension du raster, "
+"la fonction retourne des coordonnées en dehors du raster, en supposant que "
+"la grille du raster est applicable en dehors de son étendue (même taille de "
+"pixel et skew)."
 
 #. Tag: para
 #: reference_raster.xml:2512
@@ -5928,12 +6165,19 @@ msgid ""
 "ST_SkewX and row and column. An error will be raised if you give just the X "
 "column for a skewed raster."
 msgstr ""
+"Pour des rasters sans obliquité (skew), fournir le numéro de colonne X est "
+"suffisant. Pour des rasters avec obliquité, les coordonnées géo-référencées "
+"sont fonction de ST_ScaleX et ST_SkewX et de la ligne et colonne. Une erreur "
+"sera émise si seulement la colonne X est fournie pour une raster avec "
+"obliquité."
 
 #. Tag: para
 #: reference_raster.xml:2516
 #, no-c-format
 msgid "Changed: 2.1.0 In prior versions, this was called ST_Raster2WorldCoordX"
 msgstr ""
+"Changement : 2.1.0 Jusqu'à la version 2.0.x, cette fonction était appelée "
+"ST_Raster2WorldCoordX"
 
 #. Tag: programlisting
 #: reference_raster.xml:2523
@@ -5950,6 +6194,16 @@ msgid ""
 "   1 |        0.5 |       2.5 |      2\n"
 "   2 | 3427927.75 | 3427927.8 |   0.05"
 msgstr ""
+"-- avec un raster non-skewed, fournir la colonne X est suffisant\n"
+"SELECT rid, ST_RasterToWorldCoordX(rast,1) As x1coord,\n"
+"    ST_RasterToWorldCoordX(rast,2) As x2coord,\n"
+"    ST_ScaleX(rast) As pixelx\n"
+"FROM dummy_rast;\n"
+"\n"
+" rid |  x1coord   |  x2coord  | pixelx\n"
+"-----+------------+-----------+--------\n"
+"   1 |        0.5 |       2.5 |      2\n"
+"   2 | 3427927.75 | 3427927.8 |   0.05"
 
 #. Tag: programlisting
 #: reference_raster.xml:2525
@@ -5967,6 +6221,17 @@ msgid ""
 "   1 |        0.5 |     203.5 |      2\n"
 "   2 | 3427927.75 | 3428128.8 |   0.05"
 msgstr ""
+"-- ajoutons du skew\n"
+"SELECT rid, ST_RasterToWorldCoordX(rast, 1, 1) As x1coord,\n"
+"    ST_RasterToWorldCoordX(rast, 2, 3) As x2coord,\n"
+"    ST_ScaleX(rast) As pixelx\n"
+"FROM (SELECT rid, ST_SetSkew(rast, 100.5, 0) As rast FROM dummy_rast) As foo;"
+"\n"
+"\n"
+" rid |  x1coord   |  x2coord  | pixelx\n"
+"-----+------------+-----------+--------\n"
+"   1 |        0.5 |     203.5 |      2\n"
+"   2 | 3427927.75 | 3428128.8 |   0.05"
 
 #. Tag: para
 #: reference_raster.xml:2532
@@ -5975,12 +6240,14 @@ msgid ""
 ", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref "
 "linkend=\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewX\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref linkend="
+"\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewX\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:2538
 #, no-c-format
 msgid "ST_RasterToWorldCoordY"
-msgstr ""
+msgstr "ST_RasterToWorldCoordY"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2539
@@ -5989,6 +6256,8 @@ msgid ""
 "Returns the geometric Y coordinate upper left corner of a raster, column and "
 "row. Numbering of columns and rows starts at 1."
 msgstr ""
+"Retourne la coordonnée Y du coin supérieur gauche du raster à column et row. "
+"Les numéros de colonne et de ligne commencent à 1."
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:2544
@@ -6003,6 +6272,14 @@ msgid ""
 "type> <parameter>xcolumn</parameter></paramdef> <paramdef><type>integer </"
 "type> <parameter>yrow</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>float8 <function>ST_RasterToWorldCoordY</function></"
+"funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>yrow</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>float8 "
+"<function>ST_RasterToWorldCoordY</function></funcdef> <paramdef><type>raster "
+"</type> <parameter>rast</parameter></paramdef> <paramdef><type>integer </"
+"type> <parameter>xcolumn</parameter></paramdef> <paramdef><type>integer </"
+"type> <parameter>yrow</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:2562
@@ -6015,6 +6292,13 @@ msgid ""
 "left or right with the assumption that the skew and pixel sizes are same as "
 "selected raster tile."
 msgstr ""
+"Retourne la coordonnée Y du coin supérieur gauche du raster à column et row "
+"dans l'unité du système de référence spatial du raster géo-référencé. Les "
+"numéros de colonne et de ligne commencent à 1, mais si l'un des deux "
+"paramètres est 0, un nombre négatif ou supérieur à la dimension du raster, "
+"la fonction retourne des coordonnées en dehors du raster, en supposant que "
+"la grille du raster est applicable en dehors de son étendue (même taille de "
+"pixel et skew)."
 
 #. Tag: para
 #: reference_raster.xml:2567
@@ -6025,12 +6309,19 @@ msgid ""
 "ST_SkewY and row and column. An error will be raised if you give just the Y "
 "row for a skewed raster."
 msgstr ""
+"Pour des rasters sans obliquité (skew), fournir le numéro de ligne Y est "
+"suffisant. Pour des rasters avec obliquité, les coordonnées géo-référencées "
+"sont fonction de ST_ScaleY et ST_SkewY et de la ligne et colonne. Une erreur "
+"sera émise si seulement la ligne Y est fournie pour une raster avec "
+"obliquité."
 
 #. Tag: para
 #: reference_raster.xml:2571
 #, no-c-format
 msgid "Changed: 2.1.0 In prior versions, this was called ST_Raster2WorldCoordY"
 msgstr ""
+"Changement : 2.1.0 Jusqu'à la version 2.0.x, cette fonction était appelée "
+"ST_Raster2WorldCoordY"
 
 #. Tag: programlisting
 #: reference_raster.xml:2577
@@ -6047,6 +6338,16 @@ msgid ""
 "   1 |     0.5 |       6.5 |      3\n"
 "   2 | 5793244 | 5793243.9 |  -0.05"
 msgstr ""
+"-- avec un raster non-skewed, fournir la ligne Y est suffisant\n"
+"SELECT rid, ST_RasterToWorldCoordY(rast,1) As y1coord,\n"
+"    ST_RasterToWorldCoordY(rast,3) As y2coord,\n"
+"    ST_ScaleY(rast) As pixely\n"
+"FROM dummy_rast;\n"
+"\n"
+" rid | y1coord |  y2coord  | pixely\n"
+"-----+---------+-----------+--------\n"
+"   1 |     0.5 |       6.5 |      3\n"
+"   2 | 5793244 | 5793243.9 |  -0.05"
 
 #. Tag: programlisting
 #: reference_raster.xml:2579
@@ -6063,6 +6364,16 @@ msgid ""
 "   1 |     0.5 |       107 |      3\n"
 "   2 | 5793244 | 5793344.4 |  -0.05"
 msgstr ""
+"-- ajoutons du skew\n"
+"SELECT rid, ST_RasterToWorldCoordY(rast,1,1) As y1coord,\n"
+"    ST_RasterToWorldCoordY(rast,2,3) As y2coord,\n"
+"    ST_ScaleY(rast) As pixely\n"
+"FROM (SELECT rid, ST_SetSkew(rast,0,100.5) As rast FROM dummy_rast) As foo;\n"
+"\n"
+" rid | y1coord |  y2coord  | pixely\n"
+"-----+---------+-----------+--------\n"
+"   1 |     0.5 |       107 |      3\n"
+"   2 | 5793244 | 5793344.4 |  -0.05"
 
 #. Tag: para
 #: reference_raster.xml:2586
@@ -6071,18 +6382,20 @@ msgid ""
 ", <xref linkend=\"RT_ST_RasterToWorldCoordX\"/>, <xref "
 "linkend=\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewY\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_RasterToWorldCoordX\"/>, <xref linkend="
+"\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewY\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:2592
 #, no-c-format
 msgid "ST_Rotation"
-msgstr ""
+msgstr "ST_Rotation"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2593
 #, no-c-format
 msgid "Returns the rotation of the raster in radian."
-msgstr ""
+msgstr "Retourne l'angle de rotation du raster en radians."
 
 #. Tag: funcprototype
 #: reference_raster.xml:2598
@@ -6102,6 +6415,9 @@ msgid ""
 "have uniform rotation, NaN is returned. Refer to <ulink url=\"http://en."
 "wikipedia.org/wiki/World_file\">World File</ulink> for more details."
 msgstr ""
+"Retourne la rotation uniforme du raster en radians. Si le raster n'a pas de "
+"rotation uniforme, retourne NaN. Voir <ulink url=\"https://fr.wikipedia.org/"
+"wiki/World_file\">World File</ulink> pour plus de détails."
 
 #. Tag: programlisting
 #: reference_raster.xml:2615
@@ -6115,24 +6431,31 @@ msgid ""
 "   1 | 0.785398163397448\n"
 "   2 | 0.785398163397448"
 msgstr ""
+"SELECT rid, ST_Rotation(ST_SetScale(ST_SetSkew(rast, sqrt(2)), sqrt(2))) as "
+"rot FROM dummy_rast;\n"
+"\n"
+" rid |        rot\n"
+"-----+-------------------\n"
+"   1 | 0.785398163397448\n"
+"   2 | 0.785398163397448"
 
 #. Tag: para
 #: reference_raster.xml:2621
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetScale\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SetScale\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:2627
 #, no-c-format
 msgid "ST_SkewX"
-msgstr ""
+msgstr "ST_SkewX"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2628
 #, no-c-format
 msgid "Returns the georeference X skew (or rotation parameter)."
-msgstr ""
+msgstr "Retourne l'obliquité géo-référencée X (paramètre de rotation)."
 
 #. Tag: funcprototype
 #: reference_raster.xml:2633
@@ -6152,6 +6475,9 @@ msgid ""
 "url=\"http://en.wikipedia.org/wiki/World_file\">World File</ulink> for more "
 "details."
 msgstr ""
+"Retourne l'obliquité géo-référencée X (paramètre de rotation). Voir <ulink "
+"url=\"https://fr.wikipedia.org/wiki/World_file\">World File</ulink> pour "
+"plus de détails."
 
 #. Tag: programlisting
 #: reference_raster.xml:2650 reference_raster.xml:2686
@@ -6177,24 +6503,43 @@ msgid ""
 "                     : 3427927.7500000000\n"
 "                     : 5793244.0000000000"
 msgstr ""
+"SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy,\n"
+"    ST_GeoReference(rast) as georef\n"
+"FROM dummy_rast;\n"
+"\n"
+" rid | skewx | skewy |       georef\n"
+"-----+-------+-------+--------------------\n"
+"   1 |     0 |     0 | 2.0000000000\n"
+"                     : 0.0000000000\n"
+"                     : 0.0000000000\n"
+"                     : 3.0000000000\n"
+"                     : 0.5000000000\n"
+"                     : 0.5000000000\n"
+"                     :\n"
+"   2 |     0 |     0 | 0.0500000000\n"
+"                     : 0.0000000000\n"
+"                     : 0.0000000000\n"
+"                     : -0.0500000000\n"
+"                     : 3427927.7500000000\n"
+"                     : 5793244.0000000000"
 
 #. Tag: para
 #: reference_raster.xml:2657
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SkewY\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SkewY\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:2663
 #, no-c-format
 msgid "ST_SkewY"
-msgstr ""
+msgstr "ST_SkewY"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2664
 #, no-c-format
 msgid "Returns the georeference Y skew (or rotation parameter)."
-msgstr ""
+msgstr "Retourne l'obliquité géo-référencée Y (paramètre de rotation)."
 
 #. Tag: funcprototype
 #: reference_raster.xml:2669
@@ -6214,12 +6559,15 @@ msgid ""
 "url=\"http://en.wikipedia.org/wiki/World_file\">World File</ulink> for more "
 "details."
 msgstr ""
+"Retourne l'obliquité géo-référencée Y (paramètre de rotation). Voir <ulink "
+"url=\"https://fr.wikipedia.org/wiki/World_file\">World File</ulink> pour "
+"plus de détails."
 
 #. Tag: para
 #: reference_raster.xml:2693
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SkewX\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SkewX\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:2699
@@ -6234,6 +6582,8 @@ msgid ""
 "Returns the spatial reference identifier of the raster as defined in "
 "spatial_ref_sys table."
 msgstr ""
+"Retourne l'identifiant du système de référence spatial du raster, tel que "
+"défini dans la table spatial_ref_sys."
 
 #. Tag: funcprototype
 #: reference_raster.xml:2705
@@ -6252,6 +6602,8 @@ msgid ""
 "Returns the spatial reference identifier of the raster object as defined in "
 "the spatial_ref_sys table."
 msgstr ""
+"Retourne l'identifiant du système de référence spatial du raster, tel que "
+"défini dans la table spatial_ref_sys."
 
 #. Tag: para
 #: reference_raster.xml:2716
@@ -6260,6 +6612,8 @@ msgid ""
 "From PostGIS 2.0+ the srid of a non-georeferenced raster/geometry is 0 "
 "instead of the prior -1."
 msgstr ""
+"À partir de PostGIS 2.0+, le SRID d'un raster ou d'une géométrie non-géo-"
+"référencée est 0 au lieu de -1 précédemment."
 
 #. Tag: programlisting
 #: reference_raster.xml:2722
@@ -6272,18 +6626,24 @@ msgid ""
 "----------------\n"
 "0"
 msgstr ""
+"SELECT ST_SRID(rast) As srid\n"
+"FROM dummy_rast WHERE rid=1;\n"
+"\n"
+"srid\n"
+"----------------\n"
+"0"
 
 #. Tag: para
 #: reference_raster.xml:2728
 #, no-c-format
 msgid ", <xref linkend=\"ST_SRID\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_SRID\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:2734
 #, no-c-format
 msgid "ST_Summary"
-msgstr ""
+msgstr "ST_Summary"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2735
@@ -6292,6 +6652,8 @@ msgid ""
 "<refpurpose>Returns a text summary of the contents of the raster.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Retourne un résumé du contenu du raster sous forme de "
+"texte.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_raster.xml:2740
@@ -6300,12 +6662,15 @@ msgid ""
 "<funcdef>text <function>ST_Summary</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
 msgstr ""
+"<funcdef>text <function>ST_Summary</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:2750
 #, no-c-format
 msgid "<para>Returns a text summary of the contents of the raster.</para>"
 msgstr ""
+"<para>Retourne un résumé du contenu du raster sous forme de texte.</para>"
 
 #. Tag: programlisting
 #: reference_raster.xml:2757
@@ -6332,6 +6697,26 @@ msgid ""
 "     band 3 of pixtype 16BSI is in-db with no NODATA value\n"
 "(1 row)"
 msgstr ""
+"SELECT ST_Summary(\n"
+"    ST_AddBand(\n"
+"        ST_AddBand(\n"
+"            ST_AddBand(\n"
+"                ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0)\n"
+"                , 1, '8BUI', 1, 0\n"
+"            )\n"
+"            , 2, '32BF', 0, -9999\n"
+"        )\n"
+"        , 3, '16BSI', 0, NULL\n"
+"    )\n"
+");\n"
+"\n"
+"                            st_summary\n"
+"------------------------------------------------------------------\n"
+" Raster of 10x10 pixels has 3 bands and extent of BOX(0 -10,10 0)+\n"
+"     band 1 of pixtype 8BUI is in-db with NODATA value of 0      +\n"
+"     band 2 of pixtype 32BF is in-db with NODATA value of -9999  +\n"
+"     band 3 of pixtype 16BSI is in-db with no NODATA value\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_raster.xml:2762
@@ -6340,12 +6725,14 @@ msgid ""
 ", <xref linkend=\"RT_ST_BandMetaData\"/>, <xref linkend=\"ST_Summary\"/> "
 "<xref linkend=\"ST_Extent\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_BandMetaData\"/>, <xref linkend=\"ST_Summary\"/> "
+"<xref linkend=\"ST_Extent\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:2773
 #, no-c-format
 msgid "ST_UpperLeftX"
-msgstr ""
+msgstr "ST_UpperLeftX"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2774
@@ -6354,6 +6741,8 @@ msgid ""
 "<refpurpose>Returns the upper left X coordinate of raster in projected "
 "spatial ref.</refpurpose>"
 msgstr ""
+"<refpurpose>Retourne la coordonnée X du coin supérieur gauche du raster "
+"projeté dans le système de référence spatial.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_raster.xml:2779
@@ -6372,6 +6761,8 @@ msgid ""
 "<para>Returns the upper left X coordinate of raster in projected spatial ref."
 "</para>"
 msgstr ""
+"<para>Retourne la coordonnée X du coin supérieur gauche du raster projeté "
+"dans le système de référence spatial.</para>"
 
 #. Tag: programlisting
 #: reference_raster.xml:2795
@@ -6385,18 +6776,25 @@ msgid ""
 "   1 |        0.5\n"
 "   2 | 3427927.75"
 msgstr ""
+"SELECt rid, ST_UpperLeftX(rast) As ulx\n"
+"FROM dummy_rast;\n"
+"\n"
+" rid |    ulx\n"
+"-----+------------\n"
+"   1 |        0.5\n"
+"   2 | 3427927.75"
 
 #. Tag: para
 #: reference_raster.xml:2801 reference_raster.xml:2835
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_GeoReference\"/>, <xref linkend=\"RT_Box3D\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_GeoReference\"/>, <xref linkend=\"RT_Box3D\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:2807
 #, no-c-format
 msgid "ST_UpperLeftY"
-msgstr ""
+msgstr "ST_UpperLeftY"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2808
@@ -6405,6 +6803,8 @@ msgid ""
 "<refpurpose>Returns the upper left Y coordinate of raster in projected "
 "spatial ref.</refpurpose>"
 msgstr ""
+"<refpurpose>Retourne la coordonnée Y du coin supérieur gauche du raster "
+"projeté dans le système de référence spatial.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_raster.xml:2813
@@ -6423,6 +6823,8 @@ msgid ""
 "<para>Returns the upper left Y coordinate of raster in projected spatial ref."
 "</para>"
 msgstr ""
+"<para>Retourne la coordonnée Y du coin supérieur gauche du raster projeté "
+"dans le système de référence spatial.</para>"
 
 #. Tag: programlisting
 #: reference_raster.xml:2829
@@ -6436,18 +6838,25 @@ msgid ""
 "   1 |     0.5\n"
 "   2 | 5793244"
 msgstr ""
+"SELECT rid, ST_UpperLeftY(rast) As uly\n"
+"FROM dummy_rast;\n"
+"\n"
+" rid |   uly\n"
+"-----+---------\n"
+"   1 |     0.5\n"
+"   2 | 5793244"
 
 #. Tag: refname
 #: reference_raster.xml:2841
 #, no-c-format
 msgid "ST_Width"
-msgstr ""
+msgstr "ST_Width"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2842
 #, no-c-format
 msgid "<refpurpose>Returns the width of the raster in pixels.</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>Retourne la largeur du raster en pixels.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_raster.xml:2847
@@ -6463,7 +6872,7 @@ msgstr ""
 #: reference_raster.xml:2857
 #, no-c-format
 msgid "<para>Returns the width of the raster in pixels.</para>"
-msgstr ""
+msgstr "<para>Retourne la largeur du raster en pixels.</para>"
 
 #. Tag: programlisting
 #: reference_raster.xml:2863
@@ -6476,12 +6885,18 @@ msgid ""
 "----------------\n"
 "10"
 msgstr ""
+"SELECT ST_Width(rast) As rastwidth\n"
+"FROM dummy_rast WHERE rid=1;\n"
+"\n"
+"rastwidth\n"
+"----------------\n"
+"10"
 
 #. Tag: refname
 #: reference_raster.xml:2877
 #, no-c-format
 msgid "ST_WorldToRasterCoord"
-msgstr ""
+msgstr "ST_WorldToRasterCoord"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2878
@@ -6491,6 +6906,9 @@ msgid ""
 "(longitude and latitude) or a point geometry expressed in the spatial "
 "reference coordinate system of the raster."
 msgstr ""
+"Retourne le coin supérieur gauche comme colonne et ligne, en fonction de "
+"coordonnées géométriques X et Y (longitude et latitude) ou un point "
+"géométrique dans le système de référence spatial du raster."
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:2882
@@ -6506,6 +6924,15 @@ msgid ""
 "<paramdef><type>double precision </type> <parameter>latitude</parameter></"
 "paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>record <function>ST_WorldToRasterCoord</function></"
+"funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
+"paramdef> <paramdef><type>geometry </type> <parameter>pt</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>record "
+"<function>ST_WorldToRasterCoord</function></funcdef> <paramdef><type>raster "
+"</type> <parameter>rast</parameter></paramdef> <paramdef><type>double "
+"precision </type> <parameter>longitude</parameter></paramdef> "
+"<paramdef><type>double precision </type> <parameter>latitude</parameter></"
+"paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:2901
@@ -6517,6 +6944,12 @@ msgid ""
 "extent of the raster. Geometric X and Y must be expressed in the spatial "
 "reference coordinate system of the raster."
 msgstr ""
+"Retourne le coin supérieur gauche comme colonne et ligne, en fonction de "
+"coordonnées géométriques X et Y (longitude et latitude) ou un point "
+"géométrique. Cette fonction fonctionne aussi bien si X et Y ou le point sont "
+"dans l'étendue du raster ou non. Les coordonnées géométriques X et Y ou les "
+"coordonnées du point doivent être dans le système de référence spatial du "
+"raster."
 
 #. Tag: programlisting
 #: reference_raster.xml:2914
@@ -6534,6 +6967,17 @@ msgid ""
 "   1 | 1713964 |         7 | 1713964 |         7\n"
 "   2 |       2 | 115864471 |       2 | 115864471"
 msgstr ""
+"SELECT\n"
+"    rid,\n"
+"    (ST_WorldToRasterCoord(rast,3427927.8,20.5)).*,\n"
+"    (ST_WorldToRasterCoord(rast,ST_GeomFromText('POINT(3427927.8 20."
+"5)',ST_SRID(rast)))).*\n"
+"FROM dummy_rast;\n"
+"\n"
+" rid | columnx |   rowy    | columnx |   rowy\n"
+"-----+---------+-----------+---------+-----------\n"
+"   1 | 1713964 |         7 | 1713964 |         7\n"
+"   2 |       2 | 115864471 |       2 | 115864471"
 
 #. Tag: para
 #: reference_raster.xml:2920
@@ -6543,12 +6987,15 @@ msgid ""
 "linkend=\"RT_ST_RasterToWorldCoordX\"/>, <xref "
 "linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_WorldToRasterCoordY\"/>, <xref linkend="
+"\"RT_ST_RasterToWorldCoordX\"/>, <xref linkend=\"RT_ST_RasterToWorldCoordY\"/"
+">, <xref linkend=\"RT_ST_SRID\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:2932
 #, no-c-format
 msgid "ST_WorldToRasterCoordX"
-msgstr ""
+msgstr "ST_WorldToRasterCoordX"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2933
@@ -6558,6 +7005,9 @@ msgid ""
 "world coordinate (xw, yw) represented in world spatial reference system of "
 "raster."
 msgstr ""
+"Retourne la colonne dans le raster du point géométrique (pt) ou des "
+"coordonnées X et Y (xw, yw) exprimés dans le système de référence spatial du "
+"raster."
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:2938
@@ -6576,6 +7026,19 @@ msgid ""
 "<parameter>xw</parameter></paramdef> <paramdef><type>double precision </"
 "type> <parameter>yw</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>integer "
+"<function>ST_WorldToRasterCoordX</function></funcdef> <paramdef><type>raster "
+"</type> <parameter>rast</parameter></paramdef> <paramdef><type>geometry </"
+"type> <parameter>pt</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>integer <function>ST_WorldToRasterCoordX</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>double precision </type> <parameter>xw</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>integer "
+"<function>ST_WorldToRasterCoordX</function></funcdef> <paramdef><type>raster "
+"</type> <parameter>rast</parameter></paramdef> <paramdef><type>double "
+"precision </type> <parameter>xw</parameter></paramdef> "
+"<paramdef><type>double precision </type> <parameter>yw</parameter></"
+"paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:2963
@@ -6587,12 +7050,18 @@ msgid ""
 "sufficient. World coordinates are in the spatial reference coordinate system "
 "of the raster."
 msgstr ""
+"Retourne la colonne dans le raster du point géométrique (pt) ou des "
+"coordonnées X et Y (xw, yw). Un point, ou le couple (xw, yw) sont requis "
+"pour un raster avec obliquité (skew). Sinon, xw est suffisant. Les "
+"coordonnées sont exprimées dans le système de référence spatial du raster."
 
 #. Tag: para
 #: reference_raster.xml:2965
 #, no-c-format
 msgid "Changed: 2.1.0 In prior versions, this was called ST_World2RasterCoordX"
 msgstr ""
+"Changement : 2.1.0 Dans les versions précédentes, cette fonctionne était "
+"appelée ST_World2RasterCoordX"
 
 #. Tag: programlisting
 #: reference_raster.xml:2971
@@ -6609,6 +7078,16 @@ msgid ""
 "   1 | 1713964 | 1713964 |  1713964\n"
 "   2 |       1 |       1 |        1"
 msgstr ""
+"SELECT rid, ST_WorldToRasterCoordX(rast,3427927.8) As xcoord,\n"
+"        ST_WorldToRasterCoordX(rast,3427927.8,20.5) As xcoord_xwyw,\n"
+"        ST_WorldToRasterCoordX(rast,ST_GeomFromText('POINT(3427927.8 20."
+"5)',ST_SRID(rast))) As ptxcoord\n"
+"FROM dummy_rast;\n"
+"\n"
+" rid | xcoord  |  xcoord_xwyw   | ptxcoord\n"
+"-----+---------+---------+----------\n"
+"   1 | 1713964 | 1713964 |  1713964\n"
+"   2 |       1 |       1 |        1"
 
 #. Tag: para
 #: reference_raster.xml:2977 reference_raster.xml:3032
@@ -6617,12 +7096,14 @@ msgid ""
 ", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref "
 "linkend=\"RT_ST_SRID\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref linkend=\"RT_ST_SRID\""
+"/>"
 
 #. Tag: refname
 #: reference_raster.xml:2987
 #, no-c-format
 msgid "ST_WorldToRasterCoordY"
-msgstr ""
+msgstr "ST_WorldToRasterCoordY"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2988
@@ -6631,6 +7112,9 @@ msgid ""
 "Returns the row in the raster of the point geometry (pt) or a X and Y world "
 "coordinate (xw, yw) represented in world spatial reference system of raster."
 msgstr ""
+"Retourne la ligne dans le raster du point géométrique (pt) ou des "
+"coordonnées X et Y (xw, yw) exprimés dans le système de référence spatial du "
+"raster."
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:2993
@@ -6649,6 +7133,19 @@ msgid ""
 "<parameter>xw</parameter></paramdef> <paramdef><type>double precision </"
 "type> <parameter>yw</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>integer "
+"<function>ST_WorldToRasterCoordY</function></funcdef> <paramdef><type>raster "
+"</type> <parameter>rast</parameter></paramdef> <paramdef><type>geometry </"
+"type> <parameter>pt</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>integer <function>ST_WorldToRasterCoordY</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>double precision </type> <parameter>xw</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>integer "
+"<function>ST_WorldToRasterCoordY</function></funcdef> <paramdef><type>raster "
+"</type> <parameter>rast</parameter></paramdef> <paramdef><type>double "
+"precision </type> <parameter>xw</parameter></paramdef> "
+"<paramdef><type>double precision </type> <parameter>yw</parameter></"
+"paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:3018
@@ -6660,12 +7157,18 @@ msgid ""
 "sufficient. World coordinates are in the spatial reference coordinate system "
 "of the raster."
 msgstr ""
+"Retourne la ligne dans le raster du point géométrique (pt) ou des "
+"coordonnées X et Y (xw, yw). Un point, ou le couple (xw, yw) sont requis "
+"pour un raster avec obliquité (skew). Sinon, xw est suffisant. Les "
+"coordonnées sont exprimées dans le système de référence spatial du raster."
 
 #. Tag: para
 #: reference_raster.xml:3020
 #, no-c-format
 msgid "Changed: 2.1.0 In prior versions, this was called ST_World2RasterCoordY"
 msgstr ""
+"Changement : 2.1.0 Dans les versions précédentes, cette fonctionne était "
+"appelée ST_World2RasterCoordY"
 
 #. Tag: programlisting
 #: reference_raster.xml:3026
@@ -6682,18 +7185,28 @@ msgid ""
 "   1 |         7 |           7 |         7\n"
 "   2 | 115864471 |   115864471 | 115864471"
 msgstr ""
+"SELECT rid, ST_WorldToRasterCoordY(rast,20.5) As ycoord,\n"
+"        ST_WorldToRasterCoordY(rast,3427927.8,20.5) As ycoord_xwyw,\n"
+"        ST_WorldToRasterCoordY(rast,ST_GeomFromText('POINT(3427927.8 20."
+"5)',ST_SRID(rast))) As ptycoord\n"
+"FROM dummy_rast;\n"
+"\n"
+" rid |  ycoord   | ycoord_xwyw | ptycoord\n"
+"-----+-----------+-------------+-----------\n"
+"   1 |         7 |           7 |         7\n"
+"   2 | 115864471 |   115864471 | 115864471"
 
 #. Tag: title
 #: reference_raster.xml:3039
 #, no-c-format
 msgid "Raster Band Accessors"
-msgstr ""
+msgstr "Fonctions d'accès aux bandes raster"
 
 #. Tag: refname
 #: reference_raster.xml:3042
 #, no-c-format
 msgid "ST_BandMetaData"
-msgstr ""
+msgstr "ST_BandMetaData"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3043
@@ -6702,6 +7215,8 @@ msgid ""
 "Returns basic meta data for a specific raster band. band num 1 is assumed if "
 "none-specified."
 msgstr ""
+"Retourne les méta-données de base d'une bande raster spécifique. Si aucune "
+"bande n'est spécifiée, la bande 1 est utilisée."
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:3047
@@ -6732,18 +7247,21 @@ msgid ""
 "Returns basic meta data about a raster band. Columns returned: pixeltype, "
 "nodatavalue, isoutdb, path, outdbbandnum, filesize, filetimestamp."
 msgstr ""
+"Retourne les méta-données de base d'une bande raster spécifique. Les "
+"colonnes retournées sont : pixeltype, nodatavalue, isoutdb, path, "
+"outdbbandnum, filesize, filetimestamp."
 
 #. Tag: para
 #: reference_raster.xml:3067
 #, no-c-format
 msgid "If raster contains no bands then an error is thrown."
-msgstr ""
+msgstr "Si le raster ne contient aucune bande, une erreur est émise."
 
 #. Tag: para
 #: reference_raster.xml:3073
 #, no-c-format
 msgid "If band has no NODATA value, nodatavalue are NULL."
-msgstr ""
+msgstr "Si la bande n'a pas de valeur NODATA, nodatavalue est NULL."
 
 #. Tag: para
 #: reference_raster.xml:3078
@@ -6753,6 +7271,9 @@ msgid ""
 "NULL. If outdb access is disabled, filesize and filetimestamp will also be "
 "NULL."
 msgstr ""
+"Si isoutdb est False, alors path, outdbbandnum, filesize et filetimestamp "
+"sont NULL. Si l'accès outdb est désactivé, filesize et filetimestamp sont "
+"également NULL."
 
 #. Tag: para
 #: reference_raster.xml:3083
@@ -6762,6 +7283,9 @@ msgid ""
 "<emphasis>filesize</emphasis> and <emphasis>filetimestamp</emphasis> for "
 "outdb rasters."
 msgstr ""
+"Amélioration : 2.5.0 ajout de <emphasis>outdbbandnum</emphasis>, "
+"<emphasis>filesize</emphasis> et <emphasis>filetimestamp</emphasis> pour les "
+"rasters outdb."
 
 #. Tag: title
 #: reference_raster.xml:3087 reference_raster.xml:4269
@@ -6770,7 +7294,7 @@ msgstr ""
 #: reference_raster.xml:9680 reference_raster.xml:9808
 #, no-c-format
 msgid "Examples: Variant 1"
-msgstr ""
+msgstr "Exemples : Variante 1"
 
 #. Tag: programlisting
 #: reference_raster.xml:3089
@@ -6791,6 +7315,20 @@ msgid ""
 "-----+-----------+---- --------+---------+------+--------------\n"
 "   2 | 8BUI      |           0 | f       |      |"
 msgstr ""
+"SELECT\n"
+"    rid,\n"
+"    (foo.md).*\n"
+"FROM (\n"
+"    SELECT\n"
+"        rid,\n"
+"        ST_BandMetaData(rast, 1) AS md\n"
+"    FROM dummy_rast\n"
+"    WHERE rid=2\n"
+") As foo;\n"
+"\n"
+" rid | pixeltype | nodatavalue | isoutdb | path | outdbbandnum\n"
+"-----+-----------+---- --------+---------+------+--------------\n"
+"   2 | 8BUI      |           0 | f       |      |"
 
 #. Tag: title
 #: reference_raster.xml:3094 reference_raster.xml:4282
@@ -6799,7 +7337,7 @@ msgstr ""
 #: reference_raster.xml:9813
 #, no-c-format
 msgid "Examples: Variant 2"
-msgstr ""
+msgstr "Exemples : Variante 2"
 
 #. Tag: programlisting
 #: reference_raster.xml:3096
@@ -6834,18 +7372,46 @@ msgid ""
 "git/raster/test/regress/loader/Projected.tif      |            2  |    12345 "
 "|    1521807257 |"
 msgstr ""
+"WITH foo AS (\n"
+"    SELECT\n"
+"        ST_AddBand(NULL::raster, '/home/pele/devel/geo/postgis-git/raster/"
+"test/regress/loader/Projected.tif', NULL::int[]) AS rast\n"
+")\n"
+"SELECT\n"
+"    *\n"
+"FROM ST_BandMetadata(\n"
+"    (SELECT rast FROM foo),\n"
+"    ARRAY[1,3,2]::int[]\n"
+");\n"
+"\n"
+" bandnum | pixeltype | nodatavalue | isoutdb |"
+"                                      "
+"path                                      | outdbbandnum  | filesize | "
+"filetimestamp |\n"
+"---------+-----------+-------------+---------+-------------------------------"
+"-------------------------------------------------+---------------+----------+"
+"---------------+-\n"
+"       1 | 8BUI      |             | t       | /home/pele/devel/geo/"
+"postgis-git/raster/test/regress/loader/Projected.tif      |            1  |"
+"    12345 |    1521807257 |\n"
+"       3 | 8BUI      |             | t       | /home/pele/devel/geo/"
+"postgis-git/raster/test/regress/loader/Projected.tif      |            3  |"
+"    12345 |    1521807257 |\n"
+"       2 | 8BUI      |             | t       | /home/pele/devel/geo/"
+"postgis-git/raster/test/regress/loader/Projected.tif      |            2  |"
+"    12345 |    1521807257 |"
 
 #. Tag: para
 #: reference_raster.xml:3103
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_BandPixelType\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_BandPixelType\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:3109
 #, no-c-format
 msgid "ST_BandNoDataValue"
-msgstr ""
+msgstr "ST_BandNoDataValue"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3110
@@ -6854,6 +7420,8 @@ msgid ""
 "Returns the value in a given band that represents no data. If no band num 1 "
 "is assumed."
 msgstr ""
+"Retourne la valeur qui représente l'absence de valeur (nodata) pour cette "
+"bande. Si aucune bande n'est spécifiée, la bande 1 est utilisée."
 
 #. Tag: funcprototype
 #: reference_raster.xml:3115
@@ -6874,6 +7442,8 @@ msgstr ""
 #, no-c-format
 msgid "Returns the value that represents no data for the band"
 msgstr ""
+"Retourne la valeur qui représente l'absence de valeur (nodata) pour cette "
+"bande"
 
 #. Tag: programlisting
 #: reference_raster.xml:3132
@@ -6889,18 +7459,27 @@ msgid ""
 "--------+--------+--------\n"
 "      0 |      0 |      0"
 msgstr ""
+"SELECT ST_BandNoDataValue(rast,1) As bnval1,\n"
+"    ST_BandNoDataValue(rast,2) As bnval2, ST_BandNoDataValue(rast,3) As "
+"bnval3\n"
+"FROM dummy_rast\n"
+"WHERE rid = 2;\n"
+"\n"
+" bnval1 | bnval2 | bnval3\n"
+"--------+--------+--------\n"
+"      0 |      0 |      0"
 
 #. Tag: refname
 #: reference_raster.xml:3145
 #, no-c-format
 msgid "ST_BandIsNoData"
-msgstr ""
+msgstr "ST_BandIsNoData"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3146
 #, no-c-format
 msgid "Returns true if the band is filled with only nodata values."
-msgstr ""
+msgstr "Retourne true si la bande ne contient que des valeurs nodata."
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:3150
@@ -6936,6 +7515,11 @@ msgid ""
 "the isnodata flag for the band. The default value for this parameter is "
 "FALSE, if not specified."
 msgstr ""
+"Retourne true si la bande ne contient que des valeurs nodata. Si aucune "
+"bande n'est spécifiée, la bande 1 est utilisée. Si le dernier paramètre est "
+"TRUE, la bande entière est vérifiée pixel par pixel. Sinon, la fonction "
+"retourne simplement la valeur du flag isnodata pour cette bande. La valeur "
+"par défaut pour ce paramètre est FALSE."
 
 #. Tag: para
 #: reference_raster.xml:3177
@@ -6946,6 +7530,11 @@ msgid ""
 "true, by using ST_SetBandIsNodata(), or ST_SetBandNodataValue() with TRUE as "
 "last argument. See <xref linkend=\"RT_ST_SetBandIsNoData\"/>."
 msgstr ""
+"Si le flag est obsolète (c'est à dire si le résultat est différent selon "
+"qu'on utilise TRUE ou non comme dernier paramètre), vous devriez mettre à "
+"jour le raster pour mettre à jour ce flag, en utilisant ST_SetBandIsNodata()"
+", ou ST_SetBandNodataValue() avec TRUE en dernier paramètre. Voir <xref "
+"linkend=\"RT_ST_SetBandIsNoData\"/>."
 
 #. Tag: programlisting
 #: reference_raster.xml:3187
@@ -7006,6 +7595,60 @@ msgid ""
 "select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- Expected "
 "false"
 msgstr ""
+"-- Creation d'une table fictive avec une colonne raster\n"
+"create table dummy_rast (rid integer, rast raster);\n"
+"\n"
+"-- Ajout d'un raster avec deux bandes, un pixel/bande,\n"
+"-- Bande 1 : nodatavalue = valeur de pixel = 3.\n"
+"-- Bande 2 : nodatavalue = 13, valeur de pixel = 4\n"
+"insert into dummy_rast values(1,\n"
+"(\n"
+"'01' -- little endian (uint8 ndr)\n"
+"||\n"
+"'0000' -- version (uint16 0)\n"
+"||\n"
+"'0200' -- nBands (uint16 0)\n"
+"||\n"
+"'17263529ED684A3F' -- scaleX (float64 0.000805965234044584)\n"
+"||\n"
+"'F9253529ED684ABF' -- scaleY (float64 -0.00080596523404458)\n"
+"||\n"
+"'1C9F33CE69E352C0' -- ipX (float64 -75.5533328537098)\n"
+"||\n"
+"'718F0E9A27A44840' -- ipY (float64 49.2824585505576)\n"
+"||\n"
+"'ED50EB853EC32B3F' -- skewX (float64 0.000211812383858707)\n"
+"||\n"
+"'7550EB853EC32B3F' -- skewY (float64 0.000211812383858704)\n"
+"||\n"
+"'E6100000' -- SRID (int32 4326)\n"
+"||\n"
+"'0100' -- width (uint16 1)\n"
+"||\n"
+"'0100' -- height (uint16 1)\n"
+"||\n"
+"'6' -- hasnodatavalue et isnodata a true.\n"
+"||\n"
+"'2' -- type de la bande 1 (4BUI)\n"
+"||\n"
+"'03' -- novalue==3\n"
+"||\n"
+"'03' -- pixel(0,0)==3 (identique a nodata)\n"
+"||\n"
+"'0' -- hasnodatavalue a false\n"
+"||\n"
+"'5' -- type de la bande 2 (16BSI)\n"
+"||\n"
+"'0D00' -- novalue==13\n"
+"||\n"
+"'0400' -- pixel(0,0)==4\n"
+")::raster\n"
+");\n"
+"\n"
+"select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- true "
+"attendu\n"
+"select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- false "
+"attendu"
 
 #. Tag: para
 #: reference_raster.xml:3193
@@ -7015,12 +7658,14 @@ msgid ""
 "linkend=\"RT_ST_SetBandNoDataValue\"/>, <xref "
 "linkend=\"RT_ST_SetBandIsNoData\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend="
+"\"RT_ST_SetBandNoDataValue\"/>, <xref linkend=\"RT_ST_SetBandIsNoData\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:3202
 #, no-c-format
 msgid "ST_BandPath"
-msgstr ""
+msgstr "ST_BandPath"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3203
@@ -7029,6 +7674,8 @@ msgid ""
 "Returns system file path to a band stored in file system. If no bandnum "
 "specified, 1 is assumed."
 msgstr ""
+"Retourne le chemin système du fichier d'une bande stockée sur le système de "
+"fichier. Si aucune bande n'est spécifiée, la bande 1 est utilisée."
 
 #. Tag: funcprototype
 #: reference_raster.xml:3208
@@ -7051,18 +7698,20 @@ msgid ""
 "Returns system file path to a band. Throws an error if called with an in db "
 "band."
 msgstr ""
+"Retourne le chemin système du fichier d'une bande. Renvoie une erreur si la "
+"bande n'est pas outofdb."
 
 #. Tag: programlisting
 #: reference_raster.xml:3225
 #, no-c-format
 msgid "<!-- TODO: -->"
-msgstr ""
+msgstr "<!-- TODO: -->"
 
 #. Tag: refname
 #: reference_raster.xml:3237
 #, no-c-format
 msgid "ST_BandFileSize"
-msgstr ""
+msgstr "ST_BandFileSize"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3238
@@ -7071,6 +7720,8 @@ msgid ""
 "Returns the file size of a band stored in file system. If no bandnum "
 "specified, 1 is assumed."
 msgstr ""
+"Retourne la taille du fichier d'une bande stockée sur le système de fichier. "
+"Si aucune bande n'est spécifiée, la bande 1 est utilisée."
 
 #. Tag: funcprototype
 #: reference_raster.xml:3243
@@ -7093,6 +7744,9 @@ msgid ""
 "Returns the file size of a band stored in file system. Throws an error if "
 "called with an in db band, or if outdb access is not enabled."
 msgstr ""
+"Retourne la taille du fichier d'une bande stockée sur le système de fichier. "
+"Renvoie une erreur si la bande n'est pas outofdb, ou si l'accès outdb est "
+"désactivé."
 
 #. Tag: para
 #: reference_raster.xml:3256
@@ -7102,6 +7756,9 @@ msgid ""
 "ST_BandFileTimestamp() so a client can determine if the filename of a outdb "
 "raster as seen by it is the same as the one seen by the server."
 msgstr ""
+"Cette fonction est généralement utilisée conjointement à ST_BandPath() et "
+"ST_BandFileTimestamp(), pour qu'un client puisse déterminer le nom du "
+"fichier d'un raster outdb, tel que vu par le serveur."
 
 #. Tag: para
 #: reference_raster.xml:3258 reference_raster.xml:3294
@@ -7122,12 +7779,17 @@ msgid ""
 "-----------------\n"
 "          240574"
 msgstr ""
+"SELECT ST_BandFileSize(rast,1) FROM dummy_rast WHERE rid = 1;\n"
+"\n"
+" st_bandfilesize\n"
+"-----------------\n"
+"          240574"
 
 #. Tag: refname
 #: reference_raster.xml:3273
 #, no-c-format
 msgid "ST_BandFileTimestamp"
-msgstr ""
+msgstr "ST_BandFileTimestamp"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3274
@@ -7136,6 +7798,8 @@ msgid ""
 "Returns the file timestamp of a band stored in file system. If no bandnum "
 "specified, 1 is assumed."
 msgstr ""
+"Retourne le timestamp du fichier d'une bande stockée sur le système de "
+"fichier. Si aucune bande n'est spécifiée, la bande 1 est utilisée."
 
 #. Tag: funcprototype
 #: reference_raster.xml:3279
@@ -7159,6 +7823,9 @@ msgid ""
 "UTC) of a band stored in file system. Throws an error if called with an in "
 "db band, or if outdb access is not enabled."
 msgstr ""
+"Retourne le timestamp (nombre de secondes depuis Jan 1st 1970 00:00:00 UTC) "
+"du fichier d'une bande stockée sur le système de fichier. Renvoie une erreur "
+"si la bande n'est pas outofdb, ou si l'accès outdb est désactivé."
 
 #. Tag: para
 #: reference_raster.xml:3292
@@ -7168,6 +7835,9 @@ msgid ""
 "ST_BandFileSize() so a client can determine if the filename of a outdb "
 "raster as seen by it is the same as the one seen by the server."
 msgstr ""
+"Cette fonction est généralement utilisée conjointement à ST_BandPath() et "
+"ST_BandFileSize(), pour qu'un client puisse déterminer le nom du fichier "
+"d'un raster outdb, tel que vu par le serveur."
 
 #. Tag: programlisting
 #: reference_raster.xml:3300
@@ -7179,12 +7849,17 @@ msgid ""
 "----------------------\n"
 "           1521807257"
 msgstr ""
+"SELECT ST_BandFileTimestamp(rast,1) FROM dummy_rast WHERE rid = 1;\n"
+"\n"
+" st_bandfiletimestamp\n"
+"----------------------\n"
+"           1521807257"
 
 #. Tag: refname
 #: reference_raster.xml:3307
 #, no-c-format
 msgid "ST_BandPixelType"
-msgstr ""
+msgstr "ST_BandPixelType"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3308
@@ -7193,6 +7868,8 @@ msgid ""
 "Returns the type of pixel for given band. If no bandnum specified, 1 is "
 "assumed."
 msgstr ""
+"Retourne le type de pixel d'une bande. Si aucune bande n'est spécifiée, la "
+"bande 1 est utilisée."
 
 #. Tag: funcprototype
 #: reference_raster.xml:3313
@@ -7215,78 +7892,80 @@ msgid ""
 "Returns name describing data type and size of values stored in each cell of "
 "given band."
 msgstr ""
+"Retourne le nom décrivant le type de données et la taille des valeurs "
+"stockées pour chaque pixel de la bande spécifiée."
 
 #. Tag: para
 #: reference_raster.xml:3325
 #, no-c-format
 msgid "There are 11 pixel types. Pixel Types supported are as follows:"
-msgstr ""
+msgstr "Il existe 11 types de pixels. Les types de pixels supportés sont :"
 
 #. Tag: para
 #: reference_raster.xml:3328
 #, no-c-format
 msgid "1BB - 1-bit boolean"
-msgstr ""
+msgstr "1BB - booléen 1-bit"
 
 #. Tag: para
 #: reference_raster.xml:3332
 #, no-c-format
 msgid "2BUI - 2-bit unsigned integer"
-msgstr ""
+msgstr "2BUI - entier non signé 2-bits"
 
 #. Tag: para
 #: reference_raster.xml:3336
 #, no-c-format
 msgid "4BUI - 4-bit unsigned integer"
-msgstr ""
+msgstr "4BUI - entier non signé 4-bits"
 
 #. Tag: para
 #: reference_raster.xml:3340
 #, no-c-format
 msgid "8BSI - 8-bit signed integer"
-msgstr ""
+msgstr "8BSI - entier signé 8-bits"
 
 #. Tag: para
 #: reference_raster.xml:3343
 #, no-c-format
 msgid "8BUI - 8-bit unsigned integer"
-msgstr ""
+msgstr "8BUI - entier non signé 8-bits"
 
 #. Tag: para
 #: reference_raster.xml:3346
 #, no-c-format
 msgid "16BSI - 16-bit signed integer"
-msgstr ""
+msgstr "16BSI - entier signé 16-bits"
 
 #. Tag: para
 #: reference_raster.xml:3349
 #, no-c-format
 msgid "16BUI - 16-bit unsigned integer"
-msgstr ""
+msgstr "16BUI - entier non signé 16-bits"
 
 #. Tag: para
 #: reference_raster.xml:3352
 #, no-c-format
 msgid "32BSI - 32-bit signed integer"
-msgstr ""
+msgstr "32BSI - entier signé 32-bits"
 
 #. Tag: para
 #: reference_raster.xml:3355
 #, no-c-format
 msgid "32BUI - 32-bit unsigned integer"
-msgstr ""
+msgstr "32BUI - entier non signé 32-bits"
 
 #. Tag: para
 #: reference_raster.xml:3358
 #, no-c-format
 msgid "32BF - 32-bit float"
-msgstr ""
+msgstr "32BF - flottant 32-bits"
 
 #. Tag: para
 #: reference_raster.xml:3361
 #, no-c-format
 msgid "64BF - 64-bit float"
-msgstr ""
+msgstr "64BF - flottant 64-bits"
 
 #. Tag: programlisting
 #: reference_raster.xml:3370
@@ -7301,12 +7980,20 @@ msgid ""
 "--------+--------+--------\n"
 " 8BUI   | 8BUI   | 8BUI"
 msgstr ""
+"SELECT ST_BandPixelType(rast,1) As btype1,\n"
+"    ST_BandPixelType(rast,2) As btype2, ST_BandPixelType(rast,3) As btype3\n"
+"FROM dummy_rast\n"
+"WHERE rid = 2;\n"
+"\n"
+" btype1 | btype2 | btype3\n"
+"--------+--------+--------\n"
+" 8BUI   | 8BUI   | 8BUI"
 
 #. Tag: refname
 #: reference_raster.xml:3382
 #, no-c-format
 msgid "ST_MinPossibleValue"
-msgstr ""
+msgstr "ST_MinPossibleValue"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3383
@@ -7314,6 +8001,8 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns the minimum value this pixeltype can store.</refpurpose>"
 msgstr ""
+"<refpurpose>Retourne la valeur minimale supportée par le type de pixel "
+"pixeltype.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_raster.xml:3388
@@ -7330,6 +8019,8 @@ msgstr ""
 #, no-c-format
 msgid "<para>Returns the minimum value this pixeltype can store.</para>"
 msgstr ""
+"<para>Retourne la valeur minimale supportée par le type de pixel "
+"pixeltype.</para>"
 
 #. Tag: programlisting
 #: reference_raster.xml:3403
@@ -7348,12 +8039,24 @@ msgid ""
 "---------------------\n"
 "                   0"
 msgstr ""
+"SELECT ST_MinPossibleValue('16BSI');\n"
+"\n"
+" st_minpossiblevalue\n"
+"---------------------\n"
+"              -32768\n"
+"\n"
+"\n"
+"SELECT ST_MinPossibleValue('8BUI');\n"
+"\n"
+" st_minpossiblevalue\n"
+"---------------------\n"
+"                   0"
 
 #. Tag: refname
 #: reference_raster.xml:3415
 #, no-c-format
 msgid "ST_HasNoBand"
-msgstr ""
+msgstr "ST_HasNoBand"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3416
@@ -7362,6 +8065,8 @@ msgid ""
 "<refpurpose>Returns true if there is no band with given band number. If no "
 "band number is specified, then band number 1 is assumed.</refpurpose>"
 msgstr ""
+"<refpurpose>Retourne true si le raster n'a pas la bande spécifiée. Si aucune "
+"bande n'est spécifiée, la bande 1 est utilisée.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_raster.xml:3421
@@ -7382,6 +8087,8 @@ msgid ""
 "<para>Returns true if there is no band with given band number. If no band "
 "number is specified, then band number 1 is assumed.</para>"
 msgstr ""
+"<para>Retourne true si le raster n'a pas la bande spécifiée. Si aucune bande "
+"n'est spécifiée, la bande 1 est utilisée.</para>"
 
 #. Tag: programlisting
 #: reference_raster.xml:3440
@@ -7396,18 +8103,26 @@ msgid ""
 "1 | t   | t   | t   |        0\n"
 "2 | f   | f   | t   |        3"
 msgstr ""
+"SELECT rid, ST_HasNoBand(rast) As hb1, ST_HasNoBand(rast,2) as hb2,\n"
+"ST_HasNoBand(rast,4) as hb4, ST_NumBands(rast) As numbands\n"
+"FROM dummy_rast;\n"
+"\n"
+"rid | hb1 | hb2 | hb4 | numbands\n"
+"-----+-----+-----+-----+----------\n"
+"1 | t   | t   | t   |        0\n"
+"2 | f   | f   | t   |        3"
 
 #. Tag: title
 #: reference_raster.xml:3453
 #, no-c-format
 msgid "Raster Pixel Accessors and Setters"
-msgstr ""
+msgstr "Fonctions d'accès et de modifications des pixels raster"
 
 #. Tag: refname
 #: reference_raster.xml:3457
 #, no-c-format
 msgid "ST_PixelAsPolygon"
-msgstr ""
+msgstr "ST_PixelAsPolygon"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3458
@@ -7416,6 +8131,8 @@ msgid ""
 "<refpurpose>Returns the polygon geometry that bounds the pixel for a "
 "particular row and column.</refpurpose>"
 msgstr ""
+"<refpurpose>Retourne la géométrie polygonale qui délimite le pixel pour une "
+"ligne et colonne spécifiées.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_raster.xml:3463
@@ -7438,6 +8155,8 @@ msgid ""
 "<para>Returns the polygon geometry that bounds the pixel for a particular "
 "row and column.</para>"
 msgstr ""
+"<para>Retourne la géométrie polygonale qui délimite le pixel pour une ligne "
+"et colonne spécifiées.</para>"
 
 #. Tag: programlisting
 #: reference_raster.xml:3483
@@ -7458,6 +8177,20 @@ msgid ""
 " 2 | 1 | POLYGON((3427927.8 5793244,3427927.85 5793244,3427927.85 "
 "5793243.95, .."
 msgstr ""
+"-- retourne le polygone delimitant le pixel raster\n"
+"SELECT i,j, ST_AsText(ST_PixelAsPolygon(foo.rast, i,j)) As b1pgeom\n"
+"FROM dummy_rast As foo\n"
+"    CROSS JOIN generate_series(1,2) As i\n"
+"    CROSS JOIN generate_series(1,1) As j\n"
+"WHERE rid=2;\n"
+"\n"
+" i | j |                                                    b1pgeom\n"
+"---+---+---------------------------------------------------------------------"
+"--------\n"
+" 1 | 1 | POLYGON((3427927.75 5793244,3427927.8 5793244,3427927.8 5793243."
+"95,...\n"
+" 2 | 1 | POLYGON((3427927.8 5793244,3427927.85 5793244,3427927.85 "
+"5793243.95, .."
 
 #. Tag: para
 #: reference_raster.xml:3488
@@ -7469,12 +8202,16 @@ msgid ""
 "linkend=\"RT_ST_PixelAsCentroids\"/>, <xref linkend=\"RT_ST_Intersection\"/"
 ">, <xref linkend=\"ST_AsText\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_PixelAsPolygons\"/>, <xref linkend="
+"\"RT_ST_PixelAsPoint\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
+"linkend=\"RT_ST_PixelAsCentroid\"/>, <xref linkend=\"RT_ST_PixelAsCentroids\""
+"/>, <xref linkend=\"RT_ST_Intersection\"/>, <xref linkend=\"ST_AsText\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:3503
 #, no-c-format
 msgid "ST_PixelAsPolygons"
-msgstr ""
+msgstr "ST_PixelAsPolygons"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3504
@@ -7483,6 +8220,8 @@ msgid ""
 "Returns the polygon geometry that bounds every pixel of a raster band along "
 "with the value, the X and the Y raster coordinates of each pixel."
 msgstr ""
+"Retourne la géométrie polygonale qui délimite chaque pixel de la bande "
+"raster, avec la valeur et les coordonnées raster X et Y de chaque pixel."
 
 #. Tag: funcprototype
 #: reference_raster.xml:3509
@@ -7508,6 +8247,9 @@ msgid ""
 "with the value (double precision), the X and the Y raster coordinates "
 "(integers) of each pixel."
 msgstr ""
+"Retourne la géométrie polygonale qui délimite chaque pixel de la bande "
+"raster, avec la valeur (double précision) et les coordonnées raster X et Y "
+"(entiers) de chaque pixel."
 
 #. Tag: para
 #: reference_raster.xml:3523 reference_raster.xml:3629
@@ -7518,6 +8260,9 @@ msgid ""
 ">, <parameter>val</parameter> double precision, <parameter>x</parameter> "
 "integer, <parameter>y</parameter> integers."
 msgstr ""
+"Format de l'enregistrement de retour : <parameter>geom</parameter> <xref "
+"linkend=\"geometry\"/>, <parameter>val</parameter> double precision, "
+"<parameter>x</parameter> entier, <parameter>y</parameter> entier."
 
 #. Tag: para
 #: reference_raster.xml:3527 reference_raster.xml:3633
@@ -7527,6 +8272,8 @@ msgid ""
 "When <parameter>exclude_nodata_value</parameter> = TRUE, only those pixels "
 "whose values are not NODATA are returned as points."
 msgstr ""
+"Si <parameter>exclude_nodata_value</parameter> = TRUE, seuls les pixels qui "
+"ne sont pas NODATA sont retournés."
 
 #. Tag: para
 #: reference_raster.xml:3533
@@ -7536,12 +8283,15 @@ msgid ""
 "different than ST_DumpAsPolygons where each geometry represents one or more "
 "pixels with the same pixel value."
 msgstr ""
+"ST_PixelAsPolygons retourne un polygone pour chaque pixel. Ce comportement "
+"est différent de ST_DumpAsPolygons, où chaque géométrie représente un ou "
+"plusieurs pixels de même valeur."
 
 #. Tag: para
 #: reference_raster.xml:3539
 #, no-c-format
 msgid "Enhanced: 2.1.0 exclude_nodata_value optional argument was added."
-msgstr ""
+msgstr "Amélioration : 2.1.0 ajout du paramètre optionnel exclude_nodata_value."
 
 #. Tag: para
 #: reference_raster.xml:3540 reference_raster.xml:3638
@@ -7549,6 +8299,8 @@ msgstr ""
 #, no-c-format
 msgid "Changed: 2.1.1 Changed behavior of exclude_nodata_value."
 msgstr ""
+"Changement : 2.1.1 Changement du comportement de behavior of "
+"exclude_nodata_value."
 
 #. Tag: programlisting
 #: reference_raster.xml:3545
@@ -7575,6 +8327,26 @@ msgid ""
 "0.001))\n"
 " 2 | 2 |  10 | POLYGON((0.002 0,0.003 0.001,0.004 0,0.003 -0.001,0.002 0))"
 msgstr ""
+"-- retourne les polygones delimitant les pixels raster\n"
+"SELECT (gv).x, (gv).y, (gv).val, ST_AsText((gv).geom) geom\n"
+"FROM (SELECT ST_PixelAsPolygons(\n"
+"                 ST_SetValue(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(2, 2, "
+"0, 0, 0.001, -0.001, 0.001, 0.001, 4269),\n"
+"                                                    '8BUI'::text, 1, 0),\n"
+"                                         2, 2, 10),\n"
+"                             1, 1, NULL)\n"
+") gv\n"
+") foo;\n"
+"\n"
+" x | y | val |                geom\n"
+"---+---+---------------------------------------------------------------------"
+"--------\n"
+" 1 | 1 |     | POLYGON((0 0,0.001 0.001,0.002 0,0.001 -0.001,0 0))\n"
+" 1 | 2 |   1 | POLYGON((0.001 -0.001,0.002 0,0.003 -0.001,0.002 -0.002,0.001 "
+"-0.001))\n"
+" 2 | 1 |   1 | POLYGON((0.001 0.001,0.002 0.002,0.003 0.001,0.002 0,0.001 0."
+"001))\n"
+" 2 | 2 |  10 | POLYGON((0.002 0,0.003 0.001,0.004 0,0.003 -0.001,0.002 0))"
 
 #. Tag: para
 #: reference_raster.xml:3550
@@ -7585,12 +8357,16 @@ msgid ""
 "<xref linkend=\"RT_ST_PixelAsCentroid\"/>, <xref "
 "linkend=\"RT_ST_PixelAsCentroids\"/>, <xref linkend=\"ST_AsText\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPoint\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
+"linkend=\"RT_ST_PixelAsCentroid\"/>, <xref linkend=\"RT_ST_PixelAsCentroids\""
+"/>, <xref linkend=\"ST_AsText\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:3564
 #, no-c-format
 msgid "ST_PixelAsPoint"
-msgstr ""
+msgstr "ST_PixelAsPoint"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3565
@@ -7599,6 +8375,8 @@ msgid ""
 "<refpurpose>Returns a point geometry of the pixel's upper-left corner.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Retourne le point géométrique du coin supérieur gauche du "
+"pixel.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_raster.xml:3571
@@ -7619,6 +8397,7 @@ msgstr ""
 #, no-c-format
 msgid "<para>Returns a point geometry of the pixel's upper-left corner.</para>"
 msgstr ""
+"<para>Retourne le point géométrique du coin supérieur gauche du pixel.</para>"
 
 #. Tag: programlisting
 #: reference_raster.xml:3588
@@ -7631,6 +8410,12 @@ msgid ""
 "----------------\n"
 " POINT(0.5 0.5)"
 msgstr ""
+"SELECT ST_AsText(ST_PixelAsPoint(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;"
+"\n"
+"\n"
+"   st_astext\n"
+"----------------\n"
+" POINT(0.5 0.5)"
 
 #. Tag: para
 #: reference_raster.xml:3593
@@ -7641,12 +8426,16 @@ msgid ""
 ">, <xref linkend=\"RT_ST_PixelAsCentroid\"/>, <xref "
 "linkend=\"RT_ST_PixelAsCentroids\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
+"linkend=\"RT_ST_PixelAsCentroid\"/>, <xref linkend=\"RT_ST_PixelAsCentroids\""
+"/>"
 
 #. Tag: refname
 #: reference_raster.xml:3607
 #, no-c-format
 msgid "ST_PixelAsPoints"
-msgstr ""
+msgstr "ST_PixelAsPoints"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3608
@@ -7657,6 +8446,9 @@ msgid ""
 "coordinates of the point geometry are of the pixel's upper-left corner.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Retourne un point géométrique pour chaque pixel de la bande "
+"raster, avec sa valeur et ses coordonnées raster X et Y. Les coordonnées du "
+"points sont ceux du coin supérieur gauche du pixel.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_raster.xml:3614
@@ -7683,6 +8475,9 @@ msgid ""
 "the value, the X and the Y raster coordinates of each pixel. The coordinates "
 "of the point geometry are of the pixel's upper-left corner.</para>"
 msgstr ""
+"<para>Retourne un point géométrique pour chaque pixel de la bande raster, "
+"avec sa valeur et ses coordonnées raster X et Y. Les coordonnées du points "
+"sont ceux du coin supérieur gauche du pixel.</para>"
 
 #. Tag: programlisting
 #: reference_raster.xml:3643
@@ -7719,6 +8514,36 @@ msgid ""
 " 4 | 5 | 254 | POINT(3427927.9 5793243.8)\n"
 " 5 | 5 | 254 | POINT(3427927.95 5793243.8)"
 msgstr ""
+"SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsPoints(rast, 1)).* "
+"FROM dummy_rast WHERE rid = 2) foo;\n"
+"\n"
+" x | y | val |          st_astext\n"
+"---+---+-----+------------------------------\n"
+" 1 | 1 | 253 | POINT(3427927.75 5793244)\n"
+" 2 | 1 | 254 | POINT(3427927.8 5793244)\n"
+" 3 | 1 | 253 | POINT(3427927.85 5793244)\n"
+" 4 | 1 | 254 | POINT(3427927.9 5793244)\n"
+" 5 | 1 | 254 | POINT(3427927.95 5793244)\n"
+" 1 | 2 | 253 | POINT(3427927.75 5793243.95)\n"
+" 2 | 2 | 254 | POINT(3427927.8 5793243.95)\n"
+" 3 | 2 | 254 | POINT(3427927.85 5793243.95)\n"
+" 4 | 2 | 253 | POINT(3427927.9 5793243.95)\n"
+" 5 | 2 | 249 | POINT(3427927.95 5793243.95)\n"
+" 1 | 3 | 250 | POINT(3427927.75 5793243.9)\n"
+" 2 | 3 | 254 | POINT(3427927.8 5793243.9)\n"
+" 3 | 3 | 254 | POINT(3427927.85 5793243.9)\n"
+" 4 | 3 | 252 | POINT(3427927.9 5793243.9)\n"
+" 5 | 3 | 249 | POINT(3427927.95 5793243.9)\n"
+" 1 | 4 | 251 | POINT(3427927.75 5793243.85)\n"
+" 2 | 4 | 253 | POINT(3427927.8 5793243.85)\n"
+" 3 | 4 | 254 | POINT(3427927.85 5793243.85)\n"
+" 4 | 4 | 254 | POINT(3427927.9 5793243.85)\n"
+" 5 | 4 | 253 | POINT(3427927.95 5793243.85)\n"
+" 1 | 5 | 252 | POINT(3427927.75 5793243.8)\n"
+" 2 | 5 | 250 | POINT(3427927.8 5793243.8)\n"
+" 3 | 5 | 254 | POINT(3427927.85 5793243.8)\n"
+" 4 | 5 | 254 | POINT(3427927.9 5793243.8)\n"
+" 5 | 5 | 254 | POINT(3427927.95 5793243.8)"
 
 #. Tag: para
 #: reference_raster.xml:3648
@@ -7729,12 +8554,16 @@ msgid ""
 "<xref linkend=\"RT_ST_PixelAsCentroid\"/>, <xref "
 "linkend=\"RT_ST_PixelAsCentroids\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, <xref "
+"linkend=\"RT_ST_PixelAsCentroid\"/>, <xref linkend=\"RT_ST_PixelAsCentroids\""
+"/>"
 
 #. Tag: refname
 #: reference_raster.xml:3662
 #, no-c-format
 msgid "ST_PixelAsCentroid"
-msgstr ""
+msgstr "ST_PixelAsCentroid"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3663
@@ -7743,6 +8572,8 @@ msgid ""
 "<refpurpose>Returns the centroid (point geometry) of the area represented by "
 "a pixel.</refpurpose>"
 msgstr ""
+"<refpurpose>Retourne le centroïde (point géométrique) de la zone représentée "
+"par un pixel.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_raster.xml:3669
@@ -7765,12 +8596,14 @@ msgid ""
 "<para>Returns the centroid (point geometry) of the area represented by a "
 "pixel.</para>"
 msgstr ""
+"<para>Retourne le centroïde (point géométrique) de la zone représentée par "
+"un pixel.</para>"
 
 #. Tag: para
 #: reference_raster.xml:3681 reference_raster.xml:3736
 #, no-c-format
 msgid "Enhanced: 3.2.0 Faster now implemented in C."
-msgstr ""
+msgstr "Amélioration : 3.2.0 Plus rapide, désormais implémenté en C."
 
 #. Tag: programlisting
 #: reference_raster.xml:3687
@@ -7783,6 +8616,12 @@ msgid ""
 "--------------\n"
 " POINT(1.5 2)"
 msgstr ""
+"SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = "
+"1;\n"
+"\n"
+"  st_astext\n"
+"--------------\n"
+" POINT(1.5 2)"
 
 #. Tag: para
 #: reference_raster.xml:3692
@@ -7793,12 +8632,15 @@ msgid ""
 "<xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
 "linkend=\"RT_ST_PixelAsCentroids\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, <xref "
+"linkend=\"RT_ST_PixelAsPoints\"/>, <xref linkend=\"RT_ST_PixelAsCentroids\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:3706
 #, no-c-format
 msgid "ST_PixelAsCentroids"
-msgstr ""
+msgstr "ST_PixelAsCentroids"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3707
@@ -7809,6 +8651,10 @@ msgid ""
 "The point geometry is the centroid of the area represented by a pixel.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Retourne le centroïde (point géométrique) pour chaque pixel de "
+"la bande raster, avec sa valeur et les coordonnées raster X et Y. Le point "
+"géométrique est le centroïde de la zone représentée par un "
+"pixel.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_raster.xml:3713
@@ -7835,6 +8681,9 @@ msgid ""
 "along with the value, the X and the Y raster coordinates of each pixel. The "
 "point geometry is the centroid of the area represented by a pixel.</para>"
 msgstr ""
+"<para>Retourne le centroïde (point géométrique) pour chaque pixel de la "
+"bande raster, avec sa valeur et les coordonnées raster X et Y. Le point "
+"géométrique est le centroïde de la zone représentée par un pixel.</para>"
 
 #. Tag: programlisting
 #: reference_raster.xml:3743
@@ -7872,6 +8721,37 @@ msgid ""
 " 4 | 5 | 254 | POINT(3427927.925 5793243.775)\n"
 " 5 | 5 | 254 | POINT(3427927.975 5793243.775)"
 msgstr ""
+"--syntaxe LATERAL necessite PostgreSQL 9.3+\n"
+"SELECT x, y, val, ST_AsText(geom)\n"
+"    FROM (SELECT dp.* FROM dummy_rast, LATERAL ST_PixelAsCentroids(rast, 1) "
+"AS dp WHERE rid = 2) foo;\n"
+" x | y | val |           st_astext\n"
+"---+---+-----+--------------------------------\n"
+" 1 | 1 | 253 | POINT(3427927.775 5793243.975)\n"
+" 2 | 1 | 254 | POINT(3427927.825 5793243.975)\n"
+" 3 | 1 | 253 | POINT(3427927.875 5793243.975)\n"
+" 4 | 1 | 254 | POINT(3427927.925 5793243.975)\n"
+" 5 | 1 | 254 | POINT(3427927.975 5793243.975)\n"
+" 1 | 2 | 253 | POINT(3427927.775 5793243.925)\n"
+" 2 | 2 | 254 | POINT(3427927.825 5793243.925)\n"
+" 3 | 2 | 254 | POINT(3427927.875 5793243.925)\n"
+" 4 | 2 | 253 | POINT(3427927.925 5793243.925)\n"
+" 5 | 2 | 249 | POINT(3427927.975 5793243.925)\n"
+" 1 | 3 | 250 | POINT(3427927.775 5793243.875)\n"
+" 2 | 3 | 254 | POINT(3427927.825 5793243.875)\n"
+" 3 | 3 | 254 | POINT(3427927.875 5793243.875)\n"
+" 4 | 3 | 252 | POINT(3427927.925 5793243.875)\n"
+" 5 | 3 | 249 | POINT(3427927.975 5793243.875)\n"
+" 1 | 4 | 251 | POINT(3427927.775 5793243.825)\n"
+" 2 | 4 | 253 | POINT(3427927.825 5793243.825)\n"
+" 3 | 4 | 254 | POINT(3427927.875 5793243.825)\n"
+" 4 | 4 | 254 | POINT(3427927.925 5793243.825)\n"
+" 5 | 4 | 253 | POINT(3427927.975 5793243.825)\n"
+" 1 | 5 | 252 | POINT(3427927.775 5793243.775)\n"
+" 2 | 5 | 250 | POINT(3427927.825 5793243.775)\n"
+" 3 | 5 | 254 | POINT(3427927.875 5793243.775)\n"
+" 4 | 5 | 254 | POINT(3427927.925 5793243.775)\n"
+" 5 | 5 | 254 | POINT(3427927.975 5793243.775)"
 
 #. Tag: para
 #: reference_raster.xml:3748
@@ -7882,12 +8762,15 @@ msgid ""
 "<xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
 "linkend=\"RT_ST_PixelAsCentroid\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, <xref "
+"linkend=\"RT_ST_PixelAsPoints\"/>, <xref linkend=\"RT_ST_PixelAsCentroid\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:3762
 #, no-c-format
 msgid "ST_Value"
-msgstr ""
+msgstr "ST_Value"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3763
@@ -7900,6 +8783,14 @@ msgid ""
 "intersect and return value. If <varname>exclude_nodata_value</varname> is "
 "not passed in then reads it from metadata of raster."
 msgstr ""
+"Retourne la valeur d'une bande raster spécifiée au pixel donné par columnx, "
+"rowy, ou à un point géométrique spécifié. Le numéro de bande démarre à 1, et "
+"1 est la valeur par défaut si aucun numéro est spécifié. Si "
+"<varname>exclude_nodata_value</varname> vaut false, tous les pixels y "
+"compris ceux ayant la valeur <varname>nodata</varname> sont considérés comme "
+"intersectés et leur valeur sera retournée. Si <varname>exclude_nodata_value</"
+"varname> n'est pas spécifié, la valeur est lue depuis les méta-données du "
+"raster."
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:3767
@@ -7966,6 +8857,9 @@ msgid ""
 "given geometry point. Band numbers start at 1 and band is assumed to be 1 if "
 "not specified."
 msgstr ""
+"Retourne la valeur d'une bande raster spécifiée au pixel donné par columnx, "
+"rowy, ou à un point géométrique spécifié. Le numéro de bande démarre à 1, et "
+"1 est la valeur par défaut si aucun numéro est spécifié."
 
 #. Tag: para
 #: reference_raster.xml:3804
@@ -7976,6 +8870,10 @@ msgid ""
 "<varname>exclude_nodata_value</varname> is set to false, then all pixels are "
 "considered."
 msgstr ""
+"Si <varname>exclude_nodata_value</varname> vaut true, seulement les pixels "
+"différents de la valeur <varname>nodata</varname> seront utilisés. Si "
+"<varname>exclude_nodata_value</varname> vaut false, tous les pixels seront "
+"utilisés."
 
 #. Tag: para
 #: reference_raster.xml:3805
@@ -7987,18 +8885,23 @@ msgid ""
 "Bilinear_interpolation\">bilinear interpolation</ulink> to estimate the "
 "value between pixel centers."
 msgstr ""
+"Les valeurs possibles pour le paramètre <varname>resample</varname> sont : "
+"\"nearest\" (interpolation par plus proche voisin) et \"bilinear\" (<ulink "
+"url=\"https://fr.wikipedia.org/wiki/Interpolation_bilin%C3%A9aire\""
+">interpolation bilinéaire</ulink>). Ce paramètre est utilisé pour estimer la "
+"valeur entre les centres des pixels."
 
 #. Tag: para
 #: reference_raster.xml:3807
 #, no-c-format
 msgid "Enhanced: 3.2.0 resample optional argument was added."
-msgstr ""
+msgstr "Amélioration : 3.2.0 ajout du paramètre optionnel resample."
 
 #. Tag: para
 #: reference_raster.xml:3808
 #, no-c-format
 msgid "Enhanced: 2.0.0 exclude_nodata_value optional argument was added."
-msgstr ""
+msgstr "Amélioration : 2.0.0 ajout du paramètre optionnel exclude_nodata_value."
 
 #. Tag: programlisting
 #: reference_raster.xml:3813
@@ -8022,6 +8925,24 @@ msgid ""
 "FROM sometable\n"
 "WHERE ST_Intersects(rast,sometable.geom);"
 msgstr ""
+"-- affiche les valeurs raster a des points geometriques postgis "
+"particuliers\n"
+"-- le srid des points doit etre identique a celui du raster\n"
+"SELECT rid, ST_Value(rast, foo.pt_geom) As b1pval, ST_Value(rast, 2, foo."
+"pt_geom) As b2pval\n"
+"FROM dummy_rast CROSS JOIN (SELECT ST_SetSRID(ST_Point(3427927.77, 5793243."
+"76), 0) As pt_geom) As foo\n"
+"WHERE rid=2;\n"
+"\n"
+" rid | b1pval | b2pval\n"
+"-----+--------+--------\n"
+"   2 |    252 |     79\n"
+"\n"
+"\n"
+"-- usage typique (fictif) en utilisant une table reelle\n"
+"SELECT rid, ST_Value(rast, 3, sometable.geom) As b3pval\n"
+"FROM sometable\n"
+"WHERE ST_Intersects(rast,sometable.geom);"
 
 #. Tag: programlisting
 #: reference_raster.xml:3814
@@ -8036,6 +8957,14 @@ msgid ""
 "-----+--------+--------+--------\n"
 "   2 |    253 |     78 |     70"
 msgstr ""
+"SELECT rid, ST_Value(rast, 1, 1, 1) As b1pval,\n"
+"    ST_Value(rast, 2, 1, 1) As b2pval, ST_Value(rast, 3, 1, 1) As b3pval\n"
+"FROM dummy_rast\n"
+"WHERE rid=2;\n"
+"\n"
+" rid | b1pval | b2pval | b3pval\n"
+"-----+--------+--------+--------\n"
+"   2 |    253 |     78 |     70"
 
 #. Tag: programlisting
 #: reference_raster.xml:3816
@@ -8060,6 +8989,24 @@ msgid ""
 " :\n"
 " :"
 msgstr ""
+"--- affiche toutes les valeurs des pixels pour les bandes 1,2,3 --\n"
+"SELECT x, y, ST_Value(rast, 1, x, y) As b1val,\n"
+"    ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val\n"
+"FROM dummy_rast CROSS JOIN\n"
+"generate_series(1, 1000) As x CROSS JOIN generate_series(1, 1000) As y\n"
+"WHERE rid =  2 AND x &lt;= ST_Width(rast) AND y &lt;= ST_Height(rast);\n"
+"\n"
+" x | y | b1val | b2val | b3val\n"
+"---+---+-------+-------+-------\n"
+" 1 | 1 |   253 |    78 |    70\n"
+" 1 | 2 |   253 |    96 |    80\n"
+" 1 | 3 |   250 |    99 |    90\n"
+" 1 | 4 |   251 |    89 |    77\n"
+" 1 | 5 |   252 |    79 |    62\n"
+" 2 | 1 |   254 |    98 |    86\n"
+" 2 | 2 |   254 |   118 |   108\n"
+" :\n"
+" :"
 
 #. Tag: programlisting
 #: reference_raster.xml:3818
@@ -8084,6 +9031,24 @@ msgid ""
 " POINT(3427929.25 5793248.5) |   250 |    99 |    90\n"
 ":"
 msgstr ""
+"--- affiche toutes les valeurs des pixels pour les bandes 1,2,3, mais en "
+"affichant le point du coin superieur gauche de chaque pixel --\n"
+"SELECT ST_AsText(ST_SetSRID(\n"
+"    ST_Point(ST_UpperLeftX(rast) + ST_ScaleX(rast)*x,\n"
+"        ST_UpperLeftY(rast) + ST_ScaleY(rast)*y),\n"
+"        ST_SRID(rast))) As uplpt\n"
+"    , ST_Value(rast, 1, x, y) As b1val,\n"
+"    ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val\n"
+"FROM dummy_rast CROSS JOIN\n"
+"generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y\n"
+"WHERE rid =  2 AND x &lt;= ST_Width(rast) AND y &lt;= ST_Height(rast);\n"
+"\n"
+"            uplpt            | b1val | b2val | b3val\n"
+"-----------------------------+-------+-------+-------\n"
+" POINT(3427929.25 5793245.5) |   253 |    78 |    70\n"
+" POINT(3427929.25 5793247)   |   253 |    96 |    80\n"
+" POINT(3427929.25 5793248.5) |   250 |    99 |    90\n"
+":"
 
 #. Tag: programlisting
 #: reference_raster.xml:3819
@@ -8133,6 +9098,50 @@ msgid ""
 "5793243.85,\n"
 "3427927.95 5793243.85,3427927.95 5793243.8,3427927.95 5793243.75)))"
 msgstr ""
+"--- retourne un polygone forme par l'union de tous les pixels\n"
+"--- dont la valeur est dans l'intervalle specifie\n"
+"--- et qui intersecte un polygone donne\n"
+"SELECT ST_AsText(ST_Union(pixpolyg)) As shadow\n"
+"FROM (SELECT ST_Translate(ST_MakeEnvelope(\n"
+"        ST_UpperLeftX(rast), ST_UpperLeftY(rast),\n"
+"            ST_UpperLeftX(rast) + ST_ScaleX(rast),\n"
+"            ST_UpperLeftY(rast) + ST_ScaleY(rast), 0\n"
+"            ), ST_ScaleX(rast)*x, ST_ScaleY(rast)*y\n"
+"        ) As pixpolyg, ST_Value(rast, 2, x, y) As b2val\n"
+"    FROM dummy_rast CROSS JOIN\n"
+"generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y\n"
+"WHERE rid =  2\n"
+"    AND x &lt;= ST_Width(rast) AND y &lt;= ST_Height(rast)) As foo\n"
+"WHERE\n"
+"    ST_Intersects(\n"
+"        pixpolyg,\n"
+"        ST_GeomFromText('POLYGON((3427928 5793244,3427927.75 "
+"5793243.75,3427928 5793243.75,3427928 5793244))',0)\n"
+"        ) AND b2val != 254;\n"
+"\n"
+"\n"
+"        shadow\n"
+"-----------------------------------------------------------------------------"
+"-------\n"
+" MULTIPOLYGON(((3427928 5793243.9,3427928 5793243.85,3427927.95 "
+"5793243.85,3427927.95 5793243.9,\n"
+" 3427927.95 5793243.95,3427928 5793243.95,3427928.05 5793243.95,3427928.05 "
+"5793243.9,3427928 5793243.9)),((3427927.95 5793243.9,3427927.95 579324\n"
+"3.85,3427927.9 5793243.85,3427927.85 5793243.85,3427927.85 "
+"5793243.9,3427927.9 5793243.9,3427927.9 5793243.95,\n"
+"3427927.95 5793243.95,3427927.95 5793243.9)),((3427927.85 "
+"5793243.75,3427927.85 5793243.7,3427927.8 5793243.7,3427927.8 5793243.75\n"
+",3427927.8 5793243.8,3427927.8 5793243.85,3427927.85 5793243.85,3427927.85 "
+"5793243.8,3427927.85 5793243.75)),\n"
+"((3427928.05 5793243.75,3427928.05 5793243.7,3427928 5793243.7,3427927.95 "
+"5793243.7,3427927.95 5793243.75,3427927.95 5793243.8,3427\n"
+"927.95 5793243.85,3427928 5793243.85,3427928 5793243.8,3427928.05 5793243.8,"
+"\n"
+"3427928.05 5793243.75)),((3427927.95 5793243.75,3427927.95 "
+"5793243.7,3427927.9 5793243.7,3427927.85 5793243.7,\n"
+"3427927.85 5793243.75,3427927.85 5793243.8,3427927.85 5793243.85,3427927.9 "
+"5793243.85,\n"
+"3427927.95 5793243.85,3427927.95 5793243.8,3427927.95 5793243.75)))"
 
 #. Tag: programlisting
 #: reference_raster.xml:3821
@@ -8176,6 +9185,46 @@ msgid ""
 " 3427928 5793243.85,3427928 5793243.75,3427928.1 5793243.75,3427928.1 "
 "5793243.65,3427928 5793243.65,3427927.9 5793243.65)))"
 msgstr ""
+"--- Traiter tous les pixels d'une grande tuile raster peut prendre beaucoup "
+"de temps.\n"
+"--- Vous pouvez grandement ameliorer les performances de plusieurs ordres de "
+"grandeur\n"
+"--- au detriment de la precision, en re-echantillonnant les pixels en "
+"utilisant le\n"
+"--- parametre optionnel step de generate_series.\n"
+"--  L'exemple suivant a le meme comportement, mais traite 1 pixel sur 4 (2x2)"
+"\n"
+"-- et utilise la meme valeur pour les 4 pixels\n"
+"\n"
+"SELECT ST_AsText(ST_Union(pixpolyg)) As shadow\n"
+"FROM (SELECT ST_Translate(ST_MakeEnvelope(\n"
+"        ST_UpperLeftX(rast), ST_UpperLeftY(rast),\n"
+"            ST_UpperLeftX(rast) + ST_ScaleX(rast)*2,\n"
+"            ST_UpperLeftY(rast) + ST_ScaleY(rast)*2, 0\n"
+"            ), ST_ScaleX(rast)*x, ST_ScaleY(rast)*y\n"
+"        ) As pixpolyg, ST_Value(rast, 2, x, y) As b2val\n"
+"    FROM dummy_rast CROSS JOIN\n"
+"generate_series(1,1000,2) As x CROSS JOIN generate_series(1,1000,2) As y\n"
+"WHERE rid =  2\n"
+"    AND x &lt;= ST_Width(rast)  AND y &lt;= ST_Height(rast)  ) As foo\n"
+"WHERE\n"
+"    ST_Intersects(\n"
+"        pixpolyg,\n"
+"        ST_GeomFromText('POLYGON((3427928 5793244,3427927.75 "
+"5793243.75,3427928 5793243.75,3427928 5793244))',0)\n"
+"        ) AND b2val != 254;\n"
+"\n"
+"        shadow\n"
+"-----------------------------------------------------------------------------"
+"-------\n"
+" MULTIPOLYGON(((3427927.9 5793243.85,3427927.8 5793243.85,3427927.8 5793243."
+"95,\n"
+" 3427927.9 5793243.95,3427928 5793243.95,3427928.1 5793243.95,3427928.1 "
+"5793243.85,3427928 5793243.85,3427927.9 5793243.85)),\n"
+" ((3427927.9 5793243.65,3427927.8 5793243.65,3427927.8 5793243.75,3427927.8 "
+"5793243.85,3427927.9 5793243.85,\n"
+" 3427928 5793243.85,3427928 5793243.75,3427928.1 5793243.75,3427928.1 "
+"5793243.65,3427928 5793243.65,3427927.9 5793243.65)))"
 
 #. Tag: para
 #: reference_raster.xml:3826
@@ -8189,12 +9238,19 @@ msgid ""
 "linkend=\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
 "linkend=\"ST_Intersection\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref linkend=\"RT_ST_NumBands\"/"
+">, <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend=\"RT_ST_ScaleX\"/"
+">, <xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, "
+"<xref linkend=\"RT_ST_UpperLeftY\"/>, <xref linkend=\"RT_ST_SRID\"/>, <xref "
+"linkend=\"ST_AsText\"/>, <xref linkend=\"ST_Point\"/>, <xref linkend="
+"\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref linkend="
+"\"ST_Intersection\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:3847
 #, no-c-format
 msgid "ST_NearestValue"
-msgstr ""
+msgstr "ST_NearestValue"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3848
@@ -8204,6 +9260,10 @@ msgid ""
 "pixel specified by a columnx and rowy or a geometric point expressed in the "
 "same spatial reference coordinate system as the raster."
 msgstr ""
+"Retourne la valeur la plus proche différent de <varname>NODATA</varname> "
+"pour une bande raster spécifiée au pixel donné par columnx et rowy, ou à un "
+"point géométrique spécifié dans le même système de référence spatial que le "
+"raster."
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:3854
@@ -8269,6 +9329,12 @@ msgid ""
 "varname>, the function will find the nearest pixel to the columnx, rowy "
 "pixel or geometric point whose value is not <varname>NODATA</varname>."
 msgstr ""
+"Retourne la valeur la plus proche différent de <varname>NODATA</varname> "
+"pour une bande raster spécifiée au pixel donné par columnx et rowy, ou à un "
+"point géométrique spécifié. Si le pixel donné par columnx, rowy ou par le "
+"point géométrique est de valeur <varname>NODATA</varname>, la fonction "
+"trouve le plus proche pixel dont la valeur est différente de "
+"<varname>NODATA</varname>."
 
 #. Tag: para
 #: reference_raster.xml:3894 reference_raster.xml:4066
@@ -8280,12 +9346,18 @@ msgid ""
 "intersect and return value. If <varname>exclude_nodata_value</varname> is "
 "not passed in then reads it from metadata of raster."
 msgstr ""
+"Le numéro de bande démarre à 1, et si <varname>bandnum</varname>, la valeur "
+"1 sera utilisée par défaut. Si <varname>exclude_nodata_value</varname> vaut "
+"false, tous les pixels y compris ceux ayant la valeur <varname>nodata</"
+"varname> sont considérés comme intersectés et leur valeur sera retournée. Si "
+"<varname>exclude_nodata_value</varname> n'est pas spécifié, la valeur est "
+"lue depuis les méta-données du raster."
 
 #. Tag: para
 #: reference_raster.xml:3899
 #, no-c-format
 msgid "ST_NearestValue is a drop-in replacement for ST_Value."
-msgstr ""
+msgstr "ST_NearestValue remplace directement ST_Value."
 
 #. Tag: programlisting
 #: reference_raster.xml:3908
@@ -8323,6 +9395,37 @@ msgid ""
 "-------+--------------\n"
 "     1 |            1"
 msgstr ""
+"-- pixel 2x2 a une valeur\n"
+"SELECT\n"
+"    ST_Value(rast, 2, 2) AS value,\n"
+"    ST_NearestValue(rast, 2, 2) AS nearestvalue\n"
+"FROM (\n"
+"    SELECT\n"
+"        ST_SetValue(\n"
+"            ST_SetValue(\n"
+"                ST_SetValue(\n"
+"                    ST_SetValue(\n"
+"                        ST_SetValue(\n"
+"                            ST_AddBand(\n"
+"                                ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, "
+"0),\n"
+"                                '8BUI'::text, 1, 0\n"
+"                            ),\n"
+"                            1, 1, 0.\n"
+"                        ),\n"
+"                        2, 3, 0.\n"
+"                    ),\n"
+"                    3, 5, 0.\n"
+"                ),\n"
+"                4, 2, 0.\n"
+"            ),\n"
+"            5, 4, 0.\n"
+"        ) AS rast\n"
+") AS foo\n"
+"\n"
+" value | nearestvalue\n"
+"-------+--------------\n"
+"     1 |            1"
 
 #. Tag: programlisting
 #: reference_raster.xml:3910
@@ -8360,12 +9463,43 @@ msgid ""
 "-------+--------------\n"
 "       |            1"
 msgstr ""
+"-- pixel 2x3 est NODATA\n"
+"SELECT\n"
+"    ST_Value(rast, 2, 3) AS value,\n"
+"    ST_NearestValue(rast, 2, 3) AS nearestvalue\n"
+"FROM (\n"
+"    SELECT\n"
+"        ST_SetValue(\n"
+"            ST_SetValue(\n"
+"                ST_SetValue(\n"
+"                    ST_SetValue(\n"
+"                        ST_SetValue(\n"
+"                            ST_AddBand(\n"
+"                                ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, "
+"0),\n"
+"                                '8BUI'::text, 1, 0\n"
+"                            ),\n"
+"                            1, 1, 0.\n"
+"                        ),\n"
+"                        2, 3, 0.\n"
+"                    ),\n"
+"                    3, 5, 0.\n"
+"                ),\n"
+"                4, 2, 0.\n"
+"            ),\n"
+"            5, 4, 0.\n"
+"        ) AS rast\n"
+") AS foo\n"
+"\n"
+" value | nearestvalue\n"
+"-------+--------------\n"
+"       |            1"
 
 #. Tag: para
 #: reference_raster.xml:3916
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Value\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_Value\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:3926
