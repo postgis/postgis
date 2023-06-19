@@ -357,7 +357,7 @@ msgstr ""
 #: reference_guc.xml:162
 #, no-c-format
 msgid "Disable all GDAL Drivers"
-msgstr "Disability tutti i driver di GDAL"
+msgstr "Disabilita tutti i driver di GDAL"
 
 #. Tag: programlisting
 #: reference_guc.xml:163
