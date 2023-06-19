@@ -209,8 +209,12 @@ PERL = @PERL@
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
-top_builddir = @top_builddir@
 abs_topbuilddir=$(abspath $(top_builddir))
+
+# Overriding top_builddir breaks the "installcheck"
+# target from PGXS. TODO: integrate regression tests
+# with the rest of the application
+#top_builddir = @top_builddir@
 
 VPATH = $(srcdir)
 
