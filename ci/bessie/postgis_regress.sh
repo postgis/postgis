@@ -8,8 +8,7 @@ sh autogen.sh
 ./configure \
   --with-projdir=/usr/local \
   --with-libiconv=/usr/local \
-  --with-library-minor-version \
-  --without-raster
+  --with-library-minor-version
 #make distclean
 make
 export PGUSER=postgres
