@@ -5285,7 +5285,7 @@ FROM test_raster
         <refentry id="RT_ST_SetM">
             <refnamediv>
                 <refname>ST_SetM</refname>
-                <refpurpose>Returns a geometry with the same X/Y coordinates as the input geometry, and values from the raster copied into the Z dimension using the requested resample algorithm.</refpurpose>
+                <refpurpose>Returns a geometry with the same X/Y coordinates as the input geometry, and values from the raster copied into the M dimension using the requested resample algorithm.</refpurpose>
             </refnamediv>
 
             <refsynopsisdiv>
@@ -5303,7 +5303,7 @@ FROM test_raster
             <refsection>
                 <title>Description</title>
 
-                <para>Returns a geometry with the same X/Y coordinates as the input geometry, and values from the raster copied into the Z dimensions using the requested resample algorithm.</para>
+                <para>Returns a geometry with the same X/Y coordinates as the input geometry, and values from the raster copied into the M dimensions using the requested resample algorithm.</para>
                 <para>The <varname>resample</varname> parameter can be set to "nearest" to copy the values from the cell each vertex falls within, or "bilinear" to use <ulink url="https://en.wikipedia.org/wiki/Bilinear_interpolation">bilinear interpolation</ulink> to calculate a value that takes neighboring cells into account also.</para>
 
                 <para>Availability: 3.2.0</para>
