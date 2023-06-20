@@ -201,13 +201,13 @@ Datum transform_pipeline_geom(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(postgis_proj_version);
 Datum postgis_proj_version(PG_FUNCTION_ARGS)
 {
-	PJ_CONTEXT *ctx = NULL;
 	stringbuffer_t sb;
 
 #if POSTGIS_PROJ_VERSION < 61
 	stringbuffer_init(&sb);
 	stringbuffer_append(&sb, pj_get_release());
 #else
+	PJ_CONTEXT *ctx = NULL;
 	PJ_INFO pji = proj_info();
 	stringbuffer_init(&sb);
 	stringbuffer_append(&sb, pji.version);
