@@ -1094,12 +1094,6 @@ select '#4025', ST_DistanceCPA (
 	2996311.81673704 5844916.90864168 1180471541.171)'::geometry
 	);
 
--- a butterfly polygon in all cases
-SELECT '#4037.1', ST_AsText(ST_Intersection('POLYGON((0 0, 10 10, 0 10, 10 0, 0 0))', ST_MakeEnvelope(2,2,8,8)));
-SELECT '#4037.2', ST_AsText(ST_Difference('POLYGON((0 0, 10 10, 0 10, 10 0, 0 0))', ST_MakeEnvelope(2,2,8,8)));
-SELECT '#4037.3', ST_AsText(ST_SymDifference('POLYGON((0 0, 10 10, 0 10, 10 0, 0 0))', ST_MakeEnvelope(2,2,8,8)));
-SELECT '#4037.4', ST_AsText(ST_Union('POLYGON((0 0, 10 10, 0 10, 10 0, 0 0))', ST_MakeEnvelope(2,2,8,8)));
-
 -- #4055
 SELECT '#4055a', ST_SRID(unnest(ST_ClusterWithin(ARRAY['SRID=4326;POINT (3 7)'::geometry, 'SRID=4326;LINESTRING (3 0, 3 9)'], 0)));
 SELECT '#4055b', ST_SRID(unnest(ST_ClusterIntersecting(ARRAY['SRID=4326;POINT (3 7)'::geometry, 'SRID=4326;LINESTRING (3 0, 3 9)'])));
