@@ -4,9 +4,9 @@
 #
 #-----------------------------------------------------
 
-SUBDIRS = liblwgeom
+SUBDIRS = liblwgeom @RASTER@ loader
 ifeq (@LIBLWGEOM_ONLY@,no)
-SUBDIRS += @DEPS_SUBDIR@ libpgcommon postgis regress @RASTER@ @TOPOLOGY@ @SFCGAL@ loader utils doc @EXTENSIONS@
+SUBDIRS += @DEPS_SUBDIR@ libpgcommon postgis regress @TOPOLOGY@ @SFCGAL@ utils doc @EXTENSIONS@
 endif
 
 HAVE_SFCGAL=@HAVE_SFCGAL@
@@ -65,7 +65,11 @@ clean-local:
 # TODO: drop 'test' target..
 test: check
 
-check: check-no-trailing-blanks check-unit check-regress docs-check check-news check-tests-enabled
+check: check-no-trailing-blanks check-unit docs-check check-news check-tests-enabled
+
+ifeq (@LIBLWGEOM_ONLY@,no)
+check: check-regress
+endif
 
 staged-install: all
 	$(MAKE) -C regress staged-install

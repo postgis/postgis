@@ -86,9 +86,11 @@ main (int argc, char **argv)
 	int ret, i;
 
 #ifdef ENABLE_NLS
+#ifdef PGSQL_LOCALEDIR
 	setlocale (LC_ALL, "");
 	bindtextdomain (PACKAGE, PGSQL_LOCALEDIR);
 	textdomain (PACKAGE);
+#endif
 #endif
 
 	/* If no options are specified, display usage */

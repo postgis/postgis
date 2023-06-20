@@ -1,0 +1,13 @@
+pipeline:
+  build:
+    image: docker.osgeo.org/postgis/build-test:trisquel3
+    commands:
+      - ./autogen.sh
+      - ./configure --without-pgconfig --prefix=/tmp/pgx
+      - make
+      - make check
+      - make install
+      - /tmp/pgx/bin/postgis help
+      - /tmp/pgx/bin/shp2pgsql
+      - /tmp/pgx/bin/raster2pgsql
+

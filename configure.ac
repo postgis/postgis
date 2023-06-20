@@ -1483,9 +1483,12 @@ if test "x$with_raster" != "xno"; then
 		CPPFLAGS_SAVE="$CPPFLAGS"
 		CPPFLAGS="$LIBGDAL_CFLAGS"
 		CFLAGS_SAVE="$CFLAGS"
-		CFLAGS=`"$PG_CONFIG" --cflags`
 		CC_SAVE="$CC"
-		CC=`"$PG_CONFIG" --cc`
+
+		if test "x$PG_CONFIG" != "xno"; then
+			CFLAGS=`"$PG_CONFIG" --cflags`
+			CC=`"$PG_CONFIG" --cc`
+		fi
 
 		LIBS_SAVE="$LIBS"
 		LIBS="$LIBGDAL_LDFLAGS"
@@ -1521,9 +1524,11 @@ if test "x$with_raster" != "xno"; then
 
 	dnl Define raster objects, for makefiles
 	RT_CORE_LIB=corelib
-	RT_PG_LIB=pglib
 	RT_LOADER=rtloader
-	RT_POSTGIS_SQL=rtpostgis.sql
+	if test "x$PG_CONFIG" != "xno"; then
+		RT_PG_LIB=pglib
+		RT_POSTGIS_SQL=rtpostgis.sql
+	fi
 
 	AC_SUBST([RASTER])
 	AC_SUBST([RT_CORE_LIB])
@@ -1709,14 +1714,16 @@ dnl the xlstproc tool for generating the comments SQL file.
 dnl ===========================================================================
 
 EXTENSIONS=""
-if test \
-        "x$XSLTPROC" != "x" -o \
-        -e doc/postgis_comments.sql -a \
-        -e doc/raster_comments.sql;
-then
-    AC_MSG_RESULT([enabling PostgreSQL extension support...])
-    EXTENSIONS=extensions
-    AC_SUBST([EXTENSIONS])
+if test "x$PG_CONFIG" != "xno"; then
+  if test \
+          "x$XSLTPROC" != "x" -o \
+          -e doc/postgis_comments.sql -a \
+          -e doc/raster_comments.sql;
+  then
+      AC_MSG_RESULT([enabling PostgreSQL extension support...])
+      EXTENSIONS=extensions
+      AC_SUBST([EXTENSIONS])
+  fi
 fi
 
 INSTALL_EXTENSION_UPGRADES=yes

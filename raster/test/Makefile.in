@@ -18,8 +18,12 @@ core-check: check-unit
 check-unit:
 	$(MAKE) -C cunit check
 
+ifneq (@PG_CONFIG@,no)
 check-regress:
 	$(MAKE) -C regress check
+else
+check-regress:
+endif
 
 clean:
 	$(MAKE) -C cunit $@

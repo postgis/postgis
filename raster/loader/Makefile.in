@@ -24,6 +24,9 @@ top_builddir = @top_builddir@
 builddir = @builddir@
 top_srcdir = @top_srcdir@
 srcdir = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+bindir = @bindir@
 
 VPATH = $(srcdir)
 
@@ -86,13 +89,13 @@ $(RASTER2PGSQL): ../rt_core/librtcore.a raster2pgsql.o
 	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
 
 installdir:
-	@mkdir -p $(DESTDIR)$(PGSQL_BINDIR)
+	@mkdir -p $(DESTDIR)$(bindir)
 
 install: installdir
-	$(LIBTOOL) --mode=install $(INSTALL) $(RASTER2PGSQL) "$(DESTDIR)$(PGSQL_BINDIR)/$(RASTER2PGSQL)"
+	$(LIBTOOL) --mode=install $(INSTALL) $(RASTER2PGSQL) "$(DESTDIR)$(bindir)/$(RASTER2PGSQL)"
 
 uninstall:
-	$(LIBTOOL) --mode=uninstall $(RM) "$(DESTDIR)$(PGSQL_BINDIR)/$(RASTER2PGSQL)"
+	$(LIBTOOL) --mode=uninstall $(RM) "$(DESTDIR)$(bindir)/$(RASTER2PGSQL)"
 
 ../rt_core/librtcore.a:
 	$(MAKE) -C $(buidldir)/../rt_core

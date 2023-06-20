@@ -63,9 +63,13 @@ VPATH = $(srcdir)
 
 # Object files
 OBJS=	\
-	cu_pgsql2shp.o \
 	cu_shp2pgsql.o \
 	cu_tester.o
+
+ifneq (@PG_CONFIG@,no)
+OBJS +=	\
+	cu_pgsql2shp.o
+endif
 
 LOADER_OBJS= \
 	../dbfopen.o \
@@ -73,8 +77,12 @@ LOADER_OBJS= \
 	../getopt.o \
 	../shpcommon.o \
 	../safileio.o \
-	../pgsql2shp-core.o \
 	../shp2pgsql-core.o
+
+ifneq (@PG_CONFIG@,no)
+LOADER_OBJS +=	\
+	../pgsql2shp-core.o
+endif
 
 # If we couldn't find the cunit library then display a helpful message
 ifeq ($(CUNIT_LDFLAGS),)

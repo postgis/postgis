@@ -13,6 +13,7 @@
 #include <string.h>
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
+#include "../postgis_config.h"
 
 /*
 ** The main() function for setting up and running the tests.
@@ -33,12 +34,14 @@ int main()
 		return CU_get_error();
 	}
 
+#ifdef POSTGIS_PGSQL_VERSION
 	/* Add the pgsql2shp test suite */
 	if (NULL == register_pgsql2shp_suite())
 	{
 		CU_cleanup_registry();
 		return CU_get_error();
 	}
+#endif
 
 	/* Run all tests using the CUnit Basic interface */
 	CU_basic_set_mode(CU_BRM_VERBOSE);
