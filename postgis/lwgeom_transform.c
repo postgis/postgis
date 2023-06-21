@@ -31,6 +31,7 @@
 #include "../postgis_config.h"
 #include "liblwgeom.h"
 #include "lwgeodetic.h"
+#include "stringbuffer.h"
 #include "lwgeom_transform.h"
 
 
@@ -200,14 +201,30 @@ Datum transform_pipeline_geom(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(postgis_proj_version);
 Datum postgis_proj_version(PG_FUNCTION_ARGS)
 {
+	stringbuffer_t sb;
+
 #if POSTGIS_PROJ_VERSION < 61
-	const char *ver = pj_get_release();
-	text *result = cstring_to_text(ver);
+	stringbuffer_init(&sb);
+	stringbuffer_append(&sb, pj_get_release());
 #else
 	PJ_INFO pji = proj_info();
-	text *result = 	cstring_to_text(pji.version);
+	stringbuffer_init(&sb);
+	stringbuffer_append(&sb, pji.version);
 #endif
-	PG_RETURN_POINTER(result);
+
+#if POSTGIS_PROJ_VERSION >= 70
+	stringbuffer_aprintf(&sb,
+		" PROJ_NETWORK=%s",
+		proj_context_is_network_enabled(NULL) ? "ON" : "OFF");
+
+	if (proj_context_get_url_endpoint(NULL))
+		stringbuffer_aprintf(&sb, " PROJ_URL_ENDPOINT=%s", proj_context_get_url_endpoint(NULL));
+
+	if (proj_context_get_user_writable_directory(NULL, 0))
+		stringbuffer_aprintf(&sb, " PROJ_GRID_DIRECTORY=%s", proj_context_get_user_writable_directory(NULL, 0));
+#endif
+
+	PG_RETURN_POINTER(cstring_to_text(stringbuffer_getstring(&sb)));
 }
 
 
