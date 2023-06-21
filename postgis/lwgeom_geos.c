@@ -478,7 +478,7 @@ Datum ST_LargestEmptyCircle(PG_FUNCTION_ARGS)
 	Datum result;
 	Datum result_values[3];
 	bool result_is_null[3];
-	double radius = 0.0;
+	double radius = 0.0, tolerance = 0.0;
 	int32 srid = SRID_UNKNOWN;
 	bool is3d = false, hasBoundary = false;
 
@@ -486,7 +486,8 @@ Datum ST_LargestEmptyCircle(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 
 	geom = PG_GETARG_GSERIALIZED_P(0);
-	boundary = PG_GETARG_GSERIALIZED_P(1);
+	tolerance = PG_GETARG_FLOAT8(1);
+	boundary = PG_GETARG_GSERIALIZED_P(2);
 	srid = gserialized_get_srid(geom);
 	is3d = gserialized_has_z(geom);
 
@@ -506,7 +507,7 @@ Datum ST_LargestEmptyCircle(PG_FUNCTION_ARGS)
 	{
 		GEOSGeometry *ginput, *gcircle, *gcenter, *gnearest;
 		GEOSGeometry *gboundary = NULL;
-		double width, height, size, tolerance;
+		double width, height, size;
 		GBOX gbox;
 		LWGEOM *lwg;
 		lwg = lwgeom_from_gserialized(geom);
@@ -521,10 +522,13 @@ Datum ST_LargestEmptyCircle(PG_FUNCTION_ARGS)
 		if (!gserialized_get_gbox_p(geom, &gbox))
 			PG_RETURN_NULL();
 
-		width = gbox.xmax - gbox.xmin;
-		height = gbox.ymax - gbox.ymin;
-		size = width > height ? width : height;
-		tolerance = size / 1000.0;
+		if (tolerance <= 0)
+		{
+			width = gbox.xmax - gbox.xmin;
+			height = gbox.ymax - gbox.ymin;
+			size = width > height ? width : height;
+			tolerance = size / 1000.0;
+		}
 
 		initGEOS(lwpgnotice, lwgeom_geos_error);
 
