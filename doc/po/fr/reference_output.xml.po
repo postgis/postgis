@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-11-27 05:42+0000\n"
-"PO-Revision-Date: 2023-05-15 11:08+0000\n"
-"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
+"PO-Revision-Date: 2023-06-22 22:07+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_outputxml/fr/>\n"
 "Language: fr\n"
@@ -34,7 +34,7 @@ msgstr ""
 #: reference_output.xml:10
 #, no-c-format
 msgid "Geometry Output"
-msgstr "Géométrie en sortie"
+msgstr "Export de géométrie"
 
 #. Tag: title
 #: reference_output.xml:13
