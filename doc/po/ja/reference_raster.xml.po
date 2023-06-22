@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-12-04 00:50+0000\n"
+"POT-Creation-Date: 2023-06-22 22:04+0000\n"
 "PO-Revision-Date: 2023-05-15 11:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -9344,7 +9344,7 @@ msgid "ST_SetZ"
 msgstr "ST_SetZ"
 
 #. Tag: refpurpose
-#: reference_raster.xml:3927 reference_raster.xml:3970
+#: reference_raster.xml:3927
 #, no-c-format
 msgid ""
 "Returns a geometry with the same X/Y coordinates as the input geometry, and "
@@ -9373,7 +9373,7 @@ msgstr ""
 "<parameter>band=1</parameter></paramdef>"
 
 #. Tag: para
-#: reference_raster.xml:3945 reference_raster.xml:3988
+#: reference_raster.xml:3945
 #, no-c-format
 msgid ""
 "Returns a geometry with the same X/Y coordinates as the input geometry, and "
@@ -9485,6 +9485,15 @@ msgstr ", <xref linkend=\"RT_ST_SetM\"/>"
 msgid "ST_SetM"
 msgstr "ST_SetM"
 
+#. Tag: refpurpose
+#: reference_raster.xml:3970
+#, no-c-format
+msgid ""
+"Returns a geometry with the same X/Y coordinates as the input geometry, and "
+"values from the raster copied into the M dimension using the requested "
+"resample algorithm."
+msgstr ""
+
 #. Tag: funcprototype
 #: reference_raster.xml:3975
 #, no-c-format
@@ -9502,6 +9511,15 @@ msgstr ""
 "<paramdef choice=\"opt\"><type>text </type> <parameter>resample=nearest</"
 "parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
 "<parameter>band=1</parameter></paramdef>"
+
+#. Tag: para
+#: reference_raster.xml:3988
+#, no-c-format
+msgid ""
+"Returns a geometry with the same X/Y coordinates as the input geometry, and "
+"values from the raster copied into the M dimensions using the requested "
+"resample algorithm."
+msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3996
@@ -12299,7 +12317,8 @@ msgstr ""
 msgid ""
 "New pixel values are computed using one of the following resampling "
 "algorithms:"
-msgstr "新しいピクセル値は次のリサンプリングアルゴリズムの一つを使って計算されます:"
+msgstr ""
+"新しいピクセル値は次のリサンプリングアルゴリズムの一つを使って計算されます:"
 
 #. Tag: para
 #: reference_raster.xml:4814 reference_raster.xml:4888
@@ -12349,8 +12368,9 @@ msgstr "<para>Min (最小)</para>"
 msgid ""
 "The default is NearestNeighbor which is the fastest but results in the worst "
 "interpolation."
-msgstr "デフォルトはNearestNeighbor "
-"(最近傍補間)です。最も実行速度が速いですが、結果の補間が最も悪くなります。"
+msgstr ""
+"デフォルトはNearestNeighbor (最近傍補間)です。最も実行速度が速いですが、結果"
+"の補間が最も悪くなります。"
 
 #. Tag: para
 #: reference_raster.xml:4824
@@ -12451,11 +12471,11 @@ msgid ""
 "spelling), Bilinear, Cubic, CubicSpline, Lanczos, Max or Min resampling "
 "algorithm. Default is NearestNeighbor."
 msgstr ""
-"スケール (ピクセルサイズ)だけを調整するリサンプリングを行います。"
-"新しいピクセル値のリサンプリングアルゴリズムとして最近傍補間 ("
-"'NearestNeighbor' (英語または米式綴り方))、双線形補間 ('Bilinear')、3次補間 "
-"('Cubic')、3次スプライン補間 ('CubicSpline')、ランチョス補間 "
-"('Lanczos')を用います。デフォルトは最近傍補間です。"
+"スケール (ピクセルサイズ)だけを調整するリサンプリングを行います。新しいピクセ"
+"ル値のリサンプリングアルゴリズムとして最近傍補間 ('NearestNeighbor' (英語また"
+"は米式綴り方))、双線形補間 ('Bilinear')、3次補間 ('Cubic')、3次スプライン補"
+"間 ('CubicSpline')、ランチョス補間 ('Lanczos')を用います。デフォルトは最近傍"
+"補間です。"
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:4861
@@ -12497,7 +12517,8 @@ msgstr ""
 msgid ""
 "Resample a raster by adjusting only its scale (or pixel size). New pixel "
 "values are computed using one of the following resampling algorithms:"
-msgstr "スケール (またはピクセルサイズ)だけを調整するリサンプリングを行います。新しい"
+msgstr ""
+"スケール (またはピクセルサイズ)だけを調整するリサンプリングを行います。新しい"
 "ピクセル値は次のリサンプリングアルゴリズム使って計算されます:"
 
 #. Tag: para

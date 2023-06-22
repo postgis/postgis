@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-12-04 00:50+0000\n"
+"POT-Creation-Date: 2023-06-22 22:04+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -6625,7 +6625,7 @@ msgid "ST_SetZ"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:3927 reference_raster.xml:3970
+#: reference_raster.xml:3927
 #, no-c-format
 msgid ""
 "Returns a geometry with the same X/Y coordinates as the input geometry, and "
@@ -6646,7 +6646,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:3945 reference_raster.xml:3988
+#: reference_raster.xml:3945
 #, no-c-format
 msgid ""
 "Returns a geometry with the same X/Y coordinates as the input geometry, and "
@@ -6717,6 +6717,15 @@ msgstr ""
 msgid "ST_SetM"
 msgstr ""
 
+#. Tag: refpurpose
+#: reference_raster.xml:3970
+#, no-c-format
+msgid ""
+"Returns a geometry with the same X/Y coordinates as the input geometry, and "
+"values from the raster copied into the M dimension using the requested "
+"resample algorithm."
+msgstr ""
+
 #. Tag: funcprototype
 #: reference_raster.xml:3975
 #, no-c-format
@@ -6727,6 +6736,15 @@ msgid ""
 "<paramdef choice=\"opt\"><type>text </type> <parameter>resample=nearest</"
 "parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
 "<parameter>band=1</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_raster.xml:3988
+#, no-c-format
+msgid ""
+"Returns a geometry with the same X/Y coordinates as the input geometry, and "
+"values from the raster copied into the M dimensions using the requested "
+"resample algorithm."
 msgstr ""
 
 #. Tag: programlisting

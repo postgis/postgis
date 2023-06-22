@@ -105,6 +105,7 @@ NOTICE:  Extension postgis_tiger_geocoder is not available or not packagable for
 		<para>Reports full PostGIS version and build configuration
 		infos. Also informs about synchronization between
 		libraries and scripts suggesting upgrades as needed.</para>
+        <para>Enhanced: 3.4.0 now includes extra PROJ configurations NETWORK_ENABLED, URL_ENDPOINT and DATABASE_PATH of proj.db location </para>
 	  </refsection>
 
 	  <refsection>
@@ -113,8 +114,7 @@ NOTICE:  Extension postgis_tiger_geocoder is not available or not packagable for
 		<programlisting>SELECT PostGIS_Full_Version();
 							   postgis_full_version
 ----------------------------------------------------------------------------------
-POSTGIS="3.0.0dev r17211" [EXTENSION] PGSQL="110" GEOS="3.8.0dev-CAPI-1.11.0 df24b6bb" SFCGAL="1.3.6" PROJ="Rel. 5.2.0, September 15th, 2018"
-GDAL="GDAL 2.3.2, released 2018/09/21" LIBXML="2.9.9" LIBJSON="0.13.1" LIBPROTOBUF="1.3.1" WAGYU="0.4.3 (Internal)" TOPOLOGY RASTER
+POSTGIS="3.4.0dev 3.3.0rc2-993-g61bdf43a7" [EXTENSION] PGSQL="160" GEOS="3.12.0dev-CAPI-1.18.0" SFCGAL="1.3.8" PROJ="7.2.1 NETWORK_ENABLED=OFF URL_ENDPOINT=https://cdn.proj.org USER_WRITABLE_DIRECTORY=/tmp/proj DATABASE_PATH=/usr/share/proj/proj.db" GDAL="GDAL 3.2.2, released 2021/03/05" LIBXML="2.9.10" LIBJSON="0.15" LIBPROTOBUF="1.3.3" WAGYU="0.5.0 (Internal)" TOPOLOGY RASTER
 (1 row)
 </programlisting>
 	  </refsection>
@@ -165,7 +165,7 @@ GDAL="GDAL 2.3.2, released 2018/09/21" LIBXML="2.9.9" LIBJSON="0.13.1" LIBPROTOB
 		<programlisting>SELECT PostGIS_GEOS_Version();
  postgis_geos_version
 ----------------------
- 3.1.0-CAPI-1.5.0
+3.12.0dev-CAPI-1.18.0
 (1 row)</programlisting>
 	  </refsection>
 
@@ -213,7 +213,7 @@ GDAL="GDAL 2.3.2, released 2018/09/21" LIBXML="2.9.9" LIBJSON="0.13.1" LIBPROTOB
 		<programlisting>SELECT PostGIS_GEOS_Compiled_Version();
  postgis_geos_compiled_version
 -------------------------------
- 3.8.0
+ 3.12.0
 (1 row)</programlisting>
 	  </refsection>
 
@@ -257,7 +257,7 @@ GDAL="GDAL 2.3.2, released 2018/09/21" LIBXML="2.9.9" LIBJSON="0.13.1" LIBPROTOB
 		<programlisting>SELECT PostGIS_Liblwgeom_Version();
 postgis_liblwgeom_version
 --------------------------
-2.3.3 r15473
+3.4.0dev 3.3.0rc2-993-g61bdf43a7
 (1 row)</programlisting>
 	  </refsection>
 
@@ -303,7 +303,7 @@ postgis_liblwgeom_version
 		<programlisting>SELECT PostGIS_LibXML_Version();
  postgis_libxml_version
 ----------------------
- 2.7.6
+ 2.9.10
 (1 row)</programlisting>
 	  </refsection>
 
@@ -347,7 +347,7 @@ postgis_liblwgeom_version
 		<programlisting>SELECT PostGIS_Lib_Build_Date();
  postgis_lib_build_date
 ------------------------
- 2008-06-21 17:53:21
+ 2023-06-22 03:56:11
 (1 row)</programlisting>
 	  </refsection>
 	</refentry>
@@ -382,7 +382,7 @@ postgis_liblwgeom_version
 		<programlisting>SELECT PostGIS_Lib_Version();
  postgis_lib_version
 ---------------------
- 1.3.3
+ 3.4.0dev
 (1 row)</programlisting>
 	  </refsection>
 
@@ -418,8 +418,9 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the version number of the PROJ4 library, or
-		<varname>NULL</varname> if PROJ4 support is not enabled.</para>
+		<para>Returns the version number of the PROJ library and some configuration options of proj.</para>
+
+        <para>Enhanced: 3.4.0 now includes NETWORK_ENABLED, URL_ENDPOINT and DATABASE_PATH of proj.db location </para>
 	  </refsection>
 
 	  <refsection>
@@ -428,7 +429,7 @@ postgis_liblwgeom_version
 		<programlisting>SELECT PostGIS_PROJ_Version();
   postgis_proj_version
 -------------------------
- Rel. 4.4.9, 29 Oct 2004
+7.2.1 NETWORK_ENABLED=OFF URL_ENDPOINT=https://cdn.proj.org USER_WRITABLE_DIRECTORY=/tmp/proj DATABASE_PATH=/usr/share/proj/proj.db
 (1 row)</programlisting>
 	  </refsection>
 
@@ -473,7 +474,7 @@ postgis_liblwgeom_version
 		<programlisting>SELECT PostGIS_Wagyu_Version();
  postgis_wagyu_version
 -----------------------
- 0.4.3 (Internal)
+ 0.5.0 (Internal)
 (1 row)</programlisting>
 	  </refsection>
 
@@ -520,7 +521,7 @@ postgis_liblwgeom_version
 		<programlisting>SELECT PostGIS_Scripts_Build_Date();
   postgis_scripts_build_date
 -------------------------
- 2007-08-18 09:09:26
+ 2023-06-22 03:56:11
 (1 row)</programlisting>
 	  </refsection>
 
@@ -576,7 +577,7 @@ postgis_liblwgeom_version
 		<programlisting>SELECT PostGIS_Scripts_Installed();
   postgis_scripts_installed
 -------------------------
- 1.5.0SVN
+ 3.4.0dev 3.3.0rc2-993-g61bdf43a7
 (1 row)</programlisting>
 	  </refsection>
 
@@ -626,7 +627,7 @@ postgis_liblwgeom_version
 		<programlisting>SELECT PostGIS_Scripts_Released();
   postgis_scripts_released
 -------------------------
- 1.3.4SVN
+ 3.4.0dev 3.3.0rc2-993-g61bdf43a7
 (1 row)</programlisting>
 	  </refsection>
 
@@ -667,7 +668,7 @@ postgis_liblwgeom_version
 		<programlisting>SELECT PostGIS_Version();
 			postgis_version
 ---------------------------------------
- 1.3 USE_GEOS=1 USE_PROJ=1 USE_STATS=1
+ 3.4 USE_GEOS=1 USE_PROJ=1 USE_STATS=1
 (1 row)</programlisting>
 	  </refsection>
 

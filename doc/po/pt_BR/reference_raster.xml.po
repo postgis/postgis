@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-12-04 00:50+0000\n"
+"POT-Creation-Date: 2023-06-22 22:04+0000\n"
 "PO-Revision-Date: 2018-07-23 18:02+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -9056,7 +9056,7 @@ msgid "ST_SetZ"
 msgstr "ST_SetSkew"
 
 #. Tag: refpurpose
-#: reference_raster.xml:3927 reference_raster.xml:3970
+#: reference_raster.xml:3927
 #, no-c-format
 msgid ""
 "Returns a geometry with the same X/Y coordinates as the input geometry, and "
@@ -9083,7 +9083,7 @@ msgstr ""
 "<parameter>srid=sameassource</parameter></paramdef>"
 
 #. Tag: para
-#: reference_raster.xml:3945 reference_raster.xml:3988
+#: reference_raster.xml:3945
 #, no-c-format
 msgid ""
 "Returns a geometry with the same X/Y coordinates as the input geometry, and "
@@ -9154,6 +9154,15 @@ msgstr ", <xref linkend=\"RT_ST_SetSRID\"/>"
 msgid "ST_SetM"
 msgstr "ST_SetSkew"
 
+#. Tag: refpurpose
+#: reference_raster.xml:3970
+#, no-c-format
+msgid ""
+"Returns a geometry with the same X/Y coordinates as the input geometry, and "
+"values from the raster copied into the M dimension using the requested "
+"resample algorithm."
+msgstr ""
+
 #. Tag: funcprototype
 #: reference_raster.xml:3975
 #, fuzzy, no-c-format
@@ -9171,6 +9180,15 @@ msgstr ""
 "<paramdef choice=\"opt\"><type>text[] </type> <parameter>options=NULL</"
 "parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
 "<parameter>srid=sameassource</parameter></paramdef>"
+
+#. Tag: para
+#: reference_raster.xml:3988
+#, no-c-format
+msgid ""
+"Returns a geometry with the same X/Y coordinates as the input geometry, and "
+"values from the raster copied into the M dimensions using the requested "
+"resample algorithm."
+msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3996
