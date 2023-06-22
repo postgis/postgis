@@ -29,6 +29,7 @@ xxxx/xx/xx
   - GH718, ST_QuantizeCoordinates(): speed-up implementation (Even Rouault)
   - Repair spatial planner stats to use computed selectivity for contains/within queries (Paul Ramsey)
   - Additional metadata on Proj installation in postgis_proj_version (Paul Ramsey)
+  - #5177, allow building tools without PostgreSQL server headers (Sandro Santilli)
 
 * Bug Fix *
 
