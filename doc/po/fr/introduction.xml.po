@@ -6,15 +6,15 @@
 # Vincent Picavet <vincent.ml@oslandia.com>, 2013
 # Vincent Picavet <vincent.ml@oslandia.com>, 2013
 # Vincent Picavet <vincent.ml@oslandia.com>, 2013
-# Thomas Muguet <thomas.muguet@oslandia.com>, 2022.
+# Thomas Muguet <thomas.muguet@oslandia.com>, 2022, 2023.
 # Vincent Bre <vincent.bre@oslandia.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-04-10 06:16+0000\n"
-"PO-Revision-Date: 2023-05-10 15:08+0000\n"
-"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
+"PO-Revision-Date: 2023-06-22 22:07+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "introductionxml/fr/>\n"
 "Language: fr\n"
@@ -469,7 +469,8 @@ msgstr "David Zwarg"
 #, no-c-format
 msgid "Raster development (mostly map algebra analytic functions)"
 msgstr ""
-"Développement raster (principalement fonctions analytiques de map algebra)"
+"Développement raster (principalement fonctions analytiques d'algèbre "
+"cartographique)"
 
 #. Tag: title
 #: introduction.xml:209
