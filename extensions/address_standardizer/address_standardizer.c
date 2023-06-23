@@ -151,9 +151,10 @@ debug_standardize_address(PG_FUNCTION_ARGS)
 	appendStringInfo(result, "%s", quote_identifier(macro));
 	appendStringInfoString(result, ",");
 
-    std = GetStdUsingFCInfo(fcinfo, lextab, gaztab, rultab);
-    if (!std)
-        elog(ERROR, "%s failed to create the address standardizer object!",  __func__);
+	std = GetStdUsingFCInfo(fcinfo, lextab, gaztab, rultab);
+	if (!std){
+		elog(ERROR, "%s failed to create the address standardizer object!",  __func__);
+	}
 
 	elog(DEBUG2, "%s: calling std_standardize_mm('%s', '%s')", __func__ , micro, macro);
     stdaddr = std_standardize_mm( std, micro, macro, 0 );

@@ -1,0 +1,12 @@
+diff -w -U3 C:/ming64gcc81/projects/postgis/postgis-git/extensions/postgis_tiger_geocoder/expected/test-pagc_normalize_address.out C:/ming64gcc81/projects/postgis/postgis-git/extensions/postgis_tiger_geocoder/results/test-pagc_normalize_address.out
+--- C:/ming64gcc81/projects/postgis/postgis-git/extensions/postgis_tiger_geocoder/expected/test-pagc_normalize_address.out	2023-06-22 22:01:47.690311400 -0400
++++ C:/ming64gcc81/projects/postgis/postgis-git/extensions/postgis_tiger_geocoder/results/test-pagc_normalize_address.out	2023-06-22 22:03:25.945667700 -0400
+@@ -4,7 +4,7 @@
+ #1051a|212||3RD|AVE|N|STE 560|MINNEAPOLIS|MN|55401|t||212
+ #1051b|3937||43RD|AVE|S||MINNEAPOLIS|MN|55406|t||3937
+ #1051c|212|N|3RD|AVE|||MINNEAPOLIS|MN|55401|t||212
+-#1051d|212||3RD|AVE|||MINNEAPOLIS|MN|N 55401|t||212
++#1051d|212||3RD|AVE|N||MINNEAPOLIS|MN|55401|t||212
+ 529||MAIN|ST|||BOSTON|MA|02129|t||529
+ 529||MAIN|ST|||BOSTON|MA|02129|t||529
+ 529||MAIN|ST|||BOSTON|MA||t||529
