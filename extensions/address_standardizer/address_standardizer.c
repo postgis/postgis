@@ -2,6 +2,8 @@
 #include "fmgr.h"
 #include "funcapi.h"
 #include "catalog/pg_type.h"
+#include "utils/memutils.h"
+#include "executor/spi.h"
 #include "utils/builtins.h"
 
 #undef DEBUG
@@ -67,7 +69,7 @@ debug_standardize_address(PG_FUNCTION_ARGS)
 	int k;
     char rule_in[100];
 	char rule_out[100];
-	char temp[10];
+	char temp[100];
     int stz_no , n ;
 	DEF *__def__ ;
     STZ **__stz_list__;
@@ -76,6 +78,16 @@ debug_standardize_address(PG_FUNCTION_ARGS)
 	int lex_pos;
 	int started;
 	STZ *__cur_stz__;
+	/**start: variables for filtering rules **/
+	StringInfo	sql;
+	SPIPlanPtr plan = NULL;
+	Datum datrul;
+	bool isnull;
+	Datum values[1];
+  	Oid argtypes[1];
+	int spi_result;
+	int spi_conn_ret;
+	/**stop: variables for filtering rules **/
 	StringInfo	result  = makeStringInfo();
 
 	elog(DEBUG2, "Start %s", __func__);
@@ -166,6 +178,7 @@ debug_standardize_address(PG_FUNCTION_ARGS)
 	elog(DEBUG2, "Input tokenization candidates:\n");
 	appendStringInfoString(result, "\"input_tokens\":[");
 	started = 0;
+
 	for (lex_pos = FIRST_LEX_POS;lex_pos < ms->LexNum;lex_pos ++)
 	{
 
@@ -194,6 +207,27 @@ debug_standardize_address(PG_FUNCTION_ARGS)
 	started = 0;
 
 	appendStringInfoString(result, ", \"rules\":[");
+	sql = makeStringInfo();
+	appendStringInfo(sql, "SELECT id, rule FROM %s ", quote_identifier(rultab));
+	appendStringInfoString(sql, "WHERE rule LIKE $1::varchar");
+	argtypes[0] = CSTRINGOID;
+
+	spi_conn_ret = 1;
+	spi_conn_ret = SPI_connect();
+	if (spi_conn_ret != SPI_OK_CONNECT) {
+		elog(ERROR, "%s: Could not connect to the SPI manager", __func__);
+		return -1;
+	};
+	plan = SPI_prepare(sql->data, 1, argtypes);
+	//plan = SPI_prepare("SELECT id, rule FROM us_rules WHERE rule LIKE '1234%'", 0, NULL);
+	if ( ! plan )
+    {
+      elog(ERROR, "%s: unexpected return (%d) from query preparation: %s, (%d)",
+              __func__, SPI_result, sql->data, SPI_ERROR_UNCONNECTED);
+      return -1;
+    }
+	SPI_keepplan(plan);
+
 	for ( stz_no = 0 ; stz_no < n ; stz_no ++ )
 	{
 		if  (stz_no > 0 ){
@@ -239,20 +273,66 @@ debug_standardize_address(PG_FUNCTION_ARGS)
 			if ( k2 == FAIL ) break ;
 		}
 
-		appendStringInfo(result, "], \"rule_string\":\"%s",rule_in);
-		appendStringInfoString(result, " -1 ");
-		appendStringInfo(result, "%s",rule_out);
+		appendStringInfoString(result, "]");
+		/* get the sql for the matching rule records */
+		strcpy(temp, "");
+		strcat(temp, rule_in);
+		strcat(temp, " -1 ");
+		strcat(temp, rule_out);
+		strcat(temp, " -1 %");
+		 /* execute */
+ 		values[0] = CStringGetDatum(temp);
+  		spi_result = SPI_execute_plan(plan, values, NULL, true, 1);
+
+		//MemoryContextSwitchTo( oldcontext ); /* switch back */
+		if ( spi_result != SPI_OK_SELECT )
+		{
+			elog(ERROR, "%s: unexpected return (%d) from query execution: %s", __func__, spi_result, sql->data);
+			return -1;
+		}
+		else {
+
+			elog(DEBUG2, "%s: query success, sql: %s, parameter: %s", __func__, sql->data, temp);
+		}
+
+		appendStringInfo(result, ", \"rule_stub_string\": %s", quote_identifier(temp));
+
+		if (SPI_processed > 0 && SPI_tuptable != NULL) {
+			elog(DEBUG2, "%s: Processing results for: %s, rule: %s", __func__, sql->data, temp );
+			datrul = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1, &isnull);
+			if ( isnull )
+			{
+				elog(NOTICE, "%s: No match %s",  __func__, sql->data);
+				SPI_freetuptable(SPI_tuptable);
+				return -1;
+			}
+
+
+			appendStringInfo(result, ", \"rule_id\": %d",DatumGetInt32(datrul));
+			datrul = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 2, &isnull);
+			//char *srule = TextDatumGetCString(datrul);
+			appendStringInfo(result, ", \"rule_string\": %s", quote_identifier(TextDatumGetCString(datrul)));
+			//appendStringInfoString(result, " -1 ");
+			//appendStringInfo(result, "%s",rule_out);
+			SPI_freetuptable(SPI_tuptable);
+		}
+		else {
+			/** TODO: Figure out why this happens a lot **/
+			elog(DEBUG2, "%s: no match found for, sql: %s, parameter: %s", __func__, sql->data, temp);
+			appendStringInfoString(result, ", \"rule_id\": -1");
+		}
 
 		/**
-		 * TODO:  Figure out how to add the type and weight rule type
+		 * TODO:  Add type and weight of rule (parsed from rulestring)
 		 * **/
 		//appendStringInfo(result, " %d", ruleref->Type);
 		//elog(DEBUG2, "Rule  type  %d",  ruleref->Type);
 		/** rule weight **/
 		//appendStringInfo(result, " %d", ruleref->Weight);
 
-		appendStringInfoString(result, "\"}");
+		appendStringInfoString(result, "}");
 	}
+	SPI_finish();
 	appendStringInfoChar(result, ']');
 	elog(DEBUG2, "%s: setup values json", __func__);
 	appendStringInfoString(result, ",\"stdaddr\": {");
