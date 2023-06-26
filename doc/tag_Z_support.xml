@@ -1,0 +1,9 @@
+<remark conformance="3d">
+<inlinemediaobject>
+   <imageobject>
+     <imagedata fileref='images/check.png' />
+   </imageobject>
+</inlinemediaobject>
+This function supports 3d and will not drop the z-index.
+</remark>
+

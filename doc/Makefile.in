@@ -158,6 +158,17 @@ XML_SOURCES = \
 	reference.xml \
 	release_notes.xml \
 	reporting.xml \
+	tag_address_standardizer_required.xml \
+	tag_curve_support.xml \
+	tag_index_aware.xml \
+	tag_M_support.xml \
+	tag_P_support.xml \
+	tag_sfcgal_enhanced.xml \
+	tag_sfcgal_required.xml \
+	tag_sfs_compliant.xml \
+	tag_sqlmm_compliant.xml \
+	tag_T_support.xml \
+	tag_Z_support.xml \
 	using_postgis_dataman.xml \
 	using_postgis_query.xml \
 	using_raster_dataman.xml

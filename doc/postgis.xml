@@ -61,83 +61,17 @@
 <!ENTITY extras_historytable SYSTEM "extras_historytable.xml">
 <!ENTITY extras_address_standardizer SYSTEM "extras_address_standardizer.xml">
 
-<!ENTITY sfs_compliant
-"<inlinemediaobject>
-   <imageobject><imagedata fileref='images/check.png' /></imageobject>
- </inlinemediaobject>
- This method implements the <ulink
- url='http://www.opengeospatial.org/standards/sfs'>OGC Simple Features
- Implementation Specification for SQL 1.1.</ulink>">
-
-<!ENTITY sqlmm_compliant
-"<inlinemediaobject>
-   <imageobject>
-     <imagedata fileref='images/check.png' />
-   </imageobject>
- </inlinemediaobject> This method implements the SQL/MM specification.">
-
-<!ENTITY sfcgal_enhanced
-"<inlinemediaobject>
-   <imageobject>
-     <imagedata fileref='images/check.png' />
-   </imageobject>
- </inlinemediaobject> This method is also provided by SFCGAL backend.">
-
-<!ENTITY sfcgal_required
-"<inlinemediaobject>
-   <imageobject>
-     <imagedata fileref='images/check.png' />
-   </imageobject>
- </inlinemediaobject> This method needs SFCGAL backend.">
-
-<!ENTITY address_standardizer_required
-"<inlinemediaobject>
-   <imageobject>
-     <imagedata fileref='images/check.png' />
-   </imageobject>
- </inlinemediaobject> This method needs address_standardizer extension.">
-
-<!ENTITY curve_support
-"<inlinemediaobject>
-   <imageobject><imagedata fileref='images/check.png' /></imageobject>
- </inlinemediaobject>
- This method supports Circular Strings and Curves">
-
-<!ENTITY Z_support
-"<inlinemediaobject>
-   <imageobject>
-     <imagedata fileref='images/check.png' />
-   </imageobject>
- </inlinemediaobject>
- This function supports 3d and will not drop the z-index.">
-
-<!ENTITY M_support
-"<inlinemediaobject>
-   <imageobject>
-     <imagedata fileref='images/check.png' />
-   </imageobject>
- </inlinemediaobject>
- This function supports M coordinates.">
-
-<!ENTITY P_support
-"<inlinemediaobject>
-   <imageobject>
-     <imagedata fileref='images/check.png' />
-   </imageobject>
- </inlinemediaobject>
- This function supports Polyhedral surfaces.">
-
-<!ENTITY T_support
-"<inlinemediaobject>
-   <imageobject>
-     <imagedata fileref='images/check.png' />
-   </imageobject>
- </inlinemediaobject>
- This function supports Triangles and Triangulated Irregular Network Surfaces (TIN).">
-
-<!ENTITY index_aware
-"This function automatically includes a bounding box comparison
-that makes use of any spatial indexes that are available on the geometries.">
+<!ENTITY sfs_compliant SYSTEM "tag_sfs_compliant.xml">
+<!ENTITY sqlmm_compliant SYSTEM "tag_sqlmm_compliant.xml">
+<!ENTITY sfcgal_enhanced SYSTEM "tag_sfcgal_enhanced.xml">
+<!ENTITY sfcgal_required SYSTEM "tag_sfcgal_required.xml">
+<!ENTITY address_standardizer_required SYSTEM "tag_address_standardizer_required.xml">
+<!ENTITY curve_support SYSTEM "tag_curve_support.xml">
+<!ENTITY Z_support SYSTEM "tag_Z_support.xml">
+<!ENTITY M_support SYSTEM "tag_M_support.xml">
+<!ENTITY P_support SYSTEM "tag_P_support.xml">
+<!ENTITY T_support SYSTEM "tag_T_support.xml">
+<!ENTITY index_aware SYSTEM "tag_index_aware.xml">
 
 ]>
 

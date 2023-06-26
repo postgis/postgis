@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-05-25 20:53+0000\n"
+"POT-Creation-Date: 2023-06-27 13:22+0000\n"
 "PO-Revision-Date: 2022-01-31 10:53+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis/"
@@ -20,19 +20,19 @@ msgstr ""
 "X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
-#: postgis.xml:145
+#: postgis.xml:79
 #, no-c-format
 msgid "PostGIS &last_release_version; Manual"
 msgstr "PostGIS &last_release_version; マニュアル"
 
 #. Tag: corpauthor
-#: postgis.xml:149
+#: postgis.xml:83
 #, no-c-format
 msgid "The PostGIS Development Group"
 msgstr "PostGIS開発グループ"
 
 #. Tag: affiliation
-#: postgis.xml:155
+#: postgis.xml:89
 #, no-c-format
 msgid ""
 "<orgname><ulink url=\"http://www.cleverelephant.ca\">clever elephant</"
@@ -46,7 +46,7 @@ msgstr ""
 "email></address>"
 
 #. Tag: para
-#: postgis.xml:169
+#: postgis.xml:103
 #, no-c-format
 msgid ""
 "PostGIS is an extension to the <ulink url=\"https://www.postgresql.org/"
@@ -61,13 +61,13 @@ msgstr ""
 "ジェクトの解析および処理を行う機能を持ちます。"
 
 #. Tag: para
-#: postgis.xml:178
+#: postgis.xml:112
 #, no-c-format
 msgid "This is the manual for version &last_release_version;"
 msgstr "本マニュアルは、&last_release_version;版のマニュアルです。"
 
 #. Tag: para
-#: postgis.xml:179
+#: postgis.xml:113
 #, no-c-format
 msgid ""
 "This work is licensed under a <ulink url=\"http://creativecommons.org/"

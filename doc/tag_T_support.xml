@@ -1,0 +1,9 @@
+<remark conformance="triangle">
+<inlinemediaobject>
+   <imageobject>
+     <imagedata fileref='images/check.png' />
+    </imageobject>
+</inlinemediaobject>
+This function supports Triangles and Triangulated Irregular Network Surfaces (TIN).
+</remark>
+

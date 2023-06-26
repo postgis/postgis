@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-05-25 20:53+0000\n"
+"POT-Creation-Date: 2023-06-27 13:22+0000\n"
 "PO-Revision-Date: 2022-04-20 14:55+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Portuguese (Brazil) <https://weblate.osgeo.org/projects/"
@@ -20,19 +20,19 @@ msgstr ""
 "X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
-#: postgis.xml:145
+#: postgis.xml:79
 #, no-c-format
 msgid "PostGIS &last_release_version; Manual"
 msgstr "PostGIS &last_release_version; Manual"
 
 #. Tag: corpauthor
-#: postgis.xml:149
+#: postgis.xml:83
 #, no-c-format
 msgid "The PostGIS Development Group"
 msgstr ""
 
 #. Tag: affiliation
-#: postgis.xml:155
+#: postgis.xml:89
 #, no-c-format
 msgid ""
 "<orgname><ulink url=\"http://www.cleverelephant.ca\">clever elephant</"
@@ -46,7 +46,7 @@ msgstr ""
 "address>"
 
 #. Tag: para
-#: postgis.xml:169
+#: postgis.xml:103
 #, no-c-format
 msgid ""
 "PostGIS is an extension to the <ulink url=\"https://www.postgresql.org/"
@@ -62,13 +62,13 @@ msgstr ""
 "R-Tree, e funções para analise e processamento de objetos SIG."
 
 #. Tag: para
-#: postgis.xml:178
+#: postgis.xml:112
 #, no-c-format
 msgid "This is the manual for version &last_release_version;"
 msgstr "Este é o manual para a versão &last_release_version;"
 
 #. Tag: para
-#: postgis.xml:179
+#: postgis.xml:113
 #, fuzzy, no-c-format
 msgid ""
 "This work is licensed under a <ulink url=\"http://creativecommons.org/"

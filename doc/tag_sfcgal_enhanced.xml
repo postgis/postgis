@@ -1,0 +1,6 @@
+<remark conformance="sfcgal_enhanced">
+<inlinemediaobject>
+    <imageobject><imagedata fileref='images/check.png' /></imageobject>
+</inlinemediaobject>
+This method is also provided by SFCGAL backend.
+</remark>

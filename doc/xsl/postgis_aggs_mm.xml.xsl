@@ -94,7 +94,7 @@
 						<xsl:for-each select="refsection">
 							<xsl:for-each select="para">
 								<xsl:choose>
-									<xsl:when test="contains(.,'implements the SQL/MM')">
+									<xsl:when test="contains(remark/@conformance, 'sqlmm')">
 										<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /> <xsl:value-of select="." /></simpara></listitem>
 									</xsl:when>
 								</xsl:choose>
@@ -235,7 +235,7 @@
 						<xsl:for-each select="refsection">
 							<xsl:for-each select="para">
 								<xsl:choose>
-									<xsl:when test="contains(.,'This function supports 3d')">
+									<xsl:when test="contains(remark/@conformance, '3d')">
 										<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
 									</xsl:when>
 								</xsl:choose>
@@ -266,7 +266,7 @@
 						<xsl:for-each select="refsection">
 							<xsl:for-each select="para">
 								<xsl:choose>
-									<xsl:when test="contains(.,'supports Circular Strings')">
+									<xsl:when test="contains(remark/@conformance, 'curve')">
 										<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
 									</xsl:when>
 								</xsl:choose>
@@ -297,7 +297,7 @@
 						<xsl:for-each select="refsection">
 							<xsl:for-each select="para">
 								<xsl:choose>
-									<xsl:when test="contains(.,'supports Polyhedral')">
+									<xsl:when test="contains(remark/@conformance, 'sqlmm')">
 										<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
 									</xsl:when>
 								</xsl:choose>
@@ -378,7 +378,19 @@
 								<xsl:choose>
 									<!-- direct support -->
 									<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'geometry') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geometry')">
-										<entry><xsl:choose><xsl:when test="contains(.,'needs SFCGAL')"><xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/></xsl:when><xsl:otherwise><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></xsl:otherwise></xsl:choose></entry>
+										<entry>
+										<xsl:choose>
+											<xsl:when test="refsection/para/remark[@conformance='sfcgal_required']">
+												<xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/>
+											</xsl:when>
+											<xsl:when test="refsection/para/remark[@conformance='sfcgal_enhanced']">
+												<xsl:value-of select="$matrix_sfcgal_enhanced" disable-output-escaping="yes"/>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/>
+											</xsl:otherwise>
+										</xsl:choose>
+										</entry>
 									</xsl:when>
 									<!-- support via autocast -->
 									<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'box') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'box')">
@@ -408,21 +420,32 @@
 								<!-- If at least one paragraph contains support 3d -->
 								<xsl:choose>
 									<!-- supports -->
-									<xsl:when test="contains(.,'This function supports 3d')">
+									<xsl:when test="refsection/para/remark[@conformance='3d']">
 										<!-- if 3d denote if it needs sfcgal -->
-										<entry><xsl:choose><xsl:when test="contains(.,'needs SFCGAL')"><xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/></xsl:when>
-										<xsl:when test="contains(.,'provided by SFCGAL')"><xsl:value-of select="$matrix_sfcgal_enhanced" disable-output-escaping="yes"/></xsl:when>
-										<xsl:otherwise><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></xsl:otherwise></xsl:choose></entry>
+										<entry>
+										<xsl:choose>
+											<xsl:when test="refsection/para/remark[@conformance='sfcgal_required']">
+												<xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/>
+											</xsl:when>
+											<xsl:when test="refsection/para/remark[@conformance='sfcgal_enhanced']">
+												<xsl:value-of select="$matrix_sfcgal_enhanced" disable-output-escaping="yes"/>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/>
+											</xsl:otherwise>
+										</xsl:choose>
+										</entry>
 									</xsl:when>
 									<!-- no support -->
 									<xsl:otherwise>
 										<entry></entry>
 									</xsl:otherwise>
 								</xsl:choose>
+
 								<!-- Support for Curve -->
 								<xsl:choose>
 									<!-- supports -->
-									<xsl:when test="contains(.,'supports Circular Strings')">
+									<xsl:when test="refsection/para/remark[@conformance='curve']">
 										<entry><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></entry>
 									</xsl:when>
 									<!-- no support -->
@@ -433,10 +456,20 @@
 								<!-- SQL MM compliance -->
 								<xsl:choose>
 									<!-- supports -->
-									<xsl:when test="contains(.,'implements the SQL/MM')">
-										<entry><xsl:choose><xsl:when test="contains(.,'needs SFCGAL')"><xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/></xsl:when>
-										<xsl:when test="contains(.,'provided by SFCGAL')"><xsl:value-of select="$matrix_sfcgal_enhanced" disable-output-escaping="yes"/></xsl:when>
-										<xsl:otherwise><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></xsl:otherwise></xsl:choose></entry>
+									<xsl:when test="refsection/para/remark[@conformance='sqlmm']">
+										<entry>
+										<xsl:choose>
+											<xsl:when test="refsection/para/remark[@conformance='sfcgal_required']">
+												<xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/>
+											</xsl:when>
+											<xsl:when test="refsection/para/remark[@conformance='sfcgal_enhanced']">
+												<xsl:value-of select="$matrix_sfcgal_enhanced" disable-output-escaping="yes"/>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/>
+											</xsl:otherwise>
+										</xsl:choose>
+										</entry>
 									</xsl:when>
 									<!-- no support -->
 									<xsl:otherwise>
@@ -446,10 +479,20 @@
 							<!-- Polyhedral surface support -->
 								<xsl:choose>
 									<!-- supports -->
-									<xsl:when test="contains(.,'Polyhedral')">
-										<entry><xsl:choose><xsl:when test="contains(.,'needs SFCGAL')"><xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/></xsl:when>
-										<xsl:when test="contains(.,'provided by SFCGAL')"><xsl:value-of select="$matrix_sfcgal_enhanced" disable-output-escaping="yes"/></xsl:when>
-										<xsl:otherwise><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></xsl:otherwise></xsl:choose></entry>
+									<xsl:when test="refsection/para/remark[@conformance='polyhedral']">
+										<entry>
+										<xsl:choose>
+											<xsl:when test="refsection/para/remark[@conformance='sfcgal_required']">
+												<xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/>
+											</xsl:when>
+											<xsl:when test="refsection/para/remark[@conformance='sfcgal_enhanced']">
+												<xsl:value-of select="$matrix_sfcgal_enhanced" disable-output-escaping="yes"/>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/>
+											</xsl:otherwise>
+										</xsl:choose>
+										</entry>
 									</xsl:when>
 									<!-- no support -->
 									<xsl:otherwise>
@@ -459,10 +502,20 @@
 							<!-- Triangle and TIN surface support -->
 								<xsl:choose>
 									<!-- supports -->
-									<xsl:when test="contains(.,'Triang')">
-										<entry><xsl:choose><xsl:when test="contains(.,'needs SFCGAL')"><xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/></xsl:when>
-										<xsl:when test="contains(.,'provided by SFCGAL')"><xsl:value-of select="$matrix_sfcgal_enhanced" disable-output-escaping="yes"/></xsl:when>
-										<xsl:otherwise><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></xsl:otherwise></xsl:choose></entry>
+									<xsl:when test="refsection/para/remark[@conformance='triangle']">
+										<entry>
+										<xsl:choose>
+											<xsl:when test="refsection/para/remark[@conformance='sfcgal_required']">
+												<xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/>
+											</xsl:when>
+											<xsl:when test="refsection/para/remark[@conformance='sfcgal_enhanced']">
+												<xsl:value-of select="$matrix_sfcgal_enhanced" disable-output-escaping="yes"/>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/>
+											</xsl:otherwise>
+										</xsl:choose>
+										</entry>
 									</xsl:when>
 									<!-- no support -->
 									<xsl:otherwise>
