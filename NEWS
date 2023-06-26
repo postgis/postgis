@@ -1,8 +1,12 @@
 PostGIS 3.4.0dev
-xxxx/xx/xx
+2023/xx/xx
 
 * Breaking Changes *
   - #5229, Drop support for Proj < 6.1 and PG 11 (Regina Obe)
+  - #5306, GH734, postgis_full_version() and postgis_proj_version()
+    now output more information about proj network configuration
+    and data paths. GEOS compile-time version
+    also shown if different from run-time (Paul Ramsey, Sandro Santilli)
 
 * New Features *
   - #5052, target version support in postgis_extensions_upgrade
@@ -11,10 +15,10 @@ xxxx/xx/xx
   - New install-extension-upgrades command in postgis script (Sandro Santilli)
   - #5257, #5261, #5277, Support changes for PostgreSQL 16 (Regina Obe)
   - #5006, GH705, ST_Transform: Support PROJ pipelines (Robert Coup, Koordinates)
-  - #5283, RenameTopology (Sandro Santilli)
-  - #5286, RenameTopoGeometryColumn (Sandro Santilli)
-  - GH703, Add min/max resampling as options (Christian Schroeder)
-  - #5336, topogeometry cast to topoelement support (Regina Obe)
+  - #5283, [postgis_topology] RenameTopology (Sandro Santilli)
+  - #5286, [postgis_topology] RenameTopoGeometryColumn (Sandro Santilli)
+  - GH703, [postgis_raster] Add min/max resampling as options (Christian Schroeder)
+  - #5336, [postgis_topology] topogeometry cast to topoelement support (Regina Obe)
   - Allow singleton geometry to be inserted into Geometry(Multi*) columns (Paul Ramsey)
   - GH721, New window-based ST_ClusterWithinWin and ST_ClusterIntersectingWin (Paul Ramsey)
   - #5397, [address_standardizer] debug_standardize_address function (Regina Obe)
@@ -28,7 +32,7 @@ xxxx/xx/xx
   - Speed up coincident nodes check in topology validation  (Sandro Santilli)
   - GH718, ST_QuantizeCoordinates(): speed-up implementation (Even Rouault)
   - Repair spatial planner stats to use computed selectivity for contains/within queries (Paul Ramsey)
-  - Additional metadata on Proj installation in postgis_proj_version (Paul Ramsey)
+  - GH734, Additional metadata on Proj installation in postgis_proj_version (Paul Ramsey)
   - #5177, allow building tools without PostgreSQL server headers (Sandro Santilli)
 
 * Bug Fix *
