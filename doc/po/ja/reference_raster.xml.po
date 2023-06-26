@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-06-22 22:04+0000\n"
-"PO-Revision-Date: 2023-05-15 11:08+0000\n"
+"PO-Revision-Date: 2023-06-27 07:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_rasterxml/ja/>\n"
@@ -9492,7 +9492,8 @@ msgid ""
 "Returns a geometry with the same X/Y coordinates as the input geometry, and "
 "values from the raster copied into the M dimension using the requested "
 "resample algorithm."
-msgstr ""
+msgstr "入力ジオメトリと同じX/Y値を持ち、かつ、指定されたリサンプリングアルゴリズムを"
+"使ってラスタから複写されたM値を持つジオメトリを返します。"
 
 #. Tag: funcprototype
 #: reference_raster.xml:3975
@@ -9519,7 +9520,8 @@ msgid ""
 "Returns a geometry with the same X/Y coordinates as the input geometry, and "
 "values from the raster copied into the M dimensions using the requested "
 "resample algorithm."
-msgstr ""
+msgstr "入力ジオメトリと同じX/Y値を持ち、かつ、指定されたリサンプリングアルゴリズムを"
+"使ってラスタから複写されたM値を持つジオメトリを返します。"
 
 #. Tag: programlisting
 #: reference_raster.xml:3996
