@@ -221,7 +221,8 @@ ifeq ($(XSLTPROC),)
 postgis_aggs_mm.xml: requirements_not_met_xsltproc
 else
 postgis_aggs_mm.xml: xsl/postgis_aggs_mm.xml.xsl Makefile postgis-out.xml $(XML_SOURCES)
-	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
+	grep -v '\&postgis_aggs_mm;' postgis-out.xml | $(XSLTPROC) --novalid --path $(srcdir) $< - > $@.tmp
+	mv $@.tmp $@
 endif
 
 postgis_comments.sql: xsl/postgis_comments.sql.xsl $(XML_INPUTS)
@@ -355,6 +356,7 @@ clean:
 	rm -f $(XML_GENERATED_SOURCES)
 	rm -f postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
 	rm -f raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
+	rm -f *.tmp
 
 distclean: clean
 	$(MAKE) -C html/image_src distclean
