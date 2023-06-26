@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-06-22 22:04+0000\n"
-"PO-Revision-Date: 2023-05-10 15:08+0000\n"
-"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
+"PO-Revision-Date: 2023-06-27 07:08+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_versionxml/fr/>\n"
 "Language: fr\n"
@@ -242,6 +242,9 @@ msgid ""
 "Enhanced: 3.4.0 now includes extra PROJ configurations NETWORK_ENABLED, "
 "URL_ENDPOINT and DATABASE_PATH of proj.db location"
 msgstr ""
+"Amélioration : 3.4.0 inclut désormais les configurations supplémentaires "
+"PROJ NETWORK_ENABLED, URL_ENDPOINT et DATABASE_PATH pour l'emplacement proj."
+"db"
 
 #. Tag: programlisting
 #: reference_version.xml:104
@@ -258,6 +261,18 @@ msgid ""
 "LIBPROTOBUF=\"1.3.3\" WAGYU=\"0.5.0 (Internal)\" TOPOLOGY RASTER\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_Full_Version();\n"
+"                                                           "
+"postgis_full_version\n"
+"-----------------------------------------------------------------------------"
+"-----\n"
+"POSTGIS=\"3.4.0dev 3.3.0rc2-993-g61bdf43a7\" [EXTENSION] PGSQL=\"160\" GEOS="
+"\"3.12.0dev-CAPI-1.18.0\" SFCGAL=\"1.3.8\" PROJ=\"7.2.1 NETWORK_ENABLED=OFF "
+"URL_ENDPOINT=https://cdn.proj.org USER_WRITABLE_DIRECTORY=/tmp/proj "
+"DATABASE_PATH=/usr/share/proj/proj.db\" GDAL=\"GDAL 3.2.2, released 2021/03/"
+"05\" LIBXML=\"2.9.10\" LIBJSON=\"0.15\" LIBPROTOBUF=\"1.3.3\" WAGYU=\"0.5.0 "
+"(Internal)\" TOPOLOGY RASTER\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_version.xml:110
@@ -315,6 +330,11 @@ msgid ""
 "3.12.0dev-CAPI-1.18.0\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_GEOS_Version();\n"
+" postgis_geos_version\n"
+"----------------------\n"
+"3.12.0dev-CAPI-1.18.0\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_version.xml:156 reference_version.xml:240
@@ -380,6 +400,11 @@ msgid ""
 " 3.12.0\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_GEOS_Compiled_Version();\n"
+" postgis_geos_compiled_version\n"
+"-------------------------------\n"
+" 3.12.0\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_version.xml:200
@@ -429,6 +454,11 @@ msgid ""
 "3.4.0dev 3.3.0rc2-993-g61bdf43a7\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_Liblwgeom_Version();\n"
+"postgis_liblwgeom_version\n"
+"--------------------------\n"
+"3.4.0dev 3.3.0rc2-993-g61bdf43a7\n"
+"(1 row)"
 
 #. Tag: refname
 #: reference_version.xml:250
@@ -474,6 +504,11 @@ msgid ""
 " 2.9.10\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_LibXML_Version();\n"
+" postgis_libxml_version\n"
+"----------------------\n"
+" 2.9.10\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_version.xml:282
@@ -527,6 +562,11 @@ msgid ""
 " 2023-06-22 03:56:11\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_Lib_Build_Date();\n"
+" postgis_lib_build_date\n"
+"------------------------\n"
+" 2023-06-22 03:56:11\n"
+"(1 row)"
 
 #. Tag: refname
 #: reference_version.xml:322
@@ -569,6 +609,11 @@ msgid ""
 " 3.4.0dev\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_Lib_Version();\n"
+" postgis_lib_version\n"
+"---------------------\n"
+" 3.4.0dev\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_version.xml:353
@@ -611,6 +656,8 @@ msgid ""
 "Returns the version number of the PROJ library and some configuration "
 "options of proj."
 msgstr ""
+"Retourne le numéro de version de la bibliothèque PROJ et certaines options "
+"de configuration de proj."
 
 #. Tag: para
 #: reference_version.xml:384
@@ -619,6 +666,8 @@ msgid ""
 "Enhanced: 3.4.0 now includes NETWORK_ENABLED, URL_ENDPOINT and DATABASE_PATH "
 "of proj.db location"
 msgstr ""
+"Amélioration : 3.4.0 inclut désormais PROJ NETWORK_ENABLED, URL_ENDPOINT et "
+"DATABASE_PATH pour l'emplacement proj.db"
 
 #. Tag: programlisting
 #: reference_version.xml:390
@@ -631,6 +680,12 @@ msgid ""
 "USER_WRITABLE_DIRECTORY=/tmp/proj DATABASE_PATH=/usr/share/proj/proj.db\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_PROJ_Version();\n"
+"  postgis_proj_version\n"
+"-------------------------\n"
+"7.2.1 NETWORK_ENABLED=OFF URL_ENDPOINT=https://cdn.proj.org "
+"USER_WRITABLE_DIRECTORY=/tmp/proj DATABASE_PATH=/usr/share/proj/proj.db\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_version.xml:396 reference_version.xml:480
@@ -686,6 +741,11 @@ msgid ""
 " 0.5.0 (Internal)\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_Wagyu_Version();\n"
+" postgis_wagyu_version\n"
+"-----------------------\n"
+" 0.5.0 (Internal)\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_version.xml:437
@@ -746,6 +806,11 @@ msgid ""
 " 2023-06-22 03:56:11\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_Scripts_Build_Date();\n"
+"  postgis_scripts_build_date\n"
+"-------------------------\n"
+" 2023-06-22 03:56:11\n"
+"(1 row)"
 
 #. Tag: refname
 #: reference_version.xml:490
@@ -814,6 +879,11 @@ msgid ""
 " 3.4.0dev 3.3.0rc2-993-g61bdf43a7\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_Scripts_Installed();\n"
+"  postgis_scripts_installed\n"
+"-------------------------\n"
+" 3.4.0dev 3.3.0rc2-993-g61bdf43a7\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_version.xml:532
@@ -882,6 +952,11 @@ msgid ""
 " 3.4.0dev 3.3.0rc2-993-g61bdf43a7\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_Scripts_Released();\n"
+"  postgis_scripts_released\n"
+"-------------------------\n"
+" 3.4.0dev 3.3.0rc2-993-g61bdf43a7\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_version.xml:578
@@ -937,6 +1012,11 @@ msgid ""
 " 3.4 USE_GEOS=1 USE_PROJ=1 USE_STATS=1\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_Version();\n"
+"                        postgis_version\n"
+"---------------------------------------\n"
+" 3.4 USE_GEOS=1 USE_PROJ=1 USE_STATS=1\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_version.xml:615
