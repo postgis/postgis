@@ -1564,8 +1564,8 @@
 
 			<sect2 id="NewFunctions_1_5">
 				<title>PostGIS Functions new, behavior changed, or enhanced in 1.5</title>
-				<xsl:if test="//para[contains(text(),'Availability: 1.5')]">
 				<para>The functions given below are PostGIS functions that were introduced or enhanced in this minor release.</para>
+				<xsl:if test="//para[contains(text(),'Availability: 1.5')]">
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 					<xsl:for-each select='//refentry'>
