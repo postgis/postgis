@@ -8,6 +8,7 @@ pipeline:
   build:
     group: build
     image: docker.osgeo.org/postgis/build-test:trisquel3
+    pull: true
     commands:
       - sh autogen.sh
       - PGVER=${PG_VERSION} sh ci/dronie/postgis_regress.sh
