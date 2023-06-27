@@ -2,10 +2,13 @@ PostGIS 3.3.4dev
 YYYY/MM/DD
 
 * Bug Fixes and Enhancements *
-  - #5394, Improve robustness of finding distinct vertices in topology edges
-           (Sandro Santilli)
-  - #5403, Fix ValidateTopology(bbox) without topology in search_path
-           (Sandro Santilli).
+  - #5394, [postgis_topology] Improve robustness of finding
+           distinct vertices in topology edges (Sandro Santilli)
+  - #5403, [postgis_topology] Fix ValidateTopology(bbox) without
+           topology in search_path (Sandro Santilli)
+  - #5410, [postgis_raster] ST_Value bilinear resample,
+           don't throw an error if Band has no NODATA value
+           (Regina Obe)
 
 PostGIS 3.3.3
 2023/05/29

@@ -288,6 +288,8 @@ SELECT 'test 1.10', id
 
 -----------------------------------------------------------------------
 -- Test 2 - st_value(rast raster, band integer, pt geometry)
+--        - st_value(rast raster, band integer, pt geometry,
+--                   boolean exclude_nodata_value=true, text resample)
 -----------------------------------------------------------------------
 
 SELECT 'test 2.1', id
@@ -298,6 +300,18 @@ SELECT 'test 2.2', id
     FROM rt_band_properties_test
     WHERE st_value(rast, 2, st_makepoint(st_upperleftx(rast), st_upperlefty(rast))) != b2val;
 
+SELECT 'test 2.3', id, st_value(rast, 1,
+	ST_Centroid(rast::geometry),
+		 true, 'bilinear') AS val
+    FROM rt_band_properties_test
+    WHERE id = 1;
+
+SELECT '#5410', id, st_value(
+		ST_SetBandNoDataValue(rast,1,NULL), 1,
+		ST_Centroid(rast::geometry),
+		 true, 'bilinear') As val
+	FROM rt_band_properties_test
+	WHERE id = 1;
 -----------------------------------------------------------------------
 -- Test 3 - st_pixelaspolygon(rast raster, x integer, y integer)
 -----------------------------------------------------------------------
