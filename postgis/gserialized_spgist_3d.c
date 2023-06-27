@@ -424,6 +424,7 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_3d(PG_FUNCTION_ARGS)
 	spgPickSplitOut *out = (spgPickSplitOut *)PG_GETARG_POINTER(1);
 	BOX3D *centroid;
 	int median, i;
+	uint8 octant;
 	double *lowXs = palloc(sizeof(double) * in->nTuples);
 	double *highXs = palloc(sizeof(double) * in->nTuples);
 	double *lowYs = palloc(sizeof(double) * in->nTuples);
@@ -436,7 +437,7 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_3d(PG_FUNCTION_ARGS)
 	/* Calculate median of all 6D coordinates */
 	for (i = 0; i < in->nTuples; i++)
 	{
-		BOX3D *box = DatumGetBox3DP(in->datums[i]);
+		box = DatumGetBox3DP(in->datums[i]);
 
 		lowXs[i] = box->xmin;
 		highXs[i] = box->xmax;
@@ -481,8 +482,8 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_3d(PG_FUNCTION_ARGS)
 	 */
 	for (i = 0; i < in->nTuples; i++)
 	{
-		BOX3D *box = DatumGetBox3DP(in->datums[i]);
-		uint8 octant = getOctant(centroid, box);
+		box = DatumGetBox3DP(in->datums[i]);
+		octant = getOctant(centroid, box);
 
 		out->leafTupleDatums[i] = Box3DPGetDatum(box);
 		out->mapTuplesToNodes[i] = octant;

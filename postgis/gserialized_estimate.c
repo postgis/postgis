@@ -1722,7 +1722,6 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 		const ND_BOX *nd_box;
 		ND_IBOX nd_ibox;
 		int at[ND_DIMS];
-		int d;
 		double num_cells = 0;
 		double min[ND_DIMS] = {0.0, 0.0, 0.0, 0.0};
 		double max[ND_DIMS] = {0.0, 0.0, 0.0, 0.0};

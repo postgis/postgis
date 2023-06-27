@@ -1109,7 +1109,7 @@ static bytea *mvt_ctx_to_bytea(mvt_agg_context *ctx)
 	/* Zero features => empty bytea output */
 	if (ctx && ctx->layer && ctx->layer->n_features == 0)
 	{
-		bytea *ba = palloc(VARHDRSZ);
+		ba = palloc(VARHDRSZ);
 		SET_VARSIZE(ba, VARHDRSZ);
 		return ba;
 	}
