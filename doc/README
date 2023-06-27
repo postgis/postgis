@@ -33,7 +33,7 @@ Make targets
 ``make pdf``
   generates a single PDF file with the PostGIS version as a filename
 
-``make pdf``
+``make pdf-localized``
   generates a single PDF file with the PostGIS version as a filename
   and ``-<lang>`` suffix for each supported language
 
