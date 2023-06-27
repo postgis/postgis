@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - #5278, Free address standardizer rules once after allocation failure (Regina Obe)
  - Skip comments on the retired two-argument cluster function (Sandro Santilli)
  - Skip obsolete installed function signatures when restoring older dumps (Sandro Santilli)
  - Stop generating SQL when the preprocessor fails (Sandro Santilli)
