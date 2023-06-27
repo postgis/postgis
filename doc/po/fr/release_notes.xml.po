@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-25 20:53+0000\n"
-"PO-Revision-Date: 2023-06-25 01:08+0000\n"
+"PO-Revision-Date: 2023-06-27 21:08+0000\n"
 "Last-Translator: Pierre Cardinal <pierre.cardinal@sympatico.ca>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "release_notesxml/fr/>\n"
@@ -2050,7 +2050,7 @@ msgstr ""
 
 #. Tag: para
 #: release_notes.xml:515
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "#3042, ValidateTopology check for edge linking (Sandro Santilli)"
 msgstr ""
 "#3042, Vérification de ValidateTopology pour la liaison des arêtes (Sandro "
