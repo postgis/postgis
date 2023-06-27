@@ -1109,9 +1109,9 @@ static bytea *mvt_ctx_to_bytea(mvt_agg_context *ctx)
 	/* Zero features => empty bytea output */
 	if (ctx && ctx->layer && ctx->layer->n_features == 0)
 	{
-		ba = palloc(VARHDRSZ);
-		SET_VARSIZE(ba, VARHDRSZ);
-		return ba;
+		bytea* ba_empty = palloc(VARHDRSZ);
+		SET_VARSIZE(ba_empty, VARHDRSZ);
+		return ba_empty;
 	}
 
 	/* Serialize the Tile */

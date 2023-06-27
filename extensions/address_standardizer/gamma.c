@@ -163,7 +163,7 @@ RULES *rules_init( ERR_PARAM *err_p ) {
 
        rules_free(rules);
 
-       return NULL ;
+       return NULL;
     }
 
     rules -> r_p -> rule_space = r_s ;

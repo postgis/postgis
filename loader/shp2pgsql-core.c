@@ -844,7 +844,6 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	SHPObject *obj = NULL;
 	int ret = SHPLOADEROK;
 	char name[MAXFIELDNAMELEN];
-	char name2[MAXFIELDNAMELEN];
 	DBFFieldType type = FTInvalid;
 	char *utf8str;
 
@@ -1164,24 +1163,26 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		 * or after pgsql reserved attribute names
 		 */
 		if (name[0] == '_' ||
-		        ! strcmp(name, "gid") || ! strcmp(name, "tableoid") ||
+		        ! strcmp(name, "gid") ||
+		        ! strcmp(name, "tableoid") ||
 		        ! strcmp(name, "cmin") ||
 		        ! strcmp(name, "cmax") ||
 		        ! strcmp(name, "xmin") ||
 		        ! strcmp(name, "xmax") ||
 		        ! strcmp(name, "primary") ||
-		        ! strcmp(name, "oid") || ! strcmp(name, "ctid"))
+		        ! strcmp(name, "oid") ||
+		        ! strcmp(name, "ctid"))
 		{
+			char tmp_name[MAXFIELDNAMELEN];
 			size_t len = strlen(name);
-			if (len > (MAXFIELDNAMELEN - 2)){
+			if (len > (MAXFIELDNAMELEN - 2))
+			{
 				len = MAXFIELDNAMELEN - 2;
 			}
-			strncpy(name2 + 2, name, MAXFIELDNAMELEN - 2);
-			name2[MAXFIELDNAMELEN-1] = '\0';
-			name2[len + 2] = '\0';
-			name2[0] = '_';
-			name2[1] = '_';
-			strcpy(name, name2);
+			strncpy(tmp_name + 2, name, len);
+			tmp_name[len+1] = '\0';
+			tmp_name[0] = tmp_name[1] = '_';
+			strcpy(name, tmp_name);
 		}
 
 		/* Avoid duplicating field names */
