@@ -430,20 +430,21 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_3d(PG_FUNCTION_ARGS)
 	double *highYs = palloc(sizeof(double) * in->nTuples);
 	double *lowZs = palloc(sizeof(double) * in->nTuples);
 	double *highZs = palloc(sizeof(double) * in->nTuples);
-	const BOX3D *box = DatumGetBox3DP(in->datums[0]); /* we use to fetch srid */
-	int32_t srid = box->srid;
+	int32_t srid = SRID_UNKNOWN;
 
 	/* Calculate median of all 6D coordinates */
 	for (i = 0; i < in->nTuples; i++)
 	{
 		BOX3D* box_in = DatumGetBox3DP(in->datums[i]);
-
 		lowXs[i] = box_in->xmin;
 		highXs[i] = box_in->xmax;
 		lowYs[i] = box_in->ymin;
 		highYs[i] = box_in->ymax;
 		lowZs[i] = box_in->zmin;
 		highZs[i] = box_in->zmax;
+
+		if (i == 0)
+			srid = box_in->srid;
 	}
 
 	qsort(lowXs, in->nTuples, sizeof(double), compareDoubles);
