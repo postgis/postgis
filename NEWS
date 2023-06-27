@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Add text alternatives to the icons in the function support matrix (Sandro Santilli)
  - Fail documentation image generation when the rendering command fails (Sandro Santilli)
  - Read tagged dollar quotes when generating function upgrades (Sandro Santilli)
  - Count only TopoGeometries belonging to the requested topology (Sandro Santilli)
