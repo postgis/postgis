@@ -156,7 +156,7 @@ typedef struct
  * a corner of the box. This makes 64 octants in total.
  */
 static uint8
-getOctant(BOX3D *centroid, BOX3D *inBox)
+getOctant(const BOX3D *centroid, const BOX3D *inBox)
 {
 	uint8 octant = 0;
 
@@ -431,7 +431,7 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_3d(PG_FUNCTION_ARGS)
 	double *highYs = palloc(sizeof(double) * in->nTuples);
 	double *lowZs = palloc(sizeof(double) * in->nTuples);
 	double *highZs = palloc(sizeof(double) * in->nTuples);
-	BOX3D *box = DatumGetBox3DP(in->datums[0]);
+	const BOX3D *box = DatumGetBox3DP(in->datums[0]); /* we use to fetch srid */
 	int32_t srid = box->srid;
 
 	/* Calculate median of all 6D coordinates */
