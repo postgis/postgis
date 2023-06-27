@@ -1262,7 +1262,6 @@ rt_band_get_pixel_bilinear(
 	double xr, double yr,
 	double *r_value, int *r_nodata)
 {
-	rt_errorstate err;
 	double xcenter, ycenter;
 	double values[2][2];
 	double nodatavalue = 0.0;
@@ -1294,9 +1293,11 @@ rt_band_get_pixel_bilinear(
 	xdir = xr < xcenter ? 1 : 0;
 	ydir = yr < ycenter ? 1 : 0;
 
-	err = rt_band_get_nodata(band, &nodatavalue);
-	if (err != ES_NONE) {
-		nodatavalue = 0.0;
+	if (rt_band_get_hasnodata_flag(band) != FALSE) {
+			rt_band_get_nodata(band, &nodatavalue);
+	}
+	else {
+			nodatavalue = 0.0;
 	}
 
 	/* Read the 2x2 values from the band */
