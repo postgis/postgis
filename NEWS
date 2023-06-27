@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - #5278, Free address standardizer rules once after allocation failure (Regina Obe)
  - Correct the ST_AlphaShape documentation examples (Regina Obe)
  - Correct the explanation of alpha and holes in ST_AlphaShape (Martin Davis)
  - Stop generating SQL when the preprocessor fails (Sandro Santilli)
