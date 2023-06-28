@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-06-28 00:36+0000\n"
-"PO-Revision-Date: 2023-05-23 02:08+0000\n"
-"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
+"PO-Revision-Date: 2023-06-28 08:08+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_overlayxml/fr/>\n"
 "Language: fr\n"
@@ -467,7 +467,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.18"
 #: reference_overlay.xml:227
 #, no-c-format
 msgid "&geography_transform;"
-msgstr ""
+msgstr "&geography_transform;"
 
 #. Tag: programlisting
 #: reference_overlay.xml:231
