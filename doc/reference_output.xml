@@ -1521,20 +1521,53 @@ FROM mvtgeom;
 			geometries are delimited by commas (","), GeometryCollection
 			geometries are delimited by semicolons (";").</para>
 
+        <para>For working with PostGIS SVG graphics, checkout <ulink url="https://github.com/dr-jts/pg_svg">pg_svg</ulink> library which
+        provides plpgsql functions for working with outputs from ST_AsSVG.</para>
+
+        <para role="enhanced" conformance="3.4.0">Enhanced: Support for curves added</para>
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0 to use default args and support named args</para>
 		<note>
 		  <para role="availability" conformance="1.2.2.">Availability: 1.2.2. Availability: 1.4.0  Changed in PostGIS 1.4.0 to include L command in absolute path to conform to <ulink
 			url="http://www.w3.org/TR/SVG/paths.html#PathDataBNF">http://www.w3.org/TR/SVG/paths.html#PathDataBNF</ulink></para>
 		</note>
-		<para role="changed" conformance="2.0.0">Changed: 2.0.0 to use default args and support named args</para>
+        <para>&curve_support;</para>
 	  </refsection>
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting>SELECT ST_AsSVG('POLYGON((0 0,0 1,1 1,1 0,0 0))');
+		<programlisting>SELECT ST_AsSVG('POLYGON((0 0,0 1,1 1,1 0,0 0))'::geometry);
 
-		st_assvg
-		--------
-		M 0 0 L 0 -1 1 -1 1 0 Z</programlisting>
+st_assvg
+--------
+M 0 0 L 0 -1 1 -1 1 0 Z</programlisting>
+
+        <para>Circular string</para>
+		<programlisting>SELECT ST_AsSVG( ST_GeomFromText('CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)') );
+
+st_assvg
+--------
+M -2 0 A 2 2 0 0 1 2 0 A 2 2 0 0 1 2 -4</programlisting>
+
+        <para>Multi-curve</para>
+        <programlisting>SELECT ST_AsSVG('MULTICURVE((5 5,3 5,3 3,0 3),
+ CIRCULARSTRING(0 0,2 1,2 2))'::geometry, 0, 0);
+ st_assvg
+------------------------------------------------
+ M 5 -5 L 3 -5 3 -3 0 -3 M 0 0 A 2 2 0 0 0 2 -2
+ </programlisting>
+
+        <para>Multi-surface</para>
+        <programlisting>SELECT ST_AsSVG('MULTISURFACE(
+CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),
+    (-1 0,0 0.5,1 0,0 1,-1 0)),
+((7 8,10 10,6 14,4 11,7 8)))'::geometry, 0, 2);
+
+st_assvg
+---------------------------------------------------------
+M -2 0 A 1 1 0 0 0 0 0 A 1 1 0 0 0 2 0 A 2 2 0 0 0 -2 0 Z
+M -1 0 L 0 -0.5 1 0 0 -1 -1 0 Z
+M 7 -8 L 10 -10 6 -14 4 -11 Z
+ </programlisting>
 	  </refsection>
 	</refentry>
 		<refentry id="ST_AsTWKB">

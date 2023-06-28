@@ -189,6 +189,38 @@ static void out_svg_test_geoms(void)
 	    "cx=\"0\" cy=\"-1\";M 2 -3 L 4 -5",
 	    0, 0);
 
+	/* CircularString */
+	do_svg_test(
+	    "CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)",
+	    "M -2 0 A 2 2 0 0 1 2 0 A 2 2 0 0 1 2 -4",
+			0, 0);
+
+	/* : Circle */
+	do_svg_test(
+	    "CIRCULARSTRING(4 2,-2 2,4 2)",
+	    "M 1 -2 m 3 0 a 3 3 0 1 0 -6 0 a 3 3 0 1 0 6 0",
+			0, 0);
+
+	/* CompoundCurve */
+	do_svg_test(
+	    "COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,0 1))",
+	    "M 0 0 A 1 1 0 1 1 1 0 L 0 -1", 0, 0);
+
+	/* MultiCurve */
+	do_svg_test(
+	    "MULTICURVE((5 5,3 5,3 3,0 3),CIRCULARSTRING(0 0,2 1,2 2))",
+	    "M 5 -5 L 3 -5 3 -3 0 -3 M 0 0 A 2 2 0 0 0 2 -2", 0, 0);
+
+	/* CurvePolygon */
+	do_svg_test(
+	    "CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0))",
+	    "M -2 0 A 1 1 0 0 0 0 0 A 1 1 0 0 0 2 0 A 2 2 0 0 0 -2 0 Z M -1 0 L 0 0 1 0 0 -1 -1 0 Z", 0, 0);
+
+	/* MultiSurface */
+	do_svg_test(
+	    "MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
+	    "M -2 0 A 1 1 0 0 0 0 0 A 1 1 0 0 0 2 0 A 2 2 0 0 0 -2 0 Z M -1 0 L 0 0 1 0 0 -1 -1 0 Z M 7 -8 L 10 -10 6 -14 4 -11 Z", 0, 0);
+
 	/* Empty GeometryCollection */
 	do_svg_test(
 	    "GEOMETRYCOLLECTION EMPTY",
@@ -200,30 +232,6 @@ static void out_svg_test_geoms(void)
 	    "GEOMETRYCOLLECTION(POINT(0 1),GEOMETRYCOLLECTION(LINESTRING(2 3,4 5)))",
 	    "assvg_geom_buf: 'GeometryCollection' geometry type not supported.");
 
-	/* CircularString */
-	do_svg_unsupported(
-	    "CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)",
-	    "lwgeom_to_svg: 'CircularString' geometry type not supported");
-
-	/* CompoundCurve */
-	do_svg_unsupported(
-	    "COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,0 1))",
-	    "lwgeom_to_svg: 'CompoundCurve' geometry type not supported");
-
-	/* CurvePolygon */
-	do_svg_unsupported(
-	    "CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0))",
-	    "lwgeom_to_svg: 'CurvePolygon' geometry type not supported");
-
-	/* MultiCurve */
-	do_svg_unsupported(
-	    "MULTICURVE((5 5,3 5,3 3,0 3),CIRCULARSTRING(0 0,2 1,2 2))",
-	    "lwgeom_to_svg: 'MultiCurve' geometry type not supported");
-
-	/* MultiSurface */
-	do_svg_unsupported(
-	    "MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
-	    "lwgeom_to_svg: 'MultiSurface' geometry type not supported");
 }
 
 static void out_svg_test_relative(void)
