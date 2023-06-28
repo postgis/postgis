@@ -310,7 +310,6 @@
 		<sect1 id="PostGIS_TypeFunctionMatrix">
 			<xsl:variable name='matrix_checkmark'><![CDATA[
 				<inlinemediaobject>
-					<alt>[N]</alt>
 					<imageobject>
 						<imagedata fileref='images/matrix_checkmark.png' />
 					</imageobject>
@@ -318,7 +317,6 @@
 			]]></xsl:variable>
 			<xsl:variable name='matrix_transform'><![CDATA[
 				<inlinemediaobject>
-					<alt>[T]</alt>
 					<imageobject>
 						<imagedata fileref='images/matrix_transform.png' />
 					</imageobject>
@@ -326,7 +324,6 @@
 			]]></xsl:variable>
 			<xsl:variable name='matrix_autocast'><![CDATA[
 				<inlinemediaobject>
-					<alt>[C]</alt>
 					<imageobject>
 						<imagedata fileref='images/matrix_autocast.png' />
 					</imageobject>
@@ -334,7 +331,6 @@
 			]]></xsl:variable>
 			<xsl:variable name='matrix_sfcgal_required'><![CDATA[
 				<inlinemediaobject>
-					<alt>[S]</alt>
 					<imageobject>
 						<imagedata fileref='images/matrix_sfcgal_required.png' />
 					</imageobject>
@@ -342,7 +338,6 @@
 			]]></xsl:variable>
 			<xsl:variable name='matrix_sfcgal_enhanced'><![CDATA[
 				<inlinemediaobject>
-					<alt>[s]</alt>
 					<imageobject>
 						<imagedata fileref='images/matrix_sfcgal_enhanced.png' />
 					</imageobject>
@@ -439,7 +434,7 @@
 								<!-- If at least one proto function accepts or returns a geography -->
 								<xsl:choose>
 									<!-- Support via geometry transform hack -->
-									<xsl:when test="(contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')) and contains($comment,'(T)')">
+									<xsl:when test="refsection/para/remark[@conformance='geography_transform']">
 										<entry><xsl:value-of select="$matrix_transform" disable-output-escaping="yes"/></entry>
 									</xsl:when>
 									<!-- direct support -->

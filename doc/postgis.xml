@@ -72,6 +72,7 @@
 <!ENTITY P_support SYSTEM "tag_P_support.xml">
 <!ENTITY T_support SYSTEM "tag_T_support.xml">
 <!ENTITY index_aware SYSTEM "tag_index_aware.xml">
+<!ENTITY geography_transform SYSTEM "tag_geography_transform.xml">
 
 ]>
 

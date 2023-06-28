@@ -118,6 +118,7 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
                 <para>Performed by the GEOS module.</para>
                 <para>&sfs_compliant; s2.1.1.3</para>
                 <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.30</para>
+                <para>&geography_transform;</para>
             </refsection>
 
               <refsection>

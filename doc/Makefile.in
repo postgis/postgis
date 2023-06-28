@@ -169,6 +169,7 @@ XML_SOURCES = \
 	tag_sqlmm_compliant.xml \
 	tag_T_support.xml \
 	tag_Z_support.xml \
+	tag_geography_transform.xml \
 	using_postgis_dataman.xml \
 	using_postgis_query.xml \
 	using_raster_dataman.xml

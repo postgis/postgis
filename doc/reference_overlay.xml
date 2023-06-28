@@ -245,6 +245,7 @@ on that same grid.  (Requires GEOS-3.9.0 or higher)
         <para>&sqlmm_compliant; SQL-MM 3: 5.1.18</para>
         <para>&Z_support; However, the result is computed using XY only.
             The result Z values are copied, averaged or interpolated.</para>
+        <para>&geography_transform;</para>
         </refsection>
         <refsection>
         <title>Examples</title>
