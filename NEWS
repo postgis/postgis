@@ -22,6 +22,7 @@ PostGIS 3.4.0dev
   - Allow singleton geometry to be inserted into Geometry(Multi*) columns (Paul Ramsey)
   - GH721, New window-based ST_ClusterWithinWin and ST_ClusterIntersectingWin (Paul Ramsey)
   - #5397, [address_standardizer] debug_standardize_address function (Regina Obe)
+  - ST_LargestEmptyCircle, exposes extra semantics on circle finding (Martin Davis)
 
 * Enhancements *
   - #5194, do not update system catalogs from postgis_extensions_upgrade (Sandro Santilli)
