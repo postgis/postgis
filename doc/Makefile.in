@@ -199,6 +199,18 @@ XML_INPUTS = $(XML_SOURCES) $(XML_GENERATED_SOURCES)
 
 XML_INPUTS_POT = $(XML_SOURCES:%.xml=$(srcdir)/po/templates/%.xml.pot)
 
+GENERATED_COMMENT_FILES = $(patsubst \
+	$(srcdir)/xsl/%.xsl, \
+	%, \
+	$(wildcard $(srcdir)/xsl/*_comments.sql.xsl) \
+)
+
+GENERATED_CHEATSHEET_FILES = $(patsubst \
+	$(srcdir)/xsl/%.xsl, \
+	html/%, \
+	$(wildcard $(srcdir)/xsl/*_cheatsheet.html.xsl) \
+)
+
 VPATH = $(srcdir)
 
 .PHONY: $(XML_INPUTS_POT)
@@ -253,39 +265,11 @@ $(XSL_GENERATED_SOURCES): %.xls.xml: xsl/%.xml.xls postgis-out.xml
 	grep -v '\&postgis_special;' postgis-out.xml | $(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< -
 endif
 
-# TODO: generalize the following rules {
-
-postgis_comments.sql: xsl/postgis_comments.sql.xsl $(XML_INPUTS)
+$(GENERATED_COMMENT_FILES): %.sql: xsl/%.sql.xsl $(XML_INPUTS) postgis-out.xml
 	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
 
-html/postgis_cheatsheet.html: xsl/postgis_cheatsheet.html.xsl $(XML_INPUTS)
+$(GENERATED_CHEATSHEET_FILES): html/%.html: xsl/%.html.xsl $(XML_INPUTS) postgis-out.xml
 	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
-
-raster_comments.sql: xsl/raster_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
-
-html/raster_cheatsheet.html: ./xsl/raster_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
-
-topology_comments.sql: xsl/topology_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
-
-html/topology_cheatsheet.html: xsl/topology_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
-
-sfcgal_comments.sql: xsl/sfcgal_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
-
-html/sfcgal_cheatsheet.html: xsl/sfcgal_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
-
-tiger_geocoder_comments.sql: xsl/tiger_geocoder_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
-
-html/tiger_geocoder_cheatsheet.html: xsl/tiger_geocoder_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
-
-# } generalize the above rules
 
 postgis-out.xml: postgis.xml Makefile
 	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g;s'@@POSTGIS_DOWNLOAD_URL@@'${POSTGIS_DOWNLOAD_URL}'g;" $< > $@
