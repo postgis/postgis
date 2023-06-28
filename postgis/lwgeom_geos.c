@@ -331,12 +331,6 @@ Datum ST_FrechetDistance(PG_FUNCTION_ARGS)
 }
 
 
-/**
- *  @brief Compute the Frechet distance with optional densification thanks to the corresponding GEOS function
- *  @example ST_FrechetDistance {@link #frechetdistance} - SELECT ST_FrechetDistance(
- *      'LINESTRING (0 0, 50 200, 100 0, 150 200, 200 0)'::geometry,
- *      'LINESTRING (0 200, 200 150, 0 100, 200 50, 0 0)'::geometry, 0.5);
- */
 
 PG_FUNCTION_INFO_V1(ST_MaximumInscribedCircle);
 Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS)
@@ -460,6 +454,136 @@ Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS)
 
 #endif /* POSTGIS_GEOS_VERSION >= 30900 */
 }
+
+
+/* ST_LargestEmptyCircle(geom, boundary, tolerance) */
+PG_FUNCTION_INFO_V1(ST_LargestEmptyCircle);
+Datum ST_LargestEmptyCircle(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 30900
+
+	lwpgerror("The GEOS version this PostGIS binary "
+	          "was compiled against (%d) doesn't support "
+	          "'GEOSMaximumInscribedCircle' function (3.9.0+ required)",
+	          POSTGIS_GEOS_VERSION);
+	          PG_RETURN_NULL();
+
+#else /* POSTGIS_GEOS_VERSION >= 30900 */
+	GSERIALIZED* geom;
+	GSERIALIZED* boundary;
+	GSERIALIZED* center;
+	GSERIALIZED* nearest;
+	TupleDesc resultTupleDesc;
+	HeapTuple resultTuple;
+	Datum result;
+	Datum result_values[3];
+	bool result_is_null[3];
+	double radius = 0.0, tolerance = 0.0;
+	int32 srid = SRID_UNKNOWN;
+	bool is3d = false, hasBoundary = false;
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	geom = PG_GETARG_GSERIALIZED_P(0);
+	tolerance = PG_GETARG_FLOAT8(1);
+	boundary = PG_GETARG_GSERIALIZED_P(2);
+	srid = gserialized_get_srid(geom);
+	is3d = gserialized_has_z(geom);
+
+	if (boundary && ! gserialized_is_empty(boundary))
+		hasBoundary = true;
+
+    /* Empty geometry?  Return POINT EMPTY with zero radius */
+	if (gserialized_is_empty(geom))
+	{
+		LWGEOM* lwcenter = (LWGEOM*) lwpoint_construct_empty(gserialized_get_srid(geom), LW_FALSE, LW_FALSE);
+		LWGEOM* lwnearest = (LWGEOM*) lwpoint_construct_empty(gserialized_get_srid(geom), LW_FALSE, LW_FALSE);
+		center = geometry_serialize(lwcenter);
+		nearest = geometry_serialize(lwnearest);
+		radius = 0.0;
+	}
+	else
+	{
+		GEOSGeometry *ginput, *gcircle, *gcenter, *gnearest;
+		GEOSGeometry *gboundary = NULL;
+		double width, height, size;
+		GBOX gbox;
+		LWGEOM *lwg;
+		lwg = lwgeom_from_gserialized(geom);
+		if (!lwgeom_isfinite(lwg))
+		{
+			lwpgerror("Geometry contains invalid coordinates");
+			PG_RETURN_NULL();
+		}
+		lwgeom_free(lwg);
+
+
+		if (!gserialized_get_gbox_p(geom, &gbox))
+			PG_RETURN_NULL();
+
+		if (tolerance <= 0)
+		{
+			width = gbox.xmax - gbox.xmin;
+			height = gbox.ymax - gbox.ymin;
+			size = width > height ? width : height;
+			tolerance = size / 1000.0;
+		}
+
+		initGEOS(lwpgnotice, lwgeom_geos_error);
+
+		ginput = POSTGIS2GEOS(geom);
+		if (!ginput)
+			HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
+
+		if (hasBoundary)
+		{
+			gboundary = POSTGIS2GEOS(boundary);
+			if (!gboundary)
+				HANDLE_GEOS_ERROR("Boundary could not be converted to GEOS");
+		}
+
+		gcircle = GEOSLargestEmptyCircle(ginput, gboundary, tolerance);
+		if (!gcircle)
+		{
+			lwpgerror("Error calculating GEOSLargestEmptyCircle.");
+			GEOSGeom_destroy(ginput);
+			PG_RETURN_NULL();
+		}
+
+		gcenter = GEOSGeomGetStartPoint(gcircle);
+		gnearest = GEOSGeomGetEndPoint(gcircle);
+		GEOSDistance(gcenter, gnearest, &radius);
+		GEOSSetSRID(gcenter, srid);
+		GEOSSetSRID(gnearest, srid);
+
+		center = GEOS2POSTGIS(gcenter, is3d);
+		nearest = GEOS2POSTGIS(gnearest, is3d);
+		GEOSGeom_destroy(gcenter);
+		GEOSGeom_destroy(gnearest);
+		GEOSGeom_destroy(gcircle);
+		GEOSGeom_destroy(ginput);
+		if (gboundary) GEOSGeom_destroy(gboundary);
+	}
+
+	get_call_result_type(fcinfo, NULL, &resultTupleDesc);
+	BlessTupleDesc(resultTupleDesc);
+
+	result_values[0] = PointerGetDatum(center);
+	result_is_null[0] = false;
+	result_values[1] = PointerGetDatum(nearest);
+	result_is_null[1] = false;
+	result_values[2] = Float8GetDatum(radius);
+	result_is_null[2] = false;
+	resultTuple = heap_form_tuple(resultTupleDesc, result_values, result_is_null);
+
+	result = HeapTupleGetDatum(resultTuple);
+
+	PG_RETURN_DATUM(result);
+
+#endif /* POSTGIS_GEOS_VERSION >= 30900 */
+}
+
 
 
 /**

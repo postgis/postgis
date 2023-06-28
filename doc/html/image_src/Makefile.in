@@ -105,6 +105,8 @@ IMAGES= \
 	../images/st_isvalid07.png \
 	../images/st_isvalid08.png \
 	../images/st_isvalid09.png \
+	../images/st_largestemptycircle01.png \
+	../images/st_largestemptycircle02.png \
 	../images/st_letters01.png \
 	../images/st_linecrossingdirection01.png \
 	../images/st_linecrossingdirection02.png \

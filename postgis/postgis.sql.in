@@ -3793,6 +3793,12 @@ CREATE OR REPLACE FUNCTION ST_MaximumInscribedCircle(geometry, OUT center geomet
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LargestEmptyCircle(geom geometry, tolerance float8 DEFAULT 0.0, boundary geometry DEFAULT 'POINT EMPTY'::geometry, OUT center geometry, OUT nearest geometry, OUT radius double precision)
+	AS 'MODULE_PATHNAME', 'ST_LargestEmptyCircle'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
 -- PostGIS equivalent function: ST_difference(geom1 geometry, geom2 geometry)
 -- Changed: 3.1.0 to add gridSize default argument
 -- Replaces ST_Difference(geometry, geometry) deprecated in 3.1.0
