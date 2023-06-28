@@ -5,13 +5,14 @@
 # Vincent Picavet <vincent.ml@oslandia.com>, 2013
 # Vincent Picavet <vincent.ml@oslandia.com>, 2013
 # Vincent Bre <vincent.bre@oslandia.com>, 2023.
+# Thomas Muguet <thomas.muguet@oslandia.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-06-28 00:36+0000\n"
-"PO-Revision-Date: 2023-05-29 11:46+0000\n"
-"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
+"PO-Revision-Date: 2023-06-28 08:08+0000\n"
+"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_processingxml/fr/>\n"
 "Language: fr\n"
@@ -333,7 +334,7 @@ msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.30"
 #: reference_processing.xml:121
 #, no-c-format
 msgid "&geography_transform;"
-msgstr ""
+msgstr "&geography_transform;"
 
 #. Tag: title
 #: reference_processing.xml:125 reference_processing.xml:326
