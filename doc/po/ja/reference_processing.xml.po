@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-06-28 00:36+0000\n"
-"PO-Revision-Date: 2023-05-27 06:08+0000\n"
+"PO-Revision-Date: 2023-06-28 08:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_processingxml/ja/>\n"
@@ -319,7 +319,7 @@ msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.30"
 #: reference_processing.xml:121
 #, no-c-format
 msgid "&geography_transform;"
-msgstr ""
+msgstr "&geography_transform;"
 
 #. Tag: title
 #: reference_processing.xml:125 reference_processing.xml:326
