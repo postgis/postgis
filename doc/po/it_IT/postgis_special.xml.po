@@ -19,7 +19,7 @@ msgstr ""
 #: postgis_special.xml:3
 #, no-c-format
 msgid "PostGIS Special Functions Index"
-msgstr ""
+msgstr "Indice delle funzioni speciali di PostGIS"
 
 #. Tag: title
 #: postgis_special.xml:6
