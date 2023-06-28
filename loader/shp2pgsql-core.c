@@ -1163,21 +1163,19 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		 * or after pgsql reserved attribute names
 		 */
 		if (name[0] == '_' ||
-		        ! strcmp(name, "gid") ||
-		        ! strcmp(name, "tableoid") ||
-		        ! strcmp(name, "cmin") ||
-		        ! strcmp(name, "cmax") ||
-		        ! strcmp(name, "xmin") ||
-		        ! strcmp(name, "xmax") ||
-		        ! strcmp(name, "primary") ||
-		        ! strcmp(name, "oid") ||
-		        ! strcmp(name, "ctid"))
+		    ! strcmp(name, "gid") ||
+		    ! strcmp(name, "tableoid") ||
+		    ! strcmp(name, "cmin") ||
+		    ! strcmp(name, "cmax") ||
+		    ! strcmp(name, "xmin") ||
+		    ! strcmp(name, "xmax") ||
+		    ! strcmp(name, "primary") ||
+		    ! strcmp(name, "oid") ||
+		    ! strcmp(name, "ctid"))
 		{
-			char tmp_name[MAXFIELDNAMELEN];
-			strncpy(tmp_name + 2, name, MAXFIELDNAMELEN - 2);
-			tmp_name[strlen(name) + 1] = '\0';
-			tmp_name[0] = tmp_name[1] = '_';
-			strcpy(name, tmp_name);
+			char tmp[MAXFIELDNAMELEN] = "__";
+			memcpy(tmp+2, name, MAXFIELDNAMELEN-2);
+			tmp[MAXFIELDNAMELEN-1] = '\0';
 		}
 
 		/* Avoid duplicating field names */
