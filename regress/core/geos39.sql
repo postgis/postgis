@@ -51,7 +51,4 @@ SELECT 'lec-1', round(radius::numeric,3),
   ST_AsText(center,3) AS center,
   ST_AsText(nearest,3) AS nearest
 FROM ST_LargestEmptyCircle(
-  'MULTILINESTRING (
-    (10 100, 60 180, 130 150, 190 160),
-    (20 50, 70 70, 90 20, 110 40),
-    (160 30, 100 100, 180 100))');
+  'MULTIPOINT ((4 3), (7 6), (4 6))');
