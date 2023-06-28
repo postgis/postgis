@@ -3,7 +3,7 @@
 	 ********************************************************************
 	 Copyright 2010-2022, Regina Obe
 	 License: BSD
-   Purpose: This is an xsl transform that generates file list_dump_functions.xml.xls which
+   Purpose: This is an xsl transform that generates file list_dump_functions.xml.xsl which
    includes index listing of functions returning geometry dumps.
    It uses xml reference sections from reference.xml to then be processed by docbook
 	 ******************************************************************** -->

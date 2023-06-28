@@ -3,7 +3,7 @@
 	 ********************************************************************
 	 Copyright 2010-2022, Regina Obe
 	 License: BSD
-   Purpose: This is an xsl transform that generates file table_body_function_support_matrix.xml.xls which
+   Purpose: This is an xsl transform that generates file table_body_function_support_matrix.xml.xsl which
    includes table body of functions support matrix.
    It uses xml reference sections from reference.xml to then be processed by docbook
 	 ******************************************************************** -->

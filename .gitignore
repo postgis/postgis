@@ -31,7 +31,7 @@ doc/html/*.html
 doc/html/docbook.css
 doc/Makefile
 doc/Makefile.comments
-doc/**.xls.xml
+doc/**.xsl.xml
 doc/po/*/*.xml
 doc/po/*/html
 doc/po/*/Makefile

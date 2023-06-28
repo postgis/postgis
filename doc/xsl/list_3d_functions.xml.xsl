@@ -3,8 +3,8 @@
 	 ********************************************************************
 	 Copyright 2010-2022, Regina Obe
 	 License: BSD
-	 Purpose: This is an xsl transform that generates file list_box_functions.xml.xls which
-	 includes index listing of functions taking or returning a BOX.
+	 Purpose: This is an xsl transform that generates file list_3d_functions.xml.xsl which
+	 includes index listing of functions supporting Z
 	 It uses xml reference sections from reference.xml to then be processed by docbook
 	 ******************************************************************** -->
 	<xsl:output method="xml" indent="yes" encoding="utf-8" />
@@ -26,18 +26,20 @@
 					<xsl:variable name="refid">
 						<xsl:value-of select="@id" />
 					</xsl:variable>
-					<xsl:variable name="refname">
-						<xsl:value-of select="refnamediv/refname" />
-					</xsl:variable>
 
-			<!-- If at least one proto function accepts or returns a box -->
-					<xsl:choose>
-						<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'box') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'box')">
-							<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
-						</xsl:when>
-					</xsl:choose>
+			<!-- For each section if there is note that it supports 3d catalog it -->
+						<xsl:for-each select="refsection">
+							<xsl:for-each select="para">
+								<xsl:choose>
+									<xsl:when test="contains(remark/@conformance, '3d')">
+										<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
+									</xsl:when>
+								</xsl:choose>
+							</xsl:for-each>
+						</xsl:for-each>
 				</xsl:for-each>
 				</itemizedlist>
+
 	</xsl:template>
 
 </xsl:stylesheet>

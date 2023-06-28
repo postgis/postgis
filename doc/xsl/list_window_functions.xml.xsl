@@ -3,9 +3,9 @@
 	 ********************************************************************
 	 Copyright 2010-2022, Regina Obe
 	 License: BSD
-	 Purpose: This is an xsl transform that generates file list_aggregates.xml.xls which
-	 includes index listing of aggregate functions.
-	 It uses xml reference sections from reference.xml to then be processed by docbook
+   Purpose: This is an xsl transform that generates file list_window_functions.xml.xsl which
+   includes index listing of window functions.
+   It uses xml reference sections from reference.xml to then be processed by docbook
 	 ******************************************************************** -->
 	<xsl:output method="xml" indent="yes" encoding="utf-8" />
 
@@ -15,7 +15,7 @@
 	</xsl:template>
 
 	<xsl:template match="//chapter">
-
+            <xsl:if test="//funcprototype[contains(paramdef/type,' winset')]">
 			<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 			<xsl:for-each select='//refentry'>
@@ -31,14 +31,16 @@
 				</xsl:variable>
 
 			<!-- For each function prototype if it takes a geometry set then catalog it as an aggregate function  -->
-
-						<xsl:if test=".//paramdef[contains(type,' set')] or .//paramdef[contains(type,'geography set')] or
-						.//paramdef[contains(type,'raster set')]">
+				<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
+					<xsl:choose>
+						<xsl:when test="contains(paramdef/type,' winset')">
 							 <listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
-						</xsl:if>
+						</xsl:when>
+					</xsl:choose>
 				</xsl:for-each>
+			</xsl:for-each>
 			</itemizedlist>
-
+            </xsl:if>
 	</xsl:template>
 
 </xsl:stylesheet>
