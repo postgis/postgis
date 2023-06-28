@@ -57,7 +57,7 @@
         <para>Functions new in PostGIS <xsl:value-of select="$ver" /></para>
         <itemizedlist>
         <!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-          <xsl:for-each select="$chap/*/refentry">
+          <xsl:for-each select="$chap//refentry">
             <xsl:sort select="refnamediv/refname"/>
             <xsl:variable name='comment'>
               <xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
@@ -94,7 +94,7 @@
         <para>Functions enhanced in PostGIS <xsl:value-of select="$ver" /></para>
         <itemizedlist>
         <!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-        <xsl:for-each select="$chap/*/refentry">
+        <xsl:for-each select="$chap//refentry">
           <xsl:sort select="refnamediv/refname"/>
           <xsl:variable name='comment'>
             <xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
@@ -131,7 +131,7 @@
         <para>Functions changed in PostGIS <xsl:value-of select="$ver" /></para>
         <itemizedlist>
         <!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-        <xsl:for-each select="$chap/*/refentry">
+        <xsl:for-each select="$chap//refentry">
           <xsl:sort select="refnamediv/refname"/>
           <xsl:variable name='comment'>
             <xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
