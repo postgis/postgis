@@ -9,3 +9,4 @@ rp-1|POINT(1.4 19.3)
 rp-2|POINT(1 19)
 rp-3|POINT(0 20)
 ERROR:  Geometry contains invalid coordinates
+lec-1|39.261|POINT(61.592 108.35)|POINT(70 70)
