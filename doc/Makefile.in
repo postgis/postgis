@@ -59,8 +59,11 @@ ifeq ($(XSLTPROCFLAGS),)
 	XSLTPROCFLAGS=--nonet
 endif
 
+XSLTPROC_PATH_OPT= \
+	--path $(srcdir):$(srcdir)/ent:.
+
 XSLTPROC_COMMONOPTS= \
-	--path $(srcdir) \
+	$(XSLTPROC_PATH_OPT) \
 	--param section.autolabel 1 \
 	--param section.label.includes.component.label 1 \
 	--param chunk.section.depth 0 \
@@ -128,6 +131,7 @@ XML_SOURCES = \
 	introduction.xml \
 	performance_tips.xml \
 	postgis.xml \
+	postgis_special.xml \
 	reference_accessor.xml \
 	reference_bbox.xml \
 	reference_cluster.xml \
@@ -174,8 +178,21 @@ XML_SOURCES = \
 	using_postgis_query.xml \
 	using_raster_dataman.xml
 
+XSL_GENERATED_SOURCES = \
+	list_3d_functions.xls.xml \
+	list_aggregates.xls.xml \
+	list_box_functions.xls.xml \
+	list_curved_geometry_functions.xls.xml \
+	list_dump_functions.xls.xml \
+	list_geography_functions.xls.xml \
+	list_new_functions.xls.xml \
+	list_raster_functions.xls.xml \
+	list_sqlmm_functions.xls.xml \
+	list_window_functions.xls.xml \
+	table_body_function_support_matrix.xls.xml
+
 XML_GENERATED_SOURCES = \
-	postgis_aggs_mm.xml \
+	$(XSL_GENERATED_SOURCES) \
 	postgis-out.xml \
 
 XML_INPUTS = $(XML_SOURCES) $(XML_GENERATED_SOURCES)
@@ -230,42 +247,45 @@ update-po: $(XML_INPUTS_POT)
 endif
 
 ifeq ($(XSLTPROC),)
-postgis_aggs_mm.xml: requirements_not_met_xsltproc
+$(XSL_GENERATED_SOURCES): requirements_not_met_xsltproc
 else
-postgis_aggs_mm.xml: xsl/postgis_aggs_mm.xml.xsl Makefile postgis-out.xml $(XML_SOURCES)
-	grep -v '\&postgis_aggs_mm;' postgis-out.xml | $(XSLTPROC) --novalid --path $(srcdir) $< - > $@.tmp
-	mv $@.tmp $@
+$(XSL_GENERATED_SOURCES): %.xls.xml: xsl/%.xml.xls postgis-out.xml
+	grep -v '\&postgis_special;' postgis-out.xml | $(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< -
 endif
 
+# TODO: generalize the following rules {
+
 postgis_comments.sql: xsl/postgis_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $<  postgis-out.xml > $@
+	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
 
 html/postgis_cheatsheet.html: xsl/postgis_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
+	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
 
 raster_comments.sql: xsl/raster_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
+	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
 
 html/raster_cheatsheet.html: ./xsl/raster_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
+	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
 
 topology_comments.sql: xsl/topology_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
+	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
 
 html/topology_cheatsheet.html: xsl/topology_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
+	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
 
 sfcgal_comments.sql: xsl/sfcgal_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
+	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
 
 html/sfcgal_cheatsheet.html: xsl/sfcgal_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
+	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
 
 tiger_geocoder_comments.sql: xsl/tiger_geocoder_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
+	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
 
 html/tiger_geocoder_cheatsheet.html: xsl/tiger_geocoder_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
+	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
+
+# } generalize the above rules
 
 postgis-out.xml: postgis.xml Makefile
 	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g;s'@@POSTGIS_DOWNLOAD_URL@@'${POSTGIS_DOWNLOAD_URL}'g;" $< > $@
@@ -441,7 +461,7 @@ garden: postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql 
 endif
 
 %_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql: xsl/postgis_gardentest.sql.xsl postgis-out.xml
-	$(XSLTPROC) -o $@ --path $(srcdir) $^
+	$(XSLTPROC) -o $@ $(XSLTPROC_PATH_OPT) $^
 
 check: check-unit
 check-regress:
@@ -450,7 +470,7 @@ ifeq ($(XMLLINT),)
 check-unit: requirements_not_met_xmllint
 else
 check-unit: $(XML_INPUTS)
-	$(XMLLINT) --loaddtd --path $(srcdir) --xinclude --valid postgis-out.xml --noout
+	$(XMLLINT) --loaddtd $(XSLTPROC_PATH_OPT) --xinclude --valid postgis-out.xml --noout
 endif
 
 check-localized:

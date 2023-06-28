@@ -25,7 +25,6 @@
 <!ENTITY performance_tips SYSTEM "performance_tips.xml">
 <!ENTITY database_tuning SYSTEM "database_tuning.xml">
 <!ENTITY reference SYSTEM "reference.xml">
-<!ENTITY postgis_aggs_mm SYSTEM "postgis_aggs_mm.xml">
 <!ENTITY reporting SYSTEM "reporting.xml">
 <!ENTITY release_notes SYSTEM "release_notes.xml">
 <!ENTITY reference_type SYSTEM "reference_type.xml">
@@ -73,6 +72,9 @@
 <!ENTITY T_support SYSTEM "tag_T_support.xml">
 <!ENTITY index_aware SYSTEM "tag_index_aware.xml">
 <!ENTITY geography_transform SYSTEM "tag_geography_transform.xml">
+
+<!ENTITY % postgis_special SYSTEM "ent/postgis_special.ent">
+%postgis_special;
 
 ]>
 
@@ -128,7 +130,7 @@
   &using_raster_dataman;
   &reference_raster;
   &extras;
-  &postgis_aggs_mm;
+  &postgis_special;
   &reporting;
   &release_notes;
 

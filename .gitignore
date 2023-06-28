@@ -31,12 +31,13 @@ doc/html/*.html
 doc/html/docbook.css
 doc/Makefile
 doc/Makefile.comments
+doc/**.xls.xml
 doc/po/*/*.xml
 doc/po/*/html
 doc/po/*/Makefile
 doc/po/*/xsl
+doc/po/*/ent
 doc/po/*/*_comments.sql
-doc/postgis_aggs_mm.xml
 doc/postgis_comments.sql
 doc/postgis-out.xml
 doc/raster_comments.sql
