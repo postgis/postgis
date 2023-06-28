@@ -17,7 +17,7 @@ These can be set globally, by database, by session or by transaction. Best set a
       <refsection>
         <title>Description</title>
         <para>This GUC is only relevant if you compiled PostGIS with sfcgal support.  By default <varname>geos</varname> backend is used for functions where both GEOS and SFCGAL have the same named function.  This variable allows you to override and make sfcgal the backend to service the request.</para>
-        <para>Availability: 2.1.0</para>
+        <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
       </refsection>
 
       <refsection>
@@ -56,7 +56,7 @@ These can be set globally, by database, by session or by transaction. Best set a
                         This option can be set in PostgreSQL's configuration file postgresql.conf. It can also be set by connection or transaction.
                     </para>
                 </note>
-                <para>Availability: 2.2.0</para>
+                <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 
                 <note>
                     <para>
@@ -143,7 +143,7 @@ SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';</progra
                     </para>
                 </note>
 
-                <para>Availability: 2.2.0</para>
+                <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 
             </refsection>
 
@@ -219,7 +219,7 @@ SET postgis.gdal_enabled_drivers = 'DISABLE_ALL';
                     </para>
                 </note>
 
-                <para>Availability: 2.2.0</para>
+                <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 
             </refsection>
 
@@ -273,7 +273,7 @@ SELECT pg_reload_conf();
                     A string configuration to set options used when working with an out-db raster. <ulink url="http://trac.osgeo.org/gdal/wiki/ConfigOptions">Configuration options</ulink> control things like how much space GDAL allocates to local data cache, whether to read overviews, and what access keys to use for remote out-db data sources.
                 </para>
 
-                <para>Availability: 3.2.0</para>
+                <para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
 
             </refsection>
 

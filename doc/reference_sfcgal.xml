@@ -35,7 +35,7 @@
 
         <para>Returns the version of SFCGAL in use</para>
 
-		<para>Availability: 2.1.0</para>
+		<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
@@ -70,7 +70,7 @@
 
         <para>Returns the full version of SFCGAL in use including CGAL and Boost versions</para>
 
-		<para>Availability: 3.3.0</para>
+		<para role="availability" conformance="3.3.0">Availability: 3.3.0</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
@@ -103,7 +103,7 @@
 	  <refsection>
 		<title>Description</title>
 
-		<para>Availability: 2.1.0</para>
+		<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 		<para>&sfcgal_required;</para>
         <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 8.1, 10.5</para>
 		<para>&Z_support;</para>
@@ -153,7 +153,7 @@
 	  <refsection>
 		<title>Description</title>
 
-		<para>Availability: 3.3.0</para>
+		<para role="availability" conformance="3.3.0">Availability: 3.3.0</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
@@ -207,7 +207,7 @@ FROM ST_Subdivide(ST_Letters('CH'),5) WITH ORDINALITY AS sd(geom,i)
 	  <refsection>
 		<title>Description</title>
 		<para>Return a geometry that is the shared portion between geom1 and geom2.</para>
-		<para>Availability: 2.1.0</para>
+		<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 		<para>&sfcgal_required;</para>
         <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1</para>
 		<para>&Z_support;</para>
@@ -318,7 +318,7 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 	  <refsection>
 		<title>Description</title>
 		<para>Returns that part of geom1 that is not part of geom2.</para>
-		<para>Availability: 2.2.0</para>
+		<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 		<para>&sfcgal_required;</para>
         <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1</para>
 		<para>&Z_support;</para>
@@ -406,8 +406,8 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 		<title>Description</title>
 
 
-		<para>Availability: 2.2.0</para>
-		<para>Availability: 3.3.0 aggregate variant was added</para>
+		<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+		<para role="availability" conformance="3.3.0">Availability: 3.3.0 aggregate variant was added</para>
 		<para>&sfcgal_required;</para>
         <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1</para>
 		<para>&Z_support;</para>
@@ -533,7 +533,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
         but uses CGAL and a different algorithm.
         </para>
 
-		<para>Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1.</para>
+		<para role="availability" conformance="3.3.0">Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1.</para>
 		<para>&sfcgal_required;</para>
 	  </refsection>
 
@@ -625,7 +625,7 @@ a capable version (1.2.0+). Otherwise the function is just a wrapper
 around ST_StraightSkeleton (slower case).
     </para>
 
-		<para>Availability: 2.2.0</para>
+		<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
@@ -690,7 +690,7 @@ triangulation</ulink> around the vertices of the input geometry.
 Output is a TIN.
 			</para>
 			<para>&sfcgal_required;</para>
-			<para>Availability: 3.0.0</para>
+			<para role="availability" conformance="3.0.0">Availability: 3.0.0</para>
 			<para>&Z_support;</para>
 		</refsection>
 			  <refsection>
@@ -772,7 +772,7 @@ select ST_DelaunayTriangles(
 	  <refsection>
 		<title>Description</title>
 
-		<para>Availability: 2.1.0</para>
+		<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
@@ -867,7 +867,7 @@ select ST_DelaunayTriangles(
 	  <refsection>
 		<title>Description</title>
 
-		<para>Availability: 2.1.0</para>
+		<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
@@ -895,7 +895,7 @@ select ST_DelaunayTriangles(
         <refsection>
         <title>Description</title>
 
-        <para>Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left out in 2.1 release.</para>
+        <para role="availability" conformance="2.2.0">Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left out in 2.1 release.</para>
         <para>&sfcgal_required;</para>
         <para>&Z_support;</para>
         <para>&P_support;</para>
@@ -923,7 +923,7 @@ select ST_DelaunayTriangles(
 	  <refsection>
 		<title>Description</title>
 
-		<para>Availability: 2.2.0</para>
+		<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
@@ -951,7 +951,7 @@ select ST_DelaunayTriangles(
 	  <refsection>
 		<title>Description</title>
 
-		<para>Availability: 2.2.0</para>
+		<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
@@ -988,7 +988,7 @@ select ST_DelaunayTriangles(
                 <para>Implementation utilizes <ulink url="http://doc.cgal.org/latest/Minkowski_sum_2/">CGAL 2D Minkowskisum</ulink>.</para>
 
 
-		<para>Availability: 2.1.0</para>
+		<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 		<para>&sfcgal_required;</para>
 	  </refsection>
 
@@ -1123,7 +1123,7 @@ MULTIPOLYGON(
             The result will not contain holes unless the optional <varname>allow_holes</varname> argument is specified as true.
             </para>
 
-		<para>Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1.</para>
+		<para role="availability" conformance="3.3.0">Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1.</para>
 		<para>&sfcgal_required;</para>
 	  </refsection>
 
@@ -1195,7 +1195,7 @@ MULTIPOLYGON(
 
 		<para>The function only applies to polygons. It returns -1 if the polygon is counterclockwise oriented and 1 if the polygon is clockwise oriented.</para>
 
-		<para>Availability: 2.1.0</para>
+		<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 	  </refsection>
@@ -1221,7 +1221,7 @@ MULTIPOLYGON(
 	  <refsection>
 		<title>Description</title>
 
-		<para>Availability: 2.1.0</para>
+		<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
@@ -1281,7 +1281,7 @@ MULTIPOLYGON(
 	  <refsection>
 		<title>Description</title>
 		<para>Takes as input a surface such a  MULTI(POLYGON) or POLYHEDRALSURFACE and returns a TIN representation via the process of tessellation using triangles.</para>
-		<para>Availability: 2.1.0</para>
+		<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
@@ -1394,7 +1394,7 @@ MULTIPOLYGON(
 	  <refsection>
 		<title>Description</title>
 
-		<para>Availability: 2.2.0</para>
+		<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>

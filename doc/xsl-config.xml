@@ -45,21 +45,17 @@
         <!--
         | List of supported availability/enhanced/changed tags
         | we use <para> to make them translatable.
-        | First para is the actual tag ( ${tag}: ${version} )
-        | Second para is the text we want to show under the section
-        | listing all functions tagged by that tag
+        | The parameter is the text we want to show under the
+        | section listing all functions tagged by that tag
         -->
         <supported_tags>
-            <tag>
-                <para>Availability</para>
+            <tag role="availability">
                 <para>Functions new in PostGIS %</para>
             </tag>
-            <tag>
-                <para>Enhanced</para>
+            <tag role="enhanced">
                 <para>Functions enhanced in PostGIS %</para>
             </tag>
-            <tag>
-                <para>Changed</para>
+            <tag role="changed">
                 <para>Functions changed in PostGIS %</para>
             </tag>
         </supported_tags>

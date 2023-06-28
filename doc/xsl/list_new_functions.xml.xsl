@@ -48,12 +48,11 @@
 				<xsl:for-each select="document('xsl-config.xml')//list_new_functions/supported_tags/*">
 
 				<xsl:variable name='tag_node' select="." />
-
-				<xsl:variable name='tag' select="string($tag_node/para[1])" />
-				<xsl:variable name='tag_para' select="string($tag_node/para[2])" />
+				<xsl:variable name='tag_para' select="string($tag_node/para)" />
+				<xsl:variable name='tag_role' select="$tag_node/@role" />
 
 				<!-- { -->
-				<xsl:if test="$chap//para[contains(., concat(concat($tag, ': '), $ver))]">
+				<xsl:if test="$chap//para[@role=$tag_role and starts-with(./@conformance, $ver)]">
 
 				<para>
 				<xsl:value-of select="substring-before($tag_para, '%')" />
@@ -79,16 +78,12 @@
 
 						<!-- For each section if there is note about availability in this version -->
 						<xsl:for-each select="refsection">
-							<xsl:for-each select=".//para">
-								<xsl:choose>
-									<xsl:when test="contains(., concat(concat($tag, ': '), $ver))">
-										<listitem>
-											<simpara>
-												<link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /><xsl:text> </xsl:text> <xsl:value-of select="$comment" />
-											</simpara>
-										</listitem>
-									</xsl:when>
-								</xsl:choose>
+							<xsl:for-each select=".//para[@role=$tag_role and starts-with(./@conformance, $ver)]">
+								<listitem>
+									<simpara>
+										<link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /><xsl:text> </xsl:text> <xsl:value-of select="$comment" />
+									</simpara>
+								</listitem>
 							</xsl:for-each>
 						</xsl:for-each>
 					</xsl:for-each>

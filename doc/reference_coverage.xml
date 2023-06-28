@@ -59,7 +59,7 @@
       edges forming narrower gaps will also be returned as invalid.
       </para>
 
-      <para>Availability: 3.4.0 - requires GEOS &gt;= 3.12.0</para>
+      <para role="availability" conformance="3.4.0">Availability: 3.4.0 - requires GEOS &gt;= 3.12.0</para>
     </refsection>
 
     <refsection>
@@ -131,7 +131,7 @@ SELECT true = ALL (
       Use <xref linkend="ST_CoverageInvalidLocations" /> to determine if a coverage is valid.
       </para></note>
       <para>To simplify only the "internal" edges of the coverage (those that are shared by two polygons) set the <parameter>simplifyBoundary</parameter> parameter to false.</para>
-      <para>Availability: 3.4.0 - requires GEOS &gt;= 3.12.0</para>
+      <para role="availability" conformance="3.4.0">Availability: 3.4.0 - requires GEOS &gt;= 3.12.0</para>
 
     </refsection>
 
@@ -195,7 +195,7 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 1.0) OVER ())
             Use <xref linkend="ST_CoverageInvalidLocations" /> to determine if a coverage is valid.
       </para></note>
 
-      <para>Availability: 3.4.0 - requires GEOS &gt;= 3.8.0</para>
+      <para role="availability" conformance="3.4.0">Availability: 3.4.0 - requires GEOS &gt;= 3.8.0</para>
     </refsection>
 
     <refsection>

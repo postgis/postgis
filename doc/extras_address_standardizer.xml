@@ -618,7 +618,7 @@ into includes in the future for easier maintenance.</para></listitem>
 						</varlistentry>
 				</variablelist>
             <!-- use this format if new function -->
-        <para>Availability: 3.4.0</para>
+        <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
         <para>&address_standardizer_required;</para>
         </refsection>
 
@@ -698,7 +698,7 @@ into includes in the future for easier maintenance.</para></listitem>
             <emphasis>address1</emphasis>, <emphasis>city</emphasis>, <emphasis>state</emphasis>, <emphasis>zip</emphasis>, <emphasis>zipplus</emphasis>, <emphasis>country</emphasis>.</para>
 
             <!-- use this format if new function -->
-        <para>Availability: 2.2.0</para>
+        <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
         <para>&address_standardizer_required;</para>
         </refsection>
 
@@ -787,7 +787,7 @@ FROM (SELECT addid, parse_address(address) As a
 			<para>Variant 2: Takes an address as 2 parts.  A <varname>micro</varname> consisting of standard first line of postal address e.g. <code>house_num street</code>, and a macro consisting of standard postal second line of an address e.g <code>city, state postal_code country</code>.</para>
 
 			<!-- use this format if new function -->
-		<para>Availability: 2.2.0</para>
+		<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 		<para>&address_standardizer_required;</para>
 		</refsection>
 

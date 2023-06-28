@@ -39,7 +39,7 @@ The measure values must increase from each vertex to the next.
 Valid trajectories are expected as input to spatio-temporal functions
 like <xref linkend="ST_ClosestPointOfApproach" />
 			</para>
-			<para>Availability: 2.2.0</para>
+			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 			<para>&Z_support;</para>
 		  </refsection>
 
@@ -108,7 +108,7 @@ See <xref linkend="ST_LocateAlong" /> for getting the actual points at
 the given measure.
 			</para>
 
-			<para>Availability: 2.2.0</para>
+			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 			<para>&Z_support;</para>
 		  </refsection>
 
@@ -185,7 +185,7 @@ Inputs must be valid trajectories as checked by
 Null is returned if the trajectories do not overlap in their M ranges.
 			</para>
 
-			<para>Availability: 2.2.0</para>
+			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 			<para>&Z_support;</para>
 		  </refsection>
 
@@ -256,7 +256,7 @@ Inputs must be valid trajectories as checked by
 False is returned if the trajectories do not overlap in their M ranges.
 			</para>
 
-			<para>Availability: 2.2.0</para>
+			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 			<para>&Z_support;</para>
 		  </refsection>
 

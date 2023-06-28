@@ -106,14 +106,14 @@
 		geometry type, or dimension is invalid.</para>
 
 		<note>
-			<para>Changed: 2.0.0 This function no longer updates geometry_columns since geometry_columns is a view that reads from system catalogs.  It by default
+			<para role="changed" conformance="2.0.0">Changed: 2.0.0 This function no longer updates geometry_columns since geometry_columns is a view that reads from system catalogs.  It by default
 			also does not create constraints, but instead uses the built in type modifier behavior of PostgreSQL.  So for example building a wgs84 POINT column with this function is now
 			equivalent to: <code>ALTER TABLE some_table ADD COLUMN geom geometry(Point,4326);</code> </para>
-			<para>Changed: 2.0.0 If you require the old behavior of constraints use the default <varname>use_typmod</varname>, but set it to false.</para>
+			<para role="changed" conformance="2.0.0">Changed: 2.0.0 If you require the old behavior of constraints use the default <varname>use_typmod</varname>, but set it to false.</para>
 		</note>
 
 		<note>
-		    <para>Changed: 2.0.0 Views can no longer be manually registered in geometry_columns, however views built against geometry typmod tables geometries and used without wrapper functions will register themselves correctly
+		    <para role="changed" conformance="2.0.0">Changed: 2.0.0 Views can no longer be manually registered in geometry_columns, however views built against geometry typmod tables geometries and used without wrapper functions will register themselves correctly
 		            because they inherit the typmod behavior of their parent table column.
 		            Views that use geometry functions that output other geometries will need to be cast to typmod geometries for these view geometry columns to be registered correctly
 		            in geometry_columns. Refer to <xref linkend="Manual_Register_Spatial_Column"/>.
@@ -122,7 +122,7 @@
 		<para>&sfs_compliant;</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
-		<para>Enhanced: 2.0.0 use_typmod argument introduced.  Defaults to creating typmod geometry column instead of constraint-based.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 use_typmod argument introduced.  Defaults to creating typmod geometry column instead of constraint-based.</para>
 	  </refsection>
 
 	  <refsection>
@@ -253,7 +253,7 @@ SELECT f_geometry_column As col_name, type, srid, coord_dimension As ndims
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 		<note>
-			<para>Changed: 2.0.0 This function is provided for backward compatibility.  Now that since geometry_columns is now a view against the system catalogs,
+			<para role="changed" conformance="2.0.0">Changed: 2.0.0 This function is provided for backward compatibility.  Now that since geometry_columns is now a view against the system catalogs,
 			    you can drop a geometry column like any other table column using <code>ALTER TABLE</code></para>
 		</note>
 	  </refsection>
@@ -326,7 +326,7 @@ ALTER TABLE my_schema.my_spatial_table DROP column geom;
 		not provided.</para>
 
 		<note>
-			<para>Changed: 2.0.0 This function is provided for backward compatibility.  Now that since geometry_columns is now a view against the system catalogs,
+			<para role="changed" conformance="2.0.0">Changed: 2.0.0 This function is provided for backward compatibility.  Now that since geometry_columns is now a view against the system catalogs,
 			    you can drop a table with geometry columns like any other table using <code>DROP TABLE</code></para>
 		</note>
 	  </refsection>
@@ -474,10 +474,10 @@ find_srid
 		were inserted into the <varname>geometry_columns</varname> table.  The
 		parameterized version simply returns the number of rows inserted into
 		the <varname>geometry_columns</varname> table.</para>
-		<para>Availability: 1.4.0</para>
-		<para>Changed: 2.0.0 By default, now uses type modifiers instead of check constraints to constrain geometry types.  You can still use check
+		<para role="availability" conformance="1.4.0">Availability: 1.4.0</para>
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0 By default, now uses type modifiers instead of check constraints to constrain geometry types.  You can still use check
 		    constraint behavior instead by using the new  <varname>use_typmod</varname> and setting it to false.</para>
-		<para>Enhanced: 2.0.0 <varname>use_typmod</varname> optional argument was introduced that allows controlling if columns are created with typmodifiers or with check constraints.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 <varname>use_typmod</varname> optional argument was introduced that allows controlling if columns are created with typmodifiers or with check constraints.</para>
 	  </refsection>
 
 	  <refsection>

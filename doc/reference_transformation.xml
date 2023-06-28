@@ -75,8 +75,8 @@ y' = d*x + e*y + yoff
 z' = z </programlisting> This method is a subcase of the 3D method
 			above.</para>
 
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-		<para>Availability: 1.1.2. Name changed from Affine to ST_Affine in 1.2.2</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para role="availability" conformance="1.1.2.">Availability: 1.1.2. Name changed from Affine to ST_Affine in 1.2.2</para>
 		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 
 		<para>&P_support;</para>
@@ -157,9 +157,9 @@ SELECT ST_AsEWKT(ST_Affine(geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()),
 			specified either as a POINT geometry, or as x and y coordinates. If the origin is not
 			specified, the geometry is rotated about POINT(0 0).</para>
 
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-		<para>Enhanced: 2.0.0 additional parameters for specifying the origin of rotation were added.</para>
-		<para>Availability: 1.1.2. Name changed from Rotate to ST_Rotate in 1.2.2</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 additional parameters for specifying the origin of rotation were added.</para>
+		<para role="availability" conformance="1.1.2.">Availability: 1.1.2. Name changed from Rotate to ST_Rotate in 1.2.2</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
@@ -229,8 +229,8 @@ FROM (SELECT 'LINESTRING (50 160, 50 50, 100 50)'::geometry AS geom) AS foo;
 		<note><para><code>ST_RotateX(geomA,  rotRadians)</code>
 			is short-hand for <code>ST_Affine(geomA, 1, 0, 0, 0, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), cos(rotRadians), 0, 0, 0)</code>.</para></note>
 
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-		<para>Availability: 1.1.2. Name changed from RotateX to ST_RotateX in 1.2.2</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para role="availability" conformance="1.1.2.">Availability: 1.1.2. Name changed from RotateX to ST_RotateX in 1.2.2</para>
 		<para>&P_support;</para>
 		<para>&Z_support;</para>
 		<para>&T_support;</para>
@@ -282,8 +282,8 @@ SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 		<note><para><code>ST_RotateY(geomA,  rotRadians)</code>
 			is short-hand for <code>ST_Affine(geomA,  cos(rotRadians), 0, sin(rotRadians),  0, 1, 0,  -sin(rotRadians), 0, cos(rotRadians), 0,  0, 0)</code>.</para></note>
 
-		<para>Availability: 1.1.2. Name changed from RotateY to ST_RotateY in 1.2.2</para>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para role="availability" conformance="1.1.2.">Availability: 1.1.2. Name changed from RotateY to ST_RotateY in 1.2.2</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 
 		<para>&P_support;</para>
 		<para>&Z_support;</para>
@@ -338,9 +338,9 @@ SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 		<note><para><code>ST_RotateZ(geomA,  rotRadians)</code>
 			is short-hand for <code>SELECT ST_Affine(geomA,  cos(rotRadians), -sin(rotRadians), 0,  sin(rotRadians), cos(rotRadians), 0,  0, 0, 1,  0, 0, 0)</code>.</para></note>
 
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 
-		<para>Availability: 1.1.2. Name changed from RotateZ to ST_RotateZ in 1.2.2</para>
+		<para role="availability" conformance="1.1.2.">Availability: 1.1.2. Name changed from RotateZ to ST_RotateZ in 1.2.2</para>
 		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 
 		<para>&Z_support;</para>
@@ -440,10 +440,10 @@ point are equivalent to no scaling the corresponding dimension.
 		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 
 
-		<para>Availability: 1.1.0.</para>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-                <para>Enhanced: 2.2.0 support for scaling all dimension (<varname>factor</varname> parameter) was introduced.</para>
-                <para>Enhanced: 2.5.0 support for scaling relative to a local origin (<varname>origin</varname> parameter) was introduced.</para>
+		<para role="availability" conformance="1.1.0.">Availability: 1.1.0.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+                <para role="enhanced" conformance="2.2.0">Enhanced: 2.2.0 support for scaling all dimension (<varname>factor</varname> parameter) was introduced.</para>
+                <para role="enhanced" conformance="2.5.0">Enhanced: 2.5.0 support for scaling relative to a local origin (<varname>origin</varname> parameter) was introduced.</para>
 		<para>&P_support;</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
@@ -524,7 +524,7 @@ SELECT ST_AsText(ST_Scale('LINESTRING(1 1, 2 2)', 'POINT(2 2)', 'POINT(1 1)'::ge
 
 		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 
-		<para>Availability: 1.2.2</para>
+		<para role="availability" conformance="1.2.2">Availability: 1.2.2</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 	  </refsection>
@@ -599,7 +599,7 @@ SELECT ST_AsText(ST_Scale('LINESTRING(1 1, 2 2)', 'POINT(2 2)', 'POINT(1 1)'::ge
 		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 
 
-		<para>Availability: 1.1.0.</para>
+		<para role="availability" conformance="1.1.0.">Availability: 1.1.0.</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 	  </refsection>

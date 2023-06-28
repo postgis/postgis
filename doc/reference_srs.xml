@@ -39,7 +39,7 @@
 
       <para> Refer to <xref linkend="ST_TransformPipeline" /> for details on writing a transformation pipeline.</para>
 
-    <para>Availability: 3.4.0</para>
+    <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
 
     <para>
     The SRID of the input geometry is ignored, and the SRID of the output geometry will be set to
@@ -263,8 +263,8 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
 
     <note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 
-    <para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
-    <para>Enhanced: 2.3.0 support for direct PROJ.4 text was introduced.</para>
+    <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+    <para role="enhanced" conformance="2.3.0">Enhanced: 2.3.0 support for direct PROJ.4 text was introduced.</para>
     <para>&sqlmm_compliant; SQL-MM 3: 5.1.6</para>
     <para>&curve_support;</para>
     <para>&P_support;</para>
@@ -409,7 +409,7 @@ CREATE INDEX idx_geom_26986_parcels
           </listitem>
         </itemizedlist>
     </para>
-    <para>Availability: 3.4.0</para>
+    <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
 
     <para>
     The SRID of the input geometry is ignored, and the SRID of the output geometry will be set to
@@ -511,7 +511,7 @@ SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::geometry,
 
       <para>Returns a set of all <varname>auth_srid</varname> for the given <varname>auth_name</varname>.</para>
 
-      <para>Availability: 3.4.0</para>
+      <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
       <para>Proj version 6+</para>
 
     </refsection>
@@ -568,7 +568,7 @@ SELECT * FROM postgis_srs_codes('EPSG') LIMIT 10;
 
       <para>Returns a metadata record for the requested <varname>auth_srid</varname> for the given <varname>auth_name</varname>. The record will have the <varname>auth_name</varname>, <varname>auth_srid</varname>, <varname>srname</varname>, <varname>srtext</varname>, <varname>proj4text</varname>, and the corners of the area of usage, <varname>point_sw</varname> and <varname>point_ne</varname>.</para>
 
-      <para>Availability: 3.4.0</para>
+      <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
       <para>Proj version 6+</para>
 
     </refsection>
@@ -619,7 +619,7 @@ point_ne  | 0101000020E610000085EB51B81E855CC0E17A14AE47014E40
 
       <para>Returns a set of all metadata records in the underlying Proj database. The records will have the <varname>auth_name</varname>, <varname>auth_srid</varname>, <varname>srname</varname>, <varname>srtext</varname>, <varname>proj4text</varname>, and the corners of the area of usage, <varname>point_sw</varname> and <varname>point_ne</varname>.</para>
 
-      <para>Availability: 3.4.0</para>
+      <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
       <para>Proj version 6+</para>
 
     </refsection>
@@ -680,7 +680,7 @@ SELECT auth_name, auth_srid, srname FROM postgis_srs_all() LIMIT 10;
 
       <para>The search only looks for projected coordinate systems, and is intended for users to explore the possible systems that work for the extent of their data.</para>
 
-      <para>Availability: 3.4.0</para>
+      <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
       <para>Proj version 6+</para>
 
     </refsection>

@@ -38,9 +38,9 @@
 			For geography types by default area is determined on a spheroid with units in square meters.
 		  To compute the area using the faster but less accurate spherical model use <varname>ST_Area(geog,false)</varname>.
 		  </para>
-			<para>Enhanced: 2.0.0 - support for 2D polyhedral surfaces was introduced.</para>
-			<para>Enhanced: 2.2.0 - measurement on spheroid performed with GeographicLib for improved accuracy and robustness.  Requires PROJ &gt;= 4.9.0 to take advantage of the new feature.</para>
-			<para>Changed: 3.0.0 - does not depend on SFCGAL anymore.</para>
+			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 - support for 2D polyhedral surfaces was introduced.</para>
+			<para role="enhanced" conformance="2.2.0">Enhanced: 2.2.0 - measurement on spheroid performed with GeographicLib for improved accuracy and robustness.  Requires PROJ &gt;= 4.9.0 to take advantage of the new feature.</para>
+			<para role="changed" conformance="3.0.0">Changed: 3.0.0 - does not depend on SFCGAL anymore.</para>
 			<para>&sfs_compliant;</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 8.1.2, 9.5.3</para>
 			<para>&P_support;</para>
@@ -153,9 +153,9 @@ from somegeogtable;</programlisting>
 			<para>Azimuth can be used in conjunction with <xref linkend="ST_Translate" /> to shift an object along its perpendicular axis. See
 				 the <varname>upgis_lineshift()</varname> function in the <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions">PostGIS wiki</ulink> for an implementation of this.</para>
 
-			<para>Availability: 1.1.0</para>
-			<para>Enhanced: 2.0.0 support for geography was introduced.</para>
-			<para>Enhanced: 2.2.0 measurement on spheroid performed with GeographicLib for improved accuracy and robustness.  Requires PROJ &gt;= 4.9.0 to take advantage of the new feature.</para>
+			<para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
+			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for geography was introduced.</para>
+			<para role="enhanced" conformance="2.2.0">Enhanced: 2.2.0 measurement on spheroid performed with GeographicLib for improved accuracy and robustness.  Requires PROJ &gt;= 4.9.0 to take advantage of the new feature.</para>
 		</refsection>
 
 		<refsection>
@@ -242,7 +242,7 @@ SELECT degrees(ST_Azimuth( ST_Point(25, 45),  ST_Point(75, 100))) AS degA_B,
             The radian result can be converted to degrees using the PostgreSQL function <varname>degrees()</varname>.
             </para>
 			<para>Note that <varname>ST_Angle(P1,P2,P3) = ST_Angle(P2,P1,P2,P3)</varname>.</para>
-			<para>Availability: 2.5.0</para>
+			<para role="availability" conformance="2.5.0">Availability: 2.5.0</para>
 		</refsection>
 
 		<refsection>
@@ -314,7 +314,7 @@ SELECT degrees( ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, 0.2 0
         (as computed by <xref linkend="ST_ShortestLine"/>).
 		</para>
 		<note><para>If you have a 3D Geometry, you may prefer to use <xref linkend="ST_3DClosestPoint" />.</para></note>
-		<para>Availability: 1.5.0</para>
+		<para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
 	  </refsection>
 
 	  <refsection>
@@ -398,8 +398,8 @@ SELECT ST_AsText( ST_ClosestPoint(
 			<para>&Z_support;</para>
 			<!-- Optionally mention supports Polyhedral Surface  -->
 			<para>&P_support;</para>
-			<para>Availability: 2.0.0</para>
-			<para>Changed: 2.2.0 - if 2 2D geometries are input, a 2D point is returned (instead of old behavior assuming 0 for missing Z). In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
+			<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+			<para role="changed" conformance="2.2.0">Changed: 2.2.0 - if 2 2D geometries are input, a 2D point is returned (instead of old behavior assuming 0 for missing Z). In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
 		  </refsection>
 
 		  <refsection>
@@ -514,11 +514,11 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.23</para>
 		<para>&curve_support;</para>
 
-		<para>Availability: 1.5.0 geography support was introduced in 1.5.  Speed improvements for planar to better handle large or many vertex geometries</para>
-		<para>Enhanced: 2.1.0 improved speed for geography. See <ulink url="http://boundlessgeo.com/2012/07/making-geography-faster/">Making Geography faster</ulink> for details.</para>
-		<para>Enhanced: 2.1.0 - support for curved geometries was introduced.</para>
-		<para>Enhanced: 2.2.0 - measurement on spheroid performed with GeographicLib for improved accuracy and robustness. Requires PROJ &gt;= 4.9.0 to take advantage of the new feature.</para>
-		<para>Changed: 3.0.0 - does not depend on SFCGAL anymore.</para>
+		<para role="availability" conformance="1.5.0">Availability: 1.5.0 geography support was introduced in 1.5.  Speed improvements for planar to better handle large or many vertex geometries</para>
+		<para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 improved speed for geography. See <ulink url="http://boundlessgeo.com/2012/07/making-geography-faster/">Making Geography faster</ulink> for details.</para>
+		<para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 - support for curved geometries was introduced.</para>
+		<para role="enhanced" conformance="2.2.0">Enhanced: 2.2.0 - measurement on spheroid performed with GeographicLib for improved accuracy and robustness. Requires PROJ &gt;= 4.9.0 to take advantage of the new feature.</para>
+		<para role="changed" conformance="3.0.0">Changed: 3.0.0 - does not depend on SFCGAL anymore.</para>
 	  </refsection>
 
 	  <refsection>
@@ -615,9 +615,9 @@ FROM (SELECT
 		<para>&P_support;</para>
 		<para>&sqlmm_compliant; SQL-MM ISO/IEC 13249-3</para>
 
-		<para>Availability: 2.0.0</para>
-		<para>Changed: 2.2.0 - In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
-		<para>Changed: 3.0.0 - SFCGAL version removed</para>
+		<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+		<para role="changed" conformance="2.2.0">Changed: 2.2.0 - In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
+		<para role="changed" conformance="3.0.0">Changed: 3.0.0 - SFCGAL version removed</para>
 	  </refsection>
 
 	  <refsection>
@@ -688,8 +688,8 @@ SELECT ST_3DDistance(poly, mline) As dist3d,
 				Faster than <xref linkend="ST_Distance_Spheroid"/>, but less
 				accurate. PostGIS Versions prior to 1.5 only implemented for points.</para>
 
-		<para>Availability: 1.5 - support for other geometry types besides points was introduced. Prior versions only work with points.</para>
-		<para>Changed: 2.2.0 In prior versions this used to be called ST_Distance_Sphere</para>
+		<para role="availability" conformance="1.5">Availability: 1.5 - support for other geometry types besides points was introduced. Prior versions only work with points.</para>
+		<para role="changed" conformance="2.2.0">Changed: 2.2.0 In prior versions this used to be called ST_Distance_Sphere</para>
 	  </refsection>
 
 
@@ -750,8 +750,8 @@ FROM
 			</para>
 		</note>
 
-		<para>Availability: 1.5 - support for other geometry types besides points was introduced. Prior versions only work with points.</para>
-		<para>Changed: 2.2.0 In prior versions this was called ST_Distance_Spheroid</para>
+		<para role="availability" conformance="1.5">Availability: 1.5 - support for other geometry types besides points was introduced. Prior versions only work with points.</para>
+		<para role="changed" conformance="2.2.0">Changed: 2.2.0 In prior versions this was called ST_Distance_Spheroid</para>
 	  </refsection>
 
 
@@ -828,7 +828,7 @@ The smaller densifyFrac we specify, the more acurate Fréchet distance we get. B
 			</para>
 		</note>
 		<para>Performed by the GEOS module.</para>
-		<para>Availability: 2.4.0 - requires GEOS &gt;= 3.7.0</para>
+		<para role="availability" conformance="2.4.0">Availability: 2.4.0 - requires GEOS &gt;= 3.7.0</para>
 
 	  </refsection>
 
@@ -915,7 +915,7 @@ The smaller densifyFrac we specify, the more acurate Fréchet distance we get. B
             and roughly equal in length.  This is a useful metric for line matching.
 			</para>
 		</note>
-		<para>Availability: 1.5.0</para>
+		<para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
 
 	  </refsection>
 
@@ -1007,13 +1007,13 @@ SELECT DISTINCT ON (buildings.gid) buildings.gid, parcels.parcel_id
 
 			<para>Currently for geometry this is an alias for ST_Length2D, but this may change to support higher dimensions.</para>
 
-			<warning><para>Changed: 2.0.0 Breaking change -- in prior versions applying this to a MULTI/POLYGON of type geography would give you the perimeter of the POLYGON/MULTIPOLYGON.  In 2.0.0
+			<warning><para role="changed" conformance="2.0.0">Changed: 2.0.0 Breaking change -- in prior versions applying this to a MULTI/POLYGON of type geography would give you the perimeter of the POLYGON/MULTIPOLYGON.  In 2.0.0
 			this was changed to return 0 to be in line with geometry behavior.  Please use ST_Perimeter if you want the perimeter of a polygon</para></warning>
 
 			<note><para>For geography the calculation defaults to using a spheroidal model.  To use the faster but less accurate spherical calculation use ST_Length(gg,false);</para></note>
 			<para>&sfs_compliant; s2.1.5.1</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 7.1.2, 9.3.4</para>
-			<para>Availability: 1.5.0 geography support was introduced in 1.5.</para>
+			<para role="availability" conformance="1.5.0">Availability: 1.5.0 geography support was introduced in 1.5.</para>
 			<para>&sfcgal_enhanced;</para>
 		</refsection>
 
@@ -1119,7 +1119,7 @@ FROM (SELECT ST_GeographyFromText(
 			LineString or MultiLineString. For 2-d lines it will just return the 2-d length (same as ST_Length and ST_Length2D)</para>
 		<para>&Z_support;</para>
         <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 7.1, 10.3</para>
-		<para>Changed: 2.0.0 In prior versions this used to be called ST_Length3D</para>
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0 In prior versions this used to be called ST_Length3D</para>
 	  </refsection>
 
 
@@ -1174,8 +1174,8 @@ ST_3DLength
 		<para>For example:</para>
 		<literallayout>SPHEROID["GRS_1980",6378137,298.257222101]</literallayout>
 
-		<para>Availability: 1.2.2</para>
-		<para>Changed: 2.2.0 In prior versions this was called ST_Length_Spheroid and had the alias ST_3DLength_Spheroid</para>
+		<para role="availability" conformance="1.2.2">Availability: 1.2.2</para>
+		<para role="changed" conformance="2.2.0">Changed: 2.2.0 In prior versions this was called ST_Length_Spheroid and had the alias ST_3DLength_Spheroid</para>
 		<para>&Z_support;</para>
 	  </refsection>
 
@@ -1256,7 +1256,7 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
         If g1 and g2 are the same geometry, returns the line between the two vertices farthest apart in the geometry.
         The endpoints of the line lie on the circle computed by <xref linkend="ST_MinimumBoundingCircle"/>.
         </para>
-		<para>Availability: 1.5.0</para>
+		<para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
 
 	  </refsection>
 
@@ -1361,8 +1361,8 @@ FROM (SELECT 'POLYGON ((40 180, 110 160, 180 180, 180 120, 140 90, 160 40, 80 10
 		The 3D length of the line is equal to the distance returned by <xref linkend="ST_3DMaxDistance" />.
 		</para>
 
-		<para>Availability: 2.0.0</para>
-		<para>Changed: 2.2.0 - if 2 2D geometries are input, a 2D point is returned (instead of old behavior assuming 0 for missing Z). In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
+		<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+		<para role="changed" conformance="2.2.0">Changed: 2.2.0 - if 2 2D geometries are input, a 2D point is returned (instead of old behavior assuming 0 for missing Z). In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
 		<para>&Z_support;</para>
 		<!-- Optionally mention supports Polyhedral Surface  -->
 		<para>&P_support;</para>
@@ -1460,7 +1460,7 @@ SELECT ST_AsEWKT(ST_3DLongestLine(line,pt)) AS lol3d_line_pt,
     the two vertices farthest apart in that geometry.
     </para>
 
-	<para>Availability: 1.5.0</para>
+	<para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
   </refsection>
   <refsection>
     <title>Examples</title>
@@ -1522,8 +1522,8 @@ SELECT ST_MaxDistance('POLYGON ((10 10, 10 0, 0 0, 10 10))'::geometry,
         <!-- Optionally mention supports Polyhedral Surface  -->
         <para>&P_support;</para>
 
-		<para>Availability: 2.0.0</para>
-		<para>Changed: 2.2.0 - In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
+		<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+		<para role="changed" conformance="2.2.0">Changed: 2.2.0 - In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
 	  </refsection>
 
 	  <refsection>
@@ -1613,7 +1613,7 @@ SELECT ST_3DMaxDistance(
         while ensuring that polygonal geometry remains valid.
 		</para>
 
-		<para>Availability: 2.3.0</para>
+		<para role="availability" conformance="2.3.0">Availability: 2.3.0</para>
 
 	  </refsection>
 
@@ -1665,7 +1665,7 @@ SELECT ST_MinimumClearance('POLYGON ((0 0, 1 0, 1 1, 0.5 3.2e-4, 0 0))');
 		clearance, <varname>LINESTRING EMPTY</varname> is returned.
 		</para>
 		<para>Performed by the GEOS module.</para>
-		<para>Availability: 2.3.0 - requires GEOS &gt;= 3.6.0</para>
+		<para role="availability" conformance="2.3.0">Availability: 2.3.0 - requires GEOS &gt;= 3.6.0</para>
 	  </refsection>
 
 	  <refsection>
@@ -1717,7 +1717,7 @@ LINESTRING(0.5 0.00032,0.5 0)
 
 			<para>&sfs_compliant; s2.1.5.1</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 8.1.3, 9.5.4</para>
-			<para>Availability 2.0.0: Support for geography was introduced</para>
+			<para role="availability" conformance="2.0.0">Availability 2.0.0: Support for geography was introduced</para>
 		</refsection>
 
 		<refsection>
@@ -1843,7 +1843,7 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 			is a polygon or multi-polygon. If the geometry is 2-dimensional, then the 2-dimensional perimeter is returned.  </para>
 		<para>&Z_support;</para>
         <para>&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.1, 10.5</para>
-		<para>Changed: 2.0.0 In prior versions this used to be called ST_Perimeter3D</para>
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0 In prior versions this used to be called ST_Perimeter3D</para>
 	  </refsection>
 
 
@@ -1907,8 +1907,8 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 			</para>
 
 
-			<para>Availability: 2.0.0</para>
-			<para>Enhanced: 2.4.0 Allow negative distance and non-normalized azimuth.</para>
+			<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+			<para role="enhanced" conformance="2.4.0">Enhanced: 2.4.0 Allow negative distance and non-normalized azimuth.</para>
 
 		  </refsection>
 
@@ -1961,7 +1961,7 @@ SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, radians(45.0)));
 		The length of the line is the same as <xref linkend="ST_Distance"/> returns for g1 and g2.
 		</para>
 
-		<para>Availability: 1.5.0</para>
+		<para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
 	  </refsection>
 
 	  <refsection>
@@ -2044,8 +2044,8 @@ LINESTRING(131.59149149528952 101.89887534906197,101.21320343559644 138.78679656
 		The 3D length of the line this function returns will always be the same as <xref linkend="ST_3DDistance" /> returns for g1 and g2.
 		</para>
 
-		<para>Availability: 2.0.0</para>
-		<para>Changed: 2.2.0 - if 2 2D geometries are input, a 2D point is returned (instead of old behavior assuming 0 for missing Z). In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
+		<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+		<para role="changed" conformance="2.2.0">Changed: 2.2.0 - if 2 2D geometries are input, a 2D point is returned (instead of old behavior assuming 0 for missing Z). In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
 		<para>&Z_support;</para>
 		<!-- Optionally mention supports Polyhedral Surface  -->
 		<para>&P_support;</para>

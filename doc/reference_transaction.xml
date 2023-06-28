@@ -43,7 +43,7 @@
 		<para>Adds the current transaction identifier
 			and authorization token to a temporary table called <varname>temp_lock_have_table</varname>.</para>
 
-		<para>Availability: 1.1.3</para>
+		<para role="availability" conformance="1.1.3">Availability: 1.1.3</para>
 	  </refsection>
 
 	  <refsection>
@@ -105,7 +105,7 @@
 				<para>If Transaction support is not enabled, function throws an exception.</para>
 			</note>
 
-			<para>Availability: 1.1.3</para>
+			<para role="availability" conformance="1.1.3">Availability: 1.1.3</para>
 
 		  </refsection>
 
@@ -154,7 +154,7 @@
 			<para>Drops meta table called <varname>authorization_table</varname> and a view called <varname>authorized_tables</varname>
 				and all triggers called <varname>checkauthtrigger</varname></para>
 
-			<para>Availability: 1.1.3</para>
+			<para role="availability" conformance="1.1.3">Availability: 1.1.3</para>
 
 		</refsection>
 
@@ -202,7 +202,7 @@ Long transactions support disabled
 			harmless.</para>
 			<para>Creates a meta table called <varname>authorization_table</varname> and a view called <varname>authorized_tables</varname></para>
 
-			<para>Availability: 1.1.3</para>
+			<para role="availability" conformance="1.1.3">Availability: 1.1.3</para>
 
 		</refsection>
 
@@ -270,7 +270,7 @@ Long transactions support enabled
 		Returns 1 if lock has been assigned, 0
 		otherwise (i.e. row is already locked by another auth.)</para>
 
-		<para>Availability: 1.1.3</para>
+		<para role="availability" conformance="1.1.3">Availability: 1.1.3</para>
 	  </refsection>
 
 
@@ -322,7 +322,7 @@ LockRow
 		<para>Removes all locks held by specified authorization token.
 		Returns the number of locks released.</para>
 
-		<para>Availability: 1.1.3</para>
+		<para role="availability" conformance="1.1.3">Availability: 1.1.3</para>
 	  </refsection>
 
 

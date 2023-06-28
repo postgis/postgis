@@ -601,7 +601,7 @@ VALUES (1,
                 if the extent of your data has changed.
             </para>
         </note>
-        <para>Availability: 2.0.0</para>
+        <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
       </refsection>
 
       <refsection>
@@ -773,7 +773,7 @@ NOTICE:  Adding blocksize-Y constraint</programlisting>
         <para>To drop just a  raster column and leave the rest of the table, use standard SQL <programlisting>ALTER TABLE mytable DROP COLUMN rast</programlisting></para>
         <para>the table will disappear from the <varname>raster_columns</varname> catalog if the column or table is dropped.  However if only the constraints are dropped, the
         raster column will still be listed in the <varname>raster_columns</varname> catalog, but there will be no other information about it aside from the column name and table.</para>
-        <para>Availability: 2.0.0</para>
+        <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
       </refsection>
       <refsection>
         <title>Examples</title>
@@ -862,7 +862,7 @@ parameters are omitted, the first table found scanning the
 <varname>search_path</varname> will be used.
         </para>
 
-        <para>Availability: 2.0.0</para>
+        <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
       </refsection>
 
       <refsection>
@@ -952,7 +952,7 @@ the first table found scanning the <varname>search_path</varname>
 will be used.
         </para>
 
-        <para>Availability: 2.0.0</para>
+        <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
       </refsection>
 
       <refsection>
@@ -1117,9 +1117,9 @@ postgis_raster_lib_version
             Options vary depending on what drivers your libgdal was compiled with. <varname>create_options</varname> returns an xml formatted set of CreationOptionList/Option consisting of name and optional <varname>type</varname>, <varname>description</varname> and set of <varname>VALUE</varname> for each creator option for the specific driver.
         </para>
 
-         <para>Changed: 2.5.0 - add can_read and can_write columns.</para>
-         <para>Changed: 2.0.6, 2.1.3 - by default no drivers are enabled, unless GUC or Environment variable gdal_enabled_drivers is set.</para>
-         <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
+         <para role="changed" conformance="2.5.0">Changed: 2.5.0 - add can_read and can_write columns.</para>
+         <para role="changed" conformance="2.0.6">Changed: 2.0.6, 2.1.3 - by default no drivers are enabled, unless GUC or Environment variable gdal_enabled_drivers is set.</para>
+         <para role="availability" conformance="2.0.0">Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
 
       </refsection>
 
@@ -1372,7 +1372,7 @@ WHERE short_name = 'GTiff') As g;
                 <listitem><para>The raster value the line represents. For an elevation DEM input, this would be the elevation of the output contour.</para></listitem>
             </varlistentry>
         </variablelist>
-        <para>Availability: 3.2.0</para>
+        <para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
 
       </refsection>
 
@@ -1465,7 +1465,7 @@ FROM c;</programlisting>
                 </para></listitem>
             </varlistentry>
         </variablelist>
-        <para>Availability: 3.2.0</para>
+        <para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
 
       </refsection>
 
@@ -1532,7 +1532,7 @@ FROM c;</programlisting>
                     </para>
                 </note>
 
-                <para>Availability: 2.1.0</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
             </refsection>
       <refsection>
         <title>See Also</title>
@@ -1582,7 +1582,7 @@ constraints enforced.
 
                 <para>Algorithm options are: 'NearestNeighbor', 'Bilinear', 'Cubic', 'CubicSpline', and 'Lanczos'.  Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details.</para>
 
-                <para>Availability: 2.2.0</para>
+                <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
             </refsection>
 
             <refsection><title>Example</title>
@@ -1698,8 +1698,8 @@ constraints enforced.
                     For the variants that take <varname>outdbfile</varname> (Variants 6 and 7), the value must include the full path to the raster file. The file must also be accessible to the postgres server process.
                 </para>
 
-                <para>Enhanced: 2.1.0 support for addbandarg added.</para>
-                <para>Enhanced: 2.1.0 support for new out-db bands added.</para>
+                <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 support for addbandarg added.</para>
+                <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 support for new out-db bands added.</para>
             </refsection>
 
             <refsection>
@@ -1995,7 +1995,7 @@ FROM ST_BandMetadata(
 
                  <para>This is particularly useful for rendering jpegs and pngs of geometries directly from the database when using in combination
                     with <xref linkend="RT_ST_AsPNG" /> and other <xref linkend="RT_ST_AsGDALRaster" /> family of functions.</para>
-                 <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
+                 <para role="availability" conformance="2.0.0">Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
 
                  <note><para>Not yet capable of rendering complex geometry types such as curves, TINS, and PolyhedralSurfaces, but should be
                  able too once GDAL can.</para></note>
@@ -2075,7 +2075,7 @@ SELECT ST_AsPNG(
                 bands of a raster or rearranging the order of bands in a raster. If no band is specified or any of specified bands does not exist in the raster, then all bands are returned. Used as a helper function in various functions such as for deleting a band. </para>
                 <warning><para>For the <code>nbands</code> as text variant of function, the default delimiter is <code>,</code> which means you can ask for <code>'1,2,3'</code> and if you wanted to use a different delimeter you would do <code>ST_Band(rast, '1@2@3', '@')</code>.  For asking for multiple bands, we strongly suggest you use the array form of this function e.g. <code>ST_Band(rast, '{1,2,3}'::int[]);</code> since the <code>text</code> list of bands form may be removed in future versions of PostGIS.</para></warning>
 
-                 <para>Availability: 2.0.0</para>
+                 <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
             </refsection>
 
                 <refsection>
@@ -2188,7 +2188,7 @@ WHERE rid=35;
 
                     <para>Create a set of raster tiles with <xref linkend="RT_ST_MakeEmptyRaster" />. Grid dimension is <varname>width</varname> &amp; <varname>height</varname>. Tile dimension is <varname>tilewidth</varname> &amp; <varname>tileheight</varname>. The covered georeferenced area is from upper left corner (<varname>upperleftx</varname>, <varname>upperlefty</varname>) to lower right corner (<varname>upperleftx</varname> + <varname>width</varname> * <varname>scalex</varname>, <varname>upperlefty</varname> + <varname>height</varname> * <varname>scaley</varname>).</para>
                     <note><para>Note that scaley is generally negative for rasters and scalex is generally positive. So lower right corner will have a lower y value and higher x value than the upper left corner.</para></note>
-                    <para>Availability: 2.4.0 </para>
+                    <para role="availability" conformance="2.4.0">Availability: 2.4.0 </para>
                   </refsection>
 
                   <refsection>
@@ -2363,7 +2363,7 @@ FROM (SELECT rid, ST_MetaData(rast) As md
                     </para>
                 </note>
 
-                <para>Availability: 2.1.0</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
             </refsection>
 
             <refsection>
@@ -2501,7 +2501,7 @@ raster coverage (<varname>tab</varname>, <varname>col</varname>).
 
                 <para>Algorithm options are: 'NearestNeighbor', 'Bilinear', 'Cubic', 'CubicSpline', and 'Lanczos'.  Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details.</para>
 
-                <para>Availability: 2.2.0</para>
+                <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
             </refsection>
       <refsection>
         <title>See Also</title>
@@ -2541,7 +2541,7 @@ raster coverage (<varname>tab</varname>, <varname>col</varname>).
                     If <varname>srid</varname> is NULL, the function will try to automatically assign the SRID from the GDAL raster. If <varname>srid</varname> is provided, the value provided will override any automatically assigned SRID.
                 </para>
 
-                <para>Availability: 2.1.0</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
             </refsection>
 
             <refsection>
@@ -2709,7 +2709,7 @@ FROM dummy_rast;
 
                 <para>Returns true if the raster is empty (width = 0 and height = 0). Otherwise, returns false.</para>
 
-                <para>Availability: 2.0.0</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
             </refsection>
 
             <refsection>
@@ -2762,7 +2762,7 @@ t          |
         <para>pg_total_relation_size - includes, the table, the toasted tables, and the indexes.</para>
         </note>
 
-        <para>Availability: 2.2.0</para>
+        <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
       </refsection>
 
 
@@ -3032,7 +3032,7 @@ rastheight |     pixheight     | scalex | scaley | skewx | skewy
 
                 <para>Returns the X component of the pixel width in units of coordinate reference system. Refer to <ulink url="http://en.wikipedia.org/wiki/World_file">World File</ulink>
                 for more details.</para>
-                <para>Changed: 2.0.0. In WKTRaster versions this was called ST_PixelSizeX.</para>
+                <para role="changed" conformance="2.0.0.">Changed: 2.0.0. In WKTRaster versions this was called ST_PixelSizeX.</para>
                 </refsection>
 
                 <refsection>
@@ -3077,7 +3077,7 @@ FROM dummy_rast;
                 <para>Returns the Y component of the pixel height in units of coordinate reference system.  May be negative.  Refer to <ulink url="http://en.wikipedia.org/wiki/World_file">World File</ulink>
                 for more details.</para>
 
-                <para>Changed: 2.0.0. In WKTRaster versions this was called ST_PixelSizeY.</para>
+                <para role="changed" conformance="2.0.0.">Changed: 2.0.0. In WKTRaster versions this was called ST_PixelSizeY.</para>
                 </refsection>
 
                 <refsection>
@@ -3126,7 +3126,7 @@ FROM dummy_rast;
                     Numbering of column and row starts at 1 but if either parameter is passed a zero, a negative number or a number greater than the respective dimension of the raster, it will return coordinates outside of the raster assuming the raster's grid is applicable outside the raster's bounds.
                 </para>
 
-                <para>Availability: 2.1.0</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 
             </refsection>
 
@@ -3214,7 +3214,7 @@ FROM (
                         the georeferenced coordinate is a function of the ST_ScaleX and ST_SkewX and row and column.
                         An error will be raised if you give just the X column for a skewed raster.</para></note>
 
-                <para>Changed: 2.1.0 In prior versions, this was called ST_Raster2WorldCoordX</para>
+                <para role="changed" conformance="2.1.0">Changed: 2.1.0 In prior versions, this was called ST_Raster2WorldCoordX</para>
 
                 </refsection>
 
@@ -3291,7 +3291,7 @@ FROM (SELECT rid, ST_SetSkew(rast, 100.5, 0) As rast FROM dummy_rast) As foo;
                         the georeferenced coordinate is a function of the ST_ScaleY and ST_SkewY and row and column.
                         An error will be raised if you give just the Y row for a skewed raster.</para></note>
 
-                <para>Changed: 2.1.0 In prior versions, this was called ST_Raster2WorldCoordY</para>
+                <para role="changed" conformance="2.1.0">Changed: 2.1.0 In prior versions, this was called ST_Raster2WorldCoordY</para>
                 </refsection>
 
                 <refsection>
@@ -3544,7 +3544,7 @@ srid
 
                 <para>Returns a text summary of the contents of the raster.</para>
 
-                <para>Availability: 2.1.0</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
             </refsection>
 
             <refsection>
@@ -3742,7 +3742,7 @@ rastwidth
                     Geometric X and Y must be expressed in the spatial reference coordinate system of the raster.
                 </para>
 
-                <para>Availability: 2.1.0</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 
             </refsection>
 
@@ -3811,7 +3811,7 @@ FROM dummy_rast;
 
                 <para>Returns the column in the raster of the point geometry (pt) or a X and Y world coordinate (xw, yw).  A point, or (both xw and yw world coordinates are required if a raster is skewed).  If a raster
                     is not skewed then xw is sufficient. World coordinates are in the spatial reference coordinate system of the raster.</para>
-                <para>Changed: 2.1.0 In prior versions, this was called ST_World2RasterCoordX</para>
+                <para role="changed" conformance="2.1.0">Changed: 2.1.0 In prior versions, this was called ST_World2RasterCoordX</para>
             </refsection>
 
             <refsection>
@@ -3875,7 +3875,7 @@ FROM dummy_rast;
 
                 <para>Returns the row in the raster of the point geometry (pt) or a X and Y world coordinate (xw, yw).  A point, or (both xw and yw world coordinates are required if a raster is skewed).  If a raster
                     is not skewed then xw is sufficient. World coordinates are in the spatial reference coordinate system of the raster.</para>
-                <para>Changed: 2.1.0 In prior versions, this was called ST_World2RasterCoordY</para>
+                <para role="changed" conformance="2.1.0">Changed: 2.1.0 In prior versions, this was called ST_World2RasterCoordY</para>
             </refsection>
 
             <refsection>
@@ -3947,7 +3947,7 @@ FROM dummy_rast;
                     </para>
                 </note>
 
-                <para>Enhanced: 2.5.0 to include <emphasis>outdbbandnum</emphasis>, <emphasis>filesize</emphasis> and <emphasis>filetimestamp</emphasis> for outdb rasters.</para>
+                <para role="enhanced" conformance="2.5.0">Enhanced: 2.5.0 to include <emphasis>outdbbandnum</emphasis>, <emphasis>filesize</emphasis> and <emphasis>filetimestamp</emphasis> for outdb rasters.</para>
             </refsection>
 
             <refsection>
@@ -4078,7 +4078,7 @@ WHERE rid = 2;
                 the band. The default value for this parameter is FALSE, if not
                 specified.</para>
 
-                <para>Availability: 2.0.0</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 
                 <note>
                     <para>If the flag is dirty (this is, the result is different
@@ -4215,7 +4215,7 @@ select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- Expected false
 
                                 <para>This function is typically used in conjunction with ST_BandPath() and ST_BandFileTimestamp() so a client can determine if the filename of a outdb raster as seen by it is the same as the one seen by the server.</para>
 
-                <para>Availability: 2.5.0</para>
+                <para role="availability" conformance="2.5.0">Availability: 2.5.0</para>
 
             </refsection>
 
@@ -4256,7 +4256,7 @@ select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- Expected false
 
                                 <para>This function is typically used in conjunction with ST_BandPath() and ST_BandFileSize() so a client can determine if the filename of a outdb raster as seen by it is the same as the one seen by the server.</para>
 
-                <para>Availability: 2.5.0</para>
+                <para role="availability" conformance="2.5.0">Availability: 2.5.0</para>
             </refsection>
 
                         <refsection>
@@ -4421,7 +4421,7 @@ SELECT ST_MinPossibleValue('8BUI');
 
                 <para>Returns true if there is no band with given band number.  If no band number is specified, then band number 1 is assumed.</para>
 
-                <para>Availability: 2.0.0</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
             </refsection>
 
             <refsection>
@@ -4472,7 +4472,7 @@ rid | hb1 | hb2 | hb4 | numbands
 
                 <para>Returns the polygon geometry that bounds the pixel for a particular row and column.</para>
 
-                <para>Availability: 2.0.0</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 
             </refsection>
 
@@ -4545,9 +4545,9 @@ WHERE rid=2;
                     </para>
                 </note>
 
-                <para>Availability: 2.0.0</para>
-                <para>Enhanced: 2.1.0 exclude_nodata_value optional argument was added.</para>
-                <para>Changed: 2.1.1 Changed behavior of exclude_nodata_value.</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+                <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 exclude_nodata_value optional argument was added.</para>
+                <para role="changed" conformance="2.1.1">Changed: 2.1.1 Changed behavior of exclude_nodata_value.</para>
             </refsection>
 
             <refsection>
@@ -4607,7 +4607,7 @@ FROM (SELECT ST_PixelAsPolygons(
             <refsection>
                 <title>Description</title>
                 <para>Returns a point geometry of the pixel's upper-left corner.</para>
-                <para>Availability: 2.1.0</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
             </refsection>
 
             <refsection>
@@ -4667,8 +4667,8 @@ SELECT ST_AsText(ST_PixelAsPoint(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
                         When <parameter>exclude_nodata_value</parameter> = TRUE, only those pixels whose values are not NODATA are returned as points.
                     </para>
                 </note>
-                <para>Availability: 2.1.0</para>
-                <para>Changed: 2.1.1 Changed behavior of exclude_nodata_value.</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+                <para role="changed" conformance="2.1.1">Changed: 2.1.1 Changed behavior of exclude_nodata_value.</para>
             </refsection>
 
             <refsection>
@@ -4741,8 +4741,8 @@ SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsPoints(rast, 1)).* FRO
             <refsection>
                 <title>Description</title>
                 <para>Returns the centroid (point geometry) of the area represented by a pixel.</para>
-                <para>Enhanced: 3.2.0 Faster now implemented in C.</para>
-                <para>Availability: 2.1.0</para>
+                <para role="enhanced" conformance="3.2.0">Enhanced: 3.2.0 Faster now implemented in C.</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
             </refsection>
 
             <refsection>
@@ -4802,9 +4802,9 @@ SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
                     </para>
                 </note>
 
-                <para>Enhanced: 3.2.0 Faster now implemented in C.</para>
-                <para>Changed: 2.1.1 Changed behavior of exclude_nodata_value.</para>
-                <para>Availability: 2.1.0</para>
+                <para role="enhanced" conformance="3.2.0">Enhanced: 3.2.0 Faster now implemented in C.</para>
+                <para role="changed" conformance="2.1.1">Changed: 2.1.1 Changed behavior of exclude_nodata_value.</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
             </refsection>
 
             <refsection>
@@ -4903,8 +4903,8 @@ SELECT x, y, val, ST_AsText(geom)
                 <para>If <varname>exclude_nodata_value</varname> is set to true, then only non <varname>nodata</varname> pixels are considered.  If <varname>exclude_nodata_value</varname> is set to false, then all pixels are considered.</para>
                 <para>The allowed values of the <varname>resample</varname> parameter are "nearest" which performs the default nearest-neighbor resampling, and "bilinear" which performs a <ulink url="https://en.wikipedia.org/wiki/Bilinear_interpolation">bilinear interpolation</ulink> to estimate the value between pixel centers.</para>
 
-                <para>Enhanced: 3.2.0 resample optional argument was added.</para>
-                <para>Enhanced: 2.0.0 exclude_nodata_value optional argument was added.</para>
+                <para role="enhanced" conformance="3.2.0">Enhanced: 3.2.0 resample optional argument was added.</para>
+                <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 exclude_nodata_value optional argument was added.</para>
                 </refsection>
 
                 <refsection>
@@ -5118,7 +5118,7 @@ WHERE
                 <para>
                     Band numbers start at 1 and <varname>bandnum</varname> is assumed to be 1 if not specified. If <varname>exclude_nodata_value</varname> is set to false, then all pixels include <varname>nodata</varname> pixels are considered to intersect and return value. If <varname>exclude_nodata_value</varname> is not passed in then reads it from metadata of raster.
                 </para>
-                <para>Availability: 2.1.0</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
                 <note>
                     <para>
                         ST_NearestValue is a drop-in replacement for ST_Value.
@@ -5231,7 +5231,7 @@ FROM (
                 <para>Returns a geometry with the same X/Y coordinates as the input geometry, and values from the raster copied into the Z dimensions using the requested resample algorithm.</para>
                 <para>The <varname>resample</varname> parameter can be set to "nearest" to copy the values from the cell each vertex falls within, or "bilinear" to use <ulink url="https://en.wikipedia.org/wiki/Bilinear_interpolation">bilinear interpolation</ulink> to calculate a value that takes neighboring cells into account also.</para>
 
-                <para>Availability: 3.2.0</para>
+                <para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
             </refsection>
 
                 <refsection>
@@ -5306,7 +5306,7 @@ FROM test_raster
                 <para>Returns a geometry with the same X/Y coordinates as the input geometry, and values from the raster copied into the M dimensions using the requested resample algorithm.</para>
                 <para>The <varname>resample</varname> parameter can be set to "nearest" to copy the values from the cell each vertex falls within, or "bilinear" to use <ulink url="https://en.wikipedia.org/wiki/Bilinear_interpolation">bilinear interpolation</ulink> to calculate a value that takes neighboring cells into account also.</para>
 
-                <para>Availability: 3.2.0</para>
+                <para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
             </refsection>
 
                 <refsection>
@@ -5426,7 +5426,7 @@ FROM test_raster
                         The 2-D array output can be passed to any of the raster processing builtin functions, e.g. ST_Min4ma, ST_Sum4ma, ST_Mean4ma.
                     </para>
                 </note>
-                <para>Availability: 2.1.0</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
             </refsection>
 
             <refsection>
@@ -5574,7 +5574,7 @@ FROM ST_SetValues(
                 <para>Returns modified raster resulting from setting the specified pixels' values to new value for the designated band given the raster's row and column or a geometry. If no band is specified, then band 1 is assumed.
                 </para>
 
-                <para>Enhanced: 2.1.0 Geometry variant of ST_SetValue() now supports any geometry type, not just point. The geometry variant is a wrapper around the geomval[] variant of ST_SetValues()</para>
+                <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Geometry variant of ST_SetValue() now supports any geometry type, not just point. The geometry variant is a wrapper around the geomval[] variant of ST_SetValues()</para>
             </refsection>
 
             <refsection>
@@ -5707,7 +5707,7 @@ GROUP BY (foo.geomval).val;
                     For Variant 5, an array of <xref linkend="geomval" /> is used to determine the specific pixels to be set.  If all the geometries in the array are of type POINT or MULTIPOINT, the function uses a shortcut where the longitude and latitude of each point is used to set a pixel directly.  Otherwise, the geometries are converted to rasters and then iterated through in one pass. See example Variant 5.
                 </para>
 
-                <para>Availability: 2.1.0</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 
             </refsection>
 
@@ -6217,7 +6217,7 @@ ORDER BY t1.rid, t2.gid, t3.gid;
                     Get the values of the specified band as a 2-dimension array (first index is row, second is column). If <varname>nband</varname> is NULL or not provided, all raster bands are processed.
                 </para>
 
-                <para>Availability: 2.1.0</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
             </refsection>
 
             <refsection>
@@ -6353,7 +6353,7 @@ FROM foo;
                     Get the columnx, rowy coordinates of the pixel whose value equals the search value. If no band is specified, then band 1 is assumed.
                 </para>
 
-                <para>Availability: 2.1.0</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
             </refsection>
             <refsection>
                 <title>Examples</title>
@@ -6465,7 +6465,7 @@ FROM (
                     </para>
                 </note>
 
-                <para>Enhanced: 2.1.0 Addition of ST_SetGeoReference(raster, double precision, ...) variant</para>
+                <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Addition of ST_SetGeoReference(raster, double precision, ...) variant</para>
 
             </refsection>
 
@@ -6584,7 +6584,7 @@ FROM (
 
                 <note><para>ST_SetScale is different from <xref linkend="RT_ST_Rescale" /> in that ST_SetScale do not resample the raster to match the raster extent. It only changes the metadata (or georeference) of the raster to correct an originally mis-specified scaling. ST_Rescale results in a raster having different width and height computed to fit the geographic extent of the input raster. ST_SetScale do not modify the width, nor the height of the raster.</para></note>
 
-                <para>Changed: 2.0.0 In WKTRaster versions this was called ST_SetPixelSize.  This was changed in 2.0.0.</para>
+                <para role="changed" conformance="2.0.0">Changed: 2.0.0 In WKTRaster versions this was called ST_SetPixelSize.  This was changed in 2.0.0.</para>
                 </refsection>
 
                 <refsection>
@@ -6866,8 +6866,8 @@ WHERE rid = 2;
                         Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details.
                     </para>
                 </note>
-                <para>Availability: 2.0.0 Requires GDAL 1.6.1+</para>
-                <para>Enhanced: 3.4.0 max and min resampling options added</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0 Requires GDAL 1.6.1+</para>
+                <para role="enhanced" conformance="3.4.0">Enhanced: 3.4.0 max and min resampling options added</para>
             </refsection>
 
             <refsection>
@@ -6961,9 +6961,9 @@ FROM (
 
                 <note><para>ST_Rescale is different from <xref linkend="RT_ST_SetScale" /> in that ST_SetScale do not resample the raster to match the raster extent. ST_SetScale only changes the metadata (or georeference) of the raster to correct an originally mis-specified scaling. ST_Rescale results in a raster having different width and height computed to fit the geographic extent of the input raster. ST_SetScale do not modify the width, nor the height of the raster.</para></note>
 
-                <para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
-                <para>Enhanced: 3.4.0 max and min resampling options added</para>
-                <para>Changed: 2.1.0 Works on rasters with no SRID</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0  Requires GDAL 1.6.1+</para>
+                <para role="enhanced" conformance="3.4.0">Enhanced: 3.4.0 max and min resampling options added</para>
+                <para role="changed" conformance="2.1.0">Changed: 2.1.0 Works on rasters with no SRID</para>
             </refsection>
 
             <refsection>
@@ -7043,8 +7043,8 @@ SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.
 
                 <note><para>ST_Reskew is different from <xref linkend="RT_ST_SetSkew" /> in that ST_SetSkew do not resample the raster to match the raster extent. ST_SetSkew only changes the metadata (or georeference) of the raster to correct an originally mis-specified skew. ST_Reskew results in a raster having different width and height computed to fit the geographic extent of the input raster. ST_SetSkew do not modify the width, nor the height of the raster.</para></note>
 
-                <para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
-                <para>Changed: 2.1.0 Works on rasters with no SRID</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0  Requires GDAL 1.6.1+</para>
+                <para role="changed" conformance="2.1.0">Changed: 2.1.0 Works on rasters with no SRID</para>
             </refsection>
 
             <refsection>
@@ -7131,8 +7131,8 @@ SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001
 
                 <note><para>Use <xref linkend="RT_ST_Resample" /> if you need more control over the grid parameters.</para></note>
 
-                <para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
-                <para>Changed: 2.1.0 Works on rasters with no SRID</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0  Requires GDAL 1.6.1+</para>
+                <para role="changed" conformance="2.1.0">Changed: 2.1.0 Works on rasters with no SRID</para>
             </refsection>
 
             <refsection>
@@ -7219,7 +7219,7 @@ SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0
                     Variant 3 takes either the actual width/height of the output raster or a textual percentage ("20%") indicating the percentage of the input raster's width/height.
                 </para>
 
-                <para>Availability: 2.1.0  Requires GDAL 1.6.1+</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0  Requires GDAL 1.6.1+</para>
             </refsection>
             <refsection>
                 <title>Examples</title>
@@ -7341,8 +7341,8 @@ SELECT rid, (meta).* FROM bar
                     </para>
                 </warning>
 
-                <para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
-                <para>Enhanced: 2.1.0 Addition of ST_Transform(rast, alignto) variant</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0  Requires GDAL 1.6.1+</para>
+                <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Addition of ST_Transform(rast, alignto) variant</para>
             </refsection>
 
             <refsection>
@@ -7568,7 +7568,7 @@ WHERE rid = 2;
                 calling <xref linkend="RT_ST_BandIsNoData" /> is different using
                 TRUE as last argument and without using it</para>
 
-                <para>Availability: 2.0.0</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
                 </refsection>
 
                 <refsection>
@@ -7682,7 +7682,7 @@ select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected true
                     </para>
                 </note>
 
-                <para>Availability: 2.5.0</para>
+                <para role="availability" conformance="2.5.0">Availability: 2.5.0</para>
             </refsection>
 
             <refsection>
@@ -7774,7 +7774,7 @@ ORDER BY 1, 2;
                     </para>
                 </note>
 
-                <para>Availability: 2.5.0</para>
+                <para role="availability" conformance="2.5.0">Availability: 2.5.0</para>
             </refsection>
 
             <refsection>
@@ -7862,8 +7862,8 @@ ORDER BY 1, 2;
 
                 <para>Returns the number of pixels in a given band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1. </para>
                 <note><para>If <varname>exclude_nodata_value</varname> is set to true, will only count pixels with value not equal to the <varname>nodata</varname> value of the raster. Set <varname>exclude_nodata_value</varname> to false to get count all pixels</para></note>
-                <para>Changed: 3.1.0 - The ST_Count(rastertable, rastercolumn, ...) variants removed. Use <xref linkend="RT_ST_CountAgg" /> instead.</para>
-                <para>Availability: 2.0.0 </para>
+                <para role="changed" conformance="3.1.0">Changed: 3.1.0 - The ST_Count(rastertable, rastercolumn, ...) variants removed. Use <xref linkend="RT_ST_CountAgg" /> instead.</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
             </refsection>
 
             <refsection>
@@ -7934,7 +7934,7 @@ rid | exclude_nodata | include_nodata
                 </para>
                 <para>By default will sample all pixels. To get faster response, set <varname>sample_percent</varname> to value between zero (0) and one (1)</para>
 
-                <para>Availability: 2.2.0 </para>
+                <para role="availability" conformance="2.2.0">Availability: 2.2.0 </para>
             </refsection>
 
             <refsection>
@@ -8052,8 +8052,8 @@ FROM foo;
                         <listitem><para>compute the histogram from the right rather than from the left (default). This changes the criteria for evaluating a value x from [a, b) to (a, b]</para></listitem>
                     </varlistentry>
                 </variablelist>
-                <para>Changed: 3.1.0 Removed ST_Histogram(table_name, column_name) variant. </para>
-                <para>Availability: 2.0.0 </para>
+                <para role="changed" conformance="3.1.0">Changed: 3.1.0 Removed ST_Histogram(table_name, column_name) variant. </para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
             </refsection>
 
             <refsection>
@@ -8190,8 +8190,8 @@ FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
 
                 <para>Compute quantiles for a raster or raster table coverage in the context of the sample or population. Thus, a value could be examined to be at the raster's 25%, 50%, 75% percentile.</para>
                 <note><para>If <varname>exclude_nodata_value</varname> is set to false, will also count pixels with no data.</para></note>
-                <para>Changed: 3.1.0 Removed ST_Quantile(table_name, column_name) variant. </para>
-                <para>Availability: 2.0.0 </para>
+                <para role="changed" conformance="3.1.0">Changed: 3.1.0 Removed ST_Quantile(table_name, column_name) variant. </para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
             </refsection>
 
             <refsection>
@@ -8297,8 +8297,8 @@ ORDER BY value, quantile,rid
 
                 <note><para>By default will sample all pixels. To get faster response, set <varname>sample_percent</varname> to lower than 1</para></note>
 
-                <para>Changed: 3.1.0 ST_SummaryStats(rastertable, rastercolumn, ...) variants are removed. Use <xref linkend="RT_ST_SummaryStatsAgg" /> instead. </para>
-                <para>Availability: 2.0.0 </para>
+                <para role="changed" conformance="3.1.0">Changed: 3.1.0 ST_SummaryStats(rastertable, rastercolumn, ...) variants are removed. Use <xref linkend="RT_ST_SummaryStatsAgg" /> instead. </para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
 
             </refsection>
 
@@ -8433,7 +8433,7 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 
                 <note><para>By default will sample all pixels. To get faster response, set <varname>sample_percent</varname> to value between 0 and 1</para></note>
 
-                <para>Availability: 2.2.0 </para>
+                <para role="availability" conformance="2.2.0">Availability: 2.2.0 </para>
             </refsection>
 
             <refsection>
@@ -8617,7 +8617,7 @@ FROM (
                 <para>Returns a set of records with columns <varname>value</varname>  <varname>count</varname> which contain the pixel band value and count of pixels in the raster tile or raster coverage of selected band. </para>
                 <para>If no band is specified <varname>nband</varname> defaults to 1. If no <varname>searchvalues</varname> are specified, will return all pixel values found in the raster or raster coverage.  If one searchvalue is given, will return an integer instead of records denoting the count of pixels having that pixel band value</para>
                 <note><para>If <varname>exclude_nodata_value</varname> is set to false, will also count pixels with no data.</para></note>
-                <para>Availability: 2.0.0 </para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
             </refsection>
 
             <refsection>
@@ -8742,7 +8742,7 @@ SELECT rid, ST_ValueCount(rast,2,100) As count
                     Given a Well-Known Binary (WKB) raster, return a raster.
                 </para>
 
-                <para>Availability: 2.5.0</para>
+                <para role="availability" conformance="2.5.0">Availability: 2.5.0</para>
             </refsection>
 
             <refsection>
@@ -8795,7 +8795,7 @@ SELECT (ST_Metadata(
                     Given a Well-Known Binary (WKB) raster in Hex representation, return a raster.
                 </para>
 
-                <para>Availability: 2.5.0</para>
+                <para role="availability" conformance="2.5.0">Availability: 2.5.0</para>
             </refsection>
 
             <refsection>
@@ -8869,8 +8869,8 @@ SELECT (ST_Metadata(
                         By default, WKB output contains the external file path for out-db bands. If the client does not have access to the raster file underlying an out-db band, set <varname>outasin</varname> to TRUE.</para>
                 </note>
 
-                <para>Enhanced: 2.1.0 Addition of <varname>outasin</varname></para>
-                <para>Enhanced: 2.5.0 Addition of <varname>ST_AsWKB</varname></para>
+                <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Addition of <varname>outasin</varname></para>
+                <para role="enhanced" conformance="2.5.0">Enhanced: 2.5.0 Addition of <varname>ST_AsWKB</varname></para>
             </refsection>
 
                 <refsection>
@@ -8924,7 +8924,7 @@ SELECT ST_AsBinary(rast) As rastbin FROM dummy_rast WHERE rid=1;
                         By default, Hex WKB output contains the external file path for out-db bands. If the client does not have access to the raster file underlying an out-db band, set <varname>outasin</varname> to TRUE.</para>
                 </note>
 
-                <para>Availability: 2.5.0 </para>
+                <para role="availability" conformance="2.5.0">Availability: 2.5.0 </para>
             </refsection>
 
                 <refsection>
@@ -8990,7 +8990,7 @@ SELECT ST_AsHexWKB(rast) As rastbin FROM dummy_rast WHERE rid=1;
             </para>
                    </listitem>
                 </itemizedlist>
-                <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
             </refsection>
 
 
@@ -9121,7 +9121,7 @@ FROM dummy_rast WHERE rid=2;
                       </para>
                    </listitem>
                 </itemizedlist>
-                <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
             </refsection>
 
                 <refsection>
@@ -9223,7 +9223,7 @@ SELECT ST_AsJPEG(rast,ARRAY[2,1,3],ARRAY['QUALITY=90','PROGRESSIVE=ON']) As rast
                       </para>
                    </listitem>
                 </itemizedlist>
-                <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
             </refsection>
 
                 <refsection>
@@ -9309,7 +9309,7 @@ FROM dummy_rast WHERE rid=2;
                       </para>
                    </listitem>
                 </itemizedlist>
-                <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
             </refsection>
 
                 <refsection>
@@ -9408,9 +9408,9 @@ FROM dummy_rast WHERE rid=2;
                         If <varname>crop</varname> is not specified, true is assumed meaning the output raster is cropped to the intersection of the <varname>geom</varname>and <varname>rast</varname> extents. If <varname>crop</varname> is set to false, the new raster gets the same extent as <varname>rast</varname>.
                     </para>
 
-                    <para>Availability: 2.0.0 </para>
+                    <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
 
-                    <para>Enhanced: 2.1.0 Rewritten in C</para>
+                    <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Rewritten in C</para>
 
                     <para>
                         Examples here use Massachusetts aerial data available on MassGIS site <ulink url="http://www.mass.gov/mgis/colororthos2008.htm">MassGIS Aerial Orthos</ulink>. Coordinates are in Massachusetts State Plane Meters.
@@ -9712,7 +9712,7 @@ nv 0 0 0 0
                         </para>
                     </warning>
 
-                    <para>Availability: 2.1.0 </para>
+                    <para role="availability" conformance="2.1.0">Availability: 2.1.0 </para>
                 </refsection>
 
                 <refsection>
@@ -9945,7 +9945,7 @@ FROM funky_shapes;
                         </para>
                     </note>
 
-                    <para>Availability: 2.5.0 </para>
+                    <para role="availability" conformance="2.5.0">Availability: 2.5.0 </para>
 
                 </refsection>
 
@@ -10447,8 +10447,8 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
                         Variant 4 operate upon two rasters with one band per raster. See example Variant 4.
                     </para>
 
-                    <para>Availability: 2.2.0: Ability to add a mask</para>
-                    <para>Availability: 2.1.0</para>
+                    <para role="availability" conformance="2.2.0">Availability: 2.2.0: Ability to add a mask</para>
+                    <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 
                 </refsection>
 
@@ -10803,7 +10803,7 @@ FROM foo;
                         Expression version - Returns a one-band raster given one or two input rasters, band indexes and one or more user-specified SQL expressions.
                     </para>
 
-                    <para>Availability: 2.1.0</para>
+                    <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
                 </refsection>
 
                 <refsection>
@@ -11045,7 +11045,7 @@ WHERE t1.rid = 1
                         In the expression you can use the term <varname>[rast]</varname> to refer to the pixel value of the original band, <varname>[rast.x]</varname> to refer to the 1-based pixel column index, <varname>[rast.y]</varname> to refer to the 1-based pixel row index.
                     </para>
 
-                    <para>Availability: 2.0.0 </para>
+                    <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
                 </refsection>
 
                 <refsection>
@@ -11311,7 +11311,7 @@ WHERE rid=167;
                         Use the term <varname>[rast1.val]</varname>  <varname>[rast2.val]</varname> to refer to the pixel value of the original raster bands and <varname>[rast1.x]</varname>, <varname>[rast1.y]</varname> etc. to refer to the column / row positions of the pixels.
                     </para>
 
-                    <para>Availability: 2.0.0 </para>
+                    <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
                 </refsection>
 
                 <refsection>
@@ -11668,7 +11668,7 @@ FROM prunion;
                         <para>The <type>text[]</type> argument to the <varname>userfunction</varname> is required, regardless of whether you choose to pass any arguments to your user function for processing or not.</para>
                     </note>
 
-                    <para>Availability: 2.0.0</para>
+                    <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
                 </refsection>
 
                 <refsection>
@@ -11885,7 +11885,7 @@ WHERE rid=167;
                         <para>The <type>text[]</type> argument to the <varname>tworastuserfunc</varname> is required, regardless of whether you choose to pass any arguments to your user function for processing or not.</para>
                     </note>
 
-                    <para>Availability: 2.0.0</para>
+                    <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
                 </refsection>
 
                 <refsection>
@@ -12109,7 +12109,7 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast, 3,
                         </varlistentry>
                     </variablelist>
 
-                    <para>Availability: 2.0.0 </para>
+                    <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
                 </refsection>
 
                 <refsection>
@@ -12239,7 +12239,7 @@ SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 4,4,
 
                     <para>The bands of the new raster will have pixel type of <varname>pixeltype</varname>.  If <varname>reclassargset</varname> is passed in then each reclassarg defines behavior of each band generated.</para>
 
-                    <para>Availability: 2.0.0 </para>
+                    <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
                 </refsection>
 
                 <refsection>
@@ -12379,11 +12379,11 @@ UPDATE wind
                       <para>In order for rasters to be unioned, they must all have the same alignment.  Use <xref linkend="RT_ST_SameAlignment" /> and <xref linkend="RT_ST_NotSameAlignmentReason" /> for more details and help. One way to fix alignment issues is to use <xref linkend="RT_ST_Resample" /> and use the same reference raster for alignment.</para>
                     </note>
 
-                    <para>Availability: 2.0.0 </para>
-                    <para>Enhanced: 2.1.0 Improved Speed (fully C-Based).</para>
-                    <para>Availability: 2.1.0 ST_Union(rast, unionarg) variant was introduced.</para>
-                    <para>Enhanced: 2.1.0 ST_Union(rast) (variant 1) unions all bands of all input rasters.  Prior versions of PostGIS assumed the first band.</para>
-                    <para>Enhanced: 2.1.0 ST_Union(rast, uniontype) (variant 4) unions all bands of all input rasters.</para>
+                    <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
+                    <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Improved Speed (fully C-Based).</para>
+                    <para role="availability" conformance="2.1.0">Availability: 2.1.0 ST_Union(rast, unionarg) variant was introduced.</para>
+                    <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 ST_Union(rast) (variant 1) unions all bands of all input rasters.  Prior versions of PostGIS assumed the first band.</para>
+                    <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 ST_Union(rast, uniontype) (variant 4) unions all bands of all input rasters.</para>
                 </refsection>
                 <refsection>
                     <title>Examples: Reconstitute a single band chunked raster tile</title>
@@ -12481,8 +12481,8 @@ WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 887
                     </para>
                 </warning>
 
-                <para>Availability: 2.0.0</para>
-                <para>Enhanced: 2.1.0 Addition of Variant 2</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+                <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Addition of Variant 2</para>
             </refsection>
 
                 <refsection>
@@ -12565,7 +12565,7 @@ WHERE rid = 2;
                     <para>This function is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebra" />.</para>
                 </note>
 
-                <para>Availability: 2.1.0</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
             </refsection>
 
             <refsection>
@@ -12633,8 +12633,8 @@ WHERE rid = 2;
                     </para>
                 </warning>
 
-                <para>Availability: 2.0.0</para>
-                <para>Enhanced: 2.1.0 Addition of Variant 2</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+                <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Addition of Variant 2</para>
             </refsection>
 
                 <refsection>
@@ -12719,8 +12719,8 @@ WHERE rid = 2;
                     </para>
                 </warning>
 
-                <para>Availability: 2.0.0</para>
-                <para>Enhanced: 2.1.0 Addition of Variant 2</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+                <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Addition of Variant 2</para>
             </refsection>
 
                 <refsection>
@@ -12827,8 +12827,8 @@ WHERE rid = 2;
                     </para>
                 </warning>
 
-                <para>Availability: 2.0.0</para>
-                <para>Enhanced: 2.1.0 Addition of Variant 2</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+                <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Addition of Variant 2</para>
             </refsection>
 
             <refsection>
@@ -12896,7 +12896,7 @@ WHERE rid = 2;
                     <para>This function is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebra" />.</para>
                 </note>
 
-                <para>Availability: 2.1.0</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
             </refsection>
 
             <refsection>
@@ -12964,8 +12964,8 @@ WHERE rid = 2;
                     </para>
                 </warning>
 
-                <para>Availability: 2.0.0</para>
-                <para>Enhanced: 2.1.0 Addition of Variant 2</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+                <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Addition of Variant 2</para>
             </refsection>
 
                 <refsection>
@@ -13046,8 +13046,8 @@ WHERE rid = 2;
                     </para>
                 </warning>
 
-                <para>Availability: 2.0.0</para>
-                <para>Enhanced: 2.1.0 Addition of Variant 2</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+                <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Addition of Variant 2</para>
             </refsection>
 
                 <refsection>
@@ -13132,8 +13132,8 @@ WHERE rid = 2;
                     </para>
                 </warning>
 
-                <para>Availability: 2.0.0</para>
-                <para>Enhanced: 2.1.0 Addition of Variant 2</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+                <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Addition of Variant 2</para>
             </refsection>
 
                 <refsection>
@@ -13229,9 +13229,9 @@ WHERE rid = 2;
                         </para>
                     </note>
 
-                    <para>Availability: 2.0.0 </para>
-                    <para>Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional <varname>interpolate_nodata</varname> function parameter</para>
-                    <para>Changed: 2.1.0 In prior versions, return values were in radians. Now, return values default to degrees</para>
+                    <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
+                    <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional <varname>interpolate_nodata</varname> function parameter</para>
+                    <para role="changed" conformance="2.1.0">Changed: 2.1.0 In prior versions, return values were in radians. Now, return values default to degrees</para>
                 </refsection>
 
                 <refsection>
@@ -13376,9 +13376,9 @@ GROUP BY t1.rast;
                         </para>
                     </note>
 
-                    <para>Availability: 2.0.0 </para>
-                    <para>Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional <varname>interpolate_nodata</varname> function parameter</para>
-                    <para>Changed: 2.1.0 In prior versions, azimuth and altitude were expressed in radians. Now, azimuth and altitude are expressed in degrees</para>
+                    <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
+                    <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional <varname>interpolate_nodata</varname> function parameter</para>
+                    <para role="changed" conformance="2.1.0">Changed: 2.1.0 In prior versions, azimuth and altitude were expressed in radians. Now, azimuth and altitude are expressed in degrees</para>
 
                 </refsection>
 
@@ -13481,7 +13481,7 @@ GROUP BY t1.rast;
                 <refsection>
                     <title>Description</title>
                 <para>Calculates the "roughness" of a DEM, by subtracting the maximum from the minimum for a given area.</para>
-                    <para>Availability: 2.1.0</para>
+                    <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
                 </refsection>
 
                 <refsection>
@@ -13557,9 +13557,9 @@ GROUP BY t1.rast;
                         </para>
                     </note>
 
-                    <para>Availability: 2.0.0 </para>
-                    <para>Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional <varname>units</varname>, <varname>scale</varname>, <varname>interpolate_nodata</varname> function parameters</para>
-                    <para>Changed: 2.1.0 In prior versions, return values were in radians. Now, return values default to degrees</para>
+                    <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
+                    <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional <varname>units</varname>, <varname>scale</varname>, <varname>interpolate_nodata</varname> function parameters</para>
+                    <para role="changed" conformance="2.1.0">Changed: 2.1.0 In prior versions, return values were in radians. Now, return values default to degrees</para>
 
                 </refsection>
 
@@ -13669,7 +13669,7 @@ GROUP BY t1.rast;
                 <note>
               <para>This function only supports a focalmean radius of one.</para>
                 </note>
-                    <para>Availability: 2.1.0</para>
+                    <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
                 </refsection>
 
                 <refsection>
@@ -13722,7 +13722,7 @@ GROUP BY t1.rast;
                         <para>This function only supports a focalmean radius of one.</para>
                     </note>
 
-                    <para>Availability: 2.1.0</para>
+                    <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
                 </refsection>
 
                 <refsection>
@@ -13773,7 +13773,7 @@ GROUP BY t1.rast;
                         The polygon is defined by the corner points of the bounding box ((<varname>MINX</varname>, <varname>MINY</varname>), (<varname>MAXX</varname>, <varname>MAXY</varname>))
                     </para>
 
-                    <para>Changed: 2.0.0 In pre-2.0 versions, there used to be a box2d instead of box3d.  Since box2d is a deprecated type, this was changed to box3d.</para>
+                    <para role="changed" conformance="2.0.0">Changed: 2.0.0 In pre-2.0 versions, there used to be a box2d instead of box3d.  Since box2d is a deprecated type, this was changed to box3d.</para>
                 </refsection>
 
                 <refsection>
@@ -13896,7 +13896,7 @@ FROM (SELECT ST_SetRotation(rast, 0.1, 0.1) As rast
                     can be used to expand a single raster into multiple POLYGONS/MULTIPOLYGONS.</para>
 
                     <para>Changed 3.3.0, validation and fixing is disabled to improve performance. May result invalid geometries.</para>
-                    <para>Availability: Requires GDAL 1.7 or higher.</para>
+                    <para role="availability" conformance="1.7">Availability: Requires GDAL 1.7 or higher.</para>
                     <note><para>If there is a no data value set for a band, pixels with that value will not be returned except in the case of exclude_nodata_value=false.</para></note>
                     <note><para>If you only care about count of pixels with a given value in a raster, it is faster to use <xref linkend="RT_ST_ValueCount" />.</para></note>
                     <note>
@@ -14021,7 +14021,7 @@ FROM dummy_rast;
                         Return the convex hull geometry of the raster excluding NODATA pixels.  If <varname>nband</varname> is NULL, all bands of the raster are considered.
                     </para>
 
-                    <para>Availability: 2.1.0 </para>
+                    <para role="availability" conformance="2.1.0">Availability: 2.1.0 </para>
                 </refsection>
 
                 <refsection>
@@ -14102,9 +14102,9 @@ FROM foo
                 <refsection>
                     <title>Description</title>
                     <para>Changed 3.3.0, validation and fixing is disabled to improve performance. May result invalid geometries.</para>
-                    <para>Availability: 0.1.6 Requires GDAL 1.7 or higher.</para>
-                    <para>Enhanced: 2.1.0 Improved Speed (fully C-Based) and the returning multipolygon is ensured to be valid.</para>
-                    <para>Changed: 2.1.0 In prior versions would sometimes return a polygon, changed to always return multipolygon.</para>
+                    <para role="availability" conformance="0.1.6">Availability: 0.1.6 Requires GDAL 1.7 or higher.</para>
+                    <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Improved Speed (fully C-Based) and the returning multipolygon is ensured to be valid.</para>
+                    <para role="changed" conformance="2.1.0">Changed: 2.1.0 In prior versions would sometimes return a polygon, changed to always return multipolygon.</para>
                 </refsection>
 
             <refsection>
@@ -14219,7 +14219,7 @@ MULTIPOLYGON(((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.8
                 <note><para>This operand will make use of any indexes that may be available on the
                 rasters.</para></note>
 
-                <para>Availability: 2.0.0</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
           </refsection>
 
           <refsection>
@@ -14391,7 +14391,7 @@ a_rid | b_rid | overleft
             <caution><para>This operand will NOT make use of any indexes that may be available on the
                 rasters. Use <xref linkend="RT_Raster_Same" /> instead.  This operator exists mostly so one can group by the raster column.</para></caution>
 
-            <para>Availability:  2.1.0 </para>
+            <para role="availability" conformance="2.1.0">Availability:  2.1.0 </para>
 
           </refsection>
 
@@ -14458,8 +14458,8 @@ a_rid | b_rid | overleft
 
             <note><para>This operand will use spatial indexes on the rasters. </para></note>
 
-            <para>Availability:  2.0.0 raster @ raster, raster @ geometry introduced</para>
-            <para>Availability:  2.0.5 geometry @ raster introduced </para>
+            <para role="availability" conformance="2.0.0">Availability:  2.0.0 raster @ raster, raster @ geometry introduced</para>
+            <para role="availability" conformance="2.0.5">Availability:  2.0.5 geometry @ raster introduced </para>
 
           </refsection>
 
@@ -14506,7 +14506,7 @@ a_rid | b_rid | overleft
         <note><para>This operand will make use of any indexes that may be available on the
           rasters.</para></note>
 
-         <para>Availability: 2.0.0</para>
+         <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 
           </refsection>
 
@@ -14580,7 +14580,7 @@ a_rid | b_rid | overleft
 
             <note><para>This operand will use spatial indexes on the rasters. </para></note>
 
-            <para>Availability:  2.0.0</para>
+            <para role="availability" conformance="2.0.0">Availability:  2.0.0</para>
 
           </refsection>
 
@@ -14665,7 +14665,7 @@ a_rid | b_rid | overleft
                 </para>
             </note>
 
-            <para>Availability: 2.1.0</para>
+            <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
         </refsection>
 
         <refsection>
@@ -14768,7 +14768,7 @@ SELECT r1.rid, r2.rid, ST_Contains(r1.rast, r2.rast) FROM dummy_rast r1 CROSS JO
                 </para>
             </note>
 
-            <para>Availability: 2.1.0</para>
+            <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
         </refsection>
 
         <refsection>
@@ -14856,7 +14856,7 @@ SELECT r1.rid, r2.rid, ST_ContainsProperly(r1.rast, 1, r2.rast, 1) FROM dummy_ra
                 </para>
             </note>
 
-            <para>Availability: 2.1.0</para>
+            <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
         </refsection>
 
         <refsection>
@@ -14944,7 +14944,7 @@ SELECT r1.rid, r2.rid, ST_Covers(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROS
                 </para>
             </note>
 
-            <para>Availability: 2.1.0</para>
+            <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
         </refsection>
 
         <refsection>
@@ -15032,7 +15032,7 @@ SELECT r1.rid, r2.rid, ST_CoveredBy(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 C
                 </para>
             </note>
 
-            <para>Availability: 2.1.0</para>
+            <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
         </refsection>
 
         <refsection>
@@ -15269,7 +15269,7 @@ SELECT ST_Intersects(rast, 2, rast, 3) FROM dummy_rast WHERE rid = 2;
                 </para>
             </note>
 
-            <para>Availability: 2.1.0</para>
+            <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
         </refsection>
 
         <refsection>
@@ -15356,7 +15356,7 @@ SELECT ST_Overlaps(rast, 1, rast, 2) FROM dummy_rast WHERE rid = 2;
                 </para>
             </note>
 
-            <para>Availability: 2.1.0</para>
+            <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
         </refsection>
 
         <refsection>
@@ -15474,8 +15474,8 @@ SELECT r1.rid, r2.rid, ST_Touches(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CRO
                 Aggregate version (Variant 3): From a set of rasters, returns true if all rasters in the set are aligned. The ST_SameAlignment() function is an "aggregate" function in the terminology of PostgreSQL. That means that it operates on rows of data, in the same way the SUM() and AVG() functions do.
             </para>
 
-            <para>Availability: 2.0.0</para>
-            <para>Enhanced: 2.1.0 addition of Aggegrate variant</para>
+            <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+            <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 addition of Aggegrate variant</para>
           </refsection>
 
           <refsection>
@@ -15540,7 +15540,7 @@ NOTICE:  The two rasters provided have different SRIDs
                     </para>
                 </note>
 
-                <para>Availability: 2.1.0</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
             </refsection>
 
             <refsection>
@@ -15643,7 +15643,7 @@ SELECT
                 </para>
             </note>
 
-            <para>Availability: 2.1.0</para>
+            <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
         </refsection>
 
         <refsection>
@@ -15745,7 +15745,7 @@ SELECT r1.rid, r2.rid, ST_Within(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROS
                 </para>
             </note>
 
-            <para>Availability: 2.1.0</para>
+            <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
         </refsection>
 
         <refsection>
@@ -15845,7 +15845,7 @@ SELECT r1.rid, r2.rid, ST_DWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM dummy_rast 
                 </para>
             </note>
 
-            <para>Availability: 2.1.0</para>
+            <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
         </refsection>
 
         <refsection>

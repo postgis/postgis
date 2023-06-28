@@ -45,8 +45,8 @@
 			  Z values (when present), while prior releases set them to
 			  0.0.</para>
 			</note>
-			<para>Availability: 0.8.2, Z and M supported added in 1.1.1</para>
-			<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Interpolate_Point.</para>
+			<para role="availability" conformance="0.8.2">Availability: 0.8.2, Z and M supported added in 1.1.1</para>
+			<para role="changed" conformance="2.1.0.">Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Interpolate_Point.</para>
 			<para>&Z_support;</para>
 		  </refsection>
 
@@ -134,7 +134,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As geom) AS line;
               and only interpolates the M value.</para>
 			</note>
 
-			<para>Availability: 3.0.0</para>
+			<para role="availability" conformance="3.0.0">Availability: 3.0.0</para>
             <para>&Z_support;</para>
 		</refsection>
 
@@ -203,7 +203,7 @@ SELECT ST_AsText(
 		</para>
 
 
-			<para>Availability: 2.5.0</para>
+			<para role="availability" conformance="2.5.0">Availability: 2.5.0</para>
 			<para>&Z_support;</para>
 			<para>&M_support;</para>
 		  </refsection>
@@ -265,8 +265,8 @@ SELECT ST_AsText(ST_LineInterpolatePoints('LINESTRING(25 50, 100 125, 150 190)',
 
 			<para>This is useful for approximating numbers of addresses</para>
 
-			<para>Availability: 1.1.0</para>
-      <para>Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Locate_Point.</para>
+			<para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
+      <para role="changed" conformance="2.1.0.">Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Locate_Point.</para>
 		  </refsection>
 
 
@@ -361,8 +361,8 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 			  unspecified values.</para>
 			</note>
 
-			<para>Availability: 1.1.0, Z and M supported added in 1.1.1</para>
-			<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Substring.</para>
+			<para role="availability" conformance="1.1.0">Availability: 1.1.0, Z and M supported added in 1.1.1</para>
+			<para role="changed" conformance="2.1.0.">Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Substring.</para>
 			<para>&Z_support;</para>
 		  </refsection>
 
@@ -470,8 +470,8 @@ CROSS JOIN LATERAL (
 
 		<para>The semantic is specified by the <emphasis>ISO/IEC 13249-3 SQL/MM Spatial</emphasis> standard.</para>
 
-		<para>Availability: 1.1.0 by old name ST_Locate_Along_Measure. </para>
-		<para>Changed: 2.0.0 in prior versions this used to be called ST_Locate_Along_Measure.</para>
+		<para role="availability" conformance="1.1.0">Availability: 1.1.0 by old name ST_Locate_Along_Measure. </para>
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0 in prior versions this used to be called ST_Locate_Along_Measure.</para>
 
 		<para>&M_support;</para>
         <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.13</para>
@@ -532,9 +532,9 @@ SELECT ST_AsText(
 
 		<para>The semantic is specified by the <emphasis>ISO/IEC 13249-3 SQL/MM Spatial</emphasis> standard.</para>
 
-		<para>Availability: 1.1.0 by old name ST_Locate_Between_Measures. </para>
-		<para>Changed: 2.0.0 - in prior versions this used to be called ST_Locate_Between_Measures.</para>
-		<para>Enhanced: 3.0.0 - added support for POLYGON, TIN, TRIANGLE.</para>
+		<para role="availability" conformance="1.1.0">Availability: 1.1.0 by old name ST_Locate_Between_Measures. </para>
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0 - in prior versions this used to be called ST_Locate_Between_Measures.</para>
+		<para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 - added support for POLYGON, TIN, TRIANGLE.</para>
 
 		<para>&M_support;</para>
         <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1</para>
@@ -608,8 +608,8 @@ MULTILINESTRING((54.49835019899045 104.53426957938231,58.70056060327303 82.12248
 
 		<para>Clipping a non-convex POLYGON may produce invalid geometry.</para>
 
-		<para>Availability: 1.4.0</para>
-		<para>Enhanced: 3.0.0 - added support for POLYGON, TIN, TRIANGLE.</para>
+		<para role="availability" conformance="1.4.0">Availability: 1.4.0</para>
+		<para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 - added support for POLYGON, TIN, TRIANGLE.</para>
 
 		<para>&Z_support;</para>
 	  </refsection>
@@ -671,7 +671,7 @@ SELECT ST_AsText(
 
             <note><para>Use this function only for linear geometries with an M component</para></note>
 
-            <para>Availability: 2.0.0</para>
+            <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 
         <para>&Z_support;</para>
         </refsection>
@@ -718,7 +718,7 @@ SELECT ST_AsText(
 
 		   <para>Return a derived geometry with measure values linearly interpolated between the start and end points. If the geometry has no measure dimension, one is added. If the geometry has a measure dimension, it is over-written with new values. Only LINESTRINGS and MULTILINESTRINGS are supported.</para>
 
-			<para>Availability: 1.5.0</para>
+			<para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
 
 		<para>&Z_support;</para>
 	  </refsection>

@@ -69,7 +69,7 @@
 		  Input geometries that do not meet the criteria to join any other cluster will be assigned a cluster number of NULL.
 	  </para></note>
 
-      <para>Availability: 2.3.0</para>
+      <para role="availability" conformance="2.3.0">Availability: 2.3.0</para>
       <para>&curve_support;</para>
     </refsection>
 
@@ -173,7 +173,7 @@ GROUP BY cid;
 
         <para>ST_ClusterIntersectingWin is a windowing function that builds inter-connecting clusters of geometries that intersect. It is possible to traverse all geometries in a cluster without leaving the cluster. The return value is the cluster number that the geometry argument participates in, or null for null inputs.</para>
 
-        <para>Availability: 3.4.0</para>
+        <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
       </refsection>
 
       <refsection>
@@ -236,7 +236,7 @@ FROM testdata;
 
         <para>ST_ClusterIntersecting is an aggregate function that returns an array of GeometryCollections, where each GeometryCollection represents an interconnected set of geometries.</para>
 
-        <para>Availability: 2.2.0</para>
+        <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
       </refsection>
 
       <refsection>
@@ -312,9 +312,9 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
       <para><varname>max_radius</varname>, if set, will cause ST_ClusterKMeans to generate more clusters than
         <varname>k</varname> ensuring that no cluster in output has radius larger than <varname>max_radius</varname>.
         This is useful in reachability analysis. </para>
-      <para>Enhanced: 3.2.0 Support for <varname>max_radius</varname></para>
-      <para>Enhanced: 3.1.0 Support for 3D geometries and weights</para>
-      <para>Availability: 2.3.0</para>
+      <para role="enhanced" conformance="3.2.0">Enhanced: 3.2.0 Support for <varname>max_radius</varname></para>
+      <para role="enhanced" conformance="3.1.0">Enhanced: 3.1.0 Support for 3D geometries and weights</para>
+      <para role="availability" conformance="2.3.0">Availability: 2.3.0</para>
     </refsection>
 
     <refsection>
@@ -438,7 +438,7 @@ from
 
         <para>ST_ClusterWithin is an aggregate function that returns an array of GeometryCollections, where each GeometryCollection represents a set of geometries separated by no more than the specified distance.  (Distances are Cartesian distances in the units of the SRID.)</para>
 
-        <para>Availability: 2.2.0</para>
+        <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
         <para>&curve_support;</para>
       </refsection>
 
@@ -498,7 +498,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
         <para>ST_ClusterWithinWin is a window function that returns an integer for each input geometry, where the integer the cluster number the geometry is a member of. Clusters represent a set of input geometries separated by no more than the specified distance. (Distances are Cartesian distances in the units of the SRID.)
         </para>
         <para>ST_ClusterWithinWin is equivalent to running <xref linkend="ST_ClusterDBSCAN" /> with a `minpoints` of zero.</para>
-        <para>Availability: 3.4.0</para>
+        <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
         <para>&curve_support;</para>
 
       </refsection>

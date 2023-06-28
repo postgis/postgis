@@ -46,7 +46,7 @@
 
 			 <para>&sfs_compliant; s3.2.6.2</para>
 			 <para>Performed by the GEOS module.</para>
-			 <para>Availability: 1.1.0</para>
+			 <para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
 		  </refsection>
 
 <!-->
@@ -99,7 +99,7 @@
 
 				 <para>&sfs_compliant; s3.2.6.2</para>
 				 <para>Performed by the GEOS module.</para>
-				 <para>Availability: 1.1.0</para>
+				 <para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
 			</refsection>
 
 <!--
@@ -256,7 +256,7 @@ SELECT ST_AsEWKT(ST_GeogFromText('SRID=4267;POINT(-77.0092 38.889588)'));
 			<para>The EWKT format is not an OGC standard, but an PostGIS specific format that includes the spatial reference system (SRID)
 			identifier</para>
 		</note>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
@@ -358,7 +358,7 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
                 </itemizedlist>
             </para>
 
-            <para>Availability: 3.3.0, requires libxml2 2.6+</para>
+            <para role="availability" conformance="3.3.0">Availability: 3.3.0, requires libxml2 2.6+</para>
 
             <note>
                 <para>
@@ -533,7 +533,7 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.40</para>
 			<para>&curve_support;</para>
             <note><para>While not OGC-compliant, <xref linkend="ST_MakePoint" /> is faster than ST_GeomFromText and ST_PointFromText. It is also easier to use for numeric coordinate values. <xref linkend="ST_Point" /> is another option similar in speed to <xref linkend="ST_MakePoint" /> and is OGC-compliant, but doesn't support anything but 2D points.</para></note>
-			<warning><para>Changed: 2.0.0 In prior versions of PostGIS ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') was allowed.  This is now illegal in PostGIS 2.0.0 to better conform with SQL/MM standards. This should now be
+			<warning><para role="changed" conformance="2.0.0">Changed: 2.0.0 In prior versions of PostGIS ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') was allowed.  This is now illegal in PostGIS 2.0.0 to better conform with SQL/MM standards. This should now be
 			    written as ST_GeomFromText('GEOMETRYCOLLECTION EMPTY')</para></warning>
 
 		  </refsection>
@@ -1057,7 +1057,7 @@ ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\
 			<para>The EWKB format is not an OGC standard, but a PostGIS specific format that includes the spatial reference system (SRID)
 			identifier</para>
 		</note>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
@@ -1436,7 +1436,7 @@ SELECT
 
 		<para>If <varname>precision</varname> is specified ST_Box2dFromGeoHash will use that many characters from the GeoHash to create the BOX2D. Lower precision values results in larger BOX2Ds and larger values increase the precision.</para>
 
-		<para>Availability: 2.1.0</para>
+		<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 	  </refsection>
 
 	  <refsection>
@@ -1494,7 +1494,7 @@ SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 0);
 
 		<para>If <varname>precision</varname> is specified ST_GeomFromGeoHash will use that many characters from the GeoHash to create the polygon.</para>
 
-		<para>Availability: 2.1.0</para>
+		<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 	  </refsection>
 
 	  <refsection>
@@ -1563,9 +1563,9 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 			OGC GML standards, cf: <ulink url="http://www.opengeospatial.org/standards/gml">http://www.opengeospatial.org/standards/gml</ulink>:
 		</para>
 
-		<para>Availability: 1.5, requires libxml2 1.6+</para>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
-		<para>Enhanced: 2.0.0 default srid optional parameter added.</para>
+		<para role="availability" conformance="1.5">Availability: 1.5, requires libxml2 1.6+</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 default srid optional parameter added.</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -1694,9 +1694,9 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 		<para>Constructs a PostGIS geometry object from the GeoJSON representation.</para>
 		<para>ST_GeomFromGeoJSON works only for JSON Geometry fragments. It throws an error if you try to use it on a whole JSON document.</para>
 
-		<para>Enhanced: 3.0.0 parsed geometry defaults to SRID=4326 if not specified otherwise.</para>
-		<para>Enhanced: 2.5.0 can now accept json and jsonb as inputs.</para>
-		<para>Availability: 2.0.0 requires - JSON-C &gt;= 0.9</para>
+		<para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 parsed geometry defaults to SRID=4326 if not specified otherwise.</para>
+		<para role="enhanced" conformance="2.5.0">Enhanced: 2.5.0 can now accept json and jsonb as inputs.</para>
+		<para role="availability" conformance="2.0.0">Availability: 2.0.0 requires - JSON-C &gt;= 0.9</para>
 		<note><para>If you do not have JSON-C enabled, support you will get an error notice instead of seeing an output.
 			To enable JSON-C, run configure --with-jsondir=/path/to/json-c.  See <xref linkend="installation_configuration" /> for details.</para></note>
 		<para>&Z_support;</para>
@@ -1754,7 +1754,7 @@ LINESTRING(1 2,4 5,7 8)
 			OGC KML standards, cf: <ulink url="http://www.opengeospatial.org/standards/kml">http://www.opengeospatial.org/standards/kml</ulink>:
 		</para>
 
-		<para>Availability: 1.5, requires libxml2 2.6+</para>
+		<para role="availability" conformance="1.5">Availability: 1.5, requires libxml2 2.6+</para>
 		<para>&Z_support;</para>
 		<note>
 			<para>ST_GeomFromKML function not support SQL/MM curves geometries.</para>
@@ -1852,9 +1852,9 @@ LINESTRING(-113.98 39.198,-113.981 39.195)
 		  <refsection>
 			<title>Description</title>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.50 (except for curves support).</para>
-			<para>Availability: 1.5, requires libxml2 1.6+</para>
-		        <para>Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
-		        <para>Enhanced: 2.0.0 default srid optional parameter added.</para>
+			<para role="availability" conformance="1.5">Availability: 1.5, requires libxml2 1.6+</para>
+		        <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
+		        <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 default srid optional parameter added.</para>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
@@ -1887,7 +1887,7 @@ LINESTRING(-113.98 39.198,-113.981 39.195)
 		<para>Optional <varname>precision</varname> specifies how many decimal places will be preserved in Encoded Polyline. Value should be the same on encoding and decoding, or coordinates will be incorrect.</para>
 
     <para>See http://developers.google.com/maps/documentation/utilities/polylinealgorithm</para>
-    <para>Availability: 2.2.0</para>
+    <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
     </refsection>
 
     <refsection>
@@ -1941,7 +1941,7 @@ SRID=4326;LINESTRING(-12.02 3.85,-12.095 4.07,-12.6453 4.3252)
 
 		<para>If <varname>precision</varname> is specified ST_PointFromGeoHash will use that many characters from the GeoHash to create the point.</para>
 
-		<para>Availability: 2.1.0</para>
+		<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 	  </refsection>
 
 	  <refsection>
@@ -1998,7 +1998,7 @@ SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 		<para><varname>table</varname> Table name.</para>
 		<para><varname>data</varname> Input FlatGeobuf data.</para>
 
-		<para>Availability: 3.2.0</para>
+		<para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
 	  </refsection>
 	</refentry>
 
@@ -2030,7 +2030,7 @@ SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 		<para><varname>tabletype</varname> reference to a table type.</para>
 		<para><varname>data</varname> input FlatGeobuf data.</para>
 
-		<para>Availability: 3.2.0</para>
+		<para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
 	  </refsection>
 	</refentry>
 

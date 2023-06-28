@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-06-29 14:24+0000\n"
+"POT-Creation-Date: 2023-06-29 16:52+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -28,37 +28,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: xsl-config.xml:54
-#, no-c-format
-msgid "Availability"
-msgstr ""
-
-#. Tag: para
-#: xsl-config.xml:55
+#: xsl-config.xml:53
 #, no-c-format
 msgid "Functions new in PostGIS %"
 msgstr ""
 
 #. Tag: para
-#: xsl-config.xml:58
-#, no-c-format
-msgid "Enhanced"
-msgstr ""
-
-#. Tag: para
-#: xsl-config.xml:59
+#: xsl-config.xml:56
 #, no-c-format
 msgid "Functions enhanced in PostGIS %"
 msgstr ""
 
 #. Tag: para
-#: xsl-config.xml:62
-#, no-c-format
-msgid "Changed"
-msgstr ""
-
-#. Tag: para
-#: xsl-config.xml:63
+#: xsl-config.xml:59
 #, no-c-format
 msgid "Functions changed in PostGIS %"
 msgstr ""

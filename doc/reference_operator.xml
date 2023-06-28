@@ -58,8 +58,8 @@
             <note><para>This operand will make use of any indexes that may be available on the
                 geometries.</para></note>
 
-            <para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
-            <para>Availability: 1.5.0 support for geography was introduced.</para>
+            <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+            <para role="availability" conformance="1.5.0">Availability: 1.5.0 support for geography was introduced.</para>
             <para>&curve_support;</para>
             <para>&P_support;</para>
         </refsection>
@@ -133,7 +133,7 @@ FROM ( VALUES
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -199,7 +199,7 @@ FROM ( VALUES
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -265,7 +265,7 @@ FROM ( VALUES
 			<note><para>This operator is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -331,7 +331,7 @@ FROM ( VALUES
 			<note><para>This operand will make use of any indexes that may be available on the
 				geometries.</para></note>
 
-			<para>Availability: 2.0.0</para>
+			<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 			<para>&T_support;</para>
@@ -417,7 +417,7 @@ FROM ( VALUES
 			<note><para>This operator is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 			<para>&T_support;</para>
@@ -479,7 +479,7 @@ FROM ( VALUES
 			<note><para>This operator is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 			<para>&T_support;</para>
@@ -541,7 +541,7 @@ FROM ( VALUES
 			<note><para>This operator is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 			<para>&T_support;</para>
@@ -989,7 +989,7 @@ FROM
 				geometries. For an index assisted exact equality test, combine &#61; with &amp;&amp;.</para></caution>
 
 
-			<para>Changed: 2.4.0, in prior versions this was bounding box equality not a geometric equality. If you need bounding box equality, use <xref linkend="ST_Geometry_Same" /> instead.</para>
+			<para role="changed" conformance="2.4.0">Changed: 2.4.0, in prior versions this was bounding box equality not a geometric equality. If you need bounding box equality, use <xref linkend="ST_Geometry_Same" /> instead.</para>
 
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
@@ -1215,7 +1215,7 @@ FROM
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -1281,7 +1281,7 @@ FROM
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -1347,7 +1347,7 @@ FROM
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -1619,7 +1619,7 @@ FROM
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -1685,7 +1685,7 @@ FROM
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -1751,7 +1751,7 @@ FROM
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -1821,7 +1821,7 @@ FROM
 			<note><para>This operand will make use of any indexes that may be available on the
 			  geometries.</para></note>
 
-			 <para>Availability: 1.5.0 changed behavior</para>
+			 <para role="availability" conformance="1.5.0">Availability: 1.5.0 changed behavior</para>
 			 <para>&P_support;</para>
 
 			<warning>
@@ -1920,9 +1920,9 @@ sphere for geographies.
 			<note><para>Index only kicks in if one of the geometries is a constant (not in a subquery/cte).  e.g. 'SRID=3005;POINT(1011102 450541)'::geometry instead of a.geom</para></note>
 			<para>Refer to <ulink url="https://postgis.net/workshops/postgis-intro/knn.html">PostGIS workshop: Nearest-Neighbor Searching</ulink> for a detailed example.</para>
 
-			 <para>Enhanced: 2.2.0 -- True KNN ("K nearest neighbor") behavior for geometry and geography for PostgreSQL 9.5+. Note for geography KNN is based on sphere rather than spheroid.  For PostgreSQL 9.4 and below, geography support is new but only supports centroid box.</para>
-			 <para>Changed: 2.2.0 -- For PostgreSQL 9.5 users, old Hybrid syntax may be slower, so you'll want to get rid of that hack if you are running your code only on PostGIS 2.2+ 9.5+.  See examples below.</para>
-			 <para>Availability: 2.0.0 -- Weak KNN provides nearest neighbors based on geometry centroid distances instead of true distances. Exact results for points, inexact for all other types. Available for PostgreSQL 9.1+</para>
+			 <para role="enhanced" conformance="2.2.0">Enhanced: 2.2.0 -- True KNN ("K nearest neighbor") behavior for geometry and geography for PostgreSQL 9.5+. Note for geography KNN is based on sphere rather than spheroid.  For PostgreSQL 9.4 and below, geography support is new but only supports centroid box.</para>
+			 <para role="changed" conformance="2.2.0">Changed: 2.2.0 -- For PostgreSQL 9.5 users, old Hybrid syntax may be slower, so you'll want to get rid of that hack if you are running your code only on PostGIS 2.2+ 9.5+.  See examples below.</para>
+			 <para role="availability" conformance="2.0.0">Availability: 2.0.0 -- Weak KNN provides nearest neighbors based on geometry centroid distances instead of true distances. Exact results for points, inexact for all other types. Available for PostgreSQL 9.1+</para>
 
 
 		  </refsection>
@@ -2049,7 +2049,7 @@ index (requires PostgreSQL 9.5.0 or higher).
 			<note><para>This operand will make use of ND GiST indexes that may be available on the geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator is in the ORDER BY clause.</para></note>
 			<note><para>Index only kicks in if one of the geometries is a constant (not in a subquery/cte).  e.g. 'SRID=3005;LINESTRINGM(0 0 0,0 0 1)'::geometry instead of a.geom</para></note>
 
-			 <para>Availability: 2.2.0. Index-supported only available for PostgreSQL 9.5+</para>
+			 <para role="availability" conformance="2.2.0.">Availability: 2.2.0. Index-supported only available for PostgreSQL 9.5+</para>
 
 		  </refsection>
 
@@ -2124,7 +2124,7 @@ Returns the 2D distance between A and B bounding boxes.
 			  is in the ORDER BY clause.</para></note>
 			<note><para>Index only kicks in if one of the geometries is a constant e.g. ORDER BY (ST_GeomFromText('POINT(1 2)') &lt;#&gt; geom)  instead of g1.geom &lt;#&gt;.</para></note>
 
-			 <para>Availability: 2.0.0 -- KNN only available for PostgreSQL 9.1+</para>
+			 <para role="availability" conformance="2.0.0">Availability: 2.0.0 -- KNN only available for PostgreSQL 9.1+</para>
 
 		  </refsection>
 
@@ -2217,7 +2217,7 @@ subquery/cte).  e.g. 'SRID=3005;POINT(1011102 450541)'::geometry instead
 of a.geom
       </para></note>
 
-			 <para>Availability: 2.2.0 -- KNN only available for PostgreSQL 9.1+</para>
+			 <para role="availability" conformance="2.2.0">Availability: 2.2.0 -- KNN only available for PostgreSQL 9.1+</para>
 
 
 		  </refsection>
@@ -2274,7 +2274,7 @@ Index only kicks in if one of the geometries is a constant e.g. ORDER BY
 &lt;&lt;#&gt;&gt;.
       </para></note>
 
-			 <para>Availability: 2.2.0 -- KNN only available for PostgreSQL 9.1+</para>
+			 <para role="availability" conformance="2.2.0">Availability: 2.2.0 -- KNN only available for PostgreSQL 9.1+</para>
 
 		  </refsection>
 

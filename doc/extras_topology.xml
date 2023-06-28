@@ -320,7 +320,7 @@ ERROR:  value for domain topology.topoelementarray violates check constraint "di
                 <para>Valid <varname>feature_type</varname>s are: POINT, MULTIPOINT, LINE, MULTILINE, POLYGON, MULTIPOLYGON, COLLECTION</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.1</para>
+                <para role="availability" conformance="1.1">Availability: 1.1</para>
 
 			</refsection>
 
@@ -380,7 +380,7 @@ ensuring metadata information about it is updated accordingly.
                 </para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 3.4.0</para>
+                <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
 
 			</refsection>
 
@@ -424,7 +424,7 @@ SELECT topology.RenameTopoGeometryColumn('public.parcels', 'topogeom', 'tgeom');
                 This function should be USED WITH CAUTION, as it could destroy data you care about.  If the schema does not exist, it just removes reference entries the named schema.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.1</para>
+                <para role="availability" conformance="1.1">Availability: 1.1</para>
 			</refsection>
 
 
@@ -465,7 +465,7 @@ Renames a topology schema, updating its metadata record in the <varname>topology
 		</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 3.4.0</para>
+                <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
 			</refsection>
 
 
@@ -513,7 +513,7 @@ Rename a topology from <varname>topo_stage</varname> to <varname>topo_prod</varn
                 of drop status.  NOTE: it first sets all values to NULL before dropping to bypass referential integrity checks.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.1</para>
+                <para role="availability" conformance="1.1">Availability: 1.1</para>
 			</refsection>
 
 
@@ -554,7 +554,7 @@ Rename a topology from <varname>topo_stage</varname> to <varname>topo_prod</varn
                 <para>It returns the list of entries created. Returned columns are <varname>schema_name</varname>, <varname>table_name</varname>, <varname>feature_column</varname>.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.3.0</para>
+                <para role="availability" conformance="2.3.0">Availability: 2.3.0</para>
 			</refsection>
 
 
@@ -618,7 +618,7 @@ FROM topology.layer;
                 <para>Takes a topology name and provides summary totals of types of objects in topology.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0.0</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 			</refsection>
 
 
@@ -902,11 +902,11 @@ More than a one ring of edges indicate the same face on its interior.
                     </informaltable>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.0.0</para>
+                <para role="availability" conformance="1.0.0">Availability: 1.0.0</para>
 	<!-- use this format if not a new function but functionality enhanced -->
-                <para>Enhanced: 2.0.0 more efficient edge crossing detection and fixes for false positives that were existent in prior versions.</para>
-                <para>Changed: 2.2.0 values for id1 and id2 were swapped for 'edge crosses node' to be consistent with error description.</para>
-                <para>Changed: 3.2.0 added optional bbox parameter, perform face labeling and edge linking checks.</para>
+                <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 more efficient edge crossing detection and fixes for false positives that were existent in prior versions.</para>
+                <para role="changed" conformance="2.2.0">Changed: 2.2.0 values for id1 and id2 were swapped for 'edge crosses node' to be consistent with error description.</para>
+                <para role="changed" conformance="3.2.0">Changed: 3.2.0 added optional bbox parameter, perform face labeling and edge linking checks.</para>
 			</refsection>
 
 
@@ -951,7 +951,7 @@ relation table of the topology.
                 </para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 3.2.0</para>
+                <para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
 			</refsection>
 
 
@@ -1004,7 +1004,7 @@ relation table of the topology.
 a topology-related object and returns a topology.topology record.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 3.2.0</para>
+                <para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
 			</refsection>
 
 
@@ -1065,7 +1065,7 @@ SELECT name(findTopology('features.land_parcels', 'feature'));
 a topology-related object and returns a topology.layer record.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 3.2.0</para>
+                <para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
 			</refsection>
 
 
@@ -1192,8 +1192,8 @@ ANALYZE themselves, to use updated statistics.
                 <para>This is similar to the SQL/MM <xref linkend="ST_InitTopoGeo" /> but has more functionality.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.1</para>
-                <para>Enhanced: 2.0 added the signature accepting hasZ</para>
+                <para role="availability" conformance="1.1">Availability: 1.1</para>
+                <para role="enhanced" conformance="2.0">Enhanced: 2.0 added the signature accepting hasZ</para>
 			</refsection>
 
 
@@ -1249,7 +1249,7 @@ This is because the TopoGeometry objects exist only as a definition and are not 
 		</para></note>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0.0</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 			</refsection>
 
 
@@ -1297,7 +1297,7 @@ Make a backup of a topology called <varname>ma_topo</varname>.
                 it returns a text description of the topology creation, instead of the topology id.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.1</para>
+                <para role="availability" conformance="1.1">Availability: 1.1</para>
                 <para>&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.17</para>
 			</refsection>
 
@@ -1350,7 +1350,7 @@ Adds a collection of geometries to a given empty topology and returns a message 
 
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0 </para>
+                <para role="availability" conformance="2.0">Availability: 2.0 </para>
 	<para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details -- X.3.18</para>
 			</refsection>
 
@@ -1421,7 +1421,7 @@ An existing edge may be split by the snapped point.
                 </para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0.0</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 			</refsection>
 
 
@@ -1470,7 +1470,7 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
                 </para></note>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0.0</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 			</refsection>
 
 
@@ -1519,7 +1519,7 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
                 </para></note>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0.0</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 			</refsection>
 
 
@@ -1573,7 +1573,7 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
                 <para>If <varname>aface</varname> is not null and the <varname>apoint</varname> is not within the face, then an exception is thrown.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.1 </para>
+                <para role="availability" conformance="1.1">Availability: 1.1 </para>
 	<para>&sqlmm_compliant; SQL-MM: Topo-Net Routines:  X+1.3.1</para>
 			</refsection>
 
@@ -1620,7 +1620,7 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
                 <para>If the <varname>anode</varname> and <varname>anothernode</varname> are not the start and end points of the <varname>alinestring</varname> then an exception is thrown.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.1 </para>
+                <para role="availability" conformance="1.1">Availability: 1.1 </para>
 	<para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.4</para>
 			</refsection>
 
@@ -1676,7 +1676,7 @@ Updates all existing joined edges and relationships accordingly.
                 <para>If the spatial reference system (srid) of the <varname>acurve</varname> geometry is not the same as the topology an exception is thrown.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0 </para>
+                <para role="availability" conformance="2.0">Availability: 2.0 </para>
                 <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.12</para>
 			</refsection>
 
@@ -1741,7 +1741,7 @@ Updates all existing joined edges and relationships accordingly.
                     and endpoints of <varname>acurve</varname> then an error is thrown.</para>
                 <para>If the spatial reference system (srid) of the <varname>acurve</varname> geometry is not the same as the topology an exception is thrown.</para>
                 <!-- use this format if new function -->
-                <para>Availability: 2.0 </para>
+                <para role="availability" conformance="2.0">Availability: 2.0 </para>
                 <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.13</para>
 			</refsection>
 
@@ -1813,7 +1813,7 @@ name is invalid then an error is thrown.
                 </para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0 </para>
+                <para role="availability" conformance="2.0">Availability: 2.0 </para>
                 <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.14</para>
 			</refsection>
 
@@ -1881,7 +1881,7 @@ name is invalid then an error is thrown.
                 </para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0 </para>
+                <para role="availability" conformance="2.0">Availability: 2.0 </para>
                 <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.15</para>
 			</refsection>
 
@@ -1941,7 +1941,7 @@ an error is thrown.
 		</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.1.0</para>
+                <para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
 
                 <!-- use this format if not a new function but functionality enhanced -->
                 <para>
@@ -1998,8 +1998,8 @@ Returns the identifier of the newly added node.
 		</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.1 </para>
-                <para>Changed: 2.0 - In prior versions, this was misnamed ST_ModEdgesSplit</para>
+                <para role="availability" conformance="1.1">Availability: 1.1 </para>
+                <para role="changed" conformance="2.0">Changed: 2.0 - In prior versions, this was misnamed ST_ModEdgesSplit</para>
                 <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.9</para>
 			</refsection>
 
@@ -2066,7 +2066,7 @@ Updates all existing joined edges and relationships accordingly.
 		</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0</para>
+                <para role="availability" conformance="2.0">Availability: 2.0</para>
                 <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.9</para>
 			</refsection>
 
@@ -2116,7 +2116,7 @@ Updates all existing joined edges and relationships accordingly.
 
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0</para>
+                <para role="availability" conformance="2.0">Availability: 2.0</para>
                 <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.9</para>
 			</refsection>
 
@@ -2164,7 +2164,7 @@ new location is in a different face (since 3.2.0) then an exception is thrown.
 
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0.0 </para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
                 <para>
 	Enhanced: 3.2.0 ensures the nod cannot be moved in a different face
                 </para>
@@ -2226,7 +2226,7 @@ Updates all existing joined edges and relationships accordingly.
 
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.1 </para>
+                <para role="availability" conformance="1.1">Availability: 1.1 </para>
 	<para>&sqlmm_compliant; SQL-MM: Topo-Net Routines:  X.3.8</para>
 			</refsection>
 
@@ -2283,7 +2283,7 @@ SELECT topology.ST_NewEdgesSplit('ma_topo', 2,  ST_GeomFromText('POINT(227578.5 
 
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.1 </para>
+                <para role="availability" conformance="1.1">Availability: 1.1 </para>
 	<para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X+1.3.3</para>
 			</refsection>
 
@@ -2330,7 +2330,7 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
 
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.1 </para>
+                <para role="availability" conformance="1.1">Availability: 1.1 </para>
 	<para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X+1.3.3</para>
 			</refsection>
 
@@ -2389,7 +2389,7 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
               <para>If tolerance = 0, the function uses ST_Intersects otherwise uses ST_DWithin.</para>
             </note>
             <para>Performed by the GEOS module.</para>
-            <para>Availability: 2.0.0</para>
+            <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
           </refsection>
 
 
@@ -2456,8 +2456,8 @@ If no face intersects the given query location, 0 is returned (universal face).
 If more than one face intersect the query location an exception is thrown.
         </para>
 
-        <para>Availability: 2.0.0</para>
-        <para>Enhanced: 3.2.0 more efficient implementation and clearer contract, stops working with invalid topologies.</para>
+        <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+        <para role="enhanced" conformance="3.2.0">Enhanced: 3.2.0 more efficient implementation and clearer contract, stops working with invalid topologies.</para>
 		</refsection>
 		<refsection>
 			<title>Examples</title>
@@ -2510,7 +2510,7 @@ ERROR:  Two or more faces found</programlisting>
 				<para>The function relies on a valid topology, using edge linking and face labeling.</para>
 			</note>
 
-			<para>Availability: 3.2.0</para>
+			<para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
@@ -2550,7 +2550,7 @@ ERROR:  Two or more faces found</programlisting>
               <para>If tolerance = 0, the function uses ST_Intersects otherwise uses ST_DWithin.</para>
             </note>
             <para>Performed by the GEOS module.</para>
-            <para>Availability: 2.0.0</para>
+            <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
           </refsection>
 
 
@@ -2604,7 +2604,7 @@ ERROR:  Two or more faces found</programlisting>
 
                 <para>Returns the id of a topology in the topology.topology table given the name of the topology.</para>
               <!-- use this format if new function -->
-                <para>Availability: 1.1</para>
+                <para role="availability" conformance="1.1">Availability: 1.1</para>
 			</refsection>
 
 
@@ -2649,7 +2649,7 @@ ERROR:  Two or more faces found</programlisting>
 
                 <para>Returns the spatial reference id of a topology in the topology.topology table given the name of the topology.</para>
               <!-- use this format if new function -->
-                <para>Availability: 2.0.0</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 			</refsection>
 
 
@@ -2694,7 +2694,7 @@ ERROR:  Two or more faces found</programlisting>
 
                 <para>Returns the topology name (schema) of a topology from the topology.topology table given the topology id of the topology.</para>
               <!-- use this format if new function -->
-                <para>Availability: 1.1</para>
+                <para role="availability" conformance="1.1">Availability: 1.1</para>
 			</refsection>
 
 
@@ -2746,7 +2746,7 @@ Order of edges follows a left-hand-rule (bound face is on the left of each direc
 		</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0 </para>
+                <para role="availability" conformance="2.0">Availability: 2.0 </para>
 	<para>&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.5</para>
 			</refsection>
 
@@ -2813,7 +2813,7 @@ FROM topology.ST_GetFaceEdges('tt',1) As t(seq,edge)
 
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.1 </para>
+                <para role="availability" conformance="1.1">Availability: 1.1 </para>
 	<para>&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.16</para>
 			</refsection>
 
@@ -2889,7 +2889,7 @@ This function uses edge ring linking metadata.
     </para></note>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0.0 </para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
 			</refsection>
 
 
@@ -2943,7 +2943,7 @@ and is thus usable to build edge ring linking.
             </note>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0 </para>
+                <para role="availability" conformance="2.0">Availability: 2.0 </para>
 			</refsection>
 
 			<!-- Optionally add a "See Also" section -->
@@ -2993,7 +2993,7 @@ This function does not use nor set the next_left_edge and next_right_edge fields
 
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0.0</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 			</refsection>
 
 			<!-- Optionally add a "See Also" section -->
@@ -3046,7 +3046,7 @@ get the correct containing face computed.
                 <note><para>If the <varname>apoint</varname> geometry already exists as a node, the node is not added but the existing nodeid is returned.</para></note>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0.0</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 			</refsection>
 
 
@@ -3093,7 +3093,7 @@ nodeid
                 <note><para>If the <varname>aline</varname> geometry crosses, overlaps, contains or is contained by an existing linestring edge, then an error is thrown and the edge is not added.</para></note>
                 <note><para>The geometry of <varname>aline</varname> must have the same <varname>srid</varname> as defined for the topology otherwise an invalid spatial reference sys error will be thrown.</para></note>
                 <para>Performed by the GEOS module.</para>
-                <para>Availability: 2.0.0</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 			</refsection>
 
 			<refsection>
@@ -3186,7 +3186,7 @@ existing face record be updated. It is up to the caller to deal with that.
                 <note><para>The <varname>apolygon</varname> geometry must have the same <varname>srid</varname> as defined for the topology otherwise an invalid spatial reference sys error will be thrown.</para></note>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0.0</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 			</refsection>
 
 
@@ -3264,7 +3264,7 @@ faceid
     <para>Splitting component edges may help retaining simplicity/validity.</para></note>
 
 		<para>Performed by the GEOS module.</para>
-		<para>Availability: 2.1.0</para>
+		<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 	  </refsection>
 
 		  <refsection>
@@ -3304,7 +3304,7 @@ are expanded to include merged faces (upon removing edges) or healed edges
 (upon removing nodes).
         </para>
 
-		<para>Availability: 3.3.0</para>
+		<para role="availability" conformance="3.3.0">Availability: 3.3.0</para>
 	  </refsection>
 
 		  <refsection>
@@ -3361,7 +3361,7 @@ are expanded to include merged faces (upon removing edges) or healed edges
 	and collections can be formed from a mixture of nodes, edges, and faces.</para>
                 <para>Omitting the array of components generates an empty TopoGeometry object.</para>
                 <!-- use this format if new function -->
-                <para>Availability: 1.1</para>
+                <para role="availability" conformance="1.1">Availability: 1.1</para>
 			</refsection>
 
 
@@ -3505,8 +3505,8 @@ replace the old one see <xref linkend="clearTopoGeom" />.
                 </para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0</para>
-                <para>Enhanced: 2.1.0 adds the version taking an existing TopoGeometry.</para>
+                <para role="availability" conformance="2.0">Availability: 2.0</para>
+                <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 adds the version taking an existing TopoGeometry.</para>
 			</refsection>
 			<refsection>
 				<title>Examples</title>
@@ -3589,7 +3589,7 @@ SELECT ST_GetFaceGeometry('topo_boston_test', f.face_id)
                 <para>Used to create a <xref linkend="topoelementarray" /> from a set of <xref linkend="topoelement" />.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0.0</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 			</refsection>
 
 
@@ -3626,7 +3626,7 @@ SELECT ST_GetFaceGeometry('topo_boston_test', f.face_id)
                 <title>Description</title>
                 <para>Converts a <xref linkend="topogeometry" /> to a <xref linkend="topoelement" />.</para>
                 <!-- use this format if new function -->
-                <para>Availability: 3.4.0</para>
+                <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
 			</refsection>
 
 			<refsection>
@@ -3686,7 +3686,7 @@ objects and any dependent object in higher hierarchical levels.
                 </para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.1</para>
+                <para role="availability" conformance="2.1">Availability: 2.1</para>
 			</refsection>
 			<refsection>
 				<title>Examples</title>
@@ -3730,7 +3730,7 @@ part of the definition.
                 </para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.3</para>
+                <para role="availability" conformance="2.3">Availability: 2.3</para>
 			</refsection>
 			<refsection>
 				<title>Examples</title>
@@ -3776,7 +3776,7 @@ TopoGeometry object.
                 </para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.3</para>
+                <para role="availability" conformance="2.3">Availability: 2.3</para>
 			</refsection>
 			<refsection>
 				<title>Examples</title>
@@ -3827,7 +3827,7 @@ of the same child layer.
                 </para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 3.2</para>
+                <para role="availability" conformance="3.2">Availability: 3.2</para>
 			</refsection>
 			<refsection>
 				<title>Examples</title>
@@ -3906,7 +3906,7 @@ Refer to <xref linkend="toTopoGeom" />.
                 <para>tg_id is the topogeometry id of the topogeometry object in the topology in the layer denoted by <varname>layer_id</varname> in the topology.layer table.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.1</para>
+                <para role="availability" conformance="1.1">Availability: 1.1</para>
 			</refsection>
 
 
@@ -3953,7 +3953,7 @@ Refer to <xref linkend="toTopoGeom" />.
                 <para>tg_id is the topogeometry id of the topogeometry object in the topology in the layer denoted by <varname>layer_id</varname> in the topology.layer table.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0.0</para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 			</refsection>
 
 
@@ -3997,7 +3997,7 @@ Refer to <xref linkend="toTopoGeom" />.
 		<para><note><para>spatial_ref_sys
 		table is a table that catalogs all spatial reference systems known to PostGIS and is used for transformations from one spatial
 			reference system to another.  So verifying you have the right spatial reference system identifier is important if you plan to ever transform your geometries.</para></note></para>
-        <para>Availability: 3.2.0</para>
+        <para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 14.1.5</para>
 
 	  </refsection>
@@ -4112,7 +4112,7 @@ CREATE TABLE visited (
 		<para>The <varname>gmlver</varname> parameter, if given, will be passed to the underlying ST_AsGML. Defaults to 3.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0.0 </para>
+                <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
 			</refsection>
 
 
@@ -4237,8 +4237,8 @@ url="http://github.com/mbostock/topojson-specification/blob/master/README.md"
 		</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 2.1.0 </para>
-                <para>Enhanced: 2.2.1 added support for puntal inputs</para>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0 </para>
+                <para role="enhanced" conformance="2.2.1">Enhanced: 2.2.1 added support for puntal inputs</para>
 			</refsection>
 
 
@@ -4339,7 +4339,7 @@ UNION ALL SELECT ']}'::text as t;
             <para>This function not supported for topogeometries that are geometry collections.  It also can not compare topogeometries from different topologies.</para>
           </note>
           <!-- use this format if new function -->
-        <para>Availability: 1.1.0 </para>
+        <para role="availability" conformance="1.1.0">Availability: 1.1.0 </para>
 
 
         <!-- Optionally mention 3d support -->
@@ -4392,7 +4392,7 @@ two topogeometries intersect.
             Also not currently supported for hierarchical topogeometries (topogeometries composed of other topogeometries).</para>
           </note>
           <!-- use this format if new function -->
-        <para>Availability: 1.1.0 </para>
+        <para role="availability" conformance="1.1.0">Availability: 1.1.0 </para>
 
 
         <!-- Optionally mention 3d support -->

@@ -67,8 +67,8 @@
         use <xref linkend="ST_AsBinary" /> or <xref linkend="ST_AsEWKB" /> format for transport.</para>
 			</warning>
 
-            <para>Enhanced: 3.1.0 support for optional precision parameter.</para>
-			<para>Enhanced: 2.0.0 support for Geography, Polyhedral surfaces, Triangles and TIN was introduced.</para>
+            <para role="enhanced" conformance="3.1.0">Enhanced: 3.1.0 support for optional precision parameter.</para>
+			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Geography, Polyhedral surfaces, Triangles and TIN was introduced.</para>
 
 			<para>&Z_support;</para>
 			<para>&curve_support;</para>
@@ -169,8 +169,8 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
             </para>
       </warning>
 
-			<para>Availability: 1.5 - support for geography was introduced.</para>
-			<para>Enhanced: 2.5 - optional parameter precision introduced.</para>
+			<para role="availability" conformance="1.5">Availability: 1.5 - support for geography was introduced.</para>
+			<para role="enhanced" conformance="2.5">Enhanced: 2.5 - optional parameter precision introduced.</para>
 			<para>&sfs_compliant; s2.1.1.1</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.25</para>
 			<para>&curve_support;</para>
@@ -270,11 +270,11 @@ F000000000000000000000000000000000000000000000000');
                 If your GUI tools require the old behavior, then SET bytea_output='escape' in your database.</para>
 			</note>
 
-			<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-			<para>Enhanced: 2.0.0 support for higher coordinate dimensions was introduced.</para>
-			<para>Enhanced: 2.0.0 support for specifying endian with geography was introduced.</para>
-			<para>Availability: 1.5.0 geography support was introduced.</para>
-			<para>Changed: 2.0.0 Inputs to this function can not be unknown -- must be geometry.  Constructs such as <code>ST_AsBinary('POINT(1 2)')</code> are no longer valid and you will get an <code>n st_asbinary(unknown)  is not unique error</code>.  Code like that
+			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for higher coordinate dimensions was introduced.</para>
+			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for specifying endian with geography was introduced.</para>
+			<para role="availability" conformance="1.5.0">Availability: 1.5.0 geography support was introduced.</para>
+			<para role="changed" conformance="2.0.0">Changed: 2.0.0 Inputs to this function can not be unknown -- must be geometry.  Constructs such as <code>ST_AsBinary('POINT(1 2)')</code> are no longer valid and you will get an <code>n st_asbinary(unknown)  is not unique error</code>.  Code like that
 			needs to be changed to <code>ST_AsBinary('POINT(1 2)'::geometry);</code>.  If that is not possible, then install <filename>legacy.sql</filename>.</para>
 			<para>&sfs_compliant; s2.1.1.1</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.37</para>
@@ -355,7 +355,7 @@ F000000000000000000000000000000000000000000000000');
               Note that OGC/ISO WKB format does not include the SRID.  </para>
 			</note>
 
-			<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 			<para>&Z_support;</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
@@ -421,7 +421,7 @@ F000000000000000000000000000000000000000000000000');
 			little-endian (NDR) or big-endian (XDR) encoding.  If no encoding is specified, then NDR is used.</para>
 
 		<note>
-		  <para>Availability: 1.2.2</para>
+		  <para role="availability" conformance="1.2.2">Availability: 1.2.2</para>
 		</note>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
@@ -474,7 +474,7 @@ F000000000000000000000000000000000000000000000000');
 		<para>Returns the geometry as an Encoded Polyline. This format is used by Google Maps with precision=5 and by Open Source Routing Machine with precision=5 and 6.</para>
 		<para>Optional <varname>precision</varname> specifies how many decimal places will be preserved in Encoded Polyline. Value should be the same on encoding and decoding, or coordinates will be incorrect.</para>
 
-		<para>Availability: 2.2.0</para>
+		<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 		</refsection>
 
 		<refsection>
@@ -554,7 +554,7 @@ F000000000000000000000000000000000000000000000000');
 		<para><varname>index</varname> toggle spatial index creation. Default is false.</para>
 		<para><varname>geom_name</varname> is the name of the geometry column in the row data. If NULL it will default to the first found geometry column.</para>
 
-		<para>Availability: 3.2.0</para>
+		<para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
 	  </refsection>
 	</refentry>
 
@@ -590,7 +590,7 @@ F000000000000000000000000000000000000000000000000');
 		<para><varname>row</varname> row data with at least a geometry column.</para>
 		<para><varname>geom_name</varname> is the name of the geometry column in the row data. If NULL it will default to the first found geometry column.</para>
 
-		<para>Availability: 2.4.0</para>
+		<para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
 	  </refsection>
 
 	  <refsection>
@@ -699,11 +699,11 @@ F000000000000000000000000000000000000000000000000');
                 </itemizedlist>
             </para>
 
-			<para>Availability: 1.3.4</para>
-			<para>Availability: 1.5.0 geography support was introduced.</para>
-			<para>Changed: 2.0.0 support default args and named args.</para>
-			<para>Changed: 3.0.0 support records as input</para>
-			<para>Changed: 3.0.0 output SRID if not EPSG:4326.</para>
+			<para role="availability" conformance="1.3.4">Availability: 1.3.4</para>
+			<para role="availability" conformance="1.5.0">Availability: 1.5.0 geography support was introduced.</para>
+			<para role="changed" conformance="2.0.0">Changed: 2.0.0 support default args and named args.</para>
+			<para role="changed" conformance="3.0.0">Changed: 3.0.0 support records as input</para>
+			<para role="changed" conformance="3.0.0">Changed: 3.0.0 output SRID if not EPSG:4326.</para>
 			<para>&Z_support;</para>
 	  </refsection>
 
@@ -863,11 +863,11 @@ FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programl
 namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is used</para>
 
 
-		  <para>Availability: 1.3.2</para>
-		  <para>Availability: 1.5.0 geography support was introduced.</para>
-		  <para>Enhanced: 2.0.0 prefix support was introduced. Option 4 for GML3 was introduced to allow using LineString instead of Curve tag for lines. GML3 Support for Polyhedral surfaces and TINS was introduced. Option 32 was introduced to output the box.</para>
-		  <para>Changed: 2.0.0 use default named args</para>
-		  <para>Enhanced: 2.1.0 id support was introduced, for GML 3.</para>
+		  <para role="availability" conformance="1.3.2">Availability: 1.3.2</para>
+		  <para role="availability" conformance="1.5.0">Availability: 1.5.0 geography support was introduced.</para>
+		  <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 prefix support was introduced. Option 4 for GML3 was introduced to allow using LineString instead of Curve tag for lines. GML3 Support for Polyhedral surfaces and TINS was introduced. Option 32 was introduced to output the box.</para>
+		  <para role="changed" conformance="2.0.0">Changed: 2.0.0 use default named args</para>
+		  <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 id support was introduced, for GML 3.</para>
 
 		<note><para>Only version 3+ of ST_AsGML supports Polyhedral Surfaces and TINS.</para></note>
         <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 17.2</para>
@@ -1023,13 +1023,13 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 		</note>
 
 		<note>
-		  <para>Availability: 1.2.2 - later variants that include version param came in 1.3.2</para>
+		  <para role="availability" conformance="1.2.2">Availability: 1.2.2 - later variants that include version param came in 1.3.2</para>
 		</note>
 		<note>
-		  <para>Enhanced: 2.0.0 - Add prefix namespace, use default and named args</para>
+		  <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 - Add prefix namespace, use default and named args</para>
 		</note>
 		<note>
-		  <para>Changed: 3.0.0 - Removed the "versioned" variant signature</para>
+		  <para role="changed" conformance="3.0.0">Changed: 3.0.0 - Removed the "versioned" variant signature</para>
 		</note>
 
 		<note>
@@ -1099,7 +1099,7 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 					If the format string is omitted (or zero-length) a default format will be used.
 				</para>
 
-			<para>Availability: 2.0</para>
+			<para role="availability" conformance="2.0">Availability: 2.0</para>
 		  </refsection>
 
 
@@ -1207,7 +1207,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
                 </itemizedlist>
             </para>
 
-            <para>Availability: 3.3.0 </para>
+            <para role="availability" conformance="3.3.0">Availability: 3.3.0 </para>
 
             <note>
                 <para>This function does not support non lon/lat geometries, as they are not supported by the MARC21/XML standard (Coded Cartographic Mathematical Data).</para>
@@ -1340,7 +1340,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 		<para><varname>buffer</varname> is the buffer size in tile coordinate space for geometry clippig. Defaults to 256.</para>
 		<para><varname>clip_geom</varname> is a boolean to control if geometries are clipped or encoded as-is. Defaults to true.</para>
 
-		<para>Availability: 2.4.0</para>
+		<para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
 
         <note>
             <para>From 3.0, Wagyu can be chosen at configure time to clip and validate MVT polygons. This library is faster and produces more correct results than the GEOS default, but it might drop small polygons.</para>
@@ -1458,9 +1458,9 @@ SELECT ST_AsText(ST_AsMVTGeom(
 		<para><varname>feature_id_name</varname> is the name of the Feature ID column in the row data. If NULL or negative the Feature ID is not set. The first column matching name and valid type (smallint, integer, bigint) will be used as Feature ID, and any subsequent column will be added as a property. JSON properties are not supported.</para>
 
 
-	    <para>Enhanced: 3.0 - added support for Feature ID.</para>
-	    <para>Enhanced: 2.5.0 - added support parallel query.</para>
-		<para>Availability: 2.4.0</para>
+	    <para role="enhanced" conformance="3.0">Enhanced: 3.0 - added support for Feature ID.</para>
+	    <para role="enhanced" conformance="2.5.0">Enhanced: 2.5.0 - added support parallel query.</para>
+		<para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
 	  </refsection>
 
 	  <refsection>
@@ -1522,10 +1522,10 @@ FROM mvtgeom;
 			geometries are delimited by semicolons (";").</para>
 
 		<note>
-		  <para>Availability: 1.2.2. Availability: 1.4.0  Changed in PostGIS 1.4.0 to include L command in absolute path to conform to <ulink
+		  <para role="availability" conformance="1.2.2.">Availability: 1.2.2. Availability: 1.4.0  Changed in PostGIS 1.4.0 to include L command in absolute path to conform to <ulink
 			url="http://www.w3.org/TR/SVG/paths.html#PathDataBNF">http://www.w3.org/TR/SVG/paths.html#PathDataBNF</ulink></para>
 		</note>
-		<para>Changed: 2.0.0 to use default args and support named args</para>
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0 to use default args and support named args</para>
 	  </refsection>
 
 	  <refsection>
@@ -1576,8 +1576,8 @@ FROM mvtgeom;
 			  <para>The format specification is available online at <ulink url="https://github.com/TWKB/Specification">https://github.com/TWKB/Specification</ulink>, and code for building a JavaScript client can be found at <ulink url="https://github.com/TWKB/twkb.js">https://github.com/TWKB/twkb.js</ulink>.</para>
 			</note>
 
-			<para>Enhanced: 2.4.0 memory and speed improvements.</para>
-			<para>Availability: 2.2.0</para>
+			<para role="enhanced" conformance="2.4.0">Enhanced: 2.4.0 memory and speed improvements.</para>
+			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 		  </refsection>
 
 
@@ -1700,8 +1700,8 @@ SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;
 		<para>Lots of advancements happening in 3D space particularly with <ulink url="https://www.web3d.org/wiki/index.php/X3D_and_HTML5">X3D Integration with HTML5</ulink></para>
 		<para>There is also a nice open source X3D viewer you can use to view rendered geometries. Free Wrl <ulink url="http://freewrl.sourceforge.net/">http://freewrl.sourceforge.net/</ulink> binaries available for Mac, Linux, and Windows. Use the FreeWRL_Launcher packaged to view the geometries.</para>
 		<para>Also check out <ulink url="https://git.osgeo.org/gitea/robe/postgis_x3d_viewer">PostGIS minimalist X3D viewer</ulink>  that utilizes this function and <ulink url="http://www.x3dom.org/">x3dDom html/js open source toolkit</ulink>.</para>
-		<para>Availability: 2.0.0: ISO-IEC-19776-1.2-X3DEncodings-XML</para>
-		<para>Enhanced: 2.2.0: Support for GeoCoordinates and axis (x/y, long/lat) flipping.  Look at options for details.</para>
+		<para role="availability" conformance="2.0.0">Availability: 2.0.0: ISO-IEC-19776-1.2-X3DEncodings-XML</para>
+		<para role="enhanced" conformance="2.2.0">Enhanced: 2.2.0: Support for GeoCoordinates and axis (x/y, long/lat) flipping.  Look at options for details.</para>
 		<!-- Optionally mention 3d support -->
 		<para>&Z_support;</para>
         <!-- Optionally mention supports Polyhedral Surface  -->
@@ -1862,7 +1862,7 @@ x3dfrag
         It maps to a (possibly) lower precision representation of the input geometry.
         For non-points, the starting point of the calculation is the center of the bounding box of the geometry.</para>
 
-		<para>Availability: 1.4.0</para>
+		<para role="availability" conformance="1.4.0">Availability: 1.4.0</para>
 
 		<note>
 			<para>ST_GeoHash requires input geometry to be in geographic (lon/lat) coordinates.</para>

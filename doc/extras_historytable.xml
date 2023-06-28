@@ -62,7 +62,7 @@
 
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.5.0</para>
+                <para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
 			</refsection>
 
 
@@ -104,7 +104,7 @@
                <note><para>This function currently relies on a geometry column being registered in <varname>geometry_columns</varname> and fails if the geometry column is not present in <varname>geometry_columns</varname> table.</para></note>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.5.0</para>
+                <para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
 			</refsection>
 
 

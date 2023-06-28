@@ -40,11 +40,11 @@ postgis_topology, postgis_sfcgal) to given or latest version.
 		Currently only tries to upgrade extensions postgis,
     postgis_raster, postgis_sfcgal, postgis_topology, and postgis_tiger_geocoder.</para>
 
-		<para>Availability: 2.5.0</para>
+		<para role="availability" conformance="2.5.0">Availability: 2.5.0</para>
 		<note>
-			<para>Changed: 3.4.0 to add target_version argument.</para>
-            <para>Changed: 3.3.0 support for upgrades from any PostGIS version. Does not work on all systems.</para>
-			<para>Changed: 3.0.0 to repackage loose extensions and support postgis_raster.</para>
+			<para role="changed" conformance="3.4.0">Changed: 3.4.0 to add target_version argument.</para>
+            <para role="changed" conformance="3.3.0">Changed: 3.3.0 support for upgrades from any PostGIS version. Does not work on all systems.</para>
+			<para role="changed" conformance="3.0.0">Changed: 3.0.0 to repackage loose extensions and support postgis_raster.</para>
 		</note>
 	  </refsection>
 
@@ -105,7 +105,7 @@ NOTICE:  Extension postgis_tiger_geocoder is not available or not packagable for
 		<para>Reports full PostGIS version and build configuration
 		infos. Also informs about synchronization between
 		libraries and scripts suggesting upgrades as needed.</para>
-        <para>Enhanced: 3.4.0 now includes extra PROJ configurations NETWORK_ENABLED, URL_ENDPOINT and DATABASE_PATH of proj.db location </para>
+        <para role="enhanced" conformance="3.4.0">Enhanced: 3.4.0 now includes extra PROJ configurations NETWORK_ENABLED, URL_ENDPOINT and DATABASE_PATH of proj.db location </para>
 	  </refsection>
 
 	  <refsection>
@@ -204,7 +204,7 @@ POSTGIS="3.4.0dev 3.3.0rc2-993-g61bdf43a7" [EXTENSION] PGSQL="160" GEOS="3.12.0d
 		<para>Returns the version number of the GEOS library, or
 		against which PostGIS was built.</para>
 
-		<para>Availability: 3.4.0</para>
+		<para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
 	  </refsection>
 
 	  <refsection>
@@ -294,7 +294,7 @@ postgis_liblwgeom_version
 		<title>Description</title>
 
 		<para>Returns the version number of the LibXML2 library.</para>
-		<para>Availability: 1.5</para>
+		<para role="availability" conformance="1.5">Availability: 1.5</para>
 	  </refsection>
 
 	  <refsection>
@@ -420,7 +420,7 @@ postgis_liblwgeom_version
 
 		<para>Returns the version number of the PROJ library and some configuration options of proj.</para>
 
-        <para>Enhanced: 3.4.0 now includes NETWORK_ENABLED, URL_ENDPOINT and DATABASE_PATH of proj.db location </para>
+        <para role="enhanced" conformance="3.4.0">Enhanced: 3.4.0 now includes NETWORK_ENABLED, URL_ENDPOINT and DATABASE_PATH of proj.db location </para>
 	  </refsection>
 
 	  <refsection>
@@ -512,7 +512,7 @@ postgis_liblwgeom_version
 
 		<para>Returns build date of the PostGIS scripts.</para>
 
-		<para>Availability: 1.0.0RC1</para>
+		<para role="availability" conformance="1.0.0">Availability: 1.0.0RC1</para>
 	  </refsection>
 
 	  <refsection>
@@ -568,7 +568,7 @@ postgis_liblwgeom_version
 			  more info.</para>
 		</note>
 
-		<para>Availability: 0.9.0</para>
+		<para role="availability" conformance="0.9.0">Availability: 0.9.0</para>
 	  </refsection>
 
 	  <refsection>
@@ -618,7 +618,7 @@ postgis_liblwgeom_version
 		  for backward compatibility.</para>
 		</note>
 
-		<para>Availability: 0.9.0</para>
+		<para role="availability" conformance="0.9.0">Availability: 0.9.0</para>
 	  </refsection>
 
 	  <refsection>

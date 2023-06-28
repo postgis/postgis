@@ -32,7 +32,7 @@
 
 		<para>Returns a <xref linkend="box2d_type" /> representing the 2D extent of the geometry.</para>
 
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -84,7 +84,7 @@ BOX(220186.984375 150406,220288.25 150506.140625)
 		<title>Description</title>
 
 		<para>Returns a <xref linkend="box3d_type" /> representing the 3D extent of the geometry.</para>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -179,8 +179,8 @@ BOX3D(220227 150406 1,220268 150415 1)
 		    </para>
         </note>
 
-    <para>Availability: 1.0.0</para>
-    <para>Changed: 2.1.0. Up to 2.0.x this was called ST_Estimated_Extent.</para>
+    <para role="availability" conformance="1.0.0">Availability: 1.0.0</para>
+    <para role="changed" conformance="2.1.0.">Changed: 2.1.0. Up to 2.0.x this was called ST_Estimated_Extent.</para>
 
 		<para>&curve_support;</para>
 	  </refsection>
@@ -286,9 +286,9 @@ BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
 			This has been replaced by the simpler and more efficient <xref linkend="ST_DWithin" /> function.</para>
 		</note>
 
-        <para>Availability: 1.5.0 behavior changed to output double precision instead of float4 coordinates.</para>
-        <para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-        <para>Enhanced: 2.3.0 support was added to expand a box by different amounts in different dimensions.</para>
+        <para role="availability" conformance="1.5.0">Availability: 1.5.0 behavior changed to output double precision instead of float4 coordinates.</para>
+        <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+        <para role="enhanced" conformance="2.3.0">Enhanced: 2.3.0 support was added to expand a box by different amounts in different dimensions.</para>
 
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -364,7 +364,7 @@ SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As bo
             The SRID is the same as the input geometries.</para>
 		</note>
 
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 
@@ -442,8 +442,8 @@ SELECT ST_SetSRID(ST_Extent(geom),2249) as bextent FROM sometable;
             The SRID is the same as the input geometries.</para>
 		</note>
 
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-		<para>Changed: 2.0.0 In prior versions this used to be called ST_Extent3D</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0 In prior versions this used to be called ST_Extent3D</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
@@ -554,7 +554,7 @@ WHERE geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.5625
 			  <imagedata fileref="images/check.png" />
 			</imageobject>
 		  </inlinemediaobject> This function supports 3D and will not drop the z-index.</para>
-		 <para>Changed: 2.0.0 In prior versions this used to be called ST_MakeBox3D</para>
+		 <para role="changed" conformance="2.0.0">Changed: 2.0.0 In prior versions this used to be called ST_MakeBox3D</para>
 	  </refsection>
 
 

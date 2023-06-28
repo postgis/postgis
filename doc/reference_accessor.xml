@@ -34,7 +34,7 @@
 		  <para>This function also indicates if the geometry is measured,
 		  by returning a string of the form 'POINTM'.</para>
 		</note>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>&sfs_compliant;</para>
 		<para>&curve_support;</para>
 		<para>&Z_support;</para>
@@ -121,8 +121,8 @@
 		<para>&sfs_compliant; OGC SPEC s2.1.1.1</para>
         <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.17</para>
 		<para>&Z_support;</para>
-		<para>Enhanced: 2.1.0 support for Triangle was introduced</para>
-		<para>Changed: 3.2.0 support for TIN, does not use geos, does not linearize curves</para>
+		<para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 support for Triangle was introduced</para>
+		<para role="changed" conformance="3.2.0">Changed: 3.2.0 support for TIN, does not use geos, does not linearize curves</para>
 	  </refsection>
 
 	  <refsection>
@@ -251,7 +251,7 @@ will be formally invalid (no interior).
 The result is still topologically valid.
 			</para></note>
 
-			<para>Availability: 2.2.0</para>
+			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
 			<para>&Z_support;</para>
 			<para>&M_support;</para>
 		</refsection>
@@ -366,7 +366,7 @@ SELECT ST_X(ST_StartPoint(ST_BoundingDiagonal(
 		</para>
 
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.2</para>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces and TINs was introduced. No longer throws an exception if given empty geometry.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces and TINs was introduced. No longer throws an exception if given empty geometry.</para>
 		<note> <para>Prior to 2.0.0, this function throws an exception if used with empty geometry. </para></note>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -423,8 +423,8 @@ ST_Dimension
 			inverse of a <xref linkend="ST_Collect" /> / GROUP BY, in that it creates new rows.
             For example it can be use to expand MULTIPOLYGONS into POLYGONS.</para>
 
-			<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-			<para>Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or higher.</para>
+			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+			<para role="availability" conformance="1.0.0">Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or higher.</para>
 
 			<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 
@@ -548,9 +548,9 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
             To obtain a single geometry containing the coordinates use <xref linkend="ST_Points" />.
             </para>
 
-            <para>Enhanced: 2.1.0 Faster speed. Reimplemented as native-C.</para>
-            <para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-            <para>Availability: 1.5.0</para>
+            <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Faster speed. Reimplemented as native-C.</para>
+            <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+            <para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
             <para>&curve_support;</para>
             <para>&P_support;</para>
             <para>&T_support;</para>
@@ -784,7 +784,7 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
             </listitem>
             </itemizedlist>
 
-            <para>Availability: 3.2.0</para>
+            <para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
             <para>&T_support;</para>
             <para>&Z_support;</para>
 		</refsection>
@@ -902,7 +902,7 @@ FROM (
         </para>
 
 		<note><para>This only works for POLYGON geometries. It does not work for MULTIPOLYGONS</para></note>
-		<para>Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher.</para>
+		<para role="availability" conformance="1.1.3.">Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher.</para>
 		<para>&Z_support;</para>
 	  </refsection>
 
@@ -971,7 +971,7 @@ FROM polyTable;
 		<para>&Z_support;</para>
 	  <para>&curve_support;</para>
 
-		<note><para>Changed: 2.0.0 no longer works with single geometry MultiLineStrings.  In older
+		<note><para role="changed" conformance="2.0.0">Changed: 2.0.0 no longer works with single geometry MultiLineStrings.  In older
 	  versions of PostGIS a single-line MultiLineString would work with this
 	  function and return the end point.  In 2.0.0 it returns NULL like any other MultiLineString.
 	  The old behavior was an undocumented feature, but people who assumed they had their data stored as LINESTRING
@@ -1057,7 +1057,7 @@ SELECT ST_AsText(ST_EndPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 6 3)':
 			lower dimension than <varname>POLYGON</varname>, ie.
 			<varname>POINT</varname> or <varname>LINESTRING</varname>.</para>
 
-			<para>Availability: 1.5.0 behavior changed to output double precision instead of float4</para>
+			<para role="availability" conformance="1.5.0">Availability: 1.5.0 behavior changed to output double precision instead of float4</para>
 			<para>&sfs_compliant; s2.1.1.1</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.19</para>
 		</refsection>
@@ -1225,8 +1225,8 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 		<note>
 		  <para>To extract all elements of a geometry, <xref linkend="ST_Dump" /> is more efficient and works for atomic geometries.</para>
 		</note>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-		<para>Changed: 2.0.0 Prior versions would return NULL for singular geometries.  This was changed to return the geometry for ST_GeometryN(..,1) case.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0 Prior versions would return NULL for singular geometries.  This was changed to return the geometry for ST_GeometryN(..,1) case.</para>
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 9.1.5</para>
 		<para>&Z_support;</para>
@@ -1332,7 +1332,7 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 
 			<para>Returns the type of the geometry as a string. EG: 'ST_LineString', 'ST_Polygon','ST_MultiPolygon' etc. This function differs from GeometryType(geometry) in the case of the string and ST in front that is returned, as well as the fact that it will not indicate whether the geometry is measured.</para>
 
-			<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 			<para>&sqlmm_compliant;	SQL-MM 3: 5.1.4</para>
 			<para>&Z_support;</para>
 			<para>&P_support;</para>
@@ -1408,7 +1408,7 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 
 		<para>Returns true if a geometry or geometry collection contains a circular string</para>
 
-		<para>Availability: 1.2.3?</para>
+		<para role="availability" conformance="1.2.3">Availability: 1.2.3?</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 	  </refsection>
@@ -1532,7 +1532,7 @@ FROM (SELECT ST_BuildArea(
 
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
-		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 
 		<para>&P_support;</para>
 
@@ -1718,7 +1718,7 @@ postgis=# SELECT ST_IsCollection('GEOMETRYCOLLECTION(POINT(0 0))'::geometry);
 		<para>&sfs_compliant; s2.1.1.1</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.7</para>
 		<para>&curve_support;</para>
-		<warning><para>Changed: 2.0.0 In prior versions of PostGIS ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') was allowed.  This is now illegal in PostGIS 2.0.0 to better conform with SQL/MM standards</para></warning>
+		<warning><para role="changed" conformance="2.0.0">Changed: 2.0.0 In prior versions of PostGIS ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') was allowed.  This is now illegal in PostGIS 2.0.0 to better conform with SQL/MM standards</para></warning>
 
 	  </refsection>
 
@@ -1818,7 +1818,7 @@ SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));
 				</para>
 			</note>
 
-			<para>Availability: 2.4.0</para>
+			<para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
 			<para>&Z_support;</para>
 			<para>&M_support;</para>
 
@@ -1888,7 +1888,7 @@ SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));
 				</para>
 			</note>
 
-			<para>Availability: 2.4.0</para>
+			<para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
 			<para>&Z_support;</para>
 			<para>&M_support;</para>
 		</refsection>
@@ -2108,7 +2108,7 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS geom) AS foo;
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
-		<para>Changed: 2.2.0 name changed to ST_MemSize to follow naming convention.</para>
+		<para role="changed" conformance="2.2.0">Changed: 2.2.0 name changed to ST_MemSize to follow naming convention.</para>
 	  </refsection>
 
 
@@ -2206,7 +2206,7 @@ fulltable_size geomsize  pergeom
 			<title>Description</title>
 
 			<para>Return the number of points in a geometry.  Works for all geometries.</para>
-			<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 			<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 			<para>&Z_support;</para>
 			<para>&curve_support;</para>
@@ -2299,8 +2299,8 @@ SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 
 			<para>Returns the number of Geometries. If geometry is a GEOMETRYCOLLECTION (or MULTI*) return the
 			number of geometries, for single geometries will return 1, otherwise return NULL.</para>
 
-			<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-			<para>Changed: 2.0.0 In prior versions this would return NULL if the geometry was not a collection/MULTI type.
+			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+			<para role="changed" conformance="2.0.0">Changed: 2.0.0 In prior versions this would return NULL if the geometry was not a collection/MULTI type.
 				2.0.0+ now returns 1 for single geometries e.g POLYGON, LINESTRING, POINT.</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 9.1.4</para>
 			<para>&Z_support;</para>
@@ -2357,7 +2357,7 @@ POLYGON((-7 4.2,-7.1 5,-7.1 4.3,-7 4.2)))'));
     </para>
 
 		<para>&sqlmm_compliant; SQL-MM 3: 8.2.5</para>
-		<para>Changed: 2.0.0 - in prior versions it would allow passing a MULTIPOLYGON, returning the number of interior rings of first POLYGON.</para>
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0 - in prior versions it would allow passing a MULTIPOLYGON, returning the number of interior rings of first POLYGON.</para>
 	  </refsection>
 
 	  <refsection>
@@ -2426,7 +2426,7 @@ GROUP BY gid, field1,field2;
 		<para>Return the number of faces on a Polyhedral Surface.  Will return null for non-polyhedral geometries. This is
 		an alias for ST_NumGeometries to support MM naming. Faster to use ST_NumGeometries if you don't care about MM convention.</para>
 
-		<para>Availability: 2.0.0</para>
+		<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 		<para>&Z_support;</para>
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5</para>
@@ -2528,7 +2528,7 @@ GROUP BY gid, field1,field2;
 		  <para>If you want to extract all elements of a geometry <xref linkend="ST_Dump" /> is more efficient.</para>
 		</note>
 
-		<para>Availability: 2.0.0</para>
+		<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 		<para>&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
@@ -2602,10 +2602,10 @@ VALUES (ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)
 		<para>&sqlmm_compliant; SQL-MM 3: 7.2.5, 7.3.5</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
-		<note><para>Changed: 2.0.0 no longer works with single geometry multilinestrings.  In older
+		<note><para role="changed" conformance="2.0.0">Changed: 2.0.0 no longer works with single geometry multilinestrings.  In older
 	  versions of PostGIS -- a single line multilinestring would work happily with this
 	  function and return the start point.  In 2.0.0 it just returns NULL like any other multilinestring.</para>
-      <para> Changed: 2.3.0 : negative indexing available (-1 is last point)
+      <para role="changed" conformance="2.3.0"> Changed: 2.3.0 : negative indexing available (-1 is last point)
     </para>
       </note>
 
@@ -2699,7 +2699,7 @@ FROM ST_GeomFromText('LINESTRING(0 0 0, 1 1 1, 2 2 2)') AS g
 			<para>&curve_support;</para>
 			<para>&Z_support;</para>
 
-			<para>Availability: 2.3.0</para>
+			<para role="availability" conformance="2.3.0">Availability: 2.3.0</para>
 
 		</refsection>
 
@@ -2750,8 +2750,8 @@ MULTIPOINT Z ((30 10 4),(10 30 5),(40 40 6),(30 10 4))
 	  <para>&curve_support;</para>
 
 	  <note>
-        <para>Enhanced: 3.2.0 returns a point for all geometries. Prior behavior returns NULLs if input was not a LineString.</para>
-      <para>Changed: 2.0.0 no longer works with single geometry MultiLineStrings.  In older
+        <para role="enhanced" conformance="3.2.0">Enhanced: 3.2.0 returns a point for all geometries. Prior behavior returns NULLs if input was not a LineString.</para>
+      <para role="changed" conformance="2.0.0">Changed: 2.0.0 no longer works with single geometry MultiLineStrings.  In older
 	  versions of PostGIS a single-line MultiLineString would work happily with this
 	  function and return the start point.  In 2.0.0 it just returns NULL like any other MultiLineString.
 	  The old behavior was an undocumented feature, but people who assumed they had their data stored as LINESTRING
@@ -2846,10 +2846,10 @@ SELECT ST_AsText(ST_StartPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 6 3)
 
 	<!-- Optionally mention support for Triangles and TINS  -->
 	<para>&T_support;</para>
-		<para>Availability: 1.2.2</para>
-		<para>Enhanced: 2.0.0 added support for geography</para>
-		<para>Enhanced: 2.1.0 S flag to denote if has a known spatial reference system</para>
-		<para>Enhanced: 2.2.0 Added support for TIN and Curves</para>
+		<para role="availability" conformance="1.2.2">Availability: 1.2.2</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 added support for geography</para>
+		<para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 S flag to denote if has a known spatial reference system</para>
+		<para role="enhanced" conformance="2.2.0">Enhanced: 2.2.0 Added support for TIN and Curves</para>
 	  </refsection>
 
 	  <refsection>
