@@ -1539,10 +1539,6 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
         <para>Availability: 3.1.0 - requires GEOS &gt;= 3.9.0.</para>
 
       </refsection>
-      <refsection>
-        <title>See Also</title>
-        <para><xref linkend="ST_MinimumBoundingCircle" /></para>
-      </refsection>
 
       <refsection>
         <title>Examples</title>
@@ -1572,6 +1568,88 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
         <caption><para>Maximum inscribed circle of a multi-linestring. Center, nearest point, and radius are returned.</para></caption>
       </mediaobject>
     </informalfigure>
+      </refsection>
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_MinimumBoundingRadius" />, <xref linkend="ST_LargestEmptyCircle" /></para>
+      </refsection>
+    </refentry>
+
+
+    <refentry id="ST_LargestEmptyCircle">
+      <refnamediv>
+        <refname>ST_LargestEmptyCircle</refname>
+        <refpurpose>Computes the largest circle not overlapping a geometry.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>(geometry, geometry, double precision) <function>ST_LargestEmptyCircle</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+            <paramdef choice="opt"><type>double precision </type> <parameter>tolerance=0.0</parameter></paramdef>
+            <paramdef choice="opt"><type>geometry </type> <parameter>boundary=POINT EMPTY</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+        <para>Finds the largest circle which does not overlap a set of point and line obstacles. (Polygonal geometries may be included as obstacles, but only their boundary lines are used.) The center of the circle is constrained to lie inside a polygonal boundary, which by default is the convex hull of the input geometry. The circle center is the point in the interior of the boundary which has the farthest distance from the obstacles. The circle itself is provided by the center point and a nearest point lying on an obstacle detemining the circle radius.</para>
+        <para>The circle center is determined to a given  accuracy specified by a distance tolerance, using an iterative algorithm. If the accuracy distance is not specified a reasonable default is used.</para>
+        <para>Returns a record with fields:</para>
+
+        <itemizedlist>
+            <listitem><para> <varname>center</varname> - center point of the circle </para></listitem>
+            <listitem><para> <varname>nearest</varname> - a point on the geometry nearest to the center </para></listitem>
+            <listitem><para> <varname>radius</varname> - radius of the circle </para></listitem>
+        </itemizedlist>
+
+        <para>To find the largest empty circle in the interior of a polygon, see <xref linkend="ST_MaximumInscribedCircle" />.</para>
+
+        <para>Availability: 3.4.0 - requires GEOS &gt;= 3.9.0.</para>
+
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+<programlisting>SELECT radius,
+       ST_AsText(center) AS center,
+       ST_AsText(nearest) AS nearest
+  FROM ST_LargestEmptyCircle(
+        'MULTILINESTRING (
+          (10 100, 60 180, 130 150, 190 160),
+          (20 50, 70 70, 90 20, 110 40),
+          (160 30, 100 100, 180 100))');</programlisting>
+
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_largestemptycircle01.png" />
+        </imageobject>
+        <caption><para>Largest Empty Circle within a set of lines.</para></caption>
+      </mediaobject>
+    </informalfigure>
+
+<programlisting>SELECT radius,
+       ST_AsText(center) AS center,
+       ST_AsText(nearest) AS nearest
+  FROM ST_LargestEmptyCircle(
+         St_Collect(
+           'MULTIPOINT ((70 50), (60 130), (130 150), (80 90))',
+           'POLYGON ((90 190, 10 100, 60 10, 190 40, 120 100, 190 180, 90 190))'),
+         'POLYGON ((90 190, 10 100, 60 10, 190 40, 120 100, 190 180, 90 190))'
+       );</programlisting>
+
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_largestemptycircle02.png" />
+        </imageobject>
+        <caption><para>Largest Empty Circle within a set of points, constrained to lie in a polygon. The constraint polygon boundary must be included as an obstacle, as well as specified as the constraint for the circle center. </para></caption>
+      </mediaobject>
+    </informalfigure>
 
       </refsection>
       <refsection>
@@ -1579,6 +1657,7 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
         <para><xref linkend="ST_MinimumBoundingRadius" /></para>
       </refsection>
     </refentry>
+
 
     <refentry id="ST_MinimumBoundingCircle">
       <refnamediv>
@@ -1648,9 +1727,10 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
       </refsection>
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_Collect" />, <xref linkend="ST_MinimumBoundingRadius" />, <xref linkend="ST_LongestLine" /> </para>
+        <para><xref linkend="ST_Collect" />, <xref linkend="ST_MinimumBoundingRadius" />, <xref linkend="ST_LargestEmptyCircle" />, <xref linkend="ST_LongestLine" /> </para>
       </refsection>
     </refentry>
+
 
     <refentry id="ST_MinimumBoundingRadius">
     <refnamediv>
