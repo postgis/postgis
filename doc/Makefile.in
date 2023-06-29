@@ -30,6 +30,7 @@ datadir = @datadir@
 builddir = @builddir@
 top_builddir = @top_builddir@
 mandir = @mandir@
+abs_srcdir = $(abspath @srcdir@)
 
 POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
@@ -59,8 +60,11 @@ ifeq ($(XSLTPROCFLAGS),)
 	XSLTPROCFLAGS=--nonet
 endif
 
+XSLT_PATH= \
+	.:./ent:$(abs_srcdir):$(abs_srcdir)/ent
+
 XSLTPROC_PATH_OPT= \
-	--path .:./ent:$(srcdir):$(srcdir)/ent
+	--path $(XSLT_PATH)
 
 XSLTPROC_COMMONOPTS= \
 	$(XSLTPROC_PATH_OPT) \
@@ -320,6 +324,7 @@ postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSIO
 	   false; \
 	else \
 		$(DBLATEX) -T native -t pdf \
+		   -x "--path $(XSLT_PATH)" \
 		   -I "${PWD}/html" \
 		   -P doc.collab.show=0 \
 		   -P figure.note="${PWD}/html/images/note" \
