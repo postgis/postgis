@@ -1098,8 +1098,6 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 				<para>
 					If the format string is omitted (or zero-length) a default format will be used.
 				</para>
-				<para>
-			</para>
 
 			<para>Availability: 2.0</para>
 		  </refsection>
