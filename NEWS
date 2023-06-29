@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Find the PDF stylesheet from an out-of-tree build (Sandro Santilli)
  - Use the XeTeX backend for PDF documentation (Sandro Santilli)
  - Correct the default SRID in the SQL/MM documentation (Regina Obe)
  - Compare regression paths consistently when the directory has a trailing slash (Paul Ramsey)
