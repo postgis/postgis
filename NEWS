@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Use the XeTeX backend for PDF documentation (Sandro Santilli)
  - Correct the default SRID in the SQL/MM documentation (Regina Obe)
  - Compare regression paths consistently when the directory has a trailing slash (Paul Ramsey)
  - Document the convex hull bound of ST_DelaunayTriangles (Martin Davis)
