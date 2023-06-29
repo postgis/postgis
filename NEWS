@@ -13,6 +13,11 @@ YYYY/MM/DD
            using pg_cancel_backend with ST_AsMVT
            (Regina Obe, Paul Ramsey)
 
+* Breaking Changes *
+    - #5385, Take out interruptability of ST_AsMVT
+             as it causes backend crash under intense conditions
+            (Regina Obe, Paul Ramsey)
+
 PostGIS 3.3.3
 2023/05/29
 
