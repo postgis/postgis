@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Use the XeTeX backend for PDF documentation (Sandro Santilli)
  - Document the convex hull bound of ST_DelaunayTriangles (Martin Davis)
  - Correct spelling in the English function reference (Mike Taves)
  - Report the invalid values supplied to clustering functions (Sandro Santilli)
