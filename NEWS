@@ -12,6 +12,14 @@ Proj 6.1+, and PostgreSQL 14+.
   - #5410, [postgis_raster] ST_Value bilinear resample,
            don't throw an error if Band has no NODATA value
            (Regina Obe)
+  - #5385, Postgres malloc assertion fail when
+           using pg_cancel_backend with ST_AsMVT
+           (Regina Obe, Paul Ramsey)
+
+* Breaking Changes *
+    - #5385, Take out interruptability of ST_AsMVT
+             as it causes backend crash under intense conditions
+            (Regina Obe, Paul Ramsey)
 
 
 PostGIS 3.2.5
