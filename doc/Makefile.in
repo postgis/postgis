@@ -31,6 +31,7 @@ builddir = @builddir@
 top_builddir = @top_builddir@
 mandir = @mandir@
 abs_srcdir = @abs_srcdir@
+abs_builddir = @abs_builddir@
 
 POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
@@ -61,7 +62,7 @@ ifeq ($(XSLTPROCFLAGS),)
 endif
 
 XSLT_PATH= \
-	.:./ent:$(abs_srcdir):$(abs_srcdir)/ent
+	$(abs_builddir):$(abs_srcdir)
 
 XSLTPROC_PATH_OPT= \
 	--path $(XSLT_PATH)

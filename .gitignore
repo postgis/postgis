@@ -36,7 +36,6 @@ doc/po/*/*.xml
 doc/po/*/html
 doc/po/*/Makefile
 doc/po/*/xsl
-doc/po/*/ent
 doc/po/*/*_comments.sql
 doc/postgis_comments.sql
 doc/postgis-out.xml

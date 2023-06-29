@@ -18,7 +18,6 @@ local-check: symlinks
 symlinks:
 	rm -f html; ln -s ../../html html
 	rm -f xsl; ln -s $(srcdir)/../../xsl xsl
-	rm -f ent; ln -s $(srcdir)/../../ent ent
 
 # for XML_SOURCES
 include ../../Makefile
