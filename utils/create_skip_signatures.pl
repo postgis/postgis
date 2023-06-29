@@ -35,6 +35,35 @@ my %reserved_sql_word = (
 );
 
 # Example:
+#  INPUT: inout first double precision, second integer, OUT third text, fourth bool
+# OUTPUT: first double precision, second integer, fourth bool
+sub clean_inout_arguments {
+	my @args = @_;
+	my @out;
+	#print "XXX to strip: " . join(',', @args) . "\n";
+	foreach ( @args )
+	{
+		my $a = $_;
+
+		#print "  XXX arg: [$a]\n";
+		# If the arg is composed by multiple words
+		# check for out and inout indicators
+		if ( $a =~ m/([^ ]*) (.*)/ )
+		{
+			# Skip this arg if out only
+			next if $1 eq 'out';
+
+			# Hide the inout indicator
+			$a = $2 if $1 eq 'inout';
+		}
+		#print "  XXX arg became: $a\n";
+		push @out, $a;
+	}
+	#print "XXX striped: " . join(',', @out) . "\n";
+	return @out;
+}
+
+# Example:
 #  INPUT: int,named double precision,named text
 # OUTPUT: int,double precision,text
 sub strip_argument_names {
@@ -143,9 +172,17 @@ while (<>)
 
 		print "COMMENT FUNCTION $name(" . join(', ', @args) .")\n";
 
-		# For *function* signature we are supposed to strip
-		# also argument names, which aint easy
-		my @unnamed_args = strip_argument_names(@args);
+		# Example manifest line for comments on function with inout params:
+		# 4247; 0 0 COMMENT public FUNCTION testinoutmix(INOUT "inout" double precision, second integer, OUT thirdout integer, fourth integer) strk
+
+		# Example manifest line for function with inout params:
+		# 955; 1255 27730785 FUNCTION public testinoutmix(double precision, integer, integer) strk
+
+		# No inout indicator or out parameters for function signatures
+		my @inonly_args = clean_inout_arguments(@args);
+
+		# For *function* signature we are supposed to strip argument names
+		my @unnamed_args = strip_argument_names(@inonly_args);
 
 		print "FUNCTION $name(" . join(', ', @unnamed_args) . ")\n";
 	}

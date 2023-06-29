@@ -88,14 +88,33 @@ postgis_restore.pl: postgis_restore.pl.in postgis_restore_data.hardcoded postgis
 		| sort -u >> postgis_restore.pl
 	chmod +x $@
 
+postgis_restore_data.needlessly-hardcoded: postgis_restore_data.hardcoded postgis_restore_data.generated
+	comm -12 postgis_restore_data.hardcoded postgis_restore_data.generated > $@
+
+postgis_restore-check: postgis_restore_data.needlessly-hardcoded
+	@if test -s $<; then { \
+		echo "Needlessly hardcoded signatures found postgis_restore.pl.in:"; \
+		sed 's/^/  /' $<; \
+		echo "Use 'make postgis_restore-clean' to fix that"; \
+	} >&2 && false; fi
+
+
+postgis_restore-clean: postgis_restore_data.needlessly-hardcoded
+	mv $(srcdir)/postgis_restore.pl.in $(srcdir)/postgis_restore.pl.in~
+	grep -Fxvf $< $(srcdir)/postgis_restore.pl.in~ > $(srcdir)/postgis_restore.pl.in
+
 clean:
-	rm -f $(SCRIPTS_built) postgis_restore_data.generated postgis_restore_data.hardcoded
+	rm -f $(SCRIPTS_built) postgis_restore_data.*
 
 distclean: clean
 	rm -f Makefile
 
-# And there's nothing to check
-check check-unit check-regress:
+# There's nothing to check for regress
+check-regress:
+
+check: check-unit
+
+check-unit: postgis_restore-check
 
 installdir:
 	@mkdir -p $(DESTDIR)$(bindir)
