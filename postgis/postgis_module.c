@@ -97,7 +97,7 @@ handleInterrupt(int sig)
   GEOS_interruptRequest();
 
 #ifdef HAVE_LIBPROTOBUF
-	/* Taking out per #5385 crash */
+  /* Taking out per #5385 crash */
   //lwgeom_wagyu_interruptRequest();
 #endif
 
@@ -108,25 +108,3 @@ handleInterrupt(int sig)
     (*coreIntHandler)(sig);
   }
 }
-<<<<<<< HEAD
-=======
-
-static void onExecutorStart(QueryDesc *queryDesc, int eflags) {
-    /* cancel interrupt requests */
-
-    GEOS_interruptCancel();
-
-#ifdef HAVE_LIBPROTOBUF
-		/* Taking out per #5385 crash */
-    //lwgeom_wagyu_interruptReset();
-#endif
-
-    lwgeom_cancel_interrupt();
-
-    if (onExecutorStartPrev) {
-        (*onExecutorStartPrev)(queryDesc, eflags);
-    } else {
-        standard_ExecutorStart(queryDesc, eflags);
-    }
-}
->>>>>>> c4d01ce30... Prevent crash in mvt
