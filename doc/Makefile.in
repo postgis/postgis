@@ -335,6 +335,7 @@ postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSIO
 		   -P figure.caution="${PWD}/html/images/caution" \
 		   -P latex.output.revhistory=0 \
 		   -s "$(abs_srcdir)/texstyle.sty" \
+		   -b xetex \
 		   -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf $<; \
 	fi
 
