@@ -73,7 +73,7 @@
 <!ENTITY index_aware SYSTEM "tag_index_aware.xml">
 <!ENTITY geography_transform SYSTEM "tag_geography_transform.xml">
 
-<!ENTITY % postgis_special SYSTEM "ent/postgis_special.ent">
+<!ENTITY % postgis_special SYSTEM "postgis_special.ent">
 %postgis_special;
 
 ]>

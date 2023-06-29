@@ -60,7 +60,7 @@ ifeq ($(XSLTPROCFLAGS),)
 endif
 
 XSLTPROC_PATH_OPT= \
-	--path $(srcdir):$(srcdir)/ent:.
+	--path .:./ent:$(srcdir):$(srcdir)/ent
 
 XSLTPROC_COMMONOPTS= \
 	$(XSLTPROC_PATH_OPT) \
