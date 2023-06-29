@@ -1034,7 +1034,8 @@ ALTER EXTENSION postgis_tiger_geocoder UPDATE;</programlisting>
 ---------+------------+------------------+-------
 	   1 | Devonshire | Pl               | 02109</screen></para>
 			</listitem>
-			<listitem id="tiger_geocoder_loading_data"><para>Create a new record in <varname>tiger.loader_platform</varname> table with the paths of your executables and server. </para>
+			<listitem>
+                <para>Create a new record in <varname>tiger.loader_platform</varname> table with the paths of your executables and server. </para>
 				<para>So for example to create a profile called debbie that follows <code>sh</code> convention. You would do:</para>
 				<programlisting>INSERT INTO tiger.loader_platform(os, declare_sect, pgbin, wget, unzip_command, psql, path_sep,
 		   loader, environ_set_command, county_process_command)
@@ -1153,7 +1154,7 @@ vacuum (analyze, verbose) tiger.zip_state_loc;</programlisting>
 		<programlisting>SELECT loader_generate_nation_script('windows'); </programlisting>
 		<para><emphasis role="bold">For unix/linux</emphasis></para>
 		<programlisting>SELECT loader_generate_nation_script('sh');</programlisting>
-		<para>Refer to <xref linkend="tiger_geocoder_loading_data" /> for instructions on how to run the generate script. This only needs to be done once.</para>
+		<para>Refer to <xref linkend="install_tiger_geocoder_extension" /> for instructions on how to run the generate script. This only needs to be done once.</para>
 		<note><para>You can have a mix of different year state tables and can upgrade each state separately.  Before you upgrade a state you first need to drop the prior year state tables for that state using <xref linkend="Drop_State_Tables_Generate_Script" />.</para></note>
 	</sect2>
 
