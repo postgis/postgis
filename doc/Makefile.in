@@ -30,7 +30,7 @@ datadir = @datadir@
 builddir = @builddir@
 top_builddir = @top_builddir@
 mandir = @mandir@
-abs_srcdir = $(abspath @srcdir@)
+abs_srcdir = @abs_srcdir@
 
 POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
@@ -333,7 +333,7 @@ postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSIO
 		   -P figure.warning="${PWD}/html/images/warning" \
 		   -P figure.caution="${PWD}/html/images/caution" \
 		   -P latex.output.revhistory=0 \
-		   -s "${PWD}/texstyle.sty" \
+		   -s "$(abs_srcdir)/texstyle.sty" \
 		   -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf $<; \
 	fi
 
