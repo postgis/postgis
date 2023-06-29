@@ -128,7 +128,8 @@ handleInterrupt(int sig)
   GEOS_interruptRequest();
 
 #ifdef HAVE_LIBPROTOBUF
-  lwgeom_wagyu_interruptRequest();
+	/* Taking out per #5385 crash */
+  //lwgeom_wagyu_interruptRequest();
 #endif
 
   /* request interruption of liblwgeom as well */
@@ -145,7 +146,8 @@ static void onExecutorStart(QueryDesc *queryDesc, int eflags) {
     GEOS_interruptCancel();
 
 #ifdef HAVE_LIBPROTOBUF
-    lwgeom_wagyu_interruptReset();
+		/* Taking out per #5385 crash */
+    //lwgeom_wagyu_interruptReset();
 #endif
 
     lwgeom_cancel_interrupt();
