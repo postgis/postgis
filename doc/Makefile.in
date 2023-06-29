@@ -52,6 +52,8 @@ CAN_UPDATE_TRANSLATIONS=@CAN_UPDATE_TRANSLATIONS@
 XMLLINT=@XMLLINT@
 CAN_BUILD_COMMENTS=@CAN_BUILD_COMMENTS@
 PERL=@PERL@
+#CAN_BUILD_PDF=@CAN_BUILD_PDF@
+#CAN_BUILD_EPUB=@CAN_BUILD_EPUB@
 
 # To allow network access use:
 #
@@ -104,7 +106,7 @@ MSGINIT=@MSGINIT@
 XML2POT=@XML2POT@
 
 # DOCBOOK to EPUB
-DBTOEPUB=dbtoepub
+DBTOEPUB=@DBTOEPUB@
 
 # Directories for postgresql subdirectories
 PGSQL_DOCDIR=@PGSQL_DOCDIR@
@@ -118,6 +120,10 @@ endif
 
 ifeq ($(CAN_BUILD_PDF),yes)
 BUILD_TARGET += pdf
+endif
+
+ifeq ($(CAN_BUILD_EPUB),yes)
+BUILD_TARGET += epub
 endif
 
 # TODO: add "html" to the BUILD_TARGET if it can be built
@@ -324,7 +330,7 @@ ifeq ($(DBLATEX),)
 	@echo "configure was unable to find the 'dblatex' utility program."
 	@echo "To create pdf files, install dblatex and then re-run configure."
 	@echo
-	false
+	@false
 else
 	$(DBLATEX) -T native -t pdf \
 		 -x "--path $(XSLT_PATH)" \
@@ -342,15 +348,17 @@ else
 endif
 
 postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub: postgis-out.xml images $(XML_INPUTS)
-	if test x"$(DBTOEPUB)" = x; then \
-	   echo "Error: dbtoepub not found, can't build epub"; \
-	   echo "       try installing dbtoepub"; \
-	   false; \
-	else \
-		$(DBTOEPUB) -c "${PWD}/html/style.css" \
-		 -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub \
-		  $<; \
-	fi
+ifeq ($(DBTOEPUB),)
+	@echo
+	@echo "configure was unable to find the 'dbtoepub' utility program."
+	@echo "To create pdf files, install dbtoepub and then re-run configure."
+	@echo
+	@false
+else
+	$(DBTOEPUB) -c "${PWD}/html/style.css" \
+	 -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub \
+		$<
+endif
 
 epub: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub
 
