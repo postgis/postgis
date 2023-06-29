@@ -9,33 +9,6 @@
 	 ******************************************************************** -->
 	<xsl:output method="xml" indent="yes" encoding="utf-8" />
 
-	<!-- TODO: extract this from inspection of Availability/Changed/Enhanced comments -->
-	<xsl:variable name="postgis-versions">
-		<v>3.4</v>
-		<v>3.3</v>
-		<v>3.2</v>
-		<v>3.1</v>
-		<v>3.0</v>
-		<v>2.5</v>
-		<v>2.4</v>
-		<v>2.3</v>
-		<v>2.2</v>
-		<v>2.1</v>
-		<v>2.0</v>
-		<v>1.5</v>
-		<v>1.4</v>
-		<v>1.3</v>
-	</xsl:variable>
-
-	<!-- TODO: read from a localized .xml, togheter with paragraphs to
-			be translated, see #5414 -->
-	<xsl:variable name="supported-tags">
-		<v>Availability</v>
-		<v>Enhanced</v>
-		<v>Changed</v>
-	</xsl:variable>
-
-
 	<!-- We deal only with the reference chapter -->
 	<xsl:template match="/">
 		<xsl:apply-templates select="/book/chapter[@id='reference']" />
@@ -46,7 +19,8 @@
 		<xsl:variable name="chap" select="." />
 
 		<!-- for each postgis-version { -->
-		<xsl:for-each select="document('')/*/xsl:variable[@name='postgis-versions']/*">
+		<xsl:for-each select="document('xsl-config.xml')//list_new_functions/postgis_versions/*">
+
 
 			<xsl:variable name='ver'>
 				<xsl:value-of select="." />
@@ -58,30 +32,35 @@
 
 			<sect2 id="NewFunctions_{$ver_id}">
 
-				<!-- TODO: make title and parameter translatable -->
-				<title>PostGIS Functions new or enhanced in <xsl:value-of select="$ver" /></title>
-				<para>The functions given below are PostGIS functions that were added or enhanced.</para>
+				<xsl:variable name="header" select="document('xsl-config.xml')//list_new_functions/per_version_header" />
+
+				<title>
+				<xsl:value-of select="substring-before($header/title, '%')" />
+				<xsl:value-of select="$ver" />
+				<xsl:value-of select="substring-after($header/title, '%')" />
+				</title>
+
+				<para>
+				<xsl:value-of select="$header/para" />
+				</para>
 
 				<!-- for each supported-tag { -->
-				<xsl:for-each select="document('')/*/xsl:variable[@name='supported-tags']/*">
+				<xsl:for-each select="document('xsl-config.xml')//list_new_functions/supported_tags/*">
 
-				<xsl:variable name='tag'>
-					<xsl:value-of select="." />
-				</xsl:variable>
+				<xsl:variable name='tag_node' select="." />
 
-				<xsl:variable name='tag_verb'>
-					<xsl:choose>
-						<xsl:when test="$tag = 'Availability'">new</xsl:when>
-						<xsl:when test="$tag = 'Enhanced'">enhanced</xsl:when>
-						<xsl:when test="$tag = 'Changed'">changed</xsl:when>
-					</xsl:choose>
-				</xsl:variable>
-
+				<xsl:variable name='tag' select="string($tag_node/para[1])" />
+				<xsl:variable name='tag_para' select="string($tag_node/para[2])" />
 
 				<!-- { -->
 				<xsl:if test="$chap//para[contains(., concat(concat($tag, ': '), $ver))]">
-				<!-- TODO: make next parameter translatable -->
-				<para>Functions <xsl:value-of select="$tag_verb" /> in PostGIS <xsl:value-of select="$ver" /></para>
+
+				<para>
+				<xsl:value-of select="substring-before($tag_para, '%')" />
+				<xsl:value-of select="$ver" />
+				<xsl:value-of select="substring-after($tag_para, '%')" />
+				</para>
+
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in
 						 a variable to be tagged unto each function comment	-->

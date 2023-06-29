@@ -176,7 +176,8 @@ XML_SOURCES = \
 	tag_geography_transform.xml \
 	using_postgis_dataman.xml \
 	using_postgis_query.xml \
-	using_raster_dataman.xml
+	using_raster_dataman.xml \
+	xsl-config.xml
 
 XSL_GENERATED_SOURCES = \
 	list_3d_functions.xsl.xml \
@@ -261,7 +262,7 @@ endif
 ifeq ($(XSLTPROC),)
 $(XSL_GENERATED_SOURCES): requirements_not_met_xsltproc
 else
-$(XSL_GENERATED_SOURCES): %.xsl.xml: xsl/%.xml.xsl postgis-out.xml
+$(XSL_GENERATED_SOURCES): %.xsl.xml: xsl/%.xml.xsl postgis-out.xml xsl-config.xml
 	grep -v '\&postgis_special;' postgis-out.xml | $(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< -
 endif
 
