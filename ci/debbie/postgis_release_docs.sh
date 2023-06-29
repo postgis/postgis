@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+set -e
+
 export PG_VER=13
 # export PGPORT=8442
 export OS_BUILD=64
