@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-25 20:53+0000\n"
-"PO-Revision-Date: 2023-06-27 21:08+0000\n"
-"Last-Translator: Pierre Cardinal <pierre.cardinal@sympatico.ca>\n"
+"PO-Revision-Date: 2023-06-30 09:08+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "release_notesxml/fr/>\n"
 "Language: fr\n"
@@ -1948,6 +1948,8 @@ msgid ""
 "#4981, ST_StartPoint support any geometry. No longer returns null for non-"
 "linestrings."
 msgstr ""
+"#4981, ST_StartPoint supporte toute géométrie. Ne renvoie plus null pour les "
+"chaînes de caractères non linéaires."
 
 #. Tag: para
 #: release_notes.xml:492
@@ -2024,6 +2026,8 @@ msgid ""
 "#3239, Prevent headling topology edges if the connecting node is used in the "
 "definition of a TopoGeometry (Sandro Santilli)"
 msgstr ""
+"#3239, Empêcher l'en-tête des arêtes topologiques si le noeud de connexion "
+"est utilisé dans la définition d'une TopoGeometry (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:511
@@ -2040,6 +2044,8 @@ msgstr ""
 #, no-c-format
 msgid "#4945, Multi-shell face check in ValidateTopology (Sandro Santilli)"
 msgstr ""
+"#4945, Vérification de la face multi-enveloppe dans ValidateTopology (Sandro "
+"Santilli)"
 
 #. Tag: para
 #: release_notes.xml:514
@@ -2047,6 +2053,8 @@ msgstr ""
 msgid ""
 "#4944, Side-location conflict check in ValidateTopology (Sandro Santilli)"
 msgstr ""
+"#4944, Vérification des conflits d'emplacement latéral dans ValidateTopology "
+"(Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:515
@@ -2061,12 +2069,14 @@ msgstr ""
 #, no-c-format
 msgid "#3276, ValidateTopology check for face's mbr (Sandro Santilli)"
 msgstr ""
+"#3276, Vérification de ValidateTopology pour le rectangle d'emprise minimal "
+"des faces (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:517
 #, no-c-format
 msgid "#4936, Bounding box limited ValidateTopology (Sandro Santilli)"
-msgstr ""
+msgstr "#4936, Boîte de délimitation limitée ValidateTopology (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:518
@@ -2074,6 +2084,8 @@ msgstr ""
 msgid ""
 "#4933, Speed up topology building in presence of big faces (Sandro Santilli)"
 msgstr ""
+"#4933, Accélérer la construction de la topologie en présence de grandes "
+"faces (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:519
@@ -2081,6 +2093,8 @@ msgstr ""
 msgid ""
 "#3233, ValidateTopology check for node's containing_face (Sandro Santilli)"
 msgstr ""
+"#3233, ValidateTopology vérification de la face contenant le noeud (Sandro "
+"Santilli)"
 
 #. Tag: para
 #: release_notes.xml:520
@@ -2089,12 +2103,14 @@ msgid ""
 "#4830, ValidateTopology check for edges side face containment (Sandro "
 "Santilli)"
 msgstr ""
+"#4830, ValidateTopology vérification du confinement des faces latérales des "
+"arêtes (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:522
 #, no-c-format
 msgid "#4827, Allow NaN coordinates in WKT input (Paul Ramsey)"
-msgstr ""
+msgstr "#4827, Autoriser les coordonnées NaN dans les entrées WKT (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:523
@@ -2102,6 +2118,8 @@ msgstr ""
 msgid ""
 "ST_Value() accepts resample parameter to add bilinear option (Paul Ramsey)"
 msgstr ""
+"ST_Value() accepte le paramètre resample pour ajouter l'option bilinéaire ("
+"Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:524
@@ -2110,6 +2128,8 @@ msgid ""
 "#3778, #4401, ST_Boundary now works for TIN and does not linearize curves "
 "(Aliaksandr Kalenik)"
 msgstr ""
+"#3778, #4401, ST_Boundary fonctionne maintenant pour TIN et ne linéarise pas "
+"les courbes (Aliaksandr Kalenik)"
 
 #. Tag: para
 #: release_notes.xml:525
@@ -2118,6 +2138,8 @@ msgid ""
 "#4881, #4884, Store sign of edge_id for lineal TopoGeometry in relation "
 "table to retain direction (Sandro Santilli)"
 msgstr ""
+"#4881, #4884, Stocker le signe du edge_id pour la TopoGeometry linéaire dans "
+"la table des relations pour conserver la direction (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:527
@@ -2126,6 +2148,8 @@ msgid ""
 "#4628, Add an option to disable ANALYZE when loading shapefiles (Stefan "
 "Corneliu Petrea)"
 msgstr ""
+"#4628, Ajout d'une option pour désactiver ANALYZE lors du chargement des "
+"shapefiles (Stefan Corneliu Petrea)"
 
 #. Tag: para
 #: release_notes.xml:528
@@ -2134,18 +2158,24 @@ msgid ""
 "#4924, Faster ST_RemoveRepeatedPoints on large multipoints, O(NlogN) instead "
 "of O(N^2) (Aliaksandr Kalenik, Darafei Praliaskouski)"
 msgstr ""
+"#4924, ST_RemoveRepeatedPoints plus rapide sur de grands multipoints, "
+"O(NlogN) au lieu de O(N^2) (Aliaksandr Kalenik, Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:530
 #, no-c-format
 msgid "#4925, fix ST_DumpPoints to not overlook points (Aliaksandr Kalenik)"
 msgstr ""
+"#4925, correction de ST_DumpPoints pour ne pas ignorer les points ("
+"Aliaksandr Kalenik)"
 
 #. Tag: para
 #: release_notes.xml:531
 #, no-c-format
 msgid "ST_SRID(topogeometry) override, to speedup lookups (Sandro Santilli)"
 msgstr ""
+"ST_SRID(topogeometry) remplacé pour accélérer les recherches (Sandro "
+"Santilli)"
 
 #. Tag: para
 #: release_notes.xml:532
@@ -2154,6 +2184,8 @@ msgid ""
 "#2175, Avoid creating additional nodes when adding same closed line to "
 "topology (Sandro Santilli)"
 msgstr ""
+"#2175, Eviter de créer des noeuds supplémentaires lors de l'ajout d'une même "
+"ligne fermée à la topologie (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:534
@@ -2162,6 +2194,8 @@ msgid ""
 "#4974, Upgrade path for address_standardizer_data_us (Jan Katins of Aiven, "
 "Regina Obe)"
 msgstr ""
+"#4974, Mise à jour du path pour address_standardizer_data_us (Jan Katins of "
+"Aiven, Regina Obe)"
 
 #. Tag: para
 #: release_notes.xml:536
@@ -2169,18 +2203,21 @@ msgstr ""
 msgid ""
 "#4975, PostGIS upgrade change to not use temp tables (Jan Katins of Aiven)"
 msgstr ""
+"#4975, Changement de la mise à jour de PostGIS pour ne pas utiliser les "
+"tables temporaires (Jan Katins de Aiven)"
 
 #. Tag: para
 #: release_notes.xml:537
 #, no-c-format
 msgid "#4981, ST_StartPoint support any geometry (Aliaksandr Kalenik)"
 msgstr ""
+"#4981, ST_StartPoint supporte n'importe quelle géométrie (Aliaksandr Kalenik)"
 
 #. Tag: para
 #: release_notes.xml:538
 #, no-c-format
 msgid "#4799, Include srs in GeoJSON where it exists in spatial_ref_sys."
-msgstr ""
+msgstr "#4799, Inclure srs dans GeoJSON lorsqu'il existe dans spatial_ref_sys."
 
 #. Tag: para
 #: release_notes.xml:539
@@ -2190,6 +2227,9 @@ msgid ""
 "sorting method. (Han Wang, Aliaksandr Kalenik, Darafei Praliaskouski, "
 "Giuseppe Broccolo)"
 msgstr ""
+"#4986, Les index GIST sur Postgres 14 sont maintenant créés plus rapidement "
+"en utilisant la méthode de tri de Hilbert. (Han Wang, Aliaksandr Kalenik, "
+"Darafei Praliaskouski, Giuseppe Broccolo)"
 
 #. Tag: para
 #: release_notes.xml:541
@@ -2198,42 +2238,48 @@ msgid ""
 "#4949, Use proj_normalize_for_visualization to hand \"axis swap\" decisions "
 "(Paul Ramsey)"
 msgstr ""
+"#4949, Utiliser proj_normalize_for_visualization pour gérer les décisions de "
+"\"axis swap\" (changement d'axe) (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:545
 #, no-c-format
 msgid "#4923, topology.ValidateTopologyRelation (Sandro Santilli)"
-msgstr ""
+msgstr "#4923, topology.ValidateTopologyRelation (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:546
 #, no-c-format
 msgid "#4933, topology.GetFaceContainingPoint (Sandro Santilli)"
-msgstr ""
+msgstr "#4933, topology.GetFaceContainingPoint (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:547
 #, no-c-format
 msgid "#2175, ST_Scroll (Sandro Santilli)"
-msgstr ""
+msgstr "#2175, ST_Scroll (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:548
 #, no-c-format
 msgid "#4841, FindTopology to quickly get a topology record (Sandro Santilli)"
 msgstr ""
+"#4841, FindTopology pour obtenir rapidement un enregistrement de topologie ("
+"Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:549
 #, no-c-format
 msgid "#4869, FindLayer to quickly get a layer record (Sandro Santilli)"
 msgstr ""
+"#4869, FindLayer pour obtenir rapidement un enregistrement de couche (Sandro "
+"Santilli)"
 
 #. Tag: para
 #: release_notes.xml:550
 #, no-c-format
 msgid "#4851, TopoGeom_addTopoGeom function (Sandro Santilli)"
-msgstr ""
+msgstr "#4851, Fonction TopoGeom_addTopoGeom (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:564
@@ -2242,6 +2288,8 @@ msgid ""
 "#4859, ST_Point, ST_PointZ, ST_PointM, ST_PointZM, constructors with SRID "
 "parameter (Paul Ramsey)"
 msgstr ""
+"#4859, ST_Point, ST_PointZ, ST_PointM, ST_PointZM, constructeurs avec "
+"paramètre SRID (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:566
@@ -2251,18 +2299,21 @@ msgid ""
 "not sure what is the number of clusters but you know what the size of "
 "clusters should be. (Darafei Praliaskouski)"
 msgstr ""
+"#4808, ST_ClusterKMeans supporte maintenant l'argument max_radius. Utilisez-"
+"le lorsque vous n'êtes pas sûr du nombre de clusters mais que vous "
+"connaissez leur taille. (Darafei Praliaskouski)"
 
 #. Tag: title
 #: release_notes.xml:572
 #, no-c-format
 msgid "Release 3.1.0beta1"
-msgstr ""
+msgstr "Version 3.1.0beta1"
 
 #. Tag: para
 #: release_notes.xml:573
 #, no-c-format
 msgid "Release date: 2020/12/09"
-msgstr ""
+msgstr "Date de sortie : 2020/12/09"
 
 #. Tag: para
 #: release_notes.xml:574
@@ -2272,6 +2323,10 @@ msgid ""
 "9.6-13 and GEOS >= 3.6+ Additional features and enhancements enabled if you "
 "are running Proj6+, PostgreSQL 12+, and GEOS 3.9.0dev"
 msgstr ""
+"Seuls les changements depuis la version 3.1.0alpha2 sont listés. Cette "
+"version nécessite PostgreSQL 9.6-13 et GEOS >= 3.6+ Fonctionnalités "
+"supplémentaires et améliorations activées si vous utilisez Proj6+, "
+"PostgreSQL 12+, et GEOS 3.9.0dev"
 
 #. Tag: para
 #: release_notes.xml:580
@@ -2282,6 +2337,10 @@ msgid ""
 "ST_ApproxHistogram(tablename, ...), ST_Quantile(tablename, ...), "
 "ST_ApproxQuantile(tablename, ...) removed. (Darafei Praliaskouski)"
 msgstr ""
+"4214, Déclassé ST_Count(tablename,...), ST_ApproxCount(tablename, ...) "
+"ST_SummaryStats(tablename, ...), ST_Histogram(tablename, ...), "
+"ST_ApproxHistogram(tablename, ...), ST_Quantile(tablename, ...), "
+"ST_ApproxQuantile(tablename, ...) supprimé. (Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:591
@@ -2290,6 +2349,8 @@ msgid ""
 "4801, ST_ClusterKMeans supports weights in POINT[Z]M geometries (Darafei "
 "Praliaskouski)"
 msgstr ""
+"4801, ST_ClusterKMeans supporte les poids dans les géométries POINT[Z]M ("
+"Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:593
@@ -2298,6 +2359,8 @@ msgid ""
 "4804, ST_ReducePrecision (GEOS 3.9+) allows valid precision reduction (Paul "
 "Ramsey)"
 msgstr ""
+"4804, ST_ReducePrecision (GEOS 3.9+) permet une réduction de précision "
+"valide (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:595
@@ -2308,6 +2371,10 @@ msgid ""
 "_ST_SortableHash(geom) instead of ORDER BY geom to make parallel sort faster "
 "(Darafei Praliaskouski)"
 msgstr ""
+"4805, _ST_SortableHash exposé pour contourner le problème de performance du "
+"tri parallèle dans Postgres. Si votre table est énorme, utilisez ORDER BY "
+"_ST_SortableHash(geom) au lieu de ORDER BY geom pour rendre le tri parallèle "
+"plus rapide (Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:600
@@ -2316,6 +2383,9 @@ msgid ""
 "4625, Correlation statistics now calculated. Run ANALYZE for BRIN indexes to "
 "start kicking in. (Darafei Praliaskouski)"
 msgstr ""
+"4625, Les statistiques de corrélation sont maintenant calculées. Exécutez "
+"ANALYZE pour que les index BRIN commencent à fonctionner. (Darafei "
+"Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:603
@@ -2324,18 +2394,20 @@ msgid ""
 "Fix axis order issue with urn:ogc:def:crs:EPSG in ST_GeomFromGML() (Even "
 "Roualt)"
 msgstr ""
+"Corriger le problème d'ordre des axes avec urn:ogc:def:crs:EPSG dans "
+"ST_GeomFromGML() (Even Roualt)"
 
 #. Tag: title
 #: release_notes.xml:608
 #, no-c-format
 msgid "Release 3.1.0alpha3"
-msgstr ""
+msgstr "Version 3.1.0alpha3"
 
 #. Tag: para
 #: release_notes.xml:609
 #, no-c-format
 msgid "Release date: 2020/11/19"
-msgstr ""
+msgstr "Date de sortie : 2020/11/19"
 
 #. Tag: para
 #: release_notes.xml:610
@@ -2345,6 +2417,10 @@ msgid ""
 "9.6-13 and GEOS >= 3.6+ Additional features and enhancements enabled if you "
 "are running Proj6+, PostgreSQL 12+, and GEOS 3.9.0dev"
 msgstr ""
+"Seuls les changements depuis la version 3.1.0alpah2 sont listés. Cette "
+"version nécessite PostgreSQL 9.6-13 et GEOS >= 3.6+ Fonctionnalités "
+"supplémentaires et améliorations activées si vous utilisez Proj6+, "
+"PostgreSQL 12+, et GEOS 3.9.0dev"
 
 #. Tag: para
 #: release_notes.xml:614
@@ -2354,6 +2430,9 @@ msgid ""
 "configure step will now fail if the requirement isn't met or explicitly "
 "disabled (--without-protobuf)"
 msgstr ""
+"4737, Augmentation de l'exigence minimale de protobuf-c à 1.1.0 (Raúl Marín) "
+"L'étape de configuration échouera maintenant si l'exigence n'est pas "
+"satisfaite ou explicitement désactivée (--without-protobuf)"
 
 #. Tag: para
 #: release_notes.xml:617
@@ -2361,12 +2440,14 @@ msgstr ""
 msgid ""
 "4258, Untangle postgis_sfcgal from postgis into its own lib file (Regina Obe)"
 msgstr ""
+"4258, Séparer postgis_sfcgal de postgis dans son propre fichier lib (Regina "
+"Obe)"
 
 #. Tag: para
 #: release_notes.xml:623
 #, no-c-format
 msgid "4698, Add a precision parameter to ST_AsEWKT (Raúl Marín)"
-msgstr ""
+msgstr "4698, Ajouter un paramètre de précision à ST_AsEWKT (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:624
@@ -2376,6 +2457,9 @@ msgid ""
 "ST_Intersection, ST_SymDifference, ST_Subdivide Requires GEOS 3.9 (Sandro "
 "Santilli)"
 msgstr ""
+"Ajout d'un paramètre optionnel gridSize à ST_Union, ST_UnaryUnion, "
+"ST_Difference, ST_Intersection, ST_SymDifference, ST_Subdivide Nécessite "
+"GEOS 3.9 (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:631
@@ -2384,18 +2468,20 @@ msgid ""
 "4789, Speed up TopoJSON output for areal TopoGeometry with many holes "
 "(Sandro Santilli)"
 msgstr ""
+"4789, Accélérer la sortie de TopoJSON pour les TopoGéométries aréales avec "
+"de nombreux trous (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:633
 #, no-c-format
 msgid "4758, Improve topology noding robustness (Sandro Santilli)"
-msgstr ""
+msgstr "4758, Améliorer la robustesse du nodage topologique (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:634
 #, no-c-format
 msgid "Make ST_Subdivide interruptable (Sandro Santilli)"
-msgstr ""
+msgstr "Rendre ST_Subdivide interrompable (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:635
@@ -2411,12 +2497,25 @@ msgid ""
 "functions now respect the requested precision (without any limits). - The "
 "default precision is the same (9 for GeoJSON, 15 for everything else)."
 msgstr ""
+"4660, Changements dans l'impression double / coordonnée (Raúl Marín) - "
+"Utilise la représentation la plus courte (suffisante pour garantir l'aller-"
+"retour). - Utilise la notation scientifique pour les nombres absolus "
+"inférieurs à 1e-8. Le comportement précédent était de sortir 0 pour les "
+"valeurs absolues inférieures à 1e-12 et la notation fixe pour tout ce qui "
+"était plus grand. - Utilise la notation scientifique pour les nombres "
+"absolus supérieurs à 1e+15 (même comportement). - Le paramètre de précision "
+"affecte maintenant aussi la notation scientifique (avant il était fixé [5-8])"
+". - Toutes les fonctions de sortie respectent désormais la précision "
+"demandée (sans aucune limite). - La précision par défaut reste la même (9 "
+"pour GeoJSON, 15 pour tout le reste)."
 
 #. Tag: para
 #: release_notes.xml:644
 #, no-c-format
 msgid "4729, WKT/KML: Print doubles directly into stringbuffers (Raúl Marín)"
 msgstr ""
+"4729, WKT/KML : Imprimer les doubles directement dans les stringbuffers ("
+"Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:645
@@ -2424,6 +2523,8 @@ msgstr ""
 msgid ""
 "4533, Use the standard coordinate printing system for box types (Raúl Marín)"
 msgstr ""
+"4533, Utiliser le système d'impression des coordonnées standard pour les "
+"types box (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:646
@@ -2434,6 +2535,10 @@ msgid ""
 "ST_ClipByBox2D when the geometry is fully inside or outside the bbox and "
 "ST_BoundingDiagonal."
 msgstr ""
+"4686, Évite de décompresser les géographies quand c'est possible (Raúl Marín)"
+". Affecte ANALYZE, _ST_PointOutside, postgis_geobbox, ST_CombineBbox(box2d, "
+"geometry), ST_ClipByBox2D lorsque la géométrie est entièrement à l'intérieur "
+"ou à l'extérieur de la bbox et ST_BoundingDiagonal."
 
 #. Tag: para
 #: release_notes.xml:650
@@ -2442,6 +2547,8 @@ msgid ""
 "4741, Don't use ST_PointInsideCircle if you need indexes, use ST_DWithin "
 "instead. Documentation adjusted (Darafei Praliaskouski)"
 msgstr ""
+"4741, N'utilisez pas ST_PointInsideCircle si vous avez besoin d'index, "
+"utilisez ST_DWithin à la place. Documentation ajustée (Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:652
@@ -2450,12 +2557,15 @@ msgid ""
 "4737, Improve performance and reduce memory usage in ST_AsMVT, especially in "
 "queries involving parallelism (Raúl Marín)"
 msgstr ""
+"4737, Améliorer les performances et réduire l'utilisation de la mémoire dans "
+"ST_AsMVT, en particulier dans les requêtes impliquant le parallélisme (Raúl "
+"Marín)"
 
 #. Tag: para
 #: release_notes.xml:654
 #, no-c-format
 msgid "4746, Micro optimizations to the serialization process (Raúl Marín)"
-msgstr ""
+msgstr "4746, Micro optimisations du processus de sérialisation (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:655
@@ -2464,6 +2574,9 @@ msgid ""
 "4719, Fail fast when srids don't match ST_Intersection(geometry,raster) Also "
 "schema qualify calls in function. (Regina Obe)"
 msgstr ""
+"4719, Échec rapide lorsque les srids ne correspondent pas "
+"ST_Intersection(geometry,raster). Aussi les appels de qualification de "
+"schéma dans la fonction. (Regina Obe)"
 
 #. Tag: para
 #: release_notes.xml:657
@@ -2472,6 +2585,9 @@ msgid ""
 "4784, Add ST_CollectionExtract(geometry) with default behaviour of "
 "extracting the components of highest coordinate dimension. (Paul Ramsey)"
 msgstr ""
+"4784, Ajout de ST_CollectionExtract(geometry) avec le comportement par "
+"défaut d'extraire les composants de la dimension de coordonnées la plus "
+"élevée. (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:663
@@ -2480,6 +2596,8 @@ msgid ""
 "4691, Fix segfault during gist index creation with empty geometries (Raúl "
 "Marín)"
 msgstr ""
+"4691, Correction d'une erreur de segmentation lors de la création d'un index "
+"gist avec des géométries vides (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:665
@@ -2488,6 +2606,9 @@ msgid ""
 "Fix handling of bad WKB inputs (Oracle types) and unit tests for malformed "
 "WKB. Remove memory leaks in malformed WKB cases. (Paul Ramsey)"
 msgstr ""
+"Correction de la gestion des mauvaises entrées WKB (types Oracle) et tests "
+"unitaires pour les WKB malformés. Suppression des fuites de mémoire dans les "
+"cas de WKB malformés. (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:668
@@ -2496,6 +2617,8 @@ msgid ""
 "4740, Round values in geography_distance_tree as we do on geography_distance "
 "(Raúl Marín, Paul Ramsey, Regina Obe)"
 msgstr ""
+"4740, Arrondir les valeurs dans geography_distance_tree comme nous le "
+"faisons dans geography_distance (Raúl Marín, Paul Ramsey, Regina Obe)"
 
 #. Tag: para
 #: release_notes.xml:671
@@ -2504,6 +2627,8 @@ msgid ""
 "4739, Ensure all functions using postgis_oid initialize the internal cache "
 "(Raúl Marín)"
 msgstr ""
+"4739, S'assurer que toutes les fonctions utilisant postgis_oid initialisent "
+"le cache interne (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:673
@@ -2511,12 +2636,15 @@ msgstr ""
 msgid ""
 "4767, #4768, #4771, #4772, Fix segfault when parsing invalid WKB (Raúl Marín)"
 msgstr ""
+"4767, #4768, #4771, #4772, Correction d'une erreur de segmentation lors de "
+"l'analyse d'un WKB invalide (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:675
 #, no-c-format
 msgid "4769, Fix segfault in st_addband (Raúl Marín)"
 msgstr ""
+"4769, Correction d'une erreur de segmentation dans st_addband (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:676
@@ -2524,6 +2652,8 @@ msgstr ""
 msgid ""
 "4790, Fix ST_3dintersects calculations with identical vertices (Nicklas Avén)"
 msgstr ""
+"4790, Correction des calculs de ST_3dintersects avec des sommets identiques ("
+"Nicklas Avén)"
 
 #. Tag: para
 #: release_notes.xml:678
@@ -2531,6 +2661,8 @@ msgstr ""
 msgid ""
 "4742, tiger geocoder reverted to 2018 version on tiger upgrade (Regina Obe)"
 msgstr ""
+"4742, le géocodeur tiger revient à la version 2018 lors de la mise à jour de "
+"tiger (Regina Obe)"
 
 #. Tag: para
 #: release_notes.xml:680
@@ -2538,18 +2670,20 @@ msgstr ""
 msgid ""
 "3372, TopoElementArray cannot be null - change domain constraint (Regina Obe)"
 msgstr ""
+"3372, TopoElementArray ne peut pas être nul - changer la contrainte de "
+"domaine (Regina Obe)"
 
 #. Tag: title
 #: release_notes.xml:685
 #, no-c-format
 msgid "Release 3.1.0alpha2"
-msgstr ""
+msgstr "Version 3.1.0alpha2"
 
 #. Tag: para
 #: release_notes.xml:686
 #, no-c-format
 msgid "Release date: 2020/07/18"
-msgstr ""
+msgstr "Date de sortie : 2020/07/18"
 
 #. Tag: para
 #: release_notes.xml:687
@@ -2559,6 +2693,10 @@ msgid ""
 "9.6-13 and GEOS >= 3.6+ Additional features and enhancements enabled if you "
 "are running Proj6+, PostgreSQL 12+, and GEOS 3.9.0dev"
 msgstr ""
+"Seuls les changements depuis la version 3.1.0alpah1 sont listés. Cette "
+"version nécessite PostgreSQL 9.6-13 et GEOS >= 3.6+ Fonctionnalités "
+"supplémentaires et améliorations activées si vous utilisez Proj6+, "
+"PostgreSQL 12+, et GEOS 3.9.0dev"
 
 #. Tag: para
 #: release_notes.xml:691
@@ -2567,12 +2705,14 @@ msgid ""
 "4656, Cast a geojson_text::geometry for implicit GeoJSON ingestion (Raúl "
 "Marín)"
 msgstr ""
+"4656, Transformer un geojson_text::geometry pour l'ingestion implicite de "
+"GeoJSON (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:692
 #, no-c-format
 msgid "4687, Expose GEOS MaximumInscribedCircle (Paul Ramsey)"
-msgstr ""
+msgstr "4687, Expose GEOS MaximumInscribedCircle (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:693
@@ -2580,12 +2720,15 @@ msgstr ""
 msgid ""
 "4710, ST_ClusterKMeans now works with 3D geometries (Darafei Praliaskouski)"
 msgstr ""
+"4710, ST_ClusterKMeans fonctionne maintenant avec les géométries 3D (Darafei "
+"Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:698
 #, no-c-format
 msgid "4675, topology.GetRingEdges now implemented in C (Sandro Santilli)"
 msgstr ""
+"4675, topology.GetRingEdges maintenant implémenté en C (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:699
@@ -2593,30 +2736,32 @@ msgstr ""
 msgid ""
 "4681, ST_GetFaceGeometry: print corruption information (Sandro Santilli)"
 msgstr ""
+"4681, ST_GetFaceGeometry : afficher l'information de corruption (Sandro "
+"Santilli)"
 
 #. Tag: para
 #: release_notes.xml:700
 #, no-c-format
 msgid "4651, ST_Simplify: Don't copy if nothing is removed (Raúl Marín)"
-msgstr ""
+msgstr "4651, ST_Simplifier : Ne pas copier si rien n'est enlevé (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:701
 #, no-c-format
 msgid "4657, Avoid De-TOASTing where possible (Paul Ramsey)"
-msgstr ""
+msgstr "4657, Éviter le De-TOASTing dans la mesure du possible (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:702
 #, no-c-format
 msgid "4490, Tweak function costs (Raúl Marín)"
-msgstr ""
+msgstr "4490, Ajuster les coûts des fonctions (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:703
 #, no-c-format
 msgid "4672, Cache getSRSbySRID and getSRIDbySRS (Raúl Marín)"
-msgstr ""
+msgstr "4672, Mise en cache de getSRSbySRID et getSRIDbySRS (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:704
@@ -2625,18 +2770,21 @@ msgid ""
 "4676, Avoid decompressing toasted geometries to read only the header (Raúl "
 "Marín) Optimize cast to Postgresql point type (Raúl Marín)"
 msgstr ""
+"4676, Éviter de décompresser les géométries \"toastées\" pour ne lire que l"
+"'en-tête (Raúl Marín). Optimisation de la conversion au type de point "
+"Postgresql (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:706
 #, no-c-format
 msgid "4620, Update internal wagyu to 0.5.0 (Raúl Marín)"
-msgstr ""
+msgstr "4620, Mise à jour de wagyu interne vers 0.5.0 (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:707
 #, no-c-format
 msgid "4623, Optimize varlena returning functions (Raúl Marín)"
-msgstr ""
+msgstr "4623, Optimiser les fonctions de retour de varlena (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:708
@@ -2644,6 +2792,8 @@ msgstr ""
 msgid ""
 "4677, Share gserialized objects between different cache types (Raúl Marín)"
 msgstr ""
+"4677, Partager des objets gserialized entre différents types de cache (Raúl "
+"Marín)"
 
 #. Tag: para
 #: release_notes.xml:709
@@ -2651,6 +2801,8 @@ msgstr ""
 msgid ""
 "Fix compilation with MSVC compiler / Standardize shebangs (Loïc Bartoletti)"
 msgstr ""
+"Correction de la compilation avec le compilateur MSVC / Standardisation des "
+"shebangs (Loïc Bartoletti)"
 
 #. Tag: title
 #: release_notes.xml:713 release_notes.xml:2545 release_notes.xml:2611
@@ -2660,13 +2812,15 @@ msgstr ""
 #: release_notes.xml:3546
 #, no-c-format
 msgid "Bug fixes"
-msgstr ""
+msgstr "Correction de bugs"
 
 #. Tag: para
 #: release_notes.xml:714
 #, no-c-format
 msgid "4652, Fix several memory related bugs in ST_GeomFromGML (Raúl Marín)"
 msgstr ""
+"4652, Correction de plusieurs bugs liés à la mémoire dans ST_GeomFromGML ("
+"Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:715
@@ -2674,6 +2828,8 @@ msgstr ""
 msgid ""
 "4661, Fix access to spatial_ref_sys with a non default schema (Raúl Marín)"
 msgstr ""
+"4661, Correction de l'accès à spatial_ref_sys avec un schéma non défini par "
+"défaut (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:716
@@ -2681,6 +2837,8 @@ msgstr ""
 msgid ""
 "4670, ST_AddPoint: Fix bug when a positive position is requested (Raúl Marín)"
 msgstr ""
+"4670, ST_AddPoint : Correction d'un bug lorsqu'une position positive est "
+"demandée (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:717
@@ -2689,6 +2847,8 @@ msgid ""
 "4699, crash on null input to ST_Union(raster, otherarg) (Jaime Casanova, "
 "2ndQuadrant)"
 msgstr ""
+"4699, crash sur l'entrée null de ST_Union(raster, otherarg) (Jaime Casanova, "
+"2ndQuadrant)"
 
 #. Tag: para
 #: release_notes.xml:718
@@ -2696,18 +2856,20 @@ msgstr ""
 msgid ""
 "4716, Fix several issues with pkg-config in the configure script (Raúl Marín)"
 msgstr ""
+"4716, Correction de plusieurs problèmes avec pkg-config dans le script de "
+"configuration (Raúl Marín)"
 
 #. Tag: title
 #: release_notes.xml:723
 #, no-c-format
 msgid "Release 3.1.0alpha1"
-msgstr ""
+msgstr "Version 3.1.0alpha1"
 
 #. Tag: para
 #: release_notes.xml:724
 #, no-c-format
 msgid "Release date: 2020/02/01"
-msgstr ""
+msgstr "Date de sortie : 2020/02/01"
 
 #. Tag: para
 #: release_notes.xml:725
@@ -2717,6 +2879,9 @@ msgid ""
 "features and enhancements enabled if you are running Proj6+, PostgreSQL 12+, "
 "and GEOS 3.8.0"
 msgstr ""
+"Cette version nécessite PostgreSQL 9.6+-13 et GEOS >= 3.6+ Fonctionnalités "
+"supplémentaires et améliorations activées si vous utilisez Proj6+, "
+"PostgreSQL 12+, et GEOS 3.8.0"
 
 #. Tag: para
 #: release_notes.xml:729
@@ -2725,24 +2890,26 @@ msgid ""
 "svn number replaced by git hash in version output (Sandro Santilli, Raúl "
 "Marín)"
 msgstr ""
+"remplacement du numéro svn par le hash git dans la sortie de la version ("
+"Sandro Santilli, Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:731
 #, no-c-format
 msgid "4577, Drop support for PostgreSQL 9.5 (Raúl Marín)"
-msgstr ""
+msgstr "4577, Suppression du support de PostgreSQL 9.5 (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:732
 #, no-c-format
 msgid "4579, Drop postgis_proc_set_search_path.pl (Raúl Marín)"
-msgstr ""
+msgstr "4579, Supprimer postgis_proc_set_search_path.pl (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:733
 #, no-c-format
 msgid "4601, ST_TileEnvelope signature changed."
-msgstr ""
+msgstr "4601, la signature de ST_TileEnvelope a été modifiée."
 
 #. Tag: para
 #: release_notes.xml:734
@@ -2750,24 +2917,30 @@ msgstr ""
 msgid ""
 "3057, ST_Force3D, ST_Force3DZ, ST_Force3DM and ST_Force4D signatures changed."
 msgstr ""
+"3057, les signatures de ST_Force3D, ST_Force3DZ, ST_Force3DM et ST_Force4D "
+"ont été modifiées."
 
 #. Tag: para
 #: release_notes.xml:739
 #, no-c-format
 msgid "4601, Add ST_TileEnvelope margin argument (Yuri Astrakhan)"
 msgstr ""
+"4601, Ajouter l'argument margin pour la fonction ST_TileEnvelope (Yuri "
+"Astrakhan)"
 
 #. Tag: para
 #: release_notes.xml:740
 #, no-c-format
 msgid "2972, Add quiet mode (-q) to pgsql2shp (Kristian Thy)"
-msgstr ""
+msgstr "2972, Ajout du mode silencieux (-q) à pgsql2shp (Kristian Thy)"
 
 #. Tag: para
 #: release_notes.xml:741
 #, no-c-format
 msgid "4617, Add configure switch `--without-phony-revision` (Raúl Marín)"
 msgstr ""
+"4617, Ajouter le changement de configuration `--without-phony-revision` ("
+"Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:742
@@ -2775,6 +2948,8 @@ msgstr ""
 msgid ""
 "3057, Optional value params for Force3D*, Force4D functions (Kristian Thy)"
 msgstr ""
+"3057, Paramètres de valeurs optionnelles pour les fonctions Force3D*, "
+"Force4D (Kristian Thy)"
 
 #. Tag: para
 #: release_notes.xml:743
@@ -2783,12 +2958,14 @@ msgid ""
 "4624, ST_HexagonGrid and ST_SquareGrid, set returning functions to generate "
 "tilings of the plane (Paul Ramsey)"
 msgstr ""
+"4624, ST_HexagonGrid et ST_SquareGrid, ensemble de fonctions de retour pour "
+"générer des tuiles du plan (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:749
 #, no-c-format
 msgid "4539, Unify libm includes (Raúl Marín)"
-msgstr ""
+msgstr "4539, Unification des includes de libm (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:750
@@ -2797,6 +2974,8 @@ msgid ""
 "4569, Allow unknown SRID geometry insertion into typmod SRID column (Paul "
 "Ramsey)"
 msgstr ""
+"4569, Autoriser l'insertion d'une géométrie SRID inconnue dans la colonne "
+"SRID de typmod (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:751
@@ -2806,12 +2985,16 @@ msgid ""
 "ST_TransScale, ST_Rotate) optimized. ST_SnapToGrid optimized. (Darafei "
 "Praliaskouski)"
 msgstr ""
+"4149, ST_Simplify(geom, 0) est maintenant O(N). ST_Affine (ST_Translate, "
+"ST_TransScale, ST_Rotate) optimisé. ST_SnapToGrid optimisé. (Darafei "
+"Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:754
 #, no-c-format
 msgid "4574, Link Time Optimizations enabled (Darafei Praliaskouski)"
 msgstr ""
+"4574, Optimisations du temps de liaison activées (Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:755
@@ -2819,12 +3002,14 @@ msgstr ""
 msgid ""
 "4578, Add parallellism and cost properties to brin functions (Raúl Marín)"
 msgstr ""
+"4578, Ajouter les propriétés de parallélisme et de coût aux fonctions brin ("
+"Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:756
 #, no-c-format
 msgid "4473, Silence yacc warnings (Raúl Marín)"
-msgstr ""
+msgstr "4473, Silence des avertissements yacc (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:757
@@ -2832,36 +3017,38 @@ msgstr ""
 msgid ""
 "4589, Disable C asserts when building without \"--enable-debug\" (Raúl Marín)"
 msgstr ""
+"4589, Désactiver les asserts C lors de la compilation sans \"--enable-debug\""
+" (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:758
 #, no-c-format
 msgid "4543, Introduce ryu to print doubles (Raúl Marín)"
-msgstr ""
+msgstr "4543, Introduire le ryu pour afficher les doubles (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:759
 #, no-c-format
 msgid "4626, Support pkg-config for libxml2 (Bas Couwenberg)"
-msgstr ""
+msgstr "4626, Support de pkg-config pour libxml2 (Bas Couwenberg)"
 
 #. Tag: para
 #: release_notes.xml:760
 #, no-c-format
 msgid "4615, Speed up geojson output (Raúl Marín)"
-msgstr ""
+msgstr "4615, Accélérer la sortie de geojson (Raúl Marín)"
 
 #. Tag: title
 #: release_notes.xml:765
 #, no-c-format
 msgid "Release 3.0.0"
-msgstr ""
+msgstr "Sortie 3.0.0"
 
 #. Tag: para
 #: release_notes.xml:766
 #, no-c-format
 msgid "Release date: 2019/10/20"
-msgstr ""
+msgstr "Date de sortie : 2019/10/20"
 
 #. Tag: para
 #: release_notes.xml:767
@@ -2871,18 +3058,21 @@ msgid ""
 "features and enhancements enabled if you are running Proj6+, PostgreSQL 12, "
 "and GEOS 3.8.0"
 msgstr ""
+"Cette version nécessite PostgreSQL 9.5+-12 et GEOS >= 3.6+ Fonctionnalités "
+"supplémentaires et améliorations activées si vous utilisez Proj6+, "
+"PostgreSQL 12, et GEOS 3.8.0"
 
 #. Tag: para
 #: release_notes.xml:771
 #, no-c-format
 msgid "2902, postgis_geos_noop (Sandro Santilli)"
-msgstr ""
+msgstr "2902, postgis_geos_noop (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:772
 #, no-c-format
 msgid "4128, ST_AsMVT support for Feature ID (Stepan Kuzmin)"
-msgstr ""
+msgstr "4128, ST_AsMVT support pour Feature ID (Stepan Kuzmin)"
 
 #. Tag: para
 #: release_notes.xml:773
@@ -2892,12 +3082,15 @@ msgid ""
 "within, equals (Esteban Zimányi and Arthur Lesuisse from Université Libre de "
 "Bruxelles (ULB), Darafei Praliaskouski)"
 msgstr ""
+"4230, Supprot de SP-GiST et GiST pour les opérateurs de box : overlaps, "
+"contains, within, equals (Esteban Zimányi et Arthur Lesuisse de l'Université "
+"Libre de Bruxelles (ULB), Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:776
 #, no-c-format
 msgid "4171, ST_3DLineInterpolatePoint (Julien Cabieces, Vincent Mora)"
-msgstr ""
+msgstr "4171, ST_3DLineInterpolatePoint (Julien Cabieces, Vincent Mora)"
 
 #. Tag: para
 #: release_notes.xml:777
@@ -2907,12 +3100,17 @@ msgid ""
 "compiler and will use CXXFLAGS (not CFLAGS). Add `--without-wagyu` to "
 "disable this option and keep the behaviour from 2.5 (Raúl Marín)"
 msgstr ""
+"4311, Introduction de WAGYU pour valider les polygones MVT. Cette option "
+"nécessite un compilateur C++11 et utilisera CXXFLAGS (et non CFLAGS). "
+"Ajouter `--without-wagyu` pour désactiver cette option et garder le "
+"comportement de la 2.5 (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:780
 #, no-c-format
 msgid "1833, ST_AsGeoJSON(row) generates full GeoJSON Features (Joe Conway)"
 msgstr ""
+"1833, ST_AsGeoJSON(row) génère des Features GeoJSON complètes (Joe Conway)"
 
 #. Tag: para
 #: release_notes.xml:781
@@ -2921,6 +3119,8 @@ msgid ""
 "3687, Casts json(geometry) and jsonb(geometry) for implicit GeoJSON "
 "generation (Paul Ramsey)"
 msgstr ""
+"3687, Transforme json(geometry) et jsonb(geometry) pour la génération "
+"implicite de GeoJSON (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:783
@@ -2929,6 +3129,8 @@ msgid ""
 "4198, Add ST_ConstrainedDelaunayTriangles SFCGAL function (Darafei "
 "Praliaskouski)"
 msgstr ""
+"4198, Ajout de la fonction SFCGAL ST_ConstrainedDelaunayTriangles (Darafei "
+"Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:789
@@ -2936,6 +3138,8 @@ msgstr ""
 msgid ""
 "4267, Bump minimum GEOS version to 3.6 (Regina Obe, Darafei Praliaskouski)"
 msgstr ""
+"4267, Augmentation de la version minimale de GEOS à 3.6 (Regina Obe, Darafei "
+"Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:790
@@ -2943,6 +3147,8 @@ msgstr ""
 msgid ""
 "3888, Raster support now available as a separate extension (Sandro Santilli)"
 msgstr ""
+"3888, Le support des images raster est maintenant disponible en tant "
+"qu'extension séparée (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:792
@@ -2952,6 +3158,9 @@ msgid ""
 "configure switch --with-library-minor-version if you need the old behavior "
 "(Regina Obe)"
 msgstr ""
+"3807, Les fichiers de la bibliothèque d'extension n'incluent plus la version "
+"mineure. Utilisez le nouveau commutateur de configuration --with-library-"
+"minor-version si vous avez besoin de l'ancien comportement (Regina Obe)"
 
 #. Tag: para
 #: release_notes.xml:795
@@ -2961,12 +3170,17 @@ msgid ""
 "on dimensions that aren't present in both operands. Please REINDEX your ND "
 "indexes after upgrade. (Darafei Praliaskouski)"
 msgstr ""
+"4230, les opérateurs de box ND (overlaps, contains, within, equals) ne "
+"prennent plus en compte les dimensions qui ne sont pas présentes dans les "
+"deux opérandes. Veuillez REINDEXER vos index ND après la mise à jour. ("
+"Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:798
 #, no-c-format
 msgid "4229, Dropped support for PostgreSQL &lt; 9.5. (Darafei Praliaskouski)"
 msgstr ""
+"4229, Suppression du support de PostgreSQL &lt; 9.5. (Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:799
@@ -2975,6 +3189,9 @@ msgid ""
 "4260, liblwgeom headers are not installed anymore. If your project depends "
 "on them available, please use librttopo instead. (Darafei Praliaskouski)"
 msgstr ""
+"4260, les en-têtes de liblwgeom ne sont plus installés. Si votre projet "
+"dépend de leur disponibilité, veuillez utiliser librttopo à la place. ("
+"Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:802
@@ -2984,18 +3201,25 @@ msgid ""
 "ST_Difference, ST_Union, ST_Intersects, ST_3DIntersects, ST_3DDistance and "
 "postgis.backend switch (Darafei Praliaskouski)"
 msgstr ""
+"4258, Suppression du support SFCGAL pour ST_Area, ST_Distance, "
+"ST_Intersection, ST_Difference, ST_Union, ST_Intersects, ST_3DIntersects, "
+"ST_3DDistance et le commutateur postgis.backend (Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:805
 #, no-c-format
 msgid "4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)"
 msgstr ""
+"4267, Activer les APIs dépréciées de Proj 6 (Darafei Praliaskouski, Raúl "
+"Marín)"
 
 #. Tag: para
 #: release_notes.xml:806
 #, no-c-format
 msgid "4268, Bump minimum SFCGAL version to 1.3.1 (Darafei Praliaskouski)"
 msgstr ""
+"4268, Augmentation de la version minimale de SFCGAL à 1.3.1 (Darafei "
+"Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:807
@@ -3003,6 +3227,8 @@ msgstr ""
 msgid ""
 "4331, ST_3DMakeBox now returns error instead of a miniscule box (Regina Obe)"
 msgstr ""
+"4331, ST_3DMakeBox renvoie maintenant une erreur au lieu d'une box minuscule "
+"(Regina Obe)"
 
 #. Tag: para
 #: release_notes.xml:808
@@ -3011,18 +3237,24 @@ msgid ""
 "4342, Removed \"versioned\" variants of ST_AsGeoJSON and ST_AsKML (Paul "
 "Ramsey)"
 msgstr ""
+"4342, Suppression des variantes \"versionnées\" de ST_AsGeoJSON et ST_AsKML ("
+"Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:809
 #, no-c-format
 msgid "4356, ST_Accum removed. Use array_agg instead. (Darafei Praliaskouski)"
 msgstr ""
+"4356, ST_Accum supprimé. Utilisez array_agg à la place. (Darafei "
+"Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:810 release_notes.xml:993
 #, no-c-format
 msgid "4414, Include version number in address_standardizer lib (Raúl Marín)"
 msgstr ""
+"4414, Inclure le numéro de version dans la librairie address_standardizer ("
+"Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:811
@@ -3030,6 +3262,8 @@ msgstr ""
 msgid ""
 "4334, Fix upgrade issues related to renamed function parameters (Raúl Marín)"
 msgstr ""
+"4334, Correction des problèmes de mise à jour liés aux paramètres de "
+"fonction renommés (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:812 release_notes.xml:1005
@@ -3038,6 +3272,9 @@ msgid ""
 "4442, raster2pgsql now skips NODATA tiles. Use -k option if you still want "
 "them in database for some reason. (Darafei Praliaskouski)"
 msgstr ""
+"4442, raster2pgsql ignore désormais les tuiles NODATA. Utilisez l'option -k "
+"si vous les voulez toujours dans la base de données pour une raison ou une "
+"autre. (Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:814 release_notes.xml:964
@@ -3046,6 +3283,8 @@ msgid ""
 "4433, 32-bit hash fix (requires reindexing hash(geometry) indexes) (Raúl "
 "Marín)"
 msgstr ""
+"4433, correction des hashs 32 bits (nécessite de réindexer les index "
+"hash(geometry)) (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:815
@@ -3054,6 +3293,9 @@ msgid ""
 "3383, Sorting now uses Hilbert curve and Postgres Abbreviated Compare. You "
 "need to REINDEX your btree indexes if you had them. (Darafei Praliaskouski)"
 msgstr ""
+"3383, Le tri utilise maintenant la courbe de Hilbert et Postgres Abbreviated "
+"Compare. Vous devez REINDEXER vos index btree si vous les aviez. (Darafei "
+"Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:822
@@ -3062,6 +3304,9 @@ msgid ""
 "4341, Using \"support function\" API in PgSQL 12+ to replace SQL inlining as "
 "the mechanism for providing index support under ST_Intersects, et al"
 msgstr ""
+"4341, Utilisation de l'API \"fonction de support\" dans PgSQL 12+ pour "
+"remplacer l'inlining SQL comme mécanisme de support d'index sous "
+"ST_Intersects, et al"
 
 #. Tag: para
 #: release_notes.xml:824
@@ -3070,6 +3315,8 @@ msgid ""
 "4330, postgis_restore OOM when output piped to an intermediate process (Hugh "
 "Ranalli)"
 msgstr ""
+"4330, postgis_restore OOM lorsque la sortie est dirigée vers un processus "
+"intermédiaire (Hugh Ranalli)"
 
 #. Tag: para
 #: release_notes.xml:826
@@ -3078,6 +3325,8 @@ msgid ""
 "4322, Support for Proj 6+ API, bringing more accurate datum transforms and "
 "support for WKT projections"
 msgstr ""
+"4322, Prise en charge de l'API Proj 6+, apportant des transformations de "
+"données plus précises et la prise en charge des projections WKT"
 
 #. Tag: para
 #: release_notes.xml:828
@@ -3086,6 +3335,8 @@ msgid ""
 "4153, ST_Segmentize now splits segments proportionally (Darafei "
 "Praliaskouski)."
 msgstr ""
+"4153, ST_Segmentize divise maintenant les segments proportionnellement ("
+"Darafei Praliaskouski)."
 
 #. Tag: para
 #: release_notes.xml:830
@@ -3094,6 +3345,8 @@ msgid ""
 "4162, ST_DWithin documentation examples for storing geometry and radius in "
 "table (Darafei Praliaskouski, github user Boscop)."
 msgstr ""
+"4162, ST_DWithin exemples de documentation pour stocker la géométrie et le "
+"rayon dans un tableau (Darafei Praliaskouski, utilisateur github Boscop)."
 
 #. Tag: para
 #: release_notes.xml:832
@@ -3102,18 +3355,22 @@ msgid ""
 "4161 and #4294, ST_AsMVTGeom: Shortcut geometries smaller than the "
 "resolution (Raúl Marín)"
 msgstr ""
+"4161 et #4294, ST_AsMVTGeom : Raccourcis pour les géométries plus petites "
+"que la résolution (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:834
 #, no-c-format
 msgid "4176, ST_Intersects supports GEOMETRYCOLLECTION (Darafei Praliaskouski)"
-msgstr ""
+msgstr "4176, ST_Intersects supporte GEOMETRYCOLLECTION (Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:835
 #, no-c-format
 msgid "4181, ST_AsMVTGeom: Avoid type changes due to validation (Raúl Marín)"
 msgstr ""
+"4181, ST_AsMVTGeom : Éviter les changements de type en raison de la "
+"validation (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:836
@@ -3121,6 +3378,8 @@ msgstr ""
 msgid ""
 "4183, ST_AsMVTGeom: Drop invalid geometries after simplification (Raúl Marín)"
 msgstr ""
+"4183, ST_AsMVTGeom : Supprimer les géométries invalides après simplification "
+"(Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:837
@@ -3129,6 +3388,8 @@ msgid ""
 "4196, Have postgis_extensions_upgrade() package unpackaged extensions "
 "(Sandro Santilli)"
 msgstr ""
+"4196, A postgis_extensions_upgrade() package des extensions non packagées ("
+"Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:839
@@ -3136,6 +3397,8 @@ msgstr ""
 msgid ""
 "4215, Use floating point compare in ST_DumpAsPolygons (Darafei Praliaskouski)"
 msgstr ""
+"4215, Utiliser la comparaison en virgule flottante dans ST_DumpAsPolygons ("
+"Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:840
@@ -3144,6 +3407,8 @@ msgid ""
 "4155, Support for GEOMETRYCOLLECTION, POLYGON, TIN, TRIANGLE in "
 "ST_LocateBetween and ST_LocateBetweenElevations (Darafei Praliaskouski)"
 msgstr ""
+"4155, Support pour GEOMETRYCOLLECTION, POLYGON, TIN, TRIANGLE dans "
+"ST_LocateBetween et ST_LocateBetweenElevations (Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:842
@@ -3152,12 +3417,14 @@ msgid ""
 "2767, Documentation for AddRasterConstraint optional parameters (Sunveer "
 "Singh)"
 msgstr ""
+"2767, Documentation pour les paramètres optionnels de AddRasterConstraint ("
+"Sunveer Singh)"
 
 #. Tag: para
 #: release_notes.xml:843
 #, no-c-format
 msgid "4244, Avoid unaligned memory access in BOX2D_out (Raúl Marín)"
-msgstr ""
+msgstr "4244, Eviter les accès mémoire non alignés dans BOX2D_out (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:844
@@ -3166,6 +3433,9 @@ msgid ""
 "4139, Make mixed-dimension ND index build tree correctly (Darafei "
 "Praliaskouski, Arthur Lesuisse, Andrew Gierth, Raúl Marín)"
 msgstr ""
+"4139, Faire en sorte que l'index ND à dimensions mixtes construise "
+"correctement un arbre (Darafei Praliaskouski, Arthur Lesuisse, Andrew "
+"Gierth, Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:846
@@ -3173,12 +3443,16 @@ msgstr ""
 msgid ""
 "4262, Document MULTISURFACE compatibility of ST_LineToCurve (Steven Ottens)"
 msgstr ""
+"4262, Documentation sur la compatibilité MULTISURFACE de ST_LineToCurve ("
+"Steven Ottens)"
 
 #. Tag: para
 #: release_notes.xml:847
 #, no-c-format
 msgid "4276, ST_AsGeoJSON documentation refresh (Darafei Praliaskouski)"
 msgstr ""
+"4276, ST_AsGeoJSON rafraîchissement de la documentation (Darafei "
+"Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:848
@@ -3187,12 +3461,16 @@ msgid ""
 "4292, ST_AsMVT: parse JSON numeric values with decimals as doubles (Raúl "
 "Marín)"
 msgstr ""
+"4292, ST_AsMVT : analyser les valeurs numériques JSON avec des décimales "
+"comme des doubles (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:849
 #, no-c-format
 msgid "4300, ST_AsMVTGeom: Always return the simplest geometry (Raúl Marín)"
 msgstr ""
+"4300, ST_AsMVTGeom : Toujours retourner la géométrie la plus simple (Raúl "
+"Marín)"
 
 #. Tag: para
 #: release_notes.xml:850
@@ -3201,6 +3479,8 @@ msgid ""
 "4301, ST_Subdivide: fix endless loop on coordinates near coincident to "
 "bounds (Darafei Praliaskouski)"
 msgstr ""
+"4301, ST_Subdivide : correction d'une boucle sans fin sur des coordonnées "
+"proches des limites (Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:852
@@ -3208,18 +3488,22 @@ msgstr ""
 msgid ""
 "4289, ST_AsMVTGeom: Transform coordinates space before clipping (Raúl Marín)"
 msgstr ""
+"4289, ST_AsMVTGeom : Transformer l'espace des coordonnées avant le découpage "
+"(Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:853
 #, no-c-format
 msgid "4272, Improve notice message when unable to compute stats (Raúl Marín)"
 msgstr ""
+"4272, Améliorer le message de notification en cas d'impossibilité de "
+"calculer les statistiques (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:854
 #, no-c-format
 msgid "4313, #4307, PostgreSQL 12 compatibility (Laurenz Albe, Raúl Marín)"
-msgstr ""
+msgstr "4313, #4307, Compatibilité PostgreSQL 12 (Laurenz Albe, Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:855
@@ -3228,6 +3512,8 @@ msgid ""
 "4299, #4304, ST_GeneratePoints is now VOLATILE. IMMUTABLE version with seed "
 "parameter added. (Mike Taves)"
 msgstr ""
+"4299, #4304, ST_GeneratePoints est maintenant VOLATILE. Version IMMUTABLE "
+"avec le paramètre seed ajouté. (Mike Taves)"
 
 #. Tag: para
 #: release_notes.xml:857
@@ -3236,12 +3522,16 @@ msgid ""
 "4278, ST_3DDistance and ST_3DIntersects now support Solid TIN and Solid "
 "POLYHEDRALSURFACE (Darafei Praliaskouski)"
 msgstr ""
+"4278, ST_3DDistance et ST_3DIntersects supportent maintenant Solid TIN et "
+"Solid POLYHEDRALSURFACE (Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:859
 #, no-c-format
 msgid "4348, ST_AsMVTGeom (GEOS): Enforce validation at all times (Raúl Marín)"
 msgstr ""
+"4348, ST_AsMVTGeom (GEOS) : Appliquer la validation à tout moment (Raúl "
+"Marín)"
 
 #. Tag: para
 #: release_notes.xml:860
@@ -3251,6 +3541,9 @@ msgid ""
 "ST_ContainsProperly, ST_Covers, ST_CoveredBy, ST_Crosses, ST_Touches, "
 "ST_Disjoint, ST_Relate, ST_Equals (Esteban Zimányi)"
 msgstr ""
+"4295, Autorise GEOMETRYCOLLECTION dans les fonctions ST_Overlaps, "
+"ST_Contains, ST_ContainsProperly, ST_Covers, ST_CoveredBy, ST_Crosses, "
+"ST_Touches, ST_Disjoint, ST_Relate, ST_Equals (Esteban Zimányi)"
 
 #. Tag: para
 #: release_notes.xml:863
@@ -3259,6 +3552,8 @@ msgid ""
 "4340, ST_Union aggregate now can handle more than 1 GB of geometries "
 "(Darafei Praliaskouski)"
 msgstr ""
+"4378, Permettre le passage des TINs en entrée des fonctions soutenues par "
+"GEOS (Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:865
@@ -3267,6 +3562,8 @@ msgid ""
 "4378, Allow passing TINs as input to GEOS-backed functions (Darafei "
 "Praliaskouski)"
 msgstr ""
+"4378, Permettre le passage de TINs en entrée des fonctions soutenues par "
+"GEOS (Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:867
@@ -3274,6 +3571,8 @@ msgstr ""
 msgid ""
 "4368, Reorder LWGEOM struct members to minimize extra padding (Raúl Marín)"
 msgstr ""
+"4368, Réorganiser les membres de la structure LWGEOM pour minimiser le "
+"remplissage supplémentaire (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:868
@@ -3281,12 +3580,16 @@ msgstr ""
 msgid ""
 "4141, Use uint64 to handle row counts in the topology extension (Raúl Marín)"
 msgstr ""
+"4141, Utiliser uint64 pour gérer le nombre de lignes dans l'extension "
+"topology (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:869
 #, no-c-format
 msgid "4412, Support ingesting rasters with NODATA=NaN (Darafei Praliaskouski)"
 msgstr ""
+"4412, Support de l'ingestion de rasters avec NODATA=NaN (Darafei "
+"Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:870
@@ -3295,6 +3598,8 @@ msgid ""
 "4413, Raster tile size follows GeoTIFF block size on raster2pgsql -t auto "
 "(Darafei Praliaskouski)"
 msgstr ""
+"4413, La taille des tuiles raster suit la taille des blocs GeoTIFF sur "
+"raster2pgsql -t auto (Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:872
@@ -3302,12 +3607,14 @@ msgstr ""
 msgid ""
 "4422, Modernize Python 2 code to get ready for Python 3 (Christian Clauss)"
 msgstr ""
+"4422, Moderniser le code Python 2 pour se préparer à Python 3 (Christian "
+"Clauss)"
 
 #. Tag: para
 #: release_notes.xml:873 release_notes.xml:994
 #, no-c-format
 msgid "4352, Use CREATE OR REPLACE AGGREGATE for PG12+ (Raúl Marín)"
-msgstr ""
+msgstr "4352, Utiliser CREATE OR REPLACE AGGREGATE pour PG12+ (Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:874
@@ -3316,6 +3623,8 @@ msgid ""
 "4394, Allow FULL OUTER JOIN on geometry equality operator (Darafei "
 "Praliaskouski)"
 msgstr ""
+"4394, Autoriser le FULL OUTER JOIN sur l'opérateur d'égalité de la géométrie "
+"(Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:875 release_notes.xml:1007
@@ -3324,6 +3633,8 @@ msgid ""
 "4441, Make GiST penalty friendly to multi-column indexes and build single-"
 "column ones faster. (Darafei Praliaskouski)"
 msgstr ""
+"4441, Rendre GiST pénalisant pour les index multi-colonnes et construire "
+"plus rapidement les index mono-colonnes. (Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:877 release_notes.xml:969
@@ -3332,6 +3643,8 @@ msgid ""
 "4403, Support for shp2pgsql ability to reproject with copy mode (-D) (Regina "
 "Obe)"
 msgstr ""
+"4403, Support de la capacité de shp2pgsql à reprojeter avec le mode copy (-D)"
+" (Regina Obe)"
 
 #. Tag: para
 #: release_notes.xml:878
@@ -3340,6 +3653,8 @@ msgid ""
 "4410, More descriptive error messages about SRID mismatch (Darafei "
 "Praliaskouski)"
 msgstr ""
+"4410, Messages d'erreur plus descriptifs sur la non-concordance des SRID ("
+"Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:879
@@ -3348,6 +3663,8 @@ msgid ""
 "4399, TIN and Triangle output support in all output functions (Darafei "
 "Praliaskouski)"
 msgstr ""
+"4399, support des sorties TIN et Triangle dans toutes les fonctions de "
+"sortie (Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:881
@@ -3356,6 +3673,8 @@ msgid ""
 "3719, Impose minimum number of segments per arc during linearization (Dan "
 "Baston / City of Helsinki, Raúl Marín)"
 msgstr ""
+"3719, Imposer un nombre minimum de segments par arc lors de la linéarisation "
+"(Dan Baston / Ville d'Helsinki, Raúl Marín)"
 
 #. Tag: para
 #: release_notes.xml:883
@@ -3365,36 +3684,40 @@ msgid ""
 "ST_AsGeoJSON sets SRID in JSON output if it differs from 4326. (Darafei "
 "Praliaskouski)"
 msgstr ""
+"4277, ST_GeomFromGeoJSON marque maintenant SRID=4326 par défaut selon "
+"RFC7946, ST_AsGeoJSON définit le SRID dans la sortie JSON s'il diffère de "
+"4326. (Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:886
 #, no-c-format
 msgid "3979, postgis_sfcgal_noop() round trip function (Lucas C. Villa Real)"
 msgstr ""
+"3979, fonction d'aller-retour postgis_sfcgal_noop() (Lucas C. Villa Real)"
 
 #. Tag: para
 #: release_notes.xml:887
 #, no-c-format
 msgid "4328, ST_3DIntersects for 2D TINs. (Darafei Praliaskouski)"
-msgstr ""
+msgstr "4328, ST_3DIntersects pour les TINs 2D. (Darafei Praliaskouski)"
 
 #. Tag: para
 #: release_notes.xml:888 release_notes.xml:950
 #, no-c-format
 msgid "4509, Update geocoder for tiger 2019 (Regina Obe)"
-msgstr ""
+msgstr "4509, Mise à jour du géocodeur pour tiger 2019 (Regina Obe)"
 
 #. Tag: title
 #: release_notes.xml:893
 #, no-c-format
 msgid "Release 3.0.0rc2"
-msgstr ""
+msgstr "Sortie 3.0.0rc2"
 
 #. Tag: para
 #: release_notes.xml:894
 #, no-c-format
 msgid "Release date: 2019/10/13"
-msgstr ""
+msgstr "Date de sortie : 2019/10/13"
 
 #. Tag: para
 #: release_notes.xml:895 release_notes.xml:913 release_notes.xml:932
