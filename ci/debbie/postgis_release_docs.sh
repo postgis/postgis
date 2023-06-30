@@ -68,9 +68,6 @@ if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
 fi
 
 make pdf
-rm -rf images
-mkdir images
-cp html/images/* images
 make epub
 make -e chunked-html-web 2>&1 | tee -a doc-errors.log
 

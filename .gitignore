@@ -25,6 +25,7 @@ config.status
 configure
 de9i*.png
 doc/*.html
+doc/images
 doc/html/images/generator
 doc/html/images/Makefile
 doc/html/images/*.png
@@ -195,6 +196,7 @@ doc/sfcgal_comments.sql
 postgis/sfcgal.sql
 postgis/uninstall_sfcgal.sql
 *.pdf
+*.epub
 .idea/*
 .syntastic_c_config
 .vs/*
