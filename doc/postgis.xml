@@ -11,8 +11,8 @@
 <!ENTITY postgis_download_url "@@POSTGIS_DOWNLOAD_URL@@/postgis-@@LAST_RELEASE_VERSION@@.tar.gz">
 
 <!-- Change these values to update the version numbers referenced within the documentation -->
-<!ENTITY last_proj_release_version "9.2.0">
-<!ENTITY last_geos_release_version "3.11.1">
+<!ENTITY last_proj_release_version "9.2.1">
+<!ENTITY last_geos_release_version "3.12.0">
 <!ENTITY min_postgres_version "12">
 <!ENTITY max_postgres_version "16">
 
@@ -127,7 +127,7 @@
       <para>This is the manual for version &last_release_version;</para>
       <para><inlinemediaobject><imageobject><imagedata fileref='images/ccbysa.png' /></imageobject></inlinemediaobject> This work is licensed under a <ulink url="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-Share Alike 3.0 License</ulink>.
       Feel free to use this material any way you like, but we ask that you attribute credit to the PostGIS Project
-      and wherever possible, a link back to <ulink url="http://postgis.net">http://postgis.net</ulink>.</para>
+      and wherever possible, a link back to <ulink url="https://postgis.net">https://postgis.net</ulink>.</para>
     </abstract>
   </bookinfo>
 
