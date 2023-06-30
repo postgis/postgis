@@ -1,25 +1,28 @@
 # French translations for PACKAGE package.
 # Automatically generated, 2023.
 #
+# Vincent Bre <vincent.bre@oslandia.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-06-29 16:52+0000\n"
-"PO-Revision-Date: 2023-06-29 14:24+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2023-06-30 09:08+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
+"Language-Team: French <https://weblate.osgeo.org/projects/postgis/xsl-config/"
+"fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: xsl-config.xml:41
 #, no-c-format
 msgid "PostGIS Functions new or enhanced in %"
-msgstr ""
+msgstr "Fonctions PostGIS nouvelles ou améliorées en %"
 
 #. Tag: para
 #: xsl-config.xml:42
@@ -27,24 +30,26 @@ msgstr ""
 msgid ""
 "The functions given below are PostGIS functions that were added or enhanced."
 msgstr ""
+"Les fonctions indiquées ci-dessous sont des fonctions PostGIS qui ont été "
+"ajoutées ou améliorées."
 
 #. Tag: para
 #: xsl-config.xml:53
 #, no-c-format
 msgid "Functions new in PostGIS %"
-msgstr ""
+msgstr "Fonctions nouvelles dans PostGIS %"
 
 #. Tag: para
 #: xsl-config.xml:56
 #, no-c-format
 msgid "Functions enhanced in PostGIS %"
-msgstr ""
+msgstr "Fonctions améliorées dans PostGIS %"
 
 #. Tag: para
 #: xsl-config.xml:59
 #, no-c-format
 msgid "Functions changed in PostGIS %"
-msgstr ""
+msgstr "Fonctions modifiées dans PostGIS %"
 
 #, no-c-format
 #~ msgid "Availability"
