@@ -305,13 +305,14 @@ postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSIO
 	   false; \
 	else \
 		$(DBLATEX) -b xetex -T native -t pdf \
-		   -I "${PWD}/html" \
+		   -I "$(CURDIR)/html" \
+		   -I "$(abspath $(srcdir))/html" \
 		   -P doc.collab.show=0 \
-		   -P figure.note="${PWD}/html/images/note" \
-		   -P figure.tip="${PWD}/html/images/tip" \
-		   -P figure.important="${PWD}/html/images/important" \
-		   -P figure.warning="${PWD}/html/images/warning" \
-		   -P figure.caution="${PWD}/html/images/caution" \
+		   -P figure.note="images/note" \
+		   -P figure.tip="images/tip" \
+		   -P figure.important="images/important" \
+		   -P figure.warning="images/warning" \
+		   -P figure.caution="images/caution" \
 		   -P latex.output.revhistory=0 \
 		   -s "$(abspath $(srcdir))/texstyle.sty" \
 		   -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf $<; \
