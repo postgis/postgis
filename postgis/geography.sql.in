@@ -600,6 +600,13 @@ CREATE OR REPLACE FUNCTION ST_Project(geog geography, distance float8, azimuth f
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
 	_COST_MEDIUM;
 
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_Project(geog_from geography, geog_to geography, distance float8)
+	RETURNS geography
+	AS 'MODULE_PATHNAME','geography_project_geography'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_Azimuth(geog1 geography, geog2 geography)
 	RETURNS float8

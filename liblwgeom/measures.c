@@ -2466,3 +2466,49 @@ azimuth_pt_pt(const POINT2D *A, const POINT2D *B, double *d)
 	*d = fmod(2 * M_PI + M_PI / 2 - atan2(B->y - A->y, B->x - A->x), 2 * M_PI);
 	return LW_TRUE;
 }
+
+/**
+ * Azimuth is angle in radians from vertical axis
+ *
+ */
+int
+project_pt(const POINT2D *P, double distance, double azimuth, POINT2D *R)
+{
+	const double TWOPI = 2.0 * M_PI;
+	double slope;
+	/* Deal with azimuth out of (-360,360) range */
+	int orbits = floor(azimuth / TWOPI);
+	azimuth -= TWOPI * orbits;
+	/* Convert from azimuth to conventional slope */
+	slope = TWOPI - azimuth + M_PI_2;
+	if (slope > 0 && slope >  TWOPI) slope -= TWOPI;
+	if (slope < 0 && slope < -TWOPI) slope += TWOPI;
+
+	double dx = cos(slope) * distance;
+	double dy = sin(slope) * distance;
+	R->x += dx;
+	R->y += dy;
+	return LW_TRUE;
+}
+
+/**
+ * Azimuth is angle in radians from vertical axis
+ *
+ */
+int
+project_pt_pt(const POINT4D *A, const POINT4D *B, double distance, POINT4D *R)
+{
+	/* Convert from azimuth to conventional slope */
+	double len = distance2d_pt_pt((const POINT2D *)A, (const POINT2D *)B);
+	double prop = distance / len;
+	double dx = (B->x - A->x) * prop;
+	double dy = (B->y - A->y) * prop;
+	double dz = (B->z - A->z) * prop;
+	double dm = (B->m - A->m) * prop;
+	R->x += dx;
+	R->y += dy;
+	if (isfinite(dz)) R->z += dz;
+	if (isfinite(dm)) R->m += dm;
+	return LW_TRUE;
+}
+

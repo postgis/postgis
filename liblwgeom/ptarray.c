@@ -497,6 +497,27 @@ ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2)
 	return LW_TRUE;
 }
 
+char
+ptarray_same2d(const POINTARRAY *pa1, const POINTARRAY *pa2)
+{
+	uint32_t i;
+
+	if ( FLAGS_GET_ZM(pa1->flags) != FLAGS_GET_ZM(pa2->flags) ) return LW_FALSE;
+	LWDEBUG(5,"dimensions are the same");
+
+	if ( pa1->npoints != pa2->npoints ) return LW_FALSE;
+	LWDEBUG(5,"npoints are the same");
+
+	for (i=0; i<pa1->npoints; i++)
+	{
+		if ( memcmp(getPoint_internal(pa1, i), getPoint_internal(pa2, i), sizeof(POINT2D)) )
+			return LW_FALSE;
+		LWDEBUGF(5,"point #%d is the same",i);
+	}
+
+	return LW_TRUE;
+}
+
 POINTARRAY *
 ptarray_addPoint(const POINTARRAY *pa, uint8_t *p, size_t pdims, uint32_t where)
 {

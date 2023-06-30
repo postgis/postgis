@@ -290,3 +290,19 @@ SELECT '#4328.3', ST_Intersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'TRIANGLE(
 SELECT '#4328.4', ST_Intersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'POLYGON((.1 .1, .2 .2, .2 .1, .1 .1))'::geometry), ST_3DIntersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'POLYGON((.1 .1, .2 .2, .2 .1, .1 .1))'::geometry);
 SELECT '#4328.5', ST_Intersects('TIN(((0 0,3 0,0 3,0 0)))'::geometry, 'CIRCULARSTRING(1.1 1.1, 1.2 1.2, 1.2 1.1)'::geometry), ST_3DIntersects('TIN(((0 0,3 0,0 3,0 0)))'::geometry, 'CIRCULARSTRING(1.1 1.1, 1.2 1.2, 1.2 1.1)'::geometry);
 SELECT '#4328.6', ST_Intersects('TIN(((0 0,3 0,0 3,0 0)))'::geometry, 'CURVEPOLYGON(CIRCULARSTRING(1.1 1.1, 1.2 1.2, 1.2 1.1, 1.2 1.2, 1.1 1.1))'::geometry), ST_3DIntersects('TIN(((0 0,3 0,0 3,0 0)))'::geometry, 'CURVEPOLYGON(CIRCULARSTRING(1.1 1.1, 1.2 1.2, 1.2 1.1, 1.2 1.2, 1.1 1.1))'::geometry);
+
+SELECT 'st_project.01', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 0)'::geometry, 1, 0), 0.1), 2);
+SELECT 'st_project.02', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 0)'::geometry, 1, pi()), 0.1), 2);
+SELECT 'st_project.03', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 0)'::geometry, 1, pi()/2), 0.1), 2);
+SELECT 'st_project.04', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 0)'::geometry, 1, 3*pi()/2), 0.1), 2);
+SELECT 'st_project.05', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 0)'::geometry, 1, pi()/4), 0.001), 3);
+SELECT 'st_project.06', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 0)'::geometry, 1, pi()+pi()/4), 0.001), 3);
+SELECT 'st_project.07', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 0)'::geometry, 0, 0), 0.001), 3);
+
+SELECT 'st_project.11', ST_AsText(ST_SnapToGrid(ST_Project('POINT(1 0)'::geometry, 'POINT(0 0)'::geometry, 1), 0.1), 2);
+SELECT 'st_project.12', ST_AsText(ST_SnapToGrid(ST_Project('POINT(-1 0)'::geometry, 'POINT(0 0)'::geometry, 1), 0.1), 2);
+SELECT 'st_project.13', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 1)'::geometry, 'POINT(0 0)'::geometry, 1), 0.1), 2);
+SELECT 'st_project.14', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 -1)'::geometry, 'POINT(0 0)'::geometry, 1), 0.1), 2);
+SELECT 'st_project.15', ST_AsText(ST_SnapToGrid(ST_Project('POINT(1 1)'::geometry, 'POINT(0 0)'::geometry, 1), 0.001), 3);
+SELECT 'st_project.16', ST_AsText(ST_SnapToGrid(ST_Project('POINT(-1 -1)'::geometry, 'POINT(0 0)'::geometry, 1), 0.001), 3);
+SELECT 'st_project.17', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 0)'::geometry, 'POINT(0 0)'::geometry, 1), 0.001), 3);

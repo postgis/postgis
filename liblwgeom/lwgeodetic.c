@@ -2107,8 +2107,8 @@ LWPOINT* lwgeom_project_spheroid(const LWPOINT *r, const SPHEROID *spheroid, dou
 	GEOGRAPHIC_POINT geo_source, geo_dest;
 	POINT4D pt_dest;
 	double x, y;
-	POINTARRAY *pa;
 	LWPOINT *lwp;
+	int has_z, has_m;
 
 	/* Normalize distance to be positive*/
 	if ( distance < 0.0 ) {
@@ -2129,6 +2129,8 @@ LWPOINT* lwgeom_project_spheroid(const LWPOINT *r, const SPHEROID *spheroid, dou
 	/* Convert to ta geodetic point */
 	x = lwpoint_get_x(r);
 	y = lwpoint_get_y(r);
+	has_z = lwgeom_has_z(lwpoint_as_lwgeom(r));
+	has_m = lwgeom_has_m(lwpoint_as_lwgeom(r));
 	geographic_point_init(x, y, &geo_source);
 
 	/* Try the projection */
@@ -2140,20 +2142,26 @@ LWPOINT* lwgeom_project_spheroid(const LWPOINT *r, const SPHEROID *spheroid, dou
 	}
 
 	/* Build the output LWPOINT */
-	pa = ptarray_construct(0, 0, 1);
 	pt_dest.x = rad2deg(longitude_radians_normalize(geo_dest.lon));
 	pt_dest.y = rad2deg(latitude_radians_normalize(geo_dest.lat));
-	pt_dest.z = pt_dest.m = 0.0;
-	ptarray_set_point4d(pa, 0, &pt_dest);
-	lwp = lwpoint_construct(r->srid, NULL, pa);
+	pt_dest.z = has_z ? lwpoint_get_z(r) : 0.0;
+	pt_dest.m = has_m ? lwpoint_get_m(r) : 0.0;
+	lwp = lwpoint_make(r->srid, has_z, has_m, &pt_dest);
 	lwgeom_set_geodetic(lwpoint_as_lwgeom(lwp), LW_TRUE);
+	return lwp;
+}
+
+LWPOINT* lwgeom_project_spheroid_lwpoint(const LWPOINT *from, const LWPOINT *to, const SPHEROID *spheroid, double distance)
+{
+	double azimuth = lwgeom_azumith_spheroid(from, to, spheroid);
+	LWPOINT *lwp = lwgeom_project_spheroid(to, spheroid, distance, azimuth);
 	return lwp;
 }
 
 
 /**
 * Calculate a bearing (azimuth) given a source and destination point.
-* @param r - location of first point.
+https://accesd.desjardins.ca/coast* @param r - location of first point.
 * @param s - location of second point.
 * @param spheroid - spheroid definition.
 * @return azimuth - azimuth in radians.

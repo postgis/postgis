@@ -1027,6 +1027,77 @@ Datum geography_project(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(g_out);
 }
 
+/*
+** geography_project_geography(geog1, geog2, distance, azimuth)
+** returns point of projection given from/pt points,
+** azimuth in radians (bearing) and distance in meters
+*/
+PG_FUNCTION_INFO_V1(geography_project_geography);
+Datum geography_project_geography(PG_FUNCTION_ARGS)
+{
+	LWGEOM *lwgeom1, *lwgeom2;
+	LWPOINT *lwp1, *lwp2, *lwp3;
+	GSERIALIZED *g1, *g2, *g3;
+	double distance;
+	SPHEROID s;
+
+	/* Get our geometry object loaded into memory. */
+	g1 = PG_GETARG_GSERIALIZED_P(0);
+	g2 = PG_GETARG_GSERIALIZED_P(1);
+
+	if ( gserialized_get_type(g1) != POINTTYPE ||
+		 gserialized_get_type(g2) != POINTTYPE )
+	{
+		elog(ERROR, "ST_Project(geography) is only valid for point inputs");
+		PG_RETURN_NULL();
+	}
+
+	distance = PG_GETARG_FLOAT8(2); /* Distance in meters */
+
+	/* Handle the zero distance case */
+	if ( FP_EQUALS(distance, 0.0) )
+	{
+		PG_RETURN_POINTER(g2);
+	}
+
+	lwgeom1 = lwgeom_from_gserialized(g1);
+	lwgeom2 = lwgeom_from_gserialized(g2);
+
+	/* EMPTY things cannot be projected from */
+	if ( lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2) )
+	{
+		lwgeom_free(lwgeom1);
+		lwgeom_free(lwgeom2);
+		elog(ERROR, "ST_Project(geography) cannot project from an empty point");
+		PG_RETURN_NULL();
+	}
+
+	/* Initialize spheroid */
+	spheroid_init_from_srid(lwgeom_get_srid(lwgeom1), &s);
+
+	/* Calculate the length */
+	lwp1 = lwgeom_as_lwpoint(lwgeom1);
+	lwp2 = lwgeom_as_lwpoint(lwgeom2);
+	lwp3 = lwgeom_project_spheroid_lwpoint(lwp1, lwp2, &s, distance);
+
+	/* Something went wrong... */
+	if ( lwp3 == NULL )
+	{
+		elog(ERROR, "lwgeom_project_spheroid_lwpoint returned null");
+		PG_RETURN_NULL();
+	}
+
+	/* Clean up, but not all the way to the point arrays */
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
+	g3 = geography_serialize(lwpoint_as_lwgeom(lwp3));
+	lwpoint_free(lwp3);
+
+	PG_FREE_IF_COPY(g1, 0);
+	PG_FREE_IF_COPY(g2, 1);
+	PG_RETURN_POINTER(g3);
+}
+
 
 /*
 ** geography_azimuth(GSERIALIZED *g1, GSERIALIZED *g2)

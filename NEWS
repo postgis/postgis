@@ -23,6 +23,7 @@ PostGIS 3.4.0dev
   - GH721, New window-based ST_ClusterWithinWin and ST_ClusterIntersectingWin (Paul Ramsey)
   - #5397, [address_standardizer] debug_standardize_address function (Regina Obe)
   - ST_LargestEmptyCircle, exposes extra semantics on circle finding (Martin Davis)
+  - ST_Project signature for geometry, and two-point signature (Paul Ramsey)
 
 * Enhancements *
   - #5194, do not update system catalogs from postgis_extensions_upgrade (Sandro Santilli)
@@ -35,6 +36,7 @@ PostGIS 3.4.0dev
   - Repair spatial planner stats to use computed selectivity for contains/within queries (Paul Ramsey)
   - GH734, Additional metadata on Proj installation in postgis_proj_version (Paul Ramsey)
   - #5177, allow building tools without PostgreSQL server headers (Sandro Santilli)
+  - ST_Project signature for geometry, and two-point signature (Paul Ramsey)
 
 * Bug Fix *
 

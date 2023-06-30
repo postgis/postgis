@@ -1390,6 +1390,20 @@ CREATE OR REPLACE FUNCTION ST_azimuth(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_Project(geom1 geometry, distance float8, azimuth float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'geometry_project_direction'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_Project(geom1 geometry, geom2 geometry, distance float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'geometry_project_geometry'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION ST_Angle(pt1 geometry, pt2 geometry, pt3 geometry, pt4 geometry default 'POINT EMPTY'::geometry)
 	RETURNS float8

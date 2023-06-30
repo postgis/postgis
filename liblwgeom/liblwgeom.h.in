@@ -1339,6 +1339,8 @@ extern LWPOINT* lwcompound_get_lwpoint(const LWCOMPOUND *lwcmp, uint32_t where);
 extern double ptarray_length_2d(const POINTARRAY *pts);
 extern int pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring);
 extern int azimuth_pt_pt(const POINT2D *p1, const POINT2D *p2, double *ret);
+extern LWPOINT* lwpoint_project_lwpoint(const LWPOINT* lwpoint1, const LWPOINT* lwpoint2, double distance);
+extern LWPOINT* lwpoint_project(const LWPOINT* lwpoint1, double distance, double azimuth);
 extern int lwpoint_inside_circle(const LWPOINT *p, double cx, double cy, double rad);
 
 extern LWGEOM* lwgeom_reverse(const LWGEOM *lwgeom);
@@ -1743,6 +1745,11 @@ extern double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwge
 * Calculate the location of a point on a spheroid, give a start point, bearing and distance.
 */
 extern LWPOINT* lwgeom_project_spheroid(const LWPOINT *r, const SPHEROID *spheroid, double distance, double azimuth);
+
+/**
+* Calculate the location of a point on a spheroid, give a start point, end point and distance.
+*/
+extern LWPOINT* lwgeom_project_spheroid_lwpoint(const LWPOINT *from, const LWPOINT *to, const SPHEROID *spheroid, double distance);
 
 /**
 * Derive a new geometry with vertices added to ensure no vertex is more
