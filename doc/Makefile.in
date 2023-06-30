@@ -334,13 +334,14 @@ ifeq ($(DBLATEX),)
 else
 	$(DBLATEX) -T native -t pdf \
 		 -x "--path $(XSLT_PATH)" \
-		 -I "${PWD}/html" \
+		 -I "$(abs_builddir)/html" \
+		 -I "$(abs_srcdir)/html" \
 		 -P doc.collab.show=0 \
-		 -P figure.note="${PWD}/html/images/note" \
-		 -P figure.tip="${PWD}/html/images/tip" \
-		 -P figure.important="${PWD}/html/images/important" \
-		 -P figure.warning="${PWD}/html/images/warning" \
-		 -P figure.caution="${PWD}/html/images/caution" \
+		 -P figure.note="images/note" \
+		 -P figure.tip="images/tip" \
+		 -P figure.important="images/important" \
+		 -P figure.warning="images/warning" \
+		 -P figure.caution="images/caution" \
 		 -P latex.output.revhistory=0 \
 		 -s "$(abs_srcdir)/texstyle.sty" \
 		 -b xetex \
