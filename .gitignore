@@ -25,8 +25,10 @@ config.status
 configure
 de9i*.png
 doc/*.html
-doc/html/image_src/generator
-doc/html/image_src/Makefile
+doc/html/images/generator
+doc/html/images/Makefile
+doc/html/images/*.png
+doc/html/images/*.gif
 doc/html/*.html
 doc/html/docbook.css
 doc/Makefile

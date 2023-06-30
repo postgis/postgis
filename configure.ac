@@ -1779,7 +1779,7 @@ AC_CONFIG_FILES([GNUmakefile
    doc/Makefile
    doc/Makefile.comments
    $TRANSLATIONS_MAKEFILE_LIST
-   doc/html/image_src/Makefile
+   doc/html/images/Makefile
    utils/Makefile
    $RT_MAKEFILE_LIST
    $DEPS_MAKEFILE_LIST])

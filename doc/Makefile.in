@@ -335,7 +335,6 @@ else
 	$(DBLATEX) -T native -t pdf \
 		 -x "--path $(XSLT_PATH)" \
 		 -I "$(abs_builddir)/html" \
-		 -I "$(abs_srcdir)/html" \
 		 -P doc.collab.show=0 \
 		 -P figure.note="images/note" \
 		 -P figure.tip="images/tip" \
@@ -378,23 +377,23 @@ doxygen: doxygen.cfg
 	doxygen $<
 
 images:
-	$(MAKE) -C html/image_src images
+	$(MAKE) -C html/images images
 
 images-clean:
-	$(MAKE) -C html/image_src images-clean
+	$(MAKE) -C html/images images-clean
 
 clean:
 	rm -f html/*.html
 	rm -f postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
 	rm -f *.epub
-	$(MAKE) -C html/image_src clean
 	rm -f $(XML_GENERATED_SOURCES)
+	$(MAKE) -C html/images clean
 	rm -f postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
 	rm -f raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
 	rm -f *.tmp
 
 distclean: clean
-	$(MAKE) -C html/image_src distclean
+	$(MAKE) -C html/images distclean
 	rm -f Makefile Makefile.comments html/image_src/Makefile
 	for lang in $(translations); do \
 		rm -f po/$$lang/Makefile; \
@@ -444,7 +443,8 @@ docs-install: html/postgis.html html/style.css
 	mkdir -p $(DESTDIR)$(PGSQL_DOCDIR)/postgis/images
 	$(INSTALL_DATA) html/postgis.html $(DESTDIR)$(PGSQL_DOCDIR)/postgis/
 	$(INSTALL_DATA) html/style.css $(DESTDIR)$(PGSQL_DOCDIR)/postgis/
-	$(INSTALL_DATA) html/images/* $(DESTDIR)$(PGSQL_DOCDIR)/postgis/images/
+	$(INSTALL_DATA) html/images/*.png $(DESTDIR)$(PGSQL_DOCDIR)/postgis/images/
+	$(INSTALL_DATA) html/images/*.gif $(DESTDIR)$(PGSQL_DOCDIR)/postgis/images/
 	$(INSTALL_DATA) ../README.postgis $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
 
 docs-uninstall:
