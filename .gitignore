@@ -23,6 +23,8 @@ config.status
 configure
 de9i*.png
 doc/*.html
+/doc/images
+/doc/*.epub
 doc/html/image_src/generator
 doc/html/image_src/Makefile
 doc/html/*.html
