@@ -387,7 +387,7 @@ clean:
 	rm -f html/*.html
 	rm -f postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
 	rm -f *.epub
-	rm images # work around https://trac.osgeo.org/postgis/ticket/5422
+	rm -f images # work around https://trac.osgeo.org/postgis/ticket/5422
 	rm -f $(XML_GENERATED_SOURCES)
 	$(MAKE) -C html/images clean
 	rm -f postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
