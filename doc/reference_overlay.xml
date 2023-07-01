@@ -228,7 +228,7 @@ on that same grid.  (Requires GEOS-3.9.0 or higher)
             <para>ST_Intersection in conjunction with <xref linkend="ST_Intersects"/> is useful for clipping geometries such as in bounding box, buffer, or region
                 queries where you only require the portion of a geometry that is inside a country or region of interest.</para>
 
-            <note><para>Geography: For geography this is really a thin wrapper around the geometry implementation. It first determines the best SRID that
+            <note><para>&geography_transform; It first determines the best SRID that
                     fits the bounding box of the 2 geography objects (if geography objects are within one half zone UTM but not same UTM will pick one of those) (favoring UTM or Lambert Azimuthal Equal Area (LAEA) north/south pole, and falling back on mercator in worst case scenario)  and then intersection in that best fit planar spatial ref and retransforms back to WGS84 geography.</para></note>
 
         <warning><para>This function will drop the M coordinate values if present.</para></warning>
@@ -245,7 +245,6 @@ on that same grid.  (Requires GEOS-3.9.0 or higher)
         <para>&sqlmm_compliant; SQL-MM 3: 5.1.18</para>
         <para>&Z_support; However, the result is computed using XY only.
             The result Z values are copied, averaged or interpolated.</para>
-        <para>&geography_transform;</para>
         </refsection>
         <refsection>
         <title>Examples</title>

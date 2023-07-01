@@ -91,7 +91,7 @@ This is only applicable to LINESTRING geometry and does not affect POINT or POLY
 </itemizedlist>
                 </para>
 
-            <note><para>For geography, this is a wrapper around the geometry implementation.
+            <note><para>&geography_transform;
             It determines a planar spatial reference system that best fits the bounding box of the geography object
             (trying UTM, Lambert Azimuthal Equal Area (LAEA) North/South pole, and finally Mercator ).
             The buffer is computed in the planar space, and then transformed back to WGS84.
@@ -118,7 +118,6 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
                 <para>Performed by the GEOS module.</para>
                 <para>&sfs_compliant; s2.1.1.3</para>
                 <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.30</para>
-                <para>&geography_transform;</para>
             </refsection>
 
               <refsection>

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-06-28 00:36+0000\n"
+"POT-Creation-Date: 2023-07-01 21:37+0000\n"
 "PO-Revision-Date: 2022-02-18 09:52+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
@@ -55,10 +55,10 @@ msgstr ""
 
 #. Tag: title
 #: reference_overlay.xml:31 reference_overlay.xml:80 reference_overlay.xml:192
-#: reference_overlay.xml:273 reference_overlay.xml:327
-#: reference_overlay.xml:390 reference_overlay.xml:519
-#: reference_overlay.xml:635 reference_overlay.xml:727
-#: reference_overlay.xml:822
+#: reference_overlay.xml:272 reference_overlay.xml:326
+#: reference_overlay.xml:389 reference_overlay.xml:518
+#: reference_overlay.xml:634 reference_overlay.xml:726
+#: reference_overlay.xml:821
 #, no-c-format
 msgid "Description"
 msgstr "Descrizione"
@@ -74,23 +74,23 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:40 reference_overlay.xml:344 reference_overlay.xml:544
-#: reference_overlay.xml:862
+#: reference_overlay.xml:40 reference_overlay.xml:343 reference_overlay.xml:543
+#: reference_overlay.xml:861
 #, no-c-format
 msgid "Performed by the GEOS module."
 msgstr "Eseguito dal modulo GEOS."
 
 #. Tag: para
-#: reference_overlay.xml:42 reference_overlay.xml:545
+#: reference_overlay.xml:42 reference_overlay.xml:544
 #, no-c-format
 msgid "Availability: 2.2.0"
 msgstr "Disponibilità: 2.2.0"
 
 #. Tag: title
-#: reference_overlay.xml:47 reference_overlay.xml:106 reference_overlay.xml:230
-#: reference_overlay.xml:294 reference_overlay.xml:353
-#: reference_overlay.xml:418 reference_overlay.xml:551
-#: reference_overlay.xml:661 reference_overlay.xml:883
+#: reference_overlay.xml:47 reference_overlay.xml:106 reference_overlay.xml:229
+#: reference_overlay.xml:293 reference_overlay.xml:352
+#: reference_overlay.xml:417 reference_overlay.xml:550
+#: reference_overlay.xml:660 reference_overlay.xml:882
 #, no-c-format
 msgid "Examples"
 msgstr "Esempi"
@@ -104,11 +104,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_overlay.xml:51 reference_overlay.xml:147 reference_overlay.xml:249
-#: reference_overlay.xml:301 reference_overlay.xml:365
-#: reference_overlay.xml:494 reference_overlay.xml:605
-#: reference_overlay.xml:702 reference_overlay.xml:773
-#: reference_overlay.xml:894
+#: reference_overlay.xml:51 reference_overlay.xml:147 reference_overlay.xml:248
+#: reference_overlay.xml:300 reference_overlay.xml:364
+#: reference_overlay.xml:493 reference_overlay.xml:604
+#: reference_overlay.xml:701 reference_overlay.xml:772
+#: reference_overlay.xml:893
 #, no-c-format
 msgid "See Also"
 msgstr "Si veda anche"
@@ -163,8 +163,8 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:90 reference_overlay.xml:201 reference_overlay.xml:643
-#: reference_overlay.xml:757
+#: reference_overlay.xml:90 reference_overlay.xml:201 reference_overlay.xml:642
+#: reference_overlay.xml:756
 #, no-c-format
 msgid ""
 "If the optional <code>gridSize</code> argument is provided, the inputs are "
@@ -173,21 +173,21 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:96 reference_overlay.xml:217 reference_overlay.xml:649
+#: reference_overlay.xml:96 reference_overlay.xml:217 reference_overlay.xml:648
 #, no-c-format
 msgid "Performed by the GEOS module"
 msgstr "Eseguito dal modulo GEOS"
 
 #. Tag: para
-#: reference_overlay.xml:97 reference_overlay.xml:219 reference_overlay.xml:651
-#: reference_overlay.xml:765 reference_overlay.xml:870
+#: reference_overlay.xml:97 reference_overlay.xml:219 reference_overlay.xml:650
+#: reference_overlay.xml:764 reference_overlay.xml:869
 #, no-c-format
 msgid "Enhanced: 3.1.0 accept a gridSize parameter - requires GEOS &gt;= 3.9.0"
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:99 reference_overlay.xml:223 reference_overlay.xml:653
-#: reference_overlay.xml:874
+#: reference_overlay.xml:99 reference_overlay.xml:223 reference_overlay.xml:652
+#: reference_overlay.xml:873
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.3"
 msgstr ""
@@ -200,8 +200,8 @@ msgstr ""
 
 #. Tag: para
 #: reference_overlay.xml:101 reference_overlay.xml:225
-#: reference_overlay.xml:288 reference_overlay.xml:655
-#: reference_overlay.xml:763 reference_overlay.xml:878
+#: reference_overlay.xml:287 reference_overlay.xml:654
+#: reference_overlay.xml:762 reference_overlay.xml:877
 #, no-c-format
 msgid ""
 "&Z_support; However, the result is computed using XY only. The result Z "
@@ -264,7 +264,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:149 reference_overlay.xml:704
+#: reference_overlay.xml:149 reference_overlay.xml:703
 #, no-c-format
 msgid ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
 msgstr ""
@@ -328,13 +328,12 @@ msgstr ""
 #: reference_overlay.xml:210
 #, no-c-format
 msgid ""
-"Geography: For geography this is really a thin wrapper around the geometry "
-"implementation. It first determines the best SRID that fits the bounding box "
-"of the 2 geography objects (if geography objects are within one half zone "
-"UTM but not same UTM will pick one of those) (favoring UTM or Lambert "
-"Azimuthal Equal Area (LAEA) north/south pole, and falling back on mercator "
-"in worst case scenario) and then intersection in that best fit planar "
-"spatial ref and retransforms back to WGS84 geography."
+"&geography_transform; It first determines the best SRID that fits the "
+"bounding box of the 2 geography objects (if geography objects are within one "
+"half zone UTM but not same UTM will pick one of those) (favoring UTM or "
+"Lambert Azimuthal Equal Area (LAEA) north/south pole, and falling back on "
+"mercator in worst case scenario) and then intersection in that best fit "
+"planar spatial ref and retransforms back to WGS84 geography."
 msgstr ""
 
 #. Tag: para
@@ -354,7 +353,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:220 reference_overlay.xml:871
+#: reference_overlay.xml:220 reference_overlay.xml:870
 #, no-c-format
 msgid "Changed: 3.0.0 does not depend on SFCGAL."
 msgstr ""
@@ -371,14 +370,8 @@ msgstr ""
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.18"
 msgstr ""
 
-#. Tag: para
-#: reference_overlay.xml:227
-#, no-c-format
-msgid "&geography_transform;"
-msgstr ""
-
 #. Tag: programlisting
-#: reference_overlay.xml:231
+#: reference_overlay.xml:230
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, "
@@ -395,7 +388,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:232
+#: reference_overlay.xml:231
 #, no-c-format
 msgid ""
 "Clip all lines (trails) by country. Here we assume country geom are POLYGON "
@@ -407,7 +400,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:237
+#: reference_overlay.xml:236
 #, no-c-format
 msgid ""
 "select clipped.gid, clipped.f_name, clipped_geom\n"
@@ -422,7 +415,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:238
+#: reference_overlay.xml:237
 #, no-c-format
 msgid ""
 "For polys e.g. polygon landmarks, you can also use the sometimes faster hack "
@@ -433,7 +426,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:240
+#: reference_overlay.xml:239
 #, no-c-format
 msgid ""
 "select poly.gid,\n"
@@ -450,13 +443,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_overlay.xml:244
+#: reference_overlay.xml:243
 #, no-c-format
 msgid "Examples: 2.5Dish"
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:245
+#: reference_overlay.xml:244
 #, no-c-format
 msgid ""
 "Note this is not a true intersection, compare to the same example using "
@@ -464,7 +457,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:246
+#: reference_overlay.xml:245
 #, no-c-format
 msgid ""
 "select ST_AsText(ST_Intersection(linestring, polygon)) As wkt\n"
@@ -479,7 +472,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:250
+#: reference_overlay.xml:249
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
@@ -489,13 +482,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_overlay.xml:257
+#: reference_overlay.xml:256
 #, no-c-format
 msgid "ST_MemUnion"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_overlay.xml:259
+#: reference_overlay.xml:258
 #, no-c-format
 msgid ""
 "Aggregate function which unions geometries in a memory-efficent but slower "
@@ -503,7 +496,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_overlay.xml:264
+#: reference_overlay.xml:263
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MemUnion</function></funcdef> "
@@ -512,7 +505,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:275
+#: reference_overlay.xml:274
 #, no-c-format
 msgid ""
 "An aggregate function that unions the input geometries, merging them to "
@@ -521,7 +514,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:281
+#: reference_overlay.xml:280
 #, no-c-format
 msgid ""
 "Produces the same result as <xref linkend=\"ST_Union\"/>, but uses less "
@@ -532,7 +525,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:296
+#: reference_overlay.xml:295
 #, no-c-format
 msgid ""
 "SELECT id,\n"
@@ -542,19 +535,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_overlay.xml:309
+#: reference_overlay.xml:308
 #, no-c-format
 msgid "ST_Node"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_overlay.xml:311
+#: reference_overlay.xml:310
 #, no-c-format
 msgid "Nodes a collection of lines."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_overlay.xml:318
+#: reference_overlay.xml:317
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Node</function></funcdef> "
@@ -562,7 +555,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:329
+#: reference_overlay.xml:328
 #, no-c-format
 msgid ""
 "Returns a (Multi)LineString representing the fully noded version of a "
@@ -572,7 +565,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:336
+#: reference_overlay.xml:335
 #, no-c-format
 msgid ""
 "This is a good way to create fully-noded linework suitable for use as input "
@@ -580,7 +573,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:338
+#: reference_overlay.xml:337
 #, no-c-format
 msgid ""
 "can also be used to node and dissolve linework. It provides an option to "
@@ -589,19 +582,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:343
+#: reference_overlay.xml:342
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
 #. Tag: para
-#: reference_overlay.xml:345 reference_overlay.xml:766
+#: reference_overlay.xml:344 reference_overlay.xml:765
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr "Disponibilità: 2.0.0"
 
 #. Tag: para
-#: reference_overlay.xml:347
+#: reference_overlay.xml:346
 #, no-c-format
 msgid ""
 "Changed: 2.4.0 this function uses GEOSNode internally instead of "
@@ -610,13 +603,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:354
+#: reference_overlay.xml:353
 #, no-c-format
 msgid "Noding a 3D LineString which self-intersects"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:355
+#: reference_overlay.xml:354
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -629,7 +622,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:357
+#: reference_overlay.xml:356
 #, no-c-format
 msgid ""
 "Noding two LineStrings which share common linework. Note that the result "
@@ -637,7 +630,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:359
+#: reference_overlay.xml:358
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -650,19 +643,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:367 reference_overlay.xml:495
+#: reference_overlay.xml:366 reference_overlay.xml:494
 #, no-c-format
 msgid ", <xref linkend=\"ST_Union\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_overlay.xml:375
+#: reference_overlay.xml:374
 #, no-c-format
 msgid "ST_Split"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_overlay.xml:376
+#: reference_overlay.xml:375
 #, no-c-format
 msgid ""
 "Returns a collection of geometries created by splitting a geometry by "
@@ -670,7 +663,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_overlay.xml:381
+#: reference_overlay.xml:380
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Split</function></funcdef> "
@@ -679,7 +672,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:391
+#: reference_overlay.xml:390
 #, no-c-format
 msgid ""
 "The function supports splitting a LineString by a (Multi)Point, "
@@ -690,7 +683,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:399
+#: reference_overlay.xml:398
 #, no-c-format
 msgid ""
 "This function is in a sense the opposite of <xref linkend=\"ST_Union\"/>. "
@@ -700,7 +693,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:405
+#: reference_overlay.xml:404
 #, no-c-format
 msgid ""
 "If the the input and blade do not intersect due to numerical precision "
@@ -710,13 +703,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:412
+#: reference_overlay.xml:411
 #, no-c-format
 msgid "Availability: 2.0.0 requires GEOS"
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:413
+#: reference_overlay.xml:412
 #, no-c-format
 msgid ""
 "Enhanced: 2.2.0 support for splitting a line by a multiline, a multipoint or "
@@ -724,7 +717,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:414
+#: reference_overlay.xml:413
 #, no-c-format
 msgid ""
 "Enhanced: 2.5.0 support for splitting a polygon by a multiline was "
@@ -732,25 +725,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:419
+#: reference_overlay.xml:418
 #, no-c-format
 msgid "Split a Polygon by a Line."
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:431 reference_overlay.xml:465
+#: reference_overlay.xml:430 reference_overlay.xml:464
 #, no-c-format
 msgid "Before Split"
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:443 reference_overlay.xml:477
+#: reference_overlay.xml:442 reference_overlay.xml:476
 #, no-c-format
 msgid "After split"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:452
+#: reference_overlay.xml:451
 #, no-c-format
 msgid ""
 "SELECT ST_AsText( ST_Split(\n"
@@ -767,7 +760,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:453
+#: reference_overlay.xml:452
 #, no-c-format
 msgid ""
 "Split a MultiLineString a Point, where the point lies exactly on both "
@@ -775,7 +768,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:486
+#: reference_overlay.xml:485
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Split(\n"
@@ -793,7 +786,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:488
+#: reference_overlay.xml:487
 #, no-c-format
 msgid ""
 "Split a LineString by a Point, where the point does not lie exactly on the "
@@ -802,7 +795,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:491
+#: reference_overlay.xml:490
 #, no-c-format
 msgid ""
 "WITH data AS (SELECT\n"
@@ -823,19 +816,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_overlay.xml:503
+#: reference_overlay.xml:502
 #, no-c-format
 msgid "ST_Subdivide"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_overlay.xml:504
+#: reference_overlay.xml:503
 #, no-c-format
 msgid "Computes a rectilinear subdivision of a geometry."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_overlay.xml:509
+#: reference_overlay.xml:508
 #, no-c-format
 msgid ""
 "<funcdef>setof geometry <function>ST_Subdivide</function></funcdef> "
@@ -846,7 +839,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:521
+#: reference_overlay.xml:520
 #, no-c-format
 msgid ""
 "Returns a set of geometries that are the result of dividing <varname>geom</"
@@ -855,7 +848,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:526
+#: reference_overlay.xml:525
 #, no-c-format
 msgid ""
 "<code>max_vertices</code> must be 5 or more, as 5 points are needed to "
@@ -864,7 +857,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:530
+#: reference_overlay.xml:529
 #, no-c-format
 msgid ""
 "Point-in-polygon and other spatial operations are normally faster for "
@@ -875,7 +868,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:537
+#: reference_overlay.xml:536
 #, no-c-format
 msgid ""
 "This is a <ulink url=\"https://www.postgresql.org/docs/current/queries-table-"
@@ -886,7 +879,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:546
+#: reference_overlay.xml:545
 #, no-c-format
 msgid ""
 "Enhanced: 2.5.0 reuses existing points on polygon split, vertex count is "
@@ -894,7 +887,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:547
+#: reference_overlay.xml:546
 #, no-c-format
 msgid ""
 "Enhanced: 3.1.0 accept a gridSize parameter, requires GEOS &gt;= 3.9.0 to "
@@ -902,7 +895,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:553
+#: reference_overlay.xml:552
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Subdivide a polygon into parts "
@@ -910,13 +903,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:563
+#: reference_overlay.xml:562
 #, no-c-format
 msgid "Subdivided to maximum 10 vertices"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:566
+#: reference_overlay.xml:565
 #, no-c-format
 msgid ""
 "SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt\n"
@@ -930,7 +923,7 @@ msgid ""
 msgstr ""
 
 #. Tag: screen
-#: reference_overlay.xml:567
+#: reference_overlay.xml:566
 #, no-c-format
 msgid ""
 "rn │                                                      wkt\n"
@@ -947,7 +940,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:569
+#: reference_overlay.xml:568
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Densify a long geography line "
@@ -956,13 +949,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:578
+#: reference_overlay.xml:577
 #, no-c-format
 msgid "The densified and split lines."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:581
+#: reference_overlay.xml:580
 #, no-c-format
 msgid ""
 "SELECT ST_AsText( ST_Subdivide(\n"
@@ -971,7 +964,7 @@ msgid ""
 msgstr ""
 
 #. Tag: screen
-#: reference_overlay.xml:582
+#: reference_overlay.xml:581
 #, no-c-format
 msgid ""
 "LINESTRING(0 0,0.487578359029357 5.57659056746196,0.984542144675897 "
@@ -992,7 +985,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:584
+#: reference_overlay.xml:583
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Subdivide the complex geometries "
@@ -1002,7 +995,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:590
+#: reference_overlay.xml:589
 #, no-c-format
 msgid ""
 "WITH complex_areas_to_subdivide AS (\n"
@@ -1017,7 +1010,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:592
+#: reference_overlay.xml:591
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Create a new table containing "
@@ -1028,7 +1021,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:601
+#: reference_overlay.xml:600
 #, no-c-format
 msgid ""
 "CREATE TABLE subdivided_geoms AS\n"
@@ -1037,7 +1030,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:606
+#: reference_overlay.xml:605
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
@@ -1045,13 +1038,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_overlay.xml:617
+#: reference_overlay.xml:616
 #, no-c-format
 msgid "ST_SymDifference"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_overlay.xml:619
+#: reference_overlay.xml:618
 #, no-c-format
 msgid ""
 "Computes a geometry representing the portions of geometries A and B that do "
@@ -1059,7 +1052,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_overlay.xml:625
+#: reference_overlay.xml:624
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SymDifference</function></funcdef> "
@@ -1070,7 +1063,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:637
+#: reference_overlay.xml:636
 #, no-c-format
 msgid ""
 "Returns a geometry representing the portions of geonetries A and B that do "
@@ -1080,25 +1073,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:654
+#: reference_overlay.xml:653
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.21"
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:674
+#: reference_overlay.xml:673
 #, no-c-format
 msgid "The original linestrings shown together"
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:686
+#: reference_overlay.xml:685
 #, no-c-format
 msgid "The symmetric difference of the two linestrings"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:695
+#: reference_overlay.xml:694
 #, no-c-format
 msgid ""
 "--Safe for 2d - symmetric difference of 2 linestrings\n"
@@ -1115,7 +1108,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:697
+#: reference_overlay.xml:696
 #, no-c-format
 msgid ""
 "--When used in 3d doesn't quite do the right thing\n"
@@ -1129,19 +1122,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_overlay.xml:710
+#: reference_overlay.xml:709
 #, no-c-format
 msgid "ST_UnaryUnion"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_overlay.xml:712
+#: reference_overlay.xml:711
 #, no-c-format
 msgid "Computes the union of the components of a single geometry."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_overlay.xml:717
+#: reference_overlay.xml:716
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_UnaryUnion</function></funcdef> "
@@ -1151,7 +1144,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:729
+#: reference_overlay.xml:728
 #, no-c-format
 msgid ""
 "A single-input variant of <xref linkend=\"ST_Union\"/>. The input may be a "
@@ -1160,7 +1153,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:734
+#: reference_overlay.xml:733
 #, no-c-format
 msgid ""
 "This function can be used to fix MultiPolygons which are invalid due to "
@@ -1170,7 +1163,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:742
+#: reference_overlay.xml:741
 #, no-c-format
 msgid ""
 "Another use of this function is to node and dissolve a collection of "
@@ -1180,7 +1173,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:750
+#: reference_overlay.xml:749
 #, no-c-format
 msgid ""
 "It is possible to combine ST_UnaryUnion with <xref linkend=\"ST_Collect\"/> "
@@ -1190,7 +1183,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:775
+#: reference_overlay.xml:774
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, <xref "
@@ -1198,20 +1191,20 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_overlay.xml:787
+#: reference_overlay.xml:786
 #, no-c-format
 msgid "ST_Union"
 msgstr "ST_Union"
 
 #. Tag: refpurpose
-#: reference_overlay.xml:788
+#: reference_overlay.xml:787
 #, no-c-format
 msgid ""
 "Computes a geometry representing the point-set union of the input geometries."
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_overlay.xml:793
+#: reference_overlay.xml:792
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Union</function></funcdef> "
@@ -1233,7 +1226,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:823
+#: reference_overlay.xml:822
 #, no-c-format
 msgid ""
 "Unions the input geometries, merging geometry to produce a result geometry "
@@ -1242,7 +1235,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:828
+#: reference_overlay.xml:827
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Two-input variant:</emphasis> returns a geometry "
@@ -1251,7 +1244,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:833
+#: reference_overlay.xml:832
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Array variant:</emphasis> returns a geometry that is "
@@ -1259,7 +1252,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:837
+#: reference_overlay.xml:836
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Aggregate variant:</emphasis> returns a geometry "
@@ -1270,7 +1263,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:844
+#: reference_overlay.xml:843
 #, no-c-format
 msgid ""
 "See <xref linkend=\"ST_UnaryUnion\"/> for a non-aggregate, single-input "
@@ -1278,7 +1271,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:846
+#: reference_overlay.xml:845
 #, no-c-format
 msgid ""
 "The ST_Union array and set variants use the fast Cascaded Union algorithm "
@@ -1288,7 +1281,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:850
+#: reference_overlay.xml:849
 #, no-c-format
 msgid ""
 "A <code>gridSize</code> can be specified to work in fixed-precision space. "
@@ -1297,7 +1290,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:856
+#: reference_overlay.xml:855
 #, no-c-format
 msgid ""
 "may sometimes be used in place of ST_Union, if the result is not required to "
@@ -1306,7 +1299,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:863
+#: reference_overlay.xml:862
 #, no-c-format
 msgid ""
 "ST_Union creates MultiLineString and does not sew LineStrings into a single "
@@ -1314,7 +1307,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:866
+#: reference_overlay.xml:865
 #, no-c-format
 msgid ""
 "NOTE: this function was formerly called GeomUnion(), which was renamed from "
@@ -1322,7 +1315,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:872
+#: reference_overlay.xml:871
 #, no-c-format
 msgid ""
 "Availability: 1.4.0 - ST_Union was enhanced. ST_Union(geomarray) was "
@@ -1330,13 +1323,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:875
+#: reference_overlay.xml:874
 #, no-c-format
 msgid "Aggregate version is not explicitly defined in OGC SPEC."
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:876
+#: reference_overlay.xml:875
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM 3: 5.1.19 the z-index (elevation) when polygons are "
@@ -1344,13 +1337,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:884
+#: reference_overlay.xml:883
 #, no-c-format
 msgid "Aggregate example"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:885
+#: reference_overlay.xml:884
 #, no-c-format
 msgid ""
 "SELECT id,\n"
@@ -1360,13 +1353,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:886
+#: reference_overlay.xml:885
 #, no-c-format
 msgid "Non-Aggregate example"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:887
+#: reference_overlay.xml:886
 #, no-c-format
 msgid ""
 "select ST_AsText(ST_Union('POINT(1 2)' :: geometry, 'POINT(-2 3)' :: "
@@ -1385,13 +1378,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:888
+#: reference_overlay.xml:887
 #, no-c-format
 msgid "3D example - sort of supports 3D (and with mixed dimensions!)"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:889
+#: reference_overlay.xml:888
 #, no-c-format
 msgid ""
 "select ST_AsEWKT(ST_Union(geom))\n"
@@ -1413,13 +1406,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:890
+#: reference_overlay.xml:889
 #, no-c-format
 msgid "3d example not mixing dimensions"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_overlay.xml:891
+#: reference_overlay.xml:890
 #, no-c-format
 msgid ""
 "select ST_AsEWKT(ST_Union(geom))\n"
@@ -1450,7 +1443,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:895
+#: reference_overlay.xml:894
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "

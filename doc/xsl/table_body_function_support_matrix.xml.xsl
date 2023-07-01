@@ -79,10 +79,10 @@
 									<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'geometry') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geometry')">
 										<entry>
 										<xsl:choose>
-											<xsl:when test="refsection/para/remark[@conformance='sfcgal_required']">
+											<xsl:when test="refsection/descendant::node()[@conformance='sfcgal_required']">
 												<xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/>
 											</xsl:when>
-											<xsl:when test="refsection/para/remark[@conformance='sfcgal_enhanced']">
+											<xsl:when test="refsection/descendant::node()[@conformance='sfcgal_enhanced']">
 												<xsl:value-of select="$matrix_sfcgal_enhanced" disable-output-escaping="yes"/>
 											</xsl:when>
 											<xsl:otherwise>
@@ -103,7 +103,7 @@
 								<!-- If at least one proto function accepts or returns a geography -->
 								<xsl:choose>
 									<!-- Support via geometry transform hack -->
-									<xsl:when test="refsection/para/remark[@conformance='geography_transform']">
+									<xsl:when test="refsection/descendant::node()[@conformance='geography_transform']">
 										<entry><xsl:value-of select="$matrix_transform" disable-output-escaping="yes"/></entry>
 									</xsl:when>
 									<!-- direct support -->
@@ -119,14 +119,14 @@
 								<!-- If at least one paragraph contains support 3d -->
 								<xsl:choose>
 									<!-- supports -->
-									<xsl:when test="refsection/para/remark[@conformance='3d']">
+									<xsl:when test="refsection/descendant::node()[@conformance='3d']">
 										<!-- if 3d denote if it needs sfcgal -->
 										<entry>
 										<xsl:choose>
-											<xsl:when test="refsection/para/remark[@conformance='sfcgal_required']">
+											<xsl:when test="refsection/descendant::node()[@conformance='sfcgal_required']">
 												<xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/>
 											</xsl:when>
-											<xsl:when test="refsection/para/remark[@conformance='sfcgal_enhanced']">
+											<xsl:when test="refsection/descendant::node()[@conformance='sfcgal_enhanced']">
 												<xsl:value-of select="$matrix_sfcgal_enhanced" disable-output-escaping="yes"/>
 											</xsl:when>
 											<xsl:otherwise>
@@ -144,7 +144,7 @@
 								<!-- Support for Curve -->
 								<xsl:choose>
 									<!-- supports -->
-									<xsl:when test="refsection/para/remark[@conformance='curve']">
+									<xsl:when test="refsection/descendant::node()[@conformance='curve']">
 										<entry><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></entry>
 									</xsl:when>
 									<!-- no support -->
@@ -155,13 +155,13 @@
 								<!-- SQL MM compliance -->
 								<xsl:choose>
 									<!-- supports -->
-									<xsl:when test="refsection/para/remark[@conformance='sqlmm']">
+									<xsl:when test="refsection/descendant::node()[@conformance='sqlmm']">
 										<entry>
 										<xsl:choose>
-											<xsl:when test="refsection/para/remark[@conformance='sfcgal_required']">
+											<xsl:when test="refsection/descendant::node()[@conformance='sfcgal_required']">
 												<xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/>
 											</xsl:when>
-											<xsl:when test="refsection/para/remark[@conformance='sfcgal_enhanced']">
+											<xsl:when test="refsection/descendant::node()[@conformance='sfcgal_enhanced']">
 												<xsl:value-of select="$matrix_sfcgal_enhanced" disable-output-escaping="yes"/>
 											</xsl:when>
 											<xsl:otherwise>
@@ -178,13 +178,13 @@
 							<!-- Polyhedral surface support -->
 								<xsl:choose>
 									<!-- supports -->
-									<xsl:when test="refsection/para/remark[@conformance='polyhedral']">
+									<xsl:when test="refsection/descendant::node()[@conformance='polyhedral']">
 										<entry>
 										<xsl:choose>
-											<xsl:when test="refsection/para/remark[@conformance='sfcgal_required']">
+											<xsl:when test="refsection/descendant::node()[@conformance='sfcgal_required']">
 												<xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/>
 											</xsl:when>
-											<xsl:when test="refsection/para/remark[@conformance='sfcgal_enhanced']">
+											<xsl:when test="refsection/descendant::node()[@conformance='sfcgal_enhanced']">
 												<xsl:value-of select="$matrix_sfcgal_enhanced" disable-output-escaping="yes"/>
 											</xsl:when>
 											<xsl:otherwise>
@@ -201,13 +201,13 @@
 							<!-- Triangle and TIN surface support -->
 								<xsl:choose>
 									<!-- supports -->
-									<xsl:when test="refsection/para/remark[@conformance='triangle']">
+									<xsl:when test="refsection/descendant::node()[@conformance='triangle']">
 										<entry>
 										<xsl:choose>
-											<xsl:when test="refsection/para/remark[@conformance='sfcgal_required']">
+											<xsl:when test="refsection/descendant::node()[@conformance='sfcgal_required']">
 												<xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/>
 											</xsl:when>
-											<xsl:when test="refsection/para/remark[@conformance='sfcgal_enhanced']">
+											<xsl:when test="refsection/descendant::node()[@conformance='sfcgal_enhanced']">
 												<xsl:value-of select="$matrix_sfcgal_enhanced" disable-output-escaping="yes"/>
 											</xsl:when>
 											<xsl:otherwise>

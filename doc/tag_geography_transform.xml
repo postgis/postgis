@@ -2,7 +2,5 @@
 <inlinemediaobject>
    <imageobject><imagedata fileref='images/matrix_transform.png' /></imageobject>
 </inlinemediaobject>
-
-This method is not a native method for geography and relies on geometry
-with reprojection to arrive at answers.
 </remark>
+For geography this is a thin wrapper around the geometry implementation.

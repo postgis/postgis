@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-06-28 00:36+0000\n"
+"POT-Creation-Date: 2023-07-01 21:37+0000\n"
 "PO-Revision-Date: 2023-06-28 08:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -61,10 +61,10 @@ msgstr ""
 
 #. Tag: title
 #: reference_overlay.xml:31 reference_overlay.xml:80 reference_overlay.xml:192
-#: reference_overlay.xml:273 reference_overlay.xml:327
-#: reference_overlay.xml:390 reference_overlay.xml:519
-#: reference_overlay.xml:635 reference_overlay.xml:727
-#: reference_overlay.xml:822
+#: reference_overlay.xml:272 reference_overlay.xml:326
+#: reference_overlay.xml:389 reference_overlay.xml:518
+#: reference_overlay.xml:634 reference_overlay.xml:726
+#: reference_overlay.xml:821
 #, no-c-format
 msgid "Description"
 msgstr "説明"
@@ -84,23 +84,23 @@ msgstr ""
 "かも知れません)。"
 
 #. Tag: para
-#: reference_overlay.xml:40 reference_overlay.xml:344 reference_overlay.xml:544
-#: reference_overlay.xml:862
+#: reference_overlay.xml:40 reference_overlay.xml:343 reference_overlay.xml:543
+#: reference_overlay.xml:861
 #, no-c-format
 msgid "Performed by the GEOS module."
 msgstr "GEOSモジュールで実現しています。"
 
 #. Tag: para
-#: reference_overlay.xml:42 reference_overlay.xml:545
+#: reference_overlay.xml:42 reference_overlay.xml:544
 #, no-c-format
 msgid "Availability: 2.2.0"
 msgstr "Availability: 2.2.0"
 
 #. Tag: title
-#: reference_overlay.xml:47 reference_overlay.xml:106 reference_overlay.xml:230
-#: reference_overlay.xml:294 reference_overlay.xml:353
-#: reference_overlay.xml:418 reference_overlay.xml:551
-#: reference_overlay.xml:661 reference_overlay.xml:883
+#: reference_overlay.xml:47 reference_overlay.xml:106 reference_overlay.xml:229
+#: reference_overlay.xml:293 reference_overlay.xml:352
+#: reference_overlay.xml:417 reference_overlay.xml:550
+#: reference_overlay.xml:660 reference_overlay.xml:882
 #, no-c-format
 msgid "Examples"
 msgstr "例"
@@ -116,11 +116,11 @@ msgstr ""
 "SELECT ST_ClipByBox2D(the_geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;"
 
 #. Tag: title
-#: reference_overlay.xml:51 reference_overlay.xml:147 reference_overlay.xml:249
-#: reference_overlay.xml:301 reference_overlay.xml:365
-#: reference_overlay.xml:494 reference_overlay.xml:605
-#: reference_overlay.xml:702 reference_overlay.xml:773
-#: reference_overlay.xml:894
+#: reference_overlay.xml:51 reference_overlay.xml:147 reference_overlay.xml:248
+#: reference_overlay.xml:300 reference_overlay.xml:364
+#: reference_overlay.xml:493 reference_overlay.xml:604
+#: reference_overlay.xml:701 reference_overlay.xml:772
+#: reference_overlay.xml:893
 #, no-c-format
 msgid "See Also"
 msgstr "関連情報"
@@ -188,8 +188,8 @@ msgstr ""
 "ST_Difference(A, B)は常にAの一部を返します。"
 
 #. Tag: para
-#: reference_overlay.xml:90 reference_overlay.xml:201 reference_overlay.xml:643
-#: reference_overlay.xml:757
+#: reference_overlay.xml:90 reference_overlay.xml:201 reference_overlay.xml:642
+#: reference_overlay.xml:756
 #, no-c-format
 msgid ""
 "If the optional <code>gridSize</code> argument is provided, the inputs are "
@@ -201,22 +201,22 @@ msgstr ""
 "(GEOS-3.9.0以上が必要)。"
 
 #. Tag: para
-#: reference_overlay.xml:96 reference_overlay.xml:217 reference_overlay.xml:649
+#: reference_overlay.xml:96 reference_overlay.xml:217 reference_overlay.xml:648
 #, no-c-format
 msgid "Performed by the GEOS module"
 msgstr "GEOSモジュールで実現しています。"
 
 #. Tag: para
-#: reference_overlay.xml:97 reference_overlay.xml:219 reference_overlay.xml:651
-#: reference_overlay.xml:765 reference_overlay.xml:870
+#: reference_overlay.xml:97 reference_overlay.xml:219 reference_overlay.xml:650
+#: reference_overlay.xml:764 reference_overlay.xml:869
 #, no-c-format
 msgid "Enhanced: 3.1.0 accept a gridSize parameter - requires GEOS &gt;= 3.9.0"
 msgstr ""
 "Enhanced: 3.1.0 gridSizeパラメータを受け付けます - GEOS 3.9.0以上が必要です。"
 
 #. Tag: para
-#: reference_overlay.xml:99 reference_overlay.xml:223 reference_overlay.xml:653
-#: reference_overlay.xml:874
+#: reference_overlay.xml:99 reference_overlay.xml:223 reference_overlay.xml:652
+#: reference_overlay.xml:873
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.3"
 msgstr "&sfs_compliant; s2.1.1.3"
@@ -229,8 +229,8 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.20"
 
 #. Tag: para
 #: reference_overlay.xml:101 reference_overlay.xml:225
-#: reference_overlay.xml:288 reference_overlay.xml:655
-#: reference_overlay.xml:763 reference_overlay.xml:878
+#: reference_overlay.xml:287 reference_overlay.xml:654
+#: reference_overlay.xml:762 reference_overlay.xml:877
 #, no-c-format
 msgid ""
 "&Z_support; However, the result is computed using XY only. The result Z "
@@ -314,7 +314,7 @@ msgstr ""
 "MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)"
 
 #. Tag: para
-#: reference_overlay.xml:149 reference_overlay.xml:704
+#: reference_overlay.xml:149 reference_overlay.xml:703
 #, no-c-format
 msgid ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
 msgstr ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
@@ -395,18 +395,13 @@ msgstr ""
 #: reference_overlay.xml:210
 #, no-c-format
 msgid ""
-"Geography: For geography this is really a thin wrapper around the geometry "
-"implementation. It first determines the best SRID that fits the bounding box "
-"of the 2 geography objects (if geography objects are within one half zone "
-"UTM but not same UTM will pick one of those) (favoring UTM or Lambert "
-"Azimuthal Equal Area (LAEA) north/south pole, and falling back on mercator "
-"in worst case scenario) and then intersection in that best fit planar "
-"spatial ref and retransforms back to WGS84 geography."
+"&geography_transform; It first determines the best SRID that fits the "
+"bounding box of the 2 geography objects (if geography objects are within one "
+"half zone UTM but not same UTM will pick one of those) (favoring UTM or "
+"Lambert Azimuthal Equal Area (LAEA) north/south pole, and falling back on "
+"mercator in worst case scenario) and then intersection in that best fit "
+"planar spatial ref and retransforms back to WGS84 geography."
 msgstr ""
-"ジオグラフィ: ジオメトリ実装にかぶさる、薄いラッパです。ジオグラフィオブジェ"
-"クトのバウンディングボックスに最適なSRIDを決定し (UTMが望ましいですが、ランベ"
-"ルト正積方位図法 (北/南)、最悪のシナリオでメルカトルに頼ります)、その平面で"
-"バッファを生成し、WGS84ジオグラフィに戻します。"
 
 #. Tag: para
 #: reference_overlay.xml:213
@@ -429,7 +424,7 @@ msgstr ""
 "動作しますが、Z値は平均化されます。"
 
 #. Tag: para
-#: reference_overlay.xml:220 reference_overlay.xml:871
+#: reference_overlay.xml:220 reference_overlay.xml:870
 #, no-c-format
 msgid "Changed: 3.0.0 does not depend on SFCGAL."
 msgstr "Changed: 3.0.0 SFCGAL非依存になりました。"
@@ -446,14 +441,8 @@ msgstr "Availability: 1.5 ジオグラフィ型が導入されました。"
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.18"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.18"
 
-#. Tag: para
-#: reference_overlay.xml:227
-#, no-c-format
-msgid "&geography_transform;"
-msgstr "&geography_transform;"
-
 #. Tag: programlisting
-#: reference_overlay.xml:231
+#: reference_overlay.xml:230
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, "
@@ -481,7 +470,7 @@ msgstr ""
 "POINT(0 0)"
 
 #. Tag: para
-#: reference_overlay.xml:232
+#: reference_overlay.xml:231
 #, no-c-format
 msgid ""
 "Clip all lines (trails) by country. Here we assume country geom are POLYGON "
@@ -499,7 +488,7 @@ msgstr ""
 "ゴンでも動作します。"
 
 #. Tag: programlisting
-#: reference_overlay.xml:237
+#: reference_overlay.xml:236
 #, no-c-format
 msgid ""
 "select clipped.gid, clipped.f_name, clipped_geom\n"
@@ -523,7 +512,7 @@ msgstr ""
 "where ST_Dimension(clipped.clipped_geom) = 1;"
 
 #. Tag: para
-#: reference_overlay.xml:238
+#: reference_overlay.xml:237
 #, no-c-format
 msgid ""
 "For polys e.g. polygon landmarks, you can also use the sometimes faster hack "
@@ -539,7 +528,7 @@ msgstr ""
 "クションでなくなります)。"
 
 #. Tag: programlisting
-#: reference_overlay.xml:240
+#: reference_overlay.xml:239
 #, no-c-format
 msgid ""
 "select poly.gid,\n"
@@ -567,13 +556,13 @@ msgstr ""
 "0.0));"
 
 #. Tag: title
-#: reference_overlay.xml:244
+#: reference_overlay.xml:243
 #, no-c-format
 msgid "Examples: 2.5Dish"
 msgstr "例: 2.5次元的なもの"
 
 #. Tag: para
-#: reference_overlay.xml:245
+#: reference_overlay.xml:244
 #, no-c-format
 msgid ""
 "Note this is not a true intersection, compare to the same example using "
@@ -583,7 +572,7 @@ msgstr ""
 "linkend=\"ST_3DIntersection\"/>の同じ例と比較して下さい。"
 
 #. Tag: programlisting
-#: reference_overlay.xml:246
+#: reference_overlay.xml:245
 #, no-c-format
 msgid ""
 "select ST_AsText(ST_Intersection(linestring, polygon)) As wkt\n"
@@ -607,7 +596,7 @@ msgstr ""
 " LINESTRING Z (1 1 8,0.5 0.5 8,0 0 10)"
 
 #. Tag: para
-#: reference_overlay.xml:250
+#: reference_overlay.xml:249
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
@@ -621,13 +610,13 @@ msgstr ""
 "linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
 
 #. Tag: refname
-#: reference_overlay.xml:257
+#: reference_overlay.xml:256
 #, no-c-format
 msgid "ST_MemUnion"
 msgstr "ST_MemUnion"
 
 #. Tag: refpurpose
-#: reference_overlay.xml:259
+#: reference_overlay.xml:258
 #, no-c-format
 msgid ""
 "Aggregate function which unions geometries in a memory-efficent but slower "
@@ -637,7 +626,7 @@ msgstr ""
 "のです。"
 
 #. Tag: funcprototype
-#: reference_overlay.xml:264
+#: reference_overlay.xml:263
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MemUnion</function></funcdef> "
@@ -649,7 +638,7 @@ msgstr ""
 "paramdef>"
 
 #. Tag: para
-#: reference_overlay.xml:275
+#: reference_overlay.xml:274
 #, no-c-format
 msgid ""
 "An aggregate function that unions the input geometries, merging them to "
@@ -661,7 +650,7 @@ msgstr ""
 "れにかなる可能性があります。"
 
 #. Tag: para
-#: reference_overlay.xml:281
+#: reference_overlay.xml:280
 #, no-c-format
 msgid ""
 "Produces the same result as <xref linkend=\"ST_Union\"/>, but uses less "
@@ -676,7 +665,7 @@ msgstr ""
 "反対です。"
 
 #. Tag: programlisting
-#: reference_overlay.xml:296
+#: reference_overlay.xml:295
 #, no-c-format
 msgid ""
 "SELECT id,\n"
@@ -690,19 +679,19 @@ msgstr ""
 "GROUP BY id;"
 
 #. Tag: refname
-#: reference_overlay.xml:309
+#: reference_overlay.xml:308
 #, no-c-format
 msgid "ST_Node"
 msgstr "ST_Node"
 
 #. Tag: refpurpose
-#: reference_overlay.xml:311
+#: reference_overlay.xml:310
 #, no-c-format
 msgid "Nodes a collection of lines."
 msgstr "ラインストリングの集合にノードを作成します。"
 
 #. Tag: funcprototype
-#: reference_overlay.xml:318
+#: reference_overlay.xml:317
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Node</function></funcdef> "
@@ -712,7 +701,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
-#: reference_overlay.xml:329
+#: reference_overlay.xml:328
 #, no-c-format
 msgid ""
 "Returns a (Multi)LineString representing the fully noded version of a "
@@ -726,7 +715,7 @@ msgstr ""
 "れます)。"
 
 #. Tag: para
-#: reference_overlay.xml:336
+#: reference_overlay.xml:335
 #, no-c-format
 msgid ""
 "This is a good way to create fully-noded linework suitable for use as input "
@@ -736,7 +725,7 @@ msgstr ""
 "線を生成する良い方法です。"
 
 #. Tag: para
-#: reference_overlay.xml:338
+#: reference_overlay.xml:337
 #, no-c-format
 msgid ""
 "can also be used to node and dissolve linework. It provides an option to "
@@ -748,19 +737,19 @@ msgstr ""
 "いては<xref linkend=\"ST_Union\"/>をご覧下さい。"
 
 #. Tag: para
-#: reference_overlay.xml:343
+#: reference_overlay.xml:342
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
 #. Tag: para
-#: reference_overlay.xml:345 reference_overlay.xml:766
+#: reference_overlay.xml:344 reference_overlay.xml:765
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr "Availability: 2.0.0"
 
 #. Tag: para
-#: reference_overlay.xml:347
+#: reference_overlay.xml:346
 #, no-c-format
 msgid ""
 "Changed: 2.4.0 this function uses GEOSNode internally instead of "
@@ -772,13 +761,13 @@ msgstr ""
 "も知れません。"
 
 #. Tag: para
-#: reference_overlay.xml:354
+#: reference_overlay.xml:353
 #, no-c-format
 msgid "Noding a 3D LineString which self-intersects"
 msgstr "自己交差する3次元ラインストリグにノードを加えます。"
 
 #. Tag: programlisting
-#: reference_overlay.xml:355
+#: reference_overlay.xml:354
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -798,7 +787,7 @@ msgstr ""
 "4.5,10 0 3))"
 
 #. Tag: para
-#: reference_overlay.xml:357
+#: reference_overlay.xml:356
 #, no-c-format
 msgid ""
 "Noding two LineStrings which share common linework. Note that the result "
@@ -808,7 +797,7 @@ msgstr ""
 "れます。"
 
 #. Tag: programlisting
-#: reference_overlay.xml:359
+#: reference_overlay.xml:358
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -828,19 +817,19 @@ msgstr ""
 "MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))"
 
 #. Tag: para
-#: reference_overlay.xml:367 reference_overlay.xml:495
+#: reference_overlay.xml:366 reference_overlay.xml:494
 #, no-c-format
 msgid ", <xref linkend=\"ST_Union\"/>"
 msgstr ", <xref linkend=\"ST_Union\"/>"
 
 #. Tag: refname
-#: reference_overlay.xml:375
+#: reference_overlay.xml:374
 #, no-c-format
 msgid "ST_Split"
 msgstr "ST_Split"
 
 #. Tag: refpurpose
-#: reference_overlay.xml:376
+#: reference_overlay.xml:375
 #, no-c-format
 msgid ""
 "Returns a collection of geometries created by splitting a geometry by "
@@ -850,7 +839,7 @@ msgstr ""
 "す。"
 
 #. Tag: funcprototype
-#: reference_overlay.xml:381
+#: reference_overlay.xml:380
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Split</function></funcdef> "
@@ -862,7 +851,7 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>"
 
 #. Tag: para
-#: reference_overlay.xml:391
+#: reference_overlay.xml:390
 #, no-c-format
 msgid ""
 "The function supports splitting a LineString by a (Multi)Point, "
@@ -877,7 +866,7 @@ msgstr ""
 "ジオメトリは常にコレクションです。"
 
 #. Tag: para
-#: reference_overlay.xml:399
+#: reference_overlay.xml:398
 #, no-c-format
 msgid ""
 "This function is in a sense the opposite of <xref linkend=\"ST_Union\"/>. "
@@ -890,7 +879,7 @@ msgstr ""
 "ために確実に同じになるものではありません)。"
 
 #. Tag: para
-#: reference_overlay.xml:405
+#: reference_overlay.xml:404
 #, no-c-format
 msgid ""
 "If the the input and blade do not intersect due to numerical precision "
@@ -904,13 +893,13 @@ msgstr ""
 "かも知れません。"
 
 #. Tag: para
-#: reference_overlay.xml:412
+#: reference_overlay.xml:411
 #, no-c-format
 msgid "Availability: 2.0.0 requires GEOS"
 msgstr "Availability: 2.0.0 GEOSが必要です"
 
 #. Tag: para
-#: reference_overlay.xml:413
+#: reference_overlay.xml:412
 #, no-c-format
 msgid ""
 "Enhanced: 2.2.0 support for splitting a line by a multiline, a multipoint or "
@@ -920,7 +909,7 @@ msgstr ""
 "はマルチポリゴンの境界で行えるようにしました。"
 
 #. Tag: para
-#: reference_overlay.xml:414
+#: reference_overlay.xml:413
 #, no-c-format
 msgid ""
 "Enhanced: 2.5.0 support for splitting a polygon by a multiline was "
@@ -929,25 +918,25 @@ msgstr ""
 "Enhanced: 2.5.0 マルチラインによるポリゴンの分割に対応するようになりました。"
 
 #. Tag: para
-#: reference_overlay.xml:419
+#: reference_overlay.xml:418
 #, no-c-format
 msgid "Split a Polygon by a Line."
 msgstr "ラインでポリゴンを分割します。"
 
 #. Tag: para
-#: reference_overlay.xml:431 reference_overlay.xml:465
+#: reference_overlay.xml:430 reference_overlay.xml:464
 #, no-c-format
 msgid "Before Split"
 msgstr "分割前"
 
 #. Tag: para
-#: reference_overlay.xml:443 reference_overlay.xml:477
+#: reference_overlay.xml:442 reference_overlay.xml:476
 #, no-c-format
 msgid "After split"
 msgstr "分割後"
 
 #. Tag: programlisting
-#: reference_overlay.xml:452
+#: reference_overlay.xml:451
 #, no-c-format
 msgid ""
 "SELECT ST_AsText( ST_Split(\n"
@@ -975,7 +964,7 @@ msgstr ""
 ")"
 
 #. Tag: para
-#: reference_overlay.xml:453
+#: reference_overlay.xml:452
 #, no-c-format
 msgid ""
 "Split a MultiLineString a Point, where the point lies exactly on both "
@@ -985,7 +974,7 @@ msgstr ""
 "ングの要素の上に存在しています。"
 
 #. Tag: programlisting
-#: reference_overlay.xml:486
+#: reference_overlay.xml:485
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Split(\n"
@@ -1015,7 +1004,7 @@ msgstr ""
 ")"
 
 #. Tag: para
-#: reference_overlay.xml:488
+#: reference_overlay.xml:487
 #, no-c-format
 msgid ""
 "Split a LineString by a Point, where the point does not lie exactly on the "
@@ -1027,7 +1016,7 @@ msgstr ""
 "ています。"
 
 #. Tag: programlisting
-#: reference_overlay.xml:491
+#: reference_overlay.xml:490
 #, no-c-format
 msgid ""
 "WITH data AS (SELECT\n"
@@ -1063,19 +1052,19 @@ msgstr ""
 "GEOMETRYCOLLECTION(LINESTRING(0 0,100 100))"
 
 #. Tag: refname
-#: reference_overlay.xml:503
+#: reference_overlay.xml:502
 #, no-c-format
 msgid "ST_Subdivide"
 msgstr "ST_Subdivide"
 
 #. Tag: refpurpose
-#: reference_overlay.xml:504
+#: reference_overlay.xml:503
 #, no-c-format
 msgid "Computes a rectilinear subdivision of a geometry."
 msgstr "ジオメトリの線の分割を計算します。"
 
 #. Tag: funcprototype
-#: reference_overlay.xml:509
+#: reference_overlay.xml:508
 #, no-c-format
 msgid ""
 "<funcdef>setof geometry <function>ST_Subdivide</function></funcdef> "
@@ -1091,7 +1080,7 @@ msgstr ""
 "-1</parameter></paramdef>"
 
 #. Tag: para
-#: reference_overlay.xml:521
+#: reference_overlay.xml:520
 #, no-c-format
 msgid ""
 "Returns a set of geometries that are the result of dividing <varname>geom</"
@@ -1102,7 +1091,7 @@ msgstr ""
 "は<code>max_vertices</code>以下の頂点になります。"
 
 #. Tag: para
-#: reference_overlay.xml:526
+#: reference_overlay.xml:525
 #, no-c-format
 msgid ""
 "<code>max_vertices</code> must be 5 or more, as 5 points are needed to "
@@ -1114,7 +1103,7 @@ msgstr ""
 "(GEOS 3.9.0以上が必要)。"
 
 #. Tag: para
-#: reference_overlay.xml:530
+#: reference_overlay.xml:529
 #, no-c-format
 msgid ""
 "Point-in-polygon and other spatial operations are normally faster for "
@@ -1131,7 +1120,7 @@ msgstr ""
 "が速くなります。"
 
 #. Tag: para
-#: reference_overlay.xml:537
+#: reference_overlay.xml:536
 #, no-c-format
 msgid ""
 "This is a <ulink url=\"https://www.postgresql.org/docs/current/queries-table-"
@@ -1146,7 +1135,7 @@ msgstr ""
 "オメトリごとに一つのレコードとなる結果集合を生成できます。"
 
 #. Tag: para
-#: reference_overlay.xml:546
+#: reference_overlay.xml:545
 #, no-c-format
 msgid ""
 "Enhanced: 2.5.0 reuses existing points on polygon split, vertex count is "
@@ -1156,7 +1145,7 @@ msgstr ""
 "ら5に変更。"
 
 #. Tag: para
-#: reference_overlay.xml:547
+#: reference_overlay.xml:546
 #, no-c-format
 msgid ""
 "Enhanced: 3.1.0 accept a gridSize parameter, requires GEOS &gt;= 3.9.0 to "
@@ -1166,7 +1155,7 @@ msgstr ""
 "以上が必要です。"
 
 #. Tag: para
-#: reference_overlay.xml:553
+#: reference_overlay.xml:552
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Subdivide a polygon into parts "
@@ -1176,13 +1165,13 @@ msgstr ""
 "ポリゴンの分割と、個々に一意のIDの割り当て。"
 
 #. Tag: para
-#: reference_overlay.xml:563
+#: reference_overlay.xml:562
 #, no-c-format
 msgid "Subdivided to maximum 10 vertices"
 msgstr "最大10頂点での分割"
 
 #. Tag: programlisting
-#: reference_overlay.xml:566
+#: reference_overlay.xml:565
 #, no-c-format
 msgid ""
 "SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt\n"
@@ -1204,7 +1193,7 @@ msgstr ""
 "geometry,10))  AS f(geom);"
 
 #. Tag: screen
-#: reference_overlay.xml:567
+#: reference_overlay.xml:566
 #, no-c-format
 msgid ""
 "rn │                                                      wkt\n"
@@ -1232,7 +1221,7 @@ msgstr ""
 "100,114 100,114 184))"
 
 #. Tag: para
-#: reference_overlay.xml:569
+#: reference_overlay.xml:568
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Densify a long geography line "
@@ -1244,13 +1233,13 @@ msgstr ""
 "頂点の分割線への分割を行います。"
 
 #. Tag: para
-#: reference_overlay.xml:578
+#: reference_overlay.xml:577
 #, no-c-format
 msgid "The densified and split lines."
 msgstr "ラインの緻密化と分割。"
 
 #. Tag: programlisting
-#: reference_overlay.xml:581
+#: reference_overlay.xml:580
 #, no-c-format
 msgid ""
 "SELECT ST_AsText( ST_Subdivide(\n"
@@ -1262,7 +1251,7 @@ msgstr ""
 "                          1200000)::geometry,    8));"
 
 #. Tag: screen
-#: reference_overlay.xml:582
+#: reference_overlay.xml:581
 #, no-c-format
 msgid ""
 "LINESTRING(0 0,0.487578359029357 5.57659056746196,0.984542144675897 "
@@ -1298,7 +1287,7 @@ msgstr ""
 "LINESTRING(44.7994523421035 82.5156766227011,85 85)"
 
 #. Tag: para
-#: reference_overlay.xml:584
+#: reference_overlay.xml:583
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Subdivide the complex geometries "
@@ -1311,7 +1300,7 @@ msgstr ""
 "果ジオメトリが代わりの新しいレコードになります。"
 
 #. Tag: programlisting
-#: reference_overlay.xml:590
+#: reference_overlay.xml:589
 #, no-c-format
 msgid ""
 "WITH complex_areas_to_subdivide AS (\n"
@@ -1335,7 +1324,7 @@ msgstr ""
 "    FROM complex_areas_to_subdivide;"
 
 #. Tag: para
-#: reference_overlay.xml:592
+#: reference_overlay.xml:591
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Create a new table containing "
@@ -1351,7 +1340,7 @@ msgstr ""
 "す。"
 
 #. Tag: programlisting
-#: reference_overlay.xml:601
+#: reference_overlay.xml:600
 #, no-c-format
 msgid ""
 "CREATE TABLE subdivided_geoms AS\n"
@@ -1363,7 +1352,7 @@ msgstr ""
 "    FROM original_geoms;"
 
 #. Tag: para
-#: reference_overlay.xml:606
+#: reference_overlay.xml:605
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
@@ -1373,13 +1362,13 @@ msgstr ""
 "linkend=\"ST_NPoints\"/>"
 
 #. Tag: refname
-#: reference_overlay.xml:617
+#: reference_overlay.xml:616
 #, no-c-format
 msgid "ST_SymDifference"
 msgstr "ST_SymDifference"
 
 #. Tag: refpurpose
-#: reference_overlay.xml:619
+#: reference_overlay.xml:618
 #, no-c-format
 msgid ""
 "Computes a geometry representing the portions of geometries A and B that do "
@@ -1389,7 +1378,7 @@ msgstr ""
 "します。"
 
 #. Tag: funcprototype
-#: reference_overlay.xml:625
+#: reference_overlay.xml:624
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SymDifference</function></funcdef> "
@@ -1405,7 +1394,7 @@ msgstr ""
 "parameter></paramdef>"
 
 #. Tag: para
-#: reference_overlay.xml:637
+#: reference_overlay.xml:636
 #, no-c-format
 msgid ""
 "Returns a geometry representing the portions of geonetries A and B that do "
@@ -1419,25 +1408,25 @@ msgstr ""
 "ST_Intersection(A,B)</code>だからです。"
 
 #. Tag: para
-#: reference_overlay.xml:654
+#: reference_overlay.xml:653
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.21"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.21"
 
 #. Tag: para
-#: reference_overlay.xml:674
+#: reference_overlay.xml:673
 #, no-c-format
 msgid "The original linestrings shown together"
 msgstr "二つある元のラインストリングの両方"
 
 #. Tag: para
-#: reference_overlay.xml:686
+#: reference_overlay.xml:685
 #, no-c-format
 msgid "The symmetric difference of the two linestrings"
 msgstr "二つのラインストリングの対称差"
 
 #. Tag: programlisting
-#: reference_overlay.xml:695
+#: reference_overlay.xml:694
 #, no-c-format
 msgid ""
 "--Safe for 2d - symmetric difference of 2 linestrings\n"
@@ -1465,7 +1454,7 @@ msgstr ""
 "MULTILINESTRING((50 150,50 200),(50 50,50 100))"
 
 #. Tag: programlisting
-#: reference_overlay.xml:697
+#: reference_overlay.xml:696
 #, no-c-format
 msgid ""
 "--When used in 3d doesn't quite do the right thing\n"
@@ -1487,19 +1476,19 @@ msgstr ""
 "MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))"
 
 #. Tag: refname
-#: reference_overlay.xml:710
+#: reference_overlay.xml:709
 #, no-c-format
 msgid "ST_UnaryUnion"
 msgstr "ST_UnaryUnion"
 
 #. Tag: refpurpose
-#: reference_overlay.xml:712
+#: reference_overlay.xml:711
 #, no-c-format
 msgid "Computes the union of the components of a single geometry."
 msgstr "単一のジオメトリの要素の結合を計算します。"
 
 #. Tag: funcprototype
-#: reference_overlay.xml:717
+#: reference_overlay.xml:716
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_UnaryUnion</function></funcdef> "
@@ -1513,7 +1502,7 @@ msgstr ""
 "parameter></paramdef>"
 
 #. Tag: para
-#: reference_overlay.xml:729
+#: reference_overlay.xml:728
 #, no-c-format
 msgid ""
 "A single-input variant of <xref linkend=\"ST_Union\"/>. The input may be a "
@@ -1525,7 +1514,7 @@ msgstr ""
 "ントに適用されます。"
 
 #. Tag: para
-#: reference_overlay.xml:734
+#: reference_overlay.xml:733
 #, no-c-format
 msgid ""
 "This function can be used to fix MultiPolygons which are invalid due to "
@@ -1539,7 +1528,7 @@ msgstr ""
 "<xref linkend=\"ST_MakeValid\"/>を使う方が良いかも知れません。"
 
 #. Tag: para
-#: reference_overlay.xml:742
+#: reference_overlay.xml:741
 #, no-c-format
 msgid ""
 "Another use of this function is to node and dissolve a collection of "
@@ -1553,7 +1542,7 @@ msgstr ""
 "数<code>gridSize</code>を与えることができません。)"
 
 #. Tag: para
-#: reference_overlay.xml:750
+#: reference_overlay.xml:749
 #, no-c-format
 msgid ""
 "It is possible to combine ST_UnaryUnion with <xref linkend=\"ST_Collect\"/> "
@@ -1567,7 +1556,7 @@ msgstr ""
 "が得られます。"
 
 #. Tag: para
-#: reference_overlay.xml:775
+#: reference_overlay.xml:774
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, <xref "
@@ -1577,20 +1566,20 @@ msgstr ""
 "linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>"
 
 #. Tag: refname
-#: reference_overlay.xml:787
+#: reference_overlay.xml:786
 #, no-c-format
 msgid "ST_Union"
 msgstr "ST_Union"
 
 #. Tag: refpurpose
-#: reference_overlay.xml:788
+#: reference_overlay.xml:787
 #, no-c-format
 msgid ""
 "Computes a geometry representing the point-set union of the input geometries."
 msgstr "入力ジオメトリのポイント集合の結合を表現するジオメトリを返します。"
 
 #. Tag: funcsynopsis
-#: reference_overlay.xml:793
+#: reference_overlay.xml:792
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Union</function></funcdef> "
@@ -1628,7 +1617,7 @@ msgstr ""
 "<parameter>gridSize</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_overlay.xml:823
+#: reference_overlay.xml:822
 #, no-c-format
 msgid ""
 "Unions the input geometries, merging geometry to produce a result geometry "
@@ -1640,7 +1629,7 @@ msgstr ""
 "可能性があります。次の通り複数の形式があります。"
 
 #. Tag: para
-#: reference_overlay.xml:828
+#: reference_overlay.xml:827
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Two-input variant:</emphasis> returns a geometry "
@@ -1651,7 +1640,7 @@ msgstr ""
 "オメトリを返します。いずれかの入力がNULLの場合にはNULLを返します。"
 
 #. Tag: para
-#: reference_overlay.xml:833
+#: reference_overlay.xml:832
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Array variant:</emphasis> returns a geometry that is "
@@ -1661,7 +1650,7 @@ msgstr ""
 "リを返します。"
 
 #. Tag: para
-#: reference_overlay.xml:837
+#: reference_overlay.xml:836
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Aggregate variant:</emphasis> returns a geometry "
@@ -1676,7 +1665,7 @@ msgstr ""
 "約関数と同じようにNULLジオメトリを無視します。"
 
 #. Tag: para
-#: reference_overlay.xml:844
+#: reference_overlay.xml:843
 #, no-c-format
 msgid ""
 "See <xref linkend=\"ST_UnaryUnion\"/> for a non-aggregate, single-input "
@@ -1686,7 +1675,7 @@ msgstr ""
 "下さい。"
 
 #. Tag: para
-#: reference_overlay.xml:846
+#: reference_overlay.xml:845
 #, no-c-format
 msgid ""
 "The ST_Union array and set variants use the fast Cascaded Union algorithm "
@@ -1700,7 +1689,7 @@ msgstr ""
 "されている早いカスケード結合アルゴリズムを使っています。"
 
 #. Tag: para
-#: reference_overlay.xml:850
+#: reference_overlay.xml:849
 #, no-c-format
 msgid ""
 "A <code>gridSize</code> can be specified to work in fixed-precision space. "
@@ -1712,7 +1701,7 @@ msgstr ""
 "(GEOS-3.9.0以上が必要です)。"
 
 #. Tag: para
-#: reference_overlay.xml:856
+#: reference_overlay.xml:855
 #, no-c-format
 msgid ""
 "may sometimes be used in place of ST_Union, if the result is not required to "
@@ -1724,7 +1713,7 @@ msgstr ""
 "はST_Unionより早い動作速度になります。"
 
 #. Tag: para
-#: reference_overlay.xml:863
+#: reference_overlay.xml:862
 #, no-c-format
 msgid ""
 "ST_Union creates MultiLineString and does not sew LineStrings into a single "
@@ -1735,7 +1724,7 @@ msgstr ""
 "ます。"
 
 #. Tag: para
-#: reference_overlay.xml:866
+#: reference_overlay.xml:865
 #, no-c-format
 msgid ""
 "NOTE: this function was formerly called GeomUnion(), which was renamed from "
@@ -1745,7 +1734,7 @@ msgstr ""
 "した。UNIONはSQLの予約語であるためです。"
 
 #. Tag: para
-#: reference_overlay.xml:872
+#: reference_overlay.xml:871
 #, no-c-format
 msgid ""
 "Availability: 1.4.0 - ST_Union was enhanced. ST_Union(geomarray) was "
@@ -1755,13 +1744,13 @@ msgstr ""
 "され、PostgreSQLの高速なコレクションの集約が導入されました。"
 
 #. Tag: para
-#: reference_overlay.xml:875
+#: reference_overlay.xml:874
 #, no-c-format
 msgid "Aggregate version is not explicitly defined in OGC SPEC."
 msgstr "集約関数版は、OGC仕様に明示的に定義されていません。"
 
 #. Tag: para
-#: reference_overlay.xml:876
+#: reference_overlay.xml:875
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM 3: 5.1.19 the z-index (elevation) when polygons are "
@@ -1771,13 +1760,13 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#: reference_overlay.xml:884
+#: reference_overlay.xml:883
 #, no-c-format
 msgid "Aggregate example"
 msgstr "集約関数版の例"
 
 #. Tag: programlisting
-#: reference_overlay.xml:885
+#: reference_overlay.xml:884
 #, no-c-format
 msgid ""
 "SELECT id,\n"
@@ -1791,13 +1780,13 @@ msgstr ""
 "GROUP BY id;"
 
 #. Tag: para
-#: reference_overlay.xml:886
+#: reference_overlay.xml:885
 #, no-c-format
 msgid "Non-Aggregate example"
 msgstr "非集約関数の例"
 
 #. Tag: programlisting
-#: reference_overlay.xml:887
+#: reference_overlay.xml:886
 #, no-c-format
 msgid ""
 "select ST_AsText(ST_Union('POINT(1 2)' :: geometry, 'POINT(-2 3)' :: "
@@ -1829,13 +1818,13 @@ msgstr ""
 "POINT(1 2)"
 
 #. Tag: para
-#: reference_overlay.xml:888
+#: reference_overlay.xml:887
 #, no-c-format
 msgid "3D example - sort of supports 3D (and with mixed dimensions!)"
 msgstr "3次元の例 - 3次元 (かつ混合次元)の種類"
 
 #. Tag: programlisting
-#: reference_overlay.xml:889
+#: reference_overlay.xml:888
 #, no-c-format
 msgid ""
 "select ST_AsEWKT(ST_Union(geom))\n"
@@ -1873,13 +1862,13 @@ msgstr ""
 "5,-7.1 4.2 5,-7.1 4.3 5,-7 4.2 5)));"
 
 #. Tag: para
-#: reference_overlay.xml:890
+#: reference_overlay.xml:889
 #, no-c-format
 msgid "3d example not mixing dimensions"
 msgstr "3次元の例 - 混合次元なし"
 
 #. Tag: programlisting
-#: reference_overlay.xml:891
+#: reference_overlay.xml:890
 #, no-c-format
 msgid ""
 "select ST_AsEWKT(ST_Union(geom))\n"
@@ -1935,7 +1924,7 @@ msgstr ""
 "MULTILINESTRING((3 4,4 5),(1 2,3 4))"
 
 #. Tag: para
-#: reference_overlay.xml:895
+#: reference_overlay.xml:894
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
@@ -1945,6 +1934,25 @@ msgstr ""
 ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
 "linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
 "linkend=\"ST_SymDifference\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "Geography: For geography this is really a thin wrapper around the "
+#~ "geometry implementation. It first determines the best SRID that fits the "
+#~ "bounding box of the 2 geography objects (if geography objects are within "
+#~ "one half zone UTM but not same UTM will pick one of those) (favoring UTM "
+#~ "or Lambert Azimuthal Equal Area (LAEA) north/south pole, and falling back "
+#~ "on mercator in worst case scenario) and then intersection in that best "
+#~ "fit planar spatial ref and retransforms back to WGS84 geography."
+#~ msgstr ""
+#~ "ジオグラフィ: ジオメトリ実装にかぶさる、薄いラッパです。ジオグラフィオブ"
+#~ "ジェクトのバウンディングボックスに最適なSRIDを決定し (UTMが望ましいです"
+#~ "が、ランベルト正積方位図法 (北/南)、最悪のシナリオでメルカトルに頼りま"
+#~ "す)、その平面でバッファを生成し、WGS84ジオグラフィに戻します。"
+
+#, no-c-format
+#~ msgid "&geography_transform;"
+#~ msgstr "&geography_transform;"
 
 #, no-c-format
 #~ msgid ""
