@@ -3742,7 +3742,7 @@ msgstr "L'Est est l'azimut &#x03C0;/2 (90 degrés)"
 #: reference_measure.xml:1508
 #, no-c-format
 msgid "South is azimuth &#x03C0; (180 degrees)"
-msgstr "Le sud est l'azimut &#x03C0 ; (180 degrés)"
+msgstr "Le sud est l'azimut &#x03C0; (180 degrés)"
 
 #. Tag: para
 #: reference_measure.xml:1509
@@ -3757,7 +3757,7 @@ msgid ""
 "Negative azimuth values and values greater than 2&#x03C0; (360 degrees) are "
 "supported."
 msgstr ""
-"Les valeurs d'azimut négatives et les valeurs supérieures à 2&#x03C0 ; (360 "
+"Les valeurs d'azimut négatives et les valeurs supérieures à 2&#x03C0; (360 "
 "degrés) sont prises en charge."
 
 #. Tag: para

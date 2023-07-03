@@ -31,7 +31,9 @@ div.navfooter {
     color: white;
 }
 
-
+.remark {
+    background: white;
+}
 
 /* Phone width */
 @media (max-width: 40em) {

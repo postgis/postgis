@@ -1,6 +1,5 @@
 <remark conformance="geography_transform">
 <inlinemediaobject>
    <imageobject><imagedata fileref='images/matrix_transform.png' /></imageobject>
-</inlinemediaobject>
+</inlinemediaobject> For geography this is a thin wrapper around the geometry implementation.
 </remark>
-For geography this is a thin wrapper around the geometry implementation.
