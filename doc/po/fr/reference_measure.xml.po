@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-01 16:16+0000\n"
-"PO-Revision-Date: 2023-05-23 02:08+0000\n"
+"PO-Revision-Date: 2023-07-03 15:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_measurexml/fr/>\n"
@@ -3667,6 +3667,24 @@ msgid ""
 "<paramdef><type>float </type> <parameter>distance</parameter></paramdef> </"
 "funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_Project</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>distance</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>azimuth</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_Project</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>g1</parameter></paramdef> <paramdef><type>geometry </type> "
+"<parameter>g2</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>distance</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>geography <function>ST_Project</function></funcdef> "
+"<paramdef><type>geography </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>distance</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>azimuth</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geography "
+"<function>ST_Project</function></funcdef> <paramdef><type>geography </type> "
+"<parameter>g1</parameter></paramdef> <paramdef><type>geography </type> "
+"<parameter>g2</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>distance</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_measure.xml:1500
@@ -3675,6 +3693,9 @@ msgid ""
 "Returns a point projected from a point along a geodesic using a given "
 "distance and azimuth (bearing). This is known as the direct geodesic problem."
 msgstr ""
+"Renvoie un point projeté à partir d'un point le long d'une géodésique en "
+"utilisant une distance et un azimut donnés. C'est ce qu'on appelle le "
+"problème de la géodésique directe."
 
 #. Tag: para
 #: reference_measure.xml:1501
@@ -3683,6 +3704,9 @@ msgid ""
 "The two-point version uses the path from the first to the second point to "
 "implicitly define the azimuth and uses the distance as before."
 msgstr ""
+"La version à deux points utilise la trajectoire entre le premier et le "
+"deuxième point pour définir implicitement l'azimut et utilise la distance "
+"comme précédemment."
 
 #. Tag: para
 #: reference_measure.xml:1502
@@ -3699,30 +3723,32 @@ msgid ""
 "The azimuth (also known as heading or bearing) is given in radians. It is "
 "measured clockwise from true north."
 msgstr ""
+"L'azimut (également appelé cap ou relèvement) est indiqué en radians. Il est "
+"mesuré dans le sens des aiguilles d'une montre à partir du vrai nord."
 
 #. Tag: para
 #: reference_measure.xml:1506
 #, no-c-format
 msgid "North is azimuth zero (0 degrees)"
-msgstr ""
+msgstr "Le nord est l'azimut zéro (0 degré)"
 
 #. Tag: para
 #: reference_measure.xml:1507
 #, no-c-format
 msgid "East is azimuth &#x03C0;/2 (90 degrees)"
-msgstr ""
+msgstr "L'Est est l'azimut &#x03C0;/2 (90 degrés)"
 
 #. Tag: para
 #: reference_measure.xml:1508
 #, no-c-format
 msgid "South is azimuth &#x03C0; (180 degrees)"
-msgstr ""
+msgstr "Le sud est l'azimut &#x03C0 ; (180 degrés)"
 
 #. Tag: para
 #: reference_measure.xml:1509
 #, no-c-format
 msgid "West is azimuth 3&#x03C0;/2 (270 degrees)"
-msgstr ""
+msgstr "L'Ouest est l'azimut 3&#x03C0;/2 (270 degrés)"
 
 #. Tag: para
 #: reference_measure.xml:1511
@@ -3731,6 +3757,8 @@ msgid ""
 "Negative azimuth values and values greater than 2&#x03C0; (360 degrees) are "
 "supported."
 msgstr ""
+"Les valeurs d'azimut négatives et les valeurs supérieures à 2&#x03C0 ; (360 "
+"degrés) sont prises en charge."
 
 #. Tag: para
 #: reference_measure.xml:1514
@@ -3746,6 +3774,8 @@ msgstr ""
 msgid ""
 "Enhanced: 3.4.0 Allow geometry arguments and two-point form omitting azimuth."
 msgstr ""
+"Amélioré : 3.4.0 Autorise les arguments géométriques et la forme en deux "
+"points omettant l'azimut."
 
 #. Tag: title
 #: reference_measure.xml:1520
