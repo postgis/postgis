@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-01 21:37+0000\n"
-"PO-Revision-Date: 2023-06-28 08:08+0000\n"
-"Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
+"PO-Revision-Date: 2023-07-03 15:08+0000\n"
+"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_processingxml/fr/>\n"
 "Language: fr\n"
@@ -236,6 +236,13 @@ msgid ""
 "This may not produce the desired behavior if the input object is much larger "
 "than a UTM zone or crosses the dateline"
 msgstr ""
+"&geography_transform ; Il détermine un système de référence spatiale "
+"planaire qui correspond le mieux à la boîte de délimitation de l'objet "
+"géographique (en essayant UTM, le pôle Nord/Sud de Lambert Azimuthal Equal "
+"Area (LAEA), et enfin Mercator). Le tampon est calculé dans l'espace "
+"planaire, puis retransformé en WGS84. Cela peut ne pas produire le "
+"comportement souhaité si l'objet d'entrée est beaucoup plus grand qu'une "
+"zone UTM ou s'il traverse la ligne de changement de date"
 
 #. Tag: para
 #: reference_processing.xml:101
@@ -2667,19 +2674,19 @@ msgstr ""
 #: reference_processing.xml:1292
 #, no-c-format
 msgid ", <xref linkend=\"ST_LargestEmptyCircle\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LargestEmptyCircle\"/>"
 
 #. Tag: refname
 #: reference_processing.xml:1299
 #, no-c-format
 msgid "ST_LargestEmptyCircle"
-msgstr ""
+msgstr "ST_LargestEmptyCircle"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1300
 #, no-c-format
 msgid "Computes the largest circle not overlapping a geometry."
-msgstr ""
+msgstr "Calcule le plus grand cercle ne recouvrant pas une géométrie."
 
 #. Tag: funcprototype
 #: reference_processing.xml:1305
@@ -2693,6 +2700,13 @@ msgid ""
 "choice=\"opt\"><type>geometry </type> <parameter>boundary=POINT EMPTY</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>(geometry, geometry, double precision) "
+"<function>ST_LargestEmptyCircle</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>double precision </type> "
+"<parameter>tolerance=0.0</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>geometry </type> <parameter>boundary=POINT "
+"EMPTY</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1316
@@ -2707,6 +2721,15 @@ msgid ""
 "itself is provided by the center point and a nearest point lying on an "
 "obstacle detemining the circle radius."
 msgstr ""
+"Trouve le plus grand cercle qui ne chevauche pas un ensemble d'obstacles de "
+"points et de lignes. (Les géométries polygonales peuvent être incluses en "
+"tant qu'obstacles, mais seules leurs lignes de démarcation sont utilisées). "
+"Le centre du cercle est contraint de se situer à l'intérieur d'une limite "
+"polygonale, qui par défaut est l'enveloppe convexe de la géométrie d'entrée. "
+"Le centre du cercle est le point à l'intérieur de la frontière qui est le "
+"plus éloigné des obstacles. Le cercle lui-même est fourni par le point "
+"central et un point le plus proche situé sur un obstacle déterminant le "
+"rayon du cercle."
 
 #. Tag: para
 #: reference_processing.xml:1317
@@ -2716,12 +2739,16 @@ msgid ""
 "tolerance, using an iterative algorithm. If the accuracy distance is not "
 "specified a reasonable default is used."
 msgstr ""
+"Le centre du cercle est déterminé avec une précision donnée, spécifiée par "
+"une tolérance de distance, à l'aide d'un algorithme itératif. Si la distance "
+"de précision n'est pas spécifiée, une valeur par défaut raisonnable est "
+"utilisée."
 
 #. Tag: para
 #: reference_processing.xml:1318
 #, no-c-format
 msgid "Returns a record with fields:"
-msgstr ""
+msgstr "Renvoie un enregistrement avec des champs :"
 
 #. Tag: para
 #: reference_processing.xml:1326
@@ -2730,12 +2757,14 @@ msgid ""
 "To find the largest empty circle in the interior of a polygon, see <xref "
 "linkend=\"ST_MaximumInscribedCircle\"/>."
 msgstr ""
+"Pour trouver le plus grand cercle vide à l'intérieur d'un polygone, voir "
+"<xref linkend=\"ST_MaximumInscribedCircle\"/>."
 
 #. Tag: para
 #: reference_processing.xml:1328
 #, no-c-format
 msgid "Availability: 3.4.0 - requires GEOS &gt;= 3.9.0."
-msgstr ""
+msgstr "Disponibilité : 3.4.0 - nécessite GEOS &gt;= 3.9.0."
 
 #. Tag: programlisting
 #: reference_processing.xml:1335
@@ -2750,12 +2779,20 @@ msgid ""
 "          (20 50, 70 70, 90 20, 110 40),\n"
 "          (160 30, 100 100, 180 100))');"
 msgstr ""
+"SELECT radius,\n"
+"       ST_AsText(center) AS center,\n"
+"       ST_AsText(nearest) AS nearest\n"
+"  FROM ST_LargestEmptyCircle(\n"
+"        'MULTILINESTRING (\n"
+"          (10 100, 60 180, 130 150, 190 160),\n"
+"          (20 50, 70 70, 90 20, 110 40),\n"
+"          (160 30, 100 100, 180 100))');"
 
 #. Tag: para
 #: reference_processing.xml:1342
 #, no-c-format
 msgid "Largest Empty Circle within a set of lines."
-msgstr ""
+msgstr "Le plus grand cercle vide à l'intérieur d'un ensemble de lignes."
 
 #. Tag: programlisting
 #: reference_processing.xml:1346
@@ -2773,6 +2810,17 @@ msgid ""
 "190))'\n"
 "       );"
 msgstr ""
+"SELECT radius,\n"
+"       ST_AsText(center) AS center,\n"
+"       ST_AsText(nearest) AS nearest\n"
+"  FROM ST_LargestEmptyCircle(\n"
+"         St_Collect(\n"
+"           'MULTIPOINT ((70 50), (60 130), (130 150), (80 90))',\n"
+"           'POLYGON ((90 190, 10 100, 60 10, 190 40, 120 100, 190 180, 90 "
+"190))'),\n"
+"         'POLYGON ((90 190, 10 100, 60 10, 190 40, 120 100, 190 180, 90 "
+"190))'\n"
+"       );"
 
 #. Tag: para
 #: reference_processing.xml:1353
@@ -2782,6 +2830,10 @@ msgid ""
 "polygon. The constraint polygon boundary must be included as an obstacle, as "
 "well as specified as the constraint for the circle center."
 msgstr ""
+"Le plus grand cercle vide à l'intérieur d'un ensemble de points, contraint à "
+"se situer dans un polygone. La limite du polygone de contrainte doit être "
+"incluse en tant qu'obstacle et spécifiée en tant que contrainte pour le "
+"centre du cercle."
 
 #. Tag: refname
 #: reference_processing.xml:1367
@@ -2968,6 +3020,8 @@ msgid ""
 ", <xref linkend=\"ST_MinimumBoundingRadius\"/>, <xref "
 "linkend=\"ST_LargestEmptyCircle\"/>, <xref linkend=\"ST_LongestLine\"/>"
 msgstr ""
+", <xref linkend=\"ST_MinimumBoundingRadius\"/>, <xref linkend="
+"\"ST_LargestEmptyCircle\"/>, <xref linkend=\"ST_LongestLine\"/>"
 
 #. Tag: refname
 #: reference_processing.xml:1424
