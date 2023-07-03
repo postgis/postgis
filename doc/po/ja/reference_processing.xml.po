@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-01 21:37+0000\n"
-"PO-Revision-Date: 2023-06-28 08:08+0000\n"
+"PO-Revision-Date: 2023-07-03 03:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_processingxml/ja/>\n"
@@ -228,6 +228,12 @@ msgid ""
 "This may not produce the desired behavior if the input object is much larger "
 "than a UTM zone or crosses the dateline"
 msgstr ""
+"&geography_transform; "
+"ジオメトリのバウンディングボックスに最適な平面空間参照系を決定します (UTM、ラ"
+"ンベルト正積方位図法の北極/南極、最後はメルカトルです)。バッファは平面空間で"
+"計算あｓれ、WGS84に戻されます。このため、入力がUTMゾーンと比べて非常に大きく"
+"なったり、日付変更線とクロスしたりする場合に、求める動作をしないことがありま"
+"す"
 
 #. Tag: para
 #: reference_processing.xml:101
@@ -2584,19 +2590,19 @@ msgstr "マルチラインストリングの最大の内接円。中心点、最
 #: reference_processing.xml:1292
 #, no-c-format
 msgid ", <xref linkend=\"ST_LargestEmptyCircle\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LargestEmptyCircle\"/>"
 
 #. Tag: refname
 #: reference_processing.xml:1299
 #, no-c-format
 msgid "ST_LargestEmptyCircle"
-msgstr ""
+msgstr "ST_LargestEmptyCircle"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1300
 #, no-c-format
 msgid "Computes the largest circle not overlapping a geometry."
-msgstr ""
+msgstr "ジオメトリとオーバラップ市内最大の円を計算します。"
 
 #. Tag: funcprototype
 #: reference_processing.xml:1305
@@ -2610,6 +2616,13 @@ msgid ""
 "choice=\"opt\"><type>geometry </type> <parameter>boundary=POINT EMPTY</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>(geometry, geometry, double precision) "
+"<function>ST_LargestEmptyCircle</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>double precision </type> "
+"<parameter>tolerance=0.0</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>geometry </type> <parameter>boundary=POINT "
+"EMPTY</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1316
@@ -2624,6 +2637,12 @@ msgid ""
 "itself is provided by the center point and a nearest point lying on an "
 "obstacle detemining the circle radius."
 msgstr ""
+"障害物となるポイント集合またはライン集合に重ならない最大の円を探します (ポリ"
+"ゴンジオメトリは障害物として取り込まれますが、境界線しか使われません)。円の中"
+"心はポリゴン境界の内側に存在するという制約があります。ポリゴン境界は、デフォ"
+"ルトでは入力ジオメトリの凸包です。円の中心は、障害物から最も遠い距離を持つ境"
+"界の内部の点です。円自体は中心点と、円半径を決める障害物上にある点の最近傍点"
+"から決まります。"
 
 #. Tag: para
 #: reference_processing.xml:1317
@@ -2633,12 +2652,14 @@ msgid ""
 "tolerance, using an iterative algorithm. If the accuracy distance is not "
 "specified a reasonable default is used."
 msgstr ""
+"円の中心は、反復的なアルゴリズムを使って、距離許容値で指定された精度に決定さ"
+"れます。精度距離が指定されていな場合には、妥当なデフォルトが使われます。"
 
 #. Tag: para
 #: reference_processing.xml:1318
 #, no-c-format
 msgid "Returns a record with fields:"
-msgstr ""
+msgstr "次のフィールドを含むレコードを返します:"
 
 #. Tag: para
 #: reference_processing.xml:1326
@@ -2647,12 +2668,14 @@ msgid ""
 "To find the largest empty circle in the interior of a polygon, see <xref "
 "linkend=\"ST_MaximumInscribedCircle\"/>."
 msgstr ""
+"ポリゴン内部において最大の空の円を見つけるには、<xref linkend="
+"\"ST_MaximumInscribedCircle\"/>をご覧下さい。"
 
 #. Tag: para
 #: reference_processing.xml:1328
 #, no-c-format
 msgid "Availability: 3.4.0 - requires GEOS &gt;= 3.9.0."
-msgstr ""
+msgstr "Availability: 3.4.0 - GEOS 3.9.0以上が必要です。"
 
 #. Tag: programlisting
 #: reference_processing.xml:1335
@@ -2667,12 +2690,20 @@ msgid ""
 "          (20 50, 70 70, 90 20, 110 40),\n"
 "          (160 30, 100 100, 180 100))');"
 msgstr ""
+"SELECT radius,\n"
+"       ST_AsText(center) AS center,\n"
+"       ST_AsText(nearest) AS nearest\n"
+"  FROM ST_LargestEmptyCircle(\n"
+"        'MULTILINESTRING (\n"
+"          (10 100, 60 180, 130 150, 190 160),\n"
+"          (20 50, 70 70, 90 20, 110 40),\n"
+"          (160 30, 100 100, 180 100))');"
 
 #. Tag: para
 #: reference_processing.xml:1342
 #, no-c-format
 msgid "Largest Empty Circle within a set of lines."
-msgstr ""
+msgstr "ラインの集合の中で最大の空の円。"
 
 #. Tag: programlisting
 #: reference_processing.xml:1346
@@ -2690,6 +2721,17 @@ msgid ""
 "190))'\n"
 "       );"
 msgstr ""
+"SELECT radius,\n"
+"       ST_AsText(center) AS center,\n"
+"       ST_AsText(nearest) AS nearest\n"
+"  FROM ST_LargestEmptyCircle(\n"
+"         St_Collect(\n"
+"           'MULTIPOINT ((70 50), (60 130), (130 150), (80 90))',\n"
+"           'POLYGON ((90 190, 10 100, 60 10, 190 40, 120 100, 190 180, 90 "
+"190))'),\n"
+"         'POLYGON ((90 190, 10 100, 60 10, 190 40, 120 100, 190 180, 90 "
+"190))'\n"
+"       );"
 
 #. Tag: para
 #: reference_processing.xml:1353
@@ -2699,6 +2741,9 @@ msgid ""
 "polygon. The constraint polygon boundary must be included as an obstacle, as "
 "well as specified as the constraint for the circle center."
 msgstr ""
+"ポリゴン内に存在する制約を課されたポイント集合内の最大の空の円。制約ポリゴン"
+"の境界は障害物として含めるとともに、円の中心の制約としても指定しなければなり"
+"ません。"
 
 #. Tag: refname
 #: reference_processing.xml:1367
@@ -2879,6 +2924,8 @@ msgid ""
 ", <xref linkend=\"ST_MinimumBoundingRadius\"/>, <xref "
 "linkend=\"ST_LargestEmptyCircle\"/>, <xref linkend=\"ST_LongestLine\"/>"
 msgstr ""
+", <xref linkend=\"ST_MinimumBoundingRadius\"/>, <xref linkend="
+"\"ST_LargestEmptyCircle\"/>, <xref linkend=\"ST_LongestLine\"/>"
 
 #. Tag: refname
 #: reference_processing.xml:1424
