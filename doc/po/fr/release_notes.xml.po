@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-25 20:53+0000\n"
-"PO-Revision-Date: 2023-07-03 15:08+0000\n"
+"PO-Revision-Date: 2023-07-03 18:19+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "release_notesxml/fr/>\n"
@@ -6516,6 +6516,10 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/899\">#899</ulink></ulink>, -m shp2pgsql "
 "attribute names mapping -m switch (Regina Obe / Sandro Santilli)"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/899\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/899\">#899</ulink></ulink>, -m shp2pgsql "
+"correspondance des noms d'attributs en utilisant l'argument -m (Regina Obe / "
+"Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:1535
@@ -6525,6 +6529,10 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/1678\">#1678</ulink></ulink>, Added GUC "
 "postgis.gdal_datapath to specify GDAL config variable GDAL_DATA"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/1678\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/1678\">#1678</ulink></ulink>, Ajout de GUC "
+"postgis.gdal_datapath pour spécifier la variable de configuration GDAL "
+"GDAL_DATA"
 
 #. Tag: para
 #: release_notes.xml:1536
@@ -6534,6 +6542,10 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/2843\">#2843</ulink></ulink>, Support "
 "reprojection on raster import (Sandro Santilli / Vizzuality)"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2843\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2843\">#2843</ulink></ulink>, Support de la "
+"reprojection lors de l'importation de données raster (Sandro Santilli / "
+"Vizzuality)"
 
 #. Tag: para
 #: release_notes.xml:1537
@@ -6543,6 +6555,9 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/2349\">#2349</ulink></ulink>, Support for "
 "encoded_polyline input/output (Kashif Rasul)"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2349\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2349\">#2349</ulink></ulink>, Prise en "
+"charge de l'entrée/sortie encoded_polyline (Kashif Rasul)"
 
 #. Tag: para
 #: release_notes.xml:1538
@@ -6552,6 +6567,9 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/2159\">#2159</ulink></ulink>, report libjson "
 "version from postgis_full_version()"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2159\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2159\">#2159</ulink></ulink>, rapport de la "
+"version libjson de postgis_full_version()"
 
 #. Tag: para
 #: release_notes.xml:1539
@@ -6561,18 +6579,21 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/2770\">#2770</ulink></ulink>, "
 "ST_MemSize(raster)"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2770\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2770\">#2770</ulink></ulink>, "
+"ST_MemSize(raster)"
 
 #. Tag: para
 #: release_notes.xml:1540
 #, no-c-format
 msgid "Add postgis_noop(raster)"
-msgstr ""
+msgstr "Ajouter postgis_noop(raster)"
 
 #. Tag: para
 #: release_notes.xml:1541
 #, no-c-format
 msgid "Added missing variants of ST_TPI(), ST_TRI() and ST_Roughness()"
-msgstr ""
+msgstr "Ajout des variantes manquantes de ST_TPI(), ST_TRI() et ST_Roughness()"
 
 #. Tag: para
 #: release_notes.xml:1542
@@ -6581,6 +6602,8 @@ msgid ""
 "Added GUC postgis.gdal_enabled_drivers to specify GDAL config variable "
 "GDAL_SKIP"
 msgstr ""
+"Ajout du GUC postgis.gdal_enabled_drivers pour spécifier la variable de "
+"configuration GDAL GDAL_SKIP"
 
 #. Tag: para
 #: release_notes.xml:1543
@@ -6589,6 +6612,8 @@ msgid ""
 "Added GUC postgis.enable_outdb_rasters to enable access to rasters with out-"
 "db bands"
 msgstr ""
+"Ajout du GUC postgis.enable_outdb_rasters pour permettre l'accès aux rasters "
+"avec des bandes out-db"
 
 #. Tag: para
 #: release_notes.xml:1544
@@ -6599,6 +6624,10 @@ msgid ""
 "address_standardizer extension as part of PostGIS (Stephen Woodbridge / "
 "imaptools.com, Walter Sinclair, Regina Obe)"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2387\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2387\">#2387</ulink></ulink>, extension "
+"address_standardizer dans le cadre de PostGIS (Stephen Woodbridge / "
+"imaptools.com, Walter Sinclair, Regina Obe)"
 
 #. Tag: para
 #: release_notes.xml:1545
@@ -6610,6 +6639,11 @@ msgid ""
 "address_standardizer (Stephen Woodbridge / imaptools.com, Walter Sinclair, "
 "Regina Obe)"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2816\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2816\">#2816</ulink></ulink>, l'extension "
+"address_standardizer_data_us fournit une référence lex,gaz,rules pour "
+"address_standardizer (Stephen Woodbridge / imaptools.com, Walter Sinclair, "
+"Regina Obe)"
 
 #. Tag: para
 #: release_notes.xml:1546
@@ -6619,6 +6653,9 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/2341\">#2341</ulink></ulink>, New mask "
 "parameter for ST_MapAlgebra"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2341\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2341\">#2341</ulink></ulink>, Nouveau "
+"paramètre maskpour ST_MapAlgebra"
 
 #. Tag: para
 #: release_notes.xml:1547
@@ -6628,6 +6665,10 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/2397\">#2397</ulink></ulink>, read encoding "
 "info automatically in shapefile loader"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2397\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2397\">#2397</ulink></ulink>, lecture "
+"automatique des informations d'encodage dans le chargeur de fichiers "
+"shapefile"
 
 #. Tag: para
 #: release_notes.xml:1548
@@ -6636,6 +6677,8 @@ msgid ""
 "<ulink url=\"http://trac.osgeo.org/postgis/ticket/2430\"><ulink url=\"http://"
 "trac.osgeo.org/postgis/ticket/2430\">#2430</ulink></ulink>, ST_ForceCurve"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2430\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2430\">#2430</ulink></ulink>, ST_ForceCurve"
 
 #. Tag: para
 #: release_notes.xml:1549
@@ -6645,6 +6688,9 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/2565\">#2565</ulink></ulink>, "
 "ST_SummaryStatsAgg()"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2565\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2565\">#2565</ulink></ulink>, "
+"ST_SummaryStatsAgg()"
 
 #. Tag: para
 #: release_notes.xml:1550
@@ -6653,6 +6699,8 @@ msgid ""
 "<ulink url=\"http://trac.osgeo.org/postgis/ticket/2567\"><ulink url=\"http://"
 "trac.osgeo.org/postgis/ticket/2567\">#2567</ulink></ulink>, ST_CountAgg()"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2567\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2567\">#2567</ulink></ulink>, ST_CountAgg()"
 
 #. Tag: para
 #: release_notes.xml:1551
@@ -6662,6 +6710,9 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/2632\">#2632</ulink></ulink>, ST_AsGML() "
 "support for curved features"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2632\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2632\">#2632</ulink></ulink>, ST_AsGML() "
+"pour les éléments courbes"
 
 #. Tag: para
 #: release_notes.xml:1552
@@ -6671,6 +6722,9 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/2652\">#2652</ulink></ulink>, Add --upgrade-"
 "path switch to run_test.pl"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2652\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2652\">#2652</ulink></ulink>, Ajouter "
+"l'argument --upgrade-path à run_test.pl"
 
 #. Tag: para
 #: release_notes.xml:1553
@@ -6680,6 +6734,9 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/2754\">#2754</ulink></ulink>, sfcgal wrapped "
 "as an extension"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2754\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2754\">#2754</ulink></ulink>, sfcgal "
+"enveloppé comme une extension"
 
 #. Tag: para
 #: release_notes.xml:1554
@@ -6690,6 +6747,10 @@ msgid ""
 "with Visvalingam-Whyatt algorithm ST_SimplifyVW, ST_SetEffectiveArea "
 "(Nicklas Avén)"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2227\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2227\">#2227</ulink></ulink>, "
+"Simplification avec l'algorithme de Visvalingam-Whyatt ST_SimplifyVW, "
+"ST_SetEffectiveArea (Nicklas Avén)"
 
 #. Tag: para
 #: release_notes.xml:1555
@@ -6698,6 +6759,8 @@ msgid ""
 "Functions to encode and decode TWKB ST_AsTWKB, ST_GeomFromTWKB (Paul "
 "Ramsey / Nicklas Avén / CartoDB)"
 msgstr ""
+"Fonctions pour encoder et décoder TWKB ST_AsTWKB, ST_GeomFromTWKB (Paul "
+"Ramsey / Nicklas Avén / CartoDB)"
 
 #. Tag: para
 #: release_notes.xml:1559
@@ -6707,6 +6770,9 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/3223\">#3223</ulink></ulink>, Add memcmp short-"
 "circuit to ST_Equals (Daniel Baston)"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/3223\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/3223\">#3223</ulink></ulink>, Ajout d'un "
+"court-circuit memcmp à ST_Equals (Daniel Baston)"
 
 #. Tag: para
 #: release_notes.xml:1560
@@ -6716,6 +6782,9 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/3227\">#3227</ulink></ulink>, Tiger geocoder "
 "upgraded to support Tiger 2015 census"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/3227\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/3227\">#3227</ulink></ulink>, mise à jour "
+"du géocodeur Tiger pour prendre en charge le recensement Tiger 2015"
 
 #. Tag: para
 #: release_notes.xml:1561
@@ -6725,6 +6794,9 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/2278\">#2278</ulink></ulink>, Make liblwgeom "
 "compatible between minor releases"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2278\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2278\">#2278</ulink></ulink>, Rendre "
+"liblwgeom compatible entre les versions mineures"
 
 #. Tag: para
 #: release_notes.xml:1562
@@ -6735,6 +6807,10 @@ msgid ""
 "for GeoCoordinates and systems \"GD\" \"WE\" ability to flip x/y axis (use "
 "option = 2, 3)"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/897\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/897\">#897</ulink></ulink>, ST_AsX3D "
+"support pour les coordonnées géographiques et les systèmes \"GD\" \"WE\" "
+"possibilité d'inverser les axes x/y (utiliser l'option = 2, 3)"
 
 #. Tag: para
 #: release_notes.xml:1563
@@ -6743,6 +6819,8 @@ msgid ""
 "ST_Split: allow splitting lines by multilines, multipoints and "
 "(multi)polygon boundaries"
 msgstr ""
+"ST_Split : permet de diviser les lignes par des lignes multiples, des points "
+"multiples et des limites de polygones (multiples)"
 
 #. Tag: para
 #: release_notes.xml:1564
@@ -6752,6 +6830,9 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/3070\">#3070</ulink></ulink>, Simplify "
 "geometry type constraint"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/3070\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/3070\">#3070</ulink></ulink>, Simplifier la "
+"contrainte du type de géométrie"
 
 #. Tag: para
 #: release_notes.xml:1565
@@ -6762,6 +6843,11 @@ msgid ""
 "selectivity estimator for functional indexes, speeding up spatial queries on "
 "raster tables. (Sandro Santilli / Vizzuality)"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2839\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2839\">#2839</ulink></ulink>, "
+"Implémentation d'un estimateur de sélectivité pour les index fonctionnels, "
+"accélérant les requêtes spatiales sur les tables raster. (Sandro Santilli / "
+"Vizzuality)"
 
 #. Tag: para
 #: release_notes.xml:1566
@@ -6771,6 +6857,9 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/2361\">#2361</ulink></ulink>, Added "
 "spatial_index column to raster_columns view"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2361\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2361\">#2361</ulink></ulink>, Ajout de la "
+"colonne spatial_index à la vue raster_columns"
 
 #. Tag: para
 #: release_notes.xml:1567
@@ -6780,6 +6869,9 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/2390\">#2390</ulink></ulink>, Testsuite for "
 "pgsql2shp"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2390\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2390\">#2390</ulink></ulink>, Suite de "
+"tests pour pgsql2shp"
 
 #. Tag: para
 #: release_notes.xml:1568
@@ -6789,6 +6881,9 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/2527\">#2527</ulink></ulink>, Added -k flag to "
 "raster2pgsql to skip checking that band is NODATA"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2527\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2527\">#2527</ulink></ulink>, Ajout de "
+"l'argument -k à raster2pgsql pour ne pas vérifier que la bande est NODATA"
 
 #. Tag: para
 #: release_notes.xml:1569
@@ -6798,6 +6893,10 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/2616\">#2616</ulink></ulink>, Reduce text "
 "casts during topology building and export"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2616\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2616\">#2616</ulink></ulink>, Réduction des "
+"transformations de texte lors de la construction et de l'exportation de la "
+"topologie"
 
 #. Tag: para
 #: release_notes.xml:1570
@@ -6807,6 +6906,9 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/2717\">#2717</ulink></ulink>, support "
 "startpoint, endpoint, pointn, numpoints for compoundcurve"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2717\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2717\">#2717</ulink></ulink>, support "
+"startpoint, endpoint, pointn, numpoints pour compoundcurve"
 
 #. Tag: para
 #: release_notes.xml:1571
@@ -6816,6 +6918,9 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/2747\">#2747</ulink></ulink>, Add support for "
 "GDAL 2.0"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2747\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2747\">#2747</ulink></ulink>, Ajout de la "
+"prise en charge de GDAL 2.0"
 
 #. Tag: para
 #: release_notes.xml:1572
@@ -6825,6 +6930,9 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/2754\">#2754</ulink></ulink>, SFCGAL can now "
 "be installed with CREATE EXTENSION (Vincent Mora @ Oslandia)"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2754\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2754\">#2754</ulink></ulink>, SFCGAL peut "
+"maintenant être installé avec CREATE EXTENSION (Vincent Mora @ Oslandia)"
 
 #. Tag: para
 #: release_notes.xml:1573
@@ -6834,6 +6942,9 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/2828\">#2828</ulink></ulink>, Convert "
 "ST_Envelope(raster) from SQL to C"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2828\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2828\">#2828</ulink></ulink>, Convertir "
+"ST_Envelope(raster) de SQL à C"
 
 #. Tag: para
 #: release_notes.xml:1574 release_notes.xml:1667
@@ -6843,6 +6954,10 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/2829\">#2829</ulink></ulink>, Shortcut "
 "ST_Clip(raster) if geometry fully contains the raster and no NODATA specified"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2829\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2829\">#2829</ulink></ulink>, raccourci "
+"ST_Clip(raster) si la géométrie contient entièrement le raster et qu'aucune "
+"NODATA n'est spécifiée"
 
 #. Tag: para
 #: release_notes.xml:1575
@@ -6852,6 +6967,9 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/2906\">#2906</ulink></ulink>, Update tiger "
 "geocoder to handle tiger 2014 data"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/2906\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/2906\">#2906</ulink></ulink>, Mise à jour "
+"du géocodeur tiger pour traiter les données tiger 2014"
 
 #. Tag: para
 #: release_notes.xml:1576
@@ -6861,6 +6979,9 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/3048\">#3048</ulink></ulink>, Speed up "
 "geometry simplification (J.Santana @ CartoDB)"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/3048\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/3048\">#3048</ulink></ulink>, Accélérer la "
+"simplification de la géométrie (J.Santana @ CartoDB)"
 
 #. Tag: para
 #: release_notes.xml:1577
@@ -6870,6 +6991,9 @@ msgid ""
 "trac.osgeo.org/postgis/ticket/3092\">#3092</ulink></ulink>, Slow performance "
 "of geometry_columns with many tables"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/ticket/3092\"><ulink url=\"http"
+"://trac.osgeo.org/postgis/ticket/3092\">#3092</ulink></ulink>, Lenteur des "
+"performances de geometry_columns avec de nombreuses tables"
 
 #. Tag: title
 #: release_notes.xml:1582
