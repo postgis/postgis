@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-06-30 21:55+0000\n"
-"PO-Revision-Date: 2023-05-26 05:08+0000\n"
+"PO-Revision-Date: 2023-07-03 03:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "installationxml/ja/>\n"
@@ -2778,6 +2778,9 @@ msgid ""
 "instructions on how to run the generate script. This only needs to be done "
 "once."
 msgstr ""
+"生成スクリプトの実行方法に関する説明は、<xref linkend="
+"\"install_tiger_geocoder_extension\""
+"/>を参照して下さい。これは一度だけ実行する必要があります。"
 
 #. Tag: para
 #: installation.xml:923
