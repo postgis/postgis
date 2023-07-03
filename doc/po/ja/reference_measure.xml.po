@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-01 16:16+0000\n"
-"PO-Revision-Date: 2023-05-15 11:08+0000\n"
+"PO-Revision-Date: 2023-07-03 03:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_measurexml/ja/>\n"
@@ -3572,6 +3572,24 @@ msgid ""
 "<paramdef><type>float </type> <parameter>distance</parameter></paramdef> </"
 "funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_Project</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>distance</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>azimuth</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_Project</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>g1</parameter></paramdef> <paramdef><type>geometry </type> "
+"<parameter>g2</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>distance</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>geography <function>ST_Project</function></funcdef> "
+"<paramdef><type>geography </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>distance</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>azimuth</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geography "
+"<function>ST_Project</function></funcdef> <paramdef><type>geography </type> "
+"<parameter>g1</parameter></paramdef> <paramdef><type>geography </type> "
+"<parameter>g2</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>distance</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_measure.xml:1500
@@ -3579,7 +3597,8 @@ msgstr ""
 msgid ""
 "Returns a point projected from a point along a geodesic using a given "
 "distance and azimuth (bearing). This is known as the direct geodesic problem."
-msgstr ""
+msgstr "始点から測地線に沿って与えられた距離と方位で算出されたポイントを返します。測"
+"地問題と言われるものです。"
 
 #. Tag: para
 #: reference_measure.xml:1501
@@ -3587,7 +3606,8 @@ msgstr ""
 msgid ""
 "The two-point version uses the path from the first to the second point to "
 "implicitly define the azimuth and uses the distance as before."
-msgstr ""
+msgstr "2ポイント版は、方位を黙示的に定義するために一つ目のポイントから二つ目のポイン"
+"トに向かう線を使い、距離は以前と同様に使います。"
 
 #. Tag: para
 #: reference_measure.xml:1502
@@ -3601,31 +3621,32 @@ msgstr "距離はメートルで与えます。負数に対応しています。
 msgid ""
 "The azimuth (also known as heading or bearing) is given in radians. It is "
 "measured clockwise from true north."
-msgstr ""
+msgstr "方位はラジアンで与えます。真北 (方位 0)から時計回りに増えます。 "
+"真北から時計回りに数えます。"
 
 #. Tag: para
 #: reference_measure.xml:1506
 #, no-c-format
 msgid "North is azimuth zero (0 degrees)"
-msgstr ""
+msgstr "北は方位ゼロ (0度)です"
 
 #. Tag: para
 #: reference_measure.xml:1507
 #, no-c-format
 msgid "East is azimuth &#x03C0;/2 (90 degrees)"
-msgstr ""
+msgstr "東は方位 &#x03C0;/2 (90度)です"
 
 #. Tag: para
 #: reference_measure.xml:1508
 #, no-c-format
 msgid "South is azimuth &#x03C0; (180 degrees)"
-msgstr ""
+msgstr "南は方位 &#x03C0; (180度)です"
 
 #. Tag: para
 #: reference_measure.xml:1509
 #, no-c-format
 msgid "West is azimuth 3&#x03C0;/2 (270 degrees)"
-msgstr ""
+msgstr "西は方位 3&#x03C0;/2 (270度)です"
 
 #. Tag: para
 #: reference_measure.xml:1511
@@ -3633,7 +3654,7 @@ msgstr ""
 msgid ""
 "Negative azimuth values and values greater than 2&#x03C0; (360 degrees) are "
 "supported."
-msgstr ""
+msgstr "負の方位値と2&#x03C0; (360度)を超える値に対応しています。"
 
 #. Tag: para
 #: reference_measure.xml:1514
@@ -3646,7 +3667,7 @@ msgstr "Enhanced: 2.4.0 負の距離と非正規化方位を許容するよう�
 #, no-c-format
 msgid ""
 "Enhanced: 3.4.0 Allow geometry arguments and two-point form omitting azimuth."
-msgstr ""
+msgstr "Enhanced: 3.4.0 ジオメトリ引数と、azimuthを省略した2ポイント形式を許します。"
 
 #. Tag: title
 #: reference_measure.xml:1520
