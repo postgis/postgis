@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-06-29 16:52+0000\n"
+"POT-Creation-Date: 2023-07-04 20:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -43,4 +43,84 @@ msgstr ""
 #: xsl-config.xml:59
 #, no-c-format
 msgid "Functions changed in PostGIS %"
+msgstr ""
+
+#. Tag: para
+#: xsl-config.xml:70
+#, no-c-format
+msgid "This method needs address_standardizer extension."
+msgstr ""
+
+#. Tag: para
+#: xsl-config.xml:77
+#, no-c-format
+msgid "This method supports Circular Strings and Curves."
+msgstr ""
+
+#. Tag: para
+#: xsl-config.xml:84
+#, no-c-format
+msgid ""
+"For geography this is a thin wrapper around the geometry implementation."
+msgstr ""
+
+#. Tag: para
+#: xsl-config.xml:88
+#, no-c-format
+msgid ""
+"This function automatically includes a bounding box comparison that makes "
+"use of any spatial indexes that are available on the geometries."
+msgstr ""
+
+#. Tag: para
+#: xsl-config.xml:97
+#, no-c-format
+msgid "This function supports M coordinates."
+msgstr ""
+
+#. Tag: para
+#: xsl-config.xml:106
+#, no-c-format
+msgid "This function supports Polyhedral surfaces."
+msgstr ""
+
+#. Tag: para
+#: xsl-config.xml:115
+#, no-c-format
+msgid "This method is also provided by SFCGAL backend."
+msgstr ""
+
+#. Tag: para
+#: xsl-config.xml:124
+#, no-c-format
+msgid "This method needs SFCGAL backend."
+msgstr ""
+
+#. Tag: para
+#: xsl-config.xml:133
+#, no-c-format
+msgid ""
+"This method implements the <ulink url=\"http://www.opengeospatial.org/"
+"standards/sfs\">OGC Simple Features Implementation Specification for SQL 1.1."
+"</ulink>"
+msgstr ""
+
+#. Tag: para
+#: xsl-config.xml:144
+#, no-c-format
+msgid "This method implements the SQL/MM specification."
+msgstr ""
+
+#. Tag: para
+#: xsl-config.xml:153
+#, no-c-format
+msgid ""
+"This function supports Triangles and Triangulated Irregular Network Surfaces "
+"(TIN)."
+msgstr ""
+
+#. Tag: para
+#: xsl-config.xml:162
+#, no-c-format
+msgid "This function supports 3d and will not drop the z-index."
 msgstr ""

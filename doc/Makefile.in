@@ -173,18 +173,6 @@ XML_SOURCES = \
 	reference.xml \
 	release_notes.xml \
 	reporting.xml \
-	tag_address_standardizer_required.xml \
-	tag_curve_support.xml \
-	tag_index_aware.xml \
-	tag_M_support.xml \
-	tag_P_support.xml \
-	tag_sfcgal_enhanced.xml \
-	tag_sfcgal_required.xml \
-	tag_sfs_compliant.xml \
-	tag_sqlmm_compliant.xml \
-	tag_T_support.xml \
-	tag_Z_support.xml \
-	tag_geography_transform.xml \
 	using_postgis_dataman.xml \
 	using_postgis_query.xml \
 	using_raster_dataman.xml \
@@ -203,11 +191,25 @@ XSL_GENERATED_SOURCES = \
 	list_window_functions.xsl.xml \
 	table_body_function_support_matrix.xsl.xml
 
+TAG_GENERATED_SOURCES = \
+	address_standardizer_required.tag \
+	curve_support.tag \
+	geography_transform.tag \
+	index_aware.tag \
+	M_support.tag \
+	P_support.tag \
+	sfcgal_enhanced.tag \
+	sfcgal_required.tag \
+	sfs_compliant.tag \
+	sqlmm_compliant.tag \
+	T_support.tag \
+	Z_support.tag
+
 XML_GENERATED_SOURCES = \
 	$(XSL_GENERATED_SOURCES) \
 	postgis-out.xml \
 
-XML_INPUTS = $(XML_SOURCES) $(XML_GENERATED_SOURCES)
+XML_INPUTS = $(XML_SOURCES) $(XML_GENERATED_SOURCES) $(TAG_GENERATED_SOURCES)
 
 XML_INPUTS_POT = $(XML_SOURCES:%.xml=$(srcdir)/po/templates/%.xml.pot)
 
@@ -273,8 +275,17 @@ endif
 ifeq ($(XSLTPROC),)
 $(XSL_GENERATED_SOURCES): requirements_not_met_xsltproc
 else
-$(XSL_GENERATED_SOURCES): %.xsl.xml: xsl/%.xml.xsl postgis-out.xml xsl-config.xml
+$(XSL_GENERATED_SOURCES): %.xsl.xml: xsl/%.xml.xsl postgis-out.xml xsl-config.xml $(TAG_GENERATED_SOURCES)
 	grep -v '\&postgis_special;' postgis-out.xml | $(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< -
+endif
+
+ifeq ($(XMLLINT),)
+$(TAG_GENERATED_SOURCES): requirements_not_met_xmllint
+else
+$(TAG_GENERATED_SOURCES): xsl-config.xml Makefile
+	tag=tag_$(basename $(notdir $@)); \
+	$(XMLLINT) --xpath "/config/tags/para[@role='$$tag']/node()" $< > $@.tmp && \
+	mv $@.tmp $@
 endif
 
 $(GENERATED_COMMENT_FILES): %.sql: xsl/%.sql.xsl $(XML_INPUTS) postgis-out.xml
@@ -389,6 +400,7 @@ clean:
 	rm -f *.epub
 	rm -f images # work around https://trac.osgeo.org/postgis/ticket/5422
 	rm -f $(XML_GENERATED_SOURCES)
+	rm -f $(TAG_GENERATED_SOURCES)
 	$(MAKE) -C html/images clean
 	rm -f postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
 	rm -f raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql

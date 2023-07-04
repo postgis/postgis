@@ -1,9 +1,0 @@
-<remark conformance="polyhedral">
-<inlinemediaobject>
-   <imageobject>
-     <imagedata fileref='images/check.png' />
-   </imageobject>
-</inlinemediaobject>
-This function supports Polyhedral surfaces.
-</remark>
-

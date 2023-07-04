@@ -35,6 +35,7 @@ doc/html/docbook.css
 doc/Makefile
 doc/Makefile.comments
 doc/**.xsl.xml
+*.tag
 doc/po/*/*.xml
 doc/po/*/html
 doc/po/*/Makefile

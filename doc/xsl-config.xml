@@ -62,4 +62,107 @@
 
     </list_new_functions>
 
+    <tags>
+        <para role="tag_address_standardizer_required">
+            <inlinemediaobject>
+               <imageobject>
+                 <imagedata fileref='images/check.png' />
+               </imageobject>
+            </inlinemediaobject>
+            This method needs address_standardizer extension.
+        </para>
+
+        <para role="tag_curve_support">
+            <inlinemediaobject conformance="curve">
+               <imageobject><imagedata fileref='images/check.png' /></imageobject>
+            </inlinemediaobject>
+            This method supports Circular Strings and Curves.
+        </para>
+
+        <para role="tag_geography_transform">
+            <inlinemediaobject conformance="geography_transform">
+               <imageobject><imagedata fileref='images/matrix_transform.png' /></imageobject>
+            </inlinemediaobject> For geography this is a thin wrapper around the geometry implementation.
+        </para>
+
+        <para role="tag_index_aware">
+            This function automatically includes a bounding box comparison
+            that makes use of any spatial indexes that are available on the geometries.
+        </para>
+
+        <para role="tag_M_support">
+            <inlinemediaobject>
+               <imageobject>
+                 <imagedata fileref='images/check.png' />
+            </imageobject>
+            </inlinemediaobject>
+            This function supports M coordinates.
+        </para>
+
+        <para role="tag_P_support">
+            <inlinemediaobject conformance="polyhedral">
+               <imageobject>
+                 <imagedata fileref='images/check.png' />
+               </imageobject>
+            </inlinemediaobject>
+            This function supports Polyhedral surfaces.
+        </para>
+
+        <para role="tag_sfcgal_enhanced">
+            <inlinemediaobject conformance="sfcgal_enhanced">
+                <imageobject>
+                    <imagedata fileref='images/check.png' />
+                </imageobject>
+            </inlinemediaobject>
+            This method is also provided by SFCGAL backend.
+        </para>
+
+        <para role="tag_sfcgal_required">
+            <inlinemediaobject conformance="sfcgal_required">
+               <imageobject>
+                 <imagedata fileref='images/check.png' />
+               </imageobject>
+            </inlinemediaobject>
+            This method needs SFCGAL backend.
+        </para>
+
+        <para role="tag_sfs_compliant">
+            <inlinemediaobject>
+               <imageobject>
+                    <imagedata fileref='images/check.png' />
+                </imageobject>
+            </inlinemediaobject>
+            This method implements the <ulink
+            url="http://www.opengeospatial.org/standards/sfs">OGC Simple Features
+            Implementation Specification for SQL 1.1.</ulink>
+        </para>
+
+        <para role="tag_sqlmm_compliant">
+            <inlinemediaobject conformance="sqlmm">
+                <imageobject>
+                    <imagedata fileref='images/check.png' />
+                </imageobject>
+            </inlinemediaobject>
+            This method implements the SQL/MM specification.
+        </para>
+
+        <para role="tag_T_support">
+            <inlinemediaobject conformance="triangle">
+               <imageobject>
+                 <imagedata fileref='images/check.png' />
+                </imageobject>
+            </inlinemediaobject>
+            This function supports Triangles and Triangulated Irregular Network Surfaces (TIN).
+        </para>
+
+        <para role="tag_Z_support">
+            <inlinemediaobject conformance="3d">
+               <imageobject>
+                 <imagedata fileref='images/check.png' />
+               </imageobject>
+            </inlinemediaobject>
+            This function supports 3d and will not drop the z-index.
+        </para>
+    </tags>
+
 </config>

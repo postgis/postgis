@@ -1,8 +1,0 @@
-<remark conformance="sqlmm">
-<inlinemediaobject>
-    <imageobject>
-        <imagedata fileref='images/check.png' />
-    </imageobject>
-</inlinemediaobject>
-This method implements the SQL/MM specification.
-</remark>
