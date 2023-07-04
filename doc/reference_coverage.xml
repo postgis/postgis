@@ -129,16 +129,18 @@ SELECT true = ALL (
       The simplification preserves the coverage topology.
       This means the simplified output polygons are consisent along shared edges, and still form a valid coverage.
       </para>
-      
+
       <para>The simplification uses a variant of the <ulink url="https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm">Visvalingam–Whyatt algorithm</ulink>.
       The <parameter>tolerance</parameter> parameter has units of distance, 
       and is roughly equal to the square root of triangular areas to be simplified.
       </para>
 
+      <para>To simplify only the "internal" edges of the coverage (those that are shared by two polygons) set the <parameter>simplifyBoundary</parameter> parameter to false.</para>
+
       <note><para>If the input is not a valid coverage there may be unexpected artifacts in the output (such as boundary intersections, or separated boundaries which appeared to be shared).
       Use <xref linkend="ST_CoverageInvalidLocations" /> to determine if a coverage is valid.
       </para></note>
-      <para>To simplify only the "internal" edges of the coverage (those that are shared by two polygons) set the <parameter>simplifyBoundary</parameter> parameter to false.</para>
+
       <para role="availability" conformance="3.4.0">Availability: 3.4.0 - requires GEOS &gt;= 3.12.0</para>
 
     </refsection>
@@ -155,7 +157,7 @@ SELECT true = ALL (
               <imageobject>
               <imagedata fileref="images/st_coveragesimplify01.png" />
               </imageobject>
-              <caption><para>The input coverage</para></caption>
+              <caption><para>Input coverage</para></caption>
           </mediaobject>
         </informalfigure>
         </para></entry>
@@ -165,7 +167,7 @@ SELECT true = ALL (
               <imageobject>
               <imagedata fileref="images/st_coveragesimplify02.png" />
               </imageobject>
-              <caption><para>The simplified coverage</para></caption>
+              <caption><para>Simplified coverage</para></caption>
           </mediaobject>
         </informalfigure>
         </para></entry>
@@ -173,7 +175,6 @@ SELECT true = ALL (
       </tbody>
       </tgroup>
     </informaltable>
-
 
       <programlisting>CREATE TABLE coverage (id integer, geom geometry);
 
