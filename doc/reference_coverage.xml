@@ -125,8 +125,16 @@ SELECT true = ALL (
     <refsection>
       <title>Description</title>
 
-      <para>A window function which simplifies the edges of polygons in a polygonal coverage using the <ulink url="https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm">Visvalingam–Whyatt algorithm</ulink>.
-      The simplified outputs are consisent along shared edges, and still form a valid coverage.</para>
+      <para>A window function which simplifies the edges of polygons in a polygonal coverage.
+      The simplification preserves the coverage topology.
+      This means the simplified output polygons are consisent along shared edges, and still form a valid coverage.
+      </para>
+      
+      <para>The simplification uses a variant of the <ulink url="https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm">Visvalingam–Whyatt algorithm</ulink>.
+      The <parameter>tolerance</parameter> parameter has units of distance, 
+      and is roughly equal to the square root of triangular areas to be simplified.
+      </para>
+
       <note><para>If the input is not a valid coverage there may be unexpected artifacts in the output (such as boundary intersections, or separated boundaries which appeared to be shared).
       Use <xref linkend="ST_CoverageInvalidLocations" /> to determine if a coverage is valid.
       </para></note>
@@ -137,22 +145,55 @@ SELECT true = ALL (
 
     <refsection>
       <title>Examples</title>
+    <informaltable>
+      <tgroup cols="2">
+      <tbody>
+        <row>
+        <entry><para>
+        <informalfigure>
+          <mediaobject>
+              <imageobject>
+              <imagedata fileref="images/st_coveragesimplify01.png" />
+              </imageobject>
+              <caption><para>The input coverage</para></caption>
+          </mediaobject>
+        </informalfigure>
+        </para></entry>
+        <entry><para>
+        <informalfigure>
+          <mediaobject>
+              <imageobject>
+              <imagedata fileref="images/st_coveragesimplify02.png" />
+              </imageobject>
+              <caption><para>The simplified coverage</para></caption>
+          </mediaobject>
+        </informalfigure>
+        </para></entry>
+       </row>
+      </tbody>
+      </tgroup>
+    </informaltable>
+
 
       <programlisting>CREATE TABLE coverage (id integer, geom geometry);
 
 INSERT INTO coverage VALUES
-  (1, 'POLYGON((0 0, 10 0, 10.1 5, 10 10, 0 10, 0 0))'),
-  (2, 'POLYGON((10 0, 20 0, 20 10, 10 10, 10.1 5, 10 0))'),
-  (3, 'POLYGON((20 0, 30 0, 30 10, 20 10, 20 0))');
+  (1, '(POLYGON ((160 150, 110 130, 90 100, 90 70, 60 60, 50 10, 30 30, 40 50, 25 40, 10 60, 30 100, 30 120, 20 170, 60 180, 90 190, 130 180, 130 160, 160 150), 
+  (40 160, 50 140, 66 125, 60 100, 80 140, 90 170, 60 160, 40 160))'),
+  (2, 'POLYGON ((40 160, 60 160, 90 170, 80 140, 60 100, 66 125, 50 140, 40 160))'),
+  (3, 'POLYGON ((110 130, 160 50, 140 50, 120 33, 90 30, 50 10, 60 60, 90 70, 90 100, 110 130))' 
+  (4, 'POLYGON ((160 150, 150 120, 160 90, 160 50, 110 130, 160 150))' 
+  );
 
-SELECT id, ST_AsText(ST_CoverageSimplify(geom, 1.0) OVER ())
+SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
   FROM coverage;
 
  id |               st_astext
 ----+---------------------------------------
-  1 | POLYGON((10 0,10 10,0 10,0 0,10 0))
-  2 | POLYGON((10 0,20 0,20 10,10 10,10 0))
-  3 | POLYGON((20 0,30 0,30 10,20 10,20 0))
+  1 | POLYGON ((160 150, 110 130, 50 10, 10 60, 20 170, 90 190, 160 150), (40 160, 66 125, 90 170, 40 160))
+  2 | POLYGON ((40 160, 66 125, 90 170, 40 160))
+  3 | POLYGON ((110 130, 160 50, 50 10, 110 130))
+  3 | POLYGON ((160 150, 160 50, 110 130, 160 150))
       </programlisting>
     </refsection>
 
