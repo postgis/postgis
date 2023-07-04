@@ -79,6 +79,8 @@ GENERATED_IMAGES= \
 	st_convexhull01.png \
 	st_coveragesimplify01.png \
 	st_coveragesimplify02.png \
+	st_coverageunion01.png \
+	st_coverageunion02.png \
 	st_crosses01.png \
 	st_crosses02.png \
 	st_crosses03.png \

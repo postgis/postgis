@@ -238,20 +238,47 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
 
     <refsection>
       <title>Examples</title>
+    <informaltable>
+      <tgroup cols="2">
+      <tbody>
+        <row>
+        <entry><para>
+        <informalfigure>
+          <mediaobject>
+              <imageobject>
+              <imagedata fileref="images/st_coverageunion01.png" />
+              </imageobject>
+              <caption><para>Input coverage</para></caption>
+          </mediaobject>
+        </informalfigure>
+        </para></entry>
+        <entry><para>
+        <informalfigure>
+          <mediaobject>
+              <imageobject>
+              <imagedata fileref="images/st_coverageunion02.png" />
+              </imageobject>
+              <caption><para>Union result</para></caption>
+          </mediaobject>
+        </informalfigure>
+        </para></entry>
+       </row>
+      </tbody>
+      </tgroup>
+    </informaltable>
 
-      <programlisting>CREATE TABLE coverage (id integer, geom geometry);
-
-INSERT INTO coverage VALUES
-  (1, 'POLYGON((0 0, 10 0, 10.1 5, 10 10, 0 10, 0 0))'),
-  (2, 'POLYGON((10 0, 20 0, 20 10, 10 10, 10.1 5, 10 0))'),
-  (3, 'POLYGON((20 0, 30 0, 30 10, 20 10, 20 0))');
-
+      <programlisting>WITH coverage(id, geom) AS (VALUES
+  (1, 'POLYGON ((10 10, 10 150, 80 190, 110 150, 90 110, 40 110, 50 60, 10 10))'::geometry),
+  (2, 'POLYGON ((120 10, 10 10, 50 60, 100 70, 120 10))'::geometry),
+  (3, 'POLYGON ((140 80, 120 10, 100 70, 40 110, 90 110, 110 150, 140 80))'::geometry),
+  (4, 'POLYGON ((140 190, 120 170, 140 130, 160 150, 140 190))'::geometry),
+  (5, 'POLYGON ((180 160, 170 140, 140 130, 160 150, 140 190, 180 160))'::geometry)
+)
 SELECT ST_AsText(ST_CoverageUnion(geom))
   FROM coverage;
 
-                        st_astext
-----------------------------------------------------------
- POLYGON((0 0,0 10,10 10,20 10,30 10,30 0,20 0,10 0,0 0))
+--------------------------------------
+MULTIPOLYGON (((10 150, 80 190, 110 150, 140 80, 120 10, 10 10, 10 150), (50 60, 100 70, 40 110, 50 60)), ((120 170, 140 190, 180 160, 170 140, 140 130, 120 170)))
       </programlisting>
     </refsection>
 
