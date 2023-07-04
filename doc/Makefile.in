@@ -32,10 +32,14 @@ top_builddir = @top_builddir@
 mandir = @mandir@
 abs_srcdir = @abs_srcdir@
 abs_builddir = @abs_builddir@
+docdir = @docdir@
+htmldir = @htmldir@
 
 POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
+
+DOCSUFFIX=-en
 
 ifneq (,$(findstring dev,$(POSTGIS_MICRO_VERSION)))
   POSTGIS_DOWNLOAD_URL=http://postgis.net/stuff
@@ -91,6 +95,9 @@ XSLTPROC_COMMONOPTS= \
 	--stringparam html.stylesheet style.css \
 	$(XSLTPROCFLAGS)
 
+XSLTPROC_CHUNKED_HTML_OPTS = \
+	--stringparam img.src.path ../
+
 
 HTML_DOCBOOK_XSL=$(XSLBASE)/html/docbook.xsl
 CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/html/chunk.xsl
@@ -110,7 +117,6 @@ DBTOEPUB=@DBTOEPUB@
 
 # Directories for postgresql subdirectories
 PGSQL_DOCDIR=@PGSQL_DOCDIR@
-PGSQL_SHAREDIR=@PGSQL_SHAREDIR@
 
 BUILD_TARGET =
 
@@ -297,24 +303,26 @@ $(GENERATED_CHEATSHEET_FILES): html/%.html: xsl/%.html.xsl $(XML_INPUTS) postgis
 postgis-out.xml: postgis.xml Makefile
 	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g;s'@@POSTGIS_DOWNLOAD_URL@@'${POSTGIS_DOWNLOAD_URL}'g;" $< > $@
 
-chunked-html: postgis-out.xml Makefile images $(XML_INPUTS)
+chunked-html: postgis-out.xml Makefile $(XML_INPUTS)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
-		--output html$(DOCSUFFIX)/ \
+		$(XSLTPROC_CHUNKED_HTML_OPTS) \
+		--output html/postgis$(DOCSUFFIX)/ \
 		$(CHUNK_HTML_DOCBOOK_XSL) \
 		$<
 
-chunked-html-web: postgis-out.xml Makefile images $(XML_INPUTS)
+chunked-html-web: postgis-out.xml Makefile $(XML_INPUTS)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
-		--output html/ \
+		$(XSLTPROC_CHUNKED_HTML_OPTS) \
+		--output html/postgis-web$(DOCSUFFIX)/ \
 		--stringparam html.script ga.js \
 		$(CHUNK_HTML_DOCBOOK_XSL) \
 		$<
 
 HTML_BITS = $(wildcard html/*.html)
-
-chunked-html-web-mobile: postgis-out.xml Makefile images $(XML_INPUTS)
+chunked-html-web-mobile: postgis-out.xml Makefile $(XML_INPUTS)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
-		--output html/ \
+		$(XSLTPROC_CHUNKED_HTML_OPTS) \
+		--output html/postgis-web-mobile$(DOCSUFFIX)/ \
 		--stringparam html.script ga.js \
 		$(CHUNK_HTML_DOCBOOK_XSL) \
 		$<
@@ -329,7 +337,7 @@ html-localized chunked-html-localized:
     $(MAKE) -C po/$$lang local-$$rule || exit 1; \
   done
 
-html/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile images $(XML_INPUTS)
+html/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(XML_INPUTS)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		--output html/postgis$(DOCSUFFIX).html \
 		$(HTML_DOCBOOK_XSL) \
@@ -389,15 +397,12 @@ doxygen.cfg: doxygen.cfg.in
 doxygen: doxygen.cfg
 	doxygen $<
 
-images:
-	$(MAKE) -C html/images images
-
-images-clean:
-	$(MAKE) -C html/images images-clean
+images images-install images-uninstall images-clean:
+	$(MAKE) -C html/images $@
 
 clean:
-	rm -f html/*.html
-	rm -f postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
+	rm -rf html/postgis-*
+	rm -f *.pdf
 	rm -f *.epub
 	rm -f images # work around https://trac.osgeo.org/postgis/ticket/5422
 	rm -f $(XML_GENERATED_SOURCES)
@@ -454,17 +459,23 @@ man-uninstall:
 	rm -f $(DESTDIR)$(mandir)/man1/pgtopo_export.1
 	rm -f $(DESTDIR)$(mandir)/man1/pgtopo_import.1
 
-docs-install: html/postgis.html html/style.css
-	mkdir -p $(DESTDIR)$(PGSQL_DOCDIR)/postgis/images
-	$(INSTALL_DATA) html/postgis.html $(DESTDIR)$(PGSQL_DOCDIR)/postgis/
-	$(INSTALL_DATA) html/style.css $(DESTDIR)$(PGSQL_DOCDIR)/postgis/
-	$(INSTALL_DATA) html/images/*.png $(DESTDIR)$(PGSQL_DOCDIR)/postgis/images/
+html-install: html/postgis$(DOCSUFFIX).html
+	mkdir -p $(DESTDIR)$(htmldir)/postgis
+	$(INSTALL_DATA) html/postgis$(DOCSUFFIX).html $(DESTDIR)$(htmldir)/postgis/
+
+html-uninstall:
+	rm -f $(DESTDIR)$(htmldir)/postgis/postgis$(DOCSUFFIX).html
+
+html-assets-install: images-install
+	$(INSTALL_DATA) html/style.css $(DESTDIR)$(htmldir)/postgis/
+
+html-assets-uninstall: images-install
+	rm -f $(DESTDIR)$(htmldir)/postgis/style.css
+
+docs-install: html-install html-assets-install
 	$(INSTALL_DATA) ../README.postgis $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
 
-docs-uninstall:
-	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/postgis.html
-	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/style.css
-	rm -rf $(DESTDIR)$(PGSQL_DOCDIR)/postgis/images
+docs-uninstall: html-uninstall html-assets-uninstall
 	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
 
 install: comments-install

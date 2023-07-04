@@ -14,6 +14,10 @@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 srcdir = @srcdir@
+htmldir = @htmldir@
+
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
 
 CC=@CC@
 CFLAGS=@CFLAGS@ @PROJ_CPPFLAGS@
@@ -214,13 +218,25 @@ GENERATED_IMAGES_RESIZED= \
 	de9im12.png \
 	de9im13.png
 
+ALL_IMAGES = \
+	$(GENERATED_IMAGES) \
+	$(GENERATED_IMAGES_RESIZED) \
+	$(STATIC_IMAGES)
+
 OBJS=styles.o generator.o
 
 # Build the generator
 all: generator
 
 # generate the images
-images: $(GENERATED_IMAGES) $(GENERATED_IMAGES_RESIZED) $(STATIC_IMAGES)
+images: $(ALL_IMAGES)
+
+images-install: $(ALL_IMAGES)
+	mkdir -p $(DESTDIR)$(htmldir)/postgis/images
+	$(INSTALL_DATA) $(ALL_IMAGES) $(DESTDIR)$(htmldir)/postgis/images
+
+images-uninstall:
+	rm -f $(ALL_IMAGES:%=$(DESTDIR)$(htmldir)/postgis/images/%)
 
 # Command to build each of the .o files
 $(OBJS): %.o: %.c
@@ -258,6 +274,6 @@ distclean: clean
 	rm -f Makefile
 
 images-clean:
-	rm -f $(GENERATED_IMAGES) $(GENERATED_IMAGES_RESIZED) $(STATIC_IMAGES)
+	rm -f $(ALL_IMAGES)
 
 .NOTPARALLEL:
