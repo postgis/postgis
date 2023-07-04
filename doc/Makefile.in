@@ -354,7 +354,7 @@ else
 		 -P figure.caution="images/caution" \
 		 -P latex.output.revhistory=0 \
 		 -s "$(abs_srcdir)/texstyle.sty" \
-		 -b xetex \
+		 -b pdftex \
 		 -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf $<
 endif
 
