@@ -31,13 +31,11 @@
 
 			<!-- For each section if there is note that it implements Circular String catalog it -->
 						<xsl:for-each select="refsection">
-							<xsl:for-each select="para">
-								<xsl:choose>
-									<xsl:when test="contains(remark/@conformance, 'curve')">
-										<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
-									</xsl:when>
-								</xsl:choose>
-							</xsl:for-each>
+							<xsl:choose>
+								<xsl:when test="descendant::node()[@conformance='curve']">
+									<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
+								</xsl:when>
+							</xsl:choose>
 						</xsl:for-each>
 				</xsl:for-each>
 				</itemizedlist>

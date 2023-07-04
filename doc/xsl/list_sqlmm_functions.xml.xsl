@@ -28,13 +28,11 @@
 
 			<!-- For each section if there is note that it implements SQL/MM catalog it -->
 						<xsl:for-each select="refsection">
-							<xsl:for-each select="para">
 								<xsl:choose>
-									<xsl:when test="contains(remark/@conformance, 'sqlmm')">
+									<xsl:when test="descendant::node()[@conformance='sqlmm']">
 										<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /> <xsl:value-of select="." /></simpara></listitem>
 									</xsl:when>
 								</xsl:choose>
-							</xsl:for-each>
 						</xsl:for-each>
 				</xsl:for-each>
 				</itemizedlist>

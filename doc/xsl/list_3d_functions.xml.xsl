@@ -29,13 +29,11 @@
 
 			<!-- For each section if there is note that it supports 3d catalog it -->
 						<xsl:for-each select="refsection">
-							<xsl:for-each select="para">
-								<xsl:choose>
-									<xsl:when test="contains(remark/@conformance, '3d')">
-										<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
-									</xsl:when>
-								</xsl:choose>
-							</xsl:for-each>
+							<xsl:choose>
+								<xsl:when test="descendant::node()[@conformance='3d']">
+									<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
+								</xsl:when>
+							</xsl:choose>
 						</xsl:for-each>
 				</xsl:for-each>
 				</itemizedlist>
