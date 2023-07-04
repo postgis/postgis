@@ -58,7 +58,7 @@
 						<tbody>
 						<!-- Exclude PostGIS types, management functions, long transaction support, or exceptional functions from consideration  -->
 						<!-- leaving out operators in an effor to try to fit on one page -->
-						<xsl:for-each select="sect1[not(@id='PostGIS_Types' or @id='Management_Functions' or @id='Long_Transactions_Support' or @id='Exceptional_Functions')]/refentry">
+						<xsl:for-each select="descendant::node()[not(@id='PostGIS_Types' or @id='Management_Functions' or @id='Long_Transactions_Support' or @id='Exceptional_Functions' or @id='Version_Functions')]/refentry">
 							<xsl:sort select="@id"/>
 							<xsl:variable name='comment'>
 								<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
@@ -92,7 +92,7 @@
 										</entry>
 									</xsl:when>
 									<!-- support via autocast -->
-									<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'box') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'box')">
+									<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'box') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'box') or contains(refsynopsisdiv/funcsynopsis, 'geom_name')">
 										<entry><xsl:value-of select="$matrix_autocast" disable-output-escaping="yes"/></entry>
 									</xsl:when>
 									<!-- no support -->
