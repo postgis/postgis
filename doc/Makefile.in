@@ -299,7 +299,7 @@ postgis-out.xml: postgis.xml Makefile
 
 chunked-html: postgis-out.xml Makefile images $(XML_INPUTS)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
-		--output html/ \
+		--output html$(DOCSUFFIX)/ \
 		$(CHUNK_HTML_DOCBOOK_XSL) \
 		$<
 
@@ -322,10 +322,11 @@ chunked-html-web-mobile: postgis-out.xml Makefile images $(XML_INPUTS)
 
 html: html/postgis$(DOCSUFFIX).html
 
-html-localized:
-	@for lang in $(translations); do \
-    echo "Creating html for language $$lang..."; \
-    $(MAKE) -C po/$$lang local-html || exit 1; \
+html-localized chunked-html-localized:
+	rule=$(patsubst %-localized,%,$@); \
+	for lang in $(translations); do \
+    echo "Creating $$rule for language $$lang..."; \
+    $(MAKE) -C po/$$lang local-$$rule || exit 1; \
   done
 
 html/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile images $(XML_INPUTS)
