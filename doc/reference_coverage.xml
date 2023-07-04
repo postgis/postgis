@@ -32,10 +32,10 @@
     <refsection>
       <title>Description</title>
 
-      <para>Checks if the polygons in the window partition form a valid polygonal coverage,
-      and returns linear indicators showing the location of invalid edges (if any) in each polygon.
+      <para>A window function which checks if the polygons in the window partition form a valid polygonal coverage.
+      It returns linear indicators showing the location of invalid edges (if any) in each polygon.
       </para>
-      <para>A set of polygons is a valid coverage if the following conditions hold:
+      <para>A set of valid polygons is a valid coverage if the following conditions hold:
         </para>
 
       <itemizedlist>
@@ -49,7 +49,7 @@
 
       <para>As a window function a value is returned for every input polygon.
       For polygons which violate one or more of the validity conditions the return value is a MULTILINESTRING containing the problematic edges.
-      Valid polygons return the value NULL.
+      Coverage-valid polygons return the value NULL.
       Non-polygonal or empty geometries also produce NULL values.</para>
 
       <para>The conditions allow a valid coverage to contain holes (gaps between polygons),
@@ -59,30 +59,43 @@
       edges forming narrower gaps will also be returned as invalid.
       </para>
 
+      <para>The polygons being checked for coverage validity must also be valid geometries.
+      This can be checked with <xref linkend="ST_IsValid" />.
+      </para>
+
       <para role="availability" conformance="3.4.0">Availability: 3.4.0 - requires GEOS &gt;= 3.12.0</para>
     </refsection>
 
     <refsection>
       <title>Examples</title>
 
-      <programlisting>CREATE TABLE coverage (id integer, geom geometry);
+        <informalfigure>
+          <mediaobject>
+              <imageobject>
+              <imagedata fileref="images/st_coverageinvalidlocations01.png" />
+              </imageobject>
+              <caption><para>Invalid edges caused by overlap and non-matching vertices</para></caption>
+          </mediaobject>
+        </informalfigure>
 
-INSERT INTO coverage VALUES
-  (1, 'POLYGON((0 0, 10 0, 10.1 5, 10 10, 0 10, 0 0))'),
-  (2, 'POLYGON((10 0, 20 0, 20 10, 10 10, 10.05 5, 10 0))'),
-  (3, 'POLYGON((20 0, 30 0, 30 10, 20 10, 20 0))');
-
+      <programlisting>WITH coverage(id, geom) AS (VALUES
+  (1, 'POLYGON ((10 190, 30 160, 40 110, 100 70, 120 10, 10 10, 10 190))'::geometry),
+  (2, 'POLYGON ((100 190, 10 190, 30 160, 40 110, 50 80, 74 110.5, 100 130, 140 120, 140 160, 100 190))'::geometry),
+  (3, 'POLYGON ((140 190, 190 190, 190 80, 140 80, 140 190))'::geometry),
+  (4, 'POLYGON ((180 40, 120 10, 100 70, 140 80, 190 80, 180 40))'::geometry)
+)
 SELECT id, ST_AsText(ST_CoverageInvalidLocations(geom) OVER ())
   FROM coverage;
 
- id |           st_astext
-----+--------------------------------
-  1 | LINESTRING(10 0,10.1 5,10 10)
-  2 | LINESTRING(10 10,10.05 5,10 0)
-  3 |
+ id |               st_astext
+----+---------------------------------------
+  1 | LINESTRING (40 110, 100 70)
+  2 | MULTILINESTRING ((100 130, 140 120, 140 160, 100 190), (40 110, 50 80, 74 110.5))
+  3 | LINESTRING (140 80, 140 190)
+  3 | null
       </programlisting>
 
-      <programlisting>-- Test entire table for validity
+      <programlisting>-- Test entire table for coverage validity
 SELECT true = ALL (
     SELECT ST_CoverageInvalidLocations(geom) OVER () IS NULL
     FROM coverage
@@ -93,6 +106,7 @@ SELECT true = ALL (
     <refsection>
       <title>See Also</title>
       <para>
+        <xref linkend="ST_IsValid" />,
         <xref linkend="ST_CoverageUnion" />,
         <xref linkend="ST_CoverageSimplify" />
       </para>
