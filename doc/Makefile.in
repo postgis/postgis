@@ -410,7 +410,7 @@ html-clean:
 	rm -rf html/postgis-web$(DOCSUFFIX)/
 	rm -rf html/postgis-web-mobile$(DOCSUFFIX)/
 
-clean: html-clean
+clean: html-clean clean-localized
 	rm -f *.pdf
 	rm -f *.epub
 	rm -f images # work around https://trac.osgeo.org/postgis/ticket/5422
@@ -421,12 +421,9 @@ clean: html-clean
 	rm -f raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
 	rm -f *.tmp
 
-distclean: clean
+distclean: clean distclean-localized
 	$(MAKE) -C html/images distclean
 	rm -f Makefile Makefile.comments html/image_src/Makefile
-	for lang in $(translations); do \
-		rm -f po/$$lang/Makefile; \
-	done
 
 maintainer-clean: clean images-clean
 	rm -f postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql sfcgal_comments.sql

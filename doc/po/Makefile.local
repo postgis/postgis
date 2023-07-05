@@ -3,6 +3,16 @@
 
 local-all: local-html comments
 
+# We do not want to recurse in parent dir here
+local-clean:
+	rm -f $(XML_SOURCES)
+	rm -f html
+	rm -f xsl
+
+# We do not want to recurse in parent dir here
+local-distclean:
+	rm -f Makefile
+
 local-%: symlinks
 	$(MAKE) $(patsubst local-%,%,$@) DOCSUFFIX=$(DOCSUFFIX)
 
