@@ -336,7 +336,7 @@ html: html/postgis$(DOCSUFFIX).html
 %-localized:
 	rule=$(patsubst %-localized,%,$@); \
 	for lang in $(translations); do \
-    echo "Creating $$rule for language $$lang..."; \
+    echo "Making $$rule for language $$lang..."; \
     $(MAKE) -C po/$$lang local-$$rule || exit 1; \
   done
 
@@ -508,13 +508,6 @@ else
 check-unit: $(XML_INPUTS)
 	$(XMLLINT) --loaddtd $(XSLTPROC_PATH_OPT) --xinclude --valid postgis-out.xml --noout
 endif
-
-check-localized:
-	@for lang in $(translations); do \
-    echo "Creating html for language $$lang..."; \
-    $(MAKE) -C po/$$lang local-check || exit 1; \
-  done
-
 
 requirements_not_met_xsltproc:
 	@echo
