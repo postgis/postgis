@@ -99,7 +99,7 @@ cp -R $package /var/www/postgis_stuff/
 if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
 
   #rename the files without the micro if it's a development branch
-  for f in ${WEB_DIR}/*${POSTGIS_MICRO_VERSION}; do
+  for f in ${WEB_DIR}/{postgis,doc-html}${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.{tar.gz,pdf.epub}; do
     newname=$(echo "$f" | sed "s/${POSTGIS_MICRO_VERSION}//");
     mv -vi $f $newname
   done
