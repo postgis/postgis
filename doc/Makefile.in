@@ -351,6 +351,9 @@ images-clean:
 	$(MAKE) -C html/image_src images-clean
 
 clean:
+	@for lang in $(translations); do \
+		$(MAKE) -C po/$$lang local-clean || exit 1; \
+	done
 	rm -f html/*.html
 	rm -f postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
 	rm -f *.epub
