@@ -23,7 +23,7 @@ config.guess
 config.sub
 config.status
 configure
-doc/*.html
+doc/html/postgis-*
 doc/images
 doc/html/images/generator
 doc/html/images/Makefile
