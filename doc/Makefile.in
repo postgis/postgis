@@ -410,7 +410,7 @@ html-clean:
 	rm -rf html/postgis-web$(DOCSUFFIX)/
 	rm -rf html/postgis-web-mobile$(DOCSUFFIX)/
 
-clean: html-clean clean-localized
+clean: html-clean html-clean-localized
 	rm -f *.pdf
 	rm -f *.epub
 	rm -f images # work around https://trac.osgeo.org/postgis/ticket/5422
@@ -420,6 +420,7 @@ clean: html-clean clean-localized
 	rm -f postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
 	rm -f raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
 	rm -f *.tmp
+	$(MAKE) clean-localized
 
 distclean: clean distclean-localized
 	$(MAKE) -C html/images distclean
