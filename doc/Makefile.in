@@ -417,21 +417,22 @@ pdf-clean:
 epub-clean:
 	rm -f postgis*$(DOCSUFFIX).epub
 
-clean: html-clean html-clean-localized pdf-clean pdf-clean-localized epub-clean epub-clean-localized
+clean: images-clean html-clean html-clean-localized pdf-clean pdf-clean-localized epub-clean epub-clean-localized
 	rm -f images # work around https://trac.osgeo.org/postgis/ticket/5422
 	rm -f $(XML_GENERATED_SOURCES)
 	rm -f $(TAG_GENERATED_SOURCES)
 	$(MAKE) -C html/images clean
 	rm -f postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
 	rm -f raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
+	rm -f $(GENERATED_CHEATSHEET_FILES)
 	rm -f *.tmp
 	$(MAKE) clean-localized
 
 distclean: clean distclean-localized
 	$(MAKE) -C html/images distclean
-	rm -f Makefile Makefile.comments html/image_src/Makefile
+	rm -f Makefile Makefile.comments
 
-maintainer-clean: clean images-clean
+maintainer-clean: distclean
 	rm -f postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql sfcgal_comments.sql
 
 ifneq ($(CAN_BUILD_COMMENTS),yes)
