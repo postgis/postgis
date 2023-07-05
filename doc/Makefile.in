@@ -96,6 +96,7 @@ XSLTPROC_COMMONOPTS= \
 	$(XSLTPROCFLAGS)
 
 XSLTPROC_CHUNKED_HTML_OPTS = \
+	--stringparam admon.graphics.path ../images/ \
 	--stringparam img.src.path ../ \
 	--stringparam html.stylesheet ../style.css
 
