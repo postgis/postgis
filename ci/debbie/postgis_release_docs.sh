@@ -76,31 +76,48 @@ make epub
 make -e chunked-html-web # TODO: do we really want this too in the doc-html-*.tar.gz package ?
 make html-localized # TODO: do we really want this too in the doc-html-*.tar.gz package ?
 
+STUFF_DIR=/var/www/postgis_stuff/
+
 package="doc-html-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.tar.gz"
 tar -czf "$package" --exclude='static' --exclude='wkt' --exclude '*.o' html
+cp $package ${STUFF_DIR}
+
+# TODO: Replace all of this by some `make *-install` rule
+cp *.pdf ${STUFF_DIR}
+cp *.epub ${STUFF_DIR}
 
 # Install all html
 make html-assets-install
 make html-install
-make chunked-html-web-install
 make html-install-localized
+make chunked-html-web-install
 make chunked-html-web-install-localized
+
+# Strip out the "postgis-web-" suffix
+# from chunked html directories, backing
+# up any previous target directory
+for f in {HTML_DIR}postgis-web-*; do
+  if test -e $f; then
+    nf=$(echo $f| sed 's/postgis-web-//');
+    if test -e $nf; then
+      rm -rf $nf.old
+      mv -v $nf $nf.old
+    fi
+    mv -v $f $nf;
+  fi
+done
+
+
 chmod -R 755 ${HTML_DIR} # TODO: still needed ?
-
-
-
-# TODO: Replace all of this by `make *-install`
-cp -R *.pdf /var/www/postgis_stuff/
-cp -R *.epub /var/www/postgis_stuff/
-
-cp -R $package /var/www/postgis_stuff/
 
 
 if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
 
-  #rename the files without the micro if it's a development branch
-  for f in ${WEB_DIR}/{postgis,doc-html}${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.{tar.gz,pdf.epub}; do
-    newname=$(echo "$f" | sed "s/${POSTGIS_MICRO_VERSION}//");
+  # rename the files without the micro if it's a development branch
+  # to avoid proliferation of these packages
+  for f in ${STUFF_DIR}/*-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}-*
+  do
+    newname=$(echo "$f" | sed "s/\.${POSTGIS_MICRO_VERSION}//");
     mv -vi $f $newname
   done
 
