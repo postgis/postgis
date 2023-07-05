@@ -482,18 +482,18 @@ chunked-html-uninstall:
 	rm -rf $(DESTDIR)$(htmldir)/postgis/postgis$(DOCSUFFIX)/
 
 chunked-html-web-install: chunked-html-web
-	mkdir -p $(DESTDIR)$(html-webdir)/postgis
-	cp -R html-web/postgis-web$(DOCSUFFIX) $(DESTDIR)$(html-webdir)/postgis/
+	mkdir -p $(DESTDIR)$(htmldir)/postgis
+	cp -R html/postgis-web$(DOCSUFFIX) $(DESTDIR)$(htmldir)/postgis/
 
 chunked-html-web-uninstall:
-	rm -rf $(DESTDIR)$(html-webdir)/postgis/postgis-web$(DOCSUFFIX)/
+	rm -rf $(DESTDIR)$(htmldir)/postgis/postgis-web$(DOCSUFFIX)/
 
 chunked-html-web-mobile-install: chunked-html-web-mobile
-	mkdir -p $(DESTDIR)$(html-web-mobiledir)/postgis
-	cp -R html-web-mobile/postgis-web-mobile$(DOCSUFFIX) $(DESTDIR)$(html-web-mobiledir)/postgis/
+	mkdir -p $(DESTDIR)$(htmldir)/postgis
+	cp -R html/postgis-web-mobile$(DOCSUFFIX) $(DESTDIR)$(htmldir)/postgis/
 
 chunked-html-web-mobile-uninstall:
-	rm -rf $(DESTDIR)$(html-web-mobiledir)/postgis/postgis-web-mobile$(DOCSUFFIX)/
+	rm -rf $(DESTDIR)$(htmldir)/postgis/postgis-web-mobile$(DOCSUFFIX)/
 
 html-assets-install: images-install
 	$(INSTALL_DATA) html/style.css $(DESTDIR)$(htmldir)/postgis/
