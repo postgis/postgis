@@ -281,7 +281,7 @@ endif
 ifeq ($(XSLTPROC),)
 $(XSL_GENERATED_SOURCES): requirements_not_met_xsltproc
 else
-$(XSL_GENERATED_SOURCES): %.xsl.xml: xsl/%.xml.xsl postgis-out.xml xsl-config.xml $(TAG_GENERATED_SOURCES)
+$(XSL_GENERATED_SOURCES): %.xsl.xml: xsl/%.xml.xsl postgis-out.xml xsl-config.xml $(TAG_GENERATED_SOURCES) $(XML_SOURCES)
 	grep -v '\&postgis_special;' postgis-out.xml | $(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< -
 endif
 
