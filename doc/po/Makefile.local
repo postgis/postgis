@@ -4,7 +4,7 @@
 local-all: local-html comments
 
 local-%: symlinks
-	$(MAKE) $(patsubst local-%,%,$@)
+	$(MAKE) $(patsubst local-%,%,$@) DOCSUFFIX=$(DOCSUFFIX)
 
 symlinks:
 	rm -f html; ln -s ../../html html
