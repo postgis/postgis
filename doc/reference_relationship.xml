@@ -609,23 +609,19 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
     <title>Description</title>
 
     <para>Compares two geometry objects and
-    returns <varname>true</varname> if their intersection "spatially cross", that is, the
-    geometries have some, but not all interior points in common. The
-    intersection of the interiors of the geometries must be non-empty
+    returns <varname>true</varname> if their intersection "spatially crosses"; 
+    that is, the geometries have some, but not all interior points in common. 
+    The intersection of the interiors of the geometries must be non-empty
     and must have dimension less than the maximum dimension
-    of the two input geometries. Additionally, the intersection of the two
-    geometries must not equal either of the source geometries. Otherwise, it
+    of the two input geometries, and the intersection of the two
+    geometries must not equal either geometry. Otherwise, it
     returns <varname>false</varname>.</para>
 
-    <para>In mathematical terms, this is:</para>
+    <para>In mathematical terms:
+    </para> 	
 
-    <informalfigure>
-    <mediaobject>
-      <imageobject>
-      <imagedata fileref="images/st_crosses-math.png" />
-      </imageobject>
-    </mediaobject>
-    </informalfigure>
+    <para>
+    <emphasis>ST_Crosses(A, B) ⇔ (dim( I(A) ∩ I(B) ) &lt; max( dim(I(A)), dim(I(B)) )) ∧ (a ∩ b ≠ a) ∧ (a ∩ b ≠ b) </emphasis></para>
 
     <para>Geometries cross if their DE-9IM Intersection Matrix matches:</para>
 
