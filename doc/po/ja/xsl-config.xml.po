@@ -6,114 +6,64 @@
 # #-#-#-#-#  tag_curve_support.xml.po (pg 13)  #-#-#-#-#
 # Japanese translations for pg package.
 # Automatically generated, 2023.
-#
 # Teramoto Ikuhiro <yellow@affrc.go.jp>, 2023.
 # #-#-#-#-#  tag_geography_transform.xml.po (ming 64gcc81)  #-#-#-#-#
 # Japanese translations for ming package.
 # Automatically generated, 2023.
-#
 # Teramoto Ikuhiro <yellow@affrc.go.jp>, 2023.
 # #-#-#-#-#  tag_index_aware.xml.po (pg 13)  #-#-#-#-#
 # Japanese translations for pg package.
 # Automatically generated, 2023.
-#
 # Teramoto Ikuhiro <yellow@affrc.go.jp>, 2023.
 # #-#-#-#-#  tag_M_support.xml.po (pg 13)  #-#-#-#-#
 # Japanese translations for pg package.
 # Automatically generated, 2023.
-#
 # Teramoto Ikuhiro <yellow@affrc.go.jp>, 2023.
 # #-#-#-#-#  tag_P_support.xml.po (pg 13)  #-#-#-#-#
 # Japanese translations for pg package.
 # Automatically generated, 2023.
-#
 # Teramoto Ikuhiro <yellow@affrc.go.jp>, 2023.
 # #-#-#-#-#  tag_sfcgal_enhanced.xml.po (pg 13)  #-#-#-#-#
 # Japanese translations for pg package.
 # Automatically generated, 2023.
-#
 # Teramoto Ikuhiro <yellow@affrc.go.jp>, 2023.
 # #-#-#-#-#  tag_sfcgal_required.xml.po (pg 13)  #-#-#-#-#
 # Japanese translations for pg package.
 # Automatically generated, 2023.
-#
 # Teramoto Ikuhiro <yellow@affrc.go.jp>, 2023.
 # #-#-#-#-#  tag_sfs_compliant.xml.po (pg 13)  #-#-#-#-#
 # Japanese translations for pg package.
 # Automatically generated, 2023.
-#
 # Teramoto Ikuhiro <yellow@affrc.go.jp>, 2023.
 # #-#-#-#-#  tag_sqlmm_compliant.xml.po (pg 13)  #-#-#-#-#
 # Japanese translations for pg package.
 # Automatically generated, 2023.
-#
 # Teramoto Ikuhiro <yellow@affrc.go.jp>, 2023.
 # #-#-#-#-#  tag_T_support.xml.po (pg 13)  #-#-#-#-#
 # Japanese translations for pg package.
 # Automatically generated, 2023.
-#
 # Teramoto Ikuhiro <yellow@affrc.go.jp>, 2023.
 # #-#-#-#-#  tag_Z_support.xml.po (pg 13)  #-#-#-#-#
 # Japanese translations for pg package.
 # Automatically generated, 2023.
-#
 # Teramoto Ikuhiro <yellow@affrc.go.jp>, 2023.
 # #-#-#-#-#  xsl-config.xml.po (PACKAGE VERSION)  #-#-#-#-#
 # Japanese translations for PACKAGE package.
 # Automatically generated, 2023.
-#
 # Teramoto Ikuhiro <yellow@affrc.go.jp>, 2023.
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-04 20:03+0000\n"
-"PO-Revision-Date: 2023-06-30 05:08+0000\n"
+"PO-Revision-Date: 2023-07-05 04:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/xsl-"
-"config/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"xsl-config/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"#-#-#-#-#  tag_address_standardizer_required.xml.po (pg 13)  #-#-#-#-#\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
-"#-#-#-#-#  tag_curve_support.xml.po (pg 13)  #-#-#-#-#\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
-"#-#-#-#-#  tag_geography_transform.xml.po (ming 64gcc81)  #-#-#-#-#\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
-"#-#-#-#-#  tag_index_aware.xml.po (pg 13)  #-#-#-#-#\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
-"#-#-#-#-#  tag_M_support.xml.po (pg 13)  #-#-#-#-#\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
-"#-#-#-#-#  tag_P_support.xml.po (pg 13)  #-#-#-#-#\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
-"#-#-#-#-#  tag_sfcgal_enhanced.xml.po (pg 13)  #-#-#-#-#\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
-"#-#-#-#-#  tag_sfcgal_required.xml.po (pg 13)  #-#-#-#-#\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
-"#-#-#-#-#  tag_sfs_compliant.xml.po (pg 13)  #-#-#-#-#\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
-"#-#-#-#-#  tag_sqlmm_compliant.xml.po (pg 13)  #-#-#-#-#\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
-"#-#-#-#-#  tag_T_support.xml.po (pg 13)  #-#-#-#-#\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
-"#-#-#-#-#  tag_Z_support.xml.po (pg 13)  #-#-#-#-#\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
-"#-#-#-#-#  xsl-config.xml.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.16.4\n"
 
@@ -165,7 +115,7 @@ msgstr "このメソッドは曲線ストリングと曲線に対応していま
 #, no-c-format
 msgid ""
 "For geography this is a thin wrapper around the geometry implementation."
-msgstr ""
+msgstr "この関数のジオグラフィ版はジオメトリ実装にかぶせた薄いラッパです。"
 
 #. Tag: para
 #: xsl-config.xml:88
@@ -210,7 +160,7 @@ msgid ""
 "</ulink>"
 msgstr ""
 "このメソッドは<ulink url=\"http://www.opengeospatial.org/standards/sfs\">OGC "
-"Simple Features Implementation Specification for SQL 1.1.</ulink>の実装です。"
+"Simple Features Implementation Specification for SQL 1.1</ulink>の実装です。"
 
 #. Tag: para
 #: xsl-config.xml:144
