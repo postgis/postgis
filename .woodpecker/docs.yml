@@ -2,8 +2,6 @@ pipeline:
   prepare:
     image: docker.osgeo.org/postgis/build-test:trisquel3
     pull: true
-    when:
-      path: "doc/**"
     commands:
       - ./autogen.sh
       - mkdir -p build-docs && cd build-docs
@@ -11,8 +9,6 @@ pipeline:
       - make postgis_revision.h
   build-html:
     image: docker.osgeo.org/postgis/build-test:trisquel3
-    when:
-      status: [ success ]
     commands:
       - cd build-docs
       - make docs
@@ -21,15 +17,11 @@ pipeline:
       - make -C doc/ check-localized
   build-pdf:
     image: docker.osgeo.org/postgis/build-test:trisquel3
-    when:
-      status: [ success ]
     commands:
       - cd build-docs
       - make -C doc/ pdf
   build-cheatsheets:
     image: docker.osgeo.org/postgis/build-test:trisquel3
-    when:
-      status: [ success ]
     commands:
       - cd build-docs
       - make -C doc/ cheatsheets
