@@ -469,38 +469,38 @@ man-uninstall:
 	rm -f $(DESTDIR)$(mandir)/man1/pgtopo_import.1
 
 html-install: html/postgis$(DOCSUFFIX).html
-	mkdir -p $(DESTDIR)$(htmldir)/postgis
-	$(INSTALL_DATA) html/postgis$(DOCSUFFIX).html $(DESTDIR)$(htmldir)/postgis/
+	mkdir -p $(DESTDIR)$(htmldir)
+	$(INSTALL_DATA) html/postgis$(DOCSUFFIX).html $(DESTDIR)$(htmldir)/
 
 html-uninstall:
-	rm -f $(DESTDIR)$(htmldir)/postgis/postgis$(DOCSUFFIX).html
+	rm -f $(DESTDIR)$(htmldir)/postgis$(DOCSUFFIX).html
 
 chunked-html-install: chunked-html
-	mkdir -p $(DESTDIR)$(htmldir)/postgis
-	cp -R html/postgis$(DOCSUFFIX) $(DESTDIR)$(htmldir)/postgis/
+	mkdir -p $(DESTDIR)$(htmldir)
+	cp -R html/postgis$(DOCSUFFIX) $(DESTDIR)$(htmldir)/
 
 chunked-html-uninstall:
-	rm -rf $(DESTDIR)$(htmldir)/postgis/postgis$(DOCSUFFIX)/
+	rm -rf $(DESTDIR)$(htmldir)/postgis$(DOCSUFFIX)/
 
 chunked-html-web-install: chunked-html-web
-	mkdir -p $(DESTDIR)$(htmldir)/postgis
-	cp -R html/postgis-web$(DOCSUFFIX) $(DESTDIR)$(htmldir)/postgis/
+	mkdir -p $(DESTDIR)$(htmldir)
+	cp -R html/postgis-web$(DOCSUFFIX) $(DESTDIR)$(htmldir)/
 
 chunked-html-web-uninstall:
-	rm -rf $(DESTDIR)$(htmldir)/postgis/postgis-web$(DOCSUFFIX)/
+	rm -rf $(DESTDIR)$(htmldir)/postgis-web$(DOCSUFFIX)/
 
 chunked-html-web-mobile-install: chunked-html-web-mobile
-	mkdir -p $(DESTDIR)$(htmldir)/postgis
-	cp -R html/postgis-web-mobile$(DOCSUFFIX) $(DESTDIR)$(htmldir)/postgis/
+	mkdir -p $(DESTDIR)$(htmldir)
+	cp -R html/postgis-web-mobile$(DOCSUFFIX) $(DESTDIR)$(htmldir)/
 
 chunked-html-web-mobile-uninstall:
-	rm -rf $(DESTDIR)$(htmldir)/postgis/postgis-web-mobile$(DOCSUFFIX)/
+	rm -rf $(DESTDIR)$(htmldir)/postgis-web-mobile$(DOCSUFFIX)/
 
 html-assets-install: images-install
-	$(INSTALL_DATA) html/style.css $(DESTDIR)$(htmldir)/postgis/
+	$(INSTALL_DATA) html/style.css $(DESTDIR)$(htmldir)/
 
 html-assets-uninstall: images-install
-	rm -f $(DESTDIR)$(htmldir)/postgis/style.css
+	rm -f $(DESTDIR)$(htmldir)/style.css
 
 docs-install: html-install html-assets-install
 	$(INSTALL_DATA) ../README.postgis $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis

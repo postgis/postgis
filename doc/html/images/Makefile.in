@@ -236,11 +236,11 @@ all: generator
 images: $(ALL_IMAGES)
 
 images-install: $(ALL_IMAGES)
-	mkdir -p $(DESTDIR)$(htmldir)/postgis/images
-	$(INSTALL_DATA) $(ALL_IMAGES) $(DESTDIR)$(htmldir)/postgis/images
+	mkdir -p $(DESTDIR)$(htmldir)/images
+	$(INSTALL_DATA) $(ALL_IMAGES) $(DESTDIR)$(htmldir)/images/
 
 images-uninstall:
-	rm -f $(ALL_IMAGES:%=$(DESTDIR)$(htmldir)/postgis/images/%)
+	rm -f $(ALL_IMAGES:%=$(DESTDIR)$(htmldir)/images/%)
 
 # Command to build each of the .o files
 $(OBJS): %.o: %.c
