@@ -93,12 +93,11 @@ XSLTPROC_COMMONOPTS= \
 	--stringparam chunker.output.encoding UTF-8 \
 	--stringparam chunker.output.indent no \
 	--stringparam saxon.character.representation decimal \
-	--stringparam html.stylesheet style.css \
 	$(XSLTPROCFLAGS)
 
 XSLTPROC_CHUNKED_HTML_OPTS = \
-	--stringparam img.src.path ../
-
+	--stringparam img.src.path ../ \
+	--stringparam html.stylesheet ../style.css
 
 HTML_DOCBOOK_XSL=$(XSLBASE)/html/docbook.xsl
 CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/html/chunk.xsl
@@ -343,6 +342,7 @@ html: html/postgis$(DOCSUFFIX).html
 
 html/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(XML_INPUTS)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
+		--stringparam html.stylesheet style.css \
 		--output html/postgis$(DOCSUFFIX).html \
 		$(HTML_DOCBOOK_XSL) \
 		$<
