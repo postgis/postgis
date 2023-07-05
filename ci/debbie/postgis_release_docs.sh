@@ -118,7 +118,7 @@ if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
   for f in ${STUFF_DIR}/*-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}-*
   do
     newname=$(echo "$f" | sed "s/\.${POSTGIS_MICRO_VERSION}//");
-    mv -vi $f $newname
+    mv -v $f $newname
   done
 
   # restore the backedup xml file
