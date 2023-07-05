@@ -23,6 +23,7 @@
 
 translations = it_IT pt_BR fr es pl ko_KR de ja ru
 
+prefix = @prefix@
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 datarootdir = @datarootdir@

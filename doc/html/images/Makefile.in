@@ -14,6 +14,10 @@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 srcdir = @srcdir@
+
+prefix = @prefix@
+datarootdir = @datarootdir@
+docdir = @docdir@
 htmldir = @htmldir@
 
 INSTALL=@INSTALL@
