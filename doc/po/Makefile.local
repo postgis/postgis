@@ -3,7 +3,7 @@
 
 local-all: local-html comments
 
-local-html local-cheatsheets local-pdf local-chunked-html local-check: symlinks
+local-%: symlinks
 	$(MAKE) $(patsubst local-%,%,$@)
 
 symlinks:

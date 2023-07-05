@@ -333,7 +333,7 @@ html/postgis-web-mobile$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile $(XML_
 
 html: html/postgis$(DOCSUFFIX).html
 
-html-localized chunked-html-localized:
+%-localized:
 	rule=$(patsubst %-localized,%,$@); \
 	for lang in $(translations); do \
     echo "Creating $$rule for language $$lang..."; \
