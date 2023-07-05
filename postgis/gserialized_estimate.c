@@ -1518,10 +1518,15 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 	 * Also, if we're sampling a relatively small table, we'll try to ensure that
 	 * we have a smaller grid.
 	 */
+#if POSTGIS_PGSQL_VERSION >= 170
+	histo_cells_target = (int)pow((double)(stats->attstattarget), (double)ndims);
+	POSTGIS_DEBUGF(3, " stats->attstattarget: %d", stats->attstattarget);
+#else
 	histo_cells_target = (int)pow((double)(stats->attr->attstattarget), (double)ndims);
+	POSTGIS_DEBUGF(3, " stats->attr->attstattarget: %d", stats->attr->attstattarget);
+#endif
 	histo_cells_target = Min(histo_cells_target, ndims * 100000);
 	histo_cells_target = Min(histo_cells_target, (int)(10 * ndims * total_rows));
-	POSTGIS_DEBUGF(3, " stats->attr->attstattarget: %d", stats->attr->attstattarget);
 	POSTGIS_DEBUGF(3, " target # of histogram cells: %d", histo_cells_target);
 
 	/* If there's no useful features, we can't work out stats */
