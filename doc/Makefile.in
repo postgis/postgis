@@ -497,7 +497,7 @@ chunked-html-web-mobile-uninstall:
 	rm -rf $(DESTDIR)$(htmldir)/postgis-web-mobile$(DOCSUFFIX)/
 
 html-assets-install: images-install
-	$(INSTALL_DATA) html/style.css $(DESTDIR)$(htmldir)/
+	$(INSTALL_DATA) $(abs_srcdir)/html/style.css $(DESTDIR)$(htmldir)/
 
 html-assets-uninstall: images-install
 	rm -f $(DESTDIR)$(htmldir)/style.css
