@@ -69,29 +69,36 @@ fi
 
 make pdf
 make epub
-make -e chunked-html-web 2>&1 | tee -a doc-errors.log
+make -e chunked-html-web # TODO: do we really want this too in the doc-html-*.tar.gz package ?
 
-make html-localized
+make html-localized # TODO: do we really want this too in the doc-html-*.tar.gz package ?
 
 package="doc-html-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.tar.gz"
-
 export outdir=html
 tar -czf "$package" --exclude='.svn' --exclude='.git' --exclude='image_src' "$outdir"
 
 
-
 cp postgis.xml.orig postgis.xml
+
+# TODO: Replace all of this by `make html-install` and friends
 mkdir -p /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 mkdir -p /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}/images
 cp -R html/*.*  /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 cp -R html/images/* /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}/images
+
 chmod -R 755 /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
+
+
+# TODO: Replace all of this by `make *-install`
 cp -R *.pdf /var/www/postgis_stuff/
 cp -R *.epub /var/www/postgis_stuff/
+
 cp -R $package /var/www/postgis_stuff/
 
-if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then #rename the files without the micro if it's a development branch
-  mv /var/www/postgis_stuff/doc-html-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.tar.gz /var/www/postgis_stuff/doc-html-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.tar.gz
-  mv /var/www/postgis_stuff/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf /var/www/postgis_stuff/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.pdf
-  mv /var/www/postgis_stuff/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.epub /var/www/postgis_stuff/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.epub
+#rename the files without the micro if it's a development branch
+if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
+  for f in ${WEB_DIR}/*${POSTGIS_MICRO_VERSION}; do
+    newname=$(echo "$f" | sed "s/${POSTGIS_MICRO_VERSION}//");
+    mv -vi $f $newname
+  done
 fi
