@@ -23,13 +23,16 @@ config.guess
 config.sub
 config.status
 configure
-de9i*.png
 doc/*.html
 doc/images
 doc/html/images/generator
 doc/html/images/Makefile
+
+# PNG images under doc/html/images
+# should be either symlinks or generated
+# files, so we ignore them
 doc/html/images/*.png
-doc/html/images/*.gif
+
 doc/html/*.html
 doc/html/docbook.css
 doc/Makefile
@@ -174,7 +177,6 @@ sfcgal/*.sql
 sfcgal/sfcgal_upgrade.sql.in
 *.so
 *.dylib
-st_*.png
 .svn
 topology/Makefile
 topology/test/Makefile

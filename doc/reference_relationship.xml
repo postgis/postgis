@@ -622,7 +622,7 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
     <informalfigure>
     <mediaobject>
       <imageobject>
-      <imagedata fileref="images/st_crosses-math.gif" />
+      <imagedata fileref="images/st_crosses-math.png" />
       </imageobject>
     </mediaobject>
     </informalfigure>
@@ -1697,7 +1697,7 @@ SELECT pat.name AS relationship, pat.val AS pattern,
     <informalfigure>
       <mediaobject>
       <imageobject>
-        <imagedata fileref="images/st_touches-math.gif" />
+        <imagedata fileref="images/st_touches-math.png" />
       </imageobject>
       </mediaobject>
     </informalfigure>
