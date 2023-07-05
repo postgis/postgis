@@ -53,13 +53,13 @@ fi
 export VREV="`cat postgis_revision.h | awk '{print $3}'`"
 echo "VREV is ${VREV}"
 cd doc
-make cheatsheets
 
 
 #sed -e "s:</title>:</title><subtitle><subscript>SVN Revision (<emphasis>${POSTGIS_SVN_REVISION}</emphasis>)</subscript></subtitle>:" postgis.xml.orig > postgis.xml
 
 echo "Micro: $POSTGIS_MICRO_VERSION"
 #inject a development time stamp if we are in development branch
+# TODO: provide support for an env variable to do this ?
 if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
   cp postgis.xml postgis.xml.orig #we for dev will inject stuff into file, so backup original
   export GIT_TIMESTAMP=`git log -1 --pretty=format:%ct`
@@ -70,14 +70,14 @@ if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
   sed -i 's,'"$part_old"','"$part_new"',' postgis.xml
 fi
 
+make cheatsheets
 make pdf
 make epub
 make -e chunked-html-web # TODO: do we really want this too in the doc-html-*.tar.gz package ?
 make html-localized # TODO: do we really want this too in the doc-html-*.tar.gz package ?
 
 package="doc-html-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.tar.gz"
-export outdir=html
-tar -czf "$package" --exclude='.svn' --exclude='.git' --exclude='image_src' "$outdir"
+tar -czf "$package" --exclude='static' --exclude='wkt' --exclude '*.o' html
 
 # Install all html
 make html-assets-install
