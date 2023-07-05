@@ -81,9 +81,11 @@ _rti_contour_arg_destroy(_rti_contour_arg* arg)
 /**
  * Return palloc'ed list of contours.
  * @param src_raster : raster to generate contour from
+ * @param src_band : band to use as input
+ * @param src_srid : srid of raster
+ * @param src_srs : Coordinate reference system string for raster
  * @param options : CSList of OPTION=VALUE strings for the
  *   contour routine, see https://gdal.org/api/gdal_alg.html?highlight=contour#_CPPv419GDALContourGenerate15GDALRasterBandHddiPdidPvii16GDALProgressFuncPv
- * @param src_srs : Coordinate reference system string for raster
  * @param ncontours : Output parameter for length of contour list
  * @param contours : Output palloc'ed list of contours, caller to free
  */
@@ -138,9 +140,6 @@ int rt_raster_gdal_contour(
 	arg.dst.gtype = wkbLineString;
 #endif
 
-	/* Options strings list */
-	stringbuffer_init(&sb);
-
 	/* Layer has geometry, elevation, id */
 	arg.dst.lyr = OGR_DS_CreateLayer(arg.dst.ds, "contours", NULL, arg.dst.gtype, NULL);
 	if (!arg.dst.lyr)
@@ -158,37 +157,8 @@ int rt_raster_gdal_contour(
 	if (ogrerr != OGRERR_NONE)
 		return _rti_contour_arg_destroy(&arg);
 
-	// GDALContourGenerate( GDALRasterBandH hBand,
-	//   double dfContourInterval, double dfContourBase,
-	//   int nFixedLevelCount, double *padfFixedLevels,
-	//   int bUseNoData, double dfNoDataValue,
-	//   void *hLayer, int iIDField, int iElevField,
-	//   GDALProgressFunc pfnProgress, void *pProgressArg );
-
 	int use_no_data = 0;
 	double no_data_value = GDALGetRasterNoDataValue(hBand, &use_no_data);
-
-	if (use_no_data)
-		stringbuffer_aprintf(&sb, "NODATA=%g ", no_data_value);
-
-	if (fixed_level_count > 0) {
-		int i = 0;
-		stringbuffer_append(&sb, "FIXED_LEVELS=");
-		for (i = 0; i < fixed_level_count; i++) {
-			if (i) stringbuffer_append_char(&sb, ',');
-			stringbuffer_aprintf(&sb, "%g", fixed_levels[i]);
-		}
-		stringbuffer_append_char(&sb, ' ');
-	}
-	else {
-		stringbuffer_aprintf(&sb, "LEVEL_INTERVAL=%g ", contour_interval);
-		stringbuffer_aprintf(&sb, "LEVEL_BASE=%g ", contour_base);
-	}
-
-	stringbuffer_aprintf(&sb, "ID_FIELD=%d ", 0);
-	stringbuffer_aprintf(&sb, "ELEV_FIELD=%d ", 1);
-
-	papszOptList = CSLTokenizeString(stringbuffer_getstring(&sb));
 
 	// LEVEL_INTERVAL=f
 	//   The elevation interval between contours generated.
@@ -209,6 +179,32 @@ int rt_raster_gdal_contour(
 	// ELEV_FIELD_MAX=d
 	//   This will be used as a field index to indicate where the maximum elevation value of the polygon contour should be written. Only used in polygonal contouring mode.
 	// POLYGONIZE=YES|NO
+
+	/* Options strings list */
+	stringbuffer_init(&sb);
+
+	if (use_no_data)
+		stringbuffer_aprintf(&sb, "NODATA=%g ", no_data_value);
+
+	if (fixed_level_count > 0) {
+		int i = 0;
+		stringbuffer_append(&sb, "FIXED_LEVELS=");
+		for (i = 0; i < fixed_level_count; i++) {
+			if (i) stringbuffer_append_char(&sb, ',');
+			stringbuffer_aprintf(&sb, "%g", fixed_levels[i]);
+		}
+		stringbuffer_append_char(&sb, ' ');
+	}
+	else {
+		stringbuffer_aprintf(&sb, "LEVEL_INTERVAL=%g ", contour_interval);
+		stringbuffer_aprintf(&sb, "LEVEL_BASE=%g ", contour_base);
+	}
+
+	stringbuffer_aprintf(&sb, "ID_FIELD=%d ", 0);
+	stringbuffer_aprintf(&sb, "ELEV_FIELD=%d ", 1);
+	stringbuffer_aprintf(&sb, "POLYGONIZE=%s ", polygonize ? "YES" : "NO");
+
+	papszOptList = CSLTokenizeString(stringbuffer_getstring(&sb));
 
 	/* Run the contouring routine, filling up the OGR layer */
 	cplerr = GDALContourGenerateEx(
