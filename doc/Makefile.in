@@ -411,9 +411,13 @@ html-clean:
 	rm -rf html/postgis-web$(DOCSUFFIX)/
 	rm -rf html/postgis-web-mobile$(DOCSUFFIX)/
 
-clean: html-clean html-clean-localized
-	rm -f *.pdf
-	rm -f *.epub
+pdf-clean:
+	rm -f postgis*$(DOCSUFFIX).pdf
+
+epub-clean:
+	rm -f postgis*$(DOCSUFFIX).epub
+
+clean: html-clean html-clean-localized pdf-clean pdf-clean-localized epub-clean epub-clean-localized
 	rm -f images # work around https://trac.osgeo.org/postgis/ticket/5422
 	rm -f $(XML_GENERATED_SOURCES)
 	rm -f $(TAG_GENERATED_SOURCES)
