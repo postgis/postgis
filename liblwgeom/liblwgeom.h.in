@@ -1153,6 +1153,11 @@ extern POINTARRAY* lwline_interpolate_points(const LWLINE *line, double length_f
  */
 extern LWPOINT* lwline_interpolate_point_3d(const LWLINE *line, double distance);
 
+/**
+ * Extend the ends of a line
+ */
+extern LWLINE* lwline_extend(const LWLINE *line, double distance_forward, double distance_backward);
+
 /******************************************************************
  * LWPOLY functions
  ******************************************************************/

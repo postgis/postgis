@@ -107,6 +107,7 @@ Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_azimuth(PG_FUNCTION_ARGS);
 Datum geometry_project_direction(PG_FUNCTION_ARGS);
 Datum geometry_project_geometry(PG_FUNCTION_ARGS);
+Datum geometry_line_extend(PG_FUNCTION_ARGS);
 Datum LWGEOM_angle(PG_FUNCTION_ARGS);
 Datum LWGEOM_affine(PG_FUNCTION_ARGS);
 Datum LWGEOM_longitude_shift(PG_FUNCTION_ARGS);
@@ -2649,6 +2650,45 @@ Datum geometry_project_geometry(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(geom3);
 }
+
+
+
+/**
+ * Extend the ends of a line outwards from
+ * the end, the start, or both, a set positive distance.
+ * ST_LineExtent(linestring, distance_forward, distance_backward (default 0.0)
+ * Geometry must be linestring.
+ */
+PG_FUNCTION_INFO_V1(geometry_line_extend);
+Datum geometry_line_extend(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom1, *geom2;
+	LWLINE *lwline1, *lwline2;
+	LWGEOM *lwgeom1, *lwgeom2;
+	double distance_forward, distance_backward;
+
+	geom1 = PG_GETARG_GSERIALIZED_P(0);
+	distance_forward = PG_GETARG_FLOAT8(1);
+	distance_backward = PG_GETARG_FLOAT8(2);
+
+	lwgeom1 = lwgeom_from_gserialized(geom1);
+	lwline1 = lwgeom_as_lwline(lwgeom1);
+	if (!lwline1)
+		lwpgerror("Argument must be LINESTRING geometry");
+
+	if (lwline_is_empty(lwline1))
+		PG_RETURN_NULL();
+
+	if (lwline_length_2d(lwline1) <= 0.0)
+		PG_RETURN_POINTER(geom1);
+
+	lwline2 = lwline_extend(lwline1, distance_forward, distance_backward);
+	lwgeom2 = lwline_as_lwgeom(lwline2);
+	geom2 = geometry_serialize(lwgeom2);
+
+	PG_RETURN_POINTER(geom2);
+}
+
 
 
 /**

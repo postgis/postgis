@@ -1264,10 +1264,10 @@ uint32_t lwgeom_count_vertices(const LWGEOM *geom)
 	case TRIANGLETYPE:
 	case CIRCSTRINGTYPE:
 	case LINETYPE:
-		result = lwline_count_vertices((LWLINE *)geom);
+		result = lwline_count_vertices((const LWLINE *)geom);
 		break;
 	case POLYGONTYPE:
-		result = lwpoly_count_vertices((LWPOLY *)geom);
+		result = lwpoly_count_vertices((const LWPOLY *)geom);
 		break;
 	case COMPOUNDTYPE:
 	case CURVEPOLYTYPE:
@@ -1279,7 +1279,7 @@ uint32_t lwgeom_count_vertices(const LWGEOM *geom)
 	case POLYHEDRALSURFACETYPE:
 	case TINTYPE:
 	case COLLECTIONTYPE:
-		result = lwcollection_count_vertices((LWCOLLECTION *)geom);
+		result = lwcollection_count_vertices((const LWCOLLECTION *)geom);
 		break;
 	default:
 		lwerror("%s: unsupported input geometry type: %s",

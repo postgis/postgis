@@ -196,9 +196,9 @@ int lwpoint_is_empty(const LWPOINT *point);
 /*
 * Number of vertices?
 */
-uint32_t lwline_count_vertices(LWLINE *line);
-uint32_t lwpoly_count_vertices(LWPOLY *poly);
-uint32_t lwcollection_count_vertices(LWCOLLECTION *col);
+uint32_t lwline_count_vertices(const LWLINE *line);
+uint32_t lwpoly_count_vertices(const LWPOLY *poly);
+uint32_t lwcollection_count_vertices(const LWCOLLECTION *col);
 
 /*
 * DP simplification

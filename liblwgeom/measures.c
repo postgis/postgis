@@ -2486,8 +2486,8 @@ project_pt(const POINT2D *P, double distance, double azimuth, POINT2D *R)
 
 	double dx = cos(slope) * distance;
 	double dy = sin(slope) * distance;
-	R->x += dx;
-	R->y += dy;
+	R->x = P->x + dx;
+	R->y = P->x + dy;
 	return LW_TRUE;
 }
 
@@ -2505,10 +2505,10 @@ project_pt_pt(const POINT4D *A, const POINT4D *B, double distance, POINT4D *R)
 	double dy = (B->y - A->y) * prop;
 	double dz = (B->z - A->z) * prop;
 	double dm = (B->m - A->m) * prop;
-	R->x += dx;
-	R->y += dy;
-	if (isfinite(dz)) R->z += dz;
-	if (isfinite(dm)) R->m += dm;
+	R->x = B->x + dx;
+	R->y = B->y + dy;
+	if (isfinite(dz)) R->z = B->z + dz;
+	if (isfinite(dm)) R->m = B->m + dm;
 	return LW_TRUE;
 }
 

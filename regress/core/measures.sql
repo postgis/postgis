@@ -298,6 +298,7 @@ SELECT 'st_project.04', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 0)'::geometr
 SELECT 'st_project.05', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 0)'::geometry, 1, pi()/4), 0.001), 3);
 SELECT 'st_project.06', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 0)'::geometry, 1, pi()+pi()/4), 0.001), 3);
 SELECT 'st_project.07', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 0)'::geometry, 0, 0), 0.001), 3);
+SELECT 'st_project.08', ST_AsText(ST_SnapToGrid(ST_Project('POINT(10 10)'::geometry, 1, pi()+pi()/4), 0.001), 3);
 
 SELECT 'st_project.11', ST_AsText(ST_SnapToGrid(ST_Project('POINT(1 0)'::geometry, 'POINT(0 0)'::geometry, 1), 0.1), 2);
 SELECT 'st_project.12', ST_AsText(ST_SnapToGrid(ST_Project('POINT(-1 0)'::geometry, 'POINT(0 0)'::geometry, 1), 0.1), 2);
@@ -306,3 +307,11 @@ SELECT 'st_project.14', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 -1)'::geomet
 SELECT 'st_project.15', ST_AsText(ST_SnapToGrid(ST_Project('POINT(1 1)'::geometry, 'POINT(0 0)'::geometry, 1), 0.001), 3);
 SELECT 'st_project.16', ST_AsText(ST_SnapToGrid(ST_Project('POINT(-1 -1)'::geometry, 'POINT(0 0)'::geometry, 1), 0.001), 3);
 SELECT 'st_project.17', ST_AsText(ST_SnapToGrid(ST_Project('POINT(0 0)'::geometry, 'POINT(0 0)'::geometry, 1), 0.001), 3);
+SELECT 'st_project.18', ST_AsText(ST_SnapToGrid(ST_Project('POINT(10 10)'::geometry, 'POINT(8 8)'::geometry, 1), 0.001), 3);
+
+SELECT 'st_lineextend.1', ST_AsText(ST_SnapToGrid(ST_LineExtend('LINESTRING(0 0,1 1)'::geometry, 1, 1), 0.001), 3);
+SELECT 'st_lineextend.2', ST_AsText(ST_SnapToGrid(ST_LineExtend('LINESTRING(0 0,1 1)'::geometry, 0, 1), 0.001), 3);
+SELECT 'st_lineextend.3', ST_AsText(ST_SnapToGrid(ST_LineExtend('LINESTRING(0 0,1 1)'::geometry, 1), 0.001), 3);
+SELECT 'st_lineextend.4', ST_AsText(ST_SnapToGrid(ST_LineExtend('LINESTRING(0 0,1 1,1 1,1 1)'::geometry, 1), 0.001), 3);
+SELECT 'st_lineextend.5', ST_AsText(ST_SnapToGrid(ST_LineExtend('LINESTRING EMPTY'::geometry, 1), 0.001), 3);
+SELECT 'st_lineextend.6', ST_AsText(ST_SnapToGrid(ST_LineExtend('POINT EMPTY'::geometry, 1), 0.001), 3);

@@ -497,7 +497,7 @@ lwcollection_force_dims(const LWCOLLECTION *col, int hasz, int hasm, double zval
 }
 
 
-uint32_t lwcollection_count_vertices(LWCOLLECTION *col)
+uint32_t lwcollection_count_vertices(const LWCOLLECTION *col)
 {
 	uint32_t i = 0;
 	uint32_t v = 0; /* vertices */

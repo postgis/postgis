@@ -502,7 +502,7 @@ lwline_force_dims(const LWLINE *line, int hasz, int hasm, double zval, double mv
 	return lineout;
 }
 
-uint32_t lwline_count_vertices(LWLINE *line)
+uint32_t lwline_count_vertices(const LWLINE *line)
 {
 	assert(line);
 	if ( ! line->points )
@@ -666,4 +666,74 @@ lwline_interpolate_point_3d(const LWLINE *line, double distance)
 	 * could if there's some floating point rounding errors. */
 	getPoint4d_p(ipa, ipa->npoints - 1, &pt);
 	return lwpoint_make(line->srid, has_z, has_m, &pt);
+}
+
+extern LWLINE *
+lwline_extend(const LWLINE *line, double distance_forward, double distance_backward)
+{
+	POINTARRAY *pa, *opa;
+	POINT4D p00, p01, p10, p11;
+	POINT4D p_start, p_end;
+	uint32_t i;
+	bool forward = false, backward = false;
+
+	if (distance_forward < 0 || distance_backward < 0)
+		lwerror("%s: distances must be non-negative", __func__);
+
+	if (!line || lwline_is_empty(line) || lwline_count_vertices(line) < 2)
+	{
+		lwerror("%s: line must have at least two points", __func__);
+	}
+
+	pa = line->points;
+	if (distance_backward > 0.0)
+	{
+		i = 0;
+		/* Get two distinct points at start of pointarray */
+		getPoint4d_p(pa, i++, &p00);
+		getPoint4d_p(pa, i, &p01);
+		while(p4d_same(&p00, &p01))
+		{
+			if (i == pa->npoints - 1)
+			{
+				lwerror("%s: line must have at least two distinct points", __func__);
+			}
+			i++;
+			getPoint4d_p(pa, i, &p01);
+		}
+		project_pt_pt(&p01, &p00, distance_backward, &p_start);
+		backward = true;
+	}
+
+	if (distance_forward > 0.0)
+	{
+		i = pa->npoints - 1;
+		/* Get two distinct points at end of pointarray */
+		getPoint4d_p(pa, i--, &p10);
+		getPoint4d_p(pa, i, &p11);
+		while(p4d_same(&p10, &p11))
+		{
+			if (i == 0)
+			{
+				lwerror("%s: line must have at least two distinct points", __func__);
+			}
+			i--;
+			getPoint4d_p(pa, i, &p11);
+		}
+		project_pt_pt(&p11, &p10, distance_forward, &p_end);
+		forward = true;
+	}
+
+	opa = ptarray_construct_empty(ptarray_has_z(pa), ptarray_has_m(pa), pa->npoints + 2);
+
+	if (backward)
+	{
+		ptarray_append_point(opa, &p_start, true);
+	}
+	ptarray_append_ptarray(opa, pa, -1.0);
+	if (forward)
+	{
+		ptarray_append_point(opa, &p_end, true);
+	}
+	return lwline_construct(line->srid, NULL, opa);
 }

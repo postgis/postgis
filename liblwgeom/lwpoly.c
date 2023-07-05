@@ -415,7 +415,7 @@ lwpoly_force_dims(const LWPOLY *poly, int hasz, int hasm, double zval, double mv
 	return polyout;
 }
 
-uint32_t lwpoly_count_vertices(LWPOLY *poly)
+uint32_t lwpoly_count_vertices(const LWPOLY *poly)
 {
 	uint32_t i = 0;
 	uint32_t v = 0; /* vertices */

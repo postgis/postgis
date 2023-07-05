@@ -1411,6 +1411,13 @@ CREATE OR REPLACE FUNCTION ST_Angle(pt1 geometry, pt2 geometry, pt3 geometry, pt
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LineExtend(geom geometry, distance_forward float8, distance_backward float8 DEFAULT 0.0)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'geometry_line_extend'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
 -- Availability: Future
 -- CREATE OR REPLACE FUNCTION _ST_DistanceRectTree(g1 geometry, g2 geometry)
 --	RETURNS float8
