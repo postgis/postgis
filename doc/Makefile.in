@@ -459,7 +459,6 @@ docs-install: html/postgis.html html/style.css
 	$(INSTALL_DATA) html/postgis.html $(DESTDIR)$(PGSQL_DOCDIR)/postgis/
 	$(INSTALL_DATA) html/style.css $(DESTDIR)$(PGSQL_DOCDIR)/postgis/
 	$(INSTALL_DATA) html/images/*.png $(DESTDIR)$(PGSQL_DOCDIR)/postgis/images/
-	$(INSTALL_DATA) html/images/*.gif $(DESTDIR)$(PGSQL_DOCDIR)/postgis/images/
 	$(INSTALL_DATA) ../README.postgis $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
 
 docs-uninstall:
