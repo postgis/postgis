@@ -96,7 +96,7 @@ make chunked-html-web-install-localized
 # Strip out the "postgis-web-" suffix
 # from chunked html directories, backing
 # up any previous target directory
-for f in {HTML_DIR}postgis-web-*; do
+for f in ${HTML_DIR}/postgis-web-*; do
   if test -e $f; then
     nf=$(echo $f| sed 's/postgis-web-//');
     if test -e $nf; then
