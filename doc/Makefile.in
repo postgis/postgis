@@ -227,8 +227,8 @@ GENERATED_COMMENT_FILES = $(patsubst \
 )
 
 GENERATED_CHEATSHEET_FILES = $(patsubst \
-	$(srcdir)/xsl/%.xsl, \
-	html/%, \
+	$(srcdir)/xsl/%.html.xsl, \
+	html/%$(DOCSUFFIX).html, \
 	$(wildcard $(srcdir)/xsl/*_cheatsheet.html.xsl) \
 )
 
@@ -298,7 +298,7 @@ endif
 $(GENERATED_COMMENT_FILES): %.sql: xsl/%.sql.xsl $(XML_INPUTS) postgis-out.xml
 	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
 
-$(GENERATED_CHEATSHEET_FILES): html/%.html: xsl/%.html.xsl $(XML_INPUTS) postgis-out.xml
+$(GENERATED_CHEATSHEET_FILES): html/%$(DOCSUFFIX).html: xsl/%.html.xsl $(XML_INPUTS) postgis-out.xml
 	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
 
 postgis-out.xml: postgis.xml Makefile
@@ -417,14 +417,16 @@ pdf-clean:
 epub-clean:
 	rm -f postgis*$(DOCSUFFIX).epub
 
-clean: images-clean html-clean html-clean-localized pdf-clean pdf-clean-localized epub-clean epub-clean-localized
+cheatsheet-clean:
+	rm -f $(GENERATED_CHEATSHEET_FILES)
+
+clean: images-clean html-clean html-clean-localized pdf-clean pdf-clean-localized epub-clean epub-clean-localized cheatsheet-clean cheatsheet-clean-localized
 	rm -f images # work around https://trac.osgeo.org/postgis/ticket/5422
 	rm -f $(XML_GENERATED_SOURCES)
 	rm -f $(TAG_GENERATED_SOURCES)
 	$(MAKE) -C html/images clean
 	rm -f postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
 	rm -f raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
-	rm -f $(GENERATED_CHEATSHEET_FILES)
 	rm -f *.tmp
 	$(MAKE) clean-localized
 
@@ -441,7 +443,7 @@ else
 comments: postgis_comments.sql raster_comments.sql topology_comments.sql sfcgal_comments.sql tiger_geocoder_comments.sql
 endif
 
-cheatsheets: html/postgis_cheatsheet.html html/raster_cheatsheet.html html/topology_cheatsheet.html html/sfcgal_cheatsheet.html html/tiger_geocoder_cheatsheet.html
+cheatsheets: $(GENERATED_CHEATSHEET_FILES)
 
 ifneq ($(CAN_BUILD_COMMENTS),yes)
 comments-install:
