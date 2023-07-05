@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Ship the DE-9IM figures as PNG for PDF builds (Sandro Santilli)
  - Find PDF figures in the build and source directories (Sandro Santilli)
  - Find the PDF stylesheet from an out-of-tree build (Sandro Santilli)
  - Use the XeTeX backend for PDF documentation (Sandro Santilli)
