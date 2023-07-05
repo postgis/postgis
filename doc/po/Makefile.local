@@ -12,6 +12,10 @@ local-pdf: symlinks
 local-check: symlinks
 	$(MAKE) check
 
+local-clean:
+	rm -f $(XML_INPUTS)
+	rm -f html xsl
+
 symlinks:
 	rm -f html; ln -s ../../html html
 	rm -f xsl; ln -s ../../xsl xsl
