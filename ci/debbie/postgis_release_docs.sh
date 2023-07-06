@@ -93,7 +93,7 @@ make html-install-localized
 make chunked-html-web-install
 make chunked-html-web-install-localized
 make cheatsheet-install
-make cheatsheets-install-localized
+make cheatsheet-install-localized
 
 # Strip out the "postgis-web-" suffix
 # from chunked html directories, backing
