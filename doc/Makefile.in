@@ -227,9 +227,9 @@ GENERATED_COMMENT_FILES = $(patsubst \
 )
 
 GENERATED_CHEATSHEET_FILES = $(patsubst \
-	$(srcdir)/xsl/%.html.xsl, \
+	$(abs_srcdir)/xsl/%.html.xsl, \
 	html/%$(DOCSUFFIX).html, \
-	$(wildcard $(srcdir)/xsl/*_cheatsheet.html.xsl) \
+	$(wildcard $(abs_srcdir)/xsl/*_cheatsheet.html.xsl) \
 )
 
 VPATH = $(srcdir)
@@ -416,6 +416,10 @@ pdf-clean:
 
 epub-clean:
 	rm -f postgis*$(DOCSUFFIX).epub
+
+cheatsheet-install: $(GENERATED_CHEATSHEET_FILES)
+	mkdir -p $(DESTDIR)$(htmldir)
+	$(INSTALL_DATA) $(GENERATED_CHEATSHEET_FILES) $(DESTDIR)$(htmldir)/
 
 cheatsheet-clean:
 	rm -f $(GENERATED_CHEATSHEET_FILES)
