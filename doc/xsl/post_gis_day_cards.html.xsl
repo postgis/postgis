@@ -6,6 +6,7 @@
      License: BSD
 	 Purpose: This is an xsl transform that generates PostGIS flash cards
      ******************************************************************** -->
+	<xsl:include href="common_utils.xsl" />
 	<xsl:output method="text" />
 	<xsl:variable name='new_tag'>Availability: <xsl:value-of select="$postgis_version" /></xsl:variable>
 	<xsl:variable name='enhanced_tag'>Enhanced: <xsl:value-of select="$postgis_version" /></xsl:variable>
@@ -109,31 +110,6 @@ h1 {
 	<![CDATA[</div></div><div class='card_back'><div class='func_descrip'>]]><xsl:value-of select="$plaindescr2" /><![CDATA[</div></div>
 	<div class="card_separator">&nbsp;</div>]]>
 </xsl:template>
-
-<!--General replace macro hack to make up for the fact xsl 1.0 does not have a built in one.
-	Not needed for xsl 2.0 lifted from http://www.xml.com/pub/a/2002/06/05/transforming.html -->
-	<xsl:template name="globalReplace">
-	  <xsl:param name="outputString"/>
-	  <xsl:param name="target"/>
-	  <xsl:param name="replacement"/>
-	  <xsl:choose>
-		<xsl:when test="contains($outputString,$target)">
-		  <xsl:value-of select=
-			"concat(substring-before($outputString,$target),
-				   $replacement)"/>
-		  <xsl:call-template name="globalReplace">
-			<xsl:with-param name="outputString"
-				 select="substring-after($outputString,$target)"/>
-			<xsl:with-param name="target" select="$target"/>
-			<xsl:with-param name="replacement"
-				 select="$replacement"/>
-		  </xsl:call-template>
-		</xsl:when>
-		<xsl:otherwise>
-		  <xsl:value-of select="$outputString"/>
-		</xsl:otherwise>
-	  </xsl:choose>
-	</xsl:template>
 
 <xsl:template name="break">
   <xsl:param name="text" select="."/>
