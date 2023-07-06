@@ -121,7 +121,7 @@
 #include <float.h> /* for FLT_EPSILON, DBL_EPSILON and float type limits */
 #include <limits.h> /* for integer type limits */
 
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 
 #include "gdal.h"
 #include "gdalgrid.h" /* for ParseAlgorithmAndOptions */
@@ -2333,6 +2333,13 @@ rt_util_gdal_driver_registered(const char *drv);
 */
 GDALDatasetH
 rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared);
+
+
+/*
+    Callback for GDAL functions to hook into interrupt system
+*/
+int
+rt_util_gdal_progress_func(double dfComplete, const char *pszMessage, void *pProgressArg);
 
 
 void

@@ -51,6 +51,28 @@ typedef struct
 } _rti_contour_arg;
 
 
+/* ---------------------------------------------------------------- */
+/*  GDAL progress callback for interrupt handling */
+/* ---------------------------------------------------------------- */
+
+int rt_util_gdal_progress_func(
+	double dfComplete,
+	const char *pszMessage,
+	void *pProgressArg)
+{
+	(void)dfComplete;
+	(void)pszMessage;
+
+	if (_lwgeom_interrupt_requested)
+	{
+		// rtwarn("%s interrupted at %g", (const char*)pProgressArg, dfComplete);
+		_lwgeom_interrupt_requested = 0;
+		return FALSE;
+	}
+	else
+		return TRUE;
+}
+
 static void
 _rti_contour_arg_init(_rti_contour_arg* arg)
 {
@@ -206,13 +228,15 @@ int rt_raster_gdal_contour(
 
 	papszOptList = CSLTokenizeString(stringbuffer_getstring(&sb));
 
+	// CPLSetConfigOption("OGR_GEOMETRY_ACCEPT_UNCLOSED_RING", "NO");
+
 	/* Run the contouring routine, filling up the OGR layer */
 	cplerr = GDALContourGenerateEx(
 		hBand,
 		arg.dst.lyr,
 		papszOptList,      // Options
-		NULL,              // GDALProgressFunc pfnProgress
-		NULL               // void *pProgressArg
+		rt_util_gdal_progress_func,  // GDALProgressFunc pfnProgress
+		(void*)"GDALContourGenerateEx" // void *pProgressArg
 		);
 
 	// /* Run the contouring routine, filling up the OGR layer */
@@ -226,8 +250,9 @@ int rt_raster_gdal_contour(
 	// 	NULL               // void *pProgressArg
 	// 	);
 
-	if (cplerr != CE_None)
-		return _rti_contour_arg_destroy(&arg);
+	if (cplerr >= CE_Failure) {
+		return _rti_contour_arg_destroy(&arg); // FALSE
+	}
 
 	/* Convert the OGR layer into PostGIS geometries */
 	nfeatures = OGR_L_GetFeatureCount(arg.dst.lyr, TRUE);

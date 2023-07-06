@@ -1201,8 +1201,6 @@ GSERIALIZED* gserialized2_from_lwgeom(LWGEOM *geom, size_t *size)
 	return g;
 }
 
-// xxxx continue reviewing extended flags content from here
-
 /***********************************************************************
 * De-serialize GSERIALIZED into an LWGEOM.
 */

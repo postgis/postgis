@@ -21,18 +21,19 @@
  * Copyright 2012-2020 Oslandia <infos@oslandia.com>
  *
  **********************************************************************/
+
 #include "SFCGAL/capi/sfcgal_c.h"
+
 #include "postgres.h"
 #include "fmgr.h"
+#include "libpq/pqsignal.h"
 #include "utils/builtins.h"
+#include "utils/elog.h"
+#include "utils/guc.h"
+
 #include "lwgeom_pg.h"
 #include "lwgeom_sfcgal.h"
 #include "../postgis_config.h"
-
-
-#include "utils/elog.h"
-#include "utils/guc.h"
-#include "libpq/pqsignal.h"
 #include "../liblwgeom/liblwgeom.h"
 
 /*
