@@ -8,6 +8,8 @@ pipeline:
       - ../configure --without-pg
       - make postgis_revision.h
   check-xml:
+    image: docker.osgeo.org/postgis/build-test:trisquel3
+    commands:
       - cd build-docs
       - make -C doc check
       - make -C doc/ check-localized
