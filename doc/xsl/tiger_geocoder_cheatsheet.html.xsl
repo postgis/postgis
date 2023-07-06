@@ -14,7 +14,10 @@
 	<xsl:variable name='output_purpose'>true</xsl:variable>
 	<xsl:variable name='linkstub'>http://postgis.net/docs/manual-<xsl:value-of select="$postgis_version" />/</xsl:variable>
 <xsl:template match="/">
-	<xsl:text><![CDATA[<html><head><title>PostGIS ]]></xsl:text> <xsl:value-of select="$postgis_version" /> Tiger Geocoder Cheat Sheet <xsl:text><![CDATA[</title>
+	<xsl:text><![CDATA[<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>PostGIS ]]></xsl:text> <xsl:value-of select="$postgis_version" /> Tiger Geocoder Cheat Sheet <xsl:text><![CDATA[</title>
 	<style type="text/css">
 <!--
 body {

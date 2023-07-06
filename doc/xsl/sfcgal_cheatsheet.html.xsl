@@ -14,7 +14,10 @@
 	<xsl:variable name='output_purpose'>true</xsl:variable>
 	<xsl:variable name='linkstub'>https://postgis.net/docs/manual-<xsl:value-of select="$postgis_version" />/</xsl:variable>
 <xsl:template match="/">
-	<xsl:text><![CDATA[<html><head><title>PostGIS SFCGAL Cheat Sheet</title>
+	<xsl:text><![CDATA[<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>PostGIS SFCGAL Cheat Sheet</title>
 	<style type="text/css">
 <!--
 table { page-break-inside:avoid; page-break-after:auto }
