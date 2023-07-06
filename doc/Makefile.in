@@ -75,7 +75,8 @@ XSLTPROC_PATH_OPT= \
 	--path $(XSLT_PATH)
 
 XSLTPROC_CUSTOM_VARS = \
-	--stringparam postgis_version $(POSTGIS_MAJOR_VERSION).$(POSTGIS_MINOR_VERSION)
+	--stringparam postgis_version $(POSTGIS_MAJOR_VERSION).$(POSTGIS_MINOR_VERSION) \
+	--stringparam postgis_language $(patsubst -%,%,$(DOCSUFFIX))/
 
 XSLTPROC_COMMONOPTS= \
 	$(XSLTPROC_PATH_OPT) \

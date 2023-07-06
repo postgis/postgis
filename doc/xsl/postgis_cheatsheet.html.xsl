@@ -12,11 +12,6 @@
 	<xsl:include href="common_cheatsheet.xsl" />
 
 	<xsl:output method="text" />
-	<xsl:variable name='new_tag'>Availability: <xsl:value-of select="$postgis_version" /></xsl:variable>
-	<xsl:variable name='enhanced_tag'>Enhanced: <xsl:value-of select="$postgis_version" /></xsl:variable>
-	<xsl:variable name='include_examples'>false</xsl:variable>
-	<xsl:variable name='output_purpose'>true</xsl:variable>
-	<xsl:variable name='linkstub'>https://postgis.net/docs/manual-<xsl:value-of select="$postgis_version" />/</xsl:variable>
 
 <xsl:template match="/">
 	<xsl:text><![CDATA[<html>

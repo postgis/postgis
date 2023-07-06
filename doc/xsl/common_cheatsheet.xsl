@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
+<xsl:variable name='new_tag'>Availability: <xsl:value-of select="$postgis_version" /></xsl:variable>
+<xsl:variable name='enhanced_tag'>Enhanced: <xsl:value-of select="$postgis_version" /></xsl:variable>
+<xsl:variable name='include_examples'>false</xsl:variable>
+<xsl:variable name='output_purpose'>true</xsl:variable>
+<xsl:variable name='linkstub'>https://postgis.net/docs/manual-<xsl:value-of select="$postgis_version" />/<xsl:value-of select="$postgis_language" /></xsl:variable>
+
+
 <!--macro to pull out function parameter names so we can provide a pretty arg list prefix for each function -->
 <xsl:template name="list_in_params">
 	<xsl:param name="func" />
