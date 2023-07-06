@@ -111,24 +111,4 @@ h1 {
 	<div class="card_separator">&nbsp;</div>]]>
 </xsl:template>
 
-<xsl:template name="break">
-  <xsl:param name="text" select="."/>
-  <xsl:choose>
-    <xsl:when test="contains($text, '&#xa;')">
-      <xsl:value-of select="substring-before($text, '&#xa;')"/>
-      <![CDATA[<br/>]]>
-      <xsl:call-template name="break">
-        <xsl:with-param
-          name="text"
-          select="substring-after($text, '&#xa;')"
-        />
-      </xsl:call-template>
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:value-of select="$text"/>
-    </xsl:otherwise>
-  </xsl:choose>
-</xsl:template>
-
-
 </xsl:stylesheet>
