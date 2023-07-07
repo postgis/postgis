@@ -582,8 +582,7 @@ Datum RASTER_Contour(PG_FUNCTION_ARGS)
 
 		/* No-op on bad return */
 		if (rv == FALSE) {
-			funcctx = SRF_PERCALL_SETUP();
-			SRF_RETURN_DONE(funcctx);
+			PG_RETURN_NULL();
 		}
 
 		funcctx->user_fctx = result;
