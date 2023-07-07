@@ -110,7 +110,7 @@ for f in ${HTML_DIR}/postgis-web-*; do
 done
 
 
-chmod -R 755 ${HTML_DIR} # TODO: still needed ?
+#chmod -R 755 ${HTML_DIR} # TODO: still needed ?
 
 
 if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
