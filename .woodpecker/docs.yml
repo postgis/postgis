@@ -19,15 +19,21 @@ pipeline:
       - cd build-docs
       - make -C doc html
       - make -C doc/ html-localized
+      - make -C doc/ html-clean
+      - make -C doc/ html-clean-localized
   build-pdf:
     image: docker.osgeo.org/postgis/build-test:trisquel3
     commands:
       - cd build-docs
       - make -C doc/ pdf
       - make -C doc/ pdf-localized
+      - make -C doc/ pdf-clean
+      - make -C doc/ pdf-clean-localized
   build-cheatsheets:
     image: docker.osgeo.org/postgis/build-test:trisquel3
     commands:
       - cd build-docs
       - make -C doc/ cheatsheets
       - make -C doc/ cheatsheets-localized
+      - make -C doc/ cheatsheet-clean
+      - make -C doc/ cheatsheet-clean-localized
