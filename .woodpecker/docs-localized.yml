@@ -1,5 +1,5 @@
 matrix:
-  LANG:
+  TR:
     - it_IT
     - pt_BR
     - fr
@@ -19,19 +19,29 @@ pipeline:
       - mkdir -p build-docs && cd build-docs
       - ../configure --without-pg
       - make postgis_revision.h
+    when:
+      path: "doc/po/${TR}/*.po"
   check-xml:
     image: docker.osgeo.org/postgis/build-test:trisquel3
     commands:
-      - make -C build-docs/doc/po/${LANG} local-check
+      - make -C build-docs/doc/po/${TR} local-check
+    when:
+      path: "doc/po/${TR}/*.po"
   build-html:
     image: docker.osgeo.org/postgis/build-test:trisquel3
     commands:
-      - make -C build-docs/doc/po/${LANG} local-html
+      - make -C build-docs/doc/po/${TR} local-html
+    when:
+      path: "doc/po/${TR}/*.po"
   build-pdf:
     image: docker.osgeo.org/postgis/build-test:trisquel3
     commands:
-      - make -C build-docs/doc/po/${LANG} local-pdf
+      - make -C build-docs/doc/po/${TR} local-pdf
+    when:
+      path: "doc/po/${TR}/*.po"
   build-cheatsheets:
     image: docker.osgeo.org/postgis/build-test:trisquel3
     commands:
-      - make -C build-docs/doc/po/${LANG} local-cheatsheets
+      - make -C build-docs/doc/po/${TR} local-cheatsheets
+    when:
+      path: "doc/po/${TR}/*.po"
