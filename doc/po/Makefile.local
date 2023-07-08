@@ -27,6 +27,6 @@ include ../../Makefile
 # XML gettext tools
 PO2XML=po2xml
 
-$(XML_SOURCES): %.xml: %.xml.po
+$(XML_SOURCES): %.xml: %.xml.po $(srcdir)/../../%.xml
 	$(PO2XML) $(srcdir)/../../$@ $< > $@
 
