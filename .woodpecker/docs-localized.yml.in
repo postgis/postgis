@@ -1,0 +1,27 @@
+  check-xml-@LANG@:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/@LANG@ local-check
+    when:
+      path: *when_path
+  build-html-@LANG@:
+    image: *test_image
+    group: output-@LANG@
+    commands:
+      - make -C build-docs/doc/po/@LANG@ local-html
+    when:
+      path: *when_path
+  build-pdf-@LANG@:
+    image: *test_image
+    group: output-@LANG@
+    commands:
+      - make -C build-docs/doc/po/@LANG@ local-pdf
+    when:
+      path: *when_path
+  build-cheatsheets-@LANG@:
+    image: *test_image
+    group: output-@LANG@
+    commands:
+      - make -C build-docs/doc/po/@LANG@ local-cheatsheets
+    when:
+      path: *when_path

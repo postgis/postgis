@@ -1,29 +1,309 @@
+variables:
+  - &test_image 'docker.osgeo.org/postgis/build-test:trisquel3'
+  - &when_path
+      include:
+        # related config files
+        - ".woodpecker/docs.yml"
+        # Makefiles
+        - "doc/Makefile.in"
+        # XML sources
+        - "doc/*.xml"
+        # Localized Makefiles
+        - "doc/po/Makefile.local"
+        - "doc/po/*/Makefile.local"
+        # Translation files
+        - "doc/po/*/*.po"
+
 pipeline:
   prepare:
-    image: docker.osgeo.org/postgis/build-test:trisquel3
+    image: *test_image
     pull: true
     commands:
       - ./autogen.sh
       - mkdir -p build-docs && cd build-docs
       - ../configure --without-pg
       - make postgis_revision.h
+    when:
+      path: *when_path
   check-xml:
-    image: docker.osgeo.org/postgis/build-test:trisquel3
+    image: *test_image
     commands:
       - make -C build-docs/doc check
+    when:
+      path: *when_path
   build-html:
-    image: docker.osgeo.org/postgis/build-test:trisquel3
+    image: *test_image
+    group: output
     commands:
       - make -C build-docs/doc html
+    when:
+      path: *when_path
   build-cheatsheets:
-    image: docker.osgeo.org/postgis/build-test:trisquel3
+    image: *test_image
+    group: output
     commands:
       - make -C build-docs/doc/ cheatsheets
+    when:
+      path: *when_path
   build-chunked-html:
-    image: docker.osgeo.org/postgis/build-test:trisquel3
+    image: *test_image
+    group: output
     commands:
       - make -C build-docs/doc html
+    when:
+      path: *when_path
   build-pdf:
-    image: docker.osgeo.org/postgis/build-test:trisquel3
+    image: *test_image
+    group: output
     commands:
       - make -C build-docs/doc/ pdf
+    when:
+      path: *when_path
+
+  # DO NOT EDIT PAST THIS LINE, use update-docs-localized.sh to update #
+
+# Supported languages  it_IT pt_BR fr es pl ko_KR de ja ru
+
+  check-xml-it_IT:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/it_IT local-check
+    when:
+      path: *when_path
+  build-html-it_IT:
+    image: *test_image
+    group: output-it_IT
+    commands:
+      - make -C build-docs/doc/po/it_IT local-html
+    when:
+      path: *when_path
+  build-pdf-it_IT:
+    image: *test_image
+    group: output-it_IT
+    commands:
+      - make -C build-docs/doc/po/it_IT local-pdf
+    when:
+      path: *when_path
+  build-cheatsheets-it_IT:
+    image: *test_image
+    group: output-it_IT
+    commands:
+      - make -C build-docs/doc/po/it_IT local-cheatsheets
+    when:
+      path: *when_path
+  check-xml-pt_BR:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/pt_BR local-check
+    when:
+      path: *when_path
+  build-html-pt_BR:
+    image: *test_image
+    group: output-pt_BR
+    commands:
+      - make -C build-docs/doc/po/pt_BR local-html
+    when:
+      path: *when_path
+  build-pdf-pt_BR:
+    image: *test_image
+    group: output-pt_BR
+    commands:
+      - make -C build-docs/doc/po/pt_BR local-pdf
+    when:
+      path: *when_path
+  build-cheatsheets-pt_BR:
+    image: *test_image
+    group: output-pt_BR
+    commands:
+      - make -C build-docs/doc/po/pt_BR local-cheatsheets
+    when:
+      path: *when_path
+  check-xml-fr:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/fr local-check
+    when:
+      path: *when_path
+  build-html-fr:
+    image: *test_image
+    group: output-fr
+    commands:
+      - make -C build-docs/doc/po/fr local-html
+    when:
+      path: *when_path
+  build-pdf-fr:
+    image: *test_image
+    group: output-fr
+    commands:
+      - make -C build-docs/doc/po/fr local-pdf
+    when:
+      path: *when_path
+  build-cheatsheets-fr:
+    image: *test_image
+    group: output-fr
+    commands:
+      - make -C build-docs/doc/po/fr local-cheatsheets
+    when:
+      path: *when_path
+  check-xml-es:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/es local-check
+    when:
+      path: *when_path
+  build-html-es:
+    image: *test_image
+    group: output-es
+    commands:
+      - make -C build-docs/doc/po/es local-html
+    when:
+      path: *when_path
+  build-pdf-es:
+    image: *test_image
+    group: output-es
+    commands:
+      - make -C build-docs/doc/po/es local-pdf
+    when:
+      path: *when_path
+  build-cheatsheets-es:
+    image: *test_image
+    group: output-es
+    commands:
+      - make -C build-docs/doc/po/es local-cheatsheets
+    when:
+      path: *when_path
+  check-xml-pl:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/pl local-check
+    when:
+      path: *when_path
+  build-html-pl:
+    image: *test_image
+    group: output-pl
+    commands:
+      - make -C build-docs/doc/po/pl local-html
+    when:
+      path: *when_path
+  build-pdf-pl:
+    image: *test_image
+    group: output-pl
+    commands:
+      - make -C build-docs/doc/po/pl local-pdf
+    when:
+      path: *when_path
+  build-cheatsheets-pl:
+    image: *test_image
+    group: output-pl
+    commands:
+      - make -C build-docs/doc/po/pl local-cheatsheets
+    when:
+      path: *when_path
+  check-xml-ko_KR:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ko_KR local-check
+    when:
+      path: *when_path
+  build-html-ko_KR:
+    image: *test_image
+    group: output-ko_KR
+    commands:
+      - make -C build-docs/doc/po/ko_KR local-html
+    when:
+      path: *when_path
+  build-pdf-ko_KR:
+    image: *test_image
+    group: output-ko_KR
+    commands:
+      - make -C build-docs/doc/po/ko_KR local-pdf
+    when:
+      path: *when_path
+  build-cheatsheets-ko_KR:
+    image: *test_image
+    group: output-ko_KR
+    commands:
+      - make -C build-docs/doc/po/ko_KR local-cheatsheets
+    when:
+      path: *when_path
+  check-xml-de:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/de local-check
+    when:
+      path: *when_path
+  build-html-de:
+    image: *test_image
+    group: output-de
+    commands:
+      - make -C build-docs/doc/po/de local-html
+    when:
+      path: *when_path
+  build-pdf-de:
+    image: *test_image
+    group: output-de
+    commands:
+      - make -C build-docs/doc/po/de local-pdf
+    when:
+      path: *when_path
+  build-cheatsheets-de:
+    image: *test_image
+    group: output-de
+    commands:
+      - make -C build-docs/doc/po/de local-cheatsheets
+    when:
+      path: *when_path
+  check-xml-ja:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ja local-check
+    when:
+      path: *when_path
+  build-html-ja:
+    image: *test_image
+    group: output-ja
+    commands:
+      - make -C build-docs/doc/po/ja local-html
+    when:
+      path: *when_path
+  build-pdf-ja:
+    image: *test_image
+    group: output-ja
+    commands:
+      - make -C build-docs/doc/po/ja local-pdf
+    when:
+      path: *when_path
+  build-cheatsheets-ja:
+    image: *test_image
+    group: output-ja
+    commands:
+      - make -C build-docs/doc/po/ja local-cheatsheets
+    when:
+      path: *when_path
+  check-xml-ru:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ru local-check
+    when:
+      path: *when_path
+  build-html-ru:
+    image: *test_image
+    group: output-ru
+    commands:
+      - make -C build-docs/doc/po/ru local-html
+    when:
+      path: *when_path
+  build-pdf-ru:
+    image: *test_image
+    group: output-ru
+    commands:
+      - make -C build-docs/doc/po/ru local-pdf
+    when:
+      path: *when_path
+  build-cheatsheets-ru:
+    image: *test_image
+    group: output-ru
+    commands:
+      - make -C build-docs/doc/po/ru local-cheatsheets
+    when:
+      path: *when_path
