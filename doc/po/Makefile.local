@@ -18,8 +18,8 @@ local-%: symlinks
 	$(MAKE) $(patsubst local-%,%,$@) DOCSUFFIX=$(DOCSUFFIX)
 
 symlinks:
-	ln -sf ../../html html
-	ln -sf $(srcdir)/../../xsl xsl
+	ln -sf ../../html .
+	ln -sf $(srcdir)/../../xsl .
 
 # for XML_SOURCES
 include ../../Makefile
