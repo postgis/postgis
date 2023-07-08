@@ -1,3 +1,15 @@
+matrix:
+  LANG:
+    - it_IT
+    - pt_BR
+    - fr
+    - es
+    - pl
+    - ko_KR
+    - de
+    - ja
+    - ru
+
 pipeline:
   prepare:
     image: docker.osgeo.org/postgis/build-test:trisquel3
@@ -10,20 +22,16 @@ pipeline:
   check-xml:
     image: docker.osgeo.org/postgis/build-test:trisquel3
     commands:
-      - make -C build-docs/doc check
+      - make -C build-docs/doc/po/${LANG} local-check
   build-html:
     image: docker.osgeo.org/postgis/build-test:trisquel3
     commands:
-      - make -C build-docs/doc html
-  build-cheatsheets:
-    image: docker.osgeo.org/postgis/build-test:trisquel3
-    commands:
-      - make -C build-docs/doc/ cheatsheets
-  build-chunked-html:
-    image: docker.osgeo.org/postgis/build-test:trisquel3
-    commands:
-      - make -C build-docs/doc html
+      - make -C build-docs/doc/po/${LANG} local-html
   build-pdf:
     image: docker.osgeo.org/postgis/build-test:trisquel3
     commands:
-      - make -C build-docs/doc/ pdf
+      - make -C build-docs/doc/po/${LANG} local-pdf
+  build-cheatsheets:
+    image: docker.osgeo.org/postgis/build-test:trisquel3
+    commands:
+      - make -C build-docs/doc/po/${LANG} local-cheatsheets
