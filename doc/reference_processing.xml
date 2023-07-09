@@ -426,7 +426,8 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
                               <caption><para>These will create a donut</para></caption>
                             </mediaobject>
                           </informalfigure>
-                <programlisting>--using polygons
+                <programlisting>
+<lineannotation>using polygons</lineannotation>
 SELECT ST_BuildArea(ST_Collect(smallc,bigc))
 FROM (SELECT
     ST_Buffer(
@@ -434,7 +435,8 @@ FROM (SELECT
     ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;
                 </programlisting>
 
-                <programlisting>--using linestrings
+                <programlisting>
+<lineannotation>using linestrings</lineannotation>
 SELECT ST_BuildArea(ST_Collect(smallc,bigc))
 FROM (SELECT
     ST_ExteriorRing(ST_Buffer(
@@ -1055,7 +1057,8 @@ The result geometry representation is determined by the <varname>flags</varname>
                               <caption><para>Original polygons</para></caption>
                             </mediaobject>
                           </informalfigure></para>
-<programlisting>-- our original geometry --
+<programlisting>
+<lineannotation>our original geometry</lineannotation>
     ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40,
             50 60, 125 100, 175 150))'),
         ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
@@ -1071,7 +1074,9 @@ The result geometry representation is determined by the <varname>flags</varname>
                             </mediaobject>
                           </informalfigure>
                 <programlisting>
--- geometries overlaid multilinestring triangles
+<lineannotation>
+geometries overlaid multilinestring triangles
+</lineannotation>
 SELECT
     ST_DelaunayTriangles(
         ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40,
@@ -1106,7 +1111,10 @@ SELECT
                               <caption><para>-- delaunay triangles of 45 points as 55 triangle polygons</para></caption>
                             </mediaobject>
                           </informalfigure>
-                <programlisting>-- this produces a table of 42 points that form an L shape
+                <programlisting>
+<lineannotation>
+this produces a table of 42 points that form an L shape
+</lineannotation>
 SELECT (ST_DumpPoints(ST_GeomFromText(
 'MULTIPOINT(14 14,34 14,54 14,74 14,94 14,114 14,134 14,
 150 14,154 14,154 6,134 6,114 6,94 6,74 6,54 6,34 6,
@@ -1114,20 +1122,22 @@ SELECT (ST_DumpPoints(ST_GeomFromText(
 6 150,6 170,6 190,6 194,14 194,14 174,14 154,14 134,14 114,
 14 94,14 74,14 54,14 34,14 14)'))).geom
     INTO TABLE l_shape;
--- output as individual polygon triangles
+<lineannotation>
+output as individual polygon triangles
+</lineannotation>
 SELECT ST_AsText((ST_Dump(geom)).geom) As wkt
 FROM ( SELECT ST_DelaunayTriangles(ST_Collect(geom)) As geom
 FROM l_shape) As foo;
 
----wkt ---
+<lineannotation>
+wkt
+</lineannotation>
 POLYGON((6 194,6 190,14 194,6 194))
 POLYGON((14 194,6 190,14 174,14 194))
 POLYGON((14 194,14 174,154 14,14 194))
 POLYGON((154 14,14 174,14 154,154 14))
 POLYGON((154 14,14 154,150 14,154 14))
 POLYGON((154 14,150 14,154 6,154 14))
-:
-:
 </programlisting>
                         </para></entry>
              </row>
@@ -1137,11 +1147,16 @@ POLYGON((154 14,150 14,154 6,154 14))
 </informaltable>
 
 <para>Example using vertices with Z values.</para>
-            <programlisting>-- 3D multipoint --
+            <programlisting>
+<lineannotation>
+3D multipoint
+</lineannotation>
 SELECT ST_AsText(ST_DelaunayTriangles(ST_GeomFromText(
          'MULTIPOINT Z(14 14 10, 150 14 100,34 6 25, 20 10 150)'))) As wkt;
 
------wkt----
+<lineannotation>
+wkt
+</lineannotation>
 GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
  ,POLYGON Z ((14 14 10,34 6 25,150 14 100,14 14 10)))</programlisting>
         </refsection>
@@ -1199,7 +1214,9 @@ GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
                 <programlisting>
 SELECT ST_AsText(ST_FilterByM(geom,30)) simplified
 FROM (SELECT  ST_SetEffectiveArea('LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry) geom) As foo;
--result
+<lineannotation>
+result
+</lineannotation>
          simplified
 ----------------------------
  LINESTRING(5 2,7 25,10 10)
@@ -1950,7 +1967,9 @@ SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(
     16 18,16 20,16 40,16 60,16 80,16 100,
     16 120,16 140,16 160,16 180,16 195)'),
     15, 'quad_segs=4 join=round'));
---output --
+<lineannotation>
+output
+</lineannotation>
 LINESTRING(164 1,18 1,12.2597485145237 2.1418070123307,
     7.39339828220179 5.39339828220179,
     5.39339828220179 7.39339828220179,
@@ -1974,7 +1993,9 @@ SELECT ST_AsText(ST_OffsetCurve(geom,
     44 16,24 16,20 16,18 16,17 17,
     16 18,16 20,16 40,16 60,16 80,16 100,
     16 120,16 140,16 160,16 180,16 195)') As geom;
--- notsocurvy --
+<lineannotation>
+notsocurvy
+</lineannotation>
 LINESTRING(31 195,31 31,164 31)
                 </programlisting>
                         </para></entry>
@@ -1996,7 +2017,9 @@ SELECT ST_AsText(ST_OffsetCurve(ST_OffsetCurve(geom,
     44 16,24 16,20 16,18 16,17 17,
     16 18,16 20,16 40,16 60,16 80,16 100,
     16 120,16 140,16 160,16 180,16 195)') As geom;
--- morecurvy --
+<lineannotation>
+morecurvy
+</lineannotation>
 LINESTRING(164 31,46 31,40.2597485145236 32.1418070123307,
 35.3933982822018 35.3933982822018,
 32.1418070123307 40.2597485145237,31 46,31 195)
@@ -2021,7 +2044,9 @@ LINESTRING(164 31,46 31,40.2597485145236 32.1418070123307,
     44 16,24 16,20 16,18 16,17 17,
     16 18,16 20,16 40,16 60,16 80,16 100,
     16 120,16 140,16 160,16 180,16 195)') As geom;
--- parallel curves  --
+<lineannotation>
+parallel curves
+</lineannotation>
 MULTILINESTRING((164 1,18 1,12.2597485145237 2.1418070123307,
 7.39339828220179 5.39339828220179,5.39339828220179 7.39339828220179,
 2.14180701233067 12.2597485145237,1 18,1 195),
@@ -2046,7 +2071,9 @@ SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(
     16 18,16 20,16 40,16 60,16 80,16 100,
     16 120,16 140,16 160,16 180,16 195)'),
         15, 'quad_segs=4 join=bevel'));
--- output --
+<lineannotation>
+output
+</lineannotation>
 LINESTRING(164 1,18 1,7.39339828220179 5.39339828220179,
     5.39339828220179 7.39339828220179,1 18,1 195)
                 </programlisting>
@@ -2070,7 +2097,9 @@ SELECT ST_AsText(ST_Collect(
     44 16,24 16,20 16,18 16,17 17,
     16 18,16 20,16 40,16 60,16 80,16 100,
     16 120,16 140,16 160,16 180,16 195)') As geom;
--- output --
+<lineannotation>
+output
+</lineannotation>
 MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
     (31 195,31 31,164 31))
                 </programlisting>
@@ -2475,7 +2504,9 @@ GEOMETRYCOLLECTION(MULTILINESTRING((126 156.25,126 125),
         <row>
             <entry><para>
                   <programlisting>
--- same example but linestring orientation flipped
+<lineannotation>
+same example but linestring orientation flipped
+</lineannotation>
 SELECT ST_AsText(
   ST_SharedPaths(
    ST_GeomFromText('LINESTRING(76 175,90 161,126 125,126 156.25,151 100)'),
