@@ -25,6 +25,8 @@ POSTGIS_MICRO_VERSION=`grep ^POSTGIS_MICRO_VERSION Version.config | cut -d= -f2`
 
 # TODO: take base as env variable ?
 HTML_DIR=/var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
+STUFF_DIR=/var/www/postgis_stuff/
+
 
 echo $PATH
 
@@ -42,7 +44,8 @@ LDFLAGS="-L${PGPATH}/lib"  ./configure \
   --with-pgconfig=${PGPATH}/bin/pg_config \
   --with-geosconfig=${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}/bin/geos-config \
   --without-raster --without-protobuf \
-  --htmldir ${HTML_DIR}
+  --htmldir ${HTML_DIR} \
+  --docdir ${STUFF_DIR}
 make clean
 
 # generating postgis_revision.h in case hasn't been generated
@@ -71,20 +74,12 @@ if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
 fi
 
 make cheatsheets
-make pdf
-make epub
 make -e chunked-html-web # TODO: do we really want this too in the doc-html-*.tar.gz package ?
 make html-localized # TODO: do we really want this too in the doc-html-*.tar.gz package ?
-
-STUFF_DIR=/var/www/postgis_stuff/
 
 package="doc-html-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.tar.gz"
 tar -czf "$package" --exclude='static' --exclude='wkt' --exclude '*.o' html
 cp $package ${STUFF_DIR}
-
-# TODO: Replace all of this by some `make *-install` rule
-cp *.pdf ${STUFF_DIR}
-cp *.epub ${STUFF_DIR}
 
 # Install all html
 make html-assets-install
@@ -110,8 +105,13 @@ for f in ${HTML_DIR}/postgis-web-*; do
 done
 
 
-#chmod -R 755 ${HTML_DIR} # TODO: still needed ?
+# Build and install pdf and epub
+make pdf-install # || : survive failure
+make epub-install # || : survive failure
 
+# Build and install localized pdf and epub
+make pdf-install-localized # || : survive failures
+make epub-install-localized # || : survive failures
 
 if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
 
