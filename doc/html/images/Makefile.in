@@ -11,6 +11,8 @@
 # *
 # **********************************************************************
 
+PACKAGE_TARNAME = @PACKAGE_TARNAME@
+
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 srcdir = @srcdir@
