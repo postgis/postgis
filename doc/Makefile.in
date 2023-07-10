@@ -23,6 +23,8 @@
 
 translations = it_IT pt_BR fr es pl ko_KR de ja ru
 
+PACKAGE_TARNAME = @PACKAGE_TARNAME@
+
 prefix = @prefix@
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
