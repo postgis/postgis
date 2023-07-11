@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: ming 64gcc81\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-07 05:39+0000\n"
-"PO-Revision-Date: 2023-06-05 11:08+0000\n"
+"PO-Revision-Date: 2023-07-11 05:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_coverage/ja/>\n"
@@ -84,13 +84,16 @@ msgid ""
 "a valid polygonal coverage. It returns linear indicators showing the "
 "location of invalid edges (if any) in each polygon."
 msgstr ""
+"ウィンドウパーティション内のポリゴンが妥当なポリゴンカバレッジを形成するかど"
+"うかチェックするウィンドウ関数です。個々のポリゴン内の不正なエッジの位置 "
+"(あるなら)を示す線形インジケータを返します。"
 
 #. Tag: para
 #: reference_coverage.xml:38
 #, no-c-format
 msgid ""
 "A set of valid polygons is a valid coverage if the following conditions hold:"
-msgstr ""
+msgstr "次の条件を満たすなら妥当なポリゴンの集合は妥当なカバレッジです:"
 
 #. Tag: para
 #: reference_coverage.xml:42
@@ -121,6 +124,10 @@ msgid ""
 "polygons return the value NULL. Non-polygonal or empty geometries also "
 "produce NULL values."
 msgstr ""
+"ウィンドウ関数として、入力ポリゴンごとに値が返されます。妥当性条件の一つ以上"
+"に違反するポリゴンについては返り値は、問題のあるエッジを含むMULTILINESTRINGで"
+"す。カバレッジ妥当なポリゴンに対してはNULLを返します。非ポリゴンや空ジオメト"
+"リに対してもNULL値が返ります。"
 
 #. Tag: para
 #: reference_coverage.xml:55
@@ -145,6 +152,8 @@ msgid ""
 "The polygons being checked for coverage validity must also be valid "
 "geometries. This can be checked with <xref linkend=\"ST_IsValid\"/>."
 msgstr ""
+"カバレッジ妥当性のチェックがなされたポリゴンも妥当なジオメトリです。<xref "
+"linkend=\"ST_IsValid\"/>でチェックできます。"
 
 #. Tag: para
 #: reference_coverage.xml:66 reference_coverage.xml:138
@@ -163,7 +172,7 @@ msgstr "例"
 #: reference_coverage.xml:77
 #, no-c-format
 msgid "Invalid edges caused by overlap and non-matching vertices"
-msgstr ""
+msgstr "オーバラップと頂点不一致により発生した不正エッジ"
 
 #. Tag: programlisting
 #: reference_coverage.xml:81
@@ -189,6 +198,25 @@ msgid ""
 "  3 | LINESTRING (140 80, 140 190)\n"
 "  3 | null"
 msgstr ""
+"WITH coverage(id, geom) AS (VALUES\n"
+"  (1, 'POLYGON ((10 190, 30 160, 40 110, 100 70, 120 10, 10 10, 10 "
+"190))'::geometry),\n"
+"  (2, 'POLYGON ((100 190, 10 190, 30 160, 40 110, 50 80, 74 110.5, 100 130, "
+"140 120, 140 160, 100 190))'::geometry),\n"
+"  (3, 'POLYGON ((140 190, 190 190, 190 80, 140 80, 140 190))'::geometry),\n"
+"  (4, 'POLYGON ((180 40, 120 10, 100 70, 140 80, 190 80, 180 40))'::geometry)"
+"\n"
+")\n"
+"SELECT id, ST_AsText(ST_CoverageInvalidLocations(geom) OVER ())\n"
+"  FROM coverage;\n"
+"\n"
+" id |               st_astext\n"
+"----+---------------------------------------\n"
+"  1 | LINESTRING (40 110, 100 70)\n"
+"  2 | MULTILINESTRING ((100 130, 140 120, 140 160, 100 190), (40 110, 50 80, "
+"74 110.5))\n"
+"  3 | LINESTRING (140 80, 140 190)\n"
+"  3 | null"
 
 #. Tag: programlisting
 #: reference_coverage.xml:83
@@ -200,6 +228,11 @@ msgid ""
 "    FROM coverage\n"
 "    );"
 msgstr ""
+"-- カバレッジの妥当性のためにテーブル全体をテストする\n"
+"SELECT true = ALL (\n"
+"    SELECT ST_CoverageInvalidLocations(geom) OVER () IS NULL\n"
+"    FROM coverage\n"
+"    );"
 
 #. Tag: title
 #: reference_coverage.xml:87 reference_coverage.xml:177
@@ -215,6 +248,8 @@ msgid ""
 ", <xref linkend=\"ST_CoverageUnion\"/>, <xref "
 "linkend=\"ST_CoverageSimplify\"/>"
 msgstr ""
+", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageSimplify\""
+"/>"
 
 #. Tag: refname
 #: reference_coverage.xml:100
@@ -253,6 +288,9 @@ msgid ""
 "simplified output polygons are consisent along shared edges, and still form "
 "a valid coverage."
 msgstr ""
+"ポリゴンカバレッジ内でポリゴンのエッジを単純化するウィンドウ関数です。この単"
+"純化ではカバレッジのトポロジが保持されます。単純化した出力ポリゴンは共有する"
+"エッジに沿って構成され、妥当なカバレッジを形成します。"
 
 #. Tag: para
 #: reference_coverage.xml:127
@@ -264,6 +302,10 @@ msgid ""
 "of distance, and is roughly equal to the square root of triangular areas to "
 "be simplified."
 msgstr ""
+"単純化では<ulink url=\"https://en.wikipedia.org/wiki/Visvalingam%E2%80%"
+"93Whyatt_algorithm\">Visvalingam–Whyatt algorithm</ulink>版を使います。<param"
+"eter>tolerance</parameter>パラメータは距離の単位を持ち、単純化する三角形面積"
+"の平方根とだいたい同じです。"
 
 #. Tag: para
 #: reference_coverage.xml:132
@@ -294,13 +336,13 @@ msgstr ""
 #: reference_coverage.xml:154 reference_coverage.xml:230
 #, no-c-format
 msgid "Input coverage"
-msgstr ""
+msgstr "入力カバレッジ"
 
 #. Tag: para
 #: reference_coverage.xml:164
 #, no-c-format
 msgid "Simplified coverage"
-msgstr ""
+msgstr "カバレッジの単純化"
 
 #. Tag: programlisting
 #: reference_coverage.xml:173
@@ -329,6 +371,28 @@ msgid ""
 "  3 | POLYGON ((110 130, 160 50, 50 10, 110 130))\n"
 "  3 | POLYGON ((160 150, 160 50, 110 130, 160 150))"
 msgstr ""
+"WITH coverage(id, geom) AS (VALUES\n"
+"  (1, 'POLYGON ((160 150, 110 130, 90 100, 90 70, 60 60, 50 10, 30 30, 40 "
+"50, 25 40, 10 60, 30 100, 30 120, 20 170, 60 180, 90 190, 130 180, 130 160, "
+"160 150), (40 160, 50 140, 66 125, 60 100, 80 140, 90 170, 60 160, 40 "
+"160))'::geometry),\n"
+"  (2, 'POLYGON ((40 160, 60 160, 90 170, 80 140, 60 100, 66 125, 50 140, 40 "
+"160))'::geometry),\n"
+"  (3, 'POLYGON ((110 130, 160 50, 140 50, 120 33, 90 30, 50 10, 60 60, 90 "
+"70, 90 100, 110 130))'::geometry),\n"
+"  (4, 'POLYGON ((160 150, 150 120, 160 90, 160 50, 110 130, 160 "
+"150))'::geometry)\n"
+")\n"
+"SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())\n"
+"  FROM coverage;\n"
+"\n"
+" id |               st_astext\n"
+"----+---------------------------------------\n"
+"  1 | POLYGON ((160 150, 110 130, 50 10, 10 60, 20 170, 90 190, 160 150), ("
+"40 160, 66 125, 90 170, 40 160))\n"
+"  2 | POLYGON ((40 160, 66 125, 90 170, 40 160))\n"
+"  3 | POLYGON ((110 130, 160 50, 50 10, 110 130))\n"
+"  3 | POLYGON ((160 150, 160 50, 110 130, 160 150))"
 
 #. Tag: refname
 #: reference_coverage.xml:187
@@ -395,7 +459,7 @@ msgstr "Availability: 3.4.0 - GEOS 3.8.0以上が必要です"
 #: reference_coverage.xml:240
 #, no-c-format
 msgid "Union result"
-msgstr ""
+msgstr "結合結果"
 
 #. Tag: programlisting
 #: reference_coverage.xml:249
@@ -419,6 +483,23 @@ msgid ""
 "60, 100 70, 40 110, 50 60)), ((120 170, 140 190, 180 160, 170 140, 140 130, "
 "120 170)))"
 msgstr ""
+"WITH coverage(id, geom) AS (VALUES\n"
+"  (1, 'POLYGON ((10 10, 10 150, 80 190, 110 150, 90 110, 40 110, 50 60, 10 "
+"10))'::geometry),\n"
+"  (2, 'POLYGON ((120 10, 10 10, 50 60, 100 70, 120 10))'::geometry),\n"
+"  (3, 'POLYGON ((140 80, 120 10, 100 70, 40 110, 90 110, 110 150, 140 "
+"80))'::geometry),\n"
+"  (4, 'POLYGON ((140 190, 120 170, 140 130, 160 150, 140 190))'::geometry),\n"
+"  (5, 'POLYGON ((180 160, 170 140, 140 130, 160 150, 140 190, 180 "
+"160))'::geometry)\n"
+")\n"
+"SELECT ST_AsText(ST_CoverageUnion(geom))\n"
+"  FROM coverage;\n"
+"\n"
+"--------------------------------------\n"
+"MULTIPOLYGON (((10 150, 80 190, 110 150, 140 80, 120 10, 10 10, 10 150), (50 "
+"60, 100 70, 40 110, 50 60)), ((120 170, 140 190, 180 160, 170 140, 140 130, "
+"120 170)))"
 
 #. Tag: para
 #: reference_coverage.xml:254
