@@ -56,6 +56,10 @@ CIRC_NODE* lwgeom_calculate_circ_tree(const LWGEOM* lwgeom);
 int circ_tree_get_point(const CIRC_NODE* node, POINT2D* pt);
 int circ_tree_get_point_outside(const CIRC_NODE* node, POINT2D* pt);
 
+LWGEOM * geography_tree_closestpoint(const LWGEOM* g1, const LWGEOM* g2, double threshold);
+LWGEOM * geography_tree_shortestline(const LWGEOM* g1, const LWGEOM* g2, double threshold, const SPHEROID *spheroid);
+
+
 #endif /* _LWGEODETIC_TREE_H */
 
 

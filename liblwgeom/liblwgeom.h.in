@@ -1791,6 +1791,26 @@ extern double lwgeom_length_spheroid(const LWGEOM *geom, const SPHEROID *s);
 */
 extern int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2);
 
+
+extern LWGEOM * geography_substring(const LWLINE *line,
+    double from, double to,
+    double tolerance);
+
+extern LWGEOM * geography_interpolate_points(
+    const LWLINE *line,
+    double length_fraction,
+    const SPHEROID *s, char repeat);
+
+extern double
+ptarray_locate_point_spheroid(
+    const POINTARRAY *pa,
+    const POINT4D *p4d,
+    const SPHEROID *s,
+    double tolerance,
+    double *mindistout,
+    POINT4D *proj4d);
+
+
 typedef struct {
 	POINT2D* center;
 	double radius;

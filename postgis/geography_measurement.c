@@ -66,6 +66,12 @@ Datum geography_project(PG_FUNCTION_ARGS);
 Datum geography_azimuth(PG_FUNCTION_ARGS);
 Datum geography_segmentize(PG_FUNCTION_ARGS);
 
+Datum geography_line_locate_point(PG_FUNCTION_ARGS);
+Datum geography_line_interpolate_point(PG_FUNCTION_ARGS);
+Datum geography_line_substring(PG_FUNCTION_ARGS);
+Datum geography_closestpoint(PG_FUNCTION_ARGS);
+Datum geography_shortestline(PG_FUNCTION_ARGS);
+
 
 PG_FUNCTION_INFO_V1(geography_distance_knn);
 Datum geography_distance_knn(PG_FUNCTION_ARGS)
@@ -135,16 +141,12 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 {
 	LWGEOM *lwgeom1 = NULL;
 	LWGEOM *lwgeom2 = NULL;
-	GSERIALIZED *g1 = NULL;
-	GSERIALIZED *g2 = NULL;
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
 	double distance;
 	double tolerance = FP_TOLERANCE;
 	bool use_spheroid = true;
 	SPHEROID s;
-
-	/* Get our geometry objects loaded into memory. */
-	g1 = PG_GETARG_GSERIALIZED_P(0);
-	g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Read our tolerance value. */
 	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
@@ -167,7 +169,7 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 	lwgeom2 = lwgeom_from_gserialized(g2);
 
 	/* Return NULL on empty arguments. */
-	if ( lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2) )
+	if ( !lwgeom1 || !lwgeom2 || lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2) )
 	{
 		PG_FREE_IF_COPY(g1, 0);
 		PG_FREE_IF_COPY(g2, 1);
@@ -179,8 +181,6 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 	lwgeom_add_bbox_deep(lwgeom2, NULL);
 
 	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, tolerance);
-
-	POSTGIS_DEBUGF(2, "[GIST] '%s' got distance %g", __func__, distance);
 
 	/* Clean up */
 	lwgeom_free(lwgeom1);
@@ -212,7 +212,6 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	double distance;
 	bool use_spheroid = true;
 	SPHEROID s;
-
 
 	if (PG_NARGS() > 2)
 		use_spheroid = PG_GETARG_BOOL(2);
@@ -1107,17 +1106,13 @@ Datum geography_project_geography(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_azimuth);
 Datum geography_azimuth(PG_FUNCTION_ARGS)
 {
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
 	LWGEOM *lwgeom1 = NULL;
 	LWGEOM *lwgeom2 = NULL;
-	GSERIALIZED *g1 = NULL;
-	GSERIALIZED *g2 = NULL;
 	double azimuth;
 	SPHEROID s;
 	uint32_t type1, type2;
-
-	/* Get our geometry object loaded into memory. */
-	g1 = PG_GETARG_GSERIALIZED_P(0);
-	g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Only return for points. */
 	type1 = gserialized_get_type(g1);
@@ -1154,7 +1149,7 @@ Datum geography_azimuth(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(g2, 1);
 
 	/* Return NULL for unknown (same point) azimuth */
-	if( isnan(azimuth) )
+	if( !isfinite(azimuth) )
 	{
 		PG_RETURN_NULL();
 	}
@@ -1164,26 +1159,19 @@ Datum geography_azimuth(PG_FUNCTION_ARGS)
 
 
 
-/*
-** geography_segmentize(GSERIALIZED *g1, double max_seg_length)
-** returns densified geometry with no segment longer than max
-*/
+/**
+ * ST_Segmentize(geography, double max_seg_length)
+ * Returns densified geometry with no segment longer than maximum.
+ */
 PG_FUNCTION_INFO_V1(geography_segmentize);
 Datum geography_segmentize(PG_FUNCTION_ARGS)
 {
 	LWGEOM *lwgeom1 = NULL;
 	LWGEOM *lwgeom2 = NULL;
-	GSERIALIZED *g1 = NULL;
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *g2 = NULL;
-	double max_seg_length;
-	uint32_t type1;
-
-	/* Get our geometry object loaded into memory. */
-	g1 = PG_GETARG_GSERIALIZED_P(0);
-	type1 = gserialized_get_type(g1);
-
-	/* Convert max_seg_length from metric units to radians */
-	max_seg_length = PG_GETARG_FLOAT8(1) / WGS84_RADIUS;
+	double max_seg_length = PG_GETARG_FLOAT8(1) / WGS84_RADIUS;
+	uint32_t type1 = gserialized_get_type(g1);
 
 	/* We can't densify points or points, reflect them back */
 	if ( type1 == POINTTYPE || type1 == MULTIPOINTTYPE || gserialized_is_empty(g1) )
@@ -1216,3 +1204,275 @@ Datum geography_segmentize(PG_FUNCTION_ARGS)
 }
 
 
+/********************************************************************************/
+
+/**
+ * ST_LineSubstring(geography line, float start_fraction, float end_fraction)
+ * Return the part of a line between two fractional locations.
+ */
+PG_FUNCTION_INFO_V1(geography_line_substring);
+Datum geography_line_substring(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *gs = PG_GETARG_GSERIALIZED_P(0);
+	double from_fraction = PG_GETARG_FLOAT8(1);
+	double to_fraction = PG_GETARG_FLOAT8(2);
+	LWLINE *lwline;
+	LWGEOM *lwresult;
+	GSERIALIZED *result;
+
+	/* Return NULL on empty argument. */
+	if ( gserialized_is_empty(gs) )
+	{
+		PG_FREE_IF_COPY(gs, 0);
+		PG_RETURN_NULL();
+	}
+
+	if ( from_fraction < 0 || from_fraction > 1 )
+	{
+		elog(ERROR,"%s: second argument is not within [0,1]", __func__);
+		PG_FREE_IF_COPY(gs, 0);
+		PG_RETURN_NULL();
+	}
+	if ( to_fraction < 0 || to_fraction > 1 )
+	{
+		elog(ERROR,"%s: argument arg is not within [0,1]", __func__);
+		PG_FREE_IF_COPY(gs, 0);
+		PG_RETURN_NULL();
+	}
+	if ( from_fraction > to_fraction )
+	{
+		elog(ERROR, "%s: second argument must be smaller than third argument", __func__);
+		PG_RETURN_NULL();
+	}
+
+	lwline = lwgeom_as_lwline(lwgeom_from_gserialized(gs));
+	if ( !lwline )
+	{
+		elog(ERROR,"%s: first argument is not a line", __func__);
+		PG_FREE_IF_COPY(gs, 0);
+		PG_RETURN_NULL();
+	}
+
+	lwresult = geography_substring(lwline,
+		from_fraction, to_fraction, FP_TOLERANCE);
+
+	lwline_free(lwline);
+	PG_FREE_IF_COPY(gs, 0);
+	lwgeom_set_geodetic(lwresult, true);
+	result = geography_serialize(lwresult);
+	lwgeom_free(lwresult);
+
+	PG_RETURN_POINTER(result);
+}
+
+
+/**
+ * ST_LineInterpolatePoint(geography line, float fraction, boolean use_spheroid)
+ * Interpolate a point along a geographic line.
+ *
+ * ST_LineInterpolatePoints(geography line, float fraction, boolean use_spheroid)
+ * In-fill geographic line with multiple points using the fraction as the interval
+ * between each point.
+ */
+PG_FUNCTION_INFO_V1(geography_line_interpolate_point);
+Datum geography_line_interpolate_point(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *gs = PG_GETARG_GSERIALIZED_P(0);
+	double distance_fraction = PG_GETARG_FLOAT8(1);
+	/* Read calculation type */
+	bool use_spheroid = PG_GETARG_BOOL(2);
+	/* Read repeat mode */
+	bool repeat = (PG_NARGS() > 3) && PG_GETARG_BOOL(3);
+	LWLINE* lwline;
+	LWGEOM* lwresult;
+	SPHEROID s;
+	GSERIALIZED *result;
+
+	/* Return NULL on empty argument. */
+	if ( gserialized_is_empty(gs) )
+	{
+		PG_FREE_IF_COPY(gs, 0);
+		PG_RETURN_NULL();
+	}
+
+	if ( distance_fraction < 0 || distance_fraction > 1 )
+	{
+		elog(ERROR,"%s: second arg is not within [0,1]", __func__);
+		PG_FREE_IF_COPY(gs, 0);
+		PG_RETURN_NULL();
+	}
+
+	lwline = lwgeom_as_lwline(lwgeom_from_gserialized(gs));
+	if ( !lwline )
+	{
+		elog(ERROR,"%s: first arg is not a line", __func__);
+		PG_FREE_IF_COPY(gs, 0);
+		PG_RETURN_NULL();
+	}
+
+	/* Initialize spheroid */
+	// spheroid_init_from_srid(fcinfo, srid, &s);
+	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+
+	/* Set to sphere if requested */
+	if ( ! use_spheroid )
+		s.a = s.b = s.radius;
+
+	lwresult = geography_interpolate_points(lwline, distance_fraction, &s, repeat);
+
+	lwgeom_free(lwline_as_lwgeom(lwline));
+	PG_FREE_IF_COPY(gs, 0);
+
+	lwgeom_set_geodetic(lwresult, true);
+	result = geography_serialize(lwresult);
+	lwgeom_free(lwresult);
+
+	PG_RETURN_POINTER(result);
+}
+
+
+/**
+ * ST_LineLocatePoint(geography line, geography point, bool use_spheroid)
+ * Locate a point along a geographic line.
+ */
+PG_FUNCTION_INFO_V1(geography_line_locate_point);
+Datum geography_line_locate_point(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *gs1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *gs2 = PG_GETARG_GSERIALIZED_P(1);
+	bool use_spheroid = PG_GETARG_BOOL(2);
+	double tolerance = FP_TOLERANCE;
+	SPHEROID s;
+	LWLINE *lwline;
+	LWPOINT *lwpoint;
+	POINTARRAY *pa;
+	POINT4D p, p_proj;
+	double ret;
+
+	gserialized_error_if_srid_mismatch(gs1, gs2, __func__);
+
+	/* Return NULL on empty argument. */
+	if ( gserialized_is_empty(gs1) || gserialized_is_empty(gs2))
+	{
+		PG_FREE_IF_COPY(gs1, 0);
+		PG_FREE_IF_COPY(gs2, 1);
+		PG_RETURN_NULL();
+	}
+
+	if ( gserialized_get_type(gs1) != LINETYPE )
+	{
+		elog(ERROR,"%s: 1st arg is not a line", __func__);
+		PG_RETURN_NULL();
+	}
+	if ( gserialized_get_type(gs2) != POINTTYPE )
+	{
+		elog(ERROR,"%s: 2st arg is not a point", __func__);
+		PG_RETURN_NULL();
+	}
+
+	/* Set to sphere if requested */
+	if ( ! use_spheroid ) {
+		s.a = s.b = s.radius;
+	}
+	else {
+		/* Initialize spheroid */
+		// spheroid_init_from_srid(fcinfo, srid, &s);
+		spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+	}
+
+	lwline = lwgeom_as_lwline(lwgeom_from_gserialized(gs1));
+	lwpoint = lwgeom_as_lwpoint(lwgeom_from_gserialized(gs2));
+
+	pa = lwline->points;
+	lwpoint_getPoint4d_p(lwpoint, &p);
+
+	ret = ptarray_locate_point_spheroid(pa, &p, &s, tolerance, NULL, &p_proj);
+
+	PG_RETURN_FLOAT8(ret);
+}
+
+
+/**
+ * ST_ClosestPoint(geography line, geography point)
+ * Return the point in first input geography that is closest to the
+ * second input geography in 2d
+ */
+PG_FUNCTION_INFO_V1(geography_closestpoint);
+Datum geography_closestpoint(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	LWGEOM *point, *lwg1, *lwg2;
+	GSERIALIZED *result;
+
+	gserialized_error_if_srid_mismatch(g1, g2, __func__);
+
+	lwg1 = lwgeom_from_gserialized(g1);
+	lwg2 = lwgeom_from_gserialized(g2);
+
+	/* Return NULL on empty/bad arguments. */
+	if ( !lwg1 || !lwg2 || lwgeom_is_empty(lwg1) || lwgeom_is_empty(lwg2) )
+	{
+		PG_FREE_IF_COPY(g1, 0);
+		PG_FREE_IF_COPY(g2, 1);
+		PG_RETURN_NULL();
+	}
+
+	point = geography_tree_closestpoint(lwg1, lwg2, FP_TOLERANCE);
+	result = geography_serialize(point);
+	lwgeom_free(point);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
+
+	PG_FREE_IF_COPY(g1, 0);
+	PG_FREE_IF_COPY(g2, 1);
+	PG_RETURN_POINTER(result);
+}
+
+/**
+ * ST_ShortestLine(geography, geography)
+ * Return the shortest line between the first and second arguments.
+ */
+PG_FUNCTION_INFO_V1(geography_shortestline);
+Datum geography_shortestline(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED* g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED* g2 = PG_GETARG_GSERIALIZED_P(1);
+	bool use_spheroid = PG_GETARG_BOOL(2);
+	LWGEOM *line, *lwgeom1, *lwgeom2;
+	GSERIALIZED* result;
+	SPHEROID s;
+
+	gserialized_error_if_srid_mismatch(g1, g2, __func__);
+
+	lwgeom1 = lwgeom_from_gserialized(g1);
+	lwgeom2 = lwgeom_from_gserialized(g2);
+
+	/* Return NULL on empty/bad arguments. */
+	if ( !lwgeom1 || !lwgeom2 || lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2) )
+	{
+		PG_FREE_IF_COPY(g1, 0);
+		PG_FREE_IF_COPY(g2, 1);
+		PG_RETURN_NULL();
+	}
+
+	/* Initialize spheroid */
+	// spheroid_init_from_srid(fcinfo, srid, &s);
+	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+
+	/* Set to sphere if requested */
+	if ( ! use_spheroid )
+		s.a = s.b = s.radius;
+
+	line = geography_tree_shortestline(lwgeom1, lwgeom2, FP_TOLERANCE, &s);
+
+	if (lwgeom_is_empty(line))
+		PG_RETURN_NULL();
+
+	result = geography_serialize(line);
+	lwgeom_free(line);
+
+	PG_FREE_IF_COPY(g1, 0);
+	PG_FREE_IF_COPY(g2, 1);
+	PG_RETURN_POINTER(result);
+}

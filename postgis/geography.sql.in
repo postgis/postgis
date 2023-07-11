@@ -867,4 +867,76 @@ CREATE OR REPLACE FUNCTION ST_Intersects(text, text)
 
 -----------------------------------------------------------------------------
 
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_ClosestPoint(geography, geography, use_spheroid boolean DEFAULT true)
+ 	RETURNS geography
+	AS 'MODULE_PATHNAME', 'geography_closestpoint'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_ClosestPoint(text, text)
+	RETURNS geometry AS
+	$$ SELECT @extschema@.ST_ClosestPoint($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_ShortestLine(geography, geography, use_spheroid boolean DEFAULT true)
+	RETURNS geography
+	AS 'MODULE_PATHNAME', 'geography_shortestline'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_ShortestLine(text, text)
+	RETURNS geometry AS
+	$$ SELECT @extschema@.ST_ShortestLine($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LineSubstring(geography, float8, float8)
+	RETURNS geography
+	AS 'MODULE_PATHNAME', 'geography_line_substring'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LineSubstring(text, float8, float8)
+	RETURNS geometry AS
+	$$ SELECT @extschema@.ST_LineSubstring($1::@extschema@.geometry, $2, $3);  $$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LineLocatePoint(geography, geography, use_spheroid boolean DEFAULT true)
+	RETURNS float
+	AS 'MODULE_PATHNAME', 'geography_line_locate_point'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LineLocatePoint(text, text)
+	RETURNS float AS
+	$$ SELECT @extschema@.ST_LineLocatePoint($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LineInterpolatePoints(geography, float8, use_spheroid boolean DEFAULT true, repeat boolean DEFAULT true)
+	RETURNS geography
+	AS 'MODULE_PATHNAME', 'geography_line_interpolate_point'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LineInterpolatePoints(text, float8)
+	RETURNS geometry AS
+	$$ SELECT @extschema@.ST_LineInterpolatePoints($1::@extschema@.geometry, $2);  $$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LineInterpolatePoint(geography, float8, use_spheroid boolean DEFAULT true)
+	RETURNS geography
+	AS 'MODULE_PATHNAME', 'geography_line_interpolate_point'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LineInterpolatePoint(text, float8)
+	RETURNS geometry AS
+	$$ SELECT @extschema@.ST_LineInterpolatePoint($1::@extschema@.geometry, $2);  $$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
+----------------------------------------------------------------

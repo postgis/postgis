@@ -16,6 +16,14 @@
 				<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
 				<paramdef><type>float8 </type> <parameter>a_fraction</parameter></paramdef>
 			  </funcprototype>
+
+              <funcprototype>
+                <funcdef>geography <function>ST_LineInterpolatePoint</function></funcdef>
+                <paramdef><type>geography </type> <parameter>a_linestring</parameter></paramdef>
+                <paramdef><type>float8 </type> <parameter>a_fraction</parameter></paramdef>
+                <paramdef choice="opt"><type>boolean </type><parameter>use_spheroid = true</parameter></paramdef>
+              </funcprototype>
+
 			</funcsynopsis>
 		  </refsynopsisdiv>
 
@@ -183,6 +191,15 @@ SELECT ST_AsText(
 				<paramdef><type>float8 </type> <parameter>a_fraction</parameter></paramdef>
 				<paramdef><type>boolean </type> <parameter>repeat</parameter></paramdef>
 			  </funcprototype>
+
+              <funcprototype>
+                <funcdef>geography <function>ST_LineInterpolatePoints</function></funcdef>
+                <paramdef><type>geography </type> <parameter>a_linestring</parameter></paramdef>
+                <paramdef><type>float8 </type> <parameter>a_fraction</parameter></paramdef>
+                <paramdef choice="opt"><type>boolean </type><parameter>use_spheroid = true</parameter></paramdef>
+                <paramdef choice="opt"><type>boolean </type> <parameter>repeat = true</parameter></paramdef>
+              </funcprototype>
+
 			</funcsynopsis>
 		  </refsynopsisdiv>
 
@@ -245,11 +262,20 @@ SELECT ST_AsText(ST_LineInterpolatePoints('LINESTRING(25 50, 100 125, 150 190)',
 
 		  <refsynopsisdiv>
 			<funcsynopsis>
+
 			  <funcprototype>
 				<funcdef>float8 <function>ST_LineLocatePoint</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>
 			  </funcprototype>
+
+              <funcprototype>
+                <funcdef>float8 <function>ST_LineLocatePoint</function></funcdef>
+                <paramdef><type>geography </type> <parameter>a_linestring</parameter></paramdef>
+                <paramdef><type>geography </type> <parameter>a_point</parameter></paramdef>
+                <paramdef choice="opt"><type>boolean </type><parameter>use_spheroid = true</parameter></paramdef>
+              </funcprototype>
+
 			</funcsynopsis>
 		  </refsynopsisdiv>
 
@@ -330,6 +356,14 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 				<paramdef><type>float8 </type> <parameter>startfraction</parameter></paramdef>
 				<paramdef><type>float8 </type> <parameter>endfraction</parameter></paramdef>
 			  </funcprototype>
+
+              <funcprototype>
+                <funcdef>geography <function>ST_LineSubstring</function></funcdef>
+                <paramdef><type>geography </type> <parameter>a_linestring</parameter></paramdef>
+                <paramdef><type>float8 </type> <parameter>startfraction</parameter></paramdef>
+                <paramdef><type>float8 </type> <parameter>endfraction</parameter></paramdef>
+              </funcprototype>
+
 			</funcsynopsis>
 		  </refsynopsisdiv>
 

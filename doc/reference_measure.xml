@@ -294,15 +294,25 @@ SELECT degrees( ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, 0.2 0
 
 	  <refsynopsisdiv>
 		<funcsynopsis>
+
 		  <funcprototype>
 			<funcdef>geometry <function>ST_ClosestPoint</function></funcdef>
-
 			<paramdef><type>geometry </type>
 			<parameter>geom1</parameter></paramdef>
-
 			<paramdef><type>geometry </type>
 			<parameter>geom2</parameter></paramdef>
 		  </funcprototype>
+
+          <funcprototype>
+            <funcdef>geography <function>ST_ClosestPoint</function></funcdef>
+            <paramdef><type>geography </type>
+              <parameter>geom1</parameter></paramdef>
+            <paramdef><type>geography </type>
+              <parameter>geom2</parameter></paramdef>
+            <paramdef choice="opt"><type>boolean </type>
+              <parameter>repeat = true</parameter></paramdef>
+          </funcprototype>
+
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
@@ -1879,13 +1889,21 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>geometry <function>ST_ShortestLine</function></funcdef>
-
 			<paramdef><type>geometry </type>
 			<parameter>geom1</parameter></paramdef>
-
 			<paramdef><type>geometry </type>
 			<parameter>geom2</parameter></paramdef>
 		  </funcprototype>
+
+          <funcprototype>
+            <funcdef>geography <function>ST_ShortestLine</function></funcdef>
+            <paramdef><type>geography </type>
+            <parameter>geom1</parameter></paramdef>
+            <paramdef><type>geography </type>
+            <parameter>geom2</parameter></paramdef>
+            <paramdef choice="opt"><type>boolean </type><parameter>use_spheroid = true</parameter></paramdef>
+          </funcprototype>
+
 		</funcsynopsis>
 	  </refsynopsisdiv>
 

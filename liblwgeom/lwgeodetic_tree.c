@@ -674,7 +674,7 @@ circ_internal_nodes_sort(CIRC_NODE **nodes, uint32_t num_nodes, const CIRC_NODE 
 
 /***********************************************************************/
 
-static double
+double
 circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, double threshold, double* min_dist, double* max_dist, GEOGRAPHIC_POINT* closest1, GEOGRAPHIC_POINT* closest2)
 {
 	double max;
@@ -1025,4 +1025,84 @@ lwgeom_calculate_circ_tree(const LWGEOM* lwgeom)
 			return NULL;
 	}
 
+}
+
+
+/***********************************************************************
+ * Closest point and closest line functions for geographies.
+ ***********************************************************************/
+
+LWGEOM *
+geography_tree_closestpoint(const LWGEOM* lwgeom1, const LWGEOM* lwgeom2, double threshold)
+{
+	CIRC_NODE* circ_tree1 = NULL;
+	CIRC_NODE* circ_tree2 = NULL;
+	double min_dist = FLT_MAX;
+	double max_dist = FLT_MAX;
+	GEOGRAPHIC_POINT closest1, closest2;
+	LWGEOM *result;
+	POINT4D p;
+
+	circ_tree1 = lwgeom_calculate_circ_tree(lwgeom1);
+	circ_tree2 = lwgeom_calculate_circ_tree(lwgeom2);
+
+	/* Quietly decrease the threshold just a little to avoid cases where */
+	/* the actual spheroid distance is larger than the sphere distance */
+	/* causing the return value to be larger than the threshold value */
+	// double threshold_radians = 0.95 * threshold / spheroid->radius;
+	double threshold_radians = threshold / WGS84_RADIUS;
+
+	circ_tree_distance_tree_internal(
+		circ_tree1, circ_tree2, threshold_radians,
+		&min_dist, &max_dist, &closest1, &closest2);
+
+	p.x = rad2deg(closest1.lon);
+	p.y = rad2deg(closest1.lat);
+	result = (LWGEOM *)lwpoint_make2d(lwgeom_get_srid(lwgeom1), p.x, p.y);
+
+	circ_tree_free(circ_tree1);
+	circ_tree_free(circ_tree2);
+	return result;
+}
+
+
+LWGEOM *
+geography_tree_shortestline(const LWGEOM* lwgeom1, const LWGEOM* lwgeom2, double threshold, const SPHEROID *spheroid)
+{
+  CIRC_NODE* circ_tree1 = NULL;
+  CIRC_NODE* circ_tree2 = NULL;
+  double min_dist = FLT_MAX;
+  double max_dist = FLT_MAX;
+  GEOGRAPHIC_POINT closest1, closest2;
+  LWGEOM *geoms[2];
+  LWGEOM *result;
+  POINT4D p1, p2;
+  uint32_t srid = lwgeom1->srid;
+
+  circ_tree1 = lwgeom_calculate_circ_tree(lwgeom1);
+  circ_tree2 = lwgeom_calculate_circ_tree(lwgeom2);
+
+  /* Quietly decrease the threshold just a little to avoid cases where */
+  /* the actual spheroid distance is larger than the sphere distance */
+  /* causing the return value to be larger than the threshold value */
+  // double threshold_radians = 0.95 * threshold / spheroid->radius;
+  double threshold_radians = threshold / spheroid->radius;
+
+  circ_tree_distance_tree_internal(circ_tree1, circ_tree2, threshold_radians,
+      &min_dist, &max_dist, &closest1, &closest2);
+
+  p1.x = rad2deg(closest1.lon);
+  p1.y = rad2deg(closest1.lat);
+  p2.x = rad2deg(closest2.lon);
+  p2.y = rad2deg(closest2.lat);
+
+  geoms[0] = (LWGEOM *)lwpoint_make2d(srid, p1.x, p1.y);
+  geoms[1] = (LWGEOM *)lwpoint_make2d(srid, p2.x, p2.y);
+  result = (LWGEOM *)lwline_from_lwgeom_array(srid, 2, geoms);
+
+  lwgeom_free(geoms[0]);
+  lwgeom_free(geoms[1]);
+  circ_tree_free(circ_tree1);
+  circ_tree_free(circ_tree2);
+  return result;
 }
