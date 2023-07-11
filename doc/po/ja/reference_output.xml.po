@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-07 05:39+0000\n"
-"PO-Revision-Date: 2023-05-15 11:08+0000\n"
+"PO-Revision-Date: 2023-07-11 05:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_outputxml/ja/>\n"
@@ -3181,12 +3181,15 @@ msgid ""
 "com/dr-jts/pg_svg\">pg_svg</ulink> library which provides plpgsql functions "
 "for working with outputs from ST_AsSVG."
 msgstr ""
+"PostGIS SVG グラフィックを使うには、ST_AsSVGからの出力を操作するためのPL/"
+"pgSQL関数を提供する<ulink url=\"https://github.com/dr-jts/pg_svg\""
+">pg_svg</ulink>ライブラリをチェックアウトして下さい。"
 
 #. Tag: para
 #: reference_output.xml:1210
 #, no-c-format
 msgid "Enhanced: 3.4.0 to support all curve types"
-msgstr ""
+msgstr "Enhanced: 3.4.0 全ての曲線タイプに対応しました"
 
 #. Tag: para
 #: reference_output.xml:1211
@@ -3217,12 +3220,17 @@ msgid ""
 "--------\n"
 "M 0 0 L 0 -1 1 -1 1 0 Z"
 msgstr ""
+"SELECT ST_AsSVG('POLYGON((0 0,0 1,1 1,1 0,0 0))'::geometry);\n"
+"\n"
+"st_assvg\n"
+"--------\n"
+"M 0 0 L 0 -1 1 -1 1 0 Z"
 
 #. Tag: para
 #: reference_output.xml:1223
 #, no-c-format
 msgid "Circular string"
-msgstr ""
+msgstr "曲線ストリング"
 
 #. Tag: programlisting
 #: reference_output.xml:1224
@@ -3234,12 +3242,17 @@ msgid ""
 "--------\n"
 "M -2 0 A 2 2 0 0 1 2 0 A 2 2 0 0 1 2 -4"
 msgstr ""
+"SELECT ST_AsSVG( ST_GeomFromText('CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)') );\n"
+"\n"
+"st_assvg\n"
+"--------\n"
+"M -2 0 A 2 2 0 0 1 2 0 A 2 2 0 0 1 2 -4"
 
 #. Tag: para
 #: reference_output.xml:1226
 #, no-c-format
 msgid "Multi-curve"
-msgstr ""
+msgstr "マルチ曲線"
 
 #. Tag: programlisting
 #: reference_output.xml:1227
@@ -3251,12 +3264,17 @@ msgid ""
 "------------------------------------------------\n"
 " M 5 -5 L 3 -5 3 -3 0 -3 M 0 0 A 2 2 0 0 0 2 -2"
 msgstr ""
+"SELECT ST_AsSVG('MULTICURVE((5 5,3 5,3 3,0 3),\n"
+" CIRCULARSTRING(0 0,2 1,2 2))'::geometry, 0, 0);\n"
+" st_assvg\n"
+"------------------------------------------------\n"
+" M 5 -5 L 3 -5 3 -3 0 -3 M 0 0 A 2 2 0 0 0 2 -2"
 
 #. Tag: para
 #: reference_output.xml:1229
 #, no-c-format
 msgid "Multi-surface"
-msgstr ""
+msgstr "マルチサーフェス"
 
 #. Tag: programlisting
 #: reference_output.xml:1230
@@ -3273,6 +3291,16 @@ msgid ""
 "M -1 0 L 0 -0.5 1 0 0 -1 -1 0 Z\n"
 "M 7 -8 L 10 -10 6 -14 4 -11 Z"
 msgstr ""
+"SELECT ST_AsSVG('MULTISURFACE(\n"
+"CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),\n"
+"    (-1 0,0 0.5,1 0,0 1,-1 0)),\n"
+"((7 8,10 10,6 14,4 11,7 8)))'::geometry, 0, 2);\n"
+"\n"
+"st_assvg\n"
+"---------------------------------------------------------\n"
+"M -2 0 A 1 1 0 0 0 0 0 A 1 1 0 0 0 2 0 A 2 2 0 0 0 -2 0 Z\n"
+"M -1 0 L 0 -0.5 1 0 0 -1 -1 0 Z\n"
+"M 7 -8 L 10 -10 6 -14 4 -11 Z"
 
 #. Tag: refname
 #: reference_output.xml:1235
