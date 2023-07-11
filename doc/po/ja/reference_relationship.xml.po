@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-07 05:39+0000\n"
-"PO-Revision-Date: 2023-05-15 11:08+0000\n"
+"PO-Revision-Date: 2023-07-11 05:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_relationshipxml/ja/>\n"
@@ -788,7 +788,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "In mathematical terms: <emphasis>ST_CoveredBy(A, B) ⇔ A ⋂ B = A </emphasis>"
-msgstr ""
+msgstr "数学用語では: <emphasis>ST_CoveredBy(A, B) ⇔ A ⋂ B = A </emphasis>"
 
 #. Tag: para
 #: reference_relationship.xml:370
@@ -924,7 +924,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "In mathematical terms: <emphasis>ST_Covers(A, B) ⇔ A ⋂ B = B </emphasis>"
-msgstr ""
+msgstr "数学用語では: <emphasis>ST_Covers(A, B) ⇔ A ⋂ B = B </emphasis>"
 
 #. Tag: para
 #: reference_relationship.xml:449
@@ -1104,6 +1104,12 @@ msgid ""
 "geometries must not equal either geometry. Otherwise, it returns "
 "<varname>false</varname>. The crosses relation is symmetric and irreflexive."
 msgstr ""
+"二つのジオメトリを比較して、「空間的にクロスしている」場合に<varname>TRUE</va"
+"rname>を返します。ジオメトリは内部の共通点をいくつか持っていますが、全て持っ"
+"ているわけではありません。ジオメトリの内部の共通部分は空ではなく、二つのジオ"
+"メトリの最大図形次元より小さくなければなりません。二つのジオメトリの共通部分"
+"は、入力ジオメトリのいずれとも同じであってはなりません。クロスでないなら<varn"
+"ame>FALSE</varname>を返します。クロスの関係は対称ですが無反射です。"
 
 #. Tag: para
 #: reference_relationship.xml:526
@@ -1113,6 +1119,8 @@ msgid ""
 "&lt; max( dim( Int(A) ), dim( Int(B) ) )) ∧ (A ⋂ B ≠ A) ∧ (A ⋂ B ≠ B) </"
 "emphasis>"
 msgstr ""
+"数学用語では: <emphasis>ST_Crosses(A, B) ⇔ (dim( Int(A) ⋂ Int(B) ) &lt; max( "
+"dim( Int(A) ), dim( Int(B) ) )) ∧ (A ⋂ B ≠ A) ∧ (A ⋂ B ≠ B) </emphasis>"
 
 #. Tag: para
 #: reference_relationship.xml:529
@@ -1147,7 +1155,7 @@ msgstr "Line/Lineの場合には<code>0********</code>"
 msgid ""
 "the result is <varname>false</varname> for Point/Point and Area/Area "
 "situations"
-msgstr ""
+msgstr "点/点の状況や面/面の状況では、結果は<varname>FALSE</varname>です"
 
 #. Tag: para
 #: reference_relationship.xml:549
@@ -1303,7 +1311,8 @@ msgstr ""
 msgid ""
 "Returns <varname>true</varname> if two geometries are disjoint. Geometries "
 "are disjoint if they have no point in common."
-msgstr ""
+msgstr "二つのジオメトリが接続されていない場合に<varname>TRUE</varname>を返します。ジ"
+"オメトリに共有点が全くない場合を指します。"
 
 #. Tag: para
 #: reference_relationship.xml:680
@@ -1313,13 +1322,16 @@ msgid ""
 "not disjoint. Disjoint implies that <xref linkend=\"ST_Intersects\"/> is "
 "false."
 msgstr ""
+"二つのジオメトリが他の空間関係がTRUEである場合には接続されていない状況にはあ"
+"りません。接続されていない場合にあｈ<xref linkend=\"ST_Intersects\""
+"/>はFALSEを返します。"
 
 #. Tag: para
 #: reference_relationship.xml:684
 #, no-c-format
 msgid ""
 "In mathematical terms: <emphasis>ST_Disjoint(A, B) ⇔ A ⋂ B = ∅ </emphasis>"
-msgstr ""
+msgstr "数学用語では: <emphasis>ST_Disjoint(A, B) ⇔ A ⋂ B = ∅ </emphasis>"
 
 #. Tag: para
 #: reference_relationship.xml:693
@@ -1413,12 +1425,18 @@ msgid ""
 "ST_OrderingEquals is a little more stringent than simply verifying order of "
 "points are the same)."
 msgstr ""
+"ジオメトリが「トポロジ的に等価である」場合に<varname>TRUE</varname>を返します"
+"。'='より良い答を得るのに使います。トポロジ的に等価であるとは、ジオメトリが同"
+"じ図形次元で、点集合が同じ空間を占めていることを指します。頂点の順位が同じで"
+"なくても構いません。ポイントの順序の確認には一貫して<xref linkend="
+"\"ST_OrderingEquals\"/>を使います (ST_OrderingEqualsは、単純なポイントの順序"
+"が同じであるかを確認するより多少厳しいです)。"
 
 #. Tag: para
 #: reference_relationship.xml:747
 #, no-c-format
 msgid "In mathematical terms: <emphasis>ST_Equals(A, B) ⇔ A = B </emphasis>"
-msgstr ""
+msgstr "数学用語では: <emphasis>ST_Equals(A, B) ⇔ A = B </emphasis>"
 
 #. Tag: para
 #: reference_relationship.xml:750
@@ -1427,6 +1445,8 @@ msgid ""
 "The following relation holds: <emphasis>ST_Equals(A, B) ⇔ ST_Within(A,B) ∧ "
 "ST_Within(B,A) </emphasis>"
 msgstr ""
+"次の関係が成り立ちます: <emphasis>ST_Equals(A, B) ⇔ ST_Within(A,B) ∧ "
+"ST_Within(B,A) </emphasis>"
 
 #. Tag: para
 #: reference_relationship.xml:757
@@ -1533,7 +1553,8 @@ msgstr ""
 msgid ""
 "Returns <varname>true</varname> if two geometries intersect. Geometries "
 "intersect if they have any point in common."
-msgstr ""
+msgstr "二つのジオメトリがインタセクトする場合に<varname>TRUE</varname>を返します。任"
+"意の共有点を持つ場合を指します。"
 
 #. Tag: para
 #: reference_relationship.xml:815
@@ -1550,7 +1571,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "In mathematical terms: <emphasis>ST_Intersects(A, B) ⇔ A ⋂ B ≠ ∅ </emphasis>"
-msgstr ""
+msgstr "数学用語では: <emphasis>ST_Intersects(A, B) ⇔ A ⋂ B ≠ ∅ </emphasis>"
 
 #. Tag: para
 #: reference_relationship.xml:822
@@ -2118,6 +2139,11 @@ msgid ""
 "equivalently, neither one covers the other). The overlaps relation is "
 "symmetric and irreflexive."
 msgstr ""
+"ジオメトリAとBが「空間的にオーバラップする」場合にTRUEを返します。ジオメトリ"
+"が同じ次元で、内部のインタセクションも同じ次元で、"
+"少なくとも一つの点がもう一方の外側にある (一方がもう一方を覆っている状態でな"
+"いのと等価です)と、二つのジオメトリがオーバラップしていると言います。オーバラ"
+"ップの関係は、対称性があり、無反射性があります。"
 
 #. Tag: para
 #: reference_relationship.xml:1050
@@ -2126,6 +2152,8 @@ msgid ""
 "In mathematical terms: <emphasis>ST_Overlaps(A, B) ⇔ ( dim(A) = dim(B) = "
 "dim( Int(A) ⋂ Int(B) )) ∧ (A ⋂ B ≠ A) ∧ (A ⋂ B ≠ B) </emphasis>"
 msgstr ""
+"数学用語では: <emphasis>ST_Overlaps(A, B) ⇔ ( dim(A) = dim(B) = dim( Int(A) ⋂"
+" Int(B) )) ∧ (A ⋂ B ≠ A) ∧ (A ⋂ B ≠ B) </emphasis>"
 
 #. Tag: para
 #: reference_relationship.xml:1053
@@ -2892,6 +2920,8 @@ msgid ""
 "In mathematical terms: <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) ≠ ∅) ∧ "
 "(A ⋂ B ≠ ∅) </emphasis>"
 msgstr ""
+"数学用語では: <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) ≠ ∅) ∧ (A ⋂ B ≠ "
+"∅) </emphasis>"
 
 #. Tag: para
 #: reference_relationship.xml:1402
@@ -3036,6 +3066,8 @@ msgid ""
 "In mathematical terms: <emphasis>ST_Within(A, B) ⇔ (A ⋂ B = A) ∧ (Int(A) ⋂ "
 "Int(B) ≠ ∅) </emphasis>"
 msgstr ""
+"数学用語では: <emphasis>ST_Within(A, B) ⇔ (A ⋂ B = A) ∧ (Int(A) ⋂ Int(B) ≠ ∅)"
+" </emphasis>"
 
 #. Tag: para
 #: reference_relationship.xml:1544
@@ -3046,6 +3078,11 @@ msgid ""
 "<code>ST_Within(B,A) = true</code>, then the two geometries must be "
 "topologically equal (<code>ST_Equals(A,B) = true</code>)."
 msgstr ""
+"内にある、という関係性には反射性があります。全てのジオメトリは、自分の内にあ"
+"ると言えます。また、非対称性を持ちます。<code>ST_Within(A,B) = "
+"true</code>かつ<code>ST_Within(B,A) = true</code>の場合には、"
+"二つのジオメトリは必ずトポロジ的に等価 (<code>ST_Equals(A,B) = "
+"true</code>)になります。"
 
 #. Tag: para
 #: reference_relationship.xml:1548
