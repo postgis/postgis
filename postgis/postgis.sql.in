@@ -4441,9 +4441,9 @@ CREATE OR REPLACE FUNCTION ST_CoverageSimplify (geom geometry, tolerance float8,
 	_COST_HIGH;
 
 -- Availability: 3.4.0
-CREATE OR REPLACE FUNCTION ST_CoverageInvalidLocations (geom geometry, tolerance float8 default 0.0)
+CREATE OR REPLACE FUNCTION ST_CoverageInvalidEdges (geom geometry, tolerance float8 default 0.0)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'ST_CoverageInvalidLocations'
+	AS 'MODULE_PATHNAME', 'ST_CoverageInvalidEdges'
 	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
 	_COST_HIGH;
 

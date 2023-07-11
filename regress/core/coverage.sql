@@ -3,7 +3,7 @@ CREATE TABLE coverage (id integer, seq integer, geom geometry);
 
 SELECT 'empty table a' AS test,
   id, ST_AsText(GEOM) AS input,
-  ST_AsText(ST_CoverageInvalidLocations(geom) OVER (partition by id)) AS invalid,
+  ST_AsText(ST_CoverageInvalidEdges(geom) OVER (partition by id)) AS invalid,
   ST_AsText(ST_CoverageSimplify(geom, 1.0) OVER (partition by id)) AS simple
 FROM coverage
 ORDER BY id, seq;
@@ -18,7 +18,7 @@ INSERT INTO coverage VALUES
 
 SELECT 'one partition a' AS test,
   id, seq, ST_AsText(GEOM) AS input,
-  ST_AsText(ST_CoverageInvalidLocations(geom) OVER (partition by id)) AS invalid,
+  ST_AsText(ST_CoverageInvalidEdges(geom) OVER (partition by id)) AS invalid,
   ST_AsText(ST_CoverageSimplify(geom, 1.0) OVER (partition by id)) AS simple
 FROM coverage
 ORDER BY id, seq;
@@ -31,7 +31,7 @@ INSERT INTO coverage VALUES
 
 SELECT 'two partition a' AS test,
   id, seq, ST_AsText(geom) AS input,
-  ST_AsText(ST_CoverageInvalidLocations(geom) OVER (partition by id)) AS invalid,
+  ST_AsText(ST_CoverageInvalidEdges(geom) OVER (partition by id)) AS invalid,
   ST_AsText(ST_CoverageSimplify(geom, 1.0) OVER (partition by id)) AS simple
 FROM coverage
 ORDER BY id, seq;
@@ -43,7 +43,7 @@ INSERT INTO coverage VALUES
 
 SELECT 'three partition a' AS test,
   id, seq, ST_AsText(geom) AS input,
-  ST_AsText(ST_CoverageInvalidLocations(geom) OVER (partition by id)) AS invalid,
+  ST_AsText(ST_CoverageInvalidEdges(geom) OVER (partition by id)) AS invalid,
   ST_AsText(ST_CoverageSimplify(geom, 1.0) OVER (partition by id)) AS simple
 FROM coverage
 ORDER BY id, seq;
