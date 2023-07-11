@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-07 05:39+0000\n"
-"PO-Revision-Date: 2023-05-15 11:08+0000\n"
+"PO-Revision-Date: 2023-07-11 05:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_editorxml/ja/>\n"
@@ -2207,7 +2207,7 @@ msgstr ""
 #: reference_editor.xml:962
 #, no-c-format
 msgid "ST_LineExtend"
-msgstr ""
+msgstr "ST_LineExtend"
 
 #. Tag: refpurpose
 #: reference_editor.xml:964
@@ -2215,7 +2215,7 @@ msgstr ""
 msgid ""
 "Returns a line with the last and first segments extended the specified "
 "distance(s)."
-msgstr ""
+msgstr "最後の辺と最初の辺を指定した距離だけ延長されたラインを返します。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:969
@@ -2227,6 +2227,11 @@ msgid ""
 "paramdef> <paramdef choice=\"opt\"><type>float</type> "
 "<parameter>distance_backward=0.0</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_LineExtend</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>distance_forward</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>float</type> "
+"<parameter>distance_backward=0.0</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:983
@@ -2238,18 +2243,21 @@ msgid ""
 "are used to determine the direction of projection, duplicate points are "
 "ignored."
 msgstr ""
+"最後の辺と最初の辺を指定した距離だけ延長されたラインを返します。距離が0の時は"
+"延長されません。非負の距離だけが許されます。ラインの最初 (と最後)の二つの異な"
+"るポイントで延長する方向を決めます。重複するポイントは無視します。"
 
 #. Tag: para
 #: reference_editor.xml:985
 #, no-c-format
 msgid "Availability: 3.4.0"
-msgstr ""
+msgstr "Availability: 3.4.0"
 
 #. Tag: title
 #: reference_editor.xml:990 reference_editor.xml:1145
 #, no-c-format
 msgid "Example: Projected point at 100,000 meters and bearing 45 degrees"
-msgstr ""
+msgstr "例: 100,000メートル、方位45度で計算されるポイント"
 
 #. Tag: programlisting
 #: reference_editor.xml:992 reference_editor.xml:1147
@@ -2260,12 +2268,16 @@ msgid ""
 "--------------------------------------------\n"
 " POINT(0.635231029125537 0.639472334729198)"
 msgstr ""
+"SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, radians(45.0)));"
+"\n"
+"--------------------------------------------\n"
+" POINT(0.635231029125537 0.639472334729198)"
 
 #. Tag: para
 #: reference_editor.xml:998
 #, no-c-format
 msgid ", <xref linkend=\"ST_Project\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Project\"/>"
 
 #. Tag: refname
 #: reference_editor.xml:1024
@@ -2364,7 +2376,7 @@ msgstr "<para>,</para>"
 #: reference_editor.xml:1072
 #, no-c-format
 msgid "ST_Project"
-msgstr ""
+msgstr "ST_Project"
 
 #. Tag: refpurpose
 #: reference_editor.xml:1074
@@ -2372,7 +2384,7 @@ msgstr ""
 msgid ""
 "Returns a point projected from a start point by a distance and bearing "
 "(azimuth)."
-msgstr ""
+msgstr "始点から距離と方位で算出されたポイントを返します。"
 
 #. Tag: funcsynopsis
 #: reference_editor.xml:1078
@@ -2397,6 +2409,24 @@ msgid ""
 "<paramdef><type>float </type> <parameter>distance</parameter></paramdef> </"
 "funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_Project</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>distance</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>azimuth</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_Project</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>g1</parameter></paramdef> <paramdef><type>geometry </type> "
+"<parameter>g2</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>distance</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>geography <function>ST_Project</function></funcdef> "
+"<paramdef><type>geography </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>distance</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>azimuth</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geography "
+"<function>ST_Project</function></funcdef> <paramdef><type>geography </type> "
+"<parameter>g1</parameter></paramdef> <paramdef><type>geography </type> "
+"<parameter>g2</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>distance</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_editor.xml:1125
@@ -2404,7 +2434,8 @@ msgstr ""
 msgid ""
 "Returns a point projected from a point along a geodesic using a given "
 "distance and azimuth (bearing). This is known as the direct geodesic problem."
-msgstr ""
+msgstr "始点から測地線に沿って与えられた距離と方位で算出されたポイントを返します。測"
+"地問題と言われるものです。"
 
 #. Tag: para
 #: reference_editor.xml:1126
@@ -2412,13 +2443,14 @@ msgstr ""
 msgid ""
 "The two-point version uses the path from the first to the second point to "
 "implicitly define the azimuth and uses the distance as before."
-msgstr ""
+msgstr "2ポイント版は、方位を黙示的に定義するために一つ目のポイントから二つ目のポイン"
+"トに向かう線を使い、距離は以前と同様に使います。"
 
 #. Tag: para
 #: reference_editor.xml:1127
 #, no-c-format
 msgid "The distance is given in meters. Negative values are supported."
-msgstr ""
+msgstr "距離はメートルで与えます。負数に対応しています。"
 
 #. Tag: para
 #: reference_editor.xml:1128
@@ -2426,31 +2458,32 @@ msgstr ""
 msgid ""
 "The azimuth (also known as heading or bearing) is given in radians. It is "
 "measured clockwise from true north."
-msgstr ""
+msgstr "方位はラジアンで与えます。真北 (方位 0)から時計回りに増えます。 "
+"真北から時計回りに数えます。"
 
 #. Tag: para
 #: reference_editor.xml:1131
 #, no-c-format
 msgid "North is azimuth zero (0 degrees)"
-msgstr ""
+msgstr "北は方位ゼロ (0度)です"
 
 #. Tag: para
 #: reference_editor.xml:1132
 #, no-c-format
 msgid "East is azimuth &#x03C0;/2 (90 degrees)"
-msgstr ""
+msgstr "東は方位 &#x03C0;/2 (90度)です"
 
 #. Tag: para
 #: reference_editor.xml:1133
 #, no-c-format
 msgid "South is azimuth &#x03C0; (180 degrees)"
-msgstr ""
+msgstr "南は方位 &#x03C0; (180度)です"
 
 #. Tag: para
 #: reference_editor.xml:1134
 #, no-c-format
 msgid "West is azimuth 3&#x03C0;/2 (270 degrees)"
-msgstr ""
+msgstr "西は方位 3&#x03C0;/2 (270度)です"
 
 #. Tag: para
 #: reference_editor.xml:1136
@@ -2458,20 +2491,20 @@ msgstr ""
 msgid ""
 "Negative azimuth values and values greater than 2&#x03C0; (360 degrees) are "
 "supported."
-msgstr ""
+msgstr "負の方位値と2&#x03C0; (360度)を超える値に対応しています。"
 
 #. Tag: para
 #: reference_editor.xml:1139
 #, no-c-format
 msgid "Enhanced: 2.4.0 Allow negative distance and non-normalized azimuth."
-msgstr ""
+msgstr "Enhanced: 2.4.0 負の距離と非正規化方位を許容するようになりました。"
 
 #. Tag: para
 #: reference_editor.xml:1140
 #, no-c-format
 msgid ""
 "Enhanced: 3.4.0 Allow geometry arguments and two-point form omitting azimuth."
-msgstr ""
+msgstr "Enhanced: 3.4.0 ジオメトリ引数と、azimuthを省略した2ポイント形式を許します。"
 
 #. Tag: para
 #: reference_editor.xml:1153
@@ -2481,6 +2514,9 @@ msgid ""
 "docs/current/interactive/functions-math.html\">PostgreSQL function "
 "radians()</ulink>"
 msgstr ""
+", <xref linkend=\"ST_Distance\"/>, <ulink url=\"http://www.postgresql.org/"
+"docs/current/interactive/functions-math.html\">PostgreSQL function "
+"radians()</ulink>"
 
 #. Tag: refname
 #: reference_editor.xml:1160
