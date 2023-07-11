@@ -1532,16 +1532,6 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 	/* If there's no useful features, we can't work out stats */
 	if ( ! notnull_cnt )
 	{
-#if POSTGIS_DEBUG_LEVEL > 0
-		Oid relation_oid = stats->attr->attrelid;
-		char *relation_name = get_rel_name(relation_oid);
-		char *namespace = get_namespace_name(get_rel_namespace(relation_oid));
-		elog(DEBUG1,
-		     "PostGIS: Unable to compute statistics for \"%s.%s.%s\": No non-null/empty features",
-		     namespace ? namespace : "(NULL)",
-		     relation_name ? relation_name : "(NULL)",
-		     stats->attr->attname.data);
-#endif /* POSTGIS_DEBUG_LEVEL > 0 */
 		stats->stats_valid = false;
 		return;
 	}
