@@ -22,7 +22,20 @@ pipeline:
       - ../configure --without-pg
       - make postgis_revision.h
     when:
-      path: *when_path
+      path:
+        include:
+          # Common docs path
+          # related config files
+          - ".woodpecker/docs.yml"
+          # Makefiles
+          - "doc/Makefile.in"
+          # XML sources
+          - "doc/*.xml"
+          # Internationalization Makefiles
+          - "doc/po/Makefile.local"
+          # Localized assets
+          - "doc/po/*/Makefile.in"
+          - "doc/po/*/*.po"
   check-xml:
     image: *test_image
     commands:
