@@ -22,7 +22,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<html>
 		<head>
 			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-			<title>PostGIS Raster Cheat Sheet</title>
+			<title>PostGIS Raster Cheatsheet</title>
 
 <!-- TODO: share a parametrizable stylecheet -->
 			<style type="text/css">

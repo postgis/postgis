@@ -57,11 +57,11 @@
 
 			<xsl:variable name="col_cur"><xsl:value-of select="count(current()//funcprototype) + count(preceding-sibling::*//funcprototype)"/></xsl:variable>
 
+<!--
 			<xsl:if test="$col_cur &gt;$col_func_count and count(preceding-sibling::*//funcprototype) &lt; $col_func_count ">
-				<![CDATA[
 					</div><div id="content_functions_right">
-				]]>
 			</xsl:if>
+-->
 
 			<!--Beginning of section -->
 			<table class="section"><tr><th colspan="2"><xsl:value-of select="title" />
