@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-12 18:27+0000\n"
-"PO-Revision-Date: 2023-07-12 18:26+0000\n"
+"PO-Revision-Date: 2023-07-12 19:14+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_measurexml/it/>\n"
@@ -430,7 +430,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_measure.xml:165
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>float <function>ST_Angle</function></funcdef> "
 "<paramdef><type>geometry </type><parameter>point1</parameter></paramdef> "
@@ -442,13 +442,6 @@ msgid ""
 "type><parameter>line1</parameter></paramdef> <paramdef><type>geometry </"
 "type><parameter>line2</parameter></paramdef> </funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>float <function>ST_Azimuth</function></funcdef> "
-"<paramdef><type>geometry </type><parameter>pointA</parameter></paramdef> "
-"<paramdef><type>geometry </type><parameter>pointB</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>float <function>ST_Azimuth</"
-"function></funcdef> <paramdef><type>geography </type><parameter>pointA</"
-"parameter></paramdef> <paramdef><type>geography </type><parameter>pointB</"
-"parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_measure.xml:183
@@ -539,7 +532,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_measure.xml:208
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT degrees( ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, "
 "0.2 0.5, 1 0)') );\n"
@@ -548,12 +541,6 @@ msgid ""
 "--------------\n"
 "           45"
 msgstr ""
-"postgis=# SELECT st_hausdorffdistance('LINESTRING (130 0, 0 0, 0 150)'::"
-"geometry, 'LINESTRING (10 10, 10 150, 130 10)'::geometry, 0.5);\n"
-" st_hausdorffdistance\n"
-" ----------------------\n"
-"                                        70\n"
-"(1 row)"
 
 #. Tag: refname
 #: reference_measure.xml:221
