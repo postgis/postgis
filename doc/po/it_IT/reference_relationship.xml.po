@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-07 05:39+0000\n"
+"POT-Creation-Date: 2023-07-09 16:49+0000\n"
 "PO-Revision-Date: 2022-01-19 10:14+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
@@ -60,16 +60,16 @@ msgstr ""
 
 #. Tag: title
 #: reference_relationship.xml:37 reference_relationship.xml:89
-#: reference_relationship.xml:282 reference_relationship.xml:359
-#: reference_relationship.xml:438 reference_relationship.xml:514
-#: reference_relationship.xml:674 reference_relationship.xml:736
-#: reference_relationship.xml:810 reference_relationship.xml:890
-#: reference_relationship.xml:997 reference_relationship.xml:1040
-#: reference_relationship.xml:1183 reference_relationship.xml:1335
-#: reference_relationship.xml:1391 reference_relationship.xml:1529
-#: reference_relationship.xml:1628 reference_relationship.xml:1689
-#: reference_relationship.xml:1745 reference_relationship.xml:1810
-#: reference_relationship.xml:1875
+#: reference_relationship.xml:285 reference_relationship.xml:366
+#: reference_relationship.xml:445 reference_relationship.xml:521
+#: reference_relationship.xml:681 reference_relationship.xml:743
+#: reference_relationship.xml:817 reference_relationship.xml:897
+#: reference_relationship.xml:1004 reference_relationship.xml:1047
+#: reference_relationship.xml:1190 reference_relationship.xml:1342
+#: reference_relationship.xml:1398 reference_relationship.xml:1536
+#: reference_relationship.xml:1635 reference_relationship.xml:1696
+#: reference_relationship.xml:1752 reference_relationship.xml:1817
+#: reference_relationship.xml:1882
 #, no-c-format
 msgid "Description"
 msgstr "Descrizione"
@@ -84,9 +84,9 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:42 reference_relationship.xml:554
-#: reference_relationship.xml:835 reference_relationship.xml:1637
-#: reference_relationship.xml:1697 reference_relationship.xml:1753
+#: reference_relationship.xml:42 reference_relationship.xml:561
+#: reference_relationship.xml:842 reference_relationship.xml:1644
+#: reference_relationship.xml:1704 reference_relationship.xml:1760
 #, no-c-format
 msgid "&index_aware;"
 msgstr ""
@@ -98,28 +98,28 @@ msgid "Changed: 3.0.0 SFCGAL backend removed, GEOS backend supports TINs."
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:45 reference_relationship.xml:1348
-#: reference_relationship.xml:1644 reference_relationship.xml:1699
+#: reference_relationship.xml:45 reference_relationship.xml:1355
+#: reference_relationship.xml:1651 reference_relationship.xml:1706
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr "Disponibilità: 2.0.0"
 
 #. Tag: para
-#: reference_relationship.xml:47 reference_relationship.xml:1639
-#: reference_relationship.xml:1700
+#: reference_relationship.xml:47 reference_relationship.xml:1646
+#: reference_relationship.xml:1707
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
 #. Tag: para
-#: reference_relationship.xml:49 reference_relationship.xml:1641
-#: reference_relationship.xml:1702
+#: reference_relationship.xml:49 reference_relationship.xml:1648
+#: reference_relationship.xml:1709
 #, no-c-format
 msgid "&P_support;"
 msgstr "&P_support;"
 
 #. Tag: para
-#: reference_relationship.xml:50 reference_relationship.xml:856
+#: reference_relationship.xml:50 reference_relationship.xml:863
 #, no-c-format
 msgid "&T_support;"
 msgstr "&T_support;"
@@ -131,7 +131,7 @@ msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1"
 msgstr ""
 
 #. Tag: title
-#: reference_relationship.xml:54 reference_relationship.xml:859
+#: reference_relationship.xml:54 reference_relationship.xml:866
 #, no-c-format
 msgid "Geometry Examples"
 msgstr ""
@@ -167,16 +167,16 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_relationship.xml:62 reference_relationship.xml:255
-#: reference_relationship.xml:322 reference_relationship.xml:402
-#: reference_relationship.xml:489 reference_relationship.xml:646
-#: reference_relationship.xml:713 reference_relationship.xml:769
-#: reference_relationship.xml:867 reference_relationship.xml:974
-#: reference_relationship.xml:1017 reference_relationship.xml:1142
-#: reference_relationship.xml:1303 reference_relationship.xml:1363
-#: reference_relationship.xml:1593 reference_relationship.xml:1654
-#: reference_relationship.xml:1712 reference_relationship.xml:1764
-#: reference_relationship.xml:1849 reference_relationship.xml:1896
+#: reference_relationship.xml:62 reference_relationship.xml:258
+#: reference_relationship.xml:329 reference_relationship.xml:409
+#: reference_relationship.xml:496 reference_relationship.xml:653
+#: reference_relationship.xml:720 reference_relationship.xml:776
+#: reference_relationship.xml:874 reference_relationship.xml:981
+#: reference_relationship.xml:1024 reference_relationship.xml:1149
+#: reference_relationship.xml:1310 reference_relationship.xml:1370
+#: reference_relationship.xml:1600 reference_relationship.xml:1661
+#: reference_relationship.xml:1719 reference_relationship.xml:1771
+#: reference_relationship.xml:1856 reference_relationship.xml:1903
 #, no-c-format
 msgid "See Also"
 msgstr "Si veda anche"
@@ -218,6 +218,14 @@ msgstr ""
 #: reference_relationship.xml:97
 #, no-c-format
 msgid ""
+"In mathematical terms: <emphasis>ST_Contains(A, B) ⇔ (A ⋂ B = B) ∧ (Int(A) ⋂ "
+"Int(B) ≠ ∅) </emphasis>"
+msgstr ""
+
+#. Tag: para
+#: reference_relationship.xml:100
+#, no-c-format
+msgid ""
 "The contains relationship is reflexive: every geometry contains itself. (In "
 "contrast, in the <xref linkend=\"ST_ContainsProperly\"/> predicate a "
 "geometry does <emphasis>not</emphasis> properly contain itself.) The "
@@ -227,7 +235,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:104
+#: reference_relationship.xml:107
 #, no-c-format
 msgid ""
 "ST_Contains is the converse of <xref linkend=\"ST_Within\"/>. So, "
@@ -235,7 +243,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:107
+#: reference_relationship.xml:110
 #, no-c-format
 msgid ""
 "Because the interiors must have a common point, a subtlety of the definition "
@@ -247,7 +255,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:113
+#: reference_relationship.xml:116
 #, no-c-format
 msgid ""
 "&index_aware; To avoid index use, use the function <function>_ST_Contains</"
@@ -255,16 +263,16 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:116 reference_relationship.xml:387
-#: reference_relationship.xml:468 reference_relationship.xml:691
-#: reference_relationship.xml:1056 reference_relationship.xml:1261
-#: reference_relationship.xml:1346 reference_relationship.xml:1560
+#: reference_relationship.xml:119 reference_relationship.xml:394
+#: reference_relationship.xml:475 reference_relationship.xml:698
+#: reference_relationship.xml:1063 reference_relationship.xml:1268
+#: reference_relationship.xml:1353 reference_relationship.xml:1567
 #, no-c-format
 msgid "Performed by the GEOS module"
 msgstr "Eseguito dal modulo GEOS"
 
 #. Tag: para
-#: reference_relationship.xml:117 reference_relationship.xml:839
+#: reference_relationship.xml:120 reference_relationship.xml:846
 #, no-c-format
 msgid ""
 "Enhanced: 2.3.0 Enhancement to PIP short-circuit extended to support "
@@ -272,21 +280,21 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:120 reference_relationship.xml:307
-#: reference_relationship.xml:381 reference_relationship.xml:461
-#: reference_relationship.xml:557 reference_relationship.xml:688
-#: reference_relationship.xml:754 reference_relationship.xml:1059
-#: reference_relationship.xml:1264 reference_relationship.xml:1423
-#: reference_relationship.xml:1565
+#: reference_relationship.xml:123 reference_relationship.xml:314
+#: reference_relationship.xml:388 reference_relationship.xml:468
+#: reference_relationship.xml:564 reference_relationship.xml:695
+#: reference_relationship.xml:761 reference_relationship.xml:1066
+#: reference_relationship.xml:1271 reference_relationship.xml:1430
+#: reference_relationship.xml:1572
 #, no-c-format
 msgid ""
 "Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:124 reference_relationship.xml:311
-#: reference_relationship.xml:385 reference_relationship.xml:465
-#: reference_relationship.xml:1569
+#: reference_relationship.xml:127 reference_relationship.xml:318
+#: reference_relationship.xml:392 reference_relationship.xml:472
+#: reference_relationship.xml:1576
 #, no-c-format
 msgid ""
 "Do not use this function with invalid geometries. You will get unexpected "
@@ -294,10 +302,10 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:127 reference_relationship.xml:390
-#: reference_relationship.xml:474 reference_relationship.xml:699
-#: reference_relationship.xml:847 reference_relationship.xml:1062
-#: reference_relationship.xml:1572
+#: reference_relationship.xml:130 reference_relationship.xml:397
+#: reference_relationship.xml:481 reference_relationship.xml:706
+#: reference_relationship.xml:854 reference_relationship.xml:1069
+#: reference_relationship.xml:1579
 #, no-c-format
 msgid ""
 "NOTE: this is the \"allowable\" version that returns a boolean, not an "
@@ -305,7 +313,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:130
+#: reference_relationship.xml:133
 #, no-c-format
 msgid ""
 "&sfs_compliant; s2.1.1.2 // s2.1.13.3 - same as within(geometry B, geometry "
@@ -313,28 +321,28 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:132
+#: reference_relationship.xml:135
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.31"
 msgstr ""
 
 #. Tag: title
-#: reference_relationship.xml:137 reference_relationship.xml:317
-#: reference_relationship.xml:397 reference_relationship.xml:481
-#: reference_relationship.xml:565 reference_relationship.xml:707
-#: reference_relationship.xml:763 reference_relationship.xml:926
-#: reference_relationship.xml:1012 reference_relationship.xml:1070
-#: reference_relationship.xml:1271 reference_relationship.xml:1353
-#: reference_relationship.xml:1431 reference_relationship.xml:1582
-#: reference_relationship.xml:1648 reference_relationship.xml:1707
-#: reference_relationship.xml:1759 reference_relationship.xml:1844
-#: reference_relationship.xml:1889
+#: reference_relationship.xml:140 reference_relationship.xml:324
+#: reference_relationship.xml:404 reference_relationship.xml:488
+#: reference_relationship.xml:572 reference_relationship.xml:714
+#: reference_relationship.xml:770 reference_relationship.xml:933
+#: reference_relationship.xml:1019 reference_relationship.xml:1077
+#: reference_relationship.xml:1278 reference_relationship.xml:1360
+#: reference_relationship.xml:1438 reference_relationship.xml:1589
+#: reference_relationship.xml:1655 reference_relationship.xml:1714
+#: reference_relationship.xml:1766 reference_relationship.xml:1851
+#: reference_relationship.xml:1896
 #, no-c-format
 msgid "Examples"
 msgstr "Esempi"
 
 #. Tag: para
-#: reference_relationship.xml:139
+#: reference_relationship.xml:142
 #, no-c-format
 msgid ""
 "<function>ST_Contains</function> returns <varname>TRUE</varname> in the "
@@ -342,33 +350,33 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:151
+#: reference_relationship.xml:154
 #, no-c-format
 msgid "<varname>LINESTRING</varname> / <varname>MULTIPOINT</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:161 reference_relationship.xml:1495
+#: reference_relationship.xml:164 reference_relationship.xml:1502
 #, no-c-format
 msgid "<varname>POLYGON</varname> / <varname>POINT</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:172 reference_relationship.xml:212
-#: reference_relationship.xml:243 reference_relationship.xml:1464
+#: reference_relationship.xml:175 reference_relationship.xml:215
+#: reference_relationship.xml:246 reference_relationship.xml:1471
 #, no-c-format
 msgid "<varname>POLYGON</varname> / <varname>LINESTRING</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:182 reference_relationship.xml:1099
-#: reference_relationship.xml:1444 reference_relationship.xml:1454
+#: reference_relationship.xml:185 reference_relationship.xml:1106
+#: reference_relationship.xml:1451 reference_relationship.xml:1461
 #, no-c-format
 msgid "<varname>POLYGON</varname> / <varname>POLYGON</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:190
+#: reference_relationship.xml:193
 #, no-c-format
 msgid ""
 "<function>ST_Contains</function> returns <varname>FALSE</varname> in the "
@@ -376,13 +384,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:202
+#: reference_relationship.xml:205
 #, no-c-format
 msgid "<varname>POLYGON</varname> / <varname>MULTIPOINT</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:220
+#: reference_relationship.xml:223
 #, no-c-format
 msgid ""
 "Due to the interior intersection condition <function>ST_Contains</function> "
@@ -391,13 +399,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:233
+#: reference_relationship.xml:236
 #, no-c-format
 msgid "<varname>LINESTRING</varname> / <varname>POINT</varname>"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:251
+#: reference_relationship.xml:254
 #, no-c-format
 msgid ""
 "-- A circle within a circle\n"
@@ -437,7 +445,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:256
+#: reference_relationship.xml:259
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ContainsProperly\"/>, <xref linkend=\"ST_Covers\"/>, "
@@ -446,19 +454,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_relationship.xml:262
+#: reference_relationship.xml:265
 #, no-c-format
 msgid "ST_ContainsProperly"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_relationship.xml:264
+#: reference_relationship.xml:267
 #, no-c-format
 msgid "Tests if every point of B lies in the interior of A"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_relationship.xml:269
+#: reference_relationship.xml:272
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_ContainsProperly</function></funcdef> "
@@ -467,30 +475,37 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:284
+#: reference_relationship.xml:287
 #, no-c-format
 msgid ""
-"Returns <varname>true</varname> if every point of B lies inside A (or "
-"equivalently, no point of B lies in the the boundary or exterior of A)."
+"Returns <varname>true</varname> if every point of B lies in the interior of "
+"A (or equivalently, no point of B lies in the the boundary or exterior of A)."
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:287
+#: reference_relationship.xml:290
+#, no-c-format
+msgid ""
+"In mathematical terms: <emphasis>ST_ContainsProperly(A, B) ⇔ Int(A) ⋂ B = B "
+"</emphasis>"
+msgstr ""
+
+#. Tag: para
+#: reference_relationship.xml:293
+#, no-c-format
+msgid ""
+"A contains B properly if the DE-9IM Intersection Matrix for the two "
+"geometries matches [T**FF*FF*]"
+msgstr ""
+
+#. Tag: para
+#: reference_relationship.xml:296
 #, no-c-format
 msgid "A does not properly contain itself, but does contain itself."
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:288
-#, no-c-format
-msgid ""
-"Every point of the other geometry is a point of this geometry's interior. "
-"The DE-9IM Intersection Matrix for the two geometries matches [T**FF*FF*] "
-"used in <xref linkend=\"ST_Relate\"/>"
-msgstr ""
-
-#. Tag: para
-#: reference_relationship.xml:291
+#: reference_relationship.xml:298
 #, no-c-format
 msgid ""
 "A use for this predicate is computing the intersections of a set of "
@@ -501,7 +516,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:296
+#: reference_relationship.xml:303
 #, no-c-format
 msgid ""
 "&index_aware; To avoid index use, use the function "
@@ -509,7 +524,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:300
+#: reference_relationship.xml:307
 #, no-c-format
 msgid ""
 "The advantage of this predicate over <xref linkend=\"ST_Contains\"/> and "
@@ -518,19 +533,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:303
+#: reference_relationship.xml:310
 #, no-c-format
 msgid "Performed by the GEOS module."
 msgstr "Eseguito dal modulo GEOS."
 
 #. Tag: para
-#: reference_relationship.xml:304
+#: reference_relationship.xml:311
 #, no-c-format
 msgid "Availability: 1.4.0"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:318
+#: reference_relationship.xml:325
 #, no-c-format
 msgid ""
 "--a circle within a circle\n"
@@ -570,7 +585,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:323
+#: reference_relationship.xml:330
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_Contains\"/>, <xref "
@@ -580,19 +595,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_relationship.xml:329
+#: reference_relationship.xml:336
 #, no-c-format
 msgid "ST_CoveredBy"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_relationship.xml:331
+#: reference_relationship.xml:338
 #, no-c-format
 msgid "Tests if every point of A lies in B"
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_relationship.xml:335
+#: reference_relationship.xml:342
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_CoveredBy</function></funcdef> "
@@ -605,7 +620,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:361
+#: reference_relationship.xml:368
 #, no-c-format
 msgid ""
 "Returns <varname>true</varname> if every point in Geometry/Geography A lies "
@@ -614,14 +629,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:367
+#: reference_relationship.xml:374
 #, no-c-format
 msgid ""
 "In mathematical terms: <emphasis>ST_CoveredBy(A, B) ⇔ A ⋂ B = A </emphasis>"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:370
+#: reference_relationship.xml:377
 #, no-c-format
 msgid ""
 "ST_CoveredBy is the converse of <xref linkend=\"ST_Covers\"/>. So, "
@@ -629,7 +644,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:373
+#: reference_relationship.xml:380
 #, no-c-format
 msgid ""
 "Generally this function should be used instead of <xref "
@@ -638,7 +653,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:377
+#: reference_relationship.xml:384
 #, no-c-format
 msgid ""
 "&index_aware; To avoid index use, use the function <function>_ST_CoveredBy</"
@@ -646,19 +661,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:388 reference_relationship.xml:472
+#: reference_relationship.xml:395 reference_relationship.xml:479
 #, no-c-format
 msgid "Availability: 1.2.2"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:393 reference_relationship.xml:477
+#: reference_relationship.xml:400 reference_relationship.xml:484
 #, no-c-format
 msgid "Not an OGC standard, but Oracle has it too."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:398
+#: reference_relationship.xml:405
 #, no-c-format
 msgid ""
 "--a circle coveredby a circle\n"
@@ -677,7 +692,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:403
+#: reference_relationship.xml:410
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Covers\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
@@ -685,19 +700,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_relationship.xml:409
+#: reference_relationship.xml:416
 #, no-c-format
 msgid "ST_Covers"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_relationship.xml:411
+#: reference_relationship.xml:418
 #, no-c-format
 msgid "Tests if every point of B lies in A"
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_relationship.xml:415
+#: reference_relationship.xml:422
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_Covers</function></funcdef> "
@@ -710,7 +725,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:440
+#: reference_relationship.xml:447
 #, no-c-format
 msgid ""
 "Returns <varname>true</varname> if every point in Geometry/Geography B lies "
@@ -719,14 +734,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:446
+#: reference_relationship.xml:453
 #, no-c-format
 msgid ""
 "In mathematical terms: <emphasis>ST_Covers(A, B) ⇔ A ⋂ B = B </emphasis>"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:449
+#: reference_relationship.xml:456
 #, no-c-format
 msgid ""
 "ST_Covers is the converse of <xref linkend=\"ST_CoveredBy\"/>. So, "
@@ -734,7 +749,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:452
+#: reference_relationship.xml:459
 #, no-c-format
 msgid ""
 "Generally this function should be used instead of <xref "
@@ -743,7 +758,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:457
+#: reference_relationship.xml:464
 #, no-c-format
 msgid ""
 "&index_aware; To avoid index use, use the function <function>_ST_Covers</"
@@ -751,7 +766,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:469
+#: reference_relationship.xml:476
 #, no-c-format
 msgid ""
 "Enhanced: 2.4.0 Support for polygon in polygon and line in polygon added for "
@@ -759,7 +774,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:470 reference_relationship.xml:1562
+#: reference_relationship.xml:477 reference_relationship.xml:1569
 #, no-c-format
 msgid ""
 "Enhanced: 2.3.0 Enhancement to PIP short-circuit for geometry extended to "
@@ -768,19 +783,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:471
+#: reference_relationship.xml:478
 #, no-c-format
 msgid "Availability: 1.5 - support for geography was introduced."
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:482
+#: reference_relationship.xml:489
 #, no-c-format
 msgid "Geometry example"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:483
+#: reference_relationship.xml:490
 #, no-c-format
 msgid ""
 "--a circle covering a circle\n"
@@ -798,13 +813,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:484
+#: reference_relationship.xml:491
 #, no-c-format
 msgid "Geeography Example"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:485
+#: reference_relationship.xml:492
 #, no-c-format
 msgid ""
 "-- a point with a 300 meter buffer compared to a point, a point and its 10 "
@@ -822,26 +837,26 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:490
+#: reference_relationship.xml:497
 #, no-c-format
 msgid ", <xref linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Within\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_relationship.xml:496
+#: reference_relationship.xml:503
 #, no-c-format
 msgid "ST_Crosses"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_relationship.xml:498
+#: reference_relationship.xml:505
 #, no-c-format
 msgid ""
 "Tests if two geometries have some, but not all, interior points in common"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_relationship.xml:503
+#: reference_relationship.xml:510
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_Crosses</function></funcdef> "
@@ -850,7 +865,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:516
+#: reference_relationship.xml:523
 #, no-c-format
 msgid ""
 "Compares two geometry objects and returns <varname>true</varname> if their "
@@ -863,7 +878,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:526
+#: reference_relationship.xml:533
 #, no-c-format
 msgid ""
 "In mathematical terms: <emphasis>ST_Crosses(A, B) ⇔ (dim( Int(A) ⋂ Int(B) ) "
@@ -872,33 +887,33 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:529
+#: reference_relationship.xml:536
 #, no-c-format
 msgid "Geometries cross if their DE-9IM Intersection Matrix matches:"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:533
+#: reference_relationship.xml:540
 #, no-c-format
 msgid ""
 "<code>T*T******</code> for Point/Line, Point/Area, and Line/Area situations"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:537
+#: reference_relationship.xml:544
 #, no-c-format
 msgid ""
 "<code>T*****T**</code> for Line/Point, Area/Point, and Area/Line situations"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:541
+#: reference_relationship.xml:548
 #, no-c-format
 msgid "<code>0********</code> for Line/Line situations"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:545
+#: reference_relationship.xml:552
 #, no-c-format
 msgid ""
 "the result is <varname>false</varname> for Point/Point and Area/Area "
@@ -906,7 +921,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:549
+#: reference_relationship.xml:556
 #, no-c-format
 msgid ""
 "The OpenGIS Simple Features Specification defines this predicate only for "
@@ -916,50 +931,50 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:560
+#: reference_relationship.xml:567
 #, no-c-format
 msgid "&sfs_compliant; s2.1.13.3"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:561
+#: reference_relationship.xml:568
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.29"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:567
+#: reference_relationship.xml:574
 #, no-c-format
 msgid "The following situations all return <varname>true</varname>."
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:579
+#: reference_relationship.xml:586
 #, no-c-format
 msgid "<varname>MULTIPOINT</varname> / <varname>LINESTRING</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:589
+#: reference_relationship.xml:596
 #, no-c-format
 msgid "<varname>MULTIPOINT</varname> / <varname>POLYGON</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:601
+#: reference_relationship.xml:608
 #, no-c-format
 msgid "<varname>LINESTRING</varname> / <varname>POLYGON</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:611 reference_relationship.xml:1091
-#: reference_relationship.xml:1475 reference_relationship.xml:1485
+#: reference_relationship.xml:618 reference_relationship.xml:1098
+#: reference_relationship.xml:1482 reference_relationship.xml:1492
 #, no-c-format
 msgid "<varname>LINESTRING</varname> / <varname>LINESTRING</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:619
+#: reference_relationship.xml:626
 #, no-c-format
 msgid ""
 "Consider a situation where a user has two tables: a table of roads and a "
@@ -967,7 +982,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:627
+#: reference_relationship.xml:634
 #, no-c-format
 msgid ""
 "CREATE TABLE roads (\n"
@@ -978,7 +993,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:631
+#: reference_relationship.xml:638
 #, no-c-format
 msgid ""
 "CREATE TABLE highways (\n"
@@ -989,14 +1004,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:638
+#: reference_relationship.xml:645
 #, no-c-format
 msgid ""
 "To determine a list of roads that cross a highway, use a query similiar to:"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:642
+#: reference_relationship.xml:649
 #, no-c-format
 msgid ""
 "SELECT roads.id\n"
@@ -1005,25 +1020,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:648
+#: reference_relationship.xml:655
 #, no-c-format
 msgid ", <xref linkend=\"ST_Overlaps\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_relationship.xml:654
+#: reference_relationship.xml:661
 #, no-c-format
 msgid "ST_Disjoint"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_relationship.xml:656
+#: reference_relationship.xml:663
 #, no-c-format
 msgid "Tests if two geometries have no points in common"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_relationship.xml:660
+#: reference_relationship.xml:667
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_Disjoint</function></funcdef> <paramdef> "
@@ -1032,7 +1047,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:676
+#: reference_relationship.xml:683
 #, no-c-format
 msgid ""
 "Returns <varname>true</varname> if two geometries are disjoint. Geometries "
@@ -1040,7 +1055,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:680
+#: reference_relationship.xml:687
 #, no-c-format
 msgid ""
 "If any other spatial relationship is true for a pair of geometries, they are "
@@ -1049,14 +1064,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:684
+#: reference_relationship.xml:691
 #, no-c-format
 msgid ""
 "In mathematical terms: <emphasis>ST_Disjoint(A, B) ⇔ A ⋂ B = ∅ </emphasis>"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:693
+#: reference_relationship.xml:700
 #, no-c-format
 msgid ""
 "This function call does not use indexes. A negated <xref "
@@ -1066,19 +1081,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:702
+#: reference_relationship.xml:709
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.2 //s2.1.13.3 - a.Relate(b, 'FF*FF****')"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:704
+#: reference_relationship.xml:711
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.26"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:709
+#: reference_relationship.xml:716
 #, no-c-format
 msgid ""
 "SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::"
@@ -1096,19 +1111,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_relationship.xml:720
+#: reference_relationship.xml:727
 #, no-c-format
 msgid "ST_Equals"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_relationship.xml:722
+#: reference_relationship.xml:729
 #, no-c-format
 msgid "Tests if two geometries include the same set of points"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_relationship.xml:727
+#: reference_relationship.xml:734
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_Equals</function></funcdef> "
@@ -1117,7 +1132,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:738
+#: reference_relationship.xml:745
 #, no-c-format
 msgid ""
 "Returns <varname>true</varname> if the given geometries are \"topologically "
@@ -1131,13 +1146,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:747
+#: reference_relationship.xml:754
 #, no-c-format
 msgid "In mathematical terms: <emphasis>ST_Equals(A, B) ⇔ A = B </emphasis>"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:750
+#: reference_relationship.xml:757
 #, no-c-format
 msgid ""
 "The following relation holds: <emphasis>ST_Equals(A, B) ⇔ ST_Within(A,B) ∧ "
@@ -1145,19 +1160,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:757
+#: reference_relationship.xml:764
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.2"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:758
+#: reference_relationship.xml:765
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.24"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:759
+#: reference_relationship.xml:766
 #, no-c-format
 msgid ""
 "Changed: 2.2.0 Returns true even for invalid geometries if they are binary "
@@ -1165,7 +1180,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:765
+#: reference_relationship.xml:772
 #, no-c-format
 msgid ""
 "SELECT ST_Equals(ST_GeomFromText('LINESTRING(0 0, 10 10)'),\n"
@@ -1184,7 +1199,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:771
+#: reference_relationship.xml:778
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_OrderingEquals\"/>, <xref linkend=\"ST_Reverse\"/>, "
@@ -1192,20 +1207,20 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_relationship.xml:779
+#: reference_relationship.xml:786
 #, no-c-format
 msgid "ST_Intersects"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_relationship.xml:781
+#: reference_relationship.xml:788
 #, no-c-format
 msgid ""
 "Tests if two geometries intersect (they have at least one point in common)"
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_relationship.xml:784
+#: reference_relationship.xml:791
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_Intersects</function></"
@@ -1218,7 +1233,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:811
+#: reference_relationship.xml:818
 #, no-c-format
 msgid ""
 "Returns <varname>true</varname> if two geometries intersect. Geometries "
@@ -1226,7 +1241,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:815
+#: reference_relationship.xml:822
 #, no-c-format
 msgid ""
 "For geography, a distance tolerance of 0.00001 meters is used (so points "
@@ -1234,45 +1249,45 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:819
+#: reference_relationship.xml:826
 #, no-c-format
 msgid ""
 "In mathematical terms: <emphasis>ST_Intersects(A, B) ⇔ A ⋂ B ≠ ∅ </emphasis>"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:822
+#: reference_relationship.xml:829
 #, no-c-format
 msgid ""
 "Geometries intersect if their DE-9IM Intersection Matrix matches one of:"
 msgstr ""
 
 #. Tag: code
-#: reference_relationship.xml:826
+#: reference_relationship.xml:833
 #, no-c-format
 msgid "T********"
 msgstr ""
 
 #. Tag: code
-#: reference_relationship.xml:827
+#: reference_relationship.xml:834
 #, no-c-format
 msgid "*T*******"
 msgstr ""
 
 #. Tag: code
-#: reference_relationship.xml:828
+#: reference_relationship.xml:835
 #, no-c-format
 msgid "***T*****"
 msgstr ""
 
 #. Tag: code
-#: reference_relationship.xml:829
+#: reference_relationship.xml:836
 #, no-c-format
 msgid "****T****"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:832
+#: reference_relationship.xml:839
 #, no-c-format
 msgid ""
 "Spatial intersection is implied by all the other spatial relationship tests, "
@@ -1281,32 +1296,32 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:837
+#: reference_relationship.xml:844
 #, no-c-format
 msgid ""
 "Changed: 3.0.0 SFCGAL version removed and native support for 2D TINS added."
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:838
+#: reference_relationship.xml:845
 #, no-c-format
 msgid "Enhanced: 2.5.0 Supports GEOMETRYCOLLECTION."
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:840
+#: reference_relationship.xml:847
 #, no-c-format
 msgid "Performed by the GEOS module (for geometry), geography is native"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:841
+#: reference_relationship.xml:848
 #, no-c-format
 msgid "Availability: 1.5 support for geography was introduced."
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:843
+#: reference_relationship.xml:850
 #, no-c-format
 msgid ""
 "For geography, this function has a distance tolerance of about 0.00001 "
@@ -1314,7 +1329,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:850
+#: reference_relationship.xml:857
 #, no-c-format
 msgid ""
 "&sfs_compliant; s2.1.1.2 //s2.1.13.3 - ST_Intersects(g1, g2 ) --&gt; Not "
@@ -1322,19 +1337,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:853
+#: reference_relationship.xml:860
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.27"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:854
+#: reference_relationship.xml:861
 #, no-c-format
 msgid "&curve_support;"
 msgstr "&curve_support;"
 
 #. Tag: programlisting
-#: reference_relationship.xml:860
+#: reference_relationship.xml:867
 #, no-c-format
 msgid ""
 "SELECT ST_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::"
@@ -1362,13 +1377,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_relationship.xml:863
+#: reference_relationship.xml:870
 #, no-c-format
 msgid "Geography Examples"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:864
+#: reference_relationship.xml:871
 #, no-c-format
 msgid ""
 "SELECT ST_Intersects(\n"
@@ -1382,25 +1397,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:868
+#: reference_relationship.xml:875
 #, no-c-format
 msgid ", <xref linkend=\"ST_3DIntersects\"/>, <xref linkend=\"ST_Disjoint\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_relationship.xml:874
+#: reference_relationship.xml:881
 #, no-c-format
 msgid "ST_LineCrossingDirection"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_relationship.xml:876
+#: reference_relationship.xml:883
 #, no-c-format
 msgid "Returns a number indicating the crossing behavior of two LineStrings"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_relationship.xml:881
+#: reference_relationship.xml:888
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_LineCrossingDirection</function></funcdef> "
@@ -1410,7 +1425,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:892
+#: reference_relationship.xml:899
 #, no-c-format
 msgid ""
 "Given two linestrings returns an integer between -3 and 3 indicating what "
@@ -1419,61 +1434,61 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:897
+#: reference_relationship.xml:904
 #, no-c-format
 msgid "The crossing number has the following meaning:"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:900
+#: reference_relationship.xml:907
 #, no-c-format
 msgid "0: LINE NO CROSS"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:903
+#: reference_relationship.xml:910
 #, no-c-format
 msgid "-1: LINE CROSS LEFT"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:906
+#: reference_relationship.xml:913
 #, no-c-format
 msgid "1: LINE CROSS RIGHT"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:909
+#: reference_relationship.xml:916
 #, no-c-format
 msgid "-2: LINE MULTICROSS END LEFT"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:912
+#: reference_relationship.xml:919
 #, no-c-format
 msgid "2: LINE MULTICROSS END RIGHT"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:915
+#: reference_relationship.xml:922
 #, no-c-format
 msgid "-3: LINE MULTICROSS END SAME FIRST LEFT"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:918
+#: reference_relationship.xml:925
 #, no-c-format
 msgid "3: LINE MULTICROSS END SAME FIRST RIGHT"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:922
+#: reference_relationship.xml:929
 #, no-c-format
 msgid "Availability: 1.4"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:928
+#: reference_relationship.xml:935
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> LINE CROSS LEFT and LINE CROSS "
@@ -1481,14 +1496,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:936 reference_relationship.xml:949
-#: reference_relationship.xml:962
+#: reference_relationship.xml:943 reference_relationship.xml:956
+#: reference_relationship.xml:969
 #, no-c-format
 msgid "Blue: Line A; Green: Line B"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:939
+#: reference_relationship.xml:946
 #, no-c-format
 msgid ""
 "SELECT ST_LineCrossingDirection(lineA, lineB) As A_cross_B,\n"
@@ -1504,7 +1519,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:941
+#: reference_relationship.xml:948
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> LINE MULTICROSS END SAME FIRST "
@@ -1512,7 +1527,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:952
+#: reference_relationship.xml:959
 #, no-c-format
 msgid ""
 "SELECT ST_LineCrossingDirection(lineA, lineB) As A_cross_B,\n"
@@ -1528,7 +1543,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:954
+#: reference_relationship.xml:961
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> LINE MULTICROSS END LEFT and "
@@ -1536,7 +1551,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:965
+#: reference_relationship.xml:972
 #, no-c-format
 msgid ""
 "SELECT ST_LineCrossingDirection(lineA, lineB) As A_cross_B,\n"
@@ -1552,14 +1567,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:967
+#: reference_relationship.xml:974
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Finds all streets that cross"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:970
+#: reference_relationship.xml:977
 #, no-c-format
 msgid ""
 "SELECT s1.gid, s2.gid, ST_LineCrossingDirection(s1.geom, s2.geom)\n"
@@ -1569,13 +1584,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_relationship.xml:981
+#: reference_relationship.xml:988
 #, no-c-format
 msgid "ST_OrderingEquals"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_relationship.xml:983
+#: reference_relationship.xml:990
 #, no-c-format
 msgid ""
 "Tests if two geometries represent the same geometry and have points in the "
@@ -1583,7 +1598,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_relationship.xml:988
+#: reference_relationship.xml:995
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_OrderingEquals</function></funcdef> "
@@ -1592,7 +1607,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:999
+#: reference_relationship.xml:1006
 #, no-c-format
 msgid ""
 "ST_OrderingEquals compares two geometries and returns t (TRUE) if the "
@@ -1601,7 +1616,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1004
+#: reference_relationship.xml:1011
 #, no-c-format
 msgid ""
 "This function is implemented as per the ArcSDE SQL specification rather than "
@@ -1610,13 +1625,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1008
+#: reference_relationship.xml:1015
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.43"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:1014
+#: reference_relationship.xml:1021
 #, no-c-format
 msgid ""
 "SELECT ST_OrderingEquals(ST_GeomFromText('LINESTRING(0 0, 10 10)'),\n"
@@ -1643,19 +1658,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1018
+#: reference_relationship.xml:1025
 #, no-c-format
 msgid ", <xref linkend=\"ST_Equals\"/>, <xref linkend=\"ST_Reverse\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_relationship.xml:1024
+#: reference_relationship.xml:1031
 #, no-c-format
 msgid "ST_Overlaps"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_relationship.xml:1026
+#: reference_relationship.xml:1033
 #, no-c-format
 msgid ""
 "Tests if two geometries have the same dimension and intersect, but each has "
@@ -1663,7 +1678,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_relationship.xml:1031
+#: reference_relationship.xml:1038
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_Overlaps</function></funcdef> "
@@ -1672,7 +1687,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1042
+#: reference_relationship.xml:1049
 #, no-c-format
 msgid ""
 "Returns TRUE if geometry A and B \"spatially overlap\". Two geometries "
@@ -1683,7 +1698,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1050
+#: reference_relationship.xml:1057
 #, no-c-format
 msgid ""
 "In mathematical terms: <emphasis>ST_Overlaps(A, B) ⇔ ( dim(A) = dim(B) = "
@@ -1691,7 +1706,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1053
+#: reference_relationship.xml:1060
 #, no-c-format
 msgid ""
 "&index_aware; To avoid index use, use the function <function>_ST_Overlaps</"
@@ -1699,20 +1714,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1065 reference_relationship.xml:1259
-#: reference_relationship.xml:1426
+#: reference_relationship.xml:1072 reference_relationship.xml:1266
+#: reference_relationship.xml:1433
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.2 // s2.1.13.3"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1066
+#: reference_relationship.xml:1073
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.32"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1071
+#: reference_relationship.xml:1078
 #, no-c-format
 msgid ""
 "<function>ST_Overlaps</function> returns <varname>TRUE</varname> in the "
@@ -1720,13 +1735,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1082
+#: reference_relationship.xml:1089
 #, no-c-format
 msgid "<varname>MULTIPOINT</varname> / <varname>MULTIPOINT</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1114
+#: reference_relationship.xml:1121
 #, no-c-format
 msgid ""
 "A Point on a LineString is contained, but since it has lower dimension it "
@@ -1734,7 +1749,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:1116
+#: reference_relationship.xml:1123
 #, no-c-format
 msgid ""
 "SELECT ST_Overlaps(a,b) AS overlaps,       ST_Crosses(a,b) AS crosses,\n"
@@ -1749,7 +1764,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1124
+#: reference_relationship.xml:1131
 #, no-c-format
 msgid ""
 "A LineString that partly covers a Polygon intersects and crosses, but does "
@@ -1757,7 +1772,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:1126
+#: reference_relationship.xml:1133
 #, no-c-format
 msgid ""
 "SELECT ST_Overlaps(a,b) AS overlaps,        ST_Crosses(a,b) AS crosses,\n"
@@ -1772,7 +1787,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1134
+#: reference_relationship.xml:1141
 #, no-c-format
 msgid ""
 "Two Polygons that intersect but with neither contained by the other overlap, "
@@ -1780,7 +1795,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:1136
+#: reference_relationship.xml:1143
 #, no-c-format
 msgid ""
 "SELECT ST_Overlaps(a,b) AS overlaps,       ST_Crosses(a,b) AS crosses,\n"
@@ -1800,7 +1815,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1144
+#: reference_relationship.xml:1151
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Crosses\"/>, <xref linkend=\"ST_Dimension\"/>, <xref "
@@ -1808,13 +1823,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_relationship.xml:1150
+#: reference_relationship.xml:1157
 #, no-c-format
 msgid "ST_Relate"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_relationship.xml:1152
+#: reference_relationship.xml:1159
 #, no-c-format
 msgid ""
 "Tests if two geometries have a topological relationship matching an "
@@ -1822,7 +1837,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_relationship.xml:1159
+#: reference_relationship.xml:1166
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_Relate</function></funcdef> "
@@ -1841,7 +1856,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1185
+#: reference_relationship.xml:1192
 #, no-c-format
 msgid ""
 "These functions allow testing and evaluating the spatial (topological) "
@@ -1851,7 +1866,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1189
+#: reference_relationship.xml:1196
 #, no-c-format
 msgid ""
 "The DE-9IM is specified as a 9-element matrix indicating the dimension of "
@@ -1861,7 +1876,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1195
+#: reference_relationship.xml:1202
 #, no-c-format
 msgid ""
 "A specific kind of spatial relationship can be tested by matching the "
@@ -1882,13 +1897,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1211 reference_relationship.xml:1343
+#: reference_relationship.xml:1218 reference_relationship.xml:1350
 #, no-c-format
 msgid "For more information refer to <xref linkend=\"eval_spatial_rel\"/>."
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1215
+#: reference_relationship.xml:1222
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Variant 1:</emphasis> Tests if two geometries are "
@@ -1897,7 +1912,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1219
+#: reference_relationship.xml:1226
 #, no-c-format
 msgid ""
 "Unlike most of the named spatial relationship predicates, this does NOT "
@@ -1908,7 +1923,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1227
+#: reference_relationship.xml:1234
 #, no-c-format
 msgid ""
 "It is better to use a named relationship function if available, since they "
@@ -1917,7 +1932,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1233
+#: reference_relationship.xml:1240
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Variant 2:</emphasis> Returns the DE-9IM matrix "
@@ -1927,7 +1942,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1238
+#: reference_relationship.xml:1245
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Variant 3:</emphasis> Like variant 2, but allows "
@@ -1938,7 +1953,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1245
+#: reference_relationship.xml:1252
 #, no-c-format
 msgid ""
 "<code>1</code>: <emphasis role=\"bold\">OGC-Mod2</emphasis> - line endpoints "
@@ -1948,7 +1963,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1248
+#: reference_relationship.xml:1255
 #, no-c-format
 msgid ""
 "<code>2</code>: <emphasis role=\"bold\">Endpoint</emphasis> - all endpoints "
@@ -1956,7 +1971,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1250
+#: reference_relationship.xml:1257
 #, no-c-format
 msgid ""
 "<code>3</code>: <emphasis role=\"bold\">MultivalentEndpoint</emphasis> - "
@@ -1966,7 +1981,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1253
+#: reference_relationship.xml:1260
 #, no-c-format
 msgid ""
 "<code>4</code>: <emphasis role=\"bold\">MonovalentEndpoint</emphasis> - "
@@ -1975,31 +1990,31 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1258
+#: reference_relationship.xml:1265
 #, no-c-format
 msgid "This function is not in the OGC spec, but is implied. see s2.1.13.2"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1260
+#: reference_relationship.xml:1267
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.25"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1262
+#: reference_relationship.xml:1269
 #, no-c-format
 msgid "Enhanced: 2.0.0 - added support for specifying boundary node rule."
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1273
+#: reference_relationship.xml:1280
 #, no-c-format
 msgid "Using the boolean-valued function to test spatial relationships."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:1274
+#: reference_relationship.xml:1281
 #, no-c-format
 msgid ""
 "SELECT ST_Relate('POINT(1 2)', ST_Buffer( 'POINT(1 2)', 2), '0FFFFF212');\n"
@@ -2014,7 +2029,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1276
+#: reference_relationship.xml:1283
 #, no-c-format
 msgid ""
 "Testing a custom spatial relationship pattern as a query condition, with "
@@ -2022,7 +2037,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:1278
+#: reference_relationship.xml:1285
 #, no-c-format
 msgid ""
 "-- Find compounds that properly intersect (not just touch) a poly (Interior "
@@ -2036,13 +2051,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1280
+#: reference_relationship.xml:1287
 #, no-c-format
 msgid "Computing the intersection matrix for spatial relationships."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:1281
+#: reference_relationship.xml:1288
 #, no-c-format
 msgid ""
 "SELECT ST_Relate( 'POINT(1 2)',\n"
@@ -2057,7 +2072,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1283
+#: reference_relationship.xml:1290
 #, no-c-format
 msgid ""
 "Using different Boundary Node Rules to compute the spatial relationship "
@@ -2066,7 +2081,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1287
+#: reference_relationship.xml:1294
 #, no-c-format
 msgid ""
 "Using the <emphasis role=\"bold\">OGC-Mod2</emphasis> rule (1) the duplicate "
@@ -2076,7 +2091,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1291
+#: reference_relationship.xml:1298
 #, no-c-format
 msgid ""
 "Using the <emphasis role=\"bold\">Endpoint</emphasis> rule (2) the duplicate "
@@ -2086,7 +2101,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:1296
+#: reference_relationship.xml:1303
 #, no-c-format
 msgid ""
 "WITH data AS (SELECT\n"
@@ -2103,7 +2118,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1305
+#: reference_relationship.xml:1312
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_RelateMatch\"/>, <xref linkend=\"ST_Contains\"/>, <xref "
@@ -2115,20 +2130,20 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_relationship.xml:1318
+#: reference_relationship.xml:1325
 #, no-c-format
 msgid "ST_RelateMatch"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_relationship.xml:1320
+#: reference_relationship.xml:1327
 #, no-c-format
 msgid ""
 "Tests if a DE-9IM Intersection Matrix matches an Intersection Matrix pattern"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_relationship.xml:1326
+#: reference_relationship.xml:1333
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_RelateMatch</function></funcdef> "
@@ -2138,7 +2153,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1337
+#: reference_relationship.xml:1344
 #, no-c-format
 msgid ""
 "Tests if a <ulink url=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally "
@@ -2148,7 +2163,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:1354
+#: reference_relationship.xml:1361
 #, no-c-format
 msgid ""
 "SELECT ST_RelateMatch('101202FFF', 'TTTTTTFFF') ;\n"
@@ -2157,7 +2172,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1355
+#: reference_relationship.xml:1362
 #, no-c-format
 msgid ""
 "Patterns for common spatial relationships matched against intersection "
@@ -2165,7 +2180,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:1358
+#: reference_relationship.xml:1365
 #, no-c-format
 msgid ""
 "SELECT pat.name AS relationship, pat.val AS pattern,\n"
@@ -2197,19 +2212,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1364
+#: reference_relationship.xml:1371
 #, no-c-format
 msgid ", <xref linkend=\"ST_Relate\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_relationship.xml:1370
+#: reference_relationship.xml:1377
 #, no-c-format
 msgid "ST_Touches"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_relationship.xml:1372
+#: reference_relationship.xml:1379
 #, no-c-format
 msgid ""
 "Tests if two geometries have at least one point in common, but their "
@@ -2217,7 +2232,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_relationship.xml:1378
+#: reference_relationship.xml:1385
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_Touches</function></funcdef> "
@@ -2226,7 +2241,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1393
+#: reference_relationship.xml:1400
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A and B intersect, but their interiors do "
@@ -2237,7 +2252,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1399
+#: reference_relationship.xml:1406
 #, no-c-format
 msgid ""
 "In mathematical terms: <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) ≠ ∅) ∧ "
@@ -2245,7 +2260,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1402
+#: reference_relationship.xml:1409
 #, no-c-format
 msgid ""
 "This relationship holds if the DE-9IM Intersection Matrix for the two "
@@ -2253,25 +2268,25 @@ msgid ""
 msgstr ""
 
 #. Tag: markup
-#: reference_relationship.xml:1406
+#: reference_relationship.xml:1413
 #, no-c-format
 msgid "FT*******"
 msgstr ""
 
 #. Tag: markup
-#: reference_relationship.xml:1410
+#: reference_relationship.xml:1417
 #, no-c-format
 msgid "F**T*****"
 msgstr ""
 
 #. Tag: markup
-#: reference_relationship.xml:1414
+#: reference_relationship.xml:1421
 #, no-c-format
 msgid "F***T****"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1418
+#: reference_relationship.xml:1425
 #, no-c-format
 msgid ""
 "&index_aware; To avoid using an index, use <function>_ST_Touches</function> "
@@ -2279,13 +2294,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1427
+#: reference_relationship.xml:1434
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.28"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1433
+#: reference_relationship.xml:1440
 #, no-c-format
 msgid ""
 "The <function>ST_Touches</function> predicate returns <varname>TRUE</"
@@ -2293,7 +2308,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:1503
+#: reference_relationship.xml:1510
 #, no-c-format
 msgid ""
 "SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(1 1)'::"
@@ -2312,13 +2327,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_relationship.xml:1509
+#: reference_relationship.xml:1516
 #, no-c-format
 msgid "ST_Within"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_relationship.xml:1511
+#: reference_relationship.xml:1518
 #, no-c-format
 msgid ""
 "Tests if every point of A lies in B, and their interiors have a point in "
@@ -2326,7 +2341,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_relationship.xml:1516
+#: reference_relationship.xml:1523
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_Within</function></funcdef> "
@@ -2335,7 +2350,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1531
+#: reference_relationship.xml:1538
 #, no-c-format
 msgid ""
 "Returns TRUE if geometry A is within geometry B. A is within B if and only "
@@ -2345,7 +2360,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1536
+#: reference_relationship.xml:1543
 #, no-c-format
 msgid ""
 "For this function to make sense, the source geometries must both be of the "
@@ -2353,7 +2368,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1541
+#: reference_relationship.xml:1548
 #, no-c-format
 msgid ""
 "In mathematical terms: <emphasis>ST_Within(A, B) ⇔ (A ⋂ B = A) ∧ (Int(A) ⋂ "
@@ -2361,7 +2376,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1544
+#: reference_relationship.xml:1551
 #, no-c-format
 msgid ""
 "The within relation is reflexive: every geometry is within itself. The "
@@ -2371,7 +2386,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1548
+#: reference_relationship.xml:1555
 #, no-c-format
 msgid ""
 "ST_Within is the converse of <xref linkend=\"ST_Contains\"/>. So, "
@@ -2379,7 +2394,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1551
+#: reference_relationship.xml:1558
 #, no-c-format
 msgid ""
 "Because the interiors must have a common point, a subtlety of the definition "
@@ -2392,7 +2407,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1557
+#: reference_relationship.xml:1564
 #, no-c-format
 msgid ""
 "&index_aware; To avoid index use, use the function <function>_ST_Within</"
@@ -2400,19 +2415,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1575
+#: reference_relationship.xml:1582
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.2 // s2.1.13.3 - a.Relate(b, 'T*F**F***')"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1578
+#: reference_relationship.xml:1585
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.30"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:1583
+#: reference_relationship.xml:1590
 #, no-c-format
 msgid ""
 "--a circle within a circle\n"
@@ -2436,7 +2451,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1594
+#: reference_relationship.xml:1601
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Equals\"/>, <xref "
@@ -2444,25 +2459,25 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_relationship.xml:1602
+#: reference_relationship.xml:1609
 #, no-c-format
 msgid "Distance Relationships"
 msgstr ""
 
 #. Tag: refname
-#: reference_relationship.xml:1606
+#: reference_relationship.xml:1613
 #, no-c-format
 msgid "ST_3DDWithin"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_relationship.xml:1608
+#: reference_relationship.xml:1615
 #, no-c-format
 msgid "Tests if two 3D geometries are within a given 3D distance"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_relationship.xml:1612
+#: reference_relationship.xml:1619
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_3DDWithin</function></funcdef> "
@@ -2473,7 +2488,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1630
+#: reference_relationship.xml:1637
 #, no-c-format
 msgid ""
 "Returns true if the 3D distance between two geometry values is no larger "
@@ -2484,13 +2499,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1642
+#: reference_relationship.xml:1649
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM ?"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:1650
+#: reference_relationship.xml:1657
 #, no-c-format
 msgid ""
 "-- Geometry example - units in meters (SRID: 2163 US National Atlas Equal "
@@ -2518,7 +2533,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1656
+#: reference_relationship.xml:1663
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DFullyWithin\"/>, <xref "
@@ -2527,19 +2542,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_relationship.xml:1666
+#: reference_relationship.xml:1673
 #, no-c-format
 msgid "ST_3DDFullyWithin"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_relationship.xml:1668
+#: reference_relationship.xml:1675
 #, no-c-format
 msgid "Tests if two 3D geometries are entirely within a given 3D distance"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_relationship.xml:1673
+#: reference_relationship.xml:1680
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_3DDFullyWithin</function></funcdef> "
@@ -2550,7 +2565,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1691
+#: reference_relationship.xml:1698
 #, no-c-format
 msgid ""
 "Returns true if the 3D geometries are fully within the specified distance of "
@@ -2561,7 +2576,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:1708
+#: reference_relationship.xml:1715
 #, no-c-format
 msgid ""
 "-- This compares the difference between fully within and distance within as "
@@ -2581,7 +2596,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1714
+#: reference_relationship.xml:1721
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DFullyWithin\"/>, <xref "
@@ -2589,19 +2604,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_relationship.xml:1722
+#: reference_relationship.xml:1729
 #, no-c-format
 msgid "ST_DFullyWithin"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_relationship.xml:1724
+#: reference_relationship.xml:1731
 #, no-c-format
 msgid "Tests if two geometries are entirely within a given distance"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_relationship.xml:1729
+#: reference_relationship.xml:1736
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_DFullyWithin</function></funcdef> "
@@ -2612,7 +2627,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1747
+#: reference_relationship.xml:1754
 #, no-c-format
 msgid ""
 "Returns true if the geometries are entirely within the specified distance of "
@@ -2623,13 +2638,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1755
+#: reference_relationship.xml:1762
 #, no-c-format
 msgid "Availability: 1.5.0"
 msgstr "Disponibilità: 1.5.0"
 
 #. Tag: programlisting
-#: reference_relationship.xml:1760
+#: reference_relationship.xml:1767
 #, no-c-format
 msgid ""
 "postgis=# SELECT ST_DFullyWithin(geom_a, geom_b, 10) as DFullyWithin10, "
@@ -2645,7 +2660,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1766
+#: reference_relationship.xml:1773
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_3DDWithin\"/>, <xref "
@@ -2653,19 +2668,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_relationship.xml:1773
+#: reference_relationship.xml:1780
 #, no-c-format
 msgid "ST_DWithin"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_relationship.xml:1775
+#: reference_relationship.xml:1782
 #, no-c-format
 msgid "Tests if two geometries are within a given distance"
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_relationship.xml:1779
+#: reference_relationship.xml:1786
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_DWithin</function></funcdef> "
@@ -2682,13 +2697,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1812
+#: reference_relationship.xml:1819
 #, no-c-format
 msgid "Returns true if the geometries are within a given distance"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1814
+#: reference_relationship.xml:1821
 #, no-c-format
 msgid ""
 "For <type>geometry</type>: The distance is specified in units defined by the "
@@ -2698,7 +2713,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1819
+#: reference_relationship.xml:1826
 #, no-c-format
 msgid ""
 "For <type>geography</type>: units are in meters and distance measurement "
@@ -2707,13 +2722,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1824
+#: reference_relationship.xml:1831
 #, no-c-format
 msgid "Use <xref linkend=\"ST_3DDWithin\"/> for 3D geometries."
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1827
+#: reference_relationship.xml:1834
 #, no-c-format
 msgid ""
 "This function call includes a bounding box comparison that makes use of any "
@@ -2721,19 +2736,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1832
+#: reference_relationship.xml:1839
 #, no-c-format
 msgid "&sfs_compliant;"
 msgstr "&sfs_compliant;"
 
 #. Tag: para
-#: reference_relationship.xml:1833
+#: reference_relationship.xml:1840
 #, no-c-format
 msgid "Availability: 1.5.0 support for geography was introduced"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1834
+#: reference_relationship.xml:1841
 #, no-c-format
 msgid ""
 "Enhanced: 2.1.0 improved speed for geography. See <ulink url=\"http://blog."
@@ -2742,13 +2757,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1835
+#: reference_relationship.xml:1842
 #, no-c-format
 msgid "Enhanced: 2.1.0 support for curved geometries was introduced."
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1837
+#: reference_relationship.xml:1844
 #, no-c-format
 msgid ""
 "Prior to 1.3, <xref linkend=\"ST_Expand\"/> was commonly used in conjunction "
@@ -2758,7 +2773,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:1845
+#: reference_relationship.xml:1852
 #, no-c-format
 msgid ""
 "-- Find the nearest hospital to each school\n"
@@ -2803,26 +2818,26 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1851
+#: reference_relationship.xml:1858
 #, no-c-format
 msgid ", <xref linkend=\"ST_3DDWithin\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_relationship.xml:1857
+#: reference_relationship.xml:1864
 #, no-c-format
 msgid "ST_PointInsideCircle"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_relationship.xml:1859
+#: reference_relationship.xml:1866
 #, no-c-format
 msgid ""
 "Tests if a point geometry is inside a circle defined by a center and radius"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_relationship.xml:1864
+#: reference_relationship.xml:1871
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_PointInsideCircle</function></funcdef> "
@@ -2833,7 +2848,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1877
+#: reference_relationship.xml:1884
 #, no-c-format
 msgid ""
 "Returns true if the geometry is a point and is inside the circle with center "
@@ -2842,26 +2857,26 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1881
+#: reference_relationship.xml:1888
 #, no-c-format
 msgid ""
 "Does not use spatial indexes. Use <xref linkend=\"ST_DWithin\"/> instead."
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1883
+#: reference_relationship.xml:1890
 #, no-c-format
 msgid "Availability: 1.2"
 msgstr ""
 
 #. Tag: para
-#: reference_relationship.xml:1884
+#: reference_relationship.xml:1891
 #, no-c-format
 msgid "Changed: 2.2.0 In prior versions this was called ST_Point_Inside_Circle"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_relationship.xml:1891
+#: reference_relationship.xml:1898
 #, no-c-format
 msgid ""
 "SELECT ST_PointInsideCircle(ST_Point(1,2), 0.5, 2, 3);\n"

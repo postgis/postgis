@@ -68,7 +68,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-04 20:03+0000\n"
+"POT-Creation-Date: 2023-07-12 08:31+0000\n"
 "PO-Revision-Date: 2023-06-30 09:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/xsl-config/"
@@ -236,6 +236,48 @@ msgstr ""
 #, no-c-format
 msgid "This function supports 3d and will not drop the z-index."
 msgstr "Cette fonction prend en charge la 3D et ne supprime pas l'indice z."
+
+#. Tag: para
+#: xsl-config.xml:169
+#, no-c-format
+msgid "New in this release"
+msgstr ""
+
+#. Tag: para
+#: xsl-config.xml:172
+#, no-c-format
+msgid "Enhanced in this release"
+msgstr ""
+
+#. Tag: para
+#: xsl-config.xml:175
+#, no-c-format
+msgid "Aggregate"
+msgstr ""
+
+#. Tag: para
+#: xsl-config.xml:178
+#, no-c-format
+msgid "Window function"
+msgstr ""
+
+#. Tag: para
+#: xsl-config.xml:181
+#, no-c-format
+msgid "Requires GEOS 3.9 or higher"
+msgstr ""
+
+#. Tag: para
+#: xsl-config.xml:184
+#, no-c-format
+msgid "2.5/3D support"
+msgstr ""
+
+#. Tag: para
+#: xsl-config.xml:187
+#, no-c-format
+msgid "Supports geography"
+msgstr ""
 
 #, no-c-format
 #~ msgid ""

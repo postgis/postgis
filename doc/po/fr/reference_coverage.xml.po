@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ming 64gcc81\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-07 05:39+0000\n"
+"POT-Creation-Date: 2023-07-12 18:27+0000\n"
 "PO-Revision-Date: 2023-05-29 09:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -45,8 +45,8 @@ msgstr "Couvertures"
 #. Tag: refname
 #: reference_coverage.xml:15
 #, no-c-format
-msgid "ST_CoverageInvalidLocations"
-msgstr "ST_CoverageInvalidLocations"
+msgid "ST_CoverageInvalidEdges"
+msgstr ""
 
 #. Tag: refpurpose
 #: reference_coverage.xml:17
@@ -62,15 +62,11 @@ msgstr ""
 #: reference_coverage.xml:22
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_CoverageInvalidLocations</function></funcdef> "
+"<funcdef>geometry <function>ST_CoverageInvalidEdges</function></funcdef> "
 "<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
 "paramdef> <paramdef><type>float8 </type> <parameter>tolerance = 0</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_CoverageInvalidLocations</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>tolerance = 0</"
-"parameter></paramdef>"
 
 #. Tag: title
 #: reference_coverage.xml:33 reference_coverage.xml:120
@@ -183,7 +179,7 @@ msgid ""
 "  (4, 'POLYGON ((180 40, 120 10, 100 70, 140 80, 190 80, 180 40))'::"
 "geometry)\n"
 ")\n"
-"SELECT id, ST_AsText(ST_CoverageInvalidLocations(geom) OVER ())\n"
+"SELECT id, ST_AsText(ST_CoverageInvalidEdges(geom) OVER ())\n"
 "  FROM coverage;\n"
 "\n"
 " id |               st_astext\n"
@@ -201,7 +197,7 @@ msgstr ""
 msgid ""
 "-- Test entire table for coverage validity\n"
 "SELECT true = ALL (\n"
-"    SELECT ST_CoverageInvalidLocations(geom) OVER () IS NULL\n"
+"    SELECT ST_CoverageInvalidEdges(geom) OVER () IS NULL\n"
 "    FROM coverage\n"
 "    );"
 msgstr ""
@@ -288,14 +284,9 @@ msgstr ""
 msgid ""
 "If the input is not a valid coverage there may be unexpected artifacts in "
 "the output (such as boundary intersections, or separated boundaries which "
-"appeared to be shared). Use <xref linkend=\"ST_CoverageInvalidLocations\"/> "
-"to determine if a coverage is valid."
+"appeared to be shared). Use <xref linkend=\"ST_CoverageInvalidEdges\"/> to "
+"determine if a coverage is valid."
 msgstr ""
-"Si l'entrée n'est pas une couverture valide, il peut y avoir des artefacts "
-"inattendus dans la sortie (tels que des intersections de limites, ou des "
-"limites séparées qui semblaient être partagées). Utilisez <xref "
-"linkend=\"ST_CoverageInvalidLocations\"/> pour déterminer si une couverture "
-"est valide."
 
 #. Tag: para
 #: reference_coverage.xml:154 reference_coverage.xml:230
@@ -385,13 +376,8 @@ msgstr ""
 msgid ""
 "If the input is not a valid coverage there may be unexpected artifacts in "
 "the output (such as unmerged or overlapping polygons). Use <xref "
-"linkend=\"ST_CoverageInvalidLocations\"/> to determine if a coverage is "
-"valid."
+"linkend=\"ST_CoverageInvalidEdges\"/> to determine if a coverage is valid."
 msgstr ""
-"Si l'entrée n'est pas une couverture valide, il peut y avoir des artefacts "
-"inattendus dans la sortie (tels que des polygones non fusionnés ou se "
-"chevauchant). Utilisez <xref linkend=\"ST_CoverageInvalidLocations\"/> pour "
-"déterminer si une couverture est valide."
 
 #. Tag: para
 #: reference_coverage.xml:215
@@ -433,6 +419,48 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_Union\"/>"
 msgstr ", <xref linkend=\"ST_Union\"/>"
+
+#, no-c-format
+#~ msgid "ST_CoverageInvalidLocations"
+#~ msgstr "ST_CoverageInvalidLocations"
+
+#, no-c-format
+#~ msgid ""
+#~ "<funcdef>geometry <function>ST_CoverageInvalidLocations</function></"
+#~ "funcdef> <paramdef><type>geometry winset </type> <parameter>geom</"
+#~ "parameter></paramdef> <paramdef><type>float8 </type> <parameter>tolerance "
+#~ "= 0</parameter></paramdef>"
+#~ msgstr ""
+#~ "<funcdef>geometry <function>ST_CoverageInvalidLocations</function></"
+#~ "funcdef> <paramdef><type>geometry winset </type> <parameter>geom</"
+#~ "parameter></paramdef> <paramdef><type>float8 </type> <parameter>tolerance "
+#~ "= 0</parameter></paramdef>"
+
+#, no-c-format
+#~ msgid ""
+#~ "If the input is not a valid coverage there may be unexpected artifacts in "
+#~ "the output (such as boundary intersections, or separated boundaries which "
+#~ "appeared to be shared). Use <xref linkend=\"ST_CoverageInvalidLocations\"/"
+#~ "> to determine if a coverage is valid."
+#~ msgstr ""
+#~ "Si l'entrée n'est pas une couverture valide, il peut y avoir des "
+#~ "artefacts inattendus dans la sortie (tels que des intersections de "
+#~ "limites, ou des limites séparées qui semblaient être partagées). Utilisez "
+#~ "<xref linkend=\"ST_CoverageInvalidLocations\"/> pour déterminer si une "
+#~ "couverture est valide."
+
+#, no-c-format
+#~ msgid ""
+#~ "If the input is not a valid coverage there may be unexpected artifacts in "
+#~ "the output (such as unmerged or overlapping polygons). Use <xref "
+#~ "linkend=\"ST_CoverageInvalidLocations\"/> to determine if a coverage is "
+#~ "valid."
+#~ msgstr ""
+#~ "Si l'entrée n'est pas une couverture valide, il peut y avoir des "
+#~ "artefacts inattendus dans la sortie (tels que des polygones non fusionnés "
+#~ "ou se chevauchant). Utilisez <xref "
+#~ "linkend=\"ST_CoverageInvalidLocations\"/> pour déterminer si une "
+#~ "couverture est valide."
 
 #, no-c-format
 #~ msgid ""
