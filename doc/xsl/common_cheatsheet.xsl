@@ -131,5 +131,45 @@
 		<!--close section -->
 </xsl:template>
 
+<xsl:template name="examples_list">
+
+	<!--Beginning of section -->
+	<xsl:variable name="lt"><xsl:text><![CDATA[<]]></xsl:text></xsl:variable>
+
+	<xsl:if test="contains(., 'Example')">
+	<table>
+		<tr>
+			<th colspan="2" class="example_heading">
+				<xsl:value-of select="title" /> Examples
+			</th>
+		</tr>
+
+		<!--only pull the first example section of each function -->
+		<xsl:for-each select="refentry//refsection[contains(title,'Example')][1]/programlisting[1]">
+			<!-- add row for each function and alternate colors of rows -->
+			<tr>
+				<xsl:attribute name="class">
+					<xsl:choose>
+						<xsl:when test="position() mod 2 = 0">evenrow</xsl:when>
+						<xsl:otherwise>oddrow</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
+				<td>
+					<b>
+						<xsl:value-of select="ancestor::refentry/refnamediv/refname" />
+					</b>
+					<br />
+					<pre>
+						<xsl:value-of select="."  disable-output-escaping="no"/>
+					</pre>
+				</td>
+			</tr>
+
+			</xsl:for-each>
+	<!--close section -->
+	</table>
+	</xsl:if>
+
+</xsl:template>
 
 </xsl:stylesheet>
