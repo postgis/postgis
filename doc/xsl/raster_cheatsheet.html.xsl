@@ -119,8 +119,10 @@ code {font-size: 8pt}
 					<sup>2</sup> &nbsp;
 				<xsl:value-of select="$cheatsheets_config/para[@role='aggregate']" />
 					<sup>agg</sup> &nbsp;&nbsp;
+<!--
 				<xsl:value-of select="$cheatsheets_config/para[@role='window_function']" />
 					<sup>W</sup> &nbsp;
+-->
 				<xsl:value-of select="$cheatsheets_config/para[@role='requires_geos_3.9_or_higher']" />
 					<sup>g3.9</sup> &nbsp;
 				<xsl:value-of select="$cheatsheets_config/para[@role='z_support']" />
