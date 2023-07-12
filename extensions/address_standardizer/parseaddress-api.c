@@ -170,7 +170,7 @@ ADDRESS *parseaddress(HHash *stH, char *s, int *reterr)
     char *caregx;
     char *state = NULL;
     char *regx;
-    int mi;
+    int mi = 0;
     size_t ui, uj;
     int rc;
     ADDRESS *ret;
@@ -331,7 +331,7 @@ ADDRESS *parseaddress(HHash *stH, char *s, int *reterr)
     rc = match((char *)regx, s, ovect, 0);
     if (rc <= 0) {
         /* look for state specific regex */
-        mi++;
+        mi = mi + 1;
         regx = (char *) get_state_regex(ret->st);
         if (regx)
             rc = match((char *)regx, s, ovect, 0);
@@ -339,7 +339,7 @@ ADDRESS *parseaddress(HHash *stH, char *s, int *reterr)
     DBG("Checked for comma: %d", rc);
     if (rc <= 0 && ret->st && strlen(ret->st)) {
         /* look for state specific regex */
-        mi++;
+        mi = mi + 1;
         regx = (char *) get_state_regex(ret->st);
         if (regx)
             rc = match((char *)regx, s, ovect, 0);
@@ -349,7 +349,7 @@ ADDRESS *parseaddress(HHash *stH, char *s, int *reterr)
         int i;
         /* run through the regx's and see if we get a match */
         for (i=0; i<nreg; i++) {
-            mi++;
+            mi = mi + 1;
             rc = match((char *)t_regx[i], s, ovect, 0);
             DBG("    rc=%d, i=%d", rc, i);
             if (rc > 0) break;

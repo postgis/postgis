@@ -1525,7 +1525,11 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 	 * we have an average of 5 features for each cell so the histogram isn't
 	 * so sparse.
 	 */
+#if POSTGIS_PGSQL_VERSION >= 170
+	histo_cells_target = (int)pow((double)(stats->attstattarget), (double)ndims);
+#else
 	histo_cells_target = (int)pow((double)(stats->attr->attstattarget), (double)ndims);
+#endif
 	histo_cells_target = Min(histo_cells_target, ndims * 10000);
 	histo_cells_target = Min(histo_cells_target, (int)(total_rows/5));
 	POSTGIS_DEBUGF(3, " stats->attr->attstattarget: %d", stats->attr->attstattarget);
@@ -1534,16 +1538,6 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 	/* If there's no useful features, we can't work out stats */
 	if ( ! notnull_cnt )
 	{
-#if POSTGIS_DEBUG_LEVEL > 0
-		Oid relation_oid = stats->attr->attrelid;
-		char *relation_name = get_rel_name(relation_oid);
-		char *namespace = get_namespace_name(get_rel_namespace(relation_oid));
-		elog(DEBUG1,
-		     "PostGIS: Unable to compute statistics for \"%s.%s.%s\": No non-null/empty features",
-		     namespace ? namespace : "(NULL)",
-		     relation_name ? relation_name : "(NULL)",
-		     stats->attr->attname.data);
-#endif /* POSTGIS_DEBUG_LEVEL > 0 */
 		stats->stats_valid = false;
 		return;
 	}
@@ -1729,7 +1723,6 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 		const ND_BOX *nd_box;
 		ND_IBOX nd_ibox;
 		int at[ND_DIMS];
-		int d;
 		double num_cells = 0;
 		double min[ND_DIMS] = {0.0, 0.0, 0.0, 0.0};
 		double max[ND_DIMS] = {0.0, 0.0, 0.0, 0.0};
