@@ -6,6 +6,7 @@
 <xsl:variable name='include_examples'>false</xsl:variable>
 <xsl:variable name='output_purpose'>true</xsl:variable>
 <xsl:variable name='linkstub'>https://postgis.net/docs/manual-<xsl:value-of select="$postgis_version" />/<xsl:value-of select="$postgis_language" /></xsl:variable>
+<xsl:variable name="cheatsheets_config" select="document('xsl-config.xml')//cheatsheets" />
 
 
 <!--macro to pull out function parameter names so we can provide a pretty arg list prefix for each function -->

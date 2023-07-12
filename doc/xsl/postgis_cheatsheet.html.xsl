@@ -129,14 +129,21 @@ code {font-size: 8pt}
 		<body><h1 style='text-align:center'>PostGIS  <xsl:value-of select="$postgis_version" /> Cheatsheet</h1>
 			<span class='notes'>
 				<!-- TODO: make text equally distributed horizontally ? -->
-				New in this release <sup>1</sup>
-				Enhanced in this release <sup>2</sup> &nbsp;
-				Aggregate <sup>agg</sup> &nbsp;&nbsp;
-				Window function <sup>W</sup> &nbsp;
-				Requires GEOS 3.9 or higher<sup>g3.9</sup> &nbsp;
-				2.5/3D support<sup>3d</sup> &nbsp;
+				<xsl:value-of select="$cheatsheets_config/para[@role='new_in_release']" />
+					<sup>1</sup>
+				<xsl:value-of select="$cheatsheets_config/para[@role='enhanced_in_release']" />
+					<sup>2</sup> &nbsp;
+				<xsl:value-of select="$cheatsheets_config/para[@role='aggregate']" />
+					<sup>agg</sup> &nbsp;&nbsp;
+				<xsl:value-of select="$cheatsheets_config/para[@role='window_function']" />
+					<sup>W</sup> &nbsp;
+				<xsl:value-of select="$cheatsheets_config/para[@role='requires_geos_3.9_or_higher']" />
+					<sup>g3.9</sup> &nbsp;
+				<xsl:value-of select="$cheatsheets_config/para[@role='z_support']" />
+					<sup>3d</sup> &nbsp;
 				SQL-MM<sup>mm</sup> &nbsp;
-				Supports geography <sup>G</sup>
+				<xsl:value-of select="$cheatsheets_config/para[@role='geography_support']" />
+					<sup>G</sup>
 			</span>
 			<div id="content_functions">
 				<xsl:apply-templates select="/book/chapter[@id='reference']" />

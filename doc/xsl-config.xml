@@ -165,4 +165,28 @@
         </para>
     </tags>
 
+    <cheatsheets>
+        <para role="new_in_release">
+            New in this release
+        </para>
+        <para role="enhanced_in_release">
+            Enhanced in this release
+        </para>
+        <para role="aggregate">
+				Aggregate
+        </para>
+        <para role="window_function">
+				Window function
+        </para>
+        <para role="requires_geos_3.9_or_higher">
+				Requires GEOS 3.9 or higher
+        </para>
+        <para role="z_support">
+				2.5/3D support
+        </para>
+        <para role="geography_support">
+				Supports geography
+        </para>
+    </cheatsheets>
+
 </config>
