@@ -28,10 +28,12 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 prefix = @prefix@
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
+abs_top_srcdir = @abs_top_srcdir@
 datarootdir = @datarootdir@
 datadir = @datadir@
 builddir = @builddir@
 top_builddir = @top_builddir@
+abs_top_builddir = @abs_top_builddir@
 mandir = @mandir@
 abs_srcdir = @abs_srcdir@
 abs_builddir = @abs_builddir@
@@ -549,12 +551,22 @@ endif
 check: check-unit
 check-regress:
 
+check-unit: check-xml
+
 ifeq ($(XMLLINT),)
-check-unit: requirements_not_met_xmllint
+check-xml: requirements_not_met_xmllint
+check-cheatsheets: requirements_not_met_xmllint
 else
-check-unit: $(XML_INPUTS)
+check-xml: $(XML_INPUTS)
 	$(XMLLINT) --loaddtd $(XSLTPROC_PATH_OPT) --xinclude --valid postgis-out.xml --noout
+
+check-cheatsheets: cheatsheets
+	for f in $(abs_builddir)/html/*_cheatsheet-en.html; do \
+		$(abs_top_srcdir)/utils/check_localized_cheatsheets.sh $${f} en $(patsubst -%,%,$(DOCSUFFIX)); \
+	done
+
 endif
+
 
 requirements_not_met_xsltproc:
 	@echo
