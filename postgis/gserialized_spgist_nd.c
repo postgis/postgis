@@ -375,10 +375,10 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
 	 */
 	for (tuple = 0; tuple < in->nTuples; tuple++)
 	{
-		GIDX *box = (GIDX *)DatumGetPointer(in->datums[tuple]);
-		uint16_t octant = getOctant(centroid, box);
+		GIDX *b = (GIDX *)DatumGetPointer(in->datums[tuple]);
+		uint16_t octant = getOctant(centroid, b);
 
-		out->leafTupleDatums[tuple] = PointerGetDatum(box);
+		out->leafTupleDatums[tuple] = PointerGetDatum(b);
 		out->mapTuplesToNodes[tuple] = octant;
 	}
 
