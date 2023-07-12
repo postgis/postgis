@@ -71,7 +71,7 @@ ifeq ($(XSLTPROCFLAGS),)
 endif
 
 XSLT_PATH= \
-	$(abs_builddir):$(abs_srcdir)
+	$(builddir):$(abs_srcdir)
 
 XSLTPROC_PATH_OPT= \
 	--path $(XSLT_PATH)
