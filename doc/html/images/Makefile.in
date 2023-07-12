@@ -87,7 +87,7 @@ GENERATED_IMAGES= \
 	st_concavehull03.png \
 	st_concavehull04.png \
 	st_convexhull01.png \
-	ST_coverageinvalidedges01.png \
+	st_coverageinvalidedges01.png \
 	st_coveragesimplify01.png \
 	st_coveragesimplify02.png \
 	st_coverageunion01.png \
