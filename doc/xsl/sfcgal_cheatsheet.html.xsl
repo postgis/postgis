@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<!DOCTYPE xsl:stylesheet [ <!ENTITY nbsp "&#160;"> ]>
+
+<xsl:stylesheet version="1.0"
+xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <!-- ********************************************************************
      ********************************************************************
 	 Copyright 2011, Regina Obe
@@ -11,15 +14,18 @@
 	<xsl:include href="common_utils.xsl" />
 	<xsl:include href="common_cheatsheet.xsl" />
 
-	<xsl:output method="text" />
+  <xsl:variable name="chapter_id" select='"RT_reference"' />
+
+	<xsl:output method="html" />
 
 <xsl:template match="/">
-	<xsl:text><![CDATA[<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>PostGIS SFCGAL Cheat Sheet</title>
-	<style type="text/css">
-<!--
+	<html>
+		<head>
+			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+			<title>PostGIS SFCGAL Cheatsheet</title>
+
+<!-- TODO: share a parametrizable stylecheet -->
+			<style type="text/css">
 table { page-break-inside:avoid; page-break-after:auto }
 tr    { page-break-inside:avoid; page-break-after:avoid }
 thead { display:table-header-group }
@@ -50,9 +56,9 @@ body {
 
 .section {
 	border: 1px solid #000; float:left;
-	margin: 4px;]]></xsl:text>
-	<xsl:choose><xsl:when test="$output_purpose = 'false'"><![CDATA[width: 45%;]]></xsl:when><xsl:otherwise><![CDATA[width: 100%;]]></xsl:otherwise></xsl:choose>
-<xsl:text><![CDATA[	}
+	margin: 4px;
+	<xsl:choose><xsl:when test="$output_purpose = 'false'">width: 100%</xsl:when><xsl:otherwise>width: 100%;</xsl:otherwise></xsl:choose>
+}
 .section th {
 	border: 1px solid #000;
 	color: #fff;
@@ -86,90 +92,35 @@ h1 {
 	padding: 0px;
 	font-size: 14pt;
 }
-
+			</style>
+		</head>
+		<body><h1 style='text-align:center'>PostGIS <xsl:value-of select="$postgis_version" /> SFCGAL Cheatsheet</h1>
+			<span class='notes'>
+				<!-- TODO: make text equally distributed horizontally ? -->
+				<xsl:value-of select="$cheatsheets_config/para[@role='new_in_release']" />
+					<sup>1</sup>
+				<xsl:value-of select="$cheatsheets_config/para[@role='enhanced_in_release']" />
+					<sup>2</sup> &nbsp;
+				<xsl:value-of select="$cheatsheets_config/para[@role='aggregate']" />
+					<sup>agg</sup> &nbsp;&nbsp;
+<!--
+				<xsl:value-of select="$cheatsheets_config/para[@role='window_function']" />
+					<sup>W</sup> &nbsp;
 -->
-</style>
-	</head><body><h1 style='text-align:center'>PostGIS ]]></xsl:text> <xsl:value-of select="$postgis_version" /><xsl:text><![CDATA[ PostGIS SFCGAL Cheatsheet</h1>]]></xsl:text>
-		<!--Beginning of section -->
-		<xsl:text><![CDATA[<table class="section"><tr><th colspan="2">]]></xsl:text>
-			<xsl:value-of select="title" />
-			<!-- end of section header beginning of function list -->
-			<xsl:text><![CDATA[</th></tr>]]></xsl:text>
-
-			<xsl:apply-templates select="/book/chapter/sect1[@id='reference_sfcgal']" name="function_list" />
-		<!--close section -->
-	 	<![CDATA[</table>]]>
-			<xsl:text><![CDATA[</div>]]></xsl:text>
-			<xsl:text><![CDATA[<div id="content_examples">]]></xsl:text>
-			<!-- examples go here -->
-			<xsl:if test="$include_examples='true'">
-				<xsl:apply-templates select="/book/chapter/sect1[@id='reference_sfcgal']/refentry[count(//refsection//programlisting) &gt; 0]" />
-			</xsl:if>
-			<xsl:text><![CDATA[</div>]]></xsl:text>
-			<xsl:text><![CDATA[</body></html>]]></xsl:text>
+				<xsl:value-of select="$cheatsheets_config/para[@role='requires_geos_3.9_or_higher']" />
+					<sup>g3.9</sup> &nbsp;
+				<xsl:value-of select="$cheatsheets_config/para[@role='z_support']" />
+					<sup>3d</sup> &nbsp;
+				SQL-MM<sup>mm</sup> &nbsp;
+				<xsl:value-of select="$cheatsheets_config/para[@role='geography_support']" />
+					<sup>G</sup>
+			</span>
+			<div id="content_functions">
+				<xsl:apply-templates select="/book/chapter/sect1[@id='reference_sfcgal']" />
+			</div>
+		</body>
+	</html>
 </xsl:template>
 
-
-    <xsl:template match="refentry" name="function_list">
-		<!-- add row for each function and alternate colors of rows -->
-		<!-- , hyperlink to online manual -->
- 		<![CDATA[<tr]]> class="<xsl:choose><xsl:when test="position() mod 2 = 0">evenrow</xsl:when><xsl:otherwise>oddrow</xsl:otherwise></xsl:choose>" <![CDATA[><td colspan='2'><span class='func'>]]><xsl:text><![CDATA[<a href="]]></xsl:text><xsl:value-of select="$linkstub" /><xsl:value-of select="@id" />.html<xsl:text><![CDATA[" target="_blank">]]></xsl:text><xsl:value-of select="refnamediv/refname" /><xsl:text><![CDATA[</a>]]></xsl:text><![CDATA[</span>]]><xsl:if test="contains(.,$new_tag)"><![CDATA[<sup>1</sup> ]]></xsl:if>
- 		<!-- enhanced tag -->
- 		<xsl:if test="contains(.,$enhanced_tag)"><![CDATA[<sup>2</sup> ]]></xsl:if>
- 		<xsl:if test="contains(.,'implements the SQL/MM')"><![CDATA[<sup>mm</sup> ]]></xsl:if>
- 		<xsl:if test="contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')"><![CDATA[<sup>G</sup>  ]]></xsl:if>
- 		<xsl:if test="contains(.,'GEOS &gt;= 3.4')"><![CDATA[<sup>g3.4</sup> ]]></xsl:if>
- 		<xsl:if test="contains(.,'This function supports 3d')"><![CDATA[<sup>3D</sup> ]]></xsl:if>
- 		<!-- if only one proto just dispaly it on first line -->
- 		<xsl:if test="count(refsynopsisdiv/funcsynopsis/funcprototype) = 1">
- 			(<xsl:call-template name="list_in_params"><xsl:with-param name="func" select="refsynopsisdiv/funcsynopsis/funcprototype" /></xsl:call-template>)
-		</xsl:if>
-
- 		<![CDATA[&nbsp;&nbsp;]]>
- 		<xsl:if test="$output_purpose = 'true'"><xsl:value-of select="refnamediv/refpurpose" /></xsl:if>
- 		<!-- output different proto arg combos -->
- 		<xsl:if test="count(refsynopsisdiv/funcsynopsis/funcprototype) &gt; 1"><![CDATA[<span class='func_args'><ol>]]><xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype"><![CDATA[<li>]]><xsl:call-template name="list_in_params"><xsl:with-param name="func" select="." /></xsl:call-template><![CDATA[</li>]]></xsl:for-each>
- 		<![CDATA[</ol></span>]]></xsl:if>
- 		<![CDATA[</td></tr>]]>
-	</xsl:template>
-
-	 <xsl:template match="//refentry//refsection[contains(title,'Example')]">
-	 		<!-- less than needed for converting html tags in listings so they are printable -->
-	 		<xsl:variable name="lt"><xsl:text><![CDATA[<]]></xsl:text></xsl:variable>
-	 		<!-- only print section header if it has examples - not sure why this is necessary -->
-	 		<xsl:if test="contains(., 'Example')">
-			<!--Beginning of section -->
-				<xsl:text><![CDATA[<table><tr><th colspan="2" class="example_heading">]]></xsl:text>
-				<xsl:value-of select="title" /> Examples
-				<!--only pull the first example section of each function -->
-			<xsl:for-each select="refentry//refsection[contains(title,'Example')][1]/programlisting[1]">
-				<!-- end of section header beginning of function list -->
-				<xsl:text><![CDATA[</th></tr>]]></xsl:text>
-				 <xsl:variable name='plainlisting'>
-					<xsl:call-template name="globalReplace">
-						<xsl:with-param name="outputString" select="."/>
-						<xsl:with-param name="target" select="$lt"/>
-						<xsl:with-param name="replacement" select="'&amp;lt;'"/>
-					</xsl:call-template>
-				</xsl:variable>
-
-				<xsl:variable name='listing'>
-					<xsl:call-template name="break">
-						<xsl:with-param name="text" select="$plainlisting" />
-					</xsl:call-template>
-				</xsl:variable>
-
-
-
-				<!-- add row for each function and alternate colors of rows -->
-		 		<![CDATA[<tr]]> class="<xsl:choose><xsl:when test="position() mod 2 = 0">evenrow</xsl:when><xsl:otherwise>oddrow</xsl:otherwise></xsl:choose>"<![CDATA[>]]>
-		 		<![CDATA[<td><b>]]><xsl:value-of select="ancestor::refentry/refnamediv/refname" /><![CDATA[</b><br /><code>]]><xsl:value-of select="$listing"  disable-output-escaping="no"/><![CDATA[</code></td></tr>]]>
-		 	</xsl:for-each>
-		 	<![CDATA[</table>]]>
-		 	</xsl:if>
-		 	<!--close section -->
-
-
-	</xsl:template>
 
 </xsl:stylesheet>
