@@ -3,8 +3,12 @@
 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-<xsl:variable name='new_tag'>Availability: <xsl:value-of select="$postgis_version" /></xsl:variable>
-<xsl:variable name='enhanced_tag'>Enhanced: <xsl:value-of select="$postgis_version" /></xsl:variable>
+<xsl:variable name='new_tag' select='"availability"' />
+<xsl:variable name='enhanced_tag' select='"enhanced"' />
+<xsl:variable name='sqlmm_conformance_tag' select='"sqlmm"' />
+<xsl:variable name='Z_conformance_tag' select='"3d"' />
+<xsl:variable name='geography_tag' select='"geography_support"' />
+
 <xsl:variable name='include_examples'>false</xsl:variable>
 <xsl:variable name='output_purpose'>true</xsl:variable>
 <xsl:variable name='linkstub'>https://postgis.net/docs/manual-<xsl:value-of select="$postgis_version" />/<xsl:value-of select="$postgis_language" /></xsl:variable>
@@ -76,6 +80,9 @@
 		<!-- end of section header beginning of function list -->
 		</th></tr>
 	<xsl:for-each select="current()//refentry">
+
+		<xsl:variable name="ref" select="." />
+
 		<!-- add row for each function and alternate colors of rows -->
 		<!-- , hyperlink to online manual -->
 		<tr>
@@ -95,22 +102,23 @@
 					<xsl:value-of select="refnamediv/refname" />
 				</a>
 			</span>
-		<xsl:if test="contains(.,$new_tag)">
+		<xsl:if test="$ref//para[@role=$new_tag and starts-with(./@conformance, $postgis_version)]">
 			&nbsp;<sup>1</sup>
 		</xsl:if>
-		<xsl:if test="contains(.,$enhanced_tag)">
+		<xsl:if test="$ref//para[@role=$enhanced_tag and starts-with(./@conformance, $postgis_version)]">
 			&nbsp;<sup>2</sup>
 		</xsl:if>
-		<xsl:if test="contains(.,'implements the SQL/MM')">
+		<xsl:if test="$ref/descendant::*[@conformance=$sqlmm_conformance_tag]">
 			&nbsp;<sup>mm</sup>
 		</xsl:if>
 		<xsl:if test="contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')">
 			&nbsp;<sup>G</sup>
 		</xsl:if>
+		<!-- TODO: make language-agnostic -->
 		<xsl:if test="contains(.,'GEOS &gt;= 3.9')">
 			&nbsp;<sup>g3.9</sup>
 		</xsl:if>
-		<xsl:if test="contains(.,'This function supports 3d')">
+		<xsl:if test="$ref/descendant::*[@conformance=$Z_conformance_tag]">
 			&nbsp;<sup>3d</sup>
 		</xsl:if>
 
@@ -140,6 +148,7 @@
 	<table>
 		<tr>
 			<th colspan="2" class="example_heading">
+				<!-- TODO: make Examples translatable -->
 				<xsl:value-of select="title" /> Examples
 			</th>
 		</tr>
