@@ -562,7 +562,7 @@ check-xml: $(XML_INPUTS)
 
 check-cheatsheets: cheatsheets
 	for f in $(abs_builddir)/html/*_cheatsheet-en.html; do \
-		$(abs_top_srcdir)/utils/check_localized_cheatsheets.sh $${f} en $(patsubst -%,%,$(DOCSUFFIX)); \
+		$(abs_top_srcdir)/utils/check_localized_cheatsheets.sh $${f} en $(patsubst -%,%,$(DOCSUFFIX)) || exit 1; \
 	done
 
 endif
