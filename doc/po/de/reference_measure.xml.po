@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-12 18:27+0000\n"
-"PO-Revision-Date: 2023-01-09 04:42+0000\n"
+"PO-Revision-Date: 2023-07-12 19:14+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "reference_measurexml/de/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: para
 #: reference_measure.xml:5
@@ -599,7 +599,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_measure.xml:208
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT degrees( ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, "
 "0.2 0.5, 1 0)') );\n"
@@ -608,12 +608,6 @@ msgid ""
 "--------------\n"
 "           45"
 msgstr ""
-"SELECT st_frechetdistance('LINESTRING (0 0, 100 0)'::geometry, 'LINESTRING "
-"(0 0, 50 50, 100 0)'::geometry, 0.5);\n"
-" st_frechetdistance\n"
-"--------------------\n"
-"                 50\n"
-"(1 row)"
 
 #. Tag: refname
 #: reference_measure.xml:221
