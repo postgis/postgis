@@ -13,6 +13,22 @@ variables:
         # Internationalization Makefiles
         - "doc/po/Makefile.local"
         # END OF COMMON PATHS
+  - &when_path_full
+      include:
+        # Common docs path
+        # related config files
+        - ".woodpecker/docs.yml"
+        # Makefiles
+        - "doc/Makefile.in"
+        - "doc/html/images/Makefile.in"
+        # XML sources
+        - "doc/*.xml"
+        # Internationalization Makefiles
+        - "doc/po/Makefile.local"
+        # END OF COMMON PATHS
+        # Localized assets
+        - "doc/po/*/Makefile.in"
+        - "doc/po/*/*.po"
 
 pipeline:
   prepare:
@@ -24,24 +40,17 @@ pipeline:
       - ../configure --without-pg
       - make postgis_revision.h
     when:
-      path:
-        include:
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # Localized assets
-          - "doc/po/*/Makefile.in"
-          - "doc/po/*/*.po"
+      path: *when_path_full
   check-xml:
     image: *test_image
     commands:
       - make -C build-docs/doc check
+    when:
+      path: *when_path
+  build-images:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc images
     when:
       path: *when_path
   build-html:
