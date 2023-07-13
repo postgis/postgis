@@ -4,18 +4,22 @@ cd $(dirname $0)
 
 SUPPORTED_LANGUAGES=$(grep ^translations ../doc/Makefile.in | cut -d= -f2)
 
-TARGETS="check html cheatsheets pdf"
+TARGETS="check-xml html cheatsheets check-cheatsheets pdf"
 
 cat docs.yml | sed '/DO NOT EDIT/q' > docs.yml.new
 
-cat docs.yml.new | sed -n '/# Common docs path/,/^$/p' | grep -v '^$' | sed 's/^/  /' > docs.yml.common_paths
+cat docs.yml.new |
+  sed '/# Common docs path/,/# END OF COMMON/!d;/# END OF COMMON/q' |
+  sed 's/^/  /' > docs.yml.common_paths
 
 exec >> docs.yml.new
 for target in ${TARGETS}
 do
+  echo "### TARGET ${target}"
   for lang in ${SUPPORTED_LANGUAGES};
   do
-    sed "s/@LANG@/${lang}/;s/@TARGET@/${target}/" docs-localized.yml.in
+    group=localized-${target}
+    sed "s/@LANG@/${lang}/;s/@TARGET@/${target}/;s/@GROUP@/${group}/" docs-localized.yml.in
     # Add common docs paths
     cat docs.yml.common_paths
   done
