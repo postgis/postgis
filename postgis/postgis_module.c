@@ -97,7 +97,8 @@ handleInterrupt(int sig)
   GEOS_interruptRequest();
 
 #ifdef HAVE_WAGYU
-  lwgeom_wagyu_interruptRequest();
+/* Taking out per #5385 crash */
+  //lwgeom_wagyu_interruptRequest();
 #endif
 
   /* request interruption of liblwgeom as well */
