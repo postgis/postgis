@@ -122,6 +122,9 @@ cd ${POSTGIS_SRC}
 # 	make distclean
 # fi
 
+git clean -dxf # ensure we start fresh
+git describe --long --all --tags # Report where we are at
+
 sh autogen.sh
 
 if [ -n "$PCRE_VER" ]; then
