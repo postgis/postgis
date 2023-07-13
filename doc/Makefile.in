@@ -376,7 +376,8 @@ else
 		 -P figure.warning="images/warning" \
 		 -P figure.caution="images/caution" \
 		 -P latex.output.revhistory=0 \
-		 -s "$(abs_srcdir)/texstyle.sty" \
+		 --texinputs "$(srcdir):$(abs_srcdir)" \
+		 -s "texstyle" \
 		 $(DBLATEX_EXTRA_OPTIONS) \
 		 -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf $<
 endif

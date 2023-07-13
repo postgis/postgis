@@ -6,5 +6,10 @@
 \ProvidesPackage{texstyle}[2017/04/25 PostGIS DocBook Style]
 
 %% Just use the original package and pass the options
-\RequirePackageWithOptions{texstyle-common}
+\RequirePackageWithOptions{docbook}
+
+%% Make regular quotes within programlisting tags (#3726)
+\usepackage{listings}
+\lstset{upquote=true}
+
 
