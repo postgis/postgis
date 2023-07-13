@@ -4,6 +4,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:variable name='new_tag' select='"availability"' />
+<xsl:variable name='geos_tag' select='"geos_requirement"' />
 <xsl:variable name='enhanced_tag' select='"enhanced"' />
 <xsl:variable name='sqlmm_conformance_tag' select='"sqlmm"' />
 <xsl:variable name='Z_conformance_tag' select='"3d"' />
@@ -114,8 +115,7 @@
 		<xsl:if test="contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')">
 			&nbsp;<sup>G</sup>
 		</xsl:if>
-		<!-- TODO: make language-agnostic -->
-		<xsl:if test="contains(.,'GEOS &gt;= 3.9')">
+		<xsl:if test="$ref//para[@role=$geos_tag and starts-with(./@conformance, '3.9')]">
 			&nbsp;<sup>g3.9</sup>
 		</xsl:if>
 		<xsl:if test="$ref/descendant::*[@conformance=$Z_conformance_tag]">

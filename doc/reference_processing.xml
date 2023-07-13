@@ -1427,7 +1427,8 @@ FROM test;
 			<note><para>Only use with MultiLineString/LineStrings. Other geometry types
 			return an empty GeometryCollection</para></note>
 			<para>Performed by the GEOS module.</para>
-			<para role="enhanced" conformance="3.3.0">Enhanced: 3.3.0 accept a directed parameter - requires GEOS &gt;= 3.11.0</para>
+			<para role="enhanced" conformance="3.3.0">Enhanced: 3.3.0 accept a directed parameter.</para>
+            <para role="geos_requirement" conformance="3.11.0">Requires GEOS &gt;= 3.11.0 to use the directed parameter.</para>
 			<para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
 			<warning><para>This function strips the M dimension.</para></warning>
 		</refsection>
@@ -1552,7 +1553,8 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
         For linear and point inputs, the circle is inscribed within the convex hull of the input,
         using the input lines and points as further boundaries.</para>
 
-        <para role="availability" conformance="3.1.0">Availability: 3.1.0 - requires GEOS &gt;= 3.9.0.</para>
+        <para role="availability" conformance="3.1.0">Availability: 3.1.0.</para>
+        <para role="geos_requirement" conformance="3.9.0">Requires GEOS &gt;= 3.9.0.</para>
 
       </refsection>
 
@@ -1623,7 +1625,8 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
 
         <para>To find the largest empty circle in the interior of a polygon, see <xref linkend="ST_MaximumInscribedCircle" />.</para>
 
-        <para role="availability" conformance="3.4.0">Availability: 3.4.0 - requires GEOS &gt;= 3.9.0.</para>
+        <para role="availability" conformance="3.4.0">Availability: 3.4.0.</para>
+        <para role="geos_requirement" conformance="3.9.0">Requires GEOS &gt;= 3.9.0.</para>
 
       </refsection>
 
@@ -1824,8 +1827,9 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
                 May return a Point or LineString in the case of degenerate inputs.
             </para>
             <para role="availability" conformance="2.5.0">
-                Availability: 2.5.0, requires GEOS &gt;= 3.6.0
+                Availability: 2.5.0.
             </para>
+            <para role="geos_requirement" conformance="3.6.0">Requires GEOS &gt;= 3.6.0.</para>
         </refsection>
 
         <refsection>
@@ -2390,7 +2394,8 @@ geomtextrep
         </itemizedlist>
 		</para>
 
-        <para role="availability" conformance="3.1.0">Availability: 3.1.0 - requires GEOS &gt;= 3.9.0. </para>
+        <para role="availability" conformance="3.1.0">Availability: 3.1.0.</para>
+        <para role="geos_requirement" conformance="3.9.0">Requires GEOS &gt;= 3.9.0.</para>
       </refsection>
 
       <refsection>
@@ -2705,7 +2710,8 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As geom) As foo;
         <para>To get better results with geometries that contain relatively long line segments, it might be necessary to "segmentize" the input, as shown below.</para>
 
         <para>Performed by the GEOS module.</para>
-    	<para role="availability" conformance="3.3.0">Availability: 3.3.0 - requires GEOS &gt;= 3.11.0 </para>
+    	<para role="availability" conformance="3.3.0">Availability: 3.3.0.</para>
+        <para role="geos_requirement" conformance="3.11.0">Requires GEOS &gt;= 3.11.0.</para>
 
       </refsection>
       <refsection>
@@ -2907,7 +2913,8 @@ LINESTRING M (5 2 3.40282346638529e+38,3 8 29,6 20 1.5,7 25 49.5,10 10 3.4028234
         and covering it exactly, with the maximum total interior angle over all possible triangulations.
         It provides the "best quality" triangulation of the polygon.</para>
 
-        <para role="availability" conformance="3.3.0">Availability: 3.3.0 - requires GEOS &gt;= 3.11.0</para>
+        <para role="availability" conformance="3.3.0">Availability: 3.3.0.</para>
+        <para role="geos_requirement" conformance="3.11.0">Requires GEOS &gt;= 3.11.0.</para>
       </refsection>
 
           <refsection>
