@@ -4428,9 +4428,9 @@ msgid ""
 "parameter></paramdef> </funcprototype>"
 msgstr ""
 "<funcprototype> <funcdef>texto <function>ST_Summary</function></funcdef> "
-"<paramdef><type>geometria </type> <parameter>g</parameter></paramdef> </"
+"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef> </"
 "funcprototype> <funcprototype> <funcdef>text <function>ST_Summary</"
-"function></funcdef> <paramdef><type>geografia </type> <parameter>g</"
+"function></funcdef> <paramdef><type>geography </type> <parameter>g</"
 "parameter></paramdef> </funcprototype>"
 
 #. Tag: para

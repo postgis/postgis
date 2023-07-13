@@ -239,7 +239,7 @@ msgid ""
 "<funcdef>geography <function>ST_GeogFromText</function></funcdef> "
 "<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>"
 msgstr ""
-"<funcdef>geografia <function>ST_GeogFromText</function></funcdef> "
+"<funcdef>geography <function>ST_GeogFromText</function></funcdef> "
 "<paramdef><type>texto </type> <parameter>EWKT</parameter></paramdef>"
 
 #. Tag: para
@@ -307,7 +307,7 @@ msgid ""
 "<funcdef>geography <function>ST_GeographyFromText</function></funcdef> "
 "<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>"
 msgstr ""
-"<funcdef>geografia <function>ST_GeographyFromText</function></funcdef> "
+"<funcdef>geography <function>ST_GeographyFromText</function></funcdef> "
 "<paramdef><type>texto </type> <parameter>EWKT</parameter></paramdef>"
 
 #. Tag: para
@@ -1590,7 +1590,7 @@ msgid ""
 "<funcdef>geography <function>ST_GeogFromWKB</function></funcdef> "
 "<paramdef><type>bytea </type> <parameter>wkb</parameter></paramdef>"
 msgstr ""
-"<funcdef>geografia <function>ST_GeogFromWKB</function></funcdef> "
+"<funcdef>geography <function>ST_GeogFromWKB</function></funcdef> "
 "<paramdef><type>bytea </type> <parameter>wkb</parameter></paramdef>"
 
 #. Tag: para
