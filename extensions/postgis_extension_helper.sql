@@ -126,14 +126,22 @@ BEGIN
 	RAISE NOTICE 'cur_search_path from pg_db_role_setting is %', var_cur_search_path;
 
 	IF var_cur_search_path IS NULL THEN
-		SELECT reset_val
+		SELECT setting
+		INTO var_cur_search_path
+		FROM pg_catalog.pg_file_settings
+		WHERE name OPERATOR(pg_catalog.=) 'search_path' AND applied;
+
+		RAISE NOTICE 'cur_search_path from pg_file_settings is %', var_cur_search_path;
+	END IF;
+
+	IF var_cur_search_path IS NULL THEN
+		SELECT boot_val
 		INTO var_cur_search_path
 		FROM pg_catalog.pg_settings
 		WHERE name OPERATOR(pg_catalog.=) 'search_path';
 
 		RAISE NOTICE 'cur_search_path from pg_settings is %', var_cur_search_path;
 	END IF;
-
 
 	IF var_cur_search_path LIKE '%' OPERATOR(pg_catalog.||) pg_catalog.quote_ident(a_schema_name) OPERATOR(pg_catalog.||) '%' THEN
 		var_result := a_schema_name OPERATOR(pg_catalog.||) ' already in database search_path';
