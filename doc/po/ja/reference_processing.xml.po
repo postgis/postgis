@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-13 08:07+0000\n"
-"PO-Revision-Date: 2023-07-03 03:08+0000\n"
+"PO-Revision-Date: 2023-07-14 10:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_processingxml/ja/>\n"
@@ -766,6 +766,12 @@ msgid ""
 "      ST_GeomFromText('POINT(100 90)'), 25) As smallc,\n"
 "    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;"
 msgstr ""
+"<lineannotation>ポリゴンを使う</lineannotation>\n"
+"SELECT ST_BuildArea(ST_Collect(smallc,bigc))\n"
+"FROM (SELECT\n"
+"    ST_Buffer(\n"
+"      ST_GeomFromText('POINT(100 90)'), 25) As smallc,\n"
+"    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;"
 
 #. Tag: programlisting
 #: reference_processing.xml:340
@@ -779,6 +785,13 @@ msgid ""
 "    ST_ExteriorRing(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50)) As "
 "bigc) As foo;"
 msgstr ""
+"<lineannotation>ラインストリングを使う</lineannotation>\n"
+"SELECT ST_BuildArea(ST_Collect(smallc,bigc))\n"
+"FROM (SELECT\n"
+"    ST_ExteriorRing(ST_Buffer(\n"
+"      ST_GeomFromText('POINT(100 90)'), 25)) As smallc,\n"
+"    ST_ExteriorRing(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50)) As bigc)"
+" As foo;"
 
 #. Tag: para
 #: reference_processing.xml:351
@@ -1757,6 +1770,11 @@ msgid ""
 "        ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)\n"
 "        )"
 msgstr ""
+"<lineannotation>元のジオメトリ</lineannotation>\n"
+"    ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40,\n"
+"            50 60, 125 100, 175 150))'),\n"
+"        ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)\n"
+"        )"
 
 #. Tag: para
 #: reference_processing.xml:893
@@ -1783,6 +1801,16 @@ msgid ""
 "        ))\n"
 "     As  dtriag;"
 msgstr ""
+"<lineannotation>\n"
+"マルチラインストリングの三角形を重ねたジオメトリ\n"
+"</lineannotation>\n"
+"SELECT\n"
+"    ST_DelaunayTriangles(\n"
+"        ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40,\n"
+"            50 60, 125 100, 175 150))'),\n"
+"        ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)\n"
+"        ))\n"
+"     As  dtriag;"
 
 #. Tag: para
 #: reference_processing.xml:903
@@ -1847,6 +1875,32 @@ msgid ""
 "POLYGON((154 14,14 154,150 14,154 14))\n"
 "POLYGON((154 14,150 14,154 6,154 14))"
 msgstr ""
+"<lineannotation>\n"
+"これによりL字型を形成する42点のテーブルが生成されます\n"
+"</lineannotation>\n"
+"SELECT (ST_DumpPoints(ST_GeomFromText(\n"
+"'MULTIPOINT(14 14,34 14,54 14,74 14,94 14,114 14,134 14,\n"
+"150 14,154 14,154 6,134 6,114 6,94 6,74 6,54 6,34 6,\n"
+"14 6,10 6,8 6,7 7,6 8,6 10,6 30,6 50,6 70,6 90,6 110,6 130,\n"
+"6 150,6 170,6 190,6 194,14 194,14 174,14 154,14 134,14 114,\n"
+"14 94,14 74,14 54,14 34,14 14)'))).geom\n"
+"    INTO TABLE l_shape;\n"
+"<lineannotation>\n"
+"個々のポリゴン三角形として出力\n"
+"</lineannotation>\n"
+"SELECT ST_AsText((ST_Dump(geom)).geom) As wkt\n"
+"FROM ( SELECT ST_DelaunayTriangles(ST_Collect(geom)) As geom\n"
+"FROM l_shape) As foo;\n"
+"\n"
+"<lineannotation>\n"
+"wkt\n"
+"</lineannotation>\n"
+"POLYGON((6 194,6 190,14 194,6 194))\n"
+"POLYGON((14 194,6 190,14 174,14 194))\n"
+"POLYGON((14 194,14 174,154 14,14 194))\n"
+"POLYGON((154 14,14 174,14 154,154 14))\n"
+"POLYGON((154 14,14 154,150 14,154 14))\n"
+"POLYGON((154 14,150 14,154 6,154 14))"
 
 #. Tag: para
 #: reference_processing.xml:925
@@ -1870,6 +1924,17 @@ msgid ""
 "GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))\n"
 " ,POLYGON Z ((14 14 10,34 6 25,150 14 100,14 14 10)))"
 msgstr ""
+"<lineannotation>\n"
+"3次元マルチポイント\n"
+"</lineannotation>\n"
+"SELECT ST_AsText(ST_DelaunayTriangles(ST_GeomFromText(\n"
+"         'MULTIPOINT Z(14 14 10, 150 14 100,34 6 25, 20 10 150)'))) As wkt;\n"
+"\n"
+"<lineannotation>\n"
+"wkt\n"
+"</lineannotation>\n"
+"GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))\n"
+" ,POLYGON Z ((14 14 10,34 6 25,150 14 100,14 14 10)))"
 
 #. Tag: para
 #: reference_processing.xml:931
@@ -1991,6 +2056,15 @@ msgid ""
 "----------------------------\n"
 " LINESTRING(5 2,7 25,10 10)"
 msgstr ""
+"SELECT ST_AsText(ST_FilterByM(geom,30)) simplified\n"
+"FROM (SELECT  ST_SetEffectiveArea('LINESTRING(5 2, 3 8, 6 20, 7 25, 10 "
+"10)'::geometry) geom) As foo;\n"
+"<lineannotation>\n"
+"結果\n"
+"</lineannotation>\n"
+"         simplified\n"
+"----------------------------\n"
+" LINESTRING(5 2,7 25,10 10)"
 
 #. Tag: para
 #: reference_processing.xml:983
@@ -2282,13 +2356,13 @@ msgstr ""
 #: reference_processing.xml:1168
 #, no-c-format
 msgid "Enhanced: 3.3.0 accept a directed parameter."
-msgstr ""
+msgstr "Enhanced: 3.3.0 directedパラメータを付け付けるようになりました。"
 
 #. Tag: para
 #: reference_processing.xml:1169
 #, no-c-format
 msgid "Requires GEOS &gt;= 3.11.0 to use the directed parameter."
-msgstr ""
+msgstr "directedパラメータを使うにはGEOS 3.11.0以上が必要です。"
 
 #. Tag: para
 #: reference_processing.xml:1171
@@ -2496,14 +2570,14 @@ msgstr ""
 #: reference_processing.xml:1266 reference_processing.xml:1906
 #, no-c-format
 msgid "Availability: 3.1.0."
-msgstr ""
+msgstr "Availability: 3.1.0."
 
 #. Tag: para
 #: reference_processing.xml:1267 reference_processing.xml:1331
 #: reference_processing.xml:1907
 #, no-c-format
 msgid "Requires GEOS &gt;= 3.9.0."
-msgstr ""
+msgstr "GEOS 3.9.0以上が必要です。"
 
 #. Tag: para
 #: reference_processing.xml:1278
@@ -2634,7 +2708,7 @@ msgstr ""
 #: reference_processing.xml:1330
 #, no-c-format
 msgid "Availability: 3.4.0."
-msgstr ""
+msgstr "Availability: 3.4.0."
 
 #. Tag: programlisting
 #: reference_processing.xml:1338
@@ -2996,13 +3070,13 @@ msgstr ""
 #: reference_processing.xml:1495
 #, no-c-format
 msgid "Availability: 2.5.0."
-msgstr ""
+msgstr "Availability: 2.5.0."
 
 #. Tag: para
 #: reference_processing.xml:1498
 #, no-c-format
 msgid "Requires GEOS &gt;= 3.6.0."
-msgstr ""
+msgstr "GEOS 3.6.0以上が必要です。"
 
 #. Tag: programlisting
 #: reference_processing.xml:1503
@@ -3222,6 +3296,19 @@ msgid ""
 "    5.39339828220179 7.39339828220179,\n"
 "    2.14180701233067 12.2597485145237,1 18,1 195)"
 msgstr ""
+"SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(\n"
+"'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
+"    44 16,24 16,20 16,18 16,17 17,\n"
+"    16 18,16 20,16 40,16 60,16 80,16 100,\n"
+"    16 120,16 140,16 160,16 180,16 195)'),\n"
+"    15, 'quad_segs=4 join=round'));\n"
+"<lineannotation>\n"
+"出力\n"
+"</lineannotation>\n"
+"LINESTRING(164 1,18 1,12.2597485145237 2.1418070123307,\n"
+"    7.39339828220179 5.39339828220179,\n"
+"    5.39339828220179 7.39339828220179,\n"
+"    2.14180701233067 12.2597485145237,1 18,1 195)"
 
 #. Tag: para
 #: reference_processing.xml:1618
@@ -3245,6 +3332,17 @@ msgid ""
 "</lineannotation>\n"
 "LINESTRING(31 195,31 31,164 31)"
 msgstr ""
+"SELECT ST_AsText(ST_OffsetCurve(geom,\n"
+"    -15, 'quad_segs=4 join=round')) As notsocurvy\n"
+"    FROM ST_GeomFromText(\n"
+"'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
+"    44 16,24 16,20 16,18 16,17 17,\n"
+"    16 18,16 20,16 40,16 60,16 80,16 100,\n"
+"    16 120,16 140,16 160,16 180,16 195)') As geom;\n"
+"<lineannotation>\n"
+"そんなに曲線でない\n"
+"</lineannotation>\n"
+"LINESTRING(31 195,31 31,164 31)"
 
 #. Tag: para
 #: reference_processing.xml:1631
@@ -3275,6 +3373,20 @@ msgid ""
 "35.3933982822018 35.3933982822018,\n"
 "32.1418070123307 40.2597485145237,31 46,31 195)"
 msgstr ""
+"SELECT ST_AsText(ST_OffsetCurve(ST_OffsetCurve(geom,\n"
+"    -30, 'quad_segs=4 join=round'), -15, 'quad_segs=4 join=round')) As "
+"morecurvy\n"
+"    FROM ST_GeomFromText(\n"
+"'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
+"    44 16,24 16,20 16,18 16,17 17,\n"
+"    16 18,16 20,16 40,16 60,16 80,16 100,\n"
+"    16 120,16 140,16 160,16 180,16 195)') As geom;\n"
+"<lineannotation>\n"
+"かなり曲線\n"
+"</lineannotation>\n"
+"LINESTRING(164 31,46 31,40.2597485145236 32.1418070123307,\n"
+"35.3933982822018 35.3933982822018,\n"
+"32.1418070123307 40.2597485145237,31 46,31 195)"
 
 #. Tag: para
 #: reference_processing.xml:1641
@@ -3311,6 +3423,26 @@ msgid ""
 "35.3933982822018,\n"
 "32.1418070123307 40.2597485145237,31 46,31 195))"
 msgstr ""
+"SELECT ST_AsText(ST_Collect(\n"
+"    ST_OffsetCurve(geom, 15, 'quad_segs=4 join=round'),\n"
+"    ST_OffsetCurve(ST_OffsetCurve(geom,\n"
+"    -30, 'quad_segs=4 join=round'), -15, 'quad_segs=4 join=round')\n"
+"    )\n"
+") As parallel_curves\n"
+"    FROM ST_GeomFromText(\n"
+"'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
+"    44 16,24 16,20 16,18 16,17 17,\n"
+"    16 18,16 20,16 40,16 60,16 80,16 100,\n"
+"    16 120,16 140,16 160,16 180,16 195)') As geom;\n"
+"<lineannotation>\n"
+"平行曲線\n"
+"</lineannotation>\n"
+"MULTILINESTRING((164 1,18 1,12.2597485145237 2.1418070123307,\n"
+"7.39339828220179 5.39339828220179,5.39339828220179 7.39339828220179,\n"
+"2.14180701233067 12.2597485145237,1 18,1 195),\n"
+"(164 31,46 31,40.2597485145236 32.1418070123307,35.3933982822018 35."
+"3933982822018,\n"
+"32.1418070123307 40.2597485145237,31 46,31 195))"
 
 #. Tag: para
 #: reference_processing.xml:1653
@@ -3334,6 +3466,17 @@ msgid ""
 "LINESTRING(164 1,18 1,7.39339828220179 5.39339828220179,\n"
 "    5.39339828220179 7.39339828220179,1 18,1 195)"
 msgstr ""
+"SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(\n"
+"'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
+"    44 16,24 16,20 16,18 16,17 17,\n"
+"    16 18,16 20,16 40,16 60,16 80,16 100,\n"
+"    16 120,16 140,16 160,16 180,16 195)'),\n"
+"        15, 'quad_segs=4 join=bevel'));\n"
+"<lineannotation>\n"
+"出力\n"
+"</lineannotation>\n"
+"LINESTRING(164 1,18 1,7.39339828220179 5.39339828220179,\n"
+"    5.39339828220179 7.39339828220179,1 18,1 195)"
 
 #. Tag: para
 #: reference_processing.xml:1664
@@ -3361,6 +3504,20 @@ msgid ""
 "MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),\n"
 "    (31 195,31 31,164 31))"
 msgstr ""
+"SELECT ST_AsText(ST_Collect(\n"
+"    ST_OffsetCurve(geom, 15, 'quad_segs=4 join=mitre mitre_limit=2.2'),\n"
+"    ST_OffsetCurve(geom, -15, 'quad_segs=4 join=mitre mitre_limit=2.2')\n"
+"    ) )\n"
+"    FROM ST_GeomFromText(\n"
+"'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
+"    44 16,24 16,20 16,18 16,17 17,\n"
+"    16 18,16 20,16 40,16 60,16 80,16 100,\n"
+"    16 120,16 140,16 160,16 180,16 195)') As geom;\n"
+"<lineannotation>\n"
+"出力\n"
+"</lineannotation>\n"
+"MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),\n"
+"    (31 195,31 31,164 31))"
 
 #. Tag: refname
 #: reference_processing.xml:1684
@@ -3964,6 +4121,21 @@ msgid ""
 "GEOMETRYCOLLECTION(MULTILINESTRING EMPTY,\n"
 "MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))"
 msgstr ""
+"<lineannotation>\n"
+"同じ例ですがラインストリングの順序を入れ替えています\n"
+"</lineannotation>\n"
+"SELECT ST_AsText(\n"
+"  ST_SharedPaths(\n"
+"   ST_GeomFromText('LINESTRING(76 175,90 161,126 125,126 156.25,151 100)'),\n"
+"   ST_GeomFromText('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),\n"
+"       (51 150,101 150,76 175,51 150))')\n"
+"    )\n"
+"  ) As wkt\n"
+"\n"
+"                                wkt\n"
+"-------------------------------------------------------------\n"
+"GEOMETRYCOLLECTION(MULTILINESTRING EMPTY,\n"
+"MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))"
 
 #. Tag: para
 #: reference_processing.xml:1995
@@ -4313,13 +4485,13 @@ msgstr ""
 #: reference_processing.xml:2149 reference_processing.xml:2325
 #, no-c-format
 msgid "Availability: 3.3.0."
-msgstr ""
+msgstr "Availability: 3.3.0."
 
 #. Tag: para
 #: reference_processing.xml:2150 reference_processing.xml:2326
 #, no-c-format
 msgid "Requires GEOS &gt;= 3.11.0."
-msgstr ""
+msgstr "GEOS 3.11.0以上が必要です。"
 
 #. Tag: para
 #: reference_processing.xml:2162
@@ -4868,6 +5040,10 @@ msgid ""
 "(36.8181818181818 92.2727272727273,-110 43.3333333333333),(230 "
 "-45.7142857142858,36.8181818181818 92.2727272727273))"
 msgstr ""
+"<lineannotation>ST_AsText 出力</lineannotation>\n"
+"MULTILINESTRING((135.555555555556 270,36.8181818181818 92.2727272727273),("
+"36.8181818181818 92.2727272727273,-110 43.3333333333333),(230 -"
+"45.7142857142858,36.8181818181818 92.2727272727273))"
 
 #. Tag: para
 #: reference_processing.xml:2429
@@ -4959,6 +5135,18 @@ msgid ""
 "POLYGON((100.5 270,230 270,230 47.5,59.3478260869565 132.826086956522,100.5 "
 "270)))"
 msgstr ""
+"<lineannotation>ST_AsText 出力</lineannotation>\n"
+"GEOMETRYCOLLECTION(POLYGON((-110 43.3333333333333,-110 270,100.5 "
+"270,59.3478260869565 132.826086956522,36.8181818181818 92.2727272727273,-110 "
+"43.3333333333333)),\n"
+"POLYGON((55 -90,-110 -90,-110 43.3333333333333,36.8181818181818 "
+"92.2727272727273,55 79.2857142857143,55 -90)),\n"
+"POLYGON((230 47.5,230 -20.7142857142857,55 79.2857142857143,36.8181818181818 "
+"92.2727272727273,59.3478260869565 132.826086956522,230 47.5)),POLYGON((230 -"
+"20.7142857142857,230 -90,55 -90,55 79.2857142857143,230 -20.7142857142857)),"
+"\n"
+"POLYGON((100.5 270,230 270,230 47.5,59.3478260869565 132.826086956522,100.5 "
+"270)))"
 
 #. Tag: para
 #: reference_processing.xml:2509
@@ -4993,6 +5181,16 @@ msgid ""
 "POLYGON((100.5 270,230 270,230 47.5,59.3478260869565 132.826086956522,100.5 "
 "270)))"
 msgstr ""
+"<lineannotation>ST_AsText 出力</lineannotation>\n"
+"GEOMETRYCOLLECTION(POLYGON((-110 43.3333333333333,-110 270,100.5 "
+"270,59.3478260869565 132.826086956522,36.8181818181818 92.2727272727273,-110 "
+"43.3333333333333)),\n"
+"POLYGON((230 47.5,230 -45.7142857142858,36.8181818181818 "
+"92.2727272727273,59.3478260869565 132.826086956522,230 47.5)),POLYGON((230 -"
+"45.7142857142858,230 -90,-110 -90,-110 43.3333333333333,36.8181818181818 "
+"92.2727272727273,230 -45.7142857142858)),\n"
+"POLYGON((100.5 270,230 270,230 47.5,59.3478260869565 132.826086956522,100.5 "
+"270)))"
 
 #. Tag: para
 #: reference_processing.xml:2521
