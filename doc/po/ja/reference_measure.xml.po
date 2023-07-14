@@ -3,12 +3,13 @@
 # Translators:
 # Kayama Yoichi <yoichi.kayama@gmail.com>, 2016
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-12 18:27+0000\n"
-"PO-Revision-Date: 2023-07-03 03:08+0000\n"
+"PO-Revision-Date: 2023-07-14 02:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_measurexml/ja/>\n"
@@ -718,6 +719,15 @@ msgid ""
 "choice=\"opt\"><type>boolean </type> <parameter>repeat = true</parameter></"
 "paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_ClosestPoint</function></"
+"funcdef> <paramdef><type>geometry </type> <parameter>geom1</parameter></"
+"paramdef> <paramdef><type>geometry </type> <parameter>geom2</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>geography "
+"<function>ST_ClosestPoint</function></funcdef> <paramdef><type>geography </"
+"type> <parameter>geom1</parameter></paramdef> <paramdef><type>geography </"
+"type> <parameter>geom2</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>repeat = true</parameter></paramdef> "
+"</funcprototype>"
 
 #. Tag: para
 #: reference_measure.xml:254
@@ -3558,6 +3568,15 @@ msgid ""
 "choice=\"opt\"><type>boolean </type><parameter>use_spheroid = true</"
 "parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_ShortestLine</function></"
+"funcdef> <paramdef><type>geometry </type> <parameter>geom1</parameter></"
+"paramdef> <paramdef><type>geometry </type> <parameter>geom2</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>geography "
+"<function>ST_ShortestLine</function></funcdef> <paramdef><type>geography </"
+"type> <parameter>geom1</parameter></paramdef> <paramdef><type>geography </"
+"type> <parameter>geom2</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type><parameter>use_spheroid = true</parameter></paramdef> "
+"</funcprototype>"
 
 #. Tag: para
 #: reference_measure.xml:1486
