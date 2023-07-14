@@ -13,11 +13,11 @@ local-clean: local-html-clean local-pdf-clean local-epub-clean local-cheatsheet-
 local-distclean:
 	rm -f Makefile
 
-local-%: symlinks
+local-%: xsl
 	$(MAKE) $(patsubst local-%,%,$@) DOCSUFFIX=$(DOCSUFFIX)
 
-symlinks:
-	test -e xsl || ln -sf $(srcdir)/../../xsl .
+xsl:
+	ln -sf $(srcdir)/../../xsl .
 
 # for XML_SOURCES
 include ../../Makefile
