@@ -291,11 +291,14 @@ update-po: $(XML_INPUTS_POT)
   done
 endif
 
+postgis-nospecial.xml: postgis-out.xml
+	grep -v '\&postgis_special;' $< > $@
+
 ifeq ($(XSLTPROC),)
 $(XSL_GENERATED_SOURCES): requirements_not_met_xsltproc
 else
-$(XSL_GENERATED_SOURCES): %.xsl.xml: xsl/%.xml.xsl postgis-out.xml xsl-config.xml $(TAG_GENERATED_SOURCES) $(XML_SOURCES)
-	grep -v '\&postgis_special;' postgis-out.xml | $(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< -
+$(XSL_GENERATED_SOURCES): %.xsl.xml: xsl/%.xml.xsl postgis-nospecial.xml xsl-config.xml $(TAG_GENERATED_SOURCES) $(XML_SOURCES)
+	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-nospecial.xml
 endif
 
 ifeq ($(XMLLINT),)
@@ -449,6 +452,7 @@ cheatsheet-clean:
 clean: images-clean html-clean pdf-clean epub-clean cheatsheet-clean
 	rm -f images # work around https://trac.osgeo.org/postgis/ticket/5422
 	rm -f $(XML_GENERATED_SOURCES)
+	rm -f postgis-nospecial.xml
 	rm -f $(TAG_GENERATED_SOURCES)
 	$(MAKE) -C $(images_builddir) clean
 	rm -f postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql

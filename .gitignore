@@ -39,6 +39,7 @@ doc/Makefile
 doc/Makefile.comments
 doc/**.xsl.xml
 *.tag
+doc/postgis-nospecial.xml
 doc/po/*/*.xml
 doc/po/*/html
 doc/po/*/Makefile
