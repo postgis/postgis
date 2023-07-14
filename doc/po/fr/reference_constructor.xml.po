@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-08-27 04:57+0000\n"
+"POT-Creation-Date: 2023-07-14 23:23+0000\n"
 "PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -40,29 +40,6 @@ msgid ""
 msgstr ""
 "Crée une géométrie GeometryCollection ou Multi à partir d'un ensemble de "
 "géométries."
-
-#. Tag: funcsynopsis
-#: reference_constructor.xml:12
-#, no-c-format
-msgid ""
-"<funcprototype> <funcdef>geometry <function>ST_Collect</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>g2</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geometry <function>ST_Collect</"
-"function></funcdef> <paramdef><type>geometry[]</type> <parameter>g1_array</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_Collect</function></funcdef> <paramdef><type>geometry set</"
-"type> <parameter>g1field</parameter></paramdef> </funcprototype>"
-msgstr ""
-"<funcprototype> <funcdef>geometry <function>ST_Collect</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>g2</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_Collect</function></funcdef> <paramdef><type>geometry[]</type> "
-"<parameter>g1_array</parameter></paramdef> </funcprototype> <funcprototype> "
-"<funcdef>geometry <function>ST_Collect</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>g1field</parameter></"
-"paramdef> </funcprototype>"
 
 #. Tag: title
 #: reference_constructor.xml:30 reference_constructor.xml:109
@@ -189,78 +166,17 @@ msgstr "Exemples - Variante à deux entrées"
 msgid "Collect 2D points."
 msgstr "Collectez les points 2D."
 
-#. Tag: programlisting
-#: reference_constructor.xml:65
-#, no-c-format
-msgid ""
-"SELECT ST_AsText( ST_Collect( ST_GeomFromText('POINT(1 2)'),\n"
-"        ST_GeomFromText('POINT(-2 3)') ));\n"
-"\n"
-"st_astext\n"
-"----------\n"
-"MULTIPOINT((1 2),(-2 3))"
-msgstr ""
-"SELECT ST_AsText( ST_Collect( ST_GeomFromText('POINT(1 2)'),\n"
-"        ST_GeomFromText('POINT(-2 3)') )) ;\n"
-"\n"
-"st_astext\n"
-"----------\n"
-"MULTIPOINT((1 2),(-2 3))"
-
 #. Tag: para
 #: reference_constructor.xml:67
 #, no-c-format
 msgid "Collect 3D points."
 msgstr "Collectez les points 3D."
 
-#. Tag: programlisting
-#: reference_constructor.xml:68
-#, no-c-format
-msgid ""
-"SELECT ST_AsEWKT( ST_Collect( ST_GeomFromEWKT('POINT(1 2 3)'),\n"
-"                ST_GeomFromEWKT('POINT(1 2 4)') ) );\n"
-"\n"
-"                st_asewkt\n"
-"-------------------------\n"
-" MULTIPOINT(1 2 3,1 2 4)"
-msgstr ""
-"SELECT ST_AsEWKT( ST_Collect( ST_GeomFromEWKT('POINT(1 2 3)'),\n"
-"                ST_GeomFromEWKT('POINT(1 2 4)') ) ) ;\n"
-"\n"
-"                st_asewkt\n"
-"-------------------------\n"
-" MULTIPOINT(1 2 3,1 2 4)"
-
 #. Tag: para
 #: reference_constructor.xml:70
 #, no-c-format
 msgid "Collect curves."
 msgstr "Collectez les courbes."
-
-#. Tag: programlisting
-#: reference_constructor.xml:71
-#, no-c-format
-msgid ""
-"SELECT ST_AsText( ST_Collect( 'CIRCULARSTRING(220268 150415,220227 "
-"150505,220227 150406)',\n"
-"                'CIRCULARSTRING(220227 150406,2220227 150407,220227 "
-"150406)'));\n"
-"\n"
-"                st_astext\n"
-"------------------------------------------------------------------------------------\n"
-"MULTICURVE(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),\n"
-" CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))"
-msgstr ""
-"SELECT ST_AsText( ST_Collect( 'CIRCULARSTRING(220268 150415,220227 "
-"150505,220227 150406)',\n"
-"                'CIRCULARSTRING(220227 150406,2220227 150407,220227 "
-"150406)')) ;\n"
-"\n"
-"                st_astext\n"
-"-----------------------------------------------------------------------------"
-"-------\n"
-"MULTICURVE(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),\n"
-" CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))"
 
 #. Tag: title
 #: reference_constructor.xml:74
@@ -274,37 +190,11 @@ msgstr "Exemples - Variante avec un tableau"
 msgid "Using an array constructor for a subquery."
 msgstr "Utilisation d'un constructeur de tableau pour une sous-requête."
 
-#. Tag: programlisting
-#: reference_constructor.xml:76
-#, no-c-format
-msgid "SELECT ST_Collect( ARRAY( SELECT geom FROM sometable ) );"
-msgstr "SELECT ST_Collect( ARRAY( SELECT geom FROM sometable ) ) ;"
-
 #. Tag: para
 #: reference_constructor.xml:77
 #, no-c-format
 msgid "Using an array constructor for values."
 msgstr "Utilisation d'un constructeur de tableau pour les valeurs."
-
-#. Tag: programlisting
-#: reference_constructor.xml:78
-#, no-c-format
-msgid ""
-"SELECT ST_AsText(  ST_Collect(\n"
-"                ARRAY[ ST_GeomFromText('LINESTRING(1 2, 3 4)'),\n"
-"                        ST_GeomFromText('LINESTRING(3 4, 4 5)') ] )) As "
-"wktcollect;\n"
-"\n"
-"--wkt collect --\n"
-"MULTILINESTRING((1 2,3 4),(3 4,4 5))"
-msgstr ""
-"SELECT ST_AsText(  ST_Collect(\n"
-"                ARRAY[ ST_GeomFromText('LINESTRING(1 2, 3 4)'),\n"
-"                        ST_GeomFromText('LINESTRING(3 4, 4 5)') ] )) As "
-"wktcollect ;\n"
-"\n"
-"--wkt collect --\n"
-"MULTILINESTRING((1 2,3 4),(3 4,4 5))"
 
 #. Tag: title
 #: reference_constructor.xml:81
@@ -319,22 +209,6 @@ msgid "Creating multiple collections by grouping geometries in a table."
 msgstr ""
 "Création de collections multiples en regroupant les géométries dans une "
 "table."
-
-#. Tag: programlisting
-#: reference_constructor.xml:83
-#, no-c-format
-msgid ""
-"SELECT stusps, ST_Collect(f.geom) as geom\n"
-"         FROM (SELECT stusps, (ST_Dump(geom)).geom As geom\n"
-"                                FROM\n"
-"                                somestatetable ) As f\n"
-"        GROUP BY stusps"
-msgstr ""
-"SELECT stusps, ST_Collect(f.geom) as geom\n"
-"         FROM (SELECT stusps, (ST_Dump(geom)).geom As geom\n"
-"                                FROM\n"
-"                                somestatetable ) As f\n"
-"        GROUP BY stusps"
 
 #. Tag: title
 #: reference_constructor.xml:87 reference_constructor.xml:127
@@ -414,22 +288,6 @@ msgstr "Exemples"
 msgid "Create a 3D line string from a 3D MultiPoint"
 msgstr "Créer une LineString 3D à partir d'un MultiPoint 3D"
 
-#. Tag: programlisting
-#: reference_constructor.xml:122
-#, no-c-format
-msgid ""
-"SELECT ST_AsEWKT(  ST_LineFromMultiPoint('MULTIPOINT(1 2 3, 4 5 6, 7 8 "
-"9)')  ));\n"
-"\n"
-"--result--\n"
-"LINESTRING(1 2 3,4 5 6,7 8 9)"
-msgstr ""
-"SELECT ST_AsEWKT(  ST_LineFromMultiPoint('MULTIPOINT(1 2 3, 4 5 6, 7 8 9)')  "
-")) ;\n"
-"\n"
-"--résultat--\n"
-"LINESTRING(1 2 3,4 5 6,7 8 9)"
-
 #. Tag: para
 #: reference_constructor.xml:129
 #, no-c-format
@@ -467,8 +325,8 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>ymin</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>xmax</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>ymax</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer</type> "
-"<parameter>srid=unknown</parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>integer</type> <parameter>srid=unknown</"
+"parameter></paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:156
@@ -506,22 +364,6 @@ msgstr ""
 msgid "Example: Building a bounding box polygon"
 msgstr "Exemple : Construction d'un polygone de la l'enveloppe englobante"
 
-#. Tag: programlisting
-#: reference_constructor.xml:167
-#, no-c-format
-msgid ""
-"SELECT ST_AsText( ST_MakeEnvelope(10, 10, 11, 11, 4326) );\n"
-"\n"
-"st_asewkt\n"
-"-----------\n"
-"POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))"
-msgstr ""
-"SELECT ST_AsText( ST_MakeEnvelope(10, 10, 11, 11, 4326) ) ;\n"
-"\n"
-"st_asewkt\n"
-"-----------\n"
-"POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))"
-
 #. Tag: para
 #: reference_constructor.xml:171
 #, no-c-format
@@ -544,30 +386,6 @@ msgstr "ST_MakeLine"
 msgid "Creates a LineString from Point, MultiPoint, or LineString geometries."
 msgstr ""
 "Crée une LineString à partir de géométries Point, MultiPoint ou LineString."
-
-#. Tag: funcsynopsis
-#: reference_constructor.xml:183
-#, no-c-format
-msgid ""
-"<funcprototype> <funcdef>geometry <function>ST_MakeLine</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geometry <function>ST_MakeLine</"
-"function></funcdef> <paramdef><type>geometry[]</type> "
-"<parameter>geoms_array</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>geometry <function>ST_MakeLine</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>geoms</parameter></paramdef> "
-"</funcprototype>"
-msgstr ""
-"<funcprototype> <funcdef>geometry <function>ST_MakeLine</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_MakeLine</function></funcdef> <paramdef><type>geometry[]</type> "
-"<parameter>geoms_array</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>geometry <function>ST_MakeLine</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>geoms</parameter></paramdef> "
-"</funcprototype>"
 
 #. Tag: para
 #: reference_constructor.xml:205
@@ -647,67 +465,17 @@ msgstr "Exemples : Variante à deux entrées"
 msgid "Create a line composed of two points."
 msgstr "Créez une ligne composée de deux points."
 
-#. Tag: programlisting
-#: reference_constructor.xml:232
-#, no-c-format
-msgid ""
-"SELECT ST_AsText( ST_MakeLine(ST_Point(1,2), ST_Point(3,4)) );\n"
-"\n"
-"          st_astext\n"
-"---------------------\n"
-" LINESTRING(1 2,3 4)"
-msgstr ""
-"SELECT ST_AsText( ST_MakeLine(ST_Point(1,2), ST_Point(3,4)) ) ;\n"
-"\n"
-"          st_astext\n"
-"---------------------\n"
-" LINESTRING(1 2,3 4)"
-
 #. Tag: para
 #: reference_constructor.xml:234
 #, no-c-format
 msgid "Create a 3D line from two 3D points."
 msgstr "Créer une ligne 3D à partir de deux points 3D."
 
-#. Tag: programlisting
-#: reference_constructor.xml:235
-#, no-c-format
-msgid ""
-"SELECT ST_AsEWKT( ST_MakeLine(ST_MakePoint(1,2,3), ST_MakePoint(3,4,5) ));\n"
-"\n"
-"                st_asewkt\n"
-"-------------------------\n"
-" LINESTRING(1 2 3,3 4 5)"
-msgstr ""
-"SELECT ST_AsEWKT( ST_MakeLine(ST_MakePoint(1,2,3), ST_MakePoint(3,4,5) )) ;\n"
-"\n"
-"                st_asewkt\n"
-"-------------------------\n"
-" LINESTRING(1 2 3,3 4 5)"
-
 #. Tag: para
 #: reference_constructor.xml:237
 #, no-c-format
 msgid "Create a line from two disjoint LineStrings."
 msgstr "Crée une ligne à partir de deux LineStrings disjointes."
-
-#. Tag: programlisting
-#: reference_constructor.xml:238
-#, no-c-format
-msgid ""
-"select ST_AsText( ST_MakeLine( 'LINESTRING(0 0, 1 1)', 'LINESTRING(2 2, 3 "
-"3)' ) );\n"
-"\n"
-"          st_astext\n"
-"-----------------------------\n"
-" LINESTRING(0 0,1 1,2 2,3 3)"
-msgstr ""
-"select ST_AsText( ST_MakeLine( 'LINESTRING(0 0, 1 1)', 'LINESTRING(2 2, 3 3)"
-"' ) ) ;\n"
-"\n"
-"          st_astext\n"
-"-----------------------------\n"
-" LINESTRING(0 0,1 1,2 2,3 3)"
 
 #. Tag: title
 #: reference_constructor.xml:242
@@ -723,40 +491,11 @@ msgstr ""
 "Créer une ligne à partir d'un tableau formé par une sous-requête avec "
 "ordonnancement."
 
-#. Tag: programlisting
-#: reference_constructor.xml:245
-#, no-c-format
-msgid ""
-"SELECT ST_MakeLine( ARRAY( SELECT ST_Centroid(geom) FROM visit_locations "
-"ORDER BY visit_time) );"
-msgstr ""
-"SELECT ST_MakeLine( ARRAY( SELECT ST_Centroid(geom) FROM visit_locations "
-"ORDER BY visit_time) ) ;"
-
 #. Tag: para
 #: reference_constructor.xml:247
 #, no-c-format
 msgid "Create a 3D line from an array of 3D points"
 msgstr "Créer une ligne 3D à partir d'un tableau de points 3D"
-
-#. Tag: programlisting
-#: reference_constructor.xml:248
-#, no-c-format
-msgid ""
-"SELECT ST_AsEWKT( ST_MakeLine(\n"
-"          ARRAY[ ST_MakePoint(1,2,3), ST_MakePoint(3,4,5), "
-"ST_MakePoint(6,6,6) ]  ));\n"
-"\n"
-"                st_asewkt\n"
-"-------------------------\n"
-"LINESTRING(1 2 3,3 4 5,6 6 6)"
-msgstr ""
-"SELECT ST_AsEWKT( ST_MakeLine(\n"
-"          ARRAY[ ST_MakePoint(1,2,3), ST_MakePoint(3,4,5), "
-"ST_MakePoint(6,6,6) ]  )) ;\n"
-"                st_asewkt\n"
-"-------------------------\n"
-"LINESTRING(1 2 3,3 4 5,6 6 6)"
 
 #. Tag: title
 #: reference_constructor.xml:252
@@ -787,18 +526,6 @@ msgstr ""
 "L'utilisation de l'agrégat <varname>ORDER BY</varname> fournit une "
 "LineString correctement ordonnée."
 
-#. Tag: programlisting
-#: reference_constructor.xml:258
-#, no-c-format
-msgid ""
-"SELECT gps.track_id, ST_MakeLine(gps.geom ORDER BY gps_time) As geom\n"
-"        FROM gps_points As gps\n"
-"        GROUP BY track_id;"
-msgstr ""
-"SELECT gps.track_id, ST_MakeLine(gps.geom ORDER BY gps_time) As geom\n"
-"        FROM gps_points As gps\n"
-"        GROUP BY track_id ;"
-
 #. Tag: para
 #: reference_constructor.xml:260
 #, no-c-format
@@ -809,22 +536,6 @@ msgstr ""
 "Avant PostgreSQL 9, l'ordre dans une sous-requête peut être utilisé. "
 "Cependant, il arrive que le plan de requête ne respecte pas l'ordre de la "
 "sous-requête."
-
-#. Tag: programlisting
-#: reference_constructor.xml:262
-#, no-c-format
-msgid ""
-"SELECT gps.track_id, ST_MakeLine(gps.geom) As geom\n"
-"        FROM ( SELECT track_id, gps_time, geom\n"
-"                        FROM gps_points ORDER BY track_id, gps_time ) As "
-"gps\n"
-"        GROUP BY track_id;"
-msgstr ""
-"SELECT gps.track_id, ST_MakeLine(gps.geom) As geom\n"
-"        FROM ( SELECT track_id, gps_time, geom\n"
-"                        FROM gps_points ORDER BY track_id, gps_time ) As "
-"gps\n"
-"        GROUP BY track_id ;"
 
 #. Tag: para
 #: reference_constructor.xml:267
@@ -932,40 +643,6 @@ msgstr ""
 "Pour les coordonnées géodésiques, <varname>X</varname> est la longitude et "
 "<varname>Y</varname> la latitude"
 
-#. Tag: programlisting
-#: reference_constructor.xml:332
-#, no-c-format
-msgid ""
-"--Return point with unknown SRID\n"
-"SELECT ST_MakePoint(-71.1043443253471, 42.3150676015829);\n"
-"\n"
-"--Return point marked as WGS 84 long lat\n"
-"SELECT ST_SetSRID(ST_MakePoint(-71.1043443253471, 42.3150676015829),4326);\n"
-"\n"
-"--Return a 3D point (e.g. has altitude)\n"
-"SELECT ST_MakePoint(1, 2,1.5);\n"
-"\n"
-"--Get z of point\n"
-"SELECT ST_Z(ST_MakePoint(1, 2,1.5));\n"
-"result\n"
-"-------\n"
-"1.5"
-msgstr ""
-"--Return point with unknown SRID\n"
-"SELECT ST_MakePoint(-71.1043443253471, 42.3150676015829) ;\n"
-"\n"
-"--Return point marked as WGS 84 long lat\n"
-"SELECT ST_SetSRID(ST_MakePoint(-71.1043443253471, 42.3150676015829),4326) ;\n"
-"\n"
-"--Return a 3D point (e.g. has altitude)\n"
-"SELECT ST_MakePoint(1, 2,1.5) ;\n"
-"\n"
-"--Get z of point\n"
-"SELECT ST_Z(ST_MakePoint(1, 2,1.5)) ;\n"
-"result\n"
-"-------\n"
-"1.5"
-
 #. Tag: para
 #: reference_constructor.xml:336
 #, no-c-format
@@ -1034,24 +711,6 @@ msgstr ""
 msgid "Create point with unknown SRID."
 msgstr "Créer un point avec un SRID inconnu."
 
-#. Tag: programlisting
-#: reference_constructor.xml:375
-#, no-c-format
-msgid ""
-"SELECT ST_AsEWKT(  ST_MakePointM(-71.1043443253471, 42.3150676015829, "
-"10)  );\n"
-"\n"
-"                                   st_asewkt\n"
-"-----------------------------------------------\n"
-" POINTM(-71.1043443253471 42.3150676015829 10)"
-msgstr ""
-"SELECT ST_AsEWKT(  ST_MakePointM(-71.1043443253471, 42.3150676015829, 10)  ) "
-";\n"
-"\n"
-"                                   st_asewkt\n"
-"-----------------------------------------------\n"
-" POINTM(-71.1043443253471 42.3150676015829 10)"
-
 #. Tag: para
 #: reference_constructor.xml:377
 #, no-c-format
@@ -1060,44 +719,11 @@ msgstr ""
 "Créer un point avec une mesure dans le système de coordonnées géodésiques "
 "WGS 84."
 
-#. Tag: programlisting
-#: reference_constructor.xml:378
-#, no-c-format
-msgid ""
-"SELECT ST_AsEWKT( ST_SetSRID(  ST_MakePointM(-71.104, 42.315, 10),  4326));\n"
-"\n"
-"                                                st_asewkt\n"
-"---------------------------------------------------------\n"
-"SRID=4326;POINTM(-71.104 42.315 10)"
-msgstr ""
-"SELECT ST_AsEWKT( ST_SetSRID(  ST_MakePointM(-71.104, 42.315, 10),  4326)) ;"
-"\n"
-"\n"
-"                                                st_asewkt\n"
-"---------------------------------------------------------\n"
-"SRID=4326;POINTM(-71.104 42.315 10)"
-
 #. Tag: para
 #: reference_constructor.xml:380
 #, no-c-format
 msgid "Get measure of created point."
 msgstr "Obtenir la mesure du point créé."
-
-#. Tag: programlisting
-#: reference_constructor.xml:381
-#, no-c-format
-msgid ""
-"SELECT ST_M(  ST_MakePointM(-71.104, 42.315, 10)  );\n"
-"\n"
-"result\n"
-"-------\n"
-"10"
-msgstr ""
-"SELECT ST_M(  ST_MakePointM(-71.104, 42.315, 10)  ) ;\n"
-"\n"
-"result\n"
-"-------\n"
-"10"
 
 #. Tag: para
 #: reference_constructor.xml:385
@@ -1183,9 +809,9 @@ msgid ""
 "linkend=\"ST_LineMerge\"/> to generate a LineString, or <xref "
 "linkend=\"ST_Dump\"/> to extract LineStrings."
 msgstr ""
-"Cette fonction n'accepte pas les MultiLineStrings. Utilisez <xref linkend="
-"\"ST_LineMerge\"/> pour générer une LineString, ou <xref linkend=\"ST_Dump\"/"
-"> pour extraire les LineStrings."
+"Cette fonction n'accepte pas les MultiLineStrings. Utilisez <xref "
+"linkend=\"ST_LineMerge\"/> pour générer une LineString, ou <xref "
+"linkend=\"ST_Dump\"/> pour extraire les LineStrings."
 
 #. Tag: title
 #: reference_constructor.xml:431
@@ -1199,16 +825,6 @@ msgstr "Exemples : variante avec une entrée unique"
 msgid "Create a Polygon from a 2D LineString."
 msgstr "Créez un polygone à partir d'une LineString 2D."
 
-#. Tag: programlisting
-#: reference_constructor.xml:433
-#, no-c-format
-msgid ""
-"SELECT ST_MakePolygon( ST_GeomFromText('LINESTRING(75 29,77 29,77 29, 75 "
-"29)'));"
-msgstr ""
-"SELECT ST_MakePolygon( ST_GeomFromText('LINESTRING(75 29,77 29,77 29, 75 "
-"29)')) ;"
-
 #. Tag: para
 #: reference_constructor.xml:435
 #, no-c-format
@@ -1220,69 +836,17 @@ msgstr ""
 "linkend=\"ST_StartPoint\"/> et <xref linkend=\"ST_AddPoint\"/> pour la "
 "fermer."
 
-#. Tag: programlisting
-#: reference_constructor.xml:437
-#, no-c-format
-msgid ""
-"SELECT ST_MakePolygon( ST_AddPoint(foo.open_line, ST_StartPoint(foo."
-"open_line)) )\n"
-"FROM (\n"
-"  SELECT ST_GeomFromText('LINESTRING(75 29,77 29,77 29, 75 29)') As "
-"open_line) As foo;"
-msgstr ""
-"SELECT ST_MakePolygon( ST_AddPoint(foo.open_line, ST_StartPoint(foo."
-"open_line)) )\n"
-"FROM (\n"
-"  SELECT ST_GeomFromText('LINESTRING(75 29,77 29,77 29, 75 29)') As "
-"open_line) As foo ;"
-
 #. Tag: para
 #: reference_constructor.xml:439
 #, no-c-format
 msgid "Create a Polygon from a 3D LineString"
 msgstr "Créer un polygone à partir d'une LineString 3D"
 
-#. Tag: programlisting
-#: reference_constructor.xml:440
-#, no-c-format
-msgid ""
-"SELECT ST_AsEWKT( ST_MakePolygon( 'LINESTRING(75.15 29.53 1,77 29 1,77.6 "
-"29.5 1, 75.15 29.53 1)'));\n"
-"\n"
-"st_asewkt\n"
-"-----------\n"
-"POLYGON((75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1))"
-msgstr ""
-"SELECT ST_AsEWKT( ST_MakePolygon( 'LINESTRING(75.15 29.53 1,77 29 1,77.6 "
-"29.5 1, 75.15 29.53 1)')) ;\n"
-"\n"
-"st_asewkt\n"
-"-----------\n"
-"POLYGON((75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1))"
-
 #. Tag: para
 #: reference_constructor.xml:441
 #, no-c-format
 msgid "Create a Polygon from a LineString with measures"
 msgstr "Créer un polygone à partir d'une LineString avec des mesures"
-
-#. Tag: programlisting
-#: reference_constructor.xml:442
-#, no-c-format
-msgid ""
-"SELECT ST_AsEWKT( ST_MakePolygon( 'LINESTRINGM(75.15 29.53 1,77 29 1,77.6 "
-"29.5 2, 75.15 29.53 2)' ));\n"
-"\n"
-"st_asewkt\n"
-"----------\n"
-"POLYGONM((75.15 29.53 1,77 29 1,77.6 29.5 2,75.15 29.53 2))"
-msgstr ""
-"SELECT ST_AsEWKT( ST_MakePolygon( 'LINESTRINGM(75.15 29.53 1,77 29 1,77.6 "
-"29.5 2, 75.15 29.53 2)' )) ;\n"
-"\n"
-"st_asewkt\n"
-"----------\n"
-"POLYGONM((75.15 29.53 1,77 29 1,77.6 29.5 2,75.15 29.53 2))"
 
 #. Tag: title
 #: reference_constructor.xml:445
@@ -1295,24 +859,6 @@ msgstr "Exemples : Enveloppe extérieure avec variante de trous intérieurs"
 #, no-c-format
 msgid "Create a donut Polygon with an extra hole"
 msgstr "Créer un polygone en forme de donut avec un trou supplémentaire"
-
-#. Tag: programlisting
-#: reference_constructor.xml:448
-#, no-c-format
-msgid ""
-"SELECT ST_MakePolygon( ST_ExteriorRing( ST_Buffer(ring.line,10)),\n"
-"        ARRAY[  ST_Translate(ring.line, 1, 1),\n"
-"                ST_ExteriorRing(ST_Buffer(ST_Point(20,20),1)) ]\n"
-"        )\n"
-"FROM (SELECT ST_ExteriorRing(\n"
-"        ST_Buffer(ST_Point(10,10),10,10)) AS line ) AS ring;"
-msgstr ""
-"SELECT ST_MakePolygon( ST_ExteriorRing( ST_Buffer(ring.line,10)),\n"
-"        ARRAY[  ST_Translate(ring.line, 1, 1),\n"
-"                ST_ExteriorRing(ST_Buffer(ST_Point(20,20),1)) ]\n"
-"        )\n"
-"FROM (SELECT ST_ExteriorRing(\n"
-"        ST_Buffer(ST_Point(10,10),10,10)) AS line ) AS ring ;"
 
 #. Tag: para
 #: reference_constructor.xml:449
@@ -1349,30 +895,6 @@ msgstr ""
 "La construction CASE est utilisée car le passage d'un tableau nul dans "
 "ST_MakePolygon entraîne une valeur de retour NULL."
 
-#. Tag: programlisting
-#: reference_constructor.xml:465
-#, no-c-format
-msgid ""
-"SELECT p.gid, p.province_name,\n"
-"        CASE WHEN array_agg(w.geom) IS NULL\n"
-"        THEN p.geom\n"
-"        ELSE  ST_MakePolygon( ST_LineMerge(ST_Boundary(p.geom)),\n"
-"                        array_agg(w.geom)) END\n"
-"FROM\n"
-"        provinces p LEFT JOIN waterlines w\n"
-"                ON (ST_Within(w.geom, p.geom) AND ST_IsClosed(w.geom))\n"
-"GROUP BY p.gid, p.province_name, p.geom;"
-msgstr ""
-"SELECT p.gid, p.province_name,\n"
-"        CASE WHEN array_agg(w.geom) IS NULL\n"
-"        THEN p.geom\n"
-"        ELSE  ST_MakePolygon( ST_LineMerge(ST_Boundary(p.geom)),\n"
-"                        array_agg(w.geom)) END\n"
-"FROM\n"
-"        provinces p LEFT JOIN waterlines w\n"
-"                ON (ST_Within(w.geom, p.geom) AND ST_IsClosed(w.geom))\n"
-"GROUP BY p.gid, p.province_name, p.geom ;"
-
 #. Tag: para
 #: reference_constructor.xml:467
 #, no-c-format
@@ -1382,40 +904,6 @@ msgid ""
 msgstr ""
 "Une autre technique consiste à utiliser une sous-requête corrélée et le "
 "constructeur ARRAY() qui convertit un ensemble de lignes en un tableau."
-
-#. Tag: programlisting
-#: reference_constructor.xml:469
-#, no-c-format
-msgid ""
-"SELECT p.gid,  p.province_name,\n"
-"    CASE WHEN EXISTS( SELECT w.geom\n"
-"        FROM waterlines w\n"
-"        WHERE ST_Within(w.geom, p.geom)\n"
-"        AND ST_IsClosed(w.geom))\n"
-"    THEN ST_MakePolygon(\n"
-"        ST_LineMerge(ST_Boundary(p.geom)),\n"
-"        ARRAY( SELECT w.geom\n"
-"            FROM waterlines w\n"
-"            WHERE ST_Within(w.geom, p.geom)\n"
-"            AND ST_IsClosed(w.geom)))\n"
-"    ELSE p.geom\n"
-"    END AS geom\n"
-"FROM provinces p;"
-msgstr ""
-"SELECT p.gid,  p.province_name,\n"
-"    CASE WHEN EXISTS( SELECT w.geom\n"
-"        FROM waterlines w\n"
-"        WHERE ST_Within(w.geom, p.geom)\n"
-"        AND ST_IsClosed(w.geom))\n"
-"    THEN ST_MakePolygon(\n"
-"        ST_LineMerge(ST_Boundary(p.geom)),\n"
-"        ARRAY( SELECT w.geom\n"
-"            FROM waterlines w\n"
-"            WHERE ST_Within(w.geom, p.geom)\n"
-"            AND ST_IsClosed(w.geom)))\n"
-"    ELSE p.geom\n"
-"    END AS geom\n"
-"FROM provinces p ;"
 
 #. Tag: refname
 #: reference_constructor.xml:482
@@ -1490,29 +978,11 @@ msgstr "&sqlmm_compliant; SQL-MM 3 : 6.1.2"
 msgid "Examples: Geometry"
 msgstr "Exemple : Géométrie"
 
-#. Tag: programlisting
-#: reference_constructor.xml:521
-#, no-c-format
-msgid "SELECT ST_Point( -71.104, 42.315);"
-msgstr "SELECT ST_Point( -71.104, 42.315) ;"
-
-#. Tag: programlisting
-#: reference_constructor.xml:522
-#, no-c-format
-msgid "SELECT ST_SetSRID(ST_Point( -71.104, 42.315),4326);"
-msgstr "SELECT ST_SetSRID(ST_Point( -71.104, 42.315),4326) ;"
-
 #. Tag: para
 #: reference_constructor.xml:524
 #, no-c-format
 msgid "New in 3.2.0: With SRID specified"
 msgstr "Nouveau dans 3.2.0 : en spécifiant un SRID"
-
-#. Tag: programlisting
-#: reference_constructor.xml:525
-#, no-c-format
-msgid "SELECT ST_Point( -71.104, 42.315, 4326);"
-msgstr "SELECT ST_Point( -71.104, 42.315, 4326) ;"
 
 #. Tag: title
 #: reference_constructor.xml:529
@@ -1526,25 +996,11 @@ msgstr "Exemples : Géographie"
 msgid "Pre-PostGIS 3.2 syntax"
 msgstr "Syntaxe pré-PostGIS 3.2"
 
-#. Tag: programlisting
-#: reference_constructor.xml:531
-#, no-c-format
-msgid ""
-"SELECT CAST( ST_SetSRID(ST_Point( -71.104, 42.315), 4326) AS geography);"
-msgstr ""
-"SELECT CAST( ST_SetSRID(ST_Point( -71.104, 42.315), 4326) AS geography) ;"
-
 #. Tag: para
 #: reference_constructor.xml:532
 #, no-c-format
 msgid "3.2 and on you can include the srid"
 msgstr "3.2 et plus vous pouvez inclure le srid"
-
-#. Tag: programlisting
-#: reference_constructor.xml:533
-#, no-c-format
-msgid "SELECT CAST( ST_Point( -71.104, 42.315, 4326) AS geography);"
-msgstr "SELECT CAST( ST_Point( -71.104, 42.315, 4326) AS geography) ;"
 
 #. Tag: para
 #: reference_constructor.xml:535
@@ -1554,12 +1010,6 @@ msgid ""
 msgstr ""
 "PostgreSQL fournit également l'abréviation <varname>::</varname> pour le "
 "casting"
-
-#. Tag: programlisting
-#: reference_constructor.xml:536
-#, no-c-format
-msgid "SELECT ST_Point( -71.104, 42.315, 4326)::geography;"
-msgstr "SELECT ST_Point( -71.104, 42.315, 4326)::geography ;"
 
 #. Tag: para
 #: reference_constructor.xml:538
@@ -1574,16 +1024,6 @@ msgstr ""
 "géodésiques (tel que WGS84), elles doivent être reprojetées avant d'être "
 "projetées dans une géographie. Dans cet exemple, un point en pieds du plan "
 "de l'État de Pennsylvanie (SRID 2273) est projeté en WGS84 (SRID 4326)."
-
-#. Tag: programlisting
-#: reference_constructor.xml:542
-#, no-c-format
-msgid ""
-"SELECT ST_Transform(ST_SetSRID( ST_Point( 3637510, 3014852 ), 2273), 4326)::"
-"geography;"
-msgstr ""
-"SELECT ST_Transform(ST_SetSRID( ST_Point( 3637510, 3014852 ), 2273), 4326)::"
-"geography ;"
 
 #. Tag: para
 #: reference_constructor.xml:549
@@ -1624,8 +1064,8 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>z</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer</type> "
-"<parameter>srid=unknown</parameter></paramdef>"
+"choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
+"paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:574
@@ -1637,24 +1077,6 @@ msgstr ""
 "Renvoie un point avec les valeurs de coordonnées X, Y et Z données, et "
 "éventuellement un numéro SRID."
 
-#. Tag: programlisting
-#: reference_constructor.xml:580
-#, no-c-format
-msgid "SELECT ST_PointZ(-71.104, 42.315, 3.4, 4326)"
-msgstr "SELECT ST_PointZ(-71.104, 42.315, 3.4, 4326)"
-
-#. Tag: programlisting
-#: reference_constructor.xml:581
-#, no-c-format
-msgid "SELECT ST_PointZ(-71.104, 42.315, 3.4, srid => 4326)"
-msgstr "SELECT ST_PointZ(-71.104, 42.315, 3.4, srid => 4326)"
-
-#. Tag: programlisting
-#: reference_constructor.xml:582
-#, no-c-format
-msgid "SELECT ST_PointZ(-71.104, 42.315, 3.4)"
-msgstr "SELECT ST_PointZ(-71.104, 42.315, 3.4)"
-
 #. Tag: para
 #: reference_constructor.xml:587
 #, no-c-format
@@ -1662,8 +1084,8 @@ msgid ""
 ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
 "linkend=\"ST_PointZM\"/>"
 msgstr ""
-", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref linkend="
-"\"ST_PointZM\"/>"
+", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
+"linkend=\"ST_PointZM\"/>"
 
 #. Tag: refname
 #: reference_constructor.xml:593
@@ -1692,8 +1114,8 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>m</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer</type> "
-"<parameter>srid=unknown</parameter></paramdef>"
+"choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
+"paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:611
@@ -1705,24 +1127,6 @@ msgstr ""
 "Renvoie un point avec les valeurs de coordonnées X, Y et M données, et "
 "éventuellement un numéro SRID."
 
-#. Tag: programlisting
-#: reference_constructor.xml:617
-#, no-c-format
-msgid "SELECT ST_PointM(-71.104, 42.315, 3.4, 4326)"
-msgstr "SELECT ST_PointM(-71.104, 42.315, 3.4, 4326)"
-
-#. Tag: programlisting
-#: reference_constructor.xml:618
-#, no-c-format
-msgid "SELECT ST_PointM(-71.104, 42.315, 3.4, srid => 4326)"
-msgstr "SELECT ST_PointM(-71.104, 42.315, 3.4, srid => 4326)"
-
-#. Tag: programlisting
-#: reference_constructor.xml:619
-#, no-c-format
-msgid "SELECT ST_PointM(-71.104, 42.315, 3.4)"
-msgstr "SELECT ST_PointM(-71.104, 42.315, 3.4)"
-
 #. Tag: para
 #: reference_constructor.xml:624
 #, no-c-format
@@ -1730,8 +1134,8 @@ msgid ""
 ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointZ\"/>, <xref "
 "linkend=\"ST_PointZM\"/>"
 msgstr ""
-", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
-"\"ST_PointZM\"/>"
+", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointZ\"/>, <xref "
+"linkend=\"ST_PointZM\"/>"
 
 #. Tag: refname
 #: reference_constructor.xml:631
@@ -1762,8 +1166,8 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>z</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>m</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer</type> "
-"<parameter>srid=unknown</parameter></paramdef>"
+"choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
+"paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:650
@@ -1775,24 +1179,6 @@ msgstr ""
 "Renvoie un point avec les valeurs de coordonnées X, Y, Z et M données, et "
 "éventuellement un numéro SRID."
 
-#. Tag: programlisting
-#: reference_constructor.xml:656
-#, no-c-format
-msgid "SELECT ST_PointZM(-71.104, 42.315, 3.4, 4.5, 4326)"
-msgstr "SELECT ST_PointZM(-71.104, 42.315, 3.4, 4.5, 4326)"
-
-#. Tag: programlisting
-#: reference_constructor.xml:657
-#, no-c-format
-msgid "SELECT ST_PointZM(-71.104, 42.315, 3.4, 4.5, srid => 4326)"
-msgstr "SELECT ST_PointZM(-71.104, 42.315, 3.4, 4.5, srid => 4326)"
-
-#. Tag: programlisting
-#: reference_constructor.xml:658
-#, no-c-format
-msgid "SELECT ST_PointZM(-71.104, 42.315, 3.4, 4.5)"
-msgstr "SELECT ST_PointZM(-71.104, 42.315, 3.4, 4.5)"
-
 #. Tag: para
 #: reference_constructor.xml:663
 #, no-c-format
@@ -1800,8 +1186,8 @@ msgid ""
 ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
 "linkend=\"ST_PointZ\"/>, <xref linkend=\"ST_SetSRID\"/>"
 msgstr ""
-", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref linkend="
-"\"ST_PointZ\"/>, <xref linkend=\"ST_SetSRID\"/>"
+", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
+"linkend=\"ST_PointZ\"/>, <xref linkend=\"ST_SetSRID\"/>"
 
 #. Tag: refname
 #: reference_constructor.xml:669
@@ -1826,8 +1212,8 @@ msgid ""
 msgstr ""
 "<funcdef>geometry <function>ST_Polygon</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>lineString</parameter></"
-"paramdef> <paramdef><type>integer </type> "
-"<parameter>srid</parameter></paramdef>"
+"paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></"
+"paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:686
@@ -1856,8 +1242,9 @@ msgid ""
 "To create polygons with holes use <xref linkend=\"ST_MakePolygon\"/> Variant "
 "2 and then <xref linkend=\"ST_SetSRID\"/>."
 msgstr ""
-"Pour créer des polygones avec des trous, utilisez <xref linkend="
-"\"ST_MakePolygon\"/> la variante 2 et ensuite <xref linkend=\"ST_SetSRID\"/>."
+"Pour créer des polygones avec des trous, utilisez <xref "
+"linkend=\"ST_MakePolygon\"/> la variante 2 et ensuite <xref "
+"linkend=\"ST_SetSRID\"/>."
 
 #. Tag: para
 #: reference_constructor.xml:699
@@ -1877,43 +1264,11 @@ msgstr "&sqlmm_compliant; SQL-MM 3 : 8.3.2"
 msgid "Create a 2D polygon."
 msgstr "Créer un polygone 2D."
 
-#. Tag: programlisting
-#: reference_constructor.xml:709
-#, no-c-format
-msgid ""
-"SELECT ST_AsText( ST_Polygon('LINESTRING(75 29, 77 29, 77 29, 75 29)'::"
-"geometry, 4326) );\n"
-"\n"
-"-- result --\n"
-"POLYGON((75 29, 77 29, 77 29, 75 29))"
-msgstr ""
-"SELECT ST_AsText( ST_Polygon('LINESTRING(75 29, 77 29, 77 29, 75 29)'::"
-"geometry, 4326) ) ;\n"
-"\n"
-"-- résultat --\n"
-"POLYGON((75 29, 77 29, 77 29, 75 29))"
-
 #. Tag: para
 #: reference_constructor.xml:710
 #, no-c-format
 msgid "Create a 3D polygon."
 msgstr "Créer un polygone 3D."
-
-#. Tag: programlisting
-#: reference_constructor.xml:711
-#, no-c-format
-msgid ""
-"SELECT ST_AsEWKT( ST_Polygon( ST_GeomFromEWKT('LINESTRING(75 29 1, 77 29 2, "
-"77 29 3, 75 29 1)'), 4326) );\n"
-"\n"
-"-- result --\n"
-"SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))"
-msgstr ""
-"SELECT ST_AsEWKT( ST_Polygon( ST_GeomFromEWKT('LINESTRING(75 29 1, 77 29 2, "
-"77 29 3, 75 29 1)'), 4326) ) ;\n"
-"\n"
-"-- résultat --\n"
-"SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))"
 
 #. Tag: para
 #: reference_constructor.xml:718
@@ -1964,11 +1319,11 @@ msgstr ""
 "<paramdef><type>integer</type> <parameter>tileZoom</parameter></paramdef> "
 "<paramdef><type>integer</type> <parameter>tileX</parameter></paramdef> "
 "<paramdef><type>integer</type> <parameter>tileY</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>geometry</type> "
-"<parameter>bounds=SRID=3857;LINESTRING(-20037508.342789 -"
-"20037508.342789,20037508.342789 20037508.342789)</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float</type> <parameter>margin=0."
-"0</parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>geometry</type> <parameter>bounds=SRID=3857;"
+"LINESTRING(-20037508.342789 -20037508.342789,20037508.342789 "
+"20037508.342789)</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>float</type> <parameter>margin=0.0</parameter></"
+"paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:745
@@ -2043,8 +1398,8 @@ msgstr ""
 "une valeur négative pour réduire la tuile à la place. Les valeurs "
 "inférieures à -0,5 sont interdites, car cela éliminerait complètement la "
 "tuile. Ne spécifiez pas de marge lors de l'utilisation avec "
-"<varname>ST_AsMVTGeom</varname>. Voir l'exemple pour <xref linkend=\"ST_AsMVT"
-"\"/>."
+"<varname>ST_AsMVTGeom</varname>. Voir l'exemple pour <xref "
+"linkend=\"ST_AsMVT\"/>."
 
 #. Tag: para
 #: reference_constructor.xml:766
@@ -2063,38 +1418,6 @@ msgstr "Disponibilité : 3.0.0"
 #, no-c-format
 msgid "Example: Building a tile envelope"
 msgstr "Exemple : Construction d'une enveloppe de tuiles"
-
-#. Tag: programlisting
-#: reference_constructor.xml:772
-#, no-c-format
-msgid ""
-"SELECT ST_AsText( ST_TileEnvelope(2, 1, 1) );\n"
-"\n"
-" st_astext\n"
-"------------------------------\n"
-" POLYGON((-10018754.1713945 0,-10018754.1713945 10018754.1713945,0 "
-"10018754.1713945,0 0,-10018754.1713945 0))\n"
-"\n"
-"SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, "
-"90, 4326) ) );\n"
-"\n"
-"                      st_astext\n"
-"------------------------------------------------------\n"
-" POLYGON((-135 45,-135 67.5,-90 67.5,-90 45,-135 45))"
-msgstr ""
-"SELECT ST_AsText( ST_TileEnvelope(2, 1, 1) ) ;\n"
-"\n"
-" st_astext\n"
-"------------------------------\n"
-" POLYGON((-10018754.1713945 0,-10018754.1713945 10018754.1713945,0 "
-"10018754.1713945,0 0,-10018754.1713945 0))\n"
-"\n"
-"SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, "
-"90, 4326) ) ) ;\n"
-"\n"
-"                      st_astext\n"
-"------------------------------------------------------\n"
-" POLYGON((-135 45,-135 67.5,-90 67.5,-90 45,-135 45))"
 
 #. Tag: refname
 #: reference_constructor.xml:784
@@ -2136,8 +1459,8 @@ msgid ""
 "what hexagons in a given Tiling(SRS, Size) overlap with a given bounds."
 msgstr ""
 "Commence par le concept d'un tuilage hexagonal du plan. (Pas un pavage "
-"hexagonal du globe, ce n'est pas le schéma de pavage <ulink url=\"https"
-"://github.com/uber/h3\">H3</ulink>). Pour un SRS plan donné, et une taille "
+"hexagonal du globe, ce n'est pas le schéma de pavage <ulink url=\"https://"
+"github.com/uber/h3\">H3</ulink>). Pour un SRS plan donné, et une taille "
 "d'arête donnée, en commençant à l'origine du SRS, il existe un unique "
 "tuilage hexagonal du plan, Tiling(SRS, Size). Cette fonction répond à la "
 "question : quels hexagones dans un Tiling(SRS, Size) donné se chevauchent "
@@ -2190,32 +1513,6 @@ msgstr ""
 "une grille hexagonale en utilisant l'étendue des points comme limites, puis "
 "joignez spatialement cette grille."
 
-#. Tag: programlisting
-#: reference_constructor.xml:830
-#, no-c-format
-msgid ""
-"SELECT COUNT(*), hexes.geom\n"
-"FROM\n"
-"    ST_HexagonGrid(\n"
-"        10000,\n"
-"        ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)\n"
-"    ) AS hexes\n"
-"    INNER JOIN\n"
-"    pointtable AS pts\n"
-"    ON ST_Intersects(pts.geom, hexes.geom)\n"
-"GROUP BY hexes.geom;"
-msgstr ""
-"SELECT COUNT(*), hexes.geom\n"
-"FROM\n"
-"    ST_HexagonGrid(\n"
-"        10000,\n"
-"        ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)\n"
-"    ) AS hexes\n"
-"    INNER JOIN\n"
-"    pointtable AS pts\n"
-"    ON ST_Intersects(pts.geom, hexes.geom)\n"
-"GROUP BY hexes.geom ;"
-
 #. Tag: title
 #: reference_constructor.xml:833
 #, no-c-format
@@ -2258,30 +1555,6 @@ msgstr ""
 "Ainsi, CROSS JOIN LATERAL, CROSS JOIN, ou tout simplement , sont des "
 "constructions équivalentes pour cet exemple."
 
-#. Tag: programlisting
-#: reference_constructor.xml:843
-#, no-c-format
-msgid ""
-"SELECT admin1.gid, hex.geom\n"
-"FROM\n"
-"    admin1\n"
-"    CROSS JOIN\n"
-"    ST_HexagonGrid(100000, admin1.geom) AS hex\n"
-"WHERE\n"
-"    adm0_a3 = 'USA'\n"
-"    AND\n"
-"    ST_Intersects(admin1.geom, hex.geom)"
-msgstr ""
-"SELECT admin1.gid, hex.geom\n"
-"FROM\n"
-"    admin1\n"
-"    CROSS JOIN\n"
-"    ST_HexagonGrid(100000, admin1.geom) AS hex\n"
-"WHERE\n"
-"    adm0_a3 = 'USA'\n"
-"    AND\n"
-"    ST_Intersects(admin1.geom, hex.geom)"
-
 #. Tag: para
 #: reference_constructor.xml:847
 #, no-c-format
@@ -2323,8 +1596,8 @@ msgstr ""
 "<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
 "<paramdef><type>integer</type> <parameter>cell_i</parameter></paramdef> "
 "<paramdef><type>integer</type> <parameter>cell_j</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>geometry</type> "
-"<parameter>origin</parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>geometry</type> <parameter>origin</"
+"parameter></paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:873
@@ -2334,9 +1607,9 @@ msgid ""
 "but generates just one hexagon at the desired cell coordinate. Optionally, "
 "can adjust origin coordinate of the tiling, the default origin is at 0,0."
 msgstr ""
-"Utilise le même concept de tuilage d'hexagones que <xref linkend="
-"\"ST_HexagonGrid\"/>, mais génère un seul hexagone à la coordonnée de "
-"cellule souhaitée. En option, peut ajuster la coordonnée d'origine du "
+"Utilise le même concept de tuilage d'hexagones que <xref "
+"linkend=\"ST_HexagonGrid\"/>, mais génère un seul hexagone à la coordonnée "
+"de cellule souhaitée. En option, peut ajuster la coordonnée d'origine du "
 "tuilage, l'origine par défaut est à 0,0."
 
 #. Tag: para
@@ -2346,36 +1619,14 @@ msgid ""
 "Hexagons are generated with no SRID set, so use <xref linkend=\"ST_SetSRID\"/"
 "> to set the SRID to the one you expect."
 msgstr ""
-"Les hexagones sont générés sans SRID défini, utilisez donc <xref linkend="
-"\"ST_SetSRID\"/> pour définir le SRID à celui que vous attendez."
+"Les hexagones sont générés sans SRID défini, utilisez donc <xref "
+"linkend=\"ST_SetSRID\"/> pour définir le SRID à celui que vous attendez."
 
 #. Tag: title
 #: reference_constructor.xml:882
 #, no-c-format
 msgid "Example: Creating a hexagon at the origin"
 msgstr "Exemple : Création d'un hexagone à l'origine"
-
-#. Tag: programlisting
-#: reference_constructor.xml:883
-#, no-c-format
-msgid ""
-"SELECT ST_AsText(ST_SetSRID(ST_Hexagon(1.0, 0, 0), 3857));\n"
-"\n"
-"POLYGON((-1 0,-0.5\n"
-"         -0.866025403784439,0.5\n"
-"         -0.866025403784439,1\n"
-"         0,0.5\n"
-"         0.866025403784439,-0.5\n"
-"         0.866025403784439,-1 0))"
-msgstr ""
-"SELECT ST_AsText(ST_SetSRID(ST_Hexagon(1.0, 0, 0), 3857)) ;\n"
-"\n"
-"POLYGON((-1 0,-0.5\n"
-"         -0.866025403784439,0.5\n"
-"         -0.866025403784439,1\n"
-"         0,0.5\n"
-"         0.866025403784439,-0.5\n"
-"         0.866025403784439,-1 0))"
 
 #. Tag: para
 #: reference_constructor.xml:887
@@ -2466,24 +1717,6 @@ msgstr ""
 "des carrés qui touchent le pays, vous devrez filtrer ensuite avec "
 "ST_Intersects."
 
-#. Tag: programlisting
-#: reference_constructor.xml:929
-#, no-c-format
-msgid ""
-"WITH grid AS (\n"
-"SELECT (ST_SquareGrid(1, ST_Transform(geom,4326))).*\n"
-"FROM admin0 WHERE name = 'Canada'\n"
-")\n"
-"  SELEcT ST_AsText(geom)\n"
-"  FROM grid"
-msgstr ""
-"WITH grid AS (\n"
-"SELECT (ST_SquareGrid(1, ST_Transform(geom,4326))).*\n"
-"FROM admin0 WHERE name = 'Canada'\n"
-")\n"
-"  SELEcT ST_AsText(geom)\n"
-"  FROM grid"
-
 #. Tag: title
 #: reference_constructor.xml:933
 #, no-c-format
@@ -2507,32 +1740,6 @@ msgstr ""
 "différente de l'étendue réelle, soyez donc prudent et assurez-vous au moins "
 "d'avoir analysé votre tableau."
 
-#. Tag: programlisting
-#: reference_constructor.xml:936
-#, no-c-format
-msgid ""
-"SELECT COUNT(*), squares.geom\n"
-"    FROM\n"
-"    pointtable AS pts\n"
-"    INNER JOIN\n"
-"    ST_SquareGrid(\n"
-"        1000,\n"
-"        ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)\n"
-"    ) AS squares\n"
-"    ON ST_Intersects(pts.geom, squares.geom)\n"
-"    GROUP BY squares.geom"
-msgstr ""
-"SELECT COUNT(*), squares.geom\n"
-"    FROM\n"
-"    pointtable AS pts\n"
-"    INNER JOIN\n"
-"    ST_SquareGrid(\n"
-"        1000,\n"
-"        ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)\n"
-"    ) AS squares\n"
-"    ON ST_Intersects(pts.geom, squares.geom)\n"
-"    GROUP BY squares.geom"
-
 #. Tag: title
 #: reference_constructor.xml:940
 #, no-c-format
@@ -2550,32 +1757,6 @@ msgid ""
 msgstr ""
 "Cette méthode donne le même résultat que le premier exemple mais sera plus "
 "lente pour un grand nombre de points"
-
-#. Tag: programlisting
-#: reference_constructor.xml:942
-#, no-c-format
-msgid ""
-"SELECT COUNT(*), squares.geom\n"
-"    FROM\n"
-"    pointtable AS pts\n"
-"    INNER JOIN\n"
-"    ST_SquareGrid(\n"
-"        1000,\n"
-"       pts.geom\n"
-"    ) AS squares\n"
-"    ON ST_Intersects(pts.geom, squares.geom)\n"
-"    GROUP BY squares.geom"
-msgstr ""
-"SELECT COUNT(*), squares.geom\n"
-"    FROM\n"
-"    pointtable AS pts\n"
-"    INNER JOIN\n"
-"    ST_SquareGrid(\n"
-"        1000,\n"
-"       pts.geom\n"
-"    ) AS squares\n"
-"    ON ST_Intersects(pts.geom, squares.geom)\n"
-"    GROUP BY squares.geom"
 
 #. Tag: para
 #: reference_constructor.xml:947
@@ -2618,8 +1799,8 @@ msgstr ""
 "<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
 "<paramdef><type>integer</type> <parameter>cell_i</parameter></paramdef> "
 "<paramdef><type>integer</type> <parameter>cell_j</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>geometry</type> "
-"<parameter>origin</parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>geometry</type> <parameter>origin</"
+"parameter></paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:975
@@ -2641,26 +1822,14 @@ msgid ""
 "Squares are generated with no SRID set, so use <xref linkend=\"ST_SetSRID\"/"
 "> to set the SRID to the one you expect."
 msgstr ""
-"Les carrés sont générés sans SRID défini, utilisez donc <xref linkend="
-"\"ST_SetSRID\"/> pour définir le SRID à celui que vous attendez."
+"Les carrés sont générés sans SRID défini, utilisez donc <xref "
+"linkend=\"ST_SetSRID\"/> pour définir le SRID à celui que vous attendez."
 
 #. Tag: title
 #: reference_constructor.xml:984
 #, no-c-format
 msgid "Example: Creating a square at the origin"
 msgstr "Exemple : Création d'un carré à l'origine"
-
-#. Tag: programlisting
-#: reference_constructor.xml:985
-#, no-c-format
-msgid ""
-"SELECT ST_AsText(ST_SetSRID(ST_Square(1.0, 0, 0), 3857));\n"
-"\n"
-" POLYGON((0 0,0 1,1 1,1 0,0 0))"
-msgstr ""
-"SELECT ST_AsText(ST_SetSRID(ST_Square(1.0, 0, 0), 3857)) ;\n"
-"\n"
-" POLYGON((0 0,0 1,1 1,1 0,0 0))"
 
 #. Tag: para
 #: reference_constructor.xml:989
@@ -2696,8 +1865,8 @@ msgid ""
 msgstr ""
 "<funcdef>geometry <function>ST_Letters</function></funcdef> "
 "<paramdef><type>text</type> <parameter> letters</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>json</type> <parameter> "
-"font</parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>json</type> <parameter> font</parameter></"
+"paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:1013
@@ -2744,12 +1913,6 @@ msgstr "Disponibilité : 3.3.0"
 msgid "Example: Generating the word 'Yo'"
 msgstr "Exemple : Génération du mot 'Yo'"
 
-#. Tag: programlisting
-#: reference_constructor.xml:1023
-#, no-c-format
-msgid "SELECT ST_AsText(ST_Letters('Yo'), 1);"
-msgstr "SELECT ST_AsText(ST_Letters('Yo'), 1) ;"
-
 #. Tag: para
 #: reference_constructor.xml:1029
 #, no-c-format
@@ -2762,17 +1925,748 @@ msgstr "Lettres générées par ST_Letters"
 msgid "Example: Scaling and moving words"
 msgstr "Exemple : Mise à l'échelle et déplacement des mots"
 
-#. Tag: programlisting
-#: reference_constructor.xml:1035
-#, no-c-format
-msgid "SELECT ST_Translate(ST_Scale(ST_Letters('Yo'), 10, 10), 100,100);"
-msgstr "SELECT ST_Translate(ST_Scale(ST_Letters('Yo'), 10, 10), 100,100) ;"
-
 #. Tag: para
 #: reference_constructor.xml:1039
 #, no-c-format
 msgid ", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>"
 msgstr ", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "<funcprototype> <funcdef>geometry <function>ST_Collect</function></"
+#~ "funcdef> <paramdef><type>geometry</type> <parameter>g1</parameter></"
+#~ "paramdef> <paramdef><type>geometry</type> <parameter>g2</parameter></"
+#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+#~ "<function>ST_Collect</function></funcdef> <paramdef><type>geometry[]</"
+#~ "type> <parameter>g1_array</parameter></paramdef> </funcprototype> "
+#~ "<funcprototype> <funcdef>geometry <function>ST_Collect</function></"
+#~ "funcdef> <paramdef><type>geometry set</type> <parameter>g1field</"
+#~ "parameter></paramdef> </funcprototype>"
+#~ msgstr ""
+#~ "<funcprototype> <funcdef>geometry <function>ST_Collect</function></"
+#~ "funcdef> <paramdef><type>geometry</type> <parameter>g1</parameter></"
+#~ "paramdef> <paramdef><type>geometry</type> <parameter>g2</parameter></"
+#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+#~ "<function>ST_Collect</function></funcdef> <paramdef><type>geometry[]</"
+#~ "type> <parameter>g1_array</parameter></paramdef> </funcprototype> "
+#~ "<funcprototype> <funcdef>geometry <function>ST_Collect</function></"
+#~ "funcdef> <paramdef><type>geometry set</type> <parameter>g1field</"
+#~ "parameter></paramdef> </funcprototype>"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_AsText( ST_Collect( ST_GeomFromText('POINT(1 2)'),\n"
+#~ "        ST_GeomFromText('POINT(-2 3)') ));\n"
+#~ "\n"
+#~ "st_astext\n"
+#~ "----------\n"
+#~ "MULTIPOINT((1 2),(-2 3))"
+#~ msgstr ""
+#~ "SELECT ST_AsText( ST_Collect( ST_GeomFromText('POINT(1 2)'),\n"
+#~ "        ST_GeomFromText('POINT(-2 3)') )) ;\n"
+#~ "\n"
+#~ "st_astext\n"
+#~ "----------\n"
+#~ "MULTIPOINT((1 2),(-2 3))"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_AsEWKT( ST_Collect( ST_GeomFromEWKT('POINT(1 2 3)'),\n"
+#~ "                ST_GeomFromEWKT('POINT(1 2 4)') ) );\n"
+#~ "\n"
+#~ "                st_asewkt\n"
+#~ "-------------------------\n"
+#~ " MULTIPOINT(1 2 3,1 2 4)"
+#~ msgstr ""
+#~ "SELECT ST_AsEWKT( ST_Collect( ST_GeomFromEWKT('POINT(1 2 3)'),\n"
+#~ "                ST_GeomFromEWKT('POINT(1 2 4)') ) ) ;\n"
+#~ "\n"
+#~ "                st_asewkt\n"
+#~ "-------------------------\n"
+#~ " MULTIPOINT(1 2 3,1 2 4)"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_AsText( ST_Collect( 'CIRCULARSTRING(220268 150415,220227 "
+#~ "150505,220227 150406)',\n"
+#~ "                'CIRCULARSTRING(220227 150406,2220227 150407,220227 "
+#~ "150406)'));\n"
+#~ "\n"
+#~ "                st_astext\n"
+#~ "------------------------------------------------------------------------------------\n"
+#~ "MULTICURVE(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),\n"
+#~ " CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))"
+#~ msgstr ""
+#~ "SELECT ST_AsText( ST_Collect( 'CIRCULARSTRING(220268 150415,220227 "
+#~ "150505,220227 150406)',\n"
+#~ "                'CIRCULARSTRING(220227 150406,2220227 150407,220227 "
+#~ "150406)')) ;\n"
+#~ "\n"
+#~ "                st_astext\n"
+#~ "------------------------------------------------------------------------------------\n"
+#~ "MULTICURVE(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),\n"
+#~ " CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))"
+
+#, no-c-format
+#~ msgid "SELECT ST_Collect( ARRAY( SELECT geom FROM sometable ) );"
+#~ msgstr "SELECT ST_Collect( ARRAY( SELECT geom FROM sometable ) ) ;"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_AsText(  ST_Collect(\n"
+#~ "                ARRAY[ ST_GeomFromText('LINESTRING(1 2, 3 4)'),\n"
+#~ "                        ST_GeomFromText('LINESTRING(3 4, 4 5)') ] )) As "
+#~ "wktcollect;\n"
+#~ "\n"
+#~ "--wkt collect --\n"
+#~ "MULTILINESTRING((1 2,3 4),(3 4,4 5))"
+#~ msgstr ""
+#~ "SELECT ST_AsText(  ST_Collect(\n"
+#~ "                ARRAY[ ST_GeomFromText('LINESTRING(1 2, 3 4)'),\n"
+#~ "                        ST_GeomFromText('LINESTRING(3 4, 4 5)') ] )) As "
+#~ "wktcollect ;\n"
+#~ "\n"
+#~ "--wkt collect --\n"
+#~ "MULTILINESTRING((1 2,3 4),(3 4,4 5))"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT stusps, ST_Collect(f.geom) as geom\n"
+#~ "         FROM (SELECT stusps, (ST_Dump(geom)).geom As geom\n"
+#~ "                                FROM\n"
+#~ "                                somestatetable ) As f\n"
+#~ "        GROUP BY stusps"
+#~ msgstr ""
+#~ "SELECT stusps, ST_Collect(f.geom) as geom\n"
+#~ "         FROM (SELECT stusps, (ST_Dump(geom)).geom As geom\n"
+#~ "                                FROM\n"
+#~ "                                somestatetable ) As f\n"
+#~ "        GROUP BY stusps"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_AsEWKT(  ST_LineFromMultiPoint('MULTIPOINT(1 2 3, 4 5 6, 7 8 "
+#~ "9)')  ));\n"
+#~ "\n"
+#~ "--result--\n"
+#~ "LINESTRING(1 2 3,4 5 6,7 8 9)"
+#~ msgstr ""
+#~ "SELECT ST_AsEWKT(  ST_LineFromMultiPoint('MULTIPOINT(1 2 3, 4 5 6, 7 8 "
+#~ "9)')  )) ;\n"
+#~ "\n"
+#~ "--résultat--\n"
+#~ "LINESTRING(1 2 3,4 5 6,7 8 9)"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_AsText( ST_MakeEnvelope(10, 10, 11, 11, 4326) );\n"
+#~ "\n"
+#~ "st_asewkt\n"
+#~ "-----------\n"
+#~ "POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))"
+#~ msgstr ""
+#~ "SELECT ST_AsText( ST_MakeEnvelope(10, 10, 11, 11, 4326) ) ;\n"
+#~ "\n"
+#~ "st_asewkt\n"
+#~ "-----------\n"
+#~ "POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))"
+
+#, no-c-format
+#~ msgid ""
+#~ "<funcprototype> <funcdef>geometry <function>ST_MakeLine</function></"
+#~ "funcdef> <paramdef><type>geometry</type> <parameter>geom1</parameter></"
+#~ "paramdef> <paramdef><type>geometry</type> <parameter>geom2</parameter></"
+#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+#~ "<function>ST_MakeLine</function></funcdef> <paramdef><type>geometry[]</"
+#~ "type> <parameter>geoms_array</parameter></paramdef> </funcprototype> "
+#~ "<funcprototype> <funcdef>geometry <function>ST_MakeLine</function></"
+#~ "funcdef> <paramdef><type>geometry set</type> <parameter>geoms</"
+#~ "parameter></paramdef> </funcprototype>"
+#~ msgstr ""
+#~ "<funcprototype> <funcdef>geometry <function>ST_MakeLine</function></"
+#~ "funcdef> <paramdef><type>geometry</type> <parameter>geom1</parameter></"
+#~ "paramdef> <paramdef><type>geometry</type> <parameter>geom2</parameter></"
+#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+#~ "<function>ST_MakeLine</function></funcdef> <paramdef><type>geometry[]</"
+#~ "type> <parameter>geoms_array</parameter></paramdef> </funcprototype> "
+#~ "<funcprototype> <funcdef>geometry <function>ST_MakeLine</function></"
+#~ "funcdef> <paramdef><type>geometry set</type> <parameter>geoms</"
+#~ "parameter></paramdef> </funcprototype>"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_AsText( ST_MakeLine(ST_Point(1,2), ST_Point(3,4)) );\n"
+#~ "\n"
+#~ "          st_astext\n"
+#~ "---------------------\n"
+#~ " LINESTRING(1 2,3 4)"
+#~ msgstr ""
+#~ "SELECT ST_AsText( ST_MakeLine(ST_Point(1,2), ST_Point(3,4)) ) ;\n"
+#~ "\n"
+#~ "          st_astext\n"
+#~ "---------------------\n"
+#~ " LINESTRING(1 2,3 4)"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_AsEWKT( ST_MakeLine(ST_MakePoint(1,2,3), "
+#~ "ST_MakePoint(3,4,5) ));\n"
+#~ "\n"
+#~ "                st_asewkt\n"
+#~ "-------------------------\n"
+#~ " LINESTRING(1 2 3,3 4 5)"
+#~ msgstr ""
+#~ "SELECT ST_AsEWKT( ST_MakeLine(ST_MakePoint(1,2,3), "
+#~ "ST_MakePoint(3,4,5) )) ;\n"
+#~ "\n"
+#~ "                st_asewkt\n"
+#~ "-------------------------\n"
+#~ " LINESTRING(1 2 3,3 4 5)"
+
+#, no-c-format
+#~ msgid ""
+#~ "select ST_AsText( ST_MakeLine( 'LINESTRING(0 0, 1 1)', 'LINESTRING(2 2, 3 "
+#~ "3)' ) );\n"
+#~ "\n"
+#~ "          st_astext\n"
+#~ "-----------------------------\n"
+#~ " LINESTRING(0 0,1 1,2 2,3 3)"
+#~ msgstr ""
+#~ "select ST_AsText( ST_MakeLine( 'LINESTRING(0 0, 1 1)', 'LINESTRING(2 2, 3 "
+#~ "3)' ) ) ;\n"
+#~ "\n"
+#~ "          st_astext\n"
+#~ "-----------------------------\n"
+#~ " LINESTRING(0 0,1 1,2 2,3 3)"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_MakeLine( ARRAY( SELECT ST_Centroid(geom) FROM visit_locations "
+#~ "ORDER BY visit_time) );"
+#~ msgstr ""
+#~ "SELECT ST_MakeLine( ARRAY( SELECT ST_Centroid(geom) FROM visit_locations "
+#~ "ORDER BY visit_time) ) ;"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_AsEWKT( ST_MakeLine(\n"
+#~ "          ARRAY[ ST_MakePoint(1,2,3), ST_MakePoint(3,4,5), "
+#~ "ST_MakePoint(6,6,6) ]  ));\n"
+#~ "\n"
+#~ "                st_asewkt\n"
+#~ "-------------------------\n"
+#~ "LINESTRING(1 2 3,3 4 5,6 6 6)"
+#~ msgstr ""
+#~ "SELECT ST_AsEWKT( ST_MakeLine(\n"
+#~ "          ARRAY[ ST_MakePoint(1,2,3), ST_MakePoint(3,4,5), "
+#~ "ST_MakePoint(6,6,6) ]  )) ;\n"
+#~ "                st_asewkt\n"
+#~ "-------------------------\n"
+#~ "LINESTRING(1 2 3,3 4 5,6 6 6)"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT gps.track_id, ST_MakeLine(gps.geom ORDER BY gps_time) As geom\n"
+#~ "        FROM gps_points As gps\n"
+#~ "        GROUP BY track_id;"
+#~ msgstr ""
+#~ "SELECT gps.track_id, ST_MakeLine(gps.geom ORDER BY gps_time) As geom\n"
+#~ "        FROM gps_points As gps\n"
+#~ "        GROUP BY track_id ;"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT gps.track_id, ST_MakeLine(gps.geom) As geom\n"
+#~ "        FROM ( SELECT track_id, gps_time, geom\n"
+#~ "                        FROM gps_points ORDER BY track_id, gps_time ) As "
+#~ "gps\n"
+#~ "        GROUP BY track_id;"
+#~ msgstr ""
+#~ "SELECT gps.track_id, ST_MakeLine(gps.geom) As geom\n"
+#~ "        FROM ( SELECT track_id, gps_time, geom\n"
+#~ "                        FROM gps_points ORDER BY track_id, gps_time ) As "
+#~ "gps\n"
+#~ "        GROUP BY track_id ;"
+
+#, no-c-format
+#~ msgid ""
+#~ "--Return point with unknown SRID\n"
+#~ "SELECT ST_MakePoint(-71.1043443253471, 42.3150676015829);\n"
+#~ "\n"
+#~ "--Return point marked as WGS 84 long lat\n"
+#~ "SELECT ST_SetSRID(ST_MakePoint(-71.1043443253471, "
+#~ "42.3150676015829),4326);\n"
+#~ "\n"
+#~ "--Return a 3D point (e.g. has altitude)\n"
+#~ "SELECT ST_MakePoint(1, 2,1.5);\n"
+#~ "\n"
+#~ "--Get z of point\n"
+#~ "SELECT ST_Z(ST_MakePoint(1, 2,1.5));\n"
+#~ "result\n"
+#~ "-------\n"
+#~ "1.5"
+#~ msgstr ""
+#~ "--Return point with unknown SRID\n"
+#~ "SELECT ST_MakePoint(-71.1043443253471, 42.3150676015829) ;\n"
+#~ "\n"
+#~ "--Return point marked as WGS 84 long lat\n"
+#~ "SELECT ST_SetSRID(ST_MakePoint(-71.1043443253471, "
+#~ "42.3150676015829),4326) ;\n"
+#~ "\n"
+#~ "--Return a 3D point (e.g. has altitude)\n"
+#~ "SELECT ST_MakePoint(1, 2,1.5) ;\n"
+#~ "\n"
+#~ "--Get z of point\n"
+#~ "SELECT ST_Z(ST_MakePoint(1, 2,1.5)) ;\n"
+#~ "result\n"
+#~ "-------\n"
+#~ "1.5"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_AsEWKT(  ST_MakePointM(-71.1043443253471, 42.3150676015829, "
+#~ "10)  );\n"
+#~ "\n"
+#~ "                                   st_asewkt\n"
+#~ "-----------------------------------------------\n"
+#~ " POINTM(-71.1043443253471 42.3150676015829 10)"
+#~ msgstr ""
+#~ "SELECT ST_AsEWKT(  ST_MakePointM(-71.1043443253471, 42.3150676015829, "
+#~ "10)  ) ;\n"
+#~ "\n"
+#~ "                                   st_asewkt\n"
+#~ "-----------------------------------------------\n"
+#~ " POINTM(-71.1043443253471 42.3150676015829 10)"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_AsEWKT( ST_SetSRID(  ST_MakePointM(-71.104, 42.315, 10),  "
+#~ "4326));\n"
+#~ "\n"
+#~ "                                                st_asewkt\n"
+#~ "---------------------------------------------------------\n"
+#~ "SRID=4326;POINTM(-71.104 42.315 10)"
+#~ msgstr ""
+#~ "SELECT ST_AsEWKT( ST_SetSRID(  ST_MakePointM(-71.104, 42.315, 10),  "
+#~ "4326)) ;\n"
+#~ "\n"
+#~ "                                                st_asewkt\n"
+#~ "---------------------------------------------------------\n"
+#~ "SRID=4326;POINTM(-71.104 42.315 10)"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_M(  ST_MakePointM(-71.104, 42.315, 10)  );\n"
+#~ "\n"
+#~ "result\n"
+#~ "-------\n"
+#~ "10"
+#~ msgstr ""
+#~ "SELECT ST_M(  ST_MakePointM(-71.104, 42.315, 10)  ) ;\n"
+#~ "\n"
+#~ "result\n"
+#~ "-------\n"
+#~ "10"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_MakePolygon( ST_GeomFromText('LINESTRING(75 29,77 29,77 29, 75 "
+#~ "29)'));"
+#~ msgstr ""
+#~ "SELECT ST_MakePolygon( ST_GeomFromText('LINESTRING(75 29,77 29,77 29, 75 "
+#~ "29)')) ;"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_MakePolygon( ST_AddPoint(foo.open_line, ST_StartPoint(foo."
+#~ "open_line)) )\n"
+#~ "FROM (\n"
+#~ "  SELECT ST_GeomFromText('LINESTRING(75 29,77 29,77 29, 75 29)') As "
+#~ "open_line) As foo;"
+#~ msgstr ""
+#~ "SELECT ST_MakePolygon( ST_AddPoint(foo.open_line, ST_StartPoint(foo."
+#~ "open_line)) )\n"
+#~ "FROM (\n"
+#~ "  SELECT ST_GeomFromText('LINESTRING(75 29,77 29,77 29, 75 29)') As "
+#~ "open_line) As foo ;"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_AsEWKT( ST_MakePolygon( 'LINESTRING(75.15 29.53 1,77 29 1,77.6 "
+#~ "29.5 1, 75.15 29.53 1)'));\n"
+#~ "\n"
+#~ "st_asewkt\n"
+#~ "-----------\n"
+#~ "POLYGON((75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1))"
+#~ msgstr ""
+#~ "SELECT ST_AsEWKT( ST_MakePolygon( 'LINESTRING(75.15 29.53 1,77 29 1,77.6 "
+#~ "29.5 1, 75.15 29.53 1)')) ;\n"
+#~ "\n"
+#~ "st_asewkt\n"
+#~ "-----------\n"
+#~ "POLYGON((75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1))"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_AsEWKT( ST_MakePolygon( 'LINESTRINGM(75.15 29.53 1,77 29 1,77.6 "
+#~ "29.5 2, 75.15 29.53 2)' ));\n"
+#~ "\n"
+#~ "st_asewkt\n"
+#~ "----------\n"
+#~ "POLYGONM((75.15 29.53 1,77 29 1,77.6 29.5 2,75.15 29.53 2))"
+#~ msgstr ""
+#~ "SELECT ST_AsEWKT( ST_MakePolygon( 'LINESTRINGM(75.15 29.53 1,77 29 1,77.6 "
+#~ "29.5 2, 75.15 29.53 2)' )) ;\n"
+#~ "\n"
+#~ "st_asewkt\n"
+#~ "----------\n"
+#~ "POLYGONM((75.15 29.53 1,77 29 1,77.6 29.5 2,75.15 29.53 2))"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_MakePolygon( ST_ExteriorRing( ST_Buffer(ring.line,10)),\n"
+#~ "        ARRAY[  ST_Translate(ring.line, 1, 1),\n"
+#~ "                ST_ExteriorRing(ST_Buffer(ST_Point(20,20),1)) ]\n"
+#~ "        )\n"
+#~ "FROM (SELECT ST_ExteriorRing(\n"
+#~ "        ST_Buffer(ST_Point(10,10),10,10)) AS line ) AS ring;"
+#~ msgstr ""
+#~ "SELECT ST_MakePolygon( ST_ExteriorRing( ST_Buffer(ring.line,10)),\n"
+#~ "        ARRAY[  ST_Translate(ring.line, 1, 1),\n"
+#~ "                ST_ExteriorRing(ST_Buffer(ST_Point(20,20),1)) ]\n"
+#~ "        )\n"
+#~ "FROM (SELECT ST_ExteriorRing(\n"
+#~ "        ST_Buffer(ST_Point(10,10),10,10)) AS line ) AS ring ;"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT p.gid, p.province_name,\n"
+#~ "        CASE WHEN array_agg(w.geom) IS NULL\n"
+#~ "        THEN p.geom\n"
+#~ "        ELSE  ST_MakePolygon( ST_LineMerge(ST_Boundary(p.geom)),\n"
+#~ "                        array_agg(w.geom)) END\n"
+#~ "FROM\n"
+#~ "        provinces p LEFT JOIN waterlines w\n"
+#~ "                ON (ST_Within(w.geom, p.geom) AND ST_IsClosed(w.geom))\n"
+#~ "GROUP BY p.gid, p.province_name, p.geom;"
+#~ msgstr ""
+#~ "SELECT p.gid, p.province_name,\n"
+#~ "        CASE WHEN array_agg(w.geom) IS NULL\n"
+#~ "        THEN p.geom\n"
+#~ "        ELSE  ST_MakePolygon( ST_LineMerge(ST_Boundary(p.geom)),\n"
+#~ "                        array_agg(w.geom)) END\n"
+#~ "FROM\n"
+#~ "        provinces p LEFT JOIN waterlines w\n"
+#~ "                ON (ST_Within(w.geom, p.geom) AND ST_IsClosed(w.geom))\n"
+#~ "GROUP BY p.gid, p.province_name, p.geom ;"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT p.gid,  p.province_name,\n"
+#~ "    CASE WHEN EXISTS( SELECT w.geom\n"
+#~ "        FROM waterlines w\n"
+#~ "        WHERE ST_Within(w.geom, p.geom)\n"
+#~ "        AND ST_IsClosed(w.geom))\n"
+#~ "    THEN ST_MakePolygon(\n"
+#~ "        ST_LineMerge(ST_Boundary(p.geom)),\n"
+#~ "        ARRAY( SELECT w.geom\n"
+#~ "            FROM waterlines w\n"
+#~ "            WHERE ST_Within(w.geom, p.geom)\n"
+#~ "            AND ST_IsClosed(w.geom)))\n"
+#~ "    ELSE p.geom\n"
+#~ "    END AS geom\n"
+#~ "FROM provinces p;"
+#~ msgstr ""
+#~ "SELECT p.gid,  p.province_name,\n"
+#~ "    CASE WHEN EXISTS( SELECT w.geom\n"
+#~ "        FROM waterlines w\n"
+#~ "        WHERE ST_Within(w.geom, p.geom)\n"
+#~ "        AND ST_IsClosed(w.geom))\n"
+#~ "    THEN ST_MakePolygon(\n"
+#~ "        ST_LineMerge(ST_Boundary(p.geom)),\n"
+#~ "        ARRAY( SELECT w.geom\n"
+#~ "            FROM waterlines w\n"
+#~ "            WHERE ST_Within(w.geom, p.geom)\n"
+#~ "            AND ST_IsClosed(w.geom)))\n"
+#~ "    ELSE p.geom\n"
+#~ "    END AS geom\n"
+#~ "FROM provinces p ;"
+
+#, no-c-format
+#~ msgid "SELECT ST_Point( -71.104, 42.315);"
+#~ msgstr "SELECT ST_Point( -71.104, 42.315) ;"
+
+#, no-c-format
+#~ msgid "SELECT ST_SetSRID(ST_Point( -71.104, 42.315),4326);"
+#~ msgstr "SELECT ST_SetSRID(ST_Point( -71.104, 42.315),4326) ;"
+
+#, no-c-format
+#~ msgid "SELECT ST_Point( -71.104, 42.315, 4326);"
+#~ msgstr "SELECT ST_Point( -71.104, 42.315, 4326) ;"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT CAST( ST_SetSRID(ST_Point( -71.104, 42.315), 4326) AS geography);"
+#~ msgstr ""
+#~ "SELECT CAST( ST_SetSRID(ST_Point( -71.104, 42.315), 4326) AS geography) ;"
+
+#, no-c-format
+#~ msgid "SELECT CAST( ST_Point( -71.104, 42.315, 4326) AS geography);"
+#~ msgstr "SELECT CAST( ST_Point( -71.104, 42.315, 4326) AS geography) ;"
+
+#, no-c-format
+#~ msgid "SELECT ST_Point( -71.104, 42.315, 4326)::geography;"
+#~ msgstr "SELECT ST_Point( -71.104, 42.315, 4326)::geography ;"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_Transform(ST_SetSRID( ST_Point( 3637510, 3014852 ), 2273), "
+#~ "4326)::geography;"
+#~ msgstr ""
+#~ "SELECT ST_Transform(ST_SetSRID( ST_Point( 3637510, 3014852 ), 2273), "
+#~ "4326)::geography ;"
+
+#, no-c-format
+#~ msgid "SELECT ST_PointZ(-71.104, 42.315, 3.4, 4326)"
+#~ msgstr "SELECT ST_PointZ(-71.104, 42.315, 3.4, 4326)"
+
+#, no-c-format
+#~ msgid "SELECT ST_PointZ(-71.104, 42.315, 3.4, srid => 4326)"
+#~ msgstr "SELECT ST_PointZ(-71.104, 42.315, 3.4, srid => 4326)"
+
+#, no-c-format
+#~ msgid "SELECT ST_PointZ(-71.104, 42.315, 3.4)"
+#~ msgstr "SELECT ST_PointZ(-71.104, 42.315, 3.4)"
+
+#, no-c-format
+#~ msgid "SELECT ST_PointM(-71.104, 42.315, 3.4, 4326)"
+#~ msgstr "SELECT ST_PointM(-71.104, 42.315, 3.4, 4326)"
+
+#, no-c-format
+#~ msgid "SELECT ST_PointM(-71.104, 42.315, 3.4, srid => 4326)"
+#~ msgstr "SELECT ST_PointM(-71.104, 42.315, 3.4, srid => 4326)"
+
+#, no-c-format
+#~ msgid "SELECT ST_PointM(-71.104, 42.315, 3.4)"
+#~ msgstr "SELECT ST_PointM(-71.104, 42.315, 3.4)"
+
+#, no-c-format
+#~ msgid "SELECT ST_PointZM(-71.104, 42.315, 3.4, 4.5, 4326)"
+#~ msgstr "SELECT ST_PointZM(-71.104, 42.315, 3.4, 4.5, 4326)"
+
+#, no-c-format
+#~ msgid "SELECT ST_PointZM(-71.104, 42.315, 3.4, 4.5, srid => 4326)"
+#~ msgstr "SELECT ST_PointZM(-71.104, 42.315, 3.4, 4.5, srid => 4326)"
+
+#, no-c-format
+#~ msgid "SELECT ST_PointZM(-71.104, 42.315, 3.4, 4.5)"
+#~ msgstr "SELECT ST_PointZM(-71.104, 42.315, 3.4, 4.5)"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_AsText( ST_Polygon('LINESTRING(75 29, 77 29, 77 29, 75 29)'::"
+#~ "geometry, 4326) );\n"
+#~ "\n"
+#~ "-- result --\n"
+#~ "POLYGON((75 29, 77 29, 77 29, 75 29))"
+#~ msgstr ""
+#~ "SELECT ST_AsText( ST_Polygon('LINESTRING(75 29, 77 29, 77 29, 75 29)'::"
+#~ "geometry, 4326) ) ;\n"
+#~ "\n"
+#~ "-- résultat --\n"
+#~ "POLYGON((75 29, 77 29, 77 29, 75 29))"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_AsEWKT( ST_Polygon( ST_GeomFromEWKT('LINESTRING(75 29 1, 77 29 "
+#~ "2, 77 29 3, 75 29 1)'), 4326) );\n"
+#~ "\n"
+#~ "-- result --\n"
+#~ "SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))"
+#~ msgstr ""
+#~ "SELECT ST_AsEWKT( ST_Polygon( ST_GeomFromEWKT('LINESTRING(75 29 1, 77 29 "
+#~ "2, 77 29 3, 75 29 1)'), 4326) ) ;\n"
+#~ "\n"
+#~ "-- résultat --\n"
+#~ "SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_AsText( ST_TileEnvelope(2, 1, 1) );\n"
+#~ "\n"
+#~ " st_astext\n"
+#~ "------------------------------\n"
+#~ " POLYGON((-10018754.1713945 0,-10018754.1713945 10018754.1713945,0 "
+#~ "10018754.1713945,0 0,-10018754.1713945 0))\n"
+#~ "\n"
+#~ "SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, "
+#~ "180, 90, 4326) ) );\n"
+#~ "\n"
+#~ "                      st_astext\n"
+#~ "------------------------------------------------------\n"
+#~ " POLYGON((-135 45,-135 67.5,-90 67.5,-90 45,-135 45))"
+#~ msgstr ""
+#~ "SELECT ST_AsText( ST_TileEnvelope(2, 1, 1) ) ;\n"
+#~ "\n"
+#~ " st_astext\n"
+#~ "------------------------------\n"
+#~ " POLYGON((-10018754.1713945 0,-10018754.1713945 10018754.1713945,0 "
+#~ "10018754.1713945,0 0,-10018754.1713945 0))\n"
+#~ "\n"
+#~ "SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, "
+#~ "180, 90, 4326) ) ) ;\n"
+#~ "\n"
+#~ "                      st_astext\n"
+#~ "------------------------------------------------------\n"
+#~ " POLYGON((-135 45,-135 67.5,-90 67.5,-90 45,-135 45))"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT COUNT(*), hexes.geom\n"
+#~ "FROM\n"
+#~ "    ST_HexagonGrid(\n"
+#~ "        10000,\n"
+#~ "        ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)\n"
+#~ "    ) AS hexes\n"
+#~ "    INNER JOIN\n"
+#~ "    pointtable AS pts\n"
+#~ "    ON ST_Intersects(pts.geom, hexes.geom)\n"
+#~ "GROUP BY hexes.geom;"
+#~ msgstr ""
+#~ "SELECT COUNT(*), hexes.geom\n"
+#~ "FROM\n"
+#~ "    ST_HexagonGrid(\n"
+#~ "        10000,\n"
+#~ "        ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)\n"
+#~ "    ) AS hexes\n"
+#~ "    INNER JOIN\n"
+#~ "    pointtable AS pts\n"
+#~ "    ON ST_Intersects(pts.geom, hexes.geom)\n"
+#~ "GROUP BY hexes.geom ;"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT admin1.gid, hex.geom\n"
+#~ "FROM\n"
+#~ "    admin1\n"
+#~ "    CROSS JOIN\n"
+#~ "    ST_HexagonGrid(100000, admin1.geom) AS hex\n"
+#~ "WHERE\n"
+#~ "    adm0_a3 = 'USA'\n"
+#~ "    AND\n"
+#~ "    ST_Intersects(admin1.geom, hex.geom)"
+#~ msgstr ""
+#~ "SELECT admin1.gid, hex.geom\n"
+#~ "FROM\n"
+#~ "    admin1\n"
+#~ "    CROSS JOIN\n"
+#~ "    ST_HexagonGrid(100000, admin1.geom) AS hex\n"
+#~ "WHERE\n"
+#~ "    adm0_a3 = 'USA'\n"
+#~ "    AND\n"
+#~ "    ST_Intersects(admin1.geom, hex.geom)"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_AsText(ST_SetSRID(ST_Hexagon(1.0, 0, 0), 3857));\n"
+#~ "\n"
+#~ "POLYGON((-1 0,-0.5\n"
+#~ "         -0.866025403784439,0.5\n"
+#~ "         -0.866025403784439,1\n"
+#~ "         0,0.5\n"
+#~ "         0.866025403784439,-0.5\n"
+#~ "         0.866025403784439,-1 0))"
+#~ msgstr ""
+#~ "SELECT ST_AsText(ST_SetSRID(ST_Hexagon(1.0, 0, 0), 3857)) ;\n"
+#~ "\n"
+#~ "POLYGON((-1 0,-0.5\n"
+#~ "         -0.866025403784439,0.5\n"
+#~ "         -0.866025403784439,1\n"
+#~ "         0,0.5\n"
+#~ "         0.866025403784439,-0.5\n"
+#~ "         0.866025403784439,-1 0))"
+
+#, no-c-format
+#~ msgid ""
+#~ "WITH grid AS (\n"
+#~ "SELECT (ST_SquareGrid(1, ST_Transform(geom,4326))).*\n"
+#~ "FROM admin0 WHERE name = 'Canada'\n"
+#~ ")\n"
+#~ "  SELEcT ST_AsText(geom)\n"
+#~ "  FROM grid"
+#~ msgstr ""
+#~ "WITH grid AS (\n"
+#~ "SELECT (ST_SquareGrid(1, ST_Transform(geom,4326))).*\n"
+#~ "FROM admin0 WHERE name = 'Canada'\n"
+#~ ")\n"
+#~ "  SELEcT ST_AsText(geom)\n"
+#~ "  FROM grid"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT COUNT(*), squares.geom\n"
+#~ "    FROM\n"
+#~ "    pointtable AS pts\n"
+#~ "    INNER JOIN\n"
+#~ "    ST_SquareGrid(\n"
+#~ "        1000,\n"
+#~ "        ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)\n"
+#~ "    ) AS squares\n"
+#~ "    ON ST_Intersects(pts.geom, squares.geom)\n"
+#~ "    GROUP BY squares.geom"
+#~ msgstr ""
+#~ "SELECT COUNT(*), squares.geom\n"
+#~ "    FROM\n"
+#~ "    pointtable AS pts\n"
+#~ "    INNER JOIN\n"
+#~ "    ST_SquareGrid(\n"
+#~ "        1000,\n"
+#~ "        ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)\n"
+#~ "    ) AS squares\n"
+#~ "    ON ST_Intersects(pts.geom, squares.geom)\n"
+#~ "    GROUP BY squares.geom"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT COUNT(*), squares.geom\n"
+#~ "    FROM\n"
+#~ "    pointtable AS pts\n"
+#~ "    INNER JOIN\n"
+#~ "    ST_SquareGrid(\n"
+#~ "        1000,\n"
+#~ "       pts.geom\n"
+#~ "    ) AS squares\n"
+#~ "    ON ST_Intersects(pts.geom, squares.geom)\n"
+#~ "    GROUP BY squares.geom"
+#~ msgstr ""
+#~ "SELECT COUNT(*), squares.geom\n"
+#~ "    FROM\n"
+#~ "    pointtable AS pts\n"
+#~ "    INNER JOIN\n"
+#~ "    ST_SquareGrid(\n"
+#~ "        1000,\n"
+#~ "       pts.geom\n"
+#~ "    ) AS squares\n"
+#~ "    ON ST_Intersects(pts.geom, squares.geom)\n"
+#~ "    GROUP BY squares.geom"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_AsText(ST_SetSRID(ST_Square(1.0, 0, 0), 3857));\n"
+#~ "\n"
+#~ " POLYGON((0 0,0 1,1 1,1 0,0 0))"
+#~ msgstr ""
+#~ "SELECT ST_AsText(ST_SetSRID(ST_Square(1.0, 0, 0), 3857)) ;\n"
+#~ "\n"
+#~ " POLYGON((0 0,0 1,1 1,1 0,0 0))"
+
+#, no-c-format
+#~ msgid "SELECT ST_AsText(ST_Letters('Yo'), 1);"
+#~ msgstr "SELECT ST_AsText(ST_Letters('Yo'), 1) ;"
+
+#, no-c-format
+#~ msgid "SELECT ST_Translate(ST_Scale(ST_Letters('Yo'), 10, 10), 100,100);"
+#~ msgstr "SELECT ST_Translate(ST_Scale(ST_Letters('Yo'), 10, 10), 100,100) ;"
 
 #, fuzzy
 #~ msgid ""

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2023-07-14 23:23+0000\n"
 "PO-Revision-Date: 2014-02-17 16:29+0000\n"
 "Last-Translator: David Martinez Morata\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/postgis-1/"
@@ -40,20 +40,20 @@ msgstr "Descripcion del problema"
 #, fuzzy, no-c-format
 msgid ""
 "Current PostgreSQL versions (including 9.6) suffer from a query optimizer "
-"weakness regarding TOAST tables. TOAST tables are a kind of \"extension room"
-"\" used to store large (in the sense of data size) values that do not fit "
-"into normal data pages (like long texts, images or complex geometries with "
-"lots of vertices), see <ulink url=\"http://www.postgresql.org/docs/current/"
-"static/storage-toast.html\">the PostgreSQL Documentation for TOAST</ulink> "
-"for more information)."
+"weakness regarding TOAST tables. TOAST tables are a kind of \"extension "
+"room\" used to store large (in the sense of data size) values that do not "
+"fit into normal data pages (like long texts, images or complex geometries "
+"with lots of vertices), see <ulink url=\"http://www.postgresql.org/docs/"
+"current/static/storage-toast.html\">the PostgreSQL Documentation for TOAST</"
+"ulink> for more information)."
 msgstr ""
 "Versiones actuales de PostgreSQL (incluyendo la 8.0) tienen algunas "
 "debilidades en la optimización de consultas respecto a tablas TOAST. Las "
 "tablas TOAST son una especie de \"cámara de extensiones\" utilizadas para "
 "almacenar valores grandes (en sentido de tamaño de datos) que no se pueden "
 "mostrar en paginas de datos (como textos largos, imágenes o geometrías "
-"complejas con muchos vértices). Para mas información visita <ulink url="
-"\"http://www.postgresql.org/docs/current/static/storage-toast.html\">the "
+"complejas con muchos vértices). Para mas información visita <ulink "
+"url=\"http://www.postgresql.org/docs/current/static/storage-toast.html\">the "
 "PostgreSQL Documentation for TOAST</ulink>"
 
 #. Tag: para
@@ -102,15 +102,15 @@ msgstr ""
 msgid ""
 "To see whether your suffer from this issue, use the \"EXPLAIN ANALYZE\" "
 "postgresql command. For more information and the technical details, you can "
-"read the thread on the PostgreSQL performance mailing list: <ulink url="
-"\"http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php"
-"\">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</"
+"read the thread on the PostgreSQL performance mailing list: <ulink "
+"url=\"http://archives.postgresql.org/pgsql-performance/2005-02/msg00030."
+"php\">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</"
 "ulink>"
 msgstr ""
-"Para comprobar si padeces de este error, utiliza el comando \"EXPLAIN ANALYZE"
-"\" postgresql. Para obtener más información y los detalles técnicos, puedes "
-"leer el hilo en la lista de correo de rendimiento postgres: http://archives."
-"postgresql.org/pgsql-performance/2005-02/msg00030.php"
+"Para comprobar si padeces de este error, utiliza el comando \"EXPLAIN "
+"ANALYZE\" postgresql. Para obtener más información y los detalles técnicos, "
+"puedes leer el hilo en la lista de correo de rendimiento postgres: http://"
+"archives.postgresql.org/pgsql-performance/2005-02/msg00030.php"
 
 #. Tag: para
 #: performance_tips.xml:41
@@ -172,18 +172,6 @@ msgstr ""
 "que \"cachee\" los limites o bbox, y hacer coincidir en contra de esta. En "
 "nuestro ejemplo, los comandos son:"
 
-#. Tag: programlisting
-#: performance_tips.xml:63
-#, fuzzy, no-c-format
-msgid ""
-"SELECT "
-"AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\n"
-"UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(geom));"
-msgstr ""
-"SELECT "
-"AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2'); \n"
-"UPDATE mytable SET bbox = ST_Envelope(ST_Force_2d(the_geom));"
-
 #. Tag: para
 #: performance_tips.xml:65
 #, no-c-format
@@ -193,18 +181,6 @@ msgid ""
 msgstr ""
 "Ahora cambia tu consulta para utilizar el operador espacial &amp;&amp; con "
 "bbox en vez de geom_column, así:"
-
-#. Tag: programlisting
-#: performance_tips.xml:68
-#, fuzzy, no-c-format
-msgid ""
-"SELECT geom_column\n"
-"FROM mytable\n"
-"WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
-msgstr ""
-"SELECT geom_column \n"
-"FROM mytable \n"
-"WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
 
 #. Tag: para
 #: performance_tips.xml:70
@@ -265,20 +241,6 @@ msgstr ""
 "PostGIS por que los indices GiST simplemente ignoran los valores NULL, "
 "tendrás el siguiente mensaje de error:"
 
-#. Tag: programlisting
-#: performance_tips.xml:95
-#, fuzzy, no-c-format
-msgid ""
-"lwgeom=# CLUSTER my_geom_index ON my_table;\n"
-"ERROR: cannot cluster when index access method does not handle null values\n"
-"HINT: You may be able to work around this by marking column \"geom\" NOT "
-"NULL."
-msgstr ""
-"lwgeom=# CLUSTER my_geom_index ON my_table; \n"
-"ERROR: cannot cluster when index access method does not handle null values\n"
-"HINT: You may be able to work around this by marking column \"the_geom\" NOT "
-"NULL."
-
 #. Tag: para
 #: performance_tips.xml:97
 #, no-c-format
@@ -288,16 +250,6 @@ msgid ""
 msgstr ""
 "Como sugiere el mensaje de ayuda, podemos evitar esta deficiencia añadiendo "
 "una restricción \"not null\" a la tabla:"
-
-#. Tag: programlisting
-#: performance_tips.xml:100
-#, fuzzy, no-c-format
-msgid ""
-"lwgeom=# ALTER TABLE my_table ALTER COLUMN geom SET not null;\n"
-"ALTER TABLE"
-msgstr ""
-"lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null; \n"
-"ALTER TABLE"
 
 #. Tag: para
 #: performance_tips.xml:102
@@ -338,16 +290,6 @@ msgstr ""
 "esta sobrecarga, puede ser factible comprobar la validez de suprimir esas "
 "dimensiones adicionales de una vez por todas:"
 
-#. Tag: programlisting
-#: performance_tips.xml:118
-#, fuzzy, no-c-format
-msgid ""
-"UPDATE mytable SET geom = ST_Force2D(geom);\n"
-"VACUUM FULL ANALYZE mytable;"
-msgstr ""
-"UPDATE mytable SET the_geom = ST_Force_2d(the_geom); \n"
-"VACUUM FULL ANALYZE mytable;"
-
 #. Tag: para
 #: performance_tips.xml:120
 #, no-c-format
@@ -383,6 +325,56 @@ msgstr ""
 "si has mezclado dimensiones de geometrías, que restringen el UPDATE con "
 "\"WHERE dimension(the_geom)&gt;2\" salta la reescritura de geometrías que ya "
 "están en 2D."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "SELECT "
+#~ "AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\n"
+#~ "UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(geom));"
+#~ msgstr ""
+#~ "SELECT "
+#~ "AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2'); \n"
+#~ "UPDATE mytable SET bbox = ST_Envelope(ST_Force_2d(the_geom));"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "SELECT geom_column\n"
+#~ "FROM mytable\n"
+#~ "WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
+#~ msgstr ""
+#~ "SELECT geom_column \n"
+#~ "FROM mytable \n"
+#~ "WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "lwgeom=# CLUSTER my_geom_index ON my_table;\n"
+#~ "ERROR: cannot cluster when index access method does not handle null "
+#~ "values\n"
+#~ "HINT: You may be able to work around this by marking column \"geom\" NOT "
+#~ "NULL."
+#~ msgstr ""
+#~ "lwgeom=# CLUSTER my_geom_index ON my_table; \n"
+#~ "ERROR: cannot cluster when index access method does not handle null "
+#~ "values\n"
+#~ "HINT: You may be able to work around this by marking column \"the_geom\" "
+#~ "NOT NULL."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "lwgeom=# ALTER TABLE my_table ALTER COLUMN geom SET not null;\n"
+#~ "ALTER TABLE"
+#~ msgstr ""
+#~ "lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null; \n"
+#~ "ALTER TABLE"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "UPDATE mytable SET geom = ST_Force2D(geom);\n"
+#~ "VACUUM FULL ANALYZE mytable;"
+#~ msgstr ""
+#~ "UPDATE mytable SET the_geom = ST_Force_2d(the_geom); \n"
+#~ "VACUUM FULL ANALYZE mytable;"
 
 #~ msgid "Tuning your configuration"
 #~ msgstr "Ajusta tu configuración"
@@ -550,9 +542,9 @@ msgstr ""
 #~ msgstr ""
 #~ "Se establece en al menos entre 10 o 30 para las bases de datos con la "
 #~ "actividad de escritura pesada, o más para las grandes cargas de bases de "
-#~ "datos. Otro artículo sobre el tema que vale la pena leer  <ulink url="
-#~ "\"http://www.westnet.com/~gsmith/content/postgresql/chkp-bgw-83.htm"
-#~ "\">Greg Smith: Checkpoint and Background writer</ulink>"
+#~ "datos. Otro artículo sobre el tema que vale la pena leer  <ulink "
+#~ "url=\"http://www.westnet.com/~gsmith/content/postgresql/chkp-bgw-83."
+#~ "htm\">Greg Smith: Checkpoint and Background writer</ulink>"
 
 #~ msgid "Possibly store the xlog on a separate disk device"
 #~ msgstr ""

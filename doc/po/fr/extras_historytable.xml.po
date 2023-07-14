@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2023-07-14 23:23+0000\n"
 "PO-Revision-Date: 2023-05-12 10:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -84,26 +84,6 @@ msgstr ""
 "secondaire \"roads_history\", qui contient toutes les colonnes de la table "
 "parent, ainsi que les colonnes supplémentaires suivantes :"
 
-#. Tag: programlisting
-#: extras_historytable.xml:16
-#, no-c-format
-msgid ""
-"history_id      | integer                     | not null default\n"
-" date_added      | timestamp without time zone | not null default now()\n"
-" date_deleted    | timestamp without time zone |\n"
-" last_operation  | character varying(30)       | not null\n"
-" active_user     | character varying(90)       | not null default "
-"\"current_user\"()\n"
-" current_version | text                        | not null"
-msgstr ""
-"history_id      | integer                     | not null default\n"
-" date_added      | timestamp without time zone | not null default now()\n"
-" date_deleted    | timestamp without time zone |\n"
-" last_operation  | character varying(30)       | not null\n"
-" active_user     | character varying(90)       | not null default "
-"\"current_user\"()\n"
-" current_version | text                        | not null"
-
 #. Tag: para
 #: extras_historytable.xml:20
 #, no-c-format
@@ -153,12 +133,6 @@ msgstr ""
 "Grâce à ces informations, il est possible de retrouver l'historique de "
 "n'importe quel enregistrement de la table des routes :"
 
-#. Tag: programlisting
-#: extras_historytable.xml:31
-#, no-c-format
-msgid "SELECT * FROM roads_history WHERE roads_pk = 111;"
-msgstr "SELECT * FROM roads_history WHERE roads_pk = 111 ;"
-
 #. Tag: para
 #: extras_historytable.xml:33
 #, no-c-format
@@ -166,18 +140,6 @@ msgid "Or, to retrieve a view of the roads table at any point in the past:"
 msgstr ""
 "Ou pour obtenir une vue de la table des routes à n'importe quel moment dans "
 "le passé :"
-
-#. Tag: programlisting
-#: extras_historytable.xml:34
-#, no-c-format
-msgid ""
-"SELECT * FROM roads_history\n"
-"    WHERE date_added &lt; 'January 1, 2001' AND\n"
-"        ( date_deleted &gt;= 'January 1, 2001' OR date_deleted IS NULL );"
-msgstr ""
-"SELECT * FROM roads_history\n"
-"    WHERE date_added &lt; 'January 1, 2001' AND\n"
-"        ( date_deleted &gt;= 'January 1, 2001' OR date_deleted IS NULL ) ;"
 
 #. Tag: refname
 #: extras_historytable.xml:38
@@ -219,8 +181,8 @@ msgid ""
 "tables. Creates a table called <varname>historic_information</varname>"
 msgstr ""
 "Crée une table qui contiendra des valeurs intéressantes pour la gestion des "
-"tables d'historique. Crée une table appelée "
-"<varname>historic_information</varname>"
+"tables d'historique. Crée une table appelée <varname>historic_information</"
+"varname>"
 
 #. Tag: para
 #: extras_historytable.xml:58 extras_historytable.xml:100
@@ -233,12 +195,6 @@ msgstr "Disponibilité : 1.5.0"
 #, no-c-format
 msgid "Examples"
 msgstr "Exemples"
-
-#. Tag: programlisting
-#: extras_historytable.xml:65
-#, no-c-format
-msgid "SELECT postgis_install_history();"
-msgstr "SELECT postgis_install_history() ;"
 
 #. Tag: title
 #: extras_historytable.xml:71 extras_historytable.xml:113
@@ -303,52 +259,87 @@ msgid ""
 msgstr ""
 "Cette fonction repose actuellement sur l'enregistrement d'une colonne "
 "géométrique dans <varname>geometry_columns</varname> et échoue si la colonne "
-"géométrique n'est pas présente dans la table "
-"<varname>geometry_columns</varname>."
+"géométrique n'est pas présente dans la table <varname>geometry_columns</"
+"varname>."
 
-#. Tag: programlisting
-#: extras_historytable.xml:107
 #, no-c-format
-msgid ""
-"CREATE TABLE roads(gid SERIAL PRIMARY KEY, road_name varchar(150));\n"
-"SELECT AddGeometryColumn('roads', 'geom', 26986, 'LINESTRING', 2);\n"
-"\n"
-"SELECT postgis_enable_history('public', 'roads', 'geom') As register_table;\n"
-"register_table\n"
-"--------------\n"
-"t\n"
-"\n"
-"INSERT INTO roads(road_name, geom)\n"
-"  VALUES('Test Street', ST_GeomFromText('LINESTRING(231660.5 832170,231647 "
-"832202,231627.5 832250.5)',26986));\n"
-"\n"
-"-- check transaction detail --\n"
-"SELECT date_added, last_operation, current_version\n"
-"FROM roads_history\n"
-"WHERE road_name = 'Test Street' ORDER BY date_added DESC;\n"
-"\n"
-"       date_added       | last_operation | current_version\n"
-"------------------------+----------------+-----------------\n"
-" 2011-02-07 12:44:36.92 | INSERT         | 2"
-msgstr ""
-"CREATE TABLE roads(gid SERIAL PRIMARY KEY, road_name varchar(150)) ;\n"
-"SELECT AddGeometryColumn('roads', 'geom', 26986, 'LINESTRING', 2) ;\n"
-"\n"
-"SELECT postgis_enable_history('public', 'roads', 'geom') As register_table ;"
-"\n"
-"register_table\n"
-"--------------\n"
-"t\n"
-"\n"
-"INSERT INTO roads(road_name, geom)\n"
-"  VALUES('Test Street', ST_GeomFromText('LINESTRING(231660.5 832170,231647 "
-"832202,231627.5 832250.5)',26986)) ;\n"
-"\n"
-"-- check transaction detail --\n"
-"SELECT date_added, last_operation, current_version\n"
-"FROM roads_history\n"
-"WHERE road_name = 'Test Street' ORDER BY date_added DESC ;\n"
-"\n"
-"       date_added       | last_operation | current_version\n"
-"------------------------+----------------+-----------------\n"
-" 2011-02-07 12 :44 :36.92 | INSERT         | 2"
+#~ msgid ""
+#~ "history_id      | integer                     | not null default\n"
+#~ " date_added      | timestamp without time zone | not null default now()\n"
+#~ " date_deleted    | timestamp without time zone |\n"
+#~ " last_operation  | character varying(30)       | not null\n"
+#~ " active_user     | character varying(90)       | not null default "
+#~ "\"current_user\"()\n"
+#~ " current_version | text                        | not null"
+#~ msgstr ""
+#~ "history_id      | integer                     | not null default\n"
+#~ " date_added      | timestamp without time zone | not null default now()\n"
+#~ " date_deleted    | timestamp without time zone |\n"
+#~ " last_operation  | character varying(30)       | not null\n"
+#~ " active_user     | character varying(90)       | not null default "
+#~ "\"current_user\"()\n"
+#~ " current_version | text                        | not null"
+
+#, no-c-format
+#~ msgid "SELECT * FROM roads_history WHERE roads_pk = 111;"
+#~ msgstr "SELECT * FROM roads_history WHERE roads_pk = 111 ;"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT * FROM roads_history\n"
+#~ "    WHERE date_added &lt; 'January 1, 2001' AND\n"
+#~ "        ( date_deleted &gt;= 'January 1, 2001' OR date_deleted IS NULL );"
+#~ msgstr ""
+#~ "SELECT * FROM roads_history\n"
+#~ "    WHERE date_added &lt; 'January 1, 2001' AND\n"
+#~ "        ( date_deleted &gt;= 'January 1, 2001' OR date_deleted IS NULL ) ;"
+
+#, no-c-format
+#~ msgid "SELECT postgis_install_history();"
+#~ msgstr "SELECT postgis_install_history() ;"
+
+#, no-c-format
+#~ msgid ""
+#~ "CREATE TABLE roads(gid SERIAL PRIMARY KEY, road_name varchar(150));\n"
+#~ "SELECT AddGeometryColumn('roads', 'geom', 26986, 'LINESTRING', 2);\n"
+#~ "\n"
+#~ "SELECT postgis_enable_history('public', 'roads', 'geom') As "
+#~ "register_table;\n"
+#~ "register_table\n"
+#~ "--------------\n"
+#~ "t\n"
+#~ "\n"
+#~ "INSERT INTO roads(road_name, geom)\n"
+#~ "  VALUES('Test Street', ST_GeomFromText('LINESTRING(231660.5 "
+#~ "832170,231647 832202,231627.5 832250.5)',26986));\n"
+#~ "\n"
+#~ "-- check transaction detail --\n"
+#~ "SELECT date_added, last_operation, current_version\n"
+#~ "FROM roads_history\n"
+#~ "WHERE road_name = 'Test Street' ORDER BY date_added DESC;\n"
+#~ "\n"
+#~ "       date_added       | last_operation | current_version\n"
+#~ "------------------------+----------------+-----------------\n"
+#~ " 2011-02-07 12:44:36.92 | INSERT         | 2"
+#~ msgstr ""
+#~ "CREATE TABLE roads(gid SERIAL PRIMARY KEY, road_name varchar(150)) ;\n"
+#~ "SELECT AddGeometryColumn('roads', 'geom', 26986, 'LINESTRING', 2) ;\n"
+#~ "\n"
+#~ "SELECT postgis_enable_history('public', 'roads', 'geom') As "
+#~ "register_table ;\n"
+#~ "register_table\n"
+#~ "--------------\n"
+#~ "t\n"
+#~ "\n"
+#~ "INSERT INTO roads(road_name, geom)\n"
+#~ "  VALUES('Test Street', ST_GeomFromText('LINESTRING(231660.5 "
+#~ "832170,231647 832202,231627.5 832250.5)',26986)) ;\n"
+#~ "\n"
+#~ "-- check transaction detail --\n"
+#~ "SELECT date_added, last_operation, current_version\n"
+#~ "FROM roads_history\n"
+#~ "WHERE road_name = 'Test Street' ORDER BY date_added DESC ;\n"
+#~ "\n"
+#~ "       date_added       | last_operation | current_version\n"
+#~ "------------------------+----------------+-----------------\n"
+#~ " 2011-02-07 12 :44 :36.92 | INSERT         | 2"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2023-07-14 23:23+0000\n"
 "PO-Revision-Date: 2016-07-20 06:55+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -40,12 +40,12 @@ msgstr "문제점 설명"
 #, fuzzy, no-c-format
 msgid ""
 "Current PostgreSQL versions (including 9.6) suffer from a query optimizer "
-"weakness regarding TOAST tables. TOAST tables are a kind of \"extension room"
-"\" used to store large (in the sense of data size) values that do not fit "
-"into normal data pages (like long texts, images or complex geometries with "
-"lots of vertices), see <ulink url=\"http://www.postgresql.org/docs/current/"
-"static/storage-toast.html\">the PostgreSQL Documentation for TOAST</ulink> "
-"for more information)."
+"weakness regarding TOAST tables. TOAST tables are a kind of \"extension "
+"room\" used to store large (in the sense of data size) values that do not "
+"fit into normal data pages (like long texts, images or complex geometries "
+"with lots of vertices), see <ulink url=\"http://www.postgresql.org/docs/"
+"current/static/storage-toast.html\">the PostgreSQL Documentation for TOAST</"
+"ulink> for more information)."
 msgstr ""
 "현재 PostgreSQL (8.0 포함) 버전들의 쿼리 최적화기(optimizer)에는 TOAST 테이블"
 "과 관련된 약점이 있습니다. TOAST 테이블은 일반 데이터 페이지에 적합하지 않은 "
@@ -99,9 +99,9 @@ msgstr ""
 msgid ""
 "To see whether your suffer from this issue, use the \"EXPLAIN ANALYZE\" "
 "postgresql command. For more information and the technical details, you can "
-"read the thread on the PostgreSQL performance mailing list: <ulink url="
-"\"http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php"
-"\">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</"
+"read the thread on the PostgreSQL performance mailing list: <ulink "
+"url=\"http://archives.postgresql.org/pgsql-performance/2005-02/msg00030."
+"php\">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</"
 "ulink>"
 msgstr ""
 "사용자 시스템에 이 버그가 있는지 확인하려면, \"EXPLAIN ANALYZE\" PostgreSQL "
@@ -166,18 +166,6 @@ msgstr ""
 "다. 경계 상자를 \"캐시\"하는 추가 열을 생성한 다음, 이 추가 열을 대상으로 일"
 "치 여부를 쿼리하면 됩니다. 이번 예제의 경우, 해당 명령어는 다음과 같습니다:"
 
-#. Tag: programlisting
-#: performance_tips.xml:63
-#, fuzzy, no-c-format
-msgid ""
-"SELECT "
-"AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\n"
-"UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(geom));"
-msgstr ""
-"SELECT "
-"AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\n"
-"UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(the_geom));"
-
 #. Tag: para
 #: performance_tips.xml:65
 #, no-c-format
@@ -187,18 +175,6 @@ msgid ""
 msgstr ""
 "이제 geom_column 대신 bbox 에 대해 &amp;&amp; 연산자를 이용하도록 다음과 같"
 "이 사용자 쿼리를 변경하십시오:"
-
-#. Tag: programlisting
-#: performance_tips.xml:68
-#, no-c-format
-msgid ""
-"SELECT geom_column\n"
-"FROM mytable\n"
-"WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
-msgstr ""
-"SELECT geom_column\n"
-"FROM mytable\n"
-"WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
 
 #. Tag: para
 #: performance_tips.xml:70
@@ -257,20 +233,6 @@ msgstr ""
 "지 않습니다. 왜냐하면 GiST 인덱스가 NULL 값을 단순히 무시하기 때문에, 다음과 "
 "같은 오류 메시지를 보게 될 것입니다:"
 
-#. Tag: programlisting
-#: performance_tips.xml:95
-#, fuzzy, no-c-format
-msgid ""
-"lwgeom=# CLUSTER my_geom_index ON my_table;\n"
-"ERROR: cannot cluster when index access method does not handle null values\n"
-"HINT: You may be able to work around this by marking column \"geom\" NOT "
-"NULL."
-msgstr ""
-"lwgeom=# CLUSTER my_geom_index ON my_table;\n"
-"ERROR: cannot cluster when index access method does not handle null values\n"
-"HINT: You may be able to work around this by marking column \"the_geom\" NOT "
-"NULL."
-
 #. Tag: para
 #: performance_tips.xml:97
 #, no-c-format
@@ -280,16 +242,6 @@ msgid ""
 msgstr ""
 "HINT 메시지의 내용대로, 테이블에 \"not null\" 제약조건을 추가하면 이 결점을 "
 "피해 갈 수 있습니다:"
-
-#. Tag: programlisting
-#: performance_tips.xml:100
-#, fuzzy, no-c-format
-msgid ""
-"lwgeom=# ALTER TABLE my_table ALTER COLUMN geom SET not null;\n"
-"ALTER TABLE"
-msgstr ""
-"lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null;\n"
-"ALTER TABLE"
 
 #. Tag: para
 #: performance_tips.xml:102
@@ -329,16 +281,6 @@ msgstr ""
 "를 피하려면, 미리 그 추가적인 차원을 완전히 삭제하는 편이 효율적일 수 있습니"
 "다."
 
-#. Tag: programlisting
-#: performance_tips.xml:118
-#, fuzzy, no-c-format
-msgid ""
-"UPDATE mytable SET geom = ST_Force2D(geom);\n"
-"VACUUM FULL ANALYZE mytable;"
-msgstr ""
-"UPDATE mytable SET the_geom = ST_Force2D(the_geom);\n"
-"VACUUM FULL ANALYZE mytable;"
-
 #. Tag: para
 #: performance_tips.xml:120
 #, no-c-format
@@ -372,6 +314,56 @@ msgstr ""
 "다. 또한 몇 종류의 차원이 섞인 도형들을 가지고 있을 경우, \"WHERE "
 "dimension(the_geom)&gt;2\"로 업데이트를 제한하면 이미 2D인 도형을 다시 작성하"
 "는 일을 건너뛸 수 있습니다."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "SELECT "
+#~ "AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\n"
+#~ "UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(geom));"
+#~ msgstr ""
+#~ "SELECT "
+#~ "AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\n"
+#~ "UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(the_geom));"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT geom_column\n"
+#~ "FROM mytable\n"
+#~ "WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
+#~ msgstr ""
+#~ "SELECT geom_column\n"
+#~ "FROM mytable\n"
+#~ "WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "lwgeom=# CLUSTER my_geom_index ON my_table;\n"
+#~ "ERROR: cannot cluster when index access method does not handle null "
+#~ "values\n"
+#~ "HINT: You may be able to work around this by marking column \"geom\" NOT "
+#~ "NULL."
+#~ msgstr ""
+#~ "lwgeom=# CLUSTER my_geom_index ON my_table;\n"
+#~ "ERROR: cannot cluster when index access method does not handle null "
+#~ "values\n"
+#~ "HINT: You may be able to work around this by marking column \"the_geom\" "
+#~ "NOT NULL."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "lwgeom=# ALTER TABLE my_table ALTER COLUMN geom SET not null;\n"
+#~ "ALTER TABLE"
+#~ msgstr ""
+#~ "lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null;\n"
+#~ "ALTER TABLE"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "UPDATE mytable SET geom = ST_Force2D(geom);\n"
+#~ "VACUUM FULL ANALYZE mytable;"
+#~ msgstr ""
+#~ "UPDATE mytable SET the_geom = ST_Force2D(the_geom);\n"
+#~ "VACUUM FULL ANALYZE mytable;"
 
 #~ msgid "Tuning your configuration"
 #~ msgstr "사용자 설정 세부 조정"

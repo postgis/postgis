@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2023-07-14 23:23+0000\n"
 "PO-Revision-Date: 2023-05-10 15:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -107,18 +107,6 @@ msgstr "&curve_support;"
 msgid "Examples"
 msgstr "Exemples"
 
-#. Tag: programlisting
-#: reference_exception.xml:42
-#, no-c-format
-msgid ""
-"UPDATE sometable\n"
-" SET geom =  PostGIS_AddBBox(geom)\n"
-" WHERE PostGIS_HasBBox(geom) = false;"
-msgstr ""
-"UPDATE sometable\n"
-" SET geom =  PostGIS_AddBBox(geom)\n"
-" WHERE PostGIS_HasBBox(geom) = false ;"
-
 #. Tag: title
 #: reference_exception.xml:47 reference_exception.xml:95
 #: reference_exception.xml:136
@@ -199,37 +187,6 @@ msgstr ""
 "boîtes déjà corrompues. Il est donc possible de corriger manuellement en "
 "utilisant la méthode ci-dessous et de lire la bbox ou de recharger le dump."
 
-#. Tag: programlisting
-#: reference_exception.xml:90
-#, no-c-format
-msgid ""
-"--This example drops bounding boxes where the cached box is not correct\n"
-"                        --The force to ST_AsBinary before applying Box2D "
-"forces a recalculation of the box, and Box2D applied to the table geometry "
-"always\n"
-"                        -- returns the cached bounding box.\n"
-"                        UPDATE sometable\n"
-" SET geom =  PostGIS_DropBBox(geom)\n"
-" WHERE Not (Box2D(ST_AsBinary(geom)) = Box2D(geom));\n"
-"\n"
-"        UPDATE sometable\n"
-" SET geom =  PostGIS_AddBBox(geom)\n"
-" WHERE Not PostGIS_HasBBOX(geom);"
-msgstr ""
-"-- Cet exemple supprime les emprises lorsque l'emprise mise en cache est "
-"incorrecte\n"
-"-- Le fait de forcer ST_AsBinary avant d'appliquer Box2D provoque un "
-"recalcul de l'emprise, et \n"
-"-- Box2D appliquée à la géométrie de la table renvoie toujours l'emprise "
-"mise en cache.\n"
-"UPDATE sometable\n"
-" SET the_geom =  PostGIS_DropBBox(the_geom)\n"
-" WHERE Not (Box2D(ST_AsBinary(the_geom)) = Box2D(the_geom)) ;\n"
-"\n"
-" UPDATE sometable\n"
-" SET the_geom =  PostGIS_AddBBox(the_geom)\n"
-" WHERE Not PostGIS_HasBBOX(the_geom) ;"
-
 #. Tag: para
 #: reference_exception.xml:97
 #, no-c-format
@@ -267,21 +224,59 @@ msgid ""
 "to control caching."
 msgstr ""
 "Renvoie TRUE si la boîte de délimitation de cette géométrie est mise en "
-"cache, FALSE dans le cas contraire. Utilisez <xref linkend=\"PostGIS_AddBBox"
-"\"/> et <xref linkend=\"PostGIS_DropBBox\"/> pour contrôler la mise en cache."
-
-#. Tag: programlisting
-#: reference_exception.xml:131
-#, no-c-format
-msgid ""
-"SELECT geom\n"
-"FROM sometable WHERE PostGIS_HasBBox(geom) = false;"
-msgstr ""
-"SELECT the_geom\n"
-"FROM sometable WHERE PostGIS_HasBBox(the_geom) = false ;"
+"cache, FALSE dans le cas contraire. Utilisez <xref "
+"linkend=\"PostGIS_AddBBox\"/> et <xref linkend=\"PostGIS_DropBBox\"/> pour "
+"contrôler la mise en cache."
 
 #. Tag: para
 #: reference_exception.xml:138
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_DropBBox\"/>"
 msgstr ", <xref linkend=\"PostGIS_DropBBox\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "UPDATE sometable\n"
+#~ " SET geom =  PostGIS_AddBBox(geom)\n"
+#~ " WHERE PostGIS_HasBBox(geom) = false;"
+#~ msgstr ""
+#~ "UPDATE sometable\n"
+#~ " SET geom =  PostGIS_AddBBox(geom)\n"
+#~ " WHERE PostGIS_HasBBox(geom) = false ;"
+
+#, no-c-format
+#~ msgid ""
+#~ "--This example drops bounding boxes where the cached box is not correct\n"
+#~ "                        --The force to ST_AsBinary before applying Box2D "
+#~ "forces a recalculation of the box, and Box2D applied to the table "
+#~ "geometry always\n"
+#~ "                        -- returns the cached bounding box.\n"
+#~ "                        UPDATE sometable\n"
+#~ " SET geom =  PostGIS_DropBBox(geom)\n"
+#~ " WHERE Not (Box2D(ST_AsBinary(geom)) = Box2D(geom));\n"
+#~ "\n"
+#~ "        UPDATE sometable\n"
+#~ " SET geom =  PostGIS_AddBBox(geom)\n"
+#~ " WHERE Not PostGIS_HasBBOX(geom);"
+#~ msgstr ""
+#~ "-- Cet exemple supprime les emprises lorsque l'emprise mise en cache est "
+#~ "incorrecte\n"
+#~ "-- Le fait de forcer ST_AsBinary avant d'appliquer Box2D provoque un "
+#~ "recalcul de l'emprise, et \n"
+#~ "-- Box2D appliquée à la géométrie de la table renvoie toujours l'emprise "
+#~ "mise en cache.\n"
+#~ "UPDATE sometable\n"
+#~ " SET the_geom =  PostGIS_DropBBox(the_geom)\n"
+#~ " WHERE Not (Box2D(ST_AsBinary(the_geom)) = Box2D(the_geom)) ;\n"
+#~ "\n"
+#~ " UPDATE sometable\n"
+#~ " SET the_geom =  PostGIS_AddBBox(the_geom)\n"
+#~ " WHERE Not PostGIS_HasBBOX(the_geom) ;"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT geom\n"
+#~ "FROM sometable WHERE PostGIS_HasBBox(geom) = false;"
+#~ msgstr ""
+#~ "SELECT the_geom\n"
+#~ "FROM sometable WHERE PostGIS_HasBBox(the_geom) = false ;"

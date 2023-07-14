@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-06-22 22:04+0000\n"
+"POT-Creation-Date: 2023-07-14 23:23+0000\n"
 "PO-Revision-Date: 2023-06-27 07:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -134,12 +134,6 @@ msgstr ""
 msgid "Examples"
 msgstr "例"
 
-#. Tag: programlisting
-#: reference_version.xml:54
-#, no-c-format
-msgid "SELECT PostGIS_Extensions_Upgrade();"
-msgstr "SELECT PostGIS_Extensions_Upgrade();"
-
 #. Tag: screen
 #: reference_version.xml:55
 #, no-c-format
@@ -237,36 +231,8 @@ msgid ""
 "Enhanced: 3.4.0 now includes extra PROJ configurations NETWORK_ENABLED, "
 "URL_ENDPOINT and DATABASE_PATH of proj.db location"
 msgstr ""
-"Enhanced: 3.4.0 現在、外部PROJ設定のNETWORK_ENABLED、URL_ENDPOINT、proj."
-"db位置のDATABASE_PATHがあります"
-
-#. Tag: programlisting
-#: reference_version.xml:104
-#, no-c-format
-msgid ""
-"SELECT PostGIS_Full_Version();\n"
-"                                                           postgis_full_version\n"
-"----------------------------------------------------------------------------------\n"
-"POSTGIS=\"3.4.0dev 3.3.0rc2-993-g61bdf43a7\" [EXTENSION] PGSQL=\"160\" "
-"GEOS=\"3.12.0dev-CAPI-1.18.0\" SFCGAL=\"1.3.8\" PROJ=\"7.2.1 "
-"NETWORK_ENABLED=OFF URL_ENDPOINT=https://cdn.proj.org "
-"USER_WRITABLE_DIRECTORY=/tmp/proj DATABASE_PATH=/usr/share/proj/proj.db\" "
-"GDAL=\"GDAL 3.2.2, released 2021/03/05\" LIBXML=\"2.9.10\" LIBJSON=\"0.15\" "
-"LIBPROTOBUF=\"1.3.3\" WAGYU=\"0.5.0 (Internal)\" TOPOLOGY RASTER\n"
-"(1 row)"
-msgstr ""
-"SELECT PostGIS_Full_Version();\n"
-"                                                           "
-"postgis_full_version\n"
-"-----------------------------------------------------------------------------"
-"-----\n"
-"POSTGIS=\"3.4.0dev 3.3.0rc2-993-g61bdf43a7\" [EXTENSION] PGSQL=\"160\" GEOS="
-"\"3.12.0dev-CAPI-1.18.0\" SFCGAL=\"1.3.8\" PROJ=\"7.2.1 NETWORK_ENABLED=OFF "
-"URL_ENDPOINT=https://cdn.proj.org USER_WRITABLE_DIRECTORY=/tmp/proj "
-"DATABASE_PATH=/usr/share/proj/proj.db\" GDAL=\"GDAL 3.2.2, released 2021/03/"
-"05\" LIBXML=\"2.9.10\" LIBJSON=\"0.15\" LIBPROTOBUF=\"1.3.3\" WAGYU=\"0.5.0 "
-"(Internal)\" TOPOLOGY RASTER\n"
-"(1 row)"
+"Enhanced: 3.4.0 現在、外部PROJ設定のNETWORK_ENABLED、URL_ENDPOINT、proj.db位"
+"置のDATABASE_PATHがあります"
 
 #. Tag: para
 #: reference_version.xml:110
@@ -313,22 +279,6 @@ msgid ""
 msgstr ""
 "GEOSライブラリのバージョン番号を返します。GEOS対応が有効でない場合は"
 "<varname>NULL</varname>を返します。"
-
-#. Tag: programlisting
-#: reference_version.xml:150
-#, no-c-format
-msgid ""
-"SELECT PostGIS_GEOS_Version();\n"
-" postgis_geos_version\n"
-"----------------------\n"
-"3.12.0dev-CAPI-1.18.0\n"
-"(1 row)"
-msgstr ""
-"SELECT PostGIS_GEOS_Version();\n"
-" postgis_geos_version\n"
-"----------------------\n"
-"3.12.0dev-CAPI-1.18.0\n"
-"(1 row)"
 
 #. Tag: para
 #: reference_version.xml:156 reference_version.xml:240
@@ -382,22 +332,6 @@ msgstr ""
 msgid "Availability: 3.4.0"
 msgstr "Availability: 3.4.0"
 
-#. Tag: programlisting
-#: reference_version.xml:194
-#, no-c-format
-msgid ""
-"SELECT PostGIS_GEOS_Compiled_Version();\n"
-" postgis_geos_compiled_version\n"
-"-------------------------------\n"
-" 3.12.0\n"
-"(1 row)"
-msgstr ""
-"SELECT PostGIS_GEOS_Compiled_Version();\n"
-" postgis_geos_compiled_version\n"
-"-------------------------------\n"
-" 3.12.0\n"
-"(1 row)"
-
 #. Tag: para
 #: reference_version.xml:200
 #, no-c-format
@@ -436,22 +370,6 @@ msgstr ""
 msgid "Returns the version number of the liblwgeom library/"
 msgstr "liblwgeomライブラリのバージョン番号を返します。"
 
-#. Tag: programlisting
-#: reference_version.xml:234
-#, no-c-format
-msgid ""
-"SELECT PostGIS_Liblwgeom_Version();\n"
-"postgis_liblwgeom_version\n"
-"--------------------------\n"
-"3.4.0dev 3.3.0rc2-993-g61bdf43a7\n"
-"(1 row)"
-msgstr ""
-"SELECT PostGIS_Liblwgeom_Version();\n"
-"postgis_liblwgeom_version\n"
-"--------------------------\n"
-"3.4.0dev 3.3.0rc2-993-g61bdf43a7\n"
-"(1 row)"
-
 #. Tag: refname
 #: reference_version.xml:250
 #, no-c-format
@@ -485,22 +403,6 @@ msgstr "LibXML2ライブラリのバージョン番号を返します。"
 #, no-c-format
 msgid "Availability: 1.5"
 msgstr "Availability: 1.5"
-
-#. Tag: programlisting
-#: reference_version.xml:276
-#, no-c-format
-msgid ""
-"SELECT PostGIS_LibXML_Version();\n"
-" postgis_libxml_version\n"
-"----------------------\n"
-" 2.9.10\n"
-"(1 row)"
-msgstr ""
-"SELECT PostGIS_LibXML_Version();\n"
-" postgis_libxml_version\n"
-"----------------------\n"
-" 2.9.10\n"
-"(1 row)"
 
 #. Tag: para
 #: reference_version.xml:282
@@ -542,22 +444,6 @@ msgstr ""
 msgid "<para>Returns build date of the PostGIS library.</para>"
 msgstr "<para>PostGISライブラリのビルド日付を返します。</para>"
 
-#. Tag: programlisting
-#: reference_version.xml:316
-#, no-c-format
-msgid ""
-"SELECT PostGIS_Lib_Build_Date();\n"
-" postgis_lib_build_date\n"
-"------------------------\n"
-" 2023-06-22 03:56:11\n"
-"(1 row)"
-msgstr ""
-"SELECT PostGIS_Lib_Build_Date();\n"
-" postgis_lib_build_date\n"
-"------------------------\n"
-" 2023-06-22 03:56:11\n"
-"(1 row)"
-
 #. Tag: refname
 #: reference_version.xml:322
 #, no-c-format
@@ -586,22 +472,6 @@ msgstr ""
 #, no-c-format
 msgid "<para>Returns the version number of the PostGIS library.</para>"
 msgstr "<para>PostGISのバージョン番号を返します。</para>"
-
-#. Tag: programlisting
-#: reference_version.xml:347
-#, no-c-format
-msgid ""
-"SELECT PostGIS_Lib_Version();\n"
-" postgis_lib_version\n"
-"---------------------\n"
-" 3.4.0dev\n"
-"(1 row)"
-msgstr ""
-"SELECT PostGIS_Lib_Version();\n"
-" postgis_lib_version\n"
-"---------------------\n"
-" 3.4.0dev\n"
-"(1 row)"
 
 #. Tag: para
 #: reference_version.xml:353
@@ -652,26 +522,8 @@ msgid ""
 "Enhanced: 3.4.0 now includes NETWORK_ENABLED, URL_ENDPOINT and DATABASE_PATH "
 "of proj.db location"
 msgstr ""
-"Enhanced: 3.4.0 現在、NETWORK_ENABLED、URL_ENDPOINT、proj."
-"db位置のDATABASE_PATHがあります"
-
-#. Tag: programlisting
-#: reference_version.xml:390
-#, no-c-format
-msgid ""
-"SELECT PostGIS_PROJ_Version();\n"
-"  postgis_proj_version\n"
-"-------------------------\n"
-"7.2.1 NETWORK_ENABLED=OFF URL_ENDPOINT=https://cdn.proj.org "
-"USER_WRITABLE_DIRECTORY=/tmp/proj DATABASE_PATH=/usr/share/proj/proj.db\n"
-"(1 row)"
-msgstr ""
-"SELECT PostGIS_PROJ_Version();\n"
-"  postgis_proj_version\n"
-"-------------------------\n"
-"7.2.1 NETWORK_ENABLED=OFF URL_ENDPOINT=https://cdn.proj.org "
-"USER_WRITABLE_DIRECTORY=/tmp/proj DATABASE_PATH=/usr/share/proj/proj.db\n"
-"(1 row)"
+"Enhanced: 3.4.0 現在、NETWORK_ENABLED、URL_ENDPOINT、proj.db位置の"
+"DATABASE_PATHがあります"
 
 #. Tag: para
 #: reference_version.xml:396 reference_version.xml:480
@@ -716,22 +568,6 @@ msgid ""
 msgstr ""
 "内部のWagyuライブラリのバージョン番号を返します。Wagyu対応が有効でない場合に"
 "は<varname>NULL</varname>を返します。"
-
-#. Tag: programlisting
-#: reference_version.xml:431
-#, no-c-format
-msgid ""
-"SELECT PostGIS_Wagyu_Version();\n"
-" postgis_wagyu_version\n"
-"-----------------------\n"
-" 0.5.0 (Internal)\n"
-"(1 row)"
-msgstr ""
-"SELECT PostGIS_Wagyu_Version();\n"
-" postgis_wagyu_version\n"
-"-----------------------\n"
-" 0.5.0 (Internal)\n"
-"(1 row)"
 
 #. Tag: para
 #: reference_version.xml:437
@@ -780,22 +616,6 @@ msgstr "<para>PostGISスクリプトのビルド日付を返します。</para>"
 #, no-c-format
 msgid "Availability: 1.0.0RC1"
 msgstr "Availability: 1.0.0RC1"
-
-#. Tag: programlisting
-#: reference_version.xml:474
-#, no-c-format
-msgid ""
-"SELECT PostGIS_Scripts_Build_Date();\n"
-"  postgis_scripts_build_date\n"
-"-------------------------\n"
-" 2023-06-22 03:56:11\n"
-"(1 row)"
-msgstr ""
-"SELECT PostGIS_Scripts_Build_Date();\n"
-"  postgis_scripts_build_date\n"
-"-------------------------\n"
-" 2023-06-22 03:56:11\n"
-"(1 row)"
 
 #. Tag: refname
 #: reference_version.xml:490
@@ -851,22 +671,6 @@ msgstr ""
 #, no-c-format
 msgid "Availability: 0.9.0"
 msgstr "Availability: 0.9.0"
-
-#. Tag: programlisting
-#: reference_version.xml:526
-#, no-c-format
-msgid ""
-"SELECT PostGIS_Scripts_Installed();\n"
-"  postgis_scripts_installed\n"
-"-------------------------\n"
-" 3.4.0dev 3.3.0rc2-993-g61bdf43a7\n"
-"(1 row)"
-msgstr ""
-"SELECT PostGIS_Scripts_Installed();\n"
-"  postgis_scripts_installed\n"
-"-------------------------\n"
-" 3.4.0dev 3.3.0rc2-993-g61bdf43a7\n"
-"(1 row)"
 
 #. Tag: para
 #: reference_version.xml:532
@@ -924,22 +728,6 @@ msgstr ""
 "1.1.0からこの関数は<xref linkend=\"PostGIS_Lib_Version\"/>と同じ値を返すよう"
 "になりました。後方互換のためです。"
 
-#. Tag: programlisting
-#: reference_version.xml:572
-#, no-c-format
-msgid ""
-"SELECT PostGIS_Scripts_Released();\n"
-"  postgis_scripts_released\n"
-"-------------------------\n"
-" 3.4.0dev 3.3.0rc2-993-g61bdf43a7\n"
-"(1 row)"
-msgstr ""
-"SELECT PostGIS_Scripts_Released();\n"
-"  postgis_scripts_released\n"
-"-------------------------\n"
-" 3.4.0dev 3.3.0rc2-993-g61bdf43a7\n"
-"(1 row)"
-
 #. Tag: para
 #: reference_version.xml:578
 #, no-c-format
@@ -982,22 +770,6 @@ msgstr ""
 msgid "<para>Returns PostGIS version number and compile-time options.</para>"
 msgstr "<para>PostGISバージョン番号とコンパイルオプションを返します。</para>"
 
-#. Tag: programlisting
-#: reference_version.xml:609
-#, no-c-format
-msgid ""
-"SELECT PostGIS_Version();\n"
-"                        postgis_version\n"
-"---------------------------------------\n"
-" 3.4 USE_GEOS=1 USE_PROJ=1 USE_STATS=1\n"
-"(1 row)"
-msgstr ""
-"SELECT PostGIS_Version();\n"
-"                        postgis_version\n"
-"---------------------------------------\n"
-" 3.4 USE_GEOS=1 USE_PROJ=1 USE_STATS=1\n"
-"(1 row)"
-
 #. Tag: para
 #: reference_version.xml:615
 #, no-c-format
@@ -1009,6 +781,206 @@ msgstr ""
 ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref "
 "linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/"
 ">, <xref linkend=\"PostGIS_PROJ_Version\"/>"
+
+#, no-c-format
+#~ msgid "SELECT PostGIS_Extensions_Upgrade();"
+#~ msgstr "SELECT PostGIS_Extensions_Upgrade();"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT PostGIS_Full_Version();\n"
+#~ "                                                           postgis_full_version\n"
+#~ "----------------------------------------------------------------------------------\n"
+#~ "POSTGIS=\"3.4.0dev 3.3.0rc2-993-g61bdf43a7\" [EXTENSION] PGSQL=\"160\" "
+#~ "GEOS=\"3.12.0dev-CAPI-1.18.0\" SFCGAL=\"1.3.8\" PROJ=\"7.2.1 "
+#~ "NETWORK_ENABLED=OFF URL_ENDPOINT=https://cdn.proj.org "
+#~ "USER_WRITABLE_DIRECTORY=/tmp/proj DATABASE_PATH=/usr/share/proj/proj.db\" "
+#~ "GDAL=\"GDAL 3.2.2, released 2021/03/05\" LIBXML=\"2.9.10\" "
+#~ "LIBJSON=\"0.15\" LIBPROTOBUF=\"1.3.3\" WAGYU=\"0.5.0 (Internal)\" "
+#~ "TOPOLOGY RASTER\n"
+#~ "(1 row)"
+#~ msgstr ""
+#~ "SELECT PostGIS_Full_Version();\n"
+#~ "                                                           postgis_full_version\n"
+#~ "----------------------------------------------------------------------------------\n"
+#~ "POSTGIS=\"3.4.0dev 3.3.0rc2-993-g61bdf43a7\" [EXTENSION] PGSQL=\"160\" "
+#~ "GEOS=\"3.12.0dev-CAPI-1.18.0\" SFCGAL=\"1.3.8\" PROJ=\"7.2.1 "
+#~ "NETWORK_ENABLED=OFF URL_ENDPOINT=https://cdn.proj.org "
+#~ "USER_WRITABLE_DIRECTORY=/tmp/proj DATABASE_PATH=/usr/share/proj/proj.db\" "
+#~ "GDAL=\"GDAL 3.2.2, released 2021/03/05\" LIBXML=\"2.9.10\" "
+#~ "LIBJSON=\"0.15\" LIBPROTOBUF=\"1.3.3\" WAGYU=\"0.5.0 (Internal)\" "
+#~ "TOPOLOGY RASTER\n"
+#~ "(1 row)"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT PostGIS_GEOS_Version();\n"
+#~ " postgis_geos_version\n"
+#~ "----------------------\n"
+#~ "3.12.0dev-CAPI-1.18.0\n"
+#~ "(1 row)"
+#~ msgstr ""
+#~ "SELECT PostGIS_GEOS_Version();\n"
+#~ " postgis_geos_version\n"
+#~ "----------------------\n"
+#~ "3.12.0dev-CAPI-1.18.0\n"
+#~ "(1 row)"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT PostGIS_GEOS_Compiled_Version();\n"
+#~ " postgis_geos_compiled_version\n"
+#~ "-------------------------------\n"
+#~ " 3.12.0\n"
+#~ "(1 row)"
+#~ msgstr ""
+#~ "SELECT PostGIS_GEOS_Compiled_Version();\n"
+#~ " postgis_geos_compiled_version\n"
+#~ "-------------------------------\n"
+#~ " 3.12.0\n"
+#~ "(1 row)"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT PostGIS_Liblwgeom_Version();\n"
+#~ "postgis_liblwgeom_version\n"
+#~ "--------------------------\n"
+#~ "3.4.0dev 3.3.0rc2-993-g61bdf43a7\n"
+#~ "(1 row)"
+#~ msgstr ""
+#~ "SELECT PostGIS_Liblwgeom_Version();\n"
+#~ "postgis_liblwgeom_version\n"
+#~ "--------------------------\n"
+#~ "3.4.0dev 3.3.0rc2-993-g61bdf43a7\n"
+#~ "(1 row)"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT PostGIS_LibXML_Version();\n"
+#~ " postgis_libxml_version\n"
+#~ "----------------------\n"
+#~ " 2.9.10\n"
+#~ "(1 row)"
+#~ msgstr ""
+#~ "SELECT PostGIS_LibXML_Version();\n"
+#~ " postgis_libxml_version\n"
+#~ "----------------------\n"
+#~ " 2.9.10\n"
+#~ "(1 row)"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT PostGIS_Lib_Build_Date();\n"
+#~ " postgis_lib_build_date\n"
+#~ "------------------------\n"
+#~ " 2023-06-22 03:56:11\n"
+#~ "(1 row)"
+#~ msgstr ""
+#~ "SELECT PostGIS_Lib_Build_Date();\n"
+#~ " postgis_lib_build_date\n"
+#~ "------------------------\n"
+#~ " 2023-06-22 03:56:11\n"
+#~ "(1 row)"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT PostGIS_Lib_Version();\n"
+#~ " postgis_lib_version\n"
+#~ "---------------------\n"
+#~ " 3.4.0dev\n"
+#~ "(1 row)"
+#~ msgstr ""
+#~ "SELECT PostGIS_Lib_Version();\n"
+#~ " postgis_lib_version\n"
+#~ "---------------------\n"
+#~ " 3.4.0dev\n"
+#~ "(1 row)"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT PostGIS_PROJ_Version();\n"
+#~ "  postgis_proj_version\n"
+#~ "-------------------------\n"
+#~ "7.2.1 NETWORK_ENABLED=OFF URL_ENDPOINT=https://cdn.proj.org "
+#~ "USER_WRITABLE_DIRECTORY=/tmp/proj DATABASE_PATH=/usr/share/proj/proj.db\n"
+#~ "(1 row)"
+#~ msgstr ""
+#~ "SELECT PostGIS_PROJ_Version();\n"
+#~ "  postgis_proj_version\n"
+#~ "-------------------------\n"
+#~ "7.2.1 NETWORK_ENABLED=OFF URL_ENDPOINT=https://cdn.proj.org "
+#~ "USER_WRITABLE_DIRECTORY=/tmp/proj DATABASE_PATH=/usr/share/proj/proj.db\n"
+#~ "(1 row)"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT PostGIS_Wagyu_Version();\n"
+#~ " postgis_wagyu_version\n"
+#~ "-----------------------\n"
+#~ " 0.5.0 (Internal)\n"
+#~ "(1 row)"
+#~ msgstr ""
+#~ "SELECT PostGIS_Wagyu_Version();\n"
+#~ " postgis_wagyu_version\n"
+#~ "-----------------------\n"
+#~ " 0.5.0 (Internal)\n"
+#~ "(1 row)"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT PostGIS_Scripts_Build_Date();\n"
+#~ "  postgis_scripts_build_date\n"
+#~ "-------------------------\n"
+#~ " 2023-06-22 03:56:11\n"
+#~ "(1 row)"
+#~ msgstr ""
+#~ "SELECT PostGIS_Scripts_Build_Date();\n"
+#~ "  postgis_scripts_build_date\n"
+#~ "-------------------------\n"
+#~ " 2023-06-22 03:56:11\n"
+#~ "(1 row)"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT PostGIS_Scripts_Installed();\n"
+#~ "  postgis_scripts_installed\n"
+#~ "-------------------------\n"
+#~ " 3.4.0dev 3.3.0rc2-993-g61bdf43a7\n"
+#~ "(1 row)"
+#~ msgstr ""
+#~ "SELECT PostGIS_Scripts_Installed();\n"
+#~ "  postgis_scripts_installed\n"
+#~ "-------------------------\n"
+#~ " 3.4.0dev 3.3.0rc2-993-g61bdf43a7\n"
+#~ "(1 row)"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT PostGIS_Scripts_Released();\n"
+#~ "  postgis_scripts_released\n"
+#~ "-------------------------\n"
+#~ " 3.4.0dev 3.3.0rc2-993-g61bdf43a7\n"
+#~ "(1 row)"
+#~ msgstr ""
+#~ "SELECT PostGIS_Scripts_Released();\n"
+#~ "  postgis_scripts_released\n"
+#~ "-------------------------\n"
+#~ " 3.4.0dev 3.3.0rc2-993-g61bdf43a7\n"
+#~ "(1 row)"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT PostGIS_Version();\n"
+#~ "                        postgis_version\n"
+#~ "---------------------------------------\n"
+#~ " 3.4 USE_GEOS=1 USE_PROJ=1 USE_STATS=1\n"
+#~ "(1 row)"
+#~ msgstr ""
+#~ "SELECT PostGIS_Version();\n"
+#~ "                        postgis_version\n"
+#~ "---------------------------------------\n"
+#~ " 3.4 USE_GEOS=1 USE_PROJ=1 USE_STATS=1\n"
+#~ "(1 row)"
 
 #, no-c-format
 #~ msgid ""

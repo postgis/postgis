@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-04-10 06:16+0000\n"
+"POT-Creation-Date: 2023-07-14 23:23+0000\n"
 "PO-Revision-Date: 2022-02-18 09:52+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
@@ -155,20 +155,6 @@ msgstr ""
 msgid "within 50 meters at least 2 per cluster. singletons have NULL for cid"
 msgstr ""
 
-#. Tag: programlisting
-#: reference_cluster.xml:93
-#, no-c-format
-msgid ""
-"SELECT name, ST_ClusterDBSCAN(geom, eps := 50, minpoints := 2) over () AS "
-"cid\n"
-"FROM boston_polys\n"
-"WHERE name > '' AND building > ''\n"
-"        AND ST_DWithin(geom,\n"
-"        ST_Transform(\n"
-"            ST_GeomFromText('POINT(-71.04054 42.35141)', 4326), 26986),\n"
-"           500);"
-msgstr ""
-
 #. Tag: screen
 #: reference_cluster.xml:96
 #, no-c-format
@@ -204,18 +190,6 @@ msgstr ""
 msgid ""
 "Combining parcels with the same cluster number into a single geometry. This "
 "uses named argument calling"
-msgstr ""
-
-#. Tag: programlisting
-#: reference_cluster.xml:107
-#, no-c-format
-msgid ""
-"SELECT cid, ST_Collect(geom) AS cluster_geom, array_agg(parcel_id) AS "
-"ids_in_cluster FROM (\n"
-"    SELECT parcel_id, ST_ClusterDBSCAN(geom, eps := 0.5, minpoints := 5) "
-"over () AS cid, geom\n"
-"    FROM parcels) sq\n"
-"GROUP BY cid;"
 msgstr ""
 
 #. Tag: title
@@ -275,32 +249,6 @@ msgstr ""
 msgid "Availability: 3.4.0"
 msgstr ""
 
-#. Tag: programlisting
-#: reference_cluster.xml:148
-#, no-c-format
-msgid ""
-"WITH testdata AS (\n"
-"  SELECT id, geom::geometry FROM (\n"
-"  VALUES  (1, 'LINESTRING (0 0, 1 1)'),\n"
-"          (2, 'LINESTRING (5 5, 4 4)'),\n"
-"          (3, 'LINESTRING (6 6, 7 7)'),\n"
-"          (4, 'LINESTRING (0 0, -1 -1)'),\n"
-"          (5, 'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))')) AS t(id, geom)\n"
-")\n"
-"SELECT id, \n"
-"  ST_AsText(geom), \n"
-"  ST_ClusterIntersectingWin(geom) OVER () AS cluster \n"
-"FROM testdata;\n"
-"\n"
-" id |           st_astext            | cluster \n"
-"----+--------------------------------+---------\n"
-"  1 | LINESTRING(0 0,1 1)            |       0\n"
-"  2 | LINESTRING(5 5,4 4)            |       0\n"
-"  3 | LINESTRING(6 6,7 7)            |       1\n"
-"  4 | LINESTRING(0 0,-1 -1)          |       0\n"
-"  5 | POLYGON((0 0,4 0,4 4,0 4,0 0)) |       0"
-msgstr ""
-
 #. Tag: para
 #: reference_cluster.xml:152
 #, no-c-format
@@ -344,28 +292,6 @@ msgstr ""
 #, no-c-format
 msgid "Availability: 2.2.0"
 msgstr "Disponibilità: 2.2.0"
-
-#. Tag: programlisting
-#: reference_cluster.xml:189
-#, no-c-format
-msgid ""
-"WITH testdata AS\n"
-"  (SELECT unnest(ARRAY['LINESTRING (0 0, 1 1)'::geometry,\n"
-"           'LINESTRING (5 5, 4 4)'::geometry,\n"
-"           'LINESTRING (6 6, 7 7)'::geometry,\n"
-"           'LINESTRING (0 0, -1 -1)'::geometry,\n"
-"           'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS geom)\n"
-"\n"
-"SELECT ST_AsText(unnest(ST_ClusterIntersecting(geom))) FROM testdata;\n"
-"\n"
-"--result\n"
-"\n"
-"st_astext\n"
-"---------\n"
-"GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 "
-"-1),POLYGON((0 0,4 0,4 4,0 4,0 0)))\n"
-"GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))"
-msgstr ""
 
 #. Tag: para
 #: reference_cluster.xml:193
@@ -439,32 +365,10 @@ msgstr ""
 msgid "Generate dummy set of parcels for examples:"
 msgstr ""
 
-#. Tag: programlisting
-#: reference_cluster.xml:252
-#, no-c-format
-msgid ""
-"CREATE TABLE parcels AS\n"
-"SELECT lpad((row_number() over())::text,3,'0') As parcel_id, geom,\n"
-"('{residential, commercial}'::text[])[1 + mod(row_number()OVER(),2)] As "
-"type\n"
-"FROM\n"
-"    ST_Subdivide(ST_Buffer('SRID=3857;LINESTRING(40 100, 98 100, 100 150, 60 "
-"90)'::geometry,\n"
-"    40, 'endcap=square'),12) As geom;"
-msgstr ""
-
 #. Tag: para
 #: reference_cluster.xml:259
 #, no-c-format
 msgid "Parcels color-coded by cluster number (cid)"
-msgstr ""
-
-#. Tag: programlisting
-#: reference_cluster.xml:262
-#, no-c-format
-msgid ""
-"SELECT ST_ClusterKMeans(geom, 3) OVER() AS cid, parcel_id, geom\n"
-"    FROM parcels;"
 msgstr ""
 
 #. Tag: screen
@@ -486,15 +390,6 @@ msgstr ""
 #: reference_cluster.xml:266
 #, no-c-format
 msgid "Partitioning parcel clusters by type:"
-msgstr ""
-
-#. Tag: programlisting
-#: reference_cluster.xml:267
-#, no-c-format
-msgid ""
-"SELECT ST_ClusterKMeans(geom, 3) over (PARTITION BY type) AS cid, parcel_id, "
-"type\n"
-"    FROM parcels;"
 msgstr ""
 
 #. Tag: screen
@@ -521,27 +416,6 @@ msgid ""
 "<ulink url=\"https://data.humdata.org/dataset/kontur-population-"
 "dataset\">Kontur Population Data</ulink> that do not span more than 3000 km "
 "from their center:"
-msgstr ""
-
-#. Tag: programlisting
-#: reference_cluster.xml:275
-#, no-c-format
-msgid ""
-"create table kontur_population_3000km_clusters as\n"
-"select\n"
-"    geom,\n"
-"    ST_ClusterKMeans(\n"
-"        ST_Force4D(\n"
-"            ST_Transform(ST_Force3D(geom), 4978), -- cluster in 3D XYZ CRS\n"
-"            mvalue := population -- set clustering to be weighed by "
-"population\n"
-"        ),\n"
-"        20,                      -- aim to generate at least 20 clusters\n"
-"        max_radius := 3000000    -- but generate more to make each under "
-"3000 km radius\n"
-"    ) over () as cid\n"
-"from\n"
-"    kontur_population;"
 msgstr ""
 
 #. Tag: para
@@ -596,29 +470,6 @@ msgid ""
 "Cartesian distances in the units of the SRID.)"
 msgstr ""
 
-#. Tag: programlisting
-#: reference_cluster.xml:335
-#, no-c-format
-msgid ""
-"WITH testdata AS\n"
-"  (SELECT unnest(ARRAY['LINESTRING (0 0, 1 1)'::geometry,\n"
-"                       'LINESTRING (5 5, 4 4)'::geometry,\n"
-"                       'LINESTRING (6 6, 7 7)'::geometry,\n"
-"                       'LINESTRING (0 0, -1 -1)'::geometry,\n"
-"                       'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS "
-"geom)\n"
-"\n"
-"SELECT ST_AsText(unnest(ST_ClusterWithin(geom, 1.4))) FROM testdata;\n"
-"\n"
-"--result\n"
-"\n"
-"st_astext\n"
-"---------\n"
-"GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 "
-"-1),POLYGON((0 0,4 0,4 4,0 4,0 0)))\n"
-"GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))"
-msgstr ""
-
 #. Tag: para
 #: reference_cluster.xml:339
 #, no-c-format
@@ -669,33 +520,6 @@ msgstr ""
 msgid ""
 "ST_ClusterWithinWin is equivalent to running <xref "
 "linkend=\"ST_ClusterDBSCAN\"/> with a `minpoints` of zero."
-msgstr ""
-
-#. Tag: programlisting
-#: reference_cluster.xml:380
-#, no-c-format
-msgid ""
-"WITH testdata AS (\n"
-"  SELECT id, geom::geometry FROM (\n"
-"  VALUES  (1, 'LINESTRING (0 0, 1 1)'),\n"
-"          (2, 'LINESTRING (5 5, 4 4)'),\n"
-"          (3, 'LINESTRING (6 6, 7 7)'),\n"
-"          (4, 'LINESTRING (0 0, -1 -1)'),\n"
-"          (5, 'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))')) AS t(id, geom)\n"
-")\n"
-"SELECT id, \n"
-"  ST_AsText(geom), \n"
-"  ST_ClusterWithinWin(geom, 1.4) OVER () AS cluster \n"
-"FROM testdata;\n"
-"\n"
-"\n"
-" id |           st_astext            | cluster \n"
-"----+--------------------------------+---------\n"
-"  1 | LINESTRING(0 0,1 1)            |       0\n"
-"  2 | LINESTRING(5 5,4 4)            |       0\n"
-"  3 | LINESTRING(6 6,7 7)            |       1\n"
-"  4 | LINESTRING(0 0,-1 -1)          |       0\n"
-"  5 | POLYGON((0 0,4 0,4 4,0 4,0 0)) |       0"
 msgstr ""
 
 #. Tag: para

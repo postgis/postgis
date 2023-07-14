@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-06-14 01:01+0000\n"
+"POT-Creation-Date: 2023-07-14 23:23+0000\n"
 "PO-Revision-Date: 2022-10-11 22:30+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
@@ -1611,33 +1611,10 @@ msgstr "Beispiele"
 msgid "Using address_standardizer_data_us extension"
 msgstr "Verwendung der address_standardizer_data_us Erweiterung"
 
-#. Tag: programlisting
-#: extras_address_standardizer.xml:629 extras_address_standardizer.xml:743
-#, no-c-format
-msgid ""
-"CREATE EXTENSION address_standardizer_data_us; -- only needs to be done once"
-msgstr ""
-"CREATE EXTENSION address_standardizer_data_us; -- muss nur einmal vollzogen "
-"werden"
-
 #. Tag: para
 #: extras_address_standardizer.xml:631
 #, no-c-format
 msgid "Variant 1: Single line address and returning the input tokens"
-msgstr ""
-
-#. Tag: programlisting
-#: extras_address_standardizer.xml:632
-#, no-c-format
-msgid ""
-"<![CDATA[SELECT it->>'pos' AS position, it->>'word' AS word, it->>'stdword' "
-"AS standardized_word,\n"
-"            it->>'token' AS token, it->>'token-code' AS token_code\n"
-"    FROM jsonb(\n"
-"            debug_standardize_address('us_lex',\n"
-"                'us_gaz', 'us_rules', 'One Devonshire Place, PH 301, Boston, "
-"MA 02109')\n"
-"                 ) AS s, jsonb_array_elements(s->'input_tokens') AS it;]]>"
 msgstr ""
 
 #. Tag: screen
@@ -1662,23 +1639,6 @@ msgstr ""
 msgid ""
 "Variant 2: Multi line address and returning first rule input mappings and "
 "score"
-msgstr ""
-
-#. Tag: programlisting
-#: extras_address_standardizer.xml:636
-#, no-c-format
-msgid ""
-"<![CDATA[SELECT (s->'rules'->0->>'score')::numeric AS score, it->>'pos' AS "
-"position,\n"
-"        it->>'input-word' AS word, it->>'input-token' AS input_token, it-"
-">>'mapped-word' AS standardized_word,\n"
-"            it->>'output-token' AS output_token\n"
-"    FROM jsonb(\n"
-"            debug_standardize_address('us_lex',\n"
-"                'us_gaz', 'us_rules', 'One Devonshire Place, PH 301', "
-"'Boston, MA 02109')\n"
-"                 ) AS s, jsonb_array_elements(s->'rules'->0->'rule_tokens') "
-"AS it;]]>"
 msgstr ""
 
 #. Tag: screen
@@ -1767,16 +1727,6 @@ msgstr "Verfügbarkeit: 2.2.0"
 msgid "Single Addresss"
 msgstr "Einzelne Adresse"
 
-#. Tag: programlisting
-#: extras_address_standardizer.xml:682
-#, no-c-format
-msgid ""
-"SELECT num, street, city, zip, zipplus\n"
-"        FROM parse_address('1 Devonshire Place, Boston, MA 02109-1234') AS a;"
-msgstr ""
-"SELECT num, street, city, zip, zipplus\n"
-"        FROM parse_address('1 Devonshire Place, Boston, MA 02109-1234') AS a;"
-
 #. Tag: screen
 #: extras_address_standardizer.xml:683
 #, no-c-format
@@ -1794,46 +1744,6 @@ msgstr ""
 #, no-c-format
 msgid "Table of addresses"
 msgstr "Tabelle mit Adressen"
-
-#. Tag: programlisting
-#: extras_address_standardizer.xml:686
-#, no-c-format
-msgid ""
-"-- basic table\n"
-"CREATE TABLE places(addid serial PRIMARY KEY, address text);\n"
-"\n"
-"INSERT INTO places(address)\n"
-"VALUES ('529 Main Street, Boston MA, 02129'),\n"
-" ('77 Massachusetts Avenue, Cambridge, MA 02139'),\n"
-" ('25 Wizard of Oz, Walaford, KS 99912323'),\n"
-" ('26 Capen Street, Medford, MA'),\n"
-" ('124 Mount Auburn St, Cambridge, Massachusetts 02138'),\n"
-" ('950 Main Street, Worcester, MA 01610');\n"
-"\n"
-" -- parse the addresses\n"
-" -- if you want all fields you can use (a).*\n"
-"SELECT addid, (a).num, (a).street, (a).city, (a).state, (a).zip, (a)."
-"zipplus\n"
-"FROM (SELECT addid, parse_address(address) As a\n"
-" FROM places) AS p;"
-msgstr ""
-"-- Basistabelle\n"
-"CREATE TABLE places(addid serial PRIMARY KEY, address text);\n"
-"\n"
-"INSERT INTO places(address)\n"
-"VALUES ('529 Main Street, Boston MA, 02129'),\n"
-" ('77 Massachusetts Avenue, Cambridge, MA 02139'),\n"
-" ('25 Wizard of Oz, Walaford, KS 99912323'),\n"
-" ('26 Capen Street, Medford, MA'),\n"
-" ('124 Mount Auburn St, Cambridge, Massachusetts 02138'),\n"
-" ('950 Main Street, Worcester, MA 01610');\n"
-"\n"
-" -- Adressen parsen\n"
-" -- um alle Attribute zu erhalten kann (a).* verwendet werden\n"
-"SELECT addid, (a).num, (a).street, (a).city, (a).state, (a).zip, (a)."
-"zipplus\n"
-"FROM (SELECT addid, parse_address(address) As a\n"
-" FROM places) AS p;"
 
 #. Tag: screen
 #: extras_address_standardizer.xml:687
@@ -1874,36 +1784,6 @@ msgid ""
 msgstr ""
 "Gibt eine gegebene Adresse in der Form \"stdaddr\" zurück. Verwendet die "
 "Tabellen \"lex\", \"gaz\" und \"rule\"."
-
-#. Tag: funcsynopsis
-#: extras_address_standardizer.xml:706
-#, no-c-format
-msgid ""
-"<funcprototype> <funcdef>stdaddr <function>standardize_address</function></"
-"funcdef> <paramdef><type>text </type> <parameter>lextab</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>gaztab</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>rultab</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>address</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>stdaddr "
-"<function>standardize_address</function></funcdef> <paramdef><type>text </"
-"type> <parameter>lextab</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>gaztab</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>rultab</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>micro</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>macro</parameter></paramdef> </funcprototype>"
-msgstr ""
-"<funcprototype> <funcdef>stdaddr <function>standardize_address</function></"
-"funcdef> <paramdef><type>text </type> <parameter>lextab</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>gaztab</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>rultab</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>address</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>stdaddr "
-"<function>standardize_address</function></funcdef> <paramdef><type>text </"
-"type> <parameter>lextab</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>gaztab</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>rultab</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>micro</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>macro</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:729
@@ -1947,20 +1827,6 @@ msgstr ""
 "Variante 1: Einzeilige Adresse. Dies funktioniert nicht gut mit Adressen "
 "außerhalb der US"
 
-#. Tag: programlisting
-#: extras_address_standardizer.xml:746
-#, no-c-format
-msgid ""
-"SELECT house_num, name, suftype, city, country, state, unit  FROM "
-"standardize_address('us_lex',\n"
-"                           'us_gaz', 'us_rules', 'One Devonshire Place, PH "
-"301, Boston, MA 02109');"
-msgstr ""
-"SELECT house_num, name, suftype, city, country, state, unit  FROM "
-"standardize_address('us_lex',\n"
-"                           'us_gaz', 'us_rules', 'One Devonshire Place, PH "
-"301, Boston, MA 02109');"
-
 #. Tag: screen
 #: extras_address_standardizer.xml:747
 #, no-c-format
@@ -1990,18 +1856,6 @@ msgstr ""
 "Dieses Beispiel funktioniert nur, wenn Sie <varname>postgis_tiger_geocoder</"
 "varname> installiert haben."
 
-#. Tag: programlisting
-#: extras_address_standardizer.xml:749
-#, no-c-format
-msgid ""
-"SELECT *  FROM standardize_address('tiger.pagc_lex',\n"
-"         'tiger.pagc_gaz', 'tiger.pagc_rules', 'One Devonshire Place, PH "
-"301, Boston, MA 02109-1234');"
-msgstr ""
-"SELECT *  FROM standardize_address('tiger.pagc_lex',\n"
-"         'tiger.pagc_gaz', 'tiger.pagc_rules', 'One Devonshire Place, PH "
-"301, Boston, MA 02109-1234');"
-
 #. Tag: para
 #: extras_address_standardizer.xml:751
 #, no-c-format
@@ -2012,20 +1866,6 @@ msgstr ""
 "Die Ausgabe über einen Dump mit der Erweiterung \"hstore\" ist leichter "
 "lesbar. Die Erweiterung hstore muss mittels \"CREATE EXTENSION hstore;\" "
 "installiert sein."
-
-#. Tag: programlisting
-#: extras_address_standardizer.xml:752
-#, no-c-format
-msgid ""
-"SELECT (each(hstore(p))).*\n"
-" FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz',\n"
-"   'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109') As "
-"p;"
-msgstr ""
-"SELECT (each(hstore(p))).*\n"
-" FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz',\n"
-"   'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109') As "
-"p;"
 
 #. Tag: screen
 #: extras_address_standardizer.xml:753 extras_address_standardizer.xml:757
@@ -2077,19 +1917,135 @@ msgstr ""
 msgid "Variant 2: As a two part Address"
 msgstr "Variante 2: Adresse aus zwei Teilen."
 
-#. Tag: programlisting
-#: extras_address_standardizer.xml:756
 #, no-c-format
-msgid ""
-"SELECT (each(hstore(p))).*\n"
-" FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz',\n"
-"   'tiger.pagc_rules', 'One Devonshire Place, PH 301', 'Boston, MA 02109, "
-"US') As p;"
-msgstr ""
-"SELECT (each(hstore(p))).*\n"
-" FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz',\n"
-"   'tiger.pagc_rules', 'One Devonshire Place, PH 301', 'Boston, MA 02109, "
-"US') As p;"
+#~ msgid ""
+#~ "CREATE EXTENSION address_standardizer_data_us; -- only needs to be done "
+#~ "once"
+#~ msgstr ""
+#~ "CREATE EXTENSION address_standardizer_data_us; -- muss nur einmal "
+#~ "vollzogen werden"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT num, street, city, zip, zipplus\n"
+#~ "        FROM parse_address('1 Devonshire Place, Boston, MA 02109-1234') "
+#~ "AS a;"
+#~ msgstr ""
+#~ "SELECT num, street, city, zip, zipplus\n"
+#~ "        FROM parse_address('1 Devonshire Place, Boston, MA 02109-1234') "
+#~ "AS a;"
+
+#, no-c-format
+#~ msgid ""
+#~ "-- basic table\n"
+#~ "CREATE TABLE places(addid serial PRIMARY KEY, address text);\n"
+#~ "\n"
+#~ "INSERT INTO places(address)\n"
+#~ "VALUES ('529 Main Street, Boston MA, 02129'),\n"
+#~ " ('77 Massachusetts Avenue, Cambridge, MA 02139'),\n"
+#~ " ('25 Wizard of Oz, Walaford, KS 99912323'),\n"
+#~ " ('26 Capen Street, Medford, MA'),\n"
+#~ " ('124 Mount Auburn St, Cambridge, Massachusetts 02138'),\n"
+#~ " ('950 Main Street, Worcester, MA 01610');\n"
+#~ "\n"
+#~ " -- parse the addresses\n"
+#~ " -- if you want all fields you can use (a).*\n"
+#~ "SELECT addid, (a).num, (a).street, (a).city, (a).state, (a).zip, (a)."
+#~ "zipplus\n"
+#~ "FROM (SELECT addid, parse_address(address) As a\n"
+#~ " FROM places) AS p;"
+#~ msgstr ""
+#~ "-- Basistabelle\n"
+#~ "CREATE TABLE places(addid serial PRIMARY KEY, address text);\n"
+#~ "\n"
+#~ "INSERT INTO places(address)\n"
+#~ "VALUES ('529 Main Street, Boston MA, 02129'),\n"
+#~ " ('77 Massachusetts Avenue, Cambridge, MA 02139'),\n"
+#~ " ('25 Wizard of Oz, Walaford, KS 99912323'),\n"
+#~ " ('26 Capen Street, Medford, MA'),\n"
+#~ " ('124 Mount Auburn St, Cambridge, Massachusetts 02138'),\n"
+#~ " ('950 Main Street, Worcester, MA 01610');\n"
+#~ "\n"
+#~ " -- Adressen parsen\n"
+#~ " -- um alle Attribute zu erhalten kann (a).* verwendet werden\n"
+#~ "SELECT addid, (a).num, (a).street, (a).city, (a).state, (a).zip, (a)."
+#~ "zipplus\n"
+#~ "FROM (SELECT addid, parse_address(address) As a\n"
+#~ " FROM places) AS p;"
+
+#, no-c-format
+#~ msgid ""
+#~ "<funcprototype> <funcdef>stdaddr <function>standardize_address</"
+#~ "function></funcdef> <paramdef><type>text </type> <parameter>lextab</"
+#~ "parameter></paramdef> <paramdef><type>text </type> <parameter>gaztab</"
+#~ "parameter></paramdef> <paramdef><type>text </type> <parameter>rultab</"
+#~ "parameter></paramdef> <paramdef><type>text </type> <parameter>address</"
+#~ "parameter></paramdef> </funcprototype> <funcprototype> <funcdef>stdaddr "
+#~ "<function>standardize_address</function></funcdef> <paramdef><type>text </"
+#~ "type> <parameter>lextab</parameter></paramdef> <paramdef><type>text </"
+#~ "type> <parameter>gaztab</parameter></paramdef> <paramdef><type>text </"
+#~ "type> <parameter>rultab</parameter></paramdef> <paramdef><type>text </"
+#~ "type> <parameter>micro</parameter></paramdef> <paramdef><type>text </"
+#~ "type> <parameter>macro</parameter></paramdef> </funcprototype>"
+#~ msgstr ""
+#~ "<funcprototype> <funcdef>stdaddr <function>standardize_address</"
+#~ "function></funcdef> <paramdef><type>text </type> <parameter>lextab</"
+#~ "parameter></paramdef> <paramdef><type>text </type> <parameter>gaztab</"
+#~ "parameter></paramdef> <paramdef><type>text </type> <parameter>rultab</"
+#~ "parameter></paramdef> <paramdef><type>text </type> <parameter>address</"
+#~ "parameter></paramdef> </funcprototype> <funcprototype> <funcdef>stdaddr "
+#~ "<function>standardize_address</function></funcdef> <paramdef><type>text </"
+#~ "type> <parameter>lextab</parameter></paramdef> <paramdef><type>text </"
+#~ "type> <parameter>gaztab</parameter></paramdef> <paramdef><type>text </"
+#~ "type> <parameter>rultab</parameter></paramdef> <paramdef><type>text </"
+#~ "type> <parameter>micro</parameter></paramdef> <paramdef><type>text </"
+#~ "type> <parameter>macro</parameter></paramdef> </funcprototype>"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT house_num, name, suftype, city, country, state, unit  FROM "
+#~ "standardize_address('us_lex',\n"
+#~ "                           'us_gaz', 'us_rules', 'One Devonshire Place, "
+#~ "PH 301, Boston, MA 02109');"
+#~ msgstr ""
+#~ "SELECT house_num, name, suftype, city, country, state, unit  FROM "
+#~ "standardize_address('us_lex',\n"
+#~ "                           'us_gaz', 'us_rules', 'One Devonshire Place, "
+#~ "PH 301, Boston, MA 02109');"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT *  FROM standardize_address('tiger.pagc_lex',\n"
+#~ "         'tiger.pagc_gaz', 'tiger.pagc_rules', 'One Devonshire Place, PH "
+#~ "301, Boston, MA 02109-1234');"
+#~ msgstr ""
+#~ "SELECT *  FROM standardize_address('tiger.pagc_lex',\n"
+#~ "         'tiger.pagc_gaz', 'tiger.pagc_rules', 'One Devonshire Place, PH "
+#~ "301, Boston, MA 02109-1234');"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT (each(hstore(p))).*\n"
+#~ " FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz',\n"
+#~ "   'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109') "
+#~ "As p;"
+#~ msgstr ""
+#~ "SELECT (each(hstore(p))).*\n"
+#~ " FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz',\n"
+#~ "   'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109') "
+#~ "As p;"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT (each(hstore(p))).*\n"
+#~ " FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz',\n"
+#~ "   'tiger.pagc_rules', 'One Devonshire Place, PH 301', 'Boston, MA 02109, "
+#~ "US') As p;"
+#~ msgstr ""
+#~ "SELECT (each(hstore(p))).*\n"
+#~ " FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz',\n"
+#~ "   'tiger.pagc_rules', 'One Devonshire Place, PH 301', 'Boston, MA 02109, "
+#~ "US') As p;"
 
 #, no-c-format
 #~ msgid "stdaddr"

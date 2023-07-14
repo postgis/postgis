@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-13 19:13+0000\n"
+"POT-Creation-Date: 2023-07-14 23:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -128,30 +128,12 @@ msgid ""
 "are like:"
 msgstr ""
 
-#. Tag: programlisting
-#: performance_tips.xml:63
-#, no-c-format
-msgid ""
-"SELECT "
-"AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\n"
-"UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(geom));"
-msgstr ""
-
 #. Tag: para
 #: performance_tips.xml:65
 #, no-c-format
 msgid ""
 "Now change your query to use the &amp;&amp; operator against bbox instead of "
 "geom_column, like:"
-msgstr ""
-
-#. Tag: programlisting
-#: performance_tips.xml:68
-#, no-c-format
-msgid ""
-"SELECT geom_column\n"
-"FROM mytable\n"
-"WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
 msgstr ""
 
 #. Tag: para
@@ -194,30 +176,12 @@ msgid ""
 "message like:"
 msgstr ""
 
-#. Tag: programlisting
-#: performance_tips.xml:95
-#, no-c-format
-msgid ""
-"lwgeom=# CLUSTER my_geom_index ON my_table;\n"
-"ERROR: cannot cluster when index access method does not handle null values\n"
-"HINT: You may be able to work around this by marking column \"geom\" NOT "
-"NULL."
-msgstr ""
-
 #. Tag: para
 #: performance_tips.xml:97
 #, no-c-format
 msgid ""
 "As the HINT message tells you, one can work around this deficiency by adding "
 "a \"not null\" constraint to the table:"
-msgstr ""
-
-#. Tag: programlisting
-#: performance_tips.xml:100
-#, no-c-format
-msgid ""
-"lwgeom=# ALTER TABLE my_table ALTER COLUMN geom SET not null;\n"
-"ALTER TABLE"
 msgstr ""
 
 #. Tag: para
@@ -246,14 +210,6 @@ msgid ""
 "function, which introduces a significant overhead for large geometries. To "
 "avoid this overhead, it may be feasible to pre-drop those additional "
 "dimensions once and forever:"
-msgstr ""
-
-#. Tag: programlisting
-#: performance_tips.xml:118
-#, no-c-format
-msgid ""
-"UPDATE mytable SET geom = ST_Force2D(geom);\n"
-"VACUUM FULL ANALYZE mytable;"
 msgstr ""
 
 #. Tag: para

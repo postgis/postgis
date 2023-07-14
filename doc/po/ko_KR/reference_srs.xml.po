@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-05-25 20:53+0000\n"
+"POT-Creation-Date: 2023-07-14 23:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -123,39 +123,10 @@ msgstr ""
 msgid "Change WGS 84 long lat to UTM 31N using the EPSG:16031 conversion"
 msgstr ""
 
-#. Tag: programlisting
-#: reference_srs.xml:59
-#, no-c-format
-msgid ""
-"-- Inverse direction\n"
-"SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 "
-"5427937.523342293)'::geometry,\n"
-"  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;\n"
-"\n"
-"          wgs_geom\n"
-"----------------------------\n"
-" POINT(2 48.99999999999999)\n"
-"(1 row)"
-msgstr ""
-
 #. Tag: para
 #: reference_srs.xml:61 reference_srs.xml:362
 #, no-c-format
 msgid "GDA2020 example."
-msgstr ""
-
-#. Tag: programlisting
-#: reference_srs.xml:62
-#, no-c-format
-msgid ""
-"-- using ST_Transform with automatic selection of a conversion pipeline.\n"
-"SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, "
-"7844)) AS gda2020_auto;\n"
-"\n"
-"                 gda2020_auto\n"
-"-----------------------------------------------\n"
-" POINT(143.00000635638918 -36.999986706128176)\n"
-"(1 row)"
 msgstr ""
 
 #. Tag: title
@@ -229,31 +200,12 @@ msgstr ""
 msgid "-- Mark a point as WGS 84 long lat --"
 msgstr ""
 
-#. Tag: programlisting
-#: reference_srs.xml:113
-#, no-c-format
-msgid ""
-"SELECT ST_SetSRID(ST_Point(-123.365556, 48.428611),4326) As wgs84long_lat;\n"
-"-- the ewkt representation (wrap with ST_AsEWKT) -\n"
-"SRID=4326;POINT(-123.365556 48.428611)"
-msgstr ""
-
 #. Tag: para
 #: reference_srs.xml:114
 #, no-c-format
 msgid ""
 "-- Mark a point as WGS 84 long lat and then transform to web mercator "
 "(Spherical Mercator) --"
-msgstr ""
-
-#. Tag: programlisting
-#: reference_srs.xml:115
-#, no-c-format
-msgid ""
-"SELECT ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785) "
-"As spere_merc;\n"
-"-- the ewkt representation (wrap with ST_AsEWKT) -\n"
-"SRID=3785;POINT(-13732990.8753491 6178458.96425423)"
 msgstr ""
 
 #. Tag: para
@@ -314,15 +266,6 @@ msgstr ""
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.5"
 msgstr ""
 
-#. Tag: programlisting
-#: reference_srs.xml:157
-#, no-c-format
-msgid ""
-"SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));\n"
-"    --result\n"
-"    4326"
-msgstr ""
-
 #. Tag: para
 #: reference_srs.xml:162
 #, no-c-format
@@ -343,28 +286,6 @@ msgstr ""
 msgid ""
 "Return a new geometry with coordinates transformed to a different spatial "
 "reference system."
-msgstr ""
-
-#. Tag: funcsynopsis
-#: reference_srs.xml:175
-#, no-c-format
-msgid ""
-"<funcprototype> <funcdef>geometry <function>ST_Transform</function></"
-"funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_Transform</function></funcdef> <paramdef><type>geometry </type> "
-"<parameter>geom</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>to_proj</parameter></paramdef> </funcprototype> <funcprototype> "
-"<funcdef>geometry <function>ST_Transform</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>from_proj</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>to_proj</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geometry <function>ST_Transform</"
-"function></funcdef> <paramdef><type>geometry </type> <parameter>geom</"
-"parameter></paramdef> <paramdef><type>text </type> <parameter>from_proj</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>to_srid</"
-"parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -458,37 +379,6 @@ msgstr ""
 msgid "Change Massachusetts state plane US feet geometry to WGS 84 long lat"
 msgstr ""
 
-#. Tag: programlisting
-#: reference_srs.xml:251
-#, no-c-format
-msgid ""
-"SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 "
-"2967416,743238 2967450,\n"
-"  743265 2967450,743265.625 2967416,743238 2967416))',2249),4326)) As "
-"wgs_geom;\n"
-"\n"
-" wgs_geom\n"
-"---------------------------\n"
-" POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 "
-"42.3903829478009,\n"
-"-71.1775844305465 42.3903826677917,-71.1775825927231 "
-"42.3902893647987,-71.177684\n"
-"8522251 42.3902896512902));\n"
-"(1 row)\n"
-"\n"
-"--3D Circular String example\n"
-"SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;"
-"CIRCULARSTRING(743238 2967416 1,743238 2967450 2,743265 2967450 3,743265.625 "
-"2967416 3,743238 2967416 4)'),4326));\n"
-"\n"
-"         st_asewkt\n"
-"--------------------------------------------------------------------------------------\n"
-" SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 "
-"1,-71.1776843766326 42.3903829478009 2,\n"
-" -71.1775844305465 42.3903826677917 3,\n"
-" -71.1775825927231 42.3902893647987 3,-71.1776848522251 42.3902896512902 4)"
-msgstr ""
-
 #. Tag: para
 #: reference_srs.xml:252
 #, no-c-format
@@ -499,48 +389,11 @@ msgid ""
 "index smaller and more efficient."
 msgstr ""
 
-#. Tag: programlisting
-#: reference_srs.xml:254
-#, no-c-format
-msgid ""
-"CREATE INDEX idx_geom_26986_parcels\n"
-"  ON parcels\n"
-"  USING gist\n"
-"  (ST_Transform(geom, 26986))\n"
-"  WHERE geom IS NOT NULL;"
-msgstr ""
-
 #. Tag: para
 #: reference_srs.xml:256
 #, no-c-format
 msgid ""
 "Examples of using PROJ.4 text to transform with custom spatial references."
-msgstr ""
-
-#. Tag: programlisting
-#: reference_srs.xml:257
-#, no-c-format
-msgid ""
-"-- Find intersection of two polygons near the North pole, using a custom "
-"Gnomic projection\n"
-"-- See http://boundlessgeo.com/2012/02/flattening-the-peel/\n"
-" WITH data AS (\n"
-"   SELECT\n"
-"     ST_GeomFromText('POLYGON((170 50,170 72,-130 72,-130 50,170 50))', "
-"4326) AS p1,\n"
-"     ST_GeomFromText('POLYGON((-170 68,-170 90,-141 90,-141 68,-170 68))', "
-"4326) AS p2,\n"
-"     '+proj=gnom +ellps=WGS84 +lat_0=70 +lon_0=-160 +no_defs'::text AS gnom\n"
-" )\n"
-" SELECT ST_AsText(\n"
-"   ST_Transform(\n"
-"     ST_Intersection(ST_Transform(p1, gnom), ST_Transform(p2, gnom)),\n"
-"   gnom, 4326))\n"
-" FROM data;\n"
-"                                          st_astext\n"
-" --------------------------------------------------------------------------------\n"
-"  POLYGON((-170 74.053793645338,-141 73.4268621378904,-141 68,-170 68,-170 "
-"74.053793645338))"
 msgstr ""
 
 #. Tag: title
@@ -571,12 +424,6 @@ msgid ""
 "the following +nadgrids parameter:"
 msgstr ""
 
-#. Tag: programlisting
-#: reference_srs.xml:273
-#, no-c-format
-msgid "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat"
-msgstr ""
-
 #. Tag: para
 #: reference_srs.xml:274
 #, no-c-format
@@ -595,12 +442,6 @@ msgid ""
 "transformation is applied you could use:"
 msgstr ""
 
-#. Tag: programlisting
-#: reference_srs.xml:276
-#, no-c-format
-msgid "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null"
-msgstr ""
-
 #. Tag: para
 #: reference_srs.xml:277
 #, no-c-format
@@ -609,15 +450,6 @@ msgid ""
 "and applying no shift. So for a complete example, if you wanted to alter "
 "PostGIS so that transformations to SRID 4267 that didn't lie within the "
 "correct range did not throw an ERROR, you would use the following:"
-msgstr ""
-
-#. Tag: programlisting
-#: reference_srs.xml:278
-#, no-c-format
-msgid ""
-"UPDATE spatial_ref_sys SET proj4text = '+proj=longlat +ellps=clrk66 "
-"+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null +no_defs' WHERE srid "
-"= 4267;"
 msgstr ""
 
 #. Tag: para
@@ -711,70 +543,6 @@ msgid ""
 "inverse direction."
 msgstr ""
 
-#. Tag: programlisting
-#: reference_srs.xml:360
-#, no-c-format
-msgid ""
-"-- Forward direction\n"
-"SELECT ST_AsText(ST_TransformPipeline('SRID=4326;POINT(2 49)'::geometry,\n"
-"  'urn:ogc:def:coordinateOperation:EPSG::16031') AS utm_geom);\n"
-"\n"
-"                  utm_geom\n"
-"--------------------------------------------\n"
-" POINT(426857.9877165967 5427937.523342293)\n"
-"(1 row)\n"
-"\n"
-"-- Inverse direction\n"
-"SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 "
-"5427937.523342293)'::geometry,\n"
-"  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;\n"
-"\n"
-"          wgs_geom\n"
-"----------------------------\n"
-" POINT(2 48.99999999999999)\n"
-"(1 row)"
-msgstr ""
-
-#. Tag: programlisting
-#: reference_srs.xml:363
-#, no-c-format
-msgid ""
-"-- using ST_Transform with automatic selection of a conversion pipeline.\n"
-"SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, "
-"7844)) AS gda2020_auto;\n"
-"\n"
-"                 gda2020_auto\n"
-"-----------------------------------------------\n"
-" POINT(143.00000635638918 -36.999986706128176)\n"
-"(1 row)\n"
-"\n"
-"-- using a defined conversion (EPSG:8447)\n"
-"SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::"
-"geometry,\n"
-"  'urn:ogc:def:coordinateOperation:EPSG::8447')) AS gda2020_code;\n"
-"\n"
-"                   gda2020_code\n"
-"----------------------------------------------\n"
-" POINT(143.0000063280214 -36.999986718287545)\n"
-"(1 row)\n"
-"\n"
-"-- using a PROJ pipeline definition matching EPSG:8447, as returned from\n"
-"-- 'projinfo -s EPSG:4939 -t EPSG:7844'.\n"
-"-- NOTE: any 'axisswap' steps must be removed.\n"
-"SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::"
-"geometry,\n"
-"  '+proj=pipeline\n"
-"   +step +proj=unitconvert +xy_in=deg +xy_out=rad\n"
-"   +step +proj=hgridshift "
-"+grids=au_icsm_GDA94_GDA2020_conformal_and_distortion.tif\n"
-"   +step +proj=unitconvert +xy_in=rad +xy_out=deg')) AS gda2020_pipeline;\n"
-"\n"
-"                   gda2020_pipeline\n"
-"----------------------------------------------\n"
-" POINT(143.0000063280214 -36.999986718287545)\n"
-"(1 row)"
-msgstr ""
-
 #. Tag: para
 #: reference_srs.xml:370
 #, no-c-format
@@ -820,26 +588,6 @@ msgstr ""
 #: reference_srs.xml:403
 #, no-c-format
 msgid "List the first ten codes associated with the EPSG authority."
-msgstr ""
-
-#. Tag: programlisting
-#: reference_srs.xml:404
-#, no-c-format
-msgid ""
-"SELECT * FROM postgis_srs_codes('EPSG') LIMIT 10;\n"
-"\n"
-" postgis_srs_codes\n"
-"-------------------\n"
-" 2000\n"
-" 20004\n"
-" 20005\n"
-" 20006\n"
-" 20007\n"
-" 20008\n"
-" 20009\n"
-" 2001\n"
-" 20010\n"
-" 20011"
 msgstr ""
 
 #. Tag: para
@@ -888,22 +636,6 @@ msgstr ""
 msgid "Get the metadata for EPSG:3005."
 msgstr ""
 
-#. Tag: programlisting
-#: reference_srs.xml:446
-#, no-c-format
-msgid ""
-"SELECT * FROM postgis_srs('EPSG', '3005');\n"
-"\n"
-"auth_name | EPSG\n"
-"auth_srid | 3005\n"
-"srname    | NAD83 / BC Albers\n"
-"srtext    | PROJCS[\"NAD83 / BC Albers\", ... ]]\n"
-"proj4text | +proj=aea +lat_0=45 +lon_0=-126 +lat_1=50 +lat_2=58.5 "
-"+x_0=1000000 +y_0=0 +datum=NAD83 +units=m +no_defs +type=crs\n"
-"point_sw  | 0101000020E6100000E17A14AE476161C00000000000204840\n"
-"point_ne  | 0101000020E610000085EB51B81E855CC0E17A14AE47014E40"
-msgstr ""
-
 #. Tag: refname
 #: reference_srs.xml:460
 #, no-c-format
@@ -939,26 +671,6 @@ msgstr ""
 #: reference_srs.xml:486
 #, no-c-format
 msgid "Get the first 10 metadata records from the Proj database."
-msgstr ""
-
-#. Tag: programlisting
-#: reference_srs.xml:487
-#, no-c-format
-msgid ""
-"SELECT auth_name, auth_srid, srname FROM postgis_srs_all() LIMIT 10;\n"
-"\n"
-" auth_name | auth_srid |                  srname\n"
-"-----------+-----------+------------------------------------------\n"
-" EPSG      | 2000      | Anguilla 1957 / British West Indies Grid\n"
-" EPSG      | 20004     | Pulkovo 1995 / Gauss-Kruger zone 4\n"
-" EPSG      | 20005     | Pulkovo 1995 / Gauss-Kruger zone 5\n"
-" EPSG      | 20006     | Pulkovo 1995 / Gauss-Kruger zone 6\n"
-" EPSG      | 20007     | Pulkovo 1995 / Gauss-Kruger zone 7\n"
-" EPSG      | 20008     | Pulkovo 1995 / Gauss-Kruger zone 8\n"
-" EPSG      | 20009     | Pulkovo 1995 / Gauss-Kruger zone 9\n"
-" EPSG      | 2001      | Antigua 1943 / British West Indies Grid\n"
-" EPSG      | 20010     | Pulkovo 1995 / Gauss-Kruger zone 10\n"
-" EPSG      | 20011     | Pulkovo 1995 / Gauss-Kruger zone 11"
 msgstr ""
 
 #. Tag: para
@@ -1018,50 +730,12 @@ msgstr ""
 msgid "Search for projected coordinate systems in Louisiana."
 msgstr ""
 
-#. Tag: programlisting
-#: reference_srs.xml:534
-#, no-c-format
-msgid ""
-"SELECT auth_name, auth_srid, srname,\n"
-"  ST_AsText(point_sw) AS point_sw,\n"
-"  ST_AsText(point_ne) AS point_ne\n"
-"FROM postgis_srs_search('SRID=4326;LINESTRING(-90 30, -91 31)')\n"
-"LIMIT 3;\n"
-"\n"
-" auth_name | auth_srid |                srname                |      "
-"point_sw       |      point_ne\n"
-"-----------+-----------+--------------------------------------"
-"+---------------------+---------------------\n"
-" EPSG      | 2801      | NAD83(HARN) / Louisiana South        | POINT(-93.94 "
-"28.85) | POINT(-88.75 31.07)\n"
-" EPSG      | 3452      | NAD83 / Louisiana South (ftUS)       | POINT(-93.94 "
-"28.85) | POINT(-88.75 31.07)\n"
-" EPSG      | 3457      | NAD83(HARN) / Louisiana South (ftUS) | POINT(-93.94 "
-"28.85) | POINT(-88.75 31.07)"
-msgstr ""
-
 #. Tag: para
 #: reference_srs.xml:536
 #, no-c-format
 msgid ""
 "Scan a table for max extent and find projected coordinate systems that might "
 "suit."
-msgstr ""
-
-#. Tag: programlisting
-#: reference_srs.xml:538
-#, no-c-format
-msgid ""
-"WITH ext AS (\n"
-"  SELECT ST_Extent(geom) AS geom, Max(ST_SRID(geom)) AS srid\n"
-"  FROM foo\n"
-")\n"
-"SELECT auth_name, auth_srid, srname,\n"
-"  ST_AsText(point_sw) AS point_sw,\n"
-"  ST_AsText(point_ne) AS point_ne\n"
-"FROM ext\n"
-"CROSS JOIN postgis_srs_search(ST_SetSRID(ext.geom, ext.srid))\n"
-"LIMIT 3;"
 msgstr ""
 
 #. Tag: para

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2023-07-14 23:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -96,26 +96,6 @@ msgstr ""
 msgid "Examples"
 msgstr ""
 
-#. Tag: programlisting
-#: reference_trajectory.xml:49
-#, no-c-format
-msgid ""
-"-- A valid trajectory\n"
-"SELECT ST_IsValidTrajectory(ST_MakeLine(\n"
-"  ST_MakePointM(0,0,1),\n"
-"  ST_MakePointM(0,1,2))\n"
-");\n"
-" t\n"
-"\n"
-"-- An invalid trajectory\n"
-"SELECT ST_IsValidTrajectory(ST_MakeLine(ST_MakePointM(0,0,1), "
-"ST_MakePointM(0,1,0)));\n"
-"NOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)\n"
-" st_isvalidtrajectory\n"
-"----------------------\n"
-" f"
-msgstr ""
-
 #. Tag: title
 #: reference_trajectory.xml:53 reference_trajectory.xml:107
 #: reference_trajectory.xml:159 reference_trajectory.xml:214
@@ -156,9 +136,9 @@ msgstr ""
 #: reference_trajectory.xml:86 reference_trajectory.xml:142
 #, no-c-format
 msgid ""
-"Inputs must be valid trajectories as checked by <xref linkend="
-"\"ST_IsValidTrajectory\"/>. Null is returned if the trajectories do not "
-"overlap in their M ranges."
+"Inputs must be valid trajectories as checked by <xref "
+"linkend=\"ST_IsValidTrajectory\"/>. Null is returned if the trajectories do "
+"not overlap in their M ranges."
 msgstr ""
 
 #. Tag: para
@@ -167,37 +147,6 @@ msgstr ""
 msgid ""
 "See <xref linkend=\"ST_LocateAlong\"/> for getting the actual points at the "
 "given measure."
-msgstr ""
-
-#. Tag: programlisting
-#: reference_trajectory.xml:103
-#, no-c-format
-msgid ""
-"-- Return the time in which two objects moving between 10:00 and 11:00\n"
-"-- are closest to each other and their distance at that point\n"
-"WITH inp AS ( SELECT\n"
-"  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,\n"
-"    extract(epoch from '2015-05-26 10:00'::timestamptz),\n"
-"    extract(epoch from '2015-05-26 11:00'::timestamptz)\n"
-"  ) a,\n"
-"  ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,\n"
-"    extract(epoch from '2015-05-26 10:00'::timestamptz),\n"
-"    extract(epoch from '2015-05-26 11:00'::timestamptz)\n"
-"  ) b\n"
-"), cpa AS (\n"
-"  SELECT ST_ClosestPointOfApproach(a,b) m FROM inp\n"
-"), points AS (\n"
-"  SELECT ST_Force3DZ(ST_GeometryN(ST_LocateAlong(a,m),1)) pa,\n"
-"         ST_Force3DZ(ST_GeometryN(ST_LocateAlong(b,m),1)) pb\n"
-"  FROM inp, cpa\n"
-")\n"
-"SELECT to_timestamp(m) t,\n"
-"       ST_Distance(pa,pb) distance\n"
-"FROM points, cpa;\n"
-"\n"
-"               t               |     distance\n"
-"-------------------------------+------------------\n"
-" 2015-05-26 10:45:31.034483+02 | 1.96036833151395"
 msgstr ""
 
 #. Tag: para
@@ -238,35 +187,12 @@ msgid ""
 "Returns the minimum distance two moving objects have ever been each other."
 msgstr ""
 
-#. Tag: programlisting
-#: reference_trajectory.xml:155
-#, no-c-format
-msgid ""
-"-- Return the minimum distance of two objects moving between 10:00 and "
-"11:00\n"
-"WITH inp AS ( SELECT\n"
-"  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,\n"
-"    extract(epoch from '2015-05-26 10:00'::timestamptz),\n"
-"    extract(epoch from '2015-05-26 11:00'::timestamptz)\n"
-"  ) a,\n"
-"  ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,\n"
-"    extract(epoch from '2015-05-26 10:00'::timestamptz),\n"
-"    extract(epoch from '2015-05-26 11:00'::timestamptz)\n"
-"  ) b\n"
-")\n"
-"SELECT ST_DistanceCPA(a,b) distance FROM inp;\n"
-"\n"
-"     distance\n"
-"------------------\n"
-" 1.96036833151395"
-msgstr ""
-
 #. Tag: para
 #: reference_trajectory.xml:160
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
-"\"ST_AddMeasure\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
+", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
+"linkend=\"ST_AddMeasure\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -305,36 +231,15 @@ msgstr ""
 #: reference_trajectory.xml:196
 #, no-c-format
 msgid ""
-"Inputs must be valid trajectories as checked by <xref linkend="
-"\"ST_IsValidTrajectory\"/>. False is returned if the trajectories do not "
-"overlap in their M ranges."
-msgstr ""
-
-#. Tag: programlisting
-#: reference_trajectory.xml:209
-#, no-c-format
-msgid ""
-"WITH inp AS ( SELECT\n"
-"  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,\n"
-"    extract(epoch from '2015-05-26 10:00'::timestamptz),\n"
-"    extract(epoch from '2015-05-26 11:00'::timestamptz)\n"
-"  ) a,\n"
-"  ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,\n"
-"    extract(epoch from '2015-05-26 10:00'::timestamptz),\n"
-"    extract(epoch from '2015-05-26 11:00'::timestamptz)\n"
-"  ) b\n"
-")\n"
-"SELECT ST_CPAWithin(a,b,2), ST_DistanceCPA(a,b) distance FROM inp;\n"
-"\n"
-" st_cpawithin |     distance\n"
-"--------------+------------------\n"
-" t            | 1.96521473776207"
+"Inputs must be valid trajectories as checked by <xref "
+"linkend=\"ST_IsValidTrajectory\"/>. False is returned if the trajectories do "
+"not overlap in their M ranges."
 msgstr ""
 
 #. Tag: para
 #: reference_trajectory.xml:215
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
-"\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
+", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
+"linkend=\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
 msgstr ""

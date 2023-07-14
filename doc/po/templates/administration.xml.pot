@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-05-25 20:53+0000\n"
+"POT-Creation-Date: 2023-07-14 23:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -58,12 +58,6 @@ msgstr ""
 msgid "If you want to enable offline raster:"
 msgstr ""
 
-#. Tag: programlisting
-#: administration.xml:20
-#, no-c-format
-msgid "POSTGIS_ENABLE_OUTDB_RASTERS=1"
-msgstr ""
-
 #. Tag: para
 #: administration.xml:21
 #, no-c-format
@@ -78,24 +72,12 @@ msgid ""
 "environment variable as follows"
 msgstr ""
 
-#. Tag: programlisting
-#: administration.xml:23
-#, no-c-format
-msgid "POSTGIS_GDAL_ENABLED_DRIVERS=ENABLE_ALL"
-msgstr ""
-
 #. Tag: para
 #: administration.xml:24
 #, no-c-format
 msgid ""
 "If you want to only enable specific drivers, set your environment variable "
 "as follows:"
-msgstr ""
-
-#. Tag: programlisting
-#: administration.xml:25
-#, no-c-format
-msgid "POSTGIS_GDAL_ENABLED_DRIVERS=\"GTiff PNG JPEG GIF XYZ\""
 msgstr ""
 
 #. Tag: para
@@ -172,16 +154,6 @@ msgid ""
 "Run the following SQL snippet in the database you want to enable spatially:"
 msgstr ""
 
-#. Tag: programlisting
-#: administration.xml:57
-#, no-c-format
-msgid ""
-"CREATE EXTENSION IF NOT EXISTS plpgsql;\n"
-"      CREATE EXTENSION postgis;\n"
-"      CREATE EXTENSION postgis_raster; -- OPTIONAL\n"
-"      CREATE EXTENSION postgis_topology; -- OPTIONAL"
-msgstr ""
-
 #. Tag: title
 #: administration.xml:63
 #, no-c-format
@@ -240,27 +212,6 @@ msgstr ""
 #: administration.xml:99
 #, no-c-format
 msgid "Run the following Shell commands in your terminal:"
-msgstr ""
-
-#. Tag: programlisting
-#: administration.xml:101
-#, no-c-format
-msgid ""
-"DB=[yourdatabase]\n"
-"    SCRIPTSDIR=`pg_config --sharedir`/contrib/postgis-&last_minor_version;/\n"
-"\n"
-"    # Core objects\n"
-"    psql -d ${DB} -f ${SCRIPTSDIR}/postgis.sql\n"
-"    psql -d ${DB} -f ${SCRIPTSDIR}/spatial_ref_sys.sql\n"
-"    psql -d ${DB} -f ${SCRIPTSDIR}/postgis_comments.sql # OPTIONAL\n"
-"\n"
-"    # Raster support (OPTIONAL)\n"
-"    psql -d ${DB} -f ${SCRIPTSDIR}/rtpostgis.sql\n"
-"    psql -d ${DB} -f ${SCRIPTSDIR}/raster_comments.sql # OPTIONAL\n"
-"\n"
-"    # Topology support (OPTIONAL)\n"
-"    psql -d ${DB} -f ${SCRIPTSDIR}/topology.sql\n"
-"    psql -d ${DB} -f ${SCRIPTSDIR}/topology_comments.sql # OPTIONAL"
 msgstr ""
 
 #. Tag: title
@@ -342,26 +293,10 @@ msgid ""
 "version you have installed."
 msgstr ""
 
-#. Tag: programlisting
-#: administration.xml:140
-#, no-c-format
-msgid "SELECT postgis_extensions_upgrade();"
-msgstr ""
-
 #. Tag: para
 #: administration.xml:142
 #, no-c-format
 msgid "If you are running PostGIS 2.5 or lower, then do the following:"
-msgstr ""
-
-#. Tag: programlisting
-#: administration.xml:143
-#, no-c-format
-msgid ""
-"ALTER EXTENSION postgis UPDATE;\n"
-"SELECT postgis_extensions_upgrade();\n"
-"-- This second call is needed to rebundle postgis_raster extension\n"
-"SELECT postgis_extensions_upgrade();"
 msgstr ""
 
 #. Tag: para
@@ -372,24 +307,10 @@ msgid ""
 "upgrade to the latest, you can explicitly specify the version as follows:"
 msgstr ""
 
-#. Tag: programlisting
-#: administration.xml:146
-#, no-c-format
-msgid ""
-"ALTER EXTENSION postgis UPDATE TO \"&last_release_version;\";\n"
-"ALTER EXTENSION postgis_topology UPDATE TO \"&last_release_version;\";"
-msgstr ""
-
 #. Tag: para
 #: administration.xml:147
 #, no-c-format
 msgid "If you get an error notice something like:"
-msgstr ""
-
-#. Tag: programlisting
-#: administration.xml:148
-#, no-c-format
-msgid "No migration path defined for … to &last_release_version;"
 msgstr ""
 
 #. Tag: para
@@ -407,14 +328,6 @@ msgstr ""
 msgid "If you get a notice message like:"
 msgstr ""
 
-#. Tag: programlisting
-#: administration.xml:151
-#, no-c-format
-msgid ""
-"Version \"&last_release_version;\" of extension \"postgis\" is already "
-"installed"
-msgstr ""
-
 #. Tag: para
 #: administration.xml:152
 #, no-c-format
@@ -424,14 +337,6 @@ msgid ""
 "an development version to the next (which doesn't get a new version number); "
 "in that case you can append \"next\" to the version string, and next time "
 "you'll need to drop the \"next\" suffix again:"
-msgstr ""
-
-#. Tag: programlisting
-#: administration.xml:158
-#, no-c-format
-msgid ""
-"ALTER EXTENSION postgis UPDATE TO \"&last_release_version;next\";\n"
-"ALTER EXTENSION postgis_topology UPDATE TO \"&last_release_version;next\";"
 msgstr ""
 
 #. Tag: para
@@ -453,12 +358,6 @@ msgid ""
 "safely drop, if you don't need raster support. You can drop as follows:"
 msgstr ""
 
-#. Tag: programlisting
-#: administration.xml:165
-#, no-c-format
-msgid "DROP EXTENSION postgis_raster;"
-msgstr ""
-
 #. Tag: title
 #: administration.xml:171
 #, no-c-format
@@ -472,12 +371,6 @@ msgid ""
 "This section applies only to those who installed PostGIS not using "
 "extensions. If you have extensions and try to upgrade with this approach "
 "you'll get messages like:"
-msgstr ""
-
-#. Tag: programlisting
-#: administration.xml:177
-#, no-c-format
-msgid "can't drop … because postgis extension depends on it"
 msgstr ""
 
 #. Tag: para
@@ -498,26 +391,12 @@ msgid ""
 "can list them all with:"
 msgstr ""
 
-#. Tag: programlisting
-#: administration.xml:192
-#, no-c-format
-msgid ""
-"ls `pg_config --sharedir`/contrib/postgis-&last_release_version;/*_upgrade."
-"sql"
-msgstr ""
-
 #. Tag: para
 #: administration.xml:194
 #, no-c-format
 msgid ""
 "Load them all in turn, starting from <filename>postgis_upgrade.sql</"
 "filename>."
-msgstr ""
-
-#. Tag: programlisting
-#: administration.xml:198
-#, no-c-format
-msgid "psql -f postgis_upgrade.sql -d your_spatial_database"
 msgstr ""
 
 #. Tag: para
@@ -530,34 +409,10 @@ msgid ""
 "filename> respectively. If you need them:"
 msgstr ""
 
-#. Tag: programlisting
-#: administration.xml:209
-#, no-c-format
-msgid "psql -f rtpostgis_upgrade.sql -d your_spatial_database"
-msgstr ""
-
-#. Tag: programlisting
-#: administration.xml:210
-#, no-c-format
-msgid "psql -f topology_upgrade.sql -d your_spatial_database"
-msgstr ""
-
-#. Tag: programlisting
-#: administration.xml:211
-#, no-c-format
-msgid "psql -f sfcgal_upgrade.sql -d your_spatial_database"
-msgstr ""
-
 #. Tag: para
 #: administration.xml:213
 #, no-c-format
 msgid "You are advised to switch to an extension based install by running"
-msgstr ""
-
-#. Tag: programlisting
-#: administration.xml:214
-#, no-c-format
-msgid "psql -c \"SELECT postgis_extensions_upgrade();\""
 msgstr ""
 
 #. Tag: para
@@ -631,14 +486,6 @@ msgid ""
 "account."
 msgstr ""
 
-#. Tag: programlisting
-#: administration.xml:275
-#, no-c-format
-msgid ""
-"pg_dump -h localhost -p 5432 -U postgres -Fc -b -v -f \"/somepath/olddb."
-"backup\" olddb"
-msgstr ""
-
 #. Tag: para
 #: administration.xml:281
 #, no-c-format
@@ -682,14 +529,6 @@ msgid ""
 "standard error stream by psql. Keep a log of those."
 msgstr ""
 
-#. Tag: programlisting
-#: administration.xml:322
-#, no-c-format
-msgid ""
-"perl utils/postgis_restore.pl \"/somepath/olddb.backup\" | psql -h localhost "
-"-p 5432 -U postgres newdb 2> errors.txt"
-msgstr ""
-
 #. Tag: para
 #: administration.xml:328
 #, no-c-format
@@ -730,31 +569,42 @@ msgid ""
 "In order to fix this you should copy your custom SRS to a SRID with a valid "
 "value (maybe in the 910000..910999 range), convert all your tables to the "
 "new srid (see <xref linkend=\"UpdateGeometrySRID\"/>), delete the invalid "
-"entry from spatial_ref_sys and re-construct the check(s) with: "
-"<programlisting>ALTER TABLE spatial_ref_sys ADD CONSTRAINT "
-"spatial_ref_sys_srid_check check (srid &gt; 0 AND srid &lt; 999000 );</"
-"programlisting> <programlisting>ALTER TABLE spatial_ref_sys ADD PRIMARY "
-"KEY(srid));</programlisting> If you are upgrading an old database containing "
-"french <ulink url=\"https://en.wikipedia.org/wiki/"
-"Institut_g%C3%A9ographique_national\"> IGN </ulink> cartography, you will "
-"have probably SRIDs out of range and you will see, when importing your "
-"database, issues like this : <programlisting> WARNING: SRID 310642222 "
-"converted to 999175 (in reserved zone)</programlisting> In this case, you "
-"can try following steps : first throw out completely the IGN from the sql "
-"which is resulting from postgis_restore.pl. So, after having run : "
-"<programlisting>perl utils/postgis_restore.pl \"/somepath/olddb.backup\" > "
-"olddb.sql</programlisting> run this command : <programlisting>grep -v IGNF "
-"olddb.sql > olddb-without-IGN.sql</programlisting> Create then your newdb, "
-"activate the required Postgis extensions, and insert properly the french "
-"system IGN with : <ulink url=\"https://raw.githubusercontent.com/Remi-C/"
-"IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql\"> this "
-"script </ulink> After these operations, import your data :"
+"entry from spatial_ref_sys and re-construct the check(s) with:"
 msgstr ""
 
-#. Tag: programlisting
-#: administration.xml:397
+#. Tag: para
+#: administration.xml:372
 #, no-c-format
 msgid ""
-"psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  2> "
-"errors.txt"
+"If you are upgrading an old database containing french <ulink url=\"https://"
+"en.wikipedia.org/wiki/Institut_g%C3%A9ographique_national\"> IGN </ulink> "
+"cartography, you will have probably SRIDs out of range and you will see, "
+"when importing your database, issues like this :"
 msgstr ""
+
+#. Tag: para
+#: administration.xml:381
+#, no-c-format
+msgid ""
+"In this case, you can try following steps : first throw out completely the "
+"IGN from the sql which is resulting from postgis_restore.pl. So, after "
+"having run :"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:389
+#, no-c-format
+msgid "run this command :"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:395
+#, no-c-format
+msgid ""
+"Create then your newdb, activate the required Postgis extensions, and insert "
+"properly the french system IGN with : <ulink url=\"https://raw."
+"githubusercontent.com/Remi-C/IGN_spatial_ref_for_PostGIS/master/"
+"Put_IGN_SRS_into_Postgis.sql\"> this script </ulink> After these operations, "
+"import your data :"
+msgstr ""
+

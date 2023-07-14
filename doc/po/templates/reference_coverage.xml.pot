@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-12 18:27+0000\n"
+"POT-Creation-Date: 2023-07-14 23:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -143,42 +143,6 @@ msgstr ""
 msgid "Invalid edges caused by overlap and non-matching vertices"
 msgstr ""
 
-#. Tag: programlisting
-#: reference_coverage.xml:81
-#, no-c-format
-msgid ""
-"WITH coverage(id, geom) AS (VALUES\n"
-"  (1, 'POLYGON ((10 190, 30 160, 40 110, 100 70, 120 10, 10 10, 10 190))'::"
-"geometry),\n"
-"  (2, 'POLYGON ((100 190, 10 190, 30 160, 40 110, 50 80, 74 110.5, 100 130, "
-"140 120, 140 160, 100 190))'::geometry),\n"
-"  (3, 'POLYGON ((140 190, 190 190, 190 80, 140 80, 140 190))'::geometry),\n"
-"  (4, 'POLYGON ((180 40, 120 10, 100 70, 140 80, 190 80, 180 40))'::"
-"geometry)\n"
-")\n"
-"SELECT id, ST_AsText(ST_CoverageInvalidEdges(geom) OVER ())\n"
-"  FROM coverage;\n"
-"\n"
-" id |               st_astext\n"
-"----+---------------------------------------\n"
-"  1 | LINESTRING (40 110, 100 70)\n"
-"  2 | MULTILINESTRING ((100 130, 140 120, 140 160, 100 190), (40 110, 50 80, "
-"74 110.5))\n"
-"  3 | LINESTRING (140 80, 140 190)\n"
-"  3 | null"
-msgstr ""
-
-#. Tag: programlisting
-#: reference_coverage.xml:83
-#, no-c-format
-msgid ""
-"-- Test entire table for coverage validity\n"
-"SELECT true = ALL (\n"
-"    SELECT ST_CoverageInvalidEdges(geom) OVER () IS NULL\n"
-"    FROM coverage\n"
-"    );"
-msgstr ""
-
 #. Tag: title
 #: reference_coverage.xml:87 reference_coverage.xml:177
 #: reference_coverage.xml:253
@@ -269,34 +233,6 @@ msgstr ""
 msgid "Simplified coverage"
 msgstr ""
 
-#. Tag: programlisting
-#: reference_coverage.xml:173
-#, no-c-format
-msgid ""
-"WITH coverage(id, geom) AS (VALUES\n"
-"  (1, 'POLYGON ((160 150, 110 130, 90 100, 90 70, 60 60, 50 10, 30 30, 40 "
-"50, 25 40, 10 60, 30 100, 30 120, 20 170, 60 180, 90 190, 130 180, 130 160, "
-"160 150), (40 160, 50 140, 66 125, 60 100, 80 140, 90 170, 60 160, 40 "
-"160))'::geometry),\n"
-"  (2, 'POLYGON ((40 160, 60 160, 90 170, 80 140, 60 100, 66 125, 50 140, 40 "
-"160))'::geometry),\n"
-"  (3, 'POLYGON ((110 130, 160 50, 140 50, 120 33, 90 30, 50 10, 60 60, 90 "
-"70, 90 100, 110 130))'::geometry),\n"
-"  (4, 'POLYGON ((160 150, 150 120, 160 90, 160 50, 110 130, 160 150))'::"
-"geometry)\n"
-")\n"
-"SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())\n"
-"  FROM coverage;\n"
-"\n"
-" id |               st_astext\n"
-"----+---------------------------------------\n"
-"  1 | POLYGON ((160 150, 110 130, 50 10, 10 60, 20 170, 90 190, 160 150), "
-"(40 160, 66 125, 90 170, 40 160))\n"
-"  2 | POLYGON ((40 160, 66 125, 90 170, 40 160))\n"
-"  3 | POLYGON ((110 130, 160 50, 50 10, 110 130))\n"
-"  3 | POLYGON ((160 150, 160 50, 110 130, 160 150))"
-msgstr ""
-
 #. Tag: refname
 #: reference_coverage.xml:187
 #, no-c-format
@@ -349,29 +285,6 @@ msgstr ""
 #: reference_coverage.xml:240
 #, no-c-format
 msgid "Union result"
-msgstr ""
-
-#. Tag: programlisting
-#: reference_coverage.xml:249
-#, no-c-format
-msgid ""
-"WITH coverage(id, geom) AS (VALUES\n"
-"  (1, 'POLYGON ((10 10, 10 150, 80 190, 110 150, 90 110, 40 110, 50 60, 10 "
-"10))'::geometry),\n"
-"  (2, 'POLYGON ((120 10, 10 10, 50 60, 100 70, 120 10))'::geometry),\n"
-"  (3, 'POLYGON ((140 80, 120 10, 100 70, 40 110, 90 110, 110 150, 140 80))'::"
-"geometry),\n"
-"  (4, 'POLYGON ((140 190, 120 170, 140 130, 160 150, 140 190))'::geometry),\n"
-"  (5, 'POLYGON ((180 160, 170 140, 140 130, 160 150, 140 190, 180 160))'::"
-"geometry)\n"
-")\n"
-"SELECT ST_AsText(ST_CoverageUnion(geom))\n"
-"  FROM coverage;\n"
-"\n"
-"--------------------------------------\n"
-"MULTIPOLYGON (((10 150, 80 190, 110 150, 140 80, 120 10, 10 10, 10 150), (50 "
-"60, 100 70, 40 110, 50 60)), ((120 170, 140 190, 180 160, 170 140, 140 130, "
-"120 170)))"
 msgstr ""
 
 #. Tag: para

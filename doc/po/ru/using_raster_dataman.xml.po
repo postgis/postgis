@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-05-25 20:53+0000\n"
+"POT-Creation-Date: 2023-07-14 23:23+0000\n"
 "PO-Revision-Date: 2021-11-28 22:35+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Russian (http://www.transifex.com/postgis/postgis/language/"
@@ -90,26 +90,6 @@ msgid ""
 "chunked in 100x100 tiles might look like this:"
 msgstr ""
 
-#. Tag: programlisting
-#: using_raster_dataman.xml:24
-#, no-c-format
-msgid ""
-"# -s use srid 4326\n"
-"# -I create spatial index\n"
-"# -C use standard raster constraints\n"
-"# -M vacuum analyze after load\n"
-"# *.tif load all these files\n"
-"# -F include a filename column in the raster table\n"
-"# -t tile the output 100x100\n"
-"# public.demelevation load into this table\n"
-"raster2pgsql -s 4326 -I -C -M -F -t 100x100 *.tif public.demelevation > elev."
-"sql\n"
-"\n"
-"# -d connect to this database\n"
-"# -f read this file after connecting\n"
-"psql -d gisdb -f elev.sql"
-msgstr ""
-
 #. Tag: para
 #: using_raster_dataman.xml:27
 #, no-c-format
@@ -125,14 +105,6 @@ msgstr ""
 msgid "A conversion and upload can be done all in one step using UNIX pipes:"
 msgstr ""
 
-#. Tag: programlisting
-#: using_raster_dataman.xml:32
-#, no-c-format
-msgid ""
-"raster2pgsql -s 4326 -I -C -M *.tif -F -t 100x100 public.demelevation | psql "
-"-d gisdb"
-msgstr ""
-
 #. Tag: para
 #: using_raster_dataman.xml:34
 #, no-c-format
@@ -145,22 +117,6 @@ msgid ""
 "into 128x128 pixel tiles and apply raster constraints. Use copy mode instead "
 "of table insert. (-F) Include a field called filename to hold the name of "
 "the file the tiles were cut from."
-msgstr ""
-
-#. Tag: programlisting
-#: using_raster_dataman.xml:36
-#, no-c-format
-msgid ""
-"raster2pgsql -I -C -e -Y -F -s 26986 -t 128x128  -l 2,4 bostonaerials2008/*."
-"jpg aerials.boston | psql -U postgres -d gisdb -h localhost -p 5432"
-msgstr ""
-
-#. Tag: programlisting
-#: using_raster_dataman.xml:38
-#, no-c-format
-msgid ""
-"--get a list of raster types supported:\n"
-"raster2pgsql -G"
 msgstr ""
 
 #. Tag: para
@@ -643,12 +599,6 @@ msgid ""
 "be accomplished with:"
 msgstr ""
 
-#. Tag: programlisting
-#: using_raster_dataman.xml:349
-#, no-c-format
-msgid "CREATE TABLE myrasters(rid serial primary key, rast raster);"
-msgstr ""
-
 #. Tag: para
 #: using_raster_dataman.xml:352
 #, no-c-format
@@ -685,14 +635,6 @@ msgstr ""
 msgid ""
 "Once you are done populating your table initially, you'll want to create a "
 "spatial index on the raster column with something like:"
-msgstr ""
-
-#. Tag: programlisting
-#: using_raster_dataman.xml:359
-#, no-c-format
-msgid ""
-"CREATE INDEX myrasters_rast_st_convexhull_idx ON myrasters USING "
-"gist( ST_ConvexHull(rast) );"
 msgstr ""
 
 #. Tag: para
@@ -761,22 +703,6 @@ msgid ""
 "database."
 msgstr ""
 
-#. Tag: programlisting
-#: using_raster_dataman.xml:378
-#, no-c-format
-msgid ""
-"AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxxxxxxx \\\n"
-"AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx \\\n"
-"raster2pgsql \\\n"
-"  -s 990000 \\\n"
-"  -t 256x256 \\\n"
-"  -I \\\n"
-"  -R \\\n"
-"  /vsis3/your.bucket.com/your_file.tif \\\n"
-"  your_table \\\n"
-"  | psql your_db"
-msgstr ""
-
 #. Tag: para
 #: using_raster_dataman.xml:379
 #, no-c-format
@@ -787,28 +713,12 @@ msgid ""
 "linkend=\"postgis_gdal_enabled_drivers\"/>."
 msgstr ""
 
-#. Tag: programlisting
-#: using_raster_dataman.xml:382
-#, no-c-format
-msgid ""
-"SET postgis.enable_outdb_rasters = true;\n"
-"SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';"
-msgstr ""
-
 #. Tag: para
 #: using_raster_dataman.xml:383
 #, no-c-format
 msgid ""
 "To make the changes sticky, set them directly on your database. You will "
 "need to re-connect to experience the new settings."
-msgstr ""
-
-#. Tag: programlisting
-#: using_raster_dataman.xml:386
-#, no-c-format
-msgid ""
-"ALTER DATABASE your_db SET postgis.enable_outdb_rasters = true;\n"
-"ALTER DATABASE your_db SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';"
 msgstr ""
 
 #. Tag: para
@@ -821,14 +731,6 @@ msgid ""
 "linkend=\"postgis_gdal_vsi_options\"/> configuration. Note that multiple "
 "options can be set by space-separating the <varname>key=value</varname> "
 "pairs."
-msgstr ""
-
-#. Tag: programlisting
-#: using_raster_dataman.xml:390
-#, no-c-format
-msgid ""
-"SET postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxxxxxxx\n"
-"AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';"
 msgstr ""
 
 #. Tag: para
@@ -1269,41 +1171,6 @@ msgid ""
 "Massachusetts state plane feet."
 msgstr ""
 
-#. Tag: programlisting
-#: using_raster_dataman.xml:532
-#, no-c-format
-msgid ""
-"<![CDATA[<?php\n"
-"/** contents of test_raster.php **/\n"
-"$conn_str ='dbname=mydb host=localhost port=5432 user=myuser "
-"password=mypwd';\n"
-"$dbconn = pg_connect($conn_str);\n"
-"header('Content-Type: image/png');\n"
-"/**If a particular projection was requested use it otherwise use mass state "
-"plane meters **/\n"
-"if (!empty( $_REQUEST['srid'] ) && is_numeric( $_REQUEST['srid']) ){\n"
-"                $input_srid = intval($_REQUEST['srid']);\n"
-"}\n"
-"else { $input_srid = 26986; }\n"
-"/** The set bytea_output may be needed for PostgreSQL 9.0+, but not for 8.4 "
-"**/\n"
-"$sql = \"set bytea_output='escape';\n"
-"SELECT ST_AsPNG(ST_Transform(\n"
-"                        ST_AddBand(ST_Union(rast,1), ARRAY[ST_Union(rast,2),"
-"ST_Union(rast,3)])\n"
-"                                ,$input_srid) ) As new_rast\n"
-" FROM aerials.boston\n"
-"        WHERE\n"
-"         ST_Intersects(rast, ST_Transform(ST_MakeEnvelope(-71.1217, 42.227, "
-"-71.1210, 42.218,4326),26986) )\";\n"
-"$result = pg_query($sql);\n"
-"$row = pg_fetch_row($result);\n"
-"pg_free_result($result);\n"
-"if ($row === false) return;\n"
-"echo pg_unescape_bytea($row[0]);\n"
-"?>]]>"
-msgstr ""
-
 #. Tag: title
 #: using_raster_dataman.xml:535
 #, no-c-format
@@ -1349,92 +1216,6 @@ msgid ""
 "state plane feet."
 msgstr ""
 
-#. Tag: programlisting
-#: using_raster_dataman.xml:545
-#, no-c-format
-msgid ""
-"-- web.config connection string section --\n"
-"<![CDATA[<connectionStrings>\n"
-"    <add name=\"DSN\"\n"
-"        connectionString=\"server=localhost;database=mydb;Port=5432;User "
-"Id=myuser;password=mypwd\"/>\n"
-"</connectionStrings>]]>"
-msgstr ""
-
-#. Tag: programlisting
-#: using_raster_dataman.xml:546
-#, no-c-format
-msgid ""
-"// Code for TestRaster.ashx\n"
-"<![CDATA[<%@ WebHandler Language=\"C#\" Class=\"TestRaster\" %>\n"
-"using System;\n"
-"using System.Data;\n"
-"using System.Web;\n"
-"using Npgsql;\n"
-"\n"
-"public class TestRaster : IHttpHandler\n"
-"{\n"
-"        public void ProcessRequest(HttpContext context)\n"
-"        {\n"
-"\n"
-"                context.Response.ContentType = \"image/png\";\n"
-"                context.Response.BinaryWrite(GetResults(context));\n"
-"\n"
-"        }\n"
-"\n"
-"        public bool IsReusable {\n"
-"                get { return false; }\n"
-"        }\n"
-"\n"
-"        public byte[] GetResults(HttpContext context)\n"
-"        {\n"
-"                byte[] result = null;\n"
-"                NpgsqlCommand command;\n"
-"                string sql = null;\n"
-"                int input_srid = 26986;\n"
-"        try {\n"
-"                    using (NpgsqlConnection conn = new "
-"NpgsqlConnection(System.Configuration.ConfigurationManager."
-"ConnectionStrings[\"DSN\"].ConnectionString)) {\n"
-"                            conn.Open();\n"
-"\n"
-"                if (context.Request[\"srid\"] != null)\n"
-"                {\n"
-"                    input_srid = Convert.ToInt32(context."
-"Request[\"srid\"]);\n"
-"                }\n"
-"                sql = @\"SELECT ST_AsPNG(\n"
-"                            ST_Transform(\n"
-"                                        ST_AddBand(\n"
-"                                ST_Union(rast,1), ARRAY[ST_Union(rast,2),"
-"ST_Union(rast,3)])\n"
-"                                                    ,:input_srid) ) As "
-"new_rast\n"
-"                        FROM aerials.boston\n"
-"                                WHERE\n"
-"                                    ST_Intersects(rast,\n"
-"                                    ST_Transform(ST_MakeEnvelope(-71.1217, "
-"42.227, -71.1210, 42.218,4326),26986) )\";\n"
-"                            command = new NpgsqlCommand(sql, conn);\n"
-"                command.Parameters.Add(new NpgsqlParameter(\"input_srid\", "
-"input_srid));\n"
-"\n"
-"\n"
-"                            result = (byte[]) command.ExecuteScalar();\n"
-"                conn.Close();\n"
-"                        }\n"
-"\n"
-"                }\n"
-"        catch (Exception ex)\n"
-"        {\n"
-"            result = null;\n"
-"            context.Response.Write(ex.Message.Trim());\n"
-"        }\n"
-"                return result;\n"
-"        }\n"
-"}]]>"
-msgstr ""
-
 #. Tag: title
 #: using_raster_dataman.xml:549
 #, no-c-format
@@ -1464,104 +1245,10 @@ msgstr ""
 msgid "You can compile the following code using a command something like:"
 msgstr ""
 
-#. Tag: programlisting
-#: using_raster_dataman.xml:553
-#, no-c-format
-msgid ""
-"set env CLASSPATH .:..\\postgresql-9.0-801.jdbc4.jar\n"
-"javac SaveQueryImage.java\n"
-"jar cfm SaveQueryImage.jar Manifest.txt *.class"
-msgstr ""
-
 #. Tag: para
 #: using_raster_dataman.xml:554
 #, no-c-format
 msgid "And call it from the command-line with something like"
-msgstr ""
-
-#. Tag: programlisting
-#: using_raster_dataman.xml:555
-#, no-c-format
-msgid ""
-"java -jar SaveQueryImage.jar \"SELECT "
-"ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10, 'quad_segs=2'),150, 150, "
-"'8BUI',100));\" \"test.png\""
-msgstr ""
-
-#. Tag: programlisting
-#: using_raster_dataman.xml:556
-#, no-c-format
-msgid ""
-"-- Manifest.txt --\n"
-"<![CDATA[Class-Path: postgresql-9.0-801.jdbc4.jar\n"
-"Main-Class: SaveQueryImage]]>"
-msgstr ""
-
-#. Tag: programlisting
-#: using_raster_dataman.xml:557
-#, no-c-format
-msgid ""
-"// Code for SaveQueryImage.java\n"
-"<![CDATA[import java.sql.Connection;\n"
-"import java.sql.SQLException;\n"
-"import java.sql.PreparedStatement;\n"
-"import java.sql.ResultSet;\n"
-"import java.io.*;\n"
-"\n"
-"public class SaveQueryImage {\n"
-"  public static void main(String[] argv) {\n"
-"      System.out.println(\"Checking if Driver is registered with "
-"DriverManager.\");\n"
-"\n"
-"      try {\n"
-"        //java.sql.DriverManager.registerDriver (new org.postgresql."
-"Driver());\n"
-"        Class.forName(\"org.postgresql.Driver\");\n"
-"      }\n"
-"      catch (ClassNotFoundException cnfe) {\n"
-"        System.out.println(\"Couldn't find the driver!\");\n"
-"        cnfe.printStackTrace();\n"
-"        System.exit(1);\n"
-"      }\n"
-"\n"
-"      Connection conn = null;\n"
-"\n"
-"      try {\n"
-"        conn = DriverManager.getConnection(\"jdbc:postgresql://"
-"localhost:5432/mydb\",\"myuser\", \"mypwd\");\n"
-"        conn.setAutoCommit(false);\n"
-"\n"
-"        PreparedStatement sGetImg = conn.prepareStatement(argv[0]);\n"
-"\n"
-"        ResultSet rs = sGetImg.executeQuery();\n"
-"\n"
-"                FileOutputStream fout;\n"
-"                try\n"
-"                {\n"
-"                        rs.next();\n"
-"                        /** Output to file name requested by user **/\n"
-"                        fout = new FileOutputStream(new File(argv[1]) );\n"
-"                        fout.write(rs.getBytes(1));\n"
-"                        fout.close();\n"
-"                }\n"
-"                catch(Exception e)\n"
-"                {\n"
-"                        System.out.println(\"Can't create file\");\n"
-"                        e.printStackTrace();\n"
-"                }\n"
-"\n"
-"        rs.close();\n"
-"                sGetImg.close();\n"
-"        conn.close();\n"
-"      }\n"
-"      catch (SQLException se) {\n"
-"        System.out.println(\"Couldn't connect: print out a stack trace and "
-"exit.\");\n"
-"        se.printStackTrace();\n"
-"        System.exit(1);\n"
-"      }\n"
-"  }\n"
-"}]]>"
 msgstr ""
 
 #. Tag: title
@@ -1577,42 +1264,6 @@ msgid ""
 "This is a plpython stored function that creates a file in the server "
 "directory for each record. Requires you have plpython installed. Should work "
 "fine with both plpythonu and plpython3u."
-msgstr ""
-
-#. Tag: programlisting
-#: using_raster_dataman.xml:564
-#, no-c-format
-msgid ""
-"<![CDATA[CREATE OR REPLACE FUNCTION write_file (param_bytes bytea, "
-"param_filepath text)\n"
-"RETURNS text\n"
-"AS $$\n"
-"f = open(param_filepath, 'wb+')\n"
-"f.write(param_bytes)\n"
-"return param_filepath\n"
-"$$ LANGUAGE plpythonu;]]>"
-msgstr ""
-
-#. Tag: programlisting
-#: using_raster_dataman.xml:565
-#, no-c-format
-msgid ""
-"--write out 5 images to the PostgreSQL server in varying sizes\n"
-"-- note the postgresql daemon account needs to have write access to folder\n"
-"-- this echos back the file names created;\n"
-" SELECT write_file(ST_AsPNG(\n"
-"        ST_AsRaster(ST_Buffer(ST_Point(1,5),j*5, 'quad_segs=2'),150*j, "
-"150*j, '8BUI',100)),\n"
-"         'C:/temp/slices'|| j || '.png')\n"
-"         FROM generate_series(1,5) As j;\n"
-"\n"
-"     write_file\n"
-"---------------------\n"
-" C:/temp/slices1.png\n"
-" C:/temp/slices2.png\n"
-" C:/temp/slices3.png\n"
-" C:/temp/slices4.png\n"
-" C:/temp/slices5.png"
 msgstr ""
 
 #. Tag: title

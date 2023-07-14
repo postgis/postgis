@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2023-07-14 23:23+0000\n"
 "PO-Revision-Date: 2023-01-09 04:42+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Russian <https://weblate.osgeo.org/projects/postgis/"
@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || ("
-"n%100>=11 && n%100<=14)? 2 : 3);\n"
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
 "X-Generator: Weblate 4.15\n"
 
 #. Tag: para
@@ -41,40 +41,6 @@ msgstr ""
 #: reference_management.xml:16
 #, no-c-format
 msgid "Adds a geometry column to an existing table."
-msgstr ""
-
-#. Tag: funcsynopsis
-#: reference_management.xml:20
-#, no-c-format
-msgid ""
-"<funcprototype> <funcdef>text <function>AddGeometryColumn</function></"
-"funcdef> <paramdef><type>varchar </type> <parameter>table_name</parameter></"
-"paramdef> <paramdef><type>varchar </type> <parameter>column_name</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>srid</"
-"parameter></paramdef> <paramdef><type>varchar </type> <parameter>type</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>dimension</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>use_typmod=true</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>text <function>AddGeometryColumn</function></"
-"funcdef> <paramdef><type>varchar </type> <parameter>schema_name</parameter></"
-"paramdef> <paramdef><type>varchar </type> <parameter>table_name</parameter></"
-"paramdef> <paramdef><type>varchar </type> <parameter>column_name</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>srid</"
-"parameter></paramdef> <paramdef><type>varchar </type> <parameter>type</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>dimension</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>use_typmod=true</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>text <function>AddGeometryColumn</function></"
-"funcdef> <paramdef><type>varchar </type> <parameter>catalog_name</"
-"parameter></paramdef> <paramdef><type>varchar </type> "
-"<parameter>schema_name</parameter></paramdef> <paramdef><type>varchar </"
-"type> <parameter>table_name</parameter></paramdef> <paramdef><type>varchar </"
-"type> <parameter>column_name</parameter></paramdef> <paramdef><type>integer "
-"</type> <parameter>srid</parameter></paramdef> <paramdef><type>varchar </"
-"type> <parameter>type</parameter></paramdef> <paramdef><type>integer </type> "
-"<parameter>dimension</parameter></paramdef> <paramdef choice=\"opt"
-"\"><type>boolean </type> <parameter>use_typmod=true</parameter></paramdef> </"
-"funcprototype>"
 msgstr ""
 
 #. Tag: title
@@ -129,8 +95,8 @@ msgid ""
 "correctly because they inherit the typmod behavior of their parent table "
 "column. Views that use geometry functions that output other geometries will "
 "need to be cast to typmod geometries for these view geometry columns to be "
-"registered correctly in geometry_columns. Refer to <xref linkend="
-"\"Manual_Register_Spatial_Column\"/>."
+"registered correctly in geometry_columns. Refer to <xref "
+"linkend=\"Manual_Register_Spatial_Column\"/>."
 msgstr ""
 
 #. Tag: para
@@ -169,76 +135,6 @@ msgstr ""
 msgid "Examples"
 msgstr "Примеры"
 
-#. Tag: programlisting
-#: reference_management.xml:131
-#, no-c-format
-msgid ""
-"-- Create schema to hold data\n"
-"CREATE SCHEMA my_schema;\n"
-"-- Create a new simple PostgreSQL table\n"
-"CREATE TABLE my_schema.my_spatial_table (id serial);\n"
-"\n"
-"-- Describing the table shows a simple table with a single \"id\" column.\n"
-"postgis=# \\d my_schema.my_spatial_table\n"
-"                                                         Table \"my_schema."
-"my_spatial_table\"\n"
-" Column |  Type   |                                Modifiers\n"
-"--------+---------"
-"+-------------------------------------------------------------------------\n"
-" id     | integer | not null default nextval('my_schema."
-"my_spatial_table_id_seq'::regclass)\n"
-"\n"
-"-- Add a spatial column to the table\n"
-"SELECT AddGeometryColumn "
-"('my_schema','my_spatial_table','geom',4326,'POINT',2);\n"
-"\n"
-"-- Add a point using the old constraint based behavior\n"
-"SELECT AddGeometryColumn "
-"('my_schema','my_spatial_table','geom_c',4326,'POINT',2, false);\n"
-"\n"
-"--Add a curvepolygon using old constraint behavior\n"
-"SELECT AddGeometryColumn "
-"('my_schema','my_spatial_table','geomcp_c',4326,'CURVEPOLYGON',2, false);\n"
-"\n"
-"-- Describe the table again reveals the addition of a new geometry columns.\n"
-"\\d my_schema.my_spatial_table\n"
-"                            addgeometrycolumn\n"
-"-------------------------------------------------------------------------\n"
-" my_schema.my_spatial_table.geomcp_c SRID:4326 TYPE:CURVEPOLYGON DIMS:2\n"
-"(1 row)\n"
-"\n"
-"                                    Table \"my_schema.my_spatial_table\"\n"
-"  Column  |         Type         |                                Modifiers\n"
-"----------+----------------------"
-"+-------------------------------------------------------------------------\n"
-" id       | integer              | not null default nextval('my_schema."
-"my_spatial_table_id_seq'::regclass)\n"
-" geom     | geometry(Point,4326) |\n"
-" geom_c   | geometry             |\n"
-" geomcp_c | geometry             |\n"
-"Check constraints:\n"
-"    \"enforce_dims_geom_c\" CHECK (st_ndims(geom_c) = 2)\n"
-"    \"enforce_dims_geomcp_c\" CHECK (st_ndims(geomcp_c) = 2)\n"
-"    \"enforce_geotype_geom_c\" CHECK (geometrytype(geom_c) = 'POINT'::text "
-"OR geom_c IS NULL)\n"
-"    \"enforce_geotype_geomcp_c\" CHECK (geometrytype(geomcp_c) = "
-"'CURVEPOLYGON'::text OR geomcp_c IS NULL)\n"
-"    \"enforce_srid_geom_c\" CHECK (st_srid(geom_c) = 4326)\n"
-"    \"enforce_srid_geomcp_c\" CHECK (st_srid(geomcp_c) = 4326)\n"
-"\n"
-"-- geometry_columns view also registers the new columns --\n"
-"SELECT f_geometry_column As col_name, type, srid, coord_dimension As ndims\n"
-"    FROM geometry_columns\n"
-"    WHERE f_table_name = 'my_spatial_table' AND f_table_schema = "
-"'my_schema';\n"
-"\n"
-" col_name |     type     | srid | ndims\n"
-"----------+--------------+------+-------\n"
-" geom     | Point        | 4326 |     2\n"
-" geom_c   | Point        | 4326 |     2\n"
-" geomcp_c | CurvePolygon | 4326 |     2"
-msgstr ""
-
 #. Tag: title
 #: reference_management.xml:135 reference_management.xml:213
 #: reference_management.xml:277 reference_management.xml:318
@@ -267,26 +163,6 @@ msgstr ""
 msgid "Removes a geometry column from a spatial table."
 msgstr ""
 
-#. Tag: funcsynopsis
-#: reference_management.xml:150
-#, no-c-format
-msgid ""
-"<funcprototype> <funcdef>text <function>DropGeometryColumn</function></"
-"funcdef> <paramdef><type>varchar </type> <parameter>table_name</parameter></"
-"paramdef> <paramdef><type>varchar </type> <parameter>column_name</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text "
-"<function>DropGeometryColumn</function></funcdef> <paramdef><type>varchar </"
-"type> <parameter>schema_name</parameter></paramdef> <paramdef><type>varchar "
-"</type> <parameter>table_name</parameter></paramdef> <paramdef><type>varchar "
-"</type> <parameter>column_name</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>text <function>DropGeometryColumn</function></"
-"funcdef> <paramdef><type>varchar </type> <parameter>catalog_name</"
-"parameter></paramdef> <paramdef><type>varchar </type> "
-"<parameter>schema_name</parameter></paramdef> <paramdef><type>varchar </"
-"type> <parameter>table_name</parameter></paramdef> <paramdef><type>varchar </"
-"type> <parameter>column_name</parameter></paramdef> </funcprototype>"
-msgstr ""
-
 #. Tag: para
 #: reference_management.xml:195
 #, no-c-format
@@ -304,21 +180,6 @@ msgid ""
 "that since geometry_columns is now a view against the system catalogs, you "
 "can drop a geometry column like any other table column using <code>ALTER "
 "TABLE</code>"
-msgstr ""
-
-#. Tag: programlisting
-#: reference_management.xml:210
-#, no-c-format
-msgid ""
-"SELECT DropGeometryColumn ('my_schema','my_spatial_table','geom');\n"
-"                        ----RESULT output ---\n"
-"                                          dropgeometrycolumn\n"
-"------------------------------------------------------\n"
-" my_schema.my_spatial_table.geom effectively removed.\n"
-"\n"
-"-- In PostGIS 2.0+ the above is also equivalent to the standard\n"
-"-- the standard alter table.  Both will deregister from geometry_columns\n"
-"ALTER TABLE my_schema.my_spatial_table DROP column geom;"
 msgstr ""
 
 #. Tag: para
@@ -340,23 +201,6 @@ msgstr ""
 msgid "Drops a table and all its references in geometry_columns."
 msgstr ""
 
-#. Tag: funcsynopsis
-#: reference_management.xml:228
-#, no-c-format
-msgid ""
-"<funcprototype> <funcdef>boolean <function>DropGeometryTable</function></"
-"funcdef> <paramdef><type>varchar </type> <parameter>table_name</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>boolean "
-"<function>DropGeometryTable</function></funcdef> <paramdef><type>varchar </"
-"type> <parameter>schema_name</parameter></paramdef> <paramdef><type>varchar "
-"</type> <parameter>table_name</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>boolean <function>DropGeometryTable</function></"
-"funcdef> <paramdef><type>varchar </type> <parameter>catalog_name</"
-"parameter></paramdef> <paramdef><type>varchar </type> "
-"<parameter>schema_name</parameter></paramdef> <paramdef><type>varchar </"
-"type> <parameter>table_name</parameter></paramdef> </funcprototype>"
-msgstr ""
-
 #. Tag: para
 #: reference_management.xml:261
 #, no-c-format
@@ -374,18 +218,6 @@ msgid ""
 "that since geometry_columns is now a view against the system catalogs, you "
 "can drop a table with geometry columns like any other table using <code>DROP "
 "TABLE</code>"
-msgstr ""
-
-#. Tag: programlisting
-#: reference_management.xml:274
-#, no-c-format
-msgid ""
-"SELECT DropGeometryTable ('my_schema','my_spatial_table');\n"
-"----RESULT output ---\n"
-"my_schema.my_spatial_table dropped.\n"
-"\n"
-"-- The above is now equivalent to --\n"
-"DROP TABLE my_schema.my_spatial_table;"
 msgstr ""
 
 #. Tag: para
@@ -429,16 +261,6 @@ msgid ""
 "function), this function will not work."
 msgstr ""
 
-#. Tag: programlisting
-#: reference_management.xml:313
-#, no-c-format
-msgid ""
-"SELECT Find_SRID('public', 'tiger_us_state_2007', 'geom_4269');\n"
-"find_srid\n"
-"----------\n"
-"4269"
-msgstr ""
-
 #. Tag: refname
 #: reference_management.xml:327
 #, no-c-format
@@ -451,19 +273,6 @@ msgstr ""
 msgid ""
 "Ensures geometry columns are defined with type modifiers or have appropriate "
 "spatial constraints."
-msgstr ""
-
-#. Tag: funcsynopsis
-#: reference_management.xml:333
-#, no-c-format
-msgid ""
-"<funcprototype> <funcdef>text <function>Populate_Geometry_Columns</"
-"function></funcdef> <paramdef><type>boolean </type> "
-"<parameter>use_typmod=true</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>int <function>Populate_Geometry_Columns</function></"
-"funcdef> <paramdef><type>oid</type> <parameter>relation_oid</parameter></"
-"paramdef> <paramdef><type>boolean </type> <parameter>use_typmod=true</"
-"parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -575,64 +384,6 @@ msgid ""
 "or with check constraints."
 msgstr ""
 
-#. Tag: programlisting
-#: reference_management.xml:413
-#, no-c-format
-msgid ""
-"CREATE TABLE public.myspatial_table(gid serial, geom geometry);\n"
-"INSERT INTO myspatial_table(geom) VALUES(ST_GeomFromText('LINESTRING(1 2, 3 "
-"4)',4326) );\n"
-"-- This will now use typ modifiers.  For this to work, there must exist "
-"data\n"
-"SELECT Populate_Geometry_Columns('public.myspatial_table'::regclass);\n"
-"\n"
-"populate_geometry_columns\n"
-"--------------------------\n"
-"                        1\n"
-"\n"
-"\n"
-"\\d myspatial_table\n"
-"\n"
-"                                   Table \"public.myspatial_table\"\n"
-" Column |           Type            |                           Modifiers\n"
-"--------+---------------------------"
-"+---------------------------------------------------------------\n"
-" gid    | integer                   | not null default "
-"nextval('myspatial_table_gid_seq'::regclass)\n"
-" geom   | geometry(LineString,4326) |"
-msgstr ""
-
-#. Tag: programlisting
-#: reference_management.xml:415
-#, no-c-format
-msgid ""
-"-- This will change the geometry columns to use constraints if they are not "
-"typmod or have constraints already.\n"
-"--For this to work, there must exist data\n"
-"CREATE TABLE public.myspatial_table_cs(gid serial, geom geometry);\n"
-"INSERT INTO myspatial_table_cs(geom) VALUES(ST_GeomFromText('LINESTRING(1 2, "
-"3 4)',4326) );\n"
-"SELECT Populate_Geometry_Columns('public.myspatial_table_cs'::regclass, "
-"false);\n"
-"populate_geometry_columns\n"
-"--------------------------\n"
-"                        1\n"
-"\\d myspatial_table_cs\n"
-"\n"
-"                          Table \"public.myspatial_table_cs\"\n"
-" Column |   Type   |                            Modifiers\n"
-"--------+----------"
-"+------------------------------------------------------------------\n"
-" gid    | integer  | not null default nextval('myspatial_table_cs_gid_seq'::"
-"regclass)\n"
-" geom   | geometry |\n"
-"Check constraints:\n"
-"    \"enforce_dims_geom\" CHECK (st_ndims(geom) = 2)\n"
-"    \"enforce_geotype_geom\" CHECK (geometrytype(geom) = 'LINESTRING'::text "
-"OR geom IS NULL)\n"
-"    \"enforce_srid_geom\" CHECK (st_srid(geom) = 4326)"
-msgstr ""
-
 #. Tag: refname
 #: reference_management.xml:430
 #, no-c-format
@@ -645,29 +396,6 @@ msgstr ""
 msgid ""
 "Updates the SRID of all features in a geometry column, and the table "
 "metadata."
-msgstr ""
-
-#. Tag: funcsynopsis
-#: reference_management.xml:438
-#, no-c-format
-msgid ""
-"<funcprototype> <funcdef>text <function>UpdateGeometrySRID</function></"
-"funcdef> <paramdef><type>varchar </type> <parameter>table_name</parameter></"
-"paramdef> <paramdef><type>varchar </type> <parameter>column_name</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>srid</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text "
-"<function>UpdateGeometrySRID</function></funcdef> <paramdef><type>varchar </"
-"type> <parameter>schema_name</parameter></paramdef> <paramdef><type>varchar "
-"</type> <parameter>table_name</parameter></paramdef> <paramdef><type>varchar "
-"</type> <parameter>column_name</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>text <function>UpdateGeometrySRID</"
-"function></funcdef> <paramdef><type>varchar </type> <parameter>catalog_name</"
-"parameter></paramdef> <paramdef><type>varchar </type> "
-"<parameter>schema_name</parameter></paramdef> <paramdef><type>varchar </"
-"type> <parameter>table_name</parameter></paramdef> <paramdef><type>varchar </"
-"type> <parameter>column_name</parameter></paramdef> <paramdef><type>integer "
-"</type> <parameter>srid</parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -688,16 +416,6 @@ msgid ""
 "linkend=\"ST_GeomFromEWKT\">EWKT format</link>:"
 msgstr ""
 
-#. Tag: programlisting
-#: reference_management.xml:505
-#, no-c-format
-msgid ""
-"COPY roads (geom) FROM STDIN;\n"
-"SRID=4326;LINESTRING(0 0, 10 10)\n"
-"SRID=4326;LINESTRING(10 10, 15 0)\n"
-"\\."
-msgstr ""
-
 #. Tag: para
 #: reference_management.xml:507
 #, no-c-format
@@ -706,25 +424,10 @@ msgid ""
 "before:"
 msgstr ""
 
-#. Tag: programlisting
-#: reference_management.xml:508
-#, no-c-format
-msgid "SELECT UpdateGeometrySRID('roads','geom',4326);"
-msgstr ""
-
 #. Tag: para
 #: reference_management.xml:510
 #, no-c-format
 msgid "The prior example is equivalent to this DDL statement:"
-msgstr ""
-
-#. Tag: programlisting
-#: reference_management.xml:511
-#, no-c-format
-msgid ""
-"ALTER TABLE roads\n"
-"  ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 4326)\n"
-"    USING ST_SetSRID(geom,4326);"
 msgstr ""
 
 #. Tag: para
@@ -735,15 +438,6 @@ msgid ""
 "you wanted to transform to web mercator all in one shot you can do this with "
 "DDL but there is no equivalent PostGIS management function to do so in one "
 "go."
-msgstr ""
-
-#. Tag: programlisting
-#: reference_management.xml:515
-#, no-c-format
-msgid ""
-"ALTER TABLE roads\n"
-" ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 3857) USING "
-"ST_Transform(ST_SetSRID(geom,4326),3857) ;"
 msgstr ""
 
 #. Tag: para

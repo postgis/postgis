@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-12-15 21:12+0000\n"
+"POT-Creation-Date: 2023-07-14 23:23+0000\n"
 "PO-Revision-Date: 2023-01-09 04:42+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/"
@@ -36,9 +36,9 @@ msgstr ""
 #: database_tuning.xml:10
 #, no-c-format
 msgid ""
-"For general details about optimizing PostgreSQL, refer to <ulink url="
-"\"https://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server\">Tuning "
-"your PostgreSQL Server</ulink>."
+"For general details about optimizing PostgreSQL, refer to <ulink "
+"url=\"https://wiki.postgresql.org/wiki/"
+"Tuning_Your_PostgreSQL_Server\">Tuning your PostgreSQL Server</ulink>."
 msgstr ""
 
 #. Tag: para
@@ -48,18 +48,6 @@ msgid ""
 "For PostgreSQL 9.4+ configuration can be set at the server level without "
 "touching <code>postgresql.conf</code> or <code>postgresql.auto.conf</code> "
 "by using the <code>ALTER SYSTEM</code> command."
-msgstr ""
-
-#. Tag: programlisting
-#: database_tuning.xml:14
-#, no-c-format
-msgid ""
-"ALTER SYSTEM SET work_mem = '256MB';\n"
-"-- this forces non-startup configs to take effect for new connections\n"
-"SELECT pg_reload_conf();\n"
-"-- show current setting value\n"
-"-- use SHOW ALL to see all settings\n"
-"SHOW work_mem;"
 msgstr ""
 
 #. Tag: para
@@ -188,12 +176,6 @@ msgstr ""
 msgid "If you have lots of RAM and few developers:"
 msgstr ""
 
-#. Tag: programlisting
-#: database_tuning.xml:111
-#, no-c-format
-msgid "SET work_mem TO '256MB';"
-msgstr ""
-
 #. Tag: para
 #: database_tuning.xml:116
 #, no-c-format
@@ -221,12 +203,6 @@ msgstr ""
 msgid ""
 "Recommend 32MB to 1GB on production servers w/lots of RAM, but depends on "
 "the # of concurrent users. If you have lots of RAM and few developers:"
-msgstr ""
-
-#. Tag: programlisting
-#: database_tuning.xml:136
-#, no-c-format
-msgid "SET maintenance_work_mem TO '1GB';"
 msgstr ""
 
 #. Tag: ulink

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2023-07-14 23:23+0000\n"
 "PO-Revision-Date: 2019-03-11 09:15+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
@@ -93,23 +93,11 @@ msgstr "Beispiele"
 msgid "Sets backend just for life of connection"
 msgstr "Setzt das Backend für die Dauer der Verbindung"
 
-#. Tag: programlisting
-#: reference_guc.xml:26
-#, no-c-format
-msgid "set postgis.backend = sfcgal;"
-msgstr "set postgis.backend = sfcgal;"
-
 #. Tag: para
 #: reference_guc.xml:28
 #, no-c-format
 msgid "Sets backend for new connections to database"
 msgstr "Setzt das Backend für neue Verbindungen zur Datenbank"
-
-#. Tag: programlisting
-#: reference_guc.xml:29
-#, no-c-format
-msgid "ALTER DATABASE mygisdb SET postgis.backend = sfcgal;"
-msgstr "ALTER DATABASE mygisdb SET postgis.backend = sfcgal;"
 
 #. Tag: title
 #: reference_guc.xml:32 reference_guc.xml:80 reference_guc.xml:167
@@ -180,8 +168,8 @@ msgstr "Verfügbarkeit: 2.2.0"
 #: reference_guc.xml:62
 #, no-c-format
 msgid ""
-"Additional information about GDAL_DATA is available at GDAL's <ulink url="
-"\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
+"Additional information about GDAL_DATA is available at GDAL's <ulink "
+"url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
 "ulink>."
 msgstr ""
 "Zusätzliche Informationen über GDAL_DATA ist unter den <ulink url=\"http://"
@@ -194,31 +182,11 @@ msgstr ""
 msgid "Set and reset <varname>postgis.gdal_datapath</varname>"
 msgstr "Den <varname>postgis.gdal_datapath</varname> setzen oder zurücksetzen"
 
-#. Tag: programlisting
-#: reference_guc.xml:73
-#, no-c-format
-msgid ""
-"SET postgis.gdal_datapath TO '/usr/local/share/gdal.hidden';\n"
-"SET postgis.gdal_datapath TO default;"
-msgstr ""
-"SET postgis.gdal_datapath TO '/usr/local/share/gdal.hidden';\n"
-"SET postgis.gdal_datapath TO default;"
-
 #. Tag: para
 #: reference_guc.xml:75
 #, no-c-format
 msgid "Setting on windows for a particular database"
 msgstr "Auf Windows für eine bestimmte Datenbank setzen"
-
-#. Tag: programlisting
-#: reference_guc.xml:76
-#, no-c-format
-msgid ""
-"ALTER DATABASE gisdb\n"
-"SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';"
-msgstr ""
-"ALTER DATABASE gisdb\n"
-"SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';"
 
 #. Tag: para
 #: reference_guc.xml:81
@@ -351,12 +319,12 @@ msgstr ""
 #: reference_guc.xml:137
 #, no-c-format
 msgid ""
-"Additional information about GDAL_SKIP is available at GDAL's <ulink url="
-"\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
+"Additional information about GDAL_SKIP is available at GDAL's <ulink "
+"url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
 "ulink>."
 msgstr ""
-"Weiterführende Informationen über GDAL_SKIP ist auf GDAL's <ulink url="
-"\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
+"Weiterführende Informationen über GDAL_SKIP ist auf GDAL's <ulink "
+"url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
 "ulink> zu finden."
 
 #. Tag: para
@@ -374,14 +342,6 @@ msgstr ""
 "Bestimmt das Backend, das für alle neuen Verbindungen zur Datenbank "
 "verwendet wird"
 
-#. Tag: programlisting
-#: reference_guc.xml:151
-#, no-c-format
-msgid ""
-"ALTER DATABASE mygisdb SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';"
-msgstr ""
-"ALTER DATABASE mygisdb SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';"
-
 #. Tag: para
 #: reference_guc.xml:153
 #, fuzzy, no-c-format
@@ -395,49 +355,17 @@ msgstr ""
 "bitte, dass die Datenbank-, Sitzungs- und Benutzereinstellungen dies "
 "überschreiben."
 
-#. Tag: programlisting
-#: reference_guc.xml:155
-#, no-c-format
-msgid ""
-"ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\n"
-"SELECT pg_reload_conf();"
-msgstr ""
-"ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\n"
-"SELECT pg_reload_conf();"
-
-#. Tag: programlisting
-#: reference_guc.xml:157
-#, no-c-format
-msgid ""
-"SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\n"
-"SET postgis.gdal_enabled_drivers = default;"
-msgstr ""
-"SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\n"
-"SET postgis.gdal_enabled_drivers = default;"
-
 #. Tag: para
 #: reference_guc.xml:159
 #, no-c-format
 msgid "Enable all GDAL Drivers"
 msgstr "Aktiviert alle GDAL-Treiber"
 
-#. Tag: programlisting
-#: reference_guc.xml:160
-#, no-c-format
-msgid "SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';"
-msgstr "SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';"
-
 #. Tag: para
 #: reference_guc.xml:162
 #, no-c-format
 msgid "Disable all GDAL Drivers"
 msgstr "Deaktiviert alle GDAL-Treiber"
-
-#. Tag: programlisting
-#: reference_guc.xml:163
-#, no-c-format
-msgid "SET postgis.gdal_enabled_drivers = 'DISABLE_ALL';"
-msgstr "SET postgis.gdal_enabled_drivers = 'DISABLE_ALL';"
 
 #. Tag: para
 #: reference_guc.xml:168
@@ -523,31 +451,11 @@ msgid ""
 msgstr ""
 "<varname>postgis.enable_outdb_rasters</varname> setzen oder zurücksetzen"
 
-#. Tag: programlisting
-#: reference_guc.xml:217
-#, no-c-format
-msgid ""
-"SET postgis.enable_outdb_rasters TO True;\n"
-"SET postgis.enable_outdb_rasters = default;\n"
-"SET postgis.enable_outdb_rasters = True;\n"
-"SET postgis.enable_outdb_rasters = False;"
-msgstr ""
-"SET postgis.enable_outdb_rasters TO True;\n"
-"SET postgis.enable_outdb_rasters = default;\n"
-"SET postgis.enable_outdb_rasters = True;\n"
-"SET postgis.enable_outdb_rasters = False;"
-
 #. Tag: para
 #: reference_guc.xml:219
 #, no-c-format
 msgid "Set for specific database"
 msgstr ""
-
-#. Tag: programlisting
-#: reference_guc.xml:221
-#, fuzzy, no-c-format
-msgid "ALTER DATABASE gisdb SET postgis.enable_outdb_rasters = true;"
-msgstr "ALTER DATABASE mygisdb SET postgis.backend = sfcgal;"
 
 #. Tag: para
 #: reference_guc.xml:223
@@ -555,16 +463,6 @@ msgstr "ALTER DATABASE mygisdb SET postgis.backend = sfcgal;"
 msgid ""
 "Setting for whole database cluster. You need to reconnect to the database "
 "for changes to take effect."
-msgstr ""
-
-#. Tag: programlisting
-#: reference_guc.xml:224
-#, no-c-format
-msgid ""
-"--writes to postgres.auto.conf\n"
-"ALTER SYSTEM postgis.enable_outdb_rasters = true;\n"
-" --Reloads postgres conf\n"
-"SELECT pg_reload_conf();"
 msgstr ""
 
 #. Tag: refname
@@ -588,10 +486,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "A string configuration to set options used when working with an out-db "
-"raster. <ulink url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions"
-"\">Configuration options</ulink> control things like how much space GDAL "
-"allocates to local data cache, whether to read overviews, and what access "
-"keys to use for remote out-db data sources."
+"raster. <ulink url=\"http://trac.osgeo.org/gdal/wiki/"
+"ConfigOptions\">Configuration options</ulink> control things like how much "
+"space GDAL allocates to local data cache, whether to read overviews, and "
+"what access keys to use for remote out-db data sources."
 msgstr ""
 
 #. Tag: para
@@ -607,14 +505,6 @@ msgid "Set <varname>postgis.gdal_vsi_options</varname> for current session:"
 msgstr ""
 "<varname>postgis.enable_outdb_rasters</varname> setzen oder zurücksetzen"
 
-#. Tag: programlisting
-#: reference_guc.xml:259
-#, no-c-format
-msgid ""
-"SET postgis.gdal_config_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx "
-"AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';"
-msgstr ""
-
 #. Tag: para
 #: reference_guc.xml:261
 #, no-c-format
@@ -624,10 +514,74 @@ msgid ""
 "keyword:"
 msgstr ""
 
-#. Tag: programlisting
-#: reference_guc.xml:262
 #, no-c-format
-msgid ""
-"SET LOCAL postgis.gdal_config_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx "
-"AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';"
-msgstr ""
+#~ msgid "set postgis.backend = sfcgal;"
+#~ msgstr "set postgis.backend = sfcgal;"
+
+#, no-c-format
+#~ msgid "ALTER DATABASE mygisdb SET postgis.backend = sfcgal;"
+#~ msgstr "ALTER DATABASE mygisdb SET postgis.backend = sfcgal;"
+
+#, no-c-format
+#~ msgid ""
+#~ "SET postgis.gdal_datapath TO '/usr/local/share/gdal.hidden';\n"
+#~ "SET postgis.gdal_datapath TO default;"
+#~ msgstr ""
+#~ "SET postgis.gdal_datapath TO '/usr/local/share/gdal.hidden';\n"
+#~ "SET postgis.gdal_datapath TO default;"
+
+#, no-c-format
+#~ msgid ""
+#~ "ALTER DATABASE gisdb\n"
+#~ "SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';"
+#~ msgstr ""
+#~ "ALTER DATABASE gisdb\n"
+#~ "SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';"
+
+#, no-c-format
+#~ msgid ""
+#~ "ALTER DATABASE mygisdb SET postgis.gdal_enabled_drivers TO 'GTiff PNG "
+#~ "JPEG';"
+#~ msgstr ""
+#~ "ALTER DATABASE mygisdb SET postgis.gdal_enabled_drivers TO 'GTiff PNG "
+#~ "JPEG';"
+
+#, no-c-format
+#~ msgid ""
+#~ "ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\n"
+#~ "SELECT pg_reload_conf();"
+#~ msgstr ""
+#~ "ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\n"
+#~ "SELECT pg_reload_conf();"
+
+#, no-c-format
+#~ msgid ""
+#~ "SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\n"
+#~ "SET postgis.gdal_enabled_drivers = default;"
+#~ msgstr ""
+#~ "SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\n"
+#~ "SET postgis.gdal_enabled_drivers = default;"
+
+#, no-c-format
+#~ msgid "SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';"
+#~ msgstr "SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';"
+
+#, no-c-format
+#~ msgid "SET postgis.gdal_enabled_drivers = 'DISABLE_ALL';"
+#~ msgstr "SET postgis.gdal_enabled_drivers = 'DISABLE_ALL';"
+
+#, no-c-format
+#~ msgid ""
+#~ "SET postgis.enable_outdb_rasters TO True;\n"
+#~ "SET postgis.enable_outdb_rasters = default;\n"
+#~ "SET postgis.enable_outdb_rasters = True;\n"
+#~ "SET postgis.enable_outdb_rasters = False;"
+#~ msgstr ""
+#~ "SET postgis.enable_outdb_rasters TO True;\n"
+#~ "SET postgis.enable_outdb_rasters = default;\n"
+#~ "SET postgis.enable_outdb_rasters = True;\n"
+#~ "SET postgis.enable_outdb_rasters = False;"
+
+#, fuzzy, no-c-format
+#~ msgid "ALTER DATABASE gisdb SET postgis.enable_outdb_rasters = true;"
+#~ msgstr "ALTER DATABASE mygisdb SET postgis.backend = sfcgal;"

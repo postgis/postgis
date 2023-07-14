@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2023-07-14 23:23+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -102,18 +102,6 @@ msgstr "&curve_support;"
 msgid "Examples"
 msgstr "예시"
 
-#. Tag: programlisting
-#: reference_exception.xml:42
-#, fuzzy, no-c-format
-msgid ""
-"UPDATE sometable\n"
-" SET geom =  PostGIS_AddBBox(geom)\n"
-" WHERE PostGIS_HasBBox(geom) = false;"
-msgstr ""
-"UPDATE sometable\n"
-" SET the_geom =  PostGIS_AddBBox(the_geom)\n"
-" WHERE PostGIS_HasBBox(the_geom) = false;"
-
 #. Tag: title
 #: reference_exception.xml:47 reference_exception.xml:95
 #: reference_exception.xml:136
@@ -187,36 +175,6 @@ msgstr ""
 "종류의 오류 발생이 관찰됐습니다. 따라서 다음 쿼리를 통해 오류를 직접 수정하"
 "고 경계 상자를 다시 추가하거나, 또는 덤프/리로드 작업을 할 수 있습니다."
 
-#. Tag: programlisting
-#: reference_exception.xml:90
-#, fuzzy, no-c-format
-msgid ""
-"--This example drops bounding boxes where the cached box is not correct\n"
-"                        --The force to ST_AsBinary before applying Box2D "
-"forces a recalculation of the box, and Box2D applied to the table geometry "
-"always\n"
-"                        -- returns the cached bounding box.\n"
-"                        UPDATE sometable\n"
-" SET geom =  PostGIS_DropBBox(geom)\n"
-" WHERE Not (Box2D(ST_AsBinary(geom)) = Box2D(geom));\n"
-"\n"
-"        UPDATE sometable\n"
-" SET geom =  PostGIS_AddBBox(geom)\n"
-" WHERE Not PostGIS_HasBBOX(geom);"
-msgstr ""
-"-- 이 예시는 오류가 발생한 경계 상자 캐시를 삭제합니다.\n"
-"-- Box2D 호출 전에 ST_AsBinary 함수를 적용하면 경계 상자를 강제로 재계산하게 "
-"되고,\n"
-"-- 테이블 도형 열에 Box2D를 적용하면 언제나 캐시화된 경계 상자를 반환합니"
-"다.\n"
-"                        UPDATE sometable\n"
-" SET the_geom =  PostGIS_DropBBox(the_geom)\n"
-" WHERE Not (Box2D(ST_AsBinary(the_geom)) = Box2D(the_geom));\n"
-"\n"
-"        UPDATE sometable\n"
-" SET the_geom =  PostGIS_AddBBox(the_geom)\n"
-" WHERE Not PostGIS_HasBBOX(the_geom);"
-
 #. Tag: para
 #: reference_exception.xml:97
 #, no-c-format
@@ -259,18 +217,54 @@ msgstr ""
 "반환합니다. 캐시 작업을 제어하려면 <xref linkend=\"PostGIS_AddBBox\"/> 및 "
 "<xref linkend=\"PostGIS_DropBBox\"/> 를 이용하십시오."
 
-#. Tag: programlisting
-#: reference_exception.xml:131
-#, fuzzy, no-c-format
-msgid ""
-"SELECT geom\n"
-"FROM sometable WHERE PostGIS_HasBBox(geom) = false;"
-msgstr ""
-"SELECT the_geom\n"
-"FROM sometable WHERE PostGIS_HasBBox(the_geom) = false;"
-
 #. Tag: para
 #: reference_exception.xml:138
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_DropBBox\"/>"
 msgstr ", <xref linkend=\"PostGIS_DropBBox\"/>"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "UPDATE sometable\n"
+#~ " SET geom =  PostGIS_AddBBox(geom)\n"
+#~ " WHERE PostGIS_HasBBox(geom) = false;"
+#~ msgstr ""
+#~ "UPDATE sometable\n"
+#~ " SET the_geom =  PostGIS_AddBBox(the_geom)\n"
+#~ " WHERE PostGIS_HasBBox(the_geom) = false;"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "--This example drops bounding boxes where the cached box is not correct\n"
+#~ "                        --The force to ST_AsBinary before applying Box2D "
+#~ "forces a recalculation of the box, and Box2D applied to the table "
+#~ "geometry always\n"
+#~ "                        -- returns the cached bounding box.\n"
+#~ "                        UPDATE sometable\n"
+#~ " SET geom =  PostGIS_DropBBox(geom)\n"
+#~ " WHERE Not (Box2D(ST_AsBinary(geom)) = Box2D(geom));\n"
+#~ "\n"
+#~ "        UPDATE sometable\n"
+#~ " SET geom =  PostGIS_AddBBox(geom)\n"
+#~ " WHERE Not PostGIS_HasBBOX(geom);"
+#~ msgstr ""
+#~ "-- 이 예시는 오류가 발생한 경계 상자 캐시를 삭제합니다.\n"
+#~ "-- Box2D 호출 전에 ST_AsBinary 함수를 적용하면 경계 상자를 강제로 재계산하"
+#~ "게 되고,\n"
+#~ "-- 테이블 도형 열에 Box2D를 적용하면 언제나 캐시화된 경계 상자를 반환합니"
+#~ "다.\n"
+#~ "                        UPDATE sometable\n"
+#~ " SET the_geom =  PostGIS_DropBBox(the_geom)\n"
+#~ " WHERE Not (Box2D(ST_AsBinary(the_geom)) = Box2D(the_geom));\n"
+#~ "\n"
+#~ "        UPDATE sometable\n"
+#~ " SET the_geom =  PostGIS_AddBBox(the_geom)\n"
+#~ " WHERE Not PostGIS_HasBBOX(the_geom);"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "SELECT geom\n"
+#~ "FROM sometable WHERE PostGIS_HasBBox(geom) = false;"
+#~ msgstr ""
+#~ "SELECT the_geom\n"
+#~ "FROM sometable WHERE PostGIS_HasBBox(the_geom) = false;"

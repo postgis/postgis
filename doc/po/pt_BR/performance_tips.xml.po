@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2023-07-14 23:23+0000\n"
 "PO-Revision-Date: 2016-11-16 19:54+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -41,20 +41,20 @@ msgstr "Descrição do problema"
 #, fuzzy, no-c-format
 msgid ""
 "Current PostgreSQL versions (including 9.6) suffer from a query optimizer "
-"weakness regarding TOAST tables. TOAST tables are a kind of \"extension room"
-"\" used to store large (in the sense of data size) values that do not fit "
-"into normal data pages (like long texts, images or complex geometries with "
-"lots of vertices), see <ulink url=\"http://www.postgresql.org/docs/current/"
-"static/storage-toast.html\">the PostgreSQL Documentation for TOAST</ulink> "
-"for more information)."
+"weakness regarding TOAST tables. TOAST tables are a kind of \"extension "
+"room\" used to store large (in the sense of data size) values that do not "
+"fit into normal data pages (like long texts, images or complex geometries "
+"with lots of vertices), see <ulink url=\"http://www.postgresql.org/docs/"
+"current/static/storage-toast.html\">the PostgreSQL Documentation for TOAST</"
+"ulink> for more information)."
 msgstr ""
 "Versões atuais do PostgreSQL (incluindo a 8.0) sofrem de um problem no "
 "otimizador de queries quando falamos de tabelas TOAST. As tabelas TOAST são "
 "extensões utilizadas para armazenamento de grandes valores (no sentido de "
 "tamanho do dado) que não cabem normalmente nas páginas de dados (grandes "
 "blocos de texto, imagens ou geometrias complexas com muitos vértices, veja "
-"<ulink url=\"http://www.postgresql.org/docs/current/static/storage-toast.html"
-"\">a documentação oficial</ulink> para maiores informações)."
+"<ulink url=\"http://www.postgresql.org/docs/current/static/storage-toast."
+"html\">a documentação oficial</ulink> para maiores informações)."
 
 #. Tag: para
 #: performance_tips.xml:19
@@ -101,9 +101,9 @@ msgstr ""
 msgid ""
 "To see whether your suffer from this issue, use the \"EXPLAIN ANALYZE\" "
 "postgresql command. For more information and the technical details, you can "
-"read the thread on the PostgreSQL performance mailing list: <ulink url="
-"\"http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php"
-"\">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</"
+"read the thread on the PostgreSQL performance mailing list: <ulink "
+"url=\"http://archives.postgresql.org/pgsql-performance/2005-02/msg00030."
+"php\">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</"
 "ulink>"
 msgstr ""
 "Para visualizar se você sofre com este bug, utilize um \"EXPLAIN ANALYZE\" "
@@ -169,18 +169,6 @@ msgstr ""
 "cacheia o retângulo envolvente e realizando as pesquisas em cima desta "
 "coluna. Em nosso exemplo, os comandos são:"
 
-#. Tag: programlisting
-#: performance_tips.xml:63
-#, fuzzy, no-c-format
-msgid ""
-"SELECT "
-"AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\n"
-"UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(geom));"
-msgstr ""
-"SELECT "
-"AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\n"
-"UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(the_geom));"
-
 #. Tag: para
 #: performance_tips.xml:65
 #, no-c-format
@@ -190,18 +178,6 @@ msgid ""
 msgstr ""
 "Altere sua query para usar o operador &amp;&amp; contra o retângulo "
 "envolvente ao invés da colunas geométrica, assim:"
-
-#. Tag: programlisting
-#: performance_tips.xml:68
-#, no-c-format
-msgid ""
-"SELECT geom_column\n"
-"FROM mytable\n"
-"WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
-msgstr ""
-"SELECT geom_column\n"
-"FROM mytable\n"
-"WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
 
 #. Tag: para
 #: performance_tips.xml:70
@@ -261,20 +237,6 @@ msgstr ""
 "geométricos GIST, pois estes índices simplesmente ignoram valores nulos, "
 "retornando um erro como:"
 
-#. Tag: programlisting
-#: performance_tips.xml:95
-#, fuzzy, no-c-format
-msgid ""
-"lwgeom=# CLUSTER my_geom_index ON my_table;\n"
-"ERROR: cannot cluster when index access method does not handle null values\n"
-"HINT: You may be able to work around this by marking column \"geom\" NOT "
-"NULL."
-msgstr ""
-"lwgeom=# CLUSTER my_geom_index ON my_table;\n"
-"ERROR: cannot cluster when index access method does not handle null values\n"
-"HINT: You may be able to work around this by marking column \"the_geom\" NOT "
-"NULL."
-
 #. Tag: para
 #: performance_tips.xml:97
 #, no-c-format
@@ -282,18 +244,8 @@ msgid ""
 "As the HINT message tells you, one can work around this deficiency by adding "
 "a \"not null\" constraint to the table:"
 msgstr ""
-"Como a HINT da mensagem te diz, você pode adicionar uma constraint \"not null"
-"\" na tabela para contornar o problema."
-
-#. Tag: programlisting
-#: performance_tips.xml:100
-#, fuzzy, no-c-format
-msgid ""
-"lwgeom=# ALTER TABLE my_table ALTER COLUMN geom SET not null;\n"
-"ALTER TABLE"
-msgstr ""
-"lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null;\n"
-"ALTER TABLE"
+"Como a HINT da mensagem te diz, você pode adicionar uma constraint \"not "
+"null\" na tabela para contornar o problema."
 
 #. Tag: para
 #: performance_tips.xml:102
@@ -333,16 +285,6 @@ msgstr ""
 "Para evitar este gasto extra, pode ser viável dropar essas dimensões "
 "adicionais para sempre:"
 
-#. Tag: programlisting
-#: performance_tips.xml:118
-#, fuzzy, no-c-format
-msgid ""
-"UPDATE mytable SET geom = ST_Force2D(geom);\n"
-"VACUUM FULL ANALYZE mytable;"
-msgstr ""
-"UPDATE mytable SET the_geom = ST_Force2D(the_geom);\n"
-"VACUUM FULL ANALYZE mytable;"
-
 #. Tag: para
 #: performance_tips.xml:120
 #, no-c-format
@@ -377,6 +319,56 @@ msgstr ""
 "temporário. Adicionalmente, se você tem geometrias de dimensões mistas, "
 "restrigir o UPDATE por \"WHERE dimension(the_geom)&gt;2\" pula as geometrias "
 "que já estão em 2D."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "SELECT "
+#~ "AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\n"
+#~ "UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(geom));"
+#~ msgstr ""
+#~ "SELECT "
+#~ "AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\n"
+#~ "UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(the_geom));"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT geom_column\n"
+#~ "FROM mytable\n"
+#~ "WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
+#~ msgstr ""
+#~ "SELECT geom_column\n"
+#~ "FROM mytable\n"
+#~ "WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "lwgeom=# CLUSTER my_geom_index ON my_table;\n"
+#~ "ERROR: cannot cluster when index access method does not handle null "
+#~ "values\n"
+#~ "HINT: You may be able to work around this by marking column \"geom\" NOT "
+#~ "NULL."
+#~ msgstr ""
+#~ "lwgeom=# CLUSTER my_geom_index ON my_table;\n"
+#~ "ERROR: cannot cluster when index access method does not handle null "
+#~ "values\n"
+#~ "HINT: You may be able to work around this by marking column \"the_geom\" "
+#~ "NOT NULL."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "lwgeom=# ALTER TABLE my_table ALTER COLUMN geom SET not null;\n"
+#~ "ALTER TABLE"
+#~ msgstr ""
+#~ "lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null;\n"
+#~ "ALTER TABLE"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "UPDATE mytable SET geom = ST_Force2D(geom);\n"
+#~ "VACUUM FULL ANALYZE mytable;"
+#~ msgstr ""
+#~ "UPDATE mytable SET the_geom = ST_Force2D(the_geom);\n"
+#~ "VACUUM FULL ANALYZE mytable;"
 
 #~ msgid "Tuning your configuration"
 #~ msgstr "Tunando sua configuração"

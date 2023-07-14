@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-04-10 06:16+0000\n"
+"POT-Creation-Date: 2023-07-14 23:23+0000\n"
 "PO-Revision-Date: 2022-01-13 16:44+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
@@ -43,18 +43,6 @@ msgstr ""
 #: reference_validation.xml:21
 #, no-c-format
 msgid "Tests if a geometry is well-formed in 2D."
-msgstr ""
-
-#. Tag: funcsynopsis
-#: reference_validation.xml:26
-#, no-c-format
-msgid ""
-"<funcprototype> <funcdef>boolean <function>ST_IsValid</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>boolean <function>ST_IsValid</"
-"function></funcdef> <paramdef><type>geometry </type> <parameter>g</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>flags</"
-"parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: title
@@ -139,20 +127,6 @@ msgstr ""
 #, no-c-format
 msgid "Examples"
 msgstr "Esempi"
-
-#. Tag: programlisting
-#: reference_validation.xml:82
-#, no-c-format
-msgid ""
-"SELECT ST_IsValid(ST_GeomFromText('LINESTRING(0 0, 1 1)')) As good_line,\n"
-"        ST_IsValid(ST_GeomFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) As "
-"bad_poly\n"
-"--results\n"
-"NOTICE:  Self-intersection at or near point 0 0\n"
-" good_line | bad_poly\n"
-"-----------+----------\n"
-" t         | f"
-msgstr ""
 
 #. Tag: title
 #: reference_validation.xml:86 reference_validation.xml:154
@@ -241,50 +215,6 @@ msgstr ""
 msgid "Availability: 2.0.0"
 msgstr "Disponibilità: 2.0.0"
 
-#. Tag: programlisting
-#: reference_validation.xml:149
-#, no-c-format
-msgid ""
-"--First 3 Rejects from a successful quintuplet experiment\n"
-"SELECT gid, reason(ST_IsValidDetail(geom)), "
-"ST_AsText(location(ST_IsValidDetail(geom))) as location\n"
-"FROM\n"
-"(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As geom, "
-"gid\n"
-"FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + "
-"z1*1000 As gid\n"
-"        FROM generate_series(-4,6) x1\n"
-"        CROSS JOIN generate_series(2,5) y1\n"
-"        CROSS JOIN generate_series(1,8) z1\n"
-"        WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e\n"
-"        INNER JOIN (SELECT "
-"ST_Translate(ST_ExteriorRing(ST_Buffer(ST_Point(x1*10,y1), z1)),y1*1, z1*2) "
-"As line\n"
-"        FROM generate_series(-3,6) x1\n"
-"        CROSS JOIN generate_series(2,5) y1\n"
-"        CROSS JOIN generate_series(1,10) z1\n"
-"        WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f\n"
-"ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))\n"
-"GROUP BY gid, e.buff) As quintuplet_experiment\n"
-"WHERE ST_IsValid(geom) = false\n"
-"ORDER BY gid\n"
-"LIMIT 3;\n"
-"\n"
-" gid  |      reason       |  location\n"
-"------+-------------------+-------------\n"
-" 5330 | Self-intersection | POINT(32 5)\n"
-" 5340 | Self-intersection | POINT(42 5)\n"
-" 5350 | Self-intersection | POINT(52 5)\n"
-"\n"
-" --simple example\n"
-"SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 "
-"150407,222020 150410)');\n"
-"\n"
-" valid | reason | location\n"
-"-------+--------+----------\n"
-" t     |        |"
-msgstr ""
-
 #. Tag: para
 #: reference_validation.xml:156
 #, no-c-format
@@ -302,18 +232,6 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns text stating if a geometry is valid, or a reason for invalidity."
-msgstr ""
-
-#. Tag: funcsynopsis
-#: reference_validation.xml:171
-#, no-c-format
-msgid ""
-"<funcprototype> <funcdef>text <function>ST_IsValidReason</function></"
-"funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>text "
-"<function>ST_IsValidReason</function></funcdef> <paramdef><type>geometry </"
-"type> <parameter>geomA</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>flags</parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -351,62 +269,6 @@ msgstr ""
 msgid "Availability: 2.0 version taking flags."
 msgstr ""
 
-#. Tag: programlisting
-#: reference_validation.xml:202
-#, no-c-format
-msgid ""
-"-- invalid bow-tie polygon\n"
-"SELECT ST_IsValidReason(\n"
-"    'POLYGON ((100 200, 100 100, 200 200,\n"
-"     200 100, 100 200))'::geometry) as validity_info;\n"
-"validity_info\n"
-"--------------------------\n"
-"Self-intersection[150 150]"
-msgstr ""
-
-#. Tag: programlisting
-#: reference_validation.xml:203
-#, no-c-format
-msgid ""
-"--First 3 Rejects from a successful quintuplet experiment\n"
-"SELECT gid, ST_IsValidReason(geom) as validity_info\n"
-"FROM\n"
-"(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As geom, "
-"gid\n"
-"FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + "
-"z1*1000 As gid\n"
-"        FROM generate_series(-4,6) x1\n"
-"        CROSS JOIN generate_series(2,5) y1\n"
-"        CROSS JOIN generate_series(1,8) z1\n"
-"        WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e\n"
-"        INNER JOIN (SELECT "
-"ST_Translate(ST_ExteriorRing(ST_Buffer(ST_Point(x1*10,y1), z1)),y1*1, z1*2) "
-"As line\n"
-"        FROM generate_series(-3,6) x1\n"
-"        CROSS JOIN generate_series(2,5) y1\n"
-"        CROSS JOIN generate_series(1,10) z1\n"
-"        WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f\n"
-"ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))\n"
-"GROUP BY gid, e.buff) As quintuplet_experiment\n"
-"WHERE ST_IsValid(geom) = false\n"
-"ORDER BY gid\n"
-"LIMIT 3;\n"
-"\n"
-" gid  |      validity_info\n"
-"------+--------------------------\n"
-" 5330 | Self-intersection [32 5]\n"
-" 5340 | Self-intersection [42 5]\n"
-" 5350 | Self-intersection [52 5]\n"
-"\n"
-" --simple example\n"
-"SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 "
-"150410)');\n"
-"\n"
-" st_isvalidreason\n"
-"------------------\n"
-" Valid Geometry"
-msgstr ""
-
 #. Tag: para
 #: reference_validation.xml:210
 #, no-c-format
@@ -423,18 +285,6 @@ msgstr ""
 #: reference_validation.xml:217
 #, no-c-format
 msgid "Attempts to make an invalid geometry valid without losing vertices."
-msgstr ""
-
-#. Tag: funcsynopsis
-#: reference_validation.xml:221
-#, no-c-format
-msgid ""
-"<funcprototype> <funcdef>geometry <function>ST_MakeValid</function></"
-"funcdef> <paramdef><type>geometry</type> <parameter>input</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_MakeValid</function></funcdef> <paramdef><type>geometry</type> "
-"<parameter>input</parameter></paramdef> <paramdef choice=\"opt\"><type>text</"
-"type> <parameter>params</parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -565,23 +415,6 @@ msgstr ""
 msgid "after_geom_structure: MULTIPOLYGON of 1 non-overlapping polygon"
 msgstr ""
 
-#. Tag: programlisting
-#: reference_validation.xml:329
-#, no-c-format
-msgid ""
-"SELECT f.geom AS before_geom, ST_MakeValid(f.geom) AS after_geom, "
-"ST_MakeValid(f.geom, 'method=structure') AS after_geom_structure\n"
-"FROM (SELECT 'MULTIPOLYGON(((186 194,187 194,188 195,189 195,190 195,\n"
-"191 195,192 195,193 194,194 194,194 193,195 192,195 191,\n"
-"195 190,195 189,195 188,194 187,194 186,14 6,13 6,12 5,11 5,\n"
-"10 5,9 5,8 5,7 6,6 6,6 7,5 8,5 9,5 10,5 11,5 12,6 13,6 14,186 194)),\n"
-"((150 90,149 80,146 71,142 62,135 55,128 48,119 44,110 41,100 40,\n"
-"90 41,81 44,72 48,65 55,58 62,54 71,51 80,50 90,51 100,\n"
-"54 109,58 118,65 125,72 132,81 136,90 139,100 140,110 139,\n"
-"119 136,128 132,135 125,142 118,146 109,149 100,150 90)))'::geometry AS "
-"geom) AS f;"
-msgstr ""
-
 #. Tag: para
 #: reference_validation.xml:338
 #, no-c-format
@@ -598,52 +431,6 @@ msgstr ""
 #: reference_validation.xml:350
 #, no-c-format
 msgid "after_geom_structure: MULTIPOLYGON of 1 Non-overlapping polygon"
-msgstr ""
-
-#. Tag: programlisting
-#: reference_validation.xml:353
-#, no-c-format
-msgid ""
-"SELECT c.geom AS before_geom,\n"
-"                    ST_MakeValid(c.geom) AS after_geom,\n"
-"                    ST_MakeValid(c.geom, 'method=structure') AS "
-"after_geom_structure\n"
-"        FROM (SELECT 'MULTIPOLYGON(((91 50,79 22,51 10,23 22,11 50,23 78,51 "
-"90,79 78,91 50)),\n"
-"                  ((91 100,79 72,51 60,23 72,11 100,23 128,51 140,79 128,91 "
-"100)),\n"
-"                  ((91 150,79 122,51 110,23 122,11 150,23 178,51 190,79 "
-"178,91 150)),\n"
-"                  ((141 50,129 22,101 10,73 22,61 50,73 78,101 90,129 78,141 "
-"50)),\n"
-"                  ((141 100,129 72,101 60,73 72,61 100,73 128,101 140,129 "
-"128,141 100)),\n"
-"                  ((141 150,129 122,101 110,73 122,61 150,73 178,101 190,129 "
-"178,141 150)))'::geometry AS geom) AS c;"
-msgstr ""
-
-#. Tag: programlisting
-#: reference_validation.xml:362
-#, no-c-format
-msgid ""
-"SELECT ST_AsText(ST_MakeValid(\n"
-"    'LINESTRING(0 0, 0 0)',\n"
-"    'method=structure keepcollapsed=true'\n"
-"    ));\n"
-"\n"
-" st_astext\n"
-"------------\n"
-" POINT(0 0)\n"
-"\n"
-"\n"
-"SELECT ST_AsText(ST_MakeValid(\n"
-"    'LINESTRING(0 0, 0 0)',\n"
-"    'method=structure keepcollapsed=false'\n"
-"    ));\n"
-"\n"
-"    st_astext\n"
-"------------------\n"
-" LINESTRING EMPTY"
 msgstr ""
 
 #. Tag: para

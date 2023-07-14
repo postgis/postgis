@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-06-14 01:01+0000\n"
+"POT-Creation-Date: 2023-07-14 23:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -1387,31 +1387,10 @@ msgstr ""
 msgid "Using address_standardizer_data_us extension"
 msgstr ""
 
-#. Tag: programlisting
-#: extras_address_standardizer.xml:629 extras_address_standardizer.xml:743
-#, no-c-format
-msgid ""
-"CREATE EXTENSION address_standardizer_data_us; -- only needs to be done once"
-msgstr ""
-
 #. Tag: para
 #: extras_address_standardizer.xml:631
 #, no-c-format
 msgid "Variant 1: Single line address and returning the input tokens"
-msgstr ""
-
-#. Tag: programlisting
-#: extras_address_standardizer.xml:632
-#, no-c-format
-msgid ""
-"<![CDATA[SELECT it->>'pos' AS position, it->>'word' AS word, it->>'stdword' "
-"AS standardized_word,\n"
-"            it->>'token' AS token, it->>'token-code' AS token_code\n"
-"    FROM jsonb(\n"
-"            debug_standardize_address('us_lex',\n"
-"                'us_gaz', 'us_rules', 'One Devonshire Place, PH 301, Boston, "
-"MA 02109')\n"
-"                 ) AS s, jsonb_array_elements(s->'input_tokens') AS it;]]>"
 msgstr ""
 
 #. Tag: screen
@@ -1436,23 +1415,6 @@ msgstr ""
 msgid ""
 "Variant 2: Multi line address and returning first rule input mappings and "
 "score"
-msgstr ""
-
-#. Tag: programlisting
-#: extras_address_standardizer.xml:636
-#, no-c-format
-msgid ""
-"<![CDATA[SELECT (s->'rules'->0->>'score')::numeric AS score, it->>'pos' AS "
-"position,\n"
-"        it->>'input-word' AS word, it->>'input-token' AS input_token, it-"
-">>'mapped-word' AS standardized_word,\n"
-"            it->>'output-token' AS output_token\n"
-"    FROM jsonb(\n"
-"            debug_standardize_address('us_lex',\n"
-"                'us_gaz', 'us_rules', 'One Devonshire Place, PH 301', "
-"'Boston, MA 02109')\n"
-"                 ) AS s, jsonb_array_elements(s->'rules'->0->'rule_tokens') "
-"AS it;]]>"
 msgstr ""
 
 #. Tag: screen
@@ -1531,14 +1493,6 @@ msgstr ""
 msgid "Single Addresss"
 msgstr ""
 
-#. Tag: programlisting
-#: extras_address_standardizer.xml:682
-#, no-c-format
-msgid ""
-"SELECT num, street, city, zip, zipplus\n"
-"        FROM parse_address('1 Devonshire Place, Boston, MA 02109-1234') AS a;"
-msgstr ""
-
 #. Tag: screen
 #: extras_address_standardizer.xml:683
 #, no-c-format
@@ -1552,29 +1506,6 @@ msgstr ""
 #: extras_address_standardizer.xml:685
 #, no-c-format
 msgid "Table of addresses"
-msgstr ""
-
-#. Tag: programlisting
-#: extras_address_standardizer.xml:686
-#, no-c-format
-msgid ""
-"-- basic table\n"
-"CREATE TABLE places(addid serial PRIMARY KEY, address text);\n"
-"\n"
-"INSERT INTO places(address)\n"
-"VALUES ('529 Main Street, Boston MA, 02129'),\n"
-" ('77 Massachusetts Avenue, Cambridge, MA 02139'),\n"
-" ('25 Wizard of Oz, Walaford, KS 99912323'),\n"
-" ('26 Capen Street, Medford, MA'),\n"
-" ('124 Mount Auburn St, Cambridge, Massachusetts 02138'),\n"
-" ('950 Main Street, Worcester, MA 01610');\n"
-"\n"
-" -- parse the addresses\n"
-" -- if you want all fields you can use (a).*\n"
-"SELECT addid, (a).num, (a).street, (a).city, (a).state, (a).zip, (a)."
-"zipplus\n"
-"FROM (SELECT addid, parse_address(address) As a\n"
-" FROM places) AS p;"
 msgstr ""
 
 #. Tag: screen
@@ -1604,24 +1535,6 @@ msgstr ""
 msgid ""
 "Returns an stdaddr form of an input address utilizing lex, gaz, and rule "
 "tables."
-msgstr ""
-
-#. Tag: funcsynopsis
-#: extras_address_standardizer.xml:706
-#, no-c-format
-msgid ""
-"<funcprototype> <funcdef>stdaddr <function>standardize_address</function></"
-"funcdef> <paramdef><type>text </type> <parameter>lextab</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>gaztab</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>rultab</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>address</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>stdaddr "
-"<function>standardize_address</function></funcdef> <paramdef><type>text </"
-"type> <parameter>lextab</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>gaztab</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>rultab</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>micro</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>macro</parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -1656,16 +1569,6 @@ msgid ""
 "Variant 1: Single line address. This doesn't work well with non-US addresses"
 msgstr ""
 
-#. Tag: programlisting
-#: extras_address_standardizer.xml:746
-#, no-c-format
-msgid ""
-"SELECT house_num, name, suftype, city, country, state, unit  FROM "
-"standardize_address('us_lex',\n"
-"                           'us_gaz', 'us_rules', 'One Devonshire Place, PH "
-"301, Boston, MA 02109');"
-msgstr ""
-
 #. Tag: screen
 #: extras_address_standardizer.xml:747
 #, no-c-format
@@ -1686,31 +1589,12 @@ msgid ""
 "installed <varname>postgis_tiger_geocoder</varname>."
 msgstr ""
 
-#. Tag: programlisting
-#: extras_address_standardizer.xml:749
-#, no-c-format
-msgid ""
-"SELECT *  FROM standardize_address('tiger.pagc_lex',\n"
-"         'tiger.pagc_gaz', 'tiger.pagc_rules', 'One Devonshire Place, PH "
-"301, Boston, MA 02109-1234');"
-msgstr ""
-
 #. Tag: para
 #: extras_address_standardizer.xml:751
 #, no-c-format
 msgid ""
 "Make easier to read we'll dump output using hstore extension CREATE "
 "EXTENSION hstore; you need to install"
-msgstr ""
-
-#. Tag: programlisting
-#: extras_address_standardizer.xml:752
-#, no-c-format
-msgid ""
-"SELECT (each(hstore(p))).*\n"
-" FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz',\n"
-"   'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109') As "
-"p;"
 msgstr ""
 
 #. Tag: screen
@@ -1744,12 +1628,3 @@ msgstr ""
 msgid "Variant 2: As a two part Address"
 msgstr ""
 
-#. Tag: programlisting
-#: extras_address_standardizer.xml:756
-#, no-c-format
-msgid ""
-"SELECT (each(hstore(p))).*\n"
-" FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz',\n"
-"   'tiger.pagc_rules', 'One Devonshire Place, PH 301', 'Boston, MA 02109, "
-"US') As p;"
-msgstr ""
