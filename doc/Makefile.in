@@ -251,22 +251,21 @@ ifeq ($(XML2POT),)
 $(XML_INPUTS_POT): requirements_not_met_xml2pot
 else
 $(XML_INPUTS_POT): $(srcdir)/po/templates/%.xml.pot: %.xml
+	@$(XML2POT) $< > $@.tmp;
+	@$(abs_srcdir)/po/strip_untranslatable.sh $@.tmp;
 	@if test -f $@; then \
-	  $(XML2POT) $< > $@.tmp; \
     changed=`diff $@.tmp $@ \
 			| grep -v '^[<>] "POT-Creation-Date:' \
 			| grep -v '^[<>] "Report-Msgid-Bugs-To:' \
 			| wc -l`; \
     if expr $${changed} \> 3 >/dev/null; then \
       echo "$@ updated"; \
-      mv $@.tmp $@; \
     else \
       echo "$@ unchanged"; \
       rm -f $@.tmp; \
     fi; \
-  else \
-	  $(XML2POT) $< > $@; \
   fi;
+	@if test -e $@.tmp; then mv $@.tmp $@; fi
 endif
 
 # Update translation templates
