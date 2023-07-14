@@ -324,6 +324,7 @@ SELECT degrees( ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, 0.2 0
         (as computed by <xref linkend="ST_ShortestLine"/>).
 		</para>
 		<note><para>If you have a 3D Geometry, you may prefer to use <xref linkend="ST_3DClosestPoint" />.</para></note>
+        <para role="enhanced" conformance="3.4.0">Enhanced: 3.4.0 -  Support for geography added</para>
 		<para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
 	  </refsection>
 
@@ -1917,6 +1918,7 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 		The length of the line is the same as <xref linkend="ST_Distance"/> returns for g1 and g2.
 		</para>
 
+        <para role="enhanced" conformance="3.4.0">Enhanced: 3.4.0 - support for geography</para>
 		<para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
 	  </refsection>
 

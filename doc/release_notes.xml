@@ -26,8 +26,9 @@
                 <para>Allow singleton geometry to be inserted into Geometry(Multi*) columns (Paul Ramsey)</para>
                 <para><ulink url="https://github.com/postgis/postgis/pull/721">721</ulink>, New window-based ST_ClusterWithinWin and ST_ClusterIntersectingWin (Paul Ramsey)</para>
                 <para><ulink url="https://trac.osgeo.org/postgis/ticket/5397">5397</ulink>, [address_standardizer] debug_standardize_address function (Regina Obe)</para>
-                <para>ST_LargestEmptyCircle, exposes extra semantics on circle finding. Geos 3.9+ required(Martin Davis)</para>
-                <para>ST_Project signature for geometry, and two-point signature (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5373">5373</ulink>ST_LargestEmptyCircle, exposes extra semantics on circle finding. Geos 3.9+ required(Martin Davis)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5267">5267</ulink>, ST_Project signature for geometry, and two-point signature (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5267">5267</ulink>, ST_LineExtend for extending linestrings (Paul Ramsey)</para>
             </simplesect>
 
             <simplesect>
@@ -47,6 +48,7 @@
                 <para>ST_Project signature for geometry, and two-point signature (Paul Ramsey)</para>
                 <para><ulink url="https://trac.osgeo.org/postgis/ticket/4913">4913</ulink>, ST_AsSVG support for curve types CircularString, CompoundCurve, MultiCurve,
                         and MultiSurface (Regina Obe)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5266">5266</ulink>, ST_ClosestPoint, ST_ShortestLine support for geography type (MobilityDB, Paul Ramsey)</para>
             </simplesect>
 
             <simplesect>

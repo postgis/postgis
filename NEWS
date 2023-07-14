@@ -20,8 +20,10 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
   - Allow singleton geometry to be inserted into Geometry(Multi*) columns (Paul Ramsey)
   - GH721, New window-based ST_ClusterWithinWin and ST_ClusterIntersectingWin (Paul Ramsey)
   - #5397, [address_standardizer] debug_standardize_address function (Regina Obe)
-  - ST_LargestEmptyCircle, exposes extra semantics on circle finding (Martin Davis)
-  - ST_Project signature for geometry, and two-point signature (Paul Ramsey)
+  - #5373, ST_LargestEmptyCircle, exposes extra semantics on circle finding
+    Requires GEOS 3.9+ (Martin Davis)
+  - #5267, ST_Project signature for geometry, and two-point signature (Paul Ramsey)
+  - #5267, ST_LineExtend for extending linestrings (Paul Ramsey)
 
 * Enhancements *
   - #5194, do not update system catalogs from postgis_extensions_upgrade (Sandro Santilli)
@@ -39,6 +41,8 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
   - ST_Project signature for geometry, and two-point signature (Paul Ramsey)
   - #4913, ST_AsSVG support for curve types CircularString, CompoundCurve, MultiCurve,
            and MultiSurface (Regina Obe)
+  - #5266, ST_ClosestPoint, ST_ShortestLine support for geography type
+           (MobilityDB, Paul Ramsey)
 
 * Breaking Changes *
   - #5229, Drop support for Proj < 6.1 and PG 11 (Regina Obe)
