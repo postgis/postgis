@@ -1,16 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<sect1 id="Coverage">
-  <sect1info>
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Coverage">
+  <title>Coverages</title><info>
     <abstract>
       <para>These functions operate on sets of polygonal geometry that form "implicit coverages".
       To form a valid coverage polygons must not overlap, and the vertices of adjacent edges must match exactly.
       Coverages are fast to process, and can be operated on with window functions, which retain the coverage topology inside the window partition while altering the edges.</para>
     </abstract>
-  </sect1info>
+  </info>
 
-  <title>Coverages</title>
 
-  <refentry id="ST_CoverageInvalidEdges">
+
+  <refentry xml:id="ST_CoverageInvalidEdges">
     <refnamediv>
       <refname>ST_CoverageInvalidEdges</refname>
 
@@ -60,7 +60,7 @@
       </para>
 
       <para>The polygons being checked for coverage validity must also be valid geometries.
-      This can be checked with <xref linkend="ST_IsValid" />.
+      This can be checked with <xref linkend="ST_IsValid"/>.
       </para>
 
       <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
@@ -73,7 +73,7 @@
         <informalfigure>
           <mediaobject>
               <imageobject>
-              <imagedata fileref="images/st_coverageinvalidedges01.png" />
+              <imagedata fileref="images/st_coverageinvalidedges01.png"/>
               </imageobject>
               <caption><para>Invalid edges caused by overlap and non-matching vertices</para></caption>
           </mediaobject>
@@ -107,16 +107,16 @@ SELECT true = ALL (
     <refsection>
       <title>See Also</title>
       <para>
-        <xref linkend="ST_IsValid" />,
-        <xref linkend="ST_CoverageUnion" />,
-        <xref linkend="ST_CoverageSimplify" />
+        <xref linkend="ST_IsValid"/>,
+        <xref linkend="ST_CoverageUnion"/>,
+        <xref linkend="ST_CoverageSimplify"/>
       </para>
     </refsection>
 
   </refentry>
 
 
-  <refentry id="ST_CoverageSimplify">
+  <refentry xml:id="ST_CoverageSimplify">
     <refnamediv>
       <refname>ST_CoverageSimplify</refname>
 
@@ -145,7 +145,7 @@ SELECT true = ALL (
       This means the simplified output polygons are consisent along shared edges, and still form a valid coverage.
       </para>
 
-      <para>The simplification uses a variant of the <ulink url="https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm">Visvalingam–Whyatt algorithm</ulink>.
+      <para>The simplification uses a variant of the <link xlink:href="https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm">Visvalingam–Whyatt algorithm</link>.
       The <parameter>tolerance</parameter> parameter has units of distance,
       and is roughly equal to the square root of triangular areas to be simplified.
       </para>
@@ -153,7 +153,7 @@ SELECT true = ALL (
       <para>To simplify only the "internal" edges of the coverage (those that are shared by two polygons) set the <parameter>simplifyBoundary</parameter> parameter to false.</para>
 
       <note><para>If the input is not a valid coverage there may be unexpected artifacts in the output (such as boundary intersections, or separated boundaries which appeared to be shared).
-      Use <xref linkend="ST_CoverageInvalidEdges" /> to determine if a coverage is valid.
+      Use <xref linkend="ST_CoverageInvalidEdges"/> to determine if a coverage is valid.
       </para></note>
 
       <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
@@ -170,7 +170,7 @@ SELECT true = ALL (
         <informalfigure>
           <mediaobject>
               <imageobject>
-              <imagedata fileref="images/st_coveragesimplify01.png" />
+              <imagedata fileref="images/st_coveragesimplify01.png"/>
               </imageobject>
               <caption><para>Input coverage</para></caption>
           </mediaobject>
@@ -180,7 +180,7 @@ SELECT true = ALL (
         <informalfigure>
           <mediaobject>
               <imageobject>
-              <imagedata fileref="images/st_coveragesimplify02.png" />
+              <imagedata fileref="images/st_coveragesimplify02.png"/>
               </imageobject>
               <caption><para>Simplified coverage</para></caption>
           </mediaobject>
@@ -212,13 +212,13 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
     <refsection>
       <title>See Also</title>
       <para>
-        <xref linkend="ST_CoverageInvalidEdges" />
+        <xref linkend="ST_CoverageInvalidEdges"/>
       </para>
     </refsection>
 
   </refentry>
 
-  <refentry id="ST_CoverageUnion">
+  <refentry xml:id="ST_CoverageUnion">
     <refnamediv>
       <refname>ST_CoverageUnion</refname>
 
@@ -240,12 +240,12 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
 
       <para>An aggregate function which unions a set of polygons forming a polygonal coverage.
       The result is a polygonal geometry covering the same area as the coverage.
-      This function produces the same result as <xref linkend="ST_Union" />,
+      This function produces the same result as <xref linkend="ST_Union"/>,
       but uses the coverage structure to compute the union much faster.
       </para>
 
       <note><para>If the input is not a valid coverage there may be unexpected artifacts in the output (such as unmerged or overlapping polygons).
-            Use <xref linkend="ST_CoverageInvalidEdges" /> to determine if a coverage is valid.
+            Use <xref linkend="ST_CoverageInvalidEdges"/> to determine if a coverage is valid.
       </para></note>
 
       <para role="availability" conformance="3.4.0">Availability: 3.4.0 - requires GEOS &gt;= 3.8.0</para>
@@ -261,7 +261,7 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
         <informalfigure>
           <mediaobject>
               <imageobject>
-              <imagedata fileref="images/st_coverageunion01.png" />
+              <imagedata fileref="images/st_coverageunion01.png"/>
               </imageobject>
               <caption><para>Input coverage</para></caption>
           </mediaobject>
@@ -271,7 +271,7 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
         <informalfigure>
           <mediaobject>
               <imageobject>
-              <imagedata fileref="images/st_coverageunion02.png" />
+              <imagedata fileref="images/st_coverageunion02.png"/>
               </imageobject>
               <caption><para>Union result</para></caption>
           </mediaobject>
@@ -300,10 +300,10 @@ MULTIPOLYGON (((10 150, 80 190, 110 150, 140 80, 120 10, 10 10, 10 150), (50 60,
     <refsection>
       <title>See Also</title>
       <para>
-        <xref linkend="ST_CoverageInvalidEdges" />,
-        <xref linkend="ST_Union" />
+        <xref linkend="ST_CoverageInvalidEdges"/>,
+        <xref linkend="ST_Union"/>
       </para>
     </refsection>
 
   </refentry>
-</sect1>
+</section>

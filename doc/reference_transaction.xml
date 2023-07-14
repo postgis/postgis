@@ -1,25 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?>
-  <sect1 id="Long_Transactions_Support">
-    <sect1info>
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Long_Transactions_Support">
+    <title>Long Transaction Support</title><info>
     <abstract>
 
 	  <para>These functions implement a row locking mechanism to support long transactions.
 		They are provided primarily for implementors of the
-		<ulink url="http://www.opengeospatial.org/standards/wfs">Web Feature Service</ulink> specification.</para>
+		<link xlink:href="http://www.opengeospatial.org/standards/wfs">Web Feature Service</link> specification.</para>
 
     </abstract>
-    </sect1info>
+    </info>
 
-	  <title>Long Transaction Support</title>
+
 
 	  <note>
 			<para>For the locking mechanism to operate correctly the <emphasis role="bold">serializable</emphasis>
-			<ulink url="http://www.postgresql.org/docs/current/static/transaction-iso.html">
-			transaction isolation level</ulink> must be used.</para>
+			<link xlink:href="http://www.postgresql.org/docs/current/static/transaction-iso.html">
+			transaction isolation level</link> must be used.</para>
 	  </note>
 
 
-	<refentry id="AddAuth">
+	<refentry xml:id="AddAuth">
 	  <refnamediv>
 		<refname>AddAuth</refname>
 
@@ -66,11 +66,11 @@
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="LockRow" /></para>
+		<para><xref linkend="LockRow"/></para>
 	  </refsection>
 	</refentry>
 
-	  <refentry id="CheckAuth">
+	  <refentry xml:id="CheckAuth">
 		  <refnamediv>
 			<refname>CheckAuth</refname>
 
@@ -125,11 +125,11 @@
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="EnableLongTransactions" /></para>
+			<para><xref linkend="EnableLongTransactions"/></para>
 		  </refsection>
 		</refentry>
 
-	  <refentry id="DisableLongTransactions">
+	  <refentry xml:id="DisableLongTransactions">
 		<refnamediv>
 		  <refname>DisableLongTransactions</refname>
 
@@ -172,11 +172,11 @@ Long transactions support disabled
 		<refsection>
 		  <title>See Also</title>
 
-		  <para><xref linkend="EnableLongTransactions" /></para>
+		  <para><xref linkend="EnableLongTransactions"/></para>
 		</refsection>
 	  </refentry>
 
-	  <refentry id="EnableLongTransactions">
+	  <refentry xml:id="EnableLongTransactions">
 		<refnamediv>
 		  <refname>EnableLongTransactions</refname>
 
@@ -220,11 +220,11 @@ Long transactions support enabled
 		<refsection>
 		  <title>See Also</title>
 
-		  <para><xref linkend="DisableLongTransactions" /></para>
+		  <para><xref linkend="DisableLongTransactions"/></para>
 		</refsection>
 	  </refentry>
 
-	<refentry id="LockRow">
+	<refentry xml:id="LockRow">
 	  <refnamediv>
 		<refname>LockRow</refname>
 
@@ -295,11 +295,11 @@ LockRow
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="UnlockRows" /></para>
+		<para><xref linkend="UnlockRows"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="UnlockRows">
+	<refentry xml:id="UnlockRows">
 	  <refnamediv>
 		<refname>UnlockRows</refname>
 
@@ -343,7 +343,7 @@ LockRow
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="LockRow" /></para>
+		<para><xref linkend="LockRow"/></para>
 	  </refsection>
 	</refentry>
-  </sect1>
+  </section>

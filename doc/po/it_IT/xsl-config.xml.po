@@ -104,13 +104,13 @@ msgstr "Questo metodo richiede il backend SFCGAL."
 #: xsl-config.xml:133
 #, no-c-format
 msgid ""
-"This method implements the <ulink url=\"http://www.opengeospatial.org/"
+"This method implements the <link xlink:href=\"http://www.opengeospatial.org/"
 "standards/sfs\">OGC Simple Features Implementation Specification for SQL 1.1."
-"</ulink>"
+"</link>"
 msgstr ""
-"Questo metodo implementa le <ulink url=\"http://www.opengeospatial.org/"
+"Questo metodo implementa le <link xlink:href=\"http://www.opengeospatial.org/"
 "standards/sfs\">OGC Simple Features Implementation Specification for SQL 1.1."
-"</ulink>"
+"</link>"
 
 #. Tag: para
 #: xsl-config.xml:144

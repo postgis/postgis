@@ -2,7 +2,11 @@
 <!DOCTYPE xsl:stylesheet [ <!ENTITY nbsp "&#160;"> ]>
 
 <xsl:stylesheet version="1.0"
-xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:db="http://docbook.org/ns/docbook"
+	exclude-result-prefixes="db"
+>
+
 <!-- ********************************************************************
      ********************************************************************
 	 Copyright 2011, Regina Obe
@@ -146,7 +150,7 @@ code {font-size: 8pt}
 					<sup>G</sup>
 			</span>
 			<div id="content_functions">
-				<xsl:apply-templates select="/book/chapter[@id='reference']" />
+				<xsl:apply-templates select="/db:book/db:chapter[@xml:id='reference']" />
 			</div>
 		</body>
 	</html>

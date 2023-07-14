@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-29 10:16+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-09-05 06:08+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -18,31 +18,31 @@ msgstr ""
 "X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
-#: installation.xml:3
+#: installation.xml:4
 #, no-c-format
 msgid "PostGIS Installation"
 msgstr "PostGIS 安装"
 
 #. Tag: para
-#: installation.xml:5
+#: installation.xml:6
 #, no-c-format
 msgid "This chapter details the steps required to install PostGIS."
 msgstr "本章介绍安装 PostGIS 所需的步骤。"
 
 #. Tag: title
-#: installation.xml:10
+#: installation.xml:11
 #, no-c-format
 msgid "Short Version"
 msgstr "简短版本"
 
 #. Tag: para
-#: installation.xml:11
+#: installation.xml:12
 #, no-c-format
 msgid "To compile assuming you have all the dependencies in your search path:"
 msgstr "如果所有依赖项都在路径中，请按如下方式编译："
 
 #. Tag: para
-#: installation.xml:13
+#: installation.xml:14
 #, no-c-format
 msgid ""
 "Once PostGIS is installed, it needs to be enabled (<xref "
@@ -53,13 +53,13 @@ msgstr ""
 ">）或升级它（<xref linkend=\"upgrading\"/>）。"
 
 #. Tag: title
-#: installation.xml:23
+#: installation.xml:24
 #, no-c-format
 msgid "Compiling and Install from Source"
 msgstr "从源代码编译和安装"
 
 #. Tag: para
-#: installation.xml:26
+#: installation.xml:27
 #, no-c-format
 msgid ""
 "Many OS systems now include pre-built packages for PostgreSQL/PostGIS. In "
@@ -70,50 +70,53 @@ msgstr ""
 "想要最前沿的版本或者您是软件包维护者时才需要编译。"
 
 #. Tag: para
-#: installation.xml:31
+#: installation.xml:32
 #, no-c-format
 msgid ""
 "This section includes general compilation instructions, if you are compiling "
 "for Windows etc or another OS, you may find additional more detailed help at "
-"<ulink url=\"https://trac.osgeo.org/postgis/wiki/UsersWikiInstall\">PostGIS "
-"User contributed compile guides</ulink> and <ulink url=\"http://trac.osgeo."
-"org/postgis/wiki/DevWikiMain\">PostGIS Dev Wiki</ulink>."
+"<link xlink:href=\"https://trac.osgeo.org/postgis/wiki/"
+"UsersWikiInstall\">PostGIS User contributed compile guides</link> and <link "
+"xlink:href=\"http://trac.osgeo.org/postgis/wiki/DevWikiMain\">PostGIS Dev "
+"Wiki</link>."
 msgstr ""
 "本节提供一般编译过程。 如果您正在针对Windows或其他操作系统进行编译，则可以在"
-"<ulink url=\"https://trac.osgeo.org/postgis/wiki/UsersWikiInstall\">PostGIS "
-"用户编译指南</ulink>或<ulink url=\"http://trac.osgeo.org/postgis/wiki/"
-"DevWikiMain\">PostGIS开发Wiki</ulink>中找到更详细的帮助。"
-
-#. Tag: para
-#: installation.xml:33
-#, no-c-format
-msgid ""
-"Pre-Built Packages for various OS are listed in <ulink url=\"https://trac."
-"osgeo.org/postgis/wiki/UsersWikiPackages\">PostGIS Pre-built Packages</ulink>"
-msgstr ""
-"可以在 PostGIS 预构建包中找到许多操作系统的<ulink url=\"https://trac.osgeo."
-"org/postgis/wiki/UsersWikiPackages\">PostGIS 预构建包</ulink>列表"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/wiki/"
+"UsersWikiInstall\">PostGIS 用户编译指南</link>或<link xlink:href=\"http://"
+"trac.osgeo.org/postgis/wiki/DevWikiMain\">PostGIS开发Wiki</link>中找到更详细"
+"的帮助。"
 
 #. Tag: para
 #: installation.xml:34
 #, no-c-format
 msgid ""
+"Pre-Built Packages for various OS are listed in <link xlink:href=\"https://"
+"trac.osgeo.org/postgis/wiki/UsersWikiPackages\">PostGIS Pre-built Packages</"
+"link>"
+msgstr ""
+"可以在 PostGIS 预构建包中找到许多操作系统的<link xlink:href=\"https://trac."
+"osgeo.org/postgis/wiki/UsersWikiPackages\">PostGIS 预构建包</link>列表"
+
+#. Tag: para
+#: installation.xml:35
+#, no-c-format
+msgid ""
 "If you are a windows user, you can get stable builds via Stackbuilder or "
-"<ulink url=\"https://postgis.net/windows_downloads\">PostGIS Windows "
-"download site</ulink> We also have <ulink url=\"https://postgis.net/"
-"windows_downloads\">very bleeding-edge windows experimental builds</ulink> "
+"<link xlink:href=\"https://postgis.net/windows_downloads\">PostGIS Windows "
+"download site</link> We also have <link xlink:href=\"https://postgis.net/"
+"windows_downloads\">very bleeding-edge windows experimental builds</link> "
 "that are built usually once or twice a week or whenever anything exciting "
 "happens. You can use these to experiment with the in progress releases of "
 "PostGIS"
 msgstr ""
-"如果您是 Windows 用户，您可以通过 Stackbuilder 或 <ulink url=\"https://"
-"postgis.net/windows_downloads\">PostGIS Windows下载站点</ulink>获得稳定的版"
-"本。我们还有非常前沿的<ulink url=\"https://postgis.net/"
-"windows_downloads\">Windows实验性版本</ulink>，通常每周构建一次或两次，或者每"
+"如果您是 Windows 用户，您可以通过 Stackbuilder 或 <link xlink:href=\"https://"
+"postgis.net/windows_downloads\">PostGIS Windows下载站点</link>获得稳定的版"
+"本。我们还有非常前沿的<link xlink:href=\"https://postgis.net/"
+"windows_downloads\">Windows实验性版本</link>，通常每周构建一次或两次，或者每"
 "当发生任何令人兴奋的事情时构建。 您可以使用这些来试验正在进行的 PostGIS 版本"
 
 #. Tag: para
-#: installation.xml:39
+#: installation.xml:40
 #, no-c-format
 msgid ""
 "The PostGIS module is an extension to the PostgreSQL backend server. As "
@@ -128,18 +131,18 @@ msgstr ""
 "emphasis>支持旧版本的PostgreSQL。"
 
 #. Tag: para
-#: installation.xml:47
+#: installation.xml:48
 #, no-c-format
 msgid ""
 "Refer to the PostgreSQL installation guides if you haven't already installed "
-"PostgreSQL. <ulink url=\"https://www.postgresql.org\"> https://www."
-"postgresql.org </ulink> ."
+"PostgreSQL. <link xlink:href=\"https://www.postgresql.org\"> https://www."
+"postgresql.org </link> ."
 msgstr ""
-"如果您没有安装 PostgreSQL，请参阅PostgreSQL安装指南。它位于 <ulink "
-"url=\"https://www.postgresql.org\"> https://www.postgresql.org </ulink>。"
+"如果您没有安装 PostgreSQL，请参阅PostgreSQL安装指南。它位于 <link xlink:"
+"href=\"https://www.postgresql.org\"> https://www.postgresql.org </link>。"
 
 #. Tag: para
-#: installation.xml:57
+#: installation.xml:58
 #, no-c-format
 msgid ""
 "For GEOS functionality, when you install PostgresSQL you may need to "
@@ -149,7 +152,7 @@ msgstr ""
 "+库："
 
 #. Tag: para
-#: installation.xml:64
+#: installation.xml:65
 #, no-c-format
 msgid ""
 "This is a workaround for bogus C++ exceptions interaction with older "
@@ -161,7 +164,7 @@ msgstr ""
 "外关闭或类似的事情），请尝试此技巧。当然，这需要从头开始重新编译 PostgreSQL。"
 
 #. Tag: para
-#: installation.xml:72
+#: installation.xml:73
 #, no-c-format
 msgid ""
 "The following steps outline the configuration and compilation of the PostGIS "
@@ -171,23 +174,23 @@ msgstr ""
 "或Mac。"
 
 #. Tag: title
-#: installation.xml:79
+#: installation.xml:80
 #, no-c-format
 msgid "Getting the Source"
 msgstr "获取源代码"
 
 #. Tag: para
-#: installation.xml:81
+#: installation.xml:82
 #, no-c-format
 msgid ""
-"Retrieve the PostGIS source archive from the downloads website <ulink "
-"url=\"&postgis_download_url;\"> &postgis_download_url; </ulink>"
+"Retrieve the PostGIS source archive from the downloads website <link xlink:"
+"href=\"&postgis_download_url;\"> &postgis_download_url; </link>"
 msgstr ""
-"从下载站点 <ulink url=\"&postgis_download_url;\"> &postgis_download_url; </"
-"ulink> 获取源代码的存档"
+"从下载站点 <link xlink:href=\"&postgis_download_url;\"> "
+"&postgis_download_url; </link> 获取源代码的存档"
 
 #. Tag: para
-#: installation.xml:90
+#: installation.xml:91
 #, no-c-format
 msgid ""
 "This will create a directory called <varname>postgis-&last_release_version;</"
@@ -197,19 +200,20 @@ msgstr ""
 "varname>。"
 
 #. Tag: para
-#: installation.xml:96
+#: installation.xml:97
 #, no-c-format
 msgid ""
-"Alternatively, checkout the source from the <ulink url=\"https://git-scm.com/"
-"\"> git </ulink> repository <ulink url=\"https://git.osgeo.org/gitea/postgis/"
-"postgis/\"> https://git.osgeo.org/gitea/postgis/postgis/ </ulink> ."
+"Alternatively, checkout the source from the <link xlink:href=\"https://git-"
+"scm.com/\"> git </link> repository <link xlink:href=\"https://git.osgeo.org/"
+"gitea/postgis/postgis/\"> https://git.osgeo.org/gitea/postgis/postgis/ </"
+"link> ."
 msgstr ""
-"或者从<ulink url=\"https://git-scm.com/\"> git </ulink> 存储库 <ulink "
-"url=\"https://git.osgeo.org/gitea/postgis/postgis/\"> https://git.osgeo.org/"
-"gitea/postgis/postgis/ </ulink> 中查看它。"
+"或者从<link xlink:href=\"https://git-scm.com/\"> git </link> 存储库 <link "
+"xlink:href=\"https://git.osgeo.org/gitea/postgis/postgis/\"> https://git."
+"osgeo.org/gitea/postgis/postgis/ </link> 中查看它。"
 
 #. Tag: para
-#: installation.xml:110
+#: installation.xml:111
 #, no-c-format
 msgid ""
 "Change into the newly created <varname>postgis</varname> directory to "
@@ -217,52 +221,52 @@ msgid ""
 msgstr "转到新创建的目录并继续安装。<varname>postgis</varname>。"
 
 #. Tag: title
-#: installation.xml:119
+#: installation.xml:120
 #, no-c-format
 msgid "Install Requirements"
 msgstr "安装要求"
 
 #. Tag: para
-#: installation.xml:121
+#: installation.xml:122
 #, no-c-format
 msgid "PostGIS has the following requirements for building and usage:"
 msgstr "要构建和使用 PostGIS，您需要："
 
 #. Tag: emphasis
-#: installation.xml:126
+#: installation.xml:127
 #, no-c-format
 msgid "Required"
 msgstr "不可缺少"
 
 #. Tag: para
-#: installation.xml:131
+#: installation.xml:132
 #, no-c-format
 msgid ""
 "PostgreSQL &min_postgres_version; - &max_postgres_version;. A complete "
 "installation of PostgreSQL (including server headers) is required. "
-"PostgreSQL is available from <ulink url=\"https://www.postgresql.org\"> "
-"https://www.postgresql.org </ulink> ."
+"PostgreSQL is available from <link xlink:href=\"https://www.postgresql."
+"org\"> https://www.postgresql.org </link> ."
 msgstr ""
 "PostgreSQL12 - 16。需要完整安装 PostgreSQL（包括服务器标头）。PostgreSQL可从"
-"<ulink url=\"https://www.postgresql.org\">https://www.postgresql.org </"
-"ulink> 获取。"
+"<link xlink:href=\"https://www.postgresql.org\">https://www.postgresql.org </"
+"link> 获取。"
 
 #. Tag: para
-#: installation.xml:140
+#: installation.xml:141
 #, no-c-format
 msgid ""
 "For a full PostgreSQL / PostGIS support matrix and PostGIS/GEOS support "
-"matrix refer to <ulink url=\"https://trac.osgeo.org/postgis/wiki/"
+"matrix refer to <link xlink:href=\"https://trac.osgeo.org/postgis/wiki/"
 "UsersWikiPostgreSQLPostGIS\">https://trac.osgeo.org/postgis/wiki/"
-"UsersWikiPostgreSQLPostGIS</ulink>"
+"UsersWikiPostgreSQLPostGIS</link>"
 msgstr ""
-"请参阅 <ulink url=\"https://trac.osgeo.org/postgis/wiki/"
+"请参阅 <link xlink:href=\"https://trac.osgeo.org/postgis/wiki/"
 "UsersWikiPostgreSQLPostGIS\">https://trac.osgeo.org/postgis/wiki/"
-"UsersWikiPostgreSQLPostGIS</ulink> 中完整的 PosgreSQL/PostGIS 和 PostGIS/"
-"GEOS 支持表"
+"UsersWikiPostgreSQLPostGIS</link> 中完整的 PosgreSQL/PostGIS 和 PostGIS/GEOS "
+"支持表"
 
 #. Tag: para
-#: installation.xml:146
+#: installation.xml:147
 #, no-c-format
 msgid ""
 "GNU C compiler (<filename>gcc</filename>). Some other ANSI C compilers can "
@@ -273,7 +277,7 @@ msgstr ""
 "PostGIS，但使用<filename>gcc</filename>编译时我们发现问题要少得多。"
 
 #. Tag: para
-#: installation.xml:154
+#: installation.xml:155
 #, no-c-format
 msgid ""
 "GNU Make (<filename>gmake</filename> or <filename>make</filename>). For many "
@@ -288,90 +292,90 @@ msgstr ""
 "能无法正确处理 PostGIS <filename>Makefile</filename>。"
 
 #. Tag: para
-#: installation.xml:164
+#: installation.xml:165
 #, no-c-format
 msgid ""
 "Proj reprojection library. Proj 6.1 or above is required. The Proj library "
 "is used to provide coordinate reprojection support within PostGIS. Proj is "
-"available for download from <ulink url=\"https://proj.org/\"> https://proj."
-"org/ </ulink> ."
+"available for download from <link xlink:href=\"https://proj.org/\"> https://"
+"proj.org/ </link> ."
 msgstr ""
 "项目重投影库。需要项目 6.1 或更高版本。Proj 库用于在 PostGIS 中提供坐标重投影"
-"支持。Proj 可以从<ulink url=\"https://proj.org/\"> https://proj.org/ </"
-"ulink> 下载。"
+"支持。Proj 可以从<link xlink:href=\"https://proj.org/\"> https://proj.org/ </"
+"link> 下载。"
 
 #. Tag: para
-#: installation.xml:176
+#: installation.xml:177
 #, no-c-format
 msgid ""
 "GEOS geometry library, version 3.6 or greater, but GEOS 3.12+ is required to "
 "take full advantage of all the new functions and features. GEOS is available "
-"for download from <ulink url=\"https://libgeos.org/\"> https://libgeos.org </"
-"ulink>."
+"for download from <link xlink:href=\"https://libgeos.org/\"> https://libgeos."
+"org </link>."
 msgstr ""
 "几何库 GEOS 3.6 或更高版本是必需的，但需要 GEOS 3.12 或更高版本才能充分利用所"
-"有功能和特性。 您可以从 <ulink url=\"https://libgeos.org/\"> https://libgeos."
-"org </ulink>下载 GEOS。"
+"有功能和特性。 您可以从 <link xlink:href=\"https://libgeos.org/\"> https://"
+"libgeos.org </link>下载 GEOS。"
 
 #. Tag: para
-#: installation.xml:184
+#: installation.xml:185
 #, no-c-format
 msgid ""
 "LibXML2, version 2.5.x or higher. LibXML2 is currently used in some imports "
 "functions (ST_GeomFromGML and ST_GeomFromKML). LibXML2 is available for "
-"download from <ulink url=\"https://gitlab.gnome.org/GNOME/libxml2/-/"
-"releases\">https://gitlab.gnome.org/GNOME/libxml2/-/releases</ulink>."
+"download from <link xlink:href=\"https://gitlab.gnome.org/GNOME/libxml2/-/"
+"releases\">https://gitlab.gnome.org/GNOME/libxml2/-/releases</link>."
 msgstr ""
 "LibXML2、2.5.x 或更高版本。 目前，导入函数（ST_GeomFromGML和ST_GeomFromKML）"
-"使用 LibXML2。 您可以从 <ulink url=\"https://gitlab.gnome.org/GNOME/"
+"使用 LibXML2。 您可以从 <link xlink:href=\"https://gitlab.gnome.org/GNOME/"
 "libxml2/-/releases\">https://gitlab.gnome.org/GNOME/libxml2/-/releases</"
-"ulink> 下载 LibXML2。"
+"link> 下载 LibXML2。"
 
 #. Tag: para
-#: installation.xml:191
+#: installation.xml:192
 #, no-c-format
 msgid ""
 "JSON-C, version 0.9 or higher. JSON-C is currently used to import GeoJSON "
 "via the function ST_GeomFromGeoJson. JSON-C is available for download from "
-"<ulink url=\"https://github.com/json-c/json-c/releases\">https://github.com/"
-"json-c/json-c/releases/</ulink>."
+"<link xlink:href=\"https://github.com/json-c/json-c/releases\">https://"
+"github.com/json-c/json-c/releases/</link>."
 msgstr ""
 "JSON-C 0.9或更高版本。JSON-C 目前用于按 ST_GeomFromGeoJson 导入 GeoJSON。 "
-"JSON-C 可从 <ulink url=\"https://github.com/json-c/json-c/releases\">https://"
-"github.com/json-c/json-c/releases/</ulink> 下载。"
+"JSON-C 可从 <link xlink:href=\"https://github.com/json-c/json-c/"
+"releases\">https://github.com/json-c/json-c/releases/</link> 下载。"
 
 #. Tag: para
-#: installation.xml:199
+#: installation.xml:200
 #, no-c-format
 msgid ""
 "GDAL, version 2+ is required 3+ is preferred. This is required for raster "
-"support. <ulink url=\"https://gdal.org/download.html\">https://gdal.org/"
-"download.html</ulink>."
+"support. <link xlink:href=\"https://gdal.org/download.html\">https://gdal."
+"org/download.html</link>."
 msgstr ""
-"GDAL，版本 2+ 是必需的，版本 3+ 是首选。 这是光栅支持所必需的。<ulink "
-"url=\"https://gdal.org/download.html\">https://gdal.org/download.html</"
-"ulink>。"
+"GDAL，版本 2+ 是必需的，版本 3+ 是首选。 这是光栅支持所必需的。<link xlink:"
+"href=\"https://gdal.org/download.html\">https://gdal.org/download.html</"
+"link>。"
 
 #. Tag: para
-#: installation.xml:207
+#: installation.xml:208
 #, no-c-format
 msgid ""
-"If compiling with PostgreSQL+JIT, LLVM version &gt;=6 is required <ulink "
-"url=\"https://trac.osgeo.org/postgis/ticket/4125\">https://trac.osgeo.org/"
-"postgis/ticket/4125</ulink>."
+"If compiling with PostgreSQL+JIT, LLVM version &gt;=6 is required <link "
+"xlink:href=\"https://trac.osgeo.org/postgis/ticket/4125\">https://trac.osgeo."
+"org/postgis/ticket/4125</link>."
 msgstr ""
-"要使用PostgreSQL+JIT进行编译，需要LLVM版本6或更高版本。请参阅 <ulink "
-"url=\"https://trac.osgeo.org/postgis/ticket/4125\">https://trac.osgeo.org/"
-"postgis/ticket/4125</ulink>。"
+"要使用PostgreSQL+JIT进行编译，需要LLVM版本6或更高版本。请参阅 <link xlink:"
+"href=\"https://trac.osgeo.org/postgis/ticket/4125\">https://trac.osgeo.org/"
+"postgis/ticket/4125</link>。"
 
 #. Tag: emphasis
-#: installation.xml:216
+#: installation.xml:217
 #, no-c-format
 msgid "Optional"
 msgstr "可选择的"
 
 #. Tag: para
-#: installation.xml:221
+#: installation.xml:222
 #, no-c-format
 msgid ""
 "GDAL (pseudo optional) only if you don't want raster you can leave it out. "
@@ -386,10 +390,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "GTK (requires GTK+2.0, 2.8+) to compile the shp2pgsql-gui shape file loader. "
-"<ulink url=\"http://www.gtk.org/\"> http://www.gtk.org/ </ulink> ."
+"<link xlink:href=\"http://www.gtk.org/\"> http://www.gtk.org/ </link> ."
 msgstr ""
 "GTK（需要 GTK+2.0， 2.8+）。用于编译shp2pgsql-gui，一个shapefile loader。它位"
-"于 <ulink url=\"http://www.gtk.org/\"> http://www.gtk.org/ </ulink>。"
+"于 <link xlink:href=\"http://www.gtk.org/\"> http://www.gtk.org/ </link>。"
 
 #. Tag: para
 #: installation.xml:239
@@ -403,10 +407,10 @@ msgid ""
 "or ST_Area, for instance). A PostgreSQL configuration variable <code>postgis."
 "backend</code> allow end user to control which backend he want to use if "
 "SFCGAL is installed (GEOS by default). Nota: SFCGAL 1.2 require at least "
-"CGAL 4.3 and Boost 1.54 (cf: <ulink url=\"https://oslandia.gitlab.io/SFCGAL/"
-"dev.html\">https://oslandia.gitlab.io/SFCGAL/dev.html</ulink>) <ulink "
-"url=\"https://gitlab.com/Oslandia/SFCGAL/\">https://gitlab.com/Oslandia/"
-"SFCGAL/</ulink>."
+"CGAL 4.3 and Boost 1.54 (cf: <link xlink:href=\"https://oslandia.gitlab.io/"
+"SFCGAL/dev.html\">https://oslandia.gitlab.io/SFCGAL/dev.html</link>) <link "
+"xlink:href=\"https://gitlab.com/Oslandia/SFCGAL/\">https://gitlab.com/"
+"Oslandia/SFCGAL/</link>."
 msgstr ""
 "建议使用 SFCGAL 版本 1.3.1（或更高版本）、1.4.1 或更高版本，以便能够使用所有"
 "功能。SFCGAL 可用于为 PostGIS 提供额外的 2D 和 3D 高级分析功能，参见<xref "
@@ -414,23 +418,23 @@ msgstr ""
 "ST_Intersection 或 ST_Area）使用 SFCGAL 而不是 GEOS。如果安装了 SFCGAL（默认"
 "为 GEOS），PostgreSQL 配置变量 <code>postgis.backend</code>允许最终用户控制他"
 "想要使用哪个后端。注：SFCGAL 1.2 至少需要 CGAL 4.3 和 Boost 1.54（参见："
-"<ulink url=\"https://oslandia.gitlab.io/SFCGAL/dev.html\">https://oslandia."
-"gitlab.io/SFCGAL/dev.html</ulink>）<ulink url=\"https://gitlab.com/Oslandia/"
-"SFCGAL/\">https://gitlab.com/Oslandia/SFCGAL/</ulink>。"
+"<link xlink:href=\"https://oslandia.gitlab.io/SFCGAL/dev.html\">https://"
+"oslandia.gitlab.io/SFCGAL/dev.html</link>）<link xlink:href=\"https://gitlab."
+"com/Oslandia/SFCGAL/\">https://gitlab.com/Oslandia/SFCGAL/</link>。"
 
 #. Tag: para
 #: installation.xml:247
 #, no-c-format
 msgid ""
 "In order to build the <xref linkend=\"Address_Standardizer\"/> you will also "
-"need PCRE <ulink url=\"http://www.pcre.org\">http://www.pcre.org</ulink> "
-"(which generally is already installed on nix systems). <xref "
+"need PCRE <link xlink:href=\"http://www.pcre.org\">http://www.pcre.org</"
+"link> (which generally is already installed on nix systems). <xref "
 "linkend=\"Address_Standardizer\"/> will automatically be built if it detects "
 "a PCRE library, or you pass in a valid <varname>--with-pcre-dir=/path/to/"
 "pcre</varname> during configure."
 msgstr ""
-"要构建<xref linkend=\"Address_Standardizer\"/>，您还需要PCRE<ulink "
-"url=\"http://www.pcre.org\">http://www.pcre.org</ulink>（通常安装在 nix 系统"
+"要构建<xref linkend=\"Address_Standardizer\"/>，您还需要PCRE<link xlink:"
+"href=\"http://www.pcre.org\">http://www.pcre.org</link>（通常安装在 nix 系统"
 "上）。检测到 PCRE 库后，将自动构建<xref linkend=\"Address_Standardizer\"/"
 "> 。 或者，指定它在配置期间有效。<varname>--with-pcre-dir=/path/to/pcre</"
 "varname>。"
@@ -441,64 +445,66 @@ msgstr ""
 msgid ""
 "To enable ST_AsMVT protobuf-c library 1.1.0 or higher (for usage) and the "
 "protoc-c compiler (for building) are required. Also, pkg-config is required "
-"to verify the correct minimum version of protobuf-c. See <ulink "
-"url=\"https://github.com/protobuf-c/protobuf-c\">protobuf-c</ulink>. By "
+"to verify the correct minimum version of protobuf-c. See <link xlink:"
+"href=\"https://github.com/protobuf-c/protobuf-c\">protobuf-c</link>. By "
 "default, Postgis will use Wagyu to validate MVT polygons faster which "
 "requires a c++11 compiler. It will use CXXFLAGS and the same compiler as the "
 "PostgreSQL installation. To disable this and use GEOS instead use the "
 "<varname>--without-wagyu</varname> during the configure step."
 msgstr ""
 "要启用ST_AsMVT，您需要ProtoBuf-C库（运行时）和ProtoC-C编译器（构建时）。要检"
-"查 protobuf-c 的正确最低版本，需要 pkg-config。 参见<ulink url=\"https://"
-"github.com/protobuf-c/protobuf-c\">protobuf-c</ulink>。默认情况下，PostGIS 使"
-"用 Wagyu 快速评估 MVT 多边形，但需要 C++11 编译器。 使用 CXXFLAGS 使用您用于 "
-"PostgreSQL 安装的相同编译器。如果要禁用此功能并改用 GEOS，请在配置期间指定"
-"它。 <varname>--without-wagyu</varname>。"
+"查 protobuf-c 的正确最低版本，需要 pkg-config。 参见<link xlink:"
+"href=\"https://github.com/protobuf-c/protobuf-c\">protobuf-c</link>。默认情况"
+"下，PostGIS 使用 Wagyu 快速评估 MVT 多边形，但需要 C++11 编译器。 使用 "
+"CXXFLAGS 使用您用于 PostgreSQL 安装的相同编译器。如果要禁用此功能并改用 "
+"GEOS，请在配置期间指定它。 <varname>--without-wagyu</varname>。"
 
 #. Tag: para
 #: installation.xml:263
 #, no-c-format
 msgid ""
 "CUnit (<filename>CUnit</filename>). This is needed for regression testing. "
-"<ulink url=\"http://cunit.sourceforge.net/\">http://cunit.sourceforge.net/</"
-"ulink>"
+"<link xlink:href=\"http://cunit.sourceforge.net/\">http://cunit.sourceforge."
+"net/</link>"
 msgstr ""
-"CUnit（<filename>CUnit</filename>）。 这是回归测试所需要的。 <ulink "
-"url=\"http://cunit.sourceforge.net/\">http://cunit.sourceforge.net/</ulink>"
+"CUnit（<filename>CUnit</filename>）。 这是回归测试所需要的。 <link xlink:"
+"href=\"http://cunit.sourceforge.net/\">http://cunit.sourceforge.net/</link>"
 
 #. Tag: para
 #: installation.xml:269
 #, no-c-format
 msgid ""
 "DocBook (<filename>xsltproc</filename>) is required for building the "
-"documentation. Docbook is available from <ulink url=\"http://www.docbook.org/"
-"\"> http://www.docbook.org/ </ulink> ."
+"documentation. Docbook is available from <link xlink:href=\"http://www."
+"docbook.org/\"> http://www.docbook.org/ </link> ."
 msgstr ""
-"DocBook (<filename>xsltproc</filename>)构建文档需要。Docbook可从<ulink "
-"url=\"http://www.docbook.org/\"> http://www.docbook.org/ </ulink> 获取。"
+"DocBook (<filename>xsltproc</filename>)构建文档需要。Docbook可从<link xlink:"
+"href=\"http://www.docbook.org/\"> http://www.docbook.org/ </link> 获取。"
 
 #. Tag: para
 #: installation.xml:280
 #, no-c-format
 msgid ""
 "DBLatex (<filename>dblatex</filename>) is required for building the "
-"documentation in PDF format. DBLatex is available from <ulink url=\"http://"
-"dblatex.sourceforge.net/\"> http://dblatex.sourceforge.net/ </ulink> ."
+"documentation in PDF format. DBLatex is available from <link xlink:"
+"href=\"http://dblatex.sourceforge.net/\"> http://dblatex.sourceforge.net/ </"
+"link> ."
 msgstr ""
-"DBLatex (<filename>dblatex</filename>)需要以 PDF 格式构建文档。它位于 <ulink "
-"url=\"http://dblatex.sourceforge.net/\"> http://dblatex.sourceforge.net/ </"
-"ulink>。"
+"DBLatex (<filename>dblatex</filename>)需要以 PDF 格式构建文档。它位于 <link "
+"xlink:href=\"http://dblatex.sourceforge.net/\"> http://dblatex.sourceforge."
+"net/ </link>。"
 
 #. Tag: para
 #: installation.xml:291
 #, no-c-format
 msgid ""
 "ImageMagick (<filename>convert</filename>) is required to generate the "
-"images used in the documentation. ImageMagick is available from <ulink "
-"url=\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </ulink> ."
+"images used in the documentation. ImageMagick is available from <link xlink:"
+"href=\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </link> ."
 msgstr ""
-"ImageMagick (<filename>convert</filename>)生成文档中使用的图像。它位于<ulink "
-"url=\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </ulink>。"
+"ImageMagick (<filename>convert</filename>)生成文档中使用的图像。它位于<link "
+"xlink:href=\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </"
+"link>。"
 
 #. Tag: title
 #: installation.xml:305
@@ -542,6 +548,12 @@ msgstr ""
 "以下列表显示了常用参数：有关完整列表，请使用 <command>--help</command> 或 "
 "<command>--help=short</command>参数。"
 
+#. Tag: term
+#: installation.xml:333
+#, no-c-format
+msgid "--with-library-minor-version"
+msgstr ""
+
 #. Tag: para
 #: installation.xml:335
 #, no-c-format
@@ -560,6 +572,12 @@ msgstr ""
 "取文件的旧行为（包括次要版本）：例如 <code>postgis-3.0</code> 将此开关添加到"
 "您的配置语句中。"
 
+#. Tag: term
+#: installation.xml:348
+#, no-c-format
+msgid "--prefix=PREFIX"
+msgstr ""
+
 #. Tag: para
 #: installation.xml:350
 #, no-c-format
@@ -576,13 +594,19 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This parameter is currently broken, as the package will only install into "
-"the PostgreSQL installation directory. Visit <ulink url=\"http://trac.osgeo."
-"org/postgis/ticket/635\"> http://trac.osgeo.org/postgis/ticket/635 </ulink> "
-"to track this bug."
+"the PostgreSQL installation directory. Visit <link xlink:href=\"http://trac."
+"osgeo.org/postgis/ticket/635\"> http://trac.osgeo.org/postgis/ticket/635 </"
+"link> to track this bug."
 msgstr ""
-"此参数当前已损坏，只会安装在PostgreSQL的位置。有关此错误的跟踪，请参阅 "
-"<ulink url=\"http://trac.osgeo.org/postgis/ticket/635\"> http://trac.osgeo."
-"org/postgis/ticket/635 </ulink>。"
+"此参数当前已损坏，只会安装在PostgreSQL的位置。有关此错误的跟踪，请参阅 <link "
+"xlink:href=\"http://trac.osgeo.org/postgis/ticket/635\"> http://trac.osgeo."
+"org/postgis/ticket/635 </link>。"
+
+#. Tag: term
+#: installation.xml:370
+#, no-c-format
+msgid "--with-pgconfig=FILE"
+msgstr ""
 
 #. Tag: para
 #: installation.xml:372
@@ -598,6 +622,12 @@ msgstr ""
 "够定位PostgreSQL安装目录。使用此参数 （<command>--with-pgconfig=/path/to/"
 "pg_config</command>）可以手动指定 PostGIS 的特定 PostgreSQL 的安装目录。"
 
+#. Tag: term
+#: installation.xml:384
+#, no-c-format
+msgid "--with-gdalconfig=FILE"
+msgstr ""
+
 #. Tag: para
 #: installation.xml:386
 #, no-c-format
@@ -611,6 +641,12 @@ msgstr ""
 "GDAL是必需的库，提供栅格支持 <command>gdal-config</command>所需的功能，以使软"
 "件安装能够找到 GDAL装目录。使用此参数 （<command>--with-gdalconfig=/path/to/"
 "gdal-config</command>）手动指定 PostGIS 将针对其构建的特定 GDAL的安装目录。"
+
+#. Tag: term
+#: installation.xml:398
+#, no-c-format
+msgid "--with-geosconfig=FILE"
+msgstr ""
 
 #. Tag: para
 #: installation.xml:400
@@ -627,6 +663,12 @@ msgstr ""
 "geosconfig=/path/to/geos-config</command>） 手动指定要用于 PostGIS 构建的特"
 "定 GEOS的安装目录。"
 
+#. Tag: term
+#: installation.xml:412
+#, no-c-format
+msgid "--with-xml2config=FILE"
+msgstr ""
+
 #. Tag: para
 #: installation.xml:414
 #, no-c-format
@@ -635,15 +677,16 @@ msgid ""
 "normally is found if you have libxml installed, but if not or you want a "
 "specific version used, you'll need to point PostGIS at a specific "
 "<filename>xml2-config</filename> confi file to enable software installations "
-"to locate the LibXML installation directory. Use this parameter (<command>>--"
-"with-xml2config=/path/to/xml2-config</command>) to manually specify a "
-"particular LibXML installation that PostGIS will build against."
+"to locate the LibXML installation directory. Use this parameter "
+"(<command>&gt;--with-xml2config=/path/to/xml2-config</command>) to manually "
+"specify a particular LibXML installation that PostGIS will build against."
 msgstr ""
-"LibXML 是执行 GeomFromKML/GML 流程所需的库。 如果您安装了 libxml，通常会找到"
-"它，但如果没有安装或者您想要使用特定版本，则需要将 PostGIS 指向特定的 "
-"<filename>xml2-config</filename> 配置文件，以使软件安装能够找到 LibXML 安装目"
-"录。 使用此参数 (<command>>--with-xml2config=/path/to/xml2-config</command>) "
-"手动指定 PostGIS 将针对其构建的特定 LibXML 安装。"
+
+#. Tag: term
+#: installation.xml:430
+#, no-c-format
+msgid "--with-projdir=DIR"
+msgstr ""
 
 #. Tag: para
 #: installation.xml:432
@@ -656,41 +699,65 @@ msgstr ""
 "Proj是PostGIS必不可少的投影库。使用此参数 （<command>--with-projdir=/path/to/"
 "projdir</command>）手动指定要用于 PostGIS 构建的特定 Proj 的安装目录。"
 
+#. Tag: term
+#: installation.xml:442
+#, no-c-format
+msgid "--with-libiconv=DIR"
+msgstr ""
+
 #. Tag: para
 #: installation.xml:444
 #, no-c-format
 msgid "Directory where iconv is installed."
 msgstr "iconv的安装目录。"
 
+#. Tag: term
+#: installation.xml:451
+#, no-c-format
+msgid "--with-jsondir=DIR"
+msgstr ""
+
 #. Tag: para
 #: installation.xml:453
 #, no-c-format
 msgid ""
-"<ulink url=\"http://oss.metaparadigm.com/json-c/\">JSON-C</ulink> is an MIT-"
-"licensed JSON library required by PostGIS ST_GeomFromJSON support. Use this "
-"parameter (<command>--with-jsondir=/path/to/jsondir</command>) to manually "
-"specify a particular JSON-C installation directory that PostGIS will build "
-"against."
+"<link xlink:href=\"http://oss.metaparadigm.com/json-c/\">JSON-C</link> is an "
+"MIT-licensed JSON library required by PostGIS ST_GeomFromJSON support. Use "
+"this parameter (<command>--with-jsondir=/path/to/jsondir</command>) to "
+"manually specify a particular JSON-C installation directory that PostGIS "
+"will build against."
 msgstr ""
-"<ulink url=\"http://oss.metaparadigm.com/json-c/\">JSON-C</ulink> 是 MIT 许可"
-"的 JSON 库，是 PostGIS ST_GeomFromJSON 所必需的。使用此参数 （<command>--"
-"with-jsondir=/path/to/jsondir</command>） 手动指定要用于 PostGIS 构建的特定 "
-"JSON-C的安装目录。"
+"<link xlink:href=\"http://oss.metaparadigm.com/json-c/\">JSON-C</link> 是 "
+"MIT 许可的 JSON 库，是 PostGIS ST_GeomFromJSON 所必需的。使用此参数 "
+"（<command>--with-jsondir=/path/to/jsondir</command>） 手动指定要用于 "
+"PostGIS 构建的特定 JSON-C的安装目录。"
+
+#. Tag: term
+#: installation.xml:463
+#, no-c-format
+msgid "--with-pcredir=DIR"
+msgstr ""
 
 #. Tag: para
 #: installation.xml:465
 #, no-c-format
 msgid ""
-"<ulink url=\"http://www.pcre.org/\">PCRE</ulink> is an BSD-licensed Perl "
-"Compatible Regular Expression library required by address_standardizer "
+"<link xlink:href=\"http://www.pcre.org/\">PCRE</link> is an BSD-licensed "
+"Perl Compatible Regular Expression library required by address_standardizer "
 "extension. Use this parameter (<command>--with-pcredir=/path/to/pcredir</"
 "command>) to manually specify a particular PCRE installation directory that "
 "PostGIS will build against."
 msgstr ""
-"<ulink url=\"http://www.pcre.org/\">PCRE</ulink> 是 address_standardizer 扩展"
-"所需的 BSD 许可的 Perl 兼容正则表达式库。使用此参数 (<command>--with-"
-"pcredir=/path/to/pcredir</command>) 手动指定 PostGIS 将构建的特定 PCRE 的安装"
-"目录。"
+"<link xlink:href=\"http://www.pcre.org/\">PCRE</link> 是 "
+"address_standardizer 扩展所需的 BSD 许可的 Perl 兼容正则表达式库。使用此参数 "
+"(<command>--with-pcredir=/path/to/pcredir</command>) 手动指定 PostGIS 将构建"
+"的特定 PCRE 的安装目录。"
+
+#. Tag: term
+#: installation.xml:475
+#, no-c-format
+msgid "--with-gui"
+msgstr ""
 
 #. Tag: para
 #: installation.xml:477
@@ -702,11 +769,23 @@ msgstr ""
 "编译数据导入GUI（需要 GTK+2.0）。此参数为 shp2pgsql 创建一个名为 shp2pgsql-"
 "gui 的图形用户界面。"
 
+#. Tag: term
+#: installation.xml:484
+#, no-c-format
+msgid "--without-raster"
+msgstr ""
+
 #. Tag: para
 #: installation.xml:486
 #, no-c-format
 msgid "Compile without raster support."
 msgstr "在没有栅格功能的情况下进行编译。"
+
+#. Tag: term
+#: installation.xml:492
+#, no-c-format
+msgid "--without-topology"
+msgstr ""
 
 #. Tag: para
 #: installation.xml:494
@@ -718,24 +797,36 @@ msgstr ""
 "在没有拓扑支持的情况下进行编译。 拓扑所需的所有逻辑都是在postgis-"
 "&last_release_version; 库中创建的，因此没有关联的库。"
 
+#. Tag: term
+#: installation.xml:501
+#, no-c-format
+msgid "--with-gettext=no"
+msgstr ""
+
 #. Tag: para
 #: installation.xml:503
 #, no-c-format
 msgid ""
 "By default PostGIS will try to detect gettext support and compile with it, "
 "however if you run into incompatibility issues that cause breakage of "
-"loader, you can disable it entirely with this command. Refer to ticket "
-"<ulink url=\"http://trac.osgeo.org/postgis/ticket/748\">http://trac.osgeo."
-"org/postgis/ticket/748</ulink> for an example issue solved by configuring "
+"loader, you can disable it entirely with this command. Refer to ticket <link "
+"xlink:href=\"http://trac.osgeo.org/postgis/ticket/748\">http://trac.osgeo."
+"org/postgis/ticket/748</link> for an example issue solved by configuring "
 "with this. NOTE: that you aren't missing much by turning this off. This is "
 "used for international help/label support for the GUI loader which is not "
 "yet documented and still experimental."
 msgstr ""
 "默认情况下，会检测 gettext 并使用它进行编译，但如果在导致加载程序损坏的不兼容"
 "问题下运行，则此命令可以禁用它。使用此功能的配置可以解决的问题示例，请参见"
-"<ulink url=\"http://trac.osgeo.org/postgis/ticket/748\">http://trac.osgeo."
-"org/postgis/ticket/748</ulink>。 注意：关闭此功能不会消除许多功能。 它用于 "
-"GUI 加载器中的内部帮助/标签功能，这些功能尚未记录，处于实验阶段。"
+"<link xlink:href=\"http://trac.osgeo.org/postgis/ticket/748\">http://trac."
+"osgeo.org/postgis/ticket/748</link>。 注意：关闭此功能不会消除许多功能。 它用"
+"于 GUI 加载器中的内部帮助/标签功能，这些功能尚未记录，处于实验阶段。"
+
+#. Tag: term
+#: installation.xml:512
+#, no-c-format
+msgid "--with-sfcgal=PATH"
+msgstr ""
 
 #. Tag: para
 #: installation.xml:514
@@ -747,6 +838,12 @@ msgid ""
 msgstr ""
 "默认情况下，如果没有此开关，PostGIS 将不会安装 sfcgal 支持。 <varname>PATH</"
 "varname> 是一个可选参数，允许指定 sfcgal-config 的备用 PATH。"
+
+#. Tag: term
+#: installation.xml:521
+#, no-c-format
+msgid "--without-phony-revision"
+msgstr ""
 
 #. Tag: para
 #: installation.xml:523
@@ -760,12 +857,12 @@ msgstr "禁用 postgis_revision.h 更新以匹配 Git 存储库中的当前 HEAD
 #: installation.xml:530
 #, no-c-format
 msgid ""
-"If you obtained PostGIS from the <ulink url=\"https://trac.osgeo.org/postgis/"
-"wiki/CodeRepository\"> code repository </ulink> , the first step is really "
-"to run the script"
+"If you obtained PostGIS from the <link xlink:href=\"https://trac.osgeo.org/"
+"postgis/wiki/CodeRepository\"> code repository </link> , the first step is "
+"really to run the script"
 msgstr ""
-"如果要从<ulink url=\"https://trac.osgeo.org/postgis/wiki/CodeRepository\">代"
-"码存储库</ulink> 获取PostGIS，请先运行以下脚本"
+"如果要从<link xlink:href=\"https://trac.osgeo.org/postgis/wiki/"
+"CodeRepository\">代码存储库</link> 获取PostGIS，请先运行以下脚本"
 
 #. Tag: para
 #: installation.xml:542
@@ -855,12 +952,12 @@ msgstr ""
 #: installation.xml:590
 #, no-c-format
 msgid ""
-"You can download some pre-built ones available in html and pdf from <ulink "
-"url=\"http://www.postgis.us/study_guides\">PostGIS / PostgreSQL Study "
-"Guides</ulink>"
+"You can download some pre-built ones available in html and pdf from <link "
+"xlink:href=\"http://www.postgis.us/study_guides\">PostGIS / PostgreSQL Study "
+"Guides</link>"
 msgstr ""
-"预构建的HTML和PDF版本可以在<ulink url=\"http://www.postgis.us/"
-"study_guides\">PostGIS / PostgreSQL学习指南</ulink>中找到"
+"预构建的HTML和PDF版本可以在<link xlink:href=\"http://www.postgis.us/"
+"study_guides\">PostGIS / PostgreSQL学习指南</link>中找到"
 
 #. Tag: command
 #: installation.xml:593
@@ -920,13 +1017,13 @@ msgid ""
 "<code>make check</code> uses psql to run tests and as such can use psql "
 "environment variables. Common ones useful to override are <varname>PGUSER</"
 "varname>,<varname>PGPORT</varname>, and <varname>PGHOST</varname>. Refer to "
-"<ulink url=\"https://www.postgresql.org/docs/current/libpq-envars."
-"html\">psql environment variables</ulink>"
+"<link xlink:href=\"https://www.postgresql.org/docs/current/libpq-envars."
+"html\">psql environment variables</link>"
 msgstr ""
 "<code>make check</code> 使用 psql 来运行测试，并使用 psql 环境变量。常用的可"
 "用于覆盖的有 <varname>PGUSER</varname> 、<varname>PGPORT</varname> 和 "
-"<varname>PGHOST</varname>。参考<ulink url=\"https://www.postgresql.org/docs/"
-"current/libpq-envars.html\">psql环境变量</ulink>"
+"<varname>PGHOST</varname>。参考<link xlink:href=\"https://www.postgresql.org/"
+"docs/current/libpq-envars.html\">psql环境变量</link>"
 
 #. Tag: para
 #: installation.xml:614
@@ -983,11 +1080,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Once you do that, you should see <varname>postgis</varname>, "
-"<varname>postgis_topology</varname> as available extensions in PgAdmin -> "
+"<varname>postgis_topology</varname> as available extensions in PgAdmin -&gt; "
 "extensions."
 msgstr ""
-"完成此操作后，您应该在 PgAdmin -> 扩展中看到 <varname>postgis</varname>、"
-"<varname>postgis_topology</varname> 作为可用扩展。"
 
 #. Tag: para
 #: installation.xml:636
@@ -1308,8 +1403,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The address standardizer relies on PCRE which is usually already installed "
-"on many Nix systems, but you can download the latest at: <ulink url=\"http://"
-"www.pcre.org\">http://www.pcre.org</ulink>. If during <xref "
+"on many Nix systems, but you can download the latest at: <link xlink:"
+"href=\"http://www.pcre.org\">http://www.pcre.org</link>. If during <xref "
 "linkend=\"installation_configuration\"/>, PCRE is found, then the address "
 "standardizer extension will automatically be built. If you have a custom "
 "pcre install you want to use instead, pass to configure <code>--with-"
@@ -1317,11 +1412,11 @@ msgid ""
 "root folder for your pcre include and lib directories."
 msgstr ""
 "地址标准化器依赖于 PCRE，它通常已安装在许多 Nix 系统上，但您可以在以下位置下"
-"载最新版本：<ulink url=\"http://www.pcre.org\">http://www.pcre.org</ulink>。"
-"如果在<xref linkend=\"installation_configuration\"/>期间找到 PCRE，则将自动构"
-"建地址标准化器扩展。如果您想使用自定义 pcre 安装，请传递到 <code>--with-"
-"pcredir=/path/to/pcre</code>，其中<filename>/path/to/pcre</filename>是 pcre "
-"include 和 lib 目录的根文件夹。"
+"载最新版本：<link xlink:href=\"http://www.pcre.org\">http://www.pcre.org</"
+"link>。如果在<xref linkend=\"installation_configuration\"/>期间找到 PCRE，则"
+"将自动构建地址标准化器扩展。如果您想使用自定义 pcre 安装，请传递到 <code>--"
+"with-pcredir=/path/to/pcre</code>，其中<filename>/path/to/pcre</filename>是 "
+"pcre include 和 lib 目录的根文件夹。"
 
 #. Tag: para
 #: installation.xml:793
@@ -1366,17 +1461,17 @@ msgid ""
 "Extras like Tiger geocoder may not be packaged in your PostGIS distribution. "
 "If you are missing the tiger geocoder extension or want a newer version than "
 "what your install comes with, then use the <filename>share/extension/"
-"postgis_tiger_geocoder.*</filename> files from the packages in <ulink "
-"url=\"http://postgis.net/windows_downloads/\">Windows Unreleased Versions</"
-"ulink> section for your version of PostgreSQL. Although these packages are "
+"postgis_tiger_geocoder.*</filename> files from the packages in <link xlink:"
+"href=\"http://postgis.net/windows_downloads/\">Windows Unreleased Versions</"
+"link> section for your version of PostgreSQL. Although these packages are "
 "for windows, the postgis_tiger_geocoder extension files will work on any OS "
 "since the extension is an SQL/plpgsql only extension."
 msgstr ""
 "像Tiger geocoder这样的附加组件可能未包含在您的PostGIS分发中。如果您缺少tiger "
 "geocoder扩展或想要比您的安装提供的更新版本，那么可以使用适用于您PostgreSQL版"
 "本的<filename>share/extension/postgis_tiger_geocoder.*</filename>文件，这些文"
-"件可以从<ulink url=\"http://postgis.net/windows_downloads/\">Windows未发布版"
-"本</ulink>部分的软件包中获取。尽管这些软件包是为Windows准备的，但"
+"件可以从<link xlink:href=\"http://postgis.net/windows_downloads/\">Windows未"
+"发布版本</link>部分的软件包中获取。尽管这些软件包是为Windows准备的，但"
 "postgis_tiger_geocoder扩展文件将在任何操作系统上工作，因为该扩展只是一个SQL/"
 "plpgsql扩展。"
 
@@ -1739,10 +1834,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "For Windows, 7-zip which is a free compress/uncompress tool you can download "
-"from <ulink url=\"http://www.7-zip.org/\">http://www.7-zip.org/</ulink>"
+"from <link xlink:href=\"http://www.7-zip.org/\">http://www.7-zip.org/</link>"
 msgstr ""
-"在Windows上，它是7-zip。它是一个免费的压缩解压缩工具，可以从<ulink "
-"url=\"http://www.7-zip.org/\">http://www.7-zip.org/</ulink>下载"
+"在Windows上，它是7-zip。它是一个免费的压缩解压缩工具，可以从<link xlink:"
+"href=\"http://www.7-zip.org/\">http://www.7-zip.org/</link>下载"
 
 #. Tag: para
 #: installation.xml:896
@@ -1767,13 +1862,13 @@ msgstr ""
 #: installation.xml:898
 #, no-c-format
 msgid ""
-"If you are on windows, you can get pre-compiled binaries from <ulink "
-"url=\"http://gnuwin32.sourceforge.net/packages/wget.htm\">http://gnuwin32."
-"sourceforge.net/packages/wget.htm</ulink>"
+"If you are on windows, you can get pre-compiled binaries from <link xlink:"
+"href=\"http://gnuwin32.sourceforge.net/packages/wget.htm\">http://gnuwin32."
+"sourceforge.net/packages/wget.htm</link>"
 msgstr ""
-"对于 Windows，您可以从<ulink url=\"http://gnuwin32.sourceforge.net/packages/"
-"wget.htm\">http://gnuwin32.sourceforge.net/packages/wget.htm</ulink> 获取编译"
-"的二进制文件"
+"对于 Windows，您可以从<link xlink:href=\"http://gnuwin32.sourceforge.net/"
+"packages/wget.htm\">http://gnuwin32.sourceforge.net/packages/wget.htm</link> "
+"获取编译的二进制文件"
 
 #. Tag: para
 #: installation.xml:901

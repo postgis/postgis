@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-  <sect1 id="Clustering_Functions">
-    <sect1info>
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Clustering_Functions">
+    <title>Clustering Functions</title><info>
     <abstract>
     <para>These functions implement clustering algorithms for sets of geometries.</para>
     </abstract>
-    </sect1info>
-	<title>Clustering Functions</title>
+    </info>
 
-    <refentry id="ST_ClusterDBSCAN">
+
+    <refentry xml:id="ST_ClusterDBSCAN">
 	  <refnamediv>
 		<refname>ST_ClusterDBSCAN</refname>
 
@@ -36,8 +36,8 @@
 
 	  <para>
 		  A window function that returns a cluster number for each input geometry, using the 2D
-          <ulink url="https://en.wikipedia.org/wiki/DBSCAN">Density-based spatial clustering of applications with noise (DBSCAN)</ulink>
-		  algorithm.  Unlike <xref linkend="ST_ClusterKMeans" />, it does not require the number of clusters to be specified, but instead
+          <link xlink:href="https://en.wikipedia.org/wiki/DBSCAN">Density-based spatial clustering of applications with noise (DBSCAN)</link>
+		  algorithm.  Unlike <xref linkend="ST_ClusterKMeans"/>, it does not require the number of clusters to be specified, but instead
 		  uses the desired <link linkend="ST_Distance">distance</link> (<varname>eps</varname>) and density (<varname>minpoints</varname>) parameters to determine each cluster.
 	  </para>
 
@@ -58,10 +58,10 @@
 		</para>
 
 		<para>
-		  Note that border geometries may be within <varname>eps</varname> distance of core geometries in more than one cluster. 
+		  Note that border geometries may be within <varname>eps</varname> distance of core geometries in more than one cluster.
       Either assignment would be correct, so the border geometry will be arbitrarily asssigned to one of the available clusters.
 		  In this situation it is possible for a correct cluster to be generated with fewer than <varname>minpoints</varname> geometries.
-		  To ensure deterministic assignment of border geometries 
+		  To ensure deterministic assignment of border geometries
       (so that repeated calls to ST_ClusterDBSCAN will produce identical results)
       use an <code>ORDER BY</code> clause in the window definition.
       Ambiguous cluster assignments may differ from other DBSCAN implementations.
@@ -87,28 +87,28 @@
 						<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_clusterdbscan01.png" />
+								<imagedata fileref="images/st_clusterdbscan01.png"/>
 							  </imageobject>
 							  <caption><para>Clusters within 50 meters with at least 2 items per cluster. Singletons have NULL for cid</para></caption>
 							</mediaobject>
 						  </informalfigure>
   <programlisting>SELECT name, ST_ClusterDBSCAN(geom, eps := 50, minpoints := 2) over () AS cid
 FROM boston_polys
-WHERE name > '' AND building > ''
+WHERE name &gt; '' AND building &gt; ''
 	AND ST_DWithin(geom,
         ST_Transform(
             ST_GeomFromText('POINT(-71.04054 42.35141)', 4326), 26986),
            500);</programlisting>
 						  </para></entry>
 
-						<entry><para><screen><![CDATA[                name                 | bucket
+						<entry><para><screen>                name                 | bucket
 -------------------------------------+--------
  Manulife Tower                      |      0
  Park Lane Seaport I                 |      0
  Park Lane Seaport II                |      0
  Renaissance Boston Waterfront Hotel |      0
  Seaport Boston Hotel                |      0
- Seaport Hotel & World Trade Center  |      0
+ Seaport Hotel &amp; World Trade Center  |      0
  Waterside Place                     |      0
  World Trade Center East             |      0
  100 Northern Avenue                 |      1
@@ -123,7 +123,7 @@ WHERE name > '' AND building > ''
  Watermark Seaport                   |      2
  Blue Hills Bank Pavilion            |   NULL
  World Trade Center West             |   NULL
-(20 rows)]]></screen></para>
+(20 rows)</screen></para>
 				</entry>
 					  </row>
 				</tbody>
@@ -155,7 +155,7 @@ GROUP BY cid;
     </refentry>
 
 
-    <refentry id="ST_ClusterIntersecting">
+    <refentry xml:id="ST_ClusterIntersecting">
       <refnamediv>
         <refname>ST_ClusterIntersecting</refname>
 
@@ -206,16 +206,16 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
       <refsection>
         <title>See Also</title>
         <para>
-            <xref linkend="ST_ClusterIntersectingWin" />,
-            <xref linkend="ST_ClusterWithin" />,
-            <xref linkend="ST_ClusterWithinWin" />
+            <xref linkend="ST_ClusterIntersectingWin"/>,
+            <xref linkend="ST_ClusterWithin"/>,
+            <xref linkend="ST_ClusterWithinWin"/>
         </para>
       </refsection>
 
     </refentry>
 
 
-    <refentry id="ST_ClusterIntersectingWin">
+    <refentry xml:id="ST_ClusterIntersectingWin">
       <refnamediv>
         <refname>ST_ClusterIntersectingWin</refname>
 
@@ -250,12 +250,12 @@ WITH testdata AS (
           (4, 'LINESTRING (0 0, -1 -1)'),
           (5, 'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))')) AS t(id, geom)
 )
-SELECT id, 
-  ST_AsText(geom), 
-  ST_ClusterIntersectingWin(geom) OVER () AS cluster 
+SELECT id,
+  ST_AsText(geom),
+  ST_ClusterIntersectingWin(geom) OVER () AS cluster
 FROM testdata;
 
- id |           st_astext            | cluster 
+ id |           st_astext            | cluster
 ----+--------------------------------+---------
   1 | LINESTRING(0 0,1 1)            |       0
   2 | LINESTRING(5 5,4 4)            |       0
@@ -268,16 +268,16 @@ FROM testdata;
       <refsection>
         <title>See Also</title>
         <para>
-            <xref linkend="ST_ClusterIntersecting" />,
-            <xref linkend="ST_ClusterWithin" />,
-            <xref linkend="ST_ClusterWithinWin" />
+            <xref linkend="ST_ClusterIntersecting"/>,
+            <xref linkend="ST_ClusterWithin"/>,
+            <xref linkend="ST_ClusterWithinWin"/>
         </para>
       </refsection>
 
     </refentry>
 
 
-	<refentry id="ST_ClusterKMeans">
+	<refentry xml:id="ST_ClusterKMeans">
 	  <refnamediv>
 		<refname>ST_ClusterKMeans</refname>
 
@@ -304,7 +304,7 @@ FROM testdata;
 	  <refsection>
       <title>Description</title>
 
-      <para>Returns <ulink url="https://en.wikipedia.org/wiki/K-means_clustering">K-means</ulink>
+      <para>Returns <link xlink:href="https://en.wikipedia.org/wiki/K-means_clustering">K-means</link>
         cluster number for each input geometry. The distance used for clustering is the
         distance between the centroids for 2D geometries, and distance between bounding box centers for 3D geometries.
         For POINT inputs, M coordinate will be treated as weight of input and has to be larger than 0.
@@ -331,7 +331,7 @@ FROM
         <para><informalfigure>
             <mediaobject>
                 <imageobject>
-                <imagedata fileref="images/st_clusterkmeans02.png" />
+                <imagedata fileref="images/st_clusterkmeans02.png"/>
                 </imageobject>
                 <caption><para>Parcels color-coded by cluster number (cid)</para></caption>
             </mediaobject>
@@ -369,7 +369,7 @@ SELECT ST_ClusterKMeans(geom, 3) over (PARTITION BY type) AS cid, parcel_id, typ
 <para>Example: Clustering a preaggregated planetary-scale data population dataset
 using 3D clusering and weighting.
 Identify at least 20 regions based on
-<ulink url="https://data.humdata.org/dataset/kontur-population-dataset">Kontur Population Data</ulink>
+<link xlink:href="https://data.humdata.org/dataset/kontur-population-dataset">Kontur Population Data</link>
 that do not span more than 3000 km from their center:</para>
 <programlisting>create table kontur_population_3000km_clusters as
 select
@@ -388,7 +388,7 @@ from
     <para><informalfigure>
     <mediaobject>
         <imageobject>
-        <imagedata fileref="images/st_clusterkmeans03.png" />
+        <imagedata fileref="images/st_clusterkmeans03.png"/>
         </imageobject>
         <caption><para>World population clustered to above specs produces 46 clusters.
         Clusters are centered at well-populated regions (New York, Moscow).
@@ -406,17 +406,17 @@ from
           <para>
               <xref linkend="ST_ClusterDBSCAN"/>,
               <xref linkend="ST_ClusterIntersectingWin"/>,
-              <xref linkend="ST_ClusterWithinWin" />,
-              <xref linkend="ST_ClusterIntersecting" />,
-              <xref linkend="ST_ClusterWithin" />,
-              <xref linkend="ST_Subdivide" />,
-              <xref linkend="ST_Force_3D" />,
-              <xref linkend="ST_Force_4D" />,
+              <xref linkend="ST_ClusterWithinWin"/>,
+              <xref linkend="ST_ClusterIntersecting"/>,
+              <xref linkend="ST_ClusterWithin"/>,
+              <xref linkend="ST_Subdivide"/>,
+              <xref linkend="ST_Force_3D"/>,
+              <xref linkend="ST_Force_4D"/>,
           </para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_ClusterWithin">
+	<refentry xml:id="ST_ClusterWithin">
       <refnamediv>
         <refname>ST_ClusterWithin</refname>
 
@@ -436,14 +436,14 @@ from
       <refsection>
         <title>Description</title>
 
-        <para>An aggregate function that returns an array of GeometryCollections, 
-        where each collection is a cluster containing some input geometries. 
+        <para>An aggregate function that returns an array of GeometryCollections,
+        where each collection is a cluster containing some input geometries.
         Clustering partitions the input geometries into sets
         in which each geometry is within the specified <parameter>distance</parameter>
-        of at least one other geometry in the same cluster. 
+        of at least one other geometry in the same cluster.
         Distances are Cartesian distances in the units of the SRID.
         </para>
-        <para>ST_ClusterWithin is equivalent to running <xref linkend="ST_ClusterDBSCAN" /> with <code>minpoints := 0</code>.</para>
+        <para>ST_ClusterWithin is equivalent to running <xref linkend="ST_ClusterDBSCAN"/> with <code>minpoints := 0</code>.</para>
 
         <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
         <para>&curve_support;</para>
@@ -473,7 +473,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
         <title>See Also</title>
         <para>
           <xref linkend="ST_ClusterWithinWin"/>,
-          <xref linkend="ST_ClusterDBSCAN" />,
+          <xref linkend="ST_ClusterDBSCAN"/>,
           <xref linkend="ST_ClusterIntersecting"/>,
           <xref linkend="ST_ClusterIntersectingWin"/>
         </para>
@@ -481,7 +481,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
 
     </refentry>
 
-  <refentry id="ST_ClusterWithinWin">
+  <refentry xml:id="ST_ClusterWithinWin">
       <refnamediv>
         <refname>ST_ClusterWithinWin</refname>
 
@@ -501,13 +501,13 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
       <refsection>
         <title>Description</title>
 
-        <para>A window function that returns a cluster number for each input geometry. 
+        <para>A window function that returns a cluster number for each input geometry.
         Clustering partitions the geometries into sets
         in which each geometry is within the specified <varname>distance</varname>
-        of at least one other geometry in the same cluster. 
+        of at least one other geometry in the same cluster.
         Distances are Cartesian distances in the units of the SRID.
         </para>
-        <para>ST_ClusterWithinWin is equivalent to running <xref linkend="ST_ClusterDBSCAN" /> with <code>minpoints := 0</code>.</para>
+        <para>ST_ClusterWithinWin is equivalent to running <xref linkend="ST_ClusterDBSCAN"/> with <code>minpoints := 0</code>.</para>
         <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
         <para>&curve_support;</para>
 
@@ -524,13 +524,13 @@ WITH testdata AS (
           (4, 'LINESTRING (0 0, -1 -1)'),
           (5, 'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))')) AS t(id, geom)
 )
-SELECT id, 
-  ST_AsText(geom), 
-  ST_ClusterWithinWin(geom, 1.4) OVER () AS cluster 
+SELECT id,
+  ST_AsText(geom),
+  ST_ClusterWithinWin(geom, 1.4) OVER () AS cluster
 FROM testdata;
 
 
- id |           st_astext            | cluster 
+ id |           st_astext            | cluster
 ----+--------------------------------+---------
   1 | LINESTRING(0 0,1 1)            |       0
   2 | LINESTRING(5 5,4 4)            |       0
@@ -544,7 +544,7 @@ FROM testdata;
         <title>See Also</title>
         <para>
           <xref linkend="ST_ClusterWithin"/>,
-          <xref linkend="ST_ClusterDBSCAN" />,
+          <xref linkend="ST_ClusterDBSCAN"/>,
           <xref linkend="ST_ClusterIntersecting"/>,
           <xref linkend="ST_ClusterIntersectingWin"/>,
         </para>
@@ -552,4 +552,4 @@ FROM testdata;
 
     </refentry>
 
-</sect1>
+</section>

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-01-09 04:42+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Russian <https://weblate.osgeo.org/projects/postgis/"
@@ -19,8 +19,14 @@ msgstr ""
 "(n%100>=11 && n%100<=14)? 2 : 3);\n"
 "X-Generator: Weblate 4.15\n"
 
+#. Tag: title
+#: reference_validation.xml:4
+#, no-c-format
+msgid "Geometry Validation"
+msgstr ""
+
 #. Tag: para
-#: reference_validation.xml:7
+#: reference_validation.xml:6
 #, no-c-format
 msgid ""
 "These functions test whether geometries are valid according to the OGC SFS "
@@ -29,27 +35,21 @@ msgid ""
 "invalid one."
 msgstr ""
 
-#. Tag: title
-#: reference_validation.xml:15
-#, no-c-format
-msgid "Geometry Validation"
-msgstr ""
-
 #. Tag: refpurpose
-#: reference_validation.xml:21
+#: reference_validation.xml:20
 #, no-c-format
 msgid "Tests if a geometry is well-formed in 2D."
 msgstr ""
 
 #. Tag: title
-#: reference_validation.xml:42 reference_validation.xml:115
-#: reference_validation.xml:186 reference_validation.xml:235
+#: reference_validation.xml:41 reference_validation.xml:114
+#: reference_validation.xml:185 reference_validation.xml:234
 #, no-c-format
 msgid "Description"
 msgstr "Описание"
 
 #. Tag: para
-#: reference_validation.xml:44
+#: reference_validation.xml:43
 #, no-c-format
 msgid ""
 "Tests if an ST_Geometry value is well-formed and valid in 2D according to "
@@ -59,7 +59,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:49
+#: reference_validation.xml:48
 #, no-c-format
 msgid ""
 "For the version with the <varname>flags</varname> parameter, supported "
@@ -68,7 +68,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:54
+#: reference_validation.xml:53
 #, no-c-format
 msgid ""
 "For more information on the definition of geometry validity, refer to <xref "
@@ -76,7 +76,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:58
+#: reference_validation.xml:57
 #, no-c-format
 msgid ""
 "SQL-MM defines the result of ST_IsValid(NULL) to be 0, while PostGIS returns "
@@ -84,32 +84,32 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:61 reference_validation.xml:142
-#: reference_validation.xml:195 reference_validation.xml:286
+#: reference_validation.xml:60 reference_validation.xml:141
+#: reference_validation.xml:194 reference_validation.xml:285
 #, no-c-format
 msgid "Performed by the GEOS module."
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:63
+#: reference_validation.xml:62
 #, no-c-format
 msgid "The version accepting flags is available starting with 2.0.0."
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:66
+#: reference_validation.xml:65
 #, no-c-format
 msgid "&sfs_compliant;"
 msgstr "&sfs_compliant;"
 
 #. Tag: para
-#: reference_validation.xml:67
+#: reference_validation.xml:66
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.9"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:70
+#: reference_validation.xml:69
 #, no-c-format
 msgid ""
 "Neither OGC-SFS nor SQL-MM specifications include a flag argument for "
@@ -117,29 +117,29 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_validation.xml:80 reference_validation.xml:147
-#: reference_validation.xml:200 reference_validation.xml:298
-#: reference_validation.xml:361
+#: reference_validation.xml:79 reference_validation.xml:146
+#: reference_validation.xml:199 reference_validation.xml:297
+#: reference_validation.xml:360
 #, no-c-format
 msgid "Examples"
 msgstr "Примеры"
 
 #. Tag: title
-#: reference_validation.xml:86 reference_validation.xml:154
-#: reference_validation.xml:208 reference_validation.xml:365
+#: reference_validation.xml:85 reference_validation.xml:153
+#: reference_validation.xml:207 reference_validation.xml:364
 #, no-c-format
 msgid "See Also"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:88
+#: reference_validation.xml:87
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_IsValidReason\"/>, <xref linkend=\"ST_IsValidDetail\"/>,"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_validation.xml:101
+#: reference_validation.xml:100
 #, no-c-format
 msgid ""
 "Returns a <varname>valid_detail</varname> row stating if a geometry is valid "
@@ -147,7 +147,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:117
+#: reference_validation.xml:116
 #, no-c-format
 msgid ""
 "Returns a <varname>valid_detail</varname> row, containing a boolean "
@@ -157,7 +157,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:122
+#: reference_validation.xml:121
 #, no-c-format
 msgid ""
 "Useful to improve on the combination of <xref linkend=\"ST_IsValid\"/> and "
@@ -166,7 +166,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:124
+#: reference_validation.xml:123
 #, no-c-format
 msgid ""
 "The optional <varname>flags</varname> parameter is a bitfield. It can have "
@@ -174,13 +174,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:128
+#: reference_validation.xml:127
 #, no-c-format
 msgid "0: Use usual OGC SFS validity semantics."
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:133
+#: reference_validation.xml:132
 #, no-c-format
 msgid ""
 "1: Consider certain kinds of self-touching rings (inverted shells and "
@@ -190,33 +190,33 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:143 reference_validation.xml:288
+#: reference_validation.xml:142 reference_validation.xml:287
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:156
+#: reference_validation.xml:155
 #, no-c-format
 msgid ", <xref linkend=\"ST_IsValidReason\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_validation.xml:167
+#: reference_validation.xml:166
 #, no-c-format
 msgid ""
 "Returns text stating if a geometry is valid, or a reason for invalidity."
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:188
+#: reference_validation.xml:187
 #, no-c-format
 msgid ""
 "Returns text stating if a geometry is valid, or if invalid a reason why."
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:190
+#: reference_validation.xml:189
 #, no-c-format
 msgid ""
 "Useful in combination with <xref linkend=\"ST_IsValid\"/> to generate a "
@@ -224,7 +224,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:192
+#: reference_validation.xml:191
 #, no-c-format
 msgid ""
 "Allowed <varname>flags</varname> are documented in <xref "
@@ -232,31 +232,31 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:196
+#: reference_validation.xml:195
 #, no-c-format
 msgid "Availability: 1.4"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:197
+#: reference_validation.xml:196
 #, no-c-format
 msgid "Availability: 2.0 version taking flags."
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:210
+#: reference_validation.xml:209
 #, no-c-format
 msgid ", <xref linkend=\"ST_Summary\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_validation.xml:217
+#: reference_validation.xml:216
 #, no-c-format
 msgid "Attempts to make an invalid geometry valid without losing vertices."
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:236
+#: reference_validation.xml:235
 #, no-c-format
 msgid ""
 "The function attempts to create a valid representation of a given invalid "
@@ -265,7 +265,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:242
+#: reference_validation.xml:241
 #, no-c-format
 msgid ""
 "Supported inputs are: POINTS, MULTIPOINTS, LINESTRINGS, MULTILINESTRINGS, "
@@ -273,7 +273,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:248
+#: reference_validation.xml:247
 #, no-c-format
 msgid ""
 "In case of full or partial dimensional collapses, the output geometry may be "
@@ -282,14 +282,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:254
+#: reference_validation.xml:253
 #, no-c-format
 msgid ""
 "Single polygons may become multi-geometries in case of self-intersections."
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:258
+#: reference_validation.xml:257
 #, no-c-format
 msgid ""
 "The <varname>params</varname> argument can be used to supply an options "
@@ -300,13 +300,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:265
+#: reference_validation.xml:264
 #, no-c-format
 msgid "The \"method\" key has two values."
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:269
+#: reference_validation.xml:268
 #, no-c-format
 msgid ""
 "\"linework\" is the original algorithm, and builds valid geometries by first "
@@ -315,7 +315,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:274
+#: reference_validation.xml:273
 #, no-c-format
 msgid ""
 "\"structure\" is an algorithm that distinguishes between interior and "
@@ -324,7 +324,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:280
+#: reference_validation.xml:279
 #, no-c-format
 msgid ""
 "The \"keepcollapsed\" key is only valid for the \"structure\" algorithm, and "
@@ -334,25 +334,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:289
+#: reference_validation.xml:288
 #, no-c-format
 msgid "Enhanced: 2.0.1, speed improvements"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:290
+#: reference_validation.xml:289
 #, no-c-format
 msgid "Enhanced: 2.1.0, added support for GEOMETRYCOLLECTION and MULTIPOINT."
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:291
+#: reference_validation.xml:290
 #, no-c-format
 msgid "Enhanced: 3.1.0, added removal of Coordinates with NaN values."
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:292
+#: reference_validation.xml:291
 #, no-c-format
 msgid ""
 "Enhanced: 3.2.0, added algorithm options, 'linework' and 'structure' which "
@@ -360,49 +360,49 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:294
+#: reference_validation.xml:293
 #, no-c-format
 msgid "&Z_support;"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:308
+#: reference_validation.xml:307
 #, no-c-format
 msgid "before_geom: MULTIPOLYGON of 2 overlapping polygons"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:316
+#: reference_validation.xml:315
 #, no-c-format
 msgid "after_geom: MULTIPOLYGON of 4 non-overlapping polygons"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:325
+#: reference_validation.xml:324
 #, no-c-format
 msgid "after_geom_structure: MULTIPOLYGON of 1 non-overlapping polygon"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:338
+#: reference_validation.xml:337
 #, no-c-format
 msgid "before_geom: MULTIPOLYGON of 6 overlapping polygons"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:344
+#: reference_validation.xml:343
 #, no-c-format
 msgid "after_geom: MULTIPOLYGON of 14 Non-overlapping polygons"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:350
+#: reference_validation.xml:349
 #, no-c-format
 msgid "after_geom_structure: MULTIPOLYGON of 1 Non-overlapping polygon"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:366
+#: reference_validation.xml:365
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_CollectionExtract\"/>"

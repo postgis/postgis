@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-29 10:16+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2022-01-10 05:06+0000\n"
 "Last-Translator: jsanz <jsanz@osgeo.org>\n"
 "Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/"
@@ -24,26 +24,26 @@ msgstr ""
 "X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
-#: installation.xml:3
+#: installation.xml:4
 #, no-c-format
 msgid "PostGIS Installation"
 msgstr "Instalación de PostGIS"
 
 #. Tag: para
-#: installation.xml:5
+#: installation.xml:6
 #, no-c-format
 msgid "This chapter details the steps required to install PostGIS."
 msgstr ""
 "En este capítulo se detallan los pasos necesarios para instalar PostGIS ."
 
 #. Tag: title
-#: installation.xml:10
+#: installation.xml:11
 #, no-c-format
 msgid "Short Version"
 msgstr "Versión corta"
 
 #. Tag: para
-#: installation.xml:11
+#: installation.xml:12
 #, no-c-format
 msgid "To compile assuming you have all the dependencies in your search path:"
 msgstr ""
@@ -51,7 +51,7 @@ msgstr ""
 "búsqueda:"
 
 #. Tag: para
-#: installation.xml:13
+#: installation.xml:14
 #, no-c-format
 msgid ""
 "Once PostGIS is installed, it needs to be enabled (<xref "
@@ -62,13 +62,13 @@ msgstr ""
 "datos en la que desee utilizarlo."
 
 #. Tag: title
-#: installation.xml:23
+#: installation.xml:24
 #, no-c-format
 msgid "Compiling and Install from Source"
 msgstr "Compilación e instalación desde el código fuente"
 
 #. Tag: para
-#: installation.xml:26
+#: installation.xml:27
 #, no-c-format
 msgid ""
 "Many OS systems now include pre-built packages for PostgreSQL/PostGIS. In "
@@ -80,46 +80,49 @@ msgstr ""
 "las ultimas versiones o haces mantenimiento de paquetes."
 
 #. Tag: para
-#: installation.xml:31
+#: installation.xml:32
 #, no-c-format
 msgid ""
 "This section includes general compilation instructions, if you are compiling "
 "for Windows etc or another OS, you may find additional more detailed help at "
-"<ulink url=\"https://trac.osgeo.org/postgis/wiki/UsersWikiInstall\">PostGIS "
-"User contributed compile guides</ulink> and <ulink url=\"http://trac.osgeo."
-"org/postgis/wiki/DevWikiMain\">PostGIS Dev Wiki</ulink>."
-msgstr ""
-
-#. Tag: para
-#: installation.xml:33
-#, no-c-format
-msgid ""
-"Pre-Built Packages for various OS are listed in <ulink url=\"https://trac."
-"osgeo.org/postgis/wiki/UsersWikiPackages\">PostGIS Pre-built Packages</ulink>"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/wiki/"
+"UsersWikiInstall\">PostGIS User contributed compile guides</link> and <link "
+"xlink:href=\"http://trac.osgeo.org/postgis/wiki/DevWikiMain\">PostGIS Dev "
+"Wiki</link>."
 msgstr ""
 
 #. Tag: para
 #: installation.xml:34
 #, no-c-format
 msgid ""
+"Pre-Built Packages for various OS are listed in <link xlink:href=\"https://"
+"trac.osgeo.org/postgis/wiki/UsersWikiPackages\">PostGIS Pre-built Packages</"
+"link>"
+msgstr ""
+
+#. Tag: para
+#: installation.xml:35
+#, no-c-format
+msgid ""
 "If you are a windows user, you can get stable builds via Stackbuilder or "
-"<ulink url=\"https://postgis.net/windows_downloads\">PostGIS Windows "
-"download site</ulink> We also have <ulink url=\"https://postgis.net/"
-"windows_downloads\">very bleeding-edge windows experimental builds</ulink> "
+"<link xlink:href=\"https://postgis.net/windows_downloads\">PostGIS Windows "
+"download site</link> We also have <link xlink:href=\"https://postgis.net/"
+"windows_downloads\">very bleeding-edge windows experimental builds</link> "
 "that are built usually once or twice a week or whenever anything exciting "
 "happens. You can use these to experiment with the in progress releases of "
 "PostGIS"
 msgstr ""
 "Si eres usuario de Windows, puedes obtener versiones estables compiladas via "
-"Stackbuilder o el <ulink url=\"http://www.postgis.org/download/windows/\"> "
-"sitio de descargas de PostGIS para Windows</ulink> También tenemos <ulink "
-"url=\"http://www.postgis.org/download/windows/experimental.php\">versiones "
-"experimentales para Windows </ulink> que son publicadas normalmente una o "
-"dos veces por semana o cuando ocurre algo interesante. Puedes utilizar éstas "
-"para experimentar con las versiones de desarrollo de PostGIS"
+"Stackbuilder o el <link xlink:href=\"http://www.postgis.org/download/windows/"
+"\"> sitio de descargas de PostGIS para Windows</link> También tenemos <link "
+"xlink:href=\"http://www.postgis.org/download/windows/experimental."
+"php\">versiones experimentales para Windows </link> que son publicadas "
+"normalmente una o dos veces por semana o cuando ocurre algo interesante. "
+"Puedes utilizar éstas para experimentar con las versiones de desarrollo de "
+"PostGIS"
 
 #. Tag: para
-#: installation.xml:39
+#: installation.xml:40
 #, no-c-format
 msgid ""
 "The PostGIS module is an extension to the PostgreSQL backend server. As "
@@ -130,16 +133,16 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:47
+#: installation.xml:48
 #, no-c-format
 msgid ""
 "Refer to the PostgreSQL installation guides if you haven't already installed "
-"PostgreSQL. <ulink url=\"https://www.postgresql.org\"> https://www."
-"postgresql.org </ulink> ."
+"PostgreSQL. <link xlink:href=\"https://www.postgresql.org\"> https://www."
+"postgresql.org </link> ."
 msgstr ""
 
 #. Tag: para
-#: installation.xml:57
+#: installation.xml:58
 #, no-c-format
 msgid ""
 "For GEOS functionality, when you install PostgresSQL you may need to "
@@ -149,7 +152,7 @@ msgstr ""
 "PostgreSQL necesitar hacer un enlace explícito con la librería estándar C++:"
 
 #. Tag: para
-#: installation.xml:64
+#: installation.xml:65
 #, no-c-format
 msgid ""
 "This is a workaround for bogus C++ exceptions interaction with older "
@@ -163,7 +166,7 @@ msgstr ""
 "necesario volver a compilar PostgreSQL desde cero."
 
 #. Tag: para
-#: installation.xml:72
+#: installation.xml:73
 #, no-c-format
 msgid ""
 "The following steps outline the configuration and compilation of the PostGIS "
@@ -174,21 +177,21 @@ msgstr ""
 "Windows o Mac."
 
 #. Tag: title
-#: installation.xml:79
+#: installation.xml:80
 #, no-c-format
 msgid "Getting the Source"
 msgstr "Obteniendo el código fuente"
 
 #. Tag: para
-#: installation.xml:81
+#: installation.xml:82
 #, no-c-format
 msgid ""
-"Retrieve the PostGIS source archive from the downloads website <ulink "
-"url=\"&postgis_download_url;\"> &postgis_download_url; </ulink>"
+"Retrieve the PostGIS source archive from the downloads website <link xlink:"
+"href=\"&postgis_download_url;\"> &postgis_download_url; </link>"
 msgstr ""
 
 #. Tag: para
-#: installation.xml:90
+#: installation.xml:91
 #, no-c-format
 msgid ""
 "This will create a directory called <varname>postgis-&last_release_version;</"
@@ -198,20 +201,21 @@ msgstr ""
 "varname> en el directorio de trabajo actual."
 
 #. Tag: para
-#: installation.xml:96
+#: installation.xml:97
 #, no-c-format
 msgid ""
-"Alternatively, checkout the source from the <ulink url=\"https://git-scm.com/"
-"\"> git </ulink> repository <ulink url=\"https://git.osgeo.org/gitea/postgis/"
-"postgis/\"> https://git.osgeo.org/gitea/postgis/postgis/ </ulink> ."
+"Alternatively, checkout the source from the <link xlink:href=\"https://git-"
+"scm.com/\"> git </link> repository <link xlink:href=\"https://git.osgeo.org/"
+"gitea/postgis/postgis/\"> https://git.osgeo.org/gitea/postgis/postgis/ </"
+"link> ."
 msgstr ""
-"De forma alternativa se puede obtener el código fuente del  <ulink "
-"url=\"https://git-scm.com/\"> git </ulink>  repositorio <ulink url=\"https://"
-"git.osgeo.org/gitea/postgis/postgis/\"> https://git.osgeo.org/gitea/postgis/"
-"postgis/ </ulink> ."
+"De forma alternativa se puede obtener el código fuente del  <link xlink:"
+"href=\"https://git-scm.com/\"> git </link>  repositorio <link xlink:"
+"href=\"https://git.osgeo.org/gitea/postgis/postgis/\"> https://git.osgeo.org/"
+"gitea/postgis/postgis/ </link> ."
 
 #. Tag: para
-#: installation.xml:110
+#: installation.xml:111
 #, fuzzy, no-c-format
 msgid ""
 "Change into the newly created <varname>postgis</varname> directory to "
@@ -221,45 +225,45 @@ msgstr ""
 "creado para continuar con la instalación."
 
 #. Tag: title
-#: installation.xml:119
+#: installation.xml:120
 #, no-c-format
 msgid "Install Requirements"
 msgstr ""
 
 #. Tag: para
-#: installation.xml:121
+#: installation.xml:122
 #, no-c-format
 msgid "PostGIS has the following requirements for building and usage:"
 msgstr "PostGIS tiene los siguientes requisitos para compilarlo y usarlo:"
 
 #. Tag: emphasis
-#: installation.xml:126
+#: installation.xml:127
 #, no-c-format
 msgid "Required"
 msgstr "Requerido"
 
 #. Tag: para
-#: installation.xml:131
+#: installation.xml:132
 #, no-c-format
 msgid ""
 "PostgreSQL &min_postgres_version; - &max_postgres_version;. A complete "
 "installation of PostgreSQL (including server headers) is required. "
-"PostgreSQL is available from <ulink url=\"https://www.postgresql.org\"> "
-"https://www.postgresql.org </ulink> ."
+"PostgreSQL is available from <link xlink:href=\"https://www.postgresql."
+"org\"> https://www.postgresql.org </link> ."
 msgstr ""
 
 #. Tag: para
-#: installation.xml:140
+#: installation.xml:141
 #, no-c-format
 msgid ""
 "For a full PostgreSQL / PostGIS support matrix and PostGIS/GEOS support "
-"matrix refer to <ulink url=\"https://trac.osgeo.org/postgis/wiki/"
+"matrix refer to <link xlink:href=\"https://trac.osgeo.org/postgis/wiki/"
 "UsersWikiPostgreSQLPostGIS\">https://trac.osgeo.org/postgis/wiki/"
-"UsersWikiPostgreSQLPostGIS</ulink>"
+"UsersWikiPostgreSQLPostGIS</link>"
 msgstr ""
 
 #. Tag: para
-#: installation.xml:146
+#: installation.xml:147
 #, no-c-format
 msgid ""
 "GNU C compiler (<filename>gcc</filename>). Some other ANSI C compilers can "
@@ -271,7 +275,7 @@ msgstr ""
 "al compilar con <filename>gcc</filename>."
 
 #. Tag: para
-#: installation.xml:154
+#: installation.xml:155
 #, no-c-format
 msgid ""
 "GNU Make (<filename>gmake</filename> or <filename>make</filename>). For many "
@@ -288,71 +292,71 @@ msgstr ""
 "filename> de forma correcta."
 
 #. Tag: para
-#: installation.xml:164
+#: installation.xml:165
 #, no-c-format
 msgid ""
 "Proj reprojection library. Proj 6.1 or above is required. The Proj library "
 "is used to provide coordinate reprojection support within PostGIS. Proj is "
-"available for download from <ulink url=\"https://proj.org/\"> https://proj."
-"org/ </ulink> ."
+"available for download from <link xlink:href=\"https://proj.org/\"> https://"
+"proj.org/ </link> ."
 msgstr ""
 
 #. Tag: para
-#: installation.xml:176
+#: installation.xml:177
 #, no-c-format
 msgid ""
 "GEOS geometry library, version 3.6 or greater, but GEOS 3.12+ is required to "
 "take full advantage of all the new functions and features. GEOS is available "
-"for download from <ulink url=\"https://libgeos.org/\"> https://libgeos.org </"
-"ulink>."
+"for download from <link xlink:href=\"https://libgeos.org/\"> https://libgeos."
+"org </link>."
 msgstr ""
 
 #. Tag: para
-#: installation.xml:184
+#: installation.xml:185
 #, no-c-format
 msgid ""
 "LibXML2, version 2.5.x or higher. LibXML2 is currently used in some imports "
 "functions (ST_GeomFromGML and ST_GeomFromKML). LibXML2 is available for "
-"download from <ulink url=\"https://gitlab.gnome.org/GNOME/libxml2/-/"
-"releases\">https://gitlab.gnome.org/GNOME/libxml2/-/releases</ulink>."
+"download from <link xlink:href=\"https://gitlab.gnome.org/GNOME/libxml2/-/"
+"releases\">https://gitlab.gnome.org/GNOME/libxml2/-/releases</link>."
 msgstr ""
 
 #. Tag: para
-#: installation.xml:191
+#: installation.xml:192
 #, no-c-format
 msgid ""
 "JSON-C, version 0.9 or higher. JSON-C is currently used to import GeoJSON "
 "via the function ST_GeomFromGeoJson. JSON-C is available for download from "
-"<ulink url=\"https://github.com/json-c/json-c/releases\">https://github.com/"
-"json-c/json-c/releases/</ulink>."
+"<link xlink:href=\"https://github.com/json-c/json-c/releases\">https://"
+"github.com/json-c/json-c/releases/</link>."
 msgstr ""
 
 #. Tag: para
-#: installation.xml:199
+#: installation.xml:200
 #, no-c-format
 msgid ""
 "GDAL, version 2+ is required 3+ is preferred. This is required for raster "
-"support. <ulink url=\"https://gdal.org/download.html\">https://gdal.org/"
-"download.html</ulink>."
+"support. <link xlink:href=\"https://gdal.org/download.html\">https://gdal."
+"org/download.html</link>."
 msgstr ""
 
 #. Tag: para
-#: installation.xml:207
+#: installation.xml:208
 #, no-c-format
 msgid ""
-"If compiling with PostgreSQL+JIT, LLVM version &gt;=6 is required <ulink "
-"url=\"https://trac.osgeo.org/postgis/ticket/4125\">https://trac.osgeo.org/"
-"postgis/ticket/4125</ulink>."
+"If compiling with PostgreSQL+JIT, LLVM version &gt;=6 is required <link "
+"xlink:href=\"https://trac.osgeo.org/postgis/ticket/4125\">https://trac.osgeo."
+"org/postgis/ticket/4125</link>."
 msgstr ""
 
 #. Tag: emphasis
-#: installation.xml:216
+#: installation.xml:217
 #, no-c-format
 msgid "Optional"
 msgstr "Opcional"
 
 #. Tag: para
-#: installation.xml:221
+#: installation.xml:222
 #, no-c-format
 msgid ""
 "GDAL (pseudo optional) only if you don't want raster you can leave it out. "
@@ -365,11 +369,11 @@ msgstr ""
 #, no-c-format
 msgid ""
 "GTK (requires GTK+2.0, 2.8+) to compile the shp2pgsql-gui shape file loader. "
-"<ulink url=\"http://www.gtk.org/\"> http://www.gtk.org/ </ulink> ."
+"<link xlink:href=\"http://www.gtk.org/\"> http://www.gtk.org/ </link> ."
 msgstr ""
 "GTK (GTK+2.0, 2.8+ requerida) para compilar el cargador de shapefiles "
-"shp2pgsql-gui. <ulink url=\"http://www.gtk.org/\"> http://www.gtk.org/ </"
-"ulink> ."
+"shp2pgsql-gui. <link xlink:href=\"http://www.gtk.org/\"> http://www.gtk.org/ "
+"</link> ."
 
 #. Tag: para
 #: installation.xml:239
@@ -383,10 +387,10 @@ msgid ""
 "or ST_Area, for instance). A PostgreSQL configuration variable <code>postgis."
 "backend</code> allow end user to control which backend he want to use if "
 "SFCGAL is installed (GEOS by default). Nota: SFCGAL 1.2 require at least "
-"CGAL 4.3 and Boost 1.54 (cf: <ulink url=\"https://oslandia.gitlab.io/SFCGAL/"
-"dev.html\">https://oslandia.gitlab.io/SFCGAL/dev.html</ulink>) <ulink "
-"url=\"https://gitlab.com/Oslandia/SFCGAL/\">https://gitlab.com/Oslandia/"
-"SFCGAL/</ulink>."
+"CGAL 4.3 and Boost 1.54 (cf: <link xlink:href=\"https://oslandia.gitlab.io/"
+"SFCGAL/dev.html\">https://oslandia.gitlab.io/SFCGAL/dev.html</link>) <link "
+"xlink:href=\"https://gitlab.com/Oslandia/SFCGAL/\">https://gitlab.com/"
+"Oslandia/SFCGAL/</link>."
 msgstr ""
 
 #. Tag: para
@@ -394,8 +398,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "In order to build the <xref linkend=\"Address_Standardizer\"/> you will also "
-"need PCRE <ulink url=\"http://www.pcre.org\">http://www.pcre.org</ulink> "
-"(which generally is already installed on nix systems). <xref "
+"need PCRE <link xlink:href=\"http://www.pcre.org\">http://www.pcre.org</"
+"link> (which generally is already installed on nix systems). <xref "
 "linkend=\"Address_Standardizer\"/> will automatically be built if it detects "
 "a PCRE library, or you pass in a valid <varname>--with-pcre-dir=/path/to/"
 "pcre</varname> during configure."
@@ -407,8 +411,8 @@ msgstr ""
 msgid ""
 "To enable ST_AsMVT protobuf-c library 1.1.0 or higher (for usage) and the "
 "protoc-c compiler (for building) are required. Also, pkg-config is required "
-"to verify the correct minimum version of protobuf-c. See <ulink "
-"url=\"https://github.com/protobuf-c/protobuf-c\">protobuf-c</ulink>. By "
+"to verify the correct minimum version of protobuf-c. See <link xlink:"
+"href=\"https://github.com/protobuf-c/protobuf-c\">protobuf-c</link>. By "
 "default, Postgis will use Wagyu to validate MVT polygons faster which "
 "requires a c++11 compiler. It will use CXXFLAGS and the same compiler as the "
 "PostgreSQL installation. To disable this and use GEOS instead use the "
@@ -420,48 +424,51 @@ msgstr ""
 #, no-c-format
 msgid ""
 "CUnit (<filename>CUnit</filename>). This is needed for regression testing. "
-"<ulink url=\"http://cunit.sourceforge.net/\">http://cunit.sourceforge.net/</"
-"ulink>"
+"<link xlink:href=\"http://cunit.sourceforge.net/\">http://cunit.sourceforge."
+"net/</link>"
 msgstr ""
 "CUnit (<filename>CUnit</filename>). Se necesita para hacer test de "
-"regresión. <ulink url=\"http://cunit.sourceforge.net/\">http://cunit."
-"sourceforge.net/</ulink>"
+"regresión. <link xlink:href=\"http://cunit.sourceforge.net/\">http://cunit."
+"sourceforge.net/</link>"
 
 #. Tag: para
 #: installation.xml:269
 #, no-c-format
 msgid ""
 "DocBook (<filename>xsltproc</filename>) is required for building the "
-"documentation. Docbook is available from <ulink url=\"http://www.docbook.org/"
-"\"> http://www.docbook.org/ </ulink> ."
+"documentation. Docbook is available from <link xlink:href=\"http://www."
+"docbook.org/\"> http://www.docbook.org/ </link> ."
 msgstr ""
 "DocBook (<filename>xsltproc</filename>) es necesario para compilar la "
-"documentación. Docbook esta disponible en <ulink url=\"http://www.docbook."
-"org/\"> http://www.docbook.org/ </ulink> ."
+"documentación. Docbook esta disponible en <link xlink:href=\"http://www."
+"docbook.org/\"> http://www.docbook.org/ </link> ."
 
 #. Tag: para
 #: installation.xml:280
 #, no-c-format
 msgid ""
 "DBLatex (<filename>dblatex</filename>) is required for building the "
-"documentation in PDF format. DBLatex is available from <ulink url=\"http://"
-"dblatex.sourceforge.net/\"> http://dblatex.sourceforge.net/ </ulink> ."
+"documentation in PDF format. DBLatex is available from <link xlink:"
+"href=\"http://dblatex.sourceforge.net/\"> http://dblatex.sourceforge.net/ </"
+"link> ."
 msgstr ""
 "DBLatex (<filename>dblatex</filename>) necesario para construir la "
-"documentación en formato PDF. DBLatex esta disponible en <ulink url=\"http://"
-"dblatex.sourceforge.net/\"> http://dblatex.sourceforge.net/ </ulink> ."
+"documentación en formato PDF. DBLatex esta disponible en <link xlink:"
+"href=\"http://dblatex.sourceforge.net/\"> http://dblatex.sourceforge.net/ </"
+"link> ."
 
 #. Tag: para
 #: installation.xml:291
 #, no-c-format
 msgid ""
 "ImageMagick (<filename>convert</filename>) is required to generate the "
-"images used in the documentation. ImageMagick is available from <ulink "
-"url=\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </ulink> ."
+"images used in the documentation. ImageMagick is available from <link xlink:"
+"href=\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </link> ."
 msgstr ""
 "ImageMagick (<filename>convert</filename>) es necesario para generar las "
-"imágenes empleadas en la documentación. ImageMagick esta disponible en<ulink "
-"url=\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </ulink> ."
+"imágenes empleadas en la documentación. ImageMagick esta disponible en<link "
+"xlink:href=\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </"
+"link> ."
 
 #. Tag: title
 #: installation.xml:305
@@ -509,6 +516,12 @@ msgstr ""
 "obtener una lista completa, puedes utilizar los parámetros <command>--help</"
 "command> o <command>--help=short</command>."
 
+#. Tag: term
+#: installation.xml:333
+#, no-c-format
+msgid "--with-library-minor-version"
+msgstr ""
+
 #. Tag: para
 #: installation.xml:335
 #, no-c-format
@@ -520,6 +533,12 @@ msgid ""
 "PostGIS 3 series in your server. To get the old behavior of file including "
 "the minor version: e.g. <code>postgis-3.0</code> add this switch to your "
 "configure statement."
+msgstr ""
+
+#. Tag: term
+#: installation.xml:348
+#, no-c-format
+msgid "--prefix=PREFIX"
 msgstr ""
 
 #. Tag: para
@@ -539,14 +558,20 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This parameter is currently broken, as the package will only install into "
-"the PostgreSQL installation directory. Visit <ulink url=\"http://trac.osgeo."
-"org/postgis/ticket/635\"> http://trac.osgeo.org/postgis/ticket/635 </ulink> "
-"to track this bug."
+"the PostgreSQL installation directory. Visit <link xlink:href=\"http://trac."
+"osgeo.org/postgis/ticket/635\"> http://trac.osgeo.org/postgis/ticket/635 </"
+"link> to track this bug."
 msgstr ""
 "Este parámetro está roto actualmente, ya que el paquete sólo se instalará en "
 "el directorio de instalación de PostgreSQL. Para seguir avence de este bug "
-"visita <ulink url=\"http://trac.osgeo.org/postgis/ticket/635\"> http://trac."
-"osgeo.org/postgis/ticket/635 </ulink>"
+"visita <link xlink:href=\"http://trac.osgeo.org/postgis/ticket/635\"> http://"
+"trac.osgeo.org/postgis/ticket/635 </link>"
+
+#. Tag: term
+#: installation.xml:370
+#, no-c-format
+msgid "--with-pgconfig=FILE"
+msgstr ""
 
 #. Tag: para
 #: installation.xml:372
@@ -563,6 +588,12 @@ msgstr ""
 "instalación de PostgreSQL. Utiliza este parámetro (<command>--with-pgconfig=/"
 "path/to/pg_config</command>)  para especificar una instalación personalizada "
 "de PostgreSQL de forma manual que PostGIS utilizara para compilar. "
+
+#. Tag: term
+#: installation.xml:384
+#, no-c-format
+msgid "--with-gdalconfig=FILE"
+msgstr ""
 
 #. Tag: para
 #: installation.xml:386
@@ -581,6 +612,12 @@ msgstr ""
 "</command>) para especificar manualmente una instalación de GDAL "
 "personalizada que PostGIS utilizara para compilar."
 
+#. Tag: term
+#: installation.xml:398
+#, no-c-format
+msgid "--with-geosconfig=FILE"
+msgstr ""
+
 #. Tag: para
 #: installation.xml:400
 #, no-c-format
@@ -598,6 +635,12 @@ msgstr ""
 "una instalación personalizada de GEOS que PostGIS puede utilizar para "
 "compilar."
 
+#. Tag: term
+#: installation.xml:412
+#, no-c-format
+msgid "--with-xml2config=FILE"
+msgstr ""
+
 #. Tag: para
 #: installation.xml:414
 #, no-c-format
@@ -606,18 +649,16 @@ msgid ""
 "normally is found if you have libxml installed, but if not or you want a "
 "specific version used, you'll need to point PostGIS at a specific "
 "<filename>xml2-config</filename> confi file to enable software installations "
-"to locate the LibXML installation directory. Use this parameter (<command>>--"
-"with-xml2config=/path/to/xml2-config</command>) to manually specify a "
-"particular LibXML installation that PostGIS will build against."
+"to locate the LibXML installation directory. Use this parameter "
+"(<command>&gt;--with-xml2config=/path/to/xml2-config</command>) to manually "
+"specify a particular LibXML installation that PostGIS will build against."
 msgstr ""
-"LibXML es una libreria necesaria para procesar GeomFromKML/GML. Normalmente "
-"encontrara si tienes instalada la libreria libxml, pero si no esta "
-"instalada, o quieres usar una versión especifica, necesitaras que PostGIS "
-"apunte a un fichero de configuración particular <filename>xml2-config</"
-"filename> para localizar un directorio de instalación LibXML para activar la "
-"instalación del Software. Utiliza el siguiente parámetro (<command>>--with-"
-"xml2config=/path/to/xml2-config</command>) para especificar de forma manual "
-"una instalación personalizada de LibXML con la que compilar PostGIS."
+
+#. Tag: term
+#: installation.xml:430
+#, no-c-format
+msgid "--with-projdir=DIR"
+msgstr ""
 
 #. Tag: para
 #: installation.xml:432
@@ -632,38 +673,62 @@ msgstr ""
 "para definir manualmente una instalación personalizada de Proj4 para "
 "compilar PostGIS."
 
+#. Tag: term
+#: installation.xml:442
+#, no-c-format
+msgid "--with-libiconv=DIR"
+msgstr ""
+
 #. Tag: para
 #: installation.xml:444
 #, no-c-format
 msgid "Directory where iconv is installed."
 msgstr "Directorio donde iconv esta instalado."
 
+#. Tag: term
+#: installation.xml:451
+#, no-c-format
+msgid "--with-jsondir=DIR"
+msgstr ""
+
 #. Tag: para
 #: installation.xml:453
 #, no-c-format
 msgid ""
-"<ulink url=\"http://oss.metaparadigm.com/json-c/\">JSON-C</ulink> is an MIT-"
-"licensed JSON library required by PostGIS ST_GeomFromJSON support. Use this "
-"parameter (<command>--with-jsondir=/path/to/jsondir</command>) to manually "
-"specify a particular JSON-C installation directory that PostGIS will build "
-"against."
+"<link xlink:href=\"http://oss.metaparadigm.com/json-c/\">JSON-C</link> is an "
+"MIT-licensed JSON library required by PostGIS ST_GeomFromJSON support. Use "
+"this parameter (<command>--with-jsondir=/path/to/jsondir</command>) to "
+"manually specify a particular JSON-C installation directory that PostGIS "
+"will build against."
 msgstr ""
-"<ulink url=\"http://oss.metaparadigm.com/json-c/\">JSON-C</ulink>es una "
+"<link xlink:href=\"http://oss.metaparadigm.com/json-c/\">JSON-C</link>es una "
 "libreria con licencia MIT-licensed JSON necesaria para dar soporte a PostGIS "
 "ST_GeomFromJSON. Utiliza este parametro (<command>--with-jsondir=/path/to/"
 "jsondir</command>) para especificar de forma manual el directorio de "
 "instalación personalizado de instalación de JSON-C que PostGIS utilizara "
 "para compilar."
 
+#. Tag: term
+#: installation.xml:463
+#, no-c-format
+msgid "--with-pcredir=DIR"
+msgstr ""
+
 #. Tag: para
 #: installation.xml:465
 #, no-c-format
 msgid ""
-"<ulink url=\"http://www.pcre.org/\">PCRE</ulink> is an BSD-licensed Perl "
-"Compatible Regular Expression library required by address_standardizer "
+"<link xlink:href=\"http://www.pcre.org/\">PCRE</link> is an BSD-licensed "
+"Perl Compatible Regular Expression library required by address_standardizer "
 "extension. Use this parameter (<command>--with-pcredir=/path/to/pcredir</"
 "command>) to manually specify a particular PCRE installation directory that "
 "PostGIS will build against."
+msgstr ""
+
+#. Tag: term
+#: installation.xml:475
+#, no-c-format
+msgid "--with-gui"
 msgstr ""
 
 #. Tag: para
@@ -676,10 +741,22 @@ msgstr ""
 "Compilar la GUI de importar datos (necesita GTK+2.0). Esto creara una "
 "interfaz gráfica shp2pgsql-gui para el comando shp2pgsql."
 
+#. Tag: term
+#: installation.xml:484
+#, no-c-format
+msgid "--without-raster"
+msgstr ""
+
 #. Tag: para
 #: installation.xml:486
 #, no-c-format
 msgid "Compile without raster support."
+msgstr ""
+
+#. Tag: term
+#: installation.xml:492
+#, no-c-format
+msgid "--without-topology"
 msgstr ""
 
 #. Tag: para
@@ -690,15 +767,21 @@ msgid ""
 "needed for topology is in postgis-&last_release_version; library."
 msgstr ""
 
+#. Tag: term
+#: installation.xml:501
+#, no-c-format
+msgid "--with-gettext=no"
+msgstr ""
+
 #. Tag: para
 #: installation.xml:503
 #, no-c-format
 msgid ""
 "By default PostGIS will try to detect gettext support and compile with it, "
 "however if you run into incompatibility issues that cause breakage of "
-"loader, you can disable it entirely with this command. Refer to ticket "
-"<ulink url=\"http://trac.osgeo.org/postgis/ticket/748\">http://trac.osgeo."
-"org/postgis/ticket/748</ulink> for an example issue solved by configuring "
+"loader, you can disable it entirely with this command. Refer to ticket <link "
+"xlink:href=\"http://trac.osgeo.org/postgis/ticket/748\">http://trac.osgeo."
+"org/postgis/ticket/748</link> for an example issue solved by configuring "
 "with this. NOTE: that you aren't missing much by turning this off. This is "
 "used for international help/label support for the GUI loader which is not "
 "yet documented and still experimental."
@@ -707,11 +790,17 @@ msgstr ""
 "todas formas si existen incompatibilidades que causan errores de carga, se "
 "puede desactivar por completo con este comando. Para ver un ejemplo de "
 "resolución de problemas configurando en gettext puedes ver el siguiente "
-"enlace <ulink url=\"http://trac.osgeo.org/postgis/ticket/748\">http://trac."
-"osgeo.org/postgis/ticket/748</ulink>. NOTA: No te pierdes mucho si "
+"enlace <link xlink:href=\"http://trac.osgeo.org/postgis/ticket/748\">http://"
+"trac.osgeo.org/postgis/ticket/748</link>. NOTA: No te pierdes mucho si "
 "desactivas esta opción. Se utiliza principalmente para soporte de ayuda/"
 "etiquetas internacionales en la GUI de carga, que actualmente no esta "
 "documentada y sigue siendo experimental."
+
+#. Tag: term
+#: installation.xml:512
+#, no-c-format
+msgid "--with-sfcgal=PATH"
+msgstr ""
 
 #. Tag: para
 #: installation.xml:514
@@ -720,6 +809,12 @@ msgid ""
 "By default PostGIS will not install with sfcgal support without this switch. "
 "<varname>PATH</varname> is an optional argument that allows to specify an "
 "alternate PATH to sfcgal-config."
+msgstr ""
+
+#. Tag: term
+#: installation.xml:521
+#, no-c-format
+msgid "--without-phony-revision"
 msgstr ""
 
 #. Tag: para
@@ -734,9 +829,9 @@ msgstr ""
 #: installation.xml:530
 #, no-c-format
 msgid ""
-"If you obtained PostGIS from the <ulink url=\"https://trac.osgeo.org/postgis/"
-"wiki/CodeRepository\"> code repository </ulink> , the first step is really "
-"to run the script"
+"If you obtained PostGIS from the <link xlink:href=\"https://trac.osgeo.org/"
+"postgis/wiki/CodeRepository\"> code repository </link> , the first step is "
+"really to run the script"
 msgstr ""
 
 #. Tag: para
@@ -828,13 +923,13 @@ msgstr ""
 #: installation.xml:590
 #, no-c-format
 msgid ""
-"You can download some pre-built ones available in html and pdf from <ulink "
-"url=\"http://www.postgis.us/study_guides\">PostGIS / PostgreSQL Study "
-"Guides</ulink>"
+"You can download some pre-built ones available in html and pdf from <link "
+"xlink:href=\"http://www.postgis.us/study_guides\">PostGIS / PostgreSQL Study "
+"Guides</link>"
 msgstr ""
-"Puedes descargar algunos ya compilados en formato html o pdf en <ulink "
-"url=\"http://www.postgis.us/study_guides\"> Guias de Estudio PostGIS / "
-"PostgreSQL</ulink>"
+"Puedes descargar algunos ya compilados en formato html o pdf en <link xlink:"
+"href=\"http://www.postgis.us/study_guides\"> Guias de Estudio PostGIS / "
+"PostgreSQL</link>"
 
 #. Tag: command
 #: installation.xml:593
@@ -900,8 +995,8 @@ msgid ""
 "<code>make check</code> uses psql to run tests and as such can use psql "
 "environment variables. Common ones useful to override are <varname>PGUSER</"
 "varname>,<varname>PGPORT</varname>, and <varname>PGHOST</varname>. Refer to "
-"<ulink url=\"https://www.postgresql.org/docs/current/libpq-envars."
-"html\">psql environment variables</ulink>"
+"<link xlink:href=\"https://www.postgresql.org/docs/current/libpq-envars."
+"html\">psql environment variables</link>"
 msgstr ""
 
 #. Tag: para
@@ -965,12 +1060,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Once you do that, you should see <varname>postgis</varname>, "
-"<varname>postgis_topology</varname> as available extensions in PgAdmin -> "
+"<varname>postgis_topology</varname> as available extensions in PgAdmin -&gt; "
 "extensions."
 msgstr ""
-"Una vez hecho esto deberías ver <varname>postgis</varname>, "
-"<varname>postgis_topology</varname> como extensiones disponibles en PgAdmin -"
-"> extensiones."
 
 #. Tag: para
 #: installation.xml:636
@@ -1299,8 +1391,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The address standardizer relies on PCRE which is usually already installed "
-"on many Nix systems, but you can download the latest at: <ulink url=\"http://"
-"www.pcre.org\">http://www.pcre.org</ulink>. If during <xref "
+"on many Nix systems, but you can download the latest at: <link xlink:"
+"href=\"http://www.pcre.org\">http://www.pcre.org</link>. If during <xref "
 "linkend=\"installation_configuration\"/>, PCRE is found, then the address "
 "standardizer extension will automatically be built. If you have a custom "
 "pcre install you want to use instead, pass to configure <code>--with-"
@@ -1349,9 +1441,9 @@ msgid ""
 "Extras like Tiger geocoder may not be packaged in your PostGIS distribution. "
 "If you are missing the tiger geocoder extension or want a newer version than "
 "what your install comes with, then use the <filename>share/extension/"
-"postgis_tiger_geocoder.*</filename> files from the packages in <ulink "
-"url=\"http://postgis.net/windows_downloads/\">Windows Unreleased Versions</"
-"ulink> section for your version of PostgreSQL. Although these packages are "
+"postgis_tiger_geocoder.*</filename> files from the packages in <link xlink:"
+"href=\"http://postgis.net/windows_downloads/\">Windows Unreleased Versions</"
+"link> section for your version of PostgreSQL. Although these packages are "
 "for windows, the postgis_tiger_geocoder extension files will work on any OS "
 "since the extension is an SQL/plpgsql only extension."
 msgstr ""
@@ -1658,11 +1750,11 @@ msgstr ""
 #, no-c-format
 msgid ""
 "For Windows, 7-zip which is a free compress/uncompress tool you can download "
-"from <ulink url=\"http://www.7-zip.org/\">http://www.7-zip.org/</ulink>"
+"from <link xlink:href=\"http://www.7-zip.org/\">http://www.7-zip.org/</link>"
 msgstr ""
 "Para windows, 7-zip es una herramienta libre de compresión/descompresión que "
-"puedes descargar en <ulink url=\"http://www.7-zip.org/\">http://www.7-zip."
-"org/</ulink>"
+"puedes descargar en <link xlink:href=\"http://www.7-zip.org/\">http://www.7-"
+"zip.org/</link>"
 
 #. Tag: para
 #: installation.xml:896
@@ -1688,13 +1780,13 @@ msgstr ""
 #: installation.xml:898
 #, no-c-format
 msgid ""
-"If you are on windows, you can get pre-compiled binaries from <ulink "
-"url=\"http://gnuwin32.sourceforge.net/packages/wget.htm\">http://gnuwin32."
-"sourceforge.net/packages/wget.htm</ulink>"
+"If you are on windows, you can get pre-compiled binaries from <link xlink:"
+"href=\"http://gnuwin32.sourceforge.net/packages/wget.htm\">http://gnuwin32."
+"sourceforge.net/packages/wget.htm</link>"
 msgstr ""
-"Si estas en windows, puedes obtener ejecutables precompilados en <ulink "
-"url=\"http://gnuwin32.sourceforge.net/packages/wget.htm\">http://gnuwin32."
-"sourceforge.net/packages/wget.htm</ulink>"
+"Si estas en windows, puedes obtener ejecutables precompilados en <link xlink:"
+"href=\"http://gnuwin32.sourceforge.net/packages/wget.htm\">http://gnuwin32."
+"sourceforge.net/packages/wget.htm</link>"
 
 #. Tag: para
 #: installation.xml:901

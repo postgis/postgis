@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-12 14:53+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -51,8 +51,8 @@ msgstr ""
 #: release_notes.xml:11
 #, no-c-format
 msgid ""
-"NOTE: GEOS 3.12.0 details at <ulink url=\"https://libgeos.org/"
-"posts/2023-06-27-geos-3-12-released/\">GEOS 3.12.0 release notes</ulink>"
+"NOTE: GEOS 3.12.0 details at <link xlink:href=\"https://libgeos.org/"
+"posts/2023-06-27-geos-3-12-released/\">GEOS 3.12.0 release notes</link>"
 msgstr ""
 
 #. Tag: para
@@ -106,7 +106,7 @@ msgstr ""
 #: release_notes.xml:23
 #, no-c-format
 msgid ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5055\">5055</ulink>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5055\">5055</link>, "
 "complete manual internationalization (Sandro Santilli)"
 msgstr ""
 
@@ -114,7 +114,7 @@ msgstr ""
 #: release_notes.xml:24
 #, no-c-format
 msgid ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5052\">5052</ulink>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5052\">5052</link>, "
 "target version support in postgis_extensions_upgrade (Sandro Santilli)"
 msgstr ""
 
@@ -122,7 +122,7 @@ msgstr ""
 #: release_notes.xml:26
 #, no-c-format
 msgid ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</ulink>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</link>, "
 "expose version of GEOS at compile time (Sandro Santilli)"
 msgstr ""
 
@@ -137,9 +137,9 @@ msgstr ""
 #: release_notes.xml:28
 #, no-c-format
 msgid ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5257\">5257</ulink>, "
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5261\">5261</ulink>, "
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5277\">5277</ulink>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5257\">5257</link>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5261\">5261</link>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5277\">5277</link>, "
 "Support changes for PostgreSQL 16 (Regina Obe)"
 msgstr ""
 
@@ -147,8 +147,8 @@ msgstr ""
 #: release_notes.xml:29
 #, no-c-format
 msgid ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5006\">5006</ulink>, "
-"<ulink url=\"https://github.com/postgis/postgis/pull/705\">705</ulink>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5006\">5006</link>, "
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/705\">705</link>, "
 "ST_Transform: Support PROJ pipelines (Robert Coup, Koordinates)"
 msgstr ""
 
@@ -156,7 +156,7 @@ msgstr ""
 #: release_notes.xml:30
 #, no-c-format
 msgid ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5283\">5283</ulink>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5283\">5283</link>, "
 "[postgis_topology] RenameTopology (Sandro Santilli)"
 msgstr ""
 
@@ -164,7 +164,7 @@ msgstr ""
 #: release_notes.xml:31
 #, no-c-format
 msgid ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5286\">5286</ulink>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5286\">5286</link>, "
 "[postgis_topology] RenameTopoGeometryColumn (Sandro Santilli)"
 msgstr ""
 
@@ -172,7 +172,7 @@ msgstr ""
 #: release_notes.xml:32
 #, no-c-format
 msgid ""
-"<ulink url=\"https://github.com/postgis/postgis/pull/703\">703</ulink>, "
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/703\">703</link>, "
 "[postgis_raster] Add min/max resampling as options (Christian Schroeder)"
 msgstr ""
 
@@ -180,7 +180,7 @@ msgstr ""
 #: release_notes.xml:33
 #, no-c-format
 msgid ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5336\">5336</ulink>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5336\">5336</link>, "
 "[postgis_topology] topogeometry cast to topoelement support (Regina Obe)"
 msgstr ""
 
@@ -196,15 +196,16 @@ msgstr ""
 #: release_notes.xml:35
 #, no-c-format
 msgid ""
-"<ulink url=\"https://github.com/postgis/postgis/pull/721\">721</ulink>, New "
-"window-based ST_ClusterWithinWin and ST_ClusterIntersectingWin (Paul Ramsey)"
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/721\">721</link>, "
+"New window-based ST_ClusterWithinWin and ST_ClusterIntersectingWin (Paul "
+"Ramsey)"
 msgstr ""
 
 #. Tag: para
 #: release_notes.xml:36
 #, no-c-format
 msgid ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5397\">5397</ulink>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5397\">5397</link>, "
 "[address_standardizer] debug_standardize_address function (Regina Obe)"
 msgstr ""
 
@@ -212,8 +213,8 @@ msgstr ""
 #: release_notes.xml:37
 #, no-c-format
 msgid ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5373\">5373</"
-"ulink>ST_LargestEmptyCircle, exposes extra semantics on circle finding. Geos "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5373\">5373</"
+"link>ST_LargestEmptyCircle, exposes extra semantics on circle finding. Geos "
 "3.9+ required(Martin Davis)"
 msgstr ""
 
@@ -221,7 +222,7 @@ msgstr ""
 #: release_notes.xml:38
 #, no-c-format
 msgid ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</ulink>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</link>, "
 "ST_Project signature for geometry, and two-point signature (Paul Ramsey)"
 msgstr ""
 
@@ -229,7 +230,7 @@ msgstr ""
 #: release_notes.xml:39
 #, no-c-format
 msgid ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</ulink>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</link>, "
 "ST_LineExtend for extending linestrings (Paul Ramsey)"
 msgstr ""
 
@@ -251,15 +252,16 @@ msgstr ""
 #: release_notes.xml:45
 #, no-c-format
 msgid ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5194\">5194</ulink>, do "
-"not update system catalogs from postgis_extensions_upgrade (Sandro Santilli)"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5194\">5194</link>, "
+"do not update system catalogs from postgis_extensions_upgrade (Sandro "
+"Santilli)"
 msgstr ""
 
 #. Tag: para
 #: release_notes.xml:46
 #, no-c-format
 msgid ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5092\">5092</ulink>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5092\">5092</link>, "
 "reduce number of upgrade paths installed on system (Sandro Santilli)"
 msgstr ""
 
@@ -267,8 +269,9 @@ msgstr ""
 #: release_notes.xml:47
 #, no-c-format
 msgid ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/635\">635</ulink>, honour "
-"--bindir (and --prefix) configure switch for executables (Sandro Santilli)"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/635\">635</link>, "
+"honour --bindir (and --prefix) configure switch for executables (Sandro "
+"Santilli)"
 msgstr ""
 
 #. Tag: para
@@ -291,7 +294,7 @@ msgstr ""
 #: release_notes.xml:51
 #, no-c-format
 msgid ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5447\">5447</ulink> "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5447\">5447</link> "
 "Manual pages added for postgis and postgis_restore utilities (Sandro "
 "Santilli)"
 msgstr ""
@@ -316,7 +319,7 @@ msgstr ""
 #: release_notes.xml:55
 #, no-c-format
 msgid ""
-"<ulink url=\"https://github.com/postgis/postgis/pull/718\">718</ulink>, "
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/718\">718</link>, "
 "ST_QuantizeCoordinates(): speed-up implementation (Even Rouault)"
 msgstr ""
 
@@ -332,7 +335,7 @@ msgstr ""
 #: release_notes.xml:57
 #, no-c-format
 msgid ""
-"<ulink url=\"https://github.com/postgis/postgis/pull/734\">734</ulink>, "
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/734\">734</link>, "
 "Additional metadata on Proj installation in postgis_proj_version (Paul "
 "Ramsey)"
 msgstr ""
@@ -341,7 +344,7 @@ msgstr ""
 #: release_notes.xml:58
 #, no-c-format
 msgid ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5177\">5177</ulink>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5177\">5177</link>, "
 "Allow building tools without PostgreSQL server headers. Respect prefix/bin "
 "for tools install (Sandro Santilli)"
 msgstr ""
@@ -357,7 +360,7 @@ msgstr ""
 #: release_notes.xml:61
 #, no-c-format
 msgid ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/4913\">4913</ulink>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4913\">4913</link>, "
 "ST_AsSVG support for curve types CircularString, CompoundCurve, MultiCurve, "
 "and MultiSurface (Regina Obe)"
 msgstr ""
@@ -366,7 +369,7 @@ msgstr ""
 #: release_notes.xml:63
 #, no-c-format
 msgid ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5266\">5266</ulink>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5266\">5266</link>, "
 "ST_ClosestPoint, ST_ShortestLine, ST_LineSubString support for geography "
 "type (MobilityDB Esteban Zimanyi, Maxime Schoemans, Paul Ramsey)"
 msgstr ""
@@ -381,16 +384,16 @@ msgstr ""
 #: release_notes.xml:68
 #, no-c-format
 msgid ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5229\">5229</ulink>, Drop "
-"support for Proj &lt; 6.1 and PG 11 (Regina Obe)"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5229\">5229</link>, "
+"Drop support for Proj &lt; 6.1 and PG 11 (Regina Obe)"
 msgstr ""
 
 #. Tag: para
 #: release_notes.xml:69
 #, no-c-format
 msgid ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</ulink>, "
-"<ulink url=\"https://github.com/postgis/postgis/pull/734\">734</ulink>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</link>, "
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/734\">734</link>, "
 "postgis_full_version() and postgis_proj_version() now output more "
 "information about proj network configuration and data paths. GEOS compile-"
 "time version also shown if different from run-time (Paul Ramsey, Sandro "
@@ -401,8 +404,8 @@ msgstr ""
 #: release_notes.xml:73
 #, no-c-format
 msgid ""
-"<ulink url=\"https://github.com/postgis/postgis/pull/5447\">5447</ulink>, "
-"postgis_restore.pl renamed to postgis_restore (Sandro Santilli)"
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/5447\">5447</"
+"link>, postgis_restore.pl renamed to postgis_restore (Sandro Santilli)"
 msgstr ""
 
 #. Tag: para

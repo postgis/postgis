@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2022-02-18 09:52+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
@@ -17,6 +17,12 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.10.1\n"
 
+#. Tag: title
+#: reference_trajectory.xml:3
+#, no-c-format
+msgid "Trajectory Functions"
+msgstr ""
+
 #. Tag: para
 #: reference_trajectory.xml:5
 #, no-c-format
@@ -25,12 +31,6 @@ msgid ""
 "geometry with increasing measures (M value) on each coordinate. Spatio-"
 "temporal data can be modeled by using relative times (such as the epoch) as "
 "the measure values."
-msgstr ""
-
-#. Tag: title
-#: reference_trajectory.xml:12
-#, no-c-format
-msgid "Trajectory Functions"
 msgstr ""
 
 #. Tag: refpurpose

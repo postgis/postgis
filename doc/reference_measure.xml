@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-  <sect1 id="Measurement_Functions">
-    <sect1info>
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Measurement_Functions">
+    <title>Measurement Functions</title><info>
     <abstract>
     <para>These functions compute measurements of distance, area and angles.
 		There are also functions to compute geometry values determined by measurements.</para>
     </abstract>
-    </sect1info>
+    </info>
 
-	<title>Measurement Functions</title>
 
-	<refentry id="ST_Area">
+
+	<refentry xml:id="ST_Area">
 		<refnamediv>
 		  <refname>ST_Area</refname>
 
@@ -112,11 +112,11 @@ from somegeogtable;</programlisting>
 		  </refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_3DArea" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_GeographyFromText" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" /></para>
+			<para><xref linkend="ST_3DArea"/>, <xref linkend="ST_GeomFromText"/>, <xref linkend="ST_GeographyFromText"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_Transform"/></para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_Azimuth">
+	<refentry xml:id="ST_Azimuth">
 		<refnamediv>
 		  <refname>ST_Azimuth</refname>
 
@@ -146,12 +146,12 @@ from somegeogtable;</programlisting>
             North = 0; Northeast = &#x03C0;/4; East = &#x03C0;/2; Southeast = 3&#x03C0;/4;
             South = &#x03C0;; Southwest 5&#x03C0;/4; West = 3&#x03C0;/2; Northwest = 7&#x03C0;/4.</para>
 			<para>For the geography type, the azimuth solution is known as the
-                  <ulink url="https://en.wikipedia.org/wiki/Geodesics_on_an_ellipsoid">inverse geodesic problem</ulink>.</para>
+                  <link xlink:href="https://en.wikipedia.org/wiki/Geodesics_on_an_ellipsoid">inverse geodesic problem</link>.</para>
 			<para>The azimuth is a mathematical concept defined as the angle between a reference vector and a point, with angular units in radians.
 			The result value in radians can be converted to degrees using the PostgreSQL function <varname>degrees()</varname>.</para>
 
-			<para>Azimuth can be used in conjunction with <xref linkend="ST_Translate" /> to shift an object along its perpendicular axis. See
-				 the <varname>upgis_lineshift()</varname> function in the <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions">PostGIS wiki</ulink> for an implementation of this.</para>
+			<para>Azimuth can be used in conjunction with <xref linkend="ST_Translate"/> to shift an object along its perpendicular axis. See
+				 the <varname>upgis_lineshift()</varname> function in the <link xlink:href="http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions">PostGIS wiki</link> for an implementation of this.</para>
 
 			<para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
 			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for geography was introduced.</para>
@@ -176,7 +176,7 @@ SELECT degrees(ST_Azimuth( ST_Point(25, 45),  ST_Point(75, 100))) AS degA_B,
 				<entry><para><informalfigure>
 					<mediaobject>
 					  <imageobject>
-						<imagedata fileref="images/st_azimuth01.png" />
+						<imagedata fileref="images/st_azimuth01.png"/>
 					  </imageobject>
 					  <caption><para>Blue: origin Point(25,45); Green: target Point(75, 100); Yellow: Y axis or North;
                       Red: azimuth angle.</para></caption>
@@ -186,7 +186,7 @@ SELECT degrees(ST_Azimuth( ST_Point(25, 45),  ST_Point(75, 100))) AS degA_B,
 				<entry><para><informalfigure>
 					<mediaobject>
 					  <imageobject>
-						<imagedata fileref="images/st_azimuth02.png" />
+						<imagedata fileref="images/st_azimuth02.png"/>
 					  </imageobject>
 					  <caption><para>Blue: origin Point(75, 100); Green: target Point(25, 45); Yellow: Y axis or North;
                       Red: azimuth angle.</para></caption>
@@ -200,12 +200,12 @@ SELECT degrees(ST_Azimuth( ST_Point(25, 45),  ST_Point(75, 100))) AS degA_B,
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Angle" />, <xref linkend="ST_Point" />, <xref linkend="ST_Translate" />, <xref linkend="ST_Project" />, <ulink url="http://www.postgresql.org/docs/current/interactive/functions-math.html">PostgreSQL Math Functions</ulink></para>
+			<para><xref linkend="ST_Angle"/>, <xref linkend="ST_Point"/>, <xref linkend="ST_Translate"/>, <xref linkend="ST_Project"/>, <link xlink:href="http://www.postgresql.org/docs/current/interactive/functions-math.html">PostgreSQL Math Functions</link></para>
 		</refsection>
 
   </refentry>
 
-  	<refentry id="ST_Angle">
+  	<refentry xml:id="ST_Angle">
 		<refnamediv>
 		  <refname>ST_Angle</refname>
 
@@ -280,11 +280,11 @@ SELECT degrees( ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, 0.2 0
 	    <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Azimuth" /></para>
+		<para><xref linkend="ST_Azimuth"/></para>
         </refsection>
   </refentry>
 
-<refentry id="ST_ClosestPoint">
+<refentry xml:id="ST_ClosestPoint">
 	  <refnamediv>
 		<refname>ST_ClosestPoint</refname>
 
@@ -323,7 +323,7 @@ SELECT degrees( ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, 0.2 0
         This is the first point of the shortest line between the geometries
         (as computed by <xref linkend="ST_ShortestLine"/>).
 		</para>
-		<note><para>If you have a 3D Geometry, you may prefer to use <xref linkend="ST_3DClosestPoint" />.</para></note>
+		<note><para>If you have a 3D Geometry, you may prefer to use <xref linkend="ST_3DClosestPoint"/>.</para></note>
         <para role="enhanced" conformance="3.4.0">Enhanced: 3.4.0 -  Support for geography.</para>
 		<para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
 	  </refsection>
@@ -334,7 +334,7 @@ SELECT degrees( ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, 0.2 0
     <para><informalfigure>
         <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_closestpoint01.png" />
+            <imagedata fileref="images/st_closestpoint01.png"/>
             </imageobject>
             <caption><para>The closest point for a Point and a LineString is the point itself.
             The closest point for a LineString and a Point is a point on the line.</para></caption>
@@ -355,7 +355,7 @@ SELECT ST_AsText( ST_ClosestPoint(pt,line)) AS cp_pt_line,
     <para><informalfigure>
         <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_closestpoint02.png" />
+            <imagedata fileref="images/st_closestpoint02.png"/>
             </imageobject>
             <caption><para>The closest point on polygon A to polygon B</para></caption>
         </mediaobject>
@@ -374,11 +374,11 @@ SELECT ST_AsText( ST_ClosestPoint(
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_3DClosestPoint" />, <xref linkend="ST_Distance"/>, <xref linkend="ST_LongestLine"/>, <xref linkend="ST_ShortestLine"/>, <xref linkend="ST_MaxDistance"/></para>
+		<para><xref linkend="ST_3DClosestPoint"/>, <xref linkend="ST_Distance"/>, <xref linkend="ST_LongestLine"/>, <xref linkend="ST_ShortestLine"/>, <xref linkend="ST_MaxDistance"/></para>
 	  </refsection>
 </refentry>
 
-	<refentry id="ST_3DClosestPoint">
+	<refentry xml:id="ST_3DClosestPoint">
 		  <refnamediv>
 			<refname>ST_3DClosestPoint</refname>
 
@@ -471,11 +471,11 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_ClosestPoint"/>, <xref linkend="ST_3DDistance"/>, <xref linkend="ST_3DShortestLine"/></para>
+			<para><xref linkend="ST_AsEWKT"/>, <xref linkend="ST_ClosestPoint"/>, <xref linkend="ST_3DDistance"/>, <xref linkend="ST_3DShortestLine"/></para>
 		  </refsection>
 	</refentry>
 
-	<refentry id="ST_Distance">
+	<refentry xml:id="ST_Distance">
 	  <refnamediv>
 		<refname>ST_Distance</refname>
 
@@ -526,7 +526,7 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 		<para>&curve_support;</para>
 
 		<para role="availability" conformance="1.5.0">Availability: 1.5.0 geography support was introduced in 1.5.  Speed improvements for planar to better handle large or many vertex geometries</para>
-		<para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 improved speed for geography. See <ulink url="http://boundlessgeo.com/2012/07/making-geography-faster/">Making Geography faster</ulink> for details.</para>
+		<para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 improved speed for geography. See <link xlink:href="http://boundlessgeo.com/2012/07/making-geography-faster/">Making Geography faster</link> for details.</para>
 		<para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 - support for curved geometries was introduced.</para>
 		<para role="enhanced" conformance="2.2.0">Enhanced: 2.2.0 - measurement on spheroid performed with GeographicLib for improved accuracy and robustness. Requires PROJ &gt;= 4.9.0 to take advantage of the new feature.</para>
 		<para role="changed" conformance="3.0.0">Changed: 3.0.0 - does not depend on SFCGAL anymore.</para>
@@ -590,11 +590,11 @@ FROM (SELECT
 		<title>See Also</title>
 
 		<para><xref linkend="ST_3DDistance"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_DistanceSphere"/>, <xref linkend="ST_Distance_Spheroid"/>,
-		<xref linkend="ST_MaxDistance" />, <xref linkend="ST_HausdorffDistance" />,  <xref linkend="ST_FrechetDistance" />, <xref linkend="ST_Transform" /></para>
+		<xref linkend="ST_MaxDistance"/>, <xref linkend="ST_HausdorffDistance"/>,  <xref linkend="ST_FrechetDistance"/>, <xref linkend="ST_Transform"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_3DDistance">
+	<refentry xml:id="ST_3DDistance">
 	  <refnamediv>
 		<refname>ST_3DDistance</refname>
 
@@ -666,11 +666,11 @@ SELECT ST_3DDistance(poly, mline) As dist3d,
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_3DClosestPoint"/>, <xref linkend="ST_3DDWithin"/>, <xref linkend="ST_3DMaxDistance" />, <xref linkend="ST_3DShortestLine"/>, <xref linkend="ST_Transform" /></para>
+		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_3DClosestPoint"/>, <xref linkend="ST_3DDWithin"/>, <xref linkend="ST_3DMaxDistance"/>, <xref linkend="ST_3DShortestLine"/>, <xref linkend="ST_Transform"/></para>
 	  </refsection>
 	</refentry>
 
-<refentry id="ST_DistanceSphere">
+<refentry xml:id="ST_DistanceSphere">
 	  <refnamediv>
 		<refname>ST_DistanceSphere</refname>
 
@@ -726,11 +726,11 @@ FROM
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Distance" />, <xref linkend="ST_Distance_Spheroid" /></para>
+		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_Distance_Spheroid"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Distance_Spheroid">
+	<refentry xml:id="ST_Distance_Spheroid">
 	  <refnamediv>
 		<refname>ST_DistanceSpheroid</refname>
 
@@ -754,7 +754,7 @@ FROM
 
 		<para>Returns minimum distance in meters between two lon/lat
 				geometries given a particular spheroid. See the explanation of spheroids given for
-			<xref linkend="ST_Length_Spheroid" />.</para>
+			<xref linkend="ST_Length_Spheroid"/>.</para>
 		<note>
 			<para>This function does not look at the SRID of the geometry.
 			It assumes the geometry coordinates are based on the provided spheroid.
@@ -788,12 +788,12 @@ FROM
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Distance" />, <xref linkend="ST_DistanceSphere" /></para>
+		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_DistanceSphere"/></para>
 	  </refsection>
 	</refentry>
 
 
-	<refentry id="ST_FrechetDistance">
+	<refentry xml:id="ST_FrechetDistance">
 	  <refnamediv>
 		<refname>ST_FrechetDistance</refname>
 
@@ -820,7 +820,7 @@ FROM
 	  <refsection>
 		<title>Description</title>
 
-		<para>Implements algorithm for computing the Fréchet distance restricted to discrete points for both geometries, based on <ulink url="http://www.kr.tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf">Computing Discrete Fréchet Distance</ulink>.
+		<para>Implements algorithm for computing the Fréchet distance restricted to discrete points for both geometries, based on <link xlink:href="http://www.kr.tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf">Computing Discrete Fréchet Distance</link>.
 		The Fréchet distance is a measure of similarity between curves that takes into account the location and ordering of the points along the curves. Therefore it is often better than the Hausdorff distance. </para>
 		<para>
 When the optional densifyFrac is specified, this function performs a segment densification before computing the discrete Fréchet distance. The densifyFrac parameter sets the fraction by which to densify each segment. Each segment will be split into a number of equal-length subsegments, whose fraction of the total length is closest to the given fraction.
@@ -862,11 +862,11 @@ The smaller densifyFrac we specify, the more acurate Fréchet distance we get. B
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_HausdorffDistance" /></para>
+		<para><xref linkend="ST_HausdorffDistance"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_HausdorffDistance">
+	<refentry xml:id="ST_HausdorffDistance">
 	  <refnamediv>
 		<refname>ST_HausdorffDistance</refname>
 
@@ -903,7 +903,7 @@ The smaller densifyFrac we specify, the more acurate Fréchet distance we get. B
 		<title>Description</title>
 
 		<para>Returns the
-        <ulink url="http://en.wikipedia.org/wiki/Hausdorff_distance">Hausdorff distance</ulink>
+        <link xlink:href="http://en.wikipedia.org/wiki/Hausdorff_distance">Hausdorff distance</link>
         between two geometries.
         The Hausdorff distance is a measure of how similar or dissimilar 2 geometries are.
 		</para>
@@ -936,7 +936,7 @@ The smaller densifyFrac we specify, the more acurate Fréchet distance we get. B
         <informalfigure>
             <mediaobject>
             <imageobject>
-                <imagedata fileref="images/st_hausdorffdistance01.png" />
+                <imagedata fileref="images/st_hausdorffdistance01.png"/>
             </imageobject>
             <caption><para>Hausdorff distance (red) and distance (yellow)
             between two lines </para></caption>
@@ -981,11 +981,11 @@ SELECT DISTINCT ON (buildings.gid) buildings.gid, parcels.parcel_id
           <refsection>
                 <title>See Also</title>
 
-                <para><xref linkend="ST_FrechetDistance" /></para>
+                <para><xref linkend="ST_FrechetDistance"/></para>
           </refsection>
 	</refentry>
 
-	<refentry id="ST_Length">
+	<refentry xml:id="ST_Length">
 		<refnamediv>
 		  <refname>ST_Length</refname>
 
@@ -1008,7 +1008,7 @@ SELECT DISTINCT ON (buildings.gid) buildings.gid, parcels.parcel_id
 			<title>Description</title>
 
 			<para>For geometry types: returns the 2D Cartesian length of the geometry if it is a LineString, MultiLineString, ST_Curve, ST_MultiCurve.
-				For areal geometries 0 is returned; use <xref linkend="ST_Perimeter" /> instead.
+				For areal geometries 0 is returned; use <xref linkend="ST_Perimeter"/> instead.
 				The units of length is determined by the
 				spatial reference system of the geometry.</para>
 			<para>For geography types: computation is performed using the inverse geodesic calculation. Units of length are in meters.
@@ -1070,11 +1070,11 @@ FROM (SELECT ST_GeographyFromText(
 		  </refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_GeographyFromText" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_Length_Spheroid" />, <xref linkend="ST_Perimeter" />, <xref linkend="ST_Transform" /></para>
+			<para><xref linkend="ST_GeographyFromText"/>, <xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_Length_Spheroid"/>, <xref linkend="ST_Perimeter"/>, <xref linkend="ST_Transform"/></para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_Length2D">
+	<refentry xml:id="ST_Length2D">
 	  <refnamediv>
 		<refname>ST_Length2D</refname>
 
@@ -1102,11 +1102,11 @@ FROM (SELECT ST_GeographyFromText(
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Length" />, <xref linkend="ST_3DLength" /></para>
+		<para><xref linkend="ST_Length"/>, <xref linkend="ST_3DLength"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_3DLength">
+	<refentry xml:id="ST_3DLength">
 	  <refnamediv>
 		<refname>ST_3DLength</refname>
 
@@ -1151,11 +1151,11 @@ ST_3DLength
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Length" />, <xref linkend="ST_Length2D" /></para>
+		<para><xref linkend="ST_Length"/>, <xref linkend="ST_Length2D"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Length_Spheroid">
+	<refentry xml:id="ST_Length_Spheroid">
 	  <refnamediv>
 		<refname>ST_LengthSpheroid</refname>
 
@@ -1225,12 +1225,12 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeometryN" />, <xref linkend="ST_Length" /></para>
+		<para><xref linkend="ST_GeometryN"/>, <xref linkend="ST_Length"/></para>
 	  </refsection>
 	</refentry>
 
 
-<refentry id="ST_LongestLine">
+<refentry xml:id="ST_LongestLine">
 	  <refnamediv>
 		<refname>ST_LongestLine</refname>
 
@@ -1275,7 +1275,7 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
         <para><informalfigure>
             <mediaobject>
                 <imageobject>
-                <imagedata fileref="images/st_longestline01.png" />
+                <imagedata fileref="images/st_longestline01.png"/>
                 </imageobject>
                 <caption><para>Longest line between a point and a line</para></caption>
             </mediaobject>
@@ -1294,7 +1294,7 @@ LINESTRING(160 40,130 190)
         <informalfigure>
         <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_longestline02.png" />
+            <imagedata fileref="images/st_longestline02.png"/>
             </imageobject>
             <caption><para>Longest line between two polygons</para></caption>
         </mediaobject>
@@ -1312,7 +1312,7 @@ LINESTRING(20 10,105.3073372946034 186.95518130045156)
     <para><informalfigure>
         <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_longestline03.png" />
+            <imagedata fileref="images/st_longestline03.png"/>
             </imageobject>
             <caption><para>Longest line across a single geometry.
             The length of the line is equal to the Maximum Distance.
@@ -1341,7 +1341,7 @@ FROM (SELECT 'POLYGON ((40 180, 110 160, 180 180, 180 120, 140 90, 160 40, 80 10
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_3DLongestLine">
+	<refentry xml:id="ST_3DLongestLine">
 	  <refnamediv>
 		<refname>ST_3DLongestLine</refname>
 
@@ -1368,7 +1368,7 @@ FROM (SELECT 'POLYGON ((40 180, 110 160, 180 180, 180 120, 140 90, 160 40, 80 10
 		<para>Returns the 3-dimensional longest line between two geometries.
         The function returns the first longest line if more than one.
 		The line returned starts in g1 and ends in g2.
-		The 3D length of the line is equal to the distance returned by <xref linkend="ST_3DMaxDistance" />.
+		The 3D length of the line is equal to the distance returned by <xref linkend="ST_3DMaxDistance"/>.
 		</para>
 
 		<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
@@ -1440,7 +1440,7 @@ SELECT ST_AsEWKT(ST_3DLongestLine(line,pt)) AS lol3d_line_pt,
 	  </refsection>
 	</refentry>
 
-<refentry id="ST_MaxDistance">
+<refentry xml:id="ST_MaxDistance">
   <refnamediv>
     <refname>ST_MaxDistance</refname>
 
@@ -1497,11 +1497,11 @@ SELECT ST_MaxDistance('POLYGON ((10 10, 10 0, 0 0, 10 10))'::geometry,
   <!-- Optionally add a "See Also" section -->
   <refsection>
     <title>See Also</title>
-<para><xref linkend="ST_Distance"/>, <xref linkend="ST_LongestLine"/>, <xref linkend="ST_DFullyWithin" /></para>
+<para><xref linkend="ST_Distance"/>, <xref linkend="ST_LongestLine"/>, <xref linkend="ST_DFullyWithin"/></para>
   </refsection>
 </refentry>
 
-	<refentry id="ST_3DMaxDistance">
+	<refentry xml:id="ST_3DMaxDistance">
 	  <refnamediv>
 		<refname>ST_3DMaxDistance</refname>
 
@@ -1560,11 +1560,11 @@ SELECT ST_3DMaxDistance(
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_3DDWithin"/>, <xref linkend="ST_3DMaxDistance" />, <xref linkend="ST_Transform" /></para>
+		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_3DDWithin"/>, <xref linkend="ST_3DMaxDistance"/>, <xref linkend="ST_Transform"/></para>
 	  </refsection>
 	</refentry>
 
-<refentry id="ST_MinimumClearance">
+<refentry xml:id="ST_MinimumClearance">
 		<refnamediv>
 			<refname>ST_MinimumClearance</refname>
 			<refpurpose>Returns the minimum clearance of a geometry, a measure of a geometry's robustness.</refpurpose>
@@ -1583,8 +1583,8 @@ SELECT ST_3DMaxDistance(
 		<title>Description</title>
 
 		<para>
-		It is possible for a geometry to meet the criteria for validity according to <xref linkend="ST_IsValid" /> (polygons)
-		or <xref linkend="ST_IsSimple" /> (lines),
+		It is possible for a geometry to meet the criteria for validity according to <xref linkend="ST_IsValid"/> (polygons)
+		or <xref linkend="ST_IsSimple"/> (lines),
         but to become invalid if one of its vertices is moved by a small distance.
         This can happen due to loss of precision during conversion to text formats (such as WKT, KML, GML, GeoJSON),
         or binary formats that do not use double-precision floating point coordinates (e.g. MapInfo TAB).
@@ -1619,7 +1619,7 @@ SELECT ST_3DMaxDistance(
 
 		<para>
         To avoid validity issues caused by precision loss,
-		<xref linkend="ST_ReducePrecision" /> can reduce coordinate precision
+		<xref linkend="ST_ReducePrecision"/> can reduce coordinate precision
         while ensuring that polygonal geometry remains valid.
 		</para>
 
@@ -1642,15 +1642,15 @@ SELECT ST_MinimumClearance('POLYGON ((0 0, 1 0, 1 1, 0.5 3.2e-4, 0 0))');
 		<title>See Also</title>
 
 		<para>
-			<xref linkend="ST_MinimumClearanceLine" />,
-            <xref linkend="ST_IsSimple" />,
-            <xref linkend="ST_IsValid" />,
-            <xref linkend="ST_ReducePrecision" />
+			<xref linkend="ST_MinimumClearanceLine"/>,
+            <xref linkend="ST_IsSimple"/>,
+            <xref linkend="ST_IsValid"/>,
+            <xref linkend="ST_ReducePrecision"/>
 		</para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_MinimumClearanceLine">
+	<refentry xml:id="ST_MinimumClearanceLine">
 		<refnamediv>
 			<refname>ST_MinimumClearanceLine</refname>
 			<refpurpose>Returns the two-point LineString spanning a geometry's minimum clearance.</refpurpose>
@@ -1689,11 +1689,11 @@ LINESTRING(0.5 0.00032,0.5 0)
 
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_MinimumClearance" /></para>
+		<para><xref linkend="ST_MinimumClearance"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Perimeter">
+	<refentry xml:id="ST_Perimeter">
 		<refnamediv>
 		  <refname>ST_Perimeter</refname>
 
@@ -1717,7 +1717,7 @@ LINESTRING(0.5 0.00032,0.5 0)
 			<title>Description</title>
 
 			<para>Returns the 2D perimeter of the geometry/geography if it is a ST_Surface, ST_MultiSurface (Polygon, MultiPolygon).  0 is returned for
-				non-areal geometries.  For linear geometries use <xref linkend="ST_Length" />.  For geometry types, units for perimeter measures are specified by the
+				non-areal geometries.  For linear geometries use <xref linkend="ST_Length"/>.  For geometry types, units for perimeter measures are specified by the
 				spatial reference system of the geometry.</para>
 			<para>For geography types, the calculations are performed using the inverse geodesic problem, where perimeter units are in meters.
 				If PostGIS is compiled with PROJ version 4.8.0 or later, the spheroid is specified by the SRID, otherwise it is exclusive to WGS84.
@@ -1790,11 +1790,11 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 		  </refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_GeogFromText" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_Length" /></para>
+			<para><xref linkend="ST_GeogFromText"/>, <xref linkend="ST_GeomFromText"/>, <xref linkend="ST_Length"/></para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_Perimeter2D">
+	<refentry xml:id="ST_Perimeter2D">
 	  <refnamediv>
 		<refname>ST_Perimeter2D</refname>
 
@@ -1826,11 +1826,11 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Perimeter" /></para>
+		<para><xref linkend="ST_Perimeter"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_3DPerimeter">
+	<refentry xml:id="ST_3DPerimeter">
 	  <refnamediv>
 		<refname>ST_3DPerimeter</refname>
 
@@ -1875,11 +1875,11 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_Perimeter" />, <xref linkend="ST_Perimeter2D" /></para>
+		<para><xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_Perimeter"/>, <xref linkend="ST_Perimeter2D"/></para>
 	  </refsection>
 	</refentry>
 
-<refentry id="ST_ShortestLine">
+<refentry xml:id="ST_ShortestLine">
 	  <refnamediv>
 		<refname>ST_ShortestLine</refname>
 
@@ -1927,7 +1927,7 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
         <para><informalfigure>
             <mediaobject>
                 <imageobject>
-                <imagedata fileref="images/st_shortestline01.png" />
+                <imagedata fileref="images/st_shortestline01.png"/>
                 </imageobject>
                 <caption><para>Shortest line between Point and LineString</para></caption>
             </mediaobject>
@@ -1945,7 +1945,7 @@ SELECT ST_AsText(  ST_ShortestLine(
         <para><informalfigure>
             <mediaobject>
                 <imageobject>
-                <imagedata fileref="images/st_shortestline02.png" />
+                <imagedata fileref="images/st_shortestline02.png"/>
                 </imageobject>
                 <caption><para>Shortest line between Polygons</para></caption>
             </mediaobject>
@@ -1968,7 +1968,7 @@ LINESTRING(131.59149149528952 101.89887534906197,101.21320343559644 138.78679656
 		<para><xref linkend="ST_ClosestPoint"/>, <xref linkend="ST_Distance"/>, <xref linkend="ST_LongestLine"/>, <xref linkend="ST_MaxDistance"/></para>
 	  </refsection>
 	</refentry>
-	<refentry id="ST_3DShortestLine">
+	<refentry xml:id="ST_3DShortestLine">
 	  <refnamediv>
 		<refname>ST_3DShortestLine</refname>
 
@@ -1999,7 +1999,7 @@ LINESTRING(131.59149149528952 101.89887534906197,101.21320343559644 138.78679656
 		If g1 and g2 are intersecting with more than one point the function will return a line with start
 		and end in the same point but it can be any of the intersecting points.
 		The line returned will always start in g1 and end in g2.
-		The 3D length of the line this function returns will always be the same as <xref linkend="ST_3DDistance" /> returns for g1 and g2.
+		The 3D length of the line this function returns will always be the same as <xref linkend="ST_3DDistance"/> returns for g1 and g2.
 		</para>
 
 		<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
@@ -2073,4 +2073,4 @@ SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
 
 
 
-</sect1>
+</section>

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-09-11 19:03+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -17,6 +17,12 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 5.0\n"
 
+#. Tag: title
+#: reference_guc.xml:3
+#, no-c-format
+msgid "Grand Unified Custom Variables (GUCs)"
+msgstr "大一统自定义变量 (GUCs)"
+
 #. Tag: para
 #: reference_guc.xml:5
 #, no-c-format
@@ -27,12 +33,6 @@ msgid ""
 msgstr ""
 "本部分列出了自定义 PostGIS Grand Unified 自定义变量 (GUC)。 这些可以通过数据"
 "库、会话或事务进行全局设置。 最好在全局或数据库级别设置。"
-
-#. Tag: title
-#: reference_guc.xml:9
-#, no-c-format
-msgid "Grand Unified Custom Variables (GUCs)"
-msgstr "大一统自定义变量 (GUCs)"
 
 #. Tag: refpurpose
 #: reference_guc.xml:14
@@ -149,12 +149,12 @@ msgstr "可用性：2.2.0"
 #: reference_guc.xml:62
 #, no-c-format
 msgid ""
-"Additional information about GDAL_DATA is available at GDAL's <ulink "
-"url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
-"ulink>."
+"Additional information about GDAL_DATA is available at GDAL's <link xlink:"
+"href=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration "
+"Options</link>."
 msgstr ""
-"有关 GDAL_DATA 的其他信息可在 GDAL 的<ulink url=\"http://trac.osgeo.org/gdal/"
-"wiki/ConfigOptions\">配置选项</ulink>中找到。"
+"有关 GDAL_DATA 的其他信息可在 GDAL 的<link xlink:href=\"http://trac.osgeo."
+"org/gdal/wiki/ConfigOptions\">配置选项</link>中找到。"
 
 #. Tag: para
 #: reference_guc.xml:71
@@ -215,13 +215,13 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Enabled GDAL specified drivers can be specified by the driver's short-name "
-"or code. Driver short-names or codes can be found at <ulink url=\"http://www."
-"gdal.org/formats_list.html\">GDAL Raster Formats</ulink>. Multiple drivers "
-"can be specified by putting a space between each driver."
+"or code. Driver short-names or codes can be found at <link xlink:"
+"href=\"http://www.gdal.org/formats_list.html\">GDAL Raster Formats</link>. "
+"Multiple drivers can be specified by putting a space between each driver."
 msgstr ""
 "启用GDAL指定的驱动程序可以通过驱动程序的短名称或代码来指定。 驱动程序短名称或"
-"代码可以在 <ulink url=\"http://www.gdal.org/formats_list.html\">GDAL 栅格格式"
-"</ulink>中找到。 可以通过在每个驱动程序之间添加空格来指定多个驱动程序。"
+"代码可以在 <link xlink:href=\"http://www.gdal.org/formats_list.html\">GDAL 栅"
+"格格式</link>中找到。 可以通过在每个驱动程序之间添加空格来指定多个驱动程序。"
 
 #. Tag: para
 #: reference_guc.xml:110
@@ -287,12 +287,12 @@ msgstr ""
 #: reference_guc.xml:137
 #, no-c-format
 msgid ""
-"Additional information about GDAL_SKIP is available at GDAL's <ulink "
-"url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
-"ulink>."
+"Additional information about GDAL_SKIP is available at GDAL's <link xlink:"
+"href=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration "
+"Options</link>."
 msgstr ""
-"有关 GDAL_SKIP 的其他信息可在 GDAL 的<ulink url=\"http://trac.osgeo.org/gdal/"
-"wiki/ConfigOptions\">配置选项</ulink>中找到。"
+"有关 GDAL_SKIP 的其他信息可在 GDAL 的<link xlink:href=\"http://trac.osgeo."
+"org/gdal/wiki/ConfigOptions\">配置选项</link>中找到。"
 
 #. Tag: para
 #: reference_guc.xml:148
@@ -427,15 +427,15 @@ msgstr "用于设置处理外部数据库栅格时使用的选项的字符串配
 #, no-c-format
 msgid ""
 "A string configuration to set options used when working with an out-db "
-"raster. <ulink url=\"http://trac.osgeo.org/gdal/wiki/"
-"ConfigOptions\">Configuration options</ulink> control things like how much "
+"raster. <link xlink:href=\"http://trac.osgeo.org/gdal/wiki/"
+"ConfigOptions\">Configuration options</link> control things like how much "
 "space GDAL allocates to local data cache, whether to read overviews, and "
 "what access keys to use for remote out-db data sources."
 msgstr ""
-"用于设置处理外部数据库栅格时使用的选项的字符串配置。 <ulink url=\"http://"
-"trac.osgeo.org/gdal/wiki/ConfigOptions\">配置选项</ulink>控制诸如 GDAL 分配给"
-"本地数据缓存的空间大小、是否读取概述以及对远程 out-db 数据源使用哪些访问键等"
-"内容。"
+"用于设置处理外部数据库栅格时使用的选项的字符串配置。 <link xlink:"
+"href=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">配置选项</link>控制诸"
+"如 GDAL 分配给本地数据缓存的空间大小、是否读取概述以及对远程 out-db 数据源使"
+"用哪些访问键等内容。"
 
 #. Tag: para
 #: reference_guc.xml:251

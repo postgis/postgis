@@ -1,4 +1,8 @@
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:db="http://docbook.org/ns/docbook"
+	exclude-result-prefixes="db"
+>
 <!-- ********************************************************************
 	 ********************************************************************
 	 Copyright 2010-2022, Regina Obe
@@ -11,32 +15,36 @@
 
 	<!-- We deal only with the reference chapter -->
 	<xsl:template match="/">
-		<xsl:apply-templates select="/book/chapter[@id='reference']" />
+		<xsl:apply-templates select="//db:chapter[@xml:id='reference']" />
 	</xsl:template>
 
-	<xsl:template match="//chapter">
-
+	<xsl:template match="//db:chapter">
 			<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-			<xsl:for-each select='//refentry'>
-				<xsl:sort select="refnamediv/refname"/>
+			<xsl:for-each select='//db:refentry'>
+				<xsl:sort select="db:refnamediv/db:refname"/>
 				<xsl:variable name='comment'>
-					<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
+					<xsl:value-of select="normalize-space(translate(translate(db:refnamediv/db:refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
 				</xsl:variable>
 				<xsl:variable name="refid">
-					<xsl:value-of select="@id" />
+					<xsl:value-of select="@xml:id" />
 				</xsl:variable>
 				<xsl:variable name="refname">
-					<xsl:value-of select="refnamediv/refname" />
+					<xsl:value-of select="db:refnamediv/db:refname" />
 				</xsl:variable>
 
-			<!-- For each function prototype if it takes a geometry set then catalog it as an aggregate function  -->
+				<!-- For each function prototype if it takes a geometry set then catalog it as an aggregate function  -->
 
-						<xsl:if test=".//paramdef[contains(type,' set')] or .//paramdef[contains(type,'geography set')] or
-						.//paramdef[contains(type,'raster set')]">
-							 <listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
-						</xsl:if>
-				</xsl:for-each>
+				<xsl:if test=".//db:paramdef[contains(db:type, 'set')]">
+					<listitem>
+						<simpara>
+							<link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" />
+						</simpara>
+					</listitem>
+				</xsl:if>
+
+			</xsl:for-each>
+
 			</itemizedlist>
 
 	</xsl:template>

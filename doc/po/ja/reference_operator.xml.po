@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-08-23 15:40+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -53,9 +53,9 @@ msgstr ""
 #: reference_operator.xml:1258 reference_operator.xml:1311
 #: reference_operator.xml:1361 reference_operator.xml:1422
 #: reference_operator.xml:1483 reference_operator.xml:1547
-#: reference_operator.xml:1633 reference_operator.xml:1708
-#: reference_operator.xml:1769 reference_operator.xml:1823
-#: reference_operator.xml:1888
+#: reference_operator.xml:1632 reference_operator.xml:1707
+#: reference_operator.xml:1768 reference_operator.xml:1822
+#: reference_operator.xml:1887
 #, no-c-format
 msgid "Description"
 msgstr "説明"
@@ -138,8 +138,8 @@ msgstr "&P_support;"
 #: reference_operator.xml:1211 reference_operator.xml:1268
 #: reference_operator.xml:1321 reference_operator.xml:1374
 #: reference_operator.xml:1435 reference_operator.xml:1496
-#: reference_operator.xml:1571 reference_operator.xml:1656
-#: reference_operator.xml:1726 reference_operator.xml:1783
+#: reference_operator.xml:1570 reference_operator.xml:1655
+#: reference_operator.xml:1725 reference_operator.xml:1782
 #, no-c-format
 msgid "Examples"
 msgstr "例"
@@ -157,10 +157,10 @@ msgstr "例"
 #: reference_operator.xml:1155 reference_operator.xml:1217
 #: reference_operator.xml:1274 reference_operator.xml:1327
 #: reference_operator.xml:1380 reference_operator.xml:1441
-#: reference_operator.xml:1502 reference_operator.xml:1575
-#: reference_operator.xml:1672 reference_operator.xml:1730
-#: reference_operator.xml:1787 reference_operator.xml:1850
-#: reference_operator.xml:1906
+#: reference_operator.xml:1502 reference_operator.xml:1574
+#: reference_operator.xml:1671 reference_operator.xml:1729
+#: reference_operator.xml:1786 reference_operator.xml:1849
+#: reference_operator.xml:1905
 #, no-c-format
 msgid "See Also"
 msgstr "関連情報"
@@ -1178,7 +1178,7 @@ msgstr ""
 "用します。"
 
 #. Tag: para
-#: reference_operator.xml:1576
+#: reference_operator.xml:1575
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_OrderingEquals\"/>, <xref linkend=\"ST_Geometry_EQ\"/>"
@@ -1186,19 +1186,19 @@ msgstr ""
 ", <xref linkend=\"ST_OrderingEquals\"/>, <xref linkend=\"ST_Geometry_EQ\"/>"
 
 #. Tag: title
-#: reference_operator.xml:1584
+#: reference_operator.xml:1583
 #, no-c-format
 msgid "Distance Operators"
 msgstr "距離演算子"
 
 #. Tag: refpurpose
-#: reference_operator.xml:1591
+#: reference_operator.xml:1590
 #, no-c-format
 msgid "Returns the 2D distance between A and B."
 msgstr "AとBの2次元距離を返します。"
 
 #. Tag: para
-#: reference_operator.xml:1635
+#: reference_operator.xml:1634
 #, no-c-format
 msgid ""
 "The <varname>&lt;-&gt;</varname> operator returns the 2D distance between "
@@ -1215,7 +1215,7 @@ msgstr ""
 "距離検索を行います。ジオグラフィでは球面上の距離を計算します。"
 
 #. Tag: para
-#: reference_operator.xml:1644
+#: reference_operator.xml:1643
 #, no-c-format
 msgid ""
 "This operand will make use of 2D GiST indexes that may be available on the "
@@ -1227,7 +1227,7 @@ msgstr ""
 "との相違点は、ORDER BY句でのみインデックスが使用される点です。"
 
 #. Tag: para
-#: reference_operator.xml:1645 reference_operator.xml:1838
+#: reference_operator.xml:1644 reference_operator.xml:1837
 #, no-c-format
 msgid ""
 "Index only kicks in if one of the geometries is a constant (not in a "
@@ -1239,19 +1239,19 @@ msgstr ""
 "デックスが有効になるだけです。"
 
 #. Tag: para
-#: reference_operator.xml:1646
+#: reference_operator.xml:1645
 #, no-c-format
 msgid ""
-"Refer to <ulink url=\"https://postgis.net/workshops/postgis-intro/knn."
-"html\">PostGIS workshop: Nearest-Neighbor Searching</ulink> for a detailed "
+"Refer to <link xlink:href=\"https://postgis.net/workshops/postgis-intro/knn."
+"html\">PostGIS workshop: Nearest-Neighbor Searching</link> for a detailed "
 "example."
 msgstr ""
-"詳細な例については<ulink url=\"http://workshops.opengeo.org/postgis-intro/"
-"knn.html\">OpenGeo workshop: Nearest-Neighbour Searching</ulink>を参照して下"
-"さい。"
+"詳細な例については<link xlink:href=\"http://workshops.opengeo.org/postgis-"
+"intro/knn.html\">OpenGeo workshop: Nearest-Neighbour Searching</link>を参照し"
+"て下さい。"
 
 #. Tag: para
-#: reference_operator.xml:1648
+#: reference_operator.xml:1647
 #, no-c-format
 msgid ""
 "Enhanced: 2.2.0 -- True KNN (\"K nearest neighbor\") behavior for geometry "
@@ -1265,7 +1265,7 @@ msgstr ""
 "ディングボックスの重心に対応するだけです。"
 
 #. Tag: para
-#: reference_operator.xml:1649
+#: reference_operator.xml:1648
 #, no-c-format
 msgid ""
 "Changed: 2.2.0 -- For PostgreSQL 9.5 users, old Hybrid syntax may be slower, "
@@ -1277,7 +1277,7 @@ msgstr ""
 "場合には、そのやり方をり除きたくなるでしょう。"
 
 #. Tag: para
-#: reference_operator.xml:1650
+#: reference_operator.xml:1649
 #, no-c-format
 msgid ""
 "Availability: 2.0.0 -- Weak KNN provides nearest neighbors based on geometry "
@@ -1289,13 +1289,13 @@ msgstr ""
 "を得ます。PostgreSQL 9.1以上で有効です。"
 
 #. Tag: para
-#: reference_operator.xml:1658
+#: reference_operator.xml:1657
 #, no-c-format
 msgid "Then the KNN raw answer:"
 msgstr "KNNの生の答は次のとおりです。"
 
 #. Tag: para
-#: reference_operator.xml:1662
+#: reference_operator.xml:1661
 #, no-c-format
 msgid ""
 "If you run \"EXPLAIN ANALYZE\" on the two queries you would see a "
@@ -1305,7 +1305,7 @@ msgstr ""
 "かります。"
 
 #. Tag: para
-#: reference_operator.xml:1666
+#: reference_operator.xml:1665
 #, no-c-format
 msgid ""
 "For users running with PostgreSQL &lt; 9.5, use a hybrid query to find the "
@@ -1317,7 +1317,7 @@ msgstr ""
 "い、正しい順序を得る確実なクエリを実行します。"
 
 #. Tag: para
-#: reference_operator.xml:1673
+#: reference_operator.xml:1672
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_box\"/>"
@@ -1325,7 +1325,7 @@ msgstr ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_box\"/>"
 
 #. Tag: refpurpose
-#: reference_operator.xml:1681
+#: reference_operator.xml:1680
 #, no-c-format
 msgid ""
 "Returns the distance between A and B trajectories at their closest point of "
@@ -1333,7 +1333,7 @@ msgid ""
 msgstr "AトラジェクトリとBトラジェクトリとの最接近する時の距離を返します。"
 
 #. Tag: para
-#: reference_operator.xml:1710
+#: reference_operator.xml:1709
 #, no-c-format
 msgid ""
 "The <varname>|=|</varname> operator returns the 3D distance between two "
@@ -1348,7 +1348,7 @@ msgstr ""
 "(PostgreSQL 9.5.0以上)で使われる演算子です。"
 
 #. Tag: para
-#: reference_operator.xml:1718
+#: reference_operator.xml:1717
 #, no-c-format
 msgid ""
 "This operand will make use of ND GiST indexes that may be available on the "
@@ -1361,7 +1361,7 @@ msgstr ""
 "を使います。"
 
 #. Tag: para
-#: reference_operator.xml:1719
+#: reference_operator.xml:1718
 #, no-c-format
 msgid ""
 "Index only kicks in if one of the geometries is a constant (not in a "
@@ -1373,14 +1373,14 @@ msgstr ""
 "ンデックスが有効になるだけです。"
 
 #. Tag: para
-#: reference_operator.xml:1721
+#: reference_operator.xml:1720
 #, no-c-format
 msgid "Availability: 2.2.0. Index-supported only available for PostgreSQL 9.5+"
 msgstr ""
 "Availability:: 2.2.0 インデックス対応はPostgreSQL 9.5以上でのみ有効です。"
 
 #. Tag: para
-#: reference_operator.xml:1731
+#: reference_operator.xml:1730
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
@@ -1390,14 +1390,14 @@ msgstr ""
 "linkend=\"ST_IsValidTrajectory\"/>"
 
 #. Tag: refpurpose
-#: reference_operator.xml:1743
+#: reference_operator.xml:1742
 #, no-c-format
 msgid "Returns the 2D distance between A and B bounding boxes."
 msgstr ""
 "AのバウンディングボックスとBのバウンディングボックスの2次元距離を返します。"
 
 #. Tag: para
-#: reference_operator.xml:1771
+#: reference_operator.xml:1770
 #, no-c-format
 msgid ""
 "The <varname>&lt;#&gt;</varname> operator returns distance between two "
@@ -1411,7 +1411,7 @@ msgstr ""
 "る並び替えに使います。"
 
 #. Tag: para
-#: reference_operator.xml:1773 reference_operator.xml:1892
+#: reference_operator.xml:1772 reference_operator.xml:1891
 #, no-c-format
 msgid ""
 "This operand will make use of any indexes that may be available on the "
@@ -1423,7 +1423,7 @@ msgstr ""
 "との相違点は、ORDER BY句でのみインデックスが使用される点です。"
 
 #. Tag: para
-#: reference_operator.xml:1776
+#: reference_operator.xml:1775
 #, no-c-format
 msgid ""
 "Index only kicks in if one of the geometries is a constant e.g. ORDER BY "
@@ -1434,13 +1434,13 @@ msgstr ""
 "は、インデックスが有効になるだけです。"
 
 #. Tag: para
-#: reference_operator.xml:1778
+#: reference_operator.xml:1777
 #, no-c-format
 msgid "Availability: 2.0.0 -- KNN only available for PostgreSQL 9.1+"
 msgstr "Availability: 2.0.0 PostgreSQL 9.1以上でのみ有効です。"
 
 #. Tag: para
-#: reference_operator.xml:1788
+#: reference_operator.xml:1787
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_knn\"/>"
@@ -1448,7 +1448,7 @@ msgstr ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_knn\"/>"
 
 #. Tag: refpurpose
-#: reference_operator.xml:1796
+#: reference_operator.xml:1795
 #, no-c-format
 msgid ""
 "Returns the n-D distance between the centroids of A and B bounding boxes."
@@ -1456,7 +1456,7 @@ msgstr ""
 "AのバウンディングボックスとBのバウンディングボックスのn次元距離を返します。"
 
 #. Tag: para
-#: reference_operator.xml:1825
+#: reference_operator.xml:1824
 #, no-c-format
 msgid ""
 "The <varname>&lt;&lt;-&gt;&gt;</varname> operator returns the n-D "
@@ -1469,7 +1469,7 @@ msgstr ""
 "role=\"strong\">概ねの</emphasis>距離による並び替えに使います。"
 
 #. Tag: para
-#: reference_operator.xml:1832
+#: reference_operator.xml:1831
 #, no-c-format
 msgid ""
 "This operand will make use of n-D GiST indexes that may be available on the "
@@ -1481,26 +1481,26 @@ msgstr ""
 "との相違点は、ORDER BY句でのみインデックスが使用される点です。"
 
 #. Tag: para
-#: reference_operator.xml:1844 reference_operator.xml:1901
+#: reference_operator.xml:1843 reference_operator.xml:1900
 #, no-c-format
 msgid "Availability: 2.2.0 -- KNN only available for PostgreSQL 9.1+"
 msgstr "Availability: 2.0.0 KNNはPostgreSQL 9.1以上でのみ有効です。"
 
 #. Tag: para
-#: reference_operator.xml:1851
+#: reference_operator.xml:1850
 #, no-c-format
 msgid ", <xref linkend=\"geometry_distance_knn\"/>"
 msgstr ", <xref linkend=\"geometry_distance_knn\"/>"
 
 #. Tag: refpurpose
-#: reference_operator.xml:1862
+#: reference_operator.xml:1861
 #, no-c-format
 msgid "Returns the n-D distance between A and B bounding boxes."
 msgstr ""
 "AのバウンディングボックスとBのバウンディングボックスのn次元距離を返します。"
 
 #. Tag: para
-#: reference_operator.xml:1890
+#: reference_operator.xml:1889
 #, no-c-format
 msgid ""
 "The <varname>&lt;&lt;#&gt;&gt;</varname> operator returns distance between "
@@ -1514,7 +1514,7 @@ msgstr ""
 "並び替えに使います。"
 
 #. Tag: para
-#: reference_operator.xml:1895
+#: reference_operator.xml:1894
 #, no-c-format
 msgid ""
 "Index only kicks in if one of the geometries is a constant e.g. ORDER BY "
@@ -1526,7 +1526,7 @@ msgstr ""
 "には、インデックスが有効になるだけです。"
 
 #. Tag: para
-#: reference_operator.xml:1907
+#: reference_operator.xml:1906
 #, no-c-format
 msgid ", <xref linkend=\"geometry_distance_box\"/>"
 msgstr ", <xref linkend=\"geometry_distance_box\"/>"

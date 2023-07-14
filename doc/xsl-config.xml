@@ -15,7 +15,7 @@
 ######################################################################################
 -->
 
-<config>
+<config xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Configuration for list_new_functions.xml.xsl -->
     <list_new_functions>
 
@@ -132,9 +132,9 @@
                     <imagedata fileref='images/check.png' />
                 </imageobject>
             </inlinemediaobject>
-            This method implements the <ulink
-            url="http://www.opengeospatial.org/standards/sfs">OGC Simple Features
-            Implementation Specification for SQL 1.1.</ulink>
+            This method implements the <link
+            xlink:href="http://www.opengeospatial.org/standards/sfs">OGC Simple Features
+            Implementation Specification for SQL 1.1.</link>
         </para>
 
         <para role="tag_sqlmm_compliant">

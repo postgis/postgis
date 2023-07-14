@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ming 64gcc81\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-08-07 10:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -17,6 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.16.4\n"
+
+#. Tag: title
+#: reference_coverage.xml:3
+#, no-c-format
+msgid "Coverages"
+msgstr "カバレッジ"
 
 #. Tag: para
 #: reference_coverage.xml:5
@@ -33,12 +39,6 @@ msgstr ""
 "んし、隣接するエッジの頂点が確実に合致していなければいけません。カバレッジは"
 "処理が速く、かつ、エッジを変更してもウィンドウパーティション内のカバレッジの"
 "トポロジを保持するウィンドウ関数で操作できます。"
-
-#. Tag: title
-#: reference_coverage.xml:11
-#, no-c-format
-msgid "Coverages"
-msgstr "カバレッジ"
 
 #. Tag: refpurpose
 #: reference_coverage.xml:17
@@ -200,14 +200,14 @@ msgstr ""
 #: reference_coverage.xml:128
 #, no-c-format
 msgid ""
-"The simplification uses a variant of the <ulink url=\"https://en.wikipedia."
-"org/wiki/Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–Whyatt "
-"algorithm</ulink>. The <parameter>tolerance</parameter> parameter has units "
+"The simplification uses a variant of the <link xlink:href=\"https://en."
+"wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–Whyatt "
+"algorithm</link>. The <parameter>tolerance</parameter> parameter has units "
 "of distance, and is roughly equal to the square root of triangular areas to "
 "be simplified."
 msgstr ""
-"単純化では<ulink url=\"https://en.wikipedia.org/wiki/"
-"Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–Whyatt algorithm</ulink>版"
+"単純化では<link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–Whyatt algorithm</link>版"
 "を使います。<parameter>tolerance</parameter>パラメータは距離の単位を持ち、単"
 "純化する三角形面積の平方根とだいたい同じです。"
 

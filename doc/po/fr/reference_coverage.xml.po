@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ming 64gcc81\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-05-29 09:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -17,6 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.16.4\n"
+
+#. Tag: title
+#: reference_coverage.xml:3
+#, no-c-format
+msgid "Coverages"
+msgstr "Couvertures"
 
 #. Tag: para
 #: reference_coverage.xml:5
@@ -35,12 +41,6 @@ msgstr ""
 "traiter et peuvent être exploitées avec des fonctions window, qui conservent "
 "la topologie de la couverture à l'intérieur de la partition de la fenêtre "
 "tout en modifiant les arêtes."
-
-#. Tag: title
-#: reference_coverage.xml:11
-#, no-c-format
-msgid "Coverages"
-msgstr "Couvertures"
 
 #. Tag: refpurpose
 #: reference_coverage.xml:17
@@ -191,9 +191,9 @@ msgstr ""
 #: reference_coverage.xml:128
 #, no-c-format
 msgid ""
-"The simplification uses a variant of the <ulink url=\"https://en.wikipedia."
-"org/wiki/Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–Whyatt "
-"algorithm</ulink>. The <parameter>tolerance</parameter> parameter has units "
+"The simplification uses a variant of the <link xlink:href=\"https://en."
+"wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–Whyatt "
+"algorithm</link>. The <parameter>tolerance</parameter> parameter has units "
 "of distance, and is roughly equal to the square root of triangular areas to "
 "be simplified."
 msgstr ""

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -17,37 +17,38 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#. Tag: title
+#: reference_transaction.xml:3
+#, fuzzy, no-c-format
+msgid "Long Transaction Support"
+msgstr "장기 실행 트랜잭션(Long Transaction) 지원"
+
 #. Tag: para
 #: reference_transaction.xml:6
 #, fuzzy, no-c-format
 msgid ""
 "These functions implement a row locking mechanism to support long "
-"transactions. They are provided primarily for implementors of the <ulink "
-"url=\"http://www.opengeospatial.org/standards/wfs\">Web Feature Service</"
-"ulink> specification."
+"transactions. They are provided primarily for implementors of the <link "
+"xlink:href=\"http://www.opengeospatial.org/standards/wfs\">Web Feature "
+"Service</link> specification."
 msgstr ""
-"이 모듈 및 관련 PL/pgSQL 함수들은 <ulink url=\"http://www.opengeospatial.org/"
-"standards/wfs\">웹 피처 서비스(Web Feature Service)</ulink> 사양서가 요구하"
-"는 장기 잠금(long locking) 을 지원하기 위해 구현됐습니다."
-
-#. Tag: title
-#: reference_transaction.xml:13
-#, fuzzy, no-c-format
-msgid "Long Transaction Support"
-msgstr "장기 실행 트랜잭션(Long Transaction) 지원"
+"이 모듈 및 관련 PL/pgSQL 함수들은 <link xlink:href=\"http://www."
+"opengeospatial.org/standards/wfs\">웹 피처 서비스(Web Feature Service)</"
+"link> 사양서가 요구하는 장기 잠금(long locking) 을 지원하기 위해 구현됐습니"
+"다."
 
 #. Tag: para
 #: reference_transaction.xml:16
 #, fuzzy, no-c-format
 msgid ""
 "For the locking mechanism to operate correctly the <emphasis "
-"role=\"bold\">serializable</emphasis> <ulink url=\"http://www.postgresql.org/"
-"docs/current/static/transaction-iso.html\"> transaction isolation level</"
-"ulink> must be used."
+"role=\"bold\">serializable</emphasis> <link xlink:href=\"http://www."
+"postgresql.org/docs/current/static/transaction-iso.html\"> transaction "
+"isolation level</link> must be used."
 msgstr ""
-"사용자는 <ulink url=\"http://www.postgresql.org/docs/current/static/"
+"사용자는 <link xlink:href=\"http://www.postgresql.org/docs/current/static/"
 "transaction-iso.html\">직렬 가능 트랜잭션 레벨(serializable transaction "
-"level)</ulink> 을 이용해야 합니다. 그렇지 않으면 잠금 기제(locking mechanism)"
+"level)</link> 을 이용해야 합니다. 그렇지 않으면 잠금 기제(locking mechanism)"
 "가 중단될 것입니다."
 
 #. Tag: refpurpose

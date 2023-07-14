@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-12 14:53+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -14,20 +14,20 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#. Tag: title
+#: reference_transaction.xml:3
+#, no-c-format
+msgid "Long Transaction Support"
+msgstr ""
+
 #. Tag: para
 #: reference_transaction.xml:6
 #, no-c-format
 msgid ""
 "These functions implement a row locking mechanism to support long "
-"transactions. They are provided primarily for implementors of the <ulink "
-"url=\"http://www.opengeospatial.org/standards/wfs\">Web Feature Service</"
-"ulink> specification."
-msgstr ""
-
-#. Tag: title
-#: reference_transaction.xml:13
-#, no-c-format
-msgid "Long Transaction Support"
+"transactions. They are provided primarily for implementors of the <link "
+"xlink:href=\"http://www.opengeospatial.org/standards/wfs\">Web Feature "
+"Service</link> specification."
 msgstr ""
 
 #. Tag: para
@@ -35,9 +35,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "For the locking mechanism to operate correctly the <emphasis "
-"role=\"bold\">serializable</emphasis> <ulink url=\"http://www.postgresql.org/"
-"docs/current/static/transaction-iso.html\"> transaction isolation level</"
-"ulink> must be used."
+"role=\"bold\">serializable</emphasis> <link xlink:href=\"http://www."
+"postgresql.org/docs/current/static/transaction-iso.html\"> transaction "
+"isolation level</link> must be used."
 msgstr ""
 
 #. Tag: refpurpose

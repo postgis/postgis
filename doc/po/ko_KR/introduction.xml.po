@@ -1123,25 +1123,25 @@ msgstr ""
 "PostGIS 프로젝트에 직접적으로 금전을 후원하거나, 개발자 시간 및 호스팅에 기여"
 "를 한 기업들입니다."
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:343
 #, no-c-format
 msgid "Aiven"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:344
 #, no-c-format
 msgid "Arrival 3D"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:345
 #, no-c-format
 msgid "Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it)"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:346
 #, no-c-format
 msgid "AusVet"
@@ -1153,79 +1153,79 @@ msgstr ""
 msgid "Avencia"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:348
 #, no-c-format
 msgid "Azavea"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:349
 #, no-c-format
 msgid "Boundless"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:350
 #, no-c-format
 msgid "Cadcorp"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:351
 #, no-c-format
 msgid "Camptocamp"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:352
 #, no-c-format
 msgid "Carto"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:353
 #, no-c-format
 msgid "Crunchy Data"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:354
 #, no-c-format
 msgid "City of Boston (DND)"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:355
 #, no-c-format
 msgid "City of Helsinki"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:356
 #, no-c-format
 msgid "Clever Elephant Solutions"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:357
 #, no-c-format
 msgid "Cooperativa Alveo"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:358
 #, no-c-format
 msgid "Deimos Space"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:359
 #, no-c-format
 msgid "Faunalia"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:360
 #, no-c-format
 msgid "Geographic Data BC"
@@ -1237,25 +1237,25 @@ msgstr ""
 msgid "Hunter Systems Group"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:362
 #, no-c-format
 msgid "ISciences, LLC"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:363
 #, no-c-format
 msgid "Kontur"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:364
 #, no-c-format
 msgid "Lidwala Consulting Engineers"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:365
 #, no-c-format
 msgid "LISAsoft"
@@ -1273,13 +1273,13 @@ msgstr ""
 msgid "Maponics"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:368
 #, no-c-format
 msgid "Michigan Tech Research Institute"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:369
 #, no-c-format
 msgid "Natural Resources Canada"
@@ -1291,55 +1291,55 @@ msgstr ""
 msgid "Norwegian Forest and Landscape Institue"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:371
 #, no-c-format
 msgid "Norwegian Institute of Bioeconomy Research (NIBIO)"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:372
 #, no-c-format
 msgid "OSGeo"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:373
 #, no-c-format
 msgid "Oslandia"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:374
 #, no-c-format
 msgid "Palantir Technologies"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:375
 #, no-c-format
 msgid "Paragon Corporation"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:376
 #, no-c-format
 msgid "R3 GIS"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:377
 #, no-c-format
 msgid "Refractions Research"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:378
 #, no-c-format
 msgid "Regione Toscana - SITA"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:379
 #, no-c-format
 msgid "Safe Software"
@@ -1351,31 +1351,31 @@ msgstr ""
 msgid "Sirius Corporation plc"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:381
 #, no-c-format
 msgid "Stadt Uster"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:382
 #, no-c-format
 msgid "UC Davis Center for Vectorborne Diseases"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:383
 #, no-c-format
 msgid "Université Laval"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:384
 #, no-c-format
 msgid "U.S. Department of State (HIU)"
 msgstr ""
 
-#. Tag: ulink
+#. Tag: link
 #: introduction.xml:385
 #, no-c-format
 msgid "Zonar Systems"
@@ -1397,42 +1397,42 @@ msgid ""
 "sponsor chips in a small fraction of the needed funding and with enough "
 "people/organizations contributing, we have the funds to pay for the work "
 "that will help many. If you have an idea for a feature you think many others "
-"would be willing to co-fund, please post to the <ulink url=\"https://lists."
-"osgeo.org/mailman/listinfo/postgis-users\">PostGIS newsgroup</ulink> your "
-"thoughts and together we can make it happen."
+"would be willing to co-fund, please post to the <link xlink:href=\"https://"
+"lists.osgeo.org/mailman/listinfo/postgis-users\">PostGIS newsgroup</link> "
+"your thoughts and together we can make it happen."
 msgstr ""
 "크라우드 펀딩 캠페인이란 수많은 사람들에게 서비스할 수 있는, 우리가 간절히 원"
 "하는 기능들을 후원받기 위해 진행하는 캠페인입니다. 각 캠페인은 특정 기능 또"
 "는 일련의 기능에 특화되어 있습니다. 각 후원자는 필요한 펀딩의 작은 일부분을 "
 "담당하며, 충분한 공헌자 또는 조직이 모일 경우 많은 사용자를 도울 수 있는 작업"
 "을 위한 비용을 충당할 수 있습니다. 여러분이 생각하기에 다른 사람들이 기꺼이 "
-"공동 펀딩에 참여할 만한 아이디어가 있다면, <ulink url=\"https://lists.osgeo."
-"org/mailman/listinfo/postgis-users\">PostGIS 뉴스그룹</ulink> 에 여러분의 생"
-"각을 포스팅해서 우리 모두가 함께 실현할 수 있습니다."
+"공동 펀딩에 참여할 만한 아이디어가 있다면, <link xlink:href=\"https://lists."
+"osgeo.org/mailman/listinfo/postgis-users\">PostGIS 뉴스그룹</link> 에 여러분"
+"의 생각을 포스팅해서 우리 모두가 함께 실현할 수 있습니다."
 
 #. Tag: para
 #: introduction.xml:396
 #, no-c-format
 msgid ""
-"PostGIS 2.0.0 was the first release we tried this strategy. We used <ulink "
-"url=\"http://www.pledgebank.com\">PledgeBank</ulink> and we got two "
+"PostGIS 2.0.0 was the first release we tried this strategy. We used <link "
+"xlink:href=\"http://www.pledgebank.com\">PledgeBank</link> and we got two "
 "successful campaigns out of it."
 msgstr ""
-"PostGIS 2.0.0은 이런 전략 아래 탄생한 첫 번째 출시작입니다. 우리는 <ulink "
-"url=\"http://www.pledgebank.com\">PledgBank</ulink> 를 이용했으며 이를 통해 "
-"캠페인을 두 번 성공적으로 진행했습니다."
+"PostGIS 2.0.0은 이런 전략 아래 탄생한 첫 번째 출시작입니다. 우리는 <link "
+"xlink:href=\"http://www.pledgebank.com\">PledgBank</link> 를 이용했으며 이를 "
+"통해 캠페인을 두 번 성공적으로 진행했습니다."
 
 #. Tag: para
 #: introduction.xml:397
 #, no-c-format
 msgid ""
-"<ulink url=\"http://www.pledgebank.com/postgistopology\"><emphasis "
-"role=\"bold\">postgistopology</emphasis></ulink> - 10 plus sponsors each "
+"<link xlink:href=\"http://www.pledgebank.com/postgistopology\"><emphasis "
+"role=\"bold\">postgistopology</emphasis></link> - 10 plus sponsors each "
 "contributed $250 USD to build toTopoGeometry function and beef up topology "
 "support in 2.0.0. It happened."
 msgstr ""
-"<ulink url=\"http://www.pledgebank.com/postgistopology\"><emphasis "
-"role=\"bold\">postgistopology</emphasis></ulink> - 10명 이상의 후원자들이 "
+"<link xlink:href=\"http://www.pledgebank.com/postgistopology\"><emphasis "
+"role=\"bold\">postgistopology</emphasis></link> - 10명 이상의 후원자들이 "
 "2.0.0 버전에서 toTopGeometry 함수 빌드와 지형 지원 강화를 위해  250달러씩 후"
 "원했습니다."
 
@@ -1440,13 +1440,13 @@ msgstr ""
 #: introduction.xml:398
 #, fuzzy, no-c-format
 msgid ""
-"<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis "
-"role=\"bold\">postgis64windows</emphasis></ulink> - 20 someodd sponsors each "
+"<link xlink:href=\"http://www.pledgebank.com/postgis64windows\"><emphasis "
+"role=\"bold\">postgis64windows</emphasis></link> - 20 someodd sponsors each "
 "contributed $100 USD to pay for the work needed to work out PostGIS 64-bit "
 "issues on windows. It happened."
 msgstr ""
-"<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis "
-"role=\"bold\">postgis64windows</emphasis></ulink> - 후원자 20여 명이 윈도우 "
+"<link xlink:href=\"http://www.pledgebank.com/postgis64windows\"><emphasis "
+"role=\"bold\">postgis64windows</emphasis></link> - 후원자 20여 명이 윈도우 "
 "용 64비트 PostGIS의 문제점을 해결하기 위한 작업에 100달러씩 지원했고, 성공했"
 "습니다. 이제 PostgreSQL 스택 빌더에서 PostGIS 2.0.1  64비트 버전을 다운로드"
 "할 수 있습니다."
@@ -1461,7 +1461,7 @@ msgstr "주요 지원 라이브러리"
 #: introduction.xml:406
 #, no-c-format
 msgid ""
-"The <ulink url=\"https://libgeos.org\">GEOS</ulink> geometry operations "
+"The <link xlink:href=\"https://libgeos.org\">GEOS</link> geometry operations "
 "library"
 msgstr ""
 
@@ -1469,17 +1469,17 @@ msgstr ""
 #: introduction.xml:409
 #, no-c-format
 msgid ""
-"The <ulink url=\"https://gdal.org\">GDAL</ulink> Geospatial Data Abstraction "
-"Library used to power much of the raster functionality introduced in PostGIS "
-"2. In kind, improvements needed in GDAL to support PostGIS are contributed "
-"back to the GDAL project."
+"The <link xlink:href=\"https://gdal.org\">GDAL</link> Geospatial Data "
+"Abstraction Library used to power much of the raster functionality "
+"introduced in PostGIS 2. In kind, improvements needed in GDAL to support "
+"PostGIS are contributed back to the GDAL project."
 msgstr ""
 
 #. Tag: para
 #: introduction.xml:414
 #, no-c-format
 msgid ""
-"The <ulink url=\"https://www.proj4.org\">PROJ</ulink> cartographic "
+"The <link xlink:href=\"https://www.proj4.org\">PROJ</link> cartographic "
 "projection library"
 msgstr ""
 
@@ -1487,12 +1487,13 @@ msgstr ""
 #: introduction.xml:417
 #, fuzzy, no-c-format
 msgid ""
-"Last but not least, <ulink url=\"http://www.postgresql.org\">PostgreSQL</"
-"ulink>, the giant that PostGIS stands on. Much of the speed and flexibility "
-"of PostGIS would not be possible without the extensibility, great query "
-"planner, GIST index, and plethora of SQL features provided by PostgreSQL."
+"Last but not least, <link xlink:href=\"http://www.postgresql."
+"org\">PostgreSQL</link>, the giant that PostGIS stands on. Much of the speed "
+"and flexibility of PostGIS would not be possible without the extensibility, "
+"great query planner, GIST index, and plethora of SQL features provided by "
+"PostgreSQL."
 msgstr ""
-"마지막으로 그러나 역시 중요한, PostGIS의 기반이 된 <ulink url=\"http://www."
-"postgresql.org\">PostgreSQL DBMS</ulink> - PostGIS의 유동성과 속도의 대부분"
-"은 PostgreSQL가 제공하는 확장성, 강력한 쿼리 플래너, GiST 인덱스, 그리고 다양"
-"한 SQL 기능들 없이는 불가능했습니다."
+"마지막으로 그러나 역시 중요한, PostGIS의 기반이 된 <link xlink:href=\"http://"
+"www.postgresql.org\">PostgreSQL DBMS</link> - PostGIS의 유동성과 속도의 대부"
+"분은 PostgreSQL가 제공하는 확장성, 강력한 쿼리 플래너, GiST 인덱스, 그리고 다"
+"양한 SQL 기능들 없이는 불가능했습니다."

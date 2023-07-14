@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-05-15 11:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -16,6 +16,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.16.4\n"
+
+#. Tag: title
+#: reference_troubleshooting.xml:3
+#, no-c-format
+msgid "Troubleshooting Functions"
+msgstr "トラブルシューティング関数"
 
 #. Tag: para
 #: reference_troubleshooting.xml:5
@@ -28,12 +34,6 @@ msgstr ""
 "これらの関数はトラブルシューティングとジオメトリデータの修復を行うためのもの"
 "です。ジオメトリデータが、通常の環境では発生しえない出来事によって破損してい"
 "る場合のみ有効です。"
-
-#. Tag: title
-#: reference_troubleshooting.xml:10
-#, no-c-format
-msgid "Troubleshooting Functions"
-msgstr "トラブルシューティング関数"
 
 #. Tag: refpurpose
 #: reference_troubleshooting.xml:16

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-06-28 10:30+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-06-29 05:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -41,7 +41,7 @@ msgstr ""
 "次に示す関数は、PostGISが提供する空間集約関数です。<code>sum</code>や"
 "<code>average</code>といった他のSQL集約関数のように使います。"
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:7
 #, no-c-format
 msgid "&list_aggregates;"
@@ -66,7 +66,7 @@ msgstr ""
 "code>, <code>lead()</code>, <code>lag()</code>等のような他のSQLウィンドウ関数"
 "のように使います。全ての関数で、SQLの<code>OVER()</code>句が必要です。"
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:13
 #, no-c-format
 msgid "&list_window_functions;"
@@ -86,7 +86,7 @@ msgid ""
 "standard"
 msgstr "次に示す関数は、SQL/MM 3標準に準拠したPostGIS関数です。"
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:19
 #, no-c-format
 msgid "&list_sqlmm_functions;"
@@ -126,7 +126,7 @@ msgstr ""
 "挙動になることがあります。基本的な変換としては、UTMが望ましいですが、ランベル"
 "ト正積方位図法(北/南)、最悪のシナリオでメルカトルに頼ります。"
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:28
 #, no-c-format
 msgid "&list_geography_functions;"
@@ -149,7 +149,7 @@ msgstr ""
 "次に示す関数と演算子は、<xref linkend=\"raster\"/>データ型を入力または出力に"
 "取るPostGIS関数/演算子です。アルファベット順に示します。"
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:36
 #, no-c-format
 msgid "&list_raster_functions;"
@@ -173,7 +173,7 @@ msgstr ""
 "<link linkend=\"geomval\">geomval</link>データ型の集合または単一データを入力"
 "または出力に取るPostGIS関数です。"
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:42
 #, no-c-format
 msgid "&list_dump_functions;"
@@ -198,7 +198,7 @@ msgstr ""
 "す。ボックス系には<link linkend=\"box2d_type\">box2d</link>と<link "
 "linkend=\"box3d_type\">box3d</link>があります。"
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:49
 #, no-c-format
 msgid "&list_box_functions;"
@@ -218,7 +218,7 @@ msgid ""
 "Index."
 msgstr "次に示す関数は、Zインデクスを放り出さないPostGIS関数です。"
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:55
 #, no-c-format
 msgid "&list_3d_functions;"
@@ -240,7 +240,7 @@ msgstr ""
 "次に示す関数は、CIRCULARSTRING, CURVEDPOLYGON等の曲線ジオメトリ型が使える"
 "PostGIS関数です。"
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:61
 #, no-c-format
 msgid "&list_curved_geometry_functions;"
@@ -262,7 +262,7 @@ msgstr ""
 "次に示す関数は、POLYHEDRALSURFACE, POLYHEDRALSURFACEMジオメトリが使える"
 "PostGIS関数です。"
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:67
 #, no-c-format
 msgid "&list_polyhedral_geometry_functions;"
@@ -444,7 +444,7 @@ msgstr "&table_body_function_support_matrix;"
 msgid "New, Enhanced or changed PostGIS Functions"
 msgstr "新規作成/機能強化/変更されたPostGIS関数"
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:141
 #, no-c-format
 msgid "&list_new_functions;"

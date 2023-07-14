@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-11 19:02+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-07-03 15:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -22,6 +22,12 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.16.4\n"
 
+#. Tag: title
+#: reference_processing.xml:3
+#, no-c-format
+msgid "Geometry Processing"
+msgstr "Traitement des géométries"
+
 #. Tag: para
 #: reference_processing.xml:5
 #, no-c-format
@@ -31,12 +37,6 @@ msgid ""
 msgstr ""
 "Ces fonctions permettent de calculer des constructions géométriques ou de "
 "modifier la taille ou la forme d'une géométrie."
-
-#. Tag: title
-#: reference_processing.xml:11
-#, no-c-format
-msgid "Geometry Processing"
-msgstr "Traitement des géométries"
 
 #. Tag: refpurpose
 #: reference_processing.xml:17
@@ -631,18 +631,18 @@ msgstr ""
 #: reference_processing.xml:545
 #, no-c-format
 msgid ""
-"Smoothes a linear or polygonal geometry using <ulink url=\"http://www.idav."
-"ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-Algorithm."
-"html\">Chaikin's algorithm</ulink>. The degree of smoothing is controlled by "
+"Smoothes a linear or polygonal geometry using <link xlink:href=\"http://www."
+"idav.ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-Algorithm."
+"html\">Chaikin's algorithm</link>. The degree of smoothing is controlled by "
 "the <varname>nIterations</varname> parameter. On each iteration, each "
 "interior vertex is replaced by two vertices located at 1/4 of the length of "
 "the line segments before and after the vertex. A reasonable degree of "
 "smoothing is provided by 3 iterations; the maximum is limited to 5."
 msgstr ""
-"Lisse une géométrie linéaire ou polygonale en utilisant <ulink url=\"http://"
-"www.idav.ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-"
-"Algorithm.html\">Chaikin's algorithm</ulink>. Le degré de lissage est "
-"contrôlé par le paramètre <varname>nIterations</varname>. À chaque "
+"Lisse une géométrie linéaire ou polygonale en utilisant <link xlink:"
+"href=\"http://www.idav.ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/"
+"Chaikins-Algorithm.html\">Chaikin's algorithm</link>. Le degré de lissage "
+"est contrôlé par le paramètre <varname>nIterations</varname>. À chaque "
 "itération, chaque sommet intérieur est remplacé par deux sommets situés à "
 "1/4 de la longueur des segments de ligne précédant et suivant le sommet. Un "
 "degré raisonnable de lissage est fourni par 3 itérations ; le maximum est "
@@ -1025,16 +1025,16 @@ msgstr "Renvoie la triangulation de Delaunay des sommets d'une géométrie."
 #: reference_processing.xml:886
 #, no-c-format
 msgid ""
-"Computes the <ulink url=\"http://en.wikipedia.org/wiki/"
-"Delaunay_triangulation\">Delaunay triangulation</ulink> of the vertices of "
+"Computes the <link xlink:href=\"http://en.wikipedia.org/wiki/"
+"Delaunay_triangulation\">Delaunay triangulation</link> of the vertices of "
 "the input geometry. The optional <varname>tolerance</varname> can be used to "
 "snap nearby input vertices together, which improves robustness in some "
 "situations. The result geometry is bounded by the convex hull of the input "
 "vertices. The result geometry representation is determined by the "
 "<varname>flags</varname> code:"
 msgstr ""
-"Calcule la <ulink url=\"http://en.wikipedia.org/wiki/"
-"Delaunay_triangulation\"> Delaunay triangulation</ulink> des sommets de la "
+"Calcule la <link xlink:href=\"http://en.wikipedia.org/wiki/"
+"Delaunay_triangulation\"> Delaunay triangulation</link> des sommets de la "
 "géométrie d'entrée. La <varname>tolerance</varname> optionnelle peut être "
 "utilisée pour regrouper les sommets proches, ce qui améliore la robustesse "
 "dans certaines situations. La géométrie résultante est délimitée par "
@@ -1401,8 +1401,8 @@ msgstr "Fusionner des lignes d'orientation différente."
 #. Tag: para
 #: reference_processing.xml:1240
 #, no-c-format
-msgid "Lines are not merged across intersections with degree > 2."
-msgstr "Les lignes ne sont pas fusionnées aux intersections de degré > 2."
+msgid "Lines are not merged across intersections with degree &gt; 2."
+msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1248
@@ -2721,18 +2721,18 @@ msgstr ""
 #: reference_processing.xml:2467
 #, no-c-format
 msgid ""
-"Computes a two-dimensional <ulink url=\"https://en.wikipedia.org/wiki/"
-"Voronoi_diagram\">Voronoi diagram</ulink> from the vertices of the supplied "
+"Computes a two-dimensional <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Voronoi_diagram\">Voronoi diagram</link> from the vertices of the supplied "
 "geometry and returns the boundaries between cells in the diagram as a "
 "MultiLineString. Returns null if input geometry is null. Returns an empty "
 "geometry collection if the input geometry contains only one vertex. Returns "
 "an empty geometry collection if the <varname>extend_to</varname> envelope "
 "has zero area."
 msgstr ""
-"Calcule un <ulink url=\"https://en.wikipedia.org/wiki/"
-"Voronoi_diagram\">Voronoi diagram</ulink> bidimensionnel à partir des "
-"sommets de la géométrie fournie et renvoie les limites entre les cellules de "
-"la représentation sous la forme d'une MultiLineString. Renvoie null si la "
+"Calcule un <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Voronoi_diagram\">Voronoi diagram</link> bidimensionnel à partir des sommets "
+"de la géométrie fournie et renvoie les limites entre les cellules de la "
+"représentation sous la forme d'une MultiLineString. Renvoie null si la "
 "géométrie d'entrée est null. Renvoie une collection de géométries vide si la "
 "géométrie d'entrée ne contient qu'un seul sommet. Renvoie une collection de "
 "géométries vide si l'enveloppe <varname>extend_to</varname> a une surface "
@@ -2796,16 +2796,16 @@ msgstr ""
 #: reference_processing.xml:2546
 #, no-c-format
 msgid ""
-"Computes a two-dimensional <ulink url=\"https://en.wikipedia.org/wiki/"
-"Voronoi_diagram\">Voronoi diagram</ulink> from the vertices of the supplied "
+"Computes a two-dimensional <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Voronoi_diagram\">Voronoi diagram</link> from the vertices of the supplied "
 "geometry. The result is a GEOMETRYCOLLECTION of POLYGONs that covers an "
 "envelope larger than the extent of the input vertices. Returns null if input "
 "geometry is null. Returns an empty geometry collection if the input geometry "
 "contains only one vertex. Returns an empty geometry collection if the "
 "<varname>extend_to</varname> envelope has zero area."
 msgstr ""
-"Calcule un <ulink url=\"https://en.wikipedia.org/wiki/"
-"Voronoi_diagram\">diagramme de Voronoï</ulink> bidimensionnel à partir des "
+"Calcule un <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Voronoi_diagram\">diagramme de Voronoï</link> bidimensionnel à partir des "
 "sommets de la géométrie fournie. Le résultat est une GEOMETRYCOLLECTION de "
 "POLYGONES qui couvre une enveloppe plus grande que l'étendue des sommets "
 "d'entrée. Renvoie null si la géométrie d'entrée est null. Renvoie une "

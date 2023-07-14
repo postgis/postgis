@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-05-15 11:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -17,23 +17,23 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.16.4\n"
 
+#. Tag: title
+#: reference_transformation.xml:3
+#, no-c-format
+msgid "Affine Transformations"
+msgstr "Transformations affines"
+
 #. Tag: para
 #: reference_transformation.xml:5
 #, no-c-format
 msgid ""
-"These functions change the position and shape of geometries using <ulink "
-"url=\"https://en.wikipedia.org/wiki/Affine_transformation\">affine "
-"transformations</ulink>."
+"These functions change the position and shape of geometries using <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/Affine_transformation\">affine "
+"transformations</link>."
 msgstr ""
 "Ces fonctions modifient la position et la forme des géométries à l'aide de "
-"<ulink url=\"https://en.wikipedia.org/wiki/"
-"Affine_transformation\">transformations affines</ulink>."
-
-#. Tag: title
-#: reference_transformation.xml:10
-#, no-c-format
-msgid "Affine Transformations"
-msgstr "Transformations affines"
+"<link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Affine_transformation\">transformations affines</link>."
 
 #. Tag: refpurpose
 #: reference_transformation.xml:16

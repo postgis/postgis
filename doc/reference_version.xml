@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-  <sect1 id="Version_Functions">
-    <sect1info>
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Version_Functions">
+    <title>Version Functions</title><info>
     <abstract>
     <para>These functions report and upgrade PostGIS versions.
     </para>
     </abstract>
-    </sect1info>
+    </info>
 
-	<title>Version Functions</title>
+	
 
-<refentry id="PostGIS_Extensions_Upgrade">
+<refentry xml:id="PostGIS_Extensions_Upgrade">
 	  <refnamediv>
 		<refname>PostGIS_Extensions_Upgrade</refname>
 
@@ -69,19 +69,19 @@ NOTICE:  Extension postgis_tiger_geocoder is not available or not packagable for
 		<title>See Also</title>
 
 		<para>
-		<xref linkend="upgrading" />,
-		<xref linkend="PostGIS_GEOS_Version" />,
-		<xref linkend="PostGIS_Lib_Version" />,
-		<xref linkend="PostGIS_LibXML_Version" />,
-		<xref linkend="PostGIS_PROJ_Version" />,
-		<xref linkend="PostGIS_Version" />
+		<xref linkend="upgrading"/>,
+		<xref linkend="PostGIS_GEOS_Version"/>,
+		<xref linkend="PostGIS_Lib_Version"/>,
+		<xref linkend="PostGIS_LibXML_Version"/>,
+		<xref linkend="PostGIS_PROJ_Version"/>,
+		<xref linkend="PostGIS_Version"/>
 		</para>
 	  </refsection>
 	</refentry>
 
 
 
-	<refentry id="PostGIS_Full_Version">
+	<refentry xml:id="PostGIS_Full_Version">
 	  <refnamediv>
 		<refname>PostGIS_Full_Version</refname>
 
@@ -123,18 +123,18 @@ POSTGIS="3.4.0dev 3.3.0rc2-993-g61bdf43a7" [EXTENSION] PGSQL="160" GEOS="3.12.0d
 		<title>See Also</title>
 
 		<para>
-		<xref linkend="upgrading" />,
-		<xref linkend="PostGIS_GEOS_Version" />,
-		<xref linkend="PostGIS_Lib_Version" />,
-		<xref linkend="PostGIS_LibXML_Version" />,
-		<xref linkend="PostGIS_PROJ_Version" />,
-		<xref linkend="PostGIS_Wagyu_Version" />,
-		<xref linkend="PostGIS_Version" />
+		<xref linkend="upgrading"/>,
+		<xref linkend="PostGIS_GEOS_Version"/>,
+		<xref linkend="PostGIS_Lib_Version"/>,
+		<xref linkend="PostGIS_LibXML_Version"/>,
+		<xref linkend="PostGIS_PROJ_Version"/>,
+		<xref linkend="PostGIS_Wagyu_Version"/>,
+		<xref linkend="PostGIS_Version"/>
 		</para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="PostGIS_GEOS_Version">
+	<refentry xml:id="PostGIS_GEOS_Version">
 	  <refnamediv>
 		<refname>PostGIS_GEOS_Version</refname>
 
@@ -172,15 +172,11 @@ POSTGIS="3.4.0dev 3.3.0rc2-993-g61bdf43a7" [EXTENSION] PGSQL="160" GEOS="3.12.0d
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="PostGIS_Full_Version" />, <xref
-		linkend="PostGIS_Lib_Version" />, <xref
-		linkend="PostGIS_LibXML_Version" />, <xref
-		linkend="PostGIS_PROJ_Version" />, <xref
-		linkend="PostGIS_Version" /></para>
+		<para><xref linkend="PostGIS_Full_Version"/>, <xref linkend="PostGIS_Lib_Version"/>, <xref linkend="PostGIS_LibXML_Version"/>, <xref linkend="PostGIS_PROJ_Version"/>, <xref linkend="PostGIS_Version"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="PostGIS_GEOS_Compiled_Version">
+	<refentry xml:id="PostGIS_GEOS_Compiled_Version">
 	  <refnamediv>
 		<refname>PostGIS_GEOS_Compiled_Version</refname>
 
@@ -221,13 +217,13 @@ POSTGIS="3.4.0dev 3.3.0rc2-993-g61bdf43a7" [EXTENSION] PGSQL="160" GEOS="3.12.0d
 		<title>See Also</title>
 
 		<para>
-<xref linkend="PostGIS_GEOS_Version" />,
-<xref linkend="PostGIS_Full_Version" />
+<xref linkend="PostGIS_GEOS_Version"/>,
+<xref linkend="PostGIS_Full_Version"/>
         </para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="PostGIS_Liblwgeom_Version">
+	<refentry xml:id="PostGIS_Liblwgeom_Version">
 	  <refnamediv>
 		<refname>PostGIS_Liblwgeom_Version</refname>
 
@@ -264,15 +260,11 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="PostGIS_Full_Version" />, <xref
-		linkend="PostGIS_Lib_Version" />, <xref
-		linkend="PostGIS_LibXML_Version" />, <xref
-		linkend="PostGIS_PROJ_Version" />, <xref
-		linkend="PostGIS_Version" /></para>
+		<para><xref linkend="PostGIS_Full_Version"/>, <xref linkend="PostGIS_Lib_Version"/>, <xref linkend="PostGIS_LibXML_Version"/>, <xref linkend="PostGIS_PROJ_Version"/>, <xref linkend="PostGIS_Version"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="PostGIS_LibXML_Version">
+	<refentry xml:id="PostGIS_LibXML_Version">
 	  <refnamediv>
 		<refname>PostGIS_LibXML_Version</refname>
 
@@ -310,15 +302,11 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="PostGIS_Full_Version" />, <xref
-		linkend="PostGIS_Lib_Version" />, <xref
-		linkend="PostGIS_PROJ_Version" />, <xref
-		linkend="PostGIS_GEOS_Version" />, <xref
-		linkend="PostGIS_Version" /></para>
+		<para><xref linkend="PostGIS_Full_Version"/>, <xref linkend="PostGIS_Lib_Version"/>, <xref linkend="PostGIS_PROJ_Version"/>, <xref linkend="PostGIS_GEOS_Version"/>, <xref linkend="PostGIS_Version"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="PostGIS_Lib_Build_Date">
+	<refentry xml:id="PostGIS_Lib_Build_Date">
 	  <refnamediv>
 		<refname>PostGIS_Lib_Build_Date</refname>
 
@@ -352,7 +340,7 @@ postgis_liblwgeom_version
 	  </refsection>
 	</refentry>
 
-	<refentry id="PostGIS_Lib_Version">
+	<refentry xml:id="PostGIS_Lib_Version">
 	  <refnamediv>
 		<refname>PostGIS_Lib_Version</refname>
 
@@ -389,15 +377,11 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="PostGIS_Full_Version" />, <xref
-		linkend="PostGIS_GEOS_Version" />,  <xref
-		linkend="PostGIS_LibXML_Version" />, <xref
-		linkend="PostGIS_PROJ_Version" />, <xref
-		linkend="PostGIS_Version" /></para>
+		<para><xref linkend="PostGIS_Full_Version"/>, <xref linkend="PostGIS_GEOS_Version"/>,  <xref linkend="PostGIS_LibXML_Version"/>, <xref linkend="PostGIS_PROJ_Version"/>, <xref linkend="PostGIS_Version"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="PostGIS_PROJ_Version">
+	<refentry xml:id="PostGIS_PROJ_Version">
 	  <refnamediv>
 		<refname>PostGIS_PROJ_Version</refname>
 
@@ -436,15 +420,11 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="PostGIS_Full_Version" />, <xref
-		linkend="PostGIS_GEOS_Version" />,  <xref
-		linkend="PostGIS_Lib_Version" />, <xref
-		linkend="PostGIS_LibXML_Version" />, <xref
-		linkend="PostGIS_Version" /></para>
+		<para><xref linkend="PostGIS_Full_Version"/>, <xref linkend="PostGIS_GEOS_Version"/>,  <xref linkend="PostGIS_Lib_Version"/>, <xref linkend="PostGIS_LibXML_Version"/>, <xref linkend="PostGIS_Version"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="PostGIS_Wagyu_Version">
+	<refentry xml:id="PostGIS_Wagyu_Version">
 	  <refnamediv>
 		<refname>PostGIS_Wagyu_Version</refname>
 
@@ -481,16 +461,11 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="PostGIS_Full_Version" />, <xref
-		linkend="PostGIS_GEOS_Version" />,  <xref
-        linkend="PostGIS_PROJ_Version" />, <xref
-		linkend="PostGIS_Lib_Version" />, <xref
-		linkend="PostGIS_LibXML_Version" />, <xref
-		linkend="PostGIS_Version" /></para>
+		<para><xref linkend="PostGIS_Full_Version"/>, <xref linkend="PostGIS_GEOS_Version"/>,  <xref linkend="PostGIS_PROJ_Version"/>, <xref linkend="PostGIS_Lib_Version"/>, <xref linkend="PostGIS_LibXML_Version"/>, <xref linkend="PostGIS_Version"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="PostGIS_Scripts_Build_Date">
+	<refentry xml:id="PostGIS_Scripts_Build_Date">
 	  <refnamediv>
 		<refname>PostGIS_Scripts_Build_Date</refname>
 
@@ -528,15 +503,11 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="PostGIS_Full_Version" />, <xref
-		linkend="PostGIS_GEOS_Version" />, <xref
-		linkend="PostGIS_Lib_Version" />, <xref
-		linkend="PostGIS_LibXML_Version" />, <xref
-		linkend="PostGIS_Version" /></para>
+		<para><xref linkend="PostGIS_Full_Version"/>, <xref linkend="PostGIS_GEOS_Version"/>, <xref linkend="PostGIS_Lib_Version"/>, <xref linkend="PostGIS_LibXML_Version"/>, <xref linkend="PostGIS_Version"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="PostGIS_Scripts_Installed">
+	<refentry xml:id="PostGIS_Scripts_Installed">
 	  <refnamediv>
 		<refname>PostGIS_Scripts_Installed</refname>
 
@@ -562,7 +533,7 @@ postgis_liblwgeom_version
 
 		<note>
 			  <para>If the output of this function doesn't match the output of
-			  <xref linkend="PostGIS_Scripts_Released" />
+			  <xref linkend="PostGIS_Scripts_Released"/>
 			  you probably missed to properly upgrade an existing database.
 			  See the <link linkend="upgrading">Upgrading</link> section for
 			  more info.</para>
@@ -584,11 +555,11 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="PostGIS_Full_Version" />, <xref linkend="PostGIS_Scripts_Released" />, <xref linkend="PostGIS_Version" /></para>
+		<para><xref linkend="PostGIS_Full_Version"/>, <xref linkend="PostGIS_Scripts_Released"/>, <xref linkend="PostGIS_Version"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="PostGIS_Scripts_Released">
+	<refentry xml:id="PostGIS_Scripts_Released">
 	  <refnamediv>
 		<refname>PostGIS_Scripts_Released</refname>
 
@@ -614,7 +585,7 @@ postgis_liblwgeom_version
 
 		<note>
 		  <para>Starting with version 1.1.0 this function returns the same
-		  value of <xref linkend="PostGIS_Lib_Version" />. Kept
+		  value of <xref linkend="PostGIS_Lib_Version"/>. Kept
 		  for backward compatibility.</para>
 		</note>
 
@@ -634,11 +605,11 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="PostGIS_Full_Version" />, <xref linkend="PostGIS_Scripts_Installed" />, <xref linkend="PostGIS_Lib_Version" /></para>
+		<para><xref linkend="PostGIS_Full_Version"/>, <xref linkend="PostGIS_Scripts_Installed"/>, <xref linkend="PostGIS_Lib_Version"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="PostGIS_Version">
+	<refentry xml:id="PostGIS_Version">
 	  <refnamediv>
 		<refname>PostGIS_Version</refname>
 
@@ -675,12 +646,8 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="PostGIS_Full_Version" />, <xref
-		linkend="PostGIS_GEOS_Version" />, <xref
-		linkend="PostGIS_Lib_Version" />, <xref
-		linkend="PostGIS_LibXML_Version" />, <xref
-		linkend="PostGIS_PROJ_Version" /></para>
+		<para><xref linkend="PostGIS_Full_Version"/>, <xref linkend="PostGIS_GEOS_Version"/>, <xref linkend="PostGIS_Lib_Version"/>, <xref linkend="PostGIS_LibXML_Version"/>, <xref linkend="PostGIS_PROJ_Version"/></para>
 	  </refsection>
 	</refentry>
 
-  </sect1>
+  </section>

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-08-11 01:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -17,6 +17,12 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.16.4\n"
 
+#. Tag: title
+#: reference_cluster.xml:3
+#, no-c-format
+msgid "Clustering Functions"
+msgstr "クラスタリング関数"
+
 #. Tag: para
 #: reference_cluster.xml:5
 #, no-c-format
@@ -24,12 +30,6 @@ msgid "These functions implement clustering algorithms for sets of geometries."
 msgstr ""
 "これらの関数はジオメトリ集合に対するクラスタリングアルゴリズムを実装したもの"
 "です。"
-
-#. Tag: title
-#: reference_cluster.xml:8
-#, no-c-format
-msgid "Clustering Functions"
-msgstr "クラスタリング関数"
 
 #. Tag: refpurpose
 #: reference_cluster.xml:14
@@ -54,15 +54,16 @@ msgstr "説明"
 #, no-c-format
 msgid ""
 "A window function that returns a cluster number for each input geometry, "
-"using the 2D <ulink url=\"https://en.wikipedia.org/wiki/DBSCAN\">Density-"
-"based spatial clustering of applications with noise (DBSCAN)</ulink> "
-"algorithm. Unlike <xref linkend=\"ST_ClusterKMeans\"/>, it does not require "
-"the number of clusters to be specified, but instead uses the desired <link "
-"linkend=\"ST_Distance\">distance</link> (<varname>eps</varname>) and density "
-"(<varname>minpoints</varname>) parameters to determine each cluster."
+"using the 2D <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"DBSCAN\">Density-based spatial clustering of applications with noise "
+"(DBSCAN)</link> algorithm. Unlike <xref linkend=\"ST_ClusterKMeans\"/>, it "
+"does not require the number of clusters to be specified, but instead uses "
+"the desired <link linkend=\"ST_Distance\">distance</link> (<varname>eps</"
+"varname>) and density (<varname>minpoints</varname>) parameters to determine "
+"each cluster."
 msgstr ""
-"2次元<ulink url=\"https://en.wikipedia.org/wiki/DBSCAN\">Density-based "
-"spatial clustering of applications with noise (DBSCAN)</ulink>アルゴリズムを"
+"2次元<link xlink:href=\"https://en.wikipedia.org/wiki/DBSCAN\">Density-based "
+"spatial clustering of applications with noise (DBSCAN)</link>アルゴリズムを"
 "使って、入力ジオメトリ毎にクラスタ番号を返すウィンドウ関数です。<xref "
 "linkend=\"ST_ClusterKMeans\"/>と違い、クラスタ数の指定は不要ですが、代わり"
 "に、クラスタを決定するために、期待する<link linkend=\"ST_Distance\">距離</"
@@ -279,17 +280,18 @@ msgstr ""
 #: reference_cluster.xml:236
 #, no-c-format
 msgid ""
-"Returns <ulink url=\"https://en.wikipedia.org/wiki/K-means_clustering\">K-"
-"means</ulink> cluster number for each input geometry. The distance used for "
-"clustering is the distance between the centroids for 2D geometries, and "
-"distance between bounding box centers for 3D geometries. For POINT inputs, M "
-"coordinate will be treated as weight of input and has to be larger than 0."
+"Returns <link xlink:href=\"https://en.wikipedia.org/wiki/K-"
+"means_clustering\">K-means</link> cluster number for each input geometry. "
+"The distance used for clustering is the distance between the centroids for "
+"2D geometries, and distance between bounding box centers for 3D geometries. "
+"For POINT inputs, M coordinate will be treated as weight of input and has to "
+"be larger than 0."
 msgstr ""
-"入力ジオメトリごとの<ulink url=\"https://en.wikipedia.org/wiki/K-"
-"means_clustering\">K平均法</ulink>のクラスタ番号を返します。クラスタリングに"
-"使われる距離は、2次元ジオメトリでは重心間の距離、3次元ジオメトリではバウン"
-"ディングボックスの中心点間の距離です。POINT入力では、M値は入力の重みとして扱"
-"われ、0より大きくなければなりません。"
+"入力ジオメトリごとの<link xlink:href=\"https://en.wikipedia.org/wiki/K-"
+"means_clustering\">K平均法</link>のクラスタ番号を返します。クラスタリングに使"
+"われる距離は、2次元ジオメトリでは重心間の距離、3次元ジオメトリではバウンディ"
+"ングボックスの中心点間の距離です。POINT入力では、M値は入力の重みとして扱わ"
+"れ、0より大きくなければなりません。"
 
 #. Tag: para
 #: reference_cluster.xml:241
@@ -341,14 +343,14 @@ msgstr "タイプ別による区画の分割"
 msgid ""
 "Example: Clustering a preaggregated planetary-scale data population dataset "
 "using 3D clusering and weighting. Identify at least 20 regions based on "
-"<ulink url=\"https://data.humdata.org/dataset/kontur-population-"
-"dataset\">Kontur Population Data</ulink> that do not span more than 3000 km "
+"<link xlink:href=\"https://data.humdata.org/dataset/kontur-population-"
+"dataset\">Kontur Population Data</link> that do not span more than 3000 km "
 "from their center:"
 msgstr ""
 "例: 3次元クラスタリングと重み付けを使った、事前集計した地球規模の人口データ"
-"セットのクラスタリング。<ulink url=\"https://data.humdata.org/dataset/kontur-"
-"population-dataset\">Kontur Population Data</ulink>に基づいて、中心から3000km"
-"以下となる、少なくとも 20 の地域が識別されます。"
+"セットのクラスタリング。<link xlink:href=\"https://data.humdata.org/dataset/"
+"kontur-population-dataset\">Kontur Population Data</link>に基づいて、中心から"
+"3000km以下となる、少なくとも 20 の地域が識別されます。"
 
 #. Tag: para
 #: reference_cluster.xml:281

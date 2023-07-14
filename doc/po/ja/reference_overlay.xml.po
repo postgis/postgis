@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-08-29 12:13+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -16,6 +16,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.16.4\n"
+
+#. Tag: title
+#: reference_overlay.xml:3
+#, no-c-format
+msgid "Overlay Functions"
+msgstr "重ね合わせ関数"
 
 #. Tag: para
 #: reference_overlay.xml:5
@@ -28,12 +34,6 @@ msgstr ""
 "これらの関数は、二つのジオメトリの重ね合わせから生まれる結果を計算するもので"
 "す。ポイント集合理論の真偽値演算を行うものもあります。関連する関数もいくつか"
 "提供されています。"
-
-#. Tag: title
-#: reference_overlay.xml:12
-#, no-c-format
-msgid "Overlay Functions"
-msgstr "重ね合わせ関数"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:17
@@ -67,7 +67,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_overlay.xml:40 reference_overlay.xml:345 reference_overlay.xml:545
-#: reference_overlay.xml:866
+#: reference_overlay.xml:865
 #, no-c-format
 msgid "Performed by the GEOS module."
 msgstr "GEOSモジュールで実現しています。"
@@ -82,7 +82,7 @@ msgstr "Availability: 2.2.0"
 #: reference_overlay.xml:47 reference_overlay.xml:107 reference_overlay.xml:231
 #: reference_overlay.xml:295 reference_overlay.xml:354
 #: reference_overlay.xml:419 reference_overlay.xml:553
-#: reference_overlay.xml:664 reference_overlay.xml:888
+#: reference_overlay.xml:664 reference_overlay.xml:887
 #, no-c-format
 msgid "Examples"
 msgstr "例"
@@ -92,7 +92,7 @@ msgstr "例"
 #: reference_overlay.xml:302 reference_overlay.xml:366
 #: reference_overlay.xml:495 reference_overlay.xml:607
 #: reference_overlay.xml:705 reference_overlay.xml:777
-#: reference_overlay.xml:899
+#: reference_overlay.xml:898
 #, no-c-format
 msgid "See Also"
 msgstr "関連情報"
@@ -158,7 +158,7 @@ msgstr "GEOSモジュールで実現しています。"
 
 #. Tag: para
 #: reference_overlay.xml:97 reference_overlay.xml:548 reference_overlay.xml:653
-#: reference_overlay.xml:768 reference_overlay.xml:874
+#: reference_overlay.xml:768 reference_overlay.xml:873
 #, no-c-format
 msgid "Enhanced: 3.1.0 accept a gridSize parameter."
 msgstr "Enhanced: 3.1.0 gridSizeパラメータを受け付けるようになりました。"
@@ -171,7 +171,7 @@ msgstr "gridSizeパラメータを使うにはGEOS 3.9.0以上が必要です。
 
 #. Tag: para
 #: reference_overlay.xml:100 reference_overlay.xml:225
-#: reference_overlay.xml:656 reference_overlay.xml:879
+#: reference_overlay.xml:656 reference_overlay.xml:878
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.3"
 msgstr "&sfs_compliant; s2.1.1.3"
@@ -185,7 +185,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.20"
 #. Tag: para
 #: reference_overlay.xml:102 reference_overlay.xml:227
 #: reference_overlay.xml:289 reference_overlay.xml:658
-#: reference_overlay.xml:766 reference_overlay.xml:883
+#: reference_overlay.xml:766 reference_overlay.xml:882
 #, no-c-format
 msgid ""
 "&Z_support; However, the result is computed using XY only. The result Z "
@@ -313,13 +313,13 @@ msgstr "Enhanced: 3.1.0 gridSizeパラメータを受け付けるようになり
 #. Tag: para
 #: reference_overlay.xml:221 reference_overlay.xml:549
 #: reference_overlay.xml:654 reference_overlay.xml:769
-#: reference_overlay.xml:875
+#: reference_overlay.xml:874
 #, no-c-format
 msgid "Requires GEOS &gt;= 3.9.0 to use the gridSize parameter"
 msgstr "gridSizeパラメータを使うにはGEOS 3.9.0以上が必要です"
 
 #. Tag: para
-#: reference_overlay.xml:222 reference_overlay.xml:876
+#: reference_overlay.xml:222 reference_overlay.xml:875
 #, no-c-format
 msgid "Changed: 3.0.0 does not depend on SFCGAL."
 msgstr "Changed: 3.0.0 SFCGAL非依存になりました。"
@@ -692,16 +692,16 @@ msgstr ""
 #: reference_overlay.xml:538
 #, no-c-format
 msgid ""
-"This is a <ulink url=\"https://www.postgresql.org/docs/current/queries-table-"
-"expressions.html#QUERIES-TABLEFUNCTIONS\">set-returning function</ulink> "
-"(SRF) that return a set of rows containing single geometry values. It can be "
-"used in a SELECT list or a FROM clause to produce a result set with one "
-"record for each result geometry."
+"This is a <link xlink:href=\"https://www.postgresql.org/docs/current/queries-"
+"table-expressions.html#QUERIES-TABLEFUNCTIONS\">set-returning function</"
+"link> (SRF) that return a set of rows containing single geometry values. It "
+"can be used in a SELECT list or a FROM clause to produce a result set with "
+"one record for each result geometry."
 msgstr ""
-"これは<ulink url=\"https://www.postgresql.org/docs/current/queries-table-"
-"expressions.html#QUERIES-TABLEFUNCTIONS\">集合を返す関数</ulink> (SRF)です。"
-"単一ジオメトリ値を含む行の集合を返します。SELECTリストまたはFROM節で、結果ジ"
-"オメトリごとに一つのレコードとなる結果集合を生成できます。"
+"これは<link xlink:href=\"https://www.postgresql.org/docs/current/queries-"
+"table-expressions.html#QUERIES-TABLEFUNCTIONS\">集合を返す関数</link> (SRF)で"
+"す。単一ジオメトリ値を含む行の集合を返します。SELECTリストまたはFROM節で、結"
+"果ジオメトリごとに一つのレコードとなる結果集合を生成できます。"
 
 #. Tag: para
 #: reference_overlay.xml:547
@@ -968,17 +968,17 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The ST_Union array and set variants use the fast Cascaded Union algorithm "
-"described in <ulink url=\"http://blog.cleverelephant.ca/2009/01/must-faster-"
-"unions-in-postgis-14.html\">http://blog.cleverelephant.ca/2009/01/must-"
-"faster-unions-in-postgis-14.html</ulink>"
+"described in <link xlink:href=\"http://blog.cleverelephant.ca/2009/01/must-"
+"faster-unions-in-postgis-14.html\">http://blog.cleverelephant.ca/2009/01/"
+"must-faster-unions-in-postgis-14.html</link>"
 msgstr ""
-"ST_Unionの配列形式と集合形式では、<ulink url=\"http://blog.cleverelephant."
-"ca/2009/01/must-faster-unions-in-postgis-14.html\">http://blog."
-"cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html</ulink>で紹介"
-"されている早いカスケード結合アルゴリズムを使っています。"
+"ST_Unionの配列形式と集合形式では、<link xlink:href=\"http://blog."
+"cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html\">http://"
+"blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html</link>で"
+"紹介されている早いカスケード結合アルゴリズムを使っています。"
 
 #. Tag: para
-#: reference_overlay.xml:854
+#: reference_overlay.xml:853
 #, no-c-format
 msgid ""
 "A <code>gridSize</code> can be specified to work in fixed-precision space. "
@@ -990,7 +990,7 @@ msgstr ""
 "(GEOS-3.9.0以上が必要です)。"
 
 #. Tag: para
-#: reference_overlay.xml:860
+#: reference_overlay.xml:859
 #, no-c-format
 msgid ""
 "may sometimes be used in place of ST_Union, if the result is not required to "
@@ -1002,7 +1002,7 @@ msgstr ""
 "はST_Unionより早い動作速度になります。"
 
 #. Tag: para
-#: reference_overlay.xml:867
+#: reference_overlay.xml:866
 #, no-c-format
 msgid ""
 "ST_Union creates MultiLineString and does not sew LineStrings into a single "
@@ -1013,7 +1013,7 @@ msgstr ""
 "ます。"
 
 #. Tag: para
-#: reference_overlay.xml:870
+#: reference_overlay.xml:869
 #, no-c-format
 msgid ""
 "NOTE: this function was formerly called GeomUnion(), which was renamed from "
@@ -1023,7 +1023,7 @@ msgstr ""
 "した。UNIONはSQLの予約語であるためです。"
 
 #. Tag: para
-#: reference_overlay.xml:877
+#: reference_overlay.xml:876
 #, no-c-format
 msgid ""
 "Availability: 1.4.0 - ST_Union was enhanced. ST_Union(geomarray) was "
@@ -1033,13 +1033,13 @@ msgstr ""
 "され、PostgreSQLの高速なコレクションの集約が導入されました。"
 
 #. Tag: para
-#: reference_overlay.xml:880
+#: reference_overlay.xml:879
 #, no-c-format
 msgid "Aggregate version is not explicitly defined in OGC SPEC."
 msgstr "集約関数版は、OGC仕様に明示的に定義されていません。"
 
 #. Tag: para
-#: reference_overlay.xml:881
+#: reference_overlay.xml:880
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM 3: 5.1.19 the z-index (elevation) when polygons are "
@@ -1049,31 +1049,31 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#: reference_overlay.xml:889
+#: reference_overlay.xml:888
 #, no-c-format
 msgid "Aggregate example"
 msgstr "集約関数版の例"
 
 #. Tag: para
-#: reference_overlay.xml:891
+#: reference_overlay.xml:890
 #, no-c-format
 msgid "Non-Aggregate example"
 msgstr "非集約関数の例"
 
 #. Tag: para
-#: reference_overlay.xml:893
+#: reference_overlay.xml:892
 #, no-c-format
 msgid "3D example - sort of supports 3D (and with mixed dimensions!)"
 msgstr "3次元の例 - 3次元 (かつ混合次元)の種類"
 
 #. Tag: para
-#: reference_overlay.xml:895
+#: reference_overlay.xml:894
 #, no-c-format
 msgid "3d example not mixing dimensions"
 msgstr "3次元の例 - 混合次元なし"
 
 #. Tag: para
-#: reference_overlay.xml:900
+#: reference_overlay.xml:899
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "

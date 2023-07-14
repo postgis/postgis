@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<sect1 id="PostGIS_GUC">
-    <sect1info>
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="PostGIS_GUC">
+    <title>Grand Unified Custom Variables (GUCs)</title><info>
     <abstract>
     <para>This section lists custom PostGIS Grand Unified Custom Variables (GUC).
 These can be set globally, by database, by session or by transaction. Best set at global or database level.</para>
     </abstract>
-    </sect1info>
-    <title>Grand Unified Custom Variables (GUCs)</title>
+    </info>
 
-    <refentry id="postgis_backend">
+
+    <refentry xml:id="postgis_backend">
       <refnamediv>
         <refname>postgis.backend</refname>
         <refpurpose>The backend to service a function where GEOS and SFCGAL overlap. Options: geos or sfcgal. Defaults to geos.</refpurpose>
@@ -30,11 +30,11 @@ These can be set globally, by database, by session or by transaction. Best set a
       </refsection>
       <refsection>
               <title>See Also</title>
-              <para><xref linkend="reference_sfcgal" /></para>
+              <para><xref linkend="reference_sfcgal"/></para>
             </refsection>
   </refentry>
 
-  <refentry id="postgis_gdal_datapath">
+  <refentry xml:id="postgis_gdal_datapath">
             <refnamediv>
                 <refname>postgis.gdal_datapath</refname>
                 <refpurpose>
@@ -60,7 +60,7 @@ These can be set globally, by database, by session or by transaction. Best set a
 
                 <note>
                     <para>
-                        Additional information about GDAL_DATA is available at GDAL's <ulink url="http://trac.osgeo.org/gdal/wiki/ConfigOptions">Configuration Options</ulink>.
+                        Additional information about GDAL_DATA is available at GDAL's <link xlink:href="http://trac.osgeo.org/gdal/wiki/ConfigOptions">Configuration Options</link>.
                     </para>
                 </note>
 
@@ -83,12 +83,12 @@ SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';</progra
             <refsection>
                 <title>See Also</title>
                 <para>
-                    <xref linkend="RT_PostGIS_GDAL_Version" />, <xref linkend="RT_ST_Transform" />
+                    <xref linkend="RT_PostGIS_GDAL_Version"/>, <xref linkend="RT_ST_Transform"/>
                 </para>
             </refsection>
     </refentry>
 
-  <refentry id="postgis_gdal_enabled_drivers">
+  <refentry xml:id="postgis_gdal_enabled_drivers">
             <refnamediv>
                 <refname>postgis.gdal_enabled_drivers</refname>
                 <refpurpose>
@@ -107,7 +107,7 @@ SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';</progra
                 </para>
 
                 <para>
-                    Enabled GDAL specified drivers can be specified by the driver's short-name or code. Driver short-names or codes can be found at <ulink url="http://www.gdal.org/formats_list.html">GDAL Raster Formats</ulink>. Multiple drivers can be specified by putting a space between each driver.
+                    Enabled GDAL specified drivers can be specified by the driver's short-name or code. Driver short-names or codes can be found at <link xlink:href="http://www.gdal.org/formats_list.html">GDAL Raster Formats</link>. Multiple drivers can be specified by putting a space between each driver.
                 </para>
 
                 <note>
@@ -139,7 +139,7 @@ SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';</progra
 
                 <note>
                     <para>
-                        Additional information about GDAL_SKIP is available at GDAL's <ulink url="http://trac.osgeo.org/gdal/wiki/ConfigOptions">Configuration Options</ulink>.
+                        Additional information about GDAL_SKIP is available at GDAL's <link xlink:href="http://trac.osgeo.org/gdal/wiki/ConfigOptions">Configuration Options</link>.
                     </para>
                 </note>
 
@@ -179,17 +179,17 @@ SET postgis.gdal_enabled_drivers = 'DISABLE_ALL';
             <refsection>
                 <title>See Also</title>
                 <para>
-                    <xref linkend="RT_ST_FromGDALRaster" />,
-                    <xref linkend="RT_ST_AsGDALRaster" />,
-                    <xref linkend="RT_ST_AsTIFF" />,
-                    <xref linkend="RT_ST_AsPNG" />,
-                    <xref linkend="RT_ST_AsJPEG" />,
-                    <xref linkend="postgis_enable_outdb_rasters" />
+                    <xref linkend="RT_ST_FromGDALRaster"/>,
+                    <xref linkend="RT_ST_AsGDALRaster"/>,
+                    <xref linkend="RT_ST_AsTIFF"/>,
+                    <xref linkend="RT_ST_AsPNG"/>,
+                    <xref linkend="RT_ST_AsJPEG"/>,
+                    <xref linkend="postgis_enable_outdb_rasters"/>
                 </para>
             </refsection>
     </refentry>
 
-  <refentry id="postgis_enable_outdb_rasters">
+  <refentry xml:id="postgis_enable_outdb_rasters">
             <refnamediv>
                 <refname>postgis.enable_outdb_rasters</refname>
                 <refpurpose>
@@ -252,14 +252,14 @@ SELECT pg_reload_conf();
             <refsection>
                 <title>See Also</title>
                 <para>
-                    <xref linkend="postgis_gdal_enabled_drivers" />
-                    <xref linkend="postgis_gdal_vsi_options" />
+                    <xref linkend="postgis_gdal_enabled_drivers"/>
+                    <xref linkend="postgis_gdal_vsi_options"/>
                 </para>
             </refsection>
     </refentry>
 
 
-  <refentry id="postgis_gdal_vsi_options">
+  <refentry xml:id="postgis_gdal_vsi_options">
             <refnamediv>
                 <refname>postgis.gdal_config_options</refname>
                 <refpurpose>
@@ -270,7 +270,7 @@ SELECT pg_reload_conf();
             <refsection>
                 <title>Description</title>
                 <para>
-                    A string configuration to set options used when working with an out-db raster. <ulink url="http://trac.osgeo.org/gdal/wiki/ConfigOptions">Configuration options</ulink> control things like how much space GDAL allocates to local data cache, whether to read overviews, and what access keys to use for remote out-db data sources.
+                    A string configuration to set options used when working with an out-db raster. <link xlink:href="http://trac.osgeo.org/gdal/wiki/ConfigOptions">Configuration options</link> control things like how much space GDAL allocates to local data cache, whether to read overviews, and what access keys to use for remote out-db data sources.
                 </para>
 
                 <para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
@@ -294,12 +294,12 @@ SET LOCAL postgis.gdal_config_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx AWS_S
             <refsection>
                 <title>See Also</title>
                 <para>
-                    <xref linkend="postgis_enable_outdb_rasters" />
-                    <xref linkend="postgis_gdal_enabled_drivers" />
+                    <xref linkend="postgis_enable_outdb_rasters"/>
+                    <xref linkend="postgis_gdal_enabled_drivers"/>
                 </para>
             </refsection>
     </refentry>
 
 
 
-</sect1>
+</section>

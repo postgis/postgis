@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-12 14:53+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -14,18 +14,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#. Tag: title
+#: reference_measure.xml:3
+#, no-c-format
+msgid "Measurement Functions"
+msgstr ""
+
 #. Tag: para
 #: reference_measure.xml:5
 #, no-c-format
 msgid ""
 "These functions compute measurements of distance, area and angles. There are "
 "also functions to compute geometry values determined by measurements."
-msgstr ""
-
-#. Tag: title
-#: reference_measure.xml:10
-#, no-c-format
-msgid "Measurement Functions"
 msgstr ""
 
 #. Tag: refpurpose
@@ -213,9 +213,9 @@ msgstr ""
 #: reference_measure.xml:105
 #, no-c-format
 msgid ""
-"For the geography type, the azimuth solution is known as the <ulink "
-"url=\"https://en.wikipedia.org/wiki/Geodesics_on_an_ellipsoid\">inverse "
-"geodesic problem</ulink>."
+"For the geography type, the azimuth solution is known as the <link xlink:"
+"href=\"https://en.wikipedia.org/wiki/Geodesics_on_an_ellipsoid\">inverse "
+"geodesic problem</link>."
 msgstr ""
 
 #. Tag: para
@@ -234,9 +234,10 @@ msgstr ""
 msgid ""
 "Azimuth can be used in conjunction with <xref linkend=\"ST_Translate\"/> to "
 "shift an object along its perpendicular axis. See the "
-"<varname>upgis_lineshift()</varname> function in the <ulink url=\"http://"
-"trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions\">PostGIS wiki</ulink> "
-"for an implementation of this."
+"<varname>upgis_lineshift()</varname> function in the <link xlink:"
+"href=\"http://trac.osgeo.org/postgis/wiki/"
+"UsersWikiplpgsqlfunctions\">PostGIS wiki</link> for an implementation of "
+"this."
 msgstr ""
 
 #. Tag: para
@@ -287,8 +288,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_Translate\"/>, <xref "
-"linkend=\"ST_Project\"/>, <ulink url=\"http://www.postgresql.org/docs/"
-"current/interactive/functions-math.html\">PostgreSQL Math Functions</ulink>"
+"linkend=\"ST_Project\"/>, <link xlink:href=\"http://www.postgresql.org/docs/"
+"current/interactive/functions-math.html\">PostgreSQL Math Functions</link>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -542,9 +543,9 @@ msgstr ""
 #: reference_measure.xml:417
 #, no-c-format
 msgid ""
-"Enhanced: 2.1.0 improved speed for geography. See <ulink url=\"http://"
+"Enhanced: 2.1.0 improved speed for geography. See <link xlink:href=\"http://"
 "boundlessgeo.com/2012/07/making-geography-faster/\">Making Geography faster</"
-"ulink> for details."
+"link> for details."
 msgstr ""
 
 #. Tag: para
@@ -756,9 +757,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Implements algorithm for computing the Fréchet distance restricted to "
-"discrete points for both geometries, based on <ulink url=\"http://www.kr."
-"tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf\">Computing Discrete "
-"Fréchet Distance</ulink>. The Fréchet distance is a measure of similarity "
+"discrete points for both geometries, based on <link xlink:href=\"http://www."
+"kr.tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf\">Computing Discrete "
+"Fréchet Distance</link>. The Fréchet distance is a measure of similarity "
 "between curves that takes into account the location and ordering of the "
 "points along the curves. Therefore it is often better than the Hausdorff "
 "distance."
@@ -821,8 +822,8 @@ msgstr ""
 #: reference_measure.xml:705
 #, no-c-format
 msgid ""
-"Returns the <ulink url=\"http://en.wikipedia.org/wiki/"
-"Hausdorff_distance\">Hausdorff distance</ulink> between two geometries. The "
+"Returns the <link xlink:href=\"http://en.wikipedia.org/wiki/"
+"Hausdorff_distance\">Hausdorff distance</link> between two geometries. The "
 "Hausdorff distance is a measure of how similar or dissimilar 2 geometries "
 "are."
 msgstr ""

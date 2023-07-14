@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2019-03-11 09:15+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
@@ -16,6 +16,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Tag: title
+#: reference_guc.xml:3
+#, fuzzy, no-c-format
+msgid "Grand Unified Custom Variables (GUCs)"
+msgstr "PostGIS Grand Unified Custom Variables (GUCs)"
 
 #. Tag: para
 #: reference_guc.xml:5
@@ -29,12 +35,6 @@ msgstr ""
 "Variables (GUC) auf. Diese können global, pro Datenbank, Session oder "
 "Transaktion gesetzt werden. Am Besten werden diese global oder auf "
 "Datenbankebene gesetzt."
-
-#. Tag: title
-#: reference_guc.xml:9
-#, fuzzy, no-c-format
-msgid "Grand Unified Custom Variables (GUCs)"
-msgstr "PostGIS Grand Unified Custom Variables (GUCs)"
 
 #. Tag: refpurpose
 #: reference_guc.xml:14
@@ -156,13 +156,13 @@ msgstr "Verfügbarkeit: 2.2.0"
 #: reference_guc.xml:62
 #, no-c-format
 msgid ""
-"Additional information about GDAL_DATA is available at GDAL's <ulink "
-"url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
-"ulink>."
+"Additional information about GDAL_DATA is available at GDAL's <link xlink:"
+"href=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration "
+"Options</link>."
 msgstr ""
-"Zusätzliche Informationen über GDAL_DATA ist unter den <ulink url=\"http://"
-"trac.osgeo.org/gdal/wiki/ConfigOptions\">Konfigurationsmöglichkeiten</ulink> "
-"für GDAL zu finden."
+"Zusätzliche Informationen über GDAL_DATA ist unter den <link xlink:"
+"href=\"http://trac.osgeo.org/gdal/wiki/"
+"ConfigOptions\">Konfigurationsmöglichkeiten</link> für GDAL zu finden."
 
 #. Tag: para
 #: reference_guc.xml:71
@@ -226,15 +226,15 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Enabled GDAL specified drivers can be specified by the driver's short-name "
-"or code. Driver short-names or codes can be found at <ulink url=\"http://www."
-"gdal.org/formats_list.html\">GDAL Raster Formats</ulink>. Multiple drivers "
-"can be specified by putting a space between each driver."
+"or code. Driver short-names or codes can be found at <link xlink:"
+"href=\"http://www.gdal.org/formats_list.html\">GDAL Raster Formats</link>. "
+"Multiple drivers can be specified by putting a space between each driver."
 msgstr ""
 "Aktivierte GDAL Treiber können auch über die Kurzbezeichnung oder den Code "
 "des Treibers bestimmt werden. Kurzbezeichnungen und Codes für die Treiber "
-"finden sich unter <ulink url=\"http://www.gdal.org/formats_list.html\">GDAL "
-"Raster Formate</ulink> Es können mehrere, durch Leerzeichen getrennte "
-"Treiber angegeben werden."
+"finden sich unter <link xlink:href=\"http://www.gdal.org/formats_list."
+"html\">GDAL Raster Formate</link> Es können mehrere, durch Leerzeichen "
+"getrennte Treiber angegeben werden."
 
 #. Tag: para
 #: reference_guc.xml:110
@@ -301,13 +301,13 @@ msgstr ""
 #: reference_guc.xml:137
 #, no-c-format
 msgid ""
-"Additional information about GDAL_SKIP is available at GDAL's <ulink "
-"url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
-"ulink>."
+"Additional information about GDAL_SKIP is available at GDAL's <link xlink:"
+"href=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration "
+"Options</link>."
 msgstr ""
-"Weiterführende Informationen über GDAL_SKIP ist auf GDAL's <ulink "
-"url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
-"ulink> zu finden."
+"Weiterführende Informationen über GDAL_SKIP ist auf GDAL's <link xlink:"
+"href=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration "
+"Options</link> zu finden."
 
 #. Tag: para
 #: reference_guc.xml:148
@@ -456,8 +456,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "A string configuration to set options used when working with an out-db "
-"raster. <ulink url=\"http://trac.osgeo.org/gdal/wiki/"
-"ConfigOptions\">Configuration options</ulink> control things like how much "
+"raster. <link xlink:href=\"http://trac.osgeo.org/gdal/wiki/"
+"ConfigOptions\">Configuration options</link> control things like how much "
 "space GDAL allocates to local data cache, whether to read overviews, and "
 "what access keys to use for remote out-db data sources."
 msgstr ""

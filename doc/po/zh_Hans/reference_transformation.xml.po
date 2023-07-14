@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-09-08 07:58+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -17,22 +17,22 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 5.0\n"
 
+#. Tag: title
+#: reference_transformation.xml:3
+#, no-c-format
+msgid "Affine Transformations"
+msgstr "仿射变换"
+
 #. Tag: para
 #: reference_transformation.xml:5
 #, no-c-format
 msgid ""
-"These functions change the position and shape of geometries using <ulink "
-"url=\"https://en.wikipedia.org/wiki/Affine_transformation\">affine "
-"transformations</ulink>."
+"These functions change the position and shape of geometries using <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/Affine_transformation\">affine "
+"transformations</link>."
 msgstr ""
-"这些函数使用<ulink url=\"https://en.wikipedia.org/wiki/"
-"Affine_transformation\">仿射变换</ulink>来改变几何图形的位置和形状。"
-
-#. Tag: title
-#: reference_transformation.xml:10
-#, no-c-format
-msgid "Affine Transformations"
-msgstr "仿射变换"
+"这些函数使用<link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Affine_transformation\">仿射变换</link>来改变几何图形的位置和形状。"
 
 #. Tag: refpurpose
 #: reference_transformation.xml:16

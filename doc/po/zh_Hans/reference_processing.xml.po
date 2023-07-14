@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-11 19:02+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-09-08 04:20+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -18,6 +18,12 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 5.0\n"
 
+#. Tag: title
+#: reference_processing.xml:3
+#, no-c-format
+msgid "Geometry Processing"
+msgstr "几何处理"
+
 #. Tag: para
 #: reference_processing.xml:5
 #, no-c-format
@@ -25,12 +31,6 @@ msgid ""
 "These functions compute geometric constructions, or alter geometry size or "
 "shape."
 msgstr "这些函数计算几何构造，或改变几何尺寸或形状。"
-
-#. Tag: title
-#: reference_processing.xml:11
-#, no-c-format
-msgid "Geometry Processing"
-msgstr "几何处理"
 
 #. Tag: refpurpose
 #: reference_processing.xml:17
@@ -604,19 +604,19 @@ msgstr "使用 Chaikin 算法返回几何图形的平滑版本"
 #: reference_processing.xml:545
 #, no-c-format
 msgid ""
-"Smoothes a linear or polygonal geometry using <ulink url=\"http://www.idav."
-"ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-Algorithm."
-"html\">Chaikin's algorithm</ulink>. The degree of smoothing is controlled by "
+"Smoothes a linear or polygonal geometry using <link xlink:href=\"http://www."
+"idav.ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-Algorithm."
+"html\">Chaikin's algorithm</link>. The degree of smoothing is controlled by "
 "the <varname>nIterations</varname> parameter. On each iteration, each "
 "interior vertex is replaced by two vertices located at 1/4 of the length of "
 "the line segments before and after the vertex. A reasonable degree of "
 "smoothing is provided by 3 iterations; the maximum is limited to 5."
 msgstr ""
-"使用 <ulink url=\"http://www.idav.ucdavis.edu/education/CAGDNotes/Chaikins-"
-"Algorithm/Chaikins-Algorithm.html\">Chaikin 算法</ulink>平滑线性或多边形几何"
-"体。 平滑程度由<varname> nIterations </varname>参数控制。 在每次迭代中，每个"
-"内部顶点都被位于顶点前后线段长度 1/4 处的两个顶点替换。 3次迭代提供了合理的平"
-"滑度； 最大限制为 5。"
+"使用 <link xlink:href=\"http://www.idav.ucdavis.edu/education/CAGDNotes/"
+"Chaikins-Algorithm/Chaikins-Algorithm.html\">Chaikin 算法</link>平滑线性或多"
+"边形几何体。 平滑程度由<varname> nIterations </varname>参数控制。 在每次迭代"
+"中，每个内部顶点都被位于顶点前后线段长度 1/4 处的两个顶点替换。 3次迭代提供了"
+"合理的平滑度； 最大限制为 5。"
 
 #. Tag: para
 #: reference_processing.xml:553
@@ -962,16 +962,16 @@ msgstr "返回几何体顶点的 Delaunay 三角剖分。"
 #: reference_processing.xml:886
 #, no-c-format
 msgid ""
-"Computes the <ulink url=\"http://en.wikipedia.org/wiki/"
-"Delaunay_triangulation\">Delaunay triangulation</ulink> of the vertices of "
+"Computes the <link xlink:href=\"http://en.wikipedia.org/wiki/"
+"Delaunay_triangulation\">Delaunay triangulation</link> of the vertices of "
 "the input geometry. The optional <varname>tolerance</varname> can be used to "
 "snap nearby input vertices together, which improves robustness in some "
 "situations. The result geometry is bounded by the convex hull of the input "
 "vertices. The result geometry representation is determined by the "
 "<varname>flags</varname> code:"
 msgstr ""
-"计算输入几何体顶点的 <ulink url=\"http://en.wikipedia.org/wiki/"
-"Delaunay_triangulation\">Delaunay 三角剖分</ulink>。 可选的<varname>容差</"
+"计算输入几何体顶点的 <link xlink:href=\"http://en.wikipedia.org/wiki/"
+"Delaunay_triangulation\">Delaunay 三角剖分</link>。 可选的<varname>容差</"
 "varname>可用于将附近的输入顶点捕捉在一起，这在某些情况下提高了稳健性。 结果几"
 "何图形以输入顶点的凸包为边界。 结果几何表示由<varname>标志</varname>代码确"
 "定："
@@ -1310,8 +1310,8 @@ msgstr "合并不同方向的线。"
 #. Tag: para
 #: reference_processing.xml:1240
 #, no-c-format
-msgid "Lines are not merged across intersections with degree > 2."
-msgstr "线不会在度数 > 2 的交点处合并。"
+msgid "Lines are not merged across intersections with degree &gt; 2."
+msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1248
@@ -2498,16 +2498,16 @@ msgstr "返回几何体顶点的 Voronoi 图的边界。"
 #: reference_processing.xml:2467
 #, no-c-format
 msgid ""
-"Computes a two-dimensional <ulink url=\"https://en.wikipedia.org/wiki/"
-"Voronoi_diagram\">Voronoi diagram</ulink> from the vertices of the supplied "
+"Computes a two-dimensional <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Voronoi_diagram\">Voronoi diagram</link> from the vertices of the supplied "
 "geometry and returns the boundaries between cells in the diagram as a "
 "MultiLineString. Returns null if input geometry is null. Returns an empty "
 "geometry collection if the input geometry contains only one vertex. Returns "
 "an empty geometry collection if the <varname>extend_to</varname> envelope "
 "has zero area."
 msgstr ""
-"根据提供的几何图形的顶点计算二维<ulink url=\"https://en.wikipedia.org/wiki/"
-"Voronoi_diagram\"> Voronoi 图</ulink>，并将图中单元格之间的边界作为 "
+"根据提供的几何图形的顶点计算二维<link xlink:href=\"https://en.wikipedia.org/"
+"wiki/Voronoi_diagram\"> Voronoi 图</link>，并将图中单元格之间的边界作为 "
 "MultiLineString 返回。 如果输入几何图形为 null，则返回 null。 如果输入几何图"
 "形仅包含一个顶点，则返回一个空几何图形集合。 如果<varname>extend_to</varname>"
 "最小外接矩形的面积为零，则返回空几何集合。"
@@ -2564,16 +2564,16 @@ msgstr "返回几何体顶点的 Voronoi 图的单元格。"
 #: reference_processing.xml:2546
 #, no-c-format
 msgid ""
-"Computes a two-dimensional <ulink url=\"https://en.wikipedia.org/wiki/"
-"Voronoi_diagram\">Voronoi diagram</ulink> from the vertices of the supplied "
+"Computes a two-dimensional <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Voronoi_diagram\">Voronoi diagram</link> from the vertices of the supplied "
 "geometry. The result is a GEOMETRYCOLLECTION of POLYGONs that covers an "
 "envelope larger than the extent of the input vertices. Returns null if input "
 "geometry is null. Returns an empty geometry collection if the input geometry "
 "contains only one vertex. Returns an empty geometry collection if the "
 "<varname>extend_to</varname> envelope has zero area."
 msgstr ""
-"根据提供的几何图形的顶点计算二维<ulink url=\"https://en.wikipedia.org/wiki/"
-"Voronoi_diagram\"> Voronoi 图</ulink>。 结果是 POLYGON 的 "
+"根据提供的几何图形的顶点计算二维<link xlink:href=\"https://en.wikipedia.org/"
+"wiki/Voronoi_diagram\"> Voronoi 图</link>。 结果是 POLYGON 的 "
 "GEOMETRYCOLLECTION，其覆盖的包络大于输入顶点的范围。 如果输入几何图形为 "
 "null，则返回 null。 如果输入几何图形仅包含一个顶点，则返回一个空几何图形集"
 "合。 如果<varname>extend_to</varname>最小外接矩形的面积为零，则返回空几何集"

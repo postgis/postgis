@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-05-29 09:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -17,6 +17,12 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.16.4\n"
 
+#. Tag: title
+#: reference_srs.xml:3
+#, no-c-format
+msgid "Spatial Reference System Functions"
+msgstr "Fonctions des systèmes de référence spatiale"
+
 #. Tag: para
 #: reference_srs.xml:5
 #, no-c-format
@@ -26,12 +32,6 @@ msgid ""
 msgstr ""
 "Ces fonctions fonctionnent avec le système de référence spatiale des "
 "géométries défini dans la table <varname>spatial_ref_sys</varname>."
-
-#. Tag: title
-#: reference_srs.xml:10
-#, no-c-format
-msgid "Spatial Reference System Functions"
-msgstr "Fonctions des systèmes de référence spatiale"
 
 #. Tag: refpurpose
 #: reference_srs.xml:16

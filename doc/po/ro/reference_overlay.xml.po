@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-07-18 20:22+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,6 +16,12 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
 
+#. Tag: title
+#: reference_overlay.xml:3
+#, no-c-format
+msgid "Overlay Functions"
+msgstr ""
+
 #. Tag: para
 #: reference_overlay.xml:5
 #, no-c-format
@@ -23,12 +29,6 @@ msgid ""
 "These functions compute results arising from the overlay of two geometries. "
 "These are also known as point-set theoretic boolean operations. Some related "
 "functions are also provided."
-msgstr ""
-
-#. Tag: title
-#: reference_overlay.xml:12
-#, no-c-format
-msgid "Overlay Functions"
 msgstr ""
 
 #. Tag: refpurpose
@@ -59,7 +59,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_overlay.xml:40 reference_overlay.xml:345 reference_overlay.xml:545
-#: reference_overlay.xml:866
+#: reference_overlay.xml:865
 #, no-c-format
 msgid "Performed by the GEOS module."
 msgstr ""
@@ -74,7 +74,7 @@ msgstr ""
 #: reference_overlay.xml:47 reference_overlay.xml:107 reference_overlay.xml:231
 #: reference_overlay.xml:295 reference_overlay.xml:354
 #: reference_overlay.xml:419 reference_overlay.xml:553
-#: reference_overlay.xml:664 reference_overlay.xml:888
+#: reference_overlay.xml:664 reference_overlay.xml:887
 #, no-c-format
 msgid "Examples"
 msgstr ""
@@ -84,7 +84,7 @@ msgstr ""
 #: reference_overlay.xml:302 reference_overlay.xml:366
 #: reference_overlay.xml:495 reference_overlay.xml:607
 #: reference_overlay.xml:705 reference_overlay.xml:777
-#: reference_overlay.xml:899
+#: reference_overlay.xml:898
 #, no-c-format
 msgid "See Also"
 msgstr ""
@@ -139,7 +139,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_overlay.xml:97 reference_overlay.xml:548 reference_overlay.xml:653
-#: reference_overlay.xml:768 reference_overlay.xml:874
+#: reference_overlay.xml:768 reference_overlay.xml:873
 #, no-c-format
 msgid "Enhanced: 3.1.0 accept a gridSize parameter."
 msgstr ""
@@ -152,7 +152,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_overlay.xml:100 reference_overlay.xml:225
-#: reference_overlay.xml:656 reference_overlay.xml:879
+#: reference_overlay.xml:656 reference_overlay.xml:878
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.3"
 msgstr ""
@@ -166,7 +166,7 @@ msgstr ""
 #. Tag: para
 #: reference_overlay.xml:102 reference_overlay.xml:227
 #: reference_overlay.xml:289 reference_overlay.xml:658
-#: reference_overlay.xml:766 reference_overlay.xml:883
+#: reference_overlay.xml:766 reference_overlay.xml:882
 #, no-c-format
 msgid ""
 "&Z_support; However, the result is computed using XY only. The result Z "
@@ -274,13 +274,13 @@ msgstr ""
 #. Tag: para
 #: reference_overlay.xml:221 reference_overlay.xml:549
 #: reference_overlay.xml:654 reference_overlay.xml:769
-#: reference_overlay.xml:875
+#: reference_overlay.xml:874
 #, no-c-format
 msgid "Requires GEOS &gt;= 3.9.0 to use the gridSize parameter"
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:222 reference_overlay.xml:876
+#: reference_overlay.xml:222 reference_overlay.xml:875
 #, no-c-format
 msgid "Changed: 3.0.0 does not depend on SFCGAL."
 msgstr ""
@@ -581,11 +581,11 @@ msgstr ""
 #: reference_overlay.xml:538
 #, no-c-format
 msgid ""
-"This is a <ulink url=\"https://www.postgresql.org/docs/current/queries-table-"
-"expressions.html#QUERIES-TABLEFUNCTIONS\">set-returning function</ulink> "
-"(SRF) that return a set of rows containing single geometry values. It can be "
-"used in a SELECT list or a FROM clause to produce a result set with one "
-"record for each result geometry."
+"This is a <link xlink:href=\"https://www.postgresql.org/docs/current/queries-"
+"table-expressions.html#QUERIES-TABLEFUNCTIONS\">set-returning function</"
+"link> (SRF) that return a set of rows containing single geometry values. It "
+"can be used in a SELECT list or a FROM clause to produce a result set with "
+"one record for each result geometry."
 msgstr ""
 
 #. Tag: para
@@ -800,13 +800,13 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The ST_Union array and set variants use the fast Cascaded Union algorithm "
-"described in <ulink url=\"http://blog.cleverelephant.ca/2009/01/must-faster-"
-"unions-in-postgis-14.html\">http://blog.cleverelephant.ca/2009/01/must-"
-"faster-unions-in-postgis-14.html</ulink>"
+"described in <link xlink:href=\"http://blog.cleverelephant.ca/2009/01/must-"
+"faster-unions-in-postgis-14.html\">http://blog.cleverelephant.ca/2009/01/"
+"must-faster-unions-in-postgis-14.html</link>"
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:854
+#: reference_overlay.xml:853
 #, no-c-format
 msgid ""
 "A <code>gridSize</code> can be specified to work in fixed-precision space. "
@@ -815,7 +815,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:860
+#: reference_overlay.xml:859
 #, no-c-format
 msgid ""
 "may sometimes be used in place of ST_Union, if the result is not required to "
@@ -824,7 +824,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:867
+#: reference_overlay.xml:866
 #, no-c-format
 msgid ""
 "ST_Union creates MultiLineString and does not sew LineStrings into a single "
@@ -832,7 +832,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:870
+#: reference_overlay.xml:869
 #, no-c-format
 msgid ""
 "NOTE: this function was formerly called GeomUnion(), which was renamed from "
@@ -840,7 +840,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:877
+#: reference_overlay.xml:876
 #, no-c-format
 msgid ""
 "Availability: 1.4.0 - ST_Union was enhanced. ST_Union(geomarray) was "
@@ -848,13 +848,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:880
+#: reference_overlay.xml:879
 #, no-c-format
 msgid "Aggregate version is not explicitly defined in OGC SPEC."
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:881
+#: reference_overlay.xml:880
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM 3: 5.1.19 the z-index (elevation) when polygons are "
@@ -862,31 +862,31 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:889
+#: reference_overlay.xml:888
 #, no-c-format
 msgid "Aggregate example"
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:891
+#: reference_overlay.xml:890
 #, no-c-format
 msgid "Non-Aggregate example"
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:893
+#: reference_overlay.xml:892
 #, no-c-format
 msgid "3D example - sort of supports 3D (and with mixed dimensions!)"
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:895
+#: reference_overlay.xml:894
 #, no-c-format
 msgid "3d example not mixing dimensions"
 msgstr ""
 
 #. Tag: para
-#: reference_overlay.xml:900
+#: reference_overlay.xml:899
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "

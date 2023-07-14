@@ -308,7 +308,7 @@ $(TAG_GENERATED_SOURCES): xsl/node_by_xpath.xsl xsl-config.xml | Makefile
 	test -s $@ # ensure something was extracted
 endif
 
-$(GENERATED_COMMENT_FILES): %.sql: xsl/%.sql.xsl postgis-out.xml
+$(GENERATED_COMMENT_FILES): %.sql: xsl/%.sql.xsl postgis-out.xml xsl/common_utils.xsl xsl/common_comments.xsl
 	$(XSLTPROC) --novalid $(XSLTPROCFLAGS) $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
 
 $(GENERATED_CHEATSHEET_FILES): $(html_builddir)/%$(DOCSUFFIX).html: xsl/%.html.xsl postgis-out.xml xsl/common_cheatsheet.xsl xsl/common_utils.xsl

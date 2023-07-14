@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-05-15 11:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -17,23 +17,23 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.16.4\n"
 
+#. Tag: title
+#: reference_transformation.xml:3
+#, no-c-format
+msgid "Affine Transformations"
+msgstr "アフィン変換"
+
 #. Tag: para
 #: reference_transformation.xml:5
 #, no-c-format
 msgid ""
-"These functions change the position and shape of geometries using <ulink "
-"url=\"https://en.wikipedia.org/wiki/Affine_transformation\">affine "
-"transformations</ulink>."
+"These functions change the position and shape of geometries using <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/Affine_transformation\">affine "
+"transformations</link>."
 msgstr ""
-"これらの関数は<ulink url=\"https://ja.wikipedia.org/wiki/"
-"%E3%82%A2%E3%83%95%E3%82%A3%E3%83%B3%E5%86%99%E5%83%8F\">アフィン変換</ulink>"
+"これらの関数は<link xlink:href=\"https://ja.wikipedia.org/wiki/"
+"%E3%82%A2%E3%83%95%E3%82%A3%E3%83%B3%E5%86%99%E5%83%8F\">アフィン変換</link>"
 "を使用してジオメトリの位置と形状を変更するものです。"
-
-#. Tag: title
-#: reference_transformation.xml:10
-#, no-c-format
-msgid "Affine Transformations"
-msgstr "アフィン変換"
 
 #. Tag: refpurpose
 #: reference_transformation.xml:16

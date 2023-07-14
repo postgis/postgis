@@ -6,13 +6,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-12 14:53+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: reference_coverage.xml:3
+#, no-c-format
+msgid "Coverages"
+msgstr ""
 
 #. Tag: para
 #: reference_coverage.xml:5
@@ -23,12 +29,6 @@ msgid ""
 "vertices of adjacent edges must match exactly. Coverages are fast to "
 "process, and can be operated on with window functions, which retain the "
 "coverage topology inside the window partition while altering the edges."
-msgstr ""
-
-#. Tag: title
-#: reference_coverage.xml:11
-#, no-c-format
-msgid "Coverages"
 msgstr ""
 
 #. Tag: refpurpose
@@ -168,9 +168,9 @@ msgstr ""
 #: reference_coverage.xml:128
 #, no-c-format
 msgid ""
-"The simplification uses a variant of the <ulink url=\"https://en.wikipedia."
-"org/wiki/Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–Whyatt "
-"algorithm</ulink>. The <parameter>tolerance</parameter> parameter has units "
+"The simplification uses a variant of the <link xlink:href=\"https://en."
+"wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–Whyatt "
+"algorithm</link>. The <parameter>tolerance</parameter> parameter has units "
 "of distance, and is roughly equal to the square root of triangular areas to "
 "be simplified."
 msgstr ""

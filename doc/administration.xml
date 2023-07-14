@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<chapter id="postgis_administration">
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0"
+	xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="postgis_administration" >
   <title>PostGIS Administration</title>
 
   &database_tuning;
 
-  <sect1 id="raster_configuration">
+  <section xml:id="raster_configuration">
 
   <title>Configuring raster support</title>
 
@@ -14,7 +14,7 @@
 	</para>
 
 	<para>As of PostGIS 2.1.3, out-of-db rasters and all raster drivers are disabled by default. In order to re-enable these, you need to set the following environment variables
-	<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> and <varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> in the server environment. For PostGIS 2.2, you can use the more cross-platform approach of setting the corresponding <xref linkend="PostGIS_GUC" />.</para>
+	<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> and <varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> in the server environment. For PostGIS 2.2, you can use the more cross-platform approach of setting the corresponding <xref linkend="PostGIS_GUC"/>.</para>
 
 	<para>If you want to enable offline raster:</para>
 	<programlisting>POSTGIS_ENABLE_OUTDB_RASTERS=1</programlisting>
@@ -30,15 +30,15 @@
 	edit <filename>/etc/postgresql/<replaceable>10</replaceable>/<replaceable>main</replaceable>/environment</filename> where 10 refers to version of PostgreSQL and main refers to the cluster.</para>
 
 	<para>On windows, if you are running as a service, you can set via System variables which for Windows 7 you can get to by right-clicking on Computer-&gt;Properties Advanced System Settings or in explorer navigating to <varname>Control Panel\All Control Panel Items\System</varname>.
-	Then clicking <emphasis>Advanced System Settings -&gt;Advanced->Environment Variables</emphasis> and adding new system variables.</para>
+	Then clicking <emphasis>Advanced System Settings -&gt;Advanced-&gt;Environment Variables</emphasis> and adding new system variables.</para>
 	<para>After you set the environment variables, you'll need to restart your PostgreSQL service for the changes to take effect.</para>
 
-  </sect1>
+  </section>
 
-  <sect1 id="create_spatial_db">
+  <section xml:id="create_spatial_db">
 	<title>Creating spatial databases</title>
 
-  <sect2 id="create_new_db_extensions">
+  <section xml:id="create_new_db_extensions">
 	<title>Spatially enable database using EXTENSION</title>
 
 	<para>
@@ -62,9 +62,9 @@
 </programlisting>
 	</para>
 
-  </sect2>
+  </section>
 
-    <sect2 id="create_new_db">
+    <section xml:id="create_new_db">
 	<title>Spatially enable database without using EXTENSION (discouraged)</title>
 
 	<note><para>This is generally only needed if you cannot or don't
@@ -122,11 +122,11 @@ environment).</para></note>
 </programlisting>
   </para>
 
-  </sect2>
+  </section>
 
-  </sect1>
+  </section>
 
-  <sect1 id="upgrading">
+  <section xml:id="upgrading">
 	<title>Upgrading spatial databases</title>
 
 	<para>
@@ -150,14 +150,14 @@ environment).</para></note>
 	  restore the dump with a HARD UPGRADE.
 	</para>
 
-	<sect2 id="soft_upgrade">
+	<section xml:id="soft_upgrade">
 	  <title>Soft upgrade</title>
 
 	  <para>If you installed your database using extensions, you'll need to upgrade using the extension model as well.  If you installed using the old sql script way, you are advised to switch your install to extensions because the script way is no longer supported. </para>
 
-	<sect3 id="soft_upgrade_extensions"><title>Soft Upgrade 9.1+ using extensions</title>
+	<section xml:id="soft_upgrade_extensions"><title>Soft Upgrade 9.1+ using extensions</title>
 		<para>If you originally installed PostGIS with extensions, then you need to upgrade using extensions as well.  Doing a minor upgrade with extensions, is fairly painless.</para>
-        <para>If you are running PostGIS 3 or above, then you should use the <xref linkend="PostGIS_Extensions_Upgrade" /> function to upgrade to the latest version you have installed.</para>
+        <para>If you are running PostGIS 3 or above, then you should use the <xref linkend="PostGIS_Extensions_Upgrade"/> function to upgrade to the latest version you have installed.</para>
         <programlisting>SELECT postgis_extensions_upgrade();</programlisting>
 
         <para>If you are running PostGIS 2.5 or lower, then do the following:</para>
@@ -172,7 +172,7 @@ SELECT postgis_extensions_upgrade();
 ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;";</programlisting>
 		<para>If you get an error notice something like:</para>
 			<programlisting>No migration path defined for … to &last_release_version;</programlisting>
-		<para>Then you'll need to backup your database, create a fresh one as described in <xref linkend="create_new_db_extensions" /> and then restore your backup on top of this new database.</para>
+		<para>Then you'll need to backup your database, create a fresh one as described in <xref linkend="create_new_db_extensions"/> and then restore your backup on top of this new database.</para>
     <para>If you get a notice message like:</para>
     <programlisting>Version "&last_release_version;" of extension "postgis" is already installed</programlisting>
     <para>
@@ -192,9 +192,9 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
     <programlisting>DROP EXTENSION postgis_raster;</programlisting>
     </note>
 
-	</sect3>
+	</section>
 
-     <sect3 id="soft_upgrade_sql_script">
+     <section xml:id="soft_upgrade_sql_script">
 		<title>Soft Upgrade Pre 9.1+ or without extensions</title>
 
 	  <para>This section applies only to those who installed PostGIS
@@ -251,15 +251,15 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
 	  </note>
 
 	  <para>
-		The <xref linkend="PostGIS_Full_Version" /> function
+		The <xref linkend="PostGIS_Full_Version"/> function
 		should inform you about the need to run this kind of
 		upgrade using a "procs need upgrade" message.
 	  </para>
-	  </sect3>
+	  </section>
 
-	</sect2>
+	</section>
 
-	<sect2 id="hard_upgrade">
+	<section xml:id="hard_upgrade">
 	  <title>Hard upgrade</title>
 
 	  <para>
@@ -280,7 +280,7 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
 		symbol errors or bringing forward deprecated objects.
 	  </para>
 
-	 <para>Supplementary instructions for windows users are available at  <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade">Windows Hard upgrade</ulink>.</para>
+	 <para>Supplementary instructions for windows users are available at  <link xlink:href="http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade">Windows Hard upgrade</link>.</para>
 
 
 	  <para>
@@ -308,7 +308,7 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
 	  <para>
 		Do a fresh install of PostGIS in a new database -- we'll
 		refer to this database as <varname>newdb</varname>.
-		Please refer to <xref linkend="create_new_db" /> and <xref linkend="create_new_db_extensions" /> for
+		Please refer to <xref linkend="create_new_db"/> and <xref linkend="create_new_db_extensions"/> for
 		instructions on how to do this.
 	  </para>
 
@@ -346,7 +346,7 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
 		error stream by psql. Keep a log of those.
 	  </para>
 
-	  <programlisting>postgis_restore "/somepath/olddb.backup" | psql -h localhost -p 5432 -U postgres newdb 2> errors.txt</programlisting>
+	  <programlisting>postgis_restore "/somepath/olddb.backup" | psql -h localhost -p 5432 -U postgres newdb 2&gt; errors.txt</programlisting>
 
 	</listitem>
 
@@ -374,10 +374,10 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
 		Some custom records of spatial_ref_sys in dump file have
 		an invalid SRID value. Valid SRID values are bigger than 0
 		and smaller than 999000. Values in the 999000.999999 range
-    are reserved for internal use while values > 999999 can't
+    are reserved for internal use while values &gt; 999999 can't
     be used at all.
     All your custom records with invalid SRIDs will be retained,
-    with those > 999999 moved into the reserved range, but the
+    with those &gt; 999999 moved into the reserved range, but the
     spatial_ref_sys table would lose a check constraint guarding
     for that invariant to hold and possibly also its primary key
     ( when multiple invalid SRIDS get converted to the same reserved
@@ -401,9 +401,9 @@ ALTER TABLE spatial_ref_sys ADD PRIMARY KEY(srid));
     </programlisting>
 
     <para>
-		If you are upgrading an old database containing french <ulink url="https://en.wikipedia.org/wiki/Institut_g%C3%A9ographique_national">
+		If you are upgrading an old database containing french <link xlink:href="https://en.wikipedia.org/wiki/Institut_g%C3%A9ographique_national">
 			IGN
-		  </ulink> cartography, you will have probably SRIDs out
+		  </link> cartography, you will have probably SRIDs out
 		of range and you will see, when importing your database, issues like this :
     </para>
 
@@ -415,34 +415,34 @@ ALTER TABLE spatial_ref_sys ADD PRIMARY KEY(srid));
 		from postgis_restore. So, after having run :
     </para>
 
-		<programlisting>postgis_restore "/somepath/olddb.backup" > olddb.sql</programlisting>
+		<programlisting>postgis_restore "/somepath/olddb.backup" &gt; olddb.sql</programlisting>
 
     <para>
 		run this command :
     </para>
 
-		<programlisting>grep -v IGNF olddb.sql > olddb-without-IGN.sql</programlisting>
+		<programlisting>grep -v IGNF olddb.sql &gt; olddb-without-IGN.sql</programlisting>
 
     <para>
 		Create then your newdb, activate the required Postgis extensions,
 		and insert properly the french system IGN with :
 
-		<ulink url="https://raw.githubusercontent.com/Remi-C/IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql">
+		<link xlink:href="https://raw.githubusercontent.com/Remi-C/IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql">
 			this script
-		  </ulink>
+		  </link>
 
 		After these operations, import your data :
 
     </para>
 
-		<programlisting>psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  2> errors.txt</programlisting>
+		<programlisting>psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  2&gt; errors.txt</programlisting>
 
 	</listitem>
 	</orderedlist>
 
 
-	</sect2>
-  </sect1>
+	</section>
+  </section>
 
 
 

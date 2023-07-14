@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-11 19:20+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-09-04 02:39+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -17,6 +17,12 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.16.4\n"
 
+#. Tag: title
+#: reference_troubleshooting.xml:3
+#, no-c-format
+msgid "Troubleshooting Functions"
+msgstr "故障排除函数"
+
 #. Tag: para
 #: reference_troubleshooting.xml:5
 #, no-c-format
@@ -27,12 +33,6 @@ msgid ""
 msgstr ""
 "这些函数是用于故障排除和修复几何数据的实用程序。 仅当几何数据以某种方式损坏时"
 "才需要它们，而这种情况在正常情况下永远不会发生。"
-
-#. Tag: title
-#: reference_troubleshooting.xml:10
-#, no-c-format
-msgid "Troubleshooting Functions"
-msgstr "故障排除函数"
 
 #. Tag: refpurpose
 #: reference_troubleshooting.xml:16

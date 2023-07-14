@@ -76,7 +76,7 @@ h1 {
 			<div class='card_separator'>&nbsp;</div>
 			<div class='card_front'><div class='func'>WHAT DOES POST GIS?</div></div><div class='card_back'><div class='func'>POSTGIS<br /><img src='images/PostGIS_logo.png' style='width:100px;height:100px'/></div></div>
 			<div class='card_separator'>&nbsp;</div>]]></xsl:text>
-			<xsl:apply-templates select="/book/chapter//refentry" />
+			<xsl:apply-templates select="/db:book/db:chapter//db:refentry" />
 			<xsl:text><![CDATA[</div></body></html>]]></xsl:text>
 </xsl:template>
 
@@ -86,7 +86,7 @@ h1 {
 	<xsl:variable name="gt"><xsl:text><![CDATA[>]]></xsl:text></xsl:variable>
 	 <xsl:variable name='plaindescr'>
 		<xsl:call-template name="globalReplace">
-			<xsl:with-param name="outputString" select="refnamediv/refpurpose"/>
+			<xsl:with-param name="outputString" select="db:refnamediv/db:refpurpose"/>
 			<xsl:with-param name="target" select="$lt"/>
 			<xsl:with-param name="replacement" select="''"/>
 		</xsl:call-template>
@@ -99,11 +99,11 @@ h1 {
 		</xsl:call-template>
 	</xsl:variable>
 	<!-- add row for each function and alternate colors of rows -->
-	<![CDATA[<div class="card_front"><div class='func'>]]><xsl:value-of select="refnamediv/refname" /><xsl:if test="contains(.,$new_tag)"><![CDATA[<sup>1</sup> ]]></xsl:if>
+	<![CDATA[<div class="card_front"><div class='func'>]]><xsl:value-of select="db:refnamediv/db:refname" /><xsl:if test="contains(.,$new_tag)"><![CDATA[<sup>1</sup> ]]></xsl:if>
 	<!-- enhanced tag -->
 	<xsl:if test="contains(.,$enhanced_tag)"><![CDATA[<sup>2</sup> ]]></xsl:if>
 	<xsl:if test="contains(.,'implements the SQL/MM')"><![CDATA[<sup>mm</sup> ]]></xsl:if>
-	<xsl:if test="contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')"><![CDATA[<sup>G</sup>  ]]></xsl:if>
+	<xsl:if test="contains(refsynopsisdiv/db:funcsynopsis,'geography') or contains(refsynopsisdiv/db:funcsynopsis/db:funcprototype/funcdef,'geography')"><![CDATA[<sup>G</sup>  ]]></xsl:if>
 	<xsl:if test="contains(.,'GEOS &gt;= 3.4')"><![CDATA[<sup>g3.4</sup> ]]></xsl:if>
 	<xsl:if test="contains(.,'This function supports 3d')"><![CDATA[<sup>3d</sup> ]]></xsl:if>
 

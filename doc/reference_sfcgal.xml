@@ -1,20 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<sect1 id="reference_sfcgal">
-	<sect1info>
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="reference_sfcgal">
+	<title>SFCGAL Functions</title><info>
 		<abstract>
 				<para>
           SFCGAL is a C++ wrapper library around CGAL that provides advanced 2D and 3D spatial functions.
           For robustness, geometry coordinates have an exact rational number representation.
         </para>
         <para>
-          Installation instructions for the library can be found on the SFCGAL home page (<ulink url="http://www.sfcgal.org">http://www.sfcgal.org</ulink>).
+          Installation instructions for the library can be found on the SFCGAL home page (<link xlink:href="http://www.sfcgal.org">http://www.sfcgal.org</link>).
           To enable the functions use <code>create extension postgis_sfcgal</code>.
         </para>
 
 		</abstract>
-	</sect1info>
-	<title>SFCGAL Functions</title>
-	<refentry id="postgis_sfcgal_version">
+	</info>
+
+	<refentry xml:id="postgis_sfcgal_version">
 	  <refnamediv>
 		<refname>postgis_sfcgal_version</refname>
 
@@ -44,12 +44,12 @@
 	  <refsection>
 				<title>See Also</title>
 
-				<para><xref linkend="postgis_sfcgal_full_version" /></para>
+				<para><xref linkend="postgis_sfcgal_full_version"/></para>
 		</refsection>
 
 	</refentry>
 
-	<refentry id="postgis_sfcgal_full_version">
+	<refentry xml:id="postgis_sfcgal_full_version">
 	  <refnamediv>
 		<refname>postgis_sfcgal_full_version</refname>
 
@@ -79,12 +79,12 @@
 	  <refsection>
 				<title>See Also</title>
 
-				<para><xref linkend="postgis_sfcgal_version" /></para>
+				<para><xref linkend="postgis_sfcgal_version"/></para>
 		</refsection>
 
 	</refentry>
 
-    <refentry id="ST_3DArea">
+    <refentry xml:id="ST_3DArea">
 	  <refnamediv>
 		<refname>ST_3DArea</refname>
 
@@ -130,11 +130,11 @@
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Area" />, <xref linkend="ST_MakeSolid" />, <xref linkend="ST_IsSolid" />, <xref linkend="ST_Area" /></para>
+		<para><xref linkend="ST_Area"/>, <xref linkend="ST_MakeSolid"/>, <xref linkend="ST_IsSolid"/>, <xref linkend="ST_Area"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_3DConvexHull">
+	<refentry xml:id="ST_3DConvexHull">
 	  <refnamediv>
 		<refname>ST_3DConvexHull</refname>
 
@@ -174,7 +174,7 @@ FROM ST_Subdivide(ST_Letters('CH'),5) WITH ORDINALITY AS sd(geom,i)
             <informalfigure>
                 <mediaobject>
                     <imageobject>
-                        <imagedata fileref="images/st_3dconvexhull.png" />
+                        <imagedata fileref="images/st_3dconvexhull.png"/>
                     </imageobject>
                     <caption><para>Original geometry overlaid with 3D convex hull</para></caption>
                 </mediaobject>
@@ -183,11 +183,11 @@ FROM ST_Subdivide(ST_Letters('CH'),5) WITH ORDINALITY AS sd(geom,i)
 	  </refsection>
       <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_Letters" />, <xref linkend="ST_AsX3D" /></para>
+		<para><xref linkend="ST_Letters"/>, <xref linkend="ST_AsX3D"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_3DIntersection">
+	<refentry xml:id="ST_3DIntersection">
 	  <refnamediv>
 		<refname>ST_3DIntersection</refname>
 
@@ -217,7 +217,7 @@ FROM ST_Subdivide(ST_Letters('CH'),5) WITH ORDINALITY AS sd(geom,i)
 
 	  <refsection>
 		<title>Examples</title>
-		<para>3D images were generated using PostGIS <xref linkend="ST_AsX3D" /> and rendering in HTML using <ulink url="http://www.x3dom.org">X3Dom HTML Javascript rendering library</ulink>.</para>
+		<para>3D images were generated using PostGIS <xref linkend="ST_AsX3D"/> and rendering in HTML using <link xlink:href="http://www.x3dom.org">X3Dom HTML Javascript rendering library</link>.</para>
             <informaltable>
             <tgroup cols="2">
             <tbody>
@@ -231,7 +231,7 @@ FROM ST_Subdivide(ST_Letters('CH'),5) WITH ORDINALITY AS sd(geom,i)
                 <informalfigure>
                     <mediaobject>
                       <imageobject>
-                        <imagedata fileref="images/st_3ddifference01.png" />
+                        <imagedata fileref="images/st_3ddifference01.png"/>
                       </imageobject>
                       <caption><para>Original 3D geometries overlaid. geom2 is shown semi-transparent</para></caption>
                     </mediaobject>
@@ -246,7 +246,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
               <informalfigure>
                     <mediaobject>
                       <imageobject>
-                        <imagedata fileref="images/st_3dintersection01.png" />
+                        <imagedata fileref="images/st_3dintersection01.png"/>
                       </imageobject>
                       <caption><para>Intersection of geom1 and geom2</para></caption>
                     </mediaobject>
@@ -298,7 +298,7 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 
 	</refentry>
 
-	<refentry id="ST_3DDifference">
+	<refentry xml:id="ST_3DDifference">
 	  <refnamediv>
 		<refname>ST_3DDifference</refname>
 
@@ -328,7 +328,7 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 
 	  <refsection>
 	      <title>Examples</title>
-	        <para>3D images were generated using PostGIS <xref linkend="ST_AsX3D" /> and rendering in HTML using <ulink url="http://www.x3dom.org">X3Dom HTML Javascript rendering library</ulink>.</para>
+	        <para>3D images were generated using PostGIS <xref linkend="ST_AsX3D"/> and rendering in HTML using <link xlink:href="http://www.x3dom.org">X3Dom HTML Javascript rendering library</link>.</para>
             <informaltable>
             <tgroup cols="2">
             <tbody>
@@ -342,7 +342,7 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
                 <informalfigure>
                     <mediaobject>
                       <imageobject>
-                        <imagedata fileref="images/st_3ddifference01.png" />
+                        <imagedata fileref="images/st_3ddifference01.png"/>
                       </imageobject>
                       <caption><para>Original 3D geometries overlaid. geom2 is the part that will be removed.</para></caption>
                     </mediaobject>
@@ -357,7 +357,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
               <informalfigure>
                     <mediaobject>
                       <imageobject>
-                        <imagedata fileref="images/st_3ddifference02.png" />
+                        <imagedata fileref="images/st_3ddifference02.png"/>
                       </imageobject>
                       <caption><para>What's left after removing geom2</para></caption>
                     </mediaobject>
@@ -374,14 +374,14 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
         <title>See Also</title>
 
         <para>
-            <xref linkend="ST_Extrude" />,
-            <xref linkend="ST_AsX3D" />,  <xref linkend="ST_3DIntersection" />
-            <xref linkend="ST_3DUnion" />
+            <xref linkend="ST_Extrude"/>,
+            <xref linkend="ST_AsX3D"/>,  <xref linkend="ST_3DIntersection"/>
+            <xref linkend="ST_3DUnion"/>
         </para>
       </refsection>
 	</refentry>
 
-	<refentry id="ST_3DUnion">
+	<refentry xml:id="ST_3DUnion">
 	  <refnamediv>
 		<refname>ST_3DUnion</refname>
 
@@ -426,7 +426,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 
 		  <refsection>
 	      <title>Examples</title>
-	        <para>3D images were generated using PostGIS <xref linkend="ST_AsX3D" /> and rendering in HTML using <ulink url="http://www.x3dom.org">X3Dom HTML Javascript rendering library</ulink>.</para>
+	        <para>3D images were generated using PostGIS <xref linkend="ST_AsX3D"/> and rendering in HTML using <link xlink:href="http://www.x3dom.org">X3Dom HTML Javascript rendering library</link>.</para>
             <informaltable>
             <tgroup cols="2">
             <tbody>
@@ -440,7 +440,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
                 <informalfigure>
                     <mediaobject>
                       <imageobject>
-                        <imagedata fileref="images/st_3ddifference01.png" />
+                        <imagedata fileref="images/st_3ddifference01.png"/>
                       </imageobject>
                       <caption><para>Original 3D geometries overlaid. geom2 is the one with transparency.</para></caption>
                     </mediaobject>
@@ -455,7 +455,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
               <informalfigure>
                     <mediaobject>
                       <imageobject>
-                        <imagedata fileref="images/st_3dunion01.png" />
+                        <imagedata fileref="images/st_3dunion01.png"/>
                       </imageobject>
                       <caption><para>Union of geom1 and geom2</para></caption>
                     </mediaobject>
@@ -472,14 +472,14 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
         <title>See Also</title>
 
         <para>
-            <xref linkend="ST_Extrude" />,
-            <xref linkend="ST_AsX3D" />,  <xref linkend="ST_3DIntersection" />
-            <xref linkend="ST_3DDifference" />
+            <xref linkend="ST_Extrude"/>,
+            <xref linkend="ST_AsX3D"/>,  <xref linkend="ST_3DIntersection"/>
+            <xref linkend="ST_3DDifference"/>
         </para>
       </refsection>
 	</refentry>
 
-	<refentry id="ST_AlphaShape">
+	<refentry xml:id="ST_AlphaShape">
 	  <refnamediv>
 		<refname>ST_AlphaShape</refname>
 
@@ -501,7 +501,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
         <title>Description</title>
 
         <para>Computes the
-        <ulink url="https://en.wikipedia.org/wiki/Alpha_shape">Alpha-Shape</ulink>
+        <link xlink:href="https://en.wikipedia.org/wiki/Alpha_shape">Alpha-Shape</link>
             of the points in a geometry.
         An alpha-shape is a (usually) concave polygonal geometry which contains all the vertices of the input,
         and whose vertices are a subset of the input vertices.
@@ -519,7 +519,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
         <note><para>
         Following the CGAL implementation, the alpha value is the <emphasis>square</emphasis> of the radius of the disc used
         in the Alpha-Shape algorithm to "erode" the Delaunay Triangulation of the input points.
-        See <ulink url="https://doc.cgal.org/latest/Alpha_shapes_2/index.html#Chapter_2D_Alpha_Shapes">CGAL Alpha-Shapes</ulink>
+        See <link xlink:href="https://doc.cgal.org/latest/Alpha_shapes_2/index.html#Chapter_2D_Alpha_Shapes">CGAL Alpha-Shapes</link>
         for more information.
         This is different from the original definition of alpha-shapes,
         which defines alpha as the radius of the eroding disc.
@@ -529,7 +529,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
         </para>
 
         <para>
-        This function effectively computes a concave hull of a geometry in a similar way to <xref linkend="ST_ConcaveHull" />,
+        This function effectively computes a concave hull of a geometry in a similar way to <xref linkend="ST_ConcaveHull"/>,
         but uses CGAL and a different algorithm.
         </para>
 
@@ -543,9 +543,9 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
     <informalfigure>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/st_alphashape01.png" />
+          <imagedata fileref="images/st_alphashape01.png"/>
         </imageobject>
-        <caption><para>Alpha-shape of a MultiPoint (same example As <xref linkend="ST_OptimalAlphaShape" />)</para></caption>
+        <caption><para>Alpha-shape of a MultiPoint (same example As <xref linkend="ST_OptimalAlphaShape"/>)</para></caption>
       </mediaobject>
     </informalfigure>
          <programlisting>SELECT ST_AsText(ST_AlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
@@ -562,9 +562,9 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
         <informalfigure>
         <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_alphashape02.png" />
+            <imagedata fileref="images/st_alphashape02.png"/>
             </imageobject>
-            <caption><para>Alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="ST_OptimalAlphaShape" />)</para></caption>
+            <caption><para>Alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="ST_OptimalAlphaShape"/>)</para></caption>
         </mediaobject>
         </informalfigure>
             <programlisting>SELECT ST_AsText(ST_AlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
@@ -580,9 +580,9 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
         <informalfigure>
         <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_alphashape03.png" />
+            <imagedata fileref="images/st_alphashape03.png"/>
             </imageobject>
-            <caption><para>Alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="ST_ConcaveHull" />)</para></caption>
+            <caption><para>Alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="ST_ConcaveHull"/>)</para></caption>
         </mediaobject>
         </informalfigure>
             <programlisting>SELECT ST_AlphaShape(
@@ -594,12 +594,12 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 	  </refsection>
       <refsection>
 		<title>See Also</title>
-                <para><xref linkend="ST_ConcaveHull" />, <xref linkend="ST_OptimalAlphaShape" /></para>
+                <para><xref linkend="ST_ConcaveHull"/>, <xref linkend="ST_OptimalAlphaShape"/></para>
 	  </refsection>
 
 	</refentry>
 
-	<refentry id="ST_ApproximateMedialAxis">
+	<refentry xml:id="ST_ApproximateMedialAxis">
 	  <refnamediv>
 		<refname>ST_ApproximateMedialAxis</refname>
 
@@ -642,7 +642,7 @@ around ST_StraightSkeleton (slower case).
 						<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_approximatemedialaxis01.png" />
+								<imagedata fileref="images/st_approximatemedialaxis01.png"/>
 							  </imageobject>
 							  <caption><para>A polygon and its approximate medial axis</para></caption>
 							</mediaobject>
@@ -657,12 +657,12 @@ around ST_StraightSkeleton (slower case).
 	  <refsection>
 				<title>See Also</title>
 
-				<para><xref linkend="ST_StraightSkeleton" /></para>
+				<para><xref linkend="ST_StraightSkeleton"/></para>
 		</refsection>
 
 	</refentry>
 
-	<refentry id="ST_ConstrainedDelaunayTriangles">
+	<refentry xml:id="ST_ConstrainedDelaunayTriangles">
 		<refnamediv>
 			<refname>ST_ConstrainedDelaunayTriangles</refname>
 
@@ -684,9 +684,8 @@ Return a constrained Delaunay triangulation around the given input geometry.
 			<title>Description</title>
 
 			<para>
-Return a <ulink
-url="https://en.wikipedia.org/wiki/Constrained_Delaunay_triangulation">Constrained Delaunay
-triangulation</ulink> around the vertices of the input geometry.
+Return a <link xlink:href="https://en.wikipedia.org/wiki/Constrained_Delaunay_triangulation">Constrained Delaunay
+triangulation</link> around the vertices of the input geometry.
 Output is a TIN.
 			</para>
 			<para>&sfcgal_required;</para>
@@ -702,7 +701,7 @@ Output is a TIN.
 						  <entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_constraineddelaunaytriangles01.png" />
+								<imagedata fileref="images/st_constraineddelaunaytriangles01.png"/>
 							  </imageobject>
 							  <caption><para>ST_ConstrainedDelaunayTriangles of 2 polygons</para></caption>
 							</mediaobject>
@@ -719,9 +718,9 @@ select ST_ConstrainedDelaunayTriangles(
 							<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_constraineddelaunaytriangles02.png" />
+								<imagedata fileref="images/st_constraineddelaunaytriangles02.png"/>
 							  </imageobject>
-							  <caption><para><xref linkend="ST_DelaunayTriangles" />  of 2 polygons. Triangle edges cross polygon boundaries.</para></caption>
+							  <caption><para><xref linkend="ST_DelaunayTriangles"/>  of 2 polygons. Triangle edges cross polygon boundaries.</para></caption>
 							</mediaobject>
 						  </informalfigure>
 						  <programlisting>
@@ -741,16 +740,16 @@ select ST_DelaunayTriangles(
 		<refsection>
 			<title>See Also</title>
 			<para>
-				<xref linkend="ST_DelaunayTriangles" />,
-				<xref linkend="ST_TriangulatePolygon" />,
-				<xref linkend="ST_Tesselate" />,
-				<xref linkend="ST_ConcaveHull" />,
-				<xref linkend="ST_Dump" />
+				<xref linkend="ST_DelaunayTriangles"/>,
+				<xref linkend="ST_TriangulatePolygon"/>,
+				<xref linkend="ST_Tesselate"/>,
+				<xref linkend="ST_ConcaveHull"/>,
+				<xref linkend="ST_Dump"/>
 			</para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_Extrude">
+	<refentry xml:id="ST_Extrude">
 	  <refnamediv>
 		<refname>ST_Extrude</refname>
 
@@ -780,7 +779,7 @@ select ST_DelaunayTriangles(
 	  </refsection>
 
 	  <refsection><title>Examples</title>
-	        <para>3D images were generated using PostGIS <xref linkend="ST_AsX3D" /> and rendering in HTML using <ulink url="http://www.x3dom.org">X3Dom HTML Javascript rendering library</ulink>.</para>
+	        <para>3D images were generated using PostGIS <xref linkend="ST_AsX3D"/> and rendering in HTML using <link xlink:href="http://www.x3dom.org">X3Dom HTML Javascript rendering library</link>.</para>
 
 		 <informaltable>
 				  <tgroup cols="2">
@@ -792,7 +791,7 @@ select ST_DelaunayTriangles(
 						<informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_extrude01.png" />
+								<imagedata fileref="images/st_extrude01.png"/>
 							  </imageobject>
 							  <caption><para>Original octagon formed from buffering point</para></caption>
 							</mediaobject>
@@ -804,7 +803,7 @@ select ST_DelaunayTriangles(
 					  <informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_extrude02.png" />
+								<imagedata fileref="images/st_extrude02.png"/>
 							  </imageobject>
 							  <caption><para>Hexagon extruded 30 units along Z produces a PolyhedralSurfaceZ</para></caption>
 							</mediaobject>
@@ -818,7 +817,7 @@ select ST_DelaunayTriangles(
 						<informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_extrude03.png" />
+								<imagedata fileref="images/st_extrude03.png"/>
 							  </imageobject>
 							  <caption><para>Original linestring</para></caption>
 							</mediaobject>
@@ -830,7 +829,7 @@ select ST_DelaunayTriangles(
 					  <informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_extrude04.png" />
+								<imagedata fileref="images/st_extrude04.png"/>
 							  </imageobject>
 							  <caption><para>LineString Extruded along Z produces a PolyhedralSurfaceZ</para></caption>
 							</mediaobject>
@@ -844,11 +843,11 @@ select ST_DelaunayTriangles(
         <refsection>
                 <title>See Also</title>
 
-                <para><xref linkend="ST_AsX3D" /></para>
+                <para><xref linkend="ST_AsX3D"/></para>
         </refsection>
 	</refentry>
 
-	<refentry id="ST_ForceLHR">
+	<refentry xml:id="ST_ForceLHR">
 	  <refnamediv>
 		<refname>ST_ForceLHR</refname>
 
@@ -876,7 +875,7 @@ select ST_DelaunayTriangles(
 
 	</refentry>
 
-    <refentry id="ST_IsPlanar">
+    <refentry xml:id="ST_IsPlanar">
         <refnamediv>
         <refname>ST_IsPlanar</refname>
 
@@ -904,7 +903,7 @@ select ST_DelaunayTriangles(
 
     </refentry>
 
-	<refentry id="ST_IsSolid">
+	<refentry xml:id="ST_IsSolid">
 	  <refnamediv>
 		<refname>ST_IsSolid</refname>
 
@@ -932,7 +931,7 @@ select ST_DelaunayTriangles(
 
 	</refentry>
 
-	<refentry id="ST_MakeSolid">
+	<refentry xml:id="ST_MakeSolid">
 	  <refnamediv>
 		<refname>ST_MakeSolid</refname>
 
@@ -961,7 +960,7 @@ select ST_DelaunayTriangles(
 	</refentry>
 
 
-	<refentry id="ST_MinkowskiSum">
+	<refentry xml:id="ST_MinkowskiSum">
 	  <refnamediv>
 		<refname>ST_MinkowskiSum</refname>
 
@@ -982,10 +981,10 @@ select ST_DelaunayTriangles(
 		<title>Description</title>
 
                 <para>This function performs a 2D minkowski sum of a point, line or polygon with a polygon.</para>
-                <para>A minkowski sum of two geometries A and B is the set of all points that are the sum of any point in A and B. Minkowski sums are often used in motion planning and computer-aided design. More details on <ulink url="https://en.wikipedia.org/wiki/Minkowski_addition">Wikipedia Minkowski addition</ulink>.</para>
+                <para>A minkowski sum of two geometries A and B is the set of all points that are the sum of any point in A and B. Minkowski sums are often used in motion planning and computer-aided design. More details on <link xlink:href="https://en.wikipedia.org/wiki/Minkowski_addition">Wikipedia Minkowski addition</link>.</para>
                 <para>The first parameter can be any 2D geometry (point, linestring, polygon). If a 3D geometry is passed, it will be converted to 2D by forcing Z to 0, leading to possible cases of invalidity. The second parameter must be a 2D polygon.</para>
 
-                <para>Implementation utilizes <ulink url="http://doc.cgal.org/latest/Minkowski_sum_2/">CGAL 2D Minkowskisum</ulink>.</para>
+                <para>Implementation utilizes <link xlink:href="http://doc.cgal.org/latest/Minkowski_sum_2/">CGAL 2D Minkowskisum</link>.</para>
 
 
 		<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
@@ -1003,7 +1002,7 @@ select ST_DelaunayTriangles(
                             <informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_minkowskisum01.png" />
+                                <imagedata fileref="images/st_minkowskisum01.png"/>
                               </imageobject>
                               <caption><para>Before Summing</para></caption>
                             </mediaobject>
@@ -1015,7 +1014,7 @@ select ST_DelaunayTriangles(
                             <informalfigure>
                             <mediaobject>
                               <imageobject>
-                                  <imagedata fileref="images/st_minkowskisum02.png" />
+                                  <imagedata fileref="images/st_minkowskisum02.png"/>
                               </imageobject>
                               <caption><para>After summing</para></caption>
                             </mediaobject>
@@ -1047,7 +1046,7 @@ MULTIPOLYGON(((30 59.9999999999999,30.5764415879031 54.1472903395161,32.28361402
                             <informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_minkowskisum03.png" />
+                                <imagedata fileref="images/st_minkowskisum03.png"/>
                               </imageobject>
                               <caption><para>Before Summing</para></caption>
                             </mediaobject>
@@ -1059,7 +1058,7 @@ MULTIPOLYGON(((30 59.9999999999999,30.5764415879031 54.1472903395161,32.28361402
                             <informalfigure>
                             <mediaobject>
                               <imageobject>
-                                  <imagedata fileref="images/st_minkowskisum04.png" />
+                                  <imagedata fileref="images/st_minkowskisum04.png"/>
                               </imageobject>
                               <caption><para>After summing: polygon is duplicated and translated to position of points</para></caption>
                             </mediaobject>
@@ -1086,7 +1085,7 @@ MULTIPOLYGON(
 
 	</refentry>
 
-	<refentry id="ST_OptimalAlphaShape">
+	<refentry xml:id="ST_OptimalAlphaShape">
 	  <refnamediv>
 		<refname>ST_OptimalAlphaShape</refname>
 
@@ -1133,9 +1132,9 @@ MULTIPOLYGON(
             <informalfigure>
             <mediaobject>
                 <imageobject>
-                <imagedata fileref="images/st_optimalalphashape01.png" />
+                <imagedata fileref="images/st_optimalalphashape01.png"/>
                 </imageobject>
-                <caption><para>Optimal alpha-shape of a MultiPoint (same example as <xref linkend="ST_AlphaShape" />)</para></caption>
+                <caption><para>Optimal alpha-shape of a MultiPoint (same example as <xref linkend="ST_AlphaShape"/>)</para></caption>
             </mediaobject>
             </informalfigure>
                 <programlisting>SELECT ST_AsText(ST_OptimalAlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
@@ -1153,28 +1152,28 @@ MULTIPOLYGON(
             <informalfigure>
             <mediaobject>
                 <imageobject>
-                <imagedata fileref="images/st_optimalalphashape02.png" />
+                <imagedata fileref="images/st_optimalalphashape02.png"/>
                 </imageobject>
-                <caption><para>Optimal alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="ST_AlphaShape" />)</para></caption>
+                <caption><para>Optimal alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="ST_AlphaShape"/>)</para></caption>
             </mediaobject>
             </informalfigure>
                 <programlisting>SELECT ST_AsText(ST_OptimalAlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
                 (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
                 (75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
                 (80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
-                (36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry, allow_holes => true));</programlisting>
+                (36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry, allow_holes =&gt; true));</programlisting>
                 <screen>POLYGON((89 53,91 50,87 42,90 30,88 29,84 19,78 16,73 16,65 16,53 18,43 19,37 23,30 22,28 33,23 36,26 44,27 54,23 60,24 67,27 77,24 82,26 85,34 86,39 88,45 90,49 95,52 98,57 97,64 97,72 95,76 88,75 84,75 77,83 72,85 71,83 64,88 58,89 53),(36 61,36 68,40 75,43 80,50 86,60 81,68 73,77 67,81 60,82 54,81 47,78 43,81 29,76 27,70 20,62 22,55 26,54 32,48 34,44 42,38 46,36 61))</screen>
         </para>
 
 	  </refsection>
       <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_ConcaveHull" />, <xref linkend="ST_AlphaShape" /></para>
+		<para><xref linkend="ST_ConcaveHull"/>, <xref linkend="ST_AlphaShape"/></para>
 	  </refsection>
 
 	</refentry>
 
-	<refentry id="ST_Orientation">
+	<refentry xml:id="ST_Orientation">
 	  <refnamediv>
 		<refname>ST_Orientation</refname>
 
@@ -1202,7 +1201,7 @@ MULTIPOLYGON(
 
 	</refentry>
 
-    <refentry id="ST_StraightSkeleton">
+    <refentry xml:id="ST_StraightSkeleton">
 	  <refnamediv>
 		<refname>ST_StraightSkeleton</refname>
 
@@ -1238,7 +1237,7 @@ MULTIPOLYGON(
 						<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_straightskeleton01.png" />
+								<imagedata fileref="images/st_straightskeleton01.png"/>
 							  </imageobject>
 							  <caption><para>Original polygon</para></caption>
 							</mediaobject>
@@ -1247,7 +1246,7 @@ MULTIPOLYGON(
 					  <entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_straightskeleton02.png" />
+								<imagedata fileref="images/st_straightskeleton02.png"/>
 							  </imageobject>
 							  <caption><para>Straight Skeleton of polygon</para></caption>
 							</mediaobject>
@@ -1262,7 +1261,7 @@ MULTIPOLYGON(
 	</refentry>
 
 
-	<refentry id="ST_Tesselate">
+	<refentry xml:id="ST_Tesselate">
 	  <refnamediv>
 		<refname>ST_Tesselate</refname>
 
@@ -1301,7 +1300,7 @@ MULTIPOLYGON(
 						<informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_tesselate01.png" />
+								<imagedata fileref="images/st_tesselate01.png"/>
 							  </imageobject>
 							  <caption><para>Original Cube</para></caption>
 							</mediaobject>
@@ -1323,7 +1322,7 @@ MULTIPOLYGON(
 		       <para> <informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_tesselate02.png" />
+								<imagedata fileref="images/st_tesselate02.png"/>
 							  </imageobject>
 							  <caption><para>Tesselated Cube with triangles colored</para></caption>
 							</mediaobject>
@@ -1337,7 +1336,7 @@ MULTIPOLYGON(
 						<informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_tesselate03.png" />
+								<imagedata fileref="images/st_tesselate03.png"/>
 							  </imageobject>
 							  <caption><para>Original polygon</para></caption>
 							</mediaobject>
@@ -1354,7 +1353,7 @@ MULTIPOLYGON(
 					  <para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_tesselate04.png" />
+								<imagedata fileref="images/st_tesselate04.png"/>
 							  </imageobject>
 							  <caption><para>Tesselated Polygon</para></caption>
 							</mediaobject>
@@ -1369,13 +1368,13 @@ MULTIPOLYGON(
 		<refsection>
                 <title>See Also</title>
 
-                <para><xref linkend="ST_ConstrainedDelaunayTriangles" />, <xref linkend="ST_DelaunayTriangles" /></para>
+                <para><xref linkend="ST_ConstrainedDelaunayTriangles"/>, <xref linkend="ST_DelaunayTriangles"/></para>
           </refsection>
 
 
 	</refentry>
 
-	<refentry id="ST_Volume">
+	<refentry xml:id="ST_Volume">
 	  <refnamediv>
 		<refname>ST_Volume</refname>
 
@@ -1404,7 +1403,7 @@ MULTIPOLYGON(
 
 	  <refsection>
 	      <title>Example</title>
-	      <para>When closed surfaces are created with WKT, they are treated as areal rather than solid.  To make them solid, you need to use <xref linkend="ST_MakeSolid" />.
+	      <para>When closed surfaces are created with WKT, they are treated as areal rather than solid.  To make them solid, you need to use <xref linkend="ST_MakeSolid"/>.
 	      Areal geometries have no volume.  Here is an example to demonstrate.</para>
 	      <programlisting>SELECT ST_Volume(geom) As cube_surface_vol,
 	ST_Volume(ST_MakeSolid(geom)) As solid_surface_vol
@@ -1424,10 +1423,10 @@ MULTIPOLYGON(
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_3DArea" />, <xref linkend="ST_MakeSolid" />, <xref linkend="ST_IsSolid" /></para>
+		<para><xref linkend="ST_3DArea"/>, <xref linkend="ST_MakeSolid"/>, <xref linkend="ST_IsSolid"/></para>
 	  </refsection>
 
 	</refentry>
 
 
-</sect1>
+</section>

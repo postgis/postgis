@@ -2,7 +2,11 @@
 <!DOCTYPE xsl:stylesheet [ <!ENTITY nbsp "&#160;"> ]>
 
 <xsl:stylesheet version="1.0"
-xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:db="http://docbook.org/ns/docbook"
+	exclude-result-prefixes="db"
+>
+
 <!-- ********************************************************************
      ********************************************************************
 	 Copyright 2011, Regina Obe
@@ -118,10 +122,10 @@ h1 {
 			</span>
 			<div id="content_functions">
 
-				<xsl:apply-templates select="/book/chapter[@id=$chapter_id]" />
+				<xsl:apply-templates select="/db:book/db:chapter[@xml:id=$chapter_id]" />
 
 				<!-- examples go here | TODO: move this logic to the chapter template ?-->
-				<xsl:for-each select="/book/chapter[@id=$chapter_id]/sect1[count(//refentry//refsection//programlisting) &gt; 0]" >
+				<xsl:for-each select="/db:book/db:chapter[@xml:id=$chapter_id]/db:section[count(//db:refentry//db:refsection//db:programlisting) &gt; 0]">
 					<xsl:call-template name="examples_list" />
 				</xsl:for-each>
 

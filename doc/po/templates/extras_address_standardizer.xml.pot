@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-12 14:53+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -15,23 +15,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
-#: extras_address_standardizer.xml:3
+#: extras_address_standardizer.xml:6
 #, no-c-format
 msgid "Address Standardizer"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:4
+#: extras_address_standardizer.xml:7
 #, no-c-format
 msgid ""
-"This is a fork of the <ulink url=\"http://www.pagcgeo.org/docs/html/pagc-11."
-"html\">PAGC standardizer</ulink> (original code for this portion was <ulink "
-"url=\"http://sourceforge.net/p/pagc/code/360/tree/branches/sew-refactor/"
-"postgresql\">PAGC PostgreSQL Address Standardizer</ulink>)."
+"This is a fork of the <link xlink:href=\"http://www.pagcgeo.org/docs/html/"
+"pagc-11.html\">PAGC standardizer</link> (original code for this portion was "
+"<link xlink:href=\"http://sourceforge.net/p/pagc/code/360/tree/branches/sew-"
+"refactor/postgresql\">PAGC PostgreSQL Address Standardizer</link>)."
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:5
+#: extras_address_standardizer.xml:8
 #, no-c-format
 msgid ""
 "The address standardizer is a single line address parser that takes an input "
@@ -40,7 +40,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:6
+#: extras_address_standardizer.xml:9
 #, no-c-format
 msgid ""
 "The code is built into a single PostgreSQL extension library called "
@@ -53,7 +53,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:7
+#: extras_address_standardizer.xml:10
 #, no-c-format
 msgid ""
 "The code for this extension can be found in the PostGIS <filename>extensions/"
@@ -61,7 +61,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:8
+#: extras_address_standardizer.xml:11
 #, no-c-format
 msgid ""
 "For installation instructions refer to: <xref "
@@ -69,13 +69,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: extras_address_standardizer.xml:9
+#: extras_address_standardizer.xml:12
 #, no-c-format
 msgid "How the Parser Works"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:10
+#: extras_address_standardizer.xml:13
 #, no-c-format
 msgid ""
 "The parser works from right to left looking first at the macro elements for "
@@ -86,13 +86,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:17
+#: extras_address_standardizer.xml:20
 #, no-c-format
 msgid "Country code"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:18
+#: extras_address_standardizer.xml:21
 #, no-c-format
 msgid ""
 "Assumed to be US or CA based on: postcode as US or Canada state/province as "
@@ -100,13 +100,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:21
+#: extras_address_standardizer.xml:24
 #, no-c-format
 msgid "Postcode/zipcode"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:22
+#: extras_address_standardizer.xml:25
 #, no-c-format
 msgid ""
 "These are recognized using Perl compatible regular expressions. These regexs "
@@ -115,13 +115,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:27
+#: extras_address_standardizer.xml:30
 #, no-c-format
 msgid "State/province"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:28
+#: extras_address_standardizer.xml:31
 #, no-c-format
 msgid ""
 "These are recognized using Perl compatible regular expressions. These regexs "
@@ -129,8 +129,14 @@ msgid ""
 "the future for easier maintenance."
 msgstr ""
 
+#. Tag: title
+#: extras_address_standardizer.xml:38
+#, no-c-format
+msgid "Address Standardizer Types"
+msgstr ""
+
 #. Tag: para
-#: extras_address_standardizer.xml:37
+#: extras_address_standardizer.xml:40
 #, no-c-format
 msgid ""
 "This section lists the PostgreSQL data types installed by Address "
@@ -138,14 +144,8 @@ msgid ""
 "is very important especially when designing your own functions."
 msgstr ""
 
-#. Tag: title
-#: extras_address_standardizer.xml:42
-#, no-c-format
-msgid "Address Standardizer Types"
-msgstr ""
-
 #. Tag: refpurpose
-#: extras_address_standardizer.xml:46
+#: extras_address_standardizer.xml:49
 #, no-c-format
 msgid ""
 "A composite type that consists of the elements of an address. This is the "
@@ -153,26 +153,26 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: extras_address_standardizer.xml:49 extras_address_standardizer.xml:153
-#: extras_address_standardizer.xml:486 extras_address_standardizer.xml:528
-#: extras_address_standardizer.xml:590 extras_address_standardizer.xml:667
-#: extras_address_standardizer.xml:727
+#: extras_address_standardizer.xml:52 extras_address_standardizer.xml:156
+#: extras_address_standardizer.xml:489 extras_address_standardizer.xml:531
+#: extras_address_standardizer.xml:593 extras_address_standardizer.xml:670
+#: extras_address_standardizer.xml:730
 #, no-c-format
 msgid "Description"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:50
+#: extras_address_standardizer.xml:53
 #, no-c-format
 msgid ""
 "A composite type that consists of elements of an address. This is the return "
 "type for <xref linkend=\"standardize_address\"/> function. Some descriptions "
-"for elements are borrowed from <ulink url=\"http://www.pagcgeo.org/docs/html/"
-"pagc-12.html#ss12.1\">PAGC Postal Attributes</ulink>."
+"for elements are borrowed from <link xlink:href=\"http://www.pagcgeo.org/"
+"docs/html/pagc-12.html#ss12.1\">PAGC Postal Attributes</link>."
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:51
+#: extras_address_standardizer.xml:54
 #, no-c-format
 msgid ""
 "The token numbers denote the output reference number in the <xref "
@@ -180,20 +180,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:52 extras_address_standardizer.xml:622
-#: extras_address_standardizer.xml:674 extras_address_standardizer.xml:736
+#: extras_address_standardizer.xml:55 extras_address_standardizer.xml:625
+#: extras_address_standardizer.xml:677 extras_address_standardizer.xml:739
 #, no-c-format
 msgid "&address_standardizer_required;"
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:55
+#: extras_address_standardizer.xml:58
 #, no-c-format
 msgid "building"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:57
+#: extras_address_standardizer.xml:60
 #, no-c-format
 msgid ""
 "is text (token number <code>0</code>): Refers to building number or name. "
@@ -201,13 +201,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:60
+#: extras_address_standardizer.xml:63
 #, no-c-format
 msgid "house_num"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:62 extras_address_standardizer.xml:397
+#: extras_address_standardizer.xml:65 extras_address_standardizer.xml:400
 #, no-c-format
 msgid ""
 "is a text (token number <code>1</code>): This is the street number on a "
@@ -215,13 +215,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:65 extras_address_standardizer.xml:400
+#: extras_address_standardizer.xml:68 extras_address_standardizer.xml:403
 #, no-c-format
 msgid "predir"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:66 extras_address_standardizer.xml:401
+#: extras_address_standardizer.xml:69 extras_address_standardizer.xml:404
 #, no-c-format
 msgid ""
 "is text (token number <code>2</code>): STREET NAME PRE-DIRECTIONAL such as "
@@ -229,13 +229,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:68 extras_address_standardizer.xml:403
+#: extras_address_standardizer.xml:71 extras_address_standardizer.xml:406
 #, no-c-format
 msgid "qual"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:70 extras_address_standardizer.xml:405
+#: extras_address_standardizer.xml:73 extras_address_standardizer.xml:408
 #, no-c-format
 msgid ""
 "is text (token number <code>3</code>): STREET NAME PRE-MODIFIER Example "
@@ -243,37 +243,37 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:73 extras_address_standardizer.xml:408
+#: extras_address_standardizer.xml:76 extras_address_standardizer.xml:411
 #, no-c-format
 msgid "pretype"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:75 extras_address_standardizer.xml:410
+#: extras_address_standardizer.xml:78 extras_address_standardizer.xml:413
 #, no-c-format
 msgid "is text (token number <code>4</code>): STREET PREFIX TYPE"
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:78
+#: extras_address_standardizer.xml:81
 #, no-c-format
 msgid "name"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:80 extras_address_standardizer.xml:415
+#: extras_address_standardizer.xml:83 extras_address_standardizer.xml:418
 #, no-c-format
 msgid "is text (token number <code>5</code>): STREET NAME"
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:83 extras_address_standardizer.xml:418
+#: extras_address_standardizer.xml:86 extras_address_standardizer.xml:421
 #, no-c-format
 msgid "suftype"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:85 extras_address_standardizer.xml:420
+#: extras_address_standardizer.xml:88 extras_address_standardizer.xml:423
 #, no-c-format
 msgid ""
 "is text (token number <code>6</code>): STREET POST TYPE e.g. St, Ave, Cir. A "
@@ -282,13 +282,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:88 extras_address_standardizer.xml:423
+#: extras_address_standardizer.xml:91 extras_address_standardizer.xml:426
 #, no-c-format
 msgid "sufdir"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:90 extras_address_standardizer.xml:425
+#: extras_address_standardizer.xml:93 extras_address_standardizer.xml:428
 #, no-c-format
 msgid ""
 "is text (token number <code>7</code>): STREET POST-DIRECTIONAL A directional "
@@ -297,13 +297,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:93
+#: extras_address_standardizer.xml:96
 #, no-c-format
 msgid "ruralroute"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:95
+#: extras_address_standardizer.xml:98
 #, no-c-format
 msgid ""
 "is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>7</"
@@ -311,62 +311,62 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:98
+#: extras_address_standardizer.xml:101
 #, no-c-format
 msgid "extra"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:100
+#: extras_address_standardizer.xml:103
 #, no-c-format
 msgid "is text: Extra information like Floor number."
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:103
+#: extras_address_standardizer.xml:106
 #, no-c-format
 msgid "city"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:105
+#: extras_address_standardizer.xml:108
 #, no-c-format
 msgid "is text (token number <code>10</code>): Example Boston."
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:108
+#: extras_address_standardizer.xml:111
 #, no-c-format
 msgid "state"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:110
+#: extras_address_standardizer.xml:113
 #, no-c-format
 msgid ""
 "is text (token number <code>11</code>): Example <code>MASSACHUSETTS</code>"
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:113
+#: extras_address_standardizer.xml:116
 #, no-c-format
 msgid "country"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:115
+#: extras_address_standardizer.xml:118
 #, no-c-format
 msgid "is text (token number <code>12</code>): Example <code>USA</code>"
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:118
+#: extras_address_standardizer.xml:121
 #, no-c-format
 msgid "postcode"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:120
+#: extras_address_standardizer.xml:123
 #, no-c-format
 msgid ""
 "is text POSTAL CODE (ZIP CODE) (token number <code>13</code>): Example "
@@ -374,13 +374,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:123
+#: extras_address_standardizer.xml:126
 #, no-c-format
 msgid "<term>box</term>"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:125
+#: extras_address_standardizer.xml:128
 #, no-c-format
 msgid ""
 "is text POSTAL BOX NUMBER (token number <code>14 and 15</code>): Example "
@@ -388,21 +388,27 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:128
+#: extras_address_standardizer.xml:131
 #, no-c-format
 msgid "unit"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:130
+#: extras_address_standardizer.xml:133
 #, no-c-format
 msgid ""
 "is text Apartment number or Suite Number (token number <code>17</code>): "
 "Example <emphasis>3B</emphasis> in <code>APT 3B</code>."
 msgstr ""
 
+#. Tag: title
+#: extras_address_standardizer.xml:142
+#, no-c-format
+msgid "Address Standardizer Tables"
+msgstr ""
+
 #. Tag: para
-#: extras_address_standardizer.xml:141
+#: extras_address_standardizer.xml:144
 #, no-c-format
 msgid ""
 "This section lists the PostgreSQL table formats used by the "
@@ -414,21 +420,15 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:143
+#: extras_address_standardizer.xml:146
 #, no-c-format
 msgid ""
 "The packaged extension <varname>address_standardizer_data_us</varname> "
 "contains data for standardizing US addresses."
 msgstr ""
 
-#. Tag: title
-#: extras_address_standardizer.xml:146
-#, no-c-format
-msgid "Address Standardizer Tables"
-msgstr ""
-
 #. Tag: refpurpose
-#: extras_address_standardizer.xml:150
+#: extras_address_standardizer.xml:153
 #, no-c-format
 msgid ""
 "The rules table contains a set of rules that maps address input sequence "
@@ -438,7 +438,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:154
+#: extras_address_standardizer.xml:157
 #, no-c-format
 msgid ""
 "A rules table must have at least the following columns, though you are "
@@ -446,36 +446,36 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:158 extras_address_standardizer.xml:492
-#: extras_address_standardizer.xml:534
+#: extras_address_standardizer.xml:161 extras_address_standardizer.xml:495
+#: extras_address_standardizer.xml:537
 #, no-c-format
 msgid "<term>id</term>"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:160 extras_address_standardizer.xml:494
-#: extras_address_standardizer.xml:536
+#: extras_address_standardizer.xml:163 extras_address_standardizer.xml:497
+#: extras_address_standardizer.xml:539
 #, no-c-format
 msgid "Primary key of table"
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:163
+#: extras_address_standardizer.xml:166
 #, no-c-format
 msgid "rule"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:165
+#: extras_address_standardizer.xml:168
 #, no-c-format
 msgid ""
-"text field denoting the rule. Details at <ulink url=\"http://www.pagcgeo.org/"
-"docs/html/pagc-12.html#--r-rec--\">PAGC Address Standardizer Rule records</"
-"ulink>."
+"text field denoting the rule. Details at <link xlink:href=\"http://www."
+"pagcgeo.org/docs/html/pagc-12.html#--r-rec--\">PAGC Address Standardizer "
+"Rule records</link>."
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:166
+#: extras_address_standardizer.xml:169
 #, no-c-format
 msgid ""
 "A rule consists of a set of non-negative integers representing input tokens, "
@@ -486,7 +486,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:167
+#: extras_address_standardizer.xml:170
 #, no-c-format
 msgid ""
 "So for example the rule <code>2 0 2 22 3 -1 5 5 6 7 3 -1 2 6</code> maps to "
@@ -496,7 +496,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:168
+#: extras_address_standardizer.xml:171
 #, no-c-format
 msgid ""
 "Numbers for corresponding output tokens are listed in <xref "
@@ -504,35 +504,35 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: extras_address_standardizer.xml:174
+#: extras_address_standardizer.xml:177
 #, no-c-format
 msgid "Input Tokens"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:175
+#: extras_address_standardizer.xml:178
 #, no-c-format
 msgid ""
 "Each rule starts with a set of input tokens followed by a terminator "
-"<code>-1</code>. Valid input tokens excerpted from <ulink url=\"http://www."
-"pagcgeo.org/docs/html/pagc-12.html#ss12.2\">PAGC Input Tokens</ulink> are as "
-"follows:"
+"<code>-1</code>. Valid input tokens excerpted from <link xlink:href=\"http://"
+"www.pagcgeo.org/docs/html/pagc-12.html#ss12.2\">PAGC Input Tokens</link> are "
+"as follows:"
 msgstr ""
 
 #. Tag: emphasis
-#: extras_address_standardizer.xml:176
+#: extras_address_standardizer.xml:179
 #, no-c-format
 msgid "Form-Based Input Tokens"
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:179
+#: extras_address_standardizer.xml:182
 #, no-c-format
 msgid "AMPERS"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:181
+#: extras_address_standardizer.xml:184
 #, no-c-format
 msgid ""
 "(13). The ampersand (&amp;) is frequently used to abbreviate the word "
@@ -540,49 +540,49 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:186
+#: extras_address_standardizer.xml:189
 #, no-c-format
 msgid "DASH"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:188
+#: extras_address_standardizer.xml:191
 #, no-c-format
 msgid "(9). A punctuation character."
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:193
+#: extras_address_standardizer.xml:196
 #, no-c-format
 msgid "DOUBLE"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:195
+#: extras_address_standardizer.xml:198
 #, no-c-format
 msgid "(21). A sequence of two letters. Often used as identifiers."
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:200
+#: extras_address_standardizer.xml:203
 #, no-c-format
 msgid "FRACT"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:202
+#: extras_address_standardizer.xml:205
 #, no-c-format
 msgid "(25). Fractions are sometimes used in civic numbers or unit numbers."
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:207
+#: extras_address_standardizer.xml:210
 #, no-c-format
 msgid "MIXED"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:209
+#: extras_address_standardizer.xml:212
 #, no-c-format
 msgid ""
 "(23). An alphanumeric string that contains both letters and digits. Used for "
@@ -590,43 +590,43 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:214
+#: extras_address_standardizer.xml:217
 #, no-c-format
 msgid "NUMBER"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:216
+#: extras_address_standardizer.xml:219
 #, no-c-format
 msgid "(0). A string of digits."
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:221 extras_address_standardizer.xml:228
+#: extras_address_standardizer.xml:224 extras_address_standardizer.xml:231
 #, no-c-format
 msgid "<term>ORD</term>"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:223
+#: extras_address_standardizer.xml:226
 #, no-c-format
 msgid "(15). Representations such as First or 1st. Often used in street names."
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:230
+#: extras_address_standardizer.xml:233
 #, no-c-format
 msgid "(18). A single letter."
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:235
+#: extras_address_standardizer.xml:238
 #, no-c-format
 msgid "WORD"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:237
+#: extras_address_standardizer.xml:240
 #, no-c-format
 msgid ""
 "(1). A word is a string of letters of arbitrary length. A single letter can "
@@ -634,19 +634,19 @@ msgid ""
 msgstr ""
 
 #. Tag: emphasis
-#: extras_address_standardizer.xml:242
+#: extras_address_standardizer.xml:245
 #, no-c-format
 msgid "Function-based Input Tokens"
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:245 extras_address_standardizer.xml:446
+#: extras_address_standardizer.xml:248 extras_address_standardizer.xml:449
 #, no-c-format
 msgid "BOXH"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:247
+#: extras_address_standardizer.xml:250
 #, no-c-format
 msgid ""
 "(14). Words used to denote post office boxes. For example <emphasis>Box</"
@@ -654,13 +654,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:252
+#: extras_address_standardizer.xml:255
 #, no-c-format
 msgid "BUILDH"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:254
+#: extras_address_standardizer.xml:257
 #, no-c-format
 msgid ""
 "(19). Words used to denote buildings or building complexes, usually as a "
@@ -669,13 +669,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:259
+#: extras_address_standardizer.xml:262
 #, no-c-format
 msgid "BUILDT"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:261
+#: extras_address_standardizer.xml:264
 #, no-c-format
 msgid ""
 "(24). Words and abbreviations used to denote buildings or building "
@@ -684,13 +684,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:266
+#: extras_address_standardizer.xml:269
 #, no-c-format
 msgid "DIRECT"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:268
+#: extras_address_standardizer.xml:271
 #, no-c-format
 msgid ""
 "(22). Words used to denote directions, for example <emphasis>North</"
@@ -698,25 +698,25 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:273
+#: extras_address_standardizer.xml:276
 #, no-c-format
 msgid "MILE"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:275
+#: extras_address_standardizer.xml:278
 #, no-c-format
 msgid "(20). Words used to denote milepost addresses."
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:280
+#: extras_address_standardizer.xml:283
 #, no-c-format
 msgid "ROAD"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:282
+#: extras_address_standardizer.xml:285
 #, no-c-format
 msgid ""
 "(6). Words and abbreviations used to denote highways and roads. For example: "
@@ -724,13 +724,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:287 extras_address_standardizer.xml:456
+#: extras_address_standardizer.xml:290 extras_address_standardizer.xml:459
 #, no-c-format
 msgid "<term>RR</term>"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:289
+#: extras_address_standardizer.xml:292
 #, no-c-format
 msgid ""
 "(8). Words and abbreviations used to denote rural routes. <emphasis>RR</"
@@ -738,13 +738,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:294
+#: extras_address_standardizer.xml:297
 #, no-c-format
 msgid "TYPE"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:296
+#: extras_address_standardizer.xml:299
 #, no-c-format
 msgid ""
 "(2). Words and abbreviation used to denote street typess. For example: "
@@ -752,13 +752,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:301 extras_address_standardizer.xml:461
+#: extras_address_standardizer.xml:304 extras_address_standardizer.xml:464
 #, no-c-format
 msgid "UNITH"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:303
+#: extras_address_standardizer.xml:306
 #, no-c-format
 msgid ""
 "(16). Words and abbreviation used to denote internal subaddresses. For "
@@ -766,43 +766,43 @@ msgid ""
 msgstr ""
 
 #. Tag: emphasis
-#: extras_address_standardizer.xml:308
+#: extras_address_standardizer.xml:311
 #, no-c-format
 msgid "Postal Type Input Tokens"
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:311
+#: extras_address_standardizer.xml:314
 #, no-c-format
 msgid "QUINT"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:313
+#: extras_address_standardizer.xml:316
 #, no-c-format
 msgid "(28). A 5 digit number. Identifies a Zip Code"
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:318
+#: extras_address_standardizer.xml:321
 #, no-c-format
 msgid "QUAD"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:320
+#: extras_address_standardizer.xml:323
 #, no-c-format
 msgid "(29). A 4 digit number. Identifies ZIP4."
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:325
+#: extras_address_standardizer.xml:328
 #, no-c-format
 msgid "<term>PCH</term>"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:327
+#: extras_address_standardizer.xml:330
 #, no-c-format
 msgid ""
 "(27). A 3 character sequence of letter number letter. Identifies an FSA, the "
@@ -810,13 +810,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:332
+#: extras_address_standardizer.xml:335
 #, no-c-format
 msgid "<term>PCT</term>"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:334
+#: extras_address_standardizer.xml:337
 #, no-c-format
 msgid ""
 "(26). A 3 character sequence of number letter number. Identifies an LDU, the "
@@ -824,13 +824,13 @@ msgid ""
 msgstr ""
 
 #. Tag: emphasis
-#: extras_address_standardizer.xml:339
+#: extras_address_standardizer.xml:342
 #, no-c-format
 msgid "Stopwords"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:340
+#: extras_address_standardizer.xml:343
 #, no-c-format
 msgid ""
 "STOPWORDS combine with WORDS. In rules a string of multiple WORDs and "
@@ -838,13 +838,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:343
+#: extras_address_standardizer.xml:346
 #, no-c-format
 msgid "STOPWORD"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:345
+#: extras_address_standardizer.xml:348
 #, no-c-format
 msgid ""
 "(7). A word with low lexical significance, that can be omitted in parsing. "
@@ -852,13 +852,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: extras_address_standardizer.xml:354
+#: extras_address_standardizer.xml:357
 #, no-c-format
 msgid "Output Tokens"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:355
+#: extras_address_standardizer.xml:358
 #, no-c-format
 msgid ""
 "After the first -1 (terminator), follows the output tokens and their order, "
@@ -869,13 +869,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: extras_address_standardizer.xml:358
+#: extras_address_standardizer.xml:361
 #, no-c-format
 msgid "Rule Types and Rank"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:359
+#: extras_address_standardizer.xml:362
 #, no-c-format
 msgid ""
 "The final part of the rule is the rule type which is denoted by one of the "
@@ -884,13 +884,13 @@ msgid ""
 msgstr ""
 
 #. Tag: emphasis
-#: extras_address_standardizer.xml:361
+#: extras_address_standardizer.xml:364
 #, no-c-format
 msgid "MACRO_C"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:362
+#: extras_address_standardizer.xml:365
 #, no-c-format
 msgid ""
 "(token number = \"<emphasis role=\"bold\">0</emphasis>\"). The class of "
@@ -898,46 +898,46 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:363
+#: extras_address_standardizer.xml:366
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">MACRO_C output tokens</emphasis> (excerpted from "
-"<ulink url=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</ulink>."
+"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:366
+#: extras_address_standardizer.xml:369
 #, no-c-format
 msgid "CITY"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:368
+#: extras_address_standardizer.xml:371
 #, no-c-format
 msgid "(token number \"10\"). Example \"Albany\""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:372
+#: extras_address_standardizer.xml:375
 #, no-c-format
 msgid "STATE"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:374
+#: extras_address_standardizer.xml:377
 #, no-c-format
 msgid "(token number \"11\"). Example \"NY\""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:378
+#: extras_address_standardizer.xml:381
 #, no-c-format
 msgid "NATION"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:380
+#: extras_address_standardizer.xml:383
 #, no-c-format
 msgid ""
 "(token number \"12\"). This attribute is not used in most reference files. "
@@ -945,13 +945,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:384
+#: extras_address_standardizer.xml:387
 #, no-c-format
 msgid "POSTAL"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:386
+#: extras_address_standardizer.xml:389
 #, no-c-format
 msgid ""
 "(token number \"13\"). (SADS elements \"ZIP CODE\" , \"PLUS 4\" ). This "
@@ -959,13 +959,13 @@ msgid ""
 msgstr ""
 
 #. Tag: emphasis
-#: extras_address_standardizer.xml:391
+#: extras_address_standardizer.xml:394
 #, no-c-format
 msgid "MICRO_C"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:392
+#: extras_address_standardizer.xml:395
 #, no-c-format
 msgid ""
 "(token number = \"<emphasis role=\"bold\">1</emphasis>\"). The class of "
@@ -975,34 +975,34 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:393
+#: extras_address_standardizer.xml:396
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">MICRO_C output tokens</emphasis> (excerpted from "
-"<ulink url=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</ulink>."
+"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:395
+#: extras_address_standardizer.xml:398
 #, no-c-format
 msgid "HOUSE"
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:413
+#: extras_address_standardizer.xml:416
 #, no-c-format
 msgid "street"
 msgstr ""
 
 #. Tag: emphasis
-#: extras_address_standardizer.xml:430
+#: extras_address_standardizer.xml:433
 #, no-c-format
 msgid "ARC_C"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:431
+#: extras_address_standardizer.xml:434
 #, no-c-format
 msgid ""
 "(token number = \"<emphasis role=\"bold\">2</emphasis>\"). The class of "
@@ -1011,13 +1011,13 @@ msgid ""
 msgstr ""
 
 #. Tag: emphasis
-#: extras_address_standardizer.xml:433
+#: extras_address_standardizer.xml:436
 #, no-c-format
 msgid "CIVIC_C"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:434
+#: extras_address_standardizer.xml:437
 #, no-c-format
 msgid ""
 "(token number = \"<emphasis role=\"bold\">3</emphasis>\"). The class of "
@@ -1025,13 +1025,13 @@ msgid ""
 msgstr ""
 
 #. Tag: emphasis
-#: extras_address_standardizer.xml:436
+#: extras_address_standardizer.xml:439
 #, no-c-format
 msgid "EXTRA_C"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:437
+#: extras_address_standardizer.xml:440
 #, no-c-format
 msgid ""
 "(token number = \"<emphasis role=\"bold\">4</emphasis>\"). The class of "
@@ -1040,28 +1040,28 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:439
+#: extras_address_standardizer.xml:442
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">EXTRA_C output tokens</emphasis> (excerpted from "
-"<ulink url=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</ulink>."
+"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:441
+#: extras_address_standardizer.xml:444
 #, no-c-format
 msgid "BLDNG"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:443
+#: extras_address_standardizer.xml:446
 #, no-c-format
 msgid "(token number <code>0</code>): Unparsed building identifiers and types."
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:448
+#: extras_address_standardizer.xml:451
 #, no-c-format
 msgid ""
 "(token number <code>14</code>): The <emphasis role=\"bold\">BOX</emphasis> "
@@ -1069,13 +1069,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:451
+#: extras_address_standardizer.xml:454
 #, no-c-format
 msgid "BOXT"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:453
+#: extras_address_standardizer.xml:456
 #, no-c-format
 msgid ""
 "(token number <code>15</code>): The <emphasis role=\"bold\">3B</emphasis> in "
@@ -1083,7 +1083,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:458
+#: extras_address_standardizer.xml:461
 #, no-c-format
 msgid ""
 "(token number <code>8</code>): The <emphasis role=\"bold\">RR</emphasis> in "
@@ -1091,7 +1091,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:463
+#: extras_address_standardizer.xml:466
 #, no-c-format
 msgid ""
 "(token number <code>16</code>): The <emphasis role=\"bold\">APT</emphasis> "
@@ -1099,13 +1099,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:466
+#: extras_address_standardizer.xml:469
 #, no-c-format
 msgid "UNITT"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:468
+#: extras_address_standardizer.xml:471
 #, no-c-format
 msgid ""
 "(token number <code>17</code>): The <emphasis role=\"bold\">3B</emphasis> in "
@@ -1113,19 +1113,19 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:471
+#: extras_address_standardizer.xml:474
 #, no-c-format
 msgid "UNKNWN"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:473
+#: extras_address_standardizer.xml:476
 #, no-c-format
 msgid "(token number <code>9</code>): An otherwise unclassified output."
 msgstr ""
 
 #. Tag: refpurpose
-#: extras_address_standardizer.xml:483
+#: extras_address_standardizer.xml:486
 #, no-c-format
 msgid ""
 "A lex table is used to classify alphanumeric input and associate that input "
@@ -1134,7 +1134,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:487
+#: extras_address_standardizer.xml:490
 #, no-c-format
 msgid ""
 "A lex (short for lexicon) table is used to classify alphanumeric input and "
@@ -1144,64 +1144,64 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:489
+#: extras_address_standardizer.xml:492
 #, no-c-format
 msgid "A lex has at least the following columns in the table. You may add"
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:497 extras_address_standardizer.xml:539
+#: extras_address_standardizer.xml:500 extras_address_standardizer.xml:542
 #, no-c-format
 msgid "<term>seq</term>"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:499
+#: extras_address_standardizer.xml:502
 #, no-c-format
 msgid "integer: definition number?"
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:503 extras_address_standardizer.xml:544
+#: extras_address_standardizer.xml:506 extras_address_standardizer.xml:547
 #, no-c-format
 msgid "word"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:505 extras_address_standardizer.xml:546
+#: extras_address_standardizer.xml:508 extras_address_standardizer.xml:549
 #, no-c-format
 msgid "text: the input word"
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:508 extras_address_standardizer.xml:549
+#: extras_address_standardizer.xml:511 extras_address_standardizer.xml:552
 #, no-c-format
 msgid "stdword"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:510 extras_address_standardizer.xml:551
+#: extras_address_standardizer.xml:513 extras_address_standardizer.xml:554
 #, no-c-format
 msgid "text: the standardized replacement word"
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:513 extras_address_standardizer.xml:554
+#: extras_address_standardizer.xml:516 extras_address_standardizer.xml:557
 #, no-c-format
 msgid "token"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:515 extras_address_standardizer.xml:556
+#: extras_address_standardizer.xml:518 extras_address_standardizer.xml:559
 #, no-c-format
 msgid ""
 "integer: the kind of word it is. Only if it is used in this context will it "
-"be replaced. Refer to <ulink url=\"http://www.pagcgeo.org/docs/html/pagc-12."
-"html#--i-tok--\">PAGC Tokens</ulink>."
+"be replaced. Refer to <link xlink:href=\"http://www.pagcgeo.org/docs/html/"
+"pagc-12.html#--i-tok--\">PAGC Tokens</link>."
 msgstr ""
 
 #. Tag: refpurpose
-#: extras_address_standardizer.xml:525
+#: extras_address_standardizer.xml:528
 #, no-c-format
 msgid ""
 "A gaz table is used to standardize place names and associate that input with "
@@ -1210,7 +1210,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:529
+#: extras_address_standardizer.xml:532
 #, no-c-format
 msgid ""
 "A gaz (short for gazeteer) table is used to standardize place names and "
@@ -1220,7 +1220,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:531
+#: extras_address_standardizer.xml:534
 #, no-c-format
 msgid ""
 "A gaz table has at least the following columns in the table. You may add "
@@ -1228,27 +1228,27 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:541
+#: extras_address_standardizer.xml:544
 #, no-c-format
 msgid ""
 "integer: definition number? - identifer used for that instance of the word"
 msgstr ""
 
 #. Tag: title
-#: extras_address_standardizer.xml:567
+#: extras_address_standardizer.xml:570
 #, no-c-format
 msgid "Address Standardizer Functions"
 msgstr ""
 
 #. Tag: refpurpose
-#: extras_address_standardizer.xml:573
+#: extras_address_standardizer.xml:576
 #, no-c-format
 msgid ""
 "Returns a json formatted text listing the parse tokens and standardizations"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:592
+#: extras_address_standardizer.xml:595
 #, no-c-format
 msgid ""
 "This is a function for debugging address standardizer rules and lex/gaz "
@@ -1260,13 +1260,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:594
+#: extras_address_standardizer.xml:597
 #, no-c-format
 msgid "For single line addresses use just <varname>micro</varname>"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:595
+#: extras_address_standardizer.xml:598
 #, no-c-format
 msgid ""
 "For two line address A <varname>micro</varname> consisting of standard first "
@@ -1276,19 +1276,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:597
+#: extras_address_standardizer.xml:600
 #, no-c-format
 msgid "Elements returned in the json document are"
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:600
+#: extras_address_standardizer.xml:603
 #, no-c-format
 msgid "input_tokens"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:602
+#: extras_address_standardizer.xml:605
 #, no-c-format
 msgid ""
 "For each word in the input address, returns the position of the word, token "
@@ -1298,13 +1298,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:608
+#: extras_address_standardizer.xml:611
 #, no-c-format
 msgid "rules"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:610
+#: extras_address_standardizer.xml:613
 #, no-c-format
 msgid ""
 "The set of rules matching the input and the corresponding score for each. "
@@ -1312,13 +1312,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: extras_address_standardizer.xml:614
+#: extras_address_standardizer.xml:617
 #, no-c-format
 msgid "<term>stdaddr</term>"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:616
+#: extras_address_standardizer.xml:619
 #, no-c-format
 msgid ""
 "The standardized address elements <xref linkend=\"stdaddr\"/> that would be "
@@ -1326,32 +1326,32 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:621
+#: extras_address_standardizer.xml:624
 #, no-c-format
 msgid "Availability: 3.4.0"
 msgstr ""
 
 #. Tag: title
-#: extras_address_standardizer.xml:627 extras_address_standardizer.xml:679
-#: extras_address_standardizer.xml:741
+#: extras_address_standardizer.xml:630 extras_address_standardizer.xml:682
+#: extras_address_standardizer.xml:744
 #, no-c-format
 msgid "Examples"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:628 extras_address_standardizer.xml:742
+#: extras_address_standardizer.xml:631 extras_address_standardizer.xml:745
 #, no-c-format
 msgid "Using address_standardizer_data_us extension"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:631
+#: extras_address_standardizer.xml:634
 #, no-c-format
 msgid "Variant 1: Single line address and returning the input tokens"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:635
+#: extras_address_standardizer.xml:638
 #, no-c-format
 msgid ""
 "Variant 2: Multi line address and returning first rule input mappings and "
@@ -1359,14 +1359,14 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: extras_address_standardizer.xml:643 extras_address_standardizer.xml:692
-#: extras_address_standardizer.xml:763
+#: extras_address_standardizer.xml:646 extras_address_standardizer.xml:695
+#: extras_address_standardizer.xml:766
 #, no-c-format
 msgid "See Also"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:645 extras_address_standardizer.xml:765
+#: extras_address_standardizer.xml:648 extras_address_standardizer.xml:768
 #, no-c-format
 msgid ""
 ", <xref linkend=\"rulestab\"/>, <xref linkend=\"lextab\"/>, <xref "
@@ -1374,13 +1374,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refpurpose
-#: extras_address_standardizer.xml:653
+#: extras_address_standardizer.xml:656
 #, no-c-format
 msgid "Takes a 1 line address and breaks into parts"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:669
+#: extras_address_standardizer.xml:672
 #, no-c-format
 msgid ""
 "Returns takes an address as input, and returns a record output consisting of "
@@ -1391,25 +1391,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:673 extras_address_standardizer.xml:735
+#: extras_address_standardizer.xml:676 extras_address_standardizer.xml:738
 #, no-c-format
 msgid "Availability: 2.2.0"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:681
+#: extras_address_standardizer.xml:684
 #, no-c-format
 msgid "Single Addresss"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:685
+#: extras_address_standardizer.xml:688
 #, no-c-format
 msgid "Table of addresses"
 msgstr ""
 
 #. Tag: refpurpose
-#: extras_address_standardizer.xml:702
+#: extras_address_standardizer.xml:705
 #, no-c-format
 msgid ""
 "Returns an stdaddr form of an input address utilizing lex, gaz, and rule "
@@ -1417,7 +1417,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:729
+#: extras_address_standardizer.xml:732
 #, no-c-format
 msgid ""
 "Returns an <xref linkend=\"stdaddr\"/> form of an input address utilizing "
@@ -1426,13 +1426,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:731
+#: extras_address_standardizer.xml:734
 #, no-c-format
 msgid "Variant 1: Takes an address as a single line."
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:732
+#: extras_address_standardizer.xml:735
 #, no-c-format
 msgid ""
 "Variant 2: Takes an address as 2 parts. A <varname>micro</varname> "
@@ -1442,14 +1442,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:745
+#: extras_address_standardizer.xml:748
 #, no-c-format
 msgid ""
 "Variant 1: Single line address. This doesn't work well with non-US addresses"
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:748
+#: extras_address_standardizer.xml:751
 #, no-c-format
 msgid ""
 "Using tables packaged with tiger geocoder. This example only works if you "
@@ -1457,7 +1457,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:751
+#: extras_address_standardizer.xml:754
 #, no-c-format
 msgid ""
 "Make easier to read we'll dump output using hstore extension CREATE "
@@ -1465,7 +1465,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:755
+#: extras_address_standardizer.xml:758
 #, no-c-format
 msgid "Variant 2: As a two part Address"
 msgstr ""

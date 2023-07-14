@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-  <sect1 id="SRS_Functions">
-    <sect1info>
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="SRS_Functions">
+    <title>Spatial Reference System Functions</title><info>
     <abstract>
   <para>These functions work with the Spatial Reference System of geometries
     as defined in the <varname>spatial_ref_sys</varname> table.</para>
    </abstract>
-    </sect1info>
+    </info>
 
-    <title>Spatial Reference System Functions</title>
+    
 
-  <refentry id="ST_InverseTransformPipeline">
+  <refentry xml:id="ST_InverseTransformPipeline">
     <refnamediv>
     <refname>ST_InverseTransformPipeline</refname>
 
@@ -37,17 +37,17 @@
       using a defined coordinate transformation pipeline to go in the inverse direction.
       </para>
 
-      <para> Refer to <xref linkend="ST_TransformPipeline" /> for details on writing a transformation pipeline.</para>
+      <para> Refer to <xref linkend="ST_TransformPipeline"/> for details on writing a transformation pipeline.</para>
 
     <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
 
     <para>
     The SRID of the input geometry is ignored, and the SRID of the output geometry will be set to
     zero unless a value is provided via the optional <varname>to_srid</varname> parameter. When
-    using <xref linkend="ST_TransformPipeline" /> the pipeline is executed in a forward direction. Using
+    using <xref linkend="ST_TransformPipeline"/> the pipeline is executed in a forward direction. Using
     `ST_InverseTransformPipeline()` the pipeline is executed in the inverse direction.</para>
 
-    <para>Transforms using pipelines are a specialised version of <xref linkend="ST_Transform" />.
+    <para>Transforms using pipelines are a specialised version of <xref linkend="ST_Transform"/>.
     In most cases `ST_Transform` will choose the correct operations to convert between coordinate
     systems, and should be preferred.</para>
 
@@ -83,11 +83,11 @@ SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) A
     <refsection>
     <title>See Also</title>
 
-    <para><xref linkend="ST_Transform" />, <xref linkend="ST_TransformPipeline" /></para>
+    <para><xref linkend="ST_Transform"/>, <xref linkend="ST_TransformPipeline"/></para>
     </refsection>
   </refentry>
 
-  <refentry id="ST_SetSRID">
+  <refentry xml:id="ST_SetSRID">
     <refnamediv>
     <refname>ST_SetSRID</refname>
 
@@ -141,12 +141,12 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
     <refsection>
     <title>See Also</title>
 
-    <para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_SRID"/>, <xref linkend="ST_Transform"/>, <xref linkend="UpdateGeometrySRID"/></para>
+    <para><xref linkend="spatial_ref_sys"/>, <xref linkend="ST_SRID"/>, <xref linkend="ST_Transform"/>, <xref linkend="UpdateGeometrySRID"/></para>
     </refsection>
 
   </refentry>
 
-  <refentry id="ST_SRID">
+  <refentry xml:id="ST_SRID">
     <refnamediv>
     <refname>ST_SRID</refname>
     <refpurpose>Returns the spatial reference identifier for a geometry.</refpurpose>
@@ -164,7 +164,7 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
     <refsection>
     <title>Description</title>
 
-    <para>Returns the spatial reference identifier for the ST_Geometry as defined in spatial_ref_sys table. <xref linkend="spatial_ref_sys" /></para>
+    <para>Returns the spatial reference identifier for the ST_Geometry as defined in spatial_ref_sys table. <xref linkend="spatial_ref_sys"/></para>
     <para><note><para>spatial_ref_sys
     table is a table that catalogs all spatial reference systems known to PostGIS and is used for transformations from one spatial
       reference system to another.  So verifying you have the right spatial reference system identifier is important if you plan to ever transform your geometries.</para></note></para>
@@ -185,11 +185,11 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
     <refsection>
     <title>See Also</title>
 
-    <para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" />, <xref linkend="RT_ST_SRID" />, <xref linkend="TG_ST_SRID" /></para>
+    <para><xref linkend="spatial_ref_sys"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_Transform"/>, <xref linkend="RT_ST_SRID"/>, <xref linkend="TG_ST_SRID"/></para>
     </refsection>
   </refentry>
 
-  <refentry id="ST_Transform">
+  <refentry xml:id="ST_Transform">
     <refnamediv>
     <refname>ST_Transform</refname>
 
@@ -245,15 +245,15 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
       <varname>from_proj</varname>, input geometries must have a defined SRID.
     </para>
 
-    <para>ST_Transform is often confused with <xref linkend="ST_SetSRID" />.  ST_Transform actually changes the coordinates
+    <para>ST_Transform is often confused with <xref linkend="ST_SetSRID"/>.  ST_Transform actually changes the coordinates
     of a geometry from one spatial reference system to another, while ST_SetSRID() simply changes the SRID identifier of
     the geometry.</para>
 
     <para>ST_Transform automatically selects a suitable conversion pipeline given the source and target spatial
-    reference systems. To use a specific conversion method, use <xref linkend="ST_TransformPipeline" />.</para>
+    reference systems. To use a specific conversion method, use <xref linkend="ST_TransformPipeline"/>.</para>
 
     <note>
-      <para>Requires PostGIS be compiled with PROJ support.  Use <xref linkend="PostGIS_Full_Version" /> to confirm you have PROJ support compiled in.</para>
+      <para>Requires PostGIS be compiled with PROJ support.  Use <xref linkend="PostGIS_Full_Version"/> to confirm you have PROJ support compiled in.</para>
     </note>
 
     <note>
@@ -351,11 +351,11 @@ CREATE INDEX idx_geom_26986_parcels
     <refsection>
     <title>See Also</title>
 
-    <para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" />, <xref linkend="UpdateGeometrySRID"/>, <xref linkend="ST_TransformPipeline" /></para>
+    <para><xref linkend="spatial_ref_sys"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_SRID"/>, <xref linkend="UpdateGeometrySRID"/>, <xref linkend="ST_TransformPipeline"/></para>
     </refsection>
   </refentry>
 
-  <refentry id="ST_TransformPipeline">
+  <refentry xml:id="ST_TransformPipeline">
     <refnamediv>
     <refname>ST_TransformPipeline</refname>
 
@@ -415,9 +415,9 @@ CREATE INDEX idx_geom_26986_parcels
     The SRID of the input geometry is ignored, and the SRID of the output geometry will be set to
     zero unless a value is provided via the optional <varname>to_srid</varname> parameter. When
     using `ST_TransformPipeline()` the pipeline is executed in a forward direction. Using
-   <xref linkend="ST_InverseTransformPipeline" /> the pipeline is executed in the inverse direction.</para>
+   <xref linkend="ST_InverseTransformPipeline"/> the pipeline is executed in the inverse direction.</para>
 
-    <para>Transforms using pipelines are a specialised version of <xref linkend="ST_Transform" />.
+    <para>Transforms using pipelines are a specialised version of <xref linkend="ST_Transform"/>.
     In most cases `ST_Transform` will choose the correct operations to convert between coordinate
     systems, and should be preferred.</para>
 
@@ -485,12 +485,12 @@ SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::geometry,
     <refsection>
     <title>See Also</title>
 
-    <para><xref linkend="ST_Transform" />, <xref linkend="ST_InverseTransformPipeline" /></para>
+    <para><xref linkend="ST_Transform"/>, <xref linkend="ST_InverseTransformPipeline"/></para>
     </refsection>
   </refentry>
 
 
-  <refentry id="postgis_srs_codes">
+  <refentry xml:id="postgis_srs_codes">
     <refnamediv>
     <refname>postgis_srs_codes</refname>
 
@@ -540,13 +540,13 @@ SELECT * FROM postgis_srs_codes('EPSG') LIMIT 10;
     <!-- Optionally add a "See Also" section -->
     <refsection>
     <title>See Also</title>
-    <para><xref linkend="postgis_srs" />, <xref linkend="postgis_srs_all" />, <xref linkend="postgis_srs_search" /></para>
+    <para><xref linkend="postgis_srs"/>, <xref linkend="postgis_srs_all"/>, <xref linkend="postgis_srs_search"/></para>
     </refsection>
 
   </refentry>
 
 
-  <refentry id="postgis_srs">
+  <refentry xml:id="postgis_srs">
     <refnamediv>
     <refname>postgis_srs</refname>
 
@@ -592,13 +592,13 @@ point_ne  | 0101000020E610000085EB51B81E855CC0E17A14AE47014E40
     <!-- Optionally add a "See Also" section -->
     <refsection>
     <title>See Also</title>
-    <para><xref linkend="postgis_srs_codes" />, <xref linkend="postgis_srs_all" />, <xref linkend="postgis_srs_search" /></para>
+    <para><xref linkend="postgis_srs_codes"/>, <xref linkend="postgis_srs_all"/>, <xref linkend="postgis_srs_search"/></para>
     </refsection>
 
   </refentry>
 
 
-  <refentry id="postgis_srs_all">
+  <refentry xml:id="postgis_srs_all">
     <refnamediv>
     <refname>postgis_srs_all</refname>
 
@@ -647,7 +647,7 @@ SELECT auth_name, auth_srid, srname FROM postgis_srs_all() LIMIT 10;
     <!-- Optionally add a "See Also" section -->
     <refsection>
     <title>See Also</title>
-    <para><xref linkend="postgis_srs_codes" />, <xref linkend="postgis_srs" />, <xref linkend="postgis_srs_search" /></para>
+    <para><xref linkend="postgis_srs_codes"/>, <xref linkend="postgis_srs"/>, <xref linkend="postgis_srs_search"/></para>
     </refsection>
 
   </refentry>
@@ -655,7 +655,7 @@ SELECT auth_name, auth_srid, srname FROM postgis_srs_all() LIMIT 10;
 
 
 
-  <refentry id="postgis_srs_search">
+  <refentry xml:id="postgis_srs_search">
     <refnamediv>
     <refname>postgis_srs_search</refname>
 
@@ -721,11 +721,11 @@ LIMIT 3;</programlisting>
     <!-- Optionally add a "See Also" section -->
     <refsection>
     <title>See Also</title>
-    <para><xref linkend="postgis_srs_codes" />, <xref linkend="postgis_srs_all" />, <xref linkend="postgis_srs" /></para>
+    <para><xref linkend="postgis_srs_codes"/>, <xref linkend="postgis_srs_all"/>, <xref linkend="postgis_srs"/></para>
     </refsection>
 
   </refentry>
 
 
 
-  </sect1>
+  </section>

@@ -1,16 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
-  <sect1 id="Spatial_Relationships">
-    <sect1info>
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Spatial_Relationships">
+    <title>Spatial Relationships</title><info>
     <abstract>
     <para>These functions determine spatial relationships between geometries.</para>
     </abstract>
-    </sect1info>
-  <title>Spatial Relationships</title>
+    </info>
 
-    <sect2>
+
+    <section>
     <title>Topological Relationships</title>
 
-  <refentry id="ST_3DIntersects">
+  <refentry xml:id="ST_3DIntersects">
     <refnamediv>
       <refname>ST_3DIntersects</refname>
 
@@ -73,7 +73,7 @@
     </refsection>
   </refentry>
 
-  <refentry id="ST_Contains">
+  <refentry xml:id="ST_Contains">
     <refnamediv>
     <refname>ST_Contains</refname>
 
@@ -107,7 +107,7 @@
     <emphasis>ST_Contains(A, B) ⇔ (A ⋂ B = B) ∧ (Int(A) ⋂ Int(B) ≠ ∅) </emphasis></para>
 
     <para>The contains relationship is reflexive: every geometry contains itself.
-    (In contrast, in the <xref linkend="ST_ContainsProperly" />
+    (In contrast, in the <xref linkend="ST_ContainsProperly"/>
     predicate a geometry does <emphasis>not</emphasis> properly contain itself.)
     The relationship is antisymmetric: if <code>ST_Contains(A,B) = true</code> and <code>ST_Contains(B,A) = true</code>, then
     the two geometries must be topologically equal (<code>ST_Equals(A,B) = true</code>).
@@ -118,8 +118,8 @@
 
     <note><para>Because the interiors must have a common point, a subtlety of the definition is that
     polygons and lines do <emphasis>not</emphasis> contain lines and points lying fully in their boundary.
-    For further details see <ulink url="http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html">Subtleties of OGC Covers, Contains, Within</ulink>.
-    The <xref linkend="ST_Covers" /> predicate provides a more inclusive relationship.
+    For further details see <link xlink:href="http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html">Subtleties of OGC Covers, Contains, Within</link>.
+    The <xref linkend="ST_Covers"/> predicate provides a more inclusive relationship.
     </para></note>
 
     <note><para>&index_aware;
@@ -157,7 +157,7 @@
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_contains01.png" />
+            <imagedata fileref="images/st_contains01.png"/>
             </imageobject>
 
             <caption><para><varname>LINESTRING</varname> / <varname>MULTIPOINT</varname></para></caption>
@@ -167,7 +167,7 @@
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_contains02.png" />
+            <imagedata fileref="images/st_contains02.png"/>
             </imageobject>
 
             <caption><para><varname>POLYGON</varname> / <varname>POINT</varname></para></caption>
@@ -178,7 +178,7 @@
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_contains03.png" />
+            <imagedata fileref="images/st_contains03.png"/>
             </imageobject>
 
             <caption><para><varname>POLYGON</varname> / <varname>LINESTRING</varname></para></caption>
@@ -188,7 +188,7 @@
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_contains04.png" />
+            <imagedata fileref="images/st_contains04.png"/>
             </imageobject>
 
             <caption><para><varname>POLYGON</varname> / <varname>POLYGON</varname></para></caption>
@@ -208,7 +208,7 @@
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_contains05.png" />
+            <imagedata fileref="images/st_contains05.png"/>
             </imageobject>
 
             <caption><para><varname>POLYGON</varname> / <varname>MULTIPOINT</varname></para></caption>
@@ -218,7 +218,7 @@
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_contains06.png" />
+            <imagedata fileref="images/st_contains06.png"/>
             </imageobject>
 
             <caption><para><varname>POLYGON</varname> / <varname>LINESTRING</varname></para></caption>
@@ -239,7 +239,7 @@
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_contains07.png" />
+            <imagedata fileref="images/st_contains07.png"/>
             </imageobject>
 
             <caption><para><varname>LINESTRING</varname> / <varname>POINT</varname></para></caption>
@@ -249,7 +249,7 @@
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_contains08.png" />
+            <imagedata fileref="images/st_contains08.png"/>
             </imageobject>
 
             <caption><para><varname>POLYGON</varname> / <varname>LINESTRING</varname></para></caption>
@@ -295,11 +295,11 @@ ST_Point      | t          | t              | f           | f
 
     <refsection>
     <title>See Also</title>
-    <para><xref linkend="ST_Boundary" />, <xref linkend="ST_ContainsProperly" />, <xref linkend="ST_Covers" />, <xref linkend="ST_CoveredBy" />, <xref linkend="ST_Equals"/>, <xref linkend="ST_Within"/></para>
+    <para><xref linkend="ST_Boundary"/>, <xref linkend="ST_ContainsProperly"/>, <xref linkend="ST_Covers"/>, <xref linkend="ST_CoveredBy"/>, <xref linkend="ST_Equals"/>, <xref linkend="ST_Within"/></para>
     </refsection>
  </refentry>
 
- <refentry id="ST_ContainsProperly">
+ <refentry xml:id="ST_ContainsProperly">
     <refnamediv>
     <refname>ST_ContainsProperly</refname>
 
@@ -343,7 +343,7 @@ ST_Point      | t          | t              | f           | f
          To avoid index use, use the function <function>_ST_ContainsProperly</function>.</para></note>
 
     <note>
-      <para>The advantage of this predicate over <xref linkend="ST_Contains" /> and <xref linkend="ST_Intersects" /> is that it can be computed
+      <para>The advantage of this predicate over <xref linkend="ST_Contains"/> and <xref linkend="ST_Intersects"/> is that it can be computed
           more efficiently, with no need to compute topology at individual points.</para>
     </note>
     <para>Performed by the GEOS module.</para>
@@ -394,11 +394,11 @@ ST_Point      | t          | t              | f           | f
 
     <refsection>
     <title>See Also</title>
-    <para><xref linkend="ST_GeometryType" />, <xref linkend="ST_Boundary" />, <xref linkend="ST_Contains" />, <xref linkend="ST_Covers" />, <xref linkend="ST_CoveredBy" />, <xref linkend="ST_Equals"/>, <xref linkend="ST_Relate" />, <xref linkend="ST_Within"/></para>
+    <para><xref linkend="ST_GeometryType"/>, <xref linkend="ST_Boundary"/>, <xref linkend="ST_Contains"/>, <xref linkend="ST_Covers"/>, <xref linkend="ST_CoveredBy"/>, <xref linkend="ST_Equals"/>, <xref linkend="ST_Relate"/>, <xref linkend="ST_Within"/></para>
     </refsection>
  </refentry>
 
-  <refentry id="ST_CoveredBy">
+  <refentry xml:id="ST_CoveredBy">
     <refnamediv>
     <refname>ST_CoveredBy</refname>
 
@@ -486,11 +486,11 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
 
     <refsection>
     <title>See Also</title>
-    <para><xref linkend="ST_Contains"/>, <xref linkend="ST_Covers" />, <xref linkend="ST_ExteriorRing"/>, <xref linkend="ST_Within"/></para>
+    <para><xref linkend="ST_Contains"/>, <xref linkend="ST_Covers"/>, <xref linkend="ST_ExteriorRing"/>, <xref linkend="ST_Within"/></para>
     </refsection>
  </refentry>
 
-  <refentry id="ST_Covers">
+  <refentry xml:id="ST_Covers">
     <refnamediv>
     <refname>ST_Covers</refname>
 
@@ -595,11 +595,11 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
 
     <refsection>
     <title>See Also</title>
-    <para><xref linkend="ST_Contains"/>, <xref linkend="ST_CoveredBy" />, <xref linkend="ST_Within"/></para>
+    <para><xref linkend="ST_Contains"/>, <xref linkend="ST_CoveredBy"/>, <xref linkend="ST_Within"/></para>
     </refsection>
  </refentry>
 
-  <refentry id="ST_Crosses">
+  <refentry xml:id="ST_Crosses">
   <refnamediv>
     <refname>ST_Crosses</refname>
 
@@ -622,8 +622,8 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
     <title>Description</title>
 
     <para>Compares two geometry objects and
-    returns <varname>true</varname> if their intersection "spatially crosses"; 
-    that is, the geometries have some, but not all interior points in common. 
+    returns <varname>true</varname> if their intersection "spatially crosses";
+    that is, the geometries have some, but not all interior points in common.
     The intersection of the interiors of the geometries must be non-empty
     and must have dimension less than the maximum dimension
     of the two input geometries, and the intersection of the two
@@ -681,7 +681,7 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
         <entry><para><informalfigure>
           <mediaobject>
           <imageobject>
-            <imagedata fileref="images/st_crosses01.png" />
+            <imagedata fileref="images/st_crosses01.png"/>
           </imageobject>
 
           <caption><para><varname>MULTIPOINT</varname> / <varname>LINESTRING</varname></para></caption>
@@ -691,7 +691,7 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
         <entry><para><informalfigure>
           <mediaobject>
           <imageobject>
-            <imagedata fileref="images/st_crosses02.png" />
+            <imagedata fileref="images/st_crosses02.png"/>
           </imageobject>
 
           <caption><para><varname>MULTIPOINT</varname> / <varname>POLYGON</varname></para></caption>
@@ -703,7 +703,7 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
         <entry><para><informalfigure>
           <mediaobject>
           <imageobject>
-            <imagedata fileref="images/st_crosses03.png" />
+            <imagedata fileref="images/st_crosses03.png"/>
           </imageobject>
 
           <caption><para><varname>LINESTRING</varname> / <varname>POLYGON</varname></para></caption>
@@ -713,7 +713,7 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
         <entry><para><informalfigure>
           <mediaobject>
           <imageobject>
-            <imagedata fileref="images/st_crosses04.png" />
+            <imagedata fileref="images/st_crosses04.png"/>
           </imageobject>
 
           <caption><para><varname>LINESTRING</varname> / <varname>LINESTRING</varname></para></caption>
@@ -767,7 +767,7 @@ WHERE ST_Crosses(roads.geom, highways.geom);</programlisting>
     </refsection>
   </refentry>
 
-  <refentry id="ST_Disjoint">
+  <refentry xml:id="ST_Disjoint">
     <refnamediv>
       <refname>ST_Disjoint</refname>
 
@@ -793,8 +793,8 @@ WHERE ST_Crosses(roads.geom, highways.geom);</programlisting>
 
       <para>Returns <varname>true</varname> if two geometries are disjoint.
       Geometries are disjoint if they have no point in common.
-      </para>      
-      
+      </para>
+
       <para>If any other spatial relationship is true for a pair of geometries, they are not disjoint.
       Disjoint implies that <xref linkend="ST_Intersects"/> is false.
       </para>
@@ -808,7 +808,7 @@ WHERE ST_Crosses(roads.geom, highways.geom);</programlisting>
 
       <para>Performed by the GEOS module</para>
       <note>
-        <para>This function call does not use indexes. A negated <xref linkend="ST_Intersects" /> predicate
+        <para>This function call does not use indexes. A negated <xref linkend="ST_Intersects"/> predicate
           can be used as a more performant alternative that uses indexes:
           <code>ST_Disjoint(A,B) = NOT ST_Intersects(A,B)</code></para>
 
@@ -843,7 +843,7 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
     </refsection>
   </refentry>
 
-  <refentry id="ST_Equals">
+  <refentry xml:id="ST_Equals">
     <refnamediv>
     <refname>ST_Equals</refname>
 
@@ -863,11 +863,11 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
     <refsection>
     <title>Description</title>
 
-    <para>Returns <varname>true</varname> if the given geometries are "topologically equal". 
+    <para>Returns <varname>true</varname> if the given geometries are "topologically equal".
     Use this for a 'better' answer than '='.
-      Topological equality means that the geometries have the same dimension, 
+      Topological equality means that the geometries have the same dimension,
       and their point-sets occupy the same space.
-      This means that the order of vertices may be different in topologically equal geometries. 
+      This means that the order of vertices may be different in topologically equal geometries.
       To verify the order of points is consistent use
       <xref linkend="ST_OrderingEquals"/> (it must be noted ST_OrderingEquals is a little more stringent than simply verifying order of
       points are the same).</para>
@@ -909,13 +909,13 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
     <refsection>
     <title>See Also</title>
 
-    <para><xref linkend="ST_IsValid"/>, <xref linkend="ST_OrderingEquals"/>, <xref linkend="ST_Reverse"/>, <xref linkend="ST_Within" /></para>
+    <para><xref linkend="ST_IsValid"/>, <xref linkend="ST_OrderingEquals"/>, <xref linkend="ST_Reverse"/>, <xref linkend="ST_Within"/></para>
     </refsection>
 
   </refentry>
 
 
-  <refentry id="ST_Intersects">
+  <refentry xml:id="ST_Intersects">
     <refnamediv>
       <refname>ST_Intersects</refname>
 
@@ -1031,11 +1031,11 @@ t
     </refsection>
     <refsection>
       <title>See Also</title>
-      <para><xref linkend="geometry_overlaps" />, <xref linkend="ST_3DIntersects" />, <xref linkend="ST_Disjoint"/></para>
+      <para><xref linkend="geometry_overlaps"/>, <xref linkend="ST_3DIntersects"/>, <xref linkend="ST_Disjoint"/></para>
     </refsection>
   </refentry>
 
-  <refentry id="ST_LineCrossingDirection">
+  <refentry xml:id="ST_LineCrossingDirection">
   <refnamediv>
     <refname>ST_LineCrossingDirection</refname>
 
@@ -1097,7 +1097,7 @@ t
     <informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_linecrossingdirection03.png" />
+            <imagedata fileref="images/st_linecrossingdirection03.png"/>
             </imageobject>
             <caption><para>Blue: Line A;  Green: Line B</para></caption>
           </mediaobject>
@@ -1121,7 +1121,7 @@ FROM (SELECT
     <informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_linecrossingdirection01.png" />
+            <imagedata fileref="images/st_linecrossingdirection01.png"/>
             </imageobject>
             <caption><para>Blue: Line A;  Green: Line B</para></caption>
           </mediaobject>
@@ -1145,7 +1145,7 @@ FROM (SELECT
       <informalfigure>
         <mediaobject>
           <imageobject>
-          <imagedata fileref="images/st_linecrossingdirection04.png" />
+          <imagedata fileref="images/st_linecrossingdirection04.png"/>
           </imageobject>
             <caption><para>Blue: Line A;  Green: Line B</para></caption>
         </mediaobject>
@@ -1170,17 +1170,17 @@ FROM (SELECT
 SELECT s1.gid, s2.gid, ST_LineCrossingDirection(s1.geom, s2.geom)
   FROM streets s1 CROSS JOIN streets s2
          ON (s1.gid != s2.gid AND s1.geom &amp;&amp; s2.geom )
-WHERE ST_LineCrossingDirection(s1.geom, s2.geom) > 0;
+WHERE ST_LineCrossingDirection(s1.geom, s2.geom) &gt; 0;
 </programlisting>
   </refsection>
 
   <refsection>
     <title>See Also</title>
-    <para><xref linkend="ST_Crosses" /></para>
+    <para><xref linkend="ST_Crosses"/></para>
   </refsection>
   </refentry>
 
-  <refentry id="ST_OrderingEquals">
+  <refentry xml:id="ST_OrderingEquals">
     <refnamediv>
     <refname>ST_OrderingEquals</refname>
 
@@ -1239,11 +1239,11 @@ SELECT ST_OrderingEquals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
       </refsection>
       <refsection>
       <title>See Also</title>
-      <para><xref linkend="geometry_overlaps" />, <xref linkend="ST_Equals"/>, <xref linkend="ST_Reverse"/></para>
+      <para><xref linkend="geometry_overlaps"/>, <xref linkend="ST_Equals"/>, <xref linkend="ST_Reverse"/></para>
       </refsection>
   </refentry>
 
-  <refentry id="ST_Overlaps">
+  <refentry xml:id="ST_Overlaps">
     <refnamediv>
     <refname>ST_Overlaps</refname>
 
@@ -1301,7 +1301,7 @@ SELECT ST_OrderingEquals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
         <entry><para><informalfigure>
           <mediaobject>
           <imageobject>
-            <imagedata fileref="images/st_overlaps01.png" />
+            <imagedata fileref="images/st_overlaps01.png"/>
           </imageobject>
           <caption><para><varname>MULTIPOINT</varname> / <varname>MULTIPOINT</varname></para></caption>
           </mediaobject>
@@ -1310,7 +1310,7 @@ SELECT ST_OrderingEquals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
         <entry><para><informalfigure>
           <mediaobject>
           <imageobject>
-            <imagedata fileref="images/st_overlaps02.png" />
+            <imagedata fileref="images/st_overlaps02.png"/>
           </imageobject>
           <caption><para><varname>LINESTRING</varname> / <varname>LINESTRING</varname></para></caption>
           </mediaobject>
@@ -1318,7 +1318,7 @@ SELECT ST_OrderingEquals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
         <entry><para><informalfigure>
           <mediaobject>
           <imageobject>
-            <imagedata fileref="images/st_overlaps03.png" />
+            <imagedata fileref="images/st_overlaps03.png"/>
           </imageobject>
           <caption><para><varname>POLYGON</varname> / <varname>POLYGON</varname></para></caption>
           </mediaobject>
@@ -1331,7 +1331,7 @@ SELECT ST_OrderingEquals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
     <informalfigure>
           <mediaobject>
           <imageobject>
-            <imagedata fileref="images/st_overlaps04.png" />
+            <imagedata fileref="images/st_overlaps04.png"/>
           </imageobject>
           </mediaobject>
         </informalfigure>
@@ -1350,7 +1350,7 @@ f        | f       | t          | t
     <informalfigure>
           <mediaobject>
           <imageobject>
-            <imagedata fileref="images/st_overlaps05.png" />
+            <imagedata fileref="images/st_overlaps05.png"/>
           </imageobject>
           </mediaobject>
         </informalfigure>
@@ -1369,7 +1369,7 @@ FROM (SELECT ST_GeomFromText('POLYGON ((40 170, 90 30, 180 100, 40 170))') AS a,
     <informalfigure>
           <mediaobject>
           <imageobject>
-            <imagedata fileref="images/st_overlaps06.png" />
+            <imagedata fileref="images/st_overlaps06.png"/>
           </imageobject>
           </mediaobject>
         </informalfigure>
@@ -1398,7 +1398,7 @@ FROM (SELECT ST_GeomFromText('POLYGON ((40 170, 90 30, 180 100, 40 170))') AS a,
     </refsection>
   </refentry>
 
-  <refentry id="ST_Relate">
+  <refentry xml:id="ST_Relate">
     <refnamediv>
       <refname>ST_Relate</refname>
 
@@ -1437,7 +1437,7 @@ FROM (SELECT ST_GeomFromText('POLYGON ((40 170, 90 30, 180 100, 40 170))') AS a,
 
             <para>
             These functions allow testing and evaluating the spatial (topological) relationship between two geometries,
-            as defined by the <ulink url="http://en.wikipedia.org/wiki/DE-9IM">Dimensionally Extended 9-Intersection Model</ulink> (DE-9IM).
+            as defined by the <link xlink:href="http://en.wikipedia.org/wiki/DE-9IM">Dimensionally Extended 9-Intersection Model</link> (DE-9IM).
             </para>
             <para>
             The DE-9IM is specified as a 9-element matrix indicating the dimension of the intersections between the
@@ -1451,18 +1451,18 @@ FROM (SELECT ST_GeomFromText('POLYGON ((40 170, 90 30, 180 100, 40 170))') AS a,
             Patterns can include the additional symbols 'T' (meaning "intersection is non-empty")
             and '*' (meaning "any value").
             Common spatial relationships are provided by the named functions
-            <xref linkend="ST_Contains" />, <xref linkend="ST_ContainsProperly" />,
-            <xref linkend="ST_Covers" />, <xref linkend="ST_CoveredBy" />,
-            <xref linkend="ST_Crosses" />, <xref linkend="ST_Disjoint" />, <xref linkend="ST_Equals" />,
-            <xref linkend="ST_Intersects" />, <xref linkend="ST_Overlaps" />, <xref linkend="ST_Touches" />,
-            and <xref linkend="ST_Within" />.
+            <xref linkend="ST_Contains"/>, <xref linkend="ST_ContainsProperly"/>,
+            <xref linkend="ST_Covers"/>, <xref linkend="ST_CoveredBy"/>,
+            <xref linkend="ST_Crosses"/>, <xref linkend="ST_Disjoint"/>, <xref linkend="ST_Equals"/>,
+            <xref linkend="ST_Intersects"/>, <xref linkend="ST_Overlaps"/>, <xref linkend="ST_Touches"/>,
+            and <xref linkend="ST_Within"/>.
             Using an explicit pattern allows testing multiple conditions of intersects, crosses, etc in one step.
             It also allows testing spatial relationships which do not have a named spatial relationship function.
             For example, the relationship "Interior-Intersects" has the DE-9IM pattern <code>T********</code>,
             which is not evaluated by any named predicate.
             </para>
             <para>
-             For more information refer to <xref linkend="eval_spatial_rel" />.
+             For more information refer to <xref linkend="eval_spatial_rel"/>.
             </para>
 
       <para><emphasis role="bold">Variant 1:</emphasis> Tests if two geometries are spatially related
@@ -1485,7 +1485,7 @@ FROM (SELECT ST_GeomFromText('POLYGON ((40 170, 90 30, 180 100, 40 170))') AS a,
 
       <para><emphasis role="bold">Variant 2:</emphasis> Returns the DE-9IM matrix string for the
             spatial relationship between the two input geometries.
-            The matrix string can be tested for matching a DE-9IM pattern using <xref linkend="ST_RelateMatch" />.
+            The matrix string can be tested for matching a DE-9IM pattern using <xref linkend="ST_RelateMatch"/>.
             </para>
 
       <para><emphasis role="bold">Variant 3:</emphasis> Like variant 2,
@@ -1596,17 +1596,17 @@ SELECT ST_Relate( a_line, b_multiline, 1) AS bnr_mod2,
     <title>See Also</title>
 
     <para>
-            <xref linkend="eval_spatial_rel" />, <xref linkend="ST_RelateMatch" />,
-            <xref linkend="ST_Contains" />, <xref linkend="ST_ContainsProperly" />,
-            <xref linkend="ST_Covers" />, <xref linkend="ST_CoveredBy" />,
-            <xref linkend="ST_Crosses" />, <xref linkend="ST_Disjoint" />, <xref linkend="ST_Equals" />,
-            <xref linkend="ST_Intersects" />, <xref linkend="ST_Overlaps" />,
-            <xref linkend="ST_Touches" />, <xref linkend="ST_Within" />
+            <xref linkend="eval_spatial_rel"/>, <xref linkend="ST_RelateMatch"/>,
+            <xref linkend="ST_Contains"/>, <xref linkend="ST_ContainsProperly"/>,
+            <xref linkend="ST_Covers"/>, <xref linkend="ST_CoveredBy"/>,
+            <xref linkend="ST_Crosses"/>, <xref linkend="ST_Disjoint"/>, <xref linkend="ST_Equals"/>,
+            <xref linkend="ST_Intersects"/>, <xref linkend="ST_Overlaps"/>,
+            <xref linkend="ST_Touches"/>, <xref linkend="ST_Within"/>
         </para>
   </refsection>
 </refentry>
 
-<refentry id="ST_RelateMatch">
+<refentry xml:id="ST_RelateMatch">
   <refnamediv>
     <refname>ST_RelateMatch</refname>
 
@@ -1628,13 +1628,13 @@ SELECT ST_Relate( a_line, b_multiline, 1) AS bnr_mod2,
     <title>Description</title>
 
     <para>
-        Tests if a <ulink url="http://en.wikipedia.org/wiki/DE-9IM">Dimensionally Extended 9-Intersection Model</ulink> (DE-9IM)
+        Tests if a <link xlink:href="http://en.wikipedia.org/wiki/DE-9IM">Dimensionally Extended 9-Intersection Model</link> (DE-9IM)
         <varname>intersectionMatrix</varname> value satisfies
     an <varname>intersectionMatrixPattern</varname>.
-        Intersection matrix values can be computed by <xref linkend="ST_Relate" />.
+        Intersection matrix values can be computed by <xref linkend="ST_Relate"/>.
         </para>
         <para>
-        For more information refer to <xref linkend="eval_spatial_rel" />.
+        For more information refer to <xref linkend="eval_spatial_rel"/>.
         </para>
     <para>Performed by the GEOS module</para>
 
@@ -1685,11 +1685,11 @@ SELECT pat.name AS relationship, pat.val AS pattern,
   <!-- Optionally add a "See Also" section -->
   <refsection>
     <title>See Also</title>
-    <para><xref linkend="eval_spatial_rel" />, <xref linkend="ST_Relate" /></para>
+    <para><xref linkend="eval_spatial_rel"/>, <xref linkend="ST_Relate"/></para>
   </refsection>
 </refentry>
 
-  <refentry id="ST_Touches">
+  <refentry xml:id="ST_Touches">
     <refnamediv>
     <refname>ST_Touches</refname>
 
@@ -1762,7 +1762,7 @@ SELECT pat.name AS relationship, pat.val AS pattern,
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_touches01.png" />
+            <imagedata fileref="images/st_touches01.png"/>
             </imageobject>
 
             <caption><para><varname>POLYGON</varname> / <varname>POLYGON</varname></para></caption>
@@ -1772,7 +1772,7 @@ SELECT pat.name AS relationship, pat.val AS pattern,
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_touches02.png" />
+            <imagedata fileref="images/st_touches02.png"/>
             </imageobject>
 
             <caption><para><varname>POLYGON</varname> / <varname>POLYGON</varname></para></caption>
@@ -1782,7 +1782,7 @@ SELECT pat.name AS relationship, pat.val AS pattern,
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_touches03.png" />
+            <imagedata fileref="images/st_touches03.png"/>
             </imageobject>
 
             <caption><para><varname>POLYGON</varname> / <varname>LINESTRING</varname></para></caption>
@@ -1793,7 +1793,7 @@ SELECT pat.name AS relationship, pat.val AS pattern,
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_touches04.png" />
+            <imagedata fileref="images/st_touches04.png"/>
             </imageobject>
 
             <caption><para><varname>LINESTRING</varname> / <varname>LINESTRING</varname></para></caption>
@@ -1803,7 +1803,7 @@ SELECT pat.name AS relationship, pat.val AS pattern,
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_touches05.png" />
+            <imagedata fileref="images/st_touches05.png"/>
             </imageobject>
 
             <caption><para><varname>LINESTRING</varname> / <varname>LINESTRING</varname></para></caption>
@@ -1813,7 +1813,7 @@ SELECT pat.name AS relationship, pat.val AS pattern,
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_touches06.png" />
+            <imagedata fileref="images/st_touches06.png"/>
             </imageobject>
 
             <caption><para><varname>POLYGON</varname> / <varname>POINT</varname></para></caption>
@@ -1838,7 +1838,7 @@ SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(0 2)'::geometry)
     </refsection>
   </refentry>
 
-  <refentry id="ST_Within">
+  <refentry xml:id="ST_Within">
     <refnamediv>
     <refname>ST_Within</refname>
 
@@ -1884,8 +1884,8 @@ SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(0 2)'::geometry)
 
     <note><para>Because the interiors must have a common point, a subtlety of the definition is that
     lines and points lying fully in the boundary of polygons or lines are <emphasis>not</emphasis> within the geometry.
-    For further details see <ulink url="http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html">Subtleties of OGC Covers, Contains, Within</ulink>.
-    The <xref linkend="ST_CoveredBy" /> predicate provides a more inclusive relationship.
+    For further details see <link xlink:href="http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html">Subtleties of OGC Covers, Contains, Within</link>.
+    The <xref linkend="ST_CoveredBy"/> predicate provides a more inclusive relationship.
     </para></note>
 
     <note><para>&index_aware;
@@ -1935,7 +1935,7 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 
     <para><inlinemediaobject>
     <imageobject>
-      <imagedata fileref="images/st_within01.png" />
+      <imagedata fileref="images/st_within01.png"/>
     </imageobject>
     </inlinemediaobject> </para>
     </refsection>
@@ -1946,13 +1946,13 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
     </refsection>
   </refentry>
 
-    </sect2>
+    </section>
   <!-- ==============================================================================  -->
 
-    <sect2>
+    <section>
     <title>Distance Relationships</title>
 
-  <refentry id="ST_3DDWithin">
+  <refentry xml:id="ST_3DDWithin">
     <refnamediv>
     <refname>ST_3DDWithin</refname>
 
@@ -2025,11 +2025,11 @@ ST_DWithin(
         <xref linkend="ST_3DDFullyWithin"/>,
         <xref linkend="ST_DWithin"/>, <xref linkend="ST_DFullyWithin"/>,
         <xref linkend="ST_3DDistance"/>, <xref linkend="ST_Distance"/>,
-        <xref linkend="ST_3DMaxDistance" />, <xref linkend="ST_Transform" /></para>
+        <xref linkend="ST_3DMaxDistance"/>, <xref linkend="ST_Transform"/></para>
     </refsection>
   </refentry>
 
-    <refentry id="ST_3DDFullyWithin">
+    <refentry xml:id="ST_3DDFullyWithin">
     <refnamediv>
     <refname>ST_3DDFullyWithin</refname>
 
@@ -2095,7 +2095,7 @@ ST_DWithin(
     </refsection>
   </refentry>
 
-  <refentry id="ST_DFullyWithin">
+  <refentry xml:id="ST_DFullyWithin">
     <refnamediv>
     <refname>ST_DFullyWithin</refname>
 
@@ -2152,7 +2152,7 @@ ST_DWithin(
     </refsection>
   </refentry>
 
-  <refentry id="ST_DWithin">
+  <refentry xml:id="ST_DWithin">
     <refnamediv>
     <refname>ST_DWithin</refname>
 
@@ -2215,7 +2215,7 @@ ST_DWithin(
 
     <para>&sfs_compliant;</para>
     <para role="availability" conformance="1.5.0">Availability: 1.5.0 support for geography was introduced</para>
-    <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 improved speed for geography. See <ulink url="http://blog.opengeo.org/2012/07/12/making-geography-faster/">Making Geography faster</ulink> for details.</para>
+    <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 improved speed for geography. See <link xlink:href="http://blog.opengeo.org/2012/07/12/making-geography-faster/">Making Geography faster</link> for details.</para>
     <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 support for curved geometries was introduced.</para>
 
         <para>Prior to 1.3, <xref linkend="ST_Expand"/> was commonly used in conjunction with &amp;&amp; and ST_Distance to
@@ -2271,7 +2271,7 @@ SELECT b.tower_id, b.geom
     </refsection>
   </refentry>
 
-  <refentry id="ST_PointInsideCircle">
+  <refentry xml:id="ST_PointInsideCircle">
     <refnamediv>
     <refname>ST_PointInsideCircle</refname>
 
@@ -2297,7 +2297,7 @@ SELECT b.tower_id, b.geom
       circle with center <varname>center_x</varname>,<varname>center_y</varname>
             and radius <varname>radius</varname>.
         </para>
-    <warning><para>Does not use spatial indexes. Use <xref linkend="ST_DWithin" /> instead.</para></warning>
+    <warning><para>Does not use spatial indexes. Use <xref linkend="ST_DWithin"/> instead.</para></warning>
 
     <para role="availability" conformance="1.2">Availability: 1.2</para>
     <para role="changed" conformance="2.2.0">Changed: 2.2.0 In prior versions this was called ST_Point_Inside_Circle</para>
@@ -2318,10 +2318,10 @@ SELECT b.tower_id, b.geom
     <refsection>
     <title>See Also</title>
 
-    <para><xref linkend="ST_DWithin" /></para>
+    <para><xref linkend="ST_DWithin"/></para>
     </refsection>
   </refentry>
 
-    </sect2>
+    </section>
 
-</sect1>
+</section>

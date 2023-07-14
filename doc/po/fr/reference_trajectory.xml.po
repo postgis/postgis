@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-01-05 06:13+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -16,6 +16,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.14.1\n"
+
+#. Tag: title
+#: reference_trajectory.xml:3
+#, no-c-format
+msgid "Trajectory Functions"
+msgstr "Fonctions de trajectoire"
 
 #. Tag: para
 #: reference_trajectory.xml:5
@@ -31,12 +37,6 @@ msgstr ""
 "M) sur chaque coordonnée. Les données spatio-temporelles peuvent être "
 "modélisées en utilisant des temps relatifs (comme l'époque) comme valeurs de "
 "mesure."
-
-#. Tag: title
-#: reference_trajectory.xml:12
-#, no-c-format
-msgid "Trajectory Functions"
-msgstr "Fonctions de trajectoire"
 
 #. Tag: refpurpose
 #: reference_trajectory.xml:18

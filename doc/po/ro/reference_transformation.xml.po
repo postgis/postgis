@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-07-18 20:22+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,19 +16,19 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
 
+#. Tag: title
+#: reference_transformation.xml:3
+#, no-c-format
+msgid "Affine Transformations"
+msgstr ""
+
 #. Tag: para
 #: reference_transformation.xml:5
 #, no-c-format
 msgid ""
-"These functions change the position and shape of geometries using <ulink "
-"url=\"https://en.wikipedia.org/wiki/Affine_transformation\">affine "
-"transformations</ulink>."
-msgstr ""
-
-#. Tag: title
-#: reference_transformation.xml:10
-#, no-c-format
-msgid "Affine Transformations"
+"These functions change the position and shape of geometries using <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/Affine_transformation\">affine "
+"transformations</link>."
 msgstr ""
 
 #. Tag: refpurpose

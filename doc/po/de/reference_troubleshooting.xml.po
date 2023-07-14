@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2022-05-12 13:42+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
@@ -17,6 +17,12 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.11.2\n"
 
+#. Tag: title
+#: reference_troubleshooting.xml:3
+#, no-c-format
+msgid "Troubleshooting Functions"
+msgstr ""
+
 #. Tag: para
 #: reference_troubleshooting.xml:5
 #, no-c-format
@@ -24,12 +30,6 @@ msgid ""
 "These functions are utilities for troubleshooting and repairing geometry "
 "data. They are only needed if the geometry data is corrupted in some way, "
 "which should never happen under normal circumstances."
-msgstr ""
-
-#. Tag: title
-#: reference_troubleshooting.xml:10
-#, no-c-format
-msgid "Troubleshooting Functions"
 msgstr ""
 
 #. Tag: refpurpose

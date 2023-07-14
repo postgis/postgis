@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-05-15 11:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -18,17 +18,17 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.16.4\n"
 
+#. Tag: title
+#: reference_management.xml:3
+#, no-c-format
+msgid "Table Management Functions"
+msgstr "テーブル管理関数"
+
 #. Tag: para
 #: reference_management.xml:5
 #, no-c-format
 msgid "These functions assist in defining tables containing geometry columns."
 msgstr "これらの関数は、ジオメトリカラムを含むテーブルの定義を支援します。"
-
-#. Tag: title
-#: reference_management.xml:10
-#, no-c-format
-msgid "Table Management Functions"
-msgstr "テーブル管理関数"
 
 #. Tag: refpurpose
 #: reference_management.xml:16
@@ -39,7 +39,7 @@ msgstr "ジオメトリカラムを既存のテーブルに追加します。"
 #. Tag: title
 #: reference_management.xml:97 reference_management.xml:193
 #: reference_management.xml:259 reference_management.xml:302
-#: reference_management.xml:350 reference_management.xml:490
+#: reference_management.xml:350 reference_management.xml:487
 #, no-c-format
 msgid "Description"
 msgstr "説明"
@@ -121,14 +121,14 @@ msgstr "&sfs_compliant;"
 
 #. Tag: para
 #: reference_management.xml:123 reference_management.xml:200
-#: reference_management.xml:498
+#: reference_management.xml:495
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_management.xml:124 reference_management.xml:201
-#: reference_management.xml:499
+#: reference_management.xml:496
 #, no-c-format
 msgid "&curve_support;"
 msgstr "&curve_support;"
@@ -146,7 +146,7 @@ msgstr ""
 #. Tag: title
 #: reference_management.xml:129 reference_management.xml:208
 #: reference_management.xml:272 reference_management.xml:311
-#: reference_management.xml:411 reference_management.xml:502
+#: reference_management.xml:408 reference_management.xml:499
 #, no-c-format
 msgid "Examples"
 msgstr "例"
@@ -154,7 +154,7 @@ msgstr "例"
 #. Tag: title
 #: reference_management.xml:135 reference_management.xml:213
 #: reference_management.xml:277 reference_management.xml:318
-#: reference_management.xml:518
+#: reference_management.xml:515
 #, no-c-format
 msgid "See Also"
 msgstr "関連情報"
@@ -322,7 +322,7 @@ msgstr ""
 "ことを確実にします (<xref linkend=\"ST_NDims\"/>をご覧下さい)"
 
 #. Tag: para
-#: reference_management.xml:371
+#: reference_management.xml:370
 #, no-c-format
 msgid ""
 "<varname>enforce_geotype_geom</varname> - ensures every geometry is of the "
@@ -332,7 +332,7 @@ msgstr ""
 "つことを確実にします (<xref linkend=\"GeometryType\"/>をご覧下さい)"
 
 #. Tag: para
-#: reference_management.xml:377
+#: reference_management.xml:375
 #, no-c-format
 msgid ""
 "<varname>enforce_srid_geom</varname> - ensures every geometry is in the same "
@@ -342,7 +342,7 @@ msgstr ""
 "ることを確実にします (<xref linkend=\"ST_SRID\"/>をご覧下さい)"
 
 #. Tag: para
-#: reference_management.xml:383
+#: reference_management.xml:380
 #, no-c-format
 msgid ""
 "If a table <varname>oid</varname> is provided, this function tries to "
@@ -358,7 +358,7 @@ msgstr ""
 "したエラーが通知されます。"
 
 #. Tag: para
-#: reference_management.xml:390
+#: reference_management.xml:387
 #, no-c-format
 msgid ""
 "If the <varname>oid</varname> of a view is provided, as with a table oid, "
@@ -372,7 +372,7 @@ msgstr ""
 "varname>テーブルに挿入しますが、制約の追加はされません。"
 
 #. Tag: para
-#: reference_management.xml:396
+#: reference_management.xml:393
 #, no-c-format
 msgid ""
 "The parameterless variant is a simple wrapper for the parameterized variant "
@@ -392,13 +392,13 @@ msgstr ""
 "varname>に挿入された行の数を返します。"
 
 #. Tag: para
-#: reference_management.xml:404
+#: reference_management.xml:401
 #, no-c-format
 msgid "Availability: 1.4.0"
 msgstr "Availability: 1.4.0"
 
 #. Tag: para
-#: reference_management.xml:405
+#: reference_management.xml:402
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 By default, now uses type modifiers instead of check "
@@ -411,7 +411,7 @@ msgstr ""
 "して使うことで、制約確認を使用することができます。"
 
 #. Tag: para
-#: reference_management.xml:407
+#: reference_management.xml:404
 #, no-c-format
 msgid ""
 "Enhanced: 2.0.0 <varname>use_typmod</varname> optional argument was "
@@ -422,7 +422,7 @@ msgstr ""
 "が型修飾子で生成されるか制約チェックで作られるかの制御ができます。"
 
 #. Tag: refpurpose
-#: reference_management.xml:432
+#: reference_management.xml:429
 #, no-c-format
 msgid ""
 "Updates the SRID of all features in a geometry column, and the table "
@@ -432,7 +432,7 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#: reference_management.xml:492
+#: reference_management.xml:489
 #, no-c-format
 msgid ""
 "Updates the SRID of all features in a geometry column, updating constraints "
@@ -446,7 +446,7 @@ msgstr ""
 "は、current_schema()を使用します。"
 
 #. Tag: para
-#: reference_management.xml:504
+#: reference_management.xml:501
 #, no-c-format
 msgid ""
 "Insert geometries into roads table with a SRID set already using <link "
@@ -456,7 +456,7 @@ msgstr ""
 "を持つ道路テーブルに挿入します。"
 
 #. Tag: para
-#: reference_management.xml:507
+#: reference_management.xml:504
 #, no-c-format
 msgid ""
 "This will change the srid of the roads table to 4326 from whatever it was "
@@ -465,7 +465,7 @@ msgstr ""
 "これにより道路テーブルが、以前がどんなSRIDであっても、4326に変更されます。"
 
 #. Tag: para
-#: reference_management.xml:510
+#: reference_management.xml:507
 #, no-c-format
 msgid "The prior example is equivalent to this DDL statement:"
 msgstr ""
@@ -474,7 +474,7 @@ msgstr ""
 "す)とは同じです。"
 
 #. Tag: para
-#: reference_management.xml:513
+#: reference_management.xml:510
 #, no-c-format
 msgid ""
 "If you got the projection wrong (or brought it in as unknown) in load and "
@@ -487,7 +487,7 @@ msgstr ""
 "数では一度の処理ですむ等価なものはありません。"
 
 #. Tag: para
-#: reference_management.xml:520
+#: reference_management.xml:517
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "

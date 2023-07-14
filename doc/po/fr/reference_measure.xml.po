@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-07-03 15:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -20,6 +20,12 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.16.4\n"
 
+#. Tag: title
+#: reference_measure.xml:3
+#, no-c-format
+msgid "Measurement Functions"
+msgstr "Fonctions de mesure"
+
 #. Tag: para
 #: reference_measure.xml:5
 #, no-c-format
@@ -30,12 +36,6 @@ msgstr ""
 "Ces fonctions permettent de calculer des mesures de distance, de surface et "
 "d'angle. Il existe également des fonctions permettant de calculer les "
 "valeurs géométriques déterminées par les mesures."
-
-#. Tag: title
-#: reference_measure.xml:10
-#, no-c-format
-msgid "Measurement Functions"
-msgstr "Fonctions de mesure"
 
 #. Tag: refpurpose
 #: reference_measure.xml:16
@@ -261,13 +261,13 @@ msgstr ""
 #: reference_measure.xml:105
 #, no-c-format
 msgid ""
-"For the geography type, the azimuth solution is known as the <ulink "
-"url=\"https://en.wikipedia.org/wiki/Geodesics_on_an_ellipsoid\">inverse "
-"geodesic problem</ulink>."
+"For the geography type, the azimuth solution is known as the <link xlink:"
+"href=\"https://en.wikipedia.org/wiki/Geodesics_on_an_ellipsoid\">inverse "
+"geodesic problem</link>."
 msgstr ""
 "Pour le type geography, la solution azimutale est connue sous le nom de "
-"<ulink url=\"https://en.wikipedia.org/wiki/"
-"Geodesics_on_an_ellipsoid\">inverse geodesic problem</ulink>."
+"<link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Geodesics_on_an_ellipsoid\">inverse geodesic problem</link>."
 
 #. Tag: para
 #: reference_measure.xml:107
@@ -289,15 +289,17 @@ msgstr ""
 msgid ""
 "Azimuth can be used in conjunction with <xref linkend=\"ST_Translate\"/> to "
 "shift an object along its perpendicular axis. See the "
-"<varname>upgis_lineshift()</varname> function in the <ulink url=\"http://"
-"trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions\">PostGIS wiki</ulink> "
-"for an implementation of this."
+"<varname>upgis_lineshift()</varname> function in the <link xlink:"
+"href=\"http://trac.osgeo.org/postgis/wiki/"
+"UsersWikiplpgsqlfunctions\">PostGIS wiki</link> for an implementation of "
+"this."
 msgstr ""
 "L'azimut peut être utilisé conjointement avec <xref linkend=\"ST_Translate\"/"
 "> pour déplacer un objet le long de son axe perpendiculaire. Voir la "
-"fonction <varname>upgis_lineshift()</varname> dans le <ulink url=\"http://"
-"trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions\">PostGIS wiki</ulink> "
-"pour une implémentation de ceci."
+"fonction <varname>upgis_lineshift()</varname> dans le <link xlink:"
+"href=\"http://trac.osgeo.org/postgis/wiki/"
+"UsersWikiplpgsqlfunctions\">PostGIS wiki</link> pour une implémentation de "
+"ceci."
 
 #. Tag: para
 #: reference_measure.xml:113
@@ -356,12 +358,12 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_Translate\"/>, <xref "
-"linkend=\"ST_Project\"/>, <ulink url=\"http://www.postgresql.org/docs/"
-"current/interactive/functions-math.html\">PostgreSQL Math Functions</ulink>"
+"linkend=\"ST_Project\"/>, <link xlink:href=\"http://www.postgresql.org/docs/"
+"current/interactive/functions-math.html\">PostgreSQL Math Functions</link>"
 msgstr ""
 ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_Translate\"/>, <xref "
-"linkend=\"ST_Project\"/>, <ulink url=\"http://www.postgresql.org/docs/"
-"current/interactive/functions-math.html\">PostgreSQL Math Functions</ulink>"
+"linkend=\"ST_Project\"/>, <link xlink:href=\"http://www.postgresql.org/docs/"
+"current/interactive/functions-math.html\">PostgreSQL Math Functions</link>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:162
@@ -662,13 +664,13 @@ msgstr ""
 #: reference_measure.xml:417
 #, no-c-format
 msgid ""
-"Enhanced: 2.1.0 improved speed for geography. See <ulink url=\"http://"
+"Enhanced: 2.1.0 improved speed for geography. See <link xlink:href=\"http://"
 "boundlessgeo.com/2012/07/making-geography-faster/\">Making Geography faster</"
-"ulink> for details."
+"link> for details."
 msgstr ""
 "Amélioration : la version 2.1.0 a amélioré la vitesse pour le type "
-"geography. Voir <ulink url=\"http://boundlessgeo.com/2012/07/making-"
-"geography-faster/\">Making Geography faster</ulink> pour plus de détails."
+"geography. Voir <link xlink:href=\"http://boundlessgeo.com/2012/07/making-"
+"geography-faster/\">Making Geography faster</link> pour plus de détails."
 
 #. Tag: para
 #: reference_measure.xml:418
@@ -928,20 +930,20 @@ msgstr "Renvoie la distance de Fréchet entre deux géométries."
 #, no-c-format
 msgid ""
 "Implements algorithm for computing the Fréchet distance restricted to "
-"discrete points for both geometries, based on <ulink url=\"http://www.kr."
-"tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf\">Computing Discrete "
-"Fréchet Distance</ulink>. The Fréchet distance is a measure of similarity "
+"discrete points for both geometries, based on <link xlink:href=\"http://www."
+"kr.tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf\">Computing Discrete "
+"Fréchet Distance</link>. The Fréchet distance is a measure of similarity "
 "between curves that takes into account the location and ordering of the "
 "points along the curves. Therefore it is often better than the Hausdorff "
 "distance."
 msgstr ""
 "Implémente l'algorithme de calcul de la distance de Fréchet limitée aux "
-"points discrets pour les deux géométries, basé sur <ulink url=\"http://www."
-"kr.tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf\">Computing Discrete "
-"Fréchet Distance</ulink>. La distance de Fréchet est une mesure de "
-"similarité entre les courbes qui tient compte de l'emplacement et de l'ordre "
-"des points le long des courbes. Elle est donc souvent meilleure que la "
-"distance de Hausdorff."
+"points discrets pour les deux géométries, basé sur <link xlink:href=\"http://"
+"www.kr.tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf\">Computing Discrete "
+"Fréchet Distance</link>. La distance de Fréchet est une mesure de similarité "
+"entre les courbes qui tient compte de l'emplacement et de l'ordre des points "
+"le long des courbes. Elle est donc souvent meilleure que la distance de "
+"Hausdorff."
 
 #. Tag: para
 #: reference_measure.xml:635
@@ -1013,13 +1015,13 @@ msgstr "Renvoie la distance de Hausdorff entre deux géométries."
 #: reference_measure.xml:705
 #, no-c-format
 msgid ""
-"Returns the <ulink url=\"http://en.wikipedia.org/wiki/"
-"Hausdorff_distance\">Hausdorff distance</ulink> between two geometries. The "
+"Returns the <link xlink:href=\"http://en.wikipedia.org/wiki/"
+"Hausdorff_distance\">Hausdorff distance</link> between two geometries. The "
 "Hausdorff distance is a measure of how similar or dissimilar 2 geometries "
 "are."
 msgstr ""
-"Renvoie la <ulink url=\"http://en.wikipedia.org/wiki/"
-"Hausdorff_distance\">distance de Hausdorff</ulink> entre deux géométries. La "
+"Renvoie la <link xlink:href=\"http://en.wikipedia.org/wiki/"
+"Hausdorff_distance\">distance de Hausdorff</link> entre deux géométries. La "
 "distance de Hausdorff est une mesure de la similarité ou de la dissemblance "
 "de deux géométries."
 

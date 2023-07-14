@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -16,6 +16,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#. Tag: title
+#: reference_guc.xml:3
+#, fuzzy, no-c-format
+msgid "Grand Unified Custom Variables (GUCs)"
+msgstr "PostGIS GUC(Grand Unified Custom Variable)"
 
 #. Tag: para
 #: reference_guc.xml:5
@@ -29,12 +35,6 @@ msgstr ""
 "명합니다. 전체(global), 데이터베이스, 세션, 또는 상호처리(transaction) 단계에"
 "서 GUC를 설정할 수 있습니다. 전체 또는 데이터베이스 단계에서 설정하는 편이 가"
 "장 좋습니다."
-
-#. Tag: title
-#: reference_guc.xml:9
-#, fuzzy, no-c-format
-msgid "Grand Unified Custom Variables (GUCs)"
-msgstr "PostGIS GUC(Grand Unified Custom Variable)"
 
 #. Tag: refpurpose
 #: reference_guc.xml:14
@@ -153,12 +153,12 @@ msgstr "2.2.0 버전부터 사용할 수 있습니다."
 #: reference_guc.xml:62
 #, no-c-format
 msgid ""
-"Additional information about GDAL_DATA is available at GDAL's <ulink "
-"url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
-"ulink>."
+"Additional information about GDAL_DATA is available at GDAL's <link xlink:"
+"href=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration "
+"Options</link>."
 msgstr ""
-"GDAL의 <ulink url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">설정 옵션"
-"</ulink> 페이지에서 GDAL_DATA에 대한 추가 정보를 찾아볼 수 있습니다."
+"GDAL의 <link xlink:href=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">설"
+"정 옵션</link> 페이지에서 GDAL_DATA에 대한 추가 정보를 찾아볼 수 있습니다."
 
 #. Tag: para
 #: reference_guc.xml:71
@@ -222,13 +222,13 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Enabled GDAL specified drivers can be specified by the driver's short-name "
-"or code. Driver short-names or codes can be found at <ulink url=\"http://www."
-"gdal.org/formats_list.html\">GDAL Raster Formats</ulink>. Multiple drivers "
-"can be specified by putting a space between each driver."
+"or code. Driver short-names or codes can be found at <link xlink:"
+"href=\"http://www.gdal.org/formats_list.html\">GDAL Raster Formats</link>. "
+"Multiple drivers can be specified by putting a space between each driver."
 msgstr ""
 "드라이버의 축약명 또는 코드를 통해 활성화된 GDAL 특화 드라이버를 지정할 수 있"
-"습니다. 드라이버의 축약명 또는 코드는 <ulink url=\"http://www.gdal.org/"
-"formats_list.html\">GDAL 래스터 형식</ulink> 에서 찾을 수 있습니다. 각 드라이"
+"습니다. 드라이버의 축약명 또는 코드는 <link xlink:href=\"http://www.gdal.org/"
+"formats_list.html\">GDAL 래스터 형식</link> 에서 찾을 수 있습니다. 각 드라이"
 "버 사이에 공백을 삽입하면 복수의 드라이버를 지정할 수 있습니다."
 
 #. Tag: para
@@ -296,12 +296,13 @@ msgstr ""
 #: reference_guc.xml:137
 #, no-c-format
 msgid ""
-"Additional information about GDAL_SKIP is available at GDAL's <ulink "
-"url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
-"ulink>."
+"Additional information about GDAL_SKIP is available at GDAL's <link xlink:"
+"href=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration "
+"Options</link>."
 msgstr ""
-"GDAL_SKIP에 대한 추가 정보는 GDAL의 <ulink url=\"http://trac.osgeo.org/gdal/"
-"wiki/ConfigOptions\">Configuration Options</ulink> 에서 찾아볼 수 있습니다."
+"GDAL_SKIP에 대한 추가 정보는 GDAL의 <link xlink:href=\"http://trac.osgeo.org/"
+"gdal/wiki/ConfigOptions\">Configuration Options</link> 에서 찾아볼 수 있습니"
+"다."
 
 #. Tag: para
 #: reference_guc.xml:148
@@ -444,8 +445,8 @@ msgstr "DB 외부 래스터 밴드에 접근할 수 있게 해주는 불 설정 
 #, no-c-format
 msgid ""
 "A string configuration to set options used when working with an out-db "
-"raster. <ulink url=\"http://trac.osgeo.org/gdal/wiki/"
-"ConfigOptions\">Configuration options</ulink> control things like how much "
+"raster. <link xlink:href=\"http://trac.osgeo.org/gdal/wiki/"
+"ConfigOptions\">Configuration options</link> control things like how much "
 "space GDAL allocates to local data cache, whether to read overviews, and "
 "what access keys to use for remote out-db data sources."
 msgstr ""

@@ -6,13 +6,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-12 14:53+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: reference_trajectory.xml:3
+#, no-c-format
+msgid "Trajectory Functions"
+msgstr ""
 
 #. Tag: para
 #: reference_trajectory.xml:5
@@ -22,12 +28,6 @@ msgid ""
 "geometry with increasing measures (M value) on each coordinate. Spatio-"
 "temporal data can be modeled by using relative times (such as the epoch) as "
 "the measure values."
-msgstr ""
-
-#. Tag: title
-#: reference_trajectory.xml:12
-#, no-c-format
-msgid "Trajectory Functions"
 msgstr ""
 
 #. Tag: refpurpose

@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<sect1 id="Linear_Referencing">
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Linear_Referencing">
 	  <title>Linear Referencing</title>
 
-		<refentry id="ST_LineInterpolatePoint">
+		<refentry xml:id="ST_LineInterpolatePoint">
 		  <refnamediv>
 			<refname>ST_LineInterpolatePoint</refname>
 
@@ -38,13 +38,13 @@
             The Z and M values are interpolated if present.
             </para>
 
-			<para>See <xref linkend="ST_LineLocatePoint" /> for
+			<para>See <xref linkend="ST_LineLocatePoint"/> for
 			computing the line location nearest to a Point.</para>
 
 			<note>
 			  <para>This function computes points in 2D and then interpolates
               values for Z and M,
-              while <xref linkend="ST_3DLineInterpolatePoint" /> computes points in 3D
+              while <xref linkend="ST_3DLineInterpolatePoint"/> computes points in 3D
               and only interpolates the M value.</para>
 			</note>
 
@@ -64,7 +64,7 @@
 			<informalfigure>
 			  <mediaobject>
 				<imageobject>
-				  <imagedata fileref="images/st_line_interpolate_point01.png" />
+				  <imagedata fileref="images/st_line_interpolate_point01.png"/>
 				</imageobject>
 				<caption><para>A LineString with the interpolated point at 20% position (0.20) </para></caption>
 			  </mediaobject>
@@ -102,14 +102,14 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As geom) AS line;
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="ST_LineInterpolatePoints" />,
-				<xref linkend="ST_3DLineInterpolatePoint" />,
-				<xref linkend="ST_LineLocatePoint" />
+				<xref linkend="ST_LineInterpolatePoints"/>,
+				<xref linkend="ST_3DLineInterpolatePoint"/>,
+				<xref linkend="ST_LineLocatePoint"/>
 			</para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_3DLineInterpolatePoint">
+		<refentry xml:id="ST_3DLineInterpolatePoint">
 		  <refnamediv>
 			<refname>ST_3DLineInterpolatePoint</refname>
 
@@ -136,7 +136,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As geom) AS line;
             </para>
 
 			<note>
-			  <para><xref linkend="ST_LineInterpolatePoint" /> computes points in 2D
+			  <para><xref linkend="ST_LineInterpolatePoint"/> computes points in 2D
               and then interpolates the values for Z and M,
               while this function computes points in 3D
               and only interpolates the M value.</para>
@@ -167,14 +167,14 @@ SELECT ST_AsText(
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="ST_LineInterpolatePoint" />,
-				<xref linkend="ST_LineInterpolatePoints" />,
-				<xref linkend="ST_LineLocatePoint" />
+				<xref linkend="ST_LineInterpolatePoint"/>,
+				<xref linkend="ST_LineInterpolatePoints"/>,
+				<xref linkend="ST_LineLocatePoint"/>
 			</para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_LineInterpolatePoints">
+		<refentry xml:id="ST_LineInterpolatePoints">
 		  <refnamediv>
 			<refname>ST_LineInterpolatePoints</refname>
 
@@ -211,7 +211,7 @@ SELECT ST_AsText(
 			must be a LINESTRING. The second argument is a float8 between 0 and 1
 			representing the spacing between the points as a fraction of
 			line length. If the third argument is false, at most one point
-			will be constructed (which is equivalent to <xref linkend="ST_LineInterpolatePoint" />.)
+			will be constructed (which is equivalent to <xref linkend="ST_LineInterpolatePoint"/>.)
 		</para>
 
 		<para>
@@ -230,7 +230,7 @@ SELECT ST_AsText(
 			<informalfigure>
 			  <mediaobject>
 				<imageobject>
-				  <imagedata fileref="images/st_line_interpolate_points01.png" />
+				  <imagedata fileref="images/st_line_interpolate_points01.png"/>
 				</imageobject>
 				<caption><para>A LineString with points interpolated every 20% </para></caption>
 			  </mediaobject>
@@ -246,13 +246,13 @@ SELECT ST_AsText(ST_LineInterpolatePoints('LINESTRING(25 50, 100 125, 150 190)',
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="ST_LineInterpolatePoint" />,
-				<xref linkend="ST_LineLocatePoint" />
+				<xref linkend="ST_LineInterpolatePoint"/>,
+				<xref linkend="ST_LineLocatePoint"/>
 			</para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_LineLocatePoint">
+		<refentry xml:id="ST_LineLocatePoint">
 		  <refnamediv>
 			<refname>ST_LineLocatePoint</refname>
 
@@ -286,8 +286,8 @@ SELECT ST_AsText(ST_LineInterpolatePoints('LINESTRING(25 50, 100 125, 150 190)',
 			the closest point on a LineString to the given Point, as a fraction
 			of <link linkend="ST_Length2D">2d line</link> length.</para>
 
-			<para>You can use the returned location to extract a Point (<xref linkend="ST_LineInterpolatePoint" />) or
-			a substring (<xref linkend="ST_LineSubstring" />).</para>
+			<para>You can use the returned location to extract a Point (<xref linkend="ST_LineInterpolatePoint"/>) or
+			a substring (<xref linkend="ST_LineSubstring"/>).</para>
 
 			<para>This is useful for approximating numbers of addresses</para>
 
@@ -337,11 +337,11 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_DWithin" />, <xref linkend="ST_Length2D" />, <xref linkend="ST_LineInterpolatePoint" />, <xref linkend="ST_LineSubstring" /></para>
+			<para><xref linkend="ST_DWithin"/>, <xref linkend="ST_Length2D"/>, <xref linkend="ST_LineInterpolatePoint"/>, <xref linkend="ST_LineSubstring"/></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_LineSubstring">
+		<refentry xml:id="ST_LineSubstring">
 		  <refnamediv>
 			<refname>ST_LineSubstring</refname>
 
@@ -381,12 +381,12 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 
 			<para>If <varname>startfraction</varname> and <varname>endfraction</varname>
             have the same value this is equivalent
-			to <xref linkend="ST_LineInterpolatePoint" />.</para>
+			to <xref linkend="ST_LineInterpolatePoint"/>.</para>
 
 			<note>
 			  <para>This only works with LINESTRINGs.
 			    To use on contiguous MULTILINESTRINGs
-                first join them with <xref linkend="ST_LineMerge" />.</para>
+                first join them with <xref linkend="ST_LineMerge"/>.</para>
 			</note>
 
 			<note>
@@ -406,7 +406,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 			<informalfigure>
 			  <mediaobject>
 				<imageobject>
-				  <imagedata fileref="images/st_line_substring01.png" />
+				  <imagedata fileref="images/st_line_substring01.png"/>
 				</imageobject>
 				<caption><para>A LineString seen with 1/3 midrange overlaid (0.333, 0.666) </para></caption>
 			  </mediaobject>
@@ -476,11 +476,11 @@ geom_sub | LINESTRING(-102.530462 36.819064,-86.817324 39.585927)
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_Length" />, <xref linkend="ST_LineInterpolatePoint" />, <xref linkend="ST_LineMerge" /></para>
+			<para><xref linkend="ST_Length"/>, <xref linkend="ST_LineInterpolatePoint"/>, <xref linkend="ST_LineMerge"/></para>
 		  </refsection>
 	</refentry>
 
-	<refentry id="ST_LocateAlong">
+	<refentry xml:id="ST_LocateAlong">
 	  <refnamediv>
 		<refname>ST_LocateAlong</refname>
 
@@ -538,11 +538,11 @@ SELECT ST_AsText(
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_LocateBetween" />, <xref linkend="ST_LocateBetweenElevations" />, <xref linkend="ST_InterpolatePoint" /> </para>
+		<para><xref linkend="ST_LocateBetween"/>, <xref linkend="ST_LocateBetweenElevations"/>, <xref linkend="ST_InterpolatePoint"/> </para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_LocateBetween">
+	<refentry xml:id="ST_LocateBetween">
 	  <refnamediv>
 		<refname>ST_LocateBetween</refname>
 
@@ -599,7 +599,7 @@ SELECT ST_AsText(
         <informalfigure>
             <mediaobject>
             <imageobject>
-                <imagedata fileref="images/st_locatebetween01.png" />
+                <imagedata fileref="images/st_locatebetween01.png"/>
             </imageobject>
             <caption><para>A LineString with the section between measures 2 and 8, offset to the left </para></caption>
             </mediaobject>
@@ -620,11 +620,11 @@ MULTILINESTRING((54.49835019899045 104.53426957938231,58.70056060327303 82.12248
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_LocateAlong" />, <xref linkend="ST_LocateBetweenElevations" /></para>
+		<para><xref linkend="ST_LocateAlong"/>, <xref linkend="ST_LocateBetweenElevations"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_LocateBetweenElevations">
+	<refentry xml:id="ST_LocateBetweenElevations">
 	  <refnamediv>
 		<refname>ST_LocateBetweenElevations</refname>
 
@@ -684,12 +684,12 @@ SELECT ST_AsText(
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Dump" />, <xref linkend="ST_LocateBetween" /></para>
+		<para><xref linkend="ST_Dump"/>, <xref linkend="ST_LocateBetween"/></para>
 	  </refsection>
 	</refentry>
 
 
-    <refentry id="ST_InterpolatePoint">
+    <refentry xml:id="ST_InterpolatePoint">
         <refnamediv>
         <refname>ST_InterpolatePoint</refname>
 
@@ -732,13 +732,13 @@ SELECT ST_AsText(
         <refsection>
         <title>See Also</title>
 
-        <para><xref linkend="ST_AddMeasure" />, <xref linkend="ST_LocateAlong" />, <xref linkend="ST_LocateBetween" /></para>
+        <para><xref linkend="ST_AddMeasure"/>, <xref linkend="ST_LocateAlong"/>, <xref linkend="ST_LocateBetween"/></para>
         </refsection>
 
     </refentry>
 
 
-	<refentry id="ST_AddMeasure">
+	<refentry xml:id="ST_AddMeasure">
 	  <refnamediv>
 		<refname>ST_AddMeasure</refname>
 
@@ -798,4 +798,4 @@ ST_GeomFromEWKT('MULTILINESTRINGM((1 0 4, 2 0 4, 4 0 4),(1 0 4, 2 0 4, 4 0 4))')
 
 	</refentry>
 
-  </sect1>
+  </section>

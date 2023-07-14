@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -19,17 +19,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#. Tag: title
+#: reference_management.xml:3
+#, fuzzy, no-c-format
+msgid "Table Management Functions"
+msgstr "관리 함수"
+
 #. Tag: para
 #: reference_management.xml:5
 #, no-c-format
 msgid "These functions assist in defining tables containing geometry columns."
 msgstr ""
-
-#. Tag: title
-#: reference_management.xml:10
-#, fuzzy, no-c-format
-msgid "Table Management Functions"
-msgstr "관리 함수"
 
 #. Tag: refpurpose
 #: reference_management.xml:16
@@ -40,7 +40,7 @@ msgstr "공간 테이블에서 지오메트리 컬럼을 제거합니다."
 #. Tag: title
 #: reference_management.xml:97 reference_management.xml:193
 #: reference_management.xml:259 reference_management.xml:302
-#: reference_management.xml:350 reference_management.xml:490
+#: reference_management.xml:350 reference_management.xml:487
 #, no-c-format
 msgid "Description"
 msgstr "설명"
@@ -123,14 +123,14 @@ msgstr "&sfs_compliant;"
 
 #. Tag: para
 #: reference_management.xml:123 reference_management.xml:200
-#: reference_management.xml:498
+#: reference_management.xml:495
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_management.xml:124 reference_management.xml:201
-#: reference_management.xml:499
+#: reference_management.xml:496
 #, no-c-format
 msgid "&curve_support;"
 msgstr "&curve_support;"
@@ -148,7 +148,7 @@ msgstr ""
 #. Tag: title
 #: reference_management.xml:129 reference_management.xml:208
 #: reference_management.xml:272 reference_management.xml:311
-#: reference_management.xml:411 reference_management.xml:502
+#: reference_management.xml:408 reference_management.xml:499
 #, no-c-format
 msgid "Examples"
 msgstr "예제"
@@ -156,7 +156,7 @@ msgstr "예제"
 #. Tag: title
 #: reference_management.xml:135 reference_management.xml:213
 #: reference_management.xml:277 reference_management.xml:318
-#: reference_management.xml:518
+#: reference_management.xml:515
 #, no-c-format
 msgid "See Also"
 msgstr "관련 정보"
@@ -322,7 +322,7 @@ msgstr ""
 "same dimension (see <xref linkend=\"ST_NDims\"/>)"
 
 #. Tag: para
-#: reference_management.xml:371
+#: reference_management.xml:370
 #, fuzzy, no-c-format
 msgid ""
 "<varname>enforce_geotype_geom</varname> - ensures every geometry is of the "
@@ -332,7 +332,7 @@ msgstr ""
 "the same type (see <xref linkend=\"GeometryType\"/>)"
 
 #. Tag: para
-#: reference_management.xml:377
+#: reference_management.xml:375
 #, fuzzy, no-c-format
 msgid ""
 "<varname>enforce_srid_geom</varname> - ensures every geometry is in the same "
@@ -342,7 +342,7 @@ msgstr ""
 "same projection (see <xref linkend=\"ST_SRID\"/>)"
 
 #. Tag: para
-#: reference_management.xml:383
+#: reference_management.xml:380
 #, no-c-format
 msgid ""
 "If a table <varname>oid</varname> is provided, this function tries to "
@@ -358,7 +358,7 @@ msgstr ""
 "니다."
 
 #. Tag: para
-#: reference_management.xml:390
+#: reference_management.xml:387
 #, no-c-format
 msgid ""
 "If the <varname>oid</varname> of a view is provided, as with a table oid, "
@@ -373,7 +373,7 @@ msgstr ""
 "제하지는 않습니다."
 
 #. Tag: para
-#: reference_management.xml:396
+#: reference_management.xml:393
 #, no-c-format
 msgid ""
 "The parameterless variant is a simple wrapper for the parameterized variant "
@@ -394,13 +394,13 @@ msgstr ""
 "테이블로 삽입된 행의 개수를 반환합니다."
 
 #. Tag: para
-#: reference_management.xml:404
+#: reference_management.xml:401
 #, no-c-format
 msgid "Availability: 1.4.0"
 msgstr "유효버전: 1.4.0"
 
 #. Tag: para
-#: reference_management.xml:405
+#: reference_management.xml:402
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 By default, now uses type modifiers instead of check "
@@ -413,7 +413,7 @@ msgstr ""
 "면, 확인 제약조건 습성을 계속 쓸 수 있습니다."
 
 #. Tag: para
-#: reference_management.xml:407
+#: reference_management.xml:404
 #, no-c-format
 msgid ""
 "Enhanced: 2.0.0 <varname>use_typmod</varname> optional argument was "
@@ -425,7 +425,7 @@ msgstr ""
 "가됐습니다."
 
 #. Tag: refpurpose
-#: reference_management.xml:432
+#: reference_management.xml:429
 #, no-c-format
 msgid ""
 "Updates the SRID of all features in a geometry column, and the table "
@@ -433,7 +433,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_management.xml:492
+#: reference_management.xml:489
 #, fuzzy, no-c-format
 msgid ""
 "Updates the SRID of all features in a geometry column, updating constraints "
@@ -446,7 +446,7 @@ msgstr ""
 "pgsql installations 설치본에서 current_schema() 사용"
 
 #. Tag: para
-#: reference_management.xml:504
+#: reference_management.xml:501
 #, no-c-format
 msgid ""
 "Insert geometries into roads table with a SRID set already using <link "
@@ -454,7 +454,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_management.xml:507
+#: reference_management.xml:504
 #, fuzzy, no-c-format
 msgid ""
 "This will change the srid of the roads table to 4326 from whatever it was "
@@ -463,13 +463,13 @@ msgstr ""
 "다음은 도로 테이블의 이전 SRID와 상관없이 SRID를 4326으로 변경할 것입니다:"
 
 #. Tag: para
-#: reference_management.xml:510
+#: reference_management.xml:507
 #, fuzzy, no-c-format
 msgid "The prior example is equivalent to this DDL statement:"
 msgstr "앞의 예시는 다음 DDL 선언문과 동일합니다:"
 
 #. Tag: para
-#: reference_management.xml:513
+#: reference_management.xml:510
 #, fuzzy, no-c-format
 msgid ""
 "If you got the projection wrong (or brought it in as unknown) in load and "
@@ -482,7 +482,7 @@ msgstr ""
 "리 함수 가운데 한번에 이런 작업을 할 수 있는 동일한 함수는 없습니다."
 
 #. Tag: para
-#: reference_management.xml:520
+#: reference_management.xml:517
 #, fuzzy, no-c-format
 msgid ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "

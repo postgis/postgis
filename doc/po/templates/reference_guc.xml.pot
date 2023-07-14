@@ -6,13 +6,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-12 14:53+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: reference_guc.xml:3
+#, no-c-format
+msgid "Grand Unified Custom Variables (GUCs)"
+msgstr ""
 
 #. Tag: para
 #: reference_guc.xml:5
@@ -21,12 +27,6 @@ msgid ""
 "This section lists custom PostGIS Grand Unified Custom Variables (GUC). "
 "These can be set globally, by database, by session or by transaction. Best "
 "set at global or database level."
-msgstr ""
-
-#. Tag: title
-#: reference_guc.xml:9
-#, no-c-format
-msgid "Grand Unified Custom Variables (GUCs)"
 msgstr ""
 
 #. Tag: refpurpose
@@ -130,9 +130,9 @@ msgstr ""
 #: reference_guc.xml:62
 #, no-c-format
 msgid ""
-"Additional information about GDAL_DATA is available at GDAL's <ulink "
-"url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
-"ulink>."
+"Additional information about GDAL_DATA is available at GDAL's <link xlink:"
+"href=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration "
+"Options</link>."
 msgstr ""
 
 #. Tag: para
@@ -186,9 +186,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Enabled GDAL specified drivers can be specified by the driver's short-name "
-"or code. Driver short-names or codes can be found at <ulink url=\"http://www."
-"gdal.org/formats_list.html\">GDAL Raster Formats</ulink>. Multiple drivers "
-"can be specified by putting a space between each driver."
+"or code. Driver short-names or codes can be found at <link xlink:"
+"href=\"http://www.gdal.org/formats_list.html\">GDAL Raster Formats</link>. "
+"Multiple drivers can be specified by putting a space between each driver."
 msgstr ""
 
 #. Tag: para
@@ -243,9 +243,9 @@ msgstr ""
 #: reference_guc.xml:137
 #, no-c-format
 msgid ""
-"Additional information about GDAL_SKIP is available at GDAL's <ulink "
-"url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
-"ulink>."
+"Additional information about GDAL_SKIP is available at GDAL's <link xlink:"
+"href=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration "
+"Options</link>."
 msgstr ""
 
 #. Tag: para
@@ -367,8 +367,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "A string configuration to set options used when working with an out-db "
-"raster. <ulink url=\"http://trac.osgeo.org/gdal/wiki/"
-"ConfigOptions\">Configuration options</ulink> control things like how much "
+"raster. <link xlink:href=\"http://trac.osgeo.org/gdal/wiki/"
+"ConfigOptions\">Configuration options</link> control things like how much "
 "space GDAL allocates to local data cache, whether to read overviews, and "
 "what access keys to use for remote out-db data sources."
 msgstr ""

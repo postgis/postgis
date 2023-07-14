@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-  <sect1 id="Geometry_Editors">
-     <sect1info>
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Geometry_Editors">
+     <title>Geometry Editors</title><info>
         <abstract>
         <para>These functions create modified geometries by changing type, structure or vertices.
         </para>
         </abstract>
-    </sect1info>
+    </info>
 
-	  <title>Geometry Editors</title>
 
-		<refentry id="ST_AddPoint">
+
+		<refentry xml:id="ST_AddPoint">
 		  <refnamediv>
 			<refname>ST_AddPoint</refname>
 			<refpurpose>Add a point to a LineString.</refpurpose>
@@ -69,12 +69,12 @@ WHERE ST_IsClosed(geom) = false;
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_RemovePoint"/>, <xref linkend="ST_SetPoint" /></para>
+			<para><xref linkend="ST_RemovePoint"/>, <xref linkend="ST_SetPoint"/></para>
 		  </refsection>
 	</refentry>
 
 
-	<refentry id="ST_CollectionExtract">
+	<refentry xml:id="ST_CollectionExtract">
 		<refnamediv>
 			<refname>ST_CollectionExtract</refname>
 
@@ -119,13 +119,13 @@ Given a geometry collection, returns a multi-geometry containing only elements o
             <para>For atomic geometry inputs, the geometry is retured unchanged
             if the input type matches the requested type.
             Otherwise, the result is an EMPTY geometry of the specified type.
-            If required, these can be converted to multi-geometries using <xref linkend="ST_Multi" />.
+            If required, these can be converted to multi-geometries using <xref linkend="ST_Multi"/>.
             </para>
 
 			<warning><para>MultiPolygon results are not checked for validity.
             If the polygon components are adjacent or overlapping the result will be invalid.
-            (For example, this can occur when applying this function to an <xref linkend="ST_Split" /> result.)
-            This situation can be checked with <xref linkend="ST_IsValid" /> and repaired with <xref linkend="ST_MakeValid" />.
+            (For example, this can occur when applying this function to an <xref linkend="ST_Split"/> result.)
+            This situation can be checked with <xref linkend="ST_IsValid"/> and repaired with <xref linkend="ST_MakeValid"/>.
             </para></warning>
 
 			<para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
@@ -171,13 +171,13 @@ SELECT ST_AsText(ST_CollectionExtract(
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_CollectionHomogenize" />, <xref linkend="ST_Multi" />,
-                <xref linkend="ST_IsValid" />, <xref linkend="ST_MakeValid" />
+			<para><xref linkend="ST_CollectionHomogenize"/>, <xref linkend="ST_Multi"/>,
+                <xref linkend="ST_IsValid"/>, <xref linkend="ST_MakeValid"/>
             </para>
 		</refsection>
 	</refentry>
 
-    <refentry id="ST_CollectionHomogenize">
+    <refentry xml:id="ST_CollectionHomogenize">
         <refnamediv>
             <refname>ST_CollectionHomogenize</refname>
 
@@ -206,13 +206,13 @@ Returns the simplest representation of a geometry collection.
             <listitem><para>Heterogeneous (mixed) collections are flattened into a single GeometryCollection.</para></listitem>
             <listitem><para>Collections containing a single atomic element are returned as that element.</para></listitem>
             <listitem><para>Atomic geometries are returned unchanged.
-                If required, these can be converted to a multi-geometry using <xref linkend="ST_Multi" />.</para></listitem>
+                If required, these can be converted to a multi-geometry using <xref linkend="ST_Multi"/>.</para></listitem>
             </itemizedlist>
 
             <warning><para>This function does not ensure that the result is valid.
             In particular, a collection containing adjacent or overlapping Polygons
             will create an invalid MultiPolygon.
-            This situation can be checked with <xref linkend="ST_IsValid" /> and repaired with <xref linkend="ST_MakeValid" />.
+            This situation can be checked with <xref linkend="ST_IsValid"/> and repaired with <xref linkend="ST_MakeValid"/>.
             </para></warning>
 
             <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
@@ -268,12 +268,12 @@ SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION (POLYGON ((10 50, 5
         </refsection>
         <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_CollectionExtract" />, <xref linkend="ST_Multi" />,
-            <xref linkend="ST_IsValid" />, <xref linkend="ST_MakeValid" /></para>
+            <para><xref linkend="ST_CollectionExtract"/>, <xref linkend="ST_Multi"/>,
+            <xref linkend="ST_IsValid"/>, <xref linkend="ST_MakeValid"/></para>
         </refsection>
     </refentry>
 
-    <refentry id="ST_CurveToLine">
+    <refentry xml:id="ST_CurveToLine">
       <refnamediv>
         <refname>ST_CurveToLine</refname>
 
@@ -421,11 +421,11 @@ st_astext
       <refsection>
         <title>See Also</title>
 
-        <para><xref linkend="ST_LineToCurve" /></para>
+        <para><xref linkend="ST_LineToCurve"/></para>
       </refsection>
     </refentry>
 
-    <refentry id="ST_Scroll">
+    <refentry xml:id="ST_Scroll">
       <refnamediv>
         <refname>ST_Scroll</refname>
         <refpurpose>Change start point of a closed LineString.</refpurpose>
@@ -467,11 +467,11 @@ SRID=4326;LINESTRING(5 5 4 2,0 0 0 1,10 0 2 0,5 5 4 2)
       </refsection>
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_Normalize" /></para>
+        <para><xref linkend="ST_Normalize"/></para>
       </refsection>
 </refentry>
 
-    <refentry id="ST_FlipCoordinates">
+    <refentry xml:id="ST_FlipCoordinates">
       <refnamediv>
         <refname>ST_FlipCoordinates</refname>
         <refpurpose>Returns a version of a geometry with X and Y axis flipped. </refpurpose>
@@ -500,23 +500,23 @@ SRID=4326;LINESTRING(5 5 4 2,0 0 0 1,10 0 2 0,5 5 4 2)
 
       <refsection>
         <title>Example</title>
-        <programlisting><![CDATA[
+        <programlisting>
 SELECT ST_AsEWKT(ST_FlipCoordinates(GeomFromEWKT('POINT(1 2)')));
  st_asewkt
 ------------
 POINT(2 1)
-         ]]></programlisting>
+         </programlisting>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
       <refsection>
         <title>See Also</title>
-        <para> <xref linkend="ST_SwapOrdinates" /> </para>
+        <para> <xref linkend="ST_SwapOrdinates"/> </para>
       </refsection>
 
     </refentry>
 
-	<refentry id="ST_Force2D">
+	<refentry xml:id="ST_Force2D">
 	  <refnamediv>
 		<refname>ST_Force2D</refname>
 
@@ -573,7 +573,7 @@ SELECT  ST_AsEWKT(ST_Force2D('POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Force_3D">
+	<refentry xml:id="ST_Force_3D">
 	  <refnamediv>
 		<refname>ST_Force3D</refname>
 
@@ -631,7 +631,7 @@ SELECT  ST_AsEWKT(ST_Force3D('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Force_3DZ">
+	<refentry xml:id="ST_Force_3DZ">
 	  <refnamediv>
 		<refname>ST_Force3DZ</refname>
 
@@ -689,7 +689,7 @@ SELECT  ST_AsEWKT(ST_Force3DZ('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Force_3DM">
+	<refentry xml:id="ST_Force_3DM">
 	  <refnamediv>
 		<refname>ST_Force3DM</refname>
 
@@ -746,7 +746,7 @@ SELECT  ST_AsEWKT(ST_Force3DM('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Force_4D">
+	<refentry xml:id="ST_Force_4D">
 	  <refnamediv>
 		<refname>ST_Force4D</refname>
 
@@ -805,7 +805,7 @@ SELECT  ST_AsEWKT(ST_Force4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1,
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_ForcePolygonCCW">
+	<refentry xml:id="ST_ForcePolygonCCW">
 		<refnamediv>
 			<refname>
 				ST_ForcePolygonCCW
@@ -847,14 +847,14 @@ SELECT  ST_AsEWKT(ST_Force4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1,
 		<refsection>
 			<title>See Also</title>
 			<para>
-				<xref linkend="ST_ForcePolygonCW" />,
-				<xref linkend="ST_IsPolygonCCW" />,
-				<xref linkend="ST_IsPolygonCW" />
+				<xref linkend="ST_ForcePolygonCW"/>,
+				<xref linkend="ST_IsPolygonCCW"/>,
+				<xref linkend="ST_IsPolygonCW"/>
 			</para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_Force_Collection">
+	<refentry xml:id="ST_Force_Collection">
 	  <refnamediv>
 		<refname>ST_ForceCollection</refname>
 
@@ -936,7 +936,7 @@ GEOMETRYCOLLECTION(
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_ForcePolygonCW">
+	<refentry xml:id="ST_ForcePolygonCW">
 		<refnamediv>
 			<refname>
 				ST_ForcePolygonCW
@@ -978,14 +978,14 @@ GEOMETRYCOLLECTION(
 		<refsection>
 			<title>See Also</title>
 			<para>
-				<xref linkend="ST_ForcePolygonCCW" />,
-				<xref linkend="ST_IsPolygonCCW" />,
-				<xref linkend="ST_IsPolygonCW" />
+				<xref linkend="ST_ForcePolygonCCW"/>,
+				<xref linkend="ST_IsPolygonCCW"/>,
+				<xref linkend="ST_IsPolygonCW"/>
 			</para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_ForceSFS">
+	<refentry xml:id="ST_ForceSFS">
 	  <refnamediv>
 		<refname>ST_ForceSFS</refname>
 
@@ -1017,7 +1017,7 @@ GEOMETRYCOLLECTION(
 	</refentry>
 
 
-	<refentry id="ST_ForceRHR">
+	<refentry xml:id="ST_ForceRHR">
 		<refnamediv>
 			<refname>ST_ForceRHR</refname>
 
@@ -1042,7 +1042,7 @@ GEOMETRYCOLLECTION(
 				Right-Hand-Rule, in which the area that is bounded by the
 				polygon is to the right of the boundary. In particular, the exterior ring is
 				orientated in a clockwise direction and the interior rings in a counter-clockwise
-				direction.  This function is a synonym for <xref linkend="ST_ForcePolygonCW" /></para>
+				direction.  This function is a synonym for <xref linkend="ST_ForcePolygonCW"/></para>
 
 			<note>
 				<para>
@@ -1083,7 +1083,7 @@ GEOMETRYCOLLECTION(
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_ForceCurve">
+	<refentry xml:id="ST_ForceCurve">
 		<refnamediv>
 			<refname>ST_ForceCurve</refname>
 
@@ -1136,7 +1136,7 @@ GEOMETRYCOLLECTION(
 		</refsection>
 	</refentry>
 
-    <refentry id="ST_LineToCurve">
+    <refentry xml:id="ST_LineToCurve">
       <refnamediv>
         <refname>ST_LineToCurve</refname>
 
@@ -1201,11 +1201,11 @@ FROM (SELECT ST_Translate(ST_Force3D(ST_Boundary(ST_Buffer(ST_Point(1,3), 2,2)))
       <refsection>
         <title>See Also</title>
 
-        <para><xref linkend="ST_CurveToLine" /></para>
+        <para><xref linkend="ST_CurveToLine"/></para>
       </refsection>
     </refentry>
 
-	<refentry id="ST_Multi">
+	<refentry xml:id="ST_Multi">
 		<refnamediv>
 			<refname>ST_Multi</refname>
 
@@ -1241,11 +1241,11 @@ SELECT ST_AsText(ST_Multi('POLYGON ((10 30, 30 30, 30 10, 10 10, 10 30))'));
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_AsText" /></para>
+			<para><xref linkend="ST_AsText"/></para>
 		</refsection>
 	</refentry>
 
-    <refentry id="ST_LineExtend">
+    <refentry xml:id="ST_LineExtend">
           <refnamediv>
             <refname>ST_LineExtend</refname>
 
@@ -1287,7 +1287,7 @@ SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, radians(45.0)));
           <refsection>
             <title>See Also</title>
 
-            <para><xref linkend="ST_LocateAlong" />, <xref linkend="ST_Project" /></para>
+            <para><xref linkend="ST_LocateAlong"/>, <xref linkend="ST_Project"/></para>
           </refsection>
     </refentry>
 
@@ -1311,7 +1311,7 @@ SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, radians(45.0)));
 
 
 
-	<refentry id="ST_Normalize">
+	<refentry xml:id="ST_Normalize">
 		<refnamediv>
 			<refname>ST_Normalize</refname>
 
@@ -1369,13 +1369,13 @@ SELECT ST_AsText(ST_Normalize(ST_GeomFromText(
 		<refsection>
 			<title>See Also</title>
 			<para>
-        <xref linkend="ST_Equals" />,
+        <xref linkend="ST_Equals"/>,
       </para>
 		</refsection>
 	</refentry>
 
 
-    <refentry id="ST_Project">
+    <refentry xml:id="ST_Project">
           <refnamediv>
             <refname>ST_Project</refname>
 
@@ -1462,12 +1462,12 @@ SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, radians(45.0)));
           <refsection>
             <title>See Also</title>
 
-            <para><xref linkend="ST_Azimuth" />, <xref linkend="ST_Distance" />, <ulink url="http://www.postgresql.org/docs/current/interactive/functions-math.html">PostgreSQL function radians()</ulink></para>
+            <para><xref linkend="ST_Azimuth"/>, <xref linkend="ST_Distance"/>, <link xlink:href="http://www.postgresql.org/docs/current/interactive/functions-math.html">PostgreSQL function radians()</link></para>
           </refsection>
     </refentry>
 
 
-	<refentry id="ST_QuantizeCoordinates">
+	<refentry xml:id="ST_QuantizeCoordinates">
 		<refnamediv>
 			<refname>
 				ST_QuantizeCoordinates
@@ -1518,9 +1518,8 @@ SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, radians(45.0)));
 				resulting coordinate value will still round to the original value,
 				but will have improved compressiblity. This can result in a
 				significant disk usage reduction provided that the geometry column
-				is using a <ulink
-				url="https://www.postgresql.org/docs/current/static/storage-toast.html#STORAGE-TOAST-ONDISK">
-				compressible storage type</ulink>. The function allows
+				is using a <link xlink:href="https://www.postgresql.org/docs/current/static/storage-toast.html#STORAGE-TOAST-ONDISK">
+				compressible storage type</link>. The function allows
 				specification of a different number of digits after the decimal
 				point in each dimension; unspecified dimensions are assumed to have
 				the precision of the <code>x</code> dimension. Negative digits are
@@ -1572,7 +1571,7 @@ SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, radians(45.0)));
 			<note>
 				<para>
 					Only the on-disk size of the geometry is potentially affected by
-					<code>ST_QuantizeCoordinates</code>.  <xref linkend="ST_MemSize" />,
+					<code>ST_QuantizeCoordinates</code>.  <xref linkend="ST_MemSize"/>,
 					which reports the in-memory usage of the geometry, will return the
 					the same value regardless of the disk space used by a geometry.
 				</para>
@@ -1635,13 +1634,13 @@ digits  |                   encode                   |                st_astext
 		<refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_SnapToGrid" /></para>
+			<para><xref linkend="ST_SnapToGrid"/></para>
 		</refsection>
 
 	</refentry>
 
 
-	<refentry id="ST_RemovePoint">
+	<refentry xml:id="ST_RemovePoint">
 	  <refnamediv>
 		<refname>ST_RemovePoint</refname>
 		<refpurpose>Remove a point from a linestring.</refpurpose>
@@ -1684,7 +1683,7 @@ UPDATE sometable
 	  </refsection>
 	</refentry>
 
-    <refentry id="ST_RemoveRepeatedPoints">
+    <refentry xml:id="ST_RemoveRepeatedPoints">
       <refnamediv>
         <refname>ST_RemoveRepeatedPoints</refname>
         <refpurpose>Returns a version of a geometry with
@@ -1756,11 +1755,11 @@ SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1,
 
           <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_Simplify" /></para>
+            <para><xref linkend="ST_Simplify"/></para>
           </refsection>
     </refentry>
 
-	<refentry id="ST_Reverse">
+	<refentry xml:id="ST_Reverse">
 	  <refnamediv>
 		<refname>ST_Reverse</refname>
 		<refpurpose>Return the geometry with vertex order reversed.</refpurpose>
@@ -1800,7 +1799,7 @@ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Segmentize">
+	<refentry xml:id="ST_Segmentize">
 		<refnamediv>
 			<refname>ST_Segmentize</refname>
 
@@ -1895,7 +1894,7 @@ LINESTRING(0 0,4.252632294621186 8.43596525986862,8.69579947419404 16.8240934897
 			<informalfigure>
 			  <mediaobject>
 				<imageobject>
-				  <imagedata fileref="images/st_segmentize01.png" />
+				  <imagedata fileref="images/st_segmentize01.png"/>
 				</imageobject>
 				<caption><para>A geographic line segmentized along a great circle arc</para></caption>
 			  </mediaobject>
@@ -1904,11 +1903,11 @@ LINESTRING(0 0,4.252632294621186 8.43596525986862,8.69579947419404 16.8240934897
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_LineSubstring" /></para>
+			<para><xref linkend="ST_LineSubstring"/></para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_SetPoint">
+	<refentry xml:id="ST_SetPoint">
 		  <refnamediv>
 			<refname>ST_SetPoint</refname>
 			<refpurpose>Replace point of a linestring with a given point.</refpurpose>
@@ -1967,7 +1966,7 @@ LINESTRING(0 0,1 1,0 0,3 3,4 4)
 		  </refsection>
 	</refentry>
 
-    <refentry id="ST_ShiftLongitude">
+    <refentry xml:id="ST_ShiftLongitude">
       <refnamediv>
         <refname>ST_ShiftLongitude</refname>
 
@@ -2036,12 +2035,12 @@ LINESTRING(174 12,-178 13)
       <refsection>
         <title>See Also</title>
         <para>
-      <xref linkend="ST_WrapX" />
+      <xref linkend="ST_WrapX"/>
     </para>
       </refsection>
     </refentry>
 
-    <refentry id="ST_WrapX">
+    <refentry xml:id="ST_WrapX">
       <refnamediv>
         <refname>ST_WrapX</refname>
 
@@ -2100,11 +2099,11 @@ select ST_WrapX(geom, -30, 360);
       <!-- Optionally add a "See Also" section -->
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_ShiftLongitude" /></para>
+        <para><xref linkend="ST_ShiftLongitude"/></para>
       </refsection>
     </refentry>
 
-	<refentry id="ST_SnapToGrid">
+	<refentry xml:id="ST_SnapToGrid">
 	  <refnamediv>
 		<refname>ST_SnapToGrid</refname>
 
@@ -2167,7 +2166,7 @@ select ST_WrapX(geom, -30, 360);
 
 		<note>
 		  <para>The returned geometry might lose its simplicity (see
-		  <xref linkend="ST_IsSimple" />).</para>
+		  <xref linkend="ST_IsSimple"/>).</para>
 		</note>
 
 		<note>
@@ -2227,17 +2226,17 @@ SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.
 		<title>See Also</title>
 
 		<para>
-		<xref linkend="ST_Snap" />,
-		<xref linkend="ST_AsEWKT" />,
-		<xref linkend="ST_AsText" />,
-		<xref linkend="ST_GeomFromText" />,
-		<xref linkend="ST_GeomFromEWKT" />,
-		<xref linkend="ST_Simplify" />
+		<xref linkend="ST_Snap"/>,
+		<xref linkend="ST_AsEWKT"/>,
+		<xref linkend="ST_AsText"/>,
+		<xref linkend="ST_GeomFromText"/>,
+		<xref linkend="ST_GeomFromEWKT"/>,
+		<xref linkend="ST_Simplify"/>
 		</para>
 	  </refsection>
 	</refentry>
 
-		<refentry id="ST_Snap">
+		<refentry xml:id="ST_Snap">
 	  <refnamediv>
 		<refname>ST_Snap</refname>
 
@@ -2286,8 +2285,8 @@ SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.
 		<note>
 		  <para>
 		  The returned geometry might lose its simplicity (see
-		  <xref linkend="ST_IsSimple" />) and validity (see
-		  <xref linkend="ST_IsValid" />).
+		  <xref linkend="ST_IsSimple"/>) and validity (see
+		  <xref linkend="ST_IsValid"/>).
 		  </para>
 		</note>
 		<para>Performed by the GEOS module.</para>
@@ -2298,15 +2297,15 @@ SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.
 		<title>Examples</title>
 			<informaltable>
 				  <tgroup cols="2">
-					<colspec colname="column1" />
-					<colspec colname="column2" />
-					<spanspec namest="column1" nameend="column2" spanname="span-horiz" align="center" />
+					<colspec colname="column1"/>
+					<colspec colname="column2"/>
+					<spanspec namest="column1" nameend="column2" spanname="span-horiz" align="center"/>
 					<tbody>
 					  <row>
 						<entry spanname="span-horiz"><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_snap01.png" />
+								<imagedata fileref="images/st_snap01.png"/>
 							  </imageobject>
 							  <caption><para>A multipolygon shown with a linestring (before any snapping)</para></caption>
 							</mediaobject>
@@ -2317,7 +2316,7 @@ SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.
 					   <entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_snap02.png" />
+								<imagedata fileref="images/st_snap02.png"/>
 							  </imageobject>
 							  <caption><para>A multipolygon snapped to linestring to tolerance: 1.01 of distance.
 							  The new multipolygon is shown with reference linestring</para></caption>
@@ -2342,7 +2341,7 @@ FROM (SELECT
 					<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_snap04.png" />
+								<imagedata fileref="images/st_snap04.png"/>
 							  </imageobject>
 							  <caption><para>A multipolygon snapped to linestring to tolerance: 1.25 of distance.
 							  The new multipolygon is shown with reference linestring</para></caption>
@@ -2371,7 +2370,7 @@ MULTIPOLYGON(((5 107,26 200,126 200,126 125,101 100,54 84,5 107),
 					   <entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_snap03.png" />
+								<imagedata fileref="images/st_snap03.png"/>
 							  </imageobject>
 							  <caption><para>The linestring snapped to the original multipolygon  at tolerance 1.01 of distance.
 							  The new linestring is shown with reference multipolygon</para></caption>
@@ -2398,7 +2397,7 @@ FROM (SELECT
 					<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_snap05.png" />
+								<imagedata fileref="images/st_snap05.png"/>
 							  </imageobject>
 							  <caption><para>The linestring snapped to the original multipolygon  at tolerance 1.25 of distance.
 							  The new linestring is shown with reference multipolygon</para></caption>
@@ -2432,12 +2431,12 @@ LINESTRING(26 125,54 84,101 100)
 		<title>See Also</title>
 
 		<para>
-		<xref linkend="ST_SnapToGrid" />
+		<xref linkend="ST_SnapToGrid"/>
 		</para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_SwapOrdinates">
+	<refentry xml:id="ST_SwapOrdinates">
 	  <refnamediv>
 		<refname>ST_SwapOrdinates</refname>
 		<refpurpose>Returns a version of the given geometry with
@@ -2474,7 +2473,7 @@ the ordinates to swap. Valid names are: x,y,z and m.
 
 	  <refsection>
 		<title>Example</title>
-		<programlisting><![CDATA[
+		<programlisting>
 -- Scale M value by 2
 SELECT ST_AsText(
   ST_SwapOrdinates(
@@ -2487,15 +2486,15 @@ SELECT ST_AsText(
      st_astext
 --------------------
  POINT ZM (0 0 0 4)
-		 ]]></programlisting>
+		 </programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
-		<para> <xref linkend="ST_FlipCoordinates" /> </para>
+		<para> <xref linkend="ST_FlipCoordinates"/> </para>
 	  </refsection>
 
 	</refentry>
 
-  </sect1>
+  </section>

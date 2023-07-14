@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-12 14:53+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -14,16 +14,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#. Tag: title
+#: reference_relationship.xml:3
+#, no-c-format
+msgid "Spatial Relationships"
+msgstr ""
+
 #. Tag: para
 #: reference_relationship.xml:5
 #, no-c-format
 msgid "These functions determine spatial relationships between geometries."
-msgstr ""
-
-#. Tag: title
-#: reference_relationship.xml:8
-#, no-c-format
-msgid "Spatial Relationships"
 msgstr ""
 
 #. Tag: title
@@ -191,10 +191,11 @@ msgstr ""
 msgid ""
 "Because the interiors must have a common point, a subtlety of the definition "
 "is that polygons and lines do <emphasis>not</emphasis> contain lines and "
-"points lying fully in their boundary. For further details see <ulink "
-"url=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-"
-"spatial.html\">Subtleties of OGC Covers, Contains, Within</ulink>. The <xref "
-"linkend=\"ST_Covers\"/> predicate provides a more inclusive relationship."
+"points lying fully in their boundary. For further details see <link xlink:"
+"href=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-"
+"covers-spatial.html\">Subtleties of OGC Covers, Contains, Within</link>. The "
+"<xref linkend=\"ST_Covers\"/> predicate provides a more inclusive "
+"relationship."
 msgstr ""
 
 #. Tag: para
@@ -1235,9 +1236,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "These functions allow testing and evaluating the spatial (topological) "
-"relationship between two geometries, as defined by the <ulink url=\"http://"
-"en.wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-Intersection Model</"
-"ulink> (DE-9IM)."
+"relationship between two geometries, as defined by the <link xlink:"
+"href=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-"
+"Intersection Model</link> (DE-9IM)."
 msgstr ""
 
 #. Tag: para
@@ -1454,10 +1455,11 @@ msgstr ""
 #: reference_relationship.xml:1344
 #, no-c-format
 msgid ""
-"Tests if a <ulink url=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally "
-"Extended 9-Intersection Model</ulink> (DE-9IM) <varname>intersectionMatrix</"
-"varname> value satisfies an <varname>intersectionMatrixPattern</varname>. "
-"Intersection matrix values can be computed by <xref linkend=\"ST_Relate\"/>."
+"Tests if a <link xlink:href=\"http://en.wikipedia.org/wiki/"
+"DE-9IM\">Dimensionally Extended 9-Intersection Model</link> (DE-9IM) "
+"<varname>intersectionMatrix</varname> value satisfies an "
+"<varname>intersectionMatrixPattern</varname>. Intersection matrix values can "
+"be computed by <xref linkend=\"ST_Relate\"/>."
 msgstr ""
 
 #. Tag: para
@@ -1608,10 +1610,10 @@ msgid ""
 "Because the interiors must have a common point, a subtlety of the definition "
 "is that lines and points lying fully in the boundary of polygons or lines "
 "are <emphasis>not</emphasis> within the geometry. For further details see "
-"<ulink url=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-"
-"covers-spatial.html\">Subtleties of OGC Covers, Contains, Within</ulink>. "
-"The <xref linkend=\"ST_CoveredBy\"/> predicate provides a more inclusive "
-"relationship."
+"<link xlink:href=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-"
+"of-ogc-covers-spatial.html\">Subtleties of OGC Covers, Contains, Within</"
+"link>. The <xref linkend=\"ST_CoveredBy\"/> predicate provides a more "
+"inclusive relationship."
 msgstr ""
 
 #. Tag: para
@@ -1797,9 +1799,9 @@ msgstr ""
 #: reference_relationship.xml:1841
 #, no-c-format
 msgid ""
-"Enhanced: 2.1.0 improved speed for geography. See <ulink url=\"http://blog."
-"opengeo.org/2012/07/12/making-geography-faster/\">Making Geography faster</"
-"ulink> for details."
+"Enhanced: 2.1.0 improved speed for geography. See <link xlink:href=\"http://"
+"blog.opengeo.org/2012/07/12/making-geography-faster/\">Making Geography "
+"faster</link> for details."
 msgstr ""
 
 #. Tag: para

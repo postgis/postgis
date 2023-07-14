@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 12:17+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-05-29 09:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -87,15 +87,15 @@ msgstr ""
 #, no-c-format
 msgid ""
 "When creating overviews of a specific factor from a set of rasters that are "
-"aligned, it is possible for the overviews to not align. Visit <ulink "
-"url=\"http://trac.osgeo.org/postgis/ticket/1764\">http://trac.osgeo.org/"
-"postgis/ticket/1764</ulink> for an example where the overviews do not align."
+"aligned, it is possible for the overviews to not align. Visit <link xlink:"
+"href=\"http://trac.osgeo.org/postgis/ticket/1764\">http://trac.osgeo.org/"
+"postgis/ticket/1764</link> for an example where the overviews do not align."
 msgstr ""
 "Lors de la création de vues d'ensemble d'un facteur spécifique à partir d'un "
 "ensemble de rasters alignés, il est possible que les vues d'ensemble ne "
-"soient pas alignées. Consultez <ulink url=\"http://trac.osgeo.org/postgis/"
-"ticket/1764\">http://trac.osgeo.org/postgis/ticket/1764</ulink> pour un "
-"exemple où les vues d'ensemble ne sont pas alignées."
+"soient pas alignées. Consultez <link xlink:href=\"http://trac.osgeo.org/"
+"postgis/ticket/1764\">http://trac.osgeo.org/postgis/ticket/1764</link> pour "
+"un exemple où les vues d'ensemble ne sont pas alignées."
 
 #. Tag: title
 #: using_raster_dataman.xml:20
@@ -424,8 +424,8 @@ msgstr ""
 #. Tag: term
 #: using_raster_dataman.xml:200
 #, no-c-format
-msgid "<code>-l</code> <varname>OVERVIEW_FACTOR</varname>"
-msgstr "<code>-l</code> <varname>OVERVIEW_FACTOR</varname>"
+msgid "-l OVERVIEW_FACTOR"
+msgstr ""
 
 #. Tag: para
 #: using_raster_dataman.xml:201
@@ -451,8 +451,8 @@ msgstr ""
 #. Tag: term
 #: using_raster_dataman.xml:209
 #, no-c-format
-msgid "-N <varname>NODATA</varname>"
-msgstr "-N <varname>NODATA</varname>"
+msgid "-N NODATA"
+msgstr ""
 
 #. Tag: para
 #: using_raster_dataman.xml:211
@@ -565,8 +565,8 @@ msgstr ""
 #. Tag: term
 #: using_raster_dataman.xml:287
 #, no-c-format
-msgid "-T <varname>tablespace</varname>"
-msgstr "-T <varname>tablespace</varname>"
+msgid "-T tablespace"
+msgstr ""
 
 #. Tag: para
 #: using_raster_dataman.xml:289
@@ -583,8 +583,8 @@ msgstr ""
 #. Tag: term
 #: using_raster_dataman.xml:298
 #, no-c-format
-msgid "-X <varname>tablespace</varname>"
-msgstr "-X <varname>tablespace</varname>"
+msgid "-X tablespace"
+msgstr ""
 
 #. Tag: para
 #: using_raster_dataman.xml:300
@@ -599,8 +599,8 @@ msgstr ""
 #. Tag: term
 #: using_raster_dataman.xml:309
 #, no-c-format
-msgid "-Y <varname>max_rows_per_copy=50</varname>"
-msgstr "-Y <varname>max_rows_per_copy=50</varname>"
+msgid "-Y max_rows_per_copy=50"
+msgstr ""
 
 #. Tag: para
 #: using_raster_dataman.xml:311
@@ -646,8 +646,8 @@ msgstr ""
 #. Tag: term
 #: using_raster_dataman.xml:333
 #, no-c-format
-msgid "-V <varname>version</varname>"
-msgstr "-V <varname>version</varname>"
+msgid "-V version"
+msgstr ""
 
 #. Tag: para
 #: using_raster_dataman.xml:334
@@ -785,36 +785,36 @@ msgstr "Utilisation de rasters \"out db\" stockés sur le cloud"
 msgid ""
 "The <varname>raster2pgsql</varname> tool uses GDAL to access raster data, "
 "and can take advantage of a key GDAL feature: the ability to read from "
-"rasters that are <ulink url=\"https://gdal.org/user/virtual_file_systems."
-"html#network-based-file-systems\">stored remotely</ulink> in cloud \"object "
-"stores\" (e.g. AWS S3, Google Cloud Storage)."
+"rasters that are <link xlink:href=\"https://gdal.org/user/"
+"virtual_file_systems.html#network-based-file-systems\">stored remotely</"
+"link> in cloud \"object stores\" (e.g. AWS S3, Google Cloud Storage)."
 msgstr ""
 "L'outil <varname>raster2pgsql</varname> utilise GDAL pour accéder aux "
 "données raster et peut tirer parti d'une fonctionnalité clé de GDAL : la "
-"possibilité de lire des données raster qui sont <ulink url=\"https://gdal."
-"org/user/virtual_file_systems.html#network-based-file-systems\">stockées à "
-"distance</ulink> dans des \"magasins d'objets\" en nuage (par exemple AWS "
-"S3, Google Cloud Storage)."
+"possibilité de lire des données raster qui sont <link xlink:href=\"https://"
+"gdal.org/user/virtual_file_systems.html#network-based-file-"
+"systems\">stockées à distance</link> dans des \"magasins d'objets\" en nuage "
+"(par exemple AWS S3, Google Cloud Storage)."
 
 #. Tag: para
 #: using_raster_dataman.xml:372
 #, no-c-format
 msgid ""
 "Efficient use of cloud stored rasters requires the use of a \"cloud "
-"optimized\" format. The most well-known and widely used is the \"<ulink "
-"url=\"https://gdal.org/drivers/raster/cog.html\">cloud optimized GeoTIFF</"
-"ulink>\" format. Using a non-cloud format, like a JPEG, or an un-tiled TIFF "
+"optimized\" format. The most well-known and widely used is the \"<link xlink:"
+"href=\"https://gdal.org/drivers/raster/cog.html\">cloud optimized GeoTIFF</"
+"link>\" format. Using a non-cloud format, like a JPEG, or an un-tiled TIFF "
 "will result in very poor performance, as the system will have to download "
 "the entire raster each time it needs to access a subset."
 msgstr ""
 "L'utilisation efficace des rasters stockés dans le cloud nécessite "
 "l'utilisation d'un format \"optimisé pour le cloud\". Le plus connu et le "
-"plus largement utilisé est le format \"<ulink url=\"https://gdal.org/drivers/"
-"raster/cog.html\">cloud optimized GeoTIFF</ulink>\". L'utilisation d'un "
-"format non optimisé pour le cloud, comme un JPEG ou un TIFF non structuré, "
-"se traduira par des performances très médiocres, car le système devra "
-"télécharger l'intégralité du raster chaque fois qu'il devra accéder à un "
-"sous-ensemble."
+"plus largement utilisé est le format \"<link xlink:href=\"https://gdal.org/"
+"drivers/raster/cog.html\">cloud optimized GeoTIFF</link>\". L'utilisation "
+"d'un format non optimisé pour le cloud, comme un JPEG ou un TIFF non "
+"structuré, se traduira par des performances très médiocres, car le système "
+"devra télécharger l'intégralité du raster chaque fois qu'il devra accéder à "
+"un sous-ensemble."
 
 #. Tag: para
 #: using_raster_dataman.xml:375
@@ -1419,19 +1419,19 @@ msgid ""
 "The fact that PostGIS raster provides you with SQL functions to render "
 "rasters in known image formats gives you a lot of options for rendering "
 "them. For example you can use OpenOffice / LibreOffice for rendering as "
-"demonstrated in <ulink url=\"http://www.postgresonline.com/journal/"
+"demonstrated in <link xlink:href=\"http://www.postgresonline.com/journal/"
 "archives/244-Rendering-PostGIS-Raster-graphics-with-LibreOffice-Base-Reports."
 "html\">Rendering PostGIS Raster graphics with LibreOffice Base Reports</"
-"ulink>. In addition you can use a wide variety of languages as demonstrated "
+"link>. In addition you can use a wide variety of languages as demonstrated "
 "in this section."
 msgstr ""
 "Le fait que PostGIS raster vous fournisse des fonctions SQL pour rendre les "
 "rasters dans les formats d'image connus vous donne beaucoup d'options pour "
 "les rendre. Par exemple, vous pouvez utiliser OpenOffice / LibreOffice pour "
-"le rendu comme démontré dans <ulink url=\"http://www.postgresonline.com/"
-"journal/archives/244-Rendering-PostGIS-Raster-graphics-with-LibreOffice-Base-"
-"Reports.html\">Rendering PostGIS Raster graphics with LibreOffice Base "
-"Reports</ulink>. En outre, vous pouvez utiliser une grande variété de "
+"le rendu comme démontré dans <link xlink:href=\"http://www.postgresonline."
+"com/journal/archives/244-Rendering-PostGIS-Raster-graphics-with-LibreOffice-"
+"Base-Reports.html\">Rendering PostGIS Raster graphics with LibreOffice Base "
+"Reports</link>. En outre, vous pouvez utiliser une grande variété de "
 "langages, comme le montre cette section."
 
 #. Tag: title
@@ -1517,14 +1517,15 @@ msgstr ""
 #, no-c-format
 msgid ""
 "You will need the npgsql .NET PostgreSQL driver for this exercise which you "
-"can get the latest of from <ulink url=\"http://npgsql.projects.postgresql."
-"org/\">http://npgsql.projects.postgresql.org/</ulink>. Just download the "
-"latest and drop into your ASP.NET bin folder and you'll be good to go."
+"can get the latest of from <link xlink:href=\"http://npgsql.projects."
+"postgresql.org/\">http://npgsql.projects.postgresql.org/</link>. Just "
+"download the latest and drop into your ASP.NET bin folder and you'll be good "
+"to go."
 msgstr ""
 "Pour cet exercice, vous aurez besoin du driver PostgreSQL npgsql .NET dont "
-"vous pouvez obtenir la dernière version sur <ulink url=\"http://npgsql."
-"projects.postgresql.org/\">http://npgsql.projects.postgresql.org/</ulink>. "
-"Il vous suffit de télécharger la dernière version et de la placer dans votre "
+"vous pouvez obtenir la dernière version sur <link xlink:href=\"http://npgsql."
+"projects.postgresql.org/\">http://npgsql.projects.postgresql.org/</link>. Il "
+"vous suffit de télécharger la dernière version et de la placer dans votre "
 "dossier ASP.NET bin."
 
 #. Tag: para
@@ -1571,13 +1572,13 @@ msgstr ""
 #: using_raster_dataman.xml:551
 #, no-c-format
 msgid ""
-"You can download the latest PostgreSQL JDBC drivers from <ulink url=\"http://"
-"jdbc.postgresql.org/download.html\">http://jdbc.postgresql.org/download."
-"html</ulink>"
+"You can download the latest PostgreSQL JDBC drivers from <link xlink:"
+"href=\"http://jdbc.postgresql.org/download.html\">http://jdbc.postgresql.org/"
+"download.html</link>"
 msgstr ""
 "Vous pouvez télécharger les derniers drivers JDBC de PostgreSQL à partir de "
-"<ulink url=\"http://jdbc.postgresql.org/download.html\">http://jdbc."
-"postgresql.org/download.html</ulink>"
+"<link xlink:href=\"http://jdbc.postgresql.org/download.html\">http://jdbc."
+"postgresql.org/download.html</link>"
 
 #. Tag: para
 #: using_raster_dataman.xml:552

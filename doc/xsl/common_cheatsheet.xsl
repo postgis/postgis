@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE xsl:stylesheet [ <!ENTITY nbsp "&#160;"> ]>
 
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:db="http://docbook.org/ns/docbook"
+	exclude-result-prefixes="db"
+>
 
 <xsl:variable name='new_tag' select='"availability"' />
 <xsl:variable name='geos_tag' select='"geos_requirement"' />
@@ -20,11 +24,11 @@
 <xsl:template name="list_in_params">
 	<xsl:param name="func" />
 	<xsl:for-each select="$func">
-		<xsl:if test="count(paramdef/parameter)  &gt; 0"> </xsl:if>
-		<xsl:for-each select="paramdef">
+		<xsl:if test="count(db:paramdef/db:parameter)  &gt; 0"> </xsl:if>
+		<xsl:for-each select="db:paramdef">
 			<xsl:choose>
-				<xsl:when test="not( contains(parameter, 'OUT') )">
-					<xsl:value-of select="parameter" />
+				<xsl:when test="not( contains(db:parameter, 'OUT') )">
+					<xsl:value-of select="db:parameter" />
 					<xsl:if test="position()&lt;last()"><xsl:text>, </xsl:text></xsl:if>
 				</xsl:when>
 			</xsl:choose>
@@ -51,14 +55,14 @@
 	</xsl:choose>
 </xsl:template>
 
-<xsl:template match="chapter" name="function_list_html">
+<xsl:template match="db:chapter" name="function_list_html">
 
 	<div id="content_functions_left">
 
-		<xsl:variable name="col_func_count"><xsl:value-of select="count(descendant::*//funcprototype) div 1.65" /></xsl:variable>
+		<xsl:variable name="col_func_count"><xsl:value-of select="count(descendant::*//db:funcprototype) div 1.65" /></xsl:variable>
 
-    <!--count(preceding-sibling::*/refentry/refsynopsisdiv/funcsynopsis/funcprototype)-->
-		<xsl:for-each select="sect1[count(//funcprototype) &gt; 0 and not( contains(@id,'sfcgal') )]">
+    <!--count(preceding-sibling::*/db:refentry/db:refsynopsisdiv/db:funcsynopsis/db:funcprototype)-->
+		<xsl:for-each select="db:section[count(//db:funcprototype) &gt; 0 and not( contains(@xml:id,'sfcgal') )]">
 
 			 <xsl:apply-templates select="." />
 
@@ -67,20 +71,20 @@
 
 </xsl:template>
 
-<xsl:template match="sect1">
-	<xsl:variable name="col_cur"><xsl:value-of select="count(current()//funcprototype) + count(preceding-sibling::*//funcprototype)"/></xsl:variable>
+<xsl:template match="db:section">
+	<xsl:variable name="col_cur"><xsl:value-of select="count(current()//db:funcprototype) + count(preceding-sibling::*//db:funcprototype)"/></xsl:variable>
 
 <!--
-	<xsl:if test="$col_cur &gt;$col_func_count and count(preceding-sibling::*//funcprototype) &lt; $col_func_count ">
+	<xsl:if test="$col_cur &gt;$col_func_count and count(preceding-sibling::*//db:funcprototype) &lt; $col_func_count ">
 			</div><div id="content_functions_right">
 	</xsl:if>
 -->
 
 	<!--Beginning of section -->
-	<table class="section"><tr><th colspan="2"><xsl:value-of select="title" />
+	<table class="section"><tr><th colspan="2"><xsl:value-of select="db:title" />
 		<!-- end of section header beginning of function list -->
 		</th></tr>
-	<xsl:for-each select="current()//refentry">
+	<xsl:for-each select="current()//db:refentry">
 
 		<xsl:variable name="ref" select="." />
 
@@ -98,9 +102,9 @@
 			<span class='func'>
 				<a target="_blank">
 					<xsl:attribute name="href">
-						<xsl:value-of select="concat(concat($linkstub, @id), '.html')" />
+						<xsl:value-of select="concat(concat($linkstub, @xml:id), '.html')" />
 					</xsl:attribute>
-					<xsl:value-of select="refnamediv/refname" />
+					<xsl:value-of select="db:refnamediv/db:refname" />
 				</a>
 			</span>
 		<xsl:if test="$ref//para[@role=$new_tag and starts-with(./@conformance, $postgis_version)]">
@@ -112,19 +116,19 @@
 		<xsl:if test="$ref/descendant::*[@conformance=$sqlmm_conformance_tag]">
 			&nbsp;<sup>mm</sup>
 		</xsl:if>
-		<xsl:if test="contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')">
+		<xsl:if test="contains(db:refsynopsisdiv/db:funcsynopsis,'geography') or contains(db:refsynopsisdiv/db:funcsynopsis/db:funcprototype/funcdef,'geography')">
 			&nbsp;<sup>G</sup>
 		</xsl:if>
-		<xsl:if test="$ref//para[@role=$geos_tag and starts-with(./@conformance, '3.9')]">
+		<xsl:if test="$ref//db:para[@role=$geos_tag and starts-with(./@conformance, '3.9')]">
 			&nbsp;<sup>g3.9</sup>
 		</xsl:if>
-		<xsl:if test="$ref//para[@role=$geos_tag and starts-with(./@conformance, '3.10')]">
+		<xsl:if test="$ref//db:para[@role=$geos_tag and starts-with(./@conformance, '3.10')]">
 			&nbsp;<sup>g3.10</sup>
 		</xsl:if>
-		<xsl:if test="$ref//para[@role=$geos_tag and starts-with(./@conformance, '3.11')]">
+		<xsl:if test="$ref//db:para[@role=$geos_tag and starts-with(./@conformance, '3.11')]">
 			&nbsp;<sup>g3.11</sup>
 		</xsl:if>
-		<xsl:if test="$ref//para[@role=$geos_tag and starts-with(./@conformance, '3.12')]">
+		<xsl:if test="$ref//db:para[@role=$geos_tag and starts-with(./@conformance, '3.12')]">
 			&nbsp;<sup>g3.12</sup>
 		</xsl:if>
 		<xsl:if test="$ref/descendant::*[@conformance=$Z_conformance_tag]">
@@ -132,16 +136,22 @@
 		</xsl:if>
 
 		<!-- if only one proto just dispaly it on first line -->
-		<xsl:if test="count(refsynopsisdiv/funcsynopsis/funcprototype) = 1">
-			(<xsl:call-template name="list_in_params"><xsl:with-param name="func" select="refsynopsisdiv/funcsynopsis/funcprototype" /></xsl:call-template>)
+		<xsl:if test="count(db:refsynopsisdiv/db:funcsynopsis/db:funcprototype) = 1">
+			(<xsl:call-template name="list_in_params"><xsl:with-param name="func" select="db:refsynopsisdiv/db:funcsynopsis/db:funcprototype" /></xsl:call-template>)
 		</xsl:if>
 
 		&nbsp;&nbsp;
-		<xsl:if test="$output_purpose = 'true'"><xsl:value-of select="refnamediv/refpurpose" /></xsl:if>
+		<xsl:if test="$output_purpose = 'true'"><xsl:value-of select="db:refnamediv/db:refpurpose" /></xsl:if>
 		<!-- output different proto arg combos -->
-		<xsl:if test="count(refsynopsisdiv/funcsynopsis/funcprototype) &gt; 1"><span class='func_args'><ol><xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype"><li><xsl:call-template name="list_in_params"><xsl:with-param name="func" select="." /></xsl:call-template><xsl:if test=".//paramdef[contains(type,' set')] or .//paramdef[contains(type,'geography set')] or
-				.//paramdef[contains(type,'raster set')]"><sup> agg</sup> </xsl:if><xsl:if test=".//paramdef[contains(type,'winset')]"> <sup>W</sup> </xsl:if></li></xsl:for-each>
-		</ol></span></xsl:if>
+		<xsl:if test="count(db:refsynopsisdiv/db:funcsynopsis/db:funcprototype) &gt; 1">
+			<span class='func_args'><ol>
+			<xsl:for-each select="db:refsynopsisdiv/db:funcsynopsis/db:funcprototype">
+				<li><xsl:call-template name="list_in_params"><xsl:with-param name="func" select="." /></xsl:call-template>
+				<xsl:if test=".//db:paramdef[contains(db:type,' set')]"><sup> agg</sup></xsl:if>
+				<xsl:if test=".//db:paramdef[contains(db:type,' winset')]"> <sup>W</sup> </xsl:if></li>
+			</xsl:for-each>
+			</ol></span>
+		</xsl:if>
 		</td></tr>
 		</xsl:for-each>
 		</table><br />
@@ -153,17 +163,18 @@
 	<!--Beginning of section -->
 	<xsl:variable name="lt"><xsl:text><![CDATA[<]]></xsl:text></xsl:variable>
 
+	<!-- TODO: do not rely on english "Example" -->
 	<xsl:if test="contains(., 'Example')">
 	<table>
 		<tr>
 			<th colspan="2" class="example_heading">
 				<!-- TODO: make Examples translatable -->
-				<xsl:value-of select="title" /> Examples
+				<xsl:value-of select="db:title" /> Examples
 			</th>
 		</tr>
 
 		<!--only pull the first example section of each function -->
-		<xsl:for-each select="refentry//refsection[contains(title,'Example')][1]/programlisting[1]">
+		<xsl:for-each select="db:refentry//db:refsection[contains(db:title,'Example')][1]/db:programlisting[1]">
 			<!-- add row for each function and alternate colors of rows -->
 			<tr>
 				<xsl:attribute name="class">
@@ -174,7 +185,7 @@
 				</xsl:attribute>
 				<td>
 					<b>
-						<xsl:value-of select="ancestor::refentry/refnamediv/refname" />
+						<xsl:value-of select="ancestor::db:refentry/db:refnamediv/db:refname" />
 					</b>
 					<br />
 					<pre>

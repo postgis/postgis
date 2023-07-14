@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-09-07 12:33+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
@@ -18,6 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.16.4\n"
+
+#. Tag: title
+#: reference_type.xml:3
+#, fuzzy, no-c-format
+msgid "PostGIS Geometry/Geography/Box Data Types"
+msgstr "PostgreSQL PostGIS tipi Geometry/Geography/Box"
 
 #. Tag: para
 #: reference_type.xml:5
@@ -35,13 +41,14 @@ msgstr ""
 #: reference_type.xml:8
 #, no-c-format
 msgid ""
-"Each data type describes its type casting behavior. A <ulink url=\"https://"
-"www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-"
-"CASTS\">type cast</ulink> converts values of one data type into another "
-"type. PostgreSQL allows defining casting behavior for custom types, along "
-"with the functions used to convert type values. Casts can have <emphasis "
-"role=\"bold\">automatic</emphasis> behavior, which allows automatic "
-"conversion of a function argument to a type supported by the function."
+"Each data type describes its type casting behavior. A <link xlink:"
+"href=\"https://www.postgresql.org/docs/current/sql-expressions.html#SQL-"
+"SYNTAX-TYPE-CASTS\">type cast</link> converts values of one data type into "
+"another type. PostgreSQL allows defining casting behavior for custom types, "
+"along with the functions used to convert type values. Casts can have "
+"<emphasis role=\"bold\">automatic</emphasis> behavior, which allows "
+"automatic conversion of a function argument to a type supported by the "
+"function."
 msgstr ""
 
 #. Tag: para
@@ -66,12 +73,6 @@ msgid ""
 "All data types can be cast to <varname>text</varname>, so this does not need "
 "to be specified explicitly."
 msgstr ""
-
-#. Tag: title
-#: reference_type.xml:27
-#, fuzzy, no-c-format
-msgid "PostGIS Geometry/Geography/Box Data Types"
-msgstr "PostgreSQL PostGIS tipi Geometry/Geography/Box"
 
 #. Tag: refpurpose
 #: reference_type.xml:32
@@ -285,9 +286,9 @@ msgstr ""
 #: reference_type.xml:195
 #, no-c-format
 msgid ""
-"<varname>geometry_dump</varname> is a <ulink url=\"https://www.postgresql."
-"org/docs/current/rowtypes.html\">composite data type</ulink> containing the "
-"fields:"
+"<varname>geometry_dump</varname> is a <link xlink:href=\"https://www."
+"postgresql.org/docs/current/rowtypes.html\">composite data type</link> "
+"containing the fields:"
 msgstr ""
 
 #. Tag: para

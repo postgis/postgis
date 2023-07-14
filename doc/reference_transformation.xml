@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-  <sect1 id="Affine_Transformation">
-    <sect1info>
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Affine_Transformation">
+    <title>Affine Transformations</title><info>
     <abstract>
 	<para>These functions change the position and shape of geometries using
-	<ulink url="https://en.wikipedia.org/wiki/Affine_transformation">affine transformations</ulink>.</para>
+	<link xlink:href="https://en.wikipedia.org/wiki/Affine_transformation">affine transformations</link>.</para>
    </abstract>
-    </sect1info>
+    </info>
 
-	  <title>Affine Transformations</title>
 
-	<refentry id="ST_Affine">
+
+	<refentry xml:id="ST_Affine">
 	  <refnamediv>
 		<refname>ST_Affine</refname>
 
@@ -113,12 +113,12 @@ SELECT ST_AsEWKT(ST_Affine(geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()),
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Rotate" />, <xref linkend="ST_Scale" />, <xref linkend="ST_Translate" />, <xref linkend="ST_TransScale" /></para>
+		<para><xref linkend="ST_Rotate"/>, <xref linkend="ST_Scale"/>, <xref linkend="ST_Translate"/>, <xref linkend="ST_TransScale"/></para>
 	  </refsection>
 	</refentry>
 
 
-	<refentry id="ST_Rotate">
+	<refentry xml:id="ST_Rotate">
 	  <refnamediv>
 		<refname>ST_Rotate</refname>
 
@@ -200,11 +200,11 @@ FROM (SELECT 'LINESTRING (50 160, 50 50, 100 50)'::geometry AS geom) AS foo;
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Affine" />, <xref linkend="ST_RotateX" />, <xref linkend="ST_RotateY" />, <xref linkend="ST_RotateZ" /></para>
+		<para><xref linkend="ST_Affine"/>, <xref linkend="ST_RotateX"/>, <xref linkend="ST_RotateY"/>, <xref linkend="ST_RotateZ"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_RotateX">
+	<refentry xml:id="ST_RotateX">
 	  <refnamediv>
 		<refname>ST_RotateX</refname>
 
@@ -253,11 +253,11 @@ SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Affine" />, <xref linkend="ST_RotateY" />, <xref linkend="ST_RotateZ" /></para>
+		<para><xref linkend="ST_Affine"/>, <xref linkend="ST_RotateY"/>, <xref linkend="ST_RotateZ"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_RotateY">
+	<refentry xml:id="ST_RotateY">
 	  <refnamediv>
 		<refname>ST_RotateY</refname>
 
@@ -308,11 +308,11 @@ SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Affine" />, <xref linkend="ST_RotateX" />, <xref linkend="ST_RotateZ" /></para>
+		<para><xref linkend="ST_Affine"/>, <xref linkend="ST_RotateX"/>, <xref linkend="ST_RotateZ"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_RotateZ">
+	<refentry xml:id="ST_RotateZ">
 	  <refnamediv>
 		<refname>ST_RotateZ</refname>
 
@@ -375,11 +375,11 @@ FROM (SELECT ST_LineToCurve(ST_Buffer(ST_GeomFromText('POINT(234 567)'), 3)) As 
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Affine" />, <xref linkend="ST_RotateX" />, <xref linkend="ST_RotateY" /></para>
+		<para><xref linkend="ST_Affine"/>, <xref linkend="ST_RotateX"/>, <xref linkend="ST_RotateY"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Scale">
+	<refentry xml:id="ST_Scale">
 	  <refnamediv>
 		<refname>ST_Scale</refname>
 
@@ -487,11 +487,11 @@ SELECT ST_AsText(ST_Scale('LINESTRING(1 1, 2 2)', 'POINT(2 2)', 'POINT(1 1)'::ge
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Affine" />, <xref linkend="ST_TransScale" /></para>
+		<para><xref linkend="ST_Affine"/>, <xref linkend="ST_TransScale"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Translate">
+	<refentry xml:id="ST_Translate">
 	  <refnamediv>
 		<refname>ST_Translate</refname>
 
@@ -562,11 +562,11 @@ SELECT ST_AsText(ST_Scale('LINESTRING(1 1, 2 2)', 'POINT(2 2)', 'POINT(1 1)'::ge
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_Affine" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromText" /></para>
+		<para><xref linkend="ST_Affine"/>, <xref linkend="ST_AsText"/>, <xref linkend="ST_GeomFromText"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_TransScale">
+	<refentry xml:id="ST_TransScale">
 	  <refnamediv>
 		<refname>ST_TransScale</refname>
 
@@ -627,10 +627,10 @@ SELECT ST_AsText(ST_Scale('LINESTRING(1 1, 2 2)', 'POINT(2 2)', 'POINT(1 1)'::ge
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Affine" />, <xref linkend="ST_Translate" /></para>
+		<para><xref linkend="ST_Affine"/>, <xref linkend="ST_Translate"/></para>
 	  </refsection>
 	</refentry>
 
 
 
-  </sect1>
+  </section>

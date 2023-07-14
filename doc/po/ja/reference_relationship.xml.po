@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-07-14 02:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -22,17 +22,17 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.16.4\n"
 
+#. Tag: title
+#: reference_relationship.xml:3
+#, no-c-format
+msgid "Spatial Relationships"
+msgstr "空間関係関数"
+
 #. Tag: para
 #: reference_relationship.xml:5
 #, no-c-format
 msgid "These functions determine spatial relationships between geometries."
 msgstr "これらの関数は、ジオメトリ間の空間的な関係を判定します。"
-
-#. Tag: title
-#: reference_relationship.xml:8
-#, no-c-format
-msgid "Spatial Relationships"
-msgstr "空間関係関数"
 
 #. Tag: title
 #: reference_relationship.xml:11
@@ -223,16 +223,17 @@ msgstr ""
 msgid ""
 "Because the interiors must have a common point, a subtlety of the definition "
 "is that polygons and lines do <emphasis>not</emphasis> contain lines and "
-"points lying fully in their boundary. For further details see <ulink "
-"url=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-"
-"spatial.html\">Subtleties of OGC Covers, Contains, Within</ulink>. The <xref "
-"linkend=\"ST_Covers\"/> predicate provides a more inclusive relationship."
+"points lying fully in their boundary. For further details see <link xlink:"
+"href=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-"
+"covers-spatial.html\">Subtleties of OGC Covers, Contains, Within</link>. The "
+"<xref linkend=\"ST_Covers\"/> predicate provides a more inclusive "
+"relationship."
 msgstr ""
 "内部が必ず共通の点を持たなければならないので、定義の微妙な点は、ポリゴンとラ"
 "インが境界であるラインとポイントを<emphasis>含まない</emphasis>ことです。詳細"
-"については、<ulink url=\"http://lin-ear-th-inking.blogspot.com/2007/06/"
+"については、<link xlink:href=\"http://lin-ear-th-inking.blogspot.com/2007/06/"
 "subtleties-of-ogc-covers-spatial.html\">Subtleties of OGC Covers, Contains, "
-"Within</ulink>をご覧下さい。<xref linkend=\"ST_Covers\"/>述語は、より包括的な"
+"Within</link>をご覧下さい。<xref linkend=\"ST_Covers\"/>述語は、より包括的な"
 "関係を提供します。"
 
 #. Tag: para
@@ -1434,13 +1435,13 @@ msgstr ""
 #, no-c-format
 msgid ""
 "These functions allow testing and evaluating the spatial (topological) "
-"relationship between two geometries, as defined by the <ulink url=\"http://"
-"en.wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-Intersection Model</"
-"ulink> (DE-9IM)."
+"relationship between two geometries, as defined by the <link xlink:"
+"href=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-"
+"Intersection Model</link> (DE-9IM)."
 msgstr ""
-"これらの関数で、二つのジオメトリに対する<ulink url=\"http://en.wikipedia.org/"
-"wiki/DE-9IM\">Dimensionally Extended 9-Intersection Model</ulink> (DE-9IM)で"
-"定義される空間 (トポロジ)関係のテストと評価が可能になります。"
+"これらの関数で、二つのジオメトリに対する<link xlink:href=\"http://en."
+"wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-Intersection Model</"
+"link> (DE-9IM)で定義される空間 (トポロジ)関係のテストと評価が可能になります。"
 
 #. Tag: para
 #: reference_relationship.xml:1196
@@ -1721,15 +1722,16 @@ msgstr ""
 #: reference_relationship.xml:1344
 #, no-c-format
 msgid ""
-"Tests if a <ulink url=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally "
-"Extended 9-Intersection Model</ulink> (DE-9IM) <varname>intersectionMatrix</"
-"varname> value satisfies an <varname>intersectionMatrixPattern</varname>. "
-"Intersection matrix values can be computed by <xref linkend=\"ST_Relate\"/>."
+"Tests if a <link xlink:href=\"http://en.wikipedia.org/wiki/"
+"DE-9IM\">Dimensionally Extended 9-Intersection Model</link> (DE-9IM) "
+"<varname>intersectionMatrix</varname> value satisfies an "
+"<varname>intersectionMatrixPattern</varname>. Intersection matrix values can "
+"be computed by <xref linkend=\"ST_Relate\"/>."
 msgstr ""
-"<ulink url=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-"
-"Intersection Model</ulink> (DE-9IM) <varname>intersectionMatrix</varname>の値"
-"が <varname>intersectionMatrixPattern</varname>を満たすかどうかを見ます。交差"
-"行列値は<xref linkend=\"ST_Relate\"/>で計算します。"
+"<link xlink:href=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally "
+"Extended 9-Intersection Model</link> (DE-9IM) <varname>intersectionMatrix</"
+"varname>の値が <varname>intersectionMatrixPattern</varname>を満たすかどうかを"
+"見ます。交差行列値は<xref linkend=\"ST_Relate\"/>で計算します。"
 
 #. Tag: para
 #: reference_relationship.xml:1362
@@ -1909,17 +1911,17 @@ msgid ""
 "Because the interiors must have a common point, a subtlety of the definition "
 "is that lines and points lying fully in the boundary of polygons or lines "
 "are <emphasis>not</emphasis> within the geometry. For further details see "
-"<ulink url=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-"
-"covers-spatial.html\">Subtleties of OGC Covers, Contains, Within</ulink>. "
-"The <xref linkend=\"ST_CoveredBy\"/> predicate provides a more inclusive "
-"relationship."
+"<link xlink:href=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-"
+"of-ogc-covers-spatial.html\">Subtleties of OGC Covers, Contains, Within</"
+"link>. The <xref linkend=\"ST_CoveredBy\"/> predicate provides a more "
+"inclusive relationship."
 msgstr ""
 "内部が必ず共有点を持つので、定義は、ポリゴンまたはラインの境界上にあるライン"
 "またはポイントはジオメトリの内に<emphasis>ない</emphasis>という微妙なものにな"
-"ります。詳細については、<ulink url=\"http://lin-ear-th-inking.blogspot."
+"ります。詳細については、<link xlink:href=\"http://lin-ear-th-inking.blogspot."
 "com/2007/06/subtleties-of-ogc-covers-spatial.html\">Subtleties of OGC "
-"Covers, Contains, Within</ulink>をご覧下さい。<xref linkend=\"ST_CoveredBy\"/"
-">述語はより包括的な関係を提供します。"
+"Covers, Contains, Within</link>をご覧下さい。<xref linkend=\"ST_CoveredBy\"/>"
+"述語はより包括的な関係を提供します。"
 
 #. Tag: para
 #: reference_relationship.xml:1564
@@ -2139,13 +2141,13 @@ msgstr "Availability: 1.5.0 ジオグラフィが導入されました。"
 #: reference_relationship.xml:1841
 #, no-c-format
 msgid ""
-"Enhanced: 2.1.0 improved speed for geography. See <ulink url=\"http://blog."
-"opengeo.org/2012/07/12/making-geography-faster/\">Making Geography faster</"
-"ulink> for details."
+"Enhanced: 2.1.0 improved speed for geography. See <link xlink:href=\"http://"
+"blog.opengeo.org/2012/07/12/making-geography-faster/\">Making Geography "
+"faster</link> for details."
 msgstr ""
-"Enhanced: 2.1.0で、ジオグラフィでの速度が向上しました。詳細については<ulink "
-"url=\"http://blog.opengeo.org/2012/07/12/making-geography-faster/\">Making "
-"Geography faster</ulink>を参照して下さい。"
+"Enhanced: 2.1.0で、ジオグラフィでの速度が向上しました。詳細については<link "
+"xlink:href=\"http://blog.opengeo.org/2012/07/12/making-geography-faster/"
+"\">Making Geography faster</link>を参照して下さい。"
 
 #. Tag: para
 #: reference_relationship.xml:1842

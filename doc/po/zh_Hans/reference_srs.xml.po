@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-09-12 14:55+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -17,6 +17,12 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 5.0\n"
 
+#. Tag: title
+#: reference_srs.xml:3
+#, no-c-format
+msgid "Spatial Reference System Functions"
+msgstr "空间参考系统功能"
+
 #. Tag: para
 #: reference_srs.xml:5
 #, no-c-format
@@ -26,12 +32,6 @@ msgid ""
 msgstr ""
 "这些函数与在 <varname>spatial_ref_sys</varname> 表中定义的几何空间参考系统一"
 "起使用。"
-
-#. Tag: title
-#: reference_srs.xml:10
-#, no-c-format
-msgid "Spatial Reference System Functions"
-msgstr "空间参考系统功能"
 
 #. Tag: refpurpose
 #: reference_srs.xml:16

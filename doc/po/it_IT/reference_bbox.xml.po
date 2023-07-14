@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2022-01-13 16:44+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
@@ -16,6 +16,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.10.1\n"
+
+#. Tag: title
+#: reference_bbox.xml:3
+#, no-c-format
+msgid "Bounding Box Functions"
+msgstr ""
 
 #. Tag: para
 #: reference_bbox.xml:5
@@ -29,12 +35,6 @@ msgstr ""
 #: reference_bbox.xml:8
 #, no-c-format
 msgid "See also <xref linkend=\"PostGIS_BoxFunctions\"/>."
-msgstr ""
-
-#. Tag: title
-#: reference_bbox.xml:12
-#, no-c-format
-msgid "Bounding Box Functions"
 msgstr ""
 
 #. Tag: refpurpose

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-05-10 15:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -16,6 +16,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.16.4\n"
+
+#. Tag: title
+#: reference_troubleshooting.xml:3
+#, no-c-format
+msgid "Troubleshooting Functions"
+msgstr "Fonctions de dépannage"
 
 #. Tag: para
 #: reference_troubleshooting.xml:5
@@ -29,12 +35,6 @@ msgstr ""
 "géométriques. Elles ne sont nécessaires que si les données géométriques sont "
 "corrompues d'une manière ou d'une autre, ce qui ne devrait jamais se "
 "produire dans des circonstances normales."
-
-#. Tag: title
-#: reference_troubleshooting.xml:10
-#, no-c-format
-msgid "Troubleshooting Functions"
-msgstr "Fonctions de dépannage"
 
 #. Tag: refpurpose
 #: reference_troubleshooting.xml:16

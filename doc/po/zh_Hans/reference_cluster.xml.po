@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-09-08 07:58+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -17,17 +17,17 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 5.0\n"
 
+#. Tag: title
+#: reference_cluster.xml:3
+#, no-c-format
+msgid "Clustering Functions"
+msgstr "聚类函数"
+
 #. Tag: para
 #: reference_cluster.xml:5
 #, no-c-format
 msgid "These functions implement clustering algorithms for sets of geometries."
 msgstr "这些函数为几何图形集实现聚类算法。"
-
-#. Tag: title
-#: reference_cluster.xml:8
-#, no-c-format
-msgid "Clustering Functions"
-msgstr "聚类函数"
 
 #. Tag: refpurpose
 #: reference_cluster.xml:14
@@ -50,15 +50,16 @@ msgstr "描述"
 #, no-c-format
 msgid ""
 "A window function that returns a cluster number for each input geometry, "
-"using the 2D <ulink url=\"https://en.wikipedia.org/wiki/DBSCAN\">Density-"
-"based spatial clustering of applications with noise (DBSCAN)</ulink> "
-"algorithm. Unlike <xref linkend=\"ST_ClusterKMeans\"/>, it does not require "
-"the number of clusters to be specified, but instead uses the desired <link "
-"linkend=\"ST_Distance\">distance</link> (<varname>eps</varname>) and density "
-"(<varname>minpoints</varname>) parameters to determine each cluster."
+"using the 2D <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"DBSCAN\">Density-based spatial clustering of applications with noise "
+"(DBSCAN)</link> algorithm. Unlike <xref linkend=\"ST_ClusterKMeans\"/>, it "
+"does not require the number of clusters to be specified, but instead uses "
+"the desired <link linkend=\"ST_Distance\">distance</link> (<varname>eps</"
+"varname>) and density (<varname>minpoints</varname>) parameters to determine "
+"each cluster."
 msgstr ""
-"一个窗口函数，使用 2D <ulink url=\"https://en.wikipedia.org/wiki/DBSCAN\">基"
-"于密度的噪声应用空间聚类 (DBSCAN)</ulink>算法。 与 <xref "
+"一个窗口函数，使用 2D <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"DBSCAN\">基于密度的噪声应用空间聚类 (DBSCAN)</link>算法。 与 <xref "
 "linkend=\"ST_ClusterKMeans\"/> 不同，它不需要指定簇的数量，而是使用所需的"
 "<link linkend=\"ST_Distance\">距离</link> (<varname>eps</varname> ）和密度"
 "（<varname>minpoints</varname>）参数来确定每个簇。"
@@ -261,16 +262,17 @@ msgstr "使用 K 均值算法返回每个输入几何图形的簇 id 的窗口�
 #: reference_cluster.xml:236
 #, no-c-format
 msgid ""
-"Returns <ulink url=\"https://en.wikipedia.org/wiki/K-means_clustering\">K-"
-"means</ulink> cluster number for each input geometry. The distance used for "
-"clustering is the distance between the centroids for 2D geometries, and "
-"distance between bounding box centers for 3D geometries. For POINT inputs, M "
-"coordinate will be treated as weight of input and has to be larger than 0."
+"Returns <link xlink:href=\"https://en.wikipedia.org/wiki/K-"
+"means_clustering\">K-means</link> cluster number for each input geometry. "
+"The distance used for clustering is the distance between the centroids for "
+"2D geometries, and distance between bounding box centers for 3D geometries. "
+"For POINT inputs, M coordinate will be treated as weight of input and has to "
+"be larger than 0."
 msgstr ""
-"返回每个输入几何图形的 <ulink url=\"https://en.wikipedia.org/wiki/K-"
-"means_clustering\">K-means</ulink> 簇号。 用于聚类的距离是 2D 几何形状的质心"
-"之间的距离，以及 3D 几何形状的边界框中心之间的距离。 对于 POINT 输入，M 坐标"
-"将被视为输入的权重，并且必须大于 0。"
+"返回每个输入几何图形的 <link xlink:href=\"https://en.wikipedia.org/wiki/K-"
+"means_clustering\">K-means</link> 簇号。 用于聚类的距离是 2D 几何形状的质心之"
+"间的距离，以及 3D 几何形状的边界框中心之间的距离。 对于 POINT 输入，M 坐标将"
+"被视为输入的权重，并且必须大于 0。"
 
 #. Tag: para
 #: reference_cluster.xml:241
@@ -321,13 +323,13 @@ msgstr "按类型划分地块集群："
 msgid ""
 "Example: Clustering a preaggregated planetary-scale data population dataset "
 "using 3D clusering and weighting. Identify at least 20 regions based on "
-"<ulink url=\"https://data.humdata.org/dataset/kontur-population-"
-"dataset\">Kontur Population Data</ulink> that do not span more than 3000 km "
+"<link xlink:href=\"https://data.humdata.org/dataset/kontur-population-"
+"dataset\">Kontur Population Data</link> that do not span more than 3000 km "
 "from their center:"
 msgstr ""
-"示例：使用 3D 聚类和加权对预先聚合的全球人口数据集进行聚类。 根据<ulink "
-"url=\"https://data.humdata.org/dataset/kontur-population-dataset\">Kontur人口"
-"数据</ulink>，至少确定了距离中心不到3000公里的20个地区："
+"示例：使用 3D 聚类和加权对预先聚合的全球人口数据集进行聚类。 根据<link xlink:"
+"href=\"https://data.humdata.org/dataset/kontur-population-dataset\">Kontur人"
+"口数据</link>，至少确定了距离中心不到3000公里的20个地区："
 
 #. Tag: para
 #: reference_cluster.xml:281

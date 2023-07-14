@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-09-08 04:20+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -17,6 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 5.0\n"
+
+#. Tag: title
+#: reference_coverage.xml:3
+#, no-c-format
+msgid "Coverages"
+msgstr "覆盖范围"
 
 #. Tag: para
 #: reference_coverage.xml:5
@@ -31,12 +37,6 @@ msgstr ""
 "这些函数对形成“隐式覆盖”的多边形几何体集进行操作。 为了形成有效的覆盖范围，多"
 "边形不得重叠，并且相邻边的顶点必须完全匹配。 覆盖处理速度很快，并且可以使用窗"
 "口函数进行操作，窗口函数保留窗口分区内的覆盖拓扑，同时更改边缘。"
-
-#. Tag: title
-#: reference_coverage.xml:11
-#, no-c-format
-msgid "Coverages"
-msgstr "覆盖范围"
 
 #. Tag: refpurpose
 #: reference_coverage.xml:17
@@ -191,14 +191,14 @@ msgstr ""
 #: reference_coverage.xml:128
 #, no-c-format
 msgid ""
-"The simplification uses a variant of the <ulink url=\"https://en.wikipedia."
-"org/wiki/Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–Whyatt "
-"algorithm</ulink>. The <parameter>tolerance</parameter> parameter has units "
+"The simplification uses a variant of the <link xlink:href=\"https://en."
+"wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–Whyatt "
+"algorithm</link>. The <parameter>tolerance</parameter> parameter has units "
 "of distance, and is roughly equal to the square root of triangular areas to "
 "be simplified."
 msgstr ""
-"简化使用了 <ulink url=\"https://en.wikipedia.org/wiki/"
-"Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–Whyatt </ulink>算法的格"
+"简化使用了 <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–Whyatt </link>算法的格"
 "式。 <parameter>公差</parameter>参数以距离为单位，大致等于待简化的三角形面积"
 "的平方根。"
 

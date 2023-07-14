@@ -1,16 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
-    <sect1 id="Geometry_Processing">
-    <sect1info>
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Geometry_Processing">
+    <title>Geometry Processing</title><info>
         <abstract>
         <para>These functions compute geometric constructions,
         or alter geometry size or shape.
         </para>
         </abstract>
-    </sect1info>
+    </info>
 
-    <title>Geometry Processing</title>
 
-        <refentry id="ST_Buffer">
+
+        <refentry xml:id="ST_Buffer">
             <refnamediv>
                 <refname>ST_Buffer</refname>
 
@@ -101,11 +101,11 @@ This is only applicable to LINESTRING geometry and does not affect POINT or POLY
             <note><para>Buffer output is always a valid polygonal geometry.
             Buffer can handle invalid inputs,
             so buffering by distance 0 is sometimes used as a way of repairing invalid polygons.
-            <xref linkend="ST_MakeValid" /> can also be used for this purpose.
+            <xref linkend="ST_MakeValid"/> can also be used for this purpose.
             </para></note>
 
             <note><para>Buffering is sometimes used to perform a within-distance search.
-            For this use case it is more efficient to use <xref linkend="ST_DWithin" />.</para></note>
+            For this use case it is more efficient to use <xref linkend="ST_DWithin"/>.</para></note>
 
             <note><para>This function ignores the Z dimension.
 It always gives a 2D result even when used on a 3D geometry.</para></note>
@@ -130,7 +130,7 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
                         <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_buffer01.png" />
+                                <imagedata fileref="images/st_buffer01.png"/>
                               </imageobject>
                               <caption><para>quad_segs=8 (default)</para></caption>
                             </mediaobject>
@@ -145,7 +145,7 @@ SELECT ST_Buffer(
                         <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_buffer02.png" />
+                                <imagedata fileref="images/st_buffer02.png"/>
                               </imageobject>
                               <caption><para>quad_segs=2 (lame)</para></caption>
                             </mediaobject>
@@ -161,7 +161,7 @@ SELECT ST_Buffer(
                         <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_buffer03.png" />
+                                <imagedata fileref="images/st_buffer03.png"/>
                               </imageobject>
                               <caption><para>endcap=round join=round (default)</para></caption>
                             </mediaobject>
@@ -177,7 +177,7 @@ SELECT ST_Buffer(
                         <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_buffer04.png" />
+                                <imagedata fileref="images/st_buffer04.png"/>
                               </imageobject>
                               <caption><para>endcap=square</para></caption>
                             </mediaobject>
@@ -193,7 +193,7 @@ SELECT ST_Buffer(
                         <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_buffer05.png" />
+                                <imagedata fileref="images/st_buffer05.png"/>
                               </imageobject>
                               <caption><para>endcap=flat</para></caption>
                             </mediaobject>
@@ -210,7 +210,7 @@ SELECT ST_Buffer(
                         <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_buffer07.png" />
+                                <imagedata fileref="images/st_buffer07.png"/>
                               </imageobject>
                               <caption><para>join=bevel</para></caption>
                             </mediaobject>
@@ -226,7 +226,7 @@ SELECT ST_Buffer(
                         <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_buffer06.png" />
+                                <imagedata fileref="images/st_buffer06.png"/>
                               </imageobject>
                               <caption><para>join=mitre mitre_limit=5.0 (default mitre limit)</para></caption>
                             </mediaobject>
@@ -242,7 +242,7 @@ SELECT ST_Buffer(
                         <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_buffer08.png" />
+                                <imagedata fileref="images/st_buffer08.png"/>
                               </imageobject>
                               <caption><para>join=mitre mitre_limit=1</para></caption>
                             </mediaobject>
@@ -259,7 +259,7 @@ SELECT ST_Buffer(
                         <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_buffer09.png" />
+                                <imagedata fileref="images/st_buffer09.png"/>
                               </imageobject>
                               <caption><para>side=left</para></caption>
                             </mediaobject>
@@ -275,7 +275,7 @@ SELECT ST_Buffer(
                         <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_buffer10.png" />
+                                <imagedata fileref="images/st_buffer10.png"/>
                               </imageobject>
                               <caption><para>side=right</para></caption>
                             </mediaobject>
@@ -291,7 +291,7 @@ SELECT ST_Buffer(
                         <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_buffer11.png" />
+                                <imagedata fileref="images/st_buffer11.png"/>
                               </imageobject>
                               <caption><para>side=left join=mitre</para></caption>
                             </mediaobject>
@@ -308,7 +308,7 @@ SELECT ST_Buffer(
                         <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_buffer12.png" />
+                                <imagedata fileref="images/st_buffer12.png"/>
                               </imageobject>
                               <caption><para>right-hand-winding, polygon boundary side=left</para></caption>
                             </mediaobject>
@@ -325,7 +325,7 @@ ST_Boundary(
                         <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_buffer13.png" />
+                                <imagedata fileref="images/st_buffer13.png"/>
                               </imageobject>
                               <caption><para>right-hand-winding, polygon boundary side=right</para></caption>
                             </mediaobject>
@@ -374,11 +374,11 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
               <refsection>
                 <title>See Also</title>
 
-                <para><xref linkend="ST_Collect" />, <xref linkend="ST_DWithin" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" />, <xref linkend="ST_Union" />, <xref linkend="ST_MakeValid" /></para>
+                <para><xref linkend="ST_Collect"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_Transform"/>, <xref linkend="ST_Union"/>, <xref linkend="ST_MakeValid"/></para>
               </refsection>
         </refentry>
 
-        <refentry id="ST_BuildArea">
+        <refentry xml:id="ST_BuildArea">
           <refnamediv>
             <refname>ST_BuildArea</refname>
 
@@ -403,19 +403,19 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
             The result is a Polygon or MultiPolygon, depending on input.
             If the input linework does not form polygons, NULL is returned.
             </para>
-            <para>Unlike <xref linkend="ST_MakePolygon" />,
+            <para>Unlike <xref linkend="ST_MakePolygon"/>,
             this function accepts rings formed by multiple lines, and can form any number of polygons.
             </para>
             <para>This function converts inner rings into holes.
-            To turn inner rings into polygons as well, use <xref linkend="ST_Polygonize" />.
+            To turn inner rings into polygons as well, use <xref linkend="ST_Polygonize"/>.
             </para>
 
             <note>
                 <para>Input linework must be correctly noded for this function to work properly.
-                <xref linkend="ST_Node" /> can be used to node lines.
+                <xref linkend="ST_Node"/> can be used to node lines.
                 </para>
                 <para>If the input linework crosses, this function will produce invalid polygons.
-                <xref linkend="ST_MakeValid" /> can be used to ensure the output is valid.
+                <xref linkend="ST_MakeValid"/> can be used to ensure the output is valid.
                 </para>
             </note>
 
@@ -433,7 +433,7 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
         <informalfigure>
           <mediaobject>
               <imageobject>
-              <imagedata fileref="images/st_buildarea02.png" />
+              <imagedata fileref="images/st_buildarea02.png"/>
               </imageobject>
               <caption><para>Input lines</para></caption>
           </mediaobject>
@@ -443,7 +443,7 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
         <informalfigure>
           <mediaobject>
               <imageobject>
-              <imagedata fileref="images/st_buildarea03.png" />
+              <imagedata fileref="images/st_buildarea03.png"/>
               </imageobject>
               <caption><para>Area result</para></caption>
           </mediaobject>
@@ -463,7 +463,7 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
 )
 SELECT ST_AsText( ST_BuildArea( ST_Collect( geom )))
     FROM data;
-    
+
 ------------------------------------------------------------------------------------------
 POLYGON((180 40,30 20,20 90,80 120,80 190,160 160,180 40),(150 80,120 130,80 60,150 80))
 </programlisting>
@@ -471,7 +471,7 @@ POLYGON((180 40,30 20,20 90,80 120,80 190,160 160,180 40),(150 80,120 130,80 60,
     <informalfigure>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/st_buildarea01.png" />
+            <imagedata fileref="images/st_buildarea01.png"/>
           </imageobject>
           <caption><para>Create a donut from two circular polygons</para></caption>
         </mediaobject>
@@ -489,18 +489,18 @@ FROM (SELECT
             <title>See Also</title>
 
             <para>
-            <xref linkend="ST_Collect" />,
-            <xref linkend="ST_MakePolygon" />,
-            <xref linkend="ST_MakeValid" />,
-            <xref linkend="ST_Node" />,
-            <xref linkend="ST_Polygonize" />,
-            <xref linkend="ST_BdPolyFromText" />,
-            <xref linkend="ST_BdMPolyFromText" /> (wrappers to
+            <xref linkend="ST_Collect"/>,
+            <xref linkend="ST_MakePolygon"/>,
+            <xref linkend="ST_MakeValid"/>,
+            <xref linkend="ST_Node"/>,
+            <xref linkend="ST_Polygonize"/>,
+            <xref linkend="ST_BdPolyFromText"/>,
+            <xref linkend="ST_BdMPolyFromText"/> (wrappers to
             this function with standard OGC interface)</para>
           </refsection>
     </refentry>
 
-  <refentry id="ST_Centroid">
+  <refentry xml:id="ST_Centroid">
     <refnamediv>
       <refname>ST_Centroid</refname>
 
@@ -550,7 +550,7 @@ FROM (SELECT
       lie in the interior of the polygon.  For example, see the diagram below
       of the centroid of a C-shaped polygon.
       To construct a point guaranteed to lie in the interior
-      of a polygon use <xref linkend="ST_PointOnSurface" />.
+      of a polygon use <xref linkend="ST_PointOnSurface"/>.
       </para>
 
       <para>New in 2.3.0 : supports <varname>CIRCULARSTRING</varname> and <varname>COMPOUNDCURVE</varname> (using CurveToLine)</para>
@@ -574,7 +574,7 @@ FROM (SELECT
               <entry><para><informalfigure>
                   <mediaobject>
                     <imageobject>
-                      <imagedata fileref="images/st_centroid01.png" />
+                      <imagedata fileref="images/st_centroid01.png"/>
                     </imageobject>
 
                     <caption><para>Centroid of a
@@ -585,7 +585,7 @@ FROM (SELECT
               <entry><para><informalfigure>
                   <mediaobject>
                     <imageobject>
-                      <imagedata fileref="images/st_centroid02.png" />
+                      <imagedata fileref="images/st_centroid02.png"/>
                     </imageobject>
 
                     <caption><para>Centroid of a
@@ -598,7 +598,7 @@ FROM (SELECT
               <entry><para><informalfigure>
                   <mediaobject>
                     <imageobject>
-                      <imagedata fileref="images/st_centroid03.png" />
+                      <imagedata fileref="images/st_centroid03.png"/>
                     </imageobject>
 
                     <caption><para>Centroid of a
@@ -609,7 +609,7 @@ FROM (SELECT
               <entry><para><informalfigure>
                   <mediaobject>
                     <imageobject>
-                      <imagedata fileref="images/st_centroid04.png" />
+                      <imagedata fileref="images/st_centroid04.png"/>
                     </imageobject>
 
                     <caption><para>Centroid of a
@@ -644,11 +644,11 @@ POINT(0.5 1)
     <refsection>
       <title>See Also</title>
 
-      <para><xref linkend="ST_PointOnSurface" />, <xref linkend="ST_GeometricMedian" /></para>
+      <para><xref linkend="ST_PointOnSurface"/>, <xref linkend="ST_GeometricMedian"/></para>
     </refsection>
   </refentry>
 
-    <refentry id="ST_ChaikinSmoothing">
+    <refentry xml:id="ST_ChaikinSmoothing">
       <refnamediv>
         <refname>ST_ChaikinSmoothing</refname>
         <refpurpose>Returns a smoothed version of a geometry, using the Chaikin algorithm</refpurpose>
@@ -668,7 +668,7 @@ POINT(0.5 1)
       <refsection>
         <title>Description</title>
         <para>Smoothes a linear or polygonal geometry using
-        <ulink url="http://www.idav.ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-Algorithm.html">Chaikin's algorithm</ulink>.
+        <link xlink:href="http://www.idav.ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-Algorithm.html">Chaikin's algorithm</link>.
         The degree of smoothing is controlled by the <varname>nIterations</varname> parameter.
         On each iteration, each interior vertex is replaced
         by two vertices located at 1/4 of the length of the line segments before and after the vertex.
@@ -682,8 +682,8 @@ POINT(0.5 1)
         <note><para>The number of vertices doubles with each iteration,
             so the result geometry may have many more points than the input.
             To reduce the number of points use a simplification function on the result
-            (see <xref linkend="ST_Simplify" />, <xref linkend="ST_SimplifyPreserveTopology" />
-            and <xref linkend="ST_SimplifyVW" />).
+            (see <xref linkend="ST_Simplify"/>, <xref linkend="ST_SimplifyPreserveTopology"/>
+            and <xref linkend="ST_SimplifyVW"/>).
         </para></note>
 
 
@@ -713,7 +713,7 @@ FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) AS foo;
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_chaikinsmoothing01.png" />
+            <imagedata fileref="images/st_chaikinsmoothing01.png"/>
             </imageobject>
             <caption><para>nIterations = 1</para></caption>
           </mediaobject>
@@ -722,7 +722,7 @@ FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) AS foo;
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_chaikinsmoothing02.png" />
+            <imagedata fileref="images/st_chaikinsmoothing02.png"/>
             </imageobject>
             <caption><para>nIterations = 2</para></caption>
           </mediaobject>
@@ -731,7 +731,7 @@ FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) AS foo;
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_chaikinsmoothing03.png" />
+            <imagedata fileref="images/st_chaikinsmoothing03.png"/>
             </imageobject>
             <caption><para>nIterations = 3</para></caption>
           </mediaobject>
@@ -754,7 +754,7 @@ SELECT ST_ChaikinSmoothing(
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_chaikinsmoothing04.png" />
+            <imagedata fileref="images/st_chaikinsmoothing04.png"/>
             </imageobject>
             <caption><para>nIterations = 1</para></caption>
           </mediaobject>
@@ -763,7 +763,7 @@ SELECT ST_ChaikinSmoothing(
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_chaikinsmoothing05.png" />
+            <imagedata fileref="images/st_chaikinsmoothing05.png"/>
             </imageobject>
             <caption><para>nIterations = 2</para></caption>
           </mediaobject>
@@ -772,7 +772,7 @@ SELECT ST_ChaikinSmoothing(
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_chaikinsmoothing06.png" />
+            <imagedata fileref="images/st_chaikinsmoothing06.png"/>
             </imageobject>
             <caption><para>nIterations = 3</para></caption>
           </mediaobject>
@@ -790,12 +790,12 @@ SELECT ST_ChaikinSmoothing(
           </refsection>
           <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_Simplify" />, <xref linkend="ST_SimplifyPreserveTopology" />, <xref linkend="ST_SimplifyVW" /></para>
+            <para><xref linkend="ST_Simplify"/>, <xref linkend="ST_SimplifyPreserveTopology"/>, <xref linkend="ST_SimplifyVW"/></para>
           </refsection>
     </refentry>
 
 
-    <refentry id="ST_ConcaveHull">
+    <refentry xml:id="ST_ConcaveHull">
       <refnamediv>
         <refname>ST_ConcaveHull</refname>
         <refpurpose>Computes a possibly concave geometry that contains all input geometry vertices</refpurpose>
@@ -848,10 +848,10 @@ SELECT ST_ChaikinSmoothing(
 
         <para>For point and linear inputs, the hull will enclose all the points of the inputs.
         For polygonal inputs, the hull will enclose all the points of the input <emphasis>and also</emphasis> all the areas covered by the input.
-        If you want a point-wise hull of a polygonal input, convert it to points first using <xref linkend="ST_Points" />.</para>
+        If you want a point-wise hull of a polygonal input, convert it to points first using <xref linkend="ST_Points"/>.</para>
 
        <para>This is not an aggregate function.
-        To compute the concave hull of a set of geometries use <xref linkend="ST_Collect" />
+        To compute the concave hull of a set of geometries use <xref linkend="ST_Collect"/>
         (e.g. <code>ST_ConcaveHull( ST_Collect( geom ), 0.80)</code>.</para>
 
         <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
@@ -865,7 +865,7 @@ SELECT ST_ChaikinSmoothing(
     <informalfigure>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/st_concavehull01.png" />
+          <imagedata fileref="images/st_concavehull01.png"/>
         </imageobject>
         <caption><para>Concave Hull of a MultiPoint</para></caption>
       </mediaobject>
@@ -883,7 +883,7 @@ POLYGON ((18 142, 21 151, 27 160, 35 167, 44 172, 54 175, 64 178, 74 180, 84 181
     <informalfigure>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/st_concavehull02.png" />
+          <imagedata fileref="images/st_concavehull02.png"/>
         </imageobject>
         <caption><para>Concave Hull of a MultiPoint, allowing holes</para></caption>
       </mediaobject>
@@ -904,7 +904,7 @@ POLYGON ((43 69, 50 84, 57 100, 63 118, 68 133, 74 149, 81 164, 88 180, 101 180,
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_concavehull03.png" />
+            <imagedata fileref="images/st_concavehull03.png"/>
             </imageobject>
 
             <caption><para><varname>polygon_hull</varname></para></caption>
@@ -914,7 +914,7 @@ POLYGON ((43 69, 50 84, 57 100, 63 118, 68 133, 74 149, 81 164, 88 180, 101 180,
         <entry><para><informalfigure>
           <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_concavehull04.png" />
+            <imagedata fileref="images/st_concavehull04.png"/>
             </imageobject>
 
             <caption><para><varname>points_hull</varname></para></caption>
@@ -951,11 +951,11 @@ SELECT disease_type,
 
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_ConvexHull" />, <xref linkend="ST_Collect" />, <xref linkend="ST_AlphaShape" />, <xref linkend="ST_OptimalAlphaShape" /></para>
+        <para><xref linkend="ST_ConvexHull"/>, <xref linkend="ST_Collect"/>, <xref linkend="ST_AlphaShape"/>, <xref linkend="ST_OptimalAlphaShape"/></para>
       </refsection>
     </refentry>
 
-    <refentry id="ST_ConvexHull">
+    <refentry xml:id="ST_ConvexHull">
       <refnamediv>
         <refname>ST_ConvexHull</refname>
         <refpurpose>Computes the convex hull of a geometry.</refpurpose>
@@ -988,7 +988,7 @@ SELECT disease_type,
         The convex hull of one or more identical points is a Point.</para>
 
         <para>This is not an aggregate function.
-        To compute the convex hull of a set of geometries, use <xref linkend="ST_Collect" />
+        To compute the convex hull of a set of geometries, use <xref linkend="ST_Collect"/>
         to aggregate them into a geometry collection
         (e.g. <code>ST_ConvexHull(ST_Collect(geom))</code>.</para>
 
@@ -1006,7 +1006,7 @@ SELECT disease_type,
     <informalfigure>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/st_convexhull01.png" />
+          <imagedata fileref="images/st_convexhull01.png"/>
         </imageobject>
         <caption><para>Convex Hull of a MultiLinestring and a MultiPoint</para></caption>
       </mediaobject>
@@ -1035,11 +1035,11 @@ SELECT d.disease_type,
       </refsection>
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_Collect" />, <xref linkend="ST_ConcaveHull" />, <xref linkend="ST_MinimumBoundingCircle" /></para>
+        <para><xref linkend="ST_Collect"/>, <xref linkend="ST_ConcaveHull"/>, <xref linkend="ST_MinimumBoundingCircle"/></para>
       </refsection>
     </refentry>
 
-    <refentry id="ST_DelaunayTriangles">
+    <refentry xml:id="ST_DelaunayTriangles">
         <refnamediv>
             <refname>ST_DelaunayTriangles</refname>
 
@@ -1063,7 +1063,7 @@ Returns the Delaunay triangulation of the vertices of a geometry.
             <title>Description</title>
 
             <para>
-Computes the <ulink url="http://en.wikipedia.org/wiki/Delaunay_triangulation">Delaunay triangulation</ulink>
+Computes the <link xlink:href="http://en.wikipedia.org/wiki/Delaunay_triangulation">Delaunay triangulation</link>
 of the vertices of the input geometry.
 The optional <varname>tolerance</varname> can be used to snap nearby input vertices together,
 which improves robustness in some situations.
@@ -1090,7 +1090,7 @@ The result geometry representation is determined by the <varname>flags</varname>
                      <row><entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_delaunaytriangles01.png" />
+                                <imagedata fileref="images/st_delaunaytriangles01.png"/>
                               </imageobject>
                               <caption><para>Original polygons</para></caption>
                             </mediaobject>
@@ -1106,7 +1106,7 @@ The result geometry representation is determined by the <varname>flags</varname>
                         <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_delaunaytriangles03.png" />
+                                <imagedata fileref="images/st_delaunaytriangles03.png"/>
                               </imageobject>
                               <caption><para>ST_DelaunayTriangles of 2 polygons: delaunay triangle polygons each triangle themed in different color</para></caption>
                             </mediaobject>
@@ -1127,7 +1127,7 @@ SELECT
                 <row><entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_delaunaytriangles02.png" />
+                                <imagedata fileref="images/st_delaunaytriangles02.png"/>
                               </imageobject>
                               <caption><para>-- delaunay triangles as multilinestring</para></caption>
                             </mediaobject>
@@ -1144,7 +1144,7 @@ SELECT
                 <row><entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_delaunaytriangles04.png" />
+                                <imagedata fileref="images/st_delaunaytriangles04.png"/>
                               </imageobject>
                               <caption><para>-- delaunay triangles of 45 points as 55 triangle polygons</para></caption>
                             </mediaobject>
@@ -1201,16 +1201,16 @@ GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
 
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_VoronoiPolygons" />,
-            <xref linkend="ST_TriangulatePolygon" />,
-            <xref linkend="ST_ConstrainedDelaunayTriangles" />,
-            <xref linkend="ST_VoronoiLines" />,
-            <xref linkend="ST_ConvexHull" />
+        <para><xref linkend="ST_VoronoiPolygons"/>,
+            <xref linkend="ST_TriangulatePolygon"/>,
+            <xref linkend="ST_ConstrainedDelaunayTriangles"/>,
+            <xref linkend="ST_VoronoiLines"/>,
+            <xref linkend="ST_ConvexHull"/>
         </para>
       </refsection>
     </refentry>
 
-    <refentry id="ST_FilterByM">
+    <refentry xml:id="ST_FilterByM">
       <refnamediv>
         <refname>ST_FilterByM</refname>
         <refpurpose>Removes vertices based on their M value</refpurpose>
@@ -1262,11 +1262,11 @@ result
           </refsection>
           <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_SetEffectiveArea" />, <xref linkend="ST_SimplifyVW" /></para>
+            <para><xref linkend="ST_SetEffectiveArea"/>, <xref linkend="ST_SimplifyVW"/></para>
           </refsection>
     </refentry>
 
-    <refentry id="ST_GeneratePoints">
+    <refentry xml:id="ST_GeneratePoints">
       <refnamediv>
         <refname>ST_GeneratePoints</refname>
 
@@ -1316,7 +1316,7 @@ result
 <para><informalfigure>
                         <mediaobject>
                           <imageobject>
-                            <imagedata fileref="images/st_generatepoints01.png" />
+                            <imagedata fileref="images/st_generatepoints01.png"/>
                           </imageobject>
                           <caption><para>Generated a multipoint consisting of 12 Points overlaid on top of original polygon using a random seed value 1996</para></caption>
                         </mediaobject>
@@ -1339,7 +1339,7 @@ FROM s, ST_DumpPoints(ST_GeneratePoints(s.geom,12)) AS dp;</programlisting>
         </refsection>
     </refentry>
 
-    <refentry id="ST_GeometricMedian">
+    <refentry xml:id="ST_GeometricMedian">
       <refnamediv>
           <refname>
               ST_GeometricMedian
@@ -1399,7 +1399,7 @@ FROM s, ST_DumpPoints(ST_GeneratePoints(s.geom,12)) AS dp;</programlisting>
           <informalfigure>
               <mediaobject>
                     <imageobject>
-                        <imagedata fileref="images/st_geometricmedian01.png" />
+                        <imagedata fileref="images/st_geometricmedian01.png"/>
                     </imageobject>
 
                     <caption>
@@ -1434,7 +1434,7 @@ FROM test;
 
     </refentry>
 
-	<refentry id="ST_LineMerge">
+	<refentry xml:id="ST_LineMerge">
 		<refnamediv>
 			<refname>ST_LineMerge</refname>
 
@@ -1484,7 +1484,7 @@ FROM test;
           <informalfigure>
               <mediaobject>
                     <imageobject>
-                        <imagedata fileref="images/st_linemerge01.png" />
+                        <imagedata fileref="images/st_linemerge01.png"/>
                     </imageobject>
 
                     <caption>
@@ -1505,11 +1505,11 @@ FROM test;
           <informalfigure>
               <mediaobject>
                     <imageobject>
-                        <imagedata fileref="images/st_linemerge02.png" />
+                        <imagedata fileref="images/st_linemerge02.png"/>
                     </imageobject>
 
                     <caption>
-                        <para>Lines are not merged across intersections with degree > 2.
+                        <para>Lines are not merged across intersections with degree &gt; 2.
                         </para>
                     </caption>
               </mediaobject>
@@ -1536,7 +1536,7 @@ MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
 	<informalfigure>
 		<mediaobject>
 			<imageobject>
-				<imagedata fileref="images/st_linemerge03.png" />
+				<imagedata fileref="images/st_linemerge03.png"/>
 			</imageobject>
 			<caption>
 				<para>Lines with opposite directions are not merged if directed = TRUE.</para>
@@ -1563,11 +1563,11 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Segmentize" />, <xref linkend="ST_LineSubstring" /></para>
+			<para><xref linkend="ST_Segmentize"/>, <xref linkend="ST_LineSubstring"/></para>
 		</refsection>
 	</refentry>
 
-    <refentry id="ST_MaximumInscribedCircle">
+    <refentry xml:id="ST_MaximumInscribedCircle">
       <refnamediv>
         <refname>ST_MaximumInscribedCircle</refname>
         <refpurpose>Computes the largest circle contained within a geometry.</refpurpose>
@@ -1608,7 +1608,7 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
     <informalfigure>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/st_maximuminscribedcircle01.png" />
+          <imagedata fileref="images/st_maximuminscribedcircle01.png"/>
         </imageobject>
         <caption><para>Maximum inscribed circle of a polygon. Center, nearest point, and radius are returned.</para></caption>
       </mediaobject>
@@ -1626,7 +1626,7 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
     <informalfigure>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/st_maximuminscribedcircle02.png" />
+          <imagedata fileref="images/st_maximuminscribedcircle02.png"/>
         </imageobject>
         <caption><para>Maximum inscribed circle of a multi-linestring. Center, nearest point, and radius are returned.</para></caption>
       </mediaobject>
@@ -1634,12 +1634,12 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
       </refsection>
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_MinimumBoundingRadius" />, <xref linkend="ST_LargestEmptyCircle" /></para>
+        <para><xref linkend="ST_MinimumBoundingRadius"/>, <xref linkend="ST_LargestEmptyCircle"/></para>
       </refsection>
     </refentry>
 
 
-    <refentry id="ST_LargestEmptyCircle">
+    <refentry xml:id="ST_LargestEmptyCircle">
       <refnamediv>
         <refname>ST_LargestEmptyCircle</refname>
         <refpurpose>Computes the largest circle not overlapping a geometry.</refpurpose>
@@ -1668,7 +1668,7 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
             <listitem><para> <varname>radius</varname> - radius of the circle </para></listitem>
         </itemizedlist>
 
-        <para>To find the largest empty circle in the interior of a polygon, see <xref linkend="ST_MaximumInscribedCircle" />.</para>
+        <para>To find the largest empty circle in the interior of a polygon, see <xref linkend="ST_MaximumInscribedCircle"/>.</para>
 
         <para role="availability" conformance="3.4.0">Availability: 3.4.0.</para>
         <para role="geos_requirement" conformance="3.9.0">Requires GEOS &gt;= 3.9.0.</para>
@@ -1690,7 +1690,7 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
     <informalfigure>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/st_largestemptycircle01.png" />
+          <imagedata fileref="images/st_largestemptycircle01.png"/>
         </imageobject>
         <caption><para>Largest Empty Circle within a set of lines.</para></caption>
       </mediaobject>
@@ -1709,7 +1709,7 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
     <informalfigure>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/st_largestemptycircle02.png" />
+          <imagedata fileref="images/st_largestemptycircle02.png"/>
         </imageobject>
         <caption><para>Largest Empty Circle within a set of points, constrained to lie in a polygon. The constraint polygon boundary must be included as an obstacle, as well as specified as the constraint for the circle center. </para></caption>
       </mediaobject>
@@ -1718,12 +1718,12 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
       </refsection>
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_MinimumBoundingRadius" /></para>
+        <para><xref linkend="ST_MinimumBoundingRadius"/></para>
       </refsection>
     </refentry>
 
 
-    <refentry id="ST_MinimumBoundingCircle">
+    <refentry xml:id="ST_MinimumBoundingCircle">
       <refnamediv>
         <refname>ST_MinimumBoundingCircle</refname>
         <refpurpose>Returns the smallest circle polygon that contains a geometry.</refpurpose>
@@ -1746,11 +1746,11 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
             <note><para>The bounding circle is approximated by a polygon with a default of 48 segments per quarter circle.
             Because the polygon is an approximation of the minimum bounding circle, some points in the input geometry may not be contained within the polygon.
             The approximation can be improved by increasing the number of segments.
-            For applications where an approximation is not suitable <xref linkend="ST_MinimumBoundingRadius" /> may be used.</para></note>
+            For applications where an approximation is not suitable <xref linkend="ST_MinimumBoundingRadius"/> may be used.</para></note>
 
-        <para>Use with <xref linkend="ST_Collect" /> to get the minimum bounding circle of a set of geometries.</para>
+        <para>Use with <xref linkend="ST_Collect"/> to get the minimum bounding circle of a set of geometries.</para>
 
-        <para>To compute two points lying on the mimimum circle (the "maximum diameter") use <xref linkend="ST_LongestLine" />.
+        <para>To compute two points lying on the mimimum circle (the "maximum diameter") use <xref linkend="ST_LongestLine"/>.
         </para>
 
         <para>The ratio of the area of a polygon divided by the area of its Minimum Bounding Circle
@@ -1770,7 +1770,7 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
     <informalfigure>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/st_minimumboundingcircle01.png" />
+          <imagedata fileref="images/st_minimumboundingcircle01.png"/>
         </imageobject>
         <caption><para>Minimum bounding circle of a point and linestring.  Using 8 segs to approximate a quarter circle</para></caption>
       </mediaobject>
@@ -1791,12 +1791,12 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
       </refsection>
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_Collect" />, <xref linkend="ST_MinimumBoundingRadius" />, <xref linkend="ST_LargestEmptyCircle" />, <xref linkend="ST_LongestLine" /> </para>
+        <para><xref linkend="ST_Collect"/>, <xref linkend="ST_MinimumBoundingRadius"/>, <xref linkend="ST_LargestEmptyCircle"/>, <xref linkend="ST_LongestLine"/> </para>
       </refsection>
     </refentry>
 
 
-    <refentry id="ST_MinimumBoundingRadius">
+    <refentry xml:id="ST_MinimumBoundingRadius">
     <refnamediv>
         <refname>ST_MinimumBoundingRadius</refname>
         <refpurpose>Returns the center point and radius of the smallest circle that contains a geometry.</refpurpose>
@@ -1823,7 +1823,7 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
 
         <para>Use with <xref linkend="ST_Collect"/> to get the minimum bounding circle of a set of geometries.</para>
 
-        <para>To compute two points lying on the mimimum circle (the "maximum diameter") use <xref linkend="ST_LongestLine" />.
+        <para>To compute two points lying on the mimimum circle (the "maximum diameter") use <xref linkend="ST_LongestLine"/>.
         </para>
 
         <para role="availability" conformance="2.3.0">Availability - 2.3.0</para>
@@ -1841,12 +1841,12 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
 
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_Collect" />, <xref linkend="ST_MinimumBoundingCircle" />, <xref linkend="ST_LongestLine" /></para>
+        <para><xref linkend="ST_Collect"/>, <xref linkend="ST_MinimumBoundingCircle"/>, <xref linkend="ST_LongestLine"/></para>
       </refsection>
 
     </refentry>
 
-    <refentry id="ST_OrientedEnvelope">
+    <refentry xml:id="ST_OrientedEnvelope">
         <refnamediv>
             <refname>ST_OrientedEnvelope</refname>
             <refpurpose>Returns a minimum-area rectangle containing a geometry.</refpurpose>
@@ -1890,7 +1890,7 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
     <informalfigure>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/st_orientedenvelope01.png" />
+          <imagedata fileref="images/st_orientedenvelope01.png"/>
         </imageobject>
         <caption><para>Oriented envelope of a point and linestring.</para></caption>
       </mediaobject>
@@ -1911,13 +1911,13 @@ POLYGON((19.9999999999997 79.9999999999999,33.0769230769229 60.3846153846152,138
         <refsection>
             <title>See Also</title>
             <para>
-                <xref linkend="ST_Envelope" />
-                <xref linkend="ST_MinimumBoundingCircle" />
+                <xref linkend="ST_Envelope"/>
+                <xref linkend="ST_MinimumBoundingCircle"/>
             </para>
         </refsection>
     </refentry>
 
-    <refentry id="ST_OffsetCurve">
+    <refentry xml:id="ST_OffsetCurve">
         <refnamediv>
             <refname>ST_OffsetCurve</refname>
 
@@ -2003,7 +2003,7 @@ FROM someroadstable;
                         <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_offsetcurve01.png" />
+                                <imagedata fileref="images/st_offsetcurve01.png"/>
                               </imageobject>
                               <caption><para>15, 'quad_segs=4 join=round' original line
 and its offset 15 units.</para></caption>
@@ -2028,7 +2028,7 @@ LINESTRING(164 1,18 1,12.2597485145237 2.1418070123307,
                         <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_offsetcurve02.png" />
+                                <imagedata fileref="images/st_offsetcurve02.png"/>
                               </imageobject>
                               <caption><para>-15, 'quad_segs=4 join=round' original line
                                 and its offset -15 units </para></caption>
@@ -2053,7 +2053,7 @@ LINESTRING(31 195,31 31,164 31)
                         <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_offsetcurve05.png" />
+                                <imagedata fileref="images/st_offsetcurve05.png"/>
                               </imageobject>
                               <caption><para>double-offset to get more curvy, note the first reverses direction, so -30 + 15 = -15</para></caption>
                             </mediaobject>
@@ -2077,7 +2077,7 @@ LINESTRING(164 31,46 31,40.2597485145236 32.1418070123307,
 <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_offsetcurve06.png" />
+                                <imagedata fileref="images/st_offsetcurve06.png"/>
                               </imageobject>
                               <caption><para>double-offset to get more curvy,combined with regular offset 15 to get parallel lines.  Overlaid with original.</para></caption>
                             </mediaobject>
@@ -2108,7 +2108,7 @@ MULTILINESTRING((164 1,18 1,12.2597485145237 2.1418070123307,
                         <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_offsetcurve03.png" />
+                                <imagedata fileref="images/st_offsetcurve03.png"/>
                               </imageobject>
                               <caption><para>15, 'quad_segs=4 join=bevel' shown with original line</para></caption>
                             </mediaobject>
@@ -2131,7 +2131,7 @@ LINESTRING(164 1,18 1,7.39339828220179 5.39339828220179,
                         <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_offsetcurve04.png" />
+                                <imagedata fileref="images/st_offsetcurve04.png"/>
                               </imageobject>
                               <caption><para>15,-15 collected, join=mitre mitre_limit=2.1</para></caption>
                             </mediaobject>
@@ -2162,11 +2162,11 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
 
               <refsection>
                 <title>See Also</title>
-                <para><xref linkend="ST_Buffer" /></para>
+                <para><xref linkend="ST_Buffer"/></para>
               </refsection>
     </refentry>
 
-    <refentry id="ST_PointOnSurface">
+    <refentry xml:id="ST_PointOnSurface">
       <refnamediv>
         <refname>ST_PointOnSurface</refname>
         <refpurpose>Computes a point guaranteed to lie in a polygon, or on a geometry.</refpurpose>
@@ -2210,7 +2210,7 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
               <entry><para><informalfigure>
                   <mediaobject>
                     <imageobject>
-                      <imagedata fileref="images/st_pointonsurface01.png" />
+                      <imagedata fileref="images/st_pointonsurface01.png"/>
                     </imageobject>
 
                     <caption><para>PointOnSurface of a
@@ -2221,7 +2221,7 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
               <entry><para><informalfigure>
                   <mediaobject>
                     <imageobject>
-                      <imagedata fileref="images/st_pointonsurface02.png" />
+                      <imagedata fileref="images/st_pointonsurface02.png"/>
                     </imageobject>
 
                     <caption><para>PointOnSurface of a
@@ -2234,7 +2234,7 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
               <entry><para><informalfigure>
                   <mediaobject>
                     <imageobject>
-                      <imagedata fileref="images/st_pointonsurface03.png" />
+                      <imagedata fileref="images/st_pointonsurface03.png"/>
                     </imageobject>
 
                     <caption><para>PointOnSurface of a
@@ -2245,7 +2245,7 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
               <entry><para><informalfigure>
                   <mediaobject>
                     <imageobject>
-                      <imagedata fileref="images/st_pointonsurface04.png" />
+                      <imagedata fileref="images/st_pointonsurface04.png"/>
                     </imageobject>
 
                     <caption><para>PointOnSurface of a
@@ -2276,13 +2276,13 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 
         <para><emphasis role="bold">Example:</emphasis>
         The result of ST_PointOnSurface is guaranteed to lie within polygons,
-        whereas the point computed by <xref linkend="ST_Centroid" /> may be outside.
+        whereas the point computed by <xref linkend="ST_Centroid"/> may be outside.
         </para>
 
         <informalfigure>
             <mediaobject>
                 <imageobject>
-                <imagedata fileref="images/st_pointonsurface.png" />
+                <imagedata fileref="images/st_pointonsurface.png"/>
                 </imageobject>
                 <caption><para>Red: point on surface; Green: centroid</para></caption>
             </mediaobject>
@@ -2302,11 +2302,11 @@ SELECT ST_AsText(ST_PointOnSurface(geom)) AS pt_on_surf,
 
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_Centroid" />, <xref linkend="ST_MaximumInscribedCircle" /></para>
+        <para><xref linkend="ST_Centroid"/>, <xref linkend="ST_MaximumInscribedCircle"/></para>
       </refsection>
     </refentry>
 
-    <refentry id="ST_Polygonize">
+    <refentry xml:id="ST_Polygonize">
         <refnamediv>
             <refname>ST_Polygonize</refname>
 
@@ -2338,20 +2338,20 @@ SELECT ST_AsText(ST_PointOnSurface(geom)) AS pt_on_surf,
 
             <para>This function creates polygons covering all delimited areas.
             If the result is intended to form a valid polygonal geometry,
-            use <xref linkend="ST_BuildArea" /> to prevent holes being filled. 
+            use <xref linkend="ST_BuildArea"/> to prevent holes being filled.
             </para>
 
             <note>
                 <para>
                 The input linework must be correctly noded for this function to work properly.
-                To ensure input is noded use <xref linkend="ST_Node" /> on the input geometry
+                To ensure input is noded use <xref linkend="ST_Node"/> on the input geometry
                 before polygonizing.
                 </para>
             </note>
 
             <note>
                 <para>GeometryCollections can be difficult to handle with external tools.
-                Use <xref linkend="ST_Dump" /> to convert the polygonized result
+                Use <xref linkend="ST_Dump"/> to convert the polygonized result
                 into separate polygons.</para>
             </note>
             <para>Performed by the GEOS module.</para>
@@ -2370,7 +2370,7 @@ SELECT ST_AsText(ST_PointOnSurface(geom)) AS pt_on_surf,
         <informalfigure>
           <mediaobject>
               <imageobject>
-              <imagedata fileref="images/st_polygonize01.png" />
+              <imagedata fileref="images/st_polygonize01.png"/>
               </imageobject>
               <caption><para>Input lines</para></caption>
           </mediaobject>
@@ -2380,7 +2380,7 @@ SELECT ST_AsText(ST_PointOnSurface(geom)) AS pt_on_surf,
         <informalfigure>
           <mediaobject>
               <imageobject>
-              <imagedata fileref="images/st_polygonize02.png" />
+              <imagedata fileref="images/st_polygonize02.png"/>
               </imageobject>
               <caption><para>Polygonized result</para></caption>
           </mediaobject>
@@ -2404,11 +2404,11 @@ SELECT ST_AsText(ST_PointOnSurface(geom)) AS pt_on_surf,
 )
 SELECT ST_AsText( ST_Polygonize( geom ))
     FROM data;
-    
+
 ------------------------------------------------------------------------------------------
-GEOMETRYCOLLECTION (POLYGON ((180 40, 30 20, 20 90, 70 70, 80 130, 160 160, 180 40), (150 80, 120 130, 80 60, 150 80)), 
-                    POLYGON ((20 90, 20 160, 70 190, 80 130, 70 70, 20 90)), 
-                    POLYGON ((160 160, 80 130, 70 190, 160 160)), 
+GEOMETRYCOLLECTION (POLYGON ((180 40, 30 20, 20 90, 70 70, 80 130, 160 160, 180 40), (150 80, 120 130, 80 60, 150 80)),
+                    POLYGON ((20 90, 20 160, 70 190, 80 130, 70 70, 20 90)),
+                    POLYGON ((160 160, 80 130, 70 190, 160 160)),
                     POLYGON ((80 60, 120 130, 150 80, 80 60)))
 
 </programlisting>
@@ -2441,14 +2441,14 @@ FROM (SELECT ST_Polygonize(geom_4269) AS polycoll
         <refsection>
             <title>See Also</title>
             <para>
-            <xref linkend="ST_BuildArea" />,
-            <xref linkend="ST_Dump" />,
-            <xref linkend="ST_Node" />
+            <xref linkend="ST_BuildArea"/>,
+            <xref linkend="ST_Dump"/>,
+            <xref linkend="ST_Node"/>
             </para>
         </refsection>
     </refentry>
 
-    <refentry id="ST_ReducePrecision">
+    <refentry xml:id="ST_ReducePrecision">
       <refnamediv>
         <refname>ST_ReducePrecision</refname>
 
@@ -2473,7 +2473,7 @@ FROM (SELECT ST_Polygonize(geom_4269) AS polycoll
 
         <para>Returns a valid geometry with all points rounded to the provided grid tolerance, and features below the tolerance removed.</para>
 
-        <para>Unlike <xref linkend="ST_SnapToGrid" /> the returned geometry will be valid, with no ring self-intersections or collapsed components.</para>
+        <para>Unlike <xref linkend="ST_SnapToGrid"/> the returned geometry will be valid, with no ring self-intersections or collapsed components.</para>
 
 		<para>
         Precision reduction can be used to:
@@ -2537,11 +2537,11 @@ SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 10));
       <refsection>
         <title>See Also</title>
 
-        <para><xref linkend="ST_SnapToGrid" />, <xref linkend="ST_Simplify" />, <xref linkend="ST_SimplifyVW" /></para>
+        <para><xref linkend="ST_SnapToGrid"/>, <xref linkend="ST_Simplify"/>, <xref linkend="ST_SimplifyVW"/></para>
       </refsection>
     </refentry>
 
-    <refentry id="ST_SharedPaths">
+    <refentry xml:id="ST_SharedPaths">
       <refnamediv>
         <refname>ST_SharedPaths</refname>
         <refpurpose>Returns a collection containing paths shared by the two input linestrings/multilinestrings.</refpurpose>
@@ -2575,7 +2575,7 @@ SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 10));
                 <entry><para><informalfigure>
                     <mediaobject>
                       <imageobject>
-                        <imagedata fileref="images/st_sharedpaths01.png" />
+                        <imagedata fileref="images/st_sharedpaths01.png"/>
                       </imageobject>
                       <caption><para>A multilinestring and a linestring</para></caption>
                     </mediaobject>
@@ -2586,7 +2586,7 @@ SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 10));
                 <entry><para><informalfigure>
                     <mediaobject>
                       <imageobject>
-                        <imagedata fileref="images/st_sharedpaths02.png" />
+                        <imagedata fileref="images/st_sharedpaths02.png"/>
                       </imageobject>
                       <caption><para>The shared path of multilinestring and linestring overlaid with original geometries.</para></caption>
                     </mediaobject>
@@ -2637,14 +2637,14 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
       <refsection>
         <title>See Also</title>
     <para>
-        <xref linkend="ST_Dump" />,
-        <xref linkend="ST_GeometryN" />,
-        <xref linkend="ST_NumGeometries" />
+        <xref linkend="ST_Dump"/>,
+        <xref linkend="ST_GeometryN"/>,
+        <xref linkend="ST_NumGeometries"/>
     </para>
       </refsection>
     </refentry>
 
-    <refentry id="ST_Simplify">
+    <refentry xml:id="ST_Simplify">
       <refnamediv>
         <refname>ST_Simplify</refname>
         <refpurpose>Returns a simplified version of a geometry, using
@@ -2684,8 +2684,8 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
       small objects disappear from a map leaving surprising gaps.</para>
 
         <note><para>Note that returned geometry might lose its
-                simplicity (see <xref linkend="ST_IsSimple" />)</para></note>
-        <note><para>Note topology may not be preserved and may result in invalid geometries.  Use  (see <xref linkend="ST_SimplifyPreserveTopology" />) to preserve topology.</para></note>
+                simplicity (see <xref linkend="ST_IsSimple"/>)</para></note>
+        <note><para>Note topology may not be preserved and may result in invalid geometries.  Use  (see <xref linkend="ST_SimplifyPreserveTopology"/>) to preserve topology.</para></note>
 
         <para role="availability" conformance="1.2.2">Availability: 1.2.2</para>
       </refsection>
@@ -2710,14 +2710,14 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
           <refsection>
             <title>See Also</title>
             <para>
-    <xref linkend="ST_IsSimple" />,
-    <xref linkend="ST_SimplifyPreserveTopology" />,
-    <xref linkend="ST_SimplifyVW" />,
+    <xref linkend="ST_IsSimple"/>,
+    <xref linkend="ST_SimplifyPreserveTopology"/>,
+    <xref linkend="ST_SimplifyVW"/>,
     Topology <xref linkend="TP_ST_Simplify"/></para>
           </refsection>
     </refentry>
 
-    <refentry id="ST_SimplifyPreserveTopology">
+    <refentry xml:id="ST_SimplifyPreserveTopology">
       <refnamediv>
         <refname>ST_SimplifyPreserveTopology</refname>
         <refpurpose>Returns a simplified and valid version of a geometry, using
@@ -2765,12 +2765,12 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As geom) As foo;
           </refsection>
           <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_Simplify" /></para>
+            <para><xref linkend="ST_Simplify"/></para>
           </refsection>
     </refentry>
 
 
-    <refentry id="ST_SimplifyPolygonHull">
+    <refentry xml:id="ST_SimplifyPolygonHull">
       <refnamediv>
         <refname>ST_SimplifyPolygonHull</refname>
         <refpurpose>Computes a simplifed topology-preserving outer or inner hull of a polygonal geometry.</refpurpose>
@@ -2823,7 +2823,7 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As geom) As foo;
     <informalfigure>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/st_simplifypolygonhull02.png" />
+          <imagedata fileref="images/st_simplifypolygonhull02.png"/>
         </imageobject>
         <caption><para>Outer hull of a Polygon</para></caption>
       </mediaobject>
@@ -2838,7 +2838,7 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As geom) As foo;
     <informalfigure>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/st_simplifypolygonhull03.png" />
+          <imagedata fileref="images/st_simplifypolygonhull03.png"/>
         </imageobject>
         <caption><para>Inner hull of a Polygon</para></caption>
       </mediaobject>
@@ -2853,7 +2853,7 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As geom) As foo;
     <informalfigure>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/st_simplifypolygonhull01.png" />
+          <imagedata fileref="images/st_simplifypolygonhull01.png"/>
         </imageobject>
         <caption><para>Outer hull simplification of a MultiPolygon, with segmentization</para></caption>
       </mediaobject>
@@ -2868,12 +2868,12 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As geom) As foo;
 
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_ConvexHull" />, <xref linkend="ST_SimplifyVW" />, <xref linkend="ST_ConcaveHull" />, <xref linkend="ST_Segmentize" /></para>
+        <para><xref linkend="ST_ConvexHull"/>, <xref linkend="ST_SimplifyVW"/>, <xref linkend="ST_ConcaveHull"/>, <xref linkend="ST_Segmentize"/></para>
       </refsection>
     </refentry>
 
 
-    <refentry id="ST_SimplifyVW">
+    <refentry xml:id="ST_SimplifyVW">
       <refnamediv>
         <refname>ST_SimplifyVW</refname>
         <refpurpose>Returns a simplified version of a geometry, using the Visvalingam-Whyatt algorithm</refpurpose>
@@ -2896,8 +2896,8 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As geom) As foo;
         Since simplification occurs on a object-by-object basis you can also feed a GeometryCollection to this function.</para>
 
         <note><para>Note that returned geometry might lose its
-                simplicity (see <xref linkend="ST_IsSimple" />)</para></note>
-        <note><para>Note topology may not be preserved and may result in invalid geometries.  Use  (see <xref linkend="ST_SimplifyPreserveTopology" />) to preserve topology.</para></note>
+                simplicity (see <xref linkend="ST_IsSimple"/>)</para></note>
+        <note><para>Note topology may not be preserved and may result in invalid geometries.  Use  (see <xref linkend="ST_SimplifyPreserveTopology"/>) to preserve topology.</para></note>
         <note><para>This function handles 3D and the third dimension will affect the result.</para></note>
         <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
       </refsection>
@@ -2918,11 +2918,11 @@ LINESTRING(5 2,7 25,10 10)
           </refsection>
           <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_SetEffectiveArea" />, <xref linkend="ST_Simplify" />, <xref linkend="ST_SimplifyPreserveTopology" />, Topology <xref linkend="TP_ST_Simplify"/></para>
+            <para><xref linkend="ST_SetEffectiveArea"/>, <xref linkend="ST_Simplify"/>, <xref linkend="ST_SimplifyPreserveTopology"/>, Topology <xref linkend="TP_ST_Simplify"/></para>
           </refsection>
     </refentry>
 
-    <refentry id="ST_SetEffectiveArea">
+    <refentry xml:id="ST_SetEffectiveArea">
       <refnamediv>
         <refname>ST_SetEffectiveArea</refname>
         <refpurpose>
@@ -2961,8 +2961,8 @@ LINESTRING(5 2,7 25,10 10)
 
 
         <note><para>Note that returned geometry might lose its
-                simplicity (see <xref linkend="ST_IsSimple" />)</para></note>
-        <note><para>Note topology may not be preserved and may result in invalid geometries.  Use  (see <xref linkend="ST_SimplifyPreserveTopology" />) to preserve topology.</para></note>
+                simplicity (see <xref linkend="ST_IsSimple"/>)</para></note>
+        <note><para>Note topology may not be preserved and may result in invalid geometries.  Use  (see <xref linkend="ST_SimplifyPreserveTopology"/>) to preserve topology.</para></note>
         <note><para>The output geometry will lose all previous information in the M-values</para></note>
         <note><para>This function handles 3D and the third dimension will affect the effective area</para></note>
         <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
@@ -2986,11 +2986,11 @@ LINESTRING M (5 2 3.40282346638529e+38,3 8 29,6 20 1.5,7 25 49.5,10 10 3.4028234
           </refsection>
           <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_SimplifyVW" /></para>
+            <para><xref linkend="ST_SimplifyVW"/></para>
           </refsection>
     </refentry>
 
-    <refentry id="ST_TriangulatePolygon">
+    <refentry xml:id="ST_TriangulatePolygon">
       <refnamediv>
         <refname>ST_TriangulatePolygon</refname>
         <refpurpose>Computes the constrained Delaunay triangulation of polygons</refpurpose>
@@ -3041,7 +3041,7 @@ SELECT ST_AsText(
             <informalfigure>
             <mediaobject>
             <imageobject>
-            <imagedata fileref="images/st_triangulatepolygon01.png" />
+            <imagedata fileref="images/st_triangulatepolygon01.png"/>
             </imageobject>
             <caption><para>Polygon Triangulation</para></caption>
             </mediaobject>
@@ -3051,14 +3051,14 @@ SELECT ST_AsText(
           <refsection>
             <title>See Also</title>
             <para>
-				<xref linkend="ST_DelaunayTriangles" />,
-				<xref linkend="ST_ConstrainedDelaunayTriangles" />,
-				<xref linkend="ST_Tesselate" />
+				<xref linkend="ST_DelaunayTriangles"/>,
+				<xref linkend="ST_ConstrainedDelaunayTriangles"/>,
+				<xref linkend="ST_Tesselate"/>
             </para>
           </refsection>
     </refentry>
 
-    <refentry id="ST_VoronoiLines">
+    <refentry xml:id="ST_VoronoiLines">
       <refnamediv>
         <refname>ST_VoronoiLines</refname>
 
@@ -3086,7 +3086,7 @@ SELECT ST_AsText(
       <refsection>
         <title>Description</title>
         <para>
-            Computes a two-dimensional <ulink url="https://en.wikipedia.org/wiki/Voronoi_diagram">Voronoi diagram</ulink> from the vertices of
+            Computes a two-dimensional <link xlink:href="https://en.wikipedia.org/wiki/Voronoi_diagram">Voronoi diagram</link> from the vertices of
             the supplied geometry and returns the boundaries between cells in the diagram as a MultiLineString.
             Returns null if input geometry is null. Returns an empty geometry collection if the input geometry contains only one vertex.
             Returns an empty geometry collection if the <varname>extend_to</varname> envelope has zero area.
@@ -3115,7 +3115,7 @@ SELECT ST_AsText(
         <informalfigure>
             <mediaobject>
                 <imageobject>
-                <imagedata fileref="images/st_voronoi03.png" />
+                <imagedata fileref="images/st_voronoi03.png"/>
                 </imageobject>
                 <caption><para>Voronoi diagram lines, with tolerance of 30 units</para></caption>
             </mediaobject>
@@ -3136,13 +3136,13 @@ MULTILINESTRING((135.555555555556 270,36.8181818181818 92.2727272727273),(36.818
         <title>See Also</title>
 
         <para>
-            <xref linkend="ST_DelaunayTriangles" />,
-            <xref linkend="ST_VoronoiPolygons" />
+            <xref linkend="ST_DelaunayTriangles"/>,
+            <xref linkend="ST_VoronoiPolygons"/>
         </para>
       </refsection>
     </refentry>
 
-    <refentry id="ST_VoronoiPolygons">
+    <refentry xml:id="ST_VoronoiPolygons">
       <refnamediv>
         <refname>ST_VoronoiPolygons</refname>
 
@@ -3171,7 +3171,7 @@ MULTILINESTRING((135.555555555556 270,36.8181818181818 92.2727272727273),(36.818
         <title>Description</title>
 
         <para>
-            Computes a two-dimensional <ulink url="https://en.wikipedia.org/wiki/Voronoi_diagram">Voronoi diagram</ulink> from the vertices of
+            Computes a two-dimensional <link xlink:href="https://en.wikipedia.org/wiki/Voronoi_diagram">Voronoi diagram</link> from the vertices of
             the supplied geometry.
             The result is a GEOMETRYCOLLECTION of POLYGONs that covers an envelope larger than the extent of the input vertices.
             Returns null if input geometry is null. Returns an empty geometry collection if the input geometry contains only one vertex.
@@ -3202,7 +3202,7 @@ MULTILINESTRING((135.555555555556 270,36.8181818181818 92.2727272727273),(36.818
         <informalfigure>
             <mediaobject>
                 <imageobject>
-                <imagedata fileref="images/st_voronoi01.png" />
+                <imagedata fileref="images/st_voronoi01.png"/>
                 </imageobject>
                 <caption><para>Points overlaid on top of Voronoi diagram</para></caption>
             </mediaobject>
@@ -3222,7 +3222,7 @@ POLYGON((100.5 270,230 270,230 47.5,59.3478260869565 132.826086956522,100.5 270)
         <informalfigure>
             <mediaobject>
                 <imageobject>
-                <imagedata fileref="images/st_voronoi02.png" />
+                <imagedata fileref="images/st_voronoi02.png"/>
                 </imageobject>
                 <caption><para>Voronoi diagram, with tolerance of 30 units</para></caption>
             </mediaobject>
@@ -3245,9 +3245,9 @@ POLYGON((100.5 270,230 270,230 47.5,59.3478260869565 132.826086956522,100.5 270)
         <title>See Also</title>
 
         <para>
-            <xref linkend="ST_DelaunayTriangles" />,
-            <xref linkend="ST_VoronoiLines" />
+            <xref linkend="ST_DelaunayTriangles"/>,
+            <xref linkend="ST_VoronoiLines"/>
         </para>
       </refsection>
     </refentry>
-</sect1>
+</section>

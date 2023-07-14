@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-12 14:53+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -14,18 +14,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#. Tag: title
+#: reference_processing.xml:3
+#, no-c-format
+msgid "Geometry Processing"
+msgstr ""
+
 #. Tag: para
 #: reference_processing.xml:5
 #, no-c-format
 msgid ""
 "These functions compute geometric constructions, or alter geometry size or "
 "shape."
-msgstr ""
-
-#. Tag: title
-#: reference_processing.xml:11
-#, no-c-format
-msgid "Geometry Processing"
 msgstr ""
 
 #. Tag: refpurpose
@@ -535,9 +535,9 @@ msgstr ""
 #: reference_processing.xml:545
 #, no-c-format
 msgid ""
-"Smoothes a linear or polygonal geometry using <ulink url=\"http://www.idav."
-"ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-Algorithm."
-"html\">Chaikin's algorithm</ulink>. The degree of smoothing is controlled by "
+"Smoothes a linear or polygonal geometry using <link xlink:href=\"http://www."
+"idav.ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-Algorithm."
+"html\">Chaikin's algorithm</link>. The degree of smoothing is controlled by "
 "the <varname>nIterations</varname> parameter. On each iteration, each "
 "interior vertex is replaced by two vertices located at 1/4 of the length of "
 "the line segments before and after the vertex. A reasonable degree of "
@@ -846,8 +846,8 @@ msgstr ""
 #: reference_processing.xml:886
 #, no-c-format
 msgid ""
-"Computes the <ulink url=\"http://en.wikipedia.org/wiki/"
-"Delaunay_triangulation\">Delaunay triangulation</ulink> of the vertices of "
+"Computes the <link xlink:href=\"http://en.wikipedia.org/wiki/"
+"Delaunay_triangulation\">Delaunay triangulation</link> of the vertices of "
 "the input geometry. The optional <varname>tolerance</varname> can be used to "
 "snap nearby input vertices together, which improves robustness in some "
 "situations. The result geometry is bounded by the convex hull of the input "
@@ -1160,7 +1160,7 @@ msgstr ""
 #. Tag: para
 #: reference_processing.xml:1240
 #, no-c-format
-msgid "Lines are not merged across intersections with degree > 2."
+msgid "Lines are not merged across intersections with degree &gt; 2."
 msgstr ""
 
 #. Tag: para
@@ -2231,8 +2231,8 @@ msgstr ""
 #: reference_processing.xml:2467
 #, no-c-format
 msgid ""
-"Computes a two-dimensional <ulink url=\"https://en.wikipedia.org/wiki/"
-"Voronoi_diagram\">Voronoi diagram</ulink> from the vertices of the supplied "
+"Computes a two-dimensional <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Voronoi_diagram\">Voronoi diagram</link> from the vertices of the supplied "
 "geometry and returns the boundaries between cells in the diagram as a "
 "MultiLineString. Returns null if input geometry is null. Returns an empty "
 "geometry collection if the input geometry contains only one vertex. Returns "
@@ -2287,8 +2287,8 @@ msgstr ""
 #: reference_processing.xml:2546
 #, no-c-format
 msgid ""
-"Computes a two-dimensional <ulink url=\"https://en.wikipedia.org/wiki/"
-"Voronoi_diagram\">Voronoi diagram</ulink> from the vertices of the supplied "
+"Computes a two-dimensional <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Voronoi_diagram\">Voronoi diagram</link> from the vertices of the supplied "
 "geometry. The result is a GEOMETRYCOLLECTION of POLYGONs that covers an "
 "envelope larger than the extent of the input vertices. Returns null if input "
 "geometry is null. Returns an empty geometry collection if the input geometry "

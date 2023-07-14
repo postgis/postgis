@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Geometry_Validation">
 
-  <sect1 id="Geometry_Validation">
-
-	  <sect1info>
+	  <title>Geometry Validation</title><info>
 	    <abstract>
 			<para>These functions test whether geometries are valid according to
 			the OGC SFS standard.
@@ -10,11 +9,11 @@
             There is also a function to create a valid geometry out of an invalid one.
 			</para>
    	</abstract>
-    </sect1info>
+    </info>
 
-	<title>Geometry Validation</title>
+	
 
-	<refentry id="ST_IsValid">
+	<refentry xml:id="ST_IsValid">
 	  <refnamediv>
 		<refname>ST_IsValid</refname>
 
@@ -48,11 +47,11 @@
                 </para>
 		<para>
 For the version with the <varname>flags</varname> parameter,
-supported values are documented in <xref linkend="ST_IsValidDetail" />
+supported values are documented in <xref linkend="ST_IsValidDetail"/>
 This version does not print a NOTICE explaining invalidity.
 		</para>
 		<para>For more information on the definition of geometry validity, refer
-			to <xref linkend="OGC_Validity" />
+			to <xref linkend="OGC_Validity"/>
 		</para>
 		<note>
 			<para>SQL-MM defines the result of ST_IsValid(NULL) to be 0, while
@@ -93,15 +92,15 @@ NOTICE:  Self-intersection at or near point 0 0
 		<title>See Also</title>
 
 		<para>
-<xref linkend="ST_IsSimple" />,
-<xref linkend="ST_IsValidReason" />,
-<xref linkend="ST_IsValidDetail" />,
+<xref linkend="ST_IsSimple"/>,
+<xref linkend="ST_IsValidReason"/>,
+<xref linkend="ST_IsValidDetail"/>,
 </para>
 	  </refsection>
 	</refentry>
 
 
-	<refentry id="ST_IsValidDetail">
+	<refentry xml:id="ST_IsValidDetail">
 	  <refnamediv>
 		<refname>ST_IsValidDetail</refname>
 
@@ -126,7 +125,7 @@ NOTICE:  Self-intersection at or near point 0 0
         a varchar (<varname>reason</varname>) stating a reason why it is invalid
         and a geometry (<varname>location</varname>) pointing out where it is invalid.</para>
 
-		<para>Useful to improve on the combination of <xref linkend="ST_IsValid" /> and <xref linkend="ST_IsValidReason" /> to generate a detailed report of invalid geometries.</para>
+		<para>Useful to improve on the combination of <xref linkend="ST_IsValid"/> and <xref linkend="ST_IsValidReason"/> to generate a detailed report of invalid geometries.</para>
 
 		<para>
 The optional <varname>flags</varname> parameter is a bitfield. It can have the following values:
@@ -195,13 +194,13 @@ SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 150407,222020 1
 		<title>See Also</title>
 
 		<para>
-<xref linkend="ST_IsValid" />,
-<xref linkend="ST_IsValidReason" />
+<xref linkend="ST_IsValid"/>,
+<xref linkend="ST_IsValidReason"/>
 </para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_IsValidReason">
+	<refentry xml:id="ST_IsValidReason">
 	  <refnamediv>
 		<refname>ST_IsValidReason</refname>
 
@@ -228,10 +227,10 @@ SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 150407,222020 1
 
 		<para>Returns text stating if a geometry is valid, or if invalid a reason why.</para>
 
-		<para>Useful in combination with <xref linkend="ST_IsValid" /> to generate a detailed report of invalid geometries and reasons.</para>
+		<para>Useful in combination with <xref linkend="ST_IsValid"/> to generate a detailed report of invalid geometries and reasons.</para>
 
 		<para>
-Allowed <varname>flags</varname> are documented in <xref linkend="ST_IsValidDetail" />.
+Allowed <varname>flags</varname> are documented in <xref linkend="ST_IsValidDetail"/>.
 		</para>
 		<para>Performed by the GEOS module.</para>
 		<para role="availability" conformance="1.4">Availability: 1.4</para>
@@ -289,11 +288,11 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_IsValid" />, <xref linkend="ST_Summary" /></para>
+		<para><xref linkend="ST_IsValid"/>, <xref linkend="ST_Summary"/></para>
 	  </refsection>
 	</refentry>
 
-    <refentry id="ST_MakeValid">
+    <refentry xml:id="ST_MakeValid">
       <refnamediv>
         <refname>ST_MakeValid</refname>
         <refpurpose>Attempts to make an invalid geometry valid without losing vertices.</refpurpose>
@@ -385,7 +384,7 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
                         <entry><para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_makevalid01.png" />
+                                <imagedata fileref="images/st_makevalid01.png"/>
                               </imageobject>
                               <caption><para>before_geom: MULTIPOLYGON of 2 overlapping polygons</para></caption>
                             </mediaobject>
@@ -393,7 +392,7 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
                           <informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_makevalid02.png" />
+                                <imagedata fileref="images/st_makevalid02.png"/>
                               </imageobject>
                               <caption><para>after_geom: MULTIPOLYGON of 4 non-overlapping polygons</para>
                               </caption>
@@ -402,7 +401,7 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
                           <informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_makevalid05.png" />
+                                <imagedata fileref="images/st_makevalid05.png"/>
                               </imageobject>
                               <caption><para>after_geom_structure: MULTIPOLYGON of 1 non-overlapping polygon</para>
                               </caption>
@@ -424,19 +423,19 @@ FROM (SELECT 'MULTIPOLYGON(((186 194,187 194,188 195,189 195,190 195,
             <entry><para>
                 <informalfigure>
                 <mediaobject>
-                    <imageobject><imagedata fileref="images/st_makevalid03.png" /></imageobject>
+                    <imageobject><imagedata fileref="images/st_makevalid03.png"/></imageobject>
                     <caption><para>before_geom: MULTIPOLYGON of 6 overlapping polygons</para></caption>
                 </mediaobject>
                 </informalfigure>
                 <informalfigure>
                 <mediaobject>
-                    <imageobject><imagedata fileref="images/st_makevalid04.png" /></imageobject>
+                    <imageobject><imagedata fileref="images/st_makevalid04.png"/></imageobject>
                     <caption><para>after_geom: MULTIPOLYGON of 14 Non-overlapping polygons</para></caption>
                 </mediaobject>
                 </informalfigure>
                 <informalfigure>
                 <mediaobject>
-                    <imageobject><imagedata fileref="images/st_makevalid06.png" /></imageobject>
+                    <imageobject><imagedata fileref="images/st_makevalid06.png"/></imageobject>
                     <caption><para>after_geom_structure: MULTIPOLYGON of 1 Non-overlapping polygon</para></caption>
                 </mediaobject>
                 </informalfigure>
@@ -479,11 +478,11 @@ SELECT ST_AsText(ST_MakeValid(
           <refsection>
             <title>See Also</title>
             <para>
-                <xref linkend="ST_IsValid" />,
-                <xref linkend="ST_Collect" />,
-                <xref linkend="ST_CollectionExtract" />
+                <xref linkend="ST_IsValid"/>,
+                <xref linkend="ST_Collect"/>,
+                <xref linkend="ST_CollectionExtract"/>
             </para>
           </refsection>
     </refentry>
 
-  </sect1>
+  </section>

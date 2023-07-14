@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-12 14:53+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -14,16 +14,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#. Tag: title
+#: reference_cluster.xml:3
+#, no-c-format
+msgid "Clustering Functions"
+msgstr ""
+
 #. Tag: para
 #: reference_cluster.xml:5
 #, no-c-format
 msgid "These functions implement clustering algorithms for sets of geometries."
-msgstr ""
-
-#. Tag: title
-#: reference_cluster.xml:8
-#, no-c-format
-msgid "Clustering Functions"
 msgstr ""
 
 #. Tag: refpurpose
@@ -47,12 +47,13 @@ msgstr ""
 #, no-c-format
 msgid ""
 "A window function that returns a cluster number for each input geometry, "
-"using the 2D <ulink url=\"https://en.wikipedia.org/wiki/DBSCAN\">Density-"
-"based spatial clustering of applications with noise (DBSCAN)</ulink> "
-"algorithm. Unlike <xref linkend=\"ST_ClusterKMeans\"/>, it does not require "
-"the number of clusters to be specified, but instead uses the desired <link "
-"linkend=\"ST_Distance\">distance</link> (<varname>eps</varname>) and density "
-"(<varname>minpoints</varname>) parameters to determine each cluster."
+"using the 2D <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"DBSCAN\">Density-based spatial clustering of applications with noise "
+"(DBSCAN)</link> algorithm. Unlike <xref linkend=\"ST_ClusterKMeans\"/>, it "
+"does not require the number of clusters to be specified, but instead uses "
+"the desired <link linkend=\"ST_Distance\">distance</link> (<varname>eps</"
+"varname>) and density (<varname>minpoints</varname>) parameters to determine "
+"each cluster."
 msgstr ""
 
 #. Tag: para
@@ -229,11 +230,12 @@ msgstr ""
 #: reference_cluster.xml:236
 #, no-c-format
 msgid ""
-"Returns <ulink url=\"https://en.wikipedia.org/wiki/K-means_clustering\">K-"
-"means</ulink> cluster number for each input geometry. The distance used for "
-"clustering is the distance between the centroids for 2D geometries, and "
-"distance between bounding box centers for 3D geometries. For POINT inputs, M "
-"coordinate will be treated as weight of input and has to be larger than 0."
+"Returns <link xlink:href=\"https://en.wikipedia.org/wiki/K-"
+"means_clustering\">K-means</link> cluster number for each input geometry. "
+"The distance used for clustering is the distance between the centroids for "
+"2D geometries, and distance between bounding box centers for 3D geometries. "
+"For POINT inputs, M coordinate will be treated as weight of input and has to "
+"be larger than 0."
 msgstr ""
 
 #. Tag: para
@@ -282,8 +284,8 @@ msgstr ""
 msgid ""
 "Example: Clustering a preaggregated planetary-scale data population dataset "
 "using 3D clusering and weighting. Identify at least 20 regions based on "
-"<ulink url=\"https://data.humdata.org/dataset/kontur-population-"
-"dataset\">Kontur Population Data</ulink> that do not span more than 3000 km "
+"<link xlink:href=\"https://data.humdata.org/dataset/kontur-population-"
+"dataset\">Kontur Population Data</link> that do not span more than 3000 km "
 "from their center:"
 msgstr ""
 

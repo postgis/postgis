@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-11 19:02+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-07-20 04:36+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -21,6 +21,12 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.16.4\n"
 
+#. Tag: title
+#: reference_processing.xml:3
+#, no-c-format
+msgid "Geometry Processing"
+msgstr "ジオメトリ処理関数"
+
 #. Tag: para
 #: reference_processing.xml:5
 #, no-c-format
@@ -30,12 +36,6 @@ msgid ""
 msgstr ""
 "これらの関数は幾何的構造の計算、すなわちジオメトリのサイズや形状を変更しま"
 "す。"
-
-#. Tag: title
-#: reference_processing.xml:11
-#, no-c-format
-msgid "Geometry Processing"
-msgstr "ジオメトリ処理関数"
 
 #. Tag: refpurpose
 #: reference_processing.xml:17
@@ -626,17 +626,17 @@ msgstr ""
 #: reference_processing.xml:545
 #, no-c-format
 msgid ""
-"Smoothes a linear or polygonal geometry using <ulink url=\"http://www.idav."
-"ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-Algorithm."
-"html\">Chaikin's algorithm</ulink>. The degree of smoothing is controlled by "
+"Smoothes a linear or polygonal geometry using <link xlink:href=\"http://www."
+"idav.ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-Algorithm."
+"html\">Chaikin's algorithm</link>. The degree of smoothing is controlled by "
 "the <varname>nIterations</varname> parameter. On each iteration, each "
 "interior vertex is replaced by two vertices located at 1/4 of the length of "
 "the line segments before and after the vertex. A reasonable degree of "
 "smoothing is provided by 3 iterations; the maximum is limited to 5."
 msgstr ""
-"<ulink url=\"http://www.idav.ucdavis.edu/education/CAGDNotes/Chaikins-"
-"Algorithm/Chaikins-Algorithm.html\">チャイキンのアルゴリズム</ulink>を使って"
-"ラインまたはポリゴンのジオメトリの平滑化を行います。平滑化の度合いは"
+"<link xlink:href=\"http://www.idav.ucdavis.edu/education/CAGDNotes/Chaikins-"
+"Algorithm/Chaikins-Algorithm.html\">チャイキンのアルゴリズム</link>を使ってラ"
+"インまたはポリゴンのジオメトリの平滑化を行います。平滑化の度合いは"
 "<varname>nIterations</varname>パラメータで制御します。繰り返しごとに、各々の"
 "内部の頂点は、頂点を挟む辺の上で、長さが1/4となる位置の二つの頂点に置き換えま"
 "す。平滑化の合理的な度合いは3回反復です。最大値は5に制限されています。"
@@ -994,16 +994,16 @@ msgstr "ジオメトリの頂点のドローネ三角形を返します。"
 #: reference_processing.xml:886
 #, no-c-format
 msgid ""
-"Computes the <ulink url=\"http://en.wikipedia.org/wiki/"
-"Delaunay_triangulation\">Delaunay triangulation</ulink> of the vertices of "
+"Computes the <link xlink:href=\"http://en.wikipedia.org/wiki/"
+"Delaunay_triangulation\">Delaunay triangulation</link> of the vertices of "
 "the input geometry. The optional <varname>tolerance</varname> can be used to "
 "snap nearby input vertices together, which improves robustness in some "
 "situations. The result geometry is bounded by the convex hull of the input "
 "vertices. The result geometry representation is determined by the "
 "<varname>flags</varname> code:"
 msgstr ""
-"入力ジオメトリの頂点の<ulink url=\"http://en.wikipedia.org/wiki/"
-"Delaunay_triangulation\">ドロネー三角形</ulink>を計算します。任意引数"
+"入力ジオメトリの頂点の<link xlink:href=\"http://en.wikipedia.org/wiki/"
+"Delaunay_triangulation\">ドロネー三角形</link>を計算します。任意引数"
 "<varname>tolerance</varname>は、入力頂点が近いとスナップする際に使います。ロ"
 "バスト性が増すことがあります。結果ジオメトリの境界は入力頂点の凸包と同じにな"
 "ります。結果ジオメトリの表現は、次に示す<varname>flags</varname>コードによっ"
@@ -1351,8 +1351,8 @@ msgstr "異なる向きのラインのマージ。"
 #. Tag: para
 #: reference_processing.xml:1240
 #, no-c-format
-msgid "Lines are not merged across intersections with degree > 2."
-msgstr "2本以上インタセクトしたポイントをまたぐラインはマージされません。"
+msgid "Lines are not merged across intersections with degree &gt; 2."
+msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1248
@@ -2603,16 +2603,16 @@ msgstr "ジオメトリの頂点からボロノイ図のセルを返します。
 #: reference_processing.xml:2467
 #, no-c-format
 msgid ""
-"Computes a two-dimensional <ulink url=\"https://en.wikipedia.org/wiki/"
-"Voronoi_diagram\">Voronoi diagram</ulink> from the vertices of the supplied "
+"Computes a two-dimensional <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Voronoi_diagram\">Voronoi diagram</link> from the vertices of the supplied "
 "geometry and returns the boundaries between cells in the diagram as a "
 "MultiLineString. Returns null if input geometry is null. Returns an empty "
 "geometry collection if the input geometry contains only one vertex. Returns "
 "an empty geometry collection if the <varname>extend_to</varname> envelope "
 "has zero area."
 msgstr ""
-"与えられたジオメトリの頂点から2次元<ulink url=\"https://ja.wikipedia.org/"
-"wiki/ボロノイ図\">ボロノイ図</ulink>を生成し、ボロノイ図のサイト間の境界を"
+"与えられたジオメトリの頂点から2次元<link xlink:href=\"https://ja.wikipedia."
+"org/wiki/ボロノイ図\">ボロノイ図</link>を生成し、ボロノイ図のサイト間の境界を"
 "MULTILIESTRINGで返します。入力ジオメトリがNULLの場合にはNULLを返します。入力"
 "ジオメトリの頂点が一つの場合には空ジオメトリを返します。<varname>extend_to</"
 "varname>で作られるエンベロープの面積が0の場合には空ジオメトリを返します。"
@@ -2671,16 +2671,16 @@ msgstr "ジオメトリの頂点からボロノイ図のセルを返します。
 #: reference_processing.xml:2546
 #, no-c-format
 msgid ""
-"Computes a two-dimensional <ulink url=\"https://en.wikipedia.org/wiki/"
-"Voronoi_diagram\">Voronoi diagram</ulink> from the vertices of the supplied "
+"Computes a two-dimensional <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Voronoi_diagram\">Voronoi diagram</link> from the vertices of the supplied "
 "geometry. The result is a GEOMETRYCOLLECTION of POLYGONs that covers an "
 "envelope larger than the extent of the input vertices. Returns null if input "
 "geometry is null. Returns an empty geometry collection if the input geometry "
 "contains only one vertex. Returns an empty geometry collection if the "
 "<varname>extend_to</varname> envelope has zero area."
 msgstr ""
-"与えられたジオメトリの頂点から2次元<ulink url=\"https://ja.wikipedia.org/"
-"wiki/ボロノイ図\">ボロノイ図</ulink>を生成します。結果はPOLYGONの"
+"与えられたジオメトリの頂点から2次元<link xlink:href=\"https://ja.wikipedia."
+"org/wiki/ボロノイ図\">ボロノイ図</link>を生成します。結果はPOLYGONの"
 "GEOMETRYCOLLECTIONで、、入力の頂点の範囲以上のエンベロープを覆います。入力ジ"
 "オメトリがNULLの場合にはNULLを返します。入力ジオメトリの頂点が一つの場合には"
 "空ジオメトリを返します。<varname>extend_to</varname>で作られるエンベロープの"

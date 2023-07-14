@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-09-12 14:55+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -18,6 +18,12 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 5.0\n"
 
+#. Tag: title
+#: reference_measure.xml:3
+#, no-c-format
+msgid "Measurement Functions"
+msgstr "测量函数"
+
 #. Tag: para
 #: reference_measure.xml:5
 #, no-c-format
@@ -27,12 +33,6 @@ msgid ""
 msgstr ""
 "这些函数计算距离、面积和角度的测量值。 还有一些函数可以计算由测量确定的几何"
 "值。"
-
-#. Tag: title
-#: reference_measure.xml:10
-#, no-c-format
-msgid "Measurement Functions"
-msgstr "测量函数"
 
 #. Tag: refpurpose
 #: reference_measure.xml:16
@@ -241,12 +241,12 @@ msgstr ""
 #: reference_measure.xml:105
 #, no-c-format
 msgid ""
-"For the geography type, the azimuth solution is known as the <ulink "
-"url=\"https://en.wikipedia.org/wiki/Geodesics_on_an_ellipsoid\">inverse "
-"geodesic problem</ulink>."
+"For the geography type, the azimuth solution is known as the <link xlink:"
+"href=\"https://en.wikipedia.org/wiki/Geodesics_on_an_ellipsoid\">inverse "
+"geodesic problem</link>."
 msgstr ""
-"对于地理类型，方位角解决方案被称为<ulink url=\"https://en.wikipedia.org/wiki/"
-"Geodesics_on_an_ellipsoid\">反解大地测量问题</ulink>。"
+"对于地理类型，方位角解决方案被称为<link xlink:href=\"https://en.wikipedia."
+"org/wiki/Geodesics_on_an_ellipsoid\">反解大地测量问题</link>。"
 
 #. Tag: para
 #: reference_measure.xml:107
@@ -267,13 +267,14 @@ msgstr ""
 msgid ""
 "Azimuth can be used in conjunction with <xref linkend=\"ST_Translate\"/> to "
 "shift an object along its perpendicular axis. See the "
-"<varname>upgis_lineshift()</varname> function in the <ulink url=\"http://"
-"trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions\">PostGIS wiki</ulink> "
-"for an implementation of this."
+"<varname>upgis_lineshift()</varname> function in the <link xlink:"
+"href=\"http://trac.osgeo.org/postgis/wiki/"
+"UsersWikiplpgsqlfunctions\">PostGIS wiki</link> for an implementation of "
+"this."
 msgstr ""
 "方位角可与 <xref linkend=\"ST_Translate\"/>结合使用，以沿其垂直轴移动对象。 "
-"有关此功能的实现，请参阅 <ulink url=\"http://trac.osgeo.org/postgis/wiki/"
-"UsersWikiplpgsqlfunctions\">PostGIS wiki</ulink> 中的 "
+"有关此功能的实现，请参阅 <link xlink:href=\"http://trac.osgeo.org/postgis/"
+"wiki/UsersWikiplpgsqlfunctions\">PostGIS wiki</link> 中的 "
 "<varname>upgis_lineshift()</varname> 函数。"
 
 #. Tag: para
@@ -328,12 +329,12 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_Translate\"/>, <xref "
-"linkend=\"ST_Project\"/>, <ulink url=\"http://www.postgresql.org/docs/"
-"current/interactive/functions-math.html\">PostgreSQL Math Functions</ulink>"
+"linkend=\"ST_Project\"/>, <link xlink:href=\"http://www.postgresql.org/docs/"
+"current/interactive/functions-math.html\">PostgreSQL Math Functions</link>"
 msgstr ""
 ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_Translate\"/>, <xref "
-"linkend=\"ST_Project\"/>, <ulink url=\"http://www.postgresql.org/docs/"
-"current/interactive/functions-math.html\">PostgreSQL Math Functions</ulink>"
+"linkend=\"ST_Project\"/>, <link xlink:href=\"http://www.postgresql.org/docs/"
+"current/interactive/functions-math.html\">PostgreSQL Math Functions</link>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:162
@@ -617,12 +618,12 @@ msgstr ""
 #: reference_measure.xml:417
 #, no-c-format
 msgid ""
-"Enhanced: 2.1.0 improved speed for geography. See <ulink url=\"http://"
+"Enhanced: 2.1.0 improved speed for geography. See <link xlink:href=\"http://"
 "boundlessgeo.com/2012/07/making-geography-faster/\">Making Geography faster</"
-"ulink> for details."
+"link> for details."
 msgstr ""
-"增强：2.1.0 提高了地理速度。 有关详细信息，请参阅<ulink url=\"http://"
-"boundlessgeo.com/2012/07/making-geography-faster/\">使地理更快</ulink>。"
+"增强：2.1.0 提高了地理速度。 有关详细信息，请参阅<link xlink:href=\"http://"
+"boundlessgeo.com/2012/07/making-geography-faster/\">使地理更快</link>。"
 
 #. Tag: para
 #: reference_measure.xml:418
@@ -854,17 +855,17 @@ msgstr "返回两个几何图形之间的 Fréchet 距离。"
 #, no-c-format
 msgid ""
 "Implements algorithm for computing the Fréchet distance restricted to "
-"discrete points for both geometries, based on <ulink url=\"http://www.kr."
-"tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf\">Computing Discrete "
-"Fréchet Distance</ulink>. The Fréchet distance is a measure of similarity "
+"discrete points for both geometries, based on <link xlink:href=\"http://www."
+"kr.tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf\">Computing Discrete "
+"Fréchet Distance</link>. The Fréchet distance is a measure of similarity "
 "between curves that takes into account the location and ordering of the "
 "points along the curves. Therefore it is often better than the Hausdorff "
 "distance."
 msgstr ""
-"基于<ulink url=\"http://www.kr.tuwien.ac.at/staff/eiter/et-archive/cdtr9464."
-"pdf\">计算离散 Fréchet 距离</ulink>，实现计算仅限于两个几何图形的离散点的 "
-"Fréchet 距离的算法。 Fréchet 距离是曲线之间相似性的度量，考虑了曲线上点的位置"
-"和顺序。 因此它通常比 Hausdorff 距离更好。"
+"基于<link xlink:href=\"http://www.kr.tuwien.ac.at/staff/eiter/et-archive/"
+"cdtr9464.pdf\">计算离散 Fréchet 距离</link>，实现计算仅限于两个几何图形的离散"
+"点的 Fréchet 距离的算法。 Fréchet 距离是曲线之间相似性的度量，考虑了曲线上点"
+"的位置和顺序。 因此它通常比 Hausdorff 距离更好。"
 
 #. Tag: para
 #: reference_measure.xml:635
@@ -928,13 +929,13 @@ msgstr "返回两个几何图形之间的Hausdorff 距离。"
 #: reference_measure.xml:705
 #, no-c-format
 msgid ""
-"Returns the <ulink url=\"http://en.wikipedia.org/wiki/"
-"Hausdorff_distance\">Hausdorff distance</ulink> between two geometries. The "
+"Returns the <link xlink:href=\"http://en.wikipedia.org/wiki/"
+"Hausdorff_distance\">Hausdorff distance</link> between two geometries. The "
 "Hausdorff distance is a measure of how similar or dissimilar 2 geometries "
 "are."
 msgstr ""
-"返回两个几何图形之间的<ulink url=\"http://en.wikipedia.org/wiki/"
-"Hausdorff_distance\">Hausdorff距离</ulink>。 Hausdorff距离是对 2 个几何形状相"
+"返回两个几何图形之间的<link xlink:href=\"http://en.wikipedia.org/wiki/"
+"Hausdorff_distance\">Hausdorff距离</link>。 Hausdorff距离是对 2 个几何形状相"
 "似或不相似程度的度量。"
 
 #. Tag: para

@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<chapter id="postgis_introduction">
+<!-- Converted by db4-upgrade version 1.1 -->
+<chapter xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="postgis_introduction">
   <title>Introduction</title>
 
   <para>PostGIS is a spatial extension for the PostgreSQL relational database
@@ -17,7 +17,7 @@
   GIS data, and web-based access tools.</para>
 
 
-  <sect1 id="psc">
+  <section xml:id="psc">
 	<title>Project Steering Committee</title>
 	<para>
 		The PostGIS Project Steering Committee (PSC) coordinates the general direction,
@@ -67,8 +67,8 @@
 		</varlistentry>
 
 	</variablelist>
-  </sect1>
-  <sect1 id="credits_core_present">
+  </section>
+  <section xml:id="credits_core_present">
 	<title>Core Contributors Present</title>
 	<variablelist>
 		<varlistentry>
@@ -109,9 +109,9 @@
 			</listitem>
 		</varlistentry>
 	</variablelist>
-  </sect1>
+  </section>
 
-  <sect1 id="credits_core_past">
+  <section xml:id="credits_core_past">
 	<title>Core Contributors Past</title>
 	<variablelist>
 		<varlistentry>
@@ -204,9 +204,9 @@
 			</listitem>
 		</varlistentry>
 	</variablelist>
-</sect1>
+</section>
 
-<sect1 id="credits_other_contributors"><title>Other Contributors</title>
+<section xml:id="credits_other_contributors"><title>Other Contributors</title>
 	<variablelist>
 	  <varlistentry>
 		<term>Individual Contributors</term>
@@ -340,49 +340,49 @@
 			<para>These are corporate entities that have contributed developer time, hosting, or direct monetary funding to the PostGIS project.
 			      In alphabetical order:
 			<itemizedlist>
-                <listitem><simpara><ulink url="https://aiven.io">Aiven</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://arrival3d.com">Arrival 3D</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="http://gfoss.it">Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it)</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://www.ausvet.com.au">AusVet</ulink></simpara></listitem>
+                <listitem><simpara><link xlink:href="https://aiven.io">Aiven</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://arrival3d.com">Arrival 3D</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="http://gfoss.it">Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it)</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.ausvet.com.au">AusVet</link></simpara></listitem>
 				<listitem><simpara>Avencia</simpara></listitem>
-				<listitem><simpara><ulink url="https://www.azavea.com">Azavea</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://www.boundlessgeo.com">Boundless</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://www.cadcorp.com">Cadcorp</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://www.camptocamp.com">Camptocamp</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://carto.com">Carto</ulink></simpara></listitem>
-                <listitem><simpara><ulink url="https://www.crunchydata.com">Crunchy Data</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://www.boston.gov">City of Boston (DND)</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://www.hel.fi">City of Helsinki</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://blog.cleverelephant.ca">Clever Elephant Solutions</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://www.alveo.coop">Cooperativa Alveo</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="http://www.elecnor-deimos.com">Deimos Space</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://www.faunalia.eu">Faunalia</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://gov.bc.ca">Geographic Data BC</ulink></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.azavea.com">Azavea</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.boundlessgeo.com">Boundless</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.cadcorp.com">Cadcorp</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.camptocamp.com">Camptocamp</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://carto.com">Carto</link></simpara></listitem>
+                <listitem><simpara><link xlink:href="https://www.crunchydata.com">Crunchy Data</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.boston.gov">City of Boston (DND)</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.hel.fi">City of Helsinki</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://blog.cleverelephant.ca">Clever Elephant Solutions</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.alveo.coop">Cooperativa Alveo</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="http://www.elecnor-deimos.com">Deimos Space</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.faunalia.eu">Faunalia</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://gov.bc.ca">Geographic Data BC</link></simpara></listitem>
 				<listitem><simpara>Hunter Systems Group</simpara></listitem>
-				<listitem><simpara><ulink url="https://www.isciences.com">ISciences, LLC</ulink></simpara></listitem>
-                <listitem><simpara><ulink url="https://www.kontur.io">Kontur</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://www.lidwala.com">Lidwala Consulting Engineers</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://www.jirotech.com">LISAsoft</ulink></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.isciences.com">ISciences, LLC</link></simpara></listitem>
+                <listitem><simpara><link xlink:href="https://www.kontur.io">Kontur</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.lidwala.com">Lidwala Consulting Engineers</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.jirotech.com">LISAsoft</link></simpara></listitem>
 				<listitem><simpara>Logical Tracking &amp; Tracing International AG</simpara></listitem>
 				<listitem><simpara>Maponics</simpara></listitem>
-				<listitem><simpara><ulink url="http://www.mtri.org">Michigan Tech Research Institute</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://www.nrcan.gc.ca">Natural Resources Canada</ulink></simpara></listitem>
+				<listitem><simpara><link xlink:href="http://www.mtri.org">Michigan Tech Research Institute</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.nrcan.gc.ca">Natural Resources Canada</link></simpara></listitem>
 				<listitem><simpara>Norwegian Forest and Landscape Institue</simpara></listitem>
-				<listitem><simpara><ulink url="https://www.nibio.no/">Norwegian Institute of Bioeconomy Research (NIBIO)</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://www.osgeo.org">OSGeo</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://oslandia.com">Oslandia</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://www.palantir.com">Palantir Technologies</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://www.paragoncorporation.com">Paragon Corporation</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://www.r3-gis.com">R3 GIS</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="http://www.refractions.net">Refractions Research</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://www.regione.toscana.it">Regione Toscana - SITA</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://www.safe.com">Safe Software</ulink></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.nibio.no/">Norwegian Institute of Bioeconomy Research (NIBIO)</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.osgeo.org">OSGeo</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://oslandia.com">Oslandia</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.palantir.com">Palantir Technologies</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.paragoncorporation.com">Paragon Corporation</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.r3-gis.com">R3 GIS</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="http://www.refractions.net">Refractions Research</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.regione.toscana.it">Regione Toscana - SITA</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.safe.com">Safe Software</link></simpara></listitem>
 				<listitem><simpara>Sirius Corporation plc</simpara></listitem>
-				<listitem><simpara><ulink url="http://www.uster.ch">Stadt Uster</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://www.ucdavis.edu">UC Davis Center for Vectorborne Diseases</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://www.ulaval.ca">Université Laval</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://hiu.state.gov">U.S. Department of State (HIU)</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="https://www.zonarsystems.com">Zonar Systems</ulink></simpara></listitem>
+				<listitem><simpara><link xlink:href="http://www.uster.ch">Stadt Uster</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.ucdavis.edu">UC Davis Center for Vectorborne Diseases</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.ulaval.ca">Université Laval</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://hiu.state.gov">U.S. Department of State (HIU)</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.zonarsystems.com">Zonar Systems</link></simpara></listitem>
 			</itemizedlist>
 		</para>
 		</listitem>
@@ -392,10 +392,10 @@
 		<term>Crowd Funding Campaigns</term>
 
 		<listitem>
-            <para>Crowd funding campaigns are campaigns we run to get badly wanted features funded that can service a large number of people.  Each campaign is specifically focused on a particular feature or set of features.  Each sponsor chips in a small fraction of the needed funding and with enough people/organizations contributing, we have the funds to pay for the work that will help many.  If you have an idea for a feature you think many others would be willing to co-fund, please post to the <ulink url="https://lists.osgeo.org/mailman/listinfo/postgis-users">PostGIS newsgroup</ulink> your thoughts and together we can make it happen. </para>
-		  <para>PostGIS 2.0.0 was the first release we tried this strategy. We used <ulink url="http://www.pledgebank.com">PledgeBank</ulink> and we got two successful campaigns out of it.</para>
-		  <para><ulink url="http://www.pledgebank.com/postgistopology"><emphasis role="bold">postgistopology</emphasis></ulink> - 10 plus sponsors each contributed $250 USD to build toTopoGeometry function and beef up topology support in 2.0.0. It happened.</para>
-		 <para><ulink url="http://www.pledgebank.com/postgis64windows"><emphasis role="bold">postgis64windows</emphasis></ulink> - 20 someodd sponsors each contributed $100 USD to pay for the work needed to work out PostGIS 64-bit issues on windows. It happened.</para>
+            <para>Crowd funding campaigns are campaigns we run to get badly wanted features funded that can service a large number of people.  Each campaign is specifically focused on a particular feature or set of features.  Each sponsor chips in a small fraction of the needed funding and with enough people/organizations contributing, we have the funds to pay for the work that will help many.  If you have an idea for a feature you think many others would be willing to co-fund, please post to the <link xlink:href="https://lists.osgeo.org/mailman/listinfo/postgis-users">PostGIS newsgroup</link> your thoughts and together we can make it happen. </para>
+		  <para>PostGIS 2.0.0 was the first release we tried this strategy. We used <link xlink:href="http://www.pledgebank.com">PledgeBank</link> and we got two successful campaigns out of it.</para>
+		  <para><link xlink:href="http://www.pledgebank.com/postgistopology"><emphasis role="bold">postgistopology</emphasis></link> - 10 plus sponsors each contributed $250 USD to build toTopoGeometry function and beef up topology support in 2.0.0. It happened.</para>
+		 <para><link xlink:href="http://www.pledgebank.com/postgis64windows"><emphasis role="bold">postgis64windows</emphasis></link> - 20 someodd sponsors each contributed $100 USD to pay for the work needed to work out PostGIS 64-bit issues on windows. It happened.</para>
 		</listitem>
 	  </varlistentry>
 
@@ -403,23 +403,23 @@
 		<term>Important Support Libraries</term>
 
 		<listitem>
-		  <para>The <ulink url="https://libgeos.org">GEOS</ulink>
+		  <para>The <link xlink:href="https://libgeos.org">GEOS</link>
 		  geometry operations library</para>
 
-		  <para>The <ulink url="https://gdal.org">GDAL</ulink>
+		  <para>The <link xlink:href="https://gdal.org">GDAL</link>
 		  Geospatial Data Abstraction Library used to
 		  power much of the raster functionality introduced in PostGIS 2. In kind, improvements needed in GDAL
 		  to support PostGIS are contributed back to the GDAL project.</para>
 
-		  <para>The <ulink url="https://www.proj4.org">PROJ</ulink>
+		  <para>The <link xlink:href="https://www.proj4.org">PROJ</link>
 		  cartographic projection library</para>
 
-		  <para>Last but not least, <ulink url="http://www.postgresql.org">PostgreSQL</ulink>,
+		  <para>Last but not least, <link xlink:href="http://www.postgresql.org">PostgreSQL</link>,
 		  the giant that PostGIS stands on.  Much of the speed and flexibility of PostGIS would not be possible without
 		  the extensibility, great query planner, GIST index, and plethora of SQL features provided by PostgreSQL.</para>
 		</listitem>
 	  </varlistentry>
 	</variablelist>
-  </sect1>
+  </section>
 
 </chapter>

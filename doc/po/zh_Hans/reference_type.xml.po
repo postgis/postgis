@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-09-05 06:08+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -15,6 +15,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.16.4\n"
+
+#. Tag: title
+#: reference_type.xml:3
+#, no-c-format
+msgid "PostGIS Geometry/Geography/Box Data Types"
+msgstr "PostGIS Geometry/Geography/Box 数据类型"
 
 #. Tag: para
 #: reference_type.xml:5
@@ -29,18 +35,19 @@ msgstr ""
 #: reference_type.xml:8
 #, no-c-format
 msgid ""
-"Each data type describes its type casting behavior. A <ulink url=\"https://"
-"www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-"
-"CASTS\">type cast</ulink> converts values of one data type into another "
-"type. PostgreSQL allows defining casting behavior for custom types, along "
-"with the functions used to convert type values. Casts can have <emphasis "
-"role=\"bold\">automatic</emphasis> behavior, which allows automatic "
-"conversion of a function argument to a type supported by the function."
+"Each data type describes its type casting behavior. A <link xlink:"
+"href=\"https://www.postgresql.org/docs/current/sql-expressions.html#SQL-"
+"SYNTAX-TYPE-CASTS\">type cast</link> converts values of one data type into "
+"another type. PostgreSQL allows defining casting behavior for custom types, "
+"along with the functions used to convert type values. Casts can have "
+"<emphasis role=\"bold\">automatic</emphasis> behavior, which allows "
+"automatic conversion of a function argument to a type supported by the "
+"function."
 msgstr ""
-"每种数据类型都描述其类型转换行为。<ulink url=\"https://www.postgresql.org/"
-"docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-CASTS\">类型转换</ulink>将"
-"一种数据类型的值转换为另一种类型。 PostgreSQL 允许定义自定义类型的转换行为，"
-"以及用于转换类型值的函数。强制转换可以具有<emphasis role=\"bold\">自动</"
+"每种数据类型都描述其类型转换行为。<link xlink:href=\"https://www.postgresql."
+"org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-CASTS\">类型转换</link>"
+"将一种数据类型的值转换为另一种类型。 PostgreSQL 允许定义自定义类型的转换行"
+"为，以及用于转换类型值的函数。强制转换可以具有<emphasis role=\"bold\">自动</"
 "emphasis> 行为，允许将函数参数自动转换为函数支持的类型。"
 
 #. Tag: para
@@ -72,12 +79,6 @@ msgid ""
 "to be specified explicitly."
 msgstr ""
 "所有数据类型都可以转换为<varname>text</varname>，因此，无需显示指定它。"
-
-#. Tag: title
-#: reference_type.xml:27
-#, no-c-format
-msgid "PostGIS Geometry/Geography/Box Data Types"
-msgstr "PostGIS Geometry/Geography/Box 数据类型"
 
 #. Tag: refpurpose
 #: reference_type.xml:32
@@ -291,12 +292,13 @@ msgstr "用于描述复杂几何形状部分的复合类型。"
 #: reference_type.xml:195
 #, no-c-format
 msgid ""
-"<varname>geometry_dump</varname> is a <ulink url=\"https://www.postgresql."
-"org/docs/current/rowtypes.html\">composite data type</ulink> containing the "
-"fields:"
+"<varname>geometry_dump</varname> is a <link xlink:href=\"https://www."
+"postgresql.org/docs/current/rowtypes.html\">composite data type</link> "
+"containing the fields:"
 msgstr ""
-"<varname>geometry_dump</varname>是一种<ulink url=\"https://www.postgresql."
-"org/docs/current/rowtypes.html\">复合数据类型</ulink>，包含以下字段："
+"<varname>geometry_dump</varname>是一种<link xlink:href=\"https://www."
+"postgresql.org/docs/current/rowtypes.html\">复合数据类型</link>，包含以下字"
+"段："
 
 #. Tag: para
 #: reference_type.xml:200

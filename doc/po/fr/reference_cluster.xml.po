@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-05-10 15:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -17,6 +17,12 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.16.4\n"
 
+#. Tag: title
+#: reference_cluster.xml:3
+#, no-c-format
+msgid "Clustering Functions"
+msgstr "Fonctions de clustering"
+
 #. Tag: para
 #: reference_cluster.xml:5
 #, no-c-format
@@ -24,12 +30,6 @@ msgid "These functions implement clustering algorithms for sets of geometries."
 msgstr ""
 "Ces fonctions mettent en œuvre des algorithmes de regroupement pour des "
 "ensembles de géométries."
-
-#. Tag: title
-#: reference_cluster.xml:8
-#, no-c-format
-msgid "Clustering Functions"
-msgstr "Fonctions de clustering"
 
 #. Tag: refpurpose
 #: reference_cluster.xml:14
@@ -54,12 +54,13 @@ msgstr "Description"
 #, no-c-format
 msgid ""
 "A window function that returns a cluster number for each input geometry, "
-"using the 2D <ulink url=\"https://en.wikipedia.org/wiki/DBSCAN\">Density-"
-"based spatial clustering of applications with noise (DBSCAN)</ulink> "
-"algorithm. Unlike <xref linkend=\"ST_ClusterKMeans\"/>, it does not require "
-"the number of clusters to be specified, but instead uses the desired <link "
-"linkend=\"ST_Distance\">distance</link> (<varname>eps</varname>) and density "
-"(<varname>minpoints</varname>) parameters to determine each cluster."
+"using the 2D <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"DBSCAN\">Density-based spatial clustering of applications with noise "
+"(DBSCAN)</link> algorithm. Unlike <xref linkend=\"ST_ClusterKMeans\"/>, it "
+"does not require the number of clusters to be specified, but instead uses "
+"the desired <link linkend=\"ST_Distance\">distance</link> (<varname>eps</"
+"varname>) and density (<varname>minpoints</varname>) parameters to determine "
+"each cluster."
 msgstr ""
 
 #. Tag: para
@@ -244,14 +245,15 @@ msgstr ""
 #: reference_cluster.xml:236
 #, no-c-format
 msgid ""
-"Returns <ulink url=\"https://en.wikipedia.org/wiki/K-means_clustering\">K-"
-"means</ulink> cluster number for each input geometry. The distance used for "
-"clustering is the distance between the centroids for 2D geometries, and "
-"distance between bounding box centers for 3D geometries. For POINT inputs, M "
-"coordinate will be treated as weight of input and has to be larger than 0."
+"Returns <link xlink:href=\"https://en.wikipedia.org/wiki/K-"
+"means_clustering\">K-means</link> cluster number for each input geometry. "
+"The distance used for clustering is the distance between the centroids for "
+"2D geometries, and distance between bounding box centers for 3D geometries. "
+"For POINT inputs, M coordinate will be treated as weight of input and has to "
+"be larger than 0."
 msgstr ""
-"Renvoie le numéro de cluster <ulink url=\"https://en.wikipedia.org/wiki/K-"
-"means_clustering\">K-means</ulink> pour chaque géométrie en entrée. La "
+"Renvoie le numéro de cluster <link xlink:href=\"https://en.wikipedia.org/"
+"wiki/K-means_clustering\">K-means</link> pour chaque géométrie en entrée. La "
 "distance utilisée pour le clustering est la distance entre les centroïdes "
 "pour les géométries 2D, et la distance entre les centres des boîtes de "
 "délimitation pour les géométries 3D. Pour les entrées POINT, la coordonnée M "
@@ -307,15 +309,15 @@ msgstr "Partitionnement des clusters de parcelles par type :"
 msgid ""
 "Example: Clustering a preaggregated planetary-scale data population dataset "
 "using 3D clusering and weighting. Identify at least 20 regions based on "
-"<ulink url=\"https://data.humdata.org/dataset/kontur-population-"
-"dataset\">Kontur Population Data</ulink> that do not span more than 3000 km "
+"<link xlink:href=\"https://data.humdata.org/dataset/kontur-population-"
+"dataset\">Kontur Population Data</link> that do not span more than 3000 km "
 "from their center:"
 msgstr ""
 "Exemple : Regroupement d'un ensemble de données de population préagrégées à "
 "l'échelle planétaire en utilisant le clusering 3D et la pondération. "
-"Identifiez au moins 20 régions basées sur <ulink url=\"https://data.humdata."
-"org/dataset/kontur-population-dataset\">Kontur Population Data</ulink> qui "
-"ne s'étendent pas à plus de 3000 km de leur centre :"
+"Identifiez au moins 20 régions basées sur <link xlink:href=\"https://data."
+"humdata.org/dataset/kontur-population-dataset\">Kontur Population Data</"
+"link> qui ne s'étendent pas à plus de 3000 km de leur centre :"
 
 #. Tag: para
 #: reference_cluster.xml:281

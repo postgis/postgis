@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-05-25 11:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -17,18 +17,18 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.16.4\n"
 
+#. Tag: title
+#: reference_relationship.xml:3
+#, no-c-format
+msgid "Spatial Relationships"
+msgstr "Relations spatiales"
+
 #. Tag: para
 #: reference_relationship.xml:5
 #, no-c-format
 msgid "These functions determine spatial relationships between geometries."
 msgstr ""
 "Ces fonctions déterminent les relations spatiales entre les géométries."
-
-#. Tag: title
-#: reference_relationship.xml:8
-#, no-c-format
-msgid "Spatial Relationships"
-msgstr "Relations spatiales"
 
 #. Tag: title
 #: reference_relationship.xml:11
@@ -217,18 +217,19 @@ msgstr ""
 msgid ""
 "Because the interiors must have a common point, a subtlety of the definition "
 "is that polygons and lines do <emphasis>not</emphasis> contain lines and "
-"points lying fully in their boundary. For further details see <ulink "
-"url=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-"
-"spatial.html\">Subtleties of OGC Covers, Contains, Within</ulink>. The <xref "
-"linkend=\"ST_Covers\"/> predicate provides a more inclusive relationship."
+"points lying fully in their boundary. For further details see <link xlink:"
+"href=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-"
+"covers-spatial.html\">Subtleties of OGC Covers, Contains, Within</link>. The "
+"<xref linkend=\"ST_Covers\"/> predicate provides a more inclusive "
+"relationship."
 msgstr ""
 "Comme les intérieurs doivent avoir un point commun, une subtilité de la "
 "définition est que les polygones et les lignes ne contiennent <emphasis>pas</"
 "emphasis> de lignes et de points se trouvant entièrement dans leur limite. "
-"Pour plus de détails, voir <ulink url=\"http://lin-ear-th-inking.blogspot."
-"com/2007/06/subtleties-of-ogc-covers-spatial.html\">Subtleties of OGC "
-"Covers, Contains, Within</ulink>. Le prédicat <xref linkend=\"ST_Covers\"/> "
-"fournit une relation plus inclusive."
+"Pour plus de détails, voir <link xlink:href=\"http://lin-ear-th-inking."
+"blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html\">Subtleties of "
+"OGC Covers, Contains, Within</link>. Le prédicat <xref linkend=\"ST_Covers\"/"
+"> fournit une relation plus inclusive."
 
 #. Tag: para
 #: reference_relationship.xml:116
@@ -1418,14 +1419,14 @@ msgstr ""
 #, no-c-format
 msgid ""
 "These functions allow testing and evaluating the spatial (topological) "
-"relationship between two geometries, as defined by the <ulink url=\"http://"
-"en.wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-Intersection Model</"
-"ulink> (DE-9IM)."
+"relationship between two geometries, as defined by the <link xlink:"
+"href=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-"
+"Intersection Model</link> (DE-9IM)."
 msgstr ""
 "Ces fonctions permettent de tester et d'évaluer la relation spatiale "
-"(topologique) entre deux géométries, telle que définie par le <ulink "
-"url=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-"
-"Intersection Model</ulink> (DE-9IM)."
+"(topologique) entre deux géométries, telle que définie par le <link xlink:"
+"href=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-"
+"Intersection Model</link> (DE-9IM)."
 
 #. Tag: para
 #: reference_relationship.xml:1196
@@ -1728,13 +1729,14 @@ msgstr ""
 #: reference_relationship.xml:1344
 #, no-c-format
 msgid ""
-"Tests if a <ulink url=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally "
-"Extended 9-Intersection Model</ulink> (DE-9IM) <varname>intersectionMatrix</"
-"varname> value satisfies an <varname>intersectionMatrixPattern</varname>. "
-"Intersection matrix values can be computed by <xref linkend=\"ST_Relate\"/>."
+"Tests if a <link xlink:href=\"http://en.wikipedia.org/wiki/"
+"DE-9IM\">Dimensionally Extended 9-Intersection Model</link> (DE-9IM) "
+"<varname>intersectionMatrix</varname> value satisfies an "
+"<varname>intersectionMatrixPattern</varname>. Intersection matrix values can "
+"be computed by <xref linkend=\"ST_Relate\"/>."
 msgstr ""
-"Teste si une <ulink url=\"http://en.wikipedia.org/wiki/"
-"DE-9IM\">Dimensionally Extended 9-Intersection Model</ulink> (DE-9IM) "
+"Teste si une <link xlink:href=\"http://en.wikipedia.org/wiki/"
+"DE-9IM\">Dimensionally Extended 9-Intersection Model</link> (DE-9IM) "
 "<varname>intersectionMatrix</varname> satisfait un "
 "<varname>intersectionMatrixPattern</varname>. Les valeurs de la matrice "
 "d'intersection peuvent être calculées par <xref linkend=\"ST_Relate\"/>."
@@ -1914,18 +1916,19 @@ msgid ""
 "Because the interiors must have a common point, a subtlety of the definition "
 "is that lines and points lying fully in the boundary of polygons or lines "
 "are <emphasis>not</emphasis> within the geometry. For further details see "
-"<ulink url=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-"
-"covers-spatial.html\">Subtleties of OGC Covers, Contains, Within</ulink>. "
-"The <xref linkend=\"ST_CoveredBy\"/> predicate provides a more inclusive "
-"relationship."
+"<link xlink:href=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-"
+"of-ogc-covers-spatial.html\">Subtleties of OGC Covers, Contains, Within</"
+"link>. The <xref linkend=\"ST_CoveredBy\"/> predicate provides a more "
+"inclusive relationship."
 msgstr ""
 "Comme les intérieurs doivent avoir un point commun, une subtilité de la "
 "définition est que les lignes et les points situés entièrement dans la "
 "limite des polygones ou des lignes ne sont <emphasis>pas</emphasis> à "
-"l'intérieur de la géométrie. Pour plus de détails, voir <ulink url=\"http://"
-"lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial."
-"html\">Subtleties of OGC Covers, Contains, Within</ulink>. Le prédicat <xref "
-"linkend=\"ST_CoveredBy\"/> fournit une relation plus inclusive."
+"l'intérieur de la géométrie. Pour plus de détails, voir <link xlink:"
+"href=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-"
+"covers-spatial.html\">Subtleties of OGC Covers, Contains, Within</link>. Le "
+"prédicat <xref linkend=\"ST_CoveredBy\"/> fournit une relation plus "
+"inclusive."
 
 #. Tag: para
 #: reference_relationship.xml:1564
@@ -2151,13 +2154,13 @@ msgstr ""
 #: reference_relationship.xml:1841
 #, no-c-format
 msgid ""
-"Enhanced: 2.1.0 improved speed for geography. See <ulink url=\"http://blog."
-"opengeo.org/2012/07/12/making-geography-faster/\">Making Geography faster</"
-"ulink> for details."
+"Enhanced: 2.1.0 improved speed for geography. See <link xlink:href=\"http://"
+"blog.opengeo.org/2012/07/12/making-geography-faster/\">Making Geography "
+"faster</link> for details."
 msgstr ""
 "Amélioration : la version 2.1.0 a amélioré la vitesse de la géographie. Voir "
-"<ulink url=\"http://blog.opengeo.org/2012/07/12/making-geography-faster/"
-"\">Making Geography faster</ulink> pour plus de détails."
+"<link xlink:href=\"http://blog.opengeo.org/2012/07/12/making-geography-"
+"faster/\">Making Geography faster</link> pour plus de détails."
 
 #. Tag: para
 #: reference_relationship.xml:1842

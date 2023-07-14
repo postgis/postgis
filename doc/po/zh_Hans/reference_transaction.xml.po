@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-11 19:20+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-09-01 09:54+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -17,36 +17,37 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.16.4\n"
 
+#. Tag: title
+#: reference_transaction.xml:3
+#, no-c-format
+msgid "Long Transaction Support"
+msgstr "长事务支持"
+
 #. Tag: para
 #: reference_transaction.xml:6
 #, no-c-format
 msgid ""
 "These functions implement a row locking mechanism to support long "
-"transactions. They are provided primarily for implementors of the <ulink "
-"url=\"http://www.opengeospatial.org/standards/wfs\">Web Feature Service</"
-"ulink> specification."
+"transactions. They are provided primarily for implementors of the <link "
+"xlink:href=\"http://www.opengeospatial.org/standards/wfs\">Web Feature "
+"Service</link> specification."
 msgstr ""
-"这些函数实现行锁定机制来支持长事务。 它们主要是为 <ulink url=\"http://www."
-"opengeospatial.org/standards/wfs\">Web 要素服务</ulink>规范的实现者提供的。"
-
-#. Tag: title
-#: reference_transaction.xml:13
-#, no-c-format
-msgid "Long Transaction Support"
-msgstr "长事务支持"
+"这些函数实现行锁定机制来支持长事务。 它们主要是为 <link xlink:href=\"http://"
+"www.opengeospatial.org/standards/wfs\">Web 要素服务</link>规范的实现者提供"
+"的。"
 
 #. Tag: para
 #: reference_transaction.xml:16
 #, no-c-format
 msgid ""
 "For the locking mechanism to operate correctly the <emphasis "
-"role=\"bold\">serializable</emphasis> <ulink url=\"http://www.postgresql.org/"
-"docs/current/static/transaction-iso.html\"> transaction isolation level</"
-"ulink> must be used."
+"role=\"bold\">serializable</emphasis> <link xlink:href=\"http://www."
+"postgresql.org/docs/current/static/transaction-iso.html\"> transaction "
+"isolation level</link> must be used."
 msgstr ""
 "为了使锁定机制正确运行，必须使用<emphasis role=\"bold\">可序列化</"
-"emphasis><ulink url=\"http://www.postgresql.org/docs/current/static/"
-"transaction-iso.html\">事务隔离级别</ulink>。"
+"emphasis><link xlink:href=\"http://www.postgresql.org/docs/current/static/"
+"transaction-iso.html\">事务隔离级别</link>。"
 
 #. Tag: refpurpose
 #: reference_transaction.xml:26

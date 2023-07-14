@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-  <sect1 id="Geometry_Constructors">
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Geometry_Constructors">
 	  <title>Geometry Constructors</title>
 
-	<refentry id="ST_Collect">
+	<refentry xml:id="ST_Collect">
 	  <refnamediv>
 		<refname>ST_Collect</refname>
 		<refpurpose>Creates a GeometryCollection or Multi* geometry from a set of geometries.</refpurpose>
@@ -43,11 +43,11 @@
 		If any of the input geometries are collections (Multi* or GeometryCollection)
 		ST_Collect returns a GeometryCollection (since that is the only type
 		which can contain nested collections).
-		To prevent this, use <xref linkend="ST_Dump" /> in a subquery to expand the
+		To prevent this, use <xref linkend="ST_Dump"/> in a subquery to expand the
 		input collections to their atomic elements (see example below).
 		</para></note>
 
-		<note><para>ST_Collect and <xref linkend="ST_Union" /> appear similar, but in fact operate quite differently.
+		<note><para>ST_Collect and <xref linkend="ST_Union"/> appear similar, but in fact operate quite differently.
 		ST_Collect aggregates geometries into a collection without changing them in any way.
 		ST_Union geometrically merges geometries where they overlap,
 		and splits linestrings at intersections.
@@ -122,11 +122,11 @@ SELECT stusps, ST_Collect(f.geom) as geom
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_Dump" />, <xref linkend="ST_Union" /></para>
+		<para><xref linkend="ST_Dump"/>, <xref linkend="ST_Union"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_LineFromMultiPoint">
+	<refentry xml:id="ST_LineFromMultiPoint">
 	  <refnamediv>
 		<refname>ST_LineFromMultiPoint</refname>
 
@@ -147,7 +147,7 @@ SELECT stusps, ST_Collect(f.geom) as geom
 
 		<para>Creates a LineString from a MultiPoint geometry.</para>
 
-		<para>Use <xref linkend="ST_MakeLine" /> to create lines from Point or LineString inputs.</para>
+		<para>Use <xref linkend="ST_MakeLine"/> to create lines from Point or LineString inputs.</para>
 
 		<para>&Z_support;</para>
 
@@ -168,11 +168,11 @@ LINESTRING(1 2 3,4 5 6,7 8 9)
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_MakeLine" /></para>
+		<para><xref linkend="ST_AsEWKT"/>, <xref linkend="ST_MakeLine"/></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_MakeEnvelope">
+	<refentry xml:id="ST_MakeEnvelope">
 		<refnamediv>
 		<refname>ST_MakeEnvelope</refname>
 
@@ -216,11 +216,11 @@ POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_MakePoint" />, <xref linkend="ST_MakeLine" />, <xref linkend="ST_MakePolygon" />, <xref linkend="ST_TileEnvelope" /></para>
+			<para><xref linkend="ST_MakePoint"/>, <xref linkend="ST_MakeLine"/>, <xref linkend="ST_MakePolygon"/>, <xref linkend="ST_TileEnvelope"/></para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_MakeLine">
+	<refentry xml:id="ST_MakeLine">
 		<refnamediv>
 		<refname>ST_MakeLine</refname>
 
@@ -262,7 +262,7 @@ POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))
 		<para>
 		Repeated nodes at the beginning of input LineStrings are collapsed to a single point.
 		Repeated points in Point and MultiPoint inputs are not collapsed.
-		<xref linkend="ST_RemoveRepeatedPoints" /> can be used to collapse repeated points from the output LineString.
+		<xref linkend="ST_RemoveRepeatedPoints"/> can be used to collapse repeated points from the output LineString.
 		</para>
 
 		<para>&Z_support;</para>
@@ -346,18 +346,18 @@ SELECT gps.track_id, ST_MakeLine(gps.geom) As geom
 
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_RemoveRepeatedPoints" />,
-            <xref linkend="ST_AsEWKT" />,
-            <xref linkend="ST_AsText" />,
-            <xref linkend="ST_GeomFromText" />,
-            <xref linkend="ST_MakePoint" />,
-            <xref linkend="ST_Point" />
+			<para><xref linkend="ST_RemoveRepeatedPoints"/>,
+            <xref linkend="ST_AsEWKT"/>,
+            <xref linkend="ST_AsText"/>,
+            <xref linkend="ST_GeomFromText"/>,
+            <xref linkend="ST_MakePoint"/>,
+            <xref linkend="ST_Point"/>
             </para>
 		</refsection>
 	</refentry>
 
 
-	<refentry id="ST_MakePoint">
+	<refentry xml:id="ST_MakePoint">
 		<refnamediv>
 		<refname>ST_MakePoint</refname>
 
@@ -396,12 +396,12 @@ SELECT gps.track_id, ST_MakeLine(gps.geom) As geom
 
 			<para>Creates a 2D, 3D Z or 4D ZM Point geometry.</para>
 
-			<para>Use <xref linkend="ST_MakePointM" /> to make points with XYM coordinates.</para>
+			<para>Use <xref linkend="ST_MakePointM"/> to make points with XYM coordinates.</para>
 
 			<para>
 			While not OGC-compliant, <varname>ST_MakePoint</varname> is
-			faster and more precise than <xref linkend="ST_GeomFromText" />
-			and <xref linkend="ST_PointFromText" />.
+			faster and more precise than <xref linkend="ST_GeomFromText"/>
+			and <xref linkend="ST_PointFromText"/>.
 			It is also easier to use for numeric coordinate values.</para>
 
 			<note><para>For geodetic coordinates, <varname>X</varname> is longitude and <varname>Y</varname> is latitude</para></note>
@@ -428,11 +428,11 @@ result
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_PointFromText" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_MakePointM" /></para>
+			<para><xref linkend="ST_GeomFromText"/>, <xref linkend="ST_PointFromText"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_MakePointM"/></para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_MakePointM">
+	<refentry xml:id="ST_MakePointM">
 		<refnamediv>
 		<refname>ST_MakePointM</refname>
 
@@ -455,7 +455,7 @@ result
 
 			<para>Creates a point with X, Y and M (measure) coordinates. </para>
 
-			<para>Use <xref linkend="ST_MakePoint" /> to make points with XY, XYZ, or XYZM coordinates.</para>
+			<para>Use <xref linkend="ST_MakePoint"/> to make points with XY, XYZ, or XYZM coordinates.</para>
 
 			<note><para>For geodetic coordinates, <varname>X</varname> is longitude and <varname>Y</varname> is latitude</para></note>
 
@@ -463,8 +463,8 @@ result
 
 		<refsection>
 		<title>Examples</title>
-			<note><para><xref linkend="ST_AsEWKT" /> is used for text output
-			because <xref linkend="ST_AsText" /> does not support M values.</para></note>
+			<note><para><xref linkend="ST_AsEWKT"/> is used for text output
+			because <xref linkend="ST_AsText"/> does not support M values.</para></note>
 
 			<para>Create point with unknown SRID.</para>
 		 <programlisting>
@@ -495,11 +495,11 @@ result
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_MakePoint" />, <xref linkend="ST_SetSRID" /></para>
+			<para><xref linkend="ST_AsEWKT"/>, <xref linkend="ST_MakePoint"/>, <xref linkend="ST_SetSRID"/></para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_MakePolygon">
+	<refentry xml:id="ST_MakePolygon">
 		<refnamediv>
 		<refname>ST_MakePolygon</refname>
 
@@ -534,7 +534,7 @@ result
 			ARRAY() constructs.</para>
 
 			<note><para>This function does not accept MultiLineStrings.
-			Use <xref linkend="ST_LineMerge" /> to generate a LineString, or <xref linkend="ST_Dump" /> to extract LineStrings.</para>
+			Use <xref linkend="ST_LineMerge"/> to generate a LineString, or <xref linkend="ST_Dump"/> to extract LineStrings.</para>
 			</note>
 
 			<para>&Z_support;</para>
@@ -548,7 +548,7 @@ SELECT ST_MakePolygon( ST_GeomFromText('LINESTRING(75 29,77 29,77 29, 75 29)'));
 </programlisting>
 
 <para>Create a Polygon from an open LineString,
-using <xref linkend="ST_StartPoint" /> and <xref linkend="ST_AddPoint" /> to close it.</para>
+using <xref linkend="ST_StartPoint"/> and <xref linkend="ST_AddPoint"/> to close it.</para>
 <programlisting>
 SELECT ST_MakePolygon( ST_AddPoint(foo.open_line, ST_StartPoint(foo.open_line)) )
 FROM (
@@ -587,11 +587,11 @@ FROM (SELECT ST_ExteriorRing(
     <para>Create a set of province boundaries with holes
     representing lakes.  The input is a table of
     province Polygons/MultiPolygons and a table of water linestrings.
-    Lines forming lakes are determined by using <xref linkend="ST_IsClosed" />.
+    Lines forming lakes are determined by using <xref linkend="ST_IsClosed"/>.
     The province linework is extracted by using
-    <xref linkend="ST_Boundary" />.
+    <xref linkend="ST_Boundary"/>.
     As required by <code>ST_MakePolygon</code>,
-    the boundary is forced to be a single LineString by using <xref linkend="ST_LineMerge" />.
+    the boundary is forced to be a single LineString by using <xref linkend="ST_LineMerge"/>.
     (However, note that if a province has more than one region or has islands
     this will produce an invalid polygon.)
     Using a LEFT JOIN ensures all provinces are included even if they have no lakes.
@@ -634,13 +634,13 @@ FROM provinces p;
 		<refsection>
 			<title>See Also</title>
 			<para>
-				<xref linkend="ST_BuildArea" />
-				<xref linkend="ST_Polygon" />
+				<xref linkend="ST_BuildArea"/>
+				<xref linkend="ST_Polygon"/>
 			</para>
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_Point">
+	<refentry xml:id="ST_Point">
 	  <refnamediv>
 		<refname>ST_Point</refname>
 
@@ -668,7 +668,7 @@ FROM provinces p;
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns a Point with the given X and Y coordinate values. This is the SQL-MM equivalent for <xref linkend="ST_MakePoint" /> that takes just X and Y.</para>
+		<para>Returns a Point with the given X and Y coordinate values. This is the SQL-MM equivalent for <xref linkend="ST_MakePoint"/> that takes just X and Y.</para>
 
 		<note><para>For geodetic coordinates, <varname>X</varname> is longitude and <varname>Y</varname> is latitude</para></note>
 
@@ -710,12 +710,12 @@ SELECT ST_Transform(ST_SetSRID( ST_Point( 3637510, 3014852 ), 2273), 4326)::geog
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="PostGIS_Geography" />, <xref linkend="ST_MakePoint" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" />, <xref linkend="ST_PointZ" />, <xref linkend="ST_PointM" />, <xref linkend="ST_PointZM" /></para>
+		<para><xref linkend="PostGIS_Geography"/>, <xref linkend="ST_MakePoint"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_Transform"/>, <xref linkend="ST_PointZ"/>, <xref linkend="ST_PointM"/>, <xref linkend="ST_PointZM"/></para>
 	  </refsection>
 	</refentry>
 
 
-    <refentry id="ST_PointZ">
+    <refentry xml:id="ST_PointZ">
       <refnamediv>
         <refname>ST_PointZ</refname>
         <refpurpose>Creates a Point with X, Y, Z and SRID values.</refpurpose>
@@ -742,17 +742,17 @@ SELECT ST_Transform(ST_SetSRID( ST_Point( 3637510, 3014852 ), 2273), 4326)::geog
       <refsection>
         <title>Examples</title>
         <programlisting>SELECT ST_PointZ(-71.104, 42.315, 3.4, 4326)</programlisting>
-        <programlisting>SELECT ST_PointZ(-71.104, 42.315, 3.4, srid => 4326)</programlisting>
+        <programlisting>SELECT ST_PointZ(-71.104, 42.315, 3.4, srid =&gt; 4326)</programlisting>
         <programlisting>SELECT ST_PointZ(-71.104, 42.315, 3.4)</programlisting>
       </refsection>
 
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_MakePoint" />, <xref linkend="ST_Point" />, <xref linkend="ST_PointM" />, <xref linkend="ST_PointZM" /></para>
+        <para><xref linkend="ST_MakePoint"/>, <xref linkend="ST_Point"/>, <xref linkend="ST_PointM"/>, <xref linkend="ST_PointZM"/></para>
       </refsection>
     </refentry>
 
-    <refentry id="ST_PointM">
+    <refentry xml:id="ST_PointM">
       <refnamediv>
         <refname>ST_PointM</refname>
         <refpurpose>Creates a Point with X, Y, M and SRID values.</refpurpose>
@@ -779,18 +779,18 @@ SELECT ST_Transform(ST_SetSRID( ST_Point( 3637510, 3014852 ), 2273), 4326)::geog
       <refsection>
         <title>Examples</title>
         <programlisting>SELECT ST_PointM(-71.104, 42.315, 3.4, 4326)</programlisting>
-        <programlisting>SELECT ST_PointM(-71.104, 42.315, 3.4, srid => 4326)</programlisting>
+        <programlisting>SELECT ST_PointM(-71.104, 42.315, 3.4, srid =&gt; 4326)</programlisting>
         <programlisting>SELECT ST_PointM(-71.104, 42.315, 3.4)</programlisting>
       </refsection>
 
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_MakePoint" />, <xref linkend="ST_Point" />, <xref linkend="ST_PointZ" />, <xref linkend="ST_PointZM" /></para>
+        <para><xref linkend="ST_MakePoint"/>, <xref linkend="ST_Point"/>, <xref linkend="ST_PointZ"/>, <xref linkend="ST_PointZM"/></para>
       </refsection>
     </refentry>
 
 
-    <refentry id="ST_PointZM">
+    <refentry xml:id="ST_PointZM">
       <refnamediv>
         <refname>ST_PointZM</refname>
         <refpurpose>Creates a Point with X, Y, Z, M and SRID values.</refpurpose>
@@ -818,17 +818,17 @@ SELECT ST_Transform(ST_SetSRID( ST_Point( 3637510, 3014852 ), 2273), 4326)::geog
       <refsection>
         <title>Examples</title>
         <programlisting>SELECT ST_PointZM(-71.104, 42.315, 3.4, 4.5, 4326)</programlisting>
-        <programlisting>SELECT ST_PointZM(-71.104, 42.315, 3.4, 4.5, srid => 4326)</programlisting>
+        <programlisting>SELECT ST_PointZM(-71.104, 42.315, 3.4, 4.5, srid =&gt; 4326)</programlisting>
         <programlisting>SELECT ST_PointZM(-71.104, 42.315, 3.4, 4.5)</programlisting>
       </refsection>
 
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_MakePoint" />, <xref linkend="ST_Point" />, <xref linkend="ST_PointM" />, <xref linkend="ST_PointZ" />, <xref linkend="ST_SetSRID" /></para>
+        <para><xref linkend="ST_MakePoint"/>, <xref linkend="ST_Point"/>, <xref linkend="ST_PointM"/>, <xref linkend="ST_PointZ"/>, <xref linkend="ST_SetSRID"/></para>
       </refsection>
     </refentry>
 
-	<refentry id="ST_Polygon">
+	<refentry xml:id="ST_Polygon">
 	  <refnamediv>
 		<refname>ST_Polygon</refname>
 		<refpurpose>Creates a Polygon from a LineString with a specified SRID.</refpurpose>
@@ -850,14 +850,14 @@ SELECT ST_Transform(ST_SetSRID( ST_Point( 3637510, 3014852 ), 2273), 4326)::geog
 		<para>Returns a polygon built from the given LineString
 		and sets the spatial reference system from the <varname>srid</varname>.</para>
 
-		<para>ST_Polygon is similar to <xref linkend="ST_MakePolygon" /> Variant 1
+		<para>ST_Polygon is similar to <xref linkend="ST_MakePolygon"/> Variant 1
 		with the addition of setting the SRID.</para>
 		<para>To create polygons with holes
-		use <xref linkend="ST_MakePolygon" /> Variant 2 and then <xref linkend="ST_SetSRID" />.
+		use <xref linkend="ST_MakePolygon"/> Variant 2 and then <xref linkend="ST_SetSRID"/>.
 		</para>
 
 		<note><para>This function does not accept MultiLineStrings.
-		Use <xref linkend="ST_LineMerge" /> to generate a LineString, or <xref linkend="ST_Dump" /> to extract LineStrings.</para>
+		Use <xref linkend="ST_LineMerge"/> to generate a LineString, or <xref linkend="ST_Dump"/> to extract LineStrings.</para>
 		</note>
 
 		<para>&sfs_compliant;</para>
@@ -889,15 +889,15 @@ SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))
 	  <refsection>
 		<title>See Also</title>
 
-		<para> <xref linkend="ST_AsEWKT" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_LineMerge" />, <xref linkend="ST_MakePolygon" /></para>
+		<para> <xref linkend="ST_AsEWKT"/>, <xref linkend="ST_AsText"/>, <xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_GeomFromText"/>, <xref linkend="ST_LineMerge"/>, <xref linkend="ST_MakePolygon"/></para>
 	  </refsection>
 	</refentry>
 
 
-	<refentry id="ST_TileEnvelope">
+	<refentry xml:id="ST_TileEnvelope">
 		<refnamediv>
 		<refname>ST_TileEnvelope</refname>
-		<refpurpose>Creates a rectangular Polygon in <ulink url="https://en.wikipedia.org/wiki/Web_Mercator_projection">Web Mercator</ulink> (SRID:3857) using the <ulink url="https://en.wikipedia.org/wiki/Tiled_web_map">XYZ tile system</ulink>.</refpurpose>
+		<refpurpose>Creates a rectangular Polygon in <link xlink:href="https://en.wikipedia.org/wiki/Web_Mercator_projection">Web Mercator</link> (SRID:3857) using the <link xlink:href="https://en.wikipedia.org/wiki/Tiled_web_map">XYZ tile system</link>.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -917,25 +917,25 @@ SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))
 			<title>Description</title>
 
 			<para>Creates a rectangular Polygon
-            giving the extent of a tile in the <ulink url="https://en.wikipedia.org/wiki/Tiled_web_map">XYZ tile system</ulink>.
+            giving the extent of a tile in the <link xlink:href="https://en.wikipedia.org/wiki/Tiled_web_map">XYZ tile system</link>.
             The tile is specifed by the zoom level Z and the XY index of the tile in the grid at that level.
-            Can be used to define the tile bounds required by <xref linkend="ST_AsMVTGeom" /> to convert geometry
+            Can be used to define the tile bounds required by <xref linkend="ST_AsMVTGeom"/> to convert geometry
             into the MVT tile coordinate space.
             </para>
-            <para>By default, the tile envelope is in the <ulink url="https://en.wikipedia.org/wiki/Web_Mercator_projection">Web Mercator</ulink> coordinate system (SRID:3857)
+            <para>By default, the tile envelope is in the <link xlink:href="https://en.wikipedia.org/wiki/Web_Mercator_projection">Web Mercator</link> coordinate system (SRID:3857)
             using the standard range of the Web Mercator system (-20037508.342789, 20037508.342789).
             This is the most common coordinate system used for MVT tiles.
             The optional <varname>bounds</varname> parameter can be used to generate tiles in any coordinate system.
             It is a geometry that has the SRID and extent of the "Zoom Level zero" square within which the XYZ tile system is inscribed.</para>
 
 			<para>The optional <varname>margin</varname> parameter can be used to expand a tile by the given percentage.
-            E.g. <varname>margin=0.125</varname> expands the tile by 12.5%, which is equivalent to buffer=512 when the tile extent size is 4096, as used in <xref linkend="ST_AsMVTGeom" />.
+            E.g. <varname>margin=0.125</varname> expands the tile by 12.5%, which is equivalent to buffer=512 when the tile extent size is 4096, as used in <xref linkend="ST_AsMVTGeom"/>.
             This is useful to create a tile buffer to include data lying outside of the tile's visible area, but whose existence affects the tile rendering.
             For example, a city name (a point) could be near an edge of a tile, so its label should be rendered on two tiles, even though the point is located in the visible area of just one tile.
             Using expanded tiles in a query will include the city point in both tiles.
             Use a negative value to shrink the tile instead. Values less than -0.5 are prohibited because that would eliminate the tile completely.
             Do not specify a margin when using with <varname>ST_AsMVTGeom</varname>.
-            See the example for <xref linkend="ST_AsMVT" />.</para>
+            See the example for <xref linkend="ST_AsMVT"/>.</para>
 
 			<para role="enhanced" conformance="3.1.0">Enhanced: 3.1.0 Added margin parameter.</para>
 			<para role="availability" conformance="3.0.0">Availability: 3.0.0</para>
@@ -958,13 +958,13 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_MakeEnvelope" /></para>
+			<para><xref linkend="ST_MakeEnvelope"/></para>
 		</refsection>
 	</refentry>
 
 
 
-	<refentry id="ST_HexagonGrid">
+	<refentry xml:id="ST_HexagonGrid">
 		<refnamediv>
 		<refname>ST_HexagonGrid</refname>
 		<refpurpose>Returns a set of hexagons and cell indices that completely cover the bounds of the geometry argument.</refpurpose>
@@ -985,14 +985,14 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 
 			<para>Starts with the concept of a hexagon tiling of the plane.
 			(Not a hexagon tiling of the globe, this is not the
-			<ulink url="https://github.com/uber/h3">H3</ulink> tiling scheme.)
+			<link xlink:href="https://github.com/uber/h3">H3</link> tiling scheme.)
 			For a given planar SRS, and a given edge size, starting at the origin of the SRS,
 			there is one unique hexagonal tiling of the plane, Tiling(SRS, Size).
 			This function answers the question: what hexagons in a given Tiling(SRS, Size)
 			overlap with a given bounds.</para>
 
 			<para><inlinemediaobject><imageobject>
-				<imagedata fileref='images/st_hexagongrid01.png' />
+				<imagedata fileref="images/st_hexagongrid01.png"/>
 			</imageobject></inlinemediaobject></para>
 
 			<para>The SRS for the output hexagons is the SRS provided by the bounds geometry.</para>
@@ -1001,7 +1001,7 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 			hexagon tilings that the child tiles perfectly fit inside.</para>
 
 			<para><inlinemediaobject><imageobject>
-				<imagedata fileref='images/st_hexagongrid02.png' />
+				<imagedata fileref="images/st_hexagongrid02.png"/>
 			</imageobject></inlinemediaobject></para>
 
 			<para role="availability" conformance="3.1.0">Availability: 3.1.0</para>
@@ -1029,7 +1029,7 @@ GROUP BY hexes.geom;</programlisting>
 			out those that do not intersect their hexagons, we end up with a tiling for
 			each polygon.</para>
 		<para><inlinemediaobject><imageobject>
-			<imagedata fileref='images/st_hexagongrid03.png' />
+			<imagedata fileref="images/st_hexagongrid03.png"/>
 		</imageobject></inlinemediaobject></para>
 		<para>Tiling states results in a hexagon coverage of each state, and multiple
 			hexagons overlapping at the borders between states.</para>
@@ -1046,11 +1046,11 @@ WHERE
         </refsection>
         <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_EstimatedExtent" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SquareGrid" />, <xref linkend="ST_TileEnvelope" /></para>
+            <para><xref linkend="ST_EstimatedExtent"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_SquareGrid"/>, <xref linkend="ST_TileEnvelope"/></para>
         </refsection>
 	</refentry>
 
-	<refentry id="ST_Hexagon">
+	<refentry xml:id="ST_Hexagon">
 		<refnamediv>
 		<refname>ST_Hexagon</refname>
 		<refpurpose>Returns a single hexagon, using the provided edge size and
@@ -1072,10 +1072,10 @@ WHERE
 		<refsection>
 			<title>Description</title>
 
-			<para>Uses the same hexagon tiling concept as <xref linkend="ST_HexagonGrid" />, but generates just one hexagon at the desired cell coordinate. Optionally,
+			<para>Uses the same hexagon tiling concept as <xref linkend="ST_HexagonGrid"/>, but generates just one hexagon at the desired cell coordinate. Optionally,
 			can adjust origin coordinate of the tiling, the default origin is at 0,0.
 			</para>
-			<para>Hexagons are generated with no SRID set, so use <xref linkend="ST_SetSRID" /> to set the SRID to the one you expect.</para>
+			<para>Hexagons are generated with no SRID set, so use <xref linkend="ST_SetSRID"/> to set the SRID to the one you expect.</para>
 
 			<para role="availability" conformance="3.1.0">Availability: 3.1.0</para>
 		</refsection>
@@ -1093,11 +1093,11 @@ POLYGON((-1 0,-0.5
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_TileEnvelope" />, <xref linkend="ST_HexagonGrid" />, <xref linkend="ST_Square" /></para>
+			<para><xref linkend="ST_TileEnvelope"/>, <xref linkend="ST_HexagonGrid"/>, <xref linkend="ST_Square"/></para>
 		</refsection>
 	</refentry>
 
-    <refentry id="ST_SquareGrid">
+    <refentry xml:id="ST_SquareGrid">
         <refnamediv>
         <refname>ST_SquareGrid</refname>
         <refpurpose>Returns a set of grid squares and cell indices that completely cover the bounds of the geometry argument.</refpurpose>
@@ -1176,13 +1176,13 @@ FROM admin0 WHERE name = 'Canada'
 
         <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_TileEnvelope" />, <xref linkend="ST_HexagonGrid" />
-            , <xref linkend="ST_EstimatedExtent" />
-            , <xref linkend="ST_SetSRID" /></para>
+            <para><xref linkend="ST_TileEnvelope"/>, <xref linkend="ST_HexagonGrid"/>
+            , <xref linkend="ST_EstimatedExtent"/>
+            , <xref linkend="ST_SetSRID"/></para>
         </refsection>
     </refentry>
 
-	<refentry id="ST_Square">
+	<refentry xml:id="ST_Square">
 		<refnamediv>
 		<refname>ST_Square</refname>
 		<refpurpose>Returns a single square, using the provided edge size and
@@ -1204,10 +1204,10 @@ FROM admin0 WHERE name = 'Canada'
 		<refsection>
 			<title>Description</title>
 
-			<para>Uses the same square tiling concept as <xref linkend="ST_SquareGrid" />, but generates just one square at the desired cell coordinate. Optionally,
+			<para>Uses the same square tiling concept as <xref linkend="ST_SquareGrid"/>, but generates just one square at the desired cell coordinate. Optionally,
 			can adjust origin coordinate of the tiling, the default origin is at 0,0.
 			</para>
-			<para>Squares are generated with no SRID set, so use <xref linkend="ST_SetSRID" /> to set the SRID to the one you expect.</para>
+			<para>Squares are generated with no SRID set, so use <xref linkend="ST_SetSRID"/> to set the SRID to the one you expect.</para>
 
 			<para role="availability" conformance="3.1.0">Availability: 3.1.0</para>
 		</refsection>
@@ -1220,13 +1220,13 @@ FROM admin0 WHERE name = 'Canada'
  		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_TileEnvelope" />, <xref linkend="ST_SquareGrid" />, <xref linkend="ST_Hexagon" /></para>
+			<para><xref linkend="ST_TileEnvelope"/>, <xref linkend="ST_SquareGrid"/>, <xref linkend="ST_Hexagon"/></para>
 		</refsection>
 	</refentry>
 
 
 
-    <refentry id="ST_Letters">
+    <refentry xml:id="ST_Letters">
         <refnamediv>
         <refname>ST_Letters</refname>
         <refpurpose>Returns the input letters rendered as geometry with a default start position at the origin and default text height of 100.</refpurpose>
@@ -1258,7 +1258,7 @@ FROM admin0 WHERE name = 'Canada'
             <informalfigure>
             <mediaobject>
               <imageobject>
-                <imagedata fileref="images/st_letters01.png" />
+                <imagedata fileref="images/st_letters01.png"/>
               </imageobject>
               <caption><para>Letters generated by ST_Letters</para></caption>
             </mediaobject>
@@ -1270,9 +1270,9 @@ FROM admin0 WHERE name = 'Canada'
         </refsection>
         <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_AsTWKB" />, <xref linkend="ST_Scale" />, <xref linkend="ST_Translate" /></para>
+            <para><xref linkend="ST_AsTWKB"/>, <xref linkend="ST_Scale"/>, <xref linkend="ST_Translate"/></para>
         </refsection>
     </refentry>
 
 
-  </sect1>
+  </section>

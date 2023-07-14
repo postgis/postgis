@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-06-16 08:08+0000\n"
 "Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -19,6 +19,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.16.4\n"
+
+#. Tag: title
+#: reference_type.xml:3
+#, no-c-format
+msgid "PostGIS Geometry/Geography/Box Data Types"
+msgstr "Types de données PostGIS Geometry/Geography/Box"
 
 #. Tag: para
 #: reference_type.xml:5
@@ -34,17 +40,18 @@ msgstr ""
 #: reference_type.xml:8
 #, no-c-format
 msgid ""
-"Each data type describes its type casting behavior. A <ulink url=\"https://"
-"www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-"
-"CASTS\">type cast</ulink> converts values of one data type into another "
-"type. PostgreSQL allows defining casting behavior for custom types, along "
-"with the functions used to convert type values. Casts can have <emphasis "
-"role=\"bold\">automatic</emphasis> behavior, which allows automatic "
-"conversion of a function argument to a type supported by the function."
+"Each data type describes its type casting behavior. A <link xlink:"
+"href=\"https://www.postgresql.org/docs/current/sql-expressions.html#SQL-"
+"SYNTAX-TYPE-CASTS\">type cast</link> converts values of one data type into "
+"another type. PostgreSQL allows defining casting behavior for custom types, "
+"along with the functions used to convert type values. Casts can have "
+"<emphasis role=\"bold\">automatic</emphasis> behavior, which allows "
+"automatic conversion of a function argument to a type supported by the "
+"function."
 msgstr ""
-"Chaque type de données décrit son comportement de type cast. Un <ulink "
-"url=\"https://www.postgresql.org/docs/current/sql-expressions.html#SQL-"
-"SYNTAX-TYPE-CASTS\">type cast</ulink> convertit les valeurs d'un type de "
+"Chaque type de données décrit son comportement de type cast. Un <link xlink:"
+"href=\"https://www.postgresql.org/docs/current/sql-expressions.html#SQL-"
+"SYNTAX-TYPE-CASTS\">type cast</link> convertit les valeurs d'un type de "
 "données en un autre type. PostgreSQL permet de définir le comportement de "
 "casting pour les types personnalisés, ainsi que les fonctions utilisées pour "
 "convertir les valeurs du type. Les cast peuvent avoir <emphasis "
@@ -86,12 +93,6 @@ msgid ""
 msgstr ""
 "Tous les types de données peuvent être transformés en <varname>text</"
 "varname>, il n'est donc pas nécessaire de le spécifier explicitement."
-
-#. Tag: title
-#: reference_type.xml:27
-#, no-c-format
-msgid "PostGIS Geometry/Geography/Box Data Types"
-msgstr "Types de données PostGIS Geometry/Geography/Box"
 
 #. Tag: refpurpose
 #: reference_type.xml:32
@@ -319,13 +320,13 @@ msgstr ""
 #: reference_type.xml:195
 #, no-c-format
 msgid ""
-"<varname>geometry_dump</varname> is a <ulink url=\"https://www.postgresql."
-"org/docs/current/rowtypes.html\">composite data type</ulink> containing the "
-"fields:"
+"<varname>geometry_dump</varname> is a <link xlink:href=\"https://www."
+"postgresql.org/docs/current/rowtypes.html\">composite data type</link> "
+"containing the fields:"
 msgstr ""
-"<varname>geometry_dump</varname> est un <ulink url=\"https://www.postgresql."
-"org/docs/current/rowtypes.html\">type de données composite</ulink> contenant "
-"les champs :"
+"<varname>geometry_dump</varname> est un <link xlink:href=\"https://www."
+"postgresql.org/docs/current/rowtypes.html\">type de données composite</link> "
+"contenant les champs :"
 
 #. Tag: para
 #: reference_type.xml:200

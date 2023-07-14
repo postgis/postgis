@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-06-28 10:30+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-06-30 09:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -42,7 +42,7 @@ msgstr ""
 "utilisées de la même manière que les fonctions d'agrégation SQL telles que "
 "<code>sum</code> et <code>average</code>."
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:7
 #, no-c-format
 msgid "&list_aggregates;"
@@ -68,7 +68,7 @@ msgstr ""
 "<code>row_number()</code>, <code>lead()</code>, et <code>lag()</code>. Elles "
 "doivent être suivies d'une clause <code>OVER()</code>."
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:13
 #, no-c-format
 msgid "&list_window_functions;"
@@ -90,7 +90,7 @@ msgstr ""
 "Les fonctions ci-dessous sont des fonctions PostGIS conformes à la norme SQL/"
 "MM 3"
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:19
 #, no-c-format
 msgid "&list_sqlmm_functions;"
@@ -133,7 +133,7 @@ msgstr ""
 "UTM. Transformation de base - (favorisant l'UTM, l'azimut Lambert (Nord/"
 "Sud), et se rabattant sur le mercator dans le pire des cas)"
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:28
 #, no-c-format
 msgid "&list_geography_functions;"
@@ -157,7 +157,7 @@ msgstr ""
 "qui prennent en entrée ou renvoient en sortie un objet de type <xref "
 "linkend=\"raster\"/>. Ils sont classés par ordre alphabétique."
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:36
 #, no-c-format
 msgid "&list_raster_functions;"
@@ -182,7 +182,7 @@ msgstr ""
 "linkend=\"geometry_dump\">geometry_dump</link> ou <link "
 "linkend=\"geomval\">geomval</link>."
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:42
 #, no-c-format
 msgid "&list_dump_functions;"
@@ -208,7 +208,7 @@ msgstr ""
 "famille de types box comprend <link linkend=\"box2d_type\">box2d</link>, et "
 "<link linkend=\"box3d_type\">box3d</link>"
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:49
 #, no-c-format
 msgid "&list_box_functions;"
@@ -230,7 +230,7 @@ msgstr ""
 "Les fonctions ci-dessous sont des fonctions PostGIS qui n'éliminent pas "
 "l'indice Z."
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:55
 #, no-c-format
 msgid "&list_3d_functions;"
@@ -252,7 +252,7 @@ msgstr ""
 "Les fonctions ci-dessous sont des fonctions PostGIS qui peuvent utiliser "
 "CIRCULARSTRING, CURVEPOLYGON et d'autres types de géométrie courbe"
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:61
 #, no-c-format
 msgid "&list_curved_geometry_functions;"
@@ -274,7 +274,7 @@ msgstr ""
 "Les fonctions ci-dessous sont des fonctions PostGIS qui peuvent utiliser les "
 "géométries POLYHEDRALSURFACE, POLYHEDRALSURFACEM"
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:67
 #, no-c-format
 msgid "&list_polyhedral_geometry_functions;"
@@ -462,7 +462,7 @@ msgstr "&table_body_function_support_matrix;"
 msgid "New, Enhanced or changed PostGIS Functions"
 msgstr "Fonctions PostGIS nouvelles, améliorées ou modifiées"
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:141
 #, no-c-format
 msgid "&list_new_functions;"

@@ -1,4 +1,8 @@
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:db="http://docbook.org/ns/docbook"
+	exclude-result-prefixes="db"
+>
 <!-- ********************************************************************
 	 ********************************************************************
 	 Copyright 2010-2022, Regina Obe
@@ -11,10 +15,10 @@
 
 	<!-- We deal only with the reference chapter -->
 	<xsl:template match="/">
-		<xsl:apply-templates select="/book/chapter[@id='reference']" />
+		<xsl:apply-templates select="/db:book/db:chapter[@xml:id='reference']" />
 	</xsl:template>
 
-	<xsl:template match="//chapter">
+	<xsl:template match="//db:chapter">
 
 		<xsl:variable name="chap" select="." />
 
@@ -30,7 +34,10 @@
 				<xsl:value-of select="translate($ver,'.','_')" />
 			</xsl:variable>
 
-			<sect2 id="NewFunctions_{$ver_id}">
+			<section>
+			<xsl:attribute name="xml:id">
+				<xsl:value-of select="concat('NewFunctions_', $ver_id)" />
+			</xsl:attribute>
 
 				<xsl:variable name="header" select="document('xsl-config.xml')//list_new_functions/per_version_header" />
 
@@ -63,17 +70,17 @@
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in
 						 a variable to be tagged unto each function comment	-->
-					<xsl:for-each select="$chap//refentry">
-						<xsl:sort select="refnamediv/refname"/>
+					<xsl:for-each select="$chap//db:refentry">
+						<xsl:sort select="db:refnamediv/db:refname"/>
 						<xsl:variable name='comment'>
-							<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
+							<xsl:value-of select="normalize-space(translate(translate(db:refnamediv/db:refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
 						</xsl:variable>
 						<xsl:variable name="refid">
 							<xsl:value-of select="@id" />
 						</xsl:variable>
 
 						<xsl:variable name="refname">
-							<xsl:value-of select="refnamediv/refname" />
+							<xsl:value-of select="db:refnamediv/db:refname" />
 						</xsl:variable>
 
 						<!-- For each section if there is note about availability in this version -->
@@ -94,7 +101,7 @@
 				</xsl:for-each>
 				<!-- each supporte-tag } -->
 
-			</sect2>
+			</section>
 
 		</xsl:for-each>
 		<!-- each postgis-version } -->

@@ -1,12 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<sect1 id="Address_Standardizer">
+<!-- Converted by db4-upgrade version 1.1 -->
+<section
+    xmlns="http://docbook.org/ns/docbook" version="5.0"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+    xml:id="Address_Standardizer"
+>
 	<title>Address Standardizer</title>
-	<para>This is a fork of the <ulink url="http://www.pagcgeo.org/docs/html/pagc-11.html">PAGC standardizer</ulink> (original code for this portion was  <ulink url="http://sourceforge.net/p/pagc/code/360/tree/branches/sew-refactor/postgresql">PAGC PostgreSQL Address Standardizer</ulink>). </para>
+	<para>This is a fork of the <link xlink:href="http://www.pagcgeo.org/docs/html/pagc-11.html">PAGC standardizer</link> (original code for this portion was  <link xlink:href="http://sourceforge.net/p/pagc/code/360/tree/branches/sew-refactor/postgresql">PAGC PostgreSQL Address Standardizer</link>). </para>
 	<para>The address standardizer is a single line address parser that takes an input address and normalizes it based on a set of rules stored in a table and helper lex and gaz tables.</para>
 	<para>The code is built into a single PostgreSQL extension library called <code>address_standardizer</code> which can be installed with <code>CREATE EXTENSION address_standardizer;</code>. In addition to the address_standardizer extension, a sample data extension called <code>address_standardizer_data_us</code> extensions is built, which contains gaz, lex, and rules tables for US data.  This extensions can be installed via: <code>CREATE EXTENSION address_standardizer_data_us;</code></para>
 	 <para>The code for this extension can be found in the PostGIS <filename>extensions/address_standardizer</filename> and is currently self-contained.</para>
-	 <para>For installation instructions refer to: <xref linkend="installing_pagc_address_standardizer" />.</para>
-  <sect2 id="Address_Standardizer_Basics"><title>How the Parser Works</title>
+	 <para>For installation instructions refer to: <xref linkend="installing_pagc_address_standardizer"/>.</para>
+  <section xml:id="Address_Standardizer_Basics"><title>How the Parser Works</title>
 		<para>The parser works from right to left looking first at the macro elements
 			for postcode, state/province, city, and then looks micro elements to determine
 if we are dealing with a house number street or intersection or landmark.
@@ -30,25 +34,25 @@ These regexs are currently in the parseaddress-api.c but could get moved
 into includes in the future for easier maintenance.</para></listitem>
 				</varlistentry>
 			</variablelist>
-  </sect2>
-  <sect2 id="Address_Standardizer_Types">
-	<sect2info>
+  </section>
+  <section xml:id="Address_Standardizer_Types">
+	<title>Address Standardizer Types</title><info>
 		<abstract>
 			<para>This section lists the PostgreSQL data types installed by Address Standardizer extension.  Note we describe the casting behavior of these which is very
 				important especially when designing your own functions.
 			</para>
 		</abstract>
-	</sect2info>
-	<title>Address Standardizer Types</title>
-	<refentry id="stdaddr">
+	</info>
+
+	<refentry xml:id="stdaddr">
 		<refnamediv>
 		<refname>stdaddr</refname>
 			<refpurpose>A composite type that consists of the elements of an address.  This is the return type for <varname>standardize_address</varname> function.</refpurpose>
 		</refnamediv>
 		<refsection>
 			<title>Description</title>
-			<para>A composite type that consists of elements of an address.   This is the return type for <xref linkend="standardize_address" /> function. Some descriptions for elements are borrowed from <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.1">PAGC Postal Attributes</ulink>.</para>
-			<para>The token numbers denote the output reference number in the <xref linkend="rulestab" />.</para>
+			<para>A composite type that consists of elements of an address.   This is the return type for <xref linkend="standardize_address"/> function. Some descriptions for elements are borrowed from <link xlink:href="http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.1">PAGC Postal Attributes</link>.</para>
+			<para>The token numbers denote the output reference number in the <xref linkend="rulestab"/>.</para>
 			<para>&address_standardizer_required;</para>
 				<variablelist>
 					<varlistentry>
@@ -133,18 +137,18 @@ into includes in the future for easier maintenance.</para></listitem>
 			</variablelist>
 		</refsection>
 	</refentry>
-  </sect2>
+  </section>
 
-  <sect2 id="Address_Standardizer_Tables">
-		  <sect2info>
+  <section xml:id="Address_Standardizer_Tables">
+		  <title>Address Standardizer Tables</title><info>
             <abstract>
                 <para>This section lists the PostgreSQL table formats used by the address_standardizer for normalizing addresses.  Note that these tables do not need to be named the same as what is referenced here.  You can have different lex, gaz, rules tables for each country for example or for your custom geocoder.  The names of these tables get passed into the address standardizer functions.
                 </para>
                 <para>The packaged extension <varname>address_standardizer_data_us</varname> contains data for standardizing US addresses.</para>
             </abstract>
-        </sect2info>
-        <title>Address Standardizer Tables</title>
-        <refentry id="rulestab">
+        </info>
+
+        <refentry xml:id="rulestab">
 			<refnamediv>
 			<refname>rules table</refname>
 				<refpurpose>The rules table contains a set of rules that maps address input sequence tokens to standardized output sequence. A rule is defined as a set of input tokens followed by -1 (terminator) followed by set of output tokens followed by -1 followed by number denoting kind of rule followed by ranking of rule.</refpurpose>
@@ -162,17 +166,17 @@ into includes in the future for easier maintenance.</para></listitem>
 						</varlistentry>
 						<varlistentry><term>rule</term>
 							<listitem>
-								<para>text field denoting the rule. Details at <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-rec--">PAGC Address Standardizer Rule records</ulink>.</para>
+								<para>text field denoting the rule. Details at <link xlink:href="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-rec--">PAGC Address Standardizer Rule records</link>.</para>
 								<para>A rule consists of a set of non-negative integers representing input tokens, terminated by a -1, followed by an equal number of non-negative integers representing postal attributes, terminated by a -1, followed by an integer representing a rule type, followed by an integer representing the rank of the rule. The rules are ranked from 0 (lowest) to 17 (highest).</para>
 								<para>So for example the rule <code>2 0 2 22 3 -1 5 5 6 7 3 -1 2 6</code> maps to sequence of output tokens <emphasis>TYPE NUMBER TYPE DIRECT QUALIF</emphasis> to the output sequence <emphasis>STREET STREET SUFTYP SUFDIR QUALIF</emphasis>. The rule is an ARC_C rule of rank 6. </para>
-								<para>Numbers for corresponding output tokens are listed in <xref linkend="stdaddr" />.</para>
+								<para>Numbers for corresponding output tokens are listed in <xref linkend="stdaddr"/>.</para>
 							</listitem>
 						</varlistentry>
 				</variablelist>
 			</refsection>
 
-			<refsection id="rule_input_tokens"><title>Input Tokens</title>
-				<para>Each rule starts with a set of input tokens followed by a terminator <code>-1</code>. Valid input tokens excerpted from <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.2">PAGC Input Tokens</ulink> are as follows:</para>
+			<refsection xml:id="rule_input_tokens"><title>Input Tokens</title>
+				<para>Each rule starts with a set of input tokens followed by a terminator <code>-1</code>. Valid input tokens excerpted from <link xlink:href="http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.2">PAGC Input Tokens</link> are as follows:</para>
 				<para><emphasis role="bold">Form-Based Input Tokens</emphasis></para>
 				<variablelist>
 						<varlistentry>
@@ -352,15 +356,15 @@ into includes in the future for easier maintenance.</para></listitem>
 			</refsection>
 
 			<refsection><title>Output Tokens</title>
-				<para>After the first -1 (terminator), follows the output tokens and their order, followed by a terminator <code>-1</code>.  Numbers for corresponding output tokens are listed in <xref linkend="stdaddr" />. What are allowed is dependent on kind of rule.  Output tokens valid for each rule type are listed in <xref linkend="rule_types_rank" />.</para>
+				<para>After the first -1 (terminator), follows the output tokens and their order, followed by a terminator <code>-1</code>.  Numbers for corresponding output tokens are listed in <xref linkend="stdaddr"/>. What are allowed is dependent on kind of rule.  Output tokens valid for each rule type are listed in <xref linkend="rule_types_rank"/>.</para>
 			</refsection>
 
-			<refsection id="rule_types_rank"><title>Rule Types and Rank</title>
+			<refsection xml:id="rule_types_rank"><title>Rule Types and Rank</title>
 				<para>The final part of the rule is the rule type which is denoted by one of the following, followed by a rule rank.  The rules are ranked from 0 (lowest) to 17 (highest).</para>
 
 				<para><emphasis role="bold">MACRO_C</emphasis></para>
 				<para>(token number = "<emphasis role="bold">0</emphasis>"). The class of rules for parsing MACRO clauses such as <emphasis>PLACE STATE ZIP</emphasis></para>
-				<para><emphasis role="bold">MACRO_C output tokens</emphasis> (excerpted from <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</ulink>.</para>
+				<para><emphasis role="bold">MACRO_C output tokens</emphasis> (excerpted from <link xlink:href="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>.</para>
                 <variablelist>
                     <varlistentry>
                             <term>CITY</term>
@@ -390,7 +394,7 @@ into includes in the future for easier maintenance.</para></listitem>
 
                <para><emphasis role="bold">MICRO_C</emphasis></para>
 				<para>(token number = "<emphasis role="bold">1</emphasis>"). The class of rules for parsing full MICRO clauses (such as House, street, sufdir, predir, pretyp, suftype, qualif) (ie ARC_C plus CIVIC_C). These rules are not used in the build phase.</para>
-				<para><emphasis role="bold">MICRO_C output tokens</emphasis> (excerpted from <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</ulink>.</para>
+				<para><emphasis role="bold">MICRO_C output tokens</emphasis> (excerpted from <link xlink:href="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>.</para>
                 <variablelist>
                     <varlistentry><term>HOUSE</term>
 						<listitem>
@@ -436,7 +440,7 @@ into includes in the future for easier maintenance.</para></listitem>
 				<para><emphasis role="bold">EXTRA_C</emphasis></para>
 				<para>(token number = "<emphasis role="bold">4</emphasis>"). The class of rules for parsing EXTRA attributes - attributes excluded from geocoding. These rules are not used in the build phase.</para>
 
-				<para><emphasis role="bold">EXTRA_C output tokens</emphasis> (excerpted from <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</ulink>.</para>
+				<para><emphasis role="bold">EXTRA_C output tokens</emphasis> (excerpted from <link xlink:href="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>.</para>
                 <variablelist>
                     <varlistentry><term>BLDNG</term>
 						<listitem>
@@ -477,14 +481,14 @@ into includes in the future for easier maintenance.</para></listitem>
 			</refsection>
 		</refentry>
 
-		<refentry id="lextab">
+		<refentry xml:id="lextab">
 			<refnamediv>
 			<refname>lex table</refname>
-				<refpurpose>A lex table is used to classify alphanumeric input and associate that input with (a) input tokens ( See <xref linkend="rule_input_tokens" />) and (b) standardized representations.</refpurpose>
+				<refpurpose>A lex table is used to classify alphanumeric input and associate that input with (a) input tokens ( See <xref linkend="rule_input_tokens"/>) and (b) standardized representations.</refpurpose>
 			</refnamediv>
 			<refsection>
 				<title>Description</title>
-				<para>A lex (short for lexicon) table is used to classify alphanumeric input and associate that input with  <xref linkend="rule_input_tokens" /> and (b) standardized representations. Things you will find in these tables are <code>ONE</code> mapped to stdword: <code>1</code>.</para>
+				<para>A lex (short for lexicon) table is used to classify alphanumeric input and associate that input with  <xref linkend="rule_input_tokens"/> and (b) standardized representations. Things you will find in these tables are <code>ONE</code> mapped to stdword: <code>1</code>.</para>
 
 				<para>A lex has at least the following columns in the table. You may add</para>
 					<variablelist>
@@ -512,21 +516,21 @@ into includes in the future for easier maintenance.</para></listitem>
 						</varlistentry>
 						<varlistentry><term>token</term>
 							<listitem>
-								<para>integer: the kind of word it is.  Only if it is used in this context will it be replaced. Refer to <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--">PAGC Tokens</ulink>.</para>
+								<para>integer: the kind of word it is.  Only if it is used in this context will it be replaced. Refer to <link xlink:href="http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--">PAGC Tokens</link>.</para>
 							</listitem>
 						</varlistentry>
 				</variablelist>
 			</refsection>
 		</refentry>
 
-		<refentry id="gaztab">
+		<refentry xml:id="gaztab">
 			<refnamediv>
 			<refname>gaz table</refname>
-				<refpurpose>A gaz table is used to standardize place names and associate that input with (a) input tokens ( See <xref linkend="rule_input_tokens" />) and (b) standardized representations.</refpurpose>
+				<refpurpose>A gaz table is used to standardize place names and associate that input with (a) input tokens ( See <xref linkend="rule_input_tokens"/>) and (b) standardized representations.</refpurpose>
 			</refnamediv>
 			<refsection>
 				<title>Description</title>
-				<para>A gaz (short for gazeteer) table is used to standardize place names and associate that input with <xref linkend="rule_input_tokens" /> and (b) standardized representations. For example if you are in US, you may load these with State Names and associated abbreviations.</para>
+				<para>A gaz (short for gazeteer) table is used to standardize place names and associate that input with <xref linkend="rule_input_tokens"/> and (b) standardized representations. For example if you are in US, you may load these with State Names and associated abbreviations.</para>
 
 				<para>A gaz table has at least the following columns in the table. You may add more columns if you wish for your own purposes.</para>
 					<variablelist>
@@ -553,7 +557,7 @@ into includes in the future for easier maintenance.</para></listitem>
 						</varlistentry>
 						<varlistentry><term>token</term>
 							<listitem>
-								<para>integer: the kind of word it is.  Only if it is used in this context will it be replaced. Refer to <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--">PAGC Tokens</ulink>.</para>
+								<para>integer: the kind of word it is.  Only if it is used in this context will it be replaced. Refer to <link xlink:href="http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--">PAGC Tokens</link>.</para>
 							</listitem>
 						</varlistentry>
 				</variablelist>
@@ -562,11 +566,11 @@ into includes in the future for easier maintenance.</para></listitem>
 
 			</refsection>
 		</refentry>
-  </sect2>
+  </section>
 
-  <sect2 id="Address_Standardizer_Functions"><title>Address Standardizer Functions</title>
+  <section xml:id="Address_Standardizer_Functions"><title>Address Standardizer Functions</title>
 
-        <refentry id="debug_standardize_address">
+        <refentry xml:id="debug_standardize_address">
         <refnamediv>
             <refname>debug_standardize_address</refname>
 
@@ -589,7 +593,7 @@ into includes in the future for easier maintenance.</para></listitem>
         <refsection>
             <title>Description</title>
 
-            <para>This is a function for debugging address standardizer rules and lex/gaz mappings.  It returns a json formatted text that includes the matching rules, mapping of tokens, and best standardized address <xref linkend="stdaddr" /> form of an input address utilizing <xref linkend="lextab" /> table name, <xref linkend="gaztab" />, and <xref linkend="rulestab" /> table names and an address.</para>
+            <para>This is a function for debugging address standardizer rules and lex/gaz mappings.  It returns a json formatted text that includes the matching rules, mapping of tokens, and best standardized address <xref linkend="stdaddr"/> form of an input address utilizing <xref linkend="lextab"/> table name, <xref linkend="gaztab"/>, and <xref linkend="rulestab"/> table names and an address.</para>
 
             <para>For single line addresses use just <varname>micro</varname></para>
             <para>For two line address A <varname>micro</varname> consisting of standard first line of postal address e.g. <code>house_num street</code>, and a macro consisting of standard postal second line of an address e.g <code>city, state postal_code country</code>.</para>
@@ -613,7 +617,7 @@ into includes in the future for easier maintenance.</para></listitem>
 						</varlistentry>
 						<varlistentry><term>stdaddr</term>
 							<listitem>
-								<para>The standardized address elements <xref linkend="stdaddr" /> that would be returned when running <xref linkend="standardize_address" /></para>
+								<para>The standardized address elements <xref linkend="stdaddr"/> that would be returned when running <xref linkend="standardize_address"/></para>
 							</listitem>
 						</varlistentry>
 				</variablelist>
@@ -629,12 +633,12 @@ into includes in the future for easier maintenance.</para></listitem>
             <programlisting>CREATE EXTENSION address_standardizer_data_us; -- only needs to be done once</programlisting>
 
         <para>Variant 1: Single line address and returning the input tokens</para>
-        <programlisting><![CDATA[SELECT it->>'pos' AS position, it->>'word' AS word, it->>'stdword' AS standardized_word,
-            it->>'token' AS token, it->>'token-code' AS token_code
+        <programlisting>SELECT it-&gt;&gt;'pos' AS position, it-&gt;&gt;'word' AS word, it-&gt;&gt;'stdword' AS standardized_word,
+            it-&gt;&gt;'token' AS token, it-&gt;&gt;'token-code' AS token_code
     FROM jsonb(
             debug_standardize_address('us_lex',
                 'us_gaz', 'us_rules', 'One Devonshire Place, PH 301, Boston, MA 02109')
-                 ) AS s, jsonb_array_elements(s->'input_tokens') AS it;]]></programlisting>
+                 ) AS s, jsonb_array_elements(s-&gt;'input_tokens') AS it;</programlisting>
             <screen>position |    word    | standardized_word | token  | token_code
 ----------+------------+-------------------+--------+------------
  0        | ONE        | 1                 | NUMBER | 0
@@ -647,13 +651,13 @@ into includes in the future for easier maintenance.</para></listitem>
 (7 rows)</screen>
 
         <para>Variant 2: Multi line address and returning first rule input mappings and score</para>
-        <programlisting><![CDATA[SELECT (s->'rules'->0->>'score')::numeric AS score, it->>'pos' AS position,
-        it->>'input-word' AS word, it->>'input-token' AS input_token, it->>'mapped-word' AS standardized_word,
-            it->>'output-token' AS output_token
+        <programlisting>SELECT (s-&gt;'rules'-&gt;0-&gt;&gt;'score')::numeric AS score, it-&gt;&gt;'pos' AS position,
+        it-&gt;&gt;'input-word' AS word, it-&gt;&gt;'input-token' AS input_token, it-&gt;&gt;'mapped-word' AS standardized_word,
+            it-&gt;&gt;'output-token' AS output_token
     FROM jsonb(
             debug_standardize_address('us_lex',
                 'us_gaz', 'us_rules', 'One Devonshire Place, PH 301', 'Boston, MA 02109')
-                 ) AS s, jsonb_array_elements(s->'rules'->0->'rule_tokens') AS it;]]></programlisting>
+                 ) AS s, jsonb_array_elements(s-&gt;'rules'-&gt;0-&gt;'rule_tokens') AS it;</programlisting>
             <screen> score   | position |    word    | input_token | standardized_word | output_token
 ----------+----------+------------+-------------+-------------------+--------------
  0.876250 | 0        | ONE        | NUMBER      | 1                 | HOUSE
@@ -670,11 +674,11 @@ into includes in the future for easier maintenance.</para></listitem>
         <refsection>
             <title>See Also</title>
 
-            <para><xref linkend="stdaddr" />, <xref linkend="rulestab" />, <xref linkend="lextab" />, <xref linkend="gaztab" />, <xref linkend="Pagc_Normalize_Address" /></para>
+            <para><xref linkend="stdaddr"/>, <xref linkend="rulestab"/>, <xref linkend="lextab"/>, <xref linkend="gaztab"/>, <xref linkend="Pagc_Normalize_Address"/></para>
         </refsection>
         </refentry>
 
-        <refentry id="parse_address">
+        <refentry xml:id="parse_address">
         <refnamediv>
             <refname>parse_address</refname>
 
@@ -746,11 +750,11 @@ FROM (SELECT addid, parse_address(address) As a
 		<refsection>
 			<title>See Also</title>
 
-			<para></para>
+			<para/>
 		</refsection>
 	</refentry>
 
-	<refentry id="standardize_address">
+	<refentry xml:id="standardize_address">
 		<refnamediv>
 			<refname>standardize_address</refname>
 
@@ -781,7 +785,7 @@ FROM (SELECT addid, parse_address(address) As a
 		<refsection>
 			<title>Description</title>
 
-			<para>Returns an <xref linkend="stdaddr" /> form of an input address utilizing <xref linkend="lextab" /> table name, <xref linkend="gaztab" />, and <xref linkend="rulestab" /> table names and an address.</para>
+			<para>Returns an <xref linkend="stdaddr"/> form of an input address utilizing <xref linkend="lextab"/> table name, <xref linkend="gaztab"/>, and <xref linkend="rulestab"/> table names and an address.</para>
 
 			<para>Variant 1: Takes an address as a single line.</para>
 			<para>Variant 2: Takes an address as 2 parts.  A <varname>micro</varname> consisting of standard first line of postal address e.g. <code>house_num street</code>, and a macro consisting of standard postal second line of an address e.g <code>city, state postal_code country</code>.</para>
@@ -862,9 +866,9 @@ FROM (SELECT addid, parse_address(address) As a
 		<refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="stdaddr" />, <xref linkend="rulestab" />, <xref linkend="lextab" />, <xref linkend="gaztab" />, <xref linkend="Pagc_Normalize_Address" /></para>
+			<para><xref linkend="stdaddr"/>, <xref linkend="rulestab"/>, <xref linkend="lextab"/>, <xref linkend="gaztab"/>, <xref linkend="Pagc_Normalize_Address"/></para>
 		</refsection>
 	</refentry>
 
-  </sect2>
-</sect1>
+  </section>
+</section>

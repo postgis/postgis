@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2014-04-29 12:16+0000\n"
 "Last-Translator: Carlos Barrios <gbarrios@aaa.upv.es>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/postgis-1/"
@@ -17,38 +17,38 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#. Tag: title
+#: reference_transaction.xml:3
+#, fuzzy, no-c-format
+msgid "Long Transaction Support"
+msgstr "Soporte para transacciones grandes"
+
 #. Tag: para
 #: reference_transaction.xml:6
 #, fuzzy, no-c-format
 msgid ""
 "These functions implement a row locking mechanism to support long "
-"transactions. They are provided primarily for implementors of the <ulink "
-"url=\"http://www.opengeospatial.org/standards/wfs\">Web Feature Service</"
-"ulink> specification."
+"transactions. They are provided primarily for implementors of the <link "
+"xlink:href=\"http://www.opengeospatial.org/standards/wfs\">Web Feature "
+"Service</link> specification."
 msgstr ""
 "Este módulo y las funciones asociadas pl/pgsql se han implementado para "
 "proporcionar soporte a bloqueos extensos que son requeridos por la "
-"especificación <ulink url=\"http://www.opengeospatial.org/standards/"
-"wfs\">Web Feature Service</ulink>"
-
-#. Tag: title
-#: reference_transaction.xml:13
-#, fuzzy, no-c-format
-msgid "Long Transaction Support"
-msgstr "Soporte para transacciones grandes"
+"especificación <link xlink:href=\"http://www.opengeospatial.org/standards/"
+"wfs\">Web Feature Service</link>"
 
 #. Tag: para
 #: reference_transaction.xml:16
 #, fuzzy, no-c-format
 msgid ""
 "For the locking mechanism to operate correctly the <emphasis "
-"role=\"bold\">serializable</emphasis> <ulink url=\"http://www.postgresql.org/"
-"docs/current/static/transaction-iso.html\"> transaction isolation level</"
-"ulink> must be used."
+"role=\"bold\">serializable</emphasis> <link xlink:href=\"http://www."
+"postgresql.org/docs/current/static/transaction-iso.html\"> transaction "
+"isolation level</link> must be used."
 msgstr ""
-"Los usuarios deben usar <ulink url=\"http://www.postgresql.org/docs/current/"
-"static/transaction-iso.html\">el nivel de transacción en serie</ulink> sino "
-"se rompería el mecanismo de bloqueo."
+"Los usuarios deben usar <link xlink:href=\"http://www.postgresql.org/docs/"
+"current/static/transaction-iso.html\">el nivel de transacción en serie</"
+"link> sino se rompería el mecanismo de bloqueo."
 
 #. Tag: refpurpose
 #: reference_transaction.xml:26

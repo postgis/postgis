@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-05-15 11:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -16,6 +16,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.16.4\n"
+
+#. Tag: title
+#: reference_guc.xml:3
+#, no-c-format
+msgid "Grand Unified Custom Variables (GUCs)"
+msgstr "Grand Unified Custom変数 (GUC)"
 
 #. Tag: para
 #: reference_guc.xml:5
@@ -28,12 +34,6 @@ msgstr ""
 "本節では、PostGIS GUC (Grand Unified Custom)変数の一覧を上げます。これらは、"
 "グローバル、データベースごと、セッションごと、またはトランザクションごとに設"
 "定できます。グローバルまたはデータベースごとの設定が最善です。"
-
-#. Tag: title
-#: reference_guc.xml:9
-#, no-c-format
-msgid "Grand Unified Custom Variables (GUCs)"
-msgstr "Grand Unified Custom変数 (GUC)"
 
 #. Tag: refpurpose
 #: reference_guc.xml:14
@@ -153,12 +153,12 @@ msgstr "Availability: 2.2.0"
 #: reference_guc.xml:62
 #, no-c-format
 msgid ""
-"Additional information about GDAL_DATA is available at GDAL's <ulink "
-"url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
-"ulink>."
+"Additional information about GDAL_DATA is available at GDAL's <link xlink:"
+"href=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration "
+"Options</link>."
 msgstr ""
-"GDAL_DATAに関する追加情報報は、GDALの<ulink url=\"http://trac.osgeo.org/gdal/"
-"wiki/ConfigOptions\">Configuration Options</ulink>にあります。"
+"GDAL_DATAに関する追加情報報は、GDALの<link xlink:href=\"http://trac.osgeo."
+"org/gdal/wiki/ConfigOptions\">Configuration Options</link>にあります。"
 
 #. Tag: para
 #: reference_guc.xml:71
@@ -220,14 +220,14 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Enabled GDAL specified drivers can be specified by the driver's short-name "
-"or code. Driver short-names or codes can be found at <ulink url=\"http://www."
-"gdal.org/formats_list.html\">GDAL Raster Formats</ulink>. Multiple drivers "
-"can be specified by putting a space between each driver."
+"or code. Driver short-names or codes can be found at <link xlink:"
+"href=\"http://www.gdal.org/formats_list.html\">GDAL Raster Formats</link>. "
+"Multiple drivers can be specified by putting a space between each driver."
 msgstr ""
 "有効にするGDALドライバは、ドライバの短縮名またはコードで指定します。ドライバ"
-"の短縮名またはコードは<ulink url=\"http://www.gdal.org/formats_list."
-"html\">GDAL Raster Formats</ulink>にあります。複数のドライバを指定するには、"
-"ドライバの間に一つの空白を置きます。"
+"の短縮名またはコードは<link xlink:href=\"http://www.gdal.org/formats_list."
+"html\">GDAL Raster Formats</link>にあります。複数のドライバを指定するには、ド"
+"ライバの間に一つの空白を置きます。"
 
 #. Tag: para
 #: reference_guc.xml:110
@@ -294,12 +294,12 @@ msgstr ""
 #: reference_guc.xml:137
 #, no-c-format
 msgid ""
-"Additional information about GDAL_SKIP is available at GDAL's <ulink "
-"url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
-"ulink>."
+"Additional information about GDAL_SKIP is available at GDAL's <link xlink:"
+"href=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration "
+"Options</link>."
 msgstr ""
-"GDAL_SKIPに関する追加情報は、GDALの<ulink url=\"http://trac.osgeo.org/gdal/"
-"wiki/ConfigOptions\">Configuration Options</ulink>にあります。"
+"GDAL_SKIPに関する追加情報は、GDALの<link xlink:href=\"http://trac.osgeo.org/"
+"gdal/wiki/ConfigOptions\">Configuration Options</link>にあります。"
 
 #. Tag: para
 #: reference_guc.xml:148
@@ -446,14 +446,14 @@ msgstr ""
 #, no-c-format
 msgid ""
 "A string configuration to set options used when working with an out-db "
-"raster. <ulink url=\"http://trac.osgeo.org/gdal/wiki/"
-"ConfigOptions\">Configuration options</ulink> control things like how much "
+"raster. <link xlink:href=\"http://trac.osgeo.org/gdal/wiki/"
+"ConfigOptions\">Configuration options</link> control things like how much "
 "space GDAL allocates to local data cache, whether to read overviews, and "
 "what access keys to use for remote out-db data sources."
 msgstr ""
 "データベース外ラスタを操作する時に使用するオプションを設定するためのコンフィ"
-"ギュレーション。<ulink url=\"http://trac.osgeo.org/gdal/wiki/"
-"ConfigOptions\">Configuration options</ulink>によって、どれだけGDALがローカル"
+"ギュレーション。<link xlink:href=\"http://trac.osgeo.org/gdal/wiki/"
+"ConfigOptions\">Configuration options</link>によって、どれだけGDALがローカル"
 "データキャッシュを確保するか、オーバビューを読むかどうか、リモートのデータ"
 "ベース外データソースを使う際のアクセスキー等を制御します。"
 

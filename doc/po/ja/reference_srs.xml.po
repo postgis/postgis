@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-06-05 11:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -17,6 +17,12 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.16.4\n"
 
+#. Tag: title
+#: reference_srs.xml:3
+#, no-c-format
+msgid "Spatial Reference System Functions"
+msgstr "空間参照系関数"
+
 #. Tag: para
 #: reference_srs.xml:5
 #, no-c-format
@@ -26,12 +32,6 @@ msgid ""
 msgstr ""
 "これらの関数は<varname>spatial_ref_sys</varname>テーブルで定義されているジオ"
 "メトリの空間参照系と連携します。"
-
-#. Tag: title
-#: reference_srs.xml:10
-#, no-c-format
-msgid "Spatial Reference System Functions"
-msgstr "空間参照系関数"
 
 #. Tag: refpurpose
 #: reference_srs.xml:16

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-06-30 21:55+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-07-03 15:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/postgis/fr/"
@@ -22,66 +22,66 @@ msgstr ""
 "X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
-#: postgis.xml:94
+#: postgis.xml:97
 #, no-c-format
 msgid "PostGIS &last_release_version; Manual"
 msgstr "Manuel PostGIS &last_release_version;"
 
-#. Tag: corpauthor
-#: postgis.xml:98
+#. Tag: orgname
+#: postgis.xml:101
 #, no-c-format
 msgid "The PostGIS Development Group"
 msgstr "Le groupe de développement PostGIS"
 
 #. Tag: affiliation
-#: postgis.xml:104
+#: postgis.xml:102
 #, no-c-format
 msgid ""
-"<orgname><ulink url=\"http://www.cleverelephant.ca\">clever elephant</"
-"ulink></orgname> <address><city>Victoria</city> <state>British Columbia</"
+"<orgname><link xlink:href=\"http://www.cleverelephant.ca\">clever elephant</"
+"link></orgname> <address><city>Victoria</city> <state>British Columbia</"
 "state> <country>Canada</country> <email>pramsey@cleverelephant.ca</email></"
 "address>"
 msgstr ""
-"<orgname><ulink url=\"http://www.cleverelephant.ca\">clever elephant</"
-"ulink></orgname> <address><city>Victoria</city> <state>British Columbia</"
+"<orgname><link xlink:href=\"http://www.cleverelephant.ca\">clever elephant</"
+"link></orgname> <address><city>Victoria</city> <state>British Columbia</"
 "state> <country>Canada</country> <email>pramsey@cleverelephant.ca</email></"
 "address>"
 
 #. Tag: para
-#: postgis.xml:118
+#: postgis.xml:115
 #, no-c-format
 msgid ""
-"PostGIS is an extension to the <ulink url=\"https://www.postgresql.org/"
-"\">PostgreSQL</ulink> object-relational database system which allows GIS "
+"PostGIS is an extension to the <link xlink:href=\"https://www.postgresql.org/"
+"\">PostgreSQL</link> object-relational database system which allows GIS "
 "(Geographic Information Systems) objects to be stored in the database. "
 "PostGIS includes support for GiST-based R-Tree spatial indexes, and "
 "functions for analysis and processing of GIS objects."
 msgstr ""
-"PostGIS est une extension du système de base de <ulink url=\"https://www."
-"postgresql.org/\">PostgreSQL</ulink> données relationnel-objet qui permet de "
-"stocker des objets SIG (Système d'Information Géographique) dans la base. "
+"PostGIS est une extension du système de base de <link xlink:href=\"https://"
+"www.postgresql.org/\">PostgreSQL</link> données relationnel-objet qui permet "
+"de stocker des objets SIG (Système d'Information Géographique) dans la base. "
 "PostGIS comporte un support des index spatiaux R-Tree basé sur GiST et des "
 "fonctions d'analyse et de traitement des objets SIG."
 
 #. Tag: para
-#: postgis.xml:127
+#: postgis.xml:124
 #, no-c-format
 msgid "This is the manual for version &last_release_version;"
 msgstr "Manuel de la version &last_release_version;"
 
 #. Tag: para
-#: postgis.xml:128
+#: postgis.xml:125
 #, no-c-format
 msgid ""
-"This work is licensed under a <ulink url=\"http://creativecommons.org/"
+"This work is licensed under a <link xlink:href=\"http://creativecommons.org/"
 "licenses/by-sa/3.0/\">Creative Commons Attribution-Share Alike 3.0 License</"
-"ulink>. Feel free to use this material any way you like, but we ask that you "
+"link>. Feel free to use this material any way you like, but we ask that you "
 "attribute credit to the PostGIS Project and wherever possible, a link back "
-"to <ulink url=\"https://postgis.net\">https://postgis.net</ulink>."
+"to <link xlink:href=\"https://postgis.net\">https://postgis.net</link>."
 msgstr ""
-"Ce travail est soumis à une licence <ulink url=\"http://creativecommons.org/"
-"licenses/by-sa/3.0/\">Creative Commons Attribution-Share Alike 3.0 License</"
-"ulink>. Vous pouvez utiliser ce matériel comme bon vous semble, mais nous "
-"vous demandons de mentionner le projet PostGIS et, dans la mesure du "
-"possible, d'ajouter un lien vers <ulink url=\"https://postgis.net\">https://"
-"postgis.net</ulink>."
+"Ce travail est soumis à une licence <link xlink:href=\"http://"
+"creativecommons.org/licenses/by-sa/3.0/\">Creative Commons Attribution-Share "
+"Alike 3.0 License</link>. Vous pouvez utiliser ce matériel comme bon vous "
+"semble, mais nous vous demandons de mentionner le projet PostGIS et, dans la "
+"mesure du possible, d'ajouter un lien vers <link xlink:href=\"https://"
+"postgis.net\">https://postgis.net</link>."

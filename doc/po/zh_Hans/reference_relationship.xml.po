@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-09-12 14:55+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -17,17 +17,17 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 5.0\n"
 
+#. Tag: title
+#: reference_relationship.xml:3
+#, no-c-format
+msgid "Spatial Relationships"
+msgstr "空间关系"
+
 #. Tag: para
 #: reference_relationship.xml:5
 #, no-c-format
 msgid "These functions determine spatial relationships between geometries."
 msgstr "这些函数决定了几何图形之间的空间关系。"
-
-#. Tag: title
-#: reference_relationship.xml:8
-#, no-c-format
-msgid "Spatial Relationships"
-msgstr "空间关系"
 
 #. Tag: title
 #: reference_relationship.xml:11
@@ -210,15 +210,16 @@ msgstr ""
 msgid ""
 "Because the interiors must have a common point, a subtlety of the definition "
 "is that polygons and lines do <emphasis>not</emphasis> contain lines and "
-"points lying fully in their boundary. For further details see <ulink "
-"url=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-"
-"spatial.html\">Subtleties of OGC Covers, Contains, Within</ulink>. The <xref "
-"linkend=\"ST_Covers\"/> predicate provides a more inclusive relationship."
+"points lying fully in their boundary. For further details see <link xlink:"
+"href=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-"
+"covers-spatial.html\">Subtleties of OGC Covers, Contains, Within</link>. The "
+"<xref linkend=\"ST_Covers\"/> predicate provides a more inclusive "
+"relationship."
 msgstr ""
 "因为内部必须有一个公共点，所以定义的一个微妙之处是多边形和线<emphasis>不</"
-"emphasis>包含完全位于其边界内的线和点。 有关更多详细信息，请参阅 <ulink "
-"url=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-"
-"spatial.html\">OGC涵盖、包含、内部的微妙之处</ulink>。 <xref "
+"emphasis>包含完全位于其边界内的线和点。 有关更多详细信息，请参阅 <link xlink:"
+"href=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-"
+"covers-spatial.html\">OGC涵盖、包含、内部的微妙之处</link>。 <xref "
 "linkend=\"ST_Covers\"/> 谓词提供了更具包容性的关系。"
 
 #. Tag: para
@@ -1359,12 +1360,12 @@ msgstr ""
 #, no-c-format
 msgid ""
 "These functions allow testing and evaluating the spatial (topological) "
-"relationship between two geometries, as defined by the <ulink url=\"http://"
-"en.wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-Intersection Model</"
-"ulink> (DE-9IM)."
+"relationship between two geometries, as defined by the <link xlink:"
+"href=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-"
+"Intersection Model</link> (DE-9IM)."
 msgstr ""
-"这些函数允许测试和评估两个几何图形之间的空间（拓扑）关系，如<ulink "
-"url=\"http://en.wikipedia.org/wiki/DE-9IM\">维度扩展 9 相交模型</ulink> "
+"这些函数允许测试和评估两个几何图形之间的空间（拓扑）关系，如<link xlink:"
+"href=\"http://en.wikipedia.org/wiki/DE-9IM\">维度扩展 9 相交模型</link> "
 "(DE-9IM) 所定义。"
 
 #. Tag: para
@@ -1635,14 +1636,15 @@ msgstr "测试 DE-9IM 交集矩阵是否与交集矩阵模式匹配"
 #: reference_relationship.xml:1344
 #, no-c-format
 msgid ""
-"Tests if a <ulink url=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally "
-"Extended 9-Intersection Model</ulink> (DE-9IM) <varname>intersectionMatrix</"
-"varname> value satisfies an <varname>intersectionMatrixPattern</varname>. "
-"Intersection matrix values can be computed by <xref linkend=\"ST_Relate\"/>."
+"Tests if a <link xlink:href=\"http://en.wikipedia.org/wiki/"
+"DE-9IM\">Dimensionally Extended 9-Intersection Model</link> (DE-9IM) "
+"<varname>intersectionMatrix</varname> value satisfies an "
+"<varname>intersectionMatrixPattern</varname>. Intersection matrix values can "
+"be computed by <xref linkend=\"ST_Relate\"/>."
 msgstr ""
-"测试<ulink url=\"http://en.wikipedia.org/wiki/DE-9IM\">维度扩展 9 交集模型</"
-"ulink> (DE-9IM) <varname>交集矩阵</varname>值是否满足<varname>交集矩阵模式</"
-"varname>。 交集矩阵值可以通过<xref linkend=\"ST_Relate\"/> 计算。"
+"测试<link xlink:href=\"http://en.wikipedia.org/wiki/DE-9IM\">维度扩展 9 交集"
+"模型</link> (DE-9IM) <varname>交集矩阵</varname>值是否满足<varname>交集矩阵模"
+"式</varname>。 交集矩阵值可以通过<xref linkend=\"ST_Relate\"/> 计算。"
 
 #. Tag: para
 #: reference_relationship.xml:1362
@@ -1811,15 +1813,15 @@ msgid ""
 "Because the interiors must have a common point, a subtlety of the definition "
 "is that lines and points lying fully in the boundary of polygons or lines "
 "are <emphasis>not</emphasis> within the geometry. For further details see "
-"<ulink url=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-"
-"covers-spatial.html\">Subtleties of OGC Covers, Contains, Within</ulink>. "
-"The <xref linkend=\"ST_CoveredBy\"/> predicate provides a more inclusive "
-"relationship."
+"<link xlink:href=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-"
+"of-ogc-covers-spatial.html\">Subtleties of OGC Covers, Contains, Within</"
+"link>. The <xref linkend=\"ST_CoveredBy\"/> predicate provides a more "
+"inclusive relationship."
 msgstr ""
 "因为内部必须有一个公共点，所以定义的一个微妙之处在于，完全位于多边形或线的边"
 "界内的线和点<emphasis>不</emphasis>在几何内部。 有关更多详细信息，请参阅 "
-"<ulink url=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-"
-"covers-spatial.html\">OGC覆盖、包含、内部的微妙之处</ulink>。 <xref "
+"<link xlink:href=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-"
+"of-ogc-covers-spatial.html\">OGC覆盖、包含、内部的微妙之处</link>。 <xref "
 "linkend=\"ST_CoveredBy\"/> 谓词提供了更具包容性的关系。"
 
 #. Tag: para
@@ -2029,12 +2031,12 @@ msgstr "可用性：1.5.0 引入了对地理的支持"
 #: reference_relationship.xml:1841
 #, no-c-format
 msgid ""
-"Enhanced: 2.1.0 improved speed for geography. See <ulink url=\"http://blog."
-"opengeo.org/2012/07/12/making-geography-faster/\">Making Geography faster</"
-"ulink> for details."
+"Enhanced: 2.1.0 improved speed for geography. See <link xlink:href=\"http://"
+"blog.opengeo.org/2012/07/12/making-geography-faster/\">Making Geography "
+"faster</link> for details."
 msgstr ""
-"增强：2.1.0 提高了地理速度。 有关详细信息，请参阅<ulink url=\"http://blog."
-"opengeo.org/2012/07/12/making-geography-faster/\">使地理更快</ulink>。"
+"增强：2.1.0 提高了地理速度。 有关详细信息，请参阅<link xlink:href=\"http://"
+"blog.opengeo.org/2012/07/12/making-geography-faster/\">使地理更快</link>。"
 
 #. Tag: para
 #: reference_relationship.xml:1842

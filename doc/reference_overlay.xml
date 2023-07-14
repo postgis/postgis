@@ -1,17 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
-    <sect1 id="Overlay_Functions">
-    <sect1info>
+<!-- Converted by db4-upgrade version 1.1 -->
+<section xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="Overlay_Functions">
+    <title>Overlay Functions</title><info>
     <abstract>
     <para>These functions compute results arising from the overlay of two geometries.
     These are also known as point-set theoretic boolean operations.
     Some related functions are also provided.
     </para>
     </abstract>
-    </sect1info>
+    </info>
 
-    <title>Overlay Functions</title>
 
-    <refentry id="ST_ClipByBox2D">
+
+    <refentry xml:id="ST_ClipByBox2D">
       <refnamediv>
         <refname>ST_ClipByBox2D</refname>
         <refpurpose>Computes the portion of a geometry falling within a rectangle.</refpurpose>
@@ -53,14 +53,14 @@ SELECT ST_ClipByBox2D(geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;
       <refsection>
         <title>See Also</title>
         <para>
-<xref linkend="ST_Intersection" />,
-<xref linkend="ST_MakeBox2D" />,
-<xref linkend="ST_MakeEnvelope" />
+<xref linkend="ST_Intersection"/>,
+<xref linkend="ST_MakeBox2D"/>,
+<xref linkend="ST_MakeEnvelope"/>
     </para>
       </refsection>
     </refentry>
 
-    <refentry id="ST_Difference">
+    <refentry xml:id="ST_Difference">
       <refnamediv>
         <refname>ST_Difference</refname>
 
@@ -117,7 +117,7 @@ on that same grid. (Requires GEOS-3.9.0 or higher)
                             <informalfigure>
                                 <mediaobject>
                                   <imageobject>
-                                    <imagedata fileref="images/st_symdifference01.png" />
+                                    <imagedata fileref="images/st_symdifference01.png"/>
                                   </imageobject>
                                   <caption><para>The input linestrings </para></caption>
                                 </mediaobject>
@@ -129,7 +129,7 @@ on that same grid. (Requires GEOS-3.9.0 or higher)
                         <para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_difference01.png" />
+                                <imagedata fileref="images/st_difference01.png"/>
                               </imageobject>
                               <caption><para>The difference of the two linestrings</para></caption>
                             </mediaobject>
@@ -168,11 +168,11 @@ MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)
       <refsection>
         <title>See Also</title>
 
-        <para><xref linkend="ST_SymDifference" />, <xref linkend="ST_Intersection" />, <xref linkend="ST_Union" /></para>
+        <para><xref linkend="ST_SymDifference"/>, <xref linkend="ST_Intersection"/>, <xref linkend="ST_Union"/></para>
       </refsection>
     </refentry>
 
-    <refentry id="ST_Intersection">
+    <refentry xml:id="ST_Intersection">
         <refnamediv>
             <refname>ST_Intersection</refname>
 
@@ -234,7 +234,7 @@ on that same grid.  (Requires GEOS-3.9.0 or higher)
 
         <warning><para>This function will drop the M coordinate values if present.</para></warning>
 
-          <warning><para>If working with 3D geometries, you may want to use SFGCAL based <xref linkend="ST_3DIntersection" /> which does a proper 3D intersection for 3D geometries.  Although this function works with Z-coordinate, it does an averaging of Z-Coordinate.</para></warning>
+          <warning><para>If working with 3D geometries, you may want to use SFGCAL based <xref linkend="ST_3DIntersection"/> which does a proper 3D intersection for 3D geometries.  Although this function works with Z-coordinate, it does an averaging of Z-Coordinate.</para></warning>
 
         <para>Performed by the GEOS module</para>
 
@@ -288,7 +288,7 @@ where not ST_IsEmpty(ST_Buffer(ST_Intersection(country.geom, poly.geom), 0.0));<
 
         <refsection>
         <title>Examples: 2.5Dish</title>
-        <para>Note this is not a true intersection, compare to the same example using <xref linkend="ST_3DIntersection" />.</para>
+        <para>Note this is not a true intersection, compare to the same example using <xref linkend="ST_3DIntersection"/>.</para>
         <programlisting>
 select ST_AsText(ST_Intersection(linestring, polygon)) As wkt
 from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
@@ -301,12 +301,12 @@ from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
       </refsection>
         <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_3DIntersection" />, <xref linkend="ST_Difference"/>, <xref linkend="ST_Union"/>, <xref linkend="ST_Dimension"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_Force2D" />, <xref linkend="ST_SymDifference"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Multi"/></para>
+            <para><xref linkend="ST_3DIntersection"/>, <xref linkend="ST_Difference"/>, <xref linkend="ST_Union"/>, <xref linkend="ST_Dimension"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_Force2D"/>, <xref linkend="ST_SymDifference"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Multi"/></para>
         </refsection>
     </refentry>
 
 
-    <refentry id="ST_MemUnion">
+    <refentry xml:id="ST_MemUnion">
       <refnamediv>
         <refname>ST_MemUnion</refname>
 
@@ -332,7 +332,7 @@ from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
         </para>
 
         <note>
-          <para>Produces the same result as <xref linkend="ST_Union" />, but uses less memory
+          <para>Produces the same result as <xref linkend="ST_Union"/>, but uses less memory
             and more processor time.
             This aggregate function works by unioning the geometries incrementally, as opposed to
             the ST_Union aggregate which first accumulates an array and then unions the contents
@@ -359,11 +359,11 @@ GROUP BY id;
       <refsection>
         <title>See Also</title>
 
-        <para><xref linkend="ST_Union" /></para>
+        <para><xref linkend="ST_Union"/></para>
       </refsection>
     </refentry>
 
-    <refentry id="ST_Node">
+    <refentry xml:id="ST_Node">
       <refnamediv>
         <refname>ST_Node</refname>
 
@@ -392,11 +392,11 @@ and introduces the least possible number of new nodes.
 The resulting linework is dissolved (duplicate lines are removed).
         </para>
 
-        <para>This is a good way to create fully-noded linework suitable for use as input to <xref linkend="ST_Polygonize" />.</para>
+        <para>This is a good way to create fully-noded linework suitable for use as input to <xref linkend="ST_Polygonize"/>.</para>
 
-        <para><xref linkend="ST_UnaryUnion" /> can also be used to node and dissolve linework.
+        <para><xref linkend="ST_UnaryUnion"/> can also be used to node and dissolve linework.
         It provides an option to specify a gridSize, which can provide simpler and more robust output.
-        See also <xref linkend="ST_Union" /> for an aggregate variant.
+        See also <xref linkend="ST_Union"/> for an aggregate variant.
         </para>
 
         <para>&Z_support;</para>
@@ -438,12 +438,12 @@ MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))
         <title>See Also</title>
 
         <para>
-            <xref linkend="ST_UnaryUnion" />, <xref linkend="ST_Union" />
+            <xref linkend="ST_UnaryUnion"/>, <xref linkend="ST_Union"/>
         </para>
       </refsection>
     </refentry>
 
-    <refentry id="ST_Split">
+    <refentry xml:id="ST_Split">
         <refnamediv>
             <refname>ST_Split</refname>
             <refpurpose>Returns a collection of geometries created by splitting a geometry by another geometry.</refpurpose>
@@ -470,7 +470,7 @@ MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))
             </para>
 
             <para>
-            This function is in a sense the opposite of <xref linkend="ST_Union" />.
+            This function is in a sense the opposite of <xref linkend="ST_Union"/>.
             Applying ST_Union to the returned collection should theoretically yield the original geometry
             (although due to numerical rounding this may not be exactly the case).
             </para>
@@ -499,7 +499,7 @@ MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))
                             <informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_split01.png" />
+                                <imagedata fileref="images/st_split01.png"/>
                               </imageobject>
                               <caption><para>Before Split</para></caption>
                             </mediaobject>
@@ -511,7 +511,7 @@ MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))
                             <informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_split02.png" />
+                                <imagedata fileref="images/st_split02.png"/>
                               </imageobject>
                               <caption><para>After split</para></caption>
                             </mediaobject>
@@ -544,7 +544,7 @@ SELECT ST_AsText( ST_Split(
                             <informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_split03.png" />
+                                <imagedata fileref="images/st_split03.png"/>
                               </imageobject>
                               <caption><para>Before Split</para></caption>
                             </mediaobject>
@@ -556,7 +556,7 @@ SELECT ST_AsText( ST_Split(
                             <informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_split04.png" />
+                                <imagedata fileref="images/st_split04.png"/>
                               </imageobject>
                               <caption><para>After split</para></caption>
                             </mediaobject>
@@ -602,12 +602,12 @@ SELECT ST_AsText( ST_Split( ST_Snap(line, point, 1), point)) AS snapped_split,
         <refsection>
         <title>See Also</title>
         <para>
-            <xref linkend="ST_Snap"/>, <xref linkend="ST_Union" />
+            <xref linkend="ST_Snap"/>, <xref linkend="ST_Union"/>
         </para>
         </refsection>
     </refentry>
 
-   <refentry id="ST_Subdivide">
+   <refentry xml:id="ST_Subdivide">
       <refnamediv>
         <refname>ST_Subdivide</refname>
         <refpurpose>Computes a rectilinear subdivision of a geometry.</refpurpose>
@@ -644,7 +644,7 @@ SELECT ST_AsText( ST_Split( ST_Snap(line, point, 1), point)) AS snapped_split,
             executed by the index recheck process fewer points.
         </para>
         <note><para>
-            This is a <ulink url="https://www.postgresql.org/docs/current/queries-table-expressions.html#QUERIES-TABLEFUNCTIONS">set-returning function</ulink>
+            This is a <link xlink:href="https://www.postgresql.org/docs/current/queries-table-expressions.html#QUERIES-TABLEFUNCTIONS">set-returning function</link>
             (SRF) that return a set of rows containing single geometry values.
             It can be used in a SELECT list or a FROM clause
             to produce a result set with one record for each result geometry.
@@ -668,7 +668,7 @@ SELECT ST_AsText( ST_Split( ST_Snap(line, point, 1), point)) AS snapped_split,
         <informalfigure>
             <mediaobject>
                 <imageobject>
-                <imagedata fileref="images/st_subdivide01.png" />
+                <imagedata fileref="images/st_subdivide01.png"/>
                 </imageobject>
                 <caption><para>Subdivided to maximum 10 vertices</para></caption>
             </mediaobject>
@@ -696,7 +696,7 @@ SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt
         <informalfigure>
             <mediaobject>
                 <imageobject>
-                <imagedata fileref="images/st_subdivide02.png" />
+                <imagedata fileref="images/st_subdivide02.png"/>
                 </imageobject>
                 <caption><para>The densified and split lines.</para></caption>
             </mediaobject>
@@ -724,7 +724,7 @@ LINESTRING(44.7994523421035 82.5156766227011,85 85)
 <programlisting>
 WITH complex_areas_to_subdivide AS (
     DELETE from polygons_table
-    WHERE ST_NPoints(geom) > 255
+    WHERE ST_NPoints(geom) &gt; 255
     RETURNING id, column1, column2, column3, geom
 )
 INSERT INTO polygons_table (fid, column1, column2, column3, geom)
@@ -752,15 +752,15 @@ CREATE TABLE subdivided_geoms AS
       <refsection>
         <title>See Also</title>
         <para>
-<xref linkend="ST_ClipByBox2D" />,
-<xref linkend="ST_Segmentize" />,
-<xref linkend="ST_Split" />,
-<xref linkend="ST_NPoints" />
+<xref linkend="ST_ClipByBox2D"/>,
+<xref linkend="ST_Segmentize"/>,
+<xref linkend="ST_Split"/>,
+<xref linkend="ST_NPoints"/>
     </para>
       </refsection>
     </refentry>
 
-    <refentry id="ST_SymDifference">
+    <refentry xml:id="ST_SymDifference">
       <refnamediv>
         <refname>ST_SymDifference</refname>
 
@@ -818,7 +818,7 @@ on that same grid. (Requires GEOS-3.9.0 or higher)
                             <informalfigure>
                                 <mediaobject>
                                   <imageobject>
-                                    <imagedata fileref="images/st_symdifference01.png" />
+                                    <imagedata fileref="images/st_symdifference01.png"/>
                                   </imageobject>
                                   <caption><para>The original linestrings shown together</para></caption>
                                 </mediaobject>
@@ -830,7 +830,7 @@ on that same grid. (Requires GEOS-3.9.0 or higher)
                         <para><informalfigure>
                             <mediaobject>
                               <imageobject>
-                                <imagedata fileref="images/st_symdifference02.png" />
+                                <imagedata fileref="images/st_symdifference02.png"/>
                               </imageobject>
                               <caption><para>The symmetric difference of the two linestrings</para></caption>
                             </mediaobject>
@@ -871,11 +871,11 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
       <refsection>
         <title>See Also</title>
 
-        <para><xref linkend="ST_Difference" />, <xref linkend="ST_Intersection" />, <xref linkend="ST_Union" /></para>
+        <para><xref linkend="ST_Difference"/>, <xref linkend="ST_Intersection"/>, <xref linkend="ST_Union"/></para>
       </refsection>
 </refentry>
 
-    <refentry id="ST_UnaryUnion">
+    <refentry xml:id="ST_UnaryUnion">
       <refnamediv>
         <refname>ST_UnaryUnion</refname>
 
@@ -897,7 +897,7 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
         <title>Description</title>
 
         <para>
-        A single-input variant of <xref linkend="ST_Union" />.
+        A single-input variant of <xref linkend="ST_Union"/>.
         The input may be a single geometry, a MultiGeometry, or a GeometryCollection.
         The union is applied to the individual elements of the input.
         </para>
@@ -906,22 +906,22 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
         invalid due to overlapping components.
         However, the input components must each be valid.
         An invalid input component such as a bow-tie polygon may cause an error.
-        For this reason it may be better to use <xref linkend="ST_MakeValid" />.
+        For this reason it may be better to use <xref linkend="ST_MakeValid"/>.
         </para>
 
         <para>
         Another use of this function is to node and dissolve a collection of
         linestrings which cross or overlap
         to make them <link linkend="Simple_Geometry">simple</link>.
-        (<xref linkend="ST_Node" /> also does this,
+        (<xref linkend="ST_Node"/> also does this,
         but it does not provide the <code>gridSize</code> option.)
         </para>
 
         <para>
-        It is possible to combine ST_UnaryUnion with <xref linkend="ST_Collect" /> to fine-tune
+        It is possible to combine ST_UnaryUnion with <xref linkend="ST_Collect"/> to fine-tune
         how many geometries are be unioned at once.
         This allows trading off between memory usage and compute time,
-        striking a balance between ST_Union and <xref linkend="ST_MemUnion" />.
+        striking a balance between ST_Union and <xref linkend="ST_MemUnion"/>.
         </para>
 
         <para>
@@ -944,16 +944,16 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
         <title>See Also</title>
 
         <para>
-            <xref linkend="ST_Union" />,
-            <xref linkend="ST_MemUnion" />,
-            <xref linkend="ST_MakeValid" />,
-            <xref linkend="ST_Collect" />,
-            <xref linkend="ST_Node" />
+            <xref linkend="ST_Union"/>,
+            <xref linkend="ST_MemUnion"/>,
+            <xref linkend="ST_MakeValid"/>,
+            <xref linkend="ST_Collect"/>,
+            <xref linkend="ST_Node"/>
         </para>
       </refsection>
     </refentry>
 
-<refentry id="ST_Union">
+<refentry xml:id="ST_Union">
   <refnamediv>
     <refname>ST_Union</refname>
     <refpurpose>Computes a geometry representing the point-set union of
@@ -1012,10 +1012,9 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
         operates on rows of data, in the same way the SUM() and AVG()
         functions do and like most aggregates, it also ignores NULL geometries.</para>
 
-    <para>See <xref linkend="ST_UnaryUnion" /> for a non-aggregate, single-input variant.</para>
+    <para>See <xref linkend="ST_UnaryUnion"/> for a non-aggregate, single-input variant.</para>
 
-    <para>The ST_Union array and set variants use the fast Cascaded Union algorithm described in <ulink
-        url="http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html">http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html</ulink>
+    <para>The ST_Union array and set variants use the fast Cascaded Union algorithm described in <link xlink:href="http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html">http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html</link>
     </para>
 
     <para>A <code>gridSize</code> can be specified to work in fixed-precision space.
@@ -1024,7 +1023,7 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
         (Requires GEOS-3.9.0 or higher)
     </para>
 
-    <note><para><xref linkend="ST_Collect" /> may sometimes be used in place of ST_Union,
+    <note><para><xref linkend="ST_Collect"/> may sometimes be used in place of ST_Union,
         if the result is not required to be non-overlapping.
         ST_Collect is usually faster than ST_Union because it performs no processing
         on the collected geometries.
@@ -1032,7 +1031,7 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
 
     <para>Performed by the GEOS module.</para>
     <para>ST_Union creates MultiLineString and does not sew LineStrings into a single LineString.
-        Use <xref linkend="ST_LineMerge" /> to sew LineStrings.</para>
+        Use <xref linkend="ST_LineMerge"/> to sew LineStrings.</para>
 
     <para>NOTE: this function was formerly called GeomUnion(), which
         was renamed from "Union" because UNION is an SQL reserved
@@ -1119,14 +1118,14 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
       <refsection>
         <title>See Also</title>
         <para>
-            <xref linkend="ST_Collect" />,
-            <xref linkend="ST_UnaryUnion" />,
-            <xref linkend="ST_MemUnion" />,
-            <xref linkend="ST_Intersection" />,
-            <xref linkend="ST_Difference" />,
-            <xref linkend="ST_SymDifference" />
+            <xref linkend="ST_Collect"/>,
+            <xref linkend="ST_UnaryUnion"/>,
+            <xref linkend="ST_MemUnion"/>,
+            <xref linkend="ST_Intersection"/>,
+            <xref linkend="ST_Difference"/>,
+            <xref linkend="ST_SymDifference"/>
         </para>
       </refsection>
     </refentry>
 
-</sect1>
+</section>

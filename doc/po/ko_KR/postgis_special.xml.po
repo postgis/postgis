@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-06-28 10:30+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-06-28 10:30+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -36,7 +36,7 @@ msgid ""
 "<code>average</code>."
 msgstr ""
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:7
 #, no-c-format
 msgid "&list_aggregates;"
@@ -58,7 +58,7 @@ msgid ""
 "code> clause."
 msgstr ""
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:13
 #, no-c-format
 msgid "&list_window_functions;"
@@ -78,7 +78,7 @@ msgid ""
 "standard"
 msgstr ""
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:19
 #, no-c-format
 msgid "&list_sqlmm_functions;"
@@ -111,7 +111,7 @@ msgid ""
 "on mercator in worst case scenario)"
 msgstr ""
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:28
 #, no-c-format
 msgid "&list_geography_functions;"
@@ -132,7 +132,7 @@ msgid ""
 "object. Listed in alphabetical order."
 msgstr ""
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:36
 #, no-c-format
 msgid "&list_raster_functions;"
@@ -153,7 +153,7 @@ msgid ""
 "link> or <link linkend=\"geomval\">geomval</link> data type object."
 msgstr ""
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:42
 #, no-c-format
 msgid "&list_dump_functions;"
@@ -175,7 +175,7 @@ msgid ""
 "linkend=\"box3d_type\">box3d</link>"
 msgstr ""
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:49
 #, no-c-format
 msgid "&list_box_functions;"
@@ -195,7 +195,7 @@ msgid ""
 "Index."
 msgstr ""
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:55
 #, no-c-format
 msgid "&list_3d_functions;"
@@ -215,7 +215,7 @@ msgid ""
 "CURVEPOLYGON, and other curved geometry types"
 msgstr ""
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:61
 #, no-c-format
 msgid "&list_curved_geometry_functions;"
@@ -235,7 +235,7 @@ msgid ""
 "POLYHEDRALSURFACE, POLYHEDRALSURFACEM geometries"
 msgstr ""
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:67
 #, no-c-format
 msgid "&list_polyhedral_geometry_functions;"
@@ -395,7 +395,7 @@ msgstr ""
 msgid "New, Enhanced or changed PostGIS Functions"
 msgstr ""
 
-#. Tag: sect1
+#. Tag: section
 #: postgis_special.xml:141
 #, no-c-format
 msgid "&list_new_functions;"

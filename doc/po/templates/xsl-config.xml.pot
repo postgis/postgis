@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-12 14:53+0000\n"
+"POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -100,9 +100,9 @@ msgstr ""
 #: xsl-config.xml:133
 #, no-c-format
 msgid ""
-"This method implements the <ulink url=\"http://www.opengeospatial.org/"
+"This method implements the <link xlink:href=\"http://www.opengeospatial.org/"
 "standards/sfs\">OGC Simple Features Implementation Specification for SQL 1.1."
-"</ulink>"
+"</link>"
 msgstr ""
 
 #. Tag: para
