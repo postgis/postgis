@@ -370,7 +370,7 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
 	</para>
 	</listitem>
 	<listitem>
-	<para>
+    <para>
 		Some custom records of spatial_ref_sys in dump file have
 		an invalid SRID value. Valid SRID values are bigger than 0
 		and smaller than 999000. Values in the 999000.999999 range
@@ -382,36 +382,48 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
     for that invariant to hold and possibly also its primary key
     ( when multiple invalid SRIDS get converted to the same reserved
     SRID value ).
-  </para>
+    </para>
 
-  <para>
+    <para>
 		In order to fix this you should copy your custom SRS to
 		a SRID with a valid value (maybe in the 910000..910999
 		range), convert all your tables to the new srid (see
 		<xref linkend="UpdateGeometrySRID"/>), delete the invalid
 		entry from spatial_ref_sys and re-construct the check(s) with:
+    </para>
 
-		<programlisting>ALTER TABLE spatial_ref_sys ADD CONSTRAINT spatial_ref_sys_srid_check check (srid &gt; 0 AND srid &lt; 999000 );</programlisting>
+    <programlisting>
+ALTER TABLE spatial_ref_sys ADD CONSTRAINT spatial_ref_sys_srid_check check (srid &gt; 0 AND srid &lt; 999000 );
+    </programlisting>
 
-		<programlisting>ALTER TABLE spatial_ref_sys ADD PRIMARY KEY(srid));</programlisting>
+    <programlisting>
+ALTER TABLE spatial_ref_sys ADD PRIMARY KEY(srid));
+    </programlisting>
 
+    <para>
 		If you are upgrading an old database containing french <ulink url="https://en.wikipedia.org/wiki/Institut_g%C3%A9ographique_national">
 			IGN
 		  </ulink> cartography, you will have probably SRIDs out
 		of range and you will see, when importing your database, issues like this :
+    </para>
 
 		<programlisting> WARNING: SRID 310642222 converted to 999175 (in reserved zone)</programlisting>
 
+    <para>
 		In this case, you can try following steps : first throw
 		out completely the IGN from the sql which is resulting
 		from postgis_restore.pl. So, after having run :
+    </para>
 
 		<programlisting>perl utils/postgis_restore.pl "/somepath/olddb.backup" > olddb.sql</programlisting>
 
+    <para>
 		run this command :
+    </para>
 
 		<programlisting>grep -v IGNF olddb.sql > olddb-without-IGN.sql</programlisting>
 
+    <para>
 		Create then your newdb, activate the required Postgis extensions,
 		and insert properly the french system IGN with :
 
@@ -421,9 +433,10 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
 
 		After these operations, import your data :
 
+    </para>
+
 		<programlisting>psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  2> errors.txt</programlisting>
 
-	</para>
 	</listitem>
 	</orderedlist>
 
