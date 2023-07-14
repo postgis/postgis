@@ -1,9 +1,15 @@
-PostGIS 3.4.0dev
-2023/07/xx
+PostGIS 3.4.0beta1
+2023/07/14
 
 This version requires PostgreSQL 12 or higher, GEOS 3.6 or higher, and Proj 6.1+.
 To take advantage of all features, GEOS 3.12+ is needed.
 To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
+
+Many thanks to our translation teams, in particular:
+
+Teramoto Ikuhiro (Japanese Team)
+Vincent Bre (French Team)
+
 
 * New Features *
   - #5055, complete manual internationalization (Sandro Santilli)

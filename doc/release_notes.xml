@@ -4,11 +4,14 @@
     <subtitle>Release Notes</subtitle>
         <sect1>
             <title>PostGIS 3.4.0beta1</title>
-            <para>2023/07/15</para>
+            <para>2023/07/14</para>
             <para>This version requires PostgreSQL 12 or higher, GEOS 3.6 or higher, and Proj 6.1+.
             To take advantage of all features, GEOS 3.12+ is needed.
             To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.</para>
             <para>NOTE: GEOS 3.12.0 details at <ulink url="https://libgeos.org/posts/2023-06-27-geos-3-12-released/">GEOS 3.12.0 release notes</ulink></para>
+            <para>Many thanks to our translation teams, in particular:</para>
+            <para>Teramoto Ikuhiro (Japanese Team)</para>
+            <para>Vincent Bre (French Team)</para>
 
             <simplesect>
                 <title>New features</title>

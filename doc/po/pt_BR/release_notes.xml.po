@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-14 19:33+0000\n"
+"POT-Creation-Date: 2023-07-14 22:01+0000\n"
 "PO-Revision-Date: 2021-11-28 22:22+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -41,7 +41,7 @@ msgstr ""
 #. Tag: para
 #: release_notes.xml:7
 #, no-c-format
-msgid "2023/07/15"
+msgid "2023/07/14"
 msgstr ""
 
 #. Tag: para
@@ -61,14 +61,32 @@ msgid ""
 "posts/2023-06-27-geos-3-12-released/\">GEOS 3.12.0 release notes</ulink>"
 msgstr ""
 
-#. Tag: title
+#. Tag: para
+#: release_notes.xml:12
+#, no-c-format
+msgid "Many thanks to our translation teams, in particular:"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:13
+#, no-c-format
+msgid "Teramoto Ikuhiro (Japanese Team)"
+msgstr ""
+
+#. Tag: para
 #: release_notes.xml:14
+#, no-c-format
+msgid "Vincent Bre (French Team)"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:17
 #, no-c-format
 msgid "New features"
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:15
+#: release_notes.xml:18
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5055\">5055</ulink>, "
@@ -76,7 +94,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:16
+#: release_notes.xml:19
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5052\">5052</ulink>, "
@@ -84,7 +102,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:18
+#: release_notes.xml:21
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</ulink>, "
@@ -92,14 +110,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:19
+#: release_notes.xml:22
 #, no-c-format
 msgid ""
 "New install-extension-upgrades command in postgis script (Sandro Santilli)"
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:20
+#: release_notes.xml:23
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5257\">5257</ulink>, "
@@ -109,7 +127,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:21
+#: release_notes.xml:24
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5006\">5006</ulink>, "
@@ -118,7 +136,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:22
+#: release_notes.xml:25
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5283\">5283</ulink>, "
@@ -126,7 +144,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:23
+#: release_notes.xml:26
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5286\">5286</ulink>, "
@@ -134,7 +152,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:24
+#: release_notes.xml:27
 #, no-c-format
 msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/703\">703</ulink>, "
@@ -142,7 +160,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:25
+#: release_notes.xml:28
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5336\">5336</ulink>, "
@@ -150,7 +168,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:26
+#: release_notes.xml:29
 #, no-c-format
 msgid ""
 "Allow singleton geometry to be inserted into Geometry(Multi*) columns (Paul "
@@ -158,7 +176,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:27
+#: release_notes.xml:30
 #, no-c-format
 msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/721\">721</ulink>, New "
@@ -166,7 +184,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:28
+#: release_notes.xml:31
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5397\">5397</ulink>, "
@@ -174,28 +192,38 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:29
+#: release_notes.xml:32
 #, no-c-format
 msgid ""
-"ST_LargestEmptyCircle, exposes extra semantics on circle finding. Geos 3.9+ "
-"required(Martin Davis)"
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5373\">5373</"
+"ulink>ST_LargestEmptyCircle, exposes extra semantics on circle finding. Geos "
+"3.9+ required(Martin Davis)"
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:30 release_notes.xml:47
+#: release_notes.xml:33
 #, no-c-format
 msgid ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</ulink>, "
 "ST_Project signature for geometry, and two-point signature (Paul Ramsey)"
 msgstr ""
 
-#. Tag: title
+#. Tag: para
 #: release_notes.xml:34
+#, no-c-format
+msgid ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</ulink>, "
+"ST_LineExtend for extending linestrings (Paul Ramsey)"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:38
 #, no-c-format
 msgid "Enhancements"
 msgstr "Melhorias"
 
 #. Tag: para
-#: release_notes.xml:35
+#: release_notes.xml:39
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5194\">5194</ulink>, do "
@@ -203,7 +231,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:36
+#: release_notes.xml:40
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5092\">5092</ulink>, "
@@ -211,7 +239,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:37
+#: release_notes.xml:41
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/635\">635</ulink>, honour "
@@ -219,7 +247,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:38
+#: release_notes.xml:42
 #, no-c-format
 msgid ""
 "Honour --mandir (and --prefix) configure switch for man pages install path "
@@ -227,7 +255,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:39
+#: release_notes.xml:43
 #, no-c-format
 msgid ""
 "Honour --htmldir (and --docdir and --prefix) configure switch for html pages "
@@ -235,7 +263,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:41
+#: release_notes.xml:45
 #, no-c-format
 msgid ""
 "[postgis_topology] Speed up check of topology faces without edges (Sandro "
@@ -243,7 +271,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:42
+#: release_notes.xml:46
 #, no-c-format
 msgid ""
 "[postgis_topology] Speed up coincident nodes check in topology validation "
@@ -251,7 +279,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:43
+#: release_notes.xml:47
 #, no-c-format
 msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/718\">718</ulink>, "
@@ -259,7 +287,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:44
+#: release_notes.xml:48
 #, no-c-format
 msgid ""
 "Repair spatial planner stats to use computed selectivity for contains/within "
@@ -267,7 +295,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:45
+#: release_notes.xml:49
 #, no-c-format
 msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/734\">734</ulink>, "
@@ -276,7 +304,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:46
+#: release_notes.xml:50
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5177\">5177</ulink>, "
@@ -284,7 +312,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:48
+#: release_notes.xml:51
+#, no-c-format
+msgid ""
+"ST_Project signature for geometry, and two-point signature (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:52
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/4913\">4913</ulink>, "
@@ -292,14 +327,23 @@ msgid ""
 "and MultiSurface (Regina Obe)"
 msgstr ""
 
+#. Tag: para
+#: release_notes.xml:54
+#, no-c-format
+msgid ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5266\">5266</ulink>, "
+"ST_ClosestPoint, ST_ShortestLine support for geography type (MobilityDB, "
+"Paul Ramsey)"
+msgstr ""
+
 #. Tag: title
-#: release_notes.xml:53
+#: release_notes.xml:58
 #, no-c-format
 msgid "Breaking Changes"
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:54
+#: release_notes.xml:59
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5229\">5229</ulink>, Drop "
@@ -307,7 +351,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:55
+#: release_notes.xml:60
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</ulink>, "
