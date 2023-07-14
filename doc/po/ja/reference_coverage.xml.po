@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: ming 64gcc81\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-12 18:27+0000\n"
-"PO-Revision-Date: 2023-07-11 05:08+0000\n"
+"PO-Revision-Date: 2023-07-14 10:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_coverage/ja/>\n"
@@ -44,7 +44,7 @@ msgstr "カバレッジ"
 #: reference_coverage.xml:15
 #, no-c-format
 msgid "ST_CoverageInvalidEdges"
-msgstr ""
+msgstr "ST_CoverageInvalidEdges"
 
 #. Tag: refpurpose
 #: reference_coverage.xml:17
@@ -64,6 +64,10 @@ msgid ""
 "paramdef> <paramdef><type>float8 </type> <parameter>tolerance = 0</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_CoverageInvalidEdges</function></funcdef> "
+"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
+"paramdef> <paramdef><type>float8 </type> <parameter>tolerance = "
+"0</parameter></paramdef>"
 
 #. Tag: title
 #: reference_coverage.xml:33 reference_coverage.xml:120
@@ -194,6 +198,25 @@ msgid ""
 "  3 | LINESTRING (140 80, 140 190)\n"
 "  3 | null"
 msgstr ""
+"WITH coverage(id, geom) AS (VALUES\n"
+"  (1, 'POLYGON ((10 190, 30 160, 40 110, 100 70, 120 10, 10 10, 10 "
+"190))'::geometry),\n"
+"  (2, 'POLYGON ((100 190, 10 190, 30 160, 40 110, 50 80, 74 110.5, 100 130, "
+"140 120, 140 160, 100 190))'::geometry),\n"
+"  (3, 'POLYGON ((140 190, 190 190, 190 80, 140 80, 140 190))'::geometry),\n"
+"  (4, 'POLYGON ((180 40, 120 10, 100 70, 140 80, 190 80, 180 40))'::geometry)"
+"\n"
+")\n"
+"SELECT id, ST_AsText(ST_CoverageInvalidEdges(geom) OVER ())\n"
+"  FROM coverage;\n"
+"\n"
+" id |               st_astext\n"
+"----+---------------------------------------\n"
+"  1 | LINESTRING (40 110, 100 70)\n"
+"  2 | MULTILINESTRING ((100 130, 140 120, 140 160, 100 190), (40 110, 50 80, "
+"74 110.5))\n"
+"  3 | LINESTRING (140 80, 140 190)\n"
+"  3 | null"
 
 #. Tag: programlisting
 #: reference_coverage.xml:83
@@ -205,6 +228,11 @@ msgid ""
 "    FROM coverage\n"
 "    );"
 msgstr ""
+"-- カバレッジ妥当性のためにテーブル全体をテストする\n"
+"SELECT true = ALL (\n"
+"    SELECT ST_CoverageInvalidEdges(geom) OVER () IS NULL\n"
+"    FROM coverage\n"
+"    );"
 
 #. Tag: title
 #: reference_coverage.xml:87 reference_coverage.xml:177
@@ -299,6 +327,10 @@ msgid ""
 "appeared to be shared). Use <xref linkend=\"ST_CoverageInvalidEdges\"/> to "
 "determine if a coverage is valid."
 msgstr ""
+"入力が妥当なカバレッジでない場合には、出力に予期しない何か (境界のインタセク"
+"ト、共有されているように見えるのに分かれている境界)が出現する可能性があります"
+"。カバレッジが妥当かどうかを判断するには<xref linkend="
+"\"ST_CoverageInvalidLocations\"/>を使います。"
 
 #. Tag: para
 #: reference_coverage.xml:154 reference_coverage.xml:230
@@ -411,6 +443,10 @@ msgid ""
 "the output (such as unmerged or overlapping polygons). Use <xref "
 "linkend=\"ST_CoverageInvalidEdges\"/> to determine if a coverage is valid."
 msgstr ""
+"入力が妥当なカバレッジでない場合には、出力に予期しない何か (マージされていな"
+"いポリゴンやオーバラップするポリゴン)が出現する可能性があります。"
+"カバレッジが妥当かどうかを判断するには<xref linkend="
+"\"ST_CoverageInvalidLocations\"/>を使います。"
 
 #. Tag: para
 #: reference_coverage.xml:215
