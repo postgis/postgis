@@ -45,8 +45,10 @@ POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
 
 DOCSUFFIX=-en
+
 # TODO: change this ?
-HTML_OUT_DIR=$(abs_builddir)/html
+html_builddir=$(abs_builddir)/html
+images_builddir=$(html_builddir)/images
 
 ifneq (,$(findstring dev,$(POSTGIS_MICRO_VERSION)))
   POSTGIS_DOWNLOAD_URL=http://postgis.net/stuff
@@ -238,7 +240,7 @@ GENERATED_COMMENT_FILES = $(patsubst \
 
 GENERATED_CHEATSHEET_FILES = $(patsubst \
 	$(abs_srcdir)/xsl/%.html.xsl, \
-	$(HTML_OUT_DIR)/%$(DOCSUFFIX).html, \
+	$(html_builddir)/%$(DOCSUFFIX).html, \
 	$(wildcard $(abs_srcdir)/xsl/*_cheatsheet.html.xsl) \
 )
 
@@ -308,23 +310,23 @@ endif
 $(GENERATED_COMMENT_FILES): %.sql: xsl/%.sql.xsl $(XML_INPUTS) postgis-out.xml
 	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
 
-$(GENERATED_CHEATSHEET_FILES): $(HTML_OUT_DIR)/%$(DOCSUFFIX).html: xsl/%.html.xsl $(XML_INPUTS) postgis-out.xml xsl/common_cheatsheet.xsl xsl/common_utils.xsl
+$(GENERATED_CHEATSHEET_FILES): $(html_builddir)/%$(DOCSUFFIX).html: xsl/%.html.xsl $(XML_INPUTS) postgis-out.xml xsl/common_cheatsheet.xsl xsl/common_utils.xsl
 	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) $(XSLTPROC_CUSTOM_VARS) -o $@ $< postgis-out.xml
 
 # TODO: use a postgis_release_version variable passed via --stringparam
 postgis-out.xml: postgis.xml Makefile
 	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g;s'@@POSTGIS_DOWNLOAD_URL@@'${POSTGIS_DOWNLOAD_URL}'g;" $< > $@
 
-chunked-html: $(HTML_OUT_DIR)/postgis$(DOCSUFFIX)/docbook.css
-$(HTML_OUT_DIR)/postgis$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile $(XML_INPUTS)
+chunked-html: $(html_builddir)/postgis$(DOCSUFFIX)/docbook.css
+$(html_builddir)/postgis$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile $(XML_INPUTS)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		$(XSLTPROC_CHUNKED_HTML_OPTS) \
 		--output $(dir $@) \
 		$(CHUNK_HTML_DOCBOOK_XSL) \
 		$<
 
-chunked-html-web: $(HTML_OUT_DIR)/postgis-web$(DOCSUFFIX)/docbook.css
-$(HTML_OUT_DIR)/postgis-web$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile $(XML_INPUTS)
+chunked-html-web: $(html_builddir)/postgis-web$(DOCSUFFIX)/docbook.css
+$(html_builddir)/postgis-web$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile $(XML_INPUTS)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		$(XSLTPROC_CHUNKED_HTML_OPTS) \
 		--output $(dir $@) \
@@ -333,8 +335,8 @@ $(HTML_OUT_DIR)/postgis-web$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile $(
 		$<
 
 HTML_BITS = $(wildcard html/*.html)
-chunked-html-web-mobile: $(HTML_OUT_DIR)/postgis-web-mobile$(DOCSUFFIX)/docbook.css
-$(HTML_OUT_DIR)/postgis-web-mobile$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile $(XML_INPUTS)
+chunked-html-web-mobile: $(html_builddir)/postgis-web-mobile$(DOCSUFFIX)/docbook.css
+$(html_builddir)/postgis-web-mobile$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile $(XML_INPUTS)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		$(XSLTPROC_CHUNKED_HTML_OPTS) \
 		--output $(dir $@) \
@@ -343,7 +345,7 @@ $(HTML_OUT_DIR)/postgis-web-mobile$(DOCSUFFIX)/docbook.css: postgis-out.xml Make
 		$<
 	$(PERL) -pi -e 's/<head>/<head><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">/g' $(HTML_BITS)
 
-html: $(HTML_OUT_DIR)/postgis$(DOCSUFFIX).html
+html: $(html_builddir)/postgis$(DOCSUFFIX).html
 
 %-localized:
 	rule=$(patsubst %-localized,%,$@); \
@@ -352,10 +354,10 @@ html: $(HTML_OUT_DIR)/postgis$(DOCSUFFIX).html
     $(MAKE) -C po/$$lang local-$$rule || exit 1; \
   done
 
-$(HTML_OUT_DIR)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(XML_INPUTS)
+$(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(XML_INPUTS)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		--stringparam html.stylesheet style.css \
-		--output $(HTML_OUT_DIR)/postgis$(DOCSUFFIX).html \
+		--output $(html_builddir)/postgis$(DOCSUFFIX).html \
 		$(HTML_DOCBOOK_XSL) \
 		$<
 
@@ -423,13 +425,13 @@ doxygen: doxygen.cfg
 	doxygen $<
 
 images images-install images-uninstall images-clean:
-	$(MAKE) -C html/images $@
+	$(MAKE) -C $(images_builddir) $@
 
 html-clean:
-	rm -f $(HTML_OUT_DIR)/postgis$(DOCSUFFIX).html
-	rm -rf $(HTML_OUT_DIR)/postgis$(DOCSUFFIX)/
-	rm -rf $(HTML_OUT_DIR)/postgis-web$(DOCSUFFIX)/
-	rm -rf $(HTML_OUT_DIR)/postgis-web-mobile$(DOCSUFFIX)/
+	rm -f $(html_builddir)/postgis$(DOCSUFFIX).html
+	rm -rf $(html_builddir)/postgis$(DOCSUFFIX)/
+	rm -rf $(html_builddir)/postgis-web$(DOCSUFFIX)/
+	rm -rf $(html_builddir)/postgis-web-mobile$(DOCSUFFIX)/
 
 pdf-clean:
 	rm -f postgis*$(DOCSUFFIX).pdf
@@ -448,14 +450,14 @@ clean: images-clean html-clean pdf-clean epub-clean cheatsheet-clean
 	rm -f images # work around https://trac.osgeo.org/postgis/ticket/5422
 	rm -f $(XML_GENERATED_SOURCES)
 	rm -f $(TAG_GENERATED_SOURCES)
-	$(MAKE) -C html/images clean
+	$(MAKE) -C $(images_builddir) clean
 	rm -f postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
 	rm -f raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
 	rm -f *.tmp
 	$(MAKE) clean-localized
 
 distclean: clean distclean-localized
-	$(MAKE) -C html/images distclean
+	$(MAKE) -C $(images_builddir) distclean
 	rm -f Makefile Makefile.comments
 
 maintainer-clean: distclean
@@ -498,30 +500,30 @@ man-uninstall:
 	rm -f $(DESTDIR)$(mandir)/man1/pgtopo_export.1
 	rm -f $(DESTDIR)$(mandir)/man1/pgtopo_import.1
 
-html-install: $(HTML_OUT_DIR)/postgis$(DOCSUFFIX).html
+html-install: $(html_builddir)/postgis$(DOCSUFFIX).html
 	mkdir -p $(DESTDIR)$(htmldir)
-	$(INSTALL_DATA) $(HTML_OUT_DIR)/postgis$(DOCSUFFIX).html $(DESTDIR)$(htmldir)/
+	$(INSTALL_DATA) $(html_builddir)/postgis$(DOCSUFFIX).html $(DESTDIR)$(htmldir)/
 
 html-uninstall:
 	rm -f $(DESTDIR)$(htmldir)/postgis$(DOCSUFFIX).html
 
 chunked-html-install: chunked-html
 	mkdir -p $(DESTDIR)$(htmldir)
-	cp -R $(HTML_OUT_DIR)/postgis$(DOCSUFFIX) $(DESTDIR)$(htmldir)/
+	cp -R $(html_builddir)/postgis$(DOCSUFFIX) $(DESTDIR)$(htmldir)/
 
 chunked-html-uninstall:
 	rm -rf $(DESTDIR)$(htmldir)/postgis$(DOCSUFFIX)/
 
 chunked-html-web-install: chunked-html-web
 	mkdir -p $(DESTDIR)$(htmldir)
-	cp -R $(HTML_OUT_DIR)/postgis-web$(DOCSUFFIX) $(DESTDIR)$(htmldir)/
+	cp -R $(html_builddir)/postgis-web$(DOCSUFFIX) $(DESTDIR)$(htmldir)/
 
 chunked-html-web-uninstall:
 	rm -rf $(DESTDIR)$(htmldir)/postgis-web$(DOCSUFFIX)/
 
 chunked-html-web-mobile-install: chunked-html-web-mobile
 	mkdir -p $(DESTDIR)$(htmldir)
-	cp -R $(HTML_OUT_DIR)/postgis-web-mobile$(DOCSUFFIX) $(DESTDIR)$(htmldir)/
+	cp -R $(html_builddir)/postgis-web-mobile$(DOCSUFFIX) $(DESTDIR)$(htmldir)/
 
 chunked-html-web-mobile-uninstall:
 	rm -rf $(DESTDIR)$(htmldir)/postgis-web-mobile$(DOCSUFFIX)/
@@ -564,7 +566,7 @@ check-xml: $(XML_INPUTS)
 	$(XMLLINT) --loaddtd $(XSLTPROC_PATH_OPT) --xinclude --valid postgis-out.xml --noout
 
 check-cheatsheets: cheatsheets
-	for f in $(abs_builddir)/$(HTML_OUT_DIR)/*_cheatsheet-en.html; do \
+	for f in $(abs_builddir)/$(html_builddir)/*_cheatsheet-en.html; do \
 		$(abs_top_srcdir)/utils/check_localized_cheatsheets.sh $${f} en $(patsubst -%,%,$(DOCSUFFIX)) || exit 1; \
 	done
 
