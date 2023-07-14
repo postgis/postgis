@@ -2,7 +2,9 @@ PostGIS 3.3.5dev
 YYYY/MM/DD
 
 * Bug Fixes and Enhancements *
-  - ...
+ - #5442, [postgis_tiger_geocoder,postgis_topology]
+          Database search_path does not do
+          what it intends to do (Jelte Fennema)
 
 PostGIS 3.3.4
 2023/07/28
