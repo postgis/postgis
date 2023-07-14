@@ -152,7 +152,7 @@
 
          <para>Visually, for two overlapping polygonal geometries, this looks like:</para>
 
-          <informaltable frame="none" border="0">
+          <informaltable frame="none">
             <tgroup cols="2">
               <colspec colwidth="80pt" />
 
@@ -324,7 +324,7 @@ FROM city JOIN state ON ST_Intersects(city.geom, state.geom);
         are insufficient to  provide a desired spatial filter condition.
         </para>
 
-        <informaltable frame="none" border="0">
+        <informaltable frame="none">
           <tgroup cols="1">
             <tbody>
               <row>
@@ -353,7 +353,7 @@ FROM city JOIN state ON ST_Intersects(city.geom, state.geom);
           </tgroup>
         </informaltable>
 
-        <informaltable frame="none" border="0">
+        <informaltable frame="none">
           <tgroup cols="1">
             <tbody>
               <row>

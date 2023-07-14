@@ -908,7 +908,7 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
       If the endpoints of a simple LineString are identical it is called <emphasis>closed</emphasis>
       and referred to as a Linear Ring.</para>
 
-	  <informaltable border="0" frame="none">
+	  <informaltable frame="none">
 		<tgroup cols="1">
 		  <tbody>
 			<row>
@@ -976,7 +976,7 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
 	  any two elements occurs at points that are on the
 	  boundaries of both elements.  </para>
 
-	  <informaltable border="0" frame="none">
+	  <informaltable frame="none">
 		<tgroup cols="1">
 		  <tbody>
 			<row>
@@ -1085,7 +1085,7 @@ SELECT
         </para></listitem>
         </orderedlist>
 
-	  <informaltable border="0" frame="none">
+	  <informaltable frame="none">
 		<tgroup cols="1">
 		  <tbody>
 			<row>
@@ -1183,7 +1183,7 @@ SELECT
         </para></listitem>
         </orderedlist>
 
-	  <informaltable border="0" frame="none">
+	  <informaltable frame="none">
 		<tgroup cols="1">
 		  <tbody>
 			<row>
