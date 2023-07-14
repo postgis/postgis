@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-09 16:49+0000\n"
-"PO-Revision-Date: 2023-07-11 05:08+0000\n"
+"PO-Revision-Date: 2023-07-14 02:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_relationshipxml/ja/>\n"
@@ -258,6 +258,8 @@ msgid ""
 "In mathematical terms: <emphasis>ST_Contains(A, B) ⇔ (A ⋂ B = B) ∧ (Int(A) ⋂ "
 "Int(B) ≠ ∅) </emphasis>"
 msgstr ""
+"数学用語では: <emphasis>ST_Contains(A, B) ⇔ (A ⋂ B = B) ∧ (Int(A) ⋂ Int(B) ≠ "
+"∅) </emphasis>"
 
 #. Tag: para
 #: reference_relationship.xml:100
@@ -588,6 +590,8 @@ msgid ""
 "Returns <varname>true</varname> if every point of B lies in the interior of "
 "A (or equivalently, no point of B lies in the the boundary or exterior of A)."
 msgstr ""
+"Bの全てのポイントがAの内部にある (もしくはBのポイントでAの外部にあるポイント"
+"が無い)場合に<varname>TRUE</varname>を返します。"
 
 #. Tag: para
 #: reference_relationship.xml:290
@@ -596,6 +600,8 @@ msgid ""
 "In mathematical terms: <emphasis>ST_ContainsProperly(A, B) ⇔ Int(A) ⋂ B = B "
 "</emphasis>"
 msgstr ""
+"数学用語では: <emphasis>ST_ContainsProperly(A, B) ⇔ Int(A) ⋂ B = B "
+"</emphasis>"
 
 #. Tag: para
 #: reference_relationship.xml:293
@@ -603,7 +609,8 @@ msgstr ""
 msgid ""
 "A contains B properly if the DE-9IM Intersection Matrix for the two "
 "geometries matches [T**FF*FF*]"
-msgstr ""
+msgstr "二つのジオメトリのDE-"
+"9IM交差行列が[T**FF*FF*]に合致する場合には、AがBを完全に含みます。"
 
 #. Tag: para
 #: reference_relationship.xml:296
