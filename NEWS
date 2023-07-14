@@ -1,12 +1,9 @@
 PostGIS 3.4.0dev
-2023/xx/xx
+2023/07/xx
 
-* Breaking Changes *
-  - #5229, Drop support for Proj < 6.1 and PG 11 (Regina Obe)
-  - #5306, GH734, postgis_full_version() and postgis_proj_version()
-    now output more information about proj network configuration
-    and data paths. GEOS compile-time version
-    also shown if different from run-time (Paul Ramsey, Sandro Santilli)
+This version requires PostgreSQL 12 or higher, GEOS 3.6 or higher, and Proj 6.1+.
+To take advantage of all features, GEOS 3.12+ is needed.
+To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
 
 * New Features *
   - #5055, complete manual internationalization (Sandro Santilli)
@@ -33,8 +30,8 @@ PostGIS 3.4.0dev
   - Honour --mandir (and --prefix) configure switch for man pages install path (Sandro Santilli)
   - Honour --htmldir (and --docdir and --prefix) configure switch for
     html pages install path (Sandro Santilli)
-  - Speed up check of topology faces without edges (Sandro Santilli)
-  - Speed up coincident nodes check in topology validation  (Sandro Santilli)
+  - [postgis_topology] Speed up check of topology faces without edges (Sandro Santilli)
+  - [postgis_topology] Speed up coincident nodes check in topology validation  (Sandro Santilli)
   - GH718, ST_QuantizeCoordinates(): speed-up implementation (Even Rouault)
   - Repair spatial planner stats to use computed selectivity for contains/within queries (Paul Ramsey)
   - GH734, Additional metadata on Proj installation in postgis_proj_version (Paul Ramsey)
@@ -43,9 +40,12 @@ PostGIS 3.4.0dev
   - #4913, ST_AsSVG support for curve types CircularString, CompoundCurve, MultiCurve,
            and MultiSurface (Regina Obe)
 
-* Bug Fix *
-
-
+* Breaking Changes *
+  - #5229, Drop support for Proj < 6.1 and PG 11 (Regina Obe)
+  - #5306, GH734, postgis_full_version() and postgis_proj_version()
+    now output more information about proj network configuration
+    and data paths. GEOS compile-time version
+    also shown if different from run-time (Paul Ramsey, Sandro Santilli)
 
 PostGIS 3.3.0
 2022/08/26
