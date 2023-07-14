@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-13 08:07+0000\n"
-"PO-Revision-Date: 2023-07-03 03:08+0000\n"
+"PO-Revision-Date: 2023-07-14 10:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_overlayxml/ja/>\n"
@@ -211,13 +211,13 @@ msgstr "GEOSモジュールで実現しています。"
 #: reference_overlay.xml:768 reference_overlay.xml:874
 #, no-c-format
 msgid "Enhanced: 3.1.0 accept a gridSize parameter."
-msgstr ""
+msgstr "Enhanced: 3.1.0 gridSizeパラメータを受け付けるようになりました。"
 
 #. Tag: para
 #: reference_overlay.xml:98
 #, no-c-format
 msgid "Requires GEOS &gt;= 3.9.0 to use the gridSize parameter."
-msgstr ""
+msgstr "gridSizeパラメータを使うにはGEOS 3.9.0以上が必要です。"
 
 #. Tag: para
 #: reference_overlay.xml:100 reference_overlay.xml:225
@@ -438,7 +438,7 @@ msgstr ""
 #: reference_overlay.xml:220
 #, no-c-format
 msgid "Enhanced: 3.1.0 accept a gridSize parameter"
-msgstr ""
+msgstr "Enhanced: 3.1.0 gridSizeパラメータを受け付けるようになりました"
 
 #. Tag: para
 #: reference_overlay.xml:221 reference_overlay.xml:549
@@ -446,7 +446,7 @@ msgstr ""
 #: reference_overlay.xml:875
 #, no-c-format
 msgid "Requires GEOS &gt;= 3.9.0 to use the gridSize parameter"
-msgstr ""
+msgstr "gridSizeパラメータを使うにはGEOS 3.9.0以上が必要です"
 
 #. Tag: para
 #: reference_overlay.xml:222 reference_overlay.xml:876
