@@ -310,7 +310,7 @@ SELECT degrees( ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, 0.2 0
             <paramdef><type>geography </type>
               <parameter>geom2</parameter></paramdef>
             <paramdef choice="opt"><type>boolean </type>
-              <parameter>repeat = true</parameter></paramdef>
+              <parameter>use_spheroid = true</parameter></paramdef>
           </funcprototype>
 
 		</funcsynopsis>
