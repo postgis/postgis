@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-09 16:49+0000\n"
-"PO-Revision-Date: 2023-05-15 11:08+0000\n"
+"PO-Revision-Date: 2023-07-14 02:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_accessorxml/ja/>\n"
@@ -421,6 +421,10 @@ msgid ""
 "</lineannotation>\n"
 "MULTIPOINT((100 150),(160 170))"
 msgstr ""
+"<lineannotation>\n"
+"ST_AsText output\n"
+"</lineannotation>\n"
+"MULTIPOINT((100 150),(160 170))"
 
 #. Tag: para
 #: reference_accessor.xml:124
@@ -456,6 +460,11 @@ msgid ""
 "MULTILINESTRING((10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 130),\n"
 "        (70 40,100 50,120 80,80 110,50 90,70 40))"
 msgstr ""
+"<lineannotation>\n"
+"ST_AsText output\n"
+"</lineannotation>\n"
+"MULTILINESTRING((10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 130),\n"
+"        (70 40,100 50,120 80,80 110,50 90,70 40))"
 
 #. Tag: programlisting
 #: reference_accessor.xml:136
