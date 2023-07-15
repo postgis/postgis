@@ -258,8 +258,7 @@ $(GENERATED_IMAGES): %.png: wkt/%.wkt generator wkt/styles.conf
 
 # Command to resize each of the images
 $(GENERATED_IMAGES_RESIZED): %.png: wkt/%.wkt generator wkt/styles.conf
-	@./generator $< $@
-	convert $@ -resize 100x100 $@
+	./generator -s 100x100 $< $@
 
 # Build the main executable
 generator: $(OBJS) ../../../liblwgeom/.libs/liblwgeom.a

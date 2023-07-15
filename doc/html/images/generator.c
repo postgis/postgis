@@ -58,7 +58,7 @@
 bool optionVerbose = false;
 
 // Some global styling variables
-char *imageSize = "200x200";
+const char *imageSize = "200x200";
 
 int getStyleName(char **styleName, char* line);
 
@@ -394,9 +394,13 @@ int parseOptions(int argc, const char* argv[] )
 	if (argc <= 1) return 1;
 
 	int argPos = 1;
-	while (strncmp(argv[argPos], "-", 1) == 0) {
+	while (argPos < argc && strncmp(argv[argPos], "-", 1) == 0) {
 		if (strncmp(argv[argPos], "-v", 2) == 0) {
 			optionVerbose = true;
+		}
+		if (strncmp(argv[argPos], "-s", 2) == 0) {
+			if ( ++argPos >= argc ) return 1;
+			imageSize = argv[argPos];
 		}
 		argPos++;
 	}
@@ -422,7 +426,7 @@ int main( int argc, const char* argv[] )
 	int filePos = parseOptions(argc, argv);
 	if ( filePos >= argc || strlen(argv[filePos]) < 3)
 	{
-		lwerror("Usage: %s [-v] <source_wktfile> [<output_pngfile>]", argv[0]);
+		lwerror("Usage: %s [-v] [-s <width>x<height>] <source_wktfile> [<output_pngfile>]", argv[0]);
 		return -1;
 	}
 
