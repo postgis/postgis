@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 
 <!--
-Example usage:
+Example usage (replace the single dash with two dashes):
+
 	xsltproc \
-		-stringparam pattern "/config/tags/para[@role='tag_P_support']"
-		-stringparam value '.' xsl/extract_xpath.xsl
+		-stringparam xpath "/config/tags/para[@role='tag_P_support']"
 		xsl-config.xml
 -->
 
