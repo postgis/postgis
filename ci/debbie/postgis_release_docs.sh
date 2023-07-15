@@ -106,12 +106,14 @@ done
 
 
 # Build and install pdf and epub
-make pdf-install # || : survive failure
-make epub-install # || : survive failure
+# TODO: Turn back on after Korean is fixed
+#make pdf-install # || : survive failure
+#make epub-install # || : survive failure
 
-# build german and french pdf
-#make -C ../doc/po/fr local-pdf-install
-#make -C ../doc/po/de local-pdf-install
+# build japanes, french, and german pdf
+make -C ../doc/po/ja local-pdf-install
+make -C ../doc/po/fr local-pdf-install
+make -C ../doc/po/de local-pdf-install
 
 # Build and install localized pdf and epub
 make pdf-install-localized # || : survive failures
