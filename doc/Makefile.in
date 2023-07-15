@@ -464,12 +464,12 @@ distclean: clean distclean-localized
 	rm -f Makefile Makefile.comments
 
 maintainer-clean: distclean
-	rm -f postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql sfcgal_comments.sql
+	rm -f $(GENERATED_COMMENT_FILES)
 
 ifneq ($(CAN_BUILD_COMMENTS),yes)
 comments:
 else
-comments: postgis_comments.sql raster_comments.sql topology_comments.sql sfcgal_comments.sql tiger_geocoder_comments.sql
+comments: $(GENERATED_COMMENT_FILES)
 endif
 
 cheatsheets: $(GENERATED_CHEATSHEET_FILES)
