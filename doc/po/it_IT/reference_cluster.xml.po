@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-15 12:17+0000\n"
 "PO-Revision-Date: 2022-02-18 09:52+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
@@ -153,35 +153,6 @@ msgstr ""
 #: reference_cluster.xml:90
 #, no-c-format
 msgid "within 50 meters at least 2 per cluster. singletons have NULL for cid"
-msgstr ""
-
-#. Tag: screen
-#: reference_cluster.xml:96
-#, no-c-format
-msgid ""
-"<![CDATA[                name                 | bucket\n"
-"-------------------------------------+--------\n"
-" Manulife Tower                      |      0\n"
-" Park Lane Seaport I                 |      0\n"
-" Park Lane Seaport II                |      0\n"
-" Renaissance Boston Waterfront Hotel |      0\n"
-" Seaport Boston Hotel                |      0\n"
-" Seaport Hotel & World Trade Center  |      0\n"
-" Waterside Place                     |      0\n"
-" World Trade Center East             |      0\n"
-" 100 Northern Avenue                 |      1\n"
-" 100 Pier 4                          |      1\n"
-" The Institute of Contemporary Art   |      1\n"
-" 101 Seaport                         |      2\n"
-" District Hall                       |      2\n"
-" One Marina Park Drive               |      2\n"
-" Twenty Two Liberty                  |      2\n"
-" Vertex                              |      2\n"
-" Vertex                              |      2\n"
-" Watermark Seaport                   |      2\n"
-" Blue Hills Bank Pavilion            |   NULL\n"
-" World Trade Center West             |   NULL\n"
-"(20 rows)]]>"
 msgstr ""
 
 #. Tag: para
@@ -371,40 +342,10 @@ msgstr ""
 msgid "Parcels color-coded by cluster number (cid)"
 msgstr ""
 
-#. Tag: screen
-#: reference_cluster.xml:263
-#, no-c-format
-msgid ""
-"cid | parcel_id |   geom\n"
-"-----+-----------+---------------\n"
-"   0 | 001       | 0103000000...\n"
-"   0 | 002       | 0103000000...\n"
-"   1 | 003       | 0103000000...\n"
-"   0 | 004       | 0103000000...\n"
-"   1 | 005       | 0103000000...\n"
-"   2 | 006       | 0103000000...\n"
-"   2 | 007       | 0103000000..."
-msgstr ""
-
 #. Tag: para
 #: reference_cluster.xml:266
 #, no-c-format
 msgid "Partitioning parcel clusters by type:"
-msgstr ""
-
-#. Tag: screen
-#: reference_cluster.xml:268
-#, no-c-format
-msgid ""
-"cid | parcel_id |    type\n"
-"-----+-----------+-------------\n"
-"   1 | 005       | commercial\n"
-"   1 | 003       | commercial\n"
-"   2 | 007       | commercial\n"
-"   0 | 001       | commercial\n"
-"   1 | 004       | residential\n"
-"   0 | 002       | residential\n"
-"   2 | 006       | residential"
 msgstr ""
 
 #. Tag: para

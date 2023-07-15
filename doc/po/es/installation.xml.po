@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-15 12:17+0000\n"
 "PO-Revision-Date: 2022-01-10 05:06+0000\n"
 "Last-Translator: jsanz <jsanz@osgeo.org>\n"
 "Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/"
@@ -1020,33 +1020,6 @@ msgid ""
 "schema they are installed."
 msgstr ""
 
-#. Tag: screen
-#: installation.xml:649
-#, no-c-format
-msgid ""
-"List of installed extensions\n"
-"-[ RECORD 1 ]-------------------------------------------------\n"
-"Name        | postgis\n"
-"Version     | &last_release_version;\n"
-"Schema      | public\n"
-"Description | PostGIS geometry, geography, and raster spat..\n"
-"-[ RECORD 2 ]-------------------------------------------------\n"
-"Name        | postgis_raster\n"
-"Version     | 3.0.0dev\n"
-"Schema      | public\n"
-"Description | PostGIS raster types and functions\n"
-"-[ RECORD 3 ]-------------------------------------------------\n"
-"Name        | postgis_tiger_geocoder\n"
-"Version     | &last_release_version;\n"
-"Schema      | tiger\n"
-"Description | PostGIS tiger geocoder and reverse geocoder\n"
-"-[ RECORD 4 ]-------------------------------------------------\n"
-"Name        | postgis_topology\n"
-"Version     | &last_release_version;\n"
-"Schema      | topology\n"
-"Description | PostGIS topology spatial types and functions"
-msgstr ""
-
 #. Tag: para
 #: installation.xml:651
 #, no-c-format
@@ -1184,26 +1157,6 @@ msgstr ""
 msgid "Output should look like:"
 msgstr ""
 
-#. Tag: screen
-#: installation.xml:715
-#, no-c-format
-msgid ""
-"============== dropping database \"contrib_regression\" ==============\n"
-"DROP DATABASE\n"
-"============== creating database \"contrib_regression\" ==============\n"
-"CREATE DATABASE\n"
-"ALTER DATABASE\n"
-"============== running regression test queries        ==============\n"
-"test test-init-extensions     ... ok\n"
-"test test-parseaddress        ... ok\n"
-"test test-standardize_address_1 ... ok\n"
-"test test-standardize_address_2 ... ok\n"
-"\n"
-"=====================\n"
-" All 4 tests passed.\n"
-"====================="
-msgstr ""
-
 #. Tag: para
 #: installation.xml:717
 #, no-c-format
@@ -1217,32 +1170,6 @@ msgstr ""
 #: installation.xml:719
 #, no-c-format
 msgid "output should look like:"
-msgstr ""
-
-#. Tag: screen
-#: installation.xml:720
-#, no-c-format
-msgid ""
-"============== dropping database \"contrib_regression\" ==============\n"
-"DROP DATABASE\n"
-"============== creating database \"contrib_regression\" ==============\n"
-"CREATE DATABASE\n"
-"ALTER DATABASE\n"
-"============== installing fuzzystrmatch               ==============\n"
-"CREATE EXTENSION\n"
-"============== installing postgis                     ==============\n"
-"CREATE EXTENSION\n"
-"============== installing postgis_tiger_geocoder      ==============\n"
-"CREATE EXTENSION\n"
-"============== installing address_standardizer        ==============\n"
-"CREATE EXTENSION\n"
-"============== running regression test queries        ==============\n"
-"test test-normalize_address   ... ok\n"
-"test test-pagc_normalize_address ... ok\n"
-"\n"
-"=====================\n"
-"All 2 tests passed.\n"
-"====================="
 msgstr ""
 
 #. Tag: title
@@ -1409,15 +1336,6 @@ msgstr ""
 msgid "Output should be"
 msgstr ""
 
-#. Tag: screen
-#: installation.xml:802
-#, no-c-format
-msgid ""
-"num |         street         |  city  | state |  zip\n"
-"-----+------------------------+--------+-------+-------\n"
-" 1   | Devonshire Place PH301 | Boston | MA    | 02109"
-msgstr ""
-
 #. Tag: title
 #: installation.xml:807
 #, no-c-format
@@ -1491,15 +1409,6 @@ msgstr ""
 #: installation.xml:825
 #, no-c-format
 msgid "Which should output"
-msgstr ""
-
-#. Tag: screen
-#: installation.xml:826
-#, no-c-format
-msgid ""
-"address | streetname | streettypeabbrev |  zip\n"
-"---------+------------+------------------+-------\n"
-"           1 | Devonshire | Pl               | 02109"
 msgstr ""
 
 #. Tag: para
@@ -1607,30 +1516,6 @@ msgid ""
 "in your <code>tiger_data</code> schema and they should be filled with data. "
 "Confirm you do by doing the following queries from psql or pgAdmin"
 msgstr ""
-
-#. Tag: screen
-#: installation.xml:857
-#, no-c-format
-msgid ""
-"count\n"
-"-------\n"
-"  3235\n"
-"(1 row)"
-msgstr ""
-
-#. Tag: screen
-#: installation.xml:859
-#, no-c-format
-msgid ""
-"count\n"
-"-------\n"
-"    56\n"
-"(1 row)"
-msgstr ""
-"count\n"
-"-------\n"
-"    56\n"
-"(1 row)"
 
 #. Tag: para
 #: installation.xml:862
@@ -2016,6 +1901,18 @@ msgstr ""
 "<varname>POSTGIS_PGSQL_VERSION</varname>, <varname>POSTGIS_PROJ_VERSION</"
 "varname> y <varname>POSTGIS_GEOS_VERSION</varname>, han sido bien "
 "configuradas."
+
+#, no-c-format
+#~ msgid ""
+#~ "count\n"
+#~ "-------\n"
+#~ "    56\n"
+#~ "(1 row)"
+#~ msgstr ""
+#~ "count\n"
+#~ "-------\n"
+#~ "    56\n"
+#~ "(1 row)"
 
 #, fuzzy, no-c-format
 #~ msgid ""

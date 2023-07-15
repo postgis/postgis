@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-15 12:17+0000\n"
 "PO-Revision-Date: 2023-06-29 05:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -7863,18 +7863,6 @@ msgstr ""
 msgid "This is a junk table to play with"
 msgstr "これは試行のためのがらくたテーブルです。"
 
-#. Tag: screen
-#: reference_raster.xml:6944
-#, no-c-format
-msgid ""
-"n_orig | ngrey | npseudo | nfire | nbluered | nred\n"
-"--------+-------+---------+-------+----------+------\n"
-"      1 |     1 |       4 |     4 |        4 |    3"
-msgstr ""
-"n_orig | ngrey | npseudo | nfire | nbluered | nred\n"
-"--------+-------+---------+-------+----------+------\n"
-"      1 |     1 |       4 |     4 |        4 |    3"
-
 #. Tag: title
 #: reference_raster.xml:6948
 #, no-c-format
@@ -12583,6 +12571,16 @@ msgid ""
 "After making the necessary systemd changes, make sure to reload the daemon"
 msgstr ""
 "必要なシステムの変更を行った後、デーモンのリロードを必ず行ってください。"
+
+#, no-c-format
+#~ msgid ""
+#~ "n_orig | ngrey | npseudo | nfire | nbluered | nred\n"
+#~ "--------+-------+---------+-------+----------+------\n"
+#~ "      1 |     1 |       4 |     4 |        4 |    3"
+#~ msgstr ""
+#~ "n_orig | ngrey | npseudo | nfire | nbluered | nred\n"
+#~ "--------+-------+---------+-------+----------+------\n"
+#~ "      1 |     1 |       4 |     4 |        4 |    3"
 
 #, no-c-format
 #~ msgid ""

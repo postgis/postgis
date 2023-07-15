@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-15 12:17+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: georgersilva <georger.silva@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -1598,46 +1598,12 @@ msgstr "Using address_standardizer_data_us extension"
 msgid "Variant 1: Single line address and returning the input tokens"
 msgstr ""
 
-#. Tag: screen
-#: extras_address_standardizer.xml:633
-#, no-c-format
-msgid ""
-"position |    word    | standardized_word | token  | token_code\n"
-"----------+------------+-------------------+--------+------------\n"
-" 0        | ONE        | 1                 | NUMBER | 0\n"
-" 0        | ONE        | 1                 | WORD   | 1\n"
-" 1        | DEVONSHIRE | DEVONSHIRE        | WORD   | 1\n"
-" 2        | PLACE      | PLACE             | TYPE   | 2\n"
-" 3        | PH         | PATH              | TYPE   | 2\n"
-" 3        | PH         | PENTHOUSE         | UNITT  | 17\n"
-" 4        | 301        | 301               | NUMBER | 0\n"
-"(7 rows)"
-msgstr ""
-
 #. Tag: para
 #: extras_address_standardizer.xml:635
 #, no-c-format
 msgid ""
 "Variant 2: Multi line address and returning first rule input mappings and "
 "score"
-msgstr ""
-
-#. Tag: screen
-#: extras_address_standardizer.xml:637
-#, no-c-format
-msgid ""
-"score   | position |    word    | input_token | standardized_word | "
-"output_token\n"
-"----------+----------+------------+-------------+-------------------"
-"+--------------\n"
-" 0.876250 | 0        | ONE        | NUMBER      | 1                 | HOUSE\n"
-" 0.876250 | 1        | DEVONSHIRE | WORD        | DEVONSHIRE        | "
-"STREET\n"
-" 0.876250 | 2        | PLACE      | TYPE        | PLACE             | "
-"SUFTYP\n"
-" 0.876250 | 3        | PH         | UNITT       | PENTHOUSE         | UNITT\n"
-" 0.876250 | 4        | 301        | NUMBER      | 301               | UNITT\n"
-"(5 rows)"
 msgstr ""
 
 #. Tag: title
@@ -1702,47 +1668,11 @@ msgstr "Disponibilidade: 2.2.0"
 msgid "Single Addresss"
 msgstr "Endereços Únicos"
 
-#. Tag: screen
-#: extras_address_standardizer.xml:683
-#, no-c-format
-msgid ""
-"num |      street      |  city  |  zip  | zipplus\n"
-"-----+------------------+--------+-------+---------\n"
-" 1   | Devonshire Place | Boston | 02109 | 1234"
-msgstr ""
-"num |      street      |  city  |  zip  | zipplus\n"
-"-----+------------------+--------+-------+---------\n"
-" 1   | Devonshire Place | Boston | 02109 | 1234"
-
 #. Tag: para
 #: extras_address_standardizer.xml:685
 #, no-c-format
 msgid "Table of addresses"
 msgstr "Table de endereços"
-
-#. Tag: screen
-#: extras_address_standardizer.xml:687
-#, no-c-format
-msgid ""
-"addid | num |        street        |   city    | state |  zip  | zipplus\n"
-"-------+-----+----------------------+-----------+-------+-------+---------\n"
-"     1 | 529 | Main Street          | Boston    | MA    | 02129 |\n"
-"     2 | 77  | Massachusetts Avenue | Cambridge | MA    | 02139 |\n"
-"     3 | 25  | Wizard of Oz         | Walaford  | KS    | 99912 | 323\n"
-"     4 | 26  | Capen Street         | Medford   | MA    |       |\n"
-"     5 | 124 | Mount Auburn St      | Cambridge | MA    | 02138 |\n"
-"     6 | 950 | Main Street          | Worcester | MA    | 01610 |\n"
-"(6 rows)"
-msgstr ""
-"addid | num |        street        |   city    | state |  zip  | zipplus\n"
-"-------+-----+----------------------+-----------+-------+-------+---------\n"
-"     1 | 529 | Main Street          | Boston    | MA    | 02129 |\n"
-"     2 | 77  | Massachusetts Avenue | Cambridge | MA    | 02139 |\n"
-"     3 | 25  | Wizard of Oz         | Walaford  | KS    | 99912 | 323\n"
-"     4 | 26  | Capen Street         | Medford   | MA    |       |\n"
-"     5 | 124 | Mount Auburn St      | Cambridge | MA    | 02138 |\n"
-"     6 | 950 | Main Street          | Worcester | MA    | 01610 |\n"
-"(6 rows)"
 
 #. Tag: refname
 #: extras_address_standardizer.xml:700
@@ -1802,24 +1732,6 @@ msgstr ""
 "Variante 1: Única linha de endereço. Isso não funcionou bem com os endereços "
 "não-EUA"
 
-#. Tag: screen
-#: extras_address_standardizer.xml:747
-#, no-c-format
-msgid ""
-"house_num |    name    | suftype |  city  | country |     state     |      "
-"unit\n"
-"----------+------------+---------+--------+---------+---------------"
-"+-----------------\n"
-"1         | DEVONSHIRE | PLACE   | BOSTON | USA     | MASSACHUSETTS | # "
-"PENTHOUSE 301"
-msgstr ""
-"house_num |    name    | suftype |  city  | country |     state     |      "
-"unit\n"
-"----------+------------+---------+--------+---------+---------------"
-"+-----------------\n"
-"1         | DEVONSHIRE | PLACE   | BOSTON | USA     | MASSACHUSETTS | # "
-"PENTHOUSE 301"
-
 #. Tag: para
 #: extras_address_standardizer.xml:748
 #, no-c-format
@@ -1840,55 +1752,103 @@ msgstr ""
 "Para tornar a leitura mais fácil nós iremos abandonar a saída usando a "
 "extensão hstore  CREATE EXTENSION hstore; você vai precisar instalar"
 
-#. Tag: screen
-#: extras_address_standardizer.xml:753 extras_address_standardizer.xml:757
-#, no-c-format
-msgid ""
-"key     |      value\n"
-"------------+-----------------\n"
-" box        |\n"
-" city       | BOSTON\n"
-" name       | DEVONSHIRE\n"
-" qual       |\n"
-" unit       | # PENTHOUSE 301\n"
-" extra      |\n"
-" state      | MA\n"
-" predir     |\n"
-" sufdir     |\n"
-" country    | USA\n"
-" pretype    |\n"
-" suftype    | PL\n"
-" building   |\n"
-" postcode   | 02109\n"
-" house_num  | 1\n"
-" ruralroute |\n"
-"(16 rows)"
-msgstr ""
-"key     |      value\n"
-"------------+-----------------\n"
-" box        |\n"
-" city       | BOSTON\n"
-" name       | DEVONSHIRE\n"
-" qual       |\n"
-" unit       | # PENTHOUSE 301\n"
-" extra      |\n"
-" state      | MA\n"
-" predir     |\n"
-" sufdir     |\n"
-" country    | USA\n"
-" pretype    |\n"
-" suftype    | PL\n"
-" building   |\n"
-" postcode   | 02109\n"
-" house_num  | 1\n"
-" ruralroute |\n"
-"(16 rows)"
-
 #. Tag: para
 #: extras_address_standardizer.xml:755
 #, no-c-format
 msgid "Variant 2: As a two part Address"
 msgstr "variante 2: Como um endereço de duas partes"
+
+#, no-c-format
+#~ msgid ""
+#~ "num |      street      |  city  |  zip  | zipplus\n"
+#~ "-----+------------------+--------+-------+---------\n"
+#~ " 1   | Devonshire Place | Boston | 02109 | 1234"
+#~ msgstr ""
+#~ "num |      street      |  city  |  zip  | zipplus\n"
+#~ "-----+------------------+--------+-------+---------\n"
+#~ " 1   | Devonshire Place | Boston | 02109 | 1234"
+
+#, no-c-format
+#~ msgid ""
+#~ "addid | num |        street        |   city    | state |  zip  | zipplus\n"
+#~ "-------+-----+----------------------+-----------+-------+-------"
+#~ "+---------\n"
+#~ "     1 | 529 | Main Street          | Boston    | MA    | 02129 |\n"
+#~ "     2 | 77  | Massachusetts Avenue | Cambridge | MA    | 02139 |\n"
+#~ "     3 | 25  | Wizard of Oz         | Walaford  | KS    | 99912 | 323\n"
+#~ "     4 | 26  | Capen Street         | Medford   | MA    |       |\n"
+#~ "     5 | 124 | Mount Auburn St      | Cambridge | MA    | 02138 |\n"
+#~ "     6 | 950 | Main Street          | Worcester | MA    | 01610 |\n"
+#~ "(6 rows)"
+#~ msgstr ""
+#~ "addid | num |        street        |   city    | state |  zip  | zipplus\n"
+#~ "-------+-----+----------------------+-----------+-------+-------"
+#~ "+---------\n"
+#~ "     1 | 529 | Main Street          | Boston    | MA    | 02129 |\n"
+#~ "     2 | 77  | Massachusetts Avenue | Cambridge | MA    | 02139 |\n"
+#~ "     3 | 25  | Wizard of Oz         | Walaford  | KS    | 99912 | 323\n"
+#~ "     4 | 26  | Capen Street         | Medford   | MA    |       |\n"
+#~ "     5 | 124 | Mount Auburn St      | Cambridge | MA    | 02138 |\n"
+#~ "     6 | 950 | Main Street          | Worcester | MA    | 01610 |\n"
+#~ "(6 rows)"
+
+#, no-c-format
+#~ msgid ""
+#~ "house_num |    name    | suftype |  city  | country |     state     "
+#~ "|      unit\n"
+#~ "----------+------------+---------+--------+---------+---------------"
+#~ "+-----------------\n"
+#~ "1         | DEVONSHIRE | PLACE   | BOSTON | USA     | MASSACHUSETTS | # "
+#~ "PENTHOUSE 301"
+#~ msgstr ""
+#~ "house_num |    name    | suftype |  city  | country |     state     "
+#~ "|      unit\n"
+#~ "----------+------------+---------+--------+---------+---------------"
+#~ "+-----------------\n"
+#~ "1         | DEVONSHIRE | PLACE   | BOSTON | USA     | MASSACHUSETTS | # "
+#~ "PENTHOUSE 301"
+
+#, no-c-format
+#~ msgid ""
+#~ "key     |      value\n"
+#~ "------------+-----------------\n"
+#~ " box        |\n"
+#~ " city       | BOSTON\n"
+#~ " name       | DEVONSHIRE\n"
+#~ " qual       |\n"
+#~ " unit       | # PENTHOUSE 301\n"
+#~ " extra      |\n"
+#~ " state      | MA\n"
+#~ " predir     |\n"
+#~ " sufdir     |\n"
+#~ " country    | USA\n"
+#~ " pretype    |\n"
+#~ " suftype    | PL\n"
+#~ " building   |\n"
+#~ " postcode   | 02109\n"
+#~ " house_num  | 1\n"
+#~ " ruralroute |\n"
+#~ "(16 rows)"
+#~ msgstr ""
+#~ "key     |      value\n"
+#~ "------------+-----------------\n"
+#~ " box        |\n"
+#~ " city       | BOSTON\n"
+#~ " name       | DEVONSHIRE\n"
+#~ " qual       |\n"
+#~ " unit       | # PENTHOUSE 301\n"
+#~ " extra      |\n"
+#~ " state      | MA\n"
+#~ " predir     |\n"
+#~ " sufdir     |\n"
+#~ " country    | USA\n"
+#~ " pretype    |\n"
+#~ " suftype    | PL\n"
+#~ " building   |\n"
+#~ " postcode   | 02109\n"
+#~ " house_num  | 1\n"
+#~ " ruralroute |\n"
+#~ "(16 rows)"
 
 #, no-c-format
 #~ msgid ""

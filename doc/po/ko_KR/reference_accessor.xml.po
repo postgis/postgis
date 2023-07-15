@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-15 12:17+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -318,32 +318,11 @@ msgstr ""
 msgid "Linestring with boundary points overlaid"
 msgstr "범위 포인트들이 겹치는 라인스트링"
 
-#. Tag: screen
-#: reference_accessor.xml:116
-#, no-c-format
-msgid ""
-"<lineannotation>\n"
-"ST_AsText output\n"
-"</lineannotation>\n"
-"MULTIPOINT((100 150),(160 170))"
-msgstr ""
-
 #. Tag: para
 #: reference_accessor.xml:124
 #, no-c-format
 msgid "polygon holes with boundary multilinestring"
 msgstr "범위 멀티라인스트링을 가진 폴리곤 구멍"
-
-#. Tag: screen
-#: reference_accessor.xml:128
-#, no-c-format
-msgid ""
-"<lineannotation>\n"
-"ST_AsText output\n"
-"</lineannotation>\n"
-"MULTILINESTRING((10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 130),\n"
-"        (70 40,100 50,120 80,80 110,50 90,70 40))"
-msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:141

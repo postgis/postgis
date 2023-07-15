@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-15 12:17+0000\n"
 "PO-Revision-Date: 2023-07-11 05:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -895,45 +895,11 @@ msgstr "Changed: 3.0.0 EPSG:4326以外の場合のSRID出力。"
 msgid "Generate a FeatureCollection:"
 msgstr "FeatureCollectionの生成:"
 
-#. Tag: screen
-#: reference_output.xml:620
-#, no-c-format
-msgid ""
-"{\"type\" : \"FeatureCollection\", \"features\" : [{\"type\": \"Feature\", "
-"\"geometry\": {\"type\":\"Point\",\"coordinates\":[1,1]}, \"properties\": "
-"{\"id\": 1, \"name\": \"one\"}}, {\"type\": \"Feature\", \"geometry\": "
-"{\"type\":\"Point\",\"coordinates\":[2,2]}, \"properties\": {\"id\": 2, "
-"\"name\": \"two\"}}, {\"type\": \"Feature\", \"geometry\": {\"type\":"
-"\"Point\",\"coordinates\":[3,3]}, \"properties\": {\"id\": 3, \"name\": "
-"\"three\"}}]}"
-msgstr ""
-"{\"type\" : \"FeatureCollection\", \"features\" : [{\"type\": \"Feature\", "
-"\"geometry\": {\"type\":\"Point\",\"coordinates\":[1,1]}, \"properties\": "
-"{\"id\": 1, \"name\": \"one\"}}, {\"type\": \"Feature\", \"geometry\": "
-"{\"type\":\"Point\",\"coordinates\":[2,2]}, \"properties\": {\"id\": 2, "
-"\"name\": \"two\"}}, {\"type\": \"Feature\", \"geometry\": {\"type\":"
-"\"Point\",\"coordinates\":[3,3]}, \"properties\": {\"id\": 3, \"name\": "
-"\"three\"}}]}"
-
 #. Tag: para
 #: reference_output.xml:622
 #, no-c-format
 msgid "Generate a Feature:"
 msgstr "Featureの生成:"
-
-#. Tag: screen
-#: reference_output.xml:624
-#, no-c-format
-msgid ""
-"st_asgeojson\n"
-"-----------------------------------------------------------------------------------------------------------------\n"
-" {\"type\": \"Feature\", \"geometry\": {\"type\":\"Point\",\"coordinates\":"
-"[1,1]}, \"properties\": {\"id\": 1, \"name\": \"one\"}}"
-msgstr ""
-"st_asgeojson\n"
-"-----------------------------------------------------------------------------------------------------------------\n"
-" {\"type\": \"Feature\", \"geometry\": {\"type\":\"Point\",\"coordinates\":"
-"[1,1]}, \"properties\": {\"id\": 1, \"name\": \"one\"}}"
 
 #. Tag: para
 #: reference_output.xml:626
@@ -945,20 +911,6 @@ msgstr ""
 "<varname>id</varname>プロパティを持つFeatureを生成する別の方法には、JSONB関数"
 "と演算子の使用があります。"
 
-#. Tag: screen
-#: reference_output.xml:629
-#, no-c-format
-msgid ""
-"json\n"
-"-----------------------------------------------------------------------------------------------------------------\n"
-" {\"id\": 1, \"type\": \"Feature\", \"geometry\": {\"type\": \"Point\", "
-"\"coordinates\": [1, 1]}, \"properties\": {\"name\": \"one\"}}"
-msgstr ""
-"json\n"
-"-----------------------------------------------------------------------------------------------------------------\n"
-" {\"id\": 1, \"type\": \"Feature\", \"geometry\": {\"type\": \"Point\", "
-"\"coordinates\": [1, 1]}, \"properties\": {\"name\": \"one\"}}"
-
 #. Tag: para
 #: reference_output.xml:631
 #, no-c-format
@@ -968,35 +920,11 @@ msgid ""
 msgstr ""
 "データをGeoJSON使用に準拠したWGS84経度緯度に変換するのを忘れないで下さい。"
 
-#. Tag: screen
-#: reference_output.xml:633
-#, no-c-format
-msgid ""
-"st_asgeojson\n"
-"-----------------------------------------------------------------------------------------------------------\n"
-"\n"
-"{\"type\":\"MultiLineString\",\"coordinates\":"
-"[[[-89.734634999999997,31.492072000000000],\n"
-"[-89.734955999999997,31.492237999999997]]]}"
-msgstr ""
-"st_asgeojson\n"
-"-----------------------------------------------------------------------------------------------------------\n"
-"\n"
-"{\"type\":\"MultiLineString\",\"coordinates\":"
-"[[[-89.734634999999997,31.492072000000000],\n"
-"[-89.734955999999997,31.492237999999997]]]}"
-
 #. Tag: para
 #: reference_output.xml:634
 #, no-c-format
 msgid "3D geometries are supported:"
 msgstr "3次元ジオメトリへの対応:"
-
-#. Tag: screen
-#: reference_output.xml:636
-#, no-c-format
-msgid "{\"type\":\"LineString\",\"coordinates\":[[1,2,3],[4,5,6]]}"
-msgstr "{\"type\":\"LineString\",\"coordinates\":[[1,2,3],[4,5,6]]}"
 
 #. Tag: para
 #: reference_output.xml:641
@@ -2523,6 +2451,68 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_PointFromGeoHash\"/>, <xref "
 "linkend=\"ST_Box2dFromGeoHash\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "{\"type\" : \"FeatureCollection\", \"features\" : [{\"type\": "
+#~ "\"Feature\", \"geometry\": {\"type\":\"Point\",\"coordinates\":[1,1]}, "
+#~ "\"properties\": {\"id\": 1, \"name\": \"one\"}}, {\"type\": \"Feature\", "
+#~ "\"geometry\": {\"type\":\"Point\",\"coordinates\":[2,2]}, \"properties\": "
+#~ "{\"id\": 2, \"name\": \"two\"}}, {\"type\": \"Feature\", \"geometry\": "
+#~ "{\"type\":\"Point\",\"coordinates\":[3,3]}, \"properties\": {\"id\": 3, "
+#~ "\"name\": \"three\"}}]}"
+#~ msgstr ""
+#~ "{\"type\" : \"FeatureCollection\", \"features\" : [{\"type\": "
+#~ "\"Feature\", \"geometry\": {\"type\":\"Point\",\"coordinates\":[1,1]}, "
+#~ "\"properties\": {\"id\": 1, \"name\": \"one\"}}, {\"type\": \"Feature\", "
+#~ "\"geometry\": {\"type\":\"Point\",\"coordinates\":[2,2]}, \"properties\": "
+#~ "{\"id\": 2, \"name\": \"two\"}}, {\"type\": \"Feature\", \"geometry\": "
+#~ "{\"type\":\"Point\",\"coordinates\":[3,3]}, \"properties\": {\"id\": 3, "
+#~ "\"name\": \"three\"}}]}"
+
+#, no-c-format
+#~ msgid ""
+#~ "st_asgeojson\n"
+#~ "-----------------------------------------------------------------------------------------------------------------\n"
+#~ " {\"type\": \"Feature\", \"geometry\": {\"type\":\"Point\","
+#~ "\"coordinates\":[1,1]}, \"properties\": {\"id\": 1, \"name\": \"one\"}}"
+#~ msgstr ""
+#~ "st_asgeojson\n"
+#~ "-----------------------------------------------------------------------------------------------------------------\n"
+#~ " {\"type\": \"Feature\", \"geometry\": {\"type\":\"Point\","
+#~ "\"coordinates\":[1,1]}, \"properties\": {\"id\": 1, \"name\": \"one\"}}"
+
+#, no-c-format
+#~ msgid ""
+#~ "json\n"
+#~ "-----------------------------------------------------------------------------------------------------------------\n"
+#~ " {\"id\": 1, \"type\": \"Feature\", \"geometry\": {\"type\": \"Point\", "
+#~ "\"coordinates\": [1, 1]}, \"properties\": {\"name\": \"one\"}}"
+#~ msgstr ""
+#~ "json\n"
+#~ "-----------------------------------------------------------------------------------------------------------------\n"
+#~ " {\"id\": 1, \"type\": \"Feature\", \"geometry\": {\"type\": \"Point\", "
+#~ "\"coordinates\": [1, 1]}, \"properties\": {\"name\": \"one\"}}"
+
+#, no-c-format
+#~ msgid ""
+#~ "st_asgeojson\n"
+#~ "-----------------------------------------------------------------------------------------------------------\n"
+#~ "\n"
+#~ "{\"type\":\"MultiLineString\",\"coordinates\":"
+#~ "[[[-89.734634999999997,31.492072000000000],\n"
+#~ "[-89.734955999999997,31.492237999999997]]]}"
+#~ msgstr ""
+#~ "st_asgeojson\n"
+#~ "-----------------------------------------------------------------------------------------------------------\n"
+#~ "\n"
+#~ "{\"type\":\"MultiLineString\",\"coordinates\":"
+#~ "[[[-89.734634999999997,31.492072000000000],\n"
+#~ "[-89.734955999999997,31.492237999999997]]]}"
+
+#, no-c-format
+#~ msgid "{\"type\":\"LineString\",\"coordinates\":[[1,2,3],[4,5,6]]}"
+#~ msgstr "{\"type\":\"LineString\",\"coordinates\":[[1,2,3],[4,5,6]]}"
 
 #, no-c-format
 #~ msgid ""

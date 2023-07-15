@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-15 12:17+0000\n"
 "PO-Revision-Date: 2021-11-28 21:13+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -906,21 +906,6 @@ msgstr ""
 #, no-c-format
 msgid "Availability: 2.3.0"
 msgstr "Disponibilidade: 2.3.0"
-
-#. Tag: screen
-#: extras_topology.xml:518
-#, no-c-format
-msgid ""
-"schema_name | table_name | feature_column\n"
-"-------------+------------+----------------\n"
-" strk        | parcels    | topo\n"
-"(1 row)\n"
-"\n"
-" topology_id | layer_id |  sn  |   tn    |  fc\n"
-"-------------+----------+------+---------+------\n"
-"           2 |        2 | strk | parcels | topo\n"
-"(1 row)"
-msgstr ""
 
 #. Tag: refname
 #: extras_topology.xml:530

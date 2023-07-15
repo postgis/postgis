@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-15 12:17+0000\n"
 "PO-Revision-Date: 2018-07-23 18:02+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -7666,18 +7666,6 @@ msgstr ""
 msgid "This is a junk table to play with"
 msgstr "다음은 예시용 가짜 테이블입니다."
 
-#. Tag: screen
-#: reference_raster.xml:6944
-#, no-c-format
-msgid ""
-"n_orig | ngrey | npseudo | nfire | nbluered | nred\n"
-"--------+-------+---------+-------+----------+------\n"
-"      1 |     1 |       4 |     4 |        4 |    3"
-msgstr ""
-"n_orig | ngrey | npseudo | nfire | nbluered | nred\n"
-"--------+-------+---------+-------+----------+------\n"
-"      1 |     1 |       4 |     4 |        4 |    3"
-
 #. Tag: title
 #: reference_raster.xml:6948
 #, no-c-format
@@ -12304,6 +12292,16 @@ msgstr ""
 msgid ""
 "After making the necessary systemd changes, make sure to reload the daemon"
 msgstr ""
+
+#, no-c-format
+#~ msgid ""
+#~ "n_orig | ngrey | npseudo | nfire | nbluered | nred\n"
+#~ "--------+-------+---------+-------+----------+------\n"
+#~ "      1 |     1 |       4 |     4 |        4 |    3"
+#~ msgstr ""
+#~ "n_orig | ngrey | npseudo | nfire | nbluered | nred\n"
+#~ "--------+-------+---------+-------+----------+------\n"
+#~ "      1 |     1 |       4 |     4 |        4 |    3"
 
 #, no-c-format
 #~ msgid ""

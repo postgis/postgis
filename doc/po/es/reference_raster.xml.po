@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-15 12:17+0000\n"
 "PO-Revision-Date: 2015-09-29 12:24+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
@@ -6533,15 +6533,6 @@ msgstr ""
 #: reference_raster.xml:6938
 #, no-c-format
 msgid "This is a junk table to play with"
-msgstr ""
-
-#. Tag: screen
-#: reference_raster.xml:6944
-#, no-c-format
-msgid ""
-"n_orig | ngrey | npseudo | nfire | nbluered | nred\n"
-"--------+-------+---------+-------+----------+------\n"
-"      1 |     1 |       4 |     4 |        4 |    3"
 msgstr ""
 
 #. Tag: title

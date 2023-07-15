@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-15 12:17+0000\n"
 "PO-Revision-Date: 2023-06-27 07:08+0000\n"
 "Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -8144,18 +8144,6 @@ msgstr ""
 msgid "This is a junk table to play with"
 msgstr "Définit une table de bric-à-brac pour jouer"
 
-#. Tag: screen
-#: reference_raster.xml:6944
-#, no-c-format
-msgid ""
-"n_orig | ngrey | npseudo | nfire | nbluered | nred\n"
-"--------+-------+---------+-------+----------+------\n"
-"      1 |     1 |       4 |     4 |        4 |    3"
-msgstr ""
-"n_orig | ngrey | npseudo | nfire | nbluered | nred\n"
-"--------+-------+---------+-------+----------+------\n"
-"      1 |     1 |       4 |     4 |        4 |    3"
-
 #. Tag: title
 #: reference_raster.xml:6948
 #, no-c-format
@@ -13054,6 +13042,16 @@ msgid ""
 msgstr ""
 "Après avoir effectué les changements nécessaires à systemd, assurez-vous de "
 "recharger le démon"
+
+#, no-c-format
+#~ msgid ""
+#~ "n_orig | ngrey | npseudo | nfire | nbluered | nred\n"
+#~ "--------+-------+---------+-------+----------+------\n"
+#~ "      1 |     1 |       4 |     4 |        4 |    3"
+#~ msgstr ""
+#~ "n_orig | ngrey | npseudo | nfire | nbluered | nred\n"
+#~ "--------+-------+---------+-------+----------+------\n"
+#~ "      1 |     1 |       4 |     4 |        4 |    3"
 
 #, no-c-format
 #~ msgid ""

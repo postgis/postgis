@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-15 12:17+0000\n"
 "PO-Revision-Date: 2023-07-14 02:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -316,41 +316,11 @@ msgstr ""
 msgid "Linestring with boundary points overlaid"
 msgstr "境界ポイントを重ねたラインストリング"
 
-#. Tag: screen
-#: reference_accessor.xml:116
-#, no-c-format
-msgid ""
-"<lineannotation>\n"
-"ST_AsText output\n"
-"</lineannotation>\n"
-"MULTIPOINT((100 150),(160 170))"
-msgstr ""
-"<lineannotation>\n"
-"ST_AsText output\n"
-"</lineannotation>\n"
-"MULTIPOINT((100 150),(160 170))"
-
 #. Tag: para
 #: reference_accessor.xml:124
 #, no-c-format
 msgid "polygon holes with boundary multilinestring"
 msgstr "境界マルチラインストリングを重ねたポリゴンの穴"
-
-#. Tag: screen
-#: reference_accessor.xml:128
-#, no-c-format
-msgid ""
-"<lineannotation>\n"
-"ST_AsText output\n"
-"</lineannotation>\n"
-"MULTILINESTRING((10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 130),\n"
-"        (70 40,100 50,120 80,80 110,50 90,70 40))"
-msgstr ""
-"<lineannotation>\n"
-"ST_AsText output\n"
-"</lineannotation>\n"
-"MULTILINESTRING((10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 130),\n"
-"        (70 40,100 50,120 80,80 110,50 90,70 40))"
 
 #. Tag: para
 #: reference_accessor.xml:141
@@ -2966,6 +2936,34 @@ msgstr "値は 0=XY, 1=XYM, 2=XYZ, 3=XYZMとなります。"
 #, no-c-format
 msgid ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "<lineannotation>\n"
+#~ "ST_AsText output\n"
+#~ "</lineannotation>\n"
+#~ "MULTIPOINT((100 150),(160 170))"
+#~ msgstr ""
+#~ "<lineannotation>\n"
+#~ "ST_AsText output\n"
+#~ "</lineannotation>\n"
+#~ "MULTIPOINT((100 150),(160 170))"
+
+#, no-c-format
+#~ msgid ""
+#~ "<lineannotation>\n"
+#~ "ST_AsText output\n"
+#~ "</lineannotation>\n"
+#~ "MULTILINESTRING((10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 "
+#~ "130),\n"
+#~ "        (70 40,100 50,120 80,80 110,50 90,70 40))"
+#~ msgstr ""
+#~ "<lineannotation>\n"
+#~ "ST_AsText output\n"
+#~ "</lineannotation>\n"
+#~ "MULTILINESTRING((10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 "
+#~ "130),\n"
+#~ "        (70 40,100 50,120 80,80 110,50 90,70 40))"
 
 #, no-c-format
 #~ msgid ""
