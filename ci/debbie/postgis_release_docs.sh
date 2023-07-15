@@ -116,7 +116,7 @@ make -C ../doc/po/fr local-pdf-install
 make -C ../doc/po/de local-pdf-install
 
 # Build and install localized pdf and epub
-make pdf-install-localized # || : survive failures
+# make pdf-install-localized # || : survive failures
 #make epub-install-localized # || : survive failures
 
 if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
