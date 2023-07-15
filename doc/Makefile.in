@@ -585,16 +585,18 @@ requirements_not_met_xsltproc:
 	@echo
 	@echo "  http://postgis.net/documentation"
 	@echo
+	@false
 
 requirements_not_met_xmllint:
 	@echo
 	@echo "configure was unable to find 'xmllint' which is required"
-	@echo "to test the documentation."
+	@echo "to build the documentation."
 	@echo "Install xmllint and then re-run configure. Alternatively "
 	@echo "refer to online manual:"
 	@echo
 	@echo "  http://postgis.net/documentation"
 	@echo
+	@false
 
 requirements_not_met_xslbase:
 	@echo
