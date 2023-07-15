@@ -369,7 +369,9 @@ optimizeImage(char* filename)
 	char *str;
 	str = malloc( (18 + (2*strlen(filename)) + 1) * sizeof(char) );
 	sprintf(str, "convert %s -depth 8 %s", filename, filename);
-	LWDEBUGF(4, "%s", str);
+	if (optionVerbose) {
+		puts(str);
+	}
 	checked_system(str);
 	free(str);
 }
@@ -382,6 +384,9 @@ flattenLayers(char* filename)
 {
 	char *str = malloc( (48 + strlen(filename) + strlen(tmpdir) + 2) * sizeof(char) );
 	sprintf(str, "convert %s/tmp*.png -background white -flatten %s", tmpdir, filename);
+	if (optionVerbose) {
+		puts(str);
+	}
 
 	LWDEBUGF(4, "%s", str);
 	checked_system(str);
