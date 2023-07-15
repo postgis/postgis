@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Fail documentation validation if xmllint is unavailable (Sandro Santilli)
  - Remove installed topology import and export commands on uninstall (Sandro Santilli)
  - #5632, Handle empty geometries correctly in the 2D GiST index (Paul Ramsey)
  - Keep ST_AsMARC21 format checks within the format buffer (Even Rouault)
