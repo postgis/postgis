@@ -68,6 +68,7 @@ checked_system(const char* cmd)
   int ret = system(cmd);
 	if ( WEXITSTATUS(ret) != 0 ) {
 		fprintf(stderr, "Failure return code (%d) from command: %s", WEXITSTATUS(ret), cmd);
+		exit(EXIT_FAILURE);
 	}
 }
 
