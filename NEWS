@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Fail documentation image generation when the rendering command fails (Sandro Santilli)
  - Correct the CreateTopology documentation (Martin Davis)
  - #5695, Load the US address lexicon in a consistent order (Regina Obe)
  - Place the test utility interpreter directive on the first line (Jan Tojnar)
