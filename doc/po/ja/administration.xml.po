@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-14 23:26+0000\n"
+"POT-Creation-Date: 2023-07-15 01:28+0000\n"
 "PO-Revision-Date: 2023-07-14 10:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -915,6 +915,14 @@ msgstr ""
 
 #, no-c-format
 #~ msgid ""
+#~ "psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  "
+#~ "2> errors.txt"
+#~ msgstr ""
+#~ "psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  "
+#~ "2> errors.txt"
+
+#, no-c-format
+#~ msgid ""
 #~ "In order to fix this you should copy your custom SRS to a SRID with a "
 #~ "valid value (maybe in the 910000..910999 range), convert all your tables "
 #~ "to the new srid (see <xref linkend=\"UpdateGeometrySRID\"/>), delete the "
@@ -960,14 +968,6 @@ msgstr ""
 #~ "Remi-C/IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql\">"
 #~ "このスクリプト </ulink>で確実にフランスIGNの系を挿入します。これらの処理の"
 #~ "後、次のようにデータのインポートを行います。"
-
-#, no-c-format
-#~ msgid ""
-#~ "psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  "
-#~ "2> errors.txt"
-#~ msgstr ""
-#~ "psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  "
-#~ "2> errors.txt"
 
 #, no-c-format
 #~ msgid "Create a spatially-enabled database from a template"
