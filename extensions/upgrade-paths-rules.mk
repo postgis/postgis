@@ -28,7 +28,7 @@ install-extension-upgrades-from-known-versions:
 	$(PERL) $(top_srcdir)/loader/postgis.pl \
 		install-extension-upgrades \
 		--extension $(EXTENSION) \
-		--pg_sharedir $(PG_SHAREDIR) \
+		--pg_sharedir $(DESTDIR)$(PG_SHAREDIR) \
 		$(UPGRADEABLE_VERSIONS)
 
 all: sql/$(TAG_UPGRADE)
