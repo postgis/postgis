@@ -112,9 +112,9 @@ make epub-install # || : survive failure
 # build german and french pdf
 #make -C ../doc/po/fr local-pdf-install
 #make -C ../doc/po/de local-pdf-install
-# TODO put back after resolve issue with japan build
+
 # Build and install localized pdf and epub
-#make pdf-install-localized # || : survive failures
+make pdf-install-localized # || : survive failures
 #make epub-install-localized # || : survive failures
 
 if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then

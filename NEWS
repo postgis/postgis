@@ -48,7 +48,7 @@ Vincent Bre (French Team)
   - #4913, ST_AsSVG support for curve types CircularString, CompoundCurve, MultiCurve,
            and MultiSurface (Regina Obe)
   - #5266, ST_ClosestPoint, ST_ShortestLine support for geography type
-           (MobilityDB, Paul Ramsey)
+           (MobilityDB Esteban Zimanyi, Paul Ramsey)
 
 * Breaking Changes *
   - #5229, Drop support for Proj < 6.1 and PG 11 (Regina Obe)

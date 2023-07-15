@@ -51,7 +51,7 @@
                 <para>ST_Project signature for geometry, and two-point signature (Paul Ramsey)</para>
                 <para><ulink url="https://trac.osgeo.org/postgis/ticket/4913">4913</ulink>, ST_AsSVG support for curve types CircularString, CompoundCurve, MultiCurve,
                         and MultiSurface (Regina Obe)</para>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5266">5266</ulink>, ST_ClosestPoint, ST_ShortestLine support for geography type (MobilityDB, Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5266">5266</ulink>, ST_ClosestPoint, ST_ShortestLine support for geography type (MobilityDB Esteban Zimanyi, Paul Ramsey)</para>
             </simplesect>
 
             <simplesect>
