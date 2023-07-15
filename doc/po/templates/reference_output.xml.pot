@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-15 12:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -770,33 +770,10 @@ msgstr ""
 msgid "Generate a FeatureCollection:"
 msgstr ""
 
-#. Tag: screen
-#: reference_output.xml:620
-#, no-c-format
-msgid ""
-"{\"type\" : \"FeatureCollection\", \"features\" : [{\"type\": \"Feature\", "
-"\"geometry\": {\"type\":\"Point\",\"coordinates\":[1,1]}, \"properties\": "
-"{\"id\": 1, \"name\": \"one\"}}, {\"type\": \"Feature\", \"geometry\": "
-"{\"type\":\"Point\",\"coordinates\":[2,2]}, \"properties\": {\"id\": 2, "
-"\"name\": \"two\"}}, {\"type\": \"Feature\", \"geometry\": {\"type\":"
-"\"Point\",\"coordinates\":[3,3]}, \"properties\": {\"id\": 3, \"name\": "
-"\"three\"}}]}"
-msgstr ""
-
 #. Tag: para
 #: reference_output.xml:622
 #, no-c-format
 msgid "Generate a Feature:"
-msgstr ""
-
-#. Tag: screen
-#: reference_output.xml:624
-#, no-c-format
-msgid ""
-"st_asgeojson\n"
-"-----------------------------------------------------------------------------------------------------------------\n"
-" {\"type\": \"Feature\", \"geometry\": {\"type\":\"Point\",\"coordinates\":"
-"[1,1]}, \"properties\": {\"id\": 1, \"name\": \"one\"}}"
 msgstr ""
 
 #. Tag: para
@@ -807,16 +784,6 @@ msgid ""
 "is to use JSONB functions and operators:"
 msgstr ""
 
-#. Tag: screen
-#: reference_output.xml:629
-#, no-c-format
-msgid ""
-"json\n"
-"-----------------------------------------------------------------------------------------------------------------\n"
-" {\"id\": 1, \"type\": \"Feature\", \"geometry\": {\"type\": \"Point\", "
-"\"coordinates\": [1, 1]}, \"properties\": {\"name\": \"one\"}}"
-msgstr ""
-
 #. Tag: para
 #: reference_output.xml:631
 #, no-c-format
@@ -825,28 +792,10 @@ msgid ""
 "with the GeoJSON specification:"
 msgstr ""
 
-#. Tag: screen
-#: reference_output.xml:633
-#, no-c-format
-msgid ""
-"st_asgeojson\n"
-"-----------------------------------------------------------------------------------------------------------\n"
-"\n"
-"{\"type\":\"MultiLineString\",\"coordinates\":"
-"[[[-89.734634999999997,31.492072000000000],\n"
-"[-89.734955999999997,31.492237999999997]]]}"
-msgstr ""
-
 #. Tag: para
 #: reference_output.xml:634
 #, no-c-format
 msgid "3D geometries are supported:"
-msgstr ""
-
-#. Tag: screen
-#: reference_output.xml:636
-#, no-c-format
-msgid "{\"type\":\"LineString\",\"coordinates\":[[1,2,3],[4,5,6]]}"
 msgstr ""
 
 #. Tag: para

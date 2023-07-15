@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-15 12:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -6531,15 +6531,6 @@ msgstr ""
 #: reference_raster.xml:6938
 #, no-c-format
 msgid "This is a junk table to play with"
-msgstr ""
-
-#. Tag: screen
-#: reference_raster.xml:6944
-#, no-c-format
-msgid ""
-"n_orig | ngrey | npseudo | nfire | nbluered | nred\n"
-"--------+-------+---------+-------+----------+------\n"
-"      1 |     1 |       4 |     4 |        4 |    3"
 msgstr ""
 
 #. Tag: title

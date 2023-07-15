@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-15 12:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -111,24 +111,6 @@ msgstr ""
 #: reference_version.xml:607
 #, no-c-format
 msgid "Examples"
-msgstr ""
-
-#. Tag: screen
-#: reference_version.xml:55
-#, no-c-format
-msgid ""
-"NOTICE:  Packaging extension postgis\n"
-"NOTICE:  Packaging extension postgis_raster\n"
-"NOTICE:  Packaging extension postgis_sfcgal\n"
-"NOTICE:  Extension postgis_topology is not available or not packagable for "
-"some reason\n"
-"NOTICE:  Extension postgis_tiger_geocoder is not available or not packagable "
-"for some reason\n"
-"\n"
-"                    postgis_extensions_upgrade\n"
-"-------------------------------------------------------------------\n"
-" Upgrade completed, run SELECT postgis_full_version(); for details\n"
-"(1 row)"
 msgstr ""
 
 #. Tag: title

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-15 12:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -2204,22 +2204,6 @@ msgid ""
 "and views. The view structure is:"
 msgstr ""
 
-#. Tag: screen
-#: using_postgis_dataman.xml:1512
-#, no-c-format
-msgid ""
-"View \"public.geometry_columns\"\n"
-"      Column       |          Type          | Modifiers\n"
-"-------------------+------------------------+-----------\n"
-" f_table_catalog   | character varying(256) |\n"
-" f_table_schema    | character varying(256) |\n"
-" f_table_name      | character varying(256) |\n"
-" f_geometry_column | character varying(256) |\n"
-" coord_dimension   | integer                |\n"
-" srid              | integer                |\n"
-" type              | character varying(30)  |"
-msgstr ""
-
 #. Tag: term
 #: using_postgis_dataman.xml:1518
 #, no-c-format
@@ -2329,45 +2313,10 @@ msgid ""
 "We observe they are defined differently -- one is typmod, one is constraint"
 msgstr ""
 
-#. Tag: screen
-#: using_postgis_dataman.xml:1589
-#, no-c-format
-msgid ""
-"Table \"public.pois_ny\"\n"
-"  Column   |         Type          |                       Modifiers\n"
-"\n"
-"-----------+-----------------------"
-"+------------------------------------------------------\n"
-" gid       | integer               | not null default "
-"nextval('pois_ny_gid_seq'::regclass)\n"
-" poi_name  | text                  |\n"
-" cat       | character varying(20) |\n"
-" geom      | geometry(Point,4326)  |\n"
-" geom_2160 | geometry              |\n"
-"Indexes:\n"
-"    \"pois_ny_pkey\" PRIMARY KEY, btree (gid)\n"
-"Check constraints:\n"
-"    \"enforce_dims_geom_2160\" CHECK (st_ndims(geom_2160) = 2)\n"
-"    \"enforce_geotype_geom_2160\" CHECK (geometrytype(geom_2160) = 'POINT'::"
-"text\n"
-"        OR geom_2160 IS NULL)\n"
-"    \"enforce_srid_geom_2160\" CHECK (st_srid(geom_2160) = 2160)"
-msgstr ""
-
 #. Tag: para
 #: using_postgis_dataman.xml:1590
 #, no-c-format
 msgid "In geometry_columns, they both register correctly"
-msgstr ""
-
-#. Tag: screen
-#: using_postgis_dataman.xml:1592
-#, no-c-format
-msgid ""
-"f_table_name | f_geometry_column | srid | type\n"
-"-------------+-------------------+------+-------\n"
-"pois_ny      | geom              | 4326 | POINT\n"
-"pois_ny      | geom_2160         | 2160 | POINT"
 msgstr ""
 
 #. Tag: para
@@ -2384,32 +2333,12 @@ msgid ""
 "based one does not."
 msgstr ""
 
-#. Tag: screen
-#: using_postgis_dataman.xml:1597
-#, no-c-format
-msgid ""
-"f_table_name   | f_geometry_column | srid |   type\n"
-"------------------+-------------------+------+----------\n"
-" vw_pois_ny_parks | geom              | 4326 | POINT\n"
-" vw_pois_ny_parks | geom_2160         |    0 | GEOMETRY"
-msgstr ""
-
 #. Tag: para
 #: using_postgis_dataman.xml:1599
 #, no-c-format
 msgid ""
 "This may change in future versions of PostGIS, but for now to force the "
 "constraint-based view column to register correctly, you need to do this:"
-msgstr ""
-
-#. Tag: screen
-#: using_postgis_dataman.xml:1602
-#, no-c-format
-msgid ""
-"f_table_name   | f_geometry_column | srid | type\n"
-"------------------+-------------------+------+-------\n"
-" vw_pois_ny_parks | geom              | 4326 | POINT\n"
-" vw_pois_ny_parks | geom_2160         | 2160 | POINT"
 msgstr ""
 
 #. Tag: title
