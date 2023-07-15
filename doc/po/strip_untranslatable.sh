@@ -7,7 +7,7 @@
 
 
 sed -e '/^#\. Tag: programlisting$/,/^$/d' \
-    -e '/^#\. Tag: programlisting$/,/^$/d' \
+    -e '/^#\. Tag: screen$/,/^$/d' \
     -e '/^#\. Tag: funcsynopsis$/,/^$/d' \
     -i $1
 
