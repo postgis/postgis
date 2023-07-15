@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Fail documentation image generation when the rendering command fails (Sandro Santilli)
  - Read tagged dollar quotes when generating function upgrades (Sandro Santilli)
  - Count only TopoGeometries belonging to the requested topology (Sandro Santilli)
  - Place the test utility interpreter directive on the first line (Jan Tojnar)
