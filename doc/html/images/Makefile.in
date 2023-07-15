@@ -273,7 +273,7 @@ generator: $(OBJS) ../../../liblwgeom/.libs/liblwgeom.a
 clean:
 	rm -f $(OBJS)
 	rm -f generator
-	rm -f tmp[0-9].png
+	rm -rf generator-temp-*
 
 distclean: clean
 	rm -f Makefile

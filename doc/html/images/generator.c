@@ -43,9 +43,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h> /* for rmdir */
 #include <ctype.h>
 #include <sys/wait.h> /* for WEXITSTATUS */
 #include <stdbool.h>
+#include <sys/types.h>
+#include <dirent.h>
 
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
@@ -60,7 +63,8 @@ bool optionVerbose = false;
 // Some global styling variables
 const char *imageSize = "200x200";
 
-int getStyleName(char **styleName, char* line);
+char tempdir_template[] = "generator-temp-XXXXXX";
+char *tmpdir = NULL;
 
 static void
 checked_system(const char* cmd)
@@ -70,6 +74,33 @@ checked_system(const char* cmd)
 		fprintf(stderr, "Failure return code (%d) from command: %s", WEXITSTATUS(ret), cmd);
 		exit(EXIT_FAILURE);
 	}
+}
+
+static void
+cleanupTempDir(const char *dir)
+{
+	struct dirent *p;
+	DIR *d = opendir(dir);
+	char *buf;
+	size_t maxlen;
+
+	if ( NULL == d ) {
+		perror( dir );
+		exit(EXIT_FAILURE); /* or be tolerant ? */
+	}
+
+	maxlen = strlen(dir) + 64;
+	buf = malloc(maxlen);
+
+	while ( (p=readdir(d)) ) {
+		if ( strcmp(p->d_name, ".") == 0 ) continue;
+		if ( strcmp(p->d_name, ".." ) == 0) continue;
+		snprintf(buf, maxlen-1, "%s/%s", dir, p->d_name);
+		remove(buf);
+	}
+
+	closedir(d);
+	rmdir(dir);
 }
 
 /**
@@ -349,29 +380,18 @@ optimizeImage(char* filename)
 static void
 flattenLayers(char* filename)
 {
-	char *str = malloc( (48 + strlen(filename) + 1) * sizeof(char) );
-	sprintf(str, "convert tmp[0-9].png -background white -flatten %s", filename);
+	char *str = malloc( (48 + strlen(filename) + strlen(tmpdir) + 2) * sizeof(char) );
+	sprintf(str, "convert %s/tmp*.png -background white -flatten %s", tmpdir, filename);
 
 	LWDEBUGF(4, "%s", str);
 	checked_system(str);
-	// TODO: only remove the tmp files if they exist.
-	remove("tmp0.png");
-	remove("tmp1.png");
-	remove("tmp2.png");
-	remove("tmp3.png");
-	remove("tmp4.png");
-	remove("tmp5.png");
-	remove("tmp6.png");
-	remove("tmp7.png");
-	remove("tmp8.png");
-	remove("tmp9.png");
 	free(str);
 }
 
 
 // TODO: comments
-int
-getStyleName(char **styleName, char* line)
+static int
+getStyleName(char **styleName, const char* line)
 {
 	char *ptr = strrchr(line, ';');
 	if (ptr == NULL)
@@ -466,6 +486,12 @@ int main( int argc, const char* argv[] )
 		sprintf(filename + strlen(image_src) - 3, "png" );
 	}
 
+	tmpdir = mkdtemp(tempdir_template);
+	if ( NULL == tmpdir ) {
+		perror ( image_src );
+		exit(EXIT_FAILURE);
+	}
+
 	printf( "generating %s\n", filename );
 
 	layerCount = 0;
@@ -499,7 +525,7 @@ int main( int argc, const char* argv[] )
 		}
 		ptr += drawGeometry( ptr, lwgeom, style );
 
-		ptr += sprintf( ptr, "-flip tmp%d.png", layerCount );
+		ptr += sprintf( ptr, "-flip %s/tmp%d.png", tmpdir, layerCount );
 
 		lwgeom_free( lwgeom );
 
@@ -519,5 +545,8 @@ int main( int argc, const char* argv[] )
 	fclose(pfile);
 	free(filename);
 	freeStyles(&styles);
+
+	cleanupTempDir(tmpdir);
+
 	return 0;
 }
