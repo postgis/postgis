@@ -3,7 +3,7 @@
 <!-- ********************************************************************
      ********************************************************************
 	 Copyright 2011, Regina Obe
-     License: BSD
+ License: BSD-3-Clause
 	 Purpose: This is an xsl transform that generates PostGIS flash cards
      ******************************************************************** -->
 	<xsl:include href="common_utils.xsl" />

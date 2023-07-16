@@ -3,7 +3,7 @@
 <!-- ********************************************************************
  ********************************************************************
 	 Copyright 2010, Regina Obe
-	 License: BSD
+	 License: BSD-3-Clause
 	 Purpose: This is an xsl transform that generates an sql test script from xml docs to test all the raster related functions we have documented
 			using a garden variety of rasters.  Its intent is to flag major crashes.
 	 ******************************************************************** -->

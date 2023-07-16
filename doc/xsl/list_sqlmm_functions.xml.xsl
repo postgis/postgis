@@ -2,7 +2,7 @@
 <!-- ********************************************************************
 	 ********************************************************************
 	 Copyright 2010-2022, Regina Obe
-	 License: BSD
+	 License: BSD-3-Clause
    Purpose: This is an xsl transform that generates file list_sqlmm_functions.xml.xsl which
    includes index listing of functions implementing SQL/MM standard.
    It uses xml reference sections from reference.xml to then be processed by docbook

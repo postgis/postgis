@@ -6,7 +6,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <!-- ********************************************************************
      ********************************************************************
 	 Copyright 2011, Regina Obe
-     License: BSD
+ 	 License: BSD-3-Clause
 	 Purpose: This is an xsl transform that generates PostgreSQL COMMENT ON FUNCTION ddl
 	 statements from postgis xml doc reference
      ******************************************************************** -->

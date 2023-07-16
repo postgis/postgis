@@ -3,7 +3,7 @@
 <!-- ********************************************************************
      ********************************************************************
 	 Copyright 2008, Regina Obe
-     License: BSD
+   License: BSD-3-Clause
 	 Purpose: This is an xsl transform that generates PostgreSQL COMMENT ON FUNCTION ddl
 	 statements from postgis xml doc reference
      ******************************************************************** -->

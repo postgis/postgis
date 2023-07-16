@@ -2,7 +2,7 @@
 <!-- ********************************************************************
 	 ********************************************************************
 	 Copyright 2010-2022, Regina Obe
-	 License: BSD
+	 License: BSD-3-Clause
 	 Purpose: This is an xsl transform that generates file list_new_functions.xml which
 	 includes what is new in each release
 	 It uses xml reference sections from reference.xml to then be processed by docbook

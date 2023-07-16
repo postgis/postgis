@@ -33,7 +33,7 @@ shapefil.h, shpopen.c (copyrighted by Frank Warmerdam and Even Rouault).
 -- loader/getopt.* are under AT&T public domain (Copyright (c) 1984, 1985 AT&T).
 
 -- Doc/xsl files
-These are under a BSD Style license
+These are under a BSD-3-Clause license - refer to doc/xsl/LICENSE file
 
 -- liblwgeom/lookup3.c is released under Public Domain by Bob Jenkins, May 2006.
 
