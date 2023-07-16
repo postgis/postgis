@@ -3,7 +3,7 @@
 <!-- ********************************************************************
  ********************************************************************
 	 Copyright 2009, Regina Obe
-	 License: BSD
+   License: BSD-3-Clause
 	 Purpose: This is an xsl transform that generates an sql test script from xml docs to test all the functions we have documented
 			using a garden variety of geometries.  Its intent is to flag major crashes.  This version is similar to the full but designed to
 			test more geometries but only against one function.  Useful for intro of new functions or comparing major changes from function of one version of PostGIS to the other

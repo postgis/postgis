@@ -3,7 +3,7 @@
 <!-- ********************************************************************
      ********************************************************************
 	 Copyright 2008, Regina Obe
-     License: BSD
+   License: BSD-3-Clause
 	 Purpose: This is an xsl transform that generates PostgreSQL COMMENT ON FUNCTION ddl
 	 statements from postgis xml doc reference for WKT Raster section
      ******************************************************************** -->
@@ -34,7 +34,7 @@
 	If its input is a geometry set - we know it is an aggregate function rather than a regular function.
 	Do not output OUT params since they define output rather than act as input and do not put a comma after argument just before an OUT parameter -->
 		<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
-COMMENT ON <xsl:choose><xsl:when test="contains(paramdef/type,'geometry set') or contains(paramdef/type,'raster set')">AGGREGATE</xsl:when><xsl:otherwise>FUNCTION</xsl:otherwise></xsl:choose><xsl:text> </xsl:text> <xsl:value-of select="funcdef/function" />(<xsl:for-each select="paramdef"><xsl:choose><xsl:when test="count(parameter) &gt; 0"> 
+COMMENT ON <xsl:choose><xsl:when test="contains(paramdef/type,'geometry set') or contains(paramdef/type,'raster set')">AGGREGATE</xsl:when><xsl:otherwise>FUNCTION</xsl:otherwise></xsl:choose><xsl:text> </xsl:text> <xsl:value-of select="funcdef/function" />(<xsl:for-each select="paramdef"><xsl:choose><xsl:when test="count(parameter) &gt; 0">
 <xsl:choose><xsl:when test="contains(parameter,'OUT')"></xsl:when><xsl:when test="contains(type,'geometry set')">geometry</xsl:when><xsl:when test="contains(type,'raster set')">raster</xsl:when><xsl:otherwise><xsl:value-of select="type" /></xsl:otherwise></xsl:choose><xsl:if test="position()&lt;last() and not(contains(parameter,'OUT')) and not(contains(following-sibling::paramdef[1],'OUT'))"><xsl:text>, </xsl:text></xsl:if></xsl:when>
 </xsl:choose></xsl:for-each>) IS '<xsl:call-template name="listparams"><xsl:with-param name="func" select="." /></xsl:call-template> <xsl:value-of select='$comment' />';
 			</xsl:for-each>
@@ -44,7 +44,7 @@ COMMENT ON <xsl:choose><xsl:when test="contains(paramdef/type,'geometry set') or
         <xsl:for-each select="refentry">
             <xsl:variable name="ap"><xsl:text>'</xsl:text></xsl:variable>
     <!-- If this is a raster type grab the ref entry summary and refname to make type comment -->
-            
+
             <xsl:variable name='plaincomment'>
                 <xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
             </xsl:variable>
@@ -57,11 +57,11 @@ COMMENT ON <xsl:choose><xsl:when test="contains(paramdef/type,'geometry set') or
                 </xsl:call-template>
             </xsl:variable>
     COMMENT ON TYPE <xsl:value-of select="refnamediv/refname" /> IS 'postgis raster type: <xsl:value-of select='$comment' />';
-            
+
         </xsl:for-each>
 	</xsl:template>
-	
-<!--General replace macro hack to make up for the fact xsl 1.0 does not have a built in one.  
+
+<!--General replace macro hack to make up for the fact xsl 1.0 does not have a built in one.
 	Not needed for xsl 2.0 lifted from http://www.xml.com/pub/a/2002/06/05/transforming.html -->
 	<xsl:template name="globalReplace">
 	  <xsl:param name="outputString"/>
@@ -73,10 +73,10 @@ COMMENT ON <xsl:choose><xsl:when test="contains(paramdef/type,'geometry set') or
 			"concat(substring-before($outputString,$target),
 				   $replacement)"/>
 		  <xsl:call-template name="globalReplace">
-			<xsl:with-param name="outputString" 
+			<xsl:with-param name="outputString"
 				 select="substring-after($outputString,$target)"/>
 			<xsl:with-param name="target" select="$target"/>
-			<xsl:with-param name="replacement" 
+			<xsl:with-param name="replacement"
 				 select="$replacement"/>
 		  </xsl:call-template>
 		</xsl:when>
@@ -109,7 +109,7 @@ COMMENT ON <xsl:choose><xsl:when test="contains(paramdef/type,'geometry set') or
 			<xsl:if test="count(paramdef/parameter) &gt; 0">args: </xsl:if>
 			<xsl:for-each select="paramdef">
 				<xsl:choose>
-				<xsl:when test="count(parameter) &gt; 0"> 
+				<xsl:when test="count(parameter) &gt; 0">
 					<xsl:call-template name="escapesinglequotes">
 						<xsl:with-param name="arg1" select="parameter"/>
 					</xsl:call-template>
@@ -118,7 +118,7 @@ COMMENT ON <xsl:choose><xsl:when test="contains(paramdef/type,'geometry set') or
 				<xsl:if test="position()&lt;last()"><xsl:text>, </xsl:text></xsl:if>
 			</xsl:for-each>
 			<xsl:if test="count(paramdef/parameter) &gt; 0"> - </xsl:if>
-		</xsl:for-each>	
+		</xsl:for-each>
 	</xsl:template>
 
 </xsl:stylesheet>

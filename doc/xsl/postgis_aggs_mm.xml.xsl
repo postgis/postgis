@@ -2,7 +2,7 @@
 <!-- ********************************************************************
 	 ********************************************************************
 	 Copyright 2010-2022, Regina Obe
-	 License: BSD
+   License: BSD-3-Clause
 	 Purpose: This is an xsl transform that generates file postgis_aggs_mm.xml which
 	 includes index listing of aggregate functions and mm /sql compliant functions as well as what is new in each release
 	 It uses xml reference sections from reference.xml to then
