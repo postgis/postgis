@@ -33,6 +33,8 @@ Vincent Bre (French Team)
     Requires GEOS 3.9+ (Martin Davis)
   - #5267, ST_Project signature for geometry, and two-point signature (Paul Ramsey)
   - #5267, ST_LineExtend for extending linestrings (Paul Ramsey)
+  - New coverage functions ST_CoverageInvalidEdges, ST_CoverageSimplify, ST_CoverageUnion (Paul Ramsey)
+
 
 * Enhancements *
   - #5194, do not update system catalogs from postgis_extensions_upgrade (Sandro Santilli)
