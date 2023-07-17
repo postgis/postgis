@@ -21,7 +21,7 @@ export PCRE_VER=8.33
 
 # Don't convert paths
 # See https://trac.osgeo.org/postgis/ticket/5436#comment:5
-export MSYS2_ARG_CONV_EXCL=*
+export MSYS2_ARG_CONV_EXCL=/config/tags
 
 
 if  [[ "${ICON_VER}" == '' ]] ; then
