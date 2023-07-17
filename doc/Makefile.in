@@ -569,7 +569,7 @@ check-xml: $(XML_INPUTS)
 	$(XMLLINT) --loaddtd $(XSLTPROC_PATH_OPT) --xinclude --valid postgis-out.xml --noout
 
 check-cheatsheets: cheatsheets
-	for f in $(abs_builddir)/$(html_builddir)/*_cheatsheet-en.html; do \
+	for f in $(html_builddir)/*_cheatsheet-en.html; do \
 		$(abs_top_srcdir)/utils/check_localized_cheatsheets.sh $${f} en $(patsubst -%,%,$(DOCSUFFIX)) || exit 1; \
 	done
 
