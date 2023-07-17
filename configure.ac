@@ -599,14 +599,13 @@ dnl ===========================================================================
 dnl Explain our prefix policy if necessary.
 dnl ===========================================================================
 
-if test "$prefix" != "NONE"; then
+if test "$prefix" != "NONE" -a "x$PG_CONFIG" != "xno"; then
   AC_MSG_RESULT([------------------------------------------------------------------------])
   AC_MSG_RESULT([  WARNING: You have set the --prefix to '$prefix'. But we mostly    ])
   AC_MSG_RESULT([  ignore the --prefix. For your info, using the values determined from ])
   AC_MSG_RESULT([  $PG_CONFIG we will be installing:   ])
   AC_MSG_RESULT([    * postgis shared library in $PGSQL_LIBDIR ])
   AC_MSG_RESULT([    * postgis SQL files in $PGSQL_SHAREDIR/contrib/postgis-$POSTGIS_MAJOR_VERSION.$POSTGIS_MINOR_VERSION ])
-  AC_MSG_RESULT([    * postgis executables in $PGSQL_BINDIR ])
   AC_MSG_RESULT([------------------------------------------------------------------------])
 fi
 
