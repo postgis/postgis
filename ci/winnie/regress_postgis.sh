@@ -19,6 +19,11 @@ export PROTOBUFC_VER=1.2.1
 export JSON_VER=0.12
 export PCRE_VER=8.33
 
+# Don't convert paths
+# See https://trac.osgeo.org/postgis/ticket/5436#comment:5
+export MSYS_NO_PATHCONV=1
+
+
 if  [[ "${ICON_VER}" == '' ]] ; then
   export ICON_VER=1.16
 fi;
@@ -256,7 +261,7 @@ done
 fi
 
 if [ "$DUMP_RESTORE" == "1" ]; then
- echo "Dum restore test"
+ echo "Dump restore test"
  make install
  make check RUNTESTFLAGS="-v --dumprestore"
  if [ "$?" != "0" ]; then
