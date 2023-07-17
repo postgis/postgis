@@ -3,9 +3,9 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright (C) 2022 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2022-2023 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2022 Martin Davis
- * Copyright 2008 Kevin Neufeld
+ * Copyright (C) 2008 Kevin Neufeld
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -31,9 +31,10 @@
  * small to be recognizable as anything other than a single point.
  *
  * Usage:
- *  generator [-v] <source_wktfile> [<output_pngfile>]
+ *  generator [-v] [-s <width>x<height>] <source_wktfile> [<output_pngfile>]
  *
  * -v - show generated Imagemagick commands
+ * -s - output dimention, if omitted defaults to 200x200
  *
  * If <output_pngfile> is omitted the output image PNG file has the
  * same name as the source file
@@ -63,8 +64,21 @@ bool optionVerbose = false;
 // Some global styling variables
 const char *imageSize = "200x200";
 
-char tempdir_template[] = "generator-temp-XXXXXX";
+char tempdir_template[] = "generator-XXXXXX";
 char *tmpdir = NULL;
+
+typedef struct draw_context_t {
+	LAYERSTYLE *style;
+	const char *tmpdir;
+	int drawNum; /* number of draw commands */
+} GEOMETRY_DRAW_CONTEXT;
+
+static void
+initializeGeometryDrawContext(GEOMETRY_DRAW_CONTEXT *ctx) {
+	ctx->style = NULL;
+	ctx->tmpdir = NULL;
+	ctx->drawNum = 0;
+}
 
 static void
 checked_system(const char* cmd)
@@ -104,21 +118,20 @@ cleanupTempDir(const char *dir)
 }
 
 /**
- * Writes the coordinates of a POINTARRAY to a char* where ordinates are
+ * Writes the coordinates of a POINTARRAY to a FILE* where ordinates are
  * separated by a comma and coordinates by a space so that the coordinate
  * pairs can be interpreted by ImageMagick's SVG draw command.
  *
- * @param output a reference to write the POINTARRAY to
+ * @param output a file to write the POINTARRAY to
  * @param pa a reference to a POINTARRAY
  * @return the numbers of character written to *output
  */
 static size_t
-pointarrayToString(char *output, POINTARRAY *pa)
+pointarrayToFile(FILE *output, POINTARRAY *pa)
 {
 	char x[OUT_DOUBLE_BUFFER_SIZE];
 	char y[OUT_DOUBLE_BUFFER_SIZE];
-	unsigned int i;
-	char *ptr = output;
+	unsigned int i, written = 0;
 
 	for ( i=0; i < pa->npoints; i++ )
 	{
@@ -128,11 +141,11 @@ pointarrayToString(char *output, POINTARRAY *pa)
 		lwprint_double(pt.x, 10, x);
 		lwprint_double(pt.y, 10, y);
 
-		if ( i ) ptr += sprintf(ptr, " ");
-		ptr += sprintf(ptr, "%s,%s", x, y);
+		if ( i ) written += fprintf(output, " ");
+		written += fprintf(output, "%s,%s", x, y);
 	}
 
-	return (ptr - output);
+	return written;
 }
 
 /**
@@ -232,12 +245,13 @@ drawLineArrow(char *output, POINTARRAY *pa, int size, int strokeWidth, char* col
  * @return the numbers of character written to *output
  */
 static size_t
-drawPoint(char *output, LWPOINT *lwp, LAYERSTYLE *styles)
+drawPoint(char *output, LWPOINT *lwp, GEOMETRY_DRAW_CONTEXT *ctx)
 {
 	char x[OUT_DOUBLE_BUFFER_SIZE];
 	char y1[OUT_DOUBLE_BUFFER_SIZE];
 	char y2[OUT_DOUBLE_BUFFER_SIZE];
 	char *ptr = output;
+	LAYERSTYLE *styles = ctx->style;
 	POINTARRAY *pa = lwp->point;
 	POINT2D p;
 	getPoint2d_p(pa, 0, &p);
@@ -266,17 +280,33 @@ drawPoint(char *output, LWPOINT *lwp, LAYERSTYLE *styles)
  * @return the numbers of character written to *output
  */
 static size_t
-drawLineString(char *output, LWLINE *lwl, LAYERSTYLE *style)
+drawLineString(char *output, LWLINE *lwl, GEOMETRY_DRAW_CONTEXT *ctx)
 {
 	char *ptr = output;
+	LAYERSTYLE *style = ctx->style;
+	char *drawFname;
+	FILE *drawFile;
 
 	LWDEBUGF(4, "%s", "drawLineString called");
 	LWDEBUGF( 4, "line = %s", lwgeom_to_ewkt((LWGEOM*)lwl) );
 
 	ptr += sprintf(ptr, "-fill none -stroke %s -strokewidth %d ", style->lineColor, style->lineWidth);
-	ptr += sprintf(ptr, "-draw \"stroke-linecap round stroke-linejoin round path 'M ");
-	ptr += pointarrayToString(ptr, lwl->points );
-	ptr += sprintf(ptr, "'\" ");
+
+	ptr += sprintf(ptr, "-draw '@");
+	drawFname = ptr; /* hack to save allocating a new string just for the filename */
+	ptr += sprintf(ptr, "%s/draw%d", ctx->tmpdir, ctx->drawNum++);
+	drawFile = fopen(drawFname, "w");
+	if ( NULL == drawFile ) {
+		perror( drawFname );
+		exit(EXIT_FAILURE); /* or be tolerant ? */
+	}
+	ptr += sprintf(ptr, "' "); /* from now on drawFname is invalid */
+
+	fprintf(drawFile, "stroke-linecap round stroke-linejoin round path 'M ");
+	pointarrayToFile(drawFile, lwl->points );
+	fprintf(drawFile, "'");
+
+	fclose(drawFile);
 
 	ptr += drawPointSymbol(ptr, lwl->points, 0, style->lineStartSize, style->lineColor);
 	ptr += drawPointSymbol(ptr, lwl->points, lwl->points->npoints-1, style->lineEndSize, style->lineColor);
@@ -295,23 +325,39 @@ drawLineString(char *output, LWLINE *lwl, LAYERSTYLE *style)
  * @return the numbers of character written to *output
  */
 static size_t
-drawPolygon(char *output, LWPOLY *lwp, LAYERSTYLE *style)
+drawPolygon(char *output, LWPOLY *lwp, GEOMETRY_DRAW_CONTEXT *ctx)
 {
 	char *ptr = output;
 	unsigned int i;
+	LAYERSTYLE *style = ctx->style;
+	char *drawFname;
+	FILE *drawFile;
 
 	LWDEBUGF(4, "%s", "drawPolygon called");
 	LWDEBUGF( 4, "poly = %s", lwgeom_to_ewkt((LWGEOM*)lwp) );
 
 	ptr += sprintf(ptr, "-fill %s -stroke %s -strokewidth %d ", style->polygonFillColor, style->polygonStrokeColor, style->polygonStrokeWidth );
-	ptr += sprintf(ptr, "-draw \"path '");
+
+	ptr += sprintf(ptr, "-draw '@");
+	drawFname = ptr; /* hack to save allocating a new string just for the filename */
+	ptr += sprintf(ptr, "%s/draw%d", ctx->tmpdir, ctx->drawNum++);
+	drawFile = fopen(drawFname, "w");
+	if ( NULL == drawFile ) {
+		perror( drawFname );
+		exit(EXIT_FAILURE); /* or be tolerant ? */
+	}
+	ptr += sprintf(ptr, "' "); /* from now on drawFname is invalid */
+
+	fprintf(drawFile, "path '");
 	for (i=0; i<lwp->nrings; i++)
 	{
-		ptr += sprintf(ptr, "M ");
-		ptr += pointarrayToString(ptr, lwp->rings[i] );
-		ptr += sprintf(ptr, " ");
+		fprintf(drawFile, "M ");
+		pointarrayToFile(drawFile, lwp->rings[i] );
+		fprintf(drawFile, " ");
 	}
-	ptr += sprintf(ptr, "'\" ");
+	fprintf(drawFile, "'");
+
+	fclose(drawFile);
 
 	return (ptr - output);
 }
@@ -323,10 +369,11 @@ drawPolygon(char *output, LWPOLY *lwp, LAYERSTYLE *style)
 
  * @param output a char reference to write the LWGEOM to
  * @param lwgeom a reference to a LWGEOM
+ * @param ctx drawing context
  * @return the numbers of character written to *output
  */
 static size_t
-drawGeometry(char *output, LWGEOM *lwgeom, LAYERSTYLE *styles )
+drawGeometry(char *output, LWGEOM *lwgeom, GEOMETRY_DRAW_CONTEXT *ctx)
 {
 	char *ptr = output;
 	unsigned int i;
@@ -335,13 +382,13 @@ drawGeometry(char *output, LWGEOM *lwgeom, LAYERSTYLE *styles )
 	switch (type)
 	{
 	case POINTTYPE:
-		ptr += drawPoint(ptr, (LWPOINT*)lwgeom, styles );
+		ptr += drawPoint(ptr, (LWPOINT*)lwgeom, ctx );
 		break;
 	case LINETYPE:
-		ptr += drawLineString(ptr, (LWLINE*)lwgeom, styles );
+		ptr += drawLineString(ptr, (LWLINE*)lwgeom, ctx );
 		break;
 	case POLYGONTYPE:
-		ptr += drawPolygon(ptr, (LWPOLY*)lwgeom, styles );
+		ptr += drawPolygon(ptr, (LWPOLY*)lwgeom, ctx );
 		break;
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
@@ -349,7 +396,7 @@ drawGeometry(char *output, LWGEOM *lwgeom, LAYERSTYLE *styles )
 	case COLLECTIONTYPE:
 		for (i=0; i<((LWCOLLECTION*)lwgeom)->ngeoms; i++)
 		{
-			ptr += drawGeometry( ptr, lwcollection_getsubgeom ((LWCOLLECTION*)lwgeom, i), styles );
+			ptr += drawGeometry( ptr, lwcollection_getsubgeom ((LWCOLLECTION*)lwgeom, i), ctx );
 		}
 		break;
 	}
@@ -502,12 +549,14 @@ int main( int argc, const char* argv[] )
 	layerCount = 0;
 	while ( fgets ( line, sizeof line, pfile ) != NULL && !isspace(*line) )
 	{
-
+		GEOMETRY_DRAW_CONTEXT ctx;
 		char output[32768];
 		char *ptr = output;
 		char *styleName;
-		LAYERSTYLE *style;
 		int useDefaultStyle;
+
+		initializeGeometryDrawContext(&ctx);
+		ctx.tmpdir = tmpdir;
 
 		ptr += sprintf( ptr, "convert -size %s xc:none ", imageSize );
 
@@ -521,14 +570,18 @@ int main( int argc, const char* argv[] )
 		}
 		else
 			lwgeom = lwgeom_from_wkt( line+strlen(styleName)+1, LW_PARSER_CHECK_NONE );
+
 		LWDEBUGF( 4, "geom = %s", lwgeom_to_ewkt((LWGEOM*)lwgeom) );
 
-		style = getStyle(styles, styleName);
-		if ( ! style ) {
+		ctx.style = getStyle(styles, styleName);
+		if ( ! ctx.style ) {
 		  lwerror("Could not find style named %s", styleName);
+			free(styleName);
 		  return -1;
 		}
-		ptr += drawGeometry( ptr, lwgeom, style );
+		free(styleName);
+
+		ptr += drawGeometry( ptr, lwgeom, &ctx );
 
 		ptr += sprintf( ptr, "-flip %s/tmp%d.png", tmpdir, layerCount );
 
@@ -541,7 +594,6 @@ int main( int argc, const char* argv[] )
 		checked_system(output);
 
 		layerCount++;
-		free(styleName);
 	}
 
 	flattenLayers(filename);
