@@ -2,6 +2,8 @@ PostGIS 3.3.4dev
 YYYY/MM/DD
 
 * Bug Fixes and Enhancements *
+  - #5450, Fix macro expansion recursion on powerpc architectures.
+           (Bas Couwenberg)
   - #5395, [postgis_topology] Allow unprivileged user dump
            of database with topology enabled
   - #5394, [postgis_topology] Improve robustness of finding
