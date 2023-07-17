@@ -7,6 +7,8 @@ Additional features are enabled if you are running GEOS 3.9+
 Proj 6.1+, and PostgreSQL 14+.
 
 * Bug Fixes and Enhancements *
+  - #5450, Fix macro expansion recursion on powerpc architectures.
+           (Bas Couwenberg)
   - #5403, [postgis_topology] Fix ValidateTopology(bbox)
            without topology in search_path (Sandro Santilli)
   - #5410, [postgis_raster] ST_Value bilinear resample,
