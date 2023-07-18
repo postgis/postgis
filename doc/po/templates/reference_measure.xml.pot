@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -26,12 +26,6 @@ msgstr ""
 #: reference_measure.xml:10
 #, no-c-format
 msgid "Measurement Functions"
-msgstr ""
-
-#. Tag: refname
-#: reference_measure.xml:14
-#, no-c-format
-msgid "ST_Area"
 msgstr ""
 
 #. Tag: refpurpose
@@ -197,12 +191,6 @@ msgid ""
 "linkend=\"ST_Transform\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_measure.xml:78
-#, no-c-format
-msgid "ST_Azimuth"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_measure.xml:80
 #, no-c-format
@@ -303,12 +291,6 @@ msgid ""
 "current/interactive/functions-math.html\">PostgreSQL Math Functions</ulink>"
 msgstr ""
 
-#. Tag: refname
-#: reference_measure.xml:160
-#, no-c-format
-msgid "ST_Angle"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_measure.xml:162
 #, no-c-format
@@ -380,12 +362,6 @@ msgstr ""
 msgid "Angle between vectors defined by the start and end points of lines"
 msgstr ""
 
-#. Tag: refname
-#: reference_measure.xml:221
-#, no-c-format
-msgid "ST_ClosestPoint"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_measure.xml:223
 #, no-c-format
@@ -445,12 +421,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"ST_LongestLine\"/>, <xref "
 "linkend=\"ST_ShortestLine\"/>, <xref linkend=\"ST_MaxDistance\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_measure.xml:300
-#, no-c-format
-msgid "ST_3DClosestPoint"
 msgstr ""
 
 #. Tag: refpurpose
@@ -530,12 +500,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_ClosestPoint\"/>, <xref linkend=\"ST_3DDistance\"/>, "
 "<xref linkend=\"ST_3DShortestLine\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_measure.xml:368
-#, no-c-format
-msgid "ST_Distance"
 msgstr ""
 
 #. Tag: refpurpose
@@ -669,12 +633,6 @@ msgid ""
 "linkend=\"ST_FrechetDistance\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_measure.xml:458
-#, no-c-format
-msgid "ST_3DDistance"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_measure.xml:460
 #, no-c-format
@@ -729,12 +687,6 @@ msgid ""
 "<xref linkend=\"ST_Transform\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_measure.xml:509
-#, no-c-format
-msgid "ST_DistanceSphere"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_measure.xml:511
 #, no-c-format
@@ -785,12 +737,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_Distance_Spheroid\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_measure.xml:557
-#, no-c-format
-msgid "ST_DistanceSpheroid"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_measure.xml:559
 #, no-c-format
@@ -837,12 +783,6 @@ msgstr ""
 #: reference_measure.xml:601
 #, no-c-format
 msgid ", <xref linkend=\"ST_DistanceSphere\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_measure.xml:608
-#, no-c-format
-msgid "ST_FrechetDistance"
 msgstr ""
 
 #. Tag: refpurpose
@@ -922,12 +862,6 @@ msgstr ""
 msgid "Availability: 2.4.0 - requires GEOS &gt;= 3.7.0"
 msgstr ""
 
-#. Tag: refname
-#: reference_measure.xml:671
-#, no-c-format
-msgid "ST_HausdorffDistance"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_measure.xml:673
 #, no-c-format
@@ -991,12 +925,6 @@ msgid ""
 "with the building geometry. <code>DISTINCT ON</code> guarantees we get each "
 "building listed only once. <code>ORDER BY .. ST_HausdorffDistance</code> "
 "selects the parcel that is most similar to the building."
-msgstr ""
-
-#. Tag: refname
-#: reference_measure.xml:769
-#, no-c-format
-msgid "ST_Length"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1093,12 +1021,6 @@ msgid ""
 ">, <xref linkend=\"ST_Perimeter\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_measure.xml:828
-#, no-c-format
-msgid "ST_Length2D"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_measure.xml:830
 #, no-c-format
@@ -1128,12 +1050,6 @@ msgstr ""
 #: reference_measure.xml:854
 #, no-c-format
 msgid ", <xref linkend=\"ST_3DLength\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_measure.xml:860
-#, no-c-format
-msgid "ST_3DLength"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1184,12 +1100,6 @@ msgstr ""
 #: reference_measure.xml:897
 #, no-c-format
 msgid ", <xref linkend=\"ST_Length2D\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_measure.xml:903
-#, no-c-format
-msgid "ST_LengthSpheroid"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1256,12 +1166,6 @@ msgstr ""
 #: reference_measure.xml:945
 #, no-c-format
 msgid ", <xref linkend=\"ST_Length\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_measure.xml:952
-#, no-c-format
-msgid "ST_LongestLine"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1335,12 +1239,6 @@ msgid ""
 "<xref linkend=\"ST_MinimumBoundingCircle\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_measure.xml:1039
-#, no-c-format
-msgid "ST_3DLongestLine"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_measure.xml:1041
 #, no-c-format
@@ -1390,12 +1288,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_LongestLine\"/>, "
 "<xref linkend=\"ST_3DShortestLine\"/>, <xref linkend=\"ST_3DMaxDistance\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_measure.xml:1109
-#, no-c-format
-msgid "ST_MaxDistance"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1451,12 +1343,6 @@ msgid ""
 ", <xref linkend=\"ST_LongestLine\"/>, <xref linkend=\"ST_DFullyWithin\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_measure.xml:1158
-#, no-c-format
-msgid "ST_3DMaxDistance"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_measure.xml:1160
 #, no-c-format
@@ -1488,12 +1374,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_3DDWithin\"/>, <xref linkend=\"ST_3DMaxDistance\"/>, "
 "<xref linkend=\"ST_Transform\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_measure.xml:1206
-#, no-c-format
-msgid "ST_MinimumClearance"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1588,12 +1468,6 @@ msgid ""
 "linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_measure.xml:1287
-#, no-c-format
-msgid "ST_MinimumClearanceLine"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_measure.xml:1288
 #, no-c-format
@@ -1622,12 +1496,6 @@ msgstr ""
 #: reference_measure.xml:1310
 #, no-c-format
 msgid "Availability: 2.3.0 - requires GEOS &gt;= 3.6.0"
-msgstr ""
-
-#. Tag: refname
-#: reference_measure.xml:1326
-#, no-c-format
-msgid "ST_Perimeter"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1713,12 +1581,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_Length\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_measure.xml:1380
-#, no-c-format
-msgid "ST_Perimeter2D"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_measure.xml:1382
 #, no-c-format
@@ -1748,12 +1610,6 @@ msgid ""
 "This is currently an alias for ST_Perimeter. In future versions ST_Perimeter "
 "may return the highest dimension perimeter for a geometry. This is still "
 "under consideration"
-msgstr ""
-
-#. Tag: refname
-#: reference_measure.xml:1416
-#, no-c-format
-msgid "ST_3DPerimeter"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1805,12 +1661,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_Perimeter\"/>, <xref linkend=\"ST_Perimeter2D\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_measure.xml:1457
-#, no-c-format
-msgid "ST_ShortestLine"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_measure.xml:1459
 #, no-c-format
@@ -1853,12 +1703,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"ST_LongestLine\"/>, <xref "
 "linkend=\"ST_MaxDistance\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_measure.xml:1532
-#, no-c-format
-msgid "ST_3DShortestLine"
 msgstr ""
 
 #. Tag: refpurpose

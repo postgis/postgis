@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 12:17+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -26,12 +26,6 @@ msgstr ""
 #: reference_processing.xml:11
 #, no-c-format
 msgid "Geometry Processing"
-msgstr ""
-
-#. Tag: refname
-#: reference_processing.xml:15
-#, no-c-format
-msgid "ST_Buffer"
 msgstr ""
 
 #. Tag: refpurpose
@@ -339,12 +333,6 @@ msgid ""
 "linkend=\"ST_MakeValid\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_processing.xml:292
-#, no-c-format
-msgid "ST_BuildArea"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_processing.xml:294
 #, no-c-format
@@ -402,12 +390,6 @@ msgid ""
 ", <xref linkend=\"ST_MakePolygon\"/>, <xref linkend=\"ST_MakeValid\"/>, "
 "<xref linkend=\"ST_BdPolyFromText\"/>, <xref linkend=\"ST_BdMPolyFromText\"/"
 "> (wrappers to this function with standard OGC interface)"
-msgstr ""
-
-#. Tag: refname
-#: reference_processing.xml:363
-#, no-c-format
-msgid "ST_Centroid"
 msgstr ""
 
 #. Tag: refpurpose
@@ -515,12 +497,6 @@ msgstr ""
 #: reference_processing.xml:488
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeometricMedian\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_processing.xml:494
-#, no-c-format
-msgid "ST_ChaikinSmoothing"
 msgstr ""
 
 #. Tag: refpurpose
@@ -635,12 +611,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref "
 "linkend=\"ST_SimplifyVW\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_processing.xml:626
-#, no-c-format
-msgid "ST_ConcaveHull"
 msgstr ""
 
 #. Tag: refpurpose
@@ -787,12 +757,6 @@ msgid ""
 "linkend=\"ST_OptimalAlphaShape\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_processing.xml:761
-#, no-c-format
-msgid "ST_ConvexHull"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_processing.xml:762
 #, no-c-format
@@ -874,12 +838,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_ConcaveHull\"/>, <xref "
 "linkend=\"ST_MinimumBoundingCircle\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_processing.xml:831
-#, no-c-format
-msgid "ST_DelaunayTriangles"
 msgstr ""
 
 #. Tag: refpurpose
@@ -983,12 +941,6 @@ msgid ""
 "linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_ConvexHull\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_processing.xml:942
-#, no-c-format
-msgid "ST_FilterByM"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_processing.xml:943
 #, no-c-format
@@ -1064,12 +1016,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_SimplifyVW\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_processing.xml:989
-#, no-c-format
-msgid "ST_GeneratePoints"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_processing.xml:991
 #, no-c-format
@@ -1104,12 +1050,6 @@ msgstr ""
 msgid ""
 "Generated 12 Points overlaid on top of original polygon using a random seed "
 "value 1996"
-msgstr ""
-
-#. Tag: refname
-#: reference_processing.xml:1049
-#, no-c-format
-msgid "ST_GeometricMedian"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1187,12 +1127,6 @@ msgstr ""
 msgid ""
 "Comparison of the geometric median (red) and centroid (turquoise) of a "
 "MultiPoint."
-msgstr ""
-
-#. Tag: refname
-#: reference_processing.xml:1132
-#, no-c-format
-msgid "ST_LineMerge"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1284,12 +1218,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_LineSubstring\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_processing.xml:1237
-#, no-c-format
-msgid "ST_MaximumInscribedCircle"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_processing.xml:1238
 #, no-c-format
@@ -1379,12 +1307,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_LargestEmptyCircle\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_processing.xml:1301
-#, no-c-format
-msgid "ST_LargestEmptyCircle"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_processing.xml:1302
 #, no-c-format
@@ -1460,12 +1382,6 @@ msgid ""
 "Largest Empty Circle within a set of points, constrained to lie in a "
 "polygon. The constraint polygon boundary must be included as an obstacle, as "
 "well as specified as the constraint for the circle center."
-msgstr ""
-
-#. Tag: refname
-#: reference_processing.xml:1370
-#, no-c-format
-msgid "ST_MinimumBoundingCircle"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1552,12 +1468,6 @@ msgid ""
 "linkend=\"ST_LargestEmptyCircle\"/>, <xref linkend=\"ST_LongestLine\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_processing.xml:1427
-#, no-c-format
-msgid "ST_MinimumBoundingRadius"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_processing.xml:1428
 #, no-c-format
@@ -1595,12 +1505,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_MinimumBoundingCircle\"/>, <xref "
 "linkend=\"ST_LongestLine\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_processing.xml:1472
-#, no-c-format
-msgid "ST_OrientedEnvelope"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1642,12 +1546,6 @@ msgstr ""
 #: reference_processing.xml:1510
 #, no-c-format
 msgid "Oriented envelope of a point and linestring."
-msgstr ""
-
-#. Tag: refname
-#: reference_processing.xml:1528
-#, no-c-format
-msgid "ST_OffsetCurve"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1792,12 +1690,6 @@ msgstr ""
 msgid "15,-15 collected, join=mitre mitre_limit=2.1"
 msgstr ""
 
-#. Tag: refname
-#: reference_processing.xml:1684
-#, no-c-format
-msgid "ST_PointOnSurface"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_processing.xml:1685
 #, no-c-format
@@ -1883,12 +1775,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_MaximumInscribedCircle\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_processing.xml:1800
-#, no-c-format
-msgid "ST_Polygonize"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_processing.xml:1802
 #, no-c-format
@@ -1939,12 +1825,6 @@ msgstr ""
 #: reference_processing.xml:1851
 #, no-c-format
 msgid ", <xref linkend=\"ST_Dump\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_processing.xml:1860
-#, no-c-format
-msgid "ST_ReducePrecision"
 msgstr ""
 
 #. Tag: refpurpose
@@ -2031,12 +1911,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_Simplify\"/>, <xref linkend=\"ST_SimplifyVW\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_processing.xml:1931
-#, no-c-format
-msgid "ST_SharedPaths"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_processing.xml:1932
 #, no-c-format
@@ -2089,12 +1963,6 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_processing.xml:2005
-#, no-c-format
-msgid "ST_Simplify"
 msgstr ""
 
 #. Tag: refpurpose
@@ -2166,12 +2034,6 @@ msgid ""
 "linkend=\"ST_SimplifyVW\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_processing.xml:2066
-#, no-c-format
-msgid "ST_SimplifyPreserveTopology"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_processing.xml:2067
 #, no-c-format
@@ -2213,12 +2075,6 @@ msgstr ""
 msgid ""
 "Same example as Simplify, but we see Preserve Topology prevents "
 "oversimplification. The circle can at most become a square."
-msgstr ""
-
-#. Tag: refname
-#: reference_processing.xml:2109
-#, no-c-format
-msgid "ST_SimplifyPolygonHull"
 msgstr ""
 
 #. Tag: refpurpose
@@ -2319,12 +2175,6 @@ msgid ""
 "<xref linkend=\"ST_Segmentize\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_processing.xml:2203
-#, no-c-format
-msgid "ST_SimplifyVW"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_processing.xml:2204
 #, no-c-format
@@ -2379,12 +2229,6 @@ msgid ""
 ", <xref linkend=\"ST_Simplify\"/>, <xref "
 "linkend=\"ST_SimplifyPreserveTopology\"/>, Topology <xref "
 "linkend=\"TP_ST_Simplify\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_processing.xml:2243
-#, no-c-format
-msgid "ST_SetEffectiveArea"
 msgstr ""
 
 #. Tag: refpurpose
@@ -2458,12 +2302,6 @@ msgid ""
 "value of zero, all vertices in the input geometry are returned."
 msgstr ""
 
-#. Tag: refname
-#: reference_processing.xml:2302
-#, no-c-format
-msgid "ST_TriangulatePolygon"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_processing.xml:2303
 #, no-c-format
@@ -2526,12 +2364,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_ConstrainedDelaunayTriangles\"/>, <xref "
 "linkend=\"ST_Tesselate\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_processing.xml:2360
-#, no-c-format
-msgid "ST_VoronoiLines"
 msgstr ""
 
 #. Tag: refpurpose
@@ -2600,12 +2432,6 @@ msgstr ""
 #: reference_processing.xml:2429
 #, no-c-format
 msgid ", <xref linkend=\"ST_VoronoiPolygons\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_processing.xml:2438
-#, no-c-format
-msgid "ST_VoronoiPolygons"
 msgstr ""
 
 #. Tag: refpurpose

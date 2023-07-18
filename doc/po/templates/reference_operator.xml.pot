@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -24,12 +24,6 @@ msgstr ""
 #: reference_operator.xml:6
 #, no-c-format
 msgid "Bounding Box Operators"
-msgstr ""
-
-#. Tag: refname
-#: reference_operator.xml:10
-#, no-c-format
-msgid "&amp;&amp;"
 msgstr ""
 
 #. Tag: refpurpose
@@ -174,12 +168,6 @@ msgid ""
 "linkend=\"ST_Geometry_Contained\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_operator.xml:92
-#, no-c-format
-msgid "&amp;&amp;(geometry,box2df)"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_operator.xml:94
 #, no-c-format
@@ -245,12 +233,6 @@ msgid ""
 "linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_operator.xml:153
-#, no-c-format
-msgid "&amp;&amp;(box2df,geometry)"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_operator.xml:155
 #, no-c-format
@@ -277,12 +259,6 @@ msgid ""
 "B, using float precision. This means that if A is a (double precision) "
 "box2d, it will be internally converted to a float precision 2D bounding box "
 "(BOX2DF)"
-msgstr ""
-
-#. Tag: refname
-#: reference_operator.xml:214
-#, no-c-format
-msgid "&amp;&amp;(box2df,box2df)"
 msgstr ""
 
 #. Tag: refpurpose
@@ -332,12 +308,6 @@ msgid ""
 "linkend=\"is_contained_geometry_box2df\"/>, <xref "
 "linkend=\"is_contained_box2df_geometry\"/>, <xref "
 "linkend=\"is_contained_box2df_box2df\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_operator.xml:275
-#, no-c-format
-msgid "&amp;&amp;&amp;"
 msgstr ""
 
 #. Tag: refpurpose
@@ -398,12 +368,6 @@ msgstr ""
 msgid "Examples: 3M LineStrings"
 msgstr ""
 
-#. Tag: refname
-#: reference_operator.xml:337
-#, no-c-format
-msgid "&amp;&amp;&amp;(geometry,gidx)"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_operator.xml:339
 #, no-c-format
@@ -438,12 +402,6 @@ msgstr ""
 msgid ", <xref linkend=\"overlaps_nd_gidx_gidx\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_operator.xml:394
-#, no-c-format
-msgid "&amp;&amp;&amp;(gidx,geometry)"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_operator.xml:396
 #, no-c-format
@@ -470,12 +428,6 @@ msgid ""
 "geometry B, using float precision. This means that if A is a (double "
 "precision) box3d, it will be internally converted to a float precision 3D "
 "bounding box (GIDX)"
-msgstr ""
-
-#. Tag: refname
-#: reference_operator.xml:451
-#, no-c-format
-msgid "&amp;&amp;&amp;(gidx,gidx)"
 msgstr ""
 
 #. Tag: refpurpose
@@ -509,12 +461,6 @@ msgstr ""
 #: reference_operator.xml:500
 #, no-c-format
 msgid ", <xref linkend=\"overlaps_nd_gidx_geometry\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_operator.xml:508
-#, no-c-format
-msgid "&amp;&lt;"
 msgstr ""
 
 #. Tag: refpurpose
@@ -553,12 +499,6 @@ msgid ""
 ">"
 msgstr ""
 
-#. Tag: refname
-#: reference_operator.xml:566
-#, no-c-format
-msgid "&amp;&lt;|"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_operator.xml:568
 #, no-c-format
@@ -591,12 +531,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref "
 "linkend=\"ST_Geometry_Overright\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_operator.xml:627
-#, no-c-format
-msgid "&amp;&gt;"
 msgstr ""
 
 #. Tag: refpurpose
@@ -634,12 +568,6 @@ msgid ""
 "linkend=\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_operator.xml:685
-#, no-c-format
-msgid "&lt;&lt;"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_operator.xml:687
 #, no-c-format
@@ -674,12 +602,6 @@ msgid ""
 ">"
 msgstr ""
 
-#. Tag: refname
-#: reference_operator.xml:738
-#, no-c-format
-msgid "&lt;&lt;|"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_operator.xml:740
 #, no-c-format
@@ -711,12 +633,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_Geometry_Right\"/>, <xref linkend=\"ST_Geometry_Above\"/"
 ">"
-msgstr ""
-
-#. Tag: refname
-#: reference_operator.xml:791
-#, no-c-format
-msgid "&#61;"
 msgstr ""
 
 #. Tag: refpurpose
@@ -777,12 +693,6 @@ msgid ""
 ", <xref linkend=\"ST_OrderingEquals\"/>, <xref linkend=\"ST_Geometry_Same\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_operator.xml:880
-#, no-c-format
-msgid "&gt;&gt;"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_operator.xml:882
 #, no-c-format
@@ -807,12 +717,6 @@ msgid ""
 "The <varname>&gt;&gt;</varname> operator returns <varname>TRUE</varname> if "
 "the bounding box of geometry A is strictly to the right of the bounding box "
 "of geometry B."
-msgstr ""
-
-#. Tag: refname
-#: reference_operator.xml:933
-#, no-c-format
-msgid "<refname>@</refname>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -844,12 +748,6 @@ msgstr ""
 #: reference_operator.xml:982 reference_operator.xml:1329
 #, no-c-format
 msgid ", <xref linkend=\"geometry_overlaps\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_operator.xml:988
-#, no-c-format
-msgid "@(geometry,box2df)"
 msgstr ""
 
 #. Tag: refpurpose
@@ -892,12 +790,6 @@ msgid ""
 "linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_operator.xml:1049
-#, no-c-format
-msgid "@(box2df,geometry)"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_operator.xml:1051
 #, no-c-format
@@ -936,12 +828,6 @@ msgid ""
 "linkend=\"contains_box2df_box2df\"/>, <xref "
 "linkend=\"is_contained_geometry_box2df\"/>, <xref "
 "linkend=\"is_contained_box2df_box2df\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_operator.xml:1110
-#, no-c-format
-msgid "@(box2df,box2df)"
 msgstr ""
 
 #. Tag: refpurpose
@@ -984,12 +870,6 @@ msgid ""
 "linkend=\"is_contained_box2df_geometry\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_operator.xml:1171
-#, no-c-format
-msgid "|&amp;&gt;"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_operator.xml:1173
 #, no-c-format
@@ -1022,12 +902,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_Geometry_Overright\"/>, <xref "
 "linkend=\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_operator.xml:1229
-#, no-c-format
-msgid "|&gt;&gt;"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1063,12 +937,6 @@ msgid ""
 ">"
 msgstr ""
 
-#. Tag: refname
-#: reference_operator.xml:1282
-#, no-c-format
-msgid "<refname>~</refname>"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_operator.xml:1284
 #, no-c-format
@@ -1091,12 +959,6 @@ msgid ""
 "The <varname>~</varname> operator returns <varname>TRUE</varname> if the "
 "bounding box of geometry A completely contains the bounding box of geometry "
 "B."
-msgstr ""
-
-#. Tag: refname
-#: reference_operator.xml:1335
-#, no-c-format
-msgid "~(geometry,box2df)"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1139,12 +1001,6 @@ msgid ""
 "linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_operator.xml:1396
-#, no-c-format
-msgid "~(box2df,geometry)"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_operator.xml:1398
 #, no-c-format
@@ -1185,12 +1041,6 @@ msgid ""
 "linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_operator.xml:1457
-#, no-c-format
-msgid "~(box2df,box2df)"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_operator.xml:1459
 #, no-c-format
@@ -1229,12 +1079,6 @@ msgid ""
 "linkend=\"is_contained_geometry_box2df\"/>, <xref "
 "linkend=\"is_contained_box2df_geometry\"/>, <xref "
 "linkend=\"is_contained_box2df_box2df\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_operator.xml:1518
-#, no-c-format
-msgid "<refname>~=</refname>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1290,12 +1134,6 @@ msgstr ""
 #: reference_operator.xml:1584
 #, no-c-format
 msgid "Distance Operators"
-msgstr ""
-
-#. Tag: refname
-#: reference_operator.xml:1589
-#, no-c-format
-msgid "&lt;-&gt;"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1402,12 +1240,6 @@ msgid ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_box\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_operator.xml:1679
-#, no-c-format
-msgid "<refname>|=|</refname>"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_operator.xml:1681
 #, no-c-format
@@ -1469,12 +1301,6 @@ msgid ""
 "linkend=\"ST_IsValidTrajectory\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_operator.xml:1741
-#, no-c-format
-msgid "&lt;#&gt;"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_operator.xml:1743
 #, no-c-format
@@ -1531,12 +1357,6 @@ msgid ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_knn\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_operator.xml:1794
-#, no-c-format
-msgid "&lt;&lt;-&gt;&gt;"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_operator.xml:1796
 #, no-c-format
@@ -1583,12 +1403,6 @@ msgstr ""
 #: reference_operator.xml:1851
 #, no-c-format
 msgid ", <xref linkend=\"geometry_distance_knn\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_operator.xml:1860
-#, no-c-format
-msgid "&lt;&lt;#&gt;&gt;"
 msgstr ""
 
 #. Tag: refpurpose

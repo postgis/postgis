@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -29,12 +29,6 @@ msgstr ""
 #: reference_coverage.xml:11
 #, no-c-format
 msgid "Coverages"
-msgstr ""
-
-#. Tag: refname
-#: reference_coverage.xml:15
-#, no-c-format
-msgid "ST_CoverageInvalidEdges"
 msgstr ""
 
 #. Tag: refpurpose
@@ -158,12 +152,6 @@ msgid ""
 "linkend=\"ST_CoverageSimplify\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_coverage.xml:100
-#, no-c-format
-msgid "ST_CoverageSimplify"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_coverage.xml:102
 #, no-c-format
@@ -231,12 +219,6 @@ msgstr ""
 #: reference_coverage.xml:164
 #, no-c-format
 msgid "Simplified coverage"
-msgstr ""
-
-#. Tag: refname
-#: reference_coverage.xml:187
-#, no-c-format
-msgid "ST_CoverageUnion"
 msgstr ""
 
 #. Tag: refpurpose

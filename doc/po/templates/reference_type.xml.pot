@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-13 19:13+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -62,12 +62,6 @@ msgstr ""
 #: reference_type.xml:27
 #, no-c-format
 msgid "PostGIS Geometry/Geography/Box Data Types"
-msgstr ""
-
-#. Tag: refname
-#: reference_type.xml:31
-#, no-c-format
-msgid "<refname>box2d</refname>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -166,12 +160,6 @@ msgstr ""
 msgid "See Also"
 msgstr ""
 
-#. Tag: refname
-#: reference_type.xml:77
-#, no-c-format
-msgid "<refname>box3d</refname>"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_type.xml:78
 #, no-c-format
@@ -215,12 +203,6 @@ msgstr ""
 #: reference_type.xml:111 reference_type.xml:157
 #, no-c-format
 msgid "<entry>box2d</entry>"
-msgstr ""
-
-#. Tag: refname
-#: reference_type.xml:132
-#, no-c-format
-msgid "<refname>geometry</refname>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -269,12 +251,6 @@ msgstr ""
 msgid ", <xref linkend=\"PostGIS_SQLMM_Functions\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_type.xml:189
-#, no-c-format
-msgid "geometry_dump"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_type.xml:190
 #, no-c-format
@@ -314,12 +290,6 @@ msgstr ""
 msgid ""
 "It is used by the <varname>ST_Dump*</varname> family of functions as an "
 "output type to explode a complex geometry into its constituent parts."
-msgstr ""
-
-#. Tag: refname
-#: reference_type.xml:221
-#, no-c-format
-msgid "<refname>geography</refname>"
 msgstr ""
 
 #. Tag: refpurpose

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -18,12 +18,6 @@ msgstr ""
 #: reference_lrs.xml:3
 #, no-c-format
 msgid "Linear Referencing"
-msgstr ""
-
-#. Tag: refname
-#: reference_lrs.xml:7
-#, no-c-format
-msgid "ST_LineInterpolatePoint"
 msgstr ""
 
 #. Tag: refpurpose
@@ -139,12 +133,6 @@ msgid ""
 "linkend=\"ST_LineLocatePoint\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_lrs.xml:95
-#, no-c-format
-msgid "ST_3DLineInterpolatePoint"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_lrs.xml:97
 #, no-c-format
@@ -199,12 +187,6 @@ msgid ""
 "linkend=\"ST_LineLocatePoint\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_lrs.xml:152
-#, no-c-format
-msgid "ST_LineInterpolatePoints"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_lrs.xml:154
 #, no-c-format
@@ -253,12 +235,6 @@ msgstr ""
 #: reference_lrs.xml:217
 #, no-c-format
 msgid ", <xref linkend=\"ST_LineLocatePoint\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_lrs.xml:226
-#, no-c-format
-msgid "ST_LineLocatePoint"
 msgstr ""
 
 #. Tag: refpurpose
@@ -310,12 +286,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/"
 ">, <xref linkend=\"ST_LineSubstring\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_lrs.xml:284
-#, no-c-format
-msgid "ST_LineSubstring"
 msgstr ""
 
 #. Tag: refpurpose
@@ -401,12 +371,6 @@ msgid ""
 "linkend=\"ST_LineMerge\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_lrs.xml:377
-#, no-c-format
-msgid "ST_LocateAlong"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_lrs.xml:379
 #, no-c-format
@@ -482,12 +446,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_LocateBetweenElevations\"/>, <xref "
 "linkend=\"ST_InterpolatePoint\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_lrs.xml:431
-#, no-c-format
-msgid "ST_LocateBetween"
 msgstr ""
 
 #. Tag: refpurpose
@@ -570,12 +528,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_LocateBetweenElevations\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_lrs.xml:498
-#, no-c-format
-msgid "ST_LocateBetweenElevations"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_lrs.xml:500
 #, no-c-format
@@ -613,12 +565,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_LocateBetween\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_lrs.xml:546
-#, no-c-format
-msgid "ST_InterpolatePoint"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_lrs.xml:548
 #, no-c-format
@@ -654,12 +600,6 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_lrs.xml:592
-#, no-c-format
-msgid "ST_AddMeasure"
 msgstr ""
 
 #. Tag: refpurpose
