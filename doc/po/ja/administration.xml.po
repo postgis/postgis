@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-15 01:28+0000\n"
-"PO-Revision-Date: 2023-07-14 10:08+0000\n"
+"PO-Revision-Date: 2023-07-20 04:36+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "administrationxml/ja/>\n"
@@ -721,6 +721,10 @@ msgid ""
 "new srid (see <xref linkend=\"UpdateGeometrySRID\"/>), delete the invalid "
 "entry from spatial_ref_sys and re-construct the check(s) with:"
 msgstr ""
+"これを修正するために、独自のSRSを妥当な値 (910000.."
+"910999の範囲)のSRIDに複写し、全てのテーブルを新しいSRIDに変更 (<xref linkend="
+"\"UpdateGeometrySRID\"/>)し、spatial_ref_sysから不正なエントリを削除します。"
+"そして、次のようにチェック制約を再構築します:"
 
 #. Tag: para
 #: administration.xml:372
@@ -731,6 +735,10 @@ msgid ""
 "cartography, you will have probably SRIDs out of range and you will see, "
 "when importing your database, issues like this :"
 msgstr ""
+"フランス<ulink url=\"https://en.wikipedia.org/wiki/Institut_g%C3%"
+"A9ographique_national\">IGN</ulink>地図を含む古いデータベースをアップグレード"
+"する場合には、おそらくSRIDが範囲外になり、データベースのインポート時に次のよ"
+"うな問題に遭遇します:"
 
 #. Tag: para
 #: administration.xml:381
@@ -740,12 +748,14 @@ msgid ""
 "IGN from the sql which is resulting from postgis_restore.pl. So, after "
 "having run :"
 msgstr ""
+"この場合には、次のステップを試すことができます。最初にpostgis_restore."
+"plから出たIGNをSQLから完全に破棄します。そのために次のコマンドを実行します:"
 
 #. Tag: para
 #: administration.xml:389
 #, no-c-format
 msgid "run this command :"
-msgstr ""
+msgstr "次のコマンドを実行します:"
 
 #. Tag: para
 #: administration.xml:395
@@ -757,6 +767,11 @@ msgid ""
 "Put_IGN_SRS_into_Postgis.sql\"> this script </ulink> After these operations, "
 "import your data :"
 msgstr ""
+"その後、新しいデータベースを生成し、必要なPostGISエクステンションを有効化して"
+"、<ulink url=\"https://raw.githubusercontent.com/Remi-C/"
+"IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql\">このスクリ"
+"プト</ulink>で確実にフランスIGNの系を挿入します。これらの処理の後、次のように"
+"データのインポートを行います:"
 
 #, no-c-format
 #~ msgid "POSTGIS_ENABLE_OUTDB_RASTERS=1"
