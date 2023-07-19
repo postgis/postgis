@@ -399,15 +399,15 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
 
             <para>Creates an areal geometry formed by the constituent linework
             of the input geometry.
-            The input can be LINESTRINGS, MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS, and GeometryCollections.
+            The input can be a LineString, MultiLineString, Polygon, MultiPolygon or a GeometryCollection.
             The result is a Polygon or MultiPolygon, depending on input.
             If the input linework does not form polygons, NULL is returned.
             </para>
             <para>Unlike <xref linkend="ST_MakePolygon" />,
             this function accepts rings formed by multiple lines, and can form any number of polygons.
             </para>
-            <para>This function assumes all inner geometries represent holes.
-            To turn inner geometries into polygons as well, use <xref linkend="ST_Polygonize" />.
+            <para>This function converts inner rings into holes.
+            To turn inner rings into polygons as well, use <xref linkend="ST_Polygonize" />.
             </para>
 
             <note>
@@ -454,7 +454,7 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
       </tgroup>
     </informaltable>
 
-      <programlisting>WITH data(geom) AS (VALUES
+<programlisting>WITH data(geom) AS (VALUES
    ('LINESTRING (180 40, 30 20, 20 90)'::geometry)
   ,('LINESTRING (180 40, 160 160)'::geometry)
   ,('LINESTRING (160 160, 80 190, 80 120, 20 90)'::geometry)
@@ -464,8 +464,8 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
 SELECT ST_AsText( ST_BuildArea( ST_Collect( geom )))
     FROM data;
     
-  ------------------------------------------------------------------------------------------
- POLYGON((180 40,30 20,20 90,80 120,80 190,160 160,180 40),(150 80,120 130,80 60,150 80))
+------------------------------------------------------------------------------------------
+POLYGON((180 40,30 20,20 90,80 120,80 190,160 160,180 40),(150 80,120 130,80 60,150 80))
 </programlisting>
 
     <informalfigure>
@@ -477,11 +477,10 @@ SELECT ST_AsText( ST_BuildArea( ST_Collect( geom )))
         </mediaobject>
       </informalfigure>
 <programlisting>
-SELECT ST_BuildArea(ST_Collect(smallc,bigc))
+SELECT ST_BuildArea(ST_Collect(inring,outring))
 FROM (SELECT
-    ST_Buffer(
-      ST_GeomFromText('POINT(100 90)'), 25) As smallc,
-    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;
+    ST_Buffer('POINT(100 90)', 25) As inring,
+    ST_Buffer('POINT(100 90)', 50) As outring) As t;
 </programlisting>
 
           </refsection>
@@ -2326,19 +2325,26 @@ SELECT ST_AsText(ST_PointOnSurface(geom)) AS pt_on_surf,
             <title>Description</title>
 
             <para>Creates a GeometryCollection containing the
-            polygons formed by the constituent linework of a set of geometries.
-            Input linework must be correctly noded for this function to work properly.</para>
+            polygons formed by the linework of a set of geometries.
+            If the input linework does not form any polygons, an empty GeometryCollection is returned.
+            </para>
+
+            <para>This function creates polygons covering all delimited areas.
+            If the result is intended to form a valid polygonal geometry,
+            use <xref linkend="ST_BuildArea" /> to prevent holes being filled. 
+            </para>
 
             <note>
                 <para>
-                To ensure input is fully noded use <xref linkend="ST_Node" /> on the input geometry
+                The input linework must be correctly noded for this function to work properly.
+                To ensure input is noded use <xref linkend="ST_Node" /> on the input geometry
                 before polygonizing.
                 </para>
             </note>
 
             <note>
-                <para>GeometryCollections are often difficult to deal with with third party tools.
-                Use <xref linkend="ST_Dump" /> to convert the polygonize result
+                <para>GeometryCollections can be difficult to handle with external tools.
+                Use <xref linkend="ST_Dump" /> to convert the polygonized result
                 into separate polygons.</para>
             </note>
             <para>Performed by the GEOS module.</para>
@@ -2347,40 +2353,90 @@ SELECT ST_AsText(ST_PointOnSurface(geom)) AS pt_on_surf,
         </refsection>
 
         <refsection>
-        <title>Examples: Polygonizing single linestrings</title>
+        <title>Examples</title>
+
+    <informaltable>
+      <tgroup cols="2">
+      <tbody>
+        <row>
+        <entry><para>
+        <informalfigure>
+          <mediaobject>
+              <imageobject>
+              <imagedata fileref="images/st_polygonize01.png" />
+              </imageobject>
+              <caption><para>Input lines</para></caption>
+          </mediaobject>
+        </informalfigure>
+        </para></entry>
+        <entry><para>
+        <informalfigure>
+          <mediaobject>
+              <imageobject>
+              <imagedata fileref="images/st_polygonize02.png" />
+              </imageobject>
+              <caption><para>Polygonized result</para></caption>
+          </mediaobject>
+        </informalfigure>
+        </para></entry>
+       </row>
+      </tbody>
+      </tgroup>
+    </informaltable>
+
+      <programlisting>WITH data(geom) AS (VALUES
+   ('LINESTRING (180 40, 30 20, 20 90)'::geometry)
+  ,('LINESTRING (180 40, 160 160)'::geometry)
+  ,('LINESTRING (80 60, 120 130, 150 80)'::geometry)
+  ,('LINESTRING (80 60, 150 80)'::geometry)
+  ,('LINESTRING (20 90, 70 70, 80 130)'::geometry)
+  ,('LINESTRING (80 130, 160 160)'::geometry)
+  ,('LINESTRING (20 90, 20 160, 70 190)'::geometry)
+  ,('LINESTRING (70 190, 80 130)'::geometry)
+  ,('LINESTRING (70 190, 160 160)'::geometry)
+)
+SELECT ST_AsText( ST_Polygonize( geom ))
+    FROM data;
+    
+------------------------------------------------------------------------------------------
+GEOMETRYCOLLECTION (POLYGON ((180 40, 30 20, 20 90, 70 70, 80 130, 160 160, 180 40), (150 80, 120 130, 80 60, 150 80)), 
+                    POLYGON ((20 90, 20 160, 70 190, 80 130, 70 70, 20 90)), 
+                    POLYGON ((160 160, 80 130, 70 190, 160 160)), 
+                    POLYGON ((80 60, 120 130, 150 80, 80 60)))
+
+</programlisting>
+
+
+        <para>Polygonizing a table of linestrings:</para>
          <programlisting>
 SELECT ST_AsEWKT(ST_Polygonize(geom_4269)) As geomtextrep
-FROM (SELECT geom_4269 FROM ma.suffolk_edges ORDER BY tlid LIMIT 45) As foo;
+FROM (SELECT geom_4269 FROM ma.suffolk_edges) As foo;
 
-geomtextrep
 -------------------------------------
  SRID=4269;GEOMETRYCOLLECTION(POLYGON((-71.040878 42.285678,-71.040943 42.2856,-71.04096 42.285752,-71.040878 42.285678)),
  POLYGON((-71.17166 42.353675,-71.172026 42.354044,-71.17239 42.354358,-71.171794 42.354971,-71.170511 42.354855,
  -71.17112 42.354238,-71.17166 42.353675)))
-(1 row)
 
 --Use ST_Dump to dump out the polygonize geoms into individual polygons
-SELECT ST_AsEWKT((ST_Dump(foofoo.polycoll)).geom) As geomtextrep
-FROM (SELECT ST_Polygonize(geom_4269) As polycoll
-    FROM (SELECT geom_4269 FROM ma.suffolk_edges
-        ORDER BY tlid LIMIT 45) As foo) As foofoo;
+SELECT ST_AsEWKT((ST_Dump(t.polycoll)).geom) AS geomtextrep
+FROM (SELECT ST_Polygonize(geom_4269) AS polycoll
+    FROM (SELECT geom_4269 FROM ma.suffolk_edges)
+        As foo) AS t;
 
-geomtextrep
 ------------------------
  SRID=4269;POLYGON((-71.040878 42.285678,-71.040943 42.2856,-71.04096 42.285752,
 -71.040878 42.285678))
  SRID=4269;POLYGON((-71.17166 42.353675,-71.172026 42.354044,-71.17239 42.354358
 ,-71.171794 42.354971,-71.170511 42.354855,-71.17112 42.354238,-71.17166 42.353675))
-(2 rows)
-
-              </programlisting>
+</programlisting>
         </refsection>
 
         <refsection>
             <title>See Also</title>
             <para>
-            <xref linkend="ST_Node" />,
-            <xref linkend="ST_Dump" />
+            <xref linkend="ST_BuildArea" />,
+            <xref linkend="ST_Dump" />,
+            <xref linkend="ST_Node" />
             </para>
         </refsection>
     </refentry>

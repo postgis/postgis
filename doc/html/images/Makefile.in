@@ -175,6 +175,8 @@ GENERATED_IMAGES= \
 	st_pointonsurface02.png \
 	st_pointonsurface03.png \
 	st_pointonsurface04.png \
+	st_polygonize01.png \
+	st_polygonize02.png \
 	st_triangulatepolygon01.png \
 	st_segmentize01.png \
 	st_sharedpaths01.png \
