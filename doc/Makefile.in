@@ -364,7 +364,7 @@ $(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(XML_INPUTS
 		$<
 
 
-postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf: postgis-out.xml $(XML_INPUTS) | images
+postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf: postgis-out.xml $(abs_srcdir)/texstyle-common.sty  texstyle.sty $(XML_INPUTS) | images
 ifeq ($(DBLATEX),)
 	@echo
 	@echo "configure was unable to find the 'dblatex' utility program."
