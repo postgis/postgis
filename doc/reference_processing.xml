@@ -407,7 +407,7 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
             this function accepts rings formed by multiple lines, and can form any number of polygons.
             </para>
             <para>This function assumes all inner geometries represent holes.
-            To turn inner geometries into polygons as well, see <xref linkend="ST_Polygonize" />.
+            To turn inner geometries into polygons as well, use <xref linkend="ST_Polygonize" />.
             </para>
 
             <note>
