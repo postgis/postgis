@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-19 07:45+0000\n"
-"PO-Revision-Date: 2023-07-14 10:08+0000\n"
+"PO-Revision-Date: 2023-07-20 04:36+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_processingxml/ja/>\n"
@@ -392,7 +392,7 @@ msgstr ""
 #: reference_processing.xml:294
 #, no-c-format
 msgid "Creates a polygonal geometry formed by the linework of a geometry."
-msgstr "与えられたジオメトリの構成ラインから面ジオメトリを生成します。"
+msgstr "与えられたジオメトリの構成ラインワークから面ジオメトリを生成します。"
 
 #. Tag: funcprototype
 #: reference_processing.xml:299
@@ -414,6 +414,9 @@ msgid ""
 "MultiPolygon, depending on input. If the input linework does not form "
 "polygons, NULL is returned."
 msgstr ""
+"入力ジオメトリの構成するラインワークから面ジオメトリを生成します。入力はLINES"
+"TRING、MULTILINESTRING、POLYGON、MULTIPOLYGON、GEOMETRYCOLLECTIONが可能です。"
+"入力ラインワークがポリゴンを形成しない場合には、NULLが返ります。"
 
 #. Tag: para
 #: reference_processing.xml:315
@@ -422,6 +425,8 @@ msgid ""
 "Unlike <xref linkend=\"ST_MakePolygon\"/>, this function accepts rings "
 "formed by multiple lines, and can form any number of polygons."
 msgstr ""
+"<xref linkend=\"ST_MakePolygon\"/>と違い、この関数は複数の線で形成されたリン"
+"グを受け付け、任意の数量のポリゴンを形成できます。"
 
 #. Tag: para
 #: reference_processing.xml:318
@@ -430,6 +435,9 @@ msgid ""
 "This function converts inner rings into holes. To turn inner rings into "
 "polygons as well, use <xref linkend=\"ST_Polygonize\"/>."
 msgstr ""
+"この関数は内側リングを穴に変換します。"
+"内側リングもポリゴンに変換したい場合には<xref linkend=\"ST_Polygonize\""
+"/>を使います。"
 
 #. Tag: para
 #: reference_processing.xml:323
@@ -438,6 +446,9 @@ msgid ""
 "Input linework must be correctly noded for this function to work properly. "
 "<xref linkend=\"ST_Node\"/> can be used to node lines."
 msgstr ""
+"この関数が確実に動作するためには、ラインワークに正しくノードが加えられていな"
+"ければなりません。ラインにノードを加えるには<xref linkend=\"ST_Node\""
+"/>を使用します。"
 
 #. Tag: para
 #: reference_processing.xml:326
@@ -446,6 +457,9 @@ msgid ""
 "If the input linework crosses, this function will produce invalid polygons. "
 "<xref linkend=\"ST_MakeValid\"/> can be used to ensure the output is valid."
 msgstr ""
+"入力ラインワークがクロスする場合には、この関数は不正なポリゴンを生成します。"
+"<xref linkend=\"ST_MakeValid\""
+"/>で、出力を確実に妥当なものにすることができます。"
 
 #. Tag: para
 #: reference_processing.xml:331 reference_processing.xml:1204
@@ -457,19 +471,19 @@ msgstr "Availability: 1.1.0"
 #: reference_processing.xml:347 reference_processing.xml:1898
 #, no-c-format
 msgid "Input lines"
-msgstr ""
+msgstr "入力ライン"
 
 #. Tag: para
 #: reference_processing.xml:357
 #, no-c-format
 msgid "Area result"
-msgstr ""
+msgstr "結果のポリゴン"
 
 #. Tag: para
 #: reference_processing.xml:373
 #, no-c-format
 msgid "Create a donut from two circular polygons"
-msgstr ""
+msgstr "二つの円ポリゴンからのドーナツの生成"
 
 #. Tag: para
 #: reference_processing.xml:383
@@ -480,6 +494,10 @@ msgid ""
 "linkend=\"ST_BdPolyFromText\"/>, <xref linkend=\"ST_BdMPolyFromText\"/> "
 "(wrappers to this function with standard OGC interface)"
 msgstr ""
+", <xref linkend=\"ST_MakePolygon\"/>, <xref linkend=\"ST_MakeValid\"/>, "
+"<xref linkend=\"ST_Node\"/>, <xref linkend=\"ST_Polygonize\"/>, <xref "
+"linkend=\"ST_BdPolyFromText\"/>, <xref linkend=\"ST_BdMPolyFromText\"/> "
+"(標準ＯGCインタフェースを持つこの関数へのラッパ)"
 
 #. Tag: refpurpose
 #: reference_processing.xml:399
@@ -2123,8 +2141,8 @@ msgstr ", <xref linkend=\"ST_MaximumInscribedCircle\"/>"
 msgid ""
 "Computes a collection of polygons formed from the linework of a set of "
 "geometries."
-msgstr ""
-"ジオメトリ集合のラインから形成されるポリゴンのコレクションを計算します。"
+msgstr "ジオメトリ集合のラインワークから形成されるポリゴンのコレクションを計算します"
+"。"
 
 #. Tag: para
 #: reference_processing.xml:1857
@@ -2134,6 +2152,9 @@ msgid ""
 "of a set of geometries. If the input linework does not form any polygons, an "
 "empty GeometryCollection is returned."
 msgstr ""
+"ジオメトリの集合のラインワークで形成されるポリゴンを含むジオメトリコレクショ"
+"ンを生成します。入力ラインワークがポリゴンを形成しない場合には、空のジオメト"
+"リコレクションを返します。"
 
 #. Tag: para
 #: reference_processing.xml:1862
@@ -2143,6 +2164,9 @@ msgid ""
 "is intended to form a valid polygonal geometry, use <xref "
 "linkend=\"ST_BuildArea\"/> to prevent holes being filled."
 msgstr ""
+"この関数は、区切られた領域の全てを覆うポリゴンを生成します。結果が妥当なポリ"
+"ゴンジオメトリになるようにするには、<xref linkend=\"ST_BuildArea\""
+"/>を使用して、穴が埋められないようにします。"
 
 #. Tag: para
 #: reference_processing.xml:1868
@@ -2152,6 +2176,9 @@ msgid ""
 "properly. To ensure input is noded use <xref linkend=\"ST_Node\"/> on the "
 "input geometry before polygonizing."
 msgstr ""
+"この関数が正しく動作するには、入力ラインワークは正しくノードが追加されている"
+"必要があります。入力が正しくノードが追加されるようにするにはポリゴン化の前に"
+"入力ジオメトリに対して<xref linkend=\"ST_Node\"/>を使います。"
 
 #. Tag: para
 #: reference_processing.xml:1876
@@ -2161,6 +2188,8 @@ msgid ""
 "<xref linkend=\"ST_Dump\"/> to convert the polygonized result into separate "
 "polygons."
 msgstr ""
+"ジオメトリコレクションは外部ツールで扱うのに難しいことがあります。<xref "
+"linkend=\"ST_Dump\"/>でポリゴン化された結果を分かれたポリゴンに変換します。"
 
 #. Tag: para
 #: reference_processing.xml:1882
@@ -2172,19 +2201,19 @@ msgstr "Availability: 1.0.0RC1"
 #: reference_processing.xml:1908
 #, no-c-format
 msgid "Polygonized result"
-msgstr ""
+msgstr "ポリゴン化の結果"
 
 #. Tag: para
 #: reference_processing.xml:1920
 #, no-c-format
 msgid "Polygonizing a table of linestrings:"
-msgstr ""
+msgstr "ラインストリングのテーブルのポリゴン化:"
 
 #. Tag: para
 #: reference_processing.xml:1926
 #, no-c-format
 msgid ", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_Node\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_Node\"/>"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1938
