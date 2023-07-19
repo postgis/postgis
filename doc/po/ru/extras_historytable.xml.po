@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-01-09 04:42+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Russian <https://weblate.osgeo.org/projects/postgis/"
@@ -107,12 +107,6 @@ msgstr ""
 msgid "Or, to retrieve a view of the roads table at any point in the past:"
 msgstr ""
 
-#. Tag: refname
-#: extras_historytable.xml:38
-#, no-c-format
-msgid "Postgis_Install_History"
-msgstr ""
-
 #. Tag: refpurpose
 #: extras_historytable.xml:39
 #, no-c-format
@@ -159,12 +153,6 @@ msgstr "Примеры"
 #: extras_historytable.xml:71 extras_historytable.xml:113
 #, no-c-format
 msgid "See Also"
-msgstr ""
-
-#. Tag: refname
-#: extras_historytable.xml:77
-#, no-c-format
-msgid "Postgis_Enable_History"
 msgstr ""
 
 #. Tag: refpurpose

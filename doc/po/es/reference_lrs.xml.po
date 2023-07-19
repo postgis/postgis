@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2018-07-22 03:18+0000\n"
 "Last-Translator: georgersilva <georger.silva@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
@@ -22,12 +22,6 @@ msgstr ""
 #, no-c-format
 msgid "Linear Referencing"
 msgstr "Referencia Lineal "
-
-#. Tag: refname
-#: reference_lrs.xml:7
-#, no-c-format
-msgid "ST_LineInterpolatePoint"
-msgstr "ST_LineInterpolatePoint"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:9
@@ -155,12 +149,6 @@ msgstr ""
 ", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref "
 "linkend=\"ST_LineMerge\"/>"
 
-#. Tag: refname
-#: reference_lrs.xml:95
-#, fuzzy, no-c-format
-msgid "ST_3DLineInterpolatePoint"
-msgstr "ST_LineInterpolatePoint"
-
 #. Tag: refpurpose
 #: reference_lrs.xml:97
 #, no-c-format
@@ -225,12 +213,6 @@ msgstr ""
 ", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref "
 "linkend=\"ST_LineMerge\"/>"
 
-#. Tag: refname
-#: reference_lrs.xml:152
-#, no-c-format
-msgid "ST_LineInterpolatePoints"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_lrs.xml:154
 #, no-c-format
@@ -280,12 +262,6 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_LineLocatePoint\"/>"
 msgstr ""
-
-#. Tag: refname
-#: reference_lrs.xml:226
-#, no-c-format
-msgid "ST_LineLocatePoint"
-msgstr "ST_LineLocatePoint"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:228
@@ -345,12 +321,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/"
 ">, <xref linkend=\"ST_LineSubstring\"/>"
-
-#. Tag: refname
-#: reference_lrs.xml:284
-#, no-c-format
-msgid "ST_LineSubstring"
-msgstr "ST_LineSubstring"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:286
@@ -443,12 +413,6 @@ msgstr ""
 ", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref "
 "linkend=\"ST_LineMerge\"/>"
 
-#. Tag: refname
-#: reference_lrs.xml:377
-#, no-c-format
-msgid "ST_LocateAlong"
-msgstr "ST_LocateAlong"
-
 #. Tag: refpurpose
 #: reference_lrs.xml:379
 #, no-c-format
@@ -533,12 +497,6 @@ msgid ""
 ", <xref linkend=\"ST_LocateBetweenElevations\"/>, <xref "
 "linkend=\"ST_InterpolatePoint\"/>"
 msgstr ""
-
-#. Tag: refname
-#: reference_lrs.xml:431
-#, no-c-format
-msgid "ST_LocateBetween"
-msgstr "ST_LocateBetween"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:433
@@ -636,12 +594,6 @@ msgid ", <xref linkend=\"ST_LocateBetweenElevations\"/>"
 msgstr ""
 ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
 
-#. Tag: refname
-#: reference_lrs.xml:498
-#, no-c-format
-msgid "ST_LocateBetweenElevations"
-msgstr "ST_LocateBetweenElevations"
-
 #. Tag: refpurpose
 #: reference_lrs.xml:500
 #, no-c-format
@@ -685,12 +637,6 @@ msgid ", <xref linkend=\"ST_LocateBetween\"/>"
 msgstr ""
 ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
 
-#. Tag: refname
-#: reference_lrs.xml:546
-#, no-c-format
-msgid "ST_InterpolatePoint"
-msgstr "ST_InterpolatePoint"
-
 #. Tag: refpurpose
 #: reference_lrs.xml:548
 #, fuzzy, no-c-format
@@ -730,12 +676,6 @@ msgid ""
 ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
 msgstr ""
 ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
-
-#. Tag: refname
-#: reference_lrs.xml:592
-#, no-c-format
-msgid "ST_AddMeasure"
-msgstr "ST_AddMeasure"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:594
@@ -779,6 +719,42 @@ msgstr ""
 #, no-c-format
 msgid "Availability: 1.5.0"
 msgstr "Disponibilidad: 1.5.0"
+
+#, no-c-format
+#~ msgid "ST_LineInterpolatePoint"
+#~ msgstr "ST_LineInterpolatePoint"
+
+#, fuzzy, no-c-format
+#~ msgid "ST_3DLineInterpolatePoint"
+#~ msgstr "ST_LineInterpolatePoint"
+
+#, no-c-format
+#~ msgid "ST_LineLocatePoint"
+#~ msgstr "ST_LineLocatePoint"
+
+#, no-c-format
+#~ msgid "ST_LineSubstring"
+#~ msgstr "ST_LineSubstring"
+
+#, no-c-format
+#~ msgid "ST_LocateAlong"
+#~ msgstr "ST_LocateAlong"
+
+#, no-c-format
+#~ msgid "ST_LocateBetween"
+#~ msgstr "ST_LocateBetween"
+
+#, no-c-format
+#~ msgid "ST_LocateBetweenElevations"
+#~ msgstr "ST_LocateBetweenElevations"
+
+#, no-c-format
+#~ msgid "ST_InterpolatePoint"
+#~ msgstr "ST_InterpolatePoint"
+
+#, no-c-format
+#~ msgid "ST_AddMeasure"
+#~ msgstr "ST_AddMeasure"
 
 #, fuzzy, no-c-format
 #~ msgid ""

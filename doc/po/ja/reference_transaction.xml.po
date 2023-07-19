@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-05-15 11:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -48,12 +48,6 @@ msgstr ""
 "<ulink url=\"http://www.postgresql.org/docs/current/static/transaction-iso."
 "html\">serializable transaction level</ulink>を使わなければなりません。さもな"
 "くばロック機構が壊れます。"
-
-#. Tag: refname
-#: reference_transaction.xml:24
-#, no-c-format
-msgid "AddAuth"
-msgstr "AddAuth"
 
 #. Tag: refpurpose
 #: reference_transaction.xml:26
@@ -126,12 +120,6 @@ msgstr "例"
 msgid "See Also"
 msgstr "関連情報"
 
-#. Tag: refname
-#: reference_transaction.xml:65
-#, no-c-format
-msgid "CheckAuth"
-msgstr "CheckAuth"
-
 #. Tag: refpurpose
 #: reference_transaction.xml:67
 #, no-c-format
@@ -174,12 +162,6 @@ msgstr "このテーブルに認証トリガが既に存在している場合に
 msgid "If Transaction support is not enabled, function throws an exception."
 msgstr "トランザクション機能が無い場合は、例外が投げられます。"
 
-#. Tag: refname
-#: reference_transaction.xml:119
-#, no-c-format
-msgid "DisableLongTransactions"
-msgstr "DisableLongTransactions"
-
 #. Tag: refpurpose
 #: reference_transaction.xml:121
 #, no-c-format
@@ -220,12 +202,6 @@ msgstr ""
 "<varname>authorized_tables</varname>ビュー、<varname>checkauthtrigger</"
 "varname>トリガの全てが削除されます。"
 
-#. Tag: refname
-#: reference_transaction.xml:163
-#, no-c-format
-msgid "EnableLongTransactions"
-msgstr "EnableLongTransactions"
-
 #. Tag: refpurpose
 #: reference_transaction.xml:165
 #, no-c-format
@@ -264,12 +240,6 @@ msgstr ""
 "<varname>authorization_table</varname>メタデータテーブル"
 "<varname>authorized_tables</varname>ビューが生成されます。"
 
-#. Tag: refname
-#: reference_transaction.xml:208
-#, no-c-format
-msgid "LockRow"
-msgstr "LockRow"
-
 #. Tag: refpurpose
 #: reference_transaction.xml:210
 #, no-c-format
@@ -290,12 +260,6 @@ msgstr ""
 "varname>はテキスト値です。<varname>expire_dt</varname>は <emphasis>now() + 1 "
 "時間</emphasis>をデフォルトとするタイムスタンプです。割り当てが行われたなら1"
 "が返り、他の場合 (例: 行が他の認可で既にロックされていた)には0が返ります。"
-
-#. Tag: refname
-#: reference_transaction.xml:272
-#, no-c-format
-msgid "UnlockRows"
-msgstr "UnlockRows"
 
 #. Tag: refpurpose
 #: reference_transaction.xml:274
@@ -322,6 +286,30 @@ msgid ""
 msgstr ""
 "指定した認証IDが保持するロックを全て削除します。解放されたロックの数が返され"
 "ます。"
+
+#, no-c-format
+#~ msgid "AddAuth"
+#~ msgstr "AddAuth"
+
+#, no-c-format
+#~ msgid "CheckAuth"
+#~ msgstr "CheckAuth"
+
+#, no-c-format
+#~ msgid "DisableLongTransactions"
+#~ msgstr "DisableLongTransactions"
+
+#, no-c-format
+#~ msgid "EnableLongTransactions"
+#~ msgstr "EnableLongTransactions"
+
+#, no-c-format
+#~ msgid "LockRow"
+#~ msgstr "LockRow"
+
+#, no-c-format
+#~ msgid "UnlockRows"
+#~ msgstr "UnlockRows"
 
 #, no-c-format
 #~ msgid ""

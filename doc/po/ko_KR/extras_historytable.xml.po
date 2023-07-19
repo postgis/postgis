@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -131,12 +131,6 @@ msgstr ""
 msgid "Or, to retrieve a view of the roads table at any point in the past:"
 msgstr "또는, 과거 어떤 시점의 'roads' 테이블의 뷰를 검색하려면:"
 
-#. Tag: refname
-#: extras_historytable.xml:38
-#, no-c-format
-msgid "Postgis_Install_History"
-msgstr "Postgis_Install_History"
-
 #. Tag: refpurpose
 #: extras_historytable.xml:39
 #, no-c-format
@@ -190,12 +184,6 @@ msgstr "예시"
 msgid "See Also"
 msgstr "참고"
 
-#. Tag: refname
-#: extras_historytable.xml:77
-#, no-c-format
-msgid "Postgis_Enable_History"
-msgstr "Postgis_Enable_History"
-
 #. Tag: refpurpose
 #: extras_historytable.xml:78
 #, fuzzy, no-c-format
@@ -247,6 +235,14 @@ msgstr ""
 "이 함수는 현재 <varname>geometry_columns</varname> 테이블에 도형 열이 등록된"
 "다는 사실에 의존하고 있습니다. 도형 열이 <varname>geometry_columns</varname> "
 "테이블에 없을 경우 오류가 발생합니다."
+
+#, no-c-format
+#~ msgid "Postgis_Install_History"
+#~ msgstr "Postgis_Install_History"
+
+#, no-c-format
+#~ msgid "Postgis_Enable_History"
+#~ msgstr "Postgis_Enable_History"
 
 #, no-c-format
 #~ msgid ""

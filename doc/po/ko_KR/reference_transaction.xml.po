@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -49,12 +49,6 @@ msgstr ""
 "transaction-iso.html\">직렬 가능 트랜잭션 레벨(serializable transaction "
 "level)</ulink> 을 이용해야 합니다. 그렇지 않으면 잠금 기제(locking mechanism)"
 "가 중단될 것입니다."
-
-#. Tag: refname
-#: reference_transaction.xml:24
-#, no-c-format
-msgid "AddAuth"
-msgstr "AddAuth"
 
 #. Tag: refpurpose
 #: reference_transaction.xml:26
@@ -123,12 +117,6 @@ msgstr "예시"
 msgid "See Also"
 msgstr "참고"
 
-#. Tag: refname
-#: reference_transaction.xml:65
-#, no-c-format
-msgid "CheckAuth"
-msgstr "CheckAuth"
-
 #. Tag: refpurpose
 #: reference_transaction.xml:67
 #, fuzzy, no-c-format
@@ -171,12 +159,6 @@ msgstr ""
 msgid "If Transaction support is not enabled, function throws an exception."
 msgstr "트랜잭션 지원이 활성화돼 있지 않을 경우, 함수가 예외를 발생시킵니다."
 
-#. Tag: refname
-#: reference_transaction.xml:119
-#, no-c-format
-msgid "DisableLongTransactions"
-msgstr "DisableLongTransactions"
-
 #. Tag: refpurpose
 #: reference_transaction.xml:121
 #, fuzzy, no-c-format
@@ -217,12 +199,6 @@ msgstr ""
 "<varname>authorized_tables</varname> 라는 뷰, 그리고 "
 "<varname>checkauthtrigger</varname> 라는 모든 트리거들을 삭제합니다."
 
-#. Tag: refname
-#: reference_transaction.xml:163
-#, no-c-format
-msgid "EnableLongTransactions"
-msgstr "EnableLongTransactions"
-
 #. Tag: refpurpose
 #: reference_transaction.xml:165
 #, fuzzy, no-c-format
@@ -261,12 +237,6 @@ msgstr ""
 "<varname>authorization_table</varname> 이라는 메타 테이블 및 "
 "<varname>authorized_tables</varname> 라는 뷰를 생성합니다."
 
-#. Tag: refname
-#: reference_transaction.xml:208
-#, no-c-format
-msgid "LockRow"
-msgstr "LockRow"
-
 #. Tag: refpurpose
 #: reference_transaction.xml:210
 #, fuzzy, no-c-format
@@ -287,12 +257,6 @@ msgstr ""
 "값, &lt;expires&gt;는 기본값이 now()+1시간인 타임스탬프입니다. 잠금이 할당된 "
 "경우 1을 반환하고, 그렇지 않을 (이미 다른 승인을 받아 잠겨 있는) 경우 0을 반"
 "환합니다."
-
-#. Tag: refname
-#: reference_transaction.xml:272
-#, no-c-format
-msgid "UnlockRows"
-msgstr "UnlockRows"
 
 #. Tag: refpurpose
 #: reference_transaction.xml:274
@@ -318,6 +282,30 @@ msgid ""
 "of locks released."
 msgstr ""
 "특정 승인 ID가 실행한 모든 잠금을 제거합니다. 해제된 잠금 개수를 반환합니다."
+
+#, no-c-format
+#~ msgid "AddAuth"
+#~ msgstr "AddAuth"
+
+#, no-c-format
+#~ msgid "CheckAuth"
+#~ msgstr "CheckAuth"
+
+#, no-c-format
+#~ msgid "DisableLongTransactions"
+#~ msgstr "DisableLongTransactions"
+
+#, no-c-format
+#~ msgid "EnableLongTransactions"
+#~ msgstr "EnableLongTransactions"
+
+#, no-c-format
+#~ msgid "LockRow"
+#~ msgstr "LockRow"
+
+#, no-c-format
+#~ msgid "UnlockRows"
+#~ msgstr "UnlockRows"
 
 #, fuzzy, no-c-format
 #~ msgid ""

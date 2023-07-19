@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-01-09 04:42+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Russian <https://weblate.osgeo.org/projects/postgis/"
@@ -37,12 +37,6 @@ msgstr ""
 #: reference_input.xml:13
 #, no-c-format
 msgid "Well-Known Text (WKT)"
-msgstr ""
-
-#. Tag: refname
-#: reference_input.xml:17
-#, no-c-format
-msgid "ST_BdPolyFromText"
 msgstr ""
 
 #. Tag: refpurpose
@@ -138,12 +132,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_BdMPolyFromText\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_input.xml:67
-#, no-c-format
-msgid "ST_BdMPolyFromText"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_input.xml:68
 #, no-c-format
@@ -185,12 +173,6 @@ msgstr ""
 #: reference_input.xml:113
 #, no-c-format
 msgid ", <xref linkend=\"ST_BdPolyFromText\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_input.xml:119
-#, no-c-format
-msgid "ST_GeogFromText"
 msgstr ""
 
 #. Tag: refpurpose
@@ -237,12 +219,6 @@ msgstr "Примеры"
 msgid ", <xref linkend=\"ST_GeographyFromText\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_input.xml:148
-#, no-c-format
-msgid "ST_GeographyFromText"
-msgstr ""
-
 #. Tag: funcprototype
 #: reference_input.xml:153
 #, no-c-format
@@ -263,12 +239,6 @@ msgstr ""
 #: reference_input.xml:166
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsText\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_input.xml:172
-#, no-c-format
-msgid "ST_GeomCollFromText"
 msgstr ""
 
 #. Tag: refpurpose
@@ -319,12 +289,6 @@ msgstr ""
 #: reference_input.xml:225 reference_input.xml:670
 #, no-c-format
 msgid ", <xref linkend=\"ST_SRID\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_input.xml:231
-#, no-c-format
-msgid "ST_GeomFromEWKT"
 msgstr ""
 
 #. Tag: refpurpose
@@ -396,12 +360,6 @@ msgstr ""
 #: reference_input.xml:266
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeomFromText\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_input.xml:272
-#, no-c-format
-msgid "ST_GeomFromMARC21"
 msgstr ""
 
 #. Tag: refpurpose
@@ -493,12 +451,6 @@ msgid ""
 "varname> and a <varname>POINT</varname>:"
 msgstr ""
 
-#. Tag: refname
-#: reference_input.xml:353
-#, no-c-format
-msgid "ST_GeometryFromText"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_input.xml:354 reference_input.xml:783
 #, no-c-format
@@ -517,12 +469,6 @@ msgstr "&sfs_compliant;"
 #: reference_input.xml:372 reference_input.xml:413
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.40"
-msgstr ""
-
-#. Tag: refname
-#: reference_input.xml:382
-#, no-c-format
-msgid "ST_GeomFromText"
 msgstr ""
 
 #. Tag: refpurpose
@@ -584,12 +530,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_GeomFromWKB\"/>, <xref linkend=\"ST_SRID\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_input.xml:434
-#, no-c-format
-msgid "ST_LineFromText"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_input.xml:436
 #, no-c-format
@@ -627,12 +567,6 @@ msgstr ""
 msgid "&sqlmm_compliant; SQL-MM 3: 7.2.8"
 msgstr ""
 
-#. Tag: refname
-#: reference_input.xml:494
-#, no-c-format
-msgid "ST_MLineFromText"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_input.xml:496
 #, no-c-format
@@ -668,12 +602,6 @@ msgstr ""
 msgid "&sqlmm_compliant;SQL-MM 3: 9.4.4"
 msgstr ""
 
-#. Tag: refname
-#: reference_input.xml:554
-#, no-c-format
-msgid "ST_MPointFromText"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_input.xml:556 reference_input.xml:732
 #, no-c-format
@@ -706,12 +634,6 @@ msgstr ""
 #: reference_input.xml:594
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 9.2.4"
-msgstr ""
-
-#. Tag: refname
-#: reference_input.xml:615
-#, no-c-format
-msgid "ST_MPolyFromText"
 msgstr ""
 
 #. Tag: refpurpose
@@ -749,12 +671,6 @@ msgstr ""
 #: reference_input.xml:655
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 9.6.4"
-msgstr ""
-
-#. Tag: refname
-#: reference_input.xml:676
-#, no-c-format
-msgid "ST_PointFromText"
 msgstr ""
 
 #. Tag: refpurpose
@@ -812,12 +728,6 @@ msgid ""
 "linkend=\"ST_SRID\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_input.xml:730
-#, no-c-format
-msgid "ST_PolygonFromText"
-msgstr ""
-
 #. Tag: para
 #: reference_input.xml:753
 #, no-c-format
@@ -841,12 +751,6 @@ msgstr ""
 msgid "&sqlmm_compliant; SQL-MM 3: 8.3.6"
 msgstr ""
 
-#. Tag: refname
-#: reference_input.xml:782
-#, no-c-format
-msgid "ST_WKTToSQL"
-msgstr ""
-
 #. Tag: funcprototype
 #: reference_input.xml:787
 #, no-c-format
@@ -865,12 +769,6 @@ msgstr ""
 #: reference_input.xml:807
 #, no-c-format
 msgid "Well-Known Binary (WKB)"
-msgstr ""
-
-#. Tag: refname
-#: reference_input.xml:811
-#, no-c-format
-msgid "ST_GeogFromWKB"
 msgstr ""
 
 #. Tag: refpurpose
@@ -909,12 +807,6 @@ msgstr ""
 #: reference_input.xml:847
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsBinary\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_input.xml:853
-#, no-c-format
-msgid "ST_GeomFromEWKB"
 msgstr ""
 
 #. Tag: refpurpose
@@ -983,12 +875,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_GeomFromWKB\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_input.xml:901
-#, no-c-format
-msgid "ST_GeomFromWKB"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_input.xml:902
 #, no-c-format
@@ -1031,12 +917,6 @@ msgstr ""
 #: reference_input.xml:947
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsBinary\"/>, <xref linkend=\"ST_GeomFromEWKB\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_input.xml:953
-#, no-c-format
-msgid "ST_LineFromWKB"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1085,12 +965,6 @@ msgstr ""
 #: reference_input.xml:1015
 #, no-c-format
 msgid ", <xref linkend=\"ST_LinestringFromWKB\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_input.xml:1021
-#, no-c-format
-msgid "ST_LinestringFromWKB"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1142,12 +1016,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_LineFromWKB\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_input.xml:1085
-#, no-c-format
-msgid "ST_PointFromWKB"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_input.xml:1087
 #, no-c-format
@@ -1186,12 +1054,6 @@ msgstr ""
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.9"
 msgstr ""
 
-#. Tag: refname
-#: reference_input.xml:1139
-#, no-c-format
-msgid "ST_WKBToSQL"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_input.xml:1140
 #, no-c-format
@@ -1218,12 +1080,6 @@ msgstr ""
 #: reference_input.xml:1165
 #, no-c-format
 msgid "Other Formats"
-msgstr ""
-
-#. Tag: refname
-#: reference_input.xml:1169
-#, no-c-format
-msgid "ST_Box2dFromGeoHash"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1279,12 +1135,6 @@ msgid ""
 "linkend=\"ST_PointFromGeoHash\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_input.xml:1210
-#, no-c-format
-msgid "ST_GeomFromGeoHash"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_input.xml:1212
 #, no-c-format
@@ -1331,12 +1181,6 @@ msgstr ""
 msgid ""
 ",<xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref "
 "linkend=\"ST_PointFromGeoHash\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_input.xml:1250
-#, no-c-format
-msgid "ST_GeomFromGML"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1444,12 +1288,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_AsGML\"/>, <xref linkend=\"ST_GMLToSQL\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_input.xml:1329
-#, no-c-format
-msgid "ST_GeomFromGeoJSON"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_input.xml:1330
 #, no-c-format
@@ -1508,12 +1346,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_AsGeoJSON\"/>, <xref "
 "linkend=\"installation_configuration\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_input.xml:1381
-#, no-c-format
-msgid "ST_GeomFromKML"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1575,12 +1407,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_AsKML\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_input.xml:1429
-#, no-c-format
-msgid "ST_GeomFromTWKB"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_input.xml:1430
 #, no-c-format
@@ -1608,12 +1434,6 @@ msgid ""
 "instance of the appropriate geometry type."
 msgstr ""
 
-#. Tag: refname
-#: reference_input.xml:1466
-#, no-c-format
-msgid "ST_GMLToSQL"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_input.xml:1467
 #, no-c-format
@@ -1632,12 +1452,6 @@ msgstr ""
 #: reference_input.xml:1491
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeomFromGML\"/>, <xref linkend=\"ST_AsGML\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_input.xml:1498
-#, no-c-format
-msgid "ST_LineFromEncodedPolyline"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1683,12 +1497,6 @@ msgstr ""
 #: reference_input.xml:1520
 #, no-c-format
 msgid "Availability: 2.2.0"
-msgstr ""
-
-#. Tag: refname
-#: reference_input.xml:1539
-#, no-c-format
-msgid "ST_PointFromGeoHash"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1739,12 +1547,6 @@ msgid ""
 "linkend=\"ST_GeomFromGeoHash\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_input.xml:1579
-#, no-c-format
-msgid "ST_FromFlatGeobufToTable"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_input.xml:1581
 #, no-c-format
@@ -1792,12 +1594,6 @@ msgstr ""
 #: reference_input.xml:1605 reference_input.xml:1637
 #, no-c-format
 msgid "Availability: 3.2.0"
-msgstr ""
-
-#. Tag: refname
-#: reference_input.xml:1611
-#, no-c-format
-msgid "ST_FromFlatGeobuf"
 msgstr ""
 
 #. Tag: refpurpose

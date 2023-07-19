@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 12:17+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-05-26 05:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -47,12 +47,6 @@ msgstr ""
 #, no-c-format
 msgid "SFCGAL Functions"
 msgstr "SFCGAL関数"
-
-#. Tag: refname
-#: reference_sfcgal.xml:19
-#, no-c-format
-msgid "postgis_sfcgal_version"
-msgstr "postgis_sfcgal_version"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:21
@@ -151,12 +145,6 @@ msgstr "&T_support;"
 msgid "See Also"
 msgstr "関連情報"
 
-#. Tag: refname
-#: reference_sfcgal.xml:54
-#, no-c-format
-msgid "postgis_sfcgal_full_version"
-msgstr "postgis_sfcgal_full_version"
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:56
 #, no-c-format
@@ -188,12 +176,6 @@ msgstr ""
 #, no-c-format
 msgid "Availability: 3.3.0"
 msgstr "Availability: 3.3.0"
-
-#. Tag: refname
-#: reference_sfcgal.xml:89
-#, no-c-format
-msgid "ST_3DArea"
-msgstr "ST_3DArea"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:91
@@ -248,12 +230,6 @@ msgstr ""
 ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
 "linkend=\"ST_Area\"/>"
 
-#. Tag: refname
-#: reference_sfcgal.xml:128
-#, no-c-format
-msgid "ST_3DConvexHull"
-msgstr "ST_3DConvexHull"
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:130
 #, no-c-format
@@ -281,12 +257,6 @@ msgstr "3次元凸包をオーバレイした元のジオメトリ"
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsX3D\"/>"
 msgstr ", <xref linkend=\"ST_AsX3D\"/>"
-
-#. Tag: refname
-#: reference_sfcgal.xml:177
-#, no-c-format
-msgid "ST_3DIntersection"
-msgstr "ST_3DIntersection"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:179
@@ -363,12 +333,6 @@ msgid ""
 "solid (ST_Dimension returns 3)"
 msgstr "二つの立体の共通部分もまた立体です (ST_Dimensionで3を返します)"
 
-#. Tag: refname
-#: reference_sfcgal.xml:254
-#, no-c-format
-msgid "ST_3DDifference"
-msgstr "ST_3DDifference"
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:256
 #, no-c-format
@@ -423,12 +387,6 @@ msgstr ""
 ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
 "linkend=\"ST_3DUnion\"/>"
 
-#. Tag: refname
-#: reference_sfcgal.xml:329
-#, no-c-format
-msgid "ST_3DUnion"
-msgstr "ST_3DUnion"
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:331
 #, no-c-format
@@ -477,12 +435,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
 "linkend=\"ST_3DDifference\"/>"
-
-#. Tag: refname
-#: reference_sfcgal.xml:419
-#, no-c-format
-msgid "ST_AlphaShape"
-msgstr "ST_AlphaShape"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:421
@@ -618,12 +570,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_OptimalAlphaShape\"/>"
 msgstr ", <xref linkend=\"ST_OptimalAlphaShape\"/>"
 
-#. Tag: refname
-#: reference_sfcgal.xml:524
-#, no-c-format
-msgid "ST_ApproximateMedialAxis"
-msgstr "ST_ApproximateMedialAxis"
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:526
 #, no-c-format
@@ -658,12 +604,6 @@ msgstr ""
 #, no-c-format
 msgid "A polygon and its approximate medial axis"
 msgstr "ポリゴンと近似的な中心軸"
-
-#. Tag: refname
-#: reference_sfcgal.xml:587
-#, no-c-format
-msgid "ST_ConstrainedDelaunayTriangles"
-msgstr "ST_ConstrainedDelaunayTriangles"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:589
@@ -724,12 +664,6 @@ msgstr ""
 ", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref linkend=\"ST_Tesselate\"/"
 ">, <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>"
 
-#. Tag: refname
-#: reference_sfcgal.xml:661
-#, no-c-format
-msgid "ST_Extrude"
-msgstr "ST_Extrude"
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:663
 #, no-c-format
@@ -776,12 +710,6 @@ msgstr "元のラインストリング"
 msgid "LineString Extruded along Z produces a PolyhedralSurfaceZ"
 msgstr "ラインストリングをZ方向に押し出したPolyhedralSurfaceZ"
 
-#. Tag: refname
-#: reference_sfcgal.xml:756
-#, no-c-format
-msgid "ST_ForceLHR"
-msgstr "ST_ForceLHR"
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:758
 #, no-c-format
@@ -797,12 +725,6 @@ msgid ""
 msgstr ""
 "<funcdef>geometry <function>ST_ForceLHR</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-
-#. Tag: refname
-#: reference_sfcgal.xml:784
-#, no-c-format
-msgid "ST_IsPlanar"
-msgstr "ST_IsPlanar"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:786
@@ -830,12 +752,6 @@ msgstr ""
 "Availability: 2.2.0: これは2.1.0のマニュアルに記述されていましたが、2.1版では"
 "偶然に外れてしまいました。"
 
-#. Tag: refname
-#: reference_sfcgal.xml:812
-#, no-c-format
-msgid "ST_IsSolid"
-msgstr "ST_IsSolid"
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:814
 #, no-c-format
@@ -852,12 +768,6 @@ msgid ""
 msgstr ""
 "<funcdef>boolean <function>ST_IsSolid</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
-
-#. Tag: refname
-#: reference_sfcgal.xml:840
-#, no-c-format
-msgid "ST_MakeSolid"
-msgstr "ST_MakeSolid"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:842
@@ -879,12 +789,6 @@ msgid ""
 msgstr ""
 "<funcdef>geometry <function>ST_MakeSolid</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
-
-#. Tag: refname
-#: reference_sfcgal.xml:869
-#, no-c-format
-msgid "ST_MinkowskiSum"
-msgstr "ST_MinkowskiSum"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:871
@@ -986,12 +890,6 @@ msgid ""
 "After summing: polygon is duplicated and translated to position of points"
 msgstr "ミンコフスキー和実行後: 重複ポリゴンが生成されポイントの位置に移動"
 
-#. Tag: refname
-#: reference_sfcgal.xml:974
-#, no-c-format
-msgid "ST_OptimalAlphaShape"
-msgstr "ST_OptimalAlphaShape"
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:976
 #, no-c-format
@@ -1079,12 +977,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_AlphaShape\"/>"
 msgstr ", <xref linkend=\"ST_AlphaShape\"/>"
 
-#. Tag: refname
-#: reference_sfcgal.xml:1051
-#, no-c-format
-msgid "ST_Orientation"
-msgstr "ST_Orientation"
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:1053
 #, no-c-format
@@ -1110,12 +1002,6 @@ msgid ""
 msgstr ""
 "この関数はポリゴンのみ受け付けます。ポリゴンが反時計回りなら-1を返し、時計回"
 "りなら1を返します。"
-
-#. Tag: refname
-#: reference_sfcgal.xml:1079
-#, no-c-format
-msgid "ST_StraightSkeleton"
-msgstr "ST_StraightSkeleton"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:1081
@@ -1144,12 +1030,6 @@ msgstr "元のポリゴン"
 #, no-c-format
 msgid "Straight Skeleton of polygon"
 msgstr "ポリゴンのストレートスケルトン"
-
-#. Tag: refname
-#: reference_sfcgal.xml:1139
-#, no-c-format
-msgid "ST_Tesselate"
-msgstr "ST_Tesselate"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:1141
@@ -1217,12 +1097,6 @@ msgstr "テッセレーションを施したポリゴン"
 msgid ", <xref linkend=\"ST_DelaunayTriangles\"/>"
 msgstr ", <xref linkend=\"ST_DelaunayTriangles\"/>"
 
-#. Tag: refname
-#: reference_sfcgal.xml:1237
-#, no-c-format
-msgid "ST_Volume"
-msgstr "ST_Volume"
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:1239
 #, no-c-format
@@ -1272,6 +1146,90 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
 msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
+
+#, no-c-format
+#~ msgid "postgis_sfcgal_version"
+#~ msgstr "postgis_sfcgal_version"
+
+#, no-c-format
+#~ msgid "postgis_sfcgal_full_version"
+#~ msgstr "postgis_sfcgal_full_version"
+
+#, no-c-format
+#~ msgid "ST_3DArea"
+#~ msgstr "ST_3DArea"
+
+#, no-c-format
+#~ msgid "ST_3DConvexHull"
+#~ msgstr "ST_3DConvexHull"
+
+#, no-c-format
+#~ msgid "ST_3DIntersection"
+#~ msgstr "ST_3DIntersection"
+
+#, no-c-format
+#~ msgid "ST_3DDifference"
+#~ msgstr "ST_3DDifference"
+
+#, no-c-format
+#~ msgid "ST_3DUnion"
+#~ msgstr "ST_3DUnion"
+
+#, no-c-format
+#~ msgid "ST_AlphaShape"
+#~ msgstr "ST_AlphaShape"
+
+#, no-c-format
+#~ msgid "ST_ApproximateMedialAxis"
+#~ msgstr "ST_ApproximateMedialAxis"
+
+#, no-c-format
+#~ msgid "ST_ConstrainedDelaunayTriangles"
+#~ msgstr "ST_ConstrainedDelaunayTriangles"
+
+#, no-c-format
+#~ msgid "ST_Extrude"
+#~ msgstr "ST_Extrude"
+
+#, no-c-format
+#~ msgid "ST_ForceLHR"
+#~ msgstr "ST_ForceLHR"
+
+#, no-c-format
+#~ msgid "ST_IsPlanar"
+#~ msgstr "ST_IsPlanar"
+
+#, no-c-format
+#~ msgid "ST_IsSolid"
+#~ msgstr "ST_IsSolid"
+
+#, no-c-format
+#~ msgid "ST_MakeSolid"
+#~ msgstr "ST_MakeSolid"
+
+#, no-c-format
+#~ msgid "ST_MinkowskiSum"
+#~ msgstr "ST_MinkowskiSum"
+
+#, no-c-format
+#~ msgid "ST_OptimalAlphaShape"
+#~ msgstr "ST_OptimalAlphaShape"
+
+#, no-c-format
+#~ msgid "ST_Orientation"
+#~ msgstr "ST_Orientation"
+
+#, no-c-format
+#~ msgid "ST_StraightSkeleton"
+#~ msgstr "ST_StraightSkeleton"
+
+#, no-c-format
+#~ msgid "ST_Tesselate"
+#~ msgstr "ST_Tesselate"
+
+#, no-c-format
+#~ msgid "ST_Volume"
+#~ msgstr "ST_Volume"
 
 #, no-c-format
 #~ msgid ""

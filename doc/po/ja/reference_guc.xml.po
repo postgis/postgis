@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-05-15 11:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -34,12 +34,6 @@ msgstr ""
 #, no-c-format
 msgid "Grand Unified Custom Variables (GUCs)"
 msgstr "Grand Unified Custom変数 (GUC)"
-
-#. Tag: refname
-#: reference_guc.xml:13
-#, no-c-format
-msgid "postgis.backend"
-msgstr "postgis.backend"
 
 #. Tag: refpurpose
 #: reference_guc.xml:14
@@ -103,12 +97,6 @@ msgstr "データベースへの新規接続にバックエンドを設定しま
 #, no-c-format
 msgid "See Also"
 msgstr "関連情報"
-
-#. Tag: refname
-#: reference_guc.xml:39
-#, no-c-format
-msgid "postgis.gdal_datapath"
-msgstr "postgis.gdal_datapath"
 
 #. Tag: refpurpose
 #: reference_guc.xml:40
@@ -189,12 +177,6 @@ msgstr "Windows上における特定のデータベース上で設定する場�
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Transform\"/>"
 msgstr ", <xref linkend=\"RT_ST_Transform\"/>"
-
-#. Tag: refname
-#: reference_guc.xml:89
-#, no-c-format
-msgid "postgis.gdal_enabled_drivers"
-msgstr "postgis.gdal_enabled_drivers"
 
 #. Tag: refpurpose
 #: reference_guc.xml:90
@@ -367,12 +349,6 @@ msgstr ""
 "<xref linkend=\"RT_ST_AsPNG\"/>, <xref linkend=\"RT_ST_AsJPEG\"/>, <xref "
 "linkend=\"postgis_enable_outdb_rasters\"/>"
 
-#. Tag: refname
-#: reference_guc.xml:181
-#, no-c-format
-msgid "postgis.enable_outdb_rasters"
-msgstr "postgis.enable_outdb_rasters"
-
 #. Tag: refpurpose
 #: reference_guc.xml:182
 #, no-c-format
@@ -455,12 +431,6 @@ msgstr ""
 "データベースクラスタ全体の設定。変更を有効にするには、データベースに再接続す"
 "る必要があります。"
 
-#. Tag: refname
-#: reference_guc.xml:239
-#, no-c-format
-msgid "postgis.gdal_config_options"
-msgstr "postgis.gdal_config_options"
-
 #. Tag: refpurpose
 #: reference_guc.xml:240
 #, no-c-format
@@ -509,6 +479,26 @@ msgid ""
 msgstr ""
 "<varname>LOCAL</varname>キーワードを使う<emphasis>現在のトランザクション</"
 "emphasis>のための<varname>postgis.gdal_vsi_options</varname>の設定:"
+
+#, no-c-format
+#~ msgid "postgis.backend"
+#~ msgstr "postgis.backend"
+
+#, no-c-format
+#~ msgid "postgis.gdal_datapath"
+#~ msgstr "postgis.gdal_datapath"
+
+#, no-c-format
+#~ msgid "postgis.gdal_enabled_drivers"
+#~ msgstr "postgis.gdal_enabled_drivers"
+
+#, no-c-format
+#~ msgid "postgis.enable_outdb_rasters"
+#~ msgstr "postgis.enable_outdb_rasters"
+
+#, no-c-format
+#~ msgid "postgis.gdal_config_options"
+#~ msgstr "postgis.gdal_config_options"
 
 #, no-c-format
 #~ msgid "set postgis.backend = sfcgal;"

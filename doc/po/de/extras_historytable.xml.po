@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2019-03-11 09:04+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
@@ -141,12 +141,6 @@ msgstr ""
 "Oder, um einen View der Tabelle »roads« für einen beliebigen Zeitpunkt in "
 "der Vergangenheit zu erhalten:"
 
-#. Tag: refname
-#: extras_historytable.xml:38
-#, no-c-format
-msgid "Postgis_Install_History"
-msgstr "Postgis_Install_History"
-
 #. Tag: refpurpose
 #: extras_historytable.xml:39
 #, no-c-format
@@ -202,12 +196,6 @@ msgstr "Beispiele"
 msgid "See Also"
 msgstr "Siehe auch"
 
-#. Tag: refname
-#: extras_historytable.xml:77
-#, no-c-format
-msgid "Postgis_Enable_History"
-msgstr "Postgis_Enable_History"
-
 #. Tag: refpurpose
 #: extras_historytable.xml:78
 #, fuzzy, no-c-format
@@ -262,6 +250,14 @@ msgstr ""
 "<varname>geometry_columns</varname> registriert wurde. Diese Funktion "
 "scheitert, wenn die Geometriespalte nicht in der Tabelle "
 "<varname>geometry_columns</varname> vorhanden ist."
+
+#, no-c-format
+#~ msgid "Postgis_Install_History"
+#~ msgstr "Postgis_Install_History"
+
+#, no-c-format
+#~ msgid "Postgis_Enable_History"
+#~ msgstr "Postgis_Enable_History"
 
 #, no-c-format
 #~ msgid ""

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-01-09 04:42+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Russian <https://weblate.osgeo.org/projects/postgis/"
@@ -32,12 +32,6 @@ msgid ""
 "These functions are rarely used functions that should only be used if your "
 "data is corrupted in someway. They are used for troubleshooting corruption "
 "and also fixing things that should under normal circumstances, never happen."
-msgstr ""
-
-#. Tag: refname
-#: reference_exception.xml:9
-#, no-c-format
-msgid "PostGIS_AddBBox"
 msgstr ""
 
 #. Tag: refpurpose
@@ -106,12 +100,6 @@ msgstr ""
 msgid ", <xref linkend=\"PostGIS_HasBBox\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_exception.xml:55
-#, no-c-format
-msgid "PostGIS_DropBBox"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_exception.xml:57
 #, no-c-format
@@ -155,12 +143,6 @@ msgstr ""
 #: reference_exception.xml:97
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_HasBBox\"/>, <xref linkend=\"Box2D\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_exception.xml:104
-#, no-c-format
-msgid "PostGIS_HasBBox"
 msgstr ""
 
 #. Tag: refpurpose

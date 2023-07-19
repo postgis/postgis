@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -34,12 +34,6 @@ msgstr ""
 "이 함수들은 거의 쓰이지 않는 함수들로, 사용자 데이터에 어떤 식으로든 오류가 "
 "생겼을 경우에만 이용해야 합니다. 오류를 해결하고, 일반적인 경우라면 절대로 일"
 "어나지 않을 일들을 고치는 데 이 함수들을 이용합니다."
-
-#. Tag: refname
-#: reference_exception.xml:9
-#, no-c-format
-msgid "PostGIS_AddBBox"
-msgstr "PostGIS_AddBBox"
 
 #. Tag: refpurpose
 #: reference_exception.xml:11
@@ -115,12 +109,6 @@ msgstr "참고"
 msgid ", <xref linkend=\"PostGIS_HasBBox\"/>"
 msgstr ", <xref linkend=\"PostGIS_HasBBox\"/>"
 
-#. Tag: refname
-#: reference_exception.xml:55
-#, no-c-format
-msgid "PostGIS_DropBBox"
-msgstr "PostGIS_DropBBox"
-
 #. Tag: refpurpose
 #: reference_exception.xml:57
 #, no-c-format
@@ -181,12 +169,6 @@ msgstr ""
 msgid ", <xref linkend=\"PostGIS_HasBBox\"/>, <xref linkend=\"Box2D\"/>"
 msgstr ", <xref linkend=\"PostGIS_HasBBox\"/>, <xref linkend=\"Box2D\"/>"
 
-#. Tag: refname
-#: reference_exception.xml:104
-#, no-c-format
-msgid "PostGIS_HasBBox"
-msgstr "PostGIS_HasBBox"
-
 #. Tag: refpurpose
 #: reference_exception.xml:106
 #, no-c-format
@@ -222,6 +204,18 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_DropBBox\"/>"
 msgstr ", <xref linkend=\"PostGIS_DropBBox\"/>"
+
+#, no-c-format
+#~ msgid "PostGIS_AddBBox"
+#~ msgstr "PostGIS_AddBBox"
+
+#, no-c-format
+#~ msgid "PostGIS_DropBBox"
+#~ msgstr "PostGIS_DropBBox"
+
+#, no-c-format
+#~ msgid "PostGIS_HasBBox"
+#~ msgstr "PostGIS_HasBBox"
 
 #, fuzzy, no-c-format
 #~ msgid ""

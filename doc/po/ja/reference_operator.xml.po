@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-05-15 11:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -28,12 +28,6 @@ msgstr "演算子"
 #, no-c-format
 msgid "Bounding Box Operators"
 msgstr "バウンディングボックス演算子"
-
-#. Tag: refname
-#: reference_operator.xml:10
-#, no-c-format
-msgid "&amp;&amp;"
-msgstr "&amp;&amp;"
 
 #. Tag: refpurpose
 #: reference_operator.xml:12
@@ -187,12 +181,6 @@ msgstr ""
 ">, <xref linkend=\"ST_Geometry_Contain\"/>, <xref "
 "linkend=\"ST_Geometry_Contained\"/>"
 
-#. Tag: refname
-#: reference_operator.xml:92
-#, no-c-format
-msgid "&amp;&amp;(geometry,box2df)"
-msgstr "&amp;&amp;(geometry,box2df)"
-
 #. Tag: refpurpose
 #: reference_operator.xml:94
 #, no-c-format
@@ -280,12 +268,6 @@ msgstr ""
 "linkend=\"is_contained_box2df_geometry\"/>, <xref "
 "linkend=\"is_contained_box2df_box2df\"/>"
 
-#. Tag: refname
-#: reference_operator.xml:153
-#, no-c-format
-msgid "&amp;&amp;(box2df,geometry)"
-msgstr "&amp;&amp;(box2df,geometry)"
-
 #. Tag: refpurpose
 #: reference_operator.xml:155
 #, no-c-format
@@ -324,12 +306,6 @@ msgstr ""
 "<varname>TRUE</varname>を返します。単精度浮動小数点数によるバウンディングボッ"
 "クスを使います。Aが倍精度浮動小数点数を使うbox2dである場合には、単精度浮動小"
 "数点数によるバウンディングボックス (BOX2DF)に変換されることになります。"
-
-#. Tag: refname
-#: reference_operator.xml:214
-#, no-c-format
-msgid "&amp;&amp;(box2df,box2df)"
-msgstr "&amp;&amp;(box2df,box2df)"
 
 #. Tag: refpurpose
 #: reference_operator.xml:216
@@ -399,12 +375,6 @@ msgstr ""
 "linkend=\"is_contained_box2df_geometry\"/>, <xref "
 "linkend=\"is_contained_box2df_box2df\"/>"
 
-#. Tag: refname
-#: reference_operator.xml:275
-#, no-c-format
-msgid "&amp;&amp;&amp;"
-msgstr "&amp;&amp;&amp;"
-
 #. Tag: refpurpose
 #: reference_operator.xml:277
 #, no-c-format
@@ -471,12 +441,6 @@ msgstr "例: 3次元ラインストリング"
 msgid "Examples: 3M LineStrings"
 msgstr "例: XYMラインストリング"
 
-#. Tag: refname
-#: reference_operator.xml:337
-#, no-c-format
-msgid "&amp;&amp;&amp;(geometry,gidx)"
-msgstr "&amp;&amp;&amp;(geometry,gidx)"
-
 #. Tag: refpurpose
 #: reference_operator.xml:339
 #, no-c-format
@@ -523,12 +487,6 @@ msgstr ""
 msgid ", <xref linkend=\"overlaps_nd_gidx_gidx\"/>"
 msgstr ", <xref linkend=\"overlaps_nd_gidx_gidx\"/>"
 
-#. Tag: refname
-#: reference_operator.xml:394
-#, no-c-format
-msgid "&amp;&amp;&amp;(gidx,geometry)"
-msgstr "&amp;&amp;&amp;(gidx,geometry)"
-
 #. Tag: refpurpose
 #: reference_operator.xml:396
 #, no-c-format
@@ -568,12 +526,6 @@ msgstr ""
 "グボックスを使います。Aが倍精度浮動小数点数を使うbox3dである場合には、単精度"
 "浮動小数点数による3次元バウンディングボックス (GIDX)に変換されることになりま"
 "す。"
-
-#. Tag: refname
-#: reference_operator.xml:451
-#, no-c-format
-msgid "&amp;&amp;&amp;(gidx,gidx)"
-msgstr "&amp;&amp;&amp;(gidx,gidx)"
 
 #. Tag: refpurpose
 #: reference_operator.xml:453
@@ -617,12 +569,6 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"overlaps_nd_gidx_geometry\"/>"
 msgstr ", <xref linkend=\"overlaps_nd_gidx_geometry\"/>"
-
-#. Tag: refname
-#: reference_operator.xml:508
-#, no-c-format
-msgid "&amp;&lt;"
-msgstr "&amp;&lt;"
 
 #. Tag: refpurpose
 #: reference_operator.xml:510
@@ -673,12 +619,6 @@ msgstr ""
 "linkend=\"ST_Geometry_Overright\"/>, <xref linkend=\"ST_Geometry_Overbelow\"/"
 ">"
 
-#. Tag: refname
-#: reference_operator.xml:566
-#, no-c-format
-msgid "&amp;&lt;|"
-msgstr "&amp;&lt;|"
-
 #. Tag: refpurpose
 #: reference_operator.xml:568
 #, no-c-format
@@ -724,12 +664,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref "
 "linkend=\"ST_Geometry_Overright\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
-
-#. Tag: refname
-#: reference_operator.xml:627
-#, no-c-format
-msgid "&amp;&gt;"
-msgstr "&amp;&gt;"
 
 #. Tag: refpurpose
 #: reference_operator.xml:629
@@ -778,12 +712,6 @@ msgstr ""
 ", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref "
 "linkend=\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
 
-#. Tag: refname
-#: reference_operator.xml:685
-#, no-c-format
-msgid "&lt;&lt;"
-msgstr "&lt;&lt;"
-
 #. Tag: refpurpose
 #: reference_operator.xml:687
 #, no-c-format
@@ -827,12 +755,6 @@ msgstr ""
 ", <xref linkend=\"ST_Geometry_Above\"/>, <xref linkend=\"ST_Geometry_Below\"/"
 ">"
 
-#. Tag: refname
-#: reference_operator.xml:738
-#, no-c-format
-msgid "&lt;&lt;|"
-msgstr "&lt;&lt;|"
-
 #. Tag: refpurpose
 #: reference_operator.xml:740
 #, no-c-format
@@ -874,12 +796,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_Geometry_Right\"/>, <xref linkend=\"ST_Geometry_Above\"/"
 ">"
-
-#. Tag: refname
-#: reference_operator.xml:791
-#, no-c-format
-msgid "&#61;"
-msgstr "&#61;"
 
 #. Tag: refpurpose
 #: reference_operator.xml:793
@@ -957,12 +873,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_OrderingEquals\"/>, <xref linkend=\"ST_Geometry_Same\"/>"
 
-#. Tag: refname
-#: reference_operator.xml:880
-#, no-c-format
-msgid "&gt;&gt;"
-msgstr "&gt;&gt;"
-
 #. Tag: refpurpose
 #: reference_operator.xml:882
 #, no-c-format
@@ -995,12 +905,6 @@ msgid ""
 msgstr ""
 "<varname>&gt;&gt;</varname>演算子は、Aのバウンダリボックスが、厳密にBのバウン"
 "ダリボックスの右にある場合に<varname>TRUE</varname>を返します。"
-
-#. Tag: refname
-#: reference_operator.xml:933
-#, no-c-format
-msgid "<refname>@</refname>"
-msgstr "<refname>@</refname>"
 
 #. Tag: refpurpose
 #: reference_operator.xml:935
@@ -1039,12 +943,6 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"geometry_overlaps\"/>"
 msgstr ", <xref linkend=\"geometry_overlaps\"/>"
-
-#. Tag: refname
-#: reference_operator.xml:988
-#, no-c-format
-msgid "@(geometry,box2df)"
-msgstr "@(geometry,box2df)"
 
 #. Tag: refpurpose
 #: reference_operator.xml:990
@@ -1104,12 +1002,6 @@ msgstr ""
 "linkend=\"is_contained_box2df_geometry\"/>, <xref "
 "linkend=\"is_contained_box2df_box2df\"/>"
 
-#. Tag: refname
-#: reference_operator.xml:1049
-#, no-c-format
-msgid "@(box2df,geometry)"
-msgstr "@(box2df,geometry)"
-
 #. Tag: refpurpose
 #: reference_operator.xml:1051
 #, no-c-format
@@ -1166,12 +1058,6 @@ msgstr ""
 "linkend=\"contains_box2df_box2df\"/>, <xref "
 "linkend=\"is_contained_geometry_box2df\"/>, <xref "
 "linkend=\"is_contained_box2df_box2df\"/>"
-
-#. Tag: refname
-#: reference_operator.xml:1110
-#, no-c-format
-msgid "@(box2df,box2df)"
-msgstr "@(box2df,box2df)"
 
 #. Tag: refpurpose
 #: reference_operator.xml:1112
@@ -1230,12 +1116,6 @@ msgstr ""
 "linkend=\"is_contained_geometry_box2df\"/>, <xref "
 "linkend=\"is_contained_box2df_geometry\"/>"
 
-#. Tag: refname
-#: reference_operator.xml:1171
-#, no-c-format
-msgid "|&amp;&gt;"
-msgstr "|&amp;&gt;"
-
 #. Tag: refpurpose
 #: reference_operator.xml:1173
 #, no-c-format
@@ -1282,12 +1162,6 @@ msgstr ""
 ", <xref linkend=\"ST_Geometry_Overright\"/>, <xref "
 "linkend=\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
 
-#. Tag: refname
-#: reference_operator.xml:1229
-#, no-c-format
-msgid "|&gt;&gt;"
-msgstr "|&gt;&gt;"
-
 #. Tag: refpurpose
 #: reference_operator.xml:1231
 #, no-c-format
@@ -1330,12 +1204,6 @@ msgstr ""
 ", <xref linkend=\"ST_Geometry_Right\"/>, <xref linkend=\"ST_Geometry_Below\"/"
 ">"
 
-#. Tag: refname
-#: reference_operator.xml:1282
-#, no-c-format
-msgid "<refname>~</refname>"
-msgstr "<refname>~</refname>"
-
 #. Tag: refpurpose
 #: reference_operator.xml:1284
 #, no-c-format
@@ -1366,12 +1234,6 @@ msgid ""
 msgstr ""
 "<varname>~</varname>演算子は、AのバウンディングボックスがBのバウンディング"
 "ボックスを、完全に含む場合に<varname>TRUE</varname>を返します。"
-
-#. Tag: refname
-#: reference_operator.xml:1335
-#, no-c-format
-msgid "~(geometry,box2df)"
-msgstr "~(geometry,box2df)"
 
 #. Tag: refpurpose
 #: reference_operator.xml:1337
@@ -1431,12 +1293,6 @@ msgstr ""
 "linkend=\"is_contained_box2df_geometry\"/>, <xref "
 "linkend=\"is_contained_box2df_box2df\"/>"
 
-#. Tag: refname
-#: reference_operator.xml:1396
-#, no-c-format
-msgid "~(box2df,geometry)"
-msgstr "~(box2df,geometry)"
-
 #. Tag: refpurpose
 #: reference_operator.xml:1398
 #, no-c-format
@@ -1495,12 +1351,6 @@ msgstr ""
 "linkend=\"is_contained_box2df_geometry\"/>, <xref "
 "linkend=\"is_contained_box2df_box2df\"/>"
 
-#. Tag: refname
-#: reference_operator.xml:1457
-#, no-c-format
-msgid "~(box2df,box2df)"
-msgstr "~(box2df,box2df)"
-
 #. Tag: refpurpose
 #: reference_operator.xml:1459
 #, no-c-format
@@ -1557,12 +1407,6 @@ msgstr ""
 "linkend=\"is_contained_geometry_box2df\"/>, <xref "
 "linkend=\"is_contained_box2df_geometry\"/>, <xref "
 "linkend=\"is_contained_box2df_box2df\"/>"
-
-#. Tag: refname
-#: reference_operator.xml:1518
-#, no-c-format
-msgid "<refname>~=</refname>"
-msgstr "<refname>~=</refname>"
 
 #. Tag: refpurpose
 #: reference_operator.xml:1520
@@ -1634,12 +1478,6 @@ msgstr ""
 #, no-c-format
 msgid "Distance Operators"
 msgstr "距離演算子"
-
-#. Tag: refname
-#: reference_operator.xml:1589
-#, no-c-format
-msgid "&lt;-&gt;"
-msgstr "&lt;-&gt;"
 
 #. Tag: refpurpose
 #: reference_operator.xml:1591
@@ -1774,12 +1612,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_box\"/>"
 
-#. Tag: refname
-#: reference_operator.xml:1679
-#, no-c-format
-msgid "<refname>|=|</refname>"
-msgstr "<refname>|=|</refname>"
-
 #. Tag: refpurpose
 #: reference_operator.xml:1681
 #, no-c-format
@@ -1857,12 +1689,6 @@ msgstr ""
 ", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
 "linkend=\"ST_IsValidTrajectory\"/>"
 
-#. Tag: refname
-#: reference_operator.xml:1741
-#, no-c-format
-msgid "&lt;#&gt;"
-msgstr "&lt;#&gt;"
-
 #. Tag: refpurpose
 #: reference_operator.xml:1743
 #, no-c-format
@@ -1933,12 +1759,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_knn\"/>"
 
-#. Tag: refname
-#: reference_operator.xml:1794
-#, no-c-format
-msgid "&lt;&lt;-&gt;&gt;"
-msgstr "&lt;&lt;-&gt;&gt;"
-
 #. Tag: refpurpose
 #: reference_operator.xml:1796
 #, no-c-format
@@ -1996,12 +1816,6 @@ msgstr "Availability: 2.0.0 KNNはPostgreSQL 9.1以上でのみ有効です。"
 msgid ", <xref linkend=\"geometry_distance_knn\"/>"
 msgstr ", <xref linkend=\"geometry_distance_knn\"/>"
 
-#. Tag: refname
-#: reference_operator.xml:1860
-#, no-c-format
-msgid "&lt;&lt;#&gt;&gt;"
-msgstr "&lt;&lt;#&gt;&gt;"
-
 #. Tag: refpurpose
 #: reference_operator.xml:1862
 #, no-c-format
@@ -2052,6 +1866,130 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"geometry_distance_box\"/>"
 msgstr ", <xref linkend=\"geometry_distance_box\"/>"
+
+#, no-c-format
+#~ msgid "&amp;&amp;"
+#~ msgstr "&amp;&amp;"
+
+#, no-c-format
+#~ msgid "&amp;&amp;(geometry,box2df)"
+#~ msgstr "&amp;&amp;(geometry,box2df)"
+
+#, no-c-format
+#~ msgid "&amp;&amp;(box2df,geometry)"
+#~ msgstr "&amp;&amp;(box2df,geometry)"
+
+#, no-c-format
+#~ msgid "&amp;&amp;(box2df,box2df)"
+#~ msgstr "&amp;&amp;(box2df,box2df)"
+
+#, no-c-format
+#~ msgid "&amp;&amp;&amp;"
+#~ msgstr "&amp;&amp;&amp;"
+
+#, no-c-format
+#~ msgid "&amp;&amp;&amp;(geometry,gidx)"
+#~ msgstr "&amp;&amp;&amp;(geometry,gidx)"
+
+#, no-c-format
+#~ msgid "&amp;&amp;&amp;(gidx,geometry)"
+#~ msgstr "&amp;&amp;&amp;(gidx,geometry)"
+
+#, no-c-format
+#~ msgid "&amp;&amp;&amp;(gidx,gidx)"
+#~ msgstr "&amp;&amp;&amp;(gidx,gidx)"
+
+#, no-c-format
+#~ msgid "&amp;&lt;"
+#~ msgstr "&amp;&lt;"
+
+#, no-c-format
+#~ msgid "&amp;&lt;|"
+#~ msgstr "&amp;&lt;|"
+
+#, no-c-format
+#~ msgid "&amp;&gt;"
+#~ msgstr "&amp;&gt;"
+
+#, no-c-format
+#~ msgid "&lt;&lt;"
+#~ msgstr "&lt;&lt;"
+
+#, no-c-format
+#~ msgid "&lt;&lt;|"
+#~ msgstr "&lt;&lt;|"
+
+#, no-c-format
+#~ msgid "&#61;"
+#~ msgstr "&#61;"
+
+#, no-c-format
+#~ msgid "&gt;&gt;"
+#~ msgstr "&gt;&gt;"
+
+#, no-c-format
+#~ msgid "<refname>@</refname>"
+#~ msgstr "<refname>@</refname>"
+
+#, no-c-format
+#~ msgid "@(geometry,box2df)"
+#~ msgstr "@(geometry,box2df)"
+
+#, no-c-format
+#~ msgid "@(box2df,geometry)"
+#~ msgstr "@(box2df,geometry)"
+
+#, no-c-format
+#~ msgid "@(box2df,box2df)"
+#~ msgstr "@(box2df,box2df)"
+
+#, no-c-format
+#~ msgid "|&amp;&gt;"
+#~ msgstr "|&amp;&gt;"
+
+#, no-c-format
+#~ msgid "|&gt;&gt;"
+#~ msgstr "|&gt;&gt;"
+
+#, no-c-format
+#~ msgid "<refname>~</refname>"
+#~ msgstr "<refname>~</refname>"
+
+#, no-c-format
+#~ msgid "~(geometry,box2df)"
+#~ msgstr "~(geometry,box2df)"
+
+#, no-c-format
+#~ msgid "~(box2df,geometry)"
+#~ msgstr "~(box2df,geometry)"
+
+#, no-c-format
+#~ msgid "~(box2df,box2df)"
+#~ msgstr "~(box2df,box2df)"
+
+#, no-c-format
+#~ msgid "<refname>~=</refname>"
+#~ msgstr "<refname>~=</refname>"
+
+#, no-c-format
+#~ msgid "&lt;-&gt;"
+#~ msgstr "&lt;-&gt;"
+
+#, no-c-format
+#~ msgid "<refname>|=|</refname>"
+#~ msgstr "<refname>|=|</refname>"
+
+#, no-c-format
+#~ msgid "&lt;#&gt;"
+#~ msgstr "&lt;#&gt;"
+
+#, no-c-format
+#~ msgid "&lt;&lt;-&gt;&gt;"
+#~ msgstr "&lt;&lt;-&gt;&gt;"
+
+#, no-c-format
+#~ msgid "&lt;&lt;#&gt;&gt;"
+#~ msgstr "&lt;&lt;#&gt;&gt;"
 
 #, no-c-format
 #~ msgid ""

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-05-15 11:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -130,12 +130,6 @@ msgstr ""
 msgid "Or, to retrieve a view of the roads table at any point in the past:"
 msgstr "ある過去の時点におけるroadsテーブルの状態を検索することもできます。"
 
-#. Tag: refname
-#: extras_historytable.xml:38
-#, no-c-format
-msgid "Postgis_Install_History"
-msgstr "Postgis_Install_History"
-
 #. Tag: refpurpose
 #: extras_historytable.xml:39
 #, no-c-format
@@ -188,12 +182,6 @@ msgstr "例"
 msgid "See Also"
 msgstr "関連情報"
 
-#. Tag: refname
-#: extras_historytable.xml:77
-#, no-c-format
-msgid "Postgis_Enable_History"
-msgstr "Postgis_Enable_History"
-
 #. Tag: refpurpose
 #: extras_historytable.xml:78
 #, no-c-format
@@ -243,6 +231,14 @@ msgstr ""
 "この関数は現在は<varname>geometry_columns</varname>に登録されているジオメトリ"
 "カラムに依っていて、<varname>geometry_columns</varname>にないジオメトリカラム"
 "では失敗します。"
+
+#, no-c-format
+#~ msgid "Postgis_Install_History"
+#~ msgstr "Postgis_Install_History"
+
+#, no-c-format
+#~ msgid "Postgis_Enable_History"
+#~ msgstr "Postgis_Enable_History"
 
 #, no-c-format
 #~ msgid ""

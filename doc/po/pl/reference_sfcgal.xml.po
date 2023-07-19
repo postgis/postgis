@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 12:17+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2022-04-17 08:55+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Polish <https://weblate.osgeo.org/projects/postgis/"
@@ -41,12 +41,6 @@ msgstr ""
 #: reference_sfcgal.xml:16
 #, no-c-format
 msgid "SFCGAL Functions"
-msgstr ""
-
-#. Tag: refname
-#: reference_sfcgal.xml:19
-#, no-c-format
-msgid "postgis_sfcgal_version"
 msgstr ""
 
 #. Tag: refpurpose
@@ -146,12 +140,6 @@ msgstr "&T_support;"
 msgid "See Also"
 msgstr "Zobacz także"
 
-#. Tag: refname
-#: reference_sfcgal.xml:54
-#, no-c-format
-msgid "postgis_sfcgal_full_version"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:56
 #, no-c-format
@@ -178,12 +166,6 @@ msgstr ""
 #: reference_sfcgal.xml:73 reference_sfcgal.xml:145
 #, no-c-format
 msgid "Availability: 3.3.0"
-msgstr ""
-
-#. Tag: refname
-#: reference_sfcgal.xml:89
-#, no-c-format
-msgid "ST_3DArea"
 msgstr ""
 
 #. Tag: refpurpose
@@ -232,12 +214,6 @@ msgid ""
 "linkend=\"ST_Area\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_sfcgal.xml:128
-#, no-c-format
-msgid "ST_3DConvexHull"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:130
 #, no-c-format
@@ -262,12 +238,6 @@ msgstr ""
 #: reference_sfcgal.xml:171
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsX3D\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_sfcgal.xml:177
-#, no-c-format
-msgid "ST_3DIntersection"
 msgstr ""
 
 #. Tag: refpurpose
@@ -339,12 +309,6 @@ msgid ""
 "solid (ST_Dimension returns 3)"
 msgstr ""
 
-#. Tag: refname
-#: reference_sfcgal.xml:254
-#, no-c-format
-msgid "ST_3DDifference"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:256
 #, no-c-format
@@ -394,12 +358,6 @@ msgid ""
 "linkend=\"ST_3DUnion\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_sfcgal.xml:329
-#, no-c-format
-msgid "ST_3DUnion"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:331
 #, no-c-format
@@ -441,12 +399,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
 "linkend=\"ST_3DDifference\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_sfcgal.xml:419
-#, no-c-format
-msgid "ST_AlphaShape"
 msgstr ""
 
 #. Tag: refpurpose
@@ -554,12 +506,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_OptimalAlphaShape\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_sfcgal.xml:524
-#, no-c-format
-msgid "ST_ApproximateMedialAxis"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:526
 #, no-c-format
@@ -588,12 +534,6 @@ msgstr ""
 #: reference_sfcgal.xml:567
 #, no-c-format
 msgid "A polygon and its approximate medial axis"
-msgstr ""
-
-#. Tag: refname
-#: reference_sfcgal.xml:587
-#, no-c-format
-msgid "ST_ConstrainedDelaunayTriangles"
 msgstr ""
 
 #. Tag: refpurpose
@@ -647,12 +587,6 @@ msgid ""
 ">, <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_sfcgal.xml:661
-#, no-c-format
-msgid "ST_Extrude"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:663
 #, no-c-format
@@ -694,12 +628,6 @@ msgstr ""
 msgid "LineString Extruded along Z produces a PolyhedralSurfaceZ"
 msgstr ""
 
-#. Tag: refname
-#: reference_sfcgal.xml:756
-#, no-c-format
-msgid "ST_ForceLHR"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:758
 #, no-c-format
@@ -712,12 +640,6 @@ msgstr ""
 msgid ""
 "<funcdef>geometry <function>ST_ForceLHR</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-msgstr ""
-
-#. Tag: refname
-#: reference_sfcgal.xml:784
-#, no-c-format
-msgid "ST_IsPlanar"
 msgstr ""
 
 #. Tag: refpurpose
@@ -742,12 +664,6 @@ msgid ""
 "out in 2.1 release."
 msgstr ""
 
-#. Tag: refname
-#: reference_sfcgal.xml:812
-#, no-c-format
-msgid "ST_IsSolid"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:814
 #, no-c-format
@@ -760,12 +676,6 @@ msgstr ""
 msgid ""
 "<funcdef>boolean <function>ST_IsSolid</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
-msgstr ""
-
-#. Tag: refname
-#: reference_sfcgal.xml:840
-#, no-c-format
-msgid "ST_MakeSolid"
 msgstr ""
 
 #. Tag: refpurpose
@@ -783,12 +693,6 @@ msgstr ""
 msgid ""
 "<funcdef>geometry <function>ST_MakeSolid</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
-msgstr ""
-
-#. Tag: refname
-#: reference_sfcgal.xml:869
-#, no-c-format
-msgid "ST_MinkowskiSum"
 msgstr ""
 
 #. Tag: refpurpose
@@ -875,12 +779,6 @@ msgid ""
 "After summing: polygon is duplicated and translated to position of points"
 msgstr ""
 
-#. Tag: refname
-#: reference_sfcgal.xml:974
-#, no-c-format
-msgid "ST_OptimalAlphaShape"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:976
 #, no-c-format
@@ -952,12 +850,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_AlphaShape\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_sfcgal.xml:1051
-#, no-c-format
-msgid "ST_Orientation"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:1053
 #, no-c-format
@@ -978,12 +870,6 @@ msgstr ""
 msgid ""
 "The function only applies to polygons. It returns -1 if the polygon is "
 "counterclockwise oriented and 1 if the polygon is clockwise oriented."
-msgstr ""
-
-#. Tag: refname
-#: reference_sfcgal.xml:1079
-#, no-c-format
-msgid "ST_StraightSkeleton"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1010,12 +896,6 @@ msgstr ""
 #: reference_sfcgal.xml:1124
 #, no-c-format
 msgid "Straight Skeleton of polygon"
-msgstr ""
-
-#. Tag: refname
-#: reference_sfcgal.xml:1139
-#, no-c-format
-msgid "ST_Tesselate"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1076,12 +956,6 @@ msgstr ""
 #: reference_sfcgal.xml:1229
 #, no-c-format
 msgid ", <xref linkend=\"ST_DelaunayTriangles\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_sfcgal.xml:1237
-#, no-c-format
-msgid "ST_Volume"
 msgstr ""
 
 #. Tag: refpurpose

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-01-09 04:42+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Russian <https://weblate.osgeo.org/projects/postgis/"
@@ -29,12 +29,6 @@ msgstr ""
 #: reference_management.xml:10
 #, no-c-format
 msgid "Table Management Functions"
-msgstr ""
-
-#. Tag: refname
-#: reference_management.xml:14
-#, no-c-format
-msgid "AddGeometryColumn"
 msgstr ""
 
 #. Tag: refpurpose
@@ -151,12 +145,6 @@ msgid ""
 ">, <xref linkend=\"Manual_Register_Spatial_Column\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_management.xml:143
-#, no-c-format
-msgid "DropGeometryColumn"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_management.xml:145
 #, no-c-format
@@ -187,12 +175,6 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"DropGeometryTable\"/>, <xref linkend=\"geometry_columns\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_management.xml:221
-#, no-c-format
-msgid "DropGeometryTable"
 msgstr ""
 
 #. Tag: refpurpose
@@ -228,12 +210,6 @@ msgid ""
 ">"
 msgstr ""
 
-#. Tag: refname
-#: reference_management.xml:285
-#, no-c-format
-msgid "Find_SRID"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_management.xml:287
 #, no-c-format
@@ -259,12 +235,6 @@ msgid ""
 "through the GEOMETRY_COLUMNS table. If the geometry column has not been "
 "properly added (e.g. with the <xref linkend=\"AddGeometryColumn\"/> "
 "function), this function will not work."
-msgstr ""
-
-#. Tag: refname
-#: reference_management.xml:327
-#, no-c-format
-msgid "Populate_Geometry_Columns"
 msgstr ""
 
 #. Tag: refpurpose
@@ -382,12 +352,6 @@ msgid ""
 "Enhanced: 2.0.0 <varname>use_typmod</varname> optional argument was "
 "introduced that allows controlling if columns are created with typmodifiers "
 "or with check constraints."
-msgstr ""
-
-#. Tag: refname
-#: reference_management.xml:430
-#, no-c-format
-msgid "UpdateGeometrySRID"
 msgstr ""
 
 #. Tag: refpurpose

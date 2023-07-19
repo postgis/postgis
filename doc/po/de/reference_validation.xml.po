@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-01-09 04:42+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
@@ -32,12 +32,6 @@ msgstr ""
 #, no-c-format
 msgid "Geometry Validation"
 msgstr "Geometrievalidierung"
-
-#. Tag: refname
-#: reference_validation.xml:19
-#, no-c-format
-msgid "ST_IsValid"
-msgstr ""
 
 #. Tag: refpurpose
 #: reference_validation.xml:21
@@ -142,12 +136,6 @@ msgid ""
 ", <xref linkend=\"ST_IsValidReason\"/>, <xref linkend=\"ST_IsValidDetail\"/>,"
 msgstr ""
 
-#. Tag: refname
-#: reference_validation.xml:99
-#, no-c-format
-msgid "ST_IsValidDetail"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_validation.xml:101
 #, no-c-format
@@ -221,12 +209,6 @@ msgstr "Verfügbarkeit: 2.0.0"
 msgid ", <xref linkend=\"ST_IsValidReason\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_validation.xml:165
-#, no-c-format
-msgid "ST_IsValidReason"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_validation.xml:167
 #, no-c-format
@@ -273,12 +255,6 @@ msgstr ""
 #: reference_validation.xml:210
 #, no-c-format
 msgid ", <xref linkend=\"ST_Summary\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_validation.xml:216
-#, no-c-format
-msgid "ST_MakeValid"
 msgstr ""
 
 #. Tag: refpurpose

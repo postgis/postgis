@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 12:17+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2018-07-23 18:01+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -304,12 +304,6 @@ msgstr ""
 "Servlet apps, Solr에 의존합니다. GIS Graphy는 여러 플랫폼 상에서 실행되며, 몇"
 "몇 멋진 기능과 함께 역 지오코딩 도구도 가지고 있습니다."
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:58
-#, no-c-format
-msgid "Drop_Indexes_Generate_Script"
-msgstr "Drop_Indexes_Generate_Script"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:60
 #, no-c-format
@@ -417,12 +411,6 @@ msgstr "참고"
 msgid ", <xref linkend=\"Missing_Indexes_Generate_Script\"/>"
 msgstr ", <xref linkend=\"Missing_Indexes_Generate_Script\"/>"
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:100
-#, no-c-format
-msgid "Drop_Nation_Tables_Generate_Script"
-msgstr "Drop_Nation_Tables_Generate_Script"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:102
 #, no-c-format
@@ -472,12 +460,6 @@ msgstr ""
 msgid "Availability: 2.1.0"
 msgstr "2.1.0 버전부터 사용할 수 있습니다."
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:141
-#, no-c-format
-msgid "Drop_State_Tables_Generate_Script"
-msgstr "Drop_State_Tables_Generate_Script"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:143
 #, no-c-format
@@ -519,12 +501,6 @@ msgstr ""
 "<varname>tiger_data</varname> 스키마를 대상으로 합니다. 이전 데이터 로드 과정"
 "에 어떤 문제가 생겼을 경우 주(州) 데이터를 다시 로드하기 전에 주(州) 테이블들"
 "을 삭제하는 데 유용합니다."
-
-#. Tag: refname
-#: extras_tigergeocoder.xml:183
-#, no-c-format
-msgid "Geocode"
-msgstr "Geocode"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:185
@@ -659,12 +635,6 @@ msgstr ""
 "linkend=\"ST_SnapToGrid\"/>, <xref linkend=\"ST_X\"/>, <xref "
 "linkend=\"ST_Y\"/>"
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:252
-#, no-c-format
-msgid "Geocode_Intersection"
-msgstr "Geocode_Intersection"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:254
 #, no-c-format
@@ -777,12 +747,6 @@ msgstr ""
 msgid ", <xref linkend=\"Pprint_Addy\"/>, <xref linkend=\"ST_AsText\"/>"
 msgstr ", <xref linkend=\"Pprint_Addy\"/>, <xref linkend=\"ST_AsText\"/>"
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:305
-#, no-c-format
-msgid "Get_Geocode_Setting"
-msgstr "Get_Geocode_Setting"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:307
 #, no-c-format
@@ -829,12 +793,6 @@ msgstr ""
 #, no-c-format
 msgid "Example return debugging setting"
 msgstr "예시: 디버깅 설정값 반환"
-
-#. Tag: refname
-#: extras_tigergeocoder.xml:345
-#, no-c-format
-msgid "Get_Tract"
-msgstr "Get_Tract"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:347
@@ -901,12 +859,6 @@ msgstr ""
 msgid "<para>></para>"
 msgstr "<para>></para>"
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:391
-#, no-c-format
-msgid "Install_Missing_Indexes"
-msgstr "Install_Missing_Indexes"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:393
 #, no-c-format
@@ -951,12 +903,6 @@ msgstr ""
 "linkend=\"Missing_Indexes_Generate_Script\"/> 함수와 동일한 계열로, 작성된 스"
 "크립트를 실행까지 합니다. <filename>update_geocode.sql</filename> 업그레이드 "
 "스크립트의 일부로 이 함수를 호출합니다."
-
-#. Tag: refname
-#: extras_tigergeocoder.xml:435
-#, no-c-format
-msgid "Loader_Generate_Census_Script"
-msgstr "Loader_Generate_Census_Script"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:437
@@ -1096,12 +1042,6 @@ msgstr ""
 msgid "Generate sh script"
 msgstr ".sh 스크립트를 생성합니다."
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:493
-#, no-c-format
-msgid "Loader_Generate_Script"
-msgstr "Loader_Generate_Script"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:495
 #, no-c-format
@@ -1203,12 +1143,6 @@ msgid ""
 ", <xref linkend=\"Loader_Generate_Nation_Script\"/>, <xref "
 "linkend=\"Drop_State_Tables_Generate_Script\"/>"
 msgstr ", <xref linkend=\"Pprint_Addy\"/>, <xref linkend=\"ST_AsText\"/>"
-
-#. Tag: refname
-#: extras_tigergeocoder.xml:555
-#, no-c-format
-msgid "Loader_Generate_Nation_Script"
-msgstr "Loader_Generate_Nation_Script"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:557
@@ -1335,12 +1269,6 @@ msgstr ""
 msgid ", <xref linkend=\"Drop_Nation_Tables_Generate_Script\"/>"
 msgstr ", <xref linkend=\"Missing_Indexes_Generate_Script\"/>"
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:612
-#, no-c-format
-msgid "Missing_Indexes_Generate_Script"
-msgstr "Missing_Indexes_Generate_Script"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:614
 #, no-c-format
@@ -1390,12 +1318,6 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"Install_Missing_Indexes\"/>"
 msgstr ", <xref linkend=\"Install_Missing_Indexes\"/>"
-
-#. Tag: refname
-#: extras_tigergeocoder.xml:657
-#, no-c-format
-msgid "Normalize_Address"
-msgstr "Normalize_Address"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:659
@@ -1624,12 +1546,6 @@ msgstr ""
 msgid ", <xref linkend=\"Pprint_Addy\"/>"
 msgstr ", <xref linkend=\"Pprint_Addy\"/>"
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:743
-#, no-c-format
-msgid "Pagc_Normalize_Address"
-msgstr "Pagc_Normalize_Address"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:745
 #, no-c-format
@@ -1751,12 +1667,6 @@ msgstr ""
 msgid ", <xref linkend=\"Geocode\"/>"
 msgstr ", <xref linkend=\"Geocode\"/>"
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:836
-#, no-c-format
-msgid "Pprint_Addy"
-msgstr "Pprint_Addy"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:838
 #, no-c-format
@@ -1809,12 +1719,6 @@ msgstr "단일 주소의 보기 좋은 인쇄용 출력"
 #, no-c-format
 msgid "Pretty print address a table of addresses"
 msgstr "주소 테이블의 보기 좋은 인쇄용 출력"
-
-#. Tag: refname
-#: extras_tigergeocoder.xml:879
-#, no-c-format
-msgid "Reverse_Geocode"
-msgstr "Reverse_Geocode"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:881
@@ -2004,12 +1908,6 @@ msgid ""
 "linkend=\"Loader_Generate_Nation_Script\"/>"
 msgstr ", <xref linkend=\"Pprint_Addy\"/>, <xref linkend=\"ST_AsText\"/>"
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:953
-#, no-c-format
-msgid "Topology_Load_Tiger"
-msgstr "Topology_Load_Tiger"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:955
 #, no-c-format
@@ -2190,12 +2088,6 @@ msgstr ""
 ", <xref linkend=\"CreateTopoGeom\"/>, <xref linkend=\"TopologySummary\"/>, "
 "<xref linkend=\"ValidateTopology\"/>"
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:1020
-#, no-c-format
-msgid "Set_Geocode_Setting"
-msgstr "Set_Geocode_Setting"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:1022
 #, no-c-format
@@ -2237,6 +2129,78 @@ msgid ""
 msgstr ""
 "이 함수가 참일 때 <xref linkend=\"Geocode\"/> 를 실행할 경우, NOTICE 로그가 "
 "소요 시간 및 쿼리를 출력할 것입니다."
+
+#, no-c-format
+#~ msgid "Drop_Indexes_Generate_Script"
+#~ msgstr "Drop_Indexes_Generate_Script"
+
+#, no-c-format
+#~ msgid "Drop_Nation_Tables_Generate_Script"
+#~ msgstr "Drop_Nation_Tables_Generate_Script"
+
+#, no-c-format
+#~ msgid "Drop_State_Tables_Generate_Script"
+#~ msgstr "Drop_State_Tables_Generate_Script"
+
+#, no-c-format
+#~ msgid "Geocode"
+#~ msgstr "Geocode"
+
+#, no-c-format
+#~ msgid "Geocode_Intersection"
+#~ msgstr "Geocode_Intersection"
+
+#, no-c-format
+#~ msgid "Get_Geocode_Setting"
+#~ msgstr "Get_Geocode_Setting"
+
+#, no-c-format
+#~ msgid "Get_Tract"
+#~ msgstr "Get_Tract"
+
+#, no-c-format
+#~ msgid "Install_Missing_Indexes"
+#~ msgstr "Install_Missing_Indexes"
+
+#, no-c-format
+#~ msgid "Loader_Generate_Census_Script"
+#~ msgstr "Loader_Generate_Census_Script"
+
+#, no-c-format
+#~ msgid "Loader_Generate_Script"
+#~ msgstr "Loader_Generate_Script"
+
+#, no-c-format
+#~ msgid "Loader_Generate_Nation_Script"
+#~ msgstr "Loader_Generate_Nation_Script"
+
+#, no-c-format
+#~ msgid "Missing_Indexes_Generate_Script"
+#~ msgstr "Missing_Indexes_Generate_Script"
+
+#, no-c-format
+#~ msgid "Normalize_Address"
+#~ msgstr "Normalize_Address"
+
+#, no-c-format
+#~ msgid "Pagc_Normalize_Address"
+#~ msgstr "Pagc_Normalize_Address"
+
+#, no-c-format
+#~ msgid "Pprint_Addy"
+#~ msgstr "Pprint_Addy"
+
+#, no-c-format
+#~ msgid "Reverse_Geocode"
+#~ msgstr "Reverse_Geocode"
+
+#, no-c-format
+#~ msgid "Topology_Load_Tiger"
+#~ msgstr "Topology_Load_Tiger"
+
+#, no-c-format
+#~ msgid "Set_Geocode_Setting"
+#~ msgstr "Set_Geocode_Setting"
 
 #, no-c-format
 #~ msgid ""

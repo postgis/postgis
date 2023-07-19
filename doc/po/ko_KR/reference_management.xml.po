@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -30,12 +30,6 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid "Table Management Functions"
 msgstr "관리 함수"
-
-#. Tag: refname
-#: reference_management.xml:14
-#, no-c-format
-msgid "AddGeometryColumn"
-msgstr "AddGeometryColumn"
 
 #. Tag: refpurpose
 #: reference_management.xml:16
@@ -177,12 +171,6 @@ msgstr ""
 ", <xref linkend=\"DropGeometryTable\"/>, <xref linkend=\"geometry_columns\"/"
 ">, <xref linkend=\"Manual_Register_Spatial_Column\"/>"
 
-#. Tag: refname
-#: reference_management.xml:143
-#, no-c-format
-msgid "DropGeometryColumn"
-msgstr "DropGeometryColumn"
-
 #. Tag: refpurpose
 #: reference_management.xml:145
 #, no-c-format
@@ -221,12 +209,6 @@ msgid ""
 ", <xref linkend=\"DropGeometryTable\"/>, <xref linkend=\"geometry_columns\"/>"
 msgstr ""
 ", <xref linkend=\"DropGeometryTable\"/>, <xref linkend=\"geometry_columns\"/>"
-
-#. Tag: refname
-#: reference_management.xml:221
-#, no-c-format
-msgid "DropGeometryTable"
-msgstr "DropGeometryTable"
 
 #. Tag: refpurpose
 #: reference_management.xml:223
@@ -270,12 +252,6 @@ msgstr ""
 ", <xref linkend=\"DropGeometryColumn\"/>, <xref linkend=\"geometry_columns\"/"
 ">"
 
-#. Tag: refname
-#: reference_management.xml:285
-#, no-c-format
-msgid "Find_SRID"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_management.xml:287
 #, no-c-format
@@ -307,12 +283,6 @@ msgid ""
 "properly added (e.g. with the <xref linkend=\"AddGeometryColumn\"/> "
 "function), this function will not work."
 msgstr ""
-
-#. Tag: refname
-#: reference_management.xml:327
-#, no-c-format
-msgid "Populate_Geometry_Columns"
-msgstr "Populate_Geometry_Columns"
 
 #. Tag: refpurpose
 #: reference_management.xml:329
@@ -470,12 +440,6 @@ msgstr ""
 "께 생성할지 통제할 수 있는 <varname>use_typmod</varname> 의 선택적 인자가 추"
 "가됐습니다."
 
-#. Tag: refname
-#: reference_management.xml:430
-#, no-c-format
-msgid "UpdateGeometrySRID"
-msgstr "UpdateGeometrySRID"
-
 #. Tag: refpurpose
 #: reference_management.xml:432
 #, no-c-format
@@ -540,6 +504,26 @@ msgid ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
 "linkend=\"ST_GeomFromEWKT\"/>"
 msgstr ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>"
+
+#, no-c-format
+#~ msgid "AddGeometryColumn"
+#~ msgstr "AddGeometryColumn"
+
+#, no-c-format
+#~ msgid "DropGeometryColumn"
+#~ msgstr "DropGeometryColumn"
+
+#, no-c-format
+#~ msgid "DropGeometryTable"
+#~ msgstr "DropGeometryTable"
+
+#, no-c-format
+#~ msgid "Populate_Geometry_Columns"
+#~ msgstr "Populate_Geometry_Columns"
+
+#, no-c-format
+#~ msgid "UpdateGeometrySRID"
+#~ msgstr "UpdateGeometrySRID"
 
 #, no-c-format
 #~ msgid ""

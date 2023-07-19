@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2017-05-31 16:21+0000\n"
 "Last-Translator: nramire1 nramire1 <nramire1@yahoo.com.ar>\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
@@ -30,12 +30,6 @@ msgstr ""
 #: reference_guc.xml:9
 #, no-c-format
 msgid "Grand Unified Custom Variables (GUCs)"
-msgstr ""
-
-#. Tag: refname
-#: reference_guc.xml:13
-#, no-c-format
-msgid "postgis.backend"
 msgstr ""
 
 #. Tag: refpurpose
@@ -94,12 +88,6 @@ msgstr ""
 #, no-c-format
 msgid "See Also"
 msgstr "Ver también"
-
-#. Tag: refname
-#: reference_guc.xml:39
-#, no-c-format
-msgid "postgis.gdal_datapath"
-msgstr ""
 
 #. Tag: refpurpose
 #: reference_guc.xml:40
@@ -167,12 +155,6 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Transform\"/>"
 msgstr ", <xref linkend=\"RT_ST_Transform\"/>"
-
-#. Tag: refname
-#: reference_guc.xml:89
-#, no-c-format
-msgid "postgis.gdal_enabled_drivers"
-msgstr ""
 
 #. Tag: refpurpose
 #: reference_guc.xml:90
@@ -311,12 +293,6 @@ msgid ""
 "linkend=\"postgis_enable_outdb_rasters\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_guc.xml:181
-#, no-c-format
-msgid "postgis.enable_outdb_rasters"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_guc.xml:182
 #, no-c-format
@@ -379,12 +355,6 @@ msgstr ""
 msgid ""
 "Setting for whole database cluster. You need to reconnect to the database "
 "for changes to take effect."
-msgstr ""
-
-#. Tag: refname
-#: reference_guc.xml:239
-#, no-c-format
-msgid "postgis.gdal_config_options"
 msgstr ""
 
 #. Tag: refpurpose

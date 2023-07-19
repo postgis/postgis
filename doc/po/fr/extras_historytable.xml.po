@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-05-12 10:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -141,12 +141,6 @@ msgstr ""
 "Ou pour obtenir une vue de la table des routes à n'importe quel moment dans "
 "le passé :"
 
-#. Tag: refname
-#: extras_historytable.xml:38
-#, no-c-format
-msgid "Postgis_Install_History"
-msgstr "Postgis_Install_History"
-
 #. Tag: refpurpose
 #: extras_historytable.xml:39
 #, no-c-format
@@ -202,12 +196,6 @@ msgstr "Exemples"
 msgid "See Also"
 msgstr "Voir aussi"
 
-#. Tag: refname
-#: extras_historytable.xml:77
-#, no-c-format
-msgid "Postgis_Enable_History"
-msgstr "Postgis_Enable_History"
-
 #. Tag: refpurpose
 #: extras_historytable.xml:78
 #, no-c-format
@@ -261,6 +249,14 @@ msgstr ""
 "géométrique dans <varname>geometry_columns</varname> et échoue si la colonne "
 "géométrique n'est pas présente dans la table <varname>geometry_columns</"
 "varname>."
+
+#, no-c-format
+#~ msgid "Postgis_Install_History"
+#~ msgstr "Postgis_Install_History"
+
+#, no-c-format
+#~ msgid "Postgis_Enable_History"
+#~ msgstr "Postgis_Enable_History"
 
 #, no-c-format
 #~ msgid ""

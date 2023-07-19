@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 12:17+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2018-07-23 18:01+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -311,12 +311,6 @@ msgstr ""
 "multiplataforma e também possui um geocoder reverso juntamente com outros "
 "aspectos."
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:58
-#, no-c-format
-msgid "Drop_Indexes_Generate_Script"
-msgstr "Drop_Indexes_Generate_Script"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:60
 #, no-c-format
@@ -424,12 +418,6 @@ msgstr "Veja Também"
 msgid ", <xref linkend=\"Missing_Indexes_Generate_Script\"/>"
 msgstr ", <xref linkend=\"Missing_Indexes_Generate_Script\"/>"
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:100
-#, no-c-format
-msgid "Drop_Nation_Tables_Generate_Script"
-msgstr "Drop_Nation_Tables_Generate_Script"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:102
 #, no-c-format
@@ -478,12 +466,6 @@ msgstr ""
 msgid "Availability: 2.1.0"
 msgstr "Disponibilidade: 2.1.0"
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:141
-#, no-c-format
-msgid "Drop_State_Tables_Generate_Script"
-msgstr "Drop_State_Tables_Generate_Script"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:143
 #, no-c-format
@@ -525,12 +507,6 @@ msgstr ""
 "<varname>tiger_data</varname> se nenhum esquema estiver especificado. Essa "
 "função é útil para derrubar tables de um estado antes de recarregar um "
 "estado em caso de algo ter dado errado durante seu carregamento anterior. "
-
-#. Tag: refname
-#: extras_tigergeocoder.xml:183
-#, no-c-format
-msgid "Geocode"
-msgstr "Geocode"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:185
@@ -666,12 +642,6 @@ msgstr ""
 "linkend=\"ST_SnapToGrid\"/>, <xref linkend=\"ST_X\"/>, <xref "
 "linkend=\"ST_Y\"/>"
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:252
-#, no-c-format
-msgid "Geocode_Intersection"
-msgstr "Geocode_Intersection"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:254
 #, no-c-format
@@ -787,12 +757,6 @@ msgstr ""
 msgid ", <xref linkend=\"Pprint_Addy\"/>, <xref linkend=\"ST_AsText\"/>"
 msgstr ", <xref linkend=\"Pprint_Addy\"/>, <xref linkend=\"ST_AsText\"/>"
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:305
-#, no-c-format
-msgid "Get_Geocode_Setting"
-msgstr "Get_Geocode_Setting"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:307
 #, no-c-format
@@ -842,12 +806,6 @@ msgstr ""
 #, no-c-format
 msgid "Example return debugging setting"
 msgstr "Exemplo da configuração de retornar depuração"
-
-#. Tag: refname
-#: extras_tigergeocoder.xml:345
-#, no-c-format
-msgid "Get_Tract"
-msgstr "Get_Tract"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:347
@@ -915,12 +873,6 @@ msgstr ""
 msgid "<para>></para>"
 msgstr "<para>></para>"
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:391
-#, no-c-format
-msgid "Install_Missing_Indexes"
-msgstr "Install_Missing_Indexes"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:393
 #, no-c-format
@@ -966,12 +918,6 @@ msgstr ""
 "linkend=\"Missing_Indexes_Generate_Script\"/>, que somada à script que cria "
 "index, também a executa. Ela é uma parte da script de atualização  "
 "<filename>update_geocode.sql</filename>."
-
-#. Tag: refname
-#: extras_tigergeocoder.xml:435
-#, no-c-format
-msgid "Loader_Generate_Census_Script"
-msgstr "Loader_Generate_Census_Script"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:437
@@ -1109,12 +1055,6 @@ msgstr ""
 msgid "Generate sh script"
 msgstr "Gerar script sh"
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:493
-#, no-c-format
-msgid "Loader_Generate_Script"
-msgstr "Loader_Generate_Script"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:495
 #, no-c-format
@@ -1216,12 +1156,6 @@ msgid ""
 ", <xref linkend=\"Loader_Generate_Nation_Script\"/>, <xref "
 "linkend=\"Drop_State_Tables_Generate_Script\"/>"
 msgstr ", <xref linkend=\"Pprint_Addy\"/>, <xref linkend=\"ST_AsText\"/>"
-
-#. Tag: refname
-#: extras_tigergeocoder.xml:555
-#, no-c-format
-msgid "Loader_Generate_Nation_Script"
-msgstr "Loader_Generate_Nation_Script"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:557
@@ -1347,12 +1281,6 @@ msgstr "Gerar script para carregar dados para os sistemas Linux/Unix. "
 msgid ", <xref linkend=\"Drop_Nation_Tables_Generate_Script\"/>"
 msgstr ", <xref linkend=\"Missing_Indexes_Generate_Script\"/>"
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:612
-#, no-c-format
-msgid "Missing_Indexes_Generate_Script"
-msgstr "Missing_Indexes_Generate_Script"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:614
 #, no-c-format
@@ -1403,12 +1331,6 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"Install_Missing_Indexes\"/>"
 msgstr ", <xref linkend=\"Install_Missing_Indexes\"/>"
-
-#. Tag: refname
-#: extras_tigergeocoder.xml:657
-#, no-c-format
-msgid "Normalize_Address"
-msgstr "Normalize_Address"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:659
@@ -1639,12 +1561,6 @@ msgstr ""
 msgid ", <xref linkend=\"Pprint_Addy\"/>"
 msgstr ", <xref linkend=\"Pprint_Addy\"/>"
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:743
-#, no-c-format
-msgid "Pagc_Normalize_Address"
-msgstr "Pagc_Normalize_Address"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:745
 #, no-c-format
@@ -1768,12 +1684,6 @@ msgstr ""
 msgid ", <xref linkend=\"Geocode\"/>"
 msgstr ", <xref linkend=\"Geocode\"/>"
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:836
-#, no-c-format
-msgid "Pprint_Addy"
-msgstr "Pprint_Addy"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:838
 #, no-c-format
@@ -1826,12 +1736,6 @@ msgstr "Pretty print a single address"
 #, no-c-format
 msgid "Pretty print address a table of addresses"
 msgstr "Pretty print address a table of addresses"
-
-#. Tag: refname
-#: extras_tigergeocoder.xml:879
-#, no-c-format
-msgid "Reverse_Geocode"
-msgstr "Reverse_Geocode"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:881
@@ -2026,12 +1930,6 @@ msgid ""
 "linkend=\"Loader_Generate_Nation_Script\"/>"
 msgstr ", <xref linkend=\"Pprint_Addy\"/>, <xref linkend=\"ST_AsText\"/>"
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:953
-#, no-c-format
-msgid "Topology_Load_Tiger"
-msgstr "Topology_Load_Tiger"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:955
 #, no-c-format
@@ -2216,12 +2114,6 @@ msgstr ""
 ", <xref linkend=\"CreateTopoGeom\"/>, <xref linkend=\"TopologySummary\"/>, "
 "<xref linkend=\"ValidateTopology\"/>"
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:1020
-#, no-c-format
-msgid "Set_Geocode_Setting"
-msgstr "Set_Geocode_Setting"
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:1022
 #, no-c-format
@@ -2264,6 +2156,78 @@ msgid ""
 msgstr ""
 "Se você executar <xref linkend=\"Geocode\"/> quando esta função for verdade, "
 "o log NOTICE irá gerar horas e pesquisas. "
+
+#, no-c-format
+#~ msgid "Drop_Indexes_Generate_Script"
+#~ msgstr "Drop_Indexes_Generate_Script"
+
+#, no-c-format
+#~ msgid "Drop_Nation_Tables_Generate_Script"
+#~ msgstr "Drop_Nation_Tables_Generate_Script"
+
+#, no-c-format
+#~ msgid "Drop_State_Tables_Generate_Script"
+#~ msgstr "Drop_State_Tables_Generate_Script"
+
+#, no-c-format
+#~ msgid "Geocode"
+#~ msgstr "Geocode"
+
+#, no-c-format
+#~ msgid "Geocode_Intersection"
+#~ msgstr "Geocode_Intersection"
+
+#, no-c-format
+#~ msgid "Get_Geocode_Setting"
+#~ msgstr "Get_Geocode_Setting"
+
+#, no-c-format
+#~ msgid "Get_Tract"
+#~ msgstr "Get_Tract"
+
+#, no-c-format
+#~ msgid "Install_Missing_Indexes"
+#~ msgstr "Install_Missing_Indexes"
+
+#, no-c-format
+#~ msgid "Loader_Generate_Census_Script"
+#~ msgstr "Loader_Generate_Census_Script"
+
+#, no-c-format
+#~ msgid "Loader_Generate_Script"
+#~ msgstr "Loader_Generate_Script"
+
+#, no-c-format
+#~ msgid "Loader_Generate_Nation_Script"
+#~ msgstr "Loader_Generate_Nation_Script"
+
+#, no-c-format
+#~ msgid "Missing_Indexes_Generate_Script"
+#~ msgstr "Missing_Indexes_Generate_Script"
+
+#, no-c-format
+#~ msgid "Normalize_Address"
+#~ msgstr "Normalize_Address"
+
+#, no-c-format
+#~ msgid "Pagc_Normalize_Address"
+#~ msgstr "Pagc_Normalize_Address"
+
+#, no-c-format
+#~ msgid "Pprint_Addy"
+#~ msgstr "Pprint_Addy"
+
+#, no-c-format
+#~ msgid "Reverse_Geocode"
+#~ msgstr "Reverse_Geocode"
+
+#, no-c-format
+#~ msgid "Topology_Load_Tiger"
+#~ msgstr "Topology_Load_Tiger"
+
+#, no-c-format
+#~ msgid "Set_Geocode_Setting"
+#~ msgstr "Set_Geocode_Setting"
 
 #, no-c-format
 #~ msgid ""

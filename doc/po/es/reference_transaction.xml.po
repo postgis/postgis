@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2014-04-29 12:16+0000\n"
 "Last-Translator: Carlos Barrios <gbarrios@aaa.upv.es>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/postgis-1/"
@@ -49,12 +49,6 @@ msgstr ""
 "Los usuarios deben usar <ulink url=\"http://www.postgresql.org/docs/current/"
 "static/transaction-iso.html\">el nivel de transacción en serie</ulink> sino "
 "se rompería el mecanismo de bloqueo."
-
-#. Tag: refname
-#: reference_transaction.xml:24
-#, no-c-format
-msgid "AddAuth"
-msgstr "AddAuth"
 
 #. Tag: refpurpose
 #: reference_transaction.xml:26
@@ -126,12 +120,6 @@ msgstr "Ejemplos"
 msgid "See Also"
 msgstr "Ver también"
 
-#. Tag: refname
-#: reference_transaction.xml:65
-#, no-c-format
-msgid "CheckAuth"
-msgstr "CheckAuth"
-
 #. Tag: refpurpose
 #: reference_transaction.xml:67
 #, fuzzy, no-c-format
@@ -180,12 +168,6 @@ msgstr ""
 "Si no está habilitado el soporte de transacciones, la función lanza una "
 "excepción."
 
-#. Tag: refname
-#: reference_transaction.xml:119
-#, no-c-format
-msgid "DisableLongTransactions"
-msgstr "DisableLongTransactions"
-
 #. Tag: refpurpose
 #: reference_transaction.xml:121
 #, fuzzy, no-c-format
@@ -226,12 +208,6 @@ msgstr ""
 "vista llamada <varname>authorized_tables</varname> y todos los disparadores "
 "llamados <varname>checkauthtrigger</varname>"
 
-#. Tag: refname
-#: reference_transaction.xml:163
-#, no-c-format
-msgid "EnableLongTransactions"
-msgstr "EnableLongTransactions"
-
 #. Tag: refpurpose
 #: reference_transaction.xml:165
 #, fuzzy, no-c-format
@@ -271,12 +247,6 @@ msgstr ""
 "Crea una meta tabla llamada <varname>authorization_table</varname> y una "
 "vista llamada <varname>authorized_tables</varname>"
 
-#. Tag: refname
-#: reference_transaction.xml:208
-#, no-c-format
-msgid "LockRow"
-msgstr "LockRow"
-
 #. Tag: refpurpose
 #: reference_transaction.xml:210
 #, fuzzy, no-c-format
@@ -297,12 +267,6 @@ msgstr ""
 "authid&gt; es un valor de texto, &lt;expires&gt; es un valor de tiempo que "
 "por defecto es now()+1hora. Devuelve 1 si se asignó el bloqueo, 0 en otro "
 "caso (ya bloqueado por otra autorización)"
-
-#. Tag: refname
-#: reference_transaction.xml:272
-#, no-c-format
-msgid "UnlockRows"
-msgstr "UnlockRows"
 
 #. Tag: refpurpose
 #: reference_transaction.xml:274
@@ -329,6 +293,30 @@ msgid ""
 msgstr ""
 "Retira todos los bloqueos mantenidos por el id de la autorización "
 "especificada. Devuelve el número de bloqueos liberados."
+
+#, no-c-format
+#~ msgid "AddAuth"
+#~ msgstr "AddAuth"
+
+#, no-c-format
+#~ msgid "CheckAuth"
+#~ msgstr "CheckAuth"
+
+#, no-c-format
+#~ msgid "DisableLongTransactions"
+#~ msgstr "DisableLongTransactions"
+
+#, no-c-format
+#~ msgid "EnableLongTransactions"
+#~ msgstr "EnableLongTransactions"
+
+#, no-c-format
+#~ msgid "LockRow"
+#~ msgstr "LockRow"
+
+#, no-c-format
+#~ msgid "UnlockRows"
+#~ msgstr "UnlockRows"
 
 #, fuzzy, no-c-format
 #~ msgid ""

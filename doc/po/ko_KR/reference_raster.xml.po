@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 12:17+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2018-07-23 18:02+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -84,12 +84,6 @@ msgstr ""
 #, no-c-format
 msgid "Raster Support Data types"
 msgstr "래스터 지원 데이터형"
-
-#. Tag: refname
-#: reference_raster.xml:24
-#, no-c-format
-msgid "geomval"
-msgstr "geomval"
 
 #. Tag: refpurpose
 #: reference_raster.xml:25
@@ -279,12 +273,6 @@ msgstr ""
 msgid "See Also"
 msgstr "참고"
 
-#. Tag: refname
-#: reference_raster.xml:44
-#, no-c-format
-msgid "addbandarg"
-msgstr "addbandarg"
-
 #. Tag: refpurpose
 #: reference_raster.xml:45
 #, no-c-format
@@ -366,12 +354,6 @@ msgstr ""
 "새 밴드의 NODATA 값입니다. NULL일 경우, 새 밴드에 NODATA 값을 할당하지 않을 "
 "것입니다."
 
-#. Tag: refname
-#: reference_raster.xml:116
-#, no-c-format
-msgid "rastbandarg"
-msgstr "rastbandarg"
-
 #. Tag: refpurpose
 #: reference_raster.xml:117
 #, no-c-format
@@ -415,12 +397,6 @@ msgstr "<parameter>nband </parameter> <type>integer</type>"
 #, no-c-format
 msgid "1-based value indicating the band of raster"
 msgstr "래스터의 밴드를 지시하는 1-기반 값입니다."
-
-#. Tag: refname
-#: reference_raster.xml:166
-#, no-c-format
-msgid "raster"
-msgstr "raster"
 
 #. Tag: refpurpose
 #: reference_raster.xml:167
@@ -491,12 +467,6 @@ msgstr "도형"
 #, no-c-format
 msgid "automatic"
 msgstr "자동적"
-
-#. Tag: refname
-#: reference_raster.xml:207
-#, no-c-format
-msgid "reclassarg"
-msgstr "reclassarg"
 
 #. Tag: refpurpose
 #: reference_raster.xml:208
@@ -600,12 +570,6 @@ msgstr "예: 밴드 2를 255가 NODATA 값인 8BUI로 재분류하십시오."
 msgid "Example: Reclassify band 1 as an 1BB and no nodata value defined"
 msgstr "예: 밴드 1을 NODATA 값이 정의되지 않은 1BB로 재분류하십시오."
 
-#. Tag: refname
-#: reference_raster.xml:252
-#, no-c-format
-msgid "summarystats"
-msgstr "summarystats"
-
 #. Tag: refpurpose
 #: reference_raster.xml:253
 #, no-c-format
@@ -703,12 +667,6 @@ msgstr "집계된 픽셀 값 가운데 최대값입니다."
 msgid ", <xref linkend=\"RT_ST_SummaryStatsAgg\"/>"
 msgstr ", <xref linkend=\"RT_ST_SummaryStatsAgg\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:349
-#, no-c-format
-msgid "unionarg"
-msgstr "unionarg"
-
 #. Tag: refpurpose
 #: reference_raster.xml:350
 #, no-c-format
@@ -757,12 +715,6 @@ msgstr ""
 #, no-c-format
 msgid "Raster Management"
 msgstr "래스터 관리"
-
-#. Tag: refname
-#: reference_raster.xml:402
-#, no-c-format
-msgid "AddRasterConstraints"
-msgstr "AddRasterConstraints"
 
 #. Tag: refpurpose
 #: reference_raster.xml:404
@@ -964,12 +916,6 @@ msgstr ""
 ">, <xref linkend=\"RT_DropRasterConstraints\"/>, <xref "
 "linkend=\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:591
-#, no-c-format
-msgid "DropRasterConstraints"
-msgstr "DropRasterConstraints"
-
 #. Tag: refpurpose
 #: reference_raster.xml:593
 #, no-c-format
@@ -1087,12 +1033,6 @@ msgstr ""
 msgid "Examples"
 msgstr "예시"
 
-#. Tag: refname
-#: reference_raster.xml:732
-#, no-c-format
-msgid "AddOverviewConstraints"
-msgstr "AddOverviewConstraints"
-
 #. Tag: refpurpose
 #: reference_raster.xml:734
 #, no-c-format
@@ -1141,12 +1081,6 @@ msgstr ""
 ", <xref linkend=\"RT_DropOverviewConstraints\"/>, <xref "
 "linkend=\"RT_CreateOverview\"/>, <xref linkend=\"RT_AddRasterConstraints\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:815
-#, no-c-format
-msgid "DropOverviewConstraints"
-msgstr "DropOverviewConstraints"
-
 #. Tag: refpurpose
 #: reference_raster.xml:817
 #, no-c-format
@@ -1185,12 +1119,6 @@ msgstr ""
 ", <xref linkend=\"RT_AddOverviewConstraints\"/>, <xref "
 "linkend=\"RT_DropRasterConstraints\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:874
-#, no-c-format
-msgid "PostGIS_GDAL_Version"
-msgstr "PostGIS_GDAL_Version"
-
 #. Tag: refpurpose
 #: reference_raster.xml:875
 #, no-c-format
@@ -1217,12 +1145,6 @@ msgstr ""
 "PostGIS가 이용하고 있는 GDAL 라이브러리의 버전을 반환합니다. 또 GDAL이 자체 "
 "데이터 파일을 찾을 수 있는지도 확인해서 보고할 것입니다."
 
-#. Tag: refname
-#: reference_raster.xml:907
-#, no-c-format
-msgid "PostGIS_Raster_Lib_Build_Date"
-msgstr "PostGIS_Raster_Lib_Build_Date"
-
 #. Tag: refpurpose
 #: reference_raster.xml:909
 #, no-c-format
@@ -1244,12 +1166,6 @@ msgstr ""
 #, no-c-format
 msgid "Reports raster build date"
 msgstr "래스터의 빌드 날짜를 보고합니다."
-
-#. Tag: refname
-#: reference_raster.xml:943
-#, no-c-format
-msgid "PostGIS_Raster_Lib_Version"
-msgstr "PostGIS_Raster_Lib_Version"
 
 #. Tag: refpurpose
 #: reference_raster.xml:945
@@ -1274,12 +1190,6 @@ msgstr ""
 #, no-c-format
 msgid "<para>Reports full raster version and build configuration infos.</para>"
 msgstr "<para>전체 래스터 버전 및 설정 정보를 보고합니다.</para>"
-
-#. Tag: refname
-#: reference_raster.xml:983
-#, no-c-format
-msgid "ST_GDALDrivers"
-msgstr "ST_GDALDrivers"
 
 #. Tag: refpurpose
 #: reference_raster.xml:985
@@ -1362,12 +1272,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_SRID\"/>, <xref "
 "linkend=\"postgis_gdal_enabled_drivers\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:1036
-#, fuzzy, no-c-format
-msgid "ST_Contour"
-msgstr "ST_Count"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1038
@@ -1477,12 +1381,6 @@ msgstr "2.2.0 버전부터 사용할 수 있습니다."
 msgid "Example"
 msgstr "예시"
 
-#. Tag: refname
-#: reference_raster.xml:1102
-#, fuzzy, no-c-format
-msgid "ST_InterpolateRaster"
-msgstr "ST_MakeEmptyRaster"
-
 #. Tag: refpurpose
 #: reference_raster.xml:1104
 #, no-c-format
@@ -1591,12 +1489,6 @@ msgid ""
 "raster, but that can be adjusted with this parameter."
 msgstr ""
 
-#. Tag: refname
-#: reference_raster.xml:1191
-#, no-c-format
-msgid "UpdateRasterSRID"
-msgstr "UpdateRasterSRID"
-
 #. Tag: refpurpose
 #: reference_raster.xml:1192
 #, no-c-format
@@ -1647,12 +1539,6 @@ msgstr ""
 #, no-c-format
 msgid "Availability: 2.1.0"
 msgstr "2.1.0 버전부터 사용할 수 있습니다."
-
-#. Tag: refname
-#: reference_raster.xml:1243
-#, no-c-format
-msgid "ST_CreateOverview"
-msgstr "ST_CreateOverview"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1244
@@ -1752,12 +1638,6 @@ msgstr ""
 #, no-c-format
 msgid "Raster Constructors"
 msgstr "래스터 작성자(constructor)"
-
-#. Tag: refname
-#: reference_raster.xml:1309
-#, no-c-format
-msgid "ST_AddBand"
-msgstr "ST_AddBand"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1310
@@ -1873,12 +1753,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_BandPixelType\"/>, <xref "
 "linkend=\"RT_ST_MakeEmptyRaster\"/>, <xref linkend=\"RT_ST_MetaData\"/>, "
 "<xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_Reclass\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:1437
-#, no-c-format
-msgid "ST_AsRaster"
-msgstr "ST_AsRaster"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1438
@@ -2066,12 +1940,6 @@ msgstr ""
 "<xref linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_AsPNG\"/>, "
 "<xref linkend=\"RT_ST_AsJPEG\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:1647
-#, no-c-format
-msgid "ST_Band"
-msgstr "ST_Band"
-
 #. Tag: refpurpose
 #: reference_raster.xml:1648
 #, no-c-format
@@ -2142,12 +2010,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_Reclass\"/>, "
 "<xref linkend=\"RT_reference\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:1737
-#, no-c-format
-msgid "ST_MakeEmptyCoverage"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_raster.xml:1738
 #, no-c-format
@@ -2216,12 +2078,6 @@ msgid ""
 "Create 16 tiles in a 4x4 grid to cover the WGS84 area from upper left corner "
 "(22, 77) to lower right corner (55, 33)."
 msgstr ""
-
-#. Tag: refname
-#: reference_raster.xml:1784
-#, no-c-format
-msgid "ST_MakeEmptyRaster"
-msgstr "ST_MakeEmptyRaster"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1785
@@ -2301,12 +2157,6 @@ msgstr ""
 "<xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_SetValue\"/>, <xref "
 "linkend=\"RT_ST_SkewX\"/>, , <xref linkend=\"RT_ST_SkewY\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:1846
-#, no-c-format
-msgid "ST_Tile"
-msgstr "ST_Tile"
-
 #. Tag: refpurpose
 #: reference_raster.xml:1847
 #, no-c-format
@@ -2361,12 +2211,6 @@ msgstr ""
 msgid ", <xref linkend=\"RT_Retile\"/>"
 msgstr ", <xref linkend=\"RT_Retile\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:1925
-#, no-c-format
-msgid "ST_Retile"
-msgstr "ST_Retile"
-
 #. Tag: refpurpose
 #: reference_raster.xml:1926
 #, no-c-format
@@ -2416,12 +2260,6 @@ msgstr ""
 "지(<varname>tab</varname>, <varname>col</varname>)에서 나온 데이터로 설정한 "
 "범위(<varname>ext</varname>)를  커버하는 타일들의 집합을 반환합니다."
 
-#. Tag: refname
-#: reference_raster.xml:1976
-#, no-c-format
-msgid "ST_FromGDALRaster"
-msgstr "ST_FromGDALRaster"
-
 #. Tag: refpurpose
 #: reference_raster.xml:1977
 #, no-c-format
@@ -2469,12 +2307,6 @@ msgstr ""
 #, no-c-format
 msgid "Raster Accessors"
 msgstr "래스터 접근자(accessor)"
-
-#. Tag: refname
-#: reference_raster.xml:2027
-#, no-c-format
-msgid "ST_GeoReference"
-msgstr "ST_GeoReference"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2028
@@ -2538,12 +2370,6 @@ msgstr "<varname>ESRI</varname>:"
 msgid ", <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>"
 msgstr ", <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:2067
-#, no-c-format
-msgid "ST_Height"
-msgstr "ST_Height"
-
 #. Tag: refpurpose
 #: reference_raster.xml:2068
 #, no-c-format
@@ -2565,12 +2391,6 @@ msgstr ""
 #, no-c-format
 msgid "Returns the height of the raster."
 msgstr "래스터의 높이를 반환합니다."
-
-#. Tag: refname
-#: reference_raster.xml:2101
-#, no-c-format
-msgid "ST_IsEmpty"
-msgstr "ST_IsEmpty"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2102
@@ -2601,12 +2421,6 @@ msgid ""
 msgstr ""
 "<para>래스터가 비어 있을 경우 (width = 0, height = 0) 참을 반환합니다. 그렇"
 "지 않을 경우 거짓을 반환합니다.</para>"
-
-#. Tag: refname
-#: reference_raster.xml:2137
-#, no-c-format
-msgid "ST_MemSize"
-msgstr "ST_MemSize"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2139
@@ -2670,12 +2484,6 @@ msgstr ""
 "pg_total_relation_size 함수는 테이블, TOAST가 적용된 테이블 및 인덱스를 포함"
 "합니다."
 
-#. Tag: refname
-#: reference_raster.xml:2181
-#, no-c-format
-msgid "ST_MetaData"
-msgstr "ST_MetaData"
-
 #. Tag: refpurpose
 #: reference_raster.xml:2182
 #, no-c-format
@@ -2714,12 +2522,6 @@ msgstr ""
 msgid ", <xref linkend=\"RT_ST_NumBands\"/>"
 msgstr ", <xref linkend=\"RT_ST_NumBands\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:2216
-#, no-c-format
-msgid "ST_NumBands"
-msgstr "ST_NumBands"
-
 #. Tag: refpurpose
 #: reference_raster.xml:2217
 #, no-c-format
@@ -2743,12 +2545,6 @@ msgstr ""
 #, no-c-format
 msgid "<para>Returns the number of bands in the raster object.</para>"
 msgstr "<para>래스터 객체 내부에 있는 밴드들의 개수를 반환합니다.</para>"
-
-#. Tag: refname
-#: reference_raster.xml:2250
-#, no-c-format
-msgid "ST_PixelHeight"
-msgstr "ST_PixelHeight"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2251
@@ -2811,12 +2607,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, <xref "
 "linkend=\"RT_ST_SkewX\"/>, <xref linkend=\"RT_ST_SkewY\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:2300
-#, no-c-format
-msgid "ST_PixelWidth"
-msgstr "ST_PixelWidth"
-
 #. Tag: refpurpose
 #: reference_raster.xml:2301
 #, no-c-format
@@ -2863,12 +2653,6 @@ msgstr "픽셀 너비: i 방향의 픽셀 크기"
 msgid "Pixel Height: Pixel size in the j direction"
 msgstr "픽셀 높이: j 방향의 픽셀 크기"
 
-#. Tag: refname
-#: reference_raster.xml:2354
-#, no-c-format
-msgid "ST_ScaleX"
-msgstr "ST_ScaleX"
-
 #. Tag: refpurpose
 #: reference_raster.xml:2355
 #, no-c-format
@@ -2906,12 +2690,6 @@ msgid "Changed: 2.0.0. In WKTRaster versions this was called ST_PixelSizeX."
 msgstr ""
 "변경 사항: 2.0.0 미만 WKTRaster 버전에서는 ST_PixelSizeX라는 명칭이었습니다."
 
-#. Tag: refname
-#: reference_raster.xml:2391
-#, no-c-format
-msgid "ST_ScaleY"
-msgstr "ST_ScaleY"
-
 #. Tag: refpurpose
 #: reference_raster.xml:2392
 #, no-c-format
@@ -2948,12 +2726,6 @@ msgstr ""
 msgid "Changed: 2.0.0. In WKTRaster versions this was called ST_PixelSizeY."
 msgstr ""
 "변경 사항: 2.0.0 미만 WKTRaster 버전에서는 ST_PixelSizeY라는 명칭이었습니다."
-
-#. Tag: refname
-#: reference_raster.xml:2429
-#, no-c-format
-msgid "ST_RasterToWorldCoord"
-msgstr "ST_RasterToWorldCoord"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2430
@@ -3006,12 +2778,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref "
 "linkend=\"RT_ST_SetSkew\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:2478
-#, no-c-format
-msgid "ST_RasterToWorldCoordX"
-msgstr "ST_RasterToWorldCoordX"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2479
@@ -3070,12 +2836,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref "
 "linkend=\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewX\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:2533
-#, no-c-format
-msgid "ST_RasterToWorldCoordY"
-msgstr "ST_RasterToWorldCoordY"
-
 #. Tag: refpurpose
 #: reference_raster.xml:2534
 #, no-c-format
@@ -3133,12 +2893,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_RasterToWorldCoordX\"/>, <xref "
 "linkend=\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewY\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:2587
-#, no-c-format
-msgid "ST_Rotation"
-msgstr "ST_Rotation"
-
 #. Tag: refpurpose
 #: reference_raster.xml:2588
 #, no-c-format
@@ -3174,12 +2928,6 @@ msgid ", <xref linkend=\"RT_ST_SetScale\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
 msgstr ""
 ", <xref linkend=\"RT_ST_SetScale\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:2622
-#, no-c-format
-msgid "ST_SkewX"
-msgstr "ST_SkewX"
-
 #. Tag: refpurpose
 #: reference_raster.xml:2623
 #, no-c-format
@@ -3214,12 +2962,6 @@ msgstr ""
 msgid ", <xref linkend=\"RT_ST_SkewY\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
 msgstr ", <xref linkend=\"RT_ST_SkewY\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:2658
-#, no-c-format
-msgid "ST_SkewY"
-msgstr "ST_SkewY"
-
 #. Tag: refpurpose
 #: reference_raster.xml:2659
 #, no-c-format
@@ -3253,12 +2995,6 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SkewX\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
 msgstr ", <xref linkend=\"RT_ST_SkewX\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:2694
-#, no-c-format
-msgid "ST_SRID"
-msgstr "ST_SRID"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2695
@@ -3306,12 +3042,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_SRID\"/>"
 msgstr ", <xref linkend=\"ST_SRID\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:2729
-#, no-c-format
-msgid "ST_Summary"
-msgstr "ST_Summary"
-
 #. Tag: refpurpose
 #: reference_raster.xml:2730
 #, no-c-format
@@ -3345,12 +3075,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"RT_ST_BandMetaData\"/>, <xref linkend=\"ST_Summary\"/> "
 "<xref linkend=\"ST_Extent\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:2768
-#, no-c-format
-msgid "ST_UpperLeftX"
-msgstr "ST_UpperLeftX"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2769
@@ -3387,12 +3111,6 @@ msgstr ""
 msgid ", <xref linkend=\"RT_ST_GeoReference\"/>, <xref linkend=\"RT_Box3D\"/>"
 msgstr ", <xref linkend=\"RT_ST_GeoReference\"/>, <xref linkend=\"RT_Box3D\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:2802
-#, no-c-format
-msgid "ST_UpperLeftY"
-msgstr "ST_UpperLeftY"
-
 #. Tag: refpurpose
 #: reference_raster.xml:2803
 #, no-c-format
@@ -3422,12 +3140,6 @@ msgid ""
 msgstr ""
 "<para>래스터의 좌상단 Y 좌표를 투영된 공간 참조 단위로 반환합니다.</para>"
 
-#. Tag: refname
-#: reference_raster.xml:2836
-#, no-c-format
-msgid "ST_Width"
-msgstr "ST_Width"
-
 #. Tag: refpurpose
 #: reference_raster.xml:2837
 #, no-c-format
@@ -3449,12 +3161,6 @@ msgstr ""
 #, no-c-format
 msgid "<para>Returns the width of the raster in pixels.</para>"
 msgstr "<para>래스터의 너비를 픽셀 개수로 반환합니다.</para>"
-
-#. Tag: refname
-#: reference_raster.xml:2872
-#, no-c-format
-msgid "ST_WorldToRasterCoord"
-msgstr "ST_WorldToRasterCoord"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2873
@@ -3493,12 +3199,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_WorldToRasterCoordY\"/>, <xref "
 "linkend=\"RT_ST_RasterToWorldCoordX\"/>, <xref "
 "linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref linkend=\"RT_ST_SRID\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:2927
-#, no-c-format
-msgid "ST_WorldToRasterCoordX"
-msgstr "ST_WorldToRasterCoordX"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2928
@@ -3543,12 +3243,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref "
 "linkend=\"RT_ST_SRID\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:2982
-#, no-c-format
-msgid "ST_WorldToRasterCoordY"
-msgstr "ST_WorldToRasterCoordY"
-
 #. Tag: refpurpose
 #: reference_raster.xml:2983
 #, no-c-format
@@ -3586,12 +3280,6 @@ msgstr ""
 #, no-c-format
 msgid "Raster Band Accessors"
 msgstr "래스터 밴드 접근자"
-
-#. Tag: refname
-#: reference_raster.xml:3037
-#, no-c-format
-msgid "ST_BandMetaData"
-msgstr "ST_BandMetaData"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3038
@@ -3665,12 +3353,6 @@ msgstr "예시: 변종 2"
 msgid ", <xref linkend=\"RT_ST_BandPixelType\"/>"
 msgstr ", <xref linkend=\"RT_ST_BandPixelType\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:3104
-#, no-c-format
-msgid "ST_BandNoDataValue"
-msgstr "ST_BandNoDataValue"
-
 #. Tag: refpurpose
 #: reference_raster.xml:3105
 #, no-c-format
@@ -3700,12 +3382,6 @@ msgstr ""
 #, no-c-format
 msgid "Returns the value that represents no data for the band"
 msgstr "밴드에서 NODATA를 나타내는 값을 반환합니다."
-
-#. Tag: refname
-#: reference_raster.xml:3140
-#, no-c-format
-msgid "ST_BandIsNoData"
-msgstr "ST_BandIsNoData"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3141
@@ -3756,12 +3432,6 @@ msgstr ""
 "linkend=\"RT_ST_SetBandNoDataValue\"/>, <xref "
 "linkend=\"RT_ST_SetBandIsNoData\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:3197
-#, no-c-format
-msgid "ST_BandPath"
-msgstr "ST_BandPath"
-
 #. Tag: refpurpose
 #: reference_raster.xml:3198
 #, no-c-format
@@ -3795,12 +3465,6 @@ msgid ""
 msgstr ""
 "밴드를 가리키는 시스템 파일 경로를 반환합니다. DB 내부 밴드와 함께 호출할 경"
 "우 오류가 발생합니다."
-
-#. Tag: refname
-#: reference_raster.xml:3232
-#, no-c-format
-msgid "ST_BandFileSize"
-msgstr ""
 
 #. Tag: refpurpose
 #: reference_raster.xml:3233
@@ -3846,12 +3510,6 @@ msgstr ""
 msgid "Availability: 2.5.0"
 msgstr ""
 
-#. Tag: refname
-#: reference_raster.xml:3268
-#, no-c-format
-msgid "ST_BandFileTimestamp"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_raster.xml:3269
 #, no-c-format
@@ -3887,12 +3545,6 @@ msgid ""
 "ST_BandFileSize() so a client can determine if the filename of a outdb "
 "raster as seen by it is the same as the one seen by the server."
 msgstr ""
-
-#. Tag: refname
-#: reference_raster.xml:3302
-#, no-c-format
-msgid "ST_BandPixelType"
-msgstr "ST_BandPixelType"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3303
@@ -3998,12 +3650,6 @@ msgstr "32BF - 32비트 부동소수점 실수형"
 msgid "64BF - 64-bit float"
 msgstr "64BF - 64비트 부동소수점 실수형"
 
-#. Tag: refname
-#: reference_raster.xml:3377
-#, fuzzy, no-c-format
-msgid "ST_MinPossibleValue"
-msgstr "ST_PixelOfValue"
-
 #. Tag: refpurpose
 #: reference_raster.xml:3378
 #, fuzzy, no-c-format
@@ -4027,12 +3673,6 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid "<para>Returns the minimum value this pixeltype can store.</para>"
 msgstr "<para>래스터 객체 내부에 있는 밴드들의 개수를 반환합니다.</para>"
-
-#. Tag: refname
-#: reference_raster.xml:3410
-#, no-c-format
-msgid "ST_HasNoBand"
-msgstr "ST_HasNoBand"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3411
@@ -4071,12 +3711,6 @@ msgstr ""
 #, no-c-format
 msgid "Raster Pixel Accessors and Setters"
 msgstr "래스터 픽셀 접근자 및 설정자(setter)"
-
-#. Tag: refname
-#: reference_raster.xml:3452
-#, no-c-format
-msgid "ST_PixelAsPolygon"
-msgstr "ST_PixelAsPolygon"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3453
@@ -4127,12 +3761,6 @@ msgstr ""
 "<xref linkend=\"RT_ST_PixelAsCentroid\"/>, <xref "
 "linkend=\"RT_ST_PixelAsCentroids\"/>, <xref linkend=\"RT_ST_Intersection\"/"
 ">, <xref linkend=\"ST_AsText\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:3498
-#, no-c-format
-msgid "ST_PixelAsPolygons"
-msgstr "ST_PixelAsPolygons"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3499
@@ -4230,12 +3858,6 @@ msgstr ""
 "<xref linkend=\"RT_ST_PixelAsCentroid\"/>, <xref "
 "linkend=\"RT_ST_PixelAsCentroids\"/>, <xref linkend=\"ST_AsText\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:3559
-#, no-c-format
-msgid "ST_PixelAsPoint"
-msgstr "ST_PixelAsPoint"
-
 #. Tag: refpurpose
 #: reference_raster.xml:3560
 #, no-c-format
@@ -4278,12 +3900,6 @@ msgstr ""
 "linkend=\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/"
 ">, <xref linkend=\"RT_ST_PixelAsCentroid\"/>, <xref "
 "linkend=\"RT_ST_PixelAsCentroids\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:3602
-#, no-c-format
-msgid "ST_PixelAsPoints"
-msgstr "ST_PixelAsPoints"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3603
@@ -4333,12 +3949,6 @@ msgstr ""
 "linkend=\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, "
 "<xref linkend=\"RT_ST_PixelAsCentroid\"/>, <xref "
 "linkend=\"RT_ST_PixelAsCentroids\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:3657
-#, no-c-format
-msgid "ST_PixelAsCentroid"
-msgstr "ST_PixelAsCentroid"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3658
@@ -4393,12 +4003,6 @@ msgstr ""
 "<xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
 "linkend=\"RT_ST_PixelAsCentroids\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:3701
-#, no-c-format
-msgid "ST_PixelAsCentroids"
-msgstr "ST_PixelAsCentroids"
-
 #. Tag: refpurpose
 #: reference_raster.xml:3702
 #, no-c-format
@@ -4448,12 +4052,6 @@ msgstr ""
 "linkend=\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, "
 "<xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
 "linkend=\"RT_ST_PixelAsCentroid\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:3757
-#, no-c-format
-msgid "ST_Value"
-msgstr "ST_Value"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3758
@@ -4544,12 +4142,6 @@ msgstr ""
 "linkend=\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
 "linkend=\"ST_Intersection\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:3842
-#, no-c-format
-msgid "ST_NearestValue"
-msgstr "ST_NearestValue"
-
 #. Tag: refpurpose
 #: reference_raster.xml:3843
 #, no-c-format
@@ -4606,12 +4198,6 @@ msgstr "ST_NearestValue 함수는 즉석에서 ST_Value를 대체할 수 있습�
 msgid ", <xref linkend=\"RT_ST_Value\"/>"
 msgstr ", <xref linkend=\"RT_ST_Value\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:3921
-#, fuzzy, no-c-format
-msgid "ST_SetZ"
-msgstr "ST_SetSkew"
-
 #. Tag: refpurpose
 #: reference_raster.xml:3922
 #, no-c-format
@@ -4665,12 +4251,6 @@ msgstr ""
 msgid ", <xref linkend=\"RT_ST_SetM\"/>"
 msgstr ", <xref linkend=\"RT_ST_SetSRID\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:3964
-#, fuzzy, no-c-format
-msgid "ST_SetM"
-msgstr "ST_SetSkew"
-
 #. Tag: refpurpose
 #: reference_raster.xml:3965
 #, no-c-format
@@ -4712,12 +4292,6 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetZ\"/>"
 msgstr ", <xref linkend=\"RT_ST_SetSRID\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:4006
-#, no-c-format
-msgid "ST_Neighborhood"
-msgstr "ST_Neighborhood"
 
 #. Tag: refpurpose
 #: reference_raster.xml:4007
@@ -4793,12 +4367,6 @@ msgstr ""
 "linkend=\"RT_ST_Range4ma\"/>, <xref linkend=\"RT_ST_Distinct4ma\"/>, <xref "
 "linkend=\"RT_ST_StdDev4ma\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:4107
-#, no-c-format
-msgid "ST_SetValue"
-msgstr "ST_SetValue"
-
 #. Tag: refpurpose
 #: reference_raster.xml:4108
 #, no-c-format
@@ -4837,12 +4405,6 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_DumpAsPolygons\"/>"
 msgstr ", <xref linkend=\"RT_ST_DumpAsPolygons\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:4167
-#, no-c-format
-msgid "ST_SetValues"
-msgstr "ST_SetValues"
 
 #. Tag: refpurpose
 #: reference_raster.xml:4168
@@ -4983,12 +4545,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_SetValue\"/>, <xref "
 "linkend=\"RT_ST_PixelAsPolygons\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:4320
-#, no-c-format
-msgid "ST_DumpValues"
-msgstr "ST_DumpValues"
-
 #. Tag: refpurpose
 #: reference_raster.xml:4321
 #, no-c-format
@@ -5015,12 +4571,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"RT_ST_SetValue\"/>, <xref linkend=\"RT_ST_SetValues\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:4387
-#, no-c-format
-msgid "ST_PixelOfValue"
-msgstr "ST_PixelOfValue"
-
 #. Tag: refpurpose
 #: reference_raster.xml:4388
 #, no-c-format
@@ -5044,12 +4594,6 @@ msgstr ""
 #, no-c-format
 msgid "Raster Editors"
 msgstr "래스터 편집자"
-
-#. Tag: refname
-#: reference_raster.xml:4476
-#, no-c-format
-msgid "ST_SetGeoReference"
-msgstr "ST_SetGeoReference"
 
 #. Tag: refpurpose
 #: reference_raster.xml:4477
@@ -5104,12 +4648,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, <xref "
 "linkend=\"RT_ST_UpperLeftX\"/>, <xref linkend=\"RT_ST_UpperLeftY\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:4538
-#, no-c-format
-msgid "ST_SetRotation"
-msgstr "ST_SetRotation"
-
 #. Tag: refpurpose
 #: reference_raster.xml:4539
 #, no-c-format
@@ -5139,12 +4677,6 @@ msgstr ""
 "래스터를 균일하게 회전시킵니다. 회전각은 라디안 단위입니다. 자세한 내용은 "
 "<ulink url=\"http://en.wikipedia.org/wiki/World_file\">월드 파일</ulink> 을 "
 "참조하십시오."
-
-#. Tag: refname
-#: reference_raster.xml:4574
-#, no-c-format
-msgid "ST_SetScale"
-msgstr "ST_SetScale"
 
 #. Tag: refpurpose
 #: reference_raster.xml:4575
@@ -5203,12 +4735,6 @@ msgstr ""
 msgid ", <xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_Box3D\"/>"
 msgstr ", <xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_Box3D\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:4622
-#, no-c-format
-msgid "ST_SetSkew"
-msgstr "ST_SetSkew"
-
 #. Tag: refpurpose
 #: reference_raster.xml:4623
 #, no-c-format
@@ -5240,12 +4766,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"RT_ST_SetGeoReference\"/>, <xref linkend=\"RT_ST_SkewX\"/"
 ">, <xref linkend=\"RT_ST_SkewY\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:4667
-#, no-c-format
-msgid "ST_SetSRID"
-msgstr "ST_SetSRID"
 
 #. Tag: refpurpose
 #: reference_raster.xml:4669
@@ -5293,12 +4813,6 @@ msgstr ""
 msgid ", <xref linkend=\"RT_ST_SRID\"/>"
 msgstr ", <xref linkend=\"RT_ST_SRID\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:4709
-#, no-c-format
-msgid "ST_SetUpperLeft"
-msgstr "ST_SetUpperLeft"
-
 #. Tag: refpurpose
 #: reference_raster.xml:4710
 #, no-c-format
@@ -5334,12 +4848,6 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_UpperLeftY\"/>"
 msgstr ", <xref linkend=\"RT_ST_UpperLeftY\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:4745
-#, no-c-format
-msgid "ST_Resample"
-msgstr "ST_Resample"
 
 #. Tag: refpurpose
 #: reference_raster.xml:4746
@@ -5469,12 +4977,6 @@ msgid ", <xref linkend=\"RT_ST_Resize\"/>, <xref linkend=\"RT_ST_Transform\"/>"
 msgstr ""
 ", <xref linkend=\"RT_ST_Resize\"/>, <xref linkend=\"RT_ST_Transform\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:4850
-#, no-c-format
-msgid "ST_Rescale"
-msgstr "ST_Rescale"
-
 #. Tag: refpurpose
 #: reference_raster.xml:4851
 #, no-c-format
@@ -5574,12 +5076,6 @@ msgstr ""
 "<xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, <xref "
 "linkend=\"RT_ST_Transform\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:4931
-#, no-c-format
-msgid "ST_Reskew"
-msgstr "ST_Reskew"
-
 #. Tag: refpurpose
 #: reference_raster.xml:4932
 #, no-c-format
@@ -5674,12 +5170,6 @@ msgstr ""
 "<xref linkend=\"RT_ST_SetRotation\"/>, <xref linkend=\"RT_ST_SkewX\"/>, "
 "<xref linkend=\"RT_ST_SkewY\"/>, <xref linkend=\"RT_ST_Transform\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:4993
-#, no-c-format
-msgid "ST_SnapToGrid"
-msgstr "ST_SnapToGrid"
-
 #. Tag: refpurpose
 #: reference_raster.xml:4994
 #, no-c-format
@@ -5756,12 +5246,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_Rescale\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, "
 "<xref linkend=\"RT_ST_UpperLeftY\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:5071
-#, no-c-format
-msgid "ST_Resize"
-msgstr "ST_Resize"
-
 #. Tag: refpurpose
 #: reference_raster.xml:5072
 #, no-c-format
@@ -5836,12 +5320,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"RT_ST_Rescale\"/>, <xref linkend=\"RT_ST_Reskew\"/>, <xref "
 "linkend=\"RT_ST_SnapToGrid\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:5150
-#, no-c-format
-msgid "ST_Transform"
-msgstr "ST_Transform"
 
 #. Tag: refpurpose
 #: reference_raster.xml:5151
@@ -5991,12 +5469,6 @@ msgstr ", <xref linkend=\"RT_ST_SetSRID\"/>"
 msgid "Raster Band Editors"
 msgstr "래스터 밴드 편집자"
 
-#. Tag: refname
-#: reference_raster.xml:5304
-#, no-c-format
-msgid "ST_SetBandNoDataValue"
-msgstr "ST_SetBandNoDataValue"
-
 #. Tag: refpurpose
 #: reference_raster.xml:5305
 #, no-c-format
@@ -6022,12 +5494,6 @@ msgstr ""
 "드 1로 가정합니다. 이 함수는 <xref linkend=\"RT_ST_Polygon\"/>, <xref "
 "linkend=\"RT_ST_DumpAsPolygons\"/>, 그리고 ST_PixelAs...() 함수의 결과물에 영"
 "향을 미칩니다."
-
-#. Tag: refname
-#: reference_raster.xml:5348
-#, no-c-format
-msgid "ST_SetBandIsNoData"
-msgstr "ST_SetBandIsNoData"
 
 #. Tag: refpurpose
 #: reference_raster.xml:5349
@@ -6075,12 +5541,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_NumBands\"/>, <xref "
 "linkend=\"RT_ST_SetBandNoDataValue\"/>, <xref linkend=\"RT_ST_BandIsNoData\"/"
 ">"
-
-#. Tag: refname
-#: reference_raster.xml:5392
-#, no-c-format
-msgid "ST_SetBandPath"
-msgstr ""
 
 #. Tag: refpurpose
 #: reference_raster.xml:5393
@@ -6133,12 +5593,6 @@ msgstr ""
 msgid ", <xref linkend=\"RT_ST_SetBandIndex\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_raster.xml:5446
-#, no-c-format
-msgid "ST_SetBandIndex"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_raster.xml:5447
 #, no-c-format
@@ -6186,12 +5640,6 @@ msgstr ""
 #, no-c-format
 msgid "Raster Band Statistics and Analytics"
 msgstr "래스터 밴드 통계 및 분석"
-
-#. Tag: refname
-#: reference_raster.xml:5504
-#, no-c-format
-msgid "ST_Count"
-msgstr "ST_Count"
 
 #. Tag: refpurpose
 #: reference_raster.xml:5505
@@ -6250,12 +5698,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref "
 "linkend=\"RT_ST_SetBandNoDataValue\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:5551
-#, no-c-format
-msgid "ST_CountAgg"
-msgstr "ST_CountAgg"
-
 #. Tag: refpurpose
 #: reference_raster.xml:5552
 #, no-c-format
@@ -6301,12 +5743,6 @@ msgid ""
 msgstr ""
 "기본적으로 모든 픽셀을 샘플링할 것입니다. 더 빠른 속도를 원한다면, "
 "<varname>sample_percent</varname> 를 0과 1 사이의 값으로 설정하십시오."
-
-#. Tag: refname
-#: reference_raster.xml:5612
-#, no-c-format
-msgid "ST_Histogram"
-msgstr "ST_Histogram"
 
 #. Tag: refpurpose
 #: reference_raster.xml:5613
@@ -6435,12 +5871,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref "
 "linkend=\"RT_ST_SummaryStatsAgg\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:5704
-#, no-c-format
-msgid "ST_Quantile"
-msgstr "ST_Quantile"
-
 #. Tag: refpurpose
 #: reference_raster.xml:5705
 #, no-c-format
@@ -6492,12 +5922,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref "
 "linkend=\"RT_ST_SummaryStatsAgg\"/>, <xref "
 "linkend=\"RT_ST_SetBandNoDataValue\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:5790
-#, no-c-format
-msgid "ST_SummaryStats"
-msgstr "ST_SummaryStats"
 
 #. Tag: refpurpose
 #: reference_raster.xml:5791
@@ -6596,12 +6020,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_SummaryStatsAgg\"/>, <xref linkend=\"RT_ST_Count\"/"
 ">, <xref linkend=\"RT_ST_Clip\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:5855
-#, no-c-format
-msgid "ST_SummaryStatsAgg"
-msgstr "ST_SummaryStatsAgg"
-
 #. Tag: refpurpose
 #: reference_raster.xml:5856
 #, no-c-format
@@ -6645,12 +6063,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref linkend=\"RT_ST_Count\"/>, "
 "<xref linkend=\"RT_ST_Clip\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:5915
-#, no-c-format
-msgid "ST_ValueCount"
-msgstr "ST_ValueCount"
 
 #. Tag: refpurpose
 #: reference_raster.xml:5916
@@ -6708,12 +6120,6 @@ msgstr ", <xref linkend=\"RT_ST_SetBandNoDataValue\"/>"
 msgid "Raster Inputs"
 msgstr ""
 
-#. Tag: refname
-#: reference_raster.xml:6060
-#, no-c-format
-msgid "ST_RastFromWKB"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_raster.xml:6061
 #, no-c-format
@@ -6740,12 +6146,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"RT_ST_RastFromHexWKB\"/>, <xref linkend=\"RT_ST_AsBinary\"/"
 ">, <xref linkend=\"RT_ST_AsHexWKB\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_raster.xml:6103
-#, no-c-format
-msgid "ST_RastFromHexWKB"
 msgstr ""
 
 #. Tag: refpurpose
@@ -6785,12 +6185,6 @@ msgstr ""
 #, no-c-format
 msgid "Raster Outputs"
 msgstr "래스터 출력"
-
-#. Tag: refname
-#: reference_raster.xml:6151
-#, no-c-format
-msgid "ST_AsBinary/ST_AsWKB"
-msgstr ""
 
 #. Tag: refpurpose
 #: reference_raster.xml:6152
@@ -6848,12 +6242,6 @@ msgstr ""
 msgid ", <xref linkend=\"RT_ST_AsHexWKB\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_raster.xml:6209
-#, no-c-format
-msgid "ST_AsHexWKB"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_raster.xml:6210
 #, no-c-format
@@ -6894,12 +6282,6 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_AsBinary\"/>"
 msgstr ""
-
-#. Tag: refname
-#: reference_raster.xml:6258
-#, no-c-format
-msgid "ST_AsGDALRaster"
-msgstr "ST_AsGDALRaster"
 
 #. Tag: refpurpose
 #: reference_raster.xml:6259
@@ -7010,12 +6392,6 @@ msgid ", <xref linkend=\"RT_ST_GDALDrivers\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 msgstr ""
 ", <xref linkend=\"RT_ST_GDALDrivers\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:6332
-#, no-c-format
-msgid "ST_AsJPEG"
-msgstr "ST_AsJPEG"
-
 #. Tag: refpurpose
 #: reference_raster.xml:6333
 #, no-c-format
@@ -7112,12 +6488,6 @@ msgstr ""
 "linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_AsPNG\"/>, <xref "
 "linkend=\"RT_ST_AsTIFF\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:6423
-#, no-c-format
-msgid "ST_AsPNG"
-msgstr "ST_AsPNG"
-
 #. Tag: refpurpose
 #: reference_raster.xml:6424
 #, no-c-format
@@ -7202,12 +6572,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"RT_ST_ColorMap\"/>, <xref linkend=\"RT_ST_GDALDrivers\"/>, "
 "<xref linkend=\"RT_Raster_Applications\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:6514
-#, no-c-format
-msgid "ST_AsTIFF"
-msgstr "ST_AsTIFF"
 
 #. Tag: refpurpose
 #: reference_raster.xml:6515
@@ -7302,12 +6666,6 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid "Raster Processing: Map Algebra"
 msgstr "래스터 공간 처리"
-
-#. Tag: refname
-#: reference_raster.xml:6598
-#, no-c-format
-msgid "ST_Clip"
-msgstr "ST_Clip"
 
 #. Tag: refpurpose
 #: reference_raster.xml:6599
@@ -7436,12 +6794,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Intersection\"/"
 ">"
-
-#. Tag: refname
-#: reference_raster.xml:6825
-#, no-c-format
-msgid "ST_ColorMap"
-msgstr "ST_ColorMap"
 
 #. Tag: refpurpose
 #: reference_raster.xml:6826
@@ -7718,12 +7070,6 @@ msgid ""
 "linkend=\"RT_ST_SetBandNoDataValue\"/>, <xref linkend=\"RT_ST_Union\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_raster.xml:7064
-#, no-c-format
-msgid "ST_Grayscale"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_raster.xml:7065
 #, no-c-format
@@ -7793,12 +7139,6 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Reclass\"/>, <xref linkend=\"RT_ST_ColorMap\"/>"
 msgstr ""
-
-#. Tag: refname
-#: reference_raster.xml:7169
-#, no-c-format
-msgid "ST_Intersection"
-msgstr "ST_Intersection"
 
 #. Tag: refpurpose
 #: reference_raster.xml:7170
@@ -7985,12 +7325,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_Intersects\"/>, <xref "
 "linkend=\"RT_ST_MapAlgebraExpr2\"/>, <xref linkend=\"RT_ST_Clip\"/>, <xref "
 "linkend=\"ST_AsText\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:7305
-#, fuzzy, no-c-format
-msgid "ST_MapAlgebra (callback function version)"
-msgstr "내장 맵 대수 콜백 함수"
 
 #. Tag: refpurpose
 #: reference_raster.xml:7306
@@ -8422,12 +7756,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"RT_ST_Union\"/>, <xref linkend=\"RT_ST_MapAlgebra_expr\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:7661
-#, fuzzy, no-c-format
-msgid "ST_MapAlgebra (expression version)"
-msgstr "ST_MapAlgebraExpr"
-
 #. Tag: refpurpose
 #: reference_raster.xml:7662
 #, no-c-format
@@ -8781,12 +8109,6 @@ msgid ", <xref linkend=\"RT_ST_Union\"/>, <xref linkend=\"RT_ST_MapAlgebra\"/>"
 msgstr ""
 ", <xref linkend=\"RT_ST_Union\"/>, <xref linkend=\"RT_ST_MapAlgebra\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:7896 reference_raster.xml:8010
-#, no-c-format
-msgid "ST_MapAlgebraExpr"
-msgstr "ST_MapAlgebraExpr"
-
 #. Tag: refpurpose
 #: reference_raster.xml:7897
 #, no-c-format
@@ -9018,12 +8340,6 @@ msgstr ""
 "linkend=\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_GeoReference\"/>, "
 "<xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Union\"/>, <xref "
 "linkend=\"ST_Union\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:8307 reference_raster.xml:8466
-#, no-c-format
-msgid "ST_MapAlgebraFct"
-msgstr "ST_MapAlgebraFct"
 
 #. Tag: refpurpose
 #: reference_raster.xml:8308
@@ -9261,12 +8577,6 @@ msgid "user defined with extra args and different bands from same raster"
 msgstr ""
 "추가 인수 및 동일한 래스터에서 가져온 다른 밴드를 받는 사용자 지정 함수"
 
-#. Tag: refname
-#: reference_raster.xml:8597
-#, no-c-format
-msgid "ST_MapAlgebraFctNgb"
-msgstr "ST_MapAlgebraFctNgb"
-
 #. Tag: refpurpose
 #: reference_raster.xml:8598
 #, no-c-format
@@ -9499,12 +8809,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"RT_ST_MapAlgebraExpr\"/>, <xref linkend=\"RT_ST_Rescale\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:8729
-#, no-c-format
-msgid "ST_Reclass"
-msgstr "ST_Reclass"
-
 #. Tag: refpurpose
 #: reference_raster.xml:8730
 #, no-c-format
@@ -9610,12 +8914,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_Band\"/>, <xref linkend=\"RT_ST_BandPixelType\"/>, "
 "<xref linkend=\"RT_ST_MakeEmptyRaster\"/>, <xref linkend=\"reclassarg\"/>, "
 "<xref linkend=\"RT_ST_Value\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:8803
-#, no-c-format
-msgid "ST_Union"
-msgstr "ST_Union"
 
 #. Tag: refpurpose
 #: reference_raster.xml:8804
@@ -9727,12 +9025,6 @@ msgstr ""
 msgid "Built-in Map Algebra Callback Functions"
 msgstr "내장 맵 대수 콜백 함수"
 
-#. Tag: refname
-#: reference_raster.xml:8891
-#, no-c-format
-msgid "ST_Distinct4ma"
-msgstr "ST_Distinct4ma"
-
 #. Tag: refpurpose
 #: reference_raster.xml:8892
 #, no-c-format
@@ -9811,12 +9103,6 @@ msgstr ""
 "<xref linkend=\"RT_ST_Max4ma\"/>, <xref linkend=\"RT_ST_Sum4ma\"/>, <xref "
 "linkend=\"RT_ST_Mean4ma\"/>, <xref linkend=\"RT_ST_Distinct4ma\"/>, <xref "
 "linkend=\"RT_ST_StdDev4ma\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:8962
-#, no-c-format
-msgid "ST_InvDistWeight4ma"
-msgstr "ST_InvDistWeight4ma"
 
 #. Tag: refpurpose
 #: reference_raster.xml:8963
@@ -9900,12 +9186,6 @@ msgstr ""
 msgid ", <xref linkend=\"RT_ST_MinDist4ma\"/>"
 msgstr ", <xref linkend=\"RT_ST_MinDist4ma\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:9026
-#, no-c-format
-msgid "ST_Max4ma"
-msgstr "ST_Max4ma"
-
 #. Tag: refpurpose
 #: reference_raster.xml:9027
 #, no-c-format
@@ -9946,12 +9226,6 @@ msgstr ""
 "linkend=\"RT_ST_Range4ma\"/>, <xref linkend=\"RT_ST_Distinct4ma\"/>, <xref "
 "linkend=\"RT_ST_StdDev4ma\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:9101
-#, no-c-format
-msgid "ST_Mean4ma"
-msgstr "ST_Mean4ma"
-
 #. Tag: refpurpose
 #: reference_raster.xml:9102
 #, no-c-format
@@ -9977,12 +9251,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Min4ma\"/>, "
 "<xref linkend=\"RT_ST_Max4ma\"/>, <xref linkend=\"RT_ST_Sum4ma\"/>, <xref "
 "linkend=\"RT_ST_Range4ma\"/>, <xref linkend=\"RT_ST_StdDev4ma\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:9182
-#, no-c-format
-msgid "ST_Min4ma"
-msgstr "ST_Min4ma"
 
 #. Tag: refpurpose
 #: reference_raster.xml:9183
@@ -10011,12 +9279,6 @@ msgstr ""
 "<xref linkend=\"RT_ST_Sum4ma\"/>, <xref linkend=\"RT_ST_Mean4ma\"/>, <xref "
 "linkend=\"RT_ST_Range4ma\"/>, <xref linkend=\"RT_ST_Distinct4ma\"/>, <xref "
 "linkend=\"RT_ST_StdDev4ma\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:9262
-#, no-c-format
-msgid "ST_MinDist4ma"
-msgstr "ST_MinDist4ma"
 
 #. Tag: refpurpose
 #: reference_raster.xml:9263
@@ -10073,12 +9335,6 @@ msgstr ""
 msgid ", <xref linkend=\"RT_ST_InvDistWeight4ma\"/>"
 msgstr ", <xref linkend=\"RT_ST_InvDistWeight4ma\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:9311
-#, no-c-format
-msgid "ST_Range4ma"
-msgstr "ST_Range4ma"
-
 #. Tag: refpurpose
 #: reference_raster.xml:9312
 #, no-c-format
@@ -10092,12 +9348,6 @@ msgstr "이웃에 있는 픽셀값들의 범위를 계산하는 래스터 공간
 #, no-c-format
 msgid "Calculate the range of pixel values in a neighborhood of pixels."
 msgstr "픽셀의 이웃에 있는 픽셀 값들의 범위를 계산합니다."
-
-#. Tag: refname
-#: reference_raster.xml:9386
-#, no-c-format
-msgid "ST_StdDev4ma"
-msgstr "ST_StdDev4ma"
 
 #. Tag: refpurpose
 #: reference_raster.xml:9387
@@ -10114,12 +9364,6 @@ msgstr ""
 msgid ""
 "Calculate the standard deviation of pixel values in a neighborhood of pixels."
 msgstr "픽셀의 이웃에 있는 픽셀 값들의 표준 편차를 계산합니다."
-
-#. Tag: refname
-#: reference_raster.xml:9457
-#, no-c-format
-msgid "ST_Sum4ma"
-msgstr "ST_Sum4ma"
 
 #. Tag: refpurpose
 #: reference_raster.xml:9458
@@ -10155,12 +9399,6 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid "Raster Processing: DEM (Elevation)"
 msgstr "래스터 공간 처리"
-
-#. Tag: refname
-#: reference_raster.xml:9537
-#, no-c-format
-msgid "ST_Aspect"
-msgstr "ST_Aspect"
 
 #. Tag: refpurpose
 #: reference_raster.xml:9538
@@ -10279,12 +9517,6 @@ msgstr ""
 "linkend=\"RT_ST_Roughness\"/>, <xref linkend=\"RT_ST_HillShade\"/>, <xref "
 "linkend=\"RT_ST_Slope\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:9623
-#, no-c-format
-msgid "ST_HillShade"
-msgstr "ST_HillShade"
-
 #. Tag: refpurpose
 #: reference_raster.xml:9624
 #, no-c-format
@@ -10395,12 +9627,6 @@ msgstr ""
 "linkend=\"RT_ST_Roughness\"/>, <xref linkend=\"RT_ST_Aspect\"/>, <xref "
 "linkend=\"RT_ST_Slope\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:9720
-#, no-c-format
-msgid "ST_Roughness"
-msgstr "ST_Roughness"
-
 #. Tag: refpurpose
 #: reference_raster.xml:9721
 #, no-c-format
@@ -10448,12 +9674,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_TRI\"/>, <xref linkend=\"RT_ST_TPI\"/>, <xref "
 "linkend=\"RT_ST_Slope\"/>, <xref linkend=\"RT_ST_HillShade\"/>, <xref "
 "linkend=\"RT_ST_Aspect\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:9763
-#, no-c-format
-msgid "ST_Slope"
-msgstr "ST_Slope"
 
 #. Tag: refpurpose
 #: reference_raster.xml:9764
@@ -10539,12 +9759,6 @@ msgstr ""
 "linkend=\"RT_ST_Roughness\"/>, <xref linkend=\"RT_ST_HillShade\"/>, <xref "
 "linkend=\"RT_ST_Aspect\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:9848
-#, no-c-format
-msgid "ST_TPI"
-msgstr "ST_TPI"
-
 #. Tag: refpurpose
 #: reference_raster.xml:9849
 #, no-c-format
@@ -10597,12 +9811,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_TRI\"/>, <xref linkend=\"RT_ST_Roughness\"/>, <xref "
 "linkend=\"RT_ST_Slope\"/>, <xref linkend=\"RT_ST_HillShade\"/>, <xref "
 "linkend=\"RT_ST_Aspect\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:9896
-#, no-c-format
-msgid "ST_TRI"
-msgstr "ST_TRI"
 
 #. Tag: refpurpose
 #: reference_raster.xml:9897
@@ -10660,12 +9868,6 @@ msgstr ""
 msgid "Raster Processing: Raster to Geometry"
 msgstr "래스터를 도형으로"
 
-#. Tag: refname
-#: reference_raster.xml:9952
-#, no-c-format
-msgid "Box3D"
-msgstr "Box3D"
-
 #. Tag: refpurpose
 #: reference_raster.xml:9953
 #, no-c-format
@@ -10709,12 +9911,6 @@ msgid ""
 msgstr ""
 "변경 사항: 2.0.0 미만 버전에서는 BOX3D 대신 BOX2D를 이용했습니다. BOX2D가 지"
 "원이 끝난 유형이기 때문에, 2.0.0 버전에서 BOX3D로 바뀌었습니다."
-
-#. Tag: refname
-#: reference_raster.xml:9992
-#, no-c-format
-msgid "ST_ConvexHull"
-msgstr "ST_ConvexHull"
 
 #. Tag: refpurpose
 #: reference_raster.xml:9993
@@ -10785,12 +9981,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"RT_ST_MinConvexHull\"/>, <xref linkend=\"ST_ConvexHull\"/"
 ">, <xref linkend=\"ST_AsText\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:10040
-#, no-c-format
-msgid "ST_DumpAsPolygons"
-msgstr "ST_DumpAsPolygons"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10041
@@ -10896,12 +10086,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Polygon\"/>, <xref "
 "linkend=\"RT_ST_ValueCount\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:10094
-#, no-c-format
-msgid "ST_Envelope"
-msgstr "ST_Envelope"
-
 #. Tag: refpurpose
 #: reference_raster.xml:10095
 #, no-c-format
@@ -10951,12 +10135,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 msgstr ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:10139
-#, no-c-format
-msgid "ST_MinConvexHull"
-msgstr "ST_MinConvexHull"
-
 #. Tag: refpurpose
 #: reference_raster.xml:10140
 #, no-c-format
@@ -10996,12 +10174,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"RT_ST_ConvexHull\"/>, <xref linkend=\"ST_ConvexHull\"/>, "
 "<xref linkend=\"ST_AsText\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:10183
-#, no-c-format
-msgid "ST_Polygon"
-msgstr "ST_Polygon"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10184
@@ -11060,12 +10232,6 @@ msgstr ""
 msgid "Raster Operators"
 msgstr "래스터 연산자"
 
-#. Tag: refname
-#: reference_raster.xml:10225
-#, no-c-format
-msgid "&amp;&amp;"
-msgstr "&amp;&amp;"
-
 #. Tag: refpurpose
 #: reference_raster.xml:10227
 #, no-c-format
@@ -11098,12 +10264,6 @@ msgid ""
 msgstr ""
 "이 피연산자(operand)는 래스터에서 이용할 수도 있는 모든 인덱스를 활용할 것입"
 "니다."
-
-#. Tag: refname
-#: reference_raster.xml:10290
-#, no-c-format
-msgid "&amp;&lt;"
-msgstr "&amp;&lt;"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10292
@@ -11139,12 +10299,6 @@ msgstr ""
 "상자와 겹치거나 그 왼쪽에 있을 경우, 또는 더 정확히 말하자면 래스터 B의 경계 "
 "상자와 겹치거나 그 오른쪽에 있지 않을 경우, <varname>TRUE</varname> 를 반환합"
 "니다."
-
-#. Tag: refname
-#: reference_raster.xml:10334
-#, no-c-format
-msgid "&amp;&gt;"
-msgstr "&amp;&gt;"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10336
@@ -11190,12 +10344,6 @@ msgid ""
 msgstr ""
 "이 피연산자(operand)는 래스터에서 이용할 수도 있는 모든 인덱스를 활용할 것입"
 "니다."
-
-#. Tag: refname
-#: reference_raster.xml:10379
-#, no-c-format
-msgid "&#61;"
-msgstr "&#61;"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10381
@@ -11246,12 +10394,6 @@ msgstr ""
 "활용하지 않을 것입니다. 대신 <xref linkend=\"RT_Raster_Same\"/> 함수를 이용하"
 "십시오. 이 연산자의 목적은 대부분 래스터 열로 그룹화(group by)하는 것입니다."
 
-#. Tag: refname
-#: reference_raster.xml:10427
-#, no-c-format
-msgid "<refname>@</refname>"
-msgstr "<refname>@</refname>"
-
 #. Tag: refpurpose
 #: reference_raster.xml:10429
 #, no-c-format
@@ -11291,12 +10433,6 @@ msgstr ""
 #, no-c-format
 msgid "Availability: 2.0.5 geometry @ raster introduced"
 msgstr "2.0.5 버전부터 geometry @ raster 를 지원합니다."
-
-#. Tag: refname
-#: reference_raster.xml:10495
-#, no-c-format
-msgid "<refname>~=</refname>"
-msgstr "<refname>~=</refname>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10497
@@ -11345,12 +10481,6 @@ msgstr ""
 msgid ", <xref linkend=\"RT_Raster_EQ\"/>"
 msgstr ", <xref linkend=\"RT_Raster_EQ\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:10547
-#, no-c-format
-msgid "<refname>~</refname>"
-msgstr "<refname>~</refname>"
-
 #. Tag: refpurpose
 #: reference_raster.xml:10549
 #, no-c-format
@@ -11377,12 +10507,6 @@ msgstr ""
 #, no-c-format
 msgid "Raster and Raster Band Spatial Relationships"
 msgstr "래스터 및 래스터 밴드의 공간 관계성"
-
-#. Tag: refname
-#: reference_raster.xml:10618
-#, no-c-format
-msgid "ST_Contains"
-msgstr "ST_Contains"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10619
@@ -11451,12 +10575,6 @@ msgstr ""
 msgid ", <xref linkend=\"RT_ST_Within\"/>"
 msgstr ", <xref linkend=\"RT_ST_Within\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:10707
-#, no-c-format
-msgid "ST_ContainsProperly"
-msgstr "ST_ContainsProperly"
-
 #. Tag: refpurpose
 #: reference_raster.xml:10708
 #, no-c-format
@@ -11510,12 +10628,6 @@ msgstr ""
 msgid ", <xref linkend=\"RT_ST_Contains\"/>"
 msgstr ", <xref linkend=\"RT_ST_Contains\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:10792
-#, no-c-format
-msgid "ST_Covers"
-msgstr "ST_Covers"
-
 #. Tag: refpurpose
 #: reference_raster.xml:10793
 #, no-c-format
@@ -11555,12 +10667,6 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_CoveredBy\"/>"
 msgstr ", <xref linkend=\"RT_ST_CoveredBy\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:10873
-#, no-c-format
-msgid "ST_CoveredBy"
-msgstr "ST_CoveredBy"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10874
@@ -11602,12 +10708,6 @@ msgstr ""
 msgid ", <xref linkend=\"RT_ST_Covers\"/>"
 msgstr ", <xref linkend=\"RT_ST_Covers\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:10954
-#, no-c-format
-msgid "ST_Disjoint"
-msgstr "ST_Disjoint"
-
 #. Tag: refpurpose
 #: reference_raster.xml:10955
 #, no-c-format
@@ -11645,12 +10745,6 @@ msgid ""
 msgstr ""
 "래스터와 도형의 공간 관계성을 확인하려면, ST_Disjoint(ST_Polygon(raster), "
 "geometry)처럼 래스터에 ST_Polygon 함수를 이용하십시오."
-
-#. Tag: refname
-#: reference_raster.xml:11037
-#, no-c-format
-msgid "ST_Intersects"
-msgstr "ST_Intersects"
 
 #. Tag: refpurpose
 #: reference_raster.xml:11038
@@ -11694,12 +10788,6 @@ msgstr ""
 msgid ", <xref linkend=\"RT_ST_Disjoint\"/>"
 msgstr ", <xref linkend=\"RT_ST_Disjoint\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:11167
-#, no-c-format
-msgid "ST_Overlaps"
-msgstr "ST_Overlaps"
-
 #. Tag: refpurpose
 #: reference_raster.xml:11168
 #, no-c-format
@@ -11735,12 +10823,6 @@ msgid ""
 msgstr ""
 "래스터와 도형의 공간 관계성을 확인하려면, ST_Overlaps(ST_Polygon(raster), "
 "geometry)처럼 래스터에 ST_Polygon 함수를 이용하십시오."
-
-#. Tag: refname
-#: reference_raster.xml:11247
-#, no-c-format
-msgid "ST_Touches"
-msgstr "ST_Touches"
 
 #. Tag: refpurpose
 #: reference_raster.xml:11248
@@ -11778,12 +10860,6 @@ msgid ""
 msgstr ""
 "래스터와 도형의 공간 관계성을 확인하려면, ST_Touches(ST_Polygon(raster), "
 "geometry)처럼 래스터에 ST_Polygon 함수를 이용하십시오."
-
-#. Tag: refname
-#: reference_raster.xml:11327
-#, no-c-format
-msgid "ST_SameAlignment"
-msgstr "ST_SameAlignment"
 
 #. Tag: refpurpose
 #: reference_raster.xml:11329
@@ -11851,12 +10927,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_NotSameAlignmentReason\"/>, <xref "
 "linkend=\"RT_ST_MakeEmptyRaster\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:11442
-#, no-c-format
-msgid "ST_NotSameAlignmentReason"
-msgstr "ST_NotSameAlignmentReason"
-
 #. Tag: refpurpose
 #: reference_raster.xml:11443
 #, no-c-format
@@ -11904,12 +10974,6 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SameAlignment\"/>"
 msgstr ", <xref linkend=\"RT_ST_SameAlignment\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:11485
-#, no-c-format
-msgid "ST_Within"
-msgstr "ST_Within"
 
 #. Tag: refpurpose
 #: reference_raster.xml:11486
@@ -11971,12 +11035,6 @@ msgstr ""
 ", <xref linkend=\"RT_ST_Contains\"/>, <xref linkend=\"RT_ST_DWithin\"/>, "
 "<xref linkend=\"RT_ST_DFullyWithin\"/>"
 
-#. Tag: refname
-#: reference_raster.xml:11574
-#, no-c-format
-msgid "ST_DWithin"
-msgstr "ST_DWithin"
-
 #. Tag: refpurpose
 #: reference_raster.xml:11575
 #, no-c-format
@@ -12029,12 +11087,6 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_DFullyWithin\"/>"
 msgstr ", <xref linkend=\"RT_ST_DFullyWithin\"/>"
-
-#. Tag: refname
-#: reference_raster.xml:11667
-#, no-c-format
-msgid "ST_DFullyWithin"
-msgstr "ST_DFullyWithin"
 
 #. Tag: refpurpose
 #: reference_raster.xml:11668
@@ -12292,6 +11344,598 @@ msgstr ""
 msgid ""
 "After making the necessary systemd changes, make sure to reload the daemon"
 msgstr ""
+
+#, no-c-format
+#~ msgid "geomval"
+#~ msgstr "geomval"
+
+#, no-c-format
+#~ msgid "addbandarg"
+#~ msgstr "addbandarg"
+
+#, no-c-format
+#~ msgid "rastbandarg"
+#~ msgstr "rastbandarg"
+
+#, no-c-format
+#~ msgid "raster"
+#~ msgstr "raster"
+
+#, no-c-format
+#~ msgid "reclassarg"
+#~ msgstr "reclassarg"
+
+#, no-c-format
+#~ msgid "summarystats"
+#~ msgstr "summarystats"
+
+#, no-c-format
+#~ msgid "unionarg"
+#~ msgstr "unionarg"
+
+#, no-c-format
+#~ msgid "AddRasterConstraints"
+#~ msgstr "AddRasterConstraints"
+
+#, no-c-format
+#~ msgid "DropRasterConstraints"
+#~ msgstr "DropRasterConstraints"
+
+#, no-c-format
+#~ msgid "AddOverviewConstraints"
+#~ msgstr "AddOverviewConstraints"
+
+#, no-c-format
+#~ msgid "DropOverviewConstraints"
+#~ msgstr "DropOverviewConstraints"
+
+#, no-c-format
+#~ msgid "PostGIS_GDAL_Version"
+#~ msgstr "PostGIS_GDAL_Version"
+
+#, no-c-format
+#~ msgid "PostGIS_Raster_Lib_Build_Date"
+#~ msgstr "PostGIS_Raster_Lib_Build_Date"
+
+#, no-c-format
+#~ msgid "PostGIS_Raster_Lib_Version"
+#~ msgstr "PostGIS_Raster_Lib_Version"
+
+#, no-c-format
+#~ msgid "ST_GDALDrivers"
+#~ msgstr "ST_GDALDrivers"
+
+#, fuzzy, no-c-format
+#~ msgid "ST_Contour"
+#~ msgstr "ST_Count"
+
+#, fuzzy, no-c-format
+#~ msgid "ST_InterpolateRaster"
+#~ msgstr "ST_MakeEmptyRaster"
+
+#, no-c-format
+#~ msgid "UpdateRasterSRID"
+#~ msgstr "UpdateRasterSRID"
+
+#, no-c-format
+#~ msgid "ST_CreateOverview"
+#~ msgstr "ST_CreateOverview"
+
+#, no-c-format
+#~ msgid "ST_AddBand"
+#~ msgstr "ST_AddBand"
+
+#, no-c-format
+#~ msgid "ST_AsRaster"
+#~ msgstr "ST_AsRaster"
+
+#, no-c-format
+#~ msgid "ST_Band"
+#~ msgstr "ST_Band"
+
+#, no-c-format
+#~ msgid "ST_MakeEmptyRaster"
+#~ msgstr "ST_MakeEmptyRaster"
+
+#, no-c-format
+#~ msgid "ST_Tile"
+#~ msgstr "ST_Tile"
+
+#, no-c-format
+#~ msgid "ST_Retile"
+#~ msgstr "ST_Retile"
+
+#, no-c-format
+#~ msgid "ST_FromGDALRaster"
+#~ msgstr "ST_FromGDALRaster"
+
+#, no-c-format
+#~ msgid "ST_GeoReference"
+#~ msgstr "ST_GeoReference"
+
+#, no-c-format
+#~ msgid "ST_Height"
+#~ msgstr "ST_Height"
+
+#, no-c-format
+#~ msgid "ST_IsEmpty"
+#~ msgstr "ST_IsEmpty"
+
+#, no-c-format
+#~ msgid "ST_MemSize"
+#~ msgstr "ST_MemSize"
+
+#, no-c-format
+#~ msgid "ST_MetaData"
+#~ msgstr "ST_MetaData"
+
+#, no-c-format
+#~ msgid "ST_NumBands"
+#~ msgstr "ST_NumBands"
+
+#, no-c-format
+#~ msgid "ST_PixelHeight"
+#~ msgstr "ST_PixelHeight"
+
+#, no-c-format
+#~ msgid "ST_PixelWidth"
+#~ msgstr "ST_PixelWidth"
+
+#, no-c-format
+#~ msgid "ST_ScaleX"
+#~ msgstr "ST_ScaleX"
+
+#, no-c-format
+#~ msgid "ST_ScaleY"
+#~ msgstr "ST_ScaleY"
+
+#, no-c-format
+#~ msgid "ST_RasterToWorldCoord"
+#~ msgstr "ST_RasterToWorldCoord"
+
+#, no-c-format
+#~ msgid "ST_RasterToWorldCoordX"
+#~ msgstr "ST_RasterToWorldCoordX"
+
+#, no-c-format
+#~ msgid "ST_RasterToWorldCoordY"
+#~ msgstr "ST_RasterToWorldCoordY"
+
+#, no-c-format
+#~ msgid "ST_Rotation"
+#~ msgstr "ST_Rotation"
+
+#, no-c-format
+#~ msgid "ST_SkewX"
+#~ msgstr "ST_SkewX"
+
+#, no-c-format
+#~ msgid "ST_SkewY"
+#~ msgstr "ST_SkewY"
+
+#, no-c-format
+#~ msgid "ST_SRID"
+#~ msgstr "ST_SRID"
+
+#, no-c-format
+#~ msgid "ST_Summary"
+#~ msgstr "ST_Summary"
+
+#, no-c-format
+#~ msgid "ST_UpperLeftX"
+#~ msgstr "ST_UpperLeftX"
+
+#, no-c-format
+#~ msgid "ST_UpperLeftY"
+#~ msgstr "ST_UpperLeftY"
+
+#, no-c-format
+#~ msgid "ST_Width"
+#~ msgstr "ST_Width"
+
+#, no-c-format
+#~ msgid "ST_WorldToRasterCoord"
+#~ msgstr "ST_WorldToRasterCoord"
+
+#, no-c-format
+#~ msgid "ST_WorldToRasterCoordX"
+#~ msgstr "ST_WorldToRasterCoordX"
+
+#, no-c-format
+#~ msgid "ST_WorldToRasterCoordY"
+#~ msgstr "ST_WorldToRasterCoordY"
+
+#, no-c-format
+#~ msgid "ST_BandMetaData"
+#~ msgstr "ST_BandMetaData"
+
+#, no-c-format
+#~ msgid "ST_BandNoDataValue"
+#~ msgstr "ST_BandNoDataValue"
+
+#, no-c-format
+#~ msgid "ST_BandIsNoData"
+#~ msgstr "ST_BandIsNoData"
+
+#, no-c-format
+#~ msgid "ST_BandPath"
+#~ msgstr "ST_BandPath"
+
+#, no-c-format
+#~ msgid "ST_BandPixelType"
+#~ msgstr "ST_BandPixelType"
+
+#, fuzzy, no-c-format
+#~ msgid "ST_MinPossibleValue"
+#~ msgstr "ST_PixelOfValue"
+
+#, no-c-format
+#~ msgid "ST_HasNoBand"
+#~ msgstr "ST_HasNoBand"
+
+#, no-c-format
+#~ msgid "ST_PixelAsPolygon"
+#~ msgstr "ST_PixelAsPolygon"
+
+#, no-c-format
+#~ msgid "ST_PixelAsPolygons"
+#~ msgstr "ST_PixelAsPolygons"
+
+#, no-c-format
+#~ msgid "ST_PixelAsPoint"
+#~ msgstr "ST_PixelAsPoint"
+
+#, no-c-format
+#~ msgid "ST_PixelAsPoints"
+#~ msgstr "ST_PixelAsPoints"
+
+#, no-c-format
+#~ msgid "ST_PixelAsCentroid"
+#~ msgstr "ST_PixelAsCentroid"
+
+#, no-c-format
+#~ msgid "ST_PixelAsCentroids"
+#~ msgstr "ST_PixelAsCentroids"
+
+#, no-c-format
+#~ msgid "ST_Value"
+#~ msgstr "ST_Value"
+
+#, no-c-format
+#~ msgid "ST_NearestValue"
+#~ msgstr "ST_NearestValue"
+
+#, fuzzy, no-c-format
+#~ msgid "ST_SetZ"
+#~ msgstr "ST_SetSkew"
+
+#, fuzzy, no-c-format
+#~ msgid "ST_SetM"
+#~ msgstr "ST_SetSkew"
+
+#, no-c-format
+#~ msgid "ST_Neighborhood"
+#~ msgstr "ST_Neighborhood"
+
+#, no-c-format
+#~ msgid "ST_SetValue"
+#~ msgstr "ST_SetValue"
+
+#, no-c-format
+#~ msgid "ST_SetValues"
+#~ msgstr "ST_SetValues"
+
+#, no-c-format
+#~ msgid "ST_DumpValues"
+#~ msgstr "ST_DumpValues"
+
+#, no-c-format
+#~ msgid "ST_PixelOfValue"
+#~ msgstr "ST_PixelOfValue"
+
+#, no-c-format
+#~ msgid "ST_SetGeoReference"
+#~ msgstr "ST_SetGeoReference"
+
+#, no-c-format
+#~ msgid "ST_SetRotation"
+#~ msgstr "ST_SetRotation"
+
+#, no-c-format
+#~ msgid "ST_SetScale"
+#~ msgstr "ST_SetScale"
+
+#, no-c-format
+#~ msgid "ST_SetSkew"
+#~ msgstr "ST_SetSkew"
+
+#, no-c-format
+#~ msgid "ST_SetSRID"
+#~ msgstr "ST_SetSRID"
+
+#, no-c-format
+#~ msgid "ST_SetUpperLeft"
+#~ msgstr "ST_SetUpperLeft"
+
+#, no-c-format
+#~ msgid "ST_Resample"
+#~ msgstr "ST_Resample"
+
+#, no-c-format
+#~ msgid "ST_Rescale"
+#~ msgstr "ST_Rescale"
+
+#, no-c-format
+#~ msgid "ST_Reskew"
+#~ msgstr "ST_Reskew"
+
+#, no-c-format
+#~ msgid "ST_SnapToGrid"
+#~ msgstr "ST_SnapToGrid"
+
+#, no-c-format
+#~ msgid "ST_Resize"
+#~ msgstr "ST_Resize"
+
+#, no-c-format
+#~ msgid "ST_Transform"
+#~ msgstr "ST_Transform"
+
+#, no-c-format
+#~ msgid "ST_SetBandNoDataValue"
+#~ msgstr "ST_SetBandNoDataValue"
+
+#, no-c-format
+#~ msgid "ST_SetBandIsNoData"
+#~ msgstr "ST_SetBandIsNoData"
+
+#, no-c-format
+#~ msgid "ST_Count"
+#~ msgstr "ST_Count"
+
+#, no-c-format
+#~ msgid "ST_CountAgg"
+#~ msgstr "ST_CountAgg"
+
+#, no-c-format
+#~ msgid "ST_Histogram"
+#~ msgstr "ST_Histogram"
+
+#, no-c-format
+#~ msgid "ST_Quantile"
+#~ msgstr "ST_Quantile"
+
+#, no-c-format
+#~ msgid "ST_SummaryStats"
+#~ msgstr "ST_SummaryStats"
+
+#, no-c-format
+#~ msgid "ST_SummaryStatsAgg"
+#~ msgstr "ST_SummaryStatsAgg"
+
+#, no-c-format
+#~ msgid "ST_ValueCount"
+#~ msgstr "ST_ValueCount"
+
+#, no-c-format
+#~ msgid "ST_AsGDALRaster"
+#~ msgstr "ST_AsGDALRaster"
+
+#, no-c-format
+#~ msgid "ST_AsJPEG"
+#~ msgstr "ST_AsJPEG"
+
+#, no-c-format
+#~ msgid "ST_AsPNG"
+#~ msgstr "ST_AsPNG"
+
+#, no-c-format
+#~ msgid "ST_AsTIFF"
+#~ msgstr "ST_AsTIFF"
+
+#, no-c-format
+#~ msgid "ST_Clip"
+#~ msgstr "ST_Clip"
+
+#, no-c-format
+#~ msgid "ST_ColorMap"
+#~ msgstr "ST_ColorMap"
+
+#, no-c-format
+#~ msgid "ST_Intersection"
+#~ msgstr "ST_Intersection"
+
+#, fuzzy, no-c-format
+#~ msgid "ST_MapAlgebra (callback function version)"
+#~ msgstr "내장 맵 대수 콜백 함수"
+
+#, fuzzy, no-c-format
+#~ msgid "ST_MapAlgebra (expression version)"
+#~ msgstr "ST_MapAlgebraExpr"
+
+#, no-c-format
+#~ msgid "ST_MapAlgebraExpr"
+#~ msgstr "ST_MapAlgebraExpr"
+
+#, no-c-format
+#~ msgid "ST_MapAlgebraFct"
+#~ msgstr "ST_MapAlgebraFct"
+
+#, no-c-format
+#~ msgid "ST_MapAlgebraFctNgb"
+#~ msgstr "ST_MapAlgebraFctNgb"
+
+#, no-c-format
+#~ msgid "ST_Reclass"
+#~ msgstr "ST_Reclass"
+
+#, no-c-format
+#~ msgid "ST_Union"
+#~ msgstr "ST_Union"
+
+#, no-c-format
+#~ msgid "ST_Distinct4ma"
+#~ msgstr "ST_Distinct4ma"
+
+#, no-c-format
+#~ msgid "ST_InvDistWeight4ma"
+#~ msgstr "ST_InvDistWeight4ma"
+
+#, no-c-format
+#~ msgid "ST_Max4ma"
+#~ msgstr "ST_Max4ma"
+
+#, no-c-format
+#~ msgid "ST_Mean4ma"
+#~ msgstr "ST_Mean4ma"
+
+#, no-c-format
+#~ msgid "ST_Min4ma"
+#~ msgstr "ST_Min4ma"
+
+#, no-c-format
+#~ msgid "ST_MinDist4ma"
+#~ msgstr "ST_MinDist4ma"
+
+#, no-c-format
+#~ msgid "ST_Range4ma"
+#~ msgstr "ST_Range4ma"
+
+#, no-c-format
+#~ msgid "ST_StdDev4ma"
+#~ msgstr "ST_StdDev4ma"
+
+#, no-c-format
+#~ msgid "ST_Sum4ma"
+#~ msgstr "ST_Sum4ma"
+
+#, no-c-format
+#~ msgid "ST_Aspect"
+#~ msgstr "ST_Aspect"
+
+#, no-c-format
+#~ msgid "ST_HillShade"
+#~ msgstr "ST_HillShade"
+
+#, no-c-format
+#~ msgid "ST_Roughness"
+#~ msgstr "ST_Roughness"
+
+#, no-c-format
+#~ msgid "ST_Slope"
+#~ msgstr "ST_Slope"
+
+#, no-c-format
+#~ msgid "ST_TPI"
+#~ msgstr "ST_TPI"
+
+#, no-c-format
+#~ msgid "ST_TRI"
+#~ msgstr "ST_TRI"
+
+#, no-c-format
+#~ msgid "Box3D"
+#~ msgstr "Box3D"
+
+#, no-c-format
+#~ msgid "ST_ConvexHull"
+#~ msgstr "ST_ConvexHull"
+
+#, no-c-format
+#~ msgid "ST_DumpAsPolygons"
+#~ msgstr "ST_DumpAsPolygons"
+
+#, no-c-format
+#~ msgid "ST_Envelope"
+#~ msgstr "ST_Envelope"
+
+#, no-c-format
+#~ msgid "ST_MinConvexHull"
+#~ msgstr "ST_MinConvexHull"
+
+#, no-c-format
+#~ msgid "ST_Polygon"
+#~ msgstr "ST_Polygon"
+
+#, no-c-format
+#~ msgid "&amp;&amp;"
+#~ msgstr "&amp;&amp;"
+
+#, no-c-format
+#~ msgid "&amp;&lt;"
+#~ msgstr "&amp;&lt;"
+
+#, no-c-format
+#~ msgid "&amp;&gt;"
+#~ msgstr "&amp;&gt;"
+
+#, no-c-format
+#~ msgid "&#61;"
+#~ msgstr "&#61;"
+
+#, no-c-format
+#~ msgid "<refname>@</refname>"
+#~ msgstr "<refname>@</refname>"
+
+#, no-c-format
+#~ msgid "<refname>~=</refname>"
+#~ msgstr "<refname>~=</refname>"
+
+#, no-c-format
+#~ msgid "<refname>~</refname>"
+#~ msgstr "<refname>~</refname>"
+
+#, no-c-format
+#~ msgid "ST_Contains"
+#~ msgstr "ST_Contains"
+
+#, no-c-format
+#~ msgid "ST_ContainsProperly"
+#~ msgstr "ST_ContainsProperly"
+
+#, no-c-format
+#~ msgid "ST_Covers"
+#~ msgstr "ST_Covers"
+
+#, no-c-format
+#~ msgid "ST_CoveredBy"
+#~ msgstr "ST_CoveredBy"
+
+#, no-c-format
+#~ msgid "ST_Disjoint"
+#~ msgstr "ST_Disjoint"
+
+#, no-c-format
+#~ msgid "ST_Intersects"
+#~ msgstr "ST_Intersects"
+
+#, no-c-format
+#~ msgid "ST_Overlaps"
+#~ msgstr "ST_Overlaps"
+
+#, no-c-format
+#~ msgid "ST_Touches"
+#~ msgstr "ST_Touches"
+
+#, no-c-format
+#~ msgid "ST_SameAlignment"
+#~ msgstr "ST_SameAlignment"
+
+#, no-c-format
+#~ msgid "ST_NotSameAlignmentReason"
+#~ msgstr "ST_NotSameAlignmentReason"
+
+#, no-c-format
+#~ msgid "ST_Within"
+#~ msgstr "ST_Within"
+
+#, no-c-format
+#~ msgid "ST_DWithin"
+#~ msgstr "ST_DWithin"
+
+#, no-c-format
+#~ msgid "ST_DFullyWithin"
+#~ msgstr "ST_DFullyWithin"
 
 #, no-c-format
 #~ msgid ""

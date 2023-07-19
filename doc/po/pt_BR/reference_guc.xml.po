@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2016-11-30 16:59+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -35,12 +35,6 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid "Grand Unified Custom Variables (GUCs)"
 msgstr "Grandes Variáveis Unificadas Personalizadas do PostGIS (GUCs)"
-
-#. Tag: refname
-#: reference_guc.xml:13
-#, no-c-format
-msgid "postgis.backend"
-msgstr "postgis.backend"
 
 #. Tag: refpurpose
 #: reference_guc.xml:14
@@ -104,12 +98,6 @@ msgstr "Configura backend para novas conexões para o banco de dados"
 #, no-c-format
 msgid "See Also"
 msgstr "Veja também."
-
-#. Tag: refname
-#: reference_guc.xml:39
-#, no-c-format
-msgid "postgis.gdal_datapath"
-msgstr "postgis.gdal_datapath"
 
 #. Tag: refpurpose
 #: reference_guc.xml:40
@@ -190,12 +178,6 @@ msgstr "Configurando no Windows para um banco de dados específico "
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Transform\"/>"
 msgstr ", <xref linkend=\"RT_ST_Transform\"/>"
-
-#. Tag: refname
-#: reference_guc.xml:89
-#, no-c-format
-msgid "postgis.gdal_enabled_drivers"
-msgstr "postgis.gdal_enabled_drivers"
 
 #. Tag: refpurpose
 #: reference_guc.xml:90
@@ -371,12 +353,6 @@ msgstr ""
 "<xref linkend=\"RT_ST_AsPNG\"/>, <xref linkend=\"RT_ST_AsJPEG\"/>, <xref "
 "linkend=\"postgis_enable_outdb_rasters\"/>"
 
-#. Tag: refname
-#: reference_guc.xml:181
-#, no-c-format
-msgid "postgis.enable_outdb_rasters"
-msgstr "postgis.enable_outdb_rasters"
-
 #. Tag: refpurpose
 #: reference_guc.xml:182
 #, no-c-format
@@ -456,12 +432,6 @@ msgid ""
 "for changes to take effect."
 msgstr ""
 
-#. Tag: refname
-#: reference_guc.xml:239
-#, fuzzy, no-c-format
-msgid "postgis.gdal_config_options"
-msgstr "postgis.gdal_datapath"
-
 #. Tag: refpurpose
 #: reference_guc.xml:240
 #, fuzzy, no-c-format
@@ -503,6 +473,26 @@ msgid ""
 "<emphasis>current transaction</emphasis> using the <varname>LOCAL</varname> "
 "keyword:"
 msgstr ""
+
+#, no-c-format
+#~ msgid "postgis.backend"
+#~ msgstr "postgis.backend"
+
+#, no-c-format
+#~ msgid "postgis.gdal_datapath"
+#~ msgstr "postgis.gdal_datapath"
+
+#, no-c-format
+#~ msgid "postgis.gdal_enabled_drivers"
+#~ msgstr "postgis.gdal_enabled_drivers"
+
+#, no-c-format
+#~ msgid "postgis.enable_outdb_rasters"
+#~ msgstr "postgis.enable_outdb_rasters"
+
+#, fuzzy, no-c-format
+#~ msgid "postgis.gdal_config_options"
+#~ msgstr "postgis.gdal_datapath"
 
 #, no-c-format
 #~ msgid "set postgis.backend = sfcgal;"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 12:17+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: nramire1 nramire1\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
@@ -24,12 +24,6 @@ msgstr ""
 #, no-c-format
 msgid "Geometry Accessors"
 msgstr "Métodos de Acceso a Geometrías"
-
-#. Tag: refname
-#: reference_accessor.xml:8
-#, no-c-format
-msgid "GeometryType"
-msgstr "GeometryType"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:10
@@ -232,12 +226,6 @@ msgstr "Ejemplos"
 msgid "See Also"
 msgstr "Ver también"
 
-#. Tag: refname
-#: reference_accessor.xml:64
-#, no-c-format
-msgid "ST_Boundary"
-msgstr "ST_Boundary"
-
 #. Tag: refpurpose
 #: reference_accessor.xml:66
 #, fuzzy, no-c-format
@@ -334,12 +322,6 @@ msgid ""
 ", <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_MakePolygon\"/>"
 msgstr ""
 ", <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_MakePolygon\"/>"
-
-#. Tag: refname
-#: reference_accessor.xml:147
-#, no-c-format
-msgid "ST_BoundingDiagonal"
-msgstr "ST_BoundingDiagonal"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:149
@@ -440,12 +422,6 @@ msgstr ""
 "linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, "
 "<xref linkend=\"geometry_overlaps_nd\"/>"
 
-#. Tag: refname
-#: reference_accessor.xml:218
-#, no-c-format
-msgid "ST_CoordDim"
-msgstr "ST_CoordDim"
-
 #. Tag: refpurpose
 #: reference_accessor.xml:220
 #, fuzzy, no-c-format
@@ -479,12 +455,6 @@ msgstr "Es el alias de <xref linkend=\"ST_NDims\"/> conforme a MM"
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.3"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.3"
-
-#. Tag: refname
-#: reference_accessor.xml:264
-#, no-c-format
-msgid "ST_Dimension"
-msgstr "ST_Dimension"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:266
@@ -545,12 +515,6 @@ msgid ""
 msgstr ""
 "Anterior a la versión 2.0.0, esta función lanzaba una excepción si se "
 "enviaba una geometría vacía."
-
-#. Tag: refname
-#: reference_accessor.xml:311
-#, no-c-format
-msgid "ST_Dump"
-msgstr ""
 
 #. Tag: refpurpose
 #: reference_accessor.xml:312
@@ -639,12 +603,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 "linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
-
-#. Tag: refname
-#: reference_accessor.xml:372
-#, fuzzy, no-c-format
-msgid "ST_DumpPoints"
-msgstr "ST_NumPoints"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:373
@@ -740,12 +698,6 @@ msgstr ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 "linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 
-#. Tag: refname
-#: reference_accessor.xml:458
-#, fuzzy, no-c-format
-msgid "ST_DumpSegments"
-msgstr "ST_NumPoints"
-
 #. Tag: refpurpose
 #: reference_accessor.xml:459
 #, fuzzy, no-c-format
@@ -820,12 +772,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 "linkend=\"ST_NumInteriorRing\"/>,"
-
-#. Tag: refname
-#: reference_accessor.xml:524
-#, fuzzy, no-c-format
-msgid "ST_DumpRings"
-msgstr "ST_NRings"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:526
@@ -902,12 +848,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 "linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
-
-#. Tag: refname
-#: reference_accessor.xml:577
-#, no-c-format
-msgid "ST_EndPoint"
-msgstr "ST_EndPoint"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:579
@@ -996,12 +936,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_StartPoint\"/>"
 msgstr ", <xref linkend=\"ST_StartPoint\"/>"
 
-#. Tag: refname
-#: reference_accessor.xml:639
-#, no-c-format
-msgid "ST_Envelope"
-msgstr "ST_Envelope"
-
 #. Tag: refpurpose
 #: reference_accessor.xml:641
 #, fuzzy, no-c-format
@@ -1088,12 +1022,6 @@ msgstr ""
 msgid ", <xref linkend=\"Box3D\"/>, <xref linkend=\"ST_OrientedEnvelope\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_accessor.xml:699
-#, no-c-format
-msgid "ST_ExteriorRing"
-msgstr "ST_ExteriorRing"
-
 #. Tag: refpurpose
 #: reference_accessor.xml:701
 #, fuzzy, no-c-format
@@ -1151,12 +1079,6 @@ msgid ""
 ", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_NumInteriorRings\"/>"
 msgstr ""
 ", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_NumInteriorRings\"/>"
-
-#. Tag: refname
-#: reference_accessor.xml:749
-#, no-c-format
-msgid "ST_GeometryN"
-msgstr "ST_GeometryN"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:751
@@ -1231,12 +1153,6 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 9.1.5"
 msgid ", <xref linkend=\"ST_NumGeometries\"/>"
 msgstr ", <xref linkend=\"ST_NumGeometries\"/>"
 
-#. Tag: refname
-#: reference_accessor.xml:813
-#, no-c-format
-msgid "ST_GeometryType"
-msgstr "ST_GeometryType"
-
 #. Tag: refpurpose
 #: reference_accessor.xml:814
 #, fuzzy, no-c-format
@@ -1281,12 +1197,6 @@ msgstr "Mejora: 2.0.0 se introdujo soporte de superficies poliédricas."
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.4"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.4"
 
-#. Tag: refname
-#: reference_accessor.xml:857
-#, no-c-format
-msgid "ST_HasArc"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_accessor.xml:859
 #, no-c-format
@@ -1323,12 +1233,6 @@ msgstr "Disponibilidad: 1.2.2"
 #, fuzzy, no-c-format
 msgid ", <xref linkend=\"ST_LineToCurve\"/>"
 msgstr ", <xref linkend=\"ST_PointN\"/>"
-
-#. Tag: refname
-#: reference_accessor.xml:898
-#, no-c-format
-msgid "ST_InteriorRingN"
-msgstr "ST_InteriorRingN"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:900
@@ -1376,12 +1280,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_M\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/"
 ">, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
-
-#. Tag: refname
-#: reference_accessor.xml:957
-#, no-c-format
-msgid "ST_IsClosed"
-msgstr "ST_IsClosed"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:959
@@ -1446,12 +1344,6 @@ msgstr "Ejemplos con lineas y puntos"
 msgid "Polyhedral Surface Examples"
 msgstr "Ejemplos con superficies Poliédricas"
 
-#. Tag: refname
-#: reference_accessor.xml:1017
-#, no-c-format
-msgid "ST_IsCollection"
-msgstr "ST_IsCollection"
-
 #. Tag: refpurpose
 #: reference_accessor.xml:1018
 #, fuzzy, no-c-format
@@ -1508,12 +1400,6 @@ msgstr ""
 "<varname>TRUE</varname> en colecciones que estén vacías o que contengan un "
 "único elemento."
 
-#. Tag: refname
-#: reference_accessor.xml:1070
-#, no-c-format
-msgid "ST_IsEmpty"
-msgstr "ST_IsEmpty"
-
 #. Tag: refpurpose
 #: reference_accessor.xml:1072
 #, no-c-format
@@ -1568,12 +1454,6 @@ msgstr ""
 "Cambiado: 2.0.0 En las versiones anteriores de PostGIS "
 "ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') estaba permitido. Esto no esta "
 "permitido ahora en PostGIS 2.0.0 para ajustarse mejor a las normas SQL/MM. "
-
-#. Tag: refname
-#: reference_accessor.xml:1113
-#, no-c-format
-msgid "ST_IsPolygonCCW"
-msgstr "ST_IsPolygonCCW"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1116
@@ -1654,12 +1534,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_ForcePolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 
-#. Tag: refname
-#: reference_accessor.xml:1183
-#, no-c-format
-msgid "ST_IsPolygonCW"
-msgstr "ST_IsPolygonCW"
-
 #. Tag: refpurpose
 #: reference_accessor.xml:1186
 #, fuzzy, no-c-format
@@ -1693,12 +1567,6 @@ msgstr ""
 "entrada utilizan una orientación horaria para su aro exterior y una "
 "dirección contraria a las manecillas del reloj para todos los anillos "
 "interiores."
-
-#. Tag: refname
-#: reference_accessor.xml:1252
-#, no-c-format
-msgid "ST_IsRing"
-msgstr "ST_IsRing"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1254
@@ -1759,12 +1627,6 @@ msgstr ""
 ", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_StartPoint\"/>, <xref "
 "linkend=\"ST_EndPoint\"/>"
 
-#. Tag: refname
-#: reference_accessor.xml:1303
-#, no-c-format
-msgid "ST_IsSimple"
-msgstr "ST_IsSimple"
-
 #. Tag: refpurpose
 #: reference_accessor.xml:1305
 #, fuzzy, no-c-format
@@ -1813,12 +1675,6 @@ msgstr ""
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.8"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.8"
-
-#. Tag: refname
-#: reference_accessor.xml:1351
-#, no-c-format
-msgid "ST_M"
-msgstr "ST_M"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1353
@@ -1871,12 +1727,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/"
 ">"
-
-#. Tag: refname
-#: reference_accessor.xml:1397
-#, no-c-format
-msgid "ST_MemSize"
-msgstr ""
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1399
@@ -1941,12 +1791,6 @@ msgstr ""
 msgid "Changed: 2.2.0 name changed to ST_MemSize to follow naming convention."
 msgstr ""
 
-#. Tag: refname
-#: reference_accessor.xml:1441
-#, no-c-format
-msgid "ST_NDims"
-msgstr "ST_NDims"
-
 #. Tag: refpurpose
 #: reference_accessor.xml:1442
 #, fuzzy, no-c-format
@@ -1982,12 +1826,6 @@ msgid ", <xref linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
 msgstr ""
 ", <xref linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
 
-#. Tag: refname
-#: reference_accessor.xml:1476
-#, no-c-format
-msgid "ST_NPoints"
-msgstr "ST_NPoints"
-
 #. Tag: refpurpose
 #: reference_accessor.xml:1477
 #, fuzzy, no-c-format
@@ -2011,12 +1849,6 @@ msgid "Return the number of points in a geometry. Works for all geometries."
 msgstr ""
 "Devuelve el numero de puntos en la geometría. Funciona con todas las "
 "geometrías."
-
-#. Tag: refname
-#: reference_accessor.xml:1515
-#, no-c-format
-msgid "ST_NRings"
-msgstr "ST_NRings"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1516
@@ -2044,12 +1876,6 @@ msgstr ""
 "Si la geometria es un polígono o un multi-polígono devuelve el numero de "
 "anillos. Al contrario que NumInteriorRings, cuenta el anille exterior "
 "tambien."
-
-#. Tag: refname
-#: reference_accessor.xml:1554
-#, no-c-format
-msgid "ST_NumGeometries"
-msgstr "ST_NumGeometries"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1555
@@ -2105,12 +1931,6 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 9.1.4"
 msgid ", <xref linkend=\"ST_Multi\"/>"
 msgstr ", <xref linkend=\"ST_Multi\"/>"
 
-#. Tag: refname
-#: reference_accessor.xml:1597
-#, no-c-format
-msgid "ST_NumInteriorRings"
-msgstr "ST_NumInteriorRings"
-
 #. Tag: refpurpose
 #: reference_accessor.xml:1598
 #, fuzzy, no-c-format
@@ -2159,12 +1979,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_InteriorRingN\"/>"
 msgstr ", <xref linkend=\"ST_PointN\"/>"
 
-#. Tag: refname
-#: reference_accessor.xml:1636
-#, no-c-format
-msgid "ST_NumInteriorRing"
-msgstr "ST_NumInteriorRing"
-
 #. Tag: refpurpose
 #: reference_accessor.xml:1637
 #, fuzzy, no-c-format
@@ -2184,12 +1998,6 @@ msgid ""
 msgstr ""
 "<funcdef>integer <function>ST_NumInteriorRing</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
-
-#. Tag: refname
-#: reference_accessor.xml:1658
-#, no-c-format
-msgid "ST_NumPatches"
-msgstr "ST_NumPatches"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1659
@@ -2236,12 +2044,6 @@ msgstr "Disponibilidad: 2.0.0"
 msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5"
 msgstr ""
 
-#. Tag: refname
-#: reference_accessor.xml:1698
-#, no-c-format
-msgid "ST_NumPoints"
-msgstr "ST_NumPoints"
-
 #. Tag: refpurpose
 #: reference_accessor.xml:1699
 #, fuzzy, no-c-format
@@ -2281,12 +2083,6 @@ msgstr ""
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.2.4"
 msgstr "&sqlmm_compliant; SQL-MM 3: 7.2.4"
-
-#. Tag: refname
-#: reference_accessor.xml:1738
-#, no-c-format
-msgid "ST_PatchN"
-msgstr "ST_PatchN"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1740
@@ -2345,12 +2141,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 "linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
-
-#. Tag: refname
-#: reference_accessor.xml:1794
-#, no-c-format
-msgid "ST_PointN"
-msgstr "ST_PointN"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1796
@@ -2436,12 +2226,6 @@ msgid "Changed: 2.3.0 : negative indexing available (-1 is last point)"
 msgstr ""
 "Cambiado: 2.3.0: indexación negativa disponible (-1 es el último punto)"
 
-#. Tag: refname
-#: reference_accessor.xml:1857
-#, no-c-format
-msgid "ST_Points"
-msgstr "ST_Points"
-
 #. Tag: refpurpose
 #: reference_accessor.xml:1858
 #, fuzzy, no-c-format
@@ -2494,12 +2278,6 @@ msgstr "Disponibilidad: 2.3.0"
 #, fuzzy, no-c-format
 msgid ", <xref linkend=\"ST_DumpPoints\"/>"
 msgstr ", <xref linkend=\"ST_PointN\"/>"
-
-#. Tag: refname
-#: reference_accessor.xml:1915
-#, no-c-format
-msgid "ST_StartPoint"
-msgstr "ST_StartPoint"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1917
@@ -2594,12 +2372,6 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_PointN\"/>"
 msgstr ", <xref linkend=\"ST_PointN\"/>"
-
-#. Tag: refname
-#: reference_accessor.xml:1978
-#, no-c-format
-msgid "ST_Summary"
-msgstr "ST_Summary"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1980
@@ -2702,12 +2474,6 @@ msgstr ""
 ", <xref linkend=\"ST_IsValid\"/>, <xref linkend=\"ST_IsValidReason\"/>, "
 "<xref linkend=\"ST_IsValidDetail\"/>"
 
-#. Tag: refname
-#: reference_accessor.xml:2056
-#, no-c-format
-msgid "ST_X"
-msgstr "ST_X"
-
 #. Tag: refpurpose
 #: reference_accessor.xml:2058
 #, no-c-format
@@ -2759,12 +2525,6 @@ msgstr ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_M\"/>, <xref "
 "linkend=\"ST_XMax\"/>, <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_Y\"/"
 ">, <xref linkend=\"ST_Z\"/>"
-
-#. Tag: refname
-#: reference_accessor.xml:2100
-#, no-c-format
-msgid "ST_Y"
-msgstr "ST_Y"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:2102
@@ -2818,12 +2578,6 @@ msgstr ""
 "linkend=\"ST_X\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/"
 ">, <xref linkend=\"ST_Z\"/>"
 
-#. Tag: refname
-#: reference_accessor.xml:2145
-#, no-c-format
-msgid "ST_Z"
-msgstr "ST_Z"
-
 #. Tag: refpurpose
 #: reference_accessor.xml:2147
 #, no-c-format
@@ -2868,12 +2622,6 @@ msgstr ""
 ", <xref linkend=\"ST_M\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/"
 ">, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 
-#. Tag: refname
-#: reference_accessor.xml:2189
-#, no-c-format
-msgid "ST_Zmflag"
-msgstr "ST_Zmflag"
-
 #. Tag: refpurpose
 #: reference_accessor.xml:2191
 #, fuzzy, no-c-format
@@ -2915,6 +2663,162 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
+
+#, no-c-format
+#~ msgid "GeometryType"
+#~ msgstr "GeometryType"
+
+#, no-c-format
+#~ msgid "ST_Boundary"
+#~ msgstr "ST_Boundary"
+
+#, no-c-format
+#~ msgid "ST_BoundingDiagonal"
+#~ msgstr "ST_BoundingDiagonal"
+
+#, no-c-format
+#~ msgid "ST_CoordDim"
+#~ msgstr "ST_CoordDim"
+
+#, no-c-format
+#~ msgid "ST_Dimension"
+#~ msgstr "ST_Dimension"
+
+#, fuzzy, no-c-format
+#~ msgid "ST_DumpPoints"
+#~ msgstr "ST_NumPoints"
+
+#, fuzzy, no-c-format
+#~ msgid "ST_DumpSegments"
+#~ msgstr "ST_NumPoints"
+
+#, fuzzy, no-c-format
+#~ msgid "ST_DumpRings"
+#~ msgstr "ST_NRings"
+
+#, no-c-format
+#~ msgid "ST_EndPoint"
+#~ msgstr "ST_EndPoint"
+
+#, no-c-format
+#~ msgid "ST_Envelope"
+#~ msgstr "ST_Envelope"
+
+#, no-c-format
+#~ msgid "ST_ExteriorRing"
+#~ msgstr "ST_ExteriorRing"
+
+#, no-c-format
+#~ msgid "ST_GeometryN"
+#~ msgstr "ST_GeometryN"
+
+#, no-c-format
+#~ msgid "ST_GeometryType"
+#~ msgstr "ST_GeometryType"
+
+#, no-c-format
+#~ msgid "ST_InteriorRingN"
+#~ msgstr "ST_InteriorRingN"
+
+#, no-c-format
+#~ msgid "ST_IsClosed"
+#~ msgstr "ST_IsClosed"
+
+#, no-c-format
+#~ msgid "ST_IsCollection"
+#~ msgstr "ST_IsCollection"
+
+#, no-c-format
+#~ msgid "ST_IsEmpty"
+#~ msgstr "ST_IsEmpty"
+
+#, no-c-format
+#~ msgid "ST_IsPolygonCCW"
+#~ msgstr "ST_IsPolygonCCW"
+
+#, no-c-format
+#~ msgid "ST_IsPolygonCW"
+#~ msgstr "ST_IsPolygonCW"
+
+#, no-c-format
+#~ msgid "ST_IsRing"
+#~ msgstr "ST_IsRing"
+
+#, no-c-format
+#~ msgid "ST_IsSimple"
+#~ msgstr "ST_IsSimple"
+
+#, no-c-format
+#~ msgid "ST_M"
+#~ msgstr "ST_M"
+
+#, no-c-format
+#~ msgid "ST_NDims"
+#~ msgstr "ST_NDims"
+
+#, no-c-format
+#~ msgid "ST_NPoints"
+#~ msgstr "ST_NPoints"
+
+#, no-c-format
+#~ msgid "ST_NRings"
+#~ msgstr "ST_NRings"
+
+#, no-c-format
+#~ msgid "ST_NumGeometries"
+#~ msgstr "ST_NumGeometries"
+
+#, no-c-format
+#~ msgid "ST_NumInteriorRings"
+#~ msgstr "ST_NumInteriorRings"
+
+#, no-c-format
+#~ msgid "ST_NumInteriorRing"
+#~ msgstr "ST_NumInteriorRing"
+
+#, no-c-format
+#~ msgid "ST_NumPatches"
+#~ msgstr "ST_NumPatches"
+
+#, no-c-format
+#~ msgid "ST_NumPoints"
+#~ msgstr "ST_NumPoints"
+
+#, no-c-format
+#~ msgid "ST_PatchN"
+#~ msgstr "ST_PatchN"
+
+#, no-c-format
+#~ msgid "ST_PointN"
+#~ msgstr "ST_PointN"
+
+#, no-c-format
+#~ msgid "ST_Points"
+#~ msgstr "ST_Points"
+
+#, no-c-format
+#~ msgid "ST_StartPoint"
+#~ msgstr "ST_StartPoint"
+
+#, no-c-format
+#~ msgid "ST_Summary"
+#~ msgstr "ST_Summary"
+
+#, no-c-format
+#~ msgid "ST_X"
+#~ msgstr "ST_X"
+
+#, no-c-format
+#~ msgid "ST_Y"
+#~ msgstr "ST_Y"
+
+#, no-c-format
+#~ msgid "ST_Z"
+#~ msgstr "ST_Z"
+
+#, no-c-format
+#~ msgid "ST_Zmflag"
+#~ msgstr "ST_Zmflag"
 
 #, no-c-format
 #~ msgid ""

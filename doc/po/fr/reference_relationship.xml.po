@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-05-25 11:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -35,12 +35,6 @@ msgstr "Relations spatiales"
 #, no-c-format
 msgid "Topological Relationships"
 msgstr "Relations topologiques"
-
-#. Tag: refname
-#: reference_relationship.xml:15
-#, no-c-format
-msgid "ST_3DIntersects"
-msgstr "ST_3DIntersects"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:17
@@ -167,12 +161,6 @@ msgstr "Exemples TIN"
 #, no-c-format
 msgid "See Also"
 msgstr "Voir aussi"
-
-#. Tag: refname
-#: reference_relationship.xml:69
-#, no-c-format
-msgid "ST_Contains"
-msgstr "ST_Contains"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:71
@@ -449,12 +437,6 @@ msgstr ""
 "<xref linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Equals\"/>, <xref "
 "linkend=\"ST_Within\"/>"
 
-#. Tag: refname
-#: reference_relationship.xml:265
-#, no-c-format
-msgid "ST_ContainsProperly"
-msgstr "ST_ContainsProperly"
-
 #. Tag: refpurpose
 #: reference_relationship.xml:267
 #, no-c-format
@@ -569,12 +551,6 @@ msgstr ""
 "linkend=\"ST_Equals\"/>, <xref linkend=\"ST_Relate\"/>, <xref "
 "linkend=\"ST_Within\"/>"
 
-#. Tag: refname
-#: reference_relationship.xml:336
-#, no-c-format
-msgid "ST_CoveredBy"
-msgstr "ST_CoveredBy"
-
 #. Tag: refpurpose
 #: reference_relationship.xml:338
 #, no-c-format
@@ -655,12 +631,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_Covers\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
 "linkend=\"ST_Within\"/>"
-
-#. Tag: refname
-#: reference_relationship.xml:416
-#, no-c-format
-msgid "ST_Covers"
-msgstr "ST_Covers"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:418
@@ -766,12 +736,6 @@ msgstr "Exemple géographique"
 #, no-c-format
 msgid ", <xref linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Within\"/>"
 msgstr ", <xref linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Within\"/>"
-
-#. Tag: refname
-#: reference_relationship.xml:503
-#, no-c-format
-msgid "ST_Crosses"
-msgstr "ST_Crosses"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:505
@@ -937,12 +901,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_Overlaps\"/>"
 msgstr ", <xref linkend=\"ST_Overlaps\"/>"
 
-#. Tag: refname
-#: reference_relationship.xml:661
-#, no-c-format
-msgid "ST_Disjoint"
-msgstr "ST_Disjoint"
-
 #. Tag: refpurpose
 #: reference_relationship.xml:663
 #, no-c-format
@@ -1010,12 +968,6 @@ msgstr "&sfs_compliant; s2.1.1.2 //s2.1.13.3 - a.Relate(b, 'FF*FF****')"
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.26"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.26"
-
-#. Tag: refname
-#: reference_relationship.xml:727
-#, no-c-format
-msgid "ST_Equals"
-msgstr "ST_Equals"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:729
@@ -1094,12 +1046,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_OrderingEquals\"/>, <xref linkend=\"ST_Reverse\"/>, "
 "<xref linkend=\"ST_Within\"/>"
-
-#. Tag: refname
-#: reference_relationship.xml:786
-#, no-c-format
-msgid "ST_Intersects"
-msgstr "ST_Intersects"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:788
@@ -1253,12 +1199,6 @@ msgstr "Exemples géographiques"
 msgid ", <xref linkend=\"ST_3DIntersects\"/>, <xref linkend=\"ST_Disjoint\"/>"
 msgstr ", <xref linkend=\"ST_3DIntersects\"/>, <xref linkend=\"ST_Disjoint\"/>"
 
-#. Tag: refname
-#: reference_relationship.xml:881
-#, no-c-format
-msgid "ST_LineCrossingDirection"
-msgstr "ST_LineCrossingDirection"
-
 #. Tag: refpurpose
 #: reference_relationship.xml:883
 #, no-c-format
@@ -1394,12 +1334,6 @@ msgstr ""
 "<emphasis role=\"bold\">Exemple:</emphasis> Trouve toutes les rues qui se "
 "croisent"
 
-#. Tag: refname
-#: reference_relationship.xml:988
-#, no-c-format
-msgid "ST_OrderingEquals"
-msgstr "ST_OrderingEquals"
-
 #. Tag: refpurpose
 #: reference_relationship.xml:990
 #, no-c-format
@@ -1457,12 +1391,6 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.43"
 #, no-c-format
 msgid ", <xref linkend=\"ST_Equals\"/>, <xref linkend=\"ST_Reverse\"/>"
 msgstr ", <xref linkend=\"ST_Equals\"/>, <xref linkend=\"ST_Reverse\"/>"
-
-#. Tag: refname
-#: reference_relationship.xml:1031
-#, no-c-format
-msgid "ST_Overlaps"
-msgstr "ST_Overlaps"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:1033
@@ -1584,12 +1512,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_Crosses\"/>, <xref linkend=\"ST_Dimension\"/>, <xref "
 "linkend=\"ST_Intersects\"/>"
-
-#. Tag: refname
-#: reference_relationship.xml:1157
-#, no-c-format
-msgid "ST_Relate"
-msgstr "ST_Relate"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:1159
@@ -1903,12 +1825,6 @@ msgstr ""
 "linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Overlaps\"/>, <xref "
 "linkend=\"ST_Touches\"/>, <xref linkend=\"ST_Within\"/>"
 
-#. Tag: refname
-#: reference_relationship.xml:1325
-#, no-c-format
-msgid "ST_RelateMatch"
-msgstr "ST_RelateMatch"
-
 #. Tag: refpurpose
 #: reference_relationship.xml:1327
 #, no-c-format
@@ -1963,12 +1879,6 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_Relate\"/>"
 msgstr ", <xref linkend=\"ST_Relate\"/>"
-
-#. Tag: refname
-#: reference_relationship.xml:1377
-#, no-c-format
-msgid "ST_Touches"
-msgstr "ST_Touches"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:1379
@@ -2069,12 +1979,6 @@ msgid ""
 msgstr ""
 "Le prédicat <function>ST_Touches</function> renvoie <varname>TRUE</varname> "
 "dans les exemples suivants."
-
-#. Tag: refname
-#: reference_relationship.xml:1516
-#, no-c-format
-msgid "ST_Within"
-msgstr "ST_Within"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:1518
@@ -2209,12 +2113,6 @@ msgstr ""
 msgid "Distance Relationships"
 msgstr "Relations de distance"
 
-#. Tag: refname
-#: reference_relationship.xml:1613
-#, no-c-format
-msgid "ST_3DDWithin"
-msgstr "ST_3DDWithin"
-
 #. Tag: refpurpose
 #: reference_relationship.xml:1615
 #, no-c-format
@@ -2271,12 +2169,6 @@ msgstr ""
 "linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_Distance\"/>, <xref "
 "linkend=\"ST_3DMaxDistance\"/>, <xref linkend=\"ST_Transform\"/>"
 
-#. Tag: refname
-#: reference_relationship.xml:1673
-#, no-c-format
-msgid "ST_3DDFullyWithin"
-msgstr "ST_3DDFullyWithin"
-
 #. Tag: refpurpose
 #: reference_relationship.xml:1675
 #, no-c-format
@@ -2326,12 +2218,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DFullyWithin\"/>, <xref "
 "linkend=\"ST_3DMaxDistance\"/>"
-
-#. Tag: refname
-#: reference_relationship.xml:1729
-#, no-c-format
-msgid "ST_DFullyWithin"
-msgstr "ST_DFullyWithin"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:1731
@@ -2387,12 +2273,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_3DDWithin\"/>, <xref "
 "linkend=\"ST_3DDFullyWithin\"/>"
-
-#. Tag: refname
-#: reference_relationship.xml:1780
-#, no-c-format
-msgid "ST_DWithin"
-msgstr "ST_DWithin"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:1782
@@ -2504,12 +2384,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_3DDWithin\"/>"
 msgstr ", <xref linkend=\"ST_3DDWithin\"/>"
 
-#. Tag: refname
-#: reference_relationship.xml:1864
-#, no-c-format
-msgid "ST_PointInsideCircle"
-msgstr "ST_PointInsideCircle"
-
 #. Tag: refpurpose
 #: reference_relationship.xml:1866
 #, no-c-format
@@ -2569,6 +2443,90 @@ msgid "Changed: 2.2.0 In prior versions this was called ST_Point_Inside_Circle"
 msgstr ""
 "Modifié : 2.2.0 Dans les versions précédentes, cette fonction était appelée "
 "ST_Point_Inside_Circle"
+
+#, no-c-format
+#~ msgid "ST_3DIntersects"
+#~ msgstr "ST_3DIntersects"
+
+#, no-c-format
+#~ msgid "ST_Contains"
+#~ msgstr "ST_Contains"
+
+#, no-c-format
+#~ msgid "ST_ContainsProperly"
+#~ msgstr "ST_ContainsProperly"
+
+#, no-c-format
+#~ msgid "ST_CoveredBy"
+#~ msgstr "ST_CoveredBy"
+
+#, no-c-format
+#~ msgid "ST_Covers"
+#~ msgstr "ST_Covers"
+
+#, no-c-format
+#~ msgid "ST_Crosses"
+#~ msgstr "ST_Crosses"
+
+#, no-c-format
+#~ msgid "ST_Disjoint"
+#~ msgstr "ST_Disjoint"
+
+#, no-c-format
+#~ msgid "ST_Equals"
+#~ msgstr "ST_Equals"
+
+#, no-c-format
+#~ msgid "ST_Intersects"
+#~ msgstr "ST_Intersects"
+
+#, no-c-format
+#~ msgid "ST_LineCrossingDirection"
+#~ msgstr "ST_LineCrossingDirection"
+
+#, no-c-format
+#~ msgid "ST_OrderingEquals"
+#~ msgstr "ST_OrderingEquals"
+
+#, no-c-format
+#~ msgid "ST_Overlaps"
+#~ msgstr "ST_Overlaps"
+
+#, no-c-format
+#~ msgid "ST_Relate"
+#~ msgstr "ST_Relate"
+
+#, no-c-format
+#~ msgid "ST_RelateMatch"
+#~ msgstr "ST_RelateMatch"
+
+#, no-c-format
+#~ msgid "ST_Touches"
+#~ msgstr "ST_Touches"
+
+#, no-c-format
+#~ msgid "ST_Within"
+#~ msgstr "ST_Within"
+
+#, no-c-format
+#~ msgid "ST_3DDWithin"
+#~ msgstr "ST_3DDWithin"
+
+#, no-c-format
+#~ msgid "ST_3DDFullyWithin"
+#~ msgstr "ST_3DDFullyWithin"
+
+#, no-c-format
+#~ msgid "ST_DFullyWithin"
+#~ msgstr "ST_DFullyWithin"
+
+#, no-c-format
+#~ msgid "ST_DWithin"
+#~ msgstr "ST_DWithin"
+
+#, no-c-format
+#~ msgid "ST_PointInsideCircle"
+#~ msgstr "ST_PointInsideCircle"
 
 #, no-c-format
 #~ msgid ""

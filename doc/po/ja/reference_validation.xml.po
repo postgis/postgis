@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-05-15 11:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -35,12 +35,6 @@ msgstr ""
 #, no-c-format
 msgid "Geometry Validation"
 msgstr "ジオメトリ検証"
-
-#. Tag: refname
-#: reference_validation.xml:19
-#, no-c-format
-msgid "ST_IsValid"
-msgstr "ST_IsValid"
 
 #. Tag: refpurpose
 #: reference_validation.xml:21
@@ -156,12 +150,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_IsValidReason\"/>, <xref linkend=\"ST_IsValidDetail\"/>,"
 
-#. Tag: refname
-#: reference_validation.xml:99
-#, no-c-format
-msgid "ST_IsValidDetail"
-msgstr "ST_IsValidDetail"
-
 #. Tag: refpurpose
 #: reference_validation.xml:101
 #, no-c-format
@@ -252,12 +240,6 @@ msgstr "Availability: 2.0.0"
 msgid ", <xref linkend=\"ST_IsValidReason\"/>"
 msgstr ", <xref linkend=\"ST_IsValidReason\"/>"
 
-#. Tag: refname
-#: reference_validation.xml:165
-#, no-c-format
-msgid "ST_IsValidReason"
-msgstr "ST_IsValidReason"
-
 #. Tag: refpurpose
 #: reference_validation.xml:167
 #, no-c-format
@@ -309,12 +291,6 @@ msgstr "Availability: 2.0 フラグを取る形式。"
 #, no-c-format
 msgid ", <xref linkend=\"ST_Summary\"/>"
 msgstr ", <xref linkend=\"ST_Summary\"/>"
-
-#. Tag: refname
-#: reference_validation.xml:216
-#, no-c-format
-msgid "ST_MakeValid"
-msgstr "ST_MakeValid"
 
 #. Tag: refpurpose
 #: reference_validation.xml:217
@@ -499,6 +475,22 @@ msgid ""
 ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_CollectionExtract\"/>"
 msgstr ""
 ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_CollectionExtract\"/>"
+
+#, no-c-format
+#~ msgid "ST_IsValid"
+#~ msgstr "ST_IsValid"
+
+#, no-c-format
+#~ msgid "ST_IsValidDetail"
+#~ msgstr "ST_IsValidDetail"
+
+#, no-c-format
+#~ msgid "ST_IsValidReason"
+#~ msgstr "ST_IsValidReason"
+
+#, no-c-format
+#~ msgid "ST_MakeValid"
+#~ msgstr "ST_MakeValid"
 
 #, no-c-format
 #~ msgid ""

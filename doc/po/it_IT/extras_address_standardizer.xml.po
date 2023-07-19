@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 12:17+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-05-14 05:08+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
@@ -151,12 +151,6 @@ msgstr ""
 #: extras_address_standardizer.xml:42
 #, no-c-format
 msgid "Address Standardizer Types"
-msgstr ""
-
-#. Tag: refname
-#: extras_address_standardizer.xml:45
-#, no-c-format
-msgid "<refname>stdaddr</refname>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -440,12 +434,6 @@ msgstr ""
 #: extras_address_standardizer.xml:146
 #, no-c-format
 msgid "Address Standardizer Tables"
-msgstr ""
-
-#. Tag: refname
-#: extras_address_standardizer.xml:149
-#, no-c-format
-msgid "rules table"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1145,12 +1133,6 @@ msgstr ""
 msgid "(token number <code>9</code>): An otherwise unclassified output."
 msgstr ""
 
-#. Tag: refname
-#: extras_address_standardizer.xml:482
-#, no-c-format
-msgid "lex table"
-msgstr ""
-
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:483
 #, no-c-format
@@ -1227,12 +1209,6 @@ msgid ""
 "html#--i-tok--\">PAGC Tokens</ulink>."
 msgstr ""
 
-#. Tag: refname
-#: extras_address_standardizer.xml:524
-#, no-c-format
-msgid "gaz table"
-msgstr ""
-
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:525
 #, no-c-format
@@ -1271,12 +1247,6 @@ msgstr ""
 #: extras_address_standardizer.xml:567
 #, no-c-format
 msgid "Address Standardizer Functions"
-msgstr ""
-
-#. Tag: refname
-#: extras_address_standardizer.xml:571
-#, no-c-format
-msgid "debug_standardize_address"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1425,12 +1395,6 @@ msgid ""
 "linkend=\"gaztab\"/>, <xref linkend=\"Pagc_Normalize_Address\"/>"
 msgstr ""
 
-#. Tag: refname
-#: extras_address_standardizer.xml:651
-#, no-c-format
-msgid "parse_address"
-msgstr ""
-
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:653
 #, no-c-format
@@ -1472,12 +1436,6 @@ msgstr ""
 #: extras_address_standardizer.xml:685
 #, no-c-format
 msgid "Table of addresses"
-msgstr ""
-
-#. Tag: refname
-#: extras_address_standardizer.xml:700
-#, no-c-format
-msgid "standardize_address"
 msgstr ""
 
 #. Tag: refpurpose

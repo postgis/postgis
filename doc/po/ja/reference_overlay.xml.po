@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 12:17+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-07-14 10:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -34,12 +34,6 @@ msgstr ""
 #, no-c-format
 msgid "Overlay Functions"
 msgstr "重ね合わせ関数"
-
-#. Tag: refname
-#: reference_overlay.xml:16
-#, no-c-format
-msgid "ST_ClipByBox2D"
-msgstr "ST_ClipByBox2D"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:17
@@ -121,12 +115,6 @@ msgstr "関連情報"
 msgid ", <xref linkend=\"ST_MakeBox2D\"/>, <xref linkend=\"ST_MakeEnvelope\"/>"
 msgstr ""
 ", <xref linkend=\"ST_MakeBox2D\"/>, <xref linkend=\"ST_MakeEnvelope\"/>"
-
-#. Tag: refname
-#: reference_overlay.xml:62
-#, no-c-format
-msgid "ST_Difference"
-msgstr "ST_Difference"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:64
@@ -263,12 +251,6 @@ msgstr "次では、3次元ラインストリングの差を求めます。"
 #, no-c-format
 msgid ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
 msgstr ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
-
-#. Tag: refname
-#: reference_overlay.xml:156
-#, no-c-format
-msgid "ST_Intersection"
-msgstr "ST_Intersection"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:158
@@ -446,12 +428,6 @@ msgstr ""
 "linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
 "linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
 
-#. Tag: refname
-#: reference_overlay.xml:258
-#, no-c-format
-msgid "ST_MemUnion"
-msgstr "ST_MemUnion"
-
 #. Tag: refpurpose
 #: reference_overlay.xml:260
 #, no-c-format
@@ -500,12 +476,6 @@ msgstr ""
 "理時間が長くなります。この集約関数はジオメトリの逐次加算的結合で動作していま"
 "す。これは、最初に配列を蓄積して高速アルゴリズムで結合するST_Union集約関数と"
 "反対です。"
-
-#. Tag: refname
-#: reference_overlay.xml:310
-#, no-c-format
-msgid "ST_Node"
-msgstr "ST_Node"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:312
@@ -604,12 +574,6 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_Union\"/>"
 msgstr ", <xref linkend=\"ST_Union\"/>"
-
-#. Tag: refname
-#: reference_overlay.xml:376
-#, no-c-format
-msgid "ST_Split"
-msgstr "ST_Split"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:377
@@ -739,12 +703,6 @@ msgstr ""
 "ラインストリングをライン上にないポイントで分割します。<xref "
 "linkend=\"ST_Snap\"/>を使ってラインをポイントにスナップして分割できるようにし"
 "ています。"
-
-#. Tag: refname
-#: reference_overlay.xml:504
-#, no-c-format
-msgid "ST_Subdivide"
-msgstr "ST_Subdivide"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:505
@@ -906,12 +864,6 @@ msgstr ""
 ", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
 "linkend=\"ST_NPoints\"/>"
 
-#. Tag: refname
-#: reference_overlay.xml:619
-#, no-c-format
-msgid "ST_SymDifference"
-msgstr "ST_SymDifference"
-
 #. Tag: refpurpose
 #: reference_overlay.xml:621
 #, no-c-format
@@ -969,12 +921,6 @@ msgstr "二つある元のラインストリングの両方"
 #, no-c-format
 msgid "The symmetric difference of the two linestrings"
 msgstr "二つのラインストリングの対称差"
-
-#. Tag: refname
-#: reference_overlay.xml:713
-#, no-c-format
-msgid "ST_UnaryUnion"
-msgstr "ST_UnaryUnion"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:715
@@ -1059,12 +1005,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, <xref "
 "linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>"
-
-#. Tag: refname
-#: reference_overlay.xml:791
-#, no-c-format
-msgid "ST_Union"
-msgstr "ST_Union"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:792
@@ -1251,6 +1191,46 @@ msgstr ""
 ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
 "linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
 "linkend=\"ST_SymDifference\"/>"
+
+#, no-c-format
+#~ msgid "ST_ClipByBox2D"
+#~ msgstr "ST_ClipByBox2D"
+
+#, no-c-format
+#~ msgid "ST_Difference"
+#~ msgstr "ST_Difference"
+
+#, no-c-format
+#~ msgid "ST_Intersection"
+#~ msgstr "ST_Intersection"
+
+#, no-c-format
+#~ msgid "ST_MemUnion"
+#~ msgstr "ST_MemUnion"
+
+#, no-c-format
+#~ msgid "ST_Node"
+#~ msgstr "ST_Node"
+
+#, no-c-format
+#~ msgid "ST_Split"
+#~ msgstr "ST_Split"
+
+#, no-c-format
+#~ msgid "ST_Subdivide"
+#~ msgstr "ST_Subdivide"
+
+#, no-c-format
+#~ msgid "ST_SymDifference"
+#~ msgstr "ST_SymDifference"
+
+#, no-c-format
+#~ msgid "ST_UnaryUnion"
+#~ msgstr "ST_UnaryUnion"
+
+#, no-c-format
+#~ msgid "ST_Union"
+#~ msgstr "ST_Union"
 
 #, no-c-format
 #~ msgid ""

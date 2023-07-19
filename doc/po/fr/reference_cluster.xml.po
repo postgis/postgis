@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 12:17+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-05-10 15:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -30,12 +30,6 @@ msgstr ""
 #, no-c-format
 msgid "Clustering Functions"
 msgstr "Fonctions de clustering"
-
-#. Tag: refname
-#: reference_cluster.xml:12
-#, no-c-format
-msgid "ST_ClusterDBSCAN"
-msgstr "ST_ClusterDBSCAN"
 
 #. Tag: refpurpose
 #: reference_cluster.xml:14
@@ -223,12 +217,6 @@ msgstr ""
 "linkend=\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterWithin\"/> "
 "<xref linkend=\"ST_ClusterIntersectingWin\"/>"
 
-#. Tag: refname
-#: reference_cluster.xml:124
-#, no-c-format
-msgid "ST_ClusterIntersectingWin"
-msgstr "ST_ClusterIntersectingWin"
-
 #. Tag: refpurpose
 #: reference_cluster.xml:126
 #, no-c-format
@@ -285,12 +273,6 @@ msgstr ""
 "linkend=\"ST_ClusterWithinWin\"/> <xref linkend=\"ST_ClusterWithin\"/> <xref "
 "linkend=\"ST_ClusterIntersecting\"/>"
 
-#. Tag: refname
-#: reference_cluster.xml:165
-#, no-c-format
-msgid "ST_ClusterIntersecting"
-msgstr "ST_ClusterIntersecting"
-
 #. Tag: refpurpose
 #: reference_cluster.xml:167
 #, no-c-format
@@ -336,12 +318,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_ClusterKMeans\"/>, <xref "
 "linkend=\"ST_ClusterWithinWin\"/> <xref linkend=\"ST_ClusterWithin\"/>"
-
-#. Tag: refname
-#: reference_cluster.xml:211
-#, no-c-format
-msgid "ST_ClusterKMeans"
-msgstr "ST_ClusterKMeans"
 
 #. Tag: refpurpose
 #: reference_cluster.xml:213
@@ -475,12 +451,6 @@ msgstr ""
 ">, <xref linkend=\"ST_ClusterWithin\"/>, <xref linkend=\"ST_Subdivide\"/>, "
 "<xref linkend=\"ST_Force_3D\"/>, <xref linkend=\"ST_Force_4D\"/>,"
 
-#. Tag: refname
-#: reference_cluster.xml:309
-#, no-c-format
-msgid "ST_ClusterWithin"
-msgstr "ST_ClusterWithin"
-
 #. Tag: refpurpose
 #: reference_cluster.xml:311
 #, no-c-format
@@ -527,12 +497,6 @@ msgstr ""
 ", <xref linkend=\"ST_ClusterKMeans\"/>, <xref "
 "linkend=\"ST_ClusterIntersectingWin\"/>, <xref "
 "linkend=\"ST_ClusterWithinWin\"/>, <xref linkend=\"ST_ClusterIntersecting\"/>"
-
-#. Tag: refname
-#: reference_cluster.xml:352
-#, no-c-format
-msgid "ST_ClusterWithinWin"
-msgstr "ST_ClusterWithinWin"
 
 #. Tag: refpurpose
 #: reference_cluster.xml:354
@@ -595,6 +559,30 @@ msgstr ""
 ", <xref linkend=\"ST_ClusterKMeans\"/>, <xref "
 "linkend=\"ST_ClusterIntersectingWin\"/>, <xref linkend=\"ST_ClusterWithin\"/"
 ">, <xref linkend=\"ST_ClusterIntersecting\"/>"
+
+#, no-c-format
+#~ msgid "ST_ClusterDBSCAN"
+#~ msgstr "ST_ClusterDBSCAN"
+
+#, no-c-format
+#~ msgid "ST_ClusterIntersectingWin"
+#~ msgstr "ST_ClusterIntersectingWin"
+
+#, no-c-format
+#~ msgid "ST_ClusterIntersecting"
+#~ msgstr "ST_ClusterIntersecting"
+
+#, no-c-format
+#~ msgid "ST_ClusterKMeans"
+#~ msgstr "ST_ClusterKMeans"
+
+#, no-c-format
+#~ msgid "ST_ClusterWithin"
+#~ msgstr "ST_ClusterWithin"
+
+#, no-c-format
+#~ msgid "ST_ClusterWithinWin"
+#~ msgstr "ST_ClusterWithinWin"
 
 #, no-c-format
 #~ msgid ""

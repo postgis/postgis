@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 12:17+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-06-27 07:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -28,12 +28,6 @@ msgstr "これらの関数はPostGISのバージョンを報告したりアッ�
 #, no-c-format
 msgid "Version Functions"
 msgstr "バージョン関数"
-
-#. Tag: refname
-#: reference_version.xml:14
-#, no-c-format
-msgid "PostGIS_Extensions_Upgrade"
-msgstr "PostGIS_Extensions_Upgrade"
 
 #. Tag: refpurpose
 #: reference_version.xml:16
@@ -159,12 +153,6 @@ msgstr ""
 ">, <xref linkend=\"PostGIS_PROJ_Version\"/>, <xref "
 "linkend=\"PostGIS_Version\"/>"
 
-#. Tag: refname
-#: reference_version.xml:76
-#, no-c-format
-msgid "PostGIS_Full_Version"
-msgstr "PostGIS_Full_Version"
-
 #. Tag: refpurpose
 #: reference_version.xml:78
 #, no-c-format
@@ -218,12 +206,6 @@ msgstr ""
 ">, <xref linkend=\"PostGIS_PROJ_Version\"/>, <xref "
 "linkend=\"PostGIS_Wagyu_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
 
-#. Tag: refname
-#: reference_version.xml:124
-#, no-c-format
-msgid "PostGIS_GEOS_Version"
-msgstr "PostGIS_GEOS_Version"
-
 #. Tag: refpurpose
 #: reference_version.xml:126
 #, no-c-format
@@ -261,12 +243,6 @@ msgstr ""
 ", <xref linkend=\"PostGIS_Lib_Version\"/>, <xref "
 "linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/"
 ">, <xref linkend=\"PostGIS_Version\"/>"
-
-#. Tag: refname
-#: reference_version.xml:166
-#, no-c-format
-msgid "PostGIS_GEOS_Compiled_Version"
-msgstr "PostGIS_GEOS_Compiled_Version"
 
 #. Tag: refpurpose
 #: reference_version.xml:168
@@ -308,12 +284,6 @@ msgstr "Availability: 3.4.0"
 msgid ", <xref linkend=\"PostGIS_Full_Version\"/>"
 msgstr ", <xref linkend=\"PostGIS_Full_Version\"/>"
 
-#. Tag: refname
-#: reference_version.xml:209
-#, no-c-format
-msgid "PostGIS_Liblwgeom_Version"
-msgstr "PostGIS_Liblwgeom_Version"
-
 #. Tag: refpurpose
 #: reference_version.xml:211
 #, no-c-format
@@ -339,12 +309,6 @@ msgstr ""
 #, no-c-format
 msgid "Returns the version number of the liblwgeom library/"
 msgstr "liblwgeomライブラリのバージョン番号を返します。"
-
-#. Tag: refname
-#: reference_version.xml:250
-#, no-c-format
-msgid "PostGIS_LibXML_Version"
-msgstr "PostGIS_LibXML_Version"
 
 #. Tag: refpurpose
 #: reference_version.xml:252
@@ -386,12 +350,6 @@ msgstr ""
 "linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_GEOS_Version\"/"
 ">, <xref linkend=\"PostGIS_Version\"/>"
 
-#. Tag: refname
-#: reference_version.xml:292
-#, no-c-format
-msgid "PostGIS_Lib_Build_Date"
-msgstr "PostGIS_Lib_Build_Date"
-
 #. Tag: refpurpose
 #: reference_version.xml:294
 #, no-c-format
@@ -413,12 +371,6 @@ msgstr ""
 #, no-c-format
 msgid "<para>Returns build date of the PostGIS library.</para>"
 msgstr "<para>PostGISライブラリのビルド日付を返します。</para>"
-
-#. Tag: refname
-#: reference_version.xml:322
-#, no-c-format
-msgid "PostGIS_Lib_Version"
-msgstr "PostGIS_Lib_Version"
 
 #. Tag: refpurpose
 #: reference_version.xml:324
@@ -454,12 +406,6 @@ msgstr ""
 ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref "
 "linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/"
 ">, <xref linkend=\"PostGIS_Version\"/>"
-
-#. Tag: refname
-#: reference_version.xml:363
-#, no-c-format
-msgid "PostGIS_PROJ_Version"
-msgstr "PostGIS_PROJ_Version"
 
 #. Tag: refpurpose
 #: reference_version.xml:365
@@ -507,12 +453,6 @@ msgstr ""
 "linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/"
 ">, <xref linkend=\"PostGIS_Version\"/>"
 
-#. Tag: refname
-#: reference_version.xml:406
-#, no-c-format
-msgid "PostGIS_Wagyu_Version"
-msgstr "PostGIS_Wagyu_Version"
-
 #. Tag: refpurpose
 #: reference_version.xml:408
 #, no-c-format
@@ -553,12 +493,6 @@ msgstr ""
 "<xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
 "linkend=\"PostGIS_Version\"/>"
 
-#. Tag: refname
-#: reference_version.xml:448
-#, no-c-format
-msgid "PostGIS_Scripts_Build_Date"
-msgstr "PostGIS_Scripts_Build_Date"
-
 #. Tag: refpurpose
 #: reference_version.xml:450
 #, no-c-format
@@ -586,12 +520,6 @@ msgstr "<para>PostGISスクリプトのビルド日付を返します。</para>"
 #, no-c-format
 msgid "Availability: 1.0.0RC1"
 msgstr "Availability: 1.0.0RC1"
-
-#. Tag: refname
-#: reference_version.xml:490
-#, no-c-format
-msgid "PostGIS_Scripts_Installed"
-msgstr "PostGIS_Scripts_Installed"
 
 #. Tag: refpurpose
 #: reference_version.xml:492
@@ -652,12 +580,6 @@ msgstr ""
 ", <xref linkend=\"PostGIS_Scripts_Released\"/>, <xref "
 "linkend=\"PostGIS_Version\"/>"
 
-#. Tag: refname
-#: reference_version.xml:538
-#, no-c-format
-msgid "PostGIS_Scripts_Released"
-msgstr "PostGIS_Scripts_Released"
-
 #. Tag: refpurpose
 #: reference_version.xml:540
 #, no-c-format
@@ -708,12 +630,6 @@ msgstr ""
 ", <xref linkend=\"PostGIS_Scripts_Installed\"/>, <xref "
 "linkend=\"PostGIS_Lib_Version\"/>"
 
-#. Tag: refname
-#: reference_version.xml:584
-#, no-c-format
-msgid "PostGIS_Version"
-msgstr "PostGIS_Version"
-
 #. Tag: refpurpose
 #: reference_version.xml:586
 #, no-c-format
@@ -751,6 +667,62 @@ msgstr ""
 ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref "
 "linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/"
 ">, <xref linkend=\"PostGIS_PROJ_Version\"/>"
+
+#, no-c-format
+#~ msgid "PostGIS_Extensions_Upgrade"
+#~ msgstr "PostGIS_Extensions_Upgrade"
+
+#, no-c-format
+#~ msgid "PostGIS_Full_Version"
+#~ msgstr "PostGIS_Full_Version"
+
+#, no-c-format
+#~ msgid "PostGIS_GEOS_Version"
+#~ msgstr "PostGIS_GEOS_Version"
+
+#, no-c-format
+#~ msgid "PostGIS_GEOS_Compiled_Version"
+#~ msgstr "PostGIS_GEOS_Compiled_Version"
+
+#, no-c-format
+#~ msgid "PostGIS_Liblwgeom_Version"
+#~ msgstr "PostGIS_Liblwgeom_Version"
+
+#, no-c-format
+#~ msgid "PostGIS_LibXML_Version"
+#~ msgstr "PostGIS_LibXML_Version"
+
+#, no-c-format
+#~ msgid "PostGIS_Lib_Build_Date"
+#~ msgstr "PostGIS_Lib_Build_Date"
+
+#, no-c-format
+#~ msgid "PostGIS_Lib_Version"
+#~ msgstr "PostGIS_Lib_Version"
+
+#, no-c-format
+#~ msgid "PostGIS_PROJ_Version"
+#~ msgstr "PostGIS_PROJ_Version"
+
+#, no-c-format
+#~ msgid "PostGIS_Wagyu_Version"
+#~ msgstr "PostGIS_Wagyu_Version"
+
+#, no-c-format
+#~ msgid "PostGIS_Scripts_Build_Date"
+#~ msgstr "PostGIS_Scripts_Build_Date"
+
+#, no-c-format
+#~ msgid "PostGIS_Scripts_Installed"
+#~ msgstr "PostGIS_Scripts_Installed"
+
+#, no-c-format
+#~ msgid "PostGIS_Scripts_Released"
+#~ msgstr "PostGIS_Scripts_Released"
+
+#, no-c-format
+#~ msgid "PostGIS_Version"
+#~ msgstr "PostGIS_Version"
 
 #, no-c-format
 #~ msgid ""

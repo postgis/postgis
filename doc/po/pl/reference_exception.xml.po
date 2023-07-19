@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2014-01-03 08:07+0000\n"
 "Last-Translator: Jakub Bobrowski <jb@5dstudio.pl>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/postgis-1/"
@@ -32,12 +32,6 @@ msgid ""
 "data is corrupted in someway. They are used for troubleshooting corruption "
 "and also fixing things that should under normal circumstances, never happen."
 msgstr ""
-
-#. Tag: refname
-#: reference_exception.xml:9
-#, no-c-format
-msgid "PostGIS_AddBBox"
-msgstr "PostGIS_AddBBox"
 
 #. Tag: refpurpose
 #: reference_exception.xml:11
@@ -107,12 +101,6 @@ msgstr "Zobacz także"
 msgid ", <xref linkend=\"PostGIS_HasBBox\"/>"
 msgstr ", <xref linkend=\"PostGIS_HasBBox\"/>"
 
-#. Tag: refname
-#: reference_exception.xml:55
-#, no-c-format
-msgid "PostGIS_DropBBox"
-msgstr "PostGIS_DropBBox"
-
 #. Tag: refpurpose
 #: reference_exception.xml:57
 #, no-c-format
@@ -160,12 +148,6 @@ msgstr ""
 msgid ", <xref linkend=\"PostGIS_HasBBox\"/>, <xref linkend=\"Box2D\"/>"
 msgstr ", <xref linkend=\"PostGIS_HasBBox\"/>, <xref linkend=\"Box2D\"/>"
 
-#. Tag: refname
-#: reference_exception.xml:104
-#, no-c-format
-msgid "PostGIS_HasBBox"
-msgstr "PostGIS_HasBBox"
-
 #. Tag: refpurpose
 #: reference_exception.xml:106
 #, no-c-format
@@ -196,6 +178,18 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_DropBBox\"/>"
 msgstr ", <xref linkend=\"PostGIS_DropBBox\"/>"
+
+#, no-c-format
+#~ msgid "PostGIS_AddBBox"
+#~ msgstr "PostGIS_AddBBox"
+
+#, no-c-format
+#~ msgid "PostGIS_DropBBox"
+#~ msgstr "PostGIS_DropBBox"
+
+#, no-c-format
+#~ msgid "PostGIS_HasBBox"
+#~ msgstr "PostGIS_HasBBox"
 
 #, fuzzy, no-c-format
 #~ msgid ""

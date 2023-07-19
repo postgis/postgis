@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 12:17+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-07-03 15:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -35,12 +35,6 @@ msgstr ""
 #, no-c-format
 msgid "Overlay Functions"
 msgstr "Fonctions de superposition"
-
-#. Tag: refname
-#: reference_overlay.xml:16
-#, no-c-format
-msgid "ST_ClipByBox2D"
-msgstr "ST_ClipByBox2D"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:17
@@ -123,12 +117,6 @@ msgstr "Voir aussi"
 msgid ", <xref linkend=\"ST_MakeBox2D\"/>, <xref linkend=\"ST_MakeEnvelope\"/>"
 msgstr ""
 ", <xref linkend=\"ST_MakeBox2D\"/>, <xref linkend=\"ST_MakeEnvelope\"/>"
-
-#. Tag: refname
-#: reference_overlay.xml:62
-#, no-c-format
-msgid "ST_Difference"
-msgstr "ST_Difference"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:64
@@ -266,12 +254,6 @@ msgstr "La différence entre les points 3D."
 #, no-c-format
 msgid ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
 msgstr ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
-
-#. Tag: refname
-#: reference_overlay.xml:156
-#, no-c-format
-msgid "ST_Intersection"
-msgstr "ST_Intersection"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:158
@@ -461,12 +443,6 @@ msgstr ""
 "linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
 "linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
 
-#. Tag: refname
-#: reference_overlay.xml:258
-#, no-c-format
-msgid "ST_MemUnion"
-msgstr "ST_MemUnion"
-
 #. Tag: refpurpose
 #: reference_overlay.xml:260
 #, no-c-format
@@ -517,12 +493,6 @@ msgstr ""
 "fonctionne par l'union des géométries de manière incrémentale, contrairement "
 "à l'agrégation ST_Union qui accumule d'abord un tableau et en unit ensuite "
 "le contenu à l'aide d'un algorithme rapide."
-
-#. Tag: refname
-#: reference_overlay.xml:310
-#, no-c-format
-msgid "ST_Node"
-msgstr "ST_Node"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:312
@@ -622,12 +592,6 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_Union\"/>"
 msgstr ", <xref linkend=\"ST_Union\"/>"
-
-#. Tag: refname
-#: reference_overlay.xml:376
-#, no-c-format
-msgid "ST_Split"
-msgstr "ST_Split"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:377
@@ -761,12 +725,6 @@ msgstr ""
 "Diviser une ligne par un point, lorsque le point ne se trouve pas exactement "
 "sur la ligne. Montre l'utilisation de <xref linkend=\"ST_Snap\"/> pour "
 "accrocher la ligne au point afin de permettre son découpage."
-
-#. Tag: refname
-#: reference_overlay.xml:504
-#, no-c-format
-msgid "ST_Subdivide"
-msgstr "ST_Subdivide"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:505
@@ -936,12 +894,6 @@ msgstr ""
 ", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
 "linkend=\"ST_NPoints\"/>"
 
-#. Tag: refname
-#: reference_overlay.xml:619
-#, no-c-format
-msgid "ST_SymDifference"
-msgstr "ST_SymDifference"
-
 #. Tag: refpurpose
 #: reference_overlay.xml:621
 #, no-c-format
@@ -999,12 +951,6 @@ msgstr "Les lignes originales présentées ensemble"
 #, no-c-format
 msgid "The symmetric difference of the two linestrings"
 msgstr "La différence symétrique des deux lignes"
-
-#. Tag: refname
-#: reference_overlay.xml:713
-#, no-c-format
-msgid "ST_UnaryUnion"
-msgstr "ST_UnaryUnion"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:715
@@ -1092,12 +1038,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, <xref "
 "linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>"
-
-#. Tag: refname
-#: reference_overlay.xml:791
-#, no-c-format
-msgid "ST_Union"
-msgstr "ST_Union"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:792
@@ -1293,6 +1233,46 @@ msgstr ""
 ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
 "linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
 "linkend=\"ST_SymDifference\"/>"
+
+#, no-c-format
+#~ msgid "ST_ClipByBox2D"
+#~ msgstr "ST_ClipByBox2D"
+
+#, no-c-format
+#~ msgid "ST_Difference"
+#~ msgstr "ST_Difference"
+
+#, no-c-format
+#~ msgid "ST_Intersection"
+#~ msgstr "ST_Intersection"
+
+#, no-c-format
+#~ msgid "ST_MemUnion"
+#~ msgstr "ST_MemUnion"
+
+#, no-c-format
+#~ msgid "ST_Node"
+#~ msgstr "ST_Node"
+
+#, no-c-format
+#~ msgid "ST_Split"
+#~ msgstr "ST_Split"
+
+#, no-c-format
+#~ msgid "ST_Subdivide"
+#~ msgstr "ST_Subdivide"
+
+#, no-c-format
+#~ msgid "ST_SymDifference"
+#~ msgstr "ST_SymDifference"
+
+#, no-c-format
+#~ msgid "ST_UnaryUnion"
+#~ msgstr "ST_UnaryUnion"
+
+#, no-c-format
+#~ msgid "ST_Union"
+#~ msgstr "ST_Union"
 
 #, no-c-format
 #~ msgid ""

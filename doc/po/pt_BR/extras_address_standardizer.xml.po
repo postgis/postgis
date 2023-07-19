@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 12:17+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: georgersilva <georger.silva@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -184,12 +184,6 @@ msgstr ""
 #, no-c-format
 msgid "Address Standardizer Types"
 msgstr "Tipos de padronizador de endereço"
-
-#. Tag: refname
-#: extras_address_standardizer.xml:45
-#, no-c-format
-msgid "<refname>stdaddr</refname>"
-msgstr ""
 
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:46
@@ -510,12 +504,6 @@ msgstr ""
 #, no-c-format
 msgid "Address Standardizer Tables"
 msgstr "Mesas de padronizador de endereço "
-
-#. Tag: refname
-#: extras_address_standardizer.xml:149
-#, no-c-format
-msgid "rules table"
-msgstr "mesa de regras"
 
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:150
@@ -1323,12 +1311,6 @@ msgstr "DESCONHECIDO"
 msgid "(token number <code>9</code>): An otherwise unclassified output."
 msgstr "(token number <code>9</code>): Uma saída senão não classificada."
 
-#. Tag: refname
-#: extras_address_standardizer.xml:482
-#, no-c-format
-msgid "lex table"
-msgstr "lex table"
-
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:483
 #, no-c-format
@@ -1416,12 +1398,6 @@ msgstr ""
 "substituído. Disponível em <ulink url=\"http://www.pagcgeo.org/docs/html/"
 "pagc-12.html#--i-tok--\">PAGC Tokens</ulink>."
 
-#. Tag: refname
-#: extras_address_standardizer.xml:524
-#, no-c-format
-msgid "gaz table"
-msgstr "gaz table"
-
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:525
 #, no-c-format
@@ -1468,12 +1444,6 @@ msgstr ""
 #, no-c-format
 msgid "Address Standardizer Functions"
 msgstr "Funções do padronizador de endereços"
-
-#. Tag: refname
-#: extras_address_standardizer.xml:571
-#, no-c-format
-msgid "debug_standardize_address"
-msgstr ""
 
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:573
@@ -1623,12 +1593,6 @@ msgstr ""
 ", <xref linkend=\"rulestab\"/>, <xref linkend=\"lextab\"/>, <xref "
 "linkend=\"gaztab\"/>, <xref linkend=\"Pagc_Normalize_Address\"/>"
 
-#. Tag: refname
-#: extras_address_standardizer.xml:651
-#, no-c-format
-msgid "parse_address"
-msgstr "parse_address"
-
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:653
 #, no-c-format
@@ -1673,12 +1637,6 @@ msgstr "Endereços Únicos"
 #, no-c-format
 msgid "Table of addresses"
 msgstr "Table de endereços"
-
-#. Tag: refname
-#: extras_address_standardizer.xml:700
-#, no-c-format
-msgid "standardize_address"
-msgstr "standardize_address"
 
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:702
@@ -1757,6 +1715,26 @@ msgstr ""
 #, no-c-format
 msgid "Variant 2: As a two part Address"
 msgstr "variante 2: Como um endereço de duas partes"
+
+#, no-c-format
+#~ msgid "rules table"
+#~ msgstr "mesa de regras"
+
+#, no-c-format
+#~ msgid "lex table"
+#~ msgstr "lex table"
+
+#, no-c-format
+#~ msgid "gaz table"
+#~ msgstr "gaz table"
+
+#, no-c-format
+#~ msgid "parse_address"
+#~ msgstr "parse_address"
+
+#, no-c-format
+#~ msgid "standardize_address"
+#~ msgstr "standardize_address"
 
 #, no-c-format
 #~ msgid ""

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -28,12 +28,6 @@ msgstr ""
 #: reference_transformation.xml:10
 #, no-c-format
 msgid "Affine Transformations"
-msgstr ""
-
-#. Tag: refname
-#: reference_transformation.xml:14
-#, no-c-format
-msgid "ST_Affine"
 msgstr ""
 
 #. Tag: refpurpose
@@ -176,12 +170,6 @@ msgid ""
 "linkend=\"ST_TransScale\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_transformation.xml:96
-#, no-c-format
-msgid "ST_Rotate"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_transformation.xml:98
 #, no-c-format
@@ -218,12 +206,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>, <xref "
 "linkend=\"ST_RotateZ\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_transformation.xml:160
-#, no-c-format
-msgid "ST_RotateX"
 msgstr ""
 
 #. Tag: refpurpose
@@ -268,12 +250,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_RotateY\"/>, <xref linkend=\"ST_RotateZ\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_transformation.xml:207
-#, no-c-format
-msgid "ST_RotateY"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_transformation.xml:209
 #, no-c-format
@@ -314,12 +290,6 @@ msgstr ""
 #: reference_transformation.xml:250
 #, no-c-format
 msgid ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateZ\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_transformation.xml:256
-#, no-c-format
-msgid "ST_RotateZ"
 msgstr ""
 
 #. Tag: refpurpose
@@ -368,12 +338,6 @@ msgstr ""
 #: reference_transformation.xml:302
 #, no-c-format
 msgid ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_transformation.xml:308
-#, no-c-format
-msgid "ST_Scale"
 msgstr ""
 
 #. Tag: refpurpose
@@ -445,12 +409,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_TransScale\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_transformation.xml:395
-#, no-c-format
-msgid "ST_Translate"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_transformation.xml:397
 #, no-c-format
@@ -500,12 +458,6 @@ msgstr ""
 #: reference_transformation.xml:446
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_transformation.xml:452
-#, no-c-format
-msgid "ST_TransScale"
 msgstr ""
 
 #. Tag: refpurpose

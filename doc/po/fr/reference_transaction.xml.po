@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -52,12 +52,6 @@ msgstr ""
 "role=\"bold\">sérialisable</emphasis> <ulink url=\"http://www.postgresql.org/"
 "docs/current/static/transaction-iso.html\"> niveau d'isolation de la "
 "transaction</ulink> doit être utilisé."
-
-#. Tag: refname
-#: reference_transaction.xml:24
-#, no-c-format
-msgid "AddAuth"
-msgstr "AddAuth"
 
 #. Tag: refpurpose
 #: reference_transaction.xml:26
@@ -131,12 +125,6 @@ msgstr "Exemples"
 msgid "See Also"
 msgstr "Voir aussi"
 
-#. Tag: refname
-#: reference_transaction.xml:65
-#, no-c-format
-msgid "CheckAuth"
-msgstr "CheckAuth"
-
 #. Tag: refpurpose
 #: reference_transaction.xml:67
 #, no-c-format
@@ -187,12 +175,6 @@ msgstr ""
 "Si le support des transactions longues n'est pas activé alors la fonction "
 "lance une exception."
 
-#. Tag: refname
-#: reference_transaction.xml:119
-#, no-c-format
-msgid "DisableLongTransactions"
-msgstr "DisableLongTransactions"
-
 #. Tag: refpurpose
 #: reference_transaction.xml:121
 #, no-c-format
@@ -234,12 +216,6 @@ msgstr ""
 "varname> et la vue nommée <varname>authorized_tables</varname> ainsi que "
 "tous les déclencheurs nommés <varname>checkauthtrigger</varname>"
 
-#. Tag: refname
-#: reference_transaction.xml:163
-#, no-c-format
-msgid "EnableLongTransactions"
-msgstr "EnableLongTransactions"
-
 #. Tag: refpurpose
 #: reference_transaction.xml:165
 #, no-c-format
@@ -278,12 +254,6 @@ msgstr ""
 "Crée une table de métadonnées nommée <varname>authorization_table</varname> "
 "et une vue nommée <varname>authorized_tables</varname>"
 
-#. Tag: refname
-#: reference_transaction.xml:208
-#, no-c-format
-msgid "LockRow"
-msgstr "LockRow"
-
 #. Tag: refpurpose
 #: reference_transaction.xml:210
 #, no-c-format
@@ -305,12 +275,6 @@ msgstr ""
 "<varname>expire_dt</varname> est un timestamp qui a pour valeur par défaut "
 "<emphasis>now() + 1 heure</emphasis>. Renvoie 1 si le verrou a été attribué, "
 "0 sinon (c'est-à-dire que la rangée est déjà verrouillée par une autre auth.)"
-
-#. Tag: refname
-#: reference_transaction.xml:272
-#, no-c-format
-msgid "UnlockRows"
-msgstr "UnlockRows"
 
 #. Tag: refpurpose
 #: reference_transaction.xml:274
@@ -337,6 +301,30 @@ msgid ""
 msgstr ""
 "Supprime tous les verrous détenus par le jeton d'autorisation spécifié. "
 "Renvoie le nombre de verrous libérés."
+
+#, no-c-format
+#~ msgid "AddAuth"
+#~ msgstr "AddAuth"
+
+#, no-c-format
+#~ msgid "CheckAuth"
+#~ msgstr "CheckAuth"
+
+#, no-c-format
+#~ msgid "DisableLongTransactions"
+#~ msgstr "DisableLongTransactions"
+
+#, no-c-format
+#~ msgid "EnableLongTransactions"
+#~ msgstr "EnableLongTransactions"
+
+#, no-c-format
+#~ msgid "LockRow"
+#~ msgstr "LockRow"
+
+#, no-c-format
+#~ msgid "UnlockRows"
+#~ msgstr "UnlockRows"
 
 #, no-c-format
 #~ msgid ""

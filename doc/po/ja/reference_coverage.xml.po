@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ming 64gcc81\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-07-14 10:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -39,12 +39,6 @@ msgstr ""
 #, no-c-format
 msgid "Coverages"
 msgstr "カバレッジ"
-
-#. Tag: refname
-#: reference_coverage.xml:15
-#, no-c-format
-msgid "ST_CoverageInvalidEdges"
-msgstr "ST_CoverageInvalidEdges"
 
 #. Tag: refpurpose
 #: reference_coverage.xml:17
@@ -191,12 +185,6 @@ msgstr ""
 ", <xref linkend=\"ST_CoverageUnion\"/>, <xref "
 "linkend=\"ST_CoverageSimplify\"/>"
 
-#. Tag: refname
-#: reference_coverage.xml:100
-#, no-c-format
-msgid "ST_CoverageSimplify"
-msgstr "ST_CoverageSimplify"
-
 #. Tag: refpurpose
 #: reference_coverage.xml:102
 #, no-c-format
@@ -284,12 +272,6 @@ msgstr "入力カバレッジ"
 msgid "Simplified coverage"
 msgstr "カバレッジの単純化"
 
-#. Tag: refname
-#: reference_coverage.xml:187
-#, no-c-format
-msgid "ST_CoverageUnion"
-msgstr "ST_CoverageUnion"
-
 #. Tag: refpurpose
 #: reference_coverage.xml:189
 #, no-c-format
@@ -355,6 +337,18 @@ msgstr "結合結果"
 #, no-c-format
 msgid ", <xref linkend=\"ST_Union\"/>"
 msgstr ", <xref linkend=\"ST_Union\"/>"
+
+#, no-c-format
+#~ msgid "ST_CoverageInvalidEdges"
+#~ msgstr "ST_CoverageInvalidEdges"
+
+#, no-c-format
+#~ msgid "ST_CoverageSimplify"
+#~ msgstr "ST_CoverageSimplify"
+
+#, no-c-format
+#~ msgid "ST_CoverageUnion"
+#~ msgstr "ST_CoverageUnion"
 
 #, no-c-format
 #~ msgid ""

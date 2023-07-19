@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2022-05-07 19:23+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
@@ -35,12 +35,12 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Each data type describes its type casting behavior. A <ulink url=\"https://"
-"www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-CASTS"
-"\">type cast</ulink> converts values of one data type into another type. "
-"PostgreSQL allows defining casting behavior for custom types, along with the "
-"functions used to convert type values. Casts can have <emphasis role=\"bold"
-"\">automatic</emphasis> behavior, which allows automatic conversion of a "
-"function argument to a type supported by the function."
+"www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-"
+"CASTS\">type cast</ulink> converts values of one data type into another "
+"type. PostgreSQL allows defining casting behavior for custom types, along "
+"with the functions used to convert type values. Casts can have <emphasis "
+"role=\"bold\">automatic</emphasis> behavior, which allows automatic "
+"conversion of a function argument to a type supported by the function."
 msgstr ""
 
 #. Tag: para
@@ -71,12 +71,6 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid "PostGIS Geometry/Geography/Box Data Types"
 msgstr "PostgreSQL PostGIS tipi Geometry/Geography/Box"
-
-#. Tag: refname
-#: reference_type.xml:31
-#, no-c-format
-msgid "<refname>box2d</refname>"
-msgstr "<refname>box2d</refname>"
 
 #. Tag: refpurpose
 #: reference_type.xml:32
@@ -179,12 +173,6 @@ msgstr "<entry>geometry</entry>"
 msgid "See Also"
 msgstr "Si veda anche"
 
-#. Tag: refname
-#: reference_type.xml:77
-#, no-c-format
-msgid "<refname>box3d</refname>"
-msgstr "<refname>box3d</refname>"
-
 #. Tag: refpurpose
 #: reference_type.xml:78
 #, no-c-format
@@ -232,12 +220,6 @@ msgstr "<entry>box</entry>"
 #, no-c-format
 msgid "<entry>box2d</entry>"
 msgstr "<entry>box2d</entry>"
-
-#. Tag: refname
-#: reference_type.xml:132
-#, no-c-format
-msgid "<refname>geometry</refname>"
-msgstr "<entry>geometry</entry>"
 
 #. Tag: refpurpose
 #: reference_type.xml:133
@@ -289,12 +271,6 @@ msgstr "text"
 msgid ", <xref linkend=\"PostGIS_SQLMM_Functions\"/>"
 msgstr ", <xref linkend=\"PostGIS_Geography\"/>"
 
-#. Tag: refname
-#: reference_type.xml:189
-#, no-c-format
-msgid "geometry_dump"
-msgstr "geometry_dump"
-
 #. Tag: refpurpose
 #: reference_type.xml:190
 #, no-c-format
@@ -336,12 +312,6 @@ msgid ""
 "output type to explode a complex geometry into its constituent parts."
 msgstr ""
 
-#. Tag: refname
-#: reference_type.xml:221
-#, no-c-format
-msgid "<refname>geography</refname>"
-msgstr "<refname>geography</refname>"
-
 #. Tag: refpurpose
 #: reference_type.xml:222
 #, no-c-format
@@ -380,6 +350,26 @@ msgstr "Esplicito"
 #, fuzzy, no-c-format
 msgid ", <xref linkend=\"PostGIS_GeographyFunctions\"/>"
 msgstr ", <xref linkend=\"PostGIS_Geography\"/>"
+
+#, no-c-format
+#~ msgid "<refname>box2d</refname>"
+#~ msgstr "<refname>box2d</refname>"
+
+#, no-c-format
+#~ msgid "<refname>box3d</refname>"
+#~ msgstr "<refname>box3d</refname>"
+
+#, no-c-format
+#~ msgid "<refname>geometry</refname>"
+#~ msgstr "<entry>geometry</entry>"
+
+#, no-c-format
+#~ msgid "geometry_dump"
+#~ msgstr "geometry_dump"
+
+#, no-c-format
+#~ msgid "<refname>geography</refname>"
+#~ msgstr "<refname>geography</refname>"
 
 #, fuzzy, no-c-format
 #~ msgid ""

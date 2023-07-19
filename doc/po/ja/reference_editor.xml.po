@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-07-11 05:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -36,12 +36,6 @@ msgstr ""
 #, no-c-format
 msgid "Geometry Editors"
 msgstr "ジオメトリエディタ"
-
-#. Tag: refname
-#: reference_editor.xml:14
-#, no-c-format
-msgid "ST_AddPoint"
-msgstr "ST_AddPoint"
 
 #. Tag: refpurpose
 #: reference_editor.xml:15
@@ -182,12 +176,6 @@ msgstr "関連情報"
 #, no-c-format
 msgid ", <xref linkend=\"ST_SetPoint\"/>"
 msgstr ", <xref linkend=\"ST_SetPoint\"/>"
-
-#. Tag: refname
-#: reference_editor.xml:68
-#, no-c-format
-msgid "ST_CollectionExtract"
-msgstr "ST_CollectionExtract"
 
 #. Tag: refpurpose
 #: reference_editor.xml:70
@@ -353,12 +341,6 @@ msgstr ""
 ", <xref linkend=\"ST_Multi\"/>, <xref linkend=\"ST_IsValid\"/>, <xref "
 "linkend=\"ST_MakeValid\"/>"
 
-#. Tag: refname
-#: reference_editor.xml:151
-#, no-c-format
-msgid "ST_CollectionHomogenize"
-msgstr "ST_CollectionHomogenize"
-
 #. Tag: refpurpose
 #: reference_editor.xml:153
 #, no-c-format
@@ -471,12 +453,6 @@ msgstr ""
 #, no-c-format
 msgid "Collection of Polygons converted to an (invalid) MultiPolygon:"
 msgstr "ポリゴンのコレクションから (不正な)マルチポリゴンへの変換:"
-
-#. Tag: refname
-#: reference_editor.xml:217
-#, no-c-format
-msgid "ST_CurveToLine"
-msgstr "ST_CurveToLine"
 
 #. Tag: refpurpose
 #: reference_editor.xml:219
@@ -625,12 +601,6 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.7"
 msgid "&curve_support;"
 msgstr "&curve_support;"
 
-#. Tag: refname
-#: reference_editor.xml:300
-#, no-c-format
-msgid "ST_Scroll"
-msgstr "ST_Scroll"
-
 #. Tag: refpurpose
 #: reference_editor.xml:301
 #, no-c-format
@@ -677,12 +647,6 @@ msgstr "&M_support;"
 #, no-c-format
 msgid "Make e closed line start at its 3rd vertex"
 msgstr "閉じたラインの3番目の頂点を開始点にする"
-
-#. Tag: refname
-#: reference_editor.xml:340
-#, no-c-format
-msgid "ST_FlipCoordinates"
-msgstr "ST_FlipCoordinates"
 
 #. Tag: refpurpose
 #: reference_editor.xml:341
@@ -733,12 +697,6 @@ msgstr "&T_support;"
 msgid "Example"
 msgstr "例"
 
-#. Tag: refname
-#: reference_editor.xml:380
-#, no-c-format
-msgid "ST_Force2D"
-msgstr "ST_Force2D"
-
 #. Tag: refpurpose
 #: reference_editor.xml:382
 #, no-c-format
@@ -779,12 +737,6 @@ msgstr "Enhanced: 2.0.0 多面体サーフェス対応が導入されました�
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_2D."
 msgstr "Changed: 2.1.0 2.0.xの間はST_Force_2Dと呼ばれていました。"
-
-#. Tag: refname
-#: reference_editor.xml:426
-#, no-c-format
-msgid "ST_Force3D"
-msgstr "ST_Force3D"
 
 #. Tag: refpurpose
 #: reference_editor.xml:428
@@ -837,12 +789,6 @@ msgstr ""
 ", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
 "linkend=\"ST_Force_3DZ\"/>"
 
-#. Tag: refname
-#: reference_editor.xml:471
-#, no-c-format
-msgid "ST_Force3DZ"
-msgstr "ST_Force3DZ"
-
 #. Tag: refpurpose
 #: reference_editor.xml:473
 #, no-c-format
@@ -886,12 +832,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
 "linkend=\"ST_Force_3D\"/>"
-
-#. Tag: refname
-#: reference_editor.xml:516
-#, no-c-format
-msgid "ST_Force3DM"
-msgstr "ST_Force3DM"
 
 #. Tag: refpurpose
 #: reference_editor.xml:518
@@ -945,12 +885,6 @@ msgstr ""
 ", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
 "linkend=\"ST_Force_3D\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
 
-#. Tag: refname
-#: reference_editor.xml:559
-#, no-c-format
-msgid "ST_Force4D"
-msgstr "ST_Force4D"
-
 #. Tag: refpurpose
 #: reference_editor.xml:561
 #, no-c-format
@@ -993,12 +927,6 @@ msgstr "Changed: 2.1.0 2.0.xの間はST_Force_4Dと呼ばれていました。"
 #, no-c-format
 msgid "Changed: 3.1.0. Added support for supplying non-zero Z and M values."
 msgstr "Changed: 3.1.0. 0でないZ値とM値を指定できるようになりました。"
-
-#. Tag: refname
-#: reference_editor.xml:603
-#, no-c-format
-msgid "ST_ForcePolygonCCW"
-msgstr "ST_ForcePolygonCCW"
 
 #. Tag: refpurpose
 #: reference_editor.xml:606
@@ -1043,12 +971,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 
-#. Tag: refname
-#: reference_editor.xml:652
-#, no-c-format
-msgid "ST_ForceCollection"
-msgstr "ST_ForceCollection"
-
 #. Tag: refpurpose
 #: reference_editor.xml:654
 #, no-c-format
@@ -1091,12 +1013,6 @@ msgstr ""
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_Collection."
 msgstr "Changed: 2.1.0 2.0.xの間はST_Force_Collectionと呼ばれていました。"
 
-#. Tag: refname
-#: reference_editor.xml:700
-#, no-c-format
-msgid "ST_ForcePolygonCW"
-msgstr "ST_ForcePolygonCW"
-
 #. Tag: refpurpose
 #: reference_editor.xml:703
 #, no-c-format
@@ -1126,23 +1042,11 @@ msgstr ""
 "(マルチ)ポリゴンに対して、外環を時計回りに、内環を反時計回りに強制します。ポ"
 "リゴンでないジオメトリは、変更されずに返されます。"
 
-#. Tag: refname
-#: reference_editor.xml:749
-#, no-c-format
-msgid "ST_ForceSFS"
-msgstr "ST_ForceSFS"
-
 #. Tag: refpurpose
 #: reference_editor.xml:751
 #, no-c-format
 msgid "Force the geometries to use SFS 1.1 geometry types only."
 msgstr "SFS 1.1ジオメトリタイプのみ使うようジオメトリに強制します。"
-
-#. Tag: refname
-#: reference_editor.xml:781
-#, no-c-format
-msgid "ST_ForceRHR"
-msgstr "ST_ForceRHR"
 
 #. Tag: refpurpose
 #: reference_editor.xml:783
@@ -1199,12 +1103,6 @@ msgstr ""
 ">, <xref linkend=\"ST_IsPolygonCW\"/>, <xref linkend=\"ST_BuildArea\"/>, "
 "<xref linkend=\"ST_Polygonize\"/>, <xref linkend=\"ST_Reverse\"/>"
 
-#. Tag: refname
-#: reference_editor.xml:839
-#, no-c-format
-msgid "ST_ForceCurve"
-msgstr "ST_ForceCurve"
-
 #. Tag: refpurpose
 #: reference_editor.xml:841
 #, no-c-format
@@ -1240,12 +1138,6 @@ msgstr ""
 #, no-c-format
 msgid "Availability: 2.2.0"
 msgstr "Availability: 2.2.0"
-
-#. Tag: refname
-#: reference_editor.xml:884
-#, no-c-format
-msgid "ST_LineToCurve"
-msgstr "ST_LineToCurve"
 
 #. Tag: refpurpose
 #: reference_editor.xml:886
@@ -1285,12 +1177,6 @@ msgstr ""
 "入力ラインストリング/ポリゴンが、曲線をはっきりと表現するのには不十分な場合に"
 "は、関数は入力ジオメトリと同じものを返します。"
 
-#. Tag: refname
-#: reference_editor.xml:927
-#, no-c-format
-msgid "ST_Multi"
-msgstr "ST_Multi"
-
 #. Tag: refpurpose
 #: reference_editor.xml:929
 #, no-c-format
@@ -1316,12 +1202,6 @@ msgid ""
 msgstr ""
 "マルチ系ジオメトリを返します。ジオメトリが既にマルチ系なら変更せずに返しま"
 "す。"
-
-#. Tag: refname
-#: reference_editor.xml:962
-#, no-c-format
-msgid "ST_LineExtend"
-msgstr "ST_LineExtend"
 
 #. Tag: refpurpose
 #: reference_editor.xml:964
@@ -1379,12 +1259,6 @@ msgstr "例: 100,000メートル、方位45度で計算されるポイント"
 msgid ", <xref linkend=\"ST_Project\"/>"
 msgstr ", <xref linkend=\"ST_Project\"/>"
 
-#. Tag: refname
-#: reference_editor.xml:1024
-#, no-c-format
-msgid "ST_Normalize"
-msgstr "ST_Normalize"
-
 #. Tag: refpurpose
 #: reference_editor.xml:1026
 #, no-c-format
@@ -1433,12 +1307,6 @@ msgstr "Availability: 2.3.0"
 #, no-c-format
 msgid "<para>,</para>"
 msgstr "<para>,</para>"
-
-#. Tag: refname
-#: reference_editor.xml:1072
-#, no-c-format
-msgid "ST_Project"
-msgstr "ST_Project"
 
 #. Tag: refpurpose
 #: reference_editor.xml:1074
@@ -1541,12 +1409,6 @@ msgstr ""
 ", <xref linkend=\"ST_Distance\"/>, <ulink url=\"http://www.postgresql.org/"
 "docs/current/interactive/functions-math.html\">PostgreSQL function "
 "radians()</ulink>"
-
-#. Tag: refname
-#: reference_editor.xml:1160
-#, no-c-format
-msgid "ST_QuantizeCoordinates"
-msgstr "ST_QuantizeCoordinates"
 
 #. Tag: refpurpose
 #: reference_editor.xml:1163
@@ -1691,12 +1553,6 @@ msgstr ""
 "linkend=\"ST_MemSize\"/>は、ジオメトリに使われるディスク上のサイズにかかわら"
 "ず同じ値を返します。"
 
-#. Tag: refname
-#: reference_editor.xml:1290
-#, no-c-format
-msgid "ST_RemovePoint"
-msgstr "ST_RemovePoint"
-
 #. Tag: refpurpose
 #: reference_editor.xml:1291
 #, no-c-format
@@ -1746,12 +1602,6 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_NumPoints\"/>"
 msgstr ", <xref linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_NumPoints\"/>"
-
-#. Tag: refname
-#: reference_editor.xml:1328
-#, no-c-format
-msgid "ST_RemoveRepeatedPoints"
-msgstr "ST_RemoveRepeatedPoints"
 
 #. Tag: refpurpose
 #: reference_editor.xml:1329
@@ -1818,12 +1668,6 @@ msgstr ""
 "<emphasis role=\"bold\">例:</emphasis> 許容距離内にある繰り返しポイントの削"
 "除。"
 
-#. Tag: refname
-#: reference_editor.xml:1388
-#, no-c-format
-msgid "ST_Reverse"
-msgstr "ST_Reverse"
-
 #. Tag: refpurpose
 #: reference_editor.xml:1389
 #, no-c-format
@@ -1851,12 +1695,6 @@ msgstr "どのジオメトリでも使用可能です。頂点の順序を逆に
 #, no-c-format
 msgid "Enhanced: 2.4.0 support for curves was introduced."
 msgstr "Enhanced: 2.4.0 曲線対応が導入されました。"
-
-#. Tag: refname
-#: reference_editor.xml:1419
-#, no-c-format
-msgid "ST_Segmentize"
-msgstr "ST_Segmentize"
 
 #. Tag: refpurpose
 #: reference_editor.xml:1421
@@ -1999,12 +1837,6 @@ msgstr ""
 msgid "A geographic line segmentized along a great circle arc"
 msgstr "大円弧に沿って細分化されたジオグラフィのライン"
 
-#. Tag: refname
-#: reference_editor.xml:1512
-#, no-c-format
-msgid "ST_SetPoint"
-msgstr "ST_SetPoint"
-
 #. Tag: refpurpose
 #: reference_editor.xml:1513
 #, no-c-format
@@ -2056,12 +1888,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_NumPoints\"/>, <xref "
 "linkend=\"ST_PointN\"/>, <xref linkend=\"ST_RemovePoint\"/>"
-
-#. Tag: refname
-#: reference_editor.xml:1550
-#, no-c-format
-msgid "ST_ShiftLongitude"
-msgstr "ST_ShiftLongitude"
 
 #. Tag: refpurpose
 #: reference_editor.xml:1552
@@ -2129,12 +1955,6 @@ msgstr "Enhanced: 2.0.0 多面体サーフェス対応とTIN対応が導入さ�
 msgid "NOTE: this function was renamed from \"ST_Shift_Longitude\" in 2.2.0"
 msgstr "ご注意: この関数は2.0.0で\"ST_Shift_Longitude\"から名称変更しました。"
 
-#. Tag: refname
-#: reference_editor.xml:1602
-#, no-c-format
-msgid "ST_WrapX"
-msgstr "ST_WrapX"
-
 #. Tag: refpurpose
 #: reference_editor.xml:1604
 #, no-c-format
@@ -2183,12 +2003,6 @@ msgstr ""
 #, no-c-format
 msgid "Availability: 2.3.0 requires GEOS"
 msgstr "Availability: 2.3.0 GEOSが必要です。"
-
-#. Tag: refname
-#: reference_editor.xml:1657
-#, no-c-format
-msgid "ST_SnapToGrid"
-msgstr "ST_SnapToGrid"
 
 #. Tag: refpurpose
 #: reference_editor.xml:1659
@@ -2272,12 +2086,6 @@ msgstr ""
 ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
 "linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>, <xref "
 "linkend=\"ST_Simplify\"/>"
-
-#. Tag: refname
-#: reference_editor.xml:1759
-#, no-c-format
-msgid "ST_Snap"
-msgstr "ST_Snap"
 
 #. Tag: refpurpose
 #: reference_editor.xml:1761
@@ -2404,12 +2212,6 @@ msgstr ""
 "元のマルチポリゴンに1.25の許容距離でラインストリングをスナップします。新しい"
 "ラインストリングはマルチポリゴンにつながります。"
 
-#. Tag: refname
-#: reference_editor.xml:1900
-#, no-c-format
-msgid "ST_SwapOrdinates"
-msgstr "ST_SwapOrdinates"
-
 #. Tag: refpurpose
 #: reference_editor.xml:1901
 #, no-c-format
@@ -2448,6 +2250,138 @@ msgid ""
 msgstr ""
 "<varname>ords</varname>引数は2文字の文字列で、入れ替える座標名を示します。座"
 "標名はx, y, z, mが有効です。"
+
+#, no-c-format
+#~ msgid "ST_AddPoint"
+#~ msgstr "ST_AddPoint"
+
+#, no-c-format
+#~ msgid "ST_CollectionExtract"
+#~ msgstr "ST_CollectionExtract"
+
+#, no-c-format
+#~ msgid "ST_CollectionHomogenize"
+#~ msgstr "ST_CollectionHomogenize"
+
+#, no-c-format
+#~ msgid "ST_CurveToLine"
+#~ msgstr "ST_CurveToLine"
+
+#, no-c-format
+#~ msgid "ST_Scroll"
+#~ msgstr "ST_Scroll"
+
+#, no-c-format
+#~ msgid "ST_FlipCoordinates"
+#~ msgstr "ST_FlipCoordinates"
+
+#, no-c-format
+#~ msgid "ST_Force2D"
+#~ msgstr "ST_Force2D"
+
+#, no-c-format
+#~ msgid "ST_Force3D"
+#~ msgstr "ST_Force3D"
+
+#, no-c-format
+#~ msgid "ST_Force3DZ"
+#~ msgstr "ST_Force3DZ"
+
+#, no-c-format
+#~ msgid "ST_Force3DM"
+#~ msgstr "ST_Force3DM"
+
+#, no-c-format
+#~ msgid "ST_Force4D"
+#~ msgstr "ST_Force4D"
+
+#, no-c-format
+#~ msgid "ST_ForcePolygonCCW"
+#~ msgstr "ST_ForcePolygonCCW"
+
+#, no-c-format
+#~ msgid "ST_ForceCollection"
+#~ msgstr "ST_ForceCollection"
+
+#, no-c-format
+#~ msgid "ST_ForcePolygonCW"
+#~ msgstr "ST_ForcePolygonCW"
+
+#, no-c-format
+#~ msgid "ST_ForceSFS"
+#~ msgstr "ST_ForceSFS"
+
+#, no-c-format
+#~ msgid "ST_ForceRHR"
+#~ msgstr "ST_ForceRHR"
+
+#, no-c-format
+#~ msgid "ST_ForceCurve"
+#~ msgstr "ST_ForceCurve"
+
+#, no-c-format
+#~ msgid "ST_LineToCurve"
+#~ msgstr "ST_LineToCurve"
+
+#, no-c-format
+#~ msgid "ST_Multi"
+#~ msgstr "ST_Multi"
+
+#, no-c-format
+#~ msgid "ST_LineExtend"
+#~ msgstr "ST_LineExtend"
+
+#, no-c-format
+#~ msgid "ST_Normalize"
+#~ msgstr "ST_Normalize"
+
+#, no-c-format
+#~ msgid "ST_Project"
+#~ msgstr "ST_Project"
+
+#, no-c-format
+#~ msgid "ST_QuantizeCoordinates"
+#~ msgstr "ST_QuantizeCoordinates"
+
+#, no-c-format
+#~ msgid "ST_RemovePoint"
+#~ msgstr "ST_RemovePoint"
+
+#, no-c-format
+#~ msgid "ST_RemoveRepeatedPoints"
+#~ msgstr "ST_RemoveRepeatedPoints"
+
+#, no-c-format
+#~ msgid "ST_Reverse"
+#~ msgstr "ST_Reverse"
+
+#, no-c-format
+#~ msgid "ST_Segmentize"
+#~ msgstr "ST_Segmentize"
+
+#, no-c-format
+#~ msgid "ST_SetPoint"
+#~ msgstr "ST_SetPoint"
+
+#, no-c-format
+#~ msgid "ST_ShiftLongitude"
+#~ msgstr "ST_ShiftLongitude"
+
+#, no-c-format
+#~ msgid "ST_WrapX"
+#~ msgstr "ST_WrapX"
+
+#, no-c-format
+#~ msgid "ST_SnapToGrid"
+#~ msgstr "ST_SnapToGrid"
+
+#, no-c-format
+#~ msgid "ST_Snap"
+#~ msgstr "ST_Snap"
+
+#, no-c-format
+#~ msgid "ST_SwapOrdinates"
+#~ msgstr "ST_SwapOrdinates"
 
 #, no-c-format
 #~ msgid ""

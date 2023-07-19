@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 12:17+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2018-07-23 18:01+0000\n"
 "Last-Translator: Milena Nowotarska <do.milenki@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/"
@@ -228,12 +228,6 @@ msgid ""
 "has a reverse geocoder among some other neat features."
 msgstr ""
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:58
-#, no-c-format
-msgid "Drop_Indexes_Generate_Script"
-msgstr ""
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:60
 #, no-c-format
@@ -326,12 +320,6 @@ msgstr "Zobacz także"
 msgid ", <xref linkend=\"Missing_Indexes_Generate_Script\"/>"
 msgstr ""
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:100
-#, no-c-format
-msgid "Drop_Nation_Tables_Generate_Script"
-msgstr ""
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:102
 #, no-c-format
@@ -369,12 +357,6 @@ msgstr ""
 msgid "Availability: 2.1.0"
 msgstr ""
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:141
-#, no-c-format
-msgid "Drop_State_Tables_Generate_Script"
-msgstr ""
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:143
 #, no-c-format
@@ -403,12 +385,6 @@ msgid ""
 "<varname>tiger_data</varname> if no schema is specified. This function is "
 "useful for dropping tables of a state just before you reload a state in case "
 "something went wrong during your previous load."
-msgstr ""
-
-#. Tag: refname
-#: extras_tigergeocoder.xml:183
-#, no-c-format
-msgid "Geocode"
 msgstr ""
 
 #. Tag: refpurpose
@@ -511,12 +487,6 @@ msgid ""
 "linkend=\"ST_Y\"/>"
 msgstr ""
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:252
-#, no-c-format
-msgid "Geocode_Intersection"
-msgstr ""
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:254
 #, no-c-format
@@ -595,12 +565,6 @@ msgstr ""
 msgid ", <xref linkend=\"Pprint_Addy\"/>, <xref linkend=\"ST_AsText\"/>"
 msgstr ""
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:305
-#, no-c-format
-msgid "Get_Geocode_Setting"
-msgstr ""
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:307
 #, no-c-format
@@ -638,12 +602,6 @@ msgstr ""
 #: extras_tigergeocoder.xml:332 extras_tigergeocoder.xml:1046
 #, no-c-format
 msgid "Example return debugging setting"
-msgstr ""
-
-#. Tag: refname
-#: extras_tigergeocoder.xml:345
-#, no-c-format
-msgid "Get_Tract"
 msgstr ""
 
 #. Tag: refpurpose
@@ -703,12 +661,6 @@ msgstr ""
 msgid "<para>></para>"
 msgstr ""
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:391
-#, no-c-format
-msgid "Install_Missing_Indexes"
-msgstr ""
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:393
 #, no-c-format
@@ -738,12 +690,6 @@ msgid ""
 "<xref linkend=\"Missing_Indexes_Generate_Script\"/> that in addition to "
 "generating the create index script, also executes it. It is called as part "
 "of the <filename>update_geocode.sql</filename> upgrade script."
-msgstr ""
-
-#. Tag: refname
-#: extras_tigergeocoder.xml:435
-#, no-c-format
-msgid "Loader_Generate_Census_Script"
 msgstr ""
 
 #. Tag: refpurpose
@@ -848,12 +794,6 @@ msgstr ""
 msgid "Generate sh script"
 msgstr ""
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:493
-#, no-c-format
-msgid "Loader_Generate_Script"
-msgstr ""
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:495
 #, no-c-format
@@ -933,12 +873,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"Loader_Generate_Nation_Script\"/>, <xref "
 "linkend=\"Drop_State_Tables_Generate_Script\"/>"
-msgstr ""
-
-#. Tag: refname
-#: extras_tigergeocoder.xml:555
-#, no-c-format
-msgid "Loader_Generate_Nation_Script"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1041,12 +975,6 @@ msgstr ""
 msgid ", <xref linkend=\"Drop_Nation_Tables_Generate_Script\"/>"
 msgstr ""
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:612
-#, no-c-format
-msgid "Missing_Indexes_Generate_Script"
-msgstr ""
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:614
 #, no-c-format
@@ -1082,12 +1010,6 @@ msgstr ""
 #: extras_tigergeocoder.xml:651
 #, no-c-format
 msgid ", <xref linkend=\"Install_Missing_Indexes\"/>"
-msgstr ""
-
-#. Tag: refname
-#: extras_tigergeocoder.xml:657
-#, no-c-format
-msgid "Normalize_Address"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1274,12 +1196,6 @@ msgstr ""
 msgid ", <xref linkend=\"Pprint_Addy\"/>"
 msgstr ""
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:743
-#, no-c-format
-msgid "Pagc_Normalize_Address"
-msgstr ""
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:745
 #, no-c-format
@@ -1374,12 +1290,6 @@ msgstr ""
 msgid ", <xref linkend=\"Geocode\"/>"
 msgstr ""
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:836
-#, no-c-format
-msgid "Pprint_Addy"
-msgstr ""
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:838
 #, no-c-format
@@ -1422,12 +1332,6 @@ msgstr ""
 #: extras_tigergeocoder.xml:865
 #, no-c-format
 msgid "Pretty print address a table of addresses"
-msgstr ""
-
-#. Tag: refname
-#: extras_tigergeocoder.xml:879
-#, no-c-format
-msgid "Reverse_Geocode"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1571,12 +1475,6 @@ msgid ""
 "linkend=\"Loader_Generate_Nation_Script\"/>"
 msgstr ""
 
-#. Tag: refname
-#: extras_tigergeocoder.xml:953
-#, no-c-format
-msgid "Topology_Load_Tiger"
-msgstr ""
-
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:955
 #, no-c-format
@@ -1712,12 +1610,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"CreateTopoGeom\"/>, <xref linkend=\"TopologySummary\"/>, "
 "<xref linkend=\"ValidateTopology\"/>"
-msgstr ""
-
-#. Tag: refname
-#: extras_tigergeocoder.xml:1020
-#, no-c-format
-msgid "Set_Geocode_Setting"
 msgstr ""
 
 #. Tag: refpurpose

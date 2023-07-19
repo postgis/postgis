@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 12:17+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2022-05-07 19:23+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Korean <https://weblate.osgeo.org/projects/postgis/"
@@ -185,12 +185,6 @@ msgstr ""
 #, no-c-format
 msgid "Address Standardizer Types"
 msgstr "주소 표준화 도구 유형"
-
-#. Tag: refname
-#: extras_address_standardizer.xml:45
-#, no-c-format
-msgid "<refname>stdaddr</refname>"
-msgstr ""
 
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:46
@@ -513,12 +507,6 @@ msgstr ""
 #, no-c-format
 msgid "Address Standardizer Tables"
 msgstr "주소 표준화 도구 테이블"
-
-#. Tag: refname
-#: extras_address_standardizer.xml:149
-#, no-c-format
-msgid "rules table"
-msgstr "규칙 테이블"
 
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:150
@@ -1309,12 +1297,6 @@ msgstr "UNKNWN"
 msgid "(token number <code>9</code>): An otherwise unclassified output."
 msgstr "(토큰 번호 <code>9</code>): 따로 분류되지 않은 출력물입니다."
 
-#. Tag: refname
-#: extras_address_standardizer.xml:482
-#, no-c-format
-msgid "lex table"
-msgstr "어휘 목록 테이블"
-
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:483
 #, no-c-format
@@ -1403,12 +1385,6 @@ msgstr ""
 "될 것입니다. <ulink url=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--i-"
 "tok--\">PAGC Tokens</ulink> 를 참조하십시오."
 
-#. Tag: refname
-#: extras_address_standardizer.xml:524
-#, no-c-format
-msgid "gaz table"
-msgstr "지명 색인 테이블"
-
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:525
 #, no-c-format
@@ -1453,12 +1429,6 @@ msgstr "정수형: 정의 번호? - 단어의 해당 인스턴스에 쓰이는 �
 #, no-c-format
 msgid "Address Standardizer Functions"
 msgstr "주소 표준화 도구 함수"
-
-#. Tag: refname
-#: extras_address_standardizer.xml:571
-#, no-c-format
-msgid "debug_standardize_address"
-msgstr ""
 
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:573
@@ -1608,12 +1578,6 @@ msgstr ""
 ", <xref linkend=\"rulestab\"/>, <xref linkend=\"lextab\"/>, <xref "
 "linkend=\"gaztab\"/>, <xref linkend=\"Pagc_Normalize_Address\"/>"
 
-#. Tag: refname
-#: extras_address_standardizer.xml:651
-#, no-c-format
-msgid "parse_address"
-msgstr "parse_address"
-
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:653
 #, no-c-format
@@ -1658,12 +1622,6 @@ msgstr "단일 주소"
 #, no-c-format
 msgid "Table of addresses"
 msgstr "주소 테이블"
-
-#. Tag: refname
-#: extras_address_standardizer.xml:700
-#, no-c-format
-msgid "standardize_address"
-msgstr "standardize_address"
 
 #. Tag: refpurpose
 #: extras_address_standardizer.xml:702
@@ -1742,6 +1700,26 @@ msgstr ""
 #, no-c-format
 msgid "Variant 2: As a two part Address"
 msgstr "변종 2: 주소를 두 부분으로 입력받습니다."
+
+#, no-c-format
+#~ msgid "rules table"
+#~ msgstr "규칙 테이블"
+
+#, no-c-format
+#~ msgid "lex table"
+#~ msgstr "어휘 목록 테이블"
+
+#, no-c-format
+#~ msgid "gaz table"
+#~ msgstr "지명 색인 테이블"
+
+#, no-c-format
+#~ msgid "parse_address"
+#~ msgstr "parse_address"
+
+#, no-c-format
+#~ msgid "standardize_address"
+#~ msgstr "standardize_address"
 
 #, no-c-format
 #~ msgid ""

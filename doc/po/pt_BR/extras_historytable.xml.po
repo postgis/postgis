@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2016-11-16 19:50+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -134,12 +134,6 @@ msgstr ""
 msgid "Or, to retrieve a view of the roads table at any point in the past:"
 msgstr "Ou, recuperar uma visão da table roads em qualquer ponto do passado:"
 
-#. Tag: refname
-#: extras_historytable.xml:38
-#, no-c-format
-msgid "Postgis_Install_History"
-msgstr "Postgis_Install_History"
-
 #. Tag: refpurpose
 #: extras_historytable.xml:39
 #, no-c-format
@@ -195,12 +189,6 @@ msgstr "Exemplos"
 msgid "See Also"
 msgstr "Veja também."
 
-#. Tag: refname
-#: extras_historytable.xml:77
-#, no-c-format
-msgid "Postgis_Enable_History"
-msgstr "Postgis_Enable_History"
-
 #. Tag: refpurpose
 #: extras_historytable.xml:78
 #, fuzzy, no-c-format
@@ -251,6 +239,14 @@ msgstr ""
 "Esta função atualmente depende da coluna geometria sendo registrada em "
 "<varname>geometry_columns</varname> e falhas se a coluna geometria não "
 "estiver presente na table <varname>geometry_columns</varname>."
+
+#, no-c-format
+#~ msgid "Postgis_Install_History"
+#~ msgstr "Postgis_Install_History"
+
+#, no-c-format
+#~ msgid "Postgis_Enable_History"
+#~ msgstr "Postgis_Enable_History"
 
 #, no-c-format
 #~ msgid ""

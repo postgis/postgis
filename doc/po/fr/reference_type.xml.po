@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-06-16 08:08+0000\n"
 "Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -35,21 +35,22 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Each data type describes its type casting behavior. A <ulink url=\"https://"
-"www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-CASTS"
-"\">type cast</ulink> converts values of one data type into another type. "
-"PostgreSQL allows defining casting behavior for custom types, along with the "
-"functions used to convert type values. Casts can have <emphasis role=\"bold"
-"\">automatic</emphasis> behavior, which allows automatic conversion of a "
-"function argument to a type supported by the function."
+"www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-"
+"CASTS\">type cast</ulink> converts values of one data type into another "
+"type. PostgreSQL allows defining casting behavior for custom types, along "
+"with the functions used to convert type values. Casts can have <emphasis "
+"role=\"bold\">automatic</emphasis> behavior, which allows automatic "
+"conversion of a function argument to a type supported by the function."
 msgstr ""
-"Chaque type de données décrit son comportement de type cast. Un <ulink url="
-"\"https://www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-"
-"TYPE-CASTS\">type cast</ulink> convertit les valeurs d'un type de données en "
-"un autre type. PostgreSQL permet de définir le comportement de casting pour "
-"les types personnalisés, ainsi que les fonctions utilisées pour convertir "
-"les valeurs du type. Les cast peuvent avoir <emphasis role=\"bold\">un "
-"comportement automatique</emphasis>, ce qui permet la conversion automatique "
-"d'un argument de fonction vers un type supporté par la fonction."
+"Chaque type de données décrit son comportement de type cast. Un <ulink "
+"url=\"https://www.postgresql.org/docs/current/sql-expressions.html#SQL-"
+"SYNTAX-TYPE-CASTS\">type cast</ulink> convertit les valeurs d'un type de "
+"données en un autre type. PostgreSQL permet de définir le comportement de "
+"casting pour les types personnalisés, ainsi que les fonctions utilisées pour "
+"convertir les valeurs du type. Les cast peuvent avoir <emphasis "
+"role=\"bold\">un comportement automatique</emphasis>, ce qui permet la "
+"conversion automatique d'un argument de fonction vers un type supporté par "
+"la fonction."
 
 #. Tag: para
 #: reference_type.xml:14
@@ -67,14 +68,14 @@ msgid ""
 msgstr ""
 "Certains castings ont un comportement <emphasis role=\"bold\">explicite</"
 "emphasis>, ce qui signifie que le cast doit être spécifié en utilisant la "
-"syntaxe <varname>CAST(myval As sometype)</varname> ou "
-"<varname>myval::sometype</varname>. Le casting explicite évite le problème "
-"des casts ambigus, qui peuvent se produire lors de l'utilisation d'une "
-"fonction surchargée qui ne supporte pas un type donné. Par exemple, une "
-"fonction peut accepter un box2d ou un box3d, mais pas un geometry. Puisque "
-"la géométrie a un cast automatique vers les deux types de boîtes, cela "
-"produit une erreur de \"fonction ambiguë\". Pour éviter cette erreur, "
-"utilisez un cast explicite vers le type de boîte souhaité."
+"syntaxe <varname>CAST(myval As sometype)</varname> ou <varname>myval::"
+"sometype</varname>. Le casting explicite évite le problème des casts "
+"ambigus, qui peuvent se produire lors de l'utilisation d'une fonction "
+"surchargée qui ne supporte pas un type donné. Par exemple, une fonction peut "
+"accepter un box2d ou un box3d, mais pas un geometry. Puisque la géométrie a "
+"un cast automatique vers les deux types de boîtes, cela produit une erreur "
+"de \"fonction ambiguë\". Pour éviter cette erreur, utilisez un cast "
+"explicite vers le type de boîte souhaité."
 
 #. Tag: para
 #: reference_type.xml:24
@@ -91,12 +92,6 @@ msgstr ""
 #, no-c-format
 msgid "PostGIS Geometry/Geography/Box Data Types"
 msgstr "Types de données PostGIS Geometry/Geography/Box"
-
-#. Tag: refname
-#: reference_type.xml:31
-#, no-c-format
-msgid "<refname>box2d</refname>"
-msgstr "<refname>box2d</refname>"
 
 #. Tag: refpurpose
 #: reference_type.xml:32
@@ -123,8 +118,8 @@ msgstr ""
 "<varname>box2d</varname> est un type de données spatiales utilisé pour "
 "représenter la boîte de délimitation bidimensionnelle entourant une "
 "géométrie ou une collection de géométries. Par exemple, la fonction "
-"d'agrégation <xref linkend=\"ST_Extent\"/> renvoie un objet "
-"<varname>box2d</varname>."
+"d'agrégation <xref linkend=\"ST_Extent\"/> renvoie un objet <varname>box2d</"
+"varname>."
 
 #. Tag: para
 #: reference_type.xml:41
@@ -205,12 +200,6 @@ msgstr "<entry>geometry</entry>"
 msgid "See Also"
 msgstr "Voir aussi"
 
-#. Tag: refname
-#: reference_type.xml:77
-#, no-c-format
-msgid "<refname>box3d</refname>"
-msgstr "<refname>box3d</refname>"
-
 #. Tag: refpurpose
 #: reference_type.xml:78
 #, no-c-format
@@ -266,12 +255,6 @@ msgstr "<entry>box</entry>"
 msgid "<entry>box2d</entry>"
 msgstr "<entry>box2d</entry>"
 
-#. Tag: refname
-#: reference_type.xml:132
-#, no-c-format
-msgid "<refname>geometry</refname>"
-msgstr "<refname>geometry</refname>"
-
 #. Tag: refpurpose
 #: reference_type.xml:133
 #, no-c-format
@@ -324,12 +307,6 @@ msgstr "text"
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_SQLMM_Functions\"/>"
 msgstr ", <xref linkend=\"PostGIS_SQLMM_Functions\"/>"
-
-#. Tag: refname
-#: reference_type.xml:189
-#, no-c-format
-msgid "geometry_dump"
-msgstr "geometry_dump"
 
 #. Tag: refpurpose
 #: reference_type.xml:190
@@ -385,12 +362,6 @@ msgstr ""
 "type de sortie pour exploser une géométrie complexe en ses parties "
 "constitutives."
 
-#. Tag: refname
-#: reference_type.xml:221
-#, no-c-format
-msgid "<refname>geography</refname>"
-msgstr "<refname>geography</refname>"
-
 #. Tag: refpurpose
 #: reference_type.xml:222
 #, no-c-format
@@ -435,6 +406,26 @@ msgstr "explicite"
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_GeographyFunctions\"/>"
 msgstr ", <xref linkend=\"PostGIS_GeographyFunctions\"/>"
+
+#, no-c-format
+#~ msgid "<refname>box2d</refname>"
+#~ msgstr "<refname>box2d</refname>"
+
+#, no-c-format
+#~ msgid "<refname>box3d</refname>"
+#~ msgstr "<refname>box3d</refname>"
+
+#, no-c-format
+#~ msgid "<refname>geometry</refname>"
+#~ msgstr "<refname>geometry</refname>"
+
+#, no-c-format
+#~ msgid "geometry_dump"
+#~ msgstr "geometry_dump"
+
+#, no-c-format
+#~ msgid "<refname>geography</refname>"
+#~ msgstr "<refname>geography</refname>"
 
 #, fuzzy, no-c-format
 #~ msgid ""

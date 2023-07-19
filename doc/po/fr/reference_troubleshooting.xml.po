@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-05-10 15:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -35,12 +35,6 @@ msgstr ""
 #, no-c-format
 msgid "Troubleshooting Functions"
 msgstr "Fonctions de dépannage"
-
-#. Tag: refname
-#: reference_troubleshooting.xml:14
-#, no-c-format
-msgid "PostGIS_AddBBox"
-msgstr "PostGIS_AddBBox"
 
 #. Tag: refpurpose
 #: reference_troubleshooting.xml:16
@@ -119,12 +113,6 @@ msgstr "Voir aussi"
 msgid ", <xref linkend=\"PostGIS_HasBBox\"/>"
 msgstr ", <xref linkend=\"PostGIS_HasBBox\"/>"
 
-#. Tag: refname
-#: reference_troubleshooting.xml:60
-#, no-c-format
-msgid "PostGIS_DropBBox"
-msgstr "PostGIS_DropBBox"
-
 #. Tag: refpurpose
 #: reference_troubleshooting.xml:62
 #, no-c-format
@@ -192,12 +180,6 @@ msgstr ""
 msgid ", <xref linkend=\"PostGIS_HasBBox\"/>, <xref linkend=\"Box2D\"/>"
 msgstr ", <xref linkend=\"PostGIS_HasBBox\"/>, <xref linkend=\"Box2D\"/>"
 
-#. Tag: refname
-#: reference_troubleshooting.xml:109
-#, no-c-format
-msgid "PostGIS_HasBBox"
-msgstr "PostGIS_HasBBox"
-
 #. Tag: refpurpose
 #: reference_troubleshooting.xml:111
 #, no-c-format
@@ -232,6 +214,18 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_DropBBox\"/>"
 msgstr ", <xref linkend=\"PostGIS_DropBBox\"/>"
+
+#, no-c-format
+#~ msgid "PostGIS_AddBBox"
+#~ msgstr "PostGIS_AddBBox"
+
+#, no-c-format
+#~ msgid "PostGIS_DropBBox"
+#~ msgstr "PostGIS_DropBBox"
+
+#, no-c-format
+#~ msgid "PostGIS_HasBBox"
+#~ msgstr "PostGIS_HasBBox"
 
 #, no-c-format
 #~ msgid ""

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 12:17+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-01-09 04:42+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Russian <https://weblate.osgeo.org/projects/postgis/"
@@ -37,12 +37,6 @@ msgstr ""
 #: reference_output.xml:13
 #, no-c-format
 msgid "Well-Known Text (WKT)"
-msgstr ""
-
-#. Tag: refname
-#: reference_output.xml:17
-#, no-c-format
-msgid "ST_AsEWKT"
 msgstr ""
 
 #. Tag: refpurpose
@@ -183,12 +177,6 @@ msgid ""
 "linkend=\"ST_GeomFromEWKT\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_output.xml:99
-#, no-c-format
-msgid "ST_AsText"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_output.xml:100
 #, no-c-format
@@ -286,12 +274,6 @@ msgstr ""
 #: reference_output.xml:187
 #, no-c-format
 msgid "Well-Known Binary (WKB)"
-msgstr ""
-
-#. Tag: refname
-#: reference_output.xml:191
-#, no-c-format
-msgid "ST_AsBinary"
 msgstr ""
 
 #. Tag: refpurpose
@@ -401,12 +383,6 @@ msgid ""
 "linkend=\"ST_AsText\"/>,"
 msgstr ""
 
-#. Tag: refname
-#: reference_output.xml:277
-#, no-c-format
-msgid "ST_AsEWKB"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_output.xml:278
 #, no-c-format
@@ -448,12 +424,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_GeomFromEWKB\"/>, <xref linkend=\"ST_SRID\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_output.xml:337
-#, no-c-format
-msgid "ST_AsHEXEWKB"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_output.xml:339
 #, no-c-format
@@ -481,12 +451,6 @@ msgstr ""
 #: reference_output.xml:383
 #, no-c-format
 msgid "Other Formats"
-msgstr ""
-
-#. Tag: refname
-#: reference_output.xml:387
-#, no-c-format
-msgid "ST_AsEncodedPolyline"
 msgstr ""
 
 #. Tag: refpurpose
@@ -557,12 +521,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_Segmentize\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_output.xml:431
-#, no-c-format
-msgid "ST_AsFlatGeobuf"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_output.xml:433
 #, no-c-format
@@ -605,12 +563,6 @@ msgstr ""
 msgid "Availability: 3.2.0"
 msgstr ""
 
-#. Tag: refname
-#: reference_output.xml:475
-#, no-c-format
-msgid "ST_AsGeobuf"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_output.xml:477
 #, no-c-format
@@ -633,12 +585,6 @@ msgstr ""
 #: reference_output.xml:505 reference_output.xml:1049 reference_output.xml:1154
 #, no-c-format
 msgid "Availability: 2.4.0"
-msgstr ""
-
-#. Tag: refname
-#: reference_output.xml:517
-#, no-c-format
-msgid "ST_AsGeoJSON"
 msgstr ""
 
 #. Tag: refpurpose
@@ -810,12 +756,6 @@ msgid ""
 ", <xref linkend=\"ST_ForcePolygonCCW\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_output.xml:649
-#, no-c-format
-msgid "ST_AsGML"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_output.xml:650
 #, no-c-format
@@ -949,12 +889,6 @@ msgstr ""
 msgid "Examples: Version 3"
 msgstr ""
 
-#. Tag: refname
-#: reference_output.xml:783
-#, no-c-format
-msgid "ST_AsKML"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_output.xml:785
 #, no-c-format
@@ -1007,12 +941,6 @@ msgstr ""
 #: reference_output.xml:851
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsGML\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_output.xml:857
-#, no-c-format
-msgid "ST_AsLatLonText"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1115,12 +1043,6 @@ msgstr ""
 #: reference_output.xml:910
 #, no-c-format
 msgid "Excessively large values are normalized."
-msgstr ""
-
-#. Tag: refname
-#: reference_output.xml:919
-#, no-c-format
-msgid "ST_AsMARC21"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1276,12 +1198,6 @@ msgid ""
 "their order in the collection."
 msgstr ""
 
-#. Tag: refname
-#: reference_output.xml:1007
-#, no-c-format
-msgid "ST_AsMVTGeom"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_output.xml:1009
 #, no-c-format
@@ -1406,12 +1322,6 @@ msgid ""
 "linkend=\"PostGIS_Wagyu_Version\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_output.xml:1078
-#, no-c-format
-msgid "ST_AsMVT"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_output.xml:1080
 #, no-c-format
@@ -1518,12 +1428,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_TileEnvelope\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_output.xml:1173
-#, no-c-format
-msgid "ST_AsSVG"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_output.xml:1175
 #, no-c-format
@@ -1590,12 +1494,6 @@ msgstr ""
 #: reference_output.xml:1229
 #, no-c-format
 msgid "Multi-surface"
-msgstr ""
-
-#. Tag: refname
-#: reference_output.xml:1235
-#, no-c-format
-msgid "ST_AsTWKB"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1680,12 +1578,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_AsBinary\"/>, <xref linkend=\"ST_AsEWKB\"/>, <xref "
 "linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_GeomFromText\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_output.xml:1294
-#, no-c-format
-msgid "ST_AsX3D"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1988,12 +1880,6 @@ msgstr ""
 #: reference_output.xml:1427
 #, no-c-format
 msgid "Example: Closed multilinestring (the boundary of a polygon with holes)"
-msgstr ""
-
-#. Tag: refname
-#: reference_output.xml:1434
-#, no-c-format
-msgid "ST_GeoHash"
 msgstr ""
 
 #. Tag: refpurpose

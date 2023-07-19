@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-01-09 04:42+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
@@ -35,12 +35,6 @@ msgstr "Siehe auch <xref linkend=\"PostGIS_BoxFunctions\"/>."
 #: reference_bbox.xml:12
 #, no-c-format
 msgid "Bounding Box Functions"
-msgstr ""
-
-#. Tag: refname
-#: reference_bbox.xml:16
-#, no-c-format
-msgid "Box2D"
 msgstr ""
 
 #. Tag: refpurpose
@@ -133,12 +127,6 @@ msgstr "Siehe auch"
 msgid ", <xref linkend=\"ST_GeomFromText\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_bbox.xml:58
-#, no-c-format
-msgid "Box3D"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_bbox.xml:60
 #, no-c-format
@@ -173,12 +161,6 @@ msgstr "&Z_support;"
 #: reference_bbox.xml:95
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeomFromEWKT\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_bbox.xml:101
-#, no-c-format
-msgid "ST_EstimatedExtent"
 msgstr ""
 
 #. Tag: refpurpose
@@ -243,12 +225,6 @@ msgstr ""
 #: reference_bbox.xml:177
 #, no-c-format
 msgid ", <xref linkend=\"ST_3DExtent\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_bbox.xml:183
-#, no-c-format
-msgid "ST_Expand"
 msgstr ""
 
 #. Tag: refpurpose
@@ -335,12 +311,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SRID\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_bbox.xml:283
-#, no-c-format
-msgid "ST_Extent"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_bbox.xml:284
 #, no-c-format
@@ -408,12 +378,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_3DExtent\"/>, <xref linkend=\"ST_SetSRID\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_bbox.xml:342
-#, no-c-format
-msgid "ST_3DExtent"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_bbox.xml:343
 #, no-c-format
@@ -449,12 +413,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_Force_3DZ\"/>, <xref linkend=\"ST_SetSRID\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_bbox.xml:390
-#, no-c-format
-msgid "ST_MakeBox2D"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_bbox.xml:392
 #, no-c-format
@@ -483,12 +441,6 @@ msgstr ""
 #: reference_bbox.xml:423 reference_bbox.xml:469
 #, no-c-format
 msgid ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_bbox.xml:429
-#, no-c-format
-msgid "ST_3DMakeBox"
 msgstr ""
 
 #. Tag: refpurpose
@@ -524,12 +476,6 @@ msgstr ""
 #: reference_bbox.xml:455
 #, no-c-format
 msgid "Changed: 2.0.0 In prior versions this used to be called ST_MakeBox3D"
-msgstr ""
-
-#. Tag: refname
-#: reference_bbox.xml:475
-#, no-c-format
-msgid "ST_XMax"
 msgstr ""
 
 #. Tag: refpurpose
@@ -572,12 +518,6 @@ msgid ""
 "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_bbox.xml:520
-#, no-c-format
-msgid "ST_XMin"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_bbox.xml:522
 #, no-c-format
@@ -611,12 +551,6 @@ msgid ""
 "geometry or box2d text representation, since those do not auto-cast."
 msgstr ""
 
-#. Tag: refname
-#: reference_bbox.xml:565
-#, no-c-format
-msgid "ST_YMax"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_bbox.xml:567
 #, no-c-format
@@ -646,12 +580,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
 "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_bbox.xml:610
-#, no-c-format
-msgid "ST_YMin"
 msgstr ""
 
 #. Tag: refpurpose
@@ -686,12 +614,6 @@ msgid ""
 "linkend=\"ST_ZMin\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_bbox.xml:655
-#, no-c-format
-msgid "ST_ZMax"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_bbox.xml:657
 #, no-c-format
@@ -722,12 +644,6 @@ msgid ""
 ", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref "
 "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
 "linkend=\"ST_ZMax\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_bbox.xml:700
-#, no-c-format
-msgid "ST_ZMin"
 msgstr ""
 
 #. Tag: refpurpose

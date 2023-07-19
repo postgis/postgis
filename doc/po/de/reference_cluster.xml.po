@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 12:17+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2022-05-12 13:42+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
@@ -27,12 +27,6 @@ msgstr ""
 #: reference_cluster.xml:8
 #, no-c-format
 msgid "Clustering Functions"
-msgstr ""
-
-#. Tag: refname
-#: reference_cluster.xml:12
-#, no-c-format
-msgid "ST_ClusterDBSCAN"
 msgstr ""
 
 #. Tag: refpurpose
@@ -180,12 +174,6 @@ msgid ""
 "<xref linkend=\"ST_ClusterIntersectingWin\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_cluster.xml:124
-#, no-c-format
-msgid "ST_ClusterIntersectingWin"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_cluster.xml:126
 #, no-c-format
@@ -229,12 +217,6 @@ msgid ""
 "linkend=\"ST_ClusterIntersecting\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_cluster.xml:165
-#, no-c-format
-msgid "ST_ClusterIntersecting"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_cluster.xml:167
 #, no-c-format
@@ -270,12 +252,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_ClusterKMeans\"/>, <xref "
 "linkend=\"ST_ClusterWithinWin\"/> <xref linkend=\"ST_ClusterWithin\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_cluster.xml:211
-#, no-c-format
-msgid "ST_ClusterKMeans"
 msgstr ""
 
 #. Tag: refpurpose
@@ -379,12 +355,6 @@ msgid ""
 "<xref linkend=\"ST_Force_3D\"/>, <xref linkend=\"ST_Force_4D\"/>,"
 msgstr ""
 
-#. Tag: refname
-#: reference_cluster.xml:309
-#, no-c-format
-msgid "ST_ClusterWithin"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_cluster.xml:311
 #, no-c-format
@@ -418,12 +388,6 @@ msgid ""
 ", <xref linkend=\"ST_ClusterKMeans\"/>, <xref "
 "linkend=\"ST_ClusterIntersectingWin\"/>, <xref "
 "linkend=\"ST_ClusterWithinWin\"/>, <xref linkend=\"ST_ClusterIntersecting\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_cluster.xml:352
-#, no-c-format
-msgid "ST_ClusterWithinWin"
 msgstr ""
 
 #. Tag: refpurpose

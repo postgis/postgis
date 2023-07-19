@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-05-29 09:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -32,12 +32,6 @@ msgstr ""
 #, no-c-format
 msgid "Spatial Reference System Functions"
 msgstr "Fonctions des systèmes de référence spatiale"
-
-#. Tag: refname
-#: reference_srs.xml:14
-#, no-c-format
-msgid "ST_InverseTransformPipeline"
-msgstr "ST_InverseTransformPipeline"
 
 #. Tag: refpurpose
 #: reference_srs.xml:16
@@ -171,12 +165,6 @@ msgstr "Voir aussi"
 msgid ", <xref linkend=\"ST_TransformPipeline\"/>"
 msgstr ", <xref linkend=\"ST_TransformPipeline\"/>"
 
-#. Tag: refname
-#: reference_srs.xml:75
-#, no-c-format
-msgid "ST_SetSRID"
-msgstr "ST_SetSRID"
-
 #. Tag: refpurpose
 #: reference_srs.xml:77
 #, no-c-format
@@ -258,12 +246,6 @@ msgstr ""
 ", <xref linkend=\"ST_SRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
 "linkend=\"UpdateGeometrySRID\"/>"
 
-#. Tag: refname
-#: reference_srs.xml:128
-#, no-c-format
-msgid "ST_SRID"
-msgstr "ST_SRID"
-
 #. Tag: refpurpose
 #: reference_srs.xml:129
 #, no-c-format
@@ -326,12 +308,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
 "linkend=\"RT_ST_SRID\"/>, <xref linkend=\"TG_ST_SRID\"/>"
-
-#. Tag: refname
-#: reference_srs.xml:168
-#, no-c-format
-msgid "ST_Transform"
-msgstr "ST_Transform"
 
 #. Tag: refpurpose
 #: reference_srs.xml:170
@@ -581,12 +557,6 @@ msgstr ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>, <xref "
 "linkend=\"UpdateGeometrySRID\"/>, <xref linkend=\"ST_TransformPipeline\"/>"
 
-#. Tag: refname
-#: reference_srs.xml:291
-#, no-c-format
-msgid "ST_TransformPipeline"
-msgstr "ST_TransformPipeline"
-
 #. Tag: refpurpose
 #: reference_srs.xml:293
 #, no-c-format
@@ -701,12 +671,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_InverseTransformPipeline\"/>"
 msgstr ", <xref linkend=\"ST_InverseTransformPipeline\"/>"
 
-#. Tag: refname
-#: reference_srs.xml:377
-#, no-c-format
-msgid "postgis_srs_codes"
-msgstr "postgis_srs_codes"
-
 #. Tag: refpurpose
 #: reference_srs.xml:379
 #, no-c-format
@@ -754,12 +718,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"postgis_srs_all\"/>, <xref linkend=\"postgis_srs_search\"/>"
 
-#. Tag: refname
-#: reference_srs.xml:418
-#, no-c-format
-msgid "postgis_srs"
-msgstr "postgis_srs"
-
 #. Tag: refpurpose
 #: reference_srs.xml:420
 #, no-c-format
@@ -802,12 +760,6 @@ msgstr ""
 #, no-c-format
 msgid "Get the metadata for EPSG:3005."
 msgstr "Obtenir les métadonnées pour EPSG:3005."
-
-#. Tag: refname
-#: reference_srs.xml:460
-#, no-c-format
-msgid "postgis_srs_all"
-msgstr "postgis_srs_all"
 
 #. Tag: refpurpose
 #: reference_srs.xml:462
@@ -857,12 +809,6 @@ msgid ""
 ", <xref linkend=\"postgis_srs\"/>, <xref linkend=\"postgis_srs_search\"/>"
 msgstr ""
 ", <xref linkend=\"postgis_srs\"/>, <xref linkend=\"postgis_srs_search\"/>"
-
-#. Tag: refname
-#: reference_srs.xml:503
-#, no-c-format
-msgid "postgis_srs_search"
-msgstr "postgis_srs_search"
 
 #. Tag: refpurpose
 #: reference_srs.xml:505
@@ -940,6 +886,42 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"postgis_srs_all\"/>, <xref linkend=\"postgis_srs\"/>"
 msgstr ", <xref linkend=\"postgis_srs_all\"/>, <xref linkend=\"postgis_srs\"/>"
+
+#, no-c-format
+#~ msgid "ST_InverseTransformPipeline"
+#~ msgstr "ST_InverseTransformPipeline"
+
+#, no-c-format
+#~ msgid "ST_SetSRID"
+#~ msgstr "ST_SetSRID"
+
+#, no-c-format
+#~ msgid "ST_SRID"
+#~ msgstr "ST_SRID"
+
+#, no-c-format
+#~ msgid "ST_Transform"
+#~ msgstr "ST_Transform"
+
+#, no-c-format
+#~ msgid "ST_TransformPipeline"
+#~ msgstr "ST_TransformPipeline"
+
+#, no-c-format
+#~ msgid "postgis_srs_codes"
+#~ msgstr "postgis_srs_codes"
+
+#, no-c-format
+#~ msgid "postgis_srs"
+#~ msgstr "postgis_srs"
+
+#, no-c-format
+#~ msgid "postgis_srs_all"
+#~ msgstr "postgis_srs_all"
+
+#, no-c-format
+#~ msgid "postgis_srs_search"
+#~ msgstr "postgis_srs_search"
 
 #, no-c-format
 #~ msgid ""

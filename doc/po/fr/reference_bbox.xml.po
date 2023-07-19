@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-05-12 13:00+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -39,12 +39,6 @@ msgstr "Voir aussi <xref linkend=\"PostGIS_BoxFunctions\"/>."
 #, no-c-format
 msgid "Bounding Box Functions"
 msgstr "Fonctions des boîtes de délimitation"
-
-#. Tag: refname
-#: reference_bbox.xml:16
-#, no-c-format
-msgid "Box2D"
-msgstr "Box2D"
 
 #. Tag: refpurpose
 #: reference_bbox.xml:18
@@ -142,12 +136,6 @@ msgstr "Voir aussi"
 msgid ", <xref linkend=\"ST_GeomFromText\"/>"
 msgstr ", <xref linkend=\"ST_GeomFromText\"/>"
 
-#. Tag: refname
-#: reference_bbox.xml:58
-#, no-c-format
-msgid "Box3D"
-msgstr "Box3D"
-
 #. Tag: refpurpose
 #: reference_bbox.xml:60
 #, no-c-format
@@ -187,12 +175,6 @@ msgstr "&Z_support;"
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeomFromEWKT\"/>"
 msgstr ", <xref linkend=\"ST_GeomFromEWKT\"/>"
-
-#. Tag: refname
-#: reference_bbox.xml:101
-#, no-c-format
-msgid "ST_EstimatedExtent"
-msgstr "ST_EstimatedExtent"
 
 #. Tag: refpurpose
 #: reference_bbox.xml:103
@@ -276,12 +258,6 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_3DExtent\"/>"
 msgstr ", <xref linkend=\"ST_3DExtent\"/>"
-
-#. Tag: refname
-#: reference_bbox.xml:183
-#, no-c-format
-msgid "ST_Expand"
-msgstr "ST_Expand"
 
 #. Tag: refpurpose
 #: reference_bbox.xml:184
@@ -396,12 +372,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SRID\"/>"
 msgstr ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SRID\"/>"
 
-#. Tag: refname
-#: reference_bbox.xml:283
-#, no-c-format
-msgid "ST_Extent"
-msgstr "ST_Extent"
-
 #. Tag: refpurpose
 #: reference_bbox.xml:284
 #, no-c-format
@@ -486,12 +456,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_3DExtent\"/>, <xref linkend=\"ST_SetSRID\"/>"
 msgstr ", <xref linkend=\"ST_3DExtent\"/>, <xref linkend=\"ST_SetSRID\"/>"
 
-#. Tag: refname
-#: reference_bbox.xml:342
-#, no-c-format
-msgid "ST_3DExtent"
-msgstr "ST_3DExtent"
-
 #. Tag: refpurpose
 #: reference_bbox.xml:343
 #, no-c-format
@@ -535,12 +499,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_Force_3DZ\"/>, <xref linkend=\"ST_SetSRID\"/>"
 msgstr ", <xref linkend=\"ST_Force_3DZ\"/>, <xref linkend=\"ST_SetSRID\"/>"
 
-#. Tag: refname
-#: reference_bbox.xml:390
-#, no-c-format
-msgid "ST_MakeBox2D"
-msgstr "ST_MakeBox2D"
-
 #. Tag: refpurpose
 #: reference_bbox.xml:392
 #, no-c-format
@@ -576,12 +534,6 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>"
 msgstr ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>"
-
-#. Tag: refname
-#: reference_bbox.xml:429
-#, no-c-format
-msgid "ST_3DMakeBox"
-msgstr "ST_3DMakeBox"
 
 #. Tag: refpurpose
 #: reference_bbox.xml:431
@@ -625,12 +577,6 @@ msgid "Changed: 2.0.0 In prior versions this used to be called ST_MakeBox3D"
 msgstr ""
 "Modifié : 2.0.0 Dans les versions précédentes, cette fonction s'appelait "
 "ST_MakeBox3D"
-
-#. Tag: refname
-#: reference_bbox.xml:475
-#, no-c-format
-msgid "ST_XMax"
-msgstr "ST_XMax"
 
 #. Tag: refpurpose
 #: reference_bbox.xml:477
@@ -685,12 +631,6 @@ msgstr ""
 ", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
 "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 
-#. Tag: refname
-#: reference_bbox.xml:520
-#, no-c-format
-msgid "ST_XMin"
-msgstr "ST_XMin"
-
 #. Tag: refpurpose
 #: reference_bbox.xml:522
 #, no-c-format
@@ -735,12 +675,6 @@ msgstr ""
 "la géométrie ou de la box2d, car celles-ci ne sont pas coulées "
 "automatiquement."
 
-#. Tag: refname
-#: reference_bbox.xml:565
-#, no-c-format
-msgid "ST_YMax"
-msgstr "ST_YMax"
-
 #. Tag: refpurpose
 #: reference_bbox.xml:567
 #, no-c-format
@@ -779,12 +713,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
 "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
-
-#. Tag: refname
-#: reference_bbox.xml:610
-#, no-c-format
-msgid "ST_YMin"
-msgstr "ST_YMin"
 
 #. Tag: refpurpose
 #: reference_bbox.xml:612
@@ -827,12 +755,6 @@ msgstr ""
 "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
 "linkend=\"ST_ZMin\"/>"
 
-#. Tag: refname
-#: reference_bbox.xml:655
-#, no-c-format
-msgid "ST_ZMax"
-msgstr "ST_ZMax"
-
 #. Tag: refpurpose
 #: reference_bbox.xml:657
 #, no-c-format
@@ -874,12 +796,6 @@ msgstr ""
 "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
 "linkend=\"ST_ZMax\"/>"
 
-#. Tag: refname
-#: reference_bbox.xml:700
-#, no-c-format
-msgid "ST_ZMin"
-msgstr "ST_ZMin"
-
 #. Tag: refpurpose
 #: reference_bbox.xml:702
 #, no-c-format
@@ -920,6 +836,62 @@ msgstr ""
 ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
 "linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref "
 "linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
+
+#, no-c-format
+#~ msgid "Box2D"
+#~ msgstr "Box2D"
+
+#, no-c-format
+#~ msgid "Box3D"
+#~ msgstr "Box3D"
+
+#, no-c-format
+#~ msgid "ST_EstimatedExtent"
+#~ msgstr "ST_EstimatedExtent"
+
+#, no-c-format
+#~ msgid "ST_Expand"
+#~ msgstr "ST_Expand"
+
+#, no-c-format
+#~ msgid "ST_Extent"
+#~ msgstr "ST_Extent"
+
+#, no-c-format
+#~ msgid "ST_3DExtent"
+#~ msgstr "ST_3DExtent"
+
+#, no-c-format
+#~ msgid "ST_MakeBox2D"
+#~ msgstr "ST_MakeBox2D"
+
+#, no-c-format
+#~ msgid "ST_3DMakeBox"
+#~ msgstr "ST_3DMakeBox"
+
+#, no-c-format
+#~ msgid "ST_XMax"
+#~ msgstr "ST_XMax"
+
+#, no-c-format
+#~ msgid "ST_XMin"
+#~ msgstr "ST_XMin"
+
+#, no-c-format
+#~ msgid "ST_YMax"
+#~ msgstr "ST_YMax"
+
+#, no-c-format
+#~ msgid "ST_YMin"
+#~ msgstr "ST_YMin"
+
+#, no-c-format
+#~ msgid "ST_ZMax"
+#~ msgstr "ST_ZMax"
+
+#, no-c-format
+#~ msgid "ST_ZMin"
+#~ msgstr "ST_ZMin"
 
 #, no-c-format
 #~ msgid ""

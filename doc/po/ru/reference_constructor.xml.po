@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-01-09 04:42+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Russian <https://weblate.osgeo.org/projects/postgis/"
@@ -23,12 +23,6 @@ msgstr ""
 #: reference_constructor.xml:3
 #, no-c-format
 msgid "Geometry Constructors"
-msgstr ""
-
-#. Tag: refname
-#: reference_constructor.xml:7
-#, no-c-format
-msgid "ST_Collect"
 msgstr ""
 
 #. Tag: refpurpose
@@ -202,12 +196,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_Union\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_constructor.xml:94
-#, no-c-format
-msgid "ST_LineFromMultiPoint"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_constructor.xml:96
 #, no-c-format
@@ -257,12 +245,6 @@ msgstr ""
 #: reference_constructor.xml:129
 #, no-c-format
 msgid ", <xref linkend=\"ST_MakeLine\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_constructor.xml:135
-#, no-c-format
-msgid "ST_MakeEnvelope"
 msgstr ""
 
 #. Tag: refpurpose
@@ -320,12 +302,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_MakeLine\"/>, <xref linkend=\"ST_MakePolygon\"/>, <xref "
 "linkend=\"ST_TileEnvelope\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_constructor.xml:177
-#, no-c-format
-msgid "ST_MakeLine"
 msgstr ""
 
 #. Tag: refpurpose
@@ -466,12 +442,6 @@ msgid ""
 "linkend=\"ST_Point\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_constructor.xml:280
-#, no-c-format
-msgid "ST_MakePoint"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_constructor.xml:282
 #, no-c-format
@@ -548,12 +518,6 @@ msgid ""
 "<xref linkend=\"ST_MakePointM\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_constructor.xml:342
-#, no-c-format
-msgid "ST_MakePointM"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_constructor.xml:344
 #, no-c-format
@@ -614,12 +578,6 @@ msgstr ""
 #: reference_constructor.xml:385
 #, no-c-format
 msgid ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_constructor.xml:391
-#, no-c-format
-msgid "ST_MakePolygon"
 msgstr ""
 
 #. Tag: refpurpose
@@ -754,12 +712,6 @@ msgid ""
 "constructor that converts a row set to an array."
 msgstr ""
 
-#. Tag: refname
-#: reference_constructor.xml:482
-#, no-c-format
-msgid "ST_Point"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_constructor.xml:484
 #, no-c-format
@@ -864,12 +816,6 @@ msgid ""
 "linkend=\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_constructor.xml:556
-#, no-c-format
-msgid "ST_PointZ"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_constructor.xml:557
 #, no-c-format
@@ -902,12 +848,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
 "linkend=\"ST_PointZM\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_constructor.xml:593
-#, no-c-format
-msgid "ST_PointM"
 msgstr ""
 
 #. Tag: refpurpose
@@ -944,12 +884,6 @@ msgid ""
 "linkend=\"ST_PointZM\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_constructor.xml:631
-#, no-c-format
-msgid "ST_PointZM"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_constructor.xml:632
 #, no-c-format
@@ -983,12 +917,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
 "linkend=\"ST_PointZ\"/>, <xref linkend=\"ST_SetSRID\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_constructor.xml:669
-#, no-c-format
-msgid "ST_Polygon"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1062,12 +990,6 @@ msgid ""
 ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>, <xref "
 "linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_LineMerge\"/>, <xref "
 "linkend=\"ST_MakePolygon\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_constructor.xml:725
-#, no-c-format
-msgid "ST_TileEnvelope"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1155,12 +1077,6 @@ msgstr ""
 #: reference_constructor.xml:771
 #, no-c-format
 msgid "Example: Building a tile envelope"
-msgstr ""
-
-#. Tag: refname
-#: reference_constructor.xml:784
-#, no-c-format
-msgid "ST_HexagonGrid"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1270,12 +1186,6 @@ msgid ""
 "linkend=\"ST_TileEnvelope\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_constructor.xml:853
-#, no-c-format
-msgid "ST_Hexagon"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_constructor.xml:854
 #, no-c-format
@@ -1323,12 +1233,6 @@ msgstr ""
 #: reference_constructor.xml:887
 #, no-c-format
 msgid ", <xref linkend=\"ST_HexagonGrid\"/>, <xref linkend=\"ST_Square\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_constructor.xml:893
-#, no-c-format
-msgid "ST_SquareGrid"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1428,12 +1332,6 @@ msgid ""
 "> , <xref linkend=\"ST_SetSRID\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_constructor.xml:955
-#, no-c-format
-msgid "ST_Square"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_constructor.xml:956
 #, no-c-format
@@ -1481,12 +1379,6 @@ msgstr ""
 #: reference_constructor.xml:989
 #, no-c-format
 msgid ", <xref linkend=\"ST_SquareGrid\"/>, <xref linkend=\"ST_Hexagon\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_constructor.xml:997
-#, no-c-format
-msgid "ST_Letters"
 msgstr ""
 
 #. Tag: refpurpose

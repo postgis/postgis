@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2022-04-17 08:55+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Russian <https://weblate.osgeo.org/projects/postgis/"
@@ -14,9 +14,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
-"%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
 "X-Generator: Weblate 4.11.2\n"
 
 #. Tag: para
@@ -32,12 +32,12 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Each data type describes its type casting behavior. A <ulink url=\"https://"
-"www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-CASTS"
-"\">type cast</ulink> converts values of one data type into another type. "
-"PostgreSQL allows defining casting behavior for custom types, along with the "
-"functions used to convert type values. Casts can have <emphasis role=\"bold"
-"\">automatic</emphasis> behavior, which allows automatic conversion of a "
-"function argument to a type supported by the function."
+"www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-"
+"CASTS\">type cast</ulink> converts values of one data type into another "
+"type. PostgreSQL allows defining casting behavior for custom types, along "
+"with the functions used to convert type values. Casts can have <emphasis "
+"role=\"bold\">automatic</emphasis> behavior, which allows automatic "
+"conversion of a function argument to a type supported by the function."
 msgstr ""
 
 #. Tag: para
@@ -67,12 +67,6 @@ msgstr ""
 #: reference_type.xml:27
 #, no-c-format
 msgid "PostGIS Geometry/Geography/Box Data Types"
-msgstr ""
-
-#. Tag: refname
-#: reference_type.xml:31
-#, no-c-format
-msgid "<refname>box2d</refname>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -171,12 +165,6 @@ msgstr ""
 msgid "See Also"
 msgstr ""
 
-#. Tag: refname
-#: reference_type.xml:77
-#, no-c-format
-msgid "<refname>box3d</refname>"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_type.xml:78
 #, no-c-format
@@ -220,12 +208,6 @@ msgstr ""
 #: reference_type.xml:111 reference_type.xml:157
 #, no-c-format
 msgid "<entry>box2d</entry>"
-msgstr ""
-
-#. Tag: refname
-#: reference_type.xml:132
-#, no-c-format
-msgid "<refname>geometry</refname>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -274,12 +256,6 @@ msgstr ""
 msgid ", <xref linkend=\"PostGIS_SQLMM_Functions\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_type.xml:189
-#, no-c-format
-msgid "geometry_dump"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_type.xml:190
 #, no-c-format
@@ -319,12 +295,6 @@ msgstr ""
 msgid ""
 "It is used by the <varname>ST_Dump*</varname> family of functions as an "
 "output type to explode a complex geometry into its constituent parts."
-msgstr ""
-
-#. Tag: refname
-#: reference_type.xml:221
-#, no-c-format
-msgid "<refname>geography</refname>"
 msgstr ""
 
 #. Tag: refpurpose

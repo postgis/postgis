@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2022-01-12 23:53+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
@@ -41,12 +41,6 @@ msgid ""
 "role=\"bold\">serializable</emphasis> <ulink url=\"http://www.postgresql.org/"
 "docs/current/static/transaction-iso.html\"> transaction isolation level</"
 "ulink> must be used."
-msgstr ""
-
-#. Tag: refname
-#: reference_transaction.xml:24
-#, no-c-format
-msgid "AddAuth"
 msgstr ""
 
 #. Tag: refpurpose
@@ -113,12 +107,6 @@ msgstr "Esempi"
 msgid "See Also"
 msgstr "Si veda anche"
 
-#. Tag: refname
-#: reference_transaction.xml:65
-#, no-c-format
-msgid "CheckAuth"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_transaction.xml:67
 #, no-c-format
@@ -156,12 +144,6 @@ msgstr ""
 msgid "If Transaction support is not enabled, function throws an exception."
 msgstr ""
 
-#. Tag: refname
-#: reference_transaction.xml:119
-#, no-c-format
-msgid "DisableLongTransactions"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_transaction.xml:121
 #, no-c-format
@@ -192,12 +174,6 @@ msgid ""
 "Drops meta table called <varname>authorization_table</varname> and a view "
 "called <varname>authorized_tables</varname> and all triggers called "
 "<varname>checkauthtrigger</varname>"
-msgstr ""
-
-#. Tag: refname
-#: reference_transaction.xml:163
-#, no-c-format
-msgid "EnableLongTransactions"
 msgstr ""
 
 #. Tag: refpurpose
@@ -231,12 +207,6 @@ msgid ""
 "view called <varname>authorized_tables</varname>"
 msgstr ""
 
-#. Tag: refname
-#: reference_transaction.xml:208
-#, no-c-format
-msgid "LockRow"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_transaction.xml:210
 #, no-c-format
@@ -252,12 +222,6 @@ msgid ""
 "varname> is a timestamp which defaults to <emphasis>now() + 1 hour</"
 "emphasis>. Returns 1 if lock has been assigned, 0 otherwise (i.e. row is "
 "already locked by another auth.)"
-msgstr ""
-
-#. Tag: refname
-#: reference_transaction.xml:272
-#, no-c-format
-msgid "UnlockRows"
 msgstr ""
 
 #. Tag: refpurpose

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 12:17+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2021-11-08 06:12+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -29,12 +29,6 @@ msgstr ""
 #: reference_overlay.xml:12
 #, no-c-format
 msgid "Overlay Functions"
-msgstr ""
-
-#. Tag: refname
-#: reference_overlay.xml:16
-#, no-c-format
-msgid "ST_ClipByBox2D"
 msgstr ""
 
 #. Tag: refpurpose
@@ -108,12 +102,6 @@ msgstr ""
 #: reference_overlay.xml:52
 #, no-c-format
 msgid ", <xref linkend=\"ST_MakeBox2D\"/>, <xref linkend=\"ST_MakeEnvelope\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_overlay.xml:62
-#, no-c-format
-msgid "ST_Difference"
 msgstr ""
 
 #. Tag: refpurpose
@@ -233,12 +221,6 @@ msgstr ""
 #: reference_overlay.xml:150 reference_overlay.xml:707
 #, no-c-format
 msgid ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_overlay.xml:156
-#, no-c-format
-msgid "ST_Intersection"
 msgstr ""
 
 #. Tag: refpurpose
@@ -382,12 +364,6 @@ msgid ""
 "linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_overlay.xml:258
-#, no-c-format
-msgid "ST_MemUnion"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_overlay.xml:260
 #, no-c-format
@@ -423,12 +399,6 @@ msgid ""
 "the geometries incrementally, as opposed to the ST_Union aggregate which "
 "first accumulates an array and then unions the contents using a fast "
 "algorithm."
-msgstr ""
-
-#. Tag: refname
-#: reference_overlay.xml:310
-#, no-c-format
-msgid "ST_Node"
 msgstr ""
 
 #. Tag: refpurpose
@@ -511,12 +481,6 @@ msgstr ""
 #: reference_overlay.xml:368 reference_overlay.xml:496
 #, no-c-format
 msgid ", <xref linkend=\"ST_Union\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_overlay.xml:376
-#, no-c-format
-msgid "ST_Split"
 msgstr ""
 
 #. Tag: refpurpose
@@ -622,12 +586,6 @@ msgid ""
 "Split a LineString by a Point, where the point does not lie exactly on the "
 "line. Shows using <xref linkend=\"ST_Snap\"/> to snap the line to the point "
 "to allow it to be split."
-msgstr ""
-
-#. Tag: refname
-#: reference_overlay.xml:504
-#, no-c-format
-msgid "ST_Subdivide"
 msgstr ""
 
 #. Tag: refpurpose
@@ -753,12 +711,6 @@ msgid ""
 "linkend=\"ST_NPoints\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_overlay.xml:619
-#, no-c-format
-msgid "ST_SymDifference"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_overlay.xml:621
 #, no-c-format
@@ -804,12 +756,6 @@ msgstr ""
 #: reference_overlay.xml:689
 #, no-c-format
 msgid "The symmetric difference of the two linestrings"
-msgstr ""
-
-#. Tag: refname
-#: reference_overlay.xml:713
-#, no-c-format
-msgid "ST_UnaryUnion"
 msgstr ""
 
 #. Tag: refpurpose
@@ -873,12 +819,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, <xref "
 "linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_overlay.xml:791
-#, no-c-format
-msgid "ST_Union"
 msgstr ""
 
 #. Tag: refpurpose

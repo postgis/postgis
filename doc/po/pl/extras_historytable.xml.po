@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Jakub Bobrowski <jbobrowski@geoinfor.pl>\n"
 "Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/"
@@ -105,12 +105,6 @@ msgstr ""
 msgid "Or, to retrieve a view of the roads table at any point in the past:"
 msgstr ""
 
-#. Tag: refname
-#: extras_historytable.xml:38
-#, no-c-format
-msgid "Postgis_Install_History"
-msgstr ""
-
 #. Tag: refpurpose
 #: extras_historytable.xml:39
 #, no-c-format
@@ -158,12 +152,6 @@ msgstr "Przykłady"
 #, no-c-format
 msgid "See Also"
 msgstr "Zobacz także"
-
-#. Tag: refname
-#: extras_historytable.xml:77
-#, no-c-format
-msgid "Postgis_Enable_History"
-msgstr ""
 
 #. Tag: refpurpose
 #: extras_historytable.xml:78

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-01-09 04:42+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Russian <https://weblate.osgeo.org/projects/postgis/"
@@ -33,12 +33,6 @@ msgstr ""
 #: reference_trajectory.xml:12
 #, no-c-format
 msgid "Trajectory Functions"
-msgstr ""
-
-#. Tag: refname
-#: reference_trajectory.xml:17
-#, no-c-format
-msgid "ST_IsValidTrajectory"
 msgstr ""
 
 #. Tag: refpurpose
@@ -107,12 +101,6 @@ msgstr "Примеры"
 msgid "See Also"
 msgstr ""
 
-#. Tag: refname
-#: reference_trajectory.xml:63
-#, no-c-format
-msgid "ST_ClosestPointOfApproach"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_trajectory.xml:64
 #, no-c-format
@@ -161,12 +149,6 @@ msgid ""
 "<xref linkend=\"ST_AddMeasure\"/>"
 msgstr ""
 
-#. Tag: refname
-#: reference_trajectory.xml:120
-#, no-c-format
-msgid "ST_DistanceCPA"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_trajectory.xml:121
 #, no-c-format
@@ -197,12 +179,6 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
 "linkend=\"ST_AddMeasure\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
-msgstr ""
-
-#. Tag: refname
-#: reference_trajectory.xml:172
-#, no-c-format
-msgid "ST_CPAWithin"
 msgstr ""
 
 #. Tag: refpurpose

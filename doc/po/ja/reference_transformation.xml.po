@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-05-15 11:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -34,12 +34,6 @@ msgstr ""
 #, no-c-format
 msgid "Affine Transformations"
 msgstr "アフィン変換"
-
-#. Tag: refname
-#: reference_transformation.xml:14
-#, no-c-format
-msgid "ST_Affine"
-msgstr "ST_Affine"
 
 #. Tag: refpurpose
 #: reference_transformation.xml:16
@@ -208,12 +202,6 @@ msgstr ""
 ", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>, <xref "
 "linkend=\"ST_TransScale\"/>"
 
-#. Tag: refname
-#: reference_transformation.xml:96
-#, no-c-format
-msgid "ST_Rotate"
-msgstr "ST_Rotate"
-
 #. Tag: refpurpose
 #: reference_transformation.xml:98
 #, no-c-format
@@ -256,12 +244,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>, <xref "
 "linkend=\"ST_RotateZ\"/>"
-
-#. Tag: refname
-#: reference_transformation.xml:160
-#, no-c-format
-msgid "ST_RotateX"
-msgstr "ST_RotateX"
 
 #. Tag: refpurpose
 #: reference_transformation.xml:162
@@ -311,12 +293,6 @@ msgstr "Availability: 1.1.2 1.2.2でRotateXからST_RotateXに名称変更しま
 msgid ", <xref linkend=\"ST_RotateY\"/>, <xref linkend=\"ST_RotateZ\"/>"
 msgstr ", <xref linkend=\"ST_RotateY\"/>, <xref linkend=\"ST_RotateZ\"/>"
 
-#. Tag: refname
-#: reference_transformation.xml:207
-#, no-c-format
-msgid "ST_RotateY"
-msgstr "ST_RotateY"
-
 #. Tag: refpurpose
 #: reference_transformation.xml:209
 #, no-c-format
@@ -364,12 +340,6 @@ msgstr "Availability: 1.1.2 1.2.2でRotateYからST_RotateYに名称変更しま
 #, no-c-format
 msgid ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateZ\"/>"
 msgstr ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateZ\"/>"
-
-#. Tag: refname
-#: reference_transformation.xml:256
-#, no-c-format
-msgid "ST_RotateZ"
-msgstr "ST_RotateZ"
 
 #. Tag: refpurpose
 #: reference_transformation.xml:258
@@ -424,12 +394,6 @@ msgstr "Availability: 1.1.2 1.2.2でRotateZからST_RotateZに名称変更しま
 #, no-c-format
 msgid ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>"
 msgstr ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>"
-
-#. Tag: refname
-#: reference_transformation.xml:308
-#, no-c-format
-msgid "ST_Scale"
-msgstr "ST_Scale"
 
 #. Tag: refpurpose
 #: reference_transformation.xml:310
@@ -513,12 +477,6 @@ msgstr "&M_support;"
 msgid ", <xref linkend=\"ST_TransScale\"/>"
 msgstr ", <xref linkend=\"ST_TransScale\"/>"
 
-#. Tag: refname
-#: reference_transformation.xml:395
-#, no-c-format
-msgid "ST_Translate"
-msgstr "ST_Translate"
-
 #. Tag: refpurpose
 #: reference_transformation.xml:397
 #, no-c-format
@@ -572,12 +530,6 @@ msgstr "曲線とポイントを移動させます。"
 msgid ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/>"
 msgstr ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/>"
 
-#. Tag: refname
-#: reference_transformation.xml:452
-#, no-c-format
-msgid "ST_TransScale"
-msgstr "ST_TransScale"
-
 #. Tag: refpurpose
 #: reference_transformation.xml:454
 #, no-c-format
@@ -629,6 +581,38 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_Translate\"/>"
 msgstr ", <xref linkend=\"ST_Translate\"/>"
+
+#, no-c-format
+#~ msgid "ST_Affine"
+#~ msgstr "ST_Affine"
+
+#, no-c-format
+#~ msgid "ST_Rotate"
+#~ msgstr "ST_Rotate"
+
+#, no-c-format
+#~ msgid "ST_RotateX"
+#~ msgstr "ST_RotateX"
+
+#, no-c-format
+#~ msgid "ST_RotateY"
+#~ msgstr "ST_RotateY"
+
+#, no-c-format
+#~ msgid "ST_RotateZ"
+#~ msgstr "ST_RotateZ"
+
+#, no-c-format
+#~ msgid "ST_Scale"
+#~ msgstr "ST_Scale"
+
+#, no-c-format
+#~ msgid "ST_Translate"
+#~ msgstr "ST_Translate"
+
+#, no-c-format
+#~ msgid "ST_TransScale"
+#~ msgstr "ST_TransScale"
 
 #, no-c-format
 #~ msgid ""

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-05-15 11:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -35,12 +35,6 @@ msgstr ""
 #, no-c-format
 msgid "Trajectory Functions"
 msgstr "トラジェクトリ関数"
-
-#. Tag: refname
-#: reference_trajectory.xml:17
-#, no-c-format
-msgid "ST_IsValidTrajectory"
-msgstr "ST_IsValidTrajectory"
 
 #. Tag: refpurpose
 #: reference_trajectory.xml:18
@@ -115,12 +109,6 @@ msgstr "例"
 msgid "See Also"
 msgstr "関連情報"
 
-#. Tag: refname
-#: reference_trajectory.xml:63
-#, no-c-format
-msgid "ST_ClosestPointOfApproach"
-msgstr "ST_ClosestPointOfApproach"
-
 #. Tag: refpurpose
 #: reference_trajectory.xml:64
 #, no-c-format
@@ -180,12 +168,6 @@ msgstr ""
 ", <xref linkend=\"ST_DistanceCPA\"/>, <xref linkend=\"ST_LocateAlong\"/>, "
 "<xref linkend=\"ST_AddMeasure\"/>"
 
-#. Tag: refname
-#: reference_trajectory.xml:120
-#, no-c-format
-msgid "ST_DistanceCPA"
-msgstr "ST_DistanceCPA"
-
 #. Tag: refpurpose
 #: reference_trajectory.xml:121
 #, no-c-format
@@ -222,12 +204,6 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
 "linkend=\"ST_AddMeasure\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
-
-#. Tag: refname
-#: reference_trajectory.xml:172
-#, no-c-format
-msgid "ST_CPAWithin"
-msgstr "ST_CPAWithin"
 
 #. Tag: refpurpose
 #: reference_trajectory.xml:173
@@ -283,6 +259,22 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
 "linkend=\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
+
+#, no-c-format
+#~ msgid "ST_IsValidTrajectory"
+#~ msgstr "ST_IsValidTrajectory"
+
+#, no-c-format
+#~ msgid "ST_ClosestPointOfApproach"
+#~ msgstr "ST_ClosestPointOfApproach"
+
+#, no-c-format
+#~ msgid "ST_DistanceCPA"
+#~ msgstr "ST_DistanceCPA"
+
+#, no-c-format
+#~ msgid "ST_CPAWithin"
+#~ msgstr "ST_CPAWithin"
 
 #, no-c-format
 #~ msgid ""

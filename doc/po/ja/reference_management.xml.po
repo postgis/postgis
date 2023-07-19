@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:29+0000\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
 "PO-Revision-Date: 2023-05-15 11:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -29,12 +29,6 @@ msgstr "これらの関数は、ジオメトリカラムを含むテーブルの
 #, no-c-format
 msgid "Table Management Functions"
 msgstr "テーブル管理関数"
-
-#. Tag: refname
-#: reference_management.xml:14
-#, no-c-format
-msgid "AddGeometryColumn"
-msgstr "AddGeometryColumn"
 
 #. Tag: refpurpose
 #: reference_management.xml:16
@@ -175,12 +169,6 @@ msgstr ""
 ", <xref linkend=\"DropGeometryTable\"/>, <xref linkend=\"geometry_columns\"/"
 ">, <xref linkend=\"Manual_Register_Spatial_Column\"/>"
 
-#. Tag: refname
-#: reference_management.xml:143
-#, no-c-format
-msgid "DropGeometryColumn"
-msgstr "DropGeometryColumn"
-
 #. Tag: refpurpose
 #: reference_management.xml:145
 #, no-c-format
@@ -219,12 +207,6 @@ msgid ""
 ", <xref linkend=\"DropGeometryTable\"/>, <xref linkend=\"geometry_columns\"/>"
 msgstr ""
 ", <xref linkend=\"DropGeometryTable\"/>, <xref linkend=\"geometry_columns\"/>"
-
-#. Tag: refname
-#: reference_management.xml:221
-#, no-c-format
-msgid "DropGeometryTable"
-msgstr "DropGeometryTable"
 
 #. Tag: refpurpose
 #: reference_management.xml:223
@@ -266,12 +248,6 @@ msgstr ""
 ", <xref linkend=\"DropGeometryColumn\"/>, <xref linkend=\"geometry_columns\"/"
 ">"
 
-#. Tag: refname
-#: reference_management.xml:285
-#, no-c-format
-msgid "Find_SRID"
-msgstr "Find_SRID"
-
 #. Tag: refpurpose
 #: reference_management.xml:287
 #, no-c-format
@@ -306,12 +282,6 @@ msgstr ""
 "指定したジオメトリカラムSRID整数値をGEOMETRY_COLUMNSテーブルの探索によって返"
 "します。ジオメトリカラムが正しく追加されていない (例: <xref "
 "linkend=\"AddGeometryColumn\"/>関数)場合には、この関数は動作しません。"
-
-#. Tag: refname
-#: reference_management.xml:327
-#, no-c-format
-msgid "Populate_Geometry_Columns"
-msgstr "Populate_Geometry_Columns"
 
 #. Tag: refpurpose
 #: reference_management.xml:329
@@ -467,12 +437,6 @@ msgstr ""
 "Enhanced: 2.0.0 <varname>use_typmod</varname>任意引数が導入されました。カラム"
 "が型修飾子で生成されるか制約チェックで作られるかの制御ができます。"
 
-#. Tag: refname
-#: reference_management.xml:430
-#, no-c-format
-msgid "UpdateGeometrySRID"
-msgstr "UpdateGeometrySRID"
-
 #. Tag: refpurpose
 #: reference_management.xml:432
 #, no-c-format
@@ -547,6 +511,30 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
 "linkend=\"ST_GeomFromEWKT\"/>"
+
+#, no-c-format
+#~ msgid "AddGeometryColumn"
+#~ msgstr "AddGeometryColumn"
+
+#, no-c-format
+#~ msgid "DropGeometryColumn"
+#~ msgstr "DropGeometryColumn"
+
+#, no-c-format
+#~ msgid "DropGeometryTable"
+#~ msgstr "DropGeometryTable"
+
+#, no-c-format
+#~ msgid "Find_SRID"
+#~ msgstr "Find_SRID"
+
+#, no-c-format
+#~ msgid "Populate_Geometry_Columns"
+#~ msgstr "Populate_Geometry_Columns"
+
+#, no-c-format
+#~ msgid "UpdateGeometrySRID"
+#~ msgstr "UpdateGeometrySRID"
 
 #, no-c-format
 #~ msgid ""
