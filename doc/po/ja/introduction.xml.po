@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-15 01:07+0000\n"
-"PO-Revision-Date: 2023-04-12 10:08+0000\n"
+"PO-Revision-Date: 2023-07-20 04:36+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "introductionxml/ja/>\n"
@@ -648,7 +648,7 @@ msgstr "Eduin Carrillo"
 #: introduction.xml:248
 #, no-c-format
 msgid "Esteban Zimanyi"
-msgstr ""
+msgstr "Esteban Zimanyi"
 
 #. Tag: member
 #: introduction.xml:249
@@ -1086,7 +1086,7 @@ msgstr "Talha Rizwan"
 #: introduction.xml:321
 #, no-c-format
 msgid "Teramoto Ikuhiro"
-msgstr ""
+msgstr "Teramoto Ikuhiro"
 
 #. Tag: member
 #: introduction.xml:322
@@ -1110,7 +1110,7 @@ msgstr "Victor Collod"
 #: introduction.xml:325
 #, no-c-format
 msgid "Vincent Bre"
-msgstr ""
+msgstr "Vincent Bre"
 
 #. Tag: member
 #: introduction.xml:326
