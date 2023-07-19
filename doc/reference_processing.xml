@@ -403,10 +403,20 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
             The result is a Polygon or MultiPolygon, depending on input.
             If the input linework does not form polygons, NULL is returned.
             </para>
-            <para>This function assumes all inner geometries represent holes</para>
+            <para>Unlike <xref linkend="ST_MakePolygon" />,
+            this function accepts rings formed by multiple lines, and can form any number of polygons.
+            </para>
+            <para>This function assumes all inner geometries represent holes.
+            To turn inner geometries into polygons as well, see <xref linkend="ST_Polygonize" />.
+            </para>
 
             <note>
-                <para>Input linework must be correctly noded for this function to work properly</para>
+                <para>Input linework must be correctly noded for this function to work properly.
+                <xref linkend="ST_Node" /> can be used to node lines.
+                </para>
+                <para>If the input linework crosses, this function will produce invalid polygons.
+                <xref linkend="ST_MakeValid" /> can be used to ensure the output is valid.
+                </para>
             </note>
 
             <para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
@@ -414,48 +424,77 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
 
           <refsection>
             <title>Examples</title>
-            <informaltable>
-                  <tgroup cols="1">
-                    <tbody>
-                      <row>
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_buildarea01.png" />
-                              </imageobject>
-                              <caption><para>These will create a donut</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                <programlisting>
-<lineannotation>using polygons</lineannotation>
+
+                <informaltable>
+      <tgroup cols="2">
+      <tbody>
+        <row>
+        <entry><para>
+        <informalfigure>
+          <mediaobject>
+              <imageobject>
+              <imagedata fileref="images/st_buildarea02.png" />
+              </imageobject>
+              <caption><para>Input lines</para></caption>
+          </mediaobject>
+        </informalfigure>
+        </para></entry>
+        <entry><para>
+        <informalfigure>
+          <mediaobject>
+              <imageobject>
+              <imagedata fileref="images/st_buildarea03.png" />
+              </imageobject>
+              <caption><para>Area result</para></caption>
+          </mediaobject>
+        </informalfigure>
+        </para></entry>
+       </row>
+      </tbody>
+      </tgroup>
+    </informaltable>
+
+      <programlisting>WITH data(geom) AS (VALUES
+   ('LINESTRING (180 40, 30 20, 20 90)'::geometry)
+  ,('LINESTRING (180 40, 160 160)'::geometry)
+  ,('LINESTRING (160 160, 80 190, 80 120, 20 90)'::geometry)
+  ,('LINESTRING (80 60, 120 130, 150 80)'::geometry)
+  ,('LINESTRING (80 60, 150 80)'::geometry)
+)
+SELECT ST_AsText( ST_BuildArea( ST_Collect( geom )))
+    FROM data;
+    
+  ------------------------------------------------------------------------------------------
+ POLYGON((180 40,30 20,20 90,80 120,80 190,160 160,180 40),(150 80,120 130,80 60,150 80))
+</programlisting>
+
+    <informalfigure>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/st_buildarea01.png" />
+          </imageobject>
+          <caption><para>Create a donut from two circular polygons</para></caption>
+        </mediaobject>
+      </informalfigure>
+<programlisting>
 SELECT ST_BuildArea(ST_Collect(smallc,bigc))
 FROM (SELECT
     ST_Buffer(
       ST_GeomFromText('POINT(100 90)'), 25) As smallc,
     ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;
-                </programlisting>
+</programlisting>
 
-                <programlisting>
-<lineannotation>using linestrings</lineannotation>
-SELECT ST_BuildArea(ST_Collect(smallc,bigc))
-FROM (SELECT
-    ST_ExteriorRing(ST_Buffer(
-      ST_GeomFromText('POINT(100 90)'), 25)) As smallc,
-    ST_ExteriorRing(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50)) As bigc) As foo;</programlisting>
-                          </para></entry>
-                    </row>
-                    </tbody>
-                  </tgroup>
-            </informaltable>
           </refsection>
 
           <refsection>
             <title>See Also</title>
 
             <para>
-            <xref linkend="ST_Node" />,
+            <xref linkend="ST_Collect" />,
             <xref linkend="ST_MakePolygon" />,
             <xref linkend="ST_MakeValid" />,
+            <xref linkend="ST_Node" />,
+            <xref linkend="ST_Polygonize" />,
             <xref linkend="ST_BdPolyFromText" />,
             <xref linkend="ST_BdMPolyFromText" /> (wrappers to
             this function with standard OGC interface)</para>

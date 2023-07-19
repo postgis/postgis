@@ -61,6 +61,8 @@ GENERATED_IMAGES= \
 	st_buffer12.png \
 	st_buffer13.png \
 	st_buildarea01.png \
+	st_buildarea02.png \
+	st_buildarea03.png \
 	st_closestpoint01.png \
 	st_closestpoint02.png \
 	st_clusterkmeans02.png \
