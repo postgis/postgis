@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-15 01:29+0000\n"
-"PO-Revision-Date: 2023-07-14 02:08+0000\n"
+"PO-Revision-Date: 2023-07-19 07:46+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_measurexml/ja/>\n"
@@ -486,7 +486,7 @@ msgstr ""
 #: reference_measure.xml:259
 #, no-c-format
 msgid "Enhanced: 3.4.0 - Support for geography."
-msgstr ""
+msgstr "Enhanced: 3.4.0 - ジオグラフィに対応しました。"
 
 #. Tag: para
 #: reference_measure.xml:260 reference_measure.xml:729
@@ -2170,7 +2170,7 @@ msgstr ""
 #: reference_measure.xml:1494
 #, no-c-format
 msgid "Enhanced: 3.4.0 - support for geography."
-msgstr ""
+msgstr "Enhanced: 3.4.0 - ジオグラフィに対応しました。"
 
 #. Tag: para
 #: reference_measure.xml:1505
