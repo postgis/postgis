@@ -6,23 +6,24 @@ PG_SHAREDIR=$(shell $(PG_CONFIG) --sharedir)
 
 install: install-upgrade-paths
 
-# The "next" lines are a cludge to allow upgrading between different
-# revisions of the same version
 #
-# TODO: drop the "next" lines, give users instruction to use:
+# Install <extension>--<curversion>--ANY.sql
+#     and <extension>--ANY--<curversion>.sql
+# upgrade paths
 #
-#   SELECT postgis_extensions_upgrade();
+# The <curversion>--ANY file will be a symlink ( or copy,
+# on systems not supporting symlinks ) to an empty upgrade template
+# file named <extension>--TEMPLATED--TO--ANY.sql and be overwritten
+# by any future versions of PostGIS, keeping the overall number of
+# upgrade paths down.
 #
-# Or:
+# See https://trac.osgeo.org/postgis/ticket/5092
 #
-#   ALTER EXTENSION postgis UPDATE TO 'ANY';
-#   ALTER EXTENSION postgis UPDATE;
-#
-install-upgrade-paths: tag-as-any
-	tpl='$(EXTENSION)--ANY--$(EXTVERSION).sql'; \
-	$(INSTALL_DATA) sql/$${tpl} "$(EXTDIR)/$${tpl}"; \
-	$(INSTALL_DATA) "sql/$(TAG_UPGRADE)" "$(EXTDIR)/$(TAG_UPGRADE)"; \
-	ln -fs "$(TAG_UPGRADE)" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)--ANY.sql;
+install-upgrade-paths: sql/$(TAG_UPGRADE) sql/$(EXTENSION)--ANY--$(EXTVERSION).sql
+	mkdir -p "$(EXTDIR)"
+	$(INSTALL_DATA) "sql/$(EXTENSION)--ANY--$(EXTVERSION).sql" "$(EXTDIR)/$(EXTENSION)--ANY--$(EXTVERSION).sql"
+	$(INSTALL_DATA) "sql/$(TAG_UPGRADE)" "$(EXTDIR)/$(TAG_UPGRADE)"
+	ln -fs "$(TAG_UPGRADE)" "$(EXTDIR)/$(EXTENSION)--$(EXTVERSION)--ANY.sql"
 
 install-extension-upgrades-from-known-versions:
 	$(PERL) $(top_srcdir)/loader/postgis.pl \
@@ -32,8 +33,6 @@ install-extension-upgrades-from-known-versions:
 		$(UPGRADEABLE_VERSIONS)
 
 all: sql/$(TAG_UPGRADE)
-
-tag-as-any: sql/$(TAG_UPGRADE)
 
 sql/$(TAG_UPGRADE): $(MAKEFILE_LIST) | sql
 	echo '-- Just tag extension $(EXTENSION) version as "ANY"' > $@
