@@ -89,9 +89,9 @@ msgid ""
 "chiark.greenend.org.uk/~sgtatham/bugs.html\">How to Report Bugs Effectively</"
 "ulink> before filing a new report."
 msgstr ""
-"Vous pouvez lire l'article de Simon Tatham sur <ulink url=\"http://www.chiark"
-".greenend.org.uk/~sgtatham/bugs.html\">Comment signaler efficacement les "
-"bugs</ulink> avant de déposer un nouveau rapport."
+"Vous pouvez lire l'article de Simon Tatham sur <ulink url=\"http://www."
+"chiark.greenend.org.uk/~sgtatham/bugs.html\">Comment signaler efficacement "
+"les bugs</ulink> avant de déposer un nouveau rapport."
 
 #. Tag: title
 #: reporting.xml:34
@@ -118,8 +118,8 @@ msgid ""
 "Documentation issues can also be reported to the <ulink url=\"http://trac."
 "osgeo.org/postgis\">PostGIS bug tracker</ulink>."
 msgstr ""
-"Les problèmes de documentation peuvent également être signalés au <ulink url="
-"\"http://trac.osgeo.org/postgis\">PostGIS bug tracker</ulink>."
+"Les problèmes de documentation peuvent également être signalés au <ulink "
+"url=\"http://trac.osgeo.org/postgis\">PostGIS bug tracker</ulink>."
 
 #. Tag: para
 #: reporting.xml:44
@@ -141,8 +141,8 @@ msgid ""
 msgstr ""
 "Si vos modifications sont plus importantes, il est préférable d'utiliser un "
 "correctif. Il s'agit d'un processus en quatre étapes sous Unix (en supposant "
-"que vous ayez déjà installé <ulink url=\"https://git-scm.com/\">git</ulink>) "
-":"
+"que vous ayez déjà installé <ulink url=\"https://git-scm.com/\">git</"
+"ulink>) :"
 
 #. Tag: para
 #: reporting.xml:54
@@ -212,6 +212,3 @@ msgstr "git diff doc/postgis.xml &gt; doc.patch"
 msgid "Attach the patch to a new issue in bug tracker."
 msgstr ""
 "Ajoutez le correctif à un nouveau ticket dans le système de suivi de bogues."
-
-#~ msgid "svn checkout http://svn.osgeo.org/postgis/trunk/"
-#~ msgstr "svn checkout http://svn.osgeo.org/postgis/trunk/"

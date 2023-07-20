@@ -302,28 +302,3 @@ msgstr ""
 "l'exécution. Dans ce cas, le plan s'exécutera avec moins de workers que "
 "prévu, ce qui peut s'avérer inefficace. La définition de cette valeur à 0, "
 "qui est la valeur par défaut, désactive l'exécution parallèle des requêtes."
-
-#, no-c-format
-#~ msgid ""
-#~ "ALTER SYSTEM SET work_mem = '256MB';\n"
-#~ "-- this forces non-startup configs to take effect for new connections\n"
-#~ "SELECT pg_reload_conf();\n"
-#~ "-- show current setting value\n"
-#~ "-- use SHOW ALL to see all settings\n"
-#~ "SHOW work_mem;"
-#~ msgstr ""
-#~ "ALTER SYSTEM SET work_mem = '256MB' ;\n"
-#~ "-- cela force les configurations non démarrées à prendre effet pour les "
-#~ "nouvelles connexions\n"
-#~ "SELECT pg_reload_conf() ;\n"
-#~ "-- afficher la valeur du réglage actuel\n"
-#~ "-- utiliser SHOW ALL pour voir tous les réglages\n"
-#~ "SHOW work_mem ;"
-
-#, no-c-format
-#~ msgid "SET work_mem TO '256MB';"
-#~ msgstr "SET work_mem TO '256MB' ;"
-
-#, no-c-format
-#~ msgid "SET maintenance_work_mem TO '1GB';"
-#~ msgstr "SET maintenance_work_mem TO '1GB' ;"

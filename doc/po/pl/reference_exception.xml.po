@@ -178,33 +178,3 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_DropBBox\"/>"
 msgstr ", <xref linkend=\"PostGIS_DropBBox\"/>"
-
-#, no-c-format
-#~ msgid "PostGIS_AddBBox"
-#~ msgstr "PostGIS_AddBBox"
-
-#, no-c-format
-#~ msgid "PostGIS_DropBBox"
-#~ msgstr "PostGIS_DropBBox"
-
-#, no-c-format
-#~ msgid "PostGIS_HasBBox"
-#~ msgstr "PostGIS_HasBBox"
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "UPDATE sometable\n"
-#~ " SET geom =  PostGIS_AddBBox(geom)\n"
-#~ " WHERE PostGIS_HasBBox(geom) = false;"
-#~ msgstr ""
-#~ "UPDATE sometable\n"
-#~ " SET the_geom =  PostGIS_AddBBox(the_geom)\n"
-#~ " WHERE PostGIS_HasBBox(the_geom) = false;"
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "SELECT geom\n"
-#~ "FROM sometable WHERE PostGIS_HasBBox(geom) = false;"
-#~ msgstr ""
-#~ "SELECT the_geom\n"
-#~ "FROM sometable WHERE PostGIS_HasBBox(the_geom) = false;"

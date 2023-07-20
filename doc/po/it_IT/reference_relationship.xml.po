@@ -2015,7 +2015,3 @@ msgstr ""
 #, no-c-format
 msgid "Changed: 2.2.0 In prior versions this was called ST_Point_Inside_Circle"
 msgstr ""
-
-#, no-c-format
-#~ msgid "&sqlmm_compliant; SQL-MM 3: ?"
-#~ msgstr "&sqlmm_compliant; SQL-MM 3: ?"

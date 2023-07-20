@@ -278,23 +278,3 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
-
-#, no-c-format
-#~ msgid ""
-#~ "This method is not a native method for geography and relies on geometry "
-#~ "with reprojection to arrive at answers."
-#~ msgstr ""
-#~ "Cette méthode n'est pas une méthode native pour le type géographie et "
-#~ "s'appuie sur une géométrie avec reprojection pour obtenir les résultats."
-
-#, no-c-format
-#~ msgid "Availability"
-#~ msgstr "Disponibilité "
-
-#, no-c-format
-#~ msgid "Enhanced"
-#~ msgstr "Amélioré "
-
-#, no-c-format
-#~ msgid "Changed"
-#~ msgstr "Modifié "

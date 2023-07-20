@@ -972,7 +972,3 @@ msgid ""
 "linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
 "linkend=\"ST_SymDifference\"/>"
 msgstr ""
-
-#, no-c-format
-#~ msgid "ST_Union"
-#~ msgstr "ST_Union"

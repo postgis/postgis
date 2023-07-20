@@ -60,9 +60,9 @@ msgid ""
 "NEWS\">release changelog</ulink> first, to find out if your bug has already "
 "been fixed."
 msgstr ""
-"Se non si sta usando l'ultima release, vale la pena leggerne il <ulink url="
-"\"https://git.osgeo.org/gitea/postgis/postgis/raw/branch/master/NEWS"
-"\">release changelog</ulink>, per scoprire se il bug in questione è già "
+"Se non si sta usando l'ultima release, vale la pena leggerne il <ulink "
+"url=\"https://git.osgeo.org/gitea/postgis/postgis/raw/branch/master/"
+"NEWS\">release changelog</ulink>, per scoprire se il bug in questione è già "
 "stato risolto."
 
 #. Tag: para
@@ -119,8 +119,8 @@ msgid ""
 "Documentation issues can also be reported to the <ulink url=\"http://trac."
 "osgeo.org/postgis\">PostGIS bug tracker</ulink>."
 msgstr ""
-"I problemi della documentazione possono essere riportati nel <ulink url="
-"\"http://trac.osgeo.org/postgis\">bug tracker di PostGIS</ulink>."
+"I problemi della documentazione possono essere riportati nel <ulink "
+"url=\"http://trac.osgeo.org/postgis\">bug tracker di PostGIS</ulink>."
 
 #. Tag: para
 #: reporting.xml:44
@@ -141,8 +141,8 @@ msgid ""
 "git-scm.com/\">git</ulink> installed):"
 msgstr ""
 "Se i cambiamenti sono più estesi, è preferibile mandare una patch. In Unix, "
-"si tratta di un processo in 4 fasi (assumendo di avere <ulink url=\"https"
-"://git-scm.com/\">git</ulink> già installato):"
+"si tratta di un processo in 4 fasi (assumendo di avere <ulink url=\"https://"
+"git-scm.com/\">git</ulink> già installato):"
 
 #. Tag: para
 #: reporting.xml:54
@@ -211,6 +211,3 @@ msgstr "git diff doc/postgis.xml &gt; doc.patch"
 #, no-c-format
 msgid "Attach the patch to a new issue in bug tracker."
 msgstr "Allegare la patch a una nuova issue nel bug tracker."
-
-#~ msgid "svn checkout http://svn.osgeo.org/postgis/trunk/"
-#~ msgstr "svn checkout http://svn.osgeo.org/postgis/trunk/"

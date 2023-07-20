@@ -44,7 +44,3 @@ msgstr ""
 #, no-c-format
 msgid "&extras_address_standardizer; &extras_tigergeocoder;"
 msgstr ""
-
-#, no-c-format
-#~ msgid "&extras_tigergeocoder;"
-#~ msgstr "&extras_tigergeocoder;"

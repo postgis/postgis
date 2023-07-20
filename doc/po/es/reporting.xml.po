@@ -115,8 +115,9 @@ msgid ""
 "Documentation issues can also be reported to the <ulink url=\"http://trac."
 "osgeo.org/postgis\">PostGIS bug tracker</ulink>."
 msgstr ""
-"Los problemas con la documentación se pueden enviar también al <ulink url="
-"\"http://trac.osgeo.org/postgis\">Seguimiento de errores de PostGIS</ulink>."
+"Los problemas con la documentación se pueden enviar también al <ulink "
+"url=\"http://trac.osgeo.org/postgis\">Seguimiento de errores de PostGIS</"
+"ulink>."
 
 #. Tag: para
 #: reporting.xml:44
@@ -209,6 +210,3 @@ msgstr "svn diff trunk/doc/postgis.xml &gt; doc.patch"
 #, no-c-format
 msgid "Attach the patch to a new issue in bug tracker."
 msgstr "Adjunte la solución a un nuevo tema en el seguimiento de errores."
-
-#~ msgid "svn checkout http://svn.osgeo.org/postgis/trunk/"
-#~ msgstr "svn checkout http://svn.osgeo.org/postgis/trunk/"

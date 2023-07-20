@@ -410,9 +410,3 @@ msgid ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
 "linkend=\"ST_GeomFromEWKT\"/>"
 msgstr ""
-
-#~ msgid "Availability: 1.5"
-#~ msgstr "Dostępność: 1.5"
-
-#~ msgid "Availability: 1.0.0RC1"
-#~ msgstr "Dostępność: 1.0.0RC1"

@@ -1765,12 +1765,3 @@ msgid ""
 ", <xref linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_LongestLine\"/>, "
 "<xref linkend=\"ST_ShortestLine\"/>, <xref linkend=\"ST_3DMaxDistance\"/>"
 msgstr ""
-
-#~ msgid "&T_support;"
-#~ msgstr "&T_support;"
-
-#~ msgid "&M_support;"
-#~ msgstr "&M_support;"
-
-#~ msgid "Availability: 2.0.0 - requires GEOS &gt;= 3.3.0."
-#~ msgstr "Dostępność: 2.0.0 - wymaga GEOS &gt;= 3.3.0."

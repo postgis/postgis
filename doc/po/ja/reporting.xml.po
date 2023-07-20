@@ -40,10 +40,12 @@ msgid ""
 "info can be extracted running <code>SELECT postgis_full_version()</code> "
 "[for PostGIS] and <code>SELECT version()</code> [for postgresql]."
 msgstr ""
-"効率的なバグの報告はPostGISの開発を助ける本質的な方法です。最も効率的なバグ報告は、PostGIS開発者がそれを再現できるようにすることで、それの引"
-"き金となったスクリプトと検出された環境に沿った全ての情報を含んでいるのが理想です。<code>SELECT "
-"postgis_full_version()</code> [PostGIS]と<code>SELECT version()</code> "
-"[PostgreSQL]とを実行することで十分に良い情報を得ることができます。"
+"効率的なバグの報告はPostGISの開発を助ける本質的な方法です。最も効率的なバグ報"
+"告は、PostGIS開発者がそれを再現できるようにすることで、それの引き金となったス"
+"クリプトと検出された環境に沿った全ての情報を含んでいるのが理想です。"
+"<code>SELECT postgis_full_version()</code> [PostGIS]と<code>SELECT "
+"version()</code> [PostgreSQL]とを実行することで十分に良い情報を得ることができ"
+"ます。"
 
 #. Tag: para
 #: reporting.xml:16
@@ -132,8 +134,9 @@ msgid ""
 "a four step process on Unix (assuming you already have <ulink url=\"https://"
 "git-scm.com/\">git</ulink> installed):"
 msgstr ""
-"変更が大きい場合は、パッチが確実に好まれます。Unix上で次の4ステップの処理を行います (既に<ulink url=\"https://git-scm."
-"com/\">git</ulink>をインストールしていると仮定します)。"
+"変更が大きい場合は、パッチが確実に好まれます。Unix上で次の4ステップの処理を行"
+"います (既に<ulink url=\"https://git-scm.com/\">git</ulink>をインストールして"
+"いると仮定します)。"
 
 #. Tag: para
 #: reporting.xml:54

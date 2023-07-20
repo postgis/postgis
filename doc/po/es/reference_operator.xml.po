@@ -1447,7 +1447,3 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"geometry_distance_box\"/>"
 msgstr ""
-
-#, no-c-format
-#~ msgid "&amp;&amp;"
-#~ msgstr "&amp;&amp;"

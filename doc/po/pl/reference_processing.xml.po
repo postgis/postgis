@@ -2535,16 +2535,3 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_VoronoiLines\"/>"
 msgstr ""
-
-#, no-c-format
-#~ msgid "ST_LineMerge"
-#~ msgstr "ST_LineMerge"
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_LineMerge</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></"
-#~ "paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_LineMerge</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></"
-#~ "paramdef>"

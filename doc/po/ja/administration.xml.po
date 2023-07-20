@@ -721,10 +721,10 @@ msgid ""
 "new srid (see <xref linkend=\"UpdateGeometrySRID\"/>), delete the invalid "
 "entry from spatial_ref_sys and re-construct the check(s) with:"
 msgstr ""
-"これを修正するために、独自のSRSを妥当な値 (910000.."
-"910999の範囲)のSRIDに複写し、全てのテーブルを新しいSRIDに変更 (<xref linkend="
-"\"UpdateGeometrySRID\"/>)し、spatial_ref_sysから不正なエントリを削除します。"
-"そして、次のようにチェック制約を再構築します:"
+"これを修正するために、独自のSRSを妥当な値 (910000..910999の範囲)のSRIDに複写"
+"し、全てのテーブルを新しいSRIDに変更 (<xref linkend=\"UpdateGeometrySRID\"/>)"
+"し、spatial_ref_sysから不正なエントリを削除します。そして、次のようにチェック"
+"制約を再構築します:"
 
 #. Tag: para
 #: administration.xml:372
@@ -735,10 +735,10 @@ msgid ""
 "cartography, you will have probably SRIDs out of range and you will see, "
 "when importing your database, issues like this :"
 msgstr ""
-"フランス<ulink url=\"https://en.wikipedia.org/wiki/Institut_g%C3%"
-"A9ographique_national\">IGN</ulink>地図を含む古いデータベースをアップグレード"
-"する場合には、おそらくSRIDが範囲外になり、データベースのインポート時に次のよ"
-"うな問題に遭遇します:"
+"フランス<ulink url=\"https://en.wikipedia.org/wiki/"
+"Institut_g%C3%A9ographique_national\">IGN</ulink>地図を含む古いデータベースを"
+"アップグレードする場合には、おそらくSRIDが範囲外になり、データベースのイン"
+"ポート時に次のような問題に遭遇します:"
 
 #. Tag: para
 #: administration.xml:381
@@ -748,8 +748,8 @@ msgid ""
 "IGN from the sql which is resulting from postgis_restore.pl. So, after "
 "having run :"
 msgstr ""
-"この場合には、次のステップを試すことができます。最初にpostgis_restore."
-"plから出たIGNをSQLから完全に破棄します。そのために次のコマンドを実行します:"
+"この場合には、次のステップを試すことができます。最初にpostgis_restore.plから"
+"出たIGNをSQLから完全に破棄します。そのために次のコマンドを実行します:"
 
 #. Tag: para
 #: administration.xml:389
@@ -767,279 +767,8 @@ msgid ""
 "Put_IGN_SRS_into_Postgis.sql\"> this script </ulink> After these operations, "
 "import your data :"
 msgstr ""
-"その後、新しいデータベースを生成し、必要なPostGISエクステンションを有効化して"
-"、<ulink url=\"https://raw.githubusercontent.com/Remi-C/"
+"その後、新しいデータベースを生成し、必要なPostGISエクステンションを有効化し"
+"て、<ulink url=\"https://raw.githubusercontent.com/Remi-C/"
 "IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql\">このスクリ"
 "プト</ulink>で確実にフランスIGNの系を挿入します。これらの処理の後、次のように"
 "データのインポートを行います:"
-
-#, no-c-format
-#~ msgid "POSTGIS_ENABLE_OUTDB_RASTERS=1"
-#~ msgstr "POSTGIS_ENABLE_OUTDB_RASTERS=1"
-
-#, no-c-format
-#~ msgid "POSTGIS_GDAL_ENABLED_DRIVERS=ENABLE_ALL"
-#~ msgstr "POSTGIS_GDAL_ENABLED_DRIVERS=ENABLE_ALL"
-
-#, no-c-format
-#~ msgid "POSTGIS_GDAL_ENABLED_DRIVERS=\"GTiff PNG JPEG GIF XYZ\""
-#~ msgstr "POSTGIS_GDAL_ENABLED_DRIVERS=\"GTiff PNG JPEG GIF XYZ\""
-
-#, no-c-format
-#~ msgid ""
-#~ "CREATE EXTENSION IF NOT EXISTS plpgsql;\n"
-#~ "      CREATE EXTENSION postgis;\n"
-#~ "      CREATE EXTENSION postgis_raster; -- OPTIONAL\n"
-#~ "      CREATE EXTENSION postgis_topology; -- OPTIONAL"
-#~ msgstr ""
-#~ "CREATE EXTENSION IF NOT EXISTS plpgsql;\n"
-#~ "      CREATE EXTENSION postgis;\n"
-#~ "      CREATE EXTENSION postgis_raster; -- OPTIONAL\n"
-#~ "      CREATE EXTENSION postgis_topology; -- OPTIONAL"
-
-#, no-c-format
-#~ msgid ""
-#~ "DB=[yourdatabase]\n"
-#~ "    SCRIPTSDIR=`pg_config --sharedir`/contrib/postgis-"
-#~ "&last_minor_version;/\n"
-#~ "\n"
-#~ "    # Core objects\n"
-#~ "    psql -d ${DB} -f ${SCRIPTSDIR}/postgis.sql\n"
-#~ "    psql -d ${DB} -f ${SCRIPTSDIR}/spatial_ref_sys.sql\n"
-#~ "    psql -d ${DB} -f ${SCRIPTSDIR}/postgis_comments.sql # OPTIONAL\n"
-#~ "\n"
-#~ "    # Raster support (OPTIONAL)\n"
-#~ "    psql -d ${DB} -f ${SCRIPTSDIR}/rtpostgis.sql\n"
-#~ "    psql -d ${DB} -f ${SCRIPTSDIR}/raster_comments.sql # OPTIONAL\n"
-#~ "\n"
-#~ "    # Topology support (OPTIONAL)\n"
-#~ "    psql -d ${DB} -f ${SCRIPTSDIR}/topology.sql\n"
-#~ "    psql -d ${DB} -f ${SCRIPTSDIR}/topology_comments.sql # OPTIONAL"
-#~ msgstr ""
-#~ "DB=[データベース名]\n"
-#~ "    SCRIPTSDIR=`pg_config --sharedir`/contrib/postgis-3.1/\n"
-#~ "\n"
-#~ "    # 中核\n"
-#~ "    psql -d ${DB} -f ${SCRIPTSDIR}/postgis.sql\n"
-#~ "    psql -d ${DB} -f ${SCRIPTSDIR}/spatial_ref_sys.sql\n"
-#~ "    psql -d ${DB} -f ${SCRIPTSDIR}/postgis_comments.sql # 任意\n"
-#~ "\n"
-#~ "    # ラスタ機能 (任意)\n"
-#~ "    psql -d ${DB} -f ${SCRIPTSDIR}/rtpostgis.sql\n"
-#~ "    psql -d ${DB} -f ${SCRIPTSDIR}/raster_comments.sql # 任意\n"
-#~ "\n"
-#~ "    # トポロジ機能 (任意)\n"
-#~ "    psql -d ${DB} -f ${SCRIPTSDIR}/topology.sql\n"
-#~ "    psql -d ${DB} -f ${SCRIPTSDIR}/topology_comments.sql # 任意"
-
-#, no-c-format
-#~ msgid "SELECT postgis_extensions_upgrade();"
-#~ msgstr "SELECT postgis_extensions_upgrade();"
-
-#, no-c-format
-#~ msgid ""
-#~ "ALTER EXTENSION postgis UPDATE;\n"
-#~ "SELECT postgis_extensions_upgrade();\n"
-#~ "-- This second call is needed to rebundle postgis_raster extension\n"
-#~ "SELECT postgis_extensions_upgrade();"
-#~ msgstr ""
-#~ "ALTER EXTENSION postgis UPDATE;\n"
-#~ "SELECT postgis_extensions_upgrade();\n"
-#~ "-- 二回目の実行はpostgis_rasterエクステンションの再構築に必要です。\n"
-#~ "SELECT postgis_extensions_upgrade();"
-
-#, no-c-format
-#~ msgid ""
-#~ "ALTER EXTENSION postgis UPDATE TO \"&last_release_version;\";\n"
-#~ "ALTER EXTENSION postgis_topology UPDATE TO \"&last_release_version;\";"
-#~ msgstr ""
-#~ "ALTER EXTENSION postgis UPDATE TO \"&last_release_version;\";\n"
-#~ "ALTER EXTENSION postgis_topology UPDATE TO \"&last_release_version;\";"
-
-#, no-c-format
-#~ msgid "No migration path defined for … to &last_release_version;"
-#~ msgstr "No migration path defined for … to &last_release_version;"
-
-#, no-c-format
-#~ msgid ""
-#~ "Version \"&last_release_version;\" of extension \"postgis\" is already "
-#~ "installed"
-#~ msgstr ""
-#~ "Version \"&last_release_version;\" of extension \"postgis\" is already "
-#~ "installed"
-
-#, no-c-format
-#~ msgid ""
-#~ "ALTER EXTENSION postgis UPDATE TO \"&last_release_version;next\";\n"
-#~ "ALTER EXTENSION postgis_topology UPDATE TO \"&last_release_version;next\";"
-#~ msgstr ""
-#~ "ALTER EXTENSION postgis UPDATE TO \"&last_release_version;next\";\n"
-#~ "ALTER EXTENSION postgis_topology UPDATE TO \"&last_release_version;next\";"
-
-#, no-c-format
-#~ msgid "DROP EXTENSION postgis_raster;"
-#~ msgstr "DROP EXTENSION postgis_raster;"
-
-#, no-c-format
-#~ msgid "can't drop … because postgis extension depends on it"
-#~ msgstr "can't drop ... because postgis extension depends on it"
-
-#, no-c-format
-#~ msgid ""
-#~ "ls `pg_config --sharedir`/contrib/postgis-&last_release_version;/"
-#~ "*_upgrade.sql"
-#~ msgstr ""
-#~ "ls `pg_config --sharedir`/contrib/postgis-&last_release_version;/"
-#~ "*_upgrade.sql"
-
-#, no-c-format
-#~ msgid "psql -f postgis_upgrade.sql -d your_spatial_database"
-#~ msgstr "psql -f postgis_upgrade.sql -d [データベース名]"
-
-#, no-c-format
-#~ msgid "psql -f rtpostgis_upgrade.sql -d your_spatial_database"
-#~ msgstr "psql -f rtpostgis_upgrade.sql -d [データベース名]"
-
-#, no-c-format
-#~ msgid "psql -f topology_upgrade.sql -d your_spatial_database"
-#~ msgstr "psql -f topology_upgrade.sql -d [データベース名]"
-
-#, no-c-format
-#~ msgid "psql -f sfcgal_upgrade.sql -d your_spatial_database"
-#~ msgstr "psql -f sfcgal_upgrade.sql -d [データベース名]"
-
-#, no-c-format
-#~ msgid "psql -c \"SELECT postgis_extensions_upgrade();\""
-#~ msgstr "psql -c \"SELECT postgis_extensions_upgrade();\""
-
-#, no-c-format
-#~ msgid ""
-#~ "pg_dump -h localhost -p 5432 -U postgres -Fc -b -v -f \"/somepath/olddb."
-#~ "backup\" olddb"
-#~ msgstr ""
-#~ "pg_dump -h localhost -p 5432 -U postgres -Fc -b -v -f \"/somepath/olddb."
-#~ "backup\" olddb"
-
-#, no-c-format
-#~ msgid ""
-#~ "perl utils/postgis_restore.pl \"/somepath/olddb.backup\" | psql -h "
-#~ "localhost -p 5432 -U postgres newdb 2> errors.txt"
-#~ msgstr ""
-#~ "perl utils/postgis_restore.pl \"/somepath/olddb.backup\" | psql -h "
-#~ "localhost -p 5432 -U postgres newdb 2> errors.txt"
-
-#, no-c-format
-#~ msgid ""
-#~ "psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  "
-#~ "2> errors.txt"
-#~ msgstr ""
-#~ "psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  "
-#~ "2> errors.txt"
-
-#, no-c-format
-#~ msgid ""
-#~ "In order to fix this you should copy your custom SRS to a SRID with a "
-#~ "valid value (maybe in the 910000..910999 range), convert all your tables "
-#~ "to the new srid (see <xref linkend=\"UpdateGeometrySRID\"/>), delete the "
-#~ "invalid entry from spatial_ref_sys and re-construct the check(s) with: "
-#~ "<programlisting>ALTER TABLE spatial_ref_sys ADD CONSTRAINT "
-#~ "spatial_ref_sys_srid_check check (srid &gt; 0 AND srid &lt; 999000 );</"
-#~ "programlisting> <programlisting>ALTER TABLE spatial_ref_sys ADD PRIMARY "
-#~ "KEY(srid));</programlisting> If you are upgrading an old database "
-#~ "containing french <ulink url=\"https://en.wikipedia.org/wiki/"
-#~ "Institut_g%C3%A9ographique_national\"> IGN </ulink> cartography, you will "
-#~ "have probably SRIDs out of range and you will see, when importing your "
-#~ "database, issues like this : <programlisting> WARNING: SRID 310642222 "
-#~ "converted to 999175 (in reserved zone)</programlisting> In this case, you "
-#~ "can try following steps : first throw out completely the IGN from the sql "
-#~ "which is resulting from postgis_restore.pl. So, after having run : "
-#~ "<programlisting>perl utils/postgis_restore.pl \"/somepath/olddb.backup\" "
-#~ "> olddb.sql</programlisting> run this command : <programlisting>grep -v "
-#~ "IGNF olddb.sql > olddb-without-IGN.sql</programlisting> Create then your "
-#~ "newdb, activate the required Postgis extensions, and insert properly the "
-#~ "french system IGN with : <ulink url=\"https://raw.githubusercontent.com/"
-#~ "Remi-C/IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql\"> "
-#~ "this script </ulink> After these operations, import your data :"
-#~ msgstr ""
-#~ "これを修正するために、独自のSRSを妥当な値 (910000..910999の範囲)のSRIDに複"
-#~ "写し、全てのテーブルを新しいSRIDに変更 (<xref "
-#~ "linkend=\"UpdateGeometrySRID\"/>参照)し、spatial_ref_sysから不正なエントリ"
-#~ "を削除します。そして、次のようにチェック制約を再構築します。 "
-#~ "<programlisting>ALTER TABLE spatial_ref_sys ADD CONSTRAINT "
-#~ "spatial_ref_sys_srid_check check (srid &gt; 0 AND srid &lt; 999000 );</"
-#~ "programlisting> <programlisting>ALTER TABLE spatial_ref_sys ADD PRIMARY "
-#~ "KEY(srid));</programlisting>フランス <ulink url=\"https://en.wikipedia."
-#~ "org/wiki/Institut_g%C3%A9ographique_national\"> IGN </ulink>地図を含む古い"
-#~ "データベースをアップグレードする場合には、おそらくSRIDが範囲外になり、デー"
-#~ "タベースのインポート時に次のような問題に遭遇します。<programlisting> "
-#~ "WARNING: SRID 310642222 converted to 999175 (in reserved zone)</"
-#~ "programlisting>この場合には、次のステップを試すことができます。最初に"
-#~ "postgis_restore.plから出たIGNをSQLから完全に破棄します。そのために次のコマ"
-#~ "ンドを実行します。 <programlisting>perl utils/postgis_restore.pl \"/"
-#~ "somepath/olddb.backup\" > olddb.sql</programlisting>さらに、次のコマンドを"
-#~ "実行します。<programlisting>grep -v IGNF olddb.sql > olddb-without-IGN."
-#~ "sql</programlisting>その後、新しいデータベースを生成し、必要なPostGISエク"
-#~ "ステンションを有効化して、 <ulink url=\"https://raw.githubusercontent.com/"
-#~ "Remi-C/IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql\">"
-#~ "このスクリプト </ulink>で確実にフランスIGNの系を挿入します。これらの処理の"
-#~ "後、次のようにデータのインポートを行います。"
-
-#, no-c-format
-#~ msgid "Create a spatially-enabled database from a template"
-#~ msgstr "空間データベースをテンプレートから生成する"
-
-#, no-c-format
-#~ msgid ""
-#~ "Some packaged distributions of PostGIS (in particular the Win32 "
-#~ "installers for PostGIS &gt;= 1.1.5) load the PostGIS functions into a "
-#~ "template database called <varname>template_postgis</varname>. If the "
-#~ "<varname>template_postgis</varname> database exists in your PostgreSQL "
-#~ "installation then it is possible for users and/or applications to create "
-#~ "spatially-enabled databases using a single command. Note that in both "
-#~ "cases, the database user must have been granted the privilege to create "
-#~ "new databases."
-#~ msgstr ""
-#~ "PostGISのディストリビューション (特にPostGIS &gt;= 1.1.5のWin32インストー"
-#~ "ラ)の中には、<varname>template_postgis</varname>というテンプレートに"
-#~ "PostGIS関数をロードしていることがあります。PostgreSQLに"
-#~ "<varname>template_postgis</varname>データベースが存在するなら、ユーザやア"
-#~ "プリケーションは、空間データベースの生成をコマンドひとつで済ませられます。"
-#~ "この2種類のやり方のどちらを使うににしても、データベースユーザは、新しい"
-#~ "データベースを作成する権限を与えられている必要があります。"
-
-#, no-c-format
-#~ msgid "From the shell:"
-#~ msgstr "シェルからの実行は次の通りです。"
-
-#, no-c-format
-#~ msgid "# createdb -T template_postgis my_spatial_db"
-#~ msgstr "# createdb -T template_postgis my_spatial_db"
-
-#, no-c-format
-#~ msgid "From SQL:"
-#~ msgstr "SQLからの実行は次の通りです。"
-
-#, no-c-format
-#~ msgid "postgres=# CREATE DATABASE my_spatial_db TEMPLATE=template_postgis"
-#~ msgstr "postgres=# CREATE DATABASE my_spatial_db TEMPLATE=template_postgis"
-
-#~ msgid ""
-#~ "If you are upgrading PostGIS extension from a version prior to 3.0.0 "
-#~ "you'll end up with an unpackaged PostGIS Raster support. You can "
-#~ "repackage the raster support using: <programlisting>\n"
-#~ "    CREATE EXTENSION postgis_raster FROM unpackaged;\n"
-#~ "    </programlisting> And then, if you don't need it, drop it with:"
-#~ msgstr ""
-#~ "PostGISエクステンションを3.0.0より前からアップグレードする場合には、"
-#~ "PostGISラスタ機能はパッケージ化されずに終わります。ラスタ機能の再パッケー"
-#~ "ジは次のコマンドでできます。 <programlisting>\n"
-#~ "    CREATE EXTENSION postgis_raster FROM unpackaged;\n"
-#~ "    </programlisting> その後、不要なら削除します。次のようにします。"
-
-#, fuzzy
-#~ msgid "can't drop ... because postgis extension depends on it"
-#~ msgstr "can't drop ... because postgis extension depends on it"
-
-#, fuzzy
-#~ msgid "No migration path defined for ... to &last_release_version;"
-#~ msgstr "No migration path defined for ... to &last_release_version;"

@@ -244,19 +244,3 @@ msgstr ""
 "Esta función actualmente depende de que una columna de geometría se registre "
 "en <varname>geometry_columns</varname> y falla si la columna de geometría no "
 "está presente en la tabla  <varname>geometry_columns</varname> "
-
-#, no-c-format
-#~ msgid "Postgis_Install_History"
-#~ msgstr "Postgis_Install_History"
-
-#, no-c-format
-#~ msgid "Postgis_Enable_History"
-#~ msgstr "Postgis_Enable_History"
-
-#, no-c-format
-#~ msgid "SELECT * FROM roads_history WHERE roads_pk = 111;"
-#~ msgstr "SELECT * FROM roads_history WHERE roads_pk = 111;"
-
-#, no-c-format
-#~ msgid "SELECT postgis_install_history();"
-#~ msgstr "SELECT postgis_install_history();"

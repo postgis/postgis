@@ -293,27 +293,3 @@ msgstr ""
 "合があることに注意して下さい。これが発生する場合には、想定より少ないワーカで"
 "プランが実行され、非効率になります。これの値を0 (デフォルト値)にすると、パラ"
 "レルクエリ実行が無効になります。"
-
-#, no-c-format
-#~ msgid ""
-#~ "ALTER SYSTEM SET work_mem = '256MB';\n"
-#~ "-- this forces non-startup configs to take effect for new connections\n"
-#~ "SELECT pg_reload_conf();\n"
-#~ "-- show current setting value\n"
-#~ "-- use SHOW ALL to see all settings\n"
-#~ "SHOW work_mem;"
-#~ msgstr ""
-#~ "ALTER SYSTEM SET work_mem = '256MB';\n"
-#~ "-- 起動時設定でない設定を強制します。新規接続に影響を与えます。\n"
-#~ "SELECT pg_reload_conf();\n"
-#~ "-- 現在の設定値を表示\n"
-#~ "-- 全ての設定を見るにはSHOW ALLを使います\n"
-#~ "SHOW work_mem;"
-
-#, no-c-format
-#~ msgid "SET work_mem TO '256MB';"
-#~ msgstr "SET work_mem TO '256MB';"
-
-#, no-c-format
-#~ msgid "SET maintenance_work_mem TO '1GB';"
-#~ msgstr "SET maintenance_work_mem TO '1GB';"

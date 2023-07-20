@@ -2292,6 +2292,3 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 msgstr ""
-
-#~ msgid "Availability: 2.0.0 - requires GEOS &gt;= 3.3.0."
-#~ msgstr "Dostępność: 2.0.0 - wymaga GEOS &gt;= 3.3.0."

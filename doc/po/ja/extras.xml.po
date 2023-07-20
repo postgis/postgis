@@ -33,15 +33,13 @@ msgid ""
 "PostGIS binary releases, but are usually PL/pgSQL based or standard shell "
 "scripts that can be run as is."
 msgstr ""
-"本章では、PostGISのソースアーカイブとソースレポジトリのextrasフォルダにある機能を記述します。 "
-"これらは必ずPostGISバイナリ版に同梱されているものではありませんが、通常は実行可能なplpgsqlベースのものまたは標準的なシェルスクリプトです。"
+"本章では、PostGISのソースアーカイブとソースレポジトリのextrasフォルダにある機"
+"能を記述します。 これらは必ずPostGISバイナリ版に同梱されているものではありま"
+"せんが、通常は実行可能なplpgsqlベースのものまたは標準的なシェルスクリプトで"
+"す。"
 
 #. Tag: chapter
 #: extras.xml:6
 #, no-c-format
 msgid "&extras_address_standardizer; &extras_tigergeocoder;"
 msgstr "&extras_address_standardizer; &extras_tigergeocoder;"
-
-#, no-c-format
-#~ msgid "&extras_tigergeocoder;"
-#~ msgstr "&extras_tigergeocoder;"

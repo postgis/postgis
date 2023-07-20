@@ -1018,39 +1018,3 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
 msgstr ""
-
-#, no-c-format
-#~ msgid "ST_Extrude"
-#~ msgstr "ST_Extrude"
-
-#, no-c-format
-#~ msgid "ST_ForceLHR"
-#~ msgstr "ST_ForceLHR"
-
-#, no-c-format
-#~ msgid "ST_IsPlanar"
-#~ msgstr "ST_IsPlanar"
-
-#, no-c-format
-#~ msgid "ST_MinkowskiSum"
-#~ msgstr "ST_MinkowskiSum"
-
-#, no-c-format
-#~ msgid "ST_Orientation"
-#~ msgstr "ST_Orientation"
-
-#, no-c-format
-#~ msgid "ST_StraightSkeleton"
-#~ msgstr "ST_StraightSkeleton"
-
-#, no-c-format
-#~ msgid "ST_Tesselate"
-#~ msgstr "ST_Tesselate"
-
-#, fuzzy
-#~ msgid ""
-#~ "<funcdef>geometry<function>ST_3DConvexHull</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_ForceLHR</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"

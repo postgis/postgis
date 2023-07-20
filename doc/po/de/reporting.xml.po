@@ -212,6 +212,3 @@ msgstr "svn diff trunk/doc/postgis.xml &gt; doc.patch"
 #, no-c-format
 msgid "Attach the patch to a new issue in bug tracker."
 msgstr "Fügen Sie den Patch einem neuen Thema/Issue im Bug Tracker bei."
-
-#~ msgid "svn checkout http://svn.osgeo.org/postgis/trunk/"
-#~ msgstr "svn checkout http://svn.osgeo.org/postgis/trunk/"

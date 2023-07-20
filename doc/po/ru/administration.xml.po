@@ -648,27 +648,3 @@ msgid ""
 "Put_IGN_SRS_into_Postgis.sql\"> this script </ulink> After these operations, "
 "import your data :"
 msgstr ""
-
-#, no-c-format
-#~ msgid "POSTGIS_ENABLE_OUTDB_RASTERS=1"
-#~ msgstr "POSTGIS_ENABLE_OUTDB_RASTERS=1"
-
-#, no-c-format
-#~ msgid "POSTGIS_GDAL_ENABLED_DRIVERS=ENABLE_ALL"
-#~ msgstr "POSTGIS_GDAL_ENABLED_DRIVERS=ENABLE_ALL"
-
-#, no-c-format
-#~ msgid "POSTGIS_GDAL_ENABLED_DRIVERS=\"GTiff PNG JPEG GIF XYZ\""
-#~ msgstr "POSTGIS_GDAL_ENABLED_DRIVERS=\"GTiff PNG JPEG GIF XYZ\""
-
-#, no-c-format
-#~ msgid ""
-#~ "CREATE EXTENSION IF NOT EXISTS plpgsql;\n"
-#~ "      CREATE EXTENSION postgis;\n"
-#~ "      CREATE EXTENSION postgis_raster; -- OPTIONAL\n"
-#~ "      CREATE EXTENSION postgis_topology; -- OPTIONAL"
-#~ msgstr ""
-#~ "CREATE EXTENSION IF NOT EXISTS plpgsql;\n"
-#~ "      CREATE EXTENSION postgis;\n"
-#~ "      CREATE EXTENSION postgis_raster; -- НЕОБЯЗАТЕЛЬНЫЙ\n"
-#~ "      CREATE EXTENSION postgis_topology; -- НЕОБЯЗАТЕЛЬНЫЙ"

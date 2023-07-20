@@ -360,7 +360,3 @@ msgid ""
 "time version also shown if different from run-time (Paul Ramsey, Sandro "
 "Santilli)"
 msgstr ""
-
-#, no-c-format
-#~ msgid "Testers - Our unsung heroes"
-#~ msgstr "Испытатели - наши невоспетые герои"

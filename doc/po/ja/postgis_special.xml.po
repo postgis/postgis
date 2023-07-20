@@ -38,8 +38,8 @@ msgid ""
 "same way as SQL aggregate function such as <code>sum</code> and "
 "<code>average</code>."
 msgstr ""
-"次に示す関数は、PostGISが提供する空間集約関数です。<code>sum</code>や<code>av"
-"erage</code>といった他のSQL集約関数のように使います。"
+"次に示す関数は、PostGISが提供する空間集約関数です。<code>sum</code>や"
+"<code>average</code>といった他のSQL集約関数のように使います。"
 
 #. Tag: sect1
 #: postgis_special.xml:7
@@ -106,8 +106,8 @@ msgid ""
 "take as input or return as output a <link "
 "linkend=\"PostGIS_Geography\">geography</link> data type object."
 msgstr ""
-"次に示す関数と演算子は、<link linkend=\"PostGIS_Geography\""
-">ジオグラフィ</link>データ型を入力または出力に取るPostGIS関数/演算子です。"
+"次に示す関数と演算子は、<link linkend=\"PostGIS_Geography\">ジオグラフィ</"
+"link>データ型を入力または出力に取るPostGIS関数/演算子です。"
 
 #. Tag: para
 #: postgis_special.xml:27
@@ -169,9 +169,9 @@ msgid ""
 "as output a set of or single <link linkend=\"geometry_dump\">geometry_dump</"
 "link> or <link linkend=\"geomval\">geomval</link> data type object."
 msgstr ""
-"次に示す関数は、<link linkend=\"geometry_dump\">geometry_dump</"
-"link>または<link linkend=\"geomval\">geomval</link>データ型の集合または単一デ"
-"ータを入力または出力に取るPostGIS関数です。"
+"次に示す関数は、<link linkend=\"geometry_dump\">geometry_dump</link>または"
+"<link linkend=\"geomval\">geomval</link>データ型の集合または単一データを入力"
+"または出力に取るPostGIS関数です。"
 
 #. Tag: sect1
 #: postgis_special.xml:42
@@ -194,9 +194,9 @@ msgid ""
 "consists of <link linkend=\"box2d_type\">box2d</link>, and <link "
 "linkend=\"box3d_type\">box3d</link>"
 msgstr ""
-"次に示す関数は、PostGIS空間型のbox系の型を入力または出力に取るPostGIS関数です"
-"。ボックス系には<link linkend=\"box2d_type\">box2d</link>と<link linkend="
-"\"box3d_type\">box3d</link>があります。"
+"次に示す関数は、PostGIS空間型のbox系の型を入力または出力に取るPostGIS関数で"
+"す。ボックス系には<link linkend=\"box2d_type\">box2d</link>と<link "
+"linkend=\"box3d_type\">box3d</link>があります。"
 
 #. Tag: sect1
 #: postgis_special.xml:49
@@ -236,8 +236,9 @@ msgstr "PostGIS曲線ジオメトリ対応関数"
 msgid ""
 "The functions given below are PostGIS functions that can use CIRCULARSTRING, "
 "CURVEPOLYGON, and other curved geometry types"
-msgstr "次に示す関数は、CIRCULARSTRING, "
-"CURVEDPOLYGON等の曲線ジオメトリ型が使えるPostGIS関数です。"
+msgstr ""
+"次に示す関数は、CIRCULARSTRING, CURVEDPOLYGON等の曲線ジオメトリ型が使える"
+"PostGIS関数です。"
 
 #. Tag: sect1
 #: postgis_special.xml:61
@@ -257,8 +258,9 @@ msgstr "PostGIS多面体サーフェス対応関数"
 msgid ""
 "The functions given below are PostGIS functions that can use "
 "POLYHEDRALSURFACE, POLYHEDRALSURFACEM geometries"
-msgstr "次に示す関数は、POLYHEDRALSURFACE, "
-"POLYHEDRALSURFACEMジオメトリが使えるPostGIS関数です。"
+msgstr ""
+"次に示す関数は、POLYHEDRALSURFACE, POLYHEDRALSURFACEMジオメトリが使える"
+"PostGIS関数です。"
 
 #. Tag: sect1
 #: postgis_special.xml:67
@@ -332,9 +334,9 @@ msgid ""
 "matrix_sfcgal_required.png\"/></imageobject></inlinemediaobject> means the "
 "function only available if PostGIS compiled with SFCGAL support."
 msgstr ""
-"<inlinemediaobject><imageobject><imagedata fileref=\"images"
-"/matrix_sfcgal_required.png\"/></imageobject></inlinemediaobject>は、PostGIS"
-"をSFCGAL対応でコンパイルした場合にのみ利用可能な関数です。"
+"<inlinemediaobject><imageobject><imagedata fileref=\"images/"
+"matrix_sfcgal_required.png\"/></imageobject></inlinemediaobject>は、PostGISを"
+"SFCGAL対応でコンパイルした場合にのみ利用可能な関数です。"
 
 #. Tag: simpara
 #: postgis_special.xml:91
@@ -345,10 +347,10 @@ msgid ""
 "function support is provided by SFCGAL if PostGIS compiled with SFCGAL "
 "support, otherwise GEOS/built-in support."
 msgstr ""
-"<inlinemediaobject><imageobject><imagedata fileref=\"images"
-"/matrix_sfcgal_enhanced.png\"/></imageobject></inlinemediaobject>は、PostGIS"
-"をSFCGAL対応でコンパイルした場合には、SFCGALが提供し、その他の場合には、GEOS"
-"または組み込み関数で対応します。"
+"<inlinemediaobject><imageobject><imagedata fileref=\"images/"
+"matrix_sfcgal_enhanced.png\"/></imageobject></inlinemediaobject>は、PostGISを"
+"SFCGAL対応でコンパイルした場合には、SFCGALが提供し、その他の場合には、GEOSま"
+"たは組み込み関数で対応します。"
 
 #. Tag: simpara
 #: postgis_special.xml:94
@@ -366,8 +368,9 @@ msgstr "geog - 基本的な2次元ジオグラフィ (x,y)に対応していま�
 #: postgis_special.xml:100
 #, no-c-format
 msgid "2.5D - basic 2D geometries in 3 D/4D space (has Z or M coord)."
-msgstr "2.5D - 3次元/4次元 "
-"(ZまたはM座標を持つ)空間内の基本的な2次元ジオメトリに対応しています。"
+msgstr ""
+"2.5D - 3次元/4次元 (ZまたはM座標を持つ)空間内の基本的な2次元ジオメトリに対応"
+"しています。"
 
 #. Tag: simpara
 #: postgis_special.xml:103

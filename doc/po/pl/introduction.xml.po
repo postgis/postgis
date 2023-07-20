@@ -1470,6 +1470,3 @@ msgid ""
 "of PostGIS would not be possible without the extensibility, great query "
 "planner, GIST index, and plethora of SQL features provided by PostgreSQL."
 msgstr ""
-
-#~ msgid "More Information"
-#~ msgstr "Więcej informacji"

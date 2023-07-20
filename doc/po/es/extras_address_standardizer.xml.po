@@ -1581,7 +1581,3 @@ msgstr ""
 #, no-c-format
 msgid "Variant 2: As a two part Address"
 msgstr ""
-
-#, no-c-format
-#~ msgid "stdaddr"
-#~ msgstr "stdaddr"

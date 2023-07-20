@@ -357,27 +357,3 @@ msgid ""
 "time version also shown if different from run-time (Paul Ramsey, Sandro "
 "Santilli)"
 msgstr ""
-
-#, no-c-format
-#~ msgid "ST_ClosestPoint"
-#~ msgstr "ST_ClosestPoint"
-
-#, no-c-format
-#~ msgid "ST_DFullyWithin"
-#~ msgstr "ST_DFullyWithin"
-
-#, no-c-format
-#~ msgid "ST_LongestLine"
-#~ msgstr "ST_LongestLine"
-
-#, no-c-format
-#~ msgid "ST_MaxDistance"
-#~ msgstr "ST_MaxDistance"
-
-#, no-c-format
-#~ msgid "ST_ShortestLine"
-#~ msgstr "ST_ShortestLine"
-
-#, no-c-format
-#~ msgid "Upgrading"
-#~ msgstr "업그레이드"

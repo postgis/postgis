@@ -1704,33 +1704,3 @@ msgid ""
 "If you run <xref linkend=\"Geocode\"/> when this function is true, the "
 "NOTICE log will output timing and queries."
 msgstr ""
-
-#, no-c-format
-#~ msgid "Drop_Indexes_Generate_Script"
-#~ msgstr "Drop_Indexes_Generate_Script"
-
-#, no-c-format
-#~ msgid "Drop_Nation_Tables_Generate_Script"
-#~ msgstr "Drop_Nation_Tables_Generate_Script"
-
-#, no-c-format
-#~ msgid "SELECT loader_generate_nation_script('windows');"
-#~ msgstr "SELECT loader_generate_nation_script('windows');"
-
-#, no-c-format
-#~ msgid "SELECT loader_generate_nation_script('sh');"
-#~ msgstr "SELECT loader_generate_nation_script('sh');"
-
-#, no-c-format
-#~ msgid ""
-#~ "SELECT pprint_addy(normalize_address('202 East Fremont Street, Las Vegas, "
-#~ "Nevada 89101')) As pretty_address;\n"
-#~ "            pretty_address\n"
-#~ "---------------------------------------\n"
-#~ " 202 E Fremont St, Las Vegas, NV 89101"
-#~ msgstr ""
-#~ "SELECT pprint_addy(normalize_address('202 East Fremont Street, Las Vegas, "
-#~ "Nevada 89101')) As pretty_address;\n"
-#~ "            pretty_address\n"
-#~ "---------------------------------------\n"
-#~ " 202 E Fremont St, Las Vegas, NV 89101"
