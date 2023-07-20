@@ -92,8 +92,9 @@ To generate the developer's documentation:
  * Doxygen - http://www.stack.nl/~dimitri/doxygen/
  * Graphviz - http://www.graphviz.org/
 
-To generate the translated XML files:
+To generate and manage the translated XML files:
  * poxml - https://github.com/KDE/poxml
+ * gettext - https://www.gnu.org/software/gettext/
 
 How to
 ------
