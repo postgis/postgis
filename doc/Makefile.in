@@ -254,6 +254,7 @@ else
 $(XML_INPUTS_POT): $(srcdir)/po/templates/%.xml.pot: %.xml
 	@$(XML2POT) $< > $@.tmp;
 	@$(abs_srcdir)/po/strip_untranslatable.sh $@.tmp;
+	$(MSGATTRIB) --no-wrap -o $@.tmp $@.tmp;
 	@if test -f $@; then \
     changed=`diff $@.tmp $@ \
 			| grep -v '^[<>] "POT-Creation-Date:' \
@@ -283,10 +284,9 @@ update-po: $(XML_INPUTS_POT)
       mkdir -p $(srcdir)/po/$$lang; \
       po=$(srcdir)/po/$$lang/`basename $$pot .pot`.po; \
       if test -f $$po; then \
-        $(MSGMERGE) --no-fuzzy-matching --update $$po $$pot && \
-				$(MSGATTRIB) --no-obsolete -o $$po $$po || exit 1; \
+        $(MSGMERGE) --no-wrap --no-fuzzy-matching --update $$po $$pot || exit 1; \
       else \
-        $(MSGINIT) -i $$pot -o $$po -l $$lang --no-translator || exit 1; \
+        $(MSGINIT) --no-wrap -i $$pot -o $$po -l $$lang --no-translator || exit 1; \
       fi; \
     done; \
   done
