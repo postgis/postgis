@@ -121,6 +121,7 @@ DBLATEX=@DBLATEX@
 # Gettext for translated documentation
 MSGMERGE=@MSGMERGE@
 MSGINIT=@MSGINIT@
+MSGATTRIB=@MSGATTRIB@
 
 # XML gettext tools
 XML2POT=@XML2POT@
@@ -282,9 +283,10 @@ update-po: $(XML_INPUTS_POT)
       mkdir -p $(srcdir)/po/$$lang; \
       po=$(srcdir)/po/$$lang/`basename $$pot .pot`.po; \
       if test -f $$po; then \
-        $(MSGMERGE) --no-fuzzy-matching --update $$po $$pot; \
+        $(MSGMERGE) --no-fuzzy-matching --update $$po $$pot && \
+				$(MSGATTRIB) --no-obsolete -o $$po $$po || exit 1; \
       else \
-        $(MSGINIT) -i $$pot -o $$po -l $$lang --no-translator; \
+        $(MSGINIT) -i $$pot -o $$po -l $$lang --no-translator || exit 1; \
       fi; \
     done; \
   done

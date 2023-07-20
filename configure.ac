@@ -215,6 +215,11 @@ if test "x$MSGMERGE" = "x"; then
 	AC_MSG_WARN([msgmerge is not installed so translations cannot be updated])
 fi
 
+AC_PATH_PROG([MSGATTRIB], [msgattrib], [])
+if test "x$MSGATTRIB" = "x"; then
+	AC_MSG_WARN([msgattrib is not installed so translations cannot be updated])
+fi
+
 AC_PATH_PROG([MSGINIT], [msginit], [])
 if test "x$MSGINIT" = "x"; then
 	AC_MSG_WARN([msginit is not installed so new translations cannot be initialized])
