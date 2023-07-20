@@ -2,7 +2,8 @@
 
 . $(dirname $0)/winnie_common.h
 
-set -e
+echo "MSYS2_ARG_CONV_EXCL=$MSYS2_ARG_CONV_EXCL"
+
 if  [[ "${OVERRIDE}" == '' ]] ; then
 	export GEOS_VER=3.11.0
 	export GDAL_VER=3.4.2
