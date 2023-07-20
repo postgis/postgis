@@ -37,7 +37,7 @@ pipeline:
     commands:
       - ./autogen.sh
       - mkdir -p build-docs && cd build-docs
-      - ../configure --without-pg
+      - ../configure --without-pg --without-protobuf --without-raster
       - make postgis_revision.h
     when:
       path: *when_path_full
