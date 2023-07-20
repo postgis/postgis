@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-06-29 05:08+0000\n"
+"PO-Revision-Date: 2023-07-20 04:36+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_rasterxml/ja/>\n"
@@ -7626,6 +7626,9 @@ msgid ""
 "of an SQL or PL/pgSQL function, cast to a regprocedure. An example PL/pgSQL "
 "function example is:"
 msgstr ""
+"<varname>callbackfunc</varname>引数は、SQLまたはPL/pgSQL関数の名前とシグニチ"
+"ャでなければならず、regprocedureにキャストしなければなりません。PL/"
+"pgSQL関数の例は次の通りです:"
 
 #. Tag: para
 #: reference_raster.xml:7414
@@ -7644,6 +7647,15 @@ msgid ""
 "<varname>userargs</varname> is for passing through any user-specified "
 "arguments."
 msgstr ""
+"<varname>callbackfunc</varname>は、三つの引数を持たなければなりません。すなわ"
+"ち、3次元倍精度浮動小数点数配列、2次元整数配列、VARIADICの1次元文字列配列です"
+"。第1引数<varname>value</varname>は、全ての入力ラスタからの値 "
+"(倍精度浮動小数点数)の配列です。3次元 (1始まり)は、ラスタ番号、行、列です。第"
+"2引数<varname>position</varname>は、出力ラスタと入力ラスタからのピクセル位置"
+"の集合です。一つ目の次元の添え字 (0はじまりです)はラスタ番号です。一つ目の次"
+"元の添え字が0の場合に指される位置は、出力ラスタのピクセル位置です。二つ目の次"
+"元はXとYからなる二つの要素を持ちます。三つ目の引数<varname>userargs</varname>"
+"はユーザ定義関数特有の引数としてそのまま渡されます。"
 
 #. Tag: para
 #: reference_raster.xml:7418
@@ -7654,6 +7666,9 @@ msgid ""
 "type> type. To pass the above example PL/pgSQL function as an argument, the "
 "SQL for the argument is:"
 msgstr ""
+"<type>regprocedure</type>引数をSQL関数に渡す場合には、渡し先の完全な関数シグ"
+"ネチャが必要で、さらに<type>regprocedure</type>にキャストします。上の例のPL/"
+"pgSQL関数を引数として渡すには、引数のSQLは次のようになります:"
 
 #. Tag: para
 #: reference_raster.xml:7424 reference_raster.xml:8396
@@ -7664,6 +7679,8 @@ msgid ""
 "function arguments, quotes around the name and argument types, and a cast to "
 "a <type>regprocedure</type>."
 msgstr ""
+"引数には関数名が含まれ、関数引数の型、関数名と引数型を引用符で括ったもの、<ty"
+"pe>regprocedure</type>へのキャストが存在することに注意して下さい。"
 
 #. Tag: term
 #: reference_raster.xml:7432
@@ -8616,6 +8633,9 @@ msgid ""
 "signature of a SQL or PL/pgSQL function, cast to a regprocedure. A very "
 "simple and quite useless PL/pgSQL function example is:"
 msgstr ""
+"<varname>onerasteruserfunc</varname>引数は SQL関数またはPL/pgSQL関数の名前と"
+"シグネチャで、regprocedureにキャストします。大変単純で本当に使えないPL/"
+"pgSQL関数の例を挙げます:"
 
 #. Tag: para
 #: reference_raster.xml:8388
@@ -8629,6 +8649,12 @@ msgid ""
 "parameters to <xref linkend=\"RT_ST_MapAlgebraFct\"/> shall be passed "
 "through to the <varname>userfunction</varname>."
 msgstr ""
+"<varname>userfunction</varname>は、2または3の引数を受け付けます。すなわち、fl"
+"oat8値、任意引数の整数配列、VARIADIC文字列配列です。"
+"第1引数はラスタセルごとの値です (ラスタのデータ型に関係なく)。第2引数は現在の"
+"処理セルの位置で、'{x,y}'であらわされます。第3引数は、<xref linkend="
+"\"RT_ST_MapAlgebraFct\"/>へのパラメータの残っているもの全てが<varname>userfun"
+"ction</varname>に渡されることを示します。"
 
 #. Tag: para
 #: reference_raster.xml:8392 reference_raster.xml:8519
@@ -8639,6 +8665,9 @@ msgid ""
 "type> type. To pass the above example PL/pgSQL function as an argument, the "
 "SQL for the argument is:"
 msgstr ""
+"<type>regprocedure</type>引数をSQL関数に渡す場合には、渡し先の完全な関数シグ"
+"ネチャが必要で、さらに<type>regprocedure</type>にキャストします。上の例のPL/"
+"pgSQL関数を引数として渡すには、引数のSQLは次のようになります:"
 
 #. Tag: para
 #: reference_raster.xml:8400
@@ -8745,6 +8774,9 @@ msgid ""
 "signature of an SQL or PL/pgSQL function, cast to a regprocedure. An example "
 "PL/pgSQL function example is:"
 msgstr ""
+"<varname>tworastuserfunc</varname>引数は、SQLまたはPL/pgSQL関数の名前とシグニ"
+"チャでなければならず、regprocedureにキャストしなければなりません。PL/"
+"pgSQL関数の例は次の通りです:"
 
 #. Tag: para
 #: reference_raster.xml:8515
@@ -8760,6 +8792,14 @@ msgid ""
 "parameters to <xref linkend=\"RT_ST_MapAlgebraFct2\"/> shall be passed "
 "through to the <varname>tworastuserfunc</varname>."
 msgstr ""
+"<varname>tworastuserfunc</varname>は3または4の引数を受け付けます。すなわち、"
+"一つ目の倍精度浮動小数点数、二つ目の倍精度浮動小数点数、任意引数の整列配列、V"
+"ARIADIC文字列配列です。第1引数は<varname>rast1</"
+"varname>のラスタセルごとの値です (ラスタのデータ型に関係なく)。第1引数は<varn"
+"ame>rast2</varname>のラスタセルごとの値です。第3引数は現在の処理セルの位置で"
+"、'{x,y}'であらわされます。第4引数は<xref linkend=\"RT_ST_MapAlgebraFct2\"/>"
+"へのパラメータの残っているもの全てが<varname>tworastuserfunc</varname>に渡さ"
+"れることを示します。"
 
 #. Tag: para
 #: reference_raster.xml:8528
