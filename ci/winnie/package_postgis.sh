@@ -3,6 +3,9 @@
 ## PostgreSQL, OS_BUILD denote the last build to be packaged
 ## and are passed in by the jenkins job process
 ###
+
+. $(dirname $0)/winnie_common.h
+
 #export OS_BUILD=64
 #export PGPORT=8442
 
@@ -26,6 +29,7 @@ if  [[ "${OVERRIDE}" == '' ]] ; then
 	export PROJSO=libproj-19.dll
 	export CURL_VER=7.73
 fi;
+
 
 export PROTOBUF_VER=3.2.0
 export PROTOBUFC_VER=1.2.1

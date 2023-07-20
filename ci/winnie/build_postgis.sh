@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+. $(dirname $0)/winnie_common.h
+
 set -e
 if  [[ "${OVERRIDE}" == '' ]] ; then
 	export GEOS_VER=3.10.2
