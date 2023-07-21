@@ -42,7 +42,7 @@ outdir="${RELDIR}/${RELVERDIR}"
 package="${RELDIR}/${RELVERDIR}.zip"
 verfile="${RELDIR}/${RELVERDIR}/version.txt"
 rm -rf $outdir
-rm $package
+rm -f $package
 mkdir -p $outdir
 mkdir -p $outdir/share/contrib/postgis-${POSTGIS_MINOR_VER}
 mkdir -p $outdir/share/contrib/postgis-${POSTGIS_MINOR_VER}/proj
