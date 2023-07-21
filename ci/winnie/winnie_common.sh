@@ -26,7 +26,7 @@ fi;
 
 export PROTOBUF_VER=3.2.0
 export PROTOBUFC_VER=1.2.1
-export JSON_VER=0.16
+export JSON_VER=0.12
 export PCRE_VER=8.33
 
 
