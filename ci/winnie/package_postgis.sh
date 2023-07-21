@@ -116,7 +116,7 @@ if [ -n "$SFCGAL_VER"  ]; then
 	echo "GMP VERSION: ${GMP_VER} https://gmplib.org" >> $verfile
 	echo "MPFR VERSION: ${MPFR_VER} http://www.mpfr.org" >> $verfile
 
-	cp -p ${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
+	#cp -p ${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
 	cp -p ${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/lib/*.dll $outdir/bin
 	# cp -p ${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
 	# cp -p ${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/lib/*.dll $outdir/bin/postgisgui
@@ -132,7 +132,7 @@ cd ${POSTGIS_SRC}
 strip postgis/*.dll
 strip sfcgal/*.dll
 strip raster/rt_pg/*.dll
-strip liblwgeom/.libs/*.dll
+#strip liblwgeom/.libs/*.dll
 
 cp postgis/*.dll ${RELDIR}/${RELVERDIR}/lib
 cp sfcgal/*.dll ${RELDIR}/${RELVERDIR}/lib
@@ -144,7 +144,7 @@ cp raster/rt_pg/*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MIN
 cp utils/*.pl ${RELDIR}/${RELVERDIR}/utils
 
 cp raster/loader/.libs/raster2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
-cp liblwgeom/.libs/*.dll ${RELDIR}/${RELVERDIR}/bin
+#cp liblwgeom/.libs/*.dll ${RELDIR}/${RELVERDIR}/bin
 cp loader/shp2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
 cp loader/.libs/shp2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
 cp loader/pgsql2shp.exe ${RELDIR}/${RELVERDIR}/bin
@@ -159,7 +159,7 @@ cp topology/loader/* ${RELDIR}/${RELVERDIR}/bin
 cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll ${RELDIR}/${RELVERDIR}/bin/postgisgui
 cp spatial_ref_sys.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 cp topology/topology.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
-cp topology/topology_upgrade_*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
+#cp topology/topology_upgrade_*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 #cp topology/README* ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 #cp utils/* ${RELDIR}/${RELVERDIR}/utils
 #cp extras/* ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}/extras
