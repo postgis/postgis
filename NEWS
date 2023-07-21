@@ -1,5 +1,13 @@
-PostGIS 3.4.0rc1
+PostGIS 3.4.0beta2
 2023/xx/xx
+
+Changes since 3.4.0beta1 release
+
+* Bug Fixes *
+
+  #5444, 3.4.0-beta1 fails to build (postgis--TEMPLATED--TO--ANY.sql is missing)
+  #5436, doc compile issue on mingw64/msys2
+  #4752, build error on ppc64le
 
 PostGIS 3.4.0beta1
 2023/07/14
