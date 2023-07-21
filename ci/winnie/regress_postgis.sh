@@ -1,78 +1,17 @@
 #!/usr/bin/env bash
 
-. $(dirname $0)/winnie_common.h
+. $(dirname $0)/winnie_common.sh
 
 echo "MSYS2_ARG_CONV_EXCL=$MSYS2_ARG_CONV_EXCL"
-
-if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.11.0
-	export GDAL_VER=3.4.2
-	export PROJ_VER=7.2.1
-	export SFCGAL_VER=1.4.1
-	export CGAL_VER=5.3
-	export ICON_VER=1.16
-	export ZLIB_VER=1.2.11
-  export PROTOBUF_VER=3.2.0
-	export PROTOBUFC_VER=1.2.1
-	export JSON_VER=0.12
-	export PROJSO=libproj-19.dll
-fi;
-
-export PROTOBUF_VER=3.2.0
-export PROTOBUFC_VER=1.2.1
-export JSON_VER=0.12
-export PCRE_VER=8.33
-
-
-if  [[ "${ICON_VER}" == '' ]] ; then
-  export ICON_VER=1.16
-fi;
-
-echo "ICON_VER ${ICON_VER}"
-
-#set to something even if override is on but not set
-if  [[ "${ZLIB_VER}" == '' ]] ; then
-  export ZLIB_VER=1.2.11
-fi;
-
-
-#set to something even if override is on but not set
-if  [[ "${LIBXML_VER}" == '' ]] ; then
-  export LIBXML_VER=2.9.9
-fi;
-
-#set to something even if override is on but not set
-if  [[ "${CGAL_VER}" == '' ]] ; then
-  export CGAL_VER=5.3
-fi;
-
-echo "ZLIB_VER $ZLIB_VER"
-echo "PROJ_VER $PROJ_VER"
-echo "LIBXML_VER $LIBXML_VER"
-echo "CGAL_VER $CGAL_VER"
-echo "ZLIB_VER $ZLIB_VER"
-echo "PROJ_VER $PROJ_VER"
-echo "LIBXML_VER $LIBXML_VER"
-export PROJECTS=/projects
-export MINGPROJECTS=/projects
-export PATHOLD=$PATH
-
-if [ "$OS_BUILD" == "64" ] ; then
-	export MINGHOST=x86_64-w64-mingw32
-else
-	export MINGHOST=i686-w64-mingw32
-fi;
 
 echo PATH AFTER: $PATH
 #export PG_VER=9.2beta2
 export PGWINVER=${PG_VER}edb
 export WORKSPACE=`pwd`
 
-echo PATH BEFORE: $PATH
-
 #export PGHOST=localhost
 #export PGPORT=8442
-export PGUSER=postgres
+
 #export GEOS_VER=3.4.0dev
 #export GDAL_VER=1.9.1
 export PGPATH=${PROJECTS}/postgresql/rel/pg${PG_VER}w${OS_BUILD}${GCC_TYPE}
