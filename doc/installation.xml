@@ -142,7 +142,7 @@ sh autogen.sh
 		  of PostgreSQL (including server headers) is required. PostgreSQL
 		  is available from
 		  <ulink url="https://www.postgresql.org">
-			http://www.postgresql.org
+			https://www.postgresql.org
 		  </ulink>
 		  .
 		</para>
@@ -183,7 +183,7 @@ sh autogen.sh
 
 	  <listitem>
 		<para>
-		  GEOS geometry library, version 3.6 or greater, but GEOS 3.11+ is required to take full advantage of all the new functions and features. GEOS is available for download from
+		  GEOS geometry library, version 3.6 or greater, but GEOS 3.12+ is required to take full advantage of all the new functions and features. GEOS is available for download from
 		  <ulink url="https://libgeos.org/">
 			https://libgeos.org
 		  </ulink>.
