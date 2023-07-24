@@ -540,6 +540,7 @@ html-assets-uninstall: images-install
 	rm -f $(DESTDIR)$(htmldir)/style.css
 
 docs-install: html-install html-assets-install
+	mkdir -p $(DESTDIR)$(PGSQL_DOCDIR)/postgis
 	$(INSTALL_DATA) ../README.postgis $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
 
 docs-uninstall: html-uninstall html-assets-uninstall
