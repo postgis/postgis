@@ -397,18 +397,20 @@ ptarray_locate_point_spheroid(
 	/* Handle point/point case here */
 	if ( pa->npoints <= 1)
 	{
+		double mindist = 0.0;
 		if ( pa->npoints == 1 )
 		{
 			p = getPoint2d_cp(pa, 0);
 			geographic_point_init(p->x, p->y, &b);
 			/* Sphere special case, axes equal */
-			*mindistout = s->radius * sphere_distance(&a, &b);
+			mindist = s->radius * sphere_distance(&a, &b);
 			/* If close or greater than tolerance, get the real answer to be sure */
-			if ( ! use_sphere || *mindistout > 0.95 * tolerance )
+			if ( ! use_sphere || mindist > 0.95 * tolerance )
 			{
-				*mindistout = spheroid_distance(&a, &b, s);
+				mindist = spheroid_distance(&a, &b, s);
 			}
 		}
+		if ( mindistout ) *mindistout = mindist;
 		return 0.0;
 	}
 
