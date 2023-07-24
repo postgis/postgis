@@ -16,6 +16,8 @@ YYYY/MM/DD
   - #5385, Postgres malloc assertion fail when
            using pg_cancel_backend with ST_AsMVT
            (Regina Obe, Paul Ramsey)
+  - #5452, Updated README.postgis for apt-based systems
+           (Jelte Fennema)
 
 * Breaking Changes *
     - #5385, Take out interruptability of ST_AsMVT
