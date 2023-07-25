@@ -12,7 +12,7 @@
 #---------------------------------------------------------------------
 #
 # This script is aimed at generating a list of objects
-# signatures used by postgis_restore to decide
+# signatures used by postgis_restore.pl to decide
 # which objects belong to PostGIS
 #
 #---------------------------------------------------------------------
