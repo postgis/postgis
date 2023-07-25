@@ -85,7 +85,7 @@ To generate the html files and the comments:
 To generate the images:
  * ImageMagick - http://www.imagemagick.org/
 
-To generate a PDF:
+To generate the PDFs:
  * dblatex - http://dblatex.sourceforge.net
 
 To generate the developer's documentation:
@@ -95,6 +95,10 @@ To generate the developer's documentation:
 To generate and manage the translated XML files:
  * poxml - https://github.com/KDE/poxml
  * gettext - https://www.gnu.org/software/gettext/
+
+To generate the localized PDFs:
+ * fonts-ipafont-gothic
+ * fonts-ipafont-mincho
 
 How to
 ------
