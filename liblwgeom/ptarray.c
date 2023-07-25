@@ -2130,9 +2130,14 @@ ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid)
 		}
 
 		/* Skip duplicates */
-		if (p_out && p_out->x == x && p_out->y == y && (ndims > 2 ? p_out->z == z : 1) &&
+		if (p_out &&
+		    p_out->x == x &&
+		    p_out->y == y &&
+		    (ndims > 2 ? p_out->z == z : 1) &&
 		    (ndims > 3 ? p_out->m == m : 1))
+		{
 			continue;
+		}
 
 		/* Write rounded values into the next available point */
 		p_out = (POINT4D *)(getPoint_internal(pa, j++));
