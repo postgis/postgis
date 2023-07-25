@@ -1,7 +1,7 @@
 test_estimation.pl
 	test selectivity estimator for the && (overlap) operator
 
-postgis_restore.pl
+postgis_restore
 	restore a spatial database dump to a (possibly updated)
 	new spatial database.
 

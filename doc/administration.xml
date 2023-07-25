@@ -272,7 +272,7 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
 	  </para>
 
 	  <para>
-		The dump/reload process is assisted by the postgis_restore.pl
+		The dump/reload process is assisted by the postgis_restore
 		script which takes care of skipping from the dump all
 		definitions which belong to PostGIS (including old ones),
 		allowing you to restore your schemas and data into a
@@ -341,12 +341,12 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
 	  <para>
 		Restore your backup into your fresh
 		<varname>newdb</varname> database using
-		postgis_restore.pl.
+		postgis_restore.
 		Unexpected errors, if any, will be printed to the standard
 		error stream by psql. Keep a log of those.
 	  </para>
 
-	  <programlisting>perl utils/postgis_restore.pl "/somepath/olddb.backup" | psql -h localhost -p 5432 -U postgres newdb 2> errors.txt</programlisting>
+	  <programlisting>postgis_restore "/somepath/olddb.backup" | psql -h localhost -p 5432 -U postgres newdb 2> errors.txt</programlisting>
 
 	</listitem>
 
@@ -412,10 +412,10 @@ ALTER TABLE spatial_ref_sys ADD PRIMARY KEY(srid));
     <para>
 		In this case, you can try following steps : first throw
 		out completely the IGN from the sql which is resulting
-		from postgis_restore.pl. So, after having run :
+		from postgis_restore. So, after having run :
     </para>
 
-		<programlisting>perl utils/postgis_restore.pl "/somepath/olddb.backup" > olddb.sql</programlisting>
+		<programlisting>postgis_restore "/somepath/olddb.backup" > olddb.sql</programlisting>
 
     <para>
 		run this command :

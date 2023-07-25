@@ -179,7 +179,7 @@ sub raster2pgsql
 our $POSTGIS_RESTORE;
 sub postgis_restore
 {
-    $POSTGIS_RESTORE = findOrDie 'postgis_restore.pl', @_ unless defined($POSTGIS_RESTORE);
+    $POSTGIS_RESTORE = findOrDie 'postgis_restore', @_ unless defined($POSTGIS_RESTORE);
 }
 
 if ( $OPT_UPGRADE_PATH )
@@ -2107,7 +2107,7 @@ sub restore_db
         print "Restoring database '${DB}' using pg_restore\n";
         $rv = system("pg_restore -d ${DB} ${DBDUMP} >> $REGRESS_LOG 2>&1");
     } else {
-        print "Restoring database '${DB}' using postgis_restore.pl\n";
+        print "Restoring database '${DB}' using postgis_restore\n";
         my $cmd = postgis_restore() . " ${DBDUMP} | psql --set ON_ERROR_STOP=1 -X ${DB} >> $REGRESS_LOG 2>&1";
         $rv = system($cmd);
     }

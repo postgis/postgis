@@ -30,7 +30,7 @@ VPATH := @srcdir@
 SHELL = @SHELL@
 INSTALL = $(SHELL) @top_srcdir@/build-aux/install-sh
 
-SCRIPTS_built = postgis_restore.pl
+SCRIPTS_built = postgis_restore
 
 SCRIPTS = \
 	create_uninstall.pl \
@@ -69,7 +69,7 @@ $(top_builddir)/raster/rt_pg/uninstall_rtpostgis.sql:
 $(top_builddir)/topology/uninstall_topology.sql:
 	$(MAKE) -C ../topology/ uninstall_topology.sql
 
-postgis_restore_data.hardcoded: postgis_restore.pl.in Makefile
+postgis_restore_data.hardcoded: postgis_restore.in Makefile
 	sed -e '1,/^__END__/d' $< \
 		| sort -u \
 		> $@
@@ -79,13 +79,13 @@ postgis_restore_data.generated: $(DROP_FILES) Makefile create_skip_signatures.pl
 		| sort \
 		> $@
 
-postgis_restore.pl: postgis_restore.pl.in postgis_restore_data.hardcoded postgis_restore_data.generated Makefile
+postgis_restore: postgis_restore.in postgis_restore_data.hardcoded postgis_restore_data.generated Makefile
 	cat $< \
 		| sed '/^__END__/q' \
 		| sed 's,@SRID_MAXIMUM@,$(SRID_MAXIMUM),g;s,@SRID_USER_MAXIMUM@,$(SRID_USER_MAXIMUM),' \
-		> postgis_restore.pl
+		> $@
 	cat postgis_restore_data.hardcoded postgis_restore_data.generated \
-		| sort -u >> postgis_restore.pl
+		| sort -u >> $@
 	chmod +x $@
 
 postgis_restore_data.needlessly-hardcoded: postgis_restore_data.hardcoded postgis_restore_data.generated
@@ -93,15 +93,15 @@ postgis_restore_data.needlessly-hardcoded: postgis_restore_data.hardcoded postgi
 
 postgis_restore-check: postgis_restore_data.needlessly-hardcoded
 	@if test -s $<; then { \
-		echo "Needlessly hardcoded signatures found postgis_restore.pl.in:"; \
+		echo "Needlessly hardcoded signatures found postgis_restore.in:"; \
 		sed 's/^/  /' $<; \
 		echo "Use 'make postgis_restore-clean' to fix that"; \
 	} >&2 && false; fi
 
 
 postgis_restore-clean: postgis_restore_data.needlessly-hardcoded
-	mv $(srcdir)/postgis_restore.pl.in $(srcdir)/postgis_restore.pl.in~
-	grep -Fxvf $< $(srcdir)/postgis_restore.pl.in~ > $(srcdir)/postgis_restore.pl.in
+	mv $(srcdir)/postgis_restore.in $(srcdir)/postgis_restore.in~
+	grep -Fxvf $< $(srcdir)/postgis_restore.in~ > $(srcdir)/postgis_restore.in
 
 clean:
 	rm -f $(SCRIPTS_built) postgis_restore_data.*
