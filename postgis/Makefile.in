@@ -69,6 +69,13 @@ FLATGEOBUF_INCLUDE = -I@top_srcdir@/deps/flatgeobuf
 FLATGEOBUF_LIB = $(FLATGEOBUF_LIBPATH) @FLATGEOBUF_LDFLAGS@
 FLATGEOBUF_DEP = $(FLATGEOBUF_LIBPATH)
 
+ifeq (@HAVE_USD@,yes)
+USD_LIBPATH = ../deps/usd/@FLATGEOBUF_LIB@
+USD_INCLUDE = -I@top_srcdir@/deps/usd
+USD_LIB = $(USD_LIBPATH) @USD_LDFLAGS@
+USD_DEP = $(USD_LIBPATH)
+endif
+
 # SQL preprocessor
 SQLPP = @SQLPP@
 
@@ -146,7 +153,7 @@ OBJS=$(PG_OBJS)
 # to an existing liblwgeom.so in the PostgreSQL $libdir supplied by an
 # older version of PostGIS, rather than with the static liblwgeom.a
 # supplied with newer versions of PostGIS
-PG_CPPFLAGS += -I@top_srcdir@/liblwgeom -I@top_builddir@/liblwgeom @CFLAGS@ -I@top_srcdir@/libpgcommon $(FLATGEOBUF_INCLUDE) $(WAYGU_INCLUDE) $(UTHASH_INCLUDE) @CPPFLAGS@ @PICFLAGS@
+PG_CPPFLAGS += -I@top_srcdir@/liblwgeom -I@top_builddir@/liblwgeom @CFLAGS@ -I@top_srcdir@/libpgcommon $(FLATGEOBUF_INCLUDE) $(WAYGU_INCLUDE) $(UTHASH_INCLUDE) $(USD_INCLUDE) @CPPFLAGS@ @PICFLAGS@
 SHLIB_LINK_F = $(WAYGU_LIB) $(FLATGEOBUF_LIB) ../libpgcommon/libpgcommon.a ../liblwgeom/.libs/liblwgeom.a @SHLIB_LINK@
 
 # Extra files to remove during 'make clean'
