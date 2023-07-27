@@ -188,7 +188,6 @@ topology/test/regress/topogeo_addlinestring_expected
 topology/topology_after_upgrade.sql
 topology/topology_before_upgrade.sql
 topology/topology.sql
-topology/topology.sql.in
 topology/topology_upgrade.sql*
 topology/uninstall_topology.sql
 libpgcommon/Makefile
