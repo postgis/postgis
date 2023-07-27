@@ -1,0 +1,65 @@
+#/**********************************************************************
+# *
+# * PostGIS - Spatial Types for PostgreSQL
+# * http://postgis.net
+# *
+# * PostGIS is free software: you can redistribute it and/or modify
+# * it under the terms of the GNU General Public License as published by
+# * the Free Software Foundation, either version 2 of the License, or
+# * (at your option) any later version.
+# *
+# * PostGIS is distributed in the hope that it will be useful,
+# * but WITHOUT ANY WARRANTY; without even the implied warranty of
+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# * GNU General Public License for more details.
+# *
+# * You should have received a copy of the GNU General Public License
+# * along with PostGIS.  If not, see <http://www.gnu.org/licenses/>.
+# *
+# **********************************************************************
+# *
+# * Copyright 2023 ^Bo Zhou^
+# *
+# **********************************************************************/
+
+top_builddir = @top_builddir@
+top_srcdir = @top_srcdir@
+srcdir = @srcdir@
+libdir = @libdir@
+
+CXX = @USD_CXX@
+CXXFLAGS =-I$(top_srcdir)/liblwgeom -I$(top_builddir)/liblwgeom -I$(srcdir)/include @CPPFLAGS@ @CXXFLAGS@ @PICFLAGS@ @USD_CPPFLAGS@
+LDFLAGS = @LDFLAGS@ @USD_LDFLAGS@
+LIBTOOL = @LIBTOOL@
+
+VPATH = $(srcdir)
+
+USD_OBJS = writer.o
+
+USD_HEADERS = writer.h
+
+all: @USD_LIB@
+
+@USD_LIB@: $(USD_OBJS)
+	@AR@ @AR_FLAGS@ @USD_LIB@ $(USD_OBJS)
+
+$(USD_OBJS): %.o: %.cpp ../../liblwgeom/liblwgeom.h $(USD_HEADERS)
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+../../liblwgeom/liblwgeom.h:
+	$(MAKE) -C ../../liblwgeom liblwgeom.h
+
+clean:
+	rm -f @USD_LIB@ $(USD_OBJS)
+
+distclean: clean
+	rm -f Makefile
+
+
+install:
+
+uninstall:
+
+check:
+
+.PHONY: clean distclean install uninstall check
