@@ -493,7 +493,7 @@ endif
 comments-uninstall:
 	$(MAKE) -f Makefile.comments uninstall
 
-man-install: man/shp2pgsql.1 man/pgsql2shp.1 man/pgtopo_export.1 man/pgtopo_import.1 man/postgis.1
+man-install: man/shp2pgsql.1 man/pgsql2shp.1 man/pgtopo_export.1 man/pgtopo_import.1 man/postgis.1 man/postgis_restore.1
 	mkdir -p $(DESTDIR)$(mandir)/man1
 	for f in $^; do \
 		$(INSTALL_DATA) $$f $(DESTDIR)$(mandir)/man1/`basename $$f`; \
@@ -505,6 +505,7 @@ man-uninstall:
 	rm -f $(DESTDIR)$(mandir)/man1/pgtopo_export.1
 	rm -f $(DESTDIR)$(mandir)/man1/pgtopo_import.1
 	rm -f $(DESTDIR)$(mandir)/man1/postgis.1
+	rm -f $(DESTDIR)$(mandir)/man1/postgis_restore.1
 
 html-install: $(html_builddir)/postgis$(DOCSUFFIX).html
 	mkdir -p $(DESTDIR)$(htmldir)
