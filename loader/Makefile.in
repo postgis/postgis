@@ -27,7 +27,6 @@ VPATH = $(srcdir)
 CC=@CC@
 CFLAGS= -I$(top_srcdir)/liblwgeom -I$(top_builddir)/liblwgeom @CPPFLAGS@ @CFLAGS@ @PICFLAGS@ @PROJ_CPPFLAGS@
 SHELL = @SHELL@
-INSTALL = @INSTALL@
 LIBTOOL = @LIBTOOL@
 
 LDFLAGS = @LDFLAGS@
