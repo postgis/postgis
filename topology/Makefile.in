@@ -184,3 +184,11 @@ install-importer: loader/pgtopo_import | installdir
 
 install-exporter: loader/pgtopo_export | installdir
 	$(LIBTOOL) --mode=install $(INSTALL) $^ "$(DESTDIR)$(bindir)/pgtopo_export"
+
+uninstall: uninstall-importer uninstall-exporter
+
+uninstall-importer:
+	rm -f '$(DESTDIR)$(bindir)/pgtopo_import'
+
+uninstall-exporter:
+	rm -f '$(DESTDIR)$(bindir)/pgtopo_export'
