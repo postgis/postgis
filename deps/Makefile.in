@@ -31,7 +31,7 @@ top_builddir = @top_builddir@
 libdir = @libdir@
 LIBTOOL = @LIBTOOL@
 
-all: @WAGYU_LIB@ @RYU_LIB@ @FLATGEOBUF_LIB@
+all: @WAGYU_LIB@ @RYU_LIB@ @FLATGEOBUF_LIB@ @USD_LIB@
 
 @WAGYU_LIB@:
 	$(MAKE) -C wagyu $@
@@ -42,15 +42,20 @@ all: @WAGYU_LIB@ @RYU_LIB@ @FLATGEOBUF_LIB@
 @FLATGEOBUF_LIB@:
 	$(MAKE) -C flatgeobuf $@
 
+@USD_LIB@:
+	$(MAKE) -C usd $@
+
 clean:
 	$(MAKE) -C wagyu $@
 	$(MAKE) -C ryu $@
 	$(MAKE) -C flatgeobuf $@
+	$(MAKE) -C usd $@
 
 distclean: clean
 	$(MAKE) -C wagyu $@
 	$(MAKE) -C ryu $@
 	$(MAKE) -C flatgeobuf $@
+	$(MAKE) -C usd $@
 	rm -f Makefile
 
 .PHONY: install uninstall check check-unit check-regress
