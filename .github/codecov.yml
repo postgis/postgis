@@ -10,3 +10,4 @@ comment: false
 ignore:
   - "deps/wagyu/include/**/*" # Ignore wagyu library files
   - "deps/flatgeobuf/**/*" # Ignore FlatGeobuf library files
+  - "deps/usd/**/*" # Ignore USD library files
