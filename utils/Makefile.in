@@ -120,7 +120,7 @@ installdir:
 	@mkdir -p $(DESTDIR)$(bindir)
 
 uninstall:
-	rm -f $(addprefix '$(DESTDIR)$(bindir)'/, $(SCRIPTS_built))
+	rm -f '$(DESTDIR)$(bindir)/postgis_restore'
 
 install: installdir $(SCRIPTS_built)
-	$(INSTALL) $(SCRIPTS_built) '$(DESTDIR)$(bindir)/'
+	$(INSTALL) postgis_restore.pl '$(DESTDIR)$(bindir)/postgis_restore'

@@ -15,6 +15,10 @@ Changes since 3.4.0beta1 release
          and also put in new version requirements
          (Jelte Fennema, Regina Obe)
 
+* Breaking Changes *
+
+  #5447, postgis_restore.pl renamed to postgis_restore
+
 PostGIS 3.4.0beta1
 2023/07/14
 
