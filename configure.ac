@@ -1170,7 +1170,6 @@ AC_SUBST([GTK_BUILD])
 AC_SUBST([IGE_MAC_CFLAGS])
 AC_SUBST([IGE_MAC_LIBS])
 
-
 dnl ===========================================================================
 dnl Allow the developer to turn on expensive checks and debugging flags
 dnl with --enable-debug
@@ -1719,6 +1718,114 @@ DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST
 		deps/flatgeobuf/Makefile"
 
 
+dnl ===========================================================================
+dnl Detect if USD installed
+dnl ===========================================================================
+
+CHECK_USD=yes
+HAVE_USD=no
+
+AC_ARG_WITH([usd],
+	[AS_HELP_STRING([--without-usd], [build without USD support])],
+	[CHECK_USD="$withval"], [])
+
+dnl User didn't turn OFF protobuf support so...
+if test "$CHECK_USD" != "no"; then
+
+		USD_LIB=libusd.la
+		AC_SUBST([USD_LIB])
+
+		dnl ============================================================
+		dnl We force to use the same compiler as Postgresql
+		dnl ============================================================
+		CXX_SAVE="$CXX"
+		CC_SAVE="$CC"
+		CFLAGS_SAVE="$CFLAGS"
+		CXXFLAGS_SAVE="$CXXFLAGS"
+		CPPFLAGS_SAVE="$CPPFLAGS"
+		LDFLAGS_SAVE="$LDFLAGS"
+		LIBS_SAVE="$LIBS"
+
+		USD_CXX=`"$PG_CONFIG" --cc`
+		CPPFLAGS="-x c++"
+		CFLAGS=""
+		LDFLAGS=""
+		LIBS=""
+		CXX="$USD_CXX"
+		AC_PROG_CXX
+		AX_CXX_COMPILE_STDCXX(14, noext, mandatory)
+		USD_CXX="$CXX -x c++"
+
+		dnl ============================================================
+		dnl Check if we can declare the c++ stdlib
+		dnl ============================================================
+		CC="$USD_CXX"
+
+		AC_CHECK_LIB(c++, main, [HAVE_CPP=yes], [HAVE_CPP=no])
+
+		if test "x$HAVE_CPP" = "xyes"; then
+			USD_LDFLAGS="-lc++"
+		else
+			AC_MSG_WARN("Could not find libc++")
+			USD_LDFLAGS=""
+		fi
+
+		CXX="$CXX_SAVE"
+		CC="$CC_SAVE"
+		CFLAGS="$CFLAGS_SAVE"
+		CXXFLAGS="$CXXFLAGS_SAVE"
+		CPPFLAGS="$CPPFLAGS_SAVE"
+		LDFLAGS="$LDFLAGS_SAVE"
+		LIBS="$LIBS_SAVE"
+
+		AC_ARG_WITH([usddir],
+				[AS_HELP_STRING([--with-usddir=PATH], [specify the USD installation directory])],[
+							if test "x$withval" = "xyes"; then
+								AC_MSG_ERROR([you must specify a parameter to --with-usddir, e.g. --with-usddir=/usr/local])
+							else
+								USD_BASE_LDFLAGS="-L$withval/lib -lusd_ms";
+								USD_BASE_CPPFLAGS="-I$withval/include"
+							fi
+						], [])
+		AC_ARG_WITH([usdboostdir],
+				[AS_HELP_STRING([--with-usdboostdir=PATH], [specify the USD Boost installation directory])],[
+							if test "x$withval" = "xyes"; then
+								AC_MSG_ERROR([you must specify a parameter to --with-usdboostdir, e.g. --with-usdboostdir=/usr/local])
+							else
+								USD_BOOST_CPPFLAGS="-I$withval/include"
+							fi
+						], [])
+		AC_ARG_WITH([usdtbbdir],
+				[AS_HELP_STRING([--with-usdtbbdir=PATH], [specify the USD TBB installation directory])],[
+							if test "x$withval" = "xyes"; then
+								AC_MSG_ERROR([you must specify a parameter to --with-usdtbbdir, e.g. --with-usdtbbdir=/usr/local])
+							else
+								USD_TBB_CPPFLAGS="-I$withval/include"
+							fi
+						], [])
+
+		USD_CPPFLAGS="$USD_BASE_CPPFLAGS $USD_BOOST_CPPFLAGS $USD_TBB_CPPFLAGS"
+		USD_LDFLAGS="$USD_BASE_LDFLAGS"
+
+    CXX="$CXX_SAVE"
+    CC="$CC_SAVE"
+    CFLAGS="$CFLAGS_SAVE"
+    CXXFLAGS="$CXXFLAGS_SAVE"
+    CPPFLAGS="$CPPFLAGS_SAVE"
+    LDFLAGS="$LDFLAGS_SAVE"
+    LIBS="$LIBS_SAVE"
+
+    HAVE_USD=yes
+    AC_DEFINE([HAVE_USD], [1], [Define to 1 if USD is being built])
+    AC_SUBST([HAVE_USD])
+    AC_SUBST([USD_CXX])
+    AC_SUBST([USD_CPPFLAGS])
+    AC_SUBST([USD_LDFLAGS])
+
+		DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST
+				deps/usd/Makefile"
+fi
+
 
 dnl ===========================================================================
 dnl See if we have the requirements for building the extensions, namely
@@ -1805,6 +1912,9 @@ fi
 if test "x$HAVE_FLATGEOBUF" = "xyes"; then
     AC_MSG_RESULT([  C++ compiler (FlatGeobuf): ${FLATGEOBUF_CXX} ${CXXFLAGS}])
 fi
+if test "x$HAVE_USD" = "xyes"; then
+    AC_MSG_RESULT([  C++ compiler (USD): ${USD_CXX} ${CXXFLAGS}])
+fi
 AC_MSG_RESULT([  CPPFLAGS:             $CPPFLAGS])
 AC_MSG_RESULT([  LDFLAGS:              $LDFLAGS])
 AC_MSG_RESULT([  SQL preprocessor:     ${SQLPP}])
@@ -1846,6 +1956,9 @@ AC_MSG_RESULT([  JSON-C support:       ${HAVE_JSON}])
 AC_MSG_RESULT([  protobuf support:     ${HAVE_PROTOBUF}])
 if test "x$HAVE_PROTOBUF" = "xyes"; then
   AC_MSG_RESULT([  protobuf-c version:   ${PROTOC_VERSION}])
+fi
+if test "x$HAVE_USD" = "xyes"; then
+  AC_MSG_RESULT([  USD support:          ${HAVE_USD}])
 fi
 
 AC_MSG_RESULT([  PCRE support:         ${PCRE_SUPPORT}])
