@@ -9,7 +9,7 @@ Changes since 3.4.0beta1 release
         (postgis--TEMPLATED--TO--ANY.sql is missing)
         (Sandro Santilli)
   #5436, doc compile issue on mingw64/msys2 (Sandro Santilli)
-  #4752, build error on ppc64le (Sandro Santilli)
+  #4752, build error on ppc64le (Bas Couwenberg)
   #5449, Clarify licensing of XSL sheets (Regina Obe)
   #5452, README.postgis, updates for apt based,
          and also put in new version requirements
