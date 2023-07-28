@@ -50,6 +50,7 @@ documentation -- that means having the required software:
   - protobuf-c
   - GDAL (for raster)
   - json-c (for GeoJSON load support)
+  - git2cl (for ChangeLog generation)
 * For the docs:
   - xsltproc
   - DocBook XSL scripts
