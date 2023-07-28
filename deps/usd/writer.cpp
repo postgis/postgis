@@ -39,7 +39,7 @@ GenerateNextSdfPath(pxr::UsdStageRefPtr stage, const pxr::SdfPath &test_path)
 	{
 		std::string new_path_string = pxr::TfStringPrintf("%s_%d", test_path.GetText(), i);
 		new_path = pxr::SdfPath(new_path_string);
-		auto prim = stage->GetPrimAtPath(test_path);
+		auto prim = stage->GetPrimAtPath(new_path);
 		if (prim)
 		{
 			continue;
