@@ -6918,6 +6918,21 @@ CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, maxdecimaldigits integer DEFA
 	_COST_MEDIUM;
 
 -----------------------------------------------------------------------
+-- USD OUTPUT
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION _ST_AsUSDA(geom geometry)
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME','_ST_AsUSDA'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
+CREATE OR REPLACE FUNCTION ST_AsUSDA(geom geometry)
+	RETURNS TEXT
+	AS $$ SELECT @extschema@._ST_AsUSDA($1) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
+-----------------------------------------------------------------------
 -- ST_Angle
 -----------------------------------------------------------------------
 -- Availability: 2.3.0
