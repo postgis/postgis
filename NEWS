@@ -1,5 +1,5 @@
-PostGIS 3.3.4dev
-YYYY/MM/DD
+PostGIS 3.3.4
+2023/07/28
 
 * Bug Fixes and Enhancements *
   - #5450, Fix macro expansion recursion on powerpc architectures.
