@@ -133,7 +133,8 @@ void
 Writer::WriteLineString(const LWLINE *l)
 {
 	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
-	auto geometry = pxr::UsdGeomBasisCurves::Define(m_stage, prim_path);
+	auto geometry = DefineGeom<pxr::UsdGeomBasisCurves>(
+	    m_stage, prim_path, l->srid, lwtype_name(l->type), FLAGS_GET_Z(l->flags), FLAGS_GET_M(l->flags));
 	auto prim = geometry.GetPrim();
 
 	/* set type of curve to be linear */
@@ -159,7 +160,8 @@ void
 Writer::WriteMultiLineString(const LWMLINE *ml)
 {
 	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
-	auto geometry = pxr::UsdGeomBasisCurves::Define(m_stage, prim_path);
+	auto geometry = DefineGeom<pxr::UsdGeomBasisCurves>(
+	    m_stage, prim_path, ml->srid, lwtype_name(ml->type), FLAGS_GET_Z(ml->flags), FLAGS_GET_M(ml->flags));
 	auto prim = geometry.GetPrim();
 
 	auto type_attr = geometry.CreateTypeAttr();
@@ -190,7 +192,8 @@ void
 Writer::WritePolygon(const LWPOLY *p)
 {
 	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
-	auto geometry = pxr::UsdGeomMesh::Define(m_stage, prim_path);
+	auto geometry = DefineGeom<pxr::UsdGeomMesh>(
+	    m_stage, prim_path, p->srid, lwtype_name(p->type), FLAGS_GET_Z(p->flags), FLAGS_GET_M(p->flags));
 	auto prim = geometry.GetPrim();
 
 	pxr::VtIntArray fvi;
@@ -228,7 +231,8 @@ void
 Writer::WriteTriangle(const LWTRIANGLE *t)
 {
 	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
-	auto geometry = pxr::UsdGeomMesh::Define(m_stage, prim_path);
+	auto geometry = DefineGeom<pxr::UsdGeomMesh>(
+	    m_stage, prim_path, t->srid, lwtype_name(t->type), FLAGS_GET_Z(t->flags), FLAGS_GET_M(t->flags));
 	auto prim = geometry.GetPrim();
 
 	pxr::VtIntArray fvi;
