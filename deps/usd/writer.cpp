@@ -203,9 +203,15 @@ Writer::WritePolygon(const LWPOLY *p)
 
 	POINTARRAY *boundary_pa = p->rings[0];
 	ReadPointArray(points, xyzm_points, boundary_pa);
-	fvc.push_back(boundary_pa->npoints);
+
+	/* remove duplicated last point of polygon */
+	points.pop_back();
+	xyzm_points.pop_back();
+	fvc.push_back(boundary_pa->npoints - 1);
 
 	auto fvi_attr = geometry.GetFaceVertexIndicesAttr();
+	fvi.resize(fvc.front());
+	std::iota(std::begin(fvi), std::end(fvi), 0);
 	fvi_attr.Set(fvi);
 
 	auto fvc_attr = geometry.CreateFaceVertexCountsAttr();
