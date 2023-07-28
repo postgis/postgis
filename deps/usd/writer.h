@@ -14,6 +14,12 @@ namespace USD {
 class Writer {
 	private:
 		void WritePoint(const LWPOINT *p);
+		void WriteMultiPoint(const LWMPOINT *mp);
+		void WriteLineString(const LWLINE* l);
+		void WriteMultiLineString(const LWMLINE* ml);
+		void WritePolygon(const LWPOLY *p);
+		void WriteMultiPolygon(const LWMPOLY *mp);
+		void WriteTriangle(const LWTRIANGLE *t);
 		void WriteCollection(const LWCOLLECTION *coll);
 
 	public:

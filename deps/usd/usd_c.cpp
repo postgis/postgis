@@ -39,8 +39,9 @@ usd_write_save(struct usd_write_context *ctx, usd_format format)
 		std::string stage_string;
 		if (ctx->m_writer.m_stage->ExportToString(&stage_string))
 		{
-			ctx->m_size = stage_string.size();
-			ctx->m_data.reset(new char[stage_string.size() + 1]);
+			ctx->m_size = stage_string.size() + 1;
+			ctx->m_data.reset(new char[ctx->m_size]);
+			memset(ctx->m_data.get(), '\0', ctx->m_size);
 			strncpy(ctx->m_data.get(), stage_string.c_str(), stage_string.size());
 		}
 		else
