@@ -63,10 +63,12 @@ echo "Removing ci files"
 rm -rfv "$outdir"/ci "$outdir"/.gitlab-ci.yml "$outdir"/.github "$outdir"/.dron*.yml "$outdir"/.cirrus.yml "$outdir"/.clang-format
 
 # generating configure script and configuring
-echo "Running autogen.sh; ./configure"
+echo "Running autogen.sh"
 owd="$PWD"
 cd "$outdir"
 ./autogen.sh || exit 1
+
+echo "./configure ${CONFIGURE_ARGS}"
 ./configure ${CONFIGURE_ARGS} || exit 1
 # generating postgis_revision.h for >= 2.0.0 tags
 if test -f utils/repo_revision.pl; then
