@@ -120,7 +120,12 @@ Release procedure
   - Documentation should also have been built and should be in https://postgis.net/stuff
      (this sometimes takes sometime so wait 15 minutes)
   - Test generated tarball (including extension upgrade)
-  - Copy tarball, md5, pdf, doc-html to https://upload.osgeo.org/postgis/ .
+  - Copy tarball and md5 files to ssh://upload.osgeo.org/osgeo/download/postgis/source
+    $ scp postgis-${rev}.tar.gz postgis-${rev}.tar.gz.md5 upload.osgeo.org:/osgeo/download/postgis/source
+  - Copy pdf, epub and doc-html files to ssh://upload.osgeo.org/osgeo/download/postgis/docs
+    $ scp doc-html-${rev}.tar.gz postgis-${rev}.epub postgis-${rev}.pdf upload.osgeo.org:/osgeo/download/postgis/docs/
+  - Ensure md5 file is ALSO in https://postgis.net/stuff, if needed:
+    $ scp postgis-${rev}.tar.gz.md5 debbie.postgis.net:/var/www/postgis_stuff
 
   - PostGIS doc release versioned doc - http://postgis.net/documentation/
     - On postgis.net server, change /etc/nginx/sites-enabled/postgis.net (Versionless URL line )
@@ -129,9 +134,9 @@ Release procedure
       Verify the documentation is up to date (might need to change the nginx config)
 
   - Post on website:
-      - https://git.osgeo.org/gitea/postgis/postgis.net/src/branch/website/config/_default/params.toml#L132
+      - https://git.osgeo.org/gitea/postgis/postgis.net/src/branch/website/config.toml#L155
         Fix latest version pointers.
-      - https://git.osgeo.org/gitea/postgis/postgis.net/src/branch/website/content/post
+      - https://git.osgeo.org/gitea/postgis/postgis.net/src/branch/website/content/news
         a) create a new Post for current year making sure the page name starts with mm-dd
           Since hugo move, the mm-dd isn't absolutely necessary anymore
           as it uses the slug or title and date to determine the permalink.  But for now lets keep the same convention.
