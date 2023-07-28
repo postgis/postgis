@@ -1325,10 +1325,13 @@ if test "x$with_address_standardizer" != "xno"; then
     AC_SUBST([PCRE_LDFLAGS])
     AC_SUBST([PCRE_LDFLAGS])
     AC_SUBST([PCRE_VERSION])
+    ADDRESS_STANDARDIZER_MAKEFILE_LIST=extensions/address_standardizer/Makefile
+
 
 else
     ADDRESS_STANDARDIZER=""
     AC_MSG_RESULT([ADDRESS_STANDARDIZER support: disabled])
+    ADDRESS_STANDARDIZER_MAKEFILE_LIST=""
 fi
 
 AC_SUBST([ADDRESS_STANDARDIZER])
@@ -1737,7 +1740,7 @@ AC_CONFIG_FILES([GNUmakefile
    extensions/postgis_raster/Makefile
    extensions/postgis_topology/Makefile
    extensions/postgis_tiger_geocoder/Makefile
-   extensions/address_standardizer/Makefile
+   $ADDRESS_STANDARDIZER_MAKEFILE_LIST
    liblwgeom/Makefile
    liblwgeom/cunit/Makefile
    liblwgeom/liblwgeom.h
