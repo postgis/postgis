@@ -1218,7 +1218,12 @@ Datum geography_line_substring(PG_FUNCTION_ARGS)
 	double to_fraction = PG_GETARG_FLOAT8(2);
 	LWLINE *lwline;
 	LWGEOM *lwresult;
+	SPHEROID s;
 	GSERIALIZED *result;
+	bool use_spheroid = true;
+
+	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
+    	use_spheroid = PG_GETARG_BOOL(3);
 
 	/* Return NULL on empty argument. */
 	if ( gserialized_is_empty(gs) )
@@ -1253,7 +1258,13 @@ Datum geography_line_substring(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	lwresult = geography_substring(lwline,
+	/* Initialize spheroid */
+	spheroid_init_from_srid(gserialized_get_srid(gs), &s);
+ 	/* Set to sphere if requested */
+	if ( ! use_spheroid )
+		s.a = s.b = s.radius;
+
+	lwresult = geography_substring(lwline, &s,
 		from_fraction, to_fraction, FP_TOLERANCE);
 
 	lwline_free(lwline);
@@ -1311,8 +1322,7 @@ Datum geography_line_interpolate_point(PG_FUNCTION_ARGS)
 	}
 
 	/* Initialize spheroid */
-	// spheroid_init_from_srid(fcinfo, srid, &s);
-	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+	spheroid_init_from_srid(gserialized_get_srid(gs), &s);
 
 	/* Set to sphere if requested */
 	if ( ! use_spheroid )
@@ -1376,8 +1386,7 @@ Datum geography_line_locate_point(PG_FUNCTION_ARGS)
 	}
 	else {
 		/* Initialize spheroid */
-		// spheroid_init_from_srid(fcinfo, srid, &s);
-		spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+		spheroid_init_from_srid(gserialized_get_srid(gs1), &s);
 	}
 
 	lwline = lwgeom_as_lwline(lwgeom_from_gserialized(gs1));
@@ -1457,8 +1466,7 @@ Datum geography_shortestline(PG_FUNCTION_ARGS)
 	}
 
 	/* Initialize spheroid */
-	// spheroid_init_from_srid(fcinfo, srid, &s);
-	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+	spheroid_init_from_srid(gserialized_get_srid(g1), &s);
 
 	/* Set to sphere if requested */
 	if ( ! use_spheroid )

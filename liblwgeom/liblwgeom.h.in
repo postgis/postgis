@@ -1793,6 +1793,7 @@ extern int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwge
 
 
 extern LWGEOM * geography_substring(const LWLINE *line,
+    const SPHEROID *s,
     double from, double to,
     double tolerance);
 
