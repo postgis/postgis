@@ -4,6 +4,7 @@
 #include <pxr/usd/usdGeom/basisCurves.h>
 #include <pxr/usd/usdGeom/mesh.h>
 #include <pxr/usd/usdGeom/points.h>
+#include <pxr/usd/usdGeom/primvarsAPI.h>
 #include <pxr/usd/usdGeom/tokens.h>
 #include <pxr/usd/usdGeom/xform.h>
 
@@ -11,11 +12,11 @@ using namespace USD;
 
 static const int PRIM_MAX_SIBLING = 999999;
 
-static const pxr::SdfPath ROOT_PRIM_PATH("/World");
-static const pxr::SdfPath GEOMETRY_PRIM_PATH("/World/_geometry");
+static const pxr::SdfPath USD_ROOT_PRIM_PATH("/World");
+static const pxr::SdfPath USD_GEOM_PRIM_PATH("/World/_geometry");
 
-static const pxr::TfToken POSTGIS_SRID("postgis:token");
-static const pxr::TfToken POSTGIS_GEOMETRY_TYPE("postgis:geometry_type");
+static const pxr::TfToken USD_ATTR_POSTGIS_SRID("postgis:srid");
+static const pxr::TfToken USD_ATTR_POSTGIS_TYPE_NAME("postgis:type_name");
 
 template <typename AT, typename ET>
 static void
@@ -52,11 +53,32 @@ GenerateNextSdfPath(pxr::UsdStageRefPtr stage, const pxr::SdfPath &test_path)
 	return new_path;
 }
 
+template <typename T>
+static void
+SetCustomAttribute(pxr::UsdPrim prim, const pxr::TfToken &name, const pxr::SdfValueTypeName &type, const T &value)
+{
+	auto attr = prim.CreateAttribute(name, type);
+	attr.Set(pxr::VtValue(value));
+}
+
+template <class T>
+static T
+DefineGeom(pxr::UsdStageRefPtr stage, const pxr::SdfPath &path, int srid, const char *type_name)
+{
+	auto geometry = T::Define(stage, path);
+
+	SetCustomAttribute(geometry.GetPrim(), USD_ATTR_POSTGIS_SRID, pxr::SdfValueTypeNames->Int, srid);
+	SetCustomAttribute(
+	    geometry.GetPrim(), USD_ATTR_POSTGIS_TYPE_NAME, pxr::SdfValueTypeNames->String, std::string(type_name));
+
+	return geometry;
+}
+
 void
 Writer::WritePoint(const LWPOINT *p)
 {
-	auto prim_path = GenerateNextSdfPath(m_stage, GEOMETRY_PRIM_PATH);
-	auto geometry = pxr::UsdGeomPoints::Define(m_stage, prim_path);
+	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
+	auto geometry = DefineGeom<pxr::UsdGeomPoints>(m_stage, prim_path, p->srid, lwtype_name(p->type));
 
 	auto points_attr = geometry.CreatePointsAttr();
 
@@ -74,7 +96,7 @@ Writer::WritePoint(const LWPOINT *p)
 void
 Writer::WriteMultiPoint(const LWMPOINT *mp)
 {
-	auto prim_path = GenerateNextSdfPath(m_stage, GEOMETRY_PRIM_PATH);
+	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
 	auto geometry = pxr::UsdGeomPoints::Define(m_stage, pxr::SdfPath("_geometry"));
 
 	auto points_attr = geometry.CreatePointsAttr();
@@ -97,7 +119,7 @@ Writer::WriteMultiPoint(const LWMPOINT *mp)
 void
 Writer::WriteLineString(const LWLINE *l)
 {
-	auto prim_path = GenerateNextSdfPath(m_stage, GEOMETRY_PRIM_PATH);
+	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
 	auto geometry = pxr::UsdGeomBasisCurves::Define(m_stage, prim_path);
 
 	/* set type of curve to be linear */
@@ -123,7 +145,7 @@ Writer::WriteLineString(const LWLINE *l)
 void
 Writer::WriteMultiLineString(const LWMLINE *ml)
 {
-	auto prim_path = GenerateNextSdfPath(m_stage, GEOMETRY_PRIM_PATH);
+	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
 	auto geometry = pxr::UsdGeomBasisCurves::Define(m_stage, prim_path);
 
 	auto type_attr = geometry.CreateTypeAttr();
@@ -154,7 +176,7 @@ Writer::WriteMultiLineString(const LWMLINE *ml)
 void
 Writer::WritePolygon(const LWPOLY *p)
 {
-	auto prim_path = GenerateNextSdfPath(m_stage, GEOMETRY_PRIM_PATH);
+	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
 	auto geometry = pxr::UsdGeomMesh::Define(m_stage, prim_path);
 
 	auto fvi_attr = geometry.GetFaceVertexIndicesAttr();
@@ -193,7 +215,7 @@ Writer::WriteMultiPolygon(const LWMPOLY *mp)
 void
 Writer::WriteTriangle(const LWTRIANGLE *t)
 {
-	auto prim_path = GenerateNextSdfPath(m_stage, GEOMETRY_PRIM_PATH);
+	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
 	auto geometry = pxr::UsdGeomMesh::Define(m_stage, prim_path);
 
 	auto fvi_attr = geometry.GetFaceVertexIndicesAttr();
@@ -248,11 +270,8 @@ Writer::Write(LWGEOM *geom)
 	try
 	{
 		/* set USD default prim */
-		auto xform_world = pxr::UsdGeomXform::Define(m_stage, ROOT_PRIM_PATH);
+		auto xform_world = pxr::UsdGeomXform::Define(m_stage, USD_ROOT_PRIM_PATH);
 		m_stage->SetDefaultPrim(xform_world.GetPrim());
-
-		/* set postgis SRID as USD metadata */
-		m_stage->SetMetadata(POSTGIS_SRID, geom->srid);
 
 		int type = geom->type;
 		switch (type)

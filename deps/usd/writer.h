@@ -1,11 +1,16 @@
 #ifndef USD_WRITER_H
 #define USD_WRITER_H
 
-/* do not forget that lwgeom is C library */
+#ifdef __cplusplus
 extern "C" {
+#endif
+
 #include "lwgeom_log.h"
 #include "liblwgeom.h"
+
+#ifdef __cplusplus
 }
+#endif
 
 #include <pxr/usd/usd/stage.h>
 
