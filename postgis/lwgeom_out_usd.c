@@ -54,14 +54,6 @@ ST_AsUSDA(PG_FUNCTION_ARGS)
 
 	postgis_initialize_cache();
 
-	/* check srid */
-	if (srid == SRID_UNKNOWN)
-	{
-		PG_FREE_IF_COPY(gs, 0);
-		lwpgerror("ST_AsUSDA: Input geometry has unknown (%d) SRID", srid);
-		PG_RETURN_NULL();
-	}
-
 	lwgeom = lwgeom_from_gserialized(gs);
 
 	ctx = usd_write_create();
