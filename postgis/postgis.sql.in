@@ -6922,7 +6922,7 @@ CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, maxdecimaldigits integer DEFA
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION _ST_AsUSDA(geom geometry)
 	RETURNS TEXT
-	AS 'MODULE_PATHNAME','_ST_AsUSDA'
+	AS 'MODULE_PATHNAME','ST_AsUSDA'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
 
