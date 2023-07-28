@@ -34,9 +34,9 @@ LIBTOOL = @LIBTOOL@
 
 VPATH = $(srcdir)
 
-USD_OBJS = writer.o
+USD_OBJS = usd_c.o writer.o
 
-USD_HEADERS = writer.h
+USD_HEADERS = usd_c.h writer.h
 
 all: @USD_LIB@
 
