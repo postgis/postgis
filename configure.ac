@@ -1534,6 +1534,7 @@ if test "x$with_raster" != "xno"; then
 	AC_SUBST([RT_POSTGIS_SQL])
 
 	RT_MAKEFILE_LIST="
+		extensions/postgis_raster/Makefile \
 		raster/Makefile \
 		raster/rt_core/Makefile \
 		raster/rt_pg/Makefile \
@@ -1737,7 +1738,6 @@ dnl echo "TRANSLATIONS_MAKEFILE_LIST: ${TRANSLATIONS_MAKEFILE_LIST}"
 AC_CONFIG_FILES([GNUmakefile
    extensions/Makefile
    extensions/postgis/Makefile
-   extensions/postgis_raster/Makefile
    extensions/postgis_topology/Makefile
    extensions/postgis_tiger_geocoder/Makefile
    $ADDRESS_STANDARDIZER_MAKEFILE_LIST
