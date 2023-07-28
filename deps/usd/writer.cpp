@@ -17,13 +17,9 @@ static const pxr::SdfPath USD_GEOM_PRIM_PATH("/World/_geometry");
 
 static const pxr::TfToken USD_ATTR_POSTGIS_SRID("postgis:srid");
 static const pxr::TfToken USD_ATTR_POSTGIS_TYPE_NAME("postgis:type_name");
-
-template <typename AT, typename ET>
-static void
-PushVtArray(AT &a, const ET &e)
-{
-	a.push_back(e);
-}
+static const pxr::TfToken USD_ATTR_POSTGIS_HAS_Z("postgis:has_z");
+static const pxr::TfToken USD_ATTR_POSTGIS_HAS_M("postgis:has_m");
+static const pxr::TfToken USD_ATTR_POSTGIS_POINTS("postgis:points");
 
 static pxr::SdfPath
 GenerateNextSdfPath(pxr::UsdStageRefPtr stage, const pxr::SdfPath &test_path)
@@ -63,34 +59,52 @@ SetCustomAttribute(pxr::UsdPrim prim, const pxr::TfToken &name, const pxr::SdfVa
 
 template <class T>
 static T
-DefineGeom(pxr::UsdStageRefPtr stage, const pxr::SdfPath &path, int srid, const char *type_name)
+DefineGeom(pxr::UsdStageRefPtr stage, const pxr::SdfPath &path, int srid, const char *type_name, int has_z, int has_m)
 {
 	auto geometry = T::Define(stage, path);
+	auto prim = geometry.GetPrim();
 
-	SetCustomAttribute(geometry.GetPrim(), USD_ATTR_POSTGIS_SRID, pxr::SdfValueTypeNames->Int, srid);
-	SetCustomAttribute(
-	    geometry.GetPrim(), USD_ATTR_POSTGIS_TYPE_NAME, pxr::SdfValueTypeNames->String, std::string(type_name));
+	SetCustomAttribute(prim, USD_ATTR_POSTGIS_SRID, pxr::SdfValueTypeNames->Int, srid);
+	SetCustomAttribute(prim, USD_ATTR_POSTGIS_TYPE_NAME, pxr::SdfValueTypeNames->String, std::string(type_name));
+	SetCustomAttribute(prim, USD_ATTR_POSTGIS_HAS_Z, pxr::SdfValueTypeNames->Int, has_z);
+	SetCustomAttribute(prim, USD_ATTR_POSTGIS_HAS_M, pxr::SdfValueTypeNames->Int, has_m);
 
 	return geometry;
+}
+
+static void
+ReadPointArray(pxr::VtVec3fArray &points, pxr::VtVec4dArray &xyzm_points, const POINTARRAY *pa)
+{
+	for (int i = 0; i < pa->npoints; i++)
+	{
+		POINT4D pt = {0, 0, 0, 0};
+		getPoint4d_p(pa, i, &pt);
+
+		pxr::GfVec3f point(pt.x, pt.y, pt.z);
+		points.push_back(point);
+
+		pxr::GfVec4d xyzm_point(pt.x, pt.y, pt.z, pt.m);
+		xyzm_points.push_back(xyzm_point);
+	}
 }
 
 void
 Writer::WritePoint(const LWPOINT *p)
 {
 	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
-	auto geometry = DefineGeom<pxr::UsdGeomPoints>(m_stage, prim_path, p->srid, lwtype_name(p->type));
+	auto geometry = DefineGeom<pxr::UsdGeomPoints>(
+	    m_stage, prim_path, p->srid, lwtype_name(p->type), FLAGS_GET_Z(p->flags), FLAGS_GET_M(p->flags));
+	auto prim = geometry.GetPrim();
+
+	pxr::VtVec3fArray points;
+	pxr::VtVec4dArray xyzm_points;
+	POINTARRAY *pa = p->point;
+	ReadPointArray(points, xyzm_points, pa);
 
 	auto points_attr = geometry.CreatePointsAttr();
-
-	pxr::VtVec2dArray points;
-	POINTARRAY *pa = p->point;
-	for (int i = 0; i < pa->npoints; i++)
-	{
-		POINT4D pt = {0};
-		getPoint4d_p(pa, i, &pt);
-		PushVtArray(points, pxr::GfVec2d(pt.x, pt.y));
-	}
 	points_attr.Set(points);
+
+	SetCustomAttribute(prim, USD_ATTR_POSTGIS_POINTS, pxr::SdfValueTypeNames->Double4Array, xyzm_points);
 }
 
 void
@@ -98,22 +112,21 @@ Writer::WriteMultiPoint(const LWMPOINT *mp)
 {
 	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
 	auto geometry = pxr::UsdGeomPoints::Define(m_stage, pxr::SdfPath("_geometry"));
+	auto prim = geometry.GetPrim();
 
-	auto points_attr = geometry.CreatePointsAttr();
-
-	pxr::VtVec2dArray points;
+	pxr::VtVec3fArray points;
+	pxr::VtVec4dArray xyzm_points;
 	for (int g = 0; g < mp->ngeoms; g++)
 	{
 		LWPOINT *p = mp->geoms[g];
 		POINTARRAY *pa = p->point;
-		for (int i = 0; i < pa->npoints; i++)
-		{
-			POINT4D pt = {0};
-			getPoint4d_p(pa, i, &pt);
-			PushVtArray(points, pxr::GfVec2d(pt.x, pt.y));
-		}
+		ReadPointArray(points, xyzm_points, pa);
 	}
+
+	auto points_attr = geometry.CreatePointsAttr();
 	points_attr.Set(points);
+
+	SetCustomAttribute(prim, USD_ATTR_POSTGIS_POINTS, pxr::SdfValueTypeNames->Double4Array, xyzm_points);
 }
 
 void
@@ -121,21 +134,21 @@ Writer::WriteLineString(const LWLINE *l)
 {
 	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
 	auto geometry = pxr::UsdGeomBasisCurves::Define(m_stage, prim_path);
+	auto prim = geometry.GetPrim();
 
 	/* set type of curve to be linear */
 	auto type_attr = geometry.CreateTypeAttr();
 	type_attr.Set(pxr::UsdGeomTokens->linear);
 
-	auto points_attr = geometry.CreatePointsAttr();
-	pxr::VtVec2dArray points;
+	pxr::VtVec3fArray points;
+	pxr::VtVec4dArray xyzm_points;
 	POINTARRAY *pa = l->points;
-	for (int i = 0; i < pa->npoints; i++)
-	{
-		POINT4D pt = {0};
-		getPoint4d_p(pa, i, &pt);
-		PushVtArray(points, pxr::GfVec2d(pt.x, pt.y));
-	}
+	ReadPointArray(points, xyzm_points, pa);
+
+	auto points_attr = geometry.CreatePointsAttr();
 	points_attr.Set(points);
+
+	SetCustomAttribute(prim, USD_ATTR_POSTGIS_POINTS, pxr::SdfValueTypeNames->Double4Array, xyzm_points);
 
 	auto cvc_attr = geometry.CreateCurveVertexCountsAttr();
 	pxr::VtIntArray cvc{static_cast<int>(pa->npoints)};
@@ -147,29 +160,29 @@ Writer::WriteMultiLineString(const LWMLINE *ml)
 {
 	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
 	auto geometry = pxr::UsdGeomBasisCurves::Define(m_stage, prim_path);
+	auto prim = geometry.GetPrim();
 
 	auto type_attr = geometry.CreateTypeAttr();
 	type_attr.Set(pxr::UsdGeomTokens->linear);
 
-	auto points_attr = geometry.CreatePointsAttr();
-	pxr::VtVec2dArray points;
+	pxr::VtVec3fArray points;
+	pxr::VtVec4dArray xyzm_points;
 
-	auto cvc_attr = geometry.CreateCurveVertexCountsAttr();
 	pxr::VtIntArray cvc;
 
 	for (int g = 0; g < ml->ngeoms; g++)
 	{
-		LWLINE *geom = ml->geoms[g];
-		POINTARRAY *pa = geom->points;
-		for (int i = 0; i < pa->npoints; i++)
-		{
-			POINT4D pt = {0};
-			getPoint4d_p(pa, i, &pt);
-			PushVtArray(points, pxr::GfVec2d(pt.x, pt.y));
-		}
+		LWLINE *l = ml->geoms[g];
+		POINTARRAY *pa = l->points;
+		ReadPointArray(points, xyzm_points, pa);
+		cvc.push_back(pa->npoints);
 	}
 
+	auto points_attr = geometry.CreatePointsAttr();
 	points_attr.Set(points);
+	SetCustomAttribute(prim, USD_ATTR_POSTGIS_POINTS, pxr::SdfValueTypeNames->Double4Array, xyzm_points);
+
+	auto cvc_attr = geometry.CreateCurveVertexCountsAttr();
 	cvc_attr.Set(cvc);
 }
 
@@ -178,28 +191,27 @@ Writer::WritePolygon(const LWPOLY *p)
 {
 	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
 	auto geometry = pxr::UsdGeomMesh::Define(m_stage, prim_path);
+	auto prim = geometry.GetPrim();
+
+	pxr::VtIntArray fvi;
+	pxr::VtIntArray fvc;
+	pxr::VtVec3fArray points;
+	pxr::VtVec4dArray xyzm_points;
+
+	POINTARRAY *boundary_pa = p->rings[0];
+	ReadPointArray(points, xyzm_points, boundary_pa);
+	fvc.push_back(boundary_pa->npoints);
 
 	auto fvi_attr = geometry.GetFaceVertexIndicesAttr();
-	pxr::VtIntArray fvi;
+	fvi_attr.Set(fvi);
 
 	auto fvc_attr = geometry.CreateFaceVertexCountsAttr();
-	pxr::VtIntArray fvc;
+	fvc_attr.Set(fvc);
 
 	auto points_attr = geometry.CreatePointsAttr();
-	pxr::VtVec2dArray points;
-
-	POINTARRAY *boundary_ring = p->rings[0];
-	fvc.push_back(boundary_ring->npoints);
-	for (int i = 0; i < boundary_ring->npoints; i++)
-	{
-		POINT4D pt = {0};
-		getPoint4d_p(boundary_ring, i, &pt);
-		PushVtArray(points, pxr::GfVec2d(pt.x, pt.y));
-	}
-
-	fvi_attr.Set(fvi);
-	fvc_attr.Set(fvc);
 	points_attr.Set(points);
+
+	SetCustomAttribute(prim, USD_ATTR_POSTGIS_POINTS, pxr::SdfValueTypeNames->Double4Array, xyzm_points);
 }
 
 void
@@ -217,34 +229,26 @@ Writer::WriteTriangle(const LWTRIANGLE *t)
 {
 	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
 	auto geometry = pxr::UsdGeomMesh::Define(m_stage, prim_path);
+	auto prim = geometry.GetPrim();
 
-	auto fvi_attr = geometry.GetFaceVertexIndicesAttr();
 	pxr::VtIntArray fvi;
-
-	auto fvc_attr = geometry.CreateFaceVertexCountsAttr();
 	pxr::VtIntArray fvc;
-
-	auto points_attr = geometry.CreatePointsAttr();
-	pxr::VtVec2dArray points;
+	pxr::VtVec3fArray points;
+	pxr::VtVec4dArray xyzm_points;
 
 	POINTARRAY *pa = t->points;
-	for (int i = 0; i < pa->npoints; i += 4)
-	{
-		POINT4D ptx = {0};
-		POINT4D pty = {0};
-		POINT4D ptz = {0};
-		getPoint4d_p(pa, i, &ptx);
-		getPoint4d_p(pa, i + 1, &pty);
-		getPoint4d_p(pa, i + 2, &ptz);
+	ReadPointArray(points, xyzm_points, pa);
 
-		PushVtArray(points, pxr::GfVec2d(ptx.x, ptx.y));
-		PushVtArray(points, pxr::GfVec2d(pty.x, pty.y));
-		PushVtArray(points, pxr::GfVec2d(ptz.x, ptz.y));
-	}
-
+	auto fvi_attr = geometry.GetFaceVertexIndicesAttr();
 	fvi_attr.Set(fvi);
+
+	auto fvc_attr = geometry.CreateFaceVertexCountsAttr();
 	fvc_attr.Set(fvc);
+
+	auto points_attr = geometry.CreatePointsAttr();
 	points_attr.Set(points);
+
+	SetCustomAttribute(prim, USD_ATTR_POSTGIS_POINTS, pxr::SdfValueTypeNames->Double4Array, xyzm_points);
 }
 
 void
