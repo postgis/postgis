@@ -17,11 +17,15 @@ Changes since 3.4.0beta1 release
   - #5452, README.postgis, updates for apt based,
          and also put in new version requirements
          (Jelte Fennema, Regina Obe)
+  - #5460, Fixes for geography ST_LineLocatPoint and
+          ST_LineSubstring, and ST_ClosestPoint
+          (MobilityDB Esteban Zimanyi,
+           Maxime Schoemans, Paul Ramsey)
 
 * Breaking Changes *
 
   - #5447, postgis_restore.pl renamed to postgis_restore
-           (Regina Obe)
+           (Sandro Santilli)
 
 PostGIS 3.4.0dev
 2023/xx/xx
@@ -82,8 +86,10 @@ Vincent Bre (French Team)
   - #5306, GH734, postgis_full_version() and postgis_proj_version()
     now output more information about proj network configuration
     and data paths. GEOS compile-time version
-    also shown if different from run-time (Paul Ramsey, Sandro Santilli)
+    also shown if different from run-time
+    (Paul Ramsey, Sandro Santilli)
  - #5447, postgis_restore.pl renamed to postgis_restore
+   (Sandro Santilli)
 
 PostGIS 3.3.0
 2022/08/26
