@@ -1,0 +1,32 @@
+#5456|0
+POINT(4.35 50.85)
+POINT(4.35 50.85)
+POINT(37.617222 55.755833)
+1|POINT(7.267449 51.73426)
+2|POINT(10.295949 52.543175)
+3|POINT(13.432093 53.271708)
+4|POINT(16.670208 53.914941)
+5|POINT(20.002182 54.468201)
+6|POINT(23.41738 54.927194)
+7|POINT(26.902706 55.288152)
+8|POINT(30.442818 55.547972)
+9|POINT(34.020506 55.704341)
+10|POINT(37.617222 55.755833)
+LINESTRING(1.0999628 1.1000192,1.1999322 1.200035)
+POINT(1.0000000001 1.0000000001)
+0
+ERROR:  geography_line_interpolate_point: second arg is not within [0,1]
+ERROR:  geography_line_interpolate_point: first arg is not a line
+ERROR:  geography_line_interpolate_point: second arg is not within [0,1]
+ERROR:  geography_line_substring: second argument is not within [0,1]
+ERROR:  geography_line_substring: argument arg is not within [0,1]
+ERROR:  geography_line_substring: second argument must be smaller than third argument
+ERROR:  geography_line_substring: first argument is not a line
+ERROR:  geography_line_locate_point: 1st arg is not a line
+ERROR:  geography_line_locate_point: 2st arg is not a point
+4180892.366508
+297
+1
+5520157.913043
+4790369.580943
+3215502.296386

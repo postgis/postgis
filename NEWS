@@ -1,5 +1,5 @@
 PostGIS 3.4.0beta2
-2023/xx/xx
+2023/07/xx
 
 Changes since 3.4.0beta1 release
 
@@ -14,13 +14,19 @@ Changes since 3.4.0beta1 release
   #5452, README.postgis, updates for apt based,
          and also put in new version requirements
          (Jelte Fennema, Regina Obe)
+  #5460, #5456 Fixes, enhancements, and tests
+         for geography ST_LineLocatePoint,
+         ST_ClosestPoint, ST_LineSubString
+          (MobilityDB, Maxime Schoemans,
+            Esteban Zimanyi, Paul Ramsey, Regina Obe)
+
 
 * Breaking Changes *
 
   #5447, postgis_restore.pl renamed to postgis_restore
 
-PostGIS 3.4.0beta1
-2023/07/14
+PostGIS 3.4.0dev
+2023/xx/xx
 
 This version requires PostgreSQL 12 or higher, GEOS 3.6 or higher, and Proj 6.1+.
 To take advantage of all features, GEOS 3.12+ is needed.
@@ -70,8 +76,8 @@ Vincent Bre (French Team)
   - ST_Project signature for geometry, and two-point signature (Paul Ramsey)
   - #4913, ST_AsSVG support for curve types CircularString, CompoundCurve, MultiCurve,
            and MultiSurface (Regina Obe)
-  - #5266, ST_ClosestPoint, ST_ShortestLine support for geography type
-           (MobilityDB Esteban Zimanyi, Paul Ramsey)
+  - #5266, #5460 ST_ClosestPoint, ST_ShortestLine support for geography type
+    (MobilityDB Esteban Zimanyi, Maxime Schoemans, Paul Ramsey)
 
 * Breaking Changes *
   - #5229, Drop support for Proj < 6.1 and PG 11 (Regina Obe)
