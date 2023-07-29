@@ -156,7 +156,7 @@ Release procedure
           postgis-${rev}.pdf \
       upload.osgeo.org:/osgeo/download/postgis/docs/
 
-  - PostGIS doc release versioned doc - http://postgis.net/documentation/
+  - PostGIS doc release versioned doc - https://postgis.net/documentation/
     - On postgis.net server, change /etc/nginx/sites-enabled/postgis.net (Versionless URL line )
          - nginx -t #to confirm you didn't break the config
          - service nginx reload

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-07-29 10:57+0000\n"
 "PO-Revision-Date: 2023-07-14 10:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -32,9 +32,9 @@ msgstr "ラインに沿って、割合で示された位置の補間ポイント
 
 #. Tag: title
 #: reference_lrs.xml:31 reference_lrs.xml:111 reference_lrs.xml:180
-#: reference_lrs.xml:252 reference_lrs.xml:309 reference_lrs.xml:394
-#: reference_lrs.xml:450 reference_lrs.xml:517 reference_lrs.xml:563
-#: reference_lrs.xml:610
+#: reference_lrs.xml:252 reference_lrs.xml:309 reference_lrs.xml:398
+#: reference_lrs.xml:454 reference_lrs.xml:521 reference_lrs.xml:567
+#: reference_lrs.xml:614
 #, no-c-format
 msgid "Description"
 msgstr "説明"
@@ -100,17 +100,17 @@ msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:58 reference_lrs.xml:127 reference_lrs.xml:197
-#: reference_lrs.xml:338 reference_lrs.xml:527 reference_lrs.xml:572
-#: reference_lrs.xml:616
+#: reference_lrs.xml:339 reference_lrs.xml:531 reference_lrs.xml:576
+#: reference_lrs.xml:620
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
 #. Tag: title
 #: reference_lrs.xml:63 reference_lrs.xml:132 reference_lrs.xml:202
-#: reference_lrs.xml:269 reference_lrs.xml:342 reference_lrs.xml:418
-#: reference_lrs.xml:472 reference_lrs.xml:531 reference_lrs.xml:576
-#: reference_lrs.xml:620
+#: reference_lrs.xml:269 reference_lrs.xml:343 reference_lrs.xml:422
+#: reference_lrs.xml:476 reference_lrs.xml:535 reference_lrs.xml:580
+#: reference_lrs.xml:624
 #, no-c-format
 msgid "Examples"
 msgstr "例"
@@ -135,8 +135,8 @@ msgstr "ライン上のポイントに最も近いポイント"
 
 #. Tag: title
 #: reference_lrs.xml:83 reference_lrs.xml:140 reference_lrs.xml:215
-#: reference_lrs.xml:276 reference_lrs.xml:369 reference_lrs.xml:423
-#: reference_lrs.xml:490 reference_lrs.xml:537 reference_lrs.xml:582
+#: reference_lrs.xml:276 reference_lrs.xml:373 reference_lrs.xml:427
+#: reference_lrs.xml:494 reference_lrs.xml:541 reference_lrs.xml:586
 #, no-c-format
 msgid "See Also"
 msgstr "関連情報"
@@ -256,7 +256,7 @@ msgid "Availability: 2.5.0"
 msgstr "Availability: 2.5.0"
 
 #. Tag: para
-#: reference_lrs.xml:198 reference_lrs.xml:412 reference_lrs.xml:467
+#: reference_lrs.xml:198 reference_lrs.xml:416 reference_lrs.xml:471
 #, no-c-format
 msgid "&M_support;"
 msgstr "&M_support;"
@@ -388,8 +388,8 @@ msgstr ""
 #. Tag: para
 #: reference_lrs.xml:336
 #, no-c-format
-msgid "Availability: 1.1.0, Z and M supported added in 1.1.1"
-msgstr "Availability: 1.1.0 Z軸とM軸のサポートが1.1.1で追加されました。"
+msgid "Enhanced: 3.4.0 - Support for geography was introduced."
+msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:337
@@ -398,19 +398,25 @@ msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Substring."
 msgstr "Changed: 2.1.0 2.0.xではST_Line_Substringと呼ばれていました。"
 
 #. Tag: para
-#: reference_lrs.xml:348
+#: reference_lrs.xml:338
+#, no-c-format
+msgid "Availability: 1.1.0, Z and M supported added in 1.1.1"
+msgstr "Availability: 1.1.0 Z軸とM軸のサポートが1.1.1で追加されました。"
+
+#. Tag: para
+#: reference_lrs.xml:349
 #, no-c-format
 msgid "A LineString seen with 1/3 midrange overlaid (0.333, 0.666)"
 msgstr "中心の1/3区間 (0.333, 0.666)"
 
 #. Tag: para
-#: reference_lrs.xml:353
+#: reference_lrs.xml:354
 #, no-c-format
 msgid "If start and end locations are the same, the result is a POINT."
 msgstr "開始点と終了点とが同じ場合には、結果はPOINTになります。"
 
 #. Tag: para
-#: reference_lrs.xml:359
+#: reference_lrs.xml:360
 #, no-c-format
 msgid ""
 "A query to cut a LineString into sections of length 100 or shorter. It uses "
@@ -422,7 +428,14 @@ msgstr ""
 "います。"
 
 #. Tag: para
-#: reference_lrs.xml:371
+#: reference_lrs.xml:367
+#, no-c-format
+msgid ""
+"Geography implementation measures along a spheroid, geometry along a line"
+msgstr ""
+
+#. Tag: para
+#: reference_lrs.xml:375
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref "
@@ -432,13 +445,13 @@ msgstr ""
 "linkend=\"ST_LineMerge\"/>"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:379
+#: reference_lrs.xml:383
 #, no-c-format
 msgid "Returns the point(s) on a geometry that match a measure value."
 msgstr "M値に一致するジオメトリ上のポイントを返します。"
 
 #. Tag: funcprototype
-#: reference_lrs.xml:384
+#: reference_lrs.xml:388
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LocateAlong</function></funcdef> "
@@ -454,7 +467,7 @@ msgstr ""
 "0</parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:396
+#: reference_lrs.xml:400
 #, no-c-format
 msgid ""
 "Returns the location(s) along a measured geometry that have the given "
@@ -465,7 +478,7 @@ msgstr ""
 "です。ポリゴン系入力には対応していません。"
 
 #. Tag: para
-#: reference_lrs.xml:401
+#: reference_lrs.xml:405
 #, no-c-format
 msgid ""
 "If <varname>offset</varname> is provided, the result is offset to the left "
@@ -477,13 +490,13 @@ msgstr ""
 "れ移動します。"
 
 #. Tag: para
-#: reference_lrs.xml:405 reference_lrs.xml:568
+#: reference_lrs.xml:409 reference_lrs.xml:572
 #, no-c-format
 msgid "Use this function only for linear geometries with an M component"
 msgstr "この関数は、M要素を持つライン系ジオメトリでのみ使います。"
 
 #. Tag: para
-#: reference_lrs.xml:407 reference_lrs.xml:461
+#: reference_lrs.xml:411 reference_lrs.xml:465
 #, no-c-format
 msgid ""
 "The semantic is specified by the <emphasis>ISO/IEC 13249-3 SQL/MM Spatial</"
@@ -493,13 +506,13 @@ msgstr ""
 "のような意味になります。"
 
 #. Tag: para
-#: reference_lrs.xml:409
+#: reference_lrs.xml:413
 #, no-c-format
 msgid "Availability: 1.1.0 by old name ST_Locate_Along_Measure."
 msgstr "Availability: 1.1.0 それまではST_Locale_Along_Measureでした。"
 
 #. Tag: para
-#: reference_lrs.xml:410
+#: reference_lrs.xml:414
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 in prior versions this used to be called "
@@ -507,13 +520,13 @@ msgid ""
 msgstr "Changed: 2.0.0 以前の版ではST_Locate_Along_Measureと呼ばれていました。"
 
 #. Tag: para
-#: reference_lrs.xml:413
+#: reference_lrs.xml:417
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.13"
 msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.13"
 
 #. Tag: para
-#: reference_lrs.xml:425
+#: reference_lrs.xml:429
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_LocateBetweenElevations\"/>, <xref "
@@ -523,13 +536,13 @@ msgstr ""
 "linkend=\"ST_InterpolatePoint\"/>"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:433
+#: reference_lrs.xml:437
 #, no-c-format
 msgid "Returns the portions of a geometry that match a measure range."
 msgstr "M値の範囲に合致する部分ジオメトリを返します。"
 
 #. Tag: funcprototype
-#: reference_lrs.xml:438
+#: reference_lrs.xml:442
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LocateBetween</function></funcdef> "
@@ -547,7 +560,7 @@ msgstr ""
 "0</parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:452
+#: reference_lrs.xml:456
 #, no-c-format
 msgid ""
 "Return a geometry (collection) with the portions of the input measured "
@@ -557,7 +570,7 @@ msgstr ""
 "クション)を全て返します。"
 
 #. Tag: para
-#: reference_lrs.xml:455
+#: reference_lrs.xml:459
 #, no-c-format
 msgid ""
 "If the <varname>offset</varname> is provided, the result is offset to the "
@@ -569,19 +582,19 @@ msgstr ""
 "れ移動します。"
 
 #. Tag: para
-#: reference_lrs.xml:459 reference_lrs.xml:522
+#: reference_lrs.xml:463 reference_lrs.xml:526
 #, no-c-format
 msgid "Clipping a non-convex POLYGON may produce invalid geometry."
 msgstr "凸でないPOLYGONを抜き出すと不正なジオメトリを返すことがあります。"
 
 #. Tag: para
-#: reference_lrs.xml:463
+#: reference_lrs.xml:467
 #, no-c-format
 msgid "Availability: 1.1.0 by old name ST_Locate_Between_Measures."
 msgstr "Availability: 1.1.0 それより前はST_Locate_Between_Measuresでした。"
 
 #. Tag: para
-#: reference_lrs.xml:464
+#: reference_lrs.xml:468
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 - in prior versions this used to be called "
@@ -590,38 +603,38 @@ msgstr ""
 "Changed: 2.0.0 以前の版ではST_Locate_Between_Measuresと呼ばれていました。"
 
 #. Tag: para
-#: reference_lrs.xml:465 reference_lrs.xml:525
+#: reference_lrs.xml:469 reference_lrs.xml:529
 #, no-c-format
 msgid "Enhanced: 3.0.0 - added support for POLYGON, TIN, TRIANGLE."
 msgstr "Enhanced: 3.0.0 - POLYGON, TIN, TRIANGLEへの対応が追加されました。"
 
 #. Tag: para
-#: reference_lrs.xml:468
+#: reference_lrs.xml:472
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1"
 msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1"
 
 #. Tag: para
-#: reference_lrs.xml:481
+#: reference_lrs.xml:485
 #, no-c-format
 msgid ""
 "A LineString with the section between measures 2 and 8, offset to the left"
 msgstr "M値が2と8の間になる辺を持ち左にずれたラインストリング"
 
 #. Tag: para
-#: reference_lrs.xml:492
+#: reference_lrs.xml:496
 #, no-c-format
 msgid ", <xref linkend=\"ST_LocateBetweenElevations\"/>"
 msgstr ", <xref linkend=\"ST_LocateBetweenElevations\"/>"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:500
+#: reference_lrs.xml:504
 #, no-c-format
 msgid "Returns the portions of a geometry that lie in an elevation (Z) range."
 msgstr "標高 (Z値)範囲にある部分ジオメトリを返します。"
 
 #. Tag: funcprototype
-#: reference_lrs.xml:506
+#: reference_lrs.xml:510
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LocateBetweenElevations</function></funcdef> "
@@ -637,7 +650,7 @@ msgstr ""
 "parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:519
+#: reference_lrs.xml:523
 #, no-c-format
 msgid ""
 "Returns a geometry (collection) with the portions of a geometry that lie in "
@@ -646,25 +659,25 @@ msgstr ""
 "標高 (Z値)範囲にある部分ジオメトリとなるジオメトリ (コレクション)を返します。"
 
 #. Tag: para
-#: reference_lrs.xml:524
+#: reference_lrs.xml:528
 #, no-c-format
 msgid "Availability: 1.4.0"
 msgstr "Availability: 1.4.0"
 
 #. Tag: para
-#: reference_lrs.xml:539
+#: reference_lrs.xml:543
 #, no-c-format
 msgid ", <xref linkend=\"ST_LocateBetween\"/>"
 msgstr ", <xref linkend=\"ST_LocateBetween\"/>"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:548
+#: reference_lrs.xml:552
 #, no-c-format
 msgid "Returns the interpolated measure of a geometry closest to a point."
 msgstr "ジオメトリのポイントに最も近いポイント上の補間M値を返します。"
 
 #. Tag: funcprototype
-#: reference_lrs.xml:553
+#: reference_lrs.xml:557
 #, no-c-format
 msgid ""
 "<funcdef>float8 <function>ST_InterpolatePoint</function></funcdef> "
@@ -678,7 +691,7 @@ msgstr ""
 "parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:565
+#: reference_lrs.xml:569
 #, no-c-format
 msgid ""
 "Returns an interpolated measure value of a linear measured geometry at the "
@@ -688,13 +701,13 @@ msgstr ""
 "るM値の補間値を返します。"
 
 #. Tag: para
-#: reference_lrs.xml:570
+#: reference_lrs.xml:574
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr "Availability: 2.0.0"
 
 #. Tag: para
-#: reference_lrs.xml:584
+#: reference_lrs.xml:588
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
@@ -702,13 +715,13 @@ msgstr ""
 ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:594
+#: reference_lrs.xml:598
 #, no-c-format
 msgid "Interpolates measures along a linear geometry."
 msgstr "ラインに沿ったM値を補間します。"
 
 #. Tag: funcprototype
-#: reference_lrs.xml:599
+#: reference_lrs.xml:603
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_AddMeasure</function></funcdef> "
@@ -724,7 +737,7 @@ msgstr ""
 "parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:612
+#: reference_lrs.xml:616
 #, no-c-format
 msgid ""
 "Return a derived geometry with measure values linearly interpolated between "
@@ -737,7 +750,7 @@ msgstr ""
 "置き換えられます。LINESTRINGとMULTILINESTRINGだけに対応しています。"
 
 #. Tag: para
-#: reference_lrs.xml:614
+#: reference_lrs.xml:618
 #, no-c-format
 msgid "Availability: 1.5.0"
 msgstr "Availability: 1.5.0"

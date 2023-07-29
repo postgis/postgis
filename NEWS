@@ -1,5 +1,5 @@
 PostGIS 3.4.0beta2
-2023/07/xx
+2023/xx/xx
 
 Changes since 3.4.0beta1 release
 
@@ -14,12 +14,6 @@ Changes since 3.4.0beta1 release
   #5452, README.postgis, updates for apt based,
          and also put in new version requirements
          (Jelte Fennema, Regina Obe)
-  #5460, #5456 Fixes, enhancements, and tests
-         for geography ST_LineLocatePoint,
-         ST_ClosestPoint, ST_LineSubString
-          (MobilityDB, Maxime Schoemans,
-            Esteban Zimanyi, Paul Ramsey, Regina Obe)
-
 
 * Breaking Changes *
 

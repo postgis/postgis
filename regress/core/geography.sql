@@ -127,7 +127,8 @@ select 'dwithin_poly_poly_3', ST_DWithin('POLYGON((1 1, -2 -2, -3 0, 1 1))'::geo
 
 
 -- Linear Referencing functions
-
+-- #5456 garden crash
+SELECT '#5456' As ticket, ST_LineLocatePoint('0102000020E610000001000000000000000000F03F0000000000000040'::geography, 'POINT(-11.1111111 40)'::geography, false);
 SELECT 'lrs_empty_1', ST_LineInterpolatePoint(geography 'Linestring empty', 0.1);
 SELECT 'lrs_empty_2', ST_LineInterpolatePoints(geography 'Linestring empty', 0.1, true);
 SELECT 'lrs_empty_3', ST_LineLocatePoint(geography 'Linestring empty', 'Point(45 45)', true);

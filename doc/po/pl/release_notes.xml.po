@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:07+0000\n"
+"POT-Creation-Date: 2023-07-29 11:21+0000\n"
 "PO-Revision-Date: 2021-11-28 22:22+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/"
@@ -33,13 +33,13 @@ msgstr ""
 #. Tag: title
 #: release_notes.xml:6
 #, no-c-format
-msgid "PostGIS 3.4.0beta1"
+msgid "PostGIS 3.4.0beta2"
 msgstr ""
 
 #. Tag: para
 #: release_notes.xml:7
 #, no-c-format
-msgid "2023/07/14"
+msgid "2023/07/29"
 msgstr ""
 
 #. Tag: para
@@ -330,8 +330,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5266\">5266</ulink>, "
-"ST_ClosestPoint, ST_ShortestLine support for geography type (MobilityDB "
-"Esteban Zimanyi, Paul Ramsey)"
+"ST_ClosestPoint, ST_ShortestLine, ST_LineSubString support for geography "
+"type (MobilityDB Esteban Zimanyi, Maxime Schoemans, Paul Ramsey)"
 msgstr ""
 
 #. Tag: title

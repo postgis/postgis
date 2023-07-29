@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-29 10:16+0000\n"
 "PO-Revision-Date: 2023-05-15 15:33+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -598,17 +598,12 @@ msgstr ""
 #: administration.xml:247
 #, no-c-format
 msgid ""
-"The dump/reload process is assisted by the postgis_restore.pl script which "
+"The dump/reload process is assisted by the postgis_restore script which "
 "takes care of skipping from the dump all definitions which belong to PostGIS "
 "(including old ones), allowing you to restore your schemas and data into a "
 "database with PostGIS installed without getting duplicate symbol errors or "
 "bringing forward deprecated objects."
 msgstr ""
-"Le processus de dump/rechargement est assisté par le script postgis_restore."
-"pl qui se charge de sauter du dump toutes les définitions qui appartiennent "
-"à PostGIS (y compris les anciennes), ce qui vous permet de restaurer vos "
-"schémas et vos données dans une base de données où PostGIS est installé sans "
-"obtenir d'erreurs de symboles dupliqués ou d'avancer des objets obsolètes."
 
 #. Tag: para
 #: administration.xml:256
@@ -702,13 +697,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Restore your backup into your fresh <varname>newdb</varname> database using "
-"postgis_restore.pl. Unexpected errors, if any, will be printed to the "
-"standard error stream by psql. Keep a log of those."
+"postgis_restore. Unexpected errors, if any, will be printed to the standard "
+"error stream by psql. Keep a log of those."
 msgstr ""
-"Restaurez votre sauvegarde dans votre nouvelle base de données "
-"<varname>newdb</varname> en utilisant postgis_restore.pl. Les erreurs "
-"inattendues, s'il y en a, seront imprimées dans le flux d'erreur standard "
-"par psql. Conservez un journal de ces erreurs."
 
 #. Tag: para
 #: administration.xml:328
@@ -786,8 +777,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "In this case, you can try following steps : first throw out completely the "
-"IGN from the sql which is resulting from postgis_restore.pl. So, after "
-"having run :"
+"IGN from the sql which is resulting from postgis_restore. So, after having "
+"run :"
 msgstr ""
 
 #. Tag: para

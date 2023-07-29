@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:28+0000\n"
+"POT-Creation-Date: 2023-07-29 10:16+0000\n"
 "PO-Revision-Date: 2023-07-20 04:36+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -564,16 +564,12 @@ msgstr ""
 #: administration.xml:247
 #, no-c-format
 msgid ""
-"The dump/reload process is assisted by the postgis_restore.pl script which "
+"The dump/reload process is assisted by the postgis_restore script which "
 "takes care of skipping from the dump all definitions which belong to PostGIS "
 "(including old ones), allowing you to restore your schemas and data into a "
 "database with PostGIS installed without getting duplicate symbol errors or "
 "bringing forward deprecated objects."
 msgstr ""
-"ダンプ/リロード作業はpostgis_restore.plスクリプトが補助します。このスクリプト"
-"は、PostGIS (古いものを含む)に属する定義を全て飛ばすように注意します。また、"
-"重複シンボルエラーや非推奨オブジェクトを持越すことなく、スキーマとデータを"
-"PostGISをインストールしたデータベースにリストアできます 。"
 
 #. Tag: para
 #: administration.xml:256
@@ -658,12 +654,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Restore your backup into your fresh <varname>newdb</varname> database using "
-"postgis_restore.pl. Unexpected errors, if any, will be printed to the "
-"standard error stream by psql. Keep a log of those."
+"postgis_restore. Unexpected errors, if any, will be printed to the standard "
+"error stream by psql. Keep a log of those."
 msgstr ""
-"バックアップを新しい<varname>newdb</varname>データベースにリストアするには、"
-"postgis_restore.plを使います。psqlが予期せぬエラーを標準エラー出力に出すこと"
-"があります。これらのログを保存しておいて下さい。"
 
 #. Tag: para
 #: administration.xml:328
@@ -745,11 +738,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "In this case, you can try following steps : first throw out completely the "
-"IGN from the sql which is resulting from postgis_restore.pl. So, after "
-"having run :"
+"IGN from the sql which is resulting from postgis_restore. So, after having "
+"run :"
 msgstr ""
-"この場合には、次のステップを試すことができます。最初にpostgis_restore.plから"
-"出たIGNをSQLから完全に破棄します。そのために次のコマンドを実行します:"
 
 #. Tag: para
 #: administration.xml:389

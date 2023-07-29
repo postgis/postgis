@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 01:07+0000\n"
+"POT-Creation-Date: 2023-07-29 11:21+0000\n"
 "PO-Revision-Date: 2023-07-19 07:46+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -34,14 +34,14 @@ msgstr "リリースノート"
 #. Tag: title
 #: release_notes.xml:6
 #, no-c-format
-msgid "PostGIS 3.4.0beta1"
-msgstr "PostGIS 3.4.0beta1"
+msgid "PostGIS 3.4.0beta2"
+msgstr ""
 
 #. Tag: para
 #: release_notes.xml:7
 #, no-c-format
-msgid "2023/07/14"
-msgstr "2023/07/14"
+msgid "2023/07/29"
+msgstr ""
 
 #. Tag: para
 #: release_notes.xml:8
@@ -51,9 +51,6 @@ msgid ""
 "6.1+. To take advantage of all features, GEOS 3.12+ is needed. To take "
 "advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed."
 msgstr ""
-"このバージョンにはPostgreSQL 12以上、GEOS 3.6以上、Proj 6.1以上が必要です。全"
-"ての機能を利用するにはGEOS 3.12以上が必要です。全てのSFCGAL機能を使用するには"
-"SFCGAL 1.4.1以上が必要です。"
 
 #. Tag: para
 #: release_notes.xml:11
@@ -62,32 +59,30 @@ msgid ""
 "NOTE: GEOS 3.12.0 details at <ulink url=\"https://libgeos.org/"
 "posts/2023-06-27-geos-3-12-released/\">GEOS 3.12.0 release notes</ulink>"
 msgstr ""
-"注: GEOS 3.12.0の詳細は<ulink url=\"https://libgeos.org/posts/2023-06-27-"
-"geos-3-12-released/\">GEOS 3.12.0 release notes</ulink>にあります"
 
 #. Tag: para
 #: release_notes.xml:12
 #, no-c-format
 msgid "Many thanks to our translation teams, in particular:"
-msgstr "翻訳チームに感謝します、特に次の方々です:"
+msgstr ""
 
 #. Tag: para
 #: release_notes.xml:13
 #, no-c-format
 msgid "Teramoto Ikuhiro (Japanese Team)"
-msgstr "Teramoto Ikuhiroさん (日本語チーム)"
+msgstr ""
 
 #. Tag: para
 #: release_notes.xml:14
 #, no-c-format
 msgid "Vincent Bre (French Team)"
-msgstr "Vincent Breさん (フランス語チーム)"
+msgstr ""
 
 #. Tag: title
 #: release_notes.xml:17
 #, no-c-format
 msgid "New features"
-msgstr "新機能"
+msgstr ""
 
 #. Tag: para
 #: release_notes.xml:18
@@ -96,8 +91,6 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5055\">5055</ulink>, "
 "complete manual internationalization (Sandro Santilli)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5055\">5055</ulink>, 完全"
-"なマニュアル国際化 (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:19
@@ -106,8 +99,6 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5052\">5052</ulink>, "
 "target version support in postgis_extensions_upgrade (Sandro Santilli)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5052\">5052</ulink>, "
-"postgis_extensions_upgradeでの対象バージョンへの対応 (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:21
@@ -116,8 +107,6 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</ulink>, "
 "expose version of GEOS at compile time (Sandro Santilli)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</ulink>, コン"
-"パイル時のGEOSバージョンの表示 (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:22
@@ -125,8 +114,6 @@ msgstr ""
 msgid ""
 "New install-extension-upgrades command in postgis script (Sandro Santilli)"
 msgstr ""
-"PostGISスクリプトの新しいinstall-extension-upgradesコマンド (Sandro Santilli"
-"さん)"
 
 #. Tag: para
 #: release_notes.xml:23
@@ -137,10 +124,6 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5277\">5277</ulink>, "
 "Support changes for PostgreSQL 16 (Regina Obe)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5257\">5257</ulink>, "
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5261\">5261</ulink>, "
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5277\">5277</ulink>, "
-"PostgreSQL 16への対応のための変更 (Regina Obeさん)"
 
 #. Tag: para
 #: release_notes.xml:24
@@ -150,9 +133,6 @@ msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/705\">705</ulink>, "
 "ST_Transform: Support PROJ pipelines (Robert Coup, Koordinates)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5006\">5006</ulink>, "
-"<ulink url=\"https://github.com/postgis/postgis/pull/705\">705</ulink>, "
-"ST_Transform: PROJパイプライン対応 (Robert Coupさん, Koordinates)"
 
 #. Tag: para
 #: release_notes.xml:25
@@ -161,8 +141,6 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5283\">5283</ulink>, "
 "[postgis_topology] RenameTopology (Sandro Santilli)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5283\">5283</ulink>, "
-"[postgis_topology] RenameTopology (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:26
@@ -171,8 +149,6 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5286\">5286</ulink>, "
 "[postgis_topology] RenameTopoGeometryColumn (Sandro Santilli)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5286\">5286</ulink>, "
-"[postgis_topology] RenameTopoGeometryColumn (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:27
@@ -181,9 +157,6 @@ msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/703\">703</ulink>, "
 "[postgis_raster] Add min/max resampling as options (Christian Schroeder)"
 msgstr ""
-"<ulink url=\"https://github.com/postgis/postgis/pull/703\">703</ulink>, "
-"[postgis_raster] リサンプリングの選択肢にmin/maxを追加 (Christian Schroederさ"
-"ん)"
 
 #. Tag: para
 #: release_notes.xml:28
@@ -192,9 +165,6 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5336\">5336</ulink>, "
 "[postgis_topology] topogeometry cast to topoelement support (Regina Obe)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5336\">5336</ulink>, "
-"[postgis_topology] topogeometryからtopoelementへのキャストの対応 (Regina Obe"
-"さん)"
 
 #. Tag: para
 #: release_notes.xml:29
@@ -203,8 +173,6 @@ msgid ""
 "Allow singleton geometry to be inserted into Geometry(Multi*) columns (Paul "
 "Ramsey)"
 msgstr ""
-"単一ジオメトリをジオメトリ (マルチ系)カラムに挿入できるようにしました (Paul "
-"Ramseyさん)"
 
 #. Tag: para
 #: release_notes.xml:30
@@ -213,9 +181,6 @@ msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/721\">721</ulink>, New "
 "window-based ST_ClusterWithinWin and ST_ClusterIntersectingWin (Paul Ramsey)"
 msgstr ""
-"<ulink url=\"https://github.com/postgis/postgis/pull/721\">721</ulink>, 新"
-"ウィンドウ関数ST_ClusterWithinWinとST_ClusterIntersectingWin (Paul Ramseyさ"
-"ん)"
 
 #. Tag: para
 #: release_notes.xml:31
@@ -224,8 +189,6 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5397\">5397</ulink>, "
 "[address_standardizer] debug_standardize_address function (Regina Obe)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5397\">5397</ulink>, "
-"[address_standardizer] debug_standardize_address関数 (Regina Obeさん)"
 
 #. Tag: para
 #: release_notes.xml:32
@@ -235,9 +198,6 @@ msgid ""
 "ulink>ST_LargestEmptyCircle, exposes extra semantics on circle finding. Geos "
 "3.9+ required(Martin Davis)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5373\">5373</"
-"ulink>ST_LargestEmptyCircle, 円探索に関する追加的な意味の表示。GEOS 3.9以上が"
-"必要です (Martin Davisさん)"
 
 #. Tag: para
 #: release_notes.xml:33
@@ -246,9 +206,6 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</ulink>, "
 "ST_Project signature for geometry, and two-point signature (Paul Ramsey)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</ulink>, "
-"ST_Projectのジオメトリを引数に取る形式と2ポイントを引数に取る形式 (Paul "
-"Ramseyさん)"
 
 #. Tag: para
 #: release_notes.xml:34
@@ -257,14 +214,12 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</ulink>, "
 "ST_LineExtend for extending linestrings (Paul Ramsey)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</ulink>, ライ"
-"ンストリングを拡張するST_LineExtend (Paul Ramseyさん)"
 
 #. Tag: title
 #: release_notes.xml:38
 #, no-c-format
 msgid "Enhancements"
-msgstr "性能強化"
+msgstr ""
 
 #. Tag: para
 #: release_notes.xml:39
@@ -273,9 +228,6 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5194\">5194</ulink>, do "
 "not update system catalogs from postgis_extensions_upgrade (Sandro Santilli)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5194\">5194</ulink>, "
-"postgis_extensions_upgradeからシステムカタログの更新ができない (Sandro "
-"Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:40
@@ -284,9 +236,6 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5092\">5092</ulink>, "
 "reduce number of upgrade paths installed on system (Sandro Santilli)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5092\">5092</ulink>, シス"
-"テムにインストールされているアップグレードの経路の数を減らしました (Sandro "
-"Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:41
@@ -295,9 +244,6 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/635\">635</ulink>, honour "
 "--bindir (and --prefix) configure switch for executables (Sandro Santilli)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/635\">635</ulink>, 実行可"
-"能ファイルのコンフィギュレーションスイッチ --bindir (と --prefix) を見るよう"
-"になりました (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:42
@@ -306,8 +252,6 @@ msgid ""
 "Honour --mandir (and --prefix) configure switch for man pages install path "
 "(Sandro Santilli)"
 msgstr ""
-"マニュアルページのインストールパスのコンフィギュレーションスイッチ --mandir "
-"(と --prefix)を未了になりました (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:43
@@ -316,8 +260,6 @@ msgid ""
 "Honour --htmldir (and --docdir and --prefix) configure switch for html pages "
 "install path (Sandro Santilli)"
 msgstr ""
-"HTMLページのインストールパスのコンフィギュレーションスイッチ --htmldir (と --"
-"docdir と --prefix)を見るようになりました (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:45
@@ -326,8 +268,6 @@ msgid ""
 "[postgis_topology] Speed up check of topology faces without edges (Sandro "
 "Santilli)"
 msgstr ""
-"[postgis_topology] エッジのないトポロジのフェイスの確認の速度向上 (Sandro "
-"Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:46
@@ -336,8 +276,6 @@ msgid ""
 "[postgis_topology] Speed up coincident nodes check in topology validation "
 "(Sandro Santilli)"
 msgstr ""
-"[postgis_topology] トポロジ評価での一致するノードの確認の高速化 (Sandro "
-"Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:47
@@ -346,8 +284,6 @@ msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/718\">718</ulink>, "
 "ST_QuantizeCoordinates(): speed-up implementation (Even Rouault)"
 msgstr ""
-"<ulink url=\"https://github.com/postgis/postgis/pull/718\">718</ulink>, "
-"ST_QuantizeCoordinates(): 実装の速度向上 (Even Rouaultさん)"
 
 #. Tag: para
 #: release_notes.xml:48
@@ -356,8 +292,6 @@ msgid ""
 "Repair spatial planner stats to use computed selectivity for contains/within "
 "queries (Paul Ramsey)"
 msgstr ""
-"空間プランナの統計情報を修復してcontains/withinクエリで計算から得られた選択を"
-"使用するようにしました (Paul Ramseyさん)"
 
 #. Tag: para
 #: release_notes.xml:49
@@ -367,9 +301,6 @@ msgid ""
 "Additional metadata on Proj installation in postgis_proj_version (Paul "
 "Ramsey)"
 msgstr ""
-"<ulink url=\"https://github.com/postgis/postgis/pull/734\">734</ulink>, "
-"postgis_proj_versionでProjインストールに関するメタデータの追加 (Paul Ramseyさ"
-"ん)"
 
 #. Tag: para
 #: release_notes.xml:50
@@ -378,9 +309,6 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5177\">5177</ulink>, "
 "allow building tools without PostgreSQL server headers (Sandro Santilli)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5177\">5177</ulink>, "
-"PostgreSQLサーバヘッダなしでツール構築が可能になりました (Sandro Santilliさ"
-"ん)"
 
 #. Tag: para
 #: release_notes.xml:51
@@ -388,8 +316,6 @@ msgstr ""
 msgid ""
 "ST_Project signature for geometry, and two-point signature (Paul Ramsey)"
 msgstr ""
-"ST_Projectのジオメトリを引数に取る形式と2ポイントを引数に取る形式 (Paul "
-"Ramseyさん)"
 
 #. Tag: para
 #: release_notes.xml:52
@@ -399,27 +325,21 @@ msgid ""
 "ST_AsSVG support for curve types CircularString, CompoundCurve, MultiCurve, "
 "and MultiSurface (Regina Obe)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/4913\">4913</ulink>, "
-"ST_AsSVGがCircularString, CompoundCurve, Multicurve, MultiSurface曲線タイプに"
-"対応するようになりました (Regina Obeさん)"
 
 #. Tag: para
 #: release_notes.xml:54
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5266\">5266</ulink>, "
-"ST_ClosestPoint, ST_ShortestLine support for geography type (MobilityDB "
-"Esteban Zimanyi, Paul Ramsey)"
+"ST_ClosestPoint, ST_ShortestLine, ST_LineSubString support for geography "
+"type (MobilityDB Esteban Zimanyi, Maxime Schoemans, Paul Ramsey)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5266\">5266</ulink>, "
-"ST_ClosestPoint, ST_ShortestLineがジオグラフィ対応になりました (MobilityDB "
-"Esteban Zimanyiさん, Paul Ramseyさん)"
 
 #. Tag: title
 #: release_notes.xml:58
 #, no-c-format
 msgid "Breaking Changes"
-msgstr "大幅な変更"
+msgstr ""
 
 #. Tag: para
 #: release_notes.xml:59
@@ -428,8 +348,6 @@ msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5229\">5229</ulink>, Drop "
 "support for Proj &lt; 6.1 and PG 11 (Regina Obe)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5229\">5229</ulink>, Proj "
-"6.1未満およびPostgreSQL 11へのサポートの終了 (Regina Obeさん)"
 
 #. Tag: para
 #: release_notes.xml:60
@@ -442,9 +360,3 @@ msgid ""
 "time version also shown if different from run-time (Paul Ramsey, Sandro "
 "Santilli)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</ulink>, "
-"<ulink url=\"https://github.com/postgis/postgis/pull/734\">734</ulink>, "
-"postgis_full_version()とpostgis_proj_version()は、現在はprojネットワーク設定"
-"とデータパスに関するより多くの情報を出力します。GEOSのバージョンも、コンパイ"
-"ル時と実行時とで異なる場合に表示されます (Paul Ramseyさん, Sandro Santilliさ"
-"ん)"
