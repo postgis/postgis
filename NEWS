@@ -5,19 +5,20 @@ Changes since 3.4.0beta1 release
 
 * Bug Fixes *
 
-  #5444, 3.4.0-beta1 fails to build
+  - #5444, 3.4.0-beta1 fails to build
         (postgis--TEMPLATED--TO--ANY.sql is missing)
         (Sandro Santilli)
-  #5436, doc compile issue on mingw64/msys2 (Sandro Santilli)
-  #4752, build error on ppc64le (Bas Couwenberg)
-  #5449, Clarify licensing of XSL sheets (Regina Obe)
-  #5452, README.postgis, updates for apt based,
+  - #5436, doc compile issue on mingw64/msys2 (Sandro Santilli)
+  - #4752, build error on ppc64le (Bas Couwenberg)
+  - #5449, Clarify licensing of XSL sheets (Regina Obe)
+  - #5452, README.postgis, updates for apt based,
          and also put in new version requirements
          (Jelte Fennema, Regina Obe)
 
 * Breaking Changes *
 
-  #5447, postgis_restore.pl renamed to postgis_restore
+  - #5447, postgis_restore.pl renamed to postgis_restore
+           (Regina Obe)
 
 PostGIS 3.4.0dev
 2023/xx/xx
@@ -79,6 +80,7 @@ Vincent Bre (French Team)
     now output more information about proj network configuration
     and data paths. GEOS compile-time version
     also shown if different from run-time (Paul Ramsey, Sandro Santilli)
+ - #5447, postgis_restore.pl renamed to postgis_restore
 
 PostGIS 3.3.0
 2022/08/26
