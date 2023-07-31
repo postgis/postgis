@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-29 10:16+0000\n"
-"PO-Revision-Date: 2023-07-03 03:08+0000\n"
+"PO-Revision-Date: 2023-08-01 03:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "installationxml/ja/>\n"
@@ -256,6 +256,10 @@ msgid ""
 "PostgreSQL is available from <ulink url=\"https://www.postgresql.org\"> "
 "https://www.postgresql.org </ulink> ."
 msgstr ""
+"PostgreSQL &min_postgres_version; - &max_postgres_version;。"
+"PostgreSQLの完全なインストール (サーバヘッダを含む)が必要です。"
+"PostgreSQLは<ulink url=\"http://www.postgresql.org/\"> http://www.postgresql."
+"org/</ulink>にあります。"
 
 #. Tag: para
 #: installation.xml:140
@@ -321,6 +325,10 @@ msgid ""
 "for download from <ulink url=\"https://libgeos.org/\"> https://libgeos.org </"
 "ulink>."
 msgstr ""
+"ジオメトリライブラリGEOS、3.6以上が必要ですが、"
+"全ての関数と機能の利点を完全に得るにはGEOS 3.12以上が必要です。GEOSは<ulink "
+"url=\"https://libgeos.org/\"> https://libgeos.org/ "
+"</ulink>からダウンロードできます。"
 
 #. Tag: para
 #: installation.xml:184
