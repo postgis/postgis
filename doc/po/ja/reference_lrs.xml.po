@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-29 10:57+0000\n"
-"PO-Revision-Date: 2023-07-14 10:08+0000\n"
+"PO-Revision-Date: 2023-08-01 03:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_lrsxml/ja/>\n"
@@ -389,7 +389,7 @@ msgstr ""
 #: reference_lrs.xml:336
 #, no-c-format
 msgid "Enhanced: 3.4.0 - Support for geography was introduced."
-msgstr ""
+msgstr "Enhanced: 3.4.0 ジオグラフィ対応が導入されました。"
 
 #. Tag: para
 #: reference_lrs.xml:337
@@ -432,7 +432,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Geography implementation measures along a spheroid, geometry along a line"
-msgstr ""
+msgstr "ジオグラフィ実装では回転楕円体面に沿って計測し、ジオメトリではラインに沿って"
+"計測します。"
 
 #. Tag: para
 #: reference_lrs.xml:375
