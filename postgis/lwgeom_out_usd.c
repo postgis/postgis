@@ -32,57 +32,70 @@
 
 #include "usd_c.h"
 
-PG_FUNCTION_INFO_V1(ST_AsUSDX);
+PG_FUNCTION_INFO_V1(LWGEOM_to_USDA);
 
-Datum ST_AsUSDX(PG_FUNCTION_ARGS)
+Datum
+LWGEOM_to_USDA(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_USD
-	elog(ERROR, "ST_AsUSDX: Compiled without USD support");
+	elog(ERROR, "LWGEOM_to_USDA: Compiled without USD support");
 	PG_RETURN_NULL();
 #else
 	GSERIALIZED *gs = NULL;
-	LWGEOM *lwgeom = NULL;
-	int format = USDA;
+	LWGEOM *geom = NULL;
 	struct usd_write_context *ctx = NULL;
 	size_t size = 0;
 	void *data = NULL;
-	text *result_text = NULL;
-	bytea *result_bytea = NULL;
+	text *ret = NULL;
 
 	gs = PG_GETARG_GSERIALIZED_P(0);
-	format = PG_GETARG_INT32(1);
-
-	POSTGIS_DEBUGF(3, "ST_AsUSDX: Call with geometry %s and format %d", lwtype_name(lwgeom_get_type(geom)), format);
-
-	if (format != USDA && format != USDC)
-	{
-		elog(ERROR, "ST_AsUSDX: Unknown USD format %d", format);
-		PG_RETURN_NULL();
-	}
+	geom = lwgeom_from_gserialized(gs);
 
 	postgis_initialize_cache();
 
-	lwgeom = lwgeom_from_gserialized(gs);
-
 	ctx = usd_write_create();
-	usd_write_convert(ctx, lwgeom);
-	usd_write_save(ctx, format);
+	usd_write_convert(ctx, geom);
+	usd_write_save(ctx, USDA);
 	usd_write_data(ctx, &size, &data);
 
-	if (format == USDA)
-	{
-		result_text = cstring_to_text_with_len((char *)data, (int)size);
-		usd_write_destroy(ctx);
-		PG_RETURN_TEXT_P(result_text);
-	}
-	else if (format == USDC)
-	{
-		result_bytea = (bytea *)palloc(VARHDRSZ + size);
-		SET_VARSIZE(result_bytea, VARHDRSZ + size);
-		memcpy(VARDATA(result_bytea), data, size);
-		PG_RETURN_BYTEA_P(result_bytea);
-	}
+	ret = cstring_to_text_with_len((char *)data, (int)size);
 	usd_write_destroy(ctx);
+
+	PG_RETURN_TEXT_P(ret);
+#endif
+}
+
+PG_FUNCTION_INFO_V1(LWGEOM_to_USDC);
+
+Datum
+LWGEOM_to_USDC(PG_FUNCTION_ARGS)
+{
+#ifndef HAVE_USD
+	elog(ERROR, "LWGEOM_to_USDC: Compiled without USD support");
 	PG_RETURN_NULL();
+#else
+	GSERIALIZED *gs = NULL;
+	LWGEOM *geom = NULL;
+	struct usd_write_context *ctx = NULL;
+	size_t size = 0;
+	void *data = NULL;
+	bytea *ret = NULL;
+
+	gs = PG_GETARG_GSERIALIZED_P(0);
+	geom = lwgeom_from_gserialized(gs);
+
+	postgis_initialize_cache();
+
+	ctx = usd_write_create();
+	usd_write_convert(ctx, geom);
+	usd_write_save(ctx, USDC);
+	usd_write_data(ctx, &size, &data);
+
+	ret = (bytea *)palloc(VARHDRSZ + size);
+	SET_VARSIZE(ret, VARHDRSZ + size);
+	memcpy(VARDATA(ret), data, size);
+	usd_write_destroy(ctx);
+
+	PG_RETURN_BYTEA_P(ret);
 #endif
 }
