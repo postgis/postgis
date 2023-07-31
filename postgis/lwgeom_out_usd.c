@@ -32,23 +32,32 @@
 
 #include "usd_c.h"
 
-PG_FUNCTION_INFO_V1(ST_AsUSDA);
+PG_FUNCTION_INFO_V1(ST_AsUSDX);
 
 Datum
-ST_AsUSDA(PG_FUNCTION_ARGS)
+ST_AsUSDX(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_USD
-	elog(ERROR, "ST_AsUSDA: Compiled without USD support");
+	elog(ERROR, "ST_AsUSDX: Compiled without USD support");
 	PG_RETURN_NULL();
 #else
 	GSERIALIZED *gs = NULL;
 	LWGEOM *lwgeom = NULL;
+	int format = USDA;
 	struct usd_write_context *ctx = NULL;
-    size_t size = 0;
-    void *data = NULL;
-    text *result = NULL;
+	size_t size = 0;
+	void *data = NULL;
+	text *result_text = NULL;
+	bytea *result_bytea = NULL;
 
 	gs = PG_GETARG_GSERIALIZED_P(0);
+	format = PG_GETARG_INT32(1);
+
+	if (format != USDA && format != USDC)
+	{
+		elog(ERROR, "ST_AsUSDX: Unknown USD format %d", format);
+		PG_RETURN_NULL();
+	}
 
 	postgis_initialize_cache();
 
@@ -56,13 +65,23 @@ ST_AsUSDA(PG_FUNCTION_ARGS)
 
 	ctx = usd_write_create();
 	usd_write_convert(ctx, lwgeom);
-    usd_write_save(ctx, USDA);
-    usd_write_data(ctx, &size, &data);
+	usd_write_save(ctx, format);
+	usd_write_data(ctx, &size, &data);
 
-    result = cstring_to_text_with_len((char *)data, (int)size);
-
+	if (format == USDA)
+	{
+		result_text = cstring_to_text_with_len((char *)data, (int)size);
+		usd_write_destroy(ctx);
+		PG_RETURN_TEXT_P(result_text);
+	}
+	else if (format == USDC)
+	{
+		result_bytea = (bytea *)palloc(VARHDRSZ + size);
+		SET_VARSIZE(result_bytea, VARHDRSZ + size);
+		memcpy(VARDATA(result_bytea), data, size);
+		PG_RETURN_BYTEA_P(result_bytea);
+	}
 	usd_write_destroy(ctx);
-
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_NULL();
 #endif
 }
