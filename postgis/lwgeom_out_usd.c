@@ -34,8 +34,7 @@
 
 PG_FUNCTION_INFO_V1(ST_AsUSDX);
 
-Datum
-ST_AsUSDX(PG_FUNCTION_ARGS)
+Datum ST_AsUSDX(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_USD
 	elog(ERROR, "ST_AsUSDX: Compiled without USD support");
@@ -52,6 +51,8 @@ ST_AsUSDX(PG_FUNCTION_ARGS)
 
 	gs = PG_GETARG_GSERIALIZED_P(0);
 	format = PG_GETARG_INT32(1);
+
+	POSTGIS_DEBUGF(3, "ST_AsUSDX: Call with geometry %s and format %d", lwtype_name(lwgeom_get_type(geom)), format);
 
 	if (format != USDA && format != USDC)
 	{
