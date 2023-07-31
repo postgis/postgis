@@ -60,59 +60,70 @@ usd_write_convert(usd_write_context *ctx, LWGEOM *geom)
 void
 usd_write_save(struct usd_write_context *ctx, usd_format format)
 {
-	if (format == USDA)
+	try
 	{
-		std::string stage_string;
-		if (ctx->m_writer.m_stage->ExportToString(&stage_string))
+		if (format == USDA)
 		{
-			ctx->m_size = stage_string.size() + 1;
-			ctx->m_data.reset(new char[ctx->m_size]);
-			memset(ctx->m_data.get(), '\0', ctx->m_size);
-			strncpy(ctx->m_data.get(), stage_string.c_str(), stage_string.size());
+			std::string stage_string;
+			if (ctx->m_writer.m_stage->ExportToString(&stage_string))
+			{
+				ctx->m_size = stage_string.size() + 1;
+				ctx->m_data.reset(new char[ctx->m_size]);
+				memset(ctx->m_data.get(), '\0', ctx->m_size);
+				strncpy(ctx->m_data.get(), stage_string.c_str(), stage_string.size());
+			}
+			else
+			{
+				lwerror("usd: failed to save as usda");
+			}
 		}
-		else
+		else if (format == USDC)
 		{
-			lwerror("usd: failed to save as usda");
-		}
-	}
-	else if (format == USDC)
-	{
-		/* create unique path for temporary USDC file */
+			/* create unique path for temporary USDC file */
 #ifdef _WIN32
-		char tmp_path[128] = {'\0'};
-		GetTempPathA(tmp_path, 127);
+			char tmp_path[128] = {'\0'};
+			GetTempPathA(tmp_path, 127);
 #else
-		const char *tmp_path = P_tmpdir;
+			const char *tmp_path = P_tmpdir;
 #endif
 
-		char tmp_name[128] = {'\0'};
-		snprintf(tmp_name, 127, "postgis_usd_%p.usdc", boost::get_pointer(ctx->m_writer.m_stage));
+			char tmp_name[128] = {'\0'};
+			snprintf(tmp_name, 127, "postgis_usd_%p.usdc", boost::get_pointer(ctx->m_writer.m_stage));
 
-		char file_path[256] = {'\0'};
-		snprintf(file_path, 256, "%s/%s", tmp_path, tmp_name);
+			char file_path[256] = {'\0'};
+			snprintf(file_path, 255, "%s/%s", tmp_path, tmp_name);
 
-		if (ctx->m_writer.m_stage->Export(file_path))
-		{
-			FILE *file = fopen(file_path, "rb");
-			if (!file)
+			if (ctx->m_writer.m_stage->Export(file_path))
 			{
-				lwerror("usd: failed to open usdc file");
+				FILE *file = fopen(file_path, "rb");
+				if (!file)
+				{
+					lwerror("usd: failed to open usdc file");
+				}
+				fseek(file, 0, SEEK_END);
+				ctx->m_size = ftell(file);
+				ctx->m_data.reset(new char[ctx->m_size]);
+				fseek(file, 0, SEEK_SET);
+				fread(ctx->m_data.get(), ctx->m_size, 1, file);
+				fclose(file);
 			}
-			fseek(file, 0, SEEK_END);
-			ctx->m_size = ftell(file);
-			ctx->m_data.reset(new char[ctx->m_size]);
-			fseek(file, 0, SEEK_SET);
-			fread(ctx->m_data.get(), ctx->m_size, 1, file);
-			fclose(file);
+			else
+			{
+				lwerror("usd: failed to save as usdc");
+			}
 		}
 		else
 		{
-			lwerror("usd: failed to save as usdc");
+			lwerror("usd: unknown usd format to save");
 		}
 	}
-	else
+	catch (const std::exception &e)
 	{
-		lwerror("usd: unknown usd format to save");
+		lwerror("usd: caught exception %s", e.what());
+	}
+	catch (...)
+	{
+		lwerror("usd: caught unknown exception");
 	}
 }
 
