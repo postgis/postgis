@@ -5,7 +5,7 @@ matrix:
     - 12
     - 11
 
-pipeline:
+steps:
   build:
     group: build
     image: docker.osgeo.org/postgis/build-test:trisquel3
