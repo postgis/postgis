@@ -26,6 +26,7 @@
 #include "writer.h"
 
 #include <fstream>
+#include <random>
 
 #include <boost/smart_ptr/shared_array.hpp>
 
@@ -87,8 +88,11 @@ usd_write_save(struct usd_write_context *ctx, usd_format format)
 			const char *tmp_path = P_tmpdir;
 #endif
 
+			static std::mt19937 mt(time(nullptr));
+			uint32_t n = mt();
+
 			char tmp_name[128] = {'\0'};
-			snprintf(tmp_name, 127, "postgis_usd_%p.usdc", boost::get_pointer(ctx->m_writer.m_stage));
+			snprintf(tmp_name, 127, "postgis_usd_%u.usdc", n);
 
 			char file_path[256] = {'\0'};
 			snprintf(file_path, 255, "%s/%s", tmp_path, tmp_name);
@@ -96,16 +100,15 @@ usd_write_save(struct usd_write_context *ctx, usd_format format)
 			if (ctx->m_writer.m_stage->Export(file_path))
 			{
 				FILE *file = fopen(file_path, "rb");
-				if (!file)
-				{
-					lwerror("usd: failed to open usdc file");
-				}
 				fseek(file, 0, SEEK_END);
 				ctx->m_size = ftell(file);
 				ctx->m_data.reset(new char[ctx->m_size]);
 				fseek(file, 0, SEEK_SET);
 				fread(ctx->m_data.get(), ctx->m_size, 1, file);
 				fclose(file);
+
+				/* remove the temporary USDC file */
+				remove(file_path);
 			}
 			else
 			{
