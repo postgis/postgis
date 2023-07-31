@@ -30,7 +30,7 @@ variables:
         - "doc/po/*/Makefile.in"
         - "doc/po/*/*.po"
 
-pipeline:
+steps:
   prepare:
     image: *test_image
     pull: true
