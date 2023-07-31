@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-29 10:16+0000\n"
-"PO-Revision-Date: 2023-07-20 04:36+0000\n"
+"PO-Revision-Date: 2023-08-01 03:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "administrationxml/ja/>\n"
@@ -570,6 +570,10 @@ msgid ""
 "database with PostGIS installed without getting duplicate symbol errors or "
 "bringing forward deprecated objects."
 msgstr ""
+"ダンプ/リロード作業はpostgis_restoreスクリプトが補助します。このスクリプトは"
+"、PostGIS (古いものを含む)に属する定義を全て飛ばします。また、重複シンボルエ"
+"ラーや非推奨オブジェクトを持越すことなく、"
+"スキーマとデータをPostGISをインストールしたデータベースにリストアできます 。"
 
 #. Tag: para
 #: administration.xml:256
@@ -657,6 +661,9 @@ msgid ""
 "postgis_restore. Unexpected errors, if any, will be printed to the standard "
 "error stream by psql. Keep a log of those."
 msgstr ""
+"バックアップを新しい<varname>newdb</varname>データベースにリストアするには、p"
+"ostgis_restoreを使います。psqlが予期せぬエラーを標準エラー出力に出すことがあ"
+"ります。これらのログを保存しておいて下さい。"
 
 #. Tag: para
 #: administration.xml:328
@@ -741,6 +748,8 @@ msgid ""
 "IGN from the sql which is resulting from postgis_restore. So, after having "
 "run :"
 msgstr ""
+"この場合には、次のステップを試すことができます。最初にpostgis_restoreから出た"
+"IGNをSQLから完全に破棄します。そのために次のコマンドを実行します:"
 
 #. Tag: para
 #: administration.xml:389
