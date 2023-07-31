@@ -42,7 +42,6 @@ ST_AsUSDA(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL();
 #else
 	GSERIALIZED *gs = NULL;
-	int32_t srid = 0;
 	LWGEOM *lwgeom = NULL;
 	struct usd_write_context *ctx = NULL;
     size_t size = 0;
@@ -50,7 +49,6 @@ ST_AsUSDA(PG_FUNCTION_ARGS)
     text *result = NULL;
 
 	gs = PG_GETARG_GSERIALIZED_P(0);
-	srid = gserialized_get_srid(gs);
 
 	postgis_initialize_cache();
 
@@ -61,7 +59,7 @@ ST_AsUSDA(PG_FUNCTION_ARGS)
     usd_write_save(ctx, USDA);
     usd_write_data(ctx, &size, &data);
 
-    result = cstring_to_text((char *)data);
+    result = cstring_to_text_with_len((char *)data, (int)size);
 
 	usd_write_destroy(ctx);
 
