@@ -23,6 +23,7 @@
  **********************************************************************/
 
 #include "usd_c.h"
+#include "reader.h"
 #include "writer.h"
 
 #include <fstream>
@@ -138,4 +139,79 @@ usd_write_data(struct usd_write_context *ctx, size_t *size, void **data)
 	{
 		*data = ctx->m_data.get();
 	}
+}
+
+struct usd_read_context {
+	USD::Reader m_reader;
+};
+
+struct usd_read_context *
+usd_read_create()
+{
+	usd_read_context *ctx = new usd_read_context;
+	return ctx;
+}
+
+void
+usd_read_convert(usd_read_context *ctx, const char *data, size_t size, usd_format format)
+{
+	try
+	{
+		if (format == USDA)
+		{
+			ctx->m_reader.ReadUSDA(std::string(data, size));
+		}
+	}
+	catch (const std::exception &e)
+	{
+		lwerror("usd: caught c++ exception %s", e.what());
+	}
+	catch (...)
+	{
+		lwerror("usd: caught unknown exception");
+	}
+}
+
+struct usd_read_iterator {
+	usd_read_iterator(usd_read_context *ctx) : m_ctx(ctx), m_index(0) {}
+	usd_read_context *m_ctx;
+
+	size_t m_index;
+};
+
+struct usd_read_iterator *
+usd_read_iterator_create(usd_read_context *ctx)
+{
+	usd_read_iterator *itr = new usd_read_iterator(ctx);
+	return itr;
+}
+
+LWGEOM *
+usd_read_iterator_next(struct usd_read_iterator *itr)
+{
+	/* return false if context has being iterated */
+	if (itr->m_index >= itr->m_ctx->m_reader.m_geoms.size())
+	{
+		return nullptr;
+	}
+
+	/* copy data */
+	LWGEOM *geom = itr->m_ctx->m_reader.m_geoms[itr->m_index];
+
+	/* increase index */
+	itr->m_index += 1;
+
+	return geom;
+}
+
+void
+usd_read_iterator_destroy(struct usd_read_iterator *itr)
+{
+	delete itr;
+}
+
+void
+usd_read_destroy(struct usd_read_context *ctx)
+{
+	delete ctx;
 }

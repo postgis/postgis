@@ -50,6 +50,22 @@ void usd_write_save(struct usd_write_context *ctx, usd_format format);
 
 void usd_write_data(struct usd_write_context *ctx, size_t *size, void **data);
 
+struct usd_read_context;
+
+struct usd_read_context *usd_read_create();
+
+void usd_read_convert(struct usd_read_context *ctx, const char *data, size_t size, usd_format format);
+
+struct usd_read_iterator;
+
+struct usd_read_iterator *usd_read_iterator_create(struct usd_read_context *ctx);
+
+LWGEOM *usd_read_iterator_next(struct usd_read_iterator *itr);
+
+void usd_read_iterator_destroy(struct usd_read_iterator *itr);
+
+void usd_read_destroy(struct usd_read_context *ctx);
+
 #ifdef __cplusplus
 }
 #endif
