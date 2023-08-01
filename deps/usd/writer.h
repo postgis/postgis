@@ -49,6 +49,7 @@ class Writer {
 		void WritePolygon(const LWPOLY *p);
 		void WriteMultiPolygon(const LWMPOLY *mp);
 		void WriteTriangle(const LWTRIANGLE *t);
+        void WritePolyhedralSurface(const LWPSURFACE *ps);
 		void WriteCollection(const LWCOLLECTION *coll);
 
 	public:

@@ -286,6 +286,46 @@ Writer::WriteTriangle(const LWTRIANGLE *t)
 }
 
 void
+Writer::WritePolyhedralSurface(const LWPSURFACE *ps)
+{
+	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
+	auto geometry = DefineGeom<pxr::UsdGeomMesh>(
+	    m_stage, prim_path, ps->srid, lwtype_name(ps->type), FLAGS_GET_Z(ps->flags), FLAGS_GET_M(ps->flags));
+	auto prim = geometry.GetPrim();
+
+	pxr::VtIntArray fvi;
+	pxr::VtIntArray fvc;
+	pxr::VtVec3fArray points;
+	pxr::VtVec4dArray xyzm_points;
+
+	for (int f = 0; f < ps->ngeoms; f++)
+	{
+		LWPOLY *poly = ps->geoms[f];
+		for (int i = 0; i < poly->nrings; i++)
+		{
+			POINTARRAY *pa = poly->rings[i];
+			fvc.push_back(pa->npoints - 1);
+			ReadPointArray(points, xyzm_points, pa);
+			points.pop_back();
+		}
+	}
+
+	fvi.resize(points.size());
+	std::iota(std::begin(fvi), std::end(fvi), 0);
+
+	auto fvi_attr = geometry.GetFaceVertexIndicesAttr();
+	fvi_attr.Set(fvi);
+
+	auto fvc_attr = geometry.CreateFaceVertexCountsAttr();
+	fvc_attr.Set(fvc);
+
+	auto points_attr = geometry.CreatePointsAttr();
+	points_attr.Set(points);
+
+	SetCustomAttribute(prim, USD_ATTR_POSTGIS_POINTS, pxr::SdfValueTypeNames->Double4Array, xyzm_points);
+}
+
+void
 Writer::WriteCollection(const LWCOLLECTION *coll)
 {
 	for (int i = 0; i < coll->ngeoms; i++)
@@ -334,6 +374,9 @@ Writer::Write(LWGEOM *geom)
 			break;
 		case TRIANGLETYPE:
 			WriteTriangle((LWTRIANGLE *)geom);
+			break;
+		case POLYHEDRALSURFACETYPE:
+			WritePolyhedralSurface((LWPSURFACE *)geom);
 			break;
 		case COLLECTIONTYPE:
 			WriteCollection((LWCOLLECTION *)geom);
