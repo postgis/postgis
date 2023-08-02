@@ -55,7 +55,7 @@ class Reader {
 		void ReadUSDC(const char *data, size_t size);
 
 		std::vector<pxr::UsdPrim> m_prims;
-        std::vector<LWGEOM *> m_geoms;
+		std::vector<LWGEOM *> m_geoms;
 };
 
 } // namespace USD

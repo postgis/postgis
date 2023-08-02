@@ -23,6 +23,7 @@
  **********************************************************************/
 
 #include "reader.h"
+#include "tokens.h"
 
 #include <pxr/usd/sdf/layer.h>
 #include <pxr/usd/sdf/fileFormat.h>
@@ -31,6 +32,23 @@
 #include <pxr/usd/usdGeom/mesh.h>
 #include <pxr/usd/usdGeom/basisCurves.h>
 #include <pxr/usd/usdGeom/points.h>
+
+#define READ_POSTGIS_ATTRIBUTES \
+	int postgis_srid = SRID_UNKNOWN; \
+	auto postgis_srid_attr = prim.GetAttribute(TOKEN_POSTGIS_SRID); \
+	postgis_srid_attr.Get(&postgis_srid); \
+	pxr::TfToken postgis_type_name; \
+	auto postgis_type_name_attr = prim.GetAttribute(TOKEN_POSTGIS_TYPE_NAME); \
+	postgis_type_name_attr.Get(&postgis_type_name); \
+	int postgis_has_z = 0; \
+	auto postgis_has_z_attr = prim.GetAttribute(TOKEN_POSTGIS_HAS_Z); \
+	postgis_has_z_attr.Get(&postgis_has_z); \
+	int postgis_has_m = 0; \
+	auto postgis_has_m_attr = prim.GetAttribute(TOKEN_POSTGIS_HAS_M); \
+	postgis_has_m_attr.Get(&postgis_has_m); \
+	pxr::VtVec4dArray postgis_points; \
+	auto postgis_points_attr = prim.GetAttribute(TOKEN_POSTGIS_POINTS); \
+	postgis_points_attr.Get(&postgis_points);
 
 using namespace USD;
 
@@ -94,9 +112,72 @@ Reader::ReadMesh(pxr::UsdPrim prim)
 {
 	pxr::UsdGeomMesh mesh(prim);
 
-	/* todo: populate the PolyhydralSurface */
-	LWCOLLECTION *coll = lwcollection_construct_empty(POLYHEDRALSURFACETYPE, SRID_UNKNOWN, 0, 0);
+	pxr::VtIntArray fvc;
+	auto fvc_attr = mesh.GetFaceVertexCountsAttr();
+	fvc_attr.Get(&fvc);
 
+	pxr::VtIntArray fvi;
+	auto fvi_attr = mesh.GetFaceVertexIndicesAttr();
+	fvi_attr.Get(&fvi);
+
+	pxr::VtVec3fArray points;
+	auto points_attr = mesh.GetPointsAttr();
+	points_attr.Get(&points);
+
+	READ_POSTGIS_ATTRIBUTES
+
+	/* read each face as LWPOLY and create LWCOLLECTION */
+	std::vector<LWGEOM *> poly_geoms;
+	if (postgis_points.size())
+	{
+		/* use postgis:points */
+		for (size_t f = 0, offset = 0; f < fvc.size(); f++)
+		{
+			int nfv = fvc[f];
+			POINT4D pts[nfv + 1];
+			memset(pts, 0, sizeof(pts));
+			for (int v = 0; v < nfv; v++)
+			{
+				const auto &point = postgis_points[offset + v];
+				pts[v] = POINT4D{point[0], point[1], point[2], point[3]};
+			}
+			pts[nfv] = pts[0];
+			POINTARRAY *pa = ptarray_construct(postgis_has_z, postgis_has_m, nfv + 1);
+			ptarray_set_point4d(pa, nfv + 1, pts);
+
+			LWPOLY *poly = lwpoly_construct(postgis_srid, nullptr, 1, &pa);
+			poly_geoms.push_back(lwpoly_as_lwgeom(poly));
+
+			offset += nfv + 1;
+		}
+	}
+	else
+	{
+		/* use USD points, it always has z but no m */
+		for (size_t f = 0, offset = 0; f < fvc.size(); f++)
+		{
+			int nfv = fvc[f];
+			POINT4D pts[nfv + 1];
+			memset(pts, 0, sizeof(pts));
+			for (int v = 0; v < nfv; v++)
+			{
+				const auto &p = points[offset + v];
+				pts[v] = POINT4D{p[0], p[1], p[2]};
+			}
+			pts[nfv] = pts[0];
+			POINTARRAY *pa = ptarray_construct(1, 0, nfv + 1);
+			ptarray_set_point4d(pa, nfv + 1, pts);
+
+			LWPOLY *poly = lwpoly_construct(postgis_srid, nullptr, 1, &pa);
+			poly_geoms.push_back(lwpoly_as_lwgeom(poly));
+
+			offset += nfv;
+		}
+	}
+
+	LWGEOM **poly_geoms_data = poly_geoms.data();
+	LWCOLLECTION *coll =
+	    lwcollection_construct(POLYHEDRALSURFACETYPE, postgis_srid, nullptr, poly_geoms.size(), poly_geoms_data);
 	return lwcollection_as_lwgeom(coll);
 }
 
