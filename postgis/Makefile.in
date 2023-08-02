@@ -141,6 +141,7 @@ PG_OBJS= \
 	flatgeobuf.o \
 	lwgeom_in_flatgeobuf.o \
 	lwgeom_out_flatgeobuf.o \
+	lwgeom_in_usd.o \
 	lwgeom_out_usd.o \
 	postgis_legacy.o
 
