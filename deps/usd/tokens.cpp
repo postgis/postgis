@@ -26,9 +26,8 @@
 
 using namespace USD;
 
-Tokens::Tokens()
-    : postgis_points("postgis:points"), postgis_has_z("postgis:has_z"), postgis_has_m("postgis:has_m"),
-      postgis_srid("postgis:srid"), postgis_type_name("postgis:type_name")
-{}
-
-pxr::TfStaticData<Tokens> Tokens;
+const pxr::TfToken TOKEN_POSTGIS_SRID("postgis:srid");
+const pxr::TfToken TOKEN_POSTGIS_TYPE_NAME("postgis:type_name");
+const pxr::TfToken TOKEN_POSTGIS_HAS_Z("postgis:has_z");
+const pxr::TfToken TOKEN_POSTGIS_HAS_M("postgis:has_m");
+const pxr::TfToken TOKEN_POSTGIS_POINTS("postgis:points");

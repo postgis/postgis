@@ -25,21 +25,15 @@
 #ifndef USD_TOKENS_H
 #define USD_TOKENS_H
 
-#include <pxr/base/tf/staticData.h>
 #include <pxr/base/tf/token.h>
 
 namespace USD {
 
-class Tokens final {
-	public:
-		Tokens();
-
-		const pxr::TfToken postgis_points;
-		const pxr::TfToken postgis_has_z;
-		const pxr::TfToken postgis_has_m;
-		const pxr::TfToken postgis_srid;
-		const pxr::TfToken postgis_type_name;
-};
+static const pxr::TfToken TOKEN_POSTGIS_SRID;
+static const pxr::TfToken TOKEN_POSTGIS_TYPE_NAME;
+static const pxr::TfToken TOKEN_POSTGIS_HAS_Z;
+static const pxr::TfToken TOKEN_POSTGIS_HAS_M;
+static const pxr::TfToken TOKEN_POSTGIS_POINTS;
 
 } // namespace USD
 
