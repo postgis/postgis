@@ -35,18 +35,18 @@
       <title>Description</title>
 
 	  <para>
-		  Returns cluster number for each input geometry, based on a 2D implementation of the
+		  A window function that returns a cluster number for each input geometry, using the 2D
           <ulink url="https://en.wikipedia.org/wiki/DBSCAN">Density-based spatial clustering of applications with noise (DBSCAN)</ulink>
 		  algorithm.  Unlike <xref linkend="ST_ClusterKMeans" />, it does not require the number of clusters to be specified, but instead
-		  uses the desired <link linkend="ST_Distance">distance</link> (<varname>eps</varname>) and density (<varname>minpoints</varname>) parameters to construct each cluster.
+		  uses the desired <link linkend="ST_Distance">distance</link> (<varname>eps</varname>) and density (<varname>minpoints</varname>) parameters to determine each cluster.
 	  </para>
 
 	  <para>
-		  An input geometry will be added to a cluster if it is either:
+		  An input geometry is added to a cluster if it is either:
 		  <itemizedlist>
               <listitem>
                   <para>
-                      A "core" geometry, that is within <varname>eps</varname> <link linkend="ST_Distance">distance</link> of at least <varname>minpoints</varname> input geometries (including itself) or
+                      A "core" geometry, that is within <varname>eps</varname> <link linkend="ST_Distance">distance</link> of at least <varname>minpoints</varname> input geometries (including itself); or
                   </para>
 			  </listitem>
 			  <listitem>
@@ -58,15 +58,17 @@
 		</para>
 
 		<para>
-		  Note that border geometries may be within <varname>eps</varname> distance of core geometries in more than one cluster; in this
-		  case, either assignment would be correct, and the border geometry will be arbitrarily asssigned to one of the available clusters.
-		  In these cases, it is possible for a correct cluster to be generated with fewer than <varname>minpoints</varname> geometries.
-		  When assignment of a border geometry is ambiguous, repeated calls to ST_ClusterDBSCAN will produce identical results if an ORDER BY
-		  clause is included in the window definition, but cluster assignments may differ from other implementations of the same algorithm.
+		  Note that border geometries may be within <varname>eps</varname> distance of core geometries in more than one cluster. 
+      Either assignment would be correct, so the border geometry will be arbitrarily asssigned to one of the available clusters.
+		  In this situation it is possible for a correct cluster to be generated with fewer than <varname>minpoints</varname> geometries.
+		  To ensure deterministic assignment of border geometries 
+      (so that repeated calls to ST_ClusterDBSCAN will produce identical results)
+      use an <code>ORDER BY</code> clause in the window definition.
+      Ambiguous cluster assignments may differ from other DBSCAN implementations.
 	  </para>
 
 	  <note><para>
-		  Input geometries that do not meet the criteria to join any other cluster will be assigned a cluster number of NULL.
+		  Geometries that do not meet the criteria to join any cluster are assigned a cluster number of NULL.
 	  </para></note>
 
       <para role="availability" conformance="2.3.0">Availability: 2.3.0</para>
@@ -76,7 +78,7 @@
     <refsection>
       <title>Examples</title>
       <para>
-          Assigning a cluster number to each polygon within 50 meters of each other.  Require at least 2 polygons per cluster
+          Clustering polygon within 50 meters of each other, and requiring at least 2 polygons per cluster.
       </para>
 	<informaltable>
 				  <tgroup cols="2">
@@ -87,7 +89,7 @@
 							  <imageobject>
 								<imagedata fileref="images/st_clusterdbscan01.png" />
 							  </imageobject>
-							  <caption><para>within 50 meters at least 2 per cluster. singletons have NULL for cid</para></caption>
+							  <caption><para>Clusters within 50 meters with at least 2 items per cluster. Singletons have NULL for cid</para></caption>
 							</mediaobject>
 						  </informalfigure>
   <programlisting>SELECT name, ST_ClusterDBSCAN(geom, eps := 50, minpoints := 2) over () AS cid
@@ -130,7 +132,7 @@ WHERE name > '' AND building > ''
 
 
         <para>
-            Combining parcels with the same cluster number into a single geometry. This uses named argument calling
+            A example showing combining parcels with the same cluster number into geometry collections.
         </para>
 		    <programlisting>
 SELECT cid, ST_Collect(geom) AS cluster_geom, array_agg(parcel_id) AS ids_in_cluster FROM (
@@ -145,8 +147,9 @@ GROUP BY cid;
           <para><xref linkend="ST_DWithin"/>,
               <xref linkend="ST_ClusterKMeans"/>,
               <xref linkend="ST_ClusterIntersecting"/>,
-              <xref linkend="ST_ClusterWithin"/>
-              <xref linkend="ST_ClusterIntersectingWin"/>
+              <xref linkend="ST_ClusterIntersectingWin"/>,
+              <xref linkend="ST_ClusterWithin"/>,
+              <xref linkend="ST_ClusterWithinWin"/>
           </para>
 	  </refsection>
     </refentry>
@@ -435,7 +438,7 @@ from
 
         <para>An aggregate function that returns an array of GeometryCollections, 
         where each collection is a cluster containing some input geometries. 
-        Clustering partitions the input geometries into sets,
+        Clustering partitions the input geometries into sets
         in which each geometry is within the specified <parameter>distance</parameter>
         of at least one other geometry in the same cluster. 
         Distances are Cartesian distances in the units of the SRID.
@@ -498,10 +501,9 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
       <refsection>
         <title>Description</title>
 
-        <para>A window function that returns an integer for each input geometry, 
-        which is the id of the cluster containing the geometry. 
-        Clustering partitions the input geometries into sets,
-        in which each geometry is within the specified <parameter>distance</parameter>
+        <para>A window function that returns a cluster number for each input geometry. 
+        Clustering partitions the geometries into sets
+        in which each geometry is within the specified <varname>distance</varname>
         of at least one other geometry in the same cluster. 
         Distances are Cartesian distances in the units of the SRID.
         </para>
