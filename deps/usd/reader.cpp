@@ -184,9 +184,11 @@ Reader::ReadMesh(pxr::UsdPrim prim)
 void
 Reader::ReadUSDA(const std::string &usda_string)
 {
-	auto layer = pxr::SdfLayer::CreateAnonymous();
+	auto layer = pxr::SdfLayer::CreateAnonymous(
+		pxr::TfStringPrintf("%p.%s", this, pxr::UsdUsdaFileFormatTokens->Id.GetText()));
 	if (!layer->ImportFromString(usda_string))
 	{
+		lwerror("usd: failed to read USDA string");
 		return;
 	}
 	pxr::UsdStageRefPtr stage = pxr::UsdStage::Open(layer);
