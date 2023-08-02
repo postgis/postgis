@@ -54,14 +54,7 @@ using namespace USD;
 
 Reader::Reader() {}
 
-Reader::~Reader()
-{
-	for (LWGEOM *geom : m_geoms)
-	{
-		lwgeom_free(geom);
-	}
-	m_geoms.clear();
-}
+Reader::~Reader() {}
 
 void
 Reader::ScanPrim(pxr::UsdPrim prim)
@@ -136,18 +129,21 @@ Reader::ReadMesh(pxr::UsdPrim prim)
 		for (size_t f = 0, offset = 0; f < fvc.size(); f++)
 		{
 			int nfv = fvc[f];
-			POINT4D pts[nfv + 1];
-			memset(pts, 0, sizeof(pts));
+			POINTARRAY *pa = ptarray_construct(postgis_has_z, postgis_has_m, nfv + 1);
 			for (int v = 0; v < nfv; v++)
 			{
 				const auto &point = postgis_points[offset + v];
-				pts[v] = POINT4D{point[0], point[1], point[2], point[3]};
+				POINT4D pt = {point[0], point[1], point[2], point[3]};
+				ptarray_append_point(pa, &pt, LW_FALSE);
 			}
-			pts[nfv] = pts[0];
-			POINTARRAY *pa = ptarray_construct(postgis_has_z, postgis_has_m, nfv + 1);
-			ptarray_set_point4d(pa, nfv + 1, pts);
+			const auto &point = postgis_points[offset];
+			POINT4D pt = {point[0], point[1], point[2], point[3]};
+			ptarray_append_point(pa, &pt, LW_FALSE);
 
-			LWPOLY *poly = lwpoly_construct(postgis_srid, nullptr, 1, &pa);
+			POINTARRAY **ppa = static_cast<POINTARRAY **>(lwalloc(sizeof(POINTARRAY *)));
+			ppa[0] = pa;
+
+			LWPOLY *poly = lwpoly_construct(postgis_srid, nullptr, 1, ppa);
 			poly_geoms.push_back(lwpoly_as_lwgeom(poly));
 
 			offset += nfv + 1;
@@ -159,27 +155,29 @@ Reader::ReadMesh(pxr::UsdPrim prim)
 		for (size_t f = 0, offset = 0; f < fvc.size(); f++)
 		{
 			int nfv = fvc[f];
-			POINT4D pts[nfv + 1];
-			memset(pts, 0, sizeof(pts));
+			POINTARRAY *pa = ptarray_construct(1, 0, nfv);
 			for (int v = 0; v < nfv; v++)
 			{
 				const auto &p = points[offset + v];
-				pts[v] = POINT4D{p[0], p[1], p[2]};
+				POINT4D pt = {p[0], p[1], p[2]};
+				ptarray_append_point(pa, &pt, LW_FALSE);
 			}
-			pts[nfv] = pts[0];
-			POINTARRAY *pa = ptarray_construct(1, 0, nfv + 1);
-			ptarray_set_point4d(pa, nfv + 1, pts);
 
-			LWPOLY *poly = lwpoly_construct(postgis_srid, nullptr, 1, &pa);
+			POINTARRAY **ppa = static_cast<POINTARRAY **>(lwalloc(sizeof(POINTARRAY *)));
+			ppa[0] = pa;
+
+			LWPOLY *poly = lwpoly_construct(postgis_srid, nullptr, 1, ppa);
 			poly_geoms.push_back(lwpoly_as_lwgeom(poly));
 
 			offset += nfv;
 		}
 	}
 
-	LWGEOM **poly_geoms_data = poly_geoms.data();
-	LWCOLLECTION *coll =
-	    lwcollection_construct(POLYHEDRALSURFACETYPE, postgis_srid, nullptr, poly_geoms.size(), poly_geoms_data);
+	int ngeoms = static_cast<int>(poly_geoms.size());
+	LWGEOM **geoms = static_cast<LWGEOM **>(lwalloc(sizeof(LWGEOM *) * ngeoms));
+	std::copy(poly_geoms.begin(), poly_geoms.end(), geoms);
+	LWCOLLECTION *coll = lwcollection_construct(POLYHEDRALSURFACETYPE, postgis_srid, nullptr, ngeoms, geoms);
+	FLAGS_SET_SOLID(coll->flags, 1);
 	return lwcollection_as_lwgeom(coll);
 }
 
