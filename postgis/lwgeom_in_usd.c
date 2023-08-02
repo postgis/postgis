@@ -42,7 +42,7 @@ LWGEOM_from_USD(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL();
 #else
 	usd_format format = USDA;
-	bytea* array = NULL;
+	bytea *array = NULL;
 	char *data = NULL;
 	size_t size = 0;
 	struct usd_read_context *ctx = NULL;
@@ -52,22 +52,15 @@ LWGEOM_from_USD(PG_FUNCTION_ARGS)
 	GSERIALIZED *ret = NULL;
 
 	format = PG_GETARG_INT32(0);
-	if (format == USDA)
-	{
-		data = PG_GETARG_CSTRING(1);
-		size = strlen(data);
-	}
-	else if (format == USDC)
-	{
-		array = PG_GETARG_BYTEA_P(0);
-		data = VARDATA(array);
-		size = VARSIZE(array);
-	}
-	else
+	if (format != USDA && format != USDC)
 	{
 		elog(ERROR, "LWGEOM_from_USD: Unknown format %d", format);
 		PG_RETURN_NULL();
 	}
+
+	array = PG_GETARG_BYTEA_P(1);
+	data = VARDATA(array);
+	size = VARSIZE_ANY_EXHDR(array);
 
 	ctx = usd_read_create();
 	usd_read_convert(ctx, data, size, format);
@@ -82,7 +75,7 @@ LWGEOM_from_USD(PG_FUNCTION_ARGS)
 
 	ret = geometry_serialize(lwcollection_as_lwgeom(coll));
 	usd_read_destroy(ctx);
-	
+
 	PG_RETURN_POINTER(ret);
 #endif
 }
