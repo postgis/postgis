@@ -34,8 +34,7 @@
 
 PG_FUNCTION_INFO_V1(LWGEOM_from_USD);
 
-Datum
-LWGEOM_from_USD(PG_FUNCTION_ARGS)
+Datum LWGEOM_from_USD(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_USD
 	elog(ERROR, "LWGEOM_from_USD: Compiled without USD support");
@@ -65,15 +64,21 @@ LWGEOM_from_USD(PG_FUNCTION_ARGS)
 	ctx = usd_read_create();
 	usd_read_convert(ctx, data, size, format);
 
-	coll = lwcollection_construct_empty(COLLECTIONTYPE, SRID_UNKNOWN, 0, 0);
+	coll = lwcollection_construct_empty(COLLECTIONTYPE, SRID_UNKNOWN, 1, 0);
 	itr = usd_read_iterator_create(ctx);
 	while ((geom = usd_read_iterator_next(itr)))
 	{
-		coll = lwcollection_add_lwgeom(coll, geom);
+		if (!lwcollection_add_lwgeom(coll, geom))
+		{
+			elog(ERROR, "LWGEOM_from_USD: failed to append element");
+			break;
+		}
 	}
 	usd_read_iterator_destroy(itr);
 
+	lwgeom_refresh_bbox(lwcollection_as_lwgeom(coll));
 	ret = geometry_serialize(lwcollection_as_lwgeom(coll));
+	lwcollection_free(coll);
 	usd_read_destroy(ctx);
 
 	PG_RETURN_POINTER(ret);
