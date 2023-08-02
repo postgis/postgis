@@ -6918,6 +6918,15 @@ CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, maxdecimaldigits integer DEFA
 	_COST_MEDIUM;
 
 -----------------------------------------------------------------------
+-- USD INPUT
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION ST_GeomFromUSD(int, anyelement)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','LWGEOM_from_USD'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
+-----------------------------------------------------------------------
 -- USD OUTPUT
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION _LWGEOM_to_USDA(geom geometry)
