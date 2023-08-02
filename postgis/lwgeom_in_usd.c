@@ -59,7 +59,7 @@ LWGEOM_from_USD(PG_FUNCTION_ARGS)
 	}
 	else if (format == USDC)
 	{
-		bytea* array = PG_GETARG_BYTEA_P(0);
+		array = PG_GETARG_BYTEA_P(0);
 		data = VARDATA(array);
 		size = VARSIZE(array);
 	}
