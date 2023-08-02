@@ -440,7 +440,7 @@ from
         of at least one other geometry in the same cluster. 
         Distances are Cartesian distances in the units of the SRID.
         </para>
-        <para>ST_ClusterWithin is equivalent to running <xref linkend="ST_ClusterDBSCAN" /> with a `minpoints` of zero.</para>
+        <para>ST_ClusterWithin is equivalent to running <xref linkend="ST_ClusterDBSCAN" /> with <code>minpoints := 0</code>.</para>
 
         <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
         <para>&curve_support;</para>
@@ -505,7 +505,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
         of at least one other geometry in the same cluster. 
         Distances are Cartesian distances in the units of the SRID.
         </para>
-        <para>ST_ClusterWithinWin is equivalent to running <xref linkend="ST_ClusterDBSCAN" /> with a `minpoints` of zero.</para>
+        <para>ST_ClusterWithinWin is equivalent to running <xref linkend="ST_ClusterDBSCAN" /> with <code>minpoints := 0</code>.</para>
         <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
         <para>&curve_support;</para>
 
