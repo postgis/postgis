@@ -195,6 +195,10 @@ Reader::ReadUSDA(const std::string &usda_string)
 
 	/* iterate the USD stage to gather USD geometry */
 	pxr::UsdPrim root_prim = stage->GetPseudoRoot();
+	if (stage->HasDefaultPrim())
+	{
+		root_prim = stage->GetDefaultPrim();
+	}
 	ScanPrim(root_prim);
 
 	/* convert USD geometry to LWGEOM */
