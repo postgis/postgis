@@ -187,7 +187,7 @@ void
 Reader::ReadUSDA(const std::string &usda_string)
 {
 	auto layer = pxr::SdfLayer::CreateAnonymous(
-		pxr::TfStringPrintf("%p.%s", this, pxr::UsdUsdaFileFormatTokens->Id.GetText()));
+	    pxr::TfStringPrintf("%p.%s", this, pxr::UsdUsdaFileFormatTokens->Id.GetText()));
 	if (!layer->ImportFromString(usda_string))
 	{
 		lwerror("usd: failed to read USDA string");
