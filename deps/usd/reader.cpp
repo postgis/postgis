@@ -101,9 +101,11 @@ Reader::ScanPrim(pxr::UsdPrim prim)
 	}
 
 	/* visit children prims */
-	for (auto child_prim : prim.GetAllChildren())
+	auto child_prim_range = prim.GetAllChildren();
+	for (auto it : child_prim_range)
 	{
-		ScanPrim(prim);
+		auto child_prim = it.GetPrim();
+		ScanPrim(child_prim);
 	}
 }
 
