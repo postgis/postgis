@@ -6935,15 +6935,15 @@ CREATE OR REPLACE FUNCTION _LWGEOM_to_USD(int, geometry, text, text)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
 
-CREATE OR REPLACE FUNCTION ST_AsUSDA(geom geometry)
+CREATE OR REPLACE FUNCTION ST_AsUSDA(geom geometry, root_name text default 'World', geom_name text default '_geometry')
 	RETURNS text
-	AS $$ SELECT @extschema@._LWGEOM_to_USD(1, $2, $3, $4)::text $$
+	AS $$ SELECT @extschema@._LWGEOM_to_USD(1, $1, $2, $3)::text $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
 
-CREATE OR REPLACE FUNCTION ST_AsUSDC(geom geometry)
+CREATE OR REPLACE FUNCTION ST_AsUSDC(geom geometry, root_name text default 'World', geom_name text default '_geometry')
 	RETURNS bytea
-	AS $$ SELECT @extschema@._LWGEOM_to_USD(2, $1, $3, $4) $$
+	AS $$ SELECT @extschema@._LWGEOM_to_USD(2, $1, $2, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
 
