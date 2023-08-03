@@ -51,9 +51,9 @@ html_builddir=$(abs_builddir)/html
 images_builddir=$(html_builddir)/images
 
 ifneq (,$(findstring dev,$(POSTGIS_MICRO_VERSION)))
-  POSTGIS_DOWNLOAD_URL=http://postgis.net/stuff
+  POSTGIS_DOWNLOAD_URL=https://postgis.net/stuff
 else
-  POSTGIS_DOWNLOAD_URL=http://download.osgeo.org/postgis/source
+  POSTGIS_DOWNLOAD_URL=https://download.osgeo.org/postgis/source
 endif
 
 INSTALL=@INSTALL@

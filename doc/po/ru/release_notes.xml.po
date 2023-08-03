@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-29 11:21+0000\n"
+"POT-Creation-Date: 2023-08-03 00:19+0000\n"
 "PO-Revision-Date: 2022-01-10 13:38+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Russian (Russia) (http://www.transifex.com/postgis/postgis/"
@@ -215,14 +215,22 @@ msgid ""
 "ST_LineExtend for extending linestrings (Paul Ramsey)"
 msgstr ""
 
+#. Tag: para
+#: release_notes.xml:35
+#, no-c-format
+msgid ""
+"New coverage functions ST_CoverageInvalidEdges, ST_CoverageSimplify, "
+"ST_CoverageUnion (Paul Ramsey)"
+msgstr ""
+
 #. Tag: title
-#: release_notes.xml:38
+#: release_notes.xml:39
 #, no-c-format
 msgid "Enhancements"
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:39
+#: release_notes.xml:40
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5194\">5194</ulink>, do "
@@ -230,7 +238,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:40
+#: release_notes.xml:41
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5092\">5092</ulink>, "
@@ -238,7 +246,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:41
+#: release_notes.xml:42
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/635\">635</ulink>, honour "
@@ -246,7 +254,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:42
+#: release_notes.xml:43
 #, no-c-format
 msgid ""
 "Honour --mandir (and --prefix) configure switch for man pages install path "
@@ -254,7 +262,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:43
+#: release_notes.xml:44
 #, no-c-format
 msgid ""
 "Honour --htmldir (and --docdir and --prefix) configure switch for html pages "
@@ -262,7 +270,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:45
+#: release_notes.xml:46
 #, no-c-format
 msgid ""
 "[postgis_topology] Speed up check of topology faces without edges (Sandro "
@@ -270,7 +278,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:46
+#: release_notes.xml:47
 #, no-c-format
 msgid ""
 "[postgis_topology] Speed up coincident nodes check in topology validation "
@@ -278,7 +286,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:47
+#: release_notes.xml:48
 #, no-c-format
 msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/718\">718</ulink>, "
@@ -286,7 +294,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:48
+#: release_notes.xml:49
 #, no-c-format
 msgid ""
 "Repair spatial planner stats to use computed selectivity for contains/within "
@@ -294,7 +302,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:49
+#: release_notes.xml:50
 #, no-c-format
 msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/734\">734</ulink>, "
@@ -303,7 +311,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:50
+#: release_notes.xml:51
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5177\">5177</ulink>, "
@@ -311,14 +319,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:51
+#: release_notes.xml:52
 #, no-c-format
 msgid ""
 "ST_Project signature for geometry, and two-point signature (Paul Ramsey)"
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:52
+#: release_notes.xml:53
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/4913\">4913</ulink>, "
@@ -327,7 +335,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:54
+#: release_notes.xml:55
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5266\">5266</ulink>, "
@@ -336,13 +344,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: release_notes.xml:58
+#: release_notes.xml:59
 #, no-c-format
 msgid "Breaking Changes"
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:59
+#: release_notes.xml:60
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5229\">5229</ulink>, Drop "
@@ -350,7 +358,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:60
+#: release_notes.xml:61
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</ulink>, "
@@ -359,4 +367,12 @@ msgid ""
 "information about proj network configuration and data paths. GEOS compile-"
 "time version also shown if different from run-time (Paul Ramsey, Sandro "
 "Santilli)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:65
+#, no-c-format
+msgid ""
+"<ulink url=\"https://github.com/postgis/postgis/pull/5447\">5447</ulink>, "
+"postgis_restore.pl renamed to postgis_restore (Regina Obe)"
 msgstr ""

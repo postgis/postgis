@@ -570,10 +570,10 @@ msgid ""
 "database with PostGIS installed without getting duplicate symbol errors or "
 "bringing forward deprecated objects."
 msgstr ""
-"ダンプ/リロード作業はpostgis_restoreスクリプトが補助します。このスクリプトは"
-"、PostGIS (古いものを含む)に属する定義を全て飛ばします。また、重複シンボルエ"
-"ラーや非推奨オブジェクトを持越すことなく、"
-"スキーマとデータをPostGISをインストールしたデータベースにリストアできます 。"
+"ダンプ/リロード作業はpostgis_restoreスクリプトが補助します。このスクリプト"
+"は、PostGIS (古いものを含む)に属する定義を全て飛ばします。また、重複シンボル"
+"エラーや非推奨オブジェクトを持越すことなく、スキーマとデータをPostGISをインス"
+"トールしたデータベースにリストアできます 。"
 
 #. Tag: para
 #: administration.xml:256
@@ -661,8 +661,8 @@ msgid ""
 "postgis_restore. Unexpected errors, if any, will be printed to the standard "
 "error stream by psql. Keep a log of those."
 msgstr ""
-"バックアップを新しい<varname>newdb</varname>データベースにリストアするには、p"
-"ostgis_restoreを使います。psqlが予期せぬエラーを標準エラー出力に出すことがあ"
+"バックアップを新しい<varname>newdb</varname>データベースにリストアするには、"
+"postgis_restoreを使います。psqlが予期せぬエラーを標準エラー出力に出すことがあ"
 "ります。これらのログを保存しておいて下さい。"
 
 #. Tag: para

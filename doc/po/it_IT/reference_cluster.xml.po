@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-08-03 00:19+0000\n"
 "PO-Revision-Date: 2022-02-18 09:52+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
@@ -49,9 +49,9 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_cluster.xml:35 reference_cluster.xml:139 reference_cluster.xml:180
+#: reference_cluster.xml:35 reference_cluster.xml:142 reference_cluster.xml:186
 #: reference_cluster.xml:234 reference_cluster.xml:325
-#: reference_cluster.xml:368
+#: reference_cluster.xml:374
 #, no-c-format
 msgid "Description"
 msgstr "Descrizione"
@@ -60,19 +60,19 @@ msgstr "Descrizione"
 #: reference_cluster.xml:37
 #, no-c-format
 msgid ""
-"Returns cluster number for each input geometry, based on a 2D implementation "
-"of the <ulink url=\"https://en.wikipedia.org/wiki/DBSCAN\">Density-based "
-"spatial clustering of applications with noise (DBSCAN)</ulink> algorithm. "
-"Unlike <xref linkend=\"ST_ClusterKMeans\"/>, it does not require the number "
-"of clusters to be specified, but instead uses the desired <link "
+"A window function that returns a cluster number for each input geometry, "
+"using the 2D <ulink url=\"https://en.wikipedia.org/wiki/DBSCAN\">Density-"
+"based spatial clustering of applications with noise (DBSCAN)</ulink> "
+"algorithm. Unlike <xref linkend=\"ST_ClusterKMeans\"/>, it does not require "
+"the number of clusters to be specified, but instead uses the desired <link "
 "linkend=\"ST_Distance\">distance</link> (<varname>eps</varname>) and density "
-"(<varname>minpoints</varname>) parameters to construct each cluster."
+"(<varname>minpoints</varname>) parameters to determine each cluster."
 msgstr ""
 
 #. Tag: para
 #: reference_cluster.xml:44
 #, no-c-format
-msgid "An input geometry will be added to a cluster if it is either:"
+msgid "An input geometry is added to a cluster if it is either:"
 msgstr ""
 
 #. Tag: para
@@ -81,7 +81,7 @@ msgstr ""
 msgid ""
 "A \"core\" geometry, that is within <varname>eps</varname> <link "
 "linkend=\"ST_Distance\">distance</link> of at least <varname>minpoints</"
-"varname> input geometries (including itself) or"
+"varname> input geometries (including itself); or"
 msgstr ""
 
 #. Tag: para
@@ -97,85 +97,126 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Note that border geometries may be within <varname>eps</varname> distance of "
-"core geometries in more than one cluster; in this case, either assignment "
-"would be correct, and the border geometry will be arbitrarily asssigned to "
-"one of the available clusters. In these cases, it is possible for a correct "
-"cluster to be generated with fewer than <varname>minpoints</varname> "
-"geometries. When assignment of a border geometry is ambiguous, repeated "
-"calls to ST_ClusterDBSCAN will produce identical results if an ORDER BY "
-"clause is included in the window definition, but cluster assignments may "
-"differ from other implementations of the same algorithm."
+"core geometries in more than one cluster. Either assignment would be "
+"correct, so the border geometry will be arbitrarily asssigned to one of the "
+"available clusters. In this situation it is possible for a correct cluster "
+"to be generated with fewer than <varname>minpoints</varname> geometries. To "
+"ensure deterministic assignment of border geometries (so that repeated calls "
+"to ST_ClusterDBSCAN will produce identical results) use an <code>ORDER BY</"
+"code> clause in the window definition. Ambiguous cluster assignments may "
+"differ from other DBSCAN implementations."
 msgstr ""
 
 #. Tag: para
-#: reference_cluster.xml:68
+#: reference_cluster.xml:70
 #, no-c-format
 msgid ""
-"Input geometries that do not meet the criteria to join any other cluster "
-"will be assigned a cluster number of NULL."
+"Geometries that do not meet the criteria to join any cluster are assigned a "
+"cluster number of NULL."
 msgstr ""
 
 #. Tag: para
-#: reference_cluster.xml:72 reference_cluster.xml:246
+#: reference_cluster.xml:74 reference_cluster.xml:246
 #, no-c-format
 msgid "Availability: 2.3.0"
 msgstr ""
 
 #. Tag: para
-#: reference_cluster.xml:73 reference_cluster.xml:330 reference_cluster.xml:374
+#: reference_cluster.xml:75 reference_cluster.xml:337 reference_cluster.xml:384
 #, no-c-format
 msgid "&curve_support;"
 msgstr ""
 
 #. Tag: title
-#: reference_cluster.xml:77 reference_cluster.xml:147 reference_cluster.xml:188
-#: reference_cluster.xml:250 reference_cluster.xml:334
-#: reference_cluster.xml:379
+#: reference_cluster.xml:79 reference_cluster.xml:154 reference_cluster.xml:194
+#: reference_cluster.xml:250 reference_cluster.xml:341
+#: reference_cluster.xml:389
 #, no-c-format
 msgid "Examples"
 msgstr "Esempi"
 
 #. Tag: para
-#: reference_cluster.xml:78
+#: reference_cluster.xml:80
 #, no-c-format
 msgid ""
-"Assigning a cluster number to each polygon within 50 meters of each other. "
-"Require at least 2 polygons per cluster"
+"Clustering polygon within 50 meters of each other, and requiring at least 2 "
+"polygons per cluster."
 msgstr ""
 
 #. Tag: para
-#: reference_cluster.xml:90
+#: reference_cluster.xml:92
 #, no-c-format
-msgid "within 50 meters at least 2 per cluster. singletons have NULL for cid"
+msgid ""
+"Clusters within 50 meters with at least 2 items per cluster. Singletons have "
+"NULL for cid"
 msgstr ""
 
 #. Tag: para
-#: reference_cluster.xml:104
+#: reference_cluster.xml:106
 #, no-c-format
 msgid ""
-"Combining parcels with the same cluster number into a single geometry. This "
-"uses named argument calling"
+"A example showing combining parcels with the same cluster number into "
+"geometry collections."
 msgstr ""
 
 #. Tag: title
-#: reference_cluster.xml:111 reference_cluster.xml:151
-#: reference_cluster.xml:192 reference_cluster.xml:293
-#: reference_cluster.xml:338 reference_cluster.xml:383
+#: reference_cluster.xml:113 reference_cluster.xml:158
+#: reference_cluster.xml:198 reference_cluster.xml:293
+#: reference_cluster.xml:345 reference_cluster.xml:393
 #, no-c-format
 msgid "See Also"
 msgstr "Si veda anche"
 
 #. Tag: para
-#: reference_cluster.xml:112
+#: reference_cluster.xml:114
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ClusterKMeans\"/>, <xref "
-"linkend=\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterWithin\"/> "
-"<xref linkend=\"ST_ClusterIntersectingWin\"/>"
+"linkend=\"ST_ClusterIntersecting\"/>, <xref "
+"linkend=\"ST_ClusterIntersectingWin\"/>, <xref linkend=\"ST_ClusterWithin\"/"
+">, <xref linkend=\"ST_ClusterWithinWin\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_cluster.xml:126
+#: reference_cluster.xml:129
+#, no-c-format
+msgid "Aggregate function that clusters input geometries into connected sets."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_cluster.xml:134
+#, no-c-format
+msgid ""
+"<funcdef>geometry[] <function>ST_ClusterIntersecting</function></funcdef> "
+"<paramdef><type>geometry set</type> <parameter>g</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:144
+#, no-c-format
+msgid ""
+"An aggregate function that returns an array of GeometryCollections "
+"partitioning the input geometries into connected clusters that are disjoint. "
+"Each geometry in a cluster intersects at least one other geometry in the "
+"cluster, and does not intersect any geometry in other clusters."
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:150 reference_cluster.xml:336
+#, no-c-format
+msgid "Availability: 2.2.0"
+msgstr "Disponibilità: 2.2.0"
+
+#. Tag: para
+#: reference_cluster.xml:159 reference_cluster.xml:199
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_ClusterWithin\"/>, <xref "
+"linkend=\"ST_ClusterWithinWin\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_cluster.xml:173
 #, no-c-format
 msgid ""
 "Window function that returns a cluster id for each input geometry, "
@@ -183,7 +224,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_cluster.xml:131
+#: reference_cluster.xml:178
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_ClusterIntersectingWin</function></funcdef> "
@@ -192,66 +233,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_cluster.xml:141
+#: reference_cluster.xml:188
 #, no-c-format
 msgid ""
-"ST_ClusterIntersectingWin is a windowing function that builds inter-"
-"connecting clusters of geometries that intersect. It is possible to traverse "
-"all geometries in a cluster without leaving the cluster. The return value is "
-"the cluster number that the geometry argument participates in, or null for "
-"null inputs."
+"A window function that builds connected clusters of geometries that "
+"intersect. It is possible to traverse all geometries in a cluster without "
+"leaving the cluster. The return value is the cluster number that the "
+"geometry argument participates in, or null for null inputs."
 msgstr ""
 
 #. Tag: para
-#: reference_cluster.xml:143 reference_cluster.xml:373
+#: reference_cluster.xml:190 reference_cluster.xml:383
 #, no-c-format
 msgid "Availability: 3.4.0"
-msgstr ""
-
-#. Tag: para
-#: reference_cluster.xml:152
-#, no-c-format
-msgid ""
-", <xref linkend=\"ST_ClusterKMeans\"/>, <xref "
-"linkend=\"ST_ClusterWithinWin\"/> <xref linkend=\"ST_ClusterWithin\"/> <xref "
-"linkend=\"ST_ClusterIntersecting\"/>"
-msgstr ""
-
-#. Tag: refpurpose
-#: reference_cluster.xml:167
-#, no-c-format
-msgid "Aggregate function that clusters input geometries into connected sets."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_cluster.xml:172
-#, no-c-format
-msgid ""
-"<funcdef>geometry[] <function>ST_ClusterIntersecting</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>g</parameter></paramdef>"
-msgstr ""
-
-#. Tag: para
-#: reference_cluster.xml:182
-#, no-c-format
-msgid ""
-"ST_ClusterIntersecting is an aggregate function that returns an array of "
-"GeometryCollections, where each GeometryCollection represents an "
-"interconnected set of geometries."
-msgstr ""
-
-#. Tag: para
-#: reference_cluster.xml:184 reference_cluster.xml:329
-#, no-c-format
-msgid "Availability: 2.2.0"
-msgstr "Disponibilità: 2.2.0"
-
-#. Tag: para
-#: reference_cluster.xml:193
-#, no-c-format
-msgid ""
-", <xref linkend=\"ST_ClusterKMeans\"/>, <xref "
-"linkend=\"ST_ClusterWithinWin\"/> <xref linkend=\"ST_ClusterWithin\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -358,8 +352,7 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_cluster.xml:311
 #, no-c-format
-msgid ""
-"Aggregate function that clusters input geometries by separation distance."
+msgid "Aggregate function that clusters geometries by separation distance."
 msgstr ""
 
 #. Tag: funcprototype
@@ -375,23 +368,33 @@ msgstr ""
 #: reference_cluster.xml:327
 #, no-c-format
 msgid ""
-"ST_ClusterWithin is an aggregate function that returns an array of "
-"GeometryCollections, where each GeometryCollection represents a set of "
-"geometries separated by no more than the specified distance. (Distances are "
-"Cartesian distances in the units of the SRID.)"
+"An aggregate function that returns an array of GeometryCollections, where "
+"each collection is a cluster containing some input geometries. Clustering "
+"partitions the input geometries into sets in which each geometry is within "
+"the specified <parameter>distance</parameter> of at least one other geometry "
+"in the same cluster. Distances are Cartesian distances in the units of the "
+"SRID."
 msgstr ""
 
 #. Tag: para
-#: reference_cluster.xml:339
+#: reference_cluster.xml:334
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClusterKMeans\"/>, <xref "
-"linkend=\"ST_ClusterIntersectingWin\"/>, <xref "
-"linkend=\"ST_ClusterWithinWin\"/>, <xref linkend=\"ST_ClusterIntersecting\"/>"
+"ST_ClusterWithin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN\"/"
+"> with <code>minpoints := 0</code>."
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:346
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_ClusterDBSCAN\"/>, <xref "
+"linkend=\"ST_ClusterIntersecting\"/>, <xref "
+"linkend=\"ST_ClusterIntersectingWin\"/>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_cluster.xml:354
+#: reference_cluster.xml:360
 #, no-c-format
 msgid ""
 "Window function that returns a cluster id for each input geometry, "
@@ -399,7 +402,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_cluster.xml:359
+#: reference_cluster.xml:365
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_ClusterWithinWin</function></funcdef> "
@@ -409,29 +412,29 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_cluster.xml:370
+#: reference_cluster.xml:376
 #, no-c-format
 msgid ""
-"ST_ClusterWithinWin is a window function that returns an integer for each "
-"input geometry, where the integer the cluster number the geometry is a "
-"member of. Clusters represent a set of input geometries separated by no more "
-"than the specified distance. (Distances are Cartesian distances in the units "
-"of the SRID.)"
+"A window function that returns a cluster number for each input geometry. "
+"Clustering partitions the geometries into sets in which each geometry is "
+"within the specified <varname>distance</varname> of at least one other "
+"geometry in the same cluster. Distances are Cartesian distances in the units "
+"of the SRID."
 msgstr ""
 
 #. Tag: para
-#: reference_cluster.xml:372
+#: reference_cluster.xml:382
 #, no-c-format
 msgid ""
 "ST_ClusterWithinWin is equivalent to running <xref "
-"linkend=\"ST_ClusterDBSCAN\"/> with a `minpoints` of zero."
+"linkend=\"ST_ClusterDBSCAN\"/> with <code>minpoints := 0</code>."
 msgstr ""
 
 #. Tag: para
-#: reference_cluster.xml:384
+#: reference_cluster.xml:394
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClusterKMeans\"/>, <xref "
-"linkend=\"ST_ClusterIntersectingWin\"/>, <xref linkend=\"ST_ClusterWithin\"/"
-">, <xref linkend=\"ST_ClusterIntersecting\"/>"
+", <xref linkend=\"ST_ClusterDBSCAN\"/>, <xref "
+"linkend=\"ST_ClusterIntersecting\"/>, <xref "
+"linkend=\"ST_ClusterIntersectingWin\"/>,"
 msgstr ""

@@ -256,10 +256,10 @@ msgid ""
 "PostgreSQL is available from <ulink url=\"https://www.postgresql.org\"> "
 "https://www.postgresql.org </ulink> ."
 msgstr ""
-"PostgreSQL &min_postgres_version; - &max_postgres_version;。"
-"PostgreSQLの完全なインストール (サーバヘッダを含む)が必要です。"
-"PostgreSQLは<ulink url=\"http://www.postgresql.org/\"> http://www.postgresql."
-"org/</ulink>にあります。"
+"PostgreSQL &min_postgres_version; - &max_postgres_version;。PostgreSQLの完全"
+"なインストール (サーバヘッダを含む)が必要です。PostgreSQLは<ulink "
+"url=\"http://www.postgresql.org/\"> http://www.postgresql.org/</ulink>にあり"
+"ます。"
 
 #. Tag: para
 #: installation.xml:140
@@ -325,10 +325,9 @@ msgid ""
 "for download from <ulink url=\"https://libgeos.org/\"> https://libgeos.org </"
 "ulink>."
 msgstr ""
-"ジオメトリライブラリGEOS、3.6以上が必要ですが、"
-"全ての関数と機能の利点を完全に得るにはGEOS 3.12以上が必要です。GEOSは<ulink "
-"url=\"https://libgeos.org/\"> https://libgeos.org/ "
-"</ulink>からダウンロードできます。"
+"ジオメトリライブラリGEOS、3.6以上が必要ですが、全ての関数と機能の利点を完全に"
+"得るにはGEOS 3.12以上が必要です。GEOSは<ulink url=\"https://libgeos.org/\"> "
+"https://libgeos.org/ </ulink>からダウンロードできます。"
 
 #. Tag: para
 #: installation.xml:184

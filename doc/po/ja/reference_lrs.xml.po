@@ -432,7 +432,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Geography implementation measures along a spheroid, geometry along a line"
-msgstr "ジオグラフィ実装では回転楕円体面に沿って計測し、ジオメトリではラインに沿って"
+msgstr ""
+"ジオグラフィ実装では回転楕円体面に沿って計測し、ジオメトリではラインに沿って"
 "計測します。"
 
 #. Tag: para
