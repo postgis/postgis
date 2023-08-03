@@ -63,7 +63,8 @@
       This can be checked with <xref linkend="ST_IsValid" />.
       </para>
 
-      <para role="availability" conformance="3.4.0">Availability: 3.4.0 - requires GEOS &gt;= 3.12.0</para>
+      <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
+      <para role="geos_requirement" conformance="3.12.0">Requires GEOS &gt;= 3.12.0</para>
     </refsection>
 
     <refsection>
@@ -145,7 +146,7 @@ SELECT true = ALL (
       </para>
 
       <para>The simplification uses a variant of the <ulink url="https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm">Visvalingam–Whyatt algorithm</ulink>.
-      The <parameter>tolerance</parameter> parameter has units of distance, 
+      The <parameter>tolerance</parameter> parameter has units of distance,
       and is roughly equal to the square root of triangular areas to be simplified.
       </para>
 
@@ -155,8 +156,8 @@ SELECT true = ALL (
       Use <xref linkend="ST_CoverageInvalidEdges" /> to determine if a coverage is valid.
       </para></note>
 
-      <para role="availability" conformance="3.4.0">Availability: 3.4.0 - requires GEOS &gt;= 3.12.0</para>
-
+      <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
+      <para role="geos_requirement" conformance="3.12.0">Requires GEOS &gt;= 3.12.0</para>
     </refsection>
 
     <refsection>

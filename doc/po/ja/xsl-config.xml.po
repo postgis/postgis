@@ -55,7 +55,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-12 08:31+0000\n"
+"POT-Creation-Date: 2023-08-03 01:03+0000\n"
 "PO-Revision-Date: 2023-07-14 02:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/xsl-"
@@ -209,8 +209,8 @@ msgstr "ウィンドウ関数"
 #. Tag: para
 #: xsl-config.xml:181
 #, no-c-format
-msgid "Requires GEOS 3.9 or higher"
-msgstr "GEOS 3.9以上が必要"
+msgid "Requires GEOS (3.9,3.10,3.11,3.12) or higher"
+msgstr ""
 
 #. Tag: para
 #: xsl-config.xml:184

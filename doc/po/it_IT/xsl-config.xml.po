@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-12 08:31+0000\n"
+"POT-Creation-Date: 2023-08-03 01:03+0000\n"
 "PO-Revision-Date: 2023-06-29 14:24+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: none\n"
@@ -158,8 +158,8 @@ msgstr "Funzione finestra"
 #. Tag: para
 #: xsl-config.xml:181
 #, no-c-format
-msgid "Requires GEOS 3.9 or higher"
-msgstr "Richiede GEOS 3.9 o superiore"
+msgid "Requires GEOS (3.9,3.10,3.11,3.12) or higher"
+msgstr ""
 
 #. Tag: para
 #: xsl-config.xml:184
