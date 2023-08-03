@@ -28,8 +28,26 @@
 
 #include <fstream>
 #include <random>
+#include <sstream>
 
 #include <boost/smart_ptr/shared_array.hpp>
+
+static std::string
+create_unique_temporary_path(const char *name)
+{
+	static std::mt19937 mt(time(nullptr));
+#ifdef _WIN32
+	char tmp_dir[128] = {'\0'};
+	GetTempPathA(tmp_dir, 127);
+#else
+	const char *tmp_dir = P_tmpdir;
+#endif
+	std::ostringstream oss;
+	oss << tmp_dir << '/' << mt() << '-' << name;
+	std::string oss_string = oss.str();
+
+	return oss_string;
+}
 
 struct usd_write_context {
 	usd_write_context() : m_size(0) {}
@@ -81,26 +99,12 @@ usd_write_save(struct usd_write_context *ctx, usd_format format)
 		}
 		else if (format == USDC)
 		{
-			/* create unique path for temporary USDC file */
-#ifdef _WIN32
-			char tmp_path[128] = {'\0'};
-			GetTempPathA(tmp_path, 127);
-#else
-			const char *tmp_path = P_tmpdir;
-#endif
-
-			static std::mt19937 mt(time(nullptr));
-			uint32_t n = mt();
-
-			char tmp_name[128] = {'\0'};
-			snprintf(tmp_name, 127, "postgis_usd_%u.usdc", n);
-
-			char file_path[256] = {'\0'};
-			snprintf(file_path, 255, "%s/%s", tmp_path, tmp_name);
-
-			if (ctx->m_writer.m_stage->Export(file_path))
+			/* create temporary USDC file and export */
+			const std::string &usdc_file_path = create_unique_temporary_path("postgis_usd.usdc");
+			if (ctx->m_writer.m_stage->Export(usdc_file_path))
 			{
-				FILE *file = fopen(file_path, "rb");
+				/* read back the USDC file */
+				FILE *file = fopen(usdc_file_path.c_str(), "rb");
 				fseek(file, 0, SEEK_END);
 				ctx->m_size = ftell(file);
 				ctx->m_data.reset(new char[ctx->m_size]);
@@ -109,7 +113,7 @@ usd_write_save(struct usd_write_context *ctx, usd_format format)
 				fclose(file);
 
 				/* remove the temporary USDC file */
-				remove(file_path);
+				remove(usdc_file_path.c_str());
 			}
 			else
 			{
