@@ -32,15 +32,15 @@
 
 #include "usd_c.h"
 
-PG_FUNCTION_INFO_V1(LWGEOM_to_USDA);
+PG_FUNCTION_INFO_V1(LWGEOM_to_USD);
 
-Datum
-LWGEOM_to_USDA(PG_FUNCTION_ARGS)
+Datum LWGEOM_to_USD(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_USD
-	elog(ERROR, "LWGEOM_to_USDA: Compiled without USD support");
+	elog(ERROR, "LWGEOM_to_USD: Compiled without USD support");
 	PG_RETURN_NULL();
 #else
+	usd_format format = USDA;
 	GSERIALIZED *gs = NULL;
 	LWGEOM *geom = NULL;
 	struct usd_write_context *ctx = NULL;
@@ -48,47 +48,20 @@ LWGEOM_to_USDA(PG_FUNCTION_ARGS)
 	void *data = NULL;
 	text *ret = NULL;
 
-	gs = PG_GETARG_GSERIALIZED_P(0);
+	format = PG_GETARG_INT32(0);
+	if (format != USDA && format != USDC)
+	{
+		elog(ERROR, "LWGEOM_to_USD: Unknown format %d", format);
+		PG_RETURN_NULL();
+	}
+	gs = PG_GETARG_GSERIALIZED_P(1);
 	geom = lwgeom_from_gserialized(gs);
 
 	postgis_initialize_cache();
 
 	ctx = usd_write_create();
 	usd_write_convert(ctx, geom);
-	usd_write_save(ctx, USDA);
-	usd_write_data(ctx, &size, &data);
-
-	ret = cstring_to_text_with_len((char *)data, (int)size);
-	usd_write_destroy(ctx);
-
-	PG_RETURN_TEXT_P(ret);
-#endif
-}
-
-PG_FUNCTION_INFO_V1(LWGEOM_to_USDC);
-
-Datum
-LWGEOM_to_USDC(PG_FUNCTION_ARGS)
-{
-#ifndef HAVE_USD
-	elog(ERROR, "LWGEOM_to_USDC: Compiled without USD support");
-	PG_RETURN_NULL();
-#else
-	GSERIALIZED *gs = NULL;
-	LWGEOM *geom = NULL;
-	struct usd_write_context *ctx = NULL;
-	size_t size = 0;
-	void *data = NULL;
-	bytea *ret = NULL;
-
-	gs = PG_GETARG_GSERIALIZED_P(0);
-	geom = lwgeom_from_gserialized(gs);
-
-	postgis_initialize_cache();
-
-	ctx = usd_write_create();
-	usd_write_convert(ctx, geom);
-	usd_write_save(ctx, USDC);
+	usd_write_save(ctx, format);
 	usd_write_data(ctx, &size, &data);
 
 	ret = (bytea *)palloc(VARHDRSZ + size);
