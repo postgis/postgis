@@ -34,7 +34,8 @@
 
 PG_FUNCTION_INFO_V1(LWGEOM_to_USD);
 
-Datum LWGEOM_to_USD(PG_FUNCTION_ARGS)
+Datum
+LWGEOM_to_USD(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_USD
 	elog(ERROR, "LWGEOM_to_USD: Compiled without USD support");
@@ -43,10 +44,14 @@ Datum LWGEOM_to_USD(PG_FUNCTION_ARGS)
 	usd_format format = USDA;
 	GSERIALIZED *gs = NULL;
 	LWGEOM *geom = NULL;
+	text *root_name = NULL;
+	char *root_name_cstr = NULL;
+	text *geom_name = NULL;
+	char *geom_name_cstr = NULL;
 	struct usd_write_context *ctx = NULL;
 	size_t size = 0;
 	void *data = NULL;
-	text *ret = NULL;
+	bytea *ret = NULL;
 
 	format = PG_GETARG_INT32(0);
 	if (format != USDA && format != USDC)
@@ -54,14 +59,29 @@ Datum LWGEOM_to_USD(PG_FUNCTION_ARGS)
 		elog(ERROR, "LWGEOM_to_USD: Unknown format %d", format);
 		PG_RETURN_NULL();
 	}
+
 	gs = PG_GETARG_GSERIALIZED_P(1);
 	geom = lwgeom_from_gserialized(gs);
 
+	root_name = PG_GETARG_TEXT_P(2);
+	root_name_cstr = text_to_cstring(root_name);
+	if (!root_name_cstr || !strlen(root_name_cstr))
+	{
+		root_name_cstr = USD_ROOT_NAME;
+	}
+
+	geom_name = PG_GETARG_TEXT_P(3);
+	geom_name_cstr = text_to_cstring(geom_name);
+	if (!geom_name_cstr || !strlen(geom_name_cstr))
+	{
+		geom_name_cstr = USD_GEOM_NAME;
+	}
+
 	postgis_initialize_cache();
 
-	ctx = usd_write_create();
+	ctx = usd_write_create(format, root_name_cstr, geom_name_cstr);
 	usd_write_convert(ctx, geom);
-	usd_write_save(ctx, format);
+	usd_write_save(ctx);
 	usd_write_data(ctx, &size, &data);
 
 	ret = (bytea *)palloc(VARHDRSZ + size);
