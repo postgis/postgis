@@ -6936,8 +6936,8 @@ CREATE OR REPLACE FUNCTION _LWGEOM_to_USD(int, geometry, text, text)
 	_COST_MEDIUM;
 
 CREATE OR REPLACE FUNCTION ST_AsUSDA(geom geometry, root_name text default 'World', geom_name text default '_geometry')
-	RETURNS text
-	AS $$ SELECT @extschema@._LWGEOM_to_USD(1, $1, $2, $3)::text $$
+	RETURNS bytea
+	AS $$ SELECT @extschema@._LWGEOM_to_USD(1, $1, $2, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
 
