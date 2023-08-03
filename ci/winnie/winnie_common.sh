@@ -11,17 +11,17 @@ export PROJECTS=/projects
 export MSYS2_ARG_CONV_EXCL=/config/tags
 
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.10.2
-	export GDAL_VER=3.4.2
-	export PROJ_VER=7.2.1
+	export GEOS_VER=3.12.0
+	export GDAL_VER=3.7.1
+	export PROJ_VER=8.2.1
 	export SFCGAL_VER=1.4.1
 	export CGAL_VER=5.3
 	export ICON_VER=1.17
-	export ZLIB_VER=1.2.11
+	export ZLIB_VER=1.2.13
 	export PROTOBUF_VER=3.2.0
 	export PROTOBUFC_VER=1.2.1
 	export JSON_VER=0.12
-	export PROJSO=libproj-19.dll
+	export PROJSO=libproj_8_2.dll
 fi;
 
 export PROTOBUF_VER=3.2.0
@@ -59,6 +59,11 @@ if  [[ "${CGAL_VER}" == '' ]] ; then
   export CGAL_VER=5.3
 fi;
 
+##hard code versions of cgal etc. for now
+export CGAL_VER=5.3
+BOOST_VER=1.78.0
+export BOOST_VER_WU=1_78_0
+export PATH="${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/boost/rel-${BOOST_VER_WU}w${OS_BUILD}${GCC_TYPE}/lib:${PATH}"
 #export GDAL_VER=2.4.0
 #export PROJ_VER=5.2.0
 
@@ -122,3 +127,7 @@ CPPFLAGS="-I${PGPATH}/include -I${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}
 export PATH="${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/lib:${PATH}"
 
 echo "PATH AFTER: $PATH"
+
+if  [[ "${INCLUDE_MINOR_LIB}" == '' ]] ; then
+	export INCLUDE_MINOR_LIB=true
+fi;
