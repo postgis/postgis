@@ -37,12 +37,10 @@ using namespace USD;
 
 static const int PRIM_MAX_SIBLING = 999999;
 
-static const pxr::SdfPath USD_ROOT_PRIM_PATH("/World");
-static const pxr::SdfPath USD_GEOM_PRIM_PATH("/World/_geometry");
-
 static pxr::SdfPath
-GenerateNextSdfPath(pxr::UsdStageRefPtr stage, const pxr::SdfPath &test_path)
+GenerateNextSdfPath(pxr::UsdStageRefPtr stage, const std::string &name)
 {
+	pxr::SdfPath test_path(pxr::TfStringPrintf("/%s", name.c_str()));
 	auto prim = stage->GetPrimAtPath(test_path);
 	if (!prim)
 	{
@@ -110,7 +108,7 @@ ReadPointArray(pxr::VtVec3fArray &points, pxr::VtVec4dArray &xyzm_points, const 
 void
 Writer::WritePoint(const LWPOINT *p)
 {
-	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
+	auto prim_path = GenerateNextSdfPath(m_stage, m_geom_name);
 	auto geometry = DefineGeom<pxr::UsdGeomPoints>(
 	    m_stage, prim_path, p->srid, lwtype_name(p->type), FLAGS_GET_Z(p->flags), FLAGS_GET_M(p->flags));
 	auto prim = geometry.GetPrim();
@@ -129,7 +127,7 @@ Writer::WritePoint(const LWPOINT *p)
 void
 Writer::WriteMultiPoint(const LWMPOINT *mp)
 {
-	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
+	auto prim_path = GenerateNextSdfPath(m_stage, m_geom_name);
 	auto geometry = pxr::UsdGeomPoints::Define(m_stage, pxr::SdfPath("_geometry"));
 	auto prim = geometry.GetPrim();
 
@@ -151,7 +149,7 @@ Writer::WriteMultiPoint(const LWMPOINT *mp)
 void
 Writer::WriteLineString(const LWLINE *l)
 {
-	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
+	auto prim_path = GenerateNextSdfPath(m_stage, m_geom_name);
 	auto geometry = DefineGeom<pxr::UsdGeomBasisCurves>(
 	    m_stage, prim_path, l->srid, lwtype_name(l->type), FLAGS_GET_Z(l->flags), FLAGS_GET_M(l->flags));
 	auto prim = geometry.GetPrim();
@@ -178,7 +176,7 @@ Writer::WriteLineString(const LWLINE *l)
 void
 Writer::WriteMultiLineString(const LWMLINE *ml)
 {
-	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
+	auto prim_path = GenerateNextSdfPath(m_stage, m_geom_name);
 	auto geometry = DefineGeom<pxr::UsdGeomBasisCurves>(
 	    m_stage, prim_path, ml->srid, lwtype_name(ml->type), FLAGS_GET_Z(ml->flags), FLAGS_GET_M(ml->flags));
 	auto prim = geometry.GetPrim();
@@ -210,7 +208,7 @@ Writer::WriteMultiLineString(const LWMLINE *ml)
 void
 Writer::WritePolygon(const LWPOLY *p)
 {
-	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
+	auto prim_path = GenerateNextSdfPath(m_stage, m_geom_name);
 	auto geometry = DefineGeom<pxr::UsdGeomMesh>(
 	    m_stage, prim_path, p->srid, lwtype_name(p->type), FLAGS_GET_Z(p->flags), FLAGS_GET_M(p->flags));
 	auto prim = geometry.GetPrim();
@@ -255,7 +253,7 @@ Writer::WriteMultiPolygon(const LWMPOLY *mp)
 void
 Writer::WriteTriangle(const LWTRIANGLE *t)
 {
-	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
+	auto prim_path = GenerateNextSdfPath(m_stage, m_geom_name);
 	auto geometry = DefineGeom<pxr::UsdGeomMesh>(
 	    m_stage, prim_path, t->srid, lwtype_name(t->type), FLAGS_GET_Z(t->flags), FLAGS_GET_M(t->flags));
 	auto prim = geometry.GetPrim();
@@ -283,7 +281,7 @@ Writer::WriteTriangle(const LWTRIANGLE *t)
 void
 Writer::WritePolyhedralSurface(const LWPSURFACE *ps)
 {
-	auto prim_path = GenerateNextSdfPath(m_stage, USD_GEOM_PRIM_PATH);
+	auto prim_path = GenerateNextSdfPath(m_stage, m_geom_name);
 	auto geometry = DefineGeom<pxr::UsdGeomMesh>(
 	    m_stage, prim_path, ps->srid, lwtype_name(ps->type), FLAGS_GET_Z(ps->flags), FLAGS_GET_M(ps->flags));
 	auto prim = geometry.GetPrim();
@@ -330,7 +328,8 @@ Writer::WriteCollection(const LWCOLLECTION *coll)
 	}
 }
 
-Writer::Writer()
+Writer::Writer(const std::string &root_name, const std::string &geom_name)
+    : m_root_name(root_name), m_geom_name(geom_name)
 {
 	m_stage = pxr::UsdStage::CreateInMemory();
 }
@@ -343,8 +342,9 @@ Writer::Write(LWGEOM *geom)
 	try
 	{
 		/* set USD default prim */
-		auto xform_world = pxr::UsdGeomXform::Define(m_stage, USD_ROOT_PRIM_PATH);
-		m_stage->SetDefaultPrim(xform_world.GetPrim());
+		pxr::SdfPath root_path(pxr::TfStringPrintf("/%s", m_root_name.c_str()));
+		auto root_xform = pxr::UsdGeomXform::Define(m_stage, root_path);
+		m_stage->SetDefaultPrim(root_xform.GetPrim());
 
 		int type = geom->type;
 		switch (type)

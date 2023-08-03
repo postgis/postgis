@@ -49,7 +49,11 @@ create_unique_temporary_path(const char *name)
 }
 
 struct usd_write_context {
-	usd_write_context() : m_size(0) {}
+	usd_write_context(usd_format format, const std::string &root_name, const std::string &geom_name)
+	    : m_format(format), m_writer(root_name, geom_name), m_size(0)
+	{}
+
+	usd_format m_format;
 
 	USD::Writer m_writer;
 
@@ -58,9 +62,9 @@ struct usd_write_context {
 };
 
 usd_write_context *
-usd_write_create()
+usd_write_create(usd_format format, const char *root_name, const char *geom_name)
 {
-	usd_write_context *ctx = new usd_write_context;
+	usd_write_context *ctx = new usd_write_context(format, root_name, geom_name);
 	return ctx;
 }
 
@@ -77,11 +81,11 @@ usd_write_convert(usd_write_context *ctx, LWGEOM *geom)
 }
 
 void
-usd_write_save(struct usd_write_context *ctx, usd_format format)
+usd_write_save(struct usd_write_context *ctx)
 {
 	try
 	{
-		if (format == USDA)
+		if (ctx->m_format == USDA)
 		{
 			std::string stage_string;
 			if (ctx->m_writer.m_stage->ExportToString(&stage_string))
@@ -95,7 +99,7 @@ usd_write_save(struct usd_write_context *ctx, usd_format format)
 				lwerror("usd: failed to save as usda");
 			}
 		}
-		else if (format == USDC)
+		else if (ctx->m_format == USDC)
 		{
 			/* create temporary USDC file and export */
 			const std::string &usdc_file_path = create_unique_temporary_path("postgis_usd.usdc");

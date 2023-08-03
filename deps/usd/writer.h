@@ -42,6 +42,9 @@ namespace USD {
 
 class Writer {
 	private:
+		std::string m_root_name;
+		std::string m_geom_name;
+
 		void WritePoint(const LWPOINT *p);
 		void WriteMultiPoint(const LWMPOINT *mp);
 		void WriteLineString(const LWLINE* l);
@@ -49,11 +52,11 @@ class Writer {
 		void WritePolygon(const LWPOLY *p);
 		void WriteMultiPolygon(const LWMPOLY *mp);
 		void WriteTriangle(const LWTRIANGLE *t);
-        void WritePolyhedralSurface(const LWPSURFACE *ps);
+		void WritePolyhedralSurface(const LWPSURFACE *ps);
 		void WriteCollection(const LWCOLLECTION *coll);
 
 	public:
-		Writer();
+		Writer(const std::string &root_name, const std::string &geom_name);
 		~Writer();
 
 		void Write(LWGEOM *geom);

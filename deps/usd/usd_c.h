@@ -38,15 +38,18 @@ typedef enum usd_format
 	USDC = 2
 } usd_format;
 
+#define USD_ROOT_NAME "World"
+#define USD_GEOM_NAME "_Geoemtry"
+
 struct usd_write_context;
 
-struct usd_write_context *usd_write_create();
+struct usd_write_context *usd_write_create(usd_format format, const char *root_name, const char *geom_name);
 
 void usd_write_destroy(struct usd_write_context *ctx);
 
 void usd_write_convert(struct usd_write_context *ctx, LWGEOM *geom);
 
-void usd_write_save(struct usd_write_context *ctx, usd_format format);
+void usd_write_save(struct usd_write_context *ctx);
 
 void usd_write_data(struct usd_write_context *ctx, size_t *size, void **data);
 
