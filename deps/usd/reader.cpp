@@ -35,19 +35,19 @@
 
 #define READ_POSTGIS_ATTRIBUTES \
 	int postgis_srid = SRID_UNKNOWN; \
-	auto postgis_srid_attr = prim.GetAttribute(TOKEN_POSTGIS_SRID); \
+	auto postgis_srid_attr = prim.GetAttribute(pxr::TfToken(TOKEN_POSTGIS_SRID)); \
 	postgis_srid_attr.Get(&postgis_srid); \
 	pxr::TfToken postgis_type_name; \
-	auto postgis_type_name_attr = prim.GetAttribute(TOKEN_POSTGIS_TYPE_NAME); \
+	auto postgis_type_name_attr = prim.GetAttribute(pxr::TfToken(TOKEN_POSTGIS_TYPE_NAME)); \
 	postgis_type_name_attr.Get(&postgis_type_name); \
 	int postgis_has_z = 0; \
-	auto postgis_has_z_attr = prim.GetAttribute(TOKEN_POSTGIS_HAS_Z); \
+	auto postgis_has_z_attr = prim.GetAttribute(pxr::TfToken(TOKEN_POSTGIS_HAS_Z)); \
 	postgis_has_z_attr.Get(&postgis_has_z); \
 	int postgis_has_m = 0; \
-	auto postgis_has_m_attr = prim.GetAttribute(TOKEN_POSTGIS_HAS_M); \
+	auto postgis_has_m_attr = prim.GetAttribute(pxr::TfToken(TOKEN_POSTGIS_HAS_M)); \
 	postgis_has_m_attr.Get(&postgis_has_m); \
 	pxr::VtVec4dArray postgis_points; \
-	auto postgis_points_attr = prim.GetAttribute(TOKEN_POSTGIS_POINTS); \
+	auto postgis_points_attr = prim.GetAttribute(pxr::TfToken(TOKEN_POSTGIS_POINTS)); \
 	postgis_points_attr.Get(&postgis_points);
 
 using namespace USD;

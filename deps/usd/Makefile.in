@@ -34,7 +34,7 @@ LIBTOOL = @LIBTOOL@
 
 VPATH = $(srcdir)
 
-USD_OBJS = usd_c.o reader.o writer.o tokens.o
+USD_OBJS = usd_c.o reader.o writer.o
 
 USD_HEADERS = usd_c.h reader.h writer.h tokens.h
 
