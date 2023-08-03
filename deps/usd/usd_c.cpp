@@ -29,8 +29,7 @@
 #include <fstream>
 #include <random>
 #include <sstream>
-
-#include <boost/smart_ptr/shared_array.hpp>
+#include <vector>
 
 static std::string
 create_unique_temporary_path(const char *name)
@@ -55,7 +54,7 @@ struct usd_write_context {
 	USD::Writer m_writer;
 
 	size_t m_size;
-	boost::shared_array<char> m_data;
+	std::vector<char> m_data;
 };
 
 usd_write_context *
@@ -87,10 +86,9 @@ usd_write_save(struct usd_write_context *ctx, usd_format format)
 			std::string stage_string;
 			if (ctx->m_writer.m_stage->ExportToString(&stage_string))
 			{
-				ctx->m_size = stage_string.size() + 1;
-				ctx->m_data.reset(new char[ctx->m_size]);
-				memset(ctx->m_data.get(), '\0', ctx->m_size);
-				strncpy(ctx->m_data.get(), stage_string.c_str(), stage_string.size());
+				ctx->m_size = stage_string.size();
+				ctx->m_data.resize(ctx->m_size + 1, '\0');
+				strncpy(ctx->m_data.data(), stage_string.c_str(), stage_string.size());
 			}
 			else
 			{
@@ -107,9 +105,9 @@ usd_write_save(struct usd_write_context *ctx, usd_format format)
 				FILE *file = fopen(usdc_file_path.c_str(), "rb");
 				fseek(file, 0, SEEK_END);
 				ctx->m_size = ftell(file);
-				ctx->m_data.reset(new char[ctx->m_size]);
+				ctx->m_data.resize(ctx->m_size);
 				fseek(file, 0, SEEK_SET);
-				fread(ctx->m_data.get(), ctx->m_size, 1, file);
+				fread(ctx->m_data.data(), ctx->m_size, 1, file);
 				fclose(file);
 
 				/* remove the temporary USDC file */
@@ -141,7 +139,7 @@ usd_write_data(struct usd_write_context *ctx, size_t *size, void **data)
 	*size = ctx->m_size;
 	if (data)
 	{
-		*data = ctx->m_data.get();
+		*data = ctx->m_data.data();
 	}
 }
 
