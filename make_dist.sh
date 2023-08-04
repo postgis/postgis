@@ -63,18 +63,20 @@ echo "Removing ci files"
 rm -rfv "$outdir"/ci "$outdir"/.gitlab-ci.yml "$outdir"/.github "$outdir"/.dron*.yml "$outdir"/.cirrus.yml "$outdir"/.clang-format
 
 # generating configure script and configuring
-echo "Running autogen.sh; ./configure"
+echo "Running autogen.sh"
 owd="$PWD"
 cd "$outdir"
-./autogen.sh
-./configure ${CONFIGURE_ARGS}
+./autogen.sh || exit 1
+
+echo "./configure ${CONFIGURE_ARGS}"
+./configure ${CONFIGURE_ARGS} || exit 1
 # generating postgis_revision.h for >= 2.0.0 tags
 if test -f utils/repo_revision.pl; then
 	echo "Generating postgis_revision.h"
-	perl utils/repo_revision.pl
+	perl utils/repo_revision.pl || exit 1
 fi
 # generate ChangeLog
-make ChangeLog
+make ChangeLog || exit 1
 cd "$owd"
 
 
@@ -93,10 +95,10 @@ cd "$owd"
 echo "Running make distclean"
 owd="$PWD"
 cd "$outdir"
-${MAKE} distclean
+${MAKE} distclean || exit 1
 
 echo "Removing .git dir"
-rm -rf .git
+rm -rf .git || exit 1
 
 cd "$owd"
 
@@ -115,8 +117,8 @@ if test "$version" = "dev"; then
   else
       package=${newoutdir}.tar.gz
   fi
-  rm -rf ${newoutdir}
-  mv -v "$outdir" "$newoutdir"
+  rm -rf ${newoutdir} || exit 1
+  mv -v "$outdir" "$newoutdir" || exit 1
   outdir=${newoutdir}
 fi
 
@@ -125,7 +127,7 @@ if test "x$package" = "x"; then
     package="postgis-$version.tar.gz"
 fi
 echo "Generating $package file"
-tar czf "$package" "$outdir"
+tar czf "$package" "$outdir" || exit 1
 
 #echo "Cleaning up"
 #rm -Rf "$outdir"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ming 64gcc81\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-08-03 01:03+0000\n"
 "PO-Revision-Date: 2023-07-14 10:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -64,8 +64,8 @@ msgstr ""
 "parameter></paramdef>"
 
 #. Tag: title
-#: reference_coverage.xml:33 reference_coverage.xml:120
-#: reference_coverage.xml:203
+#: reference_coverage.xml:33 reference_coverage.xml:121
+#: reference_coverage.xml:204
 #, no-c-format
 msgid "Description"
 msgstr "説明"
@@ -150,33 +150,39 @@ msgstr ""
 "linkend=\"ST_IsValid\"/>でチェックできます。"
 
 #. Tag: para
-#: reference_coverage.xml:66 reference_coverage.xml:138
+#: reference_coverage.xml:66 reference_coverage.xml:139
 #, no-c-format
-msgid "Availability: 3.4.0 - requires GEOS &gt;= 3.12.0"
-msgstr "Availability: 3.4.0 - GEOS 3.12.0以上が必要です"
+msgid "Availability: 3.4.0"
+msgstr ""
+
+#. Tag: para
+#: reference_coverage.xml:67 reference_coverage.xml:140
+#, no-c-format
+msgid "Requires GEOS &gt;= 3.12.0"
+msgstr ""
 
 #. Tag: title
-#: reference_coverage.xml:70 reference_coverage.xml:143
-#: reference_coverage.xml:219
+#: reference_coverage.xml:71 reference_coverage.xml:144
+#: reference_coverage.xml:220
 #, no-c-format
 msgid "Examples"
 msgstr "例"
 
 #. Tag: para
-#: reference_coverage.xml:77
+#: reference_coverage.xml:78
 #, no-c-format
 msgid "Invalid edges caused by overlap and non-matching vertices"
 msgstr "オーバラップと頂点不一致により発生した不正エッジ"
 
 #. Tag: title
-#: reference_coverage.xml:87 reference_coverage.xml:177
-#: reference_coverage.xml:253
+#: reference_coverage.xml:88 reference_coverage.xml:178
+#: reference_coverage.xml:254
 #, no-c-format
 msgid "See Also"
 msgstr "関連情報"
 
 #. Tag: para
-#: reference_coverage.xml:88
+#: reference_coverage.xml:89
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_CoverageUnion\"/>, <xref "
@@ -186,13 +192,13 @@ msgstr ""
 "linkend=\"ST_CoverageSimplify\"/>"
 
 #. Tag: refpurpose
-#: reference_coverage.xml:102
+#: reference_coverage.xml:103
 #, no-c-format
 msgid "Window function that simplifies the edges of a polygonal coverage."
 msgstr "ポリゴンカバレッジのエッジを単純化するウィンドウ関数。"
 
 #. Tag: funcprototype
-#: reference_coverage.xml:107
+#: reference_coverage.xml:108
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_CoverageSimplify</function></funcdef> "
@@ -208,7 +214,7 @@ msgstr ""
 "<parameter>simplifyBoundary = true</parameter></paramdef>"
 
 #. Tag: para
-#: reference_coverage.xml:122
+#: reference_coverage.xml:123
 #, no-c-format
 msgid ""
 "A window function which simplifies the edges of polygons in a polygonal "
@@ -221,7 +227,7 @@ msgstr ""
 "エッジに沿って構成され、妥当なカバレッジを形成します。"
 
 #. Tag: para
-#: reference_coverage.xml:127
+#: reference_coverage.xml:128
 #, no-c-format
 msgid ""
 "The simplification uses a variant of the <ulink url=\"https://en.wikipedia."
@@ -236,7 +242,7 @@ msgstr ""
 "純化する三角形面積の平方根とだいたい同じです。"
 
 #. Tag: para
-#: reference_coverage.xml:132
+#: reference_coverage.xml:133
 #, no-c-format
 msgid ""
 "To simplify only the \"internal\" edges of the coverage (those that are "
@@ -247,7 +253,7 @@ msgstr ""
 "には、<parameter>simplifyBoundary</parameter>パラメタをFALSEに設定します。"
 
 #. Tag: para
-#: reference_coverage.xml:134
+#: reference_coverage.xml:135
 #, no-c-format
 msgid ""
 "If the input is not a valid coverage there may be unexpected artifacts in "
@@ -261,19 +267,19 @@ msgstr ""
 "linkend=\"ST_CoverageInvalidEdges\"/>を使います。"
 
 #. Tag: para
-#: reference_coverage.xml:154 reference_coverage.xml:230
+#: reference_coverage.xml:155 reference_coverage.xml:231
 #, no-c-format
 msgid "Input coverage"
 msgstr "入力カバレッジ"
 
 #. Tag: para
-#: reference_coverage.xml:164
+#: reference_coverage.xml:165
 #, no-c-format
 msgid "Simplified coverage"
 msgstr "カバレッジの単純化"
 
 #. Tag: refpurpose
-#: reference_coverage.xml:189
+#: reference_coverage.xml:190
 #, no-c-format
 msgid ""
 "Computes the union of a set of polygons forming a coverage by removing "
@@ -283,7 +289,7 @@ msgstr ""
 "計算します。"
 
 #. Tag: funcprototype
-#: reference_coverage.xml:194
+#: reference_coverage.xml:195
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_CoverageUnion</function></funcdef> "
@@ -293,7 +299,7 @@ msgstr ""
 "<paramdef><type>geometry set</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
-#: reference_coverage.xml:205
+#: reference_coverage.xml:206
 #, no-c-format
 msgid ""
 "An aggregate function which unions a set of polygons forming a polygonal "
@@ -308,7 +314,7 @@ msgstr ""
 "構造を使用します。"
 
 #. Tag: para
-#: reference_coverage.xml:211
+#: reference_coverage.xml:212
 #, no-c-format
 msgid ""
 "If the input is not a valid coverage there may be unexpected artifacts in "
@@ -321,19 +327,19 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#: reference_coverage.xml:215
+#: reference_coverage.xml:216
 #, no-c-format
 msgid "Availability: 3.4.0 - requires GEOS &gt;= 3.8.0"
 msgstr "Availability: 3.4.0 - GEOS 3.8.0以上が必要です"
 
 #. Tag: para
-#: reference_coverage.xml:240
+#: reference_coverage.xml:241
 #, no-c-format
 msgid "Union result"
 msgstr "結合結果"
 
 #. Tag: para
-#: reference_coverage.xml:254
+#: reference_coverage.xml:255
 #, no-c-format
 msgid ", <xref linkend=\"ST_Union\"/>"
 msgstr ", <xref linkend=\"ST_Union\"/>"

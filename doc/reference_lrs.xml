@@ -395,8 +395,9 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 			  unspecified values.</para>
 			</note>
 
+			<para role="enhanced" conformance="3.4.0">Enhanced: 3.4.0 - Support for geography was introduced.</para>
+			<para role="changed" conformance="2.1.0">Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Substring.</para>
 			<para role="availability" conformance="1.1.0">Availability: 1.1.0, Z and M supported added in 1.1.1</para>
-			<para role="changed" conformance="2.1.0.">Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Substring.</para>
 			<para>&Z_support;</para>
 		  </refsection>
 
@@ -459,6 +460,15 @@ CROSS JOIN LATERAL (
  B  | 2 | LINESTRING(200 100,300 100)
  B  | 3 | LINESTRING(300 100,350 100)
  C  | 0 | LINESTRING(0 200,50 200)
+</programlisting>
+
+<para>Geography implementation measures along a spheroid, geometry along a line</para>
+<programlisting>
+SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(-118.2436 34.0522, -71.0570 42.3611)'::geography, 0.333, 0.666),6) AS geog_sub
+ , ST_AsText(ST_LineSubstring('LINESTRING(-118.2436 34.0522, -71.0570 42.3611)'::geometry, 0.333, 0.666),6) AS geom_sub;
+---------------------------------------------------------------
+geog_sub | LINESTRING(-104.167064 38.854691,-87.674646 41.849854)
+geom_sub | LINESTRING(-102.530462 36.819064,-86.817324 39.585927)
 </programlisting>
 		  </refsection>
 

@@ -55,65 +55,47 @@
  * Find interpolation point p between geography points p1 and p2
  * so that the len(p1,p) == len(p1,p2)
  * f and p falls on p1,p2 segment
- *
- * @param[in] p1,p2 3D-space points we are interpolating between
- * @param[in] v1,v2 real values and z/m coordinates
- * @param[in] f Fraction
- * @param[out] p Result
  */
 static void
-interpolate_point4d_sphere(
-	const POINT3D *p1, const POINT3D *p2,
-	const POINT4D *v1, const POINT4D *v2,
-	double f, POINT4D *p)
+interpolate_point4d_spheroid(
+	const POINT4D *p1, const POINT4D *p2, POINT4D *p,
+	const SPHEROID *s, double f)
+
 {
-	/* Calculate interpolated point */
-	POINT3D mid;
-	mid.x = p1->x + ((p2->x - p1->x) * f);
-	mid.y = p1->y + ((p2->y - p1->y) * f);
-	mid.z = p1->z + ((p2->z - p1->z) * f);
-	normalize(&mid);
+	GEOGRAPHIC_POINT g, g1, g2;
+	geographic_point_init(p1->x, p1->y, &g1);
+	geographic_point_init(p2->x, p2->y, &g2);
+	int success;
+	double dist, dir;
 
-	/* Calculate z/m values */
-	GEOGRAPHIC_POINT g;
-	cart2geog(&mid, &g);
-	p->x = rad2deg(g.lon);
-	p->y = rad2deg(g.lat);
-	p->z = v1->z + ((v2->z - v1->z) * f);
-	p->m = v1->m + ((v2->m - v1->m) * f);
-}
-
-
-
-/**
- * @brief Returns the length of the point array wrt the sphere
- */
-static double
-ptarray_length_sphere(const POINTARRAY *pa)
-{
-	GEOGRAPHIC_POINT a, b;
-	POINT4D p;
-	uint32_t i;
-	double length = 0.0;
-
-	/* Return zero on non-sensical inputs */
-	if ( ! pa || pa->npoints < 2 )
-		return 0.0;
-
-	/* Initialize first point */
-	getPoint4d_p(pa, 0, &p);
-	geographic_point_init(p.x, p.y, &a);
-
-	/* Loop and sum the length for each segment */
-	for ( i = 1; i < pa->npoints; i++ )
+	/* Special sphere case */
+	if ( s == NULL || s->a == s->b )
 	{
-		getPoint4d_p(pa, i, &p);
-		geographic_point_init(p.x, p.y, &b);
-		/* Add this segment length to the total */
-		length += sphere_distance(&a, &b);
+		/* Calculate distance and direction between g1 and g2 */
+		dist = sphere_distance(&g1, &g2);
+		dir = sphere_direction(&g1, &g2, dist);
+		/* Compute interpolation point */
+		success = sphere_project(&g1, dist*f, dir, &g);
 	}
-	return length;
+	/* Spheroid case */
+	else
+	{
+		/* Calculate distance and direction between g1 and g2 */
+		dist = spheroid_distance(&g1, &g2, s);
+		dir = spheroid_direction(&g1, &g2, s);
+		/* Compute interpolation point */
+		success = spheroid_project(&g1, s, dist*f, dir, &g);
+	}
+
+	/* If success, use newly computed lat and lon,
+	* otherwise return precomputed cartesian result */
+	if (success == LW_SUCCESS)
+	{
+		p->x = rad2deg(longitude_radians_normalize(g.lon));
+		p->y = rad2deg(latitude_radians_normalize(g.lat));
+	}
 }
+
 
 /**
  * @brief Return the part of a line between two fractional locations.
@@ -121,6 +103,7 @@ ptarray_length_sphere(const POINTARRAY *pa)
 LWGEOM *
 geography_substring(
 	const LWLINE *lwline,
+	const SPHEROID *s,
 	double from, double to,
 	double tolerance)
 {
@@ -129,7 +112,6 @@ geography_substring(
 	LWGEOM *lwresult;
 	POINT4D pt;
 	POINT4D p1, p2;
-	POINT3D q1, q2;
 	GEOGRAPHIC_POINT g1, g2;
 	int nsegs, i;
 	double length, slength, tlength;
@@ -146,7 +128,7 @@ geography_substring(
 		ipa->npoints);
 
 	/* Compute total line length */
-	length = ptarray_length_sphere(ipa);
+	length = ptarray_length_spheroid(ipa, s);
 
 	/* Get 'from' and 'to' lengths */
 	from = length * from;
@@ -162,7 +144,12 @@ geography_substring(
 		geographic_point_init(p2.x, p2.y, &g2);
 
 		/* Find the length of this segment */
-		slength = sphere_distance(&g1, &g2);
+		/* Special sphere case */
+		if ( s->a == s->b )
+			slength = s->radius * sphere_distance(&g1, &g2);
+		/* Spheroid case */
+		else
+			slength = spheroid_distance(&g1, &g2, s);
 
 		/*  We are before requested start. */
 		if (state == 0) /* before */
@@ -196,9 +183,7 @@ geography_substring(
 			{
 				/* Our start is between first and second point */
 				dseg = (from - tlength) / slength;
-				geog2cart(&g1, &q1);
-				geog2cart(&g2, &q2);
-				interpolate_point4d_sphere(&q1, &q2, &p1, &p2, dseg, &pt);
+				interpolate_point4d_spheroid(&p1, &p2, &pt, s, dseg);
 				ptarray_append_point(dpa, &pt, LW_FALSE);
 				/* We're inside now, but will check 'to' point as well */
 				state = 1;
@@ -238,9 +223,7 @@ geography_substring(
 			else if (to < tlength + slength )
 			{
 				dseg = (to - tlength) / slength;
-				geog2cart(&g1, &q1);
-				geog2cart(&g2, &q2);
-				interpolate_point4d_sphere(&q1, &q2, &p1, &p2, dseg, &pt);
+				interpolate_point4d_spheroid(&p1, &p2, &pt, s, dseg);
 				ptarray_append_point(dpa, &pt, LW_FALSE);
 				break;
 			}
@@ -322,9 +305,16 @@ geography_interpolate_points(
 	geographic_point_init(p1.x, p1.y, &g1);
 	for ( i = 0; i < ipa->npoints - 1 && points_found < points_to_interpolate; i++ )
 	{
+		double segment_length_frac;
 		getPoint4d_p(ipa, i+1, &p2);
 		geographic_point_init(p2.x, p2.y, &g2);
-		double segment_length_frac = spheroid_distance(&g1, &g2, s) / length;
+
+		/* Special sphere case */
+		if ( s->a == s->b )
+			segment_length_frac = s->radius * sphere_distance(&g1, &g2) / length;
+		/* Spheroid case */
+		else
+			segment_length_frac = spheroid_distance(&g1, &g2, s) / length;
 
 		/* If our target distance is before the total length we've seen
 		* so far. create a new point some distance down the current
@@ -335,7 +325,7 @@ geography_interpolate_points(
 			geog2cart(&g1, &q1);
 			geog2cart(&g2, &q2);
 			double segment_fraction = (length_fraction - length_fraction_consumed) / segment_length_frac;
-			interpolate_point4d_sphere(&q1, &q2, &p1, &p2, segment_fraction, &pt);
+			interpolate_point4d_spheroid(&p1, &p2, &pt, s, segment_fraction);
 			ptarray_set_point4d(opa, points_found++, &pt);
 			length_fraction += length_fraction_increment;
 		}

@@ -51,9 +51,9 @@ html_builddir=$(abs_builddir)/html
 images_builddir=$(html_builddir)/images
 
 ifneq (,$(findstring dev,$(POSTGIS_MICRO_VERSION)))
-  POSTGIS_DOWNLOAD_URL=http://postgis.net/stuff
+  POSTGIS_DOWNLOAD_URL=https://postgis.net/stuff
 else
-  POSTGIS_DOWNLOAD_URL=http://download.osgeo.org/postgis/source
+  POSTGIS_DOWNLOAD_URL=https://download.osgeo.org/postgis/source
 endif
 
 INSTALL=@INSTALL@
@@ -493,7 +493,7 @@ endif
 comments-uninstall:
 	$(MAKE) -f Makefile.comments uninstall
 
-man-install: man/shp2pgsql.1 man/pgsql2shp.1 man/pgtopo_export.1 man/pgtopo_import.1 man/postgis.1
+man-install: man/shp2pgsql.1 man/pgsql2shp.1 man/pgtopo_export.1 man/pgtopo_import.1 man/postgis.1 man/postgis_restore.1
 	mkdir -p $(DESTDIR)$(mandir)/man1
 	for f in $^; do \
 		$(INSTALL_DATA) $$f $(DESTDIR)$(mandir)/man1/`basename $$f`; \
@@ -505,6 +505,7 @@ man-uninstall:
 	rm -f $(DESTDIR)$(mandir)/man1/pgtopo_export.1
 	rm -f $(DESTDIR)$(mandir)/man1/pgtopo_import.1
 	rm -f $(DESTDIR)$(mandir)/man1/postgis.1
+	rm -f $(DESTDIR)$(mandir)/man1/postgis_restore.1
 
 html-install: $(html_builddir)/postgis$(DOCSUFFIX).html
 	mkdir -p $(DESTDIR)$(htmldir)

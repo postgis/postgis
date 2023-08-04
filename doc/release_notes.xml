@@ -3,8 +3,8 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
         <sect1>
-            <title>PostGIS 3.4.0beta1</title>
-            <para>2023/07/14</para>
+            <title>PostGIS 3.4.0beta2</title>
+            <para>2023/07/29</para>
             <para>This version requires PostgreSQL 12 or higher, GEOS 3.6 or higher, and Proj 6.1+.
             To take advantage of all features, GEOS 3.12+ is needed.
             To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.</para>
@@ -32,6 +32,7 @@
                 <para><ulink url="https://trac.osgeo.org/postgis/ticket/5373">5373</ulink>ST_LargestEmptyCircle, exposes extra semantics on circle finding. Geos 3.9+ required(Martin Davis)</para>
                 <para><ulink url="https://trac.osgeo.org/postgis/ticket/5267">5267</ulink>, ST_Project signature for geometry, and two-point signature (Paul Ramsey)</para>
                 <para><ulink url="https://trac.osgeo.org/postgis/ticket/5267">5267</ulink>, ST_LineExtend for extending linestrings (Paul Ramsey)</para>
+                <para>New coverage functions ST_CoverageInvalidEdges, ST_CoverageSimplify, ST_CoverageUnion (Paul Ramsey)</para>
             </simplesect>
 
             <simplesect>
@@ -51,7 +52,7 @@
                 <para>ST_Project signature for geometry, and two-point signature (Paul Ramsey)</para>
                 <para><ulink url="https://trac.osgeo.org/postgis/ticket/4913">4913</ulink>, ST_AsSVG support for curve types CircularString, CompoundCurve, MultiCurve,
                         and MultiSurface (Regina Obe)</para>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5266">5266</ulink>, ST_ClosestPoint, ST_ShortestLine support for geography type (MobilityDB Esteban Zimanyi, Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5266">5266</ulink>, ST_ClosestPoint, ST_ShortestLine, ST_LineSubString support for geography type (MobilityDB Esteban Zimanyi, Maxime Schoemans, Paul Ramsey)</para>
             </simplesect>
 
             <simplesect>
@@ -61,6 +62,8 @@
                     now output more information about proj network configuration
                     and data paths. GEOS compile-time version
                     also shown if different from run-time (Paul Ramsey, Sandro Santilli)</para>
+                <para><ulink url="https://github.com/postgis/postgis/pull/5447">5447</ulink>, postgis_restore.pl renamed to postgis_restore
+           (Regina Obe)</para>
             </simplesect>
     </sect1>
 

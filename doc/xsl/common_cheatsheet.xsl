@@ -9,7 +9,7 @@
 <xsl:variable name='sqlmm_conformance_tag' select='"sqlmm"' />
 <xsl:variable name='Z_conformance_tag' select='"3d"' />
 <xsl:variable name='geography_tag' select='"geography_support"' />
-
+<xsl:variable name='curve_conformance_tag' select='"curve"' />
 <xsl:variable name='include_examples'>false</xsl:variable>
 <xsl:variable name='output_purpose'>true</xsl:variable>
 <xsl:variable name='linkstub'>https://postgis.net/docs/manual-<xsl:value-of select="$postgis_version" />/<xsl:value-of select="$postgis_language" /></xsl:variable>
@@ -117,6 +117,15 @@
 		</xsl:if>
 		<xsl:if test="$ref//para[@role=$geos_tag and starts-with(./@conformance, '3.9')]">
 			&nbsp;<sup>g3.9</sup>
+		</xsl:if>
+		<xsl:if test="$ref//para[@role=$geos_tag and starts-with(./@conformance, '3.10')]">
+			&nbsp;<sup>g3.10</sup>
+		</xsl:if>
+		<xsl:if test="$ref//para[@role=$geos_tag and starts-with(./@conformance, '3.11')]">
+			&nbsp;<sup>g3.11</sup>
+		</xsl:if>
+		<xsl:if test="$ref//para[@role=$geos_tag and starts-with(./@conformance, '3.12')]">
+			&nbsp;<sup>g3.12</sup>
 		</xsl:if>
 		<xsl:if test="$ref/descendant::*[@conformance=$Z_conformance_tag]">
 			&nbsp;<sup>3d</sup>

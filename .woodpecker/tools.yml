@@ -1,4 +1,4 @@
-pipeline:
+steps:
   build:
     image: docker.osgeo.org/postgis/build-test:trisquel3
     pull: true

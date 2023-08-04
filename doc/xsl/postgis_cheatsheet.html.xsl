@@ -138,7 +138,7 @@ code {font-size: 8pt}
 				<xsl:value-of select="$cheatsheets_config/para[@role='window_function']" />
 					<sup>W</sup> &nbsp;
 				<xsl:value-of select="$cheatsheets_config/para[@role='requires_geos_3.9_or_higher']" />
-					<sup>g3.9</sup> &nbsp;
+					<sup>g3.9</sup>&nbsp;<sup>g3.11</sup>&nbsp;<sup>g3.12</sup>
 				<xsl:value-of select="$cheatsheets_config/para[@role='z_support']" />
 					<sup>3d</sup> &nbsp;
 				SQL-MM<sup>mm</sup> &nbsp;

@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-15 12:17+0000\n"
+"POT-Creation-Date: 2023-07-29 10:16+0000\n"
 "PO-Revision-Date: 2023-07-03 15:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -276,12 +276,8 @@ msgid ""
 "PostgreSQL &min_postgres_version; - &max_postgres_version;. A complete "
 "installation of PostgreSQL (including server headers) is required. "
 "PostgreSQL is available from <ulink url=\"https://www.postgresql.org\"> "
-"http://www.postgresql.org </ulink> ."
+"https://www.postgresql.org </ulink> ."
 msgstr ""
-"PostgreSQL &min_postgres_version; - &max_postgres_version;. Une installation "
-"complète de PostgreSQL est nécessaire (incluant les entêtes serveur). "
-"PostgreSQL est disponible depuis <ulink url=\"https://www.postgresql.org\"> "
-"http://www.postgresql.org </ulink> ."
 
 #. Tag: para
 #: installation.xml:140
@@ -344,15 +340,11 @@ msgstr ""
 #: installation.xml:176
 #, no-c-format
 msgid ""
-"GEOS geometry library, version 3.6 or greater, but GEOS 3.11+ is required to "
+"GEOS geometry library, version 3.6 or greater, but GEOS 3.12+ is required to "
 "take full advantage of all the new functions and features. GEOS is available "
 "for download from <ulink url=\"https://libgeos.org/\"> https://libgeos.org </"
 "ulink>."
 msgstr ""
-"GEOS, bibliothèque sur les géométries, version 3.6 ou supérieur, mais GEOS "
-"3.11+ est nécessaire pour pleinement utiliser toutes les nouvelles "
-"fonctionnalités. GEOS est disponible au téléchargement depuis <ulink "
-"url=\"https://libgeos.org/\"> https://libgeos.org </ulink>."
 
 #. Tag: para
 #: installation.xml:184
