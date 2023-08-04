@@ -48,6 +48,7 @@ LWGEOM_to_USD(PG_FUNCTION_ARGS)
 	char *root_name_cstr = NULL;
 	text *geom_name = NULL;
 	char *geom_name_cstr = NULL;
+	float width = 1.0f;
 	struct usd_write_context *ctx = NULL;
 	size_t size = 0;
 	void *data = NULL;
@@ -77,9 +78,16 @@ LWGEOM_to_USD(PG_FUNCTION_ARGS)
 		geom_name_cstr = USD_GEOM_NAME;
 	}
 
+	width = PG_GETARG_FLOAT4(4);
+	if (width < USD_WIDTH_MIN || width > USD_WIDTH_MAX)
+	{
+		elog(ERROR, "LWGEOM_to_USD: Bad width %f", width);
+		PG_RETURN_NULL();
+	}
+
 	postgis_initialize_cache();
 
-	ctx = usd_write_create(format, root_name_cstr, geom_name_cstr);
+	ctx = usd_write_create(format, root_name_cstr, geom_name_cstr, width);
 	usd_write_convert(ctx, geom);
 	usd_write_save(ctx);
 	usd_write_data(ctx, &size, &data);
