@@ -91,7 +91,7 @@ DefineGeom(pxr::UsdStageRefPtr stage, const pxr::SdfPath &path, int srid, const 
 }
 
 static void
-ReadPointArray(pxr::VtVec3fArray &points, pxr::VtVec4dArray &xyzm_points, const POINTARRAY *pa)
+ReadPointArray(pxr::VtVec3fArray &points, pxr::VtVec4dArray &xyzm, const POINTARRAY *pa)
 {
 	for (int i = 0; i < pa->npoints; i++)
 	{
@@ -102,7 +102,7 @@ ReadPointArray(pxr::VtVec3fArray &points, pxr::VtVec4dArray &xyzm_points, const 
 		points.push_back(point);
 
 		pxr::GfVec4d xyzm_point(pt.x, pt.y, pt.z, pt.m);
-		xyzm_points.push_back(xyzm_point);
+		xyzm.push_back(xyzm_point);
 	}
 }
 
@@ -114,15 +114,20 @@ Writer::WritePoint(const LWPOINT *p)
 	    m_stage, prim_path, p->srid, lwtype_name(p->type), FLAGS_GET_Z(p->flags), FLAGS_GET_M(p->flags));
 	auto prim = geometry.GetPrim();
 
+	/* set constant width */
+	auto widths_attr = geometry.CreateWidthsAttr();
+	widths_attr.Set(pxr::VtFloatArray(1, m_width));
+	geometry.SetWidthsInterpolation(pxr::UsdGeomTokens->constant);
+
 	pxr::VtVec3fArray points;
-	pxr::VtVec4dArray xyzm_points;
+	pxr::VtVec4dArray xyzm;
 	POINTARRAY *pa = p->point;
-	ReadPointArray(points, xyzm_points, pa);
+	ReadPointArray(points, xyzm, pa);
 
 	auto points_attr = geometry.CreatePointsAttr();
 	points_attr.Set(points);
 
-	SetCustomAttribute(prim, pxr::TfToken(TOKEN_POSTGIS_POINTS), pxr::SdfValueTypeNames->Double4Array, xyzm_points);
+	SetCustomAttribute(prim, pxr::TfToken(TOKEN_POSTGIS_POINTS), pxr::SdfValueTypeNames->Double4Array, xyzm);
 }
 
 void
@@ -133,19 +138,24 @@ Writer::WriteMultiPoint(const LWMPOINT *mp)
 	    m_stage, prim_path, mp->srid, lwtype_name(mp->type), FLAGS_GET_Z(mp->flags), FLAGS_GET_M(mp->flags));
 	auto prim = geometry.GetPrim();
 
+	/* set constant width */
+	auto widths_attr = geometry.CreateWidthsAttr();
+	widths_attr.Set(pxr::VtFloatArray(1, m_width));
+	geometry.SetWidthsInterpolation(pxr::UsdGeomTokens->constant);
+
 	pxr::VtVec3fArray points;
-	pxr::VtVec4dArray xyzm_points;
+	pxr::VtVec4dArray xyzm;
 	for (int g = 0; g < mp->ngeoms; g++)
 	{
 		LWPOINT *p = mp->geoms[g];
 		POINTARRAY *pa = p->point;
-		ReadPointArray(points, xyzm_points, pa);
+		ReadPointArray(points, xyzm, pa);
 	}
 
 	auto points_attr = geometry.CreatePointsAttr();
 	points_attr.Set(points);
 
-	SetCustomAttribute(prim, pxr::TfToken(TOKEN_POSTGIS_POINTS), pxr::SdfValueTypeNames->Double4Array, xyzm_points);
+	SetCustomAttribute(prim, pxr::TfToken(TOKEN_POSTGIS_POINTS), pxr::SdfValueTypeNames->Double4Array, xyzm);
 }
 
 void
@@ -160,10 +170,15 @@ Writer::WriteLine(const LWLINE *l)
 	auto type_attr = geometry.CreateTypeAttr();
 	type_attr.Set(pxr::UsdGeomTokens->linear);
 
+	/* set constant width */
+	auto widths_attr = geometry.CreateWidthsAttr();
+	widths_attr.Set(pxr::VtFloatArray(1, m_width));
+	geometry.SetWidthsInterpolation(pxr::UsdGeomTokens->constant);
+
 	pxr::VtVec3fArray points;
-	pxr::VtVec4dArray xyzm_points;
+	pxr::VtVec4dArray xyzm;
 	POINTARRAY *pa = l->points;
-	ReadPointArray(points, xyzm_points, pa);
+	ReadPointArray(points, xyzm, pa);
 
 	auto points_attr = geometry.CreatePointsAttr();
 	points_attr.Set(points);
@@ -172,7 +187,7 @@ Writer::WriteLine(const LWLINE *l)
 	pxr::VtIntArray cvc{static_cast<int>(pa->npoints)};
 	cvc_attr.Set(cvc);
 
-	SetCustomAttribute(prim, pxr::TfToken(TOKEN_POSTGIS_POINTS), pxr::SdfValueTypeNames->Double4Array, xyzm_points);
+	SetCustomAttribute(prim, pxr::TfToken(TOKEN_POSTGIS_POINTS), pxr::SdfValueTypeNames->Double4Array, xyzm);
 }
 
 void
@@ -183,19 +198,23 @@ Writer::WriteMultiLine(const LWMLINE *ml)
 	    m_stage, prim_path, ml->srid, lwtype_name(ml->type), FLAGS_GET_Z(ml->flags), FLAGS_GET_M(ml->flags));
 	auto prim = geometry.GetPrim();
 
+	/* set type of curve to be linear */
 	auto type_attr = geometry.CreateTypeAttr();
 	type_attr.Set(pxr::UsdGeomTokens->linear);
 
+	/* set constant width */
+	auto widths_attr = geometry.CreateWidthsAttr();
+	widths_attr.Set(pxr::VtFloatArray(1, m_width));
+	geometry.SetWidthsInterpolation(pxr::UsdGeomTokens->constant);
+
 	pxr::VtVec3fArray points;
-	pxr::VtVec4dArray xyzm_points;
-
+	pxr::VtVec4dArray xyzm;
 	pxr::VtIntArray cvc;
-
 	for (int g = 0; g < ml->ngeoms; g++)
 	{
 		LWLINE *l = ml->geoms[g];
 		POINTARRAY *pa = l->points;
-		ReadPointArray(points, xyzm_points, pa);
+		ReadPointArray(points, xyzm, pa);
 		cvc.push_back(pa->npoints);
 	}
 
@@ -205,7 +224,7 @@ Writer::WriteMultiLine(const LWMLINE *ml)
 	auto cvc_attr = geometry.CreateCurveVertexCountsAttr();
 	cvc_attr.Set(cvc);
 
-	SetCustomAttribute(prim, pxr::TfToken(TOKEN_POSTGIS_POINTS), pxr::SdfValueTypeNames->Double4Array, xyzm_points);
+	SetCustomAttribute(prim, pxr::TfToken(TOKEN_POSTGIS_POINTS), pxr::SdfValueTypeNames->Double4Array, xyzm);
 }
 
 void
@@ -219,14 +238,14 @@ Writer::WritePolygon(const LWPOLY *p)
 	pxr::VtIntArray fvi;
 	pxr::VtIntArray fvc;
 	pxr::VtVec3fArray points;
-	pxr::VtVec4dArray xyzm_points;
+	pxr::VtVec4dArray xyzm;
 
 	POINTARRAY *boundary_pa = p->rings[0];
-	ReadPointArray(points, xyzm_points, boundary_pa);
+	ReadPointArray(points, xyzm, boundary_pa);
 
 	/* remove duplicated last point of polygon */
 	points.pop_back();
-	xyzm_points.pop_back();
+	xyzm.pop_back();
 	fvc.push_back(boundary_pa->npoints - 1);
 
 	auto fvi_attr = geometry.GetFaceVertexIndicesAttr();
@@ -240,7 +259,7 @@ Writer::WritePolygon(const LWPOLY *p)
 	auto points_attr = geometry.CreatePointsAttr();
 	points_attr.Set(points);
 
-	SetCustomAttribute(prim, pxr::TfToken(TOKEN_POSTGIS_POINTS), pxr::SdfValueTypeNames->Double4Array, xyzm_points);
+	SetCustomAttribute(prim, pxr::TfToken(TOKEN_POSTGIS_POINTS), pxr::SdfValueTypeNames->Double4Array, xyzm);
 }
 
 void
@@ -264,10 +283,10 @@ Writer::WriteTriangle(const LWTRIANGLE *t)
 	pxr::VtIntArray fvi;
 	pxr::VtIntArray fvc;
 	pxr::VtVec3fArray points;
-	pxr::VtVec4dArray xyzm_points;
+	pxr::VtVec4dArray xyzm;
 
 	POINTARRAY *pa = t->points;
-	ReadPointArray(points, xyzm_points, pa);
+	ReadPointArray(points, xyzm, pa);
 
 	auto fvi_attr = geometry.GetFaceVertexIndicesAttr();
 	fvi_attr.Set(fvi);
@@ -278,7 +297,7 @@ Writer::WriteTriangle(const LWTRIANGLE *t)
 	auto points_attr = geometry.CreatePointsAttr();
 	points_attr.Set(points);
 
-	SetCustomAttribute(prim, pxr::TfToken(TOKEN_POSTGIS_POINTS), pxr::SdfValueTypeNames->Double4Array, xyzm_points);
+	SetCustomAttribute(prim, pxr::TfToken(TOKEN_POSTGIS_POINTS), pxr::SdfValueTypeNames->Double4Array, xyzm);
 }
 
 void
@@ -292,7 +311,7 @@ Writer::WritePolyhedralSurface(const LWPSURFACE *ps)
 	pxr::VtIntArray fvi;
 	pxr::VtIntArray fvc;
 	pxr::VtVec3fArray points;
-	pxr::VtVec4dArray xyzm_points;
+	pxr::VtVec4dArray xyzm;
 
 	for (int f = 0; f < ps->ngeoms; f++)
 	{
@@ -301,7 +320,7 @@ Writer::WritePolyhedralSurface(const LWPSURFACE *ps)
 		{
 			POINTARRAY *pa = poly->rings[i];
 			fvc.push_back(pa->npoints - 1);
-			ReadPointArray(points, xyzm_points, pa);
+			ReadPointArray(points, xyzm, pa);
 			points.pop_back();
 		}
 	}
@@ -318,7 +337,7 @@ Writer::WritePolyhedralSurface(const LWPSURFACE *ps)
 	auto points_attr = geometry.CreatePointsAttr();
 	points_attr.Set(points);
 
-	SetCustomAttribute(prim, pxr::TfToken(TOKEN_POSTGIS_POINTS), pxr::SdfValueTypeNames->Double4Array, xyzm_points);
+	SetCustomAttribute(prim, pxr::TfToken(TOKEN_POSTGIS_POINTS), pxr::SdfValueTypeNames->Double4Array, xyzm);
 }
 
 void
@@ -359,8 +378,8 @@ Writer::WriteCollection(const LWCOLLECTION *coll)
 	}
 }
 
-Writer::Writer(const std::string &root_name, const std::string &geom_name)
-    : m_root_name(root_name), m_geom_name(geom_name)
+Writer::Writer(const std::string &root_name, const std::string &geom_name, float width)
+    : m_root_name(root_name), m_geom_name(geom_name), m_width(width)
 {
 	m_stage = pxr::UsdStage::CreateInMemory();
 }

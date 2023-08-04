@@ -44,6 +44,7 @@ class Writer {
 	private:
 		std::string m_root_name;
 		std::string m_geom_name;
+		float m_width;
 
 		void WritePoint(const LWPOINT *p);
 		void WriteLine(const LWLINE* l);
@@ -59,7 +60,7 @@ class Writer {
 		void WritePolyhedralSurface(const LWPSURFACE *ps);
 
 	public:
-		Writer(const std::string &root_name, const std::string &geom_name);
+		Writer(const std::string &root_name, const std::string &geom_name, float width);
 		~Writer();
 
 		void Write(LWGEOM *geom);

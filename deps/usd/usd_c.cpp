@@ -49,8 +49,11 @@ create_unique_temporary_path(const char *name)
 }
 
 struct usd_write_context {
-	usd_write_context(usd_format format, const std::string &root_name, const std::string &geom_name)
-	    : m_format(format), m_writer(root_name, geom_name), m_size(0)
+	usd_write_context(usd_format format,
+			  const std::string &root_name,
+			  const std::string &geom_name,
+			  float width)
+	    : m_format(format), m_writer(root_name, geom_name, width), m_size(0)
 	{}
 
 	usd_format m_format;
@@ -62,9 +65,9 @@ struct usd_write_context {
 };
 
 usd_write_context *
-usd_write_create(usd_format format, const char *root_name, const char *geom_name)
+usd_write_create(usd_format format, const char *root_name, const char *geom_name, float width)
 {
-	usd_write_context *ctx = new usd_write_context(format, root_name, geom_name);
+	usd_write_context *ctx = new usd_write_context(format, root_name, geom_name, width);
 	return ctx;
 }
 

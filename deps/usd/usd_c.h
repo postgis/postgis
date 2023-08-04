@@ -41,9 +41,12 @@ typedef enum usd_format
 #define USD_ROOT_NAME "World"
 #define USD_GEOM_NAME "_Geoemtry"
 
+#define USD_WIDTH_MIN 1e-6f
+#define USD_WIDTH_MAX 1e6f
+
 struct usd_write_context;
 
-struct usd_write_context *usd_write_create(usd_format format, const char *root_name, const char *geom_name);
+struct usd_write_context *usd_write_create(usd_format format, const char *root_name, const char *geom_name, float points_curves_widths);
 
 void usd_write_destroy(struct usd_write_context *ctx);
 
