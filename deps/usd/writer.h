@@ -46,17 +46,17 @@ class Writer {
 		std::string m_geom_name;
 
 		void WritePoint(const LWPOINT *p);
-		void WriteMultiPoint(const LWMPOINT *mp);
-		void WriteLineString(const LWLINE* l);
-		void WriteMultiLineString(const LWMLINE* ml);
+		void WriteLine(const LWLINE* l);
 		void WritePolygon(const LWPOLY *p);
+		void WriteMultiPoint(const LWMPOINT *mp);
+		void WriteMultiLine(const LWMLINE* ml);
 		void WriteMultiPolygon(const LWMPOLY *mp);
+		void WriteCollection(const LWCOLLECTION *coll);
+		void WriteCircularString(const LWCIRCSTRING *cs);
+		void WriteCompound(const LWCOMPOUND *c);
+		void WriteCurvePoly(const LWCURVEPOLY *cp);
 		void WriteTriangle(const LWTRIANGLE *t);
 		void WritePolyhedralSurface(const LWPSURFACE *ps);
-		void WriteCircularString(const LWCIRCSTRING *cs);
-		void WriteCurvePoly(const LWCURVEPOLY *cp);
-		void WriteCompound(const LWCOMPOUND *c);
-		void WriteCollection(const LWCOLLECTION *coll);
 
 	public:
 		Writer(const std::string &root_name, const std::string &geom_name);

@@ -149,7 +149,7 @@ Writer::WriteMultiPoint(const LWMPOINT *mp)
 }
 
 void
-Writer::WriteLineString(const LWLINE *l)
+Writer::WriteLine(const LWLINE *l)
 {
 	auto prim_path = GenerateNextSdfPath(m_stage, m_root_name, m_geom_name);
 	auto geometry = DefineGeom<pxr::UsdGeomBasisCurves>(
@@ -176,7 +176,7 @@ Writer::WriteLineString(const LWLINE *l)
 }
 
 void
-Writer::WriteMultiLineString(const LWMLINE *ml)
+Writer::WriteMultiLine(const LWMLINE *ml)
 {
 	auto prim_path = GenerateNextSdfPath(m_stage, m_root_name, m_geom_name);
 	auto geometry = DefineGeom<pxr::UsdGeomBasisCurves>(
@@ -326,7 +326,7 @@ Writer::WriteCircularString(const LWCIRCSTRING *cs)
 {
 	LWGEOM *lgeom = lwcurve_linearize(
 	    lwcircstring_as_lwgeom(cs), 0.2, LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE, LW_LINEARIZE_FLAG_SYMMETRIC);
-	WriteLineString(lwgeom_as_lwline(lgeom));
+	WriteLine(lwgeom_as_lwline(lgeom));
 	lwgeom_free(lgeom);
 }
 
@@ -377,44 +377,45 @@ Writer::Write(LWGEOM *geom)
 		auto root_xform = pxr::UsdGeomXform::Define(m_stage, root_path);
 		m_stage->SetDefaultPrim(root_xform.GetPrim());
 
+		/* process LWGEOM based on type */
 		int type = geom->type;
 		switch (type)
 		{
 		case POINTTYPE:
 			WritePoint((LWPOINT *)geom);
 			break;
-		case MULTIPOINTTYPE:
-			WriteMultiPoint((LWMPOINT *)geom);
-			break;
 		case LINETYPE:
-			WriteLineString((LWLINE *)geom);
-			break;
-		case MULTILINETYPE:
-			WriteMultiLineString((LWMLINE *)geom);
+			WriteLine((LWLINE *)geom);
 			break;
 		case POLYGONTYPE:
 			WritePolygon((LWPOLY *)geom);
 			break;
+		case MULTIPOINTTYPE:
+			WriteMultiPoint((LWMPOINT *)geom);
+			break;
+		case MULTILINETYPE:
+			WriteMultiLine((LWMLINE *)geom);
+			break;
 		case MULTIPOLYGONTYPE:
 			WriteMultiPolygon((LWMPOLY *)geom);
 			break;
-		case TRIANGLETYPE:
-			WriteTriangle((LWTRIANGLE *)geom);
-			break;
-		case POLYHEDRALSURFACETYPE:
-			WritePolyhedralSurface((LWPSURFACE *)geom);
+		case COLLECTIONTYPE:
+			WriteCollection((LWCOLLECTION *)geom);
 			break;
 		case CIRCSTRINGTYPE:
 			WriteCircularString((LWCIRCSTRING *)geom);
 			break;
-		case CURVEPOLYTYPE:
-			WriteCurvePoly((LWCURVEPOLY *)geom);
-			break;
 		case COMPOUNDTYPE:
 			WriteCompound(lwgeom_as_lwcompound(geom));
 			break;
-		case COLLECTIONTYPE:
-			WriteCollection((LWCOLLECTION *)geom);
+		case CURVEPOLYTYPE:
+			WriteCurvePoly((LWCURVEPOLY *)geom);
+			break;
+		case POLYHEDRALSURFACETYPE:
+			WritePolyhedralSurface((LWPSURFACE *)geom);
+			break;
+		case TRIANGLETYPE:
+			WriteTriangle((LWTRIANGLE *)geom);
 			break;
 		default:
 			lwerror("usd: geometry type '%s' not supported", lwtype_name(type));
