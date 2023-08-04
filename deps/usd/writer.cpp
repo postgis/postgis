@@ -391,6 +391,9 @@ Writer::Write(LWGEOM *geom)
 {
 	try
 	{
+		/* set up axis to be Z instead of Y */
+		m_stage->SetMetadata(pxr::UsdGeomTokens->upAxis, pxr::UsdGeomTokens->z);
+
 		/* set USD default prim */
 		pxr::SdfPath root_path(pxr::TfStringPrintf("/%s", m_root_name.c_str()));
 		auto root_xform = pxr::UsdGeomXform::Define(m_stage, root_path);
