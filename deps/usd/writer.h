@@ -54,6 +54,7 @@ class Writer {
 		void WriteTriangle(const LWTRIANGLE *t);
 		void WritePolyhedralSurface(const LWPSURFACE *ps);
 		void WriteCircularString(const LWCIRCSTRING *cs);
+		void WriteCurvePoly(const LWCURVEPOLY *cp);
 		void WriteCompound(const LWCOMPOUND *c);
 		void WriteCollection(const LWCOLLECTION *coll);
 

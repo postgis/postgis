@@ -324,28 +324,19 @@ Writer::WritePolyhedralSurface(const LWPSURFACE *ps)
 void
 Writer::WriteCircularString(const LWCIRCSTRING *cs)
 {
-	auto prim_path = GenerateNextSdfPath(m_stage, m_root_name, m_geom_name);
-	auto geometry = DefineGeom<pxr::UsdGeomBasisCurves>(
-	    m_stage, prim_path, cs->srid, lwtype_name(cs->type), FLAGS_GET_Z(cs->flags), FLAGS_GET_M(cs->flags));
-	auto prim = geometry.GetPrim();
+	LWGEOM *lgeom = lwcurve_linearize(
+	    lwcircstring_as_lwgeom(cs), 0.2, LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE, LW_LINEARIZE_FLAG_SYMMETRIC);
+	WriteLineString(lwgeom_as_lwline(lgeom));
+	lwgeom_free(lgeom);
+}
 
-	/* set type of curve to be linear */
-	auto type_attr = geometry.CreateTypeAttr();
-	type_attr.Set(pxr::UsdGeomTokens->linear);
-
-	pxr::VtVec3fArray points;
-	pxr::VtVec4dArray xyzm_points;
-	POINTARRAY *pa = cs->points;
-	ReadPointArray(points, xyzm_points, pa);
-
-	auto points_attr = geometry.CreatePointsAttr();
-	points_attr.Set(points);
-
-	auto cvc_attr = geometry.CreateCurveVertexCountsAttr();
-	pxr::VtIntArray cvc{static_cast<int>(pa->npoints)};
-	cvc_attr.Set(cvc);
-
-	SetCustomAttribute(prim, pxr::TfToken(TOKEN_POSTGIS_POINTS), pxr::SdfValueTypeNames->Double4Array, xyzm_points);
+void
+Writer::WriteCurvePoly(const LWCURVEPOLY *cp)
+{
+	LWGEOM *lgeom = lwcurve_linearize(
+	    lwcurvepoly_as_lwgeom(cp), 0.2, LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE, LW_LINEARIZE_FLAG_SYMMETRIC);
+	WritePolygon(lwgeom_as_lwpoly(lgeom));
+	lwgeom_free(lgeom);
 }
 
 void
@@ -415,6 +406,9 @@ Writer::Write(LWGEOM *geom)
 			break;
 		case CIRCSTRINGTYPE:
 			WriteCircularString((LWCIRCSTRING *)geom);
+			break;
+		case CURVEPOLYTYPE:
+			WriteCurvePoly((LWCURVEPOLY *)geom);
 			break;
 		case COMPOUNDTYPE:
 			WriteCompound(lwgeom_as_lwcompound(geom));
