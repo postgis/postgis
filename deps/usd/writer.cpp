@@ -322,6 +322,16 @@ Writer::WritePolyhedralSurface(const LWPSURFACE *ps)
 }
 
 void
+Writer::WriteCompound(const LWCOMPOUND *c)
+{
+	for (int i = 0; i < c->ngeoms; i++)
+	{
+		auto part = c->geoms[i];
+		Write(part);
+	}
+}
+
+void
 Writer::WriteCollection(const LWCOLLECTION *coll)
 {
 	for (int i = 0; i < coll->ngeoms; i++)
@@ -375,6 +385,9 @@ Writer::Write(LWGEOM *geom)
 			break;
 		case POLYHEDRALSURFACETYPE:
 			WritePolyhedralSurface((LWPSURFACE *)geom);
+			break;
+		case COMPOUNDTYPE:
+			WriteCompound(lwgeom_as_lwcompound(geom));
 			break;
 		case COLLECTIONTYPE:
 			WriteCollection((LWCOLLECTION *)geom);
