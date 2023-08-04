@@ -335,7 +335,7 @@ Writer::WriteCircularString(const LWCIRCSTRING *cs)
 
 	pxr::VtVec3fArray points;
 	pxr::VtVec4dArray xyzm_points;
-	POINTARRAY *pa = l->points;
+	POINTARRAY *pa = cs->points;
 	ReadPointArray(points, xyzm_points, pa);
 
 	auto points_attr = geometry.CreatePointsAttr();
