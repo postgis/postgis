@@ -78,7 +78,7 @@ LWGEOM_to_USD(PG_FUNCTION_ARGS)
 		geom_name_cstr = USD_GEOM_NAME;
 	}
 
-	width = PG_GETARG_FLOAT4(4);
+	width = PG_GETARG_FLOAT8(4);
 	if (width < USD_WIDTH_MIN || width > USD_WIDTH_MAX)
 	{
 		elog(ERROR, "LWGEOM_to_USD: Bad width %f", width);
