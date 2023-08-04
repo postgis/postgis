@@ -129,7 +129,8 @@ void
 Writer::WriteMultiPoint(const LWMPOINT *mp)
 {
 	auto prim_path = GenerateNextSdfPath(m_stage, m_root_name, m_geom_name);
-	auto geometry = pxr::UsdGeomPoints::Define(m_stage, pxr::SdfPath("_geometry"));
+	auto geometry = DefineGeom<pxr::UsdGeomPoints>(
+	    m_stage, prim_path, mp->srid, lwtype_name(mp->type), FLAGS_GET_Z(mp->flags), FLAGS_GET_M(mp->flags));
 	auto prim = geometry.GetPrim();
 
 	pxr::VtVec3fArray points;
