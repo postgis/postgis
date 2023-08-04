@@ -322,6 +322,33 @@ Writer::WritePolyhedralSurface(const LWPSURFACE *ps)
 }
 
 void
+Writer::WriteCircularString(const LWCIRCSTRING *cs)
+{
+	auto prim_path = GenerateNextSdfPath(m_stage, m_root_name, m_geom_name);
+	auto geometry = DefineGeom<pxr::UsdGeomBasisCurves>(
+	    m_stage, prim_path, cs->srid, lwtype_name(cs->type), FLAGS_GET_Z(cs->flags), FLAGS_GET_M(cs->flags));
+	auto prim = geometry.GetPrim();
+
+	/* set type of curve to be linear */
+	auto type_attr = geometry.CreateTypeAttr();
+	type_attr.Set(pxr::UsdGeomTokens->linear);
+
+	pxr::VtVec3fArray points;
+	pxr::VtVec4dArray xyzm_points;
+	POINTARRAY *pa = l->points;
+	ReadPointArray(points, xyzm_points, pa);
+
+	auto points_attr = geometry.CreatePointsAttr();
+	points_attr.Set(points);
+
+	auto cvc_attr = geometry.CreateCurveVertexCountsAttr();
+	pxr::VtIntArray cvc{static_cast<int>(pa->npoints)};
+	cvc_attr.Set(cvc);
+
+	SetCustomAttribute(prim, pxr::TfToken(TOKEN_POSTGIS_POINTS), pxr::SdfValueTypeNames->Double4Array, xyzm_points);
+}
+
+void
 Writer::WriteCompound(const LWCOMPOUND *c)
 {
 	for (int i = 0; i < c->ngeoms; i++)
@@ -385,6 +412,9 @@ Writer::Write(LWGEOM *geom)
 			break;
 		case POLYHEDRALSURFACETYPE:
 			WritePolyhedralSurface((LWPSURFACE *)geom);
+			break;
+		case CIRCSTRINGTYPE:
+			WriteCircularString((LWCIRCSTRING *)geom);
 			break;
 		case COMPOUNDTYPE:
 			WriteCompound(lwgeom_as_lwcompound(geom));
