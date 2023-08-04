@@ -56,8 +56,9 @@ class Writer {
 		void WriteCircularString(const LWCIRCSTRING *cs);
 		void WriteCompound(const LWCOMPOUND *c);
 		void WriteCurvePoly(const LWCURVEPOLY *cp);
-		void WriteTriangle(const LWTRIANGLE *t);
 		void WritePolyhedralSurface(const LWPSURFACE *ps);
+		void WriteTriangle(const LWTRIANGLE *t);
+		void WriteTin(const LWTIN *t);
 
 	public:
 		Writer(const std::string &root_name, const std::string &geom_name, float width);

@@ -301,6 +301,43 @@ Writer::WriteTriangle(const LWTRIANGLE *t)
 }
 
 void
+Writer::WriteTin(const LWTIN *t)
+{
+	auto prim_path = GenerateNextSdfPath(m_stage, m_root_name, m_geom_name);
+	int has_z = FLAGS_GET_Z(t->flags);
+	int has_m = FLAGS_GET_M(t->flags);
+	auto geometry = DefineGeom<pxr::UsdGeomMesh>(m_stage, prim_path, t->srid, lwtype_name(t->type), has_z, has_m);
+	auto prim = geometry.GetPrim();
+
+	pxr::VtIntArray fvi;
+	pxr::VtIntArray fvc;
+	pxr::VtVec3fArray points;
+	pxr::VtVec4dArray xyzm;
+
+	for (uint32_t f = 0; f < t->ngeoms; f++)
+	{
+		LWTRIANGLE *part = t->geoms[f];
+		POINTARRAY *pa = part->points;
+		ReadPointArray(points, xyzm, pa);
+		points.pop_back();
+	}
+
+	fvi.resize(points.size());
+	std::iota(std::begin(fvi), std::end(fvi), 0);
+	auto fvi_attr = geometry.GetFaceVertexIndicesAttr();
+	fvi_attr.Set(fvi);
+
+	fvc = pxr::VtIntArray(points.size() / 3, 3);
+	auto fvc_attr = geometry.CreateFaceVertexCountsAttr();
+	fvc_attr.Set(fvc);
+
+	auto points_attr = geometry.CreatePointsAttr();
+	points_attr.Set(points);
+
+	SetCustomAttribute(prim, pxr::TfToken(TOKEN_POSTGIS_POINTS), pxr::SdfValueTypeNames->Double4Array, xyzm);
+}
+
+void
 Writer::WritePolyhedralSurface(const LWPSURFACE *ps)
 {
 	auto prim_path = GenerateNextSdfPath(m_stage, m_root_name, m_geom_name);
@@ -438,6 +475,9 @@ Writer::Write(LWGEOM *geom)
 			break;
 		case TRIANGLETYPE:
 			WriteTriangle((LWTRIANGLE *)geom);
+			break;
+		case TINTYPE:
+			WriteTin(lwgeom_as_lwtin(geom));
 			break;
 		default:
 			lwerror("usd: geometry type '%s' not supported", lwtype_name(type));
