@@ -1,5 +1,11 @@
 PostGIS 3.4.0rc1
-2023/xx/xx
+2023/08/05
+
+Changes since 3.4.0beta2 release
+
+ - #5442, [postgis_tiger_geocoder,postgis_topology]
+          Database search_path does not do
+          what it intends to do (Jelte Fennema)
 
 PostGIS 3.4.0beta2
 2023/07/29
