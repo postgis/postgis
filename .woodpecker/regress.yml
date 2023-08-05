@@ -1,7 +1,6 @@
 matrix:
   PG_VERSION:
     - 15
-    - 14
     - 12
 
 steps:
