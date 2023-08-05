@@ -91,4 +91,5 @@ UPGRADEABLE_VERSIONS = \
 	3.3.3 \
 	3.3.4 \
 	3.4.0beta1 \
-	3.4.0beta2
+	3.4.0beta2 \
+	3.4.0rc1
