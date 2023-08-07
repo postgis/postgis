@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: ming 64gcc81\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-08-03 01:03+0000\n"
-"PO-Revision-Date: 2023-07-14 10:08+0000\n"
+"PO-Revision-Date: 2023-08-07 10:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_coverage/ja/>\n"
@@ -153,13 +153,13 @@ msgstr ""
 #: reference_coverage.xml:66 reference_coverage.xml:139
 #, no-c-format
 msgid "Availability: 3.4.0"
-msgstr ""
+msgstr "Availability: 3.4.0"
 
 #. Tag: para
 #: reference_coverage.xml:67 reference_coverage.xml:140
 #, no-c-format
 msgid "Requires GEOS &gt;= 3.12.0"
-msgstr ""
+msgstr "GEOS 3.12.0以上が必要です"
 
 #. Tag: title
 #: reference_coverage.xml:71 reference_coverage.xml:144
