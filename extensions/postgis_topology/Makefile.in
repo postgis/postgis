@@ -108,6 +108,7 @@ PG_CONFIG := @PG_CONFIG@
 PGXS := @PGXS@
 include $(PGXS)
 PERL=@PERL@
+MKDIR_P = @MKDIR_P@
 
 VPATH = @srcdir@
 
