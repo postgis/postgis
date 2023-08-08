@@ -1407,7 +1407,7 @@ cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
 {
   LWT_ISO_EDGE *edges;
   int spi_result;
-  int64_t elems_requested = limit;
+  int64 elems_requested = limit;
   char *hexewkb;
   MemoryContext oldcontext = CurrentMemoryContext;
   StringInfoData sqldata;
@@ -1510,7 +1510,7 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
   char *hexewkb;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
-  int64_t elems_requested = limit;
+  int64 elems_requested = limit;
   uint64_t i;
 
   initStringInfo(sql);
@@ -1645,8 +1645,8 @@ cb_insertNodes(const LWT_BE_TOPOLOGY *topo, LWT_ISO_NODE *nodes, uint64_t numele
   {
 	  cberror(topo->be_data,
 		  "processed " UINT64_FORMAT " rows, expected " UINT64_FORMAT,
-		  (uint64_t)SPI_processed,
-		  numelems);
+		  (uint64)SPI_processed,
+		  (uint64)numelems);
 	  return 0;
   }
 
@@ -1705,8 +1705,8 @@ cb_insertEdges(const LWT_BE_TOPOLOGY *topo, LWT_ISO_EDGE *edges, uint64_t numele
   {
 	  cberror(topo->be_data,
 		  "processed " UINT64_FORMAT " rows, expected " UINT64_FORMAT,
-		  (uint64_t)SPI_processed,
-		  numelems);
+		  (uint64)SPI_processed,
+		  (uint64)numelems);
 	  return -1;
   }
 
@@ -1766,8 +1766,8 @@ cb_insertFaces(const LWT_BE_TOPOLOGY *topo, LWT_ISO_FACE *faces, uint64_t numele
   {
 	  cberror(topo->be_data,
 		  "processed " UINT64_FORMAT " rows, expected " UINT64_FORMAT,
-		  (uint64_t)SPI_processed,
-		  numelems);
+		  (uint64)SPI_processed,
+		  (uint64)numelems);
 	  return -1;
   }
 
@@ -2154,7 +2154,7 @@ cb_getNextEdgeId( const LWT_BE_TOPOLOGY* topo )
 
   if ( SPI_processed != 1 )
   {
-	  cberror(topo->be_data, "processed " UINT64_FORMAT " rows, expected 1", (uint64_t)SPI_processed);
+	  cberror(topo->be_data, "processed " UINT64_FORMAT " rows, expected 1", (uint64)SPI_processed);
 	  return -1;
   }
 
