@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-08-03 00:19+0000\n"
-"PO-Revision-Date: 2023-05-15 11:08+0000\n"
+"PO-Revision-Date: 2023-08-11 01:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_clusterxml/ja/>\n"
@@ -77,12 +77,19 @@ msgid ""
 "linkend=\"ST_Distance\">distance</link> (<varname>eps</varname>) and density "
 "(<varname>minpoints</varname>) parameters to determine each cluster."
 msgstr ""
+"2次元<ulink url=\"https://en.wikipedia.org/wiki/DBSCAN\">Density-based "
+"spatial clustering of applications with noise (DBSCAN)</ulink>アルゴリズムを"
+"使って、入力ジオメトリ毎にクラスタ番号を返すウィンドウ関数です。<xref "
+"linkend=\"ST_ClusterKMeans\""
+"/>と違い、クラスタ数の指定は不要ですが、代わりに、クラスタを決定するために、"
+"期待する<link linkend=\"ST_Distance\">距離</link>(<varname>eps</varname>)と密"
+"度(<varname>minpoints</varname>)のパラメータを使います。"
 
 #. Tag: para
 #: reference_cluster.xml:44
 #, no-c-format
 msgid "An input geometry is added to a cluster if it is either:"
-msgstr ""
+msgstr "入力ジオメトリは、次のいずれかの場合にはクラスタに追加されます:"
 
 #. Tag: para
 #: reference_cluster.xml:48
@@ -92,6 +99,10 @@ msgid ""
 "linkend=\"ST_Distance\">distance</link> of at least <varname>minpoints</"
 "varname> input geometries (including itself); or"
 msgstr ""
+"「核」ジオメトリという、入力ジオメトリ "
+"(自分を含む)のうち少なくとも<varname>minpoints</varname>個が<varname>eps</"
+"varname>で指定した<link linkend=\"ST_Distance\""
+">距離</link>の範囲内にあるもの。または"
 
 #. Tag: para
 #: reference_cluster.xml:53
@@ -100,8 +111,9 @@ msgid ""
 "A \"border\" geometry, that is within <varname>eps</varname> <link "
 "linkend=\"ST_Distance\">distance</link> of a core geometry."
 msgstr ""
-"「境界」ジオメトリは、核ジオメトリから<varname>eps</varname>で指定した<link "
-"linkend=\"ST_Distance\">距離</link>の範囲内にあるものです。"
+"「境界」ジオメトリという、核ジオメトリから<varname>eps</"
+"varname>で指定した<link linkend=\"ST_Distance\""
+">距離</link>の範囲内にあるものです。"
 
 #. Tag: para
 #: reference_cluster.xml:60
@@ -117,6 +129,14 @@ msgid ""
 "code> clause in the window definition. Ambiguous cluster assignments may "
 "differ from other DBSCAN implementations."
 msgstr ""
+"境界ジオメトリは、複数のクラスタの核ジオメトリの<varname>eps</varname>距離内"
+"に存在する場合があることに注意して下さい。どちらに割り当てても正しいので、境"
+"界ジオメトリは有効なクラスタの一つに任意に割り当てられます。この状況では、正"
+"しいクラスタが<varname>minpoints</varname>ジオメトリより少ないジオメトリで生"
+"成される可能性があります。境界ジオメトリの割当の決定性を確実にする "
+"(その結果、ST_ClusterDBSCANの呼び出しで同じ結果が生成される)には、"
+"ウィンドウ定義内で<code>ORDER BY</code>節を使います。あいまいなクラスタ割当は"
+"他のDBSCAN実装とは異なるかも知れません。"
 
 #. Tag: para
 #: reference_cluster.xml:70
@@ -124,7 +144,8 @@ msgstr ""
 msgid ""
 "Geometries that do not meet the criteria to join any cluster are assigned a "
 "cluster number of NULL."
-msgstr ""
+msgstr "どのクラスタとの結合の基準に合わないジオメトリは、NULLのクラスタ番号が割り当"
+"てられます。"
 
 #. Tag: para
 #: reference_cluster.xml:74 reference_cluster.xml:246
@@ -152,7 +173,7 @@ msgstr "例"
 msgid ""
 "Clustering polygon within 50 meters of each other, and requiring at least 2 "
 "polygons per cluster."
-msgstr ""
+msgstr "少なくともクラスタごとに二つ以上のポリゴンが必要な50メートル以内のクラスタ。"
 
 #. Tag: para
 #: reference_cluster.xml:92
@@ -160,7 +181,8 @@ msgstr ""
 msgid ""
 "Clusters within 50 meters with at least 2 items per cluster. Singletons have "
 "NULL for cid"
-msgstr ""
+msgstr "少なくともクラスタごとに二つ以上のポリゴンがある50メートル以内のクラスタ。一"
+"つだけならcidはNULL。"
 
 #. Tag: para
 #: reference_cluster.xml:106
@@ -168,7 +190,7 @@ msgstr ""
 msgid ""
 "A example showing combining parcels with the same cluster number into "
 "geometry collections."
-msgstr ""
+msgstr "同じクラスタ番号の区画をジオメトリコレクションに合併する例。"
 
 #. Tag: title
 #: reference_cluster.xml:113 reference_cluster.xml:158
@@ -187,6 +209,9 @@ msgid ""
 "linkend=\"ST_ClusterIntersectingWin\"/>, <xref linkend=\"ST_ClusterWithin\"/"
 ">, <xref linkend=\"ST_ClusterWithinWin\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend="
+"\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterIntersectingWin\"/>, "
+"<xref linkend=\"ST_ClusterWithin\"/>, <xref linkend=\"ST_ClusterWithinWin\"/>"
 
 #. Tag: refpurpose
 #: reference_cluster.xml:129
@@ -213,6 +238,10 @@ msgid ""
 "Each geometry in a cluster intersects at least one other geometry in the "
 "cluster, and does not intersect any geometry in other clusters."
 msgstr ""
+"入力ジオメトリから接続されたものをクラスタとし、クラスタ間は接続されていない"
+"ように分割してGEOMETRYCOLLECTIONの配列を返す集約関数です。クラスタ内の個々の"
+"ジオメトリは同一クラスタ内の他のジオメトリの少なくとも一つとインタセクトし、"
+"他のクラスタ内のいずれのジオメトリともインタセクトしません。"
 
 #. Tag: para
 #: reference_cluster.xml:150 reference_cluster.xml:336
@@ -227,6 +256,8 @@ msgid ""
 ", <xref linkend=\"ST_ClusterWithin\"/>, <xref "
 "linkend=\"ST_ClusterWithinWin\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClusterWithin\"/>, <xref linkend=\"ST_ClusterWithinWin\""
+"/>"
 
 #. Tag: refpurpose
 #: reference_cluster.xml:173
@@ -259,6 +290,10 @@ msgid ""
 "leaving the cluster. The return value is the cluster number that the "
 "geometry argument participates in, or null for null inputs."
 msgstr ""
+"インタセクトするジオメトリの接続されたクラスタを構築するウィンドウ関数です。"
+"クラスタを離れることなく、クラスタ内の全てのジオメトリを走査することができま"
+"す。返り値はジオメトリ引数が入っているクラスタの番号です。入力がNULLの場合に"
+"はNULLを返します。"
 
 #. Tag: para
 #: reference_cluster.xml:190 reference_cluster.xml:383
@@ -399,7 +434,7 @@ msgstr ""
 #: reference_cluster.xml:311
 #, no-c-format
 msgid "Aggregate function that clusters geometries by separation distance."
-msgstr ""
+msgstr "分離距離でジオメトリのクラスタリングを行う集約関数です。"
 
 #. Tag: funcprototype
 #: reference_cluster.xml:316
@@ -424,6 +459,10 @@ msgid ""
 "in the same cluster. Distances are Cartesian distances in the units of the "
 "SRID."
 msgstr ""
+"GEOMETRYCOLLECTIONの配列を返す集約関数で、個々の要素は入力ジオメトリを含むク"
+"ラスタです。クラスタリングは入力ジオメトリを、それぞれのジオメトリが、同じク"
+"ラスタ内の他のジオメトリのうち少なくとも一つとの距離が<parameter>distance</pa"
+"rameter>以内となる集合に分割します。距離はSRIDの単位を取るデカルト距離です。"
 
 #. Tag: para
 #: reference_cluster.xml:334
@@ -432,6 +471,8 @@ msgid ""
 "ST_ClusterWithin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN\"/"
 "> with <code>minpoints := 0</code>."
 msgstr ""
+"ST_ClusterWithinは<xref linkend=\"ST_ClusterDBSCAN\"/>を<code>minpoints := "
+"0</code>で実行するのと同じです。"
 
 #. Tag: para
 #: reference_cluster.xml:346
@@ -441,6 +482,8 @@ msgid ""
 "linkend=\"ST_ClusterIntersecting\"/>, <xref "
 "linkend=\"ST_ClusterIntersectingWin\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClusterDBSCAN\"/>, <xref linkend="
+"\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterIntersectingWin\"/>"
 
 #. Tag: refpurpose
 #: reference_cluster.xml:360
@@ -476,6 +519,10 @@ msgid ""
 "geometry in the same cluster. Distances are Cartesian distances in the units "
 "of the SRID."
 msgstr ""
+"入力ジオメトリ毎のクラスタ番号を返すウィンドウ関数です。クラスタリングはジオ"
+"メトリを、それぞれのジオメトリが、同じクラスタ内の他のジオメトリのうち少なく"
+"とも一つとの距離が<varname>distance</varname>以内となる集合に分割します。距離"
+"はSRIDの単位を取るデカルト距離です。"
 
 #. Tag: para
 #: reference_cluster.xml:382
@@ -484,6 +531,8 @@ msgid ""
 "ST_ClusterWithinWin is equivalent to running <xref "
 "linkend=\"ST_ClusterDBSCAN\"/> with <code>minpoints := 0</code>."
 msgstr ""
+"ST_ClusterWithinWinは<xref linkend=\"ST_ClusterDBSCAN\"/>を<code>minpoints :"
+"= 0</code>で実行するのと同じです。"
 
 #. Tag: para
 #: reference_cluster.xml:394
@@ -493,3 +542,5 @@ msgid ""
 "linkend=\"ST_ClusterIntersecting\"/>, <xref "
 "linkend=\"ST_ClusterIntersectingWin\"/>,"
 msgstr ""
+", <xref linkend=\"ST_ClusterDBSCAN\"/>, <xref linkend="
+"\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterIntersectingWin\"/>,"
