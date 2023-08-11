@@ -200,6 +200,10 @@ DROP FUNCTION IF EXISTS st_buffer(geometry, double precision); -- Does not confl
 DROP FUNCTION IF EXISTS ST_CurveToLine(geometry, integer); -- Does not conflict
 DROP FUNCTION IF EXISTS ST_CurveToLine(geometry); -- Does not conflict
 
+-- This was renamed mid-cycle in PostGIS 3.4.0 development
+-- to ST_CoverageInvalidEdges
+DROP FUNCTION IF EXISTS ST_CoverageInvalidLocations(geometry, double precision);
+
 -- geometry_columns changed parameter types so we verify if it needs to be dropped
 -- We check the catalog to see if the view (geometry_columns) has a column
 -- with name `f_table_schema` and type `character varying(256)` as it was
