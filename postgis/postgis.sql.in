@@ -398,6 +398,12 @@ CREATE OR REPLACE FUNCTION geometry_eq(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_DEFAULT;
 
+CREATE OR REPLACE FUNCTION geometry_neq(geom1 geometry, geom2 geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'lwgeom_neq'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_DEFAULT;
+
 CREATE OR REPLACE FUNCTION geometry_cmp(geom1 geometry, geom2 geometry)
 	RETURNS integer
 	AS 'MODULE_PATHNAME', 'lwgeom_cmp'
@@ -431,7 +437,14 @@ CREATE OPERATOR <= (
 -- Availability: 0.9.0
 CREATE OPERATOR = (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_eq,
-	COMMUTATOR = '=', -- we might implement a faster negator here
+	COMMUTATOR = '=', NEGATOR = '<>',
+	RESTRICT = contsel, JOIN = contjoinsel, HASHES, MERGES
+);
+
+-- Availability: 3.5.0
+CREATE OPERATOR <> (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_neq,
+	COMMUTATOR = '<>', NEGATOR = '=',
 	RESTRICT = contsel, JOIN = contjoinsel, HASHES, MERGES
 );
 
