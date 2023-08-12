@@ -36,3 +36,16 @@ steps:
       - PGVER=14 sh ci/dronie/postgis_regress.sh
     depends_on: [ autogen ]
 
+  - name: tools
+    image: *test-image
+    pull: true
+    commands:
+      - ./autogen.sh
+      - ./configure --without-pgconfig --prefix=/tmp/pgx
+      - make
+      - make check
+      - make install
+      - /tmp/pgx/bin/postgis help
+      - /tmp/pgx/bin/shp2pgsql
+      - /tmp/pgx/bin/raster2pgsql
+
