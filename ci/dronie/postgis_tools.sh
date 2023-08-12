@@ -3,6 +3,7 @@
 # Exit on first error
 set -e
 
+sh autogen.sh
 ./configure --without-pgconfig --prefix=/tmp/pgx
 make
 make check

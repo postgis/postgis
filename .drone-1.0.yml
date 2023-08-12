@@ -36,10 +36,3 @@ steps:
       - PGVER=14 sh ci/dronie/postgis_regress.sh
     depends_on: [ autogen ]
 
-  - name: tools
-    image: *test-image
-    pull: never
-    commands:
-      - sh ci/dronie/postgis_tools.sh
-    depends_on: [ autogen ]
-
