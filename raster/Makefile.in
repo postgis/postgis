@@ -23,13 +23,16 @@ CC=@CC@
 CFLAGS=-I../liblwgeom @CFLAGS@
 LDFLAGS = @LDFLAGS@
 
+with_pg = @RT_PG_LIB@
 all:
 	$(MAKE) @RT_CORE_LIB@
+ifdef with_pg
 	$(MAKE) @RT_PG_LIB@
+endif
 	$(MAKE) @RT_LOADER@
+ifdef with_pg
 	$(MAKE) @RT_POSTGIS_SQL@
-
-with_pg = @RT_PG_LIB@
+endif
 
 corelib:
 	$(MAKE) -C rt_core
