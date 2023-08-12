@@ -38,7 +38,7 @@ steps:
 
   - name: tools
     image: *test-image
-    pull: true
+    pull: never
     commands:
       - ./autogen.sh
       - ./configure --without-pgconfig --prefix=/tmp/pgx
@@ -48,4 +48,5 @@ steps:
       - /tmp/pgx/bin/postgis help
       - /tmp/pgx/bin/shp2pgsql
       - /tmp/pgx/bin/raster2pgsql
+    depends_on: [ autogen ]
 
