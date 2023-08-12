@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-08-03 00:19+0000\n"
+"POT-Creation-Date: 2023-08-12 00:40+0000\n"
 "PO-Revision-Date: 2021-11-28 22:22+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -31,13 +31,13 @@ msgstr ""
 #. Tag: title
 #: release_notes.xml:6
 #, no-c-format
-msgid "PostGIS 3.4.0beta2"
+msgid "PostGIS 3.4.0rc2"
 msgstr ""
 
 #. Tag: para
 #: release_notes.xml:7
 #, no-c-format
-msgid "2023/07/29"
+msgid "2023/08/12"
 msgstr ""
 
 #. Tag: para
@@ -270,12 +270,21 @@ msgstr ""
 #: release_notes.xml:46
 #, no-c-format
 msgid ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5447\">5447</ulink> "
+"Manual pages added for postgis and postgis_restore utilities (Sandro "
+"Santilli)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:48
+#, no-c-format
+msgid ""
 "[postgis_topology] Speed up check of topology faces without edges (Sandro "
 "Santilli)"
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:47
+#: release_notes.xml:49
 #, no-c-format
 msgid ""
 "[postgis_topology] Speed up coincident nodes check in topology validation "
@@ -283,7 +292,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:48
+#: release_notes.xml:50
 #, no-c-format
 msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/718\">718</ulink>, "
@@ -291,7 +300,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:49
+#: release_notes.xml:51
 #, no-c-format
 msgid ""
 "Repair spatial planner stats to use computed selectivity for contains/within "
@@ -299,7 +308,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:50
+#: release_notes.xml:52
 #, no-c-format
 msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/734\">734</ulink>, "
@@ -308,22 +317,23 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:51
+#: release_notes.xml:53
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5177\">5177</ulink>, "
-"allow building tools without PostgreSQL server headers (Sandro Santilli)"
+"Allow building tools without PostgreSQL server headers. Respect prefix/bin "
+"for tools install (Sandro Santilli)"
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:52
+#: release_notes.xml:55
 #, no-c-format
 msgid ""
 "ST_Project signature for geometry, and two-point signature (Paul Ramsey)"
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:53
+#: release_notes.xml:56
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/4913\">4913</ulink>, "
@@ -332,7 +342,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:55
+#: release_notes.xml:58
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5266\">5266</ulink>, "
@@ -341,13 +351,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: release_notes.xml:59
+#: release_notes.xml:62
 #, no-c-format
 msgid "Breaking Changes"
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:60
+#: release_notes.xml:63
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5229\">5229</ulink>, Drop "
@@ -355,7 +365,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:61
+#: release_notes.xml:64
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</ulink>, "
@@ -367,9 +377,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:65
+#: release_notes.xml:68
 #, no-c-format
 msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/5447\">5447</ulink>, "
-"postgis_restore.pl renamed to postgis_restore (Regina Obe)"
+"postgis_restore.pl renamed to postgis_restore (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:70
+#, no-c-format
+msgid ""
+"Utilities now installed in OS bin or user specified --bindir and --prefix "
+"instead of postgresql bin and extension stripped except on windows (postgis, "
+"postgis_restore, shp2pgsql, raster2pgsql, pgsql2shp, pgtopo_import, "
+"pgtopo_export)"
 msgstr ""

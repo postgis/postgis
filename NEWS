@@ -1,4 +1,4 @@
-PostGIS 3.4.0rc2
+PostGIS 3.4.0
 2023/08/xx
 
 This version requires PostgreSQL 12 or higher, GEOS 3.6 or higher, and Proj 6.1+.
@@ -47,7 +47,9 @@ Vincent Bre (French Team)
   - GH718, ST_QuantizeCoordinates(): speed-up implementation (Even Rouault)
   - Repair spatial planner stats to use computed selectivity for contains/within queries (Paul Ramsey)
   - GH734, Additional metadata on Proj installation in postgis_proj_version (Paul Ramsey)
-  - #5177, allow building tools without PostgreSQL server headers (Sandro Santilli)
+  - #5177, Allow building tools without PostgreSQL server headers (Sandro Santilli)
+  - #5447, Manual pages added for postgis and postgis_restore utilities
+    (Sandro Santilli)
   - ST_Project signature for geometry, and two-point signature (Paul Ramsey)
   - #4913, ST_AsSVG support for curve types CircularString, CompoundCurve, MultiCurve,
            and MultiSurface (Regina Obe)
@@ -62,7 +64,13 @@ Vincent Bre (French Team)
     also shown if different from run-time
     (Paul Ramsey, Sandro Santilli)
  - #5447, postgis_restore.pl renamed to postgis_restore
-   (Sandro Santilli)
+ (Sandro Santilli)
+ - Utilities now installed in OS bin or
+   user specified --bindir and --prefix
+   instead of postgresql bin
+   and extension stripped except on windows
+   (postgis, postgis_restore, shp2pgsql, raster2pgsql, pgsql2shp,
+   pgtopo_import, pgtopo_export)
 
 PostGIS 3.3.0
 2022/08/26

@@ -3,8 +3,8 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
         <sect1>
-            <title>PostGIS 3.4.0rc1</title>
-            <para>2023/08/05</para>
+            <title>PostGIS 3.4.0rc2</title>
+            <para>2023/08/12</para>
             <para>This version requires PostgreSQL 12 or higher, GEOS 3.6 or higher, and Proj 6.1+.
             To take advantage of all features, GEOS 3.12+ is needed.
             To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.</para>
@@ -43,12 +43,15 @@
                 <para>Honour --mandir (and --prefix) configure switch for man pages install path (Sandro Santilli)</para>
                 <para>Honour --htmldir (and --docdir and --prefix) configure switch for
                     html pages install path (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5447">5447</ulink> Manual pages added for postgis and postgis_restore utilities
+    (Sandro Santilli)</para>
                 <para>[postgis_topology] Speed up check of topology faces without edges (Sandro Santilli)</para>
                 <para>[postgis_topology] Speed up coincident nodes check in topology validation  (Sandro Santilli)</para>
                 <para><ulink url="https://github.com/postgis/postgis/pull/718">718</ulink>, ST_QuantizeCoordinates(): speed-up implementation (Even Rouault)</para>
                 <para>Repair spatial planner stats to use computed selectivity for contains/within queries (Paul Ramsey)</para>
                 <para><ulink url="https://github.com/postgis/postgis/pull/734">734</ulink>, Additional metadata on Proj installation in postgis_proj_version (Paul Ramsey)</para>
-                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5177">5177</ulink>, allow building tools without PostgreSQL server headers (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5177">5177</ulink>, Allow building tools without PostgreSQL server headers.
+           Respect prefix/bin for tools install (Sandro Santilli)</para>
                 <para>ST_Project signature for geometry, and two-point signature (Paul Ramsey)</para>
                 <para><ulink url="https://trac.osgeo.org/postgis/ticket/4913">4913</ulink>, ST_AsSVG support for curve types CircularString, CompoundCurve, MultiCurve,
                         and MultiSurface (Regina Obe)</para>
@@ -63,7 +66,13 @@
                     and data paths. GEOS compile-time version
                     also shown if different from run-time (Paul Ramsey, Sandro Santilli)</para>
                 <para><ulink url="https://github.com/postgis/postgis/pull/5447">5447</ulink>, postgis_restore.pl renamed to postgis_restore
-           (Regina Obe)</para>
+           (Sandro Santilli)</para>
+                <para>Utilities now installed in OS bin or
+   user specified --bindir and --prefix
+   instead of postgresql bin
+   and extension stripped except on windows
+   (postgis, postgis_restore, shp2pgsql, raster2pgsql, pgsql2shp,
+    pgtopo_import, pgtopo_export)</para>
             </simplesect>
     </sect1>
 
