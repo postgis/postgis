@@ -3,7 +3,7 @@ steps:
     image: docker.osgeo.org/postgis/build-test:trisquel3
     pull: true
     when:
-      event: pull_request
+      - event: pull_request
     commands:
       - ./autogen.sh
       - ./configure --without-pgconfig --prefix=/tmp/pgx
