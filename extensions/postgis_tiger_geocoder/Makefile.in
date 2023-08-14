@@ -214,7 +214,9 @@ PG_CONFIG := @PG_CONFIG@
 PGXS := @PGXS@
 include $(PGXS)
 PERL=@PERL@
-MKDIR_P = @MKDIR_P@
+ifneq (@MKDIR_P@,)
+	MKDIR_P = @MKDIR_P@
+endif
 
 VPATH = @srcdir@
 
