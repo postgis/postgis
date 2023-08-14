@@ -4,7 +4,7 @@
     <subtitle>Release Notes</subtitle>
         <sect1>
             <title>PostGIS 3.4.0</title>
-            <para>2023/08/13</para>
+            <para>2023/08/15</para>
             <para>This version requires PostgreSQL 12 or higher, GEOS 3.6 or higher, and Proj 6.1+.
             To take advantage of all features, GEOS 3.12+ is needed.
             To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.</para>
@@ -12,6 +12,11 @@
             <para>Many thanks to our translation teams, in particular:</para>
             <para>Teramoto Ikuhiro (Japanese Team)</para>
             <para>Vincent Bre (French Team)</para>
+
+            <para>There are 2 new ./configure switches:</para>
+            <itemizedlist><listitem><para>--disable-extension-upgrades-install, will skip installing all the extension upgrade scripts except for the ANY--currentversion.  If you use this, you can install select upgrades using the postgis commandline tool</para></listitem>
+                <listitem><para>--without-pgconfig, will build just the commandline tools raster2pgsql and shp2pgsql even if PostgreSQL is not installed</para></listitem>
+            </itemizedlist>
 
             <simplesect>
                 <title>New features</title>
