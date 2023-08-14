@@ -10,6 +10,11 @@ Many thanks to our translation teams, in particular:
 Teramoto Ikuhiro (Japanese Team)
 Vincent Bre (French Team)
 
+There are 2 new ./configure switches:
+
+ -  --disable-extension-upgrades-install, will skip installing all the extension upgrade scripts except for the ANY--currentversion. If you use this, you can install select upgrades using the postgis commandline tool
+ -  --without-pgconfig, will build just the commandline tools
+    raster2pgsql and shp2pgsql even if PostgreSQL is not installed
 
 * New Features *
   - #5055, complete manual internationalization (Sandro Santilli)
