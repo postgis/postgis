@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 . $(dirname $0)/winnie_common.sh
-export INCLUDE_MINOR_LIB=1
 
 if [ -n "$SOURCE_FOLDER" ]; then
   export POSTGIS_SRC=${PROJECTS}/postgis/$SOURCE_FOLDER
@@ -12,7 +11,7 @@ else
   else
     #tagged version -- official release
     export POSTGIS_SRC=${PROJECTS}/postgis/tags/${POSTGIS_VER}.${POSTGIS_MICRO_VERSION}
-    INCLUDE_MINOR_LIB=false
+    INCLUDE_MINOR_LIB=0
   fi;
 fi;
 
