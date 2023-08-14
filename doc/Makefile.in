@@ -432,6 +432,7 @@ images images-install images-uninstall images-clean:
 	$(MAKE) -C $(images_builddir) $@
 
 html-clean:
+	rm -f $(html_builddir)/docbook.css
 	rm -f $(html_builddir)/postgis$(DOCSUFFIX).html
 	rm -rf $(html_builddir)/postgis$(DOCSUFFIX)/
 	rm -rf $(html_builddir)/postgis-web$(DOCSUFFIX)/
@@ -461,8 +462,9 @@ clean: images-clean html-clean pdf-clean epub-clean cheatsheet-clean
 	rm -f *.tmp
 	$(MAKE) clean-localized
 
-distclean: clean distclean-localized
+distclean: clean
 	$(MAKE) -C $(images_builddir) distclean
+	$(MAKE) distclean-localized
 	rm -f Makefile Makefile.comments
 
 maintainer-clean: distclean
