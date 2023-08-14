@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-08-12 03:32+0000\n"
+"POT-Creation-Date: 2023-08-14 03:15+0000\n"
 "PO-Revision-Date: 2023-08-07 10:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -40,7 +40,7 @@ msgstr ""
 #. Tag: para
 #: release_notes.xml:7
 #, no-c-format
-msgid "2023/08/13"
+msgid "2023/08/15"
 msgstr ""
 
 #. Tag: para
@@ -83,14 +83,37 @@ msgstr "Teramoto Ikuhiroさん (日本語チーム)"
 msgid "Vincent Bre (French Team)"
 msgstr "Vincent Breさん (フランス語チーム)"
 
-#. Tag: title
+#. Tag: para
+#: release_notes.xml:16
+#, no-c-format
+msgid "There are 2 new ./configure switches:"
+msgstr ""
+
+#. Tag: para
 #: release_notes.xml:17
+#, no-c-format
+msgid ""
+"--disable-extension-upgrades-install, will skip installing all the extension "
+"upgrade scripts except for the ANY--currentversion. If you use this, you can "
+"install select upgrades using the postgis commandline tool"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:18
+#, no-c-format
+msgid ""
+"--without-pgconfig, will build just the commandline tools raster2pgsql and "
+"shp2pgsql even if PostgreSQL is not installed"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:22
 #, no-c-format
 msgid "New features"
 msgstr "新機能"
 
 #. Tag: para
-#: release_notes.xml:18
+#: release_notes.xml:23
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5055\">5055</ulink>, "
@@ -100,7 +123,7 @@ msgstr ""
 "なマニュアル国際化 (Sandro Santilliさん)"
 
 #. Tag: para
-#: release_notes.xml:19
+#: release_notes.xml:24
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5052\">5052</ulink>, "
@@ -110,7 +133,7 @@ msgstr ""
 "postgis_extensions_upgradeでの対象バージョンへの対応 (Sandro Santilliさん)"
 
 #. Tag: para
-#: release_notes.xml:21
+#: release_notes.xml:26
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</ulink>, "
@@ -120,7 +143,7 @@ msgstr ""
 "パイル時のGEOSバージョンの表示 (Sandro Santilliさん)"
 
 #. Tag: para
-#: release_notes.xml:22
+#: release_notes.xml:27
 #, no-c-format
 msgid ""
 "New install-extension-upgrades command in postgis script (Sandro Santilli)"
@@ -129,7 +152,7 @@ msgstr ""
 "さん)"
 
 #. Tag: para
-#: release_notes.xml:23
+#: release_notes.xml:28
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5257\">5257</ulink>, "
@@ -143,7 +166,7 @@ msgstr ""
 "PostgreSQL 16への対応のための変更 (Regina Obeさん)"
 
 #. Tag: para
-#: release_notes.xml:24
+#: release_notes.xml:29
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5006\">5006</ulink>, "
@@ -155,7 +178,7 @@ msgstr ""
 "ST_Transform: PROJパイプライン対応 (Robert Coupさん, Koordinates)"
 
 #. Tag: para
-#: release_notes.xml:25
+#: release_notes.xml:30
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5283\">5283</ulink>, "
@@ -165,7 +188,7 @@ msgstr ""
 "[postgis_topology] RenameTopology (Sandro Santilliさん)"
 
 #. Tag: para
-#: release_notes.xml:26
+#: release_notes.xml:31
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5286\">5286</ulink>, "
@@ -175,7 +198,7 @@ msgstr ""
 "[postgis_topology] RenameTopoGeometryColumn (Sandro Santilliさん)"
 
 #. Tag: para
-#: release_notes.xml:27
+#: release_notes.xml:32
 #, no-c-format
 msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/703\">703</ulink>, "
@@ -186,7 +209,7 @@ msgstr ""
 "ん)"
 
 #. Tag: para
-#: release_notes.xml:28
+#: release_notes.xml:33
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5336\">5336</ulink>, "
@@ -197,7 +220,7 @@ msgstr ""
 "さん)"
 
 #. Tag: para
-#: release_notes.xml:29
+#: release_notes.xml:34
 #, no-c-format
 msgid ""
 "Allow singleton geometry to be inserted into Geometry(Multi*) columns (Paul "
@@ -207,7 +230,7 @@ msgstr ""
 "Ramseyさん)"
 
 #. Tag: para
-#: release_notes.xml:30
+#: release_notes.xml:35
 #, no-c-format
 msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/721\">721</ulink>, New "
@@ -218,7 +241,7 @@ msgstr ""
 "ん)"
 
 #. Tag: para
-#: release_notes.xml:31
+#: release_notes.xml:36
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5397\">5397</ulink>, "
@@ -228,7 +251,7 @@ msgstr ""
 "[address_standardizer] debug_standardize_address関数 (Regina Obeさん)"
 
 #. Tag: para
-#: release_notes.xml:32
+#: release_notes.xml:37
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5373\">5373</"
@@ -240,7 +263,7 @@ msgstr ""
 "必要です (Martin Davisさん)"
 
 #. Tag: para
-#: release_notes.xml:33
+#: release_notes.xml:38
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</ulink>, "
@@ -251,7 +274,7 @@ msgstr ""
 "Ramseyさん)"
 
 #. Tag: para
-#: release_notes.xml:34
+#: release_notes.xml:39
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</ulink>, "
@@ -261,7 +284,7 @@ msgstr ""
 "ンストリングを拡張するST_LineExtend (Paul Ramseyさん)"
 
 #. Tag: para
-#: release_notes.xml:35
+#: release_notes.xml:40
 #, no-c-format
 msgid ""
 "New coverage functions ST_CoverageInvalidEdges, ST_CoverageSimplify, "
@@ -271,13 +294,13 @@ msgstr ""
 "ST_CoverageUnion (Paul Ramseyさん)"
 
 #. Tag: title
-#: release_notes.xml:39
+#: release_notes.xml:44
 #, no-c-format
 msgid "Enhancements"
 msgstr "性能強化"
 
 #. Tag: para
-#: release_notes.xml:40
+#: release_notes.xml:45
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5194\">5194</ulink>, do "
@@ -288,7 +311,7 @@ msgstr ""
 "Santilliさん)"
 
 #. Tag: para
-#: release_notes.xml:41
+#: release_notes.xml:46
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5092\">5092</ulink>, "
@@ -299,7 +322,7 @@ msgstr ""
 "Santilliさん)"
 
 #. Tag: para
-#: release_notes.xml:42
+#: release_notes.xml:47
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/635\">635</ulink>, honour "
@@ -310,7 +333,7 @@ msgstr ""
 "になりました (Sandro Santilliさん)"
 
 #. Tag: para
-#: release_notes.xml:43
+#: release_notes.xml:48
 #, no-c-format
 msgid ""
 "Honour --mandir (and --prefix) configure switch for man pages install path "
@@ -320,7 +343,7 @@ msgstr ""
 "(と --prefix)を見るようになりました (Sandro Santilliさん)"
 
 #. Tag: para
-#: release_notes.xml:44
+#: release_notes.xml:49
 #, no-c-format
 msgid ""
 "Honour --htmldir (and --docdir and --prefix) configure switch for html pages "
@@ -330,7 +353,7 @@ msgstr ""
 "docdir と --prefix)を見るようになりました (Sandro Santilliさん)"
 
 #. Tag: para
-#: release_notes.xml:46
+#: release_notes.xml:51
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5447\">5447</ulink> "
@@ -339,7 +362,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:48
+#: release_notes.xml:53
 #, no-c-format
 msgid ""
 "[postgis_topology] Speed up check of topology faces without edges (Sandro "
@@ -349,7 +372,7 @@ msgstr ""
 "Santilliさん)"
 
 #. Tag: para
-#: release_notes.xml:49
+#: release_notes.xml:54
 #, no-c-format
 msgid ""
 "[postgis_topology] Speed up coincident nodes check in topology validation "
@@ -359,7 +382,7 @@ msgstr ""
 "Santilliさん)"
 
 #. Tag: para
-#: release_notes.xml:50
+#: release_notes.xml:55
 #, no-c-format
 msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/718\">718</ulink>, "
@@ -369,7 +392,7 @@ msgstr ""
 "ST_QuantizeCoordinates(): 実装の速度向上 (Even Rouaultさん)"
 
 #. Tag: para
-#: release_notes.xml:51
+#: release_notes.xml:56
 #, no-c-format
 msgid ""
 "Repair spatial planner stats to use computed selectivity for contains/within "
@@ -379,7 +402,7 @@ msgstr ""
 "使用するようにしました (Paul Ramseyさん)"
 
 #. Tag: para
-#: release_notes.xml:52
+#: release_notes.xml:57
 #, no-c-format
 msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/734\">734</ulink>, "
@@ -391,7 +414,7 @@ msgstr ""
 "ん)"
 
 #. Tag: para
-#: release_notes.xml:53
+#: release_notes.xml:58
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5177\">5177</ulink>, "
@@ -400,7 +423,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:55
+#: release_notes.xml:60
 #, no-c-format
 msgid ""
 "ST_Project signature for geometry, and two-point signature (Paul Ramsey)"
@@ -409,7 +432,7 @@ msgstr ""
 "Ramseyさん)"
 
 #. Tag: para
-#: release_notes.xml:56
+#: release_notes.xml:61
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/4913\">4913</ulink>, "
@@ -421,7 +444,7 @@ msgstr ""
 "対応するようになりました (Regina Obeさん)"
 
 #. Tag: para
-#: release_notes.xml:58
+#: release_notes.xml:63
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5266\">5266</ulink>, "
@@ -434,13 +457,13 @@ msgstr ""
 "Ramseyさん)"
 
 #. Tag: title
-#: release_notes.xml:62
+#: release_notes.xml:67
 #, no-c-format
 msgid "Breaking Changes"
 msgstr "大幅な変更"
 
 #. Tag: para
-#: release_notes.xml:63
+#: release_notes.xml:68
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5229\">5229</ulink>, Drop "
@@ -450,7 +473,7 @@ msgstr ""
 "6.1未満およびPostgreSQL 11へのサポートの終了 (Regina Obeさん)"
 
 #. Tag: para
-#: release_notes.xml:64
+#: release_notes.xml:69
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</ulink>, "
@@ -468,7 +491,7 @@ msgstr ""
 "ん)"
 
 #. Tag: para
-#: release_notes.xml:68
+#: release_notes.xml:73
 #, no-c-format
 msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/5447\">5447</ulink>, "
@@ -476,7 +499,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:70
+#: release_notes.xml:75
 #, no-c-format
 msgid ""
 "Utilities now installed in OS bin or user specified --bindir and --prefix "
