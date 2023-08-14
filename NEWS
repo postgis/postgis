@@ -5,8 +5,6 @@ YYYY/MM/DD
  - #5442, [postgis_tiger_geocoder,postgis_topology]
           Database search_path does not do
           what it intends to do (Jelte Fennema)
- - #5175, Remove warning 'operator is not unique' for 
-          geometry != geometry (Paul Ramsey)
 
 PostGIS 3.3.4
 2023/07/28
