@@ -5,7 +5,7 @@
         <sect1>
             <title>PostGIS 3.4.0</title>
             <para>2023/08/15</para>
-            <para>This version requires PostgreSQL 12 or higher, GEOS 3.6 or higher, and Proj 6.1+.
+            <para>This version requires PostgreSQL 12-16, GEOS 3.6 or higher, and Proj 6.1+.
             To take advantage of all features, GEOS 3.12+ is needed.
             To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.</para>
             <para>NOTE: GEOS 3.12.0 details at <ulink url="https://libgeos.org/posts/2023-06-27-geos-3-12-released/">GEOS 3.12.0 release notes</ulink></para>
