@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-08-14 03:15+0000\n"
-"PO-Revision-Date: 2023-08-07 10:08+0000\n"
+"PO-Revision-Date: 2023-08-19 03:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "release_notesxml/ja/>\n"
@@ -35,13 +35,13 @@ msgstr "リリースノート"
 #: release_notes.xml:6
 #, no-c-format
 msgid "PostGIS 3.4.0"
-msgstr ""
+msgstr "PostGIS 3.4.0"
 
 #. Tag: para
 #: release_notes.xml:7
 #, no-c-format
 msgid "2023/08/15"
-msgstr ""
+msgstr "2023/08/15"
 
 #. Tag: para
 #: release_notes.xml:8
@@ -87,7 +87,7 @@ msgstr "Vincent Breさん (フランス語チーム)"
 #: release_notes.xml:16
 #, no-c-format
 msgid "There are 2 new ./configure switches:"
-msgstr ""
+msgstr "2個の./configureスイッチが新設されました:"
 
 #. Tag: para
 #: release_notes.xml:17
@@ -97,6 +97,10 @@ msgid ""
 "upgrade scripts except for the ANY--currentversion. If you use this, you can "
 "install select upgrades using the postgis commandline tool"
 msgstr ""
+"--disable-extension-upgrades-install, ANY--currentversionを除く全てのエクステ"
+"ンションのアップグレードスクリプトのインストールを行いません。これを使用する"
+"と、PostGISコマンドラインツールを使って選択したアップグレードのインストールが"
+"可能になります"
 
 #. Tag: para
 #: release_notes.xml:18
@@ -105,6 +109,8 @@ msgid ""
 "--without-pgconfig, will build just the commandline tools raster2pgsql and "
 "shp2pgsql even if PostgreSQL is not installed"
 msgstr ""
+"--without-pgconfig, PostgreSQLがインストールされていなくてもコマンドラインツ"
+"ールのraster2pgsqlとshp2pgsqlとのビルドを行います"
 
 #. Tag: title
 #: release_notes.xml:22
@@ -360,6 +366,9 @@ msgid ""
 "Manual pages added for postgis and postgis_restore utilities (Sandro "
 "Santilli)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5447\">5447</ulink> "
+"postgisとpostgis_restoreの両ユーティリティのマニュアルページを追加 (Sandro "
+"Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:53
@@ -421,6 +430,9 @@ msgid ""
 "Allow building tools without PostgreSQL server headers. Respect prefix/bin "
 "for tools install (Sandro Santilli)"
 msgstr ""
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5177\">5177</ulink>, Postg"
+"reSQLサーバヘッダが無くてもビルドできるようにしました。ツールのインストール先"
+"について、prefix/binを尊重するようになりました (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:60
@@ -497,6 +509,8 @@ msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/5447\">5447</ulink>, "
 "postgis_restore.pl renamed to postgis_restore (Sandro Santilli)"
 msgstr ""
+"<ulink url=\"https://github.com/postgis/postgis/pull/5447\">5447</ulink>, "
+"postgis_restore.plをpostgis_restoreに名前変更 (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:75
@@ -507,3 +521,8 @@ msgid ""
 "postgis_restore, shp2pgsql, raster2pgsql, pgsql2shp, pgtopo_import, "
 "pgtopo_export)"
 msgstr ""
+"ユーティリティ (postgis, postgis_restore, shp2pgsql, raster2pgsql, "
+"pgsql2shp, pgtopo_import, pgtopo_export)は、Windowsを除いて、PostgreSQLのbin"
+"ディレクトリやエクステンションのインストールディレクトリでなく、OSのbinディレ"
+"クトリまたは--bindirや--"
+"prefixで指定されたディレクトリにインストールされるようになりました"
