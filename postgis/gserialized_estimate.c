@@ -79,10 +79,10 @@ dimensionality cases. (2D geometry) &&& (3D column), etc.
 #include "storage/lmgr.h"
 #include "catalog/namespace.h"
 #include "catalog/indexing.h"
-#if PG_VERSION_NUM >= 100000
+
 #include "utils/regproc.h"
 #include "utils/varlena.h"
-#endif
+
 #include "utils/builtins.h"
 #include "utils/datum.h"
 #include "utils/snapmgr.h"
@@ -95,11 +95,8 @@ dimensionality cases. (2D geometry) &&& (3D column), etc.
 #include "executor/spi.h"
 #include "fmgr.h"
 #include "commands/vacuum.h"
-#if PG_VERSION_NUM < 120000
-#include "nodes/relation.h"
-#else
 #include "nodes/pathnodes.h"
-#endif
+
 #include "parser/parsetree.h"
 #include "utils/array.h"
 #include "utils/lsyscache.h"
