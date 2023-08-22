@@ -720,6 +720,7 @@ OPERATOR ~=
 OPERATOR ~==
 OPERATOR ~~
 OPERATOR ~~=
+OPERATOR <>
 OPERATOR&&(box2df,box2df)
 OPERATOR@(box2df,box2df)
 OPERATOR~(box2df,box2df)
