@@ -65,7 +65,7 @@ clean-local:
 # TODO: drop 'test' target..
 test: check
 
-check: check-no-trailing-blanks check-unit docs-check check-news check-tests-enabled
+check: check-no-trailing-blanks check-unit docs-check check-news check-tests-enabled check-lang-enabled
 
 ifeq (@LIBLWGEOM_ONLY@,no)
 check: check-regress
@@ -261,6 +261,10 @@ check-regress: staged-install check-regress-deps
 
 check-tests-enabled:
 	$(top_srcdir)/utils/check_tests_enabled.sh $(top_srcdir)
+
+check-lang-enabled:
+	$(top_srcdir)/utils/check_lang_enabled.sh $(top_srcdir)
+
 
 check-regress-deps:
 ifeq (@TOPOLOGY@,topology)
