@@ -21,7 +21,7 @@
 # that we could produce a large number of files (think chunked HTML)
 #
 
-translations = it_IT pt_BR fr es pl ko_KR de ja ru zh_Hans
+translations = it_IT pt_BR fr es pl ko_KR de ja ru zh_Hans ro
 
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 
