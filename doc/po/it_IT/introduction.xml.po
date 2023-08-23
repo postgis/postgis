@@ -125,10 +125,9 @@ msgid ""
 "documentation, alignment of PostGIS with PostgreSQL releases, X3D support, "
 "TIGER geocoder support, management functions."
 msgstr ""
-"Manutenzione dei buildbot, compilazione pacchetti windows "
-"sperimentali e di produzione, allineamento dei rilasci di PostGIS "
-"con quelli di PostgreSQL, supporto X3D, support geocoder TIGER, "
-"funzioni di gestione."
+"Manutenzione dei buildbot, compilazione pacchetti windows sperimentali e di "
+"produzione, allineamento dei rilasci di PostGIS con quelli di PostgreSQL, "
+"supporto X3D, support geocoder TIGER, funzioni di gestione."
 
 #. Tag: term
 #: introduction.xml:47

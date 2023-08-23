@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-08-14 03:15+0000\n"
+"POT-Creation-Date: 2023-08-23 15:35+0000\n"
 "PO-Revision-Date: 2023-08-19 03:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -47,13 +47,10 @@ msgstr "2023/08/15"
 #: release_notes.xml:8
 #, no-c-format
 msgid ""
-"This version requires PostgreSQL 12 or higher, GEOS 3.6 or higher, and Proj "
-"6.1+. To take advantage of all features, GEOS 3.12+ is needed. To take "
-"advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed."
+"This version requires PostgreSQL 12-16, GEOS 3.6 or higher, and Proj 6.1+. "
+"To take advantage of all features, GEOS 3.12+ is needed. To take advantage "
+"of all SFCGAL featurs, SFCGAL 1.4.1+ is needed."
 msgstr ""
-"このバージョンにはPostgreSQL 12以上、GEOS 3.6以上、Proj 6.1以上が必要です。全"
-"ての機能を利用するにはGEOS 3.12以上が必要です。全てのSFCGAL機能を使用するには"
-"SFCGAL 1.4.1以上が必要です。"
 
 #. Tag: para
 #: release_notes.xml:11
@@ -109,8 +106,8 @@ msgid ""
 "--without-pgconfig, will build just the commandline tools raster2pgsql and "
 "shp2pgsql even if PostgreSQL is not installed"
 msgstr ""
-"--without-pgconfig, PostgreSQLがインストールされていなくてもコマンドラインツ"
-"ールのraster2pgsqlとshp2pgsqlとのビルドを行います"
+"--without-pgconfig, PostgreSQLがインストールされていなくてもコマンドライン"
+"ツールのraster2pgsqlとshp2pgsqlとのビルドを行います"
 
 #. Tag: title
 #: release_notes.xml:22
@@ -430,9 +427,9 @@ msgid ""
 "Allow building tools without PostgreSQL server headers. Respect prefix/bin "
 "for tools install (Sandro Santilli)"
 msgstr ""
-"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5177\">5177</ulink>, Postg"
-"reSQLサーバヘッダが無くてもビルドできるようにしました。ツールのインストール先"
-"について、prefix/binを尊重するようになりました (Sandro Santilliさん)"
+"<ulink url=\"https://trac.osgeo.org/postgis/ticket/5177\">5177</ulink>, "
+"PostgreSQLサーバヘッダが無くてもビルドできるようにしました。ツールのインス"
+"トール先について、prefix/binを尊重するようになりました (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:60
@@ -524,5 +521,5 @@ msgstr ""
 "ユーティリティ (postgis, postgis_restore, shp2pgsql, raster2pgsql, "
 "pgsql2shp, pgtopo_import, pgtopo_export)は、Windowsを除いて、PostgreSQLのbin"
 "ディレクトリやエクステンションのインストールディレクトリでなく、OSのbinディレ"
-"クトリまたは--bindirや--"
-"prefixで指定されたディレクトリにインストールされるようになりました"
+"クトリまたは--bindirや--prefixで指定されたディレクトリにインストールされるよ"
+"うになりました"

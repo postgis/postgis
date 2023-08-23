@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-08-14 03:15+0000\n"
+"POT-Creation-Date: 2023-08-23 15:35+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -42,9 +42,9 @@ msgstr ""
 #: release_notes.xml:8
 #, no-c-format
 msgid ""
-"This version requires PostgreSQL 12 or higher, GEOS 3.6 or higher, and Proj "
-"6.1+. To take advantage of all features, GEOS 3.12+ is needed. To take "
-"advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed."
+"This version requires PostgreSQL 12-16, GEOS 3.6 or higher, and Proj 6.1+. "
+"To take advantage of all features, GEOS 3.12+ is needed. To take advantage "
+"of all SFCGAL featurs, SFCGAL 1.4.1+ is needed."
 msgstr ""
 
 #. Tag: para

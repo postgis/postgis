@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-08-14 03:15+0000\n"
+"POT-Creation-Date: 2023-08-23 15:35+0000\n"
 "PO-Revision-Date: 2021-11-28 22:22+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -44,9 +44,9 @@ msgstr ""
 #: release_notes.xml:8
 #, no-c-format
 msgid ""
-"This version requires PostgreSQL 12 or higher, GEOS 3.6 or higher, and Proj "
-"6.1+. To take advantage of all features, GEOS 3.12+ is needed. To take "
-"advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed."
+"This version requires PostgreSQL 12-16, GEOS 3.6 or higher, and Proj 6.1+. "
+"To take advantage of all features, GEOS 3.12+ is needed. To take advantage "
+"of all SFCGAL featurs, SFCGAL 1.4.1+ is needed."
 msgstr ""
 
 #. Tag: para
