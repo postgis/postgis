@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-08-23 15:35+0000\n"
-"PO-Revision-Date: 2023-08-19 03:08+0000\n"
+"PO-Revision-Date: 2023-08-25 02:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "release_notesxml/ja/>\n"
@@ -51,6 +51,9 @@ msgid ""
 "To take advantage of all features, GEOS 3.12+ is needed. To take advantage "
 "of all SFCGAL featurs, SFCGAL 1.4.1+ is needed."
 msgstr ""
+"このバージョンにはPostgreSQL 12-16、GEOS 3.6以上、Proj 6.1以上が必要です。"
+"全ての機能を利用するにはGEOS 3.12以上が必要です。"
+"全てのSFCGAL機能を使用するにはSFCGAL 1.4.1以上が必要です。"
 
 #. Tag: para
 #: release_notes.xml:11
