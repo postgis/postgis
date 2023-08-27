@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Correct the ST_Split example so the point lies on both lines (Martin Davis)
  - Document the ST_NumGeometries result for empty geometries (Martin Davis)
  - Correct the PAGC regression result for a directional street name (wangdapeng)
  - Exercise nested empty polygons in the garden tests (Regina Obe)
