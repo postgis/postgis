@@ -534,7 +534,7 @@ SELECT ST_AsText( ST_Split(
             POLYGON(..))
 )
             </programlisting>
-            <para>Split a MultiLineString a Point, where the point lies exactly on both LineStrings elements.</para>
+            <para>Split a MultiLineString by a Point, where the point lies exactly on both LineStrings elements.</para>
             <informaltable>
                 <tgroup cols="2">
                     <tbody>
@@ -569,7 +569,7 @@ SELECT ST_AsText( ST_Split(
             </informaltable>
             <programlisting>
 SELECT ST_AsText(ST_Split(
-    'MULTILINESTRING((10 10, 190 191), (15 15, 30 30, 100 90))',
+    'MULTILINESTRING((10 10, 190 190), (15 15, 30 30, 100 90))',
     ST_Point(30,30))) As split;
 
 split
