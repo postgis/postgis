@@ -433,9 +433,15 @@ CREATE OR REPLACE FUNCTION _drop_st_samealignment()
 SELECT _drop_st_samealignment();
 DROP FUNCTION _drop_st_samealignment();
 
-DROP FUNCTION IF EXISTS _st_intersects(raster, integer, raster, integer);
-DROP FUNCTION IF EXISTS st_intersects(raster, integer, raster, integer);
-DROP FUNCTION IF EXISTS st_intersects(raster, raster);
+--DROP FUNCTION IF EXISTS _st_intersects(geometry, raster, integer); --------- sig1, not changed since 2.0.0, see ticket #5489
+--DROP FUNCTION IF EXISTS _st_intersects(raster, integer, raster, integer); -- sig2, not changed since 2.0.0, see ticket #5489
+
+--DROP FUNCTION IF EXISTS st_intersects(raster, integer, raster, integer); -- sig1, not changed since 2.0.0, see ticket #5489
+--DROP FUNCTION IF EXISTS st_intersects(raster, raster); -------------------- sig2, not changed since 2.0.0, see ticket #5489
+--DROP FUNCTION IF EXISTS st_intersects(geometry, raster, integer); --------- sig3, not changed since 2.0.0, see ticket #5489
+--DROP FUNCTION IF EXISTS st_intersects(raster, geometry, integer); --------- sig4, not changed since 2.0.0, see ticket #5489
+--DROP FUNCTION IF EXISTS st_intersects(raster, integer, geometry); --------- sig5, not changed since 2.0.0, see ticket #5489
+
 
 -- functions have changed dramatically
 DROP FUNCTION IF EXISTS st_intersection(raster, integer, geometry);
@@ -452,9 +458,9 @@ DROP FUNCTION IF EXISTS st_intersection(raster, int, geometry, text, regprocedur
 DROP FUNCTION IF EXISTS st_intersection(raster, int, geometry, regprocedure);
 DROP FUNCTION IF EXISTS st_intersection(raster, geometry, text, regprocedure);
 DROP FUNCTION IF EXISTS st_intersection(raster, geometry, regprocedure);
---DROP FUNCTION IF EXISTS st_clip(raster, geometry, float8, boolean); --------- sig5, not changed since 2.0.0, maybe changed before ?
---DROP FUNCTION IF EXISTS st_clip(raster, geometry, boolean); ----------------- sig6, not changed since 2.0.0, maybe changed before ?
---DROP FUNCTION IF EXISTS st_clip(raster, geometry, float8[], boolean); ------- sig4, not changed since 2.0.0, maybe changed before ?
+--DROP FUNCTION IF EXISTS st_clip(raster, geometry, float8, boolean); --------- sig5, not changed since 2.0.0, see ticket #5488
+--DROP FUNCTION IF EXISTS st_clip(raster, geometry, boolean); ----------------- sig6, not changed since 2.0.0, see ticket #5488
+--DROP FUNCTION IF EXISTS st_clip(raster, geometry, float8[], boolean); ------- sig4, not changed since 2.0.0, see ticket #5488
 
 -- refactoring of functions
 DROP FUNCTION IF EXISTS _st_dumpaswktpolygons(raster, integer);
@@ -479,13 +485,6 @@ DROP FUNCTION IF EXISTS st_pixelaspolygons(raster, integer);
 
 -- function deprecated
 DROP FUNCTION IF EXISTS st_bandsurface(raster, integer);
-
--- function no longer exist or refactored
-DROP FUNCTION IF EXISTS st_intersects(raster, integer, geometry);
-DROP FUNCTION IF EXISTS st_intersects(raster, geometry, integer);
-DROP FUNCTION IF EXISTS st_intersects(geometry, raster, integer);
-DROP FUNCTION IF EXISTS _st_intersects(raster, geometry, integer);
-DROP FUNCTION IF EXISTS _st_intersects(geometry, raster, integer);
 
 -- function no longer exists
 DROP FUNCTION IF EXISTS st_overlaps(geometry, raster, integer);
