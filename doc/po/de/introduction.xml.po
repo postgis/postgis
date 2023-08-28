@@ -5,20 +5,22 @@
 # Daniel Kastl, 2013
 # Daniel Kastl, 2013
 # Wolfgang Fahrner <wolfgang.fahrner@gmail.com>, 2017
+# Regina Obe <regina@arrival3d.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-08-12 00:40+0000\n"
-"PO-Revision-Date: 2019-03-11 13:48+0000\n"
-"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
-"Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
-"de/)\n"
+"PO-Revision-Date: 2023-08-28 12:08+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
+"introductionxml/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: introduction.xml:3
@@ -567,7 +569,7 @@ msgstr ""
 #: introduction.xml:231
 #, no-c-format
 msgid "Brian Hamlin"
-msgstr ""
+msgstr "Brian Hamlin"
 
 #. Tag: member
 #: introduction.xml:232
@@ -621,7 +623,7 @@ msgstr ""
 #: introduction.xml:240
 #, no-c-format
 msgid "Dane Springmeyer"
-msgstr ""
+msgstr "Dane Springmeyer"
 
 #. Tag: member
 #: introduction.xml:241
@@ -693,7 +695,7 @@ msgstr ""
 #: introduction.xml:252
 #, no-c-format
 msgid "Frank Warmerdam"
-msgstr ""
+msgstr "Frank Warmerdam"
 
 #. Tag: member
 #: introduction.xml:253
@@ -705,7 +707,7 @@ msgstr ""
 #: introduction.xml:254
 #, no-c-format
 msgid "Gerald Fenoy"
-msgstr ""
+msgstr "Gerald Fenoy"
 
 #. Tag: member
 #: introduction.xml:255
