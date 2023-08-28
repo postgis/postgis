@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Preserve views depending on ST_Clip across raster upgrades (Sandro Santilli)
  - Preserve views depending on ST_Value across raster upgrades (Sandro Santilli)
  - #5041, Generate valid SQL for the TIGER 2020 tract loader (Regina Obe)
  - Include generated raster upgrades in the hard-upgrade restore list (Sandro Santilli)
