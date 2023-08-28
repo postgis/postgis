@@ -2,13 +2,14 @@
 #
 # Translators:
 # robe <regina@arrival3d.com>, 2022.
+# Regina Obe <regina@arrival3d.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-06-30 21:55+0000\n"
-"PO-Revision-Date: 2022-01-11 22:18+0000\n"
-"Last-Translator: robe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2023-08-28 12:08+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Russian <https://weblate.osgeo.org/projects/postgis/postgis/"
 "ru/>\n"
 "Language: ru\n"
@@ -16,9 +17,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
-"(n%100>=11 && n%100<=14)? 2 : 3);\n"
-"X-Generator: Weblate 4.10.1\n"
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || ("
+"n%100>=11 && n%100<=14)? 2 : 3);\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: postgis.xml:94
@@ -77,3 +78,8 @@ msgid ""
 "attribute credit to the PostGIS Project and wherever possible, a link back "
 "to <ulink url=\"https://postgis.net\">https://postgis.net</ulink>."
 msgstr ""
+"Эта работа находится под лицензией <ulink url=\"http://creativecommons.org/"
+"licenses/by-sa/3.0/\">Creative Commons Attribution-Share Alike 3.0</ulink>. "
+"Не стесняйтесь использовать этот материал так, как вам нравится, но мы "
+"просим вас ссылаться на проект PostGIS и, где это возможно, давать обратную "
+"ссылку на <ulink url=\"https://postgis.net\">https://postgis. net</ulink>."
