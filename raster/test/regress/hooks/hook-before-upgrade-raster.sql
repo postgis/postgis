@@ -66,3 +66,9 @@ CREATE VIEW upgrade_test_raster_view_st_slope AS
 SELECT
 	st_slope(NULL::raster, NULL::int, NULL::raster) sig1,
 	st_slope(NULL::raster, NULL::int) sig2;
+
+-- See https://trac.osgeo.org/postgis/ticket/5491
+CREATE VIEW upgrade_test_raster_view_st_aspect AS
+SELECT
+	st_aspect(NULL::raster, NULL::int, NULL::raster) sig1,
+	st_aspect(NULL::raster) sig2;
