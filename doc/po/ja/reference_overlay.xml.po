@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-08-28 09:41+0000\n"
 "PO-Revision-Date: 2023-07-14 10:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -686,11 +686,9 @@ msgstr "分割後"
 #: reference_overlay.xml:454
 #, no-c-format
 msgid ""
-"Split a MultiLineString a Point, where the point lies exactly on both "
+"Split a MultiLineString by a Point, where the point lies exactly on both "
 "LineStrings elements."
 msgstr ""
-"マルチラインストリングをポイントで分割しますが、ポイントは確実にラインストリ"
-"ングの要素の上に存在しています。"
 
 #. Tag: para
 #: reference_overlay.xml:489

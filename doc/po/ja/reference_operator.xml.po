@@ -1642,10 +1642,10 @@ msgid ""
 "for doing nearest neighbor searches using an N-dimensional index (requires "
 "PostgreSQL 9.5.0 or higher)."
 msgstr ""
-"<varname>|=|</varname>演算子は二つのトラジェクトリの3次元距離を返します ("
-"<xref linkend=\"ST_IsValidTrajectory\"/>を参照して下さい)。これは、<xref "
-"linkend=\"ST_DistanceCPA\"/>と同じですが、N次元インデックスを使った近傍探索 ("
-"PostgreSQL 9.5.0以上)で使われる演算子です。"
+"<varname>|=|</varname>演算子は二つのトラジェクトリの3次元距離を返します "
+"(<xref linkend=\"ST_IsValidTrajectory\"/>を参照して下さい)。これは、<xref "
+"linkend=\"ST_DistanceCPA\"/>と同じですが、N次元インデックスを使った近傍探索 "
+"(PostgreSQL 9.5.0以上)で使われる演算子です。"
 
 #. Tag: para
 #: reference_operator.xml:1718
