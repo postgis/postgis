@@ -3,13 +3,13 @@
 # Translators:
 # BJ Jang <qgis.tr.kr@gmail.com>, 2013,2016
 # Kwon.Yongchan <ruvyn@naver.com>, 2016
-# Regina Obe <regina@arrival3d.com>, 2022.
+# Regina Obe <regina@arrival3d.com>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-06-30 21:55+0000\n"
-"PO-Revision-Date: 2022-04-20 14:55+0000\n"
+"PO-Revision-Date: 2023-08-28 12:08+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Korean <https://weblate.osgeo.org/projects/postgis/postgis/ko/"
 ">\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: postgis.xml:94
@@ -78,3 +78,9 @@ msgid ""
 "attribute credit to the PostGIS Project and wherever possible, a link back "
 "to <ulink url=\"https://postgis.net\">https://postgis.net</ulink>."
 msgstr ""
+"이 저작물은 <ulink url=\"http://creativecommons.org/licenses/by-sa/3.0/\""
+">크리에이티브 커먼즈 저작자표시-동일조건변경허락 3.0 라이선스</ulink>를 "
+"따릅니다. 사용자가 원하는 대로 이 문서를 사용할 수 있지만, 우리는 사용자가 "
+"PostGIS 프로젝트의 저작권을 명시하고 가능한 위치에 <ulink url=\"https"
+"://postgis.net\">https://postgis.net</ulink>으로 연결되는 링크를 삽입하도록 "
+"요구합니다."
