@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Preserve views depending on ST_Clip across raster upgrades (Sandro Santilli)
  - Preserve views depending on ST_Value across raster upgrades (Sandro Santilli)
  - #5841, Allow cancellation during raster grid interpolation (Paul Ramsey)
  - #5785, Reject second-raster expressions in single-raster ST_MapAlgebra (Regina Obe)
