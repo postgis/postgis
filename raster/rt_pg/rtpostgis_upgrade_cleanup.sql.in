@@ -519,9 +519,6 @@ DROP FUNCTION IF EXISTS st_addband(raster, raster[], integer);
 DROP FUNCTION IF EXISTS st_slope(raster, integer, text, text, double precision, boolean);
 DROP FUNCTION IF EXISTS st_slope(raster, integer, text, boolean);
 DROP FUNCTION IF EXISTS st_slope(raster, integer, text);
-DROP FUNCTION IF EXISTS st_aspect(raster, integer, text, text, boolean);
-DROP FUNCTION IF EXISTS st_aspect(raster, integer, text, boolean);
-DROP FUNCTION IF EXISTS st_aspect(raster, integer, text);
 DROP FUNCTION IF EXISTS st_hillshade(raster, integer, text, double precision, double precision, double precision, double precision, boolean);
 DROP FUNCTION IF EXISTS st_hillshade(raster, integer, text, float, float, float, float, boolean);
 DROP FUNCTION IF EXISTS st_hillshade(raster, integer, text, float, float, float, float);
@@ -570,7 +567,6 @@ DROP FUNCTION IF EXISTS _add_raster_constraint_regular_blocking(name, name, name
 -- function signature changed
 DROP FUNCTION IF EXISTS st_asbinary(raster);
 
-DROP FUNCTION IF EXISTS _st_aspect4ma(float8[], text, text[]);
 DROP FUNCTION IF EXISTS _st_hillshade4ma(float8[], text, text[]);
 DROP FUNCTION IF EXISTS _st_slope4ma(float8[], text, text[]);
 
