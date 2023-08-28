@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Document the ST_NumGeometries result for empty geometries (Martin Davis)
  - Correct the PAGC regression result for a directional street name (wangdapeng)
  - Improve compatibility of the cluster upgrade test script (Sandro Santilli)
  - Read regression directives correctly with or without a final newline (Sandro Santilli)
