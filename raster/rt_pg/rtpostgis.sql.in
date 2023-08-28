@@ -6555,11 +6555,14 @@ CREATE OR REPLACE FUNCTION _st_clip(
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
 
 -- Availability: 2.0.0
--- Changed: 2.1.0
+-- Changed: 2.1.0 - renamed the band parameter
+-- Replaces st_clip(rast raster, band int, geom geometry, nodataval float8, crop boolean) deprecated in 2.1.0
 CREATE OR REPLACE FUNCTION st_clip(
-	rast raster, nband integer[],
+	rast raster,
+	nband integer[],
 	geom geometry,
-	nodataval double precision[] DEFAULT NULL, crop boolean DEFAULT TRUE
+	nodataval double precision[] DEFAULT NULL,
+	crop boolean DEFAULT TRUE
 )
 	RETURNS raster
  	AS $$
@@ -6584,8 +6587,11 @@ CREATE OR REPLACE FUNCTION st_clip(
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Availability: 2.0.0
+-- Changed: 2.1.0 -- renamed the band parameter
+-- Replaces st_clip(rast raster, band int, geom geometry, crop boolean) deprecated in 2.1.0
 CREATE OR REPLACE FUNCTION st_clip(
-	rast raster, nband integer,
+	rast raster,
+	nband integer,
 	geom geometry,
 	crop boolean
 )
