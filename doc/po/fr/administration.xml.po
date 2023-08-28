@@ -1,6 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # H Santanna <delazj@gmail.com>, 2022.
-# Regina Obe <regina@arrival3d.com>, 2022.
+# Regina Obe <regina@arrival3d.com>, 2022, 2023.
 # Thomas Muguet <thomas.muguet@oslandia.com>, 2022.
 # Vincent Bre <vincent.bre@oslandia.com>, 2023.
 msgid ""
@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-29 10:16+0000\n"
-"PO-Revision-Date: 2023-05-15 15:33+0000\n"
-"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
+"PO-Revision-Date: 2023-08-28 12:08+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "administrationxml/fr/>\n"
 "Language: fr\n"
@@ -604,6 +604,12 @@ msgid ""
 "database with PostGIS installed without getting duplicate symbol errors or "
 "bringing forward deprecated objects."
 msgstr ""
+"Le processus de dump/rechargement est assisté par le script "
+"postgis_restore.pl qui se charge de sauter du dump toutes les définitions "
+"qui appartiennent à PostGIS (y compris les anciennes), ce qui vous permet de "
+"restaurer vos schémas et vos données dans une base de données où PostGIS est "
+"installé sans obtenir d'erreurs de symboles dupliqués ou d'avancer des "
+"objets obsolètes."
 
 #. Tag: para
 #: administration.xml:256
