@@ -48,12 +48,21 @@ DROP AGGREGATE IF EXISTS ST_Union(raster, text, text);
 DROP AGGREGATE IF EXISTS ST_Union(raster, text, text, text, double precision);
 DROP AGGREGATE IF EXISTS ST_Union(raster, record[]);
 
+-- Removed in 2.0.0 ? see ticket #5489
 DROP FUNCTION IF EXISTS ST_Intersects(raster,boolean,geometry);
+-- Removed in 2.0.0 ? see ticket #5489
 DROP FUNCTION IF EXISTS ST_Intersects(geometry,raster,boolean);
+-- Removed in 2.0.0 ? see ticket #5489
 DROP FUNCTION IF EXISTS ST_Intersects(raster,geometry);
+-- Removed in 2.0.0 ? see ticket #5489
 DROP FUNCTION IF EXISTS ST_Intersects(geometry,raster);
+-- Removed in 2.0.0 ? see ticket #5489
 DROP FUNCTION IF EXISTS ST_Intersects(raster, integer, boolean, geometry);
+-- Removed in 2.0.0 ? see ticket #5489
 DROP FUNCTION IF EXISTS ST_Intersects(geometry, raster, integer, boolean);
+-- Removed in 2.1.0, see ticket #5489
+DROP FUNCTION IF EXISTS _st_intersects(raster, geometry, integer);
+
 DROP FUNCTION IF EXISTS ST_Intersection(raster,raster, integer, integer);
 DROP FUNCTION IF EXISTS ST_Intersection(geometry,raster);
 

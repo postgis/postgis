@@ -6,8 +6,12 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
 
 * Bug Fixes *
 
+ - #5489, Fix upgrade with view using st_intersects(raster, ...)
+          (Sandro Santilli)
  - #5488, Fix upgrade with view using st_clip(raster, ...)
+          (Sandro Santilli)
  - #5484, Fix upgrade with view using st_value(raster,geometry,bool)
+          (Sandro Santilli)
  - #5479, postgis_full_version() and postgis_gdal_version() sometimes
           warn of deprecated SRID: 2163 (Regina Obe)
 
