@@ -69,6 +69,8 @@ DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, text);
 DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, int4, text);
 -- Removed in 2.1.0
 DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, text, text, text, float8, text, text, text, float8);
+-- Removed in 2.1.0
+DROP FUNCTION IF EXISTS st_clip(raster, int, geometry, float8[], boolean);
 -- Removed in 2.2.0
 DROP FUNCTION IF EXISTS _st_mapalgebra(rastbandarg[],regprocedure,text,integer,integer,text,raster,text[]);
 
