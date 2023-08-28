@@ -7,6 +7,7 @@
 -- Copyright (c) 2011 Regina Obe <lr@pcorp.us>
 -- Copyright (C) 2011 Regents of the University of California
 --   <bkpark@ucdavis.edu>
+-- Copyright (c) 2013-2023 Sandro Santilli <strk@kbt.io>
 --
 -- This program is free software; you can redistribute it and/or
 -- modify it under the terms of the GNU General Public License
@@ -250,12 +251,10 @@ DROP FUNCTION IF EXISTS st_bandpixeltype(raster, integer);
 DROP FUNCTION IF EXISTS st_value(raster, integer, integer, integer);
 DROP FUNCTION IF EXISTS st_value(raster, integer, integer);
 DROP FUNCTION IF EXISTS st_value(raster, integer, geometry);
-DROP FUNCTION IF EXISTS st_value(raster, geometry);
 -- signature changed
 DROP FUNCTION IF EXISTS st_value(raster, integer, integer, integer, boolean);
 DROP FUNCTION IF EXISTS st_value(raster, integer, integer, boolean);
 DROP FUNCTION IF EXISTS st_value(raster, integer, geometry, boolean);
-DROP FUNCTION IF EXISTS st_value(raster, geometry, boolean);
 DROP FUNCTION IF EXISTS st_value(raster, integer, geometry, double precision);
 DROP FUNCTION IF EXISTS st_value(raster, geometry, double precision);
 

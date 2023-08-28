@@ -5,7 +5,7 @@
 -- http://trac.osgeo.org/postgis/wiki/WKTRaster
 --
 -- Copyright (c) 2015-2017 Regina Obe <lr@pcorp.us>
--- Copyright (c) 2009-2012 Sandro Santilli <strk@kbt.io>
+-- Copyright (c) 2009-2023 Sandro Santilli <strk@kbt.io>
 -- Copyright (c) 2009-2010 Pierre Racine <pierre.racine@sbf.ulaval.ca>
 -- Copyright (c) 2009-2010 Jorge Arevalo <jorge.arevalo@deimos-space.com>
 -- Copyright (c) 2009-2010 Mateusz Loskot <mateusz@loskot.net>
@@ -4622,6 +4622,10 @@ CREATE OR REPLACE FUNCTION st_value(rast raster, x integer, y integer, exclude_n
     AS $$ SELECT st_value($1, 1::integer, $2, $3, $4) $$
     LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE _COST_MEDIUM;
 
+-- Availability: 2.0.0
+-- Changed: 2.1.0 - renamed the boolean parameter name
+-- Replaces st_value(raster, geometry) deprecated in 2.0.0 (signature existed in WKTRaster)
+-- Replaces st_value(rast raster, pt geometry, hasnodata boolean) deprecated in 2.1.0
 CREATE OR REPLACE FUNCTION st_value(rast raster, pt geometry, exclude_nodata_value boolean DEFAULT TRUE)
     RETURNS float8
     AS $$ SELECT @extschema@.ST_value($1, 1::integer, $2, $3, 'nearest'::text) $$
