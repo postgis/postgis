@@ -63,6 +63,11 @@ DROP FUNCTION IF EXISTS ST_Intersects(geometry, raster, integer, boolean);
 -- Removed in 2.1.0, see ticket #5489
 DROP FUNCTION IF EXISTS _st_intersects(raster, geometry, integer);
 
+-- Removed in 2.1.0, see ticket #5490
+DROP FUNCTION IF EXISTS _st_slope4ma(float8[], text, text[]);
+-- Removed in 2.0.0 ? see ticket #5490
+DROP FUNCTION IF EXISTS st_slope(raster, integer, text, boolean);
+
 DROP FUNCTION IF EXISTS ST_Intersection(raster,raster, integer, integer);
 DROP FUNCTION IF EXISTS ST_Intersection(geometry,raster);
 

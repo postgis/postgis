@@ -60,3 +60,9 @@ SELECT
 	st_intersects(NULL::geometry, NULL::raster, NULL::int) sig3,
 	st_intersects(NULL::raster, NULL::geometry, NULL::int) sig4,
 	st_intersects(NULL::raster, NULL::int, NULL::geometry)  sig5;
+
+-- See https://trac.osgeo.org/postgis/ticket/5490
+CREATE VIEW upgrade_test_raster_view_st_slope AS
+SELECT
+	st_slope(NULL::raster, NULL::int, NULL::raster) sig1,
+	st_slope(NULL::raster, NULL::int) sig2;
