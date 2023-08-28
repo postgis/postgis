@@ -3465,11 +3465,15 @@ CREATE OR REPLACE FUNCTION _st_slope4ma(value double precision[][][], pos intege
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
 
+-- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION st_slope(
-	rast raster, nband integer,
+	rast raster,
+	nband integer,
 	customextent raster,
-	pixeltype text DEFAULT '32BF', units text DEFAULT 'DEGREES',
-	scale double precision DEFAULT 1.0,	interpolate_nodata boolean DEFAULT FALSE
+	pixeltype text DEFAULT '32BF',
+	units text DEFAULT 'DEGREES',
+	scale double precision DEFAULT 1.0,
+	interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS raster
 	AS $$
@@ -3525,10 +3529,16 @@ CREATE OR REPLACE FUNCTION st_slope(
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
 
+-- Availability: 2.0.0
+-- Changed: 2.1.0 added units, scale and interpolate_nodata
+-- Replaces st_slope(raster, integer, text) deprecated in 2.1.0
 CREATE OR REPLACE FUNCTION st_slope(
-	rast raster, nband integer DEFAULT 1,
-	pixeltype text DEFAULT '32BF', units text DEFAULT 'DEGREES',
-	scale double precision DEFAULT 1.0,	interpolate_nodata boolean DEFAULT FALSE
+	rast raster,
+	nband integer DEFAULT 1,
+	pixeltype text DEFAULT '32BF',
+	units text DEFAULT 'DEGREES',
+	scale double precision DEFAULT 1.0,
+	interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@.ST_slope($1, $2, NULL::@extschema@.raster, $3, $4, $5, $6) $$
