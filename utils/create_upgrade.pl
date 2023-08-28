@@ -4,7 +4,7 @@
 # PostGIS - Spatial Types for PostgreSQL
 # http://postgis.net
 #
-# Copyright (C) 2014-2021 Sandro Santilli <strk@kbt.io>
+# Copyright (C) 2014-2023 Sandro Santilli <strk@kbt.io>
 # Copyright (C) 2009-2010 Paul Ramsey <pramsey@opengeo.org>
 # Copyright (C) 2005 Refractions Research Inc.
 #
@@ -202,16 +202,79 @@ while(<INPUT>)
         {
             my ($name, $args, $ver) = @$replaced;
             $name = lc($name); # lowercase the name
+
+            # Check if there are argument names
+            my @argtypearray;
+            my @argnamearray;
+            my $numnamedargs = 0;
+            foreach my $a ( split ',', $args )
+            {
+                my $argtype = $a;
+
+                # NOTE: we should not consider OUT parameters
+                #print "-- ARG: [$argtype]\n";
+                if ( $argtype =~ / *([^ ]+)  *([^ ]+)/ ) {
+                    my $argname = $1;
+                    $argtype = $2;
+                    #print "-- ARGNAME: [$argname]\n";
+                    #print "-- ARGTYPE: [$argtype]\n";
+                    push @argnamearray, "'$argname'";
+                    $numnamedargs++;
+                }
+
+                push @argtypearray, "$argtype";
+            }
+            my $argnames = join ',', @argnamearray;
+            my $argtypes = join ',', @argtypearray;
+
             my $renamed = $name . '_deprecated_by_postgis_' . ${ver};
             my $replacement = "${renamed}(${args})";
             push @renamed_deprecated_functions, ${renamed};
             print <<"EOF";
--- Rename $name ( $args ) deprecated in PostGIS $ver
+-- Rename $name ( $args ) deprecated in PostGIS $ver, if needed
 DO LANGUAGE 'plpgsql'
 \$postgis_proc_upgrade\$
 DECLARE
     detail TEXT;
+    argnames TEXT[];
 BEGIN
+
+    -- Check if the deprecated function exists
+    BEGIN
+
+        SELECT proargnames
+        FROM pg_catalog.pg_proc
+        WHERE oid = '$name($argtypes)'::regprocedure
+        INTO argnames;
+
+EOF
+            # Check for argument names match, if any argument name
+            # was given in the Replaces comment
+            if ( $numnamedargs )
+            {
+                print <<"EOF";
+        -- Check if the deprecated function has the expected $numnamedargs argument names
+        IF argnames[1:$numnamedargs] != ARRAY[$argnames]::text[]
+        THEN
+            RAISE DEBUG
+                'Function $name($argtypes) exist but has argnames % (not %)',
+                argnames, ARRAY[$argnames];
+            RETURN; -- nothing to do
+        END IF;
+EOF
+            }
+            print <<"EOF";
+
+    EXCEPTION
+    WHEN undefined_function THEN
+        RAISE DEBUG 'Replaced function $name($argtypes) does not exist';
+        RETURN; -- nothing to do
+    WHEN OTHERS THEN
+        GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
+        RAISE EXCEPTION 'Checking if replaced function $name($args) exists got % (%)', SQLERRM, SQLSTATE
+            USING DETAIL = detail;
+    END;
+
     -- Rename the replaced function, to avoid ambiguities.
     -- The renamed function will eventually be drop.
     BEGIN
