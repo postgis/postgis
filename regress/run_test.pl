@@ -98,7 +98,7 @@ GetOptions (
 	'verbose+' => \$VERBOSE,
 	'clean' => \$OPT_CLEAN,
 	'nodrop' => \$OPT_NODROP,
-	'upgrade' => \$OPT_UPGRADE,
+	'upgrade+' => \$OPT_UPGRADE,
 	'upgrade-path=s' => \$OPT_UPGRADE_PATH,
 	'dumprestore' => \$OPT_DUMPRESTORE,
 	'nocreate' => \$OPT_NOCREATE,
@@ -433,7 +433,8 @@ if ( $OPT_DUMPRESTORE )
 
 if ( $OPT_UPGRADE )
 {
-    print "Upgrading from postgis $libver\n";
+    my $upgradesleft = $OPT_UPGRADE;
+    print "Upgrading from postgis $libver ($upgradesleft upgrades requested)\n";
 
     foreach my $hook (@OPT_HOOK_BEFORE_UPGRADE)
     {
@@ -441,13 +442,16 @@ if ( $OPT_UPGRADE )
         die unless load_sql_file($hook, 1);
     }
 
-    if ( $OPT_EXTENSIONS )
+    while ( $upgradesleft-- )
     {
-        die unless upgrade_spatial_extensions();
-    }
-    else
-    {
-        die unless upgrade_spatial();
+        if ( $OPT_EXTENSIONS )
+        {
+            die unless upgrade_spatial_extensions();
+        }
+        else
+        {
+            die unless upgrade_spatial();
+        }
     }
 
     foreach my $hook (@OPT_HOOK_AFTER_UPGRADE)
@@ -687,7 +691,8 @@ Usage: $0 [<options>] <testname> [<testname>]
 Options:
   -v, --verbose   be verbose about failures
   --nocreate      do not create the regression database on start
-  --upgrade       source the upgrade scripts on start
+  --upgrade       upgrade db before runnign tests, can be passed
+                  multiple times to perform multiple upgrades.
   --upgrade-path  upgrade path, format <from>--<to>.
                   <from> can be specified as "unpackaged<version>"
                          to specify a script version to start from.
