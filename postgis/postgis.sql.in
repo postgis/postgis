@@ -4635,9 +4635,10 @@ CREATE OR REPLACE FUNCTION ST_LineCrossingDirection(line1 geometry, line2 geomet
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
--- Availability: 1.3.4
--- Replaces ST_DWithin(text, text, float8) deprecated in 3.0.0
-CREATE OR REPLACE FUNCTION ST_DWithin(geom1 geometry, geom2 geometry,float8)
+-- Availability: 1.3.0
+-- Changed: 2.0.0 added parameter names
+-- TODO: encode deprecation of the version with no parameter names ?
+CREATE OR REPLACE FUNCTION ST_DWithin(geom1 geometry, geom2 geometry, float8)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'LWGEOM_dwithin'
 	SUPPORT postgis_index_supportfn
