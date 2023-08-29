@@ -38,3 +38,15 @@ check-regress:
 check-long:
 	$(PERL) $(top_srcdir)/regress/run_test.pl $(RUNTESTFLAGS) $(TESTS) $(TESTS_SLOW)
 
+
+.PHONY: check-double-upgrade
+check-double-upgrade:
+	$(MAKE) check-regress \
+    RUNTESTFLAGS='$(RUNTESTFLAGS) --upgrade --upgrade' \
+    TESTS=$(top_srcdir)/regress/core/regress.sql
+
+.PHONY: check-locked-upgrade
+check-locked-upgrade:
+	$(MAKE) check-regress \
+    RUNTESTFLAGS="$(RUNTESTFLAGS) --upgrade --before-upgrade-script regress/hooks/use-all-functions.sql" \
+    TESTS=$(top_srcdir)/regress/core/regress.sql
