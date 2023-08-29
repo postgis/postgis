@@ -207,7 +207,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
     fi
     echo "Testing ${test_label}"
     RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-    make -C ${REGDIR} check && {
+    make -C ${REGDIR} check ${MAKE_ARGS} && {
       echo "PASS: ${test_label}"
     } || {
       echo "FAIL: ${test_label}"
@@ -236,7 +236,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
       fi
       echo "Testing ${test_label}"
       RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-      make -C ${REGDIR} check && {
+      make -C ${REGDIR} check ${MAKE_ARGS} && {
         echo "PASS: ${test_label}"
       } || {
         echo "FAIL: ${test_label}"
@@ -259,7 +259,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
         compatible_upgrade "${test_label}" ${majmin} ${to_version} || continue
         echo "Testing ${test_label}"
         RUNTESTFLAGS="-v --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-        make -C ${REGDIR} check && {
+        make -C ${REGDIR} check ${MAKE_ARGS} && {
           echo "PASS: ${test_label}"
         } || {
           echo "FAIL: ${test_label}"
