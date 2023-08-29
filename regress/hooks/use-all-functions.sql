@@ -2,6 +2,7 @@ DO $BODY$
 DECLARE
 	rec RECORD;
 BEGIN
+	DROP VIEW IF EXISTS postgis_locking_view;
 	FOR rec IN
 		SELECT
 			array_agg(
@@ -20,7 +21,7 @@ BEGIN
 				)
 				||
 				CASE WHEN prokind = 'w' THEN ' OVER()' ELSE '' END
-				|| ' as f' || oid
+				|| '::text as f' || oid
 			) f
 		FROM pg_catalog.pg_proc
 		WHERE proname like 'st\_%'
@@ -31,7 +32,9 @@ BEGIN
 		-- We skip functions taking anyelement for now
 		-- as those ones would need us to cast to some
 		-- real type
-		AND proname in ( 'st_asmvt' )
+		AND proname NOT IN ( 'st_asmvt', 'st_fromflatgeobuf' )
+		-- We skip functions using VARIADIC or OUTPUT arguments
+		AND ( NOT coalesce(proargmodes, '{}') && ARRAY['v'::"char",'o'] )
 	LOOP
 		EXECUTE format(
 			'CREATE VIEW postgis_locking_view AS SELECT %s',
