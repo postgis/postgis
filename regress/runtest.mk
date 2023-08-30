@@ -48,5 +48,7 @@ check-double-upgrade:
 .PHONY: check-locked-upgrade
 check-locked-upgrade:
 	$(MAKE) check-regress \
-    RUNTESTFLAGS="$(RUNTESTFLAGS) --upgrade --before-upgrade-script $(top_srcdir)/regress/hooks/use-all-functions.sql" \
+    RUNTESTFLAGS="$(RUNTESTFLAGS) --upgrade \
+      --before-upgrade-script $(top_srcdir)/regress/hooks/use-all-functions.sql \
+      --after-upgrade-script $(top_srcdir)/regress/hooks/hook-after-upgrade.sql " \
     TESTS=$(top_srcdir)/regress/core/regress.sql
