@@ -2349,6 +2349,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebraexpr(rast raster, pixeltype text, expres
     LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- All arguments supplied, use the C implementation.
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
         pixeltype text, onerastuserfunc regprocedure, variadic args text[])
     RETURNS raster
@@ -2356,6 +2357,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
     LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
 
 -- Variant 1: missing user args
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
         pixeltype text, onerastuserfunc regprocedure)
     RETURNS raster
@@ -2363,6 +2365,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
     LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Variant 2: missing pixeltype; default to pixeltype of rast
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
         onerastuserfunc regprocedure, variadic args text[])
     RETURNS raster
@@ -2370,6 +2373,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
     LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Variant 3: missing pixeltype and user args; default to pixeltype of rast
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
         onerastuserfunc regprocedure)
     RETURNS raster
@@ -2377,6 +2381,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
     LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Variant 4: missing band; default to band 1
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, pixeltype text,
         onerastuserfunc regprocedure, variadic args text[])
     RETURNS raster
@@ -2384,6 +2389,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, pixeltype text,
     LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Variant 5: missing band and user args; default to band 1
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, pixeltype text,
         onerastuserfunc regprocedure)
     RETURNS raster
@@ -2391,6 +2397,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, pixeltype text,
     LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Variant 6: missing band, and pixeltype; default to band 1, pixeltype of rast.
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, onerastuserfunc regprocedure,
         variadic args text[])
     RETURNS raster
@@ -2398,6 +2405,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, onerastuserfunc regproc
     LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Variant 7: missing band, pixeltype, and user args; default to band 1, pixeltype of rast.
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, onerastuserfunc regprocedure)
     RETURNS raster
     AS $$ SELECT @extschema@.ST_mapalgebrafct($1, 1, NULL, $2, NULL) $$
@@ -2430,6 +2438,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebraexpr(
 	AS $$ SELECT @extschema@.ST_mapalgebraexpr($1, 1, $2, 1, $3, $4, $5, $6, $7, $8) $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(
 	rast1 raster, band1 integer,
 	rast2 raster, band2 integer,
@@ -2441,11 +2450,13 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(
 	AS 'MODULE_PATHNAME', 'RASTER_mapAlgebra2'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(
 	rast1 raster,
 	rast2 raster,
 	tworastuserfunc regprocedure,
-	pixeltype text DEFAULT NULL, extenttype text DEFAULT 'INTERSECTION',
+	pixeltype text DEFAULT NULL,
+	extenttype text DEFAULT 'INTERSECTION',
 	VARIADIC userargs text[] DEFAULT NULL
 )
 	RETURNS raster
