@@ -183,14 +183,6 @@ SELECT _postgis_drop_function_if_needed
 	'GeometryA geometry, GeometryB geometry'
 	);
 
--- FUNCTION st_tileenvelope added a new default argument in 3.1
-SELECT _postgis_drop_function_if_needed
-    (
-    'st_tileenvelope',
-    'zoom integer, x integer, y integer, bounds geometry'
-    );
-
-
 -- FUNCTION st_buffer changed to add defaults in 3.0
 -- This signature was superseeded
 DROP FUNCTION IF EXISTS st_buffer(geometry, double precision); -- Does not conflict
