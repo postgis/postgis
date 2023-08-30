@@ -6,6 +6,7 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
 
 * Bug Fixes *
 
+ - #5500, Fix upgrade with view using ST_MapAlgebraFCT (Sandro Santilli)
  - #5499, Fix upgrade with view using st_tileenvelope (Sandro Santilli)
  - #5494, Fix double-upgrade with view using st_dwithin(text, ...)
           (Sandro Santilli)

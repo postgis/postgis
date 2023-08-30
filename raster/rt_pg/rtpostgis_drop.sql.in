@@ -76,6 +76,8 @@ DROP FUNCTION IF EXISTS st_aspect(raster, integer, text, boolean);
 DROP FUNCTION IF EXISTS ST_Intersection(raster,raster, integer, integer);
 DROP FUNCTION IF EXISTS ST_Intersection(geometry,raster);
 
+-- Never made it into 2.0.0, see https://trac.osgeo.org/postgis/ticket/5500
+DROP FUNCTION IF EXISTS  ST_MapAlgebraFct(raster, raster, regprocedure, VARIADIC text[]);
 -- Removed in 2.1.0
 DROP FUNCTION IF EXISTS _st_mapalgebra4unionfinal1(raster);
 -- Removed in 2.1.0

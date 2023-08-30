@@ -147,21 +147,7 @@ DROP FUNCTION IF EXISTS ST_MapAlgebra(raster, pixeltype text, expression text, n
 --signatures or arg names changed
 DROP FUNCTION IF EXISTS ST_MapAlgebraExpr(raster, integer, text, text, text);
 DROP FUNCTION IF EXISTS ST_MapAlgebraExpr(raster, text, text, text);
-DROP FUNCTION IF EXISTS ST_MapalgebraFct(raster, regprocedure);
-DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, text, regprocedure, VARIADIC text[]);
-DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, text, regprocedure);
-DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, regprocedure, VARIADIC text[]);
-DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, integer, regprocedure, variadic text[]);
-DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, integer, text, regprocedure, VARIADIC text[]);
-DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, integer, text, regprocedure);
-DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, integer, regprocedure, variadic text[]);
-DROP FUNCTION IF EXISTS ST_MapalgebraFct(raster, integer, regprocedure);
-DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, raster, regprocedure, text, text, VARIADIC text[]);
-DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, integer, raster, integer, regprocedure, text, text, VARIADIC text[]);
 DROP FUNCTION IF EXISTS ST_MapAlgebraFctNgb(raster, integer, text, integer, integer, regprocedure, text,  VARIADIC text[]);
-
---dropped functions
-DROP FUNCTION IF EXISTS  ST_MapAlgebraFct(raster, raster, regprocedure, VARIADIC text[]);
 
 --added extra parameter so these are obsolete --
 DROP FUNCTION IF EXISTS ST_AsRaster(geometry , integer , integer , double precision , double precision , text , double precision , double precision , double precision , double precision );
