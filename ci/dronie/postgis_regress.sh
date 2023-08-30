@@ -29,6 +29,11 @@ psql -c "select version()" template1
 #-----------------------------------------------
 
 RUNTESTFLAGS=-v make check
+RUNTESTFLAGS=-v make check-double-upgrade
+
+# TODO: uncomment this once it passes
+# Currently failing due to https://trac.osgeo.org/postgis/ticket/5499
+#RUNTESTFLAGS=-v check-locked-upgrade
 
 #-----------------------------------------------
 # Install
