@@ -32,6 +32,10 @@ RUNTESTFLAGS=-v make check
 RUNTESTFLAGS=-v make check-double-upgrade
 
 RUNTESTFLAGS=-v make -C regress check-locked-upgrade
+RUNTESTFLAGS=-v make -C topology/test check-locked-upgrade
+
+# This is blocked by https://trac.osgeo.org/postgis/ticket/5500
+#RUNTESTFLAGS=-v make -C raster/test/regress check-locked-upgrade
 
 #-----------------------------------------------
 # Install
