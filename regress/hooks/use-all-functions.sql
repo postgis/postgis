@@ -49,10 +49,18 @@ BEGIN
 			,'st_value' -- https://trac.osgeo.org/postgis/ticket/5513
 			,'st_georeference' -- https://trac.osgeo.org/postgis/ticket/5514
 			,'st_summarystats' -- https://trac.osgeo.org/postgis/ticket/5515
+			,'st_approxsummarystats' -- GENERIC https://trac.osgeo.org/postgis/ticket/5516
+			,'st_valuecount' -- GENERIC https://trac.osgeo.org/postgis/ticket/5516
+			,'st_nearestvalue' -- GENERIC https://trac.osgeo.org/postgis/ticket/5516
+			,'st_neighborhood' -- GENERIC https://trac.osgeo.org/postgis/ticket/5516
+			,'st_hillshade' -- GENERIC https://trac.osgeo.org/postgis/ticket/5516
+			,'st_setvalue' -- GENERIC https://trac.osgeo.org/postgis/ticket/5516
 		)
 		-- Skip function known to be problematic
 		AND oid::regprocedure::text NOT IN (
 			'st_polygon(raster,integer)' -- https://trac.osgeo.org/postgis/ticket/5507
+			,'st_intersection(raster,integer,geometry)' -- GENERIC https://trac.osgeo.org/postgis/ticket/5516
+			,'st_intersection(raster,geometry)' -- GENERIC https://trac.osgeo.org/postgis/ticket/5516
 		)
 		-- Skip functions taking polymorphic arguments (anyelement)
 		-- as those ones would need us to cast to some real type.
