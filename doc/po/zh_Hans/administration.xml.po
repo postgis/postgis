@@ -1,15 +1,16 @@
 # SOME DESCRIPTIVE TITLE.
-# Chen <onsummer@foxmail.com>, 2022.
-# Regina Obe <regina@arrival3d.com>, 2022, 2023.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-29 10:16+0000\n"
-"PO-Revision-Date: 2023-03-26 22:37+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
-"Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
-"postgis/administrationxml/zh_Hans/>\n"
+"PO-Revision-Date: 2023-08-26 10:20+0000\n"
+"Last-Translator: 左晨威 <zuocw@highgo.com>\n"
+"Language-Team: Chinese <https://weblate.osgeo.org/projects/postgis/administrationxml/"
+"zh_Hans/>\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -27,13 +28,13 @@ msgstr "PostGIS 管理"
 #: administration.xml:3
 #, no-c-format
 msgid "&database_tuning;"
-msgstr ""
+msgstr "&database_tuning"
 
 #. Tag: title
 #: administration.xml:9
 #, no-c-format
 msgid "Configuring raster support"
-msgstr ""
+msgstr "配置栅格支持"
 
 #. Tag: para
 #: administration.xml:11
@@ -54,7 +55,12 @@ msgid ""
 "For PostGIS 2.2, you can use the more cross-platform approach of setting the "
 "corresponding <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
-
+"从PostGIS2.1.3开始，默认情况下禁用数据库外栅格和所有栅格驱动程序"
+"要启用它们，请在服务器上设置环境变量"
+"<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname>和"
+"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname>。"
+"PostGIS2.2提供了一种跨平台方法，用于根据第<xref linkend=\"PostGIS_GUC\"/>进行设置。"
+"POSTGIS_GDAL_ENABLED_DRIVERSPOSTGIS_ENABLE_OUTDB_RASTERS"
 #. Tag: para
 #: administration.xml:19
 #, no-c-format
@@ -65,7 +71,7 @@ msgstr "如果要启用离线栅格:"
 #: administration.xml:21
 #, no-c-format
 msgid "Any other setting or no setting at all will disable out of db rasters."
-msgstr ""
+msgstr "如果包括任何其它值或不包含值，则会禁用离线栅格。"
 
 #. Tag: para
 #: administration.xml:22
@@ -73,7 +79,7 @@ msgstr ""
 msgid ""
 "In order to enable all GDAL drivers available in your GDAL install, set this "
 "environment variable as follows"
-msgstr ""
+msgstr "若启用已经安装的GDAL驱动程序，请设置以下环境变量："
 
 #. Tag: para
 #: administration.xml:24
@@ -81,13 +87,13 @@ msgstr ""
 msgid ""
 "If you want to only enable specific drivers, set your environment variable "
 "as follows:"
-msgstr ""
+msgstr "如果只想启用某些驱动程序，请按如下所示设置环境变量："
 
 #. Tag: para
 #: administration.xml:27
 #, no-c-format
 msgid "If you are on windows, do not quote the driver list"
-msgstr ""
+msgstr "在Windows上，不要在驱动程序列表中加上引号"
 
 #. Tag: para
 #: administration.xml:29
@@ -99,7 +105,9 @@ msgid ""
 "<replaceable>main</replaceable>/environment</filename> where 10 refers to "
 "version of PostgreSQL and main refers to the cluster."
 msgstr ""
-
+"环境变量的设置因操作系统而异。"
+"对于在Ubuntn或Debian上通过apt-postgresql安装的PostgreSQL，首选方法是编辑，"
+"其中10表示PostgreSQL版本，main表示集群。/etc/postgresql/10/main/environment"
 #. Tag: para
 #: administration.xml:32
 #, no-c-format
@@ -111,26 +119,29 @@ msgid ""
 "clicking <emphasis>Advanced System Settings -&gt;Advanced->Environment "
 "Variables</emphasis> and adding new system variables."
 msgstr ""
-
+"在Windows上，如果您作为服务运行，则可以通过系统变量进行设置，"
+"对于Windows7，您可以通过右键单击计算机>属性高级系统设置或在资源管理器中导航到。"
+"然后单击高级系统设置->高级>环境变量并添加新的系统变量。"
+"Panel\\All Control Panel Items\\System"
 #. Tag: para
 #: administration.xml:34
 #, no-c-format
 msgid ""
 "After you set the environment variables, you'll need to restart your "
 "PostgreSQL service for the changes to take effect."
-msgstr ""
+msgstr "设置环境变量后，您需要重启PostgreSQL服务才能使更改生效"
 
 #. Tag: title
 #: administration.xml:39
 #, no-c-format
 msgid "Creating spatial databases"
-msgstr ""
+msgstr "创建空间数据库"
 
 #. Tag: title
 #: administration.xml:42
 #, no-c-format
 msgid "Spatially enable database using EXTENSION"
-msgstr ""
+msgstr "使用扩展在空间上启用数据库"
 
 #. Tag: para
 #: administration.xml:44
@@ -139,7 +150,7 @@ msgid ""
 "If you are using PostgreSQL 9.1+ and have compiled and installed the "
 "extensions/postgis modules, you can turn a database into a spatial one using "
 "the EXTENSION mechanism."
-msgstr ""
+msgstr "如果您使用的是PostgreSQL9.1+并且已经编译并安装了扩展/postgis模块，则可以使用扩展机制将数据库转换为空间数据库。"
 
 #. Tag: para
 #: administration.xml:49
@@ -148,20 +159,20 @@ msgid ""
 "Core postgis extension includes geometry, geography, spatial_ref_sys and all "
 "the functions and comments. Raster and topology are packaged as a separate "
 "extension."
-msgstr ""
+msgstr "postgis的核心扩展包括几何、地理、spatial_ref_sys以及所有功能和注释。栅格和拓扑打包为单独的扩展模块。"
 
 #. Tag: para
 #: administration.xml:55
 #, no-c-format
 msgid ""
 "Run the following SQL snippet in the database you want to enable spatially:"
-msgstr ""
+msgstr "在要启用空间的数据库中运行以下SQL代码段："
 
 #. Tag: title
 #: administration.xml:63
 #, no-c-format
 msgid "Spatially enable database without using EXTENSION (discouraged)"
-msgstr ""
+msgstr "启用空间数据库而不使用EXTENSION（不鼓励）"
 
 #. Tag: para
 #: administration.xml:65
@@ -170,7 +181,7 @@ msgid ""
 "This is generally only needed if you cannot or don't want to get PostGIS "
 "installed in the PostgreSQL extension directory (for example during testing, "
 "development or in a restricted environment)."
-msgstr ""
+msgstr "通常，仅当你不能或不想在PostgreSQL扩展的目录中安装PostGIS时（例如，在测试或开发期间，或在受限环境中），才需要这样做。"
 
 #. Tag: para
 #: administration.xml:70
@@ -179,7 +190,7 @@ msgid ""
 "Adding PostGIS objects and function definitions into your database is done "
 "by loading the various sql files located in <filename>[prefix]/share/"
 "contrib</filename> as specified during the build phase."
-msgstr ""
+msgstr "加载在构建过程中指定的各种SQL文件，并将PostGIS对象和函数定义添加到数据库中。[prefix]/share/contrib"
 
 #. Tag: para
 #: administration.xml:77
@@ -189,7 +200,7 @@ msgid ""
 "functions) are in the <filename>postgis.sql</filename> script. Raster "
 "objects are in the <filename>rtpostgis.sql</filename> script. Topology "
 "objects are in the <filename>topology.sql</filename> script."
-msgstr ""
+msgstr "核心PostGIS对象（几何和地理类型及其相应的功能）位于脚本中。栅格对象位于脚本中。拓扑对象位于脚本中。 postgis.sqlrtpostgis.sqltopology.sql"
 
 #. Tag: para
 #: administration.xml:85
@@ -199,7 +210,7 @@ msgid ""
 "also load the <filename>spatial_ref_sys.sql</filename> definitions file and "
 "populate the <varname>spatial_ref_sys</varname> table. This will permit you "
 "to perform ST_Transform() operations on geometries."
-msgstr ""
+msgstr "对于完整的EPSG坐标系定义ID集，请加载定义文件并生成表。这允许执行几何函数ST_Transform()。spatial_ref_sys.sqlspatial_ref_sys"
 
 #. Tag: para
 #: administration.xml:92
@@ -209,19 +220,19 @@ msgid ""
 "the <filename>postgis_comments.sql</filename> script. Comments can be viewed "
 "by simply typing <command>\\dd [function_name]</command> from a "
 "<command>psql</command> terminal window."
-msgstr ""
+msgstr "如果要向 PostGIS 函数添加注释，可以在脚本中找到注释。 只需键入 \dd [函数名称]，即可从 psql 终端窗口查看注释。 postgis_comments.sql"
 
 #. Tag: para
 #: administration.xml:99
 #, no-c-format
 msgid "Run the following Shell commands in your terminal:"
-msgstr ""
+msgstr "在终端中运行以下 shell 命令："
 
 #. Tag: title
 #: administration.xml:109
 #, no-c-format
 msgid "Upgrading spatial databases"
-msgstr ""
+msgstr "升级空间数据库"
 
 #. Tag: para
 #: administration.xml:111
@@ -229,7 +240,7 @@ msgstr ""
 msgid ""
 "Upgrading existing spatial databases can be tricky as it requires "
 "replacement or introduction of new PostGIS object definitions."
-msgstr ""
+msgstr "当您需要替换或部署新的 PostGIS 对象定义时，升级现有空间数据库可能会很棘手。"
 
 #. Tag: para
 #: administration.xml:116
@@ -237,7 +248,7 @@ msgstr ""
 msgid ""
 "Unfortunately not all definitions can be easily replaced in a live database, "
 "so sometimes your best bet is a dump/reload process."
-msgstr ""
+msgstr "遗憾的是，并非所有定义都可以在正在运行的数据库中轻松替换，因此转储/重装可能是最好的选择"
 
 #. Tag: para
 #: administration.xml:121
@@ -245,7 +256,7 @@ msgstr ""
 msgid ""
 "PostGIS provides a SOFT UPGRADE procedure for minor or bugfix releases, and "
 "a HARD UPGRADE procedure for major releases."
-msgstr ""
+msgstr "PostGIS 为次要版本升级和错误修复提供软升级，为主要升级提供硬升级。"
 
 #. Tag: para
 #: administration.xml:126
@@ -254,13 +265,13 @@ msgid ""
 "Before attempting to upgrade PostGIS, it is always worth to backup your "
 "data. If you use the -Fc flag to pg_dump you will always be able to restore "
 "the dump with a HARD UPGRADE."
-msgstr ""
+msgstr "在尝试升级PostGIS之前备份数据始终是值得的。 可以将 -fc 标志与 pg_dump 一起使用，以始终通过硬升级还原转储。"
 
 #. Tag: title
 #: administration.xml:133
 #, no-c-format
 msgid "Soft upgrade"
-msgstr ""
+msgstr "软升级"
 
 #. Tag: para
 #: administration.xml:135
@@ -270,13 +281,13 @@ msgid ""
 "using the extension model as well. If you installed using the old sql script "
 "way, you are advised to switch your install to extensions because the script "
 "way is no longer supported."
-msgstr ""
+msgstr "如果使用扩展安装数据库，则必须使用扩展模型对其进行升级。 如果使用较旧的 SQL 脚本进行安装，则应切换到扩展，因为不再支持 SQL 脚本。"
 
 #. Tag: title
 #: administration.xml:137
 #, no-c-format
 msgid "Soft Upgrade 9.1+ using extensions"
-msgstr ""
+msgstr "使用 9.1 或更高版本的扩展进行软升级"
 
 #. Tag: para
 #: administration.xml:138
@@ -285,7 +296,7 @@ msgid ""
 "If you originally installed PostGIS with extensions, then you need to "
 "upgrade using extensions as well. Doing a minor upgrade with extensions, is "
 "fairly painless."
-msgstr ""
+msgstr "如果使用扩展程序安装了PostGIS，则需要使用该扩展程序进行升级。使用扩展程序进行小升级非常轻松。"
 
 #. Tag: para
 #: administration.xml:139
@@ -294,13 +305,14 @@ msgid ""
 "If you are running PostGIS 3 or above, then you should use the <xref "
 "linkend=\"PostGIS_Extensions_Upgrade\"/> function to upgrade to the latest "
 "version you have installed."
-msgstr ""
+msgstr "如果您运行的是 PostGIS 3 或更高版本，则应升级到已安装的具有<xref "
+"linkend=\"PostGIS_Extensions_Upgrade\"/>功能的最新版本。"
 
 #. Tag: para
 #: administration.xml:142
 #, no-c-format
 msgid "If you are running PostGIS 2.5 or lower, then do the following:"
-msgstr ""
+msgstr "如果您运行的是 PostGIS 2.5 或更早版本，执行以下操作："
 
 #. Tag: para
 #: administration.xml:145
@@ -308,13 +320,13 @@ msgstr ""
 msgid ""
 "If you have multiple versions of PostGIS installed, and you don't want to "
 "upgrade to the latest, you can explicitly specify the version as follows:"
-msgstr ""
+msgstr "如果安装了多个版本的 PostGIS，并且不想升级到最新版本，则可以指定显式版本。 执行以下操作："
 
 #. Tag: para
 #: administration.xml:147
 #, no-c-format
 msgid "If you get an error notice something like:"
-msgstr ""
+msgstr "您可能会看到类似于以下内容的错误通知："
 
 #. Tag: para
 #: administration.xml:149
@@ -323,13 +335,13 @@ msgid ""
 "Then you'll need to backup your database, create a fresh one as described in "
 "<xref linkend=\"create_new_db_extensions\"/> and then restore your backup on "
 "top of this new database."
-msgstr ""
+msgstr "在这种情况下，必须备份数据库，按照第 <xref linkend=\"create_new_db_extensions\"/>节 “使用扩展启用空间数据库”中所述生成新数据库，然后将备份还原到新数据库"
 
 #. Tag: para
 #: administration.xml:150
 #, no-c-format
 msgid "If you get a notice message like:"
-msgstr ""
+msgstr "您可能会收到类似于以下内容的消息："
 
 #. Tag: para
 #: administration.xml:152
@@ -340,7 +352,7 @@ msgid ""
 "an development version to the next (which doesn't get a new version number); "
 "in that case you can append \"next\" to the version string, and next time "
 "you'll need to drop the \"next\" suffix again:"
-msgstr ""
+msgstr "在这种情况下，所有内容都会更新，可以安全地忽略。 除非您尝试从SVN升级到下一个版本（没有新版本号），否则您可以在版本字符串中添加“next”。 但是，下次您需要删除“下一个”。"
 
 #. Tag: para
 #: administration.xml:159
@@ -350,7 +362,7 @@ msgid ""
 "often skip the reinstallation of postgis extension before restoring since "
 "the backup just has <code>CREATE EXTENSION postgis</code> and thus picks up "
 "the newest latest version during restore."
-msgstr ""
+msgstr "如果在未指定版本的情况下安装 PostGIS，则在恢复之前通常可以跳过重新安装 PostGIS 扩展模块。 备份将仅是两次还原之间的最新备份。CREATE EXTENSION postgis"
 
 #. Tag: para
 #: administration.xml:163
@@ -359,13 +371,13 @@ msgid ""
 "If you are upgrading PostGIS extension from a version prior to 3.0.0, you "
 "will have a new extension <emphasis>postgis_raster</emphasis> which you can "
 "safely drop, if you don't need raster support. You can drop as follows:"
-msgstr ""
+msgstr "如果要从 3.0.0 之前升级 PostGIS 扩展模块，则将具有一个新的postgis_raster扩展模块，如果不需要栅格功能，则可以安全地将其移除。 执行以下操作："
 
 #. Tag: title
 #: administration.xml:171
 #, no-c-format
 msgid "Soft Upgrade Pre 9.1+ or without extensions"
-msgstr ""
+msgstr "之前或非扩展软升级"
 
 #. Tag: para
 #: administration.xml:173
@@ -374,7 +386,7 @@ msgid ""
 "This section applies only to those who installed PostGIS not using "
 "extensions. If you have extensions and try to upgrade with this approach "
 "you'll get messages like:"
-msgstr ""
+msgstr "它适用于在不使用扩展名的情况下安装了PostGIS的人。如果您使用的是扩展并使用此方法，您将看到类似于以下内容的消息："
 
 #. Tag: para
 #: administration.xml:179
@@ -383,7 +395,7 @@ msgid ""
 "NOTE: if you are moving from PostGIS 1.* to PostGIS 2.* or from PostGIS 2.* "
 "prior to r7409, you cannot use this procedure but would rather need to do a "
 "<link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
-msgstr ""
+msgstr "注： 如果要迁移到 r1 之前的 PostGIS 7429.* 或 PostGIS 2.*，则此过程不可用，但需要执行<link linkend=\"hard_upgrade\">硬升级</link>。"
 
 #. Tag: para
 #: administration.xml:185
@@ -392,7 +404,7 @@ msgid ""
 "After compiling and installing (make install) you should find a set of "
 "<filename>*_upgrade.sql</filename> files in the installation folders. You "
 "can list them all with:"
-msgstr ""
+msgstr "编译并安装（进行安装）后，您应该在目标文件夹中找到文件集。 您可以使用以下命令获取列表： *_upgrade.sql"
 
 #. Tag: para
 #: administration.xml:194
@@ -400,7 +412,7 @@ msgstr ""
 msgid ""
 "Load them all in turn, starting from <filename>postgis_upgrade.sql</"
 "filename>."
-msgstr ""
+msgstr "从postgis_upgrade.sql按顺序加载所有内容"
 
 #. Tag: para
 #: administration.xml:200
@@ -410,13 +422,13 @@ msgid ""
 "upgrade files named <filename>rtpostgis_upgrade.sql</filename>, "
 "<filename>topology_upgrade.sql</filename> and <filename>sfcgal_upgrade.sql</"
 "filename> respectively. If you need them:"
-msgstr ""
+msgstr "相同的过程适用于栅格、拓扑和 sfcgal 扩展，升级文件分别名为 rtpostgis_upgrade.sql、topology_upgrade.sql 和 sfcgal_upgrade.sql。 如果您需要它们："
 
 #. Tag: para
 #: administration.xml:213
 #, no-c-format
 msgid "You are advised to switch to an extension based install by running"
-msgstr ""
+msgstr "建议您通过运行切换到基于扩展的安装"
 
 #. Tag: para
 #: administration.xml:217
@@ -425,7 +437,7 @@ msgid ""
 "If you can't find the <filename>postgis_upgrade.sql</filename> specific for "
 "upgrading your version you are using a version too early for a soft upgrade "
 "and need to do a <link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
-msgstr ""
+msgstr "如果您找不到专门用于升级您的版本的 postgis_upgrade.sql，那么您使用的版本对于软升级来说太早了，需要进行<link linkend=\"hard_upgrade\">硬升级</link>。"
 
 #. Tag: para
 #: administration.xml:226
@@ -434,13 +446,13 @@ msgid ""
 "The <xref linkend=\"PostGIS_Full_Version\"/> function should inform you "
 "about the need to run this kind of upgrade using a \"procs need upgrade\" "
 "message."
-msgstr ""
+msgstr "<xref linkend=\"PostGIS_Full_Version\"/>函数的“进程需要升级”消息提供了有关需要执行此类升级的信息。"
 
 #. Tag: title
 #: administration.xml:236
 #, no-c-format
 msgid "Hard upgrade"
-msgstr ""
+msgstr "硬升级"
 
 #. Tag: para
 #: administration.xml:238
@@ -451,7 +463,7 @@ msgid ""
 "SOFT UPGRADE is not possible. The <link linkend=\"release_notes\">Release "
 "Notes</link> appendix reports for each version whether you need a dump/"
 "reload (HARD UPGRADE) to upgrade."
-msgstr ""
+msgstr "硬升级意味着完全转储/重新加载 PostGIS 中可用的数据。如果 PostGIS 对象的内部存储状态发生更改或无法进行软升级，则需要硬升级。 附录中的<link linkend=\"release_notes\">发行说明</link>指示每个版本是否需要转储/重新加载（硬升级）。"
 
 #. Tag: para
 #: administration.xml:247
@@ -462,7 +474,7 @@ msgid ""
 "(including old ones), allowing you to restore your schemas and data into a "
 "database with PostGIS installed without getting duplicate symbol errors or "
 "bringing forward deprecated objects."
-msgstr ""
+msgstr "转储/重新加载操作由脚本辅助postgis_restore。 此脚本跳过属于 PostGIS 的所有定义（包括旧定义）。 您还可以将方案和数据恢复到 PostGIS 安装的数据库，而不会传递重复的符号错误或已弃用的对象。"
 
 #. Tag: para
 #: administration.xml:256
@@ -471,13 +483,13 @@ msgid ""
 "Supplementary instructions for windows users are available at <ulink "
 "url=\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows Hard "
 "upgrade</ulink>."
-msgstr ""
+msgstr "有关 Windows 的其他信息，请参阅 Windows <ulink url=\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows 硬升级</ulink>。"
 
 #. Tag: para
 #: administration.xml:259
 #, no-c-format
 msgid "The Procedure is as follows:"
-msgstr ""
+msgstr "程序如下："
 
 #. Tag: para
 #: administration.xml:267
@@ -487,7 +499,7 @@ msgid ""
 "call it <varname>olddb</varname>) include binary blobs (-b) and verbose (-v) "
 "output. The user can be the owner of the db, need not be postgres super "
 "account."
-msgstr ""
+msgstr "以详细模式 （-v） 生成已升级数据库的“自定义格式”转储（我们这样称呼它），其中包含二进制 BLOB 数据 （-b） 的转储。 用户可以是数据库所有者，不需要是PostgreSQL超级用户。 olddb"
 
 #. Tag: para
 #: administration.xml:281
@@ -497,7 +509,7 @@ msgid ""
 "database as <varname>newdb</varname>. Please refer to <xref "
 "linkend=\"create_new_db\"/> and <xref linkend=\"create_new_db_extensions\"/> "
 "for instructions on how to do this."
-msgstr ""
+msgstr "在新数据库中全新安装 PostGIS——我们将此数据库称为 newdb。 有关如何执行此操作的说明，请参阅第 <xref linkend=\"create_new_db\"/>节“不使用扩展在空间上启用数据库（不鼓励）”和第<xref linkend=\"create_new_db_extensions\"/>节“使用扩展在空间上启用数据库”"
 
 #. Tag: para
 #: administration.xml:288
@@ -508,7 +520,7 @@ msgid ""
 "fixes in the official set will be properly propagated to restored databases. "
 "If for any reason you really want your own overrides of standard entries "
 "just don't load the spatial_ref_sys.sql file when creating the new db."
-msgstr ""
+msgstr "转储中的spatial_ref_sys将还原，但不会覆盖现有spatial_ref_sys。 这是为了确保对正式数据集的更正被传送到要恢复的数据库。 如果要覆盖标准条目，只需在生成 newdb 时不要加载spaltial_ref_sys.sql文件。"
 
 #. Tag: para
 #: administration.xml:298
@@ -521,7 +533,7 @@ msgid ""
 "views and functions before dumping instead, if possible. The deprecated "
 "functions can be later removed by loading <filename>uninstall_legacy.sql</"
 "filename>."
-msgstr ""
+msgstr "如果您的数据库确实很旧，或者您知道您在视图和函数中使用了长期不推荐使用的函数，则可能需要为所有函数和视图等加载legacy.sql才能正确返回。 仅在确实需要时才执行此操作。 如果可能的话，请考虑在转储之前升级您的视图和函数。 稍后可以通过加载 uninstall_legacy.sql 来删除已弃用的函数。"
 
 #. Tag: para
 #: administration.xml:314
@@ -530,13 +542,13 @@ msgid ""
 "Restore your backup into your fresh <varname>newdb</varname> database using "
 "postgis_restore. Unexpected errors, if any, will be printed to the standard "
 "error stream by psql. Keep a log of those."
-msgstr ""
+msgstr "使用 postgis_restore 将备份恢复到新的 newdb 数据库中。 意外错误（如果有）将由 psql 打印到标准错误流。 记录这些内容。"
 
 #. Tag: para
 #: administration.xml:328
 #, no-c-format
 msgid "Errors may arise in the following cases:"
-msgstr ""
+msgstr "在以下情况下可能会发生错误："
 
 #. Tag: para
 #: administration.xml:334
@@ -549,7 +561,7 @@ msgid ""
 "code. If the <filename>legacy.sql</filename> way works for you, don't forget "
 "to fix your code to stop using deprecated functions and drop them loading "
 "<filename>uninstall_legacy.sql</filename>."
-msgstr ""
+msgstr "某些视图或函数使用已弃用的 PostGIS 对象。 要更正此问题，您可以尝试在还原之前加载脚本。 您还可以将已弃用的对象还原到仍具有它们的 PostGIS 版本，重写代码，然后再次移动它们。 如果使用 ，请不要忘记更正停止使用已弃用函数的代码并加载 。 legacy.sqllegacy.sqluninstall_legacy.sql"
 
 #. Tag: para
 #: administration.xml:346
@@ -564,7 +576,8 @@ msgid ""
 "invariant to hold and possibly also its primary key ( when multiple invalid "
 "SRIDS get converted to the same reserved SRID value )."
 msgstr ""
-
+"转储文件中spatial_ref_sys的一些自定义记录具有 无效的 SRID 值。有效 SRID 值大于 0 并且小于 999000。999000.999999 范围内的值 保留供内部使用，而值> 999999不能 完全使用。 所有具有无效 SRID 的自定义记录都将"
+"被保留， 随着这些> 999999移动到保留范围内，但是 spatial_ref_sys表将失去检查约束保护 对于该不变性，也可能保持其主键 （当多个无效的 SRID 转换为相同的保留时 SRID 值 ）。"
 #. Tag: para
 #: administration.xml:360
 #, no-c-format
@@ -573,7 +586,7 @@ msgid ""
 "value (maybe in the 910000..910999 range), convert all your tables to the "
 "new srid (see <xref linkend=\"UpdateGeometrySRID\"/>), delete the invalid "
 "entry from spatial_ref_sys and re-construct the check(s) with:"
-msgstr ""
+msgstr "为了解决此问题，您应该将自定义SRS复制到 具有有效值的 SRID（可能在 910000..910999 范围），将所有表转换为新的 srid （请参阅<xref linkend=\"UpdateGeometrySRID\"/>），删除无效的 从spatial_ref_sys输入并重建检查："
 
 #. Tag: para
 #: administration.xml:372
@@ -583,7 +596,8 @@ msgid ""
 "en.wikipedia.org/wiki/Institut_g%C3%A9ographique_national\"> IGN </ulink> "
 "cartography, you will have probably SRIDs out of range and you will see, "
 "when importing your database, issues like this :"
-msgstr ""
+msgstr "如果要升级包含法国 <ulink url=\"https://"
+"en.wikipedia.org/wiki/Institut_g%C3%A9ographique_national\"> IGN </ulink> 映射的旧数据库，则可能会超出 SRID 的范围，并在导入数据库时遇到以下问题："
 
 #. Tag: para
 #: administration.xml:381
@@ -592,13 +606,13 @@ msgid ""
 "In this case, you can try following steps : first throw out completely the "
 "IGN from the sql which is resulting from postgis_restore. So, after having "
 "run :"
-msgstr ""
+msgstr "在这种情况下，您可以尝试以下步骤： 完全丢弃最初从 SQL postgis_restore中产生的 IGN。 为此，请运行以下命令："
 
 #. Tag: para
 #: administration.xml:389
 #, no-c-format
 msgid "run this command :"
-msgstr ""
+msgstr "运行以下命令："
 
 #. Tag: para
 #: administration.xml:395
@@ -609,4 +623,7 @@ msgid ""
 "githubusercontent.com/Remi-C/IGN_spatial_ref_for_PostGIS/master/"
 "Put_IGN_SRS_into_Postgis.sql\"> this script </ulink> After these operations, "
 "import your data :"
-msgstr ""
+msgstr "之后，生成一个新数据库，启用必要的 PostGIS 扩展，并确保使用此 <ulink url=\"https://raw."
+"githubusercontent.com/Remi-C/IGN_spatial_ref_for_PostGIS/master/"
+"Put_IGN_SRS_into_Postgis.sql\"> 脚本</ulink>插入法语 IGN 系统。 完成这些过程后，按如下方式导入数据："
+
