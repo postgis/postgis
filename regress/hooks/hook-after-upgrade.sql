@@ -25,3 +25,6 @@ DROP FUNCTION IF EXISTS st_dwithin_deprecated_by_postgis_300(geography,geography
 DROP FUNCTION IF EXISTS st_dwithin_deprecated_by_postgis_300(text,text,float8);
 DROP FUNCTION IF EXISTS st_clusterkmeans_deprecated_by_postgis_302(geometry,integer);
 DROP FUNCTION IF EXISTS st_distance_deprecated_by_postgis_300(geography,geography);
+
+
+DROP SCHEMA IF EXISTS postgis_upgrade_test_data CASCADE;
