@@ -36,7 +36,6 @@ BEGIN
 		-- Skip function known to be problematic
 		AND proname NOT IN (
 			'st_approxquantile' -- https://trac.osgeo.org/postgis/ticket/5498
-			,'st_mapalgebrafct' -- https://trac.osgeo.org/postgis/ticket/5500
 			,'st_bandmetadata' -- https://trac.osgeo.org/postgis/ticket/5502
 			,'st_bandnodatavalue' -- https://trac.osgeo.org/postgis/ticket/5503
 			,'st_setgeoreference' -- https://trac.osgeo.org/postgis/ticket/5504
