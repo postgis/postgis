@@ -35,27 +35,25 @@ BEGIN
 		AND prokind in ('f','w')
 		-- Skip function known to be problematic
 		AND proname NOT IN (
-			'fake'
-			,'st_approxquantile' -- https://trac.osgeo.org/postgis/ticket/5498
---			,'st_mapalgebrafct' -- https://trac.osgeo.org/postgis/ticket/5500
---			,'st_bandmetadata' -- unreported
---			,'st_bandnodatavalue' -- unreported
---			,'st_setgeoreference' -- unreported
---			,'st_setbandisnodata' -- unreported
---			,'st_setbandnodatavalue' -- unreported
---			,'st_addband' -- unreported
---			,'st_bandisnodata' -- unreported
---			,'st_makeemptyraster' -- unreported
---			,'st_bandpath' -- unreported
---			,'st_bandpixeltype' -- unreported
---			,'st_value' -- unreported
---			,'st_georeference' -- unreported
---			,'st_summarystats' -- unreported
+			'st_approxquantile' -- https://trac.osgeo.org/postgis/ticket/5498
+			,'st_mapalgebrafct' -- https://trac.osgeo.org/postgis/ticket/5500
+			,'st_bandmetadata' -- https://trac.osgeo.org/postgis/ticket/5502
+			,'st_bandnodatavalue' -- https://trac.osgeo.org/postgis/ticket/5503
+			,'st_setgeoreference' -- https://trac.osgeo.org/postgis/ticket/5504
+			,'st_setbandisnodata' -- https://trac.osgeo.org/postgis/ticket/5505
+			,'st_setbandnodatavalue' -- https://trac.osgeo.org/postgis/ticket/5506
+			,'st_makeemptyraster' -- https://trac.osgeo.org/postgis/ticket/5508
+			,'st_addband' -- https://trac.osgeo.org/postgis/ticket/5509
+			,'st_bandisnodata' -- https://trac.osgeo.org/postgis/ticket/5510
+			,'st_bandpath' -- https://trac.osgeo.org/postgis/ticket/5511
+			,'st_bandpixeltype' -- https://trac.osgeo.org/postgis/ticket/5512
+			,'st_value' -- https://trac.osgeo.org/postgis/ticket/5513
+			,'st_georeference' -- https://trac.osgeo.org/postgis/ticket/5514
+			,'st_summarystats' -- https://trac.osgeo.org/postgis/ticket/5515
 		)
 		-- Skip function known to be problematic
 		AND oid::regprocedure::text NOT IN (
-			'fake'
---			,'st_polygon(raster,integer)' -- unreported
+			'st_polygon(raster,integer)' -- https://trac.osgeo.org/postgis/ticket/5507
 		)
 		-- Skip functions taking polymorphic arguments (anyelement)
 		-- as those ones would need us to cast to some real type.
