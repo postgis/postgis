@@ -58,7 +58,7 @@ BEGIN
 	WHERE pronamespace = postgis_namespace
 	AND pg_catalog.LOWER(p.proname) = pg_catalog.LOWER(function_name)
 	AND pg_catalog.pg_function_is_visible(p.oid)
-	AND pg_catalog.LOWER(pg_catalog.pg_get_function_identity_arguments(p.oid)) ~ pg_catalog.LOWER(function_arguments)
+	AND pg_catalog.LOWER(pg_catalog.pg_get_function_identity_arguments(p.oid)) = pg_catalog.LOWER(function_arguments)
 	INTO matching_function;
 
 	IF matching_function.oid IS NOT NULL THEN
