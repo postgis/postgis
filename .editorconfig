@@ -82,3 +82,7 @@ indent_size = 4
 
 [*.xsl]
 indent_style = tab
+
+[postgis/common_after_upgrade.sql]
+indent_style = space
+indent_size = 4
