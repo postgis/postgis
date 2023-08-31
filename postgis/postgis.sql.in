@@ -6614,8 +6614,6 @@ CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex f
 	PARALLEL SAFE
 	_COST_HIGH;
 
--- No longer needed with C language implementation
-DROP FUNCTION IF EXISTS _st_concavehull(geometry);
 
 #else
 

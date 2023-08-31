@@ -214,6 +214,18 @@ while (<>)
 		handle_function_signature($line);
 	}
 
+	# Retired function signature
+	# EXAMPLE: SELECT _postgis_retire_upgrade_function(pg_catalog.to_regprocedure('pgis_geometry_union_finalfn(internal)'));
+	elsif ( /SELECT _postgis_retire_upgrade_function\(pg_catalog\.to_regprocedure\('[^']*'/ )
+	{
+		my $origline = $_;
+		my $line = $origline;
+
+		$line =~ s/.*SELECT _postgis_retire_upgrade_function\(pg_catalog\.to_regprocedure\('([^']*)'.*/$1/;
+
+		handle_function_signature($line);
+	}
+
 	# Deprecated function signature using
 	# _postgis_drop_function_by_signature
 	# EXAMPLE: SELECT _postgis_drop_function_by_signature('pgis_geometry_union_finalfn(internal)');

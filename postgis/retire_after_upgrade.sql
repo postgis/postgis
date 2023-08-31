@@ -1,0 +1,1 @@
+DROP FUNCTION _postgis_retire_upgrade_function(pg_catalog.regprocedure);

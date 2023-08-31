@@ -37,7 +37,6 @@ CREATE OR REPLACE FUNCTION _postgis_drop_function_if_needed(
 	function_name text,
 	function_arguments text) RETURNS void AS $$
 DECLARE
-	sql_drop text;
 	postgis_namespace OID;
 	matching_function REGPROCEDURE;
 BEGIN
@@ -58,16 +57,7 @@ BEGIN
 	AND pg_catalog.LOWER(pg_catalog.pg_get_function_identity_arguments(p.oid)) ~ pg_catalog.LOWER(function_arguments)
 	INTO matching_function;
 
-	IF matching_function IS NOT NULL THEN
-		sql_drop := 'DROP FUNCTION ' || matching_function;
-		RAISE DEBUG 'SQL query: %', sql_drop;
-		BEGIN
-			EXECUTE sql_drop;
-		EXCEPTION
-			WHEN OTHERS THEN
-				RAISE EXCEPTION 'Could not drop function %. You might need to drop dependant objects. Postgres error: %', function_name, SQLERRM;
-		END;
-	END IF;
+	PERFORM _postgis_retire_upgrade_function(matching_function);
 
 END;
 $$ LANGUAGE plpgsql;
@@ -185,12 +175,12 @@ SELECT _postgis_drop_function_if_needed
 
 -- FUNCTION st_buffer changed to add defaults in 3.0
 -- This signature was superseeded
-DROP FUNCTION IF EXISTS st_buffer(geometry, double precision); -- Does not conflict
+SELECT _postgis_retire_upgrade_function(pg_catalog.to_regprocedure('st_buffer(geometry, double precision)')); -- Does not conflict
 
 -- FUNCTION ST_CurveToLine changed to add defaults in 2.5
 -- These signatures were superseeded
-DROP FUNCTION IF EXISTS ST_CurveToLine(geometry, integer); -- Does not conflict
-DROP FUNCTION IF EXISTS ST_CurveToLine(geometry); -- Does not conflict
+SELECT _postgis_retire_upgrade_function(pg_catalog.to_regprocedure('ST_CurveToLine(geometry, integer)')); -- Does not conflict
+SELECT _postgis_retire_upgrade_function(pg_catalog.to_regprocedure('ST_CurveToLine(geometry)')); -- Does not conflict
 
 -- geometry_columns changed parameter types so we verify if it needs to be dropped
 -- We check the catalog to see if the view (geometry_columns) has a column
