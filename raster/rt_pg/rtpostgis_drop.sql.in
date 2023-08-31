@@ -49,102 +49,95 @@ DROP AGGREGATE IF EXISTS ST_Union(raster, text, text, text, double precision);
 DROP AGGREGATE IF EXISTS ST_Union(raster, record[]);
 
 -- Removed in 2.0.0 ? see ticket #5489
-DROP FUNCTION IF EXISTS ST_Intersects(raster,boolean,geometry);
+SELECT _postgis_drop_function_by_signature('ST_Intersects(raster,boolean,geometry)');
 -- Removed in 2.0.0 ? see ticket #5489
-DROP FUNCTION IF EXISTS ST_Intersects(geometry,raster,boolean);
+SELECT _postgis_drop_function_by_signature('ST_Intersects(geometry,raster,boolean)');
 -- Removed in 2.0.0 ? see ticket #5489
-DROP FUNCTION IF EXISTS ST_Intersects(raster,geometry);
+SELECT _postgis_drop_function_by_signature('ST_Intersects(raster,geometry)');
 -- Removed in 2.0.0 ? see ticket #5489
-DROP FUNCTION IF EXISTS ST_Intersects(geometry,raster);
+SELECT _postgis_drop_function_by_signature('ST_Intersects(geometry,raster)');
 -- Removed in 2.0.0 ? see ticket #5489
-DROP FUNCTION IF EXISTS ST_Intersects(raster, integer, boolean, geometry);
+SELECT _postgis_drop_function_by_signature('ST_Intersects(raster, integer, boolean, geometry)');
 -- Removed in 2.0.0 ? see ticket #5489
-DROP FUNCTION IF EXISTS ST_Intersects(geometry, raster, integer, boolean);
+SELECT _postgis_drop_function_by_signature('ST_Intersects(geometry, raster, integer, boolean)');
 -- Removed in 2.1.0, see ticket #5489
-DROP FUNCTION IF EXISTS _st_intersects(raster, geometry, integer);
+SELECT _postgis_drop_function_by_signature('_st_intersects(raster, geometry, integer)');
 
 -- Removed in 2.1.0, see ticket #5490
-DROP FUNCTION IF EXISTS _st_slope4ma(float8[], text, text[]);
+SELECT _postgis_drop_function_by_signature('_st_slope4ma(float8[], text, text[])');
 -- Removed in 2.0.0 ? see ticket #5490
-DROP FUNCTION IF EXISTS st_slope(raster, integer, text, boolean);
+SELECT _postgis_drop_function_by_signature('st_slope(raster, integer, text, boolean)');
 
 -- Removed in 2.1.0, see ticket #5491
-DROP FUNCTION IF EXISTS _st_aspect4ma(float8[], text, text[]);
+SELECT _postgis_drop_function_by_signature('_st_aspect4ma(float8[], text, text[])');
 -- Removed before 2.0.0 ? see ticket #5491
-DROP FUNCTION IF EXISTS st_aspect(raster, integer, text, boolean);
+SELECT _postgis_drop_function_by_signature('st_aspect(raster, integer, text, boolean)');
 
-DROP FUNCTION IF EXISTS ST_Intersection(raster,raster, integer, integer);
-DROP FUNCTION IF EXISTS ST_Intersection(geometry,raster);
+SELECT _postgis_drop_function_by_signature('ST_Intersection(raster,raster, integer, integer)');
+SELECT _postgis_drop_function_by_signature('ST_Intersection(geometry,raster)');
 
 -- Never made it into 2.0.0, see https://trac.osgeo.org/postgis/ticket/5500
-DROP FUNCTION IF EXISTS  ST_MapAlgebraFct(raster, raster, regprocedure, VARIADIC text[]);
+SELECT _postgis_drop_function_by_signature('ST_MapAlgebraFct(raster, raster, regprocedure, text[])');
 -- Removed in 2.1.0
-DROP FUNCTION IF EXISTS _st_mapalgebra4unionfinal1(raster);
+SELECT _postgis_drop_function_by_signature('_st_mapalgebra4unionfinal1(raster)');
 -- Removed in 2.1.0
-DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, int4);
+SELECT _postgis_drop_function_by_signature('_st_mapalgebra4unionstate(raster, raster, int4)');
 -- Removed in 2.1.0
-DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster);
+SELECT _postgis_drop_function_by_signature('_st_mapalgebra4unionstate(raster, raster)');
 -- Removed in 2.1.0
-DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, text);
+SELECT _postgis_drop_function_by_signature('_st_mapalgebra4unionstate(raster, raster, text)');
 -- Removed in 2.1.0
-DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, int4, text);
+SELECT _postgis_drop_function_by_signature('_st_mapalgebra4unionstate(raster, raster, int4, text)');
 -- Removed in 2.1.0
-DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, text, text, text, float8, text, text, text, float8);
+SELECT _postgis_drop_function_by_signature('_st_mapalgebra4unionstate(raster, raster, text, text, text, float8, text, text, text, float8)');
 -- Removed in 2.1.0
-DROP FUNCTION IF EXISTS st_clip(raster, int, geometry, float8[], boolean);
+SELECT _postgis_drop_function_by_signature('st_clip(raster, int, geometry, float8[], boolean)');
 -- Removed in 2.2.0
-DROP FUNCTION IF EXISTS _st_mapalgebra(rastbandarg[],regprocedure,text,integer,integer,text,raster,text[]);
+SELECT _postgis_drop_function_by_signature('_st_mapalgebra(rastbandarg[],regprocedure,text,integer,integer,text,raster,text[])');
 
 -- Removed in 3.1.0
-DROP FUNCTION IF EXISTS _st_count(text, text, integer, boolean, double precision);
-DROP FUNCTION IF EXISTS st_count(text, text, int, boolean);
-DROP FUNCTION IF EXISTS st_count(text, text, boolean);
-DROP FUNCTION IF EXISTS st_approxcount(text, text, int, boolean, double precision);
-DROP FUNCTION IF EXISTS st_approxcount(text, text, int, boolean, double precision);
-DROP FUNCTION IF EXISTS st_approxcount(text, text, int, double precision);
-DROP FUNCTION IF EXISTS st_approxcount(text, text, boolean, double precision);
-DROP FUNCTION IF EXISTS st_approxcount(text, text, double precision);
+SELECT _postgis_drop_function_by_signature('_st_count(text, text, integer, boolean, double precision)');
+SELECT _postgis_drop_function_by_signature('st_count(text, text, int, boolean)');
+SELECT _postgis_drop_function_by_signature('st_count(text, text, boolean)');
+SELECT _postgis_drop_function_by_signature('st_approxcount(text, text, int, boolean, double precision)');
+SELECT _postgis_drop_function_by_signature('st_approxcount(text, text, int, boolean, double precision)');
+SELECT _postgis_drop_function_by_signature('st_approxcount(text, text, int, double precision)');
+SELECT _postgis_drop_function_by_signature('st_approxcount(text, text, boolean, double precision)');
+SELECT _postgis_drop_function_by_signature('st_approxcount(text, text, double precision)');
 
-DROP FUNCTION IF EXISTS _st_summarystats(text, text, integer, boolean, double precision);
-DROP FUNCTION IF EXISTS st_summarystats(text, text, integer, boolean);
-DROP FUNCTION IF EXISTS st_summarystats(text, text, boolean);
-DROP FUNCTION IF EXISTS st_approxsummarystats(text, text, integer, boolean, double precision);
-DROP FUNCTION IF EXISTS st_approxsummarystats(text, text, integer, double precision);
-DROP FUNCTION IF EXISTS st_approxsummarystats(text, text, boolean);
-DROP FUNCTION IF EXISTS st_approxsummarystats(text, text, double precision);
+SELECT _postgis_drop_function_by_signature('_st_summarystats(text, text, integer, boolean, double precision)');
+SELECT _postgis_drop_function_by_signature('st_summarystats(text, text, integer, boolean)');
+SELECT _postgis_drop_function_by_signature('st_summarystats(text, text, boolean)');
+SELECT _postgis_drop_function_by_signature('st_approxsummarystats(text, text, integer, boolean, double precision)');
+SELECT _postgis_drop_function_by_signature('st_approxsummarystats(text, text, integer, double precision)');
+SELECT _postgis_drop_function_by_signature('st_approxsummarystats(text, text, boolean)');
+SELECT _postgis_drop_function_by_signature('st_approxsummarystats(text, text, double precision)');
 
-DROP FUNCTION IF EXISTS _st_histogram(text, text, int, boolean, double precision, int,double precision[], boolean);
-DROP FUNCTION IF EXISTS st_histogram(text, text, int, boolean, int, double precision[], boolean);
-DROP FUNCTION IF EXISTS st_histogram(text, text, int, boolean, int, boolean);
-DROP FUNCTION IF EXISTS st_histogram(text, text, int, int, double precision[], boolean);
-DROP FUNCTION IF EXISTS st_histogram( ext, text, int, int, boolean);
-DROP FUNCTION IF EXISTS st_approxhistogram(text, text, int, boolean, double precision, int, double precision[], boolean);
-DROP FUNCTION IF EXISTS st_approxhistogram(text, text, int, boolean, double precision, int, boolean);
-DROP FUNCTION IF EXISTS st_approxhistogram(text, text, int,double precision);
-DROP FUNCTION IF EXISTS st_approxhistogram(text, text, double precision);
-DROP FUNCTION IF EXISTS st_approxhistogram(text, text, int, double precision, int, double precision[], boolean);
-DROP FUNCTION IF EXISTS st_approxhistogram(text, text, int, double precision, int, boolean);
+SELECT _postgis_drop_function_by_signature('_st_histogram(text, text, int, boolean, double precision, int,double precision[], boolean)');
+SELECT _postgis_drop_function_by_signature('st_histogram(text, text, int, boolean, int, double precision[], boolean)');
+SELECT _postgis_drop_function_by_signature('st_histogram(text, text, int, boolean, int, boolean)');
+SELECT _postgis_drop_function_by_signature('st_histogram(text, text, int, int, double precision[], boolean)');
+SELECT _postgis_drop_function_by_signature('st_histogram(text, text, int, int, boolean)', '3.1.0');
+SELECT _postgis_drop_function_by_signature('st_approxhistogram(text, text, int, boolean, double precision, int, double precision[], boolean)');
+SELECT _postgis_drop_function_by_signature('st_approxhistogram(text, text, int, boolean, double precision, int, boolean)');
+SELECT _postgis_drop_function_by_signature('st_approxhistogram(text, text, int,double precision)');
+SELECT _postgis_drop_function_by_signature('st_approxhistogram(text, text, double precision)');
+SELECT _postgis_drop_function_by_signature('st_approxhistogram(text, text, int, double precision, int, double precision[], boolean)');
+SELECT _postgis_drop_function_by_signature('st_approxhistogram(text, text, int, double precision, int, boolean)');
+
+SELECT _postgis_drop_function_by_identity('st_quantile', 'rastertable text, rastercolumn text, nband integer, exclude_nodata_value boolean, quantile double precision','3.0');
+SELECT _postgis_drop_function_by_identity('st_quantile', 'rastertable text, rastercolumn text, nband integer, quantile double precision','3.0');
+SELECT _postgis_drop_function_by_identity('st_quantile', 'rastertable text, rastercolumn text, exclude_nodata_value boolean, quantile double precision','3.0');
+SELECT _postgis_drop_function_by_identity('st_quantile', 'rastertable text, rastercolumn text, quantile double precision','3.0');
+SELECT _postgis_drop_function_by_identity('st_approxquantile', 'rastertable text, rastercolumn text, nband integer, exclude_nodata_value boolean, sample_percent double precision, quantile double precision','3.0');
+SELECT _postgis_drop_function_by_identity('st_approxquantile', 'rastertable text, rastercolumn text, nband integer, sample_percent double precision, quantile double precision','3.0');
+SELECT _postgis_drop_function_by_identity('st_approxquantile', 'rastertable text, rastercolumn text, sample_percent double precision, quantile double precision','3.0');
+SELECT _postgis_drop_function_by_identity('st_approxquantile', 'rastertable text, rastercolumn text, exclude_nodata_value boolean, quantile double precision','3.0');
+SELECT _postgis_drop_function_by_identity('st_approxquantile', 'rastertable text, rastercolumn text, quantile double precision','3.0');
 
 
-DROP FUNCTION IF EXISTS _st_quantile( rastertable text, rastercolumn text, nband int, exclude_nodata_value boolean, sample_percent double precision, quantiles double precision[], OUT quantile double precision, OUT value double precision);
-DROP FUNCTION IF EXISTS st_quantile( rastertable text, rastercolumn text, nband int, exclude_nodata_value boolean, quantiles double precision[], OUT quantile double precision, OUT value double precision);
-DROP FUNCTION IF EXISTS st_quantile( rastertable text, rastercolumn text, nband int, quantiles double precision[], OUT quantile double precision, OUT value double precision);
-DROP FUNCTION IF EXISTS st_quantile( rastertable text, rastercolumn text, quantiles double precision[], OUT quantile double precision, OUT value double precision);
-DROP FUNCTION IF EXISTS st_quantile(rastertable text, rastercolumn text, nband int, exclude_nodata_value boolean, quantile double precision);
-DROP FUNCTION IF EXISTS st_quantile(rastertable text, rastercolumn text, nband int, quantile double precision);
-DROP FUNCTION IF EXISTS st_quantile(rastertable text, rastercolumn text, exclude_nodata_value boolean, quantile double precision);
-DROP FUNCTION IF EXISTS st_quantile(rastertable text, rastercolumn text, quantile double precision);
-DROP FUNCTION IF EXISTS st_approxquantile(rastertable text, rastercolumn text, nband int, exclude_nodata_value boolean, sample_percent double precision, quantiles double precision[], OUT quantile double precision, OUT value double precision);
-DROP FUNCTION IF EXISTS st_approxquantile( rastertable text, rastercolumn text, nband int, sample_percent double precision, quantiles double precision[], OUT quantile double precision, OUT value double precision);
-DROP FUNCTION IF EXISTS st_approxquantile( rastertable text, rastercolumn text, sample_percent double precision, quantiles double precision[], OUT quantile double precision, OUT value double precision);
-DROP FUNCTION IF EXISTS st_approxquantile( rastertable text, rastercolumn text, quantiles double precision[], OUT quantile double precision, OUT value double precision);
-DROP FUNCTION IF EXISTS st_approxquantile(rastertable text, rastercolumn text, nband int, exclude_nodata_value boolean, sample_percent double precision, quantile double precision);
-DROP FUNCTION IF EXISTS st_approxquantile(rastertable text, rastercolumn text, nband int, sample_percent double precision, quantile double precision);
-DROP FUNCTION IF EXISTS st_approxquantile(rastertable text, rastercolumn text, sample_percent double precision, quantile double precision);
-DROP FUNCTION IF EXISTS st_approxquantile(rastertable text, rastercolumn text, exclude_nodata_value boolean, quantile double precision);
-DROP FUNCTION IF EXISTS st_approxquantile(rastertable text, rastercolumn text, quantile double precision);
 
-DROP FUNCTION IF EXISTS st_value(rast raster, band integer, pt geometry, exclude_nodata_value boolean);
+SELECT _postgis_drop_function_by_identity('st_value','rast raster, band integer, pt geometry, exclude_nodata_value boolean');
 
-DROP FUNCTION IF EXISTS st_gdalopenoptions(opts text[]);
+SELECT _postgis_drop_function_by_signature('st_gdalopenoptions(text[])');
 
