@@ -3680,6 +3680,7 @@ CREATE OR REPLACE FUNCTION ST_Intersection(geom1 geometry, geom2 geometry, gridS
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
+-- Replaces ST_Buffer(geometry, float8) deprecated in 3.0.0
 CREATE OR REPLACE FUNCTION ST_Buffer(geom geometry, radius float8, options text DEFAULT '')
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','buffer'
@@ -6481,6 +6482,9 @@ CREATE OR REPLACE FUNCTION ST_CoordDim(Geometry geometry)
 --    1: Symmetric output (result in same vertices when inverting the curve)
 --
 -- Availability: 2.4.0
+-- Changed: 2.5.0 to add defaults
+-- Replaces ST_CurveToLine(geometry, integer) deprecated in 2.5.0
+-- Replaces ST_CurveToLine(geometry) deprecated in 2.5.0
 --
 CREATE OR REPLACE FUNCTION ST_CurveToLine(geom geometry, tol float8 DEFAULT 32, toltype integer DEFAULT 0, flags integer DEFAULT 0)
 	RETURNS geometry
@@ -6643,15 +6647,13 @@ CREATE OR REPLACE FUNCTION ST_SimplifyPolygonHull(geom geometry, vertex_fraction
 -- Availability: 2.0.0
 -- Changed: 2.5.0
 -- Enhanced: 3.3.0 implements it in C, if GEOS >= 3.10
+-- Replaces _st_concavehull(geometry) deprecated in 3.3.0-with-geos-3.11
 CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float, param_allow_holes boolean DEFAULT false)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_ConcaveHull'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	PARALLEL SAFE
 	_COST_HIGH;
-
--- No longer needed with C language implementation
-DROP FUNCTION IF EXISTS _st_concavehull(geometry);
 
 #else
 

@@ -28,7 +28,7 @@ DROP AGGREGATE IF EXISTS st_geomunion(geometry);
 DROP AGGREGATE IF EXISTS accum_old(geometry);
 DROP AGGREGATE IF EXISTS st_accum_old(geometry);
 DROP AGGREGATE IF EXISTS st_accum(geometry); -- Dropped in 3.0.0
-DROP FUNCTION IF EXISTS pgis_geometry_accum_finalfn(internal);
+SELECT _postgis_drop_function_by_signature('pgis_geometry_accum_finalfn(internal)');
 
 DROP AGGREGATE IF EXISTS st_astwkb_agg(geometry, integer); -- temporarely introduced before 2.2.0 final
 DROP AGGREGATE IF EXISTS st_astwkb_agg(geometry, integer, bigint); -- temporarely introduced before 2.2.0 final
@@ -38,197 +38,199 @@ DROP AGGREGATE IF EXISTS st_astwkbagg(geometry, integer, bigint, boolean); -- te
 DROP AGGREGATE IF EXISTS st_astwkbagg(geometry, integer, bigint, boolean, boolean); -- temporarely introduced before 2.2.0 final
 
 -- BEGIN Management functions that now have default param for typmod --
-DROP FUNCTION IF EXISTS AddGeometryColumn(varchar, varchar, varchar, varchar, integer, varchar, integer);
-DROP FUNCTION IF EXISTS AddGeometryColumn(varchar, varchar, varchar, integer, varchar, integer);
-DROP FUNCTION IF EXISTS AddGeometryColumn(varchar, varchar, integer, varchar, integer);
-DROP FUNCTION IF EXISTS populate_geometry_columns();
-DROP FUNCTION IF EXISTS populate_geometry_columns(oid);
+SELECT _postgis_drop_function_by_signature('AddGeometryColumn(varchar, varchar, varchar, varchar, integer, varchar, integer)');
+SELECT _postgis_drop_function_by_signature('AddGeometryColumn(varchar, varchar, varchar, integer, varchar, integer)');
+SELECT _postgis_drop_function_by_signature('AddGeometryColumn(varchar, varchar, integer, varchar, integer)');
+SELECT _postgis_drop_function_by_signature('populate_geometry_columns()');
+SELECT _postgis_drop_function_by_signature('populate_geometry_columns(oid)');
 
 -- END Management functions now have default parameter for typmod --
 -- Then drop old functions
-DROP FUNCTION IF EXISTS box2d_overleft(box2d, box2d);
-DROP FUNCTION IF EXISTS box2d_overright(box2d, box2d);
-DROP FUNCTION IF EXISTS box2d_left(box2d, box2d);
-DROP FUNCTION IF EXISTS box2d_right(box2d, box2d);
-DROP FUNCTION IF EXISTS box2d_contain(box2d, box2d);
-DROP FUNCTION IF EXISTS box2d_contained(box2d, box2d);
-DROP FUNCTION IF EXISTS box2d_overlap(box2d, box2d);
-DROP FUNCTION IF EXISTS box2d_same(box2d, box2d);
-DROP FUNCTION IF EXISTS box2d_intersects(box2d, box2d);
-DROP FUNCTION IF EXISTS st_area(geography); -- this one changed to use default parameters
-DROP FUNCTION IF EXISTS ST_AsGeoJson(geometry); -- this one changed to use default args
-DROP FUNCTION IF EXISTS ST_AsGeoJson(geography); -- this one changed to use default args
-DROP FUNCTION IF EXISTS ST_AsGeoJson(geometry, int4); -- this one changed to use default args
-DROP FUNCTION IF EXISTS ST_AsGeoJson(geography, int4); -- this one changed to use default args
-DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geometry); -- this one changed to use default args
-DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geography); -- this one changed to use default args
-DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geometry, int4); -- this one changed to use default args
-DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geography, int4); -- this one changed to use default args
-DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geography, int4, int4); -- dropped because the version-first signature is dumb
-DROP FUNCTION IF EXISTS _ST_AsGeoJson(int4, geometry, int4, int4); -- dropped in PostGIS-3.0 (r17300)
-DROP FUNCTION IF EXISTS _ST_AsGeoJson(int4, geography, int4, int4); -- dropped in PostGIS-3.0 (r17300)
-DROP FUNCTION IF EXISTS st_asgml(geometry); -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(geometry, int4);  -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(int4, geometry);  -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(int4, geometry, int4);  -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(int4, geometry, int4, int4);  -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(int4, geometry, int4, int4, text); -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(geography); -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(geography, int4);  -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(int4, geography);  -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(int4, geography, int4);  -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(int4, geography, int4, int4);  -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(int4, geography, int4, int4, text); -- changed to use default args
-DROP FUNCTION IF EXISTS _st_asgml(int4, geometry, int4, int4, text); -- changed to use default args
-DROP FUNCTION IF EXISTS _st_asgml(int4, geography, int4, int4, text); -- changed to use default args
-DROP FUNCTION IF EXISTS _st_asgml(int4, geography, int4, int4, text, text); -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(geography, int4, int4);
-DROP FUNCTION IF EXISTS _st_askml(int4, geography, int4, text); -- dropped in PostGIS-3.0 (r17300)
-DROP FUNCTION IF EXISTS _st_askml(int4, geometry, int4, text); -- dropped in PostGIS-3.0 (r17300)
-DROP FUNCTION IF EXISTS st_askml(geometry); -- changed to use default args
-DROP FUNCTION IF EXISTS st_askml(geography); -- changed to use default args
-DROP FUNCTION IF EXISTS st_askml(int4, geometry, int4); -- changed to use default args
-DROP FUNCTION IF EXISTS st_askml(int4, geography, int4); -- changed to use default args
-DROP FUNCTION IF EXISTS st_askml(int4, geography, int4, text); -- dropped because the version-first signature is dumb
+SELECT _postgis_drop_function_by_signature('box2d_overleft(box2d, box2d)');
+SELECT _postgis_drop_function_by_signature('box2d_overright(box2d, box2d)');
+SELECT _postgis_drop_function_by_signature('box2d_left(box2d, box2d)');
+SELECT _postgis_drop_function_by_signature('box2d_right(box2d, box2d)');
+SELECT _postgis_drop_function_by_signature('box2d_contain(box2d, box2d)');
+SELECT _postgis_drop_function_by_signature('box2d_contained(box2d, box2d)');
+SELECT _postgis_drop_function_by_signature('box2d_overlap(box2d, box2d)');
+SELECT _postgis_drop_function_by_signature('box2d_same(box2d, box2d)');
+SELECT _postgis_drop_function_by_signature('box2d_intersects(box2d, box2d)');
+SELECT _postgis_drop_function_by_signature('st_area(geography)'); -- this one changed to use default parameters
+SELECT _postgis_drop_function_by_signature('ST_AsGeoJson(geometry)'); -- this one changed to use default args
+SELECT _postgis_drop_function_by_signature('ST_AsGeoJson(geography)'); -- this one changed to use default args
+SELECT _postgis_drop_function_by_signature('ST_AsGeoJson(geometry, int4)'); -- this one changed to use default args
+SELECT _postgis_drop_function_by_signature('ST_AsGeoJson(geography, int4)'); -- this one changed to use default args
+SELECT _postgis_drop_function_by_signature('ST_AsGeoJson(int4, geometry)'); -- this one changed to use default args
+SELECT _postgis_drop_function_by_signature('ST_AsGeoJson(int4, geography)'); -- this one changed to use default args
+SELECT _postgis_drop_function_by_signature('ST_AsGeoJson(int4, geometry, int4)'); -- this one changed to use default args
+SELECT _postgis_drop_function_by_signature('ST_AsGeoJson(int4, geography, int4)'); -- this one changed to use default args
+SELECT _postgis_drop_function_by_signature('ST_AsGeoJson(int4, geography, int4, int4)', '3.0.0'); -- dropped because the version-first signature is dumb
+SELECT _postgis_drop_function_by_signature('ST_AsGeoJson(int4, geometry, int4, int4)', '3.0.0'); -- dropped because the version-first signature is dumb
+SELECT _postgis_drop_function_by_signature('_ST_AsGeoJson(int4, geometry, int4, int4)'); -- dropped in PostGIS-3.0 (r17300)
+SELECT _postgis_drop_function_by_signature('_ST_AsGeoJson(int4, geography, int4, int4)'); -- dropped in PostGIS-3.0 (r17300)
+SELECT _postgis_drop_function_by_signature('st_asgml(geometry)'); -- changed to use default args
+SELECT _postgis_drop_function_by_signature('st_asgml(geometry, int4)');  -- changed to use default args
+SELECT _postgis_drop_function_by_signature('st_asgml(int4, geometry)');  -- changed to use default args
+SELECT _postgis_drop_function_by_signature('st_asgml(int4, geometry, int4)');  -- changed to use default args
+SELECT _postgis_drop_function_by_signature('st_asgml(int4, geometry, int4, int4)');  -- changed to use default args
+SELECT _postgis_drop_function_by_signature('st_asgml(int4, geometry, int4, int4, text)'); -- changed to use default args
+SELECT _postgis_drop_function_by_signature('st_asgml(geography)'); -- changed to use default args
+SELECT _postgis_drop_function_by_signature('st_asgml(geography, int4)');  -- changed to use default args
+SELECT _postgis_drop_function_by_signature('st_asgml(int4, geography)');  -- changed to use default args
+SELECT _postgis_drop_function_by_signature('st_asgml(int4, geography, int4)');  -- changed to use default args
+SELECT _postgis_drop_function_by_signature('st_asgml(int4, geography, int4, int4)');  -- changed to use default args
+SELECT _postgis_drop_function_by_signature('st_asgml(int4, geography, int4, int4, text)'); -- changed to use default args
+SELECT _postgis_drop_function_by_signature('_st_asgml(int4, geometry, int4, int4, text)'); -- changed to use default args
+SELECT _postgis_drop_function_by_signature('_st_asgml(int4, geography, int4, int4, text)'); -- changed to use default args
+SELECT _postgis_drop_function_by_signature('_st_asgml(int4, geography, int4, int4, text, text)'); -- changed to use default args
+SELECT _postgis_drop_function_by_signature('st_asgml(geography, int4, int4)');
+SELECT _postgis_drop_function_by_signature('_st_askml(int4, geography, int4, text)'); -- dropped in PostGIS-3.0 (r17300)
+SELECT _postgis_drop_function_by_signature('_st_askml(int4, geometry, int4, text)'); -- dropped in PostGIS-3.0 (r17300)
+SELECT _postgis_drop_function_by_signature('st_askml(geometry)'); -- changed to use default args
+SELECT _postgis_drop_function_by_signature('st_askml(geography)'); -- changed to use default args
+SELECT _postgis_drop_function_by_signature('st_askml(int4, geometry, int4)'); -- changed to use default args
+SELECT _postgis_drop_function_by_signature('st_askml(int4, geography, int4)'); -- changed to use default args
+SELECT _postgis_drop_function_by_signature('st_askml(int4, geometry, int4, text)', '3.0.0'); -- dropped because the version-first signature is dumb
+SELECT _postgis_drop_function_by_signature('st_askml(int4, geography, int4, text)', '3.0.0'); -- dropped because the version-first signature is dumb
 
-DROP FUNCTION IF EXISTS st_asx3d(geometry); -- this one changed to use default parameters so full function deals with it
-DROP FUNCTION IF EXISTS st_asx3d(geometry, int4); -- introduce variant with opts so get rid of other without ops
-DROP FUNCTION IF EXISTS st_assvg(geometry); -- changed to use default args
-DROP FUNCTION IF EXISTS st_assvg(geometry, int4); -- changed to use default args
-DROP FUNCTION IF EXISTS st_assvg(geography); -- changed to use default args
-DROP FUNCTION IF EXISTS st_assvg(geography, int4); -- changed to use default args
-DROP FUNCTION IF EXISTS st_box2d_overleft(box2d, box2d);
-DROP FUNCTION IF EXISTS st_box2d_overright(box2d, box2d);
-DROP FUNCTION IF EXISTS st_box2d_left(box2d, box2d);
-DROP FUNCTION IF EXISTS st_box2d_right(box2d, box2d);
-DROP FUNCTION IF EXISTS st_box2d_contain(box2d, box2d);
-DROP FUNCTION IF EXISTS st_box2d_contained(box2d, box2d);
-DROP FUNCTION IF EXISTS st_box2d_overlap(box2d, box2d);
-DROP FUNCTION IF EXISTS st_box2d_same(box2d, box2d);
-DROP FUNCTION IF EXISTS st_box2d_intersects(box2d, box2d);
-DROP FUNCTION IF EXISTS st_box2d_in(cstring);
-DROP FUNCTION IF EXISTS st_box2d_out(box2d);
-DROP FUNCTION IF EXISTS st_box2d(geometry);
-DROP FUNCTION IF EXISTS st_box2d(box3d);
-DROP FUNCTION IF EXISTS st_box3d(box2d);
-DROP FUNCTION IF EXISTS st_box(box3d);
-DROP FUNCTION IF EXISTS st_box3d(geometry);
-DROP FUNCTION IF EXISTS st_box(geometry);
-DROP FUNCTION IF EXISTS _st_buffer(geometry, float8, cstring); -- dropped in PostGIS-3.0 (r17300)
-DROP FUNCTION IF EXISTS ST_ConcaveHull(geometry,float); -- this one changed to use default parameters
-DROP FUNCTION IF EXISTS st_text(geometry);
-DROP FUNCTION IF EXISTS st_geometry(box2d);
-DROP FUNCTION IF EXISTS st_geometry(box3d);
-DROP FUNCTION IF EXISTS st_geometry(text);
-DROP FUNCTION IF EXISTS st_geometry(bytea);
-DROP FUNCTION IF EXISTS st_bytea(geometry);
-DROP FUNCTION IF EXISTS st_addbbox(geometry);
-DROP FUNCTION IF EXISTS _st_distance(geography, geography, float8, boolean); -- dropped in PostGIS-3.0 (r17300)
-DROP FUNCTION IF EXISTS st_dropbbox(geometry);
-DROP FUNCTION IF EXISTS st_hasbbox(geometry);
-DROP FUNCTION IF EXISTS cache_bbox();
-DROP FUNCTION IF EXISTS st_cache_bbox();
-DROP FUNCTION IF EXISTS ST_GeoHash(geometry); -- changed to use default args
-DROP FUNCTION IF EXISTS st_length(geography); -- this one changed to use default parameters
-DROP FUNCTION IF EXISTS st_perimeter(geography); -- this one changed to use default parameters
-DROP FUNCTION IF EXISTS transform_geometry(geometry, text, text, int);
-DROP FUNCTION IF EXISTS collector(geometry, geometry);
-DROP FUNCTION IF EXISTS st_collector(geometry, geometry);
-DROP FUNCTION IF EXISTS geom_accum (geometry[],geometry);
-DROP FUNCTION IF EXISTS st_geom_accum (geometry[],geometry);
-DROP FUNCTION IF EXISTS collect_garray (geometry[]);
-DROP FUNCTION IF EXISTS st_collect_garray (geometry[]);
-DROP FUNCTION IF EXISTS geosnoop(geometry);
-DROP FUNCTION IF EXISTS jtsnoop(geometry);
-DROP FUNCTION IF EXISTS st_noop(geometry);
-DROP FUNCTION IF EXISTS st_max_distance(geometry, geometry);
-DROP FUNCTION IF EXISTS  ST_MinimumBoundingCircle(geometry); --changed to use default parameters
+SELECT _postgis_drop_function_by_signature('st_asx3d(geometry)'); -- this one changed to use default parameters so full function deals with it
+SELECT _postgis_drop_function_by_signature('st_asx3d(geometry, int4)'); -- introduce variant with opts so get rid of other without ops
+SELECT _postgis_drop_function_by_signature('st_assvg(geometry)'); -- changed to use default args
+SELECT _postgis_drop_function_by_signature('st_assvg(geometry, int4)'); -- changed to use default args
+SELECT _postgis_drop_function_by_signature('st_assvg(geography)'); -- changed to use default args
+SELECT _postgis_drop_function_by_signature('st_assvg(geography, int4)'); -- changed to use default args
+SELECT _postgis_drop_function_by_signature('st_box2d_overleft(box2d, box2d)');
+SELECT _postgis_drop_function_by_signature('st_box2d_overright(box2d, box2d)');
+SELECT _postgis_drop_function_by_signature('st_box2d_left(box2d, box2d)');
+SELECT _postgis_drop_function_by_signature('st_box2d_right(box2d, box2d)');
+SELECT _postgis_drop_function_by_signature('st_box2d_contain(box2d, box2d)');
+SELECT _postgis_drop_function_by_signature('st_box2d_contained(box2d, box2d)');
+SELECT _postgis_drop_function_by_signature('st_box2d_overlap(box2d, box2d)');
+SELECT _postgis_drop_function_by_signature('st_box2d_same(box2d, box2d)');
+SELECT _postgis_drop_function_by_signature('st_box2d_intersects(box2d, box2d)');
+SELECT _postgis_drop_function_by_signature('st_box2d_in(cstring)');
+SELECT _postgis_drop_function_by_signature('st_box2d_out(box2d)');
+SELECT _postgis_drop_function_by_signature('st_box2d(geometry)');
+SELECT _postgis_drop_function_by_signature('st_box2d(box3d)');
+SELECT _postgis_drop_function_by_signature('st_box3d(box2d)');
+SELECT _postgis_drop_function_by_signature('st_box(box3d)');
+SELECT _postgis_drop_function_by_signature('st_box3d(geometry)');
+SELECT _postgis_drop_function_by_signature('st_box(geometry)');
+SELECT _postgis_drop_function_by_signature('_st_buffer(geometry, float8, cstring)'); -- dropped in PostGIS-3.0 (r17300)
+SELECT _postgis_drop_function_by_signature('ST_ConcaveHull(geometry,float)'); -- this one changed to use default parameters
+SELECT _postgis_drop_function_by_signature('st_text(geometry)');
+SELECT _postgis_drop_function_by_signature('st_geometry(box2d)');
+SELECT _postgis_drop_function_by_signature('st_geometry(box3d)');
+SELECT _postgis_drop_function_by_signature('st_geometry(text)');
+SELECT _postgis_drop_function_by_signature('st_geometry(bytea)');
+SELECT _postgis_drop_function_by_signature('st_bytea(geometry)');
+SELECT _postgis_drop_function_by_signature('st_addbbox(geometry)');
+SELECT _postgis_drop_function_by_signature('_st_distance(geography, geography, float8, boolean)'); -- dropped in PostGIS-3.0 (r17300)
+SELECT _postgis_drop_function_by_signature('st_dropbbox(geometry)');
+SELECT _postgis_drop_function_by_signature('st_hasbbox(geometry)');
+SELECT _postgis_drop_function_by_signature('cache_bbox()');
+SELECT _postgis_drop_function_by_signature('st_cache_bbox()');
+SELECT _postgis_drop_function_by_signature('ST_GeoHash(geometry)'); -- changed to use default args
+SELECT _postgis_drop_function_by_signature('st_length(geography)'); -- this one changed to use default parameters
+SELECT _postgis_drop_function_by_signature('st_perimeter(geography)'); -- this one changed to use default parameters
+SELECT _postgis_drop_function_by_signature('transform_geometry(geometry, text, text, int)');
+SELECT _postgis_drop_function_by_signature('collector(geometry, geometry)');
+SELECT _postgis_drop_function_by_signature('st_collector(geometry, geometry)');
+SELECT _postgis_drop_function_by_signature('geom_accum (geometry[],geometry)');
+SELECT _postgis_drop_function_by_signature('st_geom_accum (geometry[],geometry)');
+SELECT _postgis_drop_function_by_signature('collect_garray (geometry[])');
+SELECT _postgis_drop_function_by_signature('st_collect_garray (geometry[])');
+SELECT _postgis_drop_function_by_signature('geosnoop(geometry)');
+SELECT _postgis_drop_function_by_signature('jtsnoop(geometry)');
+SELECT _postgis_drop_function_by_signature('st_noop(geometry)');
+SELECT _postgis_drop_function_by_signature('st_max_distance(geometry, geometry)');
+SELECT _postgis_drop_function_by_signature('ST_MinimumBoundingCircle(geometry)'); --changed to use default parameters
 -- Drop internals that should never have existed --
-DROP FUNCTION IF EXISTS st_geometry_analyze(internal);
-DROP FUNCTION IF EXISTS st_geometry_in(cstring);
-DROP FUNCTION IF EXISTS st_geometry_out(geometry);
-DROP FUNCTION IF EXISTS st_geometry_recv(internal);
-DROP FUNCTION IF EXISTS st_geometry_send(geometry);
-DROP FUNCTION IF EXISTS st_spheroid_in(cstring);
-DROP FUNCTION IF EXISTS st_spheroid_out(spheroid);
-DROP FUNCTION IF EXISTS st_geometry_lt(geometry, geometry);
-DROP FUNCTION IF EXISTS st_geometry_gt(geometry, geometry);
-DROP FUNCTION IF EXISTS st_geometry_ge(geometry, geometry);
-DROP FUNCTION IF EXISTS st_geometry_eq(geometry, geometry);
-DROP FUNCTION IF EXISTS st_geometry_cmp(geometry, geometry);
-DROP FUNCTION IF EXISTS SnapToGrid(geometry, float8, float8);
-DROP FUNCTION IF EXISTS st_removerepeatedpoints(geometry);
-DROP FUNCTION IF EXISTS st_voronoi(geometry, geometry, double precision, boolean); --temporarely introduced before 2.3.0 final
+SELECT _postgis_drop_function_by_signature('st_geometry_analyze(internal)');
+SELECT _postgis_drop_function_by_signature('st_geometry_in(cstring)');
+SELECT _postgis_drop_function_by_signature('st_geometry_out(geometry)');
+SELECT _postgis_drop_function_by_signature('st_geometry_recv(internal)');
+SELECT _postgis_drop_function_by_signature('st_geometry_send(geometry)');
+SELECT _postgis_drop_function_by_signature('st_spheroid_in(cstring)');
+SELECT _postgis_drop_function_by_signature('st_spheroid_out(spheroid)');
+SELECT _postgis_drop_function_by_signature('st_geometry_lt(geometry, geometry)');
+SELECT _postgis_drop_function_by_signature('st_geometry_gt(geometry, geometry)');
+SELECT _postgis_drop_function_by_signature('st_geometry_ge(geometry, geometry)');
+SELECT _postgis_drop_function_by_signature('st_geometry_eq(geometry, geometry)');
+SELECT _postgis_drop_function_by_signature('st_geometry_cmp(geometry, geometry)');
+SELECT _postgis_drop_function_by_signature('SnapToGrid(geometry, float8, float8)');
+SELECT _postgis_drop_function_by_signature('st_removerepeatedpoints(geometry)');
+SELECT _postgis_drop_function_by_signature('st_voronoi(geometry, geometry, double precision, boolean)'); --temporarely introduced before 2.3.0 final
 
-DROP FUNCTION IF EXISTS geometry_gist_sel_2d (internal, oid, internal, int4);
-DROP FUNCTION IF EXISTS geometry_gist_joinsel_2d(internal, oid, internal, smallint);
-DROP FUNCTION IF EXISTS geography_gist_selectivity (internal, oid, internal, int4);
-DROP FUNCTION IF EXISTS geography_gist_join_selectivity(internal, oid, internal, smallint);
+SELECT _postgis_drop_function_by_signature('geometry_gist_sel_2d (internal, oid, internal, int4)');
+SELECT _postgis_drop_function_by_signature('geometry_gist_joinsel_2d(internal, oid, internal, smallint)');
+SELECT _postgis_drop_function_by_signature('geography_gist_selectivity (internal, oid, internal, int4)');
+SELECT _postgis_drop_function_by_signature('geography_gist_join_selectivity(internal, oid, internal, smallint)');
 
-DROP FUNCTION IF EXISTS ST_AsBinary(text); -- deprecated in 2.0
-DROP FUNCTION IF EXISTS postgis_uses_stats(); -- deprecated in 2.0
-DROP FUNCTION IF EXISTS ST_GeneratePoints(geometry, numeric); -- numeric -> integer
+SELECT _postgis_drop_function_by_signature('ST_AsBinary(text)'); -- deprecated in 2.0
+SELECT _postgis_drop_function_by_signature('postgis_uses_stats()'); -- deprecated in 2.0
+SELECT _postgis_drop_function_by_signature('ST_GeneratePoints(geometry, numeric)'); -- numeric -> integer
 
 -- Old accum aggregate support type, removed in 2.5.0
 -- See #4035
 DROP TYPE IF EXISTS pgis_abs CASCADE;
 
-DROP FUNCTION IF EXISTS st_astwkb(geometry, integer, bigint, bool, bool); -- temporarely introduced before 2.2.0 final
-DROP FUNCTION IF EXISTS pgis_twkb_accum_transfn(internal, geometry, integer); -- temporarely introduced before 2.2.0 final
-DROP FUNCTION IF EXISTS pgis_twkb_accum_transfn(internal, geometry, integer, bigint); -- temporarely introduced before 2.2.0 final
-DROP FUNCTION IF EXISTS pgis_twkb_accum_transfn(internal, geometry, integer, bigint, bool); -- temporarely introduced before 2.2.0 final
-DROP FUNCTION IF EXISTS pgis_twkb_accum_transfn(internal, geometry, integer, bigint, bool, bool); -- temporarely introduced before 2.2.0 final
-DROP FUNCTION IF EXISTS pgis_twkb_accum_finalfn(internal); -- temporarely introduced before 2.2.0 final
+SELECT _postgis_drop_function_by_signature('st_astwkb(geometry, integer, bigint, bool, bool)'); -- temporarely introduced before 2.2.0 final
+SELECT _postgis_drop_function_by_signature('pgis_twkb_accum_transfn(internal, geometry, integer)'); -- temporarely introduced before 2.2.0 final
+SELECT _postgis_drop_function_by_signature('pgis_twkb_accum_transfn(internal, geometry, integer, bigint)'); -- temporarely introduced before 2.2.0 final
+SELECT _postgis_drop_function_by_signature('pgis_twkb_accum_transfn(internal, geometry, integer, bigint, bool)'); -- temporarely introduced before 2.2.0 final
+SELECT _postgis_drop_function_by_signature('pgis_twkb_accum_transfn(internal, geometry, integer, bigint, bool, bool)'); -- temporarely introduced before 2.2.0 final
+SELECT _postgis_drop_function_by_signature('pgis_twkb_accum_finalfn(internal)'); -- temporarely introduced before 2.2.0 final
 
-DROP FUNCTION IF EXISTS st_seteffectivearea(geometry, double precision); -- temporarely introduced before 2.2.0 final
+SELECT _postgis_drop_function_by_signature('st_seteffectivearea(geometry, double precision)'); -- temporarely introduced before 2.2.0 final
 
-DROP FUNCTION IF EXISTS geometry_distance_box_nd(geometry, geometry); -- temporarely introduced before 2.2.0 final
+SELECT _postgis_drop_function_by_signature('geometry_distance_box_nd(geometry, geometry)'); -- temporarely introduced before 2.2.0 final
 
-DROP FUNCTION IF EXISTS _ST_DumpPoints(geometry, integer[]); -- removed 2.4.0, but really should have been removed 2.1.0 when ST_DumpPoints got reimpmented in C
+SELECT _postgis_drop_function_by_signature('_ST_DumpPoints(geometry, integer[])'); -- removed 2.4.0, but really should have been removed 2.1.0 when ST_DumpPoints got reimpmented in C
 
 -- Temporary clean-up while we wait to return these to action in dev
-DROP FUNCTION IF EXISTS _ST_DistanceRectTree(g1 geometry, g2 geometry);
-DROP FUNCTION IF EXISTS _ST_DistanceRectTreeCached(g1 geometry, g2 geometry);
+SELECT _postgis_drop_function_by_identity('_ST_DistanceRectTree','g1 geometry, g2 geometry');
+SELECT _postgis_drop_function_by_identity('_ST_DistanceRectTreeCached','g1 geometry, g2 geometry');
 
 -- Deplicative signatures removed
-DROP FUNCTION IF EXISTS ST_Distance(geography, geography); -- dropped in PostGIS-3.0 (r17300 aka ce70e4906)
-DROP FUNCTION IF EXISTS ST_Distance(geography, geography, float8, boolean);
-DROP FUNCTION IF EXISTS ST_Buffer(geometry, float8, cstring);
-DROP FUNCTION IF EXISTS ST_IsValidDetail(geometry);
-DROP FUNCTION IF EXISTS ST_AsKML(int4, geometry, int4, text);
-DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geometry, int4, int4);
-DROP FUNCTION IF EXISTS _ST_AsGeoJson(int4, geometry, int4, int4);
+SELECT _postgis_drop_function_by_signature('ST_Distance(geography, geography)'); -- dropped in PostGIS-3.0 (r17300 aka ce70e4906)
+SELECT _postgis_drop_function_by_signature('ST_Distance(geography, geography, float8, boolean)');
+SELECT _postgis_drop_function_by_signature('ST_Buffer(geometry, float8, cstring)');
+SELECT _postgis_drop_function_by_signature('ST_IsValidDetail(geometry)');
+SELECT _postgis_drop_function_by_identity('ST_AsKML','int4, geometry, int4, text');
+SELECT _postgis_drop_function_by_identity('ST_AsGeoJson','int4, geometry, int4, int4');
+SELECT _postgis_drop_function_by_identity('_ST_AsGeoJson','int4, geometry, int4, int4');
 
 -- Underscore_signatures removed for CamelCase
-DROP FUNCTION IF EXISTS st_shift_longitude(geometry);
-DROP FUNCTION IF EXISTS st_estimated_extent(text,text,text);
-DROP FUNCTION IF EXISTS st_estimated_extent(text,text);
-DROP FUNCTION IF EXISTS st_find_extent(text,text,text);
-DROP FUNCTION IF EXISTS st_find_extent(text,text);
-DROP FUNCTION IF EXISTS st_mem_size(geometry);
-DROP FUNCTION IF EXISTS st_3dlength_spheroid(geometry, spheroid);
-DROP FUNCTION IF EXISTS st_length_spheroid(geometry, spheroid);
-DROP FUNCTION IF EXISTS st_length2d_spheroid(geometry, spheroid);
-DROP FUNCTION IF EXISTS st_distance_spheroid(geometry, geometry, spheroid);
-DROP FUNCTION IF EXISTS st_point_inside_circle(geometry, float8, float8, float8);
-DROP FUNCTION IF EXISTS st_force_2d(geometry);
-DROP FUNCTION IF EXISTS st_force_3dz(geometry);
-DROP FUNCTION IF EXISTS st_force_3dm(geometry);
-DROP FUNCTION IF EXISTS st_force_collection(geometry);
-DROP FUNCTION IF EXISTS st_force_4d(geometry);
-DROP FUNCTION IF EXISTS st_force_3d(geometry);
-DROP FUNCTION IF EXISTS st_line_interpolate_point(geometry, float8);
-DROP FUNCTION IF EXISTS st_line_substring(geometry, float8, float8);
-DROP FUNCTION IF EXISTS st_line_locate_point(geometry, geometry);
-DROP FUNCTION IF EXISTS st_locate_between_measures(geometry, float8, float8);
-DROP FUNCTION IF EXISTS st_locate_along_measure(geometry, float8);
-DROP FUNCTION IF EXISTS st_combine_bbox(box3d, geometry);
-DROP FUNCTION IF EXISTS st_combine_bbox(box2d, geometry);
-DROP FUNCTION IF EXISTS st_distance_sphere(geometry, geometry);
+SELECT _postgis_drop_function_by_signature('st_shift_longitude(geometry)');
+SELECT _postgis_drop_function_by_signature('st_estimated_extent(text,text,text)');
+SELECT _postgis_drop_function_by_signature('st_estimated_extent(text,text)');
+SELECT _postgis_drop_function_by_signature('st_find_extent(text,text,text)');
+SELECT _postgis_drop_function_by_signature('st_find_extent(text,text)');
+SELECT _postgis_drop_function_by_signature('st_mem_size(geometry)');
+SELECT _postgis_drop_function_by_signature('st_3dlength_spheroid(geometry, spheroid)');
+SELECT _postgis_drop_function_by_signature('st_length_spheroid(geometry, spheroid)');
+SELECT _postgis_drop_function_by_signature('st_length2d_spheroid(geometry, spheroid)');
+SELECT _postgis_drop_function_by_signature('st_distance_spheroid(geometry, geometry, spheroid)');
+SELECT _postgis_drop_function_by_signature('st_point_inside_circle(geometry, float8, float8, float8)');
+SELECT _postgis_drop_function_by_signature('st_force_2d(geometry)');
+SELECT _postgis_drop_function_by_signature('st_force_3dz(geometry)');
+SELECT _postgis_drop_function_by_signature('st_force_3dm(geometry)');
+SELECT _postgis_drop_function_by_signature('st_force_collection(geometry)');
+SELECT _postgis_drop_function_by_signature('st_force_4d(geometry)');
+SELECT _postgis_drop_function_by_signature('st_force_3d(geometry)');
+SELECT _postgis_drop_function_by_signature('st_line_interpolate_point(geometry, float8)');
+SELECT _postgis_drop_function_by_signature('st_line_substring(geometry, float8, float8)');
+SELECT _postgis_drop_function_by_signature('st_line_locate_point(geometry, geometry)');
+SELECT _postgis_drop_function_by_signature('st_locate_between_measures(geometry, float8, float8)');
+SELECT _postgis_drop_function_by_signature('st_locate_along_measure(geometry, float8)');
+SELECT _postgis_drop_function_by_signature('st_combine_bbox(box3d, geometry)');
+SELECT _postgis_drop_function_by_signature('st_combine_bbox(box2d, geometry)');
+SELECT _postgis_drop_function_by_signature('st_distance_sphere(geometry, geometry)');
 
 -- dev function 3.0 cycle
-DROP FUNCTION IF EXISTS pgis_geometry_union_transfn(internal, geometry);
-DROP FUNCTION IF EXISTS pgis_geometry_union_finalfn(internal);
+SELECT _postgis_drop_function_by_signature('pgis_geometry_union_transfn(internal, geometry)');
+SELECT _postgis_drop_function_by_signature('pgis_geometry_union_finalfn(internal)');
 
 -- #4394
 update pg_operator set oprcanhash = true, oprcanmerge = true where oprname = '=' and oprcode = 'geometry_eq'::regproc;

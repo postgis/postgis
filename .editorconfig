@@ -30,6 +30,11 @@ indent_size = 2
 indent_style = space
 indent_size = 4
 
+# Exception: utils/create_extension_unpackage.pl uses 2-spaces indent
+[utils/create_extension_unpackage.pl]
+indent_style = space
+indent_size = 2
+
 # Exception: regress/run_test.pl uses 4-spaces indent
 [regress/run_test.pl]
 indent_style = space
@@ -82,3 +87,7 @@ indent_size = 4
 
 [*.xsl]
 indent_style = tab
+
+[postgis/common_after_upgrade.sql]
+indent_style = space
+indent_size = 4
