@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - #5493, Preserve retired functions used by views during core and raster upgrades (Sandro Santilli)
  - #5033, Use SQL wrappers for retained deprecated C functions (Sandro Santilli)
  - Check that upgrades restore ST_EstimatedExtent caller privileges (Sandro Santilli)
  - Run ST_EstimatedExtent with caller privileges (Sandro Santilli)
