@@ -66,7 +66,7 @@ BEGIN
 			matching_function.oid::regprocedure,
 			matching_function.proname || deprecated_suffix
 		);
-		RAISE WARNING 'SQL query: %', sql;
+		RAISE DEBUG 'SQL query: %', sql;
 		BEGIN
 			EXECUTE sql;
 		EXCEPTION
