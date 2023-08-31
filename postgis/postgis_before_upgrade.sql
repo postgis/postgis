@@ -130,15 +130,6 @@ SELECT _postgis_drop_function_by_identity
 	'GeometryA geometry, GeometryB geometry'
 	);
 
--- FUNCTION st_buffer changed to add defaults in 3.0
--- This signature was superseeded
-DROP FUNCTION IF EXISTS st_buffer(geometry, double precision); -- Does not conflict
-
--- FUNCTION ST_CurveToLine changed to add defaults in 2.5
--- These signatures were superseeded
-DROP FUNCTION IF EXISTS ST_CurveToLine(geometry, integer); -- Does not conflict
-DROP FUNCTION IF EXISTS ST_CurveToLine(geometry); -- Does not conflict
-
 -- This was renamed mid-cycle in PostGIS 3.4.0 development
 -- to ST_CoverageInvalidEdges
 DROP FUNCTION IF EXISTS ST_CoverageInvalidLocations(geometry, double precision);

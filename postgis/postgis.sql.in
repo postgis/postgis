@@ -3693,6 +3693,7 @@ CREATE OR REPLACE FUNCTION ST_Intersection(geom1 geometry, geom2 geometry, gridS
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
+-- Replaces ST_Buffer(geometry, float8) deprecated in 3.0.0
 CREATE OR REPLACE FUNCTION ST_Buffer(geom geometry, radius float8, options text DEFAULT '')
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','buffer'
@@ -6494,6 +6495,9 @@ CREATE OR REPLACE FUNCTION ST_CoordDim(Geometry geometry)
 --    1: Symmetric output (result in same vertices when inverting the curve)
 --
 -- Availability: 2.4.0
+-- Changed: 2.5.0 to add defaults
+-- Replaces ST_CurveToLine(geometry, integer) deprecated in 2.5.0
+-- Replaces ST_CurveToLine(geometry) deprecated in 2.5.0
 --
 CREATE OR REPLACE FUNCTION ST_CurveToLine(geom geometry, tol float8 DEFAULT 32, toltype integer DEFAULT 0, flags integer DEFAULT 0)
 	RETURNS geometry
@@ -6664,7 +6668,10 @@ CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex f
 	_COST_HIGH;
 
 -- No longer needed with C language implementation
-DROP FUNCTION IF EXISTS _st_concavehull(geometry);
+SELECT _postgis_drop_function_by_signature(
+	'_st_concavehull(geometry)',
+	'3.3.0--geos3.11'
+);
 
 #else
 
