@@ -236,6 +236,10 @@ endif
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
 # and adding the version number
 # replace @extschema@. with nothing, this is only used as placeholder for extension install
+#
+# TODO: create an intermediate product with @extschema@ in place, to reduce rules duplications
+#       in the extension/ folder
+#
 %.sql: %.sql.in
 	$(SQLPP) -I@top_srcdir@/libpgcommon -I@builddir@ $< > $@.tmp
 	grep -v '^#' $@.tmp | $(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g;s'@extschema@\.''g" > $@
@@ -246,7 +250,7 @@ postgis_upgrade.sql.in: postgis.sql ../utils/create_upgrade.pl
 	$(PERL) @top_srcdir@/utils/create_upgrade.pl $< > $@
 
 
-postgis_upgrade.sql: postgis_before_upgrade.sql postgis_upgrade.sql.in postgis_after_upgrade.sql
+postgis_upgrade.sql: common_before_upgrade.sql postgis_before_upgrade.sql postgis_upgrade.sql.in postgis_after_upgrade.sql common_after_upgrade.sql
 	echo "BEGIN;" > $@
 	cat $^ >> $@
 	echo "COMMIT;" >> $@
