@@ -19,5 +19,5 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 -- DROP auxiliar function (created by common_before_upgrade.sql)
-DROP FUNCTION _postgis_drop_function_if_needed(text, text);
+DROP FUNCTION _postgis_drop_function_if_needed(text, text, text);
 

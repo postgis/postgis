@@ -34,11 +34,15 @@
 --         ORDER BY 1, 2, 3, 4;
 CREATE OR REPLACE FUNCTION _postgis_drop_function_if_needed(
 	function_name text,
-	function_arguments text) RETURNS void AS $$
+	function_arguments text,
+	deprecated_in_version text DEFAULT 'xxx'
+) RETURNS void AS $$
 DECLARE
-	sql_drop text;
+	sql text;
 	postgis_namespace OID;
-	matching_function REGPROCEDURE;
+	matching_function pg_catalog.pg_proc;
+	detail TEXT;
+	deprecated_suffix TEXT := '_deprecated_by_postgis_' || deprecated_in_version;
 BEGIN
 
 	-- Fetch install namespace for PostGIS
@@ -49,7 +53,7 @@ BEGIN
 	INTO postgis_namespace;
 
 	-- Find a function matching the given signature
-	SELECT oid
+	SELECT *
 	FROM pg_catalog.pg_proc p
 	WHERE pronamespace = postgis_namespace
 	AND pg_catalog.LOWER(p.proname) = pg_catalog.LOWER(function_name)
@@ -57,14 +61,20 @@ BEGIN
 	AND pg_catalog.LOWER(pg_catalog.pg_get_function_identity_arguments(p.oid)) ~ pg_catalog.LOWER(function_arguments)
 	INTO matching_function;
 
-	IF matching_function IS NOT NULL THEN
-		sql_drop := 'DROP FUNCTION ' || matching_function;
-		RAISE DEBUG 'SQL query: %', sql_drop;
+	IF matching_function.oid IS NOT NULL THEN
+		sql := format('ALTER FUNCTION %s RENAME TO %I',
+			matching_function.oid::regprocedure,
+			matching_function.proname || deprecated_suffix
+		);
+		RAISE WARNING 'SQL query: %', sql;
 		BEGIN
-			EXECUTE sql_drop;
+			EXECUTE sql;
 		EXCEPTION
 			WHEN OTHERS THEN
-				RAISE EXCEPTION 'Could not drop function %. You might need to drop dependant objects. Postgres error: %', function_name, SQLERRM;
+				GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
+				RAISE EXCEPTION 'Could not rename deprecated function %, got % (%)',
+					matching_function, SQLERRM, SQLSTATE
+				USING DETAIL = detail;
 		END;
 	END IF;
 
