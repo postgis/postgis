@@ -22,7 +22,7 @@
 
 -- FUNCTION AddGeometryColumn signature dropped
 -- (catalog_name character varying, schema_name character varying, table_name character varying, column_name character varying, new_srid integer, new_type character varying, new_dim integer, use_typmod boolean)
-SELECT _postgis_drop_function_if_needed
+SELECT _postgis_drop_function_by_identity
 	(
 	'AddGeometryColumn',
 	'catalog_name character varying, schema_name character varying, table_name character varying, column_name character varying, new_srid integer, new_type character varying, new_dim integer, use_typmod boolean'
@@ -30,7 +30,7 @@ SELECT _postgis_drop_function_if_needed
 
 -- FUNCTION ST_AsX3D was changed to add versioning for 2.0
 -- (geom geometry, prec integer, options integer)
-SELECT _postgis_drop_function_if_needed
+SELECT _postgis_drop_function_by_identity
 	(
 	'ST_AsX3D',
 	'geom geometry, prec integer, options integer'
@@ -40,7 +40,7 @@ SELECT _postgis_drop_function_if_needed
 -- It changed the paramenter `new_srid` to `new_srid_in`
 -- (catalogn_name character varying, schema_name character varying, table_name character varying, column_name character varying, new_srid integer)
 -- Dropping it conditionally since the same signature still exists.
-SELECT _postgis_drop_function_if_needed
+SELECT _postgis_drop_function_by_identity
 	(
 	'UpdateGeometrySRID',
 	'catalogn_name character varying, schema_name character varying, table_name character varying, column_name character varying, new_srid integer'
@@ -84,7 +84,7 @@ $$ ;
 -- FUNCTION ST_AsLatLonText went from multiple signatures to a single one with defaults for 2.2.0
 DROP FUNCTION IF EXISTS ST_AsLatLonText(geometry); -- Does not conflict
 
-SELECT _postgis_drop_function_if_needed
+SELECT _postgis_drop_function_by_identity
 	(
 	'ST_AsLatLonText',
 	'geometry, text'
@@ -92,7 +92,7 @@ SELECT _postgis_drop_function_if_needed
 
 -- FUNCTION ST_LineCrossingDirection changed argument names in 3.0
 -- Was (geom1 geometry, geom2 geometry) and now (line1 geometry, line2 geometry)
-SELECT _postgis_drop_function_if_needed
+SELECT _postgis_drop_function_by_identity
 	(
 	'ST_LineCrossingDirection',
 	'geom1 geometry, geom2 geometry'
@@ -100,7 +100,7 @@ SELECT _postgis_drop_function_if_needed
 
 -- FUNCTION _st_linecrossingdirection changed argument names in 3.0
 -- Was (geom1 geometry, geom2 geometry) and now (line1 geometry, line2 geometry)
-SELECT _postgis_drop_function_if_needed
+SELECT _postgis_drop_function_by_identity
 	(
 	'_ST_LineCrossingDirection',
 	'geom1 geometry, geom2 geometry'
@@ -108,7 +108,7 @@ SELECT _postgis_drop_function_if_needed
 
 -- FUNCTION ST_AsGeoJson changed argument names
 -- (pretty_print => pretty_bool) in 3.0alpha4
-SELECT _postgis_drop_function_if_needed
+SELECT _postgis_drop_function_by_identity
 	(
 	'ST_AsGeoJson',
 	$args$r record, geom_column text, maxdecimaldigits integer, pretty_print boolean$args$
@@ -116,7 +116,7 @@ SELECT _postgis_drop_function_if_needed
 
 -- FUNCTION _st_orderingequals changed argument names in 3.0
 -- Was (GeometryA geometry, GeometryB geometry) and now (geom1 geometry, geom2 geometry)
-SELECT _postgis_drop_function_if_needed
+SELECT _postgis_drop_function_by_identity
 	(
 	'_st_orderingequals',
 	'GeometryA geometry, GeometryB geometry'
@@ -124,7 +124,7 @@ SELECT _postgis_drop_function_if_needed
 
 -- FUNCTION st_orderingequals changed argument names in 3.0
 -- Was (GeometryA geometry, GeometryB geometry) and now (geom1 geometry, geom2 geometry)
-SELECT _postgis_drop_function_if_needed
+SELECT _postgis_drop_function_by_identity
 	(
 	'st_orderingequals',
 	'GeometryA geometry, GeometryB geometry'
