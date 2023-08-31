@@ -2061,6 +2061,29 @@ sub uninstall_spatial
 	if ( $OBJ_COUNT_POST != $OBJ_COUNT_PRE )
 	{
 		fail("Object count pre-install ($OBJ_COUNT_PRE) != post-uninstall ($OBJ_COUNT_POST)");
+
+        if ( $OPT_UPGRADE_FROM )
+        {
+            my $fromversion = $OPT_UPGRADE_FROM;
+            $fromversion =~ s/unpackaged//;
+            print
+                "\n-------------------------------------------------\n",
+                "Need to add these to an after_upgrade.sql script?",
+                "\n-------------------------------------------------\n",
+                sql("
+SELECT format(
+    'SELECT _postgis_drop_function_by_identity(%L, %L, %L);',
+    proname,
+    pg_catalog.pg_get_function_identity_arguments(oid),
+    '$fromversion'
+)
+FROM pg_proc
+WHERE pronamespace = '${OPT_SCHEMA}'::regnamespace
+ORDER BY 1;
+                "),
+                "\n-------------------------------------------------\n",
+        }
+
 		return 0;
 	}
 
