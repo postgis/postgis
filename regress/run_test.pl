@@ -184,7 +184,7 @@ sub postgis_restore
 
 if ( $OPT_UPGRADE_PATH )
 {
-  $OPT_UPGRADE = 1; # implied
+  $OPT_UPGRADE = 1 if not $OPT_UPGRADE; # implied
   my @path = split ('--', $OPT_UPGRADE_PATH);
   $OPT_UPGRADE_FROM = $path[0]
     || die "Malformed upgrade path, <from>--<to> expected, $OPT_UPGRADE_PATH given";
