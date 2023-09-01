@@ -1,16 +1,15 @@
 # SOME DESCRIPTIVE TITLE.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-15 12:17+0000\n"
-"PO-Revision-Date: 2023-08-28\n"
-"Last-Translator: 左晨威 <zuocw@highgo.com>\n"
-"Language-Team: Chinese <https://weblate.osgeo.org/projects/postgis/using_postgis_datamanxml/"
-"zh_Hans/>\n"
+"PO-Revision-Date: 2023-09-01 09:54+0000\n"
+"Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
+"postgis/using_postgis_datamanxml/zh_Hans/>\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -51,6 +50,7 @@ msgid ""
 msgstr "开放地理空间联盟 （OGC）开发了<ulink url=\"https://www.ogc.org/standards/sfa\"><emphasis>简单要素访问</emphasis></ulink>标准（SFA），"
 "以提供地理空间数据模型。 它定义了几何的基本空间类型以及用于执行空间分析处理的操作和转换。"
 "PostGIS将OGC几何模型值实现为PostgreSQL数据类型几何和地理，以实现空间分析任务。"
+
 #. Tag: para
 #: using_postgis_dataman.xml:21
 #, no-c-format
@@ -647,6 +647,7 @@ msgid ""
 msgstr ""
 "WKB: "
 "0102000000020000000000000000000040000000000000004000000000000022400000000000002240"
+
 #. Tag: para
 #: using_postgis_dataman.xml:375
 #, no-c-format
@@ -936,6 +937,7 @@ msgid ""
 msgstr ""
 "MULTIPOLYGON(((0 0 0,4 0 0,4 4 0,0 4 0,0 0 0),(1 1 0,2 1 0,2 2 0,1 2 0,1 1 "
 "0)),((-1 -1 0,-1 -2 0,-2 -2 0,-2 -1 0,-1 -1 0)))"
+
 #. Tag: para
 #: using_postgis_dataman.xml:539
 #, no-c-format
@@ -961,6 +963,7 @@ msgstr ""
 "1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), ((1 1 0, 1 1 1, "
 "1 0 1, 1 0 0, 1 1 0)), ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 "
 "1, 1 1 1, 0 1 1, 0 0 1)) )"
+
 #. Tag: para
 #: using_postgis_dataman.xml:553
 #, no-c-format
@@ -1402,7 +1405,7 @@ msgid ""
 "query you run; the number of vertices is huge, and tests (distance, "
 "containment) have to traverse the vertex list at least once and sometimes N "
 "times (with N being the number of vertices in the other candidate feature)."
-msgstr ""	
+msgstr ""
 "因为多边形大得离谱。大面积不好有两个原因 一个原因是边界框很大，因此无论您运行什么查询，索引都倾向于拉取特征。"
 "另一个原因是顶点计数很大，并且测试（距离、包含）函数必须至少遍历顶点一次，通常为 N（其中 N 是另一个要素的顶点计数）。"
 
@@ -1425,7 +1428,7 @@ msgstr "与 GEOMETRY 一样，我们建议您在具有非常大的多边形，�
 #: using_postgis_dataman.xml:811
 #, no-c-format
 msgid "Geometry Validation"
-msgstr "几何验证"
+msgstr "几何有效性验证。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:813
