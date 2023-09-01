@@ -169,6 +169,16 @@ fi
 
 echo "INFO: installed extensions: $INSTALLED_EXTENSIONS"
 
+USERTESTFLAGS=${RUNTESTFLAGS}
+
+# Make use of all public functions defined by source version
+# and use double-upgrade
+USERTESTFLAGS="\
+  ${USERTESTFLAGS} \
+  --before-upgrade-script ${SRCDIR}/regress/hooks/use-all-functions.sql \
+  --after-upgrade-script ${SRCDIR}/regress/hooks/hook-after-upgrade.sql \
+"
+
 for EXT in ${INSTALLED_EXTENSIONS}; do
   if test "${EXT}" = "postgis"; then
     REGDIR=${BUILDDIR}/regress
@@ -181,8 +191,6 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
   else
     echo "SKIP: don't know where to find regress tests for extension ${EXT}"
   fi
-
-  USERTESTFLAGS=${RUNTESTFLAGS}
 
   # Check extension->extension upgrades
   files=`'ls' ${EXT}--* | grep -v -- '--.*--' | sed "s/^${EXT}--\(.*\)\.sql/\1/"`
