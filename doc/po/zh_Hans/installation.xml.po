@@ -1,16 +1,15 @@
 # SOME DESCRIPTIVE TITLE.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-29 10:16+0000\n"
-"PO-Revision-Date: 2023-08-26 10:20+0000\n"
-"Last-Translator: 左晨威 <zuocw@highgo.com>\n"
-"Language-Team: Chinese <https://weblate.osgeo.org/projects/postgis/installationxml/"
-"zh_Hans/>\n"
+"PO-Revision-Date: 2023-09-01 05:27+0000\n"
+"Last-Translator: Wangdapeng <wangdapeng20191008@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
+"postgis/installationxml/zh_Hans/>\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -49,7 +48,9 @@ msgid ""
 "Once PostGIS is installed, it needs to be enabled (<xref "
 "linkend=\"create_spatial_db\"/>) or upgraded (<xref linkend=\"upgrading\"/>) "
 "in each individual database you want to use it in."
-msgstr "安装 PostGIS 后，您需要使每个数据库可用（<xref linkend=\"create_spatial_db\"/>）或升级它（<xref linkend=\"upgrading\"/>）"
+msgstr ""
+"安装 PostGIS 后，您需要使每个数据库可用（<xref linkend=\"create_spatial_db\""
+"/>）或升级它（<xref linkend=\"upgrading\"/>）。"
 
 #. Tag: title
 #: installation.xml:23
@@ -342,7 +343,7 @@ msgid ""
 msgstr "建议使用 SFCGAL 版本 1.3.1（或更高版本）、1.4.1 或更高版本，以便能够使用所有功能。"
 "SFCGAL 可用于为 PostGIS 提供额外的 2D 和 3D 高级分析功能，参见<xref linkend=\"reference_sfcgal\"/>。"
 "并且还允许对两个后端提供的某些 2D 函数（例如 ST_Intersection 或 ST_Area）使用 SFCGAL 而不是 GEOS。"
-"如果安装了 SFCGAL（默认为 GEOS），PostgreSQL 配置变量 <code>postgis.backend</code>允许最终用户控制他想要使用哪个后端。" 
+"如果安装了 SFCGAL（默认为 GEOS），PostgreSQL 配置变量 <code>postgis.backend</code>允许最终用户控制他想要使用哪个后端。"
 "注：SFCGAL 1.2 至少需要 CGAL 4.3 和 Boost 1.54（参见：<ulink url=\"https://oslandia.gitlab.io/SFCGAL/dev.html\">https://oslandia.gitlab.io/SFCGAL/dev.html</ulink>）<ulink url=\"https://gitlab.com/Oslandia/SFCGAL/\">https://gitlab.com/Oslandia/SFCGAL/</ulink>。"
 
 #. Tag: para
@@ -375,6 +376,7 @@ msgstr ""
 "要检查 protobuf-c 的正确最低版本，需要 pkg-config。 参见<ulink url=\"https://github.com/protobuf-c/protobuf-c\">protobuf-c</ulink>。"
 "默认情况下，PostGIS 使用 Wagyu 快速评估 MVT 多边形，但需要 C++11 编译器。 使用 CXXFLAGS 使用您用于 PostgreSQL 安装的相同编译器。"
 "如果要禁用此功能并改用 GEOS，请在配置期间指定它。 <varname>--without-wagyu</varname>"
+
 #. Tag: para
 #: installation.xml:263
 #, no-c-format
@@ -458,7 +460,7 @@ msgid ""
 "PostGIS 3 series in your server. To get the old behavior of file including "
 "the minor version: e.g. <code>postgis-3.0</code> add this switch to your "
 "configure statement."
-msgstr "从 PostGIS 3.0 开始，默认生成的库文件将不再具有次要版本 作为文件名的一部分。这意味着所有 PostGIS 3 库都将以 <code>postgis-3</code> 结尾。" 
+msgstr "从 PostGIS 3.0 开始，默认生成的库文件将不再具有次要版本 作为文件名的一部分。这意味着所有 PostGIS 3 库都将以 <code>postgis-3</code> 结尾。"
 "这样做是为了pg_upgrade更容易，缺点是你只能安装 服务器中的一个版本 PostGIS 3 系列。"
 "获取文件的旧行为，包括次要版本：例如 将此开关添加到配置语句中。<code>postgis-3.0</code>"
 
@@ -958,6 +960,7 @@ msgid ""
 msgstr "目前，<command>make check</command> 依赖于<code>PATH</code> and <code>PGPORT</code>环境变量来执行检查。"
 "它不是使用 <command>--with-pgconfig</command>.配置参数指定的 PostgreSQL。"
 "编辑路径以匹配在配置期间检测到的 PostgreSQL。 或者为不可避免的麻烦做好准备。"
+
 #. Tag: para
 #: installation.xml:703
 #, no-c-format
@@ -977,6 +980,7 @@ msgid ""
 "PostGIS code folder."
 msgstr "<varname>postgis_tiger_geocoder</varname> and <varname>address_standardizer</varname> 扩展目前仅支持标准的 PostgreSQL 安装检查。"
 "要测试这些，请使用以下命令。注意：如果您已经在 PostGIS 代码文件夹的根目录中进行了安装，则不需要进行安装。"
+
 #. Tag: para
 #: installation.xml:711
 #, no-c-format
@@ -1182,7 +1186,7 @@ msgid ""
 msgstr "Tiger 地理编码器等附加功能可能不会打包在您的 PostGIS 发行版中。"
 "如果您缺少 Tiger 地理编码器扩展或想要比安装附带的版本更新的版本，"
 "请使用适用于您的 PostgreSQL 版本的 <ulink url=\"http://postgis.net/windows_downloads/\">Windows未发布版本</ulink>部分中的包中的"
-"<filename>share/extension/postgis_tiger_geocoder.*</filename> 文件。" 
+"<filename>share/extension/postgis_tiger_geocoder.*</filename> 文件。"
 "尽管这些包适用于 Windows，但 postgis_tiger_geocoder 扩展文件将在任何操作系统上运行，因为该扩展仅是 SQL/plpgsql 扩展。"
 
 #. Tag: title
