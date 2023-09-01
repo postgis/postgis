@@ -90,7 +90,8 @@ SELECT _postgis_drop_function_by_signature('st_askml(geometry)'); -- changed to 
 SELECT _postgis_drop_function_by_signature('st_askml(geography)'); -- changed to use default args
 SELECT _postgis_drop_function_by_signature('st_askml(int4, geometry, int4)'); -- changed to use default args
 SELECT _postgis_drop_function_by_signature('st_askml(int4, geography, int4)'); -- changed to use default args
-SELECT _postgis_drop_function_by_signature('st_askml(int4, geography, int4, text)'); -- dropped because the version-first signature is dumb
+SELECT _postgis_drop_function_by_signature('st_askml(int4, geometry, int4, text)', '3.0.0'); -- dropped because the version-first signature is dumb
+SELECT _postgis_drop_function_by_signature('st_askml(int4, geography, int4, text)', '3.0.0'); -- dropped because the version-first signature is dumb
 
 SELECT _postgis_drop_function_by_signature('st_asx3d(geometry)'); -- this one changed to use default parameters so full function deals with it
 SELECT _postgis_drop_function_by_signature('st_asx3d(geometry, int4)'); -- introduce variant with opts so get rid of other without ops
