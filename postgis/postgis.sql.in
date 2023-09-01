@@ -6660,18 +6660,13 @@ CREATE OR REPLACE FUNCTION ST_SimplifyPolygonHull(geom geometry, vertex_fraction
 -- Availability: 2.0.0
 -- Changed: 2.5.0
 -- Enhanced: 3.3.0 implements it in C, if GEOS >= 3.10
+-- Replaces _st_concavehull(geometry) deprecated in 3.3.0-with-geos-3.11
 CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float, param_allow_holes boolean DEFAULT false)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_ConcaveHull'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	PARALLEL SAFE
 	_COST_HIGH;
-
--- No longer needed with C language implementation
-SELECT _postgis_drop_function_by_signature(
-	'_st_concavehull(geometry)',
-	'3.3.0--geos3.11'
-);
 
 #else
 
