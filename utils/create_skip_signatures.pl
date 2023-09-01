@@ -131,9 +131,32 @@ sub handle_function_signature {
 	print "FUNCTION $name(" . join(', ', @unnamed_args) . ")\n";
 }
 
+my $in_signature_array = 0;
+
 while (<>)
 {
 	#print "XXX 0 $_";
+
+	# Retired function signatures listed for a DO block loop
+	# EXAMPLE: FOREACH signature IN ARRAY ARRAY[
+	#              'topology.AddNode(varchar, geometry)'
+	#          ] LOOP
+	if ( /FOREACH\s+signature\s+IN\s+ARRAY\s+ARRAY\[/ )
+	{
+		$in_signature_array = 1;
+		next;
+	}
+	if ( $in_signature_array )
+	{
+		if ( /^\s*'([^']*)'/ )
+		{
+			my $line = $1;
+			$line =~ s/^public\.//;
+			handle_function_signature($line);
+		}
+		$in_signature_array = 0 if /\]/;
+		next;
+	}
 
 	# type signature
 	if ( /^DROP TYPE IF EXISTS\s\s*([^\s]*)/ )
