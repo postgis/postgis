@@ -7,24 +7,36 @@
 --
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- These are functions where the argument names may have changed  --
--- so have to be dropped before upgrade can happen for 9.0+ --
--- argument names changed --
--- we might want to take toTopoGeom one out before release since
--- I don't think too many people installed the bad name
-DROP FUNCTION IF EXISTS topology.toTopoGeom(Geometry, varchar, int, float8);
-
--- used to be in public, will now be moved to topology
-DROP FUNCTION IF EXISTS postgis_topology_scripts_installed();
-
--- Removed in 2.2.0 when topology API moved to liblwgeom
-DROP FUNCTION IF EXISTS topology._ST_RemEdgeCheck(varchar, integer, integer, integer, integer);
-DROP FUNCTION IF EXISTS topology._ST_AddFaceSplit(varchar, integer, integer, boolean);
-
--- Added optional bbox parameter in 3.2.0
-DROP FUNCTION IF EXISTS topology.validatetopology(varchar);
-
--- Merged the two function into one with both allowEdgeSplitting and setContainingFace parameters
--- being optional (3.2.0)
-DROP FUNCTION IF EXISTS topology.AddNode(varchar, geometry);
-DROP FUNCTION IF EXISTS topology.AddNode(varchar, geometry, boolean, boolean);
+-- Remove retired overloads when possible. Preserve the function OID if
+-- a dependent object needs it, and remove the old name from resolution.
+DO LANGUAGE plpgsql $$
+DECLARE
+	signature text;
+	old_function pg_catalog.regprocedure;
+	old_name text;
+BEGIN
+	FOREACH signature IN ARRAY ARRAY[
+		'topology.toTopoGeom(Geometry, varchar, int, float8)',
+		'postgis_topology_scripts_installed()',
+		'topology._ST_RemEdgeCheck(varchar, integer, integer, integer, integer)',
+		'topology._ST_AddFaceSplit(varchar, integer, integer, boolean)',
+		'topology.validatetopology(varchar)',
+		'topology.AddNode(varchar, geometry)',
+		'topology.AddNode(varchar, geometry, boolean, boolean)'
+	] LOOP
+		old_function := pg_catalog.to_regprocedure(signature);
+		IF old_function IS NULL THEN
+			CONTINUE;
+		END IF;
+		BEGIN
+			EXECUTE pg_catalog.format('DROP FUNCTION %s', old_function);
+		EXCEPTION WHEN dependent_objects_still_exist THEN
+			SELECT proname INTO STRICT old_name
+			FROM pg_catalog.pg_proc WHERE oid = old_function;
+			EXECUTE pg_catalog.format('ALTER FUNCTION %s RENAME TO %I',
+				old_function, old_name || '_deprecated_by_postgis');
+			RAISE WARNING 'Preserving retired topology function % for dependent objects', signature;
+		END;
+	END LOOP;
+END
+$$;

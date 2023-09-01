@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Preserve topology functions used by dependent objects during upgrades (Sandro Santilli)
  - #5442, Preserve the database search path when adding a topology schema (Jelte Fennema)
  - #5299, Recognize PIECE and POINT in US street names and suffixes (Regina Obe)
  - Clean generated raster Makefiles when raster is disabled (Sandro Santilli)
