@@ -1402,8 +1402,8 @@ msgid ""
 "query you run; the number of vertices is huge, and tests (distance, "
 "containment) have to traverse the vertex list at least once and sometimes N "
 "times (with N being the number of vertices in the other candidate feature)."
-msgstr "	
-因为多边形大得离谱。大面积不好有两个原因 一个原因是边界框很大，因此无论您运行什么查询，索引都倾向于拉取特征。"
+msgstr ""	
+"因为多边形大得离谱。大面积不好有两个原因 一个原因是边界框很大，因此无论您运行什么查询，索引都倾向于拉取特征。"
 "另一个原因是顶点计数很大，并且测试（距离、包含）函数必须至少遍历顶点一次，通常为 N（其中 N 是另一个要素的顶点计数）。"
 
 #. Tag: para
