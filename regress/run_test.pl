@@ -1736,9 +1736,9 @@ sub package_extension_sql
 	my $sql;
 
 	if ( $pgvernum lt 130000 ) {
-		$sql = "CREATE EXTENSION ${extname} VERSION '${extver}' FROM unpackaged;";
+		$sql = "CREATE EXTENSION IF NOT EXISTS ${extname} VERSION '${extver}' FROM unpackaged;";
 	} else {
-		$sql = "CREATE EXTENSION ${extname} VERSION unpackaged;";
+		$sql = "CREATE EXTENSION IF NOT EXISTS ${extname} VERSION unpackaged;";
 		$sql .= "ALTER EXTENSION ${extname} UPDATE TO '${extver}'";
 	}
 	return $sql;
@@ -1858,15 +1858,8 @@ sub upgrade_spatial_extensions
 
       if ( ! $OPT_WITH_RASTER )
       {
-        print "Dropping PostGIS Raster in '${DB}' using: ${sql}\n" ;
-
-        $sql = "DROP EXTENSION postgis_raster";
-        $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
-        $rv = system($cmd);
-        if ( $rv ) {
-          fail "Error encountered dropping EXTENSION POSTGIS_RASTER on upgrade", $REGRESS_LOG;
-          return 0;
-        }
+        print "Marking PostGIS Raster as present for later drop\n";
+        $OPT_WITH_RASTER=1
       }
     }
 
