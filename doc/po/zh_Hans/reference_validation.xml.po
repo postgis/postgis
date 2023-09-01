@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-01 09:54+0000\n"
+"PO-Revision-Date: 2023-09-01 15:00+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_validationxml/zh_Hans/>\n"
@@ -218,32 +218,34 @@ msgid ""
 "this is the validity model used by those tools. Note that this is invalid "
 "under the OGC model."
 msgstr ""
+"1：考虑某些类型的自接触环（倒壳和倒孔）是有效的。 这也称为“ESRI "
+"标志”，因为这是这些工具使用的有效性模型。 注意，这在 OGC 模型下是无效的。"
 
 #. Tag: para
 #: reference_validation.xml:143 reference_validation.xml:288
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr ""
+msgstr "有效性：2.0.0"
 
 #. Tag: para
 #: reference_validation.xml:156
 #, no-c-format
 msgid ", <xref linkend=\"ST_IsValidReason\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_IsValidReason\"/>"
 
 #. Tag: refpurpose
 #: reference_validation.xml:167
 #, no-c-format
 msgid ""
 "Returns text stating if a geometry is valid, or a reason for invalidity."
-msgstr ""
+msgstr "返回说明几何图形是否有效或无效原因的文本。"
 
 #. Tag: para
 #: reference_validation.xml:188
 #, no-c-format
 msgid ""
 "Returns text stating if a geometry is valid, or if invalid a reason why."
-msgstr ""
+msgstr "返回文本，说明几何图形是否有效，如果无效，则说明原因。"
 
 #. Tag: para
 #: reference_validation.xml:190
@@ -251,7 +253,8 @@ msgstr ""
 msgid ""
 "Useful in combination with <xref linkend=\"ST_IsValid\"/> to generate a "
 "detailed report of invalid geometries and reasons."
-msgstr ""
+msgstr "与 <xref linkend=\"ST_IsValid\"/> "
+"结合使用可生成无效几何形状和原因的详细报告。"
 
 #. Tag: para
 #: reference_validation.xml:192
@@ -259,31 +262,31 @@ msgstr ""
 msgid ""
 "Allowed <varname>flags</varname> are documented in <xref "
 "linkend=\"ST_IsValidDetail\"/>."
-msgstr ""
+msgstr "允许的<varname>flags</varname>记录在<xref linkend=\"ST_IsValidDetail\"/> 中。"
 
 #. Tag: para
 #: reference_validation.xml:196
 #, no-c-format
 msgid "Availability: 1.4"
-msgstr ""
+msgstr "有效性：1.4"
 
 #. Tag: para
 #: reference_validation.xml:197
 #, no-c-format
 msgid "Availability: 2.0 version taking flags."
-msgstr ""
+msgstr "有效性：2.0 版本正在接受标记。"
 
 #. Tag: para
 #: reference_validation.xml:210
 #, no-c-format
 msgid ", <xref linkend=\"ST_Summary\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Summary\"/>"
 
 #. Tag: refpurpose
 #: reference_validation.xml:217
 #, no-c-format
 msgid "Attempts to make an invalid geometry valid without losing vertices."
-msgstr ""
+msgstr "尝试在不丢失顶点的情况下使无效几何体有效。"
 
 #. Tag: para
 #: reference_validation.xml:236
