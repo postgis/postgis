@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-01 09:54+0000\n"
+"PO-Revision-Date: 2023-09-01 15:00+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_rasterxml/zh_Hans/>\n"
@@ -804,7 +804,7 @@ msgstr ""
 #: reference_raster.xml:10601 reference_raster.xml:11420
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr ""
+msgstr "有效性：2.0.0"
 
 #. Tag: title
 #: reference_raster.xml:571
