@@ -26,10 +26,8 @@ BEGIN
 			) f
 		FROM pg_catalog.pg_proc
 		WHERE
-		-- We use the ST_ prefix as a sign that this function
-		-- belongs to PostGIS and is meant for public usage,
-		-- but the condition could be improved
-		proname like 'st\_%'
+		pronamespace::regnamespace::text !~ '^pg_'
+		AND pronamespace::regnamespace::text <> 'information_schema'
 		-- We only consider normal and window functions
 		-- ( not aggregates or procedures )
 		AND prokind in ('f','w')
@@ -42,6 +40,8 @@ BEGIN
 		AND proname NOT IN ( 'st_asmvt', 'st_fromflatgeobuf' )
 		-- Skip functions using VARIADIC or OUTPUT arguments
 		AND ( NOT coalesce(proargmodes, '{}') && ARRAY['v'::"char",'o'] )
+		-- Skip function having arguments of internal types
+		AND ( NOT proargtypes::oid[] && ARRAY ['internal'::regtype::oid] )
 	LOOP
 		EXECUTE format(
 			'CREATE VIEW postgis_upgrade_test_data.locking_view AS SELECT %s',
