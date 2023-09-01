@@ -64,7 +64,8 @@ SELECT _postgis_drop_function_by_signature('ST_AsGeoJson(int4, geometry)'); -- t
 SELECT _postgis_drop_function_by_signature('ST_AsGeoJson(int4, geography)'); -- this one changed to use default args
 SELECT _postgis_drop_function_by_signature('ST_AsGeoJson(int4, geometry, int4)'); -- this one changed to use default args
 SELECT _postgis_drop_function_by_signature('ST_AsGeoJson(int4, geography, int4)'); -- this one changed to use default args
-SELECT _postgis_drop_function_by_signature('ST_AsGeoJson(int4, geography, int4, int4)'); -- dropped because the version-first signature is dumb
+SELECT _postgis_drop_function_by_signature('ST_AsGeoJson(int4, geography, int4, int4)', '3.0.0'); -- dropped because the version-first signature is dumb
+SELECT _postgis_drop_function_by_signature('ST_AsGeoJson(int4, geometry, int4, int4)', '3.0.0'); -- dropped because the version-first signature is dumb
 SELECT _postgis_drop_function_by_signature('_ST_AsGeoJson(int4, geometry, int4, int4)'); -- dropped in PostGIS-3.0 (r17300)
 SELECT _postgis_drop_function_by_signature('_ST_AsGeoJson(int4, geography, int4, int4)'); -- dropped in PostGIS-3.0 (r17300)
 SELECT _postgis_drop_function_by_signature('st_asgml(geometry)'); -- changed to use default args
