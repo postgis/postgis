@@ -1,16 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# Chen <onsummer@foxmail.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-29 10:16+0000\n"
-"PO-Revision-Date: 2023-08-26 10:20+0000\n"
-"Last-Translator: 左晨威 <zuocw@highgo.com>\n"
-"Language-Team: Chinese <https://weblate.osgeo.org/projects/postgis/administrationxml/"
-"zh_Hans/>\n"
+"PO-Revision-Date: 2023-09-04 17:24+0000\n"
+"Last-Translator: Chen <onsummer@foxmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
+"postgis/administrationxml/zh_Hans/>\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,7 +26,7 @@ msgstr "PostGIS 管理"
 #: administration.xml:3
 #, no-c-format
 msgid "&database_tuning;"
-msgstr "&database_tuning"
+msgstr "&database_tuning;"
 
 #. Tag: title
 #: administration.xml:9
@@ -42,7 +40,7 @@ msgstr "配置栅格支持"
 msgid ""
 "If you enabled raster support you may want to read below how to properly "
 "configure it."
-msgstr "如果启用了栅格支持，则可能需要阅读以下如何正确配置它。"
+msgstr "如果启用了栅格的支持，则可能需要读一下下面的内容来正确配置它。"
 
 #. Tag: para
 #: administration.xml:16
@@ -55,17 +53,17 @@ msgid ""
 "For PostGIS 2.2, you can use the more cross-platform approach of setting the "
 "corresponding <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
-"从PostGIS2.1.3开始，默认情况下禁用数据库外栅格和所有栅格驱动程序"
-"要启用它们，请在服务器上设置环境变量"
-"<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname>和"
-"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname>。"
-"PostGIS2.2提供了一种跨平台方法，用于根据第<xref linkend=\"PostGIS_GUC\"/>进行设置。"
-"POSTGIS_GDAL_ENABLED_DRIVERSPOSTGIS_ENABLE_OUTDB_RASTERS"
+"从 PostGIS 2.1.3 "
+"开始，默认情况下禁用数据库外栅格和所有栅格驱动程序要启用它们，"
+"请在服务器上设置环境变量 <varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> "
+"和<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname>。PostGIS 2.2 "
+"提供了一种跨平台方法，用于根据第 <xref linkend=\"PostGIS_GUC\"/> 进行设置。"
+
 #. Tag: para
 #: administration.xml:19
 #, no-c-format
 msgid "If you want to enable offline raster:"
-msgstr "如果要启用离线栅格:"
+msgstr "如果要启用离线栅格："
 
 #. Tag: para
 #: administration.xml:21
@@ -79,7 +77,7 @@ msgstr "如果包括任何其它值或不包含值，则会禁用离线栅格。
 msgid ""
 "In order to enable all GDAL drivers available in your GDAL install, set this "
 "environment variable as follows"
-msgstr "若启用已经安装的GDAL驱动程序，请设置以下环境变量："
+msgstr "若想启用已经安装的 GDAL 驱动，请设置以下环境变量："
 
 #. Tag: para
 #: administration.xml:24
@@ -87,13 +85,13 @@ msgstr "若启用已经安装的GDAL驱动程序，请设置以下环境变量�
 msgid ""
 "If you want to only enable specific drivers, set your environment variable "
 "as follows:"
-msgstr "如果只想启用某些驱动程序，请按如下所示设置环境变量："
+msgstr "如果只想启用某些驱动，请按如下所示设置环境变量："
 
 #. Tag: para
 #: administration.xml:27
 #, no-c-format
 msgid "If you are on windows, do not quote the driver list"
-msgstr "在Windows上，不要在驱动程序列表中加上引号"
+msgstr "在 Windows 上，不要在驱动程序列表中加上引号"
 
 #. Tag: para
 #: administration.xml:29
@@ -105,9 +103,11 @@ msgid ""
 "<replaceable>main</replaceable>/environment</filename> where 10 refers to "
 "version of PostgreSQL and main refers to the cluster."
 msgstr ""
-"环境变量的设置因操作系统而异。"
-"对于在Ubuntn或Debian上通过apt-postgresql安装的PostgreSQL，首选方法是编辑，"
-"其中10表示PostgreSQL版本，main表示集群。/etc/postgresql/10/main/environment"
+"环境变量的设置因操作系统而异。对于在 Ubuntu 或 Debian 上通过 apt-postgresql "
+"安装的 PostgreSQL，首选方法是编辑<filename>/etc/postgresql/"
+"<replaceable>10</replaceable>/<replaceable>main</replaceable>/environment</"
+"filename> ，其中数字 10 是 PostgreSQL 的版本，main 表示集群。"
+
 #. Tag: para
 #: administration.xml:32
 #, no-c-format
@@ -119,17 +119,18 @@ msgid ""
 "clicking <emphasis>Advanced System Settings -&gt;Advanced->Environment "
 "Variables</emphasis> and adding new system variables."
 msgstr ""
-"在Windows上，如果您作为服务运行，则可以通过系统变量进行设置，"
-"对于Windows7，您可以通过右键单击计算机>属性高级系统设置或在资源管理器中导航到。"
-"然后单击高级系统设置->高级>环境变量并添加新的系统变量。"
-"Panel\\All Control Panel Items\\System"
+"在 Windows 上，如果您作为服务运行，则可以通过系统变量进行设置，对于 Windows "
+"7，您可以通过右键单击「计算机」 → 「属性 」→ "
+"「高级系统设置」，或在资源管理器中找到。随后，单击「高级系统设置」 → 「高级」"
+" → 「环境变量」并添加新的系统变量。"
+
 #. Tag: para
 #: administration.xml:34
 #, no-c-format
 msgid ""
 "After you set the environment variables, you'll need to restart your "
 "PostgreSQL service for the changes to take effect."
-msgstr "设置环境变量后，您需要重启PostgreSQL服务才能使更改生效"
+msgstr "设置环境变量后，您需要重启 PostgreSQL 服务才能使更改生效。"
 
 #. Tag: title
 #: administration.xml:39
@@ -141,7 +142,7 @@ msgstr "创建空间数据库"
 #: administration.xml:42
 #, no-c-format
 msgid "Spatially enable database using EXTENSION"
-msgstr "使用扩展在空间上启用数据库"
+msgstr "使用「扩展（EXTENSION）」来在数据库上启用空间能力"
 
 #. Tag: para
 #: administration.xml:44
@@ -150,7 +151,9 @@ msgid ""
 "If you are using PostgreSQL 9.1+ and have compiled and installed the "
 "extensions/postgis modules, you can turn a database into a spatial one using "
 "the EXTENSION mechanism."
-msgstr "如果您使用的是PostgreSQL9.1+并且已经编译并安装了扩展/postgis模块，则可以使用扩展机制将数据库转换为空间数据库。"
+msgstr ""
+"如果您使用的是 PostgreSQL 9.1 以上的版本，并且已经编译并安装了 postgis "
+"扩展模块，那么数据库将在 PG 的扩展机制下成为空间数据库。"
 
 #. Tag: para
 #: administration.xml:49
@@ -159,7 +162,9 @@ msgid ""
 "Core postgis extension includes geometry, geography, spatial_ref_sys and all "
 "the functions and comments. Raster and topology are packaged as a separate "
 "extension."
-msgstr "postgis的核心扩展包括几何、地理、spatial_ref_sys以及所有功能和注释。栅格和拓扑打包为单独的扩展模块。"
+msgstr ""
+"postgis 的核心扩展包括几何、地理、spatial_ref_sys "
+"以及所有函数和注释。栅格（Raster）和拓扑（Topology）打包为单独的扩展模块。"
 
 #. Tag: para
 #: administration.xml:55
@@ -172,7 +177,7 @@ msgstr "在要启用空间的数据库中运行以下SQL代码段："
 #: administration.xml:63
 #, no-c-format
 msgid "Spatially enable database without using EXTENSION (discouraged)"
-msgstr "启用空间数据库而不使用EXTENSION（不鼓励）"
+msgstr "不通过扩展（EXTENSION）的方式启用空间数据库（不建议）"
 
 #. Tag: para
 #: administration.xml:65
@@ -578,6 +583,7 @@ msgid ""
 msgstr ""
 "转储文件中spatial_ref_sys的一些自定义记录具有 无效的 SRID 值。有效 SRID 值大于 0 并且小于 999000。999000.999999 范围内的值 保留供内部使用，而值> 999999不能 完全使用。 所有具有无效 SRID 的自定义记录都将"
 "被保留， 随着这些> 999999移动到保留范围内，但是 spatial_ref_sys表将失去检查约束保护 对于该不变性，也可能保持其主键 （当多个无效的 SRID 转换为相同的保留时 SRID 值 ）。"
+
 #. Tag: para
 #: administration.xml:360
 #, no-c-format
@@ -626,4 +632,3 @@ msgid ""
 msgstr "之后，生成一个新数据库，启用必要的 PostGIS 扩展，并确保使用此 <ulink url=\"https://raw."
 "githubusercontent.com/Remi-C/IGN_spatial_ref_for_PostGIS/master/"
 "Put_IGN_SRS_into_Postgis.sql\"> 脚本</ulink>插入法语 IGN 系统。 完成这些过程后，按如下方式导入数据："
-
