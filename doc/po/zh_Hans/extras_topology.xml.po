@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-04 01:21+0000\n"
+"PO-Revision-Date: 2023-09-04 02:39+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/extras_topologyxml/zh_Hans/>\n"
@@ -567,7 +567,7 @@ msgstr ""
 #: extras_topology.xml:339 extras_topology.xml:422 extras_topology.xml:3229
 #, no-c-format
 msgid "Availability: 3.4.0"
-msgstr ""
+msgstr "可用性：3.4.0"
 
 #. Tag: para
 #: extras_topology.xml:352
@@ -3708,6 +3708,8 @@ msgid ""
 "Returns the spatial reference identifier for the ST_Geometry as defined in "
 "spatial_ref_sys table. <xref linkend=\"spatial_ref_sys\"/>"
 msgstr ""
+"返回ST_Geometry spatial_ref_sys表中定义的空间参考系统标识号。 请参见第 <xref "
+"linkend=\"spatial_ref_sys\"/>"
 
 #. Tag: para
 #: extras_topology.xml:3572
@@ -3718,6 +3720,9 @@ msgid ""
 "system to another. So verifying you have the right spatial reference system "
 "identifier is important if you plan to ever transform your geometries."
 msgstr ""
+"spatial_ref_sys表对 PostGIS "
+"已知的所有参考系进行编目，并用于从一个空间参考系转换为另一个空间参考系。 "
+"如果计划转换几何，请务必确保具有正确的空间参考系统标识号。"
 
 #. Tag: para
 #: extras_topology.xml:3576
