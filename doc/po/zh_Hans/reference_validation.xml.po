@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-01 15:00+0000\n"
+"PO-Revision-Date: 2023-09-04 01:21+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_validationxml/zh_Hans/>\n"
@@ -295,7 +295,8 @@ msgid ""
 "The function attempts to create a valid representation of a given invalid "
 "geometry without losing any of the input vertices. Valid geometries are "
 "returned unchanged."
-msgstr ""
+msgstr "该函数尝试创建给定无效几何体的有效表示，而不丢失任何输入顶点。 "
+"有效几何图形原封不动地返回。"
 
 #. Tag: para
 #: reference_validation.xml:242
@@ -303,7 +304,7 @@ msgstr ""
 msgid ""
 "Supported inputs are: POINTS, MULTIPOINTS, LINESTRINGS, MULTILINESTRINGS, "
 "POLYGONS, MULTIPOLYGONS and GEOMETRYCOLLECTIONS containing any mix of them."
-msgstr ""
+msgstr "相应的输入是点、多点、线串、多线串、多边形、多多边形、几何集合及其混合。"
 
 #. Tag: para
 #: reference_validation.xml:248
@@ -312,14 +313,15 @@ msgid ""
 "In case of full or partial dimensional collapses, the output geometry may be "
 "a collection of lower-to-equal dimension geometries, or a geometry of lower "
 "dimension."
-msgstr ""
+msgstr "在完全或部分尺寸折叠的情况下，输出几何是相同或较低维度的几何集合，或者是较低"
+"维度几何的集合。"
 
 #. Tag: para
 #: reference_validation.xml:254
 #, no-c-format
 msgid ""
 "Single polygons may become multi-geometries in case of self-intersections."
-msgstr ""
+msgstr "在自相交的情况下，单个多边形可能会变成多重几何图形。"
 
 #. Tag: para
 #: reference_validation.xml:258
@@ -331,12 +333,15 @@ msgid ""
 "false\". If no \"params\" argument is provided, the \"linework\" algorithm "
 "will be used as the default."
 msgstr ""
+"<varname>params</varname>参数可用于提供选项字符串来选择用于构建有效几何图形的"
+"方法。 选项字符串的格式为“method=linework|struct keepcollapsed=true|false”。 "
+"如果未提供“params”参数，则将使用“linework”算法作为默认值。"
 
 #. Tag: para
 #: reference_validation.xml:265
 #, no-c-format
 msgid "The \"method\" key has two values."
-msgstr ""
+msgstr "“method”键有两个值。"
 
 #. Tag: para
 #: reference_validation.xml:269
@@ -345,7 +350,8 @@ msgid ""
 "\"linework\" is the original algorithm, and builds valid geometries by first "
 "extracting all lines, noding that linework together, then building a value "
 "output from the linework."
-msgstr ""
+msgstr "“linework”是原始算法，它通过首先提取所有线条、将线条节点在一起、然后从线条构"
+"建值输出来构建有效的几何图形。"
 
 #. Tag: para
 #: reference_validation.xml:274
@@ -354,7 +360,8 @@ msgid ""
 "\"structure\" is an algorithm that distinguishes between interior and "
 "exterior rings, building new geometry by unioning exterior rings, and then "
 "differencing all interior rings."
-msgstr ""
+msgstr "“structure”是一种区分内环和外环的算法，通过合并外环来构建新的几何形状，然后区"
+"分所有内环。"
 
 #. Tag: para
 #: reference_validation.xml:280
@@ -365,24 +372,26 @@ msgid ""
 "components that collapse to a lower dimensionality, for example a one-point "
 "linestring would be dropped."
 msgstr ""
+"“keepcollapsed”键仅对“结构”算法有效。 以“真”或“假”为例。 "
+"如果指定了“false”，则将显示已折叠为较低维度的几何元素，例如单个 LINESTRING。"
 
 #. Tag: para
 #: reference_validation.xml:289
 #, no-c-format
 msgid "Enhanced: 2.0.1, speed improvements"
-msgstr ""
+msgstr "增强：2.0.1 速度提升"
 
 #. Tag: para
 #: reference_validation.xml:290
 #, no-c-format
 msgid "Enhanced: 2.1.0, added support for GEOMETRYCOLLECTION and MULTIPOINT."
-msgstr ""
+msgstr "增强：2.1.0添加了对几何集合和多点的支持。"
 
 #. Tag: para
 #: reference_validation.xml:291
 #, no-c-format
 msgid "Enhanced: 3.1.0, added removal of Coordinates with NaN values."
-msgstr ""
+msgstr "增强：3.1.0删除了具有NaN值的坐标。"
 
 #. Tag: para
 #: reference_validation.xml:292
@@ -391,48 +400,50 @@ msgid ""
 "Enhanced: 3.2.0, added algorithm options, 'linework' and 'structure' which "
 "requires GEOS &gt;= 3.10.0."
 msgstr ""
+"增强：在 3.2.0 中，添加了可选的算法参数“linework”和“structure”。 需要 "
+"GEOS&gt;= 3.10.0 或更高版本。"
 
 #. Tag: para
 #: reference_validation.xml:294
 #, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_validation.xml:308
 #, no-c-format
 msgid "before_geom: MULTIPOLYGON of 2 overlapping polygons"
-msgstr ""
+msgstr "before_geom：由两个重叠多边形组成的多多边形"
 
 #. Tag: para
 #: reference_validation.xml:316
 #, no-c-format
 msgid "after_geom: MULTIPOLYGON of 4 non-overlapping polygons"
-msgstr ""
+msgstr "after_geom：具有四个非重叠多边形的多多边形"
 
 #. Tag: para
 #: reference_validation.xml:325
 #, no-c-format
 msgid "after_geom_structure: MULTIPOLYGON of 1 non-overlapping polygon"
-msgstr ""
+msgstr "after_geom_structure：由单个非重叠多边形组成的多多边形"
 
 #. Tag: para
 #: reference_validation.xml:338
 #, no-c-format
 msgid "before_geom: MULTIPOLYGON of 6 overlapping polygons"
-msgstr ""
+msgstr "before_geom：由六个重叠多边形组成的多多边形"
 
 #. Tag: para
 #: reference_validation.xml:344
 #, no-c-format
 msgid "after_geom: MULTIPOLYGON of 14 Non-overlapping polygons"
-msgstr ""
+msgstr "after_geom：由 14 个不重叠多边形组成的多多边形"
 
 #. Tag: para
 #: reference_validation.xml:350
 #, no-c-format
 msgid "after_geom_structure: MULTIPOLYGON of 1 Non-overlapping polygon"
-msgstr ""
+msgstr "after_geom_structure：由单个非重叠多边形组成的多多边形"
 
 #. Tag: para
 #: reference_validation.xml:366
@@ -440,3 +451,4 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_CollectionExtract\"/>"
 msgstr ""
+", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_CollectionExtract\"/>"
