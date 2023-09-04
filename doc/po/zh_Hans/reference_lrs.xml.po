@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-29 10:57+0000\n"
-"PO-Revision-Date: 2023-09-01 15:00+0000\n"
+"PO-Revision-Date: 2023-09-04 01:21+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_lrsxml/zh_Hans/>\n"
@@ -91,7 +91,7 @@ msgstr ""
 #: reference_lrs.xml:620
 #, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: title
 #: reference_lrs.xml:63 reference_lrs.xml:132 reference_lrs.xml:202
