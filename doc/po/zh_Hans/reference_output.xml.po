@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-04 01:21+0000\n"
+"PO-Revision-Date: 2023-09-04 02:39+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_outputxml/zh_Hans/>\n"
@@ -130,14 +130,14 @@ msgstr "&Z_support;"
 #: reference_output.xml:1478
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: para
 #: reference_output.xml:75 reference_output.xml:250 reference_output.xml:316
 #: reference_output.xml:755 reference_output.xml:1390
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #: reference_output.xml:76 reference_output.xml:251 reference_output.xml:317
@@ -238,7 +238,7 @@ msgstr ""
 #: reference_output.xml:158 reference_output.xml:247
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.1"
-msgstr ""
+msgstr "&sfs_compliant; s2.1.1.1"
 
 #. Tag: para
 #: reference_output.xml:159
