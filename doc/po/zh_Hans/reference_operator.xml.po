@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-04 01:21+0000\n"
+"PO-Revision-Date: 2023-09-04 02:39+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_operatorxml/zh_Hans/>\n"
@@ -85,7 +85,7 @@ msgstr ""
 #: reference_operator.xml:61
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces was introduced."
-msgstr ""
+msgstr "增强：引入了 2.0.0 多面体曲面支持。"
 
 #. Tag: para
 #: reference_operator.xml:62
@@ -104,7 +104,7 @@ msgstr ""
 #: reference_operator.xml:1430 reference_operator.xml:1491
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: para
 #: reference_operator.xml:64 reference_operator.xml:127
@@ -118,7 +118,7 @@ msgstr ""
 #: reference_operator.xml:1556
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: title
 #: reference_operator.xml:68 reference_operator.xml:131
