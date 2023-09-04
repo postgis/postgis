@@ -35,13 +35,13 @@ BEGIN
 		AND proname NOT IN (
 			'st_approxquantile' -- https://trac.osgeo.org/postgis/ticket/5498
 		)
-		-- Skip functions taking polymorphic arguments (anyelement)
-		-- as those ones would need us to cast to some real type.
-		AND proname NOT IN ( 'st_asmvt', 'st_fromflatgeobuf' )
 		-- Skip functions using VARIADIC or OUTPUT arguments
-		AND ( NOT coalesce(proargmodes, '{}') && ARRAY['v'::"char",'o'] )
+		AND ( NOT coalesce(proargmodes, '{}') && ARRAY['v', 'o']::"char"[] )
 		-- Skip function having arguments of internal types
-		AND ( NOT proargtypes::oid[] && ARRAY ['internal'::regtype::oid] )
+		AND ( NOT proargtypes::oid[] && ARRAY ['internal'::regtype]::oid[] )
+		-- Skip function having anyelement return type, to avoid:
+		-- ERROR:  function returning record called in context that cannot accept type record
+		AND ( NOT prorettype = ANY( ARRAY ['anyelement'::regtype] ) )
 	LOOP
 		EXECUTE format(
 			'CREATE VIEW postgis_upgrade_test_data.locking_view AS SELECT %s',
