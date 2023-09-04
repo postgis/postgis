@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-04 02:39+0000\n"
+"PO-Revision-Date: 2023-09-04 12:58+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_operatorxml/zh_Hans/>\n"
@@ -350,7 +350,7 @@ msgstr "有效性：2.0.0"
 #: reference_operator.xml:430 reference_operator.xml:487
 #, no-c-format
 msgid "&T_support;"
-msgstr ""
+msgstr "&T_support;"
 
 #. Tag: para
 #: reference_operator.xml:312 reference_operator.xml:374
