@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-04 02:39+0000\n"
+"PO-Revision-Date: 2023-09-04 04:17+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_srsxml/zh_Hans/>\n"
@@ -576,6 +576,8 @@ msgid ""
 "coordinateOperation,coordinateOperation:EPSG::3895,coordinateOperation:"
 "EPSG::1618</varname>."
 msgstr ""
+"形式的串联操作：<varname>urn:ogc:def:coordinateOperation,coordinateOperation:"
+"EPSG::3895,coordinateOperation:EPSG::1618</varname>。"
 
 #. Tag: para
 #: reference_srs.xml:345
@@ -588,18 +590,22 @@ msgid ""
 "linkend=\"ST_InverseTransformPipeline\"/> the pipeline is executed in the "
 "inverse direction."
 msgstr ""
+"输入几何体的 SRID 将被忽略，输出几何体的 SRID 将设置为零，除非通过可选的 "
+"<varname>to_srid</varname> 参数提供值。 "
+"当使用“ST_TransformPipeline()”时，管道将向前执行。 使用 <xref linkend="
+"\"ST_InverseTransformPipeline\"/>管道以相反方向执行。"
 
 #. Tag: para
 #: reference_srs.xml:370
 #, no-c-format
 msgid ", <xref linkend=\"ST_InverseTransformPipeline\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_InverseTransformPipeline\"/>"
 
 #. Tag: refpurpose
 #: reference_srs.xml:379
 #, no-c-format
 msgid "Return the list of SRS codes associated with the given authority."
-msgstr ""
+msgstr "返回与给定权限关联的 SRS 代码列表。"
 
 #. Tag: funcprototype
 #: reference_srs.xml:384
@@ -608,6 +614,8 @@ msgid ""
 "<funcdef>setof text <function>postgis_srs_codes</function></funcdef> "
 "<paramdef><type>text </type> <parameter>auth_name</parameter></paramdef>"
 msgstr ""
+"<funcdef>setof text <function>postgis_srs_codes</function></funcdef> "
+"<paramdef><type>text </type> <parameter>auth_name</parameter></paramdef>"
 
 #. Tag: para
 #: reference_srs.xml:394
@@ -615,20 +623,21 @@ msgstr ""
 msgid ""
 "Returns a set of all <varname>auth_srid</varname> for the given "
 "<varname>auth_name</varname>."
-msgstr ""
+msgstr "返回给定 <varname>auth_name </varname>的所有<varname> auth_srid</varname> "
+"的集合。"
 
 #. Tag: para
 #: reference_srs.xml:397 reference_srs.xml:439 reference_srs.xml:480
 #: reference_srs.xml:527
 #, no-c-format
 msgid "Proj version 6+"
-msgstr ""
+msgstr "Proj version 6+"
 
 #. Tag: para
 #: reference_srs.xml:403
 #, no-c-format
 msgid "List the first ten codes associated with the EPSG authority."
-msgstr ""
+msgstr "获取与 EPSG 权威机构关联的前 10 个代码的列表。"
 
 #. Tag: para
 #: reference_srs.xml:410 reference_srs.xml:452
@@ -636,12 +645,13 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"postgis_srs_all\"/>, <xref linkend=\"postgis_srs_search\"/>"
 msgstr ""
+", <xref linkend=\"postgis_srs_all\"/>, <xref linkend=\"postgis_srs_search\"/>"
 
 #. Tag: refpurpose
 #: reference_srs.xml:420
 #, no-c-format
 msgid "Return a metadata record for the requested authority and srid."
-msgstr ""
+msgstr "返回所请求的权限和 srid 的元数据记录。"
 
 #. Tag: funcprototype
 #: reference_srs.xml:425
@@ -651,6 +661,9 @@ msgid ""
 "<paramdef><type>text </type> <parameter>auth_name</parameter></paramdef> "
 "<paramdef><type>text </type> <parameter>auth_srid</parameter></paramdef>"
 msgstr ""
+"<funcdef>setof record <function>postgis_srs</function></funcdef> "
+"<paramdef><type>text </type> <parameter>auth_name</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>auth_srid</parameter></paramdef>"
 
 #. Tag: para
 #: reference_srs.xml:436
@@ -663,12 +676,17 @@ msgid ""
 "corners of the area of usage, <varname>point_sw</varname> and "
 "<varname>point_ne</varname>."
 msgstr ""
+"返回给定<varname> auth_name </varname>所请求的 <varname>auth_srid</varname> "
+"的元数据记录。 该记录将包含 <varname>auth_name</varname>、<varname>auth_srid<"
+"/varname>、<varname>srname</varname>、<varname>srtext</varname>、<varname>pro"
+"j4text</varname> 以及使用区域的角点 <varname>point_sw </varname>和<varname> "
+"point_ne</varname>。"
 
 #. Tag: para
 #: reference_srs.xml:445
 #, no-c-format
 msgid "Get the metadata for EPSG:3005."
-msgstr ""
+msgstr "获取 EPSG 的元数据：3005。"
 
 #. Tag: refpurpose
 #: reference_srs.xml:462
@@ -676,13 +694,13 @@ msgstr ""
 msgid ""
 "Return metadata records for every spatial reference system in the underlying "
 "Proj database."
-msgstr ""
+msgstr "返回底层 Proj 数据库中每个空间参考系统的元数据记录。"
 
 #. Tag: funcdef
 #: reference_srs.xml:468
 #, no-c-format
 msgid "setof record <function>postgis_srs_all</function>"
-msgstr ""
+msgstr "setof record <function>postgis_srs_all</function>"
 
 #. Tag: para
 #: reference_srs.xml:477
@@ -694,12 +712,16 @@ msgid ""
 "<varname>proj4text</varname>, and the corners of the area of usage, "
 "<varname>point_sw</varname> and <varname>point_ne</varname>."
 msgstr ""
+"返回底层 Proj 数据库中所有元数据记录的集合。 这些记录将包含<varname> auth_nam"
+"e</varname>、<varname>auth_srid</varname>、<varname>srname</varname>、<varnam"
+"e>srtext</varname>、<varname>proj4text </varname>以及使用区域的角点 "
+"<varname>point_sw</varname> 和 <varname>point_ne</varname>。"
 
 #. Tag: para
 #: reference_srs.xml:486
 #, no-c-format
 msgid "Get the first 10 metadata records from the Proj database."
-msgstr ""
+msgstr "从 Proj 数据库中获取前 10 条元数据记录。"
 
 #. Tag: para
 #: reference_srs.xml:493
@@ -707,6 +729,7 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"postgis_srs\"/>, <xref linkend=\"postgis_srs_search\"/>"
 msgstr ""
+", <xref linkend=\"postgis_srs\"/>, <xref linkend=\"postgis_srs_search\"/>"
 
 #. Tag: refpurpose
 #: reference_srs.xml:505
@@ -714,7 +737,7 @@ msgstr ""
 msgid ""
 "Return metadata records for projected coordinate systems that have areas of "
 "useage that fully contain the bounds parameter."
-msgstr ""
+msgstr "返回具有完全包含边界参数的使用区域的投影坐标系的元数据记录。"
 
 #. Tag: funcprototype
 #: reference_srs.xml:510
@@ -725,6 +748,10 @@ msgid ""
 "<paramdef choice=\"opt\"><type>text </type> <parameter>auth_name=EPSG</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>setof record <function>postgis_srs_search</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>bounds</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text </type> "
+"<parameter>auth_name=EPSG</parameter></paramdef>"
 
 #. Tag: para
 #: reference_srs.xml:521
@@ -737,6 +764,11 @@ msgid ""
 "varname>, and the corners of the area of usage, <varname>point_sw</varname> "
 "and <varname>point_ne</varname>."
 msgstr ""
+"返回投影坐标系的一组元数据记录，这些坐标系的使用区域完全包含边界参数。 "
+"每条记录将包含 <varname>auth_name</varname>、<varname>auth_srid</varname>、<v"
+"arname>srname</varname>、<varname>srtext</varname>、<varname>proj4text </"
+"varname>以及使用区域的角点 <varname>point_sw</varname> 和<varname> "
+"point_ne</varname>。"
 
 #. Tag: para
 #: reference_srs.xml:524
@@ -744,13 +776,13 @@ msgstr ""
 msgid ""
 "The search only looks for projected coordinate systems, and is intended for "
 "users to explore the possible systems that work for the extent of their data."
-msgstr ""
+msgstr "该搜索仅查找投影坐标系，旨在让用户探索适用于其数据范围的可能坐标系统。"
 
 #. Tag: para
 #: reference_srs.xml:533
 #, no-c-format
 msgid "Search for projected coordinate systems in Louisiana."
-msgstr ""
+msgstr "搜索路易斯安那州的投影坐标系。"
 
 #. Tag: para
 #: reference_srs.xml:536
@@ -758,10 +790,10 @@ msgstr ""
 msgid ""
 "Scan a table for max extent and find projected coordinate systems that might "
 "suit."
-msgstr ""
+msgstr "扫描表格以获得最大范围并找到可能适合的投影坐标系。"
 
 #. Tag: para
 #: reference_srs.xml:545
 #, no-c-format
 msgid ", <xref linkend=\"postgis_srs_all\"/>, <xref linkend=\"postgis_srs\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"postgis_srs_all\"/>, <xref linkend=\"postgis_srs\"/>"
