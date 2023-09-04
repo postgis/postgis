@@ -65,7 +65,7 @@ msgstr ""
 #: postgis.xml:127
 #, no-c-format
 msgid "This is the manual for version &last_release_version;"
-msgstr "本手册的版本是&last_release_version;"
+msgstr "本手册的版本是 &last_release_version;"
 
 #. Tag: para
 #: postgis.xml:128
