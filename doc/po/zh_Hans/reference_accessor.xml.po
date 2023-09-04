@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-04 02:39+0000\n"
+"PO-Revision-Date: 2023-09-04 12:58+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_accessorxml/zh_Hans/>\n"
@@ -164,7 +164,7 @@ msgstr "&P_support;"
 #: reference_accessor.xml:1579 reference_accessor.xml:2020
 #, no-c-format
 msgid "&T_support;"
-msgstr ""
+msgstr "&T_support;"
 
 #. Tag: title
 #: reference_accessor.xml:48 reference_accessor.xml:101
@@ -1481,7 +1481,7 @@ msgstr ""
 #: reference_accessor.xml:1376 reference_accessor.xml:2169
 #, no-c-format
 msgid "&sqlmm_compliant;"
-msgstr ""
+msgstr "&sqlmm_compliant;"
 
 #. Tag: para
 #: reference_accessor.xml:1391
