@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-08-03 00:19+0000\n"
-"PO-Revision-Date: 2023-09-01 09:54+0000\n"
+"PO-Revision-Date: 2023-09-04 02:39+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_clusterxml/zh_Hans/>\n"
@@ -125,7 +125,7 @@ msgstr ""
 #: reference_cluster.xml:75 reference_cluster.xml:337 reference_cluster.xml:384
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: title
 #: reference_cluster.xml:79 reference_cluster.xml:154 reference_cluster.xml:194
@@ -246,7 +246,7 @@ msgstr ""
 #: reference_cluster.xml:190 reference_cluster.xml:383
 #, no-c-format
 msgid "Availability: 3.4.0"
-msgstr ""
+msgstr "可用性：3.4.0"
 
 #. Tag: refpurpose
 #: reference_cluster.xml:213
