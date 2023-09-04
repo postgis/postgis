@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-04 01:21+0000\n"
+"PO-Revision-Date: 2023-09-04 02:39+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_inputxml/zh_Hans/>\n"
@@ -340,13 +340,13 @@ msgstr "&Z_support;"
 #: reference_input.xml:875 reference_input.xml:933 reference_input.xml:1120
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: para
 #: reference_input.xml:254 reference_input.xml:876 reference_input.xml:1292
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #: reference_input.xml:255 reference_input.xml:877 reference_input.xml:1293
