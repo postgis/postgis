@@ -255,6 +255,10 @@ SELECT n.nspname
 		{
       $NEED_UPGRADE=" - NEEDS UPGRADE";
     }
+		elsif ( $FULL_VERSION =~ /deprecated functions/ )
+		{
+			$NEED_UPGRADE=" - NEEDS UPGRADE (HAS DEPRECATED FUNCTIONS)";
+		}
 
     print "db $db has postgis ${VERSION}${EXTENSION} in schema ${SCHEMA}${NEED_UPGRADE}\n";
   }
