@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-04 01:21+0000\n"
+"PO-Revision-Date: 2023-09-04 02:39+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_transformationxml/zh_Hans/>\n"
@@ -111,7 +111,8 @@ msgstr ""
 msgid ""
 "Prior to 1.3.4, this function crashes if used with geometries that contain "
 "CURVES. This is fixed in 1.3.4+"
-msgstr ""
+msgstr "在 1.3.4 之前，此函数在与包含曲线的几何图形一起使用时崩溃。 此问题已在 1.3.4 "
+"及更高版本中得到纠正"
 
 #. Tag: para
 #: reference_transformation.xml:72 reference_transformation.xml:138
@@ -119,7 +120,7 @@ msgstr ""
 #: reference_transformation.xml:287 reference_transformation.xml:371
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #: reference_transformation.xml:73 reference_transformation.xml:139
@@ -144,7 +145,7 @@ msgstr "&Z_support;"
 #: reference_transformation.xml:428 reference_transformation.xml:485
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: title
 #: reference_transformation.xml:80 reference_transformation.xml:145
