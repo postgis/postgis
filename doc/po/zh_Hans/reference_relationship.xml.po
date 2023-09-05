@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-04 12:58+0000\n"
+"PO-Revision-Date: 2023-09-05 05:07+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_relationshipxml/zh_Hans/>\n"
@@ -523,7 +523,7 @@ msgstr ""
 #: reference_relationship.xml:395 reference_relationship.xml:479
 #, no-c-format
 msgid "Availability: 1.2.2"
-msgstr ""
+msgstr "可用性：1.2.2"
 
 #. Tag: para
 #: reference_relationship.xml:400 reference_relationship.xml:484
@@ -607,7 +607,7 @@ msgstr ""
 #: reference_relationship.xml:478
 #, no-c-format
 msgid "Availability: 1.5 - support for geography was introduced."
-msgstr ""
+msgstr "可用性：1.5 - 引入了地理支持。"
 
 #. Tag: para
 #: reference_relationship.xml:489
@@ -1459,7 +1459,7 @@ msgstr ""
 #: reference_relationship.xml:1267
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.25"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.25"
 
 #. Tag: para
 #: reference_relationship.xml:1269
