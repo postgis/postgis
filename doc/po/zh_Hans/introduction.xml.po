@@ -1,16 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# Zuochenwei <zuochenwei5@gmail.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-08-12 00:40+0000\n"
-"PO-Revision-Date: 2023-08-27 10:10+0000\n"
-"Last-Translator: 左晨威 <zuocw@highgo.com>\n"
-"Language-Team: Chinese <https://weblate.osgeo.org/projects/postgis/introductionxml/"
-"zh_Hans/>\n"
+"PO-Revision-Date: 2023-09-05 05:07+0000\n"
+"Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
+"postgis/introductionxml/zh_Hans/>\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -85,7 +83,7 @@ msgstr "劳尔·马林·罗德里格斯"
 msgid ""
 "MVT support, Bug fixing, Performance and stability improvements, GitHub "
 "curation, alignment of PostGIS with PostgreSQL releases"
-msgstr "MVT 功能、纠错、性能和稳定性改进、GitHub 策展、PostGIS 和 PostgreSQL 版本调整。"
+msgstr "MVT 功能、纠错、性能和稳定性改进、GitHub 策展、PostGIS 和 PostgreSQL 版本调整"
 
 #. Tag: term
 #: introduction.xml:39
@@ -168,7 +166,8 @@ msgid ""
 "Distance function enhancements (including 3D distance and relationship "
 "functions) and additions, Tiny WKB (TWKB) output format and general user "
 "support"
-msgstr "距离函数增强（包括 3D 距离和关系函数）和附加功能、Tiny WKB (TWKB) 输出格式和一般用户支持。"
+msgstr "距离函数增强（包括 3D 距离和关系函数）和附加功能、Tiny WKB (TWKB) "
+"输出格式和一般用户支持"
 
 #. Tag: term
 #: introduction.xml:82
@@ -182,7 +181,7 @@ msgstr "丹·巴斯顿"
 msgid ""
 "Geometry clustering function additions, other geometry algorithm "
 "enhancements, GEOS enhancements and general user support"
-msgstr "几何聚类功能添加、其他几何算法增强、GEOS 增强和一般用户支持。"
+msgstr "几何聚类功能添加、其他几何算法增强、GEOS 增强和一般用户支持"
 
 #. Tag: term
 #: introduction.xml:90
@@ -194,7 +193,7 @@ msgstr "马丁·戴维斯"
 #: introduction.xml:92
 #, no-c-format
 msgid "GEOS enhancements and documentation"
-msgstr "GEOS 增强功能和文档。"
+msgstr "GEOS 增强功能和文档"
 
 #. Tag: term
 #: introduction.xml:97
@@ -220,7 +219,7 @@ msgstr "阿利亚克桑德·卡莱尼克"
 #: introduction.xml:108
 #, no-c-format
 msgid "Geometry Processing, PostgreSQL gist, general bug fixing"
-msgstr "几何处理，PostgreSQL GiST，常见纠错。"
+msgstr "几何处理，PostgreSQL GiST，常见纠错"
 
 #. Tag: title
 #: introduction.xml:115
@@ -241,7 +240,9 @@ msgid ""
 "Prior PSC Member. Raster development, integration with GDAL, raster loader, "
 "user support, general bug fixing, testing on various OS (Slackware, Mac, "
 "Windows, and more)"
-msgstr "前 PSC 成员。 光栅打开，与GDAL集成，光栅加载器，用户支持，常见纠错，在各种操作系统（Slackware，Mac，Windows等）上进行测试。"
+msgstr ""
+"前 PSC 成员。 光栅打开，与GDAL集成，光栅加载器，用户支持，常见纠错，在各种操"
+"作系统（Slackware，Mac，Windows等）上进行测试"
 
 #. Tag: term
 #: introduction.xml:125
@@ -268,7 +269,7 @@ msgstr "豪尔赫·阿雷瓦洛"
 #: introduction.xml:135
 #, no-c-format
 msgid "Raster development, GDAL driver support, loader"
-msgstr "光栅开发，GDAL驱动功能，加载器。"
+msgstr "光栅开发，GDAL驱动功能，加载器"
 
 #. Tag: term
 #: introduction.xml:140
@@ -296,7 +297,7 @@ msgstr "克里斯·霍奇森"
 msgid ""
 "Prior PSC Member. General development, site and buildbot maintenance, OSGeo "
 "incubation management"
-msgstr "前 PSC 成员。一般开发，站点和构建机器人维护，OSGeo孵化管理。"
+msgstr "前 PSC 成员。一般开发，站点和构建机器人维护，OSGeo孵化管理"
 
 #. Tag: term
 #: introduction.xml:154
@@ -310,7 +311,8 @@ msgstr "马特乌斯·洛斯科特"
 msgid ""
 "CMake support for PostGIS, built original raster loader in python and low "
 "level raster API functions"
-msgstr "CMake 对 PostGIS 的支持、原始栅格加载器的构造以及 Python 版本的低级栅格 API 函数。"
+msgstr "CMake 对 PostGIS 的支持、原始栅格加载器的构造以及 Python 版本的低级栅格 API "
+"函数"
 
 #. Tag: term
 #: introduction.xml:161
@@ -379,7 +381,7 @@ msgstr "皮埃尔·拉辛"
 msgid ""
 "Architect of PostGIS raster implementation. Raster overall architecture, "
 "prototyping, programming support"
-msgstr "后 GIS 栅格实现设计。 光栅架构、原型设计和编程辅助。"
+msgstr "后 GIS 栅格实现设计。 光栅架构、原型设计和编程辅助"
 
 #. Tag: term
 #: introduction.xml:201
@@ -391,7 +393,7 @@ msgstr "大卫·兹瓦格"
 #: introduction.xml:203
 #, no-c-format
 msgid "Raster development (mostly map algebra analytic functions)"
-msgstr "栅格开发（主要是地图代数分析函数）。"
+msgstr "栅格开发（主要是地图代数分析函数）"
 
 #. Tag: title
 #: introduction.xml:209
@@ -1384,6 +1386,7 @@ msgstr ""
 "众筹活动是我们为了获得急需的功能而开展的活动，这些功能可以为大量的人提供服务。每个活动都专门针对一个特定功能或一组功能。每个赞助商都会投入所需资金的一小部分，并且有足够的"
 "个人/组织捐款，我们就有资金来支付将帮助许多人的工作。 如果您对某个功能有想法，并且认为许多其他人愿意共同资助，请将您的想法发布到 <ulink url=\"https://lists."
 "osgeo.org/mailman/listinfo/postgis-users\">PostGIS 新闻组</ulink>，我们可以共同实现它。"
+
 #. Tag: para
 #: introduction.xml:396
 #, no-c-format
