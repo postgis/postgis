@@ -1,16 +1,15 @@
 # SOME DESCRIPTIVE TITLE.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-08-31 09:16+0000\n"
-"Last-Translator: 左晨威<zuocw@highgo.com>\n"
-"Language-Team: Chinese <https://weblate.osgeo.org/projects/postgis/reference_constructorxml/"
-"zh_Hans/>\n"
+"PO-Revision-Date: 2023-09-05 05:07+0000\n"
+"Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
+"postgis/reference_constructorxml/zh_Hans/>\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -61,15 +60,15 @@ msgstr "将几何图形收集到几何图形集合中。 结果是 Multi* 或 Ge
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Variant 1:</emphasis> accepts two input geometries"
-msgstr ""
-"<emphasis role=\"bold\">第一种形式:</emphasis>接受两个输入几何图形。"
+msgstr "<emphasis role=\"bold\">第一种形式:</emphasis>接受两个输入几何图形"
+
 #. Tag: para
 #: reference_constructor.xml:39 reference_constructor.xml:209
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Variant 2:</emphasis> accepts an array of geometries"
-msgstr ""
-"<emphasis role=\"bold\">第二种形式:</emphasis> 接受几何数组。"
+msgstr "<emphasis role=\"bold\">第二种形式:</emphasis> 接受几何数组"
+
 #. Tag: para
 #: reference_constructor.xml:40
 #, no-c-format
@@ -78,6 +77,7 @@ msgid ""
 "rowset of geometries."
 msgstr ""
 "<emphasis role=\"bold\">第三种形式:</emphasis> 接受几何行集的聚合函数。"
+
 #. Tag: para
 #: reference_constructor.xml:42
 #, no-c-format
@@ -218,6 +218,7 @@ msgstr ""
 "<funcdef>geometry <function>ST_LineFromMultiPoint</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>aMultiPoint</parameter></"
 "paramdef>"
+
 #. Tag: para
 #: reference_constructor.xml:111
 #, no-c-format
@@ -278,6 +279,7 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>ymax</parameter></paramdef> "
 "<paramdef choice=\"opt\"><type>integer</type> <parameter>srid=unknown</"
 "parameter></paramdef>"
+
 #. Tag: para
 #: reference_constructor.xml:156
 #, no-c-format
@@ -318,6 +320,7 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_MakeLine\"/>, <xref linkend=\"ST_MakePolygon\"/>, <xref "
 "linkend=\"ST_TileEnvelope\"/>"
+
 #. Tag: refpurpose
 #: reference_constructor.xml:179
 #, no-c-format
@@ -343,6 +346,7 @@ msgid ""
 msgstr ""
 "<emphasis role=\"bold\">第三种形式：</emphasis>接受几何行集的聚合函数。为了确保输入几何的顺序，"
 "请在函数调用中使用<varname>ORDER BY</varname>，或使用带有<varname>ORDER BY</varname>子句的子查询。"
+
 #. Tag: para
 #: reference_constructor.xml:214
 #, no-c-format
@@ -460,6 +464,7 @@ msgstr ""
 ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
 "linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_MakePoint\"/>, <xref "
 "linkend=\"ST_Point\"/>"
+
 #. Tag: refpurpose
 #: reference_constructor.xml:282
 #, no-c-format
@@ -477,6 +482,7 @@ msgstr ""
 "<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
 "<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>y</parameter></paramdef>"
+
 #. Tag: funcprototype
 #: reference_constructor.xml:294
 #, no-c-format
@@ -490,6 +496,7 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>z</parameter></paramdef>"
+
 #. Tag: funcprototype
 #: reference_constructor.xml:302
 #, no-c-format
@@ -505,6 +512,7 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>z</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>m</parameter></paramdef>"
+
 #. Tag: para
 #: reference_constructor.xml:315
 #, no-c-format
@@ -548,6 +556,7 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
 "<xref linkend=\"ST_MakePointM\"/>"
+
 #. Tag: refpurpose
 #: reference_constructor.xml:344
 #, no-c-format
@@ -567,6 +576,7 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>m</parameter></paramdef>"
+
 #. Tag: para
 #: reference_constructor.xml:361
 #, no-c-format
@@ -628,6 +638,7 @@ msgid ""
 msgstr ""
 "<funcdef>geometry <function>ST_MakePolygon</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>"
+
 #. Tag: funcprototype
 #: reference_constructor.xml:404
 #, no-c-format
@@ -641,6 +652,7 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>outerlinestring</parameter></"
 "paramdef> <paramdef><type>geometry[]</type> <parameter>interiorlinestrings</"
 "parameter></paramdef>"
+
 #. Tag: para
 #: reference_constructor.xml:415
 #, no-c-format
@@ -666,6 +678,7 @@ msgid ""
 msgstr ""
 "<emphasis role=\"bold\">形式2:</emphasis> 接受外壳 LineString 和内部（孔）LineString 数组。"
 "可以使用 PostgreSQL array_agg()、ARRAY[] 或 ARRAY() 结构来构造几何数组。"
+
 #. Tag: para
 #: reference_constructor.xml:423 reference_constructor.xml:695
 #, no-c-format
@@ -771,6 +784,7 @@ msgstr ""
 "<funcdef>geometry <function>ST_Point</function></funcdef> "
 "<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>y</parameter></paramdef>"
+
 #. Tag: funcprototype
 #: reference_constructor.xml:496
 #, no-c-format
@@ -784,6 +798,7 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
 "<paramdef><type>integer</type> <parameter>srid=unknown</parameter></paramdef>"
+
 #. Tag: para
 #: reference_constructor.xml:508
 #, no-c-format
@@ -866,6 +881,7 @@ msgstr ""
 ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
 "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref "
 "linkend=\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
+
 #. Tag: refpurpose
 #: reference_constructor.xml:557
 #, no-c-format
@@ -889,6 +905,7 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>z</parameter></paramdef> <paramdef "
 "choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
 "paramdef>"
+
 #. Tag: para
 #: reference_constructor.xml:574
 #, no-c-format
@@ -906,6 +923,7 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
 "linkend=\"ST_PointZM\"/>"
+
 #. Tag: refpurpose
 #: reference_constructor.xml:594
 #, no-c-format
@@ -929,6 +947,7 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>m</parameter></paramdef> <paramdef "
 "choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
 "paramdef>"
+
 #. Tag: para
 #: reference_constructor.xml:611
 #, no-c-format
@@ -946,6 +965,7 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointZ\"/>, <xref "
 "linkend=\"ST_PointZM\"/>"
+
 #. Tag: refpurpose
 #: reference_constructor.xml:632
 #, no-c-format
@@ -971,6 +991,7 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>m</parameter></paramdef> <paramdef "
 "choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
 "paramdef>"
+
 #. Tag: para
 #: reference_constructor.xml:650
 #, no-c-format
@@ -988,6 +1009,7 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
 "linkend=\"ST_PointZ\"/>, <xref linkend=\"ST_SetSRID\"/>"
+
 #. Tag: refpurpose
 #: reference_constructor.xml:670
 #, no-c-format
@@ -1007,6 +1029,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>lineString</parameter></"
 "paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></"
 "paramdef>"
+
 #. Tag: para
 #: reference_constructor.xml:686
 #, no-c-format
@@ -1066,6 +1089,7 @@ msgstr ""
 ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>, <xref "
 "linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_LineMerge\"/>, <xref "
 "linkend=\"ST_MakePolygon\"/>"
+
 #. Tag: refpurpose
 #: reference_constructor.xml:726
 #, no-c-format
@@ -1099,6 +1123,7 @@ msgstr ""
 "20037508.342789)</parameter></paramdef> <paramdef "
 "choice=\"opt\"><type>float</type> <parameter>margin=0.0</parameter></"
 "paramdef>"
+
 #. Tag: para
 #: reference_constructor.xml:745
 #, no-c-format
@@ -1191,6 +1216,7 @@ msgstr ""
 "<funcdef>setof record <function>ST_HexagonGrid</function></funcdef> "
 "<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
 "<paramdef><type>geometry</type> <parameter>bounds</parameter></paramdef>"
+
 #. Tag: para
 #: reference_constructor.xml:801
 #, no-c-format
@@ -1285,6 +1311,7 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SquareGrid\"/>, <xref "
 "linkend=\"ST_TileEnvelope\"/>"
+
 #. Tag: refpurpose
 #: reference_constructor.xml:854
 #, no-c-format
@@ -1310,6 +1337,7 @@ msgstr ""
 "<paramdef><type>integer</type> <parameter>cell_j</parameter></paramdef> "
 "<paramdef choice=\"opt\"><type>geometry</type> <parameter>origin</"
 "parameter></paramdef>"
+
 #. Tag: para
 #: reference_constructor.xml:873
 #, no-c-format
@@ -1359,6 +1387,7 @@ msgstr ""
 "<funcdef>setof record <function>ST_SquareGrid</function></funcdef> "
 "<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
 "<paramdef><type>geometry</type> <parameter>bounds</parameter></paramdef>"
+
 #. Tag: para
 #: reference_constructor.xml:910
 #, no-c-format
@@ -1444,6 +1473,7 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_HexagonGrid\"/> , <xref linkend=\"ST_EstimatedExtent\"/"
 "> , <xref linkend=\"ST_SetSRID\"/>"
+
 #. Tag: refpurpose
 #: reference_constructor.xml:956
 #, no-c-format
@@ -1468,7 +1498,8 @@ msgstr ""
 "<paramdef><type>integer</type> <parameter>cell_i</parameter></paramdef> "
 "<paramdef><type>integer</type> <parameter>cell_j</parameter></paramdef> "
 "<paramdef choice=\"opt\"><type>geometry</type> <parameter>origin</"
-"parameter></paramdef>" 
+"parameter></paramdef>"
+
 #. Tag: para
 #: reference_constructor.xml:975
 #, no-c-format
@@ -1520,6 +1551,7 @@ msgstr ""
 "<paramdef><type>text</type> <parameter> letters</parameter></paramdef> "
 "<paramdef choice=\"opt\"><type>json</type> <parameter> font</parameter></"
 "paramdef>"
+
 #. Tag: para
 #: reference_constructor.xml:1013
 #, no-c-format
