@@ -3032,7 +3032,7 @@ msgid ""
 "When using the \"&amp;&amp;\" operator, you can specify either a BOX3D as "
 "the comparison feature or a GEOMETRY. When you specify a GEOMETRY, however, "
 "its bounding box will be used for the comparison."
-msgstr "使用“&&”运算符时，可以指定比较特征是 BOX3D 还是几何。 但是，如果指定几何图形，则其边界框用于比较。"
+msgstr "使用“&amp;&amp;”运算符时，可以指定比较特征是 BOX3D 还是几何。 但是，如果指定几何图形，则其边界框用于比较。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1974
