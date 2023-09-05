@@ -1,18 +1,22 @@
 # Chinese translations for build-pg package.
 # Automatically generated, 2023.
 #
+# Zuochenwei <zuochenwei5@gmail.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-15 12:17+0000\n"
-"PO-Revision-Date: 2023-07-15 12:17+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2023-09-05 06:08+0000\n"
+"Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
+"postgis/using_raster_datamanxml/zh_Hans/>\n"
+"Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: zh_Hans\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: using_raster_dataman.xml:3
@@ -157,7 +161,7 @@ msgstr ""
 #: using_raster_dataman.xml:68
 #, no-c-format
 msgid "(c|a|d|p) These are mutually exclusive options:"
-msgstr ""
+msgstr "（c|a|d|p）这些是相互排斥的选项："
 
 #. Tag: term
 #: using_raster_dataman.xml:73
@@ -249,7 +253,7 @@ msgstr ""
 #: using_raster_dataman.xml:134
 #, no-c-format
 msgid "<term>-r</term>"
-msgstr ""
+msgstr "<term>-r</term>"
 
 #. Tag: para
 #: using_raster_dataman.xml:136
@@ -435,7 +439,7 @@ msgstr ""
 #: using_raster_dataman.xml:257
 #, no-c-format
 msgid "<term>-I</term>"
-msgstr ""
+msgstr "<term>-I</term>"
 
 #. Tag: para
 #: using_raster_dataman.xml:259
