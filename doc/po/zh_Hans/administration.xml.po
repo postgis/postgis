@@ -1,12 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
 # Chen <onsummer@foxmail.com>, 2023.
+# Zuochenwei <zuochenwei5@gmail.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-29 10:16+0000\n"
-"PO-Revision-Date: 2023-09-04 17:24+0000\n"
-"Last-Translator: Chen <onsummer@foxmail.com>\n"
+"PO-Revision-Date: 2023-09-05 05:07+0000\n"
+"Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/administrationxml/zh_Hans/>\n"
 "Language: zh_Hans\n"
@@ -77,7 +78,7 @@ msgstr "如果包括任何其它值或不包含值，则会禁用离线栅格。
 msgid ""
 "In order to enable all GDAL drivers available in your GDAL install, set this "
 "environment variable as follows"
-msgstr "若想启用已经安装的 GDAL 驱动，请设置以下环境变量："
+msgstr "若想启用已经安装的 GDAL 驱动，请设置以下环境变量"
 
 #. Tag: para
 #: administration.xml:24
@@ -120,9 +121,9 @@ msgid ""
 "Variables</emphasis> and adding new system variables."
 msgstr ""
 "在 Windows 上，如果您作为服务运行，则可以通过系统变量进行设置，对于 Windows "
-"7，您可以通过右键单击「计算机」 → 「属性 」→ "
-"「高级系统设置」，或在资源管理器中找到。随后，单击「高级系统设置」 → 「高级」"
-" → 「环境变量」并添加新的系统变量。"
+"7，您可以通过右键单击计算机 -&gt; 属性高级系统设置或在资源管理器中导航至 "
+"<varname>Control Panel\\All 控制面板项目\\系统</varname>。 然后点击<emphasis>"
+"高级系统设置-&gt;高级->环境变量</emphasis>并添加新的系统变量。"
 
 #. Tag: para
 #: administration.xml:34
@@ -195,7 +196,9 @@ msgid ""
 "Adding PostGIS objects and function definitions into your database is done "
 "by loading the various sql files located in <filename>[prefix]/share/"
 "contrib</filename> as specified during the build phase."
-msgstr "加载在构建过程中指定的各种SQL文件，并将PostGIS对象和函数定义添加到数据库中。[prefix]/share/contrib"
+msgstr ""
+"将 PostGIS 对象和函数定义添加到数据库中是通过加载位于构建阶段指定的 "
+"<filename>[prefix]/share/contrib</filename> 中的各种 sql 文件来完成的。"
 
 #. Tag: para
 #: administration.xml:77
@@ -205,7 +208,10 @@ msgid ""
 "functions) are in the <filename>postgis.sql</filename> script. Raster "
 "objects are in the <filename>rtpostgis.sql</filename> script. Topology "
 "objects are in the <filename>topology.sql</filename> script."
-msgstr "核心PostGIS对象（几何和地理类型及其相应的功能）位于脚本中。栅格对象位于脚本中。拓扑对象位于脚本中。 postgis.sqlrtpostgis.sqltopology.sql"
+msgstr ""
+"核心 PostGIS 对象（几何和地理类型及其支持函数）位于 <filename>postgis.sql</"
+"filename> 脚本中。 栅格对象位于 <filename>rtpostgis.sql</filename> 脚本中。 "
+"拓扑对象位于 <filename>topology.sql</filename> 脚本中。"
 
 #. Tag: para
 #: administration.xml:85
@@ -215,7 +221,10 @@ msgid ""
 "also load the <filename>spatial_ref_sys.sql</filename> definitions file and "
 "populate the <varname>spatial_ref_sys</varname> table. This will permit you "
 "to perform ST_Transform() operations on geometries."
-msgstr "对于完整的EPSG坐标系定义ID集，请加载定义文件并生成表。这允许执行几何函数ST_Transform()。spatial_ref_sys.sqlspatial_ref_sys"
+msgstr ""
+"对于完整的 EPSG 坐标系定义标识符集，您还可以加载 <filename>spatial_ref_sys."
+"sql</filename> 定义文件并填充 <varname>spatial_ref_sys</varname> 表。 "
+"这将允许您对几何图形执行 ST_Transform() 操作。"
 
 #. Tag: para
 #: administration.xml:92
@@ -225,7 +234,10 @@ msgid ""
 "the <filename>postgis_comments.sql</filename> script. Comments can be viewed "
 "by simply typing <command>\\dd [function_name]</command> from a "
 "<command>psql</command> terminal window."
-msgstr "如果要向 PostGIS 函数添加注释，可以在脚本中找到注释。 只需键入 \dd [函数名称]，即可从 psql 终端窗口查看注释。 postgis_comments.sql"
+msgstr ""
+"如果您希望向 PostGIS 函数添加注释，可以在 <filename>postgis_comments.sql</"
+"filename> 脚本中找到它们。 只需从 <command>psql</command> 终端窗口输入 "
+"<command>\\dd [function_name]</command> 即可查看注释。"
 
 #. Tag: para
 #: administration.xml:99
@@ -253,7 +265,8 @@ msgstr "当您需要替换或部署新的 PostGIS 对象定义时，升级现有
 msgid ""
 "Unfortunately not all definitions can be easily replaced in a live database, "
 "so sometimes your best bet is a dump/reload process."
-msgstr "遗憾的是，并非所有定义都可以在正在运行的数据库中轻松替换，因此转储/重装可能是最好的选择"
+msgstr "遗憾的是，并非所有定义都可以在正在运行的数据库中轻松替换，因此转储/重装可能是"
+"最好的选择。"
 
 #. Tag: para
 #: administration.xml:121
@@ -340,7 +353,9 @@ msgid ""
 "Then you'll need to backup your database, create a fresh one as described in "
 "<xref linkend=\"create_new_db_extensions\"/> and then restore your backup on "
 "top of this new database."
-msgstr "在这种情况下，必须备份数据库，按照第 <xref linkend=\"create_new_db_extensions\"/>节 “使用扩展启用空间数据库”中所述生成新数据库，然后将备份还原到新数据库"
+msgstr ""
+"在这种情况下，必须备份数据库，按照第 <xref linkend=\"create_new_db_extensions"
+"\"/>节 “使用扩展启用空间数据库”中所述生成新数据库，然后将备份还原到新数据库。"
 
 #. Tag: para
 #: administration.xml:150
@@ -357,7 +372,10 @@ msgid ""
 "an development version to the next (which doesn't get a new version number); "
 "in that case you can append \"next\" to the version string, and next time "
 "you'll need to drop the \"next\" suffix again:"
-msgstr "在这种情况下，所有内容都会更新，可以安全地忽略。 除非您尝试从SVN升级到下一个版本（没有新版本号），否则您可以在版本字符串中添加“next”。 但是，下次您需要删除“下一个”。"
+msgstr ""
+"那么一切都已经是最新的，您可以安全地忽略它。 <emphasis role=\"bold\""
+">除非</emphasis>您正在尝试从开发版本升级到下一个版本（不会获得新的版本号）； "
+"在这种情况下，您可以将“next”附加到版本字符串，下次您需要再次删除“next”后缀："
 
 #. Tag: para
 #: administration.xml:159
@@ -367,7 +385,10 @@ msgid ""
 "often skip the reinstallation of postgis extension before restoring since "
 "the backup just has <code>CREATE EXTENSION postgis</code> and thus picks up "
 "the newest latest version during restore."
-msgstr "如果在未指定版本的情况下安装 PostGIS，则在恢复之前通常可以跳过重新安装 PostGIS 扩展模块。 备份将仅是两次还原之间的最新备份。CREATE EXTENSION postgis"
+msgstr ""
+"如果您最初安装 PostGIS 时没有指定版本，则通常可以在恢复之前跳过 postgis "
+"扩展的重新安装，因为备份只有 <code>CREATE EXTENSION postgis</code> "
+"，因此在恢复期间会选择最新的最新版本。"
 
 #. Tag: para
 #: administration.xml:163
@@ -376,7 +397,10 @@ msgid ""
 "If you are upgrading PostGIS extension from a version prior to 3.0.0, you "
 "will have a new extension <emphasis>postgis_raster</emphasis> which you can "
 "safely drop, if you don't need raster support. You can drop as follows:"
-msgstr "如果要从 3.0.0 之前升级 PostGIS 扩展模块，则将具有一个新的postgis_raster扩展模块，如果不需要栅格功能，则可以安全地将其移除。 执行以下操作："
+msgstr ""
+"如果您要从 3.0.0 之前的版本升级 PostGIS 扩展，您将拥有一个新的扩展 <emphasis>"
+"postgis_raster</emphasis>，如果您不需要栅格支持，则可以安全地删除该扩展。 "
+"您可以按如下方式删除："
 
 #. Tag: title
 #: administration.xml:171
@@ -409,7 +433,9 @@ msgid ""
 "After compiling and installing (make install) you should find a set of "
 "<filename>*_upgrade.sql</filename> files in the installation folders. You "
 "can list them all with:"
-msgstr "编译并安装（进行安装）后，您应该在目标文件夹中找到文件集。 您可以使用以下命令获取列表： *_upgrade.sql"
+msgstr ""
+"编译并安装（make install）后，您应该在安装文件夹中找到一组 "
+"<filename>*_upgrade.sql</filename> 文件。 您可以通过以下方式列出它们："
 
 #. Tag: para
 #: administration.xml:194
@@ -417,7 +443,7 @@ msgstr "编译并安装（进行安装）后，您应该在目标文件夹中找
 msgid ""
 "Load them all in turn, starting from <filename>postgis_upgrade.sql</"
 "filename>."
-msgstr "从postgis_upgrade.sql按顺序加载所有内容"
+msgstr "从 <filename>postgis_upgrade.sql</filename> 开始依次加载它们。"
 
 #. Tag: para
 #: administration.xml:200
@@ -427,7 +453,10 @@ msgid ""
 "upgrade files named <filename>rtpostgis_upgrade.sql</filename>, "
 "<filename>topology_upgrade.sql</filename> and <filename>sfcgal_upgrade.sql</"
 "filename> respectively. If you need them:"
-msgstr "相同的过程适用于栅格、拓扑和 sfcgal 扩展，升级文件分别名为 rtpostgis_upgrade.sql、topology_upgrade.sql 和 sfcgal_upgrade.sql。 如果您需要它们："
+msgstr ""
+"相同的过程适用于栅格、拓扑和 sfcgal 扩展，升级文件分别名为 "
+"<filename>rtpostgis_upgrade.sql</filename>、<filename>topology_upgrade.sql</"
+"filename> 和 <filename>sfcgal_upgrade.sql</filename>。 如果您需要它们："
 
 #. Tag: para
 #: administration.xml:213
@@ -442,7 +471,10 @@ msgid ""
 "If you can't find the <filename>postgis_upgrade.sql</filename> specific for "
 "upgrading your version you are using a version too early for a soft upgrade "
 "and need to do a <link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
-msgstr "如果您找不到专门用于升级您的版本的 postgis_upgrade.sql，那么您使用的版本对于软升级来说太早了，需要进行<link linkend=\"hard_upgrade\">硬升级</link>。"
+msgstr ""
+"如果您找不到专门用于升级您的版本的 <filename>postgis_upgrade."
+"sql</filename>，那么您使用的版本对于软升级来说还太早，需要执行<link linkend="
+"\"hard_upgrade\">硬升级</link>。"
 
 #. Tag: para
 #: administration.xml:226
@@ -504,7 +536,10 @@ msgid ""
 "call it <varname>olddb</varname>) include binary blobs (-b) and verbose (-v) "
 "output. The user can be the owner of the db, need not be postgres super "
 "account."
-msgstr "以详细模式 （-v） 生成已升级数据库的“自定义格式”转储（我们这样称呼它），其中包含二进制 BLOB 数据 （-b） 的转储。 用户可以是数据库所有者，不需要是PostgreSQL超级用户。 olddb"
+msgstr ""
+"创建要升级的数据库的“自定义格式”转储（我们称之为 <varname>olddb</varname>），"
+"包括二进制 blob (-b) 和详细 (-v) 输出。 "
+"用户可以是数据库的所有者，不必是postgres超级帐户。"
 
 #. Tag: para
 #: administration.xml:281
@@ -514,7 +549,10 @@ msgid ""
 "database as <varname>newdb</varname>. Please refer to <xref "
 "linkend=\"create_new_db\"/> and <xref linkend=\"create_new_db_extensions\"/> "
 "for instructions on how to do this."
-msgstr "在新数据库中全新安装 PostGIS——我们将此数据库称为 newdb。 有关如何执行此操作的说明，请参阅第 <xref linkend=\"create_new_db\"/>节“不使用扩展在空间上启用数据库（不鼓励）”和第<xref linkend=\"create_new_db_extensions\"/>节“使用扩展在空间上启用数据库”"
+msgstr ""
+"在新数据库中全新安装 PostGIS - 我们将此数据库称为 <varname>newdb</varname>。 "
+"请参阅 <xref linkend=\"create_new_db\"/> 和 <xref linkend="
+"\"create_new_db_extensions\"/> 了解如何执行此操作的说明。"
 
 #. Tag: para
 #: administration.xml:288
@@ -538,7 +576,12 @@ msgid ""
 "views and functions before dumping instead, if possible. The deprecated "
 "functions can be later removed by loading <filename>uninstall_legacy.sql</"
 "filename>."
-msgstr "如果您的数据库确实很旧，或者您知道您在视图和函数中使用了长期不推荐使用的函数，则可能需要为所有函数和视图等加载legacy.sql才能正确返回。 仅在确实需要时才执行此操作。 如果可能的话，请考虑在转储之前升级您的视图和函数。 稍后可以通过加载 uninstall_legacy.sql 来删除已弃用的函数。"
+msgstr ""
+"如果您的数据库确实很旧，或者您知道在视图和函数中使用了长期不推荐使用的函数，"
+"则可能需要为所有函数和视图等加载 <filename>legacy.sql</filename> "
+"才能正确返回 。 仅在确实需要时才执行此操作。 "
+"如果可能的话，请考虑在转储之前升级您的视图和函数。 稍后可以通过加载 "
+"<filename>uninstall_legacy.sql</filename> 来删除已弃用的函数。"
 
 #. Tag: para
 #: administration.xml:314
@@ -547,7 +590,9 @@ msgid ""
 "Restore your backup into your fresh <varname>newdb</varname> database using "
 "postgis_restore. Unexpected errors, if any, will be printed to the standard "
 "error stream by psql. Keep a log of those."
-msgstr "使用 postgis_restore 将备份恢复到新的 newdb 数据库中。 意外错误（如果有）将由 psql 打印到标准错误流。 记录这些内容。"
+msgstr ""
+"使用 postgis_restore 将备份恢复到新的 <varname>newdb</varname> 数据库中。 "
+"意外错误（如果有）将由 psql 打印到标准错误流。 记录这些内容。"
 
 #. Tag: para
 #: administration.xml:328
@@ -566,7 +611,13 @@ msgid ""
 "code. If the <filename>legacy.sql</filename> way works for you, don't forget "
 "to fix your code to stop using deprecated functions and drop them loading "
 "<filename>uninstall_legacy.sql</filename>."
-msgstr "某些视图或函数使用已弃用的 PostGIS 对象。 要更正此问题，您可以尝试在还原之前加载脚本。 您还可以将已弃用的对象还原到仍具有它们的 PostGIS 版本，重写代码，然后再次移动它们。 如果使用 ，请不要忘记更正停止使用已弃用函数的代码并加载 。 legacy.sqllegacy.sqluninstall_legacy.sql"
+msgstr ""
+"您的某些视图或函数使用已弃用的 PostGIS 对象。 为了解决这个问题，"
+"您可以尝试在恢复之前加载 <filename>legacy.sql</filename> 脚本，"
+"或者您必须恢复到仍包含这些对象的 PostGIS 版本，并在移植代码后再次尝试迁移。 "
+"如果 <filename>legacy.sql</filename> 方式适合您，"
+"请不要忘记修复您的代码以停止使用已弃用的函数并将其加载 "
+"<filename>uninstall_legacy.sql</filename>。"
 
 #. Tag: para
 #: administration.xml:346
@@ -581,8 +632,12 @@ msgid ""
 "invariant to hold and possibly also its primary key ( when multiple invalid "
 "SRIDS get converted to the same reserved SRID value )."
 msgstr ""
-"转储文件中spatial_ref_sys的一些自定义记录具有 无效的 SRID 值。有效 SRID 值大于 0 并且小于 999000。999000.999999 范围内的值 保留供内部使用，而值> 999999不能 完全使用。 所有具有无效 SRID 的自定义记录都将"
-"被保留， 随着这些> 999999移动到保留范围内，但是 spatial_ref_sys表将失去检查约束保护 对于该不变性，也可能保持其主键 （当多个无效的 SRID 转换为相同的保留时 SRID 值 ）。"
+"转储文件中的spatial_ref_sys 的某些自定义记录具有无效的SRID 值。 有效的 SRID "
+"值大于 0 且小于 999000。999000.999999 范围内的值保留供内部使用，而大于 "
+"999999 的值根本无法使用。 所有具有无效 SRID 的自定义记录都将被保留，其中那些 "
+"> 999999 的记录将移入保留范围，但 Spatial_ref_sys "
+"表将失去保护该不变量的检查约束，也可能失去其主键（当多个无效 SRIDS 转换为 "
+"相同的保留 SRID 值）。"
 
 #. Tag: para
 #: administration.xml:360
