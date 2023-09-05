@@ -1061,7 +1061,7 @@ msgid ""
 msgstr "与几何数据类型类似，地理数据通过空间参考系统标识符 (SRID) 与空间参考系统相关联。"
 "可以使用在<varname>spatial_ref_sys</varname> 表中定义的任何大地测量（基于经/纬度）空间参考系统。"
 "（在 PostGIS 2.2 之前，地理类型仅支持 WGS 84 大地测量 (SRID:4326)）。您可以添加自己的自定义大地测量空间参考系统，"
-"如<xref linkend=\"user-spatial-ref-sys\"/中所述。"
+"如<xref linkend=\"user-spatial-ref-sys\"/>中所述。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:602

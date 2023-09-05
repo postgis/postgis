@@ -688,7 +688,8 @@ msgstr "分割後"
 msgid ""
 "Split a MultiLineString by a Point, where the point lies exactly on both "
 "LineStrings elements."
-msgstr "マルチラインストリングをポイントで分割します。ポイントは確実にラインストリン"
+msgstr ""
+"マルチラインストリングをポイントで分割します。ポイントは確実にラインストリン"
 "グの要素の上に存在するようにします。"
 
 #. Tag: para

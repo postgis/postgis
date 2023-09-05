@@ -3720,9 +3720,9 @@ msgid ""
 "system to another. So verifying you have the right spatial reference system "
 "identifier is important if you plan to ever transform your geometries."
 msgstr ""
-"spatial_ref_sys表对 PostGIS "
-"已知的所有参考系进行编目，并用于从一个空间参考系转换为另一个空间参考系。 "
-"如果计划转换几何，请务必确保具有正确的空间参考系统标识号。"
+"spatial_ref_sys表对 PostGIS 已知的所有参考系进行编目，并用于从一个空间参考系"
+"转换为另一个空间参考系。 如果计划转换几何，请务必确保具有正确的空间参考系统标"
+"识号。"
 
 #. Tag: para
 #: extras_topology.xml:3576

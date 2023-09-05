@@ -604,12 +604,11 @@ msgid ""
 "database with PostGIS installed without getting duplicate symbol errors or "
 "bringing forward deprecated objects."
 msgstr ""
-"Le processus de dump/rechargement est assisté par le script "
-"postgis_restore.pl qui se charge de sauter du dump toutes les définitions "
-"qui appartiennent à PostGIS (y compris les anciennes), ce qui vous permet de "
-"restaurer vos schémas et vos données dans une base de données où PostGIS est "
-"installé sans obtenir d'erreurs de symboles dupliqués ou d'avancer des "
-"objets obsolètes."
+"Le processus de dump/rechargement est assisté par le script postgis_restore."
+"pl qui se charge de sauter du dump toutes les définitions qui appartiennent "
+"à PostGIS (y compris les anciennes), ce qui vous permet de restaurer vos "
+"schémas et vos données dans une base de données où PostGIS est installé sans "
+"obtenir d'erreurs de symboles dupliqués ou d'avancer des objets obsolètes."
 
 #. Tag: para
 #: administration.xml:256
