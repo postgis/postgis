@@ -13,11 +13,13 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
           ST_BandNoDataValue (#5503), ST_BandPath (#5511),
           ST_BandPixelType (#5512), ST_Clip (#5488), ST_Count (#5517),
           ST_GeoReference (#5514), ST_Intersects(raster, ...) (#5489),
+          ST_LineCrossingDirection (#5518)
           ST_MakeEmptyRaster (#5508), ST_MapAlgebraFCT (#5500),
           ST_Polygon(raster, ...) (#5507), ST_SetBandIsNoData (#5505),
           ST_SetBandNoDataValue (#5506), ST_SetGeoreference (#5504),
+          ST_SetValue (#5519),
           ST_Slope (#5490), ST_SummaryStats (#5515), ST_TileEnvelope (#5499)
-          ST_Value (#5513, #5484).
+          ST_Value (#5513, #5484), toTopoGeom (#5526).
           (Sandro Santilli)
  - #5494, Fix double-upgrade with view using st_dwithin(text, ...)
           (Sandro Santilli)
