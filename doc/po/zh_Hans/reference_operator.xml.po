@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-04 12:58+0000\n"
+"PO-Revision-Date: 2023-09-06 01:08+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_operatorxml/zh_Hans/>\n"
@@ -21,13 +21,13 @@ msgstr ""
 #: reference_operator.xml:3
 #, no-c-format
 msgid "Operators"
-msgstr ""
+msgstr "运算符"
 
 #. Tag: title
 #: reference_operator.xml:6
 #, no-c-format
 msgid "Bounding Box Operators"
-msgstr ""
+msgstr "边界框运算符"
 
 #. Tag: refpurpose
 #: reference_operator.xml:12
@@ -35,7 +35,7 @@ msgstr ""
 msgid ""
 "Returns <varname>TRUE</varname> if A's 2D bounding box intersects B's 2D "
 "bounding box."
-msgstr ""
+msgstr "如果 A 的 2D 边界框与 B 的 2D 边界框相交，则返回 <varname>TRUE</varname>。"
 
 #. Tag: title
 #: reference_operator.xml:54 reference_operator.xml:118
@@ -66,6 +66,8 @@ msgid ""
 "if the 2D bounding box of geometry A intersects the 2D bounding box of "
 "geometry B."
 msgstr ""
+"如果 A 的二维边界框与 B "
+"的二维边界框交互，<varname>&amp;&amp;</varname>返回<varname>TRUE</varname>。"
 
 #. Tag: para
 #: reference_operator.xml:58 reference_operator.xml:305
@@ -79,19 +81,19 @@ msgstr ""
 msgid ""
 "This operand will make use of any indexes that may be available on the "
 "geometries."
-msgstr ""
+msgstr "该操作符将利用几何上可能可用的任何索引。"
 
 #. Tag: para
 #: reference_operator.xml:61
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces was introduced."
-msgstr "增强：引入了 2.0.0 多面体曲面支持。"
+msgstr "增强： 2.0.0 引入了对多面体曲面的支持。"
 
 #. Tag: para
 #: reference_operator.xml:62
 #, no-c-format
 msgid "Availability: 1.5.0 support for geography was introduced."
-msgstr ""
+msgstr "可用性： 1.5.0 引入了对地理的支持。"
 
 #. Tag: para
 #: reference_operator.xml:63 reference_operator.xml:126
@@ -170,6 +172,10 @@ msgid ""
 ">, <xref linkend=\"ST_Geometry_Contain\"/>, <xref "
 "linkend=\"ST_Geometry_Contained\"/>"
 msgstr ""
+", <xref linkend=\"ST_Extent\"/>, <xref linkend=\"ST_Geometry_Overabove\"/>, "
+"<xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
+"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
+"linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
 
 #. Tag: refpurpose
 #: reference_operator.xml:94
@@ -177,7 +183,8 @@ msgstr ""
 msgid ""
 "Returns <varname>TRUE</varname> if a geometry's (cached) 2D bounding box "
 "intersects a 2D float precision bounding box (BOX2DF)."
-msgstr ""
+msgstr "如果几何体的（缓存的）2D 边界框与 2D 浮点精度边界框 (BOX2DF) 相交，则返回 "
+"<varname>TRUE</varname>。"
 
 #. Tag: funcprototype
 #: reference_operator.xml:99
@@ -187,6 +194,9 @@ msgid ""
 "<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
 "<type>box2df</type> <parameter>B</parameter> </paramdef>"
 msgstr ""
+"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>box2df</type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:120
@@ -198,6 +208,10 @@ msgid ""
 "box2d, it will be internally converted to a float precision 2D bounding box "
 "(BOX2DF)"
 msgstr ""
+"如果几何体 A 的缓存 2D 边界框与 2D 边界框 B "
+"相交（使用浮点精度），则<varname>&amp;&amp;</varname>运算符返回<varname> "
+"TRUE</varname>。 这意味着如果 B 是（双精度）box2d，它将在内部转换为浮点精度 "
+"2D 边界框（BOX2DF）"
 
 #. Tag: para
 #: reference_operator.xml:122 reference_operator.xml:183
@@ -208,7 +222,7 @@ msgstr ""
 msgid ""
 "This operand is intended to be used internally by BRIN indexes, more than by "
 "users."
-msgstr ""
+msgstr "该操作数旨在由 BRIN 索引内部使用，而不是由用户使用。"
 
 #. Tag: para
 #: reference_operator.xml:125 reference_operator.xml:186
@@ -343,7 +357,7 @@ msgstr ""
 #: reference_operator.xml:308
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr "有效性：2.0.0"
+msgstr "Availability: 2.0.0"
 
 #. Tag: para
 #: reference_operator.xml:311 reference_operator.xml:373
