@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-04 12:58+0000\n"
+"PO-Revision-Date: 2023-09-05 01:12+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_inputxml/zh_Hans/>\n"
@@ -1235,7 +1235,7 @@ msgstr ""
 #: reference_input.xml:1187
 #, no-c-format
 msgid "<para>Return a BOX2D from a GeoHash string.</para>"
-msgstr ""
+msgstr "<para>从 GeoHash 字符串返回 BOX2D。</para>"
 
 #. Tag: para
 #: reference_input.xml:1189
@@ -1244,6 +1244,8 @@ msgid ""
 "If no <varname>precision</varname> is specified ST_Box2dFromGeoHash returns "
 "a BOX2D based on full precision of the input GeoHash string."
 msgstr ""
+"如果未指定<varname>precision</varname>，ST_Box2dFromGeoHash 将返回基于输入 "
+"GeoHash 字符串的完整精度的 BOX2D。"
 
 #. Tag: para
 #: reference_input.xml:1191
@@ -1253,12 +1255,15 @@ msgid ""
 "that many characters from the GeoHash to create the BOX2D. Lower precision "
 "values results in larger BOX2Ds and larger values increase the precision."
 msgstr ""
+"如果指定<varname>precision</varname>，ST_Box2dFromGeoHash 将使用 GeoHash "
+"中的许多字符来创建 BOX2D。 较低的精度值会导致较大的 "
+"BOX2D，较大的值会提高精度。"
 
 #. Tag: para
 #: reference_input.xml:1193 reference_input.xml:1234 reference_input.xml:1563
 #, no-c-format
 msgid "Availability: 2.1.0"
-msgstr ""
+msgstr "可用性：2.1.0"
 
 #. Tag: para
 #: reference_input.xml:1203
@@ -1267,12 +1272,14 @@ msgid ""
 ", <xref linkend=\"ST_GeomFromGeoHash\"/>, <xref "
 "linkend=\"ST_PointFromGeoHash\"/>"
 msgstr ""
+", <xref linkend=\"ST_GeomFromGeoHash\"/>, <xref linkend=\"ST_PointFromGeoHash"
+"\"/>"
 
 #. Tag: refpurpose
 #: reference_input.xml:1212
 #, no-c-format
 msgid "Return a geometry from a GeoHash string."
-msgstr ""
+msgstr "从 GeoHash 字符串返回几何图形。"
 
 #. Tag: funcprototype
 #: reference_input.xml:1217
@@ -1283,6 +1290,10 @@ msgid ""
 "<paramdef choice=\"opt\"><type>integer </type> "
 "<parameter>precision=full_precision_of_geohash</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_GeomFromGeoHash</function></funcdef> "
+"<paramdef><type>text </type> <parameter>geohash</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>precision=full_precision_of_geohash</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:1228
@@ -1290,7 +1301,7 @@ msgstr ""
 msgid ""
 "Return a geometry from a GeoHash string. The geometry will be a polygon "
 "representing the GeoHash bounds."
-msgstr ""
+msgstr "从 GeoHash 字符串返回几何图形。 几何图形将是表示 GeoHash 边界的多边形。"
 
 #. Tag: para
 #: reference_input.xml:1230
@@ -1299,6 +1310,8 @@ msgid ""
 "If no <varname>precision</varname> is specified ST_GeomFromGeoHash returns a "
 "polygon based on full precision of the input GeoHash string."
 msgstr ""
+"如果未指定<varname>precision</varname>，ST_GeomFromGeoHash 返回基于输入 "
+"GeoHash 字符串的完整精度的多边形。"
 
 #. Tag: para
 #: reference_input.xml:1232
@@ -1307,6 +1320,8 @@ msgid ""
 "If <varname>precision</varname> is specified ST_GeomFromGeoHash will use "
 "that many characters from the GeoHash to create the polygon."
 msgstr ""
+"如果指定<varname>precision</varname>，ST_GeomFromGeoHash 将使用 GeoHash "
+"中的那么多字符来创建多边形。"
 
 #. Tag: para
 #: reference_input.xml:1244
@@ -1315,6 +1330,8 @@ msgid ""
 ",<xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref "
 "linkend=\"ST_PointFromGeoHash\"/>"
 msgstr ""
+",<xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_PointFromGeoHash"
+"\"/>"
 
 #. Tag: refpurpose
 #: reference_input.xml:1251
@@ -1322,14 +1339,14 @@ msgstr ""
 msgid ""
 "Takes as input GML representation of geometry and outputs a PostGIS geometry "
 "object"
-msgstr ""
+msgstr "将几何图形的 GML 表示形式作为输入并输出 PostGIS 几何对象"
 
 #. Tag: para
 #: reference_input.xml:1270
 #, no-c-format
 msgid ""
 "Constructs a PostGIS ST_Geometry object from the OGC GML representation."
-msgstr ""
+msgstr "根据 OGC GML 制图表达生成 PostGIS ST_Geometry对象。"
 
 #. Tag: para
 #: reference_input.xml:1271
@@ -1337,7 +1354,8 @@ msgstr ""
 msgid ""
 "ST_GeomFromGML works only for GML Geometry fragments. It throws an error if "
 "you try to use it on a whole GML document."
-msgstr ""
+msgstr "ST_GeomFromGML仅适用于 GML 的几何部分。 尝试将其用于整个 GML "
+"文档时会引发错误。"
 
 #. Tag: para
 #: reference_input.xml:1272
@@ -1350,18 +1368,24 @@ msgid ""
 "GML standards, cf: <ulink url=\"http://www.opengeospatial.org/standards/"
 "gml\">http://www.opengeospatial.org/standards/gml</ulink>:"
 msgstr ""
+"支持的 OGC GML 版本包括：<itemizedlist><listitem><para>GML 3.2.1 "
+"命名空间</para></listitem><listitem><para>GML 3.1.1 简单功能配置文件 SF-2（"
+"向后兼容 GML 3.1.0 和 3.0.0）</para></listitem><listitem><para>GML 2.1."
+"2</para></listitem></itemizedlist>有关 OGC GML 标准，请参阅<ulink url=\"http"
+"://www.opengeospatial.org/standards/gml\">http://www.opengeospatial.org/"
+"standards/gml</ulink>"
 
 #. Tag: para
 #: reference_input.xml:1288 reference_input.xml:1485
 #, no-c-format
 msgid "Availability: 1.5, requires libxml2 1.6+"
-msgstr ""
+msgstr "可用性：需要 1.5 libxml2 1.6+"
 
 #. Tag: para
 #: reference_input.xml:1290 reference_input.xml:1487
 #, no-c-format
 msgid "Enhanced: 2.0.0 default srid optional parameter added."
-msgstr ""
+msgstr "增强：2.0.0 引入了多面体曲面支持和 TIN 支持。"
 
 #. Tag: para
 #: reference_input.xml:1294
@@ -1371,6 +1395,9 @@ msgid ""
 "instance). As PostGIS geometries don't, ST_GeomFromGML convert the whole "
 "geometry to 2D if a missing Z dimension is found once."
 msgstr ""
+"GML 允许混合维度（例如，同一 MultiGeometry 内的 2D 和 3D）。 由于 PostGIS "
+"几何图形不这样做，如果一旦发现缺失的 Z 维度，ST_GeomFromGML "
+"会将整个几何图形转换为 2D。"
 
 #. Tag: para
 #: reference_input.xml:1296
@@ -1381,6 +1408,9 @@ msgid ""
 "root node. If no srsName attribute available for the GML root node, the "
 "function throw an error."
 msgstr ""
+"GML 支持同一 MultiGeometry 内的混合 SRS。 由于 PostGIS 几何图形不这样做，"
+"因此在本例中 ST_GeomFromGML 会将所有子几何图形重新投影到 SRS 根节点。 如果 "
+"GML 根节点没有可用的 srsName 属性，则该函数会抛出错误。"
 
 #. Tag: para
 #: reference_input.xml:1298
