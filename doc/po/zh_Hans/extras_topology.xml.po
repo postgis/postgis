@@ -1,0 +1,4124 @@
+# Chinese translations for build-pg package.
+# Automatically generated, 2023.
+#
+# Zuochenwei <zuochenwei5@gmail.com>, 2023.
+msgid ""
+msgstr ""
+"Project-Id-Version: build-pg 13\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"PO-Revision-Date: 2023-09-04 12:58+0000\n"
+"Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
+"postgis/extras_topologyxml/zh_Hans/>\n"
+"Language: zh_Hans\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.16.4\n"
+
+#. Tag: title
+#: extras_topology.xml:3
+#, no-c-format
+msgid "Topology"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:4
+#, no-c-format
+msgid ""
+"The PostGIS Topology types and functions are used to manage topological "
+"objects such as faces, edges and nodes."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:5
+#, no-c-format
+msgid ""
+"Sandro Santilli's presentation at PostGIS Day Paris 2011 conference gives a "
+"good synopsis of PostGIS Topology and where it is headed <ulink url=\"http://"
+"strk.kbt.io/projects/postgis/Paris2011_TopologyWithPostGIS_2_0."
+"pdf\">Topology with PostGIS 2.0 slide deck</ulink>."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:6
+#, no-c-format
+msgid ""
+"Vincent Picavet provides a good synopsis and overview of what is Topology, "
+"how is it used, and various FOSS4G tools that support it in <ulink "
+"url=\"https://gitlab.com/Oslandia/documentation/presentations/-/blob/"
+"master/2012/pgconf_eu_2012/pgconfeu2012_vincent_picavet_postgis_topology."
+"pdf\">PostGIS Topology PGConf EU 2012</ulink>."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:11
+#, no-c-format
+msgid ""
+"An example of a topologically based GIS database is the <ulink url=\"https://"
+"www.census.gov/geo/maps-data/data/tiger.html\">US Census Topologically "
+"Integrated Geographic Encoding and Referencing System (TIGER)</ulink> "
+"database. If you want to experiment with PostGIS topology and need some "
+"data, check out <xref linkend=\"Topology_Load_Tiger\"/>."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:12
+#, no-c-format
+msgid ""
+"The PostGIS topology module has existed in prior versions of PostGIS but was "
+"never part of the Official PostGIS documentation. In PostGIS 2.0.0 major "
+"cleanup is going on to remove use of all deprecated functions in it, fix "
+"known usability issues, better document the features and functions, add new "
+"functions, and enhance to closer conform to SQL-MM standards."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:14
+#, no-c-format
+msgid ""
+"Details of this project can be found at <ulink url=\"http://trac.osgeo.org/"
+"postgis/wiki/UsersWikiPostgisTopology\">PostGIS Topology Wiki</ulink>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:15
+#, no-c-format
+msgid ""
+"All functions and tables associated with this module are installed in a "
+"schema called <varname>topology</varname>."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:16
+#, no-c-format
+msgid ""
+"Functions that are defined in SQL/MM standard are prefixed with ST_ and "
+"functions specific to PostGIS are not prefixed."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:17
+#, no-c-format
+msgid ""
+"Topology support is build by default starting with PostGIS 2.0, and can be "
+"disabled specifying --without-topology configure option at build time as "
+"described in <xref linkend=\"postgis_installation\"/>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:22
+#, no-c-format
+msgid ""
+"This section lists the PostgreSQL data types installed by PostGIS Topology. "
+"Note we describe the casting behavior of these which is very important "
+"especially when designing your own functions."
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:27
+#, no-c-format
+msgid "Topology Types"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:32
+#, no-c-format
+msgid "A composite type that consists of a sequence number and an edge number."
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:38 extras_topology.xml:62 extras_topology.xml:111
+#: extras_topology.xml:151 extras_topology.xml:198 extras_topology.xml:275
+#: extras_topology.xml:331 extras_topology.xml:375 extras_topology.xml:415
+#: extras_topology.xml:464 extras_topology.xml:504 extras_topology.xml:545
+#: extras_topology.xml:583 extras_topology.xml:855 extras_topology.xml:910
+#: extras_topology.xml:965 extras_topology.xml:1071 extras_topology.xml:1132
+#: extras_topology.xml:1187 extras_topology.xml:1233 extras_topology.xml:1281
+#: extras_topology.xml:1325 extras_topology.xml:1374 extras_topology.xml:1434
+#: extras_topology.xml:1480 extras_topology.xml:1527 extras_topology.xml:1584
+#: extras_topology.xml:1650 extras_topology.xml:1722 extras_topology.xml:1790
+#: extras_topology.xml:1854 extras_topology.xml:1909 extras_topology.xml:1957
+#: extras_topology.xml:2004 extras_topology.xml:2055 extras_topology.xml:2109
+#: extras_topology.xml:2150 extras_topology.xml:2197 extras_topology.xml:2248
+#: extras_topology.xml:2303 extras_topology.xml:2342 extras_topology.xml:2392
+#: extras_topology.xml:2434 extras_topology.xml:2476 extras_topology.xml:2519
+#: extras_topology.xml:2569 extras_topology.xml:2614 extras_topology.xml:2675
+#: extras_topology.xml:2734 extras_topology.xml:2775 extras_topology.xml:2832
+#: extras_topology.xml:2877 extras_topology.xml:2949 extras_topology.xml:2983
+#: extras_topology.xml:3046 extras_topology.xml:3115 extras_topology.xml:3191
+#: extras_topology.xml:3226 extras_topology.xml:3273 extras_topology.xml:3315
+#: extras_topology.xml:3359 extras_topology.xml:3400 extras_topology.xml:3439
+#: extras_topology.xml:3477 extras_topology.xml:3525 extras_topology.xml:3569
+#: extras_topology.xml:3664 extras_topology.xml:3718 extras_topology.xml:3785
+#: extras_topology.xml:3834
+#, no-c-format
+msgid "Description"
+msgstr "描述"
+
+#. Tag: para
+#: extras_topology.xml:39
+#, no-c-format
+msgid ""
+"A composite type that consists of a sequence number and an edge number. This "
+"is the return type for <varname>ST_GetFaceEdges</varname> and "
+"<varname>GetNodeEdges</varname> functions."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:47
+#, no-c-format
+msgid ""
+"<varname>sequence</varname> is an integer: Refers to a topology defined in "
+"the topology.topology table which defines the topology schema and srid."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:50
+#, no-c-format
+msgid "<varname>edge</varname> is an integer: The identifier of an edge."
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:59
+#, no-c-format
+msgid "A composite type representing a topologically defined geometry."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:63
+#, no-c-format
+msgid ""
+"A composite type that refers to a topology geometry in a specific topology "
+"layer, having a specific type and a specific id. The elements of a "
+"TopoGeometry are the properties: topology_id, layer_id, id integer, type "
+"integer."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:66
+#, no-c-format
+msgid ""
+"<varname>topology_id</varname> is an integer: Refers to a topology defined "
+"in the topology.topology table which defines the topology schema and srid."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:69
+#, no-c-format
+msgid ""
+"<varname>layer_id</varname> is an integer: The layer_id in the layers table "
+"that the TopoGeometry belongs to. The combination of topology_id, layer_id "
+"provides a unique reference in the topology.layers table."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:72
+#, no-c-format
+msgid ""
+"<varname>id</varname> is an integer: The id is the autogenerated sequence "
+"number that uniquely defines the topogeometry in the respective topology "
+"layer."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:75
+#, no-c-format
+msgid ""
+"<varname>type</varname> integer between 1 - 4 that defines the geometry "
+"type: 1:[multi]point, 2:[multi]line, 3:[multi]poly, 4:collection"
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:81
+#, no-c-format
+msgid "Casting Behavior"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:82
+#, no-c-format
+msgid ""
+"This section lists the automatic as well as explicit casts allowed for this "
+"data type"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:87
+#, no-c-format
+msgid "Cast To"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:88
+#, no-c-format
+msgid "Behavior"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:91
+#, no-c-format
+msgid "geometry"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:92
+#, no-c-format
+msgid "automatic"
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:100 extras_topology.xml:129 extras_topology.xml:181
+#: extras_topology.xml:208 extras_topology.xml:300 extras_topology.xml:350
+#: extras_topology.xml:393 extras_topology.xml:437 extras_topology.xml:481
+#: extras_topology.xml:523 extras_topology.xml:560 extras_topology.xml:833
+#: extras_topology.xml:869 extras_topology.xml:927 extras_topology.xml:982
+#: extras_topology.xml:1109 extras_topology.xml:1161 extras_topology.xml:1206
+#: extras_topology.xml:1255 extras_topology.xml:1296 extras_topology.xml:1345
+#: extras_topology.xml:1394 extras_topology.xml:1455 extras_topology.xml:1502
+#: extras_topology.xml:1558 extras_topology.xml:1623 extras_topology.xml:1695
+#: extras_topology.xml:1763 extras_topology.xml:1828 extras_topology.xml:1877
+#: extras_topology.xml:1926 extras_topology.xml:1976 extras_topology.xml:2032
+#: extras_topology.xml:2081 extras_topology.xml:2127 extras_topology.xml:2168
+#: extras_topology.xml:2222 extras_topology.xml:2278 extras_topology.xml:2315
+#: extras_topology.xml:2365 extras_topology.xml:2407 extras_topology.xml:2449
+#: extras_topology.xml:2491 extras_topology.xml:2542 extras_topology.xml:2587
+#: extras_topology.xml:2647 extras_topology.xml:2700 extras_topology.xml:2750
+#: extras_topology.xml:2809 extras_topology.xml:2849 extras_topology.xml:2926
+#: extras_topology.xml:2961 extras_topology.xml:3001 extras_topology.xml:3076
+#: extras_topology.xml:3164 extras_topology.xml:3205 extras_topology.xml:3242
+#: extras_topology.xml:3292 extras_topology.xml:3333 extras_topology.xml:3376
+#: extras_topology.xml:3424 extras_topology.xml:3496 extras_topology.xml:3543
+#: extras_topology.xml:3586 extras_topology.xml:3696 extras_topology.xml:3749
+#: extras_topology.xml:3810 extras_topology.xml:3863
+#, no-c-format
+msgid "See Also"
+msgstr "相关信息"
+
+#. Tag: refpurpose
+#: extras_topology.xml:108
+#, no-c-format
+msgid ""
+"A composite type that consists of an error message and id1 and id2 to denote "
+"location of error. This is the return type for <varname>ValidateTopology</"
+"varname>."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:112
+#, no-c-format
+msgid ""
+"A composite type that consists of an error message and two integers. The "
+"<xref linkend=\"ValidateTopology\"/> function returns a set of these to "
+"denote validation errors and the id1 and id2 to denote the ids of the "
+"topology objects involved in the error."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:115
+#, no-c-format
+msgid "<varname>error</varname> is varchar: Denotes type of error."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:116
+#, no-c-format
+msgid ""
+"Current error descriptors are: coincident nodes, edge crosses node, edge not "
+"simple, edge end node geometry mis-match, edge start node geometry mismatch, "
+"face overlaps face,face within face,"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:119
+#, no-c-format
+msgid ""
+"<varname>id1</varname> is an integer: Denotes identifier of edge / face / "
+"nodes in error."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:122
+#, no-c-format
+msgid ""
+"<varname>id2</varname> is an integer: For errors that involve 2 objects "
+"denotes the secondary edge / or node"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:138
+#, no-c-format
+msgid ""
+"This section lists the PostgreSQL domains installed by PostGIS Topology. "
+"Domains can be used like object types as return objects of functions or "
+"table columns. The distinction between a domain and a type is that a domain "
+"is an existing type with a check constraint bound to it."
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:143
+#, no-c-format
+msgid "Topology Domains"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:148
+#, no-c-format
+msgid ""
+"An array of 2 integers generally used to identify a TopoGeometry component."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:152
+#, no-c-format
+msgid ""
+"An array of 2 integers used to represent one component of a simple or "
+"hierarchical <xref linkend=\"topogeometry\"/>."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:156
+#, no-c-format
+msgid ""
+"In the case of a simple TopoGeometry the first element of the array "
+"represents the identifier of a topological primitive and the second element "
+"represents its type (1:node, 2:edge, 3:face). In the case of a hierarchical "
+"TopoGeometry the first element of the array represents the identifier of a "
+"child TopoGeometry and the second element represents its layer identifier."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:165
+#, no-c-format
+msgid ""
+"For any given hierarchical TopoGeometry all child TopoGeometry elements will "
+"come from the same child layer, as specified in the topology.layer record "
+"for the layer of the TopoGeometry being defined."
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:174 extras_topology.xml:202 extras_topology.xml:293
+#: extras_topology.xml:344 extras_topology.xml:386 extras_topology.xml:427
+#: extras_topology.xml:475 extras_topology.xml:516 extras_topology.xml:555
+#: extras_topology.xml:827 extras_topology.xml:921 extras_topology.xml:976
+#: extras_topology.xml:1098 extras_topology.xml:1151 extras_topology.xml:1200
+#: extras_topology.xml:1249 extras_topology.xml:1448 extras_topology.xml:1495
+#: extras_topology.xml:1551 extras_topology.xml:1616 extras_topology.xml:1688
+#: extras_topology.xml:1756 extras_topology.xml:1822 extras_topology.xml:1871
+#: extras_topology.xml:2026 extras_topology.xml:2075 extras_topology.xml:2121
+#: extras_topology.xml:2162 extras_topology.xml:2214 extras_topology.xml:2271
+#: extras_topology.xml:2357 extras_topology.xml:2401 extras_topology.xml:2443
+#: extras_topology.xml:2485 extras_topology.xml:2535 extras_topology.xml:2581
+#: extras_topology.xml:2803 extras_topology.xml:2843 extras_topology.xml:2920
+#: extras_topology.xml:3155 extras_topology.xml:3201 extras_topology.xml:3233
+#: extras_topology.xml:3286 extras_topology.xml:3327 extras_topology.xml:3370
+#: extras_topology.xml:3418 extras_topology.xml:3489 extras_topology.xml:3536
+#: extras_topology.xml:3581 extras_topology.xml:3687 extras_topology.xml:3754
+#: extras_topology.xml:3803 extras_topology.xml:3856
+#, no-c-format
+msgid "Examples"
+msgstr "示例"
+
+#. Tag: para
+#: extras_topology.xml:182
+#, no-c-format
+msgid ""
+", <xref linkend=\"topoelementarray\"/>, <xref linkend=\"topogeometry\"/>, "
+"<xref linkend=\"TopoGeom_addElement\"/>, <xref "
+"linkend=\"TopoGeom_remElement\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:195
+#, no-c-format
+msgid "An array of TopoElement objects."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:199
+#, no-c-format
+msgid ""
+"An array of 1 or more TopoElement objects, generally used to pass around "
+"components of TopoGeometry objects."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:209
+#, no-c-format
+msgid ""
+", <xref linkend=\"GetTopoGeomElementArray\"/>, <xref "
+"linkend=\"TopoElementArray_Agg\"/>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:221
+#, no-c-format
+msgid ""
+"This section lists the Topology functions for building new Topology schemas, "
+"validating topologies, and managing TopoGeometry Columns"
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:224
+#, no-c-format
+msgid "Topology and TopoGeometry Management"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:228
+#, no-c-format
+msgid ""
+"Adds a topogeometry column to an existing table, registers this new column "
+"as a layer in topology.layer and returns the new layer_id."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:277
+#, no-c-format
+msgid ""
+"Each TopoGeometry object belongs to a specific Layer of a specific Topology. "
+"Before creating a TopoGeometry object you need to create its TopologyLayer. "
+"A Topology Layer is an association of a feature-table with the topology. It "
+"also contain type and hierarchy information. We create a layer using the "
+"AddTopoGeometryColumn() function:"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:279
+#, no-c-format
+msgid ""
+"This function will both add the requested column to the table and add a "
+"record to the topology.layer table with all the given info."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:280
+#, no-c-format
+msgid ""
+"If you don't specify [child_layer] (or set it to NULL) this layer would "
+"contain Basic TopoGeometries (composed by primitive topology elements). "
+"Otherwise this layer will contain hierarchical TopoGeometries (composed by "
+"TopoGeometries from the child_layer)."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:283
+#, no-c-format
+msgid ""
+"Once the layer is created (its id is returned by the AddTopoGeometryColumn "
+"function) you're ready to construct TopoGeometry objects in it"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:284
+#, no-c-format
+msgid ""
+"Valid <varname>feature_type</varname>s are: POINT, MULTIPOINT, LINE, "
+"MULTILINE, POLYGON, MULTIPOLYGON, COLLECTION"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:287 extras_topology.xml:381 extras_topology.xml:470
+#: extras_topology.xml:1092 extras_topology.xml:1194 extras_topology.xml:1442
+#: extras_topology.xml:1489 extras_topology.xml:1864 extras_topology.xml:2069
+#: extras_topology.xml:2115 extras_topology.xml:2156 extras_topology.xml:2396
+#: extras_topology.xml:2480 extras_topology.xml:2575 extras_topology.xml:3054
+#: extras_topology.xml:3484
+#, no-c-format
+msgid "Availability: 1.1"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:302
+#, no-c-format
+msgid ""
+", <xref linkend=\"toTopoGeom\"/>, <xref linkend=\"CreateTopology\"/>, <xref "
+"linkend=\"CreateTopoGeom\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:313
+#, no-c-format
+msgid "Renames a topogeometry column"
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:318
+#, no-c-format
+msgid ""
+"<funcdef>topology.layer <function>RenameTopoGeometryColumn</function></"
+"funcdef> <paramdef><type>regclass </type> <parameter>layer_table</"
+"parameter></paramdef> <paramdef><type>name </type> "
+"<parameter>feature_column</parameter></paramdef> <paramdef><type>name </"
+"type> <parameter>new_name</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:333
+#, no-c-format
+msgid ""
+"This function changes the name of an existing TopoGeometry column ensuring "
+"metadata information about it is updated accordingly."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:339 extras_topology.xml:422 extras_topology.xml:3229
+#, no-c-format
+msgid "Availability: 3.4.0"
+msgstr "可用性：3.4.0"
+
+#. Tag: para
+#: extras_topology.xml:352
+#, no-c-format
+msgid ", <xref linkend=\"RenameTopology\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:362
+#, no-c-format
+msgid ""
+"Use with caution: Drops a topology schema and deletes its reference from "
+"topology.topology table and references to tables in that schema from the "
+"geometry_columns table."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:367
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>DropTopology</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:377
+#, no-c-format
+msgid ""
+"Drops a topology schema and deletes its reference from topology.topology "
+"table and references to tables in that schema from the geometry_columns "
+"table. This function should be USED WITH CAUTION, as it could destroy data "
+"you care about. If the schema does not exist, it just removes reference "
+"entries the named schema."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:387
+#, no-c-format
+msgid ""
+"Cascade drops the ma_topo schema and removes all references to it in "
+"topology.topology and geometry_columns."
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:401
+#, no-c-format
+msgid "Renames a topology"
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:406
+#, no-c-format
+msgid ""
+"<funcdef>varchar <function>RenameTopology</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>old_name</parameter></paramdef> "
+"<paramdef><type>varchar </type> <parameter>new_name</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:417
+#, no-c-format
+msgid ""
+"Renames a topology schema, updating its metadata record in the "
+"<varname>topology.topology</varname> table."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:428
+#, no-c-format
+msgid ""
+"Rename a topology from <varname>topo_stage</varname> to <varname>topo_prod</"
+"varname>."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:439
+#, no-c-format
+msgid ", <xref linkend=\"RenameTopoGeometryColumn\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:449
+#, no-c-format
+msgid ""
+"Drops the topogeometry column from the table named <varname>table_name</"
+"varname> in schema <varname>schema_name</varname> and unregisters the "
+"columns from topology.layer table."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:454
+#, no-c-format
+msgid ""
+"<funcdef>text <function>DropTopoGeometryColumn</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>schema_name</parameter></"
+"paramdef> <paramdef><type>varchar </type> <parameter>table_name</parameter></"
+"paramdef> <paramdef><type>varchar </type> <parameter>column_name</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:466
+#, no-c-format
+msgid ""
+"Drops the topogeometry column from the table named <varname>table_name</"
+"varname> in schema <varname>schema_name</varname> and unregisters the "
+"columns from topology.layer table. Returns summary of drop status. NOTE: it "
+"first sets all values to NULL before dropping to bypass referential "
+"integrity checks."
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:490
+#, no-c-format
+msgid ""
+"Adds missing entries to topology.layer table by reading metadata from topo "
+"tables."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:496
+#, no-c-format
+msgid ""
+"<funcdef>setof record <function>Populate_Topology_Layer</function></funcdef> "
+"<paramdef></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:506
+#, no-c-format
+msgid ""
+"Adds missing entries to the <varname>topology.layer</varname> table by "
+"inspecting topology constraints on tables. This function is useful for "
+"fixing up entries in topology catalog after restores of schemas with topo "
+"data."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:508
+#, no-c-format
+msgid ""
+"It returns the list of entries created. Returned columns are "
+"<varname>schema_name</varname>, <varname>table_name</varname>, "
+"<varname>feature_column</varname>."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:511
+#, no-c-format
+msgid "Availability: 2.3.0"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:532
+#, no-c-format
+msgid ""
+"<refpurpose>Takes a topology name and provides summary totals of types of "
+"objects in topology.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:537
+#, no-c-format
+msgid ""
+"<funcdef>text <function>TopologySummary</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:547
+#, no-c-format
+msgid ""
+"<para>Takes a topology name and provides summary totals of types of objects "
+"in topology.</para>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:550 extras_topology.xml:1146 extras_topology.xml:1290
+#: extras_topology.xml:1339 extras_topology.xml:1388 extras_topology.xml:2017
+#: extras_topology.xml:2209 extras_topology.xml:2267 extras_topology.xml:2352
+#: extras_topology.xml:2438 extras_topology.xml:2641 extras_topology.xml:2745
+#: extras_topology.xml:2798 extras_topology.xml:2839 extras_topology.xml:2915
+#: extras_topology.xml:3196 extras_topology.xml:3531 extras_topology.xml:3682
+#, no-c-format
+msgid "Availability: 2.0.0"
+msgstr "有效性：2.0.0"
+
+#. Tag: refpurpose
+#: extras_topology.xml:569
+#, no-c-format
+msgid ""
+"Returns a set of validatetopology_returntype objects detailing issues with "
+"topology."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:574
+#, no-c-format
+msgid ""
+"<funcdef>setof validatetopology_returntype <function>ValidateTopology</"
+"function></funcdef> <paramdef><type>varchar </type> <parameter>toponame</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>geometry</type> "
+"<parameter>bbox</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:585
+#, no-c-format
+msgid ""
+"Returns a set of <xref linkend=\"validatetopology_returntype\"/> objects "
+"detailing issues with topology, optionally limiting the check to the area "
+"specified by the <varname>bbox</varname> parameter."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:591
+#, no-c-format
+msgid ""
+"List of possible errors, what they mean and what the returned ids represent "
+"are displayed below:"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:597
+#, no-c-format
+msgid "Error"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:598
+#, no-c-format
+msgid "<entry>id1</entry>"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:599
+#, no-c-format
+msgid "<entry>id2</entry>"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:600
+#, no-c-format
+msgid "Meaning"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:605
+#, no-c-format
+msgid "coincident nodes"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:606
+#, no-c-format
+msgid "Identifier of first node."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:607
+#, no-c-format
+msgid "Identifier of second node."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:608
+#, no-c-format
+msgid "Two nodes have the same geometry."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:613
+#, no-c-format
+msgid "edge crosses node"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:614 extras_topology.xml:623 extras_topology.xml:632
+#: extras_topology.xml:650 extras_topology.xml:662
+#, no-c-format
+msgid "Identifier of the edge."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:615
+#, no-c-format
+msgid "Identifier of the node."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:616
+#, no-c-format
+msgid "An edge has a node in its interior. See <xref linkend=\"ST_Relate\"/>."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:622
+#, no-c-format
+msgid "invalid edge"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:625
+#, no-c-format
+msgid "An edge geometry is invalid. See <xref linkend=\"ST_IsValid\"/>."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:631
+#, no-c-format
+msgid "edge not simple"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:634
+#, no-c-format
+msgid ""
+"An edge geometry has self-intersections. See <xref linkend=\"ST_IsSimple\"/>."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:640
+#, no-c-format
+msgid "edge crosses edge"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:641
+#, no-c-format
+msgid "Identifier of first edge."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:642
+#, no-c-format
+msgid "Identifier of second edge."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:643
+#, no-c-format
+msgid ""
+"Two edges have an interior intersection. See <xref linkend=\"ST_Relate\"/>."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:649
+#, no-c-format
+msgid "edge start node geometry mis-match"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:651
+#, no-c-format
+msgid "Identifier of the indicated start node."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:654
+#, no-c-format
+msgid ""
+"The geometry of the node indicated as the starting node for an edge does not "
+"match the first point of the edge geometry. See <xref "
+"linkend=\"ST_StartPoint\"/>."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:661
+#, no-c-format
+msgid "edge end node geometry mis-match"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:663
+#, no-c-format
+msgid "Identifier of the indicated end node."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:666
+#, no-c-format
+msgid ""
+"The geometry of the node indicated as the ending node for an edge does not "
+"match the last point of the edge geometry. See <xref linkend=\"ST_EndPoint\"/"
+">."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:673
+#, no-c-format
+msgid "face without edges"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:674
+#, no-c-format
+msgid "Identifier of the orphaned face."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:678
+#, no-c-format
+msgid ""
+"No edge reports an existing face on either of its sides (left_face, "
+"right_face)."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:684
+#, no-c-format
+msgid "face has no rings"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:685
+#, no-c-format
+msgid "Identifier of the partially-defined face."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:689
+#, no-c-format
+msgid "Edges reporting a face on their sides do not form a ring."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:694
+#, no-c-format
+msgid "face has wrong mbr"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:695
+#, no-c-format
+msgid "Identifier of the face with wrong mbr cache."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:699
+#, no-c-format
+msgid ""
+"Minimum bounding rectangle of a face does not match minimum bounding box of "
+"the collection of edges reporting the face on their sides."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:705
+#, no-c-format
+msgid "hole not in advertised face"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:706 extras_topology.xml:778 extras_topology.xml:790
+#: extras_topology.xml:805
+#, no-c-format
+msgid ""
+"Signed identifier of an edge, identifying the ring. See <xref "
+"linkend=\"GetRingEdges\"/>."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:711
+#, no-c-format
+msgid ""
+"A ring of edges reporting a face on its exterior is contained in different "
+"face."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:717
+#, no-c-format
+msgid "not-isolated node has not- containing_face"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:718 extras_topology.xml:729
+#, no-c-format
+msgid "Identifier of the ill-defined node."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:722
+#, no-c-format
+msgid ""
+"A node which is reported as being on the boundary of one or more edges is "
+"indicating a containing face."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:728
+#, no-c-format
+msgid "isolated node has containing_face"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:733
+#, no-c-format
+msgid ""
+"A node which is not reported as being on the boundary of any edges is "
+"lacking the indication of a containing face."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:739
+#, no-c-format
+msgid "isolated node has wrong containing_face"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:740
+#, no-c-format
+msgid "Identifier of the misrepresented node."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:744
+#, no-c-format
+msgid ""
+"A node which is not reported as being on the boundary of any edges indicates "
+"a containing face which is not the actual face containing it. See <xref "
+"linkend=\"GetFaceContainingPoint\"/>."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:751
+#, no-c-format
+msgid "invalid next_right_edge"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:752 extras_topology.xml:765
+#, no-c-format
+msgid "Identifier of the misrepresented edge."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:755
+#, no-c-format
+msgid "Signed id of the edge which should be indicated as the next right edge."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:758
+#, no-c-format
+msgid ""
+"The edge indicated as the next edge encountered walking on the right side of "
+"an edge is wrong."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:764
+#, no-c-format
+msgid "invalid next_left_edge"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:768
+#, no-c-format
+msgid "Signed id of the edge which should be indicated as the next left edge."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:771
+#, no-c-format
+msgid ""
+"The edge indicated as the next edge encountered walking on the left side of "
+"an edge is wrong."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:777
+#, no-c-format
+msgid "mixed face labeling in ring"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:783
+#, no-c-format
+msgid ""
+"Edges in a ring indicate conflicting faces on the walking side. This is also "
+"known as a \"Side Location Conflict\"."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:789
+#, no-c-format
+msgid "non-closed ring"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:795
+#, no-c-format
+msgid ""
+"A ring of edges formed by following next_left_edge/next_right_edge "
+"attributes starts and ends on different nodes."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:801
+#, no-c-format
+msgid "face has multiple shells"
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:802
+#, no-c-format
+msgid "Identifier of the contended face."
+msgstr ""
+
+#. Tag: entry
+#: extras_topology.xml:809
+#, no-c-format
+msgid "More than a one ring of edges indicate the same face on its interior."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:818
+#, no-c-format
+msgid "Availability: 1.0.0"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:820
+#, no-c-format
+msgid ""
+"Enhanced: 2.0.0 more efficient edge crossing detection and fixes for false "
+"positives that were existent in prior versions."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:821
+#, no-c-format
+msgid ""
+"Changed: 2.2.0 values for id1 and id2 were swapped for 'edge crosses node' "
+"to be consistent with error description."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:822
+#, no-c-format
+msgid ""
+"Changed: 3.2.0 added optional bbox parameter, perform face labeling and edge "
+"linking checks."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:834
+#, no-c-format
+msgid ", <xref linkend=\"Topology_Load_Tiger\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:842
+#, no-c-format
+msgid "Returns info about invalid topology relation records"
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:847
+#, no-c-format
+msgid ""
+"<funcdef>setof record <function>ValidateTopologyRelation</function></"
+"funcdef> <paramdef><type>varchar </type> <parameter>toponame</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:857
+#, no-c-format
+msgid ""
+"Returns a set records giving information about invalidities in the relation "
+"table of the topology."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:863 extras_topology.xml:916 extras_topology.xml:971
+#: extras_topology.xml:2312 extras_topology.xml:3575
+#, no-c-format
+msgid "Availability: 3.2.0"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:878
+#, no-c-format
+msgid "Returns a topology record by different means."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:912
+#, no-c-format
+msgid ""
+"Takes a topology identifier or the identifier of a topology-related object "
+"and returns a topology.topology record."
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:936
+#, no-c-format
+msgid "Returns a topology.layer record by different means."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:967
+#, no-c-format
+msgid ""
+"Takes a layer identifier or the identifier of a topology-related object and "
+"returns a topology.layer record."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:992
+#, no-c-format
+msgid ""
+"This section discusses management of database statistics during topology "
+"building."
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:998
+#, no-c-format
+msgid "Topology Statistics Management"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1000
+#, no-c-format
+msgid ""
+"Adding elements to a topology triggers many database queries for finding "
+"existing edges that will be split, adding nodes and updating edges that will "
+"node with the new linework. For this reason it is useful that statistics "
+"about the data in the topology tables are up-to-date."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1008
+#, no-c-format
+msgid ""
+"PostGIS Topology population and editing functions do not automatically "
+"update the statistics because a updating stats after each and every change "
+"in a topology would be overkill, so it is the caller's duty to take care of "
+"that."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1016
+#, no-c-format
+msgid ""
+"That the statistics updated by autovacuum will NOT be visible to "
+"transactions which started before autovacuum process completed, so long-"
+"running transactions will need to run ANALYZE themselves, to use updated "
+"statistics."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1029
+#, no-c-format
+msgid "This section covers the topology functions for creating new topologies."
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:1032
+#, no-c-format
+msgid "Topology Constructors"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:1037 extras_topology.xml:1174
+#, no-c-format
+msgid ""
+"Creates a new topology schema and registers it in the topology.topology "
+"table."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1073
+#, no-c-format
+msgid ""
+"Creates a new topology schema with name <varname>topology_name</varname> and "
+"registers it in the <varname>topology.topology</varname> table. Topologies "
+"must be uniquely named. The topology tables (<varname>edge_data</varname>, "
+"<varname>face</varname>, <varname>node</varname>,and <varname>relation</"
+"varname> are created in the schema. It returns the id of the topology."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1080
+#, no-c-format
+msgid ""
+"The <varname>srid</varname> is the <link linkend=\"spatial_ref_sys\">spatial "
+"reference system</link> SRID for the topology."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1083
+#, no-c-format
+msgid ""
+"The tolerance <varname>prec</varname> is measured in the units of the "
+"spatial reference system. The tolerance defaults to 0."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1087
+#, no-c-format
+msgid "<varname>hasz</varname> defaults to false if not specified."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1089
+#, no-c-format
+msgid ""
+"This is similar to the SQL/MM <xref linkend=\"ST_InitTopoGeo\"/> but has "
+"more functionality."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1093
+#, no-c-format
+msgid "Enhanced: 2.0 added the signature accepting hasZ"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1099
+#, no-c-format
+msgid ""
+"Create a topology schema called <varname>ma_topo</varname> that stores edges "
+"and nodes in Massachusetts State Plane-meters (SRID = 26986). The tolerance "
+"represents 0.5 meters since the spatial reference system is meter-based."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1103
+#, no-c-format
+msgid ""
+"Create a topology for Rhode Island called <varname>ri_topo</varname> in "
+"spatial reference system State Plane-feet (SRID = 3438)"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1111
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_InitTopoGeo\"/>, <xref linkend=\"Topology_Load_Tiger\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:1118
+#, no-c-format
+msgid ""
+"Makes a copy of a topology (nodes, edges, faces, layers and TopoGeometries) "
+"into a new schema"
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:1123
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>CopyTopology</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>existing_topology_name</"
+"parameter></paramdef> <paramdef><type>varchar </type> <parameter>new_name</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1134
+#, no-c-format
+msgid ""
+"Creates a new topology with name <varname>new_name</varname>, with SRID and "
+"precision copied from <varname>existing_topology_name</varname> The nodes, "
+"edges and faces in <varname>existing_topology_name</varname> are copied into "
+"the new topology, as well as Layers and their associated TopoGeometries."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1140
+#, no-c-format
+msgid ""
+"The new rows in the <varname>topology.layer</varname> table contain "
+"synthetic values for schema_name, table_name and feature_column. This is "
+"because the TopoGeometry objects exist only as a definition and are not yet "
+"available in a user-defined table."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1152
+#, no-c-format
+msgid "Make a backup of a topology called <varname>ma_topo</varname>."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1163
+#, no-c-format
+msgid ""
+", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"RenameTopology\"/>"
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:1179
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_InitTopoGeo</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1189
+#, no-c-format
+msgid ""
+"This is the SQL-MM equivalent of <xref linkend=\"CreateTopology\"/>. It "
+"lacks options for spatial reference system and tolerance. it returns a text "
+"description of the topology creation, instead of the topology id."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1195
+#, no-c-format
+msgid ""
+"&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.17"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:1217
+#, no-c-format
+msgid ""
+"<refpurpose>Adds a collection of geometries to a given empty topology and "
+"returns a message detailing success.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:1224
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_CreateTopoGeo</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>acollection</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1235
+#, no-c-format
+msgid ""
+"<para>Adds a collection of geometries to a given empty topology and returns "
+"a message detailing success.</para>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1239
+#, no-c-format
+msgid "Useful for populating an empty topology."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1243 extras_topology.xml:1545 extras_topology.xml:1610
+#: extras_topology.xml:1682 extras_topology.xml:1750 extras_topology.xml:1919
+#: extras_topology.xml:1969 extras_topology.xml:2529 extras_topology.xml:2695
+#: extras_topology.xml:3151
+#, no-c-format
+msgid "Availability: 2.0"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1244
+#, no-c-format
+msgid ""
+"&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details -- X.3.18"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1256
+#, no-c-format
+msgid ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:1264
+#, no-c-format
+msgid ""
+"Adds a point to an existing topology using a tolerance and possibly "
+"splitting an existing edge."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:1271
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>TopoGeo_AddPoint</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>float8 </type> <parameter>tolerance</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1283
+#, no-c-format
+msgid ""
+"Adds a point to an existing topology and returns its identifier. The given "
+"point will snap to existing nodes or edges within given tolerance. An "
+"existing edge may be split by the snapped point."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1297
+#, no-c-format
+msgid ""
+", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddNode\"/>, <xref "
+"linkend=\"CreateTopology\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:1310
+#, no-c-format
+msgid ""
+"Adds a linestring to an existing topology using a tolerance and possibly "
+"splitting existing edges/faces. Returns edge identifiers."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:1315
+#, no-c-format
+msgid ""
+"<funcdef>SETOF integer <function>TopoGeo_AddLineString</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>float8 </type> <parameter>tolerance</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1327
+#, no-c-format
+msgid ""
+"Adds a linestring to an existing topology and returns a set of edge "
+"identifiers forming it up. The given line will snap to existing nodes or "
+"edges within given tolerance. Existing edges and faces may be split by the "
+"line."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1333 extras_topology.xml:1382
+#, no-c-format
+msgid ""
+"Updating statistics about topologies being loaded via this function is up to "
+"caller, see <xref linkend=\"Topology_StatsManagement\"/>."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1346
+#, no-c-format
+msgid ""
+", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddEdge\"/>, <xref "
+"linkend=\"CreateTopology\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:1359
+#, no-c-format
+msgid ""
+"Adds a polygon to an existing topology using a tolerance and possibly "
+"splitting existing edges/faces. Returns face identifiers."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:1364
+#, no-c-format
+msgid ""
+"<funcdef>SETOF integer <function>TopoGeo_AddPolygon</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>apoly</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>float8 </type> <parameter>tolerance</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1376
+#, no-c-format
+msgid ""
+"Adds a polygon to an existing topology and returns a set of face identifiers "
+"forming it up. The boundary of the given polygon will snap to existing nodes "
+"or edges within given tolerance. Existing edges and faces may be split by "
+"the boundary of the new polygon."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1395
+#, no-c-format
+msgid ""
+", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend=\"AddFace\"/>, "
+"<xref linkend=\"CreateTopology\"/>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1410
+#, no-c-format
+msgid ""
+"This section covers topology functions for adding, moving, deleting, and "
+"splitting edges, faces, and nodes. All of these functions are defined by ISO "
+"SQL/MM."
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:1413
+#, no-c-format
+msgid "Topology Editors"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:1419
+#, no-c-format
+msgid ""
+"Adds an isolated node to a face in a topology and returns the nodeid of the "
+"new node. If face is null, the node is still created."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:1424
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_AddIsoNode</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>aface</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1436
+#, no-c-format
+msgid ""
+"Adds an isolated node with point location <varname>apoint</varname> to an "
+"existing face with faceid <varname>aface</varname> to a topology "
+"<varname>atopology</varname> and returns the nodeid of the new node."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1437
+#, no-c-format
+msgid ""
+"If the spatial reference system (srid) of the point geometry is not the same "
+"as the topology, the <varname>apoint</varname> is not a point geometry, the "
+"point is null, or the point intersects an existing edge (even at the "
+"boundaries) then an exception is thrown. If the point already exists as a "
+"node, an exception is thrown."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1439
+#, no-c-format
+msgid ""
+"If <varname>aface</varname> is not null and the <varname>apoint</varname> is "
+"not within the face, then an exception is thrown."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1443
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM: Topo-Net Routines: X+1.3.1"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1456
+#, no-c-format
+msgid ""
+", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>, "
+"<xref linkend=\"ST_Intersects\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:1464
+#, no-c-format
+msgid ""
+"<refpurpose>Adds an isolated edge defined by geometry <varname>alinestring</"
+"varname> to a topology connecting two existing isolated nodes "
+"<varname>anode</varname> and <varname>anothernode</varname> and returns the "
+"edge id of the new edge.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:1469
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_AddIsoEdge</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>anode</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>anothernode</parameter></"
+"paramdef> <paramdef><type>geometry </type> <parameter>alinestring</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1482
+#, no-c-format
+msgid ""
+"<para>Adds an isolated edge defined by geometry <varname>alinestring</"
+"varname> to a topology connecting two existing isolated nodes "
+"<varname>anode</varname> and <varname>anothernode</varname> and returns the "
+"edge id of the new edge.</para>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1483
+#, no-c-format
+msgid ""
+"If the spatial reference system (srid) of the <varname>alinestring</varname> "
+"geometry is not the same as the topology, any of the input arguments are "
+"null, or the nodes are contained in more than one face, or the nodes are "
+"start or end nodes of an existing edge, then an exception is thrown."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1485
+#, no-c-format
+msgid ""
+"If the <varname>alinestring</varname> is not within the face of the face the "
+"<varname>anode</varname> and <varname>anothernode</varname> belong to, then "
+"an exception is thrown."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1486
+#, no-c-format
+msgid ""
+"If the <varname>anode</varname> and <varname>anothernode</varname> are not "
+"the start and end points of the <varname>alinestring</varname> then an "
+"exception is thrown."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1490
+#, no-c-format
+msgid ""
+"&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X.3.4"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1503
+#, no-c-format
+msgid ", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_Within\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:1511
+#, no-c-format
+msgid ""
+"Add a new edge and, if in doing so it splits a face, delete the original "
+"face and replace it with two new faces."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:1516
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_AddEdgeNewFaces</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>anode</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>anothernode</parameter></"
+"paramdef> <paramdef><type>geometry </type> <parameter>acurve</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1529
+#, no-c-format
+msgid ""
+"Add a new edge and, if in doing so it splits a face, delete the original "
+"face and replace it with two new faces. Returns the id of the newly added "
+"edge."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1535 extras_topology.xml:1601 extras_topology.xml:1664
+#: extras_topology.xml:1732
+#, no-c-format
+msgid "Updates all existing joined edges and relationships accordingly."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1539 extras_topology.xml:1605
+#, no-c-format
+msgid ""
+"If any arguments are null, the given nodes are unknown (must already exist "
+"in the <varname>node</varname> table of the topology schema) , the "
+"<varname>acurve</varname> is not a <varname>LINESTRING</varname>, the "
+"<varname>anode</varname> and <varname>anothernode</varname> are not the "
+"start and endpoints of <varname>acurve</varname> then an error is thrown."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1542 extras_topology.xml:1608 extras_topology.xml:1801
+#, no-c-format
+msgid ""
+"If the spatial reference system (srid) of the <varname>acurve</varname> "
+"geometry is not the same as the topology an exception is thrown."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1546
+#, no-c-format
+msgid ""
+"&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X.3.12"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:1568
+#, no-c-format
+msgid ""
+"Add a new edge and, if in doing so it splits a face, modify the original "
+"face and add a new face."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:1573
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_AddEdgeModFace</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>anode</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>anothernode</parameter></"
+"paramdef> <paramdef><type>geometry </type> <parameter>acurve</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1586
+#, no-c-format
+msgid ""
+"Add a new edge and, if doing so splits a face, modify the original face and "
+"add a new one."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1591
+#, no-c-format
+msgid ""
+"If possible, the new face will be created on left side of the new edge. This "
+"will not be possible if the face on the left side will need to be the "
+"Universe face (unbounded)."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1597
+#, no-c-format
+msgid "Returns the id of the newly added edge."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1611
+#, no-c-format
+msgid ""
+"&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X.3.13"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:1633
+#, no-c-format
+msgid ""
+"<refpurpose>Removes an edge and, if the removed edge separated two faces, "
+"delete the original faces and replace them with a new face.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:1641
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_RemEdgeNewFace</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1652
+#, no-c-format
+msgid ""
+"<para>Removes an edge and, if the removed edge separated two faces, delete "
+"the original faces and replace them with a new face.</para>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1657
+#, no-c-format
+msgid ""
+"Returns the id of a newly created face or NULL, if no new face is created. "
+"No new face is created when the removed edge is dangling or isolated or "
+"confined with the universe face (possibly making the universe flood into the "
+"face on the other side)."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1668 extras_topology.xml:1736
+#, no-c-format
+msgid ""
+"Refuses to remove an edge participating in the definition of an existing "
+"TopoGeometry. Refuses to heal two faces if any TopoGeometry is defined by "
+"only one of them (and not the other)."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1675 extras_topology.xml:1743
+#, no-c-format
+msgid ""
+"If any arguments are null, the given edge is unknown (must already exist in "
+"the <varname>edge</varname> table of the topology schema), the topology name "
+"is invalid then an error is thrown."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1683
+#, no-c-format
+msgid ""
+"&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X.3.14"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:1705
+#, no-c-format
+msgid ""
+"Removes an edge, and if the edge separates two faces deletes one face and "
+"modifies the other face to cover the space of both."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:1713
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_RemEdgeModFace</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1724
+#, no-c-format
+msgid ""
+"Removes an edge, and if the removed edge separates two faces deletes one "
+"face and modifies the other face to cover the space of both. Preferentially "
+"keeps the face on the right, to be consistent with <xref "
+"linkend=\"ST_AddEdgeModFace\"/>. Returns the id of the face which is "
+"preserved."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1751
+#, no-c-format
+msgid ""
+"&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X.3.15"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:1773
+#, no-c-format
+msgid ""
+"<refpurpose>Changes the shape of an edge without affecting the topology "
+"structure.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:1780
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_ChangeEdgeGeom</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>acurve</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1792
+#, no-c-format
+msgid ""
+"<para>Changes the shape of an edge without affecting the topology structure."
+"</para>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1795
+#, no-c-format
+msgid ""
+"If any arguments are null, the given edge does not exist in the "
+"<varname>edge</varname> table of the topology schema, the <varname>acurve</"
+"varname> is not a <varname>LINESTRING</varname>, or the modification would "
+"change the underlying topology then an error is thrown."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1802
+#, no-c-format
+msgid ""
+"If the new <varname>acurve</varname> is not simple, then an error is thrown."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1804
+#, no-c-format
+msgid ""
+"If moving the edge from old to new position would hit an obstacle then an "
+"error is thrown."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1810 extras_topology.xml:3794 extras_topology.xml:3847
+#, no-c-format
+msgid "Availability: 1.1.0"
+msgstr "可用性：1.1.0"
+
+#. Tag: para
+#: extras_topology.xml:1813
+#, no-c-format
+msgid "Enhanced: 2.0.0 adds topological consistency enforcement"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1817
+#, no-c-format
+msgid ""
+"&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details X.3.6"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:1839
+#, no-c-format
+msgid ""
+"Split an edge by creating a new node along an existing edge, modifying the "
+"original edge and adding a new edge."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:1844
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_ModEdgeSplit</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1856
+#, no-c-format
+msgid ""
+"Split an edge by creating a new node along an existing edge, modifying the "
+"original edge and adding a new edge. Updates all existing joined edges and "
+"relationships accordingly. Returns the identifier of the newly added node."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1865
+#, no-c-format
+msgid "Changed: 2.0 - In prior versions, this was misnamed ST_ModEdgesSplit"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1866 extras_topology.xml:1920 extras_topology.xml:1970
+#, no-c-format
+msgid ""
+"&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X.3.9"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1878
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_ModEdgeHeal\"/>, <xref linkend=\"ST_NewEdgeHeal\"/>, "
+"<xref linkend=\"AddEdge\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:1891
+#, no-c-format
+msgid ""
+"Heals two edges by deleting the node connecting them, modifying the first "
+"edge and deleting the second edge. Returns the id of the deleted node."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:1899
+#, no-c-format
+msgid ""
+"<funcdef>int <function>ST_ModEdgeHeal</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>anotheredge</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1911
+#, no-c-format
+msgid ""
+"Heals two edges by deleting the node connecting them, modifying the first "
+"edge and deleting the second edge. Returns the id of the deleted node. "
+"Updates all existing joined edges and relationships accordingly."
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:1938
+#, no-c-format
+msgid ""
+"Heals two edges by deleting the node connecting them, deleting both edges, "
+"and replacing them with an edge whose direction is the same as the first "
+"edge provided."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:1947
+#, no-c-format
+msgid ""
+"<funcdef>int <function>ST_NewEdgeHeal</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>anotheredge</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1959
+#, no-c-format
+msgid ""
+"Heals two edges by deleting the node connecting them, deleting both edges, "
+"and replacing them with an edge whose direction is the same as the first "
+"edge provided. Returns the id of the new edge replacing the healed ones. "
+"Updates all existing joined edges and relationships accordingly."
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:1989
+#, no-c-format
+msgid ""
+"Moves an isolated node in a topology from one point to another. If new "
+"<varname>apoint</varname> geometry exists as a node an error is thrown. "
+"Returns description of move."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:1994
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_MoveIsoNode</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>anode</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2006
+#, no-c-format
+msgid ""
+"Moves an isolated node in a topology from one point to another. If new "
+"<varname>apoint</varname> geometry exists as a node an error is thrown."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2007
+#, no-c-format
+msgid ""
+"If any arguments are null, the <varname>apoint</varname> is not a point, the "
+"existing node is not isolated (is a start or end point of an existing edge), "
+"new node location intersects an existing edge (even at the end points) or "
+"the new location is in a different face (since 3.2.0) then an exception is "
+"thrown."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2013
+#, no-c-format
+msgid ""
+"If the spatial reference system (srid) of the point geometry is not the same "
+"as the topology an exception is thrown."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2018
+#, no-c-format
+msgid "Enhanced: 3.2.0 ensures the nod cannot be moved in a different face"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2021
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM: Topo-Net Routines: X.3.2"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:2040
+#, no-c-format
+msgid ""
+"Split an edge by creating a new node along an existing edge, deleting the "
+"original edge and replacing it with two new edges. Returns the id of the new "
+"node created that joins the new edges."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:2045
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_NewEdgesSplit</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2057
+#, no-c-format
+msgid ""
+"Split an edge with edge id <varname>anedge</varname> by creating a new node "
+"with point location <varname>apoint</varname> along current edge, deleting "
+"the original edge and replacing it with two new edges. Returns the id of the "
+"new node created that joins the new edges. Updates all existing joined edges "
+"and relationships accordingly."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2065
+#, no-c-format
+msgid ""
+"If the spatial reference system (srid) of the point geometry is not the same "
+"as the topology, the <varname>apoint</varname> is not a point geometry, the "
+"point is null, the point already exists as a node, the edge does not "
+"correspond to an existing edge or the point is not within the edge then an "
+"exception is thrown."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2070
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM: Topo-Net Routines: X.3.8"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:2095
+#, no-c-format
+msgid ""
+"<refpurpose>Removes an isolated node and returns description of action. If "
+"the node is not isolated (is start or end of an edge), then an exception is "
+"thrown.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:2100
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_RemoveIsoNode</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>anode</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2111
+#, no-c-format
+msgid ""
+"<para>Removes an isolated node and returns description of action. If the "
+"node is not isolated (is start or end of an edge), then an exception is "
+"thrown.</para>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2116 extras_topology.xml:2157
+#, no-c-format
+msgid ""
+"&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X+1.3.3"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:2136
+#, no-c-format
+msgid ""
+"<refpurpose>Removes an isolated edge and returns description of action. If "
+"the edge is not isolated, then an exception is thrown.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:2141
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_RemoveIsoEdge</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2152
+#, no-c-format
+msgid ""
+"<para>Removes an isolated edge and returns description of action. If the "
+"edge is not isolated, then an exception is thrown.</para>"
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:2176
+#, no-c-format
+msgid "Topology Accessors"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:2181
+#, no-c-format
+msgid "Finds the edge-id of an edge that intersects a given point."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:2186
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>GetEdgeByPoint</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
+"<paramdef><type>float8 </type> <parameter>tol1</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2199
+#, no-c-format
+msgid "Retrieves the id of an edge that intersects a Point."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2200
+#, no-c-format
+msgid ""
+"The function returns an integer (id-edge) given a topology, a POINT and a "
+"tolerance. If tolerance = 0 then the point has to intersect the edge."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2201
+#, no-c-format
+msgid ""
+"If <varname>apoint</varname> doesn't intersect an edge, returns 0 (zero)."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2202
+#, no-c-format
+msgid ""
+"If use tolerance > 0 and there is more than one edge near the point then an "
+"exception is thrown."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2206 extras_topology.xml:2349
+#, no-c-format
+msgid ""
+"If tolerance = 0, the function uses ST_Intersects otherwise uses ST_DWithin."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2208 extras_topology.xml:2351 extras_topology.xml:2838
+#: extras_topology.xml:2956
+#, no-c-format
+msgid "Performed by the GEOS module."
+msgstr "它是通过GEOS模块实现的。"
+
+#. Tag: para
+#: extras_topology.xml:2215 extras_topology.xml:2358
+#, no-c-format
+msgid "These examples use edges we created in <xref linkend=\"AddEdge\"/>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2224
+#, no-c-format
+msgid ""
+", <xref linkend=\"GetNodeByPoint\"/>, <xref linkend=\"GetFaceByPoint\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:2235
+#, no-c-format
+msgid "Finds face intersecting a given point."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:2239
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>GetFaceByPoint</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
+"<paramdef><type>float8 </type> <parameter>tol1</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2250
+#, no-c-format
+msgid "Finds a face referenced by a Point, with given tolerance."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2254
+#, no-c-format
+msgid ""
+"The function will effectively look for a face intersecting a circle having "
+"the point as center and the tolerance as radius."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2259
+#, no-c-format
+msgid ""
+"If no face intersects the given query location, 0 is returned (universal "
+"face)."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2263
+#, no-c-format
+msgid ""
+"If more than one face intersect the query location an exception is thrown."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2268
+#, no-c-format
+msgid ""
+"Enhanced: 3.2.0 more efficient implementation and clearer contract, stops "
+"working with invalid topologies."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2279
+#, no-c-format
+msgid ""
+", <xref linkend=\"AddFace\"/>, <xref linkend=\"GetNodeByPoint\"/>, <xref "
+"linkend=\"GetEdgeByPoint\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:2291
+#, no-c-format
+msgid "Finds the face containing a point."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:2295
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>GetFaceContainingPoint</function></funcdef> "
+"<paramdef><type>text </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2305
+#, no-c-format
+msgid "Returns the id of the face containing a point."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2306
+#, no-c-format
+msgid "An exception is thrown if the point falls on a face boundary."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2309
+#, no-c-format
+msgid ""
+"The function relies on a valid topology, using edge linking and face "
+"labeling."
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:2326
+#, no-c-format
+msgid "Finds the node-id of a node at a point location."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:2331
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>GetNodeByPoint</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
+"<paramdef><type>float8 </type> <parameter>tol1</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2344
+#, no-c-format
+msgid "Retrieves the id of a node at a point location."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2345
+#, no-c-format
+msgid ""
+"The function returns an integer (id-node) given a topology, a POINT and a "
+"tolerance. If tolerance = 0 means exact intersection, otherwise retrieves "
+"the node from an interval."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2346
+#, no-c-format
+msgid ""
+"If <varname>apoint</varname> doesn't intersect a node, returns 0 (zero)."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2347
+#, no-c-format
+msgid ""
+"If use tolerance > 0 and there is more than one node near the point then an "
+"exception is thrown."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2367
+#, no-c-format
+msgid ""
+", <xref linkend=\"GetEdgeByPoint\"/>, <xref linkend=\"GetFaceByPoint\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:2379
+#, no-c-format
+msgid ""
+"<refpurpose>Returns the id of a topology in the topology.topology table "
+"given the name of the topology.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:2384 extras_topology.xml:2426
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>GetTopologyID</function></funcdef> "
+"<paramdef><type>varchar</type> <parameter>toponame</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2394
+#, no-c-format
+msgid ""
+"<para>Returns the id of a topology in the topology.topology table given the "
+"name of the topology.</para>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2408
+#, no-c-format
+msgid ""
+", <xref linkend=\"DropTopology\"/>, <xref linkend=\"GetTopologyName\"/>, "
+"<xref linkend=\"GetTopologySRID\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:2421
+#, no-c-format
+msgid ""
+"Returns the SRID of a topology in the topology.topology table given the name "
+"of the topology."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2436
+#, no-c-format
+msgid ""
+"Returns the spatial reference id of a topology in the topology.topology "
+"table given the name of the topology."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2450
+#, no-c-format
+msgid ""
+", <xref linkend=\"DropTopology\"/>, <xref linkend=\"GetTopologyName\"/>, "
+"<xref linkend=\"GetTopologyID\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:2463
+#, no-c-format
+msgid "Returns the name of a topology (schema) given the id of the topology."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:2468
+#, no-c-format
+msgid ""
+"<funcdef>varchar <function>GetTopologyName</function></funcdef> "
+"<paramdef><type>integer</type> <parameter>topology_id</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2478
+#, no-c-format
+msgid ""
+"Returns the topology name (schema) of a topology from the topology.topology "
+"table given the topology id of the topology."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2492
+#, no-c-format
+msgid ""
+", <xref linkend=\"DropTopology\"/>, <xref linkend=\"GetTopologyID\"/>, <xref "
+"linkend=\"GetTopologySRID\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:2505
+#, no-c-format
+msgid "Returns a set of ordered edges that bound <varname>aface</varname>."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:2510
+#, no-c-format
+msgid ""
+"<funcdef>getfaceedges_returntype <function>ST_GetFaceEdges</function></"
+"funcdef> <paramdef><type>varchar </type> <parameter>atopology</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>aface</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2521
+#, no-c-format
+msgid ""
+"Returns a set of ordered edges that bound <varname>aface</varname>. Each "
+"output consists of a sequence and edgeid. Sequence numbers start with value "
+"1."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2523
+#, no-c-format
+msgid ""
+"Enumeration of each ring edges start from the edge with smallest identifier. "
+"Order of edges follows a left-hand-rule (bound face is on the left of each "
+"directed edge)."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2530
+#, no-c-format
+msgid ""
+"&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.5"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2543
+#, no-c-format
+msgid ", <xref linkend=\"AddFace\"/>, <xref linkend=\"ST_GetFaceGeometry\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:2555
+#, no-c-format
+msgid "Returns the polygon in the given topology with the specified face id."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:2560
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_GetFaceGeometry</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>aface</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2571
+#, no-c-format
+msgid ""
+"Returns the polygon in the given topology with the specified face id. Builds "
+"the polygon from the edges making up the face."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2576
+#, no-c-format
+msgid ""
+"&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.16"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:2596
+#, no-c-format
+msgid ""
+"Returns the ordered set of signed edge identifiers met by walking on an a "
+"given edge side."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:2604
+#, no-c-format
+msgid ""
+"<funcdef>getfaceedges_returntype <function>GetRingEdges</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>aring</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>max_edges=null</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2616
+#, no-c-format
+msgid ""
+"Returns the ordered set of signed edge identifiers met by walking on an a "
+"given edge side. Each output consists of a sequence and a signed edge id. "
+"Sequence numbers start with value 1."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2623
+#, no-c-format
+msgid ""
+"If you pass a positive edge id, the walk starts on the left side of the "
+"corresponding edge and follows the edge direction. If you pass a negative "
+"edge id, the walk starts on the right side of it and goes backward."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2630
+#, no-c-format
+msgid ""
+"If <varname>max_edges</varname> is not null no more than those records are "
+"returned by that function. This is meant to be a safety parameter when "
+"dealing with possibly invalid topologies."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2636
+#, no-c-format
+msgid "This function uses edge ring linking metadata."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2648
+#, no-c-format
+msgid ", <xref linkend=\"GetNodeEdges\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:2659
+#, no-c-format
+msgid "Returns an ordered set of edges incident to the given node."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:2666
+#, no-c-format
+msgid ""
+"<funcdef>getfaceedges_returntype <function>GetNodeEdges</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>anode</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2677
+#, no-c-format
+msgid ""
+"Returns an ordered set of edges incident to the given node. Each output "
+"consists of a sequence and a signed edge id. Sequence numbers start with "
+"value 1. A positive edge starts at the given node. A negative edge ends into "
+"the given node. Closed edges will appear twice (with both signs). Order is "
+"clockwise starting from northbound."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2688
+#, no-c-format
+msgid ""
+"This function computes ordering rather than deriving from metadata and is "
+"thus usable to build edge ring linking."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2701
+#, no-c-format
+msgid ", <xref linkend=\"GetRingEdges\"/>, <xref linkend=\"ST_Azimuth\"/>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2715
+#, no-c-format
+msgid ""
+"This section covers the functions for processing topologies in non-standard "
+"ways."
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:2718
+#, no-c-format
+msgid "Topology Processing"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:2722
+#, no-c-format
+msgid "Finds and registers all faces defined by topology edges."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:2726
+#, no-c-format
+msgid ""
+"<funcdef>text <function>Polygonize</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2736
+#, no-c-format
+msgid "Registers all faces that can be built out a topology edge primitives."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2737
+#, no-c-format
+msgid "The target topology is assumed to contain no self-intersecting edges."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2738
+#, no-c-format
+msgid ""
+"Already known faces are recognized, so it is safe to call Polygonize "
+"multiple times on the same topology."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2739 extras_topology.xml:2891
+#, no-c-format
+msgid ""
+"This function does not use nor set the next_left_edge and next_right_edge "
+"fields of the edge table."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2751
+#, no-c-format
+msgid ", <xref linkend=\"ST_Polygonize\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:2759
+#, no-c-format
+msgid ""
+"Adds a point node to the node table in the specified topology schema and "
+"returns the nodeid of new node. If point already exists as node, the "
+"existing nodeid is returned."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:2764
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>AddNode</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>allowEdgeSplitting=false</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>boolean </type> <parameter>computeContainingFace=false</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2777
+#, no-c-format
+msgid ""
+"Adds a point node to the node table in the specified topology schema. The "
+"<xref linkend=\"AddEdge\"/> function automatically adds start and end points "
+"of an edge when called so not necessary to explicitly add nodes of an edge."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2784
+#, no-c-format
+msgid ""
+"If any edge crossing the node is found either an exception is raised or the "
+"edge is split, depending on the <varname>allowEdgeSplitting</varname> "
+"parameter value."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2790
+#, no-c-format
+msgid ""
+"If <varname>computeContainingFace</varname> is true a newly added node would "
+"get the correct containing face computed."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2795
+#, no-c-format
+msgid ""
+"If the <varname>apoint</varname> geometry already exists as a node, the node "
+"is not added but the existing nodeid is returned."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2810
+#, no-c-format
+msgid ", <xref linkend=\"CreateTopology\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:2818
+#, no-c-format
+msgid ""
+"Adds a linestring edge to the edge table and associated start and end points "
+"to the point nodes table of the specified topology schema using the "
+"specified linestring geometry and returns the edgeid of the new (or "
+"existing) edge."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:2823
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>AddEdge</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2834
+#, no-c-format
+msgid ""
+"Adds an edge to the edge table and associated nodes to the nodes table of "
+"the specified <varname>toponame</varname> schema using the specified "
+"linestring geometry and returns the edgeid of the new or existing record. "
+"The newly added edge has \"universe\" face on both sides and links to itself."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2836
+#, no-c-format
+msgid ""
+"If the <varname>aline</varname> geometry crosses, overlaps, contains or is "
+"contained by an existing linestring edge, then an error is thrown and the "
+"edge is not added."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2837
+#, no-c-format
+msgid ""
+"The geometry of <varname>aline</varname> must have the same <varname>srid</"
+"varname> as defined for the topology otherwise an invalid spatial reference "
+"sys error will be thrown."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2850 extras_topology.xml:2927
+#, no-c-format
+msgid ""
+", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"spatial_ref_sys\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:2862
+#, no-c-format
+msgid ""
+"<refpurpose>Registers a face primitive to a topology and gets its identifier."
+"</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:2867
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>AddFace</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>apolygon</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> <parameter>force_new=false</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2879
+#, no-c-format
+msgid ""
+"<para>Registers a face primitive to a topology and gets its identifier.</"
+"para>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2883
+#, no-c-format
+msgid ""
+"For a newly added face, the edges forming its boundaries and the ones "
+"contained in the face will be updated to have correct values in the "
+"left_face and right_face fields. Isolated nodes contained in the face will "
+"also be updated to have a correct containing_face field value."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2895
+#, no-c-format
+msgid ""
+"The target topology is assumed to be valid (containing no self-intersecting "
+"edges). An exception is raised if: The polygon boundary is not fully defined "
+"by existing edges or the polygon overlaps an existing face."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2897
+#, no-c-format
+msgid ""
+"If the <varname>apolygon</varname> geometry already exists as a face, then: "
+"if <varname>force_new</varname> is false (the default) the face id of the "
+"existing face is returned; if <varname>force_new</varname> is true a new id "
+"will be assigned to the newly registered face."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2905
+#, no-c-format
+msgid ""
+"When a new registration of an existing face is performed (force_new=true), "
+"no action will be taken to resolve dangling references to the existing face "
+"in the edge, node an relation tables, nor will the MBR field of the existing "
+"face record be updated. It is up to the caller to deal with that."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2912
+#, no-c-format
+msgid ""
+"The <varname>apolygon</varname> geometry must have the same <varname>srid</"
+"varname> as defined for the topology otherwise an invalid spatial reference "
+"sys error will be thrown."
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:2934
+#, no-c-format
+msgid ""
+"Returns a \"simplified\" geometry version of the given TopoGeometry using "
+"the Douglas-Peucker algorithm."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:2940
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_Simplify</function></funcdef> "
+"<paramdef><type>TopoGeometry</type> <parameter>tg</parameter></paramdef> "
+"<paramdef><type>float8</type> <parameter>tolerance</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2950
+#, no-c-format
+msgid ""
+"Returns a \"simplified\" geometry version of the given TopoGeometry using "
+"the Douglas-Peucker algorithm on each component edge."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2953
+#, no-c-format
+msgid "The returned geometry may be non-simple or non-valid."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2954
+#, no-c-format
+msgid "Splitting component edges may help retaining simplicity/validity."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2957 extras_topology.xml:3742
+#, no-c-format
+msgid "Availability: 2.1.0"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2962
+#, no-c-format
+msgid ""
+"Geometry <xref linkend=\"ST_Simplify\"/>, <xref linkend=\"ST_IsSimple\"/>, "
+"<xref linkend=\"ST_IsValid\"/>, <xref linkend=\"ST_ModEdgeSplit\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:2969
+#, no-c-format
+msgid ""
+"Removes topology primitives which not needed to define existing TopoGeometry "
+"objects."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:2974
+#, no-c-format
+msgid ""
+"<funcdef>int <function>RemoveUnusedPrimitives</function></funcdef> "
+"<paramdef><type>text</type> <parameter>topology_name</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>bbox</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2984
+#, no-c-format
+msgid ""
+"Finds all primitives (nodes, edges, faces) that are not strictly needed to "
+"represent existing TopoGeometry objects and removes them, maintaining "
+"topology validity (edge linking, face labeling) and TopoGeometry space "
+"occupation."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2991
+#, no-c-format
+msgid ""
+"No new primitive identifiers are created, but rather existing primitives are "
+"expanded to include merged faces (upon removing edges) or healed edges (upon "
+"removing nodes)."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:2997
+#, no-c-format
+msgid "Availability: 3.3.0"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3002
+#, no-c-format
+msgid ", <xref linkend=\"ST_RemEdgeModFace\"/>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3015
+#, no-c-format
+msgid ""
+"This section covers the topology functions for creating new topogeometries."
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:3018
+#, no-c-format
+msgid "TopoGeometry Constructors"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:3023
+#, no-c-format
+msgid ""
+"Creates a new topo geometry object from topo element array - tg_type: 1:"
+"[multi]point, 2:[multi]line, 3:[multi]poly, 4:collection"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3048
+#, no-c-format
+msgid ""
+"Creates a topogeometry object for layer denoted by <varname>layer_id</"
+"varname> and registers it in the relations table in the <varname>toponame</"
+"varname> schema."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3049
+#, no-c-format
+msgid ""
+"<varname>tg_type</varname> is an integer: 1:[multi]point (punctal), 2:"
+"[multi]line (lineal), 3:[multi]poly (areal), 4:collection. "
+"<varname>layer_id</varname> is the layer id in the topology.layer table."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3050
+#, no-c-format
+msgid ""
+"punctal layers are formed from set of nodes, lineal layers are formed from a "
+"set of edges, areal layers are formed from a set of faces, and collections "
+"can be formed from a mixture of nodes, edges, and faces."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3052
+#, no-c-format
+msgid ""
+"Omitting the array of components generates an empty TopoGeometry object."
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:3059
+#, no-c-format
+msgid "Examples: Form from existing edges"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3060
+#, no-c-format
+msgid ""
+"Create a topogeom in ri_topo schema for layer 2 (our ri_roads), of type (2) "
+"LINE, for the first edge (we loaded in <varname>ST_CreateTopoGeo</varname>)."
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:3066
+#, no-c-format
+msgid "Examples: Convert an areal geometry to best guess topogeometry"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3067
+#, no-c-format
+msgid ""
+"Lets say we have geometries that should be formed from a collection of "
+"faces. We have for example blockgroups table and want to know the topo "
+"geometry of each block group. If our data was perfectly aligned, we could do "
+"this:"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3077
+#, no-c-format
+msgid ""
+", <xref linkend=\"toTopoGeom\"/> <xref linkend=\"ST_CreateTopoGeo\"/>, <xref "
+"linkend=\"ST_GetFaceGeometry\"/>, <xref linkend=\"topoelementarray\"/>, "
+"<xref linkend=\"TopoElementArray_Agg\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:3092
+#, no-c-format
+msgid "Converts a simple Geometry into a topo geometry."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3117
+#, no-c-format
+msgid "Converts a simple Geometry into a <xref linkend=\"topogeometry\"/>."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3121
+#, no-c-format
+msgid ""
+"Topological primitives required to represent the input geometry will be "
+"added to the underlying topology, possibly splitting existing ones, and they "
+"will be associated with the output TopoGeometry in the <varname>relation</"
+"varname> table."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3128
+#, no-c-format
+msgid ""
+"Existing TopoGeometry objects (with the possible exception of "
+"<varname>topogeom</varname>, if given) will retain their shapes."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3133
+#, no-c-format
+msgid ""
+"When <varname>tolerance</varname> is given it will be used to snap the input "
+"geometry to existing primitives."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3138
+#, no-c-format
+msgid ""
+"In the first form a new TopoGeometry will be created for the given layer "
+"(<varname>layer_id</varname>) of the given topology (<varname>toponame</"
+"varname>)."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3143
+#, no-c-format
+msgid ""
+"In the second form the primitives resulting from the conversion will be "
+"added to the pre-existing TopoGeometry (<varname>topogeom</varname>), "
+"possibly adding space to its final shape. To have the new shape completely "
+"replace the old one see <xref linkend=\"clearTopoGeom\"/>."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3152
+#, no-c-format
+msgid "Enhanced: 2.1.0 adds the version taking an existing TopoGeometry."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3156 extras_topology.xml:3234
+#, no-c-format
+msgid "This is a full self-contained workflow"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3165
+#, no-c-format
+msgid ""
+", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref "
+"linkend=\"CreateTopoGeom\"/>, <xref linkend=\"TopologySummary\"/>, <xref "
+"linkend=\"clearTopoGeom\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:3178
+#, no-c-format
+msgid ""
+"Returns a <varname>topoelementarray</varname> for a set of element_id, type "
+"arrays (topoelements)."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:3183
+#, no-c-format
+msgid ""
+"<funcdef>topoelementarray <function>TopoElementArray_Agg</function></"
+"funcdef> <paramdef><type>topoelement set</type> <parameter>tefield</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3193
+#, no-c-format
+msgid ""
+"Used to create a <xref linkend=\"topoelementarray\"/> from a set of <xref "
+"linkend=\"topoelement\"/>."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3206 extras_topology.xml:3497
+#, no-c-format
+msgid ", <xref linkend=\"topoelementarray\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:3213
+#, no-c-format
+msgid "Converts a topogeometry to a topoelement."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:3218
+#, no-c-format
+msgid ""
+"<funcdef>topoelement <function>TopoElement</function></funcdef> "
+"<paramdef><type>topogeometry </type> <parameter>topo</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3227
+#, no-c-format
+msgid ""
+"Converts a <xref linkend=\"topogeometry\"/> to a <xref "
+"linkend=\"topoelement\"/>."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3243
+#, no-c-format
+msgid ", <xref linkend=\"topogeometry\"/>, <xref linkend=\"topoelement\"/>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3251
+#, no-c-format
+msgid ""
+"This section covers the topology functions for editing existing "
+"topogeometries."
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:3254
+#, no-c-format
+msgid "TopoGeometry Editors"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:3260
+#, no-c-format
+msgid "Clears the content of a topo geometry."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:3265
+#, no-c-format
+msgid ""
+"<funcdef>topogeometry <function>clearTopoGeom</function></funcdef> "
+"<paramdef><type>topogeometry </type> <parameter>topogeom</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3275
+#, no-c-format
+msgid ""
+"Clears the content a <xref linkend=\"topogeometry\"/> turning it into an "
+"empty one. Mostly useful in conjunction with <xref linkend=\"toTopoGeom\"/> "
+"to replace the shape of existing objects and any dependent object in higher "
+"hierarchical levels."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3283
+#, no-c-format
+msgid "Availability: 2.1"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:3302
+#, no-c-format
+msgid "Adds an element to the definition of a TopoGeometry."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:3306
+#, no-c-format
+msgid ""
+"<funcdef>topogeometry <function>TopoGeom_addElement</function></funcdef> "
+"<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef> "
+"<paramdef><type>topoelement </type> <parameter>el</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3317
+#, no-c-format
+msgid ""
+"Adds a <xref linkend=\"topoelement\"/> to the definition of a TopoGeometry "
+"object. Does not error out if the element is already part of the definition."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3324 extras_topology.xml:3367
+#, no-c-format
+msgid "Availability: 2.3"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3334 extras_topology.xml:3377
+#, no-c-format
+msgid ", <xref linkend=\"CreateTopoGeom\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:3345
+#, no-c-format
+msgid "Removes an element from the definition of a TopoGeometry."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:3350
+#, no-c-format
+msgid ""
+"<funcdef>topogeometry <function>TopoGeom_remElement</function></funcdef> "
+"<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef> "
+"<paramdef><type>topoelement </type> <parameter>el</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3361
+#, no-c-format
+msgid ""
+"Removes a <xref linkend=\"topoelement\"/> from the definition of a "
+"TopoGeometry object."
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:3387
+#, no-c-format
+msgid ""
+"Adds element of a TopoGeometry to the definition of another TopoGeometry."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:3391
+#, no-c-format
+msgid ""
+"<funcdef>topogeometry <function>TopoGeom_addTopoGeom</function></funcdef> "
+"<paramdef><type>topogeometry </type> <parameter>tgt</parameter></paramdef> "
+"<paramdef><type>topogeometry </type> <parameter>src</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3402
+#, no-c-format
+msgid ""
+"Adds the elements of a <xref linkend=\"topogeometry\"/> to the definition of "
+"another TopoGeometry, possibly changing its cached type (type attribute) to "
+"a collection, if needed to hold all elements in the source object."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3408
+#, no-c-format
+msgid ""
+"The two TopoGeometry objects need be defined against the *same* topology "
+"and, if hierarchically defined, need be composed by elements of the same "
+"child layer."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3415
+#, no-c-format
+msgid "Availability: 3.2"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3425
+#, no-c-format
+msgid ", <xref linkend=\"clearTopoGeom\"/>, <xref linkend=\"CreateTopoGeom\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:3436
+#, no-c-format
+msgid "Adds a geometry shape to an existing topo geometry."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3440
+#, no-c-format
+msgid "Refer to <xref linkend=\"toTopoGeom\"/>."
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:3450
+#, no-c-format
+msgid "TopoGeometry Accessors"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:3456
+#, no-c-format
+msgid ""
+"Returns a <varname>topoelementarray</varname> (an array of topoelements) "
+"containing the topological elements and type of the given TopoGeometry "
+"(primitive elements)."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:3461
+#, no-c-format
+msgid ""
+"<funcdef>topoelementarray <function>GetTopoGeomElementArray</function></"
+"funcdef> <paramdef><type>varchar </type> <parameter>toponame</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>layer_id</parameter></"
+"paramdef> <paramdef><type>integer</type> <parameter>tg_id</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:3469
+#, no-c-format
+msgid ""
+"<funcdef>topoelementarray <function>GetTopoGeomElementArray</function></"
+"funcdef> <paramdef><type>topogeometry </type> <parameter>tg</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3479
+#, no-c-format
+msgid ""
+"Returns a <xref linkend=\"topoelementarray\"/> containing the topological "
+"elements and type of the given TopoGeometry (primitive elements). This is "
+"similar to GetTopoGeomElements except it returns the elements as an array "
+"rather than as a dataset."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3481 extras_topology.xml:3528
+#, no-c-format
+msgid ""
+"tg_id is the topogeometry id of the topogeometry object in the topology in "
+"the layer denoted by <varname>layer_id</varname> in the topology.layer table."
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:3504
+#, no-c-format
+msgid ""
+"Returns a set of <varname>topoelement</varname> objects containing the "
+"topological element_id,element_type of the given TopoGeometry (primitive "
+"elements)."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:3509
+#, no-c-format
+msgid ""
+"<funcdef>setof topoelement <function>GetTopoGeomElements</function></"
+"funcdef> <paramdef><type>varchar </type> <parameter>toponame</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>layer_id</parameter></"
+"paramdef> <paramdef><type>integer</type> <parameter>tg_id</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:3517
+#, no-c-format
+msgid ""
+"<funcdef>setof topoelement <function>GetTopoGeomElements</function></"
+"funcdef> <paramdef><type>topogeometry </type> <parameter>tg</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3527
+#, no-c-format
+msgid ""
+"Returns a set of element_id,element_type (topoelements) corresponding to "
+"primitive topology elements <xref linkend=\"topoelement\"/> (1: nodes, 2: "
+"edges, 3: faces) that a given topogeometry object in <varname>toponame</"
+"varname> schema is composed of."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3544
+#, no-c-format
+msgid ""
+", <xref linkend=\"topoelement\"/>, <xref linkend=\"TopoGeom_addElement\"/>, "
+"<xref linkend=\"TopoGeom_remElement\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:3556
+#, no-c-format
+msgid "Returns the spatial reference identifier for a topogeometry."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:3561
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_SRID</function></funcdef> "
+"<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3571
+#, no-c-format
+msgid ""
+"Returns the spatial reference identifier for the ST_Geometry as defined in "
+"spatial_ref_sys table. <xref linkend=\"spatial_ref_sys\"/>"
+msgstr ""
+"返回ST_Geometry spatial_ref_sys表中定义的空间参考系统标识号。 请参见第 <xref "
+"linkend=\"spatial_ref_sys\"/>"
+
+#. Tag: para
+#: extras_topology.xml:3572
+#, no-c-format
+msgid ""
+"spatial_ref_sys table is a table that catalogs all spatial reference systems "
+"known to PostGIS and is used for transformations from one spatial reference "
+"system to another. So verifying you have the right spatial reference system "
+"identifier is important if you plan to ever transform your geometries."
+msgstr ""
+"spatial_ref_sys表对 PostGIS 已知的所有参考系进行编目，并用于从一个空间参考系"
+"转换为另一个空间参考系。 如果计划转换几何，请务必确保具有正确的空间参考系统标"
+"识号。"
+
+#. Tag: para
+#: extras_topology.xml:3576
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 14.1.5"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3588
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
+"linkend=\"ST_SRID\"/>"
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:3596
+#, no-c-format
+msgid "TopoGeometry Outputs"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:3601
+#, no-c-format
+msgid "Returns the GML representation of a topogeometry."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3666
+#, no-c-format
+msgid ""
+"Returns the GML representation of a topogeometry in version GML3 format. If "
+"no <varname>nsprefix_in</varname> is specified then <varname>gml</varname> "
+"is used. Pass in an empty string for nsprefix to get a non-qualified name "
+"space. The precision (default: 15) and options (default 1) parameters, if "
+"given, are passed untouched to the underlying call to ST_AsGML."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3668
+#, no-c-format
+msgid ""
+"The <varname>visitedTable</varname> parameter, if given, is used for keeping "
+"track of the visited Node and Edge elements so to use cross-references "
+"(xlink:xref) rather than duplicating definitions. The table is expected to "
+"have (at least) two integer fields: 'element_type' and 'element_id'. The "
+"calling user must have both read and write privileges on the given table. "
+"For best performance, an index should be defined on <varname>element_type</"
+"varname> and <varname>element_id</varname>, in that order. Such index would "
+"be created automatically by adding a unique constraint to the fields. "
+"Example:"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3677
+#, no-c-format
+msgid ""
+"The <varname>idprefix</varname> parameter, if given, will be prepended to "
+"Edge and Node tag identifiers."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3679
+#, no-c-format
+msgid ""
+"The <varname>gmlver</varname> parameter, if given, will be passed to the "
+"underlying ST_AsGML. Defaults to 3."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3688
+#, no-c-format
+msgid ""
+"This uses the topo geometry we created in <xref linkend=\"CreateTopoGeom\"/>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3690
+#, no-c-format
+msgid "Same exercise as previous without namespace"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3697
+#, no-c-format
+msgid ", <xref linkend=\"ST_CreateTopoGeo\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:3704
+#, no-c-format
+msgid "Returns the TopoJSON representation of a topogeometry."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:3709
+#, no-c-format
+msgid ""
+"<funcdef>text <function>AsTopoJSON</function></funcdef> "
+"<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef> "
+"<paramdef><type>regclass </type> <parameter>edgeMapTable</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3720
+#, no-c-format
+msgid ""
+"Returns the TopoJSON representation of a topogeometry. If "
+"<varname>edgeMapTable</varname> is not null, it will be used as a lookup/"
+"storage mapping of edge identifiers to arc indices. This is to be able to "
+"allow for a compact \"arcs\" array in the final document."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3723
+#, no-c-format
+msgid ""
+"The table, if given, is expected to have an \"arc_id\" field of type "
+"\"serial\" and an \"edge_id\" of type integer; the code will query the table "
+"for \"edge_id\" so it is recommended to add an index on that field."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3728
+#, no-c-format
+msgid ""
+"Arc indices in the TopoJSON output are 0-based but they are 1-based in the "
+"\"edgeMapTable\" table."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3734
+#, no-c-format
+msgid ""
+"A full TopoJSON document will be need to contain, in addition to the "
+"snippets returned by this function, the actual arcs plus some headers. See "
+"the <ulink url=\"http://github.com/mbostock/topojson-specification/blob/"
+"master/README.md\">TopoJSON specification</ulink>."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3743
+#, no-c-format
+msgid "Enhanced: 2.2.1 added support for puntal inputs"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3763
+#, no-c-format
+msgid ""
+"This section lists the Topology functions used to check relationships "
+"between topogeometries and topology primitives"
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:3766
+#, no-c-format
+msgid "Topology Spatial Relationships"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:3771
+#, no-c-format
+msgid ""
+"Returns true if two topogeometries are composed of the same topology "
+"primitives."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:3776
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>Equals</function></funcdef> "
+"<paramdef><type>topogeometry </type> <parameter>tg1</parameter></paramdef> "
+"<paramdef><type>topogeometry </type> <parameter>tg2</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3787
+#, no-c-format
+msgid ""
+"Returns true if two topogeometries are composed of the same topology "
+"primitives: faces, edges, nodes."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3791
+#, no-c-format
+msgid ""
+"This function not supported for topogeometries that are geometry "
+"collections. It also can not compare topogeometries from different "
+"topologies."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3798 extras_topology.xml:3851
+#, no-c-format
+msgid "&Z_support;"
+msgstr "&Z_support;"
+
+#. Tag: para
+#: extras_topology.xml:3812
+#, no-c-format
+msgid ", <xref linkend=\"ST_Equals\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:3820
+#, no-c-format
+msgid ""
+"<refpurpose>Returns true if any pair of primitives from the two "
+"topogeometries intersect.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:3825
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>Intersects</function></funcdef> "
+"<paramdef><type>topogeometry </type> <parameter>tg1</parameter></paramdef> "
+"<paramdef><type>topogeometry </type> <parameter>tg2</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3836
+#, no-c-format
+msgid ""
+"<para>Returns true if any pair of primitives from the two topogeometries "
+"intersect.</para>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3843
+#, no-c-format
+msgid ""
+"This function not supported for topogeometries that are geometry "
+"collections. It also can not compare topogeometries from different "
+"topologies. Also not currently supported for hierarchical topogeometries "
+"(topogeometries composed of other topogeometries)."
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:3871
+#, no-c-format
+msgid "Importing and exporting Topologies"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3873
+#, no-c-format
+msgid ""
+"Once you have created topologies, and maybe associated topological layers, "
+"you might want to export them into a file-based format for backup or "
+"transfer into another database."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3879
+#, no-c-format
+msgid ""
+"Using the standard dump/restore tools of PostgreSQL is problematic because "
+"topologies are composed by a set of tables (4 for primitives, an arbitrary "
+"number for layers) and records in metadata tables (topology.topology and "
+"topology.layer). Additionally, topology identifiers are not univoque across "
+"databases so that parameter of your topology will need to be changes upon "
+"restoring it."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3888
+#, no-c-format
+msgid ""
+"In order to simplify export/restore of topologies a pair of executables are "
+"provided: <filename>pgtopo_export</filename> and <filename>pgtopo_import</"
+"filename>. Example usage:"
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:3896
+#, no-c-format
+msgid "Using the Topology exporter"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3898
+#, no-c-format
+msgid ""
+"The <filename>pgtopo_export</filename> script takes the name of a database "
+"and a topology and outputs a dump file which can be used to import the "
+"topology (and associated layers) into a new database."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3904
+#, no-c-format
+msgid ""
+"By default <filename>pgtopo_export</filename> writes the dump file to the "
+"standard output so that it can be piped to <filename>pgtopo_import</"
+"filename> or redirected to a file (refusing to write to terminal). You can "
+"optionally specify an output filename with the <code>-f</code> commandline "
+"switch."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3912
+#, no-c-format
+msgid ""
+"By default <filename>pgtopo_export</filename> includes a dump of all layers "
+"defined against the given topology. This may be more data than you need, or "
+"may be non-working (in case your layer tables have complex dependencies) in "
+"which case you can request skipping the layers with the <code>--skip-layers</"
+"code> switch and deal with those separately."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3921
+#, no-c-format
+msgid ""
+"Invoking <filename>pgtopo_export</filename> with the <code>--help</code> (or "
+"<code>-h</code> for short) switch will always print short usage string."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3928
+#, no-c-format
+msgid ""
+"The dump file format is a compressed tar archive of a "
+"<filename>pgtopo_export</filename> directory containing at least a "
+"<filename>pgtopo_dump_version</filename> file with format version info. As "
+"of version <code>1</code> the directory contains tab-delimited CSV files "
+"with data of the topology primitive tables (node, edge_data, face, "
+"relation), the topology and layer records associated with it and (unless "
+"<code>--skip-layers</code> is given) a custom-format PostgreSQL dump of "
+"tables reported as being layers of the given topology."
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:3944
+#, no-c-format
+msgid "Using the Topology importer"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3946
+#, no-c-format
+msgid ""
+"The <filename>pgtopo_import</filename> script takes a <code>pgtopo_export</"
+"code> format topology dump and a name to give to the topology to be created "
+"and outputs an SQL script reconstructing the topology and associated layers."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3954
+#, no-c-format
+msgid ""
+"The generated SQL file will contain statements that create a topology with "
+"the given name, load primitive data in it, restores and registers all "
+"topology layers by properly linking all TopoGeometry values to their correct "
+"topology."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3962
+#, no-c-format
+msgid ""
+"By default <filename>pgtopo_import</filename> reads the dump from the "
+"standard input so that it can be used in conjuction with "
+"<filename>pgtopo_export</filename> in a pipeline. You can optionally specify "
+"an input filename with the <code>-f</code> commandline switch."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3970
+#, no-c-format
+msgid ""
+"By default <filename>pgtopo_import</filename> includes in the output SQL "
+"file the code to restore all layers found in the dump."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3975
+#, no-c-format
+msgid ""
+"This may be unwanted or non-working in case your target database already "
+"have tables with the same name as the ones in the dump. In that case you can "
+"request skipping the layers with the <code>--skip-layers</code> switch and "
+"deal with those separately (or later)."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3982
+#, no-c-format
+msgid ""
+"SQL to only load and link layers to a named topology can be generated using "
+"the <code>--only-layers</code> switch. This can be useful to load layers "
+"AFTER resolving the naming conflicts or to link layers to a different "
+"topology (say a spatially-simplified version of the starting topology)."
+msgstr ""

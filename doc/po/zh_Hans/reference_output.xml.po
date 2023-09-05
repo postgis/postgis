@@ -1,0 +1,1962 @@
+# Chinese translations for build-pg package.
+# Automatically generated, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: build-pg 13\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"PO-Revision-Date: 2023-09-04 12:58+0000\n"
+"Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
+"postgis/reference_outputxml/zh_Hans/>\n"
+"Language: zh_Hans\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.16.4\n"
+
+#. Tag: para
+#: reference_output.xml:6
+#, no-c-format
+msgid ""
+"These functions convert geometry objects into various textual or binary "
+"formats."
+msgstr ""
+
+#. Tag: title
+#: reference_output.xml:10
+#, no-c-format
+msgid "Geometry Output"
+msgstr ""
+
+#. Tag: title
+#: reference_output.xml:13
+#, no-c-format
+msgid "Well-Known Text (WKT)"
+msgstr "Well-Known Text (WKT)"
+
+#. Tag: refpurpose
+#: reference_output.xml:18
+#, no-c-format
+msgid ""
+"Return the Well-Known Text (WKT) representation of the geometry with SRID "
+"meta data."
+msgstr ""
+
+#. Tag: title
+#: reference_output.xml:45 reference_output.xml:127 reference_output.xml:219
+#: reference_output.xml:296 reference_output.xml:359 reference_output.xml:402
+#: reference_output.xml:456 reference_output.xml:494 reference_output.xml:547
+#: reference_output.xml:694 reference_output.xml:809 reference_output.xml:872
+#: reference_output.xml:945 reference_output.xml:1025 reference_output.xml:1118
+#: reference_output.xml:1196 reference_output.xml:1263
+#: reference_output.xml:1311 reference_output.xml:1450
+#, no-c-format
+msgid "Description"
+msgstr "描述"
+
+#. Tag: para
+#: reference_output.xml:47
+#, no-c-format
+msgid ""
+"Returns the Well-Known Text representation of the geometry prefixed with the "
+"SRID. The optional <parameter>maxdecimaldigits</parameter> argument may be "
+"used to reduce the maximum number of decimal digits after floating point "
+"used in output (defaults to 15)."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:51
+#, no-c-format
+msgid ""
+"To perform the inverse conversion of EWKT representation to PostGIS geometry "
+"use <xref linkend=\"ST_GeomFromEWKT\"/>."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:55 reference_output.xml:149 reference_output.xml:557
+#: reference_output.xml:703 reference_output.xml:816
+#, no-c-format
+msgid ""
+"Using the <parameter>maxdecimaldigits</parameter> parameter can cause output "
+"geometry to become invalid. To avoid this use <xref "
+"linkend=\"ST_ReducePrecision\"/> with a suitable gridsize first."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:63
+#, no-c-format
+msgid ""
+"The WKT spec does not include the SRID. To get the OGC WKT format use <xref "
+"linkend=\"ST_AsText\"/>."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:66
+#, no-c-format
+msgid ""
+"WKT format does not maintain precision so to prevent floating truncation, "
+"use <xref linkend=\"ST_AsBinary\"/> or <xref linkend=\"ST_AsEWKB\"/> format "
+"for transport."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:70
+#, no-c-format
+msgid "Enhanced: 3.1.0 support for optional precision parameter."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:71
+#, no-c-format
+msgid ""
+"Enhanced: 2.0.0 support for Geography, Polyhedral surfaces, Triangles and "
+"TIN was introduced."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:73 reference_output.xml:252 reference_output.xml:314
+#: reference_output.xml:367 reference_output.xml:612 reference_output.xml:754
+#: reference_output.xml:841 reference_output.xml:1388
+#, no-c-format
+msgid "&Z_support;"
+msgstr "&Z_support;"
+
+#. Tag: para
+#: reference_output.xml:74 reference_output.xml:160 reference_output.xml:249
+#: reference_output.xml:315 reference_output.xml:368 reference_output.xml:1216
+#: reference_output.xml:1478
+#, no-c-format
+msgid "&curve_support;"
+msgstr "&curve_support;"
+
+#. Tag: para
+#: reference_output.xml:75 reference_output.xml:250 reference_output.xml:316
+#: reference_output.xml:755 reference_output.xml:1390
+#, no-c-format
+msgid "&P_support;"
+msgstr "&P_support;"
+
+#. Tag: para
+#: reference_output.xml:76 reference_output.xml:251 reference_output.xml:317
+#: reference_output.xml:756 reference_output.xml:1393
+#, no-c-format
+msgid "&T_support;"
+msgstr "&T_support;"
+
+#. Tag: title
+#: reference_output.xml:81 reference_output.xml:164 reference_output.xml:257
+#: reference_output.xml:322 reference_output.xml:372 reference_output.xml:411
+#: reference_output.xml:509 reference_output.xml:616 reference_output.xml:845
+#: reference_output.xml:899 reference_output.xml:987 reference_output.xml:1057
+#: reference_output.xml:1158 reference_output.xml:1220
+#: reference_output.xml:1278 reference_output.xml:1482
+#, no-c-format
+msgid "Examples"
+msgstr "示例"
+
+#. Tag: title
+#: reference_output.xml:88 reference_output.xml:177 reference_output.xml:265
+#: reference_output.xml:330 reference_output.xml:424 reference_output.xml:639
+#: reference_output.xml:774 reference_output.xml:849 reference_output.xml:1000
+#: reference_output.xml:1067 reference_output.xml:1164
+#: reference_output.xml:1287 reference_output.xml:1486
+#, no-c-format
+msgid "See Also"
+msgstr "相关信息"
+
+#. Tag: para
+#: reference_output.xml:89
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
+"linkend=\"ST_GeomFromEWKT\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_output.xml:100
+#, no-c-format
+msgid ""
+"Return the Well-Known Text (WKT) representation of the geometry/geography "
+"without SRID metadata."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:129
+#, no-c-format
+msgid ""
+"Returns the OGC <link linkend=\"OpenGISWKBWKT\">Well-Known Text</link> (WKT) "
+"representation of the geometry/geography. The optional "
+"<parameter>maxdecimaldigits</parameter> argument may be used to limit the "
+"number of digits after the decimal point in output ordinates (defaults to "
+"15)."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:133
+#, no-c-format
+msgid ""
+"To perform the inverse conversion of WKT representation to PostGIS geometry "
+"use <xref linkend=\"ST_GeomFromText\"/>."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:137
+#, no-c-format
+msgid ""
+"The standard OGC WKT representation does not include the SRID. To include "
+"the SRID as part of the output representation, use the non-standard PostGIS "
+"function <xref linkend=\"ST_AsEWKT\"/>"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:142
+#, no-c-format
+msgid ""
+"The textual representation of numbers in WKT may not maintain full floating-"
+"point precision. To ensure full accuracy for data storage or transport it is "
+"best to use <link linkend=\"OpenGISWKBWKT\">Well-Known Binary</link> (WKB) "
+"format (see <xref linkend=\"ST_AsBinary\"/> and <parameter>maxdecimaldigits</"
+"parameter>)."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:156
+#, no-c-format
+msgid "Availability: 1.5 - support for geography was introduced."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:157
+#, no-c-format
+msgid "Enhanced: 2.5 - optional parameter precision introduced."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:158 reference_output.xml:247
+#, no-c-format
+msgid "&sfs_compliant; s2.1.1.1"
+msgstr "&sfs_compliant; s2.1.1.1"
+
+#. Tag: para
+#: reference_output.xml:159
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.25"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:168
+#, no-c-format
+msgid "Full precision output is the default."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:171
+#, no-c-format
+msgid ""
+"The <parameter>maxdecimaldigits</parameter> argument can be used to limit "
+"output precision."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:179
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsEWKT\"/>, <xref "
+"linkend=\"ST_GeomFromText\"/>"
+msgstr ""
+
+#. Tag: title
+#: reference_output.xml:187
+#, no-c-format
+msgid "Well-Known Binary (WKB)"
+msgstr "已知的二进制文件 (WKB)"
+
+#. Tag: refpurpose
+#: reference_output.xml:192
+#, no-c-format
+msgid ""
+"Return the OGC/ISO Well-Known Binary (WKB) representation of the geometry/"
+"geography without SRID meta data."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:221
+#, no-c-format
+msgid ""
+"Returns the OGC/ISO <link linkend=\"OpenGISWKBWKT\">Well-Known Binary</link> "
+"(WKB) representation of the geometry. The first function variant defaults to "
+"encoding using server machine endian. The second function variant takes a "
+"text argument specifying the endian encoding, either little-endian ('NDR') "
+"or big-endian ('XDR')."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:226 reference_output.xml:302
+#, no-c-format
+msgid ""
+"WKB format is useful to read geometry data from the database and maintaining "
+"full numeric precision. This avoids the precision rounding that can happen "
+"with text formats such as WKT."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:230
+#, no-c-format
+msgid ""
+"To perform the inverse conversion of WKB to PostGIS geometry use <xref "
+"linkend=\"ST_GeomFromWKB\"/>."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:233
+#, no-c-format
+msgid ""
+"The OGC/ISO WKB format does not include the SRID. To get the EWKB format "
+"which does include the SRID use <xref linkend=\"ST_AsEWKB\"/>"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:237
+#, no-c-format
+msgid ""
+"The default behavior in PostgreSQL 9.0 has been changed to output bytea in "
+"hex encoding. If your GUI tools require the old behavior, then SET "
+"bytea_output='escape' in your database."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:241 reference_output.xml:313
+#, no-c-format
+msgid ""
+"Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
+"introduced."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:242
+#, no-c-format
+msgid ""
+"Enhanced: 2.0.0 support for higher coordinate dimensions was introduced."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:243
+#, no-c-format
+msgid ""
+"Enhanced: 2.0.0 support for specifying endian with geography was introduced."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:244 reference_output.xml:608 reference_output.xml:747
+#, no-c-format
+msgid "Availability: 1.5.0 geography support was introduced."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:245
+#, no-c-format
+msgid ""
+"Changed: 2.0.0 Inputs to this function can not be unknown -- must be "
+"geometry. Constructs such as <code>ST_AsBinary('POINT(1 2)')</code> are no "
+"longer valid and you will get an <code>n st_asbinary(unknown) is not unique "
+"error</code>. Code like that needs to be changed to "
+"<code>ST_AsBinary('POINT(1 2)'::geometry);</code>. If that is not possible, "
+"then install <filename>legacy.sql</filename>."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:248
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.37"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:266
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsTWKB\"/>, <xref "
+"linkend=\"ST_AsText\"/>,"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_output.xml:278
+#, no-c-format
+msgid ""
+"Return the Extended Well-Known Binary (EWKB) representation of the geometry "
+"with SRID meta data."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:297
+#, no-c-format
+msgid ""
+"Returns the <link linkend=\"EWKB_EWKT\">Extended Well-Known Binary</link> "
+"(EWKB) representation of the geometry with SRID metadata. The first function "
+"variant defaults to encoding using server machine endian. The second "
+"function variant takes a text argument specifying the endian encoding, "
+"either little-endian ('NDR') or big-endian ('XDR')."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:306
+#, no-c-format
+msgid ""
+"To perform the inverse conversion of EWKB to PostGIS geometry use <xref "
+"linkend=\"ST_GeomFromEWKB\"/>."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:309
+#, no-c-format
+msgid ""
+"To get the OGC/ISO WKB format use <xref linkend=\"ST_AsBinary\"/>. Note that "
+"OGC/ISO WKB format does not include the SRID."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:331
+#, no-c-format
+msgid ", <xref linkend=\"ST_GeomFromEWKB\"/>, <xref linkend=\"ST_SRID\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_output.xml:339
+#, no-c-format
+msgid ""
+"Returns a Geometry in HEXEWKB format (as text) using either little-endian "
+"(NDR) or big-endian (XDR) encoding."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:361
+#, no-c-format
+msgid ""
+"Returns a Geometry in HEXEWKB format (as text) using either little-endian "
+"(NDR) or big-endian (XDR) encoding. If no encoding is specified, then NDR is "
+"used."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:365
+#, no-c-format
+msgid "Availability: 1.2.2"
+msgstr ""
+
+#. Tag: title
+#: reference_output.xml:383
+#, no-c-format
+msgid "Other Formats"
+msgstr "其它格式"
+
+#. Tag: refpurpose
+#: reference_output.xml:388
+#, no-c-format
+msgid "Returns an Encoded Polyline from a LineString geometry."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_output.xml:393
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_AsEncodedPolyline</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>precision=5</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:404
+#, no-c-format
+msgid ""
+"Returns the geometry as an Encoded Polyline. This format is used by Google "
+"Maps with precision=5 and by Open Source Routing Machine with precision=5 "
+"and 6."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:405
+#, no-c-format
+msgid ""
+"Optional <varname>precision</varname> specifies how many decimal places will "
+"be preserved in Encoded Polyline. Value should be the same on encoding and "
+"decoding, or coordinates will be incorrect."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:407 reference_output.xml:1273
+#, no-c-format
+msgid "Availability: 2.2.0"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:412
+#, no-c-format
+msgid "Basic"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:415
+#, no-c-format
+msgid ""
+"Use in conjunction with geography linestring and geography segmentize, and "
+"put on google maps"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:419
+#, no-c-format
+msgid ""
+"javascript will look something like this where $ variable you replace with "
+"query result"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:425
+#, no-c-format
+msgid ", <xref linkend=\"ST_Segmentize\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_output.xml:433
+#, no-c-format
+msgid "Return a FlatGeobuf representation of a set of rows."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:458
+#, no-c-format
+msgid ""
+"Return a FlatGeobuf representation (<ulink url=\"http://flatgeobuf."
+"org\">http://flatgeobuf.org</ulink>) of a set of rows corresponding to a "
+"FeatureCollection. NOTE: PostgreSQL bytea cannot exceed 1GB."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:465 reference_output.xml:502 reference_output.xml:1145
+#, no-c-format
+msgid "<varname>row</varname> row data with at least a geometry column."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:466
+#, no-c-format
+msgid ""
+"<varname>index</varname> toggle spatial index creation. Default is false."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:467 reference_output.xml:503
+#, no-c-format
+msgid ""
+"<varname>geom_name</varname> is the name of the geometry column in the row "
+"data. If NULL it will default to the first found geometry column."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:469
+#, no-c-format
+msgid "Availability: 3.2.0"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_output.xml:477
+#, no-c-format
+msgid "Return a Geobuf representation of a set of rows."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:496
+#, no-c-format
+msgid ""
+"Return a Geobuf representation (<ulink url=\"https://github.com/mapbox/"
+"geobuf\">https://github.com/mapbox/geobuf</ulink>) of a set of rows "
+"corresponding to a FeatureCollection. Every input geometry is analyzed to "
+"determine maximum precision for optimal storage. Note that Geobuf in its "
+"current form cannot be streamed so the full output will be assembled in "
+"memory."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:505 reference_output.xml:1049 reference_output.xml:1154
+#, no-c-format
+msgid "Availability: 2.4.0"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_output.xml:519
+#, no-c-format
+msgid "Return a geometry as a GeoJSON element."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:549
+#, no-c-format
+msgid ""
+"Returns a geometry as a GeoJSON \"geometry\", or a row as a GeoJSON "
+"\"feature\". (See the <ulink url=\"https://tools.ietf.org/html/"
+"rfc7946\">GeoJSON specifications RFC 7946</ulink>). 2D and 3D Geometries are "
+"both supported. GeoJSON only support SFS 1.1 geometry types (no curve "
+"support for example)."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:554
+#, no-c-format
+msgid ""
+"The <varname>maxdecimaldigits</varname> argument may be used to reduce the "
+"maximum number of decimal places used in output (defaults to 9). If you are "
+"using EPSG:4326 and are outputting the geometry only for display, "
+"<varname>maxdecimaldigits</varname>=6 can be a good choice for many maps."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:564
+#, no-c-format
+msgid ""
+"The <varname>options</varname> argument can be used to add BBOX or CRS in "
+"GeoJSON output:"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:567
+#, no-c-format
+msgid "0: means no option"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:571
+#, no-c-format
+msgid "1: GeoJSON BBOX"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:575
+#, no-c-format
+msgid "2: GeoJSON Short CRS (e.g EPSG:4326)"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:579
+#, no-c-format
+msgid "4: GeoJSON Long CRS (e.g urn:ogc:def:crs:EPSG::4326)"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:583
+#, no-c-format
+msgid "8: GeoJSON Short CRS if not EPSG:4326 (default)"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:588
+#, no-c-format
+msgid ""
+"The GeoJSON specification states that polygons are oriented using the Right-"
+"Hand Rule, and some clients require this orientation. This can be ensured by "
+"using <xref linkend=\"ST_ForcePolygonCCW\"/>. The specification also "
+"requires that geometry be in the WGS84 coordinate system (SRID = 4326). If "
+"necessary geometry can be projected into WGS84 using <xref "
+"linkend=\"ST_Transform\"/>: <code>ST_Transform( geom, 4326 )</code>."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:597
+#, no-c-format
+msgid ""
+"GeoJSON can be tested and viewed online at <ulink url=\"http://geojson.io/"
+"\">geojson.io</ulink> and <ulink url=\"http://geojson.io/\">geojsonlint.com</"
+"ulink>. It is widely supported by web mapping frameworks:"
+msgstr ""
+
+#. Tag: ulink
+#: reference_output.xml:601
+#, no-c-format
+msgid "OpenLayers GeoJSON Example"
+msgstr ""
+
+#. Tag: ulink
+#: reference_output.xml:602
+#, no-c-format
+msgid "Leaflet GeoJSON Example"
+msgstr ""
+
+#. Tag: ulink
+#: reference_output.xml:603
+#, no-c-format
+msgid "Mapbox GL GeoJSON Example"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:607
+#, no-c-format
+msgid "Availability: 1.3.4"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:609
+#, no-c-format
+msgid "Changed: 2.0.0 support default args and named args."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:610
+#, no-c-format
+msgid "Changed: 3.0.0 support records as input"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:611
+#, no-c-format
+msgid "Changed: 3.0.0 output SRID if not EPSG:4326."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:618
+#, no-c-format
+msgid "Generate a FeatureCollection:"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:622
+#, no-c-format
+msgid "Generate a Feature:"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:626
+#, no-c-format
+msgid ""
+"An alternate way to generate Features with an <varname>id</varname> property "
+"is to use JSONB functions and operators:"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:631
+#, no-c-format
+msgid ""
+"Don't forget to transform your data to WGS84 longitude, latitude to conform "
+"with the GeoJSON specification:"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:634
+#, no-c-format
+msgid "3D geometries are supported:"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:641
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_ForcePolygonCCW\"/>, <xref linkend=\"ST_Transform\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_output.xml:650
+#, no-c-format
+msgid "Return the geometry as a GML version 2 or 3 element."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:696
+#, no-c-format
+msgid ""
+"Return the geometry as a Geography Markup Language (GML) element. The "
+"version parameter, if specified, may be either 2 or 3. If no version "
+"parameter is specified then the default is assumed to be 2. The "
+"<varname>maxdecimaldigits</varname> argument may be used to reduce the "
+"maximum number of decimal places used in output (defaults to 15)."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:710
+#, no-c-format
+msgid "GML 2 refer to 2.1.2 version, GML 3 to 3.1.1 version"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:711
+#, no-c-format
+msgid ""
+"The 'options' argument is a bitfield. It could be used to define CRS output "
+"type in GML output, and to declare data as lat/lon:"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:715
+#, no-c-format
+msgid "0: GML Short CRS (e.g EPSG:4326), default value"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:719
+#, no-c-format
+msgid "1: GML Long CRS (e.g urn:ogc:def:crs:EPSG::4326)"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:723
+#, no-c-format
+msgid "2: For GML 3 only, remove srsDimension attribute from output."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:727
+#, no-c-format
+msgid ""
+"4: For GML 3 only, use &lt;LineString&gt; rather than &lt;Curve&gt; tag for "
+"lines."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:731
+#, no-c-format
+msgid ""
+"16: Declare that datas are lat/lon (e.g srid=4326). Default is to assume "
+"that data are planars. This option is useful for GML 3.1.1 output only, "
+"related to axis order. So if you set it, it will swap the coordinates so "
+"order is lat lon instead of database lon lat."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:737
+#, no-c-format
+msgid "32: Output the box of the geometry (envelope)."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:742
+#, no-c-format
+msgid ""
+"The 'namespace prefix' argument may be used to specify a custom namespace "
+"prefix or no prefix (if empty). If null or omitted 'gml' prefix is used"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:746
+#, no-c-format
+msgid "Availability: 1.3.2"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:748
+#, no-c-format
+msgid ""
+"Enhanced: 2.0.0 prefix support was introduced. Option 4 for GML3 was "
+"introduced to allow using LineString instead of Curve tag for lines. GML3 "
+"Support for Polyhedral surfaces and TINS was introduced. Option 32 was "
+"introduced to output the box."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:749
+#, no-c-format
+msgid "Changed: 2.0.0 use default named args"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:750
+#, no-c-format
+msgid "Enhanced: 2.1.0 id support was introduced, for GML 3."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:752
+#, no-c-format
+msgid "Only version 3+ of ST_AsGML supports Polyhedral Surfaces and TINS."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:753
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 17.2"
+msgstr ""
+
+#. Tag: title
+#: reference_output.xml:760
+#, no-c-format
+msgid "Examples: Version 2"
+msgstr ""
+
+#. Tag: title
+#: reference_output.xml:764
+#, no-c-format
+msgid "Examples: Version 3"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_output.xml:785
+#, no-c-format
+msgid "Return the geometry as a KML element."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:811
+#, no-c-format
+msgid ""
+"Return the geometry as a Keyhole Markup Language (KML) element. default "
+"maximum number of decimal places is 15, default namespace is no prefix."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:824
+#, no-c-format
+msgid ""
+"Requires PostGIS be compiled with Proj support. Use <xref "
+"linkend=\"PostGIS_Full_Version\"/> to confirm you have proj support compiled "
+"in."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:828
+#, no-c-format
+msgid ""
+"Availability: 1.2.2 - later variants that include version param came in 1.3.2"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:831
+#, no-c-format
+msgid "Enhanced: 2.0.0 - Add prefix namespace, use default and named args"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:834
+#, no-c-format
+msgid "Changed: 3.0.0 - Removed the \"versioned\" variant signature"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:838
+#, no-c-format
+msgid "AsKML output will not work with geometries that do not have an SRID"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:851
+#, no-c-format
+msgid ", <xref linkend=\"ST_AsGML\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_output.xml:858
+#, no-c-format
+msgid "Return the Degrees, Minutes, Seconds representation of the given point."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_output.xml:863
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_AsLatLonText</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>format=''</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:874
+#, no-c-format
+msgid "Returns the Degrees, Minutes, Seconds representation of the point."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:877
+#, no-c-format
+msgid ""
+"It is assumed the point is in a lat/lon projection. The X (lon) and Y (lat) "
+"coordinates are normalized in the output to the \"normal\" range (-180 to "
+"+180 for lon, -90 to +90 for lat)."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:880
+#, no-c-format
+msgid ""
+"The text parameter is a format string containing the format for the "
+"resulting text, similar to a date format string. Valid tokens are \"D\" for "
+"degrees, \"M\" for minutes, \"S\" for seconds, and \"C\" for cardinal "
+"direction (NSEW). DMS tokens may be repeated to indicate desired width and "
+"precision (\"SSS.SSSS\" means \" 1.0023\")."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:885
+#, no-c-format
+msgid ""
+"\"M\", \"S\", and \"C\" are optional. If \"C\" is omitted, degrees are shown "
+"with a \"-\" sign if south or west. If \"S\" is omitted, minutes will be "
+"shown as decimal with as many digits of precision as you specify. If \"M\" "
+"is also omitted, degrees are shown as decimal with as many digits precision "
+"as you specify."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:890
+#, no-c-format
+msgid ""
+"If the format string is omitted (or zero-length) a default format will be "
+"used."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:894
+#, no-c-format
+msgid "Availability: 2.0"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:900
+#, no-c-format
+msgid "Default format."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:902
+#, no-c-format
+msgid "Providing a format (same as the default)."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:904
+#, no-c-format
+msgid "Characters other than D, M, S, C and . are just passed through."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:906
+#, no-c-format
+msgid "Signed degrees instead of cardinal directions."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:908
+#, no-c-format
+msgid "Decimal degrees."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:910
+#, no-c-format
+msgid "Excessively large values are normalized."
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_output.xml:920
+#, no-c-format
+msgid ""
+"Returns geometry as a MARC21/XML record with a geographic datafield (034)."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_output.xml:926
+#, no-c-format
+msgid ""
+"<funcdef> text <function>ST_AsMARC21</function> </funcdef> <paramdef> "
+"<type>geometry </type> <parameter>geom</parameter> </paramdef> <paramdef "
+"choice=\"opt\"> <type>text </type> <parameter>format='hdddmmss'</parameter> "
+"</paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:947
+#, no-c-format
+msgid ""
+"This function returns a MARC21/XML record with <ulink url=\"https://www.loc."
+"gov/marc/bibliographic/bd034.html\">Coded Cartographic Mathematical Data</"
+"ulink> representing the bounding box of a given geometry. The "
+"<varname>format</varname> parameter allows to encode the coordinates in "
+"subfields <varname>$d</varname>,<varname>$e</varname>,<varname>$f</varname> "
+"and <varname>$g</varname> in all formats supported by the MARC21/XML "
+"standard. Valid formats are:"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:951
+#, no-c-format
+msgid ""
+"cardinal direction, degrees, minutes and seconds (default): "
+"<varname>hdddmmss</varname>"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:952
+#, no-c-format
+msgid "decimal degrees with cardinal direction: <varname>hddd.dddddd</varname>"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:953
+#, no-c-format
+msgid ""
+"decimal degrees without cardinal direction: <varname>ddd.dddddd</varname>"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:954
+#, no-c-format
+msgid "decimal minutes with cardinal direction: <varname>hdddmm.mmmm</varname>"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:955
+#, no-c-format
+msgid ""
+"decimal minutes without cardinal direction: <varname>dddmm.mmmm</varname>"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:956
+#, no-c-format
+msgid ""
+"decimal seconds with cardinal direction: <varname>hdddmmss.sss</varname>"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:959
+#, no-c-format
+msgid ""
+"The decimal sign may be also a comma, e.g. <varname>hdddmm,mmmm</varname>."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:960
+#, no-c-format
+msgid ""
+"The precision of decimal formats can be limited by the number of characters "
+"after the decimal sign, e.g. <varname>hdddmm.mm</varname> for decimal "
+"minutes with a precision of two decimals."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:961
+#, no-c-format
+msgid "This function ignores the Z and M dimensions."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:963
+#, no-c-format
+msgid "LOC MARC21/XML versions supported:"
+msgstr "支持的 LOC MARC21/XML 版本："
+
+#. Tag: ulink
+#: reference_output.xml:967
+#, no-c-format
+msgid "MARC21/XML 1.1"
+msgstr "MARC21/XML 1.1"
+
+#. Tag: para
+#: reference_output.xml:972
+#, no-c-format
+msgid "Availability: 3.3.0"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:975
+#, no-c-format
+msgid ""
+"This function does not support non lon/lat geometries, as they are not "
+"supported by the MARC21/XML standard (Coded Cartographic Mathematical Data)."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:979
+#, no-c-format
+msgid ""
+"The MARC21/XML Standard does not provide any means to annotate the spatial "
+"reference system for Coded Cartographic Mathematical Data, which means that "
+"this information will be lost after conversion to MARC21/XML."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:989
+#, no-c-format
+msgid ""
+"Converting a <varname>POINT</varname> to MARC21/XML formated as hdddmmss "
+"(default)"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:992
+#, no-c-format
+msgid ""
+"Converting a <varname>POLYGON</varname> to MARC21/XML formated in decimal "
+"degrees"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:995
+#, no-c-format
+msgid ""
+"Converting a <varname>GEOMETRYCOLLECTION</varname> to MARC21/XML formated in "
+"decimal minutes. The geometries order in the MARC21/XML output correspond to "
+"their order in the collection."
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_output.xml:1009
+#, no-c-format
+msgid "Transforms a geometry into the coordinate space of a MVT tile."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_output.xml:1013
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_AsMVTGeom</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>box2d </type> <parameter>bounds</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>extent=4096</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>buffer=256</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>boolean </type> <parameter>clip_geom=true</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1027
+#, no-c-format
+msgid ""
+"Transforms a geometry into the coordinate space of a MVT (<ulink "
+"url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</ulink>) "
+"tile, clipping it to the tile bounds if required. The geometry must be in "
+"the coordinate system of the target map (using <xref "
+"linkend=\"ST_Transform\"/> if needed). Commonly this is <ulink url=\"https://"
+"en.wikipedia.org/wiki/Web_Mercator_projection\">Web Mercator</ulink> "
+"(SRID:3857)."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1032
+#, no-c-format
+msgid ""
+"The function attempts to preserve geometry validity, and corrects it if "
+"needed. This may cause the result geometry to collapse to a lower dimension."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1035
+#, no-c-format
+msgid ""
+"The rectangular bounds of the tile in the target map coordinate space must "
+"be provided, so the geometry can be transformed, and clipped if required. "
+"The bounds can be generated using <xref linkend=\"ST_TileEnvelope\"/>."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1039
+#, no-c-format
+msgid ""
+"This function is used to convert geometry into the tile coordinate space "
+"required by <xref linkend=\"ST_AsMVT\"/>."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1043
+#, no-c-format
+msgid ""
+"<varname>geom</varname> is the geometry to transform, in the coordinate "
+"system of the target map."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1044
+#, no-c-format
+msgid ""
+"<varname>bounds</varname> is the rectangular bounds of the tile in map "
+"coordinate space, with no buffer."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1045
+#, no-c-format
+msgid ""
+"<varname>extent</varname> is the tile extent size in tile coordinate space "
+"as defined by the <ulink url=\"https://www.mapbox.com/vector-tiles/"
+"specification/\">MVT specification</ulink>. Defaults to 4096."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1046
+#, no-c-format
+msgid ""
+"<varname>buffer</varname> is the buffer size in tile coordinate space for "
+"geometry clippig. Defaults to 256."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1047
+#, no-c-format
+msgid ""
+"<varname>clip_geom</varname> is a boolean to control if geometries are "
+"clipped or encoded as-is. Defaults to true."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1052
+#, no-c-format
+msgid ""
+"From 3.0, Wagyu can be chosen at configure time to clip and validate MVT "
+"polygons. This library is faster and produces more correct results than the "
+"GEOS default, but it might drop small polygons."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1060
+#, no-c-format
+msgid ""
+"Canonical example for a Web Mercator tile using a computed tile bounds to "
+"query and clip geometry."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1068
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_TileEnvelope\"/>, <xref "
+"linkend=\"PostGIS_Wagyu_Version\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_output.xml:1080
+#, no-c-format
+msgid "Aggregate function returning a MVT representation of a set of rows."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1120
+#, no-c-format
+msgid ""
+"An aggregate function which returns a binary <ulink url=\"https://www.mapbox."
+"com/vector-tiles/\">Mapbox Vector Tile</ulink> representation of a set of "
+"rows corresponding to a tile layer. The rows must contain a geometry column "
+"which will be encoded as a feature geometry. The geometry must be in tile "
+"coordinate space and valid as per the <ulink url=\"https://www.mapbox.com/"
+"vector-tiles/specification/\">MVT specification</ulink>. <xref "
+"linkend=\"ST_AsMVTGeom\"/> can be used to transform geometry into tile "
+"coordinate space. Other row columns are encoded as feature attributes."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1129
+#, no-c-format
+msgid ""
+"The <ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</"
+"ulink> format can store features with varying sets of attributes. To use "
+"this capability supply a JSONB column in the row data containing Json "
+"objects one level deep. The keys and values in the JSONB values will be "
+"encoded as feature attributes."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1135
+#, no-c-format
+msgid ""
+"Tiles with multiple layers can be created by concatenating multiple calls to "
+"this function using <varname>||</varname> or <varname>STRING_AGG</varname>."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1141
+#, no-c-format
+msgid ""
+"Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an element in "
+"the row. However you can use <xref linkend=\"ST_AsMVTGeom\"/> to prepare a "
+"geometry collection for inclusion."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1146
+#, no-c-format
+msgid ""
+"<varname>name</varname> is the name of the layer. Default is the string "
+"\"default\"."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1147
+#, no-c-format
+msgid ""
+"<varname>extent</varname> is the tile extent in screen space as defined by "
+"the specification. Default is 4096."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1148
+#, no-c-format
+msgid ""
+"<varname>geom_name</varname> is the name of the geometry column in the row "
+"data. Default is the first geometry column. Note that PostgreSQL by default "
+"automatically <ulink url=\"https://www.postgresql.org/docs/current/sql-"
+"syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS\">folds unquoted identifiers to "
+"lower case</ulink>, which means that unless the geometry column is quoted, e."
+"g. <varname>\"MyMVTGeom\"</varname>, this parameter must be provided as "
+"lowercase."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1149
+#, no-c-format
+msgid ""
+"<varname>feature_id_name</varname> is the name of the Feature ID column in "
+"the row data. If NULL or negative the Feature ID is not set. The first "
+"column matching name and valid type (smallint, integer, bigint) will be used "
+"as Feature ID, and any subsequent column will be added as a property. JSON "
+"properties are not supported."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1152
+#, no-c-format
+msgid "Enhanced: 3.0 - added support for Feature ID."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1153
+#, no-c-format
+msgid "Enhanced: 2.5.0 - added support parallel query."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1165
+#, no-c-format
+msgid ", <xref linkend=\"ST_TileEnvelope\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_output.xml:1175
+#, no-c-format
+msgid "Returns SVG path data for a geometry."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1198
+#, no-c-format
+msgid ""
+"Return the geometry as Scalar Vector Graphics (SVG) path data. Use 1 as "
+"second argument to have the path data implemented in terms of relative "
+"moves, the default (or 0) uses absolute moves. Third argument may be used to "
+"reduce the maximum number of decimal digits used in output (defaults to 15). "
+"Point geometries will be rendered as cx/cy when 'rel' arg is 0, x/y when "
+"'rel' is 1. Multipoint geometries are delimited by commas (\",\"), "
+"GeometryCollection geometries are delimited by semicolons (\";\")."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1207
+#, no-c-format
+msgid ""
+"For working with PostGIS SVG graphics, checkout <ulink url=\"https://github."
+"com/dr-jts/pg_svg\">pg_svg</ulink> library which provides plpgsql functions "
+"for working with outputs from ST_AsSVG."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1210
+#, no-c-format
+msgid "Enhanced: 3.4.0 to support all curve types"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1211
+#, no-c-format
+msgid "Changed: 2.0.0 to use default args and support named args"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1213
+#, no-c-format
+msgid ""
+"Availability: 1.2.2. Availability: 1.4.0 Changed in PostGIS 1.4.0 to include "
+"L command in absolute path to conform to <ulink url=\"http://www.w3.org/TR/"
+"SVG/paths.html#PathDataBNF\">http://www.w3.org/TR/SVG/paths."
+"html#PathDataBNF</ulink>"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1223
+#, no-c-format
+msgid "Circular string"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1226
+#, no-c-format
+msgid "Multi-curve"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1229
+#, no-c-format
+msgid "Multi-surface"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_output.xml:1236
+#, no-c-format
+msgid "Returns the geometry as TWKB, aka \"Tiny Well-Known Binary\""
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1264
+#, no-c-format
+msgid ""
+"Returns the geometry in TWKB (Tiny Well-Known Binary) format. TWKB is a "
+"<ulink url=\"https://github.com/TWKB/Specification/blob/master/twkb."
+"md\">compressed binary format</ulink> with a focus on minimizing the size of "
+"the output."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1265
+#, no-c-format
+msgid ""
+"The decimal digits parameters control how much precision is stored in the "
+"output. By default, values are rounded to the nearest unit before encoding. "
+"If you want to transfer more precision, increase the number. For example, a "
+"value of 1 implies that the first digit to the right of the decimal point "
+"will be preserved."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1266
+#, no-c-format
+msgid ""
+"The sizes and bounding boxes parameters control whether optional information "
+"about the encoded length of the object and the bounds of the object are "
+"included in the output. By default they are not. Do not turn them on unless "
+"your client software has a use for them, as they just use up space (and "
+"saving space is the point of TWKB)."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1267
+#, no-c-format
+msgid ""
+"The array-input form of the function is used to convert a collection of "
+"geometries and unique identifiers into a TWKB collection that preserves the "
+"identifiers. This is useful for clients that expect to unpack a collection "
+"and then access further information about the objects inside. You can create "
+"the arrays using the <ulink url=\"https://www.postgresql.org/docs/current/"
+"functions-aggregate.html\">array_agg</ulink> function. The other parameters "
+"operate the same as for the simple form of the function."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1269
+#, no-c-format
+msgid ""
+"The format specification is available online at <ulink url=\"https://github."
+"com/TWKB/Specification\">https://github.com/TWKB/Specification</ulink>, and "
+"code for building a JavaScript client can be found at <ulink url=\"https://"
+"github.com/TWKB/twkb.js\">https://github.com/TWKB/twkb.js</ulink>."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1272
+#, no-c-format
+msgid "Enhanced: 2.4.0 memory and speed improvements."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1280
+#, no-c-format
+msgid ""
+"To create an aggregate TWKB object including identifiers aggregate the "
+"desired geometries and objects first, using \"array_agg()\", then call the "
+"appropriate TWKB function."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1288
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AsBinary\"/>, <xref linkend=\"ST_AsEWKB\"/>, <xref "
+"linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_GeomFromText\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_output.xml:1296
+#, no-c-format
+msgid ""
+"Returns a Geometry in X3D xml node element format: ISO-IEC-19776-1.2-"
+"X3DEncodings-XML"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_output.xml:1301
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_AsX3D</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1313
+#, no-c-format
+msgid ""
+"Returns a geometry as an X3D xml formatted node element <ulink url=\"http://"
+"www.web3d.org/standards/number/19776-1\">http://www.web3d.org/standards/"
+"number/19776-1</ulink>. If <varname>maxdecimaldigits</varname> (precision) "
+"is not specified then defaults to 15."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1315
+#, no-c-format
+msgid ""
+"There are various options for translating PostGIS geometries to X3D since "
+"X3D geometry types don't map directly to PostGIS geometry types and some "
+"newer X3D types that might be better mappings we have avoided since most "
+"rendering tools don't currently support them. These are the mappings we have "
+"settled on. Feel free to post a bug ticket if you have thoughts on the idea "
+"or ways we can allow people to denote their preferred mappings."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1317
+#, no-c-format
+msgid "Below is how we currently map PostGIS 2D/3D types to X3D types"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1320
+#, no-c-format
+msgid ""
+"The 'options' argument is a bitfield. For PostGIS 2.2+, this is used to "
+"denote whether to represent coordinates with X3D GeoCoordinates Geospatial "
+"node and also whether to flip the x/y axis. By default, <code>ST_AsX3D</"
+"code> outputs in database form (long,lat or X,Y), but X3D default of lat/"
+"lon, y/x may be preferred."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1324
+#, no-c-format
+msgid ""
+"0: X/Y in database order (e.g. long/lat = X,Y is standard database order), "
+"default value, and non-spatial coordinates (just regular old Coordinate tag)."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1328
+#, no-c-format
+msgid ""
+"1: Flip X and Y. If used in conjunction with the GeoCoordinate option "
+"switch, then output will be default \"latitude_first\" and coordinates will "
+"be flipped as well."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1332
+#, no-c-format
+msgid ""
+"2: Output coordinates in GeoSpatial GeoCoordinates. This option will throw "
+"an error if geometries are not in WGS 84 long lat (srid: 4326). This is "
+"currently the only GeoCoordinate type supported. <ulink url=\"http://www."
+"web3d.org/documents/specifications/19775-1/V3.2/Part01/components/geodata."
+"html#Specifyingaspatialreference\">Refer to X3D specs specifying a spatial "
+"reference system.</ulink>. Default output will be <code>GeoCoordinate "
+"geoSystem='\"GD\" \"WE\" \"longitude_first\"'</code>. If you prefer the X3D "
+"default of <code>GeoCoordinate geoSystem='\"GD\" \"WE\" \"latitude_first\"'</"
+"code> use <code>(2 + 1)</code> = <code>3</code>"
+msgstr ""
+
+#. Tag: entry
+#: reference_output.xml:1342
+#, no-c-format
+msgid "PostGIS Type"
+msgstr ""
+
+#. Tag: entry
+#: reference_output.xml:1343
+#, no-c-format
+msgid "2D X3D Type"
+msgstr ""
+
+#. Tag: entry
+#: reference_output.xml:1344
+#, no-c-format
+msgid "3D X3D Type"
+msgstr ""
+
+#. Tag: entry
+#: reference_output.xml:1349
+#, no-c-format
+msgid "LINESTRING"
+msgstr ""
+
+#. Tag: entry
+#: reference_output.xml:1350 reference_output.xml:1355
+#, no-c-format
+msgid "not yet implemented - will be PolyLine2D"
+msgstr ""
+
+#. Tag: entry
+#: reference_output.xml:1351
+#, no-c-format
+msgid "LineSet"
+msgstr ""
+
+#. Tag: entry
+#: reference_output.xml:1354
+#, no-c-format
+msgid "MULTILINESTRING"
+msgstr ""
+
+#. Tag: entry
+#: reference_output.xml:1356
+#, no-c-format
+msgid "IndexedLineSet"
+msgstr ""
+
+#. Tag: entry
+#: reference_output.xml:1359
+#, no-c-format
+msgid "MULTIPOINT"
+msgstr ""
+
+#. Tag: entry
+#: reference_output.xml:1360
+#, no-c-format
+msgid "Polypoint2D"
+msgstr ""
+
+#. Tag: entry
+#: reference_output.xml:1361
+#, no-c-format
+msgid "PointSet"
+msgstr ""
+
+#. Tag: entry
+#: reference_output.xml:1364
+#, no-c-format
+msgid "POINT"
+msgstr ""
+
+#. Tag: entry
+#: reference_output.xml:1365 reference_output.xml:1366
+#, no-c-format
+msgid "outputs the space delimited coordinates"
+msgstr ""
+
+#. Tag: entry
+#: reference_output.xml:1369
+#, no-c-format
+msgid "(MULTI) POLYGON, POLYHEDRALSURFACE"
+msgstr ""
+
+#. Tag: entry
+#: reference_output.xml:1370
+#, no-c-format
+msgid "Invalid X3D markup"
+msgstr ""
+
+#. Tag: entry
+#: reference_output.xml:1371
+#, no-c-format
+msgid "IndexedFaceSet (inner rings currently output as another faceset)"
+msgstr ""
+
+#. Tag: entry
+#: reference_output.xml:1374
+#, no-c-format
+msgid "<entry>TIN</entry>"
+msgstr ""
+
+#. Tag: entry
+#: reference_output.xml:1375
+#, no-c-format
+msgid "TriangleSet2D (Not Yet Implemented)"
+msgstr ""
+
+#. Tag: entry
+#: reference_output.xml:1376
+#, no-c-format
+msgid "IndexedTriangleSet"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1381
+#, no-c-format
+msgid ""
+"2D geometry support not yet complete. Inner rings currently just drawn as "
+"separate polygons. We are working on these."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1382
+#, no-c-format
+msgid ""
+"Lots of advancements happening in 3D space particularly with <ulink "
+"url=\"https://www.web3d.org/wiki/index.php/X3D_and_HTML5\">X3D Integration "
+"with HTML5</ulink>"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1383
+#, no-c-format
+msgid ""
+"There is also a nice open source X3D viewer you can use to view rendered "
+"geometries. Free Wrl <ulink url=\"http://freewrl.sourceforge.net/\">http://"
+"freewrl.sourceforge.net/</ulink> binaries available for Mac, Linux, and "
+"Windows. Use the FreeWRL_Launcher packaged to view the geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1384
+#, no-c-format
+msgid ""
+"Also check out <ulink url=\"https://git.osgeo.org/gitea/robe/"
+"postgis_x3d_viewer\">PostGIS minimalist X3D viewer</ulink> that utilizes "
+"this function and <ulink url=\"http://www.x3dom.org/\">x3dDom html/js open "
+"source toolkit</ulink>."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1385
+#, no-c-format
+msgid "Availability: 2.0.0: ISO-IEC-19776-1.2-X3DEncodings-XML"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1386
+#, no-c-format
+msgid ""
+"Enhanced: 2.2.0: Support for GeoCoordinates and axis (x/y, long/lat) "
+"flipping. Look at options for details."
+msgstr ""
+
+#. Tag: title
+#: reference_output.xml:1398
+#, no-c-format
+msgid ""
+"Example: Create a fully functional X3D document - This will generate a cube "
+"that is viewable in FreeWrl and other X3D viewers."
+msgstr ""
+
+#. Tag: title
+#: reference_output.xml:1402
+#, no-c-format
+msgid "PostGIS buildings"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1403
+#, no-c-format
+msgid ""
+"Copy and paste the output of this query to <ulink url=\"http://postgis.net/"
+"docs/support/viewers/x3d_viewer.htm\">x3d scene viewer</ulink> and click Show"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1414
+#, no-c-format
+msgid "Buildings formed by subdividing PostGIS and extrusion"
+msgstr ""
+
+#. Tag: title
+#: reference_output.xml:1419
+#, no-c-format
+msgid "Example: An Octagon elevated 3 Units and decimal precision of 6"
+msgstr ""
+
+#. Tag: title
+#: reference_output.xml:1423
+#, no-c-format
+msgid "Example: TIN"
+msgstr ""
+
+#. Tag: title
+#: reference_output.xml:1427
+#, no-c-format
+msgid "Example: Closed multilinestring (the boundary of a polygon with holes)"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_output.xml:1436
+#, no-c-format
+msgid "Return a GeoHash representation of the geometry."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_output.xml:1441
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_GeoHash</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxchars=full_precision_of_point</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1452
+#, no-c-format
+msgid ""
+"Computes a <ulink url=\"http://en.wikipedia.org/wiki/Geohash\">GeoHash</"
+"ulink> representation of a geometry. A GeoHash encodes a geographic Point "
+"into a text form that is sortable and searchable based on prefixing. A "
+"shorter GeoHash is a less precise representation of a point. It can be "
+"thought of as a box that contains the point."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1458
+#, no-c-format
+msgid ""
+"Non-point geometry values with non-zero extent can also be mapped to GeoHash "
+"codes. The precision of the code depends on the geographic extent of the "
+"geometry."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1462
+#, no-c-format
+msgid ""
+"If <varname>maxchars</varname> is not specified, the returned GeoHash code "
+"is for the smallest cell containing the input geometry. Points return a "
+"GeoHash with 20 characters of precision (about enough to hold the full "
+"double precision of the input). Other geometric types may return a GeoHash "
+"with less precision, depending on the extent of the geometry. Larger "
+"geometries are represented with less precision, smaller ones with more "
+"precision. The box determined by the GeoHash code always contains the input "
+"feature."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1468
+#, no-c-format
+msgid ""
+"If <varname>maxchars</varname> is specified the returned GeoHash code has at "
+"most that many characters. It maps to a (possibly) lower precision "
+"representation of the input geometry. For non-points, the starting point of "
+"the calculation is the center of the bounding box of the geometry."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1472
+#, no-c-format
+msgid "Availability: 1.4.0"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1475
+#, no-c-format
+msgid ""
+"ST_GeoHash requires input geometry to be in geographic (lon/lat) coordinates."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1488
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_PointFromGeoHash\"/>, <xref "
+"linkend=\"ST_Box2dFromGeoHash\"/>"
+msgstr ""

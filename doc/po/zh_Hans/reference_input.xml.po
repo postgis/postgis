@@ -1,0 +1,1796 @@
+# Chinese translations for build-pg package.
+# Automatically generated, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: build-pg 13\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"PO-Revision-Date: 2023-09-05 01:12+0000\n"
+"Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
+"postgis/reference_inputxml/zh_Hans/>\n"
+"Language: zh_Hans\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.16.4\n"
+
+#. Tag: para
+#: reference_input.xml:6
+#, no-c-format
+msgid ""
+"These functions create geometry objects from various textual or binary "
+"formats."
+msgstr "这些函数从各种文本或二进制格式创建几何对象。"
+
+#. Tag: title
+#: reference_input.xml:10
+#, no-c-format
+msgid "Geometry Input"
+msgstr "几何输入"
+
+#. Tag: title
+#: reference_input.xml:13
+#, no-c-format
+msgid "Well-Known Text (WKT)"
+msgstr "Well-Known Text (WKT)"
+
+#. Tag: refpurpose
+#: reference_input.xml:19
+#, no-c-format
+msgid ""
+"<refpurpose>Construct a Polygon given an arbitrary collection of closed "
+"linestrings as a MultiLineString Well-Known text representation.</refpurpose>"
+msgstr ""
+"<refpurpose>给定任意闭合线串集合作为 MultiLineString "
+"熟知的文本表示形式（WKT），构造一个多边形。</refpurpose>"
+
+#. Tag: funcprototype
+#: reference_input.xml:25
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_BdPolyFromText</function></funcdef> "
+"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_BdPolyFromText</function></funcdef> "
+"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
+
+#. Tag: title
+#: reference_input.xml:34 reference_input.xml:84 reference_input.xml:131
+#: reference_input.xml:160 reference_input.xml:195 reference_input.xml:245
+#: reference_input.xml:292 reference_input.xml:370 reference_input.xml:400
+#: reference_input.xml:456 reference_input.xml:516 reference_input.xml:577
+#: reference_input.xml:638 reference_input.xml:695 reference_input.xml:751
+#: reference_input.xml:794 reference_input.xml:826 reference_input.xml:867
+#: reference_input.xml:922 reference_input.xml:974 reference_input.xml:1042
+#: reference_input.xml:1106 reference_input.xml:1151 reference_input.xml:1185
+#: reference_input.xml:1226 reference_input.xml:1269 reference_input.xml:1354
+#: reference_input.xml:1395 reference_input.xml:1444 reference_input.xml:1483
+#: reference_input.xml:1514 reference_input.xml:1555 reference_input.xml:1595
+#: reference_input.xml:1626
+#, no-c-format
+msgid "Description"
+msgstr "描述"
+
+#. Tag: para
+#: reference_input.xml:36
+#, no-c-format
+msgid ""
+"<para>Construct a Polygon given an arbitrary collection of closed "
+"linestrings as a MultiLineString Well-Known text representation.</para>"
+msgstr "<para>从闭合线串的任意集合构造多边形，这些线串具有多线串的已知文本表示形式。<"
+"/para>"
+
+#. Tag: para
+#: reference_input.xml:41
+#, no-c-format
+msgid ""
+"Throws an error if WKT is not a MULTILINESTRING. Throws an error if output "
+"is a MULTIPOLYGON; use ST_BdMPolyFromText in that case, or see "
+"ST_BuildArea() for a postgis-specific approach."
+msgstr ""
+"如果 WKT 不是 MULTILINESTRING，则会引发错误。 如果输出是 "
+"MULTIPOLYGON，则抛出错误； 在这种情况下使用 ST_BdMPolyFromText，或者参见 "
+"ST_BuildArea() 了解 postgis 特定的方法。"
+
+#. Tag: para
+#: reference_input.xml:47 reference_input.xml:100 reference_input.xml:209
+#: reference_input.xml:472 reference_input.xml:532 reference_input.xml:654
+#: reference_input.xml:762 reference_input.xml:999 reference_input.xml:1065
+#, no-c-format
+msgid "&sfs_compliant; s3.2.6.2"
+msgstr "&sfs_compliant; s3.2.6.2"
+
+#. Tag: para
+#: reference_input.xml:48 reference_input.xml:101
+#, no-c-format
+msgid "Performed by the GEOS module."
+msgstr "它是通过GEOS模块实现的。"
+
+#. Tag: para
+#: reference_input.xml:49 reference_input.xml:102
+#, no-c-format
+msgid "Availability: 1.1.0"
+msgstr "可用性：1.1.0"
+
+#. Tag: title
+#: reference_input.xml:60 reference_input.xml:112 reference_input.xml:141
+#: reference_input.xml:165 reference_input.xml:223 reference_input.xml:265
+#: reference_input.xml:344 reference_input.xml:375 reference_input.xml:426
+#: reference_input.xml:486 reference_input.xml:546 reference_input.xml:607
+#: reference_input.xml:668 reference_input.xml:723 reference_input.xml:774
+#: reference_input.xml:798 reference_input.xml:845 reference_input.xml:894
+#: reference_input.xml:945 reference_input.xml:1013 reference_input.xml:1077
+#: reference_input.xml:1131 reference_input.xml:1155 reference_input.xml:1201
+#: reference_input.xml:1242 reference_input.xml:1322 reference_input.xml:1374
+#: reference_input.xml:1422 reference_input.xml:1458 reference_input.xml:1490
+#: reference_input.xml:1531 reference_input.xml:1571
+#, no-c-format
+msgid "See Also"
+msgstr "相关信息"
+
+#. Tag: para
+#: reference_input.xml:61
+#, no-c-format
+msgid ", <xref linkend=\"ST_BdMPolyFromText\"/>"
+msgstr ", <xref linkend=\"ST_BdMPolyFromText\"/>"
+
+#. Tag: refpurpose
+#: reference_input.xml:68
+#, no-c-format
+msgid ""
+"Construct a MultiPolygon given an arbitrary collection of closed linestrings "
+"as a MultiLineString text representation Well-Known text representation."
+msgstr "从任何封闭线串集合构造多面，并具有多线串的已知文本表示形式。"
+
+#. Tag: funcprototype
+#: reference_input.xml:75
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_BdMPolyFromText</function></funcdef> "
+"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_BdMPolyFromText</function></funcdef> "
+"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
+
+#. Tag: para
+#: reference_input.xml:86
+#, no-c-format
+msgid ""
+"Construct a Polygon given an arbitrary collection of closed linestrings, "
+"polygons, MultiLineStrings as Well-Known text representation."
+msgstr "给定闭合线串、多边形、多线字符串的任意集合作为已知的文本表示，构造一个多边形"
+"。"
+
+#. Tag: para
+#: reference_input.xml:91
+#, no-c-format
+msgid ""
+"Throws an error if WKT is not a MULTILINESTRING. Forces MULTIPOLYGON output "
+"even when result is really only composed by a single POLYGON; use <link "
+"linkend=\"ST_BdPolyFromText\">ST_BdPolyFromText</link> if you're sure a "
+"single POLYGON will result from operation, or see <link "
+"linkend=\"ST_BuildArea\">ST_BuildArea()</link> for a postgis-specific "
+"approach."
+msgstr ""
+"如果 WKT 不是 MULTILINESTRING，则会引发错误。 即使结果实际上仅由单个 POLYGON "
+"组成，也强制输出 MULTIPOLYGON； 如果您确定操作将产生单个 POLYGON，"
+"请使用<link linkend=\"ST_BdPolyFromText\">ST_BdPolyFromText</link>，"
+"或者请参阅 <link linkend=\"ST_BuildArea\">ST_BuildArea()</link> 了解 postgis "
+"特定的方法。"
+
+#. Tag: para
+#: reference_input.xml:113
+#, no-c-format
+msgid ", <xref linkend=\"ST_BdPolyFromText\"/>"
+msgstr ", <xref linkend=\"ST_BdPolyFromText\"/>"
+
+#. Tag: refpurpose
+#: reference_input.xml:120 reference_input.xml:149
+#, no-c-format
+msgid ""
+"Return a specified geography value from Well-Known Text representation or "
+"extended (WKT)."
+msgstr "从已知的文本表示或扩展 (WKT) 返回指定的地理值。"
+
+#. Tag: funcprototype
+#: reference_input.xml:124
+#, no-c-format
+msgid ""
+"<funcdef>geography <function>ST_GeogFromText</function></funcdef> "
+"<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>"
+msgstr ""
+"<funcdef>geography <function>ST_GeogFromText</function></funcdef> "
+"<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>"
+
+#. Tag: para
+#: reference_input.xml:132
+#, no-c-format
+msgid ""
+"Returns a geography object from the well-known text or extended well-known "
+"representation. SRID 4326 is assumed if unspecified. This is an alias for "
+"ST_GeographyFromText. Points are always expressed in long lat form."
+msgstr ""
+"从已知的文本或扩展的已知的表示中返回地理对象。 如果未指定，则假定为 SRID "
+"4326。 这是 ST_GeographyFromText 的别名。 点始终以经纬度形式表示。"
+
+#. Tag: title
+#: reference_input.xml:137 reference_input.xml:216 reference_input.xml:259
+#: reference_input.xml:328 reference_input.xml:422 reference_input.xml:479
+#: reference_input.xml:539 reference_input.xml:600 reference_input.xml:661
+#: reference_input.xml:719 reference_input.xml:767 reference_input.xml:840
+#: reference_input.xml:881 reference_input.xml:938 reference_input.xml:1006
+#: reference_input.xml:1070 reference_input.xml:1124 reference_input.xml:1197
+#: reference_input.xml:1238 reference_input.xml:1367 reference_input.xml:1453
+#: reference_input.xml:1524 reference_input.xml:1567
+#, no-c-format
+msgid "Examples"
+msgstr "示例"
+
+#. Tag: para
+#: reference_input.xml:142
+#, no-c-format
+msgid ", <xref linkend=\"ST_GeographyFromText\"/>"
+msgstr ", <xref linkend=\"ST_GeographyFromText\"/>"
+
+#. Tag: funcprototype
+#: reference_input.xml:153
+#, no-c-format
+msgid ""
+"<funcdef>geography <function>ST_GeographyFromText</function></funcdef> "
+"<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>"
+msgstr ""
+"<funcdef>geography <function>ST_GeographyFromText</function></funcdef> "
+"<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>"
+
+#. Tag: para
+#: reference_input.xml:161
+#, no-c-format
+msgid ""
+"Returns a geography object from the well-known text representation. SRID "
+"4326 is assumed if unspecified."
+msgstr "从已知的文本表示形式返回地理对象。 如果未指定，则假定为 SRID 4326。"
+
+#. Tag: para
+#: reference_input.xml:166
+#, no-c-format
+msgid ", <xref linkend=\"ST_AsText\"/>"
+msgstr ", <xref linkend=\"ST_AsText\"/>"
+
+#. Tag: refpurpose
+#: reference_input.xml:174
+#, no-c-format
+msgid ""
+"Makes a collection Geometry from collection WKT with the given SRID. If SRID "
+"is not given, it defaults to 0."
+msgstr "使用给定的 SRID 从集合 WKT 中创建集合几何体。 如果未给出 SRID，则默认为 0。"
+
+#. Tag: para
+#: reference_input.xml:197
+#, no-c-format
+msgid ""
+"Makes a collection Geometry from the Well-Known-Text (WKT) representation "
+"with the given SRID. If SRID is not given, it defaults to 0."
+msgstr "使用给定的 SRID 从已知的文本 (WKT) 表示形式创建几何集合。 如果未给出 SRID，"
+"则默认为 0。"
+
+#. Tag: para
+#: reference_input.xml:200 reference_input.xml:521 reference_input.xml:582
+#: reference_input.xml:643 reference_input.xml:757
+#, no-c-format
+msgid "OGC SPEC 3.2.6.2 - option SRID is from the conformance suite"
+msgstr "OGC 规范 3.2.6.2 - 可选 SRID 用于规范"
+
+#. Tag: para
+#: reference_input.xml:202
+#, no-c-format
+msgid "Returns null if the WKT is not a GEOMETRYCOLLECTION"
+msgstr "如果 WKT 不是几何集合，则返回 NULL"
+
+#. Tag: para
+#: reference_input.xml:204
+#, no-c-format
+msgid ""
+"If you are absolutely sure all your WKT geometries are collections, don't "
+"use this function. It is slower than ST_GeomFromText since it adds an "
+"additional validation step."
+msgstr "如果您绝对确定所有 WKT 几何图形都是集合，请不要使用此函数。 它比 "
+"ST_GeomFromText 慢，因为它添加了额外的验证步骤。"
+
+#. Tag: para
+#: reference_input.xml:210
+#, no-c-format
+msgid "&sqlmm_compliant;"
+msgstr "&sqlmm_compliant;"
+
+#. Tag: para
+#: reference_input.xml:225 reference_input.xml:670
+#, no-c-format
+msgid ", <xref linkend=\"ST_SRID\"/>"
+msgstr ", <xref linkend=\"ST_SRID\"/>"
+
+#. Tag: refpurpose
+#: reference_input.xml:232
+#, no-c-format
+msgid ""
+"Return a specified ST_Geometry value from Extended Well-Known Text "
+"representation (EWKT)."
+msgstr "从扩展已知的文本表示 (EWKT) 返回指定的 ST_Geometry 值。"
+
+#. Tag: funcprototype
+#: reference_input.xml:237
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_GeomFromEWKT</function></funcdef> "
+"<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_GeomFromEWKT</function></funcdef> "
+"<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>"
+
+#. Tag: para
+#: reference_input.xml:246
+#, no-c-format
+msgid ""
+"Constructs a PostGIS ST_Geometry object from the OGC Extended Well-Known "
+"text (EWKT) representation."
+msgstr "根据 OGC 扩展已知的文本 (EWKT) 表示构造 PostGIS ST_Geometry 对象。"
+
+#. Tag: para
+#: reference_input.xml:248
+#, no-c-format
+msgid ""
+"The EWKT format is not an OGC standard, but an PostGIS specific format that "
+"includes the spatial reference system (SRID) identifier"
+msgstr "EWKT 格式不是 OGC 标准，而是包含空间参考系统 (SRID) 标识符的 PostGIS 特定格式"
+
+#. Tag: para
+#: reference_input.xml:251 reference_input.xml:873 reference_input.xml:1289
+#: reference_input.xml:1486
+#, no-c-format
+msgid "Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced."
+msgstr "增强：2.0.0 引入了多面体曲面支持和 TIN 支持。"
+
+#. Tag: para
+#: reference_input.xml:252 reference_input.xml:874 reference_input.xml:1119
+#: reference_input.xml:1291 reference_input.xml:1363 reference_input.xml:1409
+#, no-c-format
+msgid "&Z_support;"
+msgstr "&Z_support;"
+
+#. Tag: para
+#: reference_input.xml:253 reference_input.xml:414 reference_input.xml:835
+#: reference_input.xml:875 reference_input.xml:933 reference_input.xml:1120
+#, no-c-format
+msgid "&curve_support;"
+msgstr "&curve_support;"
+
+#. Tag: para
+#: reference_input.xml:254 reference_input.xml:876 reference_input.xml:1292
+#, no-c-format
+msgid "&P_support;"
+msgstr "&P_support;"
+
+#. Tag: para
+#: reference_input.xml:255 reference_input.xml:877 reference_input.xml:1293
+#, no-c-format
+msgid "&T_support;"
+msgstr "&T_support;"
+
+#. Tag: para
+#: reference_input.xml:266
+#, no-c-format
+msgid ", <xref linkend=\"ST_GeomFromText\"/>"
+msgstr ", <xref linkend=\"ST_GeomFromText\"/>"
+
+#. Tag: refpurpose
+#: reference_input.xml:273
+#, no-c-format
+msgid ""
+"Takes MARC21/XML geographic data as input and returns a PostGIS geometry "
+"object."
+msgstr "输入 MARC21/XML 地理数据并返回 PostGIS 几何对象。"
+
+#. Tag: funcprototype
+#: reference_input.xml:278
+#, no-c-format
+msgid ""
+"<funcdef> geometry <function>ST_GeomFromMARC21</function> </funcdef> "
+"<paramdef> <type>text </type> <parameter>marcxml</parameter> </paramdef>"
+msgstr ""
+"<funcdef> geometry <function>ST_GeomFromMARC21</function> </funcdef> "
+"<paramdef> <type>text </type> <parameter>marcxml</parameter> </paramdef>"
+
+#. Tag: para
+#: reference_input.xml:293
+#, no-c-format
+msgid ""
+"This function creates a PostGIS geometry from a MARC21/XML record, which can "
+"contain a <varname>POINT</varname> or a <varname>POLYGON</varname>. In case "
+"of multiple geographic data entries in the same MARC21/XML record, a "
+"<varname>MULTIPOINT</varname> or <varname>MULTIPOLYGON</varname> will be "
+"returned. If the record contains mixed geometry types, a "
+"<varname>GEOMETRYCOLLECTION</varname> will be returned. It returns NULL if "
+"the MARC21/XML record does not contain any geographic data (datafield:034)."
+msgstr ""
+"此函数从 MARC21/XML 记录创建 PostGIS 几何图形，其中可以包含<varname> POINT</"
+"varname> 或<varname> POLYGON</varname>。 如果同一 MARC21/XML "
+"记录中有多个地理数据条目，将返回 <varname>MULTIPOINT </varname>或 "
+"<varname>MULTIPOLYGON</varname>。 如果记录包含混合几何类型，则将返回 "
+"<varname>GEOMETRYCOLLECTION</varname>。 如果 MARC21/XML "
+"记录不包含任何地理数据（数据字段：034），则返回 NULL。"
+
+#. Tag: para
+#: reference_input.xml:300
+#, no-c-format
+msgid "LOC MARC21/XML versions supported:"
+msgstr "支持的 LOC MARC21/XML 版本："
+
+#. Tag: ulink
+#: reference_input.xml:304
+#, no-c-format
+msgid "MARC21/XML 1.1"
+msgstr "MARC21/XML 1.1"
+
+#. Tag: para
+#: reference_input.xml:309
+#, no-c-format
+msgid "Availability: 3.3.0, requires libxml2 2.6+"
+msgstr "可用性：3.3.0，需要 libxml2 2.6+"
+
+#. Tag: para
+#: reference_input.xml:312
+#, no-c-format
+msgid ""
+"The MARC21/XML Coded Cartographic Mathematical Data currently does not "
+"provide any means to describe the Spatial Reference System of the encoded "
+"coordinates, so this function will always return a geometry with "
+"<varname>SRID 0</varname>."
+msgstr ""
+"在 MARC21/XML 编码的地理数据中，目前无法描述编码坐标的空间参考系，"
+"因此该函数将始终返回 <varname>SRID 0 </varname>的几何图形。"
+
+#. Tag: para
+#: reference_input.xml:319
+#, no-c-format
+msgid ""
+"Returned <varname>POLYGON</varname> geometries will always be clockwise "
+"oriented."
+msgstr "返回的<varname> POLYGON </varname>几何图形将始终是顺时针方向。"
+
+#. Tag: para
+#: reference_input.xml:330
+#, no-c-format
+msgid ""
+"Converting MARC21/XML geographic data containing a single <varname>POINT</"
+"varname> encoded as <varname>hddd.dddddd</varname>"
+msgstr ""
+"转换包含编码为<varname> hddd.dddddd </varname>的单个<varname> POINT</"
+"varname> 的 MARC21/XML 地理数据"
+
+#. Tag: para
+#: reference_input.xml:333
+#, no-c-format
+msgid ""
+"Converting MARC21/XML geographic data containing a single <varname>POLYGON</"
+"varname> encoded as <varname>hdddmmss</varname>"
+msgstr ""
+"转换包含编码为 <varname>hdddmmss</varname> 的单个<varname> POLYGON</varname> "
+"的 MARC21/XML 地理数据"
+
+#. Tag: para
+#: reference_input.xml:337
+#, no-c-format
+msgid ""
+"Converting MARC21/XML geographic data containing a <varname>POLYGON</"
+"varname> and a <varname>POINT</varname>:"
+msgstr ""
+"转换包含<varname> POLYGON </varname>和<varname> POINT</varname> 的 MARC21/"
+"XML 地理数据："
+
+#. Tag: refpurpose
+#: reference_input.xml:354 reference_input.xml:783
+#, no-c-format
+msgid ""
+"Return a specified ST_Geometry value from Well-Known Text representation "
+"(WKT). This is an alias name for ST_GeomFromText"
+msgstr "从已知的文本表示 (WKT) 返回指定的 ST_Geometry 值。 这是 ST_GeomFromText "
+"的别名"
+
+#. Tag: para
+#: reference_input.xml:371
+#, no-c-format
+msgid "&sfs_compliant;"
+msgstr "&sfs_compliant;"
+
+#. Tag: para
+#: reference_input.xml:372 reference_input.xml:413
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.40"
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.40"
+
+#. Tag: refpurpose
+#: reference_input.xml:383
+#, no-c-format
+msgid ""
+"Return a specified ST_Geometry value from Well-Known Text representation "
+"(WKT)."
+msgstr "从已知的文本表示 (WKT) 返回指定的 ST_Geometry 值。"
+
+#. Tag: para
+#: reference_input.xml:402
+#, no-c-format
+msgid ""
+"Constructs a PostGIS ST_Geometry object from the OGC Well-Known text "
+"representation."
+msgstr "从 OGC 已知的文本表示（WKT）构造 PostGIS ST_Geometry 对象。"
+
+#. Tag: para
+#: reference_input.xml:406
+#, no-c-format
+msgid ""
+"There are two variants of ST_GeomFromText function. The first takes no SRID "
+"and returns a geometry with no defined spatial reference system (SRID=0). "
+"The second takes a SRID as the second argument and returns a geometry that "
+"includes this SRID as part of its metadata."
+msgstr ""
+"ST_GeomFromText 函数有两种变体。 第一个不采用 SRID，"
+"并返回没有定义空间参考系统 (SRID=0) 的几何图形。 第二个将 SRID "
+"作为第二个参数，并返回一个几何图形，该几何图形包含此 SRID "
+"作为其元数据的一部分。"
+
+#. Tag: para
+#: reference_input.xml:412 reference_input.xml:714
+#, no-c-format
+msgid "&sfs_compliant; s3.2.6.2 - option SRID is from the conformance suite."
+msgstr "&sfs_compliant;s3.2.6.2 - 可选参数 SRID 用于规范一致性。"
+
+#. Tag: para
+#: reference_input.xml:415
+#, no-c-format
+msgid ""
+"While not OGC-compliant, <xref linkend=\"ST_MakePoint\"/> is faster than "
+"ST_GeomFromText and ST_PointFromText. It is also easier to use for numeric "
+"coordinate values. <xref linkend=\"ST_Point\"/> is another option similar in "
+"speed to <xref linkend=\"ST_MakePoint\"/> and is OGC-compliant, but doesn't "
+"support anything but 2D points."
+msgstr ""
+"它不符合 OGC，但<xref linkend=\"ST_MakePoint\"/>比 ST_GeomFromText 和 "
+"ST_PointFromText 更快。 另一个优点是，如果使用数字作为坐标值，则更容易。 "
+"另一种选择是<xref linkend=\"ST_Point\"/>，它在速度方面与<xref linkend="
+"\"ST_MakePoint\"/>相似，并且符合 OGC 标准，但仅支持 2D 点。"
+
+#. Tag: para
+#: reference_input.xml:416
+#, no-c-format
+msgid ""
+"Changed: 2.0.0 In prior versions of PostGIS "
+"ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') was allowed. This is now "
+"illegal in PostGIS 2.0.0 to better conform with SQL/MM standards. This "
+"should now be written as ST_GeomFromText('GEOMETRYCOLLECTION EMPTY')"
+msgstr ""
+"更改：2.0.0 在 PostGIS 的早期版本中，允许 "
+"ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') 。 为了更好地符合 SQL/MM 标准，"
+"这在 PostGIS 2.0.0 中现在是非法的。 现在应该写成 ST_GeomFromText("
+"'GEOMETRYCOLLECTION EMPTY')"
+
+#. Tag: para
+#: reference_input.xml:427
+#, no-c-format
+msgid ", <xref linkend=\"ST_GeomFromWKB\"/>, <xref linkend=\"ST_SRID\"/>"
+msgstr ", <xref linkend=\"ST_GeomFromWKB\"/>, <xref linkend=\"ST_SRID\"/>"
+
+#. Tag: refpurpose
+#: reference_input.xml:436
+#, no-c-format
+msgid ""
+"Makes a Geometry from WKT representation with the given SRID. If SRID is not "
+"given, it defaults to 0."
+msgstr "使用给定的 SRID 根据 WKT 表示创建几何图形。 如果未给出 SRID，则默认为 0。"
+
+#. Tag: para
+#: reference_input.xml:458
+#, no-c-format
+msgid ""
+"Makes a Geometry from WKT with the given SRID. If SRID is not given, it "
+"defaults to 0. If WKT passed in is not a LINESTRING, then null is returned."
+msgstr ""
+"使用给定的 SRID 从 WKT 创建几何图形。 如果未给出 SRID，则默认为 0。"
+"如果传入的 WKT 不是 LINESTRING，则返回 null。"
+
+#. Tag: para
+#: reference_input.xml:462 reference_input.xml:987
+#, no-c-format
+msgid "OGC SPEC 3.2.6.2 - option SRID is from the conformance suite."
+msgstr "OGC 规范 3.2.6.2 - 可选 SRID 用于规范。"
+
+#. Tag: para
+#: reference_input.xml:467
+#, no-c-format
+msgid ""
+"If you know all your geometries are LINESTRINGS, its more efficient to just "
+"use ST_GeomFromText. This just calls ST_GeomFromText and adds additional "
+"validation that it returns a linestring."
+msgstr "如果您知道所有几何图形都是线串，则使用ST_GeomFromText会更有效。 "
+"此函数调用ST_GeomFromText并评估是否返回线串。"
+
+#. Tag: para
+#: reference_input.xml:473
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 7.2.8"
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.2.8"
+
+#. Tag: refpurpose
+#: reference_input.xml:496
+#, no-c-format
+msgid "Return a specified ST_MultiLineString value from WKT representation."
+msgstr "从 WKT 表示形式返回指定的 ST_MultiLineString 值。"
+
+#. Tag: para
+#: reference_input.xml:518
+#, no-c-format
+msgid ""
+"Makes a Geometry from Well-Known-Text (WKT) with the given SRID. If SRID is "
+"not given, it defaults to 0."
+msgstr "使用给定的 SRID 从已知的文本 (WKT) 创建几何图形。 如果未给出 SRID，则默认为 "
+"0。"
+
+#. Tag: para
+#: reference_input.xml:524
+#, no-c-format
+msgid "Returns null if the WKT is not a MULTILINESTRING"
+msgstr "如果 WKT 不是多行字符串，则返回 NULL"
+
+#. Tag: para
+#: reference_input.xml:527 reference_input.xml:588
+#, no-c-format
+msgid ""
+"If you are absolutely sure all your WKT geometries are points, don't use "
+"this function. It is slower than ST_GeomFromText since it adds an additional "
+"validation step."
+msgstr "如果您绝对确定所有 WKT 几何图形都是点，请不要使用此函数。 它比 "
+"ST_GeomFromText 慢，因为它添加了额外的验证步骤。"
+
+#. Tag: para
+#: reference_input.xml:533
+#, no-c-format
+msgid "&sqlmm_compliant;SQL-MM 3: 9.4.4"
+msgstr "&sqlmm_compliant;SQL-MM 3: 9.4.4"
+
+#. Tag: refpurpose
+#: reference_input.xml:556 reference_input.xml:732
+#, no-c-format
+msgid ""
+"<refpurpose>Makes a Geometry from WKT with the given SRID. If SRID is not "
+"given, it defaults to 0.</refpurpose>"
+msgstr "<refpurpose>使用给定的 SRID 从 WKT 创建几何图形。 如果未给出 SRID，则默认为 "
+"0。</refpurpose>"
+
+#. Tag: para
+#: reference_input.xml:579
+#, no-c-format
+msgid ""
+"<para>Makes a Geometry from WKT with the given SRID. If SRID is not given, "
+"it defaults to 0.</para>"
+msgstr "<para>从已知文本 （WKT） 表示和给定 SRID 生成几何图形。 如果未给出 SRID，"
+"则为 0（未知）。</para>"
+
+#. Tag: para
+#: reference_input.xml:585
+#, no-c-format
+msgid "Returns null if the WKT is not a MULTIPOINT"
+msgstr "如果 WKT 不是多点，则返回 NULL"
+
+#. Tag: para
+#: reference_input.xml:593
+#, no-c-format
+msgid "&sfs_compliant; 3.2.6.2"
+msgstr "&sfs_compliant; 3.2.6.2"
+
+#. Tag: para
+#: reference_input.xml:594
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 9.2.4"
+msgstr "&sqlmm_compliant; SQL-MM 3: 9.2.4"
+
+#. Tag: refpurpose
+#: reference_input.xml:617
+#, no-c-format
+msgid ""
+"Makes a MultiPolygon Geometry from WKT with the given SRID. If SRID is not "
+"given, it defaults to 0."
+msgstr "使用给定的 SRID 从 WKT 制作多多边形几何体。 如果未给出 SRID，则默认为 0。"
+
+#. Tag: para
+#: reference_input.xml:640
+#, no-c-format
+msgid ""
+"Makes a MultiPolygon from WKT with the given SRID. If SRID is not given, it "
+"defaults to 0."
+msgstr "从已知文本 （WKT） 表示形式和给定 SRID 生成多面。 如果未给出 SRID，则为 "
+"0（未知）。"
+
+#. Tag: para
+#: reference_input.xml:646
+#, no-c-format
+msgid "Throws an error if the WKT is not a MULTIPOLYGON"
+msgstr "如果 WKT 不是多多边形，则引发错误"
+
+#. Tag: para
+#: reference_input.xml:649
+#, no-c-format
+msgid ""
+"If you are absolutely sure all your WKT geometries are multipolygons, don't "
+"use this function. It is slower than ST_GeomFromText since it adds an "
+"additional validation step."
+msgstr "如果您绝对确定所有 WKT 几何图形都是多边形，请不要使用此函数。 它比 "
+"ST_GeomFromText 慢，因为它添加了额外的验证步骤。"
+
+#. Tag: para
+#: reference_input.xml:655
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 9.6.4"
+msgstr "&sqlmm_compliant; SQL-MM 3: 9.6.4"
+
+#. Tag: refpurpose
+#: reference_input.xml:677
+#, no-c-format
+msgid ""
+"Makes a point Geometry from WKT with the given SRID. If SRID is not given, "
+"it defaults to unknown."
+msgstr "使用给定的 SRID 从 WKT 创建点几何图形。 如果未给出 SRID，则默认为未知。"
+
+#. Tag: para
+#: reference_input.xml:697
+#, no-c-format
+msgid ""
+"Constructs a PostGIS ST_Geometry point object from the OGC Well-Known text "
+"representation. If SRID is not given, it defaults to unknown (currently 0). "
+"If geometry is not a WKT point representation, returns null. If completely "
+"invalid WKT, then throws an error."
+msgstr ""
+"从 OGC 已知的文本表示构造 PostGIS ST_Geometry 点对象。 如果未给出 "
+"SRID，则默认为未知（当前为 0）。 如果几何图形不是 WKT 点表示，则返回 null。 "
+"如果 WKT 完全无效，则抛出错误。"
+
+#. Tag: para
+#: reference_input.xml:703
+#, no-c-format
+msgid ""
+"There are 2 variants of ST_PointFromText function, the first takes no SRID "
+"and returns a geometry with no defined spatial reference system. The second "
+"takes a spatial reference id as the second argument and returns an "
+"ST_Geometry that includes this srid as part of its meta-data. The srid must "
+"be defined in the spatial_ref_sys table."
+msgstr ""
+"ST_PointFromText 函数有 2 个形式，第一个不采用 "
+"SRID，并返回没有定义空间参考系统的几何图形。 第二个将空间参考 id "
+"作为第二个参数，并返回一个 ST_Geometry，其中包含此 srid "
+"作为其元数据的一部分。 srid 必须在spatial_ref_sys 表中定义。"
+
+#. Tag: para
+#: reference_input.xml:710
+#, no-c-format
+msgid ""
+"If you are absolutely sure all your WKT geometries are points, don't use "
+"this function. It is slower than ST_GeomFromText since it adds an additional "
+"validation step. If you are building points from long lat coordinates and "
+"care more about performance and accuracy than OGC compliance, use <xref "
+"linkend=\"ST_MakePoint\"/> or OGC compliant alias <xref linkend=\"ST_Point\"/"
+">."
+msgstr ""
+"如果您绝对确定所有 WKT 几何图形都是点，请不要使用此函数。 它比 "
+"ST_GeomFromText 慢，因为它添加了额外的验证步骤。 "
+"如果您从经纬度坐标构建点并且更关心性能和准确性而不是 OGC 合规性，请使用 "
+"<xref linkend=\"ST_MakePoint\"/>或 OGC 合规别名<xref linkend=\"ST_Point\"/>。"
+
+#. Tag: para
+#: reference_input.xml:715
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 6.1.8"
+msgstr "&sqlmm_compliant; SQL-MM 3: 6.1.8"
+
+#. Tag: para
+#: reference_input.xml:724
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_Point\"/>, <xref "
+"linkend=\"ST_SRID\"/>"
+msgstr ""
+", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_Point\"/>, <xref "
+"linkend=\"ST_SRID\"/>"
+
+#. Tag: para
+#: reference_input.xml:753
+#, no-c-format
+msgid ""
+"Makes a Geometry from WKT with the given SRID. If SRID is not given, it "
+"defaults to 0. Returns null if WKT is not a polygon."
+msgstr "使用给定的 SRID 从 WKT 创建几何图形。 如果未给出 SRID，则默认为 0。如果 WKT "
+"不是多边形，则返回 null。"
+
+#. Tag: para
+#: reference_input.xml:760
+#, no-c-format
+msgid ""
+"If you are absolutely sure all your WKT geometries are polygons, don't use "
+"this function. It is slower than ST_GeomFromText since it adds an additional "
+"validation step."
+msgstr "如果您绝对确定所有 WKT 几何图形都是多边形，请不要使用此函数。 它比 "
+"ST_GeomFromText 慢，因为它添加了额外的验证步骤。"
+
+#. Tag: para
+#: reference_input.xml:763
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 8.3.6"
+msgstr "&sqlmm_compliant; SQL-MM 3: 8.3.6"
+
+#. Tag: funcprototype
+#: reference_input.xml:787
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_WKTToSQL</function></funcdef> "
+"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_WKTToSQL</function></funcdef> "
+"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>"
+
+#. Tag: para
+#: reference_input.xml:795
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.34"
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.34"
+
+#. Tag: title
+#: reference_input.xml:807
+#, no-c-format
+msgid "Well-Known Binary (WKB)"
+msgstr "已知的二进制文件 (WKB)"
+
+#. Tag: refpurpose
+#: reference_input.xml:812
+#, no-c-format
+msgid ""
+"Creates a geography instance from a Well-Known Binary geometry "
+"representation (WKB) or extended Well Known Binary (EWKB)."
+msgstr "从已知的二进制几何表示 (WKB) 或扩展的已知的二进制 (EWKB) 创建地理实例。"
+
+#. Tag: funcprototype
+#: reference_input.xml:818
+#, no-c-format
+msgid ""
+"<funcdef>geography <function>ST_GeogFromWKB</function></funcdef> "
+"<paramdef><type>bytea </type> <parameter>wkb</parameter></paramdef>"
+msgstr ""
+"<funcdef>geography <function>ST_GeogFromWKB</function></funcdef> "
+"<paramdef><type>bytea </type> <parameter>wkb</parameter></paramdef>"
+
+#. Tag: para
+#: reference_input.xml:828
+#, no-c-format
+msgid ""
+"The <varname>ST_GeogFromWKB</varname> function, takes a well-known binary "
+"representation (WKB) of a geometry or PostGIS Extended WKB and creates an "
+"instance of the appropriate geography type. This function plays the role of "
+"the Geometry Factory in SQL."
+msgstr ""
+"<varname>ST_GeogFromWKB</varname> 函数采用已知的几何二进制表示 (WKB) 或 "
+"PostGIS 扩展 WKB，并创建适当地理类型的实例。 "
+"该函数起到了SQL中几何工厂的作用。"
+
+#. Tag: para
+#: reference_input.xml:833
+#, no-c-format
+msgid "If SRID is not specified, it defaults to 4326 (WGS 84 long lat)."
+msgstr "如果未指定 SRID，则默认为 4326（WGS 84 经纬度）。"
+
+#. Tag: para
+#: reference_input.xml:847
+#, no-c-format
+msgid ", <xref linkend=\"ST_AsBinary\"/>"
+msgstr ", <xref linkend=\"ST_AsBinary\"/>"
+
+#. Tag: refpurpose
+#: reference_input.xml:854
+#, no-c-format
+msgid ""
+"Return a specified ST_Geometry value from Extended Well-Known Binary "
+"representation (EWKB)."
+msgstr "从扩展已知的二进制表示 (EWKB) 返回指定的 ST_Geometry 值。"
+
+#. Tag: funcprototype
+#: reference_input.xml:859
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_GeomFromEWKB</function></funcdef> "
+"<paramdef><type>bytea </type> <parameter>EWKB</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_GeomFromEWKB</function></funcdef> "
+"<paramdef><type>bytea </type> <parameter>EWKB</parameter></paramdef>"
+
+#. Tag: para
+#: reference_input.xml:868
+#, no-c-format
+msgid ""
+"Constructs a PostGIS ST_Geometry object from the OGC Extended Well-Known "
+"binary (EWKT) representation."
+msgstr "从 OGC 扩展已知的二进制 (EWKT) 表示构造 PostGIS ST_Geometry 对象。"
+
+#. Tag: para
+#: reference_input.xml:870
+#, no-c-format
+msgid ""
+"The EWKB format is not an OGC standard, but a PostGIS specific format that "
+"includes the spatial reference system (SRID) identifier"
+msgstr "EWKB 格式不是 OGC 标准，而是包含空间参考系统 (SRID) 标识符的 PostGIS 特定格式"
+
+#. Tag: para
+#: reference_input.xml:882
+#, no-c-format
+msgid ""
+"line string binary rep 0f LINESTRING(-71.160281 42.258729,-71.160837 "
+"42.259113,-71.161144 42.25932) in NAD 83 long lat (4269)."
+msgstr ""
+"NAD83 经度纬度 (4269) 中 LINESTRING (-71.160281 42.258729、-71.160837 42."
+"259113、-71.161144 42.25932) 的二进制表示形式。"
+
+#. Tag: para
+#: reference_input.xml:884
+#, no-c-format
+msgid ""
+"NOTE: Even though byte arrays are delimited with \\ and may have ', we need "
+"to escape both out with \\ and '' if standard_conforming_strings is off. So "
+"it does not look exactly like its AsEWKB representation."
+msgstr ""
+"注意：字节数组由 \\ 分隔并具有 '，但如果standard_conforming_strings被截断，"
+"则它们使用 \\ 和 '' 进行转义。 它不完全对应于 AsEWKB 表达式。"
+
+#. Tag: para
+#: reference_input.xml:888
+#, no-c-format
+msgid ""
+"In PostgreSQL 9.1+ - standard_conforming_strings is set to on by default, "
+"where as in past versions it was set to off. You can change defaults as "
+"needed for a single query or at the database or server level. Below is how "
+"you would do it with standard_conforming_strings = on. In this case we "
+"escape the ' with standard ansi ', but slashes are not escaped"
+msgstr ""
+"在 PostgreSQL 9.1 中，standard_conforming_strings 默认设置为 on，"
+"而在过去的版本中它被设置为 off。 "
+"您可以根据单个查询的需要或在数据库或服务器级别更改默认值。 以下是使用 "
+"standard_conforming_strings = on 时的操作方法。 在这种情况下，我们使用标准 "
+"ansi 转义 '，但斜杠不会转义"
+
+#. Tag: para
+#: reference_input.xml:895
+#, no-c-format
+msgid ", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_GeomFromWKB\"/>"
+msgstr ", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_GeomFromWKB\"/>"
+
+#. Tag: refpurpose
+#: reference_input.xml:902
+#, no-c-format
+msgid ""
+"Creates a geometry instance from a Well-Known Binary geometry representation "
+"(WKB) and optional SRID."
+msgstr "从已知的二进制几何表示 (WKB) 和可选的 SRID 创建几何实例。"
+
+#. Tag: para
+#: reference_input.xml:924
+#, no-c-format
+msgid ""
+"The <varname>ST_GeomFromWKB</varname> function, takes a well-known binary "
+"representation of a geometry and a Spatial Reference System ID "
+"(<varname>SRID</varname>) and creates an instance of the appropriate "
+"geometry type. This function plays the role of the Geometry Factory in SQL. "
+"This is an alternate name for ST_WKBToSQL."
+msgstr ""
+"<varname>ST_GeomFromWKB</varname> "
+"函数采用已知的几何图形二进制表示形式和空间参考系统 ID "
+"(<varname>SRID</varname>)，并创建相应几何图形类型的实例。 "
+"该函数起到了SQL中几何工厂的作用。 这是 ST_WKBToSQL 的替代名称。"
+
+#. Tag: para
+#: reference_input.xml:930
+#, no-c-format
+msgid "If SRID is not specified, it defaults to 0 (Unknown)."
+msgstr "如果未指定 SRID，则默认为 0（未知）。"
+
+#. Tag: para
+#: reference_input.xml:931
+#, no-c-format
+msgid ""
+"&sfs_compliant; s3.2.7.2 - the optional SRID is from the conformance suite"
+msgstr "&sfs_compliant; s3.2.7.2 - 可选参数 SRID 用于符合规范"
+
+#. Tag: para
+#: reference_input.xml:932
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.41"
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.41"
+
+#. Tag: para
+#: reference_input.xml:947
+#, no-c-format
+msgid ", <xref linkend=\"ST_AsBinary\"/>, <xref linkend=\"ST_GeomFromEWKB\"/>"
+msgstr ", <xref linkend=\"ST_AsBinary\"/>, <xref linkend=\"ST_GeomFromEWKB\"/>"
+
+#. Tag: refpurpose
+#: reference_input.xml:955
+#, no-c-format
+msgid "Makes a <varname>LINESTRING</varname> from WKB with the given SRID"
+msgstr "使用给定的 SRID 从 WKB 制作<varname> LINESTRING</varname>"
+
+#. Tag: para
+#: reference_input.xml:976
+#, no-c-format
+msgid ""
+"The <varname>ST_LineFromWKB</varname> function, takes a well-known binary "
+"representation of geometry and a Spatial Reference System ID (<varname>SRID</"
+"varname>) and creates an instance of the appropriate geometry type - in this "
+"case, a <varname>LINESTRING</varname> geometry. This function plays the role "
+"of the Geometry Factory in SQL."
+msgstr ""
+"<varname>ST_LineFromWKB</varname> "
+"函数采用已知的几何二进制表示形式和空间参考系统 ID (<varname>SRID</varname>)，"
+"并创建适当几何类型的实例 - 在本例中为 <varname>LINESTRING</varname> 几何。 "
+"该函数起到了SQL中几何工厂的作用。"
+
+#. Tag: para
+#: reference_input.xml:982
+#, no-c-format
+msgid ""
+"If an SRID is not specified, it defaults to 0. <varname>NULL</varname> is "
+"returned if the input <varname>bytea</varname> does not represent a "
+"<varname>LINESTRING</varname>."
+msgstr ""
+"如果未指定 SRID，则默认为 0。如果输入<varname>字节</varname>不表示 "
+"<varname>LINESTRING</varname>，则返回 <varname>NULL</varname>。"
+
+#. Tag: para
+#: reference_input.xml:992
+#, no-c-format
+msgid ""
+"If you know all your geometries are <varname>LINESTRING</varname>s, its more "
+"efficient to just use <xref linkend=\"ST_GeomFromWKB\"/>. This function just "
+"calls <xref linkend=\"ST_GeomFromWKB\"/> and adds additional validation that "
+"it returns a linestring."
+msgstr ""
+"如果您知道所有几何图形都是<varname> LINESTRING</varname>，则仅使用 <xref "
+"linkend=\"ST_GeomFromWKB\"/> 会更有效。 该函数仅调用 <xref linkend="
+"\"ST_GeomFromWKB\"/>并添加额外的验证以确保它返回线串。"
+
+#. Tag: para
+#: reference_input.xml:1000 reference_input.xml:1066
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 7.2.9"
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.2.9"
+
+#. Tag: para
+#: reference_input.xml:1015
+#, no-c-format
+msgid ", <xref linkend=\"ST_LinestringFromWKB\"/>"
+msgstr ", <xref linkend=\"ST_LinestringFromWKB\"/>"
+
+#. Tag: refpurpose
+#: reference_input.xml:1023
+#, no-c-format
+msgid "Makes a geometry from WKB with the given SRID."
+msgstr "使用给定的 SRID 从 WKB 创建几何图形。"
+
+#. Tag: para
+#: reference_input.xml:1044
+#, no-c-format
+msgid ""
+"The <varname>ST_LinestringFromWKB</varname> function, takes a well-known "
+"binary representation of geometry and a Spatial Reference System ID "
+"(<varname>SRID</varname>) and creates an instance of the appropriate "
+"geometry type - in this case, a <varname>LINESTRING</varname> geometry. This "
+"function plays the role of the Geometry Factory in SQL."
+msgstr ""
+"<varname>ST_LineFromWKB </"
+"varname>函数采用已知的几何二进制表示形式和空间参考系统 ID "
+"(<varname>SRID</varname>)，并创建适当几何类型的实例 - 在本例中为<varname> "
+"LINESTRING</varname> 几何。 该函数起到了SQL中几何工厂的作用。"
+
+#. Tag: para
+#: reference_input.xml:1050
+#, no-c-format
+msgid ""
+"If an SRID is not specified, it defaults to 0. <varname>NULL</varname> is "
+"returned if the input <varname>bytea</varname> does not represent a "
+"<varname>LINESTRING</varname> geometry. This an alias for <xref "
+"linkend=\"ST_LineFromWKB\"/>."
+msgstr ""
+"如果未指定 SRID，则默认为 0。如果输入<varname>字节</varname>不表示<varname> "
+"LINESTRING</varname>，则返回<varname> NULL</varname>。这是 <xref linkend="
+"\"ST_LineFromWKB\"/> 的别名。"
+
+#. Tag: para
+#: reference_input.xml:1055
+#, no-c-format
+msgid "OGC SPEC 3.2.6.2 - optional SRID is from the conformance suite."
+msgstr "OGC 规范 3.2.6.2 - 可选 SRID 用于规范。"
+
+#. Tag: para
+#: reference_input.xml:1059
+#, no-c-format
+msgid ""
+"If you know all your geometries are <varname>LINESTRING</varname>s, it's "
+"more efficient to just use <xref linkend=\"ST_GeomFromWKB\"/>. This function "
+"just calls <xref linkend=\"ST_GeomFromWKB\"/> and adds additional validation "
+"that it returns a <varname>LINESTRING</varname>."
+msgstr ""
+"如果您知道所有几何图形都是 <varname>LINESTRING</varname>，则仅使用 <xref "
+"linkend=\"ST_GeomFromWKB\"/>会更有效。 该函数仅调用 <xref linkend="
+"\"ST_GeomFromWKB\"/> "
+"并添加额外的验证以确保它返回<varname>LINESTRING</varname>。"
+
+#. Tag: para
+#: reference_input.xml:1079 reference_input.xml:1133
+#, no-c-format
+msgid ", <xref linkend=\"ST_LineFromWKB\"/>"
+msgstr ", <xref linkend=\"ST_LineFromWKB\"/>"
+
+#. Tag: refpurpose
+#: reference_input.xml:1087
+#, no-c-format
+msgid "Makes a geometry from WKB with the given SRID"
+msgstr "使用给定的 SRID 从 WKB 创建几何图形"
+
+#. Tag: para
+#: reference_input.xml:1108
+#, no-c-format
+msgid ""
+"The <varname>ST_PointFromWKB</varname> function, takes a well-known binary "
+"representation of geometry and a Spatial Reference System ID (<varname>SRID</"
+"varname>) and creates an instance of the appropriate geometry type - in this "
+"case, a <varname>POINT</varname> geometry. This function plays the role of "
+"the Geometry Factory in SQL."
+msgstr ""
+"<varname>ST_PointFromWKB</varname>函数采用已知的几何二进制表示形式和空间参考"
+"系统ID（<varname>SRID</varname>），并创建适当几何类型的实例-在本例中为<varnam"
+"e>POINT</varname>几何。该函数起到了SQL中几何工厂的作用。"
+
+#. Tag: para
+#: reference_input.xml:1114
+#, no-c-format
+msgid ""
+"If an SRID is not specified, it defaults to 0. <varname>NULL</varname> is "
+"returned if the input <varname>bytea</varname> does not represent a "
+"<varname>POINT</varname> geometry."
+msgstr ""
+"如果未指定 SRID，则默认为 0。如果输入<varname>字节</varname>不表示 "
+"<varname>POINT</varname> 几何图形，则返回 <varname>NULL</varname>。"
+
+#. Tag: para
+#: reference_input.xml:1117
+#, no-c-format
+msgid "&sfs_compliant; s3.2.7.2"
+msgstr "&sfs_compliant; s3.2.7.2"
+
+#. Tag: para
+#: reference_input.xml:1118
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 6.1.9"
+msgstr "&sqlmm_compliant; SQL-MM 3: 6.1.9"
+
+#. Tag: refpurpose
+#: reference_input.xml:1140
+#, no-c-format
+msgid ""
+"Return a specified ST_Geometry value from Well-Known Binary representation "
+"(WKB). This is an alias name for ST_GeomFromWKB that takes no srid"
+msgstr "从已知的二进制表示 (WKB) 返回指定的 ST_Geometry 值。 这是 ST_GeomFromWKB "
+"的别名，不带 srid"
+
+#. Tag: funcprototype
+#: reference_input.xml:1144
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_WKBToSQL</function></funcdef> "
+"<paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_WKBToSQL</function></funcdef> "
+"<paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef>"
+
+#. Tag: para
+#: reference_input.xml:1152
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.36"
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.36"
+
+#. Tag: title
+#: reference_input.xml:1165
+#, no-c-format
+msgid "Other Formats"
+msgstr "其它格式"
+
+#. Tag: refpurpose
+#: reference_input.xml:1171
+#, no-c-format
+msgid "<refpurpose>Return a BOX2D from a GeoHash string.</refpurpose>"
+msgstr "<refpurpose>从 GeoHash 字符串返回 BOX2D。</refpurpose>"
+
+#. Tag: funcprototype
+#: reference_input.xml:1176
+#, no-c-format
+msgid ""
+"<funcdef>box2d <function>ST_Box2dFromGeoHash</function></funcdef> "
+"<paramdef><type>text </type> <parameter>geohash</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>precision=full_precision_of_geohash</parameter></paramdef>"
+msgstr ""
+"<funcdef>box2d <function>ST_Box2dFromGeoHash</function></funcdef> "
+"<paramdef><type>text </type> <parameter>geohash</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>precision=full_precision_of_geohash</parameter></paramdef>"
+
+#. Tag: para
+#: reference_input.xml:1187
+#, no-c-format
+msgid "<para>Return a BOX2D from a GeoHash string.</para>"
+msgstr "<para>从 GeoHash 字符串返回 BOX2D。</para>"
+
+#. Tag: para
+#: reference_input.xml:1189
+#, no-c-format
+msgid ""
+"If no <varname>precision</varname> is specified ST_Box2dFromGeoHash returns "
+"a BOX2D based on full precision of the input GeoHash string."
+msgstr ""
+"如果未指定<varname>precision</varname>，ST_Box2dFromGeoHash 将返回基于输入 "
+"GeoHash 字符串的完整精度的 BOX2D。"
+
+#. Tag: para
+#: reference_input.xml:1191
+#, no-c-format
+msgid ""
+"If <varname>precision</varname> is specified ST_Box2dFromGeoHash will use "
+"that many characters from the GeoHash to create the BOX2D. Lower precision "
+"values results in larger BOX2Ds and larger values increase the precision."
+msgstr ""
+"如果指定<varname>precision</varname>，ST_Box2dFromGeoHash 将使用 GeoHash "
+"中的许多字符来创建 BOX2D。 较低的精度值会导致较大的 "
+"BOX2D，较大的值会提高精度。"
+
+#. Tag: para
+#: reference_input.xml:1193 reference_input.xml:1234 reference_input.xml:1563
+#, no-c-format
+msgid "Availability: 2.1.0"
+msgstr "可用性：2.1.0"
+
+#. Tag: para
+#: reference_input.xml:1203
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_GeomFromGeoHash\"/>, <xref "
+"linkend=\"ST_PointFromGeoHash\"/>"
+msgstr ""
+", <xref linkend=\"ST_GeomFromGeoHash\"/>, <xref linkend=\"ST_PointFromGeoHash"
+"\"/>"
+
+#. Tag: refpurpose
+#: reference_input.xml:1212
+#, no-c-format
+msgid "Return a geometry from a GeoHash string."
+msgstr "从 GeoHash 字符串返回几何图形。"
+
+#. Tag: funcprototype
+#: reference_input.xml:1217
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_GeomFromGeoHash</function></funcdef> "
+"<paramdef><type>text </type> <parameter>geohash</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>precision=full_precision_of_geohash</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_GeomFromGeoHash</function></funcdef> "
+"<paramdef><type>text </type> <parameter>geohash</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>precision=full_precision_of_geohash</parameter></paramdef>"
+
+#. Tag: para
+#: reference_input.xml:1228
+#, no-c-format
+msgid ""
+"Return a geometry from a GeoHash string. The geometry will be a polygon "
+"representing the GeoHash bounds."
+msgstr "从 GeoHash 字符串返回几何图形。 几何图形将是表示 GeoHash 边界的多边形。"
+
+#. Tag: para
+#: reference_input.xml:1230
+#, no-c-format
+msgid ""
+"If no <varname>precision</varname> is specified ST_GeomFromGeoHash returns a "
+"polygon based on full precision of the input GeoHash string."
+msgstr ""
+"如果未指定<varname>precision</varname>，ST_GeomFromGeoHash 返回基于输入 "
+"GeoHash 字符串的完整精度的多边形。"
+
+#. Tag: para
+#: reference_input.xml:1232
+#, no-c-format
+msgid ""
+"If <varname>precision</varname> is specified ST_GeomFromGeoHash will use "
+"that many characters from the GeoHash to create the polygon."
+msgstr ""
+"如果指定<varname>precision</varname>，ST_GeomFromGeoHash 将使用 GeoHash "
+"中的那么多字符来创建多边形。"
+
+#. Tag: para
+#: reference_input.xml:1244
+#, no-c-format
+msgid ""
+",<xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref "
+"linkend=\"ST_PointFromGeoHash\"/>"
+msgstr ""
+",<xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_PointFromGeoHash"
+"\"/>"
+
+#. Tag: refpurpose
+#: reference_input.xml:1251
+#, no-c-format
+msgid ""
+"Takes as input GML representation of geometry and outputs a PostGIS geometry "
+"object"
+msgstr "将几何图形的 GML 表示形式作为输入并输出 PostGIS 几何对象"
+
+#. Tag: para
+#: reference_input.xml:1270
+#, no-c-format
+msgid ""
+"Constructs a PostGIS ST_Geometry object from the OGC GML representation."
+msgstr "根据 OGC GML 制图表达生成 PostGIS ST_Geometry对象。"
+
+#. Tag: para
+#: reference_input.xml:1271
+#, no-c-format
+msgid ""
+"ST_GeomFromGML works only for GML Geometry fragments. It throws an error if "
+"you try to use it on a whole GML document."
+msgstr "ST_GeomFromGML仅适用于 GML 的几何部分。 尝试将其用于整个 GML "
+"文档时会引发错误。"
+
+#. Tag: para
+#: reference_input.xml:1272
+#, no-c-format
+msgid ""
+"OGC GML versions supported: <itemizedlist> <listitem> <para>GML 3.2.1 "
+"Namespace</para> </listitem> <listitem> <para>GML 3.1.1 Simple Features "
+"profile SF-2 (with GML 3.1.0 and 3.0.0 backward compatibility)</para> </"
+"listitem> <listitem> <para>GML 2.1.2</para> </listitem> </itemizedlist> OGC "
+"GML standards, cf: <ulink url=\"http://www.opengeospatial.org/standards/"
+"gml\">http://www.opengeospatial.org/standards/gml</ulink>:"
+msgstr ""
+"支持的 OGC GML 版本包括：<itemizedlist><listitem><para>GML 3.2.1 "
+"命名空间</para></listitem><listitem><para>GML 3.1.1 简单功能配置文件 SF-2（"
+"向后兼容 GML 3.1.0 和 3.0.0）</para></listitem><listitem><para>GML 2.1."
+"2</para></listitem></itemizedlist>有关 OGC GML 标准，请参阅<ulink url=\"http"
+"://www.opengeospatial.org/standards/gml\">http://www.opengeospatial.org/"
+"standards/gml</ulink>"
+
+#. Tag: para
+#: reference_input.xml:1288 reference_input.xml:1485
+#, no-c-format
+msgid "Availability: 1.5, requires libxml2 1.6+"
+msgstr "可用性：需要 1.5 libxml2 1.6+"
+
+#. Tag: para
+#: reference_input.xml:1290 reference_input.xml:1487
+#, no-c-format
+msgid "Enhanced: 2.0.0 default srid optional parameter added."
+msgstr "增强：2.0.0 引入了多面体曲面支持和 TIN 支持。"
+
+#. Tag: para
+#: reference_input.xml:1294
+#, no-c-format
+msgid ""
+"GML allow mixed dimensions (2D and 3D inside the same MultiGeometry for "
+"instance). As PostGIS geometries don't, ST_GeomFromGML convert the whole "
+"geometry to 2D if a missing Z dimension is found once."
+msgstr ""
+"GML 允许混合维度（例如，同一 MultiGeometry 内的 2D 和 3D）。 由于 PostGIS "
+"几何图形不这样做，如果一旦发现缺失的 Z 维度，ST_GeomFromGML "
+"会将整个几何图形转换为 2D。"
+
+#. Tag: para
+#: reference_input.xml:1296
+#, no-c-format
+msgid ""
+"GML support mixed SRS inside the same MultiGeometry. As PostGIS geometries "
+"don't, ST_GeomFromGML, in this case, reproject all subgeometries to the SRS "
+"root node. If no srsName attribute available for the GML root node, the "
+"function throw an error."
+msgstr ""
+"GML 支持同一 MultiGeometry 内的混合 SRS。 由于 PostGIS 几何图形不这样做，"
+"因此在本例中 ST_GeomFromGML 会将所有子几何图形重新投影到 SRS 根节点。 如果 "
+"GML 根节点没有可用的 srsName 属性，则该函数会抛出错误。"
+
+#. Tag: para
+#: reference_input.xml:1298
+#, no-c-format
+msgid ""
+"ST_GeomFromGML function is not pedantic about an explicit GML namespace. You "
+"could avoid to mention it explicitly for common usages. But you need it if "
+"you want to use XLink feature inside GML."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1300
+#, no-c-format
+msgid "ST_GeomFromGML function not support SQL/MM curves geometries."
+msgstr ""
+
+#. Tag: title
+#: reference_input.xml:1306 reference_input.xml:1417
+#, no-c-format
+msgid "Examples - A single geometry with srsName"
+msgstr ""
+
+#. Tag: title
+#: reference_input.xml:1311
+#, no-c-format
+msgid "Examples - XLink usage"
+msgstr ""
+
+#. Tag: title
+#: reference_input.xml:1316
+#, no-c-format
+msgid "Examples - Polyhedral Surface"
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1323
+#, no-c-format
+msgid ", <xref linkend=\"ST_AsGML\"/>, <xref linkend=\"ST_GMLToSQL\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_input.xml:1330
+#, no-c-format
+msgid ""
+"Takes as input a geojson representation of a geometry and outputs a PostGIS "
+"geometry object"
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1355
+#, no-c-format
+msgid "Constructs a PostGIS geometry object from the GeoJSON representation."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1356
+#, no-c-format
+msgid ""
+"ST_GeomFromGeoJSON works only for JSON Geometry fragments. It throws an "
+"error if you try to use it on a whole JSON document."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1358
+#, no-c-format
+msgid ""
+"Enhanced: 3.0.0 parsed geometry defaults to SRID=4326 if not specified "
+"otherwise."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1359
+#, no-c-format
+msgid "Enhanced: 2.5.0 can now accept json and jsonb as inputs."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1360
+#, no-c-format
+msgid "Availability: 2.0.0 requires - JSON-C &gt;= 0.9"
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1361
+#, no-c-format
+msgid ""
+"If you do not have JSON-C enabled, support you will get an error notice "
+"instead of seeing an output. To enable JSON-C, run configure --with-jsondir=/"
+"path/to/json-c. See <xref linkend=\"installation_configuration\"/> for "
+"details."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1375
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AsGeoJSON\"/>, <xref "
+"linkend=\"installation_configuration\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_input.xml:1382
+#, no-c-format
+msgid ""
+"Takes as input KML representation of geometry and outputs a PostGIS geometry "
+"object"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_input.xml:1387
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_GeomFromKML</function></funcdef> "
+"<paramdef><type>text </type> <parameter>geomkml</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1396
+#, no-c-format
+msgid ""
+"Constructs a PostGIS ST_Geometry object from the OGC KML representation."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1397
+#, no-c-format
+msgid ""
+"ST_GeomFromKML works only for KML Geometry fragments. It throws an error if "
+"you try to use it on a whole KML document."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1398
+#, no-c-format
+msgid ""
+"OGC KML versions supported: <itemizedlist> <listitem> <para>KML 2.2.0 "
+"Namespace</para> </listitem> </itemizedlist> OGC KML standards, cf: <ulink "
+"url=\"http://www.opengeospatial.org/standards/kml\">http://www."
+"opengeospatial.org/standards/kml</ulink>:"
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1408
+#, no-c-format
+msgid "Availability: 1.5, requires libxml2 2.6+"
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1411
+#, no-c-format
+msgid "ST_GeomFromKML function not support SQL/MM curves geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1423
+#, no-c-format
+msgid ", <xref linkend=\"ST_AsKML\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_input.xml:1430
+#, no-c-format
+msgid ""
+"Creates a geometry instance from a TWKB (\"<ulink url=\"https://github.com/"
+"TWKB/Specification/blob/master/twkb.md\">Tiny Well-Known Binary</ulink>\") "
+"geometry representation."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_input.xml:1436
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_GeomFromTWKB</function></funcdef> "
+"<paramdef><type>bytea </type> <parameter>twkb</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1446
+#, no-c-format
+msgid ""
+"The <varname>ST_GeomFromTWKB</varname> function, takes a a TWKB (\"<ulink "
+"url=\"https://github.com/TWKB/Specification/blob/master/twkb.md\">Tiny Well-"
+"Known Binary</ulink>\") geometry representation (WKB) and creates an "
+"instance of the appropriate geometry type."
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_input.xml:1467
+#, no-c-format
+msgid ""
+"Return a specified ST_Geometry value from GML representation. This is an "
+"alias name for ST_GeomFromGML"
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1484
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.50 (except for curves support)."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1491
+#, no-c-format
+msgid ", <xref linkend=\"ST_GeomFromGML\"/>, <xref linkend=\"ST_AsGML\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_input.xml:1500
+#, no-c-format
+msgid "Creates a LineString from an Encoded Polyline."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_input.xml:1505
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_LineFromEncodedPolyline</function></funcdef> "
+"<paramdef><type>text </type> <parameter>polyline</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>precision=5</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1516
+#, no-c-format
+msgid "Creates a LineString from an Encoded Polyline string."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1517
+#, no-c-format
+msgid ""
+"Optional <varname>precision</varname> specifies how many decimal places will "
+"be preserved in Encoded Polyline. Value should be the same on encoding and "
+"decoding, or coordinates will be incorrect."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1519
+#, no-c-format
+msgid ""
+"See http://developers.google.com/maps/documentation/utilities/"
+"polylinealgorithm"
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1520
+#, no-c-format
+msgid "Availability: 2.2.0"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_input.xml:1541
+#, no-c-format
+msgid "Return a point from a GeoHash string."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_input.xml:1546
+#, no-c-format
+msgid ""
+"<funcdef>point <function>ST_PointFromGeoHash</function></funcdef> "
+"<paramdef><type>text </type> <parameter>geohash</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>precision=full_precision_of_geohash</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1557
+#, no-c-format
+msgid ""
+"Return a point from a GeoHash string. The point represents the center point "
+"of the GeoHash."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1559
+#, no-c-format
+msgid ""
+"If no <varname>precision</varname> is specified ST_PointFromGeoHash returns "
+"a point based on full precision of the input GeoHash string."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1561
+#, no-c-format
+msgid ""
+"If <varname>precision</varname> is specified ST_PointFromGeoHash will use "
+"that many characters from the GeoHash to create the point."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1573
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref "
+"linkend=\"ST_GeomFromGeoHash\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_input.xml:1581
+#, no-c-format
+msgid "Creates a table based on the structure of FlatGeobuf data."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_input.xml:1585
+#, no-c-format
+msgid ""
+"<funcdef>void <function>ST_FromFlatGeobufToTable</function></funcdef> "
+"<paramdef><type>text </type> <parameter>schemaname</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>tablename</parameter></paramdef> "
+"<paramdef><type>bytea </type> <parameter>FlatGeobuf input data</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1597
+#, no-c-format
+msgid ""
+"Creates a table based on the structure of FlatGeobuf data. (<ulink "
+"url=\"http://flatgeobuf.org\">http://flatgeobuf.org</ulink>)."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1601
+#, no-c-format
+msgid "<varname>schema</varname> Schema name."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1602
+#, no-c-format
+msgid "<varname>table</varname> Table name."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1603
+#, no-c-format
+msgid "<varname>data</varname> Input FlatGeobuf data."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1605 reference_input.xml:1637
+#, no-c-format
+msgid "Availability: 3.2.0"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_input.xml:1613
+#, no-c-format
+msgid "Reads FlatGeobuf data."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_input.xml:1617
+#, no-c-format
+msgid ""
+"<funcdef>setof anyelement <function>ST_FromFlatGeobuf</function></funcdef> "
+"<paramdef><type>anyelement </type> <parameter>Table reference</parameter></"
+"paramdef> <paramdef><type>bytea </type> <parameter>FlatGeobuf input data</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1628
+#, no-c-format
+msgid ""
+"Reads FlatGeobuf data (<ulink url=\"http://flatgeobuf.org\">http://"
+"flatgeobuf.org</ulink>). NOTE: PostgreSQL bytea cannot exceed 1GB."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1634
+#, no-c-format
+msgid "<varname>tabletype</varname> reference to a table type."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1635
+#, no-c-format
+msgid "<varname>data</varname> input FlatGeobuf data."
+msgstr ""
