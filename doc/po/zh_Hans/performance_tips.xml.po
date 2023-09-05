@@ -1,16 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# Zuochenwei <zuochenwei5@gmail.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-15 01:28+0000\n"
-"PO-Revision-Date: 2023-08-29 16：18+0000\n"
-"Last-Translator: 左晨威 <zuocw@highgo.com>\n"
-"Language-Team: Chinese <https://weblate.osgeo.org/projects/postgis/performance_tipsxml/"
-"zh_Hans/>\n"
+"PO-Revision-Date: 2023-09-05 05:07+0000\n"
+"Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
+"postgis/performance_tipsxml/zh_Hans/>\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -94,11 +92,12 @@ msgid ""
 "url=\"http://archives.postgresql.org/pgsql-performance/2005-02/msg00030."
 "php\">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</"
 "ulink>"
-msgstr "要查看您是否遇到此问题，请使用“EXPLAIN ANALYZE”postgresql 命令。 "
+msgstr ""
+"要查看您是否遇到此问题，请使用“EXPLAIN ANALYZE”postgresql 命令。 "
 "有关更多信息和技术细节，您可以阅读 PostgreSQL 性能邮件列表上的线程：<ulink "
-"url=\"http://archives.postgresql.org/pgsql-performance/2005-02/msg00030."
-"php\">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</"
-"ulink>。"
+"url=\"http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php\""
+">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030."
+"php</ulink>"
 
 #. Tag: para
 #: performance_tips.xml:41
@@ -107,9 +106,10 @@ msgid ""
 "and newer thread on PostGIS <ulink url=\"https://lists.osgeo.org/pipermail/"
 "postgis-devel/2017-June/026209.html\">https://lists.osgeo.org/pipermail/"
 "postgis-devel/2017-June/026209.html</ulink>"
-msgstr "另请参阅 PostGIS 中的新线程 <ulink url=\"https://lists.osgeo.org/pipermail/"
+msgstr ""
+"另请参阅 PostGIS 中的新线程 <ulink url=\"https://lists.osgeo.org/pipermail/"
 "postgis-devel/2017-June/026209.html\">https://lists.osgeo.org/pipermail/"
-"postgis-devel/2017-June/026209.html</ulink>。"
+"postgis-devel/2017-June/026209.html</ulink>"
 
 #. Tag: title
 #: performance_tips.xml:45
@@ -123,7 +123,8 @@ msgstr "解决办法"
 msgid ""
 "The PostgreSQL people are trying to solve this issue by making the query "
 "estimation TOAST-aware. For now, here are two workarounds:"
-msgstr "PostgreSQL社区正试图通过制作 TOAST 感知查询引用来解决这个问题。目前，有两种解决办法。"
+msgstr "PostgreSQL社区正试图通过制作 TOAST "
+"感知查询引用来解决这个问题。目前，有两种解决办法："
 
 #. Tag: para
 #: performance_tips.xml:50
