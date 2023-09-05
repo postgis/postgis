@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-05 00:50+0000\n"
-"PO-Revision-Date: 2023-07-14 02:08+0000\n"
+"PO-Revision-Date: 2023-09-05 05:07+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_accessorxml/ja/>\n"
@@ -1928,6 +1928,9 @@ msgid ""
 "or MULTI*). For non-empty atomic geometries returns 1. For empty geometries "
 "returns 0."
 msgstr ""
+"ジオメトリコレクション等(GEOMETRYCOLLECTIONやMULTI系)の要素数を返します。空ジ"
+"オメトリでなく、ジオメトリコレクション等でもないジオメトリに対しては1を返しま"
+"す。空ジオメトリに対しては0を返します。"
 
 #. Tag: para
 #: reference_accessor.xml:1575
