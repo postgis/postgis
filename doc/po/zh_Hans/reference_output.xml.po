@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-04 12:58+0000\n"
+"PO-Revision-Date: 2023-09-05 05:07+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_outputxml/zh_Hans/>\n"
@@ -23,13 +23,13 @@ msgstr ""
 msgid ""
 "These functions convert geometry objects into various textual or binary "
 "formats."
-msgstr ""
+msgstr "这些函数将几何对象转换为各种文本或二进制格式。"
 
 #. Tag: title
 #: reference_output.xml:10
 #, no-c-format
 msgid "Geometry Output"
-msgstr ""
+msgstr "几何输出"
 
 #. Tag: title
 #: reference_output.xml:13
@@ -43,7 +43,7 @@ msgstr "Well-Known Text (WKT)"
 msgid ""
 "Return the Well-Known Text (WKT) representation of the geometry with SRID "
 "meta data."
-msgstr ""
+msgstr "使用 SRID 元数据返回几何图形的已知文本 (WKT) 表示形式。"
 
 #. Tag: title
 #: reference_output.xml:45 reference_output.xml:127 reference_output.xml:219
@@ -66,6 +66,9 @@ msgid ""
 "used to reduce the maximum number of decimal digits after floating point "
 "used in output (defaults to 15)."
 msgstr ""
+"返回以 SRID 为前缀的几何图形的已知的文本表示形式（WKT)。 可选的<parameter> "
+"maxdecimaldigits</parameter> "
+"参数可用于减少输出中使用的浮点后的最大十进制位数（默认为 15）。"
 
 #. Tag: para
 #: reference_output.xml:51
@@ -73,7 +76,8 @@ msgstr ""
 msgid ""
 "To perform the inverse conversion of EWKT representation to PostGIS geometry "
 "use <xref linkend=\"ST_GeomFromEWKT\"/>."
-msgstr ""
+msgstr "要执行 EWKT 表示形式到 PostGIS 几何图形的逆转换，请使用<xref linkend="
+"\"ST_GeomFromEWKT\"/>。"
 
 #. Tag: para
 #: reference_output.xml:55 reference_output.xml:149 reference_output.xml:557
@@ -84,6 +88,9 @@ msgid ""
 "geometry to become invalid. To avoid this use <xref "
 "linkend=\"ST_ReducePrecision\"/> with a suitable gridsize first."
 msgstr ""
+"使用 <parameter>maxdecimaldigits</parameter> 参数可能会导致输出几何图形无效。"
+" 为了避免这种情况，首先使用 <xref linkend=\"ST_ReducePrecision\"/> "
+"和合适的网格大小。"
 
 #. Tag: para
 #: reference_output.xml:63
@@ -91,7 +98,8 @@ msgstr ""
 msgid ""
 "The WKT spec does not include the SRID. To get the OGC WKT format use <xref "
 "linkend=\"ST_AsText\"/>."
-msgstr ""
+msgstr "WKT 规范不包括 SRID。 要获取 OGC WKT 格式，请使用 <xref linkend=\"ST_AsText\""
+"/>。"
 
 #. Tag: para
 #: reference_output.xml:66
@@ -101,12 +109,14 @@ msgid ""
 "use <xref linkend=\"ST_AsBinary\"/> or <xref linkend=\"ST_AsEWKB\"/> format "
 "for transport."
 msgstr ""
+"WKT 格式不保持精度，因此为了防止浮动截断，请使用<xref linkend=\"ST_AsBinary\""
+"/> 或 <xref linkend=\"ST_AsEWKB\"/> 格式进行传输。"
 
 #. Tag: para
 #: reference_output.xml:70
 #, no-c-format
 msgid "Enhanced: 3.1.0 support for optional precision parameter."
-msgstr ""
+msgstr "增强：3.1.0 支持可选精度参数。"
 
 #. Tag: para
 #: reference_output.xml:71
@@ -114,7 +124,7 @@ msgstr ""
 msgid ""
 "Enhanced: 2.0.0 support for Geography, Polyhedral surfaces, Triangles and "
 "TIN was introduced."
-msgstr ""
+msgstr "增强：2.0.0 引入了对地理、多面体曲面、三角形和 TIN 的支持。"
 
 #. Tag: para
 #: reference_output.xml:73 reference_output.xml:252 reference_output.xml:314
@@ -174,6 +184,8 @@ msgid ""
 ", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
 "linkend=\"ST_GeomFromEWKT\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
+"linkend=\"ST_GeomFromEWKT\"/>"
 
 #. Tag: refpurpose
 #: reference_output.xml:100
@@ -181,7 +193,7 @@ msgstr ""
 msgid ""
 "Return the Well-Known Text (WKT) representation of the geometry/geography "
 "without SRID metadata."
-msgstr ""
+msgstr "返回不带 SRID 元数据的几何/地理的已知文本 (WKT) 表示形式。"
 
 #. Tag: para
 #: reference_output.xml:129
@@ -193,6 +205,9 @@ msgid ""
 "number of digits after the decimal point in output ordinates (defaults to "
 "15)."
 msgstr ""
+"返回几何/地理的 OGC <link linkend=\"OpenGISWKBWKT\">已知文本</link> (WKT) "
+"表示形式。 可选的 <parameter>maxdecimaldigits "
+"</parameter>参数可用于限制输出坐标中小数点后的位数（默认为 15）。"
 
 #. Tag: para
 #: reference_output.xml:133
@@ -200,7 +215,8 @@ msgstr ""
 msgid ""
 "To perform the inverse conversion of WKT representation to PostGIS geometry "
 "use <xref linkend=\"ST_GeomFromText\"/>."
-msgstr ""
+msgstr "要执行 WKT 表示形式到 PostGIS 几何图形的逆转换，请使用<xref linkend="
+"\"ST_GeomFromText\"/>。"
 
 #. Tag: para
 #: reference_output.xml:137
@@ -210,6 +226,8 @@ msgid ""
 "the SRID as part of the output representation, use the non-standard PostGIS "
 "function <xref linkend=\"ST_AsEWKT\"/>"
 msgstr ""
+"标准 OGC WKT 表示不包括 SRID。 要将 SRID 作为输出表示的一部分，请使用非标准 "
+"PostGIS 函数<xref linkend=\"ST_AsEWKT\"/>"
 
 #. Tag: para
 #: reference_output.xml:142
@@ -221,18 +239,22 @@ msgid ""
 "format (see <xref linkend=\"ST_AsBinary\"/> and <parameter>maxdecimaldigits</"
 "parameter>)."
 msgstr ""
+"WKT 中数字的文本表示可能无法保持完整的浮点精度。 "
+"为了确保数据存储或传输的完全准确性，最好使用<link linkend=\"OpenGISWKBWKT\""
+">已知的二进制</link> (WKB) 格式（请参阅 <xref linkend=\"ST_AsBinary\"/> 和 "
+"<parameter>maxdecimaldigits</parameter>）。"
 
 #. Tag: para
 #: reference_output.xml:156
 #, no-c-format
 msgid "Availability: 1.5 - support for geography was introduced."
-msgstr ""
+msgstr "可用性：1.5 - 引入了地理支持。"
 
 #. Tag: para
 #: reference_output.xml:157
 #, no-c-format
 msgid "Enhanced: 2.5 - optional parameter precision introduced."
-msgstr ""
+msgstr "增强：2.5 - 引入了可选的精度参数。"
 
 #. Tag: para
 #: reference_output.xml:158 reference_output.xml:247
@@ -244,13 +266,13 @@ msgstr "&sfs_compliant; s2.1.1.1"
 #: reference_output.xml:159
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.25"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.25"
 
 #. Tag: para
 #: reference_output.xml:168
 #, no-c-format
 msgid "Full precision output is the default."
-msgstr ""
+msgstr "默认情况下为全精度输出。"
 
 #. Tag: para
 #: reference_output.xml:171
@@ -258,7 +280,7 @@ msgstr ""
 msgid ""
 "The <parameter>maxdecimaldigits</parameter> argument can be used to limit "
 "output precision."
-msgstr ""
+msgstr "<parameter>maxdecimaldigits </parameter>参数用于限制输出精度。"
 
 #. Tag: para
 #: reference_output.xml:179
@@ -267,6 +289,8 @@ msgid ""
 ", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsEWKT\"/>, <xref "
 "linkend=\"ST_GeomFromText\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsEWKT\"/>, <xref "
+"linkend=\"ST_GeomFromText\"/>"
 
 #. Tag: title
 #: reference_output.xml:187
@@ -280,7 +304,7 @@ msgstr "已知的二进制文件 (WKB)"
 msgid ""
 "Return the OGC/ISO Well-Known Binary (WKB) representation of the geometry/"
 "geography without SRID meta data."
-msgstr ""
+msgstr "返回不带 SRID 元数据的几何/地理的 OGC/ISO 已知的二进制 (WKB) 表示形式。"
 
 #. Tag: para
 #: reference_output.xml:221
@@ -292,6 +316,9 @@ msgid ""
 "text argument specifying the endian encoding, either little-endian ('NDR') "
 "or big-endian ('XDR')."
 msgstr ""
+"返回几何图形的 OGC/ISO<link linkend=\"OpenGISWKBWKT\">已知二进制 "
+"</link>（WKB） 表示形式。 第一种形式默认为服务器计算机的字节序。 "
+"第二种形式采用指定小端序 （“NDR”） 或大端序 （“XDR”） 的字符串。"
 
 #. Tag: para
 #: reference_output.xml:226 reference_output.xml:302
@@ -300,7 +327,8 @@ msgid ""
 "WKB format is useful to read geometry data from the database and maintaining "
 "full numeric precision. This avoids the precision rounding that can happen "
 "with text formats such as WKT."
-msgstr ""
+msgstr "WKB 格式对于从数据库读取几何数据并保持完整的数值精度非常有用。 这避免了 WKT "
+"等文本格式可能发生的精确舍入。"
 
 #. Tag: para
 #: reference_output.xml:230
@@ -308,7 +336,8 @@ msgstr ""
 msgid ""
 "To perform the inverse conversion of WKB to PostGIS geometry use <xref "
 "linkend=\"ST_GeomFromWKB\"/>."
-msgstr ""
+msgstr "要执行 WKB 到 PostGIS 几何图形的逆转换，请使用<xref linkend=\"ST_GeomFromWKB"
+"\"/>。"
 
 #. Tag: para
 #: reference_output.xml:233
@@ -317,6 +346,8 @@ msgid ""
 "The OGC/ISO WKB format does not include the SRID. To get the EWKB format "
 "which does include the SRID use <xref linkend=\"ST_AsEWKB\"/>"
 msgstr ""
+"OGC/ISO WKB 格式不包括 SRID。 要获取包含 SRID 的 EWKB 格式，请使用<xref "
+"linkend=\"ST_AsEWKB\"/>"
 
 #. Tag: para
 #: reference_output.xml:237
@@ -326,6 +357,8 @@ msgid ""
 "hex encoding. If your GUI tools require the old behavior, then SET "
 "bytea_output='escape' in your database."
 msgstr ""
+"PostgreSQL 9.0 中的默认行为已更改为以十六进制编码输出 bytea。 如果您的 GUI "
+"工具需要旧行为，请在数据库中设置 SET bytea_output='escape'。"
 
 #. Tag: para
 #: reference_output.xml:241 reference_output.xml:313
@@ -333,27 +366,27 @@ msgstr ""
 msgid ""
 "Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
 "introduced."
-msgstr ""
+msgstr "增强：2.0.0支持多面体曲面、三角形和三角网。"
 
 #. Tag: para
 #: reference_output.xml:242
 #, no-c-format
 msgid ""
 "Enhanced: 2.0.0 support for higher coordinate dimensions was introduced."
-msgstr ""
+msgstr "增强：2.0.0支持更高坐标维度。"
 
 #. Tag: para
 #: reference_output.xml:243
 #, no-c-format
 msgid ""
 "Enhanced: 2.0.0 support for specifying endian with geography was introduced."
-msgstr ""
+msgstr "增强：2.0.0支持地理中的字节序。"
 
 #. Tag: para
 #: reference_output.xml:244 reference_output.xml:608 reference_output.xml:747
 #, no-c-format
 msgid "Availability: 1.5.0 geography support was introduced."
-msgstr ""
+msgstr "可用性：1.5.0支持地理位置。"
 
 #. Tag: para
 #: reference_output.xml:245
@@ -366,12 +399,17 @@ msgid ""
 "<code>ST_AsBinary('POINT(1 2)'::geometry);</code>. If that is not possible, "
 "then install <filename>legacy.sql</filename>."
 msgstr ""
+"更改：2.0.0 此函数的输入不能是未知的——必须是几何图形。 "
+"<code>ST_AsBinary('POINT(1 2)') </code>等结构不再有效，您将收到<code> n "
+"st_asbinary(unknown) is not unique error</code>。 类似的代码需要更改为 "
+"<code>ST_AsBinary('POINT(1 2)'::geometry);</code>。 "
+"如果不可能，请安装<filename>legacy.sql</filename>。"
 
 #. Tag: para
 #: reference_output.xml:248
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.37"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.37"
 
 #. Tag: para
 #: reference_output.xml:266
@@ -380,6 +418,8 @@ msgid ""
 ", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsTWKB\"/>, <xref "
 "linkend=\"ST_AsText\"/>,"
 msgstr ""
+", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsTWKB\"/>, <xref "
+"linkend=\"ST_AsText\"/>,"
 
 #. Tag: refpurpose
 #: reference_output.xml:278
@@ -387,7 +427,7 @@ msgstr ""
 msgid ""
 "Return the Extended Well-Known Binary (EWKB) representation of the geometry "
 "with SRID meta data."
-msgstr ""
+msgstr "返回带有 SRID 元数据的几何图形的扩展已知的二进制 (EWKB) 表示形式。"
 
 #. Tag: para
 #: reference_output.xml:297
@@ -399,6 +439,9 @@ msgid ""
 "function variant takes a text argument specifying the endian encoding, "
 "either little-endian ('NDR') or big-endian ('XDR')."
 msgstr ""
+"返回具有 SRID 元数据的几何图形的<link linkend=\"EWKB_EWKT\">扩展已知二进制 "
+"</link>（EWKB） 表示形式。 第一种形式默认为服务器计算机的字节序。 "
+"第二种形式采用指定小端序 （“NDR”） 或大端序 （“XDR”） 的字符串。"
 
 #. Tag: para
 #: reference_output.xml:306
@@ -406,7 +449,8 @@ msgstr ""
 msgid ""
 "To perform the inverse conversion of EWKB to PostGIS geometry use <xref "
 "linkend=\"ST_GeomFromEWKB\"/>."
-msgstr ""
+msgstr "要执行 EWKB 到 PostGIS 几何图形的逆转换，请使用 <xref linkend="
+"\"ST_GeomFromEWKB\"/>。"
 
 #. Tag: para
 #: reference_output.xml:309
@@ -415,12 +459,14 @@ msgid ""
 "To get the OGC/ISO WKB format use <xref linkend=\"ST_AsBinary\"/>. Note that "
 "OGC/ISO WKB format does not include the SRID."
 msgstr ""
+"要获取 OGC/ISO WKB 格式，请使用 <xref linkend=\"ST_AsBinary\"/>。 请注意，"
+"OGC/ISO WKB 格式不包括 SRID。"
 
 #. Tag: para
 #: reference_output.xml:331
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeomFromEWKB\"/>, <xref linkend=\"ST_SRID\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_GeomFromEWKB\"/>, <xref linkend=\"ST_SRID\"/>"
 
 #. Tag: refpurpose
 #: reference_output.xml:339
@@ -428,7 +474,7 @@ msgstr ""
 msgid ""
 "Returns a Geometry in HEXEWKB format (as text) using either little-endian "
 "(NDR) or big-endian (XDR) encoding."
-msgstr ""
+msgstr "使用小端 (NDR) 或大端 (XDR) 编码返回 HEXEWKB 格式（作为文本）的几何图形。"
 
 #. Tag: para
 #: reference_output.xml:361
@@ -437,13 +483,14 @@ msgid ""
 "Returns a Geometry in HEXEWKB format (as text) using either little-endian "
 "(NDR) or big-endian (XDR) encoding. If no encoding is specified, then NDR is "
 "used."
-msgstr ""
+msgstr "使用小端 (NDR) 或大端 (XDR) 编码返回 HEXEWKB 格式（作为文本）的几何图形。 "
+"如果未指定编码，则使用 NDR。"
 
 #. Tag: para
 #: reference_output.xml:365
 #, no-c-format
 msgid "Availability: 1.2.2"
-msgstr ""
+msgstr "可用性：1.2.2"
 
 #. Tag: title
 #: reference_output.xml:383
@@ -455,7 +502,7 @@ msgstr "其它格式"
 #: reference_output.xml:388
 #, no-c-format
 msgid "Returns an Encoded Polyline from a LineString geometry."
-msgstr ""
+msgstr "从 LineString 几何体返回编码折线。"
 
 #. Tag: funcprototype
 #: reference_output.xml:393
@@ -466,6 +513,10 @@ msgid ""
 "<paramdef choice=\"opt\"><type>integer </type> <parameter>precision=5</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>text <function>ST_AsEncodedPolyline</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>precision=5</parameter></paramdef>"
 
 #. Tag: para
 #: reference_output.xml:404
@@ -474,7 +525,8 @@ msgid ""
 "Returns the geometry as an Encoded Polyline. This format is used by Google "
 "Maps with precision=5 and by Open Source Routing Machine with precision=5 "
 "and 6."
-msgstr ""
+msgstr "以编码折线形式返回几何图形。 此格式由精度为 5 的 Google 地图和精度为 5 和 6 "
+"的开源路由机使用。"
 
 #. Tag: para
 #: reference_output.xml:405
@@ -483,19 +535,20 @@ msgid ""
 "Optional <varname>precision</varname> specifies how many decimal places will "
 "be preserved in Encoded Polyline. Value should be the same on encoding and "
 "decoding, or coordinates will be incorrect."
-msgstr ""
+msgstr "可选<varname>precision</varname>指定编码折线中将保留多少个小数位。 "
+"编码和解码时的值应该相同，否则坐标将不正确。"
 
 #. Tag: para
 #: reference_output.xml:407 reference_output.xml:1273
 #, no-c-format
 msgid "Availability: 2.2.0"
-msgstr ""
+msgstr "可用性：2.2.0"
 
 #. Tag: para
 #: reference_output.xml:412
 #, no-c-format
 msgid "Basic"
-msgstr ""
+msgstr "基本"
 
 #. Tag: para
 #: reference_output.xml:415
@@ -503,7 +556,7 @@ msgstr ""
 msgid ""
 "Use in conjunction with geography linestring and geography segmentize, and "
 "put on google maps"
-msgstr ""
+msgstr "与地理线串和地理分段结合使用，并放在谷歌地图上"
 
 #. Tag: para
 #: reference_output.xml:419
@@ -511,19 +564,19 @@ msgstr ""
 msgid ""
 "javascript will look something like this where $ variable you replace with "
 "query result"
-msgstr ""
+msgstr "javascript 看起来像这样，其中 $ 变量替换为查询结果"
 
 #. Tag: para
 #: reference_output.xml:425
 #, no-c-format
 msgid ", <xref linkend=\"ST_Segmentize\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Segmentize\"/>"
 
 #. Tag: refpurpose
 #: reference_output.xml:433
 #, no-c-format
 msgid "Return a FlatGeobuf representation of a set of rows."
-msgstr ""
+msgstr "返回一组行的 FlatGeobuf 表示形式。"
 
 #. Tag: para
 #: reference_output.xml:458
@@ -533,19 +586,22 @@ msgid ""
 "org\">http://flatgeobuf.org</ulink>) of a set of rows corresponding to a "
 "FeatureCollection. NOTE: PostgreSQL bytea cannot exceed 1GB."
 msgstr ""
+"返回与 FeatureCollection 对应的一组行的 FlatGeobuf 表示形式 (<ulink url="
+"\"http://flatgeobuf.org\">http://flatgeobuf.org</ulink>)。 注意：PostgreSQL "
+"bytea 不能超过 1GB。"
 
 #. Tag: para
 #: reference_output.xml:465 reference_output.xml:502 reference_output.xml:1145
 #, no-c-format
 msgid "<varname>row</varname> row data with at least a geometry column."
-msgstr ""
+msgstr "<varname>row </varname>至少包含一个几何列的行数据。"
 
 #. Tag: para
 #: reference_output.xml:466
 #, no-c-format
 msgid ""
 "<varname>index</varname> toggle spatial index creation. Default is false."
-msgstr ""
+msgstr "<varname>index </varname>切换空间索引生成。 默认值为 FALSE。"
 
 #. Tag: para
 #: reference_output.xml:467 reference_output.xml:503
@@ -553,19 +609,20 @@ msgstr ""
 msgid ""
 "<varname>geom_name</varname> is the name of the geometry column in the row "
 "data. If NULL it will default to the first found geometry column."
-msgstr ""
+msgstr "<varname>geom_name </varname>行数据中几何列的列名。 如果为 "
+"NULL，则它是找到的第一个几何列。"
 
 #. Tag: para
 #: reference_output.xml:469
 #, no-c-format
 msgid "Availability: 3.2.0"
-msgstr ""
+msgstr "可用性：3.2.0"
 
 #. Tag: refpurpose
 #: reference_output.xml:477
 #, no-c-format
 msgid "Return a Geobuf representation of a set of rows."
-msgstr ""
+msgstr "返回一组行的 Geobuf 表示。"
 
 #. Tag: para
 #: reference_output.xml:496
@@ -578,18 +635,22 @@ msgid ""
 "current form cannot be streamed so the full output will be assembled in "
 "memory."
 msgstr ""
+"返回与FeatureCollection对应的一组行的Geobuf表示（<ulink url=\"https://github."
+"com/mapbox/geobuf\">https://github.com/mapbox/geobuf</ulink>）。 "
+"分析每个输入几何形状以确定最佳存储的最大精度。 请注意，当前形式的 Geobuf "
+"无法进行流式传输，因此完整的输出将在内存中组装。"
 
 #. Tag: para
 #: reference_output.xml:505 reference_output.xml:1049 reference_output.xml:1154
 #, no-c-format
 msgid "Availability: 2.4.0"
-msgstr ""
+msgstr "可用性：2.4.0"
 
 #. Tag: refpurpose
 #: reference_output.xml:519
 #, no-c-format
 msgid "Return a geometry as a GeoJSON element."
-msgstr ""
+msgstr "以 GeoJSON 元素的形式返回几何图形。"
 
 #. Tag: para
 #: reference_output.xml:549
@@ -601,6 +662,10 @@ msgid ""
 "both supported. GeoJSON only support SFS 1.1 geometry types (no curve "
 "support for example)."
 msgstr ""
+"将几何图形返回为 GeoJSON“几何图形”，或将行返回为 GeoJSON“特征”。 （请参阅 "
+"<ulink url=\"https://tools.ietf.org/html/rfc7946\">GeoJSON 规范 RFC "
+"7946</ulink>）。 2D 和 3D 几何图形均受支持。 GeoJSON 仅支持 SFS 1.1 "
+"几何类型（例如不支持曲线）。"
 
 #. Tag: para
 #: reference_output.xml:554
@@ -611,6 +676,9 @@ msgid ""
 "using EPSG:4326 and are outputting the geometry only for display, "
 "<varname>maxdecimaldigits</varname>=6 can be a good choice for many maps."
 msgstr ""
+"<varname>maxdecimaldigits </varname>参数可用于减少输出中使用的最大小数位数（"
+"默认为 9）。 如果您使用 EPSG:4326 并且输出几何图形仅用于显示，则<varname> "
+"maxdecimaldigits</varname>=6 对于许多地图来说可能是一个不错的选择。"
 
 #. Tag: para
 #: reference_output.xml:564
@@ -618,37 +686,37 @@ msgstr ""
 msgid ""
 "The <varname>options</varname> argument can be used to add BBOX or CRS in "
 "GeoJSON output:"
-msgstr ""
+msgstr "<varname>options </varname>参数可用于在 GeoJSON 输出中添加 BBOX 或 CRS："
 
 #. Tag: para
 #: reference_output.xml:567
 #, no-c-format
 msgid "0: means no option"
-msgstr ""
+msgstr "0：表示没有选项"
 
 #. Tag: para
 #: reference_output.xml:571
 #, no-c-format
 msgid "1: GeoJSON BBOX"
-msgstr ""
+msgstr "1：GeoJSON BBOX"
 
 #. Tag: para
 #: reference_output.xml:575
 #, no-c-format
 msgid "2: GeoJSON Short CRS (e.g EPSG:4326)"
-msgstr ""
+msgstr "2：GeoJSON 短 CRS（例如 EPSG：4326）"
 
 #. Tag: para
 #: reference_output.xml:579
 #, no-c-format
 msgid "4: GeoJSON Long CRS (e.g urn:ogc:def:crs:EPSG::4326)"
-msgstr ""
+msgstr "4：GeoJSON 长 CRS（例如 urn:ogc:def:crs:EPSG::4326）"
 
 #. Tag: para
 #: reference_output.xml:583
 #, no-c-format
 msgid "8: GeoJSON Short CRS if not EPSG:4326 (default)"
-msgstr ""
+msgstr "8：GeoJSON 短 CRS，如果不是 EPSG：4326（默认）"
 
 #. Tag: para
 #: reference_output.xml:588
@@ -661,6 +729,11 @@ msgid ""
 "necessary geometry can be projected into WGS84 using <xref "
 "linkend=\"ST_Transform\"/>: <code>ST_Transform( geom, 4326 )</code>."
 msgstr ""
+"GeoJSON 规范规定多边形使用右手定则定向，并且某些客户端需要此方向。 "
+"这可以通过使用<xref linkend=\"ST_ForcePolygonCCW\"/> 来确保。 "
+"该规范还要求几何图形位于 WGS84 坐标系 (SRID = 4326) 中。 如果需要，可以使用 "
+"<xref linkend=\"ST_Transform\"/>将几何图形投影到 WGS84 "
+"中：<code>ST_Transform( geom, 4326 )</code>。"
 
 #. Tag: para
 #: reference_output.xml:597
@@ -670,24 +743,27 @@ msgid ""
 "\">geojson.io</ulink> and <ulink url=\"http://geojson.io/\">geojsonlint.com</"
 "ulink>. It is widely supported by web mapping frameworks:"
 msgstr ""
+"GeoJSON 可以在<ulink url=\"http://geojson.io/\"> geojson.io </ulink>和 "
+"<ulink url=\"http://geojson.io/\">geojsonlint.com </ulink>上在线测试和查看。 "
+"它受到网络地图框架的广泛支持："
 
 #. Tag: ulink
 #: reference_output.xml:601
 #, no-c-format
 msgid "OpenLayers GeoJSON Example"
-msgstr ""
+msgstr "OpenLayers GeoJSON Example"
 
 #. Tag: ulink
 #: reference_output.xml:602
 #, no-c-format
 msgid "Leaflet GeoJSON Example"
-msgstr ""
+msgstr "Leaflet GeoJSON Example"
 
 #. Tag: ulink
 #: reference_output.xml:603
 #, no-c-format
 msgid "Mapbox GL GeoJSON Example"
-msgstr ""
+msgstr "Mapbox GL GeoJSON Example"
 
 #. Tag: para
 #: reference_output.xml:607
