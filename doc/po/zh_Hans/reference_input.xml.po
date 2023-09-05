@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-05 01:12+0000\n"
+"PO-Revision-Date: 2023-09-05 05:07+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_inputxml/zh_Hans/>\n"
@@ -1373,7 +1373,7 @@ msgstr ""
 "向后兼容 GML 3.1.0 和 3.0.0）</para></listitem><listitem><para>GML 2.1."
 "2</para></listitem></itemizedlist>有关 OGC GML 标准，请参阅<ulink url=\"http"
 "://www.opengeospatial.org/standards/gml\">http://www.opengeospatial.org/"
-"standards/gml</ulink>"
+"standards/gml</ulink>："
 
 #. Tag: para
 #: reference_input.xml:1288 reference_input.xml:1485
@@ -1420,36 +1420,39 @@ msgid ""
 "could avoid to mention it explicitly for common usages. But you need it if "
 "you want to use XLink feature inside GML."
 msgstr ""
+"ST_GeomFromGML 函数对于显式 GML 命名空间并不迂腐。 "
+"您可以避免在常见用法中明确提及它。 但如果您想在 GML 中使用 XLink "
+"功能，则需要它。"
 
 #. Tag: para
 #: reference_input.xml:1300
 #, no-c-format
 msgid "ST_GeomFromGML function not support SQL/MM curves geometries."
-msgstr ""
+msgstr "ST_GeomFromGML 函数不支持 SQL/MM 曲线几何形状。"
 
 #. Tag: title
 #: reference_input.xml:1306 reference_input.xml:1417
 #, no-c-format
 msgid "Examples - A single geometry with srsName"
-msgstr ""
+msgstr "示例 - 具有 srsName 属性的单个几何图形"
 
 #. Tag: title
 #: reference_input.xml:1311
 #, no-c-format
 msgid "Examples - XLink usage"
-msgstr ""
+msgstr "示例-XLink使用法"
 
 #. Tag: title
 #: reference_input.xml:1316
 #, no-c-format
 msgid "Examples - Polyhedral Surface"
-msgstr ""
+msgstr "示例-多面体曲面"
 
 #. Tag: para
 #: reference_input.xml:1323
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsGML\"/>, <xref linkend=\"ST_GMLToSQL\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_AsGML\"/>, <xref linkend=\"ST_GMLToSQL\"/>"
 
 #. Tag: refpurpose
 #: reference_input.xml:1330
@@ -1457,13 +1460,13 @@ msgstr ""
 msgid ""
 "Takes as input a geojson representation of a geometry and outputs a PostGIS "
 "geometry object"
-msgstr ""
+msgstr "将几何图形的 geojson 表示形式作为输入并输出 PostGIS 几何对象"
 
 #. Tag: para
 #: reference_input.xml:1355
 #, no-c-format
 msgid "Constructs a PostGIS geometry object from the GeoJSON representation."
-msgstr ""
+msgstr "从 GeoJSON 制图表达生成 PostGIS 几何对象。"
 
 #. Tag: para
 #: reference_input.xml:1356
@@ -1471,7 +1474,8 @@ msgstr ""
 msgid ""
 "ST_GeomFromGeoJSON works only for JSON Geometry fragments. It throws an "
 "error if you try to use it on a whole JSON document."
-msgstr ""
+msgstr "ST_GeomFromGeoJSON仅适用于 JSON 的几何部分。 如果尝试使用整个 JSON "
+"文档，则会抛出错误。"
 
 #. Tag: para
 #: reference_input.xml:1358
@@ -1479,19 +1483,19 @@ msgstr ""
 msgid ""
 "Enhanced: 3.0.0 parsed geometry defaults to SRID=4326 if not specified "
 "otherwise."
-msgstr ""
+msgstr "增强：3.0.0如果未指定其他 SRID解析几何，则默认 SRID 为 4326。"
 
 #. Tag: para
 #: reference_input.xml:1359
 #, no-c-format
 msgid "Enhanced: 2.5.0 can now accept json and jsonb as inputs."
-msgstr ""
+msgstr "增强：2.5.0 现在可以接受 json 和 jsonb 作为输入。"
 
 #. Tag: para
 #: reference_input.xml:1360
 #, no-c-format
 msgid "Availability: 2.0.0 requires - JSON-C &gt;= 0.9"
-msgstr ""
+msgstr "可用性：2.0.0需要 JSON-C 0.9 或更高版本"
 
 #. Tag: para
 #: reference_input.xml:1361
@@ -1502,6 +1506,9 @@ msgid ""
 "path/to/json-c. See <xref linkend=\"installation_configuration\"/> for "
 "details."
 msgstr ""
+"如果您没有启用 JSON-C，支持您将收到错误通知而不是看到输出。 要启用 JSON-C，"
+"请运行 configure --with-jsondir=/path/to/json-c。 有关详细信息，请参阅<xref "
+"linkend=\"installation_configuration\"/>。"
 
 #. Tag: para
 #: reference_input.xml:1375
@@ -1510,6 +1517,8 @@ msgid ""
 ", <xref linkend=\"ST_AsGeoJSON\"/>, <xref "
 "linkend=\"installation_configuration\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsGeoJSON\"/>, <xref linkend="
+"\"installation_configuration\"/>"
 
 #. Tag: refpurpose
 #: reference_input.xml:1382
@@ -1517,7 +1526,7 @@ msgstr ""
 msgid ""
 "Takes as input KML representation of geometry and outputs a PostGIS geometry "
 "object"
-msgstr ""
+msgstr "将几何图形的 KML 表示形式作为输入并输出 PostGIS 几何对象"
 
 #. Tag: funcprototype
 #: reference_input.xml:1387
@@ -1526,13 +1535,15 @@ msgid ""
 "<funcdef>geometry <function>ST_GeomFromKML</function></funcdef> "
 "<paramdef><type>text </type> <parameter>geomkml</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_GeomFromKML</function></funcdef> "
+"<paramdef><type>text </type> <parameter>geomkml</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:1396
 #, no-c-format
 msgid ""
 "Constructs a PostGIS ST_Geometry object from the OGC KML representation."
-msgstr ""
+msgstr "从 OGC KML 表示构造 PostGIS ST_Geometry 对象。"
 
 #. Tag: para
 #: reference_input.xml:1397
@@ -1540,7 +1551,8 @@ msgstr ""
 msgid ""
 "ST_GeomFromKML works only for KML Geometry fragments. It throws an error if "
 "you try to use it on a whole KML document."
-msgstr ""
+msgstr "ST_GeomFromKML 仅适用于 KML 几何片段。 如果您尝试在整个 KML "
+"文档上使用它，它会引发错误。"
 
 #. Tag: para
 #: reference_input.xml:1398
@@ -1551,24 +1563,28 @@ msgid ""
 "url=\"http://www.opengeospatial.org/standards/kml\">http://www."
 "opengeospatial.org/standards/kml</ulink>:"
 msgstr ""
+"OGC KML 的相应版本包括：<itemizedlist><listitem><para>KML 2.2.0 "
+"命名空间</para></listitem></itemizedlist>有关 OGC KML 标准，请参见<ulink url="
+"\"http://www.opengeospatial.org/standards/kml\">http://www.opengeospatial."
+"org/standards/kml</ulink>："
 
 #. Tag: para
 #: reference_input.xml:1408
 #, no-c-format
 msgid "Availability: 1.5, requires libxml2 2.6+"
-msgstr ""
+msgstr "可用性： 1.5需要 libxml2 2.6 或更高版本。"
 
 #. Tag: para
 #: reference_input.xml:1411
 #, no-c-format
 msgid "ST_GeomFromKML function not support SQL/MM curves geometries."
-msgstr ""
+msgstr "ST_GeomFromKML函数不支持 SQL/MM 曲线几何图形。"
 
 #. Tag: para
 #: reference_input.xml:1423
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsKML\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_AsKML\"/>"
 
 #. Tag: refpurpose
 #: reference_input.xml:1430
@@ -1578,6 +1594,8 @@ msgid ""
 "TWKB/Specification/blob/master/twkb.md\">Tiny Well-Known Binary</ulink>\") "
 "geometry representation."
 msgstr ""
+"从 TWKB（“<ulink url=\"https://github.com/TWKB/Specification/blob/master/twkb"
+".md\">微小的已知的二进制</ulink>”）几何表示创建几何实例。"
 
 #. Tag: funcprototype
 #: reference_input.xml:1436
@@ -1586,6 +1604,8 @@ msgid ""
 "<funcdef>geometry <function>ST_GeomFromTWKB</function></funcdef> "
 "<paramdef><type>bytea </type> <parameter>twkb</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_GeomFromTWKB</function></funcdef> "
+"<paramdef><type>bytea </type> <parameter>twkb</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:1446
@@ -1596,6 +1616,9 @@ msgid ""
 "Known Binary</ulink>\") geometry representation (WKB) and creates an "
 "instance of the appropriate geometry type."
 msgstr ""
+"<varname>ST_GeomFromTWKB</varname>采用 TWKB（“<ulink url=\"https://github."
+"com/TWKB/Specification/blob/master/twkb.md\""
+">微小的已知二进制</ulink>”）几何表示形式，并创建相应几何类型的实例。"
 
 #. Tag: refpurpose
 #: reference_input.xml:1467
@@ -1603,25 +1626,25 @@ msgstr ""
 msgid ""
 "Return a specified ST_Geometry value from GML representation. This is an "
 "alias name for ST_GeomFromGML"
-msgstr ""
+msgstr "从 GML 表示返回指定的 ST_Geometry 值。 这是 ST_GeomFromGML 的别名"
 
 #. Tag: para
 #: reference_input.xml:1484
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.50 (except for curves support)."
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.50 (曲线支持除外)."
 
 #. Tag: para
 #: reference_input.xml:1491
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeomFromGML\"/>, <xref linkend=\"ST_AsGML\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_GeomFromGML\"/>, <xref linkend=\"ST_AsGML\"/>"
 
 #. Tag: refpurpose
 #: reference_input.xml:1500
 #, no-c-format
 msgid "Creates a LineString from an Encoded Polyline."
-msgstr ""
+msgstr "从编码折线创建 LineString。"
 
 #. Tag: funcprototype
 #: reference_input.xml:1505
@@ -1632,12 +1655,16 @@ msgid ""
 "<paramdef choice=\"opt\"><type>integer </type> <parameter>precision=5</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_LineFromEncodedPolyline</function></funcdef> "
+"<paramdef><type>text </type> <parameter>polyline</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>precision=5</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:1516
 #, no-c-format
 msgid "Creates a LineString from an Encoded Polyline string."
-msgstr ""
+msgstr "从编码多段线字符串创建 LineString。"
 
 #. Tag: para
 #: reference_input.xml:1517
@@ -1646,7 +1673,8 @@ msgid ""
 "Optional <varname>precision</varname> specifies how many decimal places will "
 "be preserved in Encoded Polyline. Value should be the same on encoding and "
 "decoding, or coordinates will be incorrect."
-msgstr ""
+msgstr "可选<varname>precision</varname>指定编码折线中将保留多少个小数位。 "
+"编码和解码时的值应该相同，否则坐标将不正确。"
 
 #. Tag: para
 #: reference_input.xml:1519
@@ -1655,18 +1683,20 @@ msgid ""
 "See http://developers.google.com/maps/documentation/utilities/"
 "polylinealgorithm"
 msgstr ""
+"参照 http://developers.google.com/maps/documentation/utilities/"
+"polylinealgorithm"
 
 #. Tag: para
 #: reference_input.xml:1520
 #, no-c-format
 msgid "Availability: 2.2.0"
-msgstr ""
+msgstr "可用性：2.2.0"
 
 #. Tag: refpurpose
 #: reference_input.xml:1541
 #, no-c-format
 msgid "Return a point from a GeoHash string."
-msgstr ""
+msgstr "从 GeoHash 字符串返回一个点。"
 
 #. Tag: funcprototype
 #: reference_input.xml:1546
@@ -1677,6 +1707,10 @@ msgid ""
 "<paramdef choice=\"opt\"><type>integer </type> "
 "<parameter>precision=full_precision_of_geohash</parameter></paramdef>"
 msgstr ""
+"<funcdef>point <function>ST_PointFromGeoHash</function></funcdef> "
+"<paramdef><type>text </type> <parameter>geohash</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>precision=full_precision_of_geohash</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:1557
@@ -1684,7 +1718,7 @@ msgstr ""
 msgid ""
 "Return a point from a GeoHash string. The point represents the center point "
 "of the GeoHash."
-msgstr ""
+msgstr "从 GeoHash 字符串返回一个点。 该点代表 GeoHash 的中心点。"
 
 #. Tag: para
 #: reference_input.xml:1559
@@ -1693,6 +1727,8 @@ msgid ""
 "If no <varname>precision</varname> is specified ST_PointFromGeoHash returns "
 "a point based on full precision of the input GeoHash string."
 msgstr ""
+"如果未指定<varname>precision</varname>，ST_PointFromGeoHash 返回基于输入 "
+"GeoHash 字符串的完整精度的点。"
 
 #. Tag: para
 #: reference_input.xml:1561
@@ -1701,6 +1737,8 @@ msgid ""
 "If <varname>precision</varname> is specified ST_PointFromGeoHash will use "
 "that many characters from the GeoHash to create the point."
 msgstr ""
+"如果指定<varname>precision</varname>，ST_PointFromGeoHash 将使用 GeoHash "
+"中的多个字符来创建点。"
 
 #. Tag: para
 #: reference_input.xml:1573
@@ -1709,12 +1747,14 @@ msgid ""
 ", <xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref "
 "linkend=\"ST_GeomFromGeoHash\"/>"
 msgstr ""
+", <xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_GeomFromGeoHash"
+"\"/>"
 
 #. Tag: refpurpose
 #: reference_input.xml:1581
 #, no-c-format
 msgid "Creates a table based on the structure of FlatGeobuf data."
-msgstr ""
+msgstr "根据 FlatGeobuf 数据的结构创建一个表。"
 
 #. Tag: funcprototype
 #: reference_input.xml:1585
@@ -1726,6 +1766,11 @@ msgid ""
 "<paramdef><type>bytea </type> <parameter>FlatGeobuf input data</parameter></"
 "paramdef>"
 msgstr ""
+"<funcdef>void <function>ST_FromFlatGeobufToTable</function></funcdef> "
+"<paramdef><type>text </type> <parameter>schemaname</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>tablename</parameter></paramdef> "
+"<paramdef><type>bytea </type> <parameter>FlatGeobuf input "
+"data</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:1597
@@ -1734,36 +1779,38 @@ msgid ""
 "Creates a table based on the structure of FlatGeobuf data. (<ulink "
 "url=\"http://flatgeobuf.org\">http://flatgeobuf.org</ulink>)."
 msgstr ""
+"根据 FlatGeobuf 数据的结构创建一个表。（<ulink url=\"http://flatgeobuf.org\""
+">http://flatgeobuf.org</ulink>）。"
 
 #. Tag: para
 #: reference_input.xml:1601
 #, no-c-format
 msgid "<varname>schema</varname> Schema name."
-msgstr ""
+msgstr "<varname>schema</varname>架构名称。"
 
 #. Tag: para
 #: reference_input.xml:1602
 #, no-c-format
 msgid "<varname>table</varname> Table name."
-msgstr ""
+msgstr "<varname>table</varname>表名。"
 
 #. Tag: para
 #: reference_input.xml:1603
 #, no-c-format
 msgid "<varname>data</varname> Input FlatGeobuf data."
-msgstr ""
+msgstr "<varname>data</varname>输入FlatGeobuf数据。"
 
 #. Tag: para
 #: reference_input.xml:1605 reference_input.xml:1637
 #, no-c-format
 msgid "Availability: 3.2.0"
-msgstr ""
+msgstr "可用性：3.2.0"
 
 #. Tag: refpurpose
 #: reference_input.xml:1613
 #, no-c-format
 msgid "Reads FlatGeobuf data."
-msgstr ""
+msgstr "读取FlatGeobuf数据。"
 
 #. Tag: funcprototype
 #: reference_input.xml:1617
@@ -1774,6 +1821,10 @@ msgid ""
 "paramdef> <paramdef><type>bytea </type> <parameter>FlatGeobuf input data</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>setof anyelement <function>ST_FromFlatGeobuf</function></funcdef> "
+"<paramdef><type>anyelement </type> <parameter>Table reference</parameter></"
+"paramdef> <paramdef><type>bytea </type> <parameter>FlatGeobuf input "
+"data</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:1628
@@ -1782,15 +1833,17 @@ msgid ""
 "Reads FlatGeobuf data (<ulink url=\"http://flatgeobuf.org\">http://"
 "flatgeobuf.org</ulink>). NOTE: PostgreSQL bytea cannot exceed 1GB."
 msgstr ""
+"读取 FlatGeobuf 数据 （<ulink url=\"http://flatgeobuf.org\">http://flatgeobuf"
+".org</ulink>）。 注意：PostgreSQL bytea 类型不能超过 1GB。"
 
 #. Tag: para
 #: reference_input.xml:1634
 #, no-c-format
 msgid "<varname>tabletype</varname> reference to a table type."
-msgstr ""
+msgstr "<varname>tabletype</varname>对表类型的引用。"
 
 #. Tag: para
 #: reference_input.xml:1635
 #, no-c-format
 msgid "<varname>data</varname> input FlatGeobuf data."
-msgstr ""
+msgstr "<varname>data</varname>输入 FlatGeobuf数据。"
