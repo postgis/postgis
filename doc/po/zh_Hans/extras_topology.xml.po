@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-05 05:07+0000\n"
+"PO-Revision-Date: 2023-09-05 06:08+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/extras_topologyxml/zh_Hans/>\n"
@@ -249,7 +249,7 @@ msgstr ""
 #: extras_topology.xml:87
 #, no-c-format
 msgid "Cast To"
-msgstr ""
+msgstr "转换到"
 
 #. Tag: entry
 #: extras_topology.xml:88
@@ -3187,7 +3187,7 @@ msgstr ""
 #: extras_topology.xml:2997
 #, no-c-format
 msgid "Availability: 3.3.0"
-msgstr ""
+msgstr "可用性： 3.3.0"
 
 #. Tag: para
 #: extras_topology.xml:3002
