@@ -1,16 +1,15 @@
 # SOME DESCRIPTIVE TITLE.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-15 01:29+0000\n"
-"PO-Revision-Date: 2023-08-29 14:16+0000\n"
-"Last-Translator: 左晨威 <zuocw@highgo.com>\n"
-"Language-Team: Chinese <https://weblate.osgeo.org/projects/postgis/using_postgis_queryxml/"
-"zh_Hans/>\n"
+"PO-Revision-Date: 2023-09-05 06:08+0000\n"
+"Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
+"postgis/using_postgis_queryxml/zh_Hans/>\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -141,7 +140,7 @@ msgid ""
 msgstr "The <ulink url=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally "
 "Extended 9-Intersection Model</ulink> (DE-9IM)通过指定每个几何图形的上述集合之间"
 "的 9 个相交的维度来描述两个几何图形之间的空间关系。交集维度可以正式表示为 3x3 <emphasis "
-"role=\"bold\">交集矩阵</emphasis>。" 
+"role=\"bold\">交集矩阵</emphasis>。"
 
 #. Tag: para
 #: using_postgis_query.xml:85
@@ -279,6 +278,7 @@ msgid ""
 msgstr ""
 "<emphasis>dim( I(a) ∩ I(b) ) = </emphasis><emphasis role=\"bold\">2</"
 "emphasis>"
+
 #. Tag: para
 #: using_postgis_query.xml:205
 #, no-c-format
@@ -286,6 +286,7 @@ msgid ""
 "<emphasis>dim( I(a) ∩ B(b) = </emphasis><emphasis role=\"bold\">1</emphasis>"
 msgstr ""
 "<emphasis>dim( I(a) ∩ B(b) = </emphasis><emphasis role=\"bold\">1</emphasis>"
+
 #. Tag: para
 #: using_postgis_query.xml:211
 #, no-c-format
@@ -295,6 +296,7 @@ msgid ""
 msgstr ""
 "<emphasis>dim( I(a) ∩ E(b) ) = </emphasis><emphasis role=\"bold\">2</"
 "emphasis>"
+
 #. Tag: para
 #: using_postgis_query.xml:222
 #, no-c-format
@@ -304,6 +306,7 @@ msgid ""
 msgstr ""
 "<emphasis>dim( B(a) ∩ I(b) ) = </emphasis><emphasis role=\"bold\">1</"
 "emphasis>"
+
 #. Tag: para
 #: using_postgis_query.xml:228
 #, no-c-format
@@ -313,6 +316,7 @@ msgid ""
 msgstr ""
 "<emphasis>dim( B(a) ∩ B(b) ) = </emphasis><emphasis role=\"bold\">0</"
 "emphasis>"
+
 #. Tag: para
 #: using_postgis_query.xml:234
 #, no-c-format
@@ -322,6 +326,7 @@ msgid ""
 msgstr ""
 "<emphasis>dim( B(a) ∩ E(b) ) = </emphasis><emphasis role=\"bold\">1</"
 "emphasis>"
+
 #. Tag: para
 #: using_postgis_query.xml:245
 #, no-c-format
@@ -331,6 +336,7 @@ msgid ""
 msgstr ""
 "<emphasis>dim( E(a) ∩ I(b) ) = </emphasis><emphasis role=\"bold\">2</"
 "emphasis>"
+
 #. Tag: para
 #: using_postgis_query.xml:251
 #, no-c-format
@@ -340,6 +346,7 @@ msgid ""
 msgstr ""
 "<emphasis>dim( E(a) ∩ B(b) ) = </emphasis><emphasis role=\"bold\">1</"
 "emphasis>"
+
 #. Tag: para
 #: using_postgis_query.xml:257
 #, no-c-format
@@ -347,6 +354,7 @@ msgid ""
 "<emphasis>dim( E(a) ∩ E(b) = </emphasis><emphasis role=\"bold\">2</emphasis>"
 msgstr ""
 "<emphasis>dim( E(a) ∩ E(b) = </emphasis><emphasis role=\"bold\">2</emphasis>"
+
 #. Tag: para
 #: using_postgis_query.xml:269
 #, no-c-format
@@ -371,7 +379,9 @@ msgid ""
 "Features Implementation Specification for SQL</ulink> (version 1.1, section "
 "2.1.13.2)"
 msgstr ""
-"<ulink url=\"http://www.opengeospatial.org/standards/sfs\">适用于 SQL 的 OpenGIS 简单功能实现规范</ulink> (1.1版本, 第 2.1.13.2 节)。"
+"<ulink url=\"http://www.opengeospatial.org/standards/sfs\">适用于 SQL 的 "
+"OpenGIS 简单功能实现规范</ulink> (1.1版本, 第 2.1.13.2 节)"
+
 #. Tag: ulink
 #: using_postgis_query.xml:281
 #, no-c-format
@@ -427,9 +437,9 @@ msgid ""
 "For more details and illustrations, see the <ulink url=\"https://postgis.net/"
 "workshops/postgis-intro/spatial_relationships.html\">PostGIS Workshop.</"
 "ulink>"
-msgstr "有关更多详细信息和插图，请参阅<ulink url=\"https://postgis.net/"
-"workshops/postgis-intro/spatial_relationships.html\">PostGIS Workshop.</"
-"ulink>。"
+msgstr ""
+"有关更多详细信息和插图，请参阅<ulink url=\"https://postgis.net/workshops/"
+"postgis-intro/spatial_relationships.html\">PostGIS Workshop.</ulink>"
 
 #. Tag: title
 #: using_postgis_query.xml:319
@@ -524,6 +534,7 @@ msgstr ""
 "(<xref linkend=\"ST_Multi\"/>(<xref linkend=\"ST_Intersection\"/>(<xref "
 "linkend=\"ST_Boundary\"/>(wharf), <xref linkend=\"ST_Boundary\"/>(lake)))) = "
 "1"
+
 #. Tag: para
 #: using_postgis_query.xml:387
 #, no-c-format
@@ -558,6 +569,7 @@ msgid ""
 "<literal>{0,1,2}</literal>"
 msgstr ""
 "<literal>T</literal> =&gt; 表示交集的维度不为空;即<literal>{0,1,2}</literal>"
+
 #. Tag: para
 #: using_postgis_query.xml:415
 #, no-c-format
@@ -585,7 +597,9 @@ msgid ""
 "For the second example, the intersection matrix pattern specifying a line "
 "partly inside and partly outside a polygon is '<emphasis "
 "role=\"bold\">102101FF2</emphasis>':"
-msgstr "这是第二个示例。当线部分位于多边形内部和外部时，相交矩阵模式为<emphasis role=\"bold\">102101FF2</emphasis>。"
+msgstr ""
+"这是第二个示例。当线部分位于多边形内部和外部时，相交矩阵模式为‘<emphasis "
+"role=\"bold\">102101FF2</emphasis>’："
 
 #. Tag: title
 #: using_postgis_query.xml:439
@@ -615,9 +629,12 @@ msgid ""
 "used in nearest-neighbor queries (the most common being <xref "
 "linkend=\"geometry_distance_knn\"/>; see <xref linkend=\"operators-"
 "distance\"/> for the full list.)"
-msgstr "空间运算符包括边界框运算符（其中最常用的是<xref linkend=\"geometry_overlaps\"/>; 有关完整列表，请参见<xref "
-"linkend=\"operators-bbox\"/>）以及最近邻查询中使用的距离运算符（最常见的是<xref linkend=\"geometry_distance_knn\"/>;"
-" 有关完整列表，请参见 <xref linkend=\"operators-distance\"/>)。"
+msgstr ""
+"空间运算符包括边界框运算符（其中最常用的是<xref linkend=\"geometry_overlaps\""
+"/>; 有关完整列表，请参见<xref linkend=\"operators-bbox\""
+"/>）以及最近邻查询中使用的距离运算符（最常见的是<xref linkend="
+"\"geometry_distance_knn\"/>; 有关完整列表，请参见 <xref linkend=\"operators-"
+"distance\"/>。)"
 
 #. Tag: para
 #: using_postgis_query.xml:455
@@ -634,11 +651,16 @@ msgid ""
 "distance predicates <xref linkend=\"ST_DWithin\"/>, <xref "
 "linkend=\"ST_DFullyWithin\"/>, <xref linkend=\"ST_3DDFullyWithin\"/>, and "
 "<xref linkend=\"ST_3DDWithin\"/> .)"
-msgstr "索引感知函数会自动将边界框运算符添加到空间条件中。 索引感知函数包括命名空间关系谓词  <xref linkend=\"ST_Contains\"/>, <xref "
-"linkend=\"ST_ContainsProperly\"/>, <xref linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Covers\"/>, <xref linkend=\"ST_Crosses\"/>, <xref "
-"linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Overlaps\"/>, <xref linkend=\"ST_Touches\"/>, <xref linkend=\"ST_Within\"/>, <xref "
-"linkend=\"ST_Within\"/>, 和<xref linkend=\"ST_3DIntersects\"/> 以及距离谓词<xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DFullyWithin\"/>, <xref linkend=\"ST_3DDFullyWithin\"/>, 和 "
-"<xref linkend=\"ST_3DDWithin\"/>。）"
+msgstr ""
+"索引感知函数会自动将边界框运算符添加到空间条件中。 "
+"索引感知函数包括命名空间关系谓词 <xref linkend=\"ST_Contains\"/>, <xref "
+"linkend=\"ST_ContainsProperly\"/>, <xref linkend=\"ST_CoveredBy\"/>, <xref "
+"linkend=\"ST_Covers\"/>, <xref linkend=\"ST_Crosses\"/>, <xref linkend="
+"\"ST_Intersects\"/>, <xref linkend=\"ST_Overlaps\"/>, <xref linkend="
+"\"ST_Touches\"/>, <xref linkend=\"ST_Within\"/>, <xref linkend=\"ST_Within\"/"
+">, 和<xref linkend=\"ST_3DIntersects\"/> 以及距离谓词<xref linkend="
+"\"ST_DWithin\"/>, <xref linkend=\"ST_DFullyWithin\"/>, <xref linkend="
+"\"ST_3DDFullyWithin\"/>, 和 <xref linkend=\"ST_3DDWithin\"/>。）"
 
 #. Tag: para
 #: using_postgis_query.xml:476
@@ -647,7 +669,9 @@ msgid ""
 "Functions such as <xref linkend=\"ST_Distance\"/> do <emphasis>not</"
 "emphasis> use indexes to optimize their operation. For example, the "
 "following query would be quite slow on a large table:"
-msgstr " <xref linkend=\"ST_Distance\"/> 等函数<emphasis>不</emphasis>使用索引来优化其操作。例如，以下查询在大型表上会非常慢："
+msgstr ""
+"<xref linkend=\"ST_Distance\"/> 等函数<emphasis>不</emphasis>使用索引来优化其"
+"操作。例如，以下查询在大型表上会非常慢："
 
 #. Tag: para
 #: using_postgis_query.xml:483
@@ -658,8 +682,12 @@ msgid ""
 "is calculating the distance between each point in the table and the "
 "specified point, ie. one <varname>ST_Distance()</varname> calculation is "
 "computed for <emphasis role=\"bold\">every</emphasis> row in the table."
-msgstr "此查询选择<code>geom_table</code>中距离 (100000, 200000)该点100个单位以内的所有几何图形。"
-"它会很慢，因为它正在计算表中每个点与指定点之间的距离，即为表中的 <emphasis role=\"bold\">每一</emphasis>行计算一个<varname>ST_Distance()</varname>。"
+msgstr ""
+"此查询选择 <code>geom_table</code> 中距离该点 100 个单位 (100000, 200000) "
+"以内的所有几何图形。 "
+"它会很慢，因为它正在计算表中每个点与指定点之间的距离，即。 为表中的<emphasis "
+"role=\"bold\">每一</emphasis> 行进行一次<varname>ST_Distance()</varname> "
+"计算。"
 
 #. Tag: para
 #: using_postgis_query.xml:489
@@ -743,7 +771,7 @@ msgstr "乔治王子城有多大（以公顷为单位）？"
 msgid ""
 "This query combines an attribute condition (on the municipality name) with a "
 "spatial calculation (of the polygon area):"
-msgstr "此查询将空间计算（面面积）与属性条件（自治市名称）结合使用。"
+msgstr "此查询将空间计算（面面积）与属性条件（自治市名称）结合使用："
 
 #. Tag: para
 #: using_postgis_query.xml:560
@@ -769,9 +797,12 @@ msgid ""
 "the results in a descending direction, and them using the PostgreSQL "
 "\"LIMIT\" command we can easily select just the largest value without using "
 "an aggregate function like MAX()."
-msgstr "请注意，为了回答这个查询，我们必须计算每个多边形的面积。 如果我们经常这样做，"
-"那么向表中添加一个区域列是有意义的，可以为性能建立索引。 通过按降序对结果进行排序，"
-"并使用 PostgreSQL“LIMIT”命令，我们可以轻松地仅选择最大值，而无需使用 MAX() 等聚合函数"
+msgstr ""
+"请注意，为了回答这个查询，我们必须计算每个多边形的面积。 "
+"如果我们经常这样做，那么向表中添加一个区域列是有意义的，可以为性能建立索引。 "
+"通过按降序对结果进行排序，并使用 "
+"PostgreSQL“LIMIT”命令，我们可以轻松地仅选择最大值，而无需使用 MAX() "
+"等聚合函数。"
 
 #. Tag: para
 #: using_postgis_query.xml:583
@@ -815,10 +846,11 @@ msgid ""
 "\"spatial join\" demonstrated above, this query creates new geometries. An "
 "overlay is like a turbo-charged spatial join, and is useful for more exact "
 "analysis work:"
-msgstr ""	
-"这是“覆盖”的一个示例。 也就是说，我们取两个表并输出一个由空间切割结果组成的新表。 "
+msgstr ""
+"这是“覆盖”的一个示例。 "
+"也就是说，我们取两个表并输出一个由空间切割结果组成的新表。 "
 "与上面显示的“空间连接”不同，此查询实际上会生成新的几何图形。 "
-"生成的叠加就像涡轮增压的空间耦合，对于更精确的分析工作非常有用。"
+"生成的叠加就像涡轮增压的空间耦合，对于更精确的分析工作非常有用："
 
 #. Tag: para
 #: using_postgis_query.xml:623
@@ -831,4 +863,3 @@ msgstr "维多利亚州的“道格拉斯街”有多长（公里）？"
 #, no-c-format
 msgid "What is the largest municipality polygon that has a hole?"
 msgstr "哪个市政面的孔洞最大？"
-
