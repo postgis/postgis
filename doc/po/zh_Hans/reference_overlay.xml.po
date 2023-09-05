@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-05 05:07+0000\n"
+"PO-Revision-Date: 2023-09-05 06:08+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_overlayxml/zh_Hans/>\n"
@@ -482,7 +482,7 @@ msgstr ""
 #: reference_overlay.xml:368 reference_overlay.xml:496
 #, no-c-format
 msgid ", <xref linkend=\"ST_Union\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Union\"/>"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:377
