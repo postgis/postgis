@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-05 05:07+0000\n"
+"PO-Revision-Date: 2023-09-05 06:08+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_constructorxml/zh_Hans/>\n"
@@ -136,19 +136,19 @@ msgstr "示例-双输入格式"
 #: reference_constructor.xml:64
 #, no-c-format
 msgid "Collect 2D points."
-msgstr "合并2D点"
+msgstr "合并2D点。"
 
 #. Tag: para
 #: reference_constructor.xml:67
 #, no-c-format
 msgid "Collect 3D points."
-msgstr "合并3D点"
+msgstr "合并3D点。"
 
 #. Tag: para
 #: reference_constructor.xml:70
 #, no-c-format
 msgid "Collect curves."
-msgstr "合并曲线"
+msgstr "合并曲线。"
 
 #. Tag: title
 #: reference_constructor.xml:74
@@ -246,7 +246,7 @@ msgstr "示例"
 #: reference_constructor.xml:121
 #, no-c-format
 msgid "Create a 3D line string from a 3D MultiPoint"
-msgstr "从 3D 多点创建 3D 线串。"
+msgstr "从 3D 多点创建 3D 线串"
 
 #. Tag: para
 #: reference_constructor.xml:129
@@ -363,14 +363,14 @@ msgstr "输入 LineString 开头的重复节点将折叠为单个点。 Point �
 #, no-c-format
 msgid ""
 "Availability: 2.3.0 - Support for MultiPoint input elements was introduced"
-msgstr "可用性：2.3.0 - 引入了对MultiPoint输入元素的支持。"
+msgstr "可用性：2.3.0 - 引入了对MultiPoint输入元素的支持"
 
 #. Tag: para
 #: reference_constructor.xml:223
 #, no-c-format
 msgid ""
 "Availability: 2.0.0 - Support for LineString input elements was introduced"
-msgstr "可用性：2.0.0 - 引入了对 LineString 输入元素的支持。"
+msgstr "可用性：2.0.0 - 引入了对 LineString 输入元素的支持"
 
 #. Tag: para
 #: reference_constructor.xml:224
@@ -420,7 +420,7 @@ msgstr "从由带排序的子查询形成的数组创建一条线。"
 #: reference_constructor.xml:247
 #, no-c-format
 msgid "Create a 3D line from an array of 3D points"
-msgstr "从三维点数组生成三维线。"
+msgstr "从三维点数组生成三维线"
 
 #. Tag: title
 #: reference_constructor.xml:252
@@ -706,19 +706,21 @@ msgstr "从 2D 线串生成多边形。"
 msgid ""
 "Create a Polygon from an open LineString, using <xref "
 "linkend=\"ST_StartPoint\"/> and <xref linkend=\"ST_AddPoint\"/> to close it."
-msgstr "使用  <xref linkend=\"ST_StartPoint\"/> 和 <xref linkend=\"ST_AddPoint\"/>闭合开放线串以生成面。"
+msgstr ""
+"使用 <xref linkend=\"ST_StartPoint\"/> 和 <xref linkend=\"ST_AddPoint\""
+"/>闭合开放线串以生成面。"
 
 #. Tag: para
 #: reference_constructor.xml:439
 #, no-c-format
 msgid "Create a Polygon from a 3D LineString"
-msgstr "从 3D 线串生成多边形。"
+msgstr "从 3D 线串生成多边形"
 
 #. Tag: para
 #: reference_constructor.xml:441
 #, no-c-format
 msgid "Create a Polygon from a LineString with measures"
-msgstr "从具有 M 值的线串生成多边形。"
+msgstr "从具有 M 值的线串生成多边形"
 
 #. Tag: title
 #: reference_constructor.xml:445
@@ -730,7 +732,7 @@ msgstr "示例：带内孔的外壳格式"
 #: reference_constructor.xml:447
 #, no-c-format
 msgid "Create a donut Polygon with an extra hole"
-msgstr "创建一个带有额外孔的环形多边形。"
+msgstr "创建一个带有额外孔的环形多边形"
 
 #. Tag: para
 #: reference_constructor.xml:449
@@ -832,7 +834,7 @@ msgstr "示例：几何图形"
 #: reference_constructor.xml:524
 #, no-c-format
 msgid "New in 3.2.0: With SRID specified"
-msgstr "3.2.0 中的新功能：可以指定 SRID。"
+msgstr "3.2.0 中的新功能：可以指定 SRID"
 
 #. Tag: title
 #: reference_constructor.xml:529
@@ -844,20 +846,20 @@ msgstr "示例：地理"
 #: reference_constructor.xml:530
 #, no-c-format
 msgid "Pre-PostGIS 3.2 syntax"
-msgstr "PostGIS 3.2 之前的语法。"
+msgstr "PostGIS 3.2 之前的语法"
 
 #. Tag: para
 #: reference_constructor.xml:532
 #, no-c-format
 msgid "3.2 and on you can include the srid"
-msgstr "在 3.2 中，它可以包含 SRID。"
+msgstr "在 3.2 中，它可以包含 SRID"
 
 #. Tag: para
 #: reference_constructor.xml:535
 #, no-c-format
 msgid ""
 "PostgreSQL also provides the <varname>::</varname> short-hand for casting"
-msgstr "PostgreSQL 还提供了用于转换的<varname>::</varname>简写。"
+msgstr "PostgreSQL 还提供了用于转换的<varname>::</varname>简写"
 
 #. Tag: para
 #: reference_constructor.xml:538
@@ -1076,7 +1078,7 @@ msgstr "生成二维多边形。"
 #: reference_constructor.xml:710
 #, no-c-format
 msgid "Create a 3D polygon."
-msgstr "生成三维多边形"
+msgstr "生成三维多边形。"
 
 #. Tag: para
 #: reference_constructor.xml:718
@@ -1462,7 +1464,7 @@ msgstr "示例：使用每个点的网格集对正方形中的点进行计数"
 msgid ""
 "This yields the same result as the first example but will be slower for a "
 "large number of points"
-msgstr "这会产生与第一个示例相同的结果，但对于大量点来说会变慢。"
+msgstr "这会产生与第一个示例相同的结果，但对于大量点来说会变慢"
 
 #. Tag: para
 #: reference_constructor.xml:947
@@ -1574,8 +1576,9 @@ msgid ""
 "The text is generated at the origin by default, so to reposition and resize "
 "the text, first apply the <code>ST_Scale</code> function and then apply the "
 "<code>ST_Translate</code> function."
-msgstr "默认情况下，文本是在原点生成的，因此要重新定位文本并调整文本大小，"
-"请首先应用  <code>ST_Scale</code>  函数，然后应用<code>ST_Translate</code>函数。"
+msgstr ""
+"默认情况下，文本是在原点生成的，因此要重新定位文本并调整文本大小，请首先应用 "
+"<code>ST_Scale</code> 函数，然后应用<code>ST_Translate</code>函数。"
 
 #. Tag: para
 #: reference_constructor.xml:1018
@@ -1593,7 +1596,7 @@ msgstr "示例：生成单词“Yo”"
 #: reference_constructor.xml:1029
 #, no-c-format
 msgid "Letters generated by ST_Letters"
-msgstr "ST_Letter生成的字符。"
+msgstr "ST_Letter生成的字符"
 
 #. Tag: title
 #: reference_constructor.xml:1034
