@@ -1,0 +1,14 @@
+%%
+%% This style is derived from the manual
+%% http://dblatex.sourceforge.net/doc/manual/sec-custom-latex.html
+%%
+\NeedsTeXFormat{LaTeX2e} % is this needed ?
+\ProvidesPackage{texstyle}[2017/04/25 PostGIS DocBook Korean Style ]
+
+%% Just use the original package and pass the options
+\RequirePackageWithOptions{texstyle-common}
+
+\usepackage{xeCJK}
+\setCJKmainfont{IPAMincho}
+\setCJKsansfont{IPAGothic}
+\setCJKmonofont{IPAGothic}
