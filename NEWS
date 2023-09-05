@@ -7,6 +7,7 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
 * Bug Fixes *
 
 
+ - #5485, Fix postgis script on OpenBSD (Sandro Santilli)
  - #5516, Fix upgrade with views using deprecated function, among which:
           ST_AddBand (#5509), ST_AsGeoJSON (#5523) ST_AsKML (#5524)
           ST_Aspect (#5491), ST_BandIsNoData (#5510), ST_BandMetadata (#5502),

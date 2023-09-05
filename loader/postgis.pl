@@ -88,7 +88,7 @@ sub install_upgrade_from
 		die "File ${EXTDIR}/${extname}--TEMPLATED--TO--ANY.sql is missing"
 			unless -f "${EXTDIR}/${extname}--TEMPLATED--TO--ANY.sql";
 
-		my $shcmd = "ln -fvs '${extname}--TEMPLATED--TO--ANY.sql' '${EXTDIR}/${extname}--${from}--ANY.sql'";
+		my $shcmd = "ln -fs '${extname}--TEMPLATED--TO--ANY.sql' '${EXTDIR}/${extname}--${from}--ANY.sql'";
 		#print " CMD: ${shcmd}\n";
 		my $rv = system($shcmd);
 		if ( $rv ) {
