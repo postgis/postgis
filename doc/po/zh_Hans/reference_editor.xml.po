@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-04 12:58+0000\n"
+"PO-Revision-Date: 2023-09-05 05:07+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_editorxml/zh_Hans/>\n"
@@ -543,7 +543,7 @@ msgstr ""
 #: reference_editor.xml:320
 #, no-c-format
 msgid "Availability: 3.2.0"
-msgstr ""
+msgstr "可用性：3.2.0"
 
 #. Tag: para
 #: reference_editor.xml:322 reference_editor.xml:360 reference_editor.xml:637
@@ -830,7 +830,7 @@ msgstr ""
 #: reference_editor.xml:635 reference_editor.xml:732
 #, no-c-format
 msgid "Availability: 2.4.0"
-msgstr ""
+msgstr "可用性：2.4.0"
 
 #. Tag: para
 #: reference_editor.xml:642 reference_editor.xml:739
@@ -979,7 +979,7 @@ msgstr ""
 #: reference_editor.xml:863 reference_editor.xml:1356 reference_editor.xml:1925
 #, no-c-format
 msgid "Availability: 2.2.0"
-msgstr ""
+msgstr "可用性：2.2.0"
 
 #. Tag: refpurpose
 #: reference_editor.xml:886
@@ -1497,7 +1497,7 @@ msgstr ""
 #: reference_editor.xml:1470
 #, no-c-format
 msgid "Availability: 1.2.2"
-msgstr ""
+msgstr "可用性：1.2.2"
 
 #. Tag: para
 #: reference_editor.xml:1471
