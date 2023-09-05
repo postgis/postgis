@@ -43,12 +43,14 @@ steps:
       path: *when_path_full
   check-xml:
     image: *test_image
+    group: check-xml-and-build-images
     commands:
       - make -C build-docs/doc check
     when:
       path: *when_path
   build-images:
     image: *test_image
+    group: check-xml-and-build-images
     commands:
       - make -C build-docs/doc images
     when:
