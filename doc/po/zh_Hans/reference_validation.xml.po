@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-04 01:21+0000\n"
+"PO-Revision-Date: 2023-09-05 06:08+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_validationxml/zh_Hans/>\n"
@@ -35,7 +35,7 @@ msgstr ""
 #: reference_validation.xml:15
 #, no-c-format
 msgid "Geometry Validation"
-msgstr "几何有效性验证。"
+msgstr "几何有效性验证"
 
 #. Tag: refpurpose
 #: reference_validation.xml:21
