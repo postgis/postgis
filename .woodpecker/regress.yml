@@ -1,13 +1,27 @@
-matrix:
-  PG_VERSION:
-    - 15
-    - 12
+variables:
+  test-image: &test-image docker.osgeo.org/postgis/build-test:trisquel3
+
+clone:
+  clone:
+    image: woodpeckerci/plugin-git
+    depth: 50
 
 steps:
-  build:
-    group: build
-    image: docker.osgeo.org/postgis/build-test:trisquel3
+
+  autogen:
+    image: *test-image
     pull: true
     commands:
-      - sh autogen.sh
-      - PGVER=${PG_VERSION} sh ci/dronie/postgis_regress.sh
+      - ./autogen.sh
+
+  regress-pg12:
+    image: *test-image
+    group: build
+    commands:
+      - PGVER=12 sh ci/dronie/postgis_regress.sh
+
+  regress-pg15:
+    image: *test-image
+    group: build
+    commands:
+      - PGVER=15 sh ci/dronie/postgis_regress.sh
