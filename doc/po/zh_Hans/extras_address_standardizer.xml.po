@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-04 02:39+0000\n"
+"PO-Revision-Date: 2023-09-05 05:07+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/extras_address_standardizerxml/zh_Hans/>\n"
@@ -1419,7 +1419,7 @@ msgstr ""
 #: extras_address_standardizer.xml:673 extras_address_standardizer.xml:735
 #, no-c-format
 msgid "Availability: 2.2.0"
-msgstr ""
+msgstr "可用性：2.2.0"
 
 #. Tag: para
 #: extras_address_standardizer.xml:681
