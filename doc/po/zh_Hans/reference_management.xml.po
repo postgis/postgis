@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-01 09:54+0000\n"
+"PO-Revision-Date: 2023-09-05 06:08+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_managementxml/zh_Hans/>\n"
@@ -70,10 +70,11 @@ msgid ""
 "modifier behavior of PostgreSQL. So for example building a wgs84 POINT "
 "column with this function is now equivalent to: <code>ALTER TABLE some_table "
 "ADD COLUMN geom geometry(Point,4326);</code>"
-msgstr "更改：2.0.0 此函数不再更新geometry_columns，因为geometry_columns 是从系统目录读取的视图。"
-"默认情况下，它也不创建约束，而是使用 PostgreSQL 内置的类型修饰符行为。 因此，例如，使用此函数构建"
-"wgs84 POINT 列现在相当于： <code>ALTER TABLE some_table "
-"ADD COLUMN geom geometry(Point,4326);</code>。"
+msgstr ""
+"更改：2.0.0 此函数不再更新geometry_columns，因为geometry_columns "
+"是从系统目录读取的视图。默认情况下，它也不创建约束，而是使用 PostgreSQL "
+"内置的类型修饰符行为。 因此，例如，使用此函数构建wgs84 POINT 列现在相当于： "
+"<code>ALTER TABLE some_table ADD COLUMN geom geometry(Point,4326);</code>"
 
 #. Tag: para
 #: reference_management.xml:112
@@ -178,8 +179,10 @@ msgid ""
 "that since geometry_columns is now a view against the system catalogs, you "
 "can drop a geometry column like any other table column using <code>ALTER "
 "TABLE</code>"
-msgstr "更改：2.0.0 提供此函数是为了向后兼容。现在，由于 Geometry_columns "
-"现在是针对系统目录的视图，因此您可以使用<code>ALTER TABLE</code> 删除几何列，就像删除任何其他表列一样。"
+msgstr ""
+"更改：2.0.0 提供此函数是为了向后兼容。现在，由于 Geometry_columns "
+"现在是针对系统目录的视图，因此您可以使用<code>ALTER TABLE</code> "
+"删除几何列，就像删除任何其他表列一样"
 
 #. Tag: para
 #: reference_management.xml:215
@@ -211,8 +214,10 @@ msgid ""
 "that since geometry_columns is now a view against the system catalogs, you "
 "can drop a table with geometry columns like any other table using <code>DROP "
 "TABLE</code>"
-msgstr "更改：2.0.0 提供此函数是为了向后兼容。现在，由于 Geometry_columns 现在是针对系统目录的视图，"
-"因此您可以使用<code>DROP TABLE</code>删除具有几何列的表，就像任何其他表一样。"
+msgstr ""
+"更改：2.0.0 提供此函数是为了向后兼容。现在，由于 Geometry_columns "
+"现在是针对系统目录的视图，因此您可以使用<code>DROP "
+"TABLE</code>删除具有几何列的表，就像任何其他表一样"
 
 #. Tag: para
 #: reference_management.xml:279
@@ -261,7 +266,7 @@ msgstr "通过搜索 GEOMETRY_COLUMNS 表返回指定几何列的整数 SRID。"
 msgid ""
 "Ensures geometry columns are defined with type modifiers or have appropriate "
 "spatial constraints."
-msgstr " 确保几何列由类型修饰符定义或具有适当的空间约束。"
+msgstr "确保几何列由类型修饰符定义或具有适当的空间约束。"
 
 #. Tag: para
 #: reference_management.xml:352
@@ -296,7 +301,9 @@ msgstr "为了向后兼容和空间需求（例如表继承，其中每个子表
 msgid ""
 "<varname>enforce_dims_geom</varname> - ensures every geometry has the same "
 "dimension (see <xref linkend=\"ST_NDims\"/>)"
-msgstr "<varname>enforce_dims_geom</varname> - 确保每个几何图形具有相同的维度（请参阅<xref linkend=\"ST_NDims\"/>）。"
+msgstr ""
+"<varname>enforce_dims_geom</varname> - 确保每个几何图形具有相同的维度（"
+"请参阅<xref linkend=\"ST_NDims\"/>）"
 
 #. Tag: para
 #: reference_management.xml:371
@@ -304,7 +311,9 @@ msgstr "<varname>enforce_dims_geom</varname> - 确保每个几何图形具有相
 msgid ""
 "<varname>enforce_geotype_geom</varname> - ensures every geometry is of the "
 "same type (see <xref linkend=\"GeometryType\"/>)"
-msgstr "<varname>enforce_geotype_geom</varname> - 确保每个几何具有相同的类型（请参阅<xref linkend=\"GeometryType\"/>）。"
+msgstr ""
+"<varname>enforce_geotype_geom</varname> - 确保每个几何具有相同的类型（"
+"请参阅<xref linkend=\"GeometryType\"/>）"
 
 #. Tag: para
 #: reference_management.xml:377
@@ -416,7 +425,7 @@ msgstr "将几何图形插入道路表，其中 SRID 集已使用 <link "
 msgid ""
 "This will change the srid of the roads table to 4326 from whatever it was "
 "before:"
-msgstr "这会将路表更改为 4326，无论它以前是什么 SRID。"
+msgstr "这会将路表更改为 4326，无论它以前是什么 SRID："
 
 #. Tag: para
 #: reference_management.xml:510
