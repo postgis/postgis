@@ -1,16 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# Zuochenwei <zuochenwei5@gmail.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-08-30 09:24+0000\n"
-"Last-Translator: 左晨威 <zuocw@highgo.com>\n"
-"Language-Team: Chinese <https://weblate.osgeo.org/projects/postgis/reference_typexml/"
-"zh_Hans/>\n"
+"PO-Revision-Date: 2023-09-05 06:08+0000\n"
+"Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
+"postgis/reference_typexml/zh_Hans/>\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -55,12 +53,14 @@ msgid ""
 "has an automatic cast to both box types, this produces an \"ambiguous "
 "function\" error. To prevent the error use an explicit cast to the desired "
 "box type."
-msgstr "某些转换具有 <emphasis role=\"bold\">显式</emphasis>行为，"
-"这意味着必须使用语法<varname>CAST(myval As sometype)</varname> 或 "
-"<varname>myval::sometype</varname> 指定转换。 显式转换避免了不明确的转换问题，"
-"这种情况在使用不支持给定类型的重载函数时可能会发生。 例如，函数可以接受 box2d 或 box3d，"
-"但不能接受几何图形。由于几何体会自动转换为两种盒子类型，因此这会产生“模糊函数”错误。 "
-"为了防止错误，请使用显式转换为所需的框类型。 "
+msgstr ""
+"某些转换具有 <emphasis role=\"bold\""
+">显式</emphasis>行为，这意味着必须使用语法<varname>CAST(myval As sometype)</"
+"varname> 或 <varname>myval::sometype</varname> 指定转换。 显式转换避免了不明"
+"确的转换问题，这种情况在使用不支持给定类型的重载函数时可能会发生。 例如，"
+"函数可以接受 box2d 或 box3d，但不能接受几何图形。由于几何体会自动转换为两种盒"
+"子类型，因此这会产生“模糊函数”错误。 "
+"为了防止错误，请使用显式转换为所需的框类型。"
 
 #. Tag: para
 #: reference_type.xml:24
@@ -177,7 +177,7 @@ msgstr "相关信息"
 #: reference_type.xml:78
 #, no-c-format
 msgid "The type representing a 3-dimensional bounding box."
-msgstr "表示二维边界框的类型"
+msgstr "表示二维边界框的类型。"
 
 #. Tag: para
 #: reference_type.xml:83
@@ -205,7 +205,7 @@ msgstr "该表示包含值<varname>xmin, ymin, zmin, xmax, ymax, zmax</varname>�
 msgid ""
 "<varname>box3d</varname> objects have a text representation which looks like "
 "<code>BOX3D(1 2 3,5 6 5)</code>."
-msgstr "<varname>box3d</varname>的文本表示如<code>BOX3D(1 2 3,5 6 5)</code>所示："
+msgstr "<varname>box3d</varname>的文本表示如<code>BOX3D(1 2 3,5 6 5)</code>所示。"
 
 #. Tag: entry
 #: reference_type.xml:107 reference_type.xml:153
@@ -297,8 +297,10 @@ msgid ""
 "path within the dumped geometry to the <varname>geom</varname> component. "
 "The path array is 1-based (i.e. <varname>path[1]</varname> is the first "
 "element.)"
-msgstr "<varname>path[]</varname>  - 一个整数数组，用于定义转储几何图形中到 geom 组件的导航路径。"
-"路径数组从 1 开始（即<varname>path[1]</varname> 是第一个元素。）"
+msgstr ""
+"<varname>path[]</varname> - 一个整数数组，用于定义转储几何图形中到 "
+"<varname>geom </varname>组件的导航路径。路径数组从 1 "
+"开始（即<varname>path[1]</varname> 是第一个元素。）"
 
 #. Tag: para
 #: reference_type.xml:209
