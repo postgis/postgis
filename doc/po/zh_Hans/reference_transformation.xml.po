@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-04 12:58+0000\n"
+"PO-Revision-Date: 2023-09-05 05:07+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_transformationxml/zh_Hans/>\n"
@@ -95,7 +95,7 @@ msgstr ""
 msgid ""
 "Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
 "introduced."
-msgstr ""
+msgstr "增强：2.0.0支持多面体曲面、三角形和三角网。"
 
 #. Tag: para
 #: reference_transformation.xml:69
@@ -431,7 +431,7 @@ msgstr ""
 #: reference_transformation.xml:426
 #, no-c-format
 msgid "Availability: 1.2.2"
-msgstr ""
+msgstr "可用性：1.2.2"
 
 #. Tag: para
 #: reference_transformation.xml:433
