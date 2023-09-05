@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-04 12:58+0000\n"
+"PO-Revision-Date: 2023-09-05 05:07+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_accessorxml/zh_Hans/>\n"
@@ -96,7 +96,7 @@ msgstr ""
 msgid ""
 "Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
 "introduced."
-msgstr ""
+msgstr "增强：2.0.0支持多面体曲面、三角形和三角网。"
 
 #. Tag: para
 #: reference_accessor.xml:38 reference_accessor.xml:239
@@ -356,7 +356,7 @@ msgstr ""
 #: reference_accessor.xml:192
 #, no-c-format
 msgid "Availability: 2.2.0"
-msgstr ""
+msgstr "可用性：2.2.0"
 
 #. Tag: para
 #: reference_accessor.xml:194 reference_accessor.xml:1167
@@ -680,7 +680,7 @@ msgstr ""
 #: reference_accessor.xml:500
 #, no-c-format
 msgid "Availability: 3.2.0"
-msgstr ""
+msgstr "可用性：3.2.0"
 
 #. Tag: title
 #: reference_accessor.xml:511
@@ -1327,7 +1327,7 @@ msgstr ""
 #: reference_accessor.xml:1165 reference_accessor.xml:1235
 #, no-c-format
 msgid "Availability: 2.4.0"
-msgstr ""
+msgstr "可用性：2.4.0"
 
 #. Tag: para
 #: reference_accessor.xml:1173 reference_accessor.xml:1242
@@ -2090,7 +2090,7 @@ msgstr ""
 #: reference_accessor.xml:2021
 #, no-c-format
 msgid "Availability: 1.2.2"
-msgstr ""
+msgstr "可用性：1.2.2"
 
 #. Tag: para
 #: reference_accessor.xml:2022
