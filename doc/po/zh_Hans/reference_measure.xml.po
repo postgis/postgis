@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-05 05:07+0000\n"
+"PO-Revision-Date: 2023-09-06 01:08+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_measurexml/zh_Hans/>\n"
@@ -346,7 +346,7 @@ msgstr ""
 #: reference_measure.xml:195
 #, no-c-format
 msgid "Availability: 2.5.0"
-msgstr ""
+msgstr "可用性：2.5.0"
 
 #. Tag: para
 #: reference_measure.xml:201
@@ -403,7 +403,7 @@ msgstr ""
 #: reference_measure.xml:1495
 #, no-c-format
 msgid "Availability: 1.5.0"
-msgstr ""
+msgstr "可用性：1.5.0"
 
 #. Tag: para
 #: reference_measure.xml:271
@@ -468,7 +468,7 @@ msgstr "&Z_support;"
 #: reference_measure.xml:1564
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr "有效性：2.0.0"
+msgstr "Availability: 2.0.0"
 
 #. Tag: para
 #: reference_measure.xml:330 reference_measure.xml:1068
@@ -1462,7 +1462,7 @@ msgstr ""
 #: reference_measure.xml:1263
 #, no-c-format
 msgid "Availability: 2.3.0"
-msgstr ""
+msgstr "可用性：2.3.0"
 
 #. Tag: para
 #: reference_measure.xml:1276
