@@ -65,11 +65,15 @@ clean-local:
 # TODO: drop 'test' target..
 test: check
 
-check: check-no-trailing-blanks check-unit docs-check check-news check-tests-enabled check-lang-enabled
+check: check-unit docs-check check-lint
 
 ifeq (@LIBLWGEOM_ONLY@,no)
 check: check-regress
 endif
+
+# The "lint" tests do not depend on specific code configurations
+# but solely on the source code state
+check-lint: check-no-trailing-blanks check-news check-tests-enabled check-lang-enabled
 
 staged-install: all
 	$(MAKE) -C regress staged-install
