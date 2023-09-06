@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-06 01:08+0000\n"
+"PO-Revision-Date: 2023-09-06 05:32+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_rasterxml/zh_Hans/>\n"
@@ -804,7 +804,7 @@ msgstr ""
 #: reference_raster.xml:10601 reference_raster.xml:11420
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr "Availability: 2.0.0"
+msgstr "可用性: 2.0.0"
 
 #. Tag: title
 #: reference_raster.xml:571
@@ -8712,7 +8712,7 @@ msgstr ""
 #: reference_raster.xml:10497
 #, no-c-format
 msgid "Returns <varname>TRUE</varname> if A's bounding box is the same as B's."
-msgstr ""
+msgstr "如果 A 的边界框与 B 的边界框相同，则返回 <varname>TRUE</varname>。"
 
 #. Tag: funcprototype
 #: reference_raster.xml:10502
