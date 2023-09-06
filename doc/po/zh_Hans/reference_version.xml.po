@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-04 02:39+0000\n"
+"PO-Revision-Date: 2023-09-06 01:08+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_versionxml/zh_Hans/>\n"
@@ -75,7 +75,7 @@ msgstr ""
 #: reference_version.xml:43
 #, no-c-format
 msgid "Availability: 2.5.0"
-msgstr ""
+msgstr "可用性：2.5.0"
 
 #. Tag: para
 #: reference_version.xml:45
@@ -441,7 +441,7 @@ msgstr ""
 #: reference_version.xml:468
 #, no-c-format
 msgid "Availability: 1.0.0RC1"
-msgstr ""
+msgstr "可用性： 1.0.0RC1"
 
 #. Tag: refpurpose
 #: reference_version.xml:492
