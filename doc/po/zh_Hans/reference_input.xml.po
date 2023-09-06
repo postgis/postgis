@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-05 05:07+0000\n"
+"PO-Revision-Date: 2023-09-06 01:08+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_inputxml/zh_Hans/>\n"
@@ -354,7 +354,7 @@ msgstr "EWKT 格式不是 OGC 标准，而是包含空间参考系统 (SRID) 标
 #: reference_input.xml:1486
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced."
-msgstr "增强：2.0.0 引入了多面体曲面支持和 TIN 支持。"
+msgstr "增强功能：2.0.0支持多面体曲面和 TIN 。"
 
 #. Tag: para
 #: reference_input.xml:252 reference_input.xml:874 reference_input.xml:1119
