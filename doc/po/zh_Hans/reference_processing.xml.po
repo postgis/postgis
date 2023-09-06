@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-19 07:45+0000\n"
-"PO-Revision-Date: 2023-09-06 01:08+0000\n"
+"PO-Revision-Date: 2023-09-06 05:32+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_processingxml/zh_Hans/>\n"
@@ -739,7 +739,7 @@ msgstr ""
 #: reference_processing.xml:717 reference_processing.xml:2028
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr "Availability: 2.0.0"
+msgstr "可用性: 2.0.0"
 
 #. Tag: para
 #: reference_processing.xml:718
