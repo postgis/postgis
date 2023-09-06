@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-05 05:07+0000\n"
+"PO-Revision-Date: 2023-09-06 01:08+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_accessorxml/zh_Hans/>\n"
@@ -21,13 +21,13 @@ msgstr ""
 #: reference_accessor.xml:4
 #, no-c-format
 msgid "Geometry Accessors"
-msgstr ""
+msgstr "几何访问器"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:10
 #, no-c-format
 msgid "Returns the type of a geometry as text."
-msgstr ""
+msgstr "以文本形式返回几何的类型。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:15
@@ -36,6 +36,8 @@ msgid ""
 "<funcdef>text <function>GeometryType</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>text <function>GeometryType</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: title
 #: reference_accessor.xml:23 reference_accessor.xml:80
@@ -69,7 +71,7 @@ msgstr "描述"
 msgid ""
 "Returns the type of the geometry as a string. Eg: 'LINESTRING', 'POLYGON', "
 "'MULTIPOINT', etc."
-msgstr ""
+msgstr "以字符串形式返回几何类型，例如“LINESTRING”、“POLYGON”、“MULTIPOINT”等。"
 
 #. Tag: para
 #: reference_accessor.xml:28
@@ -79,6 +81,8 @@ msgid ""
 "of which this Geometry instance is a member. The name of the instantiable "
 "subtype of Geometry is returned as a string."
 msgstr ""
+"OGC SPEC s2.1.1.1 - 返回 Geometry 的可实例化子类型的名称，Geometry "
+"的可实例化子类型的名称以字符串形式返回。"
 
 #. Tag: para
 #: reference_accessor.xml:34
@@ -86,7 +90,7 @@ msgstr ""
 msgid ""
 "This function also indicates if the geometry is measured, by returning a "
 "string of the form 'POINTM'."
-msgstr ""
+msgstr "该函数还通过返回“POINTM”形式的字符串来指示是否具有M值。"
 
 #. Tag: para
 #: reference_accessor.xml:37 reference_accessor.xml:344
@@ -96,7 +100,7 @@ msgstr ""
 msgid ""
 "Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
 "introduced."
-msgstr "增强：2.0.0支持多面体曲面、三角形和三角网。"
+msgstr "增强功能：引入了2.0.0 对多面体曲面、三角形和三角网的支持。"
 
 #. Tag: para
 #: reference_accessor.xml:38 reference_accessor.xml:239
@@ -217,7 +221,7 @@ msgstr "相关信息"
 #: reference_accessor.xml:66
 #, no-c-format
 msgid "Returns the boundary of a geometry."
-msgstr ""
+msgstr "返回几何图形的边界。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:71
@@ -226,6 +230,8 @@ msgid ""
 "<funcdef>geometry <function>ST_Boundary</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Boundary</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:82
@@ -238,12 +244,15 @@ msgid ""
 "representational geometry primitives as discussed in the OGC SPEC, section "
 "3.12.2."
 msgstr ""
+"返回此 Geometry 的组合边界的闭合。组合边界的定义如 OGC SPEC 第 3.12.3.2 "
+"节中所述。由于该函数的结果是一个闭包，因此是拓扑封闭的，因此可以使用 OGC "
+"SPEC 第 3.12.2 节中讨论的表征几何基元来表示生成的边界。"
 
 #. Tag: para
 #: reference_accessor.xml:89
 #, no-c-format
 msgid "Performed by the GEOS module"
-msgstr ""
+msgstr "它是通过GEOS模块实现的"
 
 #. Tag: para
 #: reference_accessor.xml:91
@@ -253,43 +262,45 @@ msgid ""
 "<varname>GEOMETRYCOLLECTION</varname>. From 2.0.0 up it will return NULL "
 "instead (unsupported input)."
 msgstr ""
+"在 2.0.0 之前，如果与 <varname>GEOMETRYCOLLECTION</varname> "
+"一起使用，此函数会引发异常。从 2.0.0 开始，它将返回 NULL（不支持的输入）。"
 
 #. Tag: para
 #: reference_accessor.xml:93
 #, no-c-format
 msgid "&sfs_compliant; OGC SPEC s2.1.1.1"
-msgstr ""
+msgstr "&sfs_compliant; OGC SPEC s2.1.1.1"
 
 #. Tag: para
 #: reference_accessor.xml:94
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.17"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.17"
 
 #. Tag: para
 #: reference_accessor.xml:96
 #, no-c-format
 msgid "Enhanced: 2.1.0 support for Triangle was introduced"
-msgstr ""
+msgstr "增强：引入了 2.1.0 三角函数支持"
 
 #. Tag: para
 #: reference_accessor.xml:97
 #, no-c-format
 msgid ""
 "Changed: 3.2.0 support for TIN, does not use geos, does not linearize curves"
-msgstr ""
+msgstr "更改：3.2.0 支持 TIN，不使用地理，不线性化曲线"
 
 #. Tag: para
 #: reference_accessor.xml:112
 #, no-c-format
 msgid "Linestring with boundary points overlaid"
-msgstr ""
+msgstr "具有重叠边界点的线串"
 
 #. Tag: para
 #: reference_accessor.xml:124
 #, no-c-format
 msgid "polygon holes with boundary multilinestring"
-msgstr ""
+msgstr "具有边界多线串的多边形孔"
 
 #. Tag: para
 #: reference_accessor.xml:141
@@ -297,12 +308,13 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_MakePolygon\"/>"
 msgstr ""
+", <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_MakePolygon\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:149
 #, no-c-format
 msgid "Returns the diagonal of a geometry's bounding box."
-msgstr ""
+msgstr "返回几何边界框的对角线。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:154
@@ -313,6 +325,10 @@ msgid ""
 "<paramdef choice=\"opt\"><type>boolean </type> <parameter>fits=false</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_BoundingDiagonal</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>fits=false</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:166
@@ -322,7 +338,8 @@ msgid ""
 "LineString. The diagonal is a 2-point LineString with the minimum values of "
 "each dimension in its start point and the maximum values in its end point. "
 "If the input geometry is empty, the diagonal line is a LINESTRING EMPTY."
-msgstr ""
+msgstr "以线串形式返回给定几何图形的边界框的对角线。它是一个由两点组成的线串，从最小"
+"点开始，到最大点结束。如果输入几何为空，则对角线为空。"
 
 #. Tag: para
 #: reference_accessor.xml:173
@@ -334,6 +351,9 @@ msgid ""
 "either case, the bounding box of the returned diagonal line always covers "
 "the input geometry."
 msgstr ""
+"可选的<varname>fits</varname>参数指定是否需要最佳拟合。如果为 false，则可以接"
+"受稍大的边界框的对角线（对于具有许多顶点的几何图形，计算速度更快）。无论哪种"
+"情况，返回的对角线的边界框始终覆盖输入几何体。"
 
 #. Tag: para
 #: reference_accessor.xml:181
@@ -341,7 +361,7 @@ msgstr ""
 msgid ""
 "The returned geometry retains the SRID and dimensionality (Z and M presence) "
 "of the input geometry."
-msgstr ""
+msgstr "返回的几何体保留输入几何体的 SRID 和维度（Z 和 M 存在）。"
 
 #. Tag: para
 #: reference_accessor.xml:186
@@ -350,7 +370,8 @@ msgid ""
 "In degenerate cases (i.e. a single vertex in input) the returned linestring "
 "will be formally invalid (no interior). The result is still topologically "
 "valid."
-msgstr ""
+msgstr "在退化情况下（即输入中的单个顶点），返回的线串将在形式上无效（无内部）。 "
+"结果在拓扑上仍然有效。"
 
 #. Tag: para
 #: reference_accessor.xml:192
@@ -363,7 +384,7 @@ msgstr "可用性：2.2.0"
 #: reference_accessor.xml:1237
 #, no-c-format
 msgid "&M_support;"
-msgstr ""
+msgstr "&M_support;"
 
 #. Tag: para
 #: reference_accessor.xml:204
@@ -373,12 +394,15 @@ msgid ""
 "linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, "
 "<xref linkend=\"ST_Envelope\"/>"
 msgstr ""
+", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref linkend="
+"\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, <xref "
+"linkend=\"ST_Envelope\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:220
 #, no-c-format
 msgid "Return the coordinate dimension of a geometry."
-msgstr ""
+msgstr "返回几何体的坐标维度。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:225
@@ -387,30 +411,32 @@ msgid ""
 "<funcdef>integer <function>ST_CoordDim</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>integer <function>ST_CoordDim</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:235
 #, no-c-format
 msgid "Return the coordinate dimension of the ST_Geometry value."
-msgstr ""
+msgstr "返回ST_Geometry值的坐标维度。"
 
 #. Tag: para
 #: reference_accessor.xml:237
 #, no-c-format
 msgid "This is the MM compliant alias name for <xref linkend=\"ST_NDims\"/>"
-msgstr ""
+msgstr "这是 <xref linkend=\"ST_NDims\"/> 的 MM 兼容别名。"
 
 #. Tag: para
 #: reference_accessor.xml:240
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.3"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.3"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:266
 #, no-c-format
 msgid "Returns the topological dimension of a geometry."
-msgstr ""
+msgstr "返回几何图形的拓扑维数"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:271
@@ -419,6 +445,8 @@ msgid ""
 "<funcdef>integer <function>ST_Dimension</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 msgstr ""
+"<funcdef>integer <function>ST_Dimension</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:282
@@ -431,12 +459,17 @@ msgid ""
 "<varname>GEOMETRYCOLLECTION</varname>. If the dimension is unknown (e.g. for "
 "an empty <varname>GEOMETRYCOLLECTION</varname>) 0 is returned."
 msgstr ""
+"返回此 Geometry 对象的拓扑维度，该维度必须小于或等于坐标维度。 OGC SPEC "
+"s2.1.1.1 - 对于 <varname>POINT</varname> 返回 0，对于<varname>LINESTRING</"
+"varname>返回 1，对于<varname>POLYGON</varname> 返回 2，以及<varname>GEOMETRYC"
+"OLLECTION</varname>组件的最大尺寸。如果尺寸未知（例如，对于空 "
+"<varname>GEOMETRYCOLLECTION</varname>），则返回 0。"
 
 #. Tag: para
 #: reference_accessor.xml:290
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.2"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.2"
 
 #. Tag: para
 #: reference_accessor.xml:291
@@ -444,7 +477,7 @@ msgstr ""
 msgid ""
 "Enhanced: 2.0.0 support for Polyhedral surfaces and TINs was introduced. No "
 "longer throws an exception if given empty geometry."
-msgstr ""
+msgstr "增强：2.0.0 引入了多面体曲面支持和 TIN 支持。当给定空几何时，它不再引发异常。"
 
 #. Tag: para
 #: reference_accessor.xml:292
@@ -452,7 +485,7 @@ msgstr ""
 msgid ""
 "Prior to 2.0.0, this function throws an exception if used with empty "
 "geometry."
-msgstr ""
+msgstr "在 2.0.0 之前，提供空几何图形会引发异常。"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:312
@@ -460,7 +493,7 @@ msgstr ""
 msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the components of "
 "a geometry."
-msgstr ""
+msgstr "返回几何组件的一组 <varname>geometry_dump</varname>行。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:317
@@ -469,6 +502,8 @@ msgid ""
 "<funcdef>geometry_dump[] <function>ST_Dump</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry_dump[] <function>ST_Dump</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:326
@@ -479,6 +514,9 @@ msgid ""
 "a geometry (<parameter>geom</parameter> field) and an array of integers "
 "(<parameter>path</parameter> field)."
 msgstr ""
+"提取几何组件的集合返回函数 (SRF)。 它返回一组 <xref linkend=\"geometry_dump\""
+"/> 行，每行包含一个几何图形（<parameter>geom</parameter> "
+"字段）和一个整数数组（<parameter>path</parameter>字段）。"
 
 #. Tag: para
 #: reference_accessor.xml:333
@@ -491,6 +529,10 @@ msgid ""
 "<parameter>path</parameter> denotes the position of the component inside the "
 "collection."
 msgstr ""
+"对于基本几何类型（POINT、LINESTRING、POLYGON），返回单个记录，其中包含空<para"
+"meter>路径</parameter> 数组，输入几何图形为 <parameter>geom</parameter>。对于"
+"集合或多几何体，将为每个集合组件返回一条记录，并且<parameter>路径</parameter>"
+"表示组件在集合内的位置。"
 
 #. Tag: para
 #: reference_accessor.xml:340
@@ -500,12 +542,14 @@ msgid ""
 "linkend=\"ST_Collect\"/> / GROUP BY, in that it creates new rows. For "
 "example it can be use to expand MULTIPOLYGONS into POLYGONS."
 msgstr ""
+"ST_Dump 对于扩展几何结构很有用。 它与<xref linkend=\"ST_Collect\"/> / GROUP "
+"BY 相反，它创建新行。例如，它可用于将 MULTIPOLYGONS 扩展为 POLYGONS。"
 
 #. Tag: para
 #: reference_accessor.xml:345
 #, no-c-format
 msgid "Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or higher."
-msgstr ""
+msgstr "可用性：PostGIS 1.0.0RC1。需要 PostgreSQL 7.3 或更高版本。"
 
 #. Tag: para
 #: reference_accessor.xml:347 reference_accessor.xml:1494
@@ -514,20 +558,20 @@ msgid ""
 "Prior to 1.3.4, this function crashes if used with geometries that contain "
 "CURVES. This is fixed in 1.3.4+"
 msgstr "在 1.3.4 之前，此函数在与包含曲线的几何图形一起使用时崩溃。 此问题已在 1.3.4 "
-"及更高版本中得到纠正"
+"及更高版本中得到纠正。"
 
 #. Tag: title
 #: reference_accessor.xml:356 reference_accessor.xml:792
 #, no-c-format
 msgid "Standard Examples"
-msgstr ""
+msgstr "标准示例"
 
 #. Tag: title
 #: reference_accessor.xml:359 reference_accessor.xml:444
 #: reference_accessor.xml:797
 #, no-c-format
 msgid "Polyhedral Surfaces, TIN and Triangle Examples"
-msgstr ""
+msgstr "多面体曲面、TIN 和三角形的示例"
 
 #. Tag: para
 #: reference_accessor.xml:366
@@ -536,6 +580,8 @@ msgid ""
 ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
 "linkend=\"ST_Collect\"/>, <xref linkend=\"ST_GeometryN\"/>"
 msgstr ""
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
+"\"ST_Collect\"/>, <xref linkend=\"ST_GeometryN\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:373
@@ -543,7 +589,7 @@ msgstr ""
 msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the coordinates "
 "in a geometry."
-msgstr ""
+msgstr "返回几何图形中坐标的一组 <varname>geometry_dump</varname> 行。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:378
@@ -552,6 +598,8 @@ msgid ""
 "<funcdef>geometry_dump[] <function>ST_DumpPoints</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry_dump[] <function>ST_DumpPoints</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:387
@@ -562,6 +610,9 @@ msgid ""
 "containing a geometry (<parameter>geom</parameter> field) and an array of "
 "integers (<parameter>path</parameter> field)."
 msgstr ""
+"提取几何图形坐标（顶点）的集合返回函数 (SRF)。它返回一组<xref linkend="
+"\"geometry_dump\"/>行，每行包含一个几何图形（<parameter>geom</parameter>字段"
+"）和一个整数数组（<parameter>path</parameter>字段）。"
 
 #. Tag: para
 #: reference_accessor.xml:396
@@ -569,7 +620,8 @@ msgstr ""
 msgid ""
 "the <parameter>geom</parameter> field <varname>POINT</varname>s represent "
 "the coordinates of the supplied geometry."
-msgstr ""
+msgstr "<parameter>geom</parameter>字段<varname>POINT</varname>s表示所提供几何图形的"
+"坐标。"
 
 #. Tag: para
 #: reference_accessor.xml:401
@@ -585,6 +637,14 @@ msgid ""
 "(1 is outer; inner rings follow) and <varname>j</varname> is the coordinate "
 "position in the ring."
 msgstr ""
+"<parameter>path</parameter>字段（<varname>integer[]</varname>）是枚举所提供几"
+"何图形元素中的坐标位置的索引。索引是从 1 "
+"开始的。例如，对于<varname>LINESTRING</varname>，路径为 "
+"<varname>{i}</varname>，其中<varname>i</varname>是<varname>LINESTRING</"
+"varname> 中的第<varname>n</varname>个坐标。 对于 "
+"<varname>POLYGON</varname>，路径为<varname>{i,j}</varname>，其中 "
+"<varname>i</varname>是环编号（1 "
+"是外环；后面是内环），<varname>j</varname>是环中的坐标位置。"
 
 #. Tag: para
 #: reference_accessor.xml:414
@@ -592,31 +652,31 @@ msgstr ""
 msgid ""
 "To obtain a single geometry containing the coordinates use <xref "
 "linkend=\"ST_Points\"/>."
-msgstr ""
+msgstr "要获取包含坐标的单个几何图形，请使用 <xref linkend=\"ST_Points\"/>。"
 
 #. Tag: para
 #: reference_accessor.xml:418
 #, no-c-format
 msgid "Enhanced: 2.1.0 Faster speed. Reimplemented as native-C."
-msgstr ""
+msgstr "增强：2.1.0 速度更快。重新实现为原生C语言。"
 
 #. Tag: para
 #: reference_accessor.xml:420
 #, no-c-format
 msgid "Availability: 1.5.0"
-msgstr ""
+msgstr "可用性：1.5.0"
 
 #. Tag: title
 #: reference_accessor.xml:427
 #, no-c-format
 msgid "Classic Explode a Table of LineStrings into nodes"
-msgstr ""
+msgstr "传统将 LineStrings 表分解为节点"
 
 #. Tag: title
 #: reference_accessor.xml:431 reference_accessor.xml:506
 #, no-c-format
 msgid "Standard Geometry Examples"
-msgstr ""
+msgstr "标准几何示例"
 
 #. Tag: para
 #: reference_accessor.xml:451
@@ -626,6 +686,8 @@ msgid ""
 "linkend=\"ST_Dump\"/>, <xref linkend=\"ST_DumpRings\"/>, <xref "
 "linkend=\"ST_Points\"/>"
 msgstr ""
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
+"\"/>, <xref linkend=\"ST_DumpRings\"/>, <xref linkend=\"ST_Points\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:459
@@ -633,7 +695,7 @@ msgstr ""
 msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the segments in a "
 "geometry."
-msgstr ""
+msgstr "为几何图形中的各个线段返回一组<varname>geometry_dump</varname>行。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:464
@@ -642,6 +704,8 @@ msgid ""
 "<funcdef>geometry_dump[] <function>ST_DumpSegments</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry_dump[] <function>ST_DumpSegments</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:473
@@ -652,6 +716,9 @@ msgid ""
 "geometry (<parameter>geom</parameter> field) and an array of integers "
 "(<parameter>path</parameter> field)."
 msgstr ""
+"提取几何图形边的集合返回函数 (SRF)。它返回一组<xref linkend=\"geometry_dump\""
+"/>行，每行包含一个几何图形（<parameter>geom</parameter>字段）和一个整数数组（"
+"<parameter>path</parameter> 字段）。"
 
 #. Tag: para
 #: reference_accessor.xml:482
@@ -660,6 +727,8 @@ msgid ""
 "the <parameter>geom</parameter> field <varname>LINESTRING</varname>s "
 "represent the segments of the supplied geometry."
 msgstr ""
+"<parameter>geom</parameter> 字段  <varname>LINESTRING</varname>s "
+"表示所提供几何图形的各个线段。"
 
 #. Tag: para
 #: reference_accessor.xml:487
@@ -675,6 +744,13 @@ msgid ""
 "number (1 is outer; inner rings follow) and <varname>j</varname> is the "
 "segment start point position in the ring."
 msgstr ""
+"<parameter>path</parameter>字段（<varname>integer[]</varname>）是枚举所提供几"
+"何元素中的段起点位置的索引。索引是从 1 开始的。 "
+"例如，对于<varname>LINESTRING</varname> ，路径为  <varname>{i}</varname>，其"
+"中<varname>i</varname>是<varname>LINESTRING</varname>中的第<varname>n</varnam"
+"e>个线段起点。 对于 <varname>POLYGON</varname> ，路径为 "
+"<varname>{i,j}</varname>，其中<varname>i</varname>是环编号（1 "
+"是外环；后面是内环），<varname>j</varname>是环中的线段起点位置。"
 
 #. Tag: para
 #: reference_accessor.xml:500
@@ -686,7 +762,7 @@ msgstr "可用性：3.2.0"
 #: reference_accessor.xml:511
 #, no-c-format
 msgid "TIN and Triangle Examples"
-msgstr ""
+msgstr "TIN 和三角形示例"
 
 #. Tag: para
 #: reference_accessor.xml:517
@@ -695,6 +771,8 @@ msgid ""
 ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
 "linkend=\"ST_Dump\"/>, <xref linkend=\"ST_DumpRings\"/>"
 msgstr ""
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
+"\"/>, <xref linkend=\"ST_DumpRings\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:526
@@ -702,7 +780,7 @@ msgstr ""
 msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the exterior and "
 "interior rings of a Polygon."
-msgstr ""
+msgstr "返回多边形外环和内环的一组<varname>geometry_dump</varname>行。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:532
@@ -711,6 +789,8 @@ msgid ""
 "<funcdef>geometry_dump[] <function>ST_DumpRings</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry_dump[] <function>ST_DumpRings</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:542
@@ -721,6 +801,9 @@ msgid ""
 "geometry (<parameter>geom</parameter> field) and an array of integers "
 "(<parameter>path</parameter> field)."
 msgstr ""
+"提取多边形环的集合返回函数 (SRF)。它返回一组<xref linkend=\"geometry_dump\"/"
+"> 行，每行包含一个几何图形（<parameter>geom</parameter>字段）和一个整数数组（"
+"<parameter>path</parameter> 字段）。"
 
 #. Tag: para
 #: reference_accessor.xml:547
@@ -731,31 +814,34 @@ msgid ""
 "the polygon ring index. The exterior ring (shell) has index 0. The interior "
 "rings (holes) have indices of 1 and higher."
 msgstr ""
+"<parameter>geom</parameter> 字段将每个环包含为 POLYGON。<parameter>path</"
+"parameter>字段是一个长度为 1 的整数数组，包含多边形环索引。外环（壳）"
+"的索引为 0。内环（孔）的索引为 1 及更高。"
 
 #. Tag: para
 #: reference_accessor.xml:553
 #, no-c-format
 msgid ""
 "This only works for POLYGON geometries. It does not work for MULTIPOLYGONS"
-msgstr ""
+msgstr "仅适用于POLYGON,它不适用于MULTIPOLYGONS。"
 
 #. Tag: para
 #: reference_accessor.xml:554
 #, no-c-format
 msgid "Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher."
-msgstr ""
+msgstr "可用性：需要 PostGIS 1.1.3 PostgreSQL 7.3 或更高版本。"
 
 #. Tag: para
 #: reference_accessor.xml:561
 #, no-c-format
 msgid "General form of query."
-msgstr ""
+msgstr "查询的常规格式。"
 
 #. Tag: para
 #: reference_accessor.xml:563
 #, no-c-format
 msgid "A polygon with a single hole."
-msgstr ""
+msgstr "具有单孔的多边形"
 
 #. Tag: para
 #: reference_accessor.xml:571
@@ -765,12 +851,15 @@ msgid ""
 "linkend=\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
 "linkend=\"ST_InteriorRingN\"/>"
 msgstr ""
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
+"\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_InteriorRingN\""
+"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:579
 #, no-c-format
 msgid "Returns the last point of a LineString or CircularLineString."
-msgstr ""
+msgstr "返回 LineString 或 CircularLineString 的最后一个点。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:584
@@ -779,6 +868,8 @@ msgid ""
 "<funcdef>geometry <function>ST_EndPoint</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_EndPoint</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:595
@@ -789,12 +880,16 @@ msgid ""
 "varname>. Returns <varname>NULL</varname> if the input is not a "
 "<varname>LINESTRING</varname> or <varname>CIRCULARLINESTRING</varname>."
 msgstr ""
+"返回 <varname>LINESTRING</varname> 或<varname>CIRCULARLINESTRING</varname> "
+"几何图形的最后一个点作为<varname>POINT</varname>。 "
+"如果输入不是<varname>LINESTRING</varname> "
+"或<varname>CIRCULARLINESTRING</varname>，则返回 <varname>NULL</varname> 。"
 
 #. Tag: para
 #: reference_accessor.xml:601
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.4"
 
 #. Tag: para
 #: reference_accessor.xml:605
@@ -807,42 +902,47 @@ msgid ""
 "who assumed they had their data stored as LINESTRING may experience these "
 "returning NULL in 2.0.0."
 msgstr ""
+"更改：2.0.0 不再适用于单个几何体 MultiLineStrings。 在旧版本的 PostGIS 中，"
+"单行 MultiLineString 可以使用此函数并返回终点。 在 2.0.0 中，它像任何其他 "
+"MultiLineString 一样返回 NULL。 旧的行为是一个未记录的功能，"
+"但是那些假设将数据存储为 LINESTRING 的人可能会在 2.0.0 中遇到这些返回 NULL "
+"的情况。"
 
 #. Tag: para
 #: reference_accessor.xml:616
 #, no-c-format
 msgid "End point of a LineString"
-msgstr ""
+msgstr "线串(LineString)端点"
 
 #. Tag: para
 #: reference_accessor.xml:619
 #, no-c-format
 msgid "End point of a non-LineString is NULL"
-msgstr ""
+msgstr "非线串终止点为 NULL"
 
 #. Tag: para
 #: reference_accessor.xml:622
 #, no-c-format
 msgid "End point of a 3D LineString"
-msgstr ""
+msgstr "3D 线串(LineString)端点"
 
 #. Tag: para
 #: reference_accessor.xml:625
 #, no-c-format
 msgid "End point of a CircularString"
-msgstr ""
+msgstr "CircularString 的端点"
 
 #. Tag: para
 #: reference_accessor.xml:632
 #, no-c-format
 msgid ", <xref linkend=\"ST_StartPoint\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_StartPoint\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:641
 #, no-c-format
 msgid "Returns a geometry representing the bounding box of a geometry."
-msgstr ""
+msgstr "返回表示几何图形边界框的几何图形。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:646
@@ -851,6 +951,8 @@ msgid ""
 "<funcdef>geometry <function>ST_Envelope</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Envelope</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:657
@@ -865,6 +967,14 @@ msgid ""
 "will add a <varname>ZMIN</varname>/<varname>ZMAX</varname> coordinate as "
 "well)."
 msgstr ""
+"以几何体的形式返回所提供几何体的双精度 (float8) 最小边界框。 "
+"多边形由边界框的角点定义（(<varname>MINX</varname>, "
+"<varname>MINY</varname>)、(<varname>MINX</varname>, "
+"<varname>MAXY</varname>)、(<varname>MAXX</varname>, "
+"<varname>MAXY</varname>)、(<varname>MAXX</varname>, "
+"<varname>MINY</varname>)、(<varname>MINX</varname>, "
+"<varname>MINY</varname>)）。（PostGIS 也会添加 "
+"<varname>ZMIN</varname>/<varname>ZMAX</varname> 坐标）。"
 
 #. Tag: para
 #: reference_accessor.xml:667
@@ -874,6 +984,9 @@ msgid ""
 "dimension than <varname>POLYGON</varname>, ie. <varname>POINT</varname> or "
 "<varname>LINESTRING</varname>."
 msgstr ""
+"退化情况（垂直线、点）将返回比 <varname>POLYGON</varname> "
+"更低维度的几何图形，即<varname>POINT</varname> "
+"或<varname>LINESTRING</varname>。"
 
 #. Tag: para
 #: reference_accessor.xml:671
@@ -881,7 +994,7 @@ msgstr ""
 msgid ""
 "Availability: 1.5.0 behavior changed to output double precision instead of "
 "float4"
-msgstr ""
+msgstr "可用性：1.5.0 行为更改为输出双精度而不是 float4。"
 
 #. Tag: para
 #: reference_accessor.xml:672 reference_accessor.xml:1095
@@ -894,25 +1007,25 @@ msgstr "&sfs_compliant; s2.1.1.1"
 #: reference_accessor.xml:673
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.19"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.19"
 
 #. Tag: para
 #: reference_accessor.xml:685
 #, no-c-format
 msgid "Envelope of a point and linestring."
-msgstr ""
+msgstr "点和线串的最小外接矩形。"
 
 #. Tag: para
 #: reference_accessor.xml:693
 #, no-c-format
 msgid ", <xref linkend=\"Box3D\"/>, <xref linkend=\"ST_OrientedEnvelope\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"Box3D\"/>, <xref linkend=\"ST_OrientedEnvelope\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:701
 #, no-c-format
 msgid "Returns a LineString representing the exterior ring of a Polygon."
-msgstr ""
+msgstr "返回表示多边形外环的LineString。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:706
@@ -921,6 +1034,8 @@ msgid ""
 "<funcdef>geometry <function>ST_ExteriorRing</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_ExteriorRing</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:717
@@ -928,7 +1043,7 @@ msgstr ""
 msgid ""
 "Returns a LINESTRING representing the exterior ring (shell) of a POLYGON. "
 "Returns NULL if the geometry is not a polygon."
-msgstr ""
+msgstr "返回表示多边形外环的线串。 如果几何图形不是多边形，则返回 NULL。"
 
 #. Tag: para
 #: reference_accessor.xml:721 reference_accessor.xml:923
@@ -938,18 +1053,20 @@ msgid ""
 "conjunction with <xref linkend=\"ST_GeometryN\"/> or <xref "
 "linkend=\"ST_Dump\"/>"
 msgstr ""
+"此函数不支持 MULTIPOLYGON。 对于 MULTIPOLYGON，与 <xref linkend="
+"\"ST_GeometryN\"/> 或 <xref linkend=\"ST_Dump\"/> 结合使用"
 
 #. Tag: para
 #: reference_accessor.xml:725 reference_accessor.xml:1277
 #, no-c-format
 msgid "&sfs_compliant; 2.1.5.1"
-msgstr ""
+msgstr "&sfs_compliant; 2.1.5.1"
 
 #. Tag: para
 #: reference_accessor.xml:726
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.2.3, 8.3.3"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 8.2.3, 8.3.3"
 
 #. Tag: para
 #: reference_accessor.xml:739
@@ -957,12 +1074,13 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_NumInteriorRings\"/>"
 msgstr ""
+", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_NumInteriorRings\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:751
 #, no-c-format
 msgid "Return an element of a geometry collection."
-msgstr ""
+msgstr "返回几何集合的一个元素。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:756
@@ -972,6 +1090,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
 "<paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_GeometryN</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:767
@@ -981,6 +1102,9 @@ msgid ""
 "GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, MULTI)POLYGON, "
 "or POLYHEDRALSURFACE. Otherwise, returns NULL."
 msgstr ""
+"返回输入几何图形的从 1 开始的第 N 个元素几何图形，该几何图形是 "
+"GEOMETRYCOLLECTION、MULTIPOINT、MULTILINESTRING、MULTICURVE、MULTI)POLYGON "
+"或POLYHEDRALSURFACE。 否则，返回 NULL。"
 
 #. Tag: para
 #: reference_accessor.xml:772
@@ -988,7 +1112,7 @@ msgstr ""
 msgid ""
 "Index is 1-based as for OGC specs since version 0.8.0. Previous versions "
 "implemented this as 0-based instead."
-msgstr ""
+msgstr "自版本 0.8.0 以来，OGC 规范的索引从 1 开始。 以前的版本将其实现为基于 0。"
 
 #. Tag: para
 #: reference_accessor.xml:777
@@ -996,7 +1120,8 @@ msgstr ""
 msgid ""
 "To extract all elements of a geometry, <xref linkend=\"ST_Dump\"/> is more "
 "efficient and works for atomic geometries."
-msgstr ""
+msgstr "要提取几何图形的所有元素，<xref linkend=\"ST_Dump\"/> "
+"效率更高，并且适用于基本几何图形。"
 
 #. Tag: para
 #: reference_accessor.xml:780
@@ -1004,25 +1129,26 @@ msgstr ""
 msgid ""
 "Changed: 2.0.0 Prior versions would return NULL for singular geometries. "
 "This was changed to return the geometry for ST_GeometryN(..,1) case."
-msgstr ""
+msgstr "更改：2.0.0 版本。之前的版本对于奇异几何图形会返回 NULL。现在已更改为在 "
+"ST_GeometryN(..,1) 情况下返回几何图形。"
 
 #. Tag: para
 #: reference_accessor.xml:782
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 9.1.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 9.1.5"
 
 #. Tag: para
 #: reference_accessor.xml:807 reference_accessor.xml:1692
 #, no-c-format
 msgid ", <xref linkend=\"ST_NumGeometries\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_NumGeometries\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:814
 #, no-c-format
 msgid "Returns the SQL-MM type of a geometry as text."
-msgstr ""
+msgstr "以文本形式返回几何图形的 SQL-MM 类型。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:819
@@ -1031,6 +1157,8 @@ msgid ""
 "<funcdef>text <function>ST_GeometryType</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 msgstr ""
+"<funcdef>text <function>ST_GeometryType</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:828
@@ -1042,25 +1170,27 @@ msgid ""
 "returned, as well as the fact that it will not indicate whether the geometry "
 "is measured."
 msgstr ""
+"以字符串形式返回几何类型，例如“ST_LineString”、“ST_Polygon”、“ST_MultiPolygon"
+"”等。与 GeometryType 不同，此函数前面有“ST”，并不指示它是否具有 M 值。"
 
 #. Tag: para
 #: reference_accessor.xml:830 reference_accessor.xml:990
 #: reference_accessor.xml:1493
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces was introduced."
-msgstr "增强：引入了 2.0.0 多面体曲面支持。"
+msgstr "增强： 2.0.0 引入了对多面体曲面的支持。"
 
 #. Tag: para
 #: reference_accessor.xml:831
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.4"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:859
 #, no-c-format
 msgid "Tests if a geometry contains a circular arc"
-msgstr ""
+msgstr "测试几何图形是否包含圆弧。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:864
@@ -1069,31 +1199,33 @@ msgid ""
 "<funcdef>boolean <function>ST_HasArc</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>boolean <function>ST_HasArc</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:874
 #, no-c-format
 msgid ""
 "Returns true if a geometry or geometry collection contains a circular string"
-msgstr ""
+msgstr "如果几何或几何集合包含圆形字符串，则返回 true。"
 
 #. Tag: para
 #: reference_accessor.xml:876
 #, no-c-format
 msgid "Availability: 1.2.3?"
-msgstr ""
+msgstr "可用性：1.2.3？"
 
 #. Tag: para
 #: reference_accessor.xml:892
 #, no-c-format
 msgid ", <xref linkend=\"ST_LineToCurve\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LineToCurve\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:900
 #, no-c-format
 msgid "Returns the Nth interior ring (hole) of a Polygon."
-msgstr ""
+msgstr "返回多边形的第 N 个内环（孔）。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:905
@@ -1103,6 +1235,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef> "
 "<paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_InteriorRingN</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:916
@@ -1112,12 +1247,14 @@ msgid ""
 "The index starts at 1. Returns NULL if the geometry is not a polygon or the "
 "index is out of range."
 msgstr ""
+"以 LINESTRING 形式返回 POLYGON 几何体的第 N 个内环（孔）。 索引从 1 "
+"开始。如果几何图形不是多边形或索引超出范围，则返回 NULL。。"
 
 #. Tag: para
 #: reference_accessor.xml:928
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.2.6, 8.3.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 8.2.6, 8.3.5"
 
 #. Tag: para
 #: reference_accessor.xml:944
@@ -1127,6 +1264,9 @@ msgid ""
 "linkend=\"ST_Dump\"/>, <xref linkend=\"ST_NumInteriorRing\"/>, <xref "
 "linkend=\"ST_NumInteriorRings\"/>"
 msgstr ""
+", <xref linkend=\"ST_BuildArea\"/>, <xref linkend=\"ST_Collect\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_NumInteriorRing\"/>, <xref linkend="
+"\"ST_NumInteriorRings\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:959
@@ -1134,7 +1274,7 @@ msgstr ""
 msgid ""
 "Tests if a LineStrings's start and end points are coincident. For a "
 "PolyhedralSurface tests if it is closed (volumetric)."
-msgstr ""
+msgstr "测试 LineStrings 的起点和终点是否重合。 对于多面体表面测试是否闭合（实心）。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:965
@@ -1143,6 +1283,8 @@ msgid ""
 "<funcdef>boolean <function>ST_IsClosed</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 msgstr ""
+"<funcdef>boolean <function>ST_IsClosed</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:976
@@ -1152,12 +1294,14 @@ msgid ""
 "and end points are coincident. For Polyhedral Surfaces, reports if the "
 "surface is areal (open) or volumetric (closed)."
 msgstr ""
+"如果  <varname>LINESTRING</varname> 的起点和终点重合，则返回<varname>TRUE</va"
+"rname>。对于多面体曲面，测试曲面是面状的（开放的）还是体状的（闭合的）。"
 
 #. Tag: para
 #: reference_accessor.xml:981
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.5, 9.3.3"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.5, 9.3.3"
 
 #. Tag: para
 #: reference_accessor.xml:983
@@ -1166,24 +1310,26 @@ msgid ""
 "SQL-MM defines the result of <function>ST_IsClosed(<varname>NULL</varname>)</"
 "function> to be 0, while PostGIS returns <varname>NULL</varname>."
 msgstr ""
+"SQL-MM 将 <function>ST_IsClosed(<varname>NULL</varname>)</function> "
+"的结果定义为 0，而 PostGIS 返回  <varname>NULL</varname>。"
 
 #. Tag: title
 #: reference_accessor.xml:997
 #, no-c-format
 msgid "Line String and Point Examples"
-msgstr ""
+msgstr "线串和点的示例"
 
 #. Tag: title
 #: reference_accessor.xml:1003
 #, no-c-format
 msgid "Polyhedral Surface Examples"
-msgstr ""
+msgstr "多面体曲面示例"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1018
 #, no-c-format
 msgid "Tests if a geometry is a geometry collection type."
-msgstr ""
+msgstr "测试几何类型是否为几何集合。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1023
@@ -1192,6 +1338,8 @@ msgid ""
 "<funcdef>boolean <function>ST_IsCollection</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 msgstr ""
+"<funcdef>boolean <function>ST_IsCollection</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1033
@@ -1199,25 +1347,26 @@ msgstr ""
 msgid ""
 "Returns <varname>TRUE</varname> if the geometry type of the argument a "
 "geometry collection type. Collection types are the following:"
-msgstr ""
+msgstr "如果参数的几何类型是几何集合类型，则返回<varname>TRUE</varname>。集合类型有以"
+"下几种："
 
 #. Tag: para
 #: reference_accessor.xml:1036
 #, no-c-format
 msgid "GEOMETRYCOLLECTION"
-msgstr ""
+msgstr "几何集合"
 
 #. Tag: para
 #: reference_accessor.xml:1037
 #, no-c-format
 msgid "MULTI{POINT,POLYGON,LINESTRING,CURVE,SURFACE}"
-msgstr ""
+msgstr "多点、多多边形、多线串、多曲线、多曲面"
 
 #. Tag: para
 #: reference_accessor.xml:1038
 #, no-c-format
 msgid "COMPOUNDCURVE"
-msgstr ""
+msgstr "复合曲线"
 
 #. Tag: para
 #: reference_accessor.xml:1043
@@ -1226,13 +1375,14 @@ msgid ""
 "This function analyzes the type of the geometry. This means that it will "
 "return <varname>TRUE</varname> on collections that are empty or that contain "
 "a single element."
-msgstr ""
+msgstr "该函数分析几何形状的类型。 这意味着它将在空集合或包含单个元素的集合上返回 "
+"<varname>TRUE</varname>。"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1072
 #, no-c-format
 msgid "Tests if a geometry is empty."
-msgstr ""
+msgstr "检测几何图形是否为空"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1078
@@ -1241,6 +1391,8 @@ msgid ""
 "<funcdef>boolean <function>ST_IsEmpty</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>boolean <function>ST_IsEmpty</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1088
@@ -1248,7 +1400,8 @@ msgstr ""
 msgid ""
 "Returns true if this Geometry is an empty geometry. If true, then this "
 "Geometry represents an empty geometry collection, polygon, point etc."
-msgstr ""
+msgstr "如果几何图形为空几何，则返回 true; 如果为 "
+"true，则此几何图形是空几何集合、多边形、点等。"
 
 #. Tag: para
 #: reference_accessor.xml:1091
@@ -1256,13 +1409,13 @@ msgstr ""
 msgid ""
 "SQL-MM defines the result of ST_IsEmpty(NULL) to be 0, while PostGIS returns "
 "NULL."
-msgstr ""
+msgstr "在SQL-MM中，ST_IsEmpty（NULL）返回0，而在PostGIS中返回NULL。"
 
 #. Tag: para
 #: reference_accessor.xml:1096
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.7"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.7"
 
 #. Tag: para
 #: reference_accessor.xml:1098
@@ -1272,6 +1425,9 @@ msgid ""
 "ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') was allowed. This is now "
 "illegal in PostGIS 2.0.0 to better conform with SQL/MM standards"
 msgstr ""
+"已更改：2.0.0 之前的 PostGIS "
+"版本允许ST_GeomFromText（“GEOMETRYCOLLECTION(EMPTY)”）。在 PostGIS 2.0.0 "
+"中，这是不正确的，因为它更符合 SQL/MM 标准。"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1116
@@ -1279,7 +1435,7 @@ msgstr ""
 msgid ""
 "Tests if Polygons have exterior rings oriented counter-clockwise and "
 "interior rings oriented clockwise."
-msgstr ""
+msgstr "检测多边形是否具有逆时针方向的外环和顺时针方向的内环。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1122
@@ -1288,6 +1444,8 @@ msgid ""
 "<funcdef> boolean <function>ST_IsPolygonCCW</function> </funcdef> <paramdef> "
 "<type>geometry</type> <parameter>geom</parameter> </paramdef>"
 msgstr ""
+"<funcdef> boolean <function>ST_IsPolygonCCW</function> </funcdef> <paramdef> "
+"<type>geometry</type> <parameter>geom</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1138
@@ -1296,13 +1454,14 @@ msgid ""
 "Returns true if all polygonal components of the input geometry use a counter-"
 "clockwise orientation for their exterior ring, and a clockwise direction for "
 "all interior rings."
-msgstr ""
+msgstr "如果输入几何体的所有多边形元素对其外环使用逆时针方向，对所有内环使用顺时针方"
+"向，则返回 true。"
 
 #. Tag: para
 #: reference_accessor.xml:1144 reference_accessor.xml:1214
 #, no-c-format
 msgid "Returns true if the geometry has no polygonal components."
-msgstr ""
+msgstr "如果几何体没有多边形元素，则返回 true。"
 
 #. Tag: para
 #: reference_accessor.xml:1149 reference_accessor.xml:1219
@@ -1311,7 +1470,8 @@ msgid ""
 "Closed linestrings are not considered polygonal components, so you would "
 "still get a true return by passing a single closed linestring no matter its "
 "orientation."
-msgstr ""
+msgstr "闭合线串不被视为多边形元素。 "
+"如果传递单个闭合线串，则无论它是顺时针还是逆时针，都会得到 TRUE。"
 
 #. Tag: para
 #: reference_accessor.xml:1157 reference_accessor.xml:1227
@@ -1322,6 +1482,8 @@ msgid ""
 "an exterior ring) then both ST_IsPolygonCW and ST_IsPolygonCCW will return "
 "false."
 msgstr ""
+"如果多边形元素的内环未反转（即，有一个或多个内环以与外环相同的方向旋转），"
+"则ST_IsPolygonCW和ST_IsPolygonCCW都返回 FALSE。"
 
 #. Tag: para
 #: reference_accessor.xml:1165 reference_accessor.xml:1235
@@ -1335,6 +1497,7 @@ msgstr "可用性：2.4.0"
 msgid ""
 ", <xref linkend=\"ST_ForcePolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 msgstr ""
+", <xref linkend=\"ST_ForcePolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1186
@@ -1342,7 +1505,7 @@ msgstr ""
 msgid ""
 "Tests if Polygons have exterior rings oriented clockwise and interior rings "
 "oriented counter-clockwise."
-msgstr ""
+msgstr "检测多边形是否具有顺时针外环和逆时针内环。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1192
@@ -1351,6 +1514,8 @@ msgid ""
 "<funcdef> boolean <function>ST_IsPolygonCW</function> </funcdef> <paramdef> "
 "<type>geometry</type> <parameter>geom</parameter> </paramdef>"
 msgstr ""
+"<funcdef> boolean <function>ST_IsPolygonCW</function> </funcdef> <paramdef> "
+"<type>geometry</type> <parameter>geom</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1208
@@ -1359,13 +1524,14 @@ msgid ""
 "Returns true if all polygonal components of the input geometry use a "
 "clockwise orientation for their exterior ring, and a counter-clockwise "
 "direction for all interior rings."
-msgstr ""
+msgstr "如果输入几何体的所有多边形元素对其外环使用顺时针方向，对所有内环使用逆时针方"
+"向，则返回 true。"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1254
 #, no-c-format
 msgid "Tests if a LineString is closed and simple."
-msgstr ""
+msgstr "检测线串是闭合的还是简单的"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1259
@@ -1374,6 +1540,8 @@ msgid ""
 "<funcdef>boolean <function>ST_IsRing</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 msgstr ""
+"<funcdef>boolean <function>ST_IsRing</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1270
@@ -1385,12 +1553,16 @@ msgid ""
 "<function>ST_Endpoint(<parameter>g</parameter>)</function>) and <xref "
 "linkend=\"ST_IsSimple\"/> (does not self intersect)."
 msgstr ""
+"如果此 <varname>LINESTRING</varname> 既是 <xref linkend=\"ST_IsClosed\"/> "
+"(<function>ST_StartPoint(<parameter>g</parameter>)</function> <function>~=</"
+"function> <function>ST_Endpoint(<parameter>g</parameter>)</function>) "
+"又是<xref linkend=\"ST_IsSimple\"/>（不自相交），则返回 TRUE。"
 
 #. Tag: para
 #: reference_accessor.xml:1278
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.6"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.6"
 
 #. Tag: para
 #: reference_accessor.xml:1280
@@ -1399,6 +1571,8 @@ msgid ""
 "SQL-MM defines the result of <function>ST_IsRing(<varname>NULL</varname>)</"
 "function> to be 0, while PostGIS returns <varname>NULL</varname>."
 msgstr ""
+"SQL-MM 将 <function>ST_IsRing(<varname>NULL</varname>)</"
+"function>的结果定义为 0，而 PostGIS 返回 <varname>NULL</varname>。"
 
 #. Tag: para
 #: reference_accessor.xml:1295
@@ -1407,13 +1581,15 @@ msgid ""
 ", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_StartPoint\"/>, <xref "
 "linkend=\"ST_EndPoint\"/>"
 msgstr ""
+", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_StartPoint\"/>, <xref "
+"linkend=\"ST_EndPoint\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1305
 #, no-c-format
 msgid ""
 "Tests if a geometry has no points of self-intersection or self-tangency."
-msgstr ""
+msgstr "检测几何体的自完整性或自接触点。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1310
@@ -1422,6 +1598,8 @@ msgid ""
 "<funcdef>boolean <function>ST_IsSimple</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>boolean <function>ST_IsSimple</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1320
@@ -1432,6 +1610,9 @@ msgid ""
 "definition of geometry simplicity and validity, refer to <link "
 "linkend=\"OGC_Validity\">\"Ensuring OpenGIS compliancy of geometries\"</link>"
 msgstr ""
+"如果此 Geometry 没有异常几何点（例如自相交或自相切），则返回 true。有关 OGC "
+"对几何简单性和有效性定义的更多信息，请参阅<link linkend=\"OGC_Validity\">"
+"\"确保几何图形的OpenGIS合规性\"</link>。"
 
 #. Tag: para
 #: reference_accessor.xml:1326
@@ -1439,19 +1620,19 @@ msgstr ""
 msgid ""
 "SQL-MM defines the result of ST_IsSimple(NULL) to be 0, while PostGIS "
 "returns NULL."
-msgstr ""
+msgstr "SQL-MM 定义 ST_IsSimple(NULL) 的结果为 0，而 PostGIS 返回 NULL。"
 
 #. Tag: para
 #: reference_accessor.xml:1331
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.8"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.8"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1353
 #, no-c-format
 msgid "Returns the M coordinate of a Point."
-msgstr ""
+msgstr "返回点的 M 值。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1358
@@ -1460,6 +1641,8 @@ msgid ""
 "<funcdef>float <function>ST_M</function></funcdef> <paramdef><type>geometry "
 "</type> <parameter>a_point</parameter></paramdef>"
 msgstr ""
+"<funcdef>float <function>ST_M</function></funcdef> <paramdef><type>geometry "
+"</type> <parameter>a_point</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1368
@@ -1467,7 +1650,7 @@ msgstr ""
 msgid ""
 "Return the M coordinate of a Point, or NULL if not available. Input must be "
 "a Point."
-msgstr ""
+msgstr "返回点的 M 坐标值，如果无效，则返回 NULL。 输入必须为点。"
 
 #. Tag: para
 #: reference_accessor.xml:1372
@@ -1475,7 +1658,7 @@ msgstr ""
 msgid ""
 "This is not (yet) part of the OGC spec, but is listed here to complete the "
 "point coordinate extractor function list."
-msgstr ""
+msgstr "这还不是 OGC 规范的一部分，但在此处列出以完成点坐标提取器功能列表。"
 
 #. Tag: para
 #: reference_accessor.xml:1376 reference_accessor.xml:2169
@@ -1490,12 +1673,14 @@ msgid ""
 ", <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/"
 ">"
 msgstr ""
+", <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\""
+"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1399
 #, no-c-format
 msgid "Returns the amount of memory space a geometry takes."
-msgstr ""
+msgstr "返回几何图形占用的内存空间总量。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1404
@@ -1504,12 +1689,14 @@ msgid ""
 "<funcdef>integer <function>ST_MemSize</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>integer <function>ST_MemSize</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1414
 #, no-c-format
 msgid "Returns the amount of memory space (in bytes) the geometry takes."
-msgstr ""
+msgstr "返回几何图形占用的内存空间量（以字节为单位）。"
 
 #. Tag: para
 #: reference_accessor.xml:1415
@@ -1520,6 +1707,10 @@ msgid ""
 "object functions</ulink> pg_column_size, pg_size_pretty, pg_relation_size, "
 "pg_total_relation_size."
 msgstr ""
+"这补充了 PostgreSQL 内置 <ulink url=\"https://www.postgresql.org/docs/"
+"current/functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT\">数据库 对象函数</"
+"ulink> "
+"pg_column_size、pg_size_pretty、pg_relation_size、pg_total_relation_size。"
 
 #. Tag: para
 #: reference_accessor.xml:1417
@@ -1529,6 +1720,9 @@ msgid ""
 "lower than ST_MemSize. This is because pg_relation_size does not add toasted "
 "table contribution and large geometries are stored in TOAST tables."
 msgstr ""
+"给出表的字节大小的 pg_relation_size 可能返回小于 ST_MemSize 的字节大小。 "
+"这是因为 pg_relation_size 不会添加 toasted 表贡献，并且大型几何图形存储在 "
+"TOAST 表中。"
 
 #. Tag: para
 #: reference_accessor.xml:1419
@@ -1536,7 +1730,7 @@ msgstr ""
 msgid ""
 "pg_total_relation_size - includes, the table, the toasted tables, and the "
 "indexes."
-msgstr ""
+msgstr "pg_total_relation_size - 包括表、压缩表和索引。"
 
 #. Tag: para
 #: reference_accessor.xml:1420
@@ -1544,19 +1738,20 @@ msgstr ""
 msgid ""
 "pg_column_size returns how much space a geometry would take in a column "
 "considering compression, so may be lower than ST_MemSize"
-msgstr ""
+msgstr "pg_column_size 返回考虑到压缩，几何图形在列中占用多少空间，因此可能低于 "
+"ST_MemSize。"
 
 #. Tag: para
 #: reference_accessor.xml:1427
 #, no-c-format
 msgid "Changed: 2.2.0 name changed to ST_MemSize to follow naming convention."
-msgstr ""
+msgstr "更改：2.2.0 名称更改为 ST_MemSize 以遵循命名约定。"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1442
 #, no-c-format
 msgid "Returns the coordinate dimension of a geometry."
-msgstr ""
+msgstr "返回几何体的坐标维度。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1447
@@ -1565,6 +1760,8 @@ msgid ""
 "<funcdef>integer <function>ST_NDims</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 msgstr ""
+"<funcdef>integer <function>ST_NDims</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1457
@@ -1574,18 +1771,20 @@ msgid ""
 "y) , 3 - (x,y,z) or 2D with measure - x,y,m, and 4 - 3D with measure space x,"
 "y,z,m"
 msgstr ""
+"返回几何体的坐标维度。PostGIS 支持 2 - (x,y) 、3 - (x,y,z) 或 2D 测量 - "
+"x,y,m 和 4 - 3D 测量空间 x,y,z,m。"
 
 #. Tag: para
 #: reference_accessor.xml:1470
 #, no-c-format
 msgid ", <xref linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1477
 #, no-c-format
 msgid "Returns the number of points (vertices) in a geometry."
-msgstr ""
+msgstr "返回几何图形中的点数（顶点）。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1482
@@ -1594,18 +1793,20 @@ msgid ""
 "<funcdef>integer <function>ST_NPoints</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 msgstr ""
+"<funcdef>integer <function>ST_NPoints</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1492
 #, no-c-format
 msgid "Return the number of points in a geometry. Works for all geometries."
-msgstr ""
+msgstr "返回几何图形中的点数。 适用于所有几何形状。"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1516
 #, no-c-format
 msgid "Returns the number of rings in a polygonal geometry."
-msgstr ""
+msgstr "返回多边形几何中的环数。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1521
@@ -1614,6 +1815,8 @@ msgid ""
 "<funcdef>integer <function>ST_NRings</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>integer <function>ST_NRings</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1531
@@ -1621,13 +1824,14 @@ msgstr ""
 msgid ""
 "If the geometry is a polygon or multi-polygon returns the number of rings. "
 "Unlike NumInteriorRings, it counts the outer rings as well."
-msgstr ""
+msgstr "如果几何图形是多边形或多多边形，则返回环数。 "
+"与NumInteriorRings不同，它还计算外环。"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1555
 #, no-c-format
 msgid "Returns the number of elements in a geometry collection."
-msgstr ""
+msgstr "返回几何集合中的元素数量。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1560
@@ -1636,6 +1840,8 @@ msgid ""
 "<funcdef>integer <function>ST_NumGeometries</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
+"<funcdef>integer <function>ST_NumGeometries</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1570
@@ -1654,24 +1860,26 @@ msgid ""
 "not a collection/MULTI type. 2.0.0+ now returns 1 for single geometries e.g "
 "POLYGON, LINESTRING, POINT."
 msgstr ""
+"更改：2.0.0 在之前的版本中，如果几何图形不是集合/MULTI 类型，则会返回 NULL。 "
+"2.0.0 现在对于单个几何图形返回 1，例如 POLYGON、LINESTRING、POINT。"
 
 #. Tag: para
 #: reference_accessor.xml:1576
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 9.1.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 9.1.4"
 
 #. Tag: para
 #: reference_accessor.xml:1591
 #, no-c-format
 msgid ", <xref linkend=\"ST_Multi\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Multi\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1598
 #, no-c-format
 msgid "Returns the number of interior rings (holes) of a Polygon."
-msgstr ""
+msgstr "返回多边形的内环（孔）数。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1603
@@ -1680,6 +1888,8 @@ msgid ""
 "<funcdef>integer <function>ST_NumInteriorRings</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
 msgstr ""
+"<funcdef>integer <function>ST_NumInteriorRings</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1613
@@ -1687,13 +1897,13 @@ msgstr ""
 msgid ""
 "Return the number of interior rings of a polygon geometry. Return NULL if "
 "the geometry is not a polygon."
-msgstr ""
+msgstr "返回多边形几何体的内环数。 如果几何图形不是多边形，则返回 NULL。"
 
 #. Tag: para
 #: reference_accessor.xml:1618
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.2.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 8.2.5"
 
 #. Tag: para
 #: reference_accessor.xml:1619
@@ -1701,13 +1911,14 @@ msgstr ""
 msgid ""
 "Changed: 2.0.0 - in prior versions it would allow passing a MULTIPOLYGON, "
 "returning the number of interior rings of first POLYGON."
-msgstr ""
+msgstr "更改：2.0.0 - 在之前的版本中，它允许传递 MULTIPOLYGON，返回第一个 POLYGON "
+"的内环数量。"
 
 #. Tag: para
 #: reference_accessor.xml:1630 reference_accessor.xml:1652
 #, no-c-format
 msgid ", <xref linkend=\"ST_InteriorRingN\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_InteriorRingN\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1637
@@ -1715,7 +1926,7 @@ msgstr ""
 msgid ""
 "Returns the number of interior rings (holes) of a Polygon. Aias for "
 "ST_NumInteriorRings"
-msgstr ""
+msgstr "返回多边形的内环（孔）数。ST_NumInteriorRings的别名。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1642
@@ -1724,6 +1935,8 @@ msgid ""
 "<funcdef>integer <function>ST_NumInteriorRing</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
 msgstr ""
+"<funcdef>integer <function>ST_NumInteriorRing</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1659
@@ -1731,7 +1944,7 @@ msgstr ""
 msgid ""
 "Return the number of faces on a Polyhedral Surface. Will return null for non-"
 "polyhedral geometries."
-msgstr ""
+msgstr "返回多面体曲面上的面数。 对于非多面体几何形状将返回 null。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1664
@@ -1740,6 +1953,8 @@ msgid ""
 "<funcdef>integer <function>ST_NumPatches</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 msgstr ""
+"<funcdef>integer <function>ST_NumPatches</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1674
@@ -1749,24 +1964,27 @@ msgid ""
 "polyhedral geometries. This is an alias for ST_NumGeometries to support MM "
 "naming. Faster to use ST_NumGeometries if you don't care about MM convention."
 msgstr ""
+"返回多面体曲面上的面数。 对于非多面体几何形状将返回 null。 这是 "
+"ST_NumGeometries 的别名，用于支持 MM 命名。 如果您不关心 MM 约定，则使用 "
+"ST_NumGeometries 会更快。"
 
 #. Tag: para
 #: reference_accessor.xml:1677 reference_accessor.xml:1770
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr "有效性：2.0.0"
+msgstr "Availability: 2.0.0"
 
 #. Tag: para
 #: reference_accessor.xml:1680 reference_accessor.xml:1771
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1699
 #, no-c-format
 msgid "Returns the number of points in a LineString or CircularString."
-msgstr ""
+msgstr "返回 LineString 或 CircularString 中的点数。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1704
@@ -1775,6 +1993,8 @@ msgid ""
 "<funcdef>integer <function>ST_NumPoints</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 msgstr ""
+"<funcdef>integer <function>ST_NumPoints</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1714
@@ -1786,18 +2006,22 @@ msgid ""
 "not just linestrings. Consider using ST_NPoints instead which is multi-"
 "purpose and works with many geometry types."
 msgstr ""
+"返回 ST_LineString 或 ST_CircularString 值中的点数。 1.4 "
+"之前的版本仅适用于规范规定的线串。从 1.4 开始，这是 ST_NPoints "
+"的别名，它不仅返回线串的顶点数，考虑使用 "
+"ST_NPoints，它是多用途的并且适用于许多几何类型。"
 
 #. Tag: para
 #: reference_accessor.xml:1721
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.2.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.2.4"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1740
 #, no-c-format
 msgid "Returns the Nth geometry (face) of a PolyhedralSurface."
-msgstr ""
+msgstr "返回多边形曲面（PolyhedralSurface）的第 N 个几何体（面）。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1745
@@ -1807,6 +2031,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
 "<paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_PatchN</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1756
@@ -1817,12 +2044,15 @@ msgid ""
 "returns the same answer as ST_GeometryN for PolyhedralSurfaces. Using "
 "ST_GeometryN is faster."
 msgstr ""
+"如果几何体是 POLYHEDRALSURFACE 或 POLYHEDRALSURFACEM，则返回从 1 开始的第 N "
+"个几何体（面）。否则，返回 NULL。这将返回与多面体曲面的 ST_GeometryN "
+"相同的答案。 使用 ST_GeometryN 速度更快。"
 
 #. Tag: para
 #: reference_accessor.xml:1763
 #, no-c-format
 msgid "Index is 1-based."
-msgstr ""
+msgstr "索引从1开始"
 
 #. Tag: para
 #: reference_accessor.xml:1767
@@ -1830,7 +2060,7 @@ msgstr ""
 msgid ""
 "If you want to extract all elements of a geometry <xref linkend=\"ST_Dump\"/"
 "> is more efficient."
-msgstr ""
+msgstr "如果要提取几何图形的所有元素，<xref linkend=\"ST_Dump\"/> 效率更高。"
 
 #. Tag: para
 #: reference_accessor.xml:1788
@@ -1839,6 +2069,8 @@ msgid ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 "linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 msgstr ""
+", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
+"linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1796
@@ -1846,7 +2078,7 @@ msgstr ""
 msgid ""
 "Returns the Nth point in the first LineString or circular LineString in a "
 "geometry."
-msgstr ""
+msgstr "返回几何图形中第一个线串或圆形线串中的第 N 个点。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1802
@@ -1856,6 +2088,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
 "paramdef> <paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_PointN</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1813
@@ -1866,6 +2101,8 @@ msgid ""
 "LineString, so that -1 is the last point. Returns NULL if there is no "
 "linestring in the geometry."
 msgstr ""
+"返回几何图形中单个线串或圆形线串中的第 N 个点。负值从 LineString "
+"末尾开始向后计数，因此 -1 是最后一个点。如果几何图形中没有线串，则返回 NULL。"
 
 #. Tag: para
 #: reference_accessor.xml:1818
@@ -1874,7 +2111,8 @@ msgid ""
 "Index is 1-based as for OGC specs since version 0.8.0. Backward indexing "
 "(negative index) is not in OGC Previous versions implemented this as 0-based "
 "instead."
-msgstr ""
+msgstr "自版本 0.8.0 以来，OGC 规范的索引从 1 开始。 OGC 中没有向后索引（负索引），"
+"以前的版本将其实现为基于 0。"
 
 #. Tag: para
 #: reference_accessor.xml:1824
@@ -1882,13 +2120,14 @@ msgstr ""
 msgid ""
 "If you want to get the Nth point of each LineString in a MultiLineString, "
 "use in conjunction with ST_Dump"
-msgstr ""
+msgstr "如果要获取 MultiLineString 中每个 LineString 的第 N 个点，请与 ST_Dump "
+"结合使用。"
 
 #. Tag: para
 #: reference_accessor.xml:1829
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.2.5, 7.3.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.2.5, 7.3.5"
 
 #. Tag: para
 #: reference_accessor.xml:1832
@@ -1899,18 +2138,21 @@ msgid ""
 "happily with this function and return the start point. In 2.0.0 it just "
 "returns NULL like any other multilinestring."
 msgstr ""
+"更改：2.0.0 不再适用于单个几何multilinestrings。 在旧版本的 PostGIS 中——单行 "
+"multilinestring可以与此函数很好地配合并返回起点。 在 2.0.0 中，它像任何其他 "
+"multilinestring一样只返回 NULL。"
 
 #. Tag: para
 #: reference_accessor.xml:1835
 #, no-c-format
 msgid "Changed: 2.3.0 : negative indexing available (-1 is last point)"
-msgstr ""
+msgstr "更改：2.3.0：负索引可用（-1 是最后一点）。"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1858
 #, no-c-format
 msgid "Returns a MultiPoint containing the coordinates of a geometry."
-msgstr ""
+msgstr "返回包含几何坐标的 MultiPoint。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1864
@@ -1919,6 +2161,8 @@ msgid ""
 "<funcdef>geometry <function>ST_Points</function></funcdef> <paramdef> "
 "<type>geometry</type> <parameter>geom</parameter> </paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Points</function></funcdef> <paramdef> "
+"<type>geometry</type> <parameter>geom</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1877
@@ -1929,6 +2173,9 @@ msgid ""
 "(If desired, duplicate points can be removed by calling <xref "
 "linkend=\"ST_RemoveRepeatedPoints\"/> on the result)."
 msgstr ""
+"返回包含几何体所有坐标的 MultiPoint。 "
+"保留重复点，包括环几何形状的起点和终点。（如果需要，可以通过对结果调用<xref "
+"linkend=\"ST_RemoveRepeatedPoints\"/>来删除重复点）。"
 
 #. Tag: para
 #: reference_accessor.xml:1885
@@ -1936,31 +2183,32 @@ msgstr ""
 msgid ""
 "To obtain information about the position of each coordinate in the parent "
 "geometry use <xref linkend=\"ST_DumpPoints\"/>."
-msgstr ""
+msgstr "要获取有关父几何体中每个坐标的位置的信息，请使用 <xref linkend="
+"\"ST_DumpPoints\"/>。"
 
 #. Tag: para
 #: reference_accessor.xml:1890
 #, no-c-format
 msgid "M and Z coordinates are preserved if present."
-msgstr ""
+msgstr "如果存在，则保留 M 和 Z 值。"
 
 #. Tag: para
 #: reference_accessor.xml:1897
 #, no-c-format
 msgid "Availability: 2.3.0"
-msgstr ""
+msgstr "可用性：2.3.0"
 
 #. Tag: para
 #: reference_accessor.xml:1909
 #, no-c-format
 msgid ", <xref linkend=\"ST_DumpPoints\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_DumpPoints\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1917
 #, no-c-format
 msgid "Returns the first point of a LineString."
-msgstr ""
+msgstr "返回 LineString 的第一个点."
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1922
@@ -1969,6 +2217,8 @@ msgid ""
 "<funcdef>geometry <function>ST_StartPoint</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_StartPoint</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1933
@@ -1979,12 +2229,16 @@ msgid ""
 "varname>. Returns <varname>NULL</varname> if the input is not a "
 "<varname>LINESTRING</varname> or <varname>CIRCULARLINESTRING</varname>."
 msgstr ""
+"返回<varname>LINESTRING</varname> 或 <varname>CIRCULARLINESTRING</varname> "
+"几何图形的第一个点作为<varname>POINT</varname>。 "
+"如果输入不是<varname>LINESTRING</varname> 或 "
+"<varname>CIRCULARLINESTRING</varname>，则返回 <varname>NULL</varname>。"
 
 #. Tag: para
 #: reference_accessor.xml:1939
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.3"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.3"
 
 #. Tag: para
 #: reference_accessor.xml:1944
@@ -1992,7 +2246,8 @@ msgstr ""
 msgid ""
 "Enhanced: 3.2.0 returns a point for all geometries. Prior behavior returns "
 "NULLs if input was not a LineString."
-msgstr ""
+msgstr "增强：3.2.0 返回所有几何图形的点。 如果输入不是 LineString，"
+"则先前的行为将返回 NULL。"
 
 #. Tag: para
 #: reference_accessor.xml:1945
@@ -2005,48 +2260,53 @@ msgid ""
 "feature, but people who assumed they had their data stored as LINESTRING may "
 "experience these returning NULL in 2.0.0."
 msgstr ""
+"更改：2.0.0 不再适用于单个几何体 MultiLineStrings。 在旧版本的 PostGIS 中，"
+"单行 MultiLineString 可以与此函数很好地配合并返回起点。 在 2.0.0 中，"
+"它像任何其他 MultiLineString 一样只返回 NULL。 旧的行为是一个未记录的功能，"
+"但是那些假设将数据存储为 LINESTRING 的人可能会在 2.0.0 中遇到这些返回 NULL "
+"的情况。"
 
 #. Tag: para
 #: reference_accessor.xml:1957
 #, no-c-format
 msgid "Start point of a LineString"
-msgstr ""
+msgstr "LineString起点"
 
 #. Tag: para
 #: reference_accessor.xml:1960
 #, no-c-format
 msgid "Start point of a non-LineString is NULL"
-msgstr ""
+msgstr "非LineString的起点为NULL"
 
 #. Tag: para
 #: reference_accessor.xml:1963
 #, no-c-format
 msgid "Start point of a 3D LineString"
-msgstr ""
+msgstr "3D LineString起点"
 
 #. Tag: para
 #: reference_accessor.xml:1966
 #, no-c-format
 msgid "Start point of a CircularString"
-msgstr ""
+msgstr "CircularString起点"
 
 #. Tag: para
 #: reference_accessor.xml:1973
 #, no-c-format
 msgid ", <xref linkend=\"ST_PointN\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_PointN\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1980
 #, no-c-format
 msgid "Returns a text summary of the contents of a geometry."
-msgstr ""
+msgstr "返回几何内容的文本摘要。"
 
 #. Tag: para
 #: reference_accessor.xml:2000
 #, no-c-format
 msgid "Returns a text summary of the contents of the geometry."
-msgstr ""
+msgstr "返回几何内容的文本摘要。"
 
 #. Tag: para
 #: reference_accessor.xml:2002
@@ -2054,37 +2314,37 @@ msgstr ""
 msgid ""
 "Flags shown square brackets after the geometry type have the following "
 "meaning:"
-msgstr ""
+msgstr "几何类型后方括号中显示的标志具有以下含义："
 
 #. Tag: para
 #: reference_accessor.xml:2006
 #, no-c-format
 msgid "M: has M coordinate"
-msgstr ""
+msgstr "M：具有M轴"
 
 #. Tag: para
 #: reference_accessor.xml:2007
 #, no-c-format
 msgid "Z: has Z coordinate"
-msgstr ""
+msgstr "Z：具有 Z 轴"
 
 #. Tag: para
 #: reference_accessor.xml:2008
 #, no-c-format
 msgid "B: has a cached bounding box"
-msgstr ""
+msgstr "B：有一个边界框"
 
 #. Tag: para
 #: reference_accessor.xml:2009
 #, no-c-format
 msgid "G: is geodetic (geography)"
-msgstr ""
+msgstr "G：大地坐标系（地理）"
 
 #. Tag: para
 #: reference_accessor.xml:2010
 #, no-c-format
 msgid "S: has spatial reference system"
-msgstr ""
+msgstr "S：具有空间参考系统"
 
 #. Tag: para
 #: reference_accessor.xml:2021
@@ -2096,20 +2356,20 @@ msgstr "可用性：1.2.2"
 #: reference_accessor.xml:2022
 #, no-c-format
 msgid "Enhanced: 2.0.0 added support for geography"
-msgstr ""
+msgstr "增强：在 2.0.0 中添加了地理支持。"
 
 #. Tag: para
 #: reference_accessor.xml:2023
 #, no-c-format
 msgid ""
 "Enhanced: 2.1.0 S flag to denote if has a known spatial reference system"
-msgstr ""
+msgstr "增强：添加了 S 标志以指示其是否具有 2.1.0 空间参考系统。"
 
 #. Tag: para
 #: reference_accessor.xml:2024
 #, no-c-format
 msgid "Enhanced: 2.2.0 Added support for TIN and Curves"
-msgstr ""
+msgstr "增强：添加了对 2.2.0 TIN 和曲线的支持。"
 
 #. Tag: para
 #: reference_accessor.xml:2036
@@ -2119,6 +2379,9 @@ msgid ""
 "<xref linkend=\"ST_Force_3DZ\"/>, <xref linkend=\"ST_Force2D\"/>, <xref "
 "linkend=\"geography\"/>"
 msgstr ""
+", <xref linkend=\"PostGIS_AddBBox\"/>, <xref linkend=\"ST_Force_3DM\"/>, "
+"<xref linkend=\"ST_Force_3DZ\"/>, <xref linkend=\"ST_Force2D\"/>, <xref "
+"linkend=\"geography\"/>"
 
 #. Tag: para
 #: reference_accessor.xml:2045
@@ -2127,12 +2390,14 @@ msgid ""
 ", <xref linkend=\"ST_IsValid\"/>, <xref linkend=\"ST_IsValidReason\"/>, "
 "<xref linkend=\"ST_IsValidDetail\"/>"
 msgstr ""
+", <xref linkend=\"ST_IsValid\"/>, <xref linkend=\"ST_IsValidReason\"/>, "
+"<xref linkend=\"ST_IsValidDetail\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:2058
 #, no-c-format
 msgid "Returns the X coordinate of a Point."
-msgstr ""
+msgstr "返回点的 X 坐标。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:2063
@@ -2141,6 +2406,8 @@ msgid ""
 "<funcdef>float <function>ST_X</function></funcdef> <paramdef><type>geometry "
 "</type> <parameter>a_point</parameter></paramdef>"
 msgstr ""
+"<funcdef>float <function>ST_X</function></funcdef> <paramdef><type>geometry "
+"</type> <parameter>a_point</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:2073
@@ -2148,7 +2415,7 @@ msgstr ""
 msgid ""
 "Return the X coordinate of the point, or NULL if not available. Input must "
 "be a point."
-msgstr ""
+msgstr "返回点的 X 坐标值，如果无效，则返回 NULL。 输入必须为点。"
 
 #. Tag: para
 #: reference_accessor.xml:2076
@@ -2157,12 +2424,14 @@ msgid ""
 "To get the minimum and maximum X value of geometry coordinates use the "
 "functions <xref linkend=\"ST_XMin\"/> and <xref linkend=\"ST_XMax\"/>."
 msgstr ""
+"要获取几何图形的最小和最大 X 值，请使用<xref linkend=\"ST_XMin\"/>和<xref "
+"linkend=\"ST_XMax\"/>函数。"
 
 #. Tag: para
 #: reference_accessor.xml:2079
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.3"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 6.1.3"
 
 #. Tag: para
 #: reference_accessor.xml:2094
@@ -2172,12 +2441,15 @@ msgid ""
 "linkend=\"ST_XMax\"/>, <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_Y\"/"
 ">, <xref linkend=\"ST_Z\"/>"
 msgstr ""
+", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_M\"/>, <xref "
+"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_Y\"/"
+">, <xref linkend=\"ST_Z\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:2102
 #, no-c-format
 msgid "Returns the Y coordinate of a Point."
-msgstr ""
+msgstr "返回点的Y坐标。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:2107
@@ -2186,6 +2458,8 @@ msgid ""
 "<funcdef>float <function>ST_Y</function></funcdef> <paramdef><type>geometry "
 "</type> <parameter>a_point</parameter></paramdef>"
 msgstr ""
+"<funcdef>float <function>ST_Y</function></funcdef> <paramdef><type>geometry "
+"</type> <parameter>a_point</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:2117
@@ -2193,7 +2467,7 @@ msgstr ""
 msgid ""
 "Return the Y coordinate of the point, or NULL if not available. Input must "
 "be a point."
-msgstr ""
+msgstr "返回点的 Y 坐标值，如果无效，则返回 NULL。 输入必须为点。"
 
 #. Tag: para
 #: reference_accessor.xml:2120
@@ -2202,12 +2476,14 @@ msgid ""
 "To get the minimum and maximum Y value of geometry coordinates use the "
 "functions <xref linkend=\"ST_YMin\"/> and <xref linkend=\"ST_YMax\"/>."
 msgstr ""
+"要获取几何图形的最小和最大 Y 值，请使用<xref linkend=\"ST_YMin\"/>和<xref "
+"linkend=\"ST_YMax\"/>函数。"
 
 #. Tag: para
 #: reference_accessor.xml:2124
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 6.1.4"
 
 #. Tag: para
 #: reference_accessor.xml:2139
@@ -2217,12 +2493,15 @@ msgid ""
 "linkend=\"ST_X\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/"
 ">, <xref linkend=\"ST_Z\"/>"
 msgstr ""
+", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_M\"/>, <xref "
+"linkend=\"ST_X\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/"
+">, <xref linkend=\"ST_Z\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:2147
 #, no-c-format
 msgid "Returns the Z coordinate of a Point."
-msgstr ""
+msgstr "返回点的Z坐标。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:2152
@@ -2231,6 +2510,8 @@ msgid ""
 "<funcdef>float <function>ST_Z</function></funcdef> <paramdef><type>geometry "
 "</type> <parameter>a_point</parameter></paramdef>"
 msgstr ""
+"<funcdef>float <function>ST_Z</function></funcdef> <paramdef><type>geometry "
+"</type> <parameter>a_point</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:2162
@@ -2238,7 +2519,7 @@ msgstr ""
 msgid ""
 "Return the Z coordinate of the point, or NULL if not available. Input must "
 "be a point."
-msgstr ""
+msgstr "返回点的 Z 坐标值，如果无效，则返回 NULL。 输入必须为点。"
 
 #. Tag: para
 #: reference_accessor.xml:2165
@@ -2247,6 +2528,8 @@ msgid ""
 "To get the minimum and maximum Z value of geometry coordinates use the "
 "functions <xref linkend=\"ST_ZMin\"/> and <xref linkend=\"ST_ZMax\"/>."
 msgstr ""
+"要获取几何图形的最小和最大 Z 值，请使用<xref linkend=\"ST_ZMin\"/>和<xref "
+"linkend=\"ST_ZMax\"/>函数。"
 
 #. Tag: para
 #: reference_accessor.xml:2183
@@ -2255,6 +2538,8 @@ msgid ""
 ", <xref linkend=\"ST_M\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/"
 ">, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 msgstr ""
+", <xref linkend=\"ST_M\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/"
+">, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:2191
@@ -2262,7 +2547,7 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns a code indicating the ZM coordinate dimension of a "
 "geometry.</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>返回指示几何体的 ZM 坐标维度的代码。</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:2196
@@ -2271,6 +2556,8 @@ msgid ""
 "<funcdef>smallint <function>ST_Zmflag</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>smallint <function>ST_Zmflag</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:2206
@@ -2278,16 +2565,16 @@ msgstr ""
 msgid ""
 "<para>Returns a code indicating the ZM coordinate dimension of a geometry.</"
 "para>"
-msgstr ""
+msgstr "<para>返回指示几何体的 ZM 坐标维度的代码。</para>"
 
 #. Tag: para
 #: reference_accessor.xml:2208
 #, no-c-format
 msgid "Values are: 0 = 2D, 1 = 3D-M, 2 = 3D-Z, 3 = 4D."
-msgstr ""
+msgstr "值为 0=XY、1=XYM、2=XYZ、3=XYZM。"
 
 #. Tag: para
 #: reference_accessor.xml:2225
 #, no-c-format
 msgid ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
