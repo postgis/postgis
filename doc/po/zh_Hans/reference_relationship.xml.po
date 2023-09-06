@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-05 06:08+0000\n"
+"PO-Revision-Date: 2023-09-06 01:08+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_relationshipxml/zh_Hans/>\n"
@@ -96,7 +96,7 @@ msgstr ""
 #: reference_relationship.xml:1651 reference_relationship.xml:1706
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr "有效性：2.0.0"
+msgstr "Availability: 2.0.0"
 
 #. Tag: para
 #: reference_relationship.xml:47 reference_relationship.xml:1646
@@ -233,7 +233,7 @@ msgstr ""
 #: reference_relationship.xml:1353 reference_relationship.xml:1567
 #, no-c-format
 msgid "Performed by the GEOS module"
-msgstr ""
+msgstr "它是通过GEOS模块实现的"
 
 #. Tag: para
 #: reference_relationship.xml:120 reference_relationship.xml:846
@@ -1872,7 +1872,7 @@ msgstr ""
 #: reference_relationship.xml:1762
 #, no-c-format
 msgid "Availability: 1.5.0"
-msgstr ""
+msgstr "可用性：1.5.0"
 
 #. Tag: para
 #: reference_relationship.xml:1773
