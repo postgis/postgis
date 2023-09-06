@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-06 01:08+0000\n"
+"PO-Revision-Date: 2023-09-06 05:32+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_accessorxml/zh_Hans/>\n"
@@ -424,7 +424,7 @@ msgstr "返回ST_Geometry值的坐标维度。"
 #: reference_accessor.xml:237
 #, no-c-format
 msgid "This is the MM compliant alias name for <xref linkend=\"ST_NDims\"/>"
-msgstr "这是 <xref linkend=\"ST_NDims\"/> 的 MM 兼容别名。"
+msgstr "这是 <xref linkend=\"ST_NDims\"/> 的 MM 兼容别名"
 
 #. Tag: para
 #: reference_accessor.xml:240
@@ -436,7 +436,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.3"
 #: reference_accessor.xml:266
 #, no-c-format
 msgid "Returns the topological dimension of a geometry."
-msgstr "返回几何图形的拓扑维数"
+msgstr "返回几何图形的拓扑维数。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:271
@@ -558,7 +558,7 @@ msgid ""
 "Prior to 1.3.4, this function crashes if used with geometries that contain "
 "CURVES. This is fixed in 1.3.4+"
 msgstr "在 1.3.4 之前，此函数在与包含曲线的几何图形一起使用时崩溃。 此问题已在 1.3.4 "
-"及更高版本中得到纠正。"
+"及更高版本中得到纠正"
 
 #. Tag: title
 #: reference_accessor.xml:356 reference_accessor.xml:792
@@ -727,7 +727,7 @@ msgid ""
 "the <parameter>geom</parameter> field <varname>LINESTRING</varname>s "
 "represent the segments of the supplied geometry."
 msgstr ""
-"<parameter>geom</parameter> 字段  <varname>LINESTRING</varname>s "
+"<parameter>geom</parameter> 字段 <varname>LINESTRING</varname>s "
 "表示所提供几何图形的各个线段。"
 
 #. Tag: para
@@ -746,9 +746,9 @@ msgid ""
 msgstr ""
 "<parameter>path</parameter>字段（<varname>integer[]</varname>）是枚举所提供几"
 "何元素中的段起点位置的索引。索引是从 1 开始的。 "
-"例如，对于<varname>LINESTRING</varname> ，路径为  <varname>{i}</varname>，其"
-"中<varname>i</varname>是<varname>LINESTRING</varname>中的第<varname>n</varnam"
-"e>个线段起点。 对于 <varname>POLYGON</varname> ，路径为 "
+"例如，对于<varname>LINESTRING</varname> ，路径为 <varname>{i}</varname>，其中"
+"<varname>i</varname>是<varname>LINESTRING</varname>中的第<varname>n</varname>"
+"个线段起点。 对于 <varname>POLYGON</varname> ，路径为 "
 "<varname>{i,j}</varname>，其中<varname>i</varname>是环编号（1 "
 "是外环；后面是内环），<varname>j</varname>是环中的线段起点位置。"
 
@@ -823,7 +823,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This only works for POLYGON geometries. It does not work for MULTIPOLYGONS"
-msgstr "仅适用于POLYGON,它不适用于MULTIPOLYGONS。"
+msgstr "仅适用于POLYGON,它不适用于MULTIPOLYGONS"
 
 #. Tag: para
 #: reference_accessor.xml:554
@@ -841,7 +841,7 @@ msgstr "查询的常规格式。"
 #: reference_accessor.xml:563
 #, no-c-format
 msgid "A polygon with a single hole."
-msgstr "具有单孔的多边形"
+msgstr "具有单孔的多边形。"
 
 #. Tag: para
 #: reference_accessor.xml:571
@@ -994,7 +994,7 @@ msgstr ""
 msgid ""
 "Availability: 1.5.0 behavior changed to output double precision instead of "
 "float4"
-msgstr "可用性：1.5.0 行为更改为输出双精度而不是 float4。"
+msgstr "可用性：1.5.0 行为更改为输出双精度而不是 float4"
 
 #. Tag: para
 #: reference_accessor.xml:672 reference_accessor.xml:1095
@@ -1190,7 +1190,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.4"
 #: reference_accessor.xml:859
 #, no-c-format
 msgid "Tests if a geometry contains a circular arc"
-msgstr "测试几何图形是否包含圆弧。"
+msgstr "测试几何图形是否包含圆弧"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:864
@@ -1207,7 +1207,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns true if a geometry or geometry collection contains a circular string"
-msgstr "如果几何或几何集合包含圆形字符串，则返回 true。"
+msgstr "如果几何或几何集合包含圆形字符串，则返回 true"
 
 #. Tag: para
 #: reference_accessor.xml:876
@@ -1294,8 +1294,8 @@ msgid ""
 "and end points are coincident. For Polyhedral Surfaces, reports if the "
 "surface is areal (open) or volumetric (closed)."
 msgstr ""
-"如果  <varname>LINESTRING</varname> 的起点和终点重合，则返回<varname>TRUE</va"
-"rname>。对于多面体曲面，测试曲面是面状的（开放的）还是体状的（闭合的）。"
+"如果 <varname>LINESTRING</varname> 的起点和终点重合，则返回<varname>TRUE</var"
+"name>。对于多面体曲面，测试曲面是面状的（开放的）还是体状的（闭合的）。"
 
 #. Tag: para
 #: reference_accessor.xml:981
@@ -1311,7 +1311,7 @@ msgid ""
 "function> to be 0, while PostGIS returns <varname>NULL</varname>."
 msgstr ""
 "SQL-MM 将 <function>ST_IsClosed(<varname>NULL</varname>)</function> "
-"的结果定义为 0，而 PostGIS 返回  <varname>NULL</varname>。"
+"的结果定义为 0，而 PostGIS 返回 <varname>NULL</varname>。"
 
 #. Tag: title
 #: reference_accessor.xml:997
@@ -1382,7 +1382,7 @@ msgstr "该函数分析几何形状的类型。 这意味着它将在空集合�
 #: reference_accessor.xml:1072
 #, no-c-format
 msgid "Tests if a geometry is empty."
-msgstr "检测几何图形是否为空"
+msgstr "检测几何图形是否为空。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1078
@@ -1427,7 +1427,7 @@ msgid ""
 msgstr ""
 "已更改：2.0.0 之前的 PostGIS "
 "版本允许ST_GeomFromText（“GEOMETRYCOLLECTION(EMPTY)”）。在 PostGIS 2.0.0 "
-"中，这是不正确的，因为它更符合 SQL/MM 标准。"
+"中，这是不正确的，因为它更符合 SQL/MM 标准"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1116
@@ -1531,7 +1531,7 @@ msgstr "如果输入几何体的所有多边形元素对其外环使用顺时针
 #: reference_accessor.xml:1254
 #, no-c-format
 msgid "Tests if a LineString is closed and simple."
-msgstr "检测线串是闭合的还是简单的"
+msgstr "检测线串是闭合的还是简单的。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1259
@@ -1556,7 +1556,8 @@ msgstr ""
 "如果此 <varname>LINESTRING</varname> 既是 <xref linkend=\"ST_IsClosed\"/> "
 "(<function>ST_StartPoint(<parameter>g</parameter>)</function> <function>~=</"
 "function> <function>ST_Endpoint(<parameter>g</parameter>)</function>) "
-"又是<xref linkend=\"ST_IsSimple\"/>（不自相交），则返回 TRUE。"
+"又是<xref linkend=\"ST_IsSimple\"/>（不自相交），则返回 "
+"<varname>TRUE</varname>。"
 
 #. Tag: para
 #: reference_accessor.xml:1278
@@ -1612,7 +1613,7 @@ msgid ""
 msgstr ""
 "如果此 Geometry 没有异常几何点（例如自相交或自相切），则返回 true。有关 OGC "
 "对几何简单性和有效性定义的更多信息，请参阅<link linkend=\"OGC_Validity\">"
-"\"确保几何图形的OpenGIS合规性\"</link>。"
+"\"确保几何图形的OpenGIS合规性\"</link>"
 
 #. Tag: para
 #: reference_accessor.xml:1326
@@ -1739,7 +1740,7 @@ msgid ""
 "pg_column_size returns how much space a geometry would take in a column "
 "considering compression, so may be lower than ST_MemSize"
 msgstr "pg_column_size 返回考虑到压缩，几何图形在列中占用多少空间，因此可能低于 "
-"ST_MemSize。"
+"ST_MemSize"
 
 #. Tag: para
 #: reference_accessor.xml:1427
@@ -1772,7 +1773,7 @@ msgid ""
 "y,z,m"
 msgstr ""
 "返回几何体的坐标维度。PostGIS 支持 2 - (x,y) 、3 - (x,y,z) 或 2D 测量 - "
-"x,y,m 和 4 - 3D 测量空间 x,y,z,m。"
+"x,y,m 和 4 - 3D 测量空间 x,y,z,m"
 
 #. Tag: para
 #: reference_accessor.xml:1470
@@ -1926,7 +1927,7 @@ msgstr ", <xref linkend=\"ST_InteriorRingN\"/>"
 msgid ""
 "Returns the number of interior rings (holes) of a Polygon. Aias for "
 "ST_NumInteriorRings"
-msgstr "返回多边形的内环（孔）数。ST_NumInteriorRings的别名。"
+msgstr "返回多边形的内环（孔）数。ST_NumInteriorRings的别名"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1642
@@ -1972,7 +1973,7 @@ msgstr ""
 #: reference_accessor.xml:1677 reference_accessor.xml:1770
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr "Availability: 2.0.0"
+msgstr "可用性: 2.0.0"
 
 #. Tag: para
 #: reference_accessor.xml:1680 reference_accessor.xml:1771
@@ -2052,7 +2053,7 @@ msgstr ""
 #: reference_accessor.xml:1763
 #, no-c-format
 msgid "Index is 1-based."
-msgstr "索引从1开始"
+msgstr "索引从1开始。"
 
 #. Tag: para
 #: reference_accessor.xml:1767
@@ -2121,7 +2122,7 @@ msgid ""
 "If you want to get the Nth point of each LineString in a MultiLineString, "
 "use in conjunction with ST_Dump"
 msgstr "如果要获取 MultiLineString 中每个 LineString 的第 N 个点，请与 ST_Dump "
-"结合使用。"
+"结合使用"
 
 #. Tag: para
 #: reference_accessor.xml:1829
@@ -2146,7 +2147,7 @@ msgstr ""
 #: reference_accessor.xml:1835
 #, no-c-format
 msgid "Changed: 2.3.0 : negative indexing available (-1 is last point)"
-msgstr "更改：2.3.0：负索引可用（-1 是最后一点）。"
+msgstr "更改：2.3.0：负索引可用（-1 是最后一点）"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1858
@@ -2356,20 +2357,20 @@ msgstr "可用性：1.2.2"
 #: reference_accessor.xml:2022
 #, no-c-format
 msgid "Enhanced: 2.0.0 added support for geography"
-msgstr "增强：在 2.0.0 中添加了地理支持。"
+msgstr "增强：在 2.0.0 中添加了地理支持"
 
 #. Tag: para
 #: reference_accessor.xml:2023
 #, no-c-format
 msgid ""
 "Enhanced: 2.1.0 S flag to denote if has a known spatial reference system"
-msgstr "增强：添加了 S 标志以指示其是否具有 2.1.0 空间参考系统。"
+msgstr "增强：添加了 S 标志以指示其是否具有 2.1.0 空间参考系统"
 
 #. Tag: para
 #: reference_accessor.xml:2024
 #, no-c-format
 msgid "Enhanced: 2.2.0 Added support for TIN and Curves"
-msgstr "增强：添加了对 2.2.0 TIN 和曲线的支持。"
+msgstr "增强：添加了对 2.2.0 TIN 和曲线的支持"
 
 #. Tag: para
 #: reference_accessor.xml:2036
