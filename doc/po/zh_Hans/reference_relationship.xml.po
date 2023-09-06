@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-06 09:58+0000\n"
+"PO-Revision-Date: 2023-09-07 10:14+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_relationshipxml/zh_Hans/>\n"
@@ -1587,6 +1587,9 @@ msgid ""
 "defined by the OGC SFS standard, and is the default for <function>ST_Relate</"
 "function>."
 msgstr ""
+"<code>1</code>：<emphasis role=\"bold\">OGC-Mod2</emphasis> - "
+"如果线条端点出现奇数次，则它们位于边界内。 这是 OGC SFS 标准定义的规则，也是 "
+"<function>ST_Relate </function>的默认规则。"
 
 #. Tag: para
 #: reference_relationship.xml:1255
@@ -1594,7 +1597,8 @@ msgstr ""
 msgid ""
 "<code>2</code>: <emphasis role=\"bold\">Endpoint</emphasis> - all endpoints "
 "are in the Boundary."
-msgstr ""
+msgstr "<code>2</code>：<emphasis role=\"bold\">端点</emphasis> - "
+"所有端点都在边界内。"
 
 #. Tag: para
 #: reference_relationship.xml:1257
@@ -1605,6 +1609,9 @@ msgid ""
 "the boundary is all the \"attached\" or \"inner\" endpoints (but not the "
 "\"unattached/outer\" ones)."
 msgstr ""
+"<code>3</code>：<emphasis role=\"bold\">MultivalentEndpoint</emphasis> - "
+"如果端点出现多次，则它们位于边界内。 "
+"换句话说，边界是所有“附加”或“内部”端点（但不是“未附加/外部”端点）。"
 
 #. Tag: para
 #: reference_relationship.xml:1260
@@ -1614,12 +1621,15 @@ msgid ""
 "endpoints are in the Boundary if they occur only once. In other words, the "
 "boundary is all the \"unattached\" or \"outer\" endpoints."
 msgstr ""
+"<code>4</code>：<emphasis role=\"bold\">MonovalentEndpoint</emphasis> - "
+"如果端点仅出现一次，则端点位于边界内。 "
+"换句话说，边界是所有“未连接”或“外部”端点。"
 
 #. Tag: para
 #: reference_relationship.xml:1265
 #, no-c-format
 msgid "This function is not in the OGC spec, but is implied. see s2.1.13.2"
-msgstr ""
+msgstr "OGC 规范中没有此函数，但它是隐含的。 见s2.1.13.2"
 
 #. Tag: para
 #: reference_relationship.xml:1267
@@ -1631,13 +1641,13 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.25"
 #: reference_relationship.xml:1269
 #, no-c-format
 msgid "Enhanced: 2.0.0 - added support for specifying boundary node rule."
-msgstr ""
+msgstr "增强：2.0.0 - 添加了对指定边界节点规则的支持。"
 
 #. Tag: para
 #: reference_relationship.xml:1280
 #, no-c-format
 msgid "Using the boolean-valued function to test spatial relationships."
-msgstr ""
+msgstr "使用布尔值函数测试空间关系。"
 
 #. Tag: para
 #: reference_relationship.xml:1283
@@ -1645,13 +1655,14 @@ msgstr ""
 msgid ""
 "Testing a custom spatial relationship pattern as a query condition, with "
 "<code>&amp;&amp;</code> to enable using a spatial index."
-msgstr ""
+msgstr "测试一个自定义的空间关系模式作为查询条件，使用<code>&amp;&amp;</code> "
+"来启用空间索引。"
 
 #. Tag: para
 #: reference_relationship.xml:1287
 #, no-c-format
 msgid "Computing the intersection matrix for spatial relationships."
-msgstr ""
+msgstr "计算空间关系的交集矩阵。"
 
 #. Tag: para
 #: reference_relationship.xml:1290
@@ -1661,6 +1672,8 @@ msgid ""
 "between a LineString and a MultiLineString with a duplicate endpoint "
 "<code>(3 3)</code>:"
 msgstr ""
+"使用不同的边界节点规则来计算具有重复端点的 LineString 和 MultiLineString "
+"之间的空间关系 <code>(3 3)</code>："
 
 #. Tag: para
 #: reference_relationship.xml:1294
@@ -1671,6 +1684,9 @@ msgid ""
 "MultiLineString, so the DE-9IM matrix entry [aB:bI] is <code>0</code> and "
 "[aB:bB] is <code>F</code>."
 msgstr ""
+"使用<emphasis role=\"bold\"> OGC-Mod2</emphasis> 规则 (1)，重复端点位于 "
+"MultiLineString 的<emphasis role=\"bold\">内部</emphasis>，因此 DE-9IM "
+"矩阵条目 [aB:bI] 为<code> 0</code>，[aB:bB] 为 <code>F</code>。"
 
 #. Tag: para
 #: reference_relationship.xml:1298
@@ -1681,6 +1697,9 @@ msgid ""
 "MultiLineString, so the DE-9IM matrix entry [aB:bI] is <code>F</code> and "
 "[aB:bB] is <code>0</code>."
 msgstr ""
+"使用<emphasis role=\"bold\">端点</emphasis>规则 (2)，重复端点位于 "
+"MultiLineString 的<emphasis role=\"bold\">边界</emphasis>中，因此 DE-9IM "
+"矩阵条目 [aB:bI] 为<code> F</code>，[aB:bB] 为<code> 0</code>。"
 
 #. Tag: para
 #: reference_relationship.xml:1312
@@ -1693,13 +1712,19 @@ msgid ""
 "linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Overlaps\"/>, <xref "
 "linkend=\"ST_Touches\"/>, <xref linkend=\"ST_Within\"/>"
 msgstr ""
+", <xref linkend=\"ST_RelateMatch\"/>, <xref linkend=\"ST_Contains\"/>, <xref "
+"linkend=\"ST_ContainsProperly\"/>, <xref linkend=\"ST_Covers\"/>, <xref "
+"linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Crosses\"/>, <xref linkend="
+"\"ST_Disjoint\"/>, <xref linkend=\"ST_Equals\"/>, <xref linkend="
+"\"ST_Intersects\"/>, <xref linkend=\"ST_Overlaps\"/>, <xref linkend="
+"\"ST_Touches\"/>, <xref linkend=\"ST_Within\"/>"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:1327
 #, no-c-format
 msgid ""
 "Tests if a DE-9IM Intersection Matrix matches an Intersection Matrix pattern"
-msgstr ""
+msgstr "测试 DE-9IM 交集矩阵是否与交集矩阵模式匹配"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:1333
@@ -1710,6 +1735,10 @@ msgid ""
 "paramdef> <paramdef><type>text </type> <parameter>intersectionMatrixPattern</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>boolean <function>ST_RelateMatch</function></funcdef> "
+"<paramdef><type>text </type> <parameter>intersectionMatrix</parameter></"
+"paramdef> <paramdef><type>text </type> "
+"<parameter>intersectionMatrixPattern</parameter></paramdef>"
 
 #. Tag: para
 #: reference_relationship.xml:1344
@@ -1720,6 +1749,10 @@ msgid ""
 "varname> value satisfies an <varname>intersectionMatrixPattern</varname>. "
 "Intersection matrix values can be computed by <xref linkend=\"ST_Relate\"/>."
 msgstr ""
+"测试<ulink url=\"http://en.wikipedia.org/wiki/DE-9IM\">维度扩展 9 交集模型</"
+"ulink> (DE-9IM) "
+"<varname>交集矩阵</varname>值是否满足<varname>交集矩阵模式</varname>。 "
+"交集矩阵值可以通过<xref linkend=\"ST_Relate\"/> 计算。"
 
 #. Tag: para
 #: reference_relationship.xml:1362
@@ -1727,13 +1760,13 @@ msgstr ""
 msgid ""
 "Patterns for common spatial relationships matched against intersection "
 "matrix values, for a line in various positions relative to a polygon"
-msgstr ""
+msgstr "对于相对于多边形处于不同位置的线，常见空间关系的模式与相交矩阵值相匹配"
 
 #. Tag: para
 #: reference_relationship.xml:1371
 #, no-c-format
 msgid ", <xref linkend=\"ST_Relate\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Relate\"/>"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:1379
@@ -1741,7 +1774,7 @@ msgstr ""
 msgid ""
 "Tests if two geometries have at least one point in common, but their "
 "interiors do not intersect"
-msgstr ""
+msgstr "测试两个几何图形是否至少有一个共同点，但它们的内部不相交"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:1385
@@ -1751,6 +1784,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>A</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>B</parameter></paramdef>"
 msgstr ""
+"<funcdef>boolean <function>ST_Touches</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>A</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>B</parameter></paramdef>"
 
 #. Tag: para
 #: reference_relationship.xml:1400
@@ -1762,6 +1798,9 @@ msgid ""
 "relationship is always <varname>FALSE</varname>, since points do not have a "
 "boundary."
 msgstr ""
+"如果 A 和 B 相交，但它们的内部不相交，则返回 <varname>TRUE</varname>。 "
+"等价地，A和B至少有一个公共点，并且公共点至少位于一个边界内。 对于点/点输入，"
+"关系始终为 <varname>FALSE</varname>，因为点没有边界。"
 
 #. Tag: para
 #: reference_relationship.xml:1406
@@ -1770,6 +1809,8 @@ msgid ""
 "In mathematical terms: <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) ≠ ∅) ∧ "
 "(A ⋂ B ≠ ∅) </emphasis>"
 msgstr ""
+"用数学术语来说： <emphasis>ST_Touches(A, B) ⇔ (Int(A) ⋂ Int(B) ≠ ∅) ∧ (A ⋂ B "
+"≠ ∅)</emphasis>"
 
 #. Tag: para
 #: reference_relationship.xml:1409
@@ -1777,25 +1818,25 @@ msgstr ""
 msgid ""
 "This relationship holds if the DE-9IM Intersection Matrix for the two "
 "geometries matches one of:"
-msgstr ""
+msgstr "如果两个几何图形的 DE-9IM 交集矩阵匹配以下之一，则此关系成立："
 
 #. Tag: markup
 #: reference_relationship.xml:1413
 #, no-c-format
 msgid "FT*******"
-msgstr ""
+msgstr "FT*******"
 
 #. Tag: markup
 #: reference_relationship.xml:1417
 #, no-c-format
 msgid "F**T*****"
-msgstr ""
+msgstr "F**T*****"
 
 #. Tag: markup
 #: reference_relationship.xml:1421
 #, no-c-format
 msgid "F***T****"
-msgstr ""
+msgstr "F***T****"
 
 #. Tag: para
 #: reference_relationship.xml:1425
@@ -1803,13 +1844,13 @@ msgstr ""
 msgid ""
 "&index_aware; To avoid using an index, use <function>_ST_Touches</function> "
 "instead."
-msgstr ""
+msgstr "&index_aware; 要避免使用索引，请改用<function> _ST_Touches</function>。"
 
 #. Tag: para
 #: reference_relationship.xml:1434
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.28"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.28"
 
 #. Tag: para
 #: reference_relationship.xml:1440
@@ -1817,7 +1858,8 @@ msgstr ""
 msgid ""
 "The <function>ST_Touches</function> predicate returns <varname>TRUE</"
 "varname> in the following examples."
-msgstr ""
+msgstr "<function>ST_Touches </function>谓词在以下示例中返回 "
+"<varname>TRUE</varname>。"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:1518
@@ -1825,7 +1867,7 @@ msgstr ""
 msgid ""
 "Tests if every point of A lies in B, and their interiors have a point in "
 "common"
-msgstr ""
+msgstr "测试 A 的每个点是否都位于 B 中，并且它们的内部是否有一个共同点"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:1523
@@ -1835,6 +1877,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>A</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>B</parameter></paramdef>"
 msgstr ""
+"<funcdef>boolean <function>ST_Within</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>A</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>B</parameter></paramdef>"
 
 #. Tag: para
 #: reference_relationship.xml:1538
@@ -1845,6 +1890,9 @@ msgid ""
 "equivalently, no points of A lie in the exterior of B), and the interiors of "
 "A and B have at least one point in common."
 msgstr ""
+"如果几何图形 A 位于几何图形 B 内，则返回 TRUE。当且仅当 A 的所有点都位于 B "
+"内部（即位于 B 的内部或边界）时，A 位于 B 内（或者等效地，A 的任何点均位于 B "
+"的外部）， A 和 B 的内部结构至少有一个共同点。"
 
 #. Tag: para
 #: reference_relationship.xml:1543
@@ -1852,7 +1900,7 @@ msgstr ""
 msgid ""
 "For this function to make sense, the source geometries must both be of the "
 "same coordinate projection, having the same SRID."
-msgstr ""
+msgstr "为了使此函数有意义，源几何图形必须具有相同的坐标投影，并具有相同的 SRID。"
 
 #. Tag: para
 #: reference_relationship.xml:1548
@@ -1861,6 +1909,8 @@ msgid ""
 "In mathematical terms: <emphasis>ST_Within(A, B) ⇔ (A ⋂ B = A) ∧ (Int(A) ⋂ "
 "Int(B) ≠ ∅) </emphasis>"
 msgstr ""
+"用数学术语来说： <emphasis>ST_Within(A, B) ⇔ (A ⋂ B = A) ∧ (Int(A) ⋂ Int(B) ≠"
+" ∅)</emphasis>"
 
 #. Tag: para
 #: reference_relationship.xml:1551
@@ -1871,6 +1921,9 @@ msgid ""
 "<code>ST_Within(B,A) = true</code>, then the two geometries must be "
 "topologically equal (<code>ST_Equals(A,B) = true</code>)."
 msgstr ""
+"内部关系是自反的：每个几何体都在其自身之内。 该关系是反对称的：如果 "
+"<code>ST_Within(A,B) = true</code> 且<code> ST_Within(B,A) = true</code>，"
+"则两个几何图形在拓扑上必须相等 (<code>ST_Equals(A,B) = true</code>)。"
 
 #. Tag: para
 #: reference_relationship.xml:1555
@@ -1879,6 +1932,8 @@ msgid ""
 "ST_Within is the converse of <xref linkend=\"ST_Contains\"/>. So, "
 "<code>ST_Within(A,B) = ST_Contains(B,A)</code>."
 msgstr ""
+"ST_Within 与 <xref linkend=\"ST_Contains\"/> 相反。 "
+"因此，<code>ST_Within(A,B) = ST_Contains(B,A)</code>。"
 
 #. Tag: para
 #: reference_relationship.xml:1558
@@ -1892,6 +1947,11 @@ msgid ""
 "The <xref linkend=\"ST_CoveredBy\"/> predicate provides a more inclusive "
 "relationship."
 msgstr ""
+"因为内部必须有一个公共点，所以定义的一个微妙之处在于，完全位于多边形或线的边"
+"界内的线和点<emphasis>不</emphasis>在几何内部。 有关更多详细信息，请参阅 "
+"<ulink url=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-"
+"covers-spatial.html\">OGC覆盖、包含、内部的微妙之处</ulink>。 <xref linkend="
+"\"ST_CoveredBy\"/> 谓词提供了更具包容性的关系。"
 
 #. Tag: para
 #: reference_relationship.xml:1564
@@ -1899,19 +1959,19 @@ msgstr ""
 msgid ""
 "&index_aware; To avoid index use, use the function <function>_ST_Within</"
 "function>."
-msgstr ""
+msgstr "&index_aware; 要避免使用索引，请使用函数 <function>_ST_Within</function>。"
 
 #. Tag: para
 #: reference_relationship.xml:1582
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.2 // s2.1.13.3 - a.Relate(b, 'T*F**F***')"
-msgstr ""
+msgstr "&sfs_compliant; s2.1.1.2 // s2.1.13.3 - a.Relate(b, 'T*F**F***')"
 
 #. Tag: para
 #: reference_relationship.xml:1585
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.30"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.30"
 
 #. Tag: para
 #: reference_relationship.xml:1601
@@ -1920,18 +1980,20 @@ msgid ""
 ", <xref linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Equals\"/>, <xref "
 "linkend=\"ST_IsValid\"/>"
 msgstr ""
+", <xref linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Equals\"/>, <xref "
+"linkend=\"ST_IsValid\"/>"
 
 #. Tag: title
 #: reference_relationship.xml:1609
 #, no-c-format
 msgid "Distance Relationships"
-msgstr ""
+msgstr "距离关系"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:1615
 #, no-c-format
 msgid "Tests if two 3D geometries are within a given 3D distance"
-msgstr ""
+msgstr "测试两个 3D 几何图形是否在给定的 3D 距离内"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:1619
@@ -1943,6 +2005,11 @@ msgid ""
 "<paramdef><type>double precision </type> <parameter>distance_of_srid</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>boolean <function>ST_3DDWithin</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef> "
+"<paramdef><type>double precision </type> "
+"<parameter>distance_of_srid</parameter></paramdef>"
 
 #. Tag: para
 #: reference_relationship.xml:1637
@@ -1954,12 +2021,15 @@ msgid ""
 "function to make sense the source geometries must be in the same coordinate "
 "system (have the same SRID)."
 msgstr ""
+"如果两个几何值之间的 3D 距离不大于距离 <varname>distance_of_srid</varname>，"
+"则返回 true。 距离以几何空间参考系统定义的单位指定。 "
+"为了使此函数有意义，源几何图形必须位于同一坐标系中（具有相同的 SRID）。"
 
 #. Tag: para
 #: reference_relationship.xml:1649
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM ?"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM ?"
 
 #. Tag: para
 #: reference_relationship.xml:1663
@@ -1969,12 +2039,15 @@ msgid ""
 "linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_Distance\"/>, <xref "
 "linkend=\"ST_3DMaxDistance\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ""
+", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DFullyWithin\"/>, <xref "
+"linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_Distance\"/>, <xref linkend="
+"\"ST_3DMaxDistance\"/>, <xref linkend=\"ST_Transform\"/>"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:1675
 #, no-c-format
 msgid "Tests if two 3D geometries are entirely within a given 3D distance"
-msgstr ""
+msgstr "测试两个 3D 几何图形是否完全在给定的 3D 距离内"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:1680
@@ -1986,6 +2059,11 @@ msgid ""
 "<paramdef><type>double precision </type> <parameter>distance</parameter></"
 "paramdef>"
 msgstr ""
+"<funcdef>boolean <function>ST_3DDFullyWithin</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef> "
+"<paramdef><type>double precision </type> "
+"<parameter>distance</parameter></paramdef>"
 
 #. Tag: para
 #: reference_relationship.xml:1698
@@ -1997,6 +2075,9 @@ msgid ""
 "source geometries must both be of the same coordinate projection, having the "
 "same SRID."
 msgstr ""
+"如果 3D 几何图形彼此完全在指定距离内，则返回 true。 "
+"距离以几何空间参考系统定义的单位指定。 "
+"为了使此函数有意义，源几何图形必须具有相同的坐标投影，并具有相同的 SRID。"
 
 #. Tag: para
 #: reference_relationship.xml:1721
@@ -2005,12 +2086,14 @@ msgid ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DFullyWithin\"/>, <xref "
 "linkend=\"ST_3DMaxDistance\"/>"
 msgstr ""
+", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DFullyWithin\"/>, <xref "
+"linkend=\"ST_3DMaxDistance\"/>"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:1731
 #, no-c-format
 msgid "Tests if two geometries are entirely within a given distance"
-msgstr ""
+msgstr "测试两个几何图形是否完全在给定距离内"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:1736
@@ -2022,6 +2105,11 @@ msgid ""
 "<paramdef><type>double precision </type> <parameter>distance</parameter></"
 "paramdef>"
 msgstr ""
+"<funcdef>boolean <function>ST_DFullyWithin</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef> "
+"<paramdef><type>double precision </type> "
+"<parameter>distance</parameter></paramdef>"
 
 #. Tag: para
 #: reference_relationship.xml:1754
@@ -2033,6 +2121,9 @@ msgid ""
 "source geometries must both be of the same coordinate projection, having the "
 "same SRID."
 msgstr ""
+"如果几何图形彼此完全在指定距离内，则返回 true。 "
+"距离以几何空间参考系统定义的单位指定。 "
+"为了使此函数有意义，源几何图形必须具有相同的坐标投影，并具有相同的 SRID。"
 
 #. Tag: para
 #: reference_relationship.xml:1762
@@ -2047,18 +2138,20 @@ msgid ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_3DDWithin\"/>, <xref "
 "linkend=\"ST_3DDFullyWithin\"/>"
 msgstr ""
+", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_3DDWithin\"/>, <xref "
+"linkend=\"ST_3DDFullyWithin\"/>"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:1782
 #, no-c-format
 msgid "Tests if two geometries are within a given distance"
-msgstr ""
+msgstr "测试两个几何图形是否在给定距离内"
 
 #. Tag: para
 #: reference_relationship.xml:1819
 #, no-c-format
 msgid "Returns true if the geometries are within a given distance"
-msgstr ""
+msgstr "如果几何图形在给定距离内，则返回 true"
 
 #. Tag: para
 #: reference_relationship.xml:1821
@@ -2069,6 +2162,8 @@ msgid ""
 "the source geometries must be in the same coordinate system (have the same "
 "SRID)."
 msgstr ""
+"对于<type>几何图形</type>：距离以几何图形的空间参考系统定义的单位指定。 "
+"为了使此函数有意义，源几何图形必须位于同一坐标系中（具有相同的 SRID）。"
 
 #. Tag: para
 #: reference_relationship.xml:1826
@@ -2078,12 +2173,15 @@ msgid ""
 "defaults to <varname>use_spheroid = true</varname>. For faster evaluation "
 "use <varname>use_spheroid = false</varname> to measure on the sphere."
 msgstr ""
+"对于<type>地理</type>：单位为米，距离测量默认为<varname> use_spheroid = "
+"true</varname>。 为了更快地进行评估，请使用<varname> use_spheroid = false "
+"</varname>在球体上进行测量。"
 
 #. Tag: para
 #: reference_relationship.xml:1831
 #, no-c-format
 msgid "Use <xref linkend=\"ST_3DDWithin\"/> for 3D geometries."
-msgstr ""
+msgstr "将 <xref linkend=\"ST_3DDWithin\"/>用于 3D 几何图形。"
 
 #. Tag: para
 #: reference_relationship.xml:1834
@@ -2091,7 +2189,7 @@ msgstr ""
 msgid ""
 "This function call includes a bounding box comparison that makes use of any "
 "indexes that are available on the geometries."
-msgstr ""
+msgstr "此函数调用包括利用几何上可用的任何索引的边界框比较。"
 
 #. Tag: para
 #: reference_relationship.xml:1839
@@ -2103,7 +2201,7 @@ msgstr "&sfs_compliant;"
 #: reference_relationship.xml:1840
 #, no-c-format
 msgid "Availability: 1.5.0 support for geography was introduced"
-msgstr ""
+msgstr "可用性：1.5.0 引入了对地理的支持"
 
 #. Tag: para
 #: reference_relationship.xml:1841
@@ -2113,12 +2211,14 @@ msgid ""
 "opengeo.org/2012/07/12/making-geography-faster/\">Making Geography faster</"
 "ulink> for details."
 msgstr ""
+"增强：2.1.0 提高了地理速度。 有关详细信息，请参阅<ulink url=\"http://blog."
+"opengeo.org/2012/07/12/making-geography-faster/\">使地理更快</ulink>。"
 
 #. Tag: para
 #: reference_relationship.xml:1842
 #, no-c-format
 msgid "Enhanced: 2.1.0 support for curved geometries was introduced."
-msgstr ""
+msgstr "增强：2.1.0 引入了对弯曲几何形状的支持。"
 
 #. Tag: para
 #: reference_relationship.xml:1844
@@ -2129,19 +2229,23 @@ msgid ""
 "function used that logic. From 1.3.4, ST_DWithin uses a faster short-circuit "
 "distance function."
 msgstr ""
+"在版本1.3之前，通常会将<xref linkend=\"ST_Expand\"/>与 &amp;&amp; "
+"和ST_Distance一起使用来测试距离，而在1.3."
+"4之前的版本中，该函数使用了这种逻辑。从1.3."
+"4版本开始，ST_DWithin使用更快速的短路距离函数。"
 
 #. Tag: para
 #: reference_relationship.xml:1858
 #, no-c-format
 msgid ", <xref linkend=\"ST_3DDWithin\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_3DDWithin\"/>"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:1866
 #, no-c-format
 msgid ""
 "Tests if a point geometry is inside a circle defined by a center and radius"
-msgstr ""
+msgstr "测试点几何图形是否位于由圆心和半径定义的圆内"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:1871
@@ -2153,6 +2257,11 @@ msgid ""
 "<paramdef><type>float </type> <parameter>center_y</parameter></paramdef> "
 "<paramdef><type>float </type> <parameter>radius</parameter></paramdef>"
 msgstr ""
+"<funcdef>boolean <function>ST_PointInsideCircle</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>center_x</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>center_y</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>radius</parameter></paramdef>"
 
 #. Tag: para
 #: reference_relationship.xml:1884
@@ -2162,22 +2271,25 @@ msgid ""
 "<varname>center_x</varname>,<varname>center_y</varname> and radius "
 "<varname>radius</varname>."
 msgstr ""
+"如果几何图形是一个点并且位于以 <varname>center_x</varname>、"
+"<varname>center_y </varname>和半径<varname> radius </varname>为圆心的圆内，"
+"则返回 true。"
 
 #. Tag: para
 #: reference_relationship.xml:1888
 #, no-c-format
 msgid ""
 "Does not use spatial indexes. Use <xref linkend=\"ST_DWithin\"/> instead."
-msgstr ""
+msgstr "不使用空间索引。 请改用 <xref linkend=\"ST_DWithin\"/>。"
 
 #. Tag: para
 #: reference_relationship.xml:1890
 #, no-c-format
 msgid "Availability: 1.2"
-msgstr ""
+msgstr "可用性：1.2"
 
 #. Tag: para
 #: reference_relationship.xml:1891
 #, no-c-format
 msgid "Changed: 2.2.0 In prior versions this was called ST_Point_Inside_Circle"
-msgstr ""
+msgstr "更改：2.2.0 在之前的版本中，这称为 ST_Point_Inside_Circle"
