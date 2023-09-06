@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-05 05:07+0000\n"
+"PO-Revision-Date: 2023-09-06 01:08+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_editorxml/zh_Hans/>\n"
@@ -24,19 +24,19 @@ msgstr ""
 msgid ""
 "These functions create modified geometries by changing type, structure or "
 "vertices."
-msgstr ""
+msgstr "这些函数通过更改类型、结构或顶点来创建修改后的几何图形。"
 
 #. Tag: title
 #: reference_editor.xml:10
 #, no-c-format
 msgid "Geometry Editors"
-msgstr ""
+msgstr "几何编辑器"
 
 #. Tag: refpurpose
 #: reference_editor.xml:15
 #, no-c-format
 msgid "Add a point to a LineString."
-msgstr ""
+msgstr "将点添加到线串（LineString）。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:19
@@ -46,6 +46,9 @@ msgid ""
 "<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
 "<paramdef><type>geometry</type> <parameter>point</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_AddPoint</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>point</parameter></paramdef>"
 
 #. Tag: funcprototype
 #: reference_editor.xml:26
@@ -57,6 +60,11 @@ msgid ""
 "<paramdef><type>integer</type> <parameter>position = -1</parameter></"
 "paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_AddPoint</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>point</parameter></paramdef> "
+"<paramdef><type>integer</type> <parameter>position = "
+"-1</parameter></paramdef>"
 
 #. Tag: title
 #: reference_editor.xml:36 reference_editor.xml:92 reference_editor.xml:168
@@ -85,6 +93,9 @@ msgid ""
 "parameter is omitted or is -1 the point is appended to the end of the "
 "LineString."
 msgstr ""
+"在索引<parameter>位置</parameter>之前向LineString 添加一个点（使用从 0 "
+"开始的索引）。如果<parameter>位置</parameter>参数被省略或为 -1，"
+"则该点将附加到 LineString 的末尾。"
 
 #. Tag: para
 #: reference_editor.xml:42 reference_editor.xml:1310 reference_editor.xml:1532
@@ -126,7 +137,7 @@ msgstr "示例"
 #: reference_editor.xml:49
 #, no-c-format
 msgid "Add a point to the end of a 3D line"
-msgstr ""
+msgstr "在 3D 线的末尾添加一个点"
 
 #. Tag: para
 #: reference_editor.xml:52
@@ -134,7 +145,8 @@ msgstr ""
 msgid ""
 "Guarantee all lines in a table are closed by adding the start point of each "
 "line to the end of the line only for those that are not closed."
-msgstr ""
+msgstr "仅对于表中那些未闭合的线，通过将每条线的起点添加到线的末尾来保证表中的所有线"
+"都是闭合的。"
 
 #. Tag: title
 #: reference_editor.xml:60 reference_editor.xml:142 reference_editor.xml:209
@@ -157,7 +169,7 @@ msgstr "相关信息"
 #: reference_editor.xml:61
 #, no-c-format
 msgid ", <xref linkend=\"ST_SetPoint\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_SetPoint\"/>"
 
 #. Tag: refpurpose
 #: reference_editor.xml:70
@@ -165,7 +177,7 @@ msgstr ""
 msgid ""
 "Given a geometry collection, returns a multi-geometry containing only "
 "elements of a specified type."
-msgstr ""
+msgstr "给定一个几何集合，返回仅包含指定类型元素的多几何图形。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:77
@@ -174,6 +186,8 @@ msgid ""
 "<funcdef>geometry <function>ST_CollectionExtract</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_CollectionExtract</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>"
 
 #. Tag: funcprototype
 #: reference_editor.xml:83
@@ -184,12 +198,16 @@ msgid ""
 "paramdef> <paramdef><type>integer </type> <parameter>type</parameter></"
 "paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_CollectionExtract</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>collection</parameter></"
+"paramdef> <paramdef><type>integer </type> "
+"<parameter>type</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:94
 #, no-c-format
 msgid "Given a geometry collection, returns a homogeneous multi-geometry."
-msgstr ""
+msgstr "给定一个几何集合，返回同种类型多几何。"
 
 #. Tag: para
 #: reference_editor.xml:96
@@ -198,7 +216,8 @@ msgid ""
 "If the <parameter>type</parameter> is not specified, returns a multi-"
 "geometry containing only geometries of the highest dimension. So polygons "
 "are preferred over lines, which are preferred over points."
-msgstr ""
+msgstr "如果未指定<parameter>类型</parameter>，则返回仅包含最高维度几何的多几何。 "
+"因此，多边形优先于线，线优先于点。"
 
 #. Tag: para
 #: reference_editor.xml:99
@@ -209,24 +228,27 @@ msgid ""
 "an EMPTY geometry is returned. Only points, lines and polygons are "
 "supported. The type numbers are:"
 msgstr ""
+"如果指定了<parameter>类型</parameter>，则返回仅包含指定类型的多几何。 "
+"如果没有指定类型的元素，则返回 EMPTY 几何图形。 仅支持点、线和面。 "
+"类型编号如下："
 
 #. Tag: para
 #: reference_editor.xml:103
 #, no-c-format
 msgid "1 == POINT"
-msgstr ""
+msgstr "1 == POINT"
 
 #. Tag: para
 #: reference_editor.xml:104
 #, no-c-format
 msgid "2 == LINESTRING"
-msgstr ""
+msgstr "2 == LINESTRING"
 
 #. Tag: para
 #: reference_editor.xml:105
 #, no-c-format
 msgid "3 == POLYGON"
-msgstr ""
+msgstr "3 == POLYGON"
 
 #. Tag: para
 #: reference_editor.xml:108
@@ -237,6 +259,9 @@ msgid ""
 "of the specified type. If required, these can be converted to multi-"
 "geometries using <xref linkend=\"ST_Multi\"/>."
 msgstr ""
+"对于基本几何输入，如果输入类型与请求的类型匹配，则几何图形将保持不变返回。 "
+"否则，结果是指定类型的空几何图形。 如果需要，可以使用 <xref linkend="
+"\"ST_Multi\"/> 将它们转换为多几何图形。"
 
 #. Tag: para
 #: reference_editor.xml:114
@@ -248,12 +273,16 @@ msgid ""
 "result.) This situation can be checked with <xref linkend=\"ST_IsValid\"/> "
 "and repaired with <xref linkend=\"ST_MakeValid\"/>."
 msgstr ""
+"不检查 MultiPolygon 结果的有效性。 "
+"如果多边形组件相邻或重叠，则结果将无效。（例如，将此函数应用于 <xref linkend="
+"\"ST_Split\"/>结果时可能会发生这种情况。）可以使用 <xref linkend=\"ST_IsValid"
+"\"/> 检查这种情况并使用<xref linkend=\"ST_MakeValid\"/> 修复。"
 
 #. Tag: para
 #: reference_editor.xml:120
 #, no-c-format
 msgid "Availability: 1.5.0"
-msgstr ""
+msgstr "可用性：1.5.0"
 
 #. Tag: para
 #: reference_editor.xml:122
@@ -264,24 +293,27 @@ msgid ""
 "2.0.0 non-matching single geometries return an EMPTY result of the requested "
 "type."
 msgstr ""
+"在 1.5.3 之前，无论类型如何，该函数都会返回同种类型的基本几何输入。在 1.5.3 "
+"中，不匹配的单个几何图形返回 NULL 结果。 在 2.0.0 中，"
+"不匹配的单个几何图形返回请求类型的 EMPTY 结果。"
 
 #. Tag: para
 #: reference_editor.xml:132
 #, no-c-format
 msgid "Extract highest-dimension type:"
-msgstr ""
+msgstr "提取最大维度类型："
 
 #. Tag: para
 #: reference_editor.xml:135
 #, no-c-format
 msgid "Extract points (type 1 == POINT):"
-msgstr ""
+msgstr "提取点（type 1 == POINT）："
 
 #. Tag: para
 #: reference_editor.xml:138
 #, no-c-format
 msgid "Extract lines (type 2 == LINESTRING):"
-msgstr ""
+msgstr "提取线（type 2 == LINESTRING）："
 
 #. Tag: para
 #: reference_editor.xml:143 reference_editor.xml:210
@@ -290,12 +322,14 @@ msgid ""
 ", <xref linkend=\"ST_Multi\"/>, <xref linkend=\"ST_IsValid\"/>, <xref "
 "linkend=\"ST_MakeValid\"/>"
 msgstr ""
+", <xref linkend=\"ST_Multi\"/>, <xref linkend=\"ST_IsValid\"/>, <xref "
+"linkend=\"ST_MakeValid\"/>"
 
 #. Tag: refpurpose
 #: reference_editor.xml:153
 #, no-c-format
 msgid "Returns the simplest representation of a geometry collection."
-msgstr ""
+msgstr "返回几何集合的最简单表示。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:160
@@ -304,6 +338,8 @@ msgid ""
 "<funcdef>geometry <function>ST_CollectionHomogenize</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_CollectionHomogenize</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:170
@@ -311,7 +347,7 @@ msgstr ""
 msgid ""
 "Given a geometry collection, returns the \"simplest\" representation of the "
 "contents."
-msgstr ""
+msgstr "给定几何集合，它返回“最简单”的表示形式。"
 
 #. Tag: para
 #: reference_editor.xml:174
@@ -319,7 +355,7 @@ msgstr ""
 msgid ""
 "Homogeneous (uniform) collections are returned as the appropriate multi-"
 "geometry."
-msgstr ""
+msgstr "同质集合将以适当的多几何体形式返回。"
 
 #. Tag: para
 #: reference_editor.xml:175
@@ -327,14 +363,14 @@ msgstr ""
 msgid ""
 "Heterogeneous (mixed) collections are flattened into a single "
 "GeometryCollection."
-msgstr ""
+msgstr "混合类型集合将转换为单个平面几何集合。"
 
 #. Tag: para
 #: reference_editor.xml:176
 #, no-c-format
 msgid ""
 "Collections containing a single atomic element are returned as that element."
-msgstr ""
+msgstr "包含单个基本元素的集合将作为该元素返回。"
 
 #. Tag: para
 #: reference_editor.xml:177
@@ -342,7 +378,8 @@ msgstr ""
 msgid ""
 "Atomic geometries are returned unchanged. If required, these can be "
 "converted to a multi-geometry using <xref linkend=\"ST_Multi\"/>."
-msgstr ""
+msgstr "基本几何形状返回不变。如果需要，可以使用<xref linkend=\"ST_Multi\""
+"/>将它们转换为多几何图形。"
 
 #. Tag: para
 #: reference_editor.xml:181
@@ -353,49 +390,52 @@ msgid ""
 "invalid MultiPolygon. This situation can be checked with <xref "
 "linkend=\"ST_IsValid\"/> and repaired with <xref linkend=\"ST_MakeValid\"/>."
 msgstr ""
+"该函数不保证结果有效。特别是，包含相邻或重叠多边形的集合将创建无效的多多边形"
+"。这种情况可以使用<xref linkend=\"ST_IsValid\"/>检查并使用<xref linkend="
+"\"ST_MakeValid\"/>修复。"
 
 #. Tag: para
 #: reference_editor.xml:187 reference_editor.xml:357 reference_editor.xml:1138
 #: reference_editor.xml:1811
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr "有效性：2.0.0"
+msgstr "Availability: 2.0.0"
 
 #. Tag: para
 #: reference_editor.xml:193
 #, no-c-format
 msgid "Single-element collection converted to an atomic geometry"
-msgstr ""
+msgstr "单个元素集合转为基本集合"
 
 #. Tag: para
 #: reference_editor.xml:196
 #, no-c-format
 msgid "Nested single-element collection converted to an atomic geometry:"
-msgstr ""
+msgstr "将嵌套的单元素集合转换为基本几何："
 
 #. Tag: para
 #: reference_editor.xml:199
 #, no-c-format
 msgid "Collection converted to a multi-geometry:"
-msgstr ""
+msgstr "集合转换为多几何图形："
 
 #. Tag: para
 #: reference_editor.xml:202
 #, no-c-format
 msgid "Nested heterogeneous collection flattened to a GeometryCollection:"
-msgstr ""
+msgstr "将嵌套混合类型集合转换为平面几何集合："
 
 #. Tag: para
 #: reference_editor.xml:205
 #, no-c-format
 msgid "Collection of Polygons converted to an (invalid) MultiPolygon:"
-msgstr ""
+msgstr "将多边形集合转换为（无效的）多多边形："
 
 #. Tag: refpurpose
 #: reference_editor.xml:219
 #, no-c-format
 msgid "Converts a geometry containing curves to a linear geometry."
-msgstr ""
+msgstr "将包含曲线的几何图形转换为线性几何图形。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:224
@@ -408,6 +448,12 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>integer</type> "
 "<parameter>flags</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_CurveToLine</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>curveGeom</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer</type> "
+"<parameter>tolerance_type</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>integer</type> <parameter>flags</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:237
@@ -417,6 +463,9 @@ msgid ""
 "or MULTISURFACE to MULTIPOLYGON. Useful for outputting to devices that can't "
 "support CIRCULARSTRING geometry types"
 msgstr ""
+"将 CIRCULAR STRING 转换为常规 LINESTRING，或将 CURVEPOLYGON 转换为 POLYGON，"
+"或将 MULTISURFACE 转换为 MULTIPOLYGON。 对于输出到不支持 CIRCULARSTRING "
+"几何类型的设备很有用"
 
 #. Tag: para
 #: reference_editor.xml:239
@@ -426,6 +475,9 @@ msgid ""
 "segment is converted into a linear approximation using the given `tolerance` "
 "and options (32 segments per quadrant and no options by default)."
 msgstr ""
+"将给定几何图形转换为线性几何图形。 "
+"使用给定的“公差”和选项（每个象限（一个圆的四个部分）32 "
+"个线段，默认情况下没有选项）将每个弯曲几何图形或线段转换为线性近似值。"
 
 #. Tag: para
 #: reference_editor.xml:244
@@ -433,37 +485,37 @@ msgstr ""
 msgid ""
 "The 'tolerance_type' argument determines interpretation of the `tolerance` "
 "argument. It can take the following values:"
-msgstr ""
+msgstr "“tolerance_type”参数决定“tolerance”参数的解释。它可以采用以下值："
 
 #. Tag: para
 #: reference_editor.xml:249
 #, no-c-format
 msgid "0 (default): Tolerance is max segments per quadrant."
-msgstr ""
+msgstr "0（默认）：公差是四分之一圆的最大边数。"
 
 #. Tag: para
 #: reference_editor.xml:252
 #, no-c-format
 msgid "1: Tolerance is max-deviation of line from curve, in source units."
-msgstr ""
+msgstr "1：公差是从曲线到直线的最大差值。 单位是输入几何的单位。"
 
 #. Tag: para
 #: reference_editor.xml:255
 #, no-c-format
 msgid "2: Tolerance is max-angle, in radians, between generating radii."
-msgstr ""
+msgstr "2：公差是由半径形成的角度的最大值（以弧度为单位）。"
 
 #. Tag: para
 #: reference_editor.xml:260
 #, no-c-format
 msgid "The 'flags' argument is a bitfield. 0 by default. Supported bits are:"
-msgstr ""
+msgstr "'flags' 参数是一个位字段。 默认为 0。 支持的位有："
 
 #. Tag: para
 #: reference_editor.xml:265
 #, no-c-format
 msgid "1: Symmetric (orientation idependent) output."
-msgstr ""
+msgstr "1：对称（与方向无关）输出。"
 
 #. Tag: para
 #: reference_editor.xml:268
@@ -471,13 +523,13 @@ msgstr ""
 msgid ""
 "2: Retain angle, avoids reducing angles (segment lengths) when producing "
 "symmetric output. Has no effect when Symmetric flag is off."
-msgstr ""
+msgstr "2：保留角度，避免在产生对称输出时减少角度（线段长度）， 对称标志关闭时无效。"
 
 #. Tag: para
 #: reference_editor.xml:273 reference_editor.xml:903
 #, no-c-format
 msgid "Availability: 1.3.0"
-msgstr ""
+msgstr "可用性：1.3.0"
 
 #. Tag: para
 #: reference_editor.xml:274
@@ -485,7 +537,7 @@ msgstr ""
 msgid ""
 "Enhanced: 2.4.0 added support for max-deviation and max-angle tolerance, and "
 "for symmetric output."
-msgstr ""
+msgstr "增强：2.4.0 支持最大距离差公差和最大角度公差，支持对称输出。"
 
 #. Tag: para
 #: reference_editor.xml:275
@@ -493,7 +545,7 @@ msgstr ""
 msgid ""
 "Enhanced: 3.0.0 implemented a minimum number of segments per linearized arc "
 "to prevent topological collapse."
-msgstr ""
+msgstr "增强：3.0.0 实现了每弧的最小线性分数。 防止拓扑崩溃。"
 
 #. Tag: para
 #: reference_editor.xml:277
@@ -505,7 +557,7 @@ msgstr "&sfs_compliant;"
 #: reference_editor.xml:278
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.7"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.7"
 
 #. Tag: para
 #: reference_editor.xml:280 reference_editor.xml:358 reference_editor.xml:404
@@ -520,7 +572,7 @@ msgstr "&curve_support;"
 #: reference_editor.xml:301
 #, no-c-format
 msgid "Change start point of a closed LineString."
-msgstr ""
+msgstr "更改闭合线串的起点。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:305
@@ -530,6 +582,9 @@ msgid ""
 "<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
 "<paramdef><type>geometry</type> <parameter>point</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Scroll</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>point</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:316
@@ -537,7 +592,7 @@ msgstr ""
 msgid ""
 "Changes the start/end point of a closed LineString to the given vertex "
 "<parameter>point</parameter>."
-msgstr ""
+msgstr "将闭合线串的起点/终点更改为给定的<parameter>point</parameter>。"
 
 #. Tag: para
 #: reference_editor.xml:320
@@ -550,19 +605,19 @@ msgstr "可用性：3.2.0"
 #: reference_editor.xml:734 reference_editor.xml:1928
 #, no-c-format
 msgid "&M_support;"
-msgstr ""
+msgstr "&M_support;"
 
 #. Tag: para
 #: reference_editor.xml:328
 #, no-c-format
 msgid "Make e closed line start at its 3rd vertex"
-msgstr ""
+msgstr "使 e 闭合线从其第三个顶点开始"
 
 #. Tag: refpurpose
 #: reference_editor.xml:341
 #, no-c-format
 msgid "Returns a version of a geometry with X and Y axis flipped."
-msgstr ""
+msgstr "返回 X 轴和 Y 轴转换的几何图形版本。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:346
@@ -571,6 +626,8 @@ msgid ""
 "<funcdef>geometry <function>ST_FlipCoordinates</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_FlipCoordinates</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:355
@@ -579,7 +636,8 @@ msgid ""
 "Returns a version of the given geometry with X and Y axis flipped. Useful "
 "for fixing geometries which contain coordinates expressed as latitude/"
 "longitude (Y,X)."
-msgstr ""
+msgstr "返回给定几何图形的 X 轴和 Y 轴转换的版本。对于修改包含以纬度/经度 (Y,X) "
+"表示的坐标的几何图形很有用。"
 
 #. Tag: para
 #: reference_editor.xml:361 reference_editor.xml:405 reference_editor.xml:449
@@ -601,13 +659,13 @@ msgstr "&T_support;"
 #: reference_editor.xml:366 reference_editor.xml:1934
 #, no-c-format
 msgid "Example"
-msgstr ""
+msgstr "示例"
 
 #. Tag: refpurpose
 #: reference_editor.xml:382
 #, no-c-format
 msgid "Force the geometries into a \"2-dimensional mode\"."
-msgstr ""
+msgstr "强制几何图形进入“二维模式”。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:387
@@ -616,6 +674,8 @@ msgid ""
 "<funcdef>geometry <function>ST_Force2D</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Force2D</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:397
@@ -625,25 +685,27 @@ msgid ""
 "representations will only have the X and Y coordinates. This is useful for "
 "force OGC-compliant output (since OGC only specifies 2-D geometries)."
 msgstr ""
+"强制几何图形进入“二维模式”，以便所有输出表示仅具有 X 和 Y 坐标。 这对于强制 "
+"OGC 兼容输出非常有用（因为 OGC 仅指定二维几何形状）。"
 
 #. Tag: para
 #: reference_editor.xml:402 reference_editor.xml:446 reference_editor.xml:491
 #: reference_editor.xml:672 reference_editor.xml:812
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces was introduced."
-msgstr "增强：引入了 2.0.0 多面体曲面支持。"
+msgstr "增强： 2.0.0 引入了对多面体曲面的支持。"
 
 #. Tag: para
 #: reference_editor.xml:403
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_2D."
-msgstr ""
+msgstr "更改： 2.1.0 在 2.0.x 期间，它被称为ST_Force_2D。"
 
 #. Tag: refpurpose
 #: reference_editor.xml:428
 #, no-c-format
 msgid "Force the geometries into XYZ mode. This is an alias for ST_Force3DZ."
-msgstr ""
+msgstr "强制几何图形进入 XYZ 模式。 这是 ST_Force3DZ 的别名。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:433
@@ -653,6 +715,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
 "<paramdef><type>float </type> <parameter>Zvalue = 0.0</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Force3D</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>Zvalue = 0.0</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:444
@@ -662,18 +727,20 @@ msgid ""
 "geometry has no Z component, then a <parameter>Zvalue</parameter> Z "
 "coordinate is tacked on."
 msgstr ""
+"强制几何图形进入 XYZ 模式。 这是 ST_Force3DZ 的别名。 如果几何体没有 Z "
+"分量，则会附加<parameter>Z值</parameter> Z 坐标。"
 
 #. Tag: para
 #: reference_editor.xml:447
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3D."
-msgstr ""
+msgstr "更改： 2.1.0 在 2.0.x 期间，它被称为 ST_Force_3D。"
 
 #. Tag: para
 #: reference_editor.xml:448 reference_editor.xml:493
 #, no-c-format
 msgid "Changed: 3.1.0. Added support for supplying a non-zero Z value."
-msgstr ""
+msgstr "更改： 3.1.0. 您现在可以指定一个非零 Z 值。"
 
 #. Tag: para
 #: reference_editor.xml:465
@@ -682,12 +749,14 @@ msgid ""
 ", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
 "linkend=\"ST_Force_3DZ\"/>"
 msgstr ""
+", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
+"linkend=\"ST_Force_3DZ\"/>"
 
 #. Tag: refpurpose
 #: reference_editor.xml:473
 #, no-c-format
 msgid "Force the geometries into XYZ mode."
-msgstr ""
+msgstr "强制几何图形进入 XYZ 模式。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:478
@@ -697,6 +766,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
 "<paramdef><type>float </type> <parameter>Zvalue = 0.0</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Force3DZ</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>Zvalue = 0.0</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:489
@@ -704,13 +776,14 @@ msgstr ""
 msgid ""
 "Forces the geometries into XYZ mode. If a geometry has no Z component, then "
 "a <parameter>Zvalue</parameter> Z coordinate is tacked on."
-msgstr ""
+msgstr "强制几何图形进入 XYZ 模式。如果几何体没有 Z 分量，则会附加 <parameter>Z值</"
+"parameter> Z 坐标。"
 
 #. Tag: para
 #: reference_editor.xml:492
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3DZ."
-msgstr ""
+msgstr "更改： 2.1.0。在 2.0.x 期间，它被称为 ST_Force_3DZ。"
 
 #. Tag: para
 #: reference_editor.xml:510 reference_editor.xml:597
@@ -719,12 +792,14 @@ msgid ""
 ", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
 "linkend=\"ST_Force_3D\"/>"
 msgstr ""
+", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
+"linkend=\"ST_Force_3D\"/>"
 
 #. Tag: refpurpose
 #: reference_editor.xml:518
 #, no-c-format
 msgid "Force the geometries into XYM mode."
-msgstr ""
+msgstr "强制几何图形进入 XYM 模式。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:523
@@ -734,6 +809,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
 "<paramdef><type>float </type> <parameter>Mvalue = 0.0</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Force3DM</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>Mvalue = 0.0</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:534
@@ -743,18 +821,20 @@ msgid ""
 "a <parameter>Mvalue</parameter> M coordinate is tacked on. If it has a Z "
 "component, then Z is removed"
 msgstr ""
+"强制几何图形进入XYM模式。 如果几何体没有 M 分量，则附加<parameter>M值</"
+"parameter>M 坐标。如果它有 Z 分量，则 Z 被移除"
 
 #. Tag: para
 #: reference_editor.xml:537
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3DM."
-msgstr ""
+msgstr "更改： 2.1.0 。在 2.0.x 期间，它被称为ST_Force_3DM。"
 
 #. Tag: para
 #: reference_editor.xml:538
 #, no-c-format
 msgid "Changed: 3.1.0. Added support for supplying a non-zero M value."
-msgstr ""
+msgstr "更改： 3.1.0. 现在可以指定一个非零 M 值。"
 
 #. Tag: para
 #: reference_editor.xml:553 reference_editor.xml:694
@@ -763,12 +843,14 @@ msgid ""
 ", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
 "linkend=\"ST_Force_3D\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
 msgstr ""
+", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
+"linkend=\"ST_Force_3D\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
 
 #. Tag: refpurpose
 #: reference_editor.xml:561
 #, no-c-format
 msgid "Force the geometries into XYZM mode."
-msgstr ""
+msgstr "强制几何图形进入XYZM模式。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:566
@@ -779,6 +861,10 @@ msgid ""
 "<paramdef><type>float </type> <parameter>Zvalue = 0.0</parameter></paramdef> "
 "<paramdef><type>float </type> <parameter>Mvalue = 0.0</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Force4D</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>Zvalue = 0.0</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>Mvalue = 0.0</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:578
@@ -788,18 +874,20 @@ msgid ""
 "<parameter>Mvalue</parameter> is tacked on for missing Z and M dimensions, "
 "respectively."
 msgstr ""
+"强制几何体进入 XYZM 模式。 如果没有 Z 值或 M 值，则添加 <parameter>Z值</"
+"parameter> 和<parameter>M值</parameter> 值。"
 
 #. Tag: para
 #: reference_editor.xml:580
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_4D."
-msgstr ""
+msgstr "更改： 2.1.0。在 2.0.x 期间，它被称为ST_Force_4D。"
 
 #. Tag: para
 #: reference_editor.xml:581
 #, no-c-format
 msgid "Changed: 3.1.0. Added support for supplying non-zero Z and M values."
-msgstr ""
+msgstr "更改： 3.1.0. 现在可以指定非零 Z 和 M 值。"
 
 #. Tag: refpurpose
 #: reference_editor.xml:606
@@ -807,7 +895,7 @@ msgstr ""
 msgid ""
 "Orients all exterior rings counter-clockwise and all interior rings "
 "clockwise."
-msgstr ""
+msgstr "将所有外环逆时针定向，将所有内环顺时针定向。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:613
@@ -816,6 +904,8 @@ msgid ""
 "<funcdef> geometry <function>ST_ForcePolygonCCW</function> </funcdef> "
 "<paramdef> <type>geometry</type> <parameter>geom</parameter> </paramdef>"
 msgstr ""
+"<funcdef> geometry <function>ST_ForcePolygonCCW</function> </funcdef> "
+"<paramdef> <type>geometry</type> <parameter>geom</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:629
@@ -824,7 +914,8 @@ msgid ""
 "Forces (Multi)Polygons to use a counter-clockwise orientation for their "
 "exterior ring, and a clockwise orientation for their interior rings. Non-"
 "polygonal geometries are returned unchanged."
-msgstr ""
+msgstr "强制（多）多边形对其外环使用逆时针方向，对其内环使用顺时针方向。 "
+"非多边形几何保持不变。"
 
 #. Tag: para
 #: reference_editor.xml:635 reference_editor.xml:732
@@ -838,12 +929,13 @@ msgstr "可用性：2.4.0"
 msgid ""
 ", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 msgstr ""
+", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 
 #. Tag: refpurpose
 #: reference_editor.xml:654
 #, no-c-format
 msgid "Convert the geometry into a GEOMETRYCOLLECTION."
-msgstr ""
+msgstr "将几何图形转换为几何集合（GEOMETRYCOLLECTION）。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:659
@@ -852,6 +944,8 @@ msgid ""
 "<funcdef>geometry <function>ST_ForceCollection</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_ForceCollection</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:669
@@ -859,7 +953,7 @@ msgstr ""
 msgid ""
 "Converts the geometry into a GEOMETRYCOLLECTION. This is useful for "
 "simplifying the WKB representation."
-msgstr ""
+msgstr "将几何图形转换为几何图形集合。 这对于简化 WKB 表示很有用。"
 
 #. Tag: para
 #: reference_editor.xml:673
@@ -867,13 +961,14 @@ msgstr ""
 msgid ""
 "Availability: 1.2.2, prior to 1.3.4 this function will crash with Curves. "
 "This is fixed in 1.3.4+"
-msgstr ""
+msgstr "可用性：1.2.2 ，在 1.3.4 之前，当与包含曲线的几何一起使用时，它会崩溃。 "
+"此问题已在 1.3.4 及更高版本中得到纠正"
 
 #. Tag: para
 #: reference_editor.xml:674
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_Collection."
-msgstr ""
+msgstr "更改： 2.1.0 。在 2.0.x 期间，它被称为ST_Force_Collection。"
 
 #. Tag: refpurpose
 #: reference_editor.xml:703
@@ -881,7 +976,7 @@ msgstr ""
 msgid ""
 "Orients all exterior rings clockwise and all interior rings counter-"
 "clockwise."
-msgstr ""
+msgstr "顺时针方向调整所有外环，逆时针方向调整所有内环。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:710
@@ -890,6 +985,8 @@ msgid ""
 "<funcdef> geometry <function>ST_ForcePolygonCW</function> </funcdef> "
 "<paramdef> <type>geometry</type> <parameter>geom</parameter> </paramdef>"
 msgstr ""
+"<funcdef> geometry <function>ST_ForcePolygonCW</function> </funcdef> "
+"<paramdef> <type>geometry</type> <parameter>geom</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:726
@@ -898,13 +995,14 @@ msgid ""
 "Forces (Multi)Polygons to use a clockwise orientation for their exterior "
 "ring, and a counter-clockwise orientation for their interior rings. Non-"
 "polygonal geometries are returned unchanged."
-msgstr ""
+msgstr "强制（多）多边形对其外环使用顺时针方向，对其内环使用逆时针方向。 "
+"非多边形几何体原封不动地返回。"
 
 #. Tag: refpurpose
 #: reference_editor.xml:751
 #, no-c-format
 msgid "Force the geometries to use SFS 1.1 geometry types only."
-msgstr ""
+msgstr "强制几何图形仅使用 SFS 1.1 几何类型。"
 
 #. Tag: refpurpose
 #: reference_editor.xml:783
@@ -912,7 +1010,7 @@ msgstr ""
 msgid ""
 "Force the orientation of the vertices in a polygon to follow the Right-Hand-"
 "Rule."
-msgstr ""
+msgstr "强制多边形顶点的方向遵循右手定则。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:789
@@ -921,6 +1019,8 @@ msgid ""
 "<funcdef>geometry <function>ST_ForceRHR</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_ForceRHR</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:800
@@ -932,6 +1032,9 @@ msgid ""
 "direction and the interior rings in a counter-clockwise direction. This "
 "function is a synonym for <xref linkend=\"ST_ForcePolygonCW\"/>"
 msgstr ""
+"强制多边形中顶点的方向遵循右手定则，其中多边形所包围的区域位于边界的右侧。特"
+"别地，外环沿顺时针方向定向，而内环沿逆时针方向定向。 该函数是 <xref linkend="
+"\"ST_ForcePolygonCW\"/>的同义词"
 
 #. Tag: para
 #: reference_editor.xml:807
@@ -940,7 +1043,8 @@ msgid ""
 "The above definition of the Right-Hand-Rule conflicts with definitions used "
 "in other contexts. To avoid confusion, it is recommended to use "
 "ST_ForcePolygonCW."
-msgstr ""
+msgstr "右手定则的上述定义与其他上下文中使用的定义相冲突。 为避免混淆，建议使用 "
+"ST_ForcePolygonCW。"
 
 #. Tag: para
 #: reference_editor.xml:826
@@ -950,12 +1054,15 @@ msgid ""
 ">, <xref linkend=\"ST_IsPolygonCW\"/>, <xref linkend=\"ST_BuildArea\"/>, "
 "<xref linkend=\"ST_Polygonize\"/>, <xref linkend=\"ST_Reverse\"/>"
 msgstr ""
+", <xref linkend=\"ST_ForcePolygonCW\"/>, <xref linkend=\"ST_IsPolygonCCW\"/"
+">, <xref linkend=\"ST_IsPolygonCW\"/>, <xref linkend=\"ST_BuildArea\"/>, "
+"<xref linkend=\"ST_Polygonize\"/>, <xref linkend=\"ST_Reverse\"/>"
 
 #. Tag: refpurpose
 #: reference_editor.xml:841
 #, no-c-format
 msgid "Upcast a geometry into its curved type, if applicable."
-msgstr ""
+msgstr "如果适用，将一个几何图形上升到其曲线类型。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:846
@@ -964,6 +1071,8 @@ msgid ""
 "<funcdef>geometry <function>ST_ForceCurve</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_ForceCurve</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:857
@@ -974,6 +1083,9 @@ msgid ""
 "multipolygons become multisurfaces. If the geometry input is already a "
 "curved representation returns back same as input."
 msgstr ""
+"将几何图形转换为其曲线表示形式（如果适用）：直线变为复合曲线，多线变为多曲线"
+"，多边形变为曲线多边形，多重多边形变为多重曲面。 "
+"如果几何输入已经是曲线表示，则返回与输入相同的值。"
 
 #. Tag: para
 #: reference_editor.xml:863 reference_editor.xml:1356 reference_editor.xml:1925
@@ -985,7 +1097,7 @@ msgstr "可用性：2.2.0"
 #: reference_editor.xml:886
 #, no-c-format
 msgid "Converts a linear geometry to a curved geometry."
-msgstr ""
+msgstr "将线性几何图形转换为曲线几何图形。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:891
@@ -995,6 +1107,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>geomANoncircular</parameter></"
 "paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_LineToCurve</function></funcdef> "
+"<paramdef><type>geometry </type> "
+"<parameter>geomANoncircular</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:901
@@ -1002,7 +1117,8 @@ msgstr ""
 msgid ""
 "Converts plain LINESTRING/POLYGON to CIRCULAR STRINGs and Curved Polygons. "
 "Note much fewer points are needed to describe the curved equivalent."
-msgstr ""
+msgstr "将普通线/多边形转换为圆形线和曲线多边形。 "
+"请注意，描述等效曲线所需的点要少得多。"
 
 #. Tag: para
 #: reference_editor.xml:902
@@ -1010,13 +1126,13 @@ msgstr ""
 msgid ""
 "If the input LINESTRING/POLYGON is not curved enough to clearly represent a "
 "curve, the function will return the same input geometry."
-msgstr ""
+msgstr "如果输入线串/多边形不足以清楚地表示曲线，则该函数返回与输入几何图形相同的值。"
 
 #. Tag: refpurpose
 #: reference_editor.xml:929
 #, no-c-format
 msgid "Return the geometry as a MULTI* geometry."
-msgstr ""
+msgstr "将几何图形返回为 MULTI* 几何图形。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:934
@@ -1025,6 +1141,8 @@ msgid ""
 "<funcdef>geometry <function>ST_Multi</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Multi</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:944
@@ -1032,7 +1150,7 @@ msgstr ""
 msgid ""
 "Returns the geometry as a MULTI* geometry collection. If the geometry is "
 "already a collection, it is returned unchanged."
-msgstr ""
+msgstr "以 MULTI* 几何集合的形式返回几何图形。 如果几何图形已经是集合，则原样返回。"
 
 #. Tag: refpurpose
 #: reference_editor.xml:964
@@ -1040,7 +1158,7 @@ msgstr ""
 msgid ""
 "Returns a line with the last and first segments extended the specified "
 "distance(s)."
-msgstr ""
+msgstr "返回一条线，其中最后一段和第一段延伸了指定的距离。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:969
@@ -1052,6 +1170,11 @@ msgid ""
 "paramdef> <paramdef choice=\"opt\"><type>float</type> "
 "<parameter>distance_backward=0.0</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_LineExtend</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>distance_forward</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>float</type> "
+"<parameter>distance_backward=0.0</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:983
@@ -1063,6 +1186,9 @@ msgid ""
 "are used to determine the direction of projection, duplicate points are "
 "ignored."
 msgstr ""
+"返回一条线，其中最后一段和第一段延伸了指定的距离。 距离为零时不进行扩展。 "
+"仅允许非负距离。 一条线上的第一个（和最后一个）两个不同的点用于确定延伸的方向"
+"，重复的点将被忽略。"
 
 #. Tag: para
 #: reference_editor.xml:985
@@ -1074,19 +1200,19 @@ msgstr "可用性：3.4.0"
 #: reference_editor.xml:990 reference_editor.xml:1145
 #, no-c-format
 msgid "Example: Projected point at 100,000 meters and bearing 45 degrees"
-msgstr ""
+msgstr "示例：延伸点位于 100,000 米、方位角 45 度"
 
 #. Tag: para
 #: reference_editor.xml:998
 #, no-c-format
 msgid ", <xref linkend=\"ST_Project\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Project\"/>"
 
 #. Tag: refpurpose
 #: reference_editor.xml:1026
 #, no-c-format
 msgid "Return the geometry in its canonical form."
-msgstr ""
+msgstr "返回规范形式的几何图形。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:1031
@@ -1095,6 +1221,8 @@ msgid ""
 "<funcdef>geometry <function>ST_Normalize</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Normalize</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:1041
@@ -1102,7 +1230,8 @@ msgstr ""
 msgid ""
 "Returns the geometry in its normalized/canonical form. May reorder vertices "
 "in polygon rings, rings in a polygon, elements in a multi-geometry complex."
-msgstr ""
+msgstr "以规范化/标准化格式返回几何图形。 "
+"多边形环中的顶点顺序、多边形中环的顺序或复合几何中元素的顺序可能会更改。"
 
 #. Tag: para
 #: reference_editor.xml:1047
@@ -1110,19 +1239,19 @@ msgstr ""
 msgid ""
 "Mostly only useful for testing purposes (comparing expected and obtained "
 "results)."
-msgstr ""
+msgstr "在大多数情况下，它仅用于测试目的（将预期结果与实际结果进行比较）。"
 
 #. Tag: para
 #: reference_editor.xml:1052
 #, no-c-format
 msgid "Availability: 2.3.0"
-msgstr ""
+msgstr "可用性：2.3.0"
 
 #. Tag: para
 #: reference_editor.xml:1063
 #, no-c-format
 msgid "<para>,</para>"
-msgstr ""
+msgstr "<para>,</para>"
 
 #. Tag: refpurpose
 #: reference_editor.xml:1074
@@ -1130,7 +1259,7 @@ msgstr ""
 msgid ""
 "Returns a point projected from a start point by a distance and bearing "
 "(azimuth)."
-msgstr ""
+msgstr "返回从起点按距离和方位角（方位角）投影的点。"
 
 #. Tag: para
 #: reference_editor.xml:1125
@@ -1138,7 +1267,7 @@ msgstr ""
 msgid ""
 "Returns a point projected from a point along a geodesic using a given "
 "distance and azimuth (bearing). This is known as the direct geodesic problem."
-msgstr ""
+msgstr "返回从具有给定距离的起点计算并沿测地线方位角计算的点。这称为直接测地线问题。"
 
 #. Tag: para
 #: reference_editor.xml:1126
@@ -1146,13 +1275,13 @@ msgstr ""
 msgid ""
 "The two-point version uses the path from the first to the second point to "
 "implicitly define the azimuth and uses the distance as before."
-msgstr ""
+msgstr "两点使用从第一个点到第二个点的路径来隐式定义方位角，并像先前一样使用距离。"
 
 #. Tag: para
 #: reference_editor.xml:1127
 #, no-c-format
 msgid "The distance is given in meters. Negative values are supported."
-msgstr ""
+msgstr "距离以米为单位。 支持负值。"
 
 #. Tag: para
 #: reference_editor.xml:1128
@@ -1160,31 +1289,31 @@ msgstr ""
 msgid ""
 "The azimuth (also known as heading or bearing) is given in radians. It is "
 "measured clockwise from true north."
-msgstr ""
+msgstr "方向角（也称为航向或方位角）以弧度给出。 它是从正北方向顺时针测量的。"
 
 #. Tag: para
 #: reference_editor.xml:1131
 #, no-c-format
 msgid "North is azimuth zero (0 degrees)"
-msgstr ""
+msgstr "正北是零度方位角（0度）"
 
 #. Tag: para
 #: reference_editor.xml:1132
 #, no-c-format
 msgid "East is azimuth &#x03C0;/2 (90 degrees)"
-msgstr ""
+msgstr "正东的方位角是&#x03C0;/2（90度）"
 
 #. Tag: para
 #: reference_editor.xml:1133
 #, no-c-format
 msgid "South is azimuth &#x03C0; (180 degrees)"
-msgstr ""
+msgstr "正南方位角是&#x03C0; （180度）"
 
 #. Tag: para
 #: reference_editor.xml:1134
 #, no-c-format
 msgid "West is azimuth 3&#x03C0;/2 (270 degrees)"
-msgstr ""
+msgstr "正西方位角是3&#x03C0;/2（270度）"
 
 #. Tag: para
 #: reference_editor.xml:1136
@@ -1192,20 +1321,20 @@ msgstr ""
 msgid ""
 "Negative azimuth values and values greater than 2&#x03C0; (360 degrees) are "
 "supported."
-msgstr ""
+msgstr "支持负方位角值和大于2&#x03C0;（360 度）的值。"
 
 #. Tag: para
 #: reference_editor.xml:1139
 #, no-c-format
 msgid "Enhanced: 2.4.0 Allow negative distance and non-normalized azimuth."
-msgstr ""
+msgstr "增强：2.4.0 允许负距离和非标准化方位角。"
 
 #. Tag: para
 #: reference_editor.xml:1140
 #, no-c-format
 msgid ""
 "Enhanced: 3.4.0 Allow geometry arguments and two-point form omitting azimuth."
-msgstr ""
+msgstr "增强：3.4.0允许几何参数和无方位角的两点格式。"
 
 #. Tag: para
 #: reference_editor.xml:1153
@@ -1215,12 +1344,15 @@ msgid ""
 "docs/current/interactive/functions-math.html\">PostgreSQL function "
 "radians()</ulink>"
 msgstr ""
+", <xref linkend=\"ST_Distance\"/>, <ulink url=\"http://www.postgresql.org/"
+"docs/current/interactive/functions-math.html\">PostgreSQL function "
+"radians()</ulink>"
 
 #. Tag: refpurpose
 #: reference_editor.xml:1163
 #, no-c-format
 msgid "Sets least significant bits of coordinates to zero"
-msgstr ""
+msgstr "将坐标的最低有效位设置为零"
 
 #. Tag: funcprototype
 #: reference_editor.xml:1170
@@ -1233,6 +1365,12 @@ msgid ""
 "<paramdef> <type>int</type> <parameter>prec_z</parameter> </paramdef> "
 "<paramdef> <type>int</type> <parameter>prec_m</parameter> </paramdef>"
 msgstr ""
+"<funcdef> geometry <function>ST_QuantizeCoordinates</function> </funcdef> "
+"<paramdef> <type>geometry</type> <parameter>g</parameter> </paramdef> "
+"<paramdef> <type>int</type> <parameter>prec_x</parameter> </paramdef> "
+"<paramdef> <type>int</type> <parameter>prec_y</parameter> </paramdef> "
+"<paramdef> <type>int</type> <parameter>prec_z</parameter> </paramdef> "
+"<paramdef> <type>int</type> <parameter>prec_m</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:1201
@@ -1253,6 +1391,15 @@ msgid ""
 "e., <code>prec_x=-2</code> will preserve coordinate values to the nearest "
 "100."
 msgstr ""
+"<code>ST_QuantizeCoordinates</"
+"code>确定表示小数点后具有指定位数的坐标值所需的位数 (<code>N</code>)，"
+"然后将除 <code>N</code> 个最高有效位之外的所有位设置为零。 "
+"生成的坐标值仍将舍入为原始值，但会提高可压缩性。 如果几何列使用<ulink url="
+"\"https://www.postgresql.org/docs/current/static/storage-toast.html#STORAGE-"
+"TOAST-ONDISK\"> 可压缩存储类型</ulink>，这可能会导致磁盘使用量显著减少。该功"
+"能允许在每个维度中指定不同的小数点后位数；未指定的尺寸假定具有 <code>x</"
+"code> 维度的精度。 负数被解释为指小数点左边的数字（即 <code>prec_x=-2</code> "
+"将保留最接近 100 的坐标值）。"
 
 #. Tag: para
 #: reference_editor.xml:1219
@@ -1265,18 +1412,22 @@ msgid ""
 "function. The function may produce invalid geometry when it is called with a "
 "number of digits lower than the intrinsic precision of the geometry."
 msgstr ""
+"<code>ST_QuantizeCoordinates</code>生成的坐标独立于包含这些坐标的几何图形以及"
+"这些坐标在几何图形中的相对位置。因此，几何图形之间现有的拓扑关系不会受到使用"
+"此函数的影响。 "
+"当使用低于几何的固有精度的位数调用该函数时，该函数可能会产生无效的几何。"
 
 #. Tag: para
 #: reference_editor.xml:1228
 #, no-c-format
 msgid "Availability: 2.5.0"
-msgstr ""
+msgstr "可用性：2.5.0"
 
 #. Tag: title
 #: reference_editor.xml:1231
 #, no-c-format
 msgid "Technical Background"
-msgstr ""
+msgstr "技术背景"
 
 #. Tag: para
 #: reference_editor.xml:1232
@@ -1290,6 +1441,10 @@ msgid ""
 "(thus requiring only nine significant digits of longitude and eight "
 "significant digits of latitude.)"
 msgstr ""
+"PostGIS将所有坐标值存储为双精度浮点整数，可以可靠地表示15位有效数字。然而，"
+"PostGIS 可用于管理本质上有效数字少于 15 位的数据。 一个例子是 TIGER "
+"数据，它以地理坐标的形式提供，小数点后精度为 6 位（因此仅需要 9 "
+"位有效的经度数字和 8 位有效的纬度数字。）"
 
 #. Tag: para
 #: reference_editor.xml:1241
@@ -1310,6 +1465,16 @@ msgid ""
 "For a long coordinate sequence this creates a pattern of blocks of "
 "consecutive zeros that is compressed by PostgreSQL more effeciently."
 msgstr ""
+"当有 15 位有效数字可用时，具有 9 位有效数字的数字有多种可能的表示形式。 "
+"双精度浮点数使用 52 个显式位来表示坐标的有效数（尾数）。 "
+"只需要30位即可表示9位有效数字的尾数，剩下22位无效位； 我们可以将它们的值设置"
+"为我们喜欢的任何值，并且最终仍然得到一个四舍五入到我们的输入值的数字。 例如，"
+"值 100.123456 可以由最接近 100.123456000000、100.123456000001 和 "
+"100.123456432199 的浮点数表示。所有这些都同样有效，因为<code>ST_AsText(geom, "
+"6)</code> 将对任何这些输入返回相同的结果。 由于我们可以将这些位设置为任何值，"
+"因此 <code>ST_QuantizeCoordinates</code> 将 22 "
+"个无意义位设置为零。对于长坐标序列，这会创建连续零块的模式，PostgreSQL "
+"可以更有效地压缩该模式。"
 
 #. Tag: para
 #: reference_editor.xml:1261
@@ -1320,12 +1485,15 @@ msgid ""
 "reports the in-memory usage of the geometry, will return the the same value "
 "regardless of the disk space used by a geometry."
 msgstr ""
+"只有几何图形的磁盘大小可能会受到<code>ST_QuantizeCoordinates</code> 的影响。"
+"<xref linkend=\"ST_MemSize\"/> 用于报告几何图形的内存使用情况，无论几何图形使"
+"用的磁盘空间如何，都将返回相同的值。"
 
 #. Tag: refpurpose
 #: reference_editor.xml:1291
 #, no-c-format
 msgid "Remove a point from a linestring."
-msgstr ""
+msgstr "从线串中删除一个点。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:1295
@@ -1335,6 +1503,9 @@ msgid ""
 "<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
 "<paramdef><type>integer</type> <parameter>offset</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_RemovePoint</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
+"<paramdef><type>integer</type> <parameter>offset</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:1306
@@ -1342,13 +1513,13 @@ msgstr ""
 msgid ""
 "Removes a point from a LineString, given its index (0-based). Useful for "
 "turning a closed line (ring) into an open linestring."
-msgstr ""
+msgstr "从线串中删除点。 索引从零开始。 用于将闭合环转换为开放线串。"
 
 #. Tag: para
 #: reference_editor.xml:1309 reference_editor.xml:1355
 #, no-c-format
 msgid "Enhanced: 3.2.0"
-msgstr ""
+msgstr "增强：3.2.0"
 
 #. Tag: para
 #: reference_editor.xml:1316
@@ -1356,19 +1527,19 @@ msgstr ""
 msgid ""
 "Guarantees no lines are closed by removing the end point of closed lines "
 "(rings). Assumes geom is of type LINESTRING"
-msgstr ""
+msgstr "通过删除闭合线（环）的端点来保证没有闭合线。 假设 geom 的类型为 LINESTRING"
 
 #. Tag: para
 #: reference_editor.xml:1322
 #, no-c-format
 msgid ", <xref linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_NumPoints\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_NumPoints\"/>"
 
 #. Tag: refpurpose
 #: reference_editor.xml:1329
 #, no-c-format
 msgid "Returns a version of a geometry with duplicate points removed."
-msgstr ""
+msgstr "返回删除了重复点的几何图形。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:1335
@@ -1379,6 +1550,10 @@ msgid ""
 "<paramdef choice=\"opt\"><type>float8</type> <parameter>tolerance</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_RemoveRepeatedPoints</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>float8</type> "
+"<parameter>tolerance</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:1345
@@ -1390,6 +1565,9 @@ msgid ""
 "GeometryCollections are processed individually. The endpoints of LineStrings "
 "are preserved."
 msgstr ""
+"返回给定几何图形的版本，其中删除了重复的连续点。该函数仅处理（多）线串、（多"
+"）多边形和多点，但可以使用任何类型的几何图形进行调用。 GeometryCollections "
+"的元素是单独处理的。 LineStrings 的端点被保留。"
 
 #. Tag: para
 #: reference_editor.xml:1352
@@ -1397,7 +1575,8 @@ msgstr ""
 msgid ""
 "If the <parameter>tolerance</parameter> parameter is provided, vertices "
 "within the tolerance distance of one another are considered to be duplicates."
-msgstr ""
+msgstr "如果提供了<parameter>容差</parameter>参数，则彼此容差距离内的顶点将被视为重复"
+"。"
 
 #. Tag: para
 #: reference_editor.xml:1368
@@ -1405,7 +1584,7 @@ msgstr ""
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Collection elements are "
 "processed individually."
-msgstr ""
+msgstr "<emphasis role=\"bold\">示例:</emphasis> 集合元素是单独处理的。"
 
 #. Tag: para
 #: reference_editor.xml:1373
@@ -1413,13 +1592,13 @@ msgstr ""
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Repeated point removal with a "
 "distance tolerance."
-msgstr ""
+msgstr "<emphasis role=\"bold\">示例:</emphasis> 删除在容差距离内的重复点。"
 
 #. Tag: refpurpose
 #: reference_editor.xml:1389
 #, no-c-format
 msgid "Return the geometry with vertex order reversed."
-msgstr ""
+msgstr "返回顶点顺序相反的几何体。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:1394
@@ -1428,18 +1607,20 @@ msgid ""
 "<funcdef>geometry <function>ST_Reverse</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Reverse</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:1404
 #, no-c-format
 msgid "Can be used on any geometry and reverses the order of the vertexes."
-msgstr ""
+msgstr "可用于任何几何体并反转顶点的顺序。"
 
 #. Tag: para
 #: reference_editor.xml:1406
 #, no-c-format
 msgid "Enhanced: 2.4.0 support for curves was introduced."
-msgstr ""
+msgstr "增强：2.4.0引入了曲线支持。"
 
 #. Tag: refpurpose
 #: reference_editor.xml:1421
@@ -1447,7 +1628,7 @@ msgstr ""
 msgid ""
 "Returns a modified geometry/geography having no segment longer than a given "
 "distance."
-msgstr ""
+msgstr "返回修改后的几何图形/地理，其线段不长于给定距离。"
 
 #. Tag: para
 #: reference_editor.xml:1443
@@ -1457,6 +1638,9 @@ msgid ""
 "<varname>max_segment_length</varname>. Length is computed in 2D. Segments "
 "are always split into equal-length subsegments."
 msgstr ""
+"返回修改后的几何图形/地理，其线段长度不超过 "
+"<varname>max_segment_length</varname>。 线段长度以二维计算。 "
+"线段段总是被分成等长的子段。"
 
 #. Tag: para
 #: reference_editor.xml:1449
@@ -1464,7 +1648,7 @@ msgstr ""
 msgid ""
 "For geometry, the maximum length is in the units of the spatial reference "
 "system."
-msgstr ""
+msgstr "对于几何形状，最大长度以空间参考系的单位表示。"
 
 #. Tag: para
 #: reference_editor.xml:1452
@@ -1473,7 +1657,8 @@ msgid ""
 "For geography, the maximum length is in meters. Distances are computed on "
 "the sphere. Added vertices are created along the spherical great-circle arcs "
 "defined by segment endpoints."
-msgstr ""
+msgstr "对于地理来说，最大长度以米为单位。 距离是在球体上计算的。 "
+"添加的顶点是沿着线段端点定义的球面大圆弧创建的。"
 
 #. Tag: para
 #: reference_editor.xml:1459
@@ -1481,7 +1666,7 @@ msgstr ""
 msgid ""
 "This only shortens long segments. It does not lengthen segments shorter than "
 "the maximum length."
-msgstr ""
+msgstr "这只会缩短长线段。 它不会延长比最大长度短的线段。"
 
 #. Tag: para
 #: reference_editor.xml:1463
@@ -1492,6 +1677,9 @@ msgid ""
 "vertices to be added. This can happen unintentionally if the argument is "
 "specified accidentally as a number of segments, rather than a maximum length."
 msgstr ""
+"对于包含长线段的输入，指定相对较短的<varname>max_segment_length</varname> 可"
+"能会导致添加大量顶点。如果意外地将参数指定为多个线段而不是最大长度，则可能会"
+"无意中发生这种情况。"
 
 #. Tag: para
 #: reference_editor.xml:1470
@@ -1504,20 +1692,20 @@ msgstr "可用性：1.2.2"
 #, no-c-format
 msgid ""
 "Enhanced: 3.0.0 Segmentize geometry now produces equal-length subsegments"
-msgstr ""
+msgstr "增强：3.0.0 分段几何现在可生成等长的子分段"
 
 #. Tag: para
 #: reference_editor.xml:1472
 #, no-c-format
 msgid ""
 "Enhanced: 2.3.0 Segmentize geography now produces equal-length subsegments"
-msgstr ""
+msgstr "增强：2.3.0 地理分段现在可生成等长的子分段"
 
 #. Tag: para
 #: reference_editor.xml:1473
 #, no-c-format
 msgid "Enhanced: 2.1.0 support for geography was introduced."
-msgstr ""
+msgstr "增强：2.1.0 引入了对地理的支持。"
 
 #. Tag: para
 #: reference_editor.xml:1474
@@ -1530,6 +1718,10 @@ msgid ""
 "type (e.g. <code>ST_Segmentize('LINESTRING(1 2, 3 4)'::geometry, 0.5) )</"
 "code>"
 msgstr ""
+"更改：2.1.0 由于引入了地理支持，使用 <code>ST_Segmentize('LINESTRING(1 2, 3 "
+"4)', 0.5)</code> 会导致不明确的函数错误。 输入需要正确键入为几何或地理。 "
+"使用 ST_GeomFromText、ST_GeogFromText 或转换为所需类型（例如 "
+"<code>ST_Segmentize('LINESTRING(1 2, 3 4)'::geometry, 0.5) )</code> ）"
 
 #. Tag: para
 #: reference_editor.xml:1484
@@ -1537,13 +1729,13 @@ msgstr ""
 msgid ""
 "Segmentizing a line. Long segments are split evenly, and short segments are "
 "not split."
-msgstr ""
+msgstr "分割一条线。 长段均分，短段不平均。"
 
 #. Tag: para
 #: reference_editor.xml:1487
 #, no-c-format
 msgid "Segmentizing a polygon:"
-msgstr ""
+msgstr "多边形分割："
 
 #. Tag: para
 #: reference_editor.xml:1490
@@ -1552,19 +1744,19 @@ msgid ""
 "Segmentizing a geographic line, using a maximum segment length of 2000 "
 "kilometers. Vertices are added along the great-circle arc connecting the "
 "endpoints."
-msgstr ""
+msgstr "对地理线进行分段，最大分段长度为 2000 公里。 沿着连接端点的大圆弧添加顶点。"
 
 #. Tag: para
 #: reference_editor.xml:1499
 #, no-c-format
 msgid "A geographic line segmentized along a great circle arc"
-msgstr ""
+msgstr "沿着大圆弧分段的地理线"
 
 #. Tag: refpurpose
 #: reference_editor.xml:1513
 #, no-c-format
 msgid "Replace point of a linestring with a given point."
-msgstr ""
+msgstr "用给定点替换线串的点。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:1517
@@ -1576,6 +1768,11 @@ msgid ""
 "paramdef> <paramdef><type>geometry</type> <parameter>point</parameter></"
 "paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_SetPoint</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
+"<paramdef><type>integer</type> <parameter>zerobasedposition</parameter></"
+"paramdef> <paramdef><type>geometry</type> "
+"<parameter>point</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:1529
@@ -1586,12 +1783,14 @@ msgid ""
 "useful in triggers when trying to maintain relationship of joints when one "
 "vertex moves."
 msgstr ""
+"将线串的 N 点替换为给定点。 索引从 0 开始。负索引向后计数，因此 -1 "
+"是最后一个点。当一个顶点移动时试图维持关节关系时，这在触发器中特别有用。"
 
 #. Tag: para
 #: reference_editor.xml:1533
 #, no-c-format
 msgid "Updated 2.3.0 : negative indexing"
-msgstr ""
+msgstr "更新 2.3.0：负索引"
 
 #. Tag: para
 #: reference_editor.xml:1544
@@ -1600,13 +1799,15 @@ msgid ""
 ", <xref linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_NumPoints\"/>, <xref "
 "linkend=\"ST_PointN\"/>, <xref linkend=\"ST_RemovePoint\"/>"
 msgstr ""
+", <xref linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_NumPoints\"/>, <xref "
+"linkend=\"ST_PointN\"/>, <xref linkend=\"ST_RemovePoint\"/>"
 
 #. Tag: refpurpose
 #: reference_editor.xml:1552
 #, no-c-format
 msgid ""
 "Shifts the longitude coordinates of a geometry between -180..180 and 0..360."
-msgstr ""
+msgstr "在 -180-180 和 0-360 之间移动几何图形的经度坐标。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:1557
@@ -1615,6 +1816,8 @@ msgid ""
 "<funcdef>geometry <function>ST_ShiftLongitude</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_ShiftLongitude</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:1567
@@ -1625,6 +1828,10 @@ msgid ""
 "function is symmetrical so the result is a 0..360 representation of a "
 "-180..180 data and a -180..180 representation of a 0..360 data."
 msgstr ""
+"读取几何图形的所有点/顶点，并将 -180 到 0 度范围内的经度值移动到 180 到 360 "
+"度，并将 180 到 360 度范围内的经度值从 -180 度移动到 0 度。 该函数是对称的，"
+"因此-180到180度范围内的数据用0到360度范围来表示，0到360度范围内的数据用-180到"
+"180度范围来表示。"
 
 #. Tag: para
 #: reference_editor.xml:1570
@@ -1632,7 +1839,7 @@ msgstr ""
 msgid ""
 "This is only useful for data with coordinates in longitude/latitude; e.g. "
 "SRID 4326 (WGS 84 geographic)"
-msgstr ""
+msgstr "这仅对具有经度/纬度坐标的数据有用； 例如 SRID 4326（WGS 84 地理坐标系）"
 
 #. Tag: para
 #: reference_editor.xml:1574
@@ -1640,25 +1847,26 @@ msgstr ""
 msgid ""
 "Pre-1.3.4 bug prevented this from working for MULTIPOINT. 1.3.4+ works with "
 "MULTIPOINT as well."
-msgstr ""
+msgstr "1.3.4 之前的错误导致该功能无法用于 MULTIPOINT。 1.3.4 也可与 MULTIPOINT "
+"配合使用。"
 
 #. Tag: para
 #: reference_editor.xml:1578
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced."
-msgstr "增强：2.0.0 引入了多面体曲面支持和 TIN 支持。"
+msgstr "增强功能：2.0.0支持多面体曲面和 TIN 。"
 
 #. Tag: para
 #: reference_editor.xml:1579
 #, no-c-format
 msgid "NOTE: this function was renamed from \"ST_Shift_Longitude\" in 2.2.0"
-msgstr ""
+msgstr "注意：该函数在 2.2.0 中由\"ST_Shift_Longitude\"重命名"
 
 #. Tag: refpurpose
 #: reference_editor.xml:1604
 #, no-c-format
 msgid "Wrap a geometry around an X value."
-msgstr ""
+msgstr "将几何体环绕在 X 值周围。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:1609
@@ -1669,6 +1877,10 @@ msgid ""
 "<paramdef><type>float8 </type> <parameter>wrap</parameter></paramdef> "
 "<paramdef><type>float8 </type> <parameter>move</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_WrapX</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>float8 </type> <parameter>wrap</parameter></paramdef> "
+"<paramdef><type>float8 </type> <parameter>move</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:1621
@@ -1679,6 +1891,9 @@ msgid ""
 "positive 'move') of given 'wrap' line in the direction specified by the "
 "'move' parameter, finally re-unioning the pieces together."
 msgstr ""
+"此函数分割输入的几何图形，然后按照“move”参数指定的方向移动落在给定“wrap”线右"
+"侧（对于负“移动”）或左侧（对于正“移动”）的每个结果组件 "
+"，最终将碎片重新组合在一起。"
 
 #. Tag: para
 #: reference_editor.xml:1628
@@ -1686,19 +1901,19 @@ msgstr ""
 msgid ""
 "This is useful to \"recenter\" long-lat input to have features of interest "
 "not spawned from one side to the other."
-msgstr ""
+msgstr "这对于\"重新居中\"经纬度输入以使感兴趣的特征不会从一侧生成到另一侧非常有用。"
 
 #. Tag: para
 #: reference_editor.xml:1633
 #, no-c-format
 msgid "Availability: 2.3.0 requires GEOS"
-msgstr ""
+msgstr "可用性：2.3.0 需要 GEOS"
 
 #. Tag: refpurpose
 #: reference_editor.xml:1659
 #, no-c-format
 msgid "Snap all points of the input geometry to a regular grid."
-msgstr ""
+msgstr "将输入几何体的所有点捕捉到规则网格。"
 
 #. Tag: para
 #: reference_editor.xml:1703
@@ -1710,6 +1925,9 @@ msgid ""
 "geometry of the given type. Collapsed geometries in a collection are "
 "stripped from it. Useful for reducing precision."
 msgstr ""
+"概要 1,2,3：将输入几何体的所有点捕捉到由其原点和像元大小定义的网格。 "
+"删除落在同一单元上的连续点，如果输出点不足以定义给定类型的几何图形，"
+"则最终返回 NULL。 集合中折叠的几何图形将从其中剥离。 对于降低精度很有用。"
 
 #. Tag: para
 #: reference_editor.xml:1711
@@ -1719,6 +1937,8 @@ msgid ""
 "grid defined by its origin (the second argument, must be a point) and cell "
 "sizes. Specify 0 as size for any dimension you don't want to snap to a grid."
 msgstr ""
+"概要4：引入 1.1.0 - 将输入几何体的所有点捕捉到由其原点（第二个参数必须是点）"
+"和像元大小定义的网格。将 0 指定为您不想捕捉到网格的任何尺寸的大小。"
 
 #. Tag: para
 #: reference_editor.xml:1717
@@ -1726,7 +1946,7 @@ msgstr ""
 msgid ""
 "The returned geometry might lose its simplicity (see <xref "
 "linkend=\"ST_IsSimple\"/>)."
-msgstr ""
+msgstr "返回的几何图形可能会失去其简单性（请参阅<xref linkend=\"ST_IsSimple\"/>）。"
 
 #. Tag: para
 #: reference_editor.xml:1722
@@ -1737,18 +1957,21 @@ msgid ""
 "one with higher dimension values untouched. Use the version taking a second "
 "geometry argument to define all grid dimensions."
 msgstr ""
+"在版本 1.1.0 之前，此函数始终返回 2d 几何图形。从 1.1.0 开始，返回的几何图形"
+"将具有与输入几何图形相同的维度，但更高的维度值保持不变。使用带有第二个几何参"
+"数的版本来定义所有网格尺寸。"
 
 #. Tag: para
 #: reference_editor.xml:1729
 #, no-c-format
 msgid "Availability: 1.0.0RC1"
-msgstr ""
+msgstr "可用性： 1.0.0RC1"
 
 #. Tag: para
 #: reference_editor.xml:1730
 #, no-c-format
 msgid "Availability: 1.1.0 - Z and M support"
-msgstr ""
+msgstr "可用性：1.1.0 - 添加了对 Z 和 M 值的支持"
 
 #. Tag: para
 #: reference_editor.xml:1746
@@ -1758,6 +1981,9 @@ msgid ""
 "linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>, <xref "
 "linkend=\"ST_Simplify\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
+"linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>, <xref "
+"linkend=\"ST_Simplify\"/>"
 
 #. Tag: refpurpose
 #: reference_editor.xml:1761
@@ -1765,7 +1991,7 @@ msgstr ""
 msgid ""
 "Snap segments and vertices of input geometry to vertices of a reference "
 "geometry."
-msgstr ""
+msgstr "将输入几何体的线段和顶点捕捉到参考几何体的顶点。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:1769
@@ -1776,6 +2002,10 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>reference</parameter></paramdef> "
 "<paramdef><type>float </type> <parameter>tolerance</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Snap</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>input</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>reference</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>tolerance</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:1781
@@ -1786,6 +2016,9 @@ msgid ""
 "performed. The result geometry is the input geometry with the vertices "
 "snapped. If no snapping occurs then the input geometry is returned unchanged."
 msgstr ""
+"将一个几何体的顶点和边捕捉到另一个几何体的顶点。捕捉距离公差用于控制执行捕捉"
+"的位置。 结果几何体是顶点被捕捉的输入几何体。 "
+"如果没有发生捕捉，则输入几何体将原样返回。"
 
 #. Tag: para
 #: reference_editor.xml:1788
@@ -1794,7 +2027,8 @@ msgid ""
 "Snapping one geometry to another can improve robustness for overlay "
 "operations by eliminating nearly-coincident edges (which cause problems "
 "during noding and intersection calculation)."
-msgstr ""
+msgstr "将一个几何体捕捉到另一个几何体可以通过消除几何重合的边（这会在节点和相交计算"
+"期间引起问题）来提高叠加操作的可靠性。"
 
 #. Tag: para
 #: reference_editor.xml:1795
@@ -1805,6 +2039,8 @@ msgid ""
 "determine when it is safe to snap. This can result in some potential snaps "
 "being omitted, however."
 msgstr ""
+"过多的捕捉可能会导致创建无效的拓扑，因此使用启发式方法确定捕捉顶点的数量和位"
+"置，以确定何时可以安全捕捉。 然而，这可能会导致一些潜在的捕捉被忽略。"
 
 #. Tag: para
 #: reference_editor.xml:1804
@@ -1813,6 +2049,8 @@ msgid ""
 "The returned geometry might lose its simplicity (see <xref "
 "linkend=\"ST_IsSimple\"/>) and validity (see <xref linkend=\"ST_IsValid\"/>)."
 msgstr ""
+"返回的几何图形可能已失去其简单性（请参阅<xref linkend=\"ST_IsSimple\""
+"/>）或可能无效（请参阅<xref linkend=\"ST_IsValid\"/>）。"
 
 #. Tag: para
 #: reference_editor.xml:1810
@@ -1824,7 +2062,7 @@ msgstr "它是通过GEOS模块实现的。"
 #: reference_editor.xml:1828
 #, no-c-format
 msgid "A multipolygon shown with a linestring (before any snapping)"
-msgstr ""
+msgstr "带有线串的多边形（在任何捕捉之前）"
 
 #. Tag: para
 #: reference_editor.xml:1839
@@ -1832,7 +2070,7 @@ msgstr ""
 msgid ""
 "A multipolygon snapped to linestring to tolerance: 1.01 of distance. The new "
 "multipolygon is shown with reference linestring"
-msgstr ""
+msgstr "将多边形捕捉到线串，公差距离为 1.01。 新的多边形连接到线串"
 
 #. Tag: para
 #: reference_editor.xml:1850
@@ -1840,7 +2078,7 @@ msgstr ""
 msgid ""
 "A multipolygon snapped to linestring to tolerance: 1.25 of distance. The new "
 "multipolygon is shown with reference linestring"
-msgstr ""
+msgstr "将多重多边形捕捉到公差为 1.25 的多线串。 新的多边形连接到线串"
 
 #. Tag: para
 #: reference_editor.xml:1863
@@ -1848,7 +2086,7 @@ msgstr ""
 msgid ""
 "The linestring snapped to the original multipolygon at tolerance 1.01 of "
 "distance. The new linestring is shown with reference multipolygon"
-msgstr ""
+msgstr "将线串捕捉到原始多边形，公差距离为 1.01。 新线串将连接到多边形"
 
 #. Tag: para
 #: reference_editor.xml:1875
@@ -1856,14 +2094,14 @@ msgstr ""
 msgid ""
 "The linestring snapped to the original multipolygon at tolerance 1.25 of "
 "distance. The new linestring is shown with reference multipolygon"
-msgstr ""
+msgstr "将线串捕捉到原始多边形，公差距离为 1.25。 新线串将连接到多边形"
 
 #. Tag: refpurpose
 #: reference_editor.xml:1901
 #, no-c-format
 msgid ""
 "Returns a version of the given geometry with given ordinate values swapped."
-msgstr ""
+msgstr "返回更改后的几何图形，其中交换了给定的坐标值。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:1908
@@ -1873,12 +2111,15 @@ msgid ""
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
 "<paramdef><type>cstring</type> <parameter>ords</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_SwapOrdinates</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>cstring</type> <parameter>ords</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:1918
 #, no-c-format
 msgid "Returns a version of the given geometry with given ordinates swapped."
-msgstr ""
+msgstr "返回一个几何图形，其中给定坐标的值在给定几何图形中交换。"
 
 #. Tag: para
 #: reference_editor.xml:1921
@@ -1886,4 +2127,5 @@ msgstr ""
 msgid ""
 "The <varname>ords</varname> parameter is a 2-characters string naming the "
 "ordinates to swap. Valid names are: x,y,z and m."
-msgstr ""
+msgstr "<varname>ords</varname> "
+"参数是一个两个字符的字符串，指定要交换的坐标。有效名称为：x、y、z 和 m。"
