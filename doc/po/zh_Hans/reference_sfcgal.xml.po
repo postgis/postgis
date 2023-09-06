@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-05 06:08+0000\n"
+"PO-Revision-Date: 2023-09-06 01:08+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_sfcgalxml/zh_Hans/>\n"
@@ -983,7 +983,7 @@ msgstr ""
 #: reference_sfcgal.xml:1263
 #, no-c-format
 msgid "Example"
-msgstr ""
+msgstr "示例"
 
 #. Tag: para
 #: reference_sfcgal.xml:1264
