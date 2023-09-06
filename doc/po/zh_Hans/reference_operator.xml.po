@@ -1676,8 +1676,8 @@ msgid ""
 "role=\"strong\">approximate</emphasis> distance ordering."
 msgstr ""
 "<varname>&lt;&lt;-&gt;&gt;</varname>运算符返回两个几何图形边界框质心之间的 n "
-"维（欧几里德）距离。 对于进行最近邻<emphasis role=</emphasis>\"strong\""
-">近似距离排序很有用。"
+"维（欧几里德）距离。 对于进行最 近邻<emphasis role=\"strong\""
+">近似</emphasis>距离排序很有用。"
 
 #. Tag: para
 #: reference_operator.xml:1832
