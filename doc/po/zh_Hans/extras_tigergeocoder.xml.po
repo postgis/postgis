@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-05 01:12+0000\n"
+"PO-Revision-Date: 2023-09-06 01:08+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/extras_tigergeocoderxml/zh_Hans/>\n"
@@ -287,7 +287,7 @@ msgstr ""
 #: extras_tigergeocoder.xml:997
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr "有效性：2.0.0"
+msgstr "Availability: 2.0.0"
 
 #. Tag: title
 #: extras_tigergeocoder.xml:86 extras_tigergeocoder.xml:127
