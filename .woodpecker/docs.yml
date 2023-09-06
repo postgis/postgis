@@ -84,11 +84,7 @@ steps:
     when:
       path:
         include:
-          - <<: *common_doc_paths
-          # Localized assets
-          - "doc/po/ja/Makefile.in"
           - "doc/po/ja/*.po"
-          - "utils/check_localized_cheatsheets.sh"
   check-xml-de:
     image: *test_image
     commands:
@@ -97,11 +93,7 @@ steps:
     when:
       path:
         include:
-          - <<: *common_doc_paths
-          # Localized assets
-          - "doc/po/de/Makefile.in"
           - "doc/po/de/*.po"
-          - "utils/check_localized_cheatsheets.sh"
   check-xml-fr:
     image: *test_image
     commands:
@@ -110,11 +102,7 @@ steps:
     when:
       path:
         include:
-          - <<: *common_doc_paths
-          # Localized assets
-          - "doc/po/fr/Makefile.in"
           - "doc/po/fr/*.po"
-          - "utils/check_localized_cheatsheets.sh"
   check-xml-zh_Hans:
     image: *test_image
     commands:
@@ -123,11 +111,7 @@ steps:
     when:
       path:
         include:
-          - <<: *common_doc_paths
-          # Localized assets
-          - "doc/po/zh_Hans/Makefile.in"
           - "doc/po/zh_Hans/*.po"
-          - "utils/check_localized_cheatsheets.sh"
 ### TARGET html
   html-ja:
     image: *test_image
@@ -137,11 +121,7 @@ steps:
     when:
       path:
         include:
-          - <<: *common_doc_paths
-          # Localized assets
-          - "doc/po/ja/Makefile.in"
           - "doc/po/ja/*.po"
-          - "utils/check_localized_cheatsheets.sh"
   html-de:
     image: *test_image
     commands:
@@ -150,11 +130,7 @@ steps:
     when:
       path:
         include:
-          - <<: *common_doc_paths
-          # Localized assets
-          - "doc/po/de/Makefile.in"
           - "doc/po/de/*.po"
-          - "utils/check_localized_cheatsheets.sh"
   html-fr:
     image: *test_image
     commands:
@@ -163,11 +139,7 @@ steps:
     when:
       path:
         include:
-          - <<: *common_doc_paths
-          # Localized assets
-          - "doc/po/fr/Makefile.in"
           - "doc/po/fr/*.po"
-          - "utils/check_localized_cheatsheets.sh"
   html-zh_Hans:
     image: *test_image
     commands:
@@ -176,11 +148,7 @@ steps:
     when:
       path:
         include:
-          - <<: *common_doc_paths
-          # Localized assets
-          - "doc/po/zh_Hans/Makefile.in"
           - "doc/po/zh_Hans/*.po"
-          - "utils/check_localized_cheatsheets.sh"
 ### TARGET cheatsheets
   cheatsheets-ja:
     image: *test_image
@@ -190,11 +158,7 @@ steps:
     when:
       path:
         include:
-          - <<: *common_doc_paths
-          # Localized assets
-          - "doc/po/ja/Makefile.in"
           - "doc/po/ja/*.po"
-          - "utils/check_localized_cheatsheets.sh"
   cheatsheets-de:
     image: *test_image
     commands:
@@ -203,11 +167,7 @@ steps:
     when:
       path:
         include:
-          - <<: *common_doc_paths
-          # Localized assets
-          - "doc/po/de/Makefile.in"
           - "doc/po/de/*.po"
-          - "utils/check_localized_cheatsheets.sh"
   cheatsheets-fr:
     image: *test_image
     commands:
@@ -216,11 +176,7 @@ steps:
     when:
       path:
         include:
-          - <<: *common_doc_paths
-          # Localized assets
-          - "doc/po/fr/Makefile.in"
           - "doc/po/fr/*.po"
-          - "utils/check_localized_cheatsheets.sh"
   cheatsheets-zh_Hans:
     image: *test_image
     commands:
@@ -229,11 +185,7 @@ steps:
     when:
       path:
         include:
-          - <<: *common_doc_paths
-          # Localized assets
-          - "doc/po/zh_Hans/Makefile.in"
           - "doc/po/zh_Hans/*.po"
-          - "utils/check_localized_cheatsheets.sh"
 ### TARGET check-cheatsheets
   check-cheatsheets-ja:
     image: *test_image
@@ -243,11 +195,7 @@ steps:
     when:
       path:
         include:
-          - <<: *common_doc_paths
-          # Localized assets
-          - "doc/po/ja/Makefile.in"
           - "doc/po/ja/*.po"
-          - "utils/check_localized_cheatsheets.sh"
   check-cheatsheets-de:
     image: *test_image
     commands:
@@ -256,11 +204,7 @@ steps:
     when:
       path:
         include:
-          - <<: *common_doc_paths
-          # Localized assets
-          - "doc/po/de/Makefile.in"
           - "doc/po/de/*.po"
-          - "utils/check_localized_cheatsheets.sh"
   check-cheatsheets-fr:
     image: *test_image
     commands:
@@ -269,11 +213,7 @@ steps:
     when:
       path:
         include:
-          - <<: *common_doc_paths
-          # Localized assets
-          - "doc/po/fr/Makefile.in"
           - "doc/po/fr/*.po"
-          - "utils/check_localized_cheatsheets.sh"
   check-cheatsheets-zh_Hans:
     image: *test_image
     commands:
@@ -282,11 +222,7 @@ steps:
     when:
       path:
         include:
-          - <<: *common_doc_paths
-          # Localized assets
-          - "doc/po/zh_Hans/Makefile.in"
           - "doc/po/zh_Hans/*.po"
-          - "utils/check_localized_cheatsheets.sh"
 ### TARGET pdf
   pdf-ja:
     image: *test_image
@@ -296,11 +232,7 @@ steps:
     when:
       path:
         include:
-          - <<: *common_doc_paths
-          # Localized assets
-          - "doc/po/ja/Makefile.in"
           - "doc/po/ja/*.po"
-          - "utils/check_localized_cheatsheets.sh"
   pdf-de:
     image: *test_image
     commands:
@@ -309,11 +241,7 @@ steps:
     when:
       path:
         include:
-          - <<: *common_doc_paths
-          # Localized assets
-          - "doc/po/de/Makefile.in"
           - "doc/po/de/*.po"
-          - "utils/check_localized_cheatsheets.sh"
   pdf-fr:
     image: *test_image
     commands:
@@ -322,11 +250,7 @@ steps:
     when:
       path:
         include:
-          - <<: *common_doc_paths
-          # Localized assets
-          - "doc/po/fr/Makefile.in"
           - "doc/po/fr/*.po"
-          - "utils/check_localized_cheatsheets.sh"
   pdf-zh_Hans:
     image: *test_image
     commands:
@@ -335,8 +259,4 @@ steps:
     when:
       path:
         include:
-          - <<: *common_doc_paths
-          # Localized assets
-          - "doc/po/zh_Hans/Makefile.in"
           - "doc/po/zh_Hans/*.po"
-          - "utils/check_localized_cheatsheets.sh"
