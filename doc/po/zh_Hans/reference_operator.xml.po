@@ -797,7 +797,7 @@ msgid ""
 "geometries. For an index assisted exact equality test, combine &#61; with "
 "&amp;&amp;."
 msgstr "此运算符不对几何图形使用任何有效索引。 要使用索引执行稳健的相等性测试，"
-"请使用= —和 &&。"
+"请使用= —和 &amp;&amp;。"
 
 #. Tag: para
 #: reference_operator.xml:857
