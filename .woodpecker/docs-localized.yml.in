@@ -6,6 +6,7 @@
     when:
       path:
         include:
+          - <<: *common_doc_paths
           # Localized assets
           - "doc/po/@LANG@/Makefile.in"
           - "doc/po/@LANG@/*.po"

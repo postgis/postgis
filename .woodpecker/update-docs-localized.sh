@@ -9,10 +9,6 @@ TARGETS="check-xml html cheatsheets check-cheatsheets pdf"
 
 cat docs.yml | sed '/DO NOT EDIT/q' > docs.yml.new
 
-cat docs.yml.new |
-  sed '/# Common docs path/,/# END OF COMMON/!d;/# END OF COMMON/q' |
-  sed 's/^/  /' > docs.yml.common_paths
-
 exec >> docs.yml.new
 for target in ${TARGETS}
 do
@@ -21,10 +17,7 @@ do
   do
     group=localized-${target}
     sed "s/@LANG@/${lang}/;s/@TARGET@/${target}/;s/@GROUP@/${group}/" docs-localized.yml.in
-    # Add common docs paths
-    cat docs.yml.common_paths
   done
 done
 
 mv -b docs.yml.new docs.yml
-rm docs.yml.common_paths

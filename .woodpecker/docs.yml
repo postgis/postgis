@@ -1,32 +1,22 @@
 variables:
   - &test_image 'docker.osgeo.org/postgis/build-test:trisquel3'
+  - common_doc_paths: &common_doc_paths
+      # related config files
+      - ".woodpecker/docs.yml"
+      # Makefiles
+      - "doc/Makefile.in"
+      - "doc/html/images/Makefile.in"
+      # XML sources
+      - "doc/*.xml"
+      # Internationalization Makefiles
+      - "doc/po/Makefile.local"
   - &when_path
       include:
-        # Common docs path
-        # related config files
-        - ".woodpecker/docs.yml"
-        # Makefiles
-        - "doc/Makefile.in"
-        - "doc/html/images/Makefile.in"
-        # XML sources
-        - "doc/*.xml"
-        # Internationalization Makefiles
-        - "doc/po/Makefile.local"
-        # END OF COMMON PATHS
+        - <<: *common_doc_paths
   - &when_path_full
       include:
-        # Common docs path
-        # related config files
-        - ".woodpecker/docs.yml"
-        # Makefiles
-        - "doc/Makefile.in"
-        - "doc/html/images/Makefile.in"
-        # XML sources
-        - "doc/*.xml"
-        # Internationalization Makefiles
-        - "doc/po/Makefile.local"
-        # END OF COMMON PATHS
-        # Localized assets
+        - <<: *common_doc_paths
+        # Any localized assets
         - "doc/po/*/Makefile.in"
         - "doc/po/*/*.po"
 
@@ -94,21 +84,11 @@ steps:
     when:
       path:
         include:
+          - <<: *common_doc_paths
           # Localized assets
           - "doc/po/ja/Makefile.in"
           - "doc/po/ja/*.po"
           - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
   check-xml-de:
     image: *test_image
     commands:
@@ -117,21 +97,11 @@ steps:
     when:
       path:
         include:
+          - <<: *common_doc_paths
           # Localized assets
           - "doc/po/de/Makefile.in"
           - "doc/po/de/*.po"
           - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
   check-xml-fr:
     image: *test_image
     commands:
@@ -140,21 +110,11 @@ steps:
     when:
       path:
         include:
+          - <<: *common_doc_paths
           # Localized assets
           - "doc/po/fr/Makefile.in"
           - "doc/po/fr/*.po"
           - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
 ### TARGET html
   html-ja:
     image: *test_image
@@ -164,21 +124,11 @@ steps:
     when:
       path:
         include:
+          - <<: *common_doc_paths
           # Localized assets
           - "doc/po/ja/Makefile.in"
           - "doc/po/ja/*.po"
           - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
   html-de:
     image: *test_image
     commands:
@@ -187,21 +137,11 @@ steps:
     when:
       path:
         include:
+          - <<: *common_doc_paths
           # Localized assets
           - "doc/po/de/Makefile.in"
           - "doc/po/de/*.po"
           - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
   html-fr:
     image: *test_image
     commands:
@@ -210,21 +150,11 @@ steps:
     when:
       path:
         include:
+          - <<: *common_doc_paths
           # Localized assets
           - "doc/po/fr/Makefile.in"
           - "doc/po/fr/*.po"
           - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
 ### TARGET cheatsheets
   cheatsheets-ja:
     image: *test_image
@@ -234,21 +164,11 @@ steps:
     when:
       path:
         include:
+          - <<: *common_doc_paths
           # Localized assets
           - "doc/po/ja/Makefile.in"
           - "doc/po/ja/*.po"
           - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
   cheatsheets-de:
     image: *test_image
     commands:
@@ -257,21 +177,11 @@ steps:
     when:
       path:
         include:
+          - <<: *common_doc_paths
           # Localized assets
           - "doc/po/de/Makefile.in"
           - "doc/po/de/*.po"
           - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
   cheatsheets-fr:
     image: *test_image
     commands:
@@ -280,21 +190,11 @@ steps:
     when:
       path:
         include:
+          - <<: *common_doc_paths
           # Localized assets
           - "doc/po/fr/Makefile.in"
           - "doc/po/fr/*.po"
           - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
 ### TARGET check-cheatsheets
   check-cheatsheets-ja:
     image: *test_image
@@ -304,21 +204,11 @@ steps:
     when:
       path:
         include:
+          - <<: *common_doc_paths
           # Localized assets
           - "doc/po/ja/Makefile.in"
           - "doc/po/ja/*.po"
           - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
   check-cheatsheets-de:
     image: *test_image
     commands:
@@ -327,21 +217,11 @@ steps:
     when:
       path:
         include:
+          - <<: *common_doc_paths
           # Localized assets
           - "doc/po/de/Makefile.in"
           - "doc/po/de/*.po"
           - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
   check-cheatsheets-fr:
     image: *test_image
     commands:
@@ -350,21 +230,11 @@ steps:
     when:
       path:
         include:
+          - <<: *common_doc_paths
           # Localized assets
           - "doc/po/fr/Makefile.in"
           - "doc/po/fr/*.po"
           - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
 ### TARGET pdf
   pdf-ja:
     image: *test_image
@@ -374,21 +244,11 @@ steps:
     when:
       path:
         include:
+          - <<: *common_doc_paths
           # Localized assets
           - "doc/po/ja/Makefile.in"
           - "doc/po/ja/*.po"
           - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
   pdf-de:
     image: *test_image
     commands:
@@ -397,21 +257,11 @@ steps:
     when:
       path:
         include:
+          - <<: *common_doc_paths
           # Localized assets
           - "doc/po/de/Makefile.in"
           - "doc/po/de/*.po"
           - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
   pdf-fr:
     image: *test_image
     commands:
@@ -420,18 +270,8 @@ steps:
     when:
       path:
         include:
+          - <<: *common_doc_paths
           # Localized assets
           - "doc/po/fr/Makefile.in"
           - "doc/po/fr/*.po"
           - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
