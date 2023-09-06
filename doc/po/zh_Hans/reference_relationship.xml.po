@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-06 09:52+0000\n"
+"PO-Revision-Date: 2023-09-06 09:58+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_relationshipxml/zh_Hans/>\n"
@@ -1547,7 +1547,8 @@ msgid ""
 "It is better to use a named relationship function if available, since they "
 "automatically use a spatial index where one exists. Also, they may implement "
 "performance optimizations which are not available with full relate evalation."
-msgstr ""
+msgstr "如果可用，最好使用命名关系函数，因为它们会自动使用存在的空间索引。 "
+"此外，他们还可以实现完全相关评估所无法实现的性能优化。"
 
 #. Tag: para
 #: reference_relationship.xml:1240
@@ -1558,6 +1559,9 @@ msgid ""
 "matrix string can be tested for matching a DE-9IM pattern using <xref "
 "linkend=\"ST_RelateMatch\"/>."
 msgstr ""
+"<emphasis role=\"bold\">形式 2：</emphasis>返回两个输入几何之间的空间关系的 "
+"DE-9IM 矩阵字符串。 可以使用 <xref linkend=\"ST_RelateMatch\"/> "
+"测试矩阵字符串与 DE-9IM 模式匹配。"
 
 #. Tag: para
 #: reference_relationship.xml:1245
@@ -1569,6 +1573,10 @@ msgid ""
 "MultiLineStrings are considered to lie in the DE-9IM Interior or Boundary. "
 "The <varname>boundaryNodeRule</varname> values are:"
 msgstr ""
+"<emphasis role=\"bold\">形式 3：</emphasis>与形式 2 类似，"
+"但允许指定<emphasis role=\"bold\">边界节点规则</emphasis>。 "
+"边界节点规则允许更好地控制 MultiLineString 的端点是否被视为位于 DE-9IM "
+"内部或边界内。 <varname>boundaryNodeRule</varname> 值为："
 
 #. Tag: para
 #: reference_relationship.xml:1252
