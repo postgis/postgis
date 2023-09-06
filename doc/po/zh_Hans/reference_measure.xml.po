@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-06 05:32+0000\n"
+"PO-Revision-Date: 2023-09-06 09:52+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_measurexml/zh_Hans/>\n"
@@ -570,7 +570,7 @@ msgstr ""
 #: reference_measure.xml:424 reference_measure.xml:810
 #, no-c-format
 msgid "Geometry Examples"
-msgstr ""
+msgstr "几何示例"
 
 #. Tag: para
 #: reference_measure.xml:426
@@ -617,7 +617,7 @@ msgstr ""
 #: reference_measure.xml:444 reference_measure.xml:816
 #, no-c-format
 msgid "Geography Examples"
-msgstr ""
+msgstr "几何示例"
 
 #. Tag: para
 #: reference_measure.xml:445
