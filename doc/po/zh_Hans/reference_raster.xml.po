@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-05 06:08+0000\n"
+"PO-Revision-Date: 2023-09-06 01:08+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_rasterxml/zh_Hans/>\n"
@@ -804,7 +804,7 @@ msgstr ""
 #: reference_raster.xml:10601 reference_raster.xml:11420
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr "有效性：2.0.0"
+msgstr "Availability: 2.0.0"
 
 #. Tag: title
 #: reference_raster.xml:571
@@ -1243,7 +1243,7 @@ msgstr "可用性：3.2.0"
 #: reference_raster.xml:1284
 #, no-c-format
 msgid "Example"
-msgstr ""
+msgstr "示例"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1104
@@ -2148,7 +2148,7 @@ msgstr ""
 msgid ""
 "pg_total_relation_size - includes, the table, the toasted tables, and the "
 "indexes."
-msgstr ""
+msgstr "pg_total_relation_size - 包括表、压缩表和索引。"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2182
@@ -3007,7 +3007,7 @@ msgstr ""
 #: reference_raster.xml:6236 reference_raster.xml:7102
 #, no-c-format
 msgid "Availability: 2.5.0"
-msgstr ""
+msgstr "可用性：2.5.0"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3269
@@ -8634,7 +8634,7 @@ msgstr ""
 msgid ""
 "This operand will make use of any indexes that may be available on the "
 "geometries."
-msgstr ""
+msgstr "该操作符将利用几何上可能可用的任何索引。"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10381
