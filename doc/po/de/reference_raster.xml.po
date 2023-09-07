@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2022-05-12 13:42+0000\n"
-"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"PO-Revision-Date: 2023-09-07 10:14+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "reference_rasterxml/de/>\n"
 "Language: de\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: reference_raster.xml:3
@@ -608,8 +608,8 @@ msgid ""
 "A composite type returned by the <xref linkend=\"RT_ST_SummaryStats\"/> and "
 "<xref linkend=\"RT_ST_SummaryStatsAgg\"/> functions."
 msgstr ""
-"Ein zusammgesetzter Datentyp, welcher von ST_SummaryStats und "
-"ST_SummaryStatsAgg zurückgegeben wird."
+"Ein zusammgesetzter Datentyp, welcher von <xref linkend=\"RT_ST_SummaryStats"
+"\"/> und <xref linkend=\"RT_ST_SummaryStatsAgg\"/> zurückgegeben wird."
 
 #. Tag: term
 #: reference_raster.xml:263
@@ -2309,7 +2309,7 @@ msgid ""
 "based upon the desired dimensions of the output rasters.</para>"
 msgstr ""
 "<para>Gibt Raster, die aus einer Teilungsoperation des Eingaberasters "
-"resultieren, mit den gewünschten Dimensionen aus."
+"resultieren, mit den gewünschten Dimensionen aus.</para>"
 
 #. Tag: para
 #: reference_raster.xml:1891
@@ -2583,7 +2583,7 @@ msgstr ""
 #: reference_raster.xml:2154
 #, no-c-format
 msgid "<para>Returns the amount of space (in bytes) the raster takes.</para>"
-msgstr "<para>Gibt den Platzbedarf des Rasters (in Byte) aus."
+msgstr "<para>Gibt den Platzbedarf des Rasters (in Byte) aus.</para>"
 
 #. Tag: para
 #: reference_raster.xml:2155
@@ -2681,7 +2681,7 @@ msgstr ""
 #: reference_raster.xml:2232
 #, no-c-format
 msgid "<para>Returns the number of bands in the raster object.</para>"
-msgstr "<para>Gibt die Anzahl der Bänder des Rasters aus."
+msgstr "<para>Gibt die Anzahl der Bänder des Rasters aus.</para>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2251
@@ -3234,8 +3234,7 @@ msgstr ""
 #, no-c-format
 msgid "<para>Returns a text summary of the contents of the raster.</para>"
 msgstr ""
-"<para>Gibt eine textliche Zusammenfassung des Rasterinhalts zurück</"
-"refpurpose>"
+"<para>Gibt eine textliche Zusammenfassung des Rasterinhalts zurück</para>"
 
 #. Tag: para
 #: reference_raster.xml:2757
@@ -3275,7 +3274,7 @@ msgid ""
 "</para>"
 msgstr ""
 "<para>Gibt die obere linke X-Koordinate des Rasters im "
-"Koordinatenprojektionssystem aus."
+"Koordinatenprojektionssystem aus.</para>"
 
 #. Tag: para
 #: reference_raster.xml:2796 reference_raster.xml:2830
@@ -3311,7 +3310,7 @@ msgid ""
 "</para>"
 msgstr ""
 "<para>Gibt die obere linke Y-Koordinate des Rasters im "
-"Koordinatenprojektionssystem aus."
+"Koordinatenprojektionssystem aus.</para>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2837
@@ -3333,7 +3332,7 @@ msgstr ""
 #: reference_raster.xml:2852
 #, no-c-format
 msgid "<para>Returns the width of the raster in pixels.</para>"
-msgstr "<para>Gibt die Breite des Rasters in Pixel aus."
+msgstr "<para>Gibt die Breite des Rasters in Pixel aus.</para>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2873
@@ -4223,7 +4222,7 @@ msgid ""
 "pixel.</para>"
 msgstr ""
 "<para>Gibt den geometrischen Schwerpunkt (Punktgeometrie) der Fläche aus, "
-"die durch das Pixel repräsentiert wird."
+"die durch das Pixel repräsentiert wird.</para>"
 
 #. Tag: para
 #: reference_raster.xml:3676 reference_raster.xml:3731
