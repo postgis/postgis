@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-29 10:16+0000\n"
-"PO-Revision-Date: 2022-01-12 23:53+0000\n"
+"PO-Revision-Date: 2023-09-07 12:33+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "installationxml/it/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: installation.xml:3
@@ -47,14 +47,15 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:13
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Once PostGIS is installed, it needs to be enabled (<xref "
 "linkend=\"create_spatial_db\"/>) or upgraded (<xref linkend=\"upgrading\"/>) "
 "in each individual database you want to use it in."
 msgstr ""
-"Una volta installato PostGIS, bisogna abilitarlo individualmente nei "
-"database in cui si vuole usare."
+"Una volta installato PostGIS, bisogna abilitarlo (<xref linkend="
+"\"create_spatial_db\"/>) o aggiornarlo (<xref linkend=\"upgrading\"/>) "
+"individualmente nei database in cui si vuole usare."
 
 #. Tag: title
 #: installation.xml:23
@@ -1103,15 +1104,15 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:683
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you configured PostGIS using non-standard PostgreSQL, GEOS, or Proj "
 "locations, you may need to add their library locations to the "
 "<varname>LD_LIBRARY_PATH</varname> environment variable."
 msgstr ""
 "Se avete configurato PostGIS utilizzando percorsi non standard per "
-"PostgreSQL, GEOS o Proj4, potreste dover aggiungere il percorso di queste "
-"librerie nella variabile di ambiente LD_LIBRARY_PATH"
+"PostgreSQL, GEOS o Proj, potreste dover aggiungere il percorso di queste "
+"librerie nella variabile di ambiente <varname>LD_LIBRARY_PATH</varname>."
 
 #. Tag: para
 #: installation.xml:691
