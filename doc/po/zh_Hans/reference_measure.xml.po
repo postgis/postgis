@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-06 09:52+0000\n"
+"PO-Revision-Date: 2023-09-07 10:14+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_measurexml/zh_Hans/>\n"
@@ -24,19 +24,20 @@ msgstr ""
 msgid ""
 "These functions compute measurements of distance, area and angles. There are "
 "also functions to compute geometry values determined by measurements."
-msgstr ""
+msgstr "这些函数计算距离、面积和角度的测量值。 "
+"还有一些函数可以计算由测量确定的几何值。"
 
 #. Tag: title
 #: reference_measure.xml:10
 #, no-c-format
 msgid "Measurement Functions"
-msgstr ""
+msgstr "测量函数"
 
 #. Tag: refpurpose
 #: reference_measure.xml:16
 #, no-c-format
 msgid "Returns the area of a polygonal geometry."
-msgstr ""
+msgstr "返回多边形几何体的面积。"
 
 #. Tag: title
 #: reference_measure.xml:34 reference_measure.xml:97 reference_measure.xml:181
@@ -66,12 +67,16 @@ msgid ""
 "meters. To compute the area using the faster but less accurate spherical "
 "model use <varname>ST_Area(geog,false)</varname>."
 msgstr ""
+"返回多边形几何体的面积。 对于几何类型，计算 2D 笛卡尔（平面）面积，单位由 "
+"SRID 指定。 对于地理类型，默认面积是在球体上确定的，单位为平方米。 "
+"要使用更快但精度较低的球形模型计算面积，请使用<varname> "
+"ST_Area(geog,false)</varname>。"
 
 #. Tag: para
 #: reference_measure.xml:41
 #, no-c-format
 msgid "Enhanced: 2.0.0 - support for 2D polyhedral surfaces was introduced."
-msgstr ""
+msgstr "增强：2.0.0 - 引入了对 2D 多面体曲面的支持。"
 
 #. Tag: para
 #: reference_measure.xml:42 reference_measure.xml:419
@@ -81,12 +86,14 @@ msgid ""
 "improved accuracy and robustness. Requires PROJ &gt;= 4.9.0 to take "
 "advantage of the new feature."
 msgstr ""
+"增强：2.2.0 - 使用 GeographicLib 对球体进行测量，以提高准确性和稳健性。 需要 "
+"PROJ >= 4.9.0 才能利用新功能。"
 
 #. Tag: para
 #: reference_measure.xml:43 reference_measure.xml:420
 #, no-c-format
 msgid "Changed: 3.0.0 - does not depend on SFCGAL anymore."
-msgstr ""
+msgstr "更改：3.0.0 - 不再依赖 SFCGAL。"
 
 #. Tag: para
 #: reference_measure.xml:44 reference_measure.xml:412
@@ -98,7 +105,7 @@ msgstr "&sfs_compliant;"
 #: reference_measure.xml:45
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.1.2, 9.5.3"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 8.1.2, 9.5.3"
 
 #. Tag: para
 #: reference_measure.xml:46 reference_measure.xml:328 reference_measure.xml:485
@@ -115,7 +122,8 @@ msgid ""
 "For polyhedral surfaces, only supports 2D polyhedral surfaces (not 2.5D). "
 "For 2.5D, may give a non-zero answer, but only for the faces that sit "
 "completely in XY plane."
-msgstr ""
+msgstr "对于多面体曲面，仅支持 2D 多面体曲面（不支持 2.5D）。 对于 2."
+"5D，可能会给出非零答案，但仅限于完全位于 XY 平面中的面。"
 
 #. Tag: title
 #: reference_measure.xml:52 reference_measure.xml:119 reference_measure.xml:199
@@ -140,6 +148,8 @@ msgid ""
 "conversion to get square meters. Note this is in square feet because "
 "EPSG:2249 is Massachusetts State Plane Feet"
 msgstr ""
+"返回马萨诸塞州一块土地的面积（以平方英尺为单位），然后乘以换算得到平方米。 "
+"请注意，这是以平方英尺为单位，因为 EPSG:2249 是马萨诸塞州平面英尺"
 
 #. Tag: para
 #: reference_measure.xml:57
@@ -150,6 +160,10 @@ msgid ""
 "is Massachusetts State Plane Feet and transformed area is in square meters "
 "since EPSG:26986 is state plane Massachusetts meters"
 msgstr ""
+"返回面积平方英尺并转换为马萨诸塞州平面米 (EPSG:26986) 以获得平方米。 "
+"请注意，单位为平方英尺，因为 2249 "
+"是马萨诸塞州平面英尺，变换面积的单位是平方米，因为 EPSG:26986 "
+"是马萨诸塞州平面米"
 
 #. Tag: para
 #: reference_measure.xml:62
@@ -161,12 +175,16 @@ msgid ""
 "meters. This is just for demonstration to compare. Normally your table will "
 "be stored in geography data type already."
 msgstr ""
+"使用地理数据类型返回面积平方英尺和平方米。 "
+"请注意，我们将几何图形转换为地理图形（在执行此操作之前，"
+"请确保您的几何图形位于 WGS 84 长纬度 4326 中）。 地理总是以米为单位。 "
+"这只是为了演示比较。 通常您的表将已经存储在地理数据类型中。"
 
 #. Tag: para
 #: reference_measure.xml:67
 #, no-c-format
 msgid "If your data is in geography already:"
-msgstr ""
+msgstr "如果您的数据已经是地理数据："
 
 #. Tag: title
 #: reference_measure.xml:71 reference_measure.xml:152 reference_measure.xml:213
@@ -194,12 +212,14 @@ msgid ""
 "linkend=\"ST_GeographyFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
 "linkend=\"ST_Transform\"/>"
 msgstr ""
+", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_GeographyFromText\""
+"/>, <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:80
 #, no-c-format
 msgid "Returns the north-based azimuth of a line between two points."
-msgstr ""
+msgstr "返回两点之间直线的基于北方的方位角。"
 
 #. Tag: para
 #: reference_measure.xml:99
@@ -212,6 +232,10 @@ msgid ""
 "Southeast = 3&#x03C0;/4; South = &#x03C0;; Southwest 5&#x03C0;/4; West = "
 "3&#x03C0;/2; Northwest = 7&#x03C0;/4."
 msgstr ""
+"返回目标点距原点的方位角（以弧度为单位）；如果两点重合，则返回 NULL。 "
+"方位角是从正 Y 轴（几何）或北子午线（地理）参考的正顺时针角度：北 = 0； "
+"东北=&#x03C0;/4； 东=&#x03C0;/2； 东南=3&#x03C0;/4； 南= &#x03C0;； "
+"西南5&#x03C0;/4； 西=3&#x03C0;/2； 西北 = 7&#x03C0;/4。"
 
 #. Tag: para
 #: reference_measure.xml:105
@@ -221,6 +245,8 @@ msgid ""
 "url=\"https://en.wikipedia.org/wiki/Geodesics_on_an_ellipsoid\">inverse "
 "geodesic problem</ulink>."
 msgstr ""
+"对于地理类型，方位角解决方案被称为<ulink url=\"https://en.wikipedia.org/wiki/"
+"Geodesics_on_an_ellipsoid\">反解大地测量问题</ulink>。"
 
 #. Tag: para
 #: reference_measure.xml:107
@@ -231,6 +257,9 @@ msgid ""
 "value in radians can be converted to degrees using the PostgreSQL function "
 "<varname>degrees()</varname>."
 msgstr ""
+"方位角是一个数学概念，定义为参考矢量与点之间的角度，角度单位为弧度。 "
+"可以使用 PostgreSQL 函数 <varname>Degrees()</varname> "
+"将结果值（以弧度表示）转换为度数。"
 
 #. Tag: para
 #: reference_measure.xml:110
@@ -242,6 +271,10 @@ msgid ""
 "trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions\">PostGIS wiki</ulink> "
 "for an implementation of this."
 msgstr ""
+"方位角可与 <xref linkend=\"ST_Translate\"/>结合使用，以沿其垂直轴移动对象。 "
+"有关此功能的实现，请参阅 <ulink url=\"http://trac.osgeo.org/postgis/wiki/"
+"UsersWikiplpgsqlfunctions\">PostGIS wiki</ulink> 中的 "
+"<varname>upgis_lineshift()</varname> 函数。"
 
 #. Tag: para
 #: reference_measure.xml:113
@@ -253,7 +286,7 @@ msgstr "可用性：1.1.0"
 #: reference_measure.xml:114
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for geography was introduced."
-msgstr ""
+msgstr "增强：2.0.0 引入了对地理的支持。"
 
 #. Tag: para
 #: reference_measure.xml:115
@@ -263,12 +296,14 @@ msgid ""
 "improved accuracy and robustness. Requires PROJ &gt;= 4.9.0 to take "
 "advantage of the new feature."
 msgstr ""
+"增强：2.2.0使用 GeographicLib 对球体进行测量，以提高准确性和稳健性。 需要 "
+"PROJ &gt;= 4.9.0 才能利用新功能。"
 
 #. Tag: para
 #: reference_measure.xml:120
 #, no-c-format
 msgid "Geometry Azimuth in degrees"
-msgstr ""
+msgstr "几何方位角（以度为单位）"
 
 #. Tag: para
 #: reference_measure.xml:131
@@ -276,7 +311,7 @@ msgstr ""
 msgid ""
 "Blue: origin Point(25,45); Green: target Point(75, 100); Yellow: Y axis or "
 "North; Red: azimuth angle."
-msgstr ""
+msgstr "蓝色：原点(25,45)； 绿色：目标点(75, 100)； 黄色：Y轴或北； 红色：方位角。"
 
 #. Tag: para
 #: reference_measure.xml:141
@@ -284,7 +319,7 @@ msgstr ""
 msgid ""
 "Blue: origin Point(75, 100); Green: target Point(25, 45); Yellow: Y axis or "
 "North; Red: azimuth angle."
-msgstr ""
+msgstr "蓝色：原点(75, 100)； 绿色：目标点(25, 45)； 黄色：Y轴或北； 红色：方位角。"
 
 #. Tag: para
 #: reference_measure.xml:153
@@ -294,19 +329,22 @@ msgid ""
 "linkend=\"ST_Project\"/>, <ulink url=\"http://www.postgresql.org/docs/"
 "current/interactive/functions-math.html\">PostgreSQL Math Functions</ulink>"
 msgstr ""
+", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_Translate\"/>, <xref "
+"linkend=\"ST_Project\"/>, <ulink url=\"http://www.postgresql.org/docs/"
+"current/interactive/functions-math.html\">PostgreSQL Math Functions</ulink>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:162
 #, no-c-format
 msgid ""
 "Returns the angle between two vectors defined by 3 or 4 points, or 2 lines."
-msgstr ""
+msgstr "返回由 3 或 4 个点或 2 条线定义的两个向量之间的角度。"
 
 #. Tag: para
 #: reference_measure.xml:183
 #, no-c-format
 msgid "Computes the clockwise angle between two vectors."
-msgstr ""
+msgstr "计算两个向量之间的顺时针角度。"
 
 #. Tag: para
 #: reference_measure.xml:186
@@ -316,6 +354,8 @@ msgid ""
 "the points P1-P2-P3. If a 4th point provided computes the angle points P1-P2 "
 "and P3-P4"
 msgstr ""
+"<emphasis role=\"bold\">形式 1</emphasis>：计算点 P1-P2-P3 所围成的角度。 "
+"如果提供了第四个点则计算角度点 P1-P2 和 P3-P4"
 
 #. Tag: para
 #: reference_measure.xml:187
@@ -325,6 +365,8 @@ msgid ""
 "vectors S1-E1 and S2-E2, defined by the start and end points of the input "
 "lines"
 msgstr ""
+"<emphasis role=\"bold\">形式 2</emphasis>：计算两个向量 S1-E1 和 S2-E2 "
+"之间的角度，由输入线的起点和终点定义"
 
 #. Tag: para
 #: reference_measure.xml:191
@@ -334,13 +376,15 @@ msgid ""
 "result can be converted to degrees using the PostgreSQL function "
 "<varname>degrees()</varname>."
 msgstr ""
+"结果是 0 到 2&#x03C0; 弧度之间的正角。 可以使用 PostgreSQL 函数 "
+"<varname>Degrees() </varname>将弧度结果转换为度数。"
 
 #. Tag: para
 #: reference_measure.xml:194
 #, no-c-format
 msgid ""
 "Note that <varname>ST_Angle(P1,P2,P3) = ST_Angle(P2,P1,P2,P3)</varname>."
-msgstr ""
+msgstr "请注意，<varname>ST_Angle(P1,P2,P3) = ST_Angle(P2,P1,P2,P3)</varname>。"
 
 #. Tag: para
 #: reference_measure.xml:195
@@ -352,19 +396,19 @@ msgstr "可用性：2.5.0"
 #: reference_measure.xml:201
 #, no-c-format
 msgid "Angle between three points"
-msgstr ""
+msgstr "三点之间的角度"
 
 #. Tag: para
 #: reference_measure.xml:204
 #, no-c-format
 msgid "Angle between vectors defined by four points"
-msgstr ""
+msgstr "由四个点定义的向量之间的角度"
 
 #. Tag: para
 #: reference_measure.xml:207
 #, no-c-format
 msgid "Angle between vectors defined by the start and end points of lines"
-msgstr ""
+msgstr "由线的起点和终点定义的向量之间的角度"
 
 #. Tag: refpurpose
 #: reference_measure.xml:223
@@ -372,7 +416,8 @@ msgstr ""
 msgid ""
 "Returns the 2D point on g1 that is closest to g2. This is the first point of "
 "the shortest line from one geometry to the other."
-msgstr ""
+msgstr "返回 g1 上最接近 g2 的 2D 点。 "
+"这是从一个几何体到另一个几何体的最短直线的第一个点。"
 
 #. Tag: para
 #: reference_measure.xml:254
@@ -382,6 +427,9 @@ msgid ""
 "to <varname>geom2</varname>. This is the first point of the shortest line "
 "between the geometries (as computed by <xref linkend=\"ST_ShortestLine\"/>)."
 msgstr ""
+"返回 <varname>geom1</varname> 上最接近 <varname>geom2 </varname>的二维点。 "
+"这是几何图形之间最短线的第一个点（由 <xref linkend=\"ST_ShortestLine\""
+"/>计算）。"
 
 #. Tag: para
 #: reference_measure.xml:258
@@ -389,13 +437,14 @@ msgstr ""
 msgid ""
 "If you have a 3D Geometry, you may prefer to use <xref "
 "linkend=\"ST_3DClosestPoint\"/>."
-msgstr ""
+msgstr "如果您有 3D 几何图形，您可能更喜欢使用 <xref linkend=\"ST_3DClosestPoint\""
+"/>。"
 
 #. Tag: para
 #: reference_measure.xml:259
 #, no-c-format
 msgid "Enhanced: 3.4.0 - Support for geography."
-msgstr ""
+msgstr "增强：3.4.0 - 支持地理。"
 
 #. Tag: para
 #: reference_measure.xml:260 reference_measure.xml:729
@@ -411,13 +460,14 @@ msgstr "可用性：1.5.0"
 msgid ""
 "The closest point for a Point and a LineString is the point itself. The "
 "closest point for a LineString and a Point is a point on the line."
-msgstr ""
+msgstr "Point 和 LineString 的最近点是点本身。 LineString 和 Point "
+"的最近点是线上的点。"
 
 #. Tag: para
 #: reference_measure.xml:283
 #, no-c-format
 msgid "The closest point on polygon A to polygon B"
-msgstr ""
+msgstr "多边形 A 上距离多边形 B 最近的点"
 
 #. Tag: para
 #: reference_measure.xml:294
@@ -426,6 +476,8 @@ msgid ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"ST_LongestLine\"/>, <xref "
 "linkend=\"ST_ShortestLine\"/>, <xref linkend=\"ST_MaxDistance\"/>"
 msgstr ""
+", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"ST_LongestLine\"/>, <xref "
+"linkend=\"ST_ShortestLine\"/>, <xref linkend=\"ST_MaxDistance\"/>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:302
@@ -433,7 +485,7 @@ msgstr ""
 msgid ""
 "Returns the 3D point on g1 that is closest to g2. This is the first point of "
 "the 3D shortest line."
-msgstr ""
+msgstr "返回 g1 上最接近 g2 的 3D 点。 这是 3D 最短线的第一个点。"
 
 #. Tag: funcprototype
 #: reference_measure.xml:308
@@ -443,6 +495,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_3DClosestPoint</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:323
@@ -451,7 +506,8 @@ msgid ""
 "Returns the 3-dimensional point on g1 that is closest to g2. This is the "
 "first point of the 3D shortest line. The 3D length of the 3D shortest line "
 "is the 3D distance."
-msgstr ""
+msgstr "返回 g1 上最接近 g2 的 3 维点。 这是 3D 最短线的第一个点。 "
+"3D最短线的3D长度是3D距离。"
 
 #. Tag: para
 #: reference_measure.xml:326 reference_measure.xml:483
@@ -479,24 +535,26 @@ msgid ""
 "(instead of old behavior assuming 0 for missing Z). In case of 2D and 3D, Z "
 "is no longer assumed to be 0 for missing Z."
 msgstr ""
+"更改：2.2.0 - 如果输入 2 个 2D 几何图形，则返回 2D 点（而不是假设缺失 Z 为 0 "
+"的旧行为）。 在 2D 和 3D 情况下，对于缺失的 Z，Z 不再被假定为 0。"
 
 #. Tag: para
 #: reference_measure.xml:339
 #, no-c-format
 msgid "linestring and point -- both 3d and 2d closest point"
-msgstr ""
+msgstr "线串和点——3d 和 2d 最近点"
 
 #. Tag: para
 #: reference_measure.xml:344
 #, no-c-format
 msgid "linestring and multipoint -- both 3d and 2d closest point"
-msgstr ""
+msgstr "线串和多点——3d 和 2d 最近点"
 
 #. Tag: para
 #: reference_measure.xml:349
 #, no-c-format
 msgid "Multilinestring and polygon both 3d and 2d closest point"
-msgstr ""
+msgstr "多线串和多边形 3d 和 2d 最近点"
 
 #. Tag: para
 #: reference_measure.xml:362
@@ -505,12 +563,14 @@ msgid ""
 ", <xref linkend=\"ST_ClosestPoint\"/>, <xref linkend=\"ST_3DDistance\"/>, "
 "<xref linkend=\"ST_3DShortestLine\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClosestPoint\"/>, <xref linkend=\"ST_3DDistance\"/>, "
+"<xref linkend=\"ST_3DShortestLine\"/>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:370
 #, no-c-format
 msgid "Returns the distance between two geometry or geography values."
-msgstr ""
+msgstr "返回两个几何或地理值之间的距离。"
 
 #. Tag: para
 #: reference_measure.xml:404
@@ -520,6 +580,8 @@ msgid ""
 "(planar) distance between two geometries, in projected units (spatial ref "
 "units)."
 msgstr ""
+"对于<xref linkend=\"geometry\"/>，返回两个几何之间的最小 2D "
+"笛卡尔（平面）距离，以投影单位（空间参考单位）表示。"
 
 #. Tag: para
 #: reference_measure.xml:407
@@ -530,12 +592,16 @@ msgid ""
 "determined by the SRID. If <varname>use_spheroid</varname> is false, a "
 "faster spherical calculation is used."
 msgstr ""
+"对于<xref linkend=\"geography\""
+"/>，默认返回两个地理位置之间的最小测地距离（以米为单位），在由 SRID "
+"确定的椭球体上进行计算。 如果 <varname>use_spheroid </varname>为 "
+"false，则使用更快的球面计算。"
 
 #. Tag: para
 #: reference_measure.xml:413
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.23"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.23"
 
 #. Tag: para
 #: reference_measure.xml:414
@@ -549,7 +615,8 @@ msgstr "&curve_support;"
 msgid ""
 "Availability: 1.5.0 geography support was introduced in 1.5. Speed "
 "improvements for planar to better handle large or many vertex geometries"
-msgstr ""
+msgstr "可用性：1.5.0 地理支持在 1.5 中引入。 "
+"提高了平面的速度，以更好地处理大型或多个顶点几何图形"
 
 #. Tag: para
 #: reference_measure.xml:417
@@ -559,12 +626,14 @@ msgid ""
 "boundlessgeo.com/2012/07/making-geography-faster/\">Making Geography faster</"
 "ulink> for details."
 msgstr ""
+"增强：2.1.0 提高了地理速度。 有关详细信息，请参阅<ulink url=\"http"
+"://boundlessgeo.com/2012/07/making-geography-faster/\">使地理更快</ulink>。"
 
 #. Tag: para
 #: reference_measure.xml:418
 #, no-c-format
 msgid "Enhanced: 2.1.0 - support for curved geometries was introduced."
-msgstr ""
+msgstr "增强：2.1.0 - 引入了对弯曲几何形状的支持。"
 
 #. Tag: title
 #: reference_measure.xml:424 reference_measure.xml:810
@@ -578,7 +647,7 @@ msgstr "几何示例"
 msgid ""
 "Geometry example - units in planar degrees 4326 is WGS 84 long lat, units "
 "are degrees."
-msgstr ""
+msgstr "几何示例 - 平面度数 4326 是 WGS 84 经纬度，单位是度。"
 
 #. Tag: para
 #: reference_measure.xml:429
@@ -588,6 +657,9 @@ msgid ""
 "popular web maps). Although the value is off, nearby ones can be compared "
 "correctly, which makes it a good choice for algorithms like KNN or KMeans."
 msgstr ""
+"几何示例 - 以米为单位（SRID：3857，与流行网络地图上的像素成比例）。 "
+"尽管该值关闭，但可以正确比较附近的值，这使其成为 KNN 或 KMeans "
+"等算法的不错选择。"
 
 #. Tag: para
 #: reference_measure.xml:434
@@ -595,7 +667,8 @@ msgstr ""
 msgid ""
 "Geometry example - units in meters (SRID: 3857 as above, but corrected by "
 "cos(lat) to account for distortion)"
-msgstr ""
+msgstr "几何示例 - 单位为米（SRID：3857，如上所述，但通过 cos(lat) "
+"进行校正以考虑失真）"
 
 #. Tag: para
 #: reference_measure.xml:437
@@ -603,7 +676,7 @@ msgstr ""
 msgid ""
 "Geometry example - units in meters (SRID: 26986 Massachusetts state plane "
 "meters) (most accurate for Massachusetts)"
-msgstr ""
+msgstr "几何示例 - 单位为米（SRID：26986 马萨诸塞州平面米）（马萨诸塞州最准确）"
 
 #. Tag: para
 #: reference_measure.xml:440
@@ -611,7 +684,7 @@ msgstr ""
 msgid ""
 "Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) "
 "(least accurate)"
-msgstr ""
+msgstr "几何示例 - 单位为米（SRID：2163 美国国家地图集等面积）（最不准确）"
 
 #. Tag: title
 #: reference_measure.xml:444 reference_measure.xml:816
@@ -625,7 +698,7 @@ msgstr "几何示例"
 msgid ""
 "Same as geometry example but note units in meters - use sphere for slightly "
 "faster and less accurate computation."
-msgstr ""
+msgstr "与几何示例相同，但注意单位为米 - 使用球体进行稍快但不太准确的计算。"
 
 #. Tag: para
 #: reference_measure.xml:451
@@ -636,6 +709,10 @@ msgid ""
 ">, <xref linkend=\"ST_HausdorffDistance\"/>, <xref "
 "linkend=\"ST_FrechetDistance\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ""
+", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DistanceSphere\"/>, "
+"<xref linkend=\"ST_Distance_Spheroid\"/>, <xref linkend=\"ST_MaxDistance\"/"
+">, <xref linkend=\"ST_HausdorffDistance\"/>, <xref linkend="
+"\"ST_FrechetDistance\"/>, <xref linkend=\"ST_Transform\"/>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:460
@@ -643,7 +720,7 @@ msgstr ""
 msgid ""
 "Returns the 3D cartesian minimum distance (based on spatial ref) between two "
 "geometries in projected units."
-msgstr ""
+msgstr "返回两个几何图形之间的 3D 笛卡尔最小距离（基于空间参考）（以投影单位表示）。"
 
 #. Tag: funcprototype
 #: reference_measure.xml:465
@@ -653,6 +730,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 msgstr ""
+"<funcdef>float <function>ST_3DDistance</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:480
@@ -660,13 +740,13 @@ msgstr ""
 msgid ""
 "Returns the 3-dimensional minimum cartesian distance between two geometries "
 "in projected units (spatial ref units)."
-msgstr ""
+msgstr "返回两个几何图形之间的 3 维最小笛卡尔距离（以投影单位（空间参考单位）表示）。"
 
 #. Tag: para
 #: reference_measure.xml:486
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3"
 
 #. Tag: para
 #: reference_measure.xml:489 reference_measure.xml:1188
@@ -674,13 +754,13 @@ msgstr ""
 msgid ""
 "Changed: 2.2.0 - In case of 2D and 3D, Z is no longer assumed to be 0 for "
 "missing Z."
-msgstr ""
+msgstr "更改：2.2.0 - 在 2D 和 3D 的情况下，对于缺失的 Z，Z 不再被假定为 0。"
 
 #. Tag: para
 #: reference_measure.xml:490
 #, no-c-format
 msgid "Changed: 3.0.0 - SFCGAL version removed"
-msgstr ""
+msgstr "更改：3.0.0 - SFCGAL 版本已删除"
 
 #. Tag: para
 #: reference_measure.xml:503
@@ -690,6 +770,9 @@ msgid ""
 "<xref linkend=\"ST_3DMaxDistance\"/>, <xref linkend=\"ST_3DShortestLine\"/>, "
 "<xref linkend=\"ST_Transform\"/>"
 msgstr ""
+", <xref linkend=\"ST_3DClosestPoint\"/>, <xref linkend=\"ST_3DDWithin\"/>, "
+"<xref linkend=\"ST_3DMaxDistance\"/>, <xref linkend=\"ST_3DShortestLine\"/>, "
+"<xref linkend=\"ST_Transform\"/>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:511
@@ -697,7 +780,7 @@ msgstr ""
 msgid ""
 "Returns minimum distance in meters between two lon/lat geometries using a "
 "spherical earth model."
-msgstr ""
+msgstr "使用球形地球模型返回两个经度/纬度几何形状之间的最小距离（以米为单位）。"
 
 #. Tag: funcprototype
 #: reference_measure.xml:518
@@ -709,6 +792,11 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>float8 </type> "
 "<parameter>radius=6371008</parameter></paramdef>"
 msgstr ""
+"<funcdef>float <function>ST_DistanceSphere</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomlonlatA</parameter></"
+"paramdef> <paramdef><type>geometry </type> "
+"<parameter>geomlonlatB</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>float8 </type> <parameter>radius=6371008</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:530
@@ -719,6 +807,9 @@ msgid ""
 "Faster than <xref linkend=\"ST_Distance_Spheroid\"/>, but less accurate. "
 "PostGIS Versions prior to 1.5 only implemented for points."
 msgstr ""
+"返回两个经度/纬度点之间的最小距离（以米为单位）。 使用球形地球和从 SRID "
+"定义的椭球体导出的半径。 比 <xref linkend=\"ST_Distance_Spheroid\""
+"/>更快，但精度较差。 PostGIS 1.5 之前的版本仅针对点实现。"
 
 #. Tag: para
 #: reference_measure.xml:536 reference_measure.xml:586
@@ -726,20 +817,20 @@ msgstr ""
 msgid ""
 "Availability: 1.5 - support for other geometry types besides points was "
 "introduced. Prior versions only work with points."
-msgstr ""
+msgstr "可用性：1.5 - 引入了对除点之外的其他几何类型的支持。 之前的版本仅适用于点。"
 
 #. Tag: para
 #: reference_measure.xml:537
 #, no-c-format
 msgid ""
 "Changed: 2.2.0 In prior versions this used to be called ST_Distance_Sphere"
-msgstr ""
+msgstr "更改：2.2.0 在之前的版本中，这曾经被称为 ST_Distance_Sphere"
 
 #. Tag: para
 #: reference_measure.xml:551
 #, no-c-format
 msgid ", <xref linkend=\"ST_Distance_Spheroid\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Distance_Spheroid\"/>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:559
@@ -747,7 +838,7 @@ msgstr ""
 msgid ""
 "Returns the minimum distance between two lon/lat geometries using a "
 "spheroidal earth model."
-msgstr ""
+msgstr "使用球体模型返回两个经度/纬度几何形状之间的最小距离。"
 
 #. Tag: funcprototype
 #: reference_measure.xml:565
@@ -759,6 +850,12 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>spheroid </"
 "type><parameter>measurement_spheroid=WGS84</parameter></paramdef>"
 msgstr ""
+"<funcdef>float <function>ST_DistanceSpheroid</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomlonlatA</parameter></"
+"paramdef> <paramdef><type>geometry </type> "
+"<parameter>geomlonlatB</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>spheroid "
+"</type><parameter>measurement_spheroid=WGS84</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:577
@@ -768,6 +865,8 @@ msgid ""
 "particular spheroid. See the explanation of spheroids given for <xref "
 "linkend=\"ST_Length_Spheroid\"/>."
 msgstr ""
+"返回给定特定球体的两个经度/纬度几何形状之间的最小距离（以米为单位）。 请参阅 "
+"<xref linkend=\"ST_Length_Spheroid\"/>给出的椭球体的解释。"
 
 #. Tag: para
 #: reference_measure.xml:581
@@ -775,25 +874,25 @@ msgstr ""
 msgid ""
 "This function does not look at the SRID of the geometry. It assumes the "
 "geometry coordinates are based on the provided spheroid."
-msgstr ""
+msgstr "此函数不查看几何体的 SRID。 它假设几何坐标基于提供的球体。"
 
 #. Tag: para
 #: reference_measure.xml:587
 #, no-c-format
 msgid "Changed: 2.2.0 In prior versions this was called ST_Distance_Spheroid"
-msgstr ""
+msgstr "更改：2.2.0 在之前的版本中，这称为 ST_Distance_Spheroid"
 
 #. Tag: para
 #: reference_measure.xml:601
 #, no-c-format
 msgid ", <xref linkend=\"ST_DistanceSphere\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_DistanceSphere\"/>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:610
 #, no-c-format
 msgid "Returns the Fréchet distance between two geometries."
-msgstr ""
+msgstr "返回两个几何图形之间的 Fréchet 距离。"
 
 #. Tag: funcprototype
 #: reference_measure.xml:615
@@ -805,6 +904,11 @@ msgid ""
 "<paramdef><type>float</type> <parameter>densifyFrac = -1</parameter></"
 "paramdef>"
 msgstr ""
+"<funcdef>float <function>ST_FrechetDistance</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>densifyFrac = "
+"-1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:633
@@ -818,6 +922,11 @@ msgid ""
 "points along the curves. Therefore it is often better than the Hausdorff "
 "distance."
 msgstr ""
+"基于<ulink url=\"http://www.kr.tuwien.ac.at/staff/eiter/et-archive/cdtr9464."
+"pdf\">计算离散 Fréchet 距离</ulink>，实现计算仅限于两个几何图形的离散点的 "
+"Fréchet 距离的算法。 Fréchet "
+"距离是曲线之间相似性的度量，考虑了曲线上点的位置和顺序。 因此它通常比 "
+"Hausdorff 距离更好。"
 
 #. Tag: para
 #: reference_measure.xml:635
@@ -829,13 +938,16 @@ msgid ""
 "Each segment will be split into a number of equal-length subsegments, whose "
 "fraction of the total length is closest to the given fraction."
 msgstr ""
+"当指定可选的 densifyFrac 时，该函数在计算离散 Fréchet "
+"距离之前执行分段致密化。 densifyFrac 参数设置用于致密每个段的分数。 "
+"每个段将被分成多个等长的子段，其总长度的分数最接近给定的分数。"
 
 #. Tag: para
 #: reference_measure.xml:638 reference_measure.xml:718
 #, no-c-format
 msgid ""
 "Units are in the units of the spatial reference system of the geometries."
-msgstr ""
+msgstr "单位采用几何空间参考系的单位。"
 
 #. Tag: para
 #: reference_measure.xml:642
@@ -843,7 +955,7 @@ msgstr ""
 msgid ""
 "The current implementation supports only vertices as the discrete locations. "
 "This could be extended to allow an arbitrary density of points to be used."
-msgstr ""
+msgstr "当前的实现仅支持顶点作为离散位置。 这可以扩展到允许使用任意密度的点。"
 
 #. Tag: para
 #: reference_measure.xml:647
@@ -852,7 +964,8 @@ msgid ""
 "The smaller densifyFrac we specify, the more acurate Fréchet distance we "
 "get. But, the computation time and the memory usage increase with the square "
 "of the number of subsegments."
-msgstr ""
+msgstr "我们指定的 densifyFrac 越小，我们获得的 Fréchet 距离就越准确。 "
+"但是，计算时间和内存使用量随着子段数量的平方而增加。"
 
 #. Tag: para
 #: reference_measure.xml:651 reference_measure.xml:1309
@@ -864,13 +977,13 @@ msgstr "它是通过GEOS模块实现的。"
 #: reference_measure.xml:652
 #, no-c-format
 msgid "Availability: 2.4.0 - requires GEOS &gt;= 3.7.0"
-msgstr ""
+msgstr "可用性：2.4.0 - 需要 GEOS &gt;= 3.7.0"
 
 #. Tag: refpurpose
 #: reference_measure.xml:673
 #, no-c-format
 msgid "Returns the Hausdorff distance between two geometries."
-msgstr ""
+msgstr "返回两个几何图形之间的Hausdorff 距离。"
 
 #. Tag: para
 #: reference_measure.xml:705
@@ -881,6 +994,9 @@ msgid ""
 "Hausdorff distance is a measure of how similar or dissimilar 2 geometries "
 "are."
 msgstr ""
+"返回两个几何图形之间的<ulink url=\"http://en.wikipedia.org/wiki/"
+"Hausdorff_distance\">Hausdorff距离</ulink>。 Hausdorff距离是对 2 "
+"个几何形状相似或不相似程度的度量。"
 
 #. Tag: para
 #: reference_measure.xml:710
@@ -894,6 +1010,11 @@ msgid ""
 "subsegments whose fraction of the segment length is closest to the given "
 "fraction."
 msgstr ""
+"该函数实际上计算“离散Hausdorff距离”。 "
+"这是在几何上的离散点计算的Hausdorff距离。 可以指定<parameter> densifyFrac "
+"</parameter>参数，以便在计算离散 Hausdorff "
+"距离之前通过致密分段来提供更准确的答案。 "
+"每个段被分成多个等长的子段，其段长度的分数最接近给定的分数。"
 
 #. Tag: para
 #: reference_measure.xml:722
@@ -905,12 +1026,15 @@ msgid ""
 "each other, and roughly equal in length. This is a useful metric for line "
 "matching."
 msgstr ""
+"该算法不等同于标准 Hausdorff距离。 "
+"然而，它计算出的近似值对于大部分有用案例都是正确的。 "
+"一种重要的情况是线串彼此大致平行且长度大致相等。 这是线路匹配的有用指标。"
 
 #. Tag: para
 #: reference_measure.xml:741
 #, no-c-format
 msgid "Hausdorff distance (red) and distance (yellow) between two lines"
-msgstr ""
+msgstr "两条线之间的Hausdorff距离（红色）和距离（黄色）"
 
 #. Tag: para
 #: reference_measure.xml:748
@@ -918,7 +1042,7 @@ msgstr ""
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Hausdorff distance with "
 "densification."
-msgstr ""
+msgstr "<emphasis role=\"bold\">示例：</emphasis>致密化的Hausdorff 距离。"
 
 #. Tag: para
 #: reference_measure.xml:751
@@ -930,12 +1054,17 @@ msgid ""
 "building listed only once. <code>ORDER BY .. ST_HausdorffDistance</code> "
 "selects the parcel that is most similar to the building."
 msgstr ""
+"<emphasis role=\"bold\""
+">示例：</emphasis>对于每个建筑物，找到最能代表它的地块。 "
+"首先，我们要求地块与建筑物几何图形相交。 <code>DISTINCT ON</code> "
+"保证我们每栋建筑仅列出一次。 <code>ORDER BY .. ST_HausdorffDistance</code> "
+"选择与建筑物最相似的地块。"
 
 #. Tag: refpurpose
 #: reference_measure.xml:771
 #, no-c-format
 msgid "Returns the 2D length of a linear geometry."
-msgstr ""
+msgstr "返回线性几何体的二维长度。"
 
 #. Tag: para
 #: reference_measure.xml:789
@@ -946,6 +1075,10 @@ msgid ""
 "0 is returned; use <xref linkend=\"ST_Perimeter\"/> instead. The units of "
 "length is determined by the spatial reference system of the geometry."
 msgstr ""
+"对于几何类型：如果几何是 "
+"LineString、MultiLineString、ST_Curve、ST_MultiCurve，则返回几何的 2D "
+"笛卡尔长度。 对于面积几何形状，返回 0； 请改用 <xref linkend=\"ST_Perimeter\""
+"/>。 长度单位由几何的空间参考系确定。"
 
 #. Tag: para
 #: reference_measure.xml:793
@@ -957,6 +1090,10 @@ msgid ""
 "is exclusive to WGS84. If <varname>use_spheroid = false</varname>, then the "
 "calculation is based on a sphere instead of a spheroid."
 msgstr ""
+"对于地理类型：使用逆测地线计算来执行计算。 长度单位为米。 "
+"如果PostGIS是使用PROJ版本4.8."
+"0或更高版本编译的，则椭球体由SRID指定，否则它是WGS84独有的。 如果<varname> "
+"use_spheroid = false</varname>，则计算基于球体而不是椭球体。"
 
 #. Tag: para
 #: reference_measure.xml:798
@@ -964,7 +1101,7 @@ msgstr ""
 msgid ""
 "Currently for geometry this is an alias for ST_Length2D, but this may change "
 "to support higher dimensions."
-msgstr ""
+msgstr "目前对于几何体，这是 ST_Length2D 的别名，但这可能会更改以支持更高的维度。"
 
 #. Tag: para
 #: reference_measure.xml:800
@@ -976,6 +1113,9 @@ msgid ""
 "geometry behavior. Please use ST_Perimeter if you want the perimeter of a "
 "polygon"
 msgstr ""
+"更改：2.0.0 重大更改 - 在之前的版本中，将此应用于地理类型的多/多边形将为您提"
+"供多边形/多多边形的周长。 在 2.0.0 中，这已更改为返回 0 以符合几何行为。 "
+"如果您想要多边形的周长，请使用 ST_Perimeter"
 
 #. Tag: para
 #: reference_measure.xml:803
@@ -983,25 +1123,26 @@ msgstr ""
 msgid ""
 "For geography the calculation defaults to using a spheroidal model. To use "
 "the faster but less accurate spherical calculation use ST_Length(gg,false);"
-msgstr ""
+msgstr "对于地理，计算默认使用球体模型。 要使用更快但不太准确的球面计算，请使用 "
+"ST_Length(gg,false);"
 
 #. Tag: para
 #: reference_measure.xml:804 reference_measure.xml:1356
 #, no-c-format
 msgid "&sfs_compliant; s2.1.5.1"
-msgstr ""
+msgstr "&sfs_compliant; s2.1.5.1"
 
 #. Tag: para
 #: reference_measure.xml:805
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.2, 9.3.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.2, 9.3.4"
 
 #. Tag: para
 #: reference_measure.xml:806
 #, no-c-format
 msgid "Availability: 1.5.0 geography support was introduced in 1.5."
-msgstr ""
+msgstr "可用性：1.5.0 地理支持在 1.5 中引入。"
 
 #. Tag: para
 #: reference_measure.xml:811
@@ -1009,13 +1150,14 @@ msgstr ""
 msgid ""
 "Return length in feet for line string. Note this is in feet because "
 "EPSG:2249 is Massachusetts State Plane Feet"
-msgstr ""
+msgstr "返回线串的长度（以英尺为单位）。 请注意，单位为英尺，因为 EPSG:2249 "
+"是马萨诸塞州平面英尺"
 
 #. Tag: para
 #: reference_measure.xml:817
 #, no-c-format
 msgid "Return length of WGS 84 geography line"
-msgstr ""
+msgstr "WGS 84 地理线返回长度"
 
 #. Tag: para
 #: reference_measure.xml:822
@@ -1024,6 +1166,8 @@ msgid ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Length_Spheroid\"/"
 ">, <xref linkend=\"ST_Perimeter\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ""
+", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Length_Spheroid\"/"
+">, <xref linkend=\"ST_Perimeter\"/>, <xref linkend=\"ST_Transform\"/>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:830
@@ -1031,7 +1175,7 @@ msgstr ""
 msgid ""
 "Returns the 2D length of a linear geometry. Alias for <varname>ST_Length</"
 "varname>"
-msgstr ""
+msgstr "返回线性几何体的二维长度。 <varname>ST_Length </varname>的别名"
 
 #. Tag: funcprototype
 #: reference_measure.xml:835
@@ -1041,6 +1185,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>a_2dlinestring</parameter></"
 "paramdef>"
 msgstr ""
+"<funcdef>float <function>ST_Length2D</function></funcdef> "
+"<paramdef><type>geometry </type> "
+"<parameter>a_2dlinestring</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:845
@@ -1048,19 +1195,20 @@ msgstr ""
 msgid ""
 "Returns the 2D length of the geometry if it is a linestring or multi-"
 "linestring. This is an alias for <varname>ST_Length</varname>"
-msgstr ""
+msgstr "如果几何图形是线串或多线串，则返回几何图形的 2D 长度。 这是<varname> "
+"ST_Length </varname>的别名"
 
 #. Tag: para
 #: reference_measure.xml:854
 #, no-c-format
 msgid ", <xref linkend=\"ST_3DLength\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_3DLength\"/>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:862
 #, no-c-format
 msgid "Returns the 3D length of a linear geometry."
-msgstr ""
+msgstr "返回线性几何体的 3D 长度。"
 
 #. Tag: funcprototype
 #: reference_measure.xml:867
@@ -1070,6 +1218,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>a_3dlinestring</parameter></"
 "paramdef>"
 msgstr ""
+"<funcdef>float <function>ST_3DLength</function></funcdef> "
+"<paramdef><type>geometry </type> "
+"<parameter>a_3dlinestring</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:877
@@ -1079,18 +1230,20 @@ msgid ""
 "LineString or MultiLineString. For 2-d lines it will just return the 2-d "
 "length (same as ST_Length and ST_Length2D)"
 msgstr ""
+"如果几何体是 LineString 或 MultiLineString，则返回几何体的 3 维或 2 维长度。 "
+"对于二维线，它将仅返回二维长度（与 ST_Length 和 ST_Length2D 相同）"
 
 #. Tag: para
 #: reference_measure.xml:880
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 7.1, 10.3"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 7.1, 10.3"
 
 #. Tag: para
 #: reference_measure.xml:881
 #, no-c-format
 msgid "Changed: 2.0.0 In prior versions this used to be called ST_Length3D"
-msgstr ""
+msgstr "更改：2.0.0 在之前的版本中，这曾经被称为 ST_Length3D"
 
 #. Tag: para
 #: reference_measure.xml:888
@@ -1098,20 +1251,21 @@ msgstr ""
 msgid ""
 "Return length in feet for a 3D cable. Note this is in feet because EPSG:2249 "
 "is Massachusetts State Plane Feet"
-msgstr ""
+msgstr "返回 3D 电缆的长度（以英尺为单位）。 请注意，单位为英尺，因为 EPSG:2249 "
+"是马萨诸塞州平面英尺"
 
 #. Tag: para
 #: reference_measure.xml:897
 #, no-c-format
 msgid ", <xref linkend=\"ST_Length2D\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Length2D\"/>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:905
 #, no-c-format
 msgid ""
 "Returns the 2D or 3D length/perimeter of a lon/lat geometry on a spheroid."
-msgstr ""
+msgstr "返回椭球体上经度/纬度几何体的 2D 或 3D 长度/周长。"
 
 #. Tag: funcprototype
 #: reference_measure.xml:910
@@ -1122,6 +1276,10 @@ msgid ""
 "paramdef> <paramdef><type>spheroid </type> <parameter>a_spheroid</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>float <function>ST_LengthSpheroid</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_geometry</parameter></"
+"paramdef> <paramdef><type>spheroid </type> "
+"<parameter>a_spheroid</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:921
@@ -1131,7 +1289,8 @@ msgid ""
 "useful if the coordinates of the geometry are in longitude/latitude and a "
 "length is desired without reprojection. The spheroid is specified by a text "
 "value as follows:"
-msgstr ""
+msgstr "返回椭球体面上几何图形的周长。 当几何图形的坐标为经度/纬度并且您希望查找没有"
+"投影的长度时，请使用此函数。椭球体由文本值指定，如下所示："
 
 #. Tag: literallayout
 #: reference_measure.xml:926
@@ -1139,18 +1298,19 @@ msgstr ""
 msgid ""
 "SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR AXIS&gt;,&lt;INVERSE FLATTENING&gt;]"
 msgstr ""
+"SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR AXIS&gt;,&lt;INVERSE FLATTENING&gt;]"
 
 #. Tag: para
 #: reference_measure.xml:927
 #, no-c-format
 msgid "For example:"
-msgstr ""
+msgstr "例如："
 
 #. Tag: literallayout
 #: reference_measure.xml:928
 #, no-c-format
 msgid "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
-msgstr ""
+msgstr "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
 
 #. Tag: para
 #: reference_measure.xml:930
@@ -1164,19 +1324,20 @@ msgstr "可用性：1.2.2"
 msgid ""
 "Changed: 2.2.0 In prior versions this was called ST_Length_Spheroid and had "
 "the alias ST_3DLength_Spheroid"
-msgstr ""
+msgstr "更改：2.2.0 在之前的版本中，这称为 ST_Length_Spheroid 并具有别名 "
+"ST_3DLength_Spheroid"
 
 #. Tag: para
 #: reference_measure.xml:945
 #, no-c-format
 msgid ", <xref linkend=\"ST_Length\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Length\"/>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:954
 #, no-c-format
 msgid "Returns the 2D longest line between two geometries."
-msgstr ""
+msgstr "返回两个几何图形之间的二维最长线。"
 
 #. Tag: funcprototype
 #: reference_measure.xml:960
@@ -1186,6 +1347,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_LongestLine</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:975
@@ -1195,6 +1359,8 @@ msgid ""
 "The line returned starts on <varname>g1</varname> and ends on <varname>g2</"
 "varname>."
 msgstr ""
+"返回两个几何点之间的二维最长线。 返回的行从<varname> g1 </varname>开始，"
+"到<varname> g2 </varname>结束。"
 
 #. Tag: para
 #: reference_measure.xml:978
@@ -1204,6 +1370,8 @@ msgid ""
 "the first longest line if more than one is found. The length of the line is "
 "equal to the distance returned by <xref linkend=\"ST_MaxDistance\"/>."
 msgstr ""
+"最长的线总是出现在两个顶点之间。 如果找到多个线，该函数将返回第一个最长的线。"
+" 直线的长度等于 <xref linkend=\"ST_MaxDistance\"/> 返回的距离。"
 
 #. Tag: para
 #: reference_measure.xml:982
@@ -1213,18 +1381,20 @@ msgid ""
 "vertices farthest apart in the geometry. The endpoints of the line lie on "
 "the circle computed by <xref linkend=\"ST_MinimumBoundingCircle\"/>."
 msgstr ""
+"如果 g1 和 g2 是相同的几何体，则返回几何体中相距最远的两个顶点之间的线。 "
+"直线的端点位于<xref linkend=\"ST_MinimumBoundingCircle\"/> 计算的圆上。"
 
 #. Tag: para
 #: reference_measure.xml:997
 #, no-c-format
 msgid "Longest line between a point and a line"
-msgstr ""
+msgstr "点和线之间最长的线"
 
 #. Tag: para
 #: reference_measure.xml:1009
 #, no-c-format
 msgid "Longest line between two polygons"
-msgstr ""
+msgstr "两个多边形之间最长的线"
 
 #. Tag: para
 #: reference_measure.xml:1020
@@ -1233,7 +1403,7 @@ msgid ""
 "Longest line across a single geometry. The length of the line is equal to "
 "the Maximum Distance. The endpoints of the line lie on the Minimum Bounding "
 "Circle."
-msgstr ""
+msgstr "跨单个几何体的最长线。 线的长度等于最大距离。 线的端点位于最小边界圆上。"
 
 #. Tag: para
 #: reference_measure.xml:1032
@@ -1242,12 +1412,14 @@ msgid ""
 ", <xref linkend=\"ST_ShortestLine\"/>, <xref linkend=\"ST_3DLongestLine\"/>, "
 "<xref linkend=\"ST_MinimumBoundingCircle\"/>"
 msgstr ""
+", <xref linkend=\"ST_ShortestLine\"/>, <xref linkend=\"ST_3DLongestLine\"/>, "
+"<xref linkend=\"ST_MinimumBoundingCircle\"/>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:1041
 #, no-c-format
 msgid "Returns the 3D longest line between two geometries"
-msgstr ""
+msgstr "返回两个几何体之间的 3D 最长直线"
 
 #. Tag: funcprototype
 #: reference_measure.xml:1046
@@ -1257,6 +1429,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_3DLongestLine</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:1061
@@ -1267,24 +1442,27 @@ msgid ""
 "g1 and ends in g2. The 3D length of the line is equal to the distance "
 "returned by <xref linkend=\"ST_3DMaxDistance\"/>."
 msgstr ""
+"返回两个几何图形之间的 3 维最长直线。 "
+"如果有多个线，该函数将返回第一个最长的线。 返回的行以 g1 开始，以 g2 结束。 "
+"线的 3D 长度等于 <xref linkend=\"ST_3DMaxDistance\"/> 返回的距离。"
 
 #. Tag: para
 #: reference_measure.xml:1080
 #, no-c-format
 msgid "linestring and point -- both 3d and 2d longest line"
-msgstr ""
+msgstr "线串和点——3d 和 2d 最长的线"
 
 #. Tag: para
 #: reference_measure.xml:1085
 #, no-c-format
 msgid "linestring and multipoint -- both 3d and 2d longest line"
-msgstr ""
+msgstr "线串和多点——3d 和 2d 最长线"
 
 #. Tag: para
 #: reference_measure.xml:1090
 #, no-c-format
 msgid "MultiLineString and Polygon both 3d and 2d longest line"
-msgstr ""
+msgstr "MultiLineString 和 Polygon - 3d 和 2d 最长的线"
 
 #. Tag: para
 #: reference_measure.xml:1103
@@ -1293,13 +1471,15 @@ msgid ""
 ", <xref linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_LongestLine\"/>, "
 "<xref linkend=\"ST_3DShortestLine\"/>, <xref linkend=\"ST_3DMaxDistance\"/>"
 msgstr ""
+", <xref linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_LongestLine\"/>, "
+"<xref linkend=\"ST_3DShortestLine\"/>, <xref linkend=\"ST_3DMaxDistance\"/>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:1111
 #, no-c-format
 msgid ""
 "Returns the 2D largest distance between two geometries in projected units."
-msgstr ""
+msgstr "返回两个几何图形之间的二维最大距离（以投影单位表示）。"
 
 #. Tag: funcprototype
 #: reference_measure.xml:1117
@@ -1309,6 +1489,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 msgstr ""
+"<funcdef>float <function>ST_MaxDistance</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:1129
@@ -1319,6 +1502,9 @@ msgid ""
 "This is the length of the line returned by <xref linkend=\"ST_LongestLine\"/"
 ">."
 msgstr ""
+"返回两个几何图形之间的二维最大距离（以投影单位表示）。 "
+"最大距离总是出现在两个顶点之间。 这是 <xref linkend=\"ST_LongestLine\"/> "
+"返回的线的长度。"
 
 #. Tag: para
 #: reference_measure.xml:1133
@@ -1326,19 +1512,19 @@ msgstr ""
 msgid ""
 "If g1 and g2 are the same geometry, returns the distance between the two "
 "vertices farthest apart in that geometry."
-msgstr ""
+msgstr "如果 g1 和 g2 是相同的几何体，则返回该几何体中相距最远的两个顶点之间的距离。"
 
 #. Tag: para
 #: reference_measure.xml:1142
 #, no-c-format
 msgid "Maximum distance between a point and lines."
-msgstr ""
+msgstr "点与线之间的最大距离。"
 
 #. Tag: para
 #: reference_measure.xml:1145
 #, no-c-format
 msgid "Maximum distance between vertices of a single geometry."
-msgstr ""
+msgstr "单个几何体顶点之间的最大距离。"
 
 #. Tag: para
 #: reference_measure.xml:1152
@@ -1346,6 +1532,7 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_LongestLine\"/>, <xref linkend=\"ST_DFullyWithin\"/>"
 msgstr ""
+", <xref linkend=\"ST_LongestLine\"/>, <xref linkend=\"ST_DFullyWithin\"/>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:1160
@@ -1353,7 +1540,7 @@ msgstr ""
 msgid ""
 "Returns the 3D cartesian maximum distance (based on spatial ref) between two "
 "geometries in projected units."
-msgstr ""
+msgstr "返回两个几何图形之间的 3D 笛卡尔最大距离（基于空间参考）（以投影单位表示）。"
 
 #. Tag: funcprototype
 #: reference_measure.xml:1165
@@ -1363,6 +1550,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 msgstr ""
+"<funcdef>float <function>ST_3DMaxDistance</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:1180
@@ -1370,7 +1560,7 @@ msgstr ""
 msgid ""
 "Returns the 3-dimensional maximum cartesian distance between two geometries "
 "in projected units (spatial ref units)."
-msgstr ""
+msgstr "返回两个几何图形之间的 3 维最大笛卡尔距离（以投影单位（空间参考单位）表示）。"
 
 #. Tag: para
 #: reference_measure.xml:1200
@@ -1379,6 +1569,8 @@ msgid ""
 ", <xref linkend=\"ST_3DDWithin\"/>, <xref linkend=\"ST_3DMaxDistance\"/>, "
 "<xref linkend=\"ST_Transform\"/>"
 msgstr ""
+", <xref linkend=\"ST_3DDWithin\"/>, <xref linkend=\"ST_3DMaxDistance\"/>, "
+"<xref linkend=\"ST_Transform\"/>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:1207
@@ -1386,7 +1578,7 @@ msgstr ""
 msgid ""
 "Returns the minimum clearance of a geometry, a measure of a geometry's "
 "robustness."
-msgstr ""
+msgstr "返回几何体的最小间隙，这是几何体稳健性的度量。"
 
 #. Tag: funcprototype
 #: reference_measure.xml:1212
@@ -1395,6 +1587,8 @@ msgid ""
 "<funcdef>float <function>ST_MinimumClearance</function></funcdef> "
 "<paramdef><type>geometry </type><parameter>g</parameter></paramdef>"
 msgstr ""
+"<funcdef>float <function>ST_MinimumClearance</function></funcdef> "
+"<paramdef><type>geometry </type><parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:1222
@@ -1407,6 +1601,12 @@ msgid ""
 "formats (such as WKT, KML, GML, GeoJSON), or binary formats that do not use "
 "double-precision floating point coordinates (e.g. MapInfo TAB)."
 msgstr ""
+"几何图形有可能满足 <xref linkend=\"ST_IsValid\"/>（多边形）或 <xref linkend="
+"\"ST_IsSimple\""
+"/>（线）的有效性标准，但如果其顶点之一是无效的，则该几何图形将变得无效。 "
+"移动了一小段距离。 发生这种情况的原因可能是转换为文本格式（例如 "
+"WKT、KML、GML、GeoJSON）或不使用双精度浮点坐标的二进制格式（例如 MapInfo "
+"TAB）期间的精度损失。"
 
 #. Tag: para
 #: reference_measure.xml:1230
@@ -1417,12 +1617,15 @@ msgid ""
 "vertices of the geometry can be moved without creating an invalid geometry. "
 "Larger values of minimum clearance indicate greater robustness."
 msgstr ""
+"最小间隙是几何形状对坐标精度变化的稳健性的定量测量。 "
+"它是在不创建无效几何体的情况下可以移动几何体顶点的最大距离。 "
+"最小间隙值越大，表明稳健性越好。"
 
 #. Tag: para
 #: reference_measure.xml:1236
 #, no-c-format
 msgid "If a geometry has a minimum clearance of <varname>e</varname>, then:"
-msgstr ""
+msgstr "如果几何形状的最小间隙为 <varname>e</varname>，则："
 
 #. Tag: para
 #: reference_measure.xml:1240
@@ -1430,7 +1633,7 @@ msgstr ""
 msgid ""
 "No two distinct vertices in the geometry are closer than the distance "
 "<varname>e</varname>."
-msgstr ""
+msgstr "几何中没有两个不同的顶点比距离<varname>e</varname>更近。"
 
 #. Tag: para
 #: reference_measure.xml:1245
@@ -1438,7 +1641,7 @@ msgstr ""
 msgid ""
 "No vertex is closer than <varname>e</varname> to a line segement of which it "
 "is not an endpoint."
-msgstr ""
+msgstr "没有顶点比 <varname>e</varname> 更接近它不是端点的线段。"
 
 #. Tag: para
 #: reference_measure.xml:1252
@@ -1447,7 +1650,8 @@ msgid ""
 "If no minimum clearance exists for a geometry (e.g. a single point, or a "
 "MultiPoint whose points are identical), the return value is "
 "<varname>Infinity</varname>."
-msgstr ""
+msgstr "如果几何体不存在最小间隙（例如，单个点或点相同的多点），则返回值为<varname>In"
+"finity</varname>。"
 
 #. Tag: para
 #: reference_measure.xml:1257
@@ -1457,6 +1661,8 @@ msgid ""
 "linkend=\"ST_ReducePrecision\"/> can reduce coordinate precision while "
 "ensuring that polygonal geometry remains valid."
 msgstr ""
+"为了避免精度损失导致的有效性问题，<xref linkend=\"ST_ReducePrecision\"/> "
+"可以降低坐标精度，同时确保多边形几何保持有效。"
 
 #. Tag: para
 #: reference_measure.xml:1263
@@ -1471,13 +1677,15 @@ msgid ""
 ", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_IsValid\"/>, <xref "
 "linkend=\"ST_ReducePrecision\"/>"
 msgstr ""
+", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_IsValid\"/>, <xref "
+"linkend=\"ST_ReducePrecision\"/>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:1288
 #, no-c-format
 msgid ""
 "Returns the two-point LineString spanning a geometry's minimum clearance."
-msgstr ""
+msgstr "返回跨越几何体最小间隙的两点线串。"
 
 #. Tag: funcprototype
 #: reference_measure.xml:1293
@@ -1486,6 +1694,8 @@ msgid ""
 "<funcdef>Geometry <function>ST_MinimumClearanceLine</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 msgstr ""
+"<funcdef>Geometry <function>ST_MinimumClearanceLine</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:1304
@@ -1494,20 +1704,21 @@ msgid ""
 "Returns the two-point LineString spanning a geometry's minimum clearance. If "
 "the geometry does not have a minimum clearance, <varname>LINESTRING EMPTY</"
 "varname> is returned."
-msgstr ""
+msgstr "返回跨越几何体最小间隙的两点线串。 如果几何图形没有最小间隙，则返回<varname> "
+"LINESTRING EMPTY</varname>。"
 
 #. Tag: para
 #: reference_measure.xml:1310
 #, no-c-format
 msgid "Availability: 2.3.0 - requires GEOS &gt;= 3.6.0"
-msgstr ""
+msgstr "可用性：2.3.0-需要GEOS &gt;= 3.6.0"
 
 #. Tag: refpurpose
 #: reference_measure.xml:1328
 #, no-c-format
 msgid ""
 "Returns the length of the boundary of a polygonal geometry or geography."
-msgstr ""
+msgstr "返回多边形几何或地理的边界长度。"
 
 #. Tag: para
 #: reference_measure.xml:1347
@@ -1519,6 +1730,10 @@ msgid ""
 "geometry types, units for perimeter measures are specified by the spatial "
 "reference system of the geometry."
 msgstr ""
+"如果几何/地理是 ST_Surface、ST_MultiSurface（Polygon、MultiPolygon），"
+"则返回其 2D 周长。 对于非区域几何形状返回 0。 对于线性几何形状，请使用<xref "
+"linkend=\"ST_Length\"/>。 "
+"对于几何类型，周长测量的单位由几何的空间参考系统指定。"
 
 #. Tag: para
 #: reference_measure.xml:1350
@@ -1530,6 +1745,10 @@ msgid ""
 "SRID, otherwise it is exclusive to WGS84. If <varname>use_spheroid = false</"
 "varname>, then calculations will approximate a sphere instead of a spheroid."
 msgstr ""
+"对于地理类型，使用逆测地线问题执行计算，其中周长单位为米。 "
+"如果PostGIS是使用PROJ版本4.8."
+"0或更高版本编译的，则椭球体由SRID指定，否则它是WGS84独有的。 "
+"如果<varname>use_spheroid = false</varname>，则计算将近似为球体而不是椭球体。"
 
 #. Tag: para
 #: reference_measure.xml:1354
@@ -1537,25 +1756,25 @@ msgstr ""
 msgid ""
 "Currently this is an alias for ST_Perimeter2D, but this may change to "
 "support higher dimensions."
-msgstr ""
+msgstr "目前，这是 ST_Perimeter2D 的别名，但可能会更改以支持更高的维度。"
 
 #. Tag: para
 #: reference_measure.xml:1357
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.1.3, 9.5.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 8.1.3, 9.5.4"
 
 #. Tag: para
 #: reference_measure.xml:1358
 #, no-c-format
 msgid "Availability 2.0.0: Support for geography was introduced"
-msgstr ""
+msgstr "可用性 2.0.0：引入了对地理的支持"
 
 #. Tag: title
 #: reference_measure.xml:1362
 #, no-c-format
 msgid "Examples: Geometry"
-msgstr ""
+msgstr "示例：几何"
 
 #. Tag: para
 #: reference_measure.xml:1363
@@ -1563,13 +1782,14 @@ msgstr ""
 msgid ""
 "Return perimeter in feet for Polygon and MultiPolygon. Note this is in feet "
 "because EPSG:2249 is Massachusetts State Plane Feet"
-msgstr ""
+msgstr "返回多边形和多重多边形的周长（以英尺为单位）。 请注意，单位为英尺，因为 EPSG:"
+"2249 是马萨诸塞州平面英尺"
 
 #. Tag: title
 #: reference_measure.xml:1368
 #, no-c-format
 msgid "Examples: Geography"
-msgstr ""
+msgstr "示例：地理"
 
 #. Tag: para
 #: reference_measure.xml:1369
@@ -1577,13 +1797,14 @@ msgstr ""
 msgid ""
 "Return perimeter in meters and feet for Polygon and MultiPolygon. Note this "
 "is geography (WGS 84 long lat)"
-msgstr ""
+msgstr "返回多边形和多重多边形的周长（以米和英尺为单位）。 请注意，这是地理（WGS 84 "
+"经纬度）"
 
 #. Tag: para
 #: reference_measure.xml:1374
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_Length\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_Length\"/>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:1382
@@ -1591,7 +1812,7 @@ msgstr ""
 msgid ""
 "Returns the 2D perimeter of a polygonal geometry. Alias for "
 "<varname>ST_Perimeter</varname>."
-msgstr ""
+msgstr "返回多边形几何体的 2D 周长。 <varname>ST_Perimeter</varname> 的别名。"
 
 #. Tag: funcprototype
 #: reference_measure.xml:1388
@@ -1600,12 +1821,14 @@ msgid ""
 "<funcdef>float <function>ST_Perimeter2D</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>float <function>ST_Perimeter2D</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:1398
 #, no-c-format
 msgid "Returns the 2-dimensional perimeter of a polygonal geometry."
-msgstr ""
+msgstr "返回多边形几何体的二维周长。"
 
 #. Tag: para
 #: reference_measure.xml:1402
@@ -1614,13 +1837,14 @@ msgid ""
 "This is currently an alias for ST_Perimeter. In future versions ST_Perimeter "
 "may return the highest dimension perimeter for a geometry. This is still "
 "under consideration"
-msgstr ""
+msgstr "目前这是 ST_Perimeter 的别名。 在未来版本中，ST_Perimeter "
+"可能会返回几何图形的最高维度周长。 这个还在考虑中"
 
 #. Tag: refpurpose
 #: reference_measure.xml:1418
 #, no-c-format
 msgid "Returns the 3D perimeter of a polygonal geometry."
-msgstr ""
+msgstr "返回多边形几何体的 3D 周长。"
 
 #. Tag: funcprototype
 #: reference_measure.xml:1423
@@ -1629,6 +1853,8 @@ msgid ""
 "<funcdef>float <function>ST_3DPerimeter</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>float <function>ST_3DPerimeter</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:1433
@@ -1637,19 +1863,20 @@ msgid ""
 "Returns the 3-dimensional perimeter of the geometry, if it is a polygon or "
 "multi-polygon. If the geometry is 2-dimensional, then the 2-dimensional "
 "perimeter is returned."
-msgstr ""
+msgstr "如果几何体是多边形或多多边形，则返回几何体的 3三维周长。 "
+"如果几何图形是二维的，则返回二维周长。"
 
 #. Tag: para
 #: reference_measure.xml:1436
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.1, 10.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.1, 10.5"
 
 #. Tag: para
 #: reference_measure.xml:1437
 #, no-c-format
 msgid "Changed: 2.0.0 In prior versions this used to be called ST_Perimeter3D"
-msgstr ""
+msgstr "更改：2.0.0 在之前的版本中，这曾经被称为 ST_Perimeter3D"
 
 #. Tag: para
 #: reference_measure.xml:1443
@@ -1657,19 +1884,19 @@ msgstr ""
 msgid ""
 "Perimeter of a slightly elevated polygon in the air in Massachusetts state "
 "plane feet"
-msgstr ""
+msgstr "马萨诸塞州飞机英尺空中稍高的多边形的周长"
 
 #. Tag: para
 #: reference_measure.xml:1451
 #, no-c-format
 msgid ", <xref linkend=\"ST_Perimeter\"/>, <xref linkend=\"ST_Perimeter2D\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Perimeter\"/>, <xref linkend=\"ST_Perimeter2D\"/>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:1459
 #, no-c-format
 msgid "Returns the 2D shortest line between two geometries"
-msgstr ""
+msgstr "返回两个几何图形之间的 2D 最短线"
 
 #. Tag: para
 #: reference_measure.xml:1487
@@ -1682,24 +1909,28 @@ msgid ""
 "of the line is the same as <xref linkend=\"ST_Distance\"/> returns for g1 "
 "and g2."
 msgstr ""
+"返回两个几何图形之间的二维最短线。 返回的线从 <varname>geom1</varname> 开始，"
+"到 <varname>geom2</varname> 结束。 如果<varname>geom1</varname>和<varname>geo"
+"m2</varname>相交，结果是一条起点和终点位于交点的线。 线的长度与 g1 和 g2 的 "
+"<xref linkend=\"ST_Distance\"/> 返回的长度相同。"
 
 #. Tag: para
 #: reference_measure.xml:1494
 #, no-c-format
 msgid "Enhanced: 3.4.0 - support for geography."
-msgstr ""
+msgstr "增强：3.4.0 - 支持地理。"
 
 #. Tag: para
 #: reference_measure.xml:1505
 #, no-c-format
 msgid "Shortest line between Point and LineString"
-msgstr ""
+msgstr "Point 和 LineString 之间的最短线"
 
 #. Tag: para
 #: reference_measure.xml:1516
 #, no-c-format
 msgid "Shortest line between Polygons"
-msgstr ""
+msgstr "多边形之间的最短线"
 
 #. Tag: para
 #: reference_measure.xml:1527
@@ -1708,12 +1939,14 @@ msgid ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"ST_LongestLine\"/>, <xref "
 "linkend=\"ST_MaxDistance\"/>"
 msgstr ""
+", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"ST_LongestLine\"/>, <xref "
+"linkend=\"ST_MaxDistance\"/>"
 
 #. Tag: refpurpose
 #: reference_measure.xml:1534
 #, no-c-format
 msgid "Returns the 3D shortest line between two geometries"
-msgstr ""
+msgstr "返回两个几何图形之间的 3D 最短线"
 
 #. Tag: funcprototype
 #: reference_measure.xml:1539
@@ -1723,6 +1956,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_3DShortestLine</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:1554
@@ -1738,24 +1974,30 @@ msgid ""
 "length of the line this function returns will always be the same as <xref "
 "linkend=\"ST_3DDistance\"/> returns for g1 and g2."
 msgstr ""
+"返回两个几何图形之间的 3 维最短线。 "
+"如果函数找到多个最短线，则该函数将仅返回第一个最短线。 如果 g1 和 g2 "
+"仅相交于一个点，则该函数将返回一条起点和终点均位于该交点的线。 如果 g1 和 g2 "
+"与多个点相交，该函数将返回一条起点和终点位于同一点的线，但它可以是任何相交点"
+"。 返回的线始终以 g1 开始并以 g2 结束。 此函数返回的线的 3D 长度始终与 <xref "
+"linkend=\"ST_3DDistance\"/> 返回的 g1 和 g2 相同。"
 
 #. Tag: para
 #: reference_measure.xml:1577
 #, no-c-format
 msgid "linestring and point -- both 3d and 2d shortest line"
-msgstr ""
+msgstr "线串和点——3d 和 2d 最短线"
 
 #. Tag: para
 #: reference_measure.xml:1582
 #, no-c-format
 msgid "linestring and multipoint -- both 3d and 2d shortest line"
-msgstr ""
+msgstr "线串和多点——3d 和 2d 最短线"
 
 #. Tag: para
 #: reference_measure.xml:1587
 #, no-c-format
 msgid "MultiLineString and polygon both 3d and 2d shortest line"
-msgstr ""
+msgstr "多线串 和多边形 -3d 和 2d 最短线"
 
 #. Tag: para
 #: reference_measure.xml:1600
@@ -1764,3 +2006,5 @@ msgid ""
 ", <xref linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_LongestLine\"/>, "
 "<xref linkend=\"ST_ShortestLine\"/>, <xref linkend=\"ST_3DMaxDistance\"/>"
 msgstr ""
+", <xref linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_LongestLine\"/>, "
+"<xref linkend=\"ST_ShortestLine\"/>, <xref linkend=\"ST_3DMaxDistance\"/>"
