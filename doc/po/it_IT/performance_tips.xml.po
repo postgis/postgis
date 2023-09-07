@@ -2,13 +2,14 @@
 #
 # Translators:
 # Tommaso Di Bucchianico, 2013
+# Sandro Santilli <strk@kbt.io>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-15 01:28+0000\n"
-"PO-Revision-Date: 2022-05-07 19:23+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2023-09-07 10:14+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "performance_tipsxml/it/>\n"
 "Language: it_IT\n"
@@ -16,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: performance_tips.xml:3
@@ -77,7 +78,7 @@ msgstr ""
 
 #. Tag: para
 #: performance_tips.xml:26
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Now issue a query where you use the geometry operator &amp;&amp; to search "
 "for a bounding box that matches only very few of those rows. Now the query "
@@ -88,8 +89,14 @@ msgid ""
 "geometry from disk to compare the bounding boxes, thus reading all TOAST "
 "pages, too."
 msgstr ""
-"Ora si lanci una query che usi l'operatore  &amp;&amp; e che [MATCHES] solo "
-"poche righe. Il"
+"Ora si lanci una query che usi l'operatore &amp;&amp; e che trovi solo poche "
+"righe. L'ottimizzatore di query ora vede che la tabella ha solo 3 pagine e "
+"80 record. Stima che una scansione sequenziale su una tabella cosi' piccola "
+"e' molto piu' veloce rispetto all'uso di un indice, e quindi decide di "
+"ignorare l'indice GiST. Normalmente questa stima e' corretta, ma nel nostro "
+"caso l'operatorore &amp;&amp; deve estrarre ogni geometria dal disco per "
+"confrontare i bounding box finendo con il leggere anche tutte le pagine "
+"TOAST."
 
 #. Tag: para
 #: performance_tips.xml:35
@@ -150,7 +157,7 @@ msgstr ""
 "impedisce al query planner di usare lo scan sequenziale della tabella se "
 "possibile e lo forza quindi ad usare l'indice GIST. Tuttavia il comando deve "
 "essere lanciato ad ogni connessione e, per evitare di confondere il query "
-"planner in altri casi,  il parametro deve essere resettato dopo l'esecuzione "
+"planner in altri casi, il parametro deve essere resettato dopo l'esecuzione "
 "della query interessata con il comando \"SET enable_seqscan TO on;\" ."
 
 #. Tag: para
@@ -266,7 +273,7 @@ msgstr "Evitare la conversione della dimensione"
 
 #. Tag: para
 #: performance_tips.xml:111
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Sometimes, you happen to have 3D or 4D data in your table, but always access "
 "it using OpenGIS compliant ST_AsText() or ST_AsBinary() functions that only "
@@ -278,7 +285,7 @@ msgstr ""
 "A volte può accadere di avere dati in 3D o 4D, ma di accederli sempre usando "
 "funzioni che danno in output solo geometrie 2D come ST_AsText() oppure "
 "ST_AsBinary(). Queste funzioni processano internamente le geometrie "
-"eseguendo ST_Force2D()  e questo può risultare in un peggioramento delle "
+"eseguendo ST_Force2D() e questo può risultare in un peggioramento delle "
 "prestazioni significativo nel caso di geometrie di grandi dimensioni. Per "
 "evitare questo problema è consigliabile eliminare le dimensioni non "
 "utilizzate una volte e per sempre:"
@@ -296,7 +303,7 @@ msgstr ""
 "AddGeometryColumn(), verrà creato anche un vincolo dimensionale sulla "
 "geometria. Per aggirare il vincolo sarà necessario cancellarlo. Ricorda di "
 "attualizzare il record nella tabella geometry_columns e di ricreare il "
-"vincolo successivamente. "
+"vincolo successivamente."
 
 #. Tag: para
 #: performance_tips.xml:126
