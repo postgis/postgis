@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2022-10-11 22:30+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2023-09-07 10:14+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_inputxml/it/>\n"
 "Language: it_IT\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: para
 #: reference_input.xml:6
@@ -1681,7 +1681,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_input.xml:1585
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>void <function>ST_FromFlatGeobufToTable</function></funcdef> "
 "<paramdef><type>text </type> <parameter>schemaname</parameter></paramdef> "
@@ -1689,9 +1689,11 @@ msgid ""
 "<paramdef><type>bytea </type> <parameter>FlatGeobuf input data</parameter></"
 "paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_BdPolyFromText</function></funcdef> "
-"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
+"<funcdef>void <function>ST_FromFlatGeobufToTable</function></funcdef> "
+"<paramdef><type>text </type> <parameter>schemaname</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>tablename</parameter></paramdef> "
+"<paramdef><type>bytea </type> <parameter>FlatGeobuf input "
+"data</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:1597
