@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-05 00:50+0000\n"
-"PO-Revision-Date: 2022-02-18 09:52+0000\n"
+"PO-Revision-Date: 2023-09-07 10:14+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_accessorxml/it/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: reference_accessor.xml:4
@@ -445,7 +445,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:282
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Return the topological dimension of this Geometry object, which must be less "
 "than or equal to the coordinate dimension. OGC SPEC s2.1.1.1 - returns 0 for "
@@ -456,10 +456,11 @@ msgid ""
 msgstr ""
 "La dimensione inerente a questo oggetto Geometry, che deve essere minore o "
 "uguale alla dimensione delle coordinate. La specifica OGC s2.1.1.1 "
-"restituisce  0 per <varname>POINT</varname>, 1 per <varname>LINESTRING</"
+"restituisce 0 per <varname>POINT</varname>, 1 per <varname>LINESTRING</"
 "varname>, 2 per <varname>POLYGON</varname>, e la maggiore fra le dimensioni "
 "dei componenti di una <varname>GEOMETRYCOLLECTION</varname>. Se la geometria "
-"è sconosciuta (vuota), viene restituito il valore NULL."
+"è sconosciuta (ad esempio per una <varname>GEOMETRYCOLLECTION</varname> "
+"vuota), viene restituito il valore 0."
 
 #. Tag: para
 #: reference_accessor.xml:290
@@ -566,13 +567,13 @@ msgstr "Esempi con superfici poliedriche, TIN e triangoli"
 
 #. Tag: para
 #: reference_accessor.xml:366
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
 "linkend=\"ST_Collect\"/>, <xref linkend=\"ST_GeometryN\"/>"
 msgstr ""
-", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
-"linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
+"\"ST_Collect\"/>, <xref linkend=\"ST_GeometryN\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:373
@@ -835,16 +836,17 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:595
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns the last point of a <varname>LINESTRING</varname> or "
 "<varname>CIRCULARLINESTRING</varname> geometry as a <varname>POINT</"
 "varname>. Returns <varname>NULL</varname> if the input is not a "
 "<varname>LINESTRING</varname> or <varname>CIRCULARLINESTRING</varname>."
 msgstr ""
-"Restituisce l'ultimo punto di una geometria <varname>LINESTRING</varname> "
-"come <varname>POINT</varname> o <varname>NULL</varname> se il parametro di "
-"input non è una <varname>LINESTRING</varname>."
+"Restituisce l'ultimo punto di una geometria <varname>LINESTRING</varname> o "
+"<varname>CIRCULARLINESTRING</varname> come un <varname>POINT</varname>. "
+"Restituisce <varname>NULL</varname> se il parametro di input non è una "
+"<varname>LINESTRING</varname> o <varname>CIRCULARLINESTRING</varname>."
 
 #. Tag: para
 #: reference_accessor.xml:601
@@ -1008,14 +1010,14 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:721 reference_accessor.xml:923
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This function does not support MULTIPOLYGONs. For MULTIPOLYGONs use in "
 "conjunction with <xref linkend=\"ST_GeometryN\"/> or <xref "
 "linkend=\"ST_Dump\"/>"
 msgstr ""
-"Non funzionerà per i MULTIPOLYGON. Da utilizzare assieme a ST_Dump per i "
-"MULTIPOLYGON"
+"Non funzionerà per i MULTIPOLYGON. Da utilizzare assieme a <xref linkend="
+"\"ST_GeometryN\"/> o <xref linkend=\"ST_Dump\"/> per i MULTIPOLYGON"
 
 #. Tag: para
 #: reference_accessor.xml:725 reference_accessor.xml:1277
@@ -1080,13 +1082,13 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:777
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "To extract all elements of a geometry, <xref linkend=\"ST_Dump\"/> is more "
 "efficient and works for atomic geometries."
 msgstr ""
-"Se volete estrarre tutte le geometria, ST_Dump è più efficiente e funziona "
-"anche nel caso di geometrie singole."
+"Se volete estrarre tutte le geometria, <xref linkend=\"ST_Dump\"/> è più "
+"efficiente e funziona anche nel caso di geometrie singole."
 
 #. Tag: para
 #: reference_accessor.xml:780
@@ -2000,13 +2002,13 @@ msgstr "L'indice parte da 1."
 
 #. Tag: para
 #: reference_accessor.xml:1768
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you want to extract all elements of a geometry <xref linkend=\"ST_Dump\"/"
 "> is more efficient."
 msgstr ""
-"Se volete estrarre tutte le geometria, ST_Dump è più efficiente e funziona "
-"anche nel caso di geometrie singole."
+"Se volete estrarre tutte le geometria, <xref linkend=\"ST_Dump\"/> è più "
+"efficiente e funziona anche nel caso di geometrie singole."
 
 #. Tag: para
 #: reference_accessor.xml:1789
@@ -2486,13 +2488,13 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:2207
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<para>Returns a code indicating the ZM coordinate dimension of a geometry.</"
 "para>"
 msgstr ""
-"<refpurpose>Restituisce un codice indicante le dimensioni ZM di una "
-"geometria.</refpurpose>"
+"<para>Restituisce un codice indicante le dimensioni ZM di una "
+"geometria.</para>"
 
 #. Tag: para
 #: reference_accessor.xml:2209
