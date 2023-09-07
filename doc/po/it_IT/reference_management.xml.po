@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2022-01-13 16:44+0000\n"
+"PO-Revision-Date: 2023-09-07 10:14+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_managementxml/it/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: para
 #: reference_management.xml:5
@@ -263,7 +263,7 @@ msgstr ""
 #: reference_management.xml:287
 #, no-c-format
 msgid "Returns the SRID defined for a geometry column."
-msgstr ""
+msgstr "Restituisce lo SRID di una colonna di tipo geometrico."
 
 #. Tag: funcprototype
 #: reference_management.xml:292
@@ -290,6 +290,10 @@ msgid ""
 "properly added (e.g. with the <xref linkend=\"AddGeometryColumn\"/> "
 "function), this function will not work."
 msgstr ""
+"Restituisce lo SRID (un intero) della colonna geometrica specificata "
+"cercandolo nella tabella GEOMETRY_COLUMNS. Se la colonna geometrica non e' "
+"stata aggiunta correttamente (ad esempio con la funzione <xref linkend="
+"\"AddGeometryColumn\"/>), questa chiamata non funzionera'."
 
 #. Tag: refpurpose
 #: reference_management.xml:329
@@ -298,10 +302,12 @@ msgid ""
 "Ensures geometry columns are defined with type modifiers or have appropriate "
 "spatial constraints."
 msgstr ""
+"Garantisce che le colonne di tipo geometrico siano definite con dei "
+"modificatori di tipo o abbiano dei vincoli spaziali appropriati."
 
 #. Tag: para
 #: reference_management.xml:352
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Ensures geometry columns have appropriate type modifiers or spatial "
 "constraints to ensure they are registered correctly in the "
@@ -312,8 +318,7 @@ msgstr ""
 "gli appropriati vincoli spaziali e conseguentemente siano correttamente "
 "registrate nella vista <varname>geometry_columns</varname>. Per default la "
 "funzione converte tutte le colonne geometry definite senza typemod in "
-"geometry con typemod. Per ottenere il vecchio meccanismo con i vincoli "
-"spaziali si può settare la variabile <varname>use_typmod=false</varname>"
+"geometry con typemod."
 
 #. Tag: para
 #: reference_management.xml:357
@@ -328,6 +333,14 @@ msgid ""
 "particular, this means that every geometry column belonging to a table has "
 "at least three constraints:"
 msgstr ""
+"Per retrocompatibilita' e per necessita' spaziali come l'ereditarieta' "
+"tabellare, in cui ogni tabella figlia puo' avere tipi geometrici differenti, "
+"il vecchio comportamento basato sui vincoli e' ancora sopportato. Se ti "
+"serve il vecchio comportamento puoi passare l'argomento opzionale "
+"<varname>use_typmod=false</varname>. In questo modo la colonna geometrica "
+"verra' creata senza modificatore di tipo ma avra' 3 vincoli definiti. In "
+"particolare questo vuol dire che ogni colonna geometrica appartenente ad una "
+"tabella avra' al meno tre vincoli:"
 
 #. Tag: para
 #: reference_management.xml:365
@@ -341,7 +354,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_management.xml:371
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>enforce_geotype_geom</varname> - ensures every geometry is of the "
 "same type (see <xref linkend=\"GeometryType\"/>)"
@@ -351,7 +364,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_management.xml:377
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>enforce_srid_geom</varname> - ensures every geometry is in the same "
 "projection (see <xref linkend=\"ST_SRID\"/>)"
@@ -452,10 +465,12 @@ msgid ""
 "Updates the SRID of all features in a geometry column, and the table "
 "metadata."
 msgstr ""
+"Aggiorna lo SRID e di tutte le geometrie nella colonna specificata e i "
+"metadati di tabella."
 
 #. Tag: para
 #: reference_management.xml:492
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Updates the SRID of all features in a geometry column, updating constraints "
 "and reference in geometry_columns. If the column was enforced by a type "
@@ -463,8 +478,10 @@ msgid ""
 "on schema-aware pgsql installations if schema is not provided."
 msgstr ""
 "Aggiorna lo SRID di tutti i record in una colonna geometry, aggiornando "
-"anche geometry_columns e il vincolo SRID della colonna. Usa la funzione "
-"current_schema() se lo schema non è passato come argomento."
+"anche geometry_columns e il vincolo SRID della colonna. Se la colonna era "
+"vincolata da una defininizione di tipo, tale definizione verrà cambiata. "
+"Nota: usa la funzione current_schema() se lo schema non è passato come "
+"argomento."
 
 #. Tag: para
 #: reference_management.xml:504
@@ -473,6 +490,8 @@ msgid ""
 "Insert geometries into roads table with a SRID set already using <link "
 "linkend=\"ST_GeomFromEWKT\">EWKT format</link>:"
 msgstr ""
+"Insertisce geometrie nella tabella delle strade con uno SRID già specificato "
+"usando il <link linkend=\"ST_GeomFromEWKT\">formato EWKT</link>:"
 
 #. Tag: para
 #: reference_management.xml:507
@@ -481,12 +500,14 @@ msgid ""
 "This will change the srid of the roads table to 4326 from whatever it was "
 "before:"
 msgstr ""
+"Cambierà lo SRID della tabella delle strade a 4326 da qualunque valore abbia "
+"avuto prima:"
 
 #. Tag: para
 #: reference_management.xml:510
 #, no-c-format
 msgid "The prior example is equivalent to this DDL statement:"
-msgstr ""
+msgstr "L'esempio precedente è equivalente a questa dichiarazione DDL:"
 
 #. Tag: para
 #: reference_management.xml:513
