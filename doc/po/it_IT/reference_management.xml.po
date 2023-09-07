@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-07 10:14+0000\n"
+"PO-Revision-Date: 2023-09-07 12:33+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_managementxml/it/>\n"
@@ -117,8 +117,9 @@ msgstr ""
 "caso la vista sarà registrata correttamente in geometry_columns perché "
 "eredita il typmod dalla colonna geometry originale. Le viste che usano "
 "funzioni che ritornano geometrie verranno registrate correttamente se il "
-"tipo delll'output della funzione verrà definito esplicitamente con la "
-"funzione CAST come typmod geometry."
+"tipo dell'output della funzione verrà definito esplicitamente con la "
+"funzione CAST come typmod geometry. Si veda <xref linkend="
+"\"Manual_Register_Spatial_Column\"/>."
 
 #. Tag: para
 #: reference_management.xml:122 reference_management.xml:199
@@ -402,7 +403,8 @@ msgstr ""
 "Se alla funzione viene passato l'<varname>oid</varname> di una vista, questa "
 "cerca di determinare srid, dimensione e tipo della geometria di tutte le "
 "colonne geometry della vista, inserendo le appropriate righe nella tabella "
-"geometry_columns. I vincoli spaziali non vengono controllati né definiti."
+"<varname>geometry_columns</varname>. I vincoli spaziali non vengono "
+"controllati né definiti."
 
 #. Tag: para
 #: reference_management.xml:396
