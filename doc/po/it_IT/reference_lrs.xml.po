@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-29 10:57+0000\n"
-"PO-Revision-Date: 2022-01-19 10:14+0000\n"
+"PO-Revision-Date: 2023-09-07 12:33+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_lrsxml/it/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: reference_lrs.xml:3
@@ -544,10 +544,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:496
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_LocateBetweenElevations\"/>"
-msgstr ""
-", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
+msgstr ", <xref linkend=\"ST_LocateBetweenElevations\"/>"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:504
@@ -582,10 +581,9 @@ msgstr "Disponibilità: 1.4.0"
 
 #. Tag: para
 #: reference_lrs.xml:543
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_LocateBetween\"/>"
-msgstr ""
-", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
+msgstr ", <xref linkend=\"ST_LocateBetween\"/>"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:552
