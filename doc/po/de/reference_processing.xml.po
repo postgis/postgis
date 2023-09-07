@@ -4,13 +4,14 @@
 # Andreas Schild <andreas.schild@bfw.gv.at>, 2017,2019-2020, 2022.
 # Jürgen E. Fischer <jef@norbit.de>, 2020
 # Regina Obe <regina@arrival3d.com>, 2022, 2023.
+# Sandro Santilli <strk@kbt.io>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-19 07:45+0000\n"
-"PO-Revision-Date: 2023-01-09 04:42+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2023-09-07 10:14+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "reference_processingxml/de/>\n"
 "Language: de\n"
@@ -18,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: para
 #: reference_processing.xml:5
@@ -1181,7 +1182,7 @@ msgstr ""
 #: reference_processing.xml:1131
 #, no-c-format
 msgid "Enhanced: 2.5.0 Added support for M as weight of points."
-msgstr " Erweiterung: 2.5.0 Unterstützung für M zur Gewichtung nach Punkten."
+msgstr "Erweiterung: 2.5.0 Unterstützung für M zur Gewichtung nach Punkten."
 
 #. Tag: para
 #: reference_processing.xml:1133
