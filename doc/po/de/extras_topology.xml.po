@@ -3,13 +3,14 @@
 # Translators:
 # Andreas Schild <andreas.schild@bfw.gv.at>, 2017-2019, 2022.
 # Regina Obe <regina@arrival3d.com>, 2022, 2023.
+# Sandro Santilli <strk@kbt.io>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-01-09 04:42+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2023-09-07 10:14+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "extras_topologyxml/de/>\n"
 "Language: de\n"
@@ -17,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: extras_topology.xml:3
@@ -2765,7 +2766,8 @@ msgid ""
 msgstr ""
 "<para>Löscht einen isolierten Knoten und gibt eine Beschreibung der "
 "getroffenen Maßnahmen aus. Falls der Knoten nicht isoliert ist (ist der "
-"Anfangs- oder der Endpunkt einer Kante), wird eine Fehlermeldung ausgegeben."
+"Anfangs- oder der Endpunkt einer Kante), wird eine Fehlermeldung "
+"ausgegeben.</para>"
 
 #. Tag: para
 #: extras_topology.xml:2116 extras_topology.xml:2157
