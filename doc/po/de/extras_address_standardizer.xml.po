@@ -3,13 +3,14 @@
 # Translators:
 # Andreas Schild <andreas.schild@bfw.gv.at>, 2017,2019
 # Regina Obe <regina@arrival3d.com>, 2022.
+# Sandro Santilli <strk@kbt.io>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2022-10-11 22:30+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2023-09-07 10:14+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "extras_address_standardizerxml/de/>\n"
 "Language: de\n"
@@ -17,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: extras_address_standardizer.xml:3
@@ -495,7 +496,7 @@ msgstr ""
 "Dieser Abschnitt beschreibt den Aufbau der PostgreSQL Tabellen, die von dem "
 "\"address_standardizer\" bei der Normalisierung von Adressen verwendet "
 "werden. Diese Tabellen können auch anders als hier bezeichnet werden. Sie "
-"können eigene \"lex\", \"gaz\" und \"rules\" Tabellen  für jedes Land oder "
+"können eigene \"lex\", \"gaz\" und \"rules\" Tabellen für jedes Land oder "
 "für einen benutzerdefinierten Geokodierer verwenden. Diese Tabellennamen "
 "werden an die Funktionen des Adressennormierers übergeben."
 
@@ -1700,9 +1701,9 @@ msgid ""
 "street</code>, and a macro consisting of standard postal second line of an "
 "address e.g <code>city, state postal_code country</code>."
 msgstr ""
-"Variante 2:  Nimmt eine Adresse in 2 Teilen entgegen. Ein <varname>micro</"
-"varname> Teil, der aus der normierten ersten Zeile einer Postadresse "
-"besteht; z.B. <code>house_num street</code>. Ein \"macro\"-Teil, der aus der "
+"Variante 2: Nimmt eine Adresse in 2 Teilen entgegen. Ein <varname>micro</"
+"varname> Teil, der aus der normierten ersten Zeile einer Postadresse besteht;"
+" z.B. <code>house_num street</code>. Ein \"macro\"-Teil, der aus der "
 "normierten zweiten Zeile einer Adresse besteht; z.B. <code>city, state "
 "postal_code country</code>."
 
