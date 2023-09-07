@@ -136,6 +136,7 @@ int rt_raster_gdal_contour(
 	/* For building out options list */
 	stringbuffer_t sb;
 	char **papszOptList = NULL;
+	const char* elev_field = polygonize ? "ELEV_FIELD_MIN" : "ELEV_FIELD";
 
 	_rti_contour_arg arg;
 	_rti_contour_arg_init(&arg);
@@ -223,7 +224,8 @@ int rt_raster_gdal_contour(
 	}
 
 	stringbuffer_aprintf(&sb, "ID_FIELD=%d ", 0);
-	stringbuffer_aprintf(&sb, "ELEV_FIELD=%d ", 1);
+	stringbuffer_aprintf(&sb, "%s=%d ", elev_field, 1);
+
 	stringbuffer_aprintf(&sb, "POLYGONIZE=%s ", polygonize ? "YES" : "NO");
 
 	papszOptList = CSLTokenizeString(stringbuffer_getstring(&sb));
