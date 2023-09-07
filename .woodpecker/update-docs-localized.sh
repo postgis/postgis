@@ -3,7 +3,7 @@
 cd $(dirname $0)
 
 SUPPORTED_LANGUAGES=$(grep ^translations ../doc/Makefile.in | cut -d= -f2)
-SUPPORTED_LANGUAGES="ja de fr zh_Hans" # restrict built translations
+#SUPPORTED_LANGUAGES="ja de fr zh_Hans" # restrict built translations
 
 TARGETS="check-xml html cheatsheets check-cheatsheets pdf"
 

@@ -76,24 +76,24 @@ steps:
 
   # DO NOT EDIT PAST THIS LINE, use update-docs-localized.sh to update #
 ### TARGET check-xml
-  check-xml-ja:
+  check-xml-it_IT:
     image: *test_image
     commands:
-      - make -C build-docs/doc/po/ja local-check-xml
+      - make -C build-docs/doc/po/it_IT local-check-xml
     group: localized-check-xml
     when:
       path:
         include:
-          - "doc/po/ja/*.po"
-  check-xml-de:
+          - "doc/po/it_IT/*.po"
+  check-xml-pt_BR:
     image: *test_image
     commands:
-      - make -C build-docs/doc/po/de local-check-xml
+      - make -C build-docs/doc/po/pt_BR local-check-xml
     group: localized-check-xml
     when:
       path:
         include:
-          - "doc/po/de/*.po"
+          - "doc/po/pt_BR/*.po"
   check-xml-fr:
     image: *test_image
     commands:
@@ -103,6 +103,60 @@ steps:
       path:
         include:
           - "doc/po/fr/*.po"
+  check-xml-es:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/es local-check-xml
+    group: localized-check-xml
+    when:
+      path:
+        include:
+          - "doc/po/es/*.po"
+  check-xml-pl:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/pl local-check-xml
+    group: localized-check-xml
+    when:
+      path:
+        include:
+          - "doc/po/pl/*.po"
+  check-xml-ko_KR:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ko_KR local-check-xml
+    group: localized-check-xml
+    when:
+      path:
+        include:
+          - "doc/po/ko_KR/*.po"
+  check-xml-de:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/de local-check-xml
+    group: localized-check-xml
+    when:
+      path:
+        include:
+          - "doc/po/de/*.po"
+  check-xml-ja:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ja local-check-xml
+    group: localized-check-xml
+    when:
+      path:
+        include:
+          - "doc/po/ja/*.po"
+  check-xml-ru:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ru local-check-xml
+    group: localized-check-xml
+    when:
+      path:
+        include:
+          - "doc/po/ru/*.po"
   check-xml-zh_Hans:
     image: *test_image
     commands:
@@ -112,25 +166,34 @@ steps:
       path:
         include:
           - "doc/po/zh_Hans/*.po"
+  check-xml-ro:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ro local-check-xml
+    group: localized-check-xml
+    when:
+      path:
+        include:
+          - "doc/po/ro/*.po"
 ### TARGET html
-  html-ja:
+  html-it_IT:
     image: *test_image
     commands:
-      - make -C build-docs/doc/po/ja local-html
+      - make -C build-docs/doc/po/it_IT local-html
     group: localized-html
     when:
       path:
         include:
-          - "doc/po/ja/*.po"
-  html-de:
+          - "doc/po/it_IT/*.po"
+  html-pt_BR:
     image: *test_image
     commands:
-      - make -C build-docs/doc/po/de local-html
+      - make -C build-docs/doc/po/pt_BR local-html
     group: localized-html
     when:
       path:
         include:
-          - "doc/po/de/*.po"
+          - "doc/po/pt_BR/*.po"
   html-fr:
     image: *test_image
     commands:
@@ -140,6 +203,60 @@ steps:
       path:
         include:
           - "doc/po/fr/*.po"
+  html-es:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/es local-html
+    group: localized-html
+    when:
+      path:
+        include:
+          - "doc/po/es/*.po"
+  html-pl:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/pl local-html
+    group: localized-html
+    when:
+      path:
+        include:
+          - "doc/po/pl/*.po"
+  html-ko_KR:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ko_KR local-html
+    group: localized-html
+    when:
+      path:
+        include:
+          - "doc/po/ko_KR/*.po"
+  html-de:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/de local-html
+    group: localized-html
+    when:
+      path:
+        include:
+          - "doc/po/de/*.po"
+  html-ja:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ja local-html
+    group: localized-html
+    when:
+      path:
+        include:
+          - "doc/po/ja/*.po"
+  html-ru:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ru local-html
+    group: localized-html
+    when:
+      path:
+        include:
+          - "doc/po/ru/*.po"
   html-zh_Hans:
     image: *test_image
     commands:
@@ -149,25 +266,34 @@ steps:
       path:
         include:
           - "doc/po/zh_Hans/*.po"
+  html-ro:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ro local-html
+    group: localized-html
+    when:
+      path:
+        include:
+          - "doc/po/ro/*.po"
 ### TARGET cheatsheets
-  cheatsheets-ja:
+  cheatsheets-it_IT:
     image: *test_image
     commands:
-      - make -C build-docs/doc/po/ja local-cheatsheets
+      - make -C build-docs/doc/po/it_IT local-cheatsheets
     group: localized-cheatsheets
     when:
       path:
         include:
-          - "doc/po/ja/*.po"
-  cheatsheets-de:
+          - "doc/po/it_IT/*.po"
+  cheatsheets-pt_BR:
     image: *test_image
     commands:
-      - make -C build-docs/doc/po/de local-cheatsheets
+      - make -C build-docs/doc/po/pt_BR local-cheatsheets
     group: localized-cheatsheets
     when:
       path:
         include:
-          - "doc/po/de/*.po"
+          - "doc/po/pt_BR/*.po"
   cheatsheets-fr:
     image: *test_image
     commands:
@@ -177,6 +303,60 @@ steps:
       path:
         include:
           - "doc/po/fr/*.po"
+  cheatsheets-es:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/es local-cheatsheets
+    group: localized-cheatsheets
+    when:
+      path:
+        include:
+          - "doc/po/es/*.po"
+  cheatsheets-pl:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/pl local-cheatsheets
+    group: localized-cheatsheets
+    when:
+      path:
+        include:
+          - "doc/po/pl/*.po"
+  cheatsheets-ko_KR:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ko_KR local-cheatsheets
+    group: localized-cheatsheets
+    when:
+      path:
+        include:
+          - "doc/po/ko_KR/*.po"
+  cheatsheets-de:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/de local-cheatsheets
+    group: localized-cheatsheets
+    when:
+      path:
+        include:
+          - "doc/po/de/*.po"
+  cheatsheets-ja:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ja local-cheatsheets
+    group: localized-cheatsheets
+    when:
+      path:
+        include:
+          - "doc/po/ja/*.po"
+  cheatsheets-ru:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ru local-cheatsheets
+    group: localized-cheatsheets
+    when:
+      path:
+        include:
+          - "doc/po/ru/*.po"
   cheatsheets-zh_Hans:
     image: *test_image
     commands:
@@ -186,25 +366,34 @@ steps:
       path:
         include:
           - "doc/po/zh_Hans/*.po"
+  cheatsheets-ro:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ro local-cheatsheets
+    group: localized-cheatsheets
+    when:
+      path:
+        include:
+          - "doc/po/ro/*.po"
 ### TARGET check-cheatsheets
-  check-cheatsheets-ja:
+  check-cheatsheets-it_IT:
     image: *test_image
     commands:
-      - make -C build-docs/doc/po/ja local-check-cheatsheets
+      - make -C build-docs/doc/po/it_IT local-check-cheatsheets
     group: localized-check-cheatsheets
     when:
       path:
         include:
-          - "doc/po/ja/*.po"
-  check-cheatsheets-de:
+          - "doc/po/it_IT/*.po"
+  check-cheatsheets-pt_BR:
     image: *test_image
     commands:
-      - make -C build-docs/doc/po/de local-check-cheatsheets
+      - make -C build-docs/doc/po/pt_BR local-check-cheatsheets
     group: localized-check-cheatsheets
     when:
       path:
         include:
-          - "doc/po/de/*.po"
+          - "doc/po/pt_BR/*.po"
   check-cheatsheets-fr:
     image: *test_image
     commands:
@@ -214,6 +403,60 @@ steps:
       path:
         include:
           - "doc/po/fr/*.po"
+  check-cheatsheets-es:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/es local-check-cheatsheets
+    group: localized-check-cheatsheets
+    when:
+      path:
+        include:
+          - "doc/po/es/*.po"
+  check-cheatsheets-pl:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/pl local-check-cheatsheets
+    group: localized-check-cheatsheets
+    when:
+      path:
+        include:
+          - "doc/po/pl/*.po"
+  check-cheatsheets-ko_KR:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ko_KR local-check-cheatsheets
+    group: localized-check-cheatsheets
+    when:
+      path:
+        include:
+          - "doc/po/ko_KR/*.po"
+  check-cheatsheets-de:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/de local-check-cheatsheets
+    group: localized-check-cheatsheets
+    when:
+      path:
+        include:
+          - "doc/po/de/*.po"
+  check-cheatsheets-ja:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ja local-check-cheatsheets
+    group: localized-check-cheatsheets
+    when:
+      path:
+        include:
+          - "doc/po/ja/*.po"
+  check-cheatsheets-ru:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ru local-check-cheatsheets
+    group: localized-check-cheatsheets
+    when:
+      path:
+        include:
+          - "doc/po/ru/*.po"
   check-cheatsheets-zh_Hans:
     image: *test_image
     commands:
@@ -223,25 +466,34 @@ steps:
       path:
         include:
           - "doc/po/zh_Hans/*.po"
+  check-cheatsheets-ro:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ro local-check-cheatsheets
+    group: localized-check-cheatsheets
+    when:
+      path:
+        include:
+          - "doc/po/ro/*.po"
 ### TARGET pdf
-  pdf-ja:
+  pdf-it_IT:
     image: *test_image
     commands:
-      - make -C build-docs/doc/po/ja local-pdf
+      - make -C build-docs/doc/po/it_IT local-pdf
     group: localized-pdf
     when:
       path:
         include:
-          - "doc/po/ja/*.po"
-  pdf-de:
+          - "doc/po/it_IT/*.po"
+  pdf-pt_BR:
     image: *test_image
     commands:
-      - make -C build-docs/doc/po/de local-pdf
+      - make -C build-docs/doc/po/pt_BR local-pdf
     group: localized-pdf
     when:
       path:
         include:
-          - "doc/po/de/*.po"
+          - "doc/po/pt_BR/*.po"
   pdf-fr:
     image: *test_image
     commands:
@@ -251,6 +503,60 @@ steps:
       path:
         include:
           - "doc/po/fr/*.po"
+  pdf-es:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/es local-pdf
+    group: localized-pdf
+    when:
+      path:
+        include:
+          - "doc/po/es/*.po"
+  pdf-pl:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/pl local-pdf
+    group: localized-pdf
+    when:
+      path:
+        include:
+          - "doc/po/pl/*.po"
+  pdf-ko_KR:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ko_KR local-pdf
+    group: localized-pdf
+    when:
+      path:
+        include:
+          - "doc/po/ko_KR/*.po"
+  pdf-de:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/de local-pdf
+    group: localized-pdf
+    when:
+      path:
+        include:
+          - "doc/po/de/*.po"
+  pdf-ja:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ja local-pdf
+    group: localized-pdf
+    when:
+      path:
+        include:
+          - "doc/po/ja/*.po"
+  pdf-ru:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ru local-pdf
+    group: localized-pdf
+    when:
+      path:
+        include:
+          - "doc/po/ru/*.po"
   pdf-zh_Hans:
     image: *test_image
     commands:
@@ -260,3 +566,12 @@ steps:
       path:
         include:
           - "doc/po/zh_Hans/*.po"
+  pdf-ro:
+    image: *test_image
+    commands:
+      - make -C build-docs/doc/po/ro local-pdf
+    group: localized-pdf
+    when:
+      path:
+        include:
+          - "doc/po/ro/*.po"
