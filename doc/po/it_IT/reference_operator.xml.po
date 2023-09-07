@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2022-01-19 00:27+0000\n"
+"PO-Revision-Date: 2023-09-07 12:33+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_operatorxml/it/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: reference_operator.xml:3
@@ -165,7 +165,7 @@ msgstr "Si veda anche"
 
 #. Tag: para
 #: reference_operator.xml:77
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Extent\"/>, <xref linkend=\"ST_Geometry_Overabove\"/>, "
 "<xref linkend=\"ST_Geometry_Overright\"/>, <xref "
@@ -173,10 +173,10 @@ msgid ""
 ">, <xref linkend=\"ST_Geometry_Contain\"/>, <xref "
 "linkend=\"ST_Geometry_Contained\"/>"
 msgstr ""
-", <xref linkend=\"ST_Geometry_Overright\"/>, <xref "
-"linkend=\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/"
-">, <xref linkend=\"ST_Geometry_Contain\"/>, <xref "
-"linkend=\"ST_Geometry_Contained\"/>"
+", <xref linkend=\"ST_Extent\"/>, <xref linkend=\"ST_Geometry_Overabove\"/>, "
+"<xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
+"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
+"linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
 
 #. Tag: refpurpose
 #: reference_operator.xml:94
@@ -318,7 +318,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_operator.xml:261
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref "
 "linkend=\"contains_geometry_box2df\"/>, <xref "
@@ -328,10 +328,12 @@ msgid ""
 "linkend=\"is_contained_box2df_geometry\"/>, <xref "
 "linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
-", <xref linkend=\"ST_Geometry_Overright\"/>, <xref "
-"linkend=\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/"
-">, <xref linkend=\"ST_Geometry_Contain\"/>, <xref "
-"linkend=\"ST_Geometry_Contained\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"contains_geometry_box2df\"/>, <xref linkend=\"contains_box2df_geometry\"/"
+">, <xref linkend=\"contains_box2df_box2df\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
 
 #. Tag: refpurpose
 #: reference_operator.xml:277
@@ -847,7 +849,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_operator.xml:1035
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref "
 "linkend=\"overlaps_box2df_box2df\"/>, <xref "
@@ -857,10 +859,11 @@ msgid ""
 "linkend=\"is_contained_box2df_geometry\"/>, <xref "
 "linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
-", <xref linkend=\"ST_Geometry_Overright\"/>, <xref "
-"linkend=\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/"
-">, <xref linkend=\"ST_Geometry_Contain\"/>, <xref "
-"linkend=\"ST_Geometry_Contained\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
+"\"contains_box2df_box2df\"/>, <xref linkend=\"is_contained_box2df_geometry\"/"
+">, <xref linkend=\"is_contained_box2df_box2df\"/>"
 
 #. Tag: refpurpose
 #: reference_operator.xml:1051
@@ -894,7 +897,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_operator.xml:1096
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref "
 "linkend=\"overlaps_box2df_box2df\"/>, <xref "
@@ -904,10 +907,11 @@ msgid ""
 "linkend=\"is_contained_geometry_box2df\"/>, <xref "
 "linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
-", <xref linkend=\"ST_Geometry_Overright\"/>, <xref "
-"linkend=\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/"
-">, <xref linkend=\"ST_Geometry_Contain\"/>, <xref "
-"linkend=\"ST_Geometry_Contained\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
+"\"contains_box2df_box2df\"/>, <xref linkend=\"is_contained_geometry_box2df\"/"
+">, <xref linkend=\"is_contained_box2df_box2df\"/>"
 
 #. Tag: refpurpose
 #: reference_operator.xml:1112
@@ -941,7 +945,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_operator.xml:1157
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref "
 "linkend=\"overlaps_box2df_box2df\"/>, <xref "
@@ -951,10 +955,11 @@ msgid ""
 "linkend=\"is_contained_geometry_box2df\"/>, <xref "
 "linkend=\"is_contained_box2df_geometry\"/>"
 msgstr ""
-", <xref linkend=\"ST_Geometry_Overright\"/>, <xref "
-"linkend=\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/"
-">, <xref linkend=\"ST_Geometry_Contain\"/>, <xref "
-"linkend=\"ST_Geometry_Contained\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
+"\"contains_box2df_box2df\"/>, <xref linkend=\"is_contained_geometry_box2df\"/"
+">, <xref linkend=\"is_contained_box2df_geometry\"/>"
 
 #. Tag: refpurpose
 #: reference_operator.xml:1173
@@ -1178,7 +1183,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_operator.xml:1504
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref "
 "linkend=\"overlaps_box2df_box2df\"/>, <xref "
@@ -1188,10 +1193,12 @@ msgid ""
 "linkend=\"is_contained_box2df_geometry\"/>, <xref "
 "linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
-", <xref linkend=\"ST_Geometry_Overright\"/>, <xref "
-"linkend=\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/"
-">, <xref linkend=\"ST_Geometry_Contain\"/>, <xref "
-"linkend=\"ST_Geometry_Contained\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
 
 #. Tag: refpurpose
 #: reference_operator.xml:1520
