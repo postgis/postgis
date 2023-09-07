@@ -2,13 +2,14 @@
 #
 # Translators:
 # Tommaso Di Bucchianico, 2013
+# Sandro Santilli <strk@kbt.io>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2022-05-07 19:23+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2023-09-07 12:33+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_typexml/it/>\n"
 "Language: it_IT\n"
@@ -16,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: para
 #: reference_type.xml:5
@@ -87,16 +88,17 @@ msgstr "Descrizione"
 
 #. Tag: para
 #: reference_type.xml:37
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>box2d</varname> is a spatial data type used to represent the two-"
 "dimensional bounding box enclosing a geometry or collection of geometries. "
 "For example, the <xref linkend=\"ST_Extent\"/> aggregate function returns a "
 "<varname>box2d</varname> object."
 msgstr ""
-"box3d è un tipo spaziale di Postgis usato per rappresentare il "
-"parallelepipedo contente una geometria o un insieme di geometrie. La "
-"funzione ST_3DExtent ritorna un oggetto box3d."
+"<varname>box2d</varname> è un tipo di dato spaziale usato per rappresentare "
+"il rettangolo contente una geometria o un insieme di geometrie. La funzione "
+"aggregata <xref linkend=\"ST_Extent\"/>, ad esempio, restituisce un oggetto "
+"<varname>box2d</varname>."
 
 #. Tag: para
 #: reference_type.xml:41
@@ -181,16 +183,17 @@ msgstr ""
 
 #. Tag: para
 #: reference_type.xml:83
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>box3d</varname> is a PostGIS spatial data type used to represent "
 "the three-dimensional bounding box enclosing a geometry or collection of "
 "geometries. For example, the <xref linkend=\"ST_3DExtent\"/> aggregate "
 "function returns a <varname>box3d</varname> object."
 msgstr ""
-"box3d è un tipo spaziale di Postgis usato per rappresentare il "
-"parallelepipedo contente una geometria o un insieme di geometrie. La "
-"funzione ST_3DExtent ritorna un oggetto box3d."
+"<varname>box3d</varname> è un tipo di dato spaziale di PostGIS usato per "
+"rappresentare il parallelepipedo contente una geometria o un insieme di "
+"geometrie. La funzione aggregata <xref linkend=\"ST_3DExtent\"/>, ad "
+"esempio, ritorna un oggetto <varname>box3d</varname>."
 
 #. Tag: para
 #: reference_type.xml:88
@@ -231,13 +234,14 @@ msgstr ""
 
 #. Tag: para
 #: reference_type.xml:138
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>geometry</varname> is a fundamental PostGIS spatial data type used "
 "to represent a feature in planar (Euclidean) coordinate systems."
 msgstr ""
-"Il tipo di dato \"geometry\" è un fondamentale tipo spaziale di Postgis "
-"usato per rappresentare una entità in un sistema di coordinate euclideo. "
+"Il tipo di dato <varname>geometry</varname> è un fondamentale tipo spaziale "
+"di PostGIS usato per rappresentare una entità in un sistema di coordinate "
+"euclideo."
 
 #. Tag: para
 #: reference_type.xml:139
@@ -322,14 +326,15 @@ msgstr ""
 
 #. Tag: para
 #: reference_type.xml:227
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>geography</varname> is a spatial data type used to represent a "
 "feature in geodetic coordinate systems. Geodetic coordinate systems model "
 "the earth using an ellipsoid."
 msgstr ""
-"geography è un tipo spaziale usato per rappresentare un'entità in un sistema "
-"di coordinate sferico valido per l'intero pianeta."
+"<varname>geography</varname> è un tipo spaziale usato per rappresentare "
+"un'entità in un sistema di coordinate geodetico. I sistemi di coordinate "
+"geodetici utilizzano un modello ellipsoidale per il pianeta terra."
 
 #. Tag: para
 #: reference_type.xml:230
