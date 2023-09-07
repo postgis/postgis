@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2022-01-19 10:14+0000\n"
+"PO-Revision-Date: 2023-09-07 18:08+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_relationshipxml/it/>\n"
@@ -15,25 +15,25 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: para
 #: reference_relationship.xml:5
 #, no-c-format
 msgid "These functions determine spatial relationships between geometries."
-msgstr ""
+msgstr "Queste funzioni determinano la relazione spaziale tra due geometrie."
 
 #. Tag: title
 #: reference_relationship.xml:8
 #, no-c-format
 msgid "Spatial Relationships"
-msgstr ""
+msgstr "Relazioni Spaziali"
 
 #. Tag: title
 #: reference_relationship.xml:11
 #, no-c-format
 msgid "Topological Relationships"
-msgstr ""
+msgstr "Relazioni Topologiche"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:17
