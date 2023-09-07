@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-05 06:08+0000\n"
+"PO-Revision-Date: 2023-09-07 10:14+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_constructorxml/zh_Hans/>\n"
@@ -828,7 +828,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 6.1.2"
 #: reference_constructor.xml:519
 #, no-c-format
 msgid "Examples: Geometry"
-msgstr "示例：几何图形"
+msgstr "示例：几何"
 
 #. Tag: para
 #: reference_constructor.xml:524
