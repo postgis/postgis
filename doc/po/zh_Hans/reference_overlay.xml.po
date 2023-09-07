@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-06 05:32+0000\n"
+"PO-Revision-Date: 2023-09-07 10:14+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_overlayxml/zh_Hans/>\n"
@@ -24,19 +24,20 @@ msgid ""
 "These functions compute results arising from the overlay of two geometries. "
 "These are also known as point-set theoretic boolean operations. Some related "
 "functions are also provided."
-msgstr ""
+msgstr "这些函数计算两个几何图形叠加所产生的结果。 这些也称为点集理论布尔运算。 "
+"还提供了一些相关的函数。"
 
 #. Tag: title
 #: reference_overlay.xml:12
 #, no-c-format
 msgid "Overlay Functions"
-msgstr ""
+msgstr "叠加函数"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:17
 #, no-c-format
 msgid "Computes the portion of a geometry falling within a rectangle."
-msgstr ""
+msgstr "计算几何图形落在矩形内的部分。"
 
 #. Tag: funcprototype
 #: reference_overlay.xml:22
@@ -46,6 +47,9 @@ msgid ""
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
 "<paramdef><type>box2d</type> <parameter>box</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_ClipByBox2D</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>box2d</type> <parameter>box</parameter></paramdef>"
 
 #. Tag: title
 #: reference_overlay.xml:31 reference_overlay.xml:80 reference_overlay.xml:193
@@ -66,6 +70,9 @@ msgid ""
 "being thrown. The output geometry is not guaranteed to be valid (in "
 "particular, self-intersections for a polygon may be introduced)."
 msgstr ""
+"以快速且宽松但可能无效的方式通过 2D 框剪切几何体。 "
+"拓扑上无效的输入几何图形不会导致抛出异常。 "
+"不保证输出几何图形有效（特别是，可能会引入多边形的自相交）。"
 
 #. Tag: para
 #: reference_overlay.xml:40 reference_overlay.xml:345 reference_overlay.xml:545
@@ -103,7 +110,7 @@ msgstr "相关信息"
 #: reference_overlay.xml:52
 #, no-c-format
 msgid ", <xref linkend=\"ST_MakeBox2D\"/>, <xref linkend=\"ST_MakeEnvelope\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_MakeBox2D\"/>, <xref linkend=\"ST_MakeEnvelope\"/>"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:64
@@ -111,7 +118,7 @@ msgstr ""
 msgid ""
 "Computes a geometry representing the part of geometry A that does not "
 "intersect geometry B."
-msgstr ""
+msgstr "计算表示几何 A 中不与几何 B 相交的部分的几何。"
 
 #. Tag: funcprototype
 #: reference_overlay.xml:70
@@ -123,6 +130,11 @@ msgid ""
 "<paramdef choice=\"opt\"><type>float8 </type> <parameter>gridSize = -1</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Difference</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>float8 </type> <parameter>gridSize = "
+"-1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_overlay.xml:82
@@ -133,6 +145,9 @@ msgid ""
 "code>. If A is completely contained in B then an empty atomic geometry of "
 "appropriate type is returned."
 msgstr ""
+"返回一个几何图形，表示几何图形 A 中不与几何图形 B 相交的部分。这相当于 "
+"<code>A - ST_Intersection(A,B)</code>。 如果 A 完全包含在 B "
+"中，则返回适当类型的空原子几何结构。"
 
 #. Tag: para
 #: reference_overlay.xml:87
@@ -140,7 +155,8 @@ msgstr ""
 msgid ""
 "This is the only overlay function where input order matters. "
 "ST_Difference(A, B) always returns a portion of A."
-msgstr ""
+msgstr "这是唯一一个与输入顺序有关的叠加函数。 ST_Difference(A, B) 始终返回 A "
+"的一部分。"
 
 #. Tag: para
 #: reference_overlay.xml:90 reference_overlay.xml:202 reference_overlay.xml:645
@@ -151,6 +167,9 @@ msgid ""
 "snapped to a grid of the given size, and the result vertices are computed on "
 "that same grid. (Requires GEOS-3.9.0 or higher)"
 msgstr ""
+"如果提供了可选的<code> gridSize "
+"</code>参数，则输入将捕捉到给定大小的网格，并在同一网格上计算结果顶点。 （"
+"需要 GEOS-3.9.0 或更高版本）"
 
 #. Tag: para
 #: reference_overlay.xml:96 reference_overlay.xml:218 reference_overlay.xml:651
@@ -163,26 +182,26 @@ msgstr "它是通过GEOS模块实现的"
 #: reference_overlay.xml:768 reference_overlay.xml:874
 #, no-c-format
 msgid "Enhanced: 3.1.0 accept a gridSize parameter."
-msgstr ""
+msgstr "增强：3.1.0 接受 gridSize 参数。"
 
 #. Tag: para
 #: reference_overlay.xml:98
 #, no-c-format
 msgid "Requires GEOS &gt;= 3.9.0 to use the gridSize parameter."
-msgstr ""
+msgstr "需要 GEOS &gt;= 3.9.0 才能使用 gridSize 参数。"
 
 #. Tag: para
 #: reference_overlay.xml:100 reference_overlay.xml:225
 #: reference_overlay.xml:656 reference_overlay.xml:879
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.3"
-msgstr ""
+msgstr "&sfs_compliant; s2.1.1.3"
 
 #. Tag: para
 #: reference_overlay.xml:101
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.20"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.20"
 
 #. Tag: para
 #: reference_overlay.xml:102 reference_overlay.xml:227
@@ -192,44 +211,44 @@ msgstr ""
 msgid ""
 "&Z_support; However, the result is computed using XY only. The result Z "
 "values are copied, averaged or interpolated."
-msgstr ""
+msgstr "&Z_support; 但是，结果仅使用 XY 计算。 结果 Z 值被复制、平均或插值。"
 
 #. Tag: para
 #: reference_overlay.xml:119
 #, no-c-format
 msgid "The input linestrings"
-msgstr ""
+msgstr "输入线串"
 
 #. Tag: para
 #: reference_overlay.xml:131
 #, no-c-format
 msgid "The difference of the two linestrings"
-msgstr ""
+msgstr "两个线串之间的差异"
 
 #. Tag: para
 #: reference_overlay.xml:140
 #, no-c-format
 msgid "The difference of 2D linestrings."
-msgstr ""
+msgstr "2D线串的差异。"
 
 #. Tag: para
 #: reference_overlay.xml:143
 #, no-c-format
 msgid "The difference of 3D points."
-msgstr ""
+msgstr "3D点的差异。"
 
 #. Tag: para
 #: reference_overlay.xml:150 reference_overlay.xml:707
 #, no-c-format
 msgid ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:158
 #, no-c-format
 msgid ""
 "Computes a geometry representing the shared portion of geometries A and B."
-msgstr ""
+msgstr "计算表示几何 A 和 B 的共享部分的几何。"
 
 #. Tag: para
 #: reference_overlay.xml:194
@@ -238,7 +257,8 @@ msgid ""
 "Returns a geometry representing the point-set intersection of two "
 "geometries. In other words, that portion of geometry A and geometry B that "
 "is shared between the two geometries."
-msgstr ""
+msgstr "返回表示两个几何图形的点集交集的几何图形。 换句话说，几何图形 A 和几何图形 B "
+"在两个几何图形之间共享的部分。"
 
 #. Tag: para
 #: reference_overlay.xml:199
@@ -246,7 +266,7 @@ msgstr ""
 msgid ""
 "If the geometries have no points in common (i.e. are disjoint) then an empty "
 "atomic geometry of appropriate type is returned."
-msgstr ""
+msgstr "如果几何图形没有共同点（即不相交），则返回适当类型的空原子几何图形。"
 
 #. Tag: para
 #: reference_overlay.xml:208
@@ -257,6 +277,9 @@ msgid ""
 "queries where you only require the portion of a geometry that is inside a "
 "country or region of interest."
 msgstr ""
+"ST_Intersection 与 <xref linkend=\"ST_Intersects\"/> 结合使用对于剪切几何图形"
+"非常有用，例如在边界框、缓冲区或区域查询中，您只需要感兴趣的国家或地区内的几"
+"何图形部分。"
 
 #. Tag: para
 #: reference_overlay.xml:211
@@ -269,12 +292,16 @@ msgid ""
 "mercator in worst case scenario) and then intersection in that best fit "
 "planar spatial ref and retransforms back to WGS84 geography."
 msgstr ""
+"&geography_transform; 它首先确定适合 2 个地理对象边界框的最佳 SRID（"
+"如果地理对象位于 UTM 的半个区域内，但不同的 UTM 将选择其中之一）（倾向于 UTM "
+"或兰伯特方位角等积 (LAEA) 北/南 极点，并在最坏的情况下回到墨卡托），"
+"然后在最适合的平面空间参考中相交并重新转换回 WGS84 地理。"
 
 #. Tag: para
 #: reference_overlay.xml:214
 #, no-c-format
 msgid "This function will drop the M coordinate values if present."
-msgstr ""
+msgstr "该函数将删除 M 坐标值（如果存在）。"
 
 #. Tag: para
 #: reference_overlay.xml:216
@@ -285,12 +312,15 @@ msgid ""
 "geometries. Although this function works with Z-coordinate, it does an "
 "averaging of Z-Coordinate."
 msgstr ""
+"如果使用 3D 几何图形，您可能需要使用基于 SFGCAL 的 <xref linkend="
+"\"ST_3DIntersection\"/> ，它可以为 3D 几何图形执行正确的 3D 交集。 "
+"尽管此函数适用于 Z 坐标，但它对 Z 坐标进行平均。"
 
 #. Tag: para
 #: reference_overlay.xml:220
 #, no-c-format
 msgid "Enhanced: 3.1.0 accept a gridSize parameter"
-msgstr ""
+msgstr "增强：3.1.0 接受 gridSize 参数"
 
 #. Tag: para
 #: reference_overlay.xml:221 reference_overlay.xml:549
@@ -298,25 +328,25 @@ msgstr ""
 #: reference_overlay.xml:875
 #, no-c-format
 msgid "Requires GEOS &gt;= 3.9.0 to use the gridSize parameter"
-msgstr ""
+msgstr "需要 GEOS &gt;= 3.9.0 才能使用 gridSize 参数"
 
 #. Tag: para
 #: reference_overlay.xml:222 reference_overlay.xml:876
 #, no-c-format
 msgid "Changed: 3.0.0 does not depend on SFCGAL."
-msgstr ""
+msgstr "更改：3.0.0 不依赖于 SFCGAL。"
 
 #. Tag: para
 #: reference_overlay.xml:223
 #, no-c-format
 msgid "Availability: 1.5 support for geography data type was introduced."
-msgstr ""
+msgstr "可用性：1.5 引入了对地理数据类型的支持。"
 
 #. Tag: para
 #: reference_overlay.xml:226
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.18"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.18"
 
 #. Tag: para
 #: reference_overlay.xml:233
@@ -329,6 +359,10 @@ msgid ""
 "individual single MULT* parts. The below is fairly generic and will work for "
 "polys, etc. by just changing the where clause."
 msgstr ""
+"按国家/地区剪辑所有线路（路径）。 这里我们假设国家几何是多边形或多多边形。 注"
+"意：我们只保留导致线串或多线串的交叉点部分，因为我们不关心仅共享一个点的路径"
+"。 需要转储来将几何集合扩展为单独的 MULT* 部分。 下面的内容相当通用，"
+"只需更改 where 子句即可适用于多边形等。"
 
 #. Tag: para
 #: reference_overlay.xml:239
@@ -340,12 +374,15 @@ msgid ""
 "buffered by 0.0 would only leave the polygons and dissolve the collection "
 "shell.)"
 msgstr ""
+"对于聚合物，例如 多边形地标，您可以使用加速技巧，在 0.0 "
+"处缓冲不包括多边形的几何，以获得空的几何集合（因此，如果缓冲包含多边形、"
+"线串和点的几何集合为 0.0，则仅保留多边形， 它将不再是几何集合。）"
 
 #. Tag: title
 #: reference_overlay.xml:245
 #, no-c-format
 msgid "Examples: 2.5Dish"
-msgstr ""
+msgstr "示例：2.5D"
 
 #. Tag: para
 #: reference_overlay.xml:246
@@ -353,7 +390,8 @@ msgstr ""
 msgid ""
 "Note this is not a true intersection, compare to the same example using "
 "<xref linkend=\"ST_3DIntersection\"/>."
-msgstr ""
+msgstr "请注意，这不是真正的交集，与使用 <xref linkend=\"ST_3DIntersection\"/> "
+"的同一示例进行比较。"
 
 #. Tag: para
 #: reference_overlay.xml:251
@@ -364,6 +402,10 @@ msgid ""
 "linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
 "linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
 msgstr ""
+", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
+"linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref linkend="
+"\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref linkend="
+"\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:260
@@ -371,7 +413,7 @@ msgstr ""
 msgid ""
 "Aggregate function which unions geometries in a memory-efficent but slower "
 "way"
-msgstr ""
+msgstr "聚合函数，以内存高效但速度较慢的方式联合几何图形"
 
 #. Tag: funcprototype
 #: reference_overlay.xml:265
@@ -381,6 +423,9 @@ msgid ""
 "<paramdef><type>geometry set</type> <parameter>geomfield</parameter></"
 "paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_MemUnion</function></funcdef> "
+"<paramdef><type>geometry set</type> "
+"<parameter>geomfield</parameter></paramdef>"
 
 #. Tag: para
 #: reference_overlay.xml:276
@@ -389,7 +434,8 @@ msgid ""
 "An aggregate function that unions the input geometries, merging them to "
 "produce a result geometry with no overlaps. The output may be a single "
 "geometry, a MultiGeometry, or a Geometry Collection."
-msgstr ""
+msgstr "聚合函数，用于联合输入几何图形，将它们合并以生成没有重叠的结果几何图形。 "
+"输出可以是单个几何体、多几何体或几何体集合。"
 
 #. Tag: para
 #: reference_overlay.xml:282
@@ -401,12 +447,16 @@ msgid ""
 "first accumulates an array and then unions the contents using a fast "
 "algorithm."
 msgstr ""
+"产生与 <xref linkend=\"ST_Union\"/> "
+"相同的结果，但使用更少的内存和更多的处理时间。 "
+"此聚合函数对几何图形的顺序加法连接进行操作，这与 ST_Union 聚合不同，ST_Union "
+"聚合首先累积一个数组，然后使用快速算法联合内容。"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:312
 #, no-c-format
 msgid "Nodes a collection of lines."
-msgstr ""
+msgstr "节点是线的集合。"
 
 #. Tag: funcprototype
 #: reference_overlay.xml:319
@@ -415,6 +465,8 @@ msgid ""
 "<funcdef>geometry <function>ST_Node</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Node</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_overlay.xml:330
@@ -425,6 +477,9 @@ msgid ""
 "introduces the least possible number of new nodes. The resulting linework is "
 "dissolved (duplicate lines are removed)."
 msgstr ""
+"返回一个 (Multi)LineString ，表示线串集合的完全节点版本。 "
+"节点保留所有输入节点，并引入尽可能少的新节点。 "
+"生成的线条被溶解（重复的线条被删除）。"
 
 #. Tag: para
 #: reference_overlay.xml:337
@@ -432,7 +487,7 @@ msgstr ""
 msgid ""
 "This is a good way to create fully-noded linework suitable for use as input "
 "to <xref linkend=\"ST_Polygonize\"/>."
-msgstr ""
+msgstr "这是创建适合用作 <xref linkend=\"ST_Polygonize\"/> 输入的全节点线条的好方法。"
 
 #. Tag: para
 #: reference_overlay.xml:339
@@ -442,6 +497,9 @@ msgid ""
 "specify a gridSize, which can provide simpler and more robust output. See "
 "also <xref linkend=\"ST_Union\"/> for an aggregate variant."
 msgstr ""
+"也可用于节点和溶解线条。 它提供了一个指定 gridSize "
+"的选项，这可以提供更简单、更稳健的输出。 另请参阅 <xref linkend=\"ST_Union\"/"
+"> 了解聚合版本。"
 
 #. Tag: para
 #: reference_overlay.xml:344
@@ -463,12 +521,14 @@ msgid ""
 "GEOSUnaryUnion. This may cause the resulting linestrings to have a different "
 "order and direction compared to PostGIS &lt; 2.4."
 msgstr ""
+"更改：2.4.0 该函数在内部使用 GEOSNode 而不是 GEOSUnaryUnion。 与 PostGIS &lt;"
+" 2.4 相比，这可能会导致生成的线串具有不同的顺序和方向。"
 
 #. Tag: para
 #: reference_overlay.xml:355
 #, no-c-format
 msgid "Noding a 3D LineString which self-intersects"
-msgstr ""
+msgstr "节点自相交的 3D LineString"
 
 #. Tag: para
 #: reference_overlay.xml:358
@@ -476,7 +536,7 @@ msgstr ""
 msgid ""
 "Noding two LineStrings which share common linework. Note that the result "
 "linework is dissolved."
-msgstr ""
+msgstr "将节点添加到共享一条线的两个线串。 生成的线被溶解。"
 
 #. Tag: para
 #: reference_overlay.xml:368 reference_overlay.xml:496
@@ -490,7 +550,7 @@ msgstr ", <xref linkend=\"ST_Union\"/>"
 msgid ""
 "Returns a collection of geometries created by splitting a geometry by "
 "another geometry."
-msgstr ""
+msgstr "返回通过将一个几何体分割为另一个几何体而创建的几何体集合。"
 
 #. Tag: funcprototype
 #: reference_overlay.xml:382
@@ -500,6 +560,9 @@ msgid ""
 "<paramdef><type>geometry</type> <parameter>input</parameter></paramdef> "
 "<paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Split</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>input</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>"
 
 #. Tag: para
 #: reference_overlay.xml:392
@@ -511,6 +574,9 @@ msgid ""
 "components (the boundary) are used for splitting the input. The result "
 "geometry is always a collection."
 msgstr ""
+"该函数支持按（多）点、（多）线串或（多）多边形边界分割线串，或按线串分割（多"
+"）多边形。 当（多）多边形用作边栏选项卡时，其线性分量（边界）用于分割输入。 "
+"结果几何图形始终是一个集合。"
 
 #. Tag: para
 #: reference_overlay.xml:400
@@ -521,6 +587,9 @@ msgid ""
 "original geometry (although due to numerical rounding this may not be "
 "exactly the case)."
 msgstr ""
+"该函数在某种意义上与 <xref linkend=\"ST_Union\"/> 相反。 将 ST_Union 应用于返"
+"回的集合理论上应该会产生原始几何图形（尽管由于数字舍入，情况可能并非完全如此"
+"）。"
 
 #. Tag: para
 #: reference_overlay.xml:406
@@ -531,12 +600,15 @@ msgid ""
 "may be necessary to snap the input to the blade first, using <xref "
 "linkend=\"ST_Snap\"/> with a small tolerance."
 msgstr ""
+"如果由于数值精度问题输入和刀片不相交，则输入可能不会按预期分割。 "
+"为了避免这种情况，可能需要首先使用具有较小公差的 <xref linkend=\"ST_Snap\"/> "
+"将输入捕捉到刀片。"
 
 #. Tag: para
 #: reference_overlay.xml:413
 #, no-c-format
 msgid "Availability: 2.0.0 requires GEOS"
-msgstr ""
+msgstr "可用性：2.0.0需要GEOS"
 
 #. Tag: para
 #: reference_overlay.xml:414
@@ -544,7 +616,7 @@ msgstr ""
 msgid ""
 "Enhanced: 2.2.0 support for splitting a line by a multiline, a multipoint or "
 "(multi)polygon boundary was introduced."
-msgstr ""
+msgstr "增强：2.2.0 引入了对通过多线、多点或（多）多边形边界分割线的支持。"
 
 #. Tag: para
 #: reference_overlay.xml:415
@@ -552,25 +624,25 @@ msgstr ""
 msgid ""
 "Enhanced: 2.5.0 support for splitting a polygon by a multiline was "
 "introduced."
-msgstr ""
+msgstr "增强：2.5.0 引入了通过多线分割多边形的支持。"
 
 #. Tag: para
 #: reference_overlay.xml:420
 #, no-c-format
 msgid "Split a Polygon by a Line."
-msgstr ""
+msgstr "用一条线分割多边形。"
 
 #. Tag: para
 #: reference_overlay.xml:432 reference_overlay.xml:466
 #, no-c-format
 msgid "Before Split"
-msgstr ""
+msgstr "分割前"
 
 #. Tag: para
 #: reference_overlay.xml:444 reference_overlay.xml:478
 #, no-c-format
 msgid "After split"
-msgstr ""
+msgstr "分割后"
 
 #. Tag: para
 #: reference_overlay.xml:454
@@ -588,12 +660,14 @@ msgid ""
 "line. Shows using <xref linkend=\"ST_Snap\"/> to snap the line to the point "
 "to allow it to be split."
 msgstr ""
+"将 LineString 用点分割，其中该点并不正好位于线上。 显示使用 <xref linkend="
+"\"ST_Snap\"/> 将线捕捉到点以允许将其分割。"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:505
 #, no-c-format
 msgid "Computes a rectilinear subdivision of a geometry."
-msgstr ""
+msgstr "计算几何体的直线细分。"
 
 #. Tag: funcprototype
 #: reference_overlay.xml:510
@@ -605,6 +679,11 @@ msgid ""
 "paramdef> <paramdef choice=\"opt\"><type>float8</type> <parameter>gridSize = "
 "-1</parameter></paramdef>"
 msgstr ""
+"<funcdef>setof geometry <function>ST_Subdivide</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>integer</type> <parameter>max_vertices=256</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>float8</type> <parameter>gridSize = "
+"-1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_overlay.xml:522
@@ -614,6 +693,8 @@ msgid ""
 "varname> into parts using rectilinear lines, with each part containing no "
 "more than <code>max_vertices</code>."
 msgstr ""
+"返回一组几何图形，这些几何图形是使用直线将 <varname>geom</varname> "
+"分成多个部分的结果，每个部分包含不超过 <code>max_vertices</code>。"
 
 #. Tag: para
 #: reference_overlay.xml:527
@@ -623,6 +704,10 @@ msgid ""
 "represent a closed box. <code>gridSize</code> can be specified to have "
 "clipping work in fixed-precision space (requires GEOS-3.9.0+)."
 msgstr ""
+"<code>max_vertices</code> 必须为 5 或更多，因为需要 5 "
+"个点来表示一个封闭的盒子。 "
+"可以指定<code>gridSize</code>以在固定精度空间中进行裁剪工作（需要GEOS-3.9."
+"0+）。"
 
 #. Tag: para
 #: reference_overlay.xml:531
@@ -634,6 +719,9 @@ msgid ""
 "fewer \"hit\" cases. The \"hit\" cases are faster because the spatial "
 "operations executed by the index recheck process fewer points."
 msgstr ""
+"对于索引细分数据集，多边形内的点和其他空间操作通常更快。 由于零件的边界框通常"
+"覆盖比原始几何图形边界框更小的区域，因此索引查询产生的“命中”情况较少。 "
+"“命中”情况更快，因为索引重新检查执行的空间操作处理的点更少。"
 
 #. Tag: para
 #: reference_overlay.xml:538
@@ -645,6 +733,10 @@ msgid ""
 "used in a SELECT list or a FROM clause to produce a result set with one "
 "record for each result geometry."
 msgstr ""
+"这是一个返回集合的 <ulink url=\"https://www.postgresql.org/docs/current/"
+"queries-table-expressions.html#QUERIES-TABLEFUNCTIONS\">集合返回函数</ulink> "
+"(SRF) 包含单个几何值的线。 它可以在 SELECT 列表或 FROM "
+"子句中使用，以生成一个结果集，其中每个结果几何图形都有一个记录。"
 
 #. Tag: para
 #: reference_overlay.xml:547
@@ -652,7 +744,7 @@ msgstr ""
 msgid ""
 "Enhanced: 2.5.0 reuses existing points on polygon split, vertex count is "
 "lowered from 8 to 5."
-msgstr ""
+msgstr "增强：2.5.0 重用多边形分割上的现有点，顶点数从 8 减少到 5。"
 
 #. Tag: para
 #: reference_overlay.xml:555
@@ -661,12 +753,14 @@ msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Subdivide a polygon into parts "
 "with no more than 10 vertices, and assign each part a unique id."
 msgstr ""
+"<emphasis role=\"bold\">示例：</emphasis> 将多边形细分为不超过 10 "
+"个顶点的部分，并为每个部分分配一个唯一的 id。"
 
 #. Tag: para
 #: reference_overlay.xml:565
 #, no-c-format
 msgid "Subdivided to maximum 10 vertices"
-msgstr ""
+msgstr "细分至最多 10 个顶点"
 
 #. Tag: para
 #: reference_overlay.xml:571
@@ -676,12 +770,15 @@ msgid ""
 "using ST_Segmentize(geography, distance), and use ST_Subdivide to split the "
 "resulting line into sublines of 8 vertices."
 msgstr ""
+"<emphasis role=\"bold\">示例：</emphasis> 使用 ST_Segmentize(geography, "
+"distance) 密集化一条长地理线，并使用 ST_Subdivide 将生成的线分割为 8 "
+"个顶点的子线。"
 
 #. Tag: para
 #: reference_overlay.xml:580
 #, no-c-format
 msgid "The densified and split lines."
-msgstr ""
+msgstr "致密线和分割线。"
 
 #. Tag: para
 #: reference_overlay.xml:586
@@ -692,6 +789,8 @@ msgid ""
 "source table, and new records for each subdivided result geometry are "
 "inserted."
 msgstr ""
+"<emphasis role=\"bold\">示例：</emphasis> 在表中的适当位置分割复杂几何图形。 "
+"具有原始几何的记录将从源表中删除，拆分后生成的几何将成为其位置的新记录。"
 
 #. Tag: para
 #: reference_overlay.xml:594
@@ -703,6 +802,10 @@ msgid ""
 "returning (table) function that returns a set of single-value rows, this "
 "syntax automatically produces a table with one row for each result part."
 msgstr ""
+"<emphasis role=\"bold\">示例：</emphasis>创建具有分区几何图形的新表。 "
+"保留原始几何图形的键，新表可以与原始表连接。 由于 ST_Subdivide 是一个返回集合"
+"的函数，并且行具有单个值，因此此语法会自动生成一个表，其中每个部分的结果都有"
+"一行。"
 
 #. Tag: para
 #: reference_overlay.xml:608
@@ -711,6 +814,8 @@ msgid ""
 ", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
 "linkend=\"ST_NPoints\"/>"
 msgstr ""
+", <xref linkend=\"ST_Segmentize\"/>, <xref linkend=\"ST_Split\"/>, <xref "
+"linkend=\"ST_NPoints\"/>"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:621
@@ -718,7 +823,7 @@ msgstr ""
 msgid ""
 "Computes a geometry representing the portions of geometries A and B that do "
 "not intersect."
-msgstr ""
+msgstr "计算表示几何图形 A 和 B 不相交部分的几何图形。"
 
 #. Tag: funcprototype
 #: reference_overlay.xml:627
@@ -730,6 +835,11 @@ msgid ""
 "<paramdef choice=\"opt\"><type>float8 </type> <parameter>gridSize = -1</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_SymDifference</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>float8 </type> <parameter>gridSize = "
+"-1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_overlay.xml:639
@@ -740,30 +850,33 @@ msgid ""
 "B)</code>. It is called a symmetric difference because "
 "<code>ST_SymDifference(A,B) = ST_SymDifference(B,A)</code>."
 msgstr ""
+"返回表示几何图形 A 和 B 不相交部分的几何图形。 这相当于<code>ST_Union(A,B) - "
+"ST_Intersection(A,B)</code>。 之所以称为对称差，是因为 "
+"<code>ST_SymDifference(A,B) = ST_SymDifference(B,A)</code>。"
 
 #. Tag: para
 #: reference_overlay.xml:657
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.21"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.21"
 
 #. Tag: para
 #: reference_overlay.xml:677
 #, no-c-format
 msgid "The original linestrings shown together"
-msgstr ""
+msgstr "原始线串一起显示"
 
 #. Tag: para
 #: reference_overlay.xml:689
 #, no-c-format
 msgid "The symmetric difference of the two linestrings"
-msgstr ""
+msgstr "两条线串的对称差"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:715
 #, no-c-format
 msgid "Computes the union of the components of a single geometry."
-msgstr ""
+msgstr "计算单个几何体的组件的并集。"
 
 #. Tag: funcprototype
 #: reference_overlay.xml:720
@@ -774,6 +887,10 @@ msgid ""
 "<paramdef choice=\"opt\"><type>float8 </type> <parameter>gridSize = -1</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_UnaryUnion</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>float8 </type> <parameter>gridSize = "
+"-1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_overlay.xml:732
@@ -783,6 +900,8 @@ msgid ""
 "single geometry, a MultiGeometry, or a GeometryCollection. The union is "
 "applied to the individual elements of the input."
 msgstr ""
+"<xref linkend=\"ST_Union\"/> 的单输入形式。 输入可以是单个几何图形、"
+"MultiGeometry 或 GeometryCollection。 并集应用于输入的各个元素。"
 
 #. Tag: para
 #: reference_overlay.xml:737
@@ -793,6 +912,10 @@ msgid ""
 "invalid input component such as a bow-tie polygon may cause an error. For "
 "this reason it may be better to use <xref linkend=\"ST_MakeValid\"/>."
 msgstr ""
+"此函数可用于修复由于重叠组件而无效的多重多边形。 "
+"但是，每个输入组件都必须有效。 "
+"无效的输入组件（例如领结多边形）可能会导致错误。 因此，最好使用 <xref "
+"linkend=\"ST_MakeValid\"/>。"
 
 #. Tag: para
 #: reference_overlay.xml:745
@@ -803,6 +926,9 @@ msgid ""
 "linkend=\"Simple_Geometry\">simple</link>. (<xref linkend=\"ST_Node\"/> also "
 "does this, but it does not provide the <code>gridSize</code> option.)"
 msgstr ""
+"此函数的另一个用途是对交叉或重叠的线串集合进行节点化和分解，以使它们<link "
+"linkend=\"Simple_Geometry\">简单</link>。 （<xref linkend=\"ST_Node\"/> "
+"也执行此操作，但它不提供 <code>gridSize</code> 选项。）"
 
 #. Tag: para
 #: reference_overlay.xml:753
@@ -813,6 +939,10 @@ msgid ""
 "off between memory usage and compute time, striking a balance between "
 "ST_Union and <xref linkend=\"ST_MemUnion\"/>."
 msgstr ""
+"可以将 ST_UnaryUnion 与 <xref linkend=\"ST_Collect\"/> "
+"结合起来，以微调一次组合的几何图形数量。 "
+"这允许在内存使用和计算时间之间进行权衡，从而在 ST_Union 和 <xref linkend="
+"\"ST_MemUnion\"/> 之间取得平衡。"
 
 #. Tag: para
 #: reference_overlay.xml:779
@@ -821,13 +951,15 @@ msgid ""
 ", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, <xref "
 "linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>"
 msgstr ""
+", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_MakeValid\"/>, <xref "
+"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Node\"/>"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:792
 #, no-c-format
 msgid ""
 "Computes a geometry representing the point-set union of the input geometries."
-msgstr ""
+msgstr "计算表示输入几何图形的点集合并的几何图形。"
 
 #. Tag: para
 #: reference_overlay.xml:827
@@ -836,7 +968,8 @@ msgid ""
 "Unions the input geometries, merging geometry to produce a result geometry "
 "with no overlaps. The output may be an atomic geometry, a MultiGeometry, or "
 "a Geometry Collection. Comes in several variants:"
-msgstr ""
+msgstr "联合输入几何图形，合并几何图形以生成没有重叠的结果几何图形。 "
+"输出可以是原子几何、多几何或几何集合。 有多种格式："
 
 #. Tag: para
 #: reference_overlay.xml:832
@@ -846,6 +979,9 @@ msgid ""
 "that is the union of two input geometries. If either input is NULL, then "
 "NULL is returned."
 msgstr ""
+"<emphasis role=\"bold\">双输入格式：</emphasis> "
+"返回一个几何图形，该几何图形是两个输入几何图形的并集。 如果任一输入为 NULL，"
+"则返回 NULL。"
 
 #. Tag: para
 #: reference_overlay.xml:837
@@ -853,7 +989,8 @@ msgstr ""
 msgid ""
 "<emphasis role=\"bold\">Array variant:</emphasis> returns a geometry that is "
 "the union of an array of geometries."
-msgstr ""
+msgstr "<emphasis role=\"bold\">数组格式：</emphasis> "
+"返回一个几何图形，该几何图形是几何图形数组的并集。"
 
 #. Tag: para
 #: reference_overlay.xml:841
@@ -865,6 +1002,10 @@ msgid ""
 "operates on rows of data, in the same way the SUM() and AVG() functions do "
 "and like most aggregates, it also ignores NULL geometries."
 msgstr ""
+"<emphasis role=\"bold\">聚合函数格式：</emphasis> "
+"返回一个几何图形，该几何图形是几何图形集合的并集。 ST_Union() 函数是 "
+"PostgreSQL 术语中的“聚合”函数。 这意味着它对数据行进行操作，与 SUM() 和 AVG()"
+" 函数的操作方式相同，并且与大多数聚合一样，它也会忽略 NULL 几何图形。"
 
 #. Tag: para
 #: reference_overlay.xml:848
@@ -872,7 +1013,7 @@ msgstr ""
 msgid ""
 "See <xref linkend=\"ST_UnaryUnion\"/> for a non-aggregate, single-input "
 "variant."
-msgstr ""
+msgstr "请参阅 <xref linkend=\"ST_UnaryUnion\"/> 了解非聚合、单输入格式。"
 
 #. Tag: para
 #: reference_overlay.xml:850
@@ -883,6 +1024,10 @@ msgid ""
 "unions-in-postgis-14.html\">http://blog.cleverelephant.ca/2009/01/must-"
 "faster-unions-in-postgis-14.html</ulink>"
 msgstr ""
+"ST_Union的数组和聚合形式使用<ulink url=\"http://blog.cleverelephant.ca/2009/"
+"01/must-faster-unions-in-postgis-14.html\"> http://blog.cleverelephant.ca/"
+"2009/01/must-faster-unions-in-postgis-14.html "
+"</ulink>中引入的快速级联连接算法"
 
 #. Tag: para
 #: reference_overlay.xml:854
@@ -892,6 +1037,9 @@ msgid ""
 "The inputs are snapped to a grid of the given size, and the result vertices "
 "are computed on that same grid. (Requires GEOS-3.9.0 or higher)"
 msgstr ""
+"可以指定 <code>gridSize </code>来在固定精度空间中工作。 "
+"输入将捕捉到给定大小的网格，并在同一网格上计算结果顶点。 （需要 GEOS-3.9.0 "
+"或更高版本）"
 
 #. Tag: para
 #: reference_overlay.xml:860
@@ -901,6 +1049,8 @@ msgid ""
 "be non-overlapping. ST_Collect is usually faster than ST_Union because it "
 "performs no processing on the collected geometries."
 msgstr ""
+"如果不要求结果不重叠，有时可以使用 ST_Collect 代替 ST_Union。 ST_Collect "
+"通常比 ST_Union 更快，因为它不对收集的几何图形执行任何处理。"
 
 #. Tag: para
 #: reference_overlay.xml:867
@@ -909,6 +1059,8 @@ msgid ""
 "ST_Union creates MultiLineString and does not sew LineStrings into a single "
 "LineString. Use <xref linkend=\"ST_LineMerge\"/> to sew LineStrings."
 msgstr ""
+"ST_Union 创建 MultiLineString 并且不会将 LineString 缝合成单个 LineString。 "
+"使用<xref linkend=\"ST_LineMerge\"/>缝合线串。"
 
 #. Tag: para
 #: reference_overlay.xml:870
@@ -916,7 +1068,8 @@ msgstr ""
 msgid ""
 "NOTE: this function was formerly called GeomUnion(), which was renamed from "
 "\"Union\" because UNION is an SQL reserved word."
-msgstr ""
+msgstr "注意：此函数以前称为 GeomUnion()，它是从“Union”重命名的，因为 UNION 是 SQL "
+"保留字。"
 
 #. Tag: para
 #: reference_overlay.xml:877
@@ -925,12 +1078,14 @@ msgid ""
 "Availability: 1.4.0 - ST_Union was enhanced. ST_Union(geomarray) was "
 "introduced and also faster aggregate collection in PostgreSQL."
 msgstr ""
+"可用性：1.4.0 - ST_Union 得到增强。 PostgreSQL 中引入了 ST_Union(geomarray) "
+"以及更快的集合聚合。"
 
 #. Tag: para
 #: reference_overlay.xml:880
 #, no-c-format
 msgid "Aggregate version is not explicitly defined in OGC SPEC."
-msgstr ""
+msgstr "OGC SPEC 中未明确定义聚合版本。"
 
 #. Tag: para
 #: reference_overlay.xml:881
@@ -938,31 +1093,31 @@ msgstr ""
 msgid ""
 "&sqlmm_compliant; SQL-MM 3: 5.1.19 the z-index (elevation) when polygons are "
 "involved."
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3：5.1.19 涉及多边形时的 z 索引（高程）。"
 
 #. Tag: para
 #: reference_overlay.xml:889
 #, no-c-format
 msgid "Aggregate example"
-msgstr ""
+msgstr "聚合示例"
 
 #. Tag: para
 #: reference_overlay.xml:891
 #, no-c-format
 msgid "Non-Aggregate example"
-msgstr ""
+msgstr "非聚合示例"
 
 #. Tag: para
 #: reference_overlay.xml:893
 #, no-c-format
 msgid "3D example - sort of supports 3D (and with mixed dimensions!)"
-msgstr ""
+msgstr "3D 示例 - 3D 的类型（和混合维度！）"
 
 #. Tag: para
 #: reference_overlay.xml:895
 #, no-c-format
 msgid "3d example not mixing dimensions"
-msgstr ""
+msgstr "不混合维度的 3D 示例"
 
 #. Tag: para
 #: reference_overlay.xml:900
@@ -972,3 +1127,6 @@ msgid ""
 "linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
 "linkend=\"ST_SymDifference\"/>"
 msgstr ""
+", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
+"linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
+"linkend=\"ST_SymDifference\"/>"
