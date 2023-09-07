@@ -5,20 +5,22 @@
 # George Silva <georger.silva@gmail.com>, 2016
 # George Silva <georger.silva@gmail.com>, 2016-2017
 # Poliana Palhares <p.palhares@plamu.com.br>, 2016
+# Sandro Santilli <strk@kbt.io>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2021-11-28 21:13+0000\n"
-"Last-Translator: Regina Obe\n"
-"Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
-"language/pt_BR/)\n"
+"PO-Revision-Date: 2023-09-07 10:14+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"Language-Team: Portuguese (Brazil) <https://weblate.osgeo.org/projects/"
+"postgis/extras_topologyxml/pt_BR/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: extras_topology.xml:3
@@ -704,11 +706,11 @@ msgid ""
 "you care about. If the schema does not exist, it just removes reference "
 "entries the named schema."
 msgstr ""
-" Derruba um esquema topologia e deleta sua referência da table topology."
-"topology e referências para tables naquele esquema da table geometry_columns."
-"Esta função deve ser USADA COM CUIDADO, ela pode destruir algum dado "
-"importante. Se o esquema não existir. ela só remove entradas de referência "
-"do esquema nomeado. "
+"Derruba um esquema topologia e deleta sua referência da table "
+"topology.topology e referências para tables naquele esquema da table "
+"geometry_columns.Esta função deve ser USADA COM CUIDADO, ela pode destruir "
+"algum dado importante. Se o esquema não existir. ela só remove entradas de "
+"referência do esquema nomeado."
 
 #. Tag: para
 #: extras_topology.xml:387
