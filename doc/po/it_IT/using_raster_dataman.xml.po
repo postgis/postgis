@@ -3,13 +3,14 @@
 # Translators:
 # pibinko <pibinko@gmail.com>, 2013-2014
 # Regina Obe <regina@arrival3d.com>, 2022.
+# Sandro Santilli <strk@kbt.io>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-15 12:17+0000\n"
-"PO-Revision-Date: 2022-05-07 19:23+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2023-09-07 10:14+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "using_raster_datamanxml/it/>\n"
 "Language: it_IT\n"
@@ -17,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: using_raster_dataman.xml:3
@@ -840,11 +841,11 @@ msgid ""
 "you restore one raster table from a backup of another database. The "
 "following columns exist in the <varname>raster_columns</varname> catalog."
 msgstr ""
-" <varname>raster_columns</varname> è un catalogo di tutte le colonne di "
-"tabelle che nel vostro database sono di tipo raster. E' una vista che "
+"La vista <varname>raster_columns</varname> è un catalogo di tutte le colonne "
+"di tabelle che nel vostro database sono di tipo raster. È una vista che "
 "utilizza i limiti applicati alle tabelle, per cui le informazioni sono "
 "sempre congruenti, anche se ripristinate una tabella raster dal backup di un "
-"altro database. Il catalogo  <varname>raster_columns</varname> contiene le "
+"altro database. Il catalogo <varname>raster_columns</varname> contiene le "
 "seguenti colonne."
 
 #. Tag: para
