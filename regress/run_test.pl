@@ -130,12 +130,12 @@ sub findOrDie
 {
     my $exec = shift;
     my $verbose = shift;
-    printf "Checking for %s ... ", $exec if $verbose;
+    printf "Checking for %s ... ", $exec if $verbose gt 1;
     foreach my $d ( split /:/, $ENV{PATH} )
     {
         my $path = $d . '/' . $exec;
         if ( -x $path ) {
-            if ( $verbose ) {
+            if ( $verbose gt 1 ) {
                 print "found";
                 print " ($path)" if $verbose gt 1;
                 print "\n";
