@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -1247,19 +1247,6 @@ msgid ""
 "Returns a json formatted text listing the parse tokens and standardizations"
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_address_standardizer.xml:578
-#, no-c-format
-msgid ""
-"<funcdef>text <function>debug_standardize_address</function></funcdef> "
-"<paramdef><type>text </type> <parameter>lextab</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>gaztab</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>rultab</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>micro</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>macro=NULL</"
-"parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_address_standardizer.xml:592
 #, no-c-format
@@ -1390,14 +1377,6 @@ msgstr ""
 #: extras_address_standardizer.xml:653
 #, no-c-format
 msgid "Takes a 1 line address and breaks into parts"
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_address_standardizer.xml:658
-#, no-c-format
-msgid ""
-"<funcdef>record <function>parse_address</function></funcdef> "
-"<paramdef><type>text </type> <parameter>address</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para

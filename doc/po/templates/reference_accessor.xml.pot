@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-05 00:50+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -24,14 +24,6 @@ msgstr ""
 #: reference_accessor.xml:10
 #, no-c-format
 msgid "Returns the type of a geometry as text."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_accessor.xml:15
-#, no-c-format
-msgid ""
-"<funcdef>text <function>GeometryType</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
 
 #. Tag: title
@@ -216,14 +208,6 @@ msgstr ""
 msgid "Returns the boundary of a geometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_accessor.xml:71
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Boundary</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_accessor.xml:82
 #, no-c-format
@@ -301,16 +285,6 @@ msgstr ""
 msgid "Returns the diagonal of a geometry's bounding box."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_accessor.xml:154
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_BoundingDiagonal</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>boolean </type> <parameter>fits=false</"
-"parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_accessor.xml:166
 #, no-c-format
@@ -377,14 +351,6 @@ msgstr ""
 msgid "Return the coordinate dimension of a geometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_accessor.xml:225
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_CoordDim</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_accessor.xml:235
 #, no-c-format
@@ -407,14 +373,6 @@ msgstr ""
 #: reference_accessor.xml:266
 #, no-c-format
 msgid "Returns the topological dimension of a geometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_accessor.xml:271
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_Dimension</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -457,14 +415,6 @@ msgstr ""
 msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the components of "
 "a geometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_accessor.xml:317
-#, no-c-format
-msgid ""
-"<funcdef>geometry_dump[] <function>ST_Dump</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -539,14 +489,6 @@ msgstr ""
 msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the coordinates "
 "in a geometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_accessor.xml:378
-#, no-c-format
-msgid ""
-"<funcdef>geometry_dump[] <function>ST_DumpPoints</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -631,14 +573,6 @@ msgid ""
 "geometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_accessor.xml:464
-#, no-c-format
-msgid ""
-"<funcdef>geometry_dump[] <function>ST_DumpSegments</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_accessor.xml:473
 #, no-c-format
@@ -700,14 +634,6 @@ msgid ""
 "interior rings of a Polygon."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_accessor.xml:532
-#, no-c-format
-msgid ""
-"<funcdef>geometry_dump[] <function>ST_DumpRings</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_accessor.xml:542
 #, no-c-format
@@ -766,14 +692,6 @@ msgstr ""
 #: reference_accessor.xml:579
 #, no-c-format
 msgid "Returns the last point of a LineString or CircularLineString."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_accessor.xml:584
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_EndPoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -840,14 +758,6 @@ msgstr ""
 msgid "Returns a geometry representing the bounding box of a geometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_accessor.xml:646
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Envelope</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_accessor.xml:657
 #, no-c-format
@@ -910,14 +820,6 @@ msgstr ""
 msgid "Returns a LineString representing the exterior ring of a Polygon."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_accessor.xml:706
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_ExteriorRing</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_accessor.xml:717
 #, no-c-format
@@ -958,15 +860,6 @@ msgstr ""
 #: reference_accessor.xml:751
 #, no-c-format
 msgid "Return an element of a geometry collection."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_accessor.xml:756
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_GeometryN</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1020,14 +913,6 @@ msgstr ""
 msgid "Returns the SQL-MM type of a geometry as text."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_accessor.xml:819
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_GeometryType</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_accessor.xml:828
 #, no-c-format
@@ -1058,14 +943,6 @@ msgstr ""
 msgid "Tests if a geometry contains a circular arc"
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_accessor.xml:864
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_HasArc</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_accessor.xml:874
 #, no-c-format
@@ -1089,15 +966,6 @@ msgstr ""
 #: reference_accessor.xml:900
 #, no-c-format
 msgid "Returns the Nth interior ring (hole) of a Polygon."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_accessor.xml:905
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_InteriorRingN</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1130,14 +998,6 @@ msgstr ""
 msgid ""
 "Tests if a LineStrings's start and end points are coincident. For a "
 "PolyhedralSurface tests if it is closed (volumetric)."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_accessor.xml:965
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_IsClosed</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1181,14 +1041,6 @@ msgstr ""
 msgid "Tests if a geometry is a geometry collection type."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_accessor.xml:1023
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_IsCollection</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_accessor.xml:1033
 #, no-c-format
@@ -1230,14 +1082,6 @@ msgstr ""
 msgid "Tests if a geometry is empty."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_accessor.xml:1078
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_IsEmpty</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_accessor.xml:1088
 #, no-c-format
@@ -1275,14 +1119,6 @@ msgstr ""
 msgid ""
 "Tests if Polygons have exterior rings oriented counter-clockwise and "
 "interior rings oriented clockwise."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_accessor.xml:1122
-#, no-c-format
-msgid ""
-"<funcdef> boolean <function>ST_IsPolygonCCW</function> </funcdef> <paramdef> "
-"<type>geometry</type> <parameter>geom</parameter> </paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1340,14 +1176,6 @@ msgid ""
 "oriented counter-clockwise."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_accessor.xml:1192
-#, no-c-format
-msgid ""
-"<funcdef> boolean <function>ST_IsPolygonCW</function> </funcdef> <paramdef> "
-"<type>geometry</type> <parameter>geom</parameter> </paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_accessor.xml:1208
 #, no-c-format
@@ -1361,14 +1189,6 @@ msgstr ""
 #: reference_accessor.xml:1254
 #, no-c-format
 msgid "Tests if a LineString is closed and simple."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_accessor.xml:1259
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_IsRing</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1411,14 +1231,6 @@ msgid ""
 "Tests if a geometry has no points of self-intersection or self-tangency."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_accessor.xml:1310
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_IsSimple</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_accessor.xml:1320
 #, no-c-format
@@ -1447,14 +1259,6 @@ msgstr ""
 #: reference_accessor.xml:1353
 #, no-c-format
 msgid "Returns the M coordinate of a Point."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_accessor.xml:1358
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_M</function></funcdef> <paramdef><type>geometry "
-"</type> <parameter>a_point</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1491,14 +1295,6 @@ msgstr ""
 #: reference_accessor.xml:1399
 #, no-c-format
 msgid "Returns the amount of memory space a geometry takes."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_accessor.xml:1404
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_MemSize</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1554,14 +1350,6 @@ msgstr ""
 msgid "Returns the coordinate dimension of a geometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_accessor.xml:1447
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_NDims</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_accessor.xml:1457
 #, no-c-format
@@ -1583,14 +1371,6 @@ msgstr ""
 msgid "Returns the number of points (vertices) in a geometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_accessor.xml:1482
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_NPoints</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_accessor.xml:1492
 #, no-c-format
@@ -1601,14 +1381,6 @@ msgstr ""
 #: reference_accessor.xml:1516
 #, no-c-format
 msgid "Returns the number of rings in a polygonal geometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_accessor.xml:1521
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_NRings</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1623,14 +1395,6 @@ msgstr ""
 #: reference_accessor.xml:1555
 #, no-c-format
 msgid "Returns the number of elements in a geometry collection."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_accessor.xml:1560
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_NumGeometries</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1669,14 +1433,6 @@ msgstr ""
 msgid "Returns the number of interior rings (holes) of a Polygon."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_accessor.xml:1604
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_NumInteriorRings</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_accessor.xml:1614
 #, no-c-format
@@ -1713,28 +1469,12 @@ msgid ""
 "ST_NumInteriorRings"
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_accessor.xml:1643
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_NumInteriorRing</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
-msgstr ""
-
 #. Tag: refpurpose
 #: reference_accessor.xml:1660
 #, no-c-format
 msgid ""
 "Return the number of faces on a Polyhedral Surface. Will return null for non-"
 "polyhedral geometries."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_accessor.xml:1665
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_NumPatches</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1764,14 +1504,6 @@ msgstr ""
 msgid "Returns the number of points in a LineString or CircularString."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_accessor.xml:1705
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_NumPoints</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_accessor.xml:1715
 #, no-c-format
@@ -1793,15 +1525,6 @@ msgstr ""
 #: reference_accessor.xml:1741
 #, no-c-format
 msgid "Returns the Nth geometry (face) of a PolyhedralSurface."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_accessor.xml:1746
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_PatchN</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1842,15 +1565,6 @@ msgstr ""
 msgid ""
 "Returns the Nth point in the first LineString or circular LineString in a "
 "geometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_accessor.xml:1803
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_PointN</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1908,14 +1622,6 @@ msgstr ""
 msgid "Returns a MultiPoint containing the coordinates of a geometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_accessor.xml:1865
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Points</function></funcdef> <paramdef> "
-"<type>geometry</type> <parameter>geom</parameter> </paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_accessor.xml:1878
 #, no-c-format
@@ -1956,14 +1662,6 @@ msgstr ""
 #: reference_accessor.xml:1918
 #, no-c-format
 msgid "Returns the first point of a LineString."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_accessor.xml:1923
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_StartPoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -2130,14 +1828,6 @@ msgstr ""
 msgid "Returns the X coordinate of a Point."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_accessor.xml:2064
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_X</function></funcdef> <paramdef><type>geometry "
-"</type> <parameter>a_point</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_accessor.xml:2074
 #, no-c-format
@@ -2173,14 +1863,6 @@ msgstr ""
 #: reference_accessor.xml:2103
 #, no-c-format
 msgid "Returns the Y coordinate of a Point."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_accessor.xml:2108
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_Y</function></funcdef> <paramdef><type>geometry "
-"</type> <parameter>a_point</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -2220,14 +1902,6 @@ msgstr ""
 msgid "Returns the Z coordinate of a Point."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_accessor.xml:2153
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_Z</function></funcdef> <paramdef><type>geometry "
-"</type> <parameter>a_point</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_accessor.xml:2163
 #, no-c-format
@@ -2258,14 +1932,6 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns a code indicating the ZM coordinate dimension of a "
 "geometry.</refpurpose>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_accessor.xml:2197
-#, no-c-format
-msgid ""
-"<funcdef>smallint <function>ST_Zmflag</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para

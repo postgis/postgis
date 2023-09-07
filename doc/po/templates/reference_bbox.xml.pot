@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -38,14 +38,6 @@ msgstr ""
 #: reference_bbox.xml:18
 #, no-c-format
 msgid "Returns a BOX2D representing the 2D extent of a geometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_bbox.xml:23
-#, no-c-format
-msgid ""
-"<funcdef>box2d <function>Box2D</function></funcdef> <paramdef><type>geometry "
-"</type> <parameter>geom</parameter></paramdef>"
 msgstr ""
 
 #. Tag: title
@@ -128,14 +120,6 @@ msgstr ""
 #: reference_bbox.xml:60
 #, no-c-format
 msgid "Returns a BOX3D representing the 3D extent of a geometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_bbox.xml:65
-#, no-c-format
-msgid ""
-"<funcdef>box3d <function>Box3D</function></funcdef> <paramdef><type>geometry "
-"</type> <parameter>geom</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -314,15 +298,6 @@ msgstr ""
 msgid "Aggregate function that returns the bounding box of geometries."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_bbox.xml:289
-#, no-c-format
-msgid ""
-"<funcdef>box2d <function>ST_Extent</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>geomfield</parameter></"
-"paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_bbox.xml:299
 #, no-c-format
@@ -381,15 +356,6 @@ msgstr ""
 msgid "Aggregate function that returns the 3D bounding box of geometries."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_bbox.xml:348
-#, no-c-format
-msgid ""
-"<funcdef>box3d <function>ST_3DExtent</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>geomfield</parameter></"
-"paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_bbox.xml:358
 #, no-c-format
@@ -416,16 +382,6 @@ msgstr ""
 msgid "Creates a BOX2D defined by two 2D point geometries."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_bbox.xml:397
-#, no-c-format
-msgid ""
-"<funcdef>box2d <function>ST_MakeBox2D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>pointLowLeft</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>pointUpRight</"
-"parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_bbox.xml:408
 #, no-c-format
@@ -444,16 +400,6 @@ msgstr ""
 #: reference_bbox.xml:431
 #, no-c-format
 msgid "Creates a BOX3D defined by two 3D point geometries."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_bbox.xml:435
-#, no-c-format
-msgid ""
-"<funcdef>box3d <function>ST_3DMakeBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>point3DLowLeftBottom</"
-"parameter></paramdef> <paramdef><type>geometry </type> "
-"<parameter>point3DUpRightTop</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -481,14 +427,6 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns the X maxima of a 2D or 3D bounding box or a geometry.</"
 "refpurpose>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_bbox.xml:482
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_XMax</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -523,14 +461,6 @@ msgid ""
 "refpurpose>"
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_bbox.xml:527
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_XMin</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_bbox.xml:537
 #, no-c-format
@@ -556,14 +486,6 @@ msgid ""
 "refpurpose>"
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_bbox.xml:572
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_YMax</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_bbox.xml:582
 #, no-c-format
@@ -585,14 +507,6 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns the Y minima of a 2D or 3D bounding box or a geometry.</"
 "refpurpose>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_bbox.xml:617
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_YMin</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -619,14 +533,6 @@ msgid ""
 "refpurpose>"
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_bbox.xml:662
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_ZMax</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_bbox.xml:672
 #, no-c-format
@@ -649,14 +555,6 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns the Z minima of a 2D or 3D bounding box or a geometry.</"
 "refpurpose>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_bbox.xml:707
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_ZMin</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para

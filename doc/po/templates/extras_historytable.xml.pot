@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -109,14 +109,6 @@ msgid ""
 "tables."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_historytable.xml:44
-#, no-c-format
-msgid ""
-"<funcdef>void <function>Postgis_Install_History</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
 #. Tag: title
 #: extras_historytable.xml:52 extras_historytable.xml:92
 #, no-c-format
@@ -156,15 +148,6 @@ msgid ""
 "Registers a table in the history_information table for tracking and also "
 "adds in side line history table and insert, update, delete rules on the "
 "table."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_historytable.xml:83
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>Postgis_Enable_History</function></funcdef> "
-"<paramdef><type>text </type> <parameter>p_schema</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>p_table</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-08-03 01:03+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -37,16 +37,6 @@ msgstr ""
 msgid ""
 "Window function that finds locations where polygons fail to form a valid "
 "coverage."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_coverage.xml:22
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_CoverageInvalidEdges</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>tolerance = 0</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: title
@@ -164,17 +154,6 @@ msgstr ""
 msgid "Window function that simplifies the edges of a polygonal coverage."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_coverage.xml:108
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_CoverageSimplify</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>tolerance</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>simplifyBoundary = true</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_coverage.xml:123
 #, no-c-format
@@ -233,14 +212,6 @@ msgstr ""
 msgid ""
 "Computes the union of a set of polygons forming a coverage by removing "
 "shared edges."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_coverage.xml:195
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_CoverageUnion</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>geom</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para

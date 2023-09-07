@@ -10,5 +10,6 @@ sed -e '/^#\. Tag: programlisting$/,/^$/d' \
     -e '/^#\. Tag: screen$/,/^$/d' \
     -e '/^#\. Tag: funcsynopsis$/,/^$/d' \
     -e '/^#\. Tag: refname$/,/^$/d' \
+    -e '/^#\. Tag: funcprototype$/,/^$/d' \
     -i $1
 

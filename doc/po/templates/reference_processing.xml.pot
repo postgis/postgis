@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-19 07:45+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -340,14 +340,6 @@ msgstr ""
 msgid "Creates a polygonal geometry formed by the linework of a geometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_processing.xml:299
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_BuildArea</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_processing.xml:309
 #, no-c-format
@@ -538,17 +530,6 @@ msgstr ""
 msgid "Returns a smoothed version of a geometry, using the Chaikin algorithm"
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_processing.xml:534
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_ChaikinSmoothing</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer</type> <parameter>nIterations = 1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean</type> "
-"<parameter>preserveEndPoints = false</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_processing.xml:545
 #, no-c-format
@@ -652,17 +633,6 @@ msgstr ""
 msgid ""
 "Computes a possibly concave geometry that contains all input geometry "
 "vertices"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_processing.xml:666
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_ConcaveHull</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>param_geom</parameter></"
-"paramdef> <paramdef><type>float </type> <parameter>param_pctconvex</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>param_allow_holes = false</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -796,14 +766,6 @@ msgstr ""
 msgid "Computes the convex hull of a geometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_processing.xml:801
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_ConvexHull</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_processing.xml:810
 #, no-c-format
@@ -877,17 +839,6 @@ msgstr ""
 #: reference_processing.xml:867
 #, no-c-format
 msgid "Returns the Delaunay triangulation of the vertices of a geometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_processing.xml:874
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_DelaunayTriangles</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float </type> <parameter>tolerance = 0.0</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>int4 </type> "
-"<parameter>flags = 0</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -978,18 +929,6 @@ msgstr ""
 #: reference_processing.xml:977
 #, no-c-format
 msgid "Removes vertices based on their M value"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_processing.xml:982
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_FilterByM</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>double precision</type> <parameter>min</parameter></"
-"paramdef> <paramdef><type>double precision</type> <parameter>max = null</"
-"parameter></paramdef> <paramdef><type>boolean</type> <parameter>returnM = "
-"false</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1089,19 +1028,6 @@ msgstr ""
 #: reference_processing.xml:1087
 #, no-c-format
 msgid "Returns the geometric median of a MultiPoint."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_processing.xml:1094
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_GeometricMedian</function> </funcdef> "
-"<paramdef> <type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float8</type> <parameter>tolerance = NULL</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>int</type> "
-"<parameter>max_iter = 10000</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>boolean</type> <parameter>fail_if_not_converged = "
-"false</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1257,15 +1183,6 @@ msgstr ""
 msgid "Computes the largest circle contained within a geometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_processing.xml:1277
-#, no-c-format
-msgid ""
-"<funcdef>(geometry, geometry, double precision) "
-"<function>ST_MaximumInscribedCircle</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_processing.xml:1286
 #, no-c-format
@@ -1346,19 +1263,6 @@ msgstr ""
 msgid "Computes the largest circle not overlapping a geometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_processing.xml:1341
-#, no-c-format
-msgid ""
-"<funcdef>(geometry, geometry, double precision) "
-"<function>ST_LargestEmptyCircle</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>double precision </type> "
-"<parameter>tolerance=0.0</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>geometry </type> <parameter>boundary=POINT EMPTY</"
-"parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_processing.xml:1352
 #, no-c-format
@@ -1423,16 +1327,6 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns the smallest circle polygon that contains a geometry.</"
 "refpurpose>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_processing.xml:1410
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_MinimumBoundingCircle</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>num_segs_per_qt_circ=48</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1509,15 +1403,6 @@ msgid ""
 "geometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_processing.xml:1467
-#, no-c-format
-msgid ""
-"<funcdef>(geometry, double precision) <function>ST_MinimumBoundingRadius</"
-"function></funcdef> <paramdef><type>geometry</type> <parameter>geom</"
-"parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_processing.xml:1476
 #, no-c-format
@@ -1544,14 +1429,6 @@ msgstr ""
 #: reference_processing.xml:1507
 #, no-c-format
 msgid "Returns a minimum-area rectangle containing a geometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_processing.xml:1512
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_OrientedEnvelope</function></funcdef> "
-"<paramdef> <type>geometry</type> <parameter>geom</parameter> </paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1585,17 +1462,6 @@ msgstr ""
 #: reference_processing.xml:1564
 #, no-c-format
 msgid "Returns an offset line at a given distance and side from an input line."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_processing.xml:1572
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_OffsetCurve</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>signed_distance</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>style_parameters=''</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1727,14 +1593,6 @@ msgstr ""
 #: reference_processing.xml:1719
 #, no-c-format
 msgid "Computes a point guaranteed to lie in a polygon, or on a geometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_processing.xml:1724
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_PointOnSurface</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1882,15 +1740,6 @@ msgstr ""
 msgid "Returns a valid geometry with points rounded to a grid tolerance."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_processing.xml:1943
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_ReducePrecision</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>gridsize</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_processing.xml:1957
 #, no-c-format
@@ -1966,15 +1815,6 @@ msgstr ""
 msgid ""
 "Returns a collection containing paths shared by the two input linestrings/"
 "multilinestrings."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_processing.xml:2013
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_SharedPaths</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>lineal1</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>lineal2</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -2091,15 +1931,6 @@ msgid ""
 "Peucker algorithm."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_processing.xml:2149
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_SimplifyPreserveTopology</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_processing.xml:2159
 #, no-c-format
@@ -2132,17 +1963,6 @@ msgstr ""
 msgid ""
 "Computes a simplifed topology-preserving outer or inner hull of a polygonal "
 "geometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_processing.xml:2191
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_SimplifyPolygonHull</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>param_geom</parameter></"
-"paramdef> <paramdef><type>float </type> <parameter>vertex_fraction</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>is_outer = true</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -2232,15 +2052,6 @@ msgid ""
 "algorithm"
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_processing.xml:2285
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_SimplifyVW</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_processing.xml:2295
 #, no-c-format
@@ -2286,16 +2097,6 @@ msgstr ""
 msgid ""
 "Sets the effective area for each vertex, using the Visvalingam-Whyatt "
 "algorithm."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_processing.xml:2327
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_SetEffectiveArea</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>threshold = 0</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>set_area = 1</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -2357,14 +2158,6 @@ msgstr ""
 msgid "Computes the constrained Delaunay triangulation of polygons"
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_processing.xml:2384
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_TriangulatePolygon</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_processing.xml:2393
 #, no-c-format
@@ -2422,17 +2215,6 @@ msgid ""
 "Returns the boundaries of the Voronoi diagram of the vertices of a geometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_processing.xml:2443
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_VoronoiLines</function></funcdef> <paramdef> "
-"<type>geometry</type> <parameter>geom</parameter> </paramdef> <paramdef "
-"choice=\"opt\"> <type>float8</type> <parameter>tolerance = 0.0</parameter> </"
-"paramdef> <paramdef choice=\"opt\"> <type>geometry</type> "
-"<parameter>extend_to = NULL</parameter> </paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_processing.xml:2461
 #, no-c-format
@@ -2487,17 +2269,6 @@ msgstr ""
 #: reference_processing.xml:2516
 #, no-c-format
 msgid "Returns the cells of the Voronoi diagram of the vertices of a geometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_processing.xml:2521
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_VoronoiPolygons</function></funcdef> "
-"<paramdef> <type>geometry</type> <parameter>geom</parameter> </paramdef> "
-"<paramdef choice=\"opt\"> <type>float8</type> <parameter>tolerance = 0.0</"
-"parameter> </paramdef> <paramdef choice=\"opt\"> <type>geometry</type> "
-"<parameter>extend_to = NULL</parameter> </paramdef>"
 msgstr ""
 
 #. Tag: para
