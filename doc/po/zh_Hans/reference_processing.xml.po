@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-19 07:45+0000\n"
-"PO-Revision-Date: 2023-09-06 05:32+0000\n"
+"PO-Revision-Date: 2023-09-07 10:14+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_processingxml/zh_Hans/>\n"
@@ -24,13 +24,13 @@ msgstr ""
 msgid ""
 "These functions compute geometric constructions, or alter geometry size or "
 "shape."
-msgstr ""
+msgstr "这些函数计算几何构造，或改变几何尺寸或形状。"
 
 #. Tag: title
 #: reference_processing.xml:11
 #, no-c-format
 msgid "Geometry Processing"
-msgstr ""
+msgstr "几何处理"
 
 #. Tag: refpurpose
 #: reference_processing.xml:17
@@ -38,7 +38,7 @@ msgstr ""
 msgid ""
 "Computes a geometry covering all points within a given distance from a "
 "geometry."
-msgstr ""
+msgstr "计算覆盖距几何体给定距离内所有点的几何体。"
 
 #. Tag: title
 #: reference_processing.xml:57 reference_processing.xml:307
@@ -71,6 +71,9 @@ msgid ""
 "returned. For points and lines negative distances always return empty "
 "results."
 msgstr ""
+"计算表示与几何/地理距离小于或等于给定距离的所有点的 POLYGON 或 MULTIPOLYGON。"
+" 负距离会缩小几何图形而不是扩展它。 负距离可能会完全缩小多边形，"
+"在这种情况下返回 POLYGON EMPTY。 对于点和线，负距离始终返回空结果。"
 
 #. Tag: para
 #: reference_processing.xml:65
@@ -79,7 +82,8 @@ msgid ""
 "For geometry, the distance is specified in the units of the Spatial "
 "Reference System of the geometry. For geography, the distance is specified "
 "in meters."
-msgstr ""
+msgstr "对于几何体，距离以几何体的空间参考系的单位指定。 "
+"对于地理，距离以米为单位指定。"
 
 #. Tag: para
 #: reference_processing.xml:69
@@ -91,6 +95,9 @@ msgid ""
 "style can be specifed by providing a list of blank-separated key=value pairs "
 "as follows:"
 msgstr ""
+"可选的第三个参数控制缓冲区的精度和样式。 "
+"缓冲区中圆弧的精度指定为用于近似四分之一圆的线段数（默认值为 8）。 "
+"可以通过提供空白分隔的键=值对列表来指定缓冲区样式，如下所示："
 
 #. Tag: para
 #: reference_processing.xml:76
@@ -98,7 +105,7 @@ msgstr ""
 msgid ""
 "'quad_segs=#' : number of line segments used to approximate a quarter circle "
 "(default is 8)."
-msgstr ""
+msgstr "'quad_segs=#' ：用于近似四分之一圆的线段数（默认为 8）。"
 
 #. Tag: para
 #: reference_processing.xml:79
@@ -107,6 +114,8 @@ msgid ""
 "'endcap=round|flat|square' : endcap style (defaults to \"round\"). 'butt' is "
 "accepted as a synonym for 'flat'."
 msgstr ""
+"'endcap=round|flat|square' ：endcap 样式（默认为“round”）。 "
+"“butt”被认为是“flat”的同义词。"
 
 #. Tag: para
 #: reference_processing.xml:82
@@ -114,7 +123,8 @@ msgstr ""
 msgid ""
 "'join=round|mitre|bevel' : join style (defaults to \"round\"). 'miter' is "
 "accepted as a synonym for 'mitre'."
-msgstr ""
+msgstr "'join=round|mitre|bevel' ：连接样式（默认为“round”）。 "
+"“mitre”被认为是“mitre”的同义词。"
 
 #. Tag: para
 #: reference_processing.xml:85
@@ -123,6 +133,8 @@ msgid ""
 "'mitre_limit=#.#' : mitre ratio limit (only affects mitered join style). "
 "'miter_limit' is accepted as a synonym for 'mitre_limit'."
 msgstr ""
+"'mitre_limit=#.#' ：斜接比率限制（仅影响斜接连接样式）。 "
+"“miter_limit”被接受为“mitre_limit”的同义词。"
 
 #. Tag: para
 #: reference_processing.xml:88
@@ -133,6 +145,9 @@ msgid ""
 "This is only applicable to LINESTRING geometry and does not affect POINT or "
 "POLYGON geometries. By default end caps are square."
 msgstr ""
+"'side=both|left|right' ：'left' 或 'right' "
+"在几何体上执行单边缓冲，缓冲边相对于线的方向。 这仅适用于 LINESTRING "
+"几何图形，不影响 POINT 或 POLYGON 几何图形。 默认情况下，终止样式是方形的。"
 
 #. Tag: para
 #: reference_processing.xml:94
@@ -145,6 +160,10 @@ msgid ""
 "This may not produce the desired behavior if the input object is much larger "
 "than a UTM zone or crosses the dateline"
 msgstr ""
+"&geography_transform; 它确定最适合地理对象边界框的平面空间参考系统（尝试 "
+"UTM、兰伯特方位角等积 (LAEA) 北/南极，最后是墨卡托）。 "
+"缓冲区在平面空间中计算，然后转换回 WGS84。 如果输入对象远大于 UTM "
+"区域或跨越日期变更线，这可能不会产生所需的行为"
 
 #. Tag: para
 #: reference_processing.xml:101
@@ -155,6 +174,9 @@ msgid ""
 "repairing invalid polygons. <xref linkend=\"ST_MakeValid\"/> can also be "
 "used for this purpose."
 msgstr ""
+"缓冲区输出始终是有效的多边形几何体。 缓冲区可以处理无效输入，因此距离 0 "
+"的缓冲有时被用作修复无效多边形的一种方法。 <xref linkend=\"ST_MakeValid\""
+"/>也可用于此目的。"
 
 #. Tag: para
 #: reference_processing.xml:107
@@ -162,7 +184,8 @@ msgstr ""
 msgid ""
 "Buffering is sometimes used to perform a within-distance search. For this "
 "use case it is more efficient to use <xref linkend=\"ST_DWithin\"/>."
-msgstr ""
+msgstr "缓冲有时用于执行近距离搜索。 对于此用例，使用<xref linkend=\"ST_DWithin\""
+"/>效率更高。"
 
 #. Tag: para
 #: reference_processing.xml:110 reference_processing.xml:1623
@@ -170,7 +193,7 @@ msgstr ""
 msgid ""
 "This function ignores the Z dimension. It always gives a 2D result even when "
 "used on a 3D geometry."
-msgstr ""
+msgstr "此函数忽略 Z 维度。 即使在 3D 几何体上使用时，它也始终给出 2D 结果。"
 
 #. Tag: para
 #: reference_processing.xml:113
@@ -179,6 +202,8 @@ msgid ""
 "Enhanced: 2.5.0 - ST_Buffer geometry support was enhanced to allow for side "
 "buffering specification <code>side=both|left|right</code>."
 msgstr ""
+"增强：2.5.0 - ST_Buffer的几何感知版本已得到增强，允许您指定要缓冲的一侧。<cod"
+"e>side=both|left|right</code>。"
 
 #. Tag: para
 #: reference_processing.xml:114
@@ -189,6 +214,9 @@ msgid ""
 "polygon roads with flat or square edges instead of rounded edges. Thin "
 "wrapper for geography was added."
 msgstr ""
+"可用性：1.5 - ST_Buffer 已得到增强，以适应各种端接和接缝。 例如，您可能希望将"
+"道路线串转换为街道面，并希望将端点视为平面或正方形而不是圆。 "
+"添加了地理的薄包装器。"
 
 #. Tag: para
 #: reference_processing.xml:118 reference_processing.xml:900
@@ -205,13 +233,13 @@ msgstr "它是通过GEOS模块实现的。"
 #: reference_processing.xml:119 reference_processing.xml:832
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.3"
-msgstr ""
+msgstr "&sfs_compliant; s2.1.1.3"
 
 #. Tag: para
 #: reference_processing.xml:120
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.30"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.30"
 
 #. Tag: title
 #: reference_processing.xml:124 reference_processing.xml:335
@@ -236,79 +264,79 @@ msgstr "示例"
 #: reference_processing.xml:135
 #, no-c-format
 msgid "quad_segs=8 (default)"
-msgstr ""
+msgstr "quad_segs=8 (默认)"
 
 #. Tag: para
 #: reference_processing.xml:146
 #, no-c-format
 msgid "quad_segs=2 (lame)"
-msgstr ""
+msgstr "quad_secs=2（不足）"
 
 #. Tag: para
 #: reference_processing.xml:158
 #, no-c-format
 msgid "endcap=round join=round (default)"
-msgstr ""
+msgstr "endcap=round join=round (默认)"
 
 #. Tag: para
 #: reference_processing.xml:169
 #, no-c-format
 msgid "endcap=square"
-msgstr ""
+msgstr "endcap=square"
 
 #. Tag: para
 #: reference_processing.xml:180
 #, no-c-format
 msgid "endcap=flat"
-msgstr ""
+msgstr "endcap=flat"
 
 #. Tag: para
 #: reference_processing.xml:192
 #, no-c-format
 msgid "join=bevel"
-msgstr ""
+msgstr "join=bevel"
 
 #. Tag: para
 #: reference_processing.xml:203
 #, no-c-format
 msgid "join=mitre mitre_limit=5.0 (default mitre limit)"
-msgstr ""
+msgstr "join=mitre mitre_limit=5.0 (默认最大斜接比率)"
 
 #. Tag: para
 #: reference_processing.xml:214
 #, no-c-format
 msgid "join=mitre mitre_limit=1"
-msgstr ""
+msgstr "join=mitre mitre_limit=1"
 
 #. Tag: para
 #: reference_processing.xml:226
 #, no-c-format
 msgid "side=left"
-msgstr ""
+msgstr "side=left"
 
 #. Tag: para
 #: reference_processing.xml:237
 #, no-c-format
 msgid "side=right"
-msgstr ""
+msgstr "side=right"
 
 #. Tag: para
 #: reference_processing.xml:248
 #, no-c-format
 msgid "side=left join=mitre"
-msgstr ""
+msgstr "side=left join=mitre"
 
 #. Tag: para
 #: reference_processing.xml:260
 #, no-c-format
 msgid "right-hand-winding, polygon boundary side=left"
-msgstr ""
+msgstr "顺时针方向，多边形边界向左"
 
 #. Tag: para
 #: reference_processing.xml:270
 #, no-c-format
 msgid "right-hand-winding, polygon boundary side=right"
-msgstr ""
+msgstr "顺时针方向，多边形边界向右"
 
 #. Tag: title
 #: reference_processing.xml:284 reference_processing.xml:381
@@ -337,12 +365,15 @@ msgid ""
 "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>, <xref "
 "linkend=\"ST_MakeValid\"/>"
 msgstr ""
+", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
+"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>, <xref linkend="
+"\"ST_MakeValid\"/>"
 
 #. Tag: refpurpose
 #: reference_processing.xml:294
 #, no-c-format
 msgid "Creates a polygonal geometry formed by the linework of a geometry."
-msgstr ""
+msgstr "创建由几何体的线条形成的多边形几何体。"
 
 #. Tag: funcprototype
 #: reference_processing.xml:299
@@ -351,6 +382,8 @@ msgid ""
 "<funcdef>geometry <function>ST_BuildArea</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_BuildArea</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:309
@@ -362,6 +395,10 @@ msgid ""
 "MultiPolygon, depending on input. If the input linework does not form "
 "polygons, NULL is returned."
 msgstr ""
+"创建由输入几何体的组成线条形成的面几何体。 输入可以是 "
+"LineString、MultiLineString、Polygon、MultiPolygon 或 GeometryCollection。 "
+"结果是多边形或多多边形，具体取决于输入。 如果输入线条未形成多边形，则返回 "
+"NULL。"
 
 #. Tag: para
 #: reference_processing.xml:315
@@ -369,7 +406,8 @@ msgstr ""
 msgid ""
 "Unlike <xref linkend=\"ST_MakePolygon\"/>, this function accepts rings "
 "formed by multiple lines, and can form any number of polygons."
-msgstr ""
+msgstr "与 <xref linkend=\"ST_MakePolygon\"/> "
+"不同，此函数接受由多条线形成的环，并且可以形成任意数量的多边形。"
 
 #. Tag: para
 #: reference_processing.xml:318
@@ -377,7 +415,8 @@ msgstr ""
 msgid ""
 "This function converts inner rings into holes. To turn inner rings into "
 "polygons as well, use <xref linkend=\"ST_Polygonize\"/>."
-msgstr ""
+msgstr "此功能将内环转换为孔。 要将内环也转换为多边形，请使用 <xref linkend="
+"\"ST_Polygonize\"/>。"
 
 #. Tag: para
 #: reference_processing.xml:323
@@ -385,7 +424,8 @@ msgstr ""
 msgid ""
 "Input linework must be correctly noded for this function to work properly. "
 "<xref linkend=\"ST_Node\"/> can be used to node lines."
-msgstr ""
+msgstr "输入线条必须正确，节点才能使此功能正常工作。<xref linkend=\"ST_Node\""
+"/>可用于节点线。"
 
 #. Tag: para
 #: reference_processing.xml:326
@@ -393,7 +433,8 @@ msgstr ""
 msgid ""
 "If the input linework crosses, this function will produce invalid polygons. "
 "<xref linkend=\"ST_MakeValid\"/> can be used to ensure the output is valid."
-msgstr ""
+msgstr "如果输入线条交叉，此函数将生成无效的多边形。<xref linkend=\"ST_MakeValid\""
+"/>可用于确保输出有效。"
 
 #. Tag: para
 #: reference_processing.xml:331 reference_processing.xml:1204
@@ -405,19 +446,19 @@ msgstr "可用性：1.1.0"
 #: reference_processing.xml:347 reference_processing.xml:1898
 #, no-c-format
 msgid "Input lines"
-msgstr ""
+msgstr "输入线"
 
 #. Tag: para
 #: reference_processing.xml:357
 #, no-c-format
 msgid "Area result"
-msgstr ""
+msgstr "生成的多边形"
 
 #. Tag: para
 #: reference_processing.xml:373
 #, no-c-format
 msgid "Create a donut from two circular polygons"
-msgstr ""
+msgstr "用两个圆形多边形创建一个环形"
 
 #. Tag: para
 #: reference_processing.xml:383
@@ -428,12 +469,16 @@ msgid ""
 "linkend=\"ST_BdPolyFromText\"/>, <xref linkend=\"ST_BdMPolyFromText\"/> "
 "(wrappers to this function with standard OGC interface)"
 msgstr ""
+", <xref linkend=\"ST_MakePolygon\"/>, <xref linkend=\"ST_MakeValid\"/>, "
+"<xref linkend=\"ST_Node\"/>, <xref linkend=\"ST_Polygonize\"/>, <xref "
+"linkend=\"ST_BdPolyFromText\"/>, <xref linkend=\"ST_BdMPolyFromText\"/> ("
+"使用标准 OGC 接口对该函数进行包装)"
 
 #. Tag: refpurpose
 #: reference_processing.xml:399
 #, no-c-format
 msgid "Returns the geometric center of a geometry."
-msgstr ""
+msgstr "返回几何体的几何中心。"
 
 #. Tag: para
 #: reference_processing.xml:425
@@ -452,6 +497,14 @@ msgid ""
 "supplied, they are converted to linestring with CurveToLine first, then same "
 "than for <varname>LINESTRING</varname>"
 msgstr ""
+"计算作为几何体的几何质心的点。 对于 [<varname>MULTI</varname>]<varname>POINT<"
+"/varname>，质心是输入坐标的算术平均值。 对于 [<varname>MULTI</varname>]<varna"
+"me>LINESTRING</varname>，质心是使用每条线段的加权长度计算的。 对于 "
+"[<varname>MULTI</varname>]<varname>POLYGON</varname>，质心是根据面积计算的。 "
+"如果提供了空几何图形，则返回空的<varname>GEOMETRYCOLLECTION</varname>。 "
+"如果提供 <varname>NULL</varname>，则返回 <varname>NULL</varname>。 如果提供了"
+"<varname>CIRCULARSTRING</varname>或<varname>COMPOUNDCURVE</varname>，它们首先"
+"使用CurveToLine转换为线串，然后与<varname>LINESTRING</varname>相同"
 
 #. Tag: para
 #: reference_processing.xml:438
@@ -460,7 +513,8 @@ msgid ""
 "For mixed-dimension input, the result is equal to the centroid of the "
 "component Geometries of highest dimension (since the lower-dimension "
 "geometries contribute zero \"weight\" to the centroid)."
-msgstr ""
+msgstr "对于混合维度输入，结果等于最高维度的组件几何图形的质心（因为较低维度的几何图"
+"形对质心的“权重”贡献为零）。"
 
 #. Tag: para
 #: reference_processing.xml:441
@@ -471,6 +525,9 @@ msgid ""
 "centroid of a C-shaped polygon. To construct a point guaranteed to lie in "
 "the interior of a polygon use <xref linkend=\"ST_PointOnSurface\"/>."
 msgstr ""
+"请注意，对于多边形几何形状，质心不一定位于多边形的内部。 例如，请参见下图 C "
+"形多边形的质心。 要构造保证位于多边形内部的点，请使用 <xref linkend="
+"\"ST_PointOnSurface\"/>。"
 
 #. Tag: para
 #: reference_processing.xml:448
@@ -479,12 +536,14 @@ msgid ""
 "New in 2.3.0 : supports <varname>CIRCULARSTRING</varname> and "
 "<varname>COMPOUNDCURVE</varname> (using CurveToLine)"
 msgstr ""
+"2.3.0 中的新增功能：支持 <varname>CIRCULARSTRING</varname> 和 "
+"<varname>COMPOUNDCURVE</varname>（使用 CurveToLine）"
 
 #. Tag: para
 #: reference_processing.xml:450
 #, no-c-format
 msgid "Availability: 2.4.0 support for geography was introduced."
-msgstr ""
+msgstr "可用性：2.4.0 引入了对地理的支持。"
 
 #. Tag: para
 #: reference_processing.xml:452
@@ -496,7 +555,7 @@ msgstr "&sfs_compliant;"
 #: reference_processing.xml:453
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.1.4, 9.5.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 8.1.4, 9.5.5"
 
 #. Tag: para
 #: reference_processing.xml:459
@@ -504,43 +563,43 @@ msgstr ""
 msgid ""
 "In the following illustrations the red dot is the centroid of the source "
 "geometry."
-msgstr ""
+msgstr "在下图中，红点是源几何体的质心。"
 
 #. Tag: para
 #: reference_processing.xml:472
 #, no-c-format
 msgid "Centroid of a <varname>MULTIPOINT</varname>"
-msgstr ""
+msgstr "<varname>MULTIPOINT</varname>的质心"
 
 #. Tag: para
 #: reference_processing.xml:483
 #, no-c-format
 msgid "Centroid of a <varname>LINESTRING</varname>"
-msgstr ""
+msgstr "<varname>LINESTRING</varname>的质心"
 
 #. Tag: para
 #: reference_processing.xml:496
 #, no-c-format
 msgid "Centroid of a <varname>POLYGON</varname>"
-msgstr ""
+msgstr "<varname>POLYGON</varname>的质心"
 
 #. Tag: para
 #: reference_processing.xml:507
 #, no-c-format
 msgid "Centroid of a <varname>GEOMETRYCOLLECTION</varname>"
-msgstr ""
+msgstr "<varname>GEOMETRYCOLLECTION</varname>的质心"
 
 #. Tag: para
 #: reference_processing.xml:522
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeometricMedian\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_GeometricMedian\"/>"
 
 #. Tag: refpurpose
 #: reference_processing.xml:529
 #, no-c-format
 msgid "Returns a smoothed version of a geometry, using the Chaikin algorithm"
-msgstr ""
+msgstr "使用 Chaikin 算法返回几何图形的平滑版本"
 
 #. Tag: funcprototype
 #: reference_processing.xml:534
@@ -552,6 +611,11 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>boolean</type> "
 "<parameter>preserveEndPoints = false</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_ChaikinSmoothing</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer</type> <parameter>nIterations = "
+"1</parameter></paramdef> <paramdef choice=\"opt\"><type>boolean</type> "
+"<parameter>preserveEndPoints = false</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:545
@@ -565,6 +629,11 @@ msgid ""
 "the line segments before and after the vertex. A reasonable degree of "
 "smoothing is provided by 3 iterations; the maximum is limited to 5."
 msgstr ""
+"使用 <ulink url=\"http://www.idav.ucdavis.edu/education/CAGDNotes/"
+"Chaikins-Algorithm/Chaikins-Algorithm.html\">Chaikin "
+"算法</ulink>平滑线性或多边形几何体。 平滑程度由<varname> nIterations "
+"</varname>参数控制。 在每次迭代中，每个内部顶点都被位于顶点前后线段长度 1/4 "
+"处的两个顶点替换。 3次迭代提供了合理的平滑度； 最大限制为 5。"
 
 #. Tag: para
 #: reference_processing.xml:553
@@ -573,6 +642,8 @@ msgid ""
 "If <varname>preserveEndPoints</varname> is true, the endpoints of Polygon "
 "rings are not smoothed. The endpoints of LineStrings are always preserved."
 msgstr ""
+"如果<varname>preserveEndPoints</varname>为true，则多边形环的端点不会被平滑。 "
+"LineStrings 的端点始终被保留。"
 
 #. Tag: para
 #: reference_processing.xml:557
@@ -584,13 +655,17 @@ msgid ""
 ">, <xref linkend=\"ST_SimplifyPreserveTopology\"/> and <xref "
 "linkend=\"ST_SimplifyVW\"/>)."
 msgstr ""
+"每次迭代顶点数量都会加倍，因此结果几何图形的点可能比输入多得多。 "
+"要减少点数，请对结果使用简化函数（请参阅 <xref linkend=\"ST_Simplify\"/>、"
+"<xref linkend=\"ST_SimplifyPreserveTopology\"/> 和 <xref linkend="
+"\"ST_SimplifyVW\"/>）。"
 
 #. Tag: para
 #: reference_processing.xml:565
 #, no-c-format
 msgid ""
 "The result has interpolated values for the Z and M dimenions when present."
-msgstr ""
+msgstr "结果具有 Z 和 M 维度（如果存在）的插值。"
 
 #. Tag: para
 #: reference_processing.xml:567 reference_processing.xml:834
@@ -610,37 +685,37 @@ msgstr "可用性：2.5.0"
 #: reference_processing.xml:573
 #, no-c-format
 msgid "Smoothing a triangle:"
-msgstr ""
+msgstr "平滑三角形："
 
 #. Tag: para
 #: reference_processing.xml:576
 #, no-c-format
 msgid "Smoothing a Polygon using 1, 2 and 3 iterations:"
-msgstr ""
+msgstr "使用 1、2 和 3 次迭代平滑多边形："
 
 #. Tag: para
 #: reference_processing.xml:586 reference_processing.xml:623
 #, no-c-format
 msgid "nIterations = 1"
-msgstr ""
+msgstr "nIterations = 1"
 
 #. Tag: para
 #: reference_processing.xml:595 reference_processing.xml:632
 #, no-c-format
 msgid "nIterations = 2"
-msgstr ""
+msgstr "nIterations = 2"
 
 #. Tag: para
 #: reference_processing.xml:604 reference_processing.xml:641
 #, no-c-format
 msgid "nIterations = 3"
-msgstr ""
+msgstr "nIterations = 3"
 
 #. Tag: para
 #: reference_processing.xml:613
 #, no-c-format
 msgid "Smoothing a LineString using 1, 2 and 3 iterations:"
-msgstr ""
+msgstr "使用 1、2 和 3 次迭代平滑 LineString："
 
 #. Tag: para
 #: reference_processing.xml:653
@@ -649,6 +724,8 @@ msgid ""
 ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref "
 "linkend=\"ST_SimplifyVW\"/>"
 msgstr ""
+", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
+"\"ST_SimplifyVW\"/>"
 
 #. Tag: refpurpose
 #: reference_processing.xml:661
@@ -656,7 +733,7 @@ msgstr ""
 msgid ""
 "Computes a possibly concave geometry that contains all input geometry "
 "vertices"
-msgstr ""
+msgstr "计算包含所有输入几何顶点的可能凹几何"
 
 #. Tag: funcprototype
 #: reference_processing.xml:666
@@ -668,6 +745,12 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>param_allow_holes = false</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_ConcaveHull</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>param_geom</parameter></"
+"paramdef> <paramdef><type>float </type> "
+"<parameter>param_pctconvex</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean </type> <parameter>param_allow_holes = "
+"false</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:678
@@ -680,6 +763,10 @@ msgid ""
 "is a Point. The polygon will not contain holes unless the optional "
 "<varname>param_allow_holes</varname> argument is specified as true."
 msgstr ""
+"凹壳是（通常）凹几何体，包含输入，其顶点是输入顶点的子集。 "
+"一般情况下，凹壳是多边形。 两个或多个共线点的凹包是两点线串。 "
+"一个或多个相同点的凹壳是一个点。 除非可选的<varname> param_allow_holes</"
+"varname> 参数指定为 true，否则多边形将不包含孔。"
 
 #. Tag: para
 #: reference_processing.xml:687
@@ -691,6 +778,9 @@ msgid ""
 "generally has a smaller area and represents a more natural boundary for the "
 "input points."
 msgstr ""
+"凹壳可以被认为是“真空包装”的几何形状的集合。 它与<link linkend="
+"\"ST_ConvexHull\">凸壳</link>不同，凸壳类似于用橡皮筋将其封闭。 "
+"凹形的圆角通常面积较小，并且具有由输入点组成的自然边界。"
 
 #. Tag: para
 #: reference_processing.xml:694
@@ -703,6 +793,11 @@ msgid ""
 "depends on the nature of the input data, but often values between 0.3 and "
 "0.1 produce reasonable results."
 msgstr ""
+"<varname>param_pctconvex </varname>控制计算的外壳的凹度。 值为 1 会生成凸包。"
+" 1 到 0 之间的值会产生凹度逐渐增加的外壳。 值为 0 "
+"会产生具有最大凹度的外壳（但仍然是单个多边形）。 "
+"选择合适的值取决于输入数据的性质，但通常 0.3 到 0.1 "
+"之间的值会产生合理的结果。"
 
 #. Tag: para
 #: reference_processing.xml:702
@@ -714,6 +809,9 @@ msgid ""
 "are \"eroded\" from the triangulation. The triangles remaining form the "
 "concave hull."
 msgstr ""
+"从技术上讲，<varname>param_pctconvex </varname>将长度确定为输入点的 Delaunay "
+"三角剖分中最长边和最短边之间的差值的一部分。 "
+"长于该长度的边会被三角测量“侵蚀”。 剩下的三角形形成凹形外壳。"
 
 #. Tag: para
 #: reference_processing.xml:709
@@ -725,6 +823,10 @@ msgid ""
 "you want a point-wise hull of a polygonal input, convert it to points first "
 "using <xref linkend=\"ST_Points\"/>."
 msgstr ""
+"对于点和线性输入，外壳将包含输入的所有点。 对于多边形输入，外壳将包围输入的所"
+"有点<emphasis>以及</emphasis>输入覆盖的所有区域。 "
+"如果您想要多边形输入的逐点外壳，请首先使用<xref linkend=\"ST_Points\""
+"/>将其转换为点。"
 
 #. Tag: para
 #: reference_processing.xml:713
@@ -734,6 +836,8 @@ msgid ""
 "geometries use <xref linkend=\"ST_Collect\"/> (e.g. "
 "<code>ST_ConcaveHull( ST_Collect( geom ), 0.80)</code>."
 msgstr ""
+"这不是聚合函数。 要计算一组几何图形的凹壳，请使用 <xref linkend=\"ST_Collect"
+"\"/>（例如 <code>ST_ConcaveHull( ST_Collect( geom ), 0.80）</code>。"
 
 #. Tag: para
 #: reference_processing.xml:717 reference_processing.xml:2028
@@ -745,31 +849,31 @@ msgstr "可用性: 2.0.0"
 #: reference_processing.xml:718
 #, no-c-format
 msgid "Enhanced: 3.3.0, GEOS native implementation enabled for GEOS 3.11+"
-msgstr ""
+msgstr "增强：3.3.0，为 GEOS 3.11+ 启用 GEOS 本机实现"
 
 #. Tag: para
 #: reference_processing.xml:730
 #, no-c-format
 msgid "Concave Hull of a MultiPoint"
-msgstr ""
+msgstr "多点的凹壳"
 
 #. Tag: para
 #: reference_processing.xml:742
 #, no-c-format
 msgid "Concave Hull of a MultiPoint, allowing holes"
-msgstr ""
+msgstr "多点的凹面外壳，允许有孔"
 
 #. Tag: varname
 #: reference_processing.xml:758
 #, no-c-format
 msgid "polygon_hull"
-msgstr ""
+msgstr "polygon_hull"
 
 #. Tag: varname
 #: reference_processing.xml:768
 #, no-c-format
 msgid "points_hull"
-msgstr ""
+msgstr "points_hull"
 
 #. Tag: para
 #: reference_processing.xml:776
@@ -778,13 +882,14 @@ msgid ""
 "Comparing a concave hull of a Polygon to the concave hull of the constituent "
 "points. The hull respects the boundary of the polygon, whereas the points-"
 "based hull does not."
-msgstr ""
+msgstr "将多边形的凹壳与组成点的凹壳进行比较。 "
+"外壳遵循多边形的边界，而基于点的外壳则不然。"
 
 #. Tag: para
 #: reference_processing.xml:782
 #, no-c-format
 msgid "Using with ST_Collect to compute the concave hull of a geometry set."
-msgstr ""
+msgstr "与 ST_Collect 一起使用来计算几何图形集的凹壳。"
 
 #. Tag: para
 #: reference_processing.xml:789
@@ -793,12 +898,14 @@ msgid ""
 ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_AlphaShape\"/>, <xref "
 "linkend=\"ST_OptimalAlphaShape\"/>"
 msgstr ""
+", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_AlphaShape\"/>, <xref "
+"linkend=\"ST_OptimalAlphaShape\"/>"
 
 #. Tag: refpurpose
 #: reference_processing.xml:796
 #, no-c-format
 msgid "Computes the convex hull of a geometry."
-msgstr ""
+msgstr "计算几何体的凸包。"
 
 #. Tag: funcprototype
 #: reference_processing.xml:801
@@ -807,6 +914,8 @@ msgid ""
 "<funcdef>geometry <function>ST_ConvexHull</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_ConvexHull</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:810
@@ -814,7 +923,7 @@ msgstr ""
 msgid ""
 "Computes the convex hull of a geometry. The convex hull is the smallest "
 "convex geometry that encloses all geometries in the input."
-msgstr ""
+msgstr "计算几何图形的凸包。 凸包是包含所有输入几何的最小凸几何体。"
 
 #. Tag: para
 #: reference_processing.xml:814
@@ -826,6 +935,10 @@ msgid ""
 "\"shrink-wrapping\" the geometries. A convex hull is often used to determine "
 "an affected area based on a set of point observations."
 msgstr ""
+"人们可以将凸包视为通过将橡皮筋缠绕在一组几何图形上而获得的几何图形。 "
+"这与<link linkend=\"ST_ConcaveHull\""
+">凹形外壳</link>不同，凹形外壳类似于“收缩包装”几何形状。 "
+"凸包通常用于根据一组点观测来确定受影响的区域。"
 
 #. Tag: para
 #: reference_processing.xml:821
@@ -834,7 +947,8 @@ msgid ""
 "In the general case the convex hull is a Polygon. The convex hull of two or "
 "more collinear points is a two-point LineString. The convex hull of one or "
 "more identical points is a Point."
-msgstr ""
+msgstr "一般情况下，凸包是多边形。 两个或多个共线点的凸包是两点线串。 "
+"一个或多个相同点的凸包是一个点。"
 
 #. Tag: para
 #: reference_processing.xml:825
@@ -844,6 +958,8 @@ msgid ""
 "geometries, use <xref linkend=\"ST_Collect\"/> to aggregate them into a "
 "geometry collection (e.g. <code>ST_ConvexHull(ST_Collect(geom))</code>."
 msgstr ""
+"这不是聚合函数。 要计算一组几何图形的凸包，请使用<xref linkend=\"ST_Collect\""
+"/>将它们聚合到几何集合中（例如 <code>ST_ConvexHull(ST_Collect(geom))</code>。"
 
 #. Tag: para
 #: reference_processing.xml:830
@@ -855,19 +971,19 @@ msgstr "它是通过GEOS模块实现的"
 #: reference_processing.xml:833
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.16"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.16"
 
 #. Tag: para
 #: reference_processing.xml:846
 #, no-c-format
 msgid "Convex Hull of a MultiLinestring and a MultiPoint"
-msgstr ""
+msgstr "多线串和多点的凸包"
 
 #. Tag: para
 #: reference_processing.xml:852
 #, no-c-format
 msgid "Using with ST_Collect to compute the convex hulls of geometry sets."
-msgstr ""
+msgstr "与 ST_Collect 一起使用来计算几何图形集的凸包。"
 
 #. Tag: para
 #: reference_processing.xml:859
@@ -876,12 +992,14 @@ msgid ""
 ", <xref linkend=\"ST_ConcaveHull\"/>, <xref "
 "linkend=\"ST_MinimumBoundingCircle\"/>"
 msgstr ""
+", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend="
+"\"ST_MinimumBoundingCircle\"/>"
 
 #. Tag: refpurpose
 #: reference_processing.xml:867
 #, no-c-format
 msgid "Returns the Delaunay triangulation of the vertices of a geometry."
-msgstr ""
+msgstr "返回几何体顶点的 Delaunay 三角剖分。"
 
 #. Tag: funcprototype
 #: reference_processing.xml:874
@@ -893,6 +1011,11 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>int4 </type> "
 "<parameter>flags = 0</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_DelaunayTriangles</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>float </type> <parameter>tolerance = 0."
+"0</parameter></paramdef> <paramdef choice=\"opt\"><type>int4 </type> "
+"<parameter>flags = 0</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:886
@@ -906,24 +1029,29 @@ msgid ""
 "vertices. The result geometry representation is determined by the "
 "<varname>flags</varname> code:"
 msgstr ""
+"计算输入几何体顶点的 <ulink url=\"http://en.wikipedia.org/wiki/"
+"Delaunay_triangulation\">Delaunay 三角剖分</ulink>。 可选的<varname>容差</var"
+"name>可用于将附近的输入顶点捕捉在一起，这在某些情况下提高了稳健性。 "
+"结果几何图形以输入顶点的凸包为边界。 "
+"结果几何表示由<varname>标志</varname>代码确定："
 
 #. Tag: para
 #: reference_processing.xml:895
 #, no-c-format
 msgid "<code>0</code> - a GEOMETRYCOLLECTION of triangular POLYGONs (default)"
-msgstr ""
+msgstr "<code>0</code> - 三角形 POLYGON 的 GEOMETRYCOLLECTION（默认）"
 
 #. Tag: para
 #: reference_processing.xml:896
 #, no-c-format
 msgid "<code>1</code> - a MULTILINESTRING of the edges of the triangulation"
-msgstr ""
+msgstr "<code>1</code> - 三角测量边缘的多线"
 
 #. Tag: para
 #: reference_processing.xml:897
 #, no-c-format
 msgid "<code>2</code> - A TIN of the triangulation"
-msgstr ""
+msgstr "<code>2</code> - 三角测量的 TIN"
 
 #. Tag: para
 #: reference_processing.xml:901
@@ -941,7 +1069,7 @@ msgstr "&T_support;"
 #: reference_processing.xml:916
 #, no-c-format
 msgid "Original polygons"
-msgstr ""
+msgstr "原始多边形"
 
 #. Tag: para
 #: reference_processing.xml:927
@@ -949,25 +1077,26 @@ msgstr ""
 msgid ""
 "ST_DelaunayTriangles of 2 polygons: delaunay triangle polygons each triangle "
 "themed in different color"
-msgstr ""
+msgstr "2 个多边形的 ST_DelaunayTriangles：delaunay "
+"三角形多边形，每个三角形以不同颜色为主题"
 
 #. Tag: para
 #: reference_processing.xml:937
 #, no-c-format
 msgid "-- delaunay triangles as multilinestring"
-msgstr ""
+msgstr "-- delaunay 三角形作为多线串"
 
 #. Tag: para
 #: reference_processing.xml:948
 #, no-c-format
 msgid "-- delaunay triangles of 45 points as 55 triangle polygons"
-msgstr ""
+msgstr "-- 45 个点的 delaunay 三角形作为 55 个三角形多边形"
 
 #. Tag: para
 #: reference_processing.xml:959
 #, no-c-format
 msgid "Example using vertices with Z values."
-msgstr ""
+msgstr "使用具有 Z 值的顶点的示例。"
 
 #. Tag: para
 #: reference_processing.xml:965
@@ -977,12 +1106,15 @@ msgid ""
 "linkend=\"ST_ConstrainedDelaunayTriangles\"/>, <xref "
 "linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_ConvexHull\"/>"
 msgstr ""
+", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref linkend="
+"\"ST_ConstrainedDelaunayTriangles\"/>, <xref linkend=\"ST_VoronoiLines\"/>, "
+"<xref linkend=\"ST_ConvexHull\"/>"
 
 #. Tag: refpurpose
 #: reference_processing.xml:977
 #, no-c-format
 msgid "Removes vertices based on their M value"
-msgstr ""
+msgstr "根据 M 值删除顶点"
 
 #. Tag: funcprototype
 #: reference_processing.xml:982
@@ -995,6 +1127,12 @@ msgid ""
 "parameter></paramdef> <paramdef><type>boolean</type> <parameter>returnM = "
 "false</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_FilterByM</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>double precision</type> <parameter>min</parameter></"
+"paramdef> <paramdef><type>double precision</type> <parameter>max = "
+"null</parameter></paramdef> <paramdef><type>boolean</type> "
+"<parameter>returnM = false</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:994
@@ -1009,6 +1147,12 @@ msgid ""
 "geometry collection geometries without enough points will just be left out "
 "silently."
 msgstr ""
+"根据 M 值过滤掉顶点。 返回仅包含 M "
+"值大于或等于最小值且小于或等于最大值的顶点的几何图形。 "
+"如果省略最大值参数，则仅考虑最小值。 如果省略第四个参数，则 m "
+"值将不会出现在生成的几何图形中。 "
+"如果生成的几何图形为其几何类型留下的顶点太少，则将返回空几何图形。 "
+"在几何集合中，没有足够点的几何图形将被默默地排除。"
 
 #. Tag: para
 #: reference_processing.xml:1000
@@ -1019,6 +1163,9 @@ msgid ""
 "its m-value. With ST_FilterByM it then is possible to get a simplified "
 "version of the geometry without any calculations, just by filtering"
 msgstr ""
+"该函数主要与 ST_SetEffectiveArea 结合使用。 ST_EffectiveArea 用其 m "
+"值设置顶点的有效区域。 使用 "
+"ST_FilterByM，无需任何计算，只需过滤即可获得几何的简化版本"
 
 #. Tag: para
 #: reference_processing.xml:1003
@@ -1028,36 +1175,39 @@ msgid ""
 "meet the criteria compared to ST_FilterByM. ST_SimplifyVW returns the "
 "geometry with enough points while ST_FilterByM returns an empty geometry"
 msgstr ""
+"与 ST_FilterByM 相比，当没有足够的点满足条件时，ST_SimplifyVW "
+"返回的结果有所不同。 ST_SimplifyVW 返回具有足够点的几何图形，而 ST_FilterByM "
+"返回空几何图形"
 
 #. Tag: para
 #: reference_processing.xml:1005
 #, no-c-format
 msgid "Note that the returned geometry might be invalid"
-msgstr ""
+msgstr "请注意，返回的几何图形可能无效"
 
 #. Tag: para
 #: reference_processing.xml:1006
 #, no-c-format
 msgid "This function returns all dimensions, including the Z and M values"
-msgstr ""
+msgstr "该函数返回所有维度，包括 Z 和 M 值"
 
 #. Tag: para
 #: reference_processing.xml:1012
 #, no-c-format
 msgid "A linestring is filtered"
-msgstr ""
+msgstr "线串被过滤"
 
 #. Tag: para
 #: reference_processing.xml:1017
 #, no-c-format
 msgid ", <xref linkend=\"ST_SimplifyVW\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_SimplifyVW\"/>"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1025
 #, no-c-format
 msgid "Generates random points contained in a Polygon or MultiPolygon."
-msgstr ""
+msgstr "生成包含在多边形或多多边形中的随机点。"
 
 #. Tag: para
 #: reference_processing.xml:1054
@@ -1067,6 +1217,8 @@ msgid ""
 "within the input area. The optional <varname>seed</varname> is used to "
 "regenerate a deterministic sequence of points, and must be greater than zero."
 msgstr ""
+"ST_GeneratePoints 生成位于输入区域内的给定数量的伪随机点。 "
+"使用任意<varname>参数</varname>用于重新生成确定性的点序列，并且必须大于零。"
 
 #. Tag: para
 #: reference_processing.xml:1061 reference_processing.xml:1130
@@ -1079,7 +1231,7 @@ msgstr "可用性：2.3.0"
 #: reference_processing.xml:1062
 #, no-c-format
 msgid "Enhanced: 3.0.0, added seed parameter"
-msgstr ""
+msgstr "增强：3.0.0，添加种子参数"
 
 #. Tag: para
 #: reference_processing.xml:1073
@@ -1087,13 +1239,13 @@ msgstr ""
 msgid ""
 "Generated 12 Points overlaid on top of original polygon using a random seed "
 "value 1996"
-msgstr ""
+msgstr "使用随机种子值 1996 生成覆盖在原始多边形顶部的 12 个点"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1087
 #, no-c-format
 msgid "Returns the geometric median of a MultiPoint."
-msgstr ""
+msgstr "返回多点的几何中位数。"
 
 #. Tag: funcprototype
 #: reference_processing.xml:1094
@@ -1107,6 +1259,13 @@ msgid ""
 "choice=\"opt\"><type>boolean</type> <parameter>fail_if_not_converged = "
 "false</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_GeometricMedian</function> </funcdef> "
+"<paramdef> <type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>float8</type> <parameter>tolerance = "
+"NULL</parameter></paramdef> <paramdef choice=\"opt\"><type>int</type> "
+"<parameter>max_iter = 10000</parameter></paramdef> <paramdef choice=\"opt\""
+"><type>boolean</type> <parameter>fail_if_not_converged = "
+"false</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1109
@@ -1117,6 +1276,9 @@ msgid ""
 "distances to the input points. It provides a centrality measure that is less "
 "sensitive to outlier points than the centroid (center of mass)."
 msgstr ""
+"使用 Weiszfeld 算法计算多点几何的近似几何中值。 "
+"几何中位数是最小化到输入点的距离总和的点。 "
+"它提供了一种中心性度量，与质心（质心）相比，它对异常点不太敏感。"
 
 #. Tag: para
 #: reference_processing.xml:1116
@@ -1129,6 +1291,11 @@ msgid ""
 "<varname>fail_if_not_converged</varname> is set to <code>false</code> (the "
 "default)."
 msgstr ""
+"该算法进行迭代，直到连续迭代之间的距离变化小于提供的<varname>容差</varname>参"
+"数。 如果在<varname> max_iterations</varname> "
+"次迭代后仍未满足此条件，则函数会产生错误并退出，"
+"除非<varname>fail_if_not_converged </varname>设置为<code> "
+"false</code>（默认值）。"
 
 #. Tag: para
 #: reference_processing.xml:1123
@@ -1136,7 +1303,7 @@ msgstr ""
 msgid ""
 "If a <varname>tolerance</varname> argument is not provided, the tolerance "
 "value is calculated based on the extent of the input geometry."
-msgstr ""
+msgstr "如果未提供<varname>容差</varname>参数，则根据输入几何图形的范围计算公差值。"
 
 #. Tag: para
 #: reference_processing.xml:1127
@@ -1144,13 +1311,13 @@ msgstr ""
 msgid ""
 "If present, the input point M values are interpreted as their relative "
 "weights."
-msgstr ""
+msgstr "如果存在，输入点 M 值将被解释为它们的相对权重。"
 
 #. Tag: para
 #: reference_processing.xml:1131
 #, no-c-format
 msgid "Enhanced: 2.5.0 Added support for M as weight of points."
-msgstr ""
+msgstr "增强：2.5.0 添加了对 M 作为点权重的支持。"
 
 #. Tag: para
 #: reference_processing.xml:1133
@@ -1164,13 +1331,13 @@ msgstr "&M_support;"
 msgid ""
 "Comparison of the geometric median (red) and centroid (turquoise) of a "
 "MultiPoint."
-msgstr ""
+msgstr "多点的几何中值（红色）和质心（绿松石色）的比较。"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1168
 #, no-c-format
 msgid "Return the lines formed by sewing together a MultiLineString."
-msgstr ""
+msgstr "返回通过将 MultiLineString 缝合在一起形成的线。"
 
 #. Tag: para
 #: reference_processing.xml:1189
