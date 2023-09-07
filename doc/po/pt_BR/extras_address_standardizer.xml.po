@@ -3,20 +3,22 @@
 # Translators:
 # Dauro Lima Sobrinho <daurolima@gmail.com>, 2014
 # Poliana Palhares <p.palhares@plamu.com.br>, 2016
+# Sandro Santilli <strk@kbt.io>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2018-07-23 18:00+0000\n"
-"Last-Translator: georgersilva <georger.silva@gmail.com>\n"
-"Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
-"language/pt_BR/)\n"
+"PO-Revision-Date: 2023-09-07 10:14+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"Language-Team: Portuguese (Brazil) <https://weblate.osgeo.org/projects/"
+"postgis/extras_address_standardizerxml/pt_BR/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.16.4\n"
 
 #. Tag: title
 #: extras_address_standardizer.xml:3
@@ -33,10 +35,10 @@ msgid ""
 "url=\"http://sourceforge.net/p/pagc/code/360/tree/branches/sew-refactor/"
 "postgresql\">PAGC PostgreSQL Address Standardizer</ulink>)."
 msgstr ""
-"Essa é uma forquilha do  <ulink url=\"http://www.pagcgeo.org/docs/html/"
-"pagc-11.html\"> padronizador PAGC </ulink> (código original para essa porção "
-"era <ulink url=\"http://sourceforge.net/p/pagc/code/360/tree/branches/sew-"
-"refactor/postgresql\"> Padronizador de endereço PAGC PostgreSQL</ulink>). "
+"Essa é uma forquilha do <ulink url=\"http://www.pagcgeo.org/docs/html/pagc-11"
+".html\"> padronizador PAGC </ulink> (código original para essa porção era "
+"<ulink url=\"http://sourceforge.net/p/pagc/code/360/tree/branches/"
+"sew-refactor/postgresql\"> Padronizador de endereço PAGC PostgreSQL</ulink>)."
 
 #. Tag: para
 #: extras_address_standardizer.xml:5
@@ -215,7 +217,7 @@ msgid ""
 msgstr ""
 "Um tipo composto dos elementos de um endereço. Este é o tipo de retorno para "
 "<xref linkend=\"standardize_address\"/> função. Algumas descrições para "
-"elementos são emprestadas de  <ulink url=\"http://www.pagcgeo.org/docs/html/"
+"elementos são emprestadas de <ulink url=\"http://www.pagcgeo.org/docs/html/"
 "pagc-12.html#ss12.1\">PAGC Postal Attributes</ulink>."
 
 #. Tag: para
@@ -356,7 +358,7 @@ msgid ""
 "modifier that follows the street name.. Example <emphasis>WEST</emphasis> in "
 "<code>3715 TENTH AVENUE WEST</code>."
 msgstr ""
-"é um texto  (número token <code>7</code>): RUA POST-DIRECTIONAL Um "
+"é um texto (número token <code>7</code>): RUA POST-DIRECTIONAL Um "
 "modificador direcional que segue o nome da rua.. Exemplo <emphasis>OESTE</"
 "emphasis> em <code>3715 DÉDIMA AVENIDA OESTE</code>."
 
@@ -469,8 +471,8 @@ msgid ""
 "is text Apartment number or Suite Number (token number <code>17</code>): "
 "Example <emphasis>3B</emphasis> in <code>APT 3B</code>."
 msgstr ""
-"é texto  Número do apartamento ou Número da suíte (número token <code>17</"
-"code>): Exemplo <emphasis>3B</emphasis> em <code>APTO 3B</code>."
+"é texto Número do apartamento ou Número da suíte (número token "
+"<code>17</code>): Exemplo <emphasis>3B</emphasis> em <code>APTO 3B</code>."
 
 #. Tag: para
 #: extras_address_standardizer.xml:141
@@ -515,7 +517,7 @@ msgid ""
 "by -1 followed by number denoting kind of rule followed by ranking of rule."
 msgstr ""
 "A mesa de regras contém um conjunto de regras que mapeia a sequência de "
-"tokens de entrada de endereço  para a sequência de saída. Uma regra é "
+"tokens de entrada de endereço para a sequência de saída. Uma regra é "
 "definida como um conjunto de tokens de entrada seguido por -1 (terminator) "
 "seguido por conjunto de tokens de saída seguido por -1 seguido por um número "
 "que denota tipo de regra seguido por um ranking de regra."
@@ -1407,8 +1409,8 @@ msgid ""
 "standardized representations."
 msgstr ""
 "Uma gaz table é usada para padronizar nomes de lugares e associações que "
-"entram com (a) tokens de entrada  ( See <xref linkend=\"rule_input_tokens\"/"
-">) e (b) representações padronizadas."
+"entram com (a) tokens de entrada ( See <xref linkend=\"rule_input_tokens\"/>)"
+" e (b) representações padronizadas."
 
 #. Tag: para
 #: extras_address_standardizer.xml:529
@@ -1645,7 +1647,7 @@ msgid ""
 "Returns an stdaddr form of an input address utilizing lex, gaz, and rule "
 "tables."
 msgstr ""
-"Retorna uma forma  stdaddr de um endereço de entrada utilizando lex, gaz e "
+"Retorna uma forma stdaddr de um endereço de entrada utilizando lex, gaz e "
 "rule tables."
 
 #. Tag: para
@@ -1656,7 +1658,7 @@ msgid ""
 "<xref linkend=\"lextab\"/> table name, <xref linkend=\"gaztab\"/>, and <xref "
 "linkend=\"rulestab\"/> table names and an address."
 msgstr ""
-"Retorna a uma  <xref linkend=\"stdaddr\"/> forma de um endereço de entrada "
+"Retorna a uma <xref linkend=\"stdaddr\"/> forma de um endereço de entrada "
 "utilizando <xref linkend=\"lextab\"/> table nome, <xref linkend=\"gaztab\"/"
 ">, e <xref linkend=\"rulestab\"/> table nomes e endereço."
 
@@ -1708,7 +1710,7 @@ msgid ""
 "EXTENSION hstore; you need to install"
 msgstr ""
 "Para tornar a leitura mais fácil nós iremos abandonar a saída usando a "
-"extensão hstore  CREATE EXTENSION hstore; você vai precisar instalar"
+"extensão hstore CREATE EXTENSION hstore; você vai precisar instalar"
 
 #. Tag: para
 #: extras_address_standardizer.xml:755
