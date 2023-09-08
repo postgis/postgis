@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-29 10:57+0000\n"
-"PO-Revision-Date: 2023-09-08 07:58+0000\n"
+"PO-Revision-Date: 2023-09-09 07:37+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_lrsxml/zh_Hans/>\n"
@@ -478,13 +478,13 @@ msgstr "仅对具有 M 分量的线性几何使用此函数"
 msgid ""
 "The semantic is specified by the <emphasis>ISO/IEC 13249-3 SQL/MM Spatial</"
 "emphasis> standard."
-msgstr ""
+msgstr "语义由 <emphasis>ISO/IEC 13249-3 SQL/MM 空间</emphasis>标准指定。"
 
 #. Tag: para
 #: reference_lrs.xml:413
 #, no-c-format
 msgid "Availability: 1.1.0 by old name ST_Locate_Along_Measure."
-msgstr ""
+msgstr "可用性：1.1.0（旧名称 ST_Locate_Along_Measure）。"
 
 #. Tag: para
 #: reference_lrs.xml:414
@@ -492,13 +492,13 @@ msgstr ""
 msgid ""
 "Changed: 2.0.0 in prior versions this used to be called "
 "ST_Locate_Along_Measure."
-msgstr ""
+msgstr "更改：2.0.0 在之前的版本中，这曾经被称为 ST_Locate_Along_Measure。"
 
 #. Tag: para
 #: reference_lrs.xml:417
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.13"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.13"
 
 #. Tag: para
 #: reference_lrs.xml:429
@@ -507,12 +507,14 @@ msgid ""
 ", <xref linkend=\"ST_LocateBetweenElevations\"/>, <xref "
 "linkend=\"ST_InterpolatePoint\"/>"
 msgstr ""
+", <xref linkend=\"ST_LocateBetweenElevations\"/>, <xref linkend="
+"\"ST_InterpolatePoint\"/>"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:437
 #, no-c-format
 msgid "Returns the portions of a geometry that match a measure range."
-msgstr ""
+msgstr "返回与测量范围匹配的几何图形部分。"
 
 #. Tag: funcprototype
 #: reference_lrs.xml:442
@@ -532,7 +534,8 @@ msgstr ""
 msgid ""
 "Return a geometry (collection) with the portions of the input measured "
 "geometry that match the specified measure range (inclusively)."
-msgstr ""
+msgstr "返回一个几何图形（集合），其中包含与指定测量范围（包含）匹配的输入测量几何图"
+"形部分。"
 
 #. Tag: para
 #: reference_lrs.xml:459
@@ -541,19 +544,20 @@ msgid ""
 "If the <varname>offset</varname> is provided, the result is offset to the "
 "left or right of the input line by the specified distance. A positive offset "
 "will be to the left, and a negative one to the right."
-msgstr ""
+msgstr "如果提供了<varname>偏移量</varname>，则结果将向输入行的左侧或右侧偏移指定的距"
+"离。 正偏移量将向左偏移，负偏移量将向右偏移。"
 
 #. Tag: para
 #: reference_lrs.xml:463 reference_lrs.xml:526
 #, no-c-format
 msgid "Clipping a non-convex POLYGON may produce invalid geometry."
-msgstr ""
+msgstr "裁剪非凸多边形可能会产生无效的几何图形。"
 
 #. Tag: para
 #: reference_lrs.xml:467
 #, no-c-format
 msgid "Availability: 1.1.0 by old name ST_Locate_Between_Measures."
-msgstr ""
+msgstr "可用性：1.1.0（旧名称 ST_Locate_Between_Measures）。"
 
 #. Tag: para
 #: reference_lrs.xml:468
@@ -561,13 +565,13 @@ msgstr ""
 msgid ""
 "Changed: 2.0.0 - in prior versions this used to be called "
 "ST_Locate_Between_Measures."
-msgstr ""
+msgstr "更改：2.0.0 - 在之前的版本中，这曾经被称为 ST_Locate_Between_Measures。"
 
 #. Tag: para
 #: reference_lrs.xml:469 reference_lrs.xml:529
 #, no-c-format
 msgid "Enhanced: 3.0.0 - added support for POLYGON, TIN, TRIANGLE."
-msgstr ""
+msgstr "增强：3.0.0 - 添加了对多边形、TIN、三角形的支持。"
 
 #. Tag: para
 #: reference_lrs.xml:472
@@ -580,19 +584,19 @@ msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1"
 #, no-c-format
 msgid ""
 "A LineString with the section between measures 2 and 8, offset to the left"
-msgstr ""
+msgstr "一个 LineString，其部分位于小节 2 和小节 8 之间，向左偏移"
 
 #. Tag: para
 #: reference_lrs.xml:496
 #, no-c-format
 msgid ", <xref linkend=\"ST_LocateBetweenElevations\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LocateBetweenElevations\"/>"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:504
 #, no-c-format
 msgid "Returns the portions of a geometry that lie in an elevation (Z) range."
-msgstr ""
+msgstr "返回位于高程 (Z) 范围内的几何图形部分。"
 
 #. Tag: funcprototype
 #: reference_lrs.xml:510
@@ -611,7 +615,7 @@ msgstr ""
 msgid ""
 "Returns a geometry (collection) with the portions of a geometry that lie in "
 "an elevation (Z) range."
-msgstr ""
+msgstr "返回一个几何图形（集合），其中包含位于高程 (Z) 范围内的几何图形部分。"
 
 #. Tag: para
 #: reference_lrs.xml:528
@@ -623,13 +627,13 @@ msgstr "可用性：1.4.0"
 #: reference_lrs.xml:543
 #, no-c-format
 msgid ", <xref linkend=\"ST_LocateBetween\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LocateBetween\"/>"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:552
 #, no-c-format
 msgid "Returns the interpolated measure of a geometry closest to a point."
-msgstr ""
+msgstr "返回最接近点的几何图形的插值测量值。"
 
 #. Tag: funcprototype
 #: reference_lrs.xml:557
@@ -647,7 +651,7 @@ msgstr ""
 msgid ""
 "Returns an interpolated measure value of a linear measured geometry at the "
 "location closest to the given point."
-msgstr ""
+msgstr "返回最接近给定点的位置处的线性测量几何图形的插值测量值。"
 
 #. Tag: para
 #: reference_lrs.xml:574
@@ -661,12 +665,13 @@ msgstr "可用性: 2.0.0"
 msgid ""
 ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
 msgstr ""
+", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:598
 #, no-c-format
 msgid "Interpolates measures along a linear geometry."
-msgstr ""
+msgstr "沿线性几何形状插值测量值。"
 
 #. Tag: funcprototype
 #: reference_lrs.xml:603
@@ -688,6 +693,10 @@ msgid ""
 "added. If the geometry has a measure dimension, it is over-written with new "
 "values. Only LINESTRINGS and MULTILINESTRINGS are supported."
 msgstr ""
+"返回派生几何图形，其测量值在起点和终点之间线性插值。 "
+"如果几何图形没有测量尺寸，则添加一个。 "
+"如果几何图形具有测量尺寸，则会用新值覆盖它。 仅支持 LINESTRINGS 和 "
+"MULTILINESTRINGS。"
 
 #. Tag: para
 #: reference_lrs.xml:618
