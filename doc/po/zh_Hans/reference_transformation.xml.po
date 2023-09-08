@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-08 04:20+0000\n"
+"PO-Revision-Date: 2023-09-08 07:58+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_transformationxml/zh_Hans/>\n"
@@ -362,24 +362,27 @@ msgid ""
 "ST_Affine(geomA, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), "
 "cos(rotRadians), 0, 0, 0, 1, 0, 0, 0)</code>."
 msgstr ""
+"<code>ST_RotateZ(geomA, rotRadians)</code> 是 <code>SELECT ST_Affine(geomA, "
+"cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), cos(rotRadians), 0, "
+"0, 0, 1, 0, 0, 0)</code>的简写。"
 
 #. Tag: para
 #: reference_transformation.xml:282
 #, no-c-format
 msgid "Availability: 1.1.2. Name changed from RotateZ to ST_RotateZ in 1.2.2"
-msgstr ""
+msgstr "可用性：1.1.2。 1.2.2 中名称从 RotateZ 更改为 ST_RotateZ"
 
 #. Tag: para
 #: reference_transformation.xml:302
 #, no-c-format
 msgid ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>"
 
 #. Tag: refpurpose
 #: reference_transformation.xml:310
 #, no-c-format
 msgid "Scales a geometry by given factors."
-msgstr ""
+msgstr "按给定因子缩放几何图形。"
 
 #. Tag: para
 #: reference_transformation.xml:350
@@ -387,7 +390,7 @@ msgstr ""
 msgid ""
 "Scales the geometry to a new size by multiplying the ordinates with the "
 "corresponding factor parameters."
-msgstr ""
+msgstr "通过将坐标与相应的因子参数相乘，将几何体缩放到新的尺寸。"
 
 #. Tag: para
 #: reference_transformation.xml:354
@@ -398,6 +401,9 @@ msgid ""
 "supported dimensions. Missing dimensions in the <varname>factor</varname> "
 "point are equivalent to no scaling the corresponding dimension."
 msgstr ""
+"采用几何图形作为 <varname>factor</varname> 参数的版本允许传递 2d、3dm、3dz "
+"或 4d 点来为所有支持的维度设置缩放因子。 <varname>factor</varname> "
+"点中缺少维度相当于没有缩放相应的维度。"
 
 #. Tag: para
 #: reference_transformation.xml:360
@@ -409,12 +415,15 @@ msgid ""
 "place relative to the actual origin, so all coordinates are just multipled "
 "by the scale factor."
 msgstr ""
+"三几何体变体允许传入缩放的“假原点”。这允许“就地缩放”，例如使用几何体的质心作"
+"为假原点。 "
+"如果没有假原点，缩放是相对于实际原点进行的，因此所有坐标都只是乘以比例因子。"
 
 #. Tag: para
 #: reference_transformation.xml:367 reference_transformation.xml:483
 #, no-c-format
 msgid "Availability: 1.1.0."
-msgstr ""
+msgstr "可用性：1.1.0。"
 
 #. Tag: para
 #: reference_transformation.xml:369
@@ -422,7 +431,7 @@ msgstr ""
 msgid ""
 "Enhanced: 2.2.0 support for scaling all dimension (<varname>factor</varname> "
 "parameter) was introduced."
-msgstr ""
+msgstr "增强：2.2.0 引入了对缩放所有维度（<varname>factor</varname> 参数）的支持。"
 
 #. Tag: para
 #: reference_transformation.xml:370
@@ -430,7 +439,8 @@ msgstr ""
 msgid ""
 "Enhanced: 2.5.0 support for scaling relative to a local origin "
 "(<varname>origin</varname> parameter) was introduced."
-msgstr ""
+msgstr "增强：2.5.0 引入了对相对于本地原点（<varname>origin</varname> "
+"参数）进行缩放的支持。"
 
 #. Tag: para
 #: reference_transformation.xml:375
@@ -442,13 +452,13 @@ msgstr "&M_support;"
 #: reference_transformation.xml:389
 #, no-c-format
 msgid ", <xref linkend=\"ST_TransScale\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_TransScale\"/>"
 
 #. Tag: refpurpose
 #: reference_transformation.xml:397
 #, no-c-format
 msgid "Translates a geometry by given offsets."
-msgstr ""
+msgstr "按给定的偏移量平移几何图形。"
 
 #. Tag: para
 #: reference_transformation.xml:421
@@ -458,6 +468,8 @@ msgid ""
 "delta z units. Units are based on the units defined in spatial reference "
 "(SRID) for this geometry."
 msgstr ""
+"返回一个新的几何图形，其坐标转换为 delta x、delta y、delta z 单位。 "
+"单位基于该几何的空间参考 (SRID) 中定义的单位。"
 
 #. Tag: para
 #: reference_transformation.xml:426
@@ -469,37 +481,37 @@ msgstr "可用性：1.2.2"
 #: reference_transformation.xml:433
 #, no-c-format
 msgid "Move a point 1 degree longitude"
-msgstr ""
+msgstr "将点移动 1 度经度"
 
 #. Tag: para
 #: reference_transformation.xml:435
 #, no-c-format
 msgid "Move a linestring 1 degree longitude and 1/2 degree latitude"
-msgstr ""
+msgstr "将线串移动 1 度经度和 1/2 度纬度"
 
 #. Tag: para
 #: reference_transformation.xml:437
 #, no-c-format
 msgid "Move a 3d point"
-msgstr ""
+msgstr "移动 3d 点"
 
 #. Tag: para
 #: reference_transformation.xml:439
 #, no-c-format
 msgid "Move a curve and a point"
-msgstr ""
+msgstr "移动曲线和点"
 
 #. Tag: para
 #: reference_transformation.xml:446
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/>"
 
 #. Tag: refpurpose
 #: reference_transformation.xml:454
 #, no-c-format
 msgid "Translates and scales a geometry by given offsets and factors."
-msgstr ""
+msgstr "按给定的偏移量和系数平移和缩放几何图形。"
 
 #. Tag: funcprototype
 #: reference_transformation.xml:459
@@ -519,7 +531,8 @@ msgstr ""
 msgid ""
 "Translates the geometry using the deltaX and deltaY args, then scales it "
 "using the XFactor, YFactor args, working in 2D only."
-msgstr ""
+msgstr "使用 deltaX 和 deltaY 参数转换几何体，然后使用 XFactor、YFactor 参数缩放它，"
+"仅在 2D 中工作。"
 
 #. Tag: para
 #: reference_transformation.xml:476
@@ -529,9 +542,12 @@ msgid ""
 "hand for <code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0, 0, 0, 1, "
 "deltaX*XFactor, deltaY*YFactor, 0)</code>."
 msgstr ""
+"<code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor) </code>是<code> "
+"ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0, 0, 0, 1, deltaX*XFactor, "
+"deltaY*YFactor, 0) </code>的简写。"
 
 #. Tag: para
 #: reference_transformation.xml:499
 #, no-c-format
 msgid ", <xref linkend=\"ST_Translate\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Translate\"/>"
