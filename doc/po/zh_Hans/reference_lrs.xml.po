@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-29 10:57+0000\n"
-"PO-Revision-Date: 2023-09-06 09:52+0000\n"
+"PO-Revision-Date: 2023-09-08 07:58+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_lrsxml/zh_Hans/>\n"
@@ -15,19 +15,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #: reference_lrs.xml:3
 #, no-c-format
 msgid "Linear Referencing"
-msgstr ""
+msgstr "线性参考"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:9
 #, no-c-format
 msgid "Returns a point interpolated along a line at a fractional location."
-msgstr ""
+msgstr "返回沿线在百分比指示位置的插值点。"
 
 #. Tag: title
 #: reference_lrs.xml:31 reference_lrs.xml:111 reference_lrs.xml:180
@@ -47,6 +47,9 @@ msgid ""
 "representing the fraction of line length where the point is to be located. "
 "The Z and M values are interpolated if present."
 msgstr ""
+"返回沿线在百分比指示位置的插值点。 第一个参数是线串。 第二个参数是介于 0 和 "
+"1 之间的浮点数，它表示点的位置与线长度的比率。 如果存在 Z 和 M "
+"值，则执行插值计算。"
 
 #. Tag: para
 #: reference_lrs.xml:41
@@ -54,7 +57,7 @@ msgstr ""
 msgid ""
 "See <xref linkend=\"ST_LineLocatePoint\"/> for computing the line location "
 "nearest to a Point."
-msgstr ""
+msgstr "请参阅<xref linkend=\"ST_LineLocatePoint\"/>以计算最接近该点的线位置。"
 
 #. Tag: para
 #: reference_lrs.xml:45
@@ -64,6 +67,8 @@ msgid ""
 "M, while <xref linkend=\"ST_3DLineInterpolatePoint\"/> computes points in 3D "
 "and only interpolates the M value."
 msgstr ""
+"此函数计算 2D 中的点，然后对 Z 和 M 的值进行插值，而 <xref linkend="
+"\"ST_3DLineInterpolatePoint\"/> 计算 3D 中的点，然后仅对 M 值进行插值。"
 
 #. Tag: para
 #: reference_lrs.xml:52
@@ -71,19 +76,20 @@ msgstr ""
 msgid ""
 "Since release 1.1.1 this function also interpolates M and Z values (when "
 "present), while prior releases set them to 0.0."
-msgstr ""
+msgstr "从版本 1.1.1 开始，此函数还会插入 M 和 Z 值（如果存在），"
+"而之前的版本将它们设置为 0.0。"
 
 #. Tag: para
 #: reference_lrs.xml:56
 #, no-c-format
 msgid "Availability: 0.8.2, Z and M supported added in 1.1.1"
-msgstr ""
+msgstr "可用性：0.8.2，1.1.1中添加支持Z和M"
 
 #. Tag: para
 #: reference_lrs.xml:57
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Interpolate_Point."
-msgstr ""
+msgstr "更改：2.1.0。 在 2.0.x 之前，这称为 ST_Line_Interpolate_Point。"
 
 #. Tag: para
 #: reference_lrs.xml:58 reference_lrs.xml:127 reference_lrs.xml:197
@@ -106,19 +112,19 @@ msgstr "示例"
 #: reference_lrs.xml:69
 #, no-c-format
 msgid "A LineString with the interpolated point at 20% position (0.20)"
-msgstr ""
+msgstr "插值点位于 20% 位置 (0.20) 的 LineString"
 
 #. Tag: para
 #: reference_lrs.xml:74
 #, no-c-format
 msgid "The mid-point of a 3D line:"
-msgstr ""
+msgstr "3D 线的中点："
 
 #. Tag: para
 #: reference_lrs.xml:77
 #, no-c-format
 msgid "The closest point on a line to a point:"
-msgstr ""
+msgstr "直线上距离某点最近的点："
 
 #. Tag: title
 #: reference_lrs.xml:83 reference_lrs.xml:140 reference_lrs.xml:215
@@ -135,12 +141,14 @@ msgid ""
 ", <xref linkend=\"ST_3DLineInterpolatePoint\"/>, <xref "
 "linkend=\"ST_LineLocatePoint\"/>"
 msgstr ""
+", <xref linkend=\"ST_3DLineInterpolatePoint\"/>, <xref linkend="
+"\"ST_LineLocatePoint\"/>"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:97
 #, no-c-format
 msgid "Returns a point interpolated along a 3D line at a fractional location."
-msgstr ""
+msgstr "返回沿 3D 线的小数指示位置插值的点。"
 
 #. Tag: funcprototype
 #: reference_lrs.xml:102
@@ -161,6 +169,9 @@ msgid ""
 "representing the point location as a fraction of line length. The M value is "
 "interpolated if present."
 msgstr ""
+"返回沿 3D 线的小数指示位置插值的点。 第一个参数必须是 LINESTRING。 "
+"第二个参数是 0 到 1 之间的浮点数，表示点位置占线长度的一部分。 如果存在 M "
+"值，则对其进行插值。"
 
 #. Tag: para
 #: reference_lrs.xml:120
@@ -168,19 +179,20 @@ msgstr ""
 msgid ""
 "computes points in 2D and then interpolates the values for Z and M, while "
 "this function computes points in 3D and only interpolates the M value."
-msgstr ""
+msgstr "计算 2D 中的点，然后对 Z 和 M 的值进行插值，而此函数计算 3D 中的点，并且仅对 "
+"M 值进行插值。"
 
 #. Tag: para
 #: reference_lrs.xml:126
 #, no-c-format
 msgid "Availability: 3.0.0"
-msgstr ""
+msgstr "可用性：3.0.0"
 
 #. Tag: para
 #: reference_lrs.xml:134
 #, no-c-format
 msgid "Return point 20% along 3D line"
-msgstr ""
+msgstr "沿 3D 线返回20%处的点"
 
 #. Tag: para
 #: reference_lrs.xml:142
@@ -189,12 +201,14 @@ msgid ""
 ", <xref linkend=\"ST_LineInterpolatePoints\"/>, <xref "
 "linkend=\"ST_LineLocatePoint\"/>"
 msgstr ""
+", <xref linkend=\"ST_LineInterpolatePoints\"/>, <xref linkend="
+"\"ST_LineLocatePoint\"/>"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:154
 #, no-c-format
 msgid "Returns points interpolated along a line at a fractional interval."
-msgstr ""
+msgstr "返回沿直线以分数间隔插值的点。"
 
 #. Tag: para
 #: reference_lrs.xml:182
@@ -207,6 +221,11 @@ msgid ""
 "will be constructed (which is equivalent to <xref "
 "linkend=\"ST_LineInterpolatePoint\"/>.)"
 msgstr ""
+"返回沿一条线以分数间隔插值的一个或多个点。 第一个参数必须是 LINESTRING。 "
+"第二个参数是一个介于 float8 0 和 1 "
+"之间的值，表示点之间的间距作为线长度的一部分。 如果第三个参数为 "
+"false，则最多构造一个点（相当于<xref linkend=\"ST_LineInterpolatePoint\""
+"/>。）"
 
 #. Tag: para
 #: reference_lrs.xml:190
@@ -214,7 +233,8 @@ msgstr ""
 msgid ""
 "If the result has zero or one points, it is returned as a POINT. If it has "
 "two or more points, it is returned as a MULTIPOINT."
-msgstr ""
+msgstr "如果结果有零个或一个点，则将其作为 POINT 返回。 如果它有两个或更多点，则以 "
+"MULTIPOINT 形式返回。"
 
 #. Tag: para
 #: reference_lrs.xml:196
@@ -232,20 +252,20 @@ msgstr "&M_support;"
 #: reference_lrs.xml:208
 #, no-c-format
 msgid "A LineString with points interpolated every 20%"
-msgstr ""
+msgstr "每 20% 插值一次点的 LineString"
 
 #. Tag: para
 #: reference_lrs.xml:217
 #, no-c-format
 msgid ", <xref linkend=\"ST_LineLocatePoint\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LineLocatePoint\"/>"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:228
 #, no-c-format
 msgid ""
 "Returns the fractional location of the closest point on a line to a point."
-msgstr ""
+msgstr "返回线上最接近点的分数位置。"
 
 #. Tag: para
 #: reference_lrs.xml:254
@@ -255,6 +275,8 @@ msgid ""
 "point on a LineString to the given Point, as a fraction of <link "
 "linkend=\"ST_Length2D\">2d line</link> length."
 msgstr ""
+"返回 0 到 1 之间的浮点数，表示 LineString 上距离给定 Point 最近的点的位置，"
+"作为 <link linkend=\"ST_Length2D\">2d 线</link>长度的一部分。"
 
 #. Tag: para
 #: reference_lrs.xml:258
@@ -264,12 +286,14 @@ msgid ""
 "linkend=\"ST_LineInterpolatePoint\"/>) or a substring (<xref "
 "linkend=\"ST_LineSubstring\"/>)."
 msgstr ""
+"您可以使用返回的位置来提取点 (<xref linkend=\"ST_LineInterpolatePoint\"/>) "
+"或子字符串 (<xref linkend=\"ST_LineSubstring\"/>)。"
 
 #. Tag: para
 #: reference_lrs.xml:261
 #, no-c-format
 msgid "This is useful for approximating numbers of addresses"
-msgstr ""
+msgstr "这对于近似地址数量很有用"
 
 #. Tag: para
 #: reference_lrs.xml:263
@@ -281,7 +305,7 @@ msgstr "可用性：1.1.0"
 #: reference_lrs.xml:264
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Locate_Point."
-msgstr ""
+msgstr "更改：2.1.0。 在 2.0.x 之前，这称为 ST_Line_Locate_Point。"
 
 #. Tag: para
 #: reference_lrs.xml:278
@@ -290,12 +314,14 @@ msgid ""
 ", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/"
 ">, <xref linkend=\"ST_LineSubstring\"/>"
 msgstr ""
+", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/"
+">, <xref linkend=\"ST_LineSubstring\"/>"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:286
 #, no-c-format
 msgid "Returns the part of a line between two fractional locations."
-msgstr ""
+msgstr "返回两个小数位置之间的直线部分。"
 
 #. Tag: para
 #: reference_lrs.xml:311
@@ -307,6 +333,10 @@ msgid ""
 "the start and end locations as fractions of line length. The Z and M values "
 "are interpolated for added endpoints if present."
 msgstr ""
+"计算作为输入线在给定小数位置处开始和结束的部分的线。 第一个参数必须是 "
+"LINESTRING。 第二个和第三个参数是 [0, 1] "
+"范围内的值，将起始位置和结束位置表示为行长度的分数。 如果存在添加的端点，"
+"则对 Z 和 M 值进行插值。"
 
 #. Tag: para
 #: reference_lrs.xml:320
@@ -316,6 +346,8 @@ msgid ""
 "the same value this is equivalent to <xref "
 "linkend=\"ST_LineInterpolatePoint\"/>."
 msgstr ""
+"如果 <varname>startfraction</varname> 和 <varname>endfraction "
+"</varname>具有相同的值，则相当于<xref linkend=\"ST_LineInterpolatePoint\"/>。"
 
 #. Tag: para
 #: reference_lrs.xml:325
@@ -324,6 +356,8 @@ msgid ""
 "This only works with LINESTRINGs. To use on contiguous MULTILINESTRINGs "
 "first join them with <xref linkend=\"ST_LineMerge\"/>."
 msgstr ""
+"这仅适用于 LINESTRING。 要在连续的 MULTILINESTRING 上使用，首先使用 <xref "
+"linkend=\"ST_LineMerge\"/>将它们连接起来。"
 
 #. Tag: para
 #: reference_lrs.xml:331
@@ -331,37 +365,38 @@ msgstr ""
 msgid ""
 "Since release 1.1.1 this function interpolates M and Z values. Prior "
 "releases set Z and M to unspecified values."
-msgstr ""
+msgstr "从 1.1.1 版开始，此函数对 M 和 Z 值进行插值。 之前的版本将 Z 和 M "
+"设置为未指定的值。"
 
 #. Tag: para
 #: reference_lrs.xml:336
 #, no-c-format
 msgid "Enhanced: 3.4.0 - Support for geography was introduced."
-msgstr ""
+msgstr "增强：3.4.0 - 引入了对地理的支持。"
 
 #. Tag: para
 #: reference_lrs.xml:337
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Substring."
-msgstr ""
+msgstr "更改：2.1.0。 在 2.0.x 之前，这被称为 ST_Line_Substring。"
 
 #. Tag: para
 #: reference_lrs.xml:338
 #, no-c-format
 msgid "Availability: 1.1.0, Z and M supported added in 1.1.1"
-msgstr ""
+msgstr "可用性：1.1.0，1.1.1中添加支持Z和M"
 
 #. Tag: para
 #: reference_lrs.xml:349
 #, no-c-format
 msgid "A LineString seen with 1/3 midrange overlaid (0.333, 0.666)"
-msgstr ""
+msgstr "在1/3中间范围上叠加的LineString（0.333, 0.666）"
 
 #. Tag: para
 #: reference_lrs.xml:354
 #, no-c-format
 msgid "If start and end locations are the same, the result is a POINT."
-msgstr ""
+msgstr "如果起始位置和结束位置相同，则结果是一个 POINT。"
 
 #. Tag: para
 #: reference_lrs.xml:360
@@ -371,13 +406,16 @@ msgid ""
 "<varname>generate_series()</varname> with a CROSS JOIN LATERAL to produce "
 "the equivalent of a FOR loop."
 msgstr ""
+"将 LineString 切成长度为 100 或更短的部分的查询。 "
+"它使用<varname>generate_series() </varname>和CROSS JOIN LATERAL 来生成FOR "
+"循环的等效项。"
 
 #. Tag: para
 #: reference_lrs.xml:367
 #, no-c-format
 msgid ""
 "Geography implementation measures along a spheroid, geometry along a line"
-msgstr ""
+msgstr "地理实现沿球体表面进行测量，而几何实现沿线进行测量"
 
 #. Tag: para
 #: reference_lrs.xml:375
@@ -386,12 +424,14 @@ msgid ""
 ", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref "
 "linkend=\"ST_LineMerge\"/>"
 msgstr ""
+", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge\""
+"/>"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:383
 #, no-c-format
 msgid "Returns the point(s) on a geometry that match a measure value."
-msgstr ""
+msgstr "返回几何上与测量值匹配的点。"
 
 #. Tag: funcprototype
 #: reference_lrs.xml:388
@@ -411,7 +451,8 @@ msgid ""
 "Returns the location(s) along a measured geometry that have the given "
 "measure values. The result is a Point or MultiPoint. Polygonal inputs are "
 "not supported."
-msgstr ""
+msgstr "返回沿具有给定测量值的测量几何图形的位置。 结果是点或多点。 "
+"不支持多边形输入。"
 
 #. Tag: para
 #: reference_lrs.xml:405
@@ -421,12 +462,15 @@ msgid ""
 "or right of the input line by the specified distance. A positive offset will "
 "be to the left, and a negative one to the right."
 msgstr ""
+"如果提供了 "
+"<varname>offset</varname>，则结果将向输入线的左侧或右侧偏移指定的距离。 "
+"正偏移将向左偏移，负偏移将向右偏移。"
 
 #. Tag: para
 #: reference_lrs.xml:409 reference_lrs.xml:572
 #, no-c-format
 msgid "Use this function only for linear geometries with an M component"
-msgstr ""
+msgstr "仅对具有 M 分量的线性几何使用此函数"
 
 #. Tag: para
 #: reference_lrs.xml:411 reference_lrs.xml:465
