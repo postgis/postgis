@@ -4,8 +4,8 @@
 # pibinko <pibinko@gmail.com>, 2013
 # pibinko <pibinko@gmail.com>, 2013
 # Sandro Santilli <strk.io>, 2014
-# Sandro Santilli <strk@kbt.io>, 2014
-# Sandro Santilli <strk@kbt.io>, 2014
+# Sandro Santilli <strk@kbt.io>, 2014, 2023.
+# Sandro Santilli <strk@kbt.io>, 2014, 2023.
 # Stefano Costa <steko@iosa.it>, 2013
 # Regina Obe <regina@arrival3d.com>, 2023.
 msgid ""
@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-08-12 00:40+0000\n"
-"PO-Revision-Date: 2023-08-28 12:08+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2023-09-09 07:37+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "introductionxml/it/>\n"
 "Language: it_IT\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #: introduction.xml:3
@@ -68,6 +68,11 @@ msgid ""
 "(coverages, surfaces, networks), data source for desktop user interface "
 "tools for viewing and editing GIS data, and web-based access tools."
 msgstr ""
+"Il gruppo di sviluppo di PostGIS pianifica l e migliorie di necessarie a "
+"supportare meglio importanti funzionalita' GIS nelle aree degli standard "
+"spaziali OGC e SQL/MM, costrutti topologici avanzati (coperture, superfici, "
+"reti), sorgenti di dati per le interfacce utente da scrivania per "
+"visualizzare e modificare i dati GIS, e sistemi di accesso via web."
 
 #. Tag: title
 #: introduction.xml:21
@@ -96,7 +101,7 @@ msgstr ""
 
 #. Tag: term
 #: introduction.xml:31
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Raúl Marín Rodríguez"
 msgstr "Raúl Marín Rodríguez"
 
