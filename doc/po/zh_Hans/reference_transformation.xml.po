@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-06 05:32+0000\n"
+"PO-Revision-Date: 2023-09-08 04:20+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_transformationxml/zh_Hans/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: para
 #: reference_transformation.xml:5
@@ -25,18 +25,20 @@ msgid ""
 "url=\"https://en.wikipedia.org/wiki/Affine_transformation\">affine "
 "transformations</ulink>."
 msgstr ""
+"这些函数使用<ulink url=\"https://en.wikipedia.org/wiki/"
+"Affine_transformation\">仿射变换</ulink>来改变几何图形的位置和形状。"
 
 #. Tag: title
 #: reference_transformation.xml:10
 #, no-c-format
 msgid "Affine Transformations"
-msgstr ""
+msgstr "仿射变换"
 
 #. Tag: refpurpose
 #: reference_transformation.xml:16
 #, no-c-format
 msgid "Apply a 3D affine transformation to a geometry."
-msgstr ""
+msgstr "对几何体应用 3D 仿射变换。"
 
 #. Tag: title
 #: reference_transformation.xml:52 reference_transformation.xml:127
@@ -53,7 +55,7 @@ msgstr "描述"
 msgid ""
 "Applies a 3D affine transformation to the geometry to do things like "
 "translate, rotate, scale in one step."
-msgstr ""
+msgstr "对几何体应用 3D 仿射变换，一步完成平移、旋转、缩放等操作。"
 
 #. Tag: para
 #: reference_transformation.xml:55
@@ -70,6 +72,15 @@ msgid ""
 "z' = g*x + h*y + i*z + zoff</programlisting> All of the translate / scale "
 "functions below are expressed via such an affine transformation."
 msgstr ""
+"版本1：调用<programlisting>ST_Affine(geom, a, b, c, d, e, f, g, h, i, xoff, "
+"yoff, zoff)</programlisting>表示变换矩阵<programlisting>/ a b c xoff \\\n"
+"| d e f yoff |\n"
+"| g h i zoff |\n"
+"\\ 0 0 0     1 /</programlisting> 并且顶点变换如下： <programlisting>x' = a*"
+"x + b*y + c*z + xoff\n"
+"y' = d*x + e*y + f*z + yoff\n"
+"z' = g*x + h*y + i*z + zoff</programlisting> "
+"下面所有的平移/缩放函数都是通过这样的仿射变换来表达的。"
 
 #. Tag: para
 #: reference_transformation.xml:62
@@ -86,6 +97,15 @@ msgid ""
 "y' = d*x + e*y + yoff\n"
 "z' = z </programlisting> This method is a subcase of the 3D method above."
 msgstr ""
+"版本 2：对几何体应用 2d 仿射变换。 调用<programlisting>ST_Affine(geom, a, b, "
+"d, e, xoff, yoff)</programlisting>表示变换矩阵<programlisting>/ a b 0 xoff \\"
+" / a b xoff \\\n"
+"| d e 0 yoff | rsp.   | d e yoff |\n"
+"| 0 0 1 0 | 0 0 1 0 \\ 0 0 1 /\n"
+"\\ 0 0 0    1 /</programlisting> 并且顶点变换如下： <programlisting>x' = a*x "
+"+ b*y + xoff\n"
+"y' = d*x + e*y + yoff\n"
+"z' = z </programlisting> 此方法是上述 3D 方法的子情况。"
 
 #. Tag: para
 #: reference_transformation.xml:68 reference_transformation.xml:133
@@ -101,7 +121,7 @@ msgstr "增强功能：引入了2.0.0 对多面体曲面、三角形和三角网
 #: reference_transformation.xml:69
 #, no-c-format
 msgid "Availability: 1.1.2. Name changed from Affine to ST_Affine in 1.2.2"
-msgstr ""
+msgstr "可用性：1.1.2。 1.2.2 中名称从 Affine 更改为 ST_Affine"
 
 #. Tag: para
 #: reference_transformation.xml:70 reference_transformation.xml:283
@@ -172,12 +192,14 @@ msgid ""
 ", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>, <xref "
 "linkend=\"ST_TransScale\"/>"
 msgstr ""
+", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>, <xref "
+"linkend=\"ST_TransScale\"/>"
 
 #. Tag: refpurpose
 #: reference_transformation.xml:98
 #, no-c-format
 msgid "Rotates a geometry about an origin point."
-msgstr ""
+msgstr "绕原点旋转几何体。"
 
 #. Tag: para
 #: reference_transformation.xml:129
@@ -188,6 +210,8 @@ msgid ""
 "coordinates. If the origin is not specified, the geometry is rotated about "
 "POINT(0 0)."
 msgstr ""
+"围绕原点逆时针旋转几何体 rotRadians。 旋转原点可以指定为 POINT 几何图形，"
+"也可以指定为 x 和 y 坐标。 如果未指定原点，则几何图形将围绕 POINT(0 0) 旋转。"
 
 #. Tag: para
 #: reference_transformation.xml:134
@@ -195,13 +219,13 @@ msgstr ""
 msgid ""
 "Enhanced: 2.0.0 additional parameters for specifying the origin of rotation "
 "were added."
-msgstr ""
+msgstr "增强：2.0.0 添加了用于指定旋转原点的附加参数。"
 
 #. Tag: para
 #: reference_transformation.xml:135
 #, no-c-format
 msgid "Availability: 1.1.2. Name changed from Rotate to ST_Rotate in 1.2.2"
-msgstr ""
+msgstr "可用性：1.1.2。 1.2.2 中名称从 Rotate 更改为 ST_Rotate"
 
 #. Tag: para
 #: reference_transformation.xml:154
@@ -210,12 +234,14 @@ msgid ""
 ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>, <xref "
 "linkend=\"ST_RotateZ\"/>"
 msgstr ""
+", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>, <xref "
+"linkend=\"ST_RotateZ\"/>"
 
 #. Tag: refpurpose
 #: reference_transformation.xml:162
 #, no-c-format
 msgid "Rotates a geometry about the X axis."
-msgstr ""
+msgstr "绕 X 轴旋转几何体。"
 
 #. Tag: funcprototype
 #: reference_transformation.xml:167
@@ -230,7 +256,7 @@ msgstr ""
 #: reference_transformation.xml:178
 #, no-c-format
 msgid "Rotates a geometry geomA - rotRadians about the X axis."
-msgstr ""
+msgstr "绕 X 轴旋转几何体 geomA - rotRadians。"
 
 #. Tag: para
 #: reference_transformation.xml:180
@@ -240,24 +266,27 @@ msgid ""
 "<code>ST_Affine(geomA, 1, 0, 0, 0, cos(rotRadians), -sin(rotRadians), 0, "
 "sin(rotRadians), cos(rotRadians), 0, 0, 0)</code>."
 msgstr ""
+"<code>ST_RotateX(geomA, rotRadians) </code>是 <code>ST_Affine(geomA, 1, 0, "
+"0, 0, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), cos(rotRadians)"
+", 0, 0, 0）</code>的简写。"
 
 #. Tag: para
 #: reference_transformation.xml:184
 #, no-c-format
 msgid "Availability: 1.1.2. Name changed from RotateX to ST_RotateX in 1.2.2"
-msgstr ""
+msgstr "可用性：1.1.2。 1.2.2 中名称从 RotateX 更改为 ST_RotateX"
 
 #. Tag: para
 #: reference_transformation.xml:201
 #, no-c-format
 msgid ", <xref linkend=\"ST_RotateY\"/>, <xref linkend=\"ST_RotateZ\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_RotateY\"/>, <xref linkend=\"ST_RotateZ\"/>"
 
 #. Tag: refpurpose
 #: reference_transformation.xml:209
 #, no-c-format
 msgid "Rotates a geometry about the Y axis."
-msgstr ""
+msgstr "绕 Y 轴旋转几何体。"
 
 #. Tag: funcprototype
 #: reference_transformation.xml:214
@@ -272,7 +301,7 @@ msgstr ""
 #: reference_transformation.xml:225
 #, no-c-format
 msgid "Rotates a geometry geomA - rotRadians about the y axis."
-msgstr ""
+msgstr "围绕 y 轴旋转几何体 geomA - rotRadians。"
 
 #. Tag: para
 #: reference_transformation.xml:227
@@ -282,24 +311,27 @@ msgid ""
 "<code>ST_Affine(geomA, cos(rotRadians), 0, sin(rotRadians), 0, 1, 0, -"
 "sin(rotRadians), 0, cos(rotRadians), 0, 0, 0)</code>."
 msgstr ""
+"<code>ST_RotateY(geomA, rotRadians)</code> 是 <code>ST_Affine(geomA, "
+"cos(rotRadians), 0, sin(rotRadians), 0, 1, 0, -sin(rotRadians), 0, "
+"cos(rotRadians), 0, 0, 0）</code>的简写。"
 
 #. Tag: para
 #: reference_transformation.xml:230
 #, no-c-format
 msgid "Availability: 1.1.2. Name changed from RotateY to ST_RotateY in 1.2.2"
-msgstr ""
+msgstr "可用性：1.1.2。 1.2.2 中名称从 RotateY 更改为 ST_RotateY"
 
 #. Tag: para
 #: reference_transformation.xml:250
 #, no-c-format
 msgid ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateZ\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateZ\"/>"
 
 #. Tag: refpurpose
 #: reference_transformation.xml:258
 #, no-c-format
 msgid "Rotates a geometry about the Z axis."
-msgstr ""
+msgstr "绕 Z 轴旋转几何体。"
 
 #. Tag: funcprototype
 #: reference_transformation.xml:263
@@ -314,13 +346,13 @@ msgstr ""
 #: reference_transformation.xml:274
 #, no-c-format
 msgid "Rotates a geometry geomA - rotRadians about the Z axis."
-msgstr ""
+msgstr "绕 Z 轴旋转几何体 geomA - rotRadians。"
 
 #. Tag: para
 #: reference_transformation.xml:276
 #, no-c-format
 msgid "This is a synonym for ST_Rotate"
-msgstr ""
+msgstr "这是 ST_Rotate 的同义词"
 
 #. Tag: para
 #: reference_transformation.xml:277
