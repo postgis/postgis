@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-08-03 00:19+0000\n"
-"PO-Revision-Date: 2023-09-06 01:08+0000\n"
+"PO-Revision-Date: 2023-09-08 07:58+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_clusterxml/zh_Hans/>\n"
@@ -15,19 +15,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: para
 #: reference_cluster.xml:5
 #, no-c-format
 msgid "These functions implement clustering algorithms for sets of geometries."
-msgstr ""
+msgstr "这些函数为几何图形集实现聚类算法。"
 
 #. Tag: title
 #: reference_cluster.xml:8
 #, no-c-format
 msgid "Clustering Functions"
-msgstr ""
+msgstr "聚类函数"
 
 #. Tag: refpurpose
 #: reference_cluster.xml:14
@@ -35,7 +35,7 @@ msgstr ""
 msgid ""
 "Window function that returns a cluster id for each input geometry using the "
 "DBSCAN algorithm."
-msgstr ""
+msgstr "使用 DBSCAN 算法返回每个输入几何图形的簇 id 的窗口函数。"
 
 #. Tag: funcprototype
 #: reference_cluster.xml:19
@@ -68,12 +68,17 @@ msgid ""
 "linkend=\"ST_Distance\">distance</link> (<varname>eps</varname>) and density "
 "(<varname>minpoints</varname>) parameters to determine each cluster."
 msgstr ""
+"一个窗口函数，使用 2D <ulink url=\"https://en.wikipedia.org/wiki/DBSCAN\""
+">基于密度的噪声应用空间聚类 (DBSCAN)</ulink>算法。 与 <xref linkend="
+"\"ST_ClusterKMeans\"/> 不同，它不需要指定簇的数量，而是使用所需的<link "
+"linkend=\"ST_Distance\">距离</link> (<varname>eps</varname> "
+"）和密度（<varname>minpoints</varname>）参数来确定每个簇。"
 
 #. Tag: para
 #: reference_cluster.xml:44
 #, no-c-format
 msgid "An input geometry is added to a cluster if it is either:"
-msgstr ""
+msgstr "如果输入几何体满足以下任一条件，则将其添加到簇中："
 
 #. Tag: para
 #: reference_cluster.xml:48
@@ -83,6 +88,9 @@ msgid ""
 "linkend=\"ST_Distance\">distance</link> of at least <varname>minpoints</"
 "varname> input geometries (including itself); or"
 msgstr ""
+"“核心”几何体，位于至少 <varname>minpoints</varname> "
+"个输入几何体（包括其自身）的 <varname>eps</varname> <link linkend="
+"\"ST_Distance\">距离</link> 内； 或者"
 
 #. Tag: para
 #: reference_cluster.xml:53
@@ -91,6 +99,8 @@ msgid ""
 "A \"border\" geometry, that is within <varname>eps</varname> <link "
 "linkend=\"ST_Distance\">distance</link> of a core geometry."
 msgstr ""
+"“边界”几何图形，位于核心几何图形的 <varname>eps</varname> <link linkend="
+"\"ST_Distance\">距离</link> 内。"
 
 #. Tag: para
 #: reference_cluster.xml:60
@@ -106,6 +116,12 @@ msgid ""
 "code> clause in the window definition. Ambiguous cluster assignments may "
 "differ from other DBSCAN implementations."
 msgstr ""
+"请注意，边界几何图形可能位于多个集群中核心几何图形的 <varname>eps</varname> "
+"距离内。 任一分配都是正确的，因此边界几何图形将被任意分配给可用集群之一。 "
+"在这种情况下，可以使用少于 <varname>minpoints</varname> "
+"几何图形生成正确的簇。 为了确保边界几何形状的确定性分配（以便重复调用 "
+"ST_ClusterDBSCAN 将产生相同的结果），请在窗口定义中使用 <code>ORDER BY</"
+"code> 子句。 不明确的簇分配可能与其他 DBSCAN 实现不同。"
 
 #. Tag: para
 #: reference_cluster.xml:70
@@ -113,7 +129,7 @@ msgstr ""
 msgid ""
 "Geometries that do not meet the criteria to join any cluster are assigned a "
 "cluster number of NULL."
-msgstr ""
+msgstr "不满足加入任何簇的条件的几何图形将被分配簇号 NULL。"
 
 #. Tag: para
 #: reference_cluster.xml:74 reference_cluster.xml:246
@@ -141,7 +157,7 @@ msgstr "示例"
 msgid ""
 "Clustering polygon within 50 meters of each other, and requiring at least 2 "
 "polygons per cluster."
-msgstr ""
+msgstr "对彼此相距 50 米以内的多边形进行聚类，并且每个聚类至少需要 2 个多边形。"
 
 #. Tag: para
 #: reference_cluster.xml:92
@@ -149,7 +165,7 @@ msgstr ""
 msgid ""
 "Clusters within 50 meters with at least 2 items per cluster. Singletons have "
 "NULL for cid"
-msgstr ""
+msgstr "50 米范围内的聚类，每个聚类至少有两个面。 如果只有一个，则 cid 为 NULL"
 
 #. Tag: para
 #: reference_cluster.xml:106
@@ -157,7 +173,7 @@ msgstr ""
 msgid ""
 "A example showing combining parcels with the same cluster number into "
 "geometry collections."
-msgstr ""
+msgstr "显示将具有相同簇编号的地块组合成几何集合的示例。"
 
 #. Tag: title
 #: reference_cluster.xml:113 reference_cluster.xml:158
@@ -176,12 +192,15 @@ msgid ""
 "linkend=\"ST_ClusterIntersectingWin\"/>, <xref linkend=\"ST_ClusterWithin\"/"
 ">, <xref linkend=\"ST_ClusterWithinWin\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend="
+"\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterIntersectingWin\"/>, "
+"<xref linkend=\"ST_ClusterWithin\"/>, <xref linkend=\"ST_ClusterWithinWin\"/>"
 
 #. Tag: refpurpose
 #: reference_cluster.xml:129
 #, no-c-format
 msgid "Aggregate function that clusters input geometries into connected sets."
-msgstr ""
+msgstr "将输入几何图形聚类成连接集的聚合函数。"
 
 #. Tag: funcprototype
 #: reference_cluster.xml:134
@@ -200,6 +219,9 @@ msgid ""
 "Each geometry in a cluster intersects at least one other geometry in the "
 "cluster, and does not intersect any geometry in other clusters."
 msgstr ""
+"一个聚合函数，返回 GeometryCollections "
+"数组，将输入几何图形划分为不相交的连接簇。 簇中的每个几何图形与该簇中的至少一"
+"个其他几何图形相交，并且不与其他簇中的任何几何图形相交。"
 
 #. Tag: para
 #: reference_cluster.xml:150 reference_cluster.xml:336
@@ -214,6 +236,8 @@ msgid ""
 ", <xref linkend=\"ST_ClusterWithin\"/>, <xref "
 "linkend=\"ST_ClusterWithinWin\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClusterWithin\"/>, <xref linkend=\"ST_ClusterWithinWin\""
+"/>"
 
 #. Tag: refpurpose
 #: reference_cluster.xml:173
@@ -221,7 +245,7 @@ msgstr ""
 msgid ""
 "Window function that returns a cluster id for each input geometry, "
 "clustering input geometries into connected sets."
-msgstr ""
+msgstr "窗口函数，返回每个输入几何图形的簇 ID，将输入几何图形聚类到连接的集合中。"
 
 #. Tag: funcprototype
 #: reference_cluster.xml:178
@@ -241,6 +265,9 @@ msgid ""
 "leaving the cluster. The return value is the cluster number that the "
 "geometry argument participates in, or null for null inputs."
 msgstr ""
+"一种窗口函数，用于构建相交的连接几何图形簇。 "
+"可以在不离开集群的情况下遍历集群中的所有几何图形。 "
+"返回值是几何参数参与的簇号，或者对于空输入为空。"
 
 #. Tag: para
 #: reference_cluster.xml:190 reference_cluster.xml:383
@@ -254,7 +281,7 @@ msgstr "可用性：3.4.0"
 msgid ""
 "Window function that returns a cluster id for each input geometry using the "
 "K-means algorithm."
-msgstr ""
+msgstr "使用 K 均值算法返回每个输入几何图形的簇 id 的窗口函数。"
 
 #. Tag: funcprototype
 #: reference_cluster.xml:218
@@ -277,6 +304,10 @@ msgid ""
 "distance between bounding box centers for 3D geometries. For POINT inputs, M "
 "coordinate will be treated as weight of input and has to be larger than 0."
 msgstr ""
+"返回每个输入几何图形的 <ulink url=\"https://en.wikipedia.org/wiki/K-"
+"means_clustering\">K-means</ulink> 簇号。 用于聚类的距离是 2D "
+"几何形状的质心之间的距离，以及 3D 几何形状的边界框中心之间的距离。 对于 "
+"POINT 输入，M 坐标将被视为输入的权重，并且必须大于 0。"
 
 #. Tag: para
 #: reference_cluster.xml:241
@@ -287,36 +318,39 @@ msgid ""
 "output has radius larger than <varname>max_radius</varname>. This is useful "
 "in reachability analysis."
 msgstr ""
+"<varname>max_radius</varname> 如果设置，将导致 ST_ClusterKMeans 生成比 "
+"<varname>k</varname> 更多的簇，确保输出中没有簇的半径大于 "
+"<varname>max_radius</varname>。 这在可达性分析中很有用。"
 
 #. Tag: para
 #: reference_cluster.xml:244
 #, no-c-format
 msgid "Enhanced: 3.2.0 Support for <varname>max_radius</varname>"
-msgstr ""
+msgstr "增强：3.2.0 支持<varname> max_radius</varname>"
 
 #. Tag: para
 #: reference_cluster.xml:245
 #, no-c-format
 msgid "Enhanced: 3.1.0 Support for 3D geometries and weights"
-msgstr ""
+msgstr "增强：3.1.0 支持 3D 几何和权重"
 
 #. Tag: para
 #: reference_cluster.xml:251
 #, no-c-format
 msgid "Generate dummy set of parcels for examples:"
-msgstr ""
+msgstr "生成虚拟地块集，例如："
 
 #. Tag: para
 #: reference_cluster.xml:259
 #, no-c-format
 msgid "Parcels color-coded by cluster number (cid)"
-msgstr ""
+msgstr "地块按簇号 (cid) 进行颜色编码"
 
 #. Tag: para
 #: reference_cluster.xml:266
 #, no-c-format
 msgid "Partitioning parcel clusters by type:"
-msgstr ""
+msgstr "按类型划分地块集群："
 
 #. Tag: para
 #: reference_cluster.xml:270
@@ -328,6 +362,9 @@ msgid ""
 "dataset\">Kontur Population Data</ulink> that do not span more than 3000 km "
 "from their center:"
 msgstr ""
+"示例：使用 3D 聚类和加权对预先聚合的全球人口数据集进行聚类。 根据<ulink url="
+"\"https://data.humdata.org/dataset/kontur-population-dataset\""
+">Kontur人口数据</ulink>，至少确定了距离中心不到3000公里的20个地区："
 
 #. Tag: para
 #: reference_cluster.xml:281
@@ -338,6 +375,9 @@ msgid ""
 "cluster. There are island clusters that span across the antimeridian. "
 "Cluster edges follow Earth's curvature."
 msgstr ""
+"根据上述规范对世界人口进行聚类，得到46个聚类。 "
+"在人口稠密的地区（纽约，莫斯科）是集群的中心。 格陵兰岛是一个集群。 "
+"有些集群跨越国际日期变更线。 聚类的边缘遵循地球的曲线。"
 
 #. Tag: para
 #: reference_cluster.xml:294
@@ -348,12 +388,16 @@ msgid ""
 ">, <xref linkend=\"ST_ClusterWithin\"/>, <xref linkend=\"ST_Subdivide\"/>, "
 "<xref linkend=\"ST_Force_3D\"/>, <xref linkend=\"ST_Force_4D\"/>,"
 msgstr ""
+", <xref linkend=\"ST_ClusterIntersectingWin\"/>, <xref linkend="
+"\"ST_ClusterWithinWin\"/>, <xref linkend=\"ST_ClusterIntersecting\"/>, <xref "
+"linkend=\"ST_ClusterWithin\"/>, <xref linkend=\"ST_Subdivide\"/>, <xref "
+"linkend=\"ST_Force_3D\"/>, <xref linkend=\"ST_Force_4D\"/>,"
 
 #. Tag: refpurpose
 #: reference_cluster.xml:311
 #, no-c-format
 msgid "Aggregate function that clusters geometries by separation distance."
-msgstr ""
+msgstr "按间隔距离对几何图形进行聚合的聚合函数。"
 
 #. Tag: funcprototype
 #: reference_cluster.xml:316
@@ -375,6 +419,10 @@ msgid ""
 "in the same cluster. Distances are Cartesian distances in the units of the "
 "SRID."
 msgstr ""
+"返回 GeometryCollections "
+"数组的聚合函数，其中每个集合都是包含一些输入几何图形的簇。 聚类将输入几何图形"
+"划分为多个集合，其中每个几何图形都在同一簇中至少一个其他几何图形的指定<parame"
+"ter>距离</parameter>内。 距离是以 SRID 为单位的笛卡尔距离。"
 
 #. Tag: para
 #: reference_cluster.xml:334
@@ -383,6 +431,8 @@ msgid ""
 "ST_ClusterWithin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN\"/"
 "> with <code>minpoints := 0</code>."
 msgstr ""
+"ST_ClusterWithin 相当于以 <code>minpoints := 0 </code>运行<xref linkend="
+"\"ST_ClusterDBSCAN\"/>。"
 
 #. Tag: para
 #: reference_cluster.xml:346
@@ -392,6 +442,8 @@ msgid ""
 "linkend=\"ST_ClusterIntersecting\"/>, <xref "
 "linkend=\"ST_ClusterIntersectingWin\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClusterDBSCAN\"/>, <xref linkend="
+"\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterIntersectingWin\"/>"
 
 #. Tag: refpurpose
 #: reference_cluster.xml:360
@@ -399,7 +451,7 @@ msgstr ""
 msgid ""
 "Window function that returns a cluster id for each input geometry, "
 "clustering using separation distance."
-msgstr ""
+msgstr "窗口函数，返回每个输入几何图形的簇 ID，使用分离距离进行聚类。"
 
 #. Tag: funcprototype
 #: reference_cluster.xml:365
@@ -421,6 +473,9 @@ msgid ""
 "geometry in the same cluster. Distances are Cartesian distances in the units "
 "of the SRID."
 msgstr ""
+"返回每个输入几何图形的簇号的窗口函数。 聚类将几何图形划分为多个集合，其中每个"
+"几何图形都在同一簇中至少一个其他几何图形的指定<varname>距离</varname>内。 "
+"距离是以 SRID 为单位的笛卡尔距离。"
 
 #. Tag: para
 #: reference_cluster.xml:382
@@ -429,6 +484,8 @@ msgid ""
 "ST_ClusterWithinWin is equivalent to running <xref "
 "linkend=\"ST_ClusterDBSCAN\"/> with <code>minpoints := 0</code>."
 msgstr ""
+"ST_ClusterWithinWin 相当于以<code> minpoints := 0 </code>运行 <xref linkend="
+"\"ST_ClusterDBSCAN\"/>。"
 
 #. Tag: para
 #: reference_cluster.xml:394
@@ -438,3 +495,5 @@ msgid ""
 "linkend=\"ST_ClusterIntersecting\"/>, <xref "
 "linkend=\"ST_ClusterIntersectingWin\"/>,"
 msgstr ""
+", <xref linkend=\"ST_ClusterDBSCAN\"/>, <xref linkend="
+"\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterIntersectingWin\"/>,"
