@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-08 07:58+0000\n"
+"PO-Revision-Date: 2023-09-09 07:37+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_sfcgalxml/zh_Hans/>\n"
@@ -25,7 +25,8 @@ msgid ""
 "SFCGAL is a C++ wrapper library around CGAL that provides advanced 2D and 3D "
 "spatial functions. For robustness, geometry coordinates have an exact "
 "rational number representation."
-msgstr ""
+msgstr "SFCGAL是CGAL的C++封装库，提供高级的二维和三维空间函数。为了确保稳健性，几何坐"
+"标具有精确的有理数表示。"
 
 #. Tag: para
 #: reference_sfcgal.xml:9
@@ -35,24 +36,27 @@ msgid ""
 "page (<ulink url=\"http://www.sfcgal.org\">http://www.sfcgal.org</ulink>). "
 "To enable the functions use <code>create extension postgis_sfcgal</code>."
 msgstr ""
+"该库的安装说明可以在 SFCGAL 主页 (<ulink url=\"http://www.sfcgal.org\""
+">http://www.sfcgal.org</ulink>) 上找到。 要启用这些功能，请使用<code>create "
+"extension postgis_sfcgal</code>。"
 
 #. Tag: title
 #: reference_sfcgal.xml:16
 #, no-c-format
 msgid "SFCGAL Functions"
-msgstr ""
+msgstr "SFCGAL 函数"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:21
 #, no-c-format
 msgid "<refpurpose>Returns the version of SFCGAL in use</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>返回正在使用的 SFCGAL 版本</refpurpose>"
 
 #. Tag: funcdef
 #: reference_sfcgal.xml:27
 #, no-c-format
 msgid "text <function>postgis_sfcgal_version</function>"
-msgstr ""
+msgstr "文本 <function>postgis_sfcgal_version</function>描述"
 
 #. Tag: title
 #: reference_sfcgal.xml:34 reference_sfcgal.xml:69 reference_sfcgal.xml:104
@@ -71,7 +75,7 @@ msgstr "描述"
 #: reference_sfcgal.xml:36
 #, no-c-format
 msgid "<para>Returns the version of SFCGAL in use</para>"
-msgstr ""
+msgstr "<para>返回正在使用的 SFCGAL 版本</para>"
 
 #. Tag: para
 #: reference_sfcgal.xml:38 reference_sfcgal.xml:106 reference_sfcgal.xml:195
@@ -93,7 +97,7 @@ msgstr "可用性：2.1.0"
 #: reference_sfcgal.xml:1255
 #, no-c-format
 msgid "&sfcgal_required;"
-msgstr ""
+msgstr "&sfcgal_required;"
 
 #. Tag: para
 #: reference_sfcgal.xml:40 reference_sfcgal.xml:75 reference_sfcgal.xml:109
@@ -145,13 +149,14 @@ msgstr "相关信息"
 msgid ""
 "<refpurpose>Returns the full version of SFCGAL in use including CGAL and "
 "Boost versions</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>返回正在使用的 SFCGAL 的完整版本，包括 CGAL 和 Boost "
+"版本</refpurpose>"
 
 #. Tag: funcdef
 #: reference_sfcgal.xml:62
 #, no-c-format
 msgid "text <function>postgis_sfcgal_full_version</function>"
-msgstr ""
+msgstr "文本<function>postgis_sfcgal_full_version</function>"
 
 #. Tag: para
 #: reference_sfcgal.xml:71
@@ -159,7 +164,7 @@ msgstr ""
 msgid ""
 "<para>Returns the full version of SFCGAL in use including CGAL and Boost "
 "versions</para>"
-msgstr ""
+msgstr "<para>返回正在使用的 SFCGAL 的完整版本，包括 CGAL 和 Boost 版本</para>"
 
 #. Tag: para
 #: reference_sfcgal.xml:73 reference_sfcgal.xml:145
@@ -171,7 +176,7 @@ msgstr "可用性： 3.3.0"
 #: reference_sfcgal.xml:91
 #, no-c-format
 msgid "Computes area of 3D surface geometries. Will return 0 for solids."
-msgstr ""
+msgstr "计算 3D 表面几何形状的面积。 对于固体将返回 0。"
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:96
@@ -185,7 +190,7 @@ msgstr ""
 #: reference_sfcgal.xml:108
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 8.1, 10.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 8.1, 10.5"
 
 #. Tag: title
 #: reference_sfcgal.xml:114 reference_sfcgal.xml:153 reference_sfcgal.xml:204
@@ -204,6 +209,8 @@ msgid ""
 "Note: By default a PolyhedralSurface built from WKT is a surface geometry, "
 "not solid. It therefore has surface area. Once converted to a solid, no area."
 msgstr ""
+"注意：默认情况下，从 WKT 构建的 PolyhedralSurface 是曲面几何体，而不是实体。 "
+"因此它具有表面积。 一旦转换为实体，就没有面积了。"
 
 #. Tag: para
 #: reference_sfcgal.xml:122
@@ -212,12 +219,14 @@ msgid ""
 ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
 "linkend=\"ST_Area\"/>"
 msgstr ""
+", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
+"linkend=\"ST_Area\"/>"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:130
 #, no-c-format
 msgid "Computes the 3D convex hull of a geometry."
-msgstr ""
+msgstr "计算几何体的 3D 凸包。"
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:135
@@ -231,19 +240,19 @@ msgstr ""
 #: reference_sfcgal.xml:164
 #, no-c-format
 msgid "Original geometry overlaid with 3D convex hull"
-msgstr ""
+msgstr "原始几何体覆盖 3D 凸包"
 
 #. Tag: para
 #: reference_sfcgal.xml:171
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsX3D\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_AsX3D\"/>"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:179
 #, no-c-format
 msgid "Perform 3D intersection"
-msgstr ""
+msgstr "执行 3D 相交"
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:184
@@ -258,7 +267,7 @@ msgstr ""
 #: reference_sfcgal.xml:194
 #, no-c-format
 msgid "Return a geometry that is the shared portion between geom1 and geom2."
-msgstr ""
+msgstr "返回作为 geom1 和 geom2 之间共享部分的几何图形。"
 
 #. Tag: para
 #: reference_sfcgal.xml:197 reference_sfcgal.xml:274 reference_sfcgal.xml:355
@@ -275,12 +284,14 @@ msgid ""
 "rendering in HTML using <ulink url=\"http://www.x3dom.org\">X3Dom HTML "
 "Javascript rendering library</ulink>."
 msgstr ""
+"3D 图像是使用 <xref linkend=\"ST_AsX3D\"/>生成的，并使用<ulink url=\"http"
+"://www.x3dom.org\"> X3Dom HTML Javascript 渲染库</ulink>以 HTML 形式渲染。"
 
 #. Tag: para
 #: reference_sfcgal.xml:217
 #, no-c-format
 msgid "Original 3D geometries overlaid. geom2 is shown semi-transparent"
-msgstr ""
+msgstr "原始 3D 几何图形叠加。 geom2 显示为半透明"
 
 #. Tag: para
 #: reference_sfcgal.xml:228
