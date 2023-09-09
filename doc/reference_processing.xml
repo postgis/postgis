@@ -1270,7 +1270,7 @@ result
       <refnamediv>
         <refname>ST_GeneratePoints</refname>
 
-        <refpurpose>Generates random points contained in a Polygon or MultiPolygon.</refpurpose>
+        <refpurpose>Generates a multipoint of random points contained in a Polygon or MultiPolygon.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -1300,7 +1300,7 @@ result
         <title>Description</title>
 
         <para>
-            ST_GeneratePoints generates a given number of pseudo-random points
+            ST_GeneratePoints generates a multipoint consisting of a given number of pseudo-random points
             which lie within the input area.
             The optional <varname>seed</varname> is used to regenerate a deterministic sequence of points,
             and must be greater than zero.
@@ -1318,7 +1318,7 @@ result
                           <imageobject>
                             <imagedata fileref="images/st_generatepoints01.png" />
                           </imageobject>
-                          <caption><para>Generated 12 Points overlaid on top of original polygon using a random seed value 1996</para></caption>
+                          <caption><para>Generated a multipoint consisting of 12 Points overlaid on top of original polygon using a random seed value 1996</para></caption>
                         </mediaobject>
                       </informalfigure>
                         <programlisting>SELECT ST_GeneratePoints(geom, 12, 1996)
@@ -1329,6 +1329,13 @@ FROM (
         10, 'endcap=round join=round') AS geom
 ) AS s;</programlisting>
             </para>
+<para>Given a table of polygons s, return 12 individual points per polygon. Results will be different each time you run.</para>
+<programlisting>SELECT s.id, dp.path[1] AS pt_id, dp.geom
+FROM s, ST_DumpPoints(ST_GeneratePoints(s.geom,12)) AS dp;</programlisting>
+        </refsection>
+        <refsection>
+          <title>See Also</title>
+          <para><xref linkend="ST_DumpPoints"/></para>
         </refsection>
     </refentry>
 
