@@ -44,7 +44,7 @@ steps:
     commands:
       - make -C build-docs/doc images
     when:
-      path: *when_path
+      path: *when_path_full
   build-html:
     image: *test_image
     group: output
