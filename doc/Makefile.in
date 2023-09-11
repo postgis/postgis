@@ -230,6 +230,7 @@ XML_GENERATED_SOURCES = \
 
 XML_INPUTS = $(XML_SOURCES) $(XML_GENERATED_SOURCES) $(TAG_GENERATED_SOURCES)
 
+# TODO: should these be XML_SOURCES ?
 XML_INPUTS_POT = $(XML_SOURCES:%.xml=$(srcdir)/po/templates/%.xml.pot)
 
 GENERATED_COMMENT_FILES = $(patsubst \
@@ -307,10 +308,10 @@ $(TAG_GENERATED_SOURCES): xsl/node_by_xpath.xsl xsl-config.xml | Makefile
 	test -s $@ # ensure something was extracted
 endif
 
-$(GENERATED_COMMENT_FILES): %.sql: xsl/%.sql.xsl $(XML_INPUTS) postgis-out.xml
+$(GENERATED_COMMENT_FILES): %.sql: xsl/%.sql.xsl postgis-out.xml
 	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
 
-$(GENERATED_CHEATSHEET_FILES): $(html_builddir)/%$(DOCSUFFIX).html: xsl/%.html.xsl $(XML_INPUTS) postgis-out.xml xsl/common_cheatsheet.xsl xsl/common_utils.xsl
+$(GENERATED_CHEATSHEET_FILES): $(html_builddir)/%$(DOCSUFFIX).html: xsl/%.html.xsl postgis-out.xml xsl/common_cheatsheet.xsl xsl/common_utils.xsl
 	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) $(XSLTPROC_CUSTOM_VARS) -o $@ $< postgis-out.xml
 
 postgis-nospecial.xml: postgis.xml $(XML_SOURCES) $(TAG_GENERATED_SOURCES) Makefile
@@ -323,7 +324,7 @@ postgis-out.xml: postgis.xml Makefile $(XML_INPUTS) Makefile
 	$(XMLLINT) $(XSLTPROC_PATH_OPT) --noent -o $@ $@.in
 
 chunked-html: $(html_builddir)/postgis$(DOCSUFFIX)/docbook.css
-$(html_builddir)/postgis$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile $(XML_INPUTS)
+$(html_builddir)/postgis$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		$(XSLTPROC_CHUNKED_HTML_OPTS) \
 		--output $(dir $@) \
@@ -331,7 +332,7 @@ $(html_builddir)/postgis$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile $(XML
 		$<
 
 chunked-html-web: $(html_builddir)/postgis-web$(DOCSUFFIX)/docbook.css
-$(html_builddir)/postgis-web$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile $(XML_INPUTS)
+$(html_builddir)/postgis-web$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		$(XSLTPROC_CHUNKED_HTML_OPTS) \
 		--output $(dir $@) \
@@ -341,7 +342,7 @@ $(html_builddir)/postgis-web$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile $
 
 HTML_BITS = $(wildcard html/*.html)
 chunked-html-web-mobile: $(html_builddir)/postgis-web-mobile$(DOCSUFFIX)/docbook.css
-$(html_builddir)/postgis-web-mobile$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile $(XML_INPUTS)
+$(html_builddir)/postgis-web-mobile$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		$(XSLTPROC_CHUNKED_HTML_OPTS) \
 		--output $(dir $@) \
@@ -359,7 +360,7 @@ html: $(html_builddir)/postgis$(DOCSUFFIX).html
     $(MAKE) -C po/$$lang local-$$rule || exit 1; \
   done
 
-$(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(XML_INPUTS)
+$(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		--stringparam html.stylesheet style.css \
 		--output $(html_builddir)/postgis$(DOCSUFFIX).html \
@@ -367,7 +368,7 @@ $(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(XML_INPUTS
 		$<
 
 
-postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf: postgis-out.xml $(abs_srcdir)/texstyle-common.sty $(abs_srcdir)/texstyle.sty $(XML_INPUTS) | images
+postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf: postgis-out.xml $(abs_srcdir)/texstyle-common.sty $(abs_srcdir)/texstyle.sty | images
 ifeq ($(DBLATEX),)
 	@echo
 	@echo "configure was unable to find the 'dblatex' utility program."
@@ -398,7 +399,7 @@ pdf-install: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS
 pdf-uninstall:
 	rm -f $(DESTDIR)$(docdir)/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf
 
-postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub: postgis-out.xml images $(XML_INPUTS)
+postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub: postgis-out.xml images
 ifeq ($(DBTOEPUB),)
 	@echo
 	@echo "configure was unable to find the 'dbtoepub' utility program."
@@ -574,7 +575,7 @@ ifeq ($(XMLLINT),)
 check-xml: requirements_not_met_xmllint
 check-cheatsheets: requirements_not_met_xmllint
 else
-check-xml: $(XML_INPUTS)
+check-xml: postgis-out.xml
 	$(XMLLINT) --loaddtd $(XSLTPROC_PATH_OPT) --xinclude --valid postgis-out.xml --noout
 
 check-cheatsheets: cheatsheets
