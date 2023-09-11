@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - Correct the SQL/MM function list (Sandro Santilli)
   - Correct the coverage examples in the manual (Martin Davis)
   - Correct the ST_LargestEmptyCircle example (Regina Obe)
   - #5632, Handle empty geometries correctly in the 2D GiST index (Paul Ramsey)
