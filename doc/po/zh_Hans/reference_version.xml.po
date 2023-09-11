@@ -5,11 +5,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-11 19:20+0000\n"
 "PO-Revision-Date: 2023-09-06 01:08+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
-"Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
-"postgis/reference_versionxml/zh_Hans/>\n"
+"Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/postgis/reference_versionxml/zh_Hans/>\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -32,12 +31,8 @@ msgstr "版本函数"
 #. Tag: refpurpose
 #: reference_version.xml:16
 #, no-c-format
-msgid ""
-"Packages and upgrades PostGIS extensions (e.g. postgis_raster, "
-"postgis_topology, postgis_sfcgal) to given or latest version."
-msgstr ""
-"将 PostGIS 扩展（例如 postgis_raster、postgis_topology、postgis_sfcgal）打包"
-"并升级到给定版本或最新版本。"
+msgid "Packages and upgrades PostGIS extensions (e.g. postgis_raster, postgis_topology, postgis_sfcgal) to given or latest version."
+msgstr "将 PostGIS 扩展（例如 postgis_raster、postgis_topology、postgis_sfcgal）打包并升级到给定版本或最新版本。"
 
 #. Tag: title
 #: reference_version.xml:32 reference_version.xml:93 reference_version.xml:141
@@ -54,20 +49,8 @@ msgstr "描述"
 #. Tag: para
 #: reference_version.xml:34
 #, no-c-format
-msgid ""
-"Packages and upgrades PostGIS extensions to given or latest version. Only "
-"extensions you have installed in the database will be packaged and upgraded "
-"if needed. Reports full PostGIS version and build configuration infos after. "
-"This is short-hand for doing multiple CREATE EXTENSION .. FROM unpackaged "
-"and ALTER EXTENSION .. UPDATE for each PostGIS extension. Currently only "
-"tries to upgrade extensions postgis, postgis_raster, postgis_sfcgal, "
-"postgis_topology, and postgis_tiger_geocoder."
-msgstr ""
-"将 PostGIS 扩展打包并升级到给定版本或最新版本。 如果需要，只会打包和升级您在"
-"数据库中安装的扩展。 报告完整的 PostGIS 版本并随后构建配置信息。 这是对每个 "
-"PostGIS 扩展执行多个 CREATE EXTENSION .. FROM unpackaged 和 ALTER "
-"EXTENSION .. UPDATE 的简写。 目前仅尝试升级扩展 postgis、postgis_raster、"
-"postgis_sfcgal、postgis_topology 和 postgis_tiger_geocoder。"
+msgid "Packages and upgrades PostGIS extensions to given or latest version. Only extensions you have installed in the database will be packaged and upgraded if needed. Reports full PostGIS version and build configuration infos after. This is short-hand for doing multiple CREATE EXTENSION .. FROM unpackaged and ALTER EXTENSION .. UPDATE for each PostGIS extension. Currently only tries to upgrade extensions postgis, postgis_raster, postgis_sfcgal, postgis_topology, and postgis_tiger_geocoder."
+msgstr "将 PostGIS 扩展打包并升级到给定版本或最新版本。 如果需要，只会打包和升级您在数据库中安装的扩展。 报告完整的 PostGIS 版本并随后构建配置信息。 这是对每个 PostGIS 扩展执行多个 CREATE EXTENSION .. FROM unpackaged 和 ALTER EXTENSION .. UPDATE 的简写。 目前仅尝试升级扩展 postgis、postgis_raster、postgis_sfcgal、postgis_topology 和 postgis_tiger_geocoder。"
 
 #. Tag: para
 #: reference_version.xml:43
@@ -84,16 +67,13 @@ msgstr "更改：3.4.0 添加 target_version 参数。"
 #. Tag: para
 #: reference_version.xml:46
 #, no-c-format
-msgid ""
-"Changed: 3.3.0 support for upgrades from any PostGIS version. Does not work "
-"on all systems."
+msgid "Changed: 3.3.0 support for upgrades from any PostGIS version. Does not work on all systems."
 msgstr "更改：3.3.0 支持从任何 PostGIS 版本升级。 不适用于所有系统。"
 
 #. Tag: para
 #: reference_version.xml:47
 #, no-c-format
-msgid ""
-"Changed: 3.0.0 to repackage loose extensions and support postgis_raster."
+msgid "Changed: 3.0.0 to repackage loose extensions and support postgis_raster."
 msgstr "更改：3.0.0 重新打包松散扩展并支持 postgis_raster。"
 
 #. Tag: title
@@ -122,14 +102,8 @@ msgstr "相关信息"
 #. Tag: para
 #: reference_version.xml:61
 #, no-c-format
-msgid ""
-", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
-"\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
-"linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
-msgstr ""
-", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
-"\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
-"linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
+msgid ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
+msgstr ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
 
 #. Tag: refpurpose
 #: reference_version.xml:78
@@ -140,37 +114,20 @@ msgstr "报告完整的 PostGIS 版本和构建配置信息。"
 #. Tag: para
 #: reference_version.xml:95
 #, no-c-format
-msgid ""
-"Reports full PostGIS version and build configuration infos. Also informs "
-"about synchronization between libraries and scripts suggesting upgrades as "
-"needed."
-msgstr ""
-"报告完整的 PostGIS 版本和构建配置信息。 还通知库和脚本之间的同步，建议根据需"
-"要进行升级。"
+msgid "Reports full PostGIS version and build configuration infos. Also informs about synchronization between libraries and scripts suggesting upgrades as needed."
+msgstr "报告完整的 PostGIS 版本和构建配置信息。 还通知库和脚本之间的同步，建议根据需要进行升级。"
 
 #. Tag: para
 #: reference_version.xml:98
 #, no-c-format
-msgid ""
-"Enhanced: 3.4.0 now includes extra PROJ configurations NETWORK_ENABLED, "
-"URL_ENDPOINT and DATABASE_PATH of proj.db location"
-msgstr ""
-"增强功能：3.4.0 现在包括额外的 PROJ 配置 NETWORK_ENABLED、URL_ENDPOINT 和 "
-"proj.db 位置的 DATABASE_PATH"
+msgid "Enhanced: 3.4.0 now includes extra PROJ configurations NETWORK_ENABLED, URL_ENDPOINT and DATABASE_PATH of proj.db location"
+msgstr "增强功能：3.4.0 现在包括额外的 PROJ 配置 NETWORK_ENABLED、URL_ENDPOINT 和 proj.db 位置的 DATABASE_PATH"
 
 #. Tag: para
 #: reference_version.xml:110
 #, no-c-format
-msgid ""
-", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
-"\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
-"linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Wagyu_Version\"/"
-">, <xref linkend=\"PostGIS_Version\"/>"
-msgstr ""
-", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
-"\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
-"linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Wagyu_Version\"/"
-">, <xref linkend=\"PostGIS_Version\"/>"
+msgid ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Wagyu_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
+msgstr ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Wagyu_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
 
 #. Tag: refpurpose
 #: reference_version.xml:126
@@ -181,38 +138,25 @@ msgstr "返回 GEOS 库的版本号。"
 #. Tag: para
 #: reference_version.xml:143
 #, no-c-format
-msgid ""
-"Returns the version number of the GEOS library, or <varname>NULL</varname> "
-"if GEOS support is not enabled."
-msgstr ""
-"返回 GEOS 库的版本号，如果未启用 GEOS 支持，则返回<varname> NULL</varname>。"
+msgid "Returns the version number of the GEOS library, or <varname>NULL</varname> if GEOS support is not enabled."
+msgstr "返回 GEOS 库的版本号，如果未启用 GEOS 支持，则返回<varname> NULL</varname>。"
 
 #. Tag: para
 #: reference_version.xml:156 reference_version.xml:240
 #, no-c-format
-msgid ""
-", <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend="
-"\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, "
-"<xref linkend=\"PostGIS_Version\"/>"
-msgstr ""
-", <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend="
-"\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, "
-"<xref linkend=\"PostGIS_Version\"/>"
+msgid ", <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
+msgstr ", <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
 
 #. Tag: refpurpose
 #: reference_version.xml:168
 #, no-c-format
-msgid ""
-"Returns the version number of the GEOS library against which PostGIS was "
-"built."
+msgid "Returns the version number of the GEOS library against which PostGIS was built."
 msgstr "返回构建 PostGIS 所依据的 GEOS 库的版本号。"
 
 #. Tag: para
 #: reference_version.xml:185
 #, no-c-format
-msgid ""
-"Returns the version number of the GEOS library, or against which PostGIS was "
-"built."
+msgid "Returns the version number of the GEOS library, or against which PostGIS was built."
 msgstr "返回 GEOS 库的版本号，或构建 PostGIS 的版本号。"
 
 #. Tag: para
@@ -230,9 +174,7 @@ msgstr ", <xref linkend=\"PostGIS_Full_Version\"/>"
 #. Tag: refpurpose
 #: reference_version.xml:211
 #, no-c-format
-msgid ""
-"Returns the version number of the liblwgeom library. This should match the "
-"version of PostGIS."
+msgid "Returns the version number of the liblwgeom library. This should match the version of PostGIS."
 msgstr "返回 liblwgeom 库的版本号。 这应该与 PostGIS 的版本匹配。"
 
 #. Tag: para
@@ -262,14 +204,8 @@ msgstr "可用性：1.5"
 #. Tag: para
 #: reference_version.xml:282
 #, no-c-format
-msgid ""
-", <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend="
-"\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref "
-"linkend=\"PostGIS_Version\"/>"
-msgstr ""
-", <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend="
-"\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref "
-"linkend=\"PostGIS_Version\"/>"
+msgid ", <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
+msgstr ", <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
 
 #. Tag: refpurpose
 #: reference_version.xml:294
@@ -286,8 +222,7 @@ msgstr "<para>返回 PostGIS 库的构建日期。</para>"
 #. Tag: refpurpose
 #: reference_version.xml:324
 #, no-c-format
-msgid ""
-"<refpurpose>Returns the version number of the PostGIS library.</refpurpose>"
+msgid "<refpurpose>Returns the version number of the PostGIS library.</refpurpose>"
 msgstr "<refpurpose>返回 PostGIS 库的版本号。</refpurpose>"
 
 #. Tag: para
@@ -299,14 +234,8 @@ msgstr "<para>返回 PostGIS 库的版本号。</para>"
 #. Tag: para
 #: reference_version.xml:353
 #, no-c-format
-msgid ""
-", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
-"\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, "
-"<xref linkend=\"PostGIS_Version\"/>"
-msgstr ""
-", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
-"\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, "
-"<xref linkend=\"PostGIS_Version\"/>"
+msgid ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
+msgstr ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
 
 #. Tag: refpurpose
 #: reference_version.xml:365
@@ -317,32 +246,20 @@ msgstr "返回 PROJ4 库的版本号。"
 #. Tag: para
 #: reference_version.xml:382
 #, no-c-format
-msgid ""
-"Returns the version number of the PROJ library and some configuration "
-"options of proj."
+msgid "Returns the version number of the PROJ library and some configuration options of proj."
 msgstr "返回 PROJ 库的版本号和 proj 的一些配置选项。"
 
 #. Tag: para
 #: reference_version.xml:384
 #, no-c-format
-msgid ""
-"Enhanced: 3.4.0 now includes NETWORK_ENABLED, URL_ENDPOINT and DATABASE_PATH "
-"of proj.db location"
-msgstr ""
-"增强功能：3.4.0 现在包括 proj.db 位置的 NETWORK_ENABLED、URL_ENDPOINT 和 "
-"DATABASE_PATH"
+msgid "Enhanced: 3.4.0 now includes NETWORK_ENABLED, URL_ENDPOINT and DATABASE_PATH of proj.db location"
+msgstr "增强功能：3.4.0 现在包括 proj.db 位置的 NETWORK_ENABLED、URL_ENDPOINT 和 DATABASE_PATH"
 
 #. Tag: para
 #: reference_version.xml:396 reference_version.xml:480
 #, no-c-format
-msgid ""
-", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
-"\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
-"linkend=\"PostGIS_Version\"/>"
-msgstr ""
-", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
-"\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
-"linkend=\"PostGIS_Version\"/>"
+msgid ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
+msgstr ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
 
 #. Tag: refpurpose
 #: reference_version.xml:408
@@ -353,24 +270,14 @@ msgstr "返回内部 Wagyu 库的版本号。"
 #. Tag: para
 #: reference_version.xml:424
 #, no-c-format
-msgid ""
-"Returns the version number of the internal Wagyu library, or <varname>NULL</"
-"varname> if Wagyu support is not enabled."
-msgstr ""
-"返回内部 Wagyu 库的版本号，如果未启用 Wagyu 支持，则返回 <varname>NULL</"
-"varname>。"
+msgid "Returns the version number of the internal Wagyu library, or <varname>NULL</varname> if Wagyu support is not enabled."
+msgstr "返回内部 Wagyu 库的版本号，如果未启用 Wagyu 支持，则返回 <varname>NULL</varname>。"
 
 #. Tag: para
 #: reference_version.xml:437
 #, no-c-format
-msgid ""
-", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
-"\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, <xref "
-"linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
-msgstr ""
-", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
-"\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, <xref "
-"linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
+msgid ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
+msgstr ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
 
 #. Tag: refpurpose
 #: reference_version.xml:450
@@ -393,31 +300,20 @@ msgstr "可用性： 1.0.0RC1"
 #. Tag: refpurpose
 #: reference_version.xml:492
 #, no-c-format
-msgid ""
-"<refpurpose>Returns version of the PostGIS scripts installed in this "
-"database.</refpurpose>"
+msgid "<refpurpose>Returns version of the PostGIS scripts installed in this database.</refpurpose>"
 msgstr "<refpurpose>返回此数据库中安装的 PostGIS 脚本的版本。</refpurpose>"
 
 #. Tag: para
 #: reference_version.xml:509
 #, no-c-format
-msgid ""
-"<para>Returns version of the PostGIS scripts installed in this database.</"
-"para>"
+msgid "<para>Returns version of the PostGIS scripts installed in this database.</para>"
 msgstr "<para>返回此数据库中安装的 PostGIS 脚本的版本。</para>"
 
 #. Tag: para
 #: reference_version.xml:513
 #, no-c-format
-msgid ""
-"If the output of this function doesn't match the output of <xref linkend="
-"\"PostGIS_Scripts_Released\"/> you probably missed to properly upgrade an "
-"existing database. See the <link linkend=\"upgrading\">Upgrading</link> "
-"section for more info."
-msgstr ""
-"如果此函数的输出与 <xref linkend=\"PostGIS_Scripts_Released\"/>的输出不匹配，"
-"您可能错过了正确升级现有数据库的机会。 有关详细信息，请参阅<link linkend="
-"\"upgrading\">升级</link>部分。"
+msgid "If the output of this function doesn't match the output of <xref linkend=\"PostGIS_Scripts_Released\"/> you probably missed to properly upgrade an existing database. See the <link linkend=\"upgrading\">Upgrading</link> section for more info."
+msgstr "如果此函数的输出与 <xref linkend=\"PostGIS_Scripts_Released\"/>的输出不匹配，您可能错过了正确升级现有数据库的机会。 有关详细信息，请参阅<link linkend=\"upgrading\">升级</link>部分。"
 
 #. Tag: para
 #: reference_version.xml:520 reference_version.xml:566
@@ -428,58 +324,37 @@ msgstr "可用性：0.9.0"
 #. Tag: para
 #: reference_version.xml:532
 #, no-c-format
-msgid ""
-", <xref linkend=\"PostGIS_Scripts_Released\"/>, <xref linkend="
-"\"PostGIS_Version\"/>"
-msgstr ""
-", <xref linkend=\"PostGIS_Scripts_Released\"/>, <xref linkend="
-"\"PostGIS_Version\"/>"
+msgid ", <xref linkend=\"PostGIS_Scripts_Released\"/>, <xref linkend=\"PostGIS_Version\"/>"
+msgstr ", <xref linkend=\"PostGIS_Scripts_Released\"/>, <xref linkend=\"PostGIS_Version\"/>"
 
 #. Tag: refpurpose
 #: reference_version.xml:540
 #, no-c-format
-msgid ""
-"<refpurpose>Returns the version number of the postgis.sql script released "
-"with the installed PostGIS lib.</refpurpose>"
-msgstr ""
-"<refpurpose>返回随安装的 PostGIS 库一起发布的 postgis.sql 脚本的版本号。</"
-"refpurpose>"
+msgid "<refpurpose>Returns the version number of the postgis.sql script released with the installed PostGIS lib.</refpurpose>"
+msgstr "<refpurpose>返回随安装的 PostGIS 库一起发布的 postgis.sql 脚本的版本号。</refpurpose>"
 
 #. Tag: para
 #: reference_version.xml:557
 #, no-c-format
-msgid ""
-"<para>Returns the version number of the postgis.sql script released with the "
-"installed PostGIS lib.</para>"
-msgstr ""
-"<para>返回随安装的 PostGIS 库一起发布的 postgis.sql 脚本的版本号。</para>"
+msgid "<para>Returns the version number of the postgis.sql script released with the installed PostGIS lib.</para>"
+msgstr "<para>返回随安装的 PostGIS 库一起发布的 postgis.sql 脚本的版本号。</para>"
 
 #. Tag: para
 #: reference_version.xml:561
 #, no-c-format
-msgid ""
-"Starting with version 1.1.0 this function returns the same value of <xref "
-"linkend=\"PostGIS_Lib_Version\"/>. Kept for backward compatibility."
-msgstr ""
-"从版本 1.1.0 开始，此函数返回与 <xref linkend=\"PostGIS_Lib_Version\"/>相同的"
-"值。 保留向后兼容性。"
+msgid "Starting with version 1.1.0 this function returns the same value of <xref linkend=\"PostGIS_Lib_Version\"/>. Kept for backward compatibility."
+msgstr "从版本 1.1.0 开始，此函数返回与 <xref linkend=\"PostGIS_Lib_Version\"/>相同的值。 保留向后兼容性。"
 
 #. Tag: para
 #: reference_version.xml:578
 #, no-c-format
-msgid ""
-", <xref linkend=\"PostGIS_Scripts_Installed\"/>, <xref linkend="
-"\"PostGIS_Lib_Version\"/>"
-msgstr ""
-", <xref linkend=\"PostGIS_Scripts_Installed\"/>, <xref linkend="
-"\"PostGIS_Lib_Version\"/>"
+msgid ", <xref linkend=\"PostGIS_Scripts_Installed\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>"
+msgstr ", <xref linkend=\"PostGIS_Scripts_Installed\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>"
 
 #. Tag: refpurpose
 #: reference_version.xml:586
 #, no-c-format
-msgid ""
-"<refpurpose>Returns PostGIS version number and compile-time options.</"
-"refpurpose>"
+msgid "<refpurpose>Returns PostGIS version number and compile-time options.</refpurpose>"
 msgstr "<refpurpose>返回 PostGIS 版本号和编译时选项。</refpurpose>"
 
 #. Tag: para
@@ -491,124 +366,5 @@ msgstr "<para>返回 PostGIS 版本号和编译时选项。</para>"
 #. Tag: para
 #: reference_version.xml:615
 #, no-c-format
-msgid ""
-", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
-"\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
-"linkend=\"PostGIS_PROJ_Version\"/>"
-msgstr ""
-", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
-"\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
-"linkend=\"PostGIS_PROJ_Version\"/>"
-
-#. Tag: funcprototype
-#: reference_version.xml:24
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Extensions_Upgrade</function></funcdef> "
-"<paramdef choice=\"opt\"><type>text</type> <parameter>target_version=null</"
-"parameter></paramdef>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_version.xml:84
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Full_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_version.xml:132
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_GEOS_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_version.xml:174
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_GEOS_Compiled_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_version.xml:217
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Liblwgeom_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_version.xml:258
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_LibXML_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_version.xml:299
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Lib_Build_Date</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_version.xml:330
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Lib_Version</function></funcdef> <paramdef></"
-"paramdef>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_version.xml:371
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_PROJ_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_version.xml:413
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Wagyu_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_version.xml:455
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Scripts_Build_Date</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_version.xml:498
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Scripts_Installed</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_version.xml:546
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Scripts_Released</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_version.xml:592
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Version</function></funcdef> <paramdef></"
-"paramdef>"
-msgstr ""
+msgid ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>"
+msgstr ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>"
