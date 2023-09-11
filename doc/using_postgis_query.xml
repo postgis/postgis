@@ -172,8 +172,7 @@
                                valign="middle" />
                     </informalfigure></para></entry>
 
-                  <entry><para> <informaltable tabstyle="styledtable">
-                      <tgroup align="center" cols="4">
+                  <entrytbl cols="4">
                         <thead valign="middle">
                           <row>
                             <entry></entry>
@@ -191,8 +190,9 @@
 
                         <tbody valign="middle">
                           <row>
-                            <entry spanname="de9im_a" style=""><emphasis
-                            role="bold">Interior</emphasis></entry>
+                            <entry spanname="de9im_a">
+                                <emphasis role="bold">Interior</emphasis>
+                            </entry>
 
                             <entry><para><informalfigure>
                                 <graphic fileref="images/de9im05.png" />
@@ -259,8 +259,7 @@
                             role="bold">2</emphasis></para></entry>
                           </row>
                         </tbody>
-                      </tgroup>
-                    </informaltable></para></entry>
+                    </entrytbl>
                 </row>
               </tbody>
             </tgroup>
