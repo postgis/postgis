@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-11 19:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -17,9 +17,7 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:6
 #, no-c-format
-msgid ""
-"These functions create geometry objects from various textual or binary "
-"formats."
+msgid "These functions create geometry objects from various textual or binary formats."
 msgstr ""
 
 #. Tag: title
@@ -37,9 +35,7 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_input.xml:19
 #, no-c-format
-msgid ""
-"<refpurpose>Construct a Polygon given an arbitrary collection of closed "
-"linestrings as a MultiLineString Well-Known text representation.</refpurpose>"
+msgid "<refpurpose>Construct a Polygon given an arbitrary collection of closed linestrings as a MultiLineString Well-Known text representation.</refpurpose>"
 msgstr ""
 
 #. Tag: title
@@ -62,18 +58,13 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:36
 #, no-c-format
-msgid ""
-"<para>Construct a Polygon given an arbitrary collection of closed "
-"linestrings as a MultiLineString Well-Known text representation.</para>"
+msgid "<para>Construct a Polygon given an arbitrary collection of closed linestrings as a MultiLineString Well-Known text representation.</para>"
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:41
 #, no-c-format
-msgid ""
-"Throws an error if WKT is not a MULTILINESTRING. Throws an error if output "
-"is a MULTIPOLYGON; use ST_BdMPolyFromText in that case, or see "
-"ST_BuildArea() for a postgis-specific approach."
+msgid "Throws an error if WKT is not a MULTILINESTRING. Throws an error if output is a MULTIPOLYGON; use ST_BdMPolyFromText in that case, or see ST_BuildArea() for a postgis-specific approach."
 msgstr ""
 
 #. Tag: para
@@ -121,29 +112,19 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_input.xml:68
 #, no-c-format
-msgid ""
-"Construct a MultiPolygon given an arbitrary collection of closed linestrings "
-"as a MultiLineString text representation Well-Known text representation."
+msgid "Construct a MultiPolygon given an arbitrary collection of closed linestrings as a MultiLineString text representation Well-Known text representation."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:86
 #, no-c-format
-msgid ""
-"Construct a Polygon given an arbitrary collection of closed linestrings, "
-"polygons, MultiLineStrings as Well-Known text representation."
+msgid "Construct a Polygon given an arbitrary collection of closed linestrings, polygons, MultiLineStrings as Well-Known text representation."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:91
 #, no-c-format
-msgid ""
-"Throws an error if WKT is not a MULTILINESTRING. Forces MULTIPOLYGON output "
-"even when result is really only composed by a single POLYGON; use <link "
-"linkend=\"ST_BdPolyFromText\">ST_BdPolyFromText</link> if you're sure a "
-"single POLYGON will result from operation, or see <link "
-"linkend=\"ST_BuildArea\">ST_BuildArea()</link> for a postgis-specific "
-"approach."
+msgid "Throws an error if WKT is not a MULTILINESTRING. Forces MULTIPOLYGON output even when result is really only composed by a single POLYGON; use <link linkend=\"ST_BdPolyFromText\">ST_BdPolyFromText</link> if you're sure a single POLYGON will result from operation, or see <link linkend=\"ST_BuildArea\">ST_BuildArea()</link> for a postgis-specific approach."
 msgstr ""
 
 #. Tag: para
@@ -155,18 +136,13 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_input.xml:120 reference_input.xml:149
 #, no-c-format
-msgid ""
-"Return a specified geography value from Well-Known Text representation or "
-"extended (WKT)."
+msgid "Return a specified geography value from Well-Known Text representation or extended (WKT)."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:132
 #, no-c-format
-msgid ""
-"Returns a geography object from the well-known text or extended well-known "
-"representation. SRID 4326 is assumed if unspecified. This is an alias for "
-"ST_GeographyFromText. Points are always expressed in long lat form."
+msgid "Returns a geography object from the well-known text or extended well-known representation. SRID 4326 is assumed if unspecified. This is an alias for ST_GeographyFromText. Points are always expressed in long lat form."
 msgstr ""
 
 #. Tag: title
@@ -191,9 +167,7 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:161
 #, no-c-format
-msgid ""
-"Returns a geography object from the well-known text representation. SRID "
-"4326 is assumed if unspecified."
+msgid "Returns a geography object from the well-known text representation. SRID 4326 is assumed if unspecified."
 msgstr ""
 
 #. Tag: para
@@ -205,17 +179,13 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_input.xml:174
 #, no-c-format
-msgid ""
-"Makes a collection Geometry from collection WKT with the given SRID. If SRID "
-"is not given, it defaults to 0."
+msgid "Makes a collection Geometry from collection WKT with the given SRID. If SRID is not given, it defaults to 0."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:197
 #, no-c-format
-msgid ""
-"Makes a collection Geometry from the Well-Known-Text (WKT) representation "
-"with the given SRID. If SRID is not given, it defaults to 0."
+msgid "Makes a collection Geometry from the Well-Known-Text (WKT) representation with the given SRID. If SRID is not given, it defaults to 0."
 msgstr ""
 
 #. Tag: para
@@ -234,10 +204,7 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:204
 #, no-c-format
-msgid ""
-"If you are absolutely sure all your WKT geometries are collections, don't "
-"use this function. It is slower than ST_GeomFromText since it adds an "
-"additional validation step."
+msgid "If you are absolutely sure all your WKT geometries are collections, don't use this function. It is slower than ST_GeomFromText since it adds an additional validation step."
 msgstr ""
 
 #. Tag: para
@@ -255,25 +222,19 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_input.xml:232
 #, no-c-format
-msgid ""
-"Return a specified ST_Geometry value from Extended Well-Known Text "
-"representation (EWKT)."
+msgid "Return a specified ST_Geometry value from Extended Well-Known Text representation (EWKT)."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:246
 #, no-c-format
-msgid ""
-"Constructs a PostGIS ST_Geometry object from the OGC Extended Well-Known "
-"text (EWKT) representation."
+msgid "Constructs a PostGIS ST_Geometry object from the OGC Extended Well-Known text (EWKT) representation."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:248
 #, no-c-format
-msgid ""
-"The EWKT format is not an OGC standard, but an PostGIS specific format that "
-"includes the spatial reference system (SRID) identifier"
+msgid "The EWKT format is not an OGC standard, but an PostGIS specific format that includes the spatial reference system (SRID) identifier"
 msgstr ""
 
 #. Tag: para
@@ -318,22 +279,13 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_input.xml:273
 #, no-c-format
-msgid ""
-"Takes MARC21/XML geographic data as input and returns a PostGIS geometry "
-"object."
+msgid "Takes MARC21/XML geographic data as input and returns a PostGIS geometry object."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:293
 #, no-c-format
-msgid ""
-"This function creates a PostGIS geometry from a MARC21/XML record, which can "
-"contain a <varname>POINT</varname> or a <varname>POLYGON</varname>. In case "
-"of multiple geographic data entries in the same MARC21/XML record, a "
-"<varname>MULTIPOINT</varname> or <varname>MULTIPOLYGON</varname> will be "
-"returned. If the record contains mixed geometry types, a "
-"<varname>GEOMETRYCOLLECTION</varname> will be returned. It returns NULL if "
-"the MARC21/XML record does not contain any geographic data (datafield:034)."
+msgid "This function creates a PostGIS geometry from a MARC21/XML record, which can contain a <varname>POINT</varname> or a <varname>POLYGON</varname>. In case of multiple geographic data entries in the same MARC21/XML record, a <varname>MULTIPOINT</varname> or <varname>MULTIPOLYGON</varname> will be returned. If the record contains mixed geometry types, a <varname>GEOMETRYCOLLECTION</varname> will be returned. It returns NULL if the MARC21/XML record does not contain any geographic data (datafield:034)."
 msgstr ""
 
 #. Tag: para
@@ -357,51 +309,37 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:312
 #, no-c-format
-msgid ""
-"The MARC21/XML Coded Cartographic Mathematical Data currently does not "
-"provide any means to describe the Spatial Reference System of the encoded "
-"coordinates, so this function will always return a geometry with "
-"<varname>SRID 0</varname>."
+msgid "The MARC21/XML Coded Cartographic Mathematical Data currently does not provide any means to describe the Spatial Reference System of the encoded coordinates, so this function will always return a geometry with <varname>SRID 0</varname>."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:319
 #, no-c-format
-msgid ""
-"Returned <varname>POLYGON</varname> geometries will always be clockwise "
-"oriented."
+msgid "Returned <varname>POLYGON</varname> geometries will always be clockwise oriented."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:330
 #, no-c-format
-msgid ""
-"Converting MARC21/XML geographic data containing a single <varname>POINT</"
-"varname> encoded as <varname>hddd.dddddd</varname>"
+msgid "Converting MARC21/XML geographic data containing a single <varname>POINT</varname> encoded as <varname>hddd.dddddd</varname>"
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:333
 #, no-c-format
-msgid ""
-"Converting MARC21/XML geographic data containing a single <varname>POLYGON</"
-"varname> encoded as <varname>hdddmmss</varname>"
+msgid "Converting MARC21/XML geographic data containing a single <varname>POLYGON</varname> encoded as <varname>hdddmmss</varname>"
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:337
 #, no-c-format
-msgid ""
-"Converting MARC21/XML geographic data containing a <varname>POLYGON</"
-"varname> and a <varname>POINT</varname>:"
+msgid "Converting MARC21/XML geographic data containing a <varname>POLYGON</varname> and a <varname>POINT</varname>:"
 msgstr ""
 
 #. Tag: refpurpose
 #: reference_input.xml:354 reference_input.xml:783
 #, no-c-format
-msgid ""
-"Return a specified ST_Geometry value from Well-Known Text representation "
-"(WKT). This is an alias name for ST_GeomFromText"
+msgid "Return a specified ST_Geometry value from Well-Known Text representation (WKT). This is an alias name for ST_GeomFromText"
 msgstr ""
 
 #. Tag: para
@@ -419,27 +357,19 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_input.xml:383
 #, no-c-format
-msgid ""
-"Return a specified ST_Geometry value from Well-Known Text representation "
-"(WKT)."
+msgid "Return a specified ST_Geometry value from Well-Known Text representation (WKT)."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:402
 #, no-c-format
-msgid ""
-"Constructs a PostGIS ST_Geometry object from the OGC Well-Known text "
-"representation."
+msgid "Constructs a PostGIS ST_Geometry object from the OGC Well-Known text representation."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:406
 #, no-c-format
-msgid ""
-"There are two variants of ST_GeomFromText function. The first takes no SRID "
-"and returns a geometry with no defined spatial reference system (SRID=0). "
-"The second takes a SRID as the second argument and returns a geometry that "
-"includes this SRID as part of its metadata."
+msgid "There are two variants of ST_GeomFromText function. The first takes no SRID and returns a geometry with no defined spatial reference system (SRID=0). The second takes a SRID as the second argument and returns a geometry that includes this SRID as part of its metadata."
 msgstr ""
 
 #. Tag: para
@@ -451,22 +381,13 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:415
 #, no-c-format
-msgid ""
-"While not OGC-compliant, <xref linkend=\"ST_MakePoint\"/> is faster than "
-"ST_GeomFromText and ST_PointFromText. It is also easier to use for numeric "
-"coordinate values. <xref linkend=\"ST_Point\"/> is another option similar in "
-"speed to <xref linkend=\"ST_MakePoint\"/> and is OGC-compliant, but doesn't "
-"support anything but 2D points."
+msgid "While not OGC-compliant, <xref linkend=\"ST_MakePoint\"/> is faster than ST_GeomFromText and ST_PointFromText. It is also easier to use for numeric coordinate values. <xref linkend=\"ST_Point\"/> is another option similar in speed to <xref linkend=\"ST_MakePoint\"/> and is OGC-compliant, but doesn't support anything but 2D points."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:416
 #, no-c-format
-msgid ""
-"Changed: 2.0.0 In prior versions of PostGIS "
-"ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') was allowed. This is now "
-"illegal in PostGIS 2.0.0 to better conform with SQL/MM standards. This "
-"should now be written as ST_GeomFromText('GEOMETRYCOLLECTION EMPTY')"
+msgid "Changed: 2.0.0 In prior versions of PostGIS ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') was allowed. This is now illegal in PostGIS 2.0.0 to better conform with SQL/MM standards. This should now be written as ST_GeomFromText('GEOMETRYCOLLECTION EMPTY')"
 msgstr ""
 
 #. Tag: para
@@ -478,17 +399,13 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_input.xml:436
 #, no-c-format
-msgid ""
-"Makes a Geometry from WKT representation with the given SRID. If SRID is not "
-"given, it defaults to 0."
+msgid "Makes a Geometry from WKT representation with the given SRID. If SRID is not given, it defaults to 0."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:458
 #, no-c-format
-msgid ""
-"Makes a Geometry from WKT with the given SRID. If SRID is not given, it "
-"defaults to 0. If WKT passed in is not a LINESTRING, then null is returned."
+msgid "Makes a Geometry from WKT with the given SRID. If SRID is not given, it defaults to 0. If WKT passed in is not a LINESTRING, then null is returned."
 msgstr ""
 
 #. Tag: para
@@ -500,10 +417,7 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:467
 #, no-c-format
-msgid ""
-"If you know all your geometries are LINESTRINGS, its more efficient to just "
-"use ST_GeomFromText. This just calls ST_GeomFromText and adds additional "
-"validation that it returns a linestring."
+msgid "If you know all your geometries are LINESTRINGS, its more efficient to just use ST_GeomFromText. This just calls ST_GeomFromText and adds additional validation that it returns a linestring."
 msgstr ""
 
 #. Tag: para
@@ -521,9 +435,7 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:518
 #, no-c-format
-msgid ""
-"Makes a Geometry from Well-Known-Text (WKT) with the given SRID. If SRID is "
-"not given, it defaults to 0."
+msgid "Makes a Geometry from Well-Known-Text (WKT) with the given SRID. If SRID is not given, it defaults to 0."
 msgstr ""
 
 #. Tag: para
@@ -535,10 +447,7 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:527 reference_input.xml:588
 #, no-c-format
-msgid ""
-"If you are absolutely sure all your WKT geometries are points, don't use "
-"this function. It is slower than ST_GeomFromText since it adds an additional "
-"validation step."
+msgid "If you are absolutely sure all your WKT geometries are points, don't use this function. It is slower than ST_GeomFromText since it adds an additional validation step."
 msgstr ""
 
 #. Tag: para
@@ -550,17 +459,13 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_input.xml:556 reference_input.xml:732
 #, no-c-format
-msgid ""
-"<refpurpose>Makes a Geometry from WKT with the given SRID. If SRID is not "
-"given, it defaults to 0.</refpurpose>"
+msgid "<refpurpose>Makes a Geometry from WKT with the given SRID. If SRID is not given, it defaults to 0.</refpurpose>"
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:579
 #, no-c-format
-msgid ""
-"<para>Makes a Geometry from WKT with the given SRID. If SRID is not given, "
-"it defaults to 0.</para>"
+msgid "<para>Makes a Geometry from WKT with the given SRID. If SRID is not given, it defaults to 0.</para>"
 msgstr ""
 
 #. Tag: para
@@ -584,17 +489,13 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_input.xml:617
 #, no-c-format
-msgid ""
-"Makes a MultiPolygon Geometry from WKT with the given SRID. If SRID is not "
-"given, it defaults to 0."
+msgid "Makes a MultiPolygon Geometry from WKT with the given SRID. If SRID is not given, it defaults to 0."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:640
 #, no-c-format
-msgid ""
-"Makes a MultiPolygon from WKT with the given SRID. If SRID is not given, it "
-"defaults to 0."
+msgid "Makes a MultiPolygon from WKT with the given SRID. If SRID is not given, it defaults to 0."
 msgstr ""
 
 #. Tag: para
@@ -606,10 +507,7 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:649
 #, no-c-format
-msgid ""
-"If you are absolutely sure all your WKT geometries are multipolygons, don't "
-"use this function. It is slower than ST_GeomFromText since it adds an "
-"additional validation step."
+msgid "If you are absolutely sure all your WKT geometries are multipolygons, don't use this function. It is slower than ST_GeomFromText since it adds an additional validation step."
 msgstr ""
 
 #. Tag: para
@@ -621,42 +519,25 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_input.xml:677
 #, no-c-format
-msgid ""
-"Makes a point Geometry from WKT with the given SRID. If SRID is not given, "
-"it defaults to unknown."
+msgid "Makes a point Geometry from WKT with the given SRID. If SRID is not given, it defaults to unknown."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:697
 #, no-c-format
-msgid ""
-"Constructs a PostGIS ST_Geometry point object from the OGC Well-Known text "
-"representation. If SRID is not given, it defaults to unknown (currently 0). "
-"If geometry is not a WKT point representation, returns null. If completely "
-"invalid WKT, then throws an error."
+msgid "Constructs a PostGIS ST_Geometry point object from the OGC Well-Known text representation. If SRID is not given, it defaults to unknown (currently 0). If geometry is not a WKT point representation, returns null. If completely invalid WKT, then throws an error."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:703
 #, no-c-format
-msgid ""
-"There are 2 variants of ST_PointFromText function, the first takes no SRID "
-"and returns a geometry with no defined spatial reference system. The second "
-"takes a spatial reference id as the second argument and returns an "
-"ST_Geometry that includes this srid as part of its meta-data. The srid must "
-"be defined in the spatial_ref_sys table."
+msgid "There are 2 variants of ST_PointFromText function, the first takes no SRID and returns a geometry with no defined spatial reference system. The second takes a spatial reference id as the second argument and returns an ST_Geometry that includes this srid as part of its meta-data. The srid must be defined in the spatial_ref_sys table."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:710
 #, no-c-format
-msgid ""
-"If you are absolutely sure all your WKT geometries are points, don't use "
-"this function. It is slower than ST_GeomFromText since it adds an additional "
-"validation step. If you are building points from long lat coordinates and "
-"care more about performance and accuracy than OGC compliance, use <xref "
-"linkend=\"ST_MakePoint\"/> or OGC compliant alias <xref linkend=\"ST_Point\"/"
-">."
+msgid "If you are absolutely sure all your WKT geometries are points, don't use this function. It is slower than ST_GeomFromText since it adds an additional validation step. If you are building points from long lat coordinates and care more about performance and accuracy than OGC compliance, use <xref linkend=\"ST_MakePoint\"/> or OGC compliant alias <xref linkend=\"ST_Point\"/>."
 msgstr ""
 
 #. Tag: para
@@ -668,26 +549,19 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:724
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_Point\"/>, <xref "
-"linkend=\"ST_SRID\"/>"
+msgid ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_SRID\"/>"
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:753
 #, no-c-format
-msgid ""
-"Makes a Geometry from WKT with the given SRID. If SRID is not given, it "
-"defaults to 0. Returns null if WKT is not a polygon."
+msgid "Makes a Geometry from WKT with the given SRID. If SRID is not given, it defaults to 0. Returns null if WKT is not a polygon."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:760
 #, no-c-format
-msgid ""
-"If you are absolutely sure all your WKT geometries are polygons, don't use "
-"this function. It is slower than ST_GeomFromText since it adds an additional "
-"validation step."
+msgid "If you are absolutely sure all your WKT geometries are polygons, don't use this function. It is slower than ST_GeomFromText since it adds an additional validation step."
 msgstr ""
 
 #. Tag: para
@@ -711,19 +585,13 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_input.xml:812
 #, no-c-format
-msgid ""
-"Creates a geography instance from a Well-Known Binary geometry "
-"representation (WKB) or extended Well Known Binary (EWKB)."
+msgid "Creates a geography instance from a Well-Known Binary geometry representation (WKB) or extended Well Known Binary (EWKB)."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:828
 #, no-c-format
-msgid ""
-"The <varname>ST_GeogFromWKB</varname> function, takes a well-known binary "
-"representation (WKB) of a geometry or PostGIS Extended WKB and creates an "
-"instance of the appropriate geography type. This function plays the role of "
-"the Geometry Factory in SQL."
+msgid "The <varname>ST_GeogFromWKB</varname> function, takes a well-known binary representation (WKB) of a geometry or PostGIS Extended WKB and creates an instance of the appropriate geography type. This function plays the role of the Geometry Factory in SQL."
 msgstr ""
 
 #. Tag: para
@@ -741,53 +609,37 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_input.xml:854
 #, no-c-format
-msgid ""
-"Return a specified ST_Geometry value from Extended Well-Known Binary "
-"representation (EWKB)."
+msgid "Return a specified ST_Geometry value from Extended Well-Known Binary representation (EWKB)."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:868
 #, no-c-format
-msgid ""
-"Constructs a PostGIS ST_Geometry object from the OGC Extended Well-Known "
-"binary (EWKT) representation."
+msgid "Constructs a PostGIS ST_Geometry object from the OGC Extended Well-Known binary (EWKT) representation."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:870
 #, no-c-format
-msgid ""
-"The EWKB format is not an OGC standard, but a PostGIS specific format that "
-"includes the spatial reference system (SRID) identifier"
+msgid "The EWKB format is not an OGC standard, but a PostGIS specific format that includes the spatial reference system (SRID) identifier"
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:882
 #, no-c-format
-msgid ""
-"line string binary rep 0f LINESTRING(-71.160281 42.258729,-71.160837 "
-"42.259113,-71.161144 42.25932) in NAD 83 long lat (4269)."
+msgid "line string binary rep 0f LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932) in NAD 83 long lat (4269)."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:884
 #, no-c-format
-msgid ""
-"NOTE: Even though byte arrays are delimited with \\ and may have ', we need "
-"to escape both out with \\ and '' if standard_conforming_strings is off. So "
-"it does not look exactly like its AsEWKB representation."
+msgid "NOTE: Even though byte arrays are delimited with \\ and may have ', we need to escape both out with \\ and '' if standard_conforming_strings is off. So it does not look exactly like its AsEWKB representation."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:888
 #, no-c-format
-msgid ""
-"In PostgreSQL 9.1+ - standard_conforming_strings is set to on by default, "
-"where as in past versions it was set to off. You can change defaults as "
-"needed for a single query or at the database or server level. Below is how "
-"you would do it with standard_conforming_strings = on. In this case we "
-"escape the ' with standard ansi ', but slashes are not escaped"
+msgid "In PostgreSQL 9.1+ - standard_conforming_strings is set to on by default, where as in past versions it was set to off. You can change defaults as needed for a single query or at the database or server level. Below is how you would do it with standard_conforming_strings = on. In this case we escape the ' with standard ansi ', but slashes are not escaped"
 msgstr ""
 
 #. Tag: para
@@ -799,20 +651,13 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_input.xml:902
 #, no-c-format
-msgid ""
-"Creates a geometry instance from a Well-Known Binary geometry representation "
-"(WKB) and optional SRID."
+msgid "Creates a geometry instance from a Well-Known Binary geometry representation (WKB) and optional SRID."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:924
 #, no-c-format
-msgid ""
-"The <varname>ST_GeomFromWKB</varname> function, takes a well-known binary "
-"representation of a geometry and a Spatial Reference System ID "
-"(<varname>SRID</varname>) and creates an instance of the appropriate "
-"geometry type. This function plays the role of the Geometry Factory in SQL. "
-"This is an alternate name for ST_WKBToSQL."
+msgid "The <varname>ST_GeomFromWKB</varname> function, takes a well-known binary representation of a geometry and a Spatial Reference System ID (<varname>SRID</varname>) and creates an instance of the appropriate geometry type. This function plays the role of the Geometry Factory in SQL. This is an alternate name for ST_WKBToSQL."
 msgstr ""
 
 #. Tag: para
@@ -824,8 +669,7 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:931
 #, no-c-format
-msgid ""
-"&sfs_compliant; s3.2.7.2 - the optional SRID is from the conformance suite"
+msgid "&sfs_compliant; s3.2.7.2 - the optional SRID is from the conformance suite"
 msgstr ""
 
 #. Tag: para
@@ -849,31 +693,19 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:976
 #, no-c-format
-msgid ""
-"The <varname>ST_LineFromWKB</varname> function, takes a well-known binary "
-"representation of geometry and a Spatial Reference System ID (<varname>SRID</"
-"varname>) and creates an instance of the appropriate geometry type - in this "
-"case, a <varname>LINESTRING</varname> geometry. This function plays the role "
-"of the Geometry Factory in SQL."
+msgid "The <varname>ST_LineFromWKB</varname> function, takes a well-known binary representation of geometry and a Spatial Reference System ID (<varname>SRID</varname>) and creates an instance of the appropriate geometry type - in this case, a <varname>LINESTRING</varname> geometry. This function plays the role of the Geometry Factory in SQL."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:982
 #, no-c-format
-msgid ""
-"If an SRID is not specified, it defaults to 0. <varname>NULL</varname> is "
-"returned if the input <varname>bytea</varname> does not represent a "
-"<varname>LINESTRING</varname>."
+msgid "If an SRID is not specified, it defaults to 0. <varname>NULL</varname> is returned if the input <varname>bytea</varname> does not represent a <varname>LINESTRING</varname>."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:992
 #, no-c-format
-msgid ""
-"If you know all your geometries are <varname>LINESTRING</varname>s, its more "
-"efficient to just use <xref linkend=\"ST_GeomFromWKB\"/>. This function just "
-"calls <xref linkend=\"ST_GeomFromWKB\"/> and adds additional validation that "
-"it returns a linestring."
+msgid "If you know all your geometries are <varname>LINESTRING</varname>s, its more efficient to just use <xref linkend=\"ST_GeomFromWKB\"/>. This function just calls <xref linkend=\"ST_GeomFromWKB\"/> and adds additional validation that it returns a linestring."
 msgstr ""
 
 #. Tag: para
@@ -897,22 +729,13 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:1044
 #, no-c-format
-msgid ""
-"The <varname>ST_LinestringFromWKB</varname> function, takes a well-known "
-"binary representation of geometry and a Spatial Reference System ID "
-"(<varname>SRID</varname>) and creates an instance of the appropriate "
-"geometry type - in this case, a <varname>LINESTRING</varname> geometry. This "
-"function plays the role of the Geometry Factory in SQL."
+msgid "The <varname>ST_LinestringFromWKB</varname> function, takes a well-known binary representation of geometry and a Spatial Reference System ID (<varname>SRID</varname>) and creates an instance of the appropriate geometry type - in this case, a <varname>LINESTRING</varname> geometry. This function plays the role of the Geometry Factory in SQL."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1050
 #, no-c-format
-msgid ""
-"If an SRID is not specified, it defaults to 0. <varname>NULL</varname> is "
-"returned if the input <varname>bytea</varname> does not represent a "
-"<varname>LINESTRING</varname> geometry. This an alias for <xref "
-"linkend=\"ST_LineFromWKB\"/>."
+msgid "If an SRID is not specified, it defaults to 0. <varname>NULL</varname> is returned if the input <varname>bytea</varname> does not represent a <varname>LINESTRING</varname> geometry. This an alias for <xref linkend=\"ST_LineFromWKB\"/>."
 msgstr ""
 
 #. Tag: para
@@ -924,11 +747,7 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:1059
 #, no-c-format
-msgid ""
-"If you know all your geometries are <varname>LINESTRING</varname>s, it's "
-"more efficient to just use <xref linkend=\"ST_GeomFromWKB\"/>. This function "
-"just calls <xref linkend=\"ST_GeomFromWKB\"/> and adds additional validation "
-"that it returns a <varname>LINESTRING</varname>."
+msgid "If you know all your geometries are <varname>LINESTRING</varname>s, it's more efficient to just use <xref linkend=\"ST_GeomFromWKB\"/>. This function just calls <xref linkend=\"ST_GeomFromWKB\"/> and adds additional validation that it returns a <varname>LINESTRING</varname>."
 msgstr ""
 
 #. Tag: para
@@ -946,21 +765,13 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:1108
 #, no-c-format
-msgid ""
-"The <varname>ST_PointFromWKB</varname> function, takes a well-known binary "
-"representation of geometry and a Spatial Reference System ID (<varname>SRID</"
-"varname>) and creates an instance of the appropriate geometry type - in this "
-"case, a <varname>POINT</varname> geometry. This function plays the role of "
-"the Geometry Factory in SQL."
+msgid "The <varname>ST_PointFromWKB</varname> function, takes a well-known binary representation of geometry and a Spatial Reference System ID (<varname>SRID</varname>) and creates an instance of the appropriate geometry type - in this case, a <varname>POINT</varname> geometry. This function plays the role of the Geometry Factory in SQL."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1114
 #, no-c-format
-msgid ""
-"If an SRID is not specified, it defaults to 0. <varname>NULL</varname> is "
-"returned if the input <varname>bytea</varname> does not represent a "
-"<varname>POINT</varname> geometry."
+msgid "If an SRID is not specified, it defaults to 0. <varname>NULL</varname> is returned if the input <varname>bytea</varname> does not represent a <varname>POINT</varname> geometry."
 msgstr ""
 
 #. Tag: para
@@ -978,9 +789,7 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_input.xml:1140
 #, no-c-format
-msgid ""
-"Return a specified ST_Geometry value from Well-Known Binary representation "
-"(WKB). This is an alias name for ST_GeomFromWKB that takes no srid"
+msgid "Return a specified ST_Geometry value from Well-Known Binary representation (WKB). This is an alias name for ST_GeomFromWKB that takes no srid"
 msgstr ""
 
 #. Tag: para
@@ -1010,18 +819,13 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:1189
 #, no-c-format
-msgid ""
-"If no <varname>precision</varname> is specified ST_Box2dFromGeoHash returns "
-"a BOX2D based on full precision of the input GeoHash string."
+msgid "If no <varname>precision</varname> is specified ST_Box2dFromGeoHash returns a BOX2D based on full precision of the input GeoHash string."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1191
 #, no-c-format
-msgid ""
-"If <varname>precision</varname> is specified ST_Box2dFromGeoHash will use "
-"that many characters from the GeoHash to create the BOX2D. Lower precision "
-"values results in larger BOX2Ds and larger values increase the precision."
+msgid "If <varname>precision</varname> is specified ST_Box2dFromGeoHash will use that many characters from the GeoHash to create the BOX2D. Lower precision values results in larger BOX2Ds and larger values increase the precision."
 msgstr ""
 
 #. Tag: para
@@ -1033,9 +837,7 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:1203
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_GeomFromGeoHash\"/>, <xref "
-"linkend=\"ST_PointFromGeoHash\"/>"
+msgid ", <xref linkend=\"ST_GeomFromGeoHash\"/>, <xref linkend=\"ST_PointFromGeoHash\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1047,68 +849,49 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:1228
 #, no-c-format
-msgid ""
-"Return a geometry from a GeoHash string. The geometry will be a polygon "
-"representing the GeoHash bounds."
+msgid "Return a geometry from a GeoHash string. The geometry will be a polygon representing the GeoHash bounds."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1230
 #, no-c-format
-msgid ""
-"If no <varname>precision</varname> is specified ST_GeomFromGeoHash returns a "
-"polygon based on full precision of the input GeoHash string."
+msgid "If no <varname>precision</varname> is specified ST_GeomFromGeoHash returns a polygon based on full precision of the input GeoHash string."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1232
 #, no-c-format
-msgid ""
-"If <varname>precision</varname> is specified ST_GeomFromGeoHash will use "
-"that many characters from the GeoHash to create the polygon."
+msgid "If <varname>precision</varname> is specified ST_GeomFromGeoHash will use that many characters from the GeoHash to create the polygon."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1244
 #, no-c-format
-msgid ""
-",<xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref "
-"linkend=\"ST_PointFromGeoHash\"/>"
+msgid ",<xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_PointFromGeoHash\"/>"
 msgstr ""
 
 #. Tag: refpurpose
 #: reference_input.xml:1251
 #, no-c-format
-msgid ""
-"Takes as input GML representation of geometry and outputs a PostGIS geometry "
-"object"
+msgid "Takes as input GML representation of geometry and outputs a PostGIS geometry object"
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1270
 #, no-c-format
-msgid ""
-"Constructs a PostGIS ST_Geometry object from the OGC GML representation."
+msgid "Constructs a PostGIS ST_Geometry object from the OGC GML representation."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1271
 #, no-c-format
-msgid ""
-"ST_GeomFromGML works only for GML Geometry fragments. It throws an error if "
-"you try to use it on a whole GML document."
+msgid "ST_GeomFromGML works only for GML Geometry fragments. It throws an error if you try to use it on a whole GML document."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1272
 #, no-c-format
-msgid ""
-"OGC GML versions supported: <itemizedlist> <listitem> <para>GML 3.2.1 "
-"Namespace</para> </listitem> <listitem> <para>GML 3.1.1 Simple Features "
-"profile SF-2 (with GML 3.1.0 and 3.0.0 backward compatibility)</para> </"
-"listitem> <listitem> <para>GML 2.1.2</para> </listitem> </itemizedlist> OGC "
-"GML standards, cf: <ulink url=\"http://www.opengeospatial.org/standards/"
-"gml\">http://www.opengeospatial.org/standards/gml</ulink>:"
+msgid "OGC GML versions supported: <itemizedlist> <listitem> <para>GML 3.2.1 Namespace</para> </listitem> <listitem> <para>GML 3.1.1 Simple Features profile SF-2 (with GML 3.1.0 and 3.0.0 backward compatibility)</para> </listitem> <listitem> <para>GML 2.1.2</para> </listitem> </itemizedlist> OGC GML standards, cf: <ulink url=\"http://www.opengeospatial.org/standards/gml\">http://www.opengeospatial.org/standards/gml</ulink>:"
 msgstr ""
 
 #. Tag: para
@@ -1126,29 +909,19 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:1294
 #, no-c-format
-msgid ""
-"GML allow mixed dimensions (2D and 3D inside the same MultiGeometry for "
-"instance). As PostGIS geometries don't, ST_GeomFromGML convert the whole "
-"geometry to 2D if a missing Z dimension is found once."
+msgid "GML allow mixed dimensions (2D and 3D inside the same MultiGeometry for instance). As PostGIS geometries don't, ST_GeomFromGML convert the whole geometry to 2D if a missing Z dimension is found once."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1296
 #, no-c-format
-msgid ""
-"GML support mixed SRS inside the same MultiGeometry. As PostGIS geometries "
-"don't, ST_GeomFromGML, in this case, reproject all subgeometries to the SRS "
-"root node. If no srsName attribute available for the GML root node, the "
-"function throw an error."
+msgid "GML support mixed SRS inside the same MultiGeometry. As PostGIS geometries don't, ST_GeomFromGML, in this case, reproject all subgeometries to the SRS root node. If no srsName attribute available for the GML root node, the function throw an error."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1298
 #, no-c-format
-msgid ""
-"ST_GeomFromGML function is not pedantic about an explicit GML namespace. You "
-"could avoid to mention it explicitly for common usages. But you need it if "
-"you want to use XLink feature inside GML."
+msgid "ST_GeomFromGML function is not pedantic about an explicit GML namespace. You could avoid to mention it explicitly for common usages. But you need it if you want to use XLink feature inside GML."
 msgstr ""
 
 #. Tag: para
@@ -1184,9 +957,7 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_input.xml:1330
 #, no-c-format
-msgid ""
-"Takes as input a geojson representation of a geometry and outputs a PostGIS "
-"geometry object"
+msgid "Takes as input a geojson representation of a geometry and outputs a PostGIS geometry object"
 msgstr ""
 
 #. Tag: para
@@ -1198,17 +969,13 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:1356
 #, no-c-format
-msgid ""
-"ST_GeomFromGeoJSON works only for JSON Geometry fragments. It throws an "
-"error if you try to use it on a whole JSON document."
+msgid "ST_GeomFromGeoJSON works only for JSON Geometry fragments. It throws an error if you try to use it on a whole JSON document."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1358
 #, no-c-format
-msgid ""
-"Enhanced: 3.0.0 parsed geometry defaults to SRID=4326 if not specified "
-"otherwise."
+msgid "Enhanced: 3.0.0 parsed geometry defaults to SRID=4326 if not specified otherwise."
 msgstr ""
 
 #. Tag: para
@@ -1226,52 +993,37 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:1361
 #, no-c-format
-msgid ""
-"If you do not have JSON-C enabled, support you will get an error notice "
-"instead of seeing an output. To enable JSON-C, run configure --with-jsondir=/"
-"path/to/json-c. See <xref linkend=\"installation_configuration\"/> for "
-"details."
+msgid "If you do not have JSON-C enabled, support you will get an error notice instead of seeing an output. To enable JSON-C, run configure --with-jsondir=/path/to/json-c. See <xref linkend=\"installation_configuration\"/> for details."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1375
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_AsGeoJSON\"/>, <xref "
-"linkend=\"installation_configuration\"/>"
+msgid ", <xref linkend=\"ST_AsGeoJSON\"/>, <xref linkend=\"installation_configuration\"/>"
 msgstr ""
 
 #. Tag: refpurpose
 #: reference_input.xml:1382
 #, no-c-format
-msgid ""
-"Takes as input KML representation of geometry and outputs a PostGIS geometry "
-"object"
+msgid "Takes as input KML representation of geometry and outputs a PostGIS geometry object"
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1396
 #, no-c-format
-msgid ""
-"Constructs a PostGIS ST_Geometry object from the OGC KML representation."
+msgid "Constructs a PostGIS ST_Geometry object from the OGC KML representation."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1397
 #, no-c-format
-msgid ""
-"ST_GeomFromKML works only for KML Geometry fragments. It throws an error if "
-"you try to use it on a whole KML document."
+msgid "ST_GeomFromKML works only for KML Geometry fragments. It throws an error if you try to use it on a whole KML document."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1398
 #, no-c-format
-msgid ""
-"OGC KML versions supported: <itemizedlist> <listitem> <para>KML 2.2.0 "
-"Namespace</para> </listitem> </itemizedlist> OGC KML standards, cf: <ulink "
-"url=\"http://www.opengeospatial.org/standards/kml\">http://www."
-"opengeospatial.org/standards/kml</ulink>:"
+msgid "OGC KML versions supported: <itemizedlist> <listitem> <para>KML 2.2.0 Namespace</para> </listitem> </itemizedlist> OGC KML standards, cf: <ulink url=\"http://www.opengeospatial.org/standards/kml\">http://www.opengeospatial.org/standards/kml</ulink>:"
 msgstr ""
 
 #. Tag: para
@@ -1295,28 +1047,19 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_input.xml:1430
 #, no-c-format
-msgid ""
-"Creates a geometry instance from a TWKB (\"<ulink url=\"https://github.com/"
-"TWKB/Specification/blob/master/twkb.md\">Tiny Well-Known Binary</ulink>\") "
-"geometry representation."
+msgid "Creates a geometry instance from a TWKB (\"<ulink url=\"https://github.com/TWKB/Specification/blob/master/twkb.md\">Tiny Well-Known Binary</ulink>\") geometry representation."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1446
 #, no-c-format
-msgid ""
-"The <varname>ST_GeomFromTWKB</varname> function, takes a a TWKB (\"<ulink "
-"url=\"https://github.com/TWKB/Specification/blob/master/twkb.md\">Tiny Well-"
-"Known Binary</ulink>\") geometry representation (WKB) and creates an "
-"instance of the appropriate geometry type."
+msgid "The <varname>ST_GeomFromTWKB</varname> function, takes a a TWKB (\"<ulink url=\"https://github.com/TWKB/Specification/blob/master/twkb.md\">Tiny Well-Known Binary</ulink>\") geometry representation (WKB) and creates an instance of the appropriate geometry type."
 msgstr ""
 
 #. Tag: refpurpose
 #: reference_input.xml:1467
 #, no-c-format
-msgid ""
-"Return a specified ST_Geometry value from GML representation. This is an "
-"alias name for ST_GeomFromGML"
+msgid "Return a specified ST_Geometry value from GML representation. This is an alias name for ST_GeomFromGML"
 msgstr ""
 
 #. Tag: para
@@ -1346,18 +1089,13 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:1517
 #, no-c-format
-msgid ""
-"Optional <varname>precision</varname> specifies how many decimal places will "
-"be preserved in Encoded Polyline. Value should be the same on encoding and "
-"decoding, or coordinates will be incorrect."
+msgid "Optional <varname>precision</varname> specifies how many decimal places will be preserved in Encoded Polyline. Value should be the same on encoding and decoding, or coordinates will be incorrect."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1519
 #, no-c-format
-msgid ""
-"See http://developers.google.com/maps/documentation/utilities/"
-"polylinealgorithm"
+msgid "See http://developers.google.com/maps/documentation/utilities/polylinealgorithm"
 msgstr ""
 
 #. Tag: para
@@ -1375,33 +1113,25 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:1557
 #, no-c-format
-msgid ""
-"Return a point from a GeoHash string. The point represents the center point "
-"of the GeoHash."
+msgid "Return a point from a GeoHash string. The point represents the center point of the GeoHash."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1559
 #, no-c-format
-msgid ""
-"If no <varname>precision</varname> is specified ST_PointFromGeoHash returns "
-"a point based on full precision of the input GeoHash string."
+msgid "If no <varname>precision</varname> is specified ST_PointFromGeoHash returns a point based on full precision of the input GeoHash string."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1561
 #, no-c-format
-msgid ""
-"If <varname>precision</varname> is specified ST_PointFromGeoHash will use "
-"that many characters from the GeoHash to create the point."
+msgid "If <varname>precision</varname> is specified ST_PointFromGeoHash will use that many characters from the GeoHash to create the point."
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1573
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref "
-"linkend=\"ST_GeomFromGeoHash\"/>"
+msgid ", <xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_GeomFromGeoHash\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1413,9 +1143,7 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:1597
 #, no-c-format
-msgid ""
-"Creates a table based on the structure of FlatGeobuf data. (<ulink "
-"url=\"http://flatgeobuf.org\">http://flatgeobuf.org</ulink>)."
+msgid "Creates a table based on the structure of FlatGeobuf data. (<ulink url=\"http://flatgeobuf.org\">http://flatgeobuf.org</ulink>)."
 msgstr ""
 
 #. Tag: para
@@ -1451,9 +1179,7 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:1628
 #, no-c-format
-msgid ""
-"Reads FlatGeobuf data (<ulink url=\"http://flatgeobuf.org\">http://"
-"flatgeobuf.org</ulink>). NOTE: PostgreSQL bytea cannot exceed 1GB."
+msgid "Reads FlatGeobuf data (<ulink url=\"http://flatgeobuf.org\">http://flatgeobuf.org</ulink>). NOTE: PostgreSQL bytea cannot exceed 1GB."
 msgstr ""
 
 #. Tag: para

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-11 19:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -17,11 +17,7 @@ msgstr ""
 #. Tag: para
 #: reference_trajectory.xml:5
 #, no-c-format
-msgid ""
-"These functions support working with trajectories. A trajectory is a linear "
-"geometry with increasing measures (M value) on each coordinate. Spatio-"
-"temporal data can be modeled by using relative times (such as the epoch) as "
-"the measure values."
+msgid "These functions support working with trajectories. A trajectory is a linear geometry with increasing measures (M value) on each coordinate. Spatio-temporal data can be modeled by using relative times (such as the epoch) as the measure values."
 msgstr ""
 
 #. Tag: title
@@ -46,18 +42,13 @@ msgstr ""
 #. Tag: para
 #: reference_trajectory.xml:32
 #, no-c-format
-msgid ""
-"Tests if a geometry encodes a valid trajectory. A valid trajectory is "
-"represented as a <varname>LINESTRING</varname> with measures (M values). The "
-"measure values must increase from each vertex to the next."
+msgid "Tests if a geometry encodes a valid trajectory. A valid trajectory is represented as a <varname>LINESTRING</varname> with measures (M values). The measure values must increase from each vertex to the next."
 msgstr ""
 
 #. Tag: para
 #: reference_trajectory.xml:38
 #, no-c-format
-msgid ""
-"Valid trajectories are expected as input to spatio-temporal functions like "
-"<xref linkend=\"ST_ClosestPointOfApproach\"/>"
+msgid "Valid trajectories are expected as input to spatio-temporal functions like <xref linkend=\"ST_ClosestPointOfApproach\"/>"
 msgstr ""
 
 #. Tag: para
@@ -97,88 +88,65 @@ msgstr ""
 #. Tag: para
 #: reference_trajectory.xml:82
 #, no-c-format
-msgid ""
-"Returns the smallest measure at which points interpolated along the given "
-"trajectories are at the smallest distance."
+msgid "Returns the smallest measure at which points interpolated along the given trajectories are at the smallest distance."
 msgstr ""
 
 #. Tag: para
 #: reference_trajectory.xml:86 reference_trajectory.xml:142
 #, no-c-format
-msgid ""
-"Inputs must be valid trajectories as checked by <xref "
-"linkend=\"ST_IsValidTrajectory\"/>. Null is returned if the trajectories do "
-"not overlap in their M ranges."
+msgid "Inputs must be valid trajectories as checked by <xref linkend=\"ST_IsValidTrajectory\"/>. Null is returned if the trajectories do not overlap in their M ranges."
 msgstr ""
 
 #. Tag: para
 #: reference_trajectory.xml:92
 #, no-c-format
-msgid ""
-"See <xref linkend=\"ST_LocateAlong\"/> for getting the actual points at the "
-"given measure."
+msgid "See <xref linkend=\"ST_LocateAlong\"/> for getting the actual points at the given measure."
 msgstr ""
 
 #. Tag: para
 #: reference_trajectory.xml:108
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_DistanceCPA\"/>, <xref linkend=\"ST_LocateAlong\"/>, "
-"<xref linkend=\"ST_AddMeasure\"/>"
+msgid ", <xref linkend=\"ST_DistanceCPA\"/>, <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_AddMeasure\"/>"
 msgstr ""
 
 #. Tag: refpurpose
 #: reference_trajectory.xml:121
 #, no-c-format
-msgid ""
-"Returns the distance between the closest point of approach of two "
-"trajectories."
+msgid "Returns the distance between the closest point of approach of two trajectories."
 msgstr ""
 
 #. Tag: para
 #: reference_trajectory.xml:139
 #, no-c-format
-msgid ""
-"Returns the minimum distance two moving objects have ever been each other."
+msgid "Returns the minimum distance two moving objects have ever been each other."
 msgstr ""
 
 #. Tag: para
 #: reference_trajectory.xml:160
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
-"linkend=\"ST_AddMeasure\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
+msgid ", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend=\"ST_AddMeasure\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
 msgstr ""
 
 #. Tag: refpurpose
 #: reference_trajectory.xml:173
 #, no-c-format
-msgid ""
-"Tests if the closest point of approach of two trajectories is within the "
-"specified distance."
+msgid "Tests if the closest point of approach of two trajectories is within the specified distance."
 msgstr ""
 
 #. Tag: para
 #: reference_trajectory.xml:193
 #, no-c-format
-msgid ""
-"Tests whether two moving objects have ever been closer than the specified "
-"distance."
+msgid "Tests whether two moving objects have ever been closer than the specified distance."
 msgstr ""
 
 #. Tag: para
 #: reference_trajectory.xml:196
 #, no-c-format
-msgid ""
-"Inputs must be valid trajectories as checked by <xref "
-"linkend=\"ST_IsValidTrajectory\"/>. False is returned if the trajectories do "
-"not overlap in their M ranges."
+msgid "Inputs must be valid trajectories as checked by <xref linkend=\"ST_IsValidTrajectory\"/>. False is returned if the trajectories do not overlap in their M ranges."
 msgstr ""
 
 #. Tag: para
 #: reference_trajectory.xml:215
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
-"linkend=\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
+msgid ", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend=\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
 msgstr ""

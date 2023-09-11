@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-11 19:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -17,45 +17,25 @@ msgstr ""
 #. Tag: para
 #: reference_type.xml:5
 #, no-c-format
-msgid ""
-"This section lists the custom PostgreSQL data types installed by PostGIS to "
-"represent spatial data."
+msgid "This section lists the custom PostgreSQL data types installed by PostGIS to represent spatial data."
 msgstr ""
 
 #. Tag: para
 #: reference_type.xml:8
 #, no-c-format
-msgid ""
-"Each data type describes its type casting behavior. A <ulink url=\"https://"
-"www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-"
-"CASTS\">type cast</ulink> converts values of one data type into another "
-"type. PostgreSQL allows defining casting behavior for custom types, along "
-"with the functions used to convert type values. Casts can have <emphasis "
-"role=\"bold\">automatic</emphasis> behavior, which allows automatic "
-"conversion of a function argument to a type supported by the function."
+msgid "Each data type describes its type casting behavior. A <ulink url=\"https://www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-CASTS\">type cast</ulink> converts values of one data type into another type. PostgreSQL allows defining casting behavior for custom types, along with the functions used to convert type values. Casts can have <emphasis role=\"bold\">automatic</emphasis> behavior, which allows automatic conversion of a function argument to a type supported by the function."
 msgstr ""
 
 #. Tag: para
 #: reference_type.xml:14
 #, no-c-format
-msgid ""
-"Some casts have <emphasis role=\"bold\">explicit</emphasis> behavior, which "
-"means the cast must be specified using the syntax <varname>CAST(myval As "
-"sometype)</varname> or <varname>myval::sometype</varname>. Explicit casting "
-"avoids the issue of ambiguous casts, which can occur when using an "
-"overloaded function which does not support a given type. For example, a "
-"function may accept a box2d or a box3d, but not a geometry. Since geometry "
-"has an automatic cast to both box types, this produces an \"ambiguous "
-"function\" error. To prevent the error use an explicit cast to the desired "
-"box type."
+msgid "Some casts have <emphasis role=\"bold\">explicit</emphasis> behavior, which means the cast must be specified using the syntax <varname>CAST(myval As sometype)</varname> or <varname>myval::sometype</varname>. Explicit casting avoids the issue of ambiguous casts, which can occur when using an overloaded function which does not support a given type. For example, a function may accept a box2d or a box3d, but not a geometry. Since geometry has an automatic cast to both box types, this produces an \"ambiguous function\" error. To prevent the error use an explicit cast to the desired box type."
 msgstr ""
 
 #. Tag: para
 #: reference_type.xml:24
 #, no-c-format
-msgid ""
-"All data types can be cast to <varname>text</varname>, so this does not need "
-"to be specified explicitly."
+msgid "All data types can be cast to <varname>text</varname>, so this does not need to be specified explicitly."
 msgstr ""
 
 #. Tag: title
@@ -80,27 +60,19 @@ msgstr ""
 #. Tag: para
 #: reference_type.xml:37
 #, no-c-format
-msgid ""
-"<varname>box2d</varname> is a spatial data type used to represent the two-"
-"dimensional bounding box enclosing a geometry or collection of geometries. "
-"For example, the <xref linkend=\"ST_Extent\"/> aggregate function returns a "
-"<varname>box2d</varname> object."
+msgid "<varname>box2d</varname> is a spatial data type used to represent the two-dimensional bounding box enclosing a geometry or collection of geometries. For example, the <xref linkend=\"ST_Extent\"/> aggregate function returns a <varname>box2d</varname> object."
 msgstr ""
 
 #. Tag: para
 #: reference_type.xml:41
 #, no-c-format
-msgid ""
-"The representation contains the values <varname>xmin, ymin, xmax, ymax</"
-"varname>. These are the minimum and maximum values of the X and Y extents."
+msgid "The representation contains the values <varname>xmin, ymin, xmax, ymax</varname>. These are the minimum and maximum values of the X and Y extents."
 msgstr ""
 
 #. Tag: para
 #: reference_type.xml:45
 #, no-c-format
-msgid ""
-"<varname>box2d</varname> objects have a text representation which looks like "
-"<code>BOX(1 2,5 6)</code>."
+msgid "<varname>box2d</varname> objects have a text representation which looks like <code>BOX(1 2,5 6)</code>."
 msgstr ""
 
 #. Tag: title
@@ -114,8 +86,7 @@ msgstr ""
 #: reference_type.xml:51 reference_type.xml:98 reference_type.xml:144
 #: reference_type.xml:238
 #, no-c-format
-msgid ""
-"This table lists the automatic and explicit casts allowed for this data type:"
+msgid "This table lists the automatic and explicit casts allowed for this data type:"
 msgstr ""
 
 #. Tag: entry
@@ -169,28 +140,19 @@ msgstr ""
 #. Tag: para
 #: reference_type.xml:83
 #, no-c-format
-msgid ""
-"<varname>box3d</varname> is a PostGIS spatial data type used to represent "
-"the three-dimensional bounding box enclosing a geometry or collection of "
-"geometries. For example, the <xref linkend=\"ST_3DExtent\"/> aggregate "
-"function returns a <varname>box3d</varname> object."
+msgid "<varname>box3d</varname> is a PostGIS spatial data type used to represent the three-dimensional bounding box enclosing a geometry or collection of geometries. For example, the <xref linkend=\"ST_3DExtent\"/> aggregate function returns a <varname>box3d</varname> object."
 msgstr ""
 
 #. Tag: para
 #: reference_type.xml:88
 #, no-c-format
-msgid ""
-"The representation contains the values <varname>xmin, ymin, zmin, xmax, "
-"ymax, zmax</varname>. These are the minimum and maxium values of the X, Y "
-"and Z extents."
+msgid "The representation contains the values <varname>xmin, ymin, zmin, xmax, ymax, zmax</varname>. These are the minimum and maxium values of the X, Y and Z extents."
 msgstr ""
 
 #. Tag: para
 #: reference_type.xml:92
 #, no-c-format
-msgid ""
-"<varname>box3d</varname> objects have a text representation which looks like "
-"<code>BOX3D(1 2 3,5 6 5)</code>."
+msgid "<varname>box3d</varname> objects have a text representation which looks like <code>BOX3D(1 2 3,5 6 5)</code>."
 msgstr ""
 
 #. Tag: entry
@@ -214,17 +176,13 @@ msgstr ""
 #. Tag: para
 #: reference_type.xml:138
 #, no-c-format
-msgid ""
-"<varname>geometry</varname> is a fundamental PostGIS spatial data type used "
-"to represent a feature in planar (Euclidean) coordinate systems."
+msgid "<varname>geometry</varname> is a fundamental PostGIS spatial data type used to represent a feature in planar (Euclidean) coordinate systems."
 msgstr ""
 
 #. Tag: para
 #: reference_type.xml:139
 #, no-c-format
-msgid ""
-"All spatial operations on geometry use the units of the Spatial Reference "
-"System the geometry is in."
+msgid "All spatial operations on geometry use the units of the Spatial Reference System the geometry is in."
 msgstr ""
 
 #. Tag: entry
@@ -260,61 +218,43 @@ msgstr ""
 #. Tag: para
 #: reference_type.xml:195
 #, no-c-format
-msgid ""
-"<varname>geometry_dump</varname> is a <ulink url=\"https://www.postgresql."
-"org/docs/current/rowtypes.html\">composite data type</ulink> containing the "
-"fields:"
+msgid "<varname>geometry_dump</varname> is a <ulink url=\"https://www.postgresql.org/docs/current/rowtypes.html\">composite data type</ulink> containing the fields:"
 msgstr ""
 
 #. Tag: para
 #: reference_type.xml:200
 #, no-c-format
-msgid ""
-"<varname>geom</varname> - a geometry representing a component of the dumped "
-"geometry. The geometry type depends on the originating function."
+msgid "<varname>geom</varname> - a geometry representing a component of the dumped geometry. The geometry type depends on the originating function."
 msgstr ""
 
 #. Tag: para
 #: reference_type.xml:204
 #, no-c-format
-msgid ""
-"<varname>path[]</varname> - an integer array that defines the navigation "
-"path within the dumped geometry to the <varname>geom</varname> component. "
-"The path array is 1-based (i.e. <varname>path[1]</varname> is the first "
-"element.)"
+msgid "<varname>path[]</varname> - an integer array that defines the navigation path within the dumped geometry to the <varname>geom</varname> component. The path array is 1-based (i.e. <varname>path[1]</varname> is the first element.)"
 msgstr ""
 
 #. Tag: para
 #: reference_type.xml:209
 #, no-c-format
-msgid ""
-"It is used by the <varname>ST_Dump*</varname> family of functions as an "
-"output type to explode a complex geometry into its constituent parts."
+msgid "It is used by the <varname>ST_Dump*</varname> family of functions as an output type to explode a complex geometry into its constituent parts."
 msgstr ""
 
 #. Tag: refpurpose
 #: reference_type.xml:222
 #, no-c-format
-msgid ""
-"The type representing spatial features with geodetic (ellipsoidal) "
-"coordinate systems."
+msgid "The type representing spatial features with geodetic (ellipsoidal) coordinate systems."
 msgstr ""
 
 #. Tag: para
 #: reference_type.xml:227
 #, no-c-format
-msgid ""
-"<varname>geography</varname> is a spatial data type used to represent a "
-"feature in geodetic coordinate systems. Geodetic coordinate systems model "
-"the earth using an ellipsoid."
+msgid "<varname>geography</varname> is a spatial data type used to represent a feature in geodetic coordinate systems. Geodetic coordinate systems model the earth using an ellipsoid."
 msgstr ""
 
 #. Tag: para
 #: reference_type.xml:230
 #, no-c-format
-msgid ""
-"Spatial operations on the geography type provide more accurate results by "
-"taking the ellipsoidal model into account."
+msgid "Spatial operations on the geography type provide more accurate results by taking the ellipsoidal model into account."
 msgstr ""
 
 #. Tag: entry

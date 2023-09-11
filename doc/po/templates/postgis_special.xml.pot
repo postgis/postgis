@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-06-28 10:30+0000\n"
+"POT-Creation-Date: 2023-09-11 19:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -29,10 +29,7 @@ msgstr ""
 #. Tag: para
 #: postgis_special.xml:7
 #, no-c-format
-msgid ""
-"The functions below are spatial aggregate functions that are used in the "
-"same way as SQL aggregate function such as <code>sum</code> and "
-"<code>average</code>."
+msgid "The functions below are spatial aggregate functions that are used in the same way as SQL aggregate function such as <code>sum</code> and <code>average</code>."
 msgstr ""
 
 #. Tag: sect1
@@ -50,11 +47,7 @@ msgstr ""
 #. Tag: para
 #: postgis_special.xml:13
 #, no-c-format
-msgid ""
-"The functions below are spatial window functions that are used in the same "
-"way as SQL window functions such as <code>row_number()</code>, <code>lead()</"
-"code>, and <code>lag()</code>. They must be followed by an <code>OVER()</"
-"code> clause."
+msgid "The functions below are spatial window functions that are used in the same way as SQL window functions such as <code>row_number()</code>, <code>lead()</code>, and <code>lag()</code>. They must be followed by an <code>OVER()</code> clause."
 msgstr ""
 
 #. Tag: sect1
@@ -72,9 +65,7 @@ msgstr ""
 #. Tag: para
 #: postgis_special.xml:19
 #, no-c-format
-msgid ""
-"The functions given below are PostGIS functions that conform to the SQL/MM 3 "
-"standard"
+msgid "The functions given below are PostGIS functions that conform to the SQL/MM 3 standard"
 msgstr ""
 
 #. Tag: sect1
@@ -92,22 +83,13 @@ msgstr ""
 #. Tag: para
 #: postgis_special.xml:25
 #, no-c-format
-msgid ""
-"The functions and operators given below are PostGIS functions/operators that "
-"take as input or return as output a <link "
-"linkend=\"PostGIS_Geography\">geography</link> data type object."
+msgid "The functions and operators given below are PostGIS functions/operators that take as input or return as output a <link linkend=\"PostGIS_Geography\">geography</link> data type object."
 msgstr ""
 
 #. Tag: para
 #: postgis_special.xml:27
 #, no-c-format
-msgid ""
-"Functions with a (T) are not native geodetic functions, and use a "
-"ST_Transform call to and from geometry to do the operation. As a result, "
-"they may not behave as expected when going over dateline, poles, and for "
-"large geometries or geometry pairs that cover more than one UTM zone. Basic "
-"transform - (favoring UTM, Lambert Azimuthal (North/South), and falling back "
-"on mercator in worst case scenario)"
+msgid "Functions with a (T) are not native geodetic functions, and use a ST_Transform call to and from geometry to do the operation. As a result, they may not behave as expected when going over dateline, poles, and for large geometries or geometry pairs that cover more than one UTM zone. Basic transform - (favoring UTM, Lambert Azimuthal (North/South), and falling back on mercator in worst case scenario)"
 msgstr ""
 
 #. Tag: sect1
@@ -125,10 +107,7 @@ msgstr ""
 #. Tag: para
 #: postgis_special.xml:35
 #, no-c-format
-msgid ""
-"The functions and operators given below are PostGIS functions/operators that "
-"take as input or return as output a <xref linkend=\"raster\"/> data type "
-"object. Listed in alphabetical order."
+msgid "The functions and operators given below are PostGIS functions/operators that take as input or return as output a <xref linkend=\"raster\"/> data type object. Listed in alphabetical order."
 msgstr ""
 
 #. Tag: sect1
@@ -146,10 +125,7 @@ msgstr ""
 #. Tag: para
 #: postgis_special.xml:42
 #, no-c-format
-msgid ""
-"The functions given below are PostGIS functions that take as input or return "
-"as output a set of or single <link linkend=\"geometry_dump\">geometry_dump</"
-"link> or <link linkend=\"geomval\">geomval</link> data type object."
+msgid "The functions given below are PostGIS functions that take as input or return as output a set of or single <link linkend=\"geometry_dump\">geometry_dump</link> or <link linkend=\"geomval\">geomval</link> data type object."
 msgstr ""
 
 #. Tag: sect1
@@ -167,11 +143,7 @@ msgstr ""
 #. Tag: para
 #: postgis_special.xml:48
 #, no-c-format
-msgid ""
-"The functions given below are PostGIS functions that take as input or return "
-"as output the box* family of PostGIS spatial types. The box family of types "
-"consists of <link linkend=\"box2d_type\">box2d</link>, and <link "
-"linkend=\"box3d_type\">box3d</link>"
+msgid "The functions given below are PostGIS functions that take as input or return as output the box* family of PostGIS spatial types. The box family of types consists of <link linkend=\"box2d_type\">box2d</link>, and <link linkend=\"box3d_type\">box3d</link>"
 msgstr ""
 
 #. Tag: sect1
@@ -189,9 +161,7 @@ msgstr ""
 #. Tag: para
 #: postgis_special.xml:55
 #, no-c-format
-msgid ""
-"The functions given below are PostGIS functions that do not throw away the Z-"
-"Index."
+msgid "The functions given below are PostGIS functions that do not throw away the Z-Index."
 msgstr ""
 
 #. Tag: sect1
@@ -209,9 +179,7 @@ msgstr ""
 #. Tag: para
 #: postgis_special.xml:61
 #, no-c-format
-msgid ""
-"The functions given below are PostGIS functions that can use CIRCULARSTRING, "
-"CURVEPOLYGON, and other curved geometry types"
+msgid "The functions given below are PostGIS functions that can use CIRCULARSTRING, CURVEPOLYGON, and other curved geometry types"
 msgstr ""
 
 #. Tag: sect1
@@ -229,9 +197,7 @@ msgstr ""
 #. Tag: para
 #: postgis_special.xml:67
 #, no-c-format
-msgid ""
-"The functions given below are PostGIS functions that can use "
-"POLYHEDRALSURFACE, POLYHEDRALSURFACEM geometries"
+msgid "The functions given below are PostGIS functions that can use POLYHEDRALSURFACE, POLYHEDRALSURFACEM geometries"
 msgstr ""
 
 #. Tag: sect1
@@ -249,59 +215,37 @@ msgstr ""
 #. Tag: para
 #: postgis_special.xml:73
 #, no-c-format
-msgid ""
-"Below is an alphabetical listing of spatial specific functions in PostGIS "
-"and the kinds of spatial types they work with or OGC/SQL compliance they try "
-"to conform to."
+msgid "Below is an alphabetical listing of spatial specific functions in PostGIS and the kinds of spatial types they work with or OGC/SQL compliance they try to conform to."
 msgstr ""
 
 #. Tag: simpara
 #: postgis_special.xml:78
 #, no-c-format
-msgid ""
-"A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
-"matrix_checkmark.png\"/></imageobject></inlinemediaobject> means the "
-"function works with the type or subtype natively."
+msgid "A <inlinemediaobject><imageobject><imagedata fileref=\"images/matrix_checkmark.png\"/></imageobject></inlinemediaobject> means the function works with the type or subtype natively."
 msgstr ""
 
 #. Tag: simpara
 #: postgis_special.xml:81
 #, no-c-format
-msgid ""
-"A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
-"matrix_transform.png\"/></imageobject></inlinemediaobject> means it works "
-"but with a transform cast built-in using cast to geometry, transform to a "
-"\"best srid\" spatial ref and then cast back. Results may not be as expected "
-"for large areas or areas at poles and may accumulate floating point junk."
+msgid "A <inlinemediaobject><imageobject><imagedata fileref=\"images/matrix_transform.png\"/></imageobject></inlinemediaobject> means it works but with a transform cast built-in using cast to geometry, transform to a \"best srid\" spatial ref and then cast back. Results may not be as expected for large areas or areas at poles and may accumulate floating point junk."
 msgstr ""
 
 #. Tag: simpara
 #: postgis_special.xml:85
 #, no-c-format
-msgid ""
-"A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
-"matrix_autocast.png\"/></imageobject></inlinemediaobject> means the function "
-"works with the type because of a auto-cast to another such as to box3d "
-"rather than direct type support."
+msgid "A <inlinemediaobject><imageobject><imagedata fileref=\"images/matrix_autocast.png\"/></imageobject></inlinemediaobject> means the function works with the type because of a auto-cast to another such as to box3d rather than direct type support."
 msgstr ""
 
 #. Tag: simpara
 #: postgis_special.xml:88
 #, no-c-format
-msgid ""
-"A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
-"matrix_sfcgal_required.png\"/></imageobject></inlinemediaobject> means the "
-"function only available if PostGIS compiled with SFCGAL support."
+msgid "A <inlinemediaobject><imageobject><imagedata fileref=\"images/matrix_sfcgal_required.png\"/></imageobject></inlinemediaobject> means the function only available if PostGIS compiled with SFCGAL support."
 msgstr ""
 
 #. Tag: simpara
 #: postgis_special.xml:91
 #, no-c-format
-msgid ""
-"A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
-"matrix_sfcgal_enhanced.png\"/></imageobject></inlinemediaobject> means the "
-"function support is provided by SFCGAL if PostGIS compiled with SFCGAL "
-"support, otherwise GEOS/built-in support."
+msgid "A <inlinemediaobject><imageobject><imagedata fileref=\"images/matrix_sfcgal_enhanced.png\"/></imageobject></inlinemediaobject> means the function support is provided by SFCGAL if PostGIS compiled with SFCGAL support, otherwise GEOS/built-in support."
 msgstr ""
 
 #. Tag: simpara

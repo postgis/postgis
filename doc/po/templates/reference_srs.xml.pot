@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-11 19:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -17,9 +17,7 @@ msgstr ""
 #. Tag: para
 #: reference_srs.xml:5
 #, no-c-format
-msgid ""
-"These functions work with the Spatial Reference System of geometries as "
-"defined in the <varname>spatial_ref_sys</varname> table."
+msgid "These functions work with the Spatial Reference System of geometries as defined in the <varname>spatial_ref_sys</varname> table."
 msgstr ""
 
 #. Tag: title
@@ -31,10 +29,7 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_srs.xml:16
 #, no-c-format
-msgid ""
-"Return a new geometry with coordinates transformed to a different spatial "
-"reference system using the inverse of a defined coordinate transformation "
-"pipeline."
+msgid "Return a new geometry with coordinates transformed to a different spatial reference system using the inverse of a defined coordinate transformation pipeline."
 msgstr ""
 
 #. Tag: title
@@ -48,18 +43,13 @@ msgstr ""
 #. Tag: para
 #: reference_srs.xml:35
 #, no-c-format
-msgid ""
-"Return a new geometry with coordinates transformed to a different spatial "
-"reference system using a defined coordinate transformation pipeline to go in "
-"the inverse direction."
+msgid "Return a new geometry with coordinates transformed to a different spatial reference system using a defined coordinate transformation pipeline to go in the inverse direction."
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:40
 #, no-c-format
-msgid ""
-"Refer to <xref linkend=\"ST_TransformPipeline\"/> for details on writing a "
-"transformation pipeline."
+msgid "Refer to <xref linkend=\"ST_TransformPipeline\"/> for details on writing a transformation pipeline."
 msgstr ""
 
 #. Tag: para
@@ -72,23 +62,13 @@ msgstr ""
 #. Tag: para
 #: reference_srs.xml:44
 #, no-c-format
-msgid ""
-"The SRID of the input geometry is ignored, and the SRID of the output "
-"geometry will be set to zero unless a value is provided via the optional "
-"<varname>to_srid</varname> parameter. When using <xref "
-"linkend=\"ST_TransformPipeline\"/> the pipeline is executed in a forward "
-"direction. Using `ST_InverseTransformPipeline()` the pipeline is executed in "
-"the inverse direction."
+msgid "The SRID of the input geometry is ignored, and the SRID of the output geometry will be set to zero unless a value is provided via the optional <varname>to_srid</varname> parameter. When using <xref linkend=\"ST_TransformPipeline\"/> the pipeline is executed in a forward direction. Using `ST_InverseTransformPipeline()` the pipeline is executed in the inverse direction."
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:50 reference_srs.xml:351
 #, no-c-format
-msgid ""
-"Transforms using pipelines are a specialised version of <xref "
-"linkend=\"ST_Transform\"/>. In most cases `ST_Transform` will choose the "
-"correct operations to convert between coordinate systems, and should be "
-"preferred."
+msgid "Transforms using pipelines are a specialised version of <xref linkend=\"ST_Transform\"/>. In most cases `ST_Transform` will choose the correct operations to convert between coordinate systems, and should be preferred."
 msgstr ""
 
 #. Tag: title
@@ -134,19 +114,13 @@ msgstr ""
 #. Tag: para
 #: reference_srs.xml:97
 #, no-c-format
-msgid ""
-"Sets the SRID on a geometry to a particular integer value. Useful in "
-"constructing bounding boxes for queries."
+msgid "Sets the SRID on a geometry to a particular integer value. Useful in constructing bounding boxes for queries."
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:101
 #, no-c-format
-msgid ""
-"This function does not transform the geometry coordinates in any way - it "
-"simply sets the meta data defining the spatial reference system the geometry "
-"is assumed to be in. Use <xref linkend=\"ST_Transform\"/> if you want to "
-"transform the geometry into a new projection."
+msgid "This function does not transform the geometry coordinates in any way - it simply sets the meta data defining the spatial reference system the geometry is assumed to be in. Use <xref linkend=\"ST_Transform\"/> if you want to transform the geometry into a new projection."
 msgstr ""
 
 #. Tag: para
@@ -170,17 +144,13 @@ msgstr ""
 #. Tag: para
 #: reference_srs.xml:114
 #, no-c-format
-msgid ""
-"-- Mark a point as WGS 84 long lat and then transform to web mercator "
-"(Spherical Mercator) --"
+msgid "-- Mark a point as WGS 84 long lat and then transform to web mercator (Spherical Mercator) --"
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:121
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_SRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
-"linkend=\"UpdateGeometrySRID\"/>"
+msgid ", <xref linkend=\"ST_SRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref linkend=\"UpdateGeometrySRID\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -192,19 +162,13 @@ msgstr ""
 #. Tag: para
 #: reference_srs.xml:144
 #, no-c-format
-msgid ""
-"Returns the spatial reference identifier for the ST_Geometry as defined in "
-"spatial_ref_sys table. <xref linkend=\"spatial_ref_sys\"/>"
+msgid "Returns the spatial reference identifier for the ST_Geometry as defined in spatial_ref_sys table. <xref linkend=\"spatial_ref_sys\"/>"
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:145
 #, no-c-format
-msgid ""
-"spatial_ref_sys table is a table that catalogs all spatial reference systems "
-"known to PostGIS and is used for transformations from one spatial reference "
-"system to another. So verifying you have the right spatial reference system "
-"identifier is important if you plan to ever transform your geometries."
+msgid "spatial_ref_sys table is a table that catalogs all spatial reference systems known to PostGIS and is used for transformations from one spatial reference system to another. So verifying you have the right spatial reference system identifier is important if you plan to ever transform your geometries."
 msgstr ""
 
 #. Tag: para
@@ -222,78 +186,49 @@ msgstr ""
 #. Tag: para
 #: reference_srs.xml:162
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
-"linkend=\"RT_ST_SRID\"/>, <xref linkend=\"TG_ST_SRID\"/>"
+msgid ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref linkend=\"RT_ST_SRID\"/>, <xref linkend=\"TG_ST_SRID\"/>"
 msgstr ""
 
 #. Tag: refpurpose
 #: reference_srs.xml:170
 #, no-c-format
-msgid ""
-"Return a new geometry with coordinates transformed to a different spatial "
-"reference system."
+msgid "Return a new geometry with coordinates transformed to a different spatial reference system."
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:208
 #, no-c-format
-msgid ""
-"Returns a new geometry with its coordinates transformed to a different "
-"spatial reference system. The destination spatial reference "
-"<varname>to_srid</varname> may be identified by a valid SRID integer "
-"parameter (i.e. it must exist in the <varname>spatial_ref_sys</varname> "
-"table). Alternatively, a spatial reference defined as a PROJ.4 string can be "
-"used for <varname>to_proj</varname> and/or <varname>from_proj</varname>, "
-"however these methods are not optimized. If the destination spatial "
-"reference system is expressed with a PROJ.4 string instead of an SRID, the "
-"SRID of the output geometry will be set to zero. With the exception of "
-"functions with <varname>from_proj</varname>, input geometries must have a "
-"defined SRID."
+msgid "Returns a new geometry with its coordinates transformed to a different spatial reference system. The destination spatial reference <varname>to_srid</varname> may be identified by a valid SRID integer parameter (i.e. it must exist in the <varname>spatial_ref_sys</varname> table). Alternatively, a spatial reference defined as a PROJ.4 string can be used for <varname>to_proj</varname> and/or <varname>from_proj</varname>, however these methods are not optimized. If the destination spatial reference system is expressed with a PROJ.4 string instead of an SRID, the SRID of the output geometry will be set to zero. With the exception of functions with <varname>from_proj</varname>, input geometries must have a defined SRID."
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:222
 #, no-c-format
-msgid ""
-"ST_Transform is often confused with <xref linkend=\"ST_SetSRID\"/>. "
-"ST_Transform actually changes the coordinates of a geometry from one spatial "
-"reference system to another, while ST_SetSRID() simply changes the SRID "
-"identifier of the geometry."
+msgid "ST_Transform is often confused with <xref linkend=\"ST_SetSRID\"/>. ST_Transform actually changes the coordinates of a geometry from one spatial reference system to another, while ST_SetSRID() simply changes the SRID identifier of the geometry."
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:226
 #, no-c-format
-msgid ""
-"ST_Transform automatically selects a suitable conversion pipeline given the "
-"source and target spatial reference systems. To use a specific conversion "
-"method, use <xref linkend=\"ST_TransformPipeline\"/>."
+msgid "ST_Transform automatically selects a suitable conversion pipeline given the source and target spatial reference systems. To use a specific conversion method, use <xref linkend=\"ST_TransformPipeline\"/>."
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:230
 #, no-c-format
-msgid ""
-"Requires PostGIS be compiled with PROJ support. Use <xref "
-"linkend=\"PostGIS_Full_Version\"/> to confirm you have PROJ support compiled "
-"in."
+msgid "Requires PostGIS be compiled with PROJ support. Use <xref linkend=\"PostGIS_Full_Version\"/> to confirm you have PROJ support compiled in."
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:234
 #, no-c-format
-msgid ""
-"If using more than one transformation, it is useful to have a functional "
-"index on the commonly used transformations to take advantage of index usage."
+msgid "If using more than one transformation, it is useful to have a functional index on the commonly used transformations to take advantage of index usage."
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:238
 #, no-c-format
-msgid ""
-"Prior to 1.3.4, this function crashes if used with geometries that contain "
-"CURVES. This is fixed in 1.3.4+"
+msgid "Prior to 1.3.4, this function crashes if used with geometries that contain CURVES. This is fixed in 1.3.4+"
 msgstr ""
 
 #. Tag: para
@@ -329,18 +264,13 @@ msgstr ""
 #. Tag: para
 #: reference_srs.xml:252
 #, no-c-format
-msgid ""
-"Example of creating a partial functional index. For tables where you are not "
-"sure all the geometries will be filled in, its best to use a partial index "
-"that leaves out null geometries which will both conserve space and make your "
-"index smaller and more efficient."
+msgid "Example of creating a partial functional index. For tables where you are not sure all the geometries will be filled in, its best to use a partial index that leaves out null geometries which will both conserve space and make your index smaller and more efficient."
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:256
 #, no-c-format
-msgid ""
-"Examples of using PROJ.4 text to transform with custom spatial references."
+msgid "Examples of using PROJ.4 text to transform with custom spatial references."
 msgstr ""
 
 #. Tag: title
@@ -352,125 +282,79 @@ msgstr ""
 #. Tag: para
 #: reference_srs.xml:262
 #, no-c-format
-msgid ""
-"Sometimes coordinate transformation involving a grid-shift can fail, for "
-"example if PROJ.4 has not been built with grid-shift files or the coordinate "
-"does not lie within the range for which the grid shift is defined. By "
-"default, PostGIS will throw an error if a grid shift file is not present, "
-"but this behavior can be configured on a per-SRID basis either by testing "
-"different <varname>to_proj</varname> values of PROJ.4 text, or altering the "
-"<varname>proj4text</varname> value within the <varname>spatial_ref_sys</"
-"varname> table."
+msgid "Sometimes coordinate transformation involving a grid-shift can fail, for example if PROJ.4 has not been built with grid-shift files or the coordinate does not lie within the range for which the grid shift is defined. By default, PostGIS will throw an error if a grid shift file is not present, but this behavior can be configured on a per-SRID basis either by testing different <varname>to_proj</varname> values of PROJ.4 text, or altering the <varname>proj4text</varname> value within the <varname>spatial_ref_sys</varname> table."
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:272
 #, no-c-format
-msgid ""
-"For example, the proj4text parameter +datum=NAD87 is a shorthand form for "
-"the following +nadgrids parameter:"
+msgid "For example, the proj4text parameter +datum=NAD87 is a shorthand form for the following +nadgrids parameter:"
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:274
 #, no-c-format
-msgid ""
-"The @ prefix means no error is reported if the files are not present, but if "
-"the end of the list is reached with no file having been appropriate (ie. "
-"found and overlapping) then an error is issued."
+msgid "The @ prefix means no error is reported if the files are not present, but if the end of the list is reached with no file having been appropriate (ie. found and overlapping) then an error is issued."
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:275
 #, no-c-format
-msgid ""
-"If, conversely, you wanted to ensure that at least the standard files were "
-"present, but that if all files were scanned without a hit a null "
-"transformation is applied you could use:"
+msgid "If, conversely, you wanted to ensure that at least the standard files were present, but that if all files were scanned without a hit a null transformation is applied you could use:"
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:277
 #, no-c-format
-msgid ""
-"The null grid shift file is a valid grid shift file covering the whole world "
-"and applying no shift. So for a complete example, if you wanted to alter "
-"PostGIS so that transformations to SRID 4267 that didn't lie within the "
-"correct range did not throw an ERROR, you would use the following:"
+msgid "The null grid shift file is a valid grid shift file covering the whole world and applying no shift. So for a complete example, if you wanted to alter PostGIS so that transformations to SRID 4267 that didn't lie within the correct range did not throw an ERROR, you would use the following:"
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:285
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>, <xref "
-"linkend=\"UpdateGeometrySRID\"/>, <xref linkend=\"ST_TransformPipeline\"/>"
+msgid ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>, <xref linkend=\"UpdateGeometrySRID\"/>, <xref linkend=\"ST_TransformPipeline\"/>"
 msgstr ""
 
 #. Tag: refpurpose
 #: reference_srs.xml:293
 #, no-c-format
-msgid ""
-"<refpurpose>Return a new geometry with coordinates transformed to a "
-"different spatial reference system using a defined coordinate transformation "
-"pipeline.</refpurpose>"
+msgid "<refpurpose>Return a new geometry with coordinates transformed to a different spatial reference system using a defined coordinate transformation pipeline.</refpurpose>"
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:312
 #, no-c-format
-msgid ""
-"<para>Return a new geometry with coordinates transformed to a different "
-"spatial reference system using a defined coordinate transformation pipeline."
-"</para>"
+msgid "<para>Return a new geometry with coordinates transformed to a different spatial reference system using a defined coordinate transformation pipeline.</para>"
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:317
 #, no-c-format
-msgid ""
-"Transformation pipelines are defined using any of the following string "
-"formats:"
+msgid "Transformation pipelines are defined using any of the following string formats:"
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:321
 #, no-c-format
-msgid ""
-"<varname>urn:ogc:def:coordinateOperation:AUTHORITY::CODE</varname>. Note "
-"that a simple <varname>EPSG:CODE</varname> string does not uniquely identify "
-"a coordinate operation: the same EPSG code can be used for a CRS definition."
+msgid "<varname>urn:ogc:def:coordinateOperation:AUTHORITY::CODE</varname>. Note that a simple <varname>EPSG:CODE</varname> string does not uniquely identify a coordinate operation: the same EPSG code can be used for a CRS definition."
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:329
 #, no-c-format
-msgid ""
-"A PROJ pipeline string of the form: <varname>+proj=pipeline ...</varname>. "
-"Automatic axis normalisation will not be applied, and if necessary the "
-"caller will need to add an additional pipeline step, or remove "
-"<varname>axisswap</varname> steps."
+msgid "A PROJ pipeline string of the form: <varname>+proj=pipeline ...</varname>. Automatic axis normalisation will not be applied, and if necessary the caller will need to add an additional pipeline step, or remove <varname>axisswap</varname> steps."
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:337
 #, no-c-format
-msgid ""
-"Concatenated operations of the form: <varname>urn:ogc:def:"
-"coordinateOperation,coordinateOperation:EPSG::3895,coordinateOperation:"
-"EPSG::1618</varname>."
+msgid "Concatenated operations of the form: <varname>urn:ogc:def:coordinateOperation,coordinateOperation:EPSG::3895,coordinateOperation:EPSG::1618</varname>."
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:345
 #, no-c-format
-msgid ""
-"The SRID of the input geometry is ignored, and the SRID of the output "
-"geometry will be set to zero unless a value is provided via the optional "
-"<varname>to_srid</varname> parameter. When using `ST_TransformPipeline()` "
-"the pipeline is executed in a forward direction. Using <xref "
-"linkend=\"ST_InverseTransformPipeline\"/> the pipeline is executed in the "
-"inverse direction."
+msgid "The SRID of the input geometry is ignored, and the SRID of the output geometry will be set to zero unless a value is provided via the optional <varname>to_srid</varname> parameter. When using `ST_TransformPipeline()` the pipeline is executed in a forward direction. Using <xref linkend=\"ST_InverseTransformPipeline\"/> the pipeline is executed in the inverse direction."
 msgstr ""
 
 #. Tag: para
@@ -488,9 +372,7 @@ msgstr ""
 #. Tag: para
 #: reference_srs.xml:394
 #, no-c-format
-msgid ""
-"Returns a set of all <varname>auth_srid</varname> for the given "
-"<varname>auth_name</varname>."
+msgid "Returns a set of all <varname>auth_srid</varname> for the given <varname>auth_name</varname>."
 msgstr ""
 
 #. Tag: para
@@ -509,8 +391,7 @@ msgstr ""
 #. Tag: para
 #: reference_srs.xml:410 reference_srs.xml:452
 #, no-c-format
-msgid ""
-", <xref linkend=\"postgis_srs_all\"/>, <xref linkend=\"postgis_srs_search\"/>"
+msgid ", <xref linkend=\"postgis_srs_all\"/>, <xref linkend=\"postgis_srs_search\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -522,13 +403,7 @@ msgstr ""
 #. Tag: para
 #: reference_srs.xml:436
 #, no-c-format
-msgid ""
-"Returns a metadata record for the requested <varname>auth_srid</varname> for "
-"the given <varname>auth_name</varname>. The record will have the "
-"<varname>auth_name</varname>, <varname>auth_srid</varname>, <varname>srname</"
-"varname>, <varname>srtext</varname>, <varname>proj4text</varname>, and the "
-"corners of the area of usage, <varname>point_sw</varname> and "
-"<varname>point_ne</varname>."
+msgid "Returns a metadata record for the requested <varname>auth_srid</varname> for the given <varname>auth_name</varname>. The record will have the <varname>auth_name</varname>, <varname>auth_srid</varname>, <varname>srname</varname>, <varname>srtext</varname>, <varname>proj4text</varname>, and the corners of the area of usage, <varname>point_sw</varname> and <varname>point_ne</varname>."
 msgstr ""
 
 #. Tag: para
@@ -540,9 +415,7 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_srs.xml:462
 #, no-c-format
-msgid ""
-"Return metadata records for every spatial reference system in the underlying "
-"Proj database."
+msgid "Return metadata records for every spatial reference system in the underlying Proj database."
 msgstr ""
 
 #. Tag: funcdef
@@ -554,12 +427,7 @@ msgstr ""
 #. Tag: para
 #: reference_srs.xml:477
 #, no-c-format
-msgid ""
-"Returns a set of all metadata records in the underlying Proj database. The "
-"records will have the <varname>auth_name</varname>, <varname>auth_srid</"
-"varname>, <varname>srname</varname>, <varname>srtext</varname>, "
-"<varname>proj4text</varname>, and the corners of the area of usage, "
-"<varname>point_sw</varname> and <varname>point_ne</varname>."
+msgid "Returns a set of all metadata records in the underlying Proj database. The records will have the <varname>auth_name</varname>, <varname>auth_srid</varname>, <varname>srname</varname>, <varname>srtext</varname>, <varname>proj4text</varname>, and the corners of the area of usage, <varname>point_sw</varname> and <varname>point_ne</varname>."
 msgstr ""
 
 #. Tag: para
@@ -571,36 +439,25 @@ msgstr ""
 #. Tag: para
 #: reference_srs.xml:493
 #, no-c-format
-msgid ""
-", <xref linkend=\"postgis_srs\"/>, <xref linkend=\"postgis_srs_search\"/>"
+msgid ", <xref linkend=\"postgis_srs\"/>, <xref linkend=\"postgis_srs_search\"/>"
 msgstr ""
 
 #. Tag: refpurpose
 #: reference_srs.xml:505
 #, no-c-format
-msgid ""
-"Return metadata records for projected coordinate systems that have areas of "
-"useage that fully contain the bounds parameter."
+msgid "Return metadata records for projected coordinate systems that have areas of useage that fully contain the bounds parameter."
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:521
 #, no-c-format
-msgid ""
-"Return a set of metadata records for projected coordinate systems that have "
-"areas of useage that fully contain the bounds parameter. Each record will "
-"have the <varname>auth_name</varname>, <varname>auth_srid</varname>, "
-"<varname>srname</varname>, <varname>srtext</varname>, <varname>proj4text</"
-"varname>, and the corners of the area of usage, <varname>point_sw</varname> "
-"and <varname>point_ne</varname>."
+msgid "Return a set of metadata records for projected coordinate systems that have areas of useage that fully contain the bounds parameter. Each record will have the <varname>auth_name</varname>, <varname>auth_srid</varname>, <varname>srname</varname>, <varname>srtext</varname>, <varname>proj4text</varname>, and the corners of the area of usage, <varname>point_sw</varname> and <varname>point_ne</varname>."
 msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:524
 #, no-c-format
-msgid ""
-"The search only looks for projected coordinate systems, and is intended for "
-"users to explore the possible systems that work for the extent of their data."
+msgid "The search only looks for projected coordinate systems, and is intended for users to explore the possible systems that work for the extent of their data."
 msgstr ""
 
 #. Tag: para
@@ -612,9 +469,7 @@ msgstr ""
 #. Tag: para
 #: reference_srs.xml:536
 #, no-c-format
-msgid ""
-"Scan a table for max extent and find projected coordinate systems that might "
-"suit."
+msgid "Scan a table for max extent and find projected coordinate systems that might suit."
 msgstr ""
 
 #. Tag: para

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-11 19:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -17,10 +17,7 @@ msgstr ""
 #. Tag: para
 #: reference_transformation.xml:5
 #, no-c-format
-msgid ""
-"These functions change the position and shape of geometries using <ulink "
-"url=\"https://en.wikipedia.org/wiki/Affine_transformation\">affine "
-"transformations</ulink>."
+msgid "These functions change the position and shape of geometries using <ulink url=\"https://en.wikipedia.org/wiki/Affine_transformation\">affine transformations</ulink>."
 msgstr ""
 
 #. Tag: title
@@ -47,39 +44,29 @@ msgstr ""
 #. Tag: para
 #: reference_transformation.xml:54
 #, no-c-format
-msgid ""
-"Applies a 3D affine transformation to the geometry to do things like "
-"translate, rotate, scale in one step."
+msgid "Applies a 3D affine transformation to the geometry to do things like translate, rotate, scale in one step."
 msgstr ""
 
 #. Tag: para
 #: reference_transformation.xml:55
 #, no-c-format
 msgid ""
-"Version 1: The call <programlisting>ST_Affine(geom, a, b, c, d, e, f, g, h, "
-"i, xoff, yoff, zoff) </programlisting> represents the transformation matrix "
-"<programlisting>/ a  b  c  xoff \\\n"
+"Version 1: The call <programlisting>ST_Affine(geom, a, b, c, d, e, f, g, h, i, xoff, yoff, zoff) </programlisting> represents the transformation matrix <programlisting>/ a  b  c  xoff \\\n"
 "| d  e  f  yoff |\n"
 "| g  h  i  zoff |\n"
-"\\ 0  0  0     1 /</programlisting> and the vertices are transformed as "
-"follows: <programlisting>x' = a*x + b*y + c*z + xoff\n"
+"\\ 0  0  0     1 /</programlisting> and the vertices are transformed as follows: <programlisting>x' = a*x + b*y + c*z + xoff\n"
 "y' = d*x + e*y + f*z + yoff\n"
-"z' = g*x + h*y + i*z + zoff</programlisting> All of the translate / scale "
-"functions below are expressed via such an affine transformation."
+"z' = g*x + h*y + i*z + zoff</programlisting> All of the translate / scale functions below are expressed via such an affine transformation."
 msgstr ""
 
 #. Tag: para
 #: reference_transformation.xml:62
 #, no-c-format
 msgid ""
-"Version 2: Applies a 2d affine transformation to the geometry. The call "
-"<programlisting>ST_Affine(geom, a, b, d, e, xoff, yoff)</programlisting> "
-"represents the transformation matrix <programlisting>/  a  b  0  xoff  "
-"\\       /  a  b  xoff  \\\n"
+"Version 2: Applies a 2d affine transformation to the geometry. The call <programlisting>ST_Affine(geom, a, b, d, e, xoff, yoff)</programlisting> represents the transformation matrix <programlisting>/  a  b  0  xoff  \\       /  a  b  xoff  \\\n"
 "|  d  e  0  yoff  | rsp.  |  d  e  yoff  |\n"
 "|  0  0  1     0  |       \\  0  0     1  /\n"
-"\\  0  0  0     1  /</programlisting> and the vertices are transformed as "
-"follows: <programlisting>x' = a*x + b*y + xoff\n"
+"\\  0  0  0     1  /</programlisting> and the vertices are transformed as follows: <programlisting>x' = a*x + b*y + xoff\n"
 "y' = d*x + e*y + yoff\n"
 "z' = z </programlisting> This method is a subcase of the 3D method above."
 msgstr ""
@@ -89,9 +76,7 @@ msgstr ""
 #: reference_transformation.xml:183 reference_transformation.xml:231
 #: reference_transformation.xml:280 reference_transformation.xml:368
 #, no-c-format
-msgid ""
-"Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
-"introduced."
+msgid "Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced."
 msgstr ""
 
 #. Tag: para
@@ -105,9 +90,7 @@ msgstr ""
 #: reference_transformation.xml:364 reference_transformation.xml:424
 #: reference_transformation.xml:480
 #, no-c-format
-msgid ""
-"Prior to 1.3.4, this function crashes if used with geometries that contain "
-"CURVES. This is fixed in 1.3.4+"
+msgid "Prior to 1.3.4, this function crashes if used with geometries that contain CURVES. This is fixed in 1.3.4+"
 msgstr ""
 
 #. Tag: para
@@ -164,9 +147,7 @@ msgstr ""
 #. Tag: para
 #: reference_transformation.xml:89
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>, <xref "
-"linkend=\"ST_TransScale\"/>"
+msgid ", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>, <xref linkend=\"ST_TransScale\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -178,19 +159,13 @@ msgstr ""
 #. Tag: para
 #: reference_transformation.xml:129
 #, no-c-format
-msgid ""
-"Rotates geometry rotRadians counter-clockwise about the origin point. The "
-"rotation origin can be specified either as a POINT geometry, or as x and y "
-"coordinates. If the origin is not specified, the geometry is rotated about "
-"POINT(0 0)."
+msgid "Rotates geometry rotRadians counter-clockwise about the origin point. The rotation origin can be specified either as a POINT geometry, or as x and y coordinates. If the origin is not specified, the geometry is rotated about POINT(0 0)."
 msgstr ""
 
 #. Tag: para
 #: reference_transformation.xml:134
 #, no-c-format
-msgid ""
-"Enhanced: 2.0.0 additional parameters for specifying the origin of rotation "
-"were added."
+msgid "Enhanced: 2.0.0 additional parameters for specifying the origin of rotation were added."
 msgstr ""
 
 #. Tag: para
@@ -202,9 +177,7 @@ msgstr ""
 #. Tag: para
 #: reference_transformation.xml:154
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>, <xref "
-"linkend=\"ST_RotateZ\"/>"
+msgid ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>, <xref linkend=\"ST_RotateZ\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -222,10 +195,7 @@ msgstr ""
 #. Tag: para
 #: reference_transformation.xml:180
 #, no-c-format
-msgid ""
-"<code>ST_RotateX(geomA, rotRadians)</code> is short-hand for "
-"<code>ST_Affine(geomA, 1, 0, 0, 0, cos(rotRadians), -sin(rotRadians), 0, "
-"sin(rotRadians), cos(rotRadians), 0, 0, 0)</code>."
+msgid "<code>ST_RotateX(geomA, rotRadians)</code> is short-hand for <code>ST_Affine(geomA, 1, 0, 0, 0, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), cos(rotRadians), 0, 0, 0)</code>."
 msgstr ""
 
 #. Tag: para
@@ -255,10 +225,7 @@ msgstr ""
 #. Tag: para
 #: reference_transformation.xml:227
 #, no-c-format
-msgid ""
-"<code>ST_RotateY(geomA, rotRadians)</code> is short-hand for "
-"<code>ST_Affine(geomA, cos(rotRadians), 0, sin(rotRadians), 0, 1, 0, -"
-"sin(rotRadians), 0, cos(rotRadians), 0, 0, 0)</code>."
+msgid "<code>ST_RotateY(geomA, rotRadians)</code> is short-hand for <code>ST_Affine(geomA, cos(rotRadians), 0, sin(rotRadians), 0, 1, 0, -sin(rotRadians), 0, cos(rotRadians), 0, 0, 0)</code>."
 msgstr ""
 
 #. Tag: para
@@ -294,10 +261,7 @@ msgstr ""
 #. Tag: para
 #: reference_transformation.xml:277
 #, no-c-format
-msgid ""
-"<code>ST_RotateZ(geomA, rotRadians)</code> is short-hand for <code>SELECT "
-"ST_Affine(geomA, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), "
-"cos(rotRadians), 0, 0, 0, 1, 0, 0, 0)</code>."
+msgid "<code>ST_RotateZ(geomA, rotRadians)</code> is short-hand for <code>SELECT ST_Affine(geomA, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), cos(rotRadians), 0, 0, 0, 1, 0, 0, 0)</code>."
 msgstr ""
 
 #. Tag: para
@@ -321,30 +285,19 @@ msgstr ""
 #. Tag: para
 #: reference_transformation.xml:350
 #, no-c-format
-msgid ""
-"Scales the geometry to a new size by multiplying the ordinates with the "
-"corresponding factor parameters."
+msgid "Scales the geometry to a new size by multiplying the ordinates with the corresponding factor parameters."
 msgstr ""
 
 #. Tag: para
 #: reference_transformation.xml:354
 #, no-c-format
-msgid ""
-"The version taking a geometry as the <varname>factor</varname> parameter "
-"allows passing a 2d, 3dm, 3dz or 4d point to set scaling factor for all "
-"supported dimensions. Missing dimensions in the <varname>factor</varname> "
-"point are equivalent to no scaling the corresponding dimension."
+msgid "The version taking a geometry as the <varname>factor</varname> parameter allows passing a 2d, 3dm, 3dz or 4d point to set scaling factor for all supported dimensions. Missing dimensions in the <varname>factor</varname> point are equivalent to no scaling the corresponding dimension."
 msgstr ""
 
 #. Tag: para
 #: reference_transformation.xml:360
 #, no-c-format
-msgid ""
-"The three-geometry variant allows a \"false origin\" for the scaling to be "
-"passed in. This allows \"scaling in place\", for example using the centroid "
-"of the geometry as the false origin. Without a false origin, scaling takes "
-"place relative to the actual origin, so all coordinates are just multipled "
-"by the scale factor."
+msgid "The three-geometry variant allows a \"false origin\" for the scaling to be passed in. This allows \"scaling in place\", for example using the centroid of the geometry as the false origin. Without a false origin, scaling takes place relative to the actual origin, so all coordinates are just multipled by the scale factor."
 msgstr ""
 
 #. Tag: para
@@ -356,17 +309,13 @@ msgstr ""
 #. Tag: para
 #: reference_transformation.xml:369
 #, no-c-format
-msgid ""
-"Enhanced: 2.2.0 support for scaling all dimension (<varname>factor</varname> "
-"parameter) was introduced."
+msgid "Enhanced: 2.2.0 support for scaling all dimension (<varname>factor</varname> parameter) was introduced."
 msgstr ""
 
 #. Tag: para
 #: reference_transformation.xml:370
 #, no-c-format
-msgid ""
-"Enhanced: 2.5.0 support for scaling relative to a local origin "
-"(<varname>origin</varname> parameter) was introduced."
+msgid "Enhanced: 2.5.0 support for scaling relative to a local origin (<varname>origin</varname> parameter) was introduced."
 msgstr ""
 
 #. Tag: para
@@ -390,10 +339,7 @@ msgstr ""
 #. Tag: para
 #: reference_transformation.xml:421
 #, no-c-format
-msgid ""
-"Returns a new geometry whose coordinates are translated delta x,delta y,"
-"delta z units. Units are based on the units defined in spatial reference "
-"(SRID) for this geometry."
+msgid "Returns a new geometry whose coordinates are translated delta x,delta y,delta z units. Units are based on the units defined in spatial reference (SRID) for this geometry."
 msgstr ""
 
 #. Tag: para
@@ -441,18 +387,13 @@ msgstr ""
 #. Tag: para
 #: reference_transformation.xml:473
 #, no-c-format
-msgid ""
-"Translates the geometry using the deltaX and deltaY args, then scales it "
-"using the XFactor, YFactor args, working in 2D only."
+msgid "Translates the geometry using the deltaX and deltaY args, then scales it using the XFactor, YFactor args, working in 2D only."
 msgstr ""
 
 #. Tag: para
 #: reference_transformation.xml:476
 #, no-c-format
-msgid ""
-"<code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code> is short-"
-"hand for <code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0, 0, 0, 1, "
-"deltaX*XFactor, deltaY*YFactor, 0)</code>."
+msgid "<code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code> is short-hand for <code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0, 0, 0, 1, deltaX*XFactor, deltaY*YFactor, 0)</code>."
 msgstr ""
 
 #. Tag: para

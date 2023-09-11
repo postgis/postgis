@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-07 10:12+0000\n"
+"POT-Creation-Date: 2023-09-11 19:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -23,8 +23,7 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_constructor.xml:8
 #, no-c-format
-msgid ""
-"Creates a GeometryCollection or Multi* geometry from a set of geometries."
+msgid "Creates a GeometryCollection or Multi* geometry from a set of geometries."
 msgstr ""
 
 #. Tag: title
@@ -44,63 +43,43 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:31
 #, no-c-format
-msgid ""
-"Collects geometries into a geometry collection. The result is either a "
-"Multi* or a GeometryCollection, depending on whether the input geometries "
-"have the same or different types (homogeneous or heterogeneous). The input "
-"geometries are left unchanged within the collection."
+msgid "Collects geometries into a geometry collection. The result is either a Multi* or a GeometryCollection, depending on whether the input geometries have the same or different types (homogeneous or heterogeneous). The input geometries are left unchanged within the collection."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:38 reference_constructor.xml:208
 #, no-c-format
-msgid ""
-"<emphasis role=\"bold\">Variant 1:</emphasis> accepts two input geometries"
+msgid "<emphasis role=\"bold\">Variant 1:</emphasis> accepts two input geometries"
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:39 reference_constructor.xml:209
 #, no-c-format
-msgid ""
-"<emphasis role=\"bold\">Variant 2:</emphasis> accepts an array of geometries"
+msgid "<emphasis role=\"bold\">Variant 2:</emphasis> accepts an array of geometries"
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:40
 #, no-c-format
-msgid ""
-"<emphasis role=\"bold\">Variant 3:</emphasis> aggregate function accepting a "
-"rowset of geometries."
+msgid "<emphasis role=\"bold\">Variant 3:</emphasis> aggregate function accepting a rowset of geometries."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:42
 #, no-c-format
-msgid ""
-"If any of the input geometries are collections (Multi* or "
-"GeometryCollection) ST_Collect returns a GeometryCollection (since that is "
-"the only type which can contain nested collections). To prevent this, use "
-"<xref linkend=\"ST_Dump\"/> in a subquery to expand the input collections to "
-"their atomic elements (see example below)."
+msgid "If any of the input geometries are collections (Multi* or GeometryCollection) ST_Collect returns a GeometryCollection (since that is the only type which can contain nested collections). To prevent this, use <xref linkend=\"ST_Dump\"/> in a subquery to expand the input collections to their atomic elements (see example below)."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:50
 #, no-c-format
-msgid ""
-"ST_Collect and <xref linkend=\"ST_Union\"/> appear similar, but in fact "
-"operate quite differently. ST_Collect aggregates geometries into a "
-"collection without changing them in any way. ST_Union geometrically merges "
-"geometries where they overlap, and splits linestrings at intersections. It "
-"may return single geometries when it dissolves boundaries."
+msgid "ST_Collect and <xref linkend=\"ST_Union\"/> appear similar, but in fact operate quite differently. ST_Collect aggregates geometries into a collection without changing them in any way. ST_Union geometrically merges geometries where they overlap, and splits linestrings at intersections. It may return single geometries when it dissolves boundaries."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:57
 #, no-c-format
-msgid ""
-"Availability: 1.4.0 - ST_Collect(geomarray) was introduced. ST_Collect was "
-"enhanced to handle more geometries faster."
+msgid "Availability: 1.4.0 - ST_Collect(geomarray) was introduced. ST_Collect was enhanced to handle more geometries faster."
 msgstr ""
 
 #. Tag: para
@@ -194,8 +173,7 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_constructor.xml:96
 #, no-c-format
-msgid ""
-"<refpurpose>Creates a LineString from a MultiPoint geometry.</refpurpose>"
+msgid "<refpurpose>Creates a LineString from a MultiPoint geometry.</refpurpose>"
 msgstr ""
 
 #. Tag: para
@@ -207,9 +185,7 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:113
 #, no-c-format
-msgid ""
-"Use <xref linkend=\"ST_MakeLine\"/> to create lines from Point or LineString "
-"inputs."
+msgid "Use <xref linkend=\"ST_MakeLine\"/> to create lines from Point or LineString inputs."
 msgstr ""
 
 #. Tag: title
@@ -242,11 +218,7 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:156
 #, no-c-format
-msgid ""
-"Creates a rectangular Polygon from the minimum and maximum values for X and "
-"Y. Input values must be in the spatial reference system specified by the "
-"SRID. If no SRID is specified the unknown spatial reference system (SRID 0) "
-"is used."
+msgid "Creates a rectangular Polygon from the minimum and maximum values for X and Y. Input values must be in the spatial reference system specified by the SRID. If no SRID is specified the unknown spatial reference system (SRID 0) is used."
 msgstr ""
 
 #. Tag: para
@@ -258,9 +230,7 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:161
 #, no-c-format
-msgid ""
-"Enhanced: 2.0: Ability to specify an envelope without specifying an SRID was "
-"introduced."
+msgid "Enhanced: 2.0: Ability to specify an envelope without specifying an SRID was introduced."
 msgstr ""
 
 #. Tag: title
@@ -272,9 +242,7 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:171
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_MakeLine\"/>, <xref linkend=\"ST_MakePolygon\"/>, <xref "
-"linkend=\"ST_TileEnvelope\"/>"
+msgid ", <xref linkend=\"ST_MakeLine\"/>, <xref linkend=\"ST_MakePolygon\"/>, <xref linkend=\"ST_TileEnvelope\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -286,51 +254,37 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:205
 #, no-c-format
-msgid ""
-"Creates a LineString containing the points of Point, MultiPoint, or "
-"LineString geometries. Other geometry types cause an error."
+msgid "Creates a LineString containing the points of Point, MultiPoint, or LineString geometries. Other geometry types cause an error."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:210
 #, no-c-format
-msgid ""
-"<emphasis role=\"bold\">Variant 3:</emphasis> aggregate function accepting a "
-"rowset of geometries. To ensure the order of the input geometries use "
-"<varname>ORDER BY</varname> in the function call, or a subquery with an "
-"<varname>ORDER BY</varname> clause."
+msgid "<emphasis role=\"bold\">Variant 3:</emphasis> aggregate function accepting a rowset of geometries. To ensure the order of the input geometries use <varname>ORDER BY</varname> in the function call, or a subquery with an <varname>ORDER BY</varname> clause."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:214
 #, no-c-format
-msgid ""
-"Repeated nodes at the beginning of input LineStrings are collapsed to a "
-"single point. Repeated points in Point and MultiPoint inputs are not "
-"collapsed. <xref linkend=\"ST_RemoveRepeatedPoints\"/> can be used to "
-"collapse repeated points from the output LineString."
+msgid "Repeated nodes at the beginning of input LineStrings are collapsed to a single point. Repeated points in Point and MultiPoint inputs are not collapsed. <xref linkend=\"ST_RemoveRepeatedPoints\"/> can be used to collapse repeated points from the output LineString."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:222
 #, no-c-format
-msgid ""
-"Availability: 2.3.0 - Support for MultiPoint input elements was introduced"
+msgid "Availability: 2.3.0 - Support for MultiPoint input elements was introduced"
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:223
 #, no-c-format
-msgid ""
-"Availability: 2.0.0 - Support for LineString input elements was introduced"
+msgid "Availability: 2.0.0 - Support for LineString input elements was introduced"
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:224
 #, no-c-format
-msgid ""
-"Availability: 1.4.0 - ST_MakeLine(geomarray) was introduced. ST_MakeLine "
-"aggregate functions was enhanced to handle more points faster."
+msgid "Availability: 1.4.0 - ST_MakeLine(geomarray) was introduced. ST_MakeLine aggregate functions was enhanced to handle more points faster."
 msgstr ""
 
 #. Tag: title
@@ -384,35 +338,25 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:253
 #, no-c-format
-msgid ""
-"This example queries time-based sequences of GPS points from a set of tracks "
-"and creates one record for each track. The result geometries are LineStrings "
-"composed of the GPS track points in the order of travel."
+msgid "This example queries time-based sequences of GPS points from a set of tracks and creates one record for each track. The result geometries are LineStrings composed of the GPS track points in the order of travel."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:257
 #, no-c-format
-msgid ""
-"Using aggregate <varname>ORDER BY</varname> provides a correctly-ordered "
-"LineString."
+msgid "Using aggregate <varname>ORDER BY</varname> provides a correctly-ordered LineString."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:260
 #, no-c-format
-msgid ""
-"Prior to PostgreSQL 9, ordering in a subquery can be used. However, "
-"sometimes the query plan may not respect the order of the subquery."
+msgid "Prior to PostgreSQL 9, ordering in a subquery can be used. However, sometimes the query plan may not respect the order of the subquery."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:267
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
-"linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_MakePoint\"/>, <xref "
-"linkend=\"ST_Point\"/>"
+msgid ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_Point\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -430,35 +374,26 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:317
 #, no-c-format
-msgid ""
-"Use <xref linkend=\"ST_MakePointM\"/> to make points with XYM coordinates."
+msgid "Use <xref linkend=\"ST_MakePointM\"/> to make points with XYM coordinates."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:319
 #, no-c-format
-msgid ""
-"While not OGC-compliant, <varname>ST_MakePoint</varname> is faster and more "
-"precise than <xref linkend=\"ST_GeomFromText\"/> and <xref "
-"linkend=\"ST_PointFromText\"/>. It is also easier to use for numeric "
-"coordinate values."
+msgid "While not OGC-compliant, <varname>ST_MakePoint</varname> is faster and more precise than <xref linkend=\"ST_GeomFromText\"/> and <xref linkend=\"ST_PointFromText\"/>. It is also easier to use for numeric coordinate values."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:325 reference_constructor.xml:365
 #: reference_constructor.xml:510
 #, no-c-format
-msgid ""
-"For geodetic coordinates, <varname>X</varname> is longitude and <varname>Y</"
-"varname> is latitude"
+msgid "For geodetic coordinates, <varname>X</varname> is longitude and <varname>Y</varname> is latitude"
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:336
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
-"<xref linkend=\"ST_MakePointM\"/>"
+msgid ", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_MakePointM\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -476,17 +411,13 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:363
 #, no-c-format
-msgid ""
-"Use <xref linkend=\"ST_MakePoint\"/> to make points with XY, XYZ, or XYZM "
-"coordinates."
+msgid "Use <xref linkend=\"ST_MakePoint\"/> to make points with XY, XYZ, or XYZM coordinates."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:371
 #, no-c-format
-msgid ""
-"is used for text output because <xref linkend=\"ST_AsText\"/> does not "
-"support M values."
+msgid "is used for text output because <xref linkend=\"ST_AsText\"/> does not support M values."
 msgstr ""
 
 #. Tag: para
@@ -522,34 +453,25 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:415
 #, no-c-format
-msgid ""
-"Creates a Polygon formed by the given shell and optional array of holes. "
-"Input geometries must be closed LineStrings (rings)."
+msgid "Creates a Polygon formed by the given shell and optional array of holes. Input geometries must be closed LineStrings (rings)."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:418
 #, no-c-format
-msgid ""
-"<emphasis role=\"bold\">Variant 1:</emphasis> Accepts one shell LineString."
+msgid "<emphasis role=\"bold\">Variant 1:</emphasis> Accepts one shell LineString."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:419
 #, no-c-format
-msgid ""
-"<emphasis role=\"bold\">Variant 2:</emphasis> Accepts a shell LineString and "
-"an array of inner (hole) LineStrings. A geometry array can be constructed "
-"using the PostgreSQL array_agg(), ARRAY[] or ARRAY() constructs."
+msgid "<emphasis role=\"bold\">Variant 2:</emphasis> Accepts a shell LineString and an array of inner (hole) LineStrings. A geometry array can be constructed using the PostgreSQL array_agg(), ARRAY[] or ARRAY() constructs."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:423 reference_constructor.xml:695
 #, no-c-format
-msgid ""
-"This function does not accept MultiLineStrings. Use <xref "
-"linkend=\"ST_LineMerge\"/> to generate a LineString, or <xref "
-"linkend=\"ST_Dump\"/> to extract LineStrings."
+msgid "This function does not accept MultiLineStrings. Use <xref linkend=\"ST_LineMerge\"/> to generate a LineString, or <xref linkend=\"ST_Dump\"/> to extract LineStrings."
 msgstr ""
 
 #. Tag: title
@@ -567,9 +489,7 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:435
 #, no-c-format
-msgid ""
-"Create a Polygon from an open LineString, using <xref "
-"linkend=\"ST_StartPoint\"/> and <xref linkend=\"ST_AddPoint\"/> to close it."
+msgid "Create a Polygon from an open LineString, using <xref linkend=\"ST_StartPoint\"/> and <xref linkend=\"ST_AddPoint\"/> to close it."
 msgstr ""
 
 #. Tag: para
@@ -599,32 +519,19 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:449
 #, no-c-format
-msgid ""
-"Create a set of province boundaries with holes representing lakes. The input "
-"is a table of province Polygons/MultiPolygons and a table of water "
-"linestrings. Lines forming lakes are determined by using <xref "
-"linkend=\"ST_IsClosed\"/>. The province linework is extracted by using <xref "
-"linkend=\"ST_Boundary\"/>. As required by <code>ST_MakePolygon</code>, the "
-"boundary is forced to be a single LineString by using <xref "
-"linkend=\"ST_LineMerge\"/>. (However, note that if a province has more than "
-"one region or has islands this will produce an invalid polygon.) Using a "
-"LEFT JOIN ensures all provinces are included even if they have no lakes."
+msgid "Create a set of province boundaries with holes representing lakes. The input is a table of province Polygons/MultiPolygons and a table of water linestrings. Lines forming lakes are determined by using <xref linkend=\"ST_IsClosed\"/>. The province linework is extracted by using <xref linkend=\"ST_Boundary\"/>. As required by <code>ST_MakePolygon</code>, the boundary is forced to be a single LineString by using <xref linkend=\"ST_LineMerge\"/>. (However, note that if a province has more than one region or has islands this will produce an invalid polygon.) Using a LEFT JOIN ensures all provinces are included even if they have no lakes."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:462
 #, no-c-format
-msgid ""
-"The CASE construct is used because passing a null array into ST_MakePolygon "
-"results in a NULL return value."
+msgid "The CASE construct is used because passing a null array into ST_MakePolygon results in a NULL return value."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:467
 #, no-c-format
-msgid ""
-"Another technique is to utilize a correlated subquery and the ARRAY() "
-"constructor that converts a row set to an array."
+msgid "Another technique is to utilize a correlated subquery and the ARRAY() constructor that converts a row set to an array."
 msgstr ""
 
 #. Tag: refpurpose
@@ -636,18 +543,14 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:508
 #, no-c-format
-msgid ""
-"Returns a Point with the given X and Y coordinate values. This is the SQL-MM "
-"equivalent for <xref linkend=\"ST_MakePoint\"/> that takes just X and Y."
+msgid "Returns a Point with the given X and Y coordinate values. This is the SQL-MM equivalent for <xref linkend=\"ST_MakePoint\"/> that takes just X and Y."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:512 reference_constructor.xml:575
 #: reference_constructor.xml:612 reference_constructor.xml:651
 #, no-c-format
-msgid ""
-"Enhanced: 3.2.0 srid as an extra optional argument was added. Older installs "
-"require combining with ST_SetSRID to mark the srid on the geometry."
+msgid "Enhanced: 3.2.0 srid as an extra optional argument was added. Older installs require combining with ST_SetSRID to mark the srid on the geometry."
 msgstr ""
 
 #. Tag: para
@@ -689,27 +592,19 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:535
 #, no-c-format
-msgid ""
-"PostgreSQL also provides the <varname>::</varname> short-hand for casting"
+msgid "PostgreSQL also provides the <varname>::</varname> short-hand for casting"
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:538
 #, no-c-format
-msgid ""
-"If the point coordinates are not in a geodetic coordinate system (such as "
-"WGS84), then they must be reprojected before casting to a geography. In this "
-"example a point in Pennsylvania State Plane feet (SRID 2273) is projected to "
-"WGS84 (SRID 4326)."
+msgid "If the point coordinates are not in a geodetic coordinate system (such as WGS84), then they must be reprojected before casting to a geography. In this example a point in Pennsylvania State Plane feet (SRID 2273) is projected to WGS84 (SRID 4326)."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:549
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref "
-"linkend=\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
+msgid ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend=\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -721,17 +616,13 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:574
 #, no-c-format
-msgid ""
-"Returns an Point with the given X, Y and Z coordinate values, and optionally "
-"an SRID number."
+msgid "Returns an Point with the given X, Y and Z coordinate values, and optionally an SRID number."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:587
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
-"linkend=\"ST_PointZM\"/>"
+msgid ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -743,17 +634,13 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:611
 #, no-c-format
-msgid ""
-"Returns an Point with the given X, Y and M coordinate values, and optionally "
-"an SRID number."
+msgid "Returns an Point with the given X, Y and M coordinate values, and optionally an SRID number."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:624
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointZ\"/>, <xref "
-"linkend=\"ST_PointZM\"/>"
+msgid ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend=\"ST_PointZM\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -765,17 +652,13 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:650
 #, no-c-format
-msgid ""
-"Returns an Point with the given X, Y, Z and M coordinate values, and "
-"optionally an SRID number."
+msgid "Returns an Point with the given X, Y, Z and M coordinate values, and optionally an SRID number."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:663
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
-"linkend=\"ST_PointZ\"/>, <xref linkend=\"ST_SetSRID\"/>"
+msgid ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend=\"ST_SetSRID\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -787,25 +670,19 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:686
 #, no-c-format
-msgid ""
-"Returns a polygon built from the given LineString and sets the spatial "
-"reference system from the <varname>srid</varname>."
+msgid "Returns a polygon built from the given LineString and sets the spatial reference system from the <varname>srid</varname>."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:689
 #, no-c-format
-msgid ""
-"ST_Polygon is similar to <xref linkend=\"ST_MakePolygon\"/> Variant 1 with "
-"the addition of setting the SRID."
+msgid "ST_Polygon is similar to <xref linkend=\"ST_MakePolygon\"/> Variant 1 with the addition of setting the SRID."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:691
 #, no-c-format
-msgid ""
-"To create polygons with holes use <xref linkend=\"ST_MakePolygon\"/> Variant "
-"2 and then <xref linkend=\"ST_SetSRID\"/>."
+msgid "To create polygons with holes use <xref linkend=\"ST_MakePolygon\"/> Variant 2 and then <xref linkend=\"ST_SetSRID\"/>."
 msgstr ""
 
 #. Tag: para
@@ -835,64 +712,31 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:718
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>, <xref "
-"linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_LineMerge\"/>, <xref "
-"linkend=\"ST_MakePolygon\"/>"
+msgid ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_LineMerge\"/>, <xref linkend=\"ST_MakePolygon\"/>"
 msgstr ""
 
 #. Tag: refpurpose
 #: reference_constructor.xml:726
 #, no-c-format
-msgid ""
-"Creates a rectangular Polygon in <ulink url=\"https://en.wikipedia.org/wiki/"
-"Web_Mercator_projection\">Web Mercator</ulink> (SRID:3857) using the <ulink "
-"url=\"https://en.wikipedia.org/wiki/Tiled_web_map\">XYZ tile system</ulink>."
+msgid "Creates a rectangular Polygon in <ulink url=\"https://en.wikipedia.org/wiki/Web_Mercator_projection\">Web Mercator</ulink> (SRID:3857) using the <ulink url=\"https://en.wikipedia.org/wiki/Tiled_web_map\">XYZ tile system</ulink>."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:745
 #, no-c-format
-msgid ""
-"Creates a rectangular Polygon giving the extent of a tile in the <ulink "
-"url=\"https://en.wikipedia.org/wiki/Tiled_web_map\">XYZ tile system</ulink>. "
-"The tile is specifed by the zoom level Z and the XY index of the tile in the "
-"grid at that level. Can be used to define the tile bounds required by <xref "
-"linkend=\"ST_AsMVTGeom\"/> to convert geometry into the MVT tile coordinate "
-"space."
+msgid "Creates a rectangular Polygon giving the extent of a tile in the <ulink url=\"https://en.wikipedia.org/wiki/Tiled_web_map\">XYZ tile system</ulink>. The tile is specifed by the zoom level Z and the XY index of the tile in the grid at that level. Can be used to define the tile bounds required by <xref linkend=\"ST_AsMVTGeom\"/> to convert geometry into the MVT tile coordinate space."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:751
 #, no-c-format
-msgid ""
-"By default, the tile envelope is in the <ulink url=\"https://en.wikipedia."
-"org/wiki/Web_Mercator_projection\">Web Mercator</ulink> coordinate system "
-"(SRID:3857) using the standard range of the Web Mercator system "
-"(-20037508.342789, 20037508.342789). This is the most common coordinate "
-"system used for MVT tiles. The optional <varname>bounds</varname> parameter "
-"can be used to generate tiles in any coordinate system. It is a geometry "
-"that has the SRID and extent of the \"Zoom Level zero\" square within which "
-"the XYZ tile system is inscribed."
+msgid "By default, the tile envelope is in the <ulink url=\"https://en.wikipedia.org/wiki/Web_Mercator_projection\">Web Mercator</ulink> coordinate system (SRID:3857) using the standard range of the Web Mercator system (-20037508.342789, 20037508.342789). This is the most common coordinate system used for MVT tiles. The optional <varname>bounds</varname> parameter can be used to generate tiles in any coordinate system. It is a geometry that has the SRID and extent of the \"Zoom Level zero\" square within which the XYZ tile system is inscribed."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:757
 #, no-c-format
-msgid ""
-"The optional <varname>margin</varname> parameter can be used to expand a "
-"tile by the given percentage. E.g. <varname>margin=0.125</varname> expands "
-"the tile by 12.5%, which is equivalent to buffer=512 when the tile extent "
-"size is 4096, as used in <xref linkend=\"ST_AsMVTGeom\"/>. This is useful to "
-"create a tile buffer to include data lying outside of the tile's visible "
-"area, but whose existence affects the tile rendering. For example, a city "
-"name (a point) could be near an edge of a tile, so its label should be "
-"rendered on two tiles, even though the point is located in the visible area "
-"of just one tile. Using expanded tiles in a query will include the city "
-"point in both tiles. Use a negative value to shrink the tile instead. Values "
-"less than -0.5 are prohibited because that would eliminate the tile "
-"completely. Do not specify a margin when using with <varname>ST_AsMVTGeom</"
-"varname>. See the example for <xref linkend=\"ST_AsMVT\"/>."
+msgid "The optional <varname>margin</varname> parameter can be used to expand a tile by the given percentage. E.g. <varname>margin=0.125</varname> expands the tile by 12.5%, which is equivalent to buffer=512 when the tile extent size is 4096, as used in <xref linkend=\"ST_AsMVTGeom\"/>. This is useful to create a tile buffer to include data lying outside of the tile's visible area, but whose existence affects the tile rendering. For example, a city name (a point) could be near an edge of a tile, so its label should be rendered on two tiles, even though the point is located in the visible area of just one tile. Using expanded tiles in a query will include the city point in both tiles. Use a negative value to shrink the tile instead. Values less than -0.5 are prohibited because that would eliminate the tile completely. Do not specify a margin when using with <varname>ST_AsMVTGeom</varname>. See the example for <xref linkend=\"ST_AsMVT\"/>."
 msgstr ""
 
 #. Tag: para
@@ -916,37 +760,25 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_constructor.xml:785
 #, no-c-format
-msgid ""
-"Returns a set of hexagons and cell indices that completely cover the bounds "
-"of the geometry argument."
+msgid "Returns a set of hexagons and cell indices that completely cover the bounds of the geometry argument."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:801
 #, no-c-format
-msgid ""
-"Starts with the concept of a hexagon tiling of the plane. (Not a hexagon "
-"tiling of the globe, this is not the <ulink url=\"https://github.com/uber/"
-"h3\">H3</ulink> tiling scheme.) For a given planar SRS, and a given edge "
-"size, starting at the origin of the SRS, there is one unique hexagonal "
-"tiling of the plane, Tiling(SRS, Size). This function answers the question: "
-"what hexagons in a given Tiling(SRS, Size) overlap with a given bounds."
+msgid "Starts with the concept of a hexagon tiling of the plane. (Not a hexagon tiling of the globe, this is not the <ulink url=\"https://github.com/uber/h3\">H3</ulink> tiling scheme.) For a given planar SRS, and a given edge size, starting at the origin of the SRS, there is one unique hexagonal tiling of the plane, Tiling(SRS, Size). This function answers the question: what hexagons in a given Tiling(SRS, Size) overlap with a given bounds."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:813
 #, no-c-format
-msgid ""
-"The SRS for the output hexagons is the SRS provided by the bounds geometry."
+msgid "The SRS for the output hexagons is the SRS provided by the bounds geometry."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:814
 #, no-c-format
-msgid ""
-"Doubling or tripling the edge size of the hexagon generates a new parent "
-"tiling that fits with the origin tiling. Unfortunately, it is not possible "
-"to generate parent hexagon tilings that the child tiles perfectly fit inside."
+msgid "Doubling or tripling the edge size of the hexagon generates a new parent tiling that fits with the origin tiling. Unfortunately, it is not possible to generate parent hexagon tilings that the child tiles perfectly fit inside."
 msgstr ""
 
 #. Tag: para
@@ -965,10 +797,7 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:828
 #, no-c-format
-msgid ""
-"To do a point summary against a hexagonal tiling, generate a hexagon grid "
-"using the extent of the points as the bounds, then spatially join to that "
-"grid."
+msgid "To do a point summary against a hexagonal tiling, generate a hexagon grid using the extent of the points as the bounds, then spatially join to that grid."
 msgstr ""
 
 #. Tag: title
@@ -980,60 +809,43 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:834
 #, no-c-format
-msgid ""
-"If we generate a set of hexagons for each polygon boundary and filter out "
-"those that do not intersect their hexagons, we end up with a tiling for each "
-"polygon."
+msgid "If we generate a set of hexagons for each polygon boundary and filter out those that do not intersect their hexagons, we end up with a tiling for each polygon."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:840
 #, no-c-format
-msgid ""
-"Tiling states results in a hexagon coverage of each state, and multiple "
-"hexagons overlapping at the borders between states."
+msgid "Tiling states results in a hexagon coverage of each state, and multiple hexagons overlapping at the borders between states."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:842
 #, no-c-format
-msgid ""
-"The LATERAL keyword is implied for set-returning functions when referring to "
-"a prior table in the FROM list. So CROSS JOIN LATERAL, CROSS JOIN, or just "
-"plain , are equivalent constructs for this example."
+msgid "The LATERAL keyword is implied for set-returning functions when referring to a prior table in the FROM list. So CROSS JOIN LATERAL, CROSS JOIN, or just plain , are equivalent constructs for this example."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:847
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SquareGrid\"/>, <xref "
-"linkend=\"ST_TileEnvelope\"/>"
+msgid ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SquareGrid\"/>, <xref linkend=\"ST_TileEnvelope\"/>"
 msgstr ""
 
 #. Tag: refpurpose
 #: reference_constructor.xml:854
 #, no-c-format
-msgid ""
-"Returns a single hexagon, using the provided edge size and cell coordinate "
-"within the hexagon grid space."
+msgid "Returns a single hexagon, using the provided edge size and cell coordinate within the hexagon grid space."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:873
 #, no-c-format
-msgid ""
-"Uses the same hexagon tiling concept as <xref linkend=\"ST_HexagonGrid\"/>, "
-"but generates just one hexagon at the desired cell coordinate. Optionally, "
-"can adjust origin coordinate of the tiling, the default origin is at 0,0."
+msgid "Uses the same hexagon tiling concept as <xref linkend=\"ST_HexagonGrid\"/>, but generates just one hexagon at the desired cell coordinate. Optionally, can adjust origin coordinate of the tiling, the default origin is at 0,0."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:876
 #, no-c-format
-msgid ""
-"Hexagons are generated with no SRID set, so use <xref linkend=\"ST_SetSRID\"/"
-"> to set the SRID to the one you expect."
+msgid "Hexagons are generated with no SRID set, so use <xref linkend=\"ST_SetSRID\"/> to set the SRID to the one you expect."
 msgstr ""
 
 #. Tag: title
@@ -1051,36 +863,25 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_constructor.xml:894
 #, no-c-format
-msgid ""
-"Returns a set of grid squares and cell indices that completely cover the "
-"bounds of the geometry argument."
+msgid "Returns a set of grid squares and cell indices that completely cover the bounds of the geometry argument."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:910
 #, no-c-format
-msgid ""
-"Starts with the concept of a square tiling of the plane. For a given planar "
-"SRS, and a given edge size, starting at the origin of the SRS, there is one "
-"unique square tiling of the plane, Tiling(SRS, Size). This function answers "
-"the question: what grids in a given Tiling(SRS, Size) overlap with a given "
-"bounds."
+msgid "Starts with the concept of a square tiling of the plane. For a given planar SRS, and a given edge size, starting at the origin of the SRS, there is one unique square tiling of the plane, Tiling(SRS, Size). This function answers the question: what grids in a given Tiling(SRS, Size) overlap with a given bounds."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:916
 #, no-c-format
-msgid ""
-"The SRS for the output squares is the SRS provided by the bounds geometry."
+msgid "The SRS for the output squares is the SRS provided by the bounds geometry."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:917
 #, no-c-format
-msgid ""
-"Doubling or edge size of the square generates a new parent tiling that "
-"perfectly fits with the original tiling. Standard web map tilings in "
-"mercator are just powers-of-two square grids in the mercator plane."
+msgid "Doubling or edge size of the square generates a new parent tiling that perfectly fits with the original tiling. Standard web map tilings in mercator are just powers-of-two square grids in the mercator plane."
 msgstr ""
 
 #. Tag: title
@@ -1092,10 +893,7 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:927
 #, no-c-format
-msgid ""
-"The grid will fill the whole bounds of the country, so if you want just "
-"squares that touch the country you will have to filter afterwards with "
-"ST_Intersects."
+msgid "The grid will fill the whole bounds of the country, so if you want just squares that touch the country you will have to filter afterwards with ST_Intersects."
 msgstr ""
 
 #. Tag: title
@@ -1107,11 +905,7 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:934
 #, no-c-format
-msgid ""
-"To do a point summary against a square tiling, generate a square grid using "
-"the extent of the points as the bounds, then spatially join to that grid. "
-"Note the estimated extent might be off from actual extent, so be cautious "
-"and at very least make sure you've analyzed your table."
+msgid "To do a point summary against a square tiling, generate a square grid using the extent of the points as the bounds, then spatially join to that grid. Note the estimated extent might be off from actual extent, so be cautious and at very least make sure you've analyzed your table."
 msgstr ""
 
 #. Tag: title
@@ -1123,42 +917,31 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:941
 #, no-c-format
-msgid ""
-"This yields the same result as the first example but will be slower for a "
-"large number of points"
+msgid "This yields the same result as the first example but will be slower for a large number of points"
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:947
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_HexagonGrid\"/> , <xref linkend=\"ST_EstimatedExtent\"/"
-"> , <xref linkend=\"ST_SetSRID\"/>"
+msgid ", <xref linkend=\"ST_HexagonGrid\"/> , <xref linkend=\"ST_EstimatedExtent\"/> , <xref linkend=\"ST_SetSRID\"/>"
 msgstr ""
 
 #. Tag: refpurpose
 #: reference_constructor.xml:956
 #, no-c-format
-msgid ""
-"Returns a single square, using the provided edge size and cell coordinate "
-"within the square grid space."
+msgid "Returns a single square, using the provided edge size and cell coordinate within the square grid space."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:975
 #, no-c-format
-msgid ""
-"Uses the same square tiling concept as <xref linkend=\"ST_SquareGrid\"/>, "
-"but generates just one square at the desired cell coordinate. Optionally, "
-"can adjust origin coordinate of the tiling, the default origin is at 0,0."
+msgid "Uses the same square tiling concept as <xref linkend=\"ST_SquareGrid\"/>, but generates just one square at the desired cell coordinate. Optionally, can adjust origin coordinate of the tiling, the default origin is at 0,0."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:978
 #, no-c-format
-msgid ""
-"Squares are generated with no SRID set, so use <xref linkend=\"ST_SetSRID\"/"
-"> to set the SRID to the one you expect."
+msgid "Squares are generated with no SRID set, so use <xref linkend=\"ST_SetSRID\"/> to set the SRID to the one you expect."
 msgstr ""
 
 #. Tag: title
@@ -1176,31 +959,19 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_constructor.xml:998
 #, no-c-format
-msgid ""
-"Returns the input letters rendered as geometry with a default start position "
-"at the origin and default text height of 100."
+msgid "Returns the input letters rendered as geometry with a default start position at the origin and default text height of 100."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:1013
 #, no-c-format
-msgid ""
-"Uses a built-in font to render out a string as a multipolygon geometry. The "
-"default text height is 100.0, the distance from the bottom of a descender to "
-"the top of a capital. The default start position places the start of the "
-"baseline at the origin. Over-riding the font involves passing in a json map, "
-"with a character as the key, and base64 encoded TWKB for the font shape, "
-"with the fonts having a height of 1000 units from the bottom of the "
-"descenders to the tops of the capitals."
+msgid "Uses a built-in font to render out a string as a multipolygon geometry. The default text height is 100.0, the distance from the bottom of a descender to the top of a capital. The default start position places the start of the baseline at the origin. Over-riding the font involves passing in a json map, with a character as the key, and base64 encoded TWKB for the font shape, with the fonts having a height of 1000 units from the bottom of the descenders to the tops of the capitals."
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:1016
 #, no-c-format
-msgid ""
-"The text is generated at the origin by default, so to reposition and resize "
-"the text, first apply the <code>ST_Scale</code> function and then apply the "
-"<code>ST_Translate</code> function."
+msgid "The text is generated at the origin by default, so to reposition and resize the text, first apply the <code>ST_Scale</code> function and then apply the <code>ST_Translate</code> function."
 msgstr ""
 
 #. Tag: para
