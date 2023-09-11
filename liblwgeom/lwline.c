@@ -372,7 +372,7 @@ lwline_setPoint4d(LWLINE *line, uint32_t index, POINT4D *newpoint)
 }
 
 /**
-* Re-write the measure ordinate (or add one, if it isn't already there) interpolating
+* Re-write the measure coordinate (or add one, if it isn't already there) interpolating
 * the measure between the supplied start and end values.
 */
 LWLINE*
