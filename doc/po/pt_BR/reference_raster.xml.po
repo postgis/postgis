@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2018-07-23 18:02+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -1137,16 +1137,6 @@ msgstr ""
 msgid "Reports the version of the GDAL library in use by PostGIS."
 msgstr "Relata a versão da biblioteca GDAL em uso pelo PostGIS"
 
-#. Tag: funcprototype
-#: reference_raster.xml:880
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_GDAL_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>text <function>PostGIS_GDAL_Version</function></funcdef> "
-"<paramdef></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:889
 #, no-c-format
@@ -1162,16 +1152,6 @@ msgstr ""
 #, no-c-format
 msgid "Reports full raster library build date."
 msgstr "Relata a data da biblioteca raster construída completa. "
-
-#. Tag: funcprototype
-#: reference_raster.xml:914
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Raster_Lib_Build_Date</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>text <function>PostGIS_Raster_Lib_Build_Date</function></funcdef> "
-"<paramdef></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:925
@@ -1189,16 +1169,6 @@ msgstr ""
 "<refpurpose>Relata a versão raster completa e constrói informações de "
 "configuração.</refpurpose>"
 
-#. Tag: funcprototype
-#: reference_raster.xml:951
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Raster_Lib_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>text <function>PostGIS_Raster_Lib_Version</function></funcdef> "
-"<paramdef></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:962
 #, no-c-format
@@ -1213,20 +1183,6 @@ msgstr ""
 msgid ""
 "Returns a list of raster formats supported by PostGIS through GDAL. Only "
 "those formats with can_write=True can be used by ST_AsGDALRaster"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_raster.xml:990
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>ST_GDALDrivers</function></funcdef> "
-"<paramdef><type>integer </type> <parameter>OUT idx</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>OUT short_name</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>OUT long_name</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>OUT can_read</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>OUT can_write</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>OUT create_options</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1298,27 +1254,6 @@ msgid ""
 "highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
 "contouring algorithm</ulink>.</refpurpose>"
 msgstr ""
-
-#. Tag: funcprototype
-#: reference_raster.xml:1044
-#, fuzzy, no-c-format
-msgid ""
-"<funcdef>setof record <function>ST_Contour</function></funcdef> "
-"<paramdef><type>raster </type><parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type><parameter>bandnumber</parameter></paramdef> "
-"<paramdef><type>double precision </type><parameter>level_interval</"
-"parameter></paramdef> <paramdef><type>double precision </"
-"type><parameter>level_base</parameter></paramdef> <paramdef><type>double "
-"precision[] </type><parameter>fixed_levels</parameter></paramdef> "
-"<paramdef><type>boolean </type><parameter>polygonize</parameter></paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_TPI</function></funcdef> <paramdef><type>raster "
-"</type> <parameter>rast</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>nband</parameter></paramdef> <paramdef><type>raster </type> "
-"<parameter>customextent</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text </type> <parameter>pixeltype=\"32BF\"</parameter> "
-"</paramdef> <paramdef choice=\"opt\"><type>boolean </type> <parameter> "
-"interpolate_nodata=FALSE </parameter> </paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:1059
@@ -1405,24 +1340,6 @@ msgid ""
 "the X- and Y-values to position the points on the grid and the Z-value of "
 "the points as the surface elevation."
 msgstr ""
-
-#. Tag: funcprototype
-#: reference_raster.xml:1112
-#, fuzzy, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_InterpolateRaster</function></funcdef> "
-"<paramdef><type>geometry </type><parameter>input_points</parameter></"
-"paramdef> <paramdef><type>text </type><parameter>algorithm_options</"
-"parameter></paramdef> <paramdef><type>raster </type><parameter>template</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </"
-"type><parameter>template_band_num=1</parameter></paramdef>"
-msgstr ""
-"<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>format</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text[] </type> <parameter>options=NULL</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>srid=sameassource</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:1125
@@ -1564,24 +1481,6 @@ msgstr "Disponibilidade: 2.1.0"
 #, no-c-format
 msgid "Create an reduced resolution version of a given raster coverage."
 msgstr "Cria uma resolução de versão reduzida de uma dada cobertura raster."
-
-#. Tag: funcprototype
-#: reference_raster.xml:1252
-#, no-c-format
-msgid ""
-"<funcdef>regclass <function>ST_CreateOverview</function></funcdef> "
-"<paramdef><type>regclass </type> <parameter>tab</parameter></paramdef> "
-"<paramdef><type>name </type> <parameter>col</parameter></paramdef> "
-"<paramdef><type>int </type> <parameter>factor</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> "
-"<parameter>algo='NearestNeighbor'</parameter></paramdef>"
-msgstr ""
-"<funcdef>regclass <function>ST_CreateOverview</function></funcdef> "
-"<paramdef><type>regclass </type> <parameter>tab</parameter></paramdef> "
-"<paramdef><type>name </type> <parameter>col</parameter></paramdef> "
-"<paramdef><type>int </type> <parameter>factor</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> "
-"<parameter>algo='NearestNeighbor'</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:1266
@@ -2041,26 +1940,6 @@ msgstr ""
 msgid "Cover georeferenced area with a grid of empty raster tiles."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_raster.xml:1743
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_MakeEmptyCoverage</function></funcdef> "
-"<paramdef><type>integer </type> <parameter>tilewidth</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>tileheight</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>width</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>height</parameter></paramdef> "
-"<paramdef><type>double precision </type> <parameter>upperleftx</parameter></"
-"paramdef> <paramdef><type>double precision </type> <parameter>upperlefty</"
-"parameter></paramdef> <paramdef><type>double precision </type> "
-"<parameter>scalex</parameter></paramdef> <paramdef><type>double precision </"
-"type> <parameter>scaley</parameter></paramdef> <paramdef><type>double "
-"precision </type> <parameter>skewx</parameter></paramdef> "
-"<paramdef><type>double precision </type> <parameter>skewy</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>srid=unknown</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_raster.xml:1763
 #, no-c-format
@@ -2246,32 +2125,6 @@ msgid ""
 msgstr ""
 "Retorna um conjunto de tiles configuradas de uma cobertura raster aleatória. "
 
-#. Tag: funcprototype
-#: reference_raster.xml:1934
-#, no-c-format
-msgid ""
-"<funcdef>SETOF raster <function>ST_Retile</function></funcdef> "
-"<paramdef><type>regclass </type> <parameter>tab</parameter></paramdef> "
-"<paramdef><type>name </type> <parameter>col</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>ext</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>sfx</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>sfy</parameter></paramdef> "
-"<paramdef><type>int </type> <parameter>tw</parameter></paramdef> "
-"<paramdef><type>int </type> <parameter>th</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text </type> <parameter>algo='NearestNeighbor'</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>SETOF raster <function>ST_Retile</function></funcdef> "
-"<paramdef><type>regclass </type> <parameter>tab</parameter></paramdef> "
-"<paramdef><type>name </type> <parameter>col</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>ext</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>sfx</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>sfy</parameter></paramdef> "
-"<paramdef><type>int </type> <parameter>tw</parameter></paramdef> "
-"<paramdef><type>int </type> <parameter>th</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text </type> <parameter>algo='NearestNeighbor'</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:1952
 #, no-c-format
@@ -2293,20 +2146,6 @@ msgstr ""
 #, no-c-format
 msgid "Returns a raster from a supported GDAL raster file."
 msgstr "Retorna um raster de um arquivo raster GDAL suportado."
-
-#. Tag: funcprototype
-#: reference_raster.xml:1982
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_FromGDALRaster</function></funcdef> "
-"<paramdef><type>bytea </type> <parameter>gdaldata</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>srid=NULL</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_FromGDALRaster</function></funcdef> "
-"<paramdef><type>bytea </type> <parameter>gdaldata</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>srid=NULL</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:1994
@@ -2346,20 +2185,6 @@ msgid ""
 msgstr ""
 "Retorna os metadados georreferenciados no formato GDAL ou ESRI como é "
 "comumente visto em um arquivo mundo. O padrão é GDAL. "
-
-#. Tag: funcprototype
-#: reference_raster.xml:2033
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_GeoReference</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>format=GDAL</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>ST_GeoReference</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>format=GDAL</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:2044
@@ -2404,16 +2229,6 @@ msgstr ", <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>"
 msgid "Returns the height of the raster in pixels."
 msgstr "Retorna a altura do raster em pixeis. "
 
-#. Tag: funcprototype
-#: reference_raster.xml:2073
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_Height</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_Height</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:2083
 #, no-c-format
@@ -2429,16 +2244,6 @@ msgid ""
 msgstr ""
 "<refpurpose>Retorna verdadeiro se o raster estiver vazio (largura = 0 e "
 "altura = 0). Senão, retorna falso.</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:2107
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_IsEmpty</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_IsEmpty</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:2117
@@ -2459,16 +2264,6 @@ msgid ""
 msgstr ""
 "<refpurpose>Retorna a quantidade de espaço (em bytes) que o raster pega.</"
 "refpurpose>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:2144
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_MemSize</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_MemSize</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:2154
@@ -2521,16 +2316,6 @@ msgstr ""
 "Retorna metadados básicos sobre um objeto raster como um tanho pixel, "
 "rotação (skew), esquerda superior, inferior etc. "
 
-#. Tag: funcprototype
-#: reference_raster.xml:2187
-#, no-c-format
-msgid ""
-"<funcdef>record <function>ST_MetaData</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>record <function>ST_MetaData</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:2197
 #, no-c-format
@@ -2557,16 +2342,6 @@ msgid ""
 "<refpurpose>Returns the number of bands in the raster object.</refpurpose>"
 msgstr "<refpurpose>Retorna o número de bandas no objeto raster.</refpurpose>"
 
-#. Tag: funcprototype
-#: reference_raster.xml:2222
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_NumBands</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_NumBands</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:2232
 #, no-c-format
@@ -2581,16 +2356,6 @@ msgid ""
 msgstr ""
 "Retorna a altura do pixel em unidades geométricas do sistema de referência "
 "espacial. "
-
-#. Tag: funcprototype
-#: reference_raster.xml:2256
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>ST_PixelHeight</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>double precision <function>ST_PixelHeight</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:2266
@@ -2646,16 +2411,6 @@ msgstr ""
 "Retorna a largura do pixel em unidades geométricas do sistema de referência "
 "espacial. "
 
-#. Tag: funcprototype
-#: reference_raster.xml:2306
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>ST_PixelWidth</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>double precision <function>ST_PixelWidth</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:2316
 #, no-c-format
@@ -2696,16 +2451,6 @@ msgstr ""
 "Retorna o componente X da largura do pixel em unidades do sistema de "
 "referência coordenadas. "
 
-#. Tag: funcprototype
-#: reference_raster.xml:2360
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_ScaleX</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>float8 <function>ST_ScaleX</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:2370
 #, no-c-format
@@ -2734,16 +2479,6 @@ msgstr ""
 "Retorna o componente Y da altura do pixel em unidades do sistema de "
 "referência coordenadas. "
 
-#. Tag: funcprototype
-#: reference_raster.xml:2397
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_ScaleY</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>float8 <function>ST_ScaleY</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:2407
 #, no-c-format
@@ -2771,20 +2506,6 @@ msgid ""
 msgstr ""
 "Retorna o canto superior esquerdo do raster como X e Y geométricos "
 "(longitude e latitude) dada a coluna e linha. Coluna e linha começam em 1."
-
-#. Tag: funcprototype
-#: reference_raster.xml:2435
-#, no-c-format
-msgid ""
-"<funcdef>record <function>ST_RasterToWorldCoord</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>xcolumn</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>yrow</parameter></paramdef>"
-msgstr ""
-"<funcdef>record <function>ST_RasterToWorldCoord</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>xcolumn</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>yrow</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:2447
@@ -2939,16 +2660,6 @@ msgstr ""
 msgid "Returns the rotation of the raster in radian."
 msgstr "Retorna a rotação do raster em radianos. "
 
-#. Tag: funcprototype
-#: reference_raster.xml:2593
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_Rotation</function></funcdef> "
-"<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>float8 <function>ST_Rotation</function></funcdef> "
-"<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:2603
 #, no-c-format
@@ -2974,16 +2685,6 @@ msgstr ""
 msgid "Returns the georeference X skew (or rotation parameter)."
 msgstr "Retorna o desvio X georreferência (ou parâmetro e rotação)."
 
-#. Tag: funcprototype
-#: reference_raster.xml:2628
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_SkewX</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>float8 <function>ST_SkewX</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:2638
 #, no-c-format
@@ -3007,16 +2708,6 @@ msgstr ", <xref linkend=\"RT_ST_SkewY\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
 #, no-c-format
 msgid "Returns the georeference Y skew (or rotation parameter)."
 msgstr "Retorna o desvio Y georreferência (ou parâmetro e rotação)."
-
-#. Tag: funcprototype
-#: reference_raster.xml:2664
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_SkewY</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>float8 <function>ST_SkewY</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:2674
@@ -3045,16 +2736,6 @@ msgid ""
 msgstr ""
 "Retorna o identificador de referência espacial  como definido na tabela "
 "spatial_ref_sys."
-
-#. Tag: funcprototype
-#: reference_raster.xml:2700
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_SRID</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_SRID</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:2710
@@ -3091,16 +2772,6 @@ msgid ""
 msgstr ""
 "<refpurpose>Retorna um texto resumo dos conteúdos do raster.</refpurpose>"
 
-#. Tag: funcprototype
-#: reference_raster.xml:2735
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_Summary</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>ST_Summary</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:2745
 #, no-c-format
@@ -3126,16 +2797,6 @@ msgid ""
 msgstr ""
 "<refpurpose>Retorna a coordenada X superior esquerda na ref. espacial "
 "projetada.</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:2774
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_UpperLeftX</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>float8 <function>ST_UpperLeftX</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:2784
@@ -3163,16 +2824,6 @@ msgstr ""
 "<refpurpose>Retorna a coordenada Y superior esquerda na ref. espacial "
 "projetada.</refpurpose>"
 
-#. Tag: funcprototype
-#: reference_raster.xml:2808
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_UpperLeftY</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>float8 <function>ST_UpperLeftY</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:2818
 #, no-c-format
@@ -3188,16 +2839,6 @@ msgstr ""
 #, no-c-format
 msgid "<refpurpose>Returns the width of the raster in pixels.</refpurpose>"
 msgstr "<refpurpose>Retorna a largura do raster em pixeis.</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:2842
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_Width</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_Width</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:2852
@@ -3410,20 +3051,6 @@ msgstr ""
 "Retorna o valor em uma dada banda que não representa nenhum valor. Se "
 "nenhuma banda número 1 for assumida. "
 
-#. Tag: funcprototype
-#: reference_raster.xml:3110
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>ST_BandNoDataValue</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>double precision <function>ST_BandNoDataValue</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:3121
 #, no-c-format
@@ -3490,20 +3117,6 @@ msgstr ""
 "Retorna o caminho do arquivo do sistema para uma banda armazenada em um "
 "sistema de arquivos. Se nenhum número de banda for especificado, usa-se 1. "
 
-#. Tag: funcprototype
-#: reference_raster.xml:3203
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_BandPath</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>ST_BandPath</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:3214
 #, no-c-format
@@ -3520,16 +3133,6 @@ msgstr ""
 msgid ""
 "Returns the file size of a band stored in file system. If no bandnum "
 "specified, 1 is assumed."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_raster.xml:3238
-#, no-c-format
-msgid ""
-"<funcdef>bigint <function>ST_BandFileSize</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -3566,16 +3169,6 @@ msgid ""
 "specified, 1 is assumed."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_raster.xml:3274
-#, no-c-format
-msgid ""
-"<funcdef>bigint <function>ST_BandFileTimestamp</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
-"parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_raster.xml:3285
 #, no-c-format
@@ -3603,20 +3196,6 @@ msgid ""
 msgstr ""
 "Retorna o tipo pixel para uma dada banda. Se nenhum número de banda for "
 "especificado, usa-se 1. "
-
-#. Tag: funcprototype
-#: reference_raster.xml:3308
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_BandPixelType</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>ST_BandPixelType</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:3319
@@ -3705,16 +3284,6 @@ msgid ""
 "<refpurpose>Returns the minimum value this pixeltype can store.</refpurpose>"
 msgstr "<refpurpose>Retorna o número de bandas no objeto raster.</refpurpose>"
 
-#. Tag: funcprototype
-#: reference_raster.xml:3383
-#, fuzzy, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_MinPossibleValue</function></funcdef> "
-"<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_MemSize</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:3392
 #, fuzzy, no-c-format
@@ -3731,18 +3300,6 @@ msgstr ""
 "<refpurpose>Retorna verdade se não existirem bandas com números dados. Se "
 "nenhum número de banda for especificado, então assume-se a banda 1.</"
 "refpurpose>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:3416
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_HasNoBand</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>bandnum=1</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_HasNoBand</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>bandnum=1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:3427
@@ -3769,20 +3326,6 @@ msgid ""
 msgstr ""
 "<refpurpose>Retorna o polígono que limita o pixel para uma linha e coluna "
 "específicas.</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:3458
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_PixelAsPolygon</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_PixelAsPolygon</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:3470
@@ -3819,22 +3362,6 @@ msgid ""
 msgstr ""
 "Retorna o polígono que limita cada pixel de uma banda raster ao longo do "
 "valor, as coordenadas raster X e Y de cada pixel."
-
-#. Tag: funcprototype
-#: reference_raster.xml:3504
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>ST_PixelAsPolygons</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
-msgstr ""
-"<funcdef>setof record <function>ST_PixelAsPolygons</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:3516
@@ -3917,20 +3444,6 @@ msgstr ""
 "<refpurpose>Retorna um ponto geométrico do canto superior esquerdo do pixel."
 "</refpurpose>"
 
-#. Tag: funcprototype
-#: reference_raster.xml:3566
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_PixelAsPoint</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_PixelAsPoint</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:3577
 #, no-c-format
@@ -3964,17 +3477,6 @@ msgstr ""
 "<refpurpose>Retorna um ponto geométrico para cada pixel de uma banda raster "
 "junto com  o valor, as coordenas raster X e Y de cada pixel. As coordenadas "
 "do ponto são do ponto esquerdo superior do pixel.</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:3609
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>ST_PixelAsPoints</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
-msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:3620
@@ -4011,20 +3513,6 @@ msgid ""
 msgstr ""
 "<refpurpose>Retorna o centroide (ponto) da área representada por um pixel.</"
 "refpurpose>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:3664
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_PixelAsCentroid</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>y</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_PixelAsCentroid</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>y</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:3675
@@ -4067,17 +3555,6 @@ msgstr ""
 "<refpurpose>Retorna o centroide (ponto geométrico) para cada pixel de uma "
 "banda raster junto com  o valor, as coordenas raster X e Y de cada pixel. O "
 "ponto é o centroide da área representada por um pixel.</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:3708
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>ST_PixelAsCentroids</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
-msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:3719
@@ -4260,24 +3737,6 @@ msgid ""
 "resample algorithm."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_raster.xml:3927
-#, fuzzy, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_SetZ</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>resample=nearest</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>band=1</parameter></paramdef>"
-msgstr ""
-"<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>format</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text[] </type> <parameter>options=NULL</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>srid=sameassource</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:3940
 #, no-c-format
@@ -4312,24 +3771,6 @@ msgid ""
 "values from the raster copied into the M dimension using the requested "
 "resample algorithm."
 msgstr ""
-
-#. Tag: funcprototype
-#: reference_raster.xml:3970
-#, fuzzy, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_SetM</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>resample=nearest</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>band=1</parameter></paramdef>"
-msgstr ""
-"<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>format</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text[] </type> <parameter>options=NULL</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>srid=sameassource</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:3983
@@ -4718,18 +4159,6 @@ msgstr ""
 msgid "Set the rotation of the raster in radian."
 msgstr "Põe a rotação do raster em radianos. "
 
-#. Tag: funcprototype
-#: reference_raster.xml:4544
-#, fuzzy, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_SetRotation</function></funcdef> "
-"<paramdef><type>raster</type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>float8</type> <parameter>rotation</parameter></paramdef>"
-msgstr ""
-"<funcdef>float8 <function>ST_SetRotation</function></funcdef> "
-"<paramdef><type>raster</type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>float8</type> <parameter>rotation</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:4555
 #, no-c-format
@@ -4843,18 +4272,6 @@ msgstr ""
 "Coloca o SRID de um raster em um srid inteiro específico definido na tabela "
 "spatial_ref_sys."
 
-#. Tag: funcprototype
-#: reference_raster.xml:4674
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_SetSRID</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_SetSRID</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:4689
 #, no-c-format
@@ -4886,20 +4303,6 @@ msgid ""
 "Sets the value of the upper left corner of the pixel of the raster to "
 "projected X and Y coordinates."
 msgstr ""
-
-#. Tag: funcprototype
-#: reference_raster.xml:4715
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_SetUpperLeft</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>double precision </type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>double precision </type> <parameter>y</parameter></paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_SetUpperLeft</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>double precision </type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>double precision </type> <parameter>y</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:4727
@@ -5578,20 +4981,6 @@ msgstr ""
 msgid "Sets the isnodata flag of the band to TRUE."
 msgstr "Coloca a bandeira isnodata da banda como VERDADE. "
 
-#. Tag: funcprototype
-#: reference_raster.xml:5354
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_SetBandIsNoData</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band=1</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_SetBandIsNoData</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band=1</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:5365
 #, no-c-format
@@ -5623,19 +5012,6 @@ msgstr ""
 #: reference_raster.xml:5393
 #, no-c-format
 msgid "Update the external path and band number of an out-db band"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_raster.xml:5398
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_SetBandPath</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>band</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>outdbpath</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>outdbindex</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>boolean </type> <parameter>force=false</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -5674,18 +5050,6 @@ msgstr ""
 #: reference_raster.xml:5447
 #, no-c-format
 msgid "Update the external band number of an out-db band"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_raster.xml:5452
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_SetBandIndex</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>band</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>outdbindex</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>boolean </type> <parameter>force=false</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -6203,14 +5567,6 @@ msgstr ""
 msgid "Return a raster value from a Well-Known Binary (WKB) raster."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_raster.xml:6066
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_RastFromWKB</function></funcdef> "
-"<paramdef><type>bytea </type> <parameter>wkb</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_raster.xml:6076
 #, no-c-format
@@ -6231,14 +5587,6 @@ msgstr ""
 msgid ""
 "Return a raster value from a Hex representation of Well-Known Binary (WKB) "
 "raster."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_raster.xml:6109
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_RastFromHexWKB</function></funcdef> "
-"<paramdef><type>text </type> <parameter>wkb</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -6325,16 +5673,6 @@ msgstr ""
 msgid "Return the Well-Known Binary (WKB) in Hex representation of the raster."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_raster.xml:6215
-#, no-c-format
-msgid ""
-"<funcdef>bytea <function>ST_AsHexWKB</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>boolean </type> <parameter>outasin=FALSE</"
-"parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_raster.xml:6226
 #, no-c-format
@@ -6368,24 +5706,6 @@ msgid ""
 "are one of those supported by your compiled library. Use ST_GDALDrivers() to "
 "get a list of formats supported by your library."
 msgstr ""
-
-#. Tag: funcprototype
-#: reference_raster.xml:6264
-#, no-c-format
-msgid ""
-"<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>format</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text[] </type> <parameter>options=NULL</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>srid=sameassource</parameter></paramdef>"
-msgstr ""
-"<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>format</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text[] </type> <parameter>options=NULL</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>srid=sameassource</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:6278
@@ -6889,42 +6209,6 @@ msgstr ""
 "Cria um novo raster de até quatro bandas 8BUI (grayscale, RGB, RGBA) do "
 "raster fonte e uma banda específica. A banda 1 usada se não especificado. "
 
-#. Tag: funcprototype
-#: reference_raster.xml:6831
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_ColorMap</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>nband=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>colormap=grayscale</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text </type> <parameter>method=INTERPOLATE</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_ColorMap</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>nband=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>colormap=grayscale</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text </type> <parameter>method=INTERPOLATE</parameter></"
-"paramdef>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:6841
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_ColorMap</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>colormap</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>method=INTERPOLATE</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_ColorMap</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>colormap</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>method=INTERPOLATE</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:6853
 #, no-c-format
@@ -7166,30 +6450,6 @@ msgstr ""
 msgid ""
 "Creates a new one-8BUI band raster from the source raster and specified "
 "bands representing Red, Green and Blue"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_raster.xml:7070
-#, no-c-format
-msgid ""
-"<funcdef>(1) raster <function>ST_Grayscale</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>redband=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>greenband=2</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer </type> <parameter>blueband=3</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>extenttype=INTERSECTION</parameter></paramdef>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_raster.xml:7081
-#, no-c-format
-msgid ""
-"<funcdef>(2) raster <function>ST_Grayscale</function></funcdef> "
-"<paramdef><type>rastbandarg[] </type> <parameter>rastbandargset</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>extenttype=INTERSECTION</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -8699,32 +7959,6 @@ msgstr ""
 "de uma função usuário PLPGSQL envolvendo uma vizinhança de valores da banda "
 "raster de entrada. "
 
-#. Tag: funcprototype
-#: reference_raster.xml:8603
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_MapAlgebraFctNgb</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>band</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>ngbwidth</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>ngbheight</parameter></paramdef> "
-"<paramdef><type>regprocedure </type> <parameter>onerastngbuserfunc</"
-"parameter></paramdef> <paramdef><type>text </type> <parameter>nodatamode</"
-"parameter></paramdef> <paramdef><type>text[] </type> <parameter>VARIADIC "
-"args</parameter></paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_MapAlgebraFctNgb</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>band</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>ngbwidth</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>ngbheight</parameter></paramdef> "
-"<paramdef><type>regprocedure </type> <parameter>onerastngbuserfunc</"
-"parameter></paramdef> <paramdef><type>text </type> <parameter>nodatamode</"
-"parameter></paramdef> <paramdef><type>text[] </type> <parameter>VARIADIC "
-"args</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:8626
 #, no-c-format
@@ -9233,22 +8467,6 @@ msgstr ""
 "Função de processamento raster que interpola um valor de pixel de uma "
 "vizinhança. "
 
-#. Tag: funcprototype
-#: reference_raster.xml:8968
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>ST_InvDistWeight4ma</function></funcdef> "
-"<paramdef><type>double precision[][][]</type> <parameter>value</parameter></"
-"paramdef> <paramdef><type>integer[][]</type> <parameter>pos</parameter></"
-"paramdef> <paramdef><type>text[]</type> <parameter>VARIADIC userargs</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>double precision <function>ST_InvDistWeight4ma</function></funcdef> "
-"<paramdef><type>double precision[][][]</type> <parameter>value</parameter></"
-"paramdef> <paramdef><type>integer[][]</type> <parameter>pos</parameter></"
-"paramdef> <paramdef><type>text[]</type> <parameter>VARIADIC userargs</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:8980
 #, no-c-format
@@ -9418,22 +8636,6 @@ msgstr ""
 "Função de processamento raster que retorna a distância mínima (em números de "
 "pixeis) entre o pixel de interesse e um pixel vizinho de interesse com "
 "valor.  "
-
-#. Tag: funcprototype
-#: reference_raster.xml:9268
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>ST_MinDist4ma</function></funcdef> "
-"<paramdef><type>double precision[][][]</type> <parameter>value</parameter></"
-"paramdef> <paramdef><type>integer[][]</type> <parameter>pos</parameter></"
-"paramdef> <paramdef><type>text[]</type> <parameter>VARIADIC userargs</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>double precision <function>ST_MinDist4ma</function></funcdef> "
-"<paramdef><type>double precision[][][]</type> <parameter>value</parameter></"
-"paramdef> <paramdef><type>integer[][]</type> <parameter>pos</parameter></"
-"paramdef> <paramdef><type>text[]</type> <parameter>VARIADIC userargs</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:9280
@@ -9772,28 +8974,6 @@ msgstr ""
 msgid "Returns a raster with the calculated \"roughness\" of a DEM."
 msgstr "Retorna um raster com a \"robustez\" calculada de um DEM. "
 
-#. Tag: funcprototype
-#: reference_raster.xml:9726
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_Roughness</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>nband</parameter></paramdef> "
-"<paramdef><type>raster </type> <parameter>customextent</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>pixeltype=\"32BF\"</parameter> </paramdef> <paramdef "
-"choice=\"opt\"><type>boolean </type> <parameter> interpolate_nodata=FALSE </"
-"parameter> </paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_Roughness</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>nband</parameter></paramdef> "
-"<paramdef><type>raster </type> <parameter>customextent</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>pixeltype=\"32BF\"</parameter> </paramdef> <paramdef "
-"choice=\"opt\"><type>boolean </type> <parameter> interpolate_nodata=FALSE </"
-"parameter> </paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:9739
 #, no-c-format
@@ -9907,26 +9087,6 @@ msgstr ""
 msgid "Returns a raster with the calculated Topographic Position Index."
 msgstr "Retorna um raster com o índice de posição topográfico calculado. "
 
-#. Tag: funcprototype
-#: reference_raster.xml:9854
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_TPI</function></funcdef> <paramdef><type>raster "
-"</type> <parameter>rast</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>nband</parameter></paramdef> <paramdef><type>raster </type> "
-"<parameter>customextent</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text </type> <parameter>pixeltype=\"32BF\"</parameter> "
-"</paramdef> <paramdef choice=\"opt\"><type>boolean </type> <parameter> "
-"interpolate_nodata=FALSE </parameter> </paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_TPI</function></funcdef> <paramdef><type>raster "
-"</type> <parameter>rast</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>nband</parameter></paramdef> <paramdef><type>raster </type> "
-"<parameter>customextent</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text </type> <parameter>pixeltype=\"32BF\"</parameter> "
-"</paramdef> <paramdef choice=\"opt\"><type>boolean </type> <parameter> "
-"interpolate_nodata=FALSE </parameter> </paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:9868
 #, no-c-format
@@ -9958,26 +9118,6 @@ msgstr ""
 #, no-c-format
 msgid "Returns a raster with the calculated Terrain Ruggedness Index."
 msgstr "Retorna um raster com o índice de aspereza do terreno calculado. "
-
-#. Tag: funcprototype
-#: reference_raster.xml:9902
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_TRI</function></funcdef> <paramdef><type>raster "
-"</type> <parameter>rast</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>nband</parameter></paramdef> <paramdef><type>raster </type> "
-"<parameter>customextent</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text </type> <parameter>pixeltype=\"32BF\"</parameter> "
-"</paramdef> <paramdef choice=\"opt\"><type>boolean </type> <parameter> "
-"interpolate_nodata=FALSE </parameter> </paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_TRI</function></funcdef> <paramdef><type>raster "
-"</type> <parameter>rast</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>nband</parameter></paramdef> <paramdef><type>raster </type> "
-"<parameter>customextent</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text </type> <parameter>pixeltype=\"32BF\"</parameter> "
-"</paramdef> <paramdef choice=\"opt\"><type>boolean </type> <parameter> "
-"interpolate_nodata=FALSE </parameter> </paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:9916
@@ -10014,16 +9154,6 @@ msgstr "Raster para Geometria "
 #, no-c-format
 msgid "Returns the box 3d representation of the enclosing box of the raster."
 msgstr "Retorna a representação da caixa 3d da caixa encerrada do raster. "
-
-#. Tag: funcprototype
-#: reference_raster.xml:9958
-#, no-c-format
-msgid ""
-"<funcdef>box3d <function>Box3D</function></funcdef> <paramdef><type>raster </"
-"type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>box3d <function>Box3D</function></funcdef> <paramdef><type>raster </"
-"type> <parameter>rast</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:9968
@@ -10067,16 +9197,6 @@ msgstr ""
 "BandNoDataValue. Para rasters com formas normais e não desviadas, o "
 "resultado é o mesmo que ST_Envelope, então só é útil para rasters com formas "
 "irregulares ou desviados. "
-
-#. Tag: funcprototype
-#: reference_raster.xml:10000
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_ConvexHull</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_ConvexHull</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:10010
@@ -10135,22 +9255,6 @@ msgid ""
 msgstr ""
 "Retorna um conjunto de  linhas geomval (geom,val), de uma dada banda raster. "
 "Se nenhum número de banda for especificado, o número de banda torna-se 1. "
-
-#. Tag: funcprototype
-#: reference_raster.xml:10046
-#, no-c-format
-msgid ""
-"<funcdef>setof geomval <function>ST_DumpAsPolygons</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band_num=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
-msgstr ""
-"<funcdef>setof geomval <function>ST_DumpAsPolygons</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band_num=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:10057
@@ -10236,16 +9340,6 @@ msgstr ""
 msgid "Returns the polygon representation of the extent of the raster."
 msgstr "Retorna a representação de polígono da extensão do raster."
 
-#. Tag: funcprototype
-#: reference_raster.xml:10100
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Envelope</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Envelope</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:10110
 #, no-c-format
@@ -10288,20 +9382,6 @@ msgstr ""
 "Retorna a geometria de casco convexo do raster excluindo os pixeis SEM "
 "DADOS. "
 
-#. Tag: funcprototype
-#: reference_raster.xml:10147
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_MinConvexHull</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>nband=NULL</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_MinConvexHull</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>nband=NULL</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:10158
 #, no-c-format
@@ -10333,20 +9413,6 @@ msgid ""
 msgstr ""
 "Retorna um multipolígono formado pela união de pixeis que têm um valor que "
 "não é um valor sem dados. Se um número de banda for especificado, usa-se 1. "
-
-#. Tag: funcprototype
-#: reference_raster.xml:10189
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Polygon</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band_num=1</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Polygon</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band_num=1</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:10200
@@ -10423,18 +9489,6 @@ msgstr ""
 "Retorna <varname>VERDADE</varname> se uma caixa limitadora de A está à "
 "esquerda da de B."
 
-#. Tag: funcprototype
-#: reference_raster.xml:10297
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&lt;</function></funcdef> <paramdef> "
-"<type>raster </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>raster </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&lt;</function></funcdef> <paramdef> "
-"<type>raster </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>raster </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:10318
 #, no-c-format
@@ -10457,18 +9511,6 @@ msgid ""
 msgstr ""
 "Retorna <varname>VERDADE</varname> se uma caixa limitadora de A está à "
 "direita da de B."
-
-#. Tag: funcprototype
-#: reference_raster.xml:10341
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&gt;</function></funcdef> <paramdef> "
-"<type>raster </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>raster </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&gt;</function></funcdef> <paramdef> "
-"<type>raster </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>raster </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:10362
@@ -10503,18 +9545,6 @@ msgid ""
 msgstr ""
 "Retorna <varname>VERDADE</varname>se a caixa limitadora de A for a mesma de "
 "B. Utiliza precisão dupla de caixa limitadora."
-
-#. Tag: funcprototype
-#: reference_raster.xml:10386
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&#61;</function></funcdef> <paramdef> "
-"<type>raster </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>raster </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&#61;</function></funcdef> <paramdef> "
-"<type>raster </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>raster </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:10407
@@ -10591,18 +9621,6 @@ msgstr "Disponibilidade: 2.0.5 geometria @ raster introduzida"
 msgid "Returns <varname>TRUE</varname> if A's bounding box is the same as B's."
 msgstr ""
 "Retorna <varname>VERDADE</varname> se a caixa limitadora de A é a mesma de B."
-
-#. Tag: funcprototype
-#: reference_raster.xml:10502
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>~=</function></funcdef> <paramdef> <type>raster </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>raster </type> "
-"<parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>~=</function></funcdef> <paramdef> <type>raster </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>raster </type> "
-"<parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:10523
@@ -11093,18 +10111,6 @@ msgid ""
 msgstr ""
 "<refpurpose>Retorna a declaração de texto se os rasters estiverem alinhados "
 "e se não tiverem, uma razão do porquê.</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:11448
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_NotSameAlignmentReason</function></funcdef> "
-"<paramdef><type>raster </type><parameter>rastA</parameter></paramdef> "
-"<paramdef><type>raster </type><parameter>rastB</parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>ST_NotSameAlignmentReason</function></funcdef> "
-"<paramdef><type>raster </type><parameter>rastA</parameter></paramdef> "
-"<paramdef><type>raster </type><parameter>rastB</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:11458

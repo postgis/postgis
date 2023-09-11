@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-09-08 07:58+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -23,8 +23,9 @@ msgstr ""
 msgid ""
 "These functions produce or operate on bounding boxes. They can also provide "
 "and accept geometry values, by using automatic or explicit casts."
-msgstr "这些函数产生或操作边界框。 "
-"它们还可以通过使用自动或显式转换来提供和接受几何值。"
+msgstr ""
+"这些函数产生或操作边界框。 它们还可以通过使用自动或显式转换来提供和接受几何"
+"值。"
 
 #. Tag: para
 #: reference_bbox.xml:8
@@ -43,14 +44,6 @@ msgstr "边界框函数"
 #, no-c-format
 msgid "Returns a BOX2D representing the 2D extent of a geometry."
 msgstr "返回表示几何图形的 2D 范围的 BOX2D。"
-
-#. Tag: funcprototype
-#: reference_bbox.xml:23
-#, no-c-format
-msgid ""
-"<funcdef>box2d <function>Box2D</function></funcdef> <paramdef><type>geometry "
-"</type> <parameter>geom</parameter></paramdef>"
-msgstr ""
 
 #. Tag: title
 #: reference_bbox.xml:31 reference_bbox.xml:73 reference_bbox.xml:133
@@ -134,14 +127,6 @@ msgstr ", <xref linkend=\"ST_GeomFromText\"/>"
 msgid "Returns a BOX3D representing the 3D extent of a geometry."
 msgstr "返回表示几何体 3D 范围的 BOX3D。"
 
-#. Tag: funcprototype
-#: reference_bbox.xml:65
-#, no-c-format
-msgid ""
-"<funcdef>box3d <function>Box3D</function></funcdef> <paramdef><type>geometry "
-"</type> <parameter>geom</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_bbox.xml:75
 #, no-c-format
@@ -180,10 +165,10 @@ msgid ""
 "usually much faster than computing the exact extent of the table using <xref "
 "linkend=\"ST_Extent\"/> or <xref linkend=\"ST_3DExtent\"/>."
 msgstr ""
-"以<xref linkend=\"box2d_type\"/> 形式返回空间表的估计范围。 "
-"如果未指定，则使用当前架构。 估计范围取自几何列的统计数据。 这通常比使用 "
-"<xref linkend=\"ST_Extent\"/>或 <xref linkend=\"ST_3DExtent\"/> "
-"计算表的精确范围要快得多。"
+"以<xref linkend=\"box2d_type\"/> 形式返回空间表的估计范围。 如果未指定，则使"
+"用当前架构。 估计范围取自几何列的统计数据。 这通常比使用 <xref "
+"linkend=\"ST_Extent\"/>或 <xref linkend=\"ST_3DExtent\"/> 计算表的精确范围要"
+"快得多。"
 
 #. Tag: para
 #: reference_bbox.xml:141
@@ -194,9 +179,9 @@ msgid ""
 "set to TRUE, only statistics for the given table are used and child tables "
 "are ignored."
 msgstr ""
-"默认行为是还使用从子表（具有 INHERITS 的表）收集的统计信息（如果可用）。 "
-"如果<varname>parent_only "
-"</varname>设置为TRUE，则仅使用给定表的统计信息并忽略子表。"
+"默认行为是还使用从子表（具有 INHERITS 的表）收集的统计信息（如果可用）。 如果"
+"<varname>parent_only </varname>设置为TRUE，则仅使用给定表的统计信息并忽略子"
+"表。"
 
 #. Tag: para
 #: reference_bbox.xml:147
@@ -207,8 +192,8 @@ msgid ""
 "statistics are gathered by running <code>update_geometry_stats()</code> and "
 "the result extent is exact."
 msgstr ""
-"对于 PostgreSQL &gt;= 8.0.0，统计信息由 VACUUM ANALYZE 收集，"
-"结果范围约为实际范围的 95%。 对于 PostgreSQL &lt; 8.0.0 统计信息是通过运行 "
+"对于 PostgreSQL &gt;= 8.0.0，统计信息由 VACUUM ANALYZE 收集，结果范围约为实际"
+"范围的 95%。 对于 PostgreSQL &lt; 8.0.0 统计信息是通过运行 "
 "<code>update_geometry_stats()</code> 收集的，结果范围是准确的。"
 
 #. Tag: para
@@ -218,8 +203,9 @@ msgid ""
 "In the absence of statistics (empty table or no ANALYZE called) this "
 "function returns NULL. Prior to version 1.5.4 an exception was thrown "
 "instead."
-msgstr "如果没有统计信息（空表或未调用 ANALYZE），此函数将返回 NULL。 在 1.5.4 "
-"版本之前，会抛出异常。"
+msgstr ""
+"如果没有统计信息（空表或未调用 ANALYZE），此函数将返回 NULL。 在 1.5.4 版本之"
+"前，会抛出异常。"
 
 #. Tag: para
 #: reference_bbox.xml:160
@@ -257,8 +243,8 @@ msgid ""
 "to a query to take advantage of a spatial index."
 msgstr ""
 "返回从输入的边界框扩展的边界框，通过指定框应在两个轴上扩展的单个距离，或通过"
-"指定每个轴的扩展距离。 使用双精度。 "
-"可用于距离查询，或向查询添加边界框过滤器以利用空间索引。"
+"指定每个轴的扩展距离。 使用双精度。 可用于距离查询，或向查询添加边界框过滤器"
+"以利用空间索引。"
 
 #. Tag: para
 #: reference_bbox.xml:243
@@ -268,8 +254,8 @@ msgid ""
 "variants are provided that accept and return <xref linkend=\"box2d_type\"/> "
 "and <xref linkend=\"box3d_type\"/> data types."
 msgstr ""
-"除了接受和返回几何图形的 ST_Expand 版本之外，还提供了接受和返回<xref linkend="
-"\"box2d_type\"/> 和<xref linkend=\"box3d_type\"/> 数据类型的形式。"
+"除了接受和返回几何图形的 ST_Expand 版本之外，还提供了接受和返回<xref "
+"linkend=\"box2d_type\"/> 和<xref linkend=\"box3d_type\"/> 数据类型的形式。"
 
 #. Tag: para
 #: reference_bbox.xml:248
@@ -286,9 +272,8 @@ msgid ""
 "buffering expands a geometry in all directions, ST_Expand expands the "
 "bounding box along each axis."
 msgstr ""
-"ST_Expand 与 <xref linkend=\"ST_Buffer\"/> "
-"类似，不同之处在于缓冲在所有方向上扩展几何图形，而 ST_Expand "
-"沿每个轴扩展边界框。"
+"ST_Expand 与 <xref linkend=\"ST_Buffer\"/> 类似，不同之处在于缓冲在所有方向上"
+"扩展几何图形，而 ST_Expand 沿每个轴扩展边界框。"
 
 #. Tag: para
 #: reference_bbox.xml:255
@@ -300,10 +285,10 @@ msgid ""
 "'POINT(10 20)') &lt; 10</code>. This has been replaced by the simpler and "
 "more efficient <xref linkend=\"ST_DWithin\"/> function."
 msgstr ""
-"在版本 1.3 之前，ST_Expand 与 <xref linkend=\"ST_Distance\"/> "
-"结合使用来执行可索引距离查询。 例如，<code>geom &amp;&amp; ST_Expand('POINT("
-"10 20)', 10) AND ST_Distance(geom, 'POINT(10 20)')&lt;10 "
-"</code>。它已被更简单、更高效的 <xref linkend=\"ST_DWithin\"/> 函数取代。"
+"在版本 1.3 之前，ST_Expand 与 <xref linkend=\"ST_Distance\"/> 结合使用来执行"
+"可索引距离查询。 例如，<code>geom &amp;&amp; ST_Expand('POINT(10 20)', 10) "
+"AND ST_Distance(geom, 'POINT(10 20)')&lt;10 </code>。它已被更简单、更高效的 "
+"<xref linkend=\"ST_DWithin\"/> 函数取代。"
 
 #. Tag: para
 #: reference_bbox.xml:260
@@ -327,7 +312,8 @@ msgstr "增强：2.3.0 添加了对不同维度的盒子进行不同数量扩展
 msgid ""
 "Examples below use US National Atlas Equal Area (SRID=2163) which is a meter "
 "projection"
-msgstr "以下示例使用美国国家地图平等面积投影（SRID=2163），这是一个以米为单位的投影"
+msgstr ""
+"以下示例使用美国国家地图平等面积投影（SRID=2163），这是一个以米为单位的投影"
 
 #. Tag: para
 #: reference_bbox.xml:277
@@ -341,23 +327,15 @@ msgstr ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SRID\"/>"
 msgid "Aggregate function that returns the bounding box of geometries."
 msgstr "返回几何图形边界框的聚合函数。"
 
-#. Tag: funcprototype
-#: reference_bbox.xml:289
-#, no-c-format
-msgid ""
-"<funcdef>box2d <function>ST_Extent</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>geomfield</parameter></"
-"paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_bbox.xml:299
 #, no-c-format
 msgid ""
 "An aggregate function that returns a <xref linkend=\"box2d_type\"/> bounding "
 "box that bounds a set of geometries."
-msgstr "一个聚合函数，返回一个包围一组几何图形的<xref linkend=\"box2d_type\"/> "
-"边界框。"
+msgstr ""
+"一个聚合函数，返回一个包围一组几何图形的<xref linkend=\"box2d_type\"/> 边界"
+"框。"
 
 #. Tag: para
 #: reference_bbox.xml:303 reference_bbox.xml:361
@@ -413,22 +391,14 @@ msgstr ", <xref linkend=\"ST_3DExtent\"/>, <xref linkend=\"ST_SetSRID\"/>"
 msgid "Aggregate function that returns the 3D bounding box of geometries."
 msgstr "返回几何图形的 3D 边界框的聚合函数。"
 
-#. Tag: funcprototype
-#: reference_bbox.xml:348
-#, no-c-format
-msgid ""
-"<funcdef>box3d <function>ST_3DExtent</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>geomfield</parameter></"
-"paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_bbox.xml:358
 #, no-c-format
 msgid ""
 "An aggregate function that returns a <xref linkend=\"box3d_type\"/> "
 "(includes Z ordinate) bounding box that bounds a set of geometries."
-msgstr "一个聚合函数，返回包围一组几何图形的 <xref linkend=\"box3d_type\"/>（包括 Z "
+msgstr ""
+"一个聚合函数，返回包围一组几何图形的 <xref linkend=\"box3d_type\"/>（包括 Z "
 "坐标）边界框。"
 
 #. Tag: para
@@ -449,24 +419,15 @@ msgstr ", <xref linkend=\"ST_Force_3DZ\"/>, <xref linkend=\"ST_SetSRID\"/>"
 msgid "Creates a BOX2D defined by two 2D point geometries."
 msgstr "创建由两个 2D 点几何图形定义的 BOX2D。"
 
-#. Tag: funcprototype
-#: reference_bbox.xml:397
-#, no-c-format
-msgid ""
-"<funcdef>box2d <function>ST_MakeBox2D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>pointLowLeft</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>pointUpRight</"
-"parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_bbox.xml:408
 #, no-c-format
 msgid ""
 "Creates a <xref linkend=\"box2d_type\"/> defined by two Point geometries. "
 "This is useful for doing range queries."
-msgstr "创建由两个 Point 几何图形定义的<xref linkend=\"box2d_type\"/>。 "
-"这对于进行范围查询很有用。"
+msgstr ""
+"创建由两个 Point 几何图形定义的<xref linkend=\"box2d_type\"/>。 这对于进行范"
+"围查询很有用。"
 
 #. Tag: para
 #: reference_bbox.xml:423 reference_bbox.xml:469
@@ -479,16 +440,6 @@ msgstr ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>"
 #, no-c-format
 msgid "Creates a BOX3D defined by two 3D point geometries."
 msgstr "创建由两个 3D 点几何图形定义的 BOX3D。"
-
-#. Tag: funcprototype
-#: reference_bbox.xml:435
-#, no-c-format
-msgid ""
-"<funcdef>box3d <function>ST_3DMakeBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>point3DLowLeftBottom</"
-"parameter></paramdef> <paramdef><type>geometry </type> "
-"<parameter>point3DUpRightTop</parameter></paramdef>"
-msgstr ""
 
 #. Tag: para
 #: reference_bbox.xml:446
@@ -517,14 +468,6 @@ msgid ""
 "refpurpose>"
 msgstr "<refpurpose>返回 2D 或 3D 边界框或几何体的 X 最大值。</refpurpose>"
 
-#. Tag: funcprototype
-#: reference_bbox.xml:482
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_XMax</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_bbox.xml:492
 #, no-c-format
@@ -540,8 +483,8 @@ msgid ""
 "and geometry values due to automatic casting. However, it will not accept a "
 "geometry or box2d text representation, since those do not auto-cast."
 msgstr ""
-"虽然此函数仅针对 box3d 定义，但由于自动转换，它也适用于 box2d 和几何值。 "
-"但是，它不会接受几何图形或 box2d 文本表示，因为它们不会自动转换。"
+"虽然此函数仅针对 box3d 定义，但由于自动转换，它也适用于 box2d 和几何值。 但"
+"是，它不会接受几何图形或 box2d 文本表示，因为它们不会自动转换。"
 
 #. Tag: para
 #: reference_bbox.xml:514 reference_bbox.xml:559
@@ -550,8 +493,8 @@ msgid ""
 ", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
 "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 msgstr ""
-", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
-"\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
+"linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 
 #. Tag: refpurpose
 #: reference_bbox.xml:522
@@ -560,14 +503,6 @@ msgid ""
 "<refpurpose>Returns the X minima of a 2D or 3D bounding box or a geometry.</"
 "refpurpose>"
 msgstr "<refpurpose>返回 2D 或 3D 边界框或几何体的 X 最小值。</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_bbox.xml:527
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_XMin</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-msgstr ""
 
 #. Tag: para
 #: reference_bbox.xml:537
@@ -585,8 +520,8 @@ msgid ""
 "and geometry values due to automatic casting. However it will not accept a "
 "geometry or box2d text representation, since those do not auto-cast."
 msgstr ""
-"虽然此函数仅针对 box3d 定义，但由于自动转换，它也适用于 box2d 和几何值。 "
-"但是，它不会接受几何图形或 box2d 文本表示，因为它们不会自动转换。"
+"虽然此函数仅针对 box3d 定义，但由于自动转换，它也适用于 box2d 和几何值。 但"
+"是，它不会接受几何图形或 box2d 文本表示，因为它们不会自动转换。"
 
 #. Tag: refpurpose
 #: reference_bbox.xml:567
@@ -595,14 +530,6 @@ msgid ""
 "<refpurpose>Returns the Y maxima of a 2D or 3D bounding box or a geometry.</"
 "refpurpose>"
 msgstr "<refpurpose>返回 2D 或 3D 边界框或几何体的 Y 最大值。</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_bbox.xml:572
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_YMax</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-msgstr ""
 
 #. Tag: para
 #: reference_bbox.xml:582
@@ -618,8 +545,8 @@ msgid ""
 ", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
 "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 msgstr ""
-", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
-"\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
+"linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 
 #. Tag: refpurpose
 #: reference_bbox.xml:612
@@ -628,14 +555,6 @@ msgid ""
 "<refpurpose>Returns the Y minima of a 2D or 3D bounding box or a geometry.</"
 "refpurpose>"
 msgstr "<refpurpose>返回 2D 或 3D 边界框或几何体的 Y 最小值。</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_bbox.xml:617
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_YMin</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-msgstr ""
 
 #. Tag: para
 #: reference_bbox.xml:627
@@ -652,8 +571,9 @@ msgid ""
 "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
 "linkend=\"ST_ZMin\"/>"
 msgstr ""
-", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
-"\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref "
+"linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
+"linkend=\"ST_ZMin\"/>"
 
 #. Tag: refpurpose
 #: reference_bbox.xml:657
@@ -662,14 +582,6 @@ msgid ""
 "<refpurpose>Returns the Z maxima of a 2D or 3D bounding box or a geometry.</"
 "refpurpose>"
 msgstr "<refpurpose>返回 2D 或 3D 边界框或几何体的 Z 最大值。</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_bbox.xml:662
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_ZMax</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-msgstr ""
 
 #. Tag: para
 #: reference_bbox.xml:672
@@ -686,8 +598,9 @@ msgid ""
 "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
 "linkend=\"ST_ZMax\"/>"
 msgstr ""
-", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
-"\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
+", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref "
+"linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
+"linkend=\"ST_ZMax\"/>"
 
 #. Tag: refpurpose
 #: reference_bbox.xml:702
@@ -696,14 +609,6 @@ msgid ""
 "<refpurpose>Returns the Z minima of a 2D or 3D bounding box or a geometry.</"
 "refpurpose>"
 msgstr "<refpurpose>返回 2D 或 3D 边界框或几何体的 Z 最小值。</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_bbox.xml:707
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_ZMin</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-msgstr ""
 
 #. Tag: para
 #: reference_bbox.xml:717
@@ -721,5 +626,5 @@ msgid ""
 "linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
 msgstr ""
 ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
-"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\""
-"/>, <xref linkend=\"ST_ZMax\"/>"
+"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref "
+"linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"

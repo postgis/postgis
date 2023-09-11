@@ -5,14 +5,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-07-18 20:22+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
+"Language: ro\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ro\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
 
@@ -35,15 +35,6 @@ msgstr ""
 #: reference_overlay.xml:17
 #, no-c-format
 msgid "Computes the portion of a geometry falling within a rectangle."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_overlay.xml:22
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_ClipByBox2D</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>box2d</type> <parameter>box</parameter></paramdef>"
 msgstr ""
 
 #. Tag: title
@@ -110,17 +101,6 @@ msgstr ""
 msgid ""
 "Computes a geometry representing the part of geometry A that does not "
 "intersect geometry B."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_overlay.xml:70
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Difference</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float8 </type> <parameter>gridSize = -1</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -372,15 +352,6 @@ msgid ""
 "way"
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_overlay.xml:265
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_MemUnion</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>geomfield</parameter></"
-"paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_overlay.xml:276
 #, no-c-format
@@ -405,14 +376,6 @@ msgstr ""
 #: reference_overlay.xml:312
 #, no-c-format
 msgid "Nodes a collection of lines."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_overlay.xml:319
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Node</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -491,15 +454,6 @@ msgid ""
 "another geometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_overlay.xml:382
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Split</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>input</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_overlay.xml:392
 #, no-c-format
@@ -575,7 +529,7 @@ msgstr ""
 #: reference_overlay.xml:454
 #, no-c-format
 msgid ""
-"Split a MultiLineString a Point, where the point lies exactly on both "
+"Split a MultiLineString by a Point, where the point lies exactly on both "
 "LineStrings elements."
 msgstr ""
 
@@ -592,17 +546,6 @@ msgstr ""
 #: reference_overlay.xml:505
 #, no-c-format
 msgid "Computes a rectilinear subdivision of a geometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_overlay.xml:510
-#, no-c-format
-msgid ""
-"<funcdef>setof geometry <function>ST_Subdivide</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>max_vertices=256</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>float8</type> <parameter>gridSize = "
-"-1</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -719,17 +662,6 @@ msgid ""
 "not intersect."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_overlay.xml:627
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_SymDifference</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float8 </type> <parameter>gridSize = -1</"
-"parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_overlay.xml:639
 #, no-c-format
@@ -762,16 +694,6 @@ msgstr ""
 #: reference_overlay.xml:715
 #, no-c-format
 msgid "Computes the union of the components of a single geometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_overlay.xml:720
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_UnaryUnion</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float8 </type> <parameter>gridSize = -1</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para

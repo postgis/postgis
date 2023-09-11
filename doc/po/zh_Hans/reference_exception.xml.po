@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-09-04 02:39+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -36,14 +36,6 @@ msgstr ""
 #: reference_exception.xml:11
 #, no-c-format
 msgid "Add bounding box to the geometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_exception.xml:16
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>PostGIS_AddBBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
 
 #. Tag: title
@@ -104,14 +96,6 @@ msgstr ""
 msgid "Drop the bounding box cache from the geometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_exception.xml:62
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>PostGIS_DropBBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_exception.xml:72
 #, no-c-format
@@ -147,14 +131,6 @@ msgstr ""
 #: reference_exception.xml:106
 #, no-c-format
 msgid "Returns TRUE if the bbox of this geometry is cached, FALSE otherwise."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_exception.xml:111
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>PostGIS_HasBBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para

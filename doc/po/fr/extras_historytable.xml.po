@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-05-12 10:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -151,16 +151,6 @@ msgstr ""
 "Crée une table qui contiendra des valeurs intéressantes pour la gestion des "
 "tables d'historique."
 
-#. Tag: funcprototype
-#: extras_historytable.xml:44
-#, no-c-format
-msgid ""
-"<funcdef>void <function>Postgis_Install_History</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>void <function>Postgis_Install_History</function></funcdef> "
-"<paramdef></paramdef>"
-
 #. Tag: title
 #: extras_historytable.xml:52 extras_historytable.xml:92
 #, no-c-format
@@ -207,18 +197,6 @@ msgstr ""
 "Enregistre une table dans la table history_information pour le suivi et "
 "ajoute également une table d'historique de ligne latérale et des règles "
 "d'insertion, de mise à jour et de suppression sur la table."
-
-#. Tag: funcprototype
-#: extras_historytable.xml:83
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>Postgis_Enable_History</function></funcdef> "
-"<paramdef><type>text </type> <parameter>p_schema</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>p_table</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>Postgis_Enable_History</function></funcdef> "
-"<paramdef><type>text </type> <parameter>p_schema</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>p_table</parameter></paramdef>"
 
 #. Tag: para
 #: extras_historytable.xml:94

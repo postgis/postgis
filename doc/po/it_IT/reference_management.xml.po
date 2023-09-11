@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-09-07 12:33+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
@@ -118,8 +118,8 @@ msgstr ""
 "eredita il typmod dalla colonna geometry originale. Le viste che usano "
 "funzioni che ritornano geometrie verranno registrate correttamente se il "
 "tipo dell'output della funzione verrà definito esplicitamente con la "
-"funzione CAST come typmod geometry. Si veda <xref linkend="
-"\"Manual_Register_Spatial_Column\"/>."
+"funzione CAST come typmod geometry. Si veda <xref "
+"linkend=\"Manual_Register_Spatial_Column\"/>."
 
 #. Tag: para
 #: reference_management.xml:122 reference_management.xml:199
@@ -266,22 +266,6 @@ msgstr ""
 msgid "Returns the SRID defined for a geometry column."
 msgstr "Restituisce lo SRID di una colonna di tipo geometrico."
 
-#. Tag: funcprototype
-#: reference_management.xml:292
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>Find_SRID</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>a_schema_name</parameter></"
-"paramdef> <paramdef><type>varchar </type> <parameter>a_table_name</"
-"parameter></paramdef> <paramdef><type>varchar </type> "
-"<parameter>a_geomfield_name</parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>Find_SRID</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>a_schema_name</parameter></"
-"paramdef> <paramdef><type>varchar </type> <parameter>a_table_name</"
-"parameter></paramdef> <paramdef><type>varchar </type> "
-"<parameter>a_geomfield_name</parameter></paramdef>"
-
 #. Tag: para
 #: reference_management.xml:304
 #, no-c-format
@@ -293,8 +277,8 @@ msgid ""
 msgstr ""
 "Restituisce lo SRID (un intero) della colonna geometrica specificata "
 "cercandolo nella tabella GEOMETRY_COLUMNS. Se la colonna geometrica non e' "
-"stata aggiunta correttamente (ad esempio con la funzione <xref linkend="
-"\"AddGeometryColumn\"/>), questa chiamata non funzionera'."
+"stata aggiunta correttamente (ad esempio con la funzione <xref "
+"linkend=\"AddGeometryColumn\"/>), questa chiamata non funzionera'."
 
 #. Tag: refpurpose
 #: reference_management.xml:329

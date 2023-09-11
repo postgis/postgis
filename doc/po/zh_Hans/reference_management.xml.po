@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-09-05 06:08+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -55,10 +55,12 @@ msgid ""
 "error is thrown if the schemaname doesn't exist (or not visible in the "
 "current search_path) or the specified SRID, geometry type, or dimension is "
 "invalid."
-msgstr "将几何列添加到现有属性表。<varname>schema_name</varname>是表模式的名称。"
+msgstr ""
+"将几何列添加到现有属性表。<varname>schema_name</varname>是表模式的名称。"
 "<varname>srid</varname> 必须是对 SPATIAL_REF_SYS 表中条目的整数值引用。 "
-"<varname>类型</varname> 必须是与几何类型相对应的字符串，例如 'POLYGON' 或 'MULTILINESTRING' 。"
-"如果 schemaname 不存在（或在当前 search_path 中不可见）或指定的 SRID、几何类型或维度无效，则会引发错误。"
+"<varname>类型</varname> 必须是与几何类型相对应的字符串，例如 'POLYGON' 或 "
+"'MULTILINESTRING' 。如果 schemaname 不存在（或在当前 search_path 中不可见）或"
+"指定的 SRID、几何类型或维度无效，则会引发错误。"
 
 #. Tag: para
 #: reference_management.xml:109
@@ -71,10 +73,10 @@ msgid ""
 "column with this function is now equivalent to: <code>ALTER TABLE some_table "
 "ADD COLUMN geom geometry(Point,4326);</code>"
 msgstr ""
-"更改：2.0.0 此函数不再更新geometry_columns，因为geometry_columns "
-"是从系统目录读取的视图。默认情况下，它也不创建约束，而是使用 PostgreSQL "
-"内置的类型修饰符行为。 因此，例如，使用此函数构建wgs84 POINT 列现在相当于： "
-"<code>ALTER TABLE some_table ADD COLUMN geom geometry(Point,4326);</code>"
+"更改：2.0.0 此函数不再更新geometry_columns，因为geometry_columns 是从系统目录"
+"读取的视图。默认情况下，它也不创建约束，而是使用 PostgreSQL 内置的类型修饰符"
+"行为。 因此，例如，使用此函数构建wgs84 POINT 列现在相当于： <code>ALTER "
+"TABLE some_table ADD COLUMN geom geometry(Point,4326);</code>"
 
 #. Tag: para
 #: reference_management.xml:112
@@ -82,7 +84,9 @@ msgstr ""
 msgid ""
 "Changed: 2.0.0 If you require the old behavior of constraints use the "
 "default <varname>use_typmod</varname>, but set it to false."
-msgstr "更改：2.0.0 如果您需要约束的旧行为，请使用默认的<varname>use_typmod</varname>，但将其设置为 false。"
+msgstr ""
+"更改：2.0.0 如果您需要约束的旧行为，请使用默认的<varname>use_typmod</"
+"varname>，但将其设置为 false。"
 
 #. Tag: para
 #: reference_management.xml:116
@@ -96,11 +100,12 @@ msgid ""
 "need to be cast to typmod geometries for these view geometry columns to be "
 "registered correctly in geometry_columns. Refer to <xref "
 "linkend=\"Manual_Register_Spatial_Column\"/>."
-msgstr "更改：2.0.0 视图不能再在 Geometry_columns 中手动注册，"
-"但是根据几何 Typmod 表几何图形构建并在没有包装器函数的情况下使用的视图将正确注册自身，"
-"因为它们继承了父表列的 Typmod 行为。 使用输出其他几何图形的几何函数的视图需要转换为typmod "
-"几何图形，以便这些视图几何列能够在geometry_columns 中正确注册。"
-"请参阅<xref linkend=\"Manual_Register_Spatial_Column\"/>。"
+msgstr ""
+"更改：2.0.0 视图不能再在 Geometry_columns 中手动注册，但是根据几何 Typmod 表"
+"几何图形构建并在没有包装器函数的情况下使用的视图将正确注册自身，因为它们继承"
+"了父表列的 Typmod 行为。 使用输出其他几何图形的几何函数的视图需要转换为"
+"typmod 几何图形，以便这些视图几何列能够在geometry_columns 中正确注册。请参阅"
+"<xref linkend=\"Manual_Register_Spatial_Column\"/>。"
 
 #. Tag: para
 #: reference_management.xml:122 reference_management.xml:199
@@ -128,7 +133,8 @@ msgstr "&curve_support;"
 msgid ""
 "Enhanced: 2.0.0 use_typmod argument introduced. Defaults to creating typmod "
 "geometry column instead of constraint-based."
-msgstr "增强：2.0.0 引入了 use_typmod 参数。 默认创建typmod几何列而不是基于约束。"
+msgstr ""
+"增强：2.0.0 引入了 use_typmod 参数。 默认创建typmod几何列而不是基于约束。"
 
 #. Tag: title
 #: reference_management.xml:129 reference_management.xml:208
@@ -169,7 +175,9 @@ msgid ""
 "Removes a geometry column from a spatial table. Note that schema_name will "
 "need to match the f_table_schema field of the table's row in the "
 "geometry_columns table."
-msgstr "从空间表中删除几何列。请注意，schema_name 需要与 Geometry_columns 表中的表行的 f_table_schema 字段相匹配。"
+msgstr ""
+"从空间表中删除几何列。请注意，schema_name 需要与 Geometry_columns 表中的表行"
+"的 f_table_schema 字段相匹配。"
 
 #. Tag: para
 #: reference_management.xml:203
@@ -180,16 +188,17 @@ msgid ""
 "can drop a geometry column like any other table column using <code>ALTER "
 "TABLE</code>"
 msgstr ""
-"更改：2.0.0 提供此函数是为了向后兼容。现在，由于 Geometry_columns "
-"现在是针对系统目录的视图，因此您可以使用<code>ALTER TABLE</code> "
-"删除几何列，就像删除任何其他表列一样"
+"更改：2.0.0 提供此函数是为了向后兼容。现在，由于 Geometry_columns 现在是针对"
+"系统目录的视图，因此您可以使用<code>ALTER TABLE</code> 删除几何列，就像删除任"
+"何其他表列一样"
 
 #. Tag: para
 #: reference_management.xml:215
 #, no-c-format
 msgid ""
 ", <xref linkend=\"DropGeometryTable\"/>, <xref linkend=\"geometry_columns\"/>"
-msgstr ", <xref linkend=\"DropGeometryTable\"/>, <xref linkend=\"geometry_columns\"/>"
+msgstr ""
+", <xref linkend=\"DropGeometryTable\"/>, <xref linkend=\"geometry_columns\"/>"
 
 #. Tag: refpurpose
 #: reference_management.xml:223
@@ -204,7 +213,9 @@ msgid ""
 "Drops a table and all its references in geometry_columns. Note: uses "
 "current_schema() on schema-aware pgsql installations if schema is not "
 "provided."
-msgstr "删除表及其在geometry_columns中的所有引用。 注意：如果未提供模式，则在模式感知的 pgsql 安装上使用 current_schema() 。"
+msgstr ""
+"删除表及其在geometry_columns中的所有引用。 注意：如果未提供模式，则在模式感知"
+"的 pgsql 安装上使用 current_schema() 。"
 
 #. Tag: para
 #: reference_management.xml:266
@@ -215,9 +226,9 @@ msgid ""
 "can drop a table with geometry columns like any other table using <code>DROP "
 "TABLE</code>"
 msgstr ""
-"更改：2.0.0 提供此函数是为了向后兼容。现在，由于 Geometry_columns "
-"现在是针对系统目录的视图，因此您可以使用<code>DROP "
-"TABLE</code>删除具有几何列的表，就像任何其他表一样"
+"更改：2.0.0 提供此函数是为了向后兼容。现在，由于 Geometry_columns 现在是针对"
+"系统目录的视图，因此您可以使用<code>DROP TABLE</code>删除具有几何列的表，就像"
+"任何其他表一样"
 
 #. Tag: para
 #: reference_management.xml:279
@@ -225,29 +236,15 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"DropGeometryColumn\"/>, <xref linkend=\"geometry_columns\"/"
 ">"
-msgstr ", <xref linkend=\"DropGeometryColumn\"/>, <xref linkend=\"geometry_columns\"/>"
+msgstr ""
+", <xref linkend=\"DropGeometryColumn\"/>, <xref linkend=\"geometry_columns\"/"
+">"
 
 #. Tag: refpurpose
 #: reference_management.xml:287
 #, no-c-format
 msgid "Returns the SRID defined for a geometry column."
 msgstr "返回geometry（几何）列中定义的 SRID。"
-
-#. Tag: funcprototype
-#: reference_management.xml:292
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>Find_SRID</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>a_schema_name</parameter></"
-"paramdef> <paramdef><type>varchar </type> <parameter>a_table_name</"
-"parameter></paramdef> <paramdef><type>varchar </type> "
-"<parameter>a_geomfield_name</parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>Find_SRID</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>a_schema_name</parameter></"
-"paramdef> <paramdef><type>varchar </type> <parameter>a_table_name</"
-"parameter></paramdef> <paramdef><type>varchar </type> "
-"<parameter>a_geomfield_name</parameter></paramdef>"
 
 #. Tag: para
 #: reference_management.xml:304
@@ -257,8 +254,9 @@ msgid ""
 "through the GEOMETRY_COLUMNS table. If the geometry column has not been "
 "properly added (e.g. with the <xref linkend=\"AddGeometryColumn\"/> "
 "function), this function will not work."
-msgstr "通过搜索 GEOMETRY_COLUMNS 表返回指定几何列的整数 SRID。"
-"如果几何列尚未正确添加（例如使用<xref linkend=\"AddGeometryColumn\"/> 函数），则此函数将不起作用。"
+msgstr ""
+"通过搜索 GEOMETRY_COLUMNS 表返回指定几何列的整数 SRID。如果几何列尚未正确添加"
+"（例如使用<xref linkend=\"AddGeometryColumn\"/> 函数），则此函数将不起作用。"
 
 #. Tag: refpurpose
 #: reference_management.xml:329
@@ -276,8 +274,10 @@ msgid ""
 "constraints to ensure they are registered correctly in the "
 "<varname>geometry_columns</varname> view. By default will convert all "
 "geometry columns with no type modifier to ones with type modifiers."
-msgstr "确保几何列具有适当的类型修饰符或空间约束，以确保它们在<varname>geometry_columns</varname>视图中正确注册。"
-"默认情况下，会将所有没有类型修饰符的几何列转换为具有类型修饰符的几何列。"
+msgstr ""
+"确保几何列具有适当的类型修饰符或空间约束，以确保它们在"
+"<varname>geometry_columns</varname>视图中正确注册。默认情况下，会将所有没有类"
+"型修饰符的几何列转换为具有类型修饰符的几何列。"
 
 #. Tag: para
 #: reference_management.xml:357
@@ -291,9 +291,12 @@ msgid ""
 "be created with no type modifiers but will have 3 constraints defined. In "
 "particular, this means that every geometry column belonging to a table has "
 "at least three constraints:"
-msgstr "为了向后兼容和空间需求（例如表继承，其中每个子表可能具有不同的几何类型），仍然支持旧的检查约束行为。"
-"如果您需要旧的行为，则需要将新的可选参数作为 false<varname>use_typmod=false</varname> 传递。"
-"完成此操作后，将创建不带类型修饰符的几何列，但将定义 3 个约束。 特别是，这意味着属于表的每个几何列至少具有三个约束："
+msgstr ""
+"为了向后兼容和空间需求（例如表继承，其中每个子表可能具有不同的几何类型），仍"
+"然支持旧的检查约束行为。如果您需要旧的行为，则需要将新的可选参数作为 "
+"false<varname>use_typmod=false</varname> 传递。完成此操作后，将创建不带类型修"
+"饰符的几何列，但将定义 3 个约束。 特别是，这意味着属于表的每个几何列至少具有"
+"三个约束："
 
 #. Tag: para
 #: reference_management.xml:365
@@ -302,8 +305,8 @@ msgid ""
 "<varname>enforce_dims_geom</varname> - ensures every geometry has the same "
 "dimension (see <xref linkend=\"ST_NDims\"/>)"
 msgstr ""
-"<varname>enforce_dims_geom</varname> - 确保每个几何图形具有相同的维度（"
-"请参阅<xref linkend=\"ST_NDims\"/>）"
+"<varname>enforce_dims_geom</varname> - 确保每个几何图形具有相同的维度（请参阅"
+"<xref linkend=\"ST_NDims\"/>）"
 
 #. Tag: para
 #: reference_management.xml:371
@@ -312,8 +315,8 @@ msgid ""
 "<varname>enforce_geotype_geom</varname> - ensures every geometry is of the "
 "same type (see <xref linkend=\"GeometryType\"/>)"
 msgstr ""
-"<varname>enforce_geotype_geom</varname> - 确保每个几何具有相同的类型（"
-"请参阅<xref linkend=\"GeometryType\"/>）"
+"<varname>enforce_geotype_geom</varname> - 确保每个几何具有相同的类型（请参阅"
+"<xref linkend=\"GeometryType\"/>）"
 
 #. Tag: para
 #: reference_management.xml:377
@@ -321,7 +324,9 @@ msgstr ""
 msgid ""
 "<varname>enforce_srid_geom</varname> - ensures every geometry is in the same "
 "projection (see <xref linkend=\"ST_SRID\"/>)"
-msgstr "<varname>enforce_srid_geom</varname>- 确保所有几何图形位于同一投影中（请参阅<xref linkend=\"ST_SRID\"/>）"
+msgstr ""
+"<varname>enforce_srid_geom</varname>- 确保所有几何图形位于同一投影中（请参阅"
+"<xref linkend=\"ST_SRID\"/>）"
 
 #. Tag: para
 #: reference_management.xml:383
@@ -332,9 +337,10 @@ msgid ""
 "the table, adding constraints as necessary. If successful, an appropriate "
 "row is inserted into the geometry_columns table, otherwise, the exception is "
 "caught and an error notice is raised describing the problem."
-msgstr "如果提供了表 <varname>oid</varname>，则此函数会尝试确定表中所有几何列的 srid、"
-"维度和几何类型，并根据需要添加约束。 如果成功，则会将适当的行插入到 Geometry_columns 表中，"
-"否则，将捕获异常并引发错误通知来描述问题。"
+msgstr ""
+"如果提供了表 <varname>oid</varname>，则此函数会尝试确定表中所有几何列的 "
+"srid、维度和几何类型，并根据需要添加约束。 如果成功，则会将适当的行插入到 "
+"Geometry_columns 表中，否则，将捕获异常并引发错误通知来描述问题。"
 
 #. Tag: para
 #: reference_management.xml:390
@@ -345,8 +351,10 @@ msgid ""
 "geometries in the view, inserting appropriate entries into the "
 "<varname>geometry_columns</varname> table, but nothing is done to enforce "
 "constraints."
-msgstr "如果提供了视图的<varname>oid</varname>，与表 oid 一样，此函数会尝试确定视图中所有几何图形的 srid、"
-"维度和类型，将适当的条目插入到 <varname>geometry_columns</varname> 表中，但不会执行任何操作来强制执行约束 。"
+msgstr ""
+"如果提供了视图的<varname>oid</varname>，与表 oid 一样，此函数会尝试确定视图中"
+"所有几何图形的 srid、维度和类型，将适当的条目插入到 "
+"<varname>geometry_columns</varname> 表中，但不会执行任何操作来强制执行约束 。"
 
 #. Tag: para
 #: reference_management.xml:396
@@ -360,9 +368,11 @@ msgid ""
 "<varname>geometry_columns</varname> table. The parameterized version simply "
 "returns the number of rows inserted into the <varname>geometry_columns</"
 "varname> table."
-msgstr "无参数格式是参数格式的简单包装器，它首先删除并重新填充数据库中每个空间表和视图的 Geometry_columns 表，"
-"并在适当的情况下向表中添加空间约束。 它返回在数据库中检测到的几何列数以及插入到 <varname>geometry_columns</varname> "
-"表中的列数的摘要。 参数格式仅返回插入到<varname>geometry_columns</varname>表中的行数。"
+msgstr ""
+"无参数格式是参数格式的简单包装器，它首先删除并重新填充数据库中每个空间表和视"
+"图的 Geometry_columns 表，并在适当的情况下向表中添加空间约束。 它返回在数据库"
+"中检测到的几何列数以及插入到 <varname>geometry_columns</varname> 表中的列数的"
+"摘要。 参数格式仅返回插入到<varname>geometry_columns</varname>表中的行数。"
 
 #. Tag: para
 #: reference_management.xml:404
@@ -378,8 +388,10 @@ msgid ""
 "constraints to constrain geometry types. You can still use check constraint "
 "behavior instead by using the new <varname>use_typmod</varname> and setting "
 "it to false."
-msgstr "更改：2.0.0 默认情况下，现在使用类型修饰符而不是检查约束来约束几何类型。"
-"您仍然可以通过使用新的 <varname>use_typmod</varname>并将其设置为 false 来使用检查约束行为。"
+msgstr ""
+"更改：2.0.0 默认情况下，现在使用类型修饰符而不是检查约束来约束几何类型。您仍"
+"然可以通过使用新的 <varname>use_typmod</varname>并将其设置为 false 来使用检查"
+"约束行为。"
 
 #. Tag: para
 #: reference_management.xml:407
@@ -388,7 +400,9 @@ msgid ""
 "Enhanced: 2.0.0 <varname>use_typmod</varname> optional argument was "
 "introduced that allows controlling if columns are created with typmodifiers "
 "or with check constraints."
-msgstr "增强：2.0.0 引入了<varname>use_typmod</varname>可选参数，允许控制是否使用typmodifiers或检查约束创建列。"
+msgstr ""
+"增强：2.0.0 引入了<varname>use_typmod</varname>可选参数，允许控制是否使用"
+"typmodifiers或检查约束创建列。"
 
 #. Tag: refpurpose
 #: reference_management.xml:432
@@ -406,9 +420,10 @@ msgid ""
 "and reference in geometry_columns. If the column was enforced by a type "
 "definition, the type definition will be changed. Note: uses current_schema() "
 "on schema-aware pgsql installations if schema is not provided."
-msgstr "更新几何列中所有要素的SRID，更新 Geometry_columns 中的约束和参考。 "
-"如果该列是由类型定义强制执行的，则类型定义将会更改。 注意：如果未提供模式，"
-"则在模式感知的 pgsql 安装上使用 current_schema() 。"
+msgstr ""
+"更新几何列中所有要素的SRID，更新 Geometry_columns 中的约束和参考。 如果该列是"
+"由类型定义强制执行的，则类型定义将会更改。 注意：如果未提供模式，则在模式感知"
+"的 pgsql 安装上使用 current_schema() 。"
 
 #. Tag: para
 #: reference_management.xml:504
@@ -416,7 +431,8 @@ msgstr "更新几何列中所有要素的SRID，更新 Geometry_columns 中的�
 msgid ""
 "Insert geometries into roads table with a SRID set already using <link "
 "linkend=\"ST_GeomFromEWKT\">EWKT format</link>:"
-msgstr "将几何图形插入道路表，其中 SRID 集已使用 <link "
+msgstr ""
+"将几何图形插入道路表，其中 SRID 集已使用 <link "
 "linkend=\"ST_GeomFromEWKT\">EWKT 格式</link> ："
 
 #. Tag: para
@@ -441,8 +457,10 @@ msgid ""
 "you wanted to transform to web mercator all in one shot you can do this with "
 "DDL but there is no equivalent PostGIS management function to do so in one "
 "go."
-msgstr "如果您在加载时投影错误（或将其引入为未知），并且您想一次性转换为 Web 墨卡托，"
-"您可以使用 DDL 来完成此操作，但没有等效的 PostGIS 管理功能可以一次性完成此操作。"
+msgstr ""
+"如果您在加载时投影错误（或将其引入为未知），并且您想一次性转换为 Web 墨卡托，"
+"您可以使用 DDL 来完成此操作，但没有等效的 PostGIS 管理功能可以一次性完成此操"
+"作。"
 
 #. Tag: para
 #: reference_management.xml:520

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-05-26 05:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -228,18 +228,6 @@ msgstr ""
 "<refpurpose>マルチポイントジオメトリからラインストリングを生成します。</"
 "refpurpose>"
 
-#. Tag: funcprototype
-#: reference_constructor.xml:101
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_LineFromMultiPoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>aMultiPoint</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_LineFromMultiPoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>aMultiPoint</parameter></"
-"paramdef>"
-
 #. Tag: para
 #: reference_constructor.xml:111
 #, no-c-format
@@ -283,26 +271,6 @@ msgstr ", <xref linkend=\"ST_MakeLine\"/>"
 #, no-c-format
 msgid "Creates a rectangular Polygon from minimum and maximum coordinates."
 msgstr "座標値の最小値と最大値から矩形ポリゴンを生成します。"
-
-#. Tag: funcprototype
-#: reference_constructor.xml:142
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_MakeEnvelope</function></funcdef> "
-"<paramdef><type>float</type> <parameter>xmin</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>ymin</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>xmax</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>ymax</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer</type> <parameter>srid=unknown</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_MakeEnvelope</function></funcdef> "
-"<paramdef><type>float</type> <parameter>xmin</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>ymin</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>xmax</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>ymax</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer</type> <parameter>srid=unknown</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:156
@@ -512,48 +480,6 @@ msgstr ""
 msgid "Creates a 2D, 3DZ or 4D Point."
 msgstr "2次元、3次元 (XYZ)、4次元のポイントを生成します。"
 
-#. Tag: funcprototype
-#: reference_constructor.xml:287
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef>"
-
-#. Tag: funcprototype
-#: reference_constructor.xml:294
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>z</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>z</parameter></paramdef>"
-
-#. Tag: funcprototype
-#: reference_constructor.xml:302
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>z</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>m</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>z</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>m</parameter></paramdef>"
-
 #. Tag: para
 #: reference_constructor.xml:315
 #, no-c-format
@@ -607,20 +533,6 @@ msgstr ""
 #, no-c-format
 msgid "Creates a Point from X, Y and M values."
 msgstr "X, Y, M値からポイントを生成します。"
-
-#. Tag: funcprototype
-#: reference_constructor.xml:349
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_MakePointM</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>m</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_MakePointM</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>m</parameter></paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:361
@@ -677,30 +589,6 @@ msgstr ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
 #, no-c-format
 msgid "Creates a Polygon from a shell and optional list of holes."
 msgstr "外殻と穴のリストからポリゴンを生成します。"
-
-#. Tag: funcprototype
-#: reference_constructor.xml:398
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_MakePolygon</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_MakePolygon</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>"
-
-#. Tag: funcprototype
-#: reference_constructor.xml:404
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_MakePolygon</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>outerlinestring</parameter></"
-"paramdef> <paramdef><type>geometry[]</type> <parameter>interiorlinestrings</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_MakePolygon</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>outerlinestring</parameter></"
-"paramdef> <paramdef><type>geometry[]</type> <parameter>interiorlinestrings</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:415
@@ -837,32 +725,6 @@ msgstr ""
 msgid "Creates a Point with X, Y and SRID values."
 msgstr "X, YとSRIDの値からポイントを生成します。"
 
-#. Tag: funcprototype
-#: reference_constructor.xml:489
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Point</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Point</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef>"
-
-#. Tag: funcprototype
-#: reference_constructor.xml:496
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Point</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>srid=unknown</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Point</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>srid=unknown</parameter></paramdef>"
-
 #. Tag: para
 #: reference_constructor.xml:508
 #, no-c-format
@@ -959,24 +821,6 @@ msgstr ""
 msgid "Creates a Point with X, Y, Z and SRID values."
 msgstr "X, Y, ZとSRIDの値からポイントを生成します。"
 
-#. Tag: funcprototype
-#: reference_constructor.xml:562
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_PointZ</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>z</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_PointZ</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>z</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
-"paramdef>"
-
 #. Tag: para
 #: reference_constructor.xml:574
 #, no-c-format
@@ -1001,24 +845,6 @@ msgstr ""
 #, no-c-format
 msgid "Creates a Point with X, Y, M and SRID values."
 msgstr "X, Y, MとSRIDの値からポイントを生成します。"
-
-#. Tag: funcprototype
-#: reference_constructor.xml:599
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_PointM</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>m</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_PointM</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>m</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
-"paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:611
@@ -1045,26 +871,6 @@ msgstr ""
 msgid "Creates a Point with X, Y, Z, M and SRID values."
 msgstr "X, Y, Z, MとSRIDの値からポイントを生成します。"
 
-#. Tag: funcprototype
-#: reference_constructor.xml:637
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_PointZM</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>z</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>m</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_PointZM</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>z</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>m</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
-"paramdef>"
-
 #. Tag: para
 #: reference_constructor.xml:650
 #, no-c-format
@@ -1089,20 +895,6 @@ msgstr ""
 #, no-c-format
 msgid "Creates a Polygon from a LineString with a specified SRID."
 msgstr "ラインストリングから指定したSRIDを持つポリゴンを生成します。"
-
-#. Tag: funcprototype
-#: reference_constructor.xml:675
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Polygon</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>lineString</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Polygon</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>lineString</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></"
-"paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:686
@@ -1181,30 +973,6 @@ msgstr ""
 "<ulink url=\"https://en.wikipedia.org/wiki/Web_Mercator_projection\">Webメル"
 "カトル</ulink> (SRID:3857)上で <ulink url=\"https://en.wikipedia.org/wiki/"
 "Tiled_web_map\">XYZタイル</ulink>を使った矩形ポリゴンを生成します。"
-
-#. Tag: funcprototype
-#: reference_constructor.xml:731
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_TileEnvelope</function></funcdef> "
-"<paramdef><type>integer</type> <parameter>tileZoom</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>tileX</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>tileY</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>geometry</type> <parameter>bounds=SRID=3857;"
-"LINESTRING(-20037508.342789 -20037508.342789,20037508.342789 "
-"20037508.342789)</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>float</type> <parameter>margin=0.0</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_TileEnvelope</function></funcdef> "
-"<paramdef><type>integer</type> <parameter>tileZoom</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>tileX</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>tileY</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>geometry</type> <parameter>bounds=SRID=3857;"
-"LINESTRING(-20037508.342789 -20037508.342789,20037508.342789 "
-"20037508.342789)</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>float</type> <parameter>margin=0.0</parameter></"
-"paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:745
@@ -1300,18 +1068,6 @@ msgid ""
 "of the geometry argument."
 msgstr ""
 "引数ジオメトリの境界を完全にカバーする六角形とセルインデックスを返します。"
-
-#. Tag: funcprototype
-#: reference_constructor.xml:790
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>ST_HexagonGrid</function></funcdef> "
-"<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>bounds</parameter></paramdef>"
-msgstr ""
-"<funcdef>setof record <function>ST_HexagonGrid</function></funcdef> "
-"<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>bounds</parameter></paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:801
@@ -1433,24 +1189,6 @@ msgstr ""
 "与えられたエッジサイズと六角形グリッド空間内のセル座標を使って単一の六角形を"
 "返します。"
 
-#. Tag: funcprototype
-#: reference_constructor.xml:860
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Hexagon</function></funcdef> "
-"<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>cell_i</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>cell_j</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>geometry</type> <parameter>origin</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Hexagon</function></funcdef> "
-"<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>cell_i</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>cell_j</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>geometry</type> <parameter>origin</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_constructor.xml:873
 #, no-c-format
@@ -1494,18 +1232,6 @@ msgid ""
 msgstr ""
 "引数ジオメトリの境界を完全にカバーするグリッド正方形とセルインデックスを返し"
 "ます。"
-
-#. Tag: funcprototype
-#: reference_constructor.xml:899
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>ST_SquareGrid</function></funcdef> "
-"<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>bounds</parameter></paramdef>"
-msgstr ""
-"<funcdef>setof record <function>ST_SquareGrid</function></funcdef> "
-"<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>bounds</parameter></paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:910
@@ -1613,24 +1339,6 @@ msgstr ""
 "与えられたエッジサイズと六角形グリッド空間内のセル座標を使って単一の正方形を"
 "返します。"
 
-#. Tag: funcprototype
-#: reference_constructor.xml:962
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Square</function></funcdef> "
-"<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>cell_i</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>cell_j</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>geometry</type> <parameter>origin</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Square</function></funcdef> "
-"<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>cell_i</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>cell_j</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>geometry</type> <parameter>origin</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_constructor.xml:975
 #, no-c-format
@@ -1674,20 +1382,6 @@ msgid ""
 msgstr ""
 "デフォルトの開始位置を原点とし、デフォルトの高さを100とする、ジオメトリとして"
 "描画された文字を返します。"
-
-#. Tag: funcprototype
-#: reference_constructor.xml:1002
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Letters</function></funcdef> "
-"<paramdef><type>text</type> <parameter> letters</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>json</type> <parameter> font</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Letters</function></funcdef> "
-"<paramdef><type>text</type> <parameter> letters</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>json</type> <parameter> font</parameter></"
-"paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:1013

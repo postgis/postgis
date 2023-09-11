@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-29 10:57+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-05-15 08:43+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -161,20 +161,6 @@ msgid "Returns a point interpolated along a 3D line at a fractional location."
 msgstr ""
 "Renvoie un point interpolé le long d'une ligne 3D à un emplacement "
 "fractionnaire."
-
-#. Tag: funcprototype
-#: reference_lrs.xml:102
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_3DLineInterpolatePoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>a_fraction</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_3DLineInterpolatePoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>a_fraction</parameter></"
-"paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:113
@@ -473,22 +459,6 @@ msgstr ""
 "Renvoie le(s) point(s) d'une géométrie qui correspond(ent) à une valeur de "
 "mesure."
 
-#. Tag: funcprototype
-#: reference_lrs.xml:388
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_LocateAlong</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom_with_measure</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>measure</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>float8 </type> <parameter>offset = "
-"0</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_LocateAlong</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom_with_measure</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>measure</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>float8 </type> <parameter>offset = "
-"0</parameter></paramdef>"
-
 #. Tag: para
 #: reference_lrs.xml:400
 #, no-c-format
@@ -570,24 +540,6 @@ msgid "Returns the portions of a geometry that match a measure range."
 msgstr ""
 "Renvoie les parties d'une géométrie qui correspondent à un intervalle de "
 "mesure."
-
-#. Tag: funcprototype
-#: reference_lrs.xml:442
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_LocateBetween</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>measure_start</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>measure_end</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>float8 </type> <parameter>offset = "
-"0</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_LocateBetween</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>measure_start</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>measure_end</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>float8 </type> <parameter>offset = "
-"0</parameter></paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:456
@@ -671,22 +623,6 @@ msgstr ""
 "Renvoie les parties d'une géométrie qui se trouvent dans un intervalle "
 "d'élévation (Z)."
 
-#. Tag: funcprototype
-#: reference_lrs.xml:510
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_LocateBetweenElevations</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>elevation_start</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>elevation_end</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_LocateBetweenElevations</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>elevation_start</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>elevation_end</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_lrs.xml:523
 #, no-c-format
@@ -715,20 +651,6 @@ msgstr ", <xref linkend=\"ST_LocateBetween\"/>"
 msgid "Returns the interpolated measure of a geometry closest to a point."
 msgstr ""
 "Renvoie la mesure interpolée d'une géométrie la plus proche d'un point."
-
-#. Tag: funcprototype
-#: reference_lrs.xml:557
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_InterpolatePoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>linear_geom_with_measure</"
-"parameter></paramdef> <paramdef><type>geometry </type> <parameter>point</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>float8 <function>ST_InterpolatePoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>linear_geom_with_measure</"
-"parameter></paramdef> <paramdef><type>geometry </type> <parameter>point</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:569
@@ -759,22 +681,6 @@ msgstr ""
 #, no-c-format
 msgid "Interpolates measures along a linear geometry."
 msgstr "Interpole les mesures le long d'une géométrie linéaire."
-
-#. Tag: funcprototype
-#: reference_lrs.xml:603
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_AddMeasure</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom_mline</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>measure_start</"
-"parameter></paramdef> <paramdef><type>float8 </type> <parameter>measure_end</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_AddMeasure</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom_mline</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>measure_start</"
-"parameter></paramdef> <paramdef><type>float8 </type> <parameter>measure_end</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:616

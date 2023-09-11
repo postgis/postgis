@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2014-01-03 08:07+0000\n"
 "Last-Translator: Jakub Bobrowski <jb@5dstudio.pl>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/postgis-1/"
@@ -38,16 +38,6 @@ msgstr ""
 #, no-c-format
 msgid "Add bounding box to the geometry."
 msgstr ""
-
-#. Tag: funcprototype
-#: reference_exception.xml:16
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>PostGIS_AddBBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>PostGIS_AddBBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: title
 #: reference_exception.xml:24 reference_exception.xml:70
@@ -107,16 +97,6 @@ msgstr ", <xref linkend=\"PostGIS_HasBBox\"/>"
 msgid "Drop the bounding box cache from the geometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_exception.xml:62
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>PostGIS_DropBBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>PostGIS_DropBBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-
 #. Tag: para
 #: reference_exception.xml:72
 #, no-c-format
@@ -153,16 +133,6 @@ msgstr ", <xref linkend=\"PostGIS_HasBBox\"/>, <xref linkend=\"Box2D\"/>"
 #, no-c-format
 msgid "Returns TRUE if the bbox of this geometry is cached, FALSE otherwise."
 msgstr ""
-
-#. Tag: funcprototype
-#: reference_exception.xml:111
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>PostGIS_HasBBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>PostGIS_HasBBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_exception.xml:121

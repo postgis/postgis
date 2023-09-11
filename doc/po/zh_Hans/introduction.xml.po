@@ -31,7 +31,10 @@ msgid ""
 "research project. Refractions is a GIS and database consulting company in "
 "Victoria, British Columbia, Canada, specializing in data integration and "
 "custom software development."
-msgstr "PostGIS是PostgreSQL关系数据库的空间扩展。由Refractions Research Inc创建，作为空间数据库技术的研究项目。Refractions是一家位于加拿大不列颠哥伦比亚省维多利亚市的GIS和数据库咨询公司，专门从事数据集成和定制软件开发。"
+msgstr ""
+"PostGIS是PostgreSQL关系数据库的空间扩展。由Refractions Research Inc创建，作为"
+"空间数据库技术的研究项目。Refractions是一家位于加拿大不列颠哥伦比亚省维多利亚"
+"市的GIS和数据库咨询公司，专门从事数据集成和定制软件开发。"
 
 #. Tag: para
 #: introduction.xml:11
@@ -40,7 +43,9 @@ msgid ""
 "PostGIS is now a project of the OSGeo Foundation and is developed and funded "
 "by many FOSS4G developers and organizations all over the world that gain "
 "great benefit from its functionality and versatility."
-msgstr "PostGIS现在是OSGeo基金会的一个项目。世界各地大量FOSS4G开发商和公司从PostGIS的功能和多样性中受益匪浅，他们正在开发和资助PostGIS。"
+msgstr ""
+"PostGIS现在是OSGeo基金会的一个项目。世界各地大量FOSS4G开发商和公司从PostGIS的"
+"功能和多样性中受益匪浅，他们正在开发和资助PostGIS。"
 
 #. Tag: para
 #: introduction.xml:13
@@ -51,7 +56,11 @@ msgid ""
 "areas of OGC and SQL/MM spatial standards, advanced topological constructs "
 "(coverages, surfaces, networks), data source for desktop user interface "
 "tools for viewing and editing GIS data, and web-based access tools."
-msgstr "PostGIS 项目开发小组为 PostGIS 创建了一个数据源，以便在 OGC 和 SQL/MM 空间标准、高级拓扑构建（覆盖范围、表面、网络）、用于查看和编辑 GIS 数据的桌面用户界面工具的数据源以及基于 Web 的访问工具的数据源等领域提供重要的 GIS 功能。我们将提供支持和增强功能，以更好地做出响应。"
+msgstr ""
+"PostGIS 项目开发小组为 PostGIS 创建了一个数据源，以便在 OGC 和 SQL/MM 空间标"
+"准、高级拓扑构建（覆盖范围、表面、网络）、用于查看和编辑 GIS 数据的桌面用户界"
+"面工具的数据源以及基于 Web 的访问工具的数据源等领域提供重要的 GIS 功能。我们"
+"将提供支持和增强功能，以更好地做出响应。"
 
 #. Tag: title
 #: introduction.xml:21
@@ -69,7 +78,10 @@ msgid ""
 "and approves patches from the general PostGIS community and votes on "
 "miscellaneous issues involving PostGIS such as developer commit access, new "
 "PSC members or significant API changes."
-msgstr "PostGIS项目指导委员会（PSC）负责协调总体方向、发布周期、文档和支持活动。委员会还对涉及 PostGIS 的其他问题进行投票，例如整体用户支持、接受和应用 PostGIS 社区的补丁、开发人员提交访问权限、新委员会成员以及重要的 API 更改。"
+msgstr ""
+"PostGIS项目指导委员会（PSC）负责协调总体方向、发布周期、文档和支持活动。委员"
+"会还对涉及 PostGIS 的其他问题进行投票，例如整体用户支持、接受和应用 PostGIS "
+"社区的补丁、开发人员提交访问权限、新委员会成员以及重要的 API 更改。"
 
 #. Tag: term
 #: introduction.xml:31
@@ -83,7 +95,8 @@ msgstr "劳尔·马林·罗德里格斯"
 msgid ""
 "MVT support, Bug fixing, Performance and stability improvements, GitHub "
 "curation, alignment of PostGIS with PostgreSQL releases"
-msgstr "MVT 功能、纠错、性能和稳定性改进、GitHub 策展、PostGIS 和 PostgreSQL 版本调整"
+msgstr ""
+"MVT 功能、纠错、性能和稳定性改进、GitHub 策展、PostGIS 和 PostgreSQL 版本调整"
 
 #. Tag: term
 #: introduction.xml:39
@@ -98,7 +111,9 @@ msgid ""
 "Buildbot Maintenance, Windows production and experimental builds, "
 "documentation, alignment of PostGIS with PostgreSQL releases, X3D support, "
 "TIGER geocoder support, management functions."
-msgstr "构建机器人维护，Windows和实验性构建，文档，与PostgreSQL的协调，X3D支持，Tiger Geocoder功能，功能管理。"
+msgstr ""
+"构建机器人维护，Windows和实验性构建，文档，与PostgreSQL的协调，X3D支持，"
+"Tiger Geocoder功能，功能管理。"
 
 #. Tag: term
 #: introduction.xml:47
@@ -112,7 +127,8 @@ msgstr "达拉菲·普拉利亚斯库斯基"
 msgid ""
 "Index improvements, bug fixing and geometry/geography function improvements, "
 "SFCGAL, raster, GitHub curation, and bot maintenance."
-msgstr "索引改进、纠错和几何/地理功能改进、SFCGAL、栅格、GitHub 策展、机器人维护。"
+msgstr ""
+"索引改进、纠错和几何/地理功能改进、SFCGAL、栅格、GitHub 策展、机器人维护。"
 
 #. Tag: term
 #: introduction.xml:54
@@ -129,7 +145,10 @@ msgid ""
 "index), underlying geometry internal structures, GEOS functionality "
 "integration and alignment with GEOS releases, alignment of PostGIS with "
 "PostgreSQL releases, loader/dumper, and Shapefile GUI loader."
-msgstr "PostGIS项目的联合创始人。全面的错误修复、地理功能、地理和几何索引（2D、3D、n 维索引和任何空间索引）、几何内部、GEOS功能集成以及与GEOS版本的协调、与PostgreSQL版本的协调、加载器/转储程序、shapefile GUI 加载器。"
+msgstr ""
+"PostGIS项目的联合创始人。全面的错误修复、地理功能、地理和几何索引（2D、3D、n "
+"维索引和任何空间索引）、几何内部、GEOS功能集成以及与GEOS版本的协调、与"
+"PostgreSQL版本的协调、加载器/转储程序、shapefile GUI 加载器。"
 
 #. Tag: term
 #: introduction.xml:63
@@ -145,7 +164,9 @@ msgid ""
 "management functions, integration of new GEOS functionality and alignment "
 "with GEOS releases, topology support, and raster framework and low level API "
 "functions."
-msgstr "纠错和维护、构建机器人维护、git 镜像管理、功能管理、新 GEOS 功能的集成、与 GEOS 版本的协调、拓扑功能、光框架和低级 API 函数。"
+msgstr ""
+"纠错和维护、构建机器人维护、git 镜像管理、功能管理、新 GEOS 功能的集成、与 "
+"GEOS 版本的协调、拓扑功能、光框架和低级 API 函数。"
 
 #. Tag: title
 #: introduction.xml:72
@@ -166,8 +187,9 @@ msgid ""
 "Distance function enhancements (including 3D distance and relationship "
 "functions) and additions, Tiny WKB (TWKB) output format and general user "
 "support"
-msgstr "距离函数增强（包括 3D 距离和关系函数）和附加功能、Tiny WKB (TWKB) "
-"输出格式和一般用户支持"
+msgstr ""
+"距离函数增强（包括 3D 距离和关系函数）和附加功能、Tiny WKB (TWKB) 输出格式和"
+"一般用户支持"
 
 #. Tag: term
 #: introduction.xml:82
@@ -257,7 +279,9 @@ msgid ""
 "Prior PSC Member. Coordinated bug fixing and maintenance effort, spatial "
 "index selectivity and binding, loader/dumper, and Shapefile GUI Loader, "
 "integration of new and new function enhancements."
-msgstr "前 PSC 成员。 纠错和维护活动、空间索引选择性和绑定、加载器/转储程序和 shapefile GUI 加载器调整、新功能集成和增强。"
+msgstr ""
+"前 PSC 成员。 纠错和维护活动、空间索引选择性和绑定、加载器/转储程序和 "
+"shapefile GUI 加载器调整、新功能集成和增强。"
 
 #. Tag: term
 #: introduction.xml:133
@@ -311,7 +335,8 @@ msgstr "马特乌斯·洛斯科特"
 msgid ""
 "CMake support for PostGIS, built original raster loader in python and low "
 "level raster API functions"
-msgstr "CMake 对 PostGIS 的支持、原始栅格加载器的构造以及 Python 版本的低级栅格 API "
+msgstr ""
+"CMake 对 PostGIS 的支持、原始栅格加载器的构造以及 Python 版本的低级栅格 API "
 "函数"
 
 #. Tag: term
@@ -327,7 +352,9 @@ msgid ""
 "Prior PSC Member. Documentation and documentation support tools, buildbot "
 "maintenance, advanced user support on PostGIS newsgroup, and PostGIS "
 "maintenance function enhancements."
-msgstr "前 PSC 成员。文档和文档辅助、Buildbot 维护、PostGIS 新闻组中的高级用户支持以及增强的 PostGIS 维护功能。"
+msgstr ""
+"前 PSC 成员。文档和文档辅助、Buildbot 维护、PostGIS 新闻组中的高级用户支持以"
+"及增强的 PostGIS 维护功能。"
 
 #. Tag: term
 #: introduction.xml:169
@@ -341,7 +368,9 @@ msgstr "戴夫·布拉斯比"
 msgid ""
 "The original developer/Co-founder of PostGIS. Dave wrote the server side "
 "objects, index bindings, and many of the server side analytical functions."
-msgstr "PostGIS的原始开发者/联合创始人。描述服务器端对象、索引绑定和许多服务器端分析函数。"
+msgstr ""
+"PostGIS的原始开发者/联合创始人。描述服务器端对象、索引绑定和许多服务器端分析"
+"函数。"
 
 #. Tag: term
 #: introduction.xml:179
@@ -1103,7 +1132,8 @@ msgstr "企业"
 msgid ""
 "These are corporate entities that have contributed developer time, hosting, "
 "or direct monetary funding to the PostGIS project. In alphabetical order:"
-msgstr "这些公司为PostGIS项目贡献了开发人员时间，托管或直接资金。按字母顺序排列："
+msgstr ""
+"这些公司为PostGIS项目贡献了开发人员时间，托管或直接资金。按字母顺序排列："
 
 #. Tag: ulink
 #: introduction.xml:343
@@ -1383,9 +1413,12 @@ msgid ""
 "osgeo.org/mailman/listinfo/postgis-users\">PostGIS newsgroup</ulink> your "
 "thoughts and together we can make it happen."
 msgstr ""
-"众筹活动是我们为了获得急需的功能而开展的活动，这些功能可以为大量的人提供服务。每个活动都专门针对一个特定功能或一组功能。每个赞助商都会投入所需资金的一小部分，并且有足够的"
-"个人/组织捐款，我们就有资金来支付将帮助许多人的工作。 如果您对某个功能有想法，并且认为许多其他人愿意共同资助，请将您的想法发布到 <ulink url=\"https://lists."
-"osgeo.org/mailman/listinfo/postgis-users\">PostGIS 新闻组</ulink>，我们可以共同实现它。"
+"众筹活动是我们为了获得急需的功能而开展的活动，这些功能可以为大量的人提供服"
+"务。每个活动都专门针对一个特定功能或一组功能。每个赞助商都会投入所需资金的一"
+"小部分，并且有足够的个人/组织捐款，我们就有资金来支付将帮助许多人的工作。 如"
+"果您对某个功能有想法，并且认为许多其他人愿意共同资助，请将您的想法发布到 "
+"<ulink url=\"https://lists.osgeo.org/mailman/listinfo/postgis-"
+"users\">PostGIS 新闻组</ulink>，我们可以共同实现它。"
 
 #. Tag: para
 #: introduction.xml:396
@@ -1394,8 +1427,9 @@ msgid ""
 "PostGIS 2.0.0 was the first release we tried this strategy. We used <ulink "
 "url=\"http://www.pledgebank.com\">PledgeBank</ulink> and we got two "
 "successful campaigns out of it."
-msgstr "PostGIS 2.0.0 是我们尝试此策略的第一个版本。我们使用了<ulink "
-"url=\"http://www.pledgebank.com\">PledgeBank</ulink>，并从中举办了两次成功的活动。"
+msgstr ""
+"PostGIS 2.0.0 是我们尝试此策略的第一个版本。我们使用了<ulink url=\"http://"
+"www.pledgebank.com\">PledgeBank</ulink>，并从中举办了两次成功的活动。"
 
 #. Tag: para
 #: introduction.xml:397
@@ -1405,8 +1439,10 @@ msgid ""
 "role=\"bold\">postgistopology</emphasis></ulink> - 10 plus sponsors each "
 "contributed $250 USD to build toTopoGeometry function and beef up topology "
 "support in 2.0.0. It happened."
-msgstr "<ulink url=\"http://www.pledgebank.com/postgistopology\"><emphasis "
-"role=\"bold\">postgistopology</emphasis></ulink>-10多个赞助商每人贡献了250美元来构建 toTopoGeometry 函数并增强 2.0.0 中的拓扑支持。它发生了。"
+msgstr ""
+"<ulink url=\"http://www.pledgebank.com/postgistopology\"><emphasis "
+"role=\"bold\">postgistopology</emphasis></ulink>-10多个赞助商每人贡献了250美"
+"元来构建 toTopoGeometry 函数并增强 2.0.0 中的拓扑支持。它发生了。"
 
 #. Tag: para
 #: introduction.xml:398
@@ -1416,8 +1452,11 @@ msgid ""
 "role=\"bold\">postgis64windows</emphasis></ulink> - 20 someodd sponsors each "
 "contributed $100 USD to pay for the work needed to work out PostGIS 64-bit "
 "issues on windows. It happened."
-msgstr "<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis "
-"role=\"bold\">postgis64windows</emphasis></ulink>-20个不同的赞助商每人捐款 100 美元，用于支付在 Windows 上解决 PostGIS 64 位问题所需的工作费用。它发生了。"
+msgstr ""
+"<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis "
+"role=\"bold\">postgis64windows</emphasis></ulink>-20个不同的赞助商每人捐款 "
+"100 美元，用于支付在 Windows 上解决 PostGIS 64 位问题所需的工作费用。它发生"
+"了。"
 
 #. Tag: term
 #: introduction.xml:403
@@ -1441,7 +1480,10 @@ msgid ""
 "Library used to power much of the raster functionality introduced in PostGIS "
 "2. In kind, improvements needed in GDAL to support PostGIS are contributed "
 "back to the GDAL project."
-msgstr "<ulink url=\"https://gdal.org\">GDAL</ulink>地理空间数据抽象库用于支持 PostGIS 2 中引入的大部分栅格功能。同样，GDAL 中支持 PostGIS 所需的改进也将回馈给 GDAL 项目。"
+msgstr ""
+"<ulink url=\"https://gdal.org\">GDAL</ulink>地理空间数据抽象库用于支持 "
+"PostGIS 2 中引入的大部分栅格功能。同样，GDAL 中支持 PostGIS 所需的改进也将回"
+"馈给 GDAL 项目。"
 
 #. Tag: para
 #: introduction.xml:414
@@ -1459,5 +1501,8 @@ msgid ""
 "ulink>, the giant that PostGIS stands on. Much of the speed and flexibility "
 "of PostGIS would not be possible without the extensibility, great query "
 "planner, GIST index, and plethora of SQL features provided by PostgreSQL."
-msgstr "最后但并非最不重要的一点是<ulink url=\"http://www.postgresql.org\">PostgreSQL</"
-"ulink>，PostGIS所依赖的巨人。如果没有 PostgreSQL 提供的可扩展性、出色的查询规划器、GIST 索引和大量 SQL 功能，PostGIS 的大部分速度和灵活性都是不可能实现的。"
+msgstr ""
+"最后但并非最不重要的一点是<ulink url=\"http://www.postgresql."
+"org\">PostgreSQL</ulink>，PostGIS所依赖的巨人。如果没有 PostgreSQL 提供的可扩"
+"展性、出色的查询规划器、GIST 索引和大量 SQL 功能，PostGIS 的大部分速度和灵活"
+"性都是不可能实现的。"

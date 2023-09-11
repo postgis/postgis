@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-09-08 07:58+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -76,11 +76,11 @@ msgstr ""
 "yoff, zoff)</programlisting>表示变换矩阵<programlisting>/ a b c xoff \\\n"
 "| d e f yoff |\n"
 "| g h i zoff |\n"
-"\\ 0 0 0     1 /</programlisting> 并且顶点变换如下： <programlisting>x' = a*"
-"x + b*y + c*z + xoff\n"
+"\\ 0 0 0     1 /</programlisting> 并且顶点变换如下： <programlisting>x' = "
+"a*x + b*y + c*z + xoff\n"
 "y' = d*x + e*y + f*z + yoff\n"
-"z' = g*x + h*y + i*z + zoff</programlisting> "
-"下面所有的平移/缩放函数都是通过这样的仿射变换来表达的。"
+"z' = g*x + h*y + i*z + zoff</programlisting> 下面所有的平移/缩放函数都是通过"
+"这样的仿射变换来表达的。"
 
 #. Tag: para
 #: reference_transformation.xml:62
@@ -98,8 +98,8 @@ msgid ""
 "z' = z </programlisting> This method is a subcase of the 3D method above."
 msgstr ""
 "版本 2：对几何体应用 2d 仿射变换。 调用<programlisting>ST_Affine(geom, a, b, "
-"d, e, xoff, yoff)</programlisting>表示变换矩阵<programlisting>/ a b 0 xoff \\"
-" / a b xoff \\\n"
+"d, e, xoff, yoff)</programlisting>表示变换矩阵<programlisting>/ a b 0 xoff "
+"\\ / a b xoff \\\n"
 "| d e 0 yoff | rsp.   | d e yoff |\n"
 "| 0 0 1 0 | 0 0 1 0 \\ 0 0 1 /\n"
 "\\ 0 0 0    1 /</programlisting> 并且顶点变换如下： <programlisting>x' = a*x "
@@ -131,7 +131,8 @@ msgstr "可用性：1.1.2。 1.2.2 中名称从 Affine 更改为 ST_Affine"
 msgid ""
 "Prior to 1.3.4, this function crashes if used with geometries that contain "
 "CURVES. This is fixed in 1.3.4+"
-msgstr "在 1.3.4 之前，此函数在与包含曲线的几何图形一起使用时崩溃。 此问题已在 1.3.4 "
+msgstr ""
+"在 1.3.4 之前，此函数在与包含曲线的几何图形一起使用时崩溃。 此问题已在 1.3.4 "
 "及更高版本中得到纠正"
 
 #. Tag: para
@@ -210,8 +211,8 @@ msgid ""
 "coordinates. If the origin is not specified, the geometry is rotated about "
 "POINT(0 0)."
 msgstr ""
-"围绕原点逆时针旋转几何体 rotRadians。 旋转原点可以指定为 POINT 几何图形，"
-"也可以指定为 x 和 y 坐标。 如果未指定原点，则几何图形将围绕 POINT(0 0) 旋转。"
+"围绕原点逆时针旋转几何体 rotRadians。 旋转原点可以指定为 POINT 几何图形，也可"
+"以指定为 x 和 y 坐标。 如果未指定原点，则几何图形将围绕 POINT(0 0) 旋转。"
 
 #. Tag: para
 #: reference_transformation.xml:134
@@ -243,15 +244,6 @@ msgstr ""
 msgid "Rotates a geometry about the X axis."
 msgstr "绕 X 轴旋转几何体。"
 
-#. Tag: funcprototype
-#: reference_transformation.xml:167
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_RotateX</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_transformation.xml:178
 #, no-c-format
@@ -267,8 +259,8 @@ msgid ""
 "sin(rotRadians), cos(rotRadians), 0, 0, 0)</code>."
 msgstr ""
 "<code>ST_RotateX(geomA, rotRadians) </code>是 <code>ST_Affine(geomA, 1, 0, "
-"0, 0, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), cos(rotRadians)"
-", 0, 0, 0）</code>的简写。"
+"0, 0, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), "
+"cos(rotRadians), 0, 0, 0）</code>的简写。"
 
 #. Tag: para
 #: reference_transformation.xml:184
@@ -287,15 +279,6 @@ msgstr ", <xref linkend=\"ST_RotateY\"/>, <xref linkend=\"ST_RotateZ\"/>"
 #, no-c-format
 msgid "Rotates a geometry about the Y axis."
 msgstr "绕 Y 轴旋转几何体。"
-
-#. Tag: funcprototype
-#: reference_transformation.xml:214
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_RotateY</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
-msgstr ""
 
 #. Tag: para
 #: reference_transformation.xml:225
@@ -332,15 +315,6 @@ msgstr ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateZ\"/>"
 #, no-c-format
 msgid "Rotates a geometry about the Z axis."
 msgstr "绕 Z 轴旋转几何体。"
-
-#. Tag: funcprototype
-#: reference_transformation.xml:263
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_RotateZ</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
-msgstr ""
 
 #. Tag: para
 #: reference_transformation.xml:274
@@ -402,8 +376,8 @@ msgid ""
 "point are equivalent to no scaling the corresponding dimension."
 msgstr ""
 "采用几何图形作为 <varname>factor</varname> 参数的版本允许传递 2d、3dm、3dz "
-"或 4d 点来为所有支持的维度设置缩放因子。 <varname>factor</varname> "
-"点中缺少维度相当于没有缩放相应的维度。"
+"或 4d 点来为所有支持的维度设置缩放因子。 <varname>factor</varname> 点中缺少维"
+"度相当于没有缩放相应的维度。"
 
 #. Tag: para
 #: reference_transformation.xml:360
@@ -416,8 +390,8 @@ msgid ""
 "by the scale factor."
 msgstr ""
 "三几何体变体允许传入缩放的“假原点”。这允许“就地缩放”，例如使用几何体的质心作"
-"为假原点。 "
-"如果没有假原点，缩放是相对于实际原点进行的，因此所有坐标都只是乘以比例因子。"
+"为假原点。 如果没有假原点，缩放是相对于实际原点进行的，因此所有坐标都只是乘以"
+"比例因子。"
 
 #. Tag: para
 #: reference_transformation.xml:367 reference_transformation.xml:483
@@ -431,7 +405,8 @@ msgstr "可用性：1.1.0。"
 msgid ""
 "Enhanced: 2.2.0 support for scaling all dimension (<varname>factor</varname> "
 "parameter) was introduced."
-msgstr "增强：2.2.0 引入了对缩放所有维度（<varname>factor</varname> 参数）的支持。"
+msgstr ""
+"增强：2.2.0 引入了对缩放所有维度（<varname>factor</varname> 参数）的支持。"
 
 #. Tag: para
 #: reference_transformation.xml:370
@@ -439,8 +414,9 @@ msgstr "增强：2.2.0 引入了对缩放所有维度（<varname>factor</varname
 msgid ""
 "Enhanced: 2.5.0 support for scaling relative to a local origin "
 "(<varname>origin</varname> parameter) was introduced."
-msgstr "增强：2.5.0 引入了对相对于本地原点（<varname>origin</varname> "
-"参数）进行缩放的支持。"
+msgstr ""
+"增强：2.5.0 引入了对相对于本地原点（<varname>origin</varname> 参数）进行缩放"
+"的支持。"
 
 #. Tag: para
 #: reference_transformation.xml:375
@@ -468,8 +444,8 @@ msgid ""
 "delta z units. Units are based on the units defined in spatial reference "
 "(SRID) for this geometry."
 msgstr ""
-"返回一个新的几何图形，其坐标转换为 delta x、delta y、delta z 单位。 "
-"单位基于该几何的空间参考 (SRID) 中定义的单位。"
+"返回一个新的几何图形，其坐标转换为 delta x、delta y、delta z 单位。 单位基于"
+"该几何的空间参考 (SRID) 中定义的单位。"
 
 #. Tag: para
 #: reference_transformation.xml:426
@@ -513,25 +489,14 @@ msgstr ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/>"
 msgid "Translates and scales a geometry by given offsets and factors."
 msgstr "按给定的偏移量和系数平移和缩放几何图形。"
 
-#. Tag: funcprototype
-#: reference_transformation.xml:459
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_TransScale</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>deltaX</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>deltaY</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_transformation.xml:473
 #, no-c-format
 msgid ""
 "Translates the geometry using the deltaX and deltaY args, then scales it "
 "using the XFactor, YFactor args, working in 2D only."
-msgstr "使用 deltaX 和 deltaY 参数转换几何体，然后使用 XFactor、YFactor 参数缩放它，"
+msgstr ""
+"使用 deltaX 和 deltaY 参数转换几何体，然后使用 XFactor、YFactor 参数缩放它，"
 "仅在 2D 中工作。"
 
 #. Tag: para

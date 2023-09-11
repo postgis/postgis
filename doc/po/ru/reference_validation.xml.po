@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-01-09 04:42+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Russian <https://weblate.osgeo.org/projects/postgis/"
@@ -144,16 +144,6 @@ msgstr ""
 msgid ""
 "Returns a <varname>valid_detail</varname> row stating if a geometry is valid "
 "or if not a reason and a location."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_validation.xml:106
-#, no-c-format
-msgid ""
-"<funcdef>valid_detail <function>ST_IsValidDetail</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>flags</parameter></"
-"paramdef>"
 msgstr ""
 
 #. Tag: para

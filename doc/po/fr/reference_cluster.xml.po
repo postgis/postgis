@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-08-03 00:19+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-05-10 15:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -40,22 +40,6 @@ msgid ""
 msgstr ""
 "Fonction Window qui renvoie un identifiant de cluster pour chaque géométrie "
 "d'entrée en utilisant l'algorithme DBSCAN."
-
-#. Tag: funcprototype
-#: reference_cluster.xml:19
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_ClusterDBSCAN</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>eps</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>minpoints</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_ClusterDBSCAN</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>eps</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>minpoints</parameter></"
-"paramdef>"
 
 #. Tag: title
 #: reference_cluster.xml:35 reference_cluster.xml:142 reference_cluster.xml:186
@@ -196,16 +180,6 @@ msgstr ""
 "Fonction d'agrégation qui regroupe les géométries en entrée en ensembles "
 "connectés."
 
-#. Tag: funcprototype
-#: reference_cluster.xml:134
-#, no-c-format
-msgid ""
-"<funcdef>geometry[] <function>ST_ClusterIntersecting</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>g</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry[] <function>ST_ClusterIntersecting</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>g</parameter></paramdef>"
-
 #. Tag: para
 #: reference_cluster.xml:144
 #, no-c-format
@@ -240,18 +214,6 @@ msgstr ""
 "Fonction Window qui renvoie un identifiant de cluster pour chaque géométrie "
 "en entrée, en regroupant les géométries en entrée en ensembles connectés."
 
-#. Tag: funcprototype
-#: reference_cluster.xml:178
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_ClusterIntersectingWin</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_ClusterIntersectingWin</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef>"
-
 #. Tag: para
 #: reference_cluster.xml:188
 #, no-c-format
@@ -277,22 +239,6 @@ msgid ""
 msgstr ""
 "Fonction Window qui renvoie un identifiant de cluster pour chaque géométrie "
 "en entrée en utilisant l'algorithme K-means."
-
-#. Tag: funcprototype
-#: reference_cluster.xml:218
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_ClusterKMeans</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>number_of_clusters</"
-"parameter></paramdef> <paramdef><type>float </type> <parameter>max_radius</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_ClusterKMeans</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>number_of_clusters</"
-"parameter></paramdef> <paramdef><type>float </type> <parameter>max_radius</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_cluster.xml:236
@@ -406,18 +352,6 @@ msgstr ""
 msgid "Aggregate function that clusters geometries by separation distance."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_cluster.xml:316
-#, no-c-format
-msgid ""
-"<funcdef>geometry[] <function>ST_ClusterWithin</function></funcdef> "
-"<paramdef><type>geometry set </type> <parameter>g</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>distance</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry[] <function>ST_ClusterWithin</function></funcdef> "
-"<paramdef><type>geometry set </type> <parameter>g</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>distance</parameter></paramdef>"
-
 #. Tag: para
 #: reference_cluster.xml:327
 #, no-c-format
@@ -456,20 +390,6 @@ msgid ""
 msgstr ""
 "Fonction Window qui renvoie un identifiant de cluster pour chaque géométrie "
 "en entrée, regroupement en utilisant la distance de séparation."
-
-#. Tag: funcprototype
-#: reference_cluster.xml:365
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_ClusterWithinWin</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>distance</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_ClusterWithinWin</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>distance</parameter></"
-"paramdef>"
 
 #. Tag: para
 #: reference_cluster.xml:376

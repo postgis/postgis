@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -35,14 +35,6 @@ msgstr ""
 #: reference_trajectory.xml:18
 #, no-c-format
 msgid "Tests if the geometry is a valid trajectory."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_trajectory.xml:23
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_IsValidTrajectory</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef>"
 msgstr ""
 
 #. Tag: title
@@ -103,15 +95,6 @@ msgstr ""
 msgid "Returns a measure at the closest point of approach of two trajectories."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_trajectory.xml:71
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_ClosestPointOfApproach</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_trajectory.xml:82
 #, no-c-format
@@ -153,15 +136,6 @@ msgid ""
 "trajectories."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_trajectory.xml:128
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_DistanceCPA</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_trajectory.xml:139
 #, no-c-format
@@ -183,16 +157,6 @@ msgstr ""
 msgid ""
 "Tests if the closest point of approach of two trajectories is within the "
 "specified distance."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_trajectory.xml:181
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_CPAWithin</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>dist</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para

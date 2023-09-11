@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-01-09 04:42+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
@@ -262,22 +262,6 @@ msgstr ""
 #, no-c-format
 msgid "Returns the SRID defined for a geometry column."
 msgstr ""
-
-#. Tag: funcprototype
-#: reference_management.xml:292
-#, fuzzy, no-c-format
-msgid ""
-"<funcdef>integer <function>Find_SRID</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>a_schema_name</parameter></"
-"paramdef> <paramdef><type>varchar </type> <parameter>a_table_name</"
-"parameter></paramdef> <paramdef><type>varchar </type> "
-"<parameter>a_geomfield_name</parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>Find_SRID</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>a_schema_name</parameter></"
-"paramdef> <paramdef><type>varchar </type> <parameter>a_table_name</"
-"parameter></paramdef> <paramdef><type>varchar </type> "
-"<parameter>a_geomfield_name</parameter></paramdef>"
 
 #. Tag: para
 #: reference_management.xml:304

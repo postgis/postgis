@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -214,15 +214,6 @@ msgstr ""
 msgid "Rotates a geometry about the X axis."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_transformation.xml:167
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_RotateX</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_transformation.xml:178
 #, no-c-format
@@ -256,15 +247,6 @@ msgstr ""
 msgid "Rotates a geometry about the Y axis."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_transformation.xml:214
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_RotateY</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_transformation.xml:225
 #, no-c-format
@@ -296,15 +278,6 @@ msgstr ""
 #: reference_transformation.xml:258
 #, no-c-format
 msgid "Rotates a geometry about the Z axis."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_transformation.xml:263
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_RotateZ</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -464,18 +437,6 @@ msgstr ""
 #: reference_transformation.xml:454
 #, no-c-format
 msgid "Translates and scales a geometry by given offsets and factors."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_transformation.xml:459
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_TransScale</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>deltaX</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>deltaY</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para

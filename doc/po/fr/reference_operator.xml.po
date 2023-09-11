@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -196,18 +196,6 @@ msgstr ""
 "d'une géométrie intersecte une boîte de délimitation 2D de précision "
 "flottante (BOX2DF)."
 
-#. Tag: funcprototype
-#: reference_operator.xml:99
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>box2df</type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>box2df</type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:120
 #, no-c-format
@@ -283,18 +271,6 @@ msgstr ""
 "flottante (BOX2DF) intersecte la boîte de délimitation 2D (mise en cache) "
 "d'une géométrie."
 
-#. Tag: funcprototype
-#: reference_operator.xml:160
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
-"<type>box2df </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
-"<type>box2df </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:181
 #, no-c-format
@@ -320,18 +296,6 @@ msgid ""
 msgstr ""
 "Renvoie <varname>TRUE</varname> si deux boîtes de délimitation 2D à "
 "précision flottante (BOX2DF) se croisent."
-
-#. Tag: funcprototype
-#: reference_operator.xml:221
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
-"<type>box2df </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>box2df </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
-"<type>box2df </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>box2df </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:242
@@ -389,18 +353,6 @@ msgstr ""
 "Renvoie <varname>TRUE</varname> si la boîte de délimitation n-D de A "
 "intersecte la boîte de délimitation n-D de B."
 
-#. Tag: funcprototype
-#: reference_operator.xml:282
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:303
 #, no-c-format
@@ -456,18 +408,6 @@ msgstr ""
 "d'une géométrie intersecte une boîte de délimitation de précision flottante "
 "n-D (GIDX)."
 
-#. Tag: funcprototype
-#: reference_operator.xml:344
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>gidx </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>gidx </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:365
 #, no-c-format
@@ -501,18 +441,6 @@ msgstr ""
 "flottante n-D (GIDX) intersecte la boîte de délimitation n-D (mise en cache) "
 "d'une géométrie."
 
-#. Tag: funcprototype
-#: reference_operator.xml:401
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>gidx </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>gidx </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:422
 #, no-c-format
@@ -539,18 +467,6 @@ msgid ""
 msgstr ""
 "Renvoie <varname>TRUE</varname> si deux boîtes de délimitation (GIDX) de "
 "précision flottante n-D se croisent."
-
-#. Tag: funcprototype
-#: reference_operator.xml:458
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>gidx </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>gidx </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>gidx </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>gidx </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:479
@@ -582,18 +498,6 @@ msgid ""
 msgstr ""
 "Renvoie <varname>TRUE</varname> si la boîte englobante de A chevauche ou est "
 "à gauche de celle de B."
-
-#. Tag: funcprototype
-#: reference_operator.xml:515
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&lt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&lt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:539
@@ -630,18 +534,6 @@ msgstr ""
 "Renvoie <varname>TRUE</varname> si la boîte englobante de A chevauche ou est "
 "inférieure à celle de B."
 
-#. Tag: funcprototype
-#: reference_operator.xml:573
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&lt;|</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&lt;|</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:597
 #, no-c-format
@@ -675,18 +567,6 @@ msgid ""
 msgstr ""
 "Renvoie <varname>TRUE</varname> si la boîte de délimitation de A chevauche "
 "ou est à droite de celle de B."
-
-#. Tag: funcprototype
-#: reference_operator.xml:634
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:658
@@ -722,18 +602,6 @@ msgstr ""
 "Renvoie <varname>TRUE</varname> si la boîte de délimitation de A est "
 "strictement à gauche de celle de B."
 
-#. Tag: funcprototype
-#: reference_operator.xml:692
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&lt;&lt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&lt;&lt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:716
 #, no-c-format
@@ -764,18 +632,6 @@ msgid ""
 msgstr ""
 "Renvoie <varname>TRUE</varname> si la boîte de délimitation de A est "
 "strictement inférieure à celle de B."
-
-#. Tag: funcprototype
-#: reference_operator.xml:745
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&lt;&lt;|</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&lt;&lt;|</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:769
@@ -892,18 +748,6 @@ msgstr ""
 "Renvoie <varname>TRUE</varname> si la boîte de délimitation de A est "
 "strictement à droite de celle de B."
 
-#. Tag: funcprototype
-#: reference_operator.xml:887
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&gt;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&gt;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:911
 #, no-c-format
@@ -924,18 +768,6 @@ msgid ""
 msgstr ""
 "Renvoie <varname>TRUE</varname> si la boîte de délimitation de A est "
 "contenue par celle de B."
-
-#. Tag: funcprototype
-#: reference_operator.xml:940
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:964
@@ -965,18 +797,6 @@ msgstr ""
 "Renvoie <varname>TRUE</varname> si la boîte de délimitation 2D d'une "
 "géométrie est contenue dans une boîte de délimitation 2D à précision "
 "flottante (BOX2DF)."
-
-#. Tag: funcprototype
-#: reference_operator.xml:995
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:1016
@@ -1024,18 +844,6 @@ msgstr ""
 "flottante 2D (BOX2DF) est contenue dans la boîte de délimitation 2D d'une "
 "géométrie."
 
-#. Tag: funcprototype
-#: reference_operator.xml:1056
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </type> "
-"<parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </type> "
-"<parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1077
 #, no-c-format
@@ -1082,18 +890,6 @@ msgstr ""
 "flottante 2D (BOX2DF) est contenue dans une autre boîte de délimitation de "
 "précision flottante 2D."
 
-#. Tag: funcprototype
-#: reference_operator.xml:1117
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1138
 #, no-c-format
@@ -1138,18 +934,6 @@ msgstr ""
 "Renvoie <varname>TRUE</varname> si la boîte de délimitation de A chevauche "
 "ou est au-dessus de celle de B."
 
-#. Tag: funcprototype
-#: reference_operator.xml:1178
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>|&amp;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>|&amp;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1202
 #, no-c-format
@@ -1183,18 +967,6 @@ msgstr ""
 "Renvoie <varname>TRUE</varname> si la boîte de délimitation de A est "
 "strictement au-dessus de celle de B."
 
-#. Tag: funcprototype
-#: reference_operator.xml:1236
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>|&gt;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>|&gt;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1260
 #, no-c-format
@@ -1225,18 +997,6 @@ msgstr ""
 "Renvoie <varname>TRUE</varname> si la boîte de délimitation de A contient "
 "celle de B."
 
-#. Tag: funcprototype
-#: reference_operator.xml:1289
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1313
 #, no-c-format
@@ -1259,18 +1019,6 @@ msgstr ""
 "Renvoie <varname>TRUE</varname> si la boîte de délimitation 2D d'une "
 "géométrie contient une boîte de délimitation de précision flottante 2D "
 "(GIDX)."
-
-#. Tag: funcprototype
-#: reference_operator.xml:1342
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:1363
@@ -1316,18 +1064,6 @@ msgid ""
 msgstr ""
 "Renvoie <varname>TRUE</varname> si une boîte de délimitation de précision "
 "flottante 2D (BOX2DF) contient la boîte de délimitation 2D d'une géométrie."
-
-#. Tag: funcprototype
-#: reference_operator.xml:1403
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </type> "
-"<parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </type> "
-"<parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:1424
@@ -1375,18 +1111,6 @@ msgstr ""
 "flottante 2D (BOX2DF) contient une autre boîte de délimitation de précision "
 "flottante 2D (BOX2DF)."
 
-#. Tag: funcprototype
-#: reference_operator.xml:1464
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1485
 #, no-c-format
@@ -1429,18 +1153,6 @@ msgid "Returns <varname>TRUE</varname> if A's bounding box is the same as B's."
 msgstr ""
 "Renvoie <varname>TRUE</varname> si la boîte de délimitation de A est la même "
 "que celle de B."
-
-#. Tag: funcprototype
-#: reference_operator.xml:1525
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>~=</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>~=</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:1549
@@ -1645,18 +1357,6 @@ msgstr ""
 "Renvoie la distance entre les trajectoires A et B à leur point d'approche le "
 "plus proche."
 
-#. Tag: funcprototype
-#: reference_operator.xml:1688
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>|=|</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>double precision <function>|=|</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1710
 #, no-c-format
@@ -1723,18 +1423,6 @@ msgstr ""
 msgid "Returns the 2D distance between A and B bounding boxes."
 msgstr "Renvoie la distance 2D entre les boîtes de délimitation A et B."
 
-#. Tag: funcprototype
-#: reference_operator.xml:1750
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>&lt;#&gt;</function></funcdef> "
-"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
-"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>double precision <function>&lt;#&gt;</function></funcdef> "
-"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
-"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1771
 #, no-c-format
@@ -1799,18 +1487,6 @@ msgstr ""
 "Renvoie la distance n-D entre les centroïdes des boîtes de délimitation A et "
 "B."
 
-#. Tag: funcprototype
-#: reference_operator.xml:1804
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>&lt;&lt;-&gt;&gt;</function></funcdef> "
-"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
-"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>double precision <function>&lt;&lt;-&gt;&gt;</function></funcdef> "
-"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
-"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1825
 #, no-c-format
@@ -1857,18 +1533,6 @@ msgstr ", <xref linkend=\"geometry_distance_knn\"/>"
 #, no-c-format
 msgid "Returns the n-D distance between A and B bounding boxes."
 msgstr "Renvoie la distance n-D entre les boîtes de délimitation A et B."
-
-#. Tag: funcprototype
-#: reference_operator.xml:1869
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>&lt;&lt;#&gt;&gt;</function></funcdef> "
-"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
-"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>double precision <function>&lt;&lt;#&gt;&gt;</function></funcdef> "
-"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
-"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:1890

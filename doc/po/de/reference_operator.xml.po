@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-01-09 04:42+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
@@ -198,18 +198,6 @@ msgstr ""
 "einer Geometrie mit einer 2D Bounding Box mit Gleitpunktgenauigkeit (BOX2DF) "
 "überschneidet."
 
-#. Tag: funcprototype
-#: reference_operator.xml:99
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>box2df</type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>box2df</type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:120
 #, no-c-format
@@ -284,18 +272,6 @@ msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn eine 2D float precision bounding "
 "box (BOX2DF) eine Geometrie (cached) 2D bounding box schneidet."
 
-#. Tag: funcprototype
-#: reference_operator.xml:160
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
-"<type>box2df </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
-"<type>box2df </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:181
 #, no-c-format
@@ -321,18 +297,6 @@ msgid ""
 msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn sich zwei 2D float precision "
 "Bounding Boxes (BOX2DF) überschneiden."
-
-#. Tag: funcprototype
-#: reference_operator.xml:221
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
-"<type>box2df </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>box2df </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
-"<type>box2df </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>box2df </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:242
@@ -390,18 +354,6 @@ msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn A's n-D bounding box B's n-D "
 "bounding box schneidet."
 
-#. Tag: funcprototype
-#: reference_operator.xml:282
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:303
 #, no-c-format
@@ -456,18 +408,6 @@ msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn die (cached) n-D bounding box "
 "einer Geometrie eine n-D float precision bounding box (GIDX) schneidet."
 
-#. Tag: funcprototype
-#: reference_operator.xml:344
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>gidx </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>gidx </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:365
 #, no-c-format
@@ -500,18 +440,6 @@ msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn eine n-D float precision bounding "
 "box (GIDX) eine (cached) n-D bounding box einer Geometrie schneidet."
 
-#. Tag: funcprototype
-#: reference_operator.xml:401
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>gidx </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>gidx </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:422
 #, no-c-format
@@ -537,18 +465,6 @@ msgid ""
 msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn sich zwei n-D float precision "
 "bounding boxes (GIDX) gegenseitig überschneiden."
-
-#. Tag: funcprototype
-#: reference_operator.xml:458
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>gidx </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>gidx </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>gidx </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>gidx </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:479
@@ -580,18 +496,6 @@ msgid ""
 msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn die bounding box der Geometrie A, "
 "die bounding box der Geometrie B überlagert oder links davon liegt."
-
-#. Tag: funcprototype
-#: reference_operator.xml:515
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&lt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&lt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:539
@@ -628,18 +532,6 @@ msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn die bounding box von A jene von B "
 "überlagert oder unterhalb liegt."
 
-#. Tag: funcprototype
-#: reference_operator.xml:573
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&lt;|</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&lt;|</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:597
 #, no-c-format
@@ -673,18 +565,6 @@ msgid ""
 msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn die Bounding Box von A jene von B "
 "überlagert oder rechts davon liegt."
-
-#. Tag: funcprototype
-#: reference_operator.xml:634
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:658
@@ -720,18 +600,6 @@ msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn die Bounding Box von A zur Gänze "
 "links von der von B liegt."
 
-#. Tag: funcprototype
-#: reference_operator.xml:692
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&lt;&lt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&lt;&lt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:716
 #, no-c-format
@@ -762,18 +630,6 @@ msgid ""
 msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn A's Bounding Box zur Gänze "
 "unterhalb von der von B liegt."
-
-#. Tag: funcprototype
-#: reference_operator.xml:745
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&lt;&lt;|</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&lt;&lt;|</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:769
@@ -888,18 +744,6 @@ msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn A's bounding box zur Gänze rechts "
 "von der von B liegt."
 
-#. Tag: funcprototype
-#: reference_operator.xml:887
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&gt;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&gt;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:911
 #, no-c-format
@@ -920,18 +764,6 @@ msgid ""
 msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn die Bounding Box von A in jener "
 "von B enthalten ist."
-
-#. Tag: funcprototype
-#: reference_operator.xml:940
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:964
@@ -960,18 +792,6 @@ msgid ""
 msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn die 2D Bounding Box einer "
 "Geometrie in einer 2D float precision Bbounding Box (BOX2DF) enthalten ist."
-
-#. Tag: funcprototype
-#: reference_operator.xml:995
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:1016
@@ -1017,18 +837,6 @@ msgid ""
 msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn eine 2D float precision bounding "
 "box (BOX2DF) in der 2D Bounding Box einer Geometrie enthalten ist.."
-
-#. Tag: funcprototype
-#: reference_operator.xml:1056
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </type> "
-"<parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </type> "
-"<parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:1077
@@ -1076,18 +884,6 @@ msgstr ""
 "box (BOX2DF) innerhalb einer anderen 2D float precision bounding box "
 "enthalten ist."
 
-#. Tag: funcprototype
-#: reference_operator.xml:1117
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1138
 #, no-c-format
@@ -1132,18 +928,6 @@ msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn A's bounding box diejenige von B "
 "überlagert oder oberhalb von B liegt."
 
-#. Tag: funcprototype
-#: reference_operator.xml:1178
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>|&amp;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>|&amp;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1202
 #, no-c-format
@@ -1177,18 +961,6 @@ msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn A's bounding box is zur Gänze "
 "oberhalb der von B liegt."
 
-#. Tag: funcprototype
-#: reference_operator.xml:1236
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>|&gt;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>|&gt;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1260
 #, no-c-format
@@ -1218,18 +990,6 @@ msgid "Returns <varname>TRUE</varname> if A's bounding box contains B's."
 msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn A's bounding box die von B enthält."
 
-#. Tag: funcprototype
-#: reference_operator.xml:1289
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1313
 #, no-c-format
@@ -1251,18 +1011,6 @@ msgid ""
 msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn die 2D bounding box einer "
 "Geometrie eine 2D float precision bounding box (GIDX) enthält."
-
-#. Tag: funcprototype
-#: reference_operator.xml:1342
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:1363
@@ -1309,18 +1057,6 @@ msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn eine 2D float precision bounding "
 "box (BOX2DF) die 2D Bounding Box einer Geometrie enthält."
 
-#. Tag: funcprototype
-#: reference_operator.xml:1403
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </type> "
-"<parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </type> "
-"<parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1424
 #, no-c-format
@@ -1366,18 +1102,6 @@ msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn eine 2D float precision bounding "
 "box (BOX2DF) eine andere 2D float precision bounding box (BOX2DF) enthält."
 
-#. Tag: funcprototype
-#: reference_operator.xml:1464
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1485
 #, no-c-format
@@ -1419,18 +1143,6 @@ msgid "Returns <varname>TRUE</varname> if A's bounding box is the same as B's."
 msgstr ""
 "Gibt <varname>TRUE</varname> zurück, wenn die bounding box von A ident mit "
 "jener von B ist."
-
-#. Tag: funcprototype
-#: reference_operator.xml:1525
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>~=</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>~=</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:1549
@@ -1634,18 +1346,6 @@ msgstr ""
 "Gibt die Entfernung zwischen den Trajektorien A und B, am Ort der dichtesten "
 "Annäherung, an."
 
-#. Tag: funcprototype
-#: reference_operator.xml:1688
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>|=|</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>double precision <function>|=|</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1710
 #, fuzzy, no-c-format
@@ -1713,18 +1413,6 @@ msgstr ""
 msgid "Returns the 2D distance between A and B bounding boxes."
 msgstr "Gibt die 2D Entfernung zwischen den Bounding Boxes von A und B zurück"
 
-#. Tag: funcprototype
-#: reference_operator.xml:1750
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>&lt;#&gt;</function></funcdef> "
-"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
-"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>double precision <function>&lt;#&gt;</function></funcdef> "
-"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
-"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1771
 #, no-c-format
@@ -1790,18 +1478,6 @@ msgstr ""
 "Gibt die n-D Entfernung zwischen den geometrischen Schwerpunkten der "
 "Begrenzungsrechtecke/Bounding Boxes von A und B zurück."
 
-#. Tag: funcprototype
-#: reference_operator.xml:1804
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>&lt;&lt;-&gt;&gt;</function></funcdef> "
-"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
-"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>double precision <function>&lt;&lt;-&gt;&gt;</function></funcdef> "
-"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
-"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1825
 #, no-c-format
@@ -1849,18 +1525,6 @@ msgstr ", <xref linkend=\"geometry_distance_knn\"/>"
 msgid "Returns the n-D distance between A and B bounding boxes."
 msgstr ""
 "Gibt die n-D Entfernung zwischen den Bounding Boxes von A und B zurück."
-
-#. Tag: funcprototype
-#: reference_operator.xml:1869
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>&lt;&lt;#&gt;&gt;</function></funcdef> "
-"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
-"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>double precision <function>&lt;&lt;#&gt;&gt;</function></funcdef> "
-"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
-"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:1890

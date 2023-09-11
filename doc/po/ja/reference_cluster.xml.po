@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-08-03 00:19+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-08-11 01:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -40,22 +40,6 @@ msgid ""
 msgstr ""
 "入力ジオメトリごとにDBSCANアルゴリズムを使ってクラスタ番号を返すウィンドウ関"
 "数です。"
-
-#. Tag: funcprototype
-#: reference_cluster.xml:19
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_ClusterDBSCAN</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>eps</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>minpoints</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_ClusterDBSCAN</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>eps</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>minpoints</parameter></"
-"paramdef>"
 
 #. Tag: title
 #: reference_cluster.xml:35 reference_cluster.xml:142 reference_cluster.xml:186
@@ -221,16 +205,6 @@ msgstr ""
 msgid "Aggregate function that clusters input geometries into connected sets."
 msgstr "入力ジオメトリを接続関係にある集合にクラスタリングする集約関数です。"
 
-#. Tag: funcprototype
-#: reference_cluster.xml:134
-#, no-c-format
-msgid ""
-"<funcdef>geometry[] <function>ST_ClusterIntersecting</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>g</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry[] <function>ST_ClusterIntersecting</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>g</parameter></paramdef>"
-
 #. Tag: para
 #: reference_cluster.xml:144
 #, no-c-format
@@ -271,18 +245,6 @@ msgstr ""
 "入力ジオメトリごとに接続された集合にクラスタリングを行い、クラスタIDを返す"
 "ウィンドウ関数です。"
 
-#. Tag: funcprototype
-#: reference_cluster.xml:178
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_ClusterIntersectingWin</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_ClusterIntersectingWin</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef>"
-
 #. Tag: para
 #: reference_cluster.xml:188
 #, no-c-format
@@ -312,22 +274,6 @@ msgid ""
 msgstr ""
 "入力ジオメトリごとにk平均法アルゴリズムを使ってクラスタ番号を返すウィンドウ関"
 "数です。"
-
-#. Tag: funcprototype
-#: reference_cluster.xml:218
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_ClusterKMeans</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>number_of_clusters</"
-"parameter></paramdef> <paramdef><type>float </type> <parameter>max_radius</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_ClusterKMeans</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>number_of_clusters</"
-"parameter></paramdef> <paramdef><type>float </type> <parameter>max_radius</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_cluster.xml:236
@@ -438,18 +384,6 @@ msgstr ""
 msgid "Aggregate function that clusters geometries by separation distance."
 msgstr "分離距離でジオメトリのクラスタリングを行う集約関数です。"
 
-#. Tag: funcprototype
-#: reference_cluster.xml:316
-#, no-c-format
-msgid ""
-"<funcdef>geometry[] <function>ST_ClusterWithin</function></funcdef> "
-"<paramdef><type>geometry set </type> <parameter>g</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>distance</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry[] <function>ST_ClusterWithin</function></funcdef> "
-"<paramdef><type>geometry set </type> <parameter>g</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>distance</parameter></paramdef>"
-
 #. Tag: para
 #: reference_cluster.xml:327
 #, no-c-format
@@ -498,20 +432,6 @@ msgid ""
 msgstr ""
 "入力ジオメトリごとに分離距離を使ったクラスタリングを行い、クラスタIDを返す"
 "ウィンドウ関数です。"
-
-#. Tag: funcprototype
-#: reference_cluster.xml:365
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_ClusterWithinWin</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>distance</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_ClusterWithinWin</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>distance</parameter></"
-"paramdef>"
 
 #. Tag: para
 #: reference_cluster.xml:376

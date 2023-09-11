@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-09-06 05:32+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -23,8 +23,9 @@ msgstr ""
 msgid ""
 "These functions work with the Spatial Reference System of geometries as "
 "defined in the <varname>spatial_ref_sys</varname> table."
-msgstr "这些函数与在 <varname>spatial_ref_sys</varname> "
-"表中定义的几何空间参考系统一起使用。"
+msgstr ""
+"这些函数与在 <varname>spatial_ref_sys</varname> 表中定义的几何空间参考系统一"
+"起使用。"
 
 #. Tag: title
 #: reference_srs.xml:10
@@ -39,24 +40,9 @@ msgid ""
 "Return a new geometry with coordinates transformed to a different spatial "
 "reference system using the inverse of a defined coordinate transformation "
 "pipeline."
-msgstr "返回一个新的几何体，其坐标值使用定义的坐标变换管道的逆变换变换到不同的空间参"
-"考系。"
-
-#. Tag: funcprototype
-#: reference_srs.xml:23
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_InverseTransformPipeline</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>pipeline</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>to_srid</"
-"parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_InverseTransformPipeline</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>pipeline</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>to_srid</parameter></paramdef>"
+"返回一个新的几何体，其坐标值使用定义的坐标变换管道的逆变换变换到不同的空间参"
+"考系。"
 
 #. Tag: title
 #: reference_srs.xml:33 reference_srs.xml:95 reference_srs.xml:142
@@ -73,7 +59,8 @@ msgid ""
 "Return a new geometry with coordinates transformed to a different spatial "
 "reference system using a defined coordinate transformation pipeline to go in "
 "the inverse direction."
-msgstr "返回一个新的几何体，其坐标值使用定义的坐标变换管道的逆变换变换到不同的空间参"
+msgstr ""
+"返回一个新的几何体，其坐标值使用定义的坐标变换管道的逆变换变换到不同的空间参"
 "考系。"
 
 #. Tag: para
@@ -82,7 +69,8 @@ msgstr "返回一个新的几何体，其坐标值使用定义的坐标变换管
 msgid ""
 "Refer to <xref linkend=\"ST_TransformPipeline\"/> for details on writing a "
 "transformation pipeline."
-msgstr "有关编写转换管道的详细信息，请参阅 <xref linkend=\"ST_TransformPipeline\"/>。"
+msgstr ""
+"有关编写转换管道的详细信息，请参阅 <xref linkend=\"ST_TransformPipeline\"/>。"
 
 #. Tag: para
 #: reference_srs.xml:42 reference_srs.xml:343 reference_srs.xml:396
@@ -103,9 +91,9 @@ msgid ""
 "the inverse direction."
 msgstr ""
 "输入几何体的 SRID 将被忽略，输出几何体的 SRID 将设置为零，除非通过可选的 "
-"<varname>to_srid</varname>参数提供值。 使用 <xref linkend="
-"\"ST_TransformPipeline\"/> 时，管道将向前执行。 "
-"使用“ST_InverseTransformPipeline()”，管道以相反方向执行。"
+"<varname>to_srid</varname>参数提供值。 使用 <xref "
+"linkend=\"ST_TransformPipeline\"/> 时，管道将向前执行。 使"
+"用“ST_InverseTransformPipeline()”，管道以相反方向执行。"
 
 #. Tag: para
 #: reference_srs.xml:50 reference_srs.xml:351
@@ -116,8 +104,8 @@ msgid ""
 "correct operations to convert between coordinate systems, and should be "
 "preferred."
 msgstr ""
-"使用管道的转换是<xref linkend=\"ST_Transform\"/> 的专门版本。 在大多数情况下"
-"，“ST_Transform”将选择正确的操作在坐标系之间进行转换，并且应该是首选。"
+"使用管道的转换是<xref linkend=\"ST_Transform\"/> 的专门版本。 在大多数情况"
+"下，“ST_Transform”将选择正确的操作在坐标系之间进行转换，并且应该是首选。"
 
 #. Tag: title
 #: reference_srs.xml:57 reference_srs.xml:111 reference_srs.xml:155
@@ -159,18 +147,6 @@ msgstr ", <xref linkend=\"ST_TransformPipeline\"/>"
 msgid "Set the SRID on a geometry."
 msgstr "在几何体上设置 SRID。"
 
-#. Tag: funcprototype
-#: reference_srs.xml:82
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_SetSRID</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_SetSRID</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
-
 #. Tag: para
 #: reference_srs.xml:97
 #, no-c-format
@@ -188,8 +164,8 @@ msgid ""
 "is assumed to be in. Use <xref linkend=\"ST_Transform\"/> if you want to "
 "transform the geometry into a new projection."
 msgstr ""
-"此函数不会变换几何，它仅设置定义几何所需的空间参考系统的元数据。 "
-"如果要将几何图形转换为新投影，请使用<xref linkend=\"ST_Transform\"/> 。"
+"此函数不会变换几何，它仅设置定义几何所需的空间参考系统的元数据。 如果要将几何"
+"图形转换为新投影，请使用<xref linkend=\"ST_Transform\"/> 。"
 
 #. Tag: para
 #: reference_srs.xml:106
@@ -233,16 +209,6 @@ msgstr ""
 msgid "Returns the spatial reference identifier for a geometry."
 msgstr "返回几何图形的空间参考标识符。"
 
-#. Tag: funcprototype
-#: reference_srs.xml:134
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_SRID</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_SRID</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-
 #. Tag: para
 #: reference_srs.xml:144
 #, no-c-format
@@ -262,9 +228,9 @@ msgid ""
 "system to another. So verifying you have the right spatial reference system "
 "identifier is important if you plan to ever transform your geometries."
 msgstr ""
-"spatial_ref_sys表对 PostGIS "
-"已知的所有参考系进行编目，并用于从一个空间参考系转换为另一个空间参考系。 "
-"如果计划转换几何，请务必确保具有正确的空间参考系统标识号。"
+"spatial_ref_sys表对 PostGIS 已知的所有参考系进行编目，并用于从一个空间参考系"
+"转换为另一个空间参考系。 如果计划转换几何，请务必确保具有正确的空间参考系统标"
+"识号。"
 
 #. Tag: para
 #: reference_srs.xml:148
@@ -312,13 +278,12 @@ msgid ""
 "functions with <varname>from_proj</varname>, input geometries must have a "
 "defined SRID."
 msgstr ""
-"返回一个新的几何图形，其坐标转换为不同的空间参考系统。 "
-"目标空间参考<varname>to_srid</varname>可以通过有效的 SRID "
-"整数参数来标识（即，它必须存在于<varname>spatial_ref_sys</varname>表中）。 "
-"或者，定义为 PROJ.4 字符串的空间参考可用于 <varname>to_proj</varname> 和/或 "
-"<varname>from_proj</varname>，但这些方法并未经过优化。 "
-"如果目标空间参考系使用 PROJ.4 字符串而不是 SRID 表示，则输出几何的 SRID "
-"将设置为零。 除了 <varname>from_proj</varname>的函数之外，"
+"返回一个新的几何图形，其坐标转换为不同的空间参考系统。 目标空间参考"
+"<varname>to_srid</varname>可以通过有效的 SRID 整数参数来标识（即，它必须存在"
+"于<varname>spatial_ref_sys</varname>表中）。 或者，定义为 PROJ.4 字符串的空间"
+"参考可用于 <varname>to_proj</varname> 和/或 <varname>from_proj</varname>，但"
+"这些方法并未经过优化。 如果目标空间参考系使用 PROJ.4 字符串而不是 SRID 表示，"
+"则输出几何的 SRID 将设置为零。 除了 <varname>from_proj</varname>的函数之外，"
 "输入几何图形必须具有已定义的 SRID。"
 
 #. Tag: para
@@ -330,9 +295,9 @@ msgid ""
 "reference system to another, while ST_SetSRID() simply changes the SRID "
 "identifier of the geometry."
 msgstr ""
-"ST_Transform 经常与<xref linkend=\"ST_SetSRID\"/> 混淆。 ST_Transform "
-"实际上将几何图形的坐标从一个空间参考系统更改为另一个空间参考系统，而 "
-"ST_SetSRID() 只是更改几何图形的 SRID 标识符。"
+"ST_Transform 经常与<xref linkend=\"ST_SetSRID\"/> 混淆。 ST_Transform 实际上"
+"将几何图形的坐标从一个空间参考系统更改为另一个空间参考系统，而 ST_SetSRID() "
+"只是更改几何图形的 SRID 标识符。"
 
 #. Tag: para
 #: reference_srs.xml:226
@@ -342,8 +307,8 @@ msgid ""
 "source and target spatial reference systems. To use a specific conversion "
 "method, use <xref linkend=\"ST_TransformPipeline\"/>."
 msgstr ""
-"ST_Transform 会在给定源和目标空间参考系统的情况下自动选择合适的转换管道。 "
-"要使用特定的转换方法，请使用<xref linkend=\"ST_TransformPipeline\"/>。"
+"ST_Transform 会在给定源和目标空间参考系统的情况下自动选择合适的转换管道。 要"
+"使用特定的转换方法，请使用<xref linkend=\"ST_TransformPipeline\"/>。"
 
 #. Tag: para
 #: reference_srs.xml:230
@@ -353,8 +318,8 @@ msgid ""
 "linkend=\"PostGIS_Full_Version\"/> to confirm you have PROJ support compiled "
 "in."
 msgstr ""
-"PostGIS 必须在 PROJ 支持下进行编译。 使用该 <xref linkend="
-"\"PostGIS_Full_Version\"/>检查它是否在 PROJ 支持下编译。"
+"PostGIS 必须在 PROJ 支持下进行编译。 使用该 <xref "
+"linkend=\"PostGIS_Full_Version\"/>检查它是否在 PROJ 支持下编译。"
 
 #. Tag: para
 #: reference_srs.xml:234
@@ -362,7 +327,8 @@ msgstr ""
 msgid ""
 "If using more than one transformation, it is useful to have a functional "
 "index on the commonly used transformations to take advantage of index usage."
-msgstr "如果使用多个转换，则在常用转换上拥有一个功能索引以充分利用索引的使用是很有用"
+msgstr ""
+"如果使用多个转换，则在常用转换上拥有一个功能索引以充分利用索引的使用是很有用"
 "的。"
 
 #. Tag: para
@@ -371,7 +337,8 @@ msgstr "如果使用多个转换，则在常用转换上拥有一个功能索引
 msgid ""
 "Prior to 1.3.4, this function crashes if used with geometries that contain "
 "CURVES. This is fixed in 1.3.4+"
-msgstr "在 1.3.4 之前，此函数在与包含曲线的几何图形一起使用时崩溃。 此问题已在 1.3.4 "
+msgstr ""
+"在 1.3.4 之前，此函数在与包含曲线的几何图形一起使用时崩溃。 此问题已在 1.3.4 "
 "及更高版本中得到纠正"
 
 #. Tag: para
@@ -412,7 +379,8 @@ msgid ""
 "sure all the geometries will be filled in, its best to use a partial index "
 "that leaves out null geometries which will both conserve space and make your "
 "index smaller and more efficient."
-msgstr "创建部分功能索引的示例。 对于不确定所有几何图形都将被填充的表，最好使用部分索"
+msgstr ""
+"创建部分功能索引的示例。 对于不确定所有几何图形都将被填充的表，最好使用部分索"
 "引来省略空几何图形，这既可以节省空间，又可以使索引更小、更高效。"
 
 #. Tag: para
@@ -441,12 +409,11 @@ msgid ""
 "<varname>proj4text</varname> value within the <varname>spatial_ref_sys</"
 "varname> table."
 msgstr ""
-"有时，涉及网格移位的坐标转换可能会失败，例如，如果 PROJ.4 "
-"尚未使用网格移位文件构建，或者坐标不在定义网格移位的范围内。 "
-"默认情况下，如果网格偏移文件不存在，PostGIS 将抛出错误，但可以通过测试 "
-"PROJ.4 文本的不同 <varname>to_proj</varname> 值或更改 "
-"<varname>Spatial_ref_sys </varname>表中的 <varname>proj4text </varname>值，"
-"在每个 SRID 的基础上配置此行为 。"
+"有时，涉及网格移位的坐标转换可能会失败，例如，如果 PROJ.4 尚未使用网格移位文"
+"件构建，或者坐标不在定义网格移位的范围内。 默认情况下，如果网格偏移文件不存"
+"在，PostGIS 将抛出错误，但可以通过测试 PROJ.4 文本的不同 <varname>to_proj</"
+"varname> 值或更改 <varname>Spatial_ref_sys </varname>表中的 "
+"<varname>proj4text </varname>值，在每个 SRID 的基础上配置此行为 。"
 
 #. Tag: para
 #: reference_srs.xml:272
@@ -463,7 +430,8 @@ msgid ""
 "The @ prefix means no error is reported if the files are not present, but if "
 "the end of the list is reached with no file having been appropriate (ie. "
 "found and overlapping) then an error is issued."
-msgstr "@ 前缀意味着如果文件不存在，则不会报告错误，但如果到达列表末尾而没有合适的文"
+msgstr ""
+"@ 前缀意味着如果文件不存在，则不会报告错误，但如果到达列表末尾而没有合适的文"
 "件（即找到并重叠），则会发出错误。"
 
 #. Tag: para
@@ -473,7 +441,8 @@ msgid ""
 "If, conversely, you wanted to ensure that at least the standard files were "
 "present, but that if all files were scanned without a hit a null "
 "transformation is applied you could use:"
-msgstr "相反，如果您想确保至少存在标准文件，但如果扫描所有文件而没有命中，则应用空转"
+msgstr ""
+"相反，如果您想确保至少存在标准文件，但如果扫描所有文件而没有命中，则应用空转"
 "换，您可以使用："
 
 #. Tag: para
@@ -485,9 +454,9 @@ msgid ""
 "PostGIS so that transformations to SRID 4267 that didn't lie within the "
 "correct range did not throw an ERROR, you would use the following:"
 msgstr ""
-"空网格平移文件是覆盖整个世界并且不应用平移的有效网格平移文件。 "
-"因此，对于一个完整的示例，如果您想更改 PostGIS，以便转换到不在正确范围内的 "
-"SRID 4267 时不会引发错误，您可以使用以下命令："
+"空网格平移文件是覆盖整个世界并且不应用平移的有效网格平移文件。 因此，对于一个"
+"完整的示例，如果您想更改 PostGIS，以便转换到不在正确范围内的 SRID 4267 时不会"
+"引发错误，您可以使用以下命令："
 
 #. Tag: para
 #: reference_srs.xml:285
@@ -496,8 +465,8 @@ msgid ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>, <xref "
 "linkend=\"UpdateGeometrySRID\"/>, <xref linkend=\"ST_TransformPipeline\"/>"
 msgstr ""
-", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>, <xref linkend="
-"\"UpdateGeometrySRID\"/>, <xref linkend=\"ST_TransformPipeline\"/>"
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>, <xref "
+"linkend=\"UpdateGeometrySRID\"/>, <xref linkend=\"ST_TransformPipeline\"/>"
 
 #. Tag: refpurpose
 #: reference_srs.xml:293
@@ -506,24 +475,9 @@ msgid ""
 "<refpurpose>Return a new geometry with coordinates transformed to a "
 "different spatial reference system using a defined coordinate transformation "
 "pipeline.</refpurpose>"
-msgstr "<refpurpose>返回一个新的几何图形，其坐标使用定义的坐标转换管道转换为不同的空"
-"间参考系统。</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_srs.xml:300
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_TransformPipeline</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>pipeline</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>to_srid</"
-"parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_TransformPipeline</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>pipeline</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>to_srid</parameter></paramdef>"
+"<refpurpose>返回一个新的几何图形，其坐标使用定义的坐标转换管道转换为不同的空"
+"间参考系统。</refpurpose>"
 
 #. Tag: para
 #: reference_srs.xml:312
@@ -532,7 +486,8 @@ msgid ""
 "<para>Return a new geometry with coordinates transformed to a different "
 "spatial reference system using a defined coordinate transformation pipeline."
 "</para>"
-msgstr "<para>返回一个新的几何图形，其坐标使用定义的坐标转换管道转换为不同的空间参考"
+msgstr ""
+"<para>返回一个新的几何图形，其坐标使用定义的坐标转换管道转换为不同的空间参考"
 "系统。</para>"
 
 #. Tag: para
@@ -552,8 +507,8 @@ msgid ""
 "a coordinate operation: the same EPSG code can be used for a CRS definition."
 msgstr ""
 "<varname>urn：ogc：def：坐标操作：权限::代码</varname>。 请注意，简单的 "
-"<varname>EPSG:CODE</varname> 字符串不能唯一标识坐标操作：相同的 EPSG "
-"代码可用于 CRS 定义。"
+"<varname>EPSG:CODE</varname> 字符串不能唯一标识坐标操作：相同的 EPSG 代码可用"
+"于 CRS 定义。"
 
 #. Tag: para
 #: reference_srs.xml:329
@@ -591,9 +546,9 @@ msgid ""
 "inverse direction."
 msgstr ""
 "输入几何体的 SRID 将被忽略，输出几何体的 SRID 将设置为零，除非通过可选的 "
-"<varname>to_srid</varname> 参数提供值。 "
-"当使用“ST_TransformPipeline()”时，管道将向前执行。 使用 <xref linkend="
-"\"ST_InverseTransformPipeline\"/>管道以相反方向执行。"
+"<varname>to_srid</varname> 参数提供值。 当使用“ST_TransformPipeline()”时，管"
+"道将向前执行。 使用 <xref linkend=\"ST_InverseTransformPipeline\"/>管道以相反"
+"方向执行。"
 
 #. Tag: para
 #: reference_srs.xml:370
@@ -607,24 +562,15 @@ msgstr ", <xref linkend=\"ST_InverseTransformPipeline\"/>"
 msgid "Return the list of SRS codes associated with the given authority."
 msgstr "返回与给定权限关联的 SRS 代码列表。"
 
-#. Tag: funcprototype
-#: reference_srs.xml:384
-#, no-c-format
-msgid ""
-"<funcdef>setof text <function>postgis_srs_codes</function></funcdef> "
-"<paramdef><type>text </type> <parameter>auth_name</parameter></paramdef>"
-msgstr ""
-"<funcdef>setof text <function>postgis_srs_codes</function></funcdef> "
-"<paramdef><type>text </type> <parameter>auth_name</parameter></paramdef>"
-
 #. Tag: para
 #: reference_srs.xml:394
 #, no-c-format
 msgid ""
 "Returns a set of all <varname>auth_srid</varname> for the given "
 "<varname>auth_name</varname>."
-msgstr "返回给定 <varname>auth_name </varname>的所有<varname> auth_srid</varname> "
-"的集合。"
+msgstr ""
+"返回给定 <varname>auth_name </varname>的所有<varname> auth_srid</varname> 的"
+"集合。"
 
 #. Tag: para
 #: reference_srs.xml:397 reference_srs.xml:439 reference_srs.xml:480
@@ -653,18 +599,6 @@ msgstr ""
 msgid "Return a metadata record for the requested authority and srid."
 msgstr "返回所请求的权限和 srid 的元数据记录。"
 
-#. Tag: funcprototype
-#: reference_srs.xml:425
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>postgis_srs</function></funcdef> "
-"<paramdef><type>text </type> <parameter>auth_name</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>auth_srid</parameter></paramdef>"
-msgstr ""
-"<funcdef>setof record <function>postgis_srs</function></funcdef> "
-"<paramdef><type>text </type> <parameter>auth_name</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>auth_srid</parameter></paramdef>"
-
 #. Tag: para
 #: reference_srs.xml:436
 #, no-c-format
@@ -677,10 +611,10 @@ msgid ""
 "<varname>point_ne</varname>."
 msgstr ""
 "返回给定<varname> auth_name </varname>所请求的 <varname>auth_srid</varname> "
-"的元数据记录。 该记录将包含 <varname>auth_name</varname>、<varname>auth_srid<"
-"/varname>、<varname>srname</varname>、<varname>srtext</varname>、<varname>pro"
-"j4text</varname> 以及使用区域的角点 <varname>point_sw </varname>和<varname> "
-"point_ne</varname>。"
+"的元数据记录。 该记录将包含 <varname>auth_name</varname>、"
+"<varname>auth_srid</varname>、<varname>srname</varname>、<varname>srtext</"
+"varname>、<varname>proj4text</varname> 以及使用区域的角点 <varname>point_sw "
+"</varname>和<varname> point_ne</varname>。"
 
 #. Tag: para
 #: reference_srs.xml:445
@@ -712,10 +646,10 @@ msgid ""
 "<varname>proj4text</varname>, and the corners of the area of usage, "
 "<varname>point_sw</varname> and <varname>point_ne</varname>."
 msgstr ""
-"返回底层 Proj 数据库中所有元数据记录的集合。 这些记录将包含<varname> auth_nam"
-"e</varname>、<varname>auth_srid</varname>、<varname>srname</varname>、<varnam"
-"e>srtext</varname>、<varname>proj4text </varname>以及使用区域的角点 "
-"<varname>point_sw</varname> 和 <varname>point_ne</varname>。"
+"返回底层 Proj 数据库中所有元数据记录的集合。 这些记录将包含<varname> "
+"auth_name</varname>、<varname>auth_srid</varname>、<varname>srname</"
+"varname>、<varname>srtext</varname>、<varname>proj4text </varname>以及使用区"
+"域的角点 <varname>point_sw</varname> 和 <varname>point_ne</varname>。"
 
 #. Tag: para
 #: reference_srs.xml:486
@@ -739,20 +673,6 @@ msgid ""
 "useage that fully contain the bounds parameter."
 msgstr "返回具有完全包含边界参数的使用区域的投影坐标系的元数据记录。"
 
-#. Tag: funcprototype
-#: reference_srs.xml:510
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>postgis_srs_search</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>bounds</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>auth_name=EPSG</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>setof record <function>postgis_srs_search</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>bounds</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> "
-"<parameter>auth_name=EPSG</parameter></paramdef>"
-
 #. Tag: para
 #: reference_srs.xml:521
 #, no-c-format
@@ -764,11 +684,11 @@ msgid ""
 "varname>, and the corners of the area of usage, <varname>point_sw</varname> "
 "and <varname>point_ne</varname>."
 msgstr ""
-"返回投影坐标系的一组元数据记录，这些坐标系的使用区域完全包含边界参数。 "
-"每条记录将包含 <varname>auth_name</varname>、<varname>auth_srid</varname>、<v"
-"arname>srname</varname>、<varname>srtext</varname>、<varname>proj4text </"
-"varname>以及使用区域的角点 <varname>point_sw</varname> 和<varname> "
-"point_ne</varname>。"
+"返回投影坐标系的一组元数据记录，这些坐标系的使用区域完全包含边界参数。 每条记"
+"录将包含 <varname>auth_name</varname>、<varname>auth_srid</varname>、"
+"<varname>srname</varname>、<varname>srtext</varname>、<varname>proj4text </"
+"varname>以及使用区域的角点 <varname>point_sw</varname> 和<varname> point_ne</"
+"varname>。"
 
 #. Tag: para
 #: reference_srs.xml:524

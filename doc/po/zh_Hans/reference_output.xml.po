@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-09-06 01:08+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -67,8 +67,8 @@ msgid ""
 "used in output (defaults to 15)."
 msgstr ""
 "返回以 SRID 为前缀的几何图形的已知的文本表示形式（WKT)。 可选的<parameter> "
-"maxdecimaldigits</parameter> "
-"参数可用于减少输出中使用的浮点后的最大十进制位数（默认为 15）。"
+"maxdecimaldigits</parameter> 参数可用于减少输出中使用的浮点后的最大十进制位数"
+"（默认为 15）。"
 
 #. Tag: para
 #: reference_output.xml:51
@@ -76,8 +76,9 @@ msgstr ""
 msgid ""
 "To perform the inverse conversion of EWKT representation to PostGIS geometry "
 "use <xref linkend=\"ST_GeomFromEWKT\"/>."
-msgstr "要执行 EWKT 表示形式到 PostGIS 几何图形的逆转换，请使用<xref linkend="
-"\"ST_GeomFromEWKT\"/>。"
+msgstr ""
+"要执行 EWKT 表示形式到 PostGIS 几何图形的逆转换，请使用<xref "
+"linkend=\"ST_GeomFromEWKT\"/>。"
 
 #. Tag: para
 #: reference_output.xml:55 reference_output.xml:149 reference_output.xml:557
@@ -88,9 +89,9 @@ msgid ""
 "geometry to become invalid. To avoid this use <xref "
 "linkend=\"ST_ReducePrecision\"/> with a suitable gridsize first."
 msgstr ""
-"使用 <parameter>maxdecimaldigits</parameter> 参数可能会导致输出几何图形无效。"
-" 为了避免这种情况，首先使用 <xref linkend=\"ST_ReducePrecision\"/> "
-"和合适的网格大小。"
+"使用 <parameter>maxdecimaldigits</parameter> 参数可能会导致输出几何图形无"
+"效。 为了避免这种情况，首先使用 <xref linkend=\"ST_ReducePrecision\"/> 和合适"
+"的网格大小。"
 
 #. Tag: para
 #: reference_output.xml:63
@@ -98,8 +99,9 @@ msgstr ""
 msgid ""
 "The WKT spec does not include the SRID. To get the OGC WKT format use <xref "
 "linkend=\"ST_AsText\"/>."
-msgstr "WKT 规范不包括 SRID。 要获取 OGC WKT 格式，请使用 <xref linkend=\"ST_AsText\""
-"/>。"
+msgstr ""
+"WKT 规范不包括 SRID。 要获取 OGC WKT 格式，请使用 <xref "
+"linkend=\"ST_AsText\"/>。"
 
 #. Tag: para
 #: reference_output.xml:66
@@ -109,8 +111,8 @@ msgid ""
 "use <xref linkend=\"ST_AsBinary\"/> or <xref linkend=\"ST_AsEWKB\"/> format "
 "for transport."
 msgstr ""
-"WKT 格式不保持精度，因此为了防止浮动截断，请使用<xref linkend=\"ST_AsBinary\""
-"/> 或 <xref linkend=\"ST_AsEWKB\"/> 格式进行传输。"
+"WKT 格式不保持精度，因此为了防止浮动截断，请使用<xref "
+"linkend=\"ST_AsBinary\"/> 或 <xref linkend=\"ST_AsEWKB\"/> 格式进行传输。"
 
 #. Tag: para
 #: reference_output.xml:70
@@ -205,9 +207,9 @@ msgid ""
 "number of digits after the decimal point in output ordinates (defaults to "
 "15)."
 msgstr ""
-"返回几何/地理的 OGC <link linkend=\"OpenGISWKBWKT\">已知文本</link> (WKT) "
-"表示形式。 可选的 <parameter>maxdecimaldigits "
-"</parameter>参数可用于限制输出坐标中小数点后的位数（默认为 15）。"
+"返回几何/地理的 OGC <link linkend=\"OpenGISWKBWKT\">已知文本</link> (WKT) 表"
+"示形式。 可选的 <parameter>maxdecimaldigits </parameter>参数可用于限制输出坐"
+"标中小数点后的位数（默认为 15）。"
 
 #. Tag: para
 #: reference_output.xml:133
@@ -215,8 +217,9 @@ msgstr ""
 msgid ""
 "To perform the inverse conversion of WKT representation to PostGIS geometry "
 "use <xref linkend=\"ST_GeomFromText\"/>."
-msgstr "要执行 WKT 表示形式到 PostGIS 几何图形的逆转换，请使用<xref linkend="
-"\"ST_GeomFromText\"/>。"
+msgstr ""
+"要执行 WKT 表示形式到 PostGIS 几何图形的逆转换，请使用<xref "
+"linkend=\"ST_GeomFromText\"/>。"
 
 #. Tag: para
 #: reference_output.xml:137
@@ -239,10 +242,10 @@ msgid ""
 "format (see <xref linkend=\"ST_AsBinary\"/> and <parameter>maxdecimaldigits</"
 "parameter>)."
 msgstr ""
-"WKT 中数字的文本表示可能无法保持完整的浮点精度。 "
-"为了确保数据存储或传输的完全准确性，最好使用<link linkend=\"OpenGISWKBWKT\""
-">已知的二进制</link> (WKB) 格式（请参阅 <xref linkend=\"ST_AsBinary\"/> 和 "
-"<parameter>maxdecimaldigits</parameter>）。"
+"WKT 中数字的文本表示可能无法保持完整的浮点精度。 为了确保数据存储或传输的完全"
+"准确性，最好使用<link linkend=\"OpenGISWKBWKT\">已知的二进制</link> (WKB) 格"
+"式（请参阅 <xref linkend=\"ST_AsBinary\"/> 和 <parameter>maxdecimaldigits</"
+"parameter>）。"
 
 #. Tag: para
 #: reference_output.xml:156
@@ -304,7 +307,8 @@ msgstr "已知的二进制文件 (WKB)"
 msgid ""
 "Return the OGC/ISO Well-Known Binary (WKB) representation of the geometry/"
 "geography without SRID meta data."
-msgstr "返回不带 SRID 元数据的几何/地理的 OGC/ISO 已知的二进制 (WKB) 表示形式。"
+msgstr ""
+"返回不带 SRID 元数据的几何/地理的 OGC/ISO 已知的二进制 (WKB) 表示形式。"
 
 #. Tag: para
 #: reference_output.xml:221
@@ -316,9 +320,9 @@ msgid ""
 "text argument specifying the endian encoding, either little-endian ('NDR') "
 "or big-endian ('XDR')."
 msgstr ""
-"返回几何图形的 OGC/ISO<link linkend=\"OpenGISWKBWKT\">已知二进制 "
-"</link>（WKB） 表示形式。 第一种形式默认为服务器计算机的字节序。 "
-"第二种形式采用指定小端序 （“NDR”） 或大端序 （“XDR”） 的字符串。"
+"返回几何图形的 OGC/ISO<link linkend=\"OpenGISWKBWKT\">已知二进制 </link>"
+"（WKB） 表示形式。 第一种形式默认为服务器计算机的字节序。 第二种形式采用指定"
+"小端序 （“NDR”） 或大端序 （“XDR”） 的字符串。"
 
 #. Tag: para
 #: reference_output.xml:226 reference_output.xml:302
@@ -327,7 +331,8 @@ msgid ""
 "WKB format is useful to read geometry data from the database and maintaining "
 "full numeric precision. This avoids the precision rounding that can happen "
 "with text formats such as WKT."
-msgstr "WKB 格式对于从数据库读取几何数据并保持完整的数值精度非常有用。 这避免了 WKT "
+msgstr ""
+"WKB 格式对于从数据库读取几何数据并保持完整的数值精度非常有用。 这避免了 WKT "
 "等文本格式可能发生的精确舍入。"
 
 #. Tag: para
@@ -336,8 +341,9 @@ msgstr "WKB 格式对于从数据库读取几何数据并保持完整的数值�
 msgid ""
 "To perform the inverse conversion of WKB to PostGIS geometry use <xref "
 "linkend=\"ST_GeomFromWKB\"/>."
-msgstr "要执行 WKB 到 PostGIS 几何图形的逆转换，请使用<xref linkend=\"ST_GeomFromWKB"
-"\"/>。"
+msgstr ""
+"要执行 WKB 到 PostGIS 几何图形的逆转换，请使用<xref "
+"linkend=\"ST_GeomFromWKB\"/>。"
 
 #. Tag: para
 #: reference_output.xml:233
@@ -357,8 +363,8 @@ msgid ""
 "hex encoding. If your GUI tools require the old behavior, then SET "
 "bytea_output='escape' in your database."
 msgstr ""
-"PostgreSQL 9.0 中的默认行为已更改为以十六进制编码输出 bytea。 如果您的 GUI "
-"工具需要旧行为，请在数据库中设置 SET bytea_output='escape'。"
+"PostgreSQL 9.0 中的默认行为已更改为以十六进制编码输出 bytea。 如果您的 GUI 工"
+"具需要旧行为，请在数据库中设置 SET bytea_output='escape'。"
 
 #. Tag: para
 #: reference_output.xml:241 reference_output.xml:313
@@ -402,8 +408,8 @@ msgstr ""
 "更改：2.0.0 此函数的输入不能是未知的——必须是几何图形。 "
 "<code>ST_AsBinary('POINT(1 2)') </code>等结构不再有效，您将收到<code> n "
 "st_asbinary(unknown) is not unique error</code>。 类似的代码需要更改为 "
-"<code>ST_AsBinary('POINT(1 2)'::geometry);</code>。 "
-"如果不可能，请安装<filename>legacy.sql</filename>。"
+"<code>ST_AsBinary('POINT(1 2)'::geometry);</code>。 如果不可能，请安装"
+"<filename>legacy.sql</filename>。"
 
 #. Tag: para
 #: reference_output.xml:248
@@ -439,9 +445,9 @@ msgid ""
 "function variant takes a text argument specifying the endian encoding, "
 "either little-endian ('NDR') or big-endian ('XDR')."
 msgstr ""
-"返回具有 SRID 元数据的几何图形的<link linkend=\"EWKB_EWKT\">扩展已知二进制 "
-"</link>（EWKB） 表示形式。 第一种形式默认为服务器计算机的字节序。 "
-"第二种形式采用指定小端序 （“NDR”） 或大端序 （“XDR”） 的字符串。"
+"返回具有 SRID 元数据的几何图形的<link linkend=\"EWKB_EWKT\">扩展已知二进制 </"
+"link>（EWKB） 表示形式。 第一种形式默认为服务器计算机的字节序。 第二种形式采"
+"用指定小端序 （“NDR”） 或大端序 （“XDR”） 的字符串。"
 
 #. Tag: para
 #: reference_output.xml:306
@@ -449,8 +455,9 @@ msgstr ""
 msgid ""
 "To perform the inverse conversion of EWKB to PostGIS geometry use <xref "
 "linkend=\"ST_GeomFromEWKB\"/>."
-msgstr "要执行 EWKB 到 PostGIS 几何图形的逆转换，请使用 <xref linkend="
-"\"ST_GeomFromEWKB\"/>。"
+msgstr ""
+"要执行 EWKB 到 PostGIS 几何图形的逆转换，请使用 <xref "
+"linkend=\"ST_GeomFromEWKB\"/>。"
 
 #. Tag: para
 #: reference_output.xml:309
@@ -474,7 +481,8 @@ msgstr ", <xref linkend=\"ST_GeomFromEWKB\"/>, <xref linkend=\"ST_SRID\"/>"
 msgid ""
 "Returns a Geometry in HEXEWKB format (as text) using either little-endian "
 "(NDR) or big-endian (XDR) encoding."
-msgstr "使用小端 (NDR) 或大端 (XDR) 编码返回 HEXEWKB 格式（作为文本）的几何图形。"
+msgstr ""
+"使用小端 (NDR) 或大端 (XDR) 编码返回 HEXEWKB 格式（作为文本）的几何图形。"
 
 #. Tag: para
 #: reference_output.xml:361
@@ -483,8 +491,9 @@ msgid ""
 "Returns a Geometry in HEXEWKB format (as text) using either little-endian "
 "(NDR) or big-endian (XDR) encoding. If no encoding is specified, then NDR is "
 "used."
-msgstr "使用小端 (NDR) 或大端 (XDR) 编码返回 HEXEWKB 格式（作为文本）的几何图形。 "
-"如果未指定编码，则使用 NDR。"
+msgstr ""
+"使用小端 (NDR) 或大端 (XDR) 编码返回 HEXEWKB 格式（作为文本）的几何图形。 如"
+"果未指定编码，则使用 NDR。"
 
 #. Tag: para
 #: reference_output.xml:365
@@ -504,20 +513,6 @@ msgstr "其它格式"
 msgid "Returns an Encoded Polyline from a LineString geometry."
 msgstr "从 LineString 几何体返回编码折线。"
 
-#. Tag: funcprototype
-#: reference_output.xml:393
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_AsEncodedPolyline</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>precision=5</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>ST_AsEncodedPolyline</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>precision=5</parameter></paramdef>"
-
 #. Tag: para
 #: reference_output.xml:404
 #, no-c-format
@@ -525,7 +520,8 @@ msgid ""
 "Returns the geometry as an Encoded Polyline. This format is used by Google "
 "Maps with precision=5 and by Open Source Routing Machine with precision=5 "
 "and 6."
-msgstr "以编码折线形式返回几何图形。 此格式由精度为 5 的 Google 地图和精度为 5 和 6 "
+msgstr ""
+"以编码折线形式返回几何图形。 此格式由精度为 5 的 Google 地图和精度为 5 和 6 "
 "的开源路由机使用。"
 
 #. Tag: para
@@ -535,8 +531,9 @@ msgid ""
 "Optional <varname>precision</varname> specifies how many decimal places will "
 "be preserved in Encoded Polyline. Value should be the same on encoding and "
 "decoding, or coordinates will be incorrect."
-msgstr "可选<varname>precision</varname>指定编码折线中将保留多少个小数位。 "
-"编码和解码时的值应该相同，否则坐标将不正确。"
+msgstr ""
+"可选<varname>precision</varname>指定编码折线中将保留多少个小数位。 编码和解码"
+"时的值应该相同，否则坐标将不正确。"
 
 #. Tag: para
 #: reference_output.xml:407 reference_output.xml:1273
@@ -586,9 +583,9 @@ msgid ""
 "org\">http://flatgeobuf.org</ulink>) of a set of rows corresponding to a "
 "FeatureCollection. NOTE: PostgreSQL bytea cannot exceed 1GB."
 msgstr ""
-"返回与 FeatureCollection 对应的一组行的 FlatGeobuf 表示形式 (<ulink url="
-"\"http://flatgeobuf.org\">http://flatgeobuf.org</ulink>)。 注意：PostgreSQL "
-"bytea 不能超过 1GB。"
+"返回与 FeatureCollection 对应的一组行的 FlatGeobuf 表示形式 (<ulink "
+"url=\"http://flatgeobuf.org\">http://flatgeobuf.org</ulink>)。 注意："
+"PostgreSQL bytea 不能超过 1GB。"
 
 #. Tag: para
 #: reference_output.xml:465 reference_output.xml:502 reference_output.xml:1145
@@ -609,8 +606,9 @@ msgstr "<varname>index </varname>切换空间索引生成。 默认值为 FALSE�
 msgid ""
 "<varname>geom_name</varname> is the name of the geometry column in the row "
 "data. If NULL it will default to the first found geometry column."
-msgstr "<varname>geom_name </varname>行数据中几何列的列名。 如果为 "
-"NULL，则它是找到的第一个几何列。"
+msgstr ""
+"<varname>geom_name </varname>行数据中几何列的列名。 如果为 NULL，则它是找到的"
+"第一个几何列。"
 
 #. Tag: para
 #: reference_output.xml:469
@@ -636,9 +634,9 @@ msgid ""
 "memory."
 msgstr ""
 "返回与FeatureCollection对应的一组行的Geobuf表示（<ulink url=\"https://github."
-"com/mapbox/geobuf\">https://github.com/mapbox/geobuf</ulink>）。 "
-"分析每个输入几何形状以确定最佳存储的最大精度。 请注意，当前形式的 Geobuf "
-"无法进行流式传输，因此完整的输出将在内存中组装。"
+"com/mapbox/geobuf\">https://github.com/mapbox/geobuf</ulink>）。 分析每个输入"
+"几何形状以确定最佳存储的最大精度。 请注意，当前形式的 Geobuf 无法进行流式传"
+"输，因此完整的输出将在内存中组装。"
 
 #. Tag: para
 #: reference_output.xml:505 reference_output.xml:1049 reference_output.xml:1154
@@ -663,9 +661,9 @@ msgid ""
 "support for example)."
 msgstr ""
 "将几何图形返回为 GeoJSON“几何图形”，或将行返回为 GeoJSON“特征”。 （请参阅 "
-"<ulink url=\"https://tools.ietf.org/html/rfc7946\">GeoJSON 规范 RFC "
-"7946</ulink>）。 2D 和 3D 几何图形均受支持。 GeoJSON 仅支持 SFS 1.1 "
-"几何类型（例如不支持曲线）。"
+"<ulink url=\"https://tools.ietf.org/html/rfc7946\">GeoJSON 规范 RFC 7946</"
+"ulink>）。 2D 和 3D 几何图形均受支持。 GeoJSON 仅支持 SFS 1.1 几何类型（例如"
+"不支持曲线）。"
 
 #. Tag: para
 #: reference_output.xml:554
@@ -676,8 +674,8 @@ msgid ""
 "using EPSG:4326 and are outputting the geometry only for display, "
 "<varname>maxdecimaldigits</varname>=6 can be a good choice for many maps."
 msgstr ""
-"<varname>maxdecimaldigits </varname>参数可用于减少输出中使用的最大小数位数（"
-"默认为 9）。 如果您使用 EPSG:4326 并且输出几何图形仅用于显示，则<varname> "
+"<varname>maxdecimaldigits </varname>参数可用于减少输出中使用的最大小数位数"
+"（默认为 9）。 如果您使用 EPSG:4326 并且输出几何图形仅用于显示，则<varname> "
 "maxdecimaldigits</varname>=6 对于许多地图来说可能是一个不错的选择。"
 
 #. Tag: para
@@ -686,7 +684,8 @@ msgstr ""
 msgid ""
 "The <varname>options</varname> argument can be used to add BBOX or CRS in "
 "GeoJSON output:"
-msgstr "<varname>options </varname>参数可用于在 GeoJSON 输出中添加 BBOX 或 CRS："
+msgstr ""
+"<varname>options </varname>参数可用于在 GeoJSON 输出中添加 BBOX 或 CRS："
 
 #. Tag: para
 #: reference_output.xml:567
@@ -729,11 +728,11 @@ msgid ""
 "necessary geometry can be projected into WGS84 using <xref "
 "linkend=\"ST_Transform\"/>: <code>ST_Transform( geom, 4326 )</code>."
 msgstr ""
-"GeoJSON 规范规定多边形使用右手定则定向，并且某些客户端需要此方向。 "
-"这可以通过使用<xref linkend=\"ST_ForcePolygonCCW\"/> 来确保。 "
-"该规范还要求几何图形位于 WGS84 坐标系 (SRID = 4326) 中。 如果需要，可以使用 "
-"<xref linkend=\"ST_Transform\"/>将几何图形投影到 WGS84 "
-"中：<code>ST_Transform( geom, 4326 )</code>。"
+"GeoJSON 规范规定多边形使用右手定则定向，并且某些客户端需要此方向。 这可以通过"
+"使用<xref linkend=\"ST_ForcePolygonCCW\"/> 来确保。 该规范还要求几何图形位于 "
+"WGS84 坐标系 (SRID = 4326) 中。 如果需要，可以使用 <xref "
+"linkend=\"ST_Transform\"/>将几何图形投影到 WGS84 中："
+"<code>ST_Transform( geom, 4326 )</code>。"
 
 #. Tag: para
 #: reference_output.xml:597
@@ -807,8 +806,9 @@ msgstr "生成一个特征："
 msgid ""
 "An alternate way to generate Features with an <varname>id</varname> property "
 "is to use JSONB functions and operators:"
-msgstr "生成具有<varname> id </varname>属性的功能的另一种方法是使用 JSONB "
-"函数和运算符："
+msgstr ""
+"生成具有<varname> id </varname>属性的功能的另一种方法是使用 JSONB 函数和运算"
+"符："
 
 #. Tag: para
 #: reference_output.xml:631
@@ -849,8 +849,8 @@ msgid ""
 "maximum number of decimal places used in output (defaults to 15)."
 msgstr ""
 "将几何图形作为地理标记语言 (GML) 元素返回。 版本参数（如果指定）可以是 2 或 "
-"3。如果未指定版本参数，则默认值为 2。 <varname>maxdecimaldigits "
-"</varname>参数可用于减少输出中使用的最大小数位数（默认为 15） ）。"
+"3。如果未指定版本参数，则默认值为 2。 <varname>maxdecimaldigits </varname>参"
+"数可用于减少输出中使用的最大小数位数（默认为 15） ）。"
 
 #. Tag: para
 #: reference_output.xml:710
@@ -864,8 +864,9 @@ msgstr "GML 2指2.1.2版本，GML 3指3.1.1版本"
 msgid ""
 "The 'options' argument is a bitfield. It could be used to define CRS output "
 "type in GML output, and to declare data as lat/lon:"
-msgstr "“选项”参数是一个位字段。 它可用于在 GML 输出中定义 CRS "
-"输出类型，并将数据声明为纬度/经度："
+msgstr ""
+"“选项”参数是一个位字段。 它可用于在 GML 输出中定义 CRS 输出类型，并将数据声明"
+"为纬度/经度："
 
 #. Tag: para
 #: reference_output.xml:715
@@ -891,7 +892,8 @@ msgstr "2：仅对于 GML 3，从输出中删除 srsDimension 属性。"
 msgid ""
 "4: For GML 3 only, use &lt;LineString&gt; rather than &lt;Curve&gt; tag for "
 "lines."
-msgstr "4：仅对于 GML 3，对线使用 &lt;LineString&gt; 而不是 &lt;Curve&gt; 标记。"
+msgstr ""
+"4：仅对于 GML 3，对线使用 &lt;LineString&gt; 而不是 &lt;Curve&gt; 标记。"
 
 #. Tag: para
 #: reference_output.xml:731
@@ -902,9 +904,9 @@ msgid ""
 "related to axis order. So if you set it, it will swap the coordinates so "
 "order is lat lon instead of database lon lat."
 msgstr ""
-"16：声明数据为纬度/经度（例如 srid=4326）。 默认情况下假设数据是平面的。 "
-"此选项仅适用于与轴顺序相关的 GML 3.1.1 输出。 "
-"因此，如果您设置它，它将交换坐标，因此顺序是 lat lon 而不是数据库 lon lat。"
+"16：声明数据为纬度/经度（例如 srid=4326）。 默认情况下假设数据是平面的。 此选"
+"项仅适用于与轴顺序相关的 GML 3.1.1 输出。 因此，如果您设置它，它将交换坐标，"
+"因此顺序是 lat lon 而不是数据库 lon lat。"
 
 #. Tag: para
 #: reference_output.xml:737
@@ -918,8 +920,9 @@ msgstr "32：输出几何体的边框（最小外接矩形）。"
 msgid ""
 "The 'namespace prefix' argument may be used to specify a custom namespace "
 "prefix or no prefix (if empty). If null or omitted 'gml' prefix is used"
-msgstr "“命名空间前缀”参数可用于指定自定义命名空间前缀或无前缀（如果为空）。 "
-"如果使用 null 或省略 'gml' 前缀"
+msgstr ""
+"“命名空间前缀”参数可用于指定自定义命名空间前缀或无前缀（如果为空）。 如果使"
+"用 null 或省略 'gml' 前缀"
 
 #. Tag: para
 #: reference_output.xml:746
@@ -936,9 +939,9 @@ msgid ""
 "Support for Polyhedral surfaces and TINS was introduced. Option 32 was "
 "introduced to output the box."
 msgstr ""
-"增强： 2.0.0 引入了前缀支持。 引入了 GML3 的选项 4，以允许使用 LineString "
-"而不是线条的 Curve 标记。 引入了对多面体曲面和 TINS 的 GML3 支持。 引入选项 "
-"32 来输出该框。"
+"增强： 2.0.0 引入了前缀支持。 引入了 GML3 的选项 4，以允许使用 LineString 而"
+"不是线条的 Curve 标记。 引入了对多面体曲面和 TINS 的 GML3 支持。 引入选项 32 "
+"来输出该框。"
 
 #. Tag: para
 #: reference_output.xml:749
@@ -988,8 +991,9 @@ msgstr "将几何图形作为 KML 元素返回。"
 msgid ""
 "Return the geometry as a Keyhole Markup Language (KML) element. default "
 "maximum number of decimal places is 15, default namespace is no prefix."
-msgstr "将几何图形作为 Keyhole 标记语言 (KML) 元素返回。 默认最大小数位数为 "
-"15，默认命名空间无前缀。"
+msgstr ""
+"将几何图形作为 Keyhole 标记语言 (KML) 元素返回。 默认最大小数位数为 15，默认"
+"命名空间无前缀。"
 
 #. Tag: para
 #: reference_output.xml:824
@@ -999,8 +1003,8 @@ msgid ""
 "linkend=\"PostGIS_Full_Version\"/> to confirm you have proj support compiled "
 "in."
 msgstr ""
-"需要在 Proj 支持下编译 PostGIS。 使用 <xref linkend=\"PostGIS_Full_Version\""
-"/>确认您已编译项目支持。"
+"需要在 Proj 支持下编译 PostGIS。 使用 <xref linkend=\"PostGIS_Full_Version\"/"
+">确认您已编译项目支持。"
 
 #. Tag: para
 #: reference_output.xml:828
@@ -1039,18 +1043,6 @@ msgstr ", <xref linkend=\"ST_AsGML\"/>"
 msgid "Return the Degrees, Minutes, Seconds representation of the given point."
 msgstr "返回给定点的度、分、秒表示形式。"
 
-#. Tag: funcprototype
-#: reference_output.xml:863
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_AsLatLonText</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>format=''</parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>ST_AsLatLonText</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>format=''</parameter></paramdef>"
-
 #. Tag: para
 #: reference_output.xml:874
 #, no-c-format
@@ -1065,9 +1057,8 @@ msgid ""
 "coordinates are normalized in the output to the \"normal\" range (-180 to "
 "+180 for lon, -90 to +90 for lat)."
 msgstr ""
-"假设该点位于纬度/经度投影中。 X（经度）和 "
-"Y（纬度）坐标在输出中标准化为“正常”范围（经度为 -180 到 180，纬度为 -90 到 "
-"90）。"
+"假设该点位于纬度/经度投影中。 X（经度）和 Y（纬度）坐标在输出中标准化为“正"
+"常”范围（经度为 -180 到 180，纬度为 -90 到 90）。"
 
 #. Tag: para
 #: reference_output.xml:880
@@ -1079,9 +1070,9 @@ msgid ""
 "direction (NSEW). DMS tokens may be repeated to indicate desired width and "
 "precision (\"SSS.SSSS\" means \" 1.0023\")."
 msgstr ""
-"text 参数是一个格式字符串，包含结果文本的格式，类似于日期格式字符串。 "
-"有效标记为“D”表示度、“M”表示分钟、“S”表示秒、“C”表示基本方向 (NSEW)。 DMS "
-"令牌可以重复以指示所需的宽度和精度（“SSS.SSSS”表示“1.0023”）。"
+"text 参数是一个格式字符串，包含结果文本的格式，类似于日期格式字符串。 有效标"
+"记为“D”表示度、“M”表示分钟、“S”表示秒、“C”表示基本方向 (NSEW)。 DMS 令牌可以"
+"重复以指示所需的宽度和精度（“SSS.SSSS”表示“1.0023”）。"
 
 #. Tag: para
 #: reference_output.xml:885
@@ -1093,9 +1084,9 @@ msgid ""
 "is also omitted, degrees are shown as decimal with as many digits precision "
 "as you specify."
 msgstr ""
-"“M”、“S”和“C”是可选的。 如果省略“C”，则南或西的度数将显示为“-”符号。 "
-"如果省略“S”，分钟将显示为十进制，其精度位数与您指定的位数相同。 "
-"如果还省略“M”，则度数将显示为十进制，其精度与您指定的位数相同。"
+"“M”、“S”和“C”是可选的。 如果省略“C”，则南或西的度数将显示为“-”符号。 如果省"
+"略“S”，分钟将显示为十进制，其精度位数与您指定的位数相同。 如果还省略“M”，则度"
+"数将显示为十进制，其精度与您指定的位数相同。"
 
 #. Tag: para
 #: reference_output.xml:890
@@ -1154,20 +1145,6 @@ msgid ""
 "Returns geometry as a MARC21/XML record with a geographic datafield (034)."
 msgstr "将几何图形返回为带有地理数据字段 (034) 的 MARC21/XML 记录。"
 
-#. Tag: funcprototype
-#: reference_output.xml:926
-#, no-c-format
-msgid ""
-"<funcdef> text <function>ST_AsMARC21</function> </funcdef> <paramdef> "
-"<type>geometry </type> <parameter>geom</parameter> </paramdef> <paramdef "
-"choice=\"opt\"> <type>text </type> <parameter>format='hdddmmss'</parameter> "
-"</paramdef>"
-msgstr ""
-"<funcdef> text <function>ST_AsMARC21</function> </funcdef> <paramdef> "
-"<type>geometry </type> <parameter>geom</parameter> </paramdef> <paramdef "
-"choice=\"opt\"> <type>text </type> <parameter>format='hdddmmss'</parameter> "
-"</paramdef>"
-
 #. Tag: para
 #: reference_output.xml:947
 #, no-c-format
@@ -1180,12 +1157,11 @@ msgid ""
 "and <varname>$g</varname> in all formats supported by the MARC21/XML "
 "standard. Valid formats are:"
 msgstr ""
-"此函数返回一个 MARC21/XML 记录，其中包含表示给定几何图形的边界框的<ulink url="
-"\"https://www.loc.gov/marc/bibliographic/bd034.html\""
-">编码制图数学数据</ulink>。 <varname>格式</varname>参数允许以 MARC21/XML "
-"标准支持的所有格式对子字段<varname> "
-"$d</varname>、<varname>$e</varname>、<varname>$f </varname>和 <varname>$g</"
-"varname> 中的坐标进行编码。 有效格式为："
+"此函数返回一个 MARC21/XML 记录，其中包含表示给定几何图形的边界框的<ulink "
+"url=\"https://www.loc.gov/marc/bibliographic/bd034.html\">编码制图数学数据</"
+"ulink>。 <varname>格式</varname>参数允许以 MARC21/XML 标准支持的所有格式对子"
+"字段<varname> $d</varname>、<varname>$e</varname>、<varname>$f </varname>和 "
+"<varname>$g</varname> 中的坐标进行编码。 有效格式为："
 
 #. Tag: para
 #: reference_output.xml:951
@@ -1242,7 +1218,8 @@ msgid ""
 "The precision of decimal formats can be limited by the number of characters "
 "after the decimal sign, e.g. <varname>hdddmm.mm</varname> for decimal "
 "minutes with a precision of two decimals."
-msgstr "小数格式的精度可能受到小数点后字符数的限制，例如 <varname>hdddmm.mm</"
+msgstr ""
+"小数格式的精度可能受到小数点后字符数的限制，例如 <varname>hdddmm.mm</"
 "varname> 表示小数分钟，精度为两位小数。"
 
 #. Tag: para
@@ -1275,8 +1252,9 @@ msgstr "可用性： 3.3.0"
 msgid ""
 "This function does not support non lon/lat geometries, as they are not "
 "supported by the MARC21/XML standard (Coded Cartographic Mathematical Data)."
-msgstr "此函数不支持非经度/纬度几何形状，因为它们不受 MARC21/XML "
-"标准（编码制图数学数据）支持。"
+msgstr ""
+"此函数不支持非经度/纬度几何形状，因为它们不受 MARC21/XML 标准（编码制图数学数"
+"据）支持。"
 
 #. Tag: para
 #: reference_output.xml:979
@@ -1285,8 +1263,9 @@ msgid ""
 "The MARC21/XML Standard does not provide any means to annotate the spatial "
 "reference system for Coded Cartographic Mathematical Data, which means that "
 "this information will be lost after conversion to MARC21/XML."
-msgstr "MARC21/XML 标准没有提供任何方法来注释编码制图数学数据的空间参考系统，"
-"这意味着这些信息在转换为 MARC21/XML 后将会丢失。"
+msgstr ""
+"MARC21/XML 标准没有提供任何方法来注释编码制图数学数据的空间参考系统，这意味着"
+"这些信息在转换为 MARC21/XML 后将会丢失。"
 
 #. Tag: para
 #: reference_output.xml:989
@@ -1321,28 +1300,6 @@ msgstr ""
 msgid "Transforms a geometry into the coordinate space of a MVT tile."
 msgstr "将几何图形转换为 MVT 瓦片的坐标空间。"
 
-#. Tag: funcprototype
-#: reference_output.xml:1013
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_AsMVTGeom</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>box2d </type> <parameter>bounds</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>extent=4096</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>buffer=256</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>boolean </type> <parameter>clip_geom=true</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_AsMVTGeom</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>box2d </type> <parameter>bounds</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>extent=4096</parameter></paramdef> <paramdef choice=\"opt\""
-"><type>integer </type> <parameter>buffer=256</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>clip_geom=true</parameter></paramdef>"
-
 #. Tag: para
 #: reference_output.xml:1027
 #, no-c-format
@@ -1355,11 +1312,11 @@ msgid ""
 "en.wikipedia.org/wiki/Web_Mercator_projection\">Web Mercator</ulink> "
 "(SRID:3857)."
 msgstr ""
-"将几何图形转换为 MVT（<ulink url=\"https://www.mapbox.com/vector-tiles/\""
-">Mapbox 矢量切片</ulink>）瓦片的坐标空间，如果需要，将其剪切到图块边界。 "
-"几何图形必须位于目标地图的坐标系中（如果需要，请使用 <xref linkend="
-"\"ST_Transform\"/>）。 通常这是 <ulink url=\"https://en.wikipedia.org/wiki/"
-"Web_Mercator_projection\">Web 墨卡托</ulink> (SRID:3857)。"
+"将几何图形转换为 MVT（<ulink url=\"https://www.mapbox.com/vector-tiles/"
+"\">Mapbox 矢量切片</ulink>）瓦片的坐标空间，如果需要，将其剪切到图块边界。 几"
+"何图形必须位于目标地图的坐标系中（如果需要，请使用 <xref "
+"linkend=\"ST_Transform\"/>）。 通常这是 <ulink url=\"https://en.wikipedia."
+"org/wiki/Web_Mercator_projection\">Web 墨卡托</ulink> (SRID:3857)。"
 
 #. Tag: para
 #: reference_output.xml:1032
@@ -1367,8 +1324,9 @@ msgstr ""
 msgid ""
 "The function attempts to preserve geometry validity, and corrects it if "
 "needed. This may cause the result geometry to collapse to a lower dimension."
-msgstr "该函数尝试保持几何有效性，并在需要时进行纠正。 "
-"这可能会导致结果几何体塌陷到较低的维度。"
+msgstr ""
+"该函数尝试保持几何有效性，并在需要时进行纠正。 这可能会导致结果几何体塌陷到较"
+"低的维度。"
 
 #. Tag: para
 #: reference_output.xml:1035
@@ -1387,8 +1345,9 @@ msgstr ""
 msgid ""
 "This function is used to convert geometry into the tile coordinate space "
 "required by <xref linkend=\"ST_AsMVT\"/>."
-msgstr "<xref linkend=\"ST_AsMVT\"/>函数用于将几何图形转换为 ST_AsMVT "
-"所需的瓦片坐标空间。"
+msgstr ""
+"<xref linkend=\"ST_AsMVT\"/>函数用于将几何图形转换为 ST_AsMVT 所需的瓦片坐标"
+"空间。"
 
 #. Tag: para
 #: reference_output.xml:1043
@@ -1404,7 +1363,8 @@ msgstr "<varname>geom</varname> 是目标地图坐标系中要变换的几何图
 msgid ""
 "<varname>bounds</varname> is the rectangular bounds of the tile in map "
 "coordinate space, with no buffer."
-msgstr "<varname>bounds</varname> 是瓦片在地图坐标空间中的矩形边界，没有缓冲区。"
+msgstr ""
+"<varname>bounds</varname> 是瓦片在地图坐标空间中的矩形边界，没有缓冲区。"
 
 #. Tag: para
 #: reference_output.xml:1045
@@ -1414,9 +1374,9 @@ msgid ""
 "as defined by the <ulink url=\"https://www.mapbox.com/vector-tiles/"
 "specification/\">MVT specification</ulink>. Defaults to 4096."
 msgstr ""
-"<varname>extent</varname>是由 <ulink url=\"https://www.mapbox.com/"
-"vector-tiles/specification/\">MVT "
-"规范</ulink>定义的切片坐标空间中切片的大小。 默认值为 4096。"
+"<varname>extent</varname>是由 <ulink url=\"https://www.mapbox.com/vector-"
+"tiles/specification/\">MVT 规范</ulink>定义的切片坐标空间中切片的大小。 默认"
+"值为 4096。"
 
 #. Tag: para
 #: reference_output.xml:1046
@@ -1424,8 +1384,9 @@ msgstr ""
 msgid ""
 "<varname>buffer</varname> is the buffer size in tile coordinate space for "
 "geometry clippig. Defaults to 256."
-msgstr "<varname>buffer</varname>是切片坐标空间中用于裁剪几何图形的缓冲区大小。 "
-"默认值为 256。"
+msgstr ""
+"<varname>buffer</varname>是切片坐标空间中用于裁剪几何图形的缓冲区大小。 默认"
+"值为 256。"
 
 #. Tag: para
 #: reference_output.xml:1047
@@ -1433,8 +1394,9 @@ msgstr "<varname>buffer</varname>是切片坐标空间中用于裁剪几何图�
 msgid ""
 "<varname>clip_geom</varname> is a boolean to control if geometries are "
 "clipped or encoded as-is. Defaults to true."
-msgstr "<varname>Clip_geom "
-"</varname>是一个布尔值，用于控制几何图形是否按原样剪切或编码。 默认为 true。"
+msgstr ""
+"<varname>Clip_geom </varname>是一个布尔值，用于控制几何图形是否按原样剪切或编"
+"码。 默认为 true。"
 
 #. Tag: para
 #: reference_output.xml:1052
@@ -1444,8 +1406,8 @@ msgid ""
 "polygons. This library is faster and produces more correct results than the "
 "GEOS default, but it might drop small polygons."
 msgstr ""
-"从 3.0 开始，可以在配置时选择 Wagyu 来剪辑和验证 MVT 多边形。 该库比 GEOS "
-"默认库速度更快，产生的结果更正确，但它可能会丢失小多边形。"
+"从 3.0 开始，可以在配置时选择 Wagyu 来剪辑和验证 MVT 多边形。 该库比 GEOS 默"
+"认库速度更快，产生的结果更正确，但它可能会丢失小多边形。"
 
 #. Tag: para
 #: reference_output.xml:1060
@@ -1462,8 +1424,8 @@ msgid ""
 ", <xref linkend=\"ST_TileEnvelope\"/>, <xref "
 "linkend=\"PostGIS_Wagyu_Version\"/>"
 msgstr ""
-", <xref linkend=\"ST_TileEnvelope\"/>, <xref linkend=\"PostGIS_Wagyu_Version"
-"\"/>"
+", <xref linkend=\"ST_TileEnvelope\"/>, <xref "
+"linkend=\"PostGIS_Wagyu_Version\"/>"
 
 #. Tag: refpurpose
 #: reference_output.xml:1080
@@ -1485,12 +1447,11 @@ msgid ""
 "coordinate space. Other row columns are encoded as feature attributes."
 msgstr ""
 "一个聚合函数，返回与图块图层对应的一组行的二进制<ulink url=\"https://www."
-"mapbox.com/vector-tiles/\"> Mapbox 矢量瓦片</ulink>表示。 "
-"这些行必须包含一个几何列，该几何列将被编码为要素几何。 "
-"几何图形必须位于图块坐标空间中，并且根据<ulink url=\"https://www.mapbox.com/"
-"vector-tiles/specification/\"> MVT 规范</ulink>有效。 <xref linkend="
-"\"ST_AsMVTGeom\"/> 可用于将几何图形转换为图块坐标空间。 "
-"其他行列被编码为特征属性。"
+"mapbox.com/vector-tiles/\"> Mapbox 矢量瓦片</ulink>表示。 这些行必须包含一个"
+"几何列，该几何列将被编码为要素几何。 几何图形必须位于图块坐标空间中，并且根据"
+"<ulink url=\"https://www.mapbox.com/vector-tiles/specification/\"> MVT 规范</"
+"ulink>有效。 <xref linkend=\"ST_AsMVTGeom\"/> 可用于将几何图形转换为图块坐标"
+"空间。 其他行列被编码为特征属性。"
 
 #. Tag: para
 #: reference_output.xml:1129
@@ -1502,10 +1463,9 @@ msgid ""
 "objects one level deep. The keys and values in the JSONB values will be "
 "encoded as feature attributes."
 msgstr ""
-"<ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox "
-"矢量切片</ulink>格式可以存储具有不同属性集的要素。 要使用此功能，"
-"请在包含一层深度的 Json 对象的行数据中提供一个 JSONB 列。 JSONB "
-"值中的键和值将被编码为功能属性。"
+"<ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox 矢量切片</ulink>格"
+"式可以存储具有不同属性集的要素。 要使用此功能，请在包含一层深度的 Json 对象的"
+"行数据中提供一个 JSONB 列。 JSONB 值中的键和值将被编码为功能属性。"
 
 #. Tag: para
 #: reference_output.xml:1135
@@ -1514,9 +1474,8 @@ msgid ""
 "Tiles with multiple layers can be created by concatenating multiple calls to "
 "this function using <varname>||</varname> or <varname>STRING_AGG</varname>."
 msgstr ""
-"可以通过使用<varname> ||</varname> "
-"连接对此函数的多个调用来创建具有多层的切片。 或 "
-"使用<varname>STRING_AGG</varname>。"
+"可以通过使用<varname> ||</varname> 连接对此函数的多个调用来创建具有多层的切"
+"片。 或 使用<varname>STRING_AGG</varname>。"
 
 #. Tag: para
 #: reference_output.xml:1141
@@ -1543,8 +1502,9 @@ msgstr "<varname>name</varname>是图层名称。 默认值为字符串“defaul
 msgid ""
 "<varname>extent</varname> is the tile extent in screen space as defined by "
 "the specification. Default is 4096."
-msgstr "<varname>extent</varname>是规范定义的屏幕空间中的切片范围。 如果为 NULL，"
-"则默认值为 4096。"
+msgstr ""
+"<varname>extent</varname>是规范定义的屏幕空间中的切片范围。 如果为 NULL，则默"
+"认值为 4096。"
 
 #. Tag: para
 #: reference_output.xml:1148
@@ -1558,11 +1518,11 @@ msgid ""
 "g. <varname>\"MyMVTGeom\"</varname>, this parameter must be provided as "
 "lowercase."
 msgstr ""
-"<varname>geom_name </varname>是行数据中几何列的名称。 默认为第一个几何列。 "
-"请注意，PostgreSQL 默认情况下会自动<ulink url=\"https://www.postgresql.org/"
-"docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS\""
-">将未加引号的标识符折叠为小写</ulink>，这意味着除非几何列被加引号，"
-"例如<varname> “MyMVTGeom”</varname>，此参数必须以小写形式提供。"
+"<varname>geom_name </varname>是行数据中几何列的名称。 默认为第一个几何列。 请"
+"注意，PostgreSQL 默认情况下会自动<ulink url=\"https://www.postgresql.org/"
+"docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS\">将未加引号的标"
+"识符折叠为小写</ulink>，这意味着除非几何列被加引号，例如<varname> "
+"“MyMVTGeom”</varname>，此参数必须以小写形式提供。"
 
 #. Tag: para
 #: reference_output.xml:1149
@@ -1575,8 +1535,8 @@ msgid ""
 "properties are not supported."
 msgstr ""
 "<varname>feature_id_name</varname> 是行数据中功能 ID 列的名称。 如果为 NULL "
-"或负数，则不设置功能 ID。 匹配名称和有效类型（smallint、integer、bigint）"
-"的第一列将用作功能 ID，任何后续列将添加为属性。 不支持 JSON 属性。"
+"或负数，则不设置功能 ID。 匹配名称和有效类型（smallint、integer、bigint）的第"
+"一列将用作功能 ID，任何后续列将添加为属性。 不支持 JSON 属性。"
 
 #. Tag: para
 #: reference_output.xml:1152
@@ -1614,12 +1574,11 @@ msgid ""
 "'rel' is 1. Multipoint geometries are delimited by commas (\",\"), "
 "GeometryCollection geometries are delimited by semicolons (\";\")."
 msgstr ""
-"将几何图形作为标量矢量图形 (SVG) 路径数据返回。 使用 1 "
-"作为第二个参数可以根据相对移动实现路径数据，默认值（或 0）使用绝对移动。 "
-"第三个参数可用于减少输出中使用的最大十进制位数（默认为 15）。 当 'rel' arg "
-"为 0 时，点几何图形将渲染为 cx/cy，当 'rel' arg 为 1 时，将渲染为 x/y。"
-"多点几何图形由逗号 (\",\") 分隔，GeometryCollection 几何图形由分号 (\";\") "
-"分隔 。"
+"将几何图形作为标量矢量图形 (SVG) 路径数据返回。 使用 1 作为第二个参数可以根据"
+"相对移动实现路径数据，默认值（或 0）使用绝对移动。 第三个参数可用于减少输出中"
+"使用的最大十进制位数（默认为 15）。 当 'rel' arg 为 0 时，点几何图形将渲染为 "
+"cx/cy，当 'rel' arg 为 1 时，将渲染为 x/y。多点几何图形由逗号 (\",\") 分隔，"
+"GeometryCollection 几何图形由分号 (\";\") 分隔 。"
 
 #. Tag: para
 #: reference_output.xml:1207
@@ -1653,9 +1612,9 @@ msgid ""
 "SVG/paths.html#PathDataBNF\">http://www.w3.org/TR/SVG/paths."
 "html#PathDataBNF</ulink>"
 msgstr ""
-"可用性：1.2.2。 可用性：1.4.0 PostGIS 1.4.0 中更改为在绝对路径中包含 L "
-"命令以符合<ulink url=\"http://www.w3.org/TR/SVG/paths.html#PathDataBNF\"> "
-"http://www.w3.org/TR/SVG/paths.html#PathDataBNF</ulink>"
+"可用性：1.2.2。 可用性：1.4.0 PostGIS 1.4.0 中更改为在绝对路径中包含 L 命令以"
+"符合<ulink url=\"http://www.w3.org/TR/SVG/paths.html#PathDataBNF\"> http://"
+"www.w3.org/TR/SVG/paths.html#PathDataBNF</ulink>"
 
 #. Tag: para
 #: reference_output.xml:1223
@@ -1690,9 +1649,9 @@ msgid ""
 "md\">compressed binary format</ulink> with a focus on minimizing the size of "
 "the output."
 msgstr ""
-"返回 TWKB（微小已知的二进制）格式的几何图形。 TWKB 是一种<ulink url=\"https"
-"://github.com/TWKB/Specification/blob/master/twkb.md\""
-">压缩的二进制格式</ulink>，注重最小化输出的大小。"
+"返回 TWKB（微小已知的二进制）格式的几何图形。 TWKB 是一种<ulink "
+"url=\"https://github.com/TWKB/Specification/blob/master/twkb.md\">压缩的二进"
+"制格式</ulink>，注重最小化输出的大小。"
 
 #. Tag: para
 #: reference_output.xml:1265
@@ -1704,10 +1663,9 @@ msgid ""
 "value of 1 implies that the first digit to the right of the decimal point "
 "will be preserved."
 msgstr ""
-"小数位参数控制输出中存储的精度。 "
-"默认情况下，值在编码前四舍五入到最接近的单位。 "
-"如果要传输更高的精度，请增加数字。 例如，值 1 "
-"表示将保留小数点右侧的第一位数字。"
+"小数位参数控制输出中存储的精度。 默认情况下，值在编码前四舍五入到最接近的单"
+"位。 如果要传输更高的精度，请增加数字。 例如，值 1 表示将保留小数点右侧的第一"
+"位数字。"
 
 #. Tag: para
 #: reference_output.xml:1266
@@ -1719,10 +1677,9 @@ msgid ""
 "your client software has a use for them, as they just use up space (and "
 "saving space is the point of TWKB)."
 msgstr ""
-"大小和边界框参数控制输出中是否包含有关对象的编码长度和对象边界的可选信息。 "
-"默认情况下，它们不是。 "
-"除非您的客户端软件需要使用它们，否则不要打开它们，因为它们只会占用空间（"
-"节省空间是 TWKB 的目的）。"
+"大小和边界框参数控制输出中是否包含有关对象的编码长度和对象边界的可选信息。 默"
+"认情况下，它们不是。 除非您的客户端软件需要使用它们，否则不要打开它们，因为它"
+"们只会占用空间（节省空间是 TWKB 的目的）。"
 
 #. Tag: para
 #: reference_output.xml:1267
@@ -1737,10 +1694,10 @@ msgid ""
 "operate the same as for the simple form of the function."
 msgstr ""
 "该函数的数组输入形式用于将几何图形和唯一标识符的集合转换为保留标识符的 TWKB "
-"集合。 这对于希望解压集合然后访问有关内部对象的更多信息的客户端非常有用。 "
-"您可以使用 <ulink url=\"https://www.postgresql.org/docs/current/functions-"
-"aggregate.html\">array_agg </ulink>函数创建数组。 "
-"其他参数的操作与函数的简单形式相同。"
+"集合。 这对于希望解压集合然后访问有关内部对象的更多信息的客户端非常有用。 您"
+"可以使用 <ulink url=\"https://www.postgresql.org/docs/current/functions-"
+"aggregate.html\">array_agg </ulink>函数创建数组。 其他参数的操作与函数的简单"
+"形式相同。"
 
 #. Tag: para
 #: reference_output.xml:1269
@@ -1751,10 +1708,10 @@ msgid ""
 "code for building a JavaScript client can be found at <ulink url=\"https://"
 "github.com/TWKB/twkb.js\">https://github.com/TWKB/twkb.js</ulink>."
 msgstr ""
-"格式规范可在 <ulink url=\"https://github.com/TWKB/Specification\""
-">https://github.com/TWKB/Specification </ulink>在线获取，构建 JavaScript "
-"客户端的代码可在<ulink url=\"https://github.com/TWKB/twkb.js\"> "
-"https://github.com/TWKB/twkb.js</ulink> 找到。"
+"格式规范可在 <ulink url=\"https://github.com/TWKB/Specification\">https://"
+"github.com/TWKB/Specification </ulink>在线获取，构建 JavaScript 客户端的代码"
+"可在<ulink url=\"https://github.com/TWKB/twkb.js\"> https://github.com/TWKB/"
+"twkb.js</ulink> 找到。"
 
 #. Tag: para
 #: reference_output.xml:1272
@@ -1769,9 +1726,9 @@ msgid ""
 "To create an aggregate TWKB object including identifiers aggregate the "
 "desired geometries and objects first, using \"array_agg()\", then call the "
 "appropriate TWKB function."
-msgstr "要创建包含标识符的聚合 TWKB "
-"对象，请首先使用“array_agg()”聚合所需的几何图形和对象，然后调用适当的 TWKB "
-"函数。"
+msgstr ""
+"要创建包含标识符的聚合 TWKB 对象，请首先使用“array_agg()”聚合所需的几何图形和"
+"对象，然后调用适当的 TWKB 函数。"
 
 #. Tag: para
 #: reference_output.xml:1288
@@ -1789,24 +1746,8 @@ msgstr ""
 msgid ""
 "Returns a Geometry in X3D xml node element format: ISO-IEC-19776-1.2-"
 "X3DEncodings-XML"
-msgstr "返回 X3D xml 节点元素格式的几何图形：ISO-IEC-19776-1.2-X3DEncodings-XML"
-
-#. Tag: funcprototype
-#: reference_output.xml:1301
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_AsX3D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></"
-"paramdef>"
 msgstr ""
-"<funcdef>text <function>ST_AsX3D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt"
-"\"><type>integer </type> <parameter>options=0</parameter></paramdef>"
+"返回 X3D xml 节点元素格式的几何图形：ISO-IEC-19776-1.2-X3DEncodings-XML"
 
 #. Tag: para
 #: reference_output.xml:1313
@@ -1818,9 +1759,9 @@ msgid ""
 "is not specified then defaults to 15."
 msgstr ""
 "以 X3D xml 格式的节点元素形式返回几何图形 <ulink url=\"http://www.web3d.org/"
-"standards/number/19776-1\">http://www.web3d.org/standards/number/"
-"19776-1</ulink>。 如果未指定 <varname>maxdecimaldigits</varname>（精度），"
-"则默认为 15。"
+"standards/number/19776-1\">http://www.web3d.org/standards/number/19776-1</"
+"ulink>。 如果未指定 <varname>maxdecimaldigits</varname>（精度），则默认为 "
+"15。"
 
 #. Tag: para
 #: reference_output.xml:1315
@@ -1833,11 +1774,10 @@ msgid ""
 "settled on. Feel free to post a bug ticket if you have thoughts on the idea "
 "or ways we can allow people to denote their preferred mappings."
 msgstr ""
-"有多种选项可用于将 PostGIS 几何图形转换为 X3D，因为 X3D "
-"几何类型不会直接映射到 PostGIS 几何类型，而一些较新的 X3D "
-"类型可能是我们避免的更好的映射，因为大多数渲染工具当前不支持它们。 "
-"这些是我们已经确定的映射。 如果您对我们允许人们表示他们首选映射的想法或方式有"
-"任何想法，请随时发布错误通知单。"
+"有多种选项可用于将 PostGIS 几何图形转换为 X3D，因为 X3D 几何类型不会直接映射"
+"到 PostGIS 几何类型，而一些较新的 X3D 类型可能是我们避免的更好的映射，因为大"
+"多数渲染工具当前不支持它们。 这些是我们已经确定的映射。 如果您对我们允许人们"
+"表示他们首选映射的想法或方式有任何想法，请随时发布错误通知单。"
 
 #. Tag: para
 #: reference_output.xml:1317
@@ -1856,9 +1796,9 @@ msgid ""
 "lon, y/x may be preferred."
 msgstr ""
 "“选项”参数是一个位字段。 对于 PostGIS 2.2 ，这用于表示是否用 X3D "
-"GeoCooperatives 地理空间节点表示坐标以及是否翻转 x/y 轴。 "
-"默认情况下，<code>ST_AsX3D</code> 以数据库形式输出（long、lat 或 X、Y），但 "
-"X3D 默认为 lat/lon、y/x 可能是首选。"
+"GeoCooperatives 地理空间节点表示坐标以及是否翻转 x/y 轴。 默认情况下，"
+"<code>ST_AsX3D</code> 以数据库形式输出（long、lat 或 X、Y），但 X3D 默认为 "
+"lat/lon、y/x 可能是首选。"
 
 #. Tag: para
 #: reference_output.xml:1324
@@ -1866,8 +1806,9 @@ msgstr ""
 msgid ""
 "0: X/Y in database order (e.g. long/lat = X,Y is standard database order), "
 "default value, and non-spatial coordinates (just regular old Coordinate tag)."
-msgstr "0：数据库顺序中的 X/Y（例如，经/纬度 = X,Y "
-"是标准数据库顺序）、默认值和非空间坐标（只是常规的旧坐标标签）。"
+msgstr ""
+"0：数据库顺序中的 X/Y（例如，经/纬度 = X,Y 是标准数据库顺序）、默认值和非空间"
+"坐标（只是常规的旧坐标标签）。"
 
 #. Tag: para
 #: reference_output.xml:1328
@@ -1876,7 +1817,8 @@ msgid ""
 "1: Flip X and Y. If used in conjunction with the GeoCoordinate option "
 "switch, then output will be default \"latitude_first\" and coordinates will "
 "be flipped as well."
-msgstr "1：翻转X和Y。如果与地理坐标选项开关结合使用，则输出将默认为“latitude_first”，"
+msgstr ""
+"1：翻转X和Y。如果与地理坐标选项开关结合使用，则输出将默认为“latitude_first”，"
 "并且坐标也会翻转。"
 
 #. Tag: para
@@ -1896,11 +1838,11 @@ msgstr ""
 "2：GeoSpatial GeoCoordinates 中的输出坐标。 如果几何图形不在 WGS 84 长纬度 "
 "(srid: 4326) 中，此选项将引发错误。 这是目前唯一支持的地理坐标类型。 <ulink "
 "url=\"http://www.web3d.org/documents/specifications/19775-1/V3.2/Part01/"
-"components/geodata.html#Specifyingaspatialreference\""
-">请参阅指定空间参考系统的 X3D 规范</ulink>。默认输出将为<code> GeoCoordinate "
-"geoSystem='\"GD\" \"WE\" \"longitude_first\"'</code>。 如果您更喜欢 "
-"<code>GeoCoordinate geoSystem='\"GD\" \"WE\" \"latitude_first\"'</code> 的 "
-"X3D 默认值，请使用<code> (2+1)</code> = <code>3</code>"
+"components/geodata.html#Specifyingaspatialreference\">请参阅指定空间参考系统"
+"的 X3D 规范</ulink>。默认输出将为<code> GeoCoordinate geoSystem='\"GD\" "
+"\"WE\" \"longitude_first\"'</code>。 如果您更喜欢 <code>GeoCoordinate "
+"geoSystem='\"GD\" \"WE\" \"latitude_first\"'</code> 的 X3D 默认值，请使用"
+"<code> (2+1)</code> = <code>3</code>"
 
 #. Tag: entry
 #: reference_output.xml:1342
@@ -2022,7 +1964,8 @@ msgstr "IndexedTriangleSet（索引三角形集）"
 msgid ""
 "2D geometry support not yet complete. Inner rings currently just drawn as "
 "separate polygons. We are working on these."
-msgstr "2D 几何支持尚未完成。 内环当前仅绘制为单独的多边形。 我们正在研究这些。"
+msgstr ""
+"2D 几何支持尚未完成。 内环当前仅绘制为单独的多边形。 我们正在研究这些。"
 
 #. Tag: para
 #: reference_output.xml:1382
@@ -2045,8 +1988,8 @@ msgid ""
 "Windows. Use the FreeWRL_Launcher packaged to view the geometries."
 msgstr ""
 "还有一个很好的开源 X3D 查看器，您可以使用它来查看渲染的几何图形。 Free "
-"Wrl<ulink url=\"http://freewrl.sourceforge.net/\"> http://freewrl.sourceforge"
-".net/ </ulink>二进制文件适用于 Mac、Linux 和 Windows。 使用打包的 "
+"Wrl<ulink url=\"http://freewrl.sourceforge.net/\"> http://freewrl."
+"sourceforge.net/ </ulink>二进制文件适用于 Mac、Linux 和 Windows。 使用打包的 "
 "FreeWRL_Launcher 来查看几何图形。"
 
 #. Tag: para
@@ -2059,8 +2002,8 @@ msgid ""
 "source toolkit</ulink>."
 msgstr ""
 "另请查看利用此功能的<ulink url=\"https://git.osgeo.org/gitea/robe/"
-"postgis_x3d_viewer\"> PostGIS 简约 X3D 查看器</ulink>和<ulink url=\"http"
-"://www.x3dom.org/\"> x3dDom html/js 开源工具包</ulink>。"
+"postgis_x3d_viewer\"> PostGIS 简约 X3D 查看器</ulink>和<ulink url=\"http://"
+"www.x3dom.org/\"> x3dDom html/js 开源工具包</ulink>。"
 
 #. Tag: para
 #: reference_output.xml:1385
@@ -2074,8 +2017,9 @@ msgstr "可用性： 2.0.0： ISO-IEC-19776-1.2-X3DEncodings-XML"
 msgid ""
 "Enhanced: 2.2.0: Support for GeoCoordinates and axis (x/y, long/lat) "
 "flipping. Look at options for details."
-msgstr "增强：2.2.0：添加了对反转地理坐标和轴（x/y、经度/纬度）的支持。 "
-"有关详细信息，请参阅选项。"
+msgstr ""
+"增强：2.2.0：添加了对反转地理坐标和轴（x/y、经度/纬度）的支持。 有关详细信"
+"息，请参阅选项。"
 
 #. Tag: title
 #: reference_output.xml:1398
@@ -2083,7 +2027,8 @@ msgstr "增强：2.2.0：添加了对反转地理坐标和轴（x/y、经度/纬
 msgid ""
 "Example: Create a fully functional X3D document - This will generate a cube "
 "that is viewable in FreeWrl and other X3D viewers."
-msgstr "示例：创建一个功能齐全的 X3D 文档 - 您正在生成一个可以在 FreeWrl 或其他 X3D "
+msgstr ""
+"示例：创建一个功能齐全的 X3D 文档 - 您正在生成一个可以在 FreeWrl 或其他 X3D "
 "查看器中查看的多维数据集。"
 
 #. Tag: title
@@ -2132,20 +2077,6 @@ msgstr "示例：闭合多线串（带孔的多边形的边界）"
 msgid "Return a GeoHash representation of the geometry."
 msgstr "返回几何图形的 GeoHash 表示形式。"
 
-#. Tag: funcprototype
-#: reference_output.xml:1441
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_GeoHash</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxchars=full_precision_of_point</parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>ST_GeoHash</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxchars=full_precision_of_point</parameter></paramdef>"
-
 #. Tag: para
 #: reference_output.xml:1452
 #, no-c-format
@@ -2167,8 +2098,9 @@ msgid ""
 "Non-point geometry values with non-zero extent can also be mapped to GeoHash "
 "codes. The precision of the code depends on the geographic extent of the "
 "geometry."
-msgstr "具有非零范围的非点几何值也可以映射到 GeoHash 代码。 "
-"代码的精度取决于几何的地理范围。"
+msgstr ""
+"具有非零范围的非点几何值也可以映射到 GeoHash 代码。 代码的精度取决于几何的地"
+"理范围。"
 
 #. Tag: para
 #: reference_output.xml:1462
@@ -2183,12 +2115,11 @@ msgid ""
 "precision. The box determined by the GeoHash code always contains the input "
 "feature."
 msgstr ""
-"如果未指定 <varname>maxchars</varname>，则返回的 GeoHash "
-"代码适用于包含输入几何图形的最小单元格。 Points 返回精度为 20 个字符的 "
-"GeoHash（大约足以容纳输入的完整双精度）。 其他几何类型可能会返回精度较低的 "
-"GeoHash，具体取决于几何形状的范围。 "
-"较大的几何图形的精度较低，较小的几何图形的精度较高。 由 GeoHash "
-"代码确定的框始终包含输入特征。"
+"如果未指定 <varname>maxchars</varname>，则返回的 GeoHash 代码适用于包含输入几"
+"何图形的最小单元格。 Points 返回精度为 20 个字符的 GeoHash（大约足以容纳输入"
+"的完整双精度）。 其他几何类型可能会返回精度较低的 GeoHash，具体取决于几何形状"
+"的范围。 较大的几何图形的精度较低，较小的几何图形的精度较高。 由 GeoHash 代码"
+"确定的框始终包含输入特征。"
 
 #. Tag: para
 #: reference_output.xml:1468
@@ -2223,5 +2154,5 @@ msgid ""
 ", <xref linkend=\"ST_PointFromGeoHash\"/>, <xref "
 "linkend=\"ST_Box2dFromGeoHash\"/>"
 msgstr ""
-", <xref linkend=\"ST_PointFromGeoHash\"/>, <xref linkend="
-"\"ST_Box2dFromGeoHash\"/>"
+", <xref linkend=\"ST_PointFromGeoHash\"/>, <xref "
+"linkend=\"ST_Box2dFromGeoHash\"/>"

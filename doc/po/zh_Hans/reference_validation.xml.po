@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-09-06 05:32+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -26,10 +26,10 @@ msgid ""
 "invalidity. There is also a function to create a valid geometry out of an "
 "invalid one."
 msgstr ""
-"这些函数用于根据OGC SFS（Open Geospatial Consortium Simple Feature Specificat"
-"ion，开放地理空间联盟简单要素规范）标准验证几何数据是否有效。它们还提供有关无"
-"效性质和位置的信息。此外，还有一个函数可用于从无效的几何数据中创建有效的几何"
-"数据。"
+"这些函数用于根据OGC SFS（Open Geospatial Consortium Simple Feature "
+"Specification，开放地理空间联盟简单要素规范）标准验证几何数据是否有效。它们还"
+"提供有关无效性质和位置的信息。此外，还有一个函数可用于从无效的几何数据中创建"
+"有效的几何数据。"
 
 #. Tag: title
 #: reference_validation.xml:15
@@ -59,8 +59,8 @@ msgid ""
 "only tested in 2 dimensions. For geometries that are invalid, a PostgreSQL "
 "NOTICE is emitted providing details of why it is not valid."
 msgstr ""
-"根据 OGC 规则测试 ST_Geometry 值在 2D 中是否格式良好且有效。 对于 3 维和 4 "
-"维几何形状，有效性仍然仅在 2 维中进行测试。 对于无效的几何图形，会发出 "
+"根据 OGC 规则测试 ST_Geometry 值在 2D 中是否格式良好且有效。 对于 3 维和 4 维"
+"几何形状，有效性仍然仅在 2 维中进行测试。 对于无效的几何图形，会发出 "
 "PostgreSQL NOTICE，提供其无效原因的详细信息。"
 
 #. Tag: para
@@ -71,8 +71,8 @@ msgid ""
 "values are documented in <xref linkend=\"ST_IsValidDetail\"/> This version "
 "does not print a NOTICE explaining invalidity."
 msgstr ""
-"对于带有 <varname>flags</varname> 参数的版本，支持的值记录在 <xref linkend="
-"\"ST_IsValidDetail\"/> 中。此版本不会打印解释无效性的通知。"
+"对于带有 <varname>flags</varname> 参数的版本，支持的值记录在 <xref "
+"linkend=\"ST_IsValidDetail\"/> 中。此版本不会打印解释无效性的通知。"
 
 #. Tag: para
 #: reference_validation.xml:54
@@ -80,7 +80,8 @@ msgstr ""
 msgid ""
 "For more information on the definition of geometry validity, refer to <xref "
 "linkend=\"OGC_Validity\"/>"
-msgstr "有关几何有效性定义的更多信息，请参阅第 <xref linkend=\"OGC_Validity\"/>"
+msgstr ""
+"有关几何有效性定义的更多信息，请参阅第 <xref linkend=\"OGC_Validity\"/>"
 
 #. Tag: para
 #: reference_validation.xml:58
@@ -121,8 +122,9 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.9"
 msgid ""
 "Neither OGC-SFS nor SQL-MM specifications include a flag argument for "
 "ST_IsValid. The flag is a PostGIS extension."
-msgstr "OGC-SFS 和 SQL-MM 规范均不包含 ST_IsValid 的标志参数。 该标志是 PostGIS "
-"扩展。"
+msgstr ""
+"OGC-SFS 和 SQL-MM 规范均不包含 ST_IsValid 的标志参数。 该标志是 PostGIS 扩"
+"展。"
 
 #. Tag: title
 #: reference_validation.xml:80 reference_validation.xml:147
@@ -153,22 +155,9 @@ msgstr ""
 msgid ""
 "Returns a <varname>valid_detail</varname> row stating if a geometry is valid "
 "or if not a reason and a location."
-msgstr "返回 <varname>valid_detail</varname> "
-"行，说明几何图形是否有效或无效，说明原因和位置。"
-
-#. Tag: funcprototype
-#: reference_validation.xml:106
-#, no-c-format
-msgid ""
-"<funcdef>valid_detail <function>ST_IsValidDetail</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>flags</parameter></"
-"paramdef>"
 msgstr ""
-"<funcdef>valid_detail <function>ST_IsValidDetail</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>flags</parameter></paramdef>"
+"返回 <varname>valid_detail</varname> 行，说明几何图形是否有效或无效，说明原因"
+"和位置。"
 
 #. Tag: para
 #: reference_validation.xml:117
@@ -179,10 +168,10 @@ msgid ""
 "(<varname>reason</varname>) stating a reason why it is invalid and a "
 "geometry (<varname>location</varname>) pointing out where it is invalid."
 msgstr ""
-"返回一个 <varname>valid_detail</varname> "
-"行，其中包含一个布尔值（<varname>有效</varname>），说明几何图形是否有效；"
-"一个 varchar（<varname>原因</varname>），说明其无效原因；以及一个几何图形（<v"
-"arname>位置</varname>），指出其无效位置。"
+"返回一个 <varname>valid_detail</varname> 行，其中包含一个布尔值（<varname>有"
+"效</varname>），说明几何图形是否有效；一个 varchar（<varname>原因</"
+"varname>），说明其无效原因；以及一个几何图形（<varname>位置</varname>），指出"
+"其无效位置。"
 
 #. Tag: para
 #: reference_validation.xml:122
@@ -192,8 +181,8 @@ msgid ""
 "<xref linkend=\"ST_IsValidReason\"/> to generate a detailed report of "
 "invalid geometries."
 msgstr ""
-"有助于改进 <xref linkend=\"ST_IsValid\"/>和<xref linkend=\"ST_IsValidReason\""
-"/>的组合，以生成无效几何的详细报告。"
+"有助于改进 <xref linkend=\"ST_IsValid\"/>和<xref "
+"linkend=\"ST_IsValidReason\"/>的组合，以生成无效几何的详细报告。"
 
 #. Tag: para
 #: reference_validation.xml:124
@@ -218,8 +207,8 @@ msgid ""
 "this is the validity model used by those tools. Note that this is invalid "
 "under the OGC model."
 msgstr ""
-"1：考虑某些类型的自接触环（倒壳和倒孔）是有效的。 这也称为“ESRI "
-"标志”，因为这是这些工具使用的有效性模型。 注意，这在 OGC 模型下是无效的。"
+"1：考虑某些类型的自接触环（倒壳和倒孔）是有效的。 这也称为“ESRI 标志”，因为这"
+"是这些工具使用的有效性模型。 注意，这在 OGC 模型下是无效的。"
 
 #. Tag: para
 #: reference_validation.xml:143 reference_validation.xml:288
@@ -253,8 +242,9 @@ msgstr "返回文本，说明几何图形是否有效，如果无效，则说明
 msgid ""
 "Useful in combination with <xref linkend=\"ST_IsValid\"/> to generate a "
 "detailed report of invalid geometries and reasons."
-msgstr "与 <xref linkend=\"ST_IsValid\"/> "
-"结合使用可生成无效几何形状和原因的详细报告。"
+msgstr ""
+"与 <xref linkend=\"ST_IsValid\"/> 结合使用可生成无效几何形状和原因的详细报"
+"告。"
 
 #. Tag: para
 #: reference_validation.xml:192
@@ -262,7 +252,8 @@ msgstr "与 <xref linkend=\"ST_IsValid\"/> "
 msgid ""
 "Allowed <varname>flags</varname> are documented in <xref "
 "linkend=\"ST_IsValidDetail\"/>."
-msgstr "允许的<varname>flags</varname>记录在<xref linkend=\"ST_IsValidDetail\"/> 中。"
+msgstr ""
+"允许的<varname>flags</varname>记录在<xref linkend=\"ST_IsValidDetail\"/> 中。"
 
 #. Tag: para
 #: reference_validation.xml:196
@@ -295,8 +286,9 @@ msgid ""
 "The function attempts to create a valid representation of a given invalid "
 "geometry without losing any of the input vertices. Valid geometries are "
 "returned unchanged."
-msgstr "该函数尝试创建给定无效几何体的有效表示，而不丢失任何输入顶点。 "
-"有效几何图形原封不动地返回。"
+msgstr ""
+"该函数尝试创建给定无效几何体的有效表示，而不丢失任何输入顶点。 有效几何图形原"
+"封不动地返回。"
 
 #. Tag: para
 #: reference_validation.xml:242
@@ -304,7 +296,8 @@ msgstr "该函数尝试创建给定无效几何体的有效表示，而不丢失
 msgid ""
 "Supported inputs are: POINTS, MULTIPOINTS, LINESTRINGS, MULTILINESTRINGS, "
 "POLYGONS, MULTIPOLYGONS and GEOMETRYCOLLECTIONS containing any mix of them."
-msgstr "相应的输入是点、多点、线串、多线串、多边形、多多边形、几何集合及其混合。"
+msgstr ""
+"相应的输入是点、多点、线串、多线串、多边形、多多边形、几何集合及其混合。"
 
 #. Tag: para
 #: reference_validation.xml:248
@@ -313,7 +306,8 @@ msgid ""
 "In case of full or partial dimensional collapses, the output geometry may be "
 "a collection of lower-to-equal dimension geometries, or a geometry of lower "
 "dimension."
-msgstr "在完全或部分尺寸折叠的情况下，输出几何是相同或较低维度的几何集合，或者是较低"
+msgstr ""
+"在完全或部分尺寸折叠的情况下，输出几何是相同或较低维度的几何集合，或者是较低"
 "维度几何的集合。"
 
 #. Tag: para
@@ -350,7 +344,8 @@ msgid ""
 "\"linework\" is the original algorithm, and builds valid geometries by first "
 "extracting all lines, noding that linework together, then building a value "
 "output from the linework."
-msgstr "“linework”是原始算法，它通过首先提取所有线条、将线条节点在一起、然后从线条构"
+msgstr ""
+"“linework”是原始算法，它通过首先提取所有线条、将线条节点在一起、然后从线条构"
 "建值输出来构建有效的几何图形。"
 
 #. Tag: para
@@ -360,7 +355,8 @@ msgid ""
 "\"structure\" is an algorithm that distinguishes between interior and "
 "exterior rings, building new geometry by unioning exterior rings, and then "
 "differencing all interior rings."
-msgstr "“structure”是一种区分内环和外环的算法，通过合并外环来构建新的几何形状，然后区"
+msgstr ""
+"“structure”是一种区分内环和外环的算法，通过合并外环来构建新的几何形状，然后区"
 "分所有内环。"
 
 #. Tag: para
@@ -372,8 +368,8 @@ msgid ""
 "components that collapse to a lower dimensionality, for example a one-point "
 "linestring would be dropped."
 msgstr ""
-"“keepcollapsed”键仅对“结构”算法有效。 以“真”或“假”为例。 "
-"如果指定了“false”，则将显示已折叠为较低维度的几何元素，例如单个 LINESTRING。"
+"“keepcollapsed”键仅对“结构”算法有效。 以“真”或“假”为例。 如果指定了“false”，"
+"则将显示已折叠为较低维度的几何元素，例如单个 LINESTRING。"
 
 #. Tag: para
 #: reference_validation.xml:289

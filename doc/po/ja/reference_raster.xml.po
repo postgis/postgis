@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-07-20 04:36+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -1128,16 +1128,6 @@ msgstr ""
 msgid "Reports the version of the GDAL library in use by PostGIS."
 msgstr "PostGISで使っているGDALライブラリの版を報告します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:880
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_GDAL_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>text <function>PostGIS_GDAL_Version</function></funcdef> "
-"<paramdef></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:889
 #, no-c-format
@@ -1153,16 +1143,6 @@ msgstr ""
 #, no-c-format
 msgid "Reports full raster library build date."
 msgstr "完全なラスタライブラリをビルドした日付を報告します。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:914
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Raster_Lib_Build_Date</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>text <function>PostGIS_Raster_Lib_Build_Date</function></funcdef> "
-"<paramdef></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:925
@@ -1180,16 +1160,6 @@ msgstr ""
 "<refpurpose>完全なラスタの版とビルドコンフィギュレーション情報を報告します。"
 "</refpurpose>"
 
-#. Tag: funcprototype
-#: reference_raster.xml:951
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Raster_Lib_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>text <function>PostGIS_Raster_Lib_Version</function></funcdef> "
-"<paramdef></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:962
 #, no-c-format
@@ -1206,28 +1176,6 @@ msgid ""
 msgstr ""
 "使用しているGDALライブラリが対応するラスタ書式の一覧を返します。この一覧で"
 "can_write=TrueとなっているものだけがST_AsGDALRasterで使えます。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:990
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>ST_GDALDrivers</function></funcdef> "
-"<paramdef><type>integer </type> <parameter>OUT idx</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>OUT short_name</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>OUT long_name</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>OUT can_read</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>OUT can_write</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>OUT create_options</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>setof record <function>ST_GDALDrivers</function></funcdef> "
-"<paramdef><type>integer </type> <parameter>OUT idx</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>OUT short_name</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>OUT long_name</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>OUT can_read</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>OUT can_write</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>OUT create_options</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:1005
@@ -1310,28 +1258,6 @@ msgstr ""
 "url=\"https://gdal.org/api/gdal_alg.html?"
 "highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL"
 "等高線生成アルゴリズム</ulink>を使います。</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:1044
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>ST_Contour</function></funcdef> "
-"<paramdef><type>raster </type><parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type><parameter>bandnumber</parameter></paramdef> "
-"<paramdef><type>double precision </type><parameter>level_interval</"
-"parameter></paramdef> <paramdef><type>double precision </"
-"type><parameter>level_base</parameter></paramdef> <paramdef><type>double "
-"precision[] </type><parameter>fixed_levels</parameter></paramdef> "
-"<paramdef><type>boolean </type><parameter>polygonize</parameter></paramdef>"
-msgstr ""
-"<funcdef>setof record <function>ST_Contour</function></funcdef> "
-"<paramdef><type>raster </type><parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type><parameter>bandnumber</parameter></paramdef> "
-"<paramdef><type>double precision </type><parameter>level_interval</"
-"parameter></paramdef> <paramdef><type>double precision </"
-"type><parameter>level_base</parameter></paramdef> <paramdef><type>double "
-"precision[] </type><parameter>fixed_levels</parameter></paramdef> "
-"<paramdef><type>boolean </type><parameter>polygonize</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:1059
@@ -1429,24 +1355,6 @@ msgstr ""
 "X値とY値を使用してグリッド上のポイントを配置し、ポイントのZ値をサーフェス標高"
 "として配置し、3次元ポイントの入力セットに基づいてグリッドサーフェスを補間しま"
 "す。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:1112
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_InterpolateRaster</function></funcdef> "
-"<paramdef><type>geometry </type><parameter>input_points</parameter></"
-"paramdef> <paramdef><type>text </type><parameter>algorithm_options</"
-"parameter></paramdef> <paramdef><type>raster </type><parameter>template</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </"
-"type><parameter>template_band_num=1</parameter></paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_InterpolateRaster</function></funcdef> "
-"<paramdef><type>geometry </type><parameter>input_points</parameter></"
-"paramdef> <paramdef><type>text </type><parameter>algorithm_options</"
-"parameter></paramdef> <paramdef><type>raster </type><parameter>template</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </"
-"type><parameter>template_band_num=1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:1125
@@ -1603,24 +1511,6 @@ msgstr "Availability: 2.1.0"
 #, no-c-format
 msgid "Create an reduced resolution version of a given raster coverage."
 msgstr "与えられたラスタカバレッジから解像度を落としたものを生成します。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:1252
-#, no-c-format
-msgid ""
-"<funcdef>regclass <function>ST_CreateOverview</function></funcdef> "
-"<paramdef><type>regclass </type> <parameter>tab</parameter></paramdef> "
-"<paramdef><type>name </type> <parameter>col</parameter></paramdef> "
-"<paramdef><type>int </type> <parameter>factor</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> "
-"<parameter>algo='NearestNeighbor'</parameter></paramdef>"
-msgstr ""
-"<funcdef>regclass <function>ST_CreateOverview</function></funcdef> "
-"<paramdef><type>regclass </type> <parameter>tab</parameter></paramdef> "
-"<paramdef><type>name </type> <parameter>col</parameter></paramdef> "
-"<paramdef><type>int </type> <parameter>factor</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> "
-"<parameter>algo='NearestNeighbor'</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:1266
@@ -2077,40 +1967,6 @@ msgid "Cover georeferenced area with a grid of empty raster tiles."
 msgstr ""
 "空のラスタタイルのグリッドでジオリファレンスを施されている領域を生成します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:1743
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_MakeEmptyCoverage</function></funcdef> "
-"<paramdef><type>integer </type> <parameter>tilewidth</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>tileheight</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>width</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>height</parameter></paramdef> "
-"<paramdef><type>double precision </type> <parameter>upperleftx</parameter></"
-"paramdef> <paramdef><type>double precision </type> <parameter>upperlefty</"
-"parameter></paramdef> <paramdef><type>double precision </type> "
-"<parameter>scalex</parameter></paramdef> <paramdef><type>double precision </"
-"type> <parameter>scaley</parameter></paramdef> <paramdef><type>double "
-"precision </type> <parameter>skewx</parameter></paramdef> "
-"<paramdef><type>double precision </type> <parameter>skewy</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>srid=unknown</parameter></paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_MakeEmptyCoverage</function></funcdef> "
-"<paramdef><type>integer </type> <parameter>tilewidth</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>tileheight</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>width</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>height</parameter></paramdef> "
-"<paramdef><type>double precision </type> <parameter>upperleftx</parameter></"
-"paramdef> <paramdef><type>double precision </type> <parameter>upperlefty</"
-"parameter></paramdef> <paramdef><type>double precision </type> "
-"<parameter>scalex</parameter></paramdef> <paramdef><type>double precision </"
-"type> <parameter>scaley</parameter></paramdef> <paramdef><type>double "
-"precision </type> <parameter>skewx</parameter></paramdef> "
-"<paramdef><type>double precision </type> <parameter>skewy</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>srid=unknown</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:1763
 #, no-c-format
@@ -2303,32 +2159,6 @@ msgid ""
 msgstr ""
 "任意のタイル化されたラスタカバレッジから構成されたタイルの集合を返します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:1934
-#, no-c-format
-msgid ""
-"<funcdef>SETOF raster <function>ST_Retile</function></funcdef> "
-"<paramdef><type>regclass </type> <parameter>tab</parameter></paramdef> "
-"<paramdef><type>name </type> <parameter>col</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>ext</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>sfx</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>sfy</parameter></paramdef> "
-"<paramdef><type>int </type> <parameter>tw</parameter></paramdef> "
-"<paramdef><type>int </type> <parameter>th</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text </type> <parameter>algo='NearestNeighbor'</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>SETOF raster <function>ST_Retile</function></funcdef> "
-"<paramdef><type>regclass </type> <parameter>tab</parameter></paramdef> "
-"<paramdef><type>name </type> <parameter>col</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>ext</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>sfx</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>sfy</parameter></paramdef> "
-"<paramdef><type>int </type> <parameter>tw</parameter></paramdef> "
-"<paramdef><type>int </type> <parameter>th</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text </type> <parameter>algo='NearestNeighbor'</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:1952
 #, no-c-format
@@ -2349,20 +2179,6 @@ msgstr ""
 #, no-c-format
 msgid "Returns a raster from a supported GDAL raster file."
 msgstr "対応するGDALラスタファイルからラスタを返します。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:1982
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_FromGDALRaster</function></funcdef> "
-"<paramdef><type>bytea </type> <parameter>gdaldata</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>srid=NULL</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_FromGDALRaster</function></funcdef> "
-"<paramdef><type>bytea </type> <parameter>gdaldata</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>srid=NULL</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:1994
@@ -2401,20 +2217,6 @@ msgid ""
 msgstr ""
 "GDAL書式または一般的にワールドファイルでみられるESRI書式の地理参照メタデータ"
 "を返します。デフォルトはGDALです。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:2033
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_GeoReference</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>format=GDAL</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>ST_GeoReference</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>format=GDAL</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:2044
@@ -2460,16 +2262,6 @@ msgstr ", <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>"
 msgid "Returns the height of the raster in pixels."
 msgstr "ラスタの高さをピクセル単位で返します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:2073
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_Height</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_Height</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:2083
 #, no-c-format
@@ -2485,16 +2277,6 @@ msgid ""
 msgstr ""
 "<refpurpose>ラスタが空 (幅が0で高さが0)の場合にはTRUEを返します。他の場合に"
 "は、FALSEを返します。</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:2107
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_IsEmpty</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_IsEmpty</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:2117
@@ -2514,16 +2296,6 @@ msgid ""
 "refpurpose>"
 msgstr ""
 "<refpurpose>ラスタが取る領域の合計をバイト単位で返します。</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:2144
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_MemSize</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_MemSize</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:2154
@@ -2574,16 +2346,6 @@ msgstr ""
 "ピクセル数、回転 (スキュー)、左上隅位置等のラスタオブジェクトに関する基本的な"
 "メタデータを返します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:2187
-#, no-c-format
-msgid ""
-"<funcdef>record <function>ST_MetaData</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>record <function>ST_MetaData</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:2197
 #, no-c-format
@@ -2609,16 +2371,6 @@ msgid ""
 "<refpurpose>Returns the number of bands in the raster object.</refpurpose>"
 msgstr "<refpurpose>ラスタオブジェクトのバンド数を返します。</refpurpose>"
 
-#. Tag: funcprototype
-#: reference_raster.xml:2222
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_NumBands</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_NumBands</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:2232
 #, no-c-format
@@ -2631,16 +2383,6 @@ msgstr "<para>ラスタオブジェクトのバンド数を返します。</para
 msgid ""
 "Returns the pixel height in geometric units of the spatial reference system."
 msgstr "空間参照系の地理的な単位でのピクセルの高さを返します。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:2256
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>ST_PixelHeight</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>double precision <function>ST_PixelHeight</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:2266
@@ -2693,16 +2435,6 @@ msgid ""
 "Returns the pixel width in geometric units of the spatial reference system."
 msgstr "空間参照系の地理的な単位でのピクセルの幅を返します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:2306
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>ST_PixelWidth</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>double precision <function>ST_PixelWidth</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:2316
 #, no-c-format
@@ -2740,16 +2472,6 @@ msgid ""
 "system."
 msgstr "空間参照系の地理的な単位でのピクセル幅のX成分を返します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:2360
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_ScaleX</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>float8 <function>ST_ScaleX</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:2370
 #, no-c-format
@@ -2775,16 +2497,6 @@ msgid ""
 "Returns the Y component of the pixel height in units of coordinate reference "
 "system."
 msgstr "空間参照系の地理的な単位でのピクセル幅のY成分を返します。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:2397
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_ScaleY</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>float8 <function>ST_ScaleY</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:2407
@@ -2813,20 +2525,6 @@ msgid ""
 msgstr ""
 "ラスタの指定した列と行における左上隅の地理座標X値とY値 (経度と緯度)を返しま"
 "す。列と行の番号は1始まりです。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:2435
-#, no-c-format
-msgid ""
-"<funcdef>record <function>ST_RasterToWorldCoord</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>xcolumn</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>yrow</parameter></paramdef>"
-msgstr ""
-"<funcdef>record <function>ST_RasterToWorldCoord</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>xcolumn</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>yrow</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:2447
@@ -2972,16 +2670,6 @@ msgstr ""
 msgid "Returns the rotation of the raster in radian."
 msgstr "ラスタの回転をラジアンで返します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:2593
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_Rotation</function></funcdef> "
-"<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>float8 <function>ST_Rotation</function></funcdef> "
-"<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:2603
 #, no-c-format
@@ -3007,16 +2695,6 @@ msgstr ""
 msgid "Returns the georeference X skew (or rotation parameter)."
 msgstr "空間参照のXスキュー (回転パラメータ)を返します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:2628
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_SkewX</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>float8 <function>ST_SkewX</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:2638
 #, no-c-format
@@ -3040,16 +2718,6 @@ msgstr ", <xref linkend=\"RT_ST_SkewY\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
 #, no-c-format
 msgid "Returns the georeference Y skew (or rotation parameter)."
 msgstr "空間参照のYスキュー (回転パラメータ)を返します。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:2664
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_SkewY</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>float8 <function>ST_SkewY</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:2674
@@ -3077,16 +2745,6 @@ msgid ""
 "spatial_ref_sys table."
 msgstr ""
 "ラスタのspatial_ref_sysテーブルで定義されている空間参照系識別番号を返します。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:2700
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_SRID</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_SRID</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:2710
@@ -3121,16 +2779,6 @@ msgid ""
 "refpurpose>"
 msgstr "<refpurpose>ラスタの中身の概要が文字列で返されます。</refpurpose>"
 
-#. Tag: funcprototype
-#: reference_raster.xml:2735
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_Summary</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>ST_Summary</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:2745
 #, no-c-format
@@ -3157,16 +2805,6 @@ msgstr ""
 "<refpurpose>適用されている空間参照系でのラスタの左上隅のX座標値を返します。</"
 "refpurpose>"
 
-#. Tag: funcprototype
-#: reference_raster.xml:2774
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_UpperLeftX</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>float8 <function>ST_UpperLeftX</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:2784
 #, no-c-format
@@ -3192,16 +2830,6 @@ msgstr ""
 "<refpurpose>適用されている空間参照系でのラスタの左上隅のY座標値を返します。</"
 "refpurpose>"
 
-#. Tag: funcprototype
-#: reference_raster.xml:2808
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_UpperLeftY</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>float8 <function>ST_UpperLeftY</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:2818
 #, no-c-format
@@ -3216,16 +2844,6 @@ msgstr ""
 #, no-c-format
 msgid "<refpurpose>Returns the width of the raster in pixels.</refpurpose>"
 msgstr "<refpurpose>ラスタの幅をピクセル単位で返します。</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:2842
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_Width</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_Width</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:2852
@@ -3441,20 +3059,6 @@ msgstr ""
 "指定されたバンドについてデータが無いことを表現する値を返します。バンド番号を"
 "指定しない場合には、1番と仮定します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:3110
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>ST_BandNoDataValue</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>double precision <function>ST_BandNoDataValue</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:3121
 #, no-c-format
@@ -3518,20 +3122,6 @@ msgstr ""
 "ファイルシステムに格納されているバンドのシステムファイルパスを返します。バン"
 "ド番号が指定されていない場合には、1番と仮定します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:3203
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_BandPath</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>ST_BandPath</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:3214
 #, no-c-format
@@ -3551,20 +3141,6 @@ msgid ""
 msgstr ""
 "ファイルシステムに格納されているバンドのファイルサイズを返します。バンド番号"
 "が指定されていない場合には、1番と仮定します。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:3238
-#, no-c-format
-msgid ""
-"<funcdef>bigint <function>ST_BandFileSize</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>bigint <function>ST_BandFileSize</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:3249
@@ -3608,20 +3184,6 @@ msgstr ""
 "ファイルシステムに格納されているバンドのファイルタイムスタンプ返します。バン"
 "ド番号が指定されていない場合には、1番と仮定します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:3274
-#, no-c-format
-msgid ""
-"<funcdef>bigint <function>ST_BandFileTimestamp</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>bigint <function>ST_BandFileTimestamp</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:3285
 #, no-c-format
@@ -3655,20 +3217,6 @@ msgid ""
 msgstr ""
 "指定したバンドのピクセルタイプを返します。バンド番号が指定されていない場合に"
 "は、1番と仮定します。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:3308
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_BandPixelType</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>ST_BandPixelType</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:3319
@@ -3760,16 +3308,6 @@ msgid ""
 msgstr ""
 "<refpurpose>このピクセルタイプが格納できる最小値を返します。</refpurpose>"
 
-#. Tag: funcprototype
-#: reference_raster.xml:3383
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_MinPossibleValue</function></funcdef> "
-"<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_MinPossibleValue</function></funcdef> "
-"<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:3392
 #, no-c-format
@@ -3785,18 +3323,6 @@ msgid ""
 msgstr ""
 "<refpurpose>指定したバンド番号のバンドが無い場合には、TRUEを返します。バンド"
 "番号を指定していない場合には、1番と仮定します。</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:3416
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_HasNoBand</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>bandnum=1</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_HasNoBand</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>bandnum=1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:3427
@@ -3823,20 +3349,6 @@ msgid ""
 msgstr ""
 "<refpurpose>指定した行と列のピクセルの境界となるジオメトリを返します。</"
 "refpurpose>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:3458
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_PixelAsPolygon</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_PixelAsPolygon</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:3470
@@ -3872,22 +3384,6 @@ msgid ""
 msgstr ""
 "全てのピクセルについて境界となるジオメトリを、ピクセルごとのピクセル値とラス"
 "タ座標系のXとYとを付けて返します。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:3504
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>ST_PixelAsPolygons</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
-msgstr ""
-"<funcdef>setof record <function>ST_PixelAsPolygons</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:3516
@@ -3972,20 +3468,6 @@ msgid ""
 msgstr ""
 "<refpurpose>ピクセルの左上隅のポイントジオメトリを返します。</refpurpose>"
 
-#. Tag: funcprototype
-#: reference_raster.xml:3566
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_PixelAsPoint</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_PixelAsPoint</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:3577
 #, no-c-format
@@ -4018,22 +3500,6 @@ msgstr ""
 "<refpurpose>全てのピクセルについてポイントジオメトリを、ピクセルごとのピクセ"
 "ル値とラスタ座標系のXとYとを付けて返します。ポイントジオメトリの座標はピクセ"
 "ルの左上隅です。</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:3609
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>ST_PixelAsPoints</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
-msgstr ""
-"<funcdef>setof record <function>ST_PixelAsPoints</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:3620
@@ -4070,20 +3536,6 @@ msgid ""
 msgstr ""
 "<refpurpose>ピクセルで表現される面の重心 (ポイントジオメトリ)を返します。</"
 "refpurpose>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:3664
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_PixelAsCentroid</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>y</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_PixelAsCentroid</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>y</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:3675
@@ -4126,22 +3578,6 @@ msgstr ""
 "<refpurpose>全てのピクセルについて重心 (ポイントジオメト)リを、ピクセルごとの"
 "ピクセル値とラスタ座標系のXとYとを付けて返します。ポイントジオメトリの座標は"
 "ピクセルで表現される面の重心です。</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:3708
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>ST_PixelAsCentroids</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
-msgstr ""
-"<funcdef>setof record <function>ST_PixelAsCentroids</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:3719
@@ -4327,24 +3763,6 @@ msgstr ""
 "入力ジオメトリと同じX/y座標値と、指定されたリサンプリングアルゴリズムを使って"
 "ラスタから複写されたZ値とを持つジオメトリを返します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:3927
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_SetZ</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>resample=nearest</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>band=1</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_SetZ</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>resample=nearest</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>band=1</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:3940
 #, no-c-format
@@ -4388,24 +3806,6 @@ msgid ""
 msgstr ""
 "入力ジオメトリと同じX/Y値を持ち、かつ、指定されたリサンプリングアルゴリズムを"
 "使ってラスタから複写されたM値を持つジオメトリを返します。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:3970
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_SetM</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>resample=nearest</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>band=1</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_SetM</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>resample=nearest</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>band=1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:3983
@@ -4786,18 +4186,6 @@ msgstr ""
 msgid "Set the rotation of the raster in radian."
 msgstr "ラスタの回転をラジアン単位で設定します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:4544
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_SetRotation</function></funcdef> "
-"<paramdef><type>raster</type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>float8</type> <parameter>rotation</parameter></paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_SetRotation</function></funcdef> "
-"<paramdef><type>raster</type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>float8</type> <parameter>rotation</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:4555
 #, no-c-format
@@ -4906,18 +4294,6 @@ msgid ""
 "spatial_ref_sys table."
 msgstr "スタのSRIDをspatial_ref_sysに定義されている特定の整数値に設定します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:4674
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_SetSRID</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_SetSRID</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:4689
 #, no-c-format
@@ -4948,20 +4324,6 @@ msgid ""
 "Sets the value of the upper left corner of the pixel of the raster to "
 "projected X and Y coordinates."
 msgstr "ラスタの左上隅の投影座標系のX値とY値を設定します。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:4715
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_SetUpperLeft</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>double precision </type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>double precision </type> <parameter>y</parameter></paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_SetUpperLeft</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>double precision </type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>double precision </type> <parameter>y</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:4727
@@ -5643,20 +5005,6 @@ msgstr ""
 msgid "Sets the isnodata flag of the band to TRUE."
 msgstr "バンドのisnodataフラグをTRUEにします。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:5354
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_SetBandIsNoData</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band=1</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_SetBandIsNoData</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band=1</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:5365
 #, no-c-format
@@ -5688,26 +5036,6 @@ msgstr ""
 #, no-c-format
 msgid "Update the external path and band number of an out-db band"
 msgstr "データベース外バンドの外部パスとバンド番号を更新します。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:5398
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_SetBandPath</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>band</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>outdbpath</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>outdbindex</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>boolean </type> <parameter>force=false</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_SetBandPath</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>band</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>outdbpath</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>outdbindex</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>boolean </type> <parameter>force=false</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:5412
@@ -5752,24 +5080,6 @@ msgstr ", <xref linkend=\"RT_ST_SetBandIndex\"/>"
 #, no-c-format
 msgid "Update the external band number of an out-db band"
 msgstr "データベース外バンドの外部バンド番号の更新"
-
-#. Tag: funcprototype
-#: reference_raster.xml:5452
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_SetBandIndex</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>band</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>outdbindex</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>boolean </type> <parameter>force=false</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_SetBandIndex</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>band</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>outdbindex</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>boolean </type> <parameter>force=false</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:5465
@@ -6289,16 +5599,6 @@ msgstr "ラスタ入力"
 msgid "Return a raster value from a Well-Known Binary (WKB) raster."
 msgstr "Well-Known Binary (WKB)ラスタからラスタ値を返します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:6066
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_RastFromWKB</function></funcdef> "
-"<paramdef><type>bytea </type> <parameter>wkb</parameter></paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_RastFromWKB</function></funcdef> "
-"<paramdef><type>bytea </type> <parameter>wkb</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:6076
 #, no-c-format
@@ -6322,16 +5622,6 @@ msgid ""
 "Return a raster value from a Hex representation of Well-Known Binary (WKB) "
 "raster."
 msgstr "Well-Knownバイナリ (WKB)ラスタの16進数表現からラスタを返します。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:6109
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_RastFromHexWKB</function></funcdef> "
-"<paramdef><type>text </type> <parameter>wkb</parameter></paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_RastFromHexWKB</function></funcdef> "
-"<paramdef><type>text </type> <parameter>wkb</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:6119
@@ -6424,20 +5714,6 @@ msgstr ", <xref linkend=\"RT_ST_AsHexWKB\"/>"
 msgid "Return the Well-Known Binary (WKB) in Hex representation of the raster."
 msgstr "Well-Known Binary (WKB)ラスタを16進数表現で返します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:6215
-#, no-c-format
-msgid ""
-"<funcdef>bytea <function>ST_AsHexWKB</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>boolean </type> <parameter>outasin=FALSE</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>bytea <function>ST_AsHexWKB</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>boolean </type> <parameter>outasin=FALSE</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:6226
 #, no-c-format
@@ -6481,24 +5757,6 @@ msgstr ""
 "指定されたGDALラスタ書式でラスタタイルを返します。ラスタ書式はコンパイルした"
 "ライブラリが対応するものです。ライブラリが対応する書式の一覧を得るには"
 "ST_GDALRasters()を使います。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:6264
-#, no-c-format
-msgid ""
-"<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>format</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text[] </type> <parameter>options=NULL</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>srid=sameassource</parameter></paramdef>"
-msgstr ""
-"<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>format</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text[] </type> <parameter>options=NULL</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>srid=sameassource</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:6278
@@ -7002,42 +6260,6 @@ msgstr ""
 "元のラスタと指定したバンドから4個までの8BUIバンド (grayscale, RGB, RGBA)から"
 "なる新しいラスタを生成します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:6831
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_ColorMap</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>nband=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>colormap=grayscale</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text </type> <parameter>method=INTERPOLATE</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_ColorMap</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>nband=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>colormap=grayscale</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text </type> <parameter>method=INTERPOLATE</parameter></"
-"paramdef>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:6841
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_ColorMap</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>colormap</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>method=INTERPOLATE</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_ColorMap</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>colormap</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>method=INTERPOLATE</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:6853
 #, no-c-format
@@ -7280,42 +6502,6 @@ msgid ""
 msgstr ""
 "元のラスタと指定したバンドを赤、緑、青バンドとして一つの8BUIバンドを持つラス"
 "タを生成します。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:7070
-#, no-c-format
-msgid ""
-"<funcdef>(1) raster <function>ST_Grayscale</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>redband=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>greenband=2</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer </type> <parameter>blueband=3</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>extenttype=INTERSECTION</parameter></paramdef>"
-msgstr ""
-"<funcdef>(1) raster <function>ST_Grayscale</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>redband=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>greenband=2</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer </type> <parameter>blueband=3</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>extenttype=INTERSECTION</parameter></paramdef>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:7081
-#, no-c-format
-msgid ""
-"<funcdef>(2) raster <function>ST_Grayscale</function></funcdef> "
-"<paramdef><type>rastbandarg[] </type> <parameter>rastbandargset</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>extenttype=INTERSECTION</parameter></paramdef>"
-msgstr ""
-"<funcdef>(2) raster <function>ST_Grayscale</function></funcdef> "
-"<paramdef><type>rastbandarg[] </type> <parameter>rastbandargset</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>extenttype=INTERSECTION</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:7092
@@ -8856,32 +8042,6 @@ msgstr ""
 "タバンドの近傍の値を与えたPL/pgSQLユーザ定義関数の結果からなるラスタを返しま"
 "す。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:8603
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_MapAlgebraFctNgb</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>band</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>ngbwidth</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>ngbheight</parameter></paramdef> "
-"<paramdef><type>regprocedure </type> <parameter>onerastngbuserfunc</"
-"parameter></paramdef> <paramdef><type>text </type> <parameter>nodatamode</"
-"parameter></paramdef> <paramdef><type>text[] </type> <parameter>VARIADIC "
-"args</parameter></paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_MapAlgebraFctNgb</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>band</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>ngbwidth</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>ngbheight</parameter></paramdef> "
-"<paramdef><type>regprocedure </type> <parameter>onerastngbuserfunc</"
-"parameter></paramdef> <paramdef><type>text </type> <parameter>nodatamode</"
-"parameter></paramdef> <paramdef><type>text[] </type> <parameter>VARIADIC "
-"args</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:8626
 #, no-c-format
@@ -9377,22 +8537,6 @@ msgid ""
 "pixel's neighborhood."
 msgstr "近隣のピクセル値の内挿補間を行うラスタ処理関数です。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:8968
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>ST_InvDistWeight4ma</function></funcdef> "
-"<paramdef><type>double precision[][][]</type> <parameter>value</parameter></"
-"paramdef> <paramdef><type>integer[][]</type> <parameter>pos</parameter></"
-"paramdef> <paramdef><type>text[]</type> <parameter>VARIADIC userargs</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>double precision <function>ST_InvDistWeight4ma</function></funcdef> "
-"<paramdef><type>double precision[][][]</type> <parameter>value</parameter></"
-"paramdef> <paramdef><type>integer[][]</type> <parameter>pos</parameter></"
-"paramdef> <paramdef><type>text[]</type> <parameter>VARIADIC userargs</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:8980
 #, no-c-format
@@ -9553,22 +8697,6 @@ msgid ""
 msgstr ""
 "対象ピクセルと値を持つ近隣ピクセルとの最短距離をピクセル単位で返すラスタ処理"
 "関数です。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:9268
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>ST_MinDist4ma</function></funcdef> "
-"<paramdef><type>double precision[][][]</type> <parameter>value</parameter></"
-"paramdef> <paramdef><type>integer[][]</type> <parameter>pos</parameter></"
-"paramdef> <paramdef><type>text[]</type> <parameter>VARIADIC userargs</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>double precision <function>ST_MinDist4ma</function></funcdef> "
-"<paramdef><type>double precision[][][]</type> <parameter>value</parameter></"
-"paramdef> <paramdef><type>integer[][]</type> <parameter>pos</parameter></"
-"paramdef> <paramdef><type>text[]</type> <parameter>VARIADIC userargs</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:9280
@@ -9892,28 +9020,6 @@ msgstr ""
 msgid "Returns a raster with the calculated \"roughness\" of a DEM."
 msgstr "DEMの「粗度」を計算したラスタを返します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:9726
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_Roughness</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>nband</parameter></paramdef> "
-"<paramdef><type>raster </type> <parameter>customextent</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>pixeltype=\"32BF\"</parameter> </paramdef> <paramdef "
-"choice=\"opt\"><type>boolean </type> <parameter> interpolate_nodata=FALSE </"
-"parameter> </paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_Roughness</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>nband</parameter></paramdef> "
-"<paramdef><type>raster </type> <parameter>customextent</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>pixeltype=\"32BF\"</parameter> </paramdef> <paramdef "
-"choice=\"opt\"><type>boolean </type> <parameter> interpolate_nodata=FALSE </"
-"parameter> </paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:9739
 #, no-c-format
@@ -10026,26 +9132,6 @@ msgstr ""
 msgid "Returns a raster with the calculated Topographic Position Index."
 msgstr "地形的位置指数を計算したラスタを返します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:9854
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_TPI</function></funcdef> <paramdef><type>raster "
-"</type> <parameter>rast</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>nband</parameter></paramdef> <paramdef><type>raster </type> "
-"<parameter>customextent</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text </type> <parameter>pixeltype=\"32BF\"</parameter> "
-"</paramdef> <paramdef choice=\"opt\"><type>boolean </type> <parameter> "
-"interpolate_nodata=FALSE </parameter> </paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_TPI</function></funcdef> <paramdef><type>raster "
-"</type> <parameter>rast</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>nband</parameter></paramdef> <paramdef><type>raster </type> "
-"<parameter>customextent</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text </type> <parameter>pixeltype=\"32BF\"</parameter> "
-"</paramdef> <paramdef choice=\"opt\"><type>boolean </type> <parameter> "
-"interpolate_nodata=FALSE </parameter> </paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:9868
 #, no-c-format
@@ -10079,26 +9165,6 @@ msgstr ""
 #, no-c-format
 msgid "Returns a raster with the calculated Terrain Ruggedness Index."
 msgstr "起伏指標を計算したラスタを返します。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:9902
-#, no-c-format
-msgid ""
-"<funcdef>raster <function>ST_TRI</function></funcdef> <paramdef><type>raster "
-"</type> <parameter>rast</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>nband</parameter></paramdef> <paramdef><type>raster </type> "
-"<parameter>customextent</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text </type> <parameter>pixeltype=\"32BF\"</parameter> "
-"</paramdef> <paramdef choice=\"opt\"><type>boolean </type> <parameter> "
-"interpolate_nodata=FALSE </parameter> </paramdef>"
-msgstr ""
-"<funcdef>raster <function>ST_TRI</function></funcdef> <paramdef><type>raster "
-"</type> <parameter>rast</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>nband</parameter></paramdef> <paramdef><type>raster </type> "
-"<parameter>customextent</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>text </type> <parameter>pixeltype=\"32BF\"</parameter> "
-"</paramdef> <paramdef choice=\"opt\"><type>boolean </type> <parameter> "
-"interpolate_nodata=FALSE </parameter> </paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:9916
@@ -10134,16 +9200,6 @@ msgstr "ラスタ処理: ラスタからジオメトリ"
 #, no-c-format
 msgid "Returns the box 3d representation of the enclosing box of the raster."
 msgstr "ラスタを囲むボックスのbox3d表現を返します。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:9958
-#, no-c-format
-msgid ""
-"<funcdef>box3d <function>Box3D</function></funcdef> <paramdef><type>raster </"
-"type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>box3d <function>Box3D</function></funcdef> <paramdef><type>raster </"
-"type> <parameter>rast</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:9968
@@ -10185,16 +9241,6 @@ msgstr ""
 "BandNoDataValueと等しいピクセル値を含むラスタの凸包ジオメトリを返します。一般"
 "的な形状でスキューのないラスタでは、ST_Envelopeと同じ結果になります。不規則な"
 "形状をしているか回転しているラスタでのみ使います。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:10000
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_ConvexHull</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_ConvexHull</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:10010
@@ -10251,22 +9297,6 @@ msgid ""
 msgstr ""
 "指定されたラスタバンドからgeomval (geom,val)行の集合を返します。バンドを指定"
 "しない場合のデフォルトは1です。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:10046
-#, no-c-format
-msgid ""
-"<funcdef>setof geomval <function>ST_DumpAsPolygons</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band_num=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
-msgstr ""
-"<funcdef>setof geomval <function>ST_DumpAsPolygons</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band_num=1</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:10057
@@ -10355,16 +9385,6 @@ msgstr ""
 msgid "Returns the polygon representation of the extent of the raster."
 msgstr "ラスタの範囲のポリゴン表現を返します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:10100
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Envelope</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Envelope</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:10110
 #, no-c-format
@@ -10404,20 +9424,6 @@ msgstr ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 msgid "Return the convex hull geometry of the raster excluding NODATA pixels."
 msgstr "NODATA値を除いたラスタの凸包ジオメトリを返します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:10147
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_MinConvexHull</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>nband=NULL</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_MinConvexHull</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>nband=NULL</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:10158
 #, no-c-format
@@ -10448,20 +9454,6 @@ msgid ""
 msgstr ""
 "NODATA値でないピクセル値を持つピクセルの結合で形成されるマルチポリゴンジオメ"
 "トリを返します。バンドを指定しない場合のデフォルトは1です。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:10189
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Polygon</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band_num=1</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Polygon</function></funcdef> "
-"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>band_num=1</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:10200
@@ -10535,18 +9527,6 @@ msgstr ""
 "AのバウンディングボックスがBのバウンディングボックスをオーバラップするか、Bの"
 "バウンディングボックスの左にある場合に<varname>TRUE</varname>を返します。"
 
-#. Tag: funcprototype
-#: reference_raster.xml:10297
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&lt;</function></funcdef> <paramdef> "
-"<type>raster </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>raster </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&lt;</function></funcdef> <paramdef> "
-"<type>raster </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>raster </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_raster.xml:10318
 #, no-c-format
@@ -10570,18 +9550,6 @@ msgid ""
 msgstr ""
 "AのバウンディングボックスがBのバウンディングボックスをオーバラップするか、Bの"
 "バウンディングボックスの右にある場合に <varname>TRUE</varname> を返します。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:10341
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&gt;</function></funcdef> <paramdef> "
-"<type>raster </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>raster </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&gt;</function></funcdef> <paramdef> "
-"<type>raster </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>raster </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:10362
@@ -10616,18 +9584,6 @@ msgstr ""
 "AのバウンディングボックスがBのバウンディングボックスと同じ場合に"
 "<varname>TRUE</varname>を返します。倍精度浮動小数点数のバウンディングボックス"
 "を使います。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:10386
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&#61;</function></funcdef> <paramdef> "
-"<type>raster </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>raster </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&#61;</function></funcdef> <paramdef> "
-"<type>raster </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>raster </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:10407
@@ -10705,18 +9661,6 @@ msgid "Returns <varname>TRUE</varname> if A's bounding box is the same as B's."
 msgstr ""
 "AのバウンディングボックスがBのバウンディングボックスと同じ場合に "
 "<varname>TRUE</varname>を返します。"
-
-#. Tag: funcprototype
-#: reference_raster.xml:10502
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>~=</function></funcdef> <paramdef> <type>raster </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>raster </type> "
-"<parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>~=</function></funcdef> <paramdef> <type>raster </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>raster </type> "
-"<parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:10523
@@ -11197,18 +10141,6 @@ msgid ""
 msgstr ""
 "<refpurpose>ラスタが同じアラインメントを持つかどうか、また、持たない場合には"
 "その理由を示す文字列を返します。</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_raster.xml:11448
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_NotSameAlignmentReason</function></funcdef> "
-"<paramdef><type>raster </type><parameter>rastA</parameter></paramdef> "
-"<paramdef><type>raster </type><parameter>rastB</parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>ST_NotSameAlignmentReason</function></funcdef> "
-"<paramdef><type>raster </type><parameter>rastA</parameter></paramdef> "
-"<paramdef><type>raster </type><parameter>rastB</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:11458

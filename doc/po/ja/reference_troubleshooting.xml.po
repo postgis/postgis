@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-05-15 11:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -40,16 +40,6 @@ msgstr "トラブルシューティング関数"
 #, no-c-format
 msgid "Add bounding box to the geometry."
 msgstr "ジオメトリにバウンディングボックスを追加します。"
-
-#. Tag: funcprototype
-#: reference_troubleshooting.xml:21
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>PostGIS_AddBBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>PostGIS_AddBBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: title
 #: reference_troubleshooting.xml:29 reference_troubleshooting.xml:75
@@ -115,16 +105,6 @@ msgstr ", <xref linkend=\"PostGIS_HasBBox\"/>"
 msgid "Drop the bounding box cache from the geometry."
 msgstr "ジオメトリからバウンディングボックスのキャッシュを削除します。"
 
-#. Tag: funcprototype
-#: reference_troubleshooting.xml:67
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>PostGIS_DropBBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>PostGIS_DropBBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-
 #. Tag: para
 #: reference_troubleshooting.xml:77
 #, no-c-format
@@ -178,16 +158,6 @@ msgid "Returns TRUE if the bbox of this geometry is cached, FALSE otherwise."
 msgstr ""
 "ジオメトリのバウンディングボックスがキャッシュされている場合にはTRUEを返し、"
 "他の場合にはFALSEを返します。"
-
-#. Tag: funcprototype
-#: reference_troubleshooting.xml:116
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>PostGIS_HasBBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>PostGIS_HasBBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_troubleshooting.xml:126

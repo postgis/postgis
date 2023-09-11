@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-09-07 10:14+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
@@ -51,18 +51,6 @@ msgstr ""
 "<refpurpose>Costruisce un poligono an partire da una collezione arbitraria "
 "di linee chiuse in forma di multilinee rappresentate come testo Well-Known</"
 "refpurpose>"
-
-#. Tag: funcprototype
-#: reference_input.xml:25
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_BdPolyFromText</function></funcdef> "
-"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_BdPolyFromText</function></funcdef> "
-"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
 
 #. Tag: title
 #: reference_input.xml:34 reference_input.xml:84 reference_input.xml:131
@@ -156,18 +144,6 @@ msgstr ""
 "Costruisce un MultiPolygon a partire da una collezione arbitraria di linee "
 "chiuse sotto forma di MultiLineString in formato Well-Known-Text."
 
-#. Tag: funcprototype
-#: reference_input.xml:75
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_BdMPolyFromText</function></funcdef> "
-"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_BdMPolyFromText</function></funcdef> "
-"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
-
 #. Tag: para
 #: reference_input.xml:86
 #, no-c-format
@@ -212,16 +188,6 @@ msgstr ""
 "Ritorna un valore geography sotto forma di Well-Know-Text (WKT) oppure di "
 "Extended-Well-Know-Text (EWKT)"
 
-#. Tag: funcprototype
-#: reference_input.xml:124
-#, no-c-format
-msgid ""
-"<funcdef>geography <function>ST_GeogFromText</function></funcdef> "
-"<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>"
-msgstr ""
-"<funcdef>geography <function>ST_GeogFromText</function></funcdef> "
-"<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>"
-
 #. Tag: para
 #: reference_input.xml:132
 #, no-c-format
@@ -249,16 +215,6 @@ msgstr "Esempi"
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeographyFromText\"/>"
 msgstr ", <xref linkend=\"ST_GeographyFromText\"/>"
-
-#. Tag: funcprototype
-#: reference_input.xml:153
-#, no-c-format
-msgid ""
-"<funcdef>geography <function>ST_GeographyFromText</function></funcdef> "
-"<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>"
-msgstr ""
-"<funcdef>geography <function>ST_GeographyFromText</function></funcdef> "
-"<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:161
@@ -337,16 +293,6 @@ msgstr ""
 "Ritorna un valore ST_Geometry a partire da una rappresentazione Extended "
 "Well-Known Text (EWKT)."
 
-#. Tag: funcprototype
-#: reference_input.xml:237
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_GeomFromEWKT</function></funcdef> "
-"<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_GeomFromEWKT</function></funcdef> "
-"<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>"
-
 #. Tag: para
 #: reference_input.xml:246
 #, no-c-format
@@ -414,14 +360,6 @@ msgstr ""
 msgid ""
 "Takes MARC21/XML geographic data as input and returns a PostGIS geometry "
 "object."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_input.xml:278
-#, no-c-format
-msgid ""
-"<funcdef> geometry <function>ST_GeomFromMARC21</function> </funcdef> "
-"<paramdef> <type>text </type> <parameter>marcxml</parameter> </paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -805,16 +743,6 @@ msgstr ""
 msgid "&sqlmm_compliant; SQL-MM 3: 8.3.6"
 msgstr "&sqlmm_compliant; SQL-MM 3: 8.3.6"
 
-#. Tag: funcprototype
-#: reference_input.xml:787
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_WKTToSQL</function></funcdef> "
-"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_WKTToSQL</function></funcdef> "
-"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>"
-
 #. Tag: para
 #: reference_input.xml:795
 #, no-c-format
@@ -836,14 +764,6 @@ msgid ""
 msgstr ""
 "Crea un oggetto geography a partire da una geometria in Well-Known Binary "
 "(WKB) oppure Extended Well-Known Binary (EWKB)."
-
-#. Tag: funcprototype
-#: reference_input.xml:818
-#, no-c-format
-msgid ""
-"<funcdef>geography <function>ST_GeogFromWKB</function></funcdef> "
-"<paramdef><type>bytea </type> <parameter>wkb</parameter></paramdef>"
-msgstr ""
 
 #. Tag: para
 #: reference_input.xml:828
@@ -879,16 +799,6 @@ msgid ""
 "representation (EWKB)."
 msgstr ""
 "Ritorna un valore ST_Geometry a partire da Extended Well-Known Binary (EWKB)."
-
-#. Tag: funcprototype
-#: reference_input.xml:859
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_GeomFromEWKB</function></funcdef> "
-"<paramdef><type>bytea </type> <parameter>EWKB</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_GeomFromEWKB</function></funcdef> "
-"<paramdef><type>bytea </type> <parameter>EWKB</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:868
@@ -1133,16 +1043,6 @@ msgid ""
 "(WKB). This is an alias name for ST_GeomFromWKB that takes no srid"
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_input.xml:1144
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_WKBToSQL</function></funcdef> "
-"<paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_WKBToSQL</function></funcdef> "
-"<paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef>"
-
 #. Tag: para
 #: reference_input.xml:1152
 #, no-c-format
@@ -1159,16 +1059,6 @@ msgstr ""
 #: reference_input.xml:1171
 #, no-c-format
 msgid "<refpurpose>Return a BOX2D from a GeoHash string.</refpurpose>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_input.xml:1176
-#, no-c-format
-msgid ""
-"<funcdef>box2d <function>ST_Box2dFromGeoHash</function></funcdef> "
-"<paramdef><type>text </type> <parameter>geohash</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>precision=full_precision_of_geohash</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1212,16 +1102,6 @@ msgstr ""
 #: reference_input.xml:1212
 #, no-c-format
 msgid "Return a geometry from a GeoHash string."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_input.xml:1217
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_GeomFromGeoHash</function></funcdef> "
-"<paramdef><type>text </type> <parameter>geohash</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>precision=full_precision_of_geohash</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1469,16 +1349,6 @@ msgstr ""
 "Accetta come input una geometria in formato KML e restituisce una geometria "
 "PostGIS."
 
-#. Tag: funcprototype
-#: reference_input.xml:1387
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_GeomFromKML</function></funcdef> "
-"<paramdef><type>text </type> <parameter>geomkml</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_GeomFromKML</function></funcdef> "
-"<paramdef><type>text </type> <parameter>geomkml</parameter></paramdef>"
-
 #. Tag: para
 #: reference_input.xml:1396
 #, no-c-format
@@ -1539,14 +1409,6 @@ msgid ""
 "geometry representation."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_input.xml:1436
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_GeomFromTWKB</function></funcdef> "
-"<paramdef><type>bytea </type> <parameter>twkb</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_input.xml:1446
 #, no-c-format
@@ -1586,16 +1448,6 @@ msgstr ", <xref linkend=\"ST_GeomFromGML\"/>, <xref linkend=\"ST_AsGML\"/>"
 msgid "Creates a LineString from an Encoded Polyline."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_input.xml:1505
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_LineFromEncodedPolyline</function></funcdef> "
-"<paramdef><type>text </type> <parameter>polyline</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>precision=5</"
-"parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_input.xml:1516
 #, no-c-format
@@ -1629,16 +1481,6 @@ msgstr "Disponibilità: 2.2.0"
 #: reference_input.xml:1541
 #, no-c-format
 msgid "Return a point from a GeoHash string."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_input.xml:1546
-#, no-c-format
-msgid ""
-"<funcdef>point <function>ST_PointFromGeoHash</function></funcdef> "
-"<paramdef><type>text </type> <parameter>geohash</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>precision=full_precision_of_geohash</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1679,22 +1521,6 @@ msgstr ""
 msgid "Creates a table based on the structure of FlatGeobuf data."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_input.xml:1585
-#, no-c-format
-msgid ""
-"<funcdef>void <function>ST_FromFlatGeobufToTable</function></funcdef> "
-"<paramdef><type>text </type> <parameter>schemaname</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>tablename</parameter></paramdef> "
-"<paramdef><type>bytea </type> <parameter>FlatGeobuf input data</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>void <function>ST_FromFlatGeobufToTable</function></funcdef> "
-"<paramdef><type>text </type> <parameter>schemaname</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>tablename</parameter></paramdef> "
-"<paramdef><type>bytea </type> <parameter>FlatGeobuf input "
-"data</parameter></paramdef>"
-
 #. Tag: para
 #: reference_input.xml:1597
 #, no-c-format
@@ -1731,16 +1557,6 @@ msgstr ""
 #: reference_input.xml:1613
 #, no-c-format
 msgid "Reads FlatGeobuf data."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_input.xml:1617
-#, no-c-format
-msgid ""
-"<funcdef>setof anyelement <function>ST_FromFlatGeobuf</function></funcdef> "
-"<paramdef><type>anyelement </type> <parameter>Table reference</parameter></"
-"paramdef> <paramdef><type>bytea </type> <parameter>FlatGeobuf input data</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para

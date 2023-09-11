@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2022-03-11 05:52+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/"
@@ -293,15 +293,6 @@ msgid ""
 "<varname>tiger_data</varname> if no schema is specified.</refpurpose>"
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:65
-#, no-c-format
-msgid ""
-"<funcdef>text <function>Drop_Indexes_Generate_Script</function></funcdef> "
-"<paramdef choice=\"opt\"><type>text </type> "
-"<parameter>param_schema=tiger_data</parameter></paramdef>"
-msgstr ""
-
 #. Tag: title
 #: extras_tigergeocoder.xml:73 extras_tigergeocoder.xml:115
 #: extras_tigergeocoder.xml:157 extras_tigergeocoder.xml:213
@@ -385,15 +376,6 @@ msgid ""
 "code followed by <varname>county</varname> or <varname>state</varname>."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:107
-#, no-c-format
-msgid ""
-"<funcdef>text <function>Drop_Nation_Tables_Generate_Script</function></"
-"funcdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>param_schema=tiger_data</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_tigergeocoder.xml:117
 #, no-c-format
@@ -421,20 +403,6 @@ msgid ""
 "prefixed with the state abbreviation. Defaults schema to "
 "<varname>tiger_data</varname> if no schema is specified."
 msgstr ""
-
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:148
-#, no-c-format
-msgid ""
-"<funcdef>text <function>Drop_State_Tables_Generate_Script</function></"
-"funcdef> <paramdef><type>text </type> <parameter>param_state</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>param_schema=tiger_data</parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>Drop_State_Tables_Generate_Script</function></"
-"funcdef> <paramdef><type>text </type> <parameter>param_state</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>param_schema=tiger_data</parameter></paramdef>"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:159
@@ -561,23 +529,6 @@ msgid ""
 "(soundex, levenshtein)."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:259
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>geocode_intersection</function></funcdef> "
-"<paramdef><type>text </type> <parameter> roadway1</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter> roadway2</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter> in_state</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter> in_city</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> <parameter> in_zip</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>max_results=10</parameter></paramdef> <paramdef><type>norm_addy </"
-"type> <parameter>OUT addy</parameter></paramdef> <paramdef><type>geometry </"
-"type> <parameter>OUT geomout</parameter></paramdef> <paramdef><type>integer "
-"</type> <parameter>OUT rating</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_tigergeocoder.xml:277
 #, no-c-format
@@ -632,14 +583,6 @@ msgid ""
 "Returns value of specific setting stored in tiger.geocode_settings table."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:312
-#, no-c-format
-msgid ""
-"<funcdef>text <function>Get_Geocode_Setting</function></funcdef> "
-"<paramdef><type>text </type> <parameter> setting_name</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_tigergeocoder.xml:322
 #, no-c-format
@@ -670,16 +613,6 @@ msgstr ""
 msgid ""
 "Returns census tract or field from tract table of where the geometry is "
 "located. Default to returning short name of tract."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:352
-#, no-c-format
-msgid ""
-"<funcdef>text <function>get_tract</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter> loc_geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter> output_field=name</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -729,14 +662,6 @@ msgid ""
 "conditions that are missing used indexes on those columns and will add them."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:398
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>Install_Missing_Indexes</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_tigergeocoder.xml:408
 #, no-c-format
@@ -760,15 +685,6 @@ msgid ""
 "that will download Tiger census state tract, bg, and tabblocks data tables, "
 "stage and load into <varname>tiger_data</varname> schema. Each state script "
 "is returned as a separate record."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:442
-#, no-c-format
-msgid ""
-"<funcdef>setof text <function>loader_generate_census_script</function></"
-"funcdef> <paramdef><type>text[]</type> <parameter>param_states</parameter></"
-"paramdef> <paramdef><type>text</type> <parameter>os</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -865,15 +781,6 @@ msgid ""
 "block groups, and blocks tables."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:500
-#, no-c-format
-msgid ""
-"<funcdef>setof text <function>loader_generate_script</function></funcdef> "
-"<paramdef><type>text[]</type> <parameter>param_states</parameter></paramdef> "
-"<paramdef><type>text</type> <parameter>os</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_tigergeocoder.xml:511
 #, no-c-format
@@ -941,14 +848,6 @@ msgstr ", <xref linkend=\"Missing_Indexes_Generate_Script\"/>"
 msgid ""
 "Generates a shell script for the specified platform that loads in the county "
 "and state lookup tables."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:562
-#, no-c-format
-msgid ""
-"<funcdef>text <function>loader_generate_nation_script</function></funcdef> "
-"<paramdef><type>text</type> <parameter>os</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1044,14 +943,6 @@ msgid ""
 "those tables."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:620
-#, no-c-format
-msgid ""
-"<funcdef>text <function>Missing_Indexes_Generate_Script</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_tigergeocoder.xml:630
 #, no-c-format
@@ -1081,14 +972,6 @@ msgid ""
 "streetname etc. broken into separate fields. This function will work with "
 "just the lookup data packaged with the tiger_geocoder (no need for tiger "
 "census data)."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:665
-#, no-c-format
-msgid ""
-"<funcdef>norm_addy <function>normalize_address</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>in_address</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1267,14 +1150,6 @@ msgid ""
 "census data). Requires address_standardizer extension."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:751
-#, no-c-format
-msgid ""
-"<funcdef>norm_addy <function>pagc_normalize_address</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>in_address</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_tigergeocoder.xml:763
 #, no-c-format
@@ -1359,14 +1234,6 @@ msgid ""
 "normalize_address."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:843
-#, no-c-format
-msgid ""
-"<funcdef>varchar <function>pprint_addy</function></funcdef> "
-"<paramdef><type>norm_addy </type> <parameter>in_addy</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_tigergeocoder.xml:853
 #, no-c-format
@@ -1402,20 +1269,6 @@ msgid ""
 "containing an array of theoretically possible addresses and an array of "
 "cross streets. If include_strnum_range = true, includes the street range in "
 "the cross streets."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:886
-#, no-c-format
-msgid ""
-"<funcdef>record <function>Reverse_Geocode</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>include_strnum_range=false</parameter></paramdef> "
-"<paramdef><type>geometry[] </type> <parameter>OUT intpt</parameter></"
-"paramdef> <paramdef><type>norm_addy[] </type> <parameter>OUT addy</"
-"parameter></paramdef> <paramdef><type>varchar[] </type> <parameter>OUT "
-"street</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1544,17 +1397,6 @@ msgid ""
 "snapping to the precision tolerance of the topology."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:961
-#, no-c-format
-msgid ""
-"<funcdef>text <function>Topology_Load_Tiger</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>topo_name</parameter></paramdef> "
-"<paramdef><type>varchar </type> <parameter>region_type</parameter></"
-"paramdef> <paramdef><type>varchar </type> <parameter>region_id</parameter></"
-"paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_tigergeocoder.xml:973
 #, no-c-format
@@ -1676,15 +1518,6 @@ msgstr ""
 #: extras_tigergeocoder.xml:1022
 #, no-c-format
 msgid "Sets a setting that affects behavior of geocoder functions."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:1027
-#, no-c-format
-msgid ""
-"<funcdef>text <function>Set_Geocode_Setting</function></funcdef> "
-"<paramdef><type>text </type> <parameter> setting_name</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter> setting_value</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para

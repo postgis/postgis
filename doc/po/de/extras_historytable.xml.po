@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2019-03-11 09:04+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
@@ -151,16 +151,6 @@ msgstr ""
 "Erstellt eine Tabelle, welche wesentliche Werte zur Verwaltung von "
 "Chroniktabellen beinhaltet."
 
-#. Tag: funcprototype
-#: extras_historytable.xml:44
-#, no-c-format
-msgid ""
-"<funcdef>void <function>Postgis_Install_History</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>void <function>Postgis_Install_History</function></funcdef> "
-"<paramdef></paramdef>"
-
 #. Tag: title
 #: extras_historytable.xml:52 extras_historytable.xml:92
 #, no-c-format
@@ -207,18 +197,6 @@ msgstr ""
 "Registriert eine Tabelle zur Chronikverfolgung in der Tabelle "
 "»history_information«. Parallel dazu wird eine Chroniktabelle erstellt und "
 "die Regeln zum INSERT, UPDATE und DELETE an der Tabelle festgelegt."
-
-#. Tag: funcprototype
-#: extras_historytable.xml:83
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>Postgis_Enable_History</function></funcdef> "
-"<paramdef><type>text </type> <parameter>p_schema</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>p_table</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>Postgis_Enable_History</function></funcdef> "
-"<paramdef><type>text </type> <parameter>p_schema</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>p_table</parameter></paramdef>"
 
 #. Tag: para
 #: extras_historytable.xml:94

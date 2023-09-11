@@ -945,8 +945,8 @@ msgstr ""
 "<varname>scale_y</varname> Il rapporto di scala tra le coordinate "
 "geometriche e il pixel, disponibile solo se tutte le tile nella colonna "
 "raster hanno lo stesso valore di <varname>scale_y</varname> e il vincolo su "
-"<varname>scale_y</varname> è applicato. Si rimanda a <xref linkend="
-"\"RT_ST_ScaleY\"/> per ulteriori dettagli."
+"<varname>scale_y</varname> è applicato. Si rimanda a <xref "
+"linkend=\"RT_ST_ScaleY\"/> per ulteriori dettagli."
 
 #. Tag: para
 #: using_raster_dataman.xml:438

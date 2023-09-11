@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-08-23 15:40+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -192,18 +192,6 @@ msgstr ""
 "数点数による2次元バウンディングボックスとインタセクトする場合に"
 "<varname>TRUE</varname>を返します。"
 
-#. Tag: funcprototype
-#: reference_operator.xml:99
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>box2df</type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>box2df</type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:120
 #, no-c-format
@@ -279,18 +267,6 @@ msgstr ""
 "されている)2次元バウンディングボックスとインタセクトする場合に<varname>TRUE</"
 "varname>を返します。"
 
-#. Tag: funcprototype
-#: reference_operator.xml:160
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
-"<type>box2df </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
-"<type>box2df </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:181
 #, no-c-format
@@ -316,18 +292,6 @@ msgid ""
 msgstr ""
 "二つの単精度浮動小数点数による2次元バウンディングボックス (BOX2DF)が相互にイ"
 "ンタセクトする場合に<varname>TRUE</varname>を返します。"
-
-#. Tag: funcprototype
-#: reference_operator.xml:221
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
-"<type>box2df </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>box2df </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
-"<type>box2df </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>box2df </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:242
@@ -385,18 +349,6 @@ msgstr ""
 "Aのn次元バウンディングボックスがBのn次元バウンディングボックスとインタセクト"
 "する場合に<varname>TRUE</varname>を返します。"
 
-#. Tag: funcprototype
-#: reference_operator.xml:282
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:303
 #, no-c-format
@@ -452,18 +404,6 @@ msgstr ""
 "数点数によるn次元バウンディングボックス (GIDX)とインタセクトする場合に"
 "<varname>TRUE</varname>を返します。"
 
-#. Tag: funcprototype
-#: reference_operator.xml:344
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>gidx </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>gidx </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:365
 #, no-c-format
@@ -498,18 +438,6 @@ msgstr ""
 "(キャッシュされている)n次元バウンディングボックスとインタセクトする場合に"
 "<varname>TRUE</varname>を返します。"
 
-#. Tag: funcprototype
-#: reference_operator.xml:401
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>gidx </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>gidx </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:422
 #, no-c-format
@@ -536,18 +464,6 @@ msgid ""
 msgstr ""
 "二つの単精度浮動小数点数によるn次元バウンディングボックス (GIDX)が相互にイン"
 "タセクトする場合に<varname>TRUE</varname>を返します。"
-
-#. Tag: funcprototype
-#: reference_operator.xml:458
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>gidx </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>gidx </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>gidx </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>gidx </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:479
@@ -579,18 +495,6 @@ msgid ""
 msgstr ""
 "AのバウンディングボックスがBのバウンディングボックスをオーバラップするか、Bの"
 "バウンディングボックスの左にある場合に<varname>TRUE</varname>を返します。"
-
-#. Tag: funcprototype
-#: reference_operator.xml:515
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&lt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&lt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:539
@@ -628,18 +532,6 @@ msgstr ""
 "AのバウンディングボックスがBのバウンディングボックスをオーバラップするか、Bの"
 "バウンディングボックスの下にある場合に<varname>TRUE</varname>を返します。"
 
-#. Tag: funcprototype
-#: reference_operator.xml:573
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&lt;|</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&lt;|</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:597
 #, no-c-format
@@ -674,18 +566,6 @@ msgid ""
 msgstr ""
 "AのバウンディングボックスがBのバウンディングボックスをオーバラップするか、Bの"
 "バウンディングボックスの右にある場合に<varname>TRUE</varname>を返します。"
-
-#. Tag: funcprototype
-#: reference_operator.xml:634
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&amp;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&amp;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:658
@@ -722,18 +602,6 @@ msgstr ""
 "Aのバウンダリボックスが、厳密にBのバウンダリボックスの左にある場合に"
 "<varname>TRUE</varname>を返します。"
 
-#. Tag: funcprototype
-#: reference_operator.xml:692
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&lt;&lt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&lt;&lt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:716
 #, no-c-format
@@ -763,18 +631,6 @@ msgid ""
 msgstr ""
 "Aのバウンダリボックスが、厳密にBのバウンダリボックスの下にある場合に"
 "<varname>TRUE</varname>を返します。"
-
-#. Tag: funcprototype
-#: reference_operator.xml:745
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&lt;&lt;|</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&lt;&lt;|</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:769
@@ -883,18 +739,6 @@ msgstr ""
 "Aのバウンダリボックスが、厳密にBのバウンダリボックスの右にある場合に"
 "<varname>TRUE</varname>を返します。"
 
-#. Tag: funcprototype
-#: reference_operator.xml:887
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>&gt;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>&gt;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:911
 #, no-c-format
@@ -914,18 +758,6 @@ msgid ""
 msgstr ""
 "AのバウンダリボックスがBのバウンダリボックスに含まれている場合に"
 "<varname>TRUE</varname>を返します。"
-
-#. Tag: funcprototype
-#: reference_operator.xml:940
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:964
@@ -954,18 +786,6 @@ msgstr ""
 "ジオメトリの2次元バウンディングボックスが単精度浮動小数点数による2次元バウン"
 "ディングボックス (BOX2DF)に包含される場合に<varname>TRUE</varname>を返しま"
 "す。"
-
-#. Tag: funcprototype
-#: reference_operator.xml:995
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:1016
@@ -1012,18 +832,6 @@ msgstr ""
 "単精度浮動小数点数による2次元バウンディングボックス (BOX2DF)がジオメトリの2次"
 "元バウンディングボックスに包含される場合に<varname>TRUE</varname>を返します。"
 
-#. Tag: funcprototype
-#: reference_operator.xml:1056
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </type> "
-"<parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </type> "
-"<parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1077
 #, no-c-format
@@ -1069,18 +877,6 @@ msgstr ""
 "二つの単精度浮動小数点数によるn次元バウンディングボックス (GIDX)の一方がもう"
 "一方を包含する場合に<varname>TRUE</varname>を返します。"
 
-#. Tag: funcprototype
-#: reference_operator.xml:1117
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1138
 #, no-c-format
@@ -1125,18 +921,6 @@ msgstr ""
 "AのバウンディングボックスがBのバウンディングボックスをオーバラップするか、Bの"
 "バウンディングボックスの上にある場合に<varname>TRUE</varname>を返します。"
 
-#. Tag: funcprototype
-#: reference_operator.xml:1178
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>|&amp;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>|&amp;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1202
 #, no-c-format
@@ -1171,18 +955,6 @@ msgstr ""
 "Aのバウンダリボックスが、厳密にBのバウンダリボックスの上にある場合に"
 "<varname>TRUE</varname>を返します。"
 
-#. Tag: funcprototype
-#: reference_operator.xml:1236
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>|&gt;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>|&gt;&gt;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1260
 #, no-c-format
@@ -1212,18 +984,6 @@ msgstr ""
 "AのバウンディングボックスがBのバウンディングボックスを含む場合に"
 "<varname>TRUE</varname>を返します。"
 
-#. Tag: funcprototype
-#: reference_operator.xml:1289
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1313
 #, no-c-format
@@ -1245,18 +1005,6 @@ msgstr ""
 "ジオメトリの (キャッシュされている)2次元バウンディングボックスが単精度浮動小"
 "数点数によるn次元バウンディングボックス (GIDX)を包含する場合に<varname>TRUE</"
 "varname>を返します。"
-
-#. Tag: funcprototype
-#: reference_operator.xml:1342
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:1363
@@ -1304,18 +1052,6 @@ msgstr ""
 "(キャッシュされている)2次元バウンディングボックスが包含する場合に"
 "<varname>TRUE</varname>を返します。"
 
-#. Tag: funcprototype
-#: reference_operator.xml:1403
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </type> "
-"<parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </type> "
-"<parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1424
 #, no-c-format
@@ -1361,18 +1097,6 @@ msgstr ""
 "二つの単精度浮動小数点数による2次元バウンディングボックス (BOX2DF)の一方がも"
 "う一方を包含する場合に<varname>TRUE</varname>を返します。"
 
-#. Tag: funcprototype
-#: reference_operator.xml:1464
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>box2df </"
-"type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
-"<parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1485
 #, no-c-format
@@ -1415,18 +1139,6 @@ msgid "Returns <varname>TRUE</varname> if A's bounding box is the same as B's."
 msgstr ""
 "AのバウンディングボックスがBのバウンディングボックスと同じ場合に "
 "<varname>TRUE</varname>を返します。"
-
-#. Tag: funcprototype
-#: reference_operator.xml:1525
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>~=</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>~=</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:1549
@@ -1620,18 +1332,6 @@ msgid ""
 "approach."
 msgstr "AトラジェクトリとBトラジェクトリとの最接近する時の距離を返します。"
 
-#. Tag: funcprototype
-#: reference_operator.xml:1688
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>|=|</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>double precision <function>|=|</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1710
 #, no-c-format
@@ -1696,18 +1396,6 @@ msgid "Returns the 2D distance between A and B bounding boxes."
 msgstr ""
 "AのバウンディングボックスとBのバウンディングボックスの2次元距離を返します。"
 
-#. Tag: funcprototype
-#: reference_operator.xml:1750
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>&lt;#&gt;</function></funcdef> "
-"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
-"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>double precision <function>&lt;#&gt;</function></funcdef> "
-"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
-"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1771
 #, no-c-format
@@ -1767,18 +1455,6 @@ msgid ""
 msgstr ""
 "AのバウンディングボックスとBのバウンディングボックスのn次元距離を返します。"
 
-#. Tag: funcprototype
-#: reference_operator.xml:1804
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>&lt;&lt;-&gt;&gt;</function></funcdef> "
-"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
-"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>double precision <function>&lt;&lt;-&gt;&gt;</function></funcdef> "
-"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
-"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_operator.xml:1825
 #, no-c-format
@@ -1822,18 +1498,6 @@ msgstr ", <xref linkend=\"geometry_distance_knn\"/>"
 msgid "Returns the n-D distance between A and B bounding boxes."
 msgstr ""
 "AのバウンディングボックスとBのバウンディングボックスのn次元距離を返します。"
-
-#. Tag: funcprototype
-#: reference_operator.xml:1869
-#, no-c-format
-msgid ""
-"<funcdef>double precision <function>&lt;&lt;#&gt;&gt;</function></funcdef> "
-"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
-"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>double precision <function>&lt;&lt;#&gt;&gt;</function></funcdef> "
-"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
-"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:1890

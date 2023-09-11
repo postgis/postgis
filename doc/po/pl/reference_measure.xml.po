@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2018-07-23 18:01+0000\n"
 "Last-Translator: Jakub Bobrowski <jbobrowski@geoinfor.pl>\n"
 "Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/"
@@ -436,15 +436,6 @@ msgid ""
 "the 3D shortest line."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_measure.xml:308
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_3DClosestPoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_measure.xml:323
 #, no-c-format
@@ -646,15 +637,6 @@ msgid ""
 "geometries in projected units."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_measure.xml:465
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_3DDistance</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_measure.xml:480
 #, no-c-format
@@ -700,17 +682,6 @@ msgid ""
 "spherical earth model."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_measure.xml:518
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_DistanceSphere</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomlonlatA</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>geomlonlatB</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>float8 </type> "
-"<parameter>radius=6371008</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_measure.xml:530
 #, no-c-format
@@ -750,17 +721,6 @@ msgid ""
 "spheroidal earth model."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_measure.xml:565
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_DistanceSpheroid</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomlonlatA</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>geomlonlatB</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>spheroid </"
-"type><parameter>measurement_spheroid=WGS84</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_measure.xml:577
 #, no-c-format
@@ -794,17 +754,6 @@ msgstr ""
 #: reference_measure.xml:610
 #, no-c-format
 msgid "Returns the Fréchet distance between two geometries."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_measure.xml:615
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_FrechetDistance</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>densifyFrac = -1</parameter></"
-"paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1034,15 +983,6 @@ msgid ""
 "varname>"
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_measure.xml:835
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_Length2D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_2dlinestring</parameter></"
-"paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_measure.xml:845
 #, no-c-format
@@ -1061,15 +1001,6 @@ msgstr ""
 #: reference_measure.xml:862
 #, no-c-format
 msgid "Returns the 3D length of a linear geometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_measure.xml:867
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_3DLength</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_3dlinestring</parameter></"
-"paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1112,16 +1043,6 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns the 2D or 3D length/perimeter of a lon/lat geometry on a spheroid."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_measure.xml:910
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_LengthSpheroid</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_geometry</parameter></"
-"paramdef> <paramdef><type>spheroid </type> <parameter>a_spheroid</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1177,15 +1098,6 @@ msgstr ""
 #: reference_measure.xml:954
 #, no-c-format
 msgid "Returns the 2D longest line between two geometries."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_measure.xml:960
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_LongestLine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1250,15 +1162,6 @@ msgstr ""
 msgid "Returns the 3D longest line between two geometries"
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_measure.xml:1046
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_3DLongestLine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_measure.xml:1061
 #, no-c-format
@@ -1300,15 +1203,6 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns the 2D largest distance between two geometries in projected units."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_measure.xml:1117
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_MaxDistance</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1356,15 +1250,6 @@ msgid ""
 "geometries in projected units."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_measure.xml:1165
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_3DMaxDistance</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_measure.xml:1180
 #, no-c-format
@@ -1387,14 +1272,6 @@ msgstr ""
 msgid ""
 "Returns the minimum clearance of a geometry, a measure of a geometry's "
 "robustness."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_measure.xml:1212
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_MinimumClearance</function></funcdef> "
-"<paramdef><type>geometry </type><parameter>g</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1478,14 +1355,6 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns the two-point LineString spanning a geometry's minimum clearance."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_measure.xml:1293
-#, no-c-format
-msgid ""
-"<funcdef>Geometry <function>ST_MinimumClearanceLine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1594,14 +1463,6 @@ msgid ""
 "<varname>ST_Perimeter</varname>."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_measure.xml:1388
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_Perimeter2D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_measure.xml:1398
 #, no-c-format
@@ -1621,14 +1482,6 @@ msgstr ""
 #: reference_measure.xml:1418
 #, no-c-format
 msgid "Returns the 3D perimeter of a polygonal geometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_measure.xml:1423
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_3DPerimeter</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1714,15 +1567,6 @@ msgstr ""
 #: reference_measure.xml:1534
 #, no-c-format
 msgid "Returns the 3D shortest line between two geometries"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_measure.xml:1539
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_3DShortestLine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para

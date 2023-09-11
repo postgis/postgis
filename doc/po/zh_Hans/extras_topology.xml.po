@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-09-08 07:58+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -544,17 +544,6 @@ msgstr ""
 msgid "Renames a topogeometry column"
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:318
-#, no-c-format
-msgid ""
-"<funcdef>topology.layer <function>RenameTopoGeometryColumn</function></"
-"funcdef> <paramdef><type>regclass </type> <parameter>layer_table</"
-"parameter></paramdef> <paramdef><type>name </type> "
-"<parameter>feature_column</parameter></paramdef> <paramdef><type>name </"
-"type> <parameter>new_name</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:333
 #, no-c-format
@@ -584,15 +573,6 @@ msgid ""
 "geometry_columns table."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:367
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>DropTopology</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></"
-"paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:377
 #, no-c-format
@@ -616,15 +596,6 @@ msgstr ""
 #: extras_topology.xml:401
 #, no-c-format
 msgid "Renames a topology"
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:406
-#, no-c-format
-msgid ""
-"<funcdef>varchar <function>RenameTopology</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>old_name</parameter></paramdef> "
-"<paramdef><type>varchar </type> <parameter>new_name</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -658,17 +629,6 @@ msgid ""
 "columns from topology.layer table."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:454
-#, no-c-format
-msgid ""
-"<funcdef>text <function>DropTopoGeometryColumn</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>schema_name</parameter></"
-"paramdef> <paramdef><type>varchar </type> <parameter>table_name</parameter></"
-"paramdef> <paramdef><type>varchar </type> <parameter>column_name</"
-"parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:466
 #, no-c-format
@@ -686,14 +646,6 @@ msgstr ""
 msgid ""
 "Adds missing entries to topology.layer table by reading metadata from topo "
 "tables."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:496
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>Populate_Topology_Layer</function></funcdef> "
-"<paramdef></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -729,15 +681,6 @@ msgid ""
 "objects in topology.</refpurpose>"
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:537
-#, no-c-format
-msgid ""
-"<funcdef>text <function>TopologySummary</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></"
-"paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:547
 #, no-c-format
@@ -763,16 +706,6 @@ msgstr "可用性: 2.0.0"
 msgid ""
 "Returns a set of validatetopology_returntype objects detailing issues with "
 "topology."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:574
-#, no-c-format
-msgid ""
-"<funcdef>setof validatetopology_returntype <function>ValidateTopology</"
-"function></funcdef> <paramdef><type>varchar </type> <parameter>toponame</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>geometry</type> "
-"<parameter>bbox</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1227,15 +1160,6 @@ msgstr ""
 msgid "Returns info about invalid topology relation records"
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:847
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>ValidateTopologyRelation</function></"
-"funcdef> <paramdef><type>varchar </type> <parameter>toponame</parameter></"
-"paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:857
 #, no-c-format
@@ -1422,16 +1346,6 @@ msgid ""
 "into a new schema"
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:1123
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>CopyTopology</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>existing_topology_name</"
-"parameter></paramdef> <paramdef><type>varchar </type> <parameter>new_name</"
-"parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:1134
 #, no-c-format
@@ -1465,15 +1379,6 @@ msgid ""
 ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"RenameTopology\"/>"
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:1179
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_InitTopoGeo</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></"
-"paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:1189
 #, no-c-format
@@ -1496,16 +1401,6 @@ msgstr ""
 msgid ""
 "<refpurpose>Adds a collection of geometries to a given empty topology and "
 "returns a message detailing success.</refpurpose>"
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:1224
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_CreateTopoGeo</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>acollection</parameter></"
-"paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1552,17 +1447,6 @@ msgid ""
 "splitting an existing edge."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:1271
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>TopoGeo_AddPoint</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float8 </type> <parameter>tolerance</"
-"parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:1283
 #, no-c-format
@@ -1586,17 +1470,6 @@ msgstr ""
 msgid ""
 "Adds a linestring to an existing topology using a tolerance and possibly "
 "splitting existing edges/faces. Returns edge identifiers."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:1315
-#, no-c-format
-msgid ""
-"<funcdef>SETOF integer <function>TopoGeo_AddLineString</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float8 </type> <parameter>tolerance</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1631,17 +1504,6 @@ msgstr ""
 msgid ""
 "Adds a polygon to an existing topology using a tolerance and possibly "
 "splitting existing edges/faces. Returns face identifiers."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:1364
-#, no-c-format
-msgid ""
-"<funcdef>SETOF integer <function>TopoGeo_AddPolygon</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>apoly</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float8 </type> <parameter>tolerance</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1683,16 +1545,6 @@ msgstr ""
 msgid ""
 "Adds an isolated node to a face in a topology and returns the nodeid of the "
 "new node. If face is null, the node is still created."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:1424
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_AddIsoNode</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>aface</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1745,18 +1597,6 @@ msgid ""
 "varname> to a topology connecting two existing isolated nodes "
 "<varname>anode</varname> and <varname>anothernode</varname> and returns the "
 "edge id of the new edge.</refpurpose>"
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:1469
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_AddIsoEdge</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>anode</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>anothernode</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>alinestring</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1818,18 +1658,6 @@ msgid ""
 "face and replace it with two new faces."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:1516
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_AddEdgeNewFaces</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>anode</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>anothernode</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>acurve</parameter></"
-"paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:1529
 #, no-c-format
@@ -1880,18 +1708,6 @@ msgid ""
 "face and add a new face."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:1573
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_AddEdgeModFace</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>anode</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>anothernode</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>acurve</parameter></"
-"paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:1586
 #, no-c-format
@@ -1928,15 +1744,6 @@ msgstr ""
 msgid ""
 "<refpurpose>Removes an edge and, if the removed edge separated two faces, "
 "delete the original faces and replace them with a new face.</refpurpose>"
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:1641
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_RemEdgeNewFace</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1990,15 +1797,6 @@ msgid ""
 "modifies the other face to cover the space of both."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:1713
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_RemEdgeModFace</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:1724
 #, no-c-format
@@ -2023,16 +1821,6 @@ msgstr ""
 msgid ""
 "<refpurpose>Changes the shape of an edge without affecting the topology "
 "structure.</refpurpose>"
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:1780
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_ChangeEdgeGeom</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>acurve</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -2095,16 +1883,6 @@ msgid ""
 "original edge and adding a new edge."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:1844
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_ModEdgeSplit</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:1856
 #, no-c-format
@@ -2143,16 +1921,6 @@ msgid ""
 "edge and deleting the second edge. Returns the id of the deleted node."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:1899
-#, no-c-format
-msgid ""
-"<funcdef>int <function>ST_ModEdgeHeal</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>anotheredge</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:1911
 #, no-c-format
@@ -2169,16 +1937,6 @@ msgid ""
 "Heals two edges by deleting the node connecting them, deleting both edges, "
 "and replacing them with an edge whose direction is the same as the first "
 "edge provided."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:1947
-#, no-c-format
-msgid ""
-"<funcdef>int <function>ST_NewEdgeHeal</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>anotheredge</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -2198,16 +1956,6 @@ msgid ""
 "Moves an isolated node in a topology from one point to another. If new "
 "<varname>apoint</varname> geometry exists as a node an error is thrown. "
 "Returns description of move."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:1994
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_MoveIsoNode</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>anode</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -2258,16 +2006,6 @@ msgid ""
 "node created that joins the new edges."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:2045
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_NewEdgesSplit</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:2057
 #, no-c-format
@@ -2305,15 +2043,6 @@ msgid ""
 "thrown.</refpurpose>"
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:2100
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_RemoveIsoNode</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>anode</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:2111
 #, no-c-format
@@ -2338,15 +2067,6 @@ msgid ""
 "the edge is not isolated, then an exception is thrown.</refpurpose>"
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:2141
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_RemoveIsoEdge</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:2152
 #, no-c-format
@@ -2365,16 +2085,6 @@ msgstr ""
 #: extras_topology.xml:2181
 #, no-c-format
 msgid "Finds the edge-id of an edge that intersects a given point."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:2186
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>GetEdgeByPoint</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>tol1</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -2439,16 +2149,6 @@ msgstr ""
 msgid "Finds face intersecting a given point."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:2239
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>GetFaceByPoint</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>tol1</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:2250
 #, no-c-format
@@ -2500,15 +2200,6 @@ msgstr ""
 msgid "Finds the face containing a point."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:2295
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>GetFaceContainingPoint</function></funcdef> "
-"<paramdef><type>text </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:2305
 #, no-c-format
@@ -2533,16 +2224,6 @@ msgstr ""
 #: extras_topology.xml:2326
 #, no-c-format
 msgid "Finds the node-id of a node at a point location."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:2331
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>GetNodeByPoint</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>tol1</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -2588,14 +2269,6 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns the id of a topology in the topology.topology table "
 "given the name of the topology.</refpurpose>"
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:2384 extras_topology.xml:2426
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>GetTopologyID</function></funcdef> "
-"<paramdef><type>varchar</type> <parameter>toponame</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -2644,14 +2317,6 @@ msgstr ""
 msgid "Returns the name of a topology (schema) given the id of the topology."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:2468
-#, no-c-format
-msgid ""
-"<funcdef>varchar <function>GetTopologyName</function></funcdef> "
-"<paramdef><type>integer</type> <parameter>topology_id</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:2478
 #, no-c-format
@@ -2672,16 +2337,6 @@ msgstr ""
 #: extras_topology.xml:2505
 #, no-c-format
 msgid "Returns a set of ordered edges that bound <varname>aface</varname>."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:2510
-#, no-c-format
-msgid ""
-"<funcdef>getfaceedges_returntype <function>ST_GetFaceEdges</function></"
-"funcdef> <paramdef><type>varchar </type> <parameter>atopology</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>aface</parameter></"
-"paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -2721,15 +2376,6 @@ msgstr ""
 msgid "Returns the polygon in the given topology with the specified face id."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:2560
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_GetFaceGeometry</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>aface</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:2571
 #, no-c-format
@@ -2751,17 +2397,6 @@ msgstr ""
 msgid ""
 "Returns the ordered set of signed edge identifiers met by walking on an a "
 "given edge side."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:2604
-#, no-c-format
-msgid ""
-"<funcdef>getfaceedges_returntype <function>GetRingEdges</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>aring</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>max_edges=null</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -2809,15 +2444,6 @@ msgstr ""
 msgid "Returns an ordered set of edges incident to the given node."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:2666
-#, no-c-format
-msgid ""
-"<funcdef>getfaceedges_returntype <function>GetNodeEdges</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>anode</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:2677
 #, no-c-format
@@ -2863,14 +2489,6 @@ msgstr ""
 msgid "Finds and registers all faces defined by topology edges."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:2726
-#, no-c-format
-msgid ""
-"<funcdef>text <function>Polygonize</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:2736
 #, no-c-format
@@ -2912,19 +2530,6 @@ msgid ""
 "Adds a point node to the node table in the specified topology schema and "
 "returns the nodeid of new node. If point already exists as node, the "
 "existing nodeid is returned."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:2764
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>AddNode</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>allowEdgeSplitting=false</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>boolean </type> <parameter>computeContainingFace=false</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -2977,15 +2582,6 @@ msgid ""
 "existing) edge."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:2823
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>AddEdge</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:2834
 #, no-c-format
@@ -3027,17 +2623,6 @@ msgstr ""
 msgid ""
 "<refpurpose>Registers a face primitive to a topology and gets its identifier."
 "</refpurpose>"
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:2867
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>AddFace</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>apolygon</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>boolean </type> <parameter>force_new=false</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -3104,15 +2689,6 @@ msgid ""
 "the Douglas-Peucker algorithm."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:2940
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Simplify</function></funcdef> "
-"<paramdef><type>TopoGeometry</type> <parameter>tg</parameter></paramdef> "
-"<paramdef><type>float8</type> <parameter>tolerance</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:2950
 #, no-c-format
@@ -3153,15 +2729,6 @@ msgstr ""
 msgid ""
 "Removes topology primitives which not needed to define existing TopoGeometry "
 "objects."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:2974
-#, no-c-format
-msgid ""
-"<funcdef>int <function>RemoveUnusedPrimitives</function></funcdef> "
-"<paramdef><type>text</type> <parameter>topology_name</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>bbox</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -3375,15 +2942,6 @@ msgid ""
 "arrays (topoelements)."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:3183
-#, no-c-format
-msgid ""
-"<funcdef>topoelementarray <function>TopoElementArray_Agg</function></"
-"funcdef> <paramdef><type>topoelement set</type> <parameter>tefield</"
-"parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:3193
 #, no-c-format
@@ -3402,14 +2960,6 @@ msgstr ""
 #: extras_topology.xml:3213
 #, no-c-format
 msgid "Converts a topogeometry to a topoelement."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:3218
-#, no-c-format
-msgid ""
-"<funcdef>topoelement <function>TopoElement</function></funcdef> "
-"<paramdef><type>topogeometry </type> <parameter>topo</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -3446,15 +2996,6 @@ msgstr ""
 msgid "Clears the content of a topo geometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:3265
-#, no-c-format
-msgid ""
-"<funcdef>topogeometry <function>clearTopoGeom</function></funcdef> "
-"<paramdef><type>topogeometry </type> <parameter>topogeom</parameter></"
-"paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:3275
 #, no-c-format
@@ -3475,15 +3016,6 @@ msgstr ""
 #: extras_topology.xml:3302
 #, no-c-format
 msgid "Adds an element to the definition of a TopoGeometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:3306
-#, no-c-format
-msgid ""
-"<funcdef>topogeometry <function>TopoGeom_addElement</function></funcdef> "
-"<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef> "
-"<paramdef><type>topoelement </type> <parameter>el</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -3512,15 +3044,6 @@ msgstr ""
 msgid "Removes an element from the definition of a TopoGeometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:3350
-#, no-c-format
-msgid ""
-"<funcdef>topogeometry <function>TopoGeom_remElement</function></funcdef> "
-"<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef> "
-"<paramdef><type>topoelement </type> <parameter>el</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:3361
 #, no-c-format
@@ -3534,15 +3057,6 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Adds element of a TopoGeometry to the definition of another TopoGeometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:3391
-#, no-c-format
-msgid ""
-"<funcdef>topogeometry <function>TopoGeom_addTopoGeom</function></funcdef> "
-"<paramdef><type>topogeometry </type> <parameter>tgt</parameter></paramdef> "
-"<paramdef><type>topogeometry </type> <parameter>src</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -3602,26 +3116,6 @@ msgid ""
 "(primitive elements)."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:3461
-#, no-c-format
-msgid ""
-"<funcdef>topoelementarray <function>GetTopoGeomElementArray</function></"
-"funcdef> <paramdef><type>varchar </type> <parameter>toponame</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>layer_id</parameter></"
-"paramdef> <paramdef><type>integer</type> <parameter>tg_id</parameter></"
-"paramdef>"
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:3469
-#, no-c-format
-msgid ""
-"<funcdef>topoelementarray <function>GetTopoGeomElementArray</function></"
-"funcdef> <paramdef><type>topogeometry </type> <parameter>tg</parameter></"
-"paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:3479
 #, no-c-format
@@ -3649,26 +3143,6 @@ msgid ""
 "elements)."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:3509
-#, no-c-format
-msgid ""
-"<funcdef>setof topoelement <function>GetTopoGeomElements</function></"
-"funcdef> <paramdef><type>varchar </type> <parameter>toponame</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>layer_id</parameter></"
-"paramdef> <paramdef><type>integer</type> <parameter>tg_id</parameter></"
-"paramdef>"
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:3517
-#, no-c-format
-msgid ""
-"<funcdef>setof topoelement <function>GetTopoGeomElements</function></"
-"funcdef> <paramdef><type>topogeometry </type> <parameter>tg</parameter></"
-"paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:3527
 #, no-c-format
@@ -3691,14 +3165,6 @@ msgstr ""
 #: extras_topology.xml:3556
 #, no-c-format
 msgid "Returns the spatial reference identifier for a topogeometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:3561
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_SRID</function></funcdef> "
-"<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -3817,16 +3283,6 @@ msgstr ""
 msgid "Returns the TopoJSON representation of a topogeometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:3709
-#, no-c-format
-msgid ""
-"<funcdef>text <function>AsTopoJSON</function></funcdef> "
-"<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef> "
-"<paramdef><type>regclass </type> <parameter>edgeMapTable</parameter></"
-"paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:3720
 #, no-c-format
@@ -3892,15 +3348,6 @@ msgid ""
 "primitives."
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_topology.xml:3776
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>Equals</function></funcdef> "
-"<paramdef><type>topogeometry </type> <parameter>tg1</parameter></paramdef> "
-"<paramdef><type>topogeometry </type> <parameter>tg2</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_topology.xml:3787
 #, no-c-format
@@ -3936,15 +3383,6 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns true if any pair of primitives from the two "
 "topogeometries intersect.</refpurpose>"
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_topology.xml:3825
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>Intersects</function></funcdef> "
-"<paramdef><type>topogeometry </type> <parameter>tg1</parameter></paramdef> "
-"<paramdef><type>topogeometry </type> <parameter>tg2</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para

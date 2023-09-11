@@ -49,8 +49,8 @@ msgid ""
 "linkend=\"create_spatial_db\"/>) or upgraded (<xref linkend=\"upgrading\"/>) "
 "in each individual database you want to use it in."
 msgstr ""
-"安装 PostGIS 后，您需要使每个数据库可用（<xref linkend=\"create_spatial_db\""
-"/>）或升级它（<xref linkend=\"upgrading\"/>）。"
+"安装 PostGIS 后，您需要使每个数据库可用（<xref linkend=\"create_spatial_db\"/"
+">）或升级它（<xref linkend=\"upgrading\"/>）。"
 
 #. Tag: title
 #: installation.xml:23
@@ -122,10 +122,10 @@ msgid ""
 "against PostgreSQL versions &min_postgres_version; - &max_postgres_version;. "
 "Earlier versions of PostgreSQL are <emphasis>not</emphasis> supported."
 msgstr ""
-"PostGIS 模块是PostgreSQL服务的扩展。 PostGIS&last_release_version; "
-"<emphasis>需要</emphasis>完整的 PostgreSQL 服务器标头进行编译。"
-"你可以在PostgreSQL &min_postgres_version; - &max_postgres_version;之间构建。 "
-"<emphasis>不</emphasis>支持旧版本的PostgreSQL。"
+"PostGIS 模块是PostgreSQL服务的扩展。 PostGIS&last_release_version; <emphasis>"
+"需要</emphasis>完整的 PostgreSQL 服务器标头进行编译。你可以在PostgreSQL "
+"&min_postgres_version; - &max_postgres_version;之间构建。 <emphasis>不</"
+"emphasis>支持旧版本的PostgreSQL。"
 
 #. Tag: para
 #: installation.xml:47
@@ -192,8 +192,9 @@ msgstr ""
 msgid ""
 "This will create a directory called <varname>postgis-&last_release_version;</"
 "varname> in the current working directory."
-msgstr "这将在当前目录下创建一个位置。<varname>postgis-&last_release_version;</varnam"
-"e>。"
+msgstr ""
+"这将在当前目录下创建一个位置。<varname>postgis-&last_release_version;</"
+"varname>。"
 
 #. Tag: para
 #: installation.xml:96
@@ -203,8 +204,8 @@ msgid ""
 "\"> git </ulink> repository <ulink url=\"https://git.osgeo.org/gitea/postgis/"
 "postgis/\"> https://git.osgeo.org/gitea/postgis/postgis/ </ulink> ."
 msgstr ""
-"或者从<ulink url=\"https://git-scm.com/\"> git </ulink> 存储库 <ulink url="
-"\"https://git.osgeo.org/gitea/postgis/postgis/\"> https://git.osgeo.org/"
+"或者从<ulink url=\"https://git-scm.com/\"> git </ulink> 存储库 <ulink "
+"url=\"https://git.osgeo.org/gitea/postgis/postgis/\"> https://git.osgeo.org/"
 "gitea/postgis/postgis/ </ulink> 中查看它。"
 
 #. Tag: para
@@ -295,9 +296,9 @@ msgid ""
 "available for download from <ulink url=\"https://proj.org/\"> https://proj."
 "org/ </ulink> ."
 msgstr ""
-"项目重投影库。需要项目 6.1 或更高版本。Proj 库用于在 PostGIS "
-"中提供坐标重投影支持。Proj 可以从<ulink url=\"https://proj.org/\"> "
-"https://proj.org/ </ulink> 下载。"
+"项目重投影库。需要项目 6.1 或更高版本。Proj 库用于在 PostGIS 中提供坐标重投影"
+"支持。Proj 可以从<ulink url=\"https://proj.org/\"> https://proj.org/ </"
+"ulink> 下载。"
 
 #. Tag: para
 #: installation.xml:176
@@ -428,11 +429,11 @@ msgid ""
 "a PCRE library, or you pass in a valid <varname>--with-pcre-dir=/path/to/"
 "pcre</varname> during configure."
 msgstr ""
-"要构建<xref linkend=\"Address_Standardizer\"/>，您还需要PCRE<ulink url=\"http"
-"://www.pcre.org\">http://www.pcre.org</ulink>（通常安装在 nix 系统上）。"
-"检测到 PCRE 库后，将自动构建<xref linkend=\"Address_Standardizer\"/> 。 "
-"或者，指定它在配置期间有效。<varname>--with-pcre-dir=/path/to/"
-"pcre</varname>。"
+"要构建<xref linkend=\"Address_Standardizer\"/>，您还需要PCRE<ulink "
+"url=\"http://www.pcre.org\">http://www.pcre.org</ulink>（通常安装在 nix 系统"
+"上）。检测到 PCRE 库后，将自动构建<xref linkend=\"Address_Standardizer\"/"
+"> 。 或者，指定它在配置期间有效。<varname>--with-pcre-dir=/path/to/pcre</"
+"varname>。"
 
 #. Tag: para
 #: installation.xml:254
@@ -447,12 +448,12 @@ msgid ""
 "PostgreSQL installation. To disable this and use GEOS instead use the "
 "<varname>--without-wagyu</varname> during the configure step."
 msgstr ""
-"要启用ST_AsMVT，您需要ProtoBuf-C库（运行时）和ProtoC-C编译器（构建时）。"
-"要检查 protobuf-c 的正确最低版本，需要 pkg-config。 参见<ulink url=\"https"
-"://github.com/protobuf-c/protobuf-c\">protobuf-c</ulink>。默认情况下，"
-"PostGIS 使用 Wagyu 快速评估 MVT 多边形，但需要 C++11 编译器。 使用 CXXFLAGS "
-"使用您用于 PostgreSQL 安装的相同编译器。如果要禁用此功能并改用 "
-"GEOS，请在配置期间指定它。 <varname>--without-wagyu</varname>。"
+"要启用ST_AsMVT，您需要ProtoBuf-C库（运行时）和ProtoC-C编译器（构建时）。要检"
+"查 protobuf-c 的正确最低版本，需要 pkg-config。 参见<ulink url=\"https://"
+"github.com/protobuf-c/protobuf-c\">protobuf-c</ulink>。默认情况下，PostGIS 使"
+"用 Wagyu 快速评估 MVT 多边形，但需要 C++11 编译器。 使用 CXXFLAGS 使用您用于 "
+"PostgreSQL 安装的相同编译器。如果要禁用此功能并改用 GEOS，请在配置期间指定"
+"它。 <varname>--without-wagyu</varname>。"
 
 #. Tag: para
 #: installation.xml:263
@@ -462,8 +463,8 @@ msgid ""
 "<ulink url=\"http://cunit.sourceforge.net/\">http://cunit.sourceforge.net/</"
 "ulink>"
 msgstr ""
-"CUnit（<filename>CUnit</filename>）。 这是回归测试所需要的。 <ulink url="
-"\"http://cunit.sourceforge.net/\">http://cunit.sourceforge.net/</ulink>"
+"CUnit（<filename>CUnit</filename>）。 这是回归测试所需要的。 <ulink "
+"url=\"http://cunit.sourceforge.net/\">http://cunit.sourceforge.net/</ulink>"
 
 #. Tag: para
 #: installation.xml:269
@@ -473,8 +474,8 @@ msgid ""
 "documentation. Docbook is available from <ulink url=\"http://www.docbook.org/"
 "\"> http://www.docbook.org/ </ulink> ."
 msgstr ""
-"DocBook (<filename>xsltproc</filename>)构建文档需要。Docbook可从<ulink url="
-"\"http://www.docbook.org/\"> http://www.docbook.org/ </ulink> 获取。"
+"DocBook (<filename>xsltproc</filename>)构建文档需要。Docbook可从<ulink "
+"url=\"http://www.docbook.org/\"> http://www.docbook.org/ </ulink> 获取。"
 
 #. Tag: para
 #: installation.xml:280
@@ -485,8 +486,8 @@ msgid ""
 "dblatex.sourceforge.net/\"> http://dblatex.sourceforge.net/ </ulink> ."
 msgstr ""
 "DBLatex (<filename>dblatex</filename>)需要以 PDF 格式构建文档。它位于 <ulink "
-"url=\"http://dblatex.sourceforge.net/\"> http://dblatex.sourceforge.net/ "
-"</ulink>。"
+"url=\"http://dblatex.sourceforge.net/\"> http://dblatex.sourceforge.net/ </"
+"ulink>。"
 
 #. Tag: para
 #: installation.xml:291
@@ -512,8 +513,9 @@ msgid ""
 "As with most linux installations, the first step is to generate the Makefile "
 "that will be used to build the source code. This is done by running the "
 "shell script"
-msgstr "与大多数 Linux 安装一样，第一步是生成一个将用于构建源代码的 Makefile。 "
-"这是通过 shell 脚本完成的"
+msgstr ""
+"与大多数 Linux 安装一样，第一步是生成一个将用于构建源代码的 Makefile。 这是通"
+"过 shell 脚本完成的"
 
 #. Tag: para
 #: installation.xml:317
@@ -552,11 +554,11 @@ msgid ""
 "the minor version: e.g. <code>postgis-3.0</code> add this switch to your "
 "configure statement."
 msgstr ""
-"从 PostGIS 3.0 开始，默认生成的库文件将不再将次要版本作为文件名的一部分。 "
-"这意味着所有 PostGIS 3 库都将以 <code>postgis-3</code> 结尾。 这样做是为了使 "
-"pg_upgrade 更容易，缺点是您只能在服务器中安装一个版本的 PostGIS 3 系列。 "
-"要获取文件的旧行为（包括次要版本）：例如 <code>postgis-3.0</code> "
-"将此开关添加到您的配置语句中。"
+"从 PostGIS 3.0 开始，默认生成的库文件将不再将次要版本作为文件名的一部分。 这"
+"意味着所有 PostGIS 3 库都将以 <code>postgis-3</code> 结尾。 这样做是为了使 "
+"pg_upgrade 更容易，缺点是您只能在服务器中安装一个版本的 PostGIS 3 系列。 要获"
+"取文件的旧行为（包括次要版本）：例如 <code>postgis-3.0</code> 将此开关添加到"
+"您的配置语句中。"
 
 #. Tag: para
 #: installation.xml:350
@@ -620,10 +622,10 @@ msgid ""
 "to/geos-config</command>) to manually specify a particular GEOS installation "
 "that PostGIS will build against."
 msgstr ""
-"作为一个基本的几何库，GEOS 有一个名为 <command>geos-"
-"config</command>的实用程序，它会告诉您在安装软件时在哪里安装 GEOS。"
-"使用此参数 （<command>--with-geosconfig=/path/to/geos-config</command>） "
-"手动指定要用于 PostGIS 构建的特定 GEOS的安装目录。"
+"作为一个基本的几何库，GEOS 有一个名为 <command>geos-config</command>的实用程"
+"序，它会告诉您在安装软件时在哪里安装 GEOS。使用此参数 （<command>--with-"
+"geosconfig=/path/to/geos-config</command>） 手动指定要用于 PostGIS 构建的特"
+"定 GEOS的安装目录。"
 
 #. Tag: para
 #: installation.xml:414
@@ -637,11 +639,11 @@ msgid ""
 "with-xml2config=/path/to/xml2-config</command>) to manually specify a "
 "particular LibXML installation that PostGIS will build against."
 msgstr ""
-"LibXML 是执行 GeomFromKML/GML 流程所需的库。 如果您安装了 "
-"libxml，通常会找到它，但如果没有安装或者您想要使用特定版本，则需要将 PostGIS "
-"指向特定的 <filename>xml2-config</filename> 配置文件，以使软件安装能够找到 "
-"LibXML 安装目录。 使用此参数 (<command>>--with-xml2config=/path/to/"
-"xml2-config</command>) 手动指定 PostGIS 将针对其构建的特定 LibXML 安装。"
+"LibXML 是执行 GeomFromKML/GML 流程所需的库。 如果您安装了 libxml，通常会找到"
+"它，但如果没有安装或者您想要使用特定版本，则需要将 PostGIS 指向特定的 "
+"<filename>xml2-config</filename> 配置文件，以使软件安装能够找到 LibXML 安装目"
+"录。 使用此参数 (<command>>--with-xml2config=/path/to/xml2-config</command>) "
+"手动指定 PostGIS 将针对其构建的特定 LibXML 安装。"
 
 #. Tag: para
 #: installation.xml:432
@@ -685,10 +687,10 @@ msgid ""
 "command>) to manually specify a particular PCRE installation directory that "
 "PostGIS will build against."
 msgstr ""
-"<ulink url=\"http://www.pcre.org/\">PCRE</ulink> 是 address_standardizer "
-"扩展所需的 BSD 许可的 Perl 兼容正则表达式库。使用此参数 (<command>--with-"
-"pcredir=/path/to/pcredir</command>) 手动指定 PostGIS 将构建的特定 PCRE "
-"的安装目录。"
+"<ulink url=\"http://www.pcre.org/\">PCRE</ulink> 是 address_standardizer 扩展"
+"所需的 BSD 许可的 Perl 兼容正则表达式库。使用此参数 (<command>--with-"
+"pcredir=/path/to/pcredir</command>) 手动指定 PostGIS 将构建的特定 PCRE 的安装"
+"目录。"
 
 #. Tag: para
 #: installation.xml:477
@@ -762,8 +764,8 @@ msgid ""
 "wiki/CodeRepository\"> code repository </ulink> , the first step is really "
 "to run the script"
 msgstr ""
-"如果要从<ulink url=\"https://trac.osgeo.org/postgis/wiki/CodeRepository\""
-">代码存储库</ulink> 获取PostGIS，请先运行以下脚本"
+"如果要从<ulink url=\"https://trac.osgeo.org/postgis/wiki/CodeRepository\">代"
+"码存储库</ulink> 获取PostGIS，请先运行以下脚本"
 
 #. Tag: para
 #: installation.xml:542
@@ -857,8 +859,8 @@ msgid ""
 "url=\"http://www.postgis.us/study_guides\">PostGIS / PostgreSQL Study "
 "Guides</ulink>"
 msgstr ""
-"预构建的HTML和PDF版本可以在<ulink url=\"http://www.postgis.us/study_guides\""
-">PostGIS / PostgreSQL学习指南</ulink>中找到"
+"预构建的HTML和PDF版本可以在<ulink url=\"http://www.postgis.us/"
+"study_guides\">PostGIS / PostgreSQL学习指南</ulink>中找到"
 
 #. Tag: command
 #: installation.xml:593
@@ -921,10 +923,10 @@ msgid ""
 "<ulink url=\"https://www.postgresql.org/docs/current/libpq-envars."
 "html\">psql environment variables</ulink>"
 msgstr ""
-"<code>make check</code> 使用 psql 来运行测试，并使用 psql 环境变量。"
-"常用的可用于覆盖的有 <varname>PGUSER</varname> 、<varname>PGPORT</varname> "
-"和 <varname>PGHOST</varname>。参考<ulink url=\"https://www.postgresql.org/"
-"docs/current/libpq-envars.html\">psql环境变量</ulink>"
+"<code>make check</code> 使用 psql 来运行测试，并使用 psql 环境变量。常用的可"
+"用于覆盖的有 <varname>PGUSER</varname> 、<varname>PGPORT</varname> 和 "
+"<varname>PGHOST</varname>。参考<ulink url=\"https://www.postgresql.org/docs/"
+"current/libpq-envars.html\">psql环境变量</ulink>"
 
 #. Tag: para
 #: installation.xml:614
@@ -948,10 +950,9 @@ msgid ""
 "filename> folder of your PostgreSQL install as well as the needed binaries "
 "for regular PostGIS if you don't have them already on the server."
 msgstr ""
-"如果您想在与您的开发不同的单独服务器上手动安装扩展，"
-"您需要将扩展文件夹中的以下文件复制到 PostgreSQL 安装的 <filename>PostgreSQL/"
-"share/extension</filename> 文件夹中 常规 PostGIS "
-"所需的二进制文件（如果服务器上还没有它们）。"
+"如果您想在与您的开发不同的单独服务器上手动安装扩展，您需要将扩展文件夹中的以"
+"下文件复制到 PostgreSQL 安装的 <filename>PostgreSQL/share/extension</"
+"filename> 文件夹中 常规 PostGIS 所需的二进制文件（如果服务器上还没有它们）。"
 
 #. Tag: para
 #: installation.xml:623
@@ -985,9 +986,8 @@ msgid ""
 "<varname>postgis_topology</varname> as available extensions in PgAdmin -> "
 "extensions."
 msgstr ""
-"完成此操作后，您应该在 PgAdmin -> 扩展中看到 "
-"<varname>postgis</varname>、<varname>postgis_topology</varname> "
-"作为可用扩展。"
+"完成此操作后，您应该在 PgAdmin -> 扩展中看到 <varname>postgis</varname>、"
+"<varname>postgis_topology</varname> 作为可用扩展。"
 
 #. Tag: para
 #: installation.xml:636
@@ -1009,10 +1009,9 @@ msgid ""
 "even allow upgrade or uninstall by right-clicking."
 msgstr ""
 "如果您正在查询的数据库中安装了扩展程序，您将在 <varname>installed_version</"
-"varname> 列中看到提及。 如果您没有收到任何记录，"
-"则意味着您的服务器上根本没有安装 postgis 扩展。 PgAdmin III 1.14+ "
-"还将在数据库浏览器树的<varname>扩展</varname> "
-"部分中提供此信息，甚至允许通过右键单击进行升级或卸载。"
+"varname> 列中看到提及。 如果您没有收到任何记录，则意味着您的服务器上根本没有"
+"安装 postgis 扩展。 PgAdmin III 1.14+ 还将在数据库浏览器树的<varname>扩展</"
+"varname> 部分中提供此信息，甚至允许通过右键单击进行升级或卸载。"
 
 #. Tag: para
 #: installation.xml:643
@@ -1107,9 +1106,8 @@ msgid ""
 "locations, you may need to add their library locations to the "
 "<varname>LD_LIBRARY_PATH</varname> environment variable."
 msgstr ""
-"如果您使用非标准 PostgreSQL、GEOS 或 Proj 位置配置 PostGIS，"
-"则可能需要将它们的库位置添加到 <varname>LD_LIBRARY_PATH</varname> "
-"环境变量中。"
+"如果您使用非标准 PostgreSQL、GEOS 或 Proj 位置配置 PostGIS，则可能需要将它们"
+"的库位置添加到 <varname>LD_LIBRARY_PATH</varname> 环境变量中。"
 
 #. Tag: para
 #: installation.xml:691
@@ -1123,10 +1121,10 @@ msgid ""
 "installation during configuration or be prepared to deal with the impending "
 "headaches."
 msgstr ""
-"目前，<command>make check</command> 依赖于<code>PATH</code>和 "
-"<code>PGPORT</code>环境变量来执行检查。它<emphasis>不</emphasis>是使用 "
-"<command>--with-pgconfig</command>配置参数指定的 PostgreSQL。"
-"编辑路径以匹配在配置期间检测到的 PostgreSQL。 或者为不可避免的麻烦做好准备。"
+"目前，<command>make check</command> 依赖于<code>PATH</code>和 <code>PGPORT</"
+"code>环境变量来执行检查。它<emphasis>不</emphasis>是使用 <command>--with-"
+"pgconfig</command>配置参数指定的 PostgreSQL。编辑路径以匹配在配置期间检测到"
+"的 PostgreSQL。 或者为不可避免的麻烦做好准备。"
 
 #. Tag: para
 #: installation.xml:703
@@ -1333,9 +1331,8 @@ msgid ""
 "address_standardizer already so no need to compile and can move straight to "
 "<code>CREATE EXTENSION</code> step."
 msgstr ""
-"在 Windows 上，PostGIS 2.1 "
-"及更高版本附带了地址标准化扩展，因此您无需编译即可立即使用。"
-"直接进入<code>CREATE EXTENSION</code>步骤。"
+"在 Windows 上，PostGIS 2.1 及更高版本附带了地址标准化扩展，因此您无需编译即可"
+"立即使用。直接进入<code>CREATE EXTENSION</code>步骤。"
 
 #. Tag: para
 #: installation.xml:796
@@ -1377,10 +1374,10 @@ msgid ""
 msgstr ""
 "像Tiger geocoder这样的附加组件可能未包含在您的PostGIS分发中。如果您缺少tiger "
 "geocoder扩展或想要比您的安装提供的更新版本，那么可以使用适用于您PostgreSQL版"
-"本的<filename>share/extension/postgis_tiger_geocoder.*</filename>文件，"
-"这些文件可以从<ulink url=\"http://postgis.net/windows_downloads/\">Windows未"
-"发布版本</ulink>部分的软件包中获取。尽管这些软件包是为Windows准备的，但postgi"
-"s_tiger_geocoder扩展文件将在任何操作系统上工作，因为该扩展只是一个SQL/"
+"本的<filename>share/extension/postgis_tiger_geocoder.*</filename>文件，这些文"
+"件可以从<ulink url=\"http://postgis.net/windows_downloads/\">Windows未发布版"
+"本</ulink>部分的软件包中获取。尽管这些软件包是为Windows准备的，但"
+"postgis_tiger_geocoder扩展文件将在任何操作系统上工作，因为该扩展只是一个SQL/"
 "plpgsql扩展。"
 
 #. Tag: title
@@ -1600,8 +1597,9 @@ msgstr ""
 msgid ""
 "Alternatively you can load just these tables after loading state data using "
 "the <xref linkend=\"Loader_Generate_Census_Script\"/>"
-msgstr "或者,可以使用<xref linkend=\"Loader_Generate_Census_Script\""
-"/>加载状态数据，然后仅加载这些表"
+msgstr ""
+"或者,可以使用<xref linkend=\"Loader_Generate_Census_Script\"/>加载状态数据，"
+"然后仅加载这些表"
 
 #. Tag: para
 #: installation.xml:867
@@ -1635,7 +1633,8 @@ msgstr "运行生成的命令行脚本。"
 msgid ""
 "After you are done loading all data or at a stopping point, it's a good idea "
 "to analyze all the tiger tables to update the stats (include inherited stats)"
-msgstr "在所有数据完成加载或到达断点后，最好对所有tiger表运行分析以更新其状态（包括继"
+msgstr ""
+"在所有数据完成加载或到达断点后，最好对所有tiger表运行分析以更新其状态（包括继"
 "承的表）"
 
 #. Tag: title
@@ -1679,13 +1678,13 @@ msgid ""
 "update to improve your standardizing experience for your own needs."
 msgstr ""
 "在安装了 <code>postgis_tiger_geocoder</code> 的同一数据库中安装此扩展程序后，"
-"就可以使用 <xref linkend=\"Pagc_Normalize_Address\"/> 代替 <xref linkend="
-"\"Normalize_Address\"/>。 此扩展与 Tiger "
-"无关，因此可以与其他数据源（例如国际地址）一起使用。 Tiger "
-"地理编码器扩展确实附带了自己的自定义版本 <xref linkend=\"rulestab\"/> "
-"(<code>tiger.pagc_rules</code>) 、 <xref linkend=\"gaztab\"/> (<code>tiger. "
-"pagc_gaz</code>）和<xref linkend=\"lextab\"/> (<code>tiger.pagc_lex</code>)。"
-" 您可以添加和更新这些内容，以根据自己的需求改善标准化体验。"
+"就可以使用 <xref linkend=\"Pagc_Normalize_Address\"/> 代替 <xref "
+"linkend=\"Normalize_Address\"/>。 此扩展与 Tiger 无关，因此可以与其他数据源"
+"（例如国际地址）一起使用。 Tiger 地理编码器扩展确实附带了自己的自定义版本 "
+"<xref linkend=\"rulestab\"/> (<code>tiger.pagc_rules</code>) 、 <xref "
+"linkend=\"gaztab\"/> (<code>tiger. pagc_gaz</code>）和<xref "
+"linkend=\"lextab\"/> (<code>tiger.pagc_lex</code>)。 您可以添加和更新这些内"
+"容，以根据自己的需求改善标准化体验。"
 
 #. Tag: title
 #: installation.xml:887
@@ -1742,8 +1741,8 @@ msgid ""
 "For Windows, 7-zip which is a free compress/uncompress tool you can download "
 "from <ulink url=\"http://www.7-zip.org/\">http://www.7-zip.org/</ulink>"
 msgstr ""
-"在Windows上，它是7-zip。它是一个免费的压缩解压缩工具，可以从<ulink url=\"http"
-"://www.7-zip.org/\">http://www.7-zip.org/</ulink>下载"
+"在Windows上，它是7-zip。它是一个免费的压缩解压缩工具，可以从<ulink "
+"url=\"http://www.7-zip.org/\">http://www.7-zip.org/</ulink>下载"
 
 #. Tag: para
 #: installation.xml:896
@@ -1760,7 +1759,8 @@ msgstr ""
 msgid ""
 "<filename>wget</filename> which is a web grabber tool usually installed on "
 "most Unix/Linux systems."
-msgstr "<filename>wget</filename> 命令。它是一个Web检索工具，通常安装在大多数Unix / "
+msgstr ""
+"<filename>wget</filename> 命令。它是一个Web检索工具，通常安装在大多数Unix / "
 "Linux系统上。"
 
 #. Tag: para
@@ -1772,8 +1772,8 @@ msgid ""
 "sourceforge.net/packages/wget.htm</ulink>"
 msgstr ""
 "对于 Windows，您可以从<ulink url=\"http://gnuwin32.sourceforge.net/packages/"
-"wget.htm\">http://gnuwin32.sourceforge.net/packages/wget.htm</ulink> "
-"获取编译的二进制文件"
+"wget.htm\">http://gnuwin32.sourceforge.net/packages/wget.htm</ulink> 获取编译"
+"的二进制文件"
 
 #. Tag: para
 #: installation.xml:901
@@ -1803,9 +1803,9 @@ msgid ""
 "Note that you can install these piecemeal. You don't have to load all the "
 "states you want all at once. You can load them as you need them."
 msgstr ""
-"要加载状态数据，请参阅<xref linkend=\"Loader_Generate_Script\""
-"/>为您的平台生成所需状态的数据加载脚本。 请注意，您可以零碎地安装这些。 "
-"您不必一次加载您想要的所有状态。 您可以根据需要加载它们。"
+"要加载状态数据，请参阅<xref linkend=\"Loader_Generate_Script\"/>为您的平台生"
+"成所需状态的数据加载脚本。 请注意，您可以零碎地安装这些。 您不必一次加载您想"
+"要的所有状态。 您可以根据需要加载它们。"
 
 #. Tag: para
 #: installation.xml:906
@@ -1824,8 +1824,9 @@ msgstr ""
 msgid ""
 "To test that things are working as they should, try to run a geocode on an "
 "address in your state using <xref linkend=\"Geocode\"/>"
-msgstr "要测试您是否能够执行应执行的操作，您将在使用 <xref linkend=\"Geocode\""
-"/>的州的地址上运行地理编码器"
+msgstr ""
+"要测试您是否能够执行应执行的操作，您将在使用 <xref linkend=\"Geocode\"/>的州"
+"的地址上运行地理编码器"
 
 #. Tag: title
 #: installation.xml:911
@@ -1847,8 +1848,9 @@ msgid ""
 "with this SQL statement as detailed in <xref "
 "linkend=\"Drop_Nation_Tables_Generate_Script\"/>"
 msgstr ""
-"然后删除所有国家/地区表并加载新的国家/地区表。 如<xref linkend="
-"\"Drop_Nation_Tables_Generate_Script\"/>中所述，使用此 SQL 语句生成删除脚本"
+"然后删除所有国家/地区表并加载新的国家/地区表。 如<xref "
+"linkend=\"Drop_Nation_Tables_Generate_Script\"/>中所述，使用此 SQL 语句生成删"
+"除脚本"
 
 #. Tag: para
 #: installation.xml:916
@@ -1863,8 +1865,8 @@ msgid ""
 "Generate a nation load script with this SELECT statement as detailed in "
 "<xref linkend=\"Loader_Generate_Nation_Script\"/>"
 msgstr ""
-"如<xref linkend=\"Loader_Generate_Nation_Script\"/>中所述，使用此 SELECT "
-"语句生成删除脚本"
+"如<xref linkend=\"Loader_Generate_Nation_Script\"/>中所述，使用此 SELECT 语句"
+"生成删除脚本"
 
 #. Tag: emphasis
 #: installation.xml:918
@@ -1899,8 +1901,8 @@ msgid ""
 "linkend=\"Drop_State_Tables_Generate_Script\"/>."
 msgstr ""
 "您可以混合使用不同年份的状态表，并且可以单独升级每个状态。 在升级某个州之前，"
-"您首先需要使用 <xref linkend=\"Drop_State_Tables_Generate_Script\"/> "
-"删除该州前一年的州表。"
+"您首先需要使用 <xref linkend=\"Drop_State_Tables_Generate_Script\"/> 删除该州"
+"前一年的州表。"
 
 #. Tag: title
 #: installation.xml:930
@@ -1945,9 +1947,8 @@ msgid ""
 "existence of pre-installed packages using the <command>rpm</command> command "
 "as follows: <command>rpm -qa | grep postgresql</command>"
 msgstr ""
-"如果您运行的是基于 RPM 的发行版，则可以使用<command>rpm</"
-"command>命令检查是否存在带有 <command>rpm -qa | grep "
-"postgresql</command>的预安装软件包"
+"如果您运行的是基于 RPM 的发行版，则可以使用<command>rpm</command>命令检查是否"
+"存在带有 <command>rpm -qa | grep postgresql</command>的预安装软件包"
 
 #. Tag: para
 #: installation.xml:961

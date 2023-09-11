@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-08-03 00:19+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2022-02-18 09:52+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
@@ -35,17 +35,6 @@ msgstr ""
 msgid ""
 "Window function that returns a cluster id for each input geometry using the "
 "DBSCAN algorithm."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_cluster.xml:19
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_ClusterDBSCAN</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>eps</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>minpoints</parameter></"
-"paramdef>"
 msgstr ""
 
 #. Tag: title
@@ -183,14 +172,6 @@ msgstr ""
 msgid "Aggregate function that clusters input geometries into connected sets."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_cluster.xml:134
-#, no-c-format
-msgid ""
-"<funcdef>geometry[] <function>ST_ClusterIntersecting</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>g</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_cluster.xml:144
 #, no-c-format
@@ -223,15 +204,6 @@ msgid ""
 "clustering input geometries into connected sets."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_cluster.xml:178
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_ClusterIntersectingWin</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_cluster.xml:188
 #, no-c-format
@@ -254,17 +226,6 @@ msgstr ""
 msgid ""
 "Window function that returns a cluster id for each input geometry using the "
 "K-means algorithm."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_cluster.xml:218
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_ClusterKMeans</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>number_of_clusters</"
-"parameter></paramdef> <paramdef><type>float </type> <parameter>max_radius</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -355,15 +316,6 @@ msgstr ""
 msgid "Aggregate function that clusters geometries by separation distance."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_cluster.xml:316
-#, no-c-format
-msgid ""
-"<funcdef>geometry[] <function>ST_ClusterWithin</function></funcdef> "
-"<paramdef><type>geometry set </type> <parameter>g</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>distance</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_cluster.xml:327
 #, no-c-format
@@ -399,16 +351,6 @@ msgstr ""
 msgid ""
 "Window function that returns a cluster id for each input geometry, "
 "clustering using separation distance."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_cluster.xml:365
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_ClusterWithinWin</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>distance</parameter></"
-"paramdef>"
 msgstr ""
 
 #. Tag: para

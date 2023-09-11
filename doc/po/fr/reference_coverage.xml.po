@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ming 64gcc81\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-08-03 01:03+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-05-29 09:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -51,16 +51,6 @@ msgid ""
 msgstr ""
 "Fonction window qui trouve les endroits où les polygones ne forment pas une "
 "couverture valide."
-
-#. Tag: funcprototype
-#: reference_coverage.xml:22
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_CoverageInvalidEdges</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>tolerance = 0</"
-"parameter></paramdef>"
-msgstr ""
 
 #. Tag: title
 #: reference_coverage.xml:33 reference_coverage.xml:121
@@ -187,22 +177,6 @@ msgstr ""
 msgid "Window function that simplifies the edges of a polygonal coverage."
 msgstr "Fonction window qui simplifie les bords d'une couverture polygonale."
 
-#. Tag: funcprototype
-#: reference_coverage.xml:108
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_CoverageSimplify</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>tolerance</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>simplifyBoundary = true</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_CoverageSimplify</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>tolerance</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>simplifyBoundary = true</parameter></paramdef>"
-
 #. Tag: para
 #: reference_coverage.xml:123
 #, no-c-format
@@ -267,16 +241,6 @@ msgid ""
 msgstr ""
 "Calcule l'union d'un ensemble de polygones formant une couverture en "
 "supprimant les arêtes communes."
-
-#. Tag: funcprototype
-#: reference_coverage.xml:195
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_CoverageUnion</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>geom</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_CoverageUnion</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_coverage.xml:206

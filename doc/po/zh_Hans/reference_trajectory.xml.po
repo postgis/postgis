@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-09-09 07:37+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -25,8 +25,9 @@ msgid ""
 "geometry with increasing measures (M value) on each coordinate. Spatio-"
 "temporal data can be modeled by using relative times (such as the epoch) as "
 "the measure values."
-msgstr "这些函数支持处理轨迹。 轨迹是每个坐标上具有递增度量（M 值）的线性几何。 "
-"时空数据可以使用相对时间（例如历元）作为度量值来建模。"
+msgstr ""
+"这些函数支持处理轨迹。 轨迹是每个坐标上具有递增度量（M 值）的线性几何。 时空"
+"数据可以使用相对时间（例如历元）作为度量值来建模。"
 
 #. Tag: title
 #: reference_trajectory.xml:12
@@ -39,14 +40,6 @@ msgstr "轨迹函数"
 #, no-c-format
 msgid "Tests if the geometry is a valid trajectory."
 msgstr "测试几何图形是否为有效轨迹。"
-
-#. Tag: funcprototype
-#: reference_trajectory.xml:23
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_IsValidTrajectory</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef>"
-msgstr ""
 
 #. Tag: title
 #: reference_trajectory.xml:31 reference_trajectory.xml:80
@@ -72,8 +65,9 @@ msgstr ""
 msgid ""
 "Valid trajectories are expected as input to spatio-temporal functions like "
 "<xref linkend=\"ST_ClosestPointOfApproach\"/>"
-msgstr "预计有效轨迹作为时空函数（如 <xref linkend=\"ST_ClosestPointOfApproach\""
-"/>）的输入"
+msgstr ""
+"预计有效轨迹作为时空函数（如 <xref linkend=\"ST_ClosestPointOfApproach\"/>）"
+"的输入"
 
 #. Tag: para
 #: reference_trajectory.xml:42 reference_trajectory.xml:97
@@ -109,15 +103,6 @@ msgstr "相关信息"
 msgid "Returns a measure at the closest point of approach of two trajectories."
 msgstr "返回两条轨迹最接近点处的测量值。"
 
-#. Tag: funcprototype
-#: reference_trajectory.xml:71
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_ClosestPointOfApproach</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_trajectory.xml:82
 #, no-c-format
@@ -134,8 +119,8 @@ msgid ""
 "linkend=\"ST_IsValidTrajectory\"/>. Null is returned if the trajectories do "
 "not overlap in their M ranges."
 msgstr ""
-"输入必须是经 <xref linkend=\"ST_IsValidTrajectory\"/> 检查的有效轨迹。 "
-"如果轨迹在其 M 范围内不重叠，则返回 Null。"
+"输入必须是经 <xref linkend=\"ST_IsValidTrajectory\"/> 检查的有效轨迹。 如果轨"
+"迹在其 M 范围内不重叠，则返回 Null。"
 
 #. Tag: para
 #: reference_trajectory.xml:92
@@ -163,15 +148,6 @@ msgid ""
 "trajectories."
 msgstr "返回两条轨迹的最近接近点之间的距离。"
 
-#. Tag: funcprototype
-#: reference_trajectory.xml:128
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_DistanceCPA</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_trajectory.xml:139
 #, no-c-format
@@ -186,8 +162,8 @@ msgid ""
 ", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
 "linkend=\"ST_AddMeasure\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
 msgstr ""
-", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
-"\"ST_AddMeasure\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
+", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
+"linkend=\"ST_AddMeasure\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
 
 #. Tag: refpurpose
 #: reference_trajectory.xml:173
@@ -196,16 +172,6 @@ msgid ""
 "Tests if the closest point of approach of two trajectories is within the "
 "specified distance."
 msgstr "测试两条轨迹的最近接近点是否在指定距离内。"
-
-#. Tag: funcprototype
-#: reference_trajectory.xml:181
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_CPAWithin</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>dist</parameter></paramdef>"
-msgstr ""
 
 #. Tag: para
 #: reference_trajectory.xml:193
@@ -223,8 +189,8 @@ msgid ""
 "linkend=\"ST_IsValidTrajectory\"/>. False is returned if the trajectories do "
 "not overlap in their M ranges."
 msgstr ""
-"输入必须是经 <xref linkend=\"ST_IsValidTrajectory\"/> 检查的有效轨迹。 "
-"如果轨迹在其 M 范围内不重叠，则返回 False。"
+"输入必须是经 <xref linkend=\"ST_IsValidTrajectory\"/> 检查的有效轨迹。 如果轨"
+"迹在其 M 范围内不重叠，则返回 False。"
 
 #. Tag: para
 #: reference_trajectory.xml:215
@@ -233,5 +199,5 @@ msgid ""
 ", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
 "linkend=\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
 msgstr ""
-", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
-"\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
+", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
+"linkend=\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"

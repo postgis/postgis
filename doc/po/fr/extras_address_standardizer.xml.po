@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-06-16 08:08+0000\n"
 "Last-Translator: Thomas Muguet <thomas.muguet@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -1478,26 +1478,6 @@ msgstr ""
 "Retourne une chaîne au format json avec les jetons d'entrée et les "
 "normalisations"
 
-#. Tag: funcprototype
-#: extras_address_standardizer.xml:578
-#, no-c-format
-msgid ""
-"<funcdef>text <function>debug_standardize_address</function></funcdef> "
-"<paramdef><type>text </type> <parameter>lextab</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>gaztab</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>rultab</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>micro</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>macro=NULL</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>debug_standardize_address</function></funcdef> "
-"<paramdef><type>text </type> <parameter>lextab</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>gaztab</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>rultab</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>micro</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>macro=NULL</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: extras_address_standardizer.xml:592
 #, no-c-format
@@ -1656,16 +1636,6 @@ msgstr ""
 #, no-c-format
 msgid "Takes a 1 line address and breaks into parts"
 msgstr "Prend une adresse d'une ligne et la décompose en plusieurs parties"
-
-#. Tag: funcprototype
-#: extras_address_standardizer.xml:658
-#, no-c-format
-msgid ""
-"<funcdef>record <function>parse_address</function></funcdef> "
-"<paramdef><type>text </type> <parameter>address</parameter></paramdef>"
-msgstr ""
-"<funcdef>record <function>parse_address</function></funcdef> "
-"<paramdef><type>text </type> <parameter>address</parameter></paramdef>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:669

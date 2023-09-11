@@ -53,9 +53,9 @@ msgid ""
 "linkend=\"create_spatial_db\"/>) or upgraded (<xref linkend=\"upgrading\"/>) "
 "in each individual database you want to use it in."
 msgstr ""
-"Una volta installato PostGIS, bisogna abilitarlo (<xref linkend="
-"\"create_spatial_db\"/>) o aggiornarlo (<xref linkend=\"upgrading\"/>) "
-"individualmente nei database in cui si vuole usare."
+"Una volta installato PostGIS, bisogna abilitarlo (<xref "
+"linkend=\"create_spatial_db\"/>) o aggiornarlo (<xref linkend=\"upgrading\"/"
+">) individualmente nei database in cui si vuole usare."
 
 #. Tag: title
 #: installation.xml:23
@@ -1748,8 +1748,8 @@ msgid ""
 "address in your state using <xref linkend=\"Geocode\"/>"
 msgstr ""
 "Per vedere se le cose funzionano come dovrebbero, provate a eseguire la "
-"geocodifica di un indirizzo nel vostro stato utilizzando <xref linkend="
-"\"Geocode\"/>"
+"geocodifica di un indirizzo nel vostro stato utilizzando <xref "
+"linkend=\"Geocode\"/>"
 
 #. Tag: title
 #: installation.xml:911

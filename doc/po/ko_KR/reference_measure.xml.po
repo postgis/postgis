@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2018-07-23 18:01+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -479,18 +479,6 @@ msgstr ""
 "g2에 가장 가까운 g1 상에 있는 3차원 포인트를 반환합니다. 해당 포인트는 3D 최"
 "단 라인의 첫 번째 포인트입니다."
 
-#. Tag: funcprototype
-#: reference_measure.xml:308
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_3DClosestPoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_3DClosestPoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-
 #. Tag: para
 #: reference_measure.xml:323
 #, no-c-format
@@ -708,18 +696,6 @@ msgstr ""
 "도형 유형에 대해, 두 도형 사이의 (SRS에 기반한) 3차원 데카르트 최단 거리를 투"
 "영 단위로 반환합니다."
 
-#. Tag: funcprototype
-#: reference_measure.xml:465
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_3DDistance</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_3DDistance</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-
 #. Tag: para
 #: reference_measure.xml:480
 #, fuzzy, no-c-format
@@ -774,17 +750,6 @@ msgstr ""
 "특정 회전타원체가 주어진 두 경위도 도형 사이의 최단 거리를 반환합니다. "
 "PostGIS 1.5 미만 버전은 포인트만 지원했습니다."
 
-#. Tag: funcprototype
-#: reference_measure.xml:518
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_DistanceSphere</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomlonlatA</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>geomlonlatB</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>float8 </type> "
-"<parameter>radius=6371008</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_measure.xml:530
 #, no-c-format
@@ -833,17 +798,6 @@ msgstr ""
 "특정 회전타원체가 주어진 두 경위도 도형 사이의 최단 거리를 반환합니다. "
 "PostGIS 1.5 미만 버전은 포인트만 지원했습니다."
 
-#. Tag: funcprototype
-#: reference_measure.xml:565
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_DistanceSpheroid</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomlonlatA</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>geomlonlatB</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>spheroid </"
-"type><parameter>measurement_spheroid=WGS84</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_measure.xml:577
 #, fuzzy, no-c-format
@@ -884,17 +838,6 @@ msgstr ", <xref linkend=\"ST_DistanceSphere\"/>"
 #, fuzzy, no-c-format
 msgid "Returns the Fréchet distance between two geometries."
 msgstr "두 도형 사이의 3차원 최단(shortest) 라인을 반환합니다."
-
-#. Tag: funcprototype
-#: reference_measure.xml:615
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_FrechetDistance</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>densifyFrac = -1</parameter></"
-"paramdef>"
-msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:633
@@ -1143,18 +1086,6 @@ msgstr ""
 "도형이 라인스트링 또는 멀티라인스트링일 경우 도형의 2차원 길이를 반환합니다. "
 "이 함수는 <varname>ST_Length</varname> 와 동일합니다."
 
-#. Tag: funcprototype
-#: reference_measure.xml:835
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_Length2D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_2dlinestring</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_Length2D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_2dlinestring</parameter></"
-"paramdef>"
-
 #. Tag: para
 #: reference_measure.xml:845
 #, fuzzy, no-c-format
@@ -1176,18 +1107,6 @@ msgstr ", <xref linkend=\"ST_3DLength\"/>"
 #, fuzzy, no-c-format
 msgid "Returns the 3D length of a linear geometry."
 msgstr "도형의 기하학적 중심을 반환합니다."
-
-#. Tag: funcprototype
-#: reference_measure.xml:867
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_3DLength</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_3dlinestring</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_3DLength</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_3dlinestring</parameter></"
-"paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:877
@@ -1235,20 +1154,6 @@ msgstr ", <xref linkend=\"ST_Length2D\"/>"
 msgid ""
 "Returns the 2D or 3D length/perimeter of a lon/lat geometry on a spheroid."
 msgstr "도형의 기하학적 중심을 반환합니다."
-
-#. Tag: funcprototype
-#: reference_measure.xml:910
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_LengthSpheroid</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_geometry</parameter></"
-"paramdef> <paramdef><type>spheroid </type> <parameter>a_spheroid</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_LengthSpheroid</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_geometry</parameter></"
-"paramdef> <paramdef><type>spheroid </type> <parameter>a_spheroid</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:921
@@ -1310,18 +1215,6 @@ msgstr ", <xref linkend=\"ST_Length\"/>"
 #, fuzzy, no-c-format
 msgid "Returns the 2D longest line between two geometries."
 msgstr "두 도형 사이의 3차원 최장(longest) 라인을 반환합니다."
-
-#. Tag: funcprototype
-#: reference_measure.xml:960
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_LongestLine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_LongestLine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:975
@@ -1385,18 +1278,6 @@ msgstr ""
 msgid "Returns the 3D longest line between two geometries"
 msgstr "두 도형 사이의 3차원 최장(longest) 라인을 반환합니다."
 
-#. Tag: funcprototype
-#: reference_measure.xml:1046
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_3DLongestLine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_3DLongestLine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-
 #. Tag: para
 #: reference_measure.xml:1061
 #, fuzzy, no-c-format
@@ -1446,18 +1327,6 @@ msgstr ""
 msgid ""
 "Returns the 2D largest distance between two geometries in projected units."
 msgstr "두 도형 사이의 2차원 최장 거리를 투영 단위로 반환합니다."
-
-#. Tag: funcprototype
-#: reference_measure.xml:1117
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_MaxDistance</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_MaxDistance</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:1129
@@ -1513,18 +1382,6 @@ msgstr ""
 "도형 유형에 대해, 두 도형 사이의 (SRS에 기반한) 3차원 데카르트 최장 거리를 투"
 "영 단위로 반환합니다."
 
-#. Tag: funcprototype
-#: reference_measure.xml:1165
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_3DMaxDistance</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_3DMaxDistance</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-
 #. Tag: para
 #: reference_measure.xml:1180
 #, fuzzy, no-c-format
@@ -1553,16 +1410,6 @@ msgid ""
 "robustness."
 msgstr ""
 "도형의 튼튼함(robustness)의 척도인 도형의 최소 여유(clearance)를 반환합니다."
-
-#. Tag: funcprototype
-#: reference_measure.xml:1212
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_MinimumClearance</function></funcdef> "
-"<paramdef><type>geometry </type><parameter>g</parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_MinimumClearance</function></funcdef> "
-"<paramdef><type>geometry </type><parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:1222
@@ -1663,16 +1510,6 @@ msgid ""
 "Returns the two-point LineString spanning a geometry's minimum clearance."
 msgstr ""
 "포인트 2개로 이루어진, 도형의 최소 여유를 나타내는 라인스트링을 반환합니다."
-
-#. Tag: funcprototype
-#: reference_measure.xml:1293
-#, no-c-format
-msgid ""
-"<funcdef>Geometry <function>ST_MinimumClearanceLine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
-msgstr ""
-"<funcdef>Geometry <function>ST_MinimumClearanceLine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:1304
@@ -1790,16 +1627,6 @@ msgid ""
 "<varname>ST_Perimeter</varname>."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_measure.xml:1388
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_Perimeter2D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_Perimeter2D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-
 #. Tag: para
 #: reference_measure.xml:1398
 #, fuzzy, no-c-format
@@ -1823,16 +1650,6 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid "Returns the 3D perimeter of a polygonal geometry."
 msgstr "도형의 기하학적 중심을 반환합니다."
-
-#. Tag: funcprototype
-#: reference_measure.xml:1423
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_3DPerimeter</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_3DPerimeter</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:1433
@@ -1922,18 +1739,6 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid "Returns the 3D shortest line between two geometries"
 msgstr "두 도형 사이의 3차원 최단(shortest) 라인을 반환합니다."
-
-#. Tag: funcprototype
-#: reference_measure.xml:1539
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_3DShortestLine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_3DShortestLine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:1554

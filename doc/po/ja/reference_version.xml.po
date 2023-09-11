@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-06-27 07:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -39,18 +39,6 @@ msgstr ""
 "PostGISエクステンション (例: postgis_raster, postgis_topology, "
 "postgis_sfcgal)について、指定したバージョンまたは最新版にパッケージ化し、アッ"
 "プグレードします。"
-
-#. Tag: funcprototype
-#: reference_version.xml:24
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Extensions_Upgrade</function></funcdef> "
-"<paramdef choice=\"opt\"><type>text</type> <parameter>target_version=null</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>PostGIS_Extensions_Upgrade</function></funcdef> "
-"<paramdef choice=\"opt\"><type>text</type> <parameter>target_version=null</"
-"parameter></paramdef>"
 
 #. Tag: title
 #: reference_version.xml:32 reference_version.xml:93 reference_version.xml:141
@@ -160,16 +148,6 @@ msgid "Reports full PostGIS version and build configuration infos."
 msgstr ""
 "完全なPostGISのバージョン情報とコンフィギュレーション情報を報告します。"
 
-#. Tag: funcprototype
-#: reference_version.xml:84
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Full_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>text <function>PostGIS_Full_Version</function></funcdef> "
-"<paramdef></paramdef>"
-
 #. Tag: para
 #: reference_version.xml:95
 #, no-c-format
@@ -212,16 +190,6 @@ msgstr ""
 msgid "Returns the version number of the GEOS library."
 msgstr "GEOSライブラリのバージョン番号を返します。"
 
-#. Tag: funcprototype
-#: reference_version.xml:132
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_GEOS_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>text <function>PostGIS_GEOS_Version</function></funcdef> "
-"<paramdef></paramdef>"
-
 #. Tag: para
 #: reference_version.xml:143
 #, no-c-format
@@ -251,16 +219,6 @@ msgid ""
 "Returns the version number of the GEOS library against which PostGIS was "
 "built."
 msgstr "PostGISのビルドに使われたGEOSライブラリのバージョン番号を返します。"
-
-#. Tag: funcprototype
-#: reference_version.xml:174
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_GEOS_Compiled_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>text <function>PostGIS_GEOS_Compiled_Version</function></funcdef> "
-"<paramdef></paramdef>"
 
 #. Tag: para
 #: reference_version.xml:185
@@ -294,16 +252,6 @@ msgstr ""
 "liblwgeomライブラリのバージョン番号を返します。PostGISのバージョンと同じにな"
 "るべきものです。"
 
-#. Tag: funcprototype
-#: reference_version.xml:217
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Liblwgeom_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>text <function>PostGIS_Liblwgeom_Version</function></funcdef> "
-"<paramdef></paramdef>"
-
 #. Tag: para
 #: reference_version.xml:228
 #, no-c-format
@@ -315,16 +263,6 @@ msgstr "liblwgeomライブラリのバージョン番号を返します。"
 #, no-c-format
 msgid "Returns the version number of the libxml2 library."
 msgstr "LibXML2ライブラリのバージョン番号を返します。"
-
-#. Tag: funcprototype
-#: reference_version.xml:258
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_LibXML_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>text <function>PostGIS_LibXML_Version</function></funcdef> "
-"<paramdef></paramdef>"
 
 #. Tag: para
 #: reference_version.xml:269
@@ -356,16 +294,6 @@ msgstr ""
 msgid "<refpurpose>Returns build date of the PostGIS library.</refpurpose>"
 msgstr "<refpurpose>PostGISライブラリのビルド日付を返します。</refpurpose>"
 
-#. Tag: funcprototype
-#: reference_version.xml:299
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Lib_Build_Date</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>text <function>PostGIS_Lib_Build_Date</function></funcdef> "
-"<paramdef></paramdef>"
-
 #. Tag: para
 #: reference_version.xml:310
 #, no-c-format
@@ -378,16 +306,6 @@ msgstr "<para>PostGISライブラリのビルド日付を返します。</para>"
 msgid ""
 "<refpurpose>Returns the version number of the PostGIS library.</refpurpose>"
 msgstr "<refpurpose>PostGISのバージョン番号を返します。</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_version.xml:330
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Lib_Version</function></funcdef> <paramdef></"
-"paramdef>"
-msgstr ""
-"<funcdef>text <function>PostGIS_Lib_Version</function></funcdef> <paramdef></"
-"paramdef>"
 
 #. Tag: para
 #: reference_version.xml:341
@@ -412,16 +330,6 @@ msgstr ""
 #, no-c-format
 msgid "Returns the version number of the PROJ4 library."
 msgstr "PROJ4のバージョン番号を返します。"
-
-#. Tag: funcprototype
-#: reference_version.xml:371
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_PROJ_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>text <function>PostGIS_PROJ_Version</function></funcdef> "
-"<paramdef></paramdef>"
 
 #. Tag: para
 #: reference_version.xml:382
@@ -459,16 +367,6 @@ msgstr ""
 msgid "Returns the version number of the internal Wagyu library."
 msgstr "内部のWagyuライブラリのバージョン番号を返します。"
 
-#. Tag: funcprototype
-#: reference_version.xml:413
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Wagyu_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>text <function>PostGIS_Wagyu_Version</function></funcdef> "
-"<paramdef></paramdef>"
-
 #. Tag: para
 #: reference_version.xml:424
 #, no-c-format
@@ -499,16 +397,6 @@ msgstr ""
 msgid "<refpurpose>Returns build date of the PostGIS scripts.</refpurpose>"
 msgstr "<refpurpose>PostGISスクリプトのビルド日付を返します。</refpurpose>"
 
-#. Tag: funcprototype
-#: reference_version.xml:455
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Scripts_Build_Date</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>text <function>PostGIS_Scripts_Build_Date</function></funcdef> "
-"<paramdef></paramdef>"
-
 #. Tag: para
 #: reference_version.xml:466
 #, no-c-format
@@ -530,16 +418,6 @@ msgid ""
 msgstr ""
 "<refpurpose>このデータベースにインストールしたPostGISスクリプトのバージョンを"
 "返します。</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_version.xml:498
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Scripts_Installed</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>text <function>PostGIS_Scripts_Installed</function></funcdef> "
-"<paramdef></paramdef>"
 
 #. Tag: para
 #: reference_version.xml:509
@@ -590,16 +468,6 @@ msgstr ""
 "<refpurpose>インストールしたPostGISライブラリとともにリリースされたpostgis."
 "sqlスクリプトのバージョン番号を返します。</refpurpose>"
 
-#. Tag: funcprototype
-#: reference_version.xml:546
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Scripts_Released</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>text <function>PostGIS_Scripts_Released</function></funcdef> "
-"<paramdef></paramdef>"
-
 #. Tag: para
 #: reference_version.xml:557
 #, no-c-format
@@ -639,16 +507,6 @@ msgid ""
 msgstr ""
 "<refpurpose>PostGISバージョン番号とコンパイルオプションを返します。</"
 "refpurpose>"
-
-#. Tag: funcprototype
-#: reference_version.xml:592
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Version</function></funcdef> <paramdef></"
-"paramdef>"
-msgstr ""
-"<funcdef>text <function>PostGIS_Version</function></funcdef> <paramdef></"
-"paramdef>"
 
 #. Tag: para
 #: reference_version.xml:603

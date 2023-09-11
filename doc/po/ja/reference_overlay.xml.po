@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-08-28 09:41+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-08-29 12:13+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -40,18 +40,6 @@ msgstr "重ね合わせ関数"
 #, no-c-format
 msgid "Computes the portion of a geometry falling within a rectangle."
 msgstr "長方形内に落ちるジオメトリの一部を返します。"
-
-#. Tag: funcprototype
-#: reference_overlay.xml:22
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_ClipByBox2D</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>box2d</type> <parameter>box</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_ClipByBox2D</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>box2d</type> <parameter>box</parameter></paramdef>"
 
 #. Tag: title
 #: reference_overlay.xml:31 reference_overlay.xml:80 reference_overlay.xml:193
@@ -125,22 +113,6 @@ msgid ""
 msgstr ""
 "ジオメトリBとインタセクトしていないジオメトリAの一部を表現するジオメトリを計"
 "算します。"
-
-#. Tag: funcprototype
-#: reference_overlay.xml:70
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Difference</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float8 </type> <parameter>gridSize = -1</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Difference</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float8 </type> <parameter>gridSize = -1</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_overlay.xml:82
@@ -438,18 +410,6 @@ msgstr ""
 "ジオメトリを結合する集約関数で、メモリを効率的に使いますが処理時間のかかるも"
 "のです。"
 
-#. Tag: funcprototype
-#: reference_overlay.xml:265
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_MemUnion</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>geomfield</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_MemUnion</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>geomfield</parameter></"
-"paramdef>"
-
 #. Tag: para
 #: reference_overlay.xml:276
 #, no-c-format
@@ -482,16 +442,6 @@ msgstr ""
 #, no-c-format
 msgid "Nodes a collection of lines."
 msgstr "ラインストリングの集合にノードを作成します。"
-
-#. Tag: funcprototype
-#: reference_overlay.xml:319
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Node</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Node</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_overlay.xml:330
@@ -584,18 +534,6 @@ msgid ""
 msgstr ""
 "ジオメトリを他のジオメトリで分割してできたジオメトリのコレクションを返しま"
 "す。"
-
-#. Tag: funcprototype
-#: reference_overlay.xml:382
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Split</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>input</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Split</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>input</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>"
 
 #. Tag: para
 #: reference_overlay.xml:392
@@ -709,22 +647,6 @@ msgstr ""
 #, no-c-format
 msgid "Computes a rectilinear subdivision of a geometry."
 msgstr "ジオメトリの線の分割を計算します。"
-
-#. Tag: funcprototype
-#: reference_overlay.xml:510
-#, no-c-format
-msgid ""
-"<funcdef>setof geometry <function>ST_Subdivide</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>max_vertices=256</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>float8</type> <parameter>gridSize = "
-"-1</parameter></paramdef>"
-msgstr ""
-"<funcdef>setof geometry <function>ST_Subdivide</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>max_vertices=256</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>float8</type> <parameter>gridSize = "
-"-1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_overlay.xml:522
@@ -874,22 +796,6 @@ msgstr ""
 "ジオメトリAとジオメトリBがインタセクトしていない部分を表現するジオメトリを返"
 "します。"
 
-#. Tag: funcprototype
-#: reference_overlay.xml:627
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_SymDifference</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float8 </type> <parameter>gridSize = -1</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_SymDifference</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float8 </type> <parameter>gridSize = -1</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_overlay.xml:639
 #, no-c-format
@@ -927,20 +833,6 @@ msgstr "二つのラインストリングの対称差"
 #, no-c-format
 msgid "Computes the union of the components of a single geometry."
 msgstr "単一のジオメトリの要素の結合を計算します。"
-
-#. Tag: funcprototype
-#: reference_overlay.xml:720
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_UnaryUnion</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float8 </type> <parameter>gridSize = -1</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_UnaryUnion</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float8 </type> <parameter>gridSize = -1</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_overlay.xml:732

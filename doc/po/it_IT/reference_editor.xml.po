@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2022-02-18 09:52+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
@@ -38,29 +38,6 @@ msgstr ""
 #: reference_editor.xml:15
 #, no-c-format
 msgid "Add a point to a LineString."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_editor.xml:19
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_AddPoint</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>point</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_AddPoint</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>point</parameter></paramdef>"
-
-#. Tag: funcprototype
-#: reference_editor.xml:26
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_AddPoint</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>point</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>position = -1</parameter></"
-"paramdef>"
 msgstr ""
 
 #. Tag: title
@@ -171,28 +148,6 @@ msgid ""
 "Given a geometry collection, returns a multi-geometry containing only "
 "elements of a specified type."
 msgstr ""
-
-#. Tag: funcprototype
-#: reference_editor.xml:77
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_CollectionExtract</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_editor.xml:83
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_CollectionExtract</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>collection</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>type</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_CollectionExtract</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>collection</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>type</parameter></"
-"paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:94
@@ -306,16 +261,6 @@ msgstr ""
 msgid "Returns the simplest representation of a geometry collection."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_editor.xml:160
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_CollectionHomogenize</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_CollectionHomogenize</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>"
-
 #. Tag: para
 #: reference_editor.xml:170
 #, no-c-format
@@ -406,18 +351,6 @@ msgstr ""
 #: reference_editor.xml:219
 #, no-c-format
 msgid "Converts a geometry containing curves to a linear geometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_editor.xml:224
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_CurveToLine</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>curveGeom</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer</type> <parameter>tolerance_type</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer</type> "
-"<parameter>flags</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -533,15 +466,6 @@ msgstr "&curve_support;"
 msgid "Change start point of a closed LineString."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_editor.xml:305
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Scroll</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>point</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_editor.xml:316
 #, no-c-format
@@ -574,16 +498,6 @@ msgstr ""
 #, no-c-format
 msgid "Returns a version of a geometry with X and Y axis flipped."
 msgstr ""
-
-#. Tag: funcprototype
-#: reference_editor.xml:346
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_FlipCoordinates</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_FlipCoordinates</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:355
@@ -622,14 +536,6 @@ msgstr "Esempio"
 msgid "Force the geometries into a \"2-dimensional mode\"."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_editor.xml:387
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Force2D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_editor.xml:397
 #, no-c-format
@@ -658,15 +564,6 @@ msgstr ""
 #: reference_editor.xml:428
 #, no-c-format
 msgid "Force the geometries into XYZ mode. This is an alias for ST_Force3DZ."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_editor.xml:433
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Force3D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>Zvalue = 0.0</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -704,15 +601,6 @@ msgstr ""
 msgid "Force the geometries into XYZ mode."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_editor.xml:478
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Force3DZ</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>Zvalue = 0.0</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_editor.xml:489
 #, no-c-format
@@ -739,15 +627,6 @@ msgstr ""
 #: reference_editor.xml:518
 #, no-c-format
 msgid "Force the geometries into XYM mode."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_editor.xml:523
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Force3DM</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>Mvalue = 0.0</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -785,16 +664,6 @@ msgstr ""
 msgid "Force the geometries into XYZM mode."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_editor.xml:566
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Force4D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>Zvalue = 0.0</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>Mvalue = 0.0</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_editor.xml:578
 #, no-c-format
@@ -824,14 +693,6 @@ msgid ""
 "clockwise."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_editor.xml:613
-#, no-c-format
-msgid ""
-"<funcdef> geometry <function>ST_ForcePolygonCCW</function> </funcdef> "
-"<paramdef> <type>geometry</type> <parameter>geom</parameter> </paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_editor.xml:629
 #, no-c-format
@@ -858,14 +719,6 @@ msgstr ""
 #: reference_editor.xml:654
 #, no-c-format
 msgid "Convert the geometry into a GEOMETRYCOLLECTION."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_editor.xml:659
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_ForceCollection</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -898,14 +751,6 @@ msgid ""
 "clockwise."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_editor.xml:710
-#, no-c-format
-msgid ""
-"<funcdef> geometry <function>ST_ForcePolygonCW</function> </funcdef> "
-"<paramdef> <type>geometry</type> <parameter>geom</parameter> </paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_editor.xml:726
 #, no-c-format
@@ -927,14 +772,6 @@ msgstr ""
 msgid ""
 "Force the orientation of the vertices in a polygon to follow the Right-Hand-"
 "Rule."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_editor.xml:789
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_ForceRHR</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -972,14 +809,6 @@ msgstr ""
 msgid "Upcast a geometry into its curved type, if applicable."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_editor.xml:846
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_ForceCurve</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_editor.xml:857
 #, no-c-format
@@ -1001,18 +830,6 @@ msgstr "Disponibilità: 2.2.0"
 #, no-c-format
 msgid "Converts a linear geometry to a curved geometry."
 msgstr ""
-
-#. Tag: funcprototype
-#: reference_editor.xml:891
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_LineToCurve</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomANoncircular</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_LineToCurve</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomANoncircular</parameter></"
-"paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:901
@@ -1036,14 +853,6 @@ msgstr ""
 msgid "Return the geometry as a MULTI* geometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_editor.xml:934
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Multi</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_editor.xml:944
 #, no-c-format
@@ -1058,17 +867,6 @@ msgstr ""
 msgid ""
 "Returns a line with the last and first segments extended the specified "
 "distance(s)."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_editor.xml:969
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_LineExtend</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>distance_forward</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>float</type> "
-"<parameter>distance_backward=0.0</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1104,14 +902,6 @@ msgstr ""
 #: reference_editor.xml:1026
 #, no-c-format
 msgid "Return the geometry in its canonical form."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_editor.xml:1031
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Normalize</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1240,18 +1030,6 @@ msgstr ""
 msgid "Sets least significant bits of coordinates to zero"
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_editor.xml:1170
-#, no-c-format
-msgid ""
-"<funcdef> geometry <function>ST_QuantizeCoordinates</function> </funcdef> "
-"<paramdef> <type>geometry</type> <parameter>g</parameter> </paramdef> "
-"<paramdef> <type>int</type> <parameter>prec_x</parameter> </paramdef> "
-"<paramdef> <type>int</type> <parameter>prec_y</parameter> </paramdef> "
-"<paramdef> <type>int</type> <parameter>prec_z</parameter> </paramdef> "
-"<paramdef> <type>int</type> <parameter>prec_m</parameter> </paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_editor.xml:1201
 #, no-c-format
@@ -1345,18 +1123,6 @@ msgstr ""
 msgid "Remove a point from a linestring."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_editor.xml:1295
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_RemovePoint</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>offset</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_RemovePoint</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>offset</parameter></paramdef>"
-
 #. Tag: para
 #: reference_editor.xml:1306
 #, no-c-format
@@ -1389,16 +1155,6 @@ msgstr ", <xref linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_NumPoints\"/>"
 #: reference_editor.xml:1329
 #, no-c-format
 msgid "Returns a version of a geometry with duplicate points removed."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_editor.xml:1335
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_RemoveRepeatedPoints</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float8</type> <parameter>tolerance</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1441,16 +1197,6 @@ msgstr ""
 #, no-c-format
 msgid "Return the geometry with vertex order reversed."
 msgstr ""
-
-#. Tag: funcprototype
-#: reference_editor.xml:1394
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Reverse</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Reverse</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:1404
@@ -1589,22 +1335,6 @@ msgstr ""
 msgid "Replace point of a linestring with a given point."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_editor.xml:1517
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_SetPoint</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>zerobasedposition</parameter></"
-"paramdef> <paramdef><type>geometry</type> <parameter>point</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_SetPoint</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>zerobasedposition</parameter></"
-"paramdef> <paramdef><type>geometry</type> <parameter>point</parameter></"
-"paramdef>"
-
 #. Tag: para
 #: reference_editor.xml:1529
 #, no-c-format
@@ -1636,14 +1366,6 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Shifts the longitude coordinates of a geometry between -180..180 and 0..360."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_editor.xml:1557
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_ShiftLongitude</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1690,16 +1412,6 @@ msgstr ""
 #: reference_editor.xml:1604
 #, no-c-format
 msgid "Wrap a geometry around an X value."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_editor.xml:1609
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_WrapX</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>wrap</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>move</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1802,20 +1514,6 @@ msgid ""
 "geometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_editor.xml:1769
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Snap</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>input</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>reference</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>tolerance</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Snap</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>input</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>reference</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>tolerance</parameter></paramdef>"
-
 #. Tag: para
 #: reference_editor.xml:1781
 #, no-c-format
@@ -1902,15 +1600,6 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns a version of the given geometry with given ordinate values swapped."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_editor.xml:1908
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_SwapOrdinates</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>cstring</type> <parameter>ords</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-05-15 11:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -317,18 +317,6 @@ msgstr ""
 "かつユニークでないインデックスを削除します。スキーマを指定しない場合のデフォ"
 "ルトスキーマは、<varname>tiger_data</varname>です。</refpurpose>"
 
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:65
-#, no-c-format
-msgid ""
-"<funcdef>text <function>Drop_Indexes_Generate_Script</function></funcdef> "
-"<paramdef choice=\"opt\"><type>text </type> "
-"<parameter>param_schema=tiger_data</parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>Drop_Indexes_Generate_Script</function></funcdef> "
-"<paramdef choice=\"opt\"><type>text </type> "
-"<parameter>param_schema=tiger_data</parameter></paramdef>"
-
 #. Tag: title
 #: extras_tigergeocoder.xml:73 extras_tigergeocoder.xml:115
 #: extras_tigergeocoder.xml:157 extras_tigergeocoder.xml:213
@@ -422,18 +410,6 @@ msgstr ""
 "<varname>state_all</varname>または、<varname>county</varname> or "
 "<varname>state</varname>を削除するスクリプトを生成します。"
 
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:107
-#, no-c-format
-msgid ""
-"<funcdef>text <function>Drop_Nation_Tables_Generate_Script</function></"
-"funcdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>param_schema=tiger_data</parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>Drop_Nation_Tables_Generate_Script</function></"
-"funcdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>param_schema=tiger_data</parameter></paramdef>"
-
 #. Tag: para
 #: extras_tigergeocoder.xml:117
 #, no-c-format
@@ -469,20 +445,6 @@ msgstr ""
 "指定したスキーマ内の、名前が州コードから始まるテーブルを全て削除するスクリプ"
 "トを生成します。スキーマが指定されていない場合のデフォルトスキーマは"
 "<varname>tiger_data</varname>です。"
-
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:148
-#, no-c-format
-msgid ""
-"<funcdef>text <function>Drop_State_Tables_Generate_Script</function></"
-"funcdef> <paramdef><type>text </type> <parameter>param_state</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>param_schema=tiger_data</parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>Drop_State_Tables_Generate_Script</function></"
-"funcdef> <paramdef><type>text </type> <parameter>param_state</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>param_schema=tiger_data</parameter></paramdef>"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:159
@@ -649,34 +611,6 @@ msgstr ""
 "(エッジ、フェイス、住所)と、PostgreSQLあいまい文字列合致 (soundex, "
 "levenshtein)を使います。"
 
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:259
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>geocode_intersection</function></funcdef> "
-"<paramdef><type>text </type> <parameter> roadway1</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter> roadway2</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter> in_state</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter> in_city</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> <parameter> in_zip</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>max_results=10</parameter></paramdef> <paramdef><type>norm_addy </"
-"type> <parameter>OUT addy</parameter></paramdef> <paramdef><type>geometry </"
-"type> <parameter>OUT geomout</parameter></paramdef> <paramdef><type>integer "
-"</type> <parameter>OUT rating</parameter></paramdef>"
-msgstr ""
-"<funcdef>setof record <function>geocode_intersection</function></funcdef> "
-"<paramdef><type>text </type> <parameter> roadway1</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter> roadway2</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter> in_state</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter> in_city</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> <parameter> in_zip</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>max_results=10</parameter></paramdef> <paramdef><type>norm_addy </"
-"type> <parameter>OUT addy</parameter></paramdef> <paramdef><type>geometry </"
-"type> <parameter>OUT geomout</parameter></paramdef> <paramdef><type>integer "
-"</type> <parameter>OUT rating</parameter></paramdef>"
-
 #. Tag: para
 #: extras_tigergeocoder.xml:277
 #, no-c-format
@@ -749,16 +683,6 @@ msgstr ""
 "tiger.geocode_settingsテーブルに格納されている設定のうち指定したものの値を返"
 "します。"
 
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:312
-#, no-c-format
-msgid ""
-"<funcdef>text <function>Get_Geocode_Setting</function></funcdef> "
-"<paramdef><type>text </type> <parameter> setting_name</parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>Get_Geocode_Setting</function></funcdef> "
-"<paramdef><type>text </type> <parameter> setting_name</parameter></paramdef>"
-
 #. Tag: para
 #: extras_tigergeocoder.xml:322
 #, no-c-format
@@ -797,20 +721,6 @@ msgid ""
 msgstr ""
 "ジオメトリで指定した位置の米国国勢調査統計区またはtractテーブルのフィールドを"
 "返します。デフォルトでは、統計区の短縮名を返します。"
-
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:352
-#, no-c-format
-msgid ""
-"<funcdef>text <function>get_tract</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter> loc_geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter> output_field=name</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>get_tract</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter> loc_geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter> output_field=name</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:363
@@ -870,16 +780,6 @@ msgstr ""
 "ジオコーダで結合や検索条件に使われ、インデックスが付いていなキーカラムを持つ"
 "全てのテーブルを探し、インデックスを追加します。"
 
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:398
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>Install_Missing_Indexes</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>Install_Missing_Indexes</function></funcdef> "
-"<paramdef></paramdef>"
-
 #. Tag: para
 #: extras_tigergeocoder.xml:408
 #, no-c-format
@@ -916,18 +816,6 @@ msgstr ""
 "tabblock (ブロック)をダウンロードし、<varname>tiger_data</varname>に格納する"
 "ための、指定したプラットフォーム用のシェルスクリプトを生成します。行ごとに州"
 "ごとのスクリプトが返されます。"
-
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:442
-#, no-c-format
-msgid ""
-"<funcdef>setof text <function>loader_generate_census_script</function></"
-"funcdef> <paramdef><type>text[]</type> <parameter>param_states</parameter></"
-"paramdef> <paramdef><type>text</type> <parameter>os</parameter></paramdef>"
-msgstr ""
-"<funcdef>setof text <function>loader_generate_census_script</function></"
-"funcdef> <paramdef><type>text[]</type> <parameter>param_states</parameter></"
-"paramdef> <paramdef><type>text</type> <parameter>os</parameter></paramdef>"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:453
@@ -1055,18 +943,6 @@ msgstr ""
 "構造変更に対応していて、国勢統計区、細分区グループ、細分区 (tabblocks)テーブ"
 "ルをダウンロードすることができます。"
 
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:500
-#, no-c-format
-msgid ""
-"<funcdef>setof text <function>loader_generate_script</function></funcdef> "
-"<paramdef><type>text[]</type> <parameter>param_states</parameter></paramdef> "
-"<paramdef><type>text</type> <parameter>os</parameter></paramdef>"
-msgstr ""
-"<funcdef>setof text <function>loader_generate_script</function></funcdef> "
-"<paramdef><type>text[]</type> <parameter>param_states</parameter></paramdef> "
-"<paramdef><type>text</type> <parameter>os</parameter></paramdef>"
-
 #. Tag: para
 #: extras_tigergeocoder.xml:511
 #, no-c-format
@@ -1159,16 +1035,6 @@ msgid ""
 msgstr ""
 "指定したプラットフォーム用の、国と州のルックアップテーブルをロードするシェル"
 "スクリプトを生成します。"
-
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:562
-#, no-c-format
-msgid ""
-"<funcdef>text <function>loader_generate_nation_script</function></funcdef> "
-"<paramdef><type>text</type> <parameter>os</parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>loader_generate_nation_script</function></funcdef> "
-"<paramdef><type>text</type> <parameter>os</parameter></paramdef>"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:572
@@ -1288,16 +1154,6 @@ msgstr ""
 "ラムを持つすべてのテーブルを検索し、インデックスを追加するSQLデータ定義言語を"
 "出力します。"
 
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:620
-#, no-c-format
-msgid ""
-"<funcdef>text <function>Missing_Indexes_Generate_Script</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>text <function>Missing_Indexes_Generate_Script</function></funcdef> "
-"<paramdef></paramdef>"
-
 #. Tag: para
 #: extras_tigergeocoder.xml:630
 #, no-c-format
@@ -1339,16 +1195,6 @@ msgstr ""
 "リート名等をフィールドに分けて持つ<varname>norm_addy</varname>複合型を返しま"
 "す。tiger_geocoderに同梱されているルックアップデータで動作します (Tigerデータ"
 "自体は不要です)。"
-
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:665
-#, no-c-format
-msgid ""
-"<funcdef>norm_addy <function>normalize_address</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>in_address</parameter></paramdef>"
-msgstr ""
-"<funcdef>norm_addy <function>normalize_address</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>in_address</parameter></paramdef>"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:675 extras_tigergeocoder.xml:761
@@ -1565,16 +1411,6 @@ msgstr ""
 "返します。この関数は、tiger_geocoder同梱のルックアップテーブルだけを使います "
 "(Tigerデータは不要です)。住所標準化エクステンションが必要です。"
 
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:751
-#, no-c-format
-msgid ""
-"<funcdef>norm_addy <function>pagc_normalize_address</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>in_address</parameter></paramdef>"
-msgstr ""
-"<funcdef>norm_addy <function>pagc_normalize_address</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>in_address</parameter></paramdef>"
-
 #. Tag: para
 #: extras_tigergeocoder.xml:763
 #, no-c-format
@@ -1680,16 +1516,6 @@ msgstr ""
 "<varname>norm_addy</varname>複合型オブジェクトを与えると、印刷表現を返しま"
 "す。通常はnormalize_addressと併用します。"
 
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:843
-#, no-c-format
-msgid ""
-"<funcdef>varchar <function>pprint_addy</function></funcdef> "
-"<paramdef><type>norm_addy </type> <parameter>in_addy</parameter></paramdef>"
-msgstr ""
-"<funcdef>varchar <function>pprint_addy</function></funcdef> "
-"<paramdef><type>norm_addy </type> <parameter>in_addy</parameter></paramdef>"
-
 #. Tag: para
 #: extras_tigergeocoder.xml:853
 #, no-c-format
@@ -1732,28 +1558,6 @@ msgstr ""
 "性のある住所の配列と交差するストリートの配列を一つのレコードで返します。"
 "include_strnum_range = trueの場合には、交差するストリートに番地範囲を追加しま"
 "す。"
-
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:886
-#, no-c-format
-msgid ""
-"<funcdef>record <function>Reverse_Geocode</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>include_strnum_range=false</parameter></paramdef> "
-"<paramdef><type>geometry[] </type> <parameter>OUT intpt</parameter></"
-"paramdef> <paramdef><type>norm_addy[] </type> <parameter>OUT addy</"
-"parameter></paramdef> <paramdef><type>varchar[] </type> <parameter>OUT "
-"street</parameter></paramdef>"
-msgstr ""
-"<funcdef>record <function>Reverse_Geocode</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>include_strnum_range=false</parameter></paramdef> "
-"<paramdef><type>geometry[] </type> <parameter>OUT intpt</parameter></"
-"paramdef> <paramdef><type>norm_addy[] </type> <parameter>OUT addy</"
-"parameter></paramdef> <paramdef><type>varchar[] </type> <parameter>OUT "
-"street</parameter></paramdef>"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:900
@@ -1923,22 +1727,6 @@ msgstr ""
 "Tigerデータの定義領域をPostGISトポロジにロードして、Tigerデータをトポロジの空"
 "間参照系に投影変換し、トポロジの許容精度にスナップします。"
 
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:961
-#, no-c-format
-msgid ""
-"<funcdef>text <function>Topology_Load_Tiger</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>topo_name</parameter></paramdef> "
-"<paramdef><type>varchar </type> <parameter>region_type</parameter></"
-"paramdef> <paramdef><type>varchar </type> <parameter>region_id</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>text <function>Topology_Load_Tiger</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>topo_name</parameter></paramdef> "
-"<paramdef><type>varchar </type> <parameter>region_type</parameter></"
-"paramdef> <paramdef><type>varchar </type> <parameter>region_id</parameter></"
-"paramdef>"
-
 #. Tag: para
 #: extras_tigergeocoder.xml:973
 #, no-c-format
@@ -2092,18 +1880,6 @@ msgstr ""
 #, no-c-format
 msgid "Sets a setting that affects behavior of geocoder functions."
 msgstr "ジオコーダ関数の振る舞いに影響を与える設定を行います。"
-
-#. Tag: funcprototype
-#: extras_tigergeocoder.xml:1027
-#, no-c-format
-msgid ""
-"<funcdef>text <function>Set_Geocode_Setting</function></funcdef> "
-"<paramdef><type>text </type> <parameter> setting_name</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter> setting_value</parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>Set_Geocode_Setting</function></funcdef> "
-"<paramdef><type>text </type> <parameter> setting_name</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter> setting_value</parameter></paramdef>"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:1038

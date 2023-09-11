@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -40,16 +40,6 @@ msgstr ""
 #, no-c-format
 msgid "Add bounding box to the geometry."
 msgstr "도형에 경계 상자를 추가합니다."
-
-#. Tag: funcprototype
-#: reference_exception.xml:16
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>PostGIS_AddBBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>PostGIS_AddBBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: title
 #: reference_exception.xml:24 reference_exception.xml:70
@@ -115,16 +105,6 @@ msgstr ", <xref linkend=\"PostGIS_HasBBox\"/>"
 msgid "Drop the bounding box cache from the geometry."
 msgstr "도형으로부터 경계 상자 캐시를 삭제합니다."
 
-#. Tag: funcprototype
-#: reference_exception.xml:62
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>PostGIS_DropBBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>PostGIS_DropBBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-
 #. Tag: para
 #: reference_exception.xml:72
 #, no-c-format
@@ -176,16 +156,6 @@ msgid "Returns TRUE if the bbox of this geometry is cached, FALSE otherwise."
 msgstr ""
 "해당 도형의 경계 상자가 캐시화된 경우 참을 반환하고, 그렇지 않을 경우 거짓을 "
 "반환합니다."
-
-#. Tag: funcprototype
-#: reference_exception.xml:111
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>PostGIS_HasBBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>PostGIS_HasBBox</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_exception.xml:121

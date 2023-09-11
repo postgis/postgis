@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-06-21 09:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -1427,26 +1427,6 @@ msgid ""
 "Returns a json formatted text listing the parse tokens and standardizations"
 msgstr "パースしたトークンと標準化のリストをJSON形式の文字列で返します"
 
-#. Tag: funcprototype
-#: extras_address_standardizer.xml:578
-#, no-c-format
-msgid ""
-"<funcdef>text <function>debug_standardize_address</function></funcdef> "
-"<paramdef><type>text </type> <parameter>lextab</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>gaztab</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>rultab</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>micro</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>macro=NULL</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>debug_standardize_address</function></funcdef> "
-"<paramdef><type>text </type> <parameter>lextab</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>gaztab</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>rultab</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>micro</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>macro=NULL</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: extras_address_standardizer.xml:592
 #, no-c-format
@@ -1595,16 +1575,6 @@ msgstr ""
 #, no-c-format
 msgid "Takes a 1 line address and breaks into parts"
 msgstr "1行の住所を取り、分割します。"
-
-#. Tag: funcprototype
-#: extras_address_standardizer.xml:658
-#, no-c-format
-msgid ""
-"<funcdef>record <function>parse_address</function></funcdef> "
-"<paramdef><type>text </type> <parameter>address</parameter></paramdef>"
-msgstr ""
-"<funcdef>record <function>parse_address</function></funcdef> "
-"<paramdef><type>text </type> <parameter>address</parameter></paramdef>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:669

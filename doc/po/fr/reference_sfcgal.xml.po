@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-05-29 09:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -187,16 +187,6 @@ msgid "Computes area of 3D surface geometries. Will return 0 for solids."
 msgstr ""
 "Calcule la surface des géométries de surface 3D. Retourne 0 pour les solides."
 
-#. Tag: funcprototype
-#: reference_sfcgal.xml:96
-#, no-c-format
-msgid ""
-"<funcdef>float<function>ST_3DArea</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
-msgstr ""
-"<funcdef>float<function>ST_3DArea</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
-
 #. Tag: para
 #: reference_sfcgal.xml:108
 #, no-c-format
@@ -240,16 +230,6 @@ msgstr ""
 msgid "Computes the 3D convex hull of a geometry."
 msgstr "Calcule l'enveloppe convexe 3D d'une géométrie."
 
-#. Tag: funcprototype
-#: reference_sfcgal.xml:135
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_3DConvexHull</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_3DConvexHull</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
-
 #. Tag: para
 #: reference_sfcgal.xml:164
 #, no-c-format
@@ -267,18 +247,6 @@ msgstr ", <xref linkend=\"ST_AsX3D\"/>"
 #, no-c-format
 msgid "Perform 3D intersection"
 msgstr "Réaliser une intersection 3D"
-
-#. Tag: funcprototype
-#: reference_sfcgal.xml:184
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_3DIntersection</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_3DIntersection</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_sfcgal.xml:194
@@ -346,18 +314,6 @@ msgstr ""
 #, no-c-format
 msgid "Perform 3D difference"
 msgstr "Effectuer une différence 3D"
-
-#. Tag: funcprototype
-#: reference_sfcgal.xml:261
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_3DDifference</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_3DDifference</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_sfcgal.xml:271
@@ -453,22 +409,6 @@ msgstr ""
 #, no-c-format
 msgid "Computes an Alpha-shape enclosing a geometry"
 msgstr "Calcul d'une forme Alpha entourant une géométrie"
-
-#. Tag: funcprototype
-#: reference_sfcgal.xml:426
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_AlphaShape</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float </type> <parameter>alpha</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>allow_holes = false</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_AlphaShape</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float </type> <parameter>alpha</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>allow_holes = false</parameter></paramdef>"
 
 #. Tag: para
 #: reference_sfcgal.xml:438
@@ -593,16 +533,6 @@ msgstr ", <xref linkend=\"ST_OptimalAlphaShape\"/>"
 msgid "Compute the approximate medial axis of an areal geometry."
 msgstr "Calculer l'axe médian approximatif d'une géométrie aréolaire."
 
-#. Tag: funcprototype
-#: reference_sfcgal.xml:531
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_ApproximateMedialAxis</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_ApproximateMedialAxis</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-
 #. Tag: para
 #: reference_sfcgal.xml:541
 #, no-c-format
@@ -631,18 +561,6 @@ msgid ""
 msgstr ""
 "Renvoie une triangulation de Delaunay contrainte autour de la géométrie "
 "d'entrée donnée."
-
-#. Tag: funcprototype
-#: reference_sfcgal.xml:596
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_ConstrainedDelaunayTriangles</function></"
-"funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_ConstrainedDelaunayTriangles</function></"
-"funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
-"paramdef>"
 
 #. Tag: para
 #: reference_sfcgal.xml:606
@@ -692,22 +610,6 @@ msgstr ""
 msgid "Extrude a surface to a related volume"
 msgstr "Extruder une surface vers un volume"
 
-#. Tag: funcprototype
-#: reference_sfcgal.xml:668
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Extrude</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>z</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Extrude</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>z</parameter></paramdef>"
-
 #. Tag: para
 #: reference_sfcgal.xml:702
 #, no-c-format
@@ -739,31 +641,11 @@ msgstr "LineString extrudé le long de Z produit une PolyhedralSurfaceZ"
 msgid "Force LHR orientation"
 msgstr "Force l'orientation LHR d'un objet"
 
-#. Tag: funcprototype
-#: reference_sfcgal.xml:763
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_ForceLHR</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_ForceLHR</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:786
 #, no-c-format
 msgid "Check if a surface is or not planar"
 msgstr "Vérifie si une surface est planaire ou non"
-
-#. Tag: funcprototype
-#: reference_sfcgal.xml:791
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_IsPlanar</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_IsPlanar</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_sfcgal.xml:801
@@ -783,16 +665,6 @@ msgstr ""
 "Teste si la géométrie est un solide. Aucun contrôle de validité n'est "
 "effectué."
 
-#. Tag: funcprototype
-#: reference_sfcgal.xml:819
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_IsSolid</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_IsSolid</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:842
 #, no-c-format
@@ -805,33 +677,11 @@ msgstr ""
 "effectuée. Pour obtenir un solide valide, la géométrie d'entrée doit être "
 "une surface polyédrique fermée ou un TIN fermé."
 
-#. Tag: funcprototype
-#: reference_sfcgal.xml:847
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_MakeSolid</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_MakeSolid</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
-
 #. Tag: refpurpose
 #: reference_sfcgal.xml:871
 #, no-c-format
 msgid "Performs Minkowski sum"
 msgstr "Effectue la somme de Minkowski"
-
-#. Tag: funcprototype
-#: reference_sfcgal.xml:876
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_MinkowskiSum</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_MinkowskiSum</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_sfcgal.xml:887
@@ -929,22 +779,6 @@ msgstr ""
 "Calcule une forme alpha entourant une géométrie en utilisant une valeur "
 "alpha \"optimale\"."
 
-#. Tag: funcprototype
-#: reference_sfcgal.xml:981
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_OptimalAlphaShape</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>boolean </type> <parameter>allow_holes = "
-"false</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>nb_components = 1</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_OptimalAlphaShape</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>boolean </type> <parameter>allow_holes = "
-"false</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>nb_components = 1</parameter></paramdef>"
-
 #. Tag: para
 #: reference_sfcgal.xml:993
 #, no-c-format
@@ -1013,16 +847,6 @@ msgstr ", <xref linkend=\"ST_AlphaShape\"/>"
 msgid "Determine surface orientation"
 msgstr "Détermine l'orientation d'une surface"
 
-#. Tag: funcprototype
-#: reference_sfcgal.xml:1058
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_Orientation</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_Orientation</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-
 #. Tag: para
 #: reference_sfcgal.xml:1068
 #, no-c-format
@@ -1039,16 +863,6 @@ msgstr ""
 #, no-c-format
 msgid "Compute a straight skeleton from a geometry"
 msgstr "Calcule un squelette (straight skeleton) à partir d'une géométrie"
-
-#. Tag: funcprototype
-#: reference_sfcgal.xml:1086
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_StraightSkeleton</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_StraightSkeleton</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_sfcgal.xml:1115 reference_sfcgal.xml:1202
@@ -1071,16 +885,6 @@ msgid ""
 msgstr ""
 "Effectue la tessellation de la surface d'un polygone ou d'une surface "
 "polyédrique et renvoie un TIN ou une collection de TINS"
-
-#. Tag: funcprototype
-#: reference_sfcgal.xml:1146
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Tesselate</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Tesselate</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_sfcgal.xml:1155
@@ -1138,16 +942,6 @@ msgid ""
 msgstr ""
 "Calcule le volume d'un solide 3D. S'il est appliqué à des géométries de "
 "surface (même fermées), il renvoie 0."
-
-#. Tag: funcprototype
-#: reference_sfcgal.xml:1244
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_Volume</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_Volume</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_sfcgal.xml:1259

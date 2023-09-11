@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-09-07 10:14+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
@@ -1472,19 +1472,6 @@ msgid ""
 "Returns a json formatted text listing the parse tokens and standardizations"
 msgstr ""
 
-#. Tag: funcprototype
-#: extras_address_standardizer.xml:578
-#, no-c-format
-msgid ""
-"<funcdef>text <function>debug_standardize_address</function></funcdef> "
-"<paramdef><type>text </type> <parameter>lextab</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>gaztab</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>rultab</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>micro</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>macro=NULL</"
-"parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: extras_address_standardizer.xml:592
 #, no-c-format
@@ -1620,16 +1607,6 @@ msgid "Takes a 1 line address and breaks into parts"
 msgstr ""
 "Nimmt eine 1-zeilige Adresse entgegen und zerlegt sie in die Einzelteile"
 
-#. Tag: funcprototype
-#: extras_address_standardizer.xml:658
-#, no-c-format
-msgid ""
-"<funcdef>record <function>parse_address</function></funcdef> "
-"<paramdef><type>text </type> <parameter>address</parameter></paramdef>"
-msgstr ""
-"<funcdef>record <function>parse_address</function></funcdef> "
-"<paramdef><type>text </type> <parameter>address</parameter></paramdef>"
-
 #. Tag: para
 #: extras_address_standardizer.xml:669
 #, no-c-format
@@ -1702,8 +1679,8 @@ msgid ""
 "address e.g <code>city, state postal_code country</code>."
 msgstr ""
 "Variante 2: Nimmt eine Adresse in 2 Teilen entgegen. Ein <varname>micro</"
-"varname> Teil, der aus der normierten ersten Zeile einer Postadresse besteht;"
-" z.B. <code>house_num street</code>. Ein \"macro\"-Teil, der aus der "
+"varname> Teil, der aus der normierten ersten Zeile einer Postadresse "
+"besteht; z.B. <code>house_num street</code>. Ein \"macro\"-Teil, der aus der "
 "normierten zweiten Zeile einer Adresse besteht; z.B. <code>city, state "
 "postal_code country</code>."
 

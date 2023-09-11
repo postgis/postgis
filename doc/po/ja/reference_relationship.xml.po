@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-07-14 02:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -50,18 +50,6 @@ msgstr ""
 "二つのジオメトリが3次元空間において空間的にインタセクトするかどうかをテストし"
 "ます。ポイント、ラインストリング、ポリゴン、多面体サーフェス (面)についてのみ"
 "動作します。"
-
-#. Tag: funcprototype
-#: reference_relationship.xml:23
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_3DIntersects</function></funcdef> <paramdef> "
-"<type>geometry</type> <parameter>geomA</parameter> </paramdef> <paramdef> "
-"<type>geometry</type> <parameter>geomB</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_3DIntersects</function></funcdef> <paramdef> "
-"<type>geometry</type> <parameter>geomA</parameter> </paramdef> <paramdef> "
-"<type>geometry</type> <parameter>geomB</parameter> </paramdef>"
 
 #. Tag: title
 #: reference_relationship.xml:37 reference_relationship.xml:89
@@ -176,18 +164,6 @@ msgid ""
 msgstr ""
 "Bの全てのポイントがA内にあり、かつ、双方の内部に共有点が存在するかどうかをテ"
 "ストします。"
-
-#. Tag: funcprototype
-#: reference_relationship.xml:76
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_Contains</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_Contains</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>"
 
 #. Tag: para
 #: reference_relationship.xml:91
@@ -442,18 +418,6 @@ msgstr ""
 #, no-c-format
 msgid "Tests if every point of B lies in the interior of A"
 msgstr "Bの全てのポイントがAの内部にあるかをテストします。"
-
-#. Tag: funcprototype
-#: reference_relationship.xml:272
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_ContainsProperly</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_ContainsProperly</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>"
 
 #. Tag: para
 #: reference_relationship.xml:287
@@ -747,18 +711,6 @@ msgstr ""
 "二つのジオメトリが内部に共有ポイントを持ち、かつそれだけにならないようになっ"
 "ているかテストします。"
 
-#. Tag: funcprototype
-#: reference_relationship.xml:510
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_Crosses</function></funcdef> "
-"<paramdef><type>geometry </type><parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type><parameter>g2</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_Crosses</function></funcdef> "
-"<paramdef><type>geometry </type><parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type><parameter>g2</parameter></paramdef>"
-
 #. Tag: para
 #: reference_relationship.xml:523
 #, no-c-format
@@ -910,18 +862,6 @@ msgstr ", <xref linkend=\"ST_Overlaps\"/>"
 msgid "Tests if two geometries have no points in common"
 msgstr "二つのジオメトリが共有点を持たないようになっているかテストします。"
 
-#. Tag: funcprototype
-#: reference_relationship.xml:667
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_Disjoint</function></funcdef> <paramdef> "
-"<type>geometry</type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry</type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_Disjoint</function></funcdef> <paramdef> "
-"<type>geometry</type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry</type> <parameter>B</parameter> </paramdef>"
-
 #. Tag: para
 #: reference_relationship.xml:683
 #, no-c-format
@@ -981,18 +921,6 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.26"
 #, no-c-format
 msgid "Tests if two geometries include the same set of points"
 msgstr "二つのジオメトリが同じ点集合になっているかテストします。"
-
-#. Tag: funcprototype
-#: reference_relationship.xml:734
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_Equals</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>A</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>B</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_Equals</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>A</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>B</parameter></paramdef>"
 
 #. Tag: para
 #: reference_relationship.xml:745
@@ -1221,20 +1149,6 @@ msgstr ", <xref linkend=\"ST_3DIntersects\"/>, <xref linkend=\"ST_Disjoint\"/>"
 msgid "Returns a number indicating the crossing behavior of two LineStrings"
 msgstr "二つのラインストリングがどのように交差しているかを示す数字を返します。"
 
-#. Tag: funcprototype
-#: reference_relationship.xml:888
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_LineCrossingDirection</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>linestringA</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>linestringB</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_LineCrossingDirection</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>linestringA</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>linestringB</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_relationship.xml:899
 #, no-c-format
@@ -1354,18 +1268,6 @@ msgstr ""
 "二つのジオメトリが同じジオメトリを表現し、かつ点の並び順が同じかどうかをテス"
 "トします。"
 
-#. Tag: funcprototype
-#: reference_relationship.xml:995
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_OrderingEquals</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>A</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>B</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_OrderingEquals</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>A</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>B</parameter></paramdef>"
-
 #. Tag: para
 #: reference_relationship.xml:1006
 #, no-c-format
@@ -1411,18 +1313,6 @@ msgid ""
 msgstr ""
 "二つのジオメトリが同じ次元を持ち、インタセクトして、かつ相手と重ならない点少"
 "なくとも一つあるかをテストします。"
-
-#. Tag: funcprototype
-#: reference_relationship.xml:1038
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_Overlaps</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>A</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>B</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_Overlaps</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>A</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>B</parameter></paramdef>"
 
 #. Tag: para
 #: reference_relationship.xml:1049
@@ -1827,20 +1717,6 @@ msgstr ""
 "DE-9IMインタセクション行列がインタセクション行列パターンに合致するかどうかを"
 "見ます。"
 
-#. Tag: funcprototype
-#: reference_relationship.xml:1333
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_RelateMatch</function></funcdef> "
-"<paramdef><type>text </type> <parameter>intersectionMatrix</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>intersectionMatrixPattern</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_RelateMatch</function></funcdef> "
-"<paramdef><type>text </type> <parameter>intersectionMatrix</parameter></"
-"paramdef> <paramdef><type>text </type> <parameter>intersectionMatrixPattern</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_relationship.xml:1344
 #, no-c-format
@@ -1880,18 +1756,6 @@ msgid ""
 msgstr ""
 "二つのジオメトリが少なくとも一つの共有点を持ち、かつ内部でインタセクトしてい"
 "ないようになっているかテストします。"
-
-#. Tag: funcprototype
-#: reference_relationship.xml:1385
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_Touches</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>A</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>B</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_Touches</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>A</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>B</parameter></paramdef>"
 
 #. Tag: para
 #: reference_relationship.xml:1400
@@ -1981,18 +1845,6 @@ msgid ""
 msgstr ""
 "Aの全てのポイントがB内にあり、かつ両方の内部が共有点を持つかどうかをテストし"
 "ます。"
-
-#. Tag: funcprototype
-#: reference_relationship.xml:1523
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_Within</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>A</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>B</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_Within</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>A</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>B</parameter></paramdef>"
 
 #. Tag: para
 #: reference_relationship.xml:1538
@@ -2114,22 +1966,6 @@ msgid "Tests if two 3D geometries are within a given 3D distance"
 msgstr ""
 "二つの3次元ジオメトリが与えらえれた3次元距離内にあるかどうかをテストします。"
 
-#. Tag: funcprototype
-#: reference_relationship.xml:1619
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_3DDWithin</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef> "
-"<paramdef><type>double precision </type> <parameter>distance_of_srid</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_3DDWithin</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef> "
-"<paramdef><type>double precision </type> <parameter>distance_of_srid</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_relationship.xml:1637
 #, no-c-format
@@ -2171,22 +2007,6 @@ msgstr ""
 "二つの3次元ジオメトリが完全に与えらえれた3次元距離内にあるかどうかをテストし"
 "ます。"
 
-#. Tag: funcprototype
-#: reference_relationship.xml:1680
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_3DDFullyWithin</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef> "
-"<paramdef><type>double precision </type> <parameter>distance</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_3DDFullyWithin</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef> "
-"<paramdef><type>double precision </type> <parameter>distance</parameter></"
-"paramdef>"
-
 #. Tag: para
 #: reference_relationship.xml:1698
 #, no-c-format
@@ -2218,22 +2038,6 @@ msgstr ""
 msgid "Tests if two geometries are entirely within a given distance"
 msgstr ""
 "二つのジオメトリが完全に与えらえれた距離内にあるかどうかをテストします。"
-
-#. Tag: funcprototype
-#: reference_relationship.xml:1736
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_DFullyWithin</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef> "
-"<paramdef><type>double precision </type> <parameter>distance</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_DFullyWithin</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef> "
-"<paramdef><type>double precision </type> <parameter>distance</parameter></"
-"paramdef>"
 
 #. Tag: para
 #: reference_relationship.xml:1754
@@ -2376,22 +2180,6 @@ msgid ""
 "Tests if a point geometry is inside a circle defined by a center and radius"
 msgstr ""
 "ポイントジオメトリが中心と半径で定められた円の内側にあるかをテストします。"
-
-#. Tag: funcprototype
-#: reference_relationship.xml:1871
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_PointInsideCircle</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>center_x</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>center_y</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>radius</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_PointInsideCircle</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>center_x</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>center_y</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>radius</parameter></paramdef>"
 
 #. Tag: para
 #: reference_relationship.xml:1884

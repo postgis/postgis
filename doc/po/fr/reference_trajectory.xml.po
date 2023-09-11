@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-01-05 06:13+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -43,16 +43,6 @@ msgstr "Fonctions de trajectoire"
 #, no-c-format
 msgid "Tests if the geometry is a valid trajectory."
 msgstr "Teste si la géométrie est une trajectoire valide."
-
-#. Tag: funcprototype
-#: reference_trajectory.xml:23
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_IsValidTrajectory</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_IsValidTrajectory</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef>"
 
 #. Tag: title
 #: reference_trajectory.xml:31 reference_trajectory.xml:80
@@ -119,18 +109,6 @@ msgid "Returns a measure at the closest point of approach of two trajectories."
 msgstr ""
 "Renvoie une mesure au point d'approche le plus proche de deux trajectoires."
 
-#. Tag: funcprototype
-#: reference_trajectory.xml:71
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_ClosestPointOfApproach</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>"
-msgstr ""
-"<funcdef>float8 <function>ST_ClosestPointOfApproach</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>"
-
 #. Tag: para
 #: reference_trajectory.xml:82
 #, no-c-format
@@ -183,18 +161,6 @@ msgstr ""
 "Renvoie la distance entre le point d'approche le plus proche de deux "
 "trajectoires."
 
-#. Tag: funcprototype
-#: reference_trajectory.xml:128
-#, no-c-format
-msgid ""
-"<funcdef>float8 <function>ST_DistanceCPA</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>"
-msgstr ""
-"<funcdef>float8 <function>ST_DistanceCPA</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>"
-
 #. Tag: para
 #: reference_trajectory.xml:139
 #, no-c-format
@@ -223,20 +189,6 @@ msgid ""
 msgstr ""
 "Teste si le point d'approche le plus proche de deux trajectoires se trouve "
 "dans la distance spécifiée."
-
-#. Tag: funcprototype
-#: reference_trajectory.xml:181
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>ST_CPAWithin</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>dist</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>ST_CPAWithin</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>dist</parameter></paramdef>"
 
 #. Tag: para
 #: reference_trajectory.xml:193

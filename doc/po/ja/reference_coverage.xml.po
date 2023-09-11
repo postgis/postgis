@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ming 64gcc81\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-08-03 01:03+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-08-07 10:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -48,20 +48,6 @@ msgid ""
 "coverage."
 msgstr ""
 "ポリゴンが妥当なカバレッジの形成に失敗する位置を検索するウィンドウ関数。"
-
-#. Tag: funcprototype
-#: reference_coverage.xml:22
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_CoverageInvalidEdges</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>tolerance = 0</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_CoverageInvalidEdges</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>tolerance = 0</"
-"parameter></paramdef>"
 
 #. Tag: title
 #: reference_coverage.xml:33 reference_coverage.xml:121
@@ -197,22 +183,6 @@ msgstr ""
 msgid "Window function that simplifies the edges of a polygonal coverage."
 msgstr "ポリゴンカバレッジのエッジを単純化するウィンドウ関数。"
 
-#. Tag: funcprototype
-#: reference_coverage.xml:108
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_CoverageSimplify</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>tolerance</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>simplifyBoundary = true</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_CoverageSimplify</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>tolerance</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>simplifyBoundary = true</parameter></paramdef>"
-
 #. Tag: para
 #: reference_coverage.xml:123
 #, no-c-format
@@ -287,16 +257,6 @@ msgid ""
 msgstr ""
 "共有しているエッジを除去することでカバレッジを形成するポリゴンの集合の結合を"
 "計算します。"
-
-#. Tag: funcprototype
-#: reference_coverage.xml:195
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_CoverageUnion</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>geom</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_CoverageUnion</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_coverage.xml:206

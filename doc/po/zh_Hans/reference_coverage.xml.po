@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-08-03 01:03+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-09-08 04:20+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -28,10 +28,9 @@ msgid ""
 "process, and can be operated on with window functions, which retain the "
 "coverage topology inside the window partition while altering the edges."
 msgstr ""
-"这些函数对形成“隐式覆盖”的多边形几何体集进行操作。 "
-"为了形成有效的覆盖范围，多边形不得重叠，并且相邻边的顶点必须完全匹配。 覆盖处"
-"理速度很快，并且可以使用窗口函数进行操作，窗口函数保留窗口分区内的覆盖拓扑，"
-"同时更改边缘。"
+"这些函数对形成“隐式覆盖”的多边形几何体集进行操作。 为了形成有效的覆盖范围，多"
+"边形不得重叠，并且相邻边的顶点必须完全匹配。 覆盖处理速度很快，并且可以使用窗"
+"口函数进行操作，窗口函数保留窗口分区内的覆盖拓扑，同时更改边缘。"
 
 #. Tag: title
 #: reference_coverage.xml:11
@@ -47,16 +46,6 @@ msgid ""
 "coverage."
 msgstr "用于查找多边形无法形成有效覆盖范围的位置的窗口函数。"
 
-#. Tag: funcprototype
-#: reference_coverage.xml:22
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_CoverageInvalidEdges</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>tolerance = 0</"
-"parameter></paramdef>"
-msgstr ""
-
 #. Tag: title
 #: reference_coverage.xml:33 reference_coverage.xml:121
 #: reference_coverage.xml:204
@@ -71,8 +60,9 @@ msgid ""
 "A window function which checks if the polygons in the window partition form "
 "a valid polygonal coverage. It returns linear indicators showing the "
 "location of invalid edges (if any) in each polygon."
-msgstr "一个窗口函数，用于检查窗口分区中的多边形是否形成有效的多边形覆盖范围。 "
-"它返回线性指示器，显示每个多边形中无效边（如果有）的位置。"
+msgstr ""
+"一个窗口函数，用于检查窗口分区中的多边形是否形成有效的多边形覆盖范围。 它返回"
+"线性指示器，显示每个多边形中无效边（如果有）的位置。"
 
 #. Tag: para
 #: reference_coverage.xml:38
@@ -87,8 +77,9 @@ msgstr "如果满足以下条件，则一组有效多边形是有效的覆盖范
 msgid ""
 "<emphasis role=\"bold\">Non-overlapping</emphasis> - polygons do not overlap "
 "(their interiors do not intersect)"
-msgstr "<emphasis role=\"bold\">Non-"
-"overlapping</emphasis>-多边形不重叠（它们的内部不相交）"
+msgstr ""
+"<emphasis role=\"bold\">Non-overlapping</emphasis>-多边形不重叠（它们的内部不"
+"相交）"
 
 #. Tag: para
 #: reference_coverage.xml:45
@@ -108,10 +99,9 @@ msgid ""
 "polygons return the value NULL. Non-polygonal or empty geometries also "
 "produce NULL values."
 msgstr ""
-"作为窗口函数，为每个输入多边形返回一个值。 "
-"对于违反一个或多个有效性条件的多边形，返回值是包含有问题边的 "
-"MULTILINESTRING。 覆盖范围有效的面返回值 NULL。 非多边形或空几何图形也会产生 "
-"NULL 值。"
+"作为窗口函数，为每个输入多边形返回一个值。 对于违反一个或多个有效性条件的多边"
+"形，返回值是包含有问题边的 MULTILINESTRING。 覆盖范围有效的面返回值 NULL。 非"
+"多边形或空几何图形也会产生 NULL 值。"
 
 #. Tag: para
 #: reference_coverage.xml:55
@@ -133,7 +123,8 @@ msgstr ""
 msgid ""
 "The polygons being checked for coverage validity must also be valid "
 "geometries. This can be checked with <xref linkend=\"ST_IsValid\"/>."
-msgstr "正在检查覆盖范围有效性的多边形也必须是有效的几何图形。 这可以使用<xref "
+msgstr ""
+"正在检查覆盖范围有效性的多边形也必须是有效的几何图形。 这可以使用<xref "
 "linkend=\"ST_IsValid\"/> 进行检查。"
 
 #. Tag: para
@@ -175,25 +166,14 @@ msgid ""
 ", <xref linkend=\"ST_CoverageUnion\"/>, <xref "
 "linkend=\"ST_CoverageSimplify\"/>"
 msgstr ""
-", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageSimplify\""
-"/>"
+", <xref linkend=\"ST_CoverageUnion\"/>, <xref "
+"linkend=\"ST_CoverageSimplify\"/>"
 
 #. Tag: refpurpose
 #: reference_coverage.xml:103
 #, no-c-format
 msgid "Window function that simplifies the edges of a polygonal coverage."
 msgstr "简化多边形覆盖范围边缘的窗口函数。"
-
-#. Tag: funcprototype
-#: reference_coverage.xml:108
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_CoverageSimplify</function></funcdef> "
-"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>tolerance</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>simplifyBoundary = true</parameter></paramdef>"
-msgstr ""
 
 #. Tag: para
 #: reference_coverage.xml:123
@@ -204,8 +184,8 @@ msgid ""
 "simplified output polygons are consisent along shared edges, and still form "
 "a valid coverage."
 msgstr ""
-"一种窗函数，可简化多边形覆盖范围内的多边形边缘。 简化保留了覆盖拓扑。 "
-"这意味着简化的输出多边形沿着共享边是一致的，并且仍然形成有效的覆盖范围。"
+"一种窗函数，可简化多边形覆盖范围内的多边形边缘。 简化保留了覆盖拓扑。 这意味"
+"着简化的输出多边形沿着共享边是一致的，并且仍然形成有效的覆盖范围。"
 
 #. Tag: para
 #: reference_coverage.xml:128
@@ -217,9 +197,10 @@ msgid ""
 "of distance, and is roughly equal to the square root of triangular areas to "
 "be simplified."
 msgstr ""
-"简化使用了 <ulink url=\"https://en.wikipedia.org/wiki/Visvalingam%E2%80%"
-"93Whyatt_algorithm\">Visvalingam–Whyatt </ulink>算法的格式。 <parameter>公差<"
-"/parameter>参数以距离为单位，大致等于待简化的三角形面积的平方根。"
+"简化使用了 <ulink url=\"https://en.wikipedia.org/wiki/"
+"Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–Whyatt </ulink>算法的格"
+"式。 <parameter>公差</parameter>参数以距离为单位，大致等于待简化的三角形面积"
+"的平方根。"
 
 #. Tag: para
 #: reference_coverage.xml:133
@@ -242,8 +223,8 @@ msgid ""
 "determine if a coverage is valid."
 msgstr ""
 "如果输入不是有效的覆盖范围，则输出中可能会出现意外的伪影（例如边界交叉点或看"
-"似共享的分离边界）。 使用 <xref linkend=\"ST_CoverageInvalidEdges\"/> "
-"确定覆盖范围是否有效。"
+"似共享的分离边界）。 使用 <xref linkend=\"ST_CoverageInvalidEdges\"/> 确定覆"
+"盖范围是否有效。"
 
 #. Tag: para
 #: reference_coverage.xml:155 reference_coverage.xml:231
@@ -265,14 +246,6 @@ msgid ""
 "shared edges."
 msgstr "通过删除共享边来计算形成覆盖范围的一组多边形的并集。"
 
-#. Tag: funcprototype
-#: reference_coverage.xml:195
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_CoverageUnion</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>geom</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_coverage.xml:206
 #, no-c-format
@@ -283,9 +256,9 @@ msgid ""
 "linkend=\"ST_Union\"/>, but uses the coverage structure to compute the union "
 "much faster."
 msgstr ""
-"将一组多边形联合起来形成多边形覆盖范围的聚合函数。 "
-"结果是覆盖与覆盖范围相同的区域的多边形几何体。 该函数产生与 <xref linkend="
-"\"ST_Union\"/>相同的结果，但使用覆盖结构来更快地计算并集。"
+"将一组多边形联合起来形成多边形覆盖范围的聚合函数。 结果是覆盖与覆盖范围相同的"
+"区域的多边形几何体。 该函数产生与 <xref linkend=\"ST_Union\"/>相同的结果，但"
+"使用覆盖结构来更快地计算并集。"
 
 #. Tag: para
 #: reference_coverage.xml:212
@@ -296,8 +269,8 @@ msgid ""
 "linkend=\"ST_CoverageInvalidEdges\"/> to determine if a coverage is valid."
 msgstr ""
 "如果输入不是有效的覆盖范围，则输出中可能会出现意外的伪影（例如未合并或重叠的"
-"多边形）。 使用 <xref linkend=\"ST_CoverageInvalidEdges\""
-"/>确定覆盖范围是否有效。"
+"多边形）。 使用 <xref linkend=\"ST_CoverageInvalidEdges\"/>确定覆盖范围是否有"
+"效。"
 
 #. Tag: para
 #: reference_coverage.xml:216

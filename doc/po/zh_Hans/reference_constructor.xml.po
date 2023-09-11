@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-09-08 07:58+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -52,8 +52,10 @@ msgid ""
 "Multi* or a GeometryCollection, depending on whether the input geometries "
 "have the same or different types (homogeneous or heterogeneous). The input "
 "geometries are left unchanged within the collection."
-msgstr "将几何图形收集到几何图形集合中。 结果是 Multi* 或 GeometryCollection，"
-"具体取决于输入几何图形是否具有相同或不同类型（同质或异构）。输入几何图形在集合中保持不变。"
+msgstr ""
+"将几何图形收集到几何图形集合中。 结果是 Multi* 或 GeometryCollection，具体取"
+"决于输入几何图形是否具有相同或不同类型（同质或异构）。输入几何图形在集合中保"
+"持不变。"
 
 #. Tag: para
 #: reference_constructor.xml:38 reference_constructor.xml:208
@@ -87,9 +89,11 @@ msgid ""
 "the only type which can contain nested collections). To prevent this, use "
 "<xref linkend=\"ST_Dump\"/> in a subquery to expand the input collections to "
 "their atomic elements (see example below)."
-msgstr "如果任何输入几何图形是集合（Multi* 或 GeometryCollection），ST_Collect "
-"返回 GeometryCollection（因为这是唯一可以包含嵌套集合的类型）。 为了防止这种情况，"
-"请在子查询中使用<xref linkend=\"ST_Dump\"/> 将输入集合扩展到其原子元素（请参见下面的示例）。"
+msgstr ""
+"如果任何输入几何图形是集合（Multi* 或 GeometryCollection），ST_Collect 返回 "
+"GeometryCollection（因为这是唯一可以包含嵌套集合的类型）。 为了防止这种情况，"
+"请在子查询中使用<xref linkend=\"ST_Dump\"/> 将输入集合扩展到其原子元素（请参"
+"见下面的示例）。"
 
 #. Tag: para
 #: reference_constructor.xml:50
@@ -100,9 +104,11 @@ msgid ""
 "collection without changing them in any way. ST_Union geometrically merges "
 "geometries where they overlap, and splits linestrings at intersections. It "
 "may return single geometries when it dissolves boundaries."
-msgstr "ST_Collect 和<xref linkend=\"ST_Union\"/> 看起来很相似，但实际上操作方式却截然不同。"
-"ST_Collect 将几何图形聚合到一个集合中，而不以任何方式更改它们。 ST_Union 在几何上合并重叠的几何图形，"
-"并在交叉点分割线串。当它合并边界时，它可能会返回单个几何图形。"
+msgstr ""
+"ST_Collect 和<xref linkend=\"ST_Union\"/> 看起来很相似，但实际上操作方式却截"
+"然不同。ST_Collect 将几何图形聚合到一个集合中，而不以任何方式更改它们。 "
+"ST_Union 在几何上合并重叠的几何图形，并在交叉点分割线串。当它合并边界时，它可"
+"能会返回单个几何图形。"
 
 #. Tag: para
 #: reference_constructor.xml:57
@@ -110,7 +116,9 @@ msgstr "ST_Collect 和<xref linkend=\"ST_Union\"/> 看起来很相似，但实�
 msgid ""
 "Availability: 1.4.0 - ST_Collect(geomarray) was introduced. ST_Collect was "
 "enhanced to handle more geometries faster."
-msgstr "可用性：引入了 1.4.0 - ST_Collect（几何）。 ST_Collect已得到增强，可以更快地处理更多几何图形。"
+msgstr ""
+"可用性：引入了 1.4.0 - ST_Collect（几何）。 ST_Collect已得到增强，可以更快地"
+"处理更多几何图形。"
 
 #. Tag: para
 #: reference_constructor.xml:58 reference_constructor.xml:115
@@ -207,18 +215,6 @@ msgid ""
 "<refpurpose>Creates a LineString from a MultiPoint geometry.</refpurpose>"
 msgstr "<refpurpose>从多点几何创建线串。</refpurpose>"
 
-#. Tag: funcprototype
-#: reference_constructor.xml:101
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_LineFromMultiPoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>aMultiPoint</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_LineFromMultiPoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>aMultiPoint</parameter></"
-"paramdef>"
-
 #. Tag: para
 #: reference_constructor.xml:111
 #, no-c-format
@@ -231,7 +227,8 @@ msgstr "<para>从多点几何图形生成线串。</para>"
 msgid ""
 "Use <xref linkend=\"ST_MakeLine\"/> to create lines from Point or LineString "
 "inputs."
-msgstr "使用<xref linkend=\"ST_MakeLine\"/> 从 Point 或 LineString 输入创建线。"
+msgstr ""
+"使用<xref linkend=\"ST_MakeLine\"/> 从 Point 或 LineString 输入创建线。"
 
 #. Tag: title
 #: reference_constructor.xml:120 reference_constructor.xml:331
@@ -260,26 +257,6 @@ msgstr ", <xref linkend=\"ST_MakeLine\"/>"
 msgid "Creates a rectangular Polygon from minimum and maximum coordinates."
 msgstr "根据最小和最大坐标创建矩形多边形。"
 
-#. Tag: funcprototype
-#: reference_constructor.xml:142
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_MakeEnvelope</function></funcdef> "
-"<paramdef><type>float</type> <parameter>xmin</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>ymin</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>xmax</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>ymax</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer</type> <parameter>srid=unknown</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_MakeEnvelope</function></funcdef> "
-"<paramdef><type>float</type> <parameter>xmin</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>ymin</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>xmax</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>ymax</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer</type> <parameter>srid=unknown</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_constructor.xml:156
 #, no-c-format
@@ -288,8 +265,9 @@ msgid ""
 "Y. Input values must be in the spatial reference system specified by the "
 "SRID. If no SRID is specified the unknown spatial reference system (SRID 0) "
 "is used."
-msgstr "根据最小值和最大值 X 和 Y 生成矩形多边形。 输入值必须与 SRID 指定的空间参考系统匹配。"
-"如果未指定 SRID，则使用未知空间参考系统 （SRID 0）。"
+msgstr ""
+"根据最小值和最大值 X 和 Y 生成矩形多边形。 输入值必须与 SRID 指定的空间参考系"
+"统匹配。如果未指定 SRID，则使用未知空间参考系统 （SRID 0）。"
 
 #. Tag: para
 #: reference_constructor.xml:160
@@ -333,7 +311,9 @@ msgstr "从Point, MultiPoint,或LineString geometries创建LineString。"
 msgid ""
 "Creates a LineString containing the points of Point, MultiPoint, or "
 "LineString geometries. Other geometry types cause an error."
-msgstr "创建包含 Point、MultiPoint 或 LineString 几何图形的点的 LineString。 其他几何类型会导致错误。"
+msgstr ""
+"创建包含 Point、MultiPoint 或 LineString 几何图形的点的 LineString。 其他几何"
+"类型会导致错误。"
 
 #. Tag: para
 #: reference_constructor.xml:210
@@ -344,8 +324,9 @@ msgid ""
 "<varname>ORDER BY</varname> in the function call, or a subquery with an "
 "<varname>ORDER BY</varname> clause."
 msgstr ""
-"<emphasis role=\"bold\">第三种形式：</emphasis>接受几何行集的聚合函数。为了确保输入几何的顺序，"
-"请在函数调用中使用<varname>ORDER BY</varname>，或使用带有<varname>ORDER BY</varname>子句的子查询。"
+"<emphasis role=\"bold\">第三种形式：</emphasis>接受几何行集的聚合函数。为了确"
+"保输入几何的顺序，请在函数调用中使用<varname>ORDER BY</varname>，或使用带有"
+"<varname>ORDER BY</varname>子句的子查询。"
 
 #. Tag: para
 #: reference_constructor.xml:214
@@ -355,8 +336,10 @@ msgid ""
 "single point. Repeated points in Point and MultiPoint inputs are not "
 "collapsed. <xref linkend=\"ST_RemoveRepeatedPoints\"/> can be used to "
 "collapse repeated points from the output LineString."
-msgstr "输入 LineString 开头的重复节点将折叠为单个点。 Point 和 MultiPoint 输入中的重复点不会折叠。"
-" <xref linkend=\"ST_RemoveRepeatedPoints\"/>可用于折叠输出 LineString 中的重复点。"
+msgstr ""
+"输入 LineString 开头的重复节点将折叠为单个点。 Point 和 MultiPoint 输入中的重"
+"复点不会折叠。 <xref linkend=\"ST_RemoveRepeatedPoints\"/>可用于折叠输出 "
+"LineString 中的重复点。"
 
 #. Tag: para
 #: reference_constructor.xml:222
@@ -378,7 +361,9 @@ msgstr "可用性：2.0.0 - 引入了对 LineString 输入元素的支持"
 msgid ""
 "Availability: 1.4.0 - ST_MakeLine(geomarray) was introduced. ST_MakeLine "
 "aggregate functions was enhanced to handle more points faster."
-msgstr "可用性：1.4.0 - 引入了 ST_MakeLine(geomarray)。 ST_MakeLine 聚合函数得到增强，可以更快地处理更多点。"
+msgstr ""
+"可用性：1.4.0 - 引入了 ST_MakeLine(geomarray)。 ST_MakeLine 聚合函数得到增"
+"强，可以更快地处理更多点。"
 
 #. Tag: title
 #: reference_constructor.xml:229
@@ -435,7 +420,9 @@ msgid ""
 "This example queries time-based sequences of GPS points from a set of tracks "
 "and creates one record for each track. The result geometries are LineStrings "
 "composed of the GPS track points in the order of travel."
-msgstr "此示例从一组轨迹中查询基于时间的 GPS 点序列，并为每个轨迹创建一条记录。 结果几何图形是由按行进顺序的 GPS 轨迹点组成的 LineStrings。"
+msgstr ""
+"此示例从一组轨迹中查询基于时间的 GPS 点序列，并为每个轨迹创建一条记录。 结果"
+"几何图形是由按行进顺序的 GPS 轨迹点组成的 LineStrings。"
 
 #. Tag: para
 #: reference_constructor.xml:257
@@ -451,7 +438,9 @@ msgstr "<varname>ORDER BY</varname>子句可用于以正确的顺序生成线串
 msgid ""
 "Prior to PostgreSQL 9, ordering in a subquery can be used. However, "
 "sometimes the query plan may not respect the order of the subquery."
-msgstr "在PostgreSQL 9之前，可以使用子查询中的排序。但是，查询计划可能不遵循子查询的顺序。"
+msgstr ""
+"在PostgreSQL 9之前，可以使用子查询中的排序。但是，查询计划可能不遵循子查询的"
+"顺序。"
 
 #. Tag: para
 #: reference_constructor.xml:267
@@ -470,48 +459,6 @@ msgstr ""
 #, no-c-format
 msgid "Creates a 2D, 3DZ or 4D Point."
 msgstr "创建 2D、3DZ 或 4D 点。"
-
-#. Tag: funcprototype
-#: reference_constructor.xml:287
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef>"
-
-#. Tag: funcprototype
-#: reference_constructor.xml:294
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>z</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>z</parameter></paramdef>"
-
-#. Tag: funcprototype
-#: reference_constructor.xml:302
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>z</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>m</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>z</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>m</parameter></paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:315
@@ -534,9 +481,10 @@ msgid ""
 "precise than <xref linkend=\"ST_GeomFromText\"/> and <xref "
 "linkend=\"ST_PointFromText\"/>. It is also easier to use for numeric "
 "coordinate values."
-msgstr "虽然不符合 OGC 标准，但<varname>ST_MakePoint</varname> 比"
-"<xref linkend=\"ST_GeomFromText\"/> 和 <xref linkend=\"ST_PointFromText\"/>"
-"更快、更精确。 它也更容易用于数字坐标值。"
+msgstr ""
+"虽然不符合 OGC 标准，但<varname>ST_MakePoint</varname> 比<xref "
+"linkend=\"ST_GeomFromText\"/> 和 <xref linkend=\"ST_PointFromText\"/>更快、更"
+"精确。 它也更容易用于数字坐标值。"
 
 #. Tag: para
 #: reference_constructor.xml:325 reference_constructor.xml:365
@@ -563,20 +511,6 @@ msgstr ""
 msgid "Creates a Point from X, Y and M values."
 msgstr "根据 X、Y 和 M 值创建一个点。"
 
-#. Tag: funcprototype
-#: reference_constructor.xml:349
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_MakePointM</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>m</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_MakePointM</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>m</parameter></paramdef>"
-
 #. Tag: para
 #: reference_constructor.xml:361
 #, no-c-format
@@ -589,7 +523,8 @@ msgstr "从 X、Y、M（测量）值生成点。"
 msgid ""
 "Use <xref linkend=\"ST_MakePoint\"/> to make points with XY, XYZ, or XYZM "
 "coordinates."
-msgstr "使用 <xref linkend=\"ST_MakePoint\"/> 创建具有 XY、XYZ、XYZM 坐标的点。"
+msgstr ""
+"使用 <xref linkend=\"ST_MakePoint\"/> 创建具有 XY、XYZ、XYZM 坐标的点。"
 
 #. Tag: para
 #: reference_constructor.xml:371
@@ -597,7 +532,8 @@ msgstr "使用 <xref linkend=\"ST_MakePoint\"/> 创建具有 XY、XYZ、XYZM 坐
 msgid ""
 "is used for text output because <xref linkend=\"ST_AsText\"/> does not "
 "support M values."
-msgstr "ST_AsEWKT用于字符串输出。这是因为<xref linkend=\"ST_AsText\"/>与 M 值不对应。"
+msgstr ""
+"ST_AsEWKT用于字符串输出。这是因为<xref linkend=\"ST_AsText\"/>与 M 值不对应。"
 
 #. Tag: para
 #: reference_constructor.xml:374
@@ -629,37 +565,14 @@ msgstr ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
 msgid "Creates a Polygon from a shell and optional list of holes."
 msgstr "从壳和可选的孔列表创建多边形。"
 
-#. Tag: funcprototype
-#: reference_constructor.xml:398
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_MakePolygon</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_MakePolygon</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>"
-
-#. Tag: funcprototype
-#: reference_constructor.xml:404
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_MakePolygon</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>outerlinestring</parameter></"
-"paramdef> <paramdef><type>geometry[]</type> <parameter>interiorlinestrings</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_MakePolygon</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>outerlinestring</parameter></"
-"paramdef> <paramdef><type>geometry[]</type> <parameter>interiorlinestrings</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_constructor.xml:415
 #, no-c-format
 msgid ""
 "Creates a Polygon formed by the given shell and optional array of holes. "
 "Input geometries must be closed LineStrings (rings)."
-msgstr "创建由给定壳和可选孔阵列形成的多边形。 输入几何图形必须是闭合的线串（环）。"
+msgstr ""
+"创建由给定壳和可选孔阵列形成的多边形。 输入几何图形必须是闭合的线串（环）。"
 
 #. Tag: para
 #: reference_constructor.xml:418
@@ -676,8 +589,9 @@ msgid ""
 "an array of inner (hole) LineStrings. A geometry array can be constructed "
 "using the PostgreSQL array_agg(), ARRAY[] or ARRAY() constructs."
 msgstr ""
-"<emphasis role=\"bold\">形式2:</emphasis> 接受外壳 LineString 和内部（孔）LineString 数组。"
-"可以使用 PostgreSQL array_agg()、ARRAY[] 或 ARRAY() 结构来构造几何数组。"
+"<emphasis role=\"bold\">形式2:</emphasis> 接受外壳 LineString 和内部（孔）"
+"LineString 数组。可以使用 PostgreSQL array_agg()、ARRAY[] 或 ARRAY() 结构来构"
+"造几何数组。"
 
 #. Tag: para
 #: reference_constructor.xml:423 reference_constructor.xml:695
@@ -686,7 +600,9 @@ msgid ""
 "This function does not accept MultiLineStrings. Use <xref "
 "linkend=\"ST_LineMerge\"/> to generate a LineString, or <xref "
 "linkend=\"ST_Dump\"/> to extract LineStrings."
-msgstr "此函数不接受多行字符串。 使用 <xref linkend=\"ST_LineMerge\"/>生成线串。它还使用<xref linkend=\"ST_Dump\"/> 来提取线串。"
+msgstr ""
+"此函数不接受多行字符串。 使用 <xref linkend=\"ST_LineMerge\"/>生成线串。它还"
+"使用<xref linkend=\"ST_Dump\"/> 来提取线串。"
 
 #. Tag: title
 #: reference_constructor.xml:431
@@ -707,8 +623,8 @@ msgid ""
 "Create a Polygon from an open LineString, using <xref "
 "linkend=\"ST_StartPoint\"/> and <xref linkend=\"ST_AddPoint\"/> to close it."
 msgstr ""
-"使用 <xref linkend=\"ST_StartPoint\"/> 和 <xref linkend=\"ST_AddPoint\""
-"/>闭合开放线串以生成面。"
+"使用 <xref linkend=\"ST_StartPoint\"/> 和 <xref linkend=\"ST_AddPoint\"/>闭合"
+"开放线串以生成面。"
 
 #. Tag: para
 #: reference_constructor.xml:439
@@ -747,10 +663,12 @@ msgid ""
 "linkend=\"ST_LineMerge\"/>. (However, note that if a province has more than "
 "one region or has islands this will produce an invalid polygon.) Using a "
 "LEFT JOIN ensures all provinces are included even if they have no lakes."
-msgstr "创建一组省份边界，其中的孔代表湖泊。输入是省份多边形/多边形表和水域线串表。 "
-"形成湖泊的线是通过使用<xref linkend=\"ST_IsClosed\"/>确定的。 使用<xref linkend=\"ST_Boundary\"/>"
-" 提取省份线条。 根据<code>ST_MakePolygon</code> 的要求，通过使用 <xref linkend=\"ST_LineMerge\"/>"
-"将边界强制为单个 LineString。 （但是，请注意，如果一个省份拥有多个区域或拥有岛屿，这将生成无效的多边形。）"
+msgstr ""
+"创建一组省份边界，其中的孔代表湖泊。输入是省份多边形/多边形表和水域线串表。 "
+"形成湖泊的线是通过使用<xref linkend=\"ST_IsClosed\"/>确定的。 使用<xref "
+"linkend=\"ST_Boundary\"/> 提取省份线条。 根据<code>ST_MakePolygon</code> 的要"
+"求，通过使用 <xref linkend=\"ST_LineMerge\"/>将边界强制为单个 LineString。 "
+"（但是，请注意，如果一个省份拥有多个区域或拥有岛屿，这将生成无效的多边形。）"
 "使用 LEFT JOIN 可确保包括所有省份，即使它们没有湖泊。"
 
 #. Tag: para
@@ -775,39 +693,15 @@ msgstr "另一种技术是利用相关子查询和 ARRAY() 构造函数将行集
 msgid "Creates a Point with X, Y and SRID values."
 msgstr "创建具有 X、Y 和 SRID 值的点。"
 
-#. Tag: funcprototype
-#: reference_constructor.xml:489
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Point</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Point</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef>"
-
-#. Tag: funcprototype
-#: reference_constructor.xml:496
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Point</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>srid=unknown</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Point</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>srid=unknown</parameter></paramdef>"
-
 #. Tag: para
 #: reference_constructor.xml:508
 #, no-c-format
 msgid ""
 "Returns a Point with the given X and Y coordinate values. This is the SQL-MM "
 "equivalent for <xref linkend=\"ST_MakePoint\"/> that takes just X and Y."
-msgstr "返回具有给定 X和Y 坐标值的 Point。 这是 <xref linkend=\"ST_MakePoint\"/> 的 SQL-MM 等效项，仅采用 X 和 Y。"
+msgstr ""
+"返回具有给定 X和Y 坐标值的 Point。 这是 <xref linkend=\"ST_MakePoint\"/> 的 "
+"SQL-MM 等效项，仅采用 X 和 Y。"
 
 #. Tag: para
 #: reference_constructor.xml:512 reference_constructor.xml:575
@@ -816,7 +710,9 @@ msgstr "返回具有给定 X和Y 坐标值的 Point。 这是 <xref linkend=\"ST
 msgid ""
 "Enhanced: 3.2.0 srid as an extra optional argument was added. Older installs "
 "require combining with ST_SetSRID to mark the srid on the geometry."
-msgstr "增强：3.2.0 srid作为额外的可选参数被添加。 较旧的安装需要与 ST_SetSRID 结合以在几何体上标记 srid。"
+msgstr ""
+"增强：3.2.0 srid作为额外的可选参数被添加。 较旧的安装需要与 ST_SetSRID 结合以"
+"在几何体上标记 srid。"
 
 #. Tag: para
 #: reference_constructor.xml:513
@@ -869,8 +765,10 @@ msgid ""
 "WGS84), then they must be reprojected before casting to a geography. In this "
 "example a point in Pennsylvania State Plane feet (SRID 2273) is projected to "
 "WGS84 (SRID 4326)."
-msgstr "如果点的坐标不在地理坐标系（如 WGS84）中，则必须先执行坐标变换，然后再将其投射到地理。"
-"在此示例中，宾夕法尼亚州平面英尺 （SRID 2273） 上的点将转换为 WGS84 （SRID 4326）。"
+msgstr ""
+"如果点的坐标不在地理坐标系（如 WGS84）中，则必须先执行坐标变换，然后再将其投"
+"射到地理。在此示例中，宾夕法尼亚州平面英尺 （SRID 2273） 上的点将转换为 "
+"WGS84 （SRID 4326）。"
 
 #. Tag: para
 #: reference_constructor.xml:549
@@ -889,24 +787,6 @@ msgstr ""
 #, no-c-format
 msgid "Creates a Point with X, Y, Z and SRID values."
 msgstr "创建具有 X、Y、Z 和 SRID 值的点。"
-
-#. Tag: funcprototype
-#: reference_constructor.xml:562
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_PointZ</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>z</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_PointZ</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>z</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
-"paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:574
@@ -932,24 +812,6 @@ msgstr ""
 msgid "Creates a Point with X, Y, M and SRID values."
 msgstr "创建具有 X、Y、M 和 SRID 值的点。"
 
-#. Tag: funcprototype
-#: reference_constructor.xml:599
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_PointM</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>m</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_PointM</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>m</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
-"paramdef>"
-
 #. Tag: para
 #: reference_constructor.xml:611
 #, no-c-format
@@ -973,26 +835,6 @@ msgstr ""
 #, no-c-format
 msgid "Creates a Point with X, Y, Z, M and SRID values."
 msgstr "创建具有 X、Y、Z、M 和 SRID 值的点。"
-
-#. Tag: funcprototype
-#: reference_constructor.xml:637
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_PointZM</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>z</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>m</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_PointZM</function></funcdef> "
-"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>z</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>m</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
-"paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:650
@@ -1018,27 +860,15 @@ msgstr ""
 msgid "Creates a Polygon from a LineString with a specified SRID."
 msgstr "从具有指定 SRID 的线串创建多边形。"
 
-#. Tag: funcprototype
-#: reference_constructor.xml:675
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Polygon</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>lineString</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Polygon</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>lineString</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></"
-"paramdef>"
-
 #. Tag: para
 #: reference_constructor.xml:686
 #, no-c-format
 msgid ""
 "Returns a polygon built from the given LineString and sets the spatial "
 "reference system from the <varname>srid</varname>."
-msgstr "返回根据给定 LineString 构建的多边形，并根据<varname>srid</varname>设置空间参考系统。"
+msgstr ""
+"返回根据给定 LineString 构建的多边形，并根据<varname>srid</varname>设置空间参"
+"考系统。"
 
 #. Tag: para
 #: reference_constructor.xml:689
@@ -1046,7 +876,9 @@ msgstr "返回根据给定 LineString 构建的多边形，并根据<varname>sri
 msgid ""
 "ST_Polygon is similar to <xref linkend=\"ST_MakePolygon\"/> Variant 1 with "
 "the addition of setting the SRID."
-msgstr "ST_Polygon类似于<xref linkend=\"ST_MakePolygon\"/> 格式 1，但添加了 SRID 设置。"
+msgstr ""
+"ST_Polygon类似于<xref linkend=\"ST_MakePolygon\"/> 格式 1，但添加了 SRID 设"
+"置。"
 
 #. Tag: para
 #: reference_constructor.xml:691
@@ -1054,7 +886,9 @@ msgstr "ST_Polygon类似于<xref linkend=\"ST_MakePolygon\"/> 格式 1，但添�
 msgid ""
 "To create polygons with holes use <xref linkend=\"ST_MakePolygon\"/> Variant "
 "2 and then <xref linkend=\"ST_SetSRID\"/>."
-msgstr "要创建带孔的多边形，请使用 <xref linkend=\"ST_MakePolygon\"/> 格式 2，然后使用 <xref linkend=\"ST_SetSRID\"/>。"
+msgstr ""
+"要创建带孔的多边形，请使用 <xref linkend=\"ST_MakePolygon\"/> 格式 2，然后使"
+"用 <xref linkend=\"ST_SetSRID\"/>。"
 
 #. Tag: para
 #: reference_constructor.xml:699
@@ -1099,32 +933,11 @@ msgid ""
 "Creates a rectangular Polygon in <ulink url=\"https://en.wikipedia.org/wiki/"
 "Web_Mercator_projection\">Web Mercator</ulink> (SRID:3857) using the <ulink "
 "url=\"https://en.wikipedia.org/wiki/Tiled_web_map\">XYZ tile system</ulink>."
-msgstr "使用 <ulink url=\"https://en.wikipedia.org/wiki/Tiled_web_map\">XYZ 切片系统</ulink>"
-"在 <ulink url=\"https://en.wikipedia.org/wiki/Web_Mercator_projection\">Web Mercator</ulink> （SRID：3857） 中创建矩形多边形。"
-
-#. Tag: funcprototype
-#: reference_constructor.xml:731
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_TileEnvelope</function></funcdef> "
-"<paramdef><type>integer</type> <parameter>tileZoom</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>tileX</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>tileY</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>geometry</type> <parameter>bounds=SRID=3857;"
-"LINESTRING(-20037508.342789 -20037508.342789,20037508.342789 "
-"20037508.342789)</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>float</type> <parameter>margin=0.0</parameter></"
-"paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_TileEnvelope</function></funcdef> "
-"<paramdef><type>integer</type> <parameter>tileZoom</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>tileX</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>tileY</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>geometry</type> <parameter>bounds=SRID=3857;"
-"LINESTRING(-20037508.342789 -20037508.342789,20037508.342789 "
-"20037508.342789)</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>float</type> <parameter>margin=0.0</parameter></"
-"paramdef>"
+"使用 <ulink url=\"https://en.wikipedia.org/wiki/Tiled_web_map\">XYZ 切片系统"
+"</ulink>在 <ulink url=\"https://en.wikipedia.org/wiki/"
+"Web_Mercator_projection\">Web Mercator</ulink> （SRID：3857） 中创建矩形多边"
+"形。"
 
 #. Tag: para
 #: reference_constructor.xml:745
@@ -1136,9 +949,11 @@ msgid ""
 "grid at that level. Can be used to define the tile bounds required by <xref "
 "linkend=\"ST_AsMVTGeom\"/> to convert geometry into the MVT tile coordinate "
 "space."
-msgstr "创建一个矩形多边形，给出 <ulink url=\"https://en.wikipedia.org/wiki/Tiled_web_map\">XYZ切片系统</ulink>"
-"中切片的范围。该图块由缩放级别 Z 和该级别的网格中图块的 XY 索引指定。 可用于定义 <xref linkend=\"ST_AsMVTGeom\"/>"
-"所需的图块边界，以将几何图形转换为 MVT 图块坐标空间。"
+msgstr ""
+"创建一个矩形多边形，给出 <ulink url=\"https://en.wikipedia.org/wiki/"
+"Tiled_web_map\">XYZ切片系统</ulink>中切片的范围。该图块由缩放级别 Z 和该级别"
+"的网格中图块的 XY 索引指定。 可用于定义 <xref linkend=\"ST_AsMVTGeom\"/>所需"
+"的图块边界，以将几何图形转换为 MVT 图块坐标空间。"
 
 #. Tag: para
 #: reference_constructor.xml:751
@@ -1152,10 +967,13 @@ msgid ""
 "can be used to generate tiles in any coordinate system. It is a geometry "
 "that has the SRID and extent of the \"Zoom Level zero\" square within which "
 "the XYZ tile system is inscribed."
-msgstr "默认情况下，切片封套位于<ulink url=\"https://en.wikipedia.org/wiki/Web_Mercator_projection\">"
-"Web Mercator</ulink>坐标系 (SRID:3857) 中，使用 Web 墨卡托系统的标准范围（-20037508.342789、20037508.342789）。"
-"这是 MVT 图块最常用的坐标系。 可选的<varname>bounds</varname>参数可用于在任何坐标系中生成图块。 它是一个几何体，"
-"具有 SRID 和“缩放级别零”正方形的范围，XYZ 图块系统内切在该正方形内。"
+msgstr ""
+"默认情况下，切片封套位于<ulink url=\"https://en.wikipedia.org/wiki/"
+"Web_Mercator_projection\">Web Mercator</ulink>坐标系 (SRID:3857) 中，使用 "
+"Web 墨卡托系统的标准范围（-20037508.342789、20037508.342789）。这是 MVT 图块"
+"最常用的坐标系。 可选的<varname>bounds</varname>参数可用于在任何坐标系中生成"
+"图块。 它是一个几何体，具有 SRID 和“缩放级别零”正方形的范围，XYZ 图块系统内切"
+"在该正方形内。"
 
 #. Tag: para
 #: reference_constructor.xml:757
@@ -1174,12 +992,16 @@ msgid ""
 "less than -0.5 are prohibited because that would eliminate the tile "
 "completely. Do not specify a margin when using with <varname>ST_AsMVTGeom</"
 "varname>. See the example for <xref linkend=\"ST_AsMVT\"/>."
-msgstr "可选的<varname>margin</varname>参数可用于将图块扩展给定的百分比。 例如。<varname>margin=0.125</varname>"
-"将图块扩展 12.5%，相当于当图块范围大小为 4096 时 buffer=512（如 <xref linkend=\"ST_AsMVTGeom\"/>中使用的）。"
-"这对于创建图块缓冲区以包含位于图块可见区域之外的数据非常有用，但其存在会影响图块渲染。"
-"例如，城市名称（一个点）可能靠近图块的边缘，因此其标签应该呈现在两个图块上，即使该点仅位于一个图块的可见区域中。"
-"在查询中使用扩展图块将在两个图块中包含城市点。 使用负值来缩小图块。 禁止使用小于 -0.5 的值，因为这会完全消除图块。"
-"与<varname>ST_AsMVTGeom</varname> 一起使用时，请勿指定边距。 请参阅 <xref linkend=\"ST_AsMVT\"/>。"
+msgstr ""
+"可选的<varname>margin</varname>参数可用于将图块扩展给定的百分比。 例如。"
+"<varname>margin=0.125</varname>将图块扩展 12.5%，相当于当图块范围大小为 4096 "
+"时 buffer=512（如 <xref linkend=\"ST_AsMVTGeom\"/>中使用的）。这对于创建图块"
+"缓冲区以包含位于图块可见区域之外的数据非常有用，但其存在会影响图块渲染。例"
+"如，城市名称（一个点）可能靠近图块的边缘，因此其标签应该呈现在两个图块上，即"
+"使该点仅位于一个图块的可见区域中。在查询中使用扩展图块将在两个图块中包含城市"
+"点。 使用负值来缩小图块。 禁止使用小于 -0.5 的值，因为这会完全消除图块。与"
+"<varname>ST_AsMVTGeom</varname> 一起使用时，请勿指定边距。 请参阅 <xref "
+"linkend=\"ST_AsMVT\"/>。"
 
 #. Tag: para
 #: reference_constructor.xml:766
@@ -1207,18 +1029,6 @@ msgid ""
 "of the geometry argument."
 msgstr "返回一组完全覆盖几何参数边界的六边形和单元格索引。"
 
-#. Tag: funcprototype
-#: reference_constructor.xml:790
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>ST_HexagonGrid</function></funcdef> "
-"<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>bounds</parameter></paramdef>"
-msgstr ""
-"<funcdef>setof record <function>ST_HexagonGrid</function></funcdef> "
-"<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>bounds</parameter></paramdef>"
-
 #. Tag: para
 #: reference_constructor.xml:801
 #, no-c-format
@@ -1229,9 +1039,12 @@ msgid ""
 "size, starting at the origin of the SRS, there is one unique hexagonal "
 "tiling of the plane, Tiling(SRS, Size). This function answers the question: "
 "what hexagons in a given Tiling(SRS, Size) overlap with a given bounds."
-msgstr "从平面六边形格网的概念开始。（不是地球仪的六边形格网，这不是<ulink url=\"https://github.com/uber/"
-"h3\">H3</ulink>格网方案。）对于给定的平面 SRS 和给定的边缘大小，从 SRS 的原点开始，有一种独特的平面六边形格网，"
-"Tiling(SRS, Size)。此函数回答了以下问题：给定 Tiling(SRS, Size) 中的哪些六边形与给定边界重叠。"
+msgstr ""
+"从平面六边形格网的概念开始。（不是地球仪的六边形格网，这不是<ulink "
+"url=\"https://github.com/uber/h3\">H3</ulink>格网方案。）对于给定的平面 SRS "
+"和给定的边缘大小，从 SRS 的原点开始，有一种独特的平面六边形格网，Tiling(SRS, "
+"Size)。此函数回答了以下问题：给定 Tiling(SRS, Size) 中的哪些六边形与给定边界"
+"重叠。"
 
 #. Tag: para
 #: reference_constructor.xml:813
@@ -1247,7 +1060,9 @@ msgid ""
 "Doubling or tripling the edge size of the hexagon generates a new parent "
 "tiling that fits with the origin tiling. Unfortunately, it is not possible "
 "to generate parent hexagon tilings that the child tiles perfectly fit inside."
-msgstr "将六边形的边缘尺寸加倍或三倍会生成与原始格网相匹配的新父格网。不幸的是，不可能生成子格网完全适合内部的父六边形格网。"
+msgstr ""
+"将六边形的边缘尺寸加倍或三倍会生成与原始格网相匹配的新父格网。不幸的是，不可"
+"能生成子格网完全适合内部的父六边形格网。"
 
 #. Tag: para
 #: reference_constructor.xml:822 reference_constructor.xml:878
@@ -1269,7 +1084,9 @@ msgid ""
 "To do a point summary against a hexagonal tiling, generate a hexagon grid "
 "using the extent of the points as the bounds, then spatially join to that "
 "grid."
-msgstr "要针对六边形格网进行点聚合，请使用点的范围作为边界生成六边形网格，然后在空间上连接到该网格。"
+msgstr ""
+"要针对六边形格网进行点聚合，请使用点的范围作为边界生成六边形网格，然后在空间"
+"上连接到该网格。"
 
 #. Tag: title
 #: reference_constructor.xml:833
@@ -1284,7 +1101,9 @@ msgid ""
 "If we generate a set of hexagons for each polygon boundary and filter out "
 "those that do not intersect their hexagons, we end up with a tiling for each "
 "polygon."
-msgstr "如果我们为每个多边形边界生成一组六边形并过滤掉那些不与其六边形相交的六边形，我们最终会得到每个多边形的格网。"
+msgstr ""
+"如果我们为每个多边形边界生成一组六边形并过滤掉那些不与其六边形相交的六边形，"
+"我们最终会得到每个多边形的格网。"
 
 #. Tag: para
 #: reference_constructor.xml:840
@@ -1301,8 +1120,10 @@ msgid ""
 "The LATERAL keyword is implied for set-returning functions when referring to "
 "a prior table in the FROM list. So CROSS JOIN LATERAL, CROSS JOIN, or just "
 "plain , are equivalent constructs for this example."
-msgstr "当引用 FROM 列表中的先前表时，LATERAL关键字隐含在返回集合的函数中。"
-"因此，CROSS JOIN LATERAL、CROSS JOIN 或简单的 CROSS JOIN LATERAL 是本示例的等效构造。"
+msgstr ""
+"当引用 FROM 列表中的先前表时，LATERAL关键字隐含在返回集合的函数中。因此，"
+"CROSS JOIN LATERAL、CROSS JOIN 或简单的 CROSS JOIN LATERAL 是本示例的等效构"
+"造。"
 
 #. Tag: para
 #: reference_constructor.xml:847
@@ -1322,24 +1143,6 @@ msgid ""
 "within the hexagon grid space."
 msgstr "使用提供的边尺寸和六边形网格空间内的单元坐标返回单个六边形。"
 
-#. Tag: funcprototype
-#: reference_constructor.xml:860
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Hexagon</function></funcdef> "
-"<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>cell_i</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>cell_j</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>geometry</type> <parameter>origin</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Hexagon</function></funcdef> "
-"<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>cell_i</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>cell_j</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>geometry</type> <parameter>origin</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_constructor.xml:873
 #, no-c-format
@@ -1347,8 +1150,9 @@ msgid ""
 "Uses the same hexagon tiling concept as <xref linkend=\"ST_HexagonGrid\"/>, "
 "but generates just one hexagon at the desired cell coordinate. Optionally, "
 "can adjust origin coordinate of the tiling, the default origin is at 0,0."
-msgstr "使用与 <xref linkend=\"ST_HexagonGrid\"/>相同的六边形格网概念，"
-"但在所需的单元格坐标处仅生成一个六边形。（可选）可以调整格网的原点坐标，默认原点为 0,0。"
+msgstr ""
+"使用与 <xref linkend=\"ST_HexagonGrid\"/>相同的六边形格网概念，但在所需的单元"
+"格坐标处仅生成一个六边形。（可选）可以调整格网的原点坐标，默认原点为 0,0。"
 
 #. Tag: para
 #: reference_constructor.xml:876
@@ -1356,7 +1160,9 @@ msgstr "使用与 <xref linkend=\"ST_HexagonGrid\"/>相同的六边形格网概�
 msgid ""
 "Hexagons are generated with no SRID set, so use <xref linkend=\"ST_SetSRID\"/"
 "> to set the SRID to the one you expect."
-msgstr "生成的六边形没有设置 SRID，因此请使用 <xref linkend=\"ST_SetSRID\"/> 将 SRID 设置为您期望的值。"
+msgstr ""
+"生成的六边形没有设置 SRID，因此请使用 <xref linkend=\"ST_SetSRID\"/> 将 SRID "
+"设置为您期望的值。"
 
 #. Tag: title
 #: reference_constructor.xml:882
@@ -1378,18 +1184,6 @@ msgid ""
 "bounds of the geometry argument."
 msgstr "返回一组完全覆盖几何参数边界的网格正方形和单元格索引。"
 
-#. Tag: funcprototype
-#: reference_constructor.xml:899
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>ST_SquareGrid</function></funcdef> "
-"<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>bounds</parameter></paramdef>"
-msgstr ""
-"<funcdef>setof record <function>ST_SquareGrid</function></funcdef> "
-"<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>bounds</parameter></paramdef>"
-
 #. Tag: para
 #: reference_constructor.xml:910
 #, no-c-format
@@ -1399,8 +1193,10 @@ msgid ""
 "unique square tiling of the plane, Tiling(SRS, Size). This function answers "
 "the question: what grids in a given Tiling(SRS, Size) overlap with a given "
 "bounds."
-msgstr "从平面正方形格网的概念开始。对于给定的平面 SRS 和给定的边缘尺寸，从 SRS 的原点开始，"
-"存在一个独特的平面方形格网，Tiling(SRS, Size)。此函数回答了以下问题：给定 Tiling(SRS, Size) 中的哪些网格与给定边界重叠。"
+msgstr ""
+"从平面正方形格网的概念开始。对于给定的平面 SRS 和给定的边缘尺寸，从 SRS 的原"
+"点开始，存在一个独特的平面方形格网，Tiling(SRS, Size)。此函数回答了以下问题："
+"给定 Tiling(SRS, Size) 中的哪些网格与给定边界重叠。"
 
 #. Tag: para
 #: reference_constructor.xml:916
@@ -1416,8 +1212,9 @@ msgid ""
 "Doubling or edge size of the square generates a new parent tiling that "
 "perfectly fits with the original tiling. Standard web map tilings in "
 "mercator are just powers-of-two square grids in the mercator plane."
-msgstr "正方形的加倍或边缘大小会生成与原始格网完美契合的新父格网。"
-"墨卡托中的标准网络地图格网只是墨卡托平面中的两个平方网格的幂。"
+msgstr ""
+"正方形的加倍或边缘大小会生成与原始格网完美契合的新父格网。墨卡托中的标准网络"
+"地图格网只是墨卡托平面中的两个平方网格的幂。"
 
 #. Tag: title
 #: reference_constructor.xml:926
@@ -1432,8 +1229,9 @@ msgid ""
 "The grid will fill the whole bounds of the country, so if you want just "
 "squares that touch the country you will have to filter afterwards with "
 "ST_Intersects."
-msgstr "网格将填充国家/地区的整个边界，因此如果您只想接触国家/地区的方块，"
-"则必须随后使用 ST_Intersects 进行过滤。"
+msgstr ""
+"网格将填充国家/地区的整个边界，因此如果您只想接触国家/地区的方块，则必须随后"
+"使用 ST_Intersects 进行过滤。"
 
 #. Tag: title
 #: reference_constructor.xml:933
@@ -1449,8 +1247,10 @@ msgid ""
 "the extent of the points as the bounds, then spatially join to that grid. "
 "Note the estimated extent might be off from actual extent, so be cautious "
 "and at very least make sure you've analyzed your table."
-msgstr "要针对方形格网进行点聚合，请使用点的范围作为边界生成方形网格，然后在空间上连接到该网格。"
-"请注意，估计范围可能与实际范围有所不同，因此请务必谨慎，至少确保您已分析了表。"
+msgstr ""
+"要针对方形格网进行点聚合，请使用点的范围作为边界生成方形网格，然后在空间上连"
+"接到该网格。请注意，估计范围可能与实际范围有所不同，因此请务必谨慎，至少确保"
+"您已分析了表。"
 
 #. Tag: title
 #: reference_constructor.xml:940
@@ -1484,24 +1284,6 @@ msgid ""
 "within the square grid space."
 msgstr "使用提供的边缘大小和正方形网格空间内的单元格坐标返回单个正方形。"
 
-#. Tag: funcprototype
-#: reference_constructor.xml:962
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Square</function></funcdef> "
-"<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>cell_i</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>cell_j</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>geometry</type> <parameter>origin</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Square</function></funcdef> "
-"<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>cell_i</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>cell_j</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>geometry</type> <parameter>origin</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_constructor.xml:975
 #, no-c-format
@@ -1509,8 +1291,9 @@ msgid ""
 "Uses the same square tiling concept as <xref linkend=\"ST_SquareGrid\"/>, "
 "but generates just one square at the desired cell coordinate. Optionally, "
 "can adjust origin coordinate of the tiling, the default origin is at 0,0."
-msgstr "使用与<xref linkend=\"ST_SquareGrid\"/>相同的正方形格网概念，"
-"但仅在所需的单元格坐标处生成一个正方形。（可选）可以调整平铺的原点坐标，默认原点为 0,0。"
+msgstr ""
+"使用与<xref linkend=\"ST_SquareGrid\"/>相同的正方形格网概念，但仅在所需的单元"
+"格坐标处生成一个正方形。（可选）可以调整平铺的原点坐标，默认原点为 0,0。"
 
 #. Tag: para
 #: reference_constructor.xml:978
@@ -1518,7 +1301,9 @@ msgstr "使用与<xref linkend=\"ST_SquareGrid\"/>相同的正方形格网概念
 msgid ""
 "Squares are generated with no SRID set, so use <xref linkend=\"ST_SetSRID\"/"
 "> to set the SRID to the one you expect."
-msgstr "生成的方块没有设置 SRID，因此请使用 <xref linkend=\"ST_SetSRID\"/> 将 SRID 设置为您期望的值。"
+msgstr ""
+"生成的方块没有设置 SRID，因此请使用 <xref linkend=\"ST_SetSRID\"/> 将 SRID 设"
+"置为您期望的值。"
 
 #. Tag: title
 #: reference_constructor.xml:984
@@ -1540,20 +1325,6 @@ msgid ""
 "at the origin and default text height of 100."
 msgstr "返回以几何图形绘制的文本，默认起始位置为原点，默认高度为 100。"
 
-#. Tag: funcprototype
-#: reference_constructor.xml:1002
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_Letters</function></funcdef> "
-"<paramdef><type>text</type> <parameter> letters</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>json</type> <parameter> font</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Letters</function></funcdef> "
-"<paramdef><type>text</type> <parameter> letters</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>json</type> <parameter> font</parameter></"
-"paramdef>"
-
 #. Tag: para
 #: reference_constructor.xml:1013
 #, no-c-format
@@ -1565,9 +1336,11 @@ msgid ""
 "with a character as the key, and base64 encoded TWKB for the font shape, "
 "with the fonts having a height of 1000 units from the bottom of the "
 "descenders to the tops of the capitals."
-msgstr "使用内置字体将字符串渲染为多边形几何体。默认文本高度为 100.0，即从下行字母底部到大写字母顶部的距离。"
-"默认起始位置将基线的起点置于原点。 覆盖字体涉及传入一个 json 映射，以字符为键，并以 base64 编码的 TWKB "
-"作为字体形状，字体从下行底部到大写顶部的高度为 1000 个单位。"
+msgstr ""
+"使用内置字体将字符串渲染为多边形几何体。默认文本高度为 100.0，即从下行字母底"
+"部到大写字母顶部的距离。默认起始位置将基线的起点置于原点。 覆盖字体涉及传入一"
+"个 json 映射，以字符为键，并以 base64 编码的 TWKB 作为字体形状，字体从下行底"
+"部到大写顶部的高度为 1000 个单位。"
 
 #. Tag: para
 #: reference_constructor.xml:1016

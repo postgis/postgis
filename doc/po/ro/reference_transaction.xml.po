@@ -5,14 +5,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-07-18 20:22+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
+"Language: ro\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ro\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
 
@@ -48,14 +48,6 @@ msgstr ""
 msgid ""
 "<refpurpose>Adds an authorization token to be used in the current "
 "transaction.</refpurpose>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_transaction.xml:31
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>AddAuth</function></funcdef> <paramdef><type>text "
-"</type> <parameter>auth_token</parameter></paramdef>"
 msgstr ""
 
 #. Tag: title
@@ -149,14 +141,6 @@ msgstr ""
 msgid "Disables long transaction support."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_transaction.xml:126
-#, no-c-format
-msgid ""
-"<funcdef>text <function>DisableLongTransactions</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_transaction.xml:136
 #, no-c-format
@@ -179,14 +163,6 @@ msgstr ""
 #: reference_transaction.xml:165
 #, no-c-format
 msgid "Enables long transaction support."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_transaction.xml:170
-#, no-c-format
-msgid ""
-"<funcdef>text <function>EnableLongTransactions</function></funcdef> "
-"<paramdef></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -227,14 +203,6 @@ msgstr ""
 #: reference_transaction.xml:274
 #, no-c-format
 msgid "Removes all locks held by an authorization token."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_transaction.xml:280
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>UnlockRows</function></funcdef> "
-"<paramdef><type>text </type> <parameter>auth_token</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para

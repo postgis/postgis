@@ -112,9 +112,9 @@ msgstr ""
 "Per controllare se i propri dati sono interessati da questo bug, si può "
 "usare il comando PostgreSQL \"EXPLAIN ANALYZE\". Per maggiori informazioni e "
 "dettagli tecnici consultare il corrispondente thread sulla mailing list di "
-"PostgreSQL: <ulink url=\"http://archives.postgresql.org/pgsql-performance/"
-"2005-02/msg00030.php\">http://archives.postgresql.org/pgsql-performance/"
-"2005-02/msg00030.php</ulink>"
+"PostgreSQL: <ulink url=\"http://archives.postgresql.org/pgsql-"
+"performance/2005-02/msg00030.php\">http://archives.postgresql.org/pgsql-"
+"performance/2005-02/msg00030.php</ulink>"
 
 #. Tag: para
 #: performance_tips.xml:41

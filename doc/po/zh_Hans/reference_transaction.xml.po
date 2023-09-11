@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-09-01 09:54+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -49,14 +49,6 @@ msgstr ""
 msgid ""
 "<refpurpose>Adds an authorization token to be used in the current "
 "transaction.</refpurpose>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_transaction.xml:31
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>AddAuth</function></funcdef> <paramdef><type>text "
-"</type> <parameter>auth_token</parameter></paramdef>"
 msgstr ""
 
 #. Tag: title
@@ -150,14 +142,6 @@ msgstr ""
 msgid "Disables long transaction support."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_transaction.xml:126
-#, no-c-format
-msgid ""
-"<funcdef>text <function>DisableLongTransactions</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_transaction.xml:136
 #, no-c-format
@@ -180,14 +164,6 @@ msgstr ""
 #: reference_transaction.xml:165
 #, no-c-format
 msgid "Enables long transaction support."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_transaction.xml:170
-#, no-c-format
-msgid ""
-"<funcdef>text <function>EnableLongTransactions</function></funcdef> "
-"<paramdef></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -228,14 +204,6 @@ msgstr ""
 #: reference_transaction.xml:274
 #, no-c-format
 msgid "Removes all locks held by an authorization token."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_transaction.xml:280
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>UnlockRows</function></funcdef> "
-"<paramdef><type>text </type> <parameter>auth_token</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para

@@ -5,14 +5,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-07-18 20:22+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
+"Language: ro\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ro\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
 
@@ -37,17 +37,6 @@ msgid ""
 "Return a new geometry with coordinates transformed to a different spatial "
 "reference system using the inverse of a defined coordinate transformation "
 "pipeline."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_srs.xml:23
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_InverseTransformPipeline</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>pipeline</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>to_srid</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: title
@@ -144,15 +133,6 @@ msgstr ""
 msgid "Set the SRID on a geometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_srs.xml:82
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_SetSRID</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_srs.xml:97
 #, no-c-format
@@ -209,14 +189,6 @@ msgstr ""
 #: reference_srs.xml:129
 #, no-c-format
 msgid "Returns the spatial reference identifier for a geometry."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_srs.xml:134
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_SRID</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -446,17 +418,6 @@ msgid ""
 "pipeline.</refpurpose>"
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_srs.xml:300
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_TransformPipeline</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>pipeline</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>to_srid</"
-"parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_srs.xml:312
 #, no-c-format
@@ -526,14 +487,6 @@ msgstr ""
 msgid "Return the list of SRS codes associated with the given authority."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_srs.xml:384
-#, no-c-format
-msgid ""
-"<funcdef>setof text <function>postgis_srs_codes</function></funcdef> "
-"<paramdef><type>text </type> <parameter>auth_name</parameter></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_srs.xml:394
 #, no-c-format
@@ -566,15 +519,6 @@ msgstr ""
 #: reference_srs.xml:420
 #, no-c-format
 msgid "Return a metadata record for the requested authority and srid."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_srs.xml:425
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>postgis_srs</function></funcdef> "
-"<paramdef><type>text </type> <parameter>auth_name</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>auth_srid</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -639,16 +583,6 @@ msgstr ""
 msgid ""
 "Return metadata records for projected coordinate systems that have areas of "
 "useage that fully contain the bounds parameter."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_srs.xml:510
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>postgis_srs_search</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>bounds</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>auth_name=EPSG</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para

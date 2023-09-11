@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2021-11-28 22:06+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -487,20 +487,6 @@ msgstr ""
 #, no-c-format
 msgid "Returns an Encoded Polyline from a LineString geometry."
 msgstr "Retorna uma Polilinha Encoded de uma geometria LineString. "
-
-#. Tag: funcprototype
-#: reference_output.xml:393
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_AsEncodedPolyline</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>precision=5</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>ST_AsEncodedPolyline</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>precision=5</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_output.xml:404
@@ -1012,18 +998,6 @@ msgstr ", <xref linkend=\"ST_AsGML\"/>"
 msgid "Return the Degrees, Minutes, Seconds representation of the given point."
 msgstr "Retorna a representação de Graus, Minutos, Segundos do ponto dado."
 
-#. Tag: funcprototype
-#: reference_output.xml:863
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_AsLatLonText</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>format=''</parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>ST_AsLatLonText</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>format=''</parameter></paramdef>"
-
 #. Tag: para
 #: reference_output.xml:874
 #, no-c-format
@@ -1132,16 +1106,6 @@ msgstr "Valores excessivamente grandes são normalizados."
 #, no-c-format
 msgid ""
 "Returns geometry as a MARC21/XML record with a geographic datafield (034)."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_output.xml:926
-#, no-c-format
-msgid ""
-"<funcdef> text <function>ST_AsMARC21</function> </funcdef> <paramdef> "
-"<type>geometry </type> <parameter>geom</parameter> </paramdef> <paramdef "
-"choice=\"opt\"> <type>text </type> <parameter>format='hdddmmss'</parameter> "
-"</paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1284,20 +1248,6 @@ msgstr ""
 #: reference_output.xml:1009
 #, no-c-format
 msgid "Transforms a geometry into the coordinate space of a MVT tile."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_output.xml:1013
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_AsMVTGeom</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>box2d </type> <parameter>bounds</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>extent=4096</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>buffer=256</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>boolean </type> <parameter>clip_geom=true</parameter></"
-"paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1715,24 +1665,6 @@ msgstr ""
 "Retorna uma geometria em X3D nó xml formato do elemento: ISO-IEC-19776-1.2-"
 "X3DEncodings-XML"
 
-#. Tag: funcprototype
-#: reference_output.xml:1301
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_AsX3D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>text <function>ST_AsX3D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></"
-"paramdef>"
-
 #. Tag: para
 #: reference_output.xml:1313
 #, no-c-format
@@ -2064,20 +1996,6 @@ msgstr "Exemplo: Multilinestring fechada (o limite de um polígono com buracos)"
 #, no-c-format
 msgid "Return a GeoHash representation of the geometry."
 msgstr "Retorna uma representação GeoHash da geometria. "
-
-#. Tag: funcprototype
-#: reference_output.xml:1441
-#, no-c-format
-msgid ""
-"<funcdef>text <function>ST_GeoHash</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxchars=full_precision_of_point</parameter></paramdef>"
-msgstr ""
-"<funcdef>text <function>ST_GeoHash</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxchars=full_precision_of_point</parameter></paramdef>"
 
 #. Tag: para
 #: reference_output.xml:1452

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-07-19 07:46+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -509,18 +509,6 @@ msgstr ""
 "g1上の、g2に最も近い3次元ポイントを返します。これは3次元の最短ラインの始点で"
 "す。"
 
-#. Tag: funcprototype
-#: reference_measure.xml:308
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_3DClosestPoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_3DClosestPoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-
 #. Tag: para
 #: reference_measure.xml:323
 #, no-c-format
@@ -758,18 +746,6 @@ msgstr ""
 "投影座標系の単位で、二つのジオメトリ間の3次元デカルト距離の最小値を返します "
 "(空間参照系に基づきます)。"
 
-#. Tag: funcprototype
-#: reference_measure.xml:465
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_3DDistance</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_3DDistance</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-
 #. Tag: para
 #: reference_measure.xml:480
 #, no-c-format
@@ -824,22 +800,6 @@ msgstr ""
 "球面の地球モデルを使って、二つの経度/緯度ジオメトリの最小距離をメートル単位で"
 "返します。"
 
-#. Tag: funcprototype
-#: reference_measure.xml:518
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_DistanceSphere</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomlonlatA</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>geomlonlatB</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>float8 </type> "
-"<parameter>radius=6371008</parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_DistanceSphere</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomlonlatA</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>geomlonlatB</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>float8 </type> "
-"<parameter>radius=6371008</parameter></paramdef>"
-
 #. Tag: para
 #: reference_measure.xml:530
 #, no-c-format
@@ -888,22 +848,6 @@ msgstr ""
 "回転楕円体面の地球モデルを使って、二つの経度/緯度ジオメトリの最小距離を返しま"
 "す。"
 
-#. Tag: funcprototype
-#: reference_measure.xml:565
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_DistanceSpheroid</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomlonlatA</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>geomlonlatB</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>spheroid </"
-"type><parameter>measurement_spheroid=WGS84</parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_DistanceSpheroid</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomlonlatA</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>geomlonlatB</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>spheroid </"
-"type><parameter>measurement_spheroid=WGS84</parameter></paramdef>"
-
 #. Tag: para
 #: reference_measure.xml:577
 #, no-c-format
@@ -944,22 +888,6 @@ msgstr ", <xref linkend=\"ST_DistanceSphere\"/>"
 #, no-c-format
 msgid "Returns the Fréchet distance between two geometries."
 msgstr "二つのジオメトリのフレシェ距離を返します。"
-
-#. Tag: funcprototype
-#: reference_measure.xml:615
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_FrechetDistance</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>densifyFrac = -1</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_FrechetDistance</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>densifyFrac = -1</parameter></"
-"paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:633
@@ -1243,18 +1171,6 @@ msgstr ""
 "LINESTRINGまたはMULTILINESTRINGに対して、ジオメトリの2次元長を返します。これ"
 "は<varname>ST_Length</varname>の別名です。"
 
-#. Tag: funcprototype
-#: reference_measure.xml:835
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_Length2D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_2dlinestring</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_Length2D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_2dlinestring</parameter></"
-"paramdef>"
-
 #. Tag: para
 #: reference_measure.xml:845
 #, no-c-format
@@ -1276,18 +1192,6 @@ msgstr ", <xref linkend=\"ST_3DLength\"/>"
 #, no-c-format
 msgid "Returns the 3D length of a linear geometry."
 msgstr "線ジオメトリの3次元長を返します。"
-
-#. Tag: funcprototype
-#: reference_measure.xml:867
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_3DLength</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_3dlinestring</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_3DLength</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_3dlinestring</parameter></"
-"paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:877
@@ -1336,20 +1240,6 @@ msgid ""
 "Returns the 2D or 3D length/perimeter of a lon/lat geometry on a spheroid."
 msgstr ""
 "回転楕円体面上の経度緯度のジオメトリの2次元または3次元の長さ/周長を返します。"
-
-#. Tag: funcprototype
-#: reference_measure.xml:910
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_LengthSpheroid</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_geometry</parameter></"
-"paramdef> <paramdef><type>spheroid </type> <parameter>a_spheroid</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_LengthSpheroid</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_geometry</parameter></"
-"paramdef> <paramdef><type>spheroid </type> <parameter>a_spheroid</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:921
@@ -1409,18 +1299,6 @@ msgstr ", <xref linkend=\"ST_Length\"/>"
 #, no-c-format
 msgid "Returns the 2D longest line between two geometries."
 msgstr "二つのジオメトリ間の2次元最長ラインを返します。"
-
-#. Tag: funcprototype
-#: reference_measure.xml:960
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_LongestLine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_LongestLine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:975
@@ -1496,18 +1374,6 @@ msgstr ""
 msgid "Returns the 3D longest line between two geometries"
 msgstr "二つのジオメトリ間の3次元最長ラインを返します。"
 
-#. Tag: funcprototype
-#: reference_measure.xml:1046
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_3DLongestLine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_3DLongestLine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-
 #. Tag: para
 #: reference_measure.xml:1061
 #, no-c-format
@@ -1555,18 +1421,6 @@ msgstr ""
 msgid ""
 "Returns the 2D largest distance between two geometries in projected units."
 msgstr "二つのジオメトリ間の2次元最長距離を空間参照系の単位で返します。"
-
-#. Tag: funcprototype
-#: reference_measure.xml:1117
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_MaxDistance</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_MaxDistance</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:1129
@@ -1621,18 +1475,6 @@ msgstr ""
 "二つのジオメトリ間の3次元最大デカルト距離 (空間参照系に基づく)を空間参照系の"
 "単位で返します。"
 
-#. Tag: funcprototype
-#: reference_measure.xml:1165
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_3DMaxDistance</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_3DMaxDistance</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-
 #. Tag: para
 #: reference_measure.xml:1180
 #, no-c-format
@@ -1661,16 +1503,6 @@ msgid ""
 msgstr ""
 "ジオメトリのクリアランスの最小値を返します。この値はジオメトリのロバスト性を"
 "示すものです。"
-
-#. Tag: funcprototype
-#: reference_measure.xml:1212
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_MinimumClearance</function></funcdef> "
-"<paramdef><type>geometry </type><parameter>g</parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_MinimumClearance</function></funcdef> "
-"<paramdef><type>geometry </type><parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:1222
@@ -1773,16 +1605,6 @@ msgstr ""
 msgid ""
 "Returns the two-point LineString spanning a geometry's minimum clearance."
 msgstr "ジオメトリの最小クリアランスを示す、2点のラインストリングを返します。"
-
-#. Tag: funcprototype
-#: reference_measure.xml:1293
-#, no-c-format
-msgid ""
-"<funcdef>Geometry <function>ST_MinimumClearanceLine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
-msgstr ""
-"<funcdef>Geometry <function>ST_MinimumClearanceLine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:1304
@@ -1910,16 +1732,6 @@ msgstr ""
 "ポリゴンジオメトリの2次元周長を返します。<varname>ST_Perimeter</varname>の別"
 "名です。"
 
-#. Tag: funcprototype
-#: reference_measure.xml:1388
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_Perimeter2D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_Perimeter2D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-
 #. Tag: para
 #: reference_measure.xml:1398
 #, no-c-format
@@ -1942,16 +1754,6 @@ msgstr ""
 #, no-c-format
 msgid "Returns the 3D perimeter of a polygonal geometry."
 msgstr "ポリゴンジオメトリの3次元周長を返します。"
-
-#. Tag: funcprototype
-#: reference_measure.xml:1423
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_3DPerimeter</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_3DPerimeter</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:1433
@@ -2049,18 +1851,6 @@ msgstr ""
 #, no-c-format
 msgid "Returns the 3D shortest line between two geometries"
 msgstr "二つのジオメトリの3次元の最短ラインを返します。"
-
-#. Tag: funcprototype
-#: reference_measure.xml:1539
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_3DShortestLine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_3DShortestLine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_measure.xml:1554

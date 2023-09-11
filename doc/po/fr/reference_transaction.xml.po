@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-01-06 15:50+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -62,16 +62,6 @@ msgid ""
 msgstr ""
 "<refpurpose>Ajoute un jeton d'autorisation à utiliser dans la transaction "
 "courante.</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_transaction.xml:31
-#, no-c-format
-msgid ""
-"<funcdef>boolean <function>AddAuth</function></funcdef> <paramdef><type>text "
-"</type> <parameter>auth_token</parameter></paramdef>"
-msgstr ""
-"<funcdef>boolean <function>AddAuth</function></funcdef> <paramdef><type>text "
-"</type> <parameter>auth_token</parameter></paramdef>"
 
 #. Tag: title
 #: reference_transaction.xml:39 reference_transaction.xml:88
@@ -181,16 +171,6 @@ msgstr ""
 msgid "Disables long transaction support."
 msgstr "Désactive le support des transactions longues."
 
-#. Tag: funcprototype
-#: reference_transaction.xml:126
-#, no-c-format
-msgid ""
-"<funcdef>text <function>DisableLongTransactions</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>text <function>DisableLongTransactions</function></funcdef> "
-"<paramdef></paramdef>"
-
 #. Tag: para
 #: reference_transaction.xml:136
 #, no-c-format
@@ -221,16 +201,6 @@ msgstr ""
 #, no-c-format
 msgid "Enables long transaction support."
 msgstr "Active le support des transactions longues."
-
-#. Tag: funcprototype
-#: reference_transaction.xml:170
-#, no-c-format
-msgid ""
-"<funcdef>text <function>EnableLongTransactions</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-"<funcdef>text <function>EnableLongTransactions</function></funcdef> "
-"<paramdef></paramdef>"
 
 #. Tag: para
 #: reference_transaction.xml:180
@@ -281,16 +251,6 @@ msgstr ""
 #, no-c-format
 msgid "Removes all locks held by an authorization token."
 msgstr "Supprime tous les verrous détenus par un jeton d'autorisation."
-
-#. Tag: funcprototype
-#: reference_transaction.xml:280
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>UnlockRows</function></funcdef> "
-"<paramdef><type>text </type> <parameter>auth_token</parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>UnlockRows</function></funcdef> "
-"<paramdef><type>text </type> <parameter>auth_token</parameter></paramdef>"
 
 #. Tag: para
 #: reference_transaction.xml:290

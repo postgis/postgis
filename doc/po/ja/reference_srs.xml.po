@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-06-05 11:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -43,22 +43,6 @@ msgid ""
 msgstr ""
 "定義した座標変換パイプラインの逆変換を使って、異なる空間参照系に座標値を変換"
 "した新しいジオメトリを返します。"
-
-#. Tag: funcprototype
-#: reference_srs.xml:23
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_InverseTransformPipeline</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>pipeline</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>to_srid</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_InverseTransformPipeline</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>pipeline</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>to_srid</"
-"parameter></paramdef>"
 
 #. Tag: title
 #: reference_srs.xml:33 reference_srs.xml:95 reference_srs.xml:142
@@ -166,18 +150,6 @@ msgstr ", <xref linkend=\"ST_TransformPipeline\"/>"
 msgid "Set the SRID on a geometry."
 msgstr "ジオメトリにSRIDを設定します。"
 
-#. Tag: funcprototype
-#: reference_srs.xml:82
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_SetSRID</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_SetSRID</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
-
 #. Tag: para
 #: reference_srs.xml:97
 #, no-c-format
@@ -244,16 +216,6 @@ msgstr ""
 #, no-c-format
 msgid "Returns the spatial reference identifier for a geometry."
 msgstr "ジオメトリの空間参照系識別子を返します。"
-
-#. Tag: funcprototype
-#: reference_srs.xml:134
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_SRID</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_SRID</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_srs.xml:144
@@ -536,22 +498,6 @@ msgstr ""
 "<refpurpose>定義されている座標変換パイプラインを使用して異なる空間参照系に変"
 "換された新しいジオメトリを返します。</refpurpose>"
 
-#. Tag: funcprototype
-#: reference_srs.xml:300
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_TransformPipeline</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>pipeline</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>to_srid</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_TransformPipeline</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>pipeline</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>to_srid</"
-"parameter></paramdef>"
-
 #. Tag: para
 #: reference_srs.xml:312
 #, no-c-format
@@ -636,16 +582,6 @@ msgstr ", <xref linkend=\"ST_InverseTransformPipeline\"/>"
 msgid "Return the list of SRS codes associated with the given authority."
 msgstr "指定した機関に関連付けられたSRSコードの一覧を返します。"
 
-#. Tag: funcprototype
-#: reference_srs.xml:384
-#, no-c-format
-msgid ""
-"<funcdef>setof text <function>postgis_srs_codes</function></funcdef> "
-"<paramdef><type>text </type> <parameter>auth_name</parameter></paramdef>"
-msgstr ""
-"<funcdef>setof text <function>postgis_srs_codes</function></funcdef> "
-"<paramdef><type>text </type> <parameter>auth_name</parameter></paramdef>"
-
 #. Tag: para
 #: reference_srs.xml:394
 #, no-c-format
@@ -682,18 +618,6 @@ msgstr ""
 #, no-c-format
 msgid "Return a metadata record for the requested authority and srid."
 msgstr "求める機関と空間参照識別子に関するメタデータレコードを返します。"
-
-#. Tag: funcprototype
-#: reference_srs.xml:425
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>postgis_srs</function></funcdef> "
-"<paramdef><type>text </type> <parameter>auth_name</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>auth_srid</parameter></paramdef>"
-msgstr ""
-"<funcdef>setof record <function>postgis_srs</function></funcdef> "
-"<paramdef><type>text </type> <parameter>auth_name</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>auth_srid</parameter></paramdef>"
 
 #. Tag: para
 #: reference_srs.xml:436
@@ -771,20 +695,6 @@ msgid ""
 msgstr ""
 "boundsパラメータを完全に含む適用範囲を持つ投影座標系のメタデータレコードを返"
 "します。"
-
-#. Tag: funcprototype
-#: reference_srs.xml:510
-#, no-c-format
-msgid ""
-"<funcdef>setof record <function>postgis_srs_search</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>bounds</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>auth_name=EPSG</"
-"parameter></paramdef>"
-msgstr ""
-"<funcdef>setof record <function>postgis_srs_search</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>bounds</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>auth_name=EPSG</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_srs.xml:521

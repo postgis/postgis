@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -33,15 +33,6 @@ msgstr ""
 msgid ""
 "Packages and upgrades PostGIS extensions (e.g. postgis_raster, "
 "postgis_topology, postgis_sfcgal) to given or latest version."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_version.xml:24
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Extensions_Upgrade</function></funcdef> "
-"<paramdef choice=\"opt\"><type>text</type> <parameter>target_version=null</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: title
@@ -135,14 +126,6 @@ msgstr ""
 msgid "Reports full PostGIS version and build configuration infos."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_version.xml:84
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Full_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_version.xml:95
 #, no-c-format
@@ -176,14 +159,6 @@ msgstr ""
 msgid "Returns the version number of the GEOS library."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_version.xml:132
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_GEOS_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_version.xml:143
 #, no-c-format
@@ -207,14 +182,6 @@ msgstr ""
 msgid ""
 "Returns the version number of the GEOS library against which PostGIS was "
 "built."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_version.xml:174
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_GEOS_Compiled_Version</function></funcdef> "
-"<paramdef></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -245,14 +212,6 @@ msgid ""
 "version of PostGIS."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_version.xml:217
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Liblwgeom_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_version.xml:228
 #, no-c-format
@@ -263,14 +222,6 @@ msgstr ""
 #: reference_version.xml:252
 #, no-c-format
 msgid "Returns the version number of the libxml2 library."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_version.xml:258
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_LibXML_Version</function></funcdef> "
-"<paramdef></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -300,14 +251,6 @@ msgstr ""
 msgid "<refpurpose>Returns build date of the PostGIS library.</refpurpose>"
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_version.xml:299
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Lib_Build_Date</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_version.xml:310
 #, no-c-format
@@ -319,14 +262,6 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<refpurpose>Returns the version number of the PostGIS library.</refpurpose>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_version.xml:330
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Lib_Version</function></funcdef> <paramdef></"
-"paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -348,14 +283,6 @@ msgstr ""
 #: reference_version.xml:365
 #, no-c-format
 msgid "Returns the version number of the PROJ4 library."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_version.xml:371
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_PROJ_Version</function></funcdef> "
-"<paramdef></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -389,14 +316,6 @@ msgstr ""
 msgid "Returns the version number of the internal Wagyu library."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_version.xml:413
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Wagyu_Version</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_version.xml:424
 #, no-c-format
@@ -421,14 +340,6 @@ msgstr ""
 msgid "<refpurpose>Returns build date of the PostGIS scripts.</refpurpose>"
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_version.xml:455
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Scripts_Build_Date</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_version.xml:466
 #, no-c-format
@@ -447,14 +358,6 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns version of the PostGIS scripts installed in this "
 "database.</refpurpose>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_version.xml:498
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Scripts_Installed</function></funcdef> "
-"<paramdef></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -497,14 +400,6 @@ msgid ""
 "with the installed PostGIS lib.</refpurpose>"
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_version.xml:546
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Scripts_Released</function></funcdef> "
-"<paramdef></paramdef>"
-msgstr ""
-
 #. Tag: para
 #: reference_version.xml:557
 #, no-c-format
@@ -535,14 +430,6 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns PostGIS version number and compile-time options.</"
 "refpurpose>"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_version.xml:592
-#, no-c-format
-msgid ""
-"<funcdef>text <function>PostGIS_Version</function></funcdef> <paramdef></"
-"paramdef>"
 msgstr ""
 
 #. Tag: para

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-05-10 15:08+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
@@ -165,20 +165,6 @@ msgid ""
 msgstr ""
 "Renvoie une ligne <varname>valid_detail</varname> indiquant si une géométrie "
 "est valide ou sinon une raison et une localisation."
-
-#. Tag: funcprototype
-#: reference_validation.xml:106
-#, no-c-format
-msgid ""
-"<funcdef>valid_detail <function>ST_IsValidDetail</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>flags</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>valid_detail <function>ST_IsValidDetail</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>flags</parameter></"
-"paramdef>"
 
 #. Tag: para
 #: reference_validation.xml:117

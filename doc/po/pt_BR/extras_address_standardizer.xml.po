@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-07-18 20:22+0000\n"
+"POT-Creation-Date: 2023-09-07 10:12+0000\n"
 "PO-Revision-Date: 2023-09-07 10:14+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Portuguese (Brazil) <https://weblate.osgeo.org/projects/"
@@ -35,10 +35,10 @@ msgid ""
 "url=\"http://sourceforge.net/p/pagc/code/360/tree/branches/sew-refactor/"
 "postgresql\">PAGC PostgreSQL Address Standardizer</ulink>)."
 msgstr ""
-"Essa é uma forquilha do <ulink url=\"http://www.pagcgeo.org/docs/html/pagc-11"
-".html\"> padronizador PAGC </ulink> (código original para essa porção era "
-"<ulink url=\"http://sourceforge.net/p/pagc/code/360/tree/branches/"
-"sew-refactor/postgresql\"> Padronizador de endereço PAGC PostgreSQL</ulink>)."
+"Essa é uma forquilha do <ulink url=\"http://www.pagcgeo.org/docs/html/"
+"pagc-11.html\"> padronizador PAGC </ulink> (código original para essa porção "
+"era <ulink url=\"http://sourceforge.net/p/pagc/code/360/tree/branches/sew-"
+"refactor/postgresql\"> Padronizador de endereço PAGC PostgreSQL</ulink>)."
 
 #. Tag: para
 #: extras_address_standardizer.xml:5
@@ -471,8 +471,8 @@ msgid ""
 "is text Apartment number or Suite Number (token number <code>17</code>): "
 "Example <emphasis>3B</emphasis> in <code>APT 3B</code>."
 msgstr ""
-"é texto Número do apartamento ou Número da suíte (número token "
-"<code>17</code>): Exemplo <emphasis>3B</emphasis> em <code>APTO 3B</code>."
+"é texto Número do apartamento ou Número da suíte (número token <code>17</"
+"code>): Exemplo <emphasis>3B</emphasis> em <code>APTO 3B</code>."
 
 #. Tag: para
 #: extras_address_standardizer.xml:141
@@ -1409,8 +1409,8 @@ msgid ""
 "standardized representations."
 msgstr ""
 "Uma gaz table é usada para padronizar nomes de lugares e associações que "
-"entram com (a) tokens de entrada ( See <xref linkend=\"rule_input_tokens\"/>)"
-" e (b) representações padronizadas."
+"entram com (a) tokens de entrada ( See <xref linkend=\"rule_input_tokens\"/"
+">) e (b) representações padronizadas."
 
 #. Tag: para
 #: extras_address_standardizer.xml:529
@@ -1452,19 +1452,6 @@ msgstr "Funções do padronizador de endereços"
 #, no-c-format
 msgid ""
 "Returns a json formatted text listing the parse tokens and standardizations"
-msgstr ""
-
-#. Tag: funcprototype
-#: extras_address_standardizer.xml:578
-#, no-c-format
-msgid ""
-"<funcdef>text <function>debug_standardize_address</function></funcdef> "
-"<paramdef><type>text </type> <parameter>lextab</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>gaztab</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>rultab</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>micro</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>text </type> <parameter>macro=NULL</"
-"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1600,16 +1587,6 @@ msgstr ""
 #, no-c-format
 msgid "Takes a 1 line address and breaks into parts"
 msgstr "Pega um endereço linha 1 e quebra em partes"
-
-#. Tag: funcprototype
-#: extras_address_standardizer.xml:658
-#, no-c-format
-msgid ""
-"<funcdef>record <function>parse_address</function></funcdef> "
-"<paramdef><type>text </type> <parameter>address</parameter></paramdef>"
-msgstr ""
-"<funcdef>record <function>parse_address</function></funcdef> "
-"<paramdef><type>text </type> <parameter>address</parameter></paramdef>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:669
