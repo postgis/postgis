@@ -30,7 +30,7 @@
 						<xsl:for-each select="refsection">
 								<xsl:choose>
 									<xsl:when test="descendant::node()[@conformance='sqlmm']">
-										<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /> <xsl:value-of select="." /></simpara></listitem>
+										<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
 									</xsl:when>
 								</xsl:choose>
 						</xsl:for-each>
