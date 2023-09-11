@@ -455,7 +455,8 @@ cheatsheet-clean:
 clean: images-clean html-clean pdf-clean epub-clean cheatsheet-clean
 	rm -f images # work around https://trac.osgeo.org/postgis/ticket/5422
 	rm -f $(XML_GENERATED_SOURCES)
-	rm -f postgis-nospecial.xml
+	rm -f postgis-nospecial.xml postgis-nospecial.xml.in
+	rm -f postgis-out.xml postgis-out.xml.in
 	rm -f $(TAG_GENERATED_SOURCES)
 	$(MAKE) -C $(images_builddir) clean
 	rm -f postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
