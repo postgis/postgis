@@ -37,8 +37,8 @@ msgid ""
 "page (<ulink url=\"http://www.sfcgal.org\">http://www.sfcgal.org</ulink>). "
 "To enable the functions use <code>create extension postgis_sfcgal</code>."
 msgstr ""
-"该库的安装说明可以在 SFCGAL 主页 (<ulink url=\"http://www.sfcgal."
-"org\">http://www.sfcgal.org</ulink>) 上找到。 要启用这些功能，请使用"
+"该库的安装说明可以在 SFCGAL 主页 (<ulink url=\"http://www.sfcgal.org"
+"\">http://www.sfcgal.org</ulink>) 上找到。 要启用这些功能，请使用"
 "<code>create extension postgis_sfcgal</code>。"
 
 #. Tag: title
@@ -274,19 +274,19 @@ msgstr "原始 3D 几何图形叠加。 geom2 显示为半透明"
 #: reference_sfcgal.xml:228
 #, no-c-format
 msgid "Intersection of geom1 and geom2"
-msgstr ""
+msgstr "geom1和geom2的交集"
 
 #. Tag: para
 #: reference_sfcgal.xml:237
 #, no-c-format
 msgid "3D linestrings and polygons"
-msgstr ""
+msgstr "3D 线串和多边形"
 
 #. Tag: para
 #: reference_sfcgal.xml:240
 #, no-c-format
 msgid "Cube (closed Polyhedral Surface) and Polygon Z"
-msgstr ""
+msgstr "立方体（闭合多面体曲面）和多边形 Z"
 
 #. Tag: para
 #: reference_sfcgal.xml:244
@@ -294,19 +294,19 @@ msgstr ""
 msgid ""
 "Intersection of 2 solids that result in volumetric intersection is also a "
 "solid (ST_Dimension returns 3)"
-msgstr ""
+msgstr "两个实体的交点也是实体（ST_Dimension返回3）"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:256
 #, no-c-format
 msgid "Perform 3D difference"
-msgstr ""
+msgstr "执行 3D 差异"
 
 #. Tag: para
 #: reference_sfcgal.xml:271
 #, no-c-format
 msgid "Returns that part of geom1 that is not part of geom2."
-msgstr ""
+msgstr "返回 geom1 中不属于 geom2 的部分。"
 
 #. Tag: para
 #: reference_sfcgal.xml:272 reference_sfcgal.xml:352 reference_sfcgal.xml:548
@@ -320,13 +320,13 @@ msgstr "可用性：2.2.0"
 #, no-c-format
 msgid ""
 "Original 3D geometries overlaid. geom2 is the part that will be removed."
-msgstr ""
+msgstr "原始 3D 几何图形叠加。 geom2 是将要删除的部分。"
 
 #. Tag: para
 #: reference_sfcgal.xml:305
 #, no-c-format
 msgid "What's left after removing geom2"
-msgstr ""
+msgstr "删除geom2后还剩下什么"
 
 #. Tag: para
 #: reference_sfcgal.xml:319
@@ -335,18 +335,20 @@ msgid ""
 ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
 "linkend=\"ST_3DUnion\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
+"linkend=\"ST_3DUnion\"/>"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:331
 #, no-c-format
 msgid "Perform 3D union."
-msgstr ""
+msgstr "执行 3D 联合。"
 
 #. Tag: para
 #: reference_sfcgal.xml:353
 #, no-c-format
 msgid "Availability: 3.3.0 aggregate variant was added"
-msgstr ""
+msgstr "可用性：3.3.0 添加了聚合函数格式"
 
 #. Tag: para
 #: reference_sfcgal.xml:360
@@ -358,18 +360,22 @@ msgid ""
 "it operates on rows of data, in the same way the SUM() and AVG() functions "
 "do and like most aggregates, it also ignores NULL geometries."
 msgstr ""
+"<emphasis role=\"bold\">聚合形式：</emphasis>返回几何图形，该几何图形是几何图"
+"形行集的 3D 并集。 ST_3DUnion() 函数是 PostgreSQL 术语中的“聚合”函数。 这意味"
+"着它对数据行进行操作，与 SUM() 和 AVG() 函数的操作方式相同，并且与大多数聚合"
+"一样，它也会忽略 NULL 几何图形。"
 
 #. Tag: para
 #: reference_sfcgal.xml:384
 #, no-c-format
 msgid "Original 3D geometries overlaid. geom2 is the one with transparency."
-msgstr ""
+msgstr "原始 3D 几何图形叠加。 geom2是具有透明度的。"
 
 #. Tag: para
 #: reference_sfcgal.xml:395
 #, no-c-format
 msgid "Union of geom1 and geom2"
-msgstr ""
+msgstr "geom1 和 geom2 的并集"
 
 #. Tag: para
 #: reference_sfcgal.xml:409
@@ -378,12 +384,14 @@ msgid ""
 ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
 "linkend=\"ST_3DDifference\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
+"linkend=\"ST_3DDifference\"/>"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:421
 #, no-c-format
 msgid "Computes an Alpha-shape enclosing a geometry"
-msgstr ""
+msgstr "计算包围几何体的 Alpha 形状"
 
 #. Tag: para
 #: reference_sfcgal.xml:438
@@ -396,6 +404,10 @@ msgid ""
 "closer fit to the shape of the input than the shape produced by the <link "
 "linkend=\"ST_ConvexHull\">convex hull</link>."
 msgstr ""
+"计算几何中点的 <ulink url=\"https://en.wikipedia.org/wiki/Alpha_shape"
+"\">Alpha 形状</ulink>。 alpha 形状是（通常）凹多边形几何体，它包含输入的所有"
+"顶点，并且其顶点是输入顶点的子集。 与<link linkend=\"ST_ConvexHull\">凸包</"
+"link>生成的形状相比，alpha 形状更适合输入的形状。"
 
 #. Tag: para
 #: reference_sfcgal.xml:447
@@ -406,6 +418,9 @@ msgid ""
 "produce more concave results. Alpha values greater than some data-dependent "
 "value produce the convex hull of the input."
 msgstr ""
+"“拟合紧密度”由 <varname>alpha </varname>参数控制，该参数的值可以从 0 到无穷"
+"大。 较小的 alpha 值会产生更凹的结果。 大于某些数据相关值的 Alpha 值会生成输"
+"入的凸包。"
 
 #. Tag: para
 #: reference_sfcgal.xml:454
@@ -413,12 +428,17 @@ msgstr ""
 msgid ""
 "Following the CGAL implementation, the alpha value is the <emphasis>square</"
 "emphasis> of the radius of the disc used in the Alpha-Shape algorithm to "
-"\"erode\" the Delaunay Triangulation of the input points. See <ulink "
-"url=\"https://doc.cgal.org/latest/Alpha_shapes_2/index."
+"\"erode\" the Delaunay Triangulation of the input points. See <ulink url="
+"\"https://doc.cgal.org/latest/Alpha_shapes_2/index."
 "html#Chapter_2D_Alpha_Shapes\">CGAL Alpha-Shapes</ulink> for more "
 "information. This is different from the original definition of alpha-shapes, "
 "which defines alpha as the radius of the eroding disc."
 msgstr ""
+"在 CGAL 实现之后，alpha 值是 Alpha-Shape 算法中用于“侵蚀”输入点的 Delaunay 三"
+"角剖分的圆半径的<emphasis>平方</emphasis>。 有关详细信息，请参阅 <ulink url="
+"\"https://doc.cgal.org/latest/Alpha_shapes_2/index."
+"html#Chapter_2D_Alpha_Shapes\">CGAL Alpha 形状</ulink>。 这与 alpha 形状的原"
+"始定义不同，后者将 alpha 定义为侵蚀圆的半径。"
 
 #. Tag: para
 #: reference_sfcgal.xml:463
@@ -427,6 +447,8 @@ msgid ""
 "The computed shape does not contain holes unless the optional "
 "<varname>allow_holes</varname> argument is specified as true."
 msgstr ""
+"除非将可选的<varname>allow_holes</varname>参数指定为true，否则计算的形状不包"
+"含孔。"
 
 #. Tag: para
 #: reference_sfcgal.xml:466
@@ -436,48 +458,56 @@ msgid ""
 "way to <xref linkend=\"ST_ConcaveHull\"/>, but uses CGAL and a different "
 "algorithm."
 msgstr ""
+"该函数以与<xref linkend=\"ST_ConcaveHull\"/>类似的方式有效地计算几何体的凹"
+"壳，但使用 CGAL 和不同的算法。"
 
 #. Tag: para
 #: reference_sfcgal.xml:471 reference_sfcgal.xml:1009
 #, no-c-format
 msgid "Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1."
-msgstr ""
+msgstr "可用性：3.3.0 - 需要 SFCGAL &gt;= 1.4.1。"
 
 #. Tag: para
 #: reference_sfcgal.xml:483
 #, no-c-format
 msgid ""
-"Alpha-shape of a MultiPoint (same example As <xref "
-"linkend=\"ST_OptimalAlphaShape\"/>)"
+"Alpha-shape of a MultiPoint (same example As <xref linkend="
+"\"ST_OptimalAlphaShape\"/>)"
 msgstr ""
+"MultiPoint 的 Alpha 形状（与 <xref linkend=\"ST_OptimalAlphaShape\"/> 相同的"
+"示例）"
 
 #. Tag: para
 #: reference_sfcgal.xml:495
 #, no-c-format
 msgid ""
-"Alpha-shape of a MultiPoint, allowing holes (same example as <xref "
-"linkend=\"ST_OptimalAlphaShape\"/>)"
+"Alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="
+"\"ST_OptimalAlphaShape\"/>)"
 msgstr ""
+"MultiPoint 的 Alpha 形状，允许有孔（与 <xref linkend=\"ST_OptimalAlphaShape"
+"\"/>相同的示例）"
 
 #. Tag: para
 #: reference_sfcgal.xml:508
 #, no-c-format
 msgid ""
-"Alpha-shape of a MultiPoint, allowing holes (same example as <xref "
-"linkend=\"ST_ConcaveHull\"/>)"
+"Alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="
+"\"ST_ConcaveHull\"/>)"
 msgstr ""
+"MultiPoint 的 Alpha 形状，允许有孔（与 <xref linkend=\"ST_ConcaveHull\"/>相同"
+"的示例）"
 
 #. Tag: para
 #: reference_sfcgal.xml:517
 #, no-c-format
 msgid ", <xref linkend=\"ST_OptimalAlphaShape\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_OptimalAlphaShape\"/>"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:526
 #, no-c-format
 msgid "Compute the approximate medial axis of an areal geometry."
-msgstr ""
+msgstr "计算几何区域的近似中轴。"
 
 #. Tag: para
 #: reference_sfcgal.xml:541
@@ -488,19 +518,22 @@ msgid ""
 "(1.2.0+). Otherwise the function is just a wrapper around "
 "ST_StraightSkeleton (slower case)."
 msgstr ""
+"基于直线骨架，返回输入面的近似中心轴。 如果您使用可能的版本（1.2.0 或更高版"
+"本）进行构建，则将使用 SFCGAL 自己的 API。 否则ST_StraightSkeleton它将是一个"
+"（缓慢的）包装。"
 
 #. Tag: para
 #: reference_sfcgal.xml:567
 #, no-c-format
 msgid "A polygon and its approximate medial axis"
-msgstr ""
+msgstr "多边形及其近似中轴"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:589
 #, no-c-format
 msgid ""
 "Return a constrained Delaunay triangulation around the given input geometry."
-msgstr ""
+msgstr "返回围绕给定输入几何体的约束 Delaunay 三角剖分。"
 
 #. Tag: para
 #: reference_sfcgal.xml:606
@@ -510,6 +543,9 @@ msgid ""
 "Constrained_Delaunay_triangulation\">Constrained Delaunay triangulation</"
 "ulink> around the vertices of the input geometry. Output is a TIN."
 msgstr ""
+"返回围绕输入几何体顶点的<ulink url=\"https://en.wikipedia.org/wiki/"
+"Constrained_Delaunay_triangulation\">约束 Delaunay 三角剖分</ulink>。 输出是 "
+"TIN。"
 
 #. Tag: para
 #: reference_sfcgal.xml:613
@@ -521,13 +557,13 @@ msgstr "可用性：3.0.0"
 #: reference_sfcgal.xml:627
 #, no-c-format
 msgid "ST_ConstrainedDelaunayTriangles of 2 polygons"
-msgstr ""
+msgstr "2 个多边形的ST_ConstrainedDelaunayTriangles"
 
 #. Tag: para
 #: reference_sfcgal.xml:637
 #, no-c-format
 msgid "of 2 polygons. Triangle edges cross polygon boundaries."
-msgstr ""
+msgstr "2 个多边形。 三角形边与多边形边界相交。"
 
 #. Tag: para
 #: reference_sfcgal.xml:649
@@ -536,48 +572,50 @@ msgid ""
 ", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref linkend=\"ST_Tesselate\"/"
 ">, <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>"
 msgstr ""
+", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref linkend=\"ST_Tesselate\"/"
+">, <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:663
 #, no-c-format
 msgid "Extrude a surface to a related volume"
-msgstr ""
+msgstr "将曲面挤出到相关体积"
 
 #. Tag: para
 #: reference_sfcgal.xml:702
 #, no-c-format
 msgid "Original octagon formed from buffering point"
-msgstr ""
+msgstr "由缓冲点形成的原始八边形"
 
 #. Tag: para
 #: reference_sfcgal.xml:713
 #, no-c-format
 msgid "Hexagon extruded 30 units along Z produces a PolyhedralSurfaceZ"
-msgstr ""
+msgstr "六边形沿 Z 方向挤压 30 个单位产生多面体表面 Z"
 
 #. Tag: para
 #: reference_sfcgal.xml:727
 #, no-c-format
 msgid "Original linestring"
-msgstr ""
+msgstr "原始线串"
 
 #. Tag: para
 #: reference_sfcgal.xml:738
 #, no-c-format
 msgid "LineString Extruded along Z produces a PolyhedralSurfaceZ"
-msgstr ""
+msgstr "沿 Z 方向拉伸的 LineString 会生成 PolyhedralSurfaceZ"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:758
 #, no-c-format
 msgid "Force LHR orientation"
-msgstr ""
+msgstr "强制 LHR 方向"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:786
 #, no-c-format
 msgid "Check if a surface is or not planar"
-msgstr ""
+msgstr "检查表面是否平坦"
 
 #. Tag: para
 #: reference_sfcgal.xml:801
@@ -585,13 +623,13 @@ msgstr ""
 msgid ""
 "Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left "
 "out in 2.1 release."
-msgstr ""
+msgstr "可用性：2.2.0：这在 2.1.0 中已记录，但在 2.1 版本中意外遗漏。"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:814
 #, no-c-format
 msgid "Test if the geometry is a solid. No validity check is performed."
-msgstr ""
+msgstr "测试几何体是否为实体。 不执行有效性检查。"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:842
@@ -601,12 +639,14 @@ msgid ""
 "solid, the input geometry must be a closed Polyhedral Surface or a closed "
 "TIN."
 msgstr ""
+"将几何体铸造成实体。 不执行任何检查。 要获得有效的实体，输入几何图形必须是闭"
+"合多面体曲面或闭合 TIN。"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:871
 #, no-c-format
 msgid "Performs Minkowski sum"
-msgstr ""
+msgstr "执行 Minkowski sum"
 
 #. Tag: para
 #: reference_sfcgal.xml:887
@@ -614,7 +654,7 @@ msgstr ""
 msgid ""
 "This function performs a 2D minkowski sum of a point, line or polygon with a "
 "polygon."
-msgstr ""
+msgstr "此函数执行点、线或多边形与多边形的 2D minkowski 和。"
 
 #. Tag: para
 #: reference_sfcgal.xml:888
@@ -625,6 +665,10 @@ msgid ""
 "planning and computer-aided design. More details on <ulink url=\"https://en."
 "wikipedia.org/wiki/Minkowski_addition\">Wikipedia Minkowski addition</ulink>."
 msgstr ""
+"两个几何图形 A 和 B 的minkowski和是所有点的集合，这些点是 A 和 B 中任意点的"
+"和。minkowski和经常用于运动规划和计算机辅助设计。 有关更多详细信息在<ulink "
+"url=\"https://en.wikipedia.org/wiki/Minkowski_addition\">维基百科 Minkowski "
+"添加</ulink>。"
 
 #. Tag: para
 #: reference_sfcgal.xml:889
@@ -635,6 +679,9 @@ msgid ""
 "leading to possible cases of invalidity. The second parameter must be a 2D "
 "polygon."
 msgstr ""
+"第一个参数可以是任何 2D 几何图形（点、线串、多边形）。 如果传递 3D 几何图形，"
+"则会通过强制 Z 为 0 将其转换为 2D，从而可能导致无效的情况。 第二个参数必须是"
+"二维多边形。"
 
 #. Tag: para
 #: reference_sfcgal.xml:891
@@ -643,6 +690,8 @@ msgid ""
 "Implementation utilizes <ulink url=\"http://doc.cgal.org/latest/"
 "Minkowski_sum_2/\">CGAL 2D Minkowskisum</ulink>."
 msgstr ""
+"实现利用 <ulink url=\"http://doc.cgal.org/latest/Minkowski_sum_2/\">CGAL 2D "
+"Minkowskisum</ulink>。"
 
 #. Tag: para
 #: reference_sfcgal.xml:899
@@ -650,32 +699,32 @@ msgstr ""
 msgid ""
 "Minkowski Sum of Linestring and circle polygon where Linestring cuts thru "
 "the circle"
-msgstr ""
+msgstr "Minkowski 线串与圆多边形的总和，其中线串穿过圆"
 
 #. Tag: para
 #: reference_sfcgal.xml:911 reference_sfcgal.xml:946
 #, no-c-format
 msgid "Before Summing"
-msgstr ""
+msgstr "求和前"
 
 #. Tag: para
 #: reference_sfcgal.xml:923
 #, no-c-format
 msgid "After summing"
-msgstr ""
+msgstr "求和后"
 
 #. Tag: para
 #: reference_sfcgal.xml:934
 #, no-c-format
 msgid "Minkowski Sum of a polygon and multipoint"
-msgstr ""
+msgstr "多边形和多点的 Minkowski 和"
 
 #. Tag: para
 #: reference_sfcgal.xml:958
 #, no-c-format
 msgid ""
 "After summing: polygon is duplicated and translated to position of points"
-msgstr ""
+msgstr "求和后：复制多边形并转换为点的位置"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:976
@@ -683,7 +732,7 @@ msgstr ""
 msgid ""
 "Computes an Alpha-shape enclosing a geometry using an \"optimal\" alpha "
 "value."
-msgstr ""
+msgstr "使用“最佳”alpha 值计算包围几何体的 Alpha 形状。"
 
 #. Tag: para
 #: reference_sfcgal.xml:993
@@ -692,6 +741,7 @@ msgid ""
 "Computes the \"optimal\" alpha-shape of the points in a geometry. The alpha-"
 "shape is computed using a value of α chosen so that:"
 msgstr ""
+"计算几何中点的“最佳”alpha 形状。 alpha 形状是使用所选的 α 值计算的，以便："
 
 #. Tag: para
 #: reference_sfcgal.xml:998
@@ -699,13 +749,13 @@ msgstr ""
 msgid ""
 "the number of polygon elements is equal to or smaller than "
 "<varname>nb_components</varname> (which defaults to 1)"
-msgstr ""
+msgstr "多边形元素的数量等于或小于<varname>nb_components</varname>（默认为1）"
 
 #. Tag: para
 #: reference_sfcgal.xml:1002
 #, no-c-format
 msgid "all input points are contained in the shape"
-msgstr ""
+msgstr "所有输入点都包含在形状中"
 
 #. Tag: para
 #: reference_sfcgal.xml:1005
@@ -714,14 +764,18 @@ msgid ""
 "The result will not contain holes unless the optional <varname>allow_holes</"
 "varname> argument is specified as true."
 msgstr ""
+"除非将可选的<varname>allow_holes</varname>参数指定为true，否则结果将不包含"
+"孔。"
 
 #. Tag: para
 #: reference_sfcgal.xml:1021
 #, no-c-format
 msgid ""
-"Optimal alpha-shape of a MultiPoint (same example as <xref "
-"linkend=\"ST_AlphaShape\"/>)"
+"Optimal alpha-shape of a MultiPoint (same example as <xref linkend="
+"\"ST_AlphaShape\"/>)"
 msgstr ""
+"MultiPoint 的最佳 alpha 形状（与 <xref linkend=\"ST_AlphaShape\"/> 相同的示"
+"例）"
 
 #. Tag: para
 #: reference_sfcgal.xml:1034
@@ -730,18 +784,20 @@ msgid ""
 "Optimal alpha-shape of a MultiPoint, allowing holes (same example as <xref "
 "linkend=\"ST_AlphaShape\"/>)"
 msgstr ""
+"MultiPoint 的最佳 alpha 形状（与<xref linkend=\"ST_AlphaShape\"/> 相同的示"
+"例）"
 
 #. Tag: para
 #: reference_sfcgal.xml:1044
 #, no-c-format
 msgid ", <xref linkend=\"ST_AlphaShape\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_AlphaShape\"/>"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:1053
 #, no-c-format
 msgid "Determine surface orientation"
-msgstr ""
+msgstr "确定表面方向"
 
 #. Tag: para
 #: reference_sfcgal.xml:1068
@@ -750,24 +806,26 @@ msgid ""
 "The function only applies to polygons. It returns -1 if the polygon is "
 "counterclockwise oriented and 1 if the polygon is clockwise oriented."
 msgstr ""
+"该函数仅适用于多边形。 如果多边形是逆时针方向，则返回 -1；如果多边形是顺时针"
+"方向，则返回 1。"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:1081
 #, no-c-format
 msgid "Compute a straight skeleton from a geometry"
-msgstr ""
+msgstr "从几何体计算直骨架"
 
 #. Tag: para
 #: reference_sfcgal.xml:1115 reference_sfcgal.xml:1202
 #, no-c-format
 msgid "Original polygon"
-msgstr ""
+msgstr "原始多边形"
 
 #. Tag: para
 #: reference_sfcgal.xml:1124
 #, no-c-format
 msgid "Straight Skeleton of polygon"
-msgstr ""
+msgstr "多边形的直骨架"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:1141
@@ -775,7 +833,7 @@ msgstr ""
 msgid ""
 "Perform surface Tesselation of a polygon or polyhedralsurface and returns as "
 "a TIN or collection of TINS"
-msgstr ""
+msgstr "对多边形或多面体表面执行曲面细分，并以 TIN 或 TINS 集合的形式返回"
 
 #. Tag: para
 #: reference_sfcgal.xml:1155
@@ -784,42 +842,44 @@ msgid ""
 "Takes as input a surface such a MULTI(POLYGON) or POLYHEDRALSURFACE and "
 "returns a TIN representation via the process of tessellation using triangles."
 msgstr ""
+"将 MULTI(POLYGON) 或 POLYHEDRALSURFACE 等曲面作为输入，并通过使用三角形的细分"
+"过程返回 TIN 表示形式。"
 
 #. Tag: para
 #: reference_sfcgal.xml:1175
 #, no-c-format
 msgid "Original Cube"
-msgstr ""
+msgstr "原始立方体"
 
 #. Tag: para
 #: reference_sfcgal.xml:1181
 #, no-c-format
 msgid "ST_AsText output:"
-msgstr ""
+msgstr "ST_AsText 输出:"
 
 #. Tag: para
 #: reference_sfcgal.xml:1188
 #, no-c-format
 msgid "Tesselated Cube with triangles colored"
-msgstr ""
+msgstr "带有彩色三角形的细分立方体"
 
 #. Tag: para
 #: reference_sfcgal.xml:1209
 #, no-c-format
 msgid "ST_AsText output"
-msgstr ""
+msgstr "ST_AsText 输出"
 
 #. Tag: para
 #: reference_sfcgal.xml:1216
 #, no-c-format
 msgid "Tesselated Polygon"
-msgstr ""
+msgstr "细分多边形"
 
 #. Tag: para
 #: reference_sfcgal.xml:1229
 #, no-c-format
 msgid ", <xref linkend=\"ST_DelaunayTriangles\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_DelaunayTriangles\"/>"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:1239
@@ -827,13 +887,13 @@ msgstr ""
 msgid ""
 "Computes the volume of a 3D solid. If applied to surface (even closed) "
 "geometries will return 0."
-msgstr ""
+msgstr "计算 3D 实体的体积。 如果应用于表面（甚至闭合）几何图形将返回 0。"
 
 #. Tag: para
 #: reference_sfcgal.xml:1259
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as ST_3DVolume)"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (与ST_3DVolume相同)"
 
 #. Tag: title
 #: reference_sfcgal.xml:1263
@@ -846,13 +906,172 @@ msgstr "示例"
 #, no-c-format
 msgid ""
 "When closed surfaces are created with WKT, they are treated as areal rather "
-"than solid. To make them solid, you need to use <xref "
-"linkend=\"ST_MakeSolid\"/>. Areal geometries have no volume. Here is an "
-"example to demonstrate."
+"than solid. To make them solid, you need to use <xref linkend=\"ST_MakeSolid"
+"\"/>. Areal geometries have no volume. Here is an example to demonstrate."
 msgstr ""
+"当使用 WKT 创建闭合曲面时，它们将被视为面而不是实体。 要使它们成为实体，您需"
+"要使用<xref linkend=\"ST_MakeSolid\"/>。 面积几何没有体积。 这里有一个例子来"
+"演示。"
 
 #. Tag: para
 #: reference_sfcgal.xml:1272
 #, no-c-format
 msgid ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
+msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:96
+#, no-c-format
+msgid ""
+"<funcdef>float<function>ST_3DArea</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:135
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_3DConvexHull</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:184
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_3DIntersection</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:261
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_3DDifference</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:426
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_AlphaShape</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>float </type> <parameter>alpha</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>allow_holes = false</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:531
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_ApproximateMedialAxis</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:596
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_ConstrainedDelaunayTriangles</function></"
+"funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:668
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_Extrude</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>z</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:763
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_ForceLHR</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:791
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>ST_IsPlanar</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:819
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>ST_IsSolid</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:847
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_MakeSolid</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:876
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_MinkowskiSum</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:981
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_OptimalAlphaShape</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> <parameter>allow_holes = "
+"false</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>nb_components = 1</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:1058
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_Orientation</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:1086
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_StraightSkeleton</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:1146
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_Tesselate</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:1244
+#, no-c-format
+msgid ""
+"<funcdef>float <function>ST_Volume</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
 msgstr ""
