@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-08-12 00:40+0000\n"
-"PO-Revision-Date: 2023-09-09 07:37+0000\n"
+"PO-Revision-Date: 2023-09-11 19:39+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "introductionxml/it/>\n"
@@ -138,7 +138,7 @@ msgstr ""
 #: introduction.xml:47
 #, no-c-format
 msgid "Darafei Praliaskouski"
-msgstr ""
+msgstr "Darafei Praliaskouski"
 
 #. Tag: para
 #: introduction.xml:49
@@ -147,6 +147,9 @@ msgid ""
 "Index improvements, bug fixing and geometry/geography function improvements, "
 "SFCGAL, raster, GitHub curation, and bot maintenance."
 msgstr ""
+"Miglioramento degli indici, correzione di malfunzionamenti e migliorie nelle "
+"funzioni a supporto di geometrie/geografie, SFCGAL, raster, cura di GitHub e "
+"mantenimento bot."
 
 #. Tag: term
 #: introduction.xml:54
