@@ -319,27 +319,6 @@ fi
 
 AC_SUBST([XSLBASE])
 
-dnl
-dnl Let's see if we can find mathml2.dtd
-dnl
-AC_ARG_WITH([mathmldtd],
-	[AS_HELP_STRING([--with-mathmldtd=PATH], [specify the dtd path for mathml2.dtd])],
-	[MATHML2_DTD="$withval"], [MATHML2_DTD=""])
-dnl TODO: get more paths to add here...
-if test "x$MATHML2_DTD" = "x"; then
-	MATHML2_DTD="http://www.w3.org/Math/DTD/mathml2/mathml2.dtd"
-	SEARCHPATH="
-			/usr/share/xml/schema/w3c/mathml/dtd
-			"
-	for p in ${SEARCHPATH}; do
-		if test -r "${p}"/mathml2.dtd; then
-			MATHML2_DTD="${p}/mathml2.dtd"
-			break
-		fi
-	done
-fi
-AC_SUBST([MATHML2_DTD])
-
 dnl ===========================================================================
 dnl Detect if pkg-config installed
 dnl ===========================================================================
@@ -1894,7 +1873,6 @@ AC_MSG_RESULT([  xsltproc:             ${XSLTPROC}])
 AC_MSG_RESULT([  xsl style sheets:     ${XSLBASE}])
 AC_MSG_RESULT([  dblatex:              ${DBLATEX}])
 AC_MSG_RESULT([  convert:              ${CONVERT}])
-AC_MSG_RESULT([  mathml2.dtd:          ${MATHML2_DTD}])
 AC_MSG_RESULT()
 
 if test "$POSTGIS_GEOS_VERSION" -lt 31200; then
