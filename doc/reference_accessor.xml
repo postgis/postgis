@@ -1532,7 +1532,7 @@ FROM (SELECT ST_BuildArea(
 		<para>&sqlmm_compliant; SQL-MM 3: 7.1.5, 9.3.3</para>
 		<note>
 		  <para>SQL-MM defines the result of
-		  <function>ST_IsClosed(<varname>NULL</varname>)</function> to be 0, while
+		  <code>ST_IsClosed(NULL)</code> to be 0, while
 		  PostGIS returns <varname>NULL</varname>.</para>
 		</note>
 
@@ -1931,16 +1931,14 @@ SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));
 
 	  <para>Returns <varname>TRUE</varname> if this
 	  <varname>LINESTRING</varname> is both <xref linkend="ST_IsClosed" />
-	  (<function>ST_StartPoint(<parameter>g</parameter>)</function>
-	  <function>~=</function>
-	  <function>ST_Endpoint(<parameter>g</parameter>)</function>) and <xref
+	  (<code>ST_StartPoint(g) ~= ST_Endpoint(g)</code>) and <xref
 	  linkend="ST_IsSimple" /> (does not self intersect).</para>
 
 	  <para>&sfs_compliant; 2.1.5.1</para>
 	  <para>&sqlmm_compliant; SQL-MM 3: 7.1.6</para>
 	  <note>
 		<para>SQL-MM defines the result of
-		<function>ST_IsRing(<varname>NULL</varname>)</function> to be 0, while
+		<code>ST_IsRing(NULL)</code> to be 0, while
 		PostGIS returns <varname>NULL</varname>.</para>
 	  </note>
 	</refsection>
