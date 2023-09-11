@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-18 20:22+0000\n"
-"PO-Revision-Date: 2023-09-05 05:07+0000\n"
+"PO-Revision-Date: 2023-09-11 19:03+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_gucxml/zh_Hans/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: para
 #: reference_guc.xml:5
@@ -25,12 +25,14 @@ msgid ""
 "These can be set globally, by database, by session or by transaction. Best "
 "set at global or database level."
 msgstr ""
+"本部分列出了自定义 PostGIS Grand Unified 自定义变量 (GUC)。 "
+"这些可以通过数据库、会话或事务进行全局设置。 最好在全局或数据库级别设置。"
 
 #. Tag: title
 #: reference_guc.xml:9
 #, no-c-format
 msgid "Grand Unified Custom Variables (GUCs)"
-msgstr ""
+msgstr "大一统自定义变量 (GUCs)"
 
 #. Tag: refpurpose
 #: reference_guc.xml:14
@@ -38,7 +40,8 @@ msgstr ""
 msgid ""
 "The backend to service a function where GEOS and SFCGAL overlap. Options: "
 "geos or sfcgal. Defaults to geos."
-msgstr ""
+msgstr "为 GEOS 和 SFCGAL 重叠的功能提供服务的后端。 选项：geos 或 sfcgal。 "
+"默认为geos。"
 
 #. Tag: title
 #: reference_guc.xml:18 reference_guc.xml:46 reference_guc.xml:96
@@ -56,6 +59,9 @@ msgid ""
 "GEOS and SFCGAL have the same named function. This variable allows you to "
 "override and make sfcgal the backend to service the request."
 msgstr ""
+"仅当您使用 sfcgal 支持编译 PostGIS 时，此 GUC 才相关。 默认情况下，"
+"<varname>geos </varname>后端用于 GEOS 和 SFCGAL 具有相同命名函数的函数。 "
+"此变量允许您覆盖并使 sfcgal 成为后端来服务请求。"
 
 #. Tag: para
 #: reference_guc.xml:20
@@ -74,13 +80,13 @@ msgstr "示例"
 #: reference_guc.xml:25
 #, no-c-format
 msgid "Sets backend just for life of connection"
-msgstr ""
+msgstr "仅针对连接生命周期设置后端"
 
 #. Tag: para
 #: reference_guc.xml:28
 #, no-c-format
 msgid "Sets backend for new connections to database"
-msgstr ""
+msgstr "设置数据库新连接的后端"
 
 #. Tag: title
 #: reference_guc.xml:32 reference_guc.xml:80 reference_guc.xml:167
@@ -95,7 +101,8 @@ msgstr "相关信息"
 msgid ""
 "A configuration option to assign the value of GDAL's GDAL_DATA option. If "
 "not set, the environmentally set GDAL_DATA variable is used."
-msgstr ""
+msgstr "用于分配 GDAL 的 GDAL_DATA 选项值的配置选项。 如果未设置，则使用环境设置的 "
+"GDAL_DATA 变量。"
 
 #. Tag: para
 #: reference_guc.xml:47
@@ -105,6 +112,9 @@ msgid ""
 "The <varname>postgis.gdal_datapath</varname> value should be the complete "
 "physical path to GDAL's data files."
 msgstr ""
+"一个 PostgreSQL GUC 变量，用于设置 GDAL 的 GDAL_DATA 选项的值。 "
+"<varname>postgis.gdal_datapath</varname> 值应该是 GDAL "
+"数据文件的完整物理路径。"
 
 #. Tag: para
 #: reference_guc.xml:50
@@ -114,6 +124,8 @@ msgid ""
 "data files path is not hard-coded. This option should also be set when "
 "GDAL's data files are not located in GDAL's expected path."
 msgstr ""
+"此配置选项最适用于 GDAL 数据文件路径未硬编码的 Windows 平台。 当 GDAL "
+"的数据文件不在 GDAL 的预期路径中时，也应该设置此选项。"
 
 #. Tag: para
 #: reference_guc.xml:55
@@ -121,7 +133,8 @@ msgstr ""
 msgid ""
 "This option can be set in PostgreSQL's configuration file postgresql.conf. "
 "It can also be set by connection or transaction."
-msgstr ""
+msgstr "该选项可以在 PostgreSQL 的配置文件 postgresql.conf 中设置。 "
+"也可以通过连接或事务来设置。"
 
 #. Tag: para
 #: reference_guc.xml:59 reference_guc.xml:142 reference_guc.xml:209
@@ -137,24 +150,26 @@ msgid ""
 "url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
 "ulink>."
 msgstr ""
+"有关 GDAL_DATA 的其他信息可在 GDAL 的<ulink url=\"http://trac.osgeo.org/gdal/"
+"wiki/ConfigOptions\">配置选项</ulink>中找到。"
 
 #. Tag: para
 #: reference_guc.xml:71
 #, no-c-format
 msgid "Set and reset <varname>postgis.gdal_datapath</varname>"
-msgstr ""
+msgstr "设置和重置<varname> postgis.gdal_datapath</varname>"
 
 #. Tag: para
 #: reference_guc.xml:75
 #, no-c-format
 msgid "Setting on windows for a particular database"
-msgstr ""
+msgstr "在 Windows 上针对特定数据库进行设置"
 
 #. Tag: para
 #: reference_guc.xml:81
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Transform\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_Transform\"/>"
 
 #. Tag: refpurpose
 #: reference_guc.xml:90
@@ -162,7 +177,8 @@ msgstr ""
 msgid ""
 "A configuration option to set the enabled GDAL drivers in the PostGIS "
 "environment. Affects the GDAL configuration variable GDAL_SKIP."
-msgstr ""
+msgstr "用于设置 PostGIS 环境中启用的 GDAL 驱动程序的配置选项。 影响 GDAL 配置变量 "
+"GDAL_SKIP。"
 
 #. Tag: para
 #: reference_guc.xml:97
@@ -173,6 +189,9 @@ msgid ""
 "can be set in PostgreSQL's configuration file: postgresql.conf. It can also "
 "be set by connection or transaction."
 msgstr ""
+"用于设置 PostGIS 环境中启用的 GDAL 驱动程序的配置选项。 影响 GDAL 配置变量 "
+"GDAL_SKIP。 该选项可以在 PostgreSQL 的配置文件：postgresql.conf 中设置。 "
+"也可以通过连接或事务来设置。"
 
 #. Tag: para
 #: reference_guc.xml:101
@@ -183,6 +202,9 @@ msgid ""
 "<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> with the list of enabled "
 "drivers to the process starting PostgreSQL."
 msgstr ""
+"<varname>postgis.gdal_enabled_drivers</varname> 的初始值也可以通过将环境变量 "
+"<varname>POSTGIS_GDAL_ENABLED_DRIVERS </"
+"varname>和已启用的驱动程序列表传递给启动 PostgreSQL 的进程来设置。"
 
 #. Tag: para
 #: reference_guc.xml:105
@@ -193,6 +215,10 @@ msgid ""
 "gdal.org/formats_list.html\">GDAL Raster Formats</ulink>. Multiple drivers "
 "can be specified by putting a space between each driver."
 msgstr ""
+"启用GDAL指定的驱动程序可以通过驱动程序的短名称或代码来指定。 "
+"驱动程序短名称或代码可以在 <ulink url=\"http://www.gdal.org/formats_list."
+"html\">GDAL 栅格格式</ulink>中找到。 "
+"可以通过在每个驱动程序之间添加空格来指定多个驱动程序。"
 
 #. Tag: para
 #: reference_guc.xml:110
@@ -200,7 +226,8 @@ msgstr ""
 msgid ""
 "There are three special codes available for <varname>postgis."
 "gdal_enabled_drivers</varname>. The codes are case-sensitive."
-msgstr ""
+msgstr "<varname>postgis.gdal_enabled_drivers </varname>有三个可用的特殊代码。 "
+"代码区分大小写。"
 
 #. Tag: para
 #: reference_guc.xml:115
@@ -210,12 +237,15 @@ msgid ""
 "<varname>DISABLE_ALL</varname> overrides all other values in "
 "<varname>postgis.gdal_enabled_drivers</varname>."
 msgstr ""
+"<varname>DISABLE_ALL </varname>禁用所有 GDAL 驱动程序。 如果存在，"
+"<varname>DISABLE_ALL </varname>会覆盖 <varname>postgis.gdal_enabled_drivers "
+"</varname>中的所有其他值。"
 
 #. Tag: para
 #: reference_guc.xml:118
 #, no-c-format
 msgid "<varname>ENABLE_ALL</varname> enables all GDAL drivers."
-msgstr ""
+msgstr "<varname>ENABLE_ALL </varname>启用所有 GDAL 驱动程序。"
 
 #. Tag: para
 #: reference_guc.xml:121
@@ -224,6 +254,8 @@ msgid ""
 "<varname>VSICURL</varname> enables GDAL's <varname>/vsicurl/</varname> "
 "virtual file system."
 msgstr ""
+"<varname>VSICURL</varname> 启用 GDAL 的 <varname>/vsicurl/ "
+"</varname>虚拟文件系统。"
 
 #. Tag: para
 #: reference_guc.xml:125
@@ -233,6 +265,10 @@ msgid ""
 "attempts to use out-db rasters, ST_FromGDALRaster(), ST_AsGDALRaster(), "
 "ST_AsTIFF(), ST_AsJPEG() and ST_AsPNG() will result in error messages."
 msgstr ""
+"当<varname> postgis.gdal_enabled_drivers </varname>设置为 DISABLE_ALL 时，"
+"尝试使用 out-db "
+"栅格、ST_FromGDALRaster()、ST_AsGDALRaster()、ST_AsTIFF()、ST_AsJPEG() 和 "
+"ST_AsPNG() 将导致错误消息。"
 
 #. Tag: para
 #: reference_guc.xml:131
@@ -241,6 +277,8 @@ msgid ""
 "In the standard PostGIS installation, <varname>postgis.gdal_enabled_drivers</"
 "varname> is set to DISABLE_ALL."
 msgstr ""
+"在标准 PostGIS 安装中，<varname>postgis.gdal_enabled_drivers </"
+"varname>设置为 DISABLE_ALL。"
 
 #. Tag: para
 #: reference_guc.xml:137
@@ -250,18 +288,20 @@ msgid ""
 "url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
 "ulink>."
 msgstr ""
+"有关 GDAL_SKIP 的其他信息可在 GDAL 的<ulink url=\"http://trac.osgeo.org/gdal/"
+"wiki/ConfigOptions\">配置选项</ulink>中找到。"
 
 #. Tag: para
 #: reference_guc.xml:148
 #, no-c-format
 msgid "Set and reset <varname>postgis.gdal_enabled_drivers</varname>"
-msgstr ""
+msgstr "设置和重置<varname>postgis.gdal_enabled_drivers</varname>"
 
 #. Tag: para
 #: reference_guc.xml:150
 #, no-c-format
 msgid "Sets backend for all new connections to database"
-msgstr ""
+msgstr "为所有新的数据库连接设置后端"
 
 #. Tag: para
 #: reference_guc.xml:153
@@ -271,18 +311,20 @@ msgid ""
 "super user access and PostgreSQL 9.4+. Also note that database, session, and "
 "user settings override this."
 msgstr ""
+"为与服务器的所有新连接设置默认启用的驱动程序。 需要超级用户访问权限和 "
+"PostgreSQL 9.4+ 。 另请注意，数据库、会话和用户设置会覆盖此设置。"
 
 #. Tag: para
 #: reference_guc.xml:159
 #, no-c-format
 msgid "Enable all GDAL Drivers"
-msgstr ""
+msgstr "启用所有 GDAL 驱动程序"
 
 #. Tag: para
 #: reference_guc.xml:162
 #, no-c-format
 msgid "Disable all GDAL Drivers"
-msgstr ""
+msgstr "禁用所有GDAL驱动程序"
 
 #. Tag: para
 #: reference_guc.xml:168
@@ -292,12 +334,15 @@ msgid ""
 "<xref linkend=\"RT_ST_AsPNG\"/>, <xref linkend=\"RT_ST_AsJPEG\"/>, <xref "
 "linkend=\"postgis_enable_outdb_rasters\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_AsTIFF\"/>, "
+"<xref linkend=\"RT_ST_AsPNG\"/>, <xref linkend=\"RT_ST_AsJPEG\"/>, <xref "
+"linkend=\"postgis_enable_outdb_rasters\"/>"
 
 #. Tag: refpurpose
 #: reference_guc.xml:182
 #, no-c-format
 msgid "A boolean configuration option to enable access to out-db raster bands."
-msgstr ""
+msgstr "一个布尔配置选项，用于启用对数据库外栅格波段的访问。"
 
 #. Tag: para
 #: reference_guc.xml:189
@@ -307,6 +352,8 @@ msgid ""
 "option can be set in PostgreSQL's configuration file: postgresql.conf. It "
 "can also be set by connection or transaction."
 msgstr ""
+"一个布尔配置选项，用于启用对数据库外栅格波段的访问。 该选项可以在 PostgreSQL "
+"的配置文件：postgresql.conf 中设置。 也可以通过连接或事务来设置。"
 
 #. Tag: para
 #: reference_guc.xml:193
@@ -317,6 +364,10 @@ msgid ""
 "<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> with a non-zero value to the "
 "process starting PostgreSQL."
 msgstr ""
+"<varname>postgis.enable_outdb_rasters </"
+"varname>的初始值也可以通过将具有非零值的环境变量 "
+"<varname>POSTGIS_ENABLE_OUTDB_RASTERS </varname>传递给启动 PostgreSQL "
+"的进程来设置。"
 
 #. Tag: para
 #: reference_guc.xml:198
@@ -326,6 +377,8 @@ msgid ""
 "<varname>postgis.gdal_enabled_drivers</varname> determines the accessible "
 "raster formats."
 msgstr ""
+"即使 <varname>postgis.enable_outdb_rasters</varname> 为 True，GUC<varname> "
+"postgis.gdal_enabled_drivers </varname>也会确定可访问的栅格格式。"
 
 #. Tag: para
 #: reference_guc.xml:204
@@ -334,6 +387,8 @@ msgid ""
 "In the standard PostGIS installation, <varname>postgis.enable_outdb_rasters</"
 "varname> is set to False."
 msgstr ""
+"在标准 PostGIS 安装中，<varname>postgis.enable_outdb_rasters</varname> "
+"设置为 False。"
 
 #. Tag: para
 #: reference_guc.xml:215
@@ -341,13 +396,13 @@ msgstr ""
 msgid ""
 "Set and reset <varname>postgis.enable_outdb_rasters</varname> for current "
 "session"
-msgstr ""
+msgstr "设置和重置当前会话的 <varname>postgis.enable_outdb_rasters</varname>"
 
 #. Tag: para
 #: reference_guc.xml:219
 #, no-c-format
 msgid "Set for specific database"
-msgstr ""
+msgstr "针对特定数据库设置"
 
 #. Tag: para
 #: reference_guc.xml:223
@@ -355,7 +410,7 @@ msgstr ""
 msgid ""
 "Setting for whole database cluster. You need to reconnect to the database "
 "for changes to take effect."
-msgstr ""
+msgstr "整个数据库集群的设置。 您需要重新连接到数据库才能使更改生效。"
 
 #. Tag: refpurpose
 #: reference_guc.xml:240
@@ -363,7 +418,7 @@ msgstr ""
 msgid ""
 "A string configuration to set options used when working with an out-db "
 "raster."
-msgstr ""
+msgstr "用于设置处理外部数据库栅格时使用的选项的字符串配置。"
 
 #. Tag: para
 #: reference_guc.xml:247
@@ -375,6 +430,10 @@ msgid ""
 "space GDAL allocates to local data cache, whether to read overviews, and "
 "what access keys to use for remote out-db data sources."
 msgstr ""
+"用于设置处理外部数据库栅格时使用的选项的字符串配置。 <ulink url=\"http://trac"
+".osgeo.org/gdal/wiki/ConfigOptions\">配置选项</ulink>控制诸如 GDAL "
+"分配给本地数据缓存的空间大小、是否读取概述以及对远程 out-db "
+"数据源使用哪些访问键等内容。"
 
 #. Tag: para
 #: reference_guc.xml:251
@@ -386,7 +445,7 @@ msgstr "可用性：3.2.0"
 #: reference_guc.xml:257
 #, no-c-format
 msgid "Set <varname>postgis.gdal_vsi_options</varname> for current session:"
-msgstr ""
+msgstr "为当前会话设置 <varname>postgis.gdal_vsi_options</varname>："
 
 #. Tag: para
 #: reference_guc.xml:261
@@ -396,3 +455,5 @@ msgid ""
 "<emphasis>current transaction</emphasis> using the <varname>LOCAL</varname> "
 "keyword:"
 msgstr ""
+"使用<varname> LOCAL</varname> 关键字仅为<emphasis>当前事务</"
+"emphasis>设置<varname> postgis.gdal_vsi_options</varname>："
