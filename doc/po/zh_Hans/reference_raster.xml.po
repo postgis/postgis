@@ -45,8 +45,8 @@ msgstr ""
 #: reference_raster.xml:10
 #, no-c-format
 msgid ""
-"For loading rasters from raster files please refer to <xref "
-"linkend=\"RT_Loading_Rasters\"/>"
+"For loading rasters from raster files please refer to <xref linkend="
+"\"RT_Loading_Rasters\"/>"
 msgstr ""
 
 #. Tag: para
@@ -394,7 +394,7 @@ msgstr ""
 #: reference_raster.xml:181
 #, no-c-format
 msgid "Casting Behavior"
-msgstr ""
+msgstr "强制转换行为"
 
 #. Tag: para
 #: reference_raster.xml:182
@@ -402,7 +402,7 @@ msgstr ""
 msgid ""
 "This section lists the automatic as well as explicit casts allowed for this "
 "data type"
-msgstr ""
+msgstr "本节列出了此数据类型允许的显式和自动强制转换"
 
 #. Tag: entry
 #: reference_raster.xml:187
@@ -414,19 +414,19 @@ msgstr "转换到"
 #: reference_raster.xml:188
 #, no-c-format
 msgid "Behavior"
-msgstr ""
+msgstr "行为"
 
 #. Tag: entry
 #: reference_raster.xml:191
 #, no-c-format
 msgid "geometry"
-msgstr ""
+msgstr "几何"
 
 #. Tag: entry
 #: reference_raster.xml:192
 #, no-c-format
 msgid "automatic"
-msgstr ""
+msgstr "自动"
 
 #. Tag: refpurpose
 #: reference_raster.xml:208
@@ -488,8 +488,8 @@ msgstr ""
 #: reference_raster.xml:228
 #, no-c-format
 msgid ""
-"One of defined pixel types as described in <xref "
-"linkend=\"RT_ST_BandPixelType\"/>"
+"One of defined pixel types as described in <xref linkend="
+"\"RT_ST_BandPixelType\"/>"
 msgstr ""
 
 #. Tag: term
@@ -645,8 +645,8 @@ msgstr ""
 #: reference_raster.xml:377
 #, no-c-format
 msgid ""
-"Type of UNION operation. One of defined types as described in <xref "
-"linkend=\"RT_ST_Union\"/>."
+"Type of UNION operation. One of defined types as described in <xref linkend="
+"\"RT_ST_Union\"/>."
 msgstr ""
 
 #. Tag: title
@@ -689,8 +689,8 @@ msgstr ""
 #: reference_raster.xml:543
 #, no-c-format
 msgid ""
-"Valid constraint names to pass in: refer to <xref "
-"linkend=\"RT_Raster_Columns\"/> for more details."
+"Valid constraint names to pass in: refer to <xref linkend=\"RT_Raster_Columns"
+"\"/> for more details."
 msgstr ""
 
 #. Tag: para
@@ -823,8 +823,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_AddBand\"/>, <xref linkend=\"RT_ST_MakeEmptyRaster\"/"
-">, <xref linkend=\"RT_DropRasterConstraints\"/>, <xref "
-"linkend=\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_SRID\"/>"
+">, <xref linkend=\"RT_DropRasterConstraints\"/>, <xref linkend="
+"\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -967,8 +967,8 @@ msgstr ""
 #: reference_raster.xml:804
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_DropOverviewConstraints\"/>, <xref "
-"linkend=\"RT_CreateOverview\"/>, <xref linkend=\"RT_AddRasterConstraints\"/>"
+", <xref linkend=\"RT_DropOverviewConstraints\"/>, <xref linkend="
+"\"RT_CreateOverview\"/>, <xref linkend=\"RT_AddRasterConstraints\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -998,8 +998,8 @@ msgstr ""
 #: reference_raster.xml:864
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_AddOverviewConstraints\"/>, <xref "
-"linkend=\"RT_DropRasterConstraints\"/>"
+", <xref linkend=\"RT_AddOverviewConstraints\"/>, <xref linkend="
+"\"RT_DropRasterConstraints\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1102,8 +1102,8 @@ msgstr ""
 #: reference_raster.xml:1030
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_SRID\"/>, <xref "
-"linkend=\"postgis_gdal_enabled_drivers\"/>"
+", <xref linkend=\"ST_SRID\"/>, <xref linkend=\"postgis_gdal_enabled_drivers"
+"\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1112,8 +1112,8 @@ msgstr ""
 msgid ""
 "<refpurpose>Generates a set of vector contours from the provided raster "
 "band, using the <ulink url=\"https://gdal.org/api/gdal_alg.html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
-"contouring algorithm</ulink>.</refpurpose>"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv"
+"\">GDAL contouring algorithm</ulink>.</refpurpose>"
 msgstr ""
 
 #. Tag: para
@@ -1122,8 +1122,8 @@ msgstr ""
 msgid ""
 "<para>Generates a set of vector contours from the provided raster band, "
 "using the <ulink url=\"https://gdal.org/api/gdal_alg.html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
-"contouring algorithm</ulink>.</para>"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv"
+"\">GDAL contouring algorithm</ulink>.</para>"
 msgstr ""
 
 #. Tag: para
@@ -1210,12 +1210,12 @@ msgid ""
 "the X- and Y-values to position the points on the grid and the Z-value of "
 "the points as the surface elevation. There are five interpolation algorithms "
 "available: inverse distance, inverse distance nearest-neighbor, moving "
-"average, nearest neighbor, and linear interpolation. See the <ulink "
-"url=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
-"algorithms\">gdal_grid documentation</ulink> for more details on the "
-"algorithms and their parameters. For more information on how interpolations "
-"are calculated, see the <ulink url=\"https://gdal.org/tutorials/"
-"gdal_grid_tut.html\">GDAL grid tutorial</ulink>."
+"average, nearest neighbor, and linear interpolation. See the <ulink url="
+"\"https://gdal.org/programs/gdal_grid.html#interpolation-algorithms"
+"\">gdal_grid documentation</ulink> for more details on the algorithms and "
+"their parameters. For more information on how interpolations are calculated, "
+"see the <ulink url=\"https://gdal.org/tutorials/gdal_grid_tut.html\">GDAL "
+"grid tutorial</ulink>."
 msgstr ""
 
 #. Tag: para
@@ -1387,9 +1387,8 @@ msgstr ""
 #: reference_raster.xml:1294
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_AddOverviewConstraints\"/>, <xref "
-"linkend=\"RT_AddRasterConstraints\"/>, <xref linkend=\"RT_Raster_Overviews\"/"
-">"
+", <xref linkend=\"RT_AddOverviewConstraints\"/>, <xref linkend="
+"\"RT_AddRasterConstraints\"/>, <xref linkend=\"RT_Raster_Overviews\"/>"
 msgstr ""
 
 #. Tag: title
@@ -1484,9 +1483,9 @@ msgstr ""
 #: reference_raster.xml:1424
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_BandPixelType\"/>, <xref "
-"linkend=\"RT_ST_MakeEmptyRaster\"/>, <xref linkend=\"RT_ST_MetaData\"/>, "
-"<xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_Reclass\"/>"
+", <xref linkend=\"RT_ST_BandPixelType\"/>, <xref linkend="
+"\"RT_ST_MakeEmptyRaster\"/>, <xref linkend=\"RT_ST_MetaData\"/>, <xref "
+"linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_Reclass\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -1590,9 +1589,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This is particularly useful for rendering jpegs and pngs of geometries "
-"directly from the database when using in combination with <xref "
-"linkend=\"RT_ST_AsPNG\"/> and other <xref linkend=\"RT_ST_AsGDALRaster\"/> "
-"family of functions."
+"directly from the database when using in combination with <xref linkend="
+"\"RT_ST_AsPNG\"/> and other <xref linkend=\"RT_ST_AsGDALRaster\"/> family of "
+"functions."
 msgstr ""
 
 #. Tag: para
@@ -1782,8 +1781,8 @@ msgstr ""
 msgid ""
 "If no srid is specified it defaults to 0. After you create an empty raster "
 "you probably want to add bands to it and maybe edit it. Refer to <xref "
-"linkend=\"RT_ST_AddBand\"/> to define bands and <xref "
-"linkend=\"RT_ST_SetValue\"/> to set initial pixel values."
+"linkend=\"RT_ST_AddBand\"/> to define bands and <xref linkend="
+"\"RT_ST_SetValue\"/> to set initial pixel values."
 msgstr ""
 
 #. Tag: para
@@ -2122,8 +2121,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns the X component of the pixel width in units of coordinate reference "
-"system. Refer to <ulink url=\"http://en.wikipedia.org/wiki/"
-"World_file\">World File</ulink> for more details."
+"system. Refer to <ulink url=\"http://en.wikipedia.org/wiki/World_file"
+"\">World File</ulink> for more details."
 msgstr ""
 
 #. Tag: para
@@ -2180,8 +2179,8 @@ msgstr ""
 #: reference_raster.xml:2468
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref "
-"linkend=\"RT_ST_SetSkew\"/>"
+", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref linkend="
+"\"RT_ST_SetSkew\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -2224,8 +2223,8 @@ msgstr ""
 #: reference_raster.xml:2527
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref "
-"linkend=\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewX\"/>"
+", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref linkend="
+"\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewX\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -2268,8 +2267,8 @@ msgstr ""
 #: reference_raster.xml:2581
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_RasterToWorldCoordX\"/>, <xref "
-"linkend=\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewY\"/>"
+", <xref linkend=\"RT_ST_RasterToWorldCoordX\"/>, <xref linkend="
+"\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewY\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -2303,8 +2302,8 @@ msgstr ""
 #: reference_raster.xml:2638
 #, no-c-format
 msgid ""
-"Returns the georeference X skew (or rotation parameter). Refer to <ulink "
-"url=\"http://en.wikipedia.org/wiki/World_file\">World File</ulink> for more "
+"Returns the georeference X skew (or rotation parameter). Refer to <ulink url="
+"\"http://en.wikipedia.org/wiki/World_file\">World File</ulink> for more "
 "details."
 msgstr ""
 
@@ -2324,8 +2323,8 @@ msgstr ""
 #: reference_raster.xml:2674
 #, no-c-format
 msgid ""
-"Returns the georeference Y skew (or rotation parameter). Refer to <ulink "
-"url=\"http://en.wikipedia.org/wiki/World_file\">World File</ulink> for more "
+"Returns the georeference Y skew (or rotation parameter). Refer to <ulink url="
+"\"http://en.wikipedia.org/wiki/World_file\">World File</ulink> for more "
 "details."
 msgstr ""
 
@@ -2461,9 +2460,9 @@ msgstr ""
 #: reference_raster.xml:2915
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_WorldToRasterCoordY\"/>, <xref "
-"linkend=\"RT_ST_RasterToWorldCoordX\"/>, <xref "
-"linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref linkend=\"RT_ST_SRID\"/>"
+", <xref linkend=\"RT_ST_WorldToRasterCoordY\"/>, <xref linkend="
+"\"RT_ST_RasterToWorldCoordX\"/>, <xref linkend=\"RT_ST_RasterToWorldCoordY\"/"
+">, <xref linkend=\"RT_ST_SRID\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -2496,8 +2495,8 @@ msgstr ""
 #: reference_raster.xml:2972 reference_raster.xml:3027
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref "
-"linkend=\"RT_ST_SRID\"/>"
+", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref linkend=\"RT_ST_SRID"
+"\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -2646,9 +2645,8 @@ msgstr ""
 #: reference_raster.xml:3188
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_NumBands\"/>, <xref "
-"linkend=\"RT_ST_SetBandNoDataValue\"/>, <xref "
-"linkend=\"RT_ST_SetBandIsNoData\"/>"
+", <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend="
+"\"RT_ST_SetBandNoDataValue\"/>, <xref linkend=\"RT_ST_SetBandIsNoData\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -2870,11 +2868,10 @@ msgstr ""
 #: reference_raster.xml:3483
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_PixelAsPolygons\"/>, <xref "
-"linkend=\"RT_ST_PixelAsPoint\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/>, "
-"<xref linkend=\"RT_ST_PixelAsCentroid\"/>, <xref "
-"linkend=\"RT_ST_PixelAsCentroids\"/>, <xref linkend=\"RT_ST_Intersection\"/"
-">, <xref linkend=\"ST_AsText\"/>"
+", <xref linkend=\"RT_ST_PixelAsPolygons\"/>, <xref linkend="
+"\"RT_ST_PixelAsPoint\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
+"linkend=\"RT_ST_PixelAsCentroid\"/>, <xref linkend=\"RT_ST_PixelAsCentroids"
+"\"/>, <xref linkend=\"RT_ST_Intersection\"/>, <xref linkend=\"ST_AsText\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -2939,10 +2936,10 @@ msgstr ""
 #: reference_raster.xml:3545
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref "
-"linkend=\"RT_ST_PixelAsPoint\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/>, "
-"<xref linkend=\"RT_ST_PixelAsCentroid\"/>, <xref "
-"linkend=\"RT_ST_PixelAsCentroids\"/>, <xref linkend=\"ST_AsText\"/>"
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPoint\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
+"linkend=\"RT_ST_PixelAsCentroid\"/>, <xref linkend=\"RT_ST_PixelAsCentroids"
+"\"/>, <xref linkend=\"ST_AsText\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -2963,10 +2960,10 @@ msgstr ""
 #: reference_raster.xml:3588
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref "
-"linkend=\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/"
-">, <xref linkend=\"RT_ST_PixelAsCentroid\"/>, <xref "
-"linkend=\"RT_ST_PixelAsCentroids\"/>"
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
+"linkend=\"RT_ST_PixelAsCentroid\"/>, <xref linkend=\"RT_ST_PixelAsCentroids"
+"\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -2992,10 +2989,10 @@ msgstr ""
 #: reference_raster.xml:3643
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref "
-"linkend=\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, "
-"<xref linkend=\"RT_ST_PixelAsCentroid\"/>, <xref "
-"linkend=\"RT_ST_PixelAsCentroids\"/>"
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, <xref "
+"linkend=\"RT_ST_PixelAsCentroid\"/>, <xref linkend=\"RT_ST_PixelAsCentroids"
+"\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -3024,10 +3021,9 @@ msgstr ""
 #: reference_raster.xml:3687
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref "
-"linkend=\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, "
-"<xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
-"linkend=\"RT_ST_PixelAsCentroids\"/>"
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, <xref "
+"linkend=\"RT_ST_PixelAsPoints\"/>, <xref linkend=\"RT_ST_PixelAsCentroids\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -3053,10 +3049,9 @@ msgstr ""
 #: reference_raster.xml:3743
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref "
-"linkend=\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, "
-"<xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
-"linkend=\"RT_ST_PixelAsCentroid\"/>"
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, <xref "
+"linkend=\"RT_ST_PixelAsPoints\"/>, <xref linkend=\"RT_ST_PixelAsCentroid\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -3094,9 +3089,9 @@ msgstr ""
 #: reference_raster.xml:3800
 #, no-c-format
 msgid ""
-"The allowed values of the <varname>resample</varname> parameter are "
-"\"nearest\" which performs the default nearest-neighbor resampling, and "
-"\"bilinear\" which performs a <ulink url=\"https://en.wikipedia.org/wiki/"
+"The allowed values of the <varname>resample</varname> parameter are \"nearest"
+"\" which performs the default nearest-neighbor resampling, and \"bilinear\" "
+"which performs a <ulink url=\"https://en.wikipedia.org/wiki/"
 "Bilinear_interpolation\">bilinear interpolation</ulink> to estimate the "
 "value between pixel centers."
 msgstr ""
@@ -3121,9 +3116,9 @@ msgid ""
 ">, <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend=\"RT_ST_ScaleX\"/"
 ">, <xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, "
 "<xref linkend=\"RT_ST_UpperLeftY\"/>, <xref linkend=\"RT_ST_SRID\"/>, <xref "
-"linkend=\"ST_AsText\"/>, <xref linkend=\"ST_Point\"/>, <xref "
-"linkend=\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
-"linkend=\"ST_Intersection\"/>"
+"linkend=\"ST_AsText\"/>, <xref linkend=\"ST_Point\"/>, <xref linkend="
+"\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref linkend="
+"\"ST_Intersection\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -3276,9 +3271,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_Min4ma\"/>, <xref linkend=\"RT_ST_Max4ma\"/>, <xref "
-"linkend=\"RT_ST_Sum4ma\"/>, <xref linkend=\"RT_ST_Mean4ma\"/>, <xref "
-"linkend=\"RT_ST_Range4ma\"/>, <xref linkend=\"RT_ST_Distinct4ma\"/>, <xref "
-"linkend=\"RT_ST_StdDev4ma\"/>"
+"linkend=\"RT_ST_Sum4ma\"/>, <xref linkend=\"RT_ST_Mean4ma\"/>, <xref linkend="
+"\"RT_ST_Range4ma\"/>, <xref linkend=\"RT_ST_Distinct4ma\"/>, <xref linkend="
+"\"RT_ST_StdDev4ma\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -3421,8 +3416,8 @@ msgstr ""
 #: reference_raster.xml:4310
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_SetValue\"/>, <xref "
-"linkend=\"RT_ST_PixelAsPolygons\"/>"
+", <xref linkend=\"RT_ST_SetValue\"/>, <xref linkend=\"RT_ST_PixelAsPolygons"
+"\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -3521,8 +3516,8 @@ msgstr ""
 #: reference_raster.xml:4555
 #, no-c-format
 msgid ""
-"Uniformly rotate the raster. Rotation is in radian. Refer to <ulink "
-"url=\"http://en.wikipedia.org/wiki/World_file\">World File</ulink> for more "
+"Uniformly rotate the raster. Rotation is in radian. Refer to <ulink url="
+"\"http://en.wikipedia.org/wiki/World_file\">World File</ulink> for more "
 "details."
 msgstr ""
 
@@ -4199,9 +4194,8 @@ msgstr ""
 #: reference_raster.xml:5383
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_NumBands\"/>, <xref "
-"linkend=\"RT_ST_SetBandNoDataValue\"/>, <xref linkend=\"RT_ST_BandIsNoData\"/"
-">"
+", <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend="
+"\"RT_ST_SetBandNoDataValue\"/>, <xref linkend=\"RT_ST_BandIsNoData\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -4317,8 +4311,8 @@ msgstr ""
 #: reference_raster.xml:5541 reference_raster.xml:5602
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref "
-"linkend=\"RT_ST_SetBandNoDataValue\"/>"
+", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref linkend="
+"\"RT_ST_SetBandNoDataValue\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -4458,8 +4452,8 @@ msgstr ""
 #: reference_raster.xml:5694
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref "
-"linkend=\"RT_ST_SummaryStatsAgg\"/>"
+", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref linkend="
+"\"RT_ST_SummaryStatsAgg\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -4498,9 +4492,8 @@ msgstr ""
 #: reference_raster.xml:5779
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref "
-"linkend=\"RT_ST_SummaryStatsAgg\"/>, <xref "
-"linkend=\"RT_ST_SetBandNoDataValue\"/>"
+", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref linkend="
+"\"RT_ST_SummaryStatsAgg\"/>, <xref linkend=\"RT_ST_SetBandNoDataValue\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -4938,9 +4931,8 @@ msgstr ""
 #: reference_raster.xml:6417
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_GDALDrivers\"/>, <xref "
-"linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_AsPNG\"/>, <xref "
-"linkend=\"RT_ST_AsTIFF\"/>"
+", <xref linkend=\"RT_ST_GDALDrivers\"/>, <xref linkend=\"RT_ST_AsGDALRaster"
+"\"/>, <xref linkend=\"RT_ST_AsPNG\"/>, <xref linkend=\"RT_ST_AsTIFF\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -5019,11 +5011,11 @@ msgstr ""
 msgid ""
 "Returns the selected bands of the raster as a single Tagged Image File "
 "Format (TIFF). If no band is specified, will try to use all bands. This is a "
-"wrapper around <xref linkend=\"RT_ST_AsGDALRaster\"/>. Use <xref "
-"linkend=\"RT_ST_AsGDALRaster\"/> if you need to export as less common raster "
-"types. There are many variants of the function with many options. If no "
-"spatial reference SRS text is present, the spatial reference of the raster "
-"is used. These are itemized below:"
+"wrapper around <xref linkend=\"RT_ST_AsGDALRaster\"/>. Use <xref linkend="
+"\"RT_ST_AsGDALRaster\"/> if you need to export as less common raster types. "
+"There are many variants of the function with many options. If no spatial "
+"reference SRS text is present, the spatial reference of the raster is used. "
+"These are itemized below:"
 msgstr ""
 
 #. Tag: para
@@ -5048,9 +5040,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<varname>options</varname> text Array of GDAL create options as defined for "
-"GTiff (look at create_options for GTiff of <xref "
-"linkend=\"RT_ST_GDALDrivers\"/>). or refer to <ulink url=\"http://www.gdal."
-"org/frmt_various.html\">GDAL Raster format options</ulink> for more details."
+"GTiff (look at create_options for GTiff of <xref linkend=\"RT_ST_GDALDrivers"
+"\"/>). or refer to <ulink url=\"http://www.gdal.org/frmt_various.html\">GDAL "
+"Raster format options</ulink> for more details."
 msgstr ""
 
 #. Tag: para
@@ -5312,8 +5304,8 @@ msgstr ""
 #: reference_raster.xml:6923
 #, no-c-format
 msgid ""
-"A great reference for colormaps is <ulink url=\"http://www.colorbrewer2."
-"org\">ColorBrewer</ulink>."
+"A great reference for colormaps is <ulink url=\"http://www.colorbrewer2.org"
+"\">ColorBrewer</ulink>."
 msgstr ""
 
 #. Tag: para
@@ -5379,8 +5371,8 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"RT_ST_AsRaster\"/> <xref linkend=\"RT_ST_MapAlgebra\"/>, "
 "<xref linkend=\"RT_ST_Grayscale\"/> <xref linkend=\"RT_ST_NumBands\"/>, "
-"<xref linkend=\"RT_ST_Reclass\"/>, <xref "
-"linkend=\"RT_ST_SetBandNoDataValue\"/>, <xref linkend=\"RT_ST_Union\"/>"
+"<xref linkend=\"RT_ST_Reclass\"/>, <xref linkend=\"RT_ST_SetBandNoDataValue"
+"\"/>, <xref linkend=\"RT_ST_Union\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -5522,8 +5514,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "To get more control on the resulting extent or on what to return when "
-"encountering a nodata value, use the two rasters version of <xref "
-"linkend=\"RT_ST_MapAlgebraExpr2\"/>."
+"encountering a nodata value, use the two rasters version of <xref linkend="
+"\"RT_ST_MapAlgebraExpr2\"/>."
 msgstr ""
 
 #. Tag: para
@@ -5539,9 +5531,9 @@ msgstr ""
 #: reference_raster.xml:7275
 #, no-c-format
 msgid ""
-"ST_Intersection should be used in conjunction with <xref "
-"linkend=\"RT_ST_Intersects\"/> and an index on the raster column and/or the "
-"geometry column."
+"ST_Intersection should be used in conjunction with <xref linkend="
+"\"RT_ST_Intersects\"/> and an index on the raster column and/or the geometry "
+"column."
 msgstr ""
 
 #. Tag: para
@@ -5563,9 +5555,9 @@ msgstr ""
 #: reference_raster.xml:7293
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_Intersects\"/>, <xref "
-"linkend=\"RT_ST_MapAlgebraExpr2\"/>, <xref linkend=\"RT_ST_Clip\"/>, <xref "
-"linkend=\"ST_AsText\"/>"
+", <xref linkend=\"RT_ST_Intersects\"/>, <xref linkend="
+"\"RT_ST_MapAlgebraExpr2\"/>, <xref linkend=\"RT_ST_Clip\"/>, <xref linkend="
+"\"ST_AsText\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -6319,9 +6311,9 @@ msgstr ""
 #: reference_raster.xml:7998
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_MapAlgebraFct\"/>, <xref "
-"linkend=\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_GeoReference\"/>, "
-"<xref linkend=\"RT_ST_Value\"/>"
+", <xref linkend=\"RT_ST_MapAlgebraFct\"/>, <xref linkend="
+"\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_GeoReference\"/>, <xref "
+"linkend=\"RT_ST_Value\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -6528,8 +6520,8 @@ msgstr ""
 #: reference_raster.xml:8455 reference_raster.xml:8586
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_BandPixelType\"/>, <xref "
-"linkend=\"RT_ST_GeoReference\"/>, <xref linkend=\"RT_ST_SetValue\"/>"
+", <xref linkend=\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_GeoReference"
+"\"/>, <xref linkend=\"RT_ST_SetValue\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -6907,10 +6899,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "In order for rasters to be unioned, they must all have the same alignment. "
-"Use <xref linkend=\"RT_ST_SameAlignment\"/> and <xref "
-"linkend=\"RT_ST_NotSameAlignmentReason\"/> for more details and help. One "
-"way to fix alignment issues is to use <xref linkend=\"RT_ST_Resample\"/> and "
-"use the same reference raster for alignment."
+"Use <xref linkend=\"RT_ST_SameAlignment\"/> and <xref linkend="
+"\"RT_ST_NotSameAlignmentReason\"/> for more details and help. One way to fix "
+"alignment issues is to use <xref linkend=\"RT_ST_Resample\"/> and use the "
+"same reference raster for alignment."
 msgstr ""
 
 #. Tag: para
@@ -7021,8 +7013,8 @@ msgstr ""
 #: reference_raster.xml:9499
 #, no-c-format
 msgid ""
-"Use of Variant 1 is discouraged since <xref "
-"linkend=\"RT_ST_MapAlgebraFctNgb\"/> has been deprecated as of 2.1.0."
+"Use of Variant 1 is discouraged since <xref linkend=\"RT_ST_MapAlgebraFctNgb"
+"\"/> has been deprecated as of 2.1.0."
 msgstr ""
 
 #. Tag: para
@@ -7420,9 +7412,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If <varname>interpolate_nodata</varname> is TRUE, values for NODATA pixels "
-"from the input raster will be interpolated using <xref "
-"linkend=\"RT_ST_InvDistWeight4ma\"/> before computing the hillshade "
-"illumination."
+"from the input raster will be interpolated using <xref linkend="
+"\"RT_ST_InvDistWeight4ma\"/> before computing the hillshade illumination."
 msgstr ""
 
 #. Tag: para
@@ -7430,8 +7421,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "For more information about Hillshade, please refer to <ulink url=\"http://"
-"webhelp.esri.com/arcgisdesktop/9.3/index.cfm?"
-"TopicName=How%20Hillshade%20works\">How hillshade works</ulink>."
+"webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade"
+"%20works\">How hillshade works</ulink>."
 msgstr ""
 
 #. Tag: para
@@ -7503,8 +7494,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If <varname>interpolate_nodata</varname> is TRUE, values for NODATA pixels "
-"from the input raster will be interpolated using <xref "
-"linkend=\"RT_ST_InvDistWeight4ma\"/> before computing the surface slope."
+"from the input raster will be interpolated using <xref linkend="
+"\"RT_ST_InvDistWeight4ma\"/> before computing the surface slope."
 msgstr ""
 
 #. Tag: para
@@ -8347,8 +8338,8 @@ msgstr ""
 #: reference_raster.xml:11432
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_NotSameAlignmentReason\"/>, <xref "
-"linkend=\"RT_ST_MakeEmptyRaster\"/>"
+", <xref linkend=\"RT_ST_NotSameAlignmentReason\"/>, <xref linkend="
+"\"RT_ST_MakeEmptyRaster\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -8583,8 +8574,8 @@ msgstr ""
 #: reference_raster.xml:11795
 #, no-c-format
 msgid ""
-"The easiest change to make is the following PostgreSQL setting: <ulink "
-"url=\"https://www.postgresql.org/docs/current/static/runtime-config-resource."
+"The easiest change to make is the following PostgreSQL setting: <ulink url="
+"\"https://www.postgresql.org/docs/current/static/runtime-config-resource."
 "html#GUC-MAX-FILES-PER-PROCESS\">max_files_per_process</ulink>. The default "
 "is set to 1000, which is far too low for Out-DB Rasters. A safe starting "
 "value could be 65536 but this really depends on your datasets and the "
@@ -8694,20 +8685,20 @@ msgstr ""
 #: reference_raster.xml:11854
 #, no-c-format
 msgid ""
-"Let's first address the SysV Ubuntu case where we add <emphasis "
-"role=\"strong\">ulimit -H -n 262144</emphasis> and <emphasis "
-"role=\"strong\">ulimit -n 131072</emphasis> to <emphasis role=\"strong\">/"
-"etc/init.d/postgresql</emphasis>."
+"Let's first address the SysV Ubuntu case where we add <emphasis role=\"strong"
+"\">ulimit -H -n 262144</emphasis> and <emphasis role=\"strong\">ulimit -n "
+"131072</emphasis> to <emphasis role=\"strong\">/etc/init.d/postgresql</"
+"emphasis>."
 msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:11860
 #, no-c-format
 msgid ""
-"Now to address the systemd Ubuntu case. We will add <emphasis "
-"role=\"strong\">LimitNOFILE=131072</emphasis> to every <emphasis "
-"role=\"strong\">/lib/systemd/system/postgresql*.service</emphasis> file in "
-"the <emphasis role=\"strong\">[Service]</emphasis> section."
+"Now to address the systemd Ubuntu case. We will add <emphasis role=\"strong"
+"\">LimitNOFILE=131072</emphasis> to every <emphasis role=\"strong\">/lib/"
+"systemd/system/postgresql*.service</emphasis> file in the <emphasis role="
+"\"strong\">[Service]</emphasis> section."
 msgstr ""
 
 #. Tag: para
@@ -8715,4 +8706,761 @@ msgstr ""
 #, no-c-format
 msgid ""
 "After making the necessary systemd changes, make sure to reload the daemon"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:880
+#, no-c-format
+msgid ""
+"<funcdef>text <function>PostGIS_GDAL_Version</function></funcdef> "
+"<paramdef></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:914
+#, no-c-format
+msgid ""
+"<funcdef>text <function>PostGIS_Raster_Lib_Build_Date</function></funcdef> "
+"<paramdef></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:951
+#, no-c-format
+msgid ""
+"<funcdef>text <function>PostGIS_Raster_Lib_Version</function></funcdef> "
+"<paramdef></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:990
+#, no-c-format
+msgid ""
+"<funcdef>setof record <function>ST_GDALDrivers</function></funcdef> "
+"<paramdef><type>integer </type> <parameter>OUT idx</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>OUT short_name</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>OUT long_name</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>OUT can_read</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>OUT can_write</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>OUT create_options</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:1044
+#, no-c-format
+msgid ""
+"<funcdef>setof record <function>ST_Contour</function></funcdef> "
+"<paramdef><type>raster </type><parameter>rast</parameter></paramdef> "
+"<paramdef><type>integer </type><parameter>bandnumber</parameter></paramdef> "
+"<paramdef><type>double precision </type><parameter>level_interval</"
+"parameter></paramdef> <paramdef><type>double precision </"
+"type><parameter>level_base</parameter></paramdef> <paramdef><type>double "
+"precision[] </type><parameter>fixed_levels</parameter></paramdef> "
+"<paramdef><type>boolean </type><parameter>polygonize</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:1112
+#, no-c-format
+msgid ""
+"<funcdef>raster <function>ST_InterpolateRaster</function></funcdef> "
+"<paramdef><type>geometry </type><parameter>input_points</parameter></"
+"paramdef> <paramdef><type>text </type><parameter>algorithm_options</"
+"parameter></paramdef> <paramdef><type>raster </type><parameter>template</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </"
+"type><parameter>template_band_num=1</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:1252
+#, no-c-format
+msgid ""
+"<funcdef>regclass <function>ST_CreateOverview</function></funcdef> "
+"<paramdef><type>regclass </type> <parameter>tab</parameter></paramdef> "
+"<paramdef><type>name </type> <parameter>col</parameter></paramdef> "
+"<paramdef><type>int </type> <parameter>factor</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text </type> "
+"<parameter>algo='NearestNeighbor'</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:1743
+#, no-c-format
+msgid ""
+"<funcdef>raster <function>ST_MakeEmptyCoverage</function></funcdef> "
+"<paramdef><type>integer </type> <parameter>tilewidth</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>tileheight</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>width</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>height</parameter></paramdef> "
+"<paramdef><type>double precision </type> <parameter>upperleftx</parameter></"
+"paramdef> <paramdef><type>double precision </type> <parameter>upperlefty</"
+"parameter></paramdef> <paramdef><type>double precision </type> "
+"<parameter>scalex</parameter></paramdef> <paramdef><type>double precision </"
+"type> <parameter>scaley</parameter></paramdef> <paramdef><type>double "
+"precision </type> <parameter>skewx</parameter></paramdef> "
+"<paramdef><type>double precision </type> <parameter>skewy</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>srid=unknown</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:1934
+#, no-c-format
+msgid ""
+"<funcdef>SETOF raster <function>ST_Retile</function></funcdef> "
+"<paramdef><type>regclass </type> <parameter>tab</parameter></paramdef> "
+"<paramdef><type>name </type> <parameter>col</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>ext</parameter></paramdef> "
+"<paramdef><type>float8 </type> <parameter>sfx</parameter></paramdef> "
+"<paramdef><type>float8 </type> <parameter>sfy</parameter></paramdef> "
+"<paramdef><type>int </type> <parameter>tw</parameter></paramdef> "
+"<paramdef><type>int </type> <parameter>th</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>text </type> <parameter>algo='NearestNeighbor'</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:1982
+#, no-c-format
+msgid ""
+"<funcdef>raster <function>ST_FromGDALRaster</function></funcdef> "
+"<paramdef><type>bytea </type> <parameter>gdaldata</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>srid=NULL</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:2033
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_GeoReference</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text </type> <parameter>format=GDAL</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:2073
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_Height</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:2107
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>ST_IsEmpty</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:2144
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_MemSize</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:2187
+#, no-c-format
+msgid ""
+"<funcdef>record <function>ST_MetaData</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:2222
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_NumBands</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:2256
+#, no-c-format
+msgid ""
+"<funcdef>double precision <function>ST_PixelHeight</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:2306
+#, no-c-format
+msgid ""
+"<funcdef>double precision <function>ST_PixelWidth</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:2360
+#, no-c-format
+msgid ""
+"<funcdef>float8 <function>ST_ScaleX</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:2397
+#, no-c-format
+msgid ""
+"<funcdef>float8 <function>ST_ScaleY</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:2435
+#, no-c-format
+msgid ""
+"<funcdef>record <function>ST_RasterToWorldCoord</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>xcolumn</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>yrow</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:2593
+#, no-c-format
+msgid ""
+"<funcdef>float8 <function>ST_Rotation</function></funcdef> "
+"<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:2628
+#, no-c-format
+msgid ""
+"<funcdef>float8 <function>ST_SkewX</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:2664
+#, no-c-format
+msgid ""
+"<funcdef>float8 <function>ST_SkewY</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:2700
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_SRID</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:2735
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_Summary</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:2774
+#, no-c-format
+msgid ""
+"<funcdef>float8 <function>ST_UpperLeftX</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:2808
+#, no-c-format
+msgid ""
+"<funcdef>float8 <function>ST_UpperLeftY</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:2842
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_Width</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:3110
+#, no-c-format
+msgid ""
+"<funcdef>double precision <function>ST_BandNoDataValue</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:3203
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_BandPath</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:3238
+#, no-c-format
+msgid ""
+"<funcdef>bigint <function>ST_BandFileSize</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:3274
+#, no-c-format
+msgid ""
+"<funcdef>bigint <function>ST_BandFileTimestamp</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:3308
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_BandPixelType</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>bandnum=1</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:3383
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_MinPossibleValue</function></funcdef> "
+"<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:3416
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>ST_HasNoBand</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>bandnum=1</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:3458
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_PixelAsPolygon</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:3504
+#, no-c-format
+msgid ""
+"<funcdef>setof record <function>ST_PixelAsPolygons</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>band=1</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:3566
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_PixelAsPoint</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:3609
+#, no-c-format
+msgid ""
+"<funcdef>setof record <function>ST_PixelAsPoints</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>band=1</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:3664
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_PixelAsCentroid</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>x</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>y</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:3708
+#, no-c-format
+msgid ""
+"<funcdef>setof record <function>ST_PixelAsCentroids</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>band=1</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:3927
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_SetZ</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text </type> <parameter>resample=nearest</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>band=1</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:3970
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_SetM</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text </type> <parameter>resample=nearest</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>band=1</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:4544
+#, no-c-format
+msgid ""
+"<funcdef>raster <function>ST_SetRotation</function></funcdef> "
+"<paramdef><type>raster</type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>float8</type> <parameter>rotation</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:4674
+#, no-c-format
+msgid ""
+"<funcdef>raster <function>ST_SetSRID</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:4715
+#, no-c-format
+msgid ""
+"<funcdef>raster <function>ST_SetUpperLeft</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>double precision </type> <parameter>x</parameter></paramdef> "
+"<paramdef><type>double precision </type> <parameter>y</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:5354
+#, no-c-format
+msgid ""
+"<funcdef>raster <function>ST_SetBandIsNoData</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>band=1</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:5398
+#, no-c-format
+msgid ""
+"<funcdef>raster <function>ST_SetBandPath</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>band</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>outdbpath</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>outdbindex</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> <parameter>force=false</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:5452
+#, no-c-format
+msgid ""
+"<funcdef>raster <function>ST_SetBandIndex</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>band</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>outdbindex</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> <parameter>force=false</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:6066
+#, no-c-format
+msgid ""
+"<funcdef>raster <function>ST_RastFromWKB</function></funcdef> "
+"<paramdef><type>bytea </type> <parameter>wkb</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:6109
+#, no-c-format
+msgid ""
+"<funcdef>raster <function>ST_RastFromHexWKB</function></funcdef> "
+"<paramdef><type>text </type> <parameter>wkb</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:6215
+#, no-c-format
+msgid ""
+"<funcdef>bytea <function>ST_AsHexWKB</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> <parameter>outasin=FALSE</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:6264
+#, no-c-format
+msgid ""
+"<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>format</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text[] </type> <parameter>options=NULL</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>srid=sameassource</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:6831
+#, no-c-format
+msgid ""
+"<funcdef>raster <function>ST_ColorMap</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>nband=1</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> "
+"<parameter>colormap=grayscale</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>text </type> <parameter>method=INTERPOLATE</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:6841
+#, no-c-format
+msgid ""
+"<funcdef>raster <function>ST_ColorMap</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>colormap</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text </type> <parameter>method=INTERPOLATE</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:7070
+#, no-c-format
+msgid ""
+"<funcdef>(1) raster <function>ST_Grayscale</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>redband=1</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>greenband=2</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>integer </type> <parameter>blueband=3</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text </type> "
+"<parameter>extenttype=INTERSECTION</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:7081
+#, no-c-format
+msgid ""
+"<funcdef>(2) raster <function>ST_Grayscale</function></funcdef> "
+"<paramdef><type>rastbandarg[] </type> <parameter>rastbandargset</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>text </type> "
+"<parameter>extenttype=INTERSECTION</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:8603
+#, no-c-format
+msgid ""
+"<funcdef>raster <function>ST_MapAlgebraFctNgb</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>band</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>ngbwidth</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>ngbheight</parameter></paramdef> "
+"<paramdef><type>regprocedure </type> <parameter>onerastngbuserfunc</"
+"parameter></paramdef> <paramdef><type>text </type> <parameter>nodatamode</"
+"parameter></paramdef> <paramdef><type>text[] </type> <parameter>VARIADIC "
+"args</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:8968
+#, no-c-format
+msgid ""
+"<funcdef>double precision <function>ST_InvDistWeight4ma</function></funcdef> "
+"<paramdef><type>double precision[][][]</type> <parameter>value</parameter></"
+"paramdef> <paramdef><type>integer[][]</type> <parameter>pos</parameter></"
+"paramdef> <paramdef><type>text[]</type> <parameter>VARIADIC userargs</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:9268
+#, no-c-format
+msgid ""
+"<funcdef>double precision <function>ST_MinDist4ma</function></funcdef> "
+"<paramdef><type>double precision[][][]</type> <parameter>value</parameter></"
+"paramdef> <paramdef><type>integer[][]</type> <parameter>pos</parameter></"
+"paramdef> <paramdef><type>text[]</type> <parameter>VARIADIC userargs</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:9726
+#, no-c-format
+msgid ""
+"<funcdef>raster <function>ST_Roughness</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>nband</parameter></paramdef> "
+"<paramdef><type>raster </type> <parameter>customextent</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>text </type> <parameter>pixeltype="
+"\"32BF\"</parameter> </paramdef> <paramdef choice=\"opt\"><type>boolean </"
+"type> <parameter> interpolate_nodata=FALSE </parameter> </paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:9854
+#, no-c-format
+msgid ""
+"<funcdef>raster <function>ST_TPI</function></funcdef> <paramdef><type>raster "
+"</type> <parameter>rast</parameter></paramdef> <paramdef><type>integer </"
+"type> <parameter>nband</parameter></paramdef> <paramdef><type>raster </type> "
+"<parameter>customextent</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>text </type> <parameter>pixeltype=\"32BF\"</parameter> </paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> <parameter> "
+"interpolate_nodata=FALSE </parameter> </paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:9902
+#, no-c-format
+msgid ""
+"<funcdef>raster <function>ST_TRI</function></funcdef> <paramdef><type>raster "
+"</type> <parameter>rast</parameter></paramdef> <paramdef><type>integer </"
+"type> <parameter>nband</parameter></paramdef> <paramdef><type>raster </type> "
+"<parameter>customextent</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>text </type> <parameter>pixeltype=\"32BF\"</parameter> </paramdef> "
+"<paramdef choice=\"opt\"><type>boolean </type> <parameter> "
+"interpolate_nodata=FALSE </parameter> </paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:9958
+#, no-c-format
+msgid ""
+"<funcdef>box3d <function>Box3D</function></funcdef> <paramdef><type>raster </"
+"type> <parameter>rast</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:10000
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_ConvexHull</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:10046
+#, no-c-format
+msgid ""
+"<funcdef>setof geomval <function>ST_DumpAsPolygons</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>band_num=1</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>exclude_nodata_value=TRUE</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:10100
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_Envelope</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:10147
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_MinConvexHull</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>nband=NULL</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:10189
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_Polygon</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>band_num=1</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:10297
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>&amp;&lt;</function></funcdef> <paramdef> "
+"<type>raster </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>raster </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:10341
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>&amp;&gt;</function></funcdef> <paramdef> "
+"<type>raster </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>raster </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:10386
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>&#61;</function></funcdef> <paramdef> "
+"<type>raster </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>raster </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:10502
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>~=</function></funcdef> <paramdef> <type>raster </"
+"type> <parameter>A</parameter> </paramdef> <paramdef> <type>raster </type> "
+"<parameter>B</parameter> </paramdef>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_raster.xml:11448
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_NotSameAlignmentReason</function></funcdef> "
+"<paramdef><type>raster </type><parameter>rastA</parameter></paramdef> "
+"<paramdef><type>raster </type><parameter>rastB</parameter></paramdef>"
 msgstr ""
