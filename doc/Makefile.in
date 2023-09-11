@@ -307,7 +307,7 @@ $(TAG_GENERATED_SOURCES): requirements_not_met_xsltproc
 else
 $(TAG_GENERATED_SOURCES): xsl/node_by_xpath.xsl xsl-config.xml | Makefile
 	tag=tag_$(basename $(notdir $@)); \
-	$(XSLTPROC) --stringparam xpath "/config/tags/para[@role='$$tag']" -o $@ $^
+	$(XSLTPROC) --stringparam xpath "/config/tags/para[@role='$$tag']/node()" -o $@ $^
 	test -s $@ # ensure something was extracted
 endif
 
