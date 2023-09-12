@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-07 10:12+0000\n"
-"PO-Revision-Date: 2023-09-06 01:08+0000\n"
+"PO-Revision-Date: 2023-09-12 14:55+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/extras_historytablexml/zh_Hans/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #: extras_historytable.xml:3
@@ -131,7 +131,7 @@ msgstr ""
 #: extras_historytable.xml:58 extras_historytable.xml:100
 #, no-c-format
 msgid "Availability: 1.5.0"
-msgstr "可用性：1.5.0"
+msgstr "可用性：1.1.0"
 
 #. Tag: title
 #: extras_historytable.xml:63 extras_historytable.xml:105
