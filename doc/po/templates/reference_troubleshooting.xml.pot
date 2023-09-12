@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-11 19:20+0000\n"
+"POT-Creation-Date: 2023-09-12 14:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -17,7 +17,10 @@ msgstr ""
 #. Tag: para
 #: reference_troubleshooting.xml:5
 #, no-c-format
-msgid "These functions are utilities for troubleshooting and repairing geometry data. They are only needed if the geometry data is corrupted in some way, which should never happen under normal circumstances."
+msgid ""
+"These functions are utilities for troubleshooting and repairing geometry "
+"data. They are only needed if the geometry data is corrupted in some way, "
+"which should never happen under normal circumstances."
 msgstr ""
 
 #. Tag: title
@@ -42,13 +45,19 @@ msgstr ""
 #. Tag: para
 #: reference_troubleshooting.xml:31
 #, no-c-format
-msgid "Add bounding box to the geometry. This would make bounding box based queries faster, but will increase the size of the geometry."
+msgid ""
+"Add bounding box to the geometry. This would make bounding box based queries "
+"faster, but will increase the size of the geometry."
 msgstr ""
 
 #. Tag: para
 #: reference_troubleshooting.xml:36
 #, no-c-format
-msgid "Bounding boxes are automatically added to geometries so in general this is not needed unless the generated bounding box somehow becomes corrupted or you have an old install that is lacking bounding boxes. Then you need to drop the old and readd."
+msgid ""
+"Bounding boxes are automatically added to geometries so in general this is "
+"not needed unless the generated bounding box somehow becomes corrupted or "
+"you have an old install that is lacking bounding boxes. Then you need to "
+"drop the old and readd."
 msgstr ""
 
 #. Tag: para
@@ -87,13 +96,26 @@ msgstr ""
 #. Tag: para
 #: reference_troubleshooting.xml:77
 #, no-c-format
-msgid "Drop the bounding box cache from the geometry. This reduces geometry size, but makes bounding-box based queries slower. It is also used to drop a corrupt bounding box. A tale-tell sign of a corrupt cached bounding box is when your ST_Intersects and other relation queries leave out geometries that rightfully should return true."
+msgid ""
+"Drop the bounding box cache from the geometry. This reduces geometry size, "
+"but makes bounding-box based queries slower. It is also used to drop a "
+"corrupt bounding box. A tale-tell sign of a corrupt cached bounding box is "
+"when your ST_Intersects and other relation queries leave out geometries that "
+"rightfully should return true."
 msgstr ""
 
 #. Tag: para
 #: reference_troubleshooting.xml:82
 #, no-c-format
-msgid "Bounding boxes are automatically added to geometries and improve speed of queries so in general this is not needed unless the generated bounding box somehow becomes corrupted or you have an old install that is lacking bounding boxes. Then you need to drop the old and readd. This kind of corruption has been observed in 8.3-8.3.6 series whereby cached bboxes were not always recalculated when a geometry changed and upgrading to a newer version without a dump reload will not correct already corrupted boxes. So one can manually correct using below and readd the bbox or do a dump reload."
+msgid ""
+"Bounding boxes are automatically added to geometries and improve speed of "
+"queries so in general this is not needed unless the generated bounding box "
+"somehow becomes corrupted or you have an old install that is lacking "
+"bounding boxes. Then you need to drop the old and readd. This kind of "
+"corruption has been observed in 8.3-8.3.6 series whereby cached bboxes were "
+"not always recalculated when a geometry changed and upgrading to a newer "
+"version without a dump reload will not correct already corrupted boxes. So "
+"one can manually correct using below and readd the bbox or do a dump reload."
 msgstr ""
 
 #. Tag: para
@@ -111,7 +133,10 @@ msgstr ""
 #. Tag: para
 #: reference_troubleshooting.xml:126
 #, no-c-format
-msgid "Returns TRUE if the bbox of this geometry is cached, FALSE otherwise. Use <xref linkend=\"PostGIS_AddBBox\"/> and <xref linkend=\"PostGIS_DropBBox\"/> to control caching."
+msgid ""
+"Returns TRUE if the bbox of this geometry is cached, FALSE otherwise. Use "
+"<xref linkend=\"PostGIS_AddBBox\"/> and <xref linkend=\"PostGIS_DropBBox\"/> "
+"to control caching."
 msgstr ""
 
 #. Tag: para

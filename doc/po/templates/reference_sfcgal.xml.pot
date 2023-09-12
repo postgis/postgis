@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-11 19:20+0000\n"
+"POT-Creation-Date: 2023-09-12 14:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -17,13 +17,19 @@ msgstr ""
 #. Tag: para
 #: reference_sfcgal.xml:5
 #, no-c-format
-msgid "SFCGAL is a C++ wrapper library around CGAL that provides advanced 2D and 3D spatial functions. For robustness, geometry coordinates have an exact rational number representation."
+msgid ""
+"SFCGAL is a C++ wrapper library around CGAL that provides advanced 2D and 3D "
+"spatial functions. For robustness, geometry coordinates have an exact "
+"rational number representation."
 msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:9
 #, no-c-format
-msgid "Installation instructions for the library can be found on the SFCGAL home page (<ulink url=\"http://www.sfcgal.org\">http://www.sfcgal.org</ulink>). To enable the functions use <code>create extension postgis_sfcgal</code>."
+msgid ""
+"Installation instructions for the library can be found on the SFCGAL home "
+"page (<ulink url=\"http://www.sfcgal.org\">http://www.sfcgal.org</ulink>). "
+"To enable the functions use <code>create extension postgis_sfcgal</code>."
 msgstr ""
 
 #. Tag: title
@@ -132,7 +138,9 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_sfcgal.xml:56
 #, no-c-format
-msgid "<refpurpose>Returns the full version of SFCGAL in use including CGAL and Boost versions</refpurpose>"
+msgid ""
+"<refpurpose>Returns the full version of SFCGAL in use including CGAL and "
+"Boost versions</refpurpose>"
 msgstr ""
 
 #. Tag: funcdef
@@ -144,7 +152,9 @@ msgstr ""
 #. Tag: para
 #: reference_sfcgal.xml:71
 #, no-c-format
-msgid "<para>Returns the full version of SFCGAL in use including CGAL and Boost versions</para>"
+msgid ""
+"<para>Returns the full version of SFCGAL in use including CGAL and Boost "
+"versions</para>"
 msgstr ""
 
 #. Tag: para
@@ -178,13 +188,17 @@ msgstr ""
 #. Tag: para
 #: reference_sfcgal.xml:115
 #, no-c-format
-msgid "Note: By default a PolyhedralSurface built from WKT is a surface geometry, not solid. It therefore has surface area. Once converted to a solid, no area."
+msgid ""
+"Note: By default a PolyhedralSurface built from WKT is a surface geometry, "
+"not solid. It therefore has surface area. Once converted to a solid, no area."
 msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:122
 #, no-c-format
-msgid ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref linkend=\"ST_Area\"/>"
+msgid ""
+", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
+"linkend=\"ST_Area\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -227,7 +241,10 @@ msgstr ""
 #: reference_sfcgal.xml:205 reference_sfcgal.xml:282 reference_sfcgal.xml:372
 #: reference_sfcgal.xml:689
 #, no-c-format
-msgid "3D images were generated using PostGIS <xref linkend=\"ST_AsX3D\"/> and rendering in HTML using <ulink url=\"http://www.x3dom.org\">X3Dom HTML Javascript rendering library</ulink>."
+msgid ""
+"3D images were generated using PostGIS <xref linkend=\"ST_AsX3D\"/> and "
+"rendering in HTML using <ulink url=\"http://www.x3dom.org\">X3Dom HTML "
+"Javascript rendering library</ulink>."
 msgstr ""
 
 #. Tag: para
@@ -257,7 +274,9 @@ msgstr ""
 #. Tag: para
 #: reference_sfcgal.xml:244
 #, no-c-format
-msgid "Intersection of 2 solids that result in volumetric intersection is also a solid (ST_Dimension returns 3)"
+msgid ""
+"Intersection of 2 solids that result in volumetric intersection is also a "
+"solid (ST_Dimension returns 3)"
 msgstr ""
 
 #. Tag: refpurpose
@@ -282,7 +301,8 @@ msgstr ""
 #. Tag: para
 #: reference_sfcgal.xml:294
 #, no-c-format
-msgid "Original 3D geometries overlaid. geom2 is the part that will be removed."
+msgid ""
+"Original 3D geometries overlaid. geom2 is the part that will be removed."
 msgstr ""
 
 #. Tag: para
@@ -294,7 +314,9 @@ msgstr ""
 #. Tag: para
 #: reference_sfcgal.xml:319
 #, no-c-format
-msgid ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref linkend=\"ST_3DUnion\"/>"
+msgid ""
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
+"linkend=\"ST_3DUnion\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -312,7 +334,12 @@ msgstr ""
 #. Tag: para
 #: reference_sfcgal.xml:360
 #, no-c-format
-msgid "<emphasis role=\"bold\">Aggregate variant:</emphasis> returns a geometry that is the 3D union of a rowset of geometries. The ST_3DUnion() function is an \"aggregate\" function in the terminology of PostgreSQL. That means that it operates on rows of data, in the same way the SUM() and AVG() functions do and like most aggregates, it also ignores NULL geometries."
+msgid ""
+"<emphasis role=\"bold\">Aggregate variant:</emphasis> returns a geometry "
+"that is the 3D union of a rowset of geometries. The ST_3DUnion() function is "
+"an \"aggregate\" function in the terminology of PostgreSQL. That means that "
+"it operates on rows of data, in the same way the SUM() and AVG() functions "
+"do and like most aggregates, it also ignores NULL geometries."
 msgstr ""
 
 #. Tag: para
@@ -330,7 +357,9 @@ msgstr ""
 #. Tag: para
 #: reference_sfcgal.xml:409
 #, no-c-format
-msgid ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref linkend=\"ST_3DDifference\"/>"
+msgid ""
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
+"linkend=\"ST_3DDifference\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -342,31 +371,53 @@ msgstr ""
 #. Tag: para
 #: reference_sfcgal.xml:438
 #, no-c-format
-msgid "Computes the <ulink url=\"https://en.wikipedia.org/wiki/Alpha_shape\">Alpha-Shape</ulink> of the points in a geometry. An alpha-shape is a (usually) concave polygonal geometry which contains all the vertices of the input, and whose vertices are a subset of the input vertices. An alpha-shape provides a closer fit to the shape of the input than the shape produced by the <link linkend=\"ST_ConvexHull\">convex hull</link>."
+msgid ""
+"Computes the <ulink url=\"https://en.wikipedia.org/wiki/Alpha_shape\">Alpha-"
+"Shape</ulink> of the points in a geometry. An alpha-shape is a (usually) "
+"concave polygonal geometry which contains all the vertices of the input, and "
+"whose vertices are a subset of the input vertices. An alpha-shape provides a "
+"closer fit to the shape of the input than the shape produced by the <link "
+"linkend=\"ST_ConvexHull\">convex hull</link>."
 msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:447
 #, no-c-format
-msgid "The \"closeness of fit\" is controlled by the <varname>alpha</varname> parameter, which can have values from 0 to infinity. Smaller alpha values produce more concave results. Alpha values greater than some data-dependent value produce the convex hull of the input."
+msgid ""
+"The \"closeness of fit\" is controlled by the <varname>alpha</varname> "
+"parameter, which can have values from 0 to infinity. Smaller alpha values "
+"produce more concave results. Alpha values greater than some data-dependent "
+"value produce the convex hull of the input."
 msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:454
 #, no-c-format
-msgid "Following the CGAL implementation, the alpha value is the <emphasis>square</emphasis> of the radius of the disc used in the Alpha-Shape algorithm to \"erode\" the Delaunay Triangulation of the input points. See <ulink url=\"https://doc.cgal.org/latest/Alpha_shapes_2/index.html#Chapter_2D_Alpha_Shapes\">CGAL Alpha-Shapes</ulink> for more information. This is different from the original definition of alpha-shapes, which defines alpha as the radius of the eroding disc."
+msgid ""
+"Following the CGAL implementation, the alpha value is the <emphasis>square</"
+"emphasis> of the radius of the disc used in the Alpha-Shape algorithm to "
+"\"erode\" the Delaunay Triangulation of the input points. See <ulink "
+"url=\"https://doc.cgal.org/latest/Alpha_shapes_2/index."
+"html#Chapter_2D_Alpha_Shapes\">CGAL Alpha-Shapes</ulink> for more "
+"information. This is different from the original definition of alpha-shapes, "
+"which defines alpha as the radius of the eroding disc."
 msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:463
 #, no-c-format
-msgid "The computed shape does not contain holes unless the optional <varname>allow_holes</varname> argument is specified as true."
+msgid ""
+"The computed shape does not contain holes unless the optional "
+"<varname>allow_holes</varname> argument is specified as true."
 msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:466
 #, no-c-format
-msgid "This function effectively computes a concave hull of a geometry in a similar way to <xref linkend=\"ST_ConcaveHull\"/>, but uses CGAL and a different algorithm."
+msgid ""
+"This function effectively computes a concave hull of a geometry in a similar "
+"way to <xref linkend=\"ST_ConcaveHull\"/>, but uses CGAL and a different "
+"algorithm."
 msgstr ""
 
 #. Tag: para
@@ -378,19 +429,25 @@ msgstr ""
 #. Tag: para
 #: reference_sfcgal.xml:483
 #, no-c-format
-msgid "Alpha-shape of a MultiPoint (same example As <xref linkend=\"ST_OptimalAlphaShape\"/>)"
+msgid ""
+"Alpha-shape of a MultiPoint (same example As <xref "
+"linkend=\"ST_OptimalAlphaShape\"/>)"
 msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:495
 #, no-c-format
-msgid "Alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend=\"ST_OptimalAlphaShape\"/>)"
+msgid ""
+"Alpha-shape of a MultiPoint, allowing holes (same example as <xref "
+"linkend=\"ST_OptimalAlphaShape\"/>)"
 msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:508
 #, no-c-format
-msgid "Alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend=\"ST_ConcaveHull\"/>)"
+msgid ""
+"Alpha-shape of a MultiPoint, allowing holes (same example as <xref "
+"linkend=\"ST_ConcaveHull\"/>)"
 msgstr ""
 
 #. Tag: para
@@ -408,7 +465,11 @@ msgstr ""
 #. Tag: para
 #: reference_sfcgal.xml:541
 #, no-c-format
-msgid "Return an approximate medial axis for the areal input based on its straight skeleton. Uses an SFCGAL specific API when built against a capable version (1.2.0+). Otherwise the function is just a wrapper around ST_StraightSkeleton (slower case)."
+msgid ""
+"Return an approximate medial axis for the areal input based on its straight "
+"skeleton. Uses an SFCGAL specific API when built against a capable version "
+"(1.2.0+). Otherwise the function is just a wrapper around "
+"ST_StraightSkeleton (slower case)."
 msgstr ""
 
 #. Tag: para
@@ -420,13 +481,17 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_sfcgal.xml:589
 #, no-c-format
-msgid "Return a constrained Delaunay triangulation around the given input geometry."
+msgid ""
+"Return a constrained Delaunay triangulation around the given input geometry."
 msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:606
 #, no-c-format
-msgid "Return a <ulink url=\"https://en.wikipedia.org/wiki/Constrained_Delaunay_triangulation\">Constrained Delaunay triangulation</ulink> around the vertices of the input geometry. Output is a TIN."
+msgid ""
+"Return a <ulink url=\"https://en.wikipedia.org/wiki/"
+"Constrained_Delaunay_triangulation\">Constrained Delaunay triangulation</"
+"ulink> around the vertices of the input geometry. Output is a TIN."
 msgstr ""
 
 #. Tag: para
@@ -450,7 +515,9 @@ msgstr ""
 #. Tag: para
 #: reference_sfcgal.xml:649
 #, no-c-format
-msgid ", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref linkend=\"ST_Tesselate\"/>, <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>"
+msgid ""
+", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref linkend=\"ST_Tesselate\"/"
+">, <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -498,7 +565,9 @@ msgstr ""
 #. Tag: para
 #: reference_sfcgal.xml:801
 #, no-c-format
-msgid "Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left out in 2.1 release."
+msgid ""
+"Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left "
+"out in 2.1 release."
 msgstr ""
 
 #. Tag: refpurpose
@@ -510,7 +579,10 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_sfcgal.xml:842
 #, no-c-format
-msgid "Cast the geometry into a solid. No check is performed. To obtain a valid solid, the input geometry must be a closed Polyhedral Surface or a closed TIN."
+msgid ""
+"Cast the geometry into a solid. No check is performed. To obtain a valid "
+"solid, the input geometry must be a closed Polyhedral Surface or a closed "
+"TIN."
 msgstr ""
 
 #. Tag: refpurpose
@@ -522,31 +594,45 @@ msgstr ""
 #. Tag: para
 #: reference_sfcgal.xml:887
 #, no-c-format
-msgid "This function performs a 2D minkowski sum of a point, line or polygon with a polygon."
+msgid ""
+"This function performs a 2D minkowski sum of a point, line or polygon with a "
+"polygon."
 msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:888
 #, no-c-format
-msgid "A minkowski sum of two geometries A and B is the set of all points that are the sum of any point in A and B. Minkowski sums are often used in motion planning and computer-aided design. More details on <ulink url=\"https://en.wikipedia.org/wiki/Minkowski_addition\">Wikipedia Minkowski addition</ulink>."
+msgid ""
+"A minkowski sum of two geometries A and B is the set of all points that are "
+"the sum of any point in A and B. Minkowski sums are often used in motion "
+"planning and computer-aided design. More details on <ulink url=\"https://en."
+"wikipedia.org/wiki/Minkowski_addition\">Wikipedia Minkowski addition</ulink>."
 msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:889
 #, no-c-format
-msgid "The first parameter can be any 2D geometry (point, linestring, polygon). If a 3D geometry is passed, it will be converted to 2D by forcing Z to 0, leading to possible cases of invalidity. The second parameter must be a 2D polygon."
+msgid ""
+"The first parameter can be any 2D geometry (point, linestring, polygon). If "
+"a 3D geometry is passed, it will be converted to 2D by forcing Z to 0, "
+"leading to possible cases of invalidity. The second parameter must be a 2D "
+"polygon."
 msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:891
 #, no-c-format
-msgid "Implementation utilizes <ulink url=\"http://doc.cgal.org/latest/Minkowski_sum_2/\">CGAL 2D Minkowskisum</ulink>."
+msgid ""
+"Implementation utilizes <ulink url=\"http://doc.cgal.org/latest/"
+"Minkowski_sum_2/\">CGAL 2D Minkowskisum</ulink>."
 msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:899
 #, no-c-format
-msgid "Minkowski Sum of Linestring and circle polygon where Linestring cuts thru the circle"
+msgid ""
+"Minkowski Sum of Linestring and circle polygon where Linestring cuts thru "
+"the circle"
 msgstr ""
 
 #. Tag: para
@@ -570,25 +656,32 @@ msgstr ""
 #. Tag: para
 #: reference_sfcgal.xml:958
 #, no-c-format
-msgid "After summing: polygon is duplicated and translated to position of points"
+msgid ""
+"After summing: polygon is duplicated and translated to position of points"
 msgstr ""
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:976
 #, no-c-format
-msgid "Computes an Alpha-shape enclosing a geometry using an \"optimal\" alpha value."
+msgid ""
+"Computes an Alpha-shape enclosing a geometry using an \"optimal\" alpha "
+"value."
 msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:993
 #, no-c-format
-msgid "Computes the \"optimal\" alpha-shape of the points in a geometry. The alpha-shape is computed using a value of α chosen so that:"
+msgid ""
+"Computes the \"optimal\" alpha-shape of the points in a geometry. The alpha-"
+"shape is computed using a value of α chosen so that:"
 msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:998
 #, no-c-format
-msgid "the number of polygon elements is equal to or smaller than <varname>nb_components</varname> (which defaults to 1)"
+msgid ""
+"the number of polygon elements is equal to or smaller than "
+"<varname>nb_components</varname> (which defaults to 1)"
 msgstr ""
 
 #. Tag: para
@@ -600,19 +693,25 @@ msgstr ""
 #. Tag: para
 #: reference_sfcgal.xml:1005
 #, no-c-format
-msgid "The result will not contain holes unless the optional <varname>allow_holes</varname> argument is specified as true."
+msgid ""
+"The result will not contain holes unless the optional <varname>allow_holes</"
+"varname> argument is specified as true."
 msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:1021
 #, no-c-format
-msgid "Optimal alpha-shape of a MultiPoint (same example as <xref linkend=\"ST_AlphaShape\"/>)"
+msgid ""
+"Optimal alpha-shape of a MultiPoint (same example as <xref "
+"linkend=\"ST_AlphaShape\"/>)"
 msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:1034
 #, no-c-format
-msgid "Optimal alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend=\"ST_AlphaShape\"/>)"
+msgid ""
+"Optimal alpha-shape of a MultiPoint, allowing holes (same example as <xref "
+"linkend=\"ST_AlphaShape\"/>)"
 msgstr ""
 
 #. Tag: para
@@ -630,7 +729,9 @@ msgstr ""
 #. Tag: para
 #: reference_sfcgal.xml:1068
 #, no-c-format
-msgid "The function only applies to polygons. It returns -1 if the polygon is counterclockwise oriented and 1 if the polygon is clockwise oriented."
+msgid ""
+"The function only applies to polygons. It returns -1 if the polygon is "
+"counterclockwise oriented and 1 if the polygon is clockwise oriented."
 msgstr ""
 
 #. Tag: refpurpose
@@ -654,13 +755,17 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_sfcgal.xml:1141
 #, no-c-format
-msgid "Perform surface Tesselation of a polygon or polyhedralsurface and returns as a TIN or collection of TINS"
+msgid ""
+"Perform surface Tesselation of a polygon or polyhedralsurface and returns as "
+"a TIN or collection of TINS"
 msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:1155
 #, no-c-format
-msgid "Takes as input a surface such a MULTI(POLYGON) or POLYHEDRALSURFACE and returns a TIN representation via the process of tessellation using triangles."
+msgid ""
+"Takes as input a surface such a MULTI(POLYGON) or POLYHEDRALSURFACE and "
+"returns a TIN representation via the process of tessellation using triangles."
 msgstr ""
 
 #. Tag: para
@@ -702,7 +807,9 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_sfcgal.xml:1239
 #, no-c-format
-msgid "Computes the volume of a 3D solid. If applied to surface (even closed) geometries will return 0."
+msgid ""
+"Computes the volume of a 3D solid. If applied to surface (even closed) "
+"geometries will return 0."
 msgstr ""
 
 #. Tag: para
@@ -720,7 +827,11 @@ msgstr ""
 #. Tag: para
 #: reference_sfcgal.xml:1264
 #, no-c-format
-msgid "When closed surfaces are created with WKT, they are treated as areal rather than solid. To make them solid, you need to use <xref linkend=\"ST_MakeSolid\"/>. Areal geometries have no volume. Here is an example to demonstrate."
+msgid ""
+"When closed surfaces are created with WKT, they are treated as areal rather "
+"than solid. To make them solid, you need to use <xref "
+"linkend=\"ST_MakeSolid\"/>. Areal geometries have no volume. Here is an "
+"example to demonstrate."
 msgstr ""
 
 #. Tag: para

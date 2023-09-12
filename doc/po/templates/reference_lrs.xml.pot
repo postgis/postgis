@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-11 19:20+0000\n"
+"POT-Creation-Date: 2023-09-12 14:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -38,25 +38,36 @@ msgstr ""
 #. Tag: para
 #: reference_lrs.xml:33
 #, no-c-format
-msgid "Returns a point interpolated along a line at a fractional location. First argument must be a LINESTRING. Second argument is a float between 0 and 1 representing the fraction of line length where the point is to be located. The Z and M values are interpolated if present."
+msgid ""
+"Returns a point interpolated along a line at a fractional location. First "
+"argument must be a LINESTRING. Second argument is a float between 0 and 1 "
+"representing the fraction of line length where the point is to be located. "
+"The Z and M values are interpolated if present."
 msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:41
 #, no-c-format
-msgid "See <xref linkend=\"ST_LineLocatePoint\"/> for computing the line location nearest to a Point."
+msgid ""
+"See <xref linkend=\"ST_LineLocatePoint\"/> for computing the line location "
+"nearest to a Point."
 msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:45
 #, no-c-format
-msgid "This function computes points in 2D and then interpolates values for Z and M, while <xref linkend=\"ST_3DLineInterpolatePoint\"/> computes points in 3D and only interpolates the M value."
+msgid ""
+"This function computes points in 2D and then interpolates values for Z and "
+"M, while <xref linkend=\"ST_3DLineInterpolatePoint\"/> computes points in 3D "
+"and only interpolates the M value."
 msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:52
 #, no-c-format
-msgid "Since release 1.1.1 this function also interpolates M and Z values (when present), while prior releases set them to 0.0."
+msgid ""
+"Since release 1.1.1 this function also interpolates M and Z values (when "
+"present), while prior releases set them to 0.0."
 msgstr ""
 
 #. Tag: para
@@ -117,7 +128,9 @@ msgstr ""
 #. Tag: para
 #: reference_lrs.xml:85
 #, no-c-format
-msgid ", <xref linkend=\"ST_3DLineInterpolatePoint\"/>, <xref linkend=\"ST_LineLocatePoint\"/>"
+msgid ""
+", <xref linkend=\"ST_3DLineInterpolatePoint\"/>, <xref "
+"linkend=\"ST_LineLocatePoint\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -129,13 +142,19 @@ msgstr ""
 #. Tag: para
 #: reference_lrs.xml:113
 #, no-c-format
-msgid "Returns a point interpolated along a 3D line at a fractional location. First argument must be a LINESTRING. Second argument is a float between 0 and 1 representing the point location as a fraction of line length. The M value is interpolated if present."
+msgid ""
+"Returns a point interpolated along a 3D line at a fractional location. First "
+"argument must be a LINESTRING. Second argument is a float between 0 and 1 "
+"representing the point location as a fraction of line length. The M value is "
+"interpolated if present."
 msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:120
 #, no-c-format
-msgid "computes points in 2D and then interpolates the values for Z and M, while this function computes points in 3D and only interpolates the M value."
+msgid ""
+"computes points in 2D and then interpolates the values for Z and M, while "
+"this function computes points in 3D and only interpolates the M value."
 msgstr ""
 
 #. Tag: para
@@ -153,7 +172,9 @@ msgstr ""
 #. Tag: para
 #: reference_lrs.xml:142
 #, no-c-format
-msgid ", <xref linkend=\"ST_LineInterpolatePoints\"/>, <xref linkend=\"ST_LineLocatePoint\"/>"
+msgid ""
+", <xref linkend=\"ST_LineInterpolatePoints\"/>, <xref "
+"linkend=\"ST_LineLocatePoint\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -165,13 +186,21 @@ msgstr ""
 #. Tag: para
 #: reference_lrs.xml:182
 #, no-c-format
-msgid "Returns one or more points interpolated along a line at a fractional interval. The first argument must be a LINESTRING. The second argument is a float8 between 0 and 1 representing the spacing between the points as a fraction of line length. If the third argument is false, at most one point will be constructed (which is equivalent to <xref linkend=\"ST_LineInterpolatePoint\"/>.)"
+msgid ""
+"Returns one or more points interpolated along a line at a fractional "
+"interval. The first argument must be a LINESTRING. The second argument is a "
+"float8 between 0 and 1 representing the spacing between the points as a "
+"fraction of line length. If the third argument is false, at most one point "
+"will be constructed (which is equivalent to <xref "
+"linkend=\"ST_LineInterpolatePoint\"/>.)"
 msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:190
 #, no-c-format
-msgid "If the result has zero or one points, it is returned as a POINT. If it has two or more points, it is returned as a MULTIPOINT."
+msgid ""
+"If the result has zero or one points, it is returned as a POINT. If it has "
+"two or more points, it is returned as a MULTIPOINT."
 msgstr ""
 
 #. Tag: para
@@ -201,19 +230,26 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_lrs.xml:228
 #, no-c-format
-msgid "Returns the fractional location of the closest point on a line to a point."
+msgid ""
+"Returns the fractional location of the closest point on a line to a point."
 msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:254
 #, no-c-format
-msgid "Returns a float between 0 and 1 representing the location of the closest point on a LineString to the given Point, as a fraction of <link linkend=\"ST_Length2D\">2d line</link> length."
+msgid ""
+"Returns a float between 0 and 1 representing the location of the closest "
+"point on a LineString to the given Point, as a fraction of <link "
+"linkend=\"ST_Length2D\">2d line</link> length."
 msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:258
 #, no-c-format
-msgid "You can use the returned location to extract a Point (<xref linkend=\"ST_LineInterpolatePoint\"/>) or a substring (<xref linkend=\"ST_LineSubstring\"/>)."
+msgid ""
+"You can use the returned location to extract a Point (<xref "
+"linkend=\"ST_LineInterpolatePoint\"/>) or a substring (<xref "
+"linkend=\"ST_LineSubstring\"/>)."
 msgstr ""
 
 #. Tag: para
@@ -237,7 +273,9 @@ msgstr ""
 #. Tag: para
 #: reference_lrs.xml:278
 #, no-c-format
-msgid ", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineSubstring\"/>"
+msgid ""
+", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/"
+">, <xref linkend=\"ST_LineSubstring\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -249,25 +287,37 @@ msgstr ""
 #. Tag: para
 #: reference_lrs.xml:311
 #, no-c-format
-msgid "Computes the line which is the section of the input line starting and ending at the given fractional locations. The first argument must be a LINESTRING. The second and third arguments are values in the range [0, 1] representing the start and end locations as fractions of line length. The Z and M values are interpolated for added endpoints if present."
+msgid ""
+"Computes the line which is the section of the input line starting and ending "
+"at the given fractional locations. The first argument must be a LINESTRING. "
+"The second and third arguments are values in the range [0, 1] representing "
+"the start and end locations as fractions of line length. The Z and M values "
+"are interpolated for added endpoints if present."
 msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:320
 #, no-c-format
-msgid "If <varname>startfraction</varname> and <varname>endfraction</varname> have the same value this is equivalent to <xref linkend=\"ST_LineInterpolatePoint\"/>."
+msgid ""
+"If <varname>startfraction</varname> and <varname>endfraction</varname> have "
+"the same value this is equivalent to <xref "
+"linkend=\"ST_LineInterpolatePoint\"/>."
 msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:325
 #, no-c-format
-msgid "This only works with LINESTRINGs. To use on contiguous MULTILINESTRINGs first join them with <xref linkend=\"ST_LineMerge\"/>."
+msgid ""
+"This only works with LINESTRINGs. To use on contiguous MULTILINESTRINGs "
+"first join them with <xref linkend=\"ST_LineMerge\"/>."
 msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:331
 #, no-c-format
-msgid "Since release 1.1.1 this function interpolates M and Z values. Prior releases set Z and M to unspecified values."
+msgid ""
+"Since release 1.1.1 this function interpolates M and Z values. Prior "
+"releases set Z and M to unspecified values."
 msgstr ""
 
 #. Tag: para
@@ -303,19 +353,25 @@ msgstr ""
 #. Tag: para
 #: reference_lrs.xml:360
 #, no-c-format
-msgid "A query to cut a LineString into sections of length 100 or shorter. It uses <varname>generate_series()</varname> with a CROSS JOIN LATERAL to produce the equivalent of a FOR loop."
+msgid ""
+"A query to cut a LineString into sections of length 100 or shorter. It uses "
+"<varname>generate_series()</varname> with a CROSS JOIN LATERAL to produce "
+"the equivalent of a FOR loop."
 msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:367
 #, no-c-format
-msgid "Geography implementation measures along a spheroid, geometry along a line"
+msgid ""
+"Geography implementation measures along a spheroid, geometry along a line"
 msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:375
 #, no-c-format
-msgid ", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge\"/>"
+msgid ""
+", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref "
+"linkend=\"ST_LineMerge\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -327,13 +383,19 @@ msgstr ""
 #. Tag: para
 #: reference_lrs.xml:400
 #, no-c-format
-msgid "Returns the location(s) along a measured geometry that have the given measure values. The result is a Point or MultiPoint. Polygonal inputs are not supported."
+msgid ""
+"Returns the location(s) along a measured geometry that have the given "
+"measure values. The result is a Point or MultiPoint. Polygonal inputs are "
+"not supported."
 msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:405
 #, no-c-format
-msgid "If <varname>offset</varname> is provided, the result is offset to the left or right of the input line by the specified distance. A positive offset will be to the left, and a negative one to the right."
+msgid ""
+"If <varname>offset</varname> is provided, the result is offset to the left "
+"or right of the input line by the specified distance. A positive offset will "
+"be to the left, and a negative one to the right."
 msgstr ""
 
 #. Tag: para
@@ -345,7 +407,9 @@ msgstr ""
 #. Tag: para
 #: reference_lrs.xml:411 reference_lrs.xml:465
 #, no-c-format
-msgid "The semantic is specified by the <emphasis>ISO/IEC 13249-3 SQL/MM Spatial</emphasis> standard."
+msgid ""
+"The semantic is specified by the <emphasis>ISO/IEC 13249-3 SQL/MM Spatial</"
+"emphasis> standard."
 msgstr ""
 
 #. Tag: para
@@ -357,7 +421,9 @@ msgstr ""
 #. Tag: para
 #: reference_lrs.xml:414
 #, no-c-format
-msgid "Changed: 2.0.0 in prior versions this used to be called ST_Locate_Along_Measure."
+msgid ""
+"Changed: 2.0.0 in prior versions this used to be called "
+"ST_Locate_Along_Measure."
 msgstr ""
 
 #. Tag: para
@@ -369,7 +435,9 @@ msgstr ""
 #. Tag: para
 #: reference_lrs.xml:429
 #, no-c-format
-msgid ", <xref linkend=\"ST_LocateBetweenElevations\"/>, <xref linkend=\"ST_InterpolatePoint\"/>"
+msgid ""
+", <xref linkend=\"ST_LocateBetweenElevations\"/>, <xref "
+"linkend=\"ST_InterpolatePoint\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -381,13 +449,18 @@ msgstr ""
 #. Tag: para
 #: reference_lrs.xml:456
 #, no-c-format
-msgid "Return a geometry (collection) with the portions of the input measured geometry that match the specified measure range (inclusively)."
+msgid ""
+"Return a geometry (collection) with the portions of the input measured "
+"geometry that match the specified measure range (inclusively)."
 msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:459
 #, no-c-format
-msgid "If the <varname>offset</varname> is provided, the result is offset to the left or right of the input line by the specified distance. A positive offset will be to the left, and a negative one to the right."
+msgid ""
+"If the <varname>offset</varname> is provided, the result is offset to the "
+"left or right of the input line by the specified distance. A positive offset "
+"will be to the left, and a negative one to the right."
 msgstr ""
 
 #. Tag: para
@@ -405,7 +478,9 @@ msgstr ""
 #. Tag: para
 #: reference_lrs.xml:468
 #, no-c-format
-msgid "Changed: 2.0.0 - in prior versions this used to be called ST_Locate_Between_Measures."
+msgid ""
+"Changed: 2.0.0 - in prior versions this used to be called "
+"ST_Locate_Between_Measures."
 msgstr ""
 
 #. Tag: para
@@ -423,7 +498,8 @@ msgstr ""
 #. Tag: para
 #: reference_lrs.xml:485
 #, no-c-format
-msgid "A LineString with the section between measures 2 and 8, offset to the left"
+msgid ""
+"A LineString with the section between measures 2 and 8, offset to the left"
 msgstr ""
 
 #. Tag: para
@@ -441,7 +517,9 @@ msgstr ""
 #. Tag: para
 #: reference_lrs.xml:523
 #, no-c-format
-msgid "Returns a geometry (collection) with the portions of a geometry that lie in an elevation (Z) range."
+msgid ""
+"Returns a geometry (collection) with the portions of a geometry that lie in "
+"an elevation (Z) range."
 msgstr ""
 
 #. Tag: para
@@ -465,7 +543,9 @@ msgstr ""
 #. Tag: para
 #: reference_lrs.xml:569
 #, no-c-format
-msgid "Returns an interpolated measure value of a linear measured geometry at the location closest to the given point."
+msgid ""
+"Returns an interpolated measure value of a linear measured geometry at the "
+"location closest to the given point."
 msgstr ""
 
 #. Tag: para
@@ -477,7 +557,8 @@ msgstr ""
 #. Tag: para
 #: reference_lrs.xml:588
 #, no-c-format
-msgid ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
+msgid ""
+", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -489,7 +570,11 @@ msgstr ""
 #. Tag: para
 #: reference_lrs.xml:616
 #, no-c-format
-msgid "Return a derived geometry with measure values linearly interpolated between the start and end points. If the geometry has no measure dimension, one is added. If the geometry has a measure dimension, it is over-written with new values. Only LINESTRINGS and MULTILINESTRINGS are supported."
+msgid ""
+"Return a derived geometry with measure values linearly interpolated between "
+"the start and end points. If the geometry has no measure dimension, one is "
+"added. If the geometry has a measure dimension, it is over-written with new "
+"values. Only LINESTRINGS and MULTILINESTRINGS are supported."
 msgstr ""
 
 #. Tag: para
@@ -497,3 +582,4 @@ msgstr ""
 #, no-c-format
 msgid "Availability: 1.5.0"
 msgstr ""
+
