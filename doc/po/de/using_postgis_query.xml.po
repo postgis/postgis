@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-11 19:02+0000\n"
+"POT-Creation-Date: 2023-09-12 14:53+0000\n"
 "PO-Revision-Date: 2022-08-23 23:30+0000\n"
 "Last-Translator: Juergen E. Fischer <jef@norbit.de>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
@@ -189,21 +189,21 @@ msgstr ""
 
 #. Tag: emphasis
 #: using_postgis_query.xml:123 using_postgis_query.xml:131
-#: using_postgis_query.xml:181 using_postgis_query.xml:194
+#: using_postgis_query.xml:185 using_postgis_query.xml:198
 #, no-c-format
 msgid "<emphasis role=\"bold\">Interior</emphasis>"
 msgstr ""
 
 #. Tag: emphasis
 #: using_postgis_query.xml:124 using_postgis_query.xml:137
-#: using_postgis_query.xml:184 using_postgis_query.xml:218
+#: using_postgis_query.xml:188 using_postgis_query.xml:228
 #, no-c-format
 msgid "<emphasis role=\"bold\">Boundary</emphasis>"
 msgstr ""
 
 #. Tag: emphasis
 #: using_postgis_query.xml:125 using_postgis_query.xml:143
-#: using_postgis_query.xml:187 using_postgis_query.xml:241
+#: using_postgis_query.xml:191 using_postgis_query.xml:257
 #, no-c-format
 msgid "<emphasis role=\"bold\">Exterior</emphasis>"
 msgstr ""
@@ -269,7 +269,7 @@ msgid "Visually, for two overlapping polygonal geometries, this looks like:"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:199
+#: using_postgis_query.xml:205
 #, no-c-format
 msgid ""
 "<emphasis>dim( I(a) ∩ I(b) ) = </emphasis><emphasis role=\"bold\">2</"
@@ -277,14 +277,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:205
+#: using_postgis_query.xml:213
 #, no-c-format
 msgid ""
 "<emphasis>dim( I(a) ∩ B(b) = </emphasis><emphasis role=\"bold\">1</emphasis>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:211
+#: using_postgis_query.xml:221
 #, no-c-format
 msgid ""
 "<emphasis>dim( I(a) ∩ E(b) ) = </emphasis><emphasis role=\"bold\">2</"
@@ -292,7 +292,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:222
+#: using_postgis_query.xml:234
 #, no-c-format
 msgid ""
 "<emphasis>dim( B(a) ∩ I(b) ) = </emphasis><emphasis role=\"bold\">1</"
@@ -300,7 +300,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:228
+#: using_postgis_query.xml:242
 #, no-c-format
 msgid ""
 "<emphasis>dim( B(a) ∩ B(b) ) = </emphasis><emphasis role=\"bold\">0</"
@@ -308,7 +308,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:234
+#: using_postgis_query.xml:250
 #, no-c-format
 msgid ""
 "<emphasis>dim( B(a) ∩ E(b) ) = </emphasis><emphasis role=\"bold\">1</"
@@ -316,7 +316,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:245
+#: using_postgis_query.xml:263
 #, no-c-format
 msgid ""
 "<emphasis>dim( E(a) ∩ I(b) ) = </emphasis><emphasis role=\"bold\">2</"
@@ -324,7 +324,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:251
+#: using_postgis_query.xml:271
 #, no-c-format
 msgid ""
 "<emphasis>dim( E(a) ∩ B(b) ) = </emphasis><emphasis role=\"bold\">1</"
@@ -332,14 +332,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:257
+#: using_postgis_query.xml:279
 #, no-c-format
 msgid ""
 "<emphasis>dim( E(a) ∩ E(b) = </emphasis><emphasis role=\"bold\">2</emphasis>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:268
+#: using_postgis_query.xml:290
 #, no-c-format
 msgid ""
 "Reading from left to right and top to bottom, the intersection matrix is "
@@ -348,13 +348,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:271
+#: using_postgis_query.xml:293
 #, no-c-format
 msgid "For more information, refer to:"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:275
+#: using_postgis_query.xml:297
 #, no-c-format
 msgid ""
 "<ulink url=\"http://www.opengeospatial.org/standards/sfs\">OpenGIS Simple "
@@ -363,25 +363,25 @@ msgid ""
 msgstr ""
 
 #. Tag: ulink
-#: using_postgis_query.xml:280
+#: using_postgis_query.xml:302
 #, no-c-format
 msgid "Wikipedia: Dimensionally Extended Nine-Intersection Model (DE-9IM)"
 msgstr ""
 
 #. Tag: ulink
-#: using_postgis_query.xml:284
+#: using_postgis_query.xml:306
 #, no-c-format
 msgid "GeoTools: Point Set Theory and the DE-9IM Matrix"
 msgstr ""
 
 #. Tag: title
-#: using_postgis_query.xml:291
+#: using_postgis_query.xml:313
 #, no-c-format
 msgid "Named Spatial Relationships"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:293
+#: using_postgis_query.xml:315
 #, no-c-format
 msgid ""
 "To make it easy to determine common spatial relationships, the OGC SFS "
@@ -396,7 +396,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:304
+#: using_postgis_query.xml:326
 #, no-c-format
 msgid ""
 "Spatial predicates are usually used as conditions in SQL <code>WHERE</code> "
@@ -406,7 +406,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:312
+#: using_postgis_query.xml:334
 #, no-c-format
 msgid ""
 "For more details and illustrations, see the <ulink url=\"https://postgis.net/"
@@ -415,13 +415,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: using_postgis_query.xml:318
+#: using_postgis_query.xml:340
 #, no-c-format
 msgid "General Spatial Relationships"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:320
+#: using_postgis_query.xml:342
 #, no-c-format
 msgid ""
 "In some cases the named spatial relationships are insufficient to provide a "
@@ -429,7 +429,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:330
+#: using_postgis_query.xml:354
 #, no-c-format
 msgid ""
 "For example, consider a linear dataset representing a road network. It may "
@@ -441,7 +441,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:338
+#: using_postgis_query.xml:362
 #, no-c-format
 msgid ""
 "A two-step solution would be to first compute the actual intersection (<xref "
@@ -454,13 +454,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:347
+#: using_postgis_query.xml:371
 #, no-c-format
 msgid "Clearly, a simpler and faster solution is desirable."
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:359
+#: using_postgis_query.xml:385
 #, no-c-format
 msgid ""
 "A second example is locating wharves that intersect a lake's boundary on a "
@@ -472,25 +472,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:370
+#: using_postgis_query.xml:396
 #, no-c-format
 msgid "(lake, wharf) = TRUE"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:374
+#: using_postgis_query.xml:400
 #, no-c-format
 msgid "(lake, wharf) = FALSE"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:378
+#: using_postgis_query.xml:404
 #, no-c-format
 msgid "(<xref linkend=\"ST_Intersection\"/>(wharf, lake)) = 'LINESTRING'"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:383
+#: using_postgis_query.xml:409
 #, no-c-format
 msgid ""
 "(<xref linkend=\"ST_Multi\"/>(<xref linkend=\"ST_Intersection\"/>(<xref "
@@ -499,13 +499,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:386
+#: using_postgis_query.xml:412
 #, no-c-format
 msgid "... but needless to say, this is quite complicated."
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:394
+#: using_postgis_query.xml:420
 #, no-c-format
 msgid ""
 "These requirements can be met by computing the full DE-9IM intersection "
@@ -514,7 +514,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:401
+#: using_postgis_query.xml:427
 #, no-c-format
 msgid ""
 "To test a particular spatial relationship, an <emphasis "
@@ -524,7 +524,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:409
+#: using_postgis_query.xml:435
 #, no-c-format
 msgid ""
 "<literal>T</literal> =&gt; intersection dimension is non-empty; i.e. is in "
@@ -532,13 +532,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:414
+#: using_postgis_query.xml:440
 #, no-c-format
 msgid "<literal>*</literal> =&gt; don't care"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:418
+#: using_postgis_query.xml:444
 #, no-c-format
 msgid ""
 "Using intersection matrix patterns, specific spatial relationships can be "
@@ -550,7 +550,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:428
+#: using_postgis_query.xml:454
 #, no-c-format
 msgid ""
 "For the second example, the intersection matrix pattern specifying a line "
@@ -559,13 +559,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: using_postgis_query.xml:438
+#: using_postgis_query.xml:464
 #, no-c-format
 msgid "Using Spatial Indexes"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:440
+#: using_postgis_query.xml:466
 #, no-c-format
 msgid ""
 "When constructing queries using spatial conditions, for best performance it "
@@ -576,7 +576,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:446
+#: using_postgis_query.xml:472
 #, no-c-format
 msgid ""
 "Spatial operators include the bounding box operators (of which the most "
@@ -588,7 +588,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:454
+#: using_postgis_query.xml:480
 #, no-c-format
 msgid ""
 "Index-aware functions automatically add a bounding box operator to the "
@@ -605,7 +605,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:475
+#: using_postgis_query.xml:501
 #, no-c-format
 msgid ""
 "Functions such as <xref linkend=\"ST_Distance\"/> do <emphasis>not</"
@@ -614,7 +614,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:482
+#: using_postgis_query.xml:508
 #, no-c-format
 msgid ""
 "This query selects all the geometries in <code>geom_table</code> which are "
@@ -625,7 +625,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:488
+#: using_postgis_query.xml:514
 #, no-c-format
 msgid ""
 "The number of rows processed can be reduced substantially by using the index-"
@@ -633,7 +633,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:494
+#: using_postgis_query.xml:520
 #, no-c-format
 msgid ""
 "This query selects the same geometries, but it does it in a more efficient "
@@ -649,7 +649,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:508
+#: using_postgis_query.xml:534
 #, no-c-format
 msgid ""
 "For more information and examples see the <ulink url=\"https://postgis.net/"
@@ -657,13 +657,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: using_postgis_query.xml:515
+#: using_postgis_query.xml:541
 #, no-c-format
 msgid "Examples of Spatial SQL"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:517
+#: using_postgis_query.xml:543
 #, no-c-format
 msgid ""
 "The examples in this section make use of a table of linear roads, and a "
@@ -672,31 +672,31 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:523
+#: using_postgis_query.xml:549
 #, no-c-format
 msgid "The definition of the <varname>bc_municipality</varname> table is:"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:531
+#: using_postgis_query.xml:557
 #, no-c-format
 msgid "What is the total length of all roads, expressed in kilometers?"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:536
+#: using_postgis_query.xml:562
 #, no-c-format
 msgid "You can answer this question with a very simple piece of SQL:"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:545
+#: using_postgis_query.xml:571
 #, no-c-format
 msgid "How large is the city of Prince George, in hectares?"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:549
+#: using_postgis_query.xml:575
 #, no-c-format
 msgid ""
 "This query combines an attribute condition (on the municipality name) with a "
@@ -704,13 +704,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:559
+#: using_postgis_query.xml:585
 #, no-c-format
 msgid "What is the largest municipality in the province, by area?"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:564
+#: using_postgis_query.xml:590
 #, no-c-format
 msgid ""
 "This query uses a spatial measurement as an ordering value. There are "
@@ -718,7 +718,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:570
+#: using_postgis_query.xml:596
 #, no-c-format
 msgid ""
 "Note that in order to answer this query we have to calculate the area of "
@@ -730,13 +730,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:582
+#: using_postgis_query.xml:608
 #, no-c-format
 msgid "What is the length of roads fully contained within each municipality?"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:587
+#: using_postgis_query.xml:613
 #, no-c-format
 msgid ""
 "This is an example of a \"spatial join\", which brings together data from "
@@ -746,7 +746,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:595
+#: using_postgis_query.xml:621
 #, no-c-format
 msgid ""
 "This query takes a while, because every road in the table is summarized into "
@@ -756,13 +756,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:604
+#: using_postgis_query.xml:630
 #, no-c-format
 msgid "Create a new table with all the roads within the city of Prince George."
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:609
+#: using_postgis_query.xml:635
 #, no-c-format
 msgid ""
 "This is an example of an \"overlay\", which takes in two tables and outputs "
@@ -773,13 +773,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:622
+#: using_postgis_query.xml:648
 #, no-c-format
 msgid "What is the length in kilometers of \"Douglas St\" in Victoria?"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:633
+#: using_postgis_query.xml:659
 #, no-c-format
 msgid "What is the largest municipality polygon that has a hole?"
 msgstr ""
