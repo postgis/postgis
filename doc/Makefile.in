@@ -309,10 +309,10 @@ $(TAG_GENERATED_SOURCES): xsl/node_by_xpath.xsl xsl-config.xml | Makefile
 endif
 
 $(GENERATED_COMMENT_FILES): %.sql: xsl/%.sql.xsl postgis-out.xml
-	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
+	$(XSLTPROC) --novalid $(XSLTPROCFLAGS) $(XSLTPROC_PATH_OPT) -o $@ $< postgis-out.xml
 
 $(GENERATED_CHEATSHEET_FILES): $(html_builddir)/%$(DOCSUFFIX).html: xsl/%.html.xsl postgis-out.xml xsl/common_cheatsheet.xsl xsl/common_utils.xsl
-	$(XSLTPROC) --novalid $(XSLTPROC_PATH_OPT) $(XSLTPROC_CUSTOM_VARS) -o $@ $< postgis-out.xml
+	$(XSLTPROC) --novalid $(XSLTPROCFLAGS) $(XSLTPROC_PATH_OPT) $(XSLTPROC_CUSTOM_VARS) -o $@ $< postgis-out.xml
 
 postgis-nospecial.xml: postgis.xml $(XML_SOURCES) $(TAG_GENERATED_SOURCES) Makefile
 	grep -v '\&postgis_special;' $< > $@.in
