@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-07 10:12+0000\n"
-"PO-Revision-Date: 2023-09-06 05:32+0000\n"
+"PO-Revision-Date: 2023-09-12 14:55+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_srsxml/zh_Hans/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: para
 #: reference_srs.xml:5
@@ -216,7 +216,7 @@ msgid ""
 "Returns the spatial reference identifier for the ST_Geometry as defined in "
 "spatial_ref_sys table. <xref linkend=\"spatial_ref_sys\"/>"
 msgstr ""
-"返回ST_Geometry spatial_ref_sys表中定义的空间参考系统标识号。 请参见第 <xref "
+"返回ST_Geometry spatial_ref_sys表中定义的空间参考系统标识号。 请参见 <xref "
 "linkend=\"spatial_ref_sys\"/>"
 
 #. Tag: para
