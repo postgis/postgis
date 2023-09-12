@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-15 12:17+0000\n"
-"PO-Revision-Date: 2023-09-05 06:08+0000\n"
+"PO-Revision-Date: 2023-09-12 14:55+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/using_raster_datamanxml/zh_Hans/>\n"
@@ -16,19 +16,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #: using_raster_dataman.xml:3
 #, no-c-format
 msgid "Raster Data Management, Queries, and Applications"
-msgstr ""
+msgstr "栅格数据管理、查询和应用程序"
 
 #. Tag: title
 #: using_raster_dataman.xml:5
 #, no-c-format
 msgid "Loading and Creating Rasters"
-msgstr ""
+msgstr "加载和创建栅格"
 
 #. Tag: para
 #: using_raster_dataman.xml:6
@@ -38,12 +38,14 @@ msgid ""
 "raster files using the packaged <varname>raster2pgsql</varname> raster "
 "loader."
 msgstr ""
+"对于大多数用例，您将通过使用打包的 <varname>raster2pgsql </"
+"varname>栅格加载器加载现有栅格文件来创建 PostGIS 栅格。"
 
 #. Tag: title
 #: using_raster_dataman.xml:9
 #, no-c-format
 msgid "Using raster2pgsql to load rasters"
-msgstr ""
+msgstr "使用 raster2pgsql 加载栅格"
 
 #. Tag: para
 #: using_raster_dataman.xml:11
@@ -54,6 +56,9 @@ msgid ""
 "raster table. It is capable of loading folders of raster files as well as "
 "creating overviews of rasters."
 msgstr ""
+"<varname>raster2pgsql</varname>是一个用于将 GDAL "
+"支持的栅格格式加载到适合加载到 PostGIS 栅格表的 SQL "
+"的栅格加载器可执行文件。它能够加载文件夹中的栅格文件，同时创建栅格的概览。"
 
 #. Tag: para
 #: using_raster_dataman.xml:13
@@ -65,6 +70,10 @@ msgid ""
 "list of raster types your particular <varname>raster2pgsql</varname> "
 "supports use the <varname>-G</varname> switch."
 msgstr ""
+"由于 raster2pgsql 最常被编译为 PostGIS 的一部分（除非您编译自己的 GDAL 库），"
+"因此可执行文件支持的栅格类型将与 GDAL 依赖库中编译的栅格类型相同。 "
+"要获取特定 <varname>raster2pgsql </varname>支持的栅格类型列表，请使用 "
+"<varname>-G</varname> 指令。"
 
 #. Tag: para
 #: using_raster_dataman.xml:16
@@ -75,12 +84,15 @@ msgid ""
 "url=\"http://trac.osgeo.org/postgis/ticket/1764\">http://trac.osgeo.org/"
 "postgis/ticket/1764</ulink> for an example where the overviews do not align."
 msgstr ""
+"在从一组对齐的栅格创建特定因子的概览时，有可能概览不会对齐。请访问<ulink url="
+"\"http://trac.osgeo.org/postgis/ticket/1764\"> http://trac.osgeo.org/postgis/"
+"ticket/1764 </ulink>查看一个示例，其中概览未对齐。"
 
 #. Tag: title
 #: using_raster_dataman.xml:20
 #, no-c-format
 msgid "Example Usage"
-msgstr ""
+msgstr "用法示例"
 
 #. Tag: para
 #: using_raster_dataman.xml:22
@@ -88,7 +100,7 @@ msgstr ""
 msgid ""
 "An example session using the loader to create an input file and uploading it "
 "chunked in 100x100 tiles might look like this:"
-msgstr ""
+msgstr "使用加载器创建输入文件并将其以 100x100 块分块上传的示例会话可能如下所示："
 
 #. Tag: para
 #: using_raster_dataman.xml:27
@@ -97,13 +109,14 @@ msgid ""
 "If you do not specify the schema as part of the target table name, the table "
 "will be created in the default schema of the database or user you are "
 "connecting with."
-msgstr ""
+msgstr "如果您没有将架构指定为目标表名称的一部分，则该表将在您所连接的数据库或用户的"
+"默认架构中创建。"
 
 #. Tag: para
 #: using_raster_dataman.xml:30
 #, no-c-format
 msgid "A conversion and upload can be done all in one step using UNIX pipes:"
-msgstr ""
+msgstr "使用 UNIX 管道可以一步完成转换和上传："
 
 #. Tag: para
 #: using_raster_dataman.xml:34
@@ -118,24 +131,29 @@ msgid ""
 "of table insert. (-F) Include a field called filename to hold the name of "
 "the file the tiles were cut from."
 msgstr ""
+"将马萨诸塞州平面米制航空瓦片加载到名为<varname>aerial</varname>的架构中，并创"
+"建一个全视图，2级和4级概览表，使用复制模式进行插入（没有中间文件，直接到数据"
+"库），并且使用“-e”选项来避免强制将所有内容放入一个事务中（如果你希望立即查看"
+"表中的数据而不必等待的话）。将栅格分割成128x128像素的瓦片，并应用栅格约束。同"
+"时，包括一个名为“filename”的字段，用于存储瓦片所来自的文件的名称。"
 
 #. Tag: para
 #: using_raster_dataman.xml:40
 #, no-c-format
 msgid "The -G commands outputs a list something like"
-msgstr ""
+msgstr "-G 指令输出类似的列表"
 
 #. Tag: title
 #: using_raster_dataman.xml:46
 #, no-c-format
 msgid "raster2pgsql options"
-msgstr ""
+msgstr "raster2pgsql 选项"
 
 #. Tag: term
 #: using_raster_dataman.xml:50
 #, no-c-format
 msgid "<term>-?</term>"
-msgstr ""
+msgstr "<term>-?</term>"
 
 #. Tag: para
 #: using_raster_dataman.xml:52
