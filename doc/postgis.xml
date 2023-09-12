@@ -97,10 +97,9 @@
 
 	<corpauthor>The PostGIS Development Group</corpauthor>
 	<editor>
-        <personname>
-            <firstname>Paul</firstname>
-            <surname>Ramsey</surname>
-        </personname>
+		<firstname>Paul</firstname>
+
+		<surname>Ramsey</surname>
 
 		<affiliation>
 		<orgname><ulink url="http://www.cleverelephant.ca">clever elephant</ulink></orgname>
