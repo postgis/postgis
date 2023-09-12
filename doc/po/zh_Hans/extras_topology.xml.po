@@ -38,23 +38,23 @@ msgstr "PostGIS拓扑类型和函数用于管理拓扑对象，例如面、边�
 msgid ""
 "Sandro Santilli's presentation at PostGIS Day Paris 2011 conference gives a "
 "good synopsis of PostGIS Topology and where it is headed <ulink url=\"http://"
-"strk.kbt.io/projects/postgis/Paris2011_TopologyWithPostGIS_2_0."
-"pdf\">Topology with PostGIS 2.0 slide deck</ulink>."
+"strk.kbt.io/projects/postgis/Paris2011_TopologyWithPostGIS_2_0.pdf"
+"\">Topology with PostGIS 2.0 slide deck</ulink>."
 msgstr ""
 "Sandro Santilli在2011年PostGIS Day Paris会议上的演示提供了关于PostGIS拓扑和未"
-"来发展方向的很好概述。您可以查看他的幻灯片演示，链接如下：<ulink "
-"url=\"http://strk.kbt.io/projects/postgis/Paris2011_TopologyWithPostGIS_2_0."
-"pdf\">Topology with PostGIS 2.0 slide deck</ulink>。"
+"来发展方向的很好概述。您可以查看他的幻灯片演示，链接如下：<ulink url="
+"\"http://strk.kbt.io/projects/postgis/Paris2011_TopologyWithPostGIS_2_0.pdf"
+"\">Topology with PostGIS 2.0 slide deck</ulink>。"
 
 #. Tag: para
 #: extras_topology.xml:6
 #, no-c-format
 msgid ""
 "Vincent Picavet provides a good synopsis and overview of what is Topology, "
-"how is it used, and various FOSS4G tools that support it in <ulink "
-"url=\"https://gitlab.com/Oslandia/documentation/presentations/-/blob/"
-"master/2012/pgconf_eu_2012/pgconfeu2012_vincent_picavet_postgis_topology."
-"pdf\">PostGIS Topology PGConf EU 2012</ulink>."
+"how is it used, and various FOSS4G tools that support it in <ulink url="
+"\"https://gitlab.com/Oslandia/documentation/presentations/-/blob/master/2012/"
+"pgconf_eu_2012/pgconfeu2012_vincent_picavet_postgis_topology.pdf\">PostGIS "
+"Topology PGConf EU 2012</ulink>."
 msgstr ""
 "Vincent Picavet 在<ulink url=\"https://gitlab.com/Oslandia/documentation/"
 "presentations/-/blob/master/2012/pgconf_eu_2012/"
@@ -74,8 +74,8 @@ msgid ""
 msgstr ""
 "基于拓扑的 GIS 数据库的一个示例是<ulink url=\"https://www.census.gov/geo/"
 "maps-data/data/tiger.html\">美国人口普查拓扑集成地理编码和参考系统 (TIGER) </"
-"ulink>数据库。 如果您想尝试 PostGIS 拓扑并需要一些数据，请查看 <xref "
-"linkend=\"Topology_Load_Tiger\"/>。"
+"ulink>数据库。 如果您想尝试 PostGIS 拓扑并需要一些数据，请查看 <xref linkend="
+"\"Topology_Load_Tiger\"/>。"
 
 #. Tag: para
 #: extras_topology.xml:12
@@ -481,12 +481,12 @@ msgstr "示例"
 #, no-c-format
 msgid ""
 ", <xref linkend=\"topoelementarray\"/>, <xref linkend=\"topogeometry\"/>, "
-"<xref linkend=\"TopoGeom_addElement\"/>, <xref "
-"linkend=\"TopoGeom_remElement\"/>"
+"<xref linkend=\"TopoGeom_addElement\"/>, <xref linkend=\"TopoGeom_remElement"
+"\"/>"
 msgstr ""
 ", <xref linkend=\"topoelementarray\"/>, <xref linkend=\"topogeometry\"/>, "
-"<xref linkend=\"TopoGeom_addElement\"/>, <xref "
-"linkend=\"TopoGeom_remElement\"/>"
+"<xref linkend=\"TopoGeom_addElement\"/>, <xref linkend=\"TopoGeom_remElement"
+"\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:195
@@ -507,11 +507,11 @@ msgstr ""
 #: extras_topology.xml:209
 #, no-c-format
 msgid ""
-", <xref linkend=\"GetTopoGeomElementArray\"/>, <xref "
-"linkend=\"TopoElementArray_Agg\"/>"
+", <xref linkend=\"GetTopoGeomElementArray\"/>, <xref linkend="
+"\"TopoElementArray_Agg\"/>"
 msgstr ""
-", <xref linkend=\"GetTopoGeomElementArray\"/>, <xref "
-"linkend=\"TopoElementArray_Agg\"/>"
+", <xref linkend=\"GetTopoGeomElementArray\"/>, <xref linkend="
+"\"TopoElementArray_Agg\"/>"
 
 #. Tag: para
 #: extras_topology.xml:221
@@ -963,8 +963,8 @@ msgstr "指示的起始节点的标识符。"
 #, no-c-format
 msgid ""
 "The geometry of the node indicated as the starting node for an edge does not "
-"match the first point of the edge geometry. See <xref "
-"linkend=\"ST_StartPoint\"/>."
+"match the first point of the edge geometry. See <xref linkend=\"ST_StartPoint"
+"\"/>."
 msgstr ""
 "指示为边的起始节点的节点的几何形状与边几何形状的第一个点不匹配。 请参阅<xref "
 "linkend=\"ST_StartPoint\"/>。"
@@ -1061,8 +1061,8 @@ msgstr "hole not in advertised face（孔不在宣传的面内）"
 #: extras_topology.xml:805
 #, no-c-format
 msgid ""
-"Signed identifier of an edge, identifying the ring. See <xref "
-"linkend=\"GetRingEdges\"/>."
+"Signed identifier of an edge, identifying the ring. See <xref linkend="
+"\"GetRingEdges\"/>."
 msgstr "边的签名标识符，标识环。 请参阅<xref linkend=\"GetRingEdges\"/>。"
 
 #. Tag: entry
@@ -1314,13 +1314,13 @@ msgstr "获取层标识符或拓扑相关对象的标识符并返回topology.lay
 msgid ""
 "This section discusses management of database statistics during topology "
 "building."
-msgstr ""
+msgstr "本节讨论拓扑构建期间数据库统计信息的管理。"
 
 #. Tag: title
 #: extras_topology.xml:998
 #, no-c-format
 msgid "Topology Statistics Management"
-msgstr ""
+msgstr "拓扑统计管理"
 
 #. Tag: para
 #: extras_topology.xml:1000
@@ -1331,6 +1331,8 @@ msgid ""
 "node with the new linework. For this reason it is useful that statistics "
 "about the data in the topology tables are up-to-date."
 msgstr ""
+"向拓扑添加元素会触发许多数据库查询，以查找将被分割的现有边、添加节点并更新将"
+"与新线路连接的边。 因此，有关拓扑表中数据的统计信息是最新的非常有用。"
 
 #. Tag: para
 #: extras_topology.xml:1008
@@ -1341,6 +1343,8 @@ msgid ""
 "in a topology would be overkill, so it is the caller's duty to take care of "
 "that."
 msgstr ""
+"PostGIS 拓扑数据的填充和编辑函数不会自动更新统计信息，因为在每次拓扑更改之后"
+"都更新统计信息会显得过于冗余，所以更新统计信息是调用者的责任。"
 
 #. Tag: para
 #: extras_topology.xml:1016
@@ -1351,18 +1355,20 @@ msgid ""
 "running transactions will need to run ANALYZE themselves, to use updated "
 "statistics."
 msgstr ""
+"由 autovacuum 更新的统计信息对于在 autovacuum 过程完成之前启动的事务不可见，"
+"因此长时间运行的事务将需要自行运行 ANALYZE，以使用更新的统计信息。"
 
 #. Tag: para
 #: extras_topology.xml:1029
 #, no-c-format
 msgid "This section covers the topology functions for creating new topologies."
-msgstr ""
+msgstr "本节介绍用于创建新拓扑的拓扑函数。"
 
 #. Tag: title
 #: extras_topology.xml:1032
 #, no-c-format
 msgid "Topology Constructors"
-msgstr ""
+msgstr "拓扑构造器"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1037 extras_topology.xml:1174
@@ -1370,7 +1376,7 @@ msgstr ""
 msgid ""
 "Creates a new topology schema and registers it in the topology.topology "
 "table."
-msgstr ""
+msgstr "创建一个新的拓扑架构并将其注册到topology.topology 表中。"
 
 #. Tag: para
 #: extras_topology.xml:1073
@@ -1382,6 +1388,10 @@ msgid ""
 "<varname>face</varname>, <varname>node</varname>,and <varname>relation</"
 "varname> are created in the schema. It returns the id of the topology."
 msgstr ""
+"创建名为<varname>topology_name</varname>的新拓扑模式并将其注册到"
+"<varname>topology.topology</varname>表中。 拓扑必须具有唯一的名称。 拓扑表"
+"（<varname>edge_data</varname>、<varname>面</varname>、<varname>节点</"
+"varname>和<varname>关系</varname>）在模式中创建。它返回拓扑的 id。"
 
 #. Tag: para
 #: extras_topology.xml:1080
@@ -1390,6 +1400,8 @@ msgid ""
 "The <varname>srid</varname> is the <link linkend=\"spatial_ref_sys\">spatial "
 "reference system</link> SRID for the topology."
 msgstr ""
+"<varname>srid</varname> 是拓扑的<link linkend=\"spatial_ref_sys\">空间参考系"
+"统</link> SRID。"
 
 #. Tag: para
 #: extras_topology.xml:1083
@@ -1397,13 +1409,13 @@ msgstr ""
 msgid ""
 "The tolerance <varname>prec</varname> is measured in the units of the "
 "spatial reference system. The tolerance defaults to 0."
-msgstr ""
+msgstr "容差<varname>精度</varname>以空间参考系的单位进行测量。 容差默认为 0。"
 
 #. Tag: para
 #: extras_topology.xml:1087
 #, no-c-format
 msgid "<varname>hasz</varname> defaults to false if not specified."
-msgstr ""
+msgstr "如果未指定，<varname>hasz </varname>默认为 false。"
 
 #. Tag: para
 #: extras_topology.xml:1089
@@ -1411,13 +1423,13 @@ msgstr ""
 msgid ""
 "This is similar to the SQL/MM <xref linkend=\"ST_InitTopoGeo\"/> but has "
 "more functionality."
-msgstr ""
+msgstr "这与 SQL/MM <xref linkend=\"ST_InitTopoGeo\"/> 类似，但具有更多功能。"
 
 #. Tag: para
 #: extras_topology.xml:1093
 #, no-c-format
 msgid "Enhanced: 2.0 added the signature accepting hasZ"
-msgstr ""
+msgstr "增强：2.0添加接受hasZ的格式"
 
 #. Tag: para
 #: extras_topology.xml:1099
@@ -1427,6 +1439,9 @@ msgid ""
 "and nodes in Massachusetts State Plane-meters (SRID = 26986). The tolerance "
 "represents 0.5 meters since the spatial reference system is meter-based."
 msgstr ""
+"创建一个名为<varname> ma_topo </varname>的拓扑模式，用于存储马萨诸塞州平面米 "
+"(SRID = 26986) 中的边和节点。 由于空间参考系统是基于米的，因此容差表示 0.5 "
+"米。"
 
 #. Tag: para
 #: extras_topology.xml:1103
@@ -1435,6 +1450,8 @@ msgid ""
 "Create a topology for Rhode Island called <varname>ri_topo</varname> in "
 "spatial reference system State Plane-feet (SRID = 3438)"
 msgstr ""
+"在空间参考系统 State Plane-feet (SRID = 3438) 中为罗德岛创建一个名为"
+"<varname> ri_topo </varname>的拓扑"
 
 #. Tag: para
 #: extras_topology.xml:1111
@@ -1442,6 +1459,7 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_InitTopoGeo\"/>, <xref linkend=\"Topology_Load_Tiger\"/>"
 msgstr ""
+", <xref linkend=\"ST_InitTopoGeo\"/>, <xref linkend=\"Topology_Load_Tiger\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1118
@@ -1449,7 +1467,7 @@ msgstr ""
 msgid ""
 "Makes a copy of a topology (nodes, edges, faces, layers and TopoGeometries) "
 "into a new schema"
-msgstr ""
+msgstr "将拓扑（节点、边、面、层和拓扑几何）的副本复制到新模式中"
 
 #. Tag: para
 #: extras_topology.xml:1134
@@ -1460,6 +1478,10 @@ msgid ""
 "edges and faces in <varname>existing_topology_name</varname> are copied into "
 "the new topology, as well as Layers and their associated TopoGeometries."
 msgstr ""
+"创建名为<varname> new_name </varname>的新拓扑，并使用从<varname> "
+"existing_topology_name</varname>复制的 SRID 和精度。"
+"<varname>existing_topology_name</varname> 中的节点、边和面以及层及其关联的 "
+"TopoGeometries 都将复制到新拓扑中。"
 
 #. Tag: para
 #: extras_topology.xml:1140
@@ -1470,12 +1492,15 @@ msgid ""
 "because the TopoGeometry objects exist only as a definition and are not yet "
 "available in a user-defined table."
 msgstr ""
+"<varname>topology.layer</varname> 表中的新行包含 schema_name、table_name 和 "
+"feature_column 的合成值。 这是因为 TopoGeometry 对象仅作为定义存在，并且在用"
+"户定义的表中尚不可用。"
 
 #. Tag: para
 #: extras_topology.xml:1152
 #, no-c-format
 msgid "Make a backup of a topology called <varname>ma_topo</varname>."
-msgstr ""
+msgstr "备份名为<varname> ma_topo </varname>的拓扑。"
 
 #. Tag: para
 #: extras_topology.xml:1163
@@ -1483,6 +1508,7 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"RenameTopology\"/>"
 msgstr ""
+", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"RenameTopology\"/>"
 
 #. Tag: para
 #: extras_topology.xml:1189
@@ -1492,6 +1518,8 @@ msgid ""
 "lacks options for spatial reference system and tolerance. it returns a text "
 "description of the topology creation, instead of the topology id."
 msgstr ""
+"这在 SQL-MM 中相当于<xref linkend=\"CreateTopology\"/>。 它缺乏空间参考系统和"
+"容差的选项。 它返回拓扑创建的文本描述，而不是拓扑 ID。"
 
 #. Tag: para
 #: extras_topology.xml:1195
@@ -1499,6 +1527,7 @@ msgstr ""
 msgid ""
 "&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.17"
 msgstr ""
+"&sqlmm_compliant; SQL-MM 3 Topo-Geo 和 Topo-Net 3：例程详细信息：X.3.17"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1217
@@ -1507,6 +1536,8 @@ msgid ""
 "<refpurpose>Adds a collection of geometries to a given empty topology and "
 "returns a message detailing success.</refpurpose>"
 msgstr ""
+"<refpurpose>将几何图形集合添加到给定的空拓扑并返回详细说明成功的消息。</"
+"refpurpose>"
 
 #. Tag: para
 #: extras_topology.xml:1235
@@ -1515,12 +1546,13 @@ msgid ""
 "<para>Adds a collection of geometries to a given empty topology and returns "
 "a message detailing success.</para>"
 msgstr ""
+"<para>将几何图形集合添加到给定的空拓扑并返回详细说明成功的消息。</para>"
 
 #. Tag: para
 #: extras_topology.xml:1239
 #, no-c-format
 msgid "Useful for populating an empty topology."
-msgstr ""
+msgstr "对于填充空拓扑很有用。"
 
 #. Tag: para
 #: extras_topology.xml:1243 extras_topology.xml:1545 extras_topology.xml:1610
@@ -1537,12 +1569,13 @@ msgstr "可用性：2.0"
 msgid ""
 "&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details -- X.3.18"
 msgstr ""
+"&sqlmm_compliant; SQL-MM: Topo-Geo 和 Topo-Net 3: 例程详细信息 -- X.3.18"
 
 #. Tag: para
 #: extras_topology.xml:1256
 #, no-c-format
 msgid ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1264
@@ -1550,7 +1583,7 @@ msgstr ""
 msgid ""
 "Adds a point to an existing topology using a tolerance and possibly "
 "splitting an existing edge."
-msgstr ""
+msgstr "使用容差并可能分割现有边向现有拓扑添加点。"
 
 #. Tag: para
 #: extras_topology.xml:1283
@@ -1560,6 +1593,8 @@ msgid ""
 "point will snap to existing nodes or edges within given tolerance. An "
 "existing edge may be split by the snapped point."
 msgstr ""
+"向现有拓扑添加一个点并返回其标识符。 给定点将捕捉到给定容差内的现有节点或"
+"边。 现有的边可能会被捕捉点分割。"
 
 #. Tag: para
 #: extras_topology.xml:1297
@@ -1568,6 +1603,8 @@ msgid ""
 ", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddNode\"/>, <xref "
 "linkend=\"CreateTopology\"/>"
 msgstr ""
+", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddNode\"/>, <xref "
+"linkend=\"CreateTopology\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1310
@@ -1575,7 +1612,7 @@ msgstr ""
 msgid ""
 "Adds a linestring to an existing topology using a tolerance and possibly "
 "splitting existing edges/faces. Returns edge identifiers."
-msgstr ""
+msgstr "使用公差并可能分割现有边/面，将线串添加到现有拓扑。 返回边标识符。"
 
 #. Tag: para
 #: extras_topology.xml:1327
@@ -1586,6 +1623,8 @@ msgid ""
 "edges within given tolerance. Existing edges and faces may be split by the "
 "line."
 msgstr ""
+"将线串添加到现有拓扑并返回组成它的一组边标识符。 给定的线将捕捉到给定公差内的"
+"现有节点或边。 现有的边和面可能会被线分割。"
 
 #. Tag: para
 #: extras_topology.xml:1333 extras_topology.xml:1382
@@ -1594,6 +1633,8 @@ msgid ""
 "Updating statistics about topologies being loaded via this function is up to "
 "caller, see <xref linkend=\"Topology_StatsManagement\"/>."
 msgstr ""
+"更新有关通过此函数加载的拓扑的统计信息由调用者决定，请参阅<xref linkend="
+"\"Topology_StatsManagement\"/>在拓扑编辑和填充期间维护统计信息。"
 
 #. Tag: para
 #: extras_topology.xml:1346
@@ -1602,6 +1643,8 @@ msgid ""
 ", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddEdge\"/>, <xref "
 "linkend=\"CreateTopology\"/>"
 msgstr ""
+", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddEdge\"/>, <xref "
+"linkend=\"CreateTopology\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1359
@@ -1609,7 +1652,7 @@ msgstr ""
 msgid ""
 "Adds a polygon to an existing topology using a tolerance and possibly "
 "splitting existing edges/faces. Returns face identifiers."
-msgstr ""
+msgstr "使用公差并可能分割现有边/面将多边形添加到现有拓扑。 返回面标识符。"
 
 #. Tag: para
 #: extras_topology.xml:1376
@@ -1620,6 +1663,8 @@ msgid ""
 "or edges within given tolerance. Existing edges and faces may be split by "
 "the boundary of the new polygon."
 msgstr ""
+"将多边形添加到现有拓扑并返回组成它的一组面标识符。 给定多边形的边界将捕捉到给"
+"定容差内的现有节点或边。 现有边和面可能会被新多边形的边界分割。"
 
 #. Tag: para
 #: extras_topology.xml:1395
@@ -1628,6 +1673,8 @@ msgid ""
 ", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend=\"AddFace\"/>, "
 "<xref linkend=\"CreateTopology\"/>"
 msgstr ""
+", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend=\"AddFace\"/>, "
+"<xref linkend=\"CreateTopology\"/>"
 
 #. Tag: para
 #: extras_topology.xml:1410
@@ -1637,12 +1684,14 @@ msgid ""
 "splitting edges, faces, and nodes. All of these functions are defined by ISO "
 "SQL/MM."
 msgstr ""
+"本节介绍用于添加、移动、删除和分割边、面和节点的拓扑函数。 所有这些函数都是"
+"由 ISO SQL/MM 定义的。"
 
 #. Tag: title
 #: extras_topology.xml:1413
 #, no-c-format
 msgid "Topology Editors"
-msgstr ""
+msgstr "拓扑编辑器"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1419
@@ -1651,6 +1700,8 @@ msgid ""
 "Adds an isolated node to a face in a topology and returns the nodeid of the "
 "new node. If face is null, the node is still created."
 msgstr ""
+"将一个孤立的节点添加到拓扑结构中的一个面，并返回新节点的节点ID。如果\"face"
+"\"为空（null），仍然会创建节点。"
 
 #. Tag: para
 #: extras_topology.xml:1436
@@ -1660,6 +1711,8 @@ msgid ""
 "existing face with faceid <varname>aface</varname> to a topology "
 "<varname>atopology</varname> and returns the nodeid of the new node."
 msgstr ""
+"将具有点位置指定的孤立节点<varname>apoint</varname>添加到具有<varname>aface</"
+"varname>的现有面到拓扑 <varname>atopology</varname>拓扑并返回新节点的nodeid。"
 
 #. Tag: para
 #: extras_topology.xml:1437
@@ -1671,6 +1724,9 @@ msgid ""
 "boundaries) then an exception is thrown. If the point already exists as a "
 "node, an exception is thrown."
 msgstr ""
+"如果点几何的空间参考系 (srid) 与拓扑不同、 <varname>apoint</varname>不是点几"
+"何、该点为空或该点与现有边相交（即使在边界处），则例外情况是抛出。 如果该点已"
+"作为节点存在，则会引发异常。"
 
 #. Tag: para
 #: extras_topology.xml:1439
@@ -1679,12 +1735,14 @@ msgid ""
 "If <varname>aface</varname> is not null and the <varname>apoint</varname> is "
 "not within the face, then an exception is thrown."
 msgstr ""
+"如果<varname>aface</varname>不为null并且<varname>apoint</varname>不在该面内，"
+"则抛出异常。"
 
 #. Tag: para
 #: extras_topology.xml:1443
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM: Topo-Net Routines: X+1.3.1"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM: Topo-Net 例程: X+1.3.1"
 
 #. Tag: para
 #: extras_topology.xml:1456
@@ -1693,6 +1751,8 @@ msgid ""
 ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>, "
 "<xref linkend=\"ST_Intersects\"/>"
 msgstr ""
+", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>, "
+"<xref linkend=\"ST_Intersects\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1464
@@ -1703,6 +1763,9 @@ msgid ""
 "<varname>anode</varname> and <varname>anothernode</varname> and returns the "
 "edge id of the new edge.</refpurpose>"
 msgstr ""
+"<refpurpose>将由几何 <varname>alinestring</varname> 定义的孤立边添加到连接两"
+"个现有孤立节点<varname>anode</varname>和<varname>anothernode</varname>的拓"
+"扑，并返回新边的边id。</refpurpose>"
 
 #. Tag: para
 #: extras_topology.xml:1482
@@ -1713,6 +1776,9 @@ msgid ""
 "<varname>anode</varname> and <varname>anothernode</varname> and returns the "
 "edge id of the new edge.</para>"
 msgstr ""
+"<para>将由几何<varname>alinestring</varname>定义的孤立边添加到连接两个现有孤"
+"立节点<varname>anode</varname>和<varname>anothernode</varname>的拓扑，并返回"
+"新边的边ID。</para>"
 
 #. Tag: para
 #: extras_topology.xml:1483
@@ -1723,6 +1789,9 @@ msgid ""
 "null, or the nodes are contained in more than one face, or the nodes are "
 "start or end nodes of an existing edge, then an exception is thrown."
 msgstr ""
+"如果<varname>alinestring</varname>几何的空间参考系统 （SRID） 与拓扑不同、不"
+"是点几何、点为 NULL 或点与现有边（包括其边界）交互，则会引发异常。 此外，如果"
+"该点已作为节点存在，则会引发异常。"
 
 #. Tag: para
 #: extras_topology.xml:1485
@@ -1732,6 +1801,8 @@ msgid ""
 "<varname>anode</varname> and <varname>anothernode</varname> belong to, then "
 "an exception is thrown."
 msgstr ""
+"如果<varname>alinestring</varname>不在<varname>anode</varname>和"
+"<varname>anothernode</varname>所属的面内，那么将抛出一个异常。"
 
 #. Tag: para
 #: extras_topology.xml:1486
@@ -1741,19 +1812,21 @@ msgid ""
 "the start and end points of the <varname>alinestring</varname> then an "
 "exception is thrown."
 msgstr ""
+"如果<varname>anode</varname>和<varname>anothernode</varname>不是"
+"<varname>alinestring</varname>的起始点和结束点，则会抛出异常。"
 
 #. Tag: para
 #: extras_topology.xml:1490
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X.3.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM: Topo-Geo和 Topo-Net 3: 详细例程: X.3.4"
 
 #. Tag: para
 #: extras_topology.xml:1503
 #, no-c-format
 msgid ", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_Within\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_Within\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1511
@@ -1761,7 +1834,7 @@ msgstr ""
 msgid ""
 "Add a new edge and, if in doing so it splits a face, delete the original "
 "face and replace it with two new faces."
-msgstr ""
+msgstr "添加新边，如果这样做会分割一个面，请删除原始面并用两个新面替换它。"
 
 #. Tag: para
 #: extras_topology.xml:1529
@@ -1771,13 +1844,15 @@ msgid ""
 "face and replace it with two new faces. Returns the id of the newly added "
 "edge."
 msgstr ""
+"添加新边，如果这样做会分割一个面，请删除原始面并用两个新面替换它。 返回新添加"
+"的边的 id。"
 
 #. Tag: para
 #: extras_topology.xml:1535 extras_topology.xml:1601 extras_topology.xml:1664
 #: extras_topology.xml:1732
 #, no-c-format
 msgid "Updates all existing joined edges and relationships accordingly."
-msgstr ""
+msgstr "相应地更新所有现有的连接边和关系。"
 
 #. Tag: para
 #: extras_topology.xml:1539 extras_topology.xml:1605
@@ -1789,6 +1864,10 @@ msgid ""
 "<varname>anode</varname> and <varname>anothernode</varname> are not the "
 "start and endpoints of <varname>acurve</varname> then an error is thrown."
 msgstr ""
+"如果任何参数为null，给定的节点未知（必须已经存在于拓扑模式的<varname>node</"
+"varname>表中），<varname>acurve</varname>不是<varname>LINESTRING</varname>，"
+"<varname>anode</varname>和<varname>anothernode</varname>不是<varname>acurve</"
+"varname>的起始点和终点，则会引发错误。"
 
 #. Tag: para
 #: extras_topology.xml:1542 extras_topology.xml:1608 extras_topology.xml:1801
@@ -1797,13 +1876,15 @@ msgid ""
 "If the spatial reference system (srid) of the <varname>acurve</varname> "
 "geometry is not the same as the topology an exception is thrown."
 msgstr ""
+"如果<varname>acurve</varname>几何对象的空间参考系统（SRID）与拓扑结构不同，那"
+"么将抛出异常。"
 
 #. Tag: para
 #: extras_topology.xml:1546
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X.3.12"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM: Topo-Geo 和 Topo-Net 3: 详细例程: X.3.12"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1568
@@ -1811,7 +1892,7 @@ msgstr ""
 msgid ""
 "Add a new edge and, if in doing so it splits a face, modify the original "
 "face and add a new face."
-msgstr ""
+msgstr "添加新边，如果这样做会分割面，则修改原始面并添加新面。"
 
 #. Tag: para
 #: extras_topology.xml:1586
@@ -1819,7 +1900,7 @@ msgstr ""
 msgid ""
 "Add a new edge and, if doing so splits a face, modify the original face and "
 "add a new one."
-msgstr ""
+msgstr "添加新边，如果这样做会分割面，则修改原始面并添加新面。"
 
 #. Tag: para
 #: extras_topology.xml:1591
@@ -1829,19 +1910,21 @@ msgid ""
 "will not be possible if the face on the left side will need to be the "
 "Universe face (unbounded)."
 msgstr ""
+"如果可能，新面将创建在新边的左侧。 如果左侧的面需要是宇宙面（无界），则这是不"
+"可能的。"
 
 #. Tag: para
 #: extras_topology.xml:1597
 #, no-c-format
 msgid "Returns the id of the newly added edge."
-msgstr ""
+msgstr "返回新添加的边的 id。"
 
 #. Tag: para
 #: extras_topology.xml:1611
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X.3.13"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM: Topo-Geo 和 Topo-Net 3: 详细例程: X.3.13"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1633
@@ -1850,6 +1933,8 @@ msgid ""
 "<refpurpose>Removes an edge and, if the removed edge separated two faces, "
 "delete the original faces and replace them with a new face.</refpurpose>"
 msgstr ""
+"<refpurpose>删除一条边，如果删除的边将两个面分开，则删除原始面并用新面替换它"
+"们。</refpurpose>"
 
 #. Tag: para
 #: extras_topology.xml:1652
@@ -1858,6 +1943,8 @@ msgid ""
 "<para>Removes an edge and, if the removed edge separated two faces, delete "
 "the original faces and replace them with a new face.</para>"
 msgstr ""
+"<para>删除一条边，如果删除的边将两个面分开，则删除原始面并用新面替换它们。</"
+"para>"
 
 #. Tag: para
 #: extras_topology.xml:1657
@@ -1868,6 +1955,9 @@ msgid ""
 "confined with the universe face (possibly making the universe flood into the "
 "face on the other side)."
 msgstr ""
+"返回一个新创建的面的ID，或者返回NULL，如果没有创建新的面。当被移除的边是悬挂"
+"的、孤立的，或者与宇宙面相连（可能导致宇宙面涌入另一侧的面）时，不会创建新的"
+"面。"
 
 #. Tag: para
 #: extras_topology.xml:1668 extras_topology.xml:1736
@@ -1877,6 +1967,8 @@ msgid ""
 "TopoGeometry. Refuses to heal two faces if any TopoGeometry is defined by "
 "only one of them (and not the other)."
 msgstr ""
+"拒绝移除参与现有TopoGeometry定义的边。如果有任何TopoGeometry只由其中一个面定"
+"义而不是另一个面，则拒绝合并这两个面。"
 
 #. Tag: para
 #: extras_topology.xml:1675 extras_topology.xml:1743
@@ -1886,13 +1978,15 @@ msgid ""
 "the <varname>edge</varname> table of the topology schema), the topology name "
 "is invalid then an error is thrown."
 msgstr ""
+"如果任何参数为null，给定的边是未知的（必须已经存在于拓扑模式的<varname>edge</"
+"varname>表中），拓扑名称无效，则会抛出错误。"
 
 #. Tag: para
 #: extras_topology.xml:1683
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X.3.14"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM: Topo-Geo 和 Topo-Net 3: 详细例程: X.3.14"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1705
@@ -1901,6 +1995,8 @@ msgid ""
 "Removes an edge, and if the edge separates two faces deletes one face and "
 "modifies the other face to cover the space of both."
 msgstr ""
+"删除一条边，如果该边将两个面分开，则删除一个面并修改另一个面以覆盖两个面的空"
+"间。"
 
 #. Tag: para
 #: extras_topology.xml:1724
@@ -1908,17 +2004,19 @@ msgstr ""
 msgid ""
 "Removes an edge, and if the removed edge separates two faces deletes one "
 "face and modifies the other face to cover the space of both. Preferentially "
-"keeps the face on the right, to be consistent with <xref "
-"linkend=\"ST_AddEdgeModFace\"/>. Returns the id of the face which is "
-"preserved."
+"keeps the face on the right, to be consistent with <xref linkend="
+"\"ST_AddEdgeModFace\"/>. Returns the id of the face which is preserved."
 msgstr ""
+"删除一条边，如果删除的边将两个面分开，则删除一个面并修改另一个面以覆盖两个面"
+"的空间。 优先将面保持在右侧，以与<xref linkend=\"ST_AddEdgeModFace\"/>保持一"
+"致。 返回保留的面的 id。"
 
 #. Tag: para
 #: extras_topology.xml:1751
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X.3.15"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM: Topo-Geo 和 Topo-Net 3: 详细例程: X.3.15"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1773
@@ -1926,7 +2024,7 @@ msgstr ""
 msgid ""
 "<refpurpose>Changes the shape of an edge without affecting the topology "
 "structure.</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>改变边的形状而不影响拓扑结构。</refpurpose>"
 
 #. Tag: para
 #: extras_topology.xml:1792
@@ -1934,7 +2032,7 @@ msgstr ""
 msgid ""
 "<para>Changes the shape of an edge without affecting the topology structure."
 "</para>"
-msgstr ""
+msgstr "<para>改变边的形状而不影响拓扑结构。</para>"
 
 #. Tag: para
 #: extras_topology.xml:1795
@@ -1945,6 +2043,9 @@ msgid ""
 "varname> is not a <varname>LINESTRING</varname>, or the modification would "
 "change the underlying topology then an error is thrown."
 msgstr ""
+"如果任何参数为null，给定的边在拓扑模式的<varname>edge</varname>表中不存在，"
+"<varname>acurve</varname>不是<varname>LINESTRING</varname>，或者修改将改变底"
+"层拓扑结构，则会抛出错误。"
 
 #. Tag: para
 #: extras_topology.xml:1802
@@ -1952,6 +2053,7 @@ msgstr ""
 msgid ""
 "If the new <varname>acurve</varname> is not simple, then an error is thrown."
 msgstr ""
+"如果新的<varname>acurve</varname>不是简单线（simple line），则会抛出错误。"
 
 #. Tag: para
 #: extras_topology.xml:1804
@@ -1959,7 +2061,7 @@ msgstr ""
 msgid ""
 "If moving the edge from old to new position would hit an obstacle then an "
 "error is thrown."
-msgstr ""
+msgstr "如果将边从旧位置移动到新位置会碰到障碍物，那么会抛出错误。"
 
 #. Tag: para
 #: extras_topology.xml:1810 extras_topology.xml:3794 extras_topology.xml:3847
@@ -1971,14 +2073,14 @@ msgstr "可用性：1.1.0"
 #: extras_topology.xml:1813
 #, no-c-format
 msgid "Enhanced: 2.0.0 adds topological consistency enforcement"
-msgstr ""
+msgstr "增强版 2.0.0 添加了拓扑一致性强制执行功能"
 
 #. Tag: para
 #: extras_topology.xml:1817
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details X.3.6"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM: Topo-Geo 和 Topo-Net 3: 详细例程 X.3.6"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1839
@@ -1986,7 +2088,7 @@ msgstr ""
 msgid ""
 "Split an edge by creating a new node along an existing edge, modifying the "
 "original edge and adding a new edge."
-msgstr ""
+msgstr "通过沿现有边创建新节点、修改原始边并添加新边来分割边。"
 
 #. Tag: para
 #: extras_topology.xml:1856
@@ -1996,19 +2098,21 @@ msgid ""
 "original edge and adding a new edge. Updates all existing joined edges and "
 "relationships accordingly. Returns the identifier of the newly added node."
 msgstr ""
+"通过沿现有边创建新节点、修改原始边并添加新边来分割边。 相应地更新所有现有的连"
+"接边和关系。 返回新添加的节点的标识符。"
 
 #. Tag: para
 #: extras_topology.xml:1865
 #, no-c-format
 msgid "Changed: 2.0 - In prior versions, this was misnamed ST_ModEdgesSplit"
-msgstr ""
+msgstr "更改：2.0 - 在之前的版本中，它被错误命名为 ST_ModEdgesSplit"
 
 #. Tag: para
 #: extras_topology.xml:1866 extras_topology.xml:1920 extras_topology.xml:1970
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X.3.9"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM: Topo-Geo 和 Topo-Net 3: 详细例程: X.3.9"
 
 #. Tag: para
 #: extras_topology.xml:1878
@@ -2017,6 +2121,8 @@ msgid ""
 ", <xref linkend=\"ST_ModEdgeHeal\"/>, <xref linkend=\"ST_NewEdgeHeal\"/>, "
 "<xref linkend=\"AddEdge\"/>"
 msgstr ""
+", <xref linkend=\"ST_ModEdgeHeal\"/>, <xref linkend=\"ST_NewEdgeHeal\"/>, "
+"<xref linkend=\"AddEdge\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1891
@@ -2025,6 +2131,8 @@ msgid ""
 "Heals two edges by deleting the node connecting them, modifying the first "
 "edge and deleting the second edge. Returns the id of the deleted node."
 msgstr ""
+"通过删除连接两条边的节点、修改第一条边并删除第二条边来修复两条边。 返回已删除"
+"节点的 id。"
 
 #. Tag: para
 #: extras_topology.xml:1911
@@ -2034,6 +2142,8 @@ msgid ""
 "edge and deleting the second edge. Returns the id of the deleted node. "
 "Updates all existing joined edges and relationships accordingly."
 msgstr ""
+"通过删除连接两条边的节点、修改第一条边并删除第二条边来修复两条边。 返回已删除"
+"节点的 id。 相应地更新所有现有的连接边和关系。"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1938
@@ -2043,6 +2153,8 @@ msgid ""
 "and replacing them with an edge whose direction is the same as the first "
 "edge provided."
 msgstr ""
+"通过删除连接两条边的节点、删除两条边并用方向与提供的第一条边相同的边替换它们"
+"来修复两条边。"
 
 #. Tag: para
 #: extras_topology.xml:1959
@@ -2053,6 +2165,9 @@ msgid ""
 "edge provided. Returns the id of the new edge replacing the healed ones. "
 "Updates all existing joined edges and relationships accordingly."
 msgstr ""
+"通过删除连接两条边的节点、删除两条边并用方向与提供的第一条边相同的边替换它们"
+"来修复两条边。 返回替换已修复边的新边的 ID。 相应地更新所有现有的连接边和关"
+"系。"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1989
@@ -2062,6 +2177,8 @@ msgid ""
 "<varname>apoint</varname> geometry exists as a node an error is thrown. "
 "Returns description of move."
 msgstr ""
+"在拓扑结构中将一个孤立节点从一个点移动到另一个点。如果新的<varname>apoint</"
+"varname>几何对象已存在作为一个节点，则会抛出错误。返回移动的描述。"
 
 #. Tag: para
 #: extras_topology.xml:2006
@@ -2070,6 +2187,8 @@ msgid ""
 "Moves an isolated node in a topology from one point to another. If new "
 "<varname>apoint</varname> geometry exists as a node an error is thrown."
 msgstr ""
+"将拓扑中的孤立节点从一点移动到另一点。 如果新的<varname>apoint</varname>几何"
+"图形作为节点存在，则会抛出错误。"
 
 #. Tag: para
 #: extras_topology.xml:2007
@@ -2081,6 +2200,9 @@ msgid ""
 "the new location is in a different face (since 3.2.0) then an exception is "
 "thrown."
 msgstr ""
+"如果任何参数为null，<varname>apoint</varname>不是一个点，现有节点不是孤立的"
+"（是现有边的起点或终点），新节点位置与现有边相交（即使在端点处也相交），或新"
+"位置在不同的面（自3.2.0版本起），则会抛出异常。"
 
 #. Tag: para
 #: extras_topology.xml:2013
@@ -2088,19 +2210,19 @@ msgstr ""
 msgid ""
 "If the spatial reference system (srid) of the point geometry is not the same "
 "as the topology an exception is thrown."
-msgstr ""
+msgstr "如果点几何的空间参考系统 (srid) 与拓扑不同，则会引发异常。"
 
 #. Tag: para
 #: extras_topology.xml:2018
 #, no-c-format
 msgid "Enhanced: 3.2.0 ensures the nod cannot be moved in a different face"
-msgstr ""
+msgstr "增强：3.2.0 确保节点不能移动到不同的面"
 
 #. Tag: para
 #: extras_topology.xml:2021
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM: Topo-Net Routines: X.3.2"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM: Topo-Net 例程: X.3.2"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2040
@@ -2110,6 +2232,8 @@ msgid ""
 "original edge and replacing it with two new edges. Returns the id of the new "
 "node created that joins the new edges."
 msgstr ""
+"通过沿现有边创建新节点、删除原始边并用两条新边替换它来分割边。 返回创建的连接"
+"新边的新节点的 id。"
 
 #. Tag: para
 #: extras_topology.xml:2057
@@ -2121,6 +2245,9 @@ msgid ""
 "new node created that joins the new edges. Updates all existing joined edges "
 "and relationships accordingly."
 msgstr ""
+"通过在当前边上创建一个具有点位置<varname>apoint</varname>的新节点，删除原始边"
+"并用两个新边替换它，来分割具有边ID<varname>anedge</varname>的边。返回连接新边"
+"的新节点的ID。相应地更新所有已连接的边和关系。"
 
 #. Tag: para
 #: extras_topology.xml:2065
@@ -2132,12 +2259,15 @@ msgid ""
 "correspond to an existing edge or the point is not within the edge then an "
 "exception is thrown."
 msgstr ""
+"如果点几何对象的空间参考系统（SRID）与拓扑结构不同，<varname>apoint</varname>"
+"不是点几何对象，点为null，点已经存在作为一个节点，边与现有边不对应，或者点不"
+"在边上，则会抛出异常。"
 
 #. Tag: para
 #: extras_topology.xml:2070
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM: Topo-Net Routines: X.3.8"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM: Topo-Net 例程: X.3.8"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2095
@@ -2147,6 +2277,8 @@ msgid ""
 "the node is not isolated (is start or end of an edge), then an exception is "
 "thrown.</refpurpose>"
 msgstr ""
+"<refpurpose>删除孤立节点并返回操作描述。 如果节点不是孤立的（是边的开始或结"
+"束），则会引发异常。</refpurpose>"
 
 #. Tag: para
 #: extras_topology.xml:2111
@@ -2156,13 +2288,15 @@ msgid ""
 "node is not isolated (is start or end of an edge), then an exception is "
 "thrown.</para>"
 msgstr ""
+"<para>移除一个孤立节点并返回操作的描述。如果节点不是孤立的（是边的起点或终"
+"点），则会抛出异常。</para>"
 
 #. Tag: para
 #: extras_topology.xml:2116 extras_topology.xml:2157
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X+1.3.3"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM: Topo-Geo和 Topo-Net 3: 详细例程: X+1.3.3"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2136
@@ -2171,6 +2305,8 @@ msgid ""
 "<refpurpose>Removes an isolated edge and returns description of action. If "
 "the edge is not isolated, then an exception is thrown.</refpurpose>"
 msgstr ""
+"<refpurpose>删除孤立的边并返回操作的描述。 如果边缘未被隔离，则会引发异常。</"
+"refpurpose>"
 
 #. Tag: para
 #: extras_topology.xml:2152
@@ -2179,24 +2315,25 @@ msgid ""
 "<para>Removes an isolated edge and returns description of action. If the "
 "edge is not isolated, then an exception is thrown.</para>"
 msgstr ""
+"<para>移除一个孤立的边并返回操作的描述。如果边不是孤立的，将抛出异常。</para>"
 
 #. Tag: title
 #: extras_topology.xml:2176
 #, no-c-format
 msgid "Topology Accessors"
-msgstr ""
+msgstr "拓扑访问器"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2181
 #, no-c-format
 msgid "Finds the edge-id of an edge that intersects a given point."
-msgstr ""
+msgstr "查找与给定点相交的边的边 ID。"
 
 #. Tag: para
 #: extras_topology.xml:2199
 #, no-c-format
 msgid "Retrieves the id of an edge that intersects a Point."
-msgstr ""
+msgstr "检索与 Point 相交的边的 id。"
 
 #. Tag: para
 #: extras_topology.xml:2200
@@ -2205,13 +2342,15 @@ msgid ""
 "The function returns an integer (id-edge) given a topology, a POINT and a "
 "tolerance. If tolerance = 0 then the point has to intersect the edge."
 msgstr ""
+"给定拓扑、POINT 和容差，该函数返回一个整数 (id-edge)。 如果容差 = 0，则该点必"
+"须与边相交。"
 
 #. Tag: para
 #: extras_topology.xml:2201
 #, no-c-format
 msgid ""
 "If <varname>apoint</varname> doesn't intersect an edge, returns 0 (zero)."
-msgstr ""
+msgstr "如果<varname>apoint</varname>与边不相交，返回0。"
 
 #. Tag: para
 #: extras_topology.xml:2202
@@ -2219,14 +2358,14 @@ msgstr ""
 msgid ""
 "If use tolerance > 0 and there is more than one edge near the point then an "
 "exception is thrown."
-msgstr ""
+msgstr "如果使用公差> 0 并且该点附近有多个边，则会引发异常。"
 
 #. Tag: para
 #: extras_topology.xml:2206 extras_topology.xml:2349
 #, no-c-format
 msgid ""
 "If tolerance = 0, the function uses ST_Intersects otherwise uses ST_DWithin."
-msgstr ""
+msgstr "如果容差 = 0，则该函数使用 ST_Intersects，否则使用 ST_DWithin。"
 
 #. Tag: para
 #: extras_topology.xml:2208 extras_topology.xml:2351 extras_topology.xml:2838
@@ -2239,7 +2378,7 @@ msgstr "它是通过GEOS模块实现的。"
 #: extras_topology.xml:2215 extras_topology.xml:2358
 #, no-c-format
 msgid "These examples use edges we created in <xref linkend=\"AddEdge\"/>"
-msgstr ""
+msgstr "这些示例使用我们在 <xref linkend=\"AddEdge\"/>中创建的边"
 
 #. Tag: para
 #: extras_topology.xml:2224
@@ -2247,18 +2386,19 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"GetNodeByPoint\"/>, <xref linkend=\"GetFaceByPoint\"/>"
 msgstr ""
+", <xref linkend=\"GetNodeByPoint\"/>, <xref linkend=\"GetFaceByPoint\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2235
 #, no-c-format
 msgid "Finds face intersecting a given point."
-msgstr ""
+msgstr "查找与给定点相交的面。"
 
 #. Tag: para
 #: extras_topology.xml:2250
 #, no-c-format
 msgid "Finds a face referenced by a Point, with given tolerance."
-msgstr ""
+msgstr "查找由点引用且具有给定容差的面。"
 
 #. Tag: para
 #: extras_topology.xml:2254
@@ -2266,7 +2406,7 @@ msgstr ""
 msgid ""
 "The function will effectively look for a face intersecting a circle having "
 "the point as center and the tolerance as radius."
-msgstr ""
+msgstr "该函数将有效地查找与以该点为中心、以公差为半径的圆相交的面。"
 
 #. Tag: para
 #: extras_topology.xml:2259
@@ -2274,14 +2414,14 @@ msgstr ""
 msgid ""
 "If no face intersects the given query location, 0 is returned (universal "
 "face)."
-msgstr ""
+msgstr "如果没有面与给定查询位置相交，则返回 0（通用面）。"
 
 #. Tag: para
 #: extras_topology.xml:2263
 #, no-c-format
 msgid ""
 "If more than one face intersect the query location an exception is thrown."
-msgstr ""
+msgstr "如果多个面与查询位置相交，则会引发异常。"
 
 #. Tag: para
 #: extras_topology.xml:2268
@@ -2289,7 +2429,7 @@ msgstr ""
 msgid ""
 "Enhanced: 3.2.0 more efficient implementation and clearer contract, stops "
 "working with invalid topologies."
-msgstr ""
+msgstr "增强：3.2.0 更高效的实施和更清晰的契约，停止使用无效的拓扑。"
 
 #. Tag: para
 #: extras_topology.xml:2279
@@ -2298,24 +2438,26 @@ msgid ""
 ", <xref linkend=\"AddFace\"/>, <xref linkend=\"GetNodeByPoint\"/>, <xref "
 "linkend=\"GetEdgeByPoint\"/>"
 msgstr ""
+", <xref linkend=\"AddFace\"/>, <xref linkend=\"GetNodeByPoint\"/>, <xref "
+"linkend=\"GetEdgeByPoint\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2291
 #, no-c-format
 msgid "Finds the face containing a point."
-msgstr ""
+msgstr "查找包含点的面。"
 
 #. Tag: para
 #: extras_topology.xml:2305
 #, no-c-format
 msgid "Returns the id of the face containing a point."
-msgstr ""
+msgstr "返回包含点的面的 id。"
 
 #. Tag: para
 #: extras_topology.xml:2306
 #, no-c-format
 msgid "An exception is thrown if the point falls on a face boundary."
-msgstr ""
+msgstr "如果点落在面边界上，则会引发异常。"
 
 #. Tag: para
 #: extras_topology.xml:2309
@@ -2323,19 +2465,19 @@ msgstr ""
 msgid ""
 "The function relies on a valid topology, using edge linking and face "
 "labeling."
-msgstr ""
+msgstr "该函数依赖于有效的拓扑，使用边链接和面标记。"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2326
 #, no-c-format
 msgid "Finds the node-id of a node at a point location."
-msgstr ""
+msgstr "查找某个点位置处节点的节点 ID。"
 
 #. Tag: para
 #: extras_topology.xml:2344
 #, no-c-format
 msgid "Retrieves the id of a node at a point location."
-msgstr ""
+msgstr "检索某个点位置处的节点 id。"
 
 #. Tag: para
 #: extras_topology.xml:2345
@@ -2345,13 +2487,15 @@ msgid ""
 "tolerance. If tolerance = 0 means exact intersection, otherwise retrieves "
 "the node from an interval."
 msgstr ""
+"给定拓扑、POINT 和容差，该函数返回一个整数（id-node）。 如果公差 = 0 表示精确"
+"交集，否则从区间中检索节点。"
 
 #. Tag: para
 #: extras_topology.xml:2346
 #, no-c-format
 msgid ""
 "If <varname>apoint</varname> doesn't intersect a node, returns 0 (zero)."
-msgstr ""
+msgstr "如果<varname>apoint</varname>不与节点相交，则返回 0（零）。"
 
 #. Tag: para
 #: extras_topology.xml:2347
@@ -2359,7 +2503,7 @@ msgstr ""
 msgid ""
 "If use tolerance > 0 and there is more than one node near the point then an "
 "exception is thrown."
-msgstr ""
+msgstr "如果使用容差 > 0 并且该点附近有多个节点，则会引发异常。"
 
 #. Tag: para
 #: extras_topology.xml:2367
@@ -2367,6 +2511,7 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"GetEdgeByPoint\"/>, <xref linkend=\"GetFaceByPoint\"/>"
 msgstr ""
+", <xref linkend=\"GetEdgeByPoint\"/>, <xref linkend=\"GetFaceByPoint\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2379
@@ -2375,6 +2520,7 @@ msgid ""
 "<refpurpose>Returns the id of a topology in the topology.topology table "
 "given the name of the topology.</refpurpose>"
 msgstr ""
+"<refpurpose>返回topology.topology表中给定拓扑名称的拓扑的id。</refpurpose>"
 
 #. Tag: para
 #: extras_topology.xml:2394
@@ -2382,7 +2528,7 @@ msgstr ""
 msgid ""
 "<para>Returns the id of a topology in the topology.topology table given the "
 "name of the topology.</para>"
-msgstr ""
+msgstr "<para>返回topology.topology表中给定拓扑名称的拓扑的id。</para>"
 
 #. Tag: para
 #: extras_topology.xml:2408
@@ -2391,6 +2537,8 @@ msgid ""
 ", <xref linkend=\"DropTopology\"/>, <xref linkend=\"GetTopologyName\"/>, "
 "<xref linkend=\"GetTopologySRID\"/>"
 msgstr ""
+", <xref linkend=\"DropTopology\"/>, <xref linkend=\"GetTopologyName\"/>, "
+"<xref linkend=\"GetTopologySRID\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2421
@@ -2398,7 +2546,7 @@ msgstr ""
 msgid ""
 "Returns the SRID of a topology in the topology.topology table given the name "
 "of the topology."
-msgstr ""
+msgstr "返回拓扑表中给定拓扑名称的拓扑的 SRID。"
 
 #. Tag: para
 #: extras_topology.xml:2436
@@ -2406,7 +2554,7 @@ msgstr ""
 msgid ""
 "Returns the spatial reference id of a topology in the topology.topology "
 "table given the name of the topology."
-msgstr ""
+msgstr "在给定拓扑名称的情况下，返回topology.topology 表中拓扑的空间参考ID。"
 
 #. Tag: para
 #: extras_topology.xml:2450
@@ -2415,12 +2563,14 @@ msgid ""
 ", <xref linkend=\"DropTopology\"/>, <xref linkend=\"GetTopologyName\"/>, "
 "<xref linkend=\"GetTopologyID\"/>"
 msgstr ""
+", <xref linkend=\"DropTopology\"/>, <xref linkend=\"GetTopologyName\"/>, "
+"<xref linkend=\"GetTopologyID\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2463
 #, no-c-format
 msgid "Returns the name of a topology (schema) given the id of the topology."
-msgstr ""
+msgstr "返回给定拓扑 ID 的拓扑（架构）名称。"
 
 #. Tag: para
 #: extras_topology.xml:2478
@@ -2429,6 +2579,8 @@ msgid ""
 "Returns the topology name (schema) of a topology from the topology.topology "
 "table given the topology id of the topology."
 msgstr ""
+"在给定拓扑的拓扑 ID 的情况下，从 topology.topology 表中返回拓扑的拓扑名称（架"
+"构）。"
 
 #. Tag: para
 #: extras_topology.xml:2492
@@ -2437,12 +2589,14 @@ msgid ""
 ", <xref linkend=\"DropTopology\"/>, <xref linkend=\"GetTopologyID\"/>, <xref "
 "linkend=\"GetTopologySRID\"/>"
 msgstr ""
+", <xref linkend=\"DropTopology\"/>, <xref linkend=\"GetTopologyID\"/>, <xref "
+"linkend=\"GetTopologySRID\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2505
 #, no-c-format
 msgid "Returns a set of ordered edges that bound <varname>aface</varname>."
-msgstr ""
+msgstr "返回一组有序的边，这些边界绑定了<varname>aface</varname>。"
 
 #. Tag: para
 #: extras_topology.xml:2521
@@ -2452,6 +2606,8 @@ msgid ""
 "output consists of a sequence and edgeid. Sequence numbers start with value "
 "1."
 msgstr ""
+"返回一组有序的边，这些边界绑定了<varname>aface</varname>。每个输出包括一个序"
+"列号和边ID。序列号从1开始。"
 
 #. Tag: para
 #: extras_topology.xml:2523
@@ -2461,25 +2617,27 @@ msgid ""
 "Order of edges follows a left-hand-rule (bound face is on the left of each "
 "directed edge)."
 msgstr ""
+"每个环边的枚举从具有最小标识符的边开始。 边的顺序遵循左手定则（合界面位于每个"
+"有向边的左侧）。"
 
 #. Tag: para
 #: extras_topology.xml:2530
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3 Topo-Geo 和 Topo-Net 3: 详细例程: X.3.5"
 
 #. Tag: para
 #: extras_topology.xml:2543
 #, no-c-format
 msgid ", <xref linkend=\"AddFace\"/>, <xref linkend=\"ST_GetFaceGeometry\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"AddFace\"/>, <xref linkend=\"ST_GetFaceGeometry\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2555
 #, no-c-format
 msgid "Returns the polygon in the given topology with the specified face id."
-msgstr ""
+msgstr "返回给定拓扑中具有指定面 ID 的多边形。"
 
 #. Tag: para
 #: extras_topology.xml:2571
@@ -2487,14 +2645,14 @@ msgstr ""
 msgid ""
 "Returns the polygon in the given topology with the specified face id. Builds "
 "the polygon from the edges making up the face."
-msgstr ""
+msgstr "返回给定拓扑中具有指定面 ID 的多边形。 从构成面的边构建多边形。"
 
 #. Tag: para
 #: extras_topology.xml:2576
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.16"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3 Topo-Geo 和 Topo-Net 3: 详细例程: X.3.16"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2596
@@ -2503,6 +2661,7 @@ msgid ""
 "Returns the ordered set of signed edge identifiers met by walking on an a "
 "given edge side."
 msgstr ""
+"返回按顺序排列的边标识符集合，这些标识符是通过沿给定边的一侧行走时遇到的。"
 
 #. Tag: para
 #: extras_topology.xml:2616
@@ -2512,6 +2671,8 @@ msgid ""
 "given edge side. Each output consists of a sequence and a signed edge id. "
 "Sequence numbers start with value 1."
 msgstr ""
+"返回在给定边上行走时遇到的有符号边标识符的有序集合。 每个输出由一个序列和一个"
+"带符号的边 id 组成。 序列号从值 1 开始。"
 
 #. Tag: para
 #: extras_topology.xml:2623
@@ -2521,6 +2682,8 @@ msgid ""
 "corresponding edge and follows the edge direction. If you pass a negative "
 "edge id, the walk starts on the right side of it and goes backward."
 msgstr ""
+"如果传递正边缘 id，则行走从相应边缘的左侧开始，并遵循边缘方向。 如果您传递负"
+"边缘 ID，则行走从其右侧开始并向后走。"
 
 #. Tag: para
 #: extras_topology.xml:2630
@@ -2530,24 +2693,26 @@ msgid ""
 "returned by that function. This is meant to be a safety parameter when "
 "dealing with possibly invalid topologies."
 msgstr ""
+"如果<varname> max_edges</varname> 不为 null，则该函数返回的记录数不超过这些记"
+"录。 在处理可能无效的拓扑时，这是一个安全参数。"
 
 #. Tag: para
 #: extras_topology.xml:2636
 #, no-c-format
 msgid "This function uses edge ring linking metadata."
-msgstr ""
+msgstr "该函数使用边环链接元数据。"
 
 #. Tag: para
 #: extras_topology.xml:2648
 #, no-c-format
 msgid ", <xref linkend=\"GetNodeEdges\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"GetNodeEdges\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2659
 #, no-c-format
 msgid "Returns an ordered set of edges incident to the given node."
-msgstr ""
+msgstr "返回与给定节点相关的一组有序边。"
 
 #. Tag: para
 #: extras_topology.xml:2677
@@ -2559,6 +2724,9 @@ msgid ""
 "the given node. Closed edges will appear twice (with both signs). Order is "
 "clockwise starting from northbound."
 msgstr ""
+"返回与给定节点相关的一组有序边。 每个输出由一个序列和一个带符号的边 id 组"
+"成。 序列号从值 1 开始。上升沿从给定节点开始。 负边沿结束于给定节点。 封闭的"
+"边将出现两次（都有两个标志）。 顺序是从北行开始顺时针方向。"
 
 #. Tag: para
 #: extras_topology.xml:2688
@@ -2566,13 +2734,13 @@ msgstr ""
 msgid ""
 "This function computes ordering rather than deriving from metadata and is "
 "thus usable to build edge ring linking."
-msgstr ""
+msgstr "该函数计算排序而不是从元数据导出，因此可用于构建边环链接。"
 
 #. Tag: para
 #: extras_topology.xml:2701
 #, no-c-format
 msgid ", <xref linkend=\"GetRingEdges\"/>, <xref linkend=\"ST_Azimuth\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"GetRingEdges\"/>, <xref linkend=\"ST_Azimuth\"/>"
 
 #. Tag: para
 #: extras_topology.xml:2715
@@ -2580,31 +2748,31 @@ msgstr ""
 msgid ""
 "This section covers the functions for processing topologies in non-standard "
 "ways."
-msgstr ""
+msgstr "本节介绍以非标准方式处理拓扑的函数。"
 
 #. Tag: title
 #: extras_topology.xml:2718
 #, no-c-format
 msgid "Topology Processing"
-msgstr ""
+msgstr "拓扑处理"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2722
 #, no-c-format
 msgid "Finds and registers all faces defined by topology edges."
-msgstr ""
+msgstr "查找并注册由拓扑边定义的所有面。"
 
 #. Tag: para
 #: extras_topology.xml:2736
 #, no-c-format
 msgid "Registers all faces that can be built out a topology edge primitives."
-msgstr ""
+msgstr "注册可以构建拓扑边基元的所有面。"
 
 #. Tag: para
 #: extras_topology.xml:2737
 #, no-c-format
 msgid "The target topology is assumed to contain no self-intersecting edges."
-msgstr ""
+msgstr "假设目标拓扑不包含自相交边。"
 
 #. Tag: para
 #: extras_topology.xml:2738
@@ -2612,7 +2780,7 @@ msgstr ""
 msgid ""
 "Already known faces are recognized, so it is safe to call Polygonize "
 "multiple times on the same topology."
-msgstr ""
+msgstr "已经识别出已知的面，因此在同一拓扑上多次调用 Polygonize 是安全的。"
 
 #. Tag: para
 #: extras_topology.xml:2739 extras_topology.xml:2891
@@ -2620,13 +2788,13 @@ msgstr ""
 msgid ""
 "This function does not use nor set the next_left_edge and next_right_edge "
 "fields of the edge table."
-msgstr ""
+msgstr "该函数不使用也不设置边表的 next_left_edge 和 next_right_edge 字段。"
 
 #. Tag: para
 #: extras_topology.xml:2751
 #, no-c-format
 msgid ", <xref linkend=\"ST_Polygonize\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Polygonize\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2759
@@ -2636,6 +2804,8 @@ msgid ""
 "returns the nodeid of new node. If point already exists as node, the "
 "existing nodeid is returned."
 msgstr ""
+"将点节点添加到指定拓扑模式的节点表中，并返回新节点的nodeid。 如果点已经作为节"
+"点存在，则返回现有的nodeid。"
 
 #. Tag: para
 #: extras_topology.xml:2777
@@ -2645,6 +2815,8 @@ msgid ""
 "<xref linkend=\"AddEdge\"/> function automatically adds start and end points "
 "of an edge when called so not necessary to explicitly add nodes of an edge."
 msgstr ""
+"将点节点添加到指定拓扑方案的节点表中。 <xref linkend=\"AddEdge\"/>函数在调用"
+"时会自动添加边的起点和终点，因此无需显式添加边的节点。"
 
 #. Tag: para
 #: extras_topology.xml:2784
@@ -2654,6 +2826,8 @@ msgid ""
 "edge is split, depending on the <varname>allowEdgeSplitting</varname> "
 "parameter value."
 msgstr ""
+"如果发现任何穿过节点的边，则会引发异常或分割边，具体取决于 "
+"<varname>allowedEdgeSplitting</varname> 参数值。"
 
 #. Tag: para
 #: extras_topology.xml:2790
@@ -2662,6 +2836,8 @@ msgid ""
 "If <varname>computeContainingFace</varname> is true a newly added node would "
 "get the correct containing face computed."
 msgstr ""
+"如果<varname>computeContainingFace</varname>为真，新添加的节点将计算出正确的"
+"包含面。"
 
 #. Tag: para
 #: extras_topology.xml:2795
@@ -2670,12 +2846,14 @@ msgid ""
 "If the <varname>apoint</varname> geometry already exists as a node, the node "
 "is not added but the existing nodeid is returned."
 msgstr ""
+"如果<varname>apoint</varname>几何图形已作为节点存在，则不会添加该节点，但会返"
+"回现有的nodeid。"
 
 #. Tag: para
 #: extras_topology.xml:2810
 #, no-c-format
 msgid ", <xref linkend=\"CreateTopology\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CreateTopology\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2818
@@ -2686,6 +2864,8 @@ msgid ""
 "specified linestring geometry and returns the edgeid of the new (or "
 "existing) edge."
 msgstr ""
+"使用指定的线串几何将线串边添加到边表，并将关联的起点和终点添加到指定拓扑方案"
+"的点节点表，并返回新（或现有）边的edgeid。"
 
 #. Tag: para
 #: extras_topology.xml:2834
@@ -2696,6 +2876,9 @@ msgid ""
 "linestring geometry and returns the edgeid of the new or existing record. "
 "The newly added edge has \"universe\" face on both sides and links to itself."
 msgstr ""
+"使用指定的线串几何图形将边添加到边表，并将关联节点添加到指定<varname>拓扑名称"
+"</varname>模式的节点表，并返回新记录或现有记录的edgeid。 新添加的边两侧都"
+"有“宇宙”面，并与其自身相连。"
 
 #. Tag: para
 #: extras_topology.xml:2836
@@ -2705,6 +2888,8 @@ msgid ""
 "contained by an existing linestring edge, then an error is thrown and the "
 "edge is not added."
 msgstr ""
+"如果<varname>aline</varname>几何图形与现有线串边交叉、重叠、包含或被现有线串"
+"边包含，则会引发错误并且不会添加边。"
 
 #. Tag: para
 #: extras_topology.xml:2837
@@ -2714,6 +2899,8 @@ msgid ""
 "varname> as defined for the topology otherwise an invalid spatial reference "
 "sys error will be thrown."
 msgstr ""
+"<varname>aline </varname>的几何形状必须具有与为拓扑定义的相同的 "
+"<varname>srid</varname>，否则将引发无效的空间参考系统错误。"
 
 #. Tag: para
 #: extras_topology.xml:2850 extras_topology.xml:2927
@@ -2721,6 +2908,7 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"spatial_ref_sys\"/>"
 msgstr ""
+", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"spatial_ref_sys\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2862
@@ -2728,7 +2916,7 @@ msgstr ""
 msgid ""
 "<refpurpose>Registers a face primitive to a topology and gets its identifier."
 "</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>将面基元注册到拓扑并获取其标识符。</refpurpose>"
 
 #. Tag: para
 #: extras_topology.xml:2879
@@ -2736,7 +2924,7 @@ msgstr ""
 msgid ""
 "<para>Registers a face primitive to a topology and gets its identifier.</"
 "para>"
-msgstr ""
+msgstr "<para>将面基元注册到拓扑并获取其标识符。</para>"
 
 #. Tag: para
 #: extras_topology.xml:2883
@@ -2747,6 +2935,9 @@ msgid ""
 "left_face and right_face fields. Isolated nodes contained in the face will "
 "also be updated to have a correct containing_face field value."
 msgstr ""
+"对于新添加的面，形成其边界的边以及面中包含的边将更新为在 left_face 和 "
+"right_face 字段中具有正确的值。 面中包含的孤立节点也将更新为具有正确的 "
+"contains_face 字段值。"
 
 #. Tag: para
 #: extras_topology.xml:2895
@@ -2756,6 +2947,8 @@ msgid ""
 "edges). An exception is raised if: The polygon boundary is not fully defined "
 "by existing edges or the polygon overlaps an existing face."
 msgstr ""
+"假定目标拓扑有效（不包含自相交边）。 如果出现以下情况，则会引发异常： 多边形"
+"边界未完全由现有边定义，或者多边形与现有面重叠。"
 
 #. Tag: para
 #: extras_topology.xml:2897
@@ -2766,6 +2959,9 @@ msgid ""
 "existing face is returned; if <varname>force_new</varname> is true a new id "
 "will be assigned to the newly registered face."
 msgstr ""
+"如果<varname>多边形</varname>几何体已经作为面存在，则： 如果"
+"<varname>force_new</varname>为假（默认），则返回现有面的面id； 如果"
+"<varname>force_new</varname>为true，新的id将被分配给新产生的面。"
 
 #. Tag: para
 #: extras_topology.xml:2905
@@ -2776,6 +2972,8 @@ msgid ""
 "in the edge, node an relation tables, nor will the MBR field of the existing "
 "face record be updated. It is up to the caller to deal with that."
 msgstr ""
+"对现有面执行新配准（force_new=true）时，不会采取任何措施来解决边、节点和关系"
+"表中对现有面的悬挂引用，也不会更新现有面记录的MBR字段。这由调用者自行处理。"
 
 #. Tag: para
 #: extras_topology.xml:2912
@@ -2785,6 +2983,8 @@ msgid ""
 "varname> as defined for the topology otherwise an invalid spatial reference "
 "sys error will be thrown."
 msgstr ""
+"<varname>多边形</varname>几何图形必须具有与为拓扑定义的相同的 <varname>srid</"
+"varname>，否则将引发无效的空间参考系统错误。"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2934
@@ -2792,7 +2992,7 @@ msgstr ""
 msgid ""
 "Returns a \"simplified\" geometry version of the given TopoGeometry using "
 "the Douglas-Peucker algorithm."
-msgstr ""
+msgstr "使用 Douglas-Peucker 算法返回给定 TopoGeometry 的“简化”几何版本。"
 
 #. Tag: para
 #: extras_topology.xml:2950
@@ -2801,18 +3001,20 @@ msgid ""
 "Returns a \"simplified\" geometry version of the given TopoGeometry using "
 "the Douglas-Peucker algorithm on each component edge."
 msgstr ""
+"在每个组件边上使用 Douglas-Peucker 算法返回给定 TopoGeometry 的“简化”几何版"
+"本。"
 
 #. Tag: para
 #: extras_topology.xml:2953
 #, no-c-format
 msgid "The returned geometry may be non-simple or non-valid."
-msgstr ""
+msgstr "返回的几何图形可能不简单或无效。"
 
 #. Tag: para
 #: extras_topology.xml:2954
 #, no-c-format
 msgid "Splitting component edges may help retaining simplicity/validity."
-msgstr ""
+msgstr "拆分组件边缘可能有助于保持简单性/有效性。"
 
 #. Tag: para
 #: extras_topology.xml:2957 extras_topology.xml:3742
@@ -2827,6 +3029,8 @@ msgid ""
 "Geometry <xref linkend=\"ST_Simplify\"/>, <xref linkend=\"ST_IsSimple\"/>, "
 "<xref linkend=\"ST_IsValid\"/>, <xref linkend=\"ST_ModEdgeSplit\"/>"
 msgstr ""
+"几何 <xref linkend=\"ST_Simplify\"/>, <xref linkend=\"ST_IsSimple\"/>, <xref "
+"linkend=\"ST_IsValid\"/>, <xref linkend=\"ST_ModEdgeSplit\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2969
@@ -2834,7 +3038,7 @@ msgstr ""
 msgid ""
 "Removes topology primitives which not needed to define existing TopoGeometry "
 "objects."
-msgstr ""
+msgstr "删除定义现有 TopoGeometry 对象不需要的拓扑基元。"
 
 #. Tag: para
 #: extras_topology.xml:2984
@@ -2845,6 +3049,8 @@ msgid ""
 "topology validity (edge linking, face labeling) and TopoGeometry space "
 "occupation."
 msgstr ""
+"查找表示现有 TopoGeometry 对象并不严格需要的所有图元（节点、边、面）并将其删"
+"除，从而保持拓扑有效性（边链接、面标记）和 TopoGeometry 空间占用。"
 
 #. Tag: para
 #: extras_topology.xml:2991
@@ -2854,6 +3060,8 @@ msgid ""
 "expanded to include merged faces (upon removing edges) or healed edges (upon "
 "removing nodes)."
 msgstr ""
+"不会创建新的图元标识符，而是扩展现有图元以包括合并的面（在删除边时）或修复的"
+"边（在删除节点时）。"
 
 #. Tag: para
 #: extras_topology.xml:2997
@@ -2865,20 +3073,20 @@ msgstr "可用性： 3.3.0"
 #: extras_topology.xml:3002
 #, no-c-format
 msgid ", <xref linkend=\"ST_RemEdgeModFace\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_RemEdgeModFace\"/>"
 
 #. Tag: para
 #: extras_topology.xml:3015
 #, no-c-format
 msgid ""
 "This section covers the topology functions for creating new topogeometries."
-msgstr ""
+msgstr "本节介绍用于创建新拓扑几何的拓扑函数。"
 
 #. Tag: title
 #: extras_topology.xml:3018
 #, no-c-format
 msgid "TopoGeometry Constructors"
-msgstr ""
+msgstr "拓扑几何构造函数"
 
 #. Tag: refpurpose
 #: extras_topology.xml:3023
@@ -2887,6 +3095,8 @@ msgid ""
 "Creates a new topo geometry object from topo element array - tg_type: 1:"
 "[multi]point, 2:[multi]line, 3:[multi]poly, 4:collection"
 msgstr ""
+"从拓扑元素数组创建一个新的拓扑几何对象 - tg_type: 1:[多]点, 2:[多]线, 3:[多]"
+"多边形, 4:集合"
 
 #. Tag: para
 #: extras_topology.xml:3048
@@ -2896,6 +3106,8 @@ msgid ""
 "varname> and registers it in the relations table in the <varname>toponame</"
 "varname> schema."
 msgstr ""
+"为由<varname>layer_id</varname>表示的图层创建一个拓扑几何对象，并将其注册到"
+"<varname>拓扑名称</varname>架构的关系表中。"
 
 #. Tag: para
 #: extras_topology.xml:3049
@@ -2905,6 +3117,9 @@ msgid ""
 "[multi]line (lineal), 3:[multi]poly (areal), 4:collection. "
 "<varname>layer_id</varname> is the layer id in the topology.layer table."
 msgstr ""
+"<varname>tg_type</varname> 是一个整数：1：[多]点（点）、2：[多]线（线性）、"
+"3：[多]多边形（面）、4：集合。 <varname>layer_id</varname> 是topology.layer "
+"表中的层id。"
 
 #. Tag: para
 #: extras_topology.xml:3050
@@ -2914,19 +3129,21 @@ msgid ""
 "set of edges, areal layers are formed from a set of faces, and collections "
 "can be formed from a mixture of nodes, edges, and faces."
 msgstr ""
+"点状层由一组节点形成，线性层由一组边形成，区域层由一组面形成，集合可以由节"
+"点、边和面的混合形成。"
 
 #. Tag: para
 #: extras_topology.xml:3052
 #, no-c-format
 msgid ""
 "Omitting the array of components generates an empty TopoGeometry object."
-msgstr ""
+msgstr "省略组件数组会生成一个空的 TopoGeometry 对象。"
 
 #. Tag: title
 #: extras_topology.xml:3059
 #, no-c-format
 msgid "Examples: Form from existing edges"
-msgstr ""
+msgstr "示例：从现有边形成"
 
 #. Tag: para
 #: extras_topology.xml:3060
@@ -2935,12 +3152,15 @@ msgid ""
 "Create a topogeom in ri_topo schema for layer 2 (our ri_roads), of type (2) "
 "LINE, for the first edge (we loaded in <varname>ST_CreateTopoGeo</varname>)."
 msgstr ""
+"在\"ri_topo\"模式中为\"layer 2\"（我们的\"ri_roads\"）创建一个拓扑几何对象，"
+"类型为(2) LINE，用于第一条边（我们在<varname>ST_CreateTopoGeo</varname>中加载"
+"的边）。"
 
 #. Tag: title
 #: extras_topology.xml:3066
 #, no-c-format
 msgid "Examples: Convert an areal geometry to best guess topogeometry"
-msgstr ""
+msgstr "示例：将面状几何对象转换为最佳猜测的拓扑几何对象"
 
 #. Tag: para
 #: extras_topology.xml:3067
@@ -2951,6 +3171,8 @@ msgid ""
 "geometry of each block group. If our data was perfectly aligned, we could do "
 "this:"
 msgstr ""
+"假设我们有应该由面的集合形成的几何形状。 例如，我们有块组表，并且想知道每个块"
+"组的拓扑几何形状。 如果我们的数据完全一致，我们可以这样做："
 
 #. Tag: para
 #: extras_topology.xml:3077
@@ -2960,18 +3182,21 @@ msgid ""
 "linkend=\"ST_GetFaceGeometry\"/>, <xref linkend=\"topoelementarray\"/>, "
 "<xref linkend=\"TopoElementArray_Agg\"/>"
 msgstr ""
+", <xref linkend=\"toTopoGeom\"/> <xref linkend=\"ST_CreateTopoGeo\"/>, <xref "
+"linkend=\"ST_GetFaceGeometry\"/>, <xref linkend=\"topoelementarray\"/>, "
+"<xref linkend=\"TopoElementArray_Agg\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:3092
 #, no-c-format
 msgid "Converts a simple Geometry into a topo geometry."
-msgstr ""
+msgstr "将简单几何图形转换为拓扑几何图形。"
 
 #. Tag: para
 #: extras_topology.xml:3117
 #, no-c-format
 msgid "Converts a simple Geometry into a <xref linkend=\"topogeometry\"/>."
-msgstr ""
+msgstr "将简单的几何图形转换为拓扑几何图形<xref linkend=\"topogeometry\"/>。"
 
 #. Tag: para
 #: extras_topology.xml:3121
@@ -2982,6 +3207,8 @@ msgid ""
 "will be associated with the output TopoGeometry in the <varname>relation</"
 "varname> table."
 msgstr ""
+"表示输入几何所需的拓扑基元将被添加到底层拓扑中，可能会拆分现有拓扑，并且它们"
+"将与<varname>关系</varname>表中的输出 TopoGeometry 相关联。"
 
 #. Tag: para
 #: extras_topology.xml:3128
@@ -2990,6 +3217,8 @@ msgid ""
 "Existing TopoGeometry objects (with the possible exception of "
 "<varname>topogeom</varname>, if given) will retain their shapes."
 msgstr ""
+"现有的 TopoGeometry 对象（<varname>拓扑几何</varname>可能除外，如果给定的话）"
+"将保留其形状。"
 
 #. Tag: para
 #: extras_topology.xml:3133
@@ -2997,7 +3226,7 @@ msgstr ""
 msgid ""
 "When <varname>tolerance</varname> is given it will be used to snap the input "
 "geometry to existing primitives."
-msgstr ""
+msgstr "当给出<varname>公差</varname>时，它将用于将输入几何体捕捉到现有图元。"
 
 #. Tag: para
 #: extras_topology.xml:3138
@@ -3007,6 +3236,8 @@ msgid ""
 "(<varname>layer_id</varname>) of the given topology (<varname>toponame</"
 "varname>)."
 msgstr ""
+"在第一种形式中，将为给定拓扑 (<varname>toponame</varname>) 的给定图层 "
+"(<varname>layer_id</varname>) 创建新的 TopoGeometry。"
 
 #. Tag: para
 #: extras_topology.xml:3143
@@ -3017,27 +3248,31 @@ msgid ""
 "possibly adding space to its final shape. To have the new shape completely "
 "replace the old one see <xref linkend=\"clearTopoGeom\"/>."
 msgstr ""
+"在第二种形式中，转换产生的图元将被添加到预先存在的 TopoGeometry "
+"(<varname>topogeom</varname>) 中，可能会为其最终形状添加空间。 要让新形状完全"
+"取代旧形状，请参阅<xref linkend=\"clearTopoGeom\"/>。"
 
 #. Tag: para
 #: extras_topology.xml:3152
 #, no-c-format
 msgid "Enhanced: 2.1.0 adds the version taking an existing TopoGeometry."
-msgstr ""
+msgstr "增强：2.1.0添加了采用现有TopoGeometry的版本。"
 
 #. Tag: para
 #: extras_topology.xml:3156 extras_topology.xml:3234
 #, no-c-format
 msgid "This is a full self-contained workflow"
-msgstr ""
+msgstr "这是一个完整的独立工作流程"
 
 #. Tag: para
 #: extras_topology.xml:3165
 #, no-c-format
 msgid ""
-", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref "
-"linkend=\"CreateTopoGeom\"/>, <xref linkend=\"TopologySummary\"/>, <xref "
-"linkend=\"clearTopoGeom\"/>"
+", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref linkend=\"CreateTopoGeom"
+"\"/>, <xref linkend=\"TopologySummary\"/>, <xref linkend=\"clearTopoGeom\"/>"
 msgstr ""
+", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref linkend=\"CreateTopoGeom"
+"\"/>, <xref linkend=\"TopologySummary\"/>, <xref linkend=\"clearTopoGeom\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:3178
@@ -3046,6 +3281,8 @@ msgid ""
 "Returns a <varname>topoelementarray</varname> for a set of element_id, type "
 "arrays (topoelements)."
 msgstr ""
+"返回一组 element_id、类型数组 (topoelements) 的 <varname>topoelementarray</"
+"varname>。"
 
 #. Tag: para
 #: extras_topology.xml:3193
@@ -3054,32 +3291,35 @@ msgid ""
 "Used to create a <xref linkend=\"topoelementarray\"/> from a set of <xref "
 "linkend=\"topoelement\"/>."
 msgstr ""
+"用于从一组 <xref linkend=\"topoelement\"/>创建<xref linkend="
+"\"topoelementarray\"/>。"
 
 #. Tag: para
 #: extras_topology.xml:3206 extras_topology.xml:3497
 #, no-c-format
 msgid ", <xref linkend=\"topoelementarray\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"topoelementarray\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:3213
 #, no-c-format
 msgid "Converts a topogeometry to a topoelement."
-msgstr ""
+msgstr "将拓扑几何转换为拓扑元素。"
 
 #. Tag: para
 #: extras_topology.xml:3227
 #, no-c-format
 msgid ""
-"Converts a <xref linkend=\"topogeometry\"/> to a <xref "
-"linkend=\"topoelement\"/>."
+"Converts a <xref linkend=\"topogeometry\"/> to a <xref linkend=\"topoelement"
+"\"/>."
 msgstr ""
+"将 <xref linkend=\"topogeometry\"/>转换为<xref linkend=\"topoelement\"/>。"
 
 #. Tag: para
 #: extras_topology.xml:3243
 #, no-c-format
 msgid ", <xref linkend=\"topogeometry\"/>, <xref linkend=\"topoelement\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"topogeometry\"/>, <xref linkend=\"topoelement\"/>"
 
 #. Tag: para
 #: extras_topology.xml:3251
@@ -3087,19 +3327,19 @@ msgstr ""
 msgid ""
 "This section covers the topology functions for editing existing "
 "topogeometries."
-msgstr ""
+msgstr "本节介绍用于编辑现有拓扑几何的拓扑函数。"
 
 #. Tag: title
 #: extras_topology.xml:3254
 #, no-c-format
 msgid "TopoGeometry Editors"
-msgstr ""
+msgstr "拓扑几何编辑器"
 
 #. Tag: refpurpose
 #: extras_topology.xml:3260
 #, no-c-format
 msgid "Clears the content of a topo geometry."
-msgstr ""
+msgstr "清除拓扑几何的内容。"
 
 #. Tag: para
 #: extras_topology.xml:3275
@@ -3110,18 +3350,21 @@ msgid ""
 "to replace the shape of existing objects and any dependent object in higher "
 "hierarchical levels."
 msgstr ""
+"清除 <xref linkend=\"topogeometry\"/>的内容，将其变为空内容。 主要与<xref "
+"linkend=\"toTopoGeom\"/> 结合使用，以替换现有对象的形状以及更高层次级别中的任"
+"何依赖对象。"
 
 #. Tag: para
 #: extras_topology.xml:3283
 #, no-c-format
 msgid "Availability: 2.1"
-msgstr ""
+msgstr "可用性：2.1"
 
 #. Tag: refpurpose
 #: extras_topology.xml:3302
 #, no-c-format
 msgid "Adds an element to the definition of a TopoGeometry."
-msgstr ""
+msgstr "将元素添加到 TopoGeometry 的定义中。"
 
 #. Tag: para
 #: extras_topology.xml:3317
@@ -3130,24 +3373,26 @@ msgid ""
 "Adds a <xref linkend=\"topoelement\"/> to the definition of a TopoGeometry "
 "object. Does not error out if the element is already part of the definition."
 msgstr ""
+"将 <xref linkend=\"topoelement\"/> 添加到 TopoGeometry 对象的定义中。 如果元"
+"素已经是定义的一部分，则不会出错。"
 
 #. Tag: para
 #: extras_topology.xml:3324 extras_topology.xml:3367
 #, no-c-format
 msgid "Availability: 2.3"
-msgstr ""
+msgstr "可用性：2.3"
 
 #. Tag: para
 #: extras_topology.xml:3334 extras_topology.xml:3377
 #, no-c-format
 msgid ", <xref linkend=\"CreateTopoGeom\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CreateTopoGeom\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:3345
 #, no-c-format
 msgid "Removes an element from the definition of a TopoGeometry."
-msgstr ""
+msgstr "从 TopoGeometry 的定义中删除元素。"
 
 #. Tag: para
 #: extras_topology.xml:3361
@@ -3155,14 +3400,14 @@ msgstr ""
 msgid ""
 "Removes a <xref linkend=\"topoelement\"/> from the definition of a "
 "TopoGeometry object."
-msgstr ""
+msgstr "从 TopoGeometry 对象的定义中删除 <xref linkend=\"topoelement\"/>。"
 
 #. Tag: refpurpose
 #: extras_topology.xml:3387
 #, no-c-format
 msgid ""
 "Adds element of a TopoGeometry to the definition of another TopoGeometry."
-msgstr ""
+msgstr "将一个 TopoGeometry 的元素添加到另一个 TopoGeometry 的定义中。"
 
 #. Tag: para
 #: extras_topology.xml:3402
@@ -3172,6 +3417,9 @@ msgid ""
 "another TopoGeometry, possibly changing its cached type (type attribute) to "
 "a collection, if needed to hold all elements in the source object."
 msgstr ""
+"将一个<xref linkend=\"topogeometry\"/> 的元素添加到另一个 TopoGeometry 的定义"
+"中，如果需要保存源对象中的所有元素，可能会将其缓存类型（类型属性）更改为集"
+"合。"
 
 #. Tag: para
 #: extras_topology.xml:3408
@@ -3181,36 +3429,39 @@ msgid ""
 "and, if hierarchically defined, need be composed by elements of the same "
 "child layer."
 msgstr ""
+"两个 TopoGeometry 对象需要针对“相同”拓扑进行定义，并且如果按层次结构定义，则"
+"需要由同一子层的元素组成。"
 
 #. Tag: para
 #: extras_topology.xml:3415
 #, no-c-format
 msgid "Availability: 3.2"
-msgstr ""
+msgstr "可用性：3.2"
 
 #. Tag: para
 #: extras_topology.xml:3425
 #, no-c-format
 msgid ", <xref linkend=\"clearTopoGeom\"/>, <xref linkend=\"CreateTopoGeom\"/>"
 msgstr ""
+", <xref linkend=\"clearTopoGeom\"/>, <xref linkend=\"CreateTopoGeom\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:3436
 #, no-c-format
 msgid "Adds a geometry shape to an existing topo geometry."
-msgstr ""
+msgstr "将几何形状添加到现有拓扑几何图形中。"
 
 #. Tag: para
 #: extras_topology.xml:3440
 #, no-c-format
 msgid "Refer to <xref linkend=\"toTopoGeom\"/>."
-msgstr ""
+msgstr "参考<xref linkend=\"toTopoGeom\"/>。"
 
 #. Tag: title
 #: extras_topology.xml:3450
 #, no-c-format
 msgid "TopoGeometry Accessors"
-msgstr ""
+msgstr "拓扑几何访问器"
 
 #. Tag: refpurpose
 #: extras_topology.xml:3456
@@ -3220,6 +3471,8 @@ msgid ""
 "containing the topological elements and type of the given TopoGeometry "
 "(primitive elements)."
 msgstr ""
+"返回一个<varname>topoelementarray</varname>（包含拓扑元素的数组），其中包含给"
+"定TopoGeometry的拓扑元素和类型（原始元素）。"
 
 #. Tag: para
 #: extras_topology.xml:3479
@@ -3230,6 +3483,9 @@ msgid ""
 "similar to GetTopoGeomElements except it returns the elements as an array "
 "rather than as a dataset."
 msgstr ""
+"返回一个<xref linkend=\"topoelementarray\"/>，其中包含给定 TopoGeometry（原始"
+"元素）的拓扑元素和类型。 这与 GetTopoGeomElements 类似，只不过它将元素作为数"
+"组而不是数据集返回。"
 
 #. Tag: para
 #: extras_topology.xml:3481 extras_topology.xml:3528
@@ -3238,6 +3494,8 @@ msgid ""
 "tg_id is the topogeometry id of the topogeometry object in the topology in "
 "the layer denoted by <varname>layer_id</varname> in the topology.layer table."
 msgstr ""
+"tg_id 是topology.layer 表中<varname>layer_id </varname>表示的图层中拓扑中的拓"
+"扑几何对象的拓扑几何ID。"
 
 #. Tag: refpurpose
 #: extras_topology.xml:3504
@@ -3247,6 +3505,8 @@ msgid ""
 "topological element_id,element_type of the given TopoGeometry (primitive "
 "elements)."
 msgstr ""
+"返回一组<varname> topoelement</varname> 对象，其中包含给定 TopoGeometry（原始"
+"元素）的拓扑 element_id、element_type。"
 
 #. Tag: para
 #: extras_topology.xml:3527
@@ -3257,6 +3517,9 @@ msgid ""
 "edges, 3: faces) that a given topogeometry object in <varname>toponame</"
 "varname> schema is composed of."
 msgstr ""
+"返回与<varname>拓扑名称</varname>架构中给定拓扑几何对象组成的原始拓扑元素 "
+"<xref linkend=\"topoelement\"/>（1：节点，2：边，3：面）对应的一组 "
+"element_id、element_type（topoelements）。"
 
 #. Tag: para
 #: extras_topology.xml:3544
@@ -3265,12 +3528,14 @@ msgid ""
 ", <xref linkend=\"topoelement\"/>, <xref linkend=\"TopoGeom_addElement\"/>, "
 "<xref linkend=\"TopoGeom_remElement\"/>"
 msgstr ""
+", <xref linkend=\"topoelement\"/>, <xref linkend=\"TopoGeom_addElement\"/>, "
+"<xref linkend=\"TopoGeom_remElement\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:3556
 #, no-c-format
 msgid "Returns the spatial reference identifier for a topogeometry."
-msgstr ""
+msgstr "返回拓扑几何的空间参考标识符。"
 
 #. Tag: para
 #: extras_topology.xml:3571
@@ -3279,7 +3544,7 @@ msgid ""
 "Returns the spatial reference identifier for the ST_Geometry as defined in "
 "spatial_ref_sys table. <xref linkend=\"spatial_ref_sys\"/>"
 msgstr ""
-"返回ST_Geometry spatial_ref_sys表中定义的空间参考系统标识号。 请参见第 <xref "
+"返回ST_Geometry spatial_ref_sys表中定义的空间参考系统标识号。 请参见 <xref "
 "linkend=\"spatial_ref_sys\"/>"
 
 #. Tag: para
@@ -3299,7 +3564,7 @@ msgstr ""
 #: extras_topology.xml:3576
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 14.1.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 14.1.5"
 
 #. Tag: para
 #: extras_topology.xml:3588
@@ -3308,18 +3573,20 @@ msgid ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
 "linkend=\"ST_SRID\"/>"
 msgstr ""
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
+"linkend=\"ST_SRID\"/>"
 
 #. Tag: title
 #: extras_topology.xml:3596
 #, no-c-format
 msgid "TopoGeometry Outputs"
-msgstr ""
+msgstr "拓扑几何输出"
 
 #. Tag: refpurpose
 #: extras_topology.xml:3601
 #, no-c-format
 msgid "Returns the GML representation of a topogeometry."
-msgstr ""
+msgstr "返回拓扑几何的 GML 表示形式。"
 
 #. Tag: para
 #: extras_topology.xml:3666
@@ -3331,6 +3598,10 @@ msgid ""
 "space. The precision (default: 15) and options (default 1) parameters, if "
 "given, are passed untouched to the underlying call to ST_AsGML."
 msgstr ""
+"返回 GML3 版本格式的拓扑几何的 GML 表示形式。 如果未指定 "
+"<varname>nsprefix_in</varname>，则使用 <varname>gml</varname>。 为 nsprefix "
+"传入一个空字符串以获取非限定名称空间。 精度（默认值：15）和选项（默认值 1）参"
+"数（如果给定）将原封不动地传递到 ST_AsGML 的底层调用。"
 
 #. Tag: para
 #: extras_topology.xml:3668
@@ -3346,6 +3617,12 @@ msgid ""
 "be created automatically by adding a unique constraint to the fields. "
 "Example:"
 msgstr ""
+"<varname>VisitedTable </varname>参数（如果给定）用于跟踪访问过的 Node 和 "
+"Edge 元素，以便使用交叉引用 (xlink:xref) 而不是重复定义。 该表预计有（至少）"
+"两个整数字段：“element_type”和“element_id”。 调用用户必须对给定表具有读取和写"
+"入权限。 为了获得最佳性能，应按 <varname>element_type </varname>和 "
+"<varname>element_id </varname>的顺序定义索引。 此类索引将通过向字段添加唯一约"
+"束来自动创建。 例子："
 
 #. Tag: para
 #: extras_topology.xml:3677
@@ -3354,6 +3631,8 @@ msgid ""
 "The <varname>idprefix</varname> parameter, if given, will be prepended to "
 "Edge and Node tag identifiers."
 msgstr ""
+"<varname>idprefix</varname> 参数（如果给定）将被添加到 Edge 和 Node 标记标识"
+"符之前。"
 
 #. Tag: para
 #: extras_topology.xml:3679
@@ -3362,31 +3641,33 @@ msgid ""
 "The <varname>gmlver</varname> parameter, if given, will be passed to the "
 "underlying ST_AsGML. Defaults to 3."
 msgstr ""
+"<varname>gmlver</varname> 参数（如果给定）将被传递到底层 ST_AsGML。 默认为 "
+"3。"
 
 #. Tag: para
 #: extras_topology.xml:3688
 #, no-c-format
 msgid ""
 "This uses the topo geometry we created in <xref linkend=\"CreateTopoGeom\"/>"
-msgstr ""
+msgstr "这使用了我们在<xref linkend=\"CreateTopoGeom\"/>中创建的拓扑几何体"
 
 #. Tag: para
 #: extras_topology.xml:3690
 #, no-c-format
 msgid "Same exercise as previous without namespace"
-msgstr ""
+msgstr "与之前的练习相同，没有命名空间"
 
 #. Tag: para
 #: extras_topology.xml:3697
 #, no-c-format
 msgid ", <xref linkend=\"ST_CreateTopoGeo\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_CreateTopoGeo\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:3704
 #, no-c-format
 msgid "Returns the TopoJSON representation of a topogeometry."
-msgstr ""
+msgstr "返回拓扑几何的 TopoJSON 表示形式。"
 
 #. Tag: para
 #: extras_topology.xml:3720
@@ -3397,15 +3678,20 @@ msgid ""
 "storage mapping of edge identifiers to arc indices. This is to be able to "
 "allow for a compact \"arcs\" array in the final document."
 msgstr ""
+"返回拓扑几何的 TopoJSON 表示形式。 如果<varname>edgeMapTable</varname>不为"
+"空，它将用作边标识符到弧索引的查找/存储映射。 这是为了能够在最终文档中允许紧"
+"凑的“arcs”数组。"
 
 #. Tag: para
 #: extras_topology.xml:3723
 #, no-c-format
 msgid ""
-"The table, if given, is expected to have an \"arc_id\" field of type "
-"\"serial\" and an \"edge_id\" of type integer; the code will query the table "
-"for \"edge_id\" so it is recommended to add an index on that field."
+"The table, if given, is expected to have an \"arc_id\" field of type \"serial"
+"\" and an \"edge_id\" of type integer; the code will query the table for "
+"\"edge_id\" so it is recommended to add an index on that field."
 msgstr ""
+"该表（如果给定）应具有“serial”类型的“arc_id”字段和整数类型的“edge_id”字段； "
+"该代码将查询表中的“edge_id”，因此建议在该字段上添加索引。"
 
 #. Tag: para
 #: extras_topology.xml:3728
@@ -3414,6 +3700,8 @@ msgid ""
 "Arc indices in the TopoJSON output are 0-based but they are 1-based in the "
 "\"edgeMapTable\" table."
 msgstr ""
+"TopoJSON 输出中的弧索引是从 0 开始的，但在“edgeMapTable”表中它们是从 1 开始"
+"的。"
 
 #. Tag: para
 #: extras_topology.xml:3734
@@ -3424,12 +3712,15 @@ msgid ""
 "the <ulink url=\"http://github.com/mbostock/topojson-specification/blob/"
 "master/README.md\">TopoJSON specification</ulink>."
 msgstr ""
+"除了该函数返回的片段之外，完整的 TopoJSON 文档还需要包含实际的弧和一些标头。 "
+"请参阅 <ulink url=\"http://github.com/mbostock/topojson-specification/blob/"
+"master/README.md\">TopoJSON 规范</ulink>。"
 
 #. Tag: para
 #: extras_topology.xml:3743
 #, no-c-format
 msgid "Enhanced: 2.2.1 added support for puntal inputs"
-msgstr ""
+msgstr "增强：2.2.1 添加了对 puntal 输入的支持"
 
 #. Tag: para
 #: extras_topology.xml:3763
@@ -3437,13 +3728,13 @@ msgstr ""
 msgid ""
 "This section lists the Topology functions used to check relationships "
 "between topogeometries and topology primitives"
-msgstr ""
+msgstr "本节列出了用于检查拓扑几何和拓扑基元之间关系的拓扑函数"
 
 #. Tag: title
 #: extras_topology.xml:3766
 #, no-c-format
 msgid "Topology Spatial Relationships"
-msgstr ""
+msgstr "拓扑空间关系"
 
 #. Tag: refpurpose
 #: extras_topology.xml:3771
@@ -3451,7 +3742,7 @@ msgstr ""
 msgid ""
 "Returns true if two topogeometries are composed of the same topology "
 "primitives."
-msgstr ""
+msgstr "如果两个拓扑几何由相同的拓扑基元组成，则返回 true。"
 
 #. Tag: para
 #: extras_topology.xml:3787
@@ -3459,7 +3750,7 @@ msgstr ""
 msgid ""
 "Returns true if two topogeometries are composed of the same topology "
 "primitives: faces, edges, nodes."
-msgstr ""
+msgstr "如果两个拓扑几何由相同的拓扑基元组成：面、边、节点，则返回 true。"
 
 #. Tag: para
 #: extras_topology.xml:3791
@@ -3469,6 +3760,7 @@ msgid ""
 "collections. It also can not compare topogeometries from different "
 "topologies."
 msgstr ""
+"作为几何集合的拓扑几何不支持此函数。 它也无法比较不同拓扑的拓扑几何形状。"
 
 #. Tag: para
 #: extras_topology.xml:3798 extras_topology.xml:3851
@@ -3480,7 +3772,7 @@ msgstr "&Z_support;"
 #: extras_topology.xml:3812
 #, no-c-format
 msgid ", <xref linkend=\"ST_Equals\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Equals\"/>"
 
 #. Tag: refpurpose
 #: extras_topology.xml:3820
@@ -3489,6 +3781,7 @@ msgid ""
 "<refpurpose>Returns true if any pair of primitives from the two "
 "topogeometries intersect.</refpurpose>"
 msgstr ""
+"<refpurpose>如果两个拓扑几何中的任何一对图元相交，则返回 true。</refpurpose>"
 
 #. Tag: para
 #: extras_topology.xml:3836
@@ -3496,7 +3789,7 @@ msgstr ""
 msgid ""
 "<para>Returns true if any pair of primitives from the two topogeometries "
 "intersect.</para>"
-msgstr ""
+msgstr "<para>如果两个拓扑几何中的任何一对图元相交，则返回 true。</para>"
 
 #. Tag: para
 #: extras_topology.xml:3843
@@ -3507,12 +3800,14 @@ msgid ""
 "topologies. Also not currently supported for hierarchical topogeometries "
 "(topogeometries composed of other topogeometries)."
 msgstr ""
+"作为几何集合的拓扑几何不支持此函数。 它也无法比较不同拓扑的拓扑几何形状。 目"
+"前也不支持分层拓扑几何（由其他拓扑几何组成的拓扑几何）。"
 
 #. Tag: title
 #: extras_topology.xml:3871
 #, no-c-format
 msgid "Importing and exporting Topologies"
-msgstr ""
+msgstr "导入和导出拓扑"
 
 #. Tag: para
 #: extras_topology.xml:3873
@@ -3522,6 +3817,8 @@ msgid ""
 "you might want to export them into a file-based format for backup or "
 "transfer into another database."
 msgstr ""
+"创建拓扑以及关联的拓扑层后，您可能希望将它们导出为基于文件的格式以进行备份或"
+"传输到另一个数据库中。"
 
 #. Tag: para
 #: extras_topology.xml:3879
@@ -3534,6 +3831,10 @@ msgid ""
 "databases so that parameter of your topology will need to be changes upon "
 "restoring it."
 msgstr ""
+"使用 PostgreSQL 的标准转储/恢复工具是有问题的，因为拓扑由一组表（基元为 4 "
+"个，层为任意数量）和元数据表中的记录（topology.topology 和 topology.layer）组"
+"成。 此外，拓扑标识符在数据库中并不是唯一的，因此在恢复拓扑时需要更改拓扑参"
+"数。"
 
 #. Tag: para
 #: extras_topology.xml:3888
@@ -3543,12 +3844,14 @@ msgid ""
 "provided: <filename>pgtopo_export</filename> and <filename>pgtopo_import</"
 "filename>. Example usage:"
 msgstr ""
+"为了简化拓扑的导出/恢复，提供了一对可执行文件：<filename>pgtopo_export</"
+"filename> 和<filename>pgtopo_import</filename>。 用法示例："
 
 #. Tag: title
 #: extras_topology.xml:3896
 #, no-c-format
 msgid "Using the Topology exporter"
-msgstr ""
+msgstr "使用拓扑导出器"
 
 #. Tag: para
 #: extras_topology.xml:3898
@@ -3558,6 +3861,8 @@ msgid ""
 "and a topology and outputs a dump file which can be used to import the "
 "topology (and associated layers) into a new database."
 msgstr ""
+"<filename>pgtopo_export </filename>脚本采用数据库和拓扑的名称，并输出转储文"
+"件，该文件可用于将拓扑（和关联的层）导入到新数据库中。"
 
 #. Tag: para
 #: extras_topology.xml:3904
@@ -3569,6 +3874,9 @@ msgid ""
 "optionally specify an output filename with the <code>-f</code> commandline "
 "switch."
 msgstr ""
+"默认情况下，<filename>pgtopo_export </filename>将转储文件写入标准输出，以便可"
+"以将其通过管道传输到 <filename>pgtopo_import </filename>或重定向到文件（拒绝"
+"写入终端）。 您可以选择使用<code> -f </code>命令行开关指定输出文件名。"
 
 #. Tag: para
 #: extras_topology.xml:3912
@@ -3580,6 +3888,10 @@ msgid ""
 "which case you can request skipping the layers with the <code>--skip-layers</"
 "code> switch and deal with those separately."
 msgstr ""
+"默认情况下，<filename>pgtopo_export</filename> 包含针对给定拓扑定义的所有层的"
+"转储。 这可能是比您需要的更多的数据，或者可能不起作用（如果您的图层表具有复杂"
+"的依赖关系），在这种情况下，您可以使用<code> --skip-layers</code> 开关请求跳"
+"过图层并单独处理这些图层。"
 
 #. Tag: para
 #: extras_topology.xml:3921
@@ -3588,6 +3900,8 @@ msgid ""
 "Invoking <filename>pgtopo_export</filename> with the <code>--help</code> (or "
 "<code>-h</code> for short) switch will always print short usage string."
 msgstr ""
+"使用<code> --help </code>（或简称 <code>-h</code>）命令调用 "
+"<filename>pgtopo_export</filename> 将始终打印简短的用法字符串。"
 
 #. Tag: para
 #: extras_topology.xml:3928
@@ -3602,12 +3916,17 @@ msgid ""
 "<code>--skip-layers</code> is given) a custom-format PostgreSQL dump of "
 "tables reported as being layers of the given topology."
 msgstr ""
+"转储文件格式是<filename> pgtopo_export</filename> 目录的压缩 tar 存档，其中至"
+"少包含一个带有格式版本信息的<filename> pgtopo_dump_version </filename>文件。 "
+"从版本<code> 1 </code>开始，该目录包含制表符分隔的 CSV 文件，其中包含拓扑基元"
+"表的数据（节点、边、面、关系）、与其关联的拓扑和层记录以及（除非给出 <code>--"
+"skip-layers</code>）自定义 -format PostgreSQL 转储表报告为给定拓扑的层。"
 
 #. Tag: title
 #: extras_topology.xml:3944
 #, no-c-format
 msgid "Using the Topology importer"
-msgstr ""
+msgstr "使用拓扑导入器"
 
 #. Tag: para
 #: extras_topology.xml:3946
@@ -3617,6 +3936,8 @@ msgid ""
 "code> format topology dump and a name to give to the topology to be created "
 "and outputs an SQL script reconstructing the topology and associated layers."
 msgstr ""
+"<filename>pgtopo_import </filename>脚本采用 <code>pgtopo_export </code>格式的"
+"拓扑转储和要创建的拓扑的名称，并输出重建拓扑和关联层的 SQL 脚本。"
 
 #. Tag: para
 #: extras_topology.xml:3954
@@ -3627,6 +3948,8 @@ msgid ""
 "topology layers by properly linking all TopoGeometry values to their correct "
 "topology."
 msgstr ""
+"生成的 SQL 文件将包含以下语句：创建具有给定名称的拓扑、在其中加载原始数据、通"
+"过将所有 TopoGeometry 值正确链接到其正确的拓扑来恢复和注册所有拓扑层。"
 
 #. Tag: para
 #: extras_topology.xml:3962
@@ -3637,6 +3960,9 @@ msgid ""
 "<filename>pgtopo_export</filename> in a pipeline. You can optionally specify "
 "an input filename with the <code>-f</code> commandline switch."
 msgstr ""
+"默认情况下，<filename>pgtopo_import </filename>从标准输入读取转储，以便它可以"
+"与管道中的 <filename>pgtopo_export </filename>结合使用。 您可以选择使用"
+"<code> -f</code> 命令行开关指定输入文件名。"
 
 #. Tag: para
 #: extras_topology.xml:3970
@@ -3645,6 +3971,8 @@ msgid ""
 "By default <filename>pgtopo_import</filename> includes in the output SQL "
 "file the code to restore all layers found in the dump."
 msgstr ""
+"默认情况下，<filename>pgtopo_import </filename>在输出 SQL 文件中包含用于恢复"
+"转储中找到的所有层的代码。"
 
 #. Tag: para
 #: extras_topology.xml:3975
@@ -3655,6 +3983,9 @@ msgid ""
 "request skipping the layers with the <code>--skip-layers</code> switch and "
 "deal with those separately (or later)."
 msgstr ""
+"如果您的目标数据库已经具有与转储中的表同名的表，这可能是不需要的或不起作用"
+"的。 在这种情况下，您可以使用<code> --skip-layers </code>命令请求跳过层并单独"
+"（或稍后）处理这些层。"
 
 #. Tag: para
 #: extras_topology.xml:3982
@@ -3665,3 +3996,6 @@ msgid ""
 "AFTER resolving the naming conflicts or to link layers to a different "
 "topology (say a spatially-simplified version of the starting topology)."
 msgstr ""
+"可以使用<code> --only-layers</code> 命令生成仅加载层并将层链接到命名拓扑的 "
+"SQL。 这对于在解决命名冲突后加载图层或将图层链接到不同的拓扑（例如起始拓扑的"
+"空间简化版本）非常有用。"
