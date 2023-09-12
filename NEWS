@@ -6,6 +6,10 @@ xxxx/xx/xx
   - #5055, add explicit <> geometry operator to prevent non-unique
            error with <> and != (Paul Ramsey)
 
+* Enhancements *
+
+  - #5531, documentation format upgraded to DocBook 5 (Sandro Santilli)
+
 
 PostGIS 3.4.0
 2023/08/15
