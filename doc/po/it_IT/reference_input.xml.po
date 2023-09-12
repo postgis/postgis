@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-07 10:14+0000\n"
+"PO-Revision-Date: 2023-09-13 00:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_inputxml/it/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #: reference_input.xml:4
@@ -319,8 +319,8 @@ msgstr ""
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced."
 msgstr ""
-"Miglioramento nella version 2.0.2: introdotto il supporto per superfici "
-"poliedriche e TIN. "
+"Miglioramento nella version 2.0.0: introdotto il supporto per superfici "
+"poliedriche e TIN."
 
 #. Tag: para
 #: reference_input.xml:250 reference_input.xml:872 reference_input.xml:1117
@@ -1551,7 +1551,7 @@ msgstr ""
 #: reference_input.xml:1603 reference_input.xml:1635
 #, no-c-format
 msgid "Availability: 3.2.0"
-msgstr ""
+msgstr "Disponibilità: 3.2.0"
 
 #. Tag: refpurpose
 #: reference_input.xml:1611
