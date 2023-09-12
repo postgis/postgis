@@ -4,14 +4,14 @@
 # pibinko <pibinko@gmail.com>, 2014
 # pibinko <pibinko@gmail.com>, 2014
 # Sandro Santilli <strk.io>, 2013
-# Sandro Santilli <strk@kbt.io>, 2013
-# Sandro Santilli <strk@kbt.io>, 2013
+# Sandro Santilli <strk@kbt.io>, 2013, 2023.
+# Sandro Santilli <strk@kbt.io>, 2013, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2022-01-19 11:54+0000\n"
+"PO-Revision-Date: 2023-09-13 00:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "extras_topologyxml/it/>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #: extras_topology.xml:6
@@ -1309,7 +1309,7 @@ msgstr ""
 #: extras_topology.xml:2313 extras_topology.xml:3575
 #, no-c-format
 msgid "Availability: 3.2.0"
-msgstr ""
+msgstr "Disponibilità: 3.2.0"
 
 #. Tag: refpurpose
 #: extras_topology.xml:880
