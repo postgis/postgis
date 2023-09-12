@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-08-12 00:40+0000\n"
-"PO-Revision-Date: 2023-09-05 05:07+0000\n"
+"PO-Revision-Date: 2023-09-12 14:55+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/introductionxml/zh_Hans/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #: introduction.xml:3
@@ -524,7 +524,7 @@ msgstr "比约恩·埃瑟"
 #: introduction.xml:231
 #, no-c-format
 msgid "Brian Hamlin"
-msgstr "布赖恩·哈姆林"
+msgstr "Brian Hamlin"
 
 #. Tag: member
 #: introduction.xml:232
@@ -578,7 +578,7 @@ msgstr "克里斯托夫·莫恩奇-泰格德"
 #: introduction.xml:240
 #, no-c-format
 msgid "Dane Springmeyer"
-msgstr "戴恩·斯普林迈尔"
+msgstr "Dane Springmeyer"
 
 #. Tag: member
 #: introduction.xml:241
@@ -1313,7 +1313,7 @@ msgstr "挪威生物经济研究所 (NIBIO)"
 #: introduction.xml:372
 #, no-c-format
 msgid "OSGeo"
-msgstr "开源地理空间基金会"
+msgstr "OSGeo"
 
 #. Tag: ulink
 #: introduction.xml:373
