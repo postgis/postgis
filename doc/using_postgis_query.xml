@@ -161,15 +161,19 @@
                   <entry></entry>
 
                   <entry align="center"><para><informalfigure>
-                      <graphic align="center" fileref="images/de9im04.png"
+                      <mediaobject><imageobject>
+                      <imagedata align="center" fileref="images/de9im04.png"
                                valign="middle" />
+                      </imageobject></mediaobject>
                     </informalfigure></para></entry>
                 </row>
 
                 <row>
                   <entry align="center" valign="middle"><para><informalfigure>
-                      <graphic align="center" fileref="images/de9im03.png"
+                      <mediaobject><imageobject>
+                      <imagedata align="center" fileref="images/de9im03.png"
                                valign="middle" />
+                      </imageobject></mediaobject>
                     </informalfigure></para></entry>
 
                   <entrytbl cols="4">
@@ -195,19 +199,25 @@
                             </entry>
 
                             <entry><para><informalfigure>
-                                <graphic fileref="images/de9im05.png" />
+                               <mediaobject><imageobject>
+                                <imagedata fileref="images/de9im05.png" />
+                               </imageobject></mediaobject>
                               </informalfigure></para><para><emphasis>dim( I(a) ∩ I(b) ) =
                             </emphasis><emphasis
                             role="bold">2</emphasis></para></entry>
 
                             <entry><para><informalfigure>
-                                <graphic fileref="images/de9im06.png" />
+                               <mediaobject><imageobject>
+                                <imagedata fileref="images/de9im06.png" />
+                               </imageobject></mediaobject>
                               </informalfigure></para><para><emphasis>dim( I(a) ∩ B(b)  =
                             </emphasis><emphasis
                             role="bold">1</emphasis></para></entry>
 
                             <entry><para><informalfigure>
-                                <graphic fileref="images/de9im07.png" />
+                      <mediaobject><imageobject>
+                                <imagedata fileref="images/de9im07.png" />
+                      </imageobject></mediaobject>
                               </informalfigure></para><para><emphasis>dim( I(a) ∩ E(b) ) =
                             </emphasis><emphasis
                             role="bold">2</emphasis></para></entry>
@@ -218,19 +228,25 @@
                             role="bold">Boundary</emphasis></entry>
 
                             <entry><para><informalfigure>
-                                <graphic fileref="images/de9im08.png" />
+                      <mediaobject><imageobject>
+                                <imagedata fileref="images/de9im08.png" />
+                      </imageobject></mediaobject>
                               </informalfigure></para><para><emphasis>dim( B(a) ∩ I(b) ) =
                             </emphasis><emphasis
                             role="bold">1</emphasis></para></entry>
 
                             <entry><para><informalfigure>
-                                <graphic fileref="images/de9im09.png" />
+                      <mediaobject><imageobject>
+                                <imagedata fileref="images/de9im09.png" />
+                      </imageobject></mediaobject>
                               </informalfigure></para><para><emphasis>dim( B(a) ∩ B(b) ) =
                             </emphasis><emphasis
                             role="bold">0</emphasis></para></entry>
 
                             <entry><para><informalfigure>
-                                <graphic fileref="images/de9im10.png" />
+                      <mediaobject><imageobject>
+                                <imagedata fileref="images/de9im10.png" />
+                      </imageobject></mediaobject>
                               </informalfigure></para><para><emphasis>dim( B(a) ∩ E(b) ) =
                             </emphasis><emphasis
                             role="bold">1</emphasis></para></entry>
@@ -241,19 +257,25 @@
                             role="bold">Exterior</emphasis></entry>
 
                             <entry><para><informalfigure>
-                                <graphic fileref="images/de9im11.png" />
+                      <mediaobject><imageobject>
+                                <imagedata fileref="images/de9im11.png" />
+                      </imageobject></mediaobject>
                               </informalfigure></para><para><emphasis>dim( E(a) ∩ I(b) ) =
                             </emphasis><emphasis
                             role="bold">2</emphasis></para></entry>
 
                             <entry><para><informalfigure>
-                                <graphic fileref="images/de9im12.png" />
+                      <mediaobject><imageobject>
+                                <imagedata fileref="images/de9im12.png" />
+                      </imageobject></mediaobject>
                               </informalfigure></para><para><emphasis>dim( E(a) ∩ B(b) ) =
                             </emphasis><emphasis
                             role="bold">1</emphasis></para></entry>
 
                             <entry><para><informalfigure>
-                                <graphic fileref="images/de9im13.png" />
+                      <mediaobject><imageobject>
+                                <imagedata fileref="images/de9im13.png" />
+                      </imageobject></mediaobject>
                               </informalfigure></para><para><emphasis>dim( E(a) ∩ E(b)  =
                             </emphasis><emphasis
                             role="bold">2</emphasis></para></entry>
@@ -329,7 +351,9 @@ FROM city JOIN state ON ST_Intersects(city.geom, state.geom);
             <tbody>
               <row>
                 <entry><para><informalfigure float="1" floatstyle="right">
-                    <graphic align="left" fileref="images/de9im01.png" />
+                      <mediaobject><imageobject>
+                    <imagedata align="left" fileref="images/de9im01.png" />
+                      </imageobject></mediaobject>
                   </informalfigure></para><para>For example, consider a linear
                 dataset representing a road network. It may be required
                 to identify all road segments that cross
@@ -358,7 +382,9 @@ FROM city JOIN state ON ST_Intersects(city.geom, state.geom);
             <tbody>
               <row>
                 <entry><para> <informalfigure float="1" floatstyle="right">
-                    <graphic align="right" fileref="images/de9im02.png" />
+                      <mediaobject><imageobject>
+                    <imagedata align="right" fileref="images/de9im02.png" />
+                      </imageobject></mediaobject>
                   </informalfigure></para> <para>A second
                 example is locating
                 wharves that intersect a lake's boundary on a line and
