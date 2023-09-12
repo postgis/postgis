@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-07 10:12+0000\n"
-"PO-Revision-Date: 2023-09-05 05:07+0000\n"
+"PO-Revision-Date: 2023-09-12 14:55+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/extras_address_standardizerxml/zh_Hans/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #: extras_address_standardizer.xml:3
@@ -262,7 +262,7 @@ msgstr ""
 #: extras_address_standardizer.xml:78
 #, no-c-format
 msgid "name"
-msgstr ""
+msgstr "Name"
 
 #. Tag: para
 #: extras_address_standardizer.xml:80 extras_address_standardizer.xml:415
@@ -583,7 +583,7 @@ msgstr ""
 #: extras_address_standardizer.xml:207
 #, no-c-format
 msgid "MIXED"
-msgstr ""
+msgstr "MIXED"
 
 #. Tag: para
 #: extras_address_standardizer.xml:209
@@ -691,7 +691,7 @@ msgstr ""
 #: extras_address_standardizer.xml:266
 #, no-c-format
 msgid "DIRECT"
-msgstr ""
+msgstr "DIRECT"
 
 #. Tag: para
 #: extras_address_standardizer.xml:268
