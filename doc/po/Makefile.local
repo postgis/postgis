@@ -26,5 +26,6 @@ include ../../Makefile
 PO2XML=po2xml
 
 $(XML_SOURCES): %.xml: %.xml.po $(abs_srcdir)/%.xml
-	$(PO2XML) $(abs_srcdir)/$@ $< > $@
+	$(PO2XML) $(abs_srcdir)/$@ $< > $@.tmp
+	mv $@.tmp $@
 
