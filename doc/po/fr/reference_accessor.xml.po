@@ -1490,9 +1490,9 @@ msgid ""
 "SQL-MM defines the result of ST_IsSimple(NULL) to be 0, while PostGIS "
 "returns NULL."
 msgstr ""
-"La norme SQL-MM indique que le résultat de la fonction <function> "
-"ST_IsSimple(<varname>NULL</varname>)</function> doit être 0 ; PostGIS "
-"renvoie <varname>NULL</varname>."
+"La norme SQL-MM indique que le résultat de la fonction "
+"ST_IsSimple(NULL) doit être 0 ; PostGIS "
+"renvoie NULL."
 
 #. Tag: para
 #: reference_accessor.xml:1327

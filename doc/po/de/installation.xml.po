@@ -355,8 +355,8 @@ msgid ""
 "org/postgis/ticket/4125</link>."
 msgstr ""
 "Wenn mit PostgreSQL+JIT kompiliert wird, ist die LLVM-Version &gt;=6 "
-"erforderlich <link url = \"https://trac.osgeo.org/postgis/ticket/4125\"> "
-"https://trac.osgeo.org/postgis/ticket/4125 </link>."
+"erforderlich <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4125\">"
+"https://trac.osgeo.org/postgis/ticket/4125</link>."
 
 #. Tag: emphasis
 #: installation.xml:217
