@@ -41,6 +41,7 @@ doc/**.xsl.xml
 *.tag
 doc/postgis-nospecial.xml
 doc/po/*/*.xml
+doc/po/*/*.xml.in
 doc/po/*/html
 doc/po/*/Makefile
 doc/po/*/xsl
