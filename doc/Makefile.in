@@ -576,7 +576,7 @@ check-xml: requirements_not_met_xmllint
 check-cheatsheets: requirements_not_met_xmllint
 else
 check-xml: postgis-out.xml
-	$(XMLLINT) --loaddtd $(XSLTPROC_PATH_OPT) --xinclude --valid postgis-out.xml --noout
+	$(XMLLINT) --loaddtd $(XSLTPROC_PATH_OPT) --xinclude --valid postgis-out.xml --noout --nonet
 
 check-cheatsheets: cheatsheets
 	for f in $(html_builddir)/*_cheatsheet-en.html; do \
