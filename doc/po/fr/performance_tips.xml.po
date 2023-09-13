@@ -115,8 +115,8 @@ msgstr ""
 "Pour voir si vous souffrez de ce problème, utilisez la commande postgresql "
 "\"EXPLAIN ANALYZE\". Pour plus d'informations et les détails techniques, "
 "vous pouvez lire le fil de discussion sur la liste de diffusion sur les "
-"performances de PostgreSQL : <link xlink:href=\"http ://archives.postgresql."
-"org/pgsql-performance/2005-02/msg00030.php\">http ://archives.postgresql.org/"
+"performances de PostgreSQL : <link xlink:href=\"http://archives.postgresql."
+"org/pgsql-performance/2005-02/msg00030.php\">http://archives.postgresql.org/"
 "pgsql-performance/2005-02/msg00030.php</link>"
 
 #. Tag: para

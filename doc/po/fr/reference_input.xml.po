@@ -1359,8 +1359,8 @@ msgstr ""
 "Namespace</para> </listitem> <listitem> <para>GML 3.1.1 Simple Features "
 "profile SF-2 (with GML 3.1.0 and 3.0.0 backward compatibility)</para> </"
 "listitem> <listitem> <para>GML 2.1.2</para> </listitem> </itemizedlist> OGC "
-"GML standards, cf : <link xlink:href=\"http ://www.opengeospatial.org/"
-"standards/gml\">http ://www.opengeospatial.org/standards/gml</link> :"
+"GML standards, cf : <link xlink:href=\"http://www.opengeospatial.org/"
+"standards/gml\">http://www.opengeospatial.org/standards/gml</link> :"
 
 #. Tag: para
 #: reference_input.xml:1286 reference_input.xml:1483
@@ -1561,7 +1561,7 @@ msgid ""
 msgstr ""
 "versions OGC KML supportées : <itemizedlist> <listitem> <para>KML 2.2.0 "
 "Namespace</para> </listitem> </itemizedlist> OGC KML standards, cf : <link "
-"xlink:href=\"http ://www.opengeospatial.org/standards/kml\">http ://www."
+"xlink:href=\"http://www.opengeospatial.org/standards/kml\">http://www."
 "opengeospatial.org/standards/kml</link> :"
 
 #. Tag: para
