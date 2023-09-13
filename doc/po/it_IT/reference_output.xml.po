@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-13 00:23+0000\n"
+"PO-Revision-Date: 2023-09-13 10:51+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_outputxml/it/>\n"
@@ -280,7 +280,7 @@ msgstr ""
 #: reference_output.xml:186
 #, no-c-format
 msgid "Well-Known Binary (WKB)"
-msgstr ""
+msgstr "Well-Known Binary (WKB)"
 
 #. Tag: refpurpose
 #: reference_output.xml:191
@@ -459,7 +459,7 @@ msgstr ""
 #: reference_output.xml:382
 #, no-c-format
 msgid "Other Formats"
-msgstr ""
+msgstr "Altri formati"
 
 #. Tag: refpurpose
 #: reference_output.xml:387
@@ -484,6 +484,10 @@ msgid ""
 "be preserved in Encoded Polyline. Value should be the same on encoding and "
 "decoding, or coordinates will be incorrect."
 msgstr ""
+"Opzionale <varname>precision</varname> specifica quante cifre decimali "
+"saranno conservate nella polilinea codificata. Il valore deve essere lo "
+"stesso nella codifica e nella decodifica, altrimenti le coordinate non "
+"saranno corrette."
 
 #. Tag: para
 #: reference_output.xml:406 reference_output.xml:1271
@@ -1121,13 +1125,13 @@ msgstr ""
 #: reference_output.xml:962
 #, no-c-format
 msgid "LOC MARC21/XML versions supported:"
-msgstr ""
+msgstr "Versioni LOC MARC21/XML supportate:"
 
 #. Tag: link
 #: reference_output.xml:966
 #, no-c-format
 msgid "MARC21/XML 1.1"
-msgstr ""
+msgstr "MARC21/XML 1.1"
 
 #. Tag: para
 #: reference_output.xml:971
