@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-12 14:55+0000\n"
+"PO-Revision-Date: 2023-09-13 03:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/using_raster_datamanxml/zh_Hans/>\n"
@@ -163,19 +163,19 @@ msgstr "<term>-?</term>"
 msgid ""
 "Display help screen. Help will also display if you don't pass in any "
 "arguments."
-msgstr ""
+msgstr "显示帮助屏幕。 如果您不传入任何参数，也会显示帮助。"
 
 #. Tag: term
 #: using_raster_dataman.xml:59
 #, no-c-format
 msgid "<term>-G</term>"
-msgstr ""
+msgstr "<term>-G</term>"
 
 #. Tag: para
 #: using_raster_dataman.xml:61
 #, no-c-format
 msgid "Print the supported raster formats."
-msgstr ""
+msgstr "打印支持的栅格格式。"
 
 #. Tag: term
 #: using_raster_dataman.xml:68
@@ -187,7 +187,7 @@ msgstr "（c|a|d|p）这些是相互排斥的选项："
 #: using_raster_dataman.xml:73
 #, no-c-format
 msgid "<term>-c</term>"
-msgstr ""
+msgstr "<term>-c</term>"
 
 #. Tag: para
 #: using_raster_dataman.xml:75
@@ -195,43 +195,43 @@ msgstr ""
 msgid ""
 "Create new table and populate it with raster(s), <emphasis>this is the "
 "default mode</emphasis>"
-msgstr ""
+msgstr "创建新表并用栅格填充它，<emphasis>这是默认模式</emphasis>"
 
 #. Tag: term
 #: using_raster_dataman.xml:82
 #, no-c-format
 msgid "<term>-a</term>"
-msgstr ""
+msgstr "<term>-a</term>"
 
 #. Tag: para
 #: using_raster_dataman.xml:84
 #, no-c-format
 msgid "Append raster(s) to an existing table."
-msgstr ""
+msgstr "将栅格附加到现有表。"
 
 #. Tag: term
 #: using_raster_dataman.xml:91
 #, no-c-format
 msgid "<term>-d</term>"
-msgstr ""
+msgstr "<term>-d</term>"
 
 #. Tag: para
 #: using_raster_dataman.xml:93
 #, no-c-format
 msgid "Drop table, create new one and populate it with raster(s)"
-msgstr ""
+msgstr "删除表，创建新表并用栅格填充它"
 
 #. Tag: term
 #: using_raster_dataman.xml:100
 #, no-c-format
 msgid "<term>-p</term>"
-msgstr ""
+msgstr "<term>-p</term>"
 
 #. Tag: para
 #: using_raster_dataman.xml:102
 #, no-c-format
 msgid "Prepare mode, only create the table."
-msgstr ""
+msgstr "准备模式，只创建表。"
 
 #. Tag: term
 #: using_raster_dataman.xml:113
@@ -239,13 +239,13 @@ msgstr ""
 msgid ""
 "Raster processing: Applying constraints for proper registering in raster "
 "catalogs"
-msgstr ""
+msgstr "栅格处理：应用约束以在栅格目录中正确注册"
 
 #. Tag: term
 #: using_raster_dataman.xml:118
 #, no-c-format
 msgid "<term>-C</term>"
-msgstr ""
+msgstr "<term>-C</term>"
 
 #. Tag: para
 #: using_raster_dataman.xml:120
@@ -253,13 +253,14 @@ msgstr ""
 msgid ""
 "Apply raster constraints -- srid, pixelsize etc. to ensure raster is "
 "properly registered in <varname>raster_columns</varname> view."
-msgstr ""
+msgstr "应用栅格约束——srid、像素大小等，以确保栅格在<varname>raster_columns</"
+"varname> 视图中正确配准。"
 
 #. Tag: term
 #: using_raster_dataman.xml:126
 #, no-c-format
 msgid "<term>-x</term>"
-msgstr ""
+msgstr "<term>-x</term>"
 
 #. Tag: para
 #: using_raster_dataman.xml:128
@@ -267,7 +268,7 @@ msgstr ""
 msgid ""
 "Disable setting the max extent constraint. Only applied if -C flag is also "
 "used."
-msgstr ""
+msgstr "禁用设置最大范围约束。 仅当还使用 -C 指令时才适用。"
 
 #. Tag: term
 #: using_raster_dataman.xml:134
@@ -281,7 +282,7 @@ msgstr "<term>-r</term>"
 msgid ""
 "Set the constraints (spatially unique and coverage tile) for regular "
 "blocking. Only applied if -C flag is also used."
-msgstr ""
+msgstr "设置规范块约束（空间唯一和详尽的切片）。 仅当还使用 -C 指令时才适用。"
 
 #. Tag: term
 #: using_raster_dataman.xml:147
@@ -289,13 +290,13 @@ msgstr ""
 msgid ""
 "Raster processing: Optional parameters used to manipulate input raster "
 "dataset"
-msgstr ""
+msgstr "栅格处理：用于操作输入栅格数据集的可选参数"
 
 #. Tag: term
 #: using_raster_dataman.xml:152
 #, no-c-format
 msgid "-s &lt;SRID&gt;"
-msgstr ""
+msgstr "-s <SRID>"
 
 #. Tag: para
 #: using_raster_dataman.xml:154
@@ -303,13 +304,14 @@ msgstr ""
 msgid ""
 "Assign output raster with specified SRID. If not provided or is zero, "
 "raster's metadata will be checked to determine an appropriate SRID."
-msgstr ""
+msgstr "使用指定的 SRID 分配输出栅格。 如果未提供或为零，"
+"则将检查栅格的元数据以确定适当的 SRID。"
 
 #. Tag: term
 #: using_raster_dataman.xml:161
 #, no-c-format
 msgid "-b BAND"
-msgstr ""
+msgstr "-b BAND"
 
 #. Tag: para
 #: using_raster_dataman.xml:163
@@ -318,13 +320,14 @@ msgid ""
 "Index (1-based) of band to extract from raster. For more than one band "
 "index, separate with comma (,). If unspecified, all bands of raster will be "
 "extracted."
-msgstr ""
+msgstr "从栅格中提取的波段索引（从 1 开始）。 对于多个波段索引，用逗号（,）分隔。 "
+"如果未指定，则将提取栅格的所有波段。"
 
 #. Tag: term
 #: using_raster_dataman.xml:171
 #, no-c-format
 msgid "-t TILE_SIZE"
-msgstr ""
+msgstr "-t TILE_SIZE"
 
 #. Tag: para
 #: using_raster_dataman.xml:173
@@ -335,12 +338,15 @@ msgid ""
 "the loader to compute an appropriate tile size using the first raster and "
 "applied to all rasters."
 msgstr ""
+"将光栅切割成图块，以便在每个表行插入一个图块。<varname> TILE_SIZE</varname> "
+"表示为 WIDTHxHEIGHT 或设置为值“auto”，以允许加载程序使用第一个栅格计算适当的"
+"切片大小并将其应用于所有栅格。"
 
 #. Tag: term
 #: using_raster_dataman.xml:180
 #, no-c-format
 msgid "<term>-P</term>"
-msgstr ""
+msgstr "<term>-P</term>"
 
 #. Tag: para
 #: using_raster_dataman.xml:182
@@ -348,19 +354,19 @@ msgstr ""
 msgid ""
 "Pad right-most and bottom-most tiles to guarantee that all tiles have the "
 "same width and height."
-msgstr ""
+msgstr "填充最右侧和最底部的图块，以保证所有图块具有相同的宽度和高度。"
 
 #. Tag: term
 #: using_raster_dataman.xml:192
 #, no-c-format
 msgid "-R, --register"
-msgstr ""
+msgstr "-R, --register"
 
 #. Tag: para
 #: using_raster_dataman.xml:194
 #, no-c-format
 msgid "Register the raster as a filesystem (out-db) raster."
-msgstr ""
+msgstr "将栅格注册为文件系统 (out-db) 栅格。"
 
 #. Tag: para
 #: using_raster_dataman.xml:195
@@ -368,13 +374,13 @@ msgstr ""
 msgid ""
 "Only the metadata of the raster and path location to the raster is stored in "
 "the database (not the pixels)."
-msgstr ""
+msgstr "仅栅格的元数据和栅格的路径位置存储在数据库中（而不是像素）。"
 
 #. Tag: term
 #: using_raster_dataman.xml:200
 #, no-c-format
 msgid "-l OVERVIEW_FACTOR"
-msgstr ""
+msgstr "-l OVERVIEW_FACTOR"
 
 #. Tag: para
 #: using_raster_dataman.xml:201
@@ -388,72 +394,77 @@ msgid ""
 "the database and is not affected by -R. Note that your generated sql file "
 "will contain both the main table and overview tables."
 msgstr ""
+"创建栅格的概览。 对于多个因素，用逗号（，）分隔。 概览表名称遵循 "
+"o_<varname>overview Factor</varname>_<varname>table</varname> 模式，其中<varn"
+"ame>概览因子</varname>是数字概览因子的占位符，<varname>表</varname>将替换为基"
+"表名称。 创建的概述存储在数据库中，不受-R影响。 请注意，生成的 sql "
+"文件将包含主表和概览表。"
 
 #. Tag: term
 #: using_raster_dataman.xml:209
 #, no-c-format
 msgid "-N NODATA"
-msgstr ""
+msgstr "-N NODATA"
 
 #. Tag: para
 #: using_raster_dataman.xml:211
 #, no-c-format
 msgid "NODATA value to use on bands without a NODATA value."
-msgstr ""
+msgstr "NODATA 值用于没有 NODATA 值的带。"
 
 #. Tag: term
 #: using_raster_dataman.xml:223
 #, no-c-format
 msgid "Optional parameters used to manipulate database objects"
-msgstr ""
+msgstr "用于操作数据库对象的可选参数"
 
 #. Tag: term
 #: using_raster_dataman.xml:228
 #, no-c-format
 msgid "-f COLUMN"
-msgstr ""
+msgstr "-f COLUMN"
 
 #. Tag: para
 #: using_raster_dataman.xml:230
 #, no-c-format
 msgid "Specify name of destination raster column, default is 'rast'"
-msgstr ""
+msgstr "指定目标栅格列的名称，默认为“rast”"
 
 #. Tag: term
 #: using_raster_dataman.xml:236
 #, no-c-format
 msgid "<term>-F</term>"
-msgstr ""
+msgstr "<term>-F</term>"
 
 #. Tag: para
 #: using_raster_dataman.xml:238
 #, no-c-format
 msgid "Add a column with the name of the file"
-msgstr ""
+msgstr "添加包含文件名的列"
 
 #. Tag: term
 #: using_raster_dataman.xml:243
 #, no-c-format
 msgid "-n COLUMN"
-msgstr ""
+msgstr "-n COLUMN"
 
 #. Tag: para
 #: using_raster_dataman.xml:245
 #, no-c-format
 msgid "Specify the name of the filename column. Implies -F."
-msgstr ""
+msgstr "指定文件名列的名称。 意味着-F。"
 
 #. Tag: term
 #: using_raster_dataman.xml:250
 #, no-c-format
 msgid "<term>-q</term>"
-msgstr ""
+msgstr "<term>-q</term>"
 
 #. Tag: para
 #: using_raster_dataman.xml:252
 #, no-c-format
 msgid "Wrap PostgreSQL identifiers in quotes."
-msgstr ""
+msgstr "将 PostgreSQL 标识符括在引号中。"
 
 #. Tag: term
 #: using_raster_dataman.xml:257
@@ -465,25 +476,25 @@ msgstr "<term>-I</term>"
 #: using_raster_dataman.xml:259
 #, no-c-format
 msgid "Create a GiST index on the raster column."
-msgstr ""
+msgstr "在栅格列上创建 GiST 索引。"
 
 #. Tag: term
 #: using_raster_dataman.xml:266
 #, no-c-format
 msgid "<term>-M</term>"
-msgstr ""
+msgstr "<term>-M</term>"
 
 #. Tag: para
 #: using_raster_dataman.xml:268
 #, no-c-format
 msgid "Vacuum analyze the raster table."
-msgstr ""
+msgstr "真空分析栅格表。"
 
 #. Tag: term
 #: using_raster_dataman.xml:276
 #, no-c-format
 msgid "<term>-k</term>"
-msgstr ""
+msgstr "<term>-k</term>"
 
 #. Tag: para
 #: using_raster_dataman.xml:278
@@ -493,12 +504,14 @@ msgid ""
 "you save time in checking, but could end up with far more junk rows in your "
 "database and those junk rows are not marked as empty tiles."
 msgstr ""
+"保留空的瓦片并跳过每个光栅波段的NODATA值检查。请注意，这样可以节省检查的时间"
+"，但可能会导致数据库中出现更多的垃圾行，并且这些垃圾行不会标记为空的瓦片。"
 
 #. Tag: term
 #: using_raster_dataman.xml:287
 #, no-c-format
 msgid "-T tablespace"
-msgstr ""
+msgstr "-T tablespace"
 
 #. Tag: para
 #: using_raster_dataman.xml:289
@@ -507,13 +520,14 @@ msgid ""
 "Specify the tablespace for the new table. Note that indices (including the "
 "primary key) will still use the default tablespace unless the -X flag is "
 "also used."
-msgstr ""
+msgstr "指定新表的表空间。 请注意，索引（包括主键）仍将使用默认表空间，除非还使用了 -"
+"X 标志。"
 
 #. Tag: term
 #: using_raster_dataman.xml:298
 #, no-c-format
 msgid "-X tablespace"
-msgstr ""
+msgstr "-X tablespace"
 
 #. Tag: para
 #: using_raster_dataman.xml:300
@@ -521,13 +535,13 @@ msgstr ""
 msgid ""
 "Specify the tablespace for the table's new index. This applies to the "
 "primary key and the spatial index if the -I flag is used."
-msgstr ""
+msgstr "指定表的新索引的表空间。 如果使用 -I 标志，这适用于主键和空间索引。"
 
 #. Tag: term
 #: using_raster_dataman.xml:309
 #, no-c-format
 msgid "-Y max_rows_per_copy=50"
-msgstr ""
+msgstr "-Y max_rows_per_copy=50"
 
 #. Tag: para
 #: using_raster_dataman.xml:311
@@ -535,25 +549,26 @@ msgstr ""
 msgid ""
 "Use copy statements instead of insert statements. Optionally specify "
 "<varname>max_rows_per_copy</varname>; default 50 when not specified."
-msgstr ""
+msgstr "使用复制语句而不是插入语句。 可以选择指定 "
+"<varname>max_rows_per_copy</varname>； 未指定时默认为 50。"
 
 #. Tag: term
 #: using_raster_dataman.xml:323
 #, no-c-format
 msgid "<term>-e</term>"
-msgstr ""
+msgstr "<term>-e</term>"
 
 #. Tag: para
 #: using_raster_dataman.xml:324
 #, no-c-format
 msgid "Execute each statement individually, do not use a transaction."
-msgstr ""
+msgstr "单独执行每条语句，不使用事务。"
 
 #. Tag: term
 #: using_raster_dataman.xml:328
 #, no-c-format
 msgid "-E ENDIAN"
-msgstr ""
+msgstr "-E ENDIAN"
 
 #. Tag: para
 #: using_raster_dataman.xml:329
@@ -561,13 +576,14 @@ msgstr ""
 msgid ""
 "Control endianness of generated binary output of raster; specify 0 for XDR "
 "and 1 for NDR (default); only NDR output is supported now"
-msgstr ""
+msgstr "控制生成的光栅二进制输出的字节顺序； 为 XDR 指定 0，为 NDR 指定 1（默认）； "
+"现在仅支持 NDR 输出"
 
 #. Tag: term
 #: using_raster_dataman.xml:333
 #, no-c-format
 msgid "-V version"
-msgstr ""
+msgstr "-V version"
 
 #. Tag: para
 #: using_raster_dataman.xml:334
@@ -575,13 +591,13 @@ msgstr ""
 msgid ""
 "Specify version of output format. Default is 0. Only 0 is supported at this "
 "time."
-msgstr ""
+msgstr "指定输出格式的版本。 默认为0。目前仅支持0。"
 
 #. Tag: title
 #: using_raster_dataman.xml:345
 #, no-c-format
 msgid "Creating rasters using PostGIS raster functions"
-msgstr ""
+msgstr "使用 PostGIS 栅格函数创建栅格"
 
 #. Tag: para
 #: using_raster_dataman.xml:346
@@ -590,7 +606,8 @@ msgid ""
 "On many occasions, you'll want to create rasters and raster tables right in "
 "the database. There are a plethora of functions to do that. The general "
 "steps to follow."
-msgstr ""
+msgstr "在许多情况下，您需要直接在数据库中创建栅格和栅格表。 "
+"有很多函数可以做到这一点。 要遵循的一般步骤。"
 
 #. Tag: para
 #: using_raster_dataman.xml:348
@@ -598,7 +615,7 @@ msgstr ""
 msgid ""
 "Create a table with a raster column to hold the new raster records which can "
 "be accomplished with:"
-msgstr ""
+msgstr "创建一个包含栅格列的表来保存新的栅格记录，可以通过以下方式完成："
 
 #. Tag: para
 #: using_raster_dataman.xml:352
@@ -609,6 +626,9 @@ msgid ""
 "linkend=\"RT_ST_MakeEmptyRaster\"/>, followed by <xref "
 "linkend=\"RT_ST_AddBand\"/>"
 msgstr ""
+"有许多功能可以帮助实现这一目标。 "
+"如果您创建的栅格不是其他栅格的衍生品，则需要从以下位置开始：<xref linkend="
+"\"RT_ST_MakeEmptyRaster\"/>，然后是 <xref linkend=\"RT_ST_AddBand\"/>"
 
 #. Tag: para
 #: using_raster_dataman.xml:354
@@ -620,6 +640,9 @@ msgid ""
 "linkend=\"RT_ST_MapAlgebraFct2\"/> or any of the family of other map algebra "
 "functions."
 msgstr ""
+"您还可以从几何图形创建栅格。 为了实现这一点，您可能需要使用 <xref linkend="
+"\"RT_ST_AsRaster\"/> 以及其他函数，例如 <xref linkend=\"RT_ST_Union\"/> 或 "
+"<xref linkend=\"RT_ST_MapAlgebraFct2\"/>或任何其他地图代数函数系列。"
 
 #. Tag: para
 #: using_raster_dataman.xml:356
@@ -629,6 +652,8 @@ msgid ""
 "existing tables. For example you can create a raster table in a different "
 "projection from an existing one using <xref linkend=\"RT_ST_Transform\"/>"
 msgstr ""
+"甚至还有更多选项可用于从现有表创建新栅格表。 例如，您可以使用 <xref linkend="
+"\"RT_ST_Transform\"/>在与现有投影不同的投影中创建栅格表"
 
 #. Tag: para
 #: using_raster_dataman.xml:358
@@ -636,7 +661,7 @@ msgstr ""
 msgid ""
 "Once you are done populating your table initially, you'll want to create a "
 "spatial index on the raster column with something like:"
-msgstr ""
+msgstr "最初填充表后，您将需要在栅格列上创建一个空间索引，如下所示："
 
 #. Tag: para
 #: using_raster_dataman.xml:360
@@ -644,7 +669,8 @@ msgstr ""
 msgid ""
 "Note the use of <xref linkend=\"RT_ST_ConvexHull\"/> since most raster "
 "operators are based on the convex hull of the rasters."
-msgstr ""
+msgstr "请注意 <xref linkend=\"RT_ST_ConvexHull\""
+"/>的使用，因为大多数栅格运算符都基于栅格的凸包。"
 
 #. Tag: para
 #: using_raster_dataman.xml:361
@@ -653,7 +679,8 @@ msgid ""
 "Pre-2.0 versions of PostGIS raster were based on the envelop rather than the "
 "convex hull. For the spatial indexes to work properly you'll need to drop "
 "those and replace with convex hull based index."
-msgstr ""
+msgstr "PostGIS 栅格 2.0 之前的版本基于最小外接矩形而不是凸包。 "
+"为了使空间索引正常工作，您需要删除它们并替换为基于凸包的索引。"
 
 #. Tag: para
 #: using_raster_dataman.xml:362
