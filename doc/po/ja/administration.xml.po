@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-13 03:23+0000\n"
+"PO-Revision-Date: 2023-09-13 05:59+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/administrationxml/ja/>\n"
 "Language: ja\n"
@@ -696,7 +696,7 @@ msgid ""
 "spatial_ref_sys table would lose a check constraint guarding for that "
 "invariant to hold and possibly also its primary key ( when multiple invalid "
 "SRIDS get converted to the same reserved SRID value )."
-msgstr "ダンプファイル内のspatial_ref_sysにあるカスタムレコードが不正なSRIDになっていることがあります。妥当なSRID値は0より大きく999000より小さくなります。999000から999999の間は内部利用のための予約領域ですが、999999より大きい値は一切使用できません。全ての不正なSRIDを持つ独自レコードは、999999以上は予約領域に移動して、保持されます。しかし、spatial_ref_sysテーブルから、値が保持されるように設定されているチェック制約が外れます。場合によっては (複数の不正なSRIDが同じ予約領域のSRID値に変換されるとき)、主キーも外れます。"
+msgstr "ダンプファイル内のspatial_ref_sysにあるカスタムレコードが不正なSRIDになっていることがあります。妥当なSRID値は0より大きく999000より小さくなります。999000から999999の間は内部利用のための予約領域ですが、SRID値 &gt; 999999 の場合は、その値は一切使用できません。全ての不正なSRIDを持つ独自レコードは、SRID値 &gt; 999999 の場合は予約領域に移動して、保持されます。しかし、spatial_ref_sysテーブルから、値が保持されるように設定されているチェック制約が外れます。場合によっては (複数の不正なSRIDが同じ予約領域のSRID値に変換されるとき)、主キーも外れます。"
 
 #. Tag: para
 #: administration.xml:360
