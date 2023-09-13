@@ -9,15 +9,16 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2018-07-23 18:01+0000\n"
-"Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
-"Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
-"language/pt_BR/)\n"
+"PO-Revision-Date: 2023-09-13 07:05+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"Language-Team: Portuguese (Brazil) <https://weblate.osgeo.org/projects/"
+"postgis/using_postgis_datamanxml/pt_BR/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #: using_postgis_dataman.xml:3
@@ -699,7 +700,7 @@ msgstr ""
 
 #. Tag: para
 #: using_postgis_dataman.xml:417
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The SFA standard specifies that spatial objects include a Spatial Reference "
 "System identifier (SRID). The SRID is required when creating spatial objects "
@@ -709,7 +710,8 @@ msgstr ""
 "A especificação OpenGIS também requer que o formato do armazenamento interno "
 "dos objetos espacias incluam um identificador de sistema de referência "
 "espacial (SRID). O SRID é fundamental na criação de objetos espaciais para a "
-"inserção no banco de dados. "
+"inserção no banco de dados. Consulte <xref linkend=\"ST_SRID\"/> e <xref "
+"linkend=\"spatial_ref_sys\"/>"
 
 #. Tag: para
 #: using_postgis_dataman.xml:422
@@ -1002,11 +1004,11 @@ msgid ""
 "called \"geodetic\" coordinates, or \"lat/lon\", or \"lon/lat\"). Geographic "
 "coordinates are spherical coordinates expressed in angular units (degrees)."
 msgstr ""
-"O tipo de geografia fornece suporte natural para características "
-"representadas nas coordenadas\"geográficas\" (às vezes chamadas de "
-"coordenadas \"geodéticas\", ou \"lat/lon\", ou 'lon/lat\"). As coordenadas "
-"geográficas são coordenadas esféricas expressadas em unidades angulares "
-"(graus)."
+"O tipo de dados PostGIS <varname>geography</varname> oferece suporte nativo "
+"para recursos espaciais representados em coordenadas \"geográficas\" (às "
+"vezes chamadas de coordenadas \"geodésicas\", \"lat/lon\" ou \"lon/lat\"). "
+"As coordenadas geográficas são coordenadas esféricas expressas em unidades "
+"angulares (graus)."
 
 #. Tag: para
 #: using_postgis_dataman.xml:579
@@ -2288,7 +2290,7 @@ msgstr ""
 
 #. Tag: para
 #: using_postgis_dataman.xml:1448
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "the <emphasis role=\"bold\">spatial type modifier</emphasis> restricts the "
 "kind of shapes and dimensions allowed in the column. The value can be any of "
@@ -2300,12 +2302,15 @@ msgid ""
 "third dimension as a measure. Similarly, 'POINTZM' requires four dimensional "
 "(XYZM) data."
 msgstr ""
-"Os valores permitidos para o modificador de tipo são: PONTO, LINESTRING, "
-"POLÍGONO, MULTIPONTO, MULTILINESTRING, MULTIPOLÍGONO. O modificador também "
-"suporta restrições de dimensionalidade através de sufixos: Z, M, e ZM. "
-"Então, por exemplo, um modificador de 'LINESTRINGM' só permitiria line "
-"strings com três dimensões, e trataria a terceira dimensão como uma medida. "
-"Da mesma forma, 'PONTOZM' esperaria dados de quatro dimensões. "
+"O modificador de tipo espacial <emphasis role=\"bold\"></emphasis> restringe "
+"o tipo de formas e dimensões permitidas na coluna. O valor pode ser qualquer "
+"um dos subtipos de geometria <link linkend=\"RefObject\">suportados</link> ("
+"por exemplo, POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, "
+"MULTIPOLYGON, GEOMETRYCOLLECTION etc.). O modificador oferece suporte a "
+"restrições de dimensionalidade de coordenadas adicionando sufixos: Z, M e "
+"ZM. Por exemplo, um modificador de \"LINESTRINGM\" permite apenas linhas com "
+"três dimensões e trata a terceira dimensão como uma medida. Da mesma forma, "
+"'POINTZM' requer dados de quatro dimensões (XYZM)."
 
 #. Tag: para
 #: using_postgis_dataman.xml:1459
@@ -2374,7 +2379,7 @@ msgstr "A GEOMETRY_COLUMNS VIEW"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1504
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The OGC <emphasis>Simple Features Specification for SQL</emphasis> defines "
 "the <varname>GEOMETRY_COLUMNS</varname> metadata table to describe geometry "
@@ -2383,11 +2388,13 @@ msgid ""
 "metadata information is always consistent with the currently defined tables "
 "and views. The view structure is:"
 msgstr ""
-"O OpenGIS \"Especificação de Características Simples para SQL\" define tipos "
-"padrão de objetos GIS, as funções requeridas para manipulá-los e um conjunto "
-"de tabelas de metadados. Querendo certificar-se de que os metadados "
-"permaneçam consistentes, operações como criar e remover uma coluna espacial "
-"são carregadas para fora dos procedimentos especiais definido pelo OpenGIS. "
+"A OGC <emphasis>Simple Features Specification for SQL</emphasis> define a "
+"tabela de metadados <varname>GEOMETRY_COLUMNS</varname> para descrever a "
+"estrutura da tabela de geometria. No PostGIS <varname>geometry_columns</"
+"varname> é uma visualização que lê as tabelas de catálogo do sistema de "
+"banco de dados. Isso garante que as informações de metadados espaciais sejam "
+"sempre consistentes com as tabelas e visualizações definidas atualmente. A "
+"estrutura da visualização é:"
 
 #. Tag: term
 #: using_postgis_dataman.xml:1517
@@ -2436,14 +2443,16 @@ msgstr "A dimensão espacial (2, 3 ou 4 dimensões) da coluna. "
 
 #. Tag: para
 #: using_postgis_dataman.xml:1547
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The ID of the spatial reference system used for the coordinate geometry in "
 "this table. It is a foreign key reference to the <varname>spatial_ref_sys</"
 "varname> table (see <xref linkend=\"spatial_ref_sys_table\"/>)."
 msgstr ""
-"A ID do sistema de referência espacial usada pela coordenada nesta coluna. É "
-"uma referência de chave estrangeira para <varname>SPATIAL_REF_SYS</varname>."
+"A ID do sistema de referência espacial usado para a geometria de coordenadas "
+"nessa tabela. É uma referência de chave estrangeira para a tabela "
+"<varname>spatial_ref_sys</varname> (consulte <xref linkend="
+"\"spatial_ref_sys_table\"/>)."
 
 #. Tag: term
 #: using_postgis_dataman.xml:1555
@@ -2574,18 +2583,18 @@ msgstr "Usando SQL para recuperar dados"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1618
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If spatial data can be converted to a text representation (as either WKT or "
 "WKB), then using SQL might be the easiest way to get data into PostGIS. Data "
 "can be bulk-loaded into PostGIS/PostgreSQL by loading a text file of SQL "
 "<code>INSERT</code> statements using the <code>psql</code> SQL utility."
 msgstr ""
-"Se você puder converter seus dados para uma representação de texto, então "
-"usar SQL formatado pode ser mais fácil de colocar seus dados no PostGIS. "
-"Como com o Oracle e outros banco de dados SQL, dados só podem ser carregados "
-"em volume canalizando um grande arquivo de texto cheio de declarações SQL "
-"\"INSERT\" dentro do monitor SQL. "
+"Se os dados espaciais puderem ser convertidos em uma representação de texto ("
+"como WKT ou WKB), o uso do SQL poderá ser a maneira mais fácil de inserir os "
+"dados no PostGIS. Os dados podem ser carregados em massa no PostGIS/"
+"PostgreSQL carregando um arquivo de texto de instruções SQL <code>INSERT</"
+"code> usando o utilitário SQL <code>psql</code>."
 
 #. Tag: para
 #: using_postgis_dataman.xml:1623
@@ -2599,11 +2608,10 @@ msgstr ""
 
 #. Tag: para
 #: using_postgis_dataman.xml:1628
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "The SQL file can be loaded into PostgreSQL using <code>psql</code>:"
 msgstr ""
-"O arquivo de dados pode ser canalizado para PostgreSQL facilmente usando o "
-"\"psql\" SQL  monitor terminal: "
+"O arquivo SQL pode ser carregado no PostgreSQL usando <code>psql</code>:"
 
 #. Tag: title
 #: using_postgis_dataman.xml:1634
@@ -3073,15 +3081,15 @@ msgstr "Usando SQL para recuperar dados"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1915
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The most straightforward way of extracting spatial data out of the database "
 "is to use a SQL <code>SELECT</code> query to define the data set to be "
 "extracted and dump the resulting columns into a parsable text file:"
 msgstr ""
-"O mais simples significa extrair os dados do banco de dados, é usar uma "
-"consulta SQL para reduzir o número de RELATOS e COLUNAS retornados e "
-"abandonar as colunas resultantes dentro de um arquivo de texto analisável: "
+"A maneira mais direta de extrair dados espaciais do banco de dados é usar "
+"uma consulta SQL <code>SELECT</code> para definir o conjunto de dados a ser "
+"extraído e despejar as colunas resultantes em um arquivo de texto analisável:"
 
 #. Tag: para
 #: using_postgis_dataman.xml:1922
@@ -3371,7 +3379,7 @@ msgstr ""
 
 #. Tag: para
 #: using_postgis_dataman.xml:2098
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<emphasis role=\"bold\">GiST (Generalized Search Tree)</emphasis> indexes "
 "break up data into \"things to one side\", \"things which overlap\", "
@@ -3380,10 +3388,13 @@ msgid ""
 "to index spatial data. GiST is the most commonly-used and versatile spatial "
 "index method, and offers very good query performance."
 msgstr ""
-"GiST (Generalized Search Trees) dissolvem dados em \"coisas de um lado\", "
-"\"coisas que sobrepõem\", \"coisas que estão dentro\" e pode ser usado em "
-"vários tipos de dados, incluindo dados GIS. O PostGIS usa o índice R-Tree "
-"implementado no topo do GiST para classificar dados GIS. "
+"<emphasis role=\"bold\">Os índices GiST (Generalized Search Tree)</emphasis> "
+"dividem os dados em \"coisas para um lado\", \"coisas que se sobrepõem\", "
+"\"coisas que estão dentro\" e podem ser usados em uma ampla variedade de "
+"tipos de dados, inclusive dados GIS. O PostGIS usa um índice R-Tree "
+"implementado sobre o GiST para indexar dados espaciais. O GiST é o método de "
+"índice espacial mais comumente usado e versátil, e oferece um desempenho de "
+"consulta muito bom."
 
 #. Tag: para
 #: using_postgis_dataman.xml:2108
@@ -3594,12 +3605,12 @@ msgstr ""
 
 #. Tag: para
 #: using_postgis_dataman.xml:2238
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The syntax for building a BRIN index on a <code>geometry</code> column is:"
 msgstr ""
-"A sintaxe para construir um índice GiST em uma coluna \"geométrica\" é a "
-"seguinte: "
+"A sintaxe para criar um índice BRIN em uma coluna <code>geometry</code> é a "
+"seguinte:"
 
 #. Tag: para
 #: using_postgis_dataman.xml:2242
