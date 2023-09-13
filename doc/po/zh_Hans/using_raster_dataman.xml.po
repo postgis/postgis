@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-09-13 06:31+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/using_raster_datamanxml/zh_Hans/>\n"
 "Language: zh_Hans\n"
@@ -1421,12 +1421,14 @@ msgid ""
 "directory for each record. Requires you have plpython installed. Should work "
 "fine with both plpythonu and plpython3u."
 msgstr ""
+"这是一个 plpython 存储函数，它在服务器目录中为每条记录创建一个文件。 "
+"需要你安装了 plpython。 应该可以与 plpythonu 和 plpython3u 一起正常工作。"
 
 #. Tag: title
 #: using_raster_dataman.xml:568
 #, no-c-format
 msgid "Outputting Rasters with PSQL"
-msgstr ""
+msgstr "使用 PSQL 输出栅格"
 
 #. Tag: para
 #: using_raster_dataman.xml:569
@@ -1437,6 +1439,9 @@ msgid ""
 "legacy large object support. To use first launch your psql commandline "
 "connected to your database."
 msgstr ""
+"遗憾的是，PSQL 没有易于使用的内置功能来输出二进制文件。 这是一个有点依赖于 "
+"PostgreSQL 遗留的大对象支持的 hack。 要使用，首先启动连接到数据库的 psql "
+"命令行。"
 
 #. Tag: para
 #: using_raster_dataman.xml:571
@@ -1444,4 +1449,4 @@ msgstr ""
 msgid ""
 "Unlike the python approach, this approach creates the file on your local "
 "computer."
-msgstr ""
+msgstr "与 python 方法不同，此方法在本地计算机上创建文件。"
