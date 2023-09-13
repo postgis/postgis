@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-08-12 00:40+0000\n"
-"PO-Revision-Date: 2023-09-13 00:46+0000\n"
+"PO-Revision-Date: 2023-09-13 03:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "introductionxml/it/>\n"
@@ -313,6 +313,10 @@ msgid ""
 "index selectivity and binding, loader/dumper, and Shapefile GUI Loader, "
 "integration of new and new function enhancements."
 msgstr ""
+"Precedente membro del PSC. Ha coordinato la correzione di bug e la "
+"manutenzione, la selettività e il binding degli indici spaziali, il "
+"caricatore/dumper e il caricatore di GUI Shapefile, l'integrazione di nuovi "
+"miglioramenti e nuove funzioni."
 
 #. Tag: term
 #: introduction.xml:133
@@ -453,6 +457,8 @@ msgid ""
 "Architect of PostGIS raster implementation. Raster overall architecture, "
 "prototyping, programming support"
 msgstr ""
+"Architetto dell'implementazione raster di PostGIS. Architettura generale dei "
+"raster, prototipazione, supporto alla programmazione."
 
 #. Tag: term
 #: introduction.xml:201
@@ -1531,6 +1537,8 @@ msgid ""
 "The <link xlink:href=\"https://www.proj4.org\">PROJ</link> cartographic "
 "projection library"
 msgstr ""
+"La libreria di proiezioni cartografiche <link xlink:href=\"https://www.proj4."
+"org\">PROJ</link>"
 
 #. Tag: para
 #: introduction.xml:417
