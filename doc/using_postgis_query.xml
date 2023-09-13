@@ -426,11 +426,13 @@ WHERE a.id != b.id
           specifying a line partly inside and partly outside a polygon is
           '<emphasis role="bold">102101FF2</emphasis>':</para>
 
-          <programlisting>-- Find wharves partly on a lake's shoreline
+          <programlisting><![CDATA[[
+-- Find wharves partly on a lake's shoreline
 SELECT a.lake_id, b.wharf_id
 FROM lakes a, wharfs b
-WHERE a.geom &amp;&amp; b.geom
-      AND ST_Relate(a.geom, b.geom, '102101FF2');</programlisting>
+WHERE a.geom && b.geom
+      AND ST_Relate(a.geom, b.geom, '102101FF2');
+]]></programlisting>
 
         </section>
     </section>
@@ -478,9 +480,11 @@ WHERE a.geom &amp;&amp; b.geom
     operation. For example, the following query would be quite slow on a
     large table:</para>
 
-	  <programlisting>SELECT geom
+	  <programlisting><![CDATA[[
+SELECT geom
 FROM geom_table
-WHERE ST_Distance( geom, 'SRID=312;POINT(100000 200000)' ) &lt; 100</programlisting>
+WHERE ST_Distance( geom, 'SRID=312;POINT(100000 200000)' ) < 100
+]]></programlisting>
 
     <para>This query selects all the geometries in <code>geom_table</code> which are
     within 100 units of the point (100000, 200000). It will be slow because
@@ -711,15 +715,17 @@ kilometers
 		  </question>
 
 		  <answer>
-			<programlisting>SELECT gid, name, ST_Area(geom) AS area
+			<programlisting><![CDATA[[
+SELECT gid, name, ST_Area(geom) AS area
 FROM bc_municipality
-WHERE ST_NRings(geom) &gt; 1
+WHERE ST_NRings(geom) > 1
 ORDER BY area DESC LIMIT 1;
 
 gid  | name         | area
 -----+--------------+------------------
 12   | SPALLUMCHEEN | 257374619.430216
-</programlisting>
+
+]]></programlisting>
 		  </answer>
 		</qandaentry>
 	  </qandaset>

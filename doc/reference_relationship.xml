@@ -1166,12 +1166,14 @@ FROM (SELECT
 <para><emphasis role="bold">Example:</emphasis>
       Finds all streets that cross
       </para>
-<programlisting>
+<programlisting><![CDATA[[
+
 SELECT s1.gid, s2.gid, ST_LineCrossingDirection(s1.geom, s2.geom)
   FROM streets s1 CROSS JOIN streets s2
-         ON (s1.gid != s2.gid AND s1.geom &amp;&amp; s2.geom )
-WHERE ST_LineCrossingDirection(s1.geom, s2.geom) &gt; 0;
-</programlisting>
+         ON (s1.gid != s2.gid AND s1.geom && s2.geom )
+WHERE ST_LineCrossingDirection(s1.geom, s2.geom) > 0;
+
+]]></programlisting>
   </refsection>
 
   <refsection>

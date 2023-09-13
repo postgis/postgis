@@ -1180,7 +1180,9 @@ ST_3DLength
 			longitude/latitude and a length is desired without reprojection.
 			The spheroid is specified by a text value	as follows:</para>
 
-		<literallayout>SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR AXIS&gt;,&lt;INVERSE FLATTENING&gt;]</literallayout>
+		<literallayout><![CDATA[[
+SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]
+]]> </literallayout>
 		<para>For example:</para>
 		<literallayout>SPHEROID["GRS_1980",6378137,298.257222101]</literallayout>
 

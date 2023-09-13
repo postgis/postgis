@@ -1244,14 +1244,15 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 	  <refsection>
 		<title>Standard Examples</title>
 
-		<programlisting>--Extracting a subset of points from a 3d multipoint
+		<programlisting><![CDATA[[
+--Extracting a subset of points from a 3d multipoint
 SELECT n, ST_AsEWKT(ST_GeometryN(geom, n)) As geomewkt
 FROM (
 VALUES (ST_GeomFromEWKT('MULTIPOINT((1 2 7), (3 4 7), (5 6 7), (8 9 10))') ),
 ( ST_GeomFromEWKT('MULTICURVE(CIRCULARSTRING(2.5 2.5,4.5 2.5, 3.5 3.5), (10 11, 12 11))') )
 	)As foo(geom)
 	CROSS JOIN generate_series(1,100) n
-WHERE n &lt;= ST_NumGeometries(geom);
+WHERE n <= ST_NumGeometries(geom);
 
  n |               geomewkt
 ---+-----------------------------------------
@@ -1266,7 +1267,8 @@ WHERE n &lt;= ST_NumGeometries(geom);
 --Extracting all geometries (useful when you want to assign an id)
 SELECT gid, n, ST_GeometryN(geom, n)
 FROM sometable CROSS JOIN generate_series(1,100) n
-WHERE n &lt;= ST_NumGeometries(geom);</programlisting>
+WHERE n <= ST_NumGeometries(geom);
+]]></programlisting>
 	  </refsection>
 
 <refsection><title>Polyhedral Surfaces, TIN and Triangle Examples</title>

@@ -92,23 +92,26 @@
 							  <caption><para>Clusters within 50 meters with at least 2 items per cluster. Singletons have NULL for cid</para></caption>
 							</mediaobject>
 						  </informalfigure>
-  <programlisting>SELECT name, ST_ClusterDBSCAN(geom, eps := 50, minpoints := 2) over () AS cid
+  <programlisting><![CDATA[[
+SELECT name, ST_ClusterDBSCAN(geom, eps := 50, minpoints := 2) over () AS cid
 FROM boston_polys
-WHERE name &gt; '' AND building &gt; ''
+WHERE name > '' AND building > ''
 	AND ST_DWithin(geom,
         ST_Transform(
             ST_GeomFromText('POINT(-71.04054 42.35141)', 4326), 26986),
-           500);</programlisting>
+           500);
+]]></programlisting>
 						  </para></entry>
 
-						<entry><para><screen>                name                 | bucket
+						<entry><para><screen><![CDATA[[
+                name                 | bucket
 -------------------------------------+--------
  Manulife Tower                      |      0
  Park Lane Seaport I                 |      0
  Park Lane Seaport II                |      0
  Renaissance Boston Waterfront Hotel |      0
  Seaport Boston Hotel                |      0
- Seaport Hotel &amp; World Trade Center  |      0
+ Seaport Hotel & World Trade Center  |      0
  Waterside Place                     |      0
  World Trade Center East             |      0
  100 Northern Avenue                 |      1
@@ -123,7 +126,8 @@ WHERE name &gt; '' AND building &gt; ''
  Watermark Seaport                   |      2
  Blue Hills Bank Pavilion            |   NULL
  World Trade Center West             |   NULL
-(20 rows)</screen></para>
+(20 rows)
+]]></screen></para>
 				</entry>
 					  </row>
 				</tbody>

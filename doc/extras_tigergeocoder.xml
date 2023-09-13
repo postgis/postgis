@@ -1273,11 +1273,12 @@ result
 </programlisting>
 
 <para>For this one we reuse our geocoded example from <xref linkend="Geocode"/> and we only want the primary address and at most 2 cross streets.</para>
-<programlisting>SELECT actual_addr, lon, lat, pprint_addy((rg).addy[1]) As int_addr1,
+<programlisting><![CDATA[[
+SELECT actual_addr, lon, lat, pprint_addy((rg).addy[1]) As int_addr1,
     (rg).street[1] As cross1, (rg).street[2] As cross2
 FROM (SELECT address As actual_addr, lon, lat,
     reverse_geocode( ST_SetSRID(ST_Point(lon,lat),4326) ) As rg
-    FROM addresses_to_geocode WHERE rating &gt; -1) As foo;
+    FROM addresses_to_geocode WHERE rating > -1) As foo;
 
                      actual_addr                     |    lon    |   lat    |                 int_addr1                 |     cross1      |   cross2
 -----------------------------------------------------+-----------+----------+-------------------------------------------+-----------------+------------
@@ -1286,7 +1287,8 @@ FROM (SELECT address As actual_addr, lon, lat,
  26 Capen Street, Medford, MA                        | -71.12377 | 42.41101 | 9 Edison Ave, Medford, MA 02155           | Capen St        | Tesla Ave
  124 Mount Auburn St, Cambridge, Massachusetts 02138 | -71.12304 | 42.37328 | 3 University Rd, Cambridge, MA 02138      | Mount Auburn St |
  950 Main Street, Worcester, MA 01610                | -71.82368 | 42.24956 | 3 Maywood St, Worcester, MA 01603         | Main St         | Maywood Pl
-</programlisting>
+
+]]></programlisting>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->

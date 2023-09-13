@@ -2125,8 +2125,10 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
     this:
   </para>
 
-  <programlisting># shp2pgsql -c -D -s 4269 -i -I shaperoads.shp myschema.roadstable &gt; roads.sql
-# psql -d roadsdb -f roads.sql</programlisting>
+  <programlisting><![CDATA[[
+# shp2pgsql -c -D -s 4269 -i -I shaperoads.shp myschema.roadstable > roads.sql
+# psql -d roadsdb -f roads.sql
+]]></programlisting>
 
   <para>
     A conversion and load can be done in one step using UNIX pipes:
@@ -2222,10 +2224,12 @@ WHERE ST_Intersects(roads_geom, 'SRID=312;POLYGON((...))');</programlisting>
 	  comparison.</para>
 		<para>Using a "BOX3D" object for the frame, such a query looks like this:</para>
 
-	  <programlisting>SELECT ST_AsText(roads_geom) AS geom
+	  <programlisting><![CDATA[[
+SELECT ST_AsText(roads_geom) AS geom
 FROM roads
 WHERE
-  roads_geom &amp;&amp; ST_MakeEnvelope(191232, 243117,191232, 243119,312);</programlisting>
+  roads_geom && ST_MakeEnvelope(191232, 243117,191232, 243119,312);
+]]></programlisting>
 
 	  <para>Note the use of the SRID 312, to specify the projection of the envelope.</para>
 
@@ -2239,9 +2243,13 @@ WHERE
 	  to the database and converts a table (possibly defined by a query) into
 	  a shape file. The basic syntax is:</para>
 
-	  <programlisting>pgsql2shp [&lt;options&gt;] &lt;database&gt; [&lt;schema&gt;.]&lt;table&gt;</programlisting>
+	  <programlisting><![CDATA[[
+pgsql2shp [<options>] <database> [<schema>.]<table>
+]]></programlisting>
 
-	  <programlisting>pgsql2shp [&lt;options&gt;] &lt;database&gt; &lt;query&gt;</programlisting>
+	  <programlisting><![CDATA[[
+pgsql2shp [<options>] <database> <query>
+]]></programlisting>
 
 	  <para>The commandline options are:</para>
 

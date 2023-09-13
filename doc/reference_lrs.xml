@@ -432,7 +432,8 @@ A query to cut a LineString into sections of length 100 or shorter.
 It uses <varname>generate_series()</varname> with a CROSS JOIN LATERAL
 to produce the equivalent of a FOR loop.
 </para>
-<programlisting>
+<programlisting><![CDATA[[
+
 WITH data(id, geom) AS (VALUES
         ( 'A', 'LINESTRING( 0 0, 200 0)'::geometry ),
         ( 'B', 'LINESTRING( 0 100, 350 100)'::geometry ),
@@ -448,7 +449,7 @@ CROSS JOIN LATERAL (
               (sublen * (i+1)) / len AS endfrac
     FROM generate_series(0, floor( len / sublen )::integer ) AS t(i)
     -- skip last i if line length is exact multiple of sublen
-    WHERE (sublen * i) / len &lt;&gt; 1.0
+    WHERE (sublen * i) / len <> 1.0
     ) AS d2;
 
  id | i |            geom
@@ -460,7 +461,8 @@ CROSS JOIN LATERAL (
  B  | 2 | LINESTRING(200 100,300 100)
  B  | 3 | LINESTRING(300 100,350 100)
  C  | 0 | LINESTRING(0 200,50 200)
-</programlisting>
+
+]]></programlisting>
 
 <para>Geography implementation measures along a spheroid, geometry along a line</para>
 <programlisting>

@@ -66,9 +66,11 @@ UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(geom));</programlisting>
       <para>Now change your query to use the &amp;&amp; operator against bbox
       instead of geom_column, like:</para>
 
-      <programlisting>SELECT geom_column
+      <programlisting><![CDATA[[
+SELECT geom_column
 FROM mytable
-WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);</programlisting>
+WHERE bbox && ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);
+]]></programlisting>
 
       <para>Of course, if you change or add rows to mytable, you have to keep
       the bbox "in sync". The most transparent way to do this would be

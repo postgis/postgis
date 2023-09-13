@@ -21,7 +21,8 @@
 
     <para>An example session using the loader to create an input file and uploading it chunked in 100x100 tiles might look like this:</para>
 
-    <programlisting># -s use srid 4326
+    <programlisting><![CDATA[[
+# -s use srid 4326
 # -I create spatial index
 # -C use standard raster constraints
 # -M vacuum analyze after load
@@ -29,11 +30,12 @@
 # -F include a filename column in the raster table
 # -t tile the output 100x100
 # public.demelevation load into this table
-raster2pgsql -s 4326 -I -C -M -F -t 100x100 *.tif public.demelevation &gt; elev.sql
+raster2pgsql -s 4326 -I -C -M -F -t 100x100 *.tif public.demelevation > elev.sql
 
 # -d connect to this database
 # -f read this file after connecting
-psql -d gisdb -f elev.sql</programlisting>
+psql -d gisdb -f elev.sql
+]]></programlisting>
 
     <note>
       <para>If you do not specify the schema as part of the target table name, the table will be created in the default schema of the database or user you are connecting with.</para>
@@ -569,8 +571,9 @@ AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';</programlisting
 				a particular wgs 84 bounding box and then unions with <xref linkend="RT_ST_Union"/> the intersecting tiles together returning all bands, transforms to user specified projection using <xref linkend="RT_ST_Transform"/>,
 				and then outputs the results as a png using <xref linkend="RT_ST_AsPNG"/>.</para>
 				<para>You would call the below using <programlisting>http://mywebserver/test_raster.php?srid=2249</programlisting> to get the raster image in Massachusetts state plane feet.</para>
-			<programlisting>
-&lt;?php
+			<programlisting><![CDATA[[
+
+<?php
 /** contents of test_raster.php **/
 $conn_str ='dbname=mydb host=localhost port=5432 user=myuser password=mypwd';
 $dbconn = pg_connect($conn_str);
@@ -593,7 +596,8 @@ $row = pg_fetch_row($result);
 pg_free_result($result);
 if ($row === false) return;
 echo pg_unescape_bytea($row[0]);
-?&gt;</programlisting>
+?>
+]]></programlisting>
 		</section>
 		<section xml:id="RT_Net_Output_CS">
 			<title>ASP.NET C# Example Outputting using ST_AsPNG in concert with other raster functions</title>
@@ -606,13 +610,16 @@ echo pg_unescape_bytea($row[0]);
 				and then outputs the results as a png using <xref linkend="RT_ST_AsPNG"/>.</para>
 				<para>This is same example as <xref linkend="RT_PHP_Output"/> except implemented in C#.</para>
 				<para>You would call the below using <programlisting>http://mywebserver/TestRaster.ashx?srid=2249</programlisting> to get the raster image in Massachusetts state plane feet.</para>
-				<programlisting> -- web.config connection string section --
-&lt;connectionStrings&gt;
-    &lt;add name="DSN"
-        connectionString="server=localhost;database=mydb;Port=5432;User Id=myuser;password=mypwd"/&gt;
-&lt;/connectionStrings&gt;</programlisting>
-			<programlisting>// Code for TestRaster.ashx
-&lt;%@ WebHandler Language="C#" Class="TestRaster" %&gt;
+				<programlisting><![CDATA[[
+ -- web.config connection string section --
+<connectionStrings>
+    <add name="DSN"
+        connectionString="server=localhost;database=mydb;Port=5432;User Id=myuser;password=mypwd"/>
+</connectionStrings>
+]]></programlisting>
+			<programlisting><![CDATA[[
+// Code for TestRaster.ashx
+<%@ WebHandler Language="C#" Class="TestRaster" %>
 using System;
 using System.Data;
 using System.Web;
@@ -671,7 +678,8 @@ public class TestRaster : IHttpHandler
         }
 		return result;
 	}
-}</programlisting>
+}
+]]></programlisting>
 		</section>
 		<section xml:id="RT_Java_Console_App">
 			<title>Java console app that outputs raster query as Image file</title>

@@ -44,7 +44,7 @@
 			postgis-specific approach.</para>
 			</note>
 
-			 <para>&sfs_compliant; s3.2.6.2</para>
+			 <para>[[[sfs_compliant]]] s3.2.6.2</para>
 			 <para>Performed by the GEOS module.</para>
 			 <para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
 		  </refsection>
@@ -95,7 +95,7 @@
 					approach.</para>
 				</note>
 
-				 <para>&sfs_compliant; s3.2.6.2</para>
+				 <para>[[[sfs_compliant]]] s3.2.6.2</para>
 				 <para>Performed by the GEOS module.</para>
 				 <para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
 			</refsection>
@@ -211,8 +211,8 @@ SELECT ST_AsEWKT(ST_GeogFromText('SRID=4267;POINT(-77.0092 38.889588)'));
 			</para>
 		</note>
 
-		<para>&sfs_compliant; s3.2.6.2</para>
-		<para>&sqlmm_compliant;</para>
+		<para>[[[sfs_compliant]]] s3.2.6.2</para>
+		<para>[[[sqlmm_compliant]]]</para>
 
 	  </refsection>
 
@@ -255,10 +255,10 @@ SELECT ST_AsEWKT(ST_GeogFromText('SRID=4267;POINT(-77.0092 38.889588)'));
 			identifier</para>
 		</note>
 		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
-		<para>&Z_support;</para>
-		<para>&curve_support;</para>
-		<para>&P_support;</para>
-		<para>&T_support;</para>
+		<para>[[[Z_support]]]</para>
+		<para>[[[curve_support]]]</para>
+		<para>[[[P_support]]]</para>
+		<para>[[[T_support]]]</para>
 	  </refsection>
 
 	  <refsection>
@@ -378,83 +378,86 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
             <title>Examples</title>
 
             <para>Converting MARC21/XML geographic data containing a single <varname>POINT</varname> encoded as  <varname>hddd.dddddd</varname>  </para>
-            <programlisting>
+            <programlisting><![CDATA[
+
                 SELECT
                 ST_AsText(
                     ST_GeomFromMARC21('
-                        &lt;record xmlns="http://www.loc.gov/MARC21/slim"&gt;
-                            &lt;leader&gt;00000nz a2200000nc 4500&lt;/leader&gt;
-                            &lt;controlfield tag="001"&gt;040277569&lt;/controlfield&gt;
-                            &lt;datafield tag="034" ind1=" " ind2=" "&gt;
-                                &lt;subfield code="d"&gt;W004.500000&lt;/subfield&gt;
-                                &lt;subfield code="e"&gt;W004.500000&lt;/subfield&gt;
-                                &lt;subfield code="f"&gt;N054.250000&lt;/subfield&gt;
-                                &lt;subfield code="g"&gt;N054.250000&lt;/subfield&gt;
-                            &lt;/datafield&gt;
-                        &lt;/record&gt;'));
+                        <record xmlns="http://www.loc.gov/MARC21/slim">
+                            <leader>00000nz a2200000nc 4500</leader>
+                            <controlfield tag="001">040277569</controlfield>
+                            <datafield tag="034" ind1=" " ind2=" ">
+                                <subfield code="d">W004.500000</subfield>
+                                <subfield code="e">W004.500000</subfield>
+                                <subfield code="f">N054.250000</subfield>
+                                <subfield code="g">N054.250000</subfield>
+                            </datafield>
+                        </record>'));
 
                 st_astext
                 -------------------
                 POINT(-4.5 54.25)
                 (1 row)
 
-            </programlisting>
+            ]]></programlisting>
 
             <para>Converting MARC21/XML geographic data containing a single <varname>POLYGON</varname> encoded as <varname>hdddmmss</varname></para>
 
-            <programlisting>
+            <programlisting><![CDATA[
+
 
                 SELECT
                 ST_AsText(
                     ST_GeomFromMARC21('
-                        &lt;record xmlns="http://www.loc.gov/MARC21/slim"&gt;
-                            &lt;leader&gt;01062cem a2200241 a 4500&lt;/leader&gt;
-                            &lt;controlfield tag="001"&gt;   84696781 &lt;/controlfield&gt;
-                            &lt;datafield tag="034" ind1="1" ind2=" "&gt;
-                                &lt;subfield code="a"&gt;a&lt;/subfield&gt;
-                                &lt;subfield code="b"&gt;50000&lt;/subfield&gt;
-                                &lt;subfield code="d"&gt;E0130600&lt;/subfield&gt;
-                                &lt;subfield code="e"&gt;E0133100&lt;/subfield&gt;
-                                &lt;subfield code="f"&gt;N0523900&lt;/subfield&gt;
-                                &lt;subfield code="g"&gt;N0522300&lt;/subfield&gt;
-                            &lt;/datafield&gt;
-                        &lt;/record&gt;'));
+                        <record xmlns="http://www.loc.gov/MARC21/slim">
+                            <leader>01062cem a2200241 a 4500</leader>
+                            <controlfield tag="001">   84696781 </controlfield>
+                            <datafield tag="034" ind1="1" ind2=" ">
+                                <subfield code="a">a</subfield>
+                                <subfield code="b">50000</subfield>
+                                <subfield code="d">E0130600</subfield>
+                                <subfield code="e">E0133100</subfield>
+                                <subfield code="f">N0523900</subfield>
+                                <subfield code="g">N0522300</subfield>
+                            </datafield>
+                        </record>'));
 
                 st_astext
                 -----------------------------------------------------------------------------------------------------------------------
                 POLYGON((13.1 52.65,13.516666666666667 52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52.65))
                 (1 row)
 
-            </programlisting>
+            ]]></programlisting>
 
             <para>Converting MARC21/XML geographic data containing a <varname>POLYGON</varname> and a <varname>POINT</varname>:</para>
 
-            <programlisting>
+            <programlisting><![CDATA[
+
 
                 SELECT
                 ST_AsText(
                     ST_GeomFromMARC21('
-                &lt;record xmlns="http://www.loc.gov/MARC21/slim"&gt;
-                    &lt;datafield tag="034" ind1="1" ind2=" "&gt;
-                        &lt;subfield code="a"&gt;a&lt;/subfield&gt;
-                        &lt;subfield code="b"&gt;50000&lt;/subfield&gt;
-                        &lt;subfield code="d"&gt;E0130600&lt;/subfield&gt;
-                        &lt;subfield code="e"&gt;E0133100&lt;/subfield&gt;
-                        &lt;subfield code="f"&gt;N0523900&lt;/subfield&gt;
-                        &lt;subfield code="g"&gt;N0522300&lt;/subfield&gt;
-                    &lt;/datafield&gt;
-                    &lt;datafield tag="034" ind1=" " ind2=" "&gt;
-                        &lt;subfield code="d"&gt;W004.500000&lt;/subfield&gt;
-                        &lt;subfield code="e"&gt;W004.500000&lt;/subfield&gt;
-                        &lt;subfield code="f"&gt;N054.250000&lt;/subfield&gt;
-                        &lt;subfield code="g"&gt;N054.250000&lt;/subfield&gt;
-                    &lt;/datafield&gt;
-                &lt;/record&gt;'));
+                <record xmlns="http://www.loc.gov/MARC21/slim">
+                    <datafield tag="034" ind1="1" ind2=" ">
+                        <subfield code="a">a</subfield>
+                        <subfield code="b">50000</subfield>
+                        <subfield code="d">E0130600</subfield>
+                        <subfield code="e">E0133100</subfield>
+                        <subfield code="f">N0523900</subfield>
+                        <subfield code="g">N0522300</subfield>
+                    </datafield>
+                    <datafield tag="034" ind1=" " ind2=" ">
+                        <subfield code="d">W004.500000</subfield>
+                        <subfield code="e">W004.500000</subfield>
+                        <subfield code="f">N054.250000</subfield>
+                        <subfield code="g">N054.250000</subfield>
+                    </datafield>
+                </record>'));
                                                                                         st_astext
                 -------------------------------------------------------------------------------------------------------------------------------------------------------------
                 GEOMETRYCOLLECTION(POLYGON((13.1 52.65,13.516666666666667 52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52.65)),POINT(-4.5 54.25))
                 (1 row)
-            </programlisting>
+            ]]></programlisting>
 
         </refsection>
 
@@ -486,8 +489,8 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 		  </refsynopsisdiv>
 		  <refsection>
 			<title>Description</title>
-			<para>&sfs_compliant;</para>
-			<para>&sqlmm_compliant; SQL-MM 3: 5.1.40</para>
+			<para>[[[sfs_compliant]]]</para>
+			<para>[[[sqlmm_compliant]]] SQL-MM 3: 5.1.40</para>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
@@ -527,9 +530,9 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 				</para>
 			</note>
 
-			<para>&sfs_compliant; s3.2.6.2 - option SRID is from the conformance suite.</para>
-			<para>&sqlmm_compliant; SQL-MM 3: 5.1.40</para>
-			<para>&curve_support;</para>
+			<para>[[[sfs_compliant]]] s3.2.6.2 - option SRID is from the conformance suite.</para>
+			<para>[[[sqlmm_compliant]]] SQL-MM 3: 5.1.40</para>
+			<para>[[[curve_support]]]</para>
             <note><para>While not OGC-compliant, <xref linkend="ST_MakePoint"/> is faster than ST_GeomFromText and ST_PointFromText. It is also easier to use for numeric coordinate values. <xref linkend="ST_Point"/> is another option similar in speed to <xref linkend="ST_MakePoint"/> and is OGC-compliant, but doesn't support anything but 2D points.</para></note>
 			<warning><para role="changed" conformance="2.0.0">Changed: 2.0.0 In prior versions of PostGIS ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') was allowed.  This is now illegal in PostGIS 2.0.0 to better conform with SQL/MM standards. This should now be
 			    written as ST_GeomFromText('GEOMETRYCOLLECTION EMPTY')</para></warning>
@@ -622,8 +625,8 @@ SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406
 		</note>
 
 
-		<para>&sfs_compliant; s3.2.6.2</para>
-		<para>&sqlmm_compliant; SQL-MM 3: 7.2.8</para>
+		<para>[[[sfs_compliant]]] s3.2.6.2</para>
+		<para>[[[sqlmm_compliant]]] SQL-MM 3: 7.2.8</para>
 
 	  </refsection>
 
@@ -686,8 +689,8 @@ aline                            | null_return
 			</para>
 		</note>
 
-		<para>&sfs_compliant; s3.2.6.2</para>
-		<para>&sqlmm_compliant;SQL-MM 3: 9.4.4</para>
+		<para>[[[sfs_compliant]]] s3.2.6.2</para>
+		<para>[[[sqlmm_compliant]]]SQL-MM 3: 9.4.4</para>
 
 	  </refsection>
 
@@ -747,8 +750,8 @@ aline                            | null_return
 			</para>
 		</note>
 
-		<para>&sfs_compliant; 3.2.6.2</para>
-		<para>&sqlmm_compliant; SQL-MM 3: 9.2.4</para>
+		<para>[[[sfs_compliant]]] 3.2.6.2</para>
+		<para>[[[sqlmm_compliant]]] SQL-MM 3: 9.2.4</para>
 
 	  </refsection>
 
@@ -809,8 +812,8 @@ SELECT ST_MPointFromText('MULTIPOINT((-70.9590 42.1180),(-70.9611 42.1223))', 43
 			</para>
 		</note>
 
-		<para>&sfs_compliant; s3.2.6.2</para>
-		<para>&sqlmm_compliant; SQL-MM 3: 9.6.4</para>
+		<para>[[[sfs_compliant]]] s3.2.6.2</para>
+		<para>[[[sqlmm_compliant]]] SQL-MM 3: 9.6.4</para>
 
 	  </refsection>
 
@@ -872,8 +875,8 @@ SELECt ST_MPolyFromText('MULTIPOLYGON(((-70.916 42.1002,-70.9468 42.0946,-70.976
 					It is slower than ST_GeomFromText since it adds an additional validation step.  If you are building points from long lat coordinates and care more about performance and accuracy than OGC compliance, use <xref linkend="ST_MakePoint"/> or OGC compliant alias <xref linkend="ST_Point"/>.   </para>
 			</note>
 
-			<para>&sfs_compliant; s3.2.6.2 - option SRID is from the conformance suite.</para>
-			<para>&sqlmm_compliant; SQL-MM 3: 6.1.8</para>
+			<para>[[[sfs_compliant]]] s3.2.6.2 - option SRID is from the conformance suite.</para>
+			<para>[[[sqlmm_compliant]]] SQL-MM 3: 6.1.8</para>
 		  </refsection>
 
 		  <refsection>
@@ -923,8 +926,8 @@ SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
 
 		<note><para>If you are absolutely sure all your WKT geometries are polygons, don't use this function.
 					It is slower than ST_GeomFromText since it adds an additional validation step. </para></note>
-		<para>&sfs_compliant; s3.2.6.2</para>
-		<para>&sqlmm_compliant; SQL-MM 3: 8.3.6</para>
+		<para>[[[sfs_compliant]]] s3.2.6.2</para>
+		<para>[[[sqlmm_compliant]]] SQL-MM 3: 8.3.6</para>
 	  </refsection>
 
 	  <refsection>
@@ -968,7 +971,7 @@ t
 		  </refsynopsisdiv>
 		  <refsection>
 			<title>Description</title>
-			<para>&sqlmm_compliant; SQL-MM 3: 5.1.34</para>
+			<para>[[[sqlmm_compliant]]] SQL-MM 3: 5.1.34</para>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
@@ -1008,7 +1011,7 @@ t
 
 		<para>If SRID is not specified, it defaults to 4326 (WGS 84 long lat).</para>
 
-		<para>&curve_support;</para>
+		<para>[[[curve_support]]]</para>
 
 	  </refsection>
 
@@ -1056,10 +1059,10 @@ ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\
 			identifier</para>
 		</note>
 		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
-		<para>&Z_support;</para>
-		<para>&curve_support;</para>
-		<para>&P_support;</para>
-		<para>&T_support;</para>
+		<para>[[[Z_support]]]</para>
+		<para>[[[curve_support]]]</para>
+		<para>[[[P_support]]]</para>
+		<para>[[[T_support]]]</para>
 	  </refsection>
 
 	  <refsection>
@@ -1119,9 +1122,9 @@ SELECT ST_GeomFromEWKB('\001\002\000\000 \255\020\000\000\003\000\000\000\344J=\
 		SQL. This is an alternate name for ST_WKBToSQL.</para>
 
 		<para>If SRID is not specified, it defaults to 0 (Unknown).</para>
-		<para>&sfs_compliant; s3.2.7.2 - the optional SRID is from the conformance suite</para>
-		<para>&sqlmm_compliant; SQL-MM 3: 5.1.41</para>
-		<para>&curve_support;</para>
+		<para>[[[sfs_compliant]]] s3.2.7.2 - the optional SRID is from the conformance suite</para>
+		<para>[[[sqlmm_compliant]]] SQL-MM 3: 5.1.41</para>
+		<para>[[[curve_support]]]</para>
 	  </refsection>
 
 
@@ -1206,8 +1209,8 @@ SELECT
 		</note>
 
 
-		<para>&sfs_compliant; s3.2.6.2</para>
-		<para>&sqlmm_compliant; SQL-MM 3: 7.2.9</para>
+		<para>[[[sfs_compliant]]] s3.2.6.2</para>
+		<para>[[[sqlmm_compliant]]] SQL-MM 3: 7.2.9</para>
 
 	  </refsection>
 
@@ -1277,8 +1280,8 @@ aline                            | null_return
 		  <varname>LINESTRING</varname>.</para>
 		</note>
 
-		<para>&sfs_compliant; s3.2.6.2</para>
-		<para>&sqlmm_compliant; SQL-MM 3: 7.2.9</para>
+		<para>[[[sfs_compliant]]] s3.2.6.2</para>
+		<para>[[[sqlmm_compliant]]] SQL-MM 3: 7.2.9</para>
 	  </refsection>
 
 	  <refsection>
@@ -1338,10 +1341,10 @@ aline                            | null_return
 		<para>If an SRID is not specified, it defaults to 0.  <varname>NULL</varname> is
 		returned if the input <varname>bytea</varname> does not represent a
 		<varname>POINT</varname> geometry.</para>
-		<para>&sfs_compliant; s3.2.7.2</para>
-		<para>&sqlmm_compliant; SQL-MM 3: 6.1.9</para>
-		<para>&Z_support;</para>
-		<para>&curve_support;</para>
+		<para>[[[sfs_compliant]]] s3.2.7.2</para>
+		<para>[[[sqlmm_compliant]]] SQL-MM 3: 6.1.9</para>
+		<para>[[[Z_support]]]</para>
+		<para>[[[curve_support]]]</para>
 	  </refsection>
 
 	  <refsection>
@@ -1393,7 +1396,7 @@ SELECT
 		  </refsynopsisdiv>
 		  <refsection>
 			<title>Description</title>
-			<para>&sqlmm_compliant; SQL-MM 3: 5.1.36</para>
+			<para>[[[sqlmm_compliant]]] SQL-MM 3: 5.1.36</para>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
@@ -1564,9 +1567,9 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 		<para role="availability" conformance="1.5">Availability: 1.5, requires libxml2 1.6+</para>
 		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
 		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 default srid optional parameter added.</para>
-		<para>&Z_support;</para>
-		<para>&P_support;</para>
-		<para>&T_support;</para>
+		<para>[[[Z_support]]]</para>
+		<para>[[[P_support]]]</para>
+		<para>[[[T_support]]]</para>
 		<para>GML allow mixed dimensions (2D and 3D inside the same MultiGeometry for instance). As PostGIS geometries don't, ST_GeomFromGML convert the whole geometry to 2D if a missing Z dimension is found once.</para>
 
 		<para>GML support mixed SRS inside the same MultiGeometry. As PostGIS geometries don't, ST_GeomFromGML, in this case, reproject all subgeometries to the SRS root node. If no srsName attribute available for the GML root node, the function throw an error.</para>
@@ -1580,69 +1583,76 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 
 	  <refsection>
 		<title>Examples - A single geometry with srsName</title>
-		<programlisting>SELECT ST_GeomFromGML('
-		&lt;gml:LineString srsName="EPSG:4269"&gt;
-			&lt;gml:coordinates&gt;
-				-71.16028,42.258729 -71.160837,42.259112 -71.161143,42.25932
-			&lt;/gml:coordinates&gt;
-		&lt;/gml:LineString&gt;');
+		<programlisting><![CDATA[
+SELECT ST_GeomFromGML($$
+    <gml:LineString srsName="EPSG:4269">
+        <gml:coordinates>
+            -71.16028,42.258729 -71.160837,42.259112 -71.161143,42.25932
+        </gml:coordinates>
+    </gml:LineString>
+$$);
+]]>
 		</programlisting>
 	  </refsection>
 
 	  <refsection>
 		<title>Examples - XLink usage</title>
-		<programlisting>SELECT ST_GeomFromGML('
-		&lt;gml:LineString xmlns:gml="http://www.opengis.net/gml"
-				xmlns:xlink="http://www.w3.org/1999/xlink"
-				srsName="urn:ogc:def:crs:EPSG::4269"&gt;
-			&lt;gml:pointProperty&gt;
-				&lt;gml:Point gml:id="p1"&gt;&lt;gml:pos&gt;42.258729 -71.16028&lt;/gml:pos&gt;&lt;/gml:Point&gt;
-			&lt;/gml:pointProperty&gt;
-			&lt;gml:pos&gt;42.259112 -71.160837&lt;/gml:pos&gt;
-			&lt;gml:pointProperty&gt;
-				&lt;gml:Point xlink:type="simple" xlink:href="#p1"/&gt;
-			&lt;/gml:pointProperty&gt;
-		&lt;/gml:LineString&gt;'););
+		<programlisting><![CDATA[
+SELECT ST_GeomFromGML($$
+    <gml:LineString xmlns:gml="http://www.opengis.net/gml"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            srsName="urn:ogc:def:crs:EPSG::4269">
+        <gml:pointProperty>
+            <gml:Point gml:id="p1"><gml:pos>42.258729 -71.16028</gml:pos></gml:Point>
+        </gml:pointProperty>
+        <gml:pos>42.259112 -71.160837</gml:pos>
+        <gml:pointProperty>
+            <gml:Point xlink:type="simple" xlink:href="#p1"/>
+        </gml:pointProperty>
+    </gml:LineString>
+$$);
+]]>
 		</programlisting>
 	  </refsection>
 
 	 <refsection>
 		<title>Examples - Polyhedral Surface</title>
-		<programlisting>SELECT ST_AsEWKT(ST_GeomFromGML('
-&lt;gml:PolyhedralSurface&gt;
-&lt;gml:polygonPatches&gt;
-  &lt;gml:PolygonPatch&gt;
-    &lt;gml:exterior&gt;
-      &lt;gml:LinearRing&gt;&lt;gml:posList srsDimension="3"&gt;0 0 0 0 0 1 0 1 1 0 1 0 0 0 0&lt;/gml:posList&gt;&lt;/gml:LinearRing&gt;
-    &lt;/gml:exterior&gt;
-  &lt;/gml:PolygonPatch&gt;
-  &lt;gml:PolygonPatch&gt;
-    &lt;gml:exterior&gt;
-	&lt;gml:LinearRing&gt;&lt;gml:posList srsDimension="3"&gt;0 0 0 0 1 0 1 1 0 1 0 0 0 0 0&lt;/gml:posList&gt;&lt;/gml:LinearRing&gt;
-    &lt;/gml:exterior&gt;
-  &lt;/gml:PolygonPatch&gt;
-  &lt;gml:PolygonPatch&gt;
-    &lt;gml:exterior&gt;
-	&lt;gml:LinearRing&gt;&lt;gml:posList srsDimension="3"&gt;0 0 0 1 0 0 1 0 1 0 0 1 0 0 0&lt;/gml:posList&gt;&lt;/gml:LinearRing&gt;
-    &lt;/gml:exterior&gt;
-  &lt;/gml:PolygonPatch&gt;
-  &lt;gml:PolygonPatch&gt;
-    &lt;gml:exterior&gt;
-	&lt;gml:LinearRing&gt;&lt;gml:posList srsDimension="3"&gt;1 1 0 1 1 1 1 0 1 1 0 0 1 1 0&lt;/gml:posList&gt;&lt;/gml:LinearRing&gt;
-    &lt;/gml:exterior&gt;
-  &lt;/gml:PolygonPatch&gt;
-  &lt;gml:PolygonPatch&gt;
-    &lt;gml:exterior&gt;
-	&lt;gml:LinearRing&gt;&lt;gml:posList srsDimension="3"&gt;0 1 0 0 1 1 1 1 1 1 1 0 0 1 0&lt;/gml:posList&gt;&lt;/gml:LinearRing&gt;
-    &lt;/gml:exterior&gt;
-  &lt;/gml:PolygonPatch&gt;
-  &lt;gml:PolygonPatch&gt;
-    &lt;gml:exterior&gt;
-	&lt;gml:LinearRing&gt;&lt;gml:posList srsDimension="3"&gt;0 0 1 1 0 1 1 1 1 0 1 1 0 0 1&lt;/gml:posList&gt;&lt;/gml:LinearRing&gt;
-    &lt;/gml:exterior&gt;
-  &lt;/gml:PolygonPatch&gt;
-&lt;/gml:polygonPatches&gt;
-&lt;/gml:PolyhedralSurface&gt;'));
+		<programlisting><![CDATA[
+SELECT ST_AsEWKT(ST_GeomFromGML('
+<gml:PolyhedralSurface>
+<gml:polygonPatches>
+  <gml:PolygonPatch>
+    <gml:exterior>
+      <gml:LinearRing><gml:posList srsDimension="3">0 0 0 0 0 1 0 1 1 0 1 0 0 0 0</gml:posList></gml:LinearRing>
+    </gml:exterior>
+  </gml:PolygonPatch>
+  <gml:PolygonPatch>
+    <gml:exterior>
+	<gml:LinearRing><gml:posList srsDimension="3">0 0 0 0 1 0 1 1 0 1 0 0 0 0 0</gml:posList></gml:LinearRing>
+    </gml:exterior>
+  </gml:PolygonPatch>
+  <gml:PolygonPatch>
+    <gml:exterior>
+	<gml:LinearRing><gml:posList srsDimension="3">0 0 0 1 0 0 1 0 1 0 0 1 0 0 0</gml:posList></gml:LinearRing>
+    </gml:exterior>
+  </gml:PolygonPatch>
+  <gml:PolygonPatch>
+    <gml:exterior>
+	<gml:LinearRing><gml:posList srsDimension="3">1 1 0 1 1 1 1 0 1 1 0 0 1 1 0</gml:posList></gml:LinearRing>
+    </gml:exterior>
+  </gml:PolygonPatch>
+  <gml:PolygonPatch>
+    <gml:exterior>
+	<gml:LinearRing><gml:posList srsDimension="3">0 1 0 0 1 1 1 1 1 1 1 0 0 1 0</gml:posList></gml:LinearRing>
+    </gml:exterior>
+  </gml:PolygonPatch>
+  <gml:PolygonPatch>
+    <gml:exterior>
+	<gml:LinearRing><gml:posList srsDimension="3">0 0 1 1 0 1 1 1 1 0 1 1 0 0 1</gml:posList></gml:LinearRing>
+    </gml:exterior>
+  </gml:PolygonPatch>
+</gml:polygonPatches>
+</gml:PolyhedralSurface>'));
 
 -- result --
  POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
@@ -1651,7 +1661,7 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
  ((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
  ((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),
  ((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)))
-		</programlisting>
+		]]></programlisting>
 	  </refsection>
 
 
@@ -1697,7 +1707,7 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 		<para role="availability" conformance="2.0.0">Availability: 2.0.0 requires - JSON-C &gt;= 0.9</para>
 		<note><para>If you do not have JSON-C enabled, support you will get an error notice instead of seeing an output.
 			To enable JSON-C, run configure --with-jsondir=/path/to/json-c.  See <xref linkend="installation_configuration"/> for details.</para></note>
-		<para>&Z_support;</para>
+		<para>[[[Z_support]]]</para>
 	  </refsection>
 
 	 <refsection>
@@ -1753,7 +1763,7 @@ LINESTRING(1 2,4 5,7 8)
 		</para>
 
 		<para role="availability" conformance="1.5">Availability: 1.5, requires libxml2 2.6+</para>
-		<para>&Z_support;</para>
+		<para>[[[Z_support]]]</para>
 		<note>
 			<para>ST_GeomFromKML function not support SQL/MM curves geometries.</para>
 		</note>
@@ -1762,12 +1772,15 @@ LINESTRING(1 2,4 5,7 8)
 
 	  <refsection>
 		<title>Examples - A single geometry with srsName</title>
-		<programlisting>SELECT ST_GeomFromKML('
-		&lt;LineString&gt;
-			&lt;coordinates&gt;-71.1663,42.2614
-				-71.1667,42.2616&lt;/coordinates&gt;
-		&lt;/LineString&gt;');
-		</programlisting>
+		<programlisting><![CDATA[
+SELECT ST_GeomFromKML($$
+    <LineString>
+        <coordinates>-71.1663,42.2614
+            -71.1667,42.2616</coordinates>
+    </LineString>
+$$);
+]]>
+        </programlisting>
 	  </refsection>
 
 	  <refsection>
@@ -1849,7 +1862,7 @@ LINESTRING(-113.98 39.198,-113.981 39.195)
 		</refsynopsisdiv>
 		  <refsection>
 			<title>Description</title>
-			<para>&sqlmm_compliant; SQL-MM 3: 5.1.50 (except for curves support).</para>
+			<para>[[[sqlmm_compliant]]] SQL-MM 3: 5.1.50 (except for curves support).</para>
 			<para role="availability" conformance="1.5">Availability: 1.5, requires libxml2 1.6+</para>
 		        <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
 		        <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 default srid optional parameter added.</para>

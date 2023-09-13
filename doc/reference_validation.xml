@@ -11,7 +11,7 @@
    	</abstract>
     </info>
 
-	
+
 
 	<refentry xml:id="ST_IsValid">
 	  <refnamediv>
@@ -152,7 +152,8 @@ The optional <varname>flags</varname> parameter is a bitfield. It can have the f
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>
+		<programlisting><![CDATA[[
+
 --First 3 Rejects from a successful quintuplet experiment
 SELECT gid, reason(ST_IsValidDetail(geom)), ST_AsText(location(ST_IsValidDetail(geom))) as location
 FROM
@@ -161,13 +162,13 @@ FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000
 	FROM generate_series(-4,6) x1
 	CROSS JOIN generate_series(2,5) y1
 	CROSS JOIN generate_series(1,8) z1
-	WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e
+	WHERE x1 > y1*0.5 AND z1 < x1*y1) As e
 	INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_Point(x1*10,y1), z1)),y1*1, z1*2) As line
 	FROM generate_series(-3,6) x1
 	CROSS JOIN generate_series(2,5) y1
 	CROSS JOIN generate_series(1,10) z1
-	WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f
-ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))
+	WHERE x1 > y1*0.75 AND z1 < x1*y1) As f
+ON (ST_Area(e.buff) > 78 AND ST_Contains(e.buff, f.line))
 GROUP BY gid, e.buff) As quintuplet_experiment
 WHERE ST_IsValid(geom) = false
 ORDER BY gid
@@ -186,7 +187,8 @@ SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 150407,222020 1
 -------+--------+----------
  t     |        |
 
-		</programlisting>
+
+]]></programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -247,7 +249,8 @@ validity_info
 --------------------------
 Self-intersection[150 150]
         </programlisting>
-		<programlisting>
+		<programlisting><![CDATA[[
+
 --First 3 Rejects from a successful quintuplet experiment
 SELECT gid, ST_IsValidReason(geom) as validity_info
 FROM
@@ -256,13 +259,13 @@ FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000
 	FROM generate_series(-4,6) x1
 	CROSS JOIN generate_series(2,5) y1
 	CROSS JOIN generate_series(1,8) z1
-	WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e
+	WHERE x1 > y1*0.5 AND z1 < x1*y1) As e
 	INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_Point(x1*10,y1), z1)),y1*1, z1*2) As line
 	FROM generate_series(-3,6) x1
 	CROSS JOIN generate_series(2,5) y1
 	CROSS JOIN generate_series(1,10) z1
-	WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f
-ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))
+	WHERE x1 > y1*0.75 AND z1 < x1*y1) As f
+ON (ST_Area(e.buff) > 78 AND ST_Contains(e.buff, f.line))
 GROUP BY gid, e.buff) As quintuplet_experiment
 WHERE ST_IsValid(geom) = false
 ORDER BY gid
@@ -281,7 +284,8 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
 ------------------
  Valid Geometry
 
-		</programlisting>
+
+]]></programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->

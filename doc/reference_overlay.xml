@@ -721,17 +721,19 @@ LINESTRING(44.7994523421035 82.5156766227011,85 85)
         and new records for each subdivided result geometry are inserted.
         </para>
 
-<programlisting>
+<programlisting><![CDATA[[
+
 WITH complex_areas_to_subdivide AS (
     DELETE from polygons_table
-    WHERE ST_NPoints(geom) &gt; 255
+    WHERE ST_NPoints(geom) > 255
     RETURNING id, column1, column2, column3, geom
 )
 INSERT INTO polygons_table (fid, column1, column2, column3, geom)
     SELECT fid, column1, column2, column3,
            ST_Subdivide(geom, 255) as geom
     FROM complex_areas_to_subdivide;
-</programlisting>
+
+]]></programlisting>
 
         <para><emphasis role="bold">Example:</emphasis>
         Create a new table containing subdivided geometries,

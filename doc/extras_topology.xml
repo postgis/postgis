@@ -3193,9 +3193,10 @@ existing face record be updated. It is up to the caller to deal with that.
 
 			<refsection>
 				<title>Examples</title>
-				<programlisting>
+				<programlisting><![CDATA[
+
 -- first add the edges we use generate_series as an iterator (the below
--- will only work for polygons with &lt; 10000 points because of our max in gs)
+-- will only work for polygons with < 10000 points because of our max in gs)
 SELECT topology.AddEdge('ma_topo', ST_MakeLine(ST_PointN(geom,i), ST_PointN(geom, i + 1) )) As edgeid
     FROM (SELECT  ST_NPoints(geom) AS npt, geom
             FROM
@@ -3203,7 +3204,7 @@ SELECT topology.AddEdge('ma_topo', ST_MakeLine(ST_PointN(geom,i), ST_PointN(geom
                 234891 899285.4,234992.5 899145, 234890.6 899069,234755.2 899255.4,
                 234612.7 899379.4,234776.9 899563.7,234896.5 899456.7))', 26986) )  As geom
             )  As geoms) As facen CROSS JOIN generate_series(1,10000) As i
-         WHERE i &lt; npt;
+         WHERE i < npt;
 -- result --
  edgeid
 --------
@@ -3229,7 +3230,7 @@ faceid
 --------
  1
 
-</programlisting>
+]]></programlisting>
 			</refsection>
 
 			<!-- Optionally add a "See Also" section -->
@@ -3414,7 +3415,7 @@ FROM (SELECT b.gid,  topology.TopoElementArray_Agg(ARRAY[f.face_id,3]) As bfaces
         WHERE ST_Covers(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id))
 	OR
  (  ST_Intersects(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id))
-            AND ST_Area(ST_Intersection(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id) ) ) &gt;
+            AND ST_Area(ST_Intersection(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id) ) ) >
                 ST_Area(topology.ST_GetFaceGeometry('topo_boston', f.face_id))*0.5
                 )
             GROUP BY b.gid) As foo
@@ -3540,7 +3541,8 @@ Topology topo_boston_test (5), SRID 2249, precision 0
 Layer 1, type Polygonal (3), 15 topogeoms
  Deploy: public.nei_topo.topo</programlisting>
 
-        <programlisting>
+        <programlisting><![CDATA[
+
 -- Shrink all TopoGeometry polygons by 10 meters
 UPDATE nei_topo SET topo = ST_Buffer(clearTopoGeom(topo), -10);
 
@@ -3548,12 +3550,12 @@ UPDATE nei_topo SET topo = ST_Buffer(clearTopoGeom(topo), -10);
 -- I think GRASS calls this "polygon0 layer"
 SELECT ST_GetFaceGeometry('topo_boston_test', f.face_id)
   FROM topo_boston_test.face f
-  WHERE f.face_id &gt; 0 -- don't consider the universe face
+  WHERE f.face_id > 0 -- don't consider the universe face
   AND NOT EXISTS ( -- check that no TopoGeometry references the face
     SELECT * FROM topo_boston_test.relation
     WHERE layer_id = 1 AND element_id = f.face_id
   );
-        </programlisting>
+        ]]></programlisting>
 			</refsection>
 
 			<!-- Optionally add a "See Also" section -->
@@ -4119,23 +4121,24 @@ CREATE TABLE visited (
 			<refsection>
 				<title>Examples</title>
 				<para>This uses the topo geometry we created in <xref linkend="CreateTopoGeom"/></para>
-				<programlisting>SELECT topology.AsGML(topo) As rdgml
+				<programlisting><![CDATA[
+SELECT topology.AsGML(topo) As rdgml
   FROM ri.roads
   WHERE road_name = 'Unknown';
 
 -- rdgml--
-&lt;gml:TopoCurve&gt;
-    &lt;gml:directedEdge&gt;
-        &lt;gml:Edge gml:id="E1"&gt;
-            &lt;gml:directedNode orientation="-"&gt;
-                &lt;gml:Node gml:id="N1"/&gt;
-            &lt;/gml:directedNode&gt;
-            &lt;gml:directedNode&gt;&lt;/gml:directedNode&gt;
-            &lt;gml:curveProperty&gt;
-                &lt;gml:Curve srsName="urn:ogc:def:crs:EPSG::3438"&gt;
-                    &lt;gml:segments&gt;
-                        &lt;gml:LineStringSegment&gt;
-                            &lt;gml:posList srsDimension="2"&gt;384744 236928 384750 236923 384769 236911 384799 236895 384811 236890
+<gml:TopoCurve>
+    <gml:directedEdge>
+        <gml:Edge gml:id="E1">
+            <gml:directedNode orientation="-">
+                <gml:Node gml:id="N1"/>
+            </gml:directedNode>
+            <gml:directedNode></gml:directedNode>
+            <gml:curveProperty>
+                <gml:Curve srsName="urn:ogc:def:crs:EPSG::3438">
+                    <gml:segments>
+                        <gml:LineStringSegment>
+                            <gml:posList srsDimension="2">384744 236928 384750 236923 384769 236911 384799 236895 384811 236890
                             384833 236884 384844 236882 384866 236881 384879 236883 384954 236898 385087 236932 385117 236938
                             385167 236938 385203 236941 385224 236946 385233 236950 385241 236956 385254 236971
                             385260 236979 385268 236999 385273 237018 385273 237037 385271 237047 385267 237057 385225 237125
@@ -4143,33 +4146,34 @@ CREATE TABLE visited (
                             385166 237256 385196 237324 385209 237345 385234 237375 385237 237383 385238 237399 385236 237407
                             385227 237419 385213 237430 385193 237439 385174 237451 385170 237455 385169 237460 385171 237475
                             385181 237503 385190 237521 385200 237533 385206 237538 385213 237541 385221 237542 385235 237540 385242 237541
-                            385249 237544 385260 237555 385270 237570 385289 237584 385292 237589 385291 237596 385284 237630&lt;/gml:posList&gt;
-                        &lt;/gml:LineStringSegment&gt;
-                    &lt;/gml:segments&gt;
-                &lt;/gml:Curve&gt;
-            &lt;/gml:curveProperty&gt;
-        &lt;/gml:Edge&gt;
-    &lt;/gml:directedEdge&gt;
-&lt;/gml:TopoCurve&gt;
-</programlisting>
+                            385249 237544 385260 237555 385270 237570 385289 237584 385292 237589 385291 237596 385284 237630</gml:posList>
+                        </gml:LineStringSegment>
+                    </gml:segments>
+                </gml:Curve>
+            </gml:curveProperty>
+        </gml:Edge>
+    </gml:directedEdge>
+</gml:TopoCurve>
+]]></programlisting>
 <para>Same exercise as previous without namespace</para>
-<programlisting>SELECT topology.AsGML(topo,'') As rdgml
+<programlisting><![CDATA[
+SELECT topology.AsGML(topo,'') As rdgml
   FROM ri.roads
   WHERE road_name = 'Unknown';
 
 -- rdgml--
-&lt;TopoCurve&gt;
-    &lt;directedEdge&gt;
-        &lt;Edge id="E1"&gt;
-            &lt;directedNode orientation="-"&gt;
-                &lt;Node id="N1"/&gt;
-            &lt;/directedNode&gt;
-            &lt;directedNode&gt;&lt;/directedNode&gt;
-            &lt;curveProperty&gt;
-                &lt;Curve srsName="urn:ogc:def:crs:EPSG::3438"&gt;
-                    &lt;segments&gt;
-                        &lt;LineStringSegment&gt;
-                            &lt;posList srsDimension="2"&gt;384744 236928 384750 236923 384769 236911 384799 236895 384811 236890
+<TopoCurve>
+    <directedEdge>
+        <Edge id="E1">
+            <directedNode orientation="-">
+                <Node id="N1"/>
+            </directedNode>
+            <directedNode></directedNode>
+            <curveProperty>
+                <Curve srsName="urn:ogc:def:crs:EPSG::3438">
+                    <segments>
+                        <LineStringSegment>
+                            <posList srsDimension="2">384744 236928 384750 236923 384769 236911 384799 236895 384811 236890
                             384833 236884 384844 236882 384866 236881 384879 236883 384954 236898 385087 236932 385117 236938
                             385167 236938 385203 236941 385224 236946 385233 236950 385241 236956 385254 236971
                             385260 236979 385268 236999 385273 237018 385273 237037 385271 237047 385267 237057 385225 237125
@@ -4177,15 +4181,15 @@ CREATE TABLE visited (
                             385166 237256 385196 237324 385209 237345 385234 237375 385237 237383 385238 237399 385236 237407
                             385227 237419 385213 237430 385193 237439 385174 237451 385170 237455 385169 237460 385171 237475
                             385181 237503 385190 237521 385200 237533 385206 237538 385213 237541 385221 237542 385235 237540 385242 237541
-                            385249 237544 385260 237555 385270 237570 385289 237584 385292 237589 385291 237596 385284 237630&lt;/posList&gt;
-                         &lt;/LineStringSegment&gt;
-                    &lt;/segments&gt;
-                &lt;/Curve&gt;
-            &lt;/curveProperty&gt;
-        &lt;/Edge&gt;
-    &lt;/directedEdge&gt;
-&lt;/TopoCurve&gt;
-</programlisting>
+                            385249 237544 385260 237555 385270 237570 385289 237584 385292 237589 385291 237596 385284 237630</posList>
+                         </LineStringSegment>
+                    </segments>
+                </Curve>
+            </curveProperty>
+        </Edge>
+    </directedEdge>
+</TopoCurve>
+]]></programlisting>
 			</refsection>
 
 			<!-- Optionally add a "See Also" section -->

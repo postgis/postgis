@@ -9,7 +9,7 @@
     	</abstract>
     </info>
 
-	
+
 
 	<refentry xml:id="Box2D">
 	  <refnamediv>
@@ -509,13 +509,15 @@ FROM (SELECT ST_Translate(ST_Force_3DZ(ST_LineToCurve(ST_Buffer(ST_Point(x,y),1)
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>
+		<programlisting><![CDATA[[
+
 --Return all features that fall reside or partly reside in a US national atlas coordinate bounding box
 --It is assumed here that the geometries are stored with SRID = 2163 (US National atlas equal area)
 SELECT feature_id, feature_name, geom
 FROM features
-WHERE geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.5625),
-	ST_Point(-987121.375 ,529933.1875)),2163)</programlisting>
+WHERE geom && ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.5625),
+	ST_Point(-987121.375 ,529933.1875)),2163)
+]]></programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->

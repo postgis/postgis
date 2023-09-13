@@ -494,8 +494,9 @@ F000000000000000000000000000000000000000000000000');
 
 
 	<para>javascript will look something like this where $ variable you replace with query result</para>
-	<programlisting>&lt;script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=geometry"&gt;&lt;/script&gt;
-&lt;script type="text/javascript"&gt;
+	<programlisting><![CDATA[[
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=geometry"></script>
+<script type="text/javascript">
 	 flightPath = new google.maps.Polyline({
 			path:  google.maps.geometry.encoding.decodePath("$encodedFlightPath"),
 			map: map,
@@ -503,8 +504,9 @@ F000000000000000000000000000000000000000000000000');
 			strokeOpacity: 1.0,
 			strokeWeight: 4
 		});
-&lt;/script&gt;
-	</programlisting>
+</script>
+
+]]></programlisting>
 	</refsection>
 		<!-- Optionally add a "See Also" section -->
 		<refsection>
@@ -877,94 +879,104 @@ namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is use
 
 	  <refsection>
 		<title>Examples: Version 2</title>
-		<programlisting>SELECT ST_AsGML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
+		<programlisting><![CDATA[
+SELECT ST_AsGML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
 		st_asgml
 		--------
-		&lt;gml:Polygon srsName="EPSG:4326"&gt;&lt;gml:outerBoundaryIs&gt;&lt;gml:LinearRing&gt;&lt;gml:coordinates&gt;0,0 0,1 1,1 1,0 0,0&lt;/gml:coordinates&gt;&lt;/gml:LinearRing&gt;&lt;/gml:outerBoundaryIs&gt;&lt;/gml:Polygon&gt;
-			</programlisting>
+		<gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,0 0,1 1,1 1,0 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>
+
+]]></programlisting>
 	  </refsection>
 		<refsection>
 		<title>Examples: Version 3</title>
-		<programlisting>-- Flip coordinates and output extended EPSG (16 | 1)--
+		<programlisting><![CDATA[[
+-- Flip coordinates and output extended EPSG (16 | 1)--
 SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)',4326), 5, 17);
 			st_asgml
 			--------
-		&lt;gml:Point srsName="urn:ogc:def:crs:EPSG::4326"&gt;&lt;gml:pos&gt;6.34535 5.23423&lt;/gml:pos&gt;&lt;/gml:Point&gt;
-			</programlisting>
-		<programlisting>-- Output the envelope (32) --
+		<gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>6.34535 5.23423</gml:pos></gml:Point>
+
+]]></programlisting>
+		<programlisting><![CDATA[[
+-- Output the envelope (32) --
 SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 32);
 		st_asgml
 		--------
-	&lt;gml:Envelope srsName="EPSG:4326"&gt;
-		&lt;gml:lowerCorner&gt;1 2&lt;/gml:lowerCorner&gt;
-		&lt;gml:upperCorner&gt;10 20&lt;/gml:upperCorner&gt;
-	&lt;/gml:Envelope&gt;
-			</programlisting>
+	<gml:Envelope srsName="EPSG:4326">
+		<gml:lowerCorner>1 2</gml:lowerCorner>
+		<gml:upperCorner>10 20</gml:upperCorner>
+	</gml:Envelope>
 
-		<programlisting>-- Output the envelope (32) , reverse (lat lon instead of lon lat) (16), long srs (1)= 32 | 16 | 1 = 49 --
+]]></programlisting>
+
+		<programlisting><![CDATA[[
+-- Output the envelope (32) , reverse (lat lon instead of lon lat) (16), long srs (1)= 32 | 16 | 1 = 49 --
 SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 49);
 	st_asgml
 	--------
-&lt;gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"&gt;
-	&lt;gml:lowerCorner&gt;2 1&lt;/gml:lowerCorner&gt;
-	&lt;gml:upperCorner&gt;20 10&lt;/gml:upperCorner&gt;
-&lt;/gml:Envelope&gt;
-			</programlisting>
+<gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326">
+	<gml:lowerCorner>2 1</gml:lowerCorner>
+	<gml:upperCorner>20 10</gml:upperCorner>
+</gml:Envelope>
 
-		<programlisting>-- Polyhedral Example --
+]]></programlisting>
+
+		<programlisting><![CDATA[[
+-- Polyhedral Example --
 SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
 ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
 ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
 ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
 	st_asgml
 	--------
- &lt;gml:PolyhedralSurface&gt;
-&lt;gml:polygonPatches&gt;
-   &lt;gml:PolygonPatch&gt;
-		&lt;gml:exterior&gt;
-			  &lt;gml:LinearRing&gt;
-				   &lt;gml:posList srsDimension="3"&gt;0 0 0 0 0 1 0 1 1 0 1 0 0 0 0&lt;/gml:posList&gt;
-			  &lt;/gml:LinearRing&gt;
-		&lt;/gml:exterior&gt;
-   &lt;/gml:PolygonPatch&gt;
-   &lt;gml:PolygonPatch&gt;
-		&lt;gml:exterior&gt;
-			  &lt;gml:LinearRing&gt;
-				   &lt;gml:posList srsDimension="3"&gt;0 0 0 0 1 0 1 1 0 1 0 0 0 0 0&lt;/gml:posList&gt;
-			  &lt;/gml:LinearRing&gt;
-		&lt;/gml:exterior&gt;
-   &lt;/gml:PolygonPatch&gt;
-   &lt;gml:PolygonPatch&gt;
-		&lt;gml:exterior&gt;
-			  &lt;gml:LinearRing&gt;
-				   &lt;gml:posList srsDimension="3"&gt;0 0 0 1 0 0 1 0 1 0 0 1 0 0 0&lt;/gml:posList&gt;
-			  &lt;/gml:LinearRing&gt;
-		&lt;/gml:exterior&gt;
-   &lt;/gml:PolygonPatch&gt;
-   &lt;gml:PolygonPatch&gt;
-		&lt;gml:exterior&gt;
-			  &lt;gml:LinearRing&gt;
-				   &lt;gml:posList srsDimension="3"&gt;1 1 0 1 1 1 1 0 1 1 0 0 1 1 0&lt;/gml:posList&gt;
-			  &lt;/gml:LinearRing&gt;
-		&lt;/gml:exterior&gt;
-   &lt;/gml:PolygonPatch&gt;
-   &lt;gml:PolygonPatch&gt;
-		&lt;gml:exterior&gt;
-			  &lt;gml:LinearRing&gt;
-				   &lt;gml:posList srsDimension="3"&gt;0 1 0 0 1 1 1 1 1 1 1 0 0 1 0&lt;/gml:posList&gt;
-			  &lt;/gml:LinearRing&gt;
-		&lt;/gml:exterior&gt;
-   &lt;/gml:PolygonPatch&gt;
-   &lt;gml:PolygonPatch&gt;
-		&lt;gml:exterior&gt;
-			  &lt;gml:LinearRing&gt;
-				   &lt;gml:posList srsDimension="3"&gt;0 0 1 1 0 1 1 1 1 0 1 1 0 0 1&lt;/gml:posList&gt;
-			  &lt;/gml:LinearRing&gt;
-		&lt;/gml:exterior&gt;
-   &lt;/gml:PolygonPatch&gt;
-&lt;/gml:polygonPatches&gt;
-&lt;/gml:PolyhedralSurface&gt;
-			</programlisting>
+ <gml:PolyhedralSurface>
+<gml:polygonPatches>
+   <gml:PolygonPatch>
+		<gml:exterior>
+			  <gml:LinearRing>
+				   <gml:posList srsDimension="3">0 0 0 0 0 1 0 1 1 0 1 0 0 0 0</gml:posList>
+			  </gml:LinearRing>
+		</gml:exterior>
+   </gml:PolygonPatch>
+   <gml:PolygonPatch>
+		<gml:exterior>
+			  <gml:LinearRing>
+				   <gml:posList srsDimension="3">0 0 0 0 1 0 1 1 0 1 0 0 0 0 0</gml:posList>
+			  </gml:LinearRing>
+		</gml:exterior>
+   </gml:PolygonPatch>
+   <gml:PolygonPatch>
+		<gml:exterior>
+			  <gml:LinearRing>
+				   <gml:posList srsDimension="3">0 0 0 1 0 0 1 0 1 0 0 1 0 0 0</gml:posList>
+			  </gml:LinearRing>
+		</gml:exterior>
+   </gml:PolygonPatch>
+   <gml:PolygonPatch>
+		<gml:exterior>
+			  <gml:LinearRing>
+				   <gml:posList srsDimension="3">1 1 0 1 1 1 1 0 1 1 0 0 1 1 0</gml:posList>
+			  </gml:LinearRing>
+		</gml:exterior>
+   </gml:PolygonPatch>
+   <gml:PolygonPatch>
+		<gml:exterior>
+			  <gml:LinearRing>
+				   <gml:posList srsDimension="3">0 1 0 0 1 1 1 1 1 1 1 0 0 1 0</gml:posList>
+			  </gml:LinearRing>
+		</gml:exterior>
+   </gml:PolygonPatch>
+   <gml:PolygonPatch>
+		<gml:exterior>
+			  <gml:LinearRing>
+				   <gml:posList srsDimension="3">0 0 1 1 0 1 1 1 1 0 1 1 0 0 1</gml:posList>
+			  </gml:LinearRing>
+		</gml:exterior>
+   </gml:PolygonPatch>
+</gml:polygonPatches>
+</gml:PolyhedralSurface>
+
+]]></programlisting>
 
 	  </refsection>
   <refsection>
@@ -1040,17 +1052,19 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting>SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
+		<programlisting><![CDATA[[
+SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
 
 		st_askml
 		--------
-		&lt;Polygon&gt;&lt;outerBoundaryIs&gt;&lt;LinearRing&gt;&lt;coordinates&gt;0,0 0,1 1,1 1,0 0,0&lt;/coordinates&gt;&lt;/LinearRing&gt;&lt;/outerBoundaryIs&gt;&lt;/Polygon&gt;
+		<Polygon><outerBoundaryIs><LinearRing><coordinates>0,0 0,1 1,1 1,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>
 
 		--3d linestring
 		SELECT ST_AsKML('SRID=4326;LINESTRING(1 2 3, 4 5 6)');
-		&lt;LineString&gt;&lt;coordinates&gt;1,2,3 4,5,6&lt;/coordinates&gt;&lt;/LineString&gt;
+		<LineString><coordinates>1,2,3 4,5,6</coordinates></LineString>
 
-		</programlisting>
+
+]]></programlisting>
 	  </refsection>
 	 <refsection>
 		<title>See Also</title>
@@ -1224,69 +1238,75 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
             <title>Examples</title>
 
             <para>Converting a <varname>POINT</varname> to MARC21/XML formated as hdddmmss (default)</para>
-            <programlisting>
+            <programlisting><![CDATA[[
+
 
                 SELECT ST_AsMARC21('SRID=4326;POINT(-4.504289 54.253312)'::geometry);
 
                                 st_asmarc21
                 -------------------------------------------------
-                &lt;record xmlns="http://www.loc.gov/MARC21/slim"&gt;
-                    &lt;datafield tag="034" ind1="1" ind2=" "&gt;
-                        &lt;subfield code="a"&gt;a&lt;/subfield&gt;
-                        &lt;subfield code="d"&gt;W0043015&lt;/subfield&gt;
-                        &lt;subfield code="e"&gt;W0043015&lt;/subfield&gt;
-                        &lt;subfield code="f"&gt;N0541512&lt;/subfield&gt;
-                        &lt;subfield code="g"&gt;N0541512&lt;/subfield&gt;
-                    &lt;/datafield&gt;
-                &lt;/record&gt;
+                <record xmlns="http://www.loc.gov/MARC21/slim">
+                    <datafield tag="034" ind1="1" ind2=" ">
+                        <subfield code="a">a</subfield>
+                        <subfield code="d">W0043015</subfield>
+                        <subfield code="e">W0043015</subfield>
+                        <subfield code="f">N0541512</subfield>
+                        <subfield code="g">N0541512</subfield>
+                    </datafield>
+                </record>
 
 
-            </programlisting>
+
+]]></programlisting>
 
             <para>Converting a <varname>POLYGON</varname> to MARC21/XML formated in decimal degrees</para>
-            <programlisting>
+            <programlisting><![CDATA[[
+
 
                 SELECT ST_AsMARC21('SRID=4326;POLYGON((-4.5792388916015625 54.18172660239091,-4.56756591796875 54.196993557130355,-4.546623229980469 54.18313300502024,-4.5792388916015625 54.18172660239091))'::geometry,'hddd.dddd');
 
-                &lt;record xmlns="http://www.loc.gov/MARC21/slim"&gt;
-                    &lt;datafield tag="034" ind1="1" ind2=" "&gt;
-                        &lt;subfield code="a"&gt;a&lt;/subfield&gt;
-                        &lt;subfield code="d"&gt;W004.5792&lt;/subfield&gt;
-                        &lt;subfield code="e"&gt;W004.5466&lt;/subfield&gt;
-                        &lt;subfield code="f"&gt;N054.1970&lt;/subfield&gt;
-                        &lt;subfield code="g"&gt;N054.1817&lt;/subfield&gt;
-                    &lt;/datafield&gt;
-                &lt;/record&gt;
+                <record xmlns="http://www.loc.gov/MARC21/slim">
+                    <datafield tag="034" ind1="1" ind2=" ">
+                        <subfield code="a">a</subfield>
+                        <subfield code="d">W004.5792</subfield>
+                        <subfield code="e">W004.5466</subfield>
+                        <subfield code="f">N054.1970</subfield>
+                        <subfield code="g">N054.1817</subfield>
+                    </datafield>
+                </record>
 
 
-            </programlisting>
+
+]]></programlisting>
 
             <para>Converting a <varname>GEOMETRYCOLLECTION</varname> to MARC21/XML formated in decimal minutes. The geometries order in the MARC21/XML output correspond to their order in the collection.</para>
-            <programlisting>
+            <programlisting><![CDATA[[
+
 
                 SELECT ST_AsMARC21('SRID=4326;GEOMETRYCOLLECTION(POLYGON((13.1 52.65,13.516666666666667 52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52.65)),POINT(-4.5 54.25))'::geometry,'hdddmm.mmmm');
 
                                 st_asmarc21
                 -------------------------------------------------
-                &lt;record xmlns="http://www.loc.gov/MARC21/slim"&gt;
-                    &lt;datafield tag="034" ind1="1" ind2=" "&gt;
-                        &lt;subfield code="a"&gt;a&lt;/subfield&gt;
-                        &lt;subfield code="d"&gt;E01307.0000&lt;/subfield&gt;
-                        &lt;subfield code="e"&gt;E01331.0000&lt;/subfield&gt;
-                        &lt;subfield code="f"&gt;N05240.0000&lt;/subfield&gt;
-                        &lt;subfield code="g"&gt;N05224.0000&lt;/subfield&gt;
-                    &lt;/datafield&gt;
-                    &lt;datafield tag="034" ind1="1" ind2=" "&gt;
-                        &lt;subfield code="a"&gt;a&lt;/subfield&gt;
-                        &lt;subfield code="d"&gt;W00430.0000&lt;/subfield&gt;
-                        &lt;subfield code="e"&gt;W00430.0000&lt;/subfield&gt;
-                        &lt;subfield code="f"&gt;N05415.0000&lt;/subfield&gt;
-                        &lt;subfield code="g"&gt;N05415.0000&lt;/subfield&gt;
-                    &lt;/datafield&gt;
-                &lt;/record&gt;
+                <record xmlns="http://www.loc.gov/MARC21/slim">
+                    <datafield tag="034" ind1="1" ind2=" ">
+                        <subfield code="a">a</subfield>
+                        <subfield code="d">E01307.0000</subfield>
+                        <subfield code="e">E01331.0000</subfield>
+                        <subfield code="f">N05240.0000</subfield>
+                        <subfield code="g">N05224.0000</subfield>
+                    </datafield>
+                    <datafield tag="034" ind1="1" ind2=" ">
+                        <subfield code="a">a</subfield>
+                        <subfield code="d">W00430.0000</subfield>
+                        <subfield code="e">W00430.0000</subfield>
+                        <subfield code="f">N05415.0000</subfield>
+                        <subfield code="g">N05415.0000</subfield>
+                    </datafield>
+                </record>
 
 
-            </programlisting>
+
+]]></programlisting>
 
         </refsection>
         <refsection>
@@ -1360,14 +1380,16 @@ SELECT ST_AsText(ST_AsMVTGeom(
 
     <para>Canonical example for a Web Mercator tile using a computed tile bounds to query and clip geometry.
     </para>
-		<programlisting>
+		<programlisting><![CDATA[
+
 SELECT ST_AsMVTGeom(
             ST_Transform( geom, 3857 ),
-            ST_TileEnvelope(12, 513, 412), extent =&gt; 4096, buffer =&gt; 64) AS geom
+            ST_TileEnvelope(12, 513, 412), extent => 4096, buffer => 64) AS geom
   FROM data
-  WHERE geom &amp;&amp; ST_TileEnvelope(12, 513, 412, margin =&gt; (64.0 / 4096))
+  WHERE geom && ST_TileEnvelope(12, 513, 412, margin => (64.0 / 4096))
 
-</programlisting>
+
+]]></programlisting>
 
 	  </refsection>
 
@@ -1464,15 +1486,18 @@ SELECT ST_AsMVTGeom(
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting>WITH mvtgeom AS
+		<programlisting><![CDATA[[
+WITH mvtgeom AS
 (
-  SELECT ST_AsMVTGeom(geom, ST_TileEnvelope(12, 513, 412), extent =&gt; 4096, buffer =&gt; 64) AS geom, name, description
+  SELECT ST_AsMVTGeom(geom, ST_TileEnvelope(12, 513, 412), extent => 4096, buffer => 64) AS geom, name, description
   FROM points_of_interest
-  WHERE geom &amp;&amp; ST_TileEnvelope(12, 513, 412, margin =&gt; (64.0 / 4096))
+  WHERE geom && ST_TileEnvelope(12, 513, 412, margin => (64.0 / 4096))
 )
 SELECT ST_AsMVT(mvtgeom.*)
 FROM mvtgeom;
-</programlisting>
+
+]]>
+        </programlisting>
 
 	  </refsection>
 
@@ -1745,42 +1770,44 @@ SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;
 
 	  <refsection>
 		<title>Example: Create a fully functional X3D document - This will generate a cube that is viewable in FreeWrl and other X3D viewers.</title>
-		<programlisting>SELECT '&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN" "http://www.web3d.org/specifications/x3d-3.0.dtd"&gt;
-&lt;X3D&gt;
-  &lt;Scene&gt;
-    &lt;Transform&gt;
-      &lt;Shape&gt;
-       &lt;Appearance&gt;
-            &lt;Material emissiveColor=''0 0 1''/&gt;
-       &lt;/Appearance&gt; ' ||
+		<programlisting><![CDATA[[
+SELECT '<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN" "http://www.web3d.org/specifications/x3d-3.0.dtd">
+<X3D>
+  <Scene>
+    <Transform>
+      <Shape>
+       <Appearance>
+            <Material emissiveColor=''0 0 1''/>
+       </Appearance> ' ||
        ST_AsX3D( ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
 ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
 ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
 ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )')) ||
-      '&lt;/Shape&gt;
-    &lt;/Transform&gt;
-  &lt;/Scene&gt;
-&lt;/X3D&gt;' As x3ddoc;
+      '</Shape>
+    </Transform>
+  </Scene>
+</X3D>' As x3ddoc;
 
 		x3ddoc
 		--------
-&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN" "http://www.web3d.org/specifications/x3d-3.0.dtd"&gt;
-&lt;X3D&gt;
-  &lt;Scene&gt;
-    &lt;Transform&gt;
-      &lt;Shape&gt;
-       &lt;Appearance&gt;
-            &lt;Material emissiveColor='0 0 1'/&gt;
-       &lt;/Appearance&gt;
-       &lt;IndexedFaceSet  coordIndex='0 1 2 3 -1 4 5 6 7 -1 8 9 10 11 -1 12 13 14 15 -1 16 17 18 19 -1 20 21 22 23'&gt;
-            &lt;Coordinate point='0 0 0 0 0 1 0 1 1 0 1 0 0 0 0 0 1 0 1 1 0 1 0 0 0 0 0 1 0 0 1 0 1 0 0 1 1 1 0 1 1 1 1 0 1 1 0 0 0 1 0 0 1 1 1 1 1 1 1 0 0 0 1 1 0 1 1 1 1 0 1 1' /&gt;
-      &lt;/IndexedFaceSet&gt;
-      &lt;/Shape&gt;
-    &lt;/Transform&gt;
-  &lt;/Scene&gt;
-&lt;/X3D&gt;</programlisting>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN" "http://www.web3d.org/specifications/x3d-3.0.dtd">
+<X3D>
+  <Scene>
+    <Transform>
+      <Shape>
+       <Appearance>
+            <Material emissiveColor='0 0 1'/>
+       </Appearance>
+       <IndexedFaceSet  coordIndex='0 1 2 3 -1 4 5 6 7 -1 8 9 10 11 -1 12 13 14 15 -1 16 17 18 19 -1 20 21 22 23'>
+            <Coordinate point='0 0 0 0 0 1 0 1 1 0 1 0 0 0 0 0 1 0 1 1 0 1 0 0 0 0 0 1 0 0 1 0 1 0 0 1 1 1 0 1 1 1 1 0 1 1 0 0 0 1 0 0 1 1 1 1 1 1 1 0 0 0 1 1 0 1 1 1 1 0 1 1' />
+      </IndexedFaceSet>
+      </Shape>
+    </Transform>
+  </Scene>
+</X3D>
+]]></programlisting>
 	  </refsection>
       <refsection>
          <title>PostGIS buildings</title>
@@ -1789,12 +1816,14 @@ SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;
             <link xlink:href="http://postgis.net/docs/support/viewers/x3d_viewer.htm">x3d scene viewer</link>
             and click Show
          </para>
-         <programlisting>SELECT string_agg('&lt;Shape&gt;' || ST_AsX3D(ST_Extrude(geom, 0,0, i*0.5)) ||
-    '&lt;Appearance&gt;
-          &lt;Material diffuseColor="' || (0.01*i)::text || ' 0.8 0.2" specularColor="' || (0.05*i)::text || ' 0 0.5"/&gt;
-        &lt;/Appearance&gt;
-    &lt;/Shape&gt;', '')
-FROM ST_Subdivide(ST_Letters('PostGIS'),20) WITH ORDINALITY AS f(geom,i);</programlisting>
+         <programlisting><![CDATA[[
+SELECT string_agg('<Shape>' || ST_AsX3D(ST_Extrude(geom, 0,0, i*0.5)) ||
+    '<Appearance>
+          <Material diffuseColor="' || (0.01*i)::text || ' 0.8 0.2" specularColor="' || (0.05*i)::text || ' 0 0.5"/>
+        </Appearance>
+    </Shape>', '')
+FROM ST_Subdivide(ST_Letters('PostGIS'),20) WITH ORDINALITY AS f(geom,i);
+]]></programlisting>
         <informalfigure>
             <mediaobject>
                 <imageobject>
@@ -1806,7 +1835,8 @@ FROM ST_Subdivide(ST_Letters('PostGIS'),20) WITH ORDINALITY AS f(geom,i);</progr
       </refsection>
 	   <refsection>
 		<title>Example: An Octagon elevated 3 Units and decimal precision of 6</title>
-		<programlisting>SELECT ST_AsX3D(
+		<programlisting><![CDATA[[
+SELECT ST_AsX3D(
 ST_Translate(
     ST_Force_3d(
         ST_Buffer(ST_Point(10,10),5, 'quad_segs=2')), 0,0,
@@ -1815,13 +1845,15 @@ ST_Translate(
 
 x3dfrag
 --------
-&lt;IndexedFaceSet coordIndex="0 1 2 3 4 5 6 7"&gt;
-    &lt;Coordinate point="15 10 3 13.535534 6.464466 3 10 5 3 6.464466 6.464466 3 5 10 3 6.464466 13.535534 3 10 15 3 13.535534 13.535534 3 " /&gt;
-&lt;/IndexedFaceSet&gt;</programlisting>
+<IndexedFaceSet coordIndex="0 1 2 3 4 5 6 7">
+    <Coordinate point="15 10 3 13.535534 6.464466 3 10 5 3 6.464466 6.464466 3 5 10 3 6.464466 13.535534 3 10 15 3 13.535534 13.535534 3 " />
+</IndexedFaceSet>
+]]></programlisting>
 	  </refsection>
 	  <refsection>
 		<title>Example: TIN</title>
-		<programlisting>SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((
+		<programlisting><![CDATA[[
+SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((
                 0 0 0,
                 0 0 1,
                 0 1 0,
@@ -1836,20 +1868,23 @@ x3dfrag
 
 		x3dfrag
 		--------
-&lt;IndexedTriangleSet  index='0 1 2 3 4 5'&gt;&lt;Coordinate point='0 0 0 0 0 1 0 1 0 0 0 0 0 1 0 1 1 0'/&gt;&lt;/IndexedTriangleSet&gt;</programlisting>
+<IndexedTriangleSet  index='0 1 2 3 4 5'><Coordinate point='0 0 0 0 0 1 0 1 0 0 0 0 0 1 0 1 1 0'/></IndexedTriangleSet>
+]]></programlisting>
 	  </refsection>
 	  <refsection>
 		<title>Example: Closed multilinestring (the boundary of a polygon with holes)</title>
-		<programlisting>SELECT ST_AsX3D(
+		<programlisting><![CDATA[[
+SELECT ST_AsX3D(
 		    ST_GeomFromEWKT('MULTILINESTRING((20 0 10,16 -12 10,0 -16 10,-12 -12 10,-20 0 10,-12 16 10,0 24 10,16 16 10,20 0 10),
   (12 0 10,8 8 10,0 12 10,-8 8 10,-8 0 10,-8 -4 10,0 -8 10,8 -4 10,12 0 10))')
 ) As x3dfrag;
 
 		x3dfrag
 		--------
-&lt;IndexedLineSet  coordIndex='0 1 2 3 4 5 6 7 0 -1 8 9 10 11 12 13 14 15 8'&gt;
-    &lt;Coordinate point='20 0 10 16 -12 10 0 -16 10 -12 -12 10 -20 0 10 -12 16 10 0 24 10 16 16 10 12 0 10 8 8 10 0 12 10 -8 8 10 -8 0 10 -8 -4 10 0 -8 10 8 -4 10 ' /&gt;
- &lt;/IndexedLineSet&gt;</programlisting>
+<IndexedLineSet  coordIndex='0 1 2 3 4 5 6 7 0 -1 8 9 10 11 12 13 14 15 8'>
+    <Coordinate point='20 0 10 16 -12 10 0 -16 10 -12 -12 10 -20 0 10 -12 16 10 0 24 10 16 16 10 12 0 10 8 8 10 0 12 10 -8 8 10 -8 0 10 -8 -4 10 0 -8 10 8 -4 10 ' />
+ </IndexedLineSet>
+]]></programlisting>
 	  </refsection>
 	</refentry>
 
