@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-08-01 03:08+0000\n"
+"PO-Revision-Date: 2023-09-13 05:59+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "installationxml/ja/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #: installation.xml:4
@@ -579,7 +579,7 @@ msgstr ""
 #: installation.xml:333
 #, no-c-format
 msgid "--with-library-minor-version"
-msgstr ""
+msgstr "--with-library-minor-version"
 
 #. Tag: para
 #: installation.xml:335
@@ -605,7 +605,7 @@ msgstr ""
 #: installation.xml:348
 #, no-c-format
 msgid "--prefix=PREFIX"
-msgstr ""
+msgstr "--prefix=PREFIX"
 
 #. Tag: para
 #: installation.xml:350
@@ -636,7 +636,7 @@ msgstr ""
 #: installation.xml:370
 #, no-c-format
 msgid "--with-pgconfig=FILE"
-msgstr ""
+msgstr "--with-pgconfig=FILE"
 
 #. Tag: para
 #: installation.xml:372
@@ -658,7 +658,7 @@ msgstr ""
 #: installation.xml:384
 #, no-c-format
 msgid "--with-gdalconfig=FILE"
-msgstr ""
+msgstr "--with-gdalconfig=FILE"
 
 #. Tag: para
 #: installation.xml:386
@@ -680,7 +680,7 @@ msgstr ""
 #: installation.xml:398
 #, no-c-format
 msgid "--with-geosconfig=FILE"
-msgstr ""
+msgstr "--with-geosconfig=FILE"
 
 #. Tag: para
 #: installation.xml:400
@@ -702,7 +702,7 @@ msgstr ""
 #: installation.xml:412
 #, no-c-format
 msgid "--with-xml2config=FILE"
-msgstr ""
+msgstr "--with-xml2config=FILE"
 
 #. Tag: para
 #: installation.xml:414
@@ -716,12 +716,18 @@ msgid ""
 "(<command>&gt;--with-xml2config=/path/to/xml2-config</command>) to manually "
 "specify a particular LibXML installation that PostGIS will build against."
 msgstr ""
+"LibXMLはGeomFromKML/GML処理を行うのに必須のライブラリです。通常はlibxmlをイン"
+"ストールしているなら発見されますが、発見できない場合や特定の版を使用したい場"
+"合は、<filename>xml2-config</filename>を指定してインストールスクリプトにLibXM"
+"Lのインストール先ディレクトリを伝えます。PostGISのビルドに使う特定のLibXMLを"
+"手動で指定する場合に、このパラメータ (<command>&gt;--with-xml2config=/path/"
+"to/xml2-config</command>)を使います。"
 
 #. Tag: term
 #: installation.xml:430
 #, no-c-format
 msgid "--with-projdir=DIR"
-msgstr ""
+msgstr "--with-projdir=DIR"
 
 #. Tag: para
 #: installation.xml:432
@@ -739,7 +745,7 @@ msgstr ""
 #: installation.xml:442
 #, no-c-format
 msgid "--with-libiconv=DIR"
-msgstr ""
+msgstr "--with-libiconv=DIR"
 
 #. Tag: para
 #: installation.xml:444
@@ -751,7 +757,7 @@ msgstr "iconvのインストール先ディレクトリを指定します。"
 #: installation.xml:451
 #, no-c-format
 msgid "--with-jsondir=DIR"
-msgstr ""
+msgstr "--with-jsondir=DIR"
 
 #. Tag: para
 #: installation.xml:453
@@ -772,7 +778,7 @@ msgstr ""
 #: installation.xml:463
 #, no-c-format
 msgid "--with-pcredir=DIR"
-msgstr ""
+msgstr "--with-pcredir=DIR"
 
 #. Tag: para
 #: installation.xml:465
@@ -793,7 +799,7 @@ msgstr ""
 #: installation.xml:475
 #, no-c-format
 msgid "--with-gui"
-msgstr ""
+msgstr "--with-gui"
 
 #. Tag: para
 #: installation.xml:477
@@ -810,7 +816,7 @@ msgstr ""
 #: installation.xml:484
 #, no-c-format
 msgid "--without-raster"
-msgstr ""
+msgstr "--without-raster"
 
 #. Tag: para
 #: installation.xml:486
@@ -822,7 +828,7 @@ msgstr "ラスタ機能なしでコンパイルします。"
 #: installation.xml:492
 #, no-c-format
 msgid "--without-topology"
-msgstr ""
+msgstr "--without-topology"
 
 #. Tag: para
 #: installation.xml:494
@@ -839,7 +845,7 @@ msgstr ""
 #: installation.xml:501
 #, no-c-format
 msgid "--with-gettext=no"
-msgstr ""
+msgstr "--with-gettext=no"
 
 #. Tag: para
 #: installation.xml:503
@@ -866,7 +872,7 @@ msgstr ""
 #: installation.xml:512
 #, no-c-format
 msgid "--with-sfcgal=PATH"
-msgstr ""
+msgstr "--with-sfcgal=PATH"
 
 #. Tag: para
 #: installation.xml:514
@@ -884,7 +890,7 @@ msgstr ""
 #: installation.xml:521
 #, no-c-format
 msgid "--without-phony-revision"
-msgstr ""
+msgstr "--without-phony-revision"
 
 #. Tag: para
 #: installation.xml:523
@@ -1141,6 +1147,8 @@ msgid ""
 "<varname>postgis_topology</varname> as available extensions in PgAdmin -&gt; "
 "extensions."
 msgstr ""
+"以上を実行すると、PgAdmin -&gt; extensionで<varname>postgis</varname>, "
+"<varname>postgis_topology</varname>が有効なエクステンションとして見えます。"
 
 #. Tag: para
 #: installation.xml:636
