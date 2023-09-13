@@ -3,13 +3,14 @@
 # Translators:
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016
 # Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022, 2023.
+# Sandro Santilli <strk@kbt.io>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-13 05:59+0000\n"
-"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
+"PO-Revision-Date: 2023-09-13 06:31+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "using_raster_datamanxml/ja/>\n"
 "Language: ja\n"
