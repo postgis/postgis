@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-06-27 07:08+0000\n"
+"PO-Revision-Date: 2023-09-13 05:59+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "using_raster_datamanxml/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #: using_raster_dataman.xml:3
@@ -399,7 +399,7 @@ msgstr ""
 #: using_raster_dataman.xml:200
 #, no-c-format
 msgid "-l OVERVIEW_FACTOR"
-msgstr ""
+msgstr "-l OVERVIEW_FACTOR"
 
 #. Tag: para
 #: using_raster_dataman.xml:201
@@ -425,7 +425,7 @@ msgstr ""
 #: using_raster_dataman.xml:209
 #, no-c-format
 msgid "-N NODATA"
-msgstr ""
+msgstr "-N NODATA"
 
 #. Tag: para
 #: using_raster_dataman.xml:211
@@ -533,7 +533,7 @@ msgstr ""
 #: using_raster_dataman.xml:287
 #, no-c-format
 msgid "-T tablespace"
-msgstr ""
+msgstr "-T tablespace"
 
 #. Tag: para
 #: using_raster_dataman.xml:289
@@ -551,7 +551,7 @@ msgstr ""
 #: using_raster_dataman.xml:298
 #, no-c-format
 msgid "-X tablespace"
-msgstr ""
+msgstr "-X tablespace"
 
 #. Tag: para
 #: using_raster_dataman.xml:300
@@ -567,7 +567,7 @@ msgstr ""
 #: using_raster_dataman.xml:309
 #, no-c-format
 msgid "-Y max_rows_per_copy=50"
-msgstr ""
+msgstr "-Y max_rows_per_copy=50"
 
 #. Tag: para
 #: using_raster_dataman.xml:311
@@ -613,7 +613,7 @@ msgstr ""
 #: using_raster_dataman.xml:333
 #, no-c-format
 msgid "-V version"
-msgstr ""
+msgstr "-V version"
 
 #. Tag: para
 #: using_raster_dataman.xml:334
