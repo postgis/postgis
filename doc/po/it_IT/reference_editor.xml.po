@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-13 00:23+0000\n"
+"PO-Revision-Date: 2023-09-13 21:12+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_editorxml/it/>\n"
@@ -24,7 +24,7 @@ msgstr ""
 #: reference_editor.xml:3
 #, no-c-format
 msgid "Geometry Editors"
-msgstr ""
+msgstr "Editori di geometria"
 
 #. Tag: para
 #: reference_editor.xml:5
@@ -33,12 +33,14 @@ msgid ""
 "These functions create modified geometries by changing type, structure or "
 "vertices."
 msgstr ""
+"Queste funzioni creano geometrie modificate cambiando tipo, struttura o "
+"vertici."
 
 #. Tag: refpurpose
 #: reference_editor.xml:15
 #, no-c-format
 msgid "Add a point to a LineString."
-msgstr ""
+msgstr "Aggiunge un punto a una stringa di linee."
 
 #. Tag: title
 #: reference_editor.xml:36 reference_editor.xml:92 reference_editor.xml:168
@@ -67,6 +69,10 @@ msgid ""
 "parameter is omitted or is -1 the point is appended to the end of the "
 "LineString."
 msgstr ""
+"Aggiunge un punto a una stringa di linee prima dell'indice "
+"<parameter>position</parameter> (utilizzando un indice basato su 0). Se il "
+"parametro <parameter>position</parameter> è omesso o è -1, il punto viene "
+"aggiunto alla fine della stringa di linee."
 
 #. Tag: para
 #: reference_editor.xml:42 reference_editor.xml:1309 reference_editor.xml:1531
@@ -163,6 +169,9 @@ msgid ""
 "geometry containing only geometries of the highest dimension. So polygons "
 "are preferred over lines, which are preferred over points."
 msgstr ""
+"Se il tipo <parameter></parameter> non è specificato, restituisce una "
+"multigeometria contenente solo geometrie della dimensione più alta. Quindi i "
+"poligoni sono preferiti alle linee, che sono preferite ai punti."
 
 #. Tag: para
 #: reference_editor.xml:99
@@ -173,12 +182,16 @@ msgid ""
 "an EMPTY geometry is returned. Only points, lines and polygons are "
 "supported. The type numbers are:"
 msgstr ""
+"Se è specificato il tipo <parameter></parameter> , restituisce una "
+"multigeometria contenente solo quel tipo. Se non ci sono sottogeometrie del "
+"tipo giusto, viene restituita una geometria VUOTA. Sono supportati solo "
+"punti, linee e poligoni. I numeri di tipo sono:"
 
 #. Tag: para
 #: reference_editor.xml:103
 #, no-c-format
 msgid "1 == POINT"
-msgstr ""
+msgstr "1 == POINT"
 
 #. Tag: para
 #: reference_editor.xml:104
