@@ -111,7 +111,7 @@ XSLTPROC_CHUNKED_HTML_OPTS = \
 	--stringparam img.src.path ../ \
 	--stringparam html.stylesheet ../style.css
 
-DOCBOOK_XSLBASE=http://cdn.docbook.org/release/xsl/current/
+DOCBOOK_XSLBASE=http://cdn.docbook.org/release/xsl/current
 HTML_DOCBOOK_XSL=$(DOCBOOK_XSLBASE)/html/docbook.xsl
 CHUNK_HTML_DOCBOOK_XSL=$(DOCBOOK_XSLBASE)/html/chunk.xsl
 
