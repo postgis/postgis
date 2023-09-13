@@ -576,7 +576,13 @@ check-xml: requirements_not_met_xmllint
 check-cheatsheets: requirements_not_met_xmllint
 else
 check-xml: postgis-out.xml
-	$(XMLLINT) --loaddtd $(XSLTPROC_PATH_OPT) --xinclude --valid postgis-out.xml --noout --nonet
+	# TODO: --schematron http://docbook.org/xml/5.0/sch/docbook.sch
+	# See https://trac.osgeo.org/postgis/ticket/5532
+	$(XMLLINT) --noout --nonet \
+		--valid --loaddtd \
+		--relaxng http://docbook.org/xml/5.0/rng/docbook.rng \
+		$<
+
 
 check-cheatsheets: cheatsheets
 	for f in $(html_builddir)/*_cheatsheet-en.html; do \
