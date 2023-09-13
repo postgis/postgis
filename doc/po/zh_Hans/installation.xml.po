@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-05 06:08+0000\n"
+"PO-Revision-Date: 2023-09-13 03:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/installationxml/zh_Hans/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #: installation.xml:4
@@ -552,7 +552,7 @@ msgstr ""
 #: installation.xml:333
 #, no-c-format
 msgid "--with-library-minor-version"
-msgstr ""
+msgstr "使用库次要版本（--with-library-minor-version）"
 
 #. Tag: para
 #: installation.xml:335
@@ -576,7 +576,7 @@ msgstr ""
 #: installation.xml:348
 #, no-c-format
 msgid "--prefix=PREFIX"
-msgstr ""
+msgstr "安装路径（--prefix=PREFIX）"
 
 #. Tag: para
 #: installation.xml:350
@@ -606,7 +606,7 @@ msgstr ""
 #: installation.xml:370
 #, no-c-format
 msgid "--with-pgconfig=FILE"
-msgstr ""
+msgstr "使用pgconfig=文件（--with-pgconfig=FILE）"
 
 #. Tag: para
 #: installation.xml:372
@@ -626,7 +626,7 @@ msgstr ""
 #: installation.xml:384
 #, no-c-format
 msgid "--with-gdalconfig=FILE"
-msgstr ""
+msgstr "使用gdalconfig=文件（--with-gdalconfig=FILE）"
 
 #. Tag: para
 #: installation.xml:386
@@ -646,7 +646,7 @@ msgstr ""
 #: installation.xml:398
 #, no-c-format
 msgid "--with-geosconfig=FILE"
-msgstr ""
+msgstr "使用geosconfig=文件（--with-geosconfig=FILE）"
 
 #. Tag: para
 #: installation.xml:400
@@ -667,7 +667,7 @@ msgstr ""
 #: installation.xml:412
 #, no-c-format
 msgid "--with-xml2config=FILE"
-msgstr ""
+msgstr "使用xml2config=文件（--with-xml2config=FILE）"
 
 #. Tag: para
 #: installation.xml:414
@@ -681,12 +681,17 @@ msgid ""
 "(<command>&gt;--with-xml2config=/path/to/xml2-config</command>) to manually "
 "specify a particular LibXML installation that PostGIS will build against."
 msgstr ""
+"LibXML 是执行 GeomFromKML/GML 过程所需的库。通常情况下，如果您已安装 "
+"libxml，它将被找到，但如果没有或者您想使用特定版本，您需要指定一个特定的 "
+"<filename>xml2-config</filename> 配置文件，以便让软件安装程序找到 LibXML "
+"安装目录。使用这个参数 (<command>&gt;--with-xml2config=/path/to/"
+"xml2-config</command>) 来手动指定 PostGIS 将构建的特定 LibXML 安装。"
 
 #. Tag: term
 #: installation.xml:430
 #, no-c-format
 msgid "--with-projdir=DIR"
-msgstr ""
+msgstr "使用projdir=DIR（--with-projdir=DIR）"
 
 #. Tag: para
 #: installation.xml:432
@@ -703,7 +708,7 @@ msgstr ""
 #: installation.xml:442
 #, no-c-format
 msgid "--with-libiconv=DIR"
-msgstr ""
+msgstr "使用libiconv=DIR（--with-libiconv=DIR）"
 
 #. Tag: para
 #: installation.xml:444
@@ -715,7 +720,7 @@ msgstr "iconv的安装目录。"
 #: installation.xml:451
 #, no-c-format
 msgid "--with-jsondir=DIR"
-msgstr ""
+msgstr "使用jsondir=DIR（--with-jsondir=DIR）"
 
 #. Tag: para
 #: installation.xml:453
@@ -736,7 +741,7 @@ msgstr ""
 #: installation.xml:463
 #, no-c-format
 msgid "--with-pcredir=DIR"
-msgstr ""
+msgstr "使用pcredir=DIR（--with-pcredir=DIR）"
 
 #. Tag: para
 #: installation.xml:465
@@ -757,7 +762,7 @@ msgstr ""
 #: installation.xml:475
 #, no-c-format
 msgid "--with-gui"
-msgstr ""
+msgstr "使用gui（--with-gui）"
 
 #. Tag: para
 #: installation.xml:477
@@ -773,7 +778,7 @@ msgstr ""
 #: installation.xml:484
 #, no-c-format
 msgid "--without-raster"
-msgstr ""
+msgstr "禁用栅格支持（--without-raster）"
 
 #. Tag: para
 #: installation.xml:486
@@ -785,7 +790,7 @@ msgstr "在没有栅格功能的情况下进行编译。"
 #: installation.xml:492
 #, no-c-format
 msgid "--without-topology"
-msgstr ""
+msgstr "禁用拓扑支持（--without-topology）"
 
 #. Tag: para
 #: installation.xml:494
@@ -801,7 +806,7 @@ msgstr ""
 #: installation.xml:501
 #, no-c-format
 msgid "--with-gettext=no"
-msgstr ""
+msgstr "禁用 gettext 支持（--with-gettext=no）"
 
 #. Tag: para
 #: installation.xml:503
@@ -826,7 +831,7 @@ msgstr ""
 #: installation.xml:512
 #, no-c-format
 msgid "--with-sfcgal=PATH"
-msgstr ""
+msgstr "--with-sfcgal=PATH"
 
 #. Tag: para
 #: installation.xml:514
@@ -843,7 +848,7 @@ msgstr ""
 #: installation.xml:521
 #, no-c-format
 msgid "--without-phony-revision"
-msgstr ""
+msgstr "--without-phony-revision"
 
 #. Tag: para
 #: installation.xml:523
@@ -1083,6 +1088,9 @@ msgid ""
 "<varname>postgis_topology</varname> as available extensions in PgAdmin -&gt; "
 "extensions."
 msgstr ""
+"完成此操作后，您应该在 PgAdmin&gt; 中看到 "
+"<varname>postgis</varname>、<varname>postgis_topology</varname> "
+"作为可用扩展。 扩展。"
 
 #. Tag: para
 #: installation.xml:636
