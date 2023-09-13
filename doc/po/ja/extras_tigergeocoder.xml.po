@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-05-15 11:08+0000\n"
+"PO-Revision-Date: 2023-09-13 03:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "extras_tigergeocoderxml/ja/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #: extras_tigergeocoder.xml:6
@@ -768,7 +768,7 @@ msgstr ""
 #: extras_tigergeocoder.xml:387
 #, no-c-format
 msgid "&gt;"
-msgstr ""
+msgstr "&gt;"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:395
