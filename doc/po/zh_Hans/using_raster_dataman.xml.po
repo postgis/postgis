@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-13 03:23+0000\n"
+"PO-Revision-Date: 2023-09-13 05:59+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/using_raster_datamanxml/zh_Hans/>\n"
@@ -687,13 +687,13 @@ msgstr "PostGIS 栅格 2.0 之前的版本基于最小外接矩形而不是凸�
 #, no-c-format
 msgid ""
 "Apply raster constraints using <xref linkend=\"RT_AddRasterConstraints\"/>"
-msgstr ""
+msgstr "使用 <xref linkend=\"RT_AddRasterConstraints\"/>应用栅格约束"
 
 #. Tag: title
 #: using_raster_dataman.xml:367
 #, no-c-format
 msgid "Using \"out db\" cloud rasters"
-msgstr ""
+msgstr "使用“out db”云栅格"
 
 #. Tag: para
 #: using_raster_dataman.xml:368
@@ -705,6 +705,11 @@ msgid ""
 "virtual_file_systems.html#network-based-file-systems\">stored remotely</"
 "link> in cloud \"object stores\" (e.g. AWS S3, Google Cloud Storage)."
 msgstr ""
+"<varname>raster2pgsql</varname> 工具使用 GDAL 访问栅格数据，并且可以利用 "
+"GDAL 的一个关键功能：能够从<link xlink:href=\"https://gdal.org/user/"
+"virtual_file_systems.html#network-based-file-systems\""
+">远程存储</link>在云“对象存储”（例如 AWS S3、Google Cloud "
+"Storage）中的栅格中读取数据。"
 
 #. Tag: para
 #: using_raster_dataman.xml:372
@@ -717,6 +722,10 @@ msgid ""
 "will result in very poor performance, as the system will have to download "
 "the entire raster each time it needs to access a subset."
 msgstr ""
+"有效使用云存储栅格需要使用“云优化”格式。 最知名和最广泛使用的是“<link "
+"xlink:href=\"https://gdal.org/drivers/raster/cog.html\">云优化的 "
+"GeoTIFF</link>”格式。 使用非云格式（例如 JPEG 或未平铺的 "
+"TIFF）将导致性能非常差，因为系统每次需要访问子集时都必须下载整个栅格。"
 
 #. Tag: para
 #: using_raster_dataman.xml:375
@@ -730,6 +739,11 @@ msgid ""
 "emphasis> from the cloud raster and <emphasis>writing</emphasis> to the "
 "database."
 msgstr ""
+"首先，将栅格加载到您选择的云存储中。 一旦加载，您将有一个 URI "
+"来访问它，可以是“http”URI，有时也可以是特定于服务的 URI。 （例如，“s3://"
+"bucket/object”）。 要访问非公共存储桶，您需要提供 GDAL "
+"配置选项来验证您的连接。 请注意，此命令是从云栅格<emphasis>读取</emphasis>并<"
+"emphasis>写入</emphasis>数据库。"
 
 #. Tag: para
 #: using_raster_dataman.xml:379
@@ -740,6 +754,9 @@ msgid ""
 "linkend=\"postgis_enable_outdb_rasters\"/> and <xref "
 "linkend=\"postgis_gdal_enabled_drivers\"/>."
 msgstr ""
+"加载表后，您需要通过设置两个权限（<xref linkend="
+"\"postgis_enable_outdb_rasters\"/> 和<xref linkend="
+"\"postgis_gdal_enabled_drivers\"/>）来授予数据库从远程栅格读取的权限。"
 
 #. Tag: para
 #: using_raster_dataman.xml:383
@@ -747,7 +764,8 @@ msgstr ""
 msgid ""
 "To make the changes sticky, set them directly on your database. You will "
 "need to re-connect to experience the new settings."
-msgstr ""
+msgstr "为了使更改生效并持久化，直接在您的数据库上进行设置。您将需要重新连接以体验新"
+"的设置。"
 
 #. Tag: para
 #: using_raster_dataman.xml:387
@@ -760,6 +778,10 @@ msgid ""
 "options can be set by space-separating the <varname>key=value</varname> "
 "pairs."
 msgstr ""
+"对于非公共栅格，您可能必须提供访问密钥才能从云栅格中读取。 您可以使用 <xref "
+"linkend=\"postgis_gdal_vsi_options\"/>配置将用于编写<varname> raster2pgsql "
+"</varname>调用的相同键设置为在数据库内部使用。 "
+"请注意，可以通过空格分隔<varname>键=值对</varname>来设置多个选项。"
 
 #. Tag: para
 #: using_raster_dataman.xml:391
@@ -769,13 +791,14 @@ msgid ""
 "raster table like any other raster table, using the same functions. The "
 "database will handle all the mechanics of connecting to the cloud data when "
 "it needs to read pixel data."
-msgstr ""
+msgstr "加载数据并设置权限后，您可以使用相同的功能像任何其他栅格表一样与栅格表进行交"
+"互。 当需要读取像素数据时，数据库将处理连接到云数据的所有机制。"
 
 #. Tag: title
 #: using_raster_dataman.xml:397
 #, no-c-format
 msgid "Raster Catalogs"
-msgstr ""
+msgstr "光栅目录"
 
 #. Tag: para
 #: using_raster_dataman.xml:398
@@ -786,6 +809,8 @@ msgid ""
 "As a result the catalog views are always consistent with the raster data in "
 "the tables since the constraints are enforced."
 msgstr ""
+"PostGIS 附带了两个栅格目录视图。 两个视图都利用嵌入在栅格表约束中的信息。 "
+"因此，由于强制实施了约束，目录视图始终与表中的栅格数据一致。"
 
 #. Tag: para
 #: using_raster_dataman.xml:402
@@ -793,7 +818,7 @@ msgstr ""
 msgid ""
 "<varname>raster_columns</varname> this view catalogs all the raster table "
 "columns in your database."
-msgstr ""
+msgstr "<varname>raster_columns</varname> 此视图对数据库中的所有栅格表列进行编目。"
 
 #. Tag: para
 #: using_raster_dataman.xml:405
@@ -804,12 +829,15 @@ msgid ""
 "Tables of this type are generated when you use the <varname>-l</varname> "
 "switch during load."
 msgstr ""
+"<varname>raster_overviews </varname>此视图对数据库中的所有栅格表列进行编目，"
+"这些列用作更细粒度表的概述。 当您在加载期间使用<varname> -l "
+"</varname>开关时，会生成这种类型的表。"
 
 #. Tag: title
 #: using_raster_dataman.xml:409
 #, no-c-format
 msgid "Raster Columns Catalog"
-msgstr ""
+msgstr "栅格列目录"
 
 #. Tag: para
 #: using_raster_dataman.xml:410
@@ -821,6 +849,9 @@ msgid ""
 "you restore one raster table from a backup of another database. The "
 "following columns exist in the <varname>raster_columns</varname> catalog."
 msgstr ""
+"<varname>raster_columns</varname> 是数据库中所有栅格类型的栅格表列的目录。 它"
+"是一种利用表约束的视图，因此即使您从另一个数据库的备份恢复一个栅格表，信息也"
+"始终保持一致。 <varname>raster_columns </varname>目录中存在以下列。"
 
 #. Tag: para
 #: using_raster_dataman.xml:412
@@ -832,6 +863,9 @@ msgid ""
 "<varname>raster_columns</varname> catalog registers the common information "
 "about your raster tiles."
 msgstr ""
+"如果您未使用加载器创建表或忘记在加载期间指定 <varname>-C </varname>标志，"
+"则可以在事后使用 <xref linkend=\"RT_AddRasterConstraints\"/>强制执行约束，"
+"以便 <varname>raster_columns </varname>目录注册有关栅格切片的通用信息。"
 
 #. Tag: para
 #: using_raster_dataman.xml:417
@@ -839,7 +873,7 @@ msgstr ""
 msgid ""
 "<varname>r_table_catalog</varname> The database the table is in. This will "
 "always read the current database."
-msgstr ""
+msgstr "<varname>r_table_catalog </varname>表所在的数据库。这将始终读取当前数据库。"
 
 #. Tag: para
 #: using_raster_dataman.xml:420
@@ -847,13 +881,13 @@ msgstr ""
 msgid ""
 "<varname>r_table_schema</varname> The database schema the raster table "
 "belongs to."
-msgstr ""
+msgstr "<varname>r_table_schema </varname>栅格表所属的数据库模式。"
 
 #. Tag: para
 #: using_raster_dataman.xml:423
 #, no-c-format
 msgid "<varname>r_table_name</varname> raster table"
-msgstr ""
+msgstr "<varname>r_table_name</varname> 栅格表"
 
 #. Tag: para
 #: using_raster_dataman.xml:426
@@ -865,6 +899,9 @@ msgid ""
 "to have a raster table listed multiple times with a different raster column "
 "for each."
 msgstr ""
+"<varname>r_raster_column </varname>在<varname>r_table_name</varname> "
+"表中栅格类型的列。 PostGIS 中没有任何内容可以阻止您在每个表中拥有多个栅格列，"
+"因此可以多次列出一个栅格表，并且每个表具有不同的栅格列。"
 
 #. Tag: para
 #: using_raster_dataman.xml:429
@@ -873,6 +910,8 @@ msgid ""
 "<varname>srid</varname> The spatial reference identifier of the raster. "
 "Should be an entry in the <xref linkend=\"spatial_ref_sys\"/>."
 msgstr ""
+"<varname>srid </varname>栅格的空间参考标识符。 应该是<xref linkend="
+"\"spatial_ref_sys\"/>中的条目。"
 
 #. Tag: para
 #: using_raster_dataman.xml:432
@@ -883,6 +922,9 @@ msgid ""
 "same <varname>scale_x</varname> and this constraint is applied. Refer to "
 "<xref linkend=\"RT_ST_ScaleX\"/> for more details."
 msgstr ""
+"<varname>scale_x </varname>几何空间坐标与像素之间的缩放比例。 仅当栅格列中的"
+"所有切片具有相同的<varname>scale_x</varname>并且应用此约束时，此功能才可用。 "
+"有关更多详细信息，请参阅 <xref linkend=\"RT_ST_ScaleX\"/>。"
 
 #. Tag: para
 #: using_raster_dataman.xml:435
@@ -894,6 +936,10 @@ msgid ""
 "constraint is applied. Refer to <xref linkend=\"RT_ST_ScaleY\"/> for more "
 "details."
 msgstr ""
+"<varname>scale_y </varname>几何空间坐标与像素之间的缩放比例。 仅当栅格列中的"
+"所有切片具有相同的<varname>scale_y</varname>并且应用了<varname>scale_y</varna"
+"me>约束时，此功能才可用。 有关详细信息，请参阅 <xref linkend=\"RT_ST_ScaleY\""
+"/>。"
 
 #. Tag: para
 #: using_raster_dataman.xml:438
@@ -902,6 +948,8 @@ msgid ""
 "<varname>blocksize_x</varname> The width (number of pixels across) of each "
 "raster tile . Refer to <xref linkend=\"RT_ST_Width\"/> for more details."
 msgstr ""
+"<varname>blocksize_x </varname>每个栅格图块的宽度（跨像素数）。 "
+"有关更多详细信息，请参阅<xref linkend=\"RT_ST_Width\"/>。"
 
 #. Tag: para
 #: using_raster_dataman.xml:441
@@ -910,6 +958,8 @@ msgid ""
 "<varname>blocksize_y</varname> The width (number of pixels down) of each "
 "raster tile . Refer to <xref linkend=\"RT_ST_Height\"/> for more details."
 msgstr ""
+"<varname>blocksize_y </varname>每个栅格图块的宽度（向下的像素数）。 "
+"有关更多详细信息，请参阅<xref linkend=\"RT_ST_Height\"/>。"
 
 #. Tag: para
 #: using_raster_dataman.xml:444
@@ -919,6 +969,9 @@ msgid ""
 "tiles have the same alignment . Refer to <xref "
 "linkend=\"RT_ST_SameAlignment\"/> for more details."
 msgstr ""
+"<varname>same_alignment "
+"</varname>一个布尔值，如果所有栅格图块具有相同的对齐方式，则该值为 true。 "
+"有关更多详细信息，请参阅<xref linkend=\"RT_ST_SameAlignment\"/>。"
 
 #. Tag: para
 #: using_raster_dataman.xml:447
@@ -928,6 +981,9 @@ msgid ""
 "unique and coverage tile constraints, the value with be TRUE. Otherwise, it "
 "will be FALSE."
 msgstr ""
+"<varname>Regular_blocking</varname> "
+"如果栅格列具有空间唯一性和覆盖范围切片约束，则该值为 TRUE。 否则，它将是 "
+"FALSE。"
 
 #. Tag: para
 #: using_raster_dataman.xml:450
@@ -935,7 +991,8 @@ msgstr ""
 msgid ""
 "<varname>num_bands</varname> The number of bands in each tile of your raster "
 "set. This is the same information as what is provided by"
-msgstr ""
+msgstr "<varname>num_bands </varname>栅格集中每个切片中的波段数。 这与 ST_NumBands "
+"提供的信息相同"
 
 #. Tag: para
 #: using_raster_dataman.xml:453
@@ -946,6 +1003,9 @@ msgid ""
 "number of bands. The pixel_types are one of the following defined in <xref "
 "linkend=\"RT_ST_BandPixelType\"/>."
 msgstr ""
+"<varname>Pixel_types</varname> 定义每个波段的像素类型的数组。 "
+"该数组中的元素数量与波段的数量相同。 Pixel_types 是 <xref linkend="
+"\"RT_ST_BandPixelType\"/> 中定义的以下类型之一。"
 
 #. Tag: para
 #: using_raster_dataman.xml:456
@@ -958,6 +1018,10 @@ msgid ""
 "operations. This is similar information provided by <xref "
 "linkend=\"RT_ST_BandNoDataValue\"/>."
 msgstr ""
+"<varname>nodata_values</varname> 双精度数字数组，表示每个波段的<varname> "
+"nodata_value</varname>。 该数组中的元素数量与带的数量相同。 "
+"这些数字定义了大多数操作中应忽略的每个波段的像素值。 这与<xref linkend="
+"\"RT_ST_BandNoDataValue\"/> 提供的信息类似。"
 
 #. Tag: para
 #: using_raster_dataman.xml:459
@@ -966,7 +1030,9 @@ msgid ""
 "<varname>out_db</varname> An array of boolean flags indicating if the raster "
 "bands data is maintained outside the database. You will have the same number "
 "of elements in this array as you have number of bands."
-msgstr ""
+msgstr "<varname>out_db "
+"</varname>布尔标志数组，指示栅格波段数据是否在数据库外部维护。 "
+"该数组中的元素数量与带的数量相同。"
 
 #. Tag: para
 #: using_raster_dataman.xml:462
@@ -978,6 +1044,10 @@ msgid ""
 "function before load and then reapply constraints with <xref "
 "linkend=\"RT_AddRasterConstraints\"/> after load."
 msgstr ""
+"<varname>extent</varname>这是栅格集中所有栅格行的范围。 "
+"如果您计划加载更多数据来更改集的范围，则需要在加载之前运行 <xref linkend="
+"\"RT_DropRasterConstraints\"/> 函数，然后在加载后使用<xref linkend="
+"\"RT_AddRasterConstraints\"/> 重新应用约束。"
 
 #. Tag: para
 #: using_raster_dataman.xml:465
@@ -985,13 +1055,13 @@ msgstr ""
 msgid ""
 "<varname>spatial_index</varname> A boolean that is true if raster column has "
 "a spatial index."
-msgstr ""
+msgstr "<varname>Spatial_index </varname>如果栅格列具有空间索引，则为 true 的布尔值。"
 
 #. Tag: title
 #: using_raster_dataman.xml:470
 #, no-c-format
 msgid "Raster Overviews"
-msgstr ""
+msgstr "光栅概述"
 
 #. Tag: para
 #: using_raster_dataman.xml:471
@@ -1007,6 +1077,13 @@ msgid ""
 "table when you use the <varname>-l</varname> switch in raster loading or can "
 "be generated manually using <xref linkend=\"RT_AddOverviewConstraints\"/>."
 msgstr ""
+"<varname>raster_overviews</varname> "
+"目录有关用于概览的栅格表列的信息以及在使用概览时了解的有用的附加信息。 "
+"概览表在 <varname>raster_columns</varname> 和 <varname>raster_overviews </var"
+"name>中进行编目，因为它们本身就是栅格，但还具有作为高分辨率表的较低分辨率的漫"
+"画化图像的额外特殊用途。 当您在栅格加载中使用 <varname>-l "
+"</varname>开关时，它们会与主栅格表一起生成，或者可以使用 <xref linkend="
+"\"RT_AddOverviewConstraints\"/>手动生成。"
 
 #. Tag: para
 #: using_raster_dataman.xml:472
@@ -1014,7 +1091,7 @@ msgstr ""
 msgid ""
 "Overview tables contain the same constraints as other raster tables as well "
 "as additional informational only constraints specific to overviews."
-msgstr ""
+msgstr "概览表包含与其他栅格表相同的约束以及特定于概览的附加信息约束。"
 
 #. Tag: para
 #: using_raster_dataman.xml:473
@@ -1027,12 +1104,16 @@ msgid ""
 "<varname>raster_columns</varname> together to get the full set of "
 "information you need."
 msgstr ""
+"<varname>raster_overviews</varname> 中的信息与<varname> raster_columns "
+"</varname>中的信息不重复。 如果您需要有关 <varname>raster_columns "
+"</varname>中存在的概览表的信息，您可以将 <varname>raster_overviews</varname> "
+"和 <varname>raster_columns </varname>连接在一起以获得所需的完整信息集。"
 
 #. Tag: para
 #: using_raster_dataman.xml:474
 #, no-c-format
 msgid "Two main reasons for overviews are:"
-msgstr ""
+msgstr "进行概览的两个主要原因是："
 
 #. Tag: para
 #: using_raster_dataman.xml:476
@@ -1040,7 +1121,7 @@ msgstr ""
 msgid ""
 "Low resolution representation of the core tables commonly used for fast "
 "mapping zoom-out."
-msgstr ""
+msgstr "通常用于快速映射缩小的核心表的低分辨率表示。"
 
 #. Tag: para
 #: using_raster_dataman.xml:477
@@ -1052,6 +1133,9 @@ msgid ""
 "tables they support, they can be sufficient in many rule-of-thumb "
 "computations."
 msgstr ""
+"它们的计算速度通常比其更高分辨率的父级更快，因为记录更少，每个像素覆盖更多区"
+"域。 "
+"尽管计算不如它们支持的高分辨率表那么准确，但它们在许多粗略计算中已经足够了。"
 
 #. Tag: para
 #: using_raster_dataman.xml:480
@@ -1059,7 +1143,7 @@ msgstr ""
 msgid ""
 "The <varname>raster_overviews</varname> catalog contains the following "
 "columns of information."
-msgstr ""
+msgstr "<varname>raster_overviews</varname> 目录包含以下信息。"
 
 #. Tag: para
 #: using_raster_dataman.xml:483
@@ -1067,7 +1151,8 @@ msgstr ""
 msgid ""
 "<varname>o_table_catalog</varname> The database the overview table is in. "
 "This will always read the current database."
-msgstr ""
+msgstr "<varname>o_table_catalog "
+"</varname>概览表所在的数据库。这将始终读取当前数据库。"
 
 #. Tag: para
 #: using_raster_dataman.xml:486
@@ -1075,20 +1160,20 @@ msgstr ""
 msgid ""
 "<varname>o_table_schema</varname> The database schema the overview raster "
 "table belongs to."
-msgstr ""
+msgstr "<varname>o_table_schema</varname> 概览栅格表所属的数据库架构。"
 
 #. Tag: para
 #: using_raster_dataman.xml:489
 #, no-c-format
 msgid "<varname>o_table_name</varname> raster overview table name"
-msgstr ""
+msgstr "<varname>o_table_name </varname>栅格概览表名称"
 
 #. Tag: para
 #: using_raster_dataman.xml:492
 #, no-c-format
 msgid ""
 "<varname>o_raster_column</varname> the raster column in the overview table."
-msgstr ""
+msgstr "<varname>o_raster_column </varname>概览表中的栅格列。"
 
 #. Tag: para
 #: using_raster_dataman.xml:496
@@ -1096,7 +1181,8 @@ msgstr ""
 msgid ""
 "<varname>r_table_catalog</varname> The database the raster table that this "
 "overview services is in. This will always read the current database."
-msgstr ""
+msgstr "<varname>r_table_catalog</varname> "
+"该概览服务所在的栅格表所在的数据库。这将始终读取当前数据库。"
 
 #. Tag: para
 #: using_raster_dataman.xml:499
@@ -1104,14 +1190,14 @@ msgstr ""
 msgid ""
 "<varname>r_table_schema</varname> The database schema the raster table that "
 "this overview services belongs to."
-msgstr ""
+msgstr "<varname>r_table_schema </varname>此概览服务所属的栅格表的数据库架构。"
 
 #. Tag: para
 #: using_raster_dataman.xml:502
 #, no-c-format
 msgid ""
 "<varname>r_table_name</varname> raster table that this overview services."
-msgstr ""
+msgstr "<varname>r_table_name</varname> 此概览服务的栅格表。"
 
 #. Tag: para
 #: using_raster_dataman.xml:505
@@ -1119,7 +1205,7 @@ msgstr ""
 msgid ""
 "<varname>r_raster_column</varname> the raster column that this overview "
 "column services."
-msgstr ""
+msgstr "<varname>r_raster_column</varname> 此概览列服务的栅格列。"
 
 #. Tag: para
 #: using_raster_dataman.xml:508
@@ -1140,12 +1226,23 @@ msgid ""
 "number of pixels as its parent, but is of a lower resolution where each "
 "pixel of it represents (Power(2,overview_factor) pixels of the original)."
 msgstr ""
+"<varname>Overview_factor</varname> - 这是概述表的金字塔级别。 "
+"数字越大，表的分辨率越低。 raster2pgsql "
+"如果给定图像文件夹，将计算每个图像文件的概述并单独加载。 假定级别为 "
+"1，并且始终为原始文件。 2 级是每个图块代表 4 个原始图块。 例如，"
+"如果您有一个包含 5000x5000 像素图像文件的文件夹，您选择将其分块为 "
+"125x125，则对于每个图像文件，您的基表将有 (5000*5000)/(125*125) 条记录 = "
+"1600，您的 (l=2) <varname>o_2 </varname>表将有上限(1600/Power(2,2)) = 400 "
+"行，您的 (l=3) <varname>o_3 </varname>将有上限(1600/Power(2,3) ) = 200 行。 "
+"如果您的像素不能被图块的大小整除，您将得到一些废图块（未完全填充的图块）。 "
+"请注意，raster2pgsql 生成的每个概览图块与其父级图块具有相同数量的像素，但分辨"
+"率较低，其中每个像素代表（原始图块的 Power(2,overview_factor) 像素）。"
 
 #. Tag: title
 #: using_raster_dataman.xml:520
 #, no-c-format
 msgid "Building Custom Applications with PostGIS Raster"
-msgstr ""
+msgstr "使用 PostGIS Raster 构建自定义应用程序"
 
 #. Tag: para
 #: using_raster_dataman.xml:521
@@ -1160,13 +1257,19 @@ msgid ""
 "link>. In addition you can use a wide variety of languages as demonstrated "
 "in this section."
 msgstr ""
+"事实上，PostGIS 栅格为您提供了 SQL "
+"函数来以已知图像格式渲染栅格，这为您提供了很多渲染栅格的选项。 例如，"
+"您可以使用 OpenOffice / LibreOffice 进行渲染，如 <link xlink:href=\"http"
+"://www.postgresonline.com/journal/archives/244-Rendering-PostGIS-Raster-"
+"graphics-with-LibreOffice-Base-Reports.html\">使用 LibreOffice 基础报告渲染 "
+"PostGIS 栅格图形</link>中所示。 此外，您还可以使用本节中演示的多种语言。"
 
 #. Tag: title
 #: using_raster_dataman.xml:524
 #, no-c-format
 msgid ""
 "PHP Example Outputting using ST_AsPNG in concert with other raster functions"
-msgstr ""
+msgstr "PHP 示例使用 ST_AsPNG 与其他栅格函数进行输出"
 
 #. Tag: para
 #: using_raster_dataman.xml:525
@@ -1177,6 +1280,9 @@ msgid ""
 "band 1,2,3 of a raster to a PHP request stream that can then be embedded in "
 "an img src html tag."
 msgstr ""
+"在本节中，我们将演示如何使用 PHP PostgreSQL 驱动程序和 <xref linkend="
+"\"RT_ST_AsGDALRaster\"/>系列函数将栅格的波段 1、2、3 输出到 PHP 请求流，"
+"然后将其嵌入到 img src html 标记中。"
 
 #. Tag: para
 #: using_raster_dataman.xml:528 using_raster_dataman.xml:540
@@ -1189,6 +1295,11 @@ msgid ""
 "specified projection using <xref linkend=\"RT_ST_Transform\"/>, and then "
 "outputs the results as a png using <xref linkend=\"RT_ST_AsPNG\"/>."
 msgstr ""
+"示例查询演示了如何将一大堆栅格函数组合在一起，以获取与特定 wgs 84 "
+"边界框相交的所有图块，然后将相交图块与 <xref linkend=\"RT_ST_Union\""
+"/>联合起来，返回所有波段，使用 <xref linkend=\"RT_ST_Transform\""
+"/>转换为用户指定的投影，然后输出 使用 <xref linkend=\"RT_ST_AsPNG\"/"
+">将结果显示为 png。"
 
 #. Tag: para
 #: using_raster_dataman.xml:531
@@ -1198,6 +1309,8 @@ msgid ""
 "test_raster.php?srid=2249</programlisting> to get the raster image in "
 "Massachusetts state plane feet."
 msgstr ""
+"您可以使用<programlisting> http://mywebserver/test_raster.php?srid=2249 "
+"</programlisting>调用以下命令来获取马萨诸塞州平面英尺的栅格图像。"
 
 #. Tag: title
 #: using_raster_dataman.xml:535
@@ -1205,7 +1318,7 @@ msgstr ""
 msgid ""
 "ASP.NET C# Example Outputting using ST_AsPNG in concert with other raster "
 "functions"
-msgstr ""
+msgstr "ASP.NET C# 示例使用 ST_AsPNG 与其他栅格函数进行输出"
 
 #. Tag: para
 #: using_raster_dataman.xml:536
@@ -1216,6 +1329,9 @@ msgid ""
 "band 1,2,3 of a raster to a PHP request stream that can then be embedded in "
 "an img src html tag."
 msgstr ""
+"在本节中，我们将演示如何使用 Npgsql PostgreSQL .NET 驱动程序和<xref linkend="
+"\"RT_ST_AsGDALRaster\"/>系列函数将栅格的波段 1、2、3 输出到 PHP 请求流，"
+"然后将其嵌入到 img src html 标记中。"
 
 #. Tag: para
 #: using_raster_dataman.xml:539
@@ -1227,6 +1343,10 @@ msgid ""
 "download the latest and drop into your ASP.NET bin folder and you'll be good "
 "to go."
 msgstr ""
+"本练习需要 npgsql .NET PostgreSQL 驱动程序，您可以从 <link xlink:href=\"http"
+"://npgsql.projects.postgresql.org/\"> http://npgsql.projects.postgresql.org/ "
+"</link>获取最新的驱动程序。 只需下载最新版本并放入 ASP.NET bin "
+"文件夹中即可开始使用。"
 
 #. Tag: para
 #: using_raster_dataman.xml:543
@@ -1234,7 +1354,7 @@ msgstr ""
 msgid ""
 "This is same example as <xref linkend=\"RT_PHP_Output\"/> except implemented "
 "in C#."
-msgstr ""
+msgstr "该示例与<xref linkend=\"RT_PHP_Output\"/>示例相同，只不过是在 C# 中实现的。"
 
 #. Tag: para
 #: using_raster_dataman.xml:544
@@ -1244,12 +1364,14 @@ msgid ""
 "ashx?srid=2249</programlisting> to get the raster image in Massachusetts "
 "state plane feet."
 msgstr ""
+"您可以使用<programlisting> http://mywebserver/TestRaster.ashx?srid=2249 "
+"</programlisting>调用以下命令来获取马萨诸塞州平面英尺的栅格图像。"
 
 #. Tag: title
 #: using_raster_dataman.xml:549
 #, no-c-format
 msgid "Java console app that outputs raster query as Image file"
-msgstr ""
+msgstr "将栅格查询输出为图像文件的 Java 控制台应用程序"
 
 #. Tag: para
 #: using_raster_dataman.xml:550
@@ -1257,7 +1379,8 @@ msgstr ""
 msgid ""
 "This is a simple java console app that takes a query that returns one image "
 "and outputs to specified file."
-msgstr ""
+msgstr "这是一个简单的 java "
+"控制台应用程序，它接受一个返回一张图像并输出到指定文件的查询。"
 
 #. Tag: para
 #: using_raster_dataman.xml:551
@@ -1267,24 +1390,27 @@ msgid ""
 "href=\"http://jdbc.postgresql.org/download.html\">http://jdbc.postgresql.org/"
 "download.html</link>"
 msgstr ""
+"您可以从 <link xlink:href=\"http://jdbc.postgresql.org/download.html\"> "
+"http://jdbc.postgresql.org/download.html </link>下载最新的 PostgreSQL JDBC "
+"驱动程序"
 
 #. Tag: para
 #: using_raster_dataman.xml:552
 #, no-c-format
 msgid "You can compile the following code using a command something like:"
-msgstr ""
+msgstr "您可以使用如下命令编译以下代码："
 
 #. Tag: para
 #: using_raster_dataman.xml:554
 #, no-c-format
 msgid "And call it from the command-line with something like"
-msgstr ""
+msgstr "并使用类似的命令从命令行调用它"
 
 #. Tag: title
 #: using_raster_dataman.xml:561
 #, no-c-format
 msgid "Use PLPython to dump out images via SQL"
-msgstr ""
+msgstr "使用 PLPython 通过 SQL 转储图像"
 
 #. Tag: para
 #: using_raster_dataman.xml:562
