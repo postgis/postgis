@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-13 00:23+0000\n"
+"PO-Revision-Date: 2023-09-13 00:41+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/administrationxml/it/>\n"
 "Language: it_IT\n"
@@ -493,7 +493,7 @@ msgid ""
 "Supplementary instructions for windows users are available at <link xlink:"
 "href=\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows Hard "
 "upgrade</link>."
-msgstr "Le istruzioni supplementari per gli utenti di Windows sono disponibili all'indirizzo <link xlink:href=\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows Hard upgrade<link>."
+msgstr "Le istruzioni supplementari per gli utenti di Windows sono disponibili all'indirizzo <link xlink:href=\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows Hard upgrade</link>."
 
 #. Tag: para
 #: administration.xml:259
