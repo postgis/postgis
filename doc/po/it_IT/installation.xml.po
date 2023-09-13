@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-12 22:08+0000\n"
+"POT-Creation-Date: 2023-09-13 13:07+0000\n"
 "PO-Revision-Date: 2023-09-13 13:07+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
@@ -90,8 +90,8 @@ msgstr ""
 "compilando per Windows o altri sistemi operativi, si può trovare un aiuto "
 "più dettagliato in <link xlink:href=\"https://trac.osgeo.org/postgis/wiki/"
 "UsersWikiInstall\">Guide di compilazione fornite dagli utenti di PostGIS</"
-"link> e <link xlink:href=\"http://trac.osgeo.org/postgis/wiki/DevWikiMain\""
-">PostGIS Dev Wiki</link>."
+"link> e <link xlink:href=\"http://trac.osgeo.org/postgis/wiki/"
+"DevWikiMain\">PostGIS Dev Wiki</link>."
 
 #. Tag: para
 #: installation.xml:34
@@ -102,8 +102,8 @@ msgid ""
 "link>"
 msgstr ""
 "I pacchetti precostruiti per vari sistemi operativi sono elencati in <link "
-"xlink:href=\"https://trac.osgeo.org/postgis/wiki/UsersWikiPackages\""
-">Pacchetti precostruiti PostGIS</link>"
+"xlink:href=\"https://trac.osgeo.org/postgis/wiki/"
+"UsersWikiPackages\">Pacchetti precostruiti PostGIS</link>"
 
 #. Tag: para
 #: installation.xml:35
@@ -119,10 +119,10 @@ msgid ""
 msgstr ""
 "Se siete utenti di Windows, potete ottenere le build stabili tramite "
 "Stackbuilder o <link xlink:href=\"https://postgis.net/windows_downloads\">il "
-"sito di download di PostGIS Windows</link> Abbiamo anche <link xlink:href="
-"\"https://postgis.net/windows_downloads\">c build sperimentali di Windows "
-"molto all'avanguardia</link> che vengono create di solito una o due volte "
-"alla settimana o ogni volta che succede qualcosa di interessante. È "
+"sito di download di PostGIS Windows</link> Abbiamo anche <link xlink:"
+"href=\"https://postgis.net/windows_downloads\">c build sperimentali di "
+"Windows molto all'avanguardia</link> che vengono create di solito una o due "
+"volte alla settimana o ogni volta che succede qualcosa di interessante. È "
 "possibile utilizzarle per sperimentare le versioni in corso di PostGIS"
 
 #. Tag: para
@@ -268,9 +268,9 @@ msgid ""
 "org\"> https://www.postgresql.org </link> ."
 msgstr ""
 "PostgreSQL &min_postgres_version; - &max_postgres_version;. È necessaria "
-"un'installazione completa di PostgreSQL (comprese le intestazioni del server)"
-". PostgreSQL è disponibile presso <link xlink:href=\"https://www.postgresql."
-"org\"> https://www.postgresql.org </link> ."
+"un'installazione completa di PostgreSQL (comprese le intestazioni del "
+"server). PostgreSQL è disponibile presso <link xlink:href=\"https://www."
+"postgresql.org\"> https://www.postgresql.org </link> ."
 
 #. Tag: para
 #: installation.xml:141
@@ -282,9 +282,9 @@ msgid ""
 "UsersWikiPostgreSQLPostGIS</link>"
 msgstr ""
 "Per una matrice di supporto completa di PostgreSQL / PostGIS e per la "
-"matrice di supporto di PostGIS/GEOS, consultare <link xlink:href=\"https"
-"://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS\">https://trac."
-"osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS</link>"
+"matrice di supporto di PostGIS/GEOS, consultare <link xlink:href=\"https://"
+"trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS\">https://trac.osgeo."
+"org/postgis/wiki/UsersWikiPostgreSQLPostGIS</link>"
 
 #. Tag: para
 #: installation.xml:147
@@ -380,8 +380,8 @@ msgid ""
 "org/download.html</link>."
 msgstr ""
 "GDAL, è richiesta la versione 2+, la 3+ è preferibile. È necessario per il "
-"supporto dei raster. <link xlink:href=\"https://gdal.org/download.html\""
-">https://gdal.org/download.html</link>."
+"supporto dei raster. <link xlink:href=\"https://gdal.org/download."
+"html\">https://gdal.org/download.html</link>."
 
 #. Tag: para
 #: installation.xml:208
@@ -450,9 +450,9 @@ msgstr ""
 "configurazione PostgreSQL <code>postgis.backend</code> permette all'utente "
 "finale di controllare quale backend vuole usare se SFCGAL è installato (GEOS "
 "di default). Nota: SFCGAL 1.2 richiede almeno CGAL 4.3 e Boost 1.54 (cfr. "
-"<link xlink:href=\"https://oslandia.gitlab.io/SFCGAL/dev.html\""
-">https://oslandia.gitlab.io/SFCGAL/dev.html</link>) <link xlink:href=\"https"
-"://gitlab.com/Oslandia/SFCGAL/\">https://gitlab.com/Oslandia/SFCGAL/</link>."
+"<link xlink:href=\"https://oslandia.gitlab.io/SFCGAL/dev.html\">https://"
+"oslandia.gitlab.io/SFCGAL/dev.html</link>) <link xlink:href=\"https://gitlab."
+"com/Oslandia/SFCGAL/\">https://gitlab.com/Oslandia/SFCGAL/</link>."
 
 #. Tag: para
 #: installation.xml:247
@@ -466,10 +466,10 @@ msgid ""
 "pcre</varname> during configure."
 msgstr ""
 "Per costruire <xref linkend=\"Address_Standardizer\"/> è necessario anche "
-"PCRE <link xlink:href=\"http://www.pcre.org\">http://www.pcre.org</link> ("
-"che generalmente è già installato sui sistemi nix). <xref linkend="
-"\"Address_Standardizer\"/> sarà costruito automaticamente se rileva una "
-"libreria PCRE o se si passa un <varname>--with-pcre-dir=/path/to/pcre</"
+"PCRE <link xlink:href=\"http://www.pcre.org\">http://www.pcre.org</link> "
+"(che generalmente è già installato sui sistemi nix). <xref "
+"linkend=\"Address_Standardizer\"/> sarà costruito automaticamente se rileva "
+"una libreria PCRE o se si passa un <varname>--with-pcre-dir=/path/to/pcre</"
 "varname> valido durante la configurazione."
 
 #. Tag: para
@@ -594,12 +594,6 @@ msgstr ""
 "una lista completa, utilizzate i parametri <command>--help</command> o "
 "<command>--help=short</command>."
 
-#. Tag: term
-#: installation.xml:333
-#, no-c-format
-msgid "--with-library-minor-version"
-msgstr "--with-library-minor-version"
-
 #. Tag: para
 #: installation.xml:335
 #, no-c-format
@@ -621,12 +615,6 @@ msgstr ""
 "comportamento dei file che includono la versione minore: per esempio "
 "<code>postgis-3.0</code> aggiungere questo switch alla dichiarazione "
 "configure."
-
-#. Tag: term
-#: installation.xml:348
-#, no-c-format
-msgid "--prefix=PREFIX"
-msgstr "--prefix=PREFIX"
 
 #. Tag: para
 #: installation.xml:350
@@ -655,12 +643,6 @@ msgstr ""
 "ticket/635\"> http://trac.osgeo.org/postgis/ticket/635 </link> per seguire "
 "l'evoluzione di questo bug."
 
-#. Tag: term
-#: installation.xml:370
-#, no-c-format
-msgid "--with-pgconfig=FILE"
-msgstr "--with-pgconfig=FILE"
-
 #. Tag: para
 #: installation.xml:372
 #, no-c-format
@@ -676,12 +658,6 @@ msgstr ""
 "installazione di PostgreSQL. Utilizzate questo parametro (<command>--with-"
 "pgconfig=/path/to/pg_config</command>) per specificare manualmente una "
 "particolare installazione di PostgreSQL per la quale PostGIS sarà compilato."
-
-#. Tag: term
-#: installation.xml:384
-#, no-c-format
-msgid "--with-gdalconfig=FILE"
-msgstr ""
 
 #. Tag: para
 #: installation.xml:386
@@ -700,12 +676,6 @@ msgstr ""
 "indicare manualmente specifica installazione di GDAL con cui compilare "
 "PostGIS."
 
-#. Tag: term
-#: installation.xml:398
-#, no-c-format
-msgid "--with-geosconfig=FILE"
-msgstr ""
-
 #. Tag: para
 #: installation.xml:400
 #, no-c-format
@@ -723,12 +693,6 @@ msgstr ""
 "geos-config</command>) per indicare manualmente una specifica installazione "
 "di GEO da utilizzare per la compilazione."
 
-#. Tag: term
-#: installation.xml:412
-#, no-c-format
-msgid "--with-xml2config=FILE"
-msgstr ""
-
 #. Tag: para
 #: installation.xml:414
 #, no-c-format
@@ -740,12 +704,6 @@ msgid ""
 "to locate the LibXML installation directory. Use this parameter "
 "(<command>&gt;--with-xml2config=/path/to/xml2-config</command>) to manually "
 "specify a particular LibXML installation that PostGIS will build against."
-msgstr ""
-
-#. Tag: term
-#: installation.xml:430
-#, no-c-format
-msgid "--with-projdir=DIR"
 msgstr ""
 
 #. Tag: para
@@ -761,23 +719,11 @@ msgstr ""
 "manualmente una specifica cartella di installazione di Proj4 per la "
 "compilazione di PostGIS."
 
-#. Tag: term
-#: installation.xml:442
-#, no-c-format
-msgid "--with-libiconv=DIR"
-msgstr ""
-
 #. Tag: para
 #: installation.xml:444
 #, no-c-format
 msgid "Directory where iconv is installed."
 msgstr "Cartella di installazione di iconv."
-
-#. Tag: term
-#: installation.xml:451
-#, no-c-format
-msgid "--with-jsondir=DIR"
-msgstr ""
 
 #. Tag: para
 #: installation.xml:453
@@ -795,12 +741,6 @@ msgstr ""
 "to/jsondir</command>) per indicare manualmente una specifica cartella di "
 "installazione che PostGIS userà per la compilazione."
 
-#. Tag: term
-#: installation.xml:463
-#, no-c-format
-msgid "--with-pcredir=DIR"
-msgstr ""
-
 #. Tag: para
 #: installation.xml:465
 #, no-c-format
@@ -810,12 +750,6 @@ msgid ""
 "extension. Use this parameter (<command>--with-pcredir=/path/to/pcredir</"
 "command>) to manually specify a particular PCRE installation directory that "
 "PostGIS will build against."
-msgstr ""
-
-#. Tag: term
-#: installation.xml:475
-#, no-c-format
-msgid "--with-gui"
 msgstr ""
 
 #. Tag: para
@@ -829,23 +763,11 @@ msgstr ""
 "GTK+2.0). Questo passaggio creerà shp2pgsql-gui, interfaccia grafica per "
 "shp2pgsql."
 
-#. Tag: term
-#: installation.xml:484
-#, no-c-format
-msgid "--without-raster"
-msgstr ""
-
 #. Tag: para
 #: installation.xml:486
 #, fuzzy, no-c-format
 msgid "Compile without raster support."
 msgstr "Installazione del supporto raster"
-
-#. Tag: term
-#: installation.xml:492
-#, no-c-format
-msgid "--without-topology"
-msgstr ""
 
 #. Tag: para
 #: installation.xml:494
@@ -853,12 +775,6 @@ msgstr ""
 msgid ""
 "Disable topology support. There is no corresponding library as all logic "
 "needed for topology is in postgis-&last_release_version; library."
-msgstr ""
-
-#. Tag: term
-#: installation.xml:501
-#, no-c-format
-msgid "--with-gettext=no"
 msgstr ""
 
 #. Tag: para
@@ -885,12 +801,6 @@ msgstr ""
 "etichette nel loader, che non sono ancora ben documentate e in forma "
 "sperimentale."
 
-#. Tag: term
-#: installation.xml:512
-#, no-c-format
-msgid "--with-sfcgal=PATH"
-msgstr ""
-
 #. Tag: para
 #: installation.xml:514
 #, no-c-format
@@ -898,12 +808,6 @@ msgid ""
 "By default PostGIS will not install with sfcgal support without this switch. "
 "<varname>PATH</varname> is an optional argument that allows to specify an "
 "alternate PATH to sfcgal-config."
-msgstr ""
-
-#. Tag: term
-#: installation.xml:521
-#, no-c-format
-msgid "--without-phony-revision"
 msgstr ""
 
 #. Tag: para

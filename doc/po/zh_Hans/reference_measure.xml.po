@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-12 22:08+0000\n"
+"POT-Creation-Date: 2023-09-13 11:40+0000\n"
 "PO-Revision-Date: 2023-09-12 14:55+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -1200,9 +1200,10 @@ msgstr ""
 #: reference_measure.xml:926
 #, no-c-format
 msgid ""
-"SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR AXIS&gt;,&lt;INVERSE FLATTENING&gt;]"
+"<![CDATA[[\n"
+"SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]\n"
+"]]>"
 msgstr ""
-"SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR AXIS&gt;,&lt;INVERSE FLATTENING&gt;]"
 
 #. Tag: para
 #: reference_measure.xml:927

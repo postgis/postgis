@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-12 22:08+0000\n"
+"POT-Creation-Date: 2023-09-13 11:40+0000\n"
 "PO-Revision-Date: 2018-07-23 18:01+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -1185,9 +1185,10 @@ msgstr ""
 #: reference_measure.xml:926
 #, no-c-format
 msgid ""
-"SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR AXIS&gt;,&lt;INVERSE FLATTENING&gt;]"
+"<![CDATA[[\n"
+"SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]\n"
+"]]>"
 msgstr ""
-"SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR AXIS&gt;,&lt;INVERSE FLATTENING&gt;]"
 
 #. Tag: para
 #: reference_measure.xml:927

@@ -2554,8 +2554,9 @@ msgstr ""
 msgid ""
 "If use tolerance &gt; 0 and there is more than one edge near the point then "
 "an exception is thrown."
-msgstr "許容差 &gt; 0 "
-"として、ポイント付近のエッジが一つより多い場合には、例外が投げられます。"
+msgstr ""
+"許容差 &gt; 0 として、ポイント付近のエッジが一つより多い場合には、例外が投げ"
+"られます。"
 
 #. Tag: para
 #: extras_topology.xml:2207 extras_topology.xml:2350
@@ -2713,8 +2714,9 @@ msgstr ""
 msgid ""
 "If use tolerance &gt; 0 and there is more than one node near the point then "
 "an exception is thrown."
-msgstr "許容差 &gt; 0 "
-"として、ポイント付近のノードが一つより多い場合には、例外が投げられます。"
+msgstr ""
+"許容差 &gt; 0 として、ポイント付近のノードが一つより多い場合には、例外が投げ"
+"られます。"
 
 #. Tag: para
 #: extras_topology.xml:2368

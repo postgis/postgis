@@ -1220,8 +1220,8 @@ msgid ""
 "SQL-MM defines the result of ST_IsEmpty(NULL) to be 0, while PostGIS returns "
 "NULL."
 msgstr ""
-"SQL-MM은 ST_IsEmpty(NULL) 의 결과를 0"
-"으로 정의하지만, PostGIS는 NULL 을 반환합니다."
+"SQL-MM은 ST_IsEmpty(NULL) 의 결과를 0으로 정의하지만, PostGIS는 NULL 을 반환"
+"합니다."
 
 #. Tag: para
 #: reference_accessor.xml:1094
@@ -1385,8 +1385,8 @@ msgid ""
 "SQL-MM defines the result of ST_IsSimple(NULL) to be 0, while PostGIS "
 "returns NULL."
 msgstr ""
-"SQL-MM은 ST_IsSimple(NULL) 의 결과를 "
-"0으로 정의하지만, PostGIS는 NULL 을 반환합니다."
+"SQL-MM은 ST_IsSimple(NULL) 의 결과를 0으로 정의하지만, PostGIS는 NULL 을 반환"
+"합니다."
 
 #. Tag: para
 #: reference_accessor.xml:1327

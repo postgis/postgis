@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-12 22:08+0000\n"
+"POT-Creation-Date: 2023-09-13 11:40+0000\n"
 "PO-Revision-Date: 2023-07-19 07:46+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -1258,8 +1258,10 @@ msgstr ""
 #: reference_measure.xml:926
 #, no-c-format
 msgid ""
-"SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR AXIS&gt;,&lt;INVERSE FLATTENING&gt;]"
-msgstr "SPHEROID[&lt;名称&gt;,&lt;長軸半径&gt;,&lt;扁平率の逆数&gt;]"
+"<![CDATA[[\n"
+"SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]\n"
+"]]>"
+msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:927

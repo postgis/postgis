@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-12 22:08+0000\n"
+"POT-Creation-Date: 2023-09-13 13:07+0000\n"
 "PO-Revision-Date: 2023-07-29 10:16+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -439,12 +439,6 @@ msgid ""
 "command> parameters."
 msgstr ""
 
-#. Tag: term
-#: installation.xml:333
-#, no-c-format
-msgid "--with-library-minor-version"
-msgstr ""
-
 #. Tag: para
 #: installation.xml:335
 #, no-c-format
@@ -456,12 +450,6 @@ msgid ""
 "PostGIS 3 series in your server. To get the old behavior of file including "
 "the minor version: e.g. <code>postgis-3.0</code> add this switch to your "
 "configure statement."
-msgstr ""
-
-#. Tag: term
-#: installation.xml:348
-#, no-c-format
-msgid "--prefix=PREFIX"
 msgstr ""
 
 #. Tag: para
@@ -483,12 +471,6 @@ msgid ""
 "link> to track this bug."
 msgstr ""
 
-#. Tag: term
-#: installation.xml:370
-#, no-c-format
-msgid "--with-pgconfig=FILE"
-msgstr ""
-
 #. Tag: para
 #: installation.xml:372
 #, no-c-format
@@ -498,12 +480,6 @@ msgid ""
 "this parameter (<command>--with-pgconfig=/path/to/pg_config</command>) to "
 "manually specify a particular PostgreSQL installation that PostGIS will "
 "build against."
-msgstr ""
-
-#. Tag: term
-#: installation.xml:384
-#, no-c-format
-msgid "--with-gdalconfig=FILE"
 msgstr ""
 
 #. Tag: para
@@ -517,12 +493,6 @@ msgid ""
 "GDAL installation that PostGIS will build against."
 msgstr ""
 
-#. Tag: term
-#: installation.xml:398
-#, no-c-format
-msgid "--with-geosconfig=FILE"
-msgstr ""
-
 #. Tag: para
 #: installation.xml:400
 #, no-c-format
@@ -532,12 +502,6 @@ msgid ""
 "installation directory. Use this parameter (<command>--with-geosconfig=/path/"
 "to/geos-config</command>) to manually specify a particular GEOS installation "
 "that PostGIS will build against."
-msgstr ""
-
-#. Tag: term
-#: installation.xml:412
-#, no-c-format
-msgid "--with-xml2config=FILE"
 msgstr ""
 
 #. Tag: para
@@ -553,12 +517,6 @@ msgid ""
 "specify a particular LibXML installation that PostGIS will build against."
 msgstr ""
 
-#. Tag: term
-#: installation.xml:430
-#, no-c-format
-msgid "--with-projdir=DIR"
-msgstr ""
-
 #. Tag: para
 #: installation.xml:432
 #, no-c-format
@@ -568,22 +526,10 @@ msgid ""
 "particular Proj installation directory that PostGIS will build against."
 msgstr ""
 
-#. Tag: term
-#: installation.xml:442
-#, no-c-format
-msgid "--with-libiconv=DIR"
-msgstr ""
-
 #. Tag: para
 #: installation.xml:444
 #, no-c-format
 msgid "Directory where iconv is installed."
-msgstr ""
-
-#. Tag: term
-#: installation.xml:451
-#, no-c-format
-msgid "--with-jsondir=DIR"
 msgstr ""
 
 #. Tag: para
@@ -597,12 +543,6 @@ msgid ""
 "will build against."
 msgstr ""
 
-#. Tag: term
-#: installation.xml:463
-#, no-c-format
-msgid "--with-pcredir=DIR"
-msgstr ""
-
 #. Tag: para
 #: installation.xml:465
 #, no-c-format
@@ -614,12 +554,6 @@ msgid ""
 "PostGIS will build against."
 msgstr ""
 
-#. Tag: term
-#: installation.xml:475
-#, no-c-format
-msgid "--with-gui"
-msgstr ""
-
 #. Tag: para
 #: installation.xml:477
 #, no-c-format
@@ -628,22 +562,10 @@ msgid ""
 "gui graphical interface to shp2pgsql."
 msgstr ""
 
-#. Tag: term
-#: installation.xml:484
-#, no-c-format
-msgid "--without-raster"
-msgstr ""
-
 #. Tag: para
 #: installation.xml:486
 #, no-c-format
 msgid "Compile without raster support."
-msgstr ""
-
-#. Tag: term
-#: installation.xml:492
-#, no-c-format
-msgid "--without-topology"
 msgstr ""
 
 #. Tag: para
@@ -652,12 +574,6 @@ msgstr ""
 msgid ""
 "Disable topology support. There is no corresponding library as all logic "
 "needed for topology is in postgis-&last_release_version; library."
-msgstr ""
-
-#. Tag: term
-#: installation.xml:501
-#, no-c-format
-msgid "--with-gettext=no"
 msgstr ""
 
 #. Tag: para
@@ -674,12 +590,6 @@ msgid ""
 "yet documented and still experimental."
 msgstr ""
 
-#. Tag: term
-#: installation.xml:512
-#, no-c-format
-msgid "--with-sfcgal=PATH"
-msgstr ""
-
 #. Tag: para
 #: installation.xml:514
 #, no-c-format
@@ -687,12 +597,6 @@ msgid ""
 "By default PostGIS will not install with sfcgal support without this switch. "
 "<varname>PATH</varname> is an optional argument that allows to specify an "
 "alternate PATH to sfcgal-config."
-msgstr ""
-
-#. Tag: term
-#: installation.xml:521
-#, no-c-format
-msgid "--without-phony-revision"
 msgstr ""
 
 #. Tag: para

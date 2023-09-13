@@ -1130,7 +1130,8 @@ msgstr ", <xref linkend=\"ST_SimplifyVW\"/>"
 msgid ""
 "Generates a multipoint of random points contained in a Polygon or "
 "MultiPolygon."
-msgstr "生成一个包含在多边形（Polygon）或多重多边形（MultiPolygon）内的随机点的多点对"
+msgstr ""
+"生成一个包含在多边形（Polygon）或多重多边形（MultiPolygon）内的随机点的多点对"
 "象。"
 
 #. Tag: para
@@ -1142,9 +1143,9 @@ msgid ""
 "<varname>seed</varname> is used to regenerate a deterministic sequence of "
 "points, and must be greater than zero."
 msgstr ""
-"ST_GeneratePoints "
-"生成一个包含指定数量伪随机点的多点对象，这些点位于输入区域内。可选的 "
-"<varname>seed</varname> 用于重新生成一个确定性的点序列，必须大于零。"
+"ST_GeneratePoints 生成一个包含指定数量伪随机点的多点对象，这些点位于输入区域"
+"内。可选的 <varname>seed</varname> 用于重新生成一个确定性的点序列，必须大于"
+"零。"
 
 #. Tag: para
 #: reference_processing.xml:1061 reference_processing.xml:1136
@@ -1173,7 +1174,8 @@ msgstr "使用随机种子值 1996，在原始多边形上生成了一个包含 
 msgid ""
 "Given a table of polygons s, return 12 individual points per polygon. "
 "Results will be different each time you run."
-msgstr "给定一个多边形表 s，返回每个多边形 12 个单独的点。每次运行结果都会不同。"
+msgstr ""
+"给定一个多边形表 s，返回每个多边形 12 个单独的点。每次运行结果都会不同。"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1093

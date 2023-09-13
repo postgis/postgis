@@ -2359,7 +2359,8 @@ msgstr "如果<varname>apoint</varname>与边不相交，返回0。"
 msgid ""
 "If use tolerance &gt; 0 and there is more than one edge near the point then "
 "an exception is thrown."
-msgstr "如果使用的容差（tolerance）大于0，并且在某点附近存在多条边，则会引发异常。"
+msgstr ""
+"如果使用的容差（tolerance）大于0，并且在某点附近存在多条边，则会引发异常。"
 
 #. Tag: para
 #: extras_topology.xml:2207 extras_topology.xml:2350
@@ -2504,7 +2505,8 @@ msgstr "如果<varname>apoint</varname>不与节点相交，则返回 0（零）
 msgid ""
 "If use tolerance &gt; 0 and there is more than one node near the point then "
 "an exception is thrown."
-msgstr "如果设置容差（tolerance）大于0，并且在某点附近存在多个节点（node），那么可能"
+msgstr ""
+"如果设置容差（tolerance）大于0，并且在某点附近存在多个节点（node），那么可能"
 "会引发异常。"
 
 #. Tag: para

@@ -30,7 +30,8 @@ msgid ""
 "These functions are rarely used functions that should only be used if your "
 "data is corrupted in someway. They are used for troubleshooting corruption "
 "and also fixing things that should under normal circumstances, never happen."
-msgstr "这些函数是极少使用的函数，只有在您的数据以某种方式受损时才应该使用。它们用于"
+msgstr ""
+"这些函数是极少使用的函数，只有在您的数据以某种方式受损时才应该使用。它们用于"
 "排除数据损坏问题，以及修复在正常情况下不应该发生的情况。"
 
 #. Tag: refpurpose

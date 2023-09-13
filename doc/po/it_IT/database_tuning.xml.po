@@ -144,8 +144,8 @@ msgid ""
 msgstr ""
 "<link xlink:href=\"https://www.postgresql.org/docs/current/static/runtime-"
 "config-resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</link> "
-"Questa impostazione è disponibile solo per PostgreSQL 9.4+. Per PostgreSQL 9."
-"6+ questa impostazione ha un'importanza aggiuntiva in quanto controlla il "
+"Questa impostazione è disponibile solo per PostgreSQL 9.4+. Per PostgreSQL "
+"9.6+ questa impostazione ha un'importanza aggiuntiva in quanto controlla il "
 "numero massimo di processi che si possono avere per le query parallele."
 
 #. Tag: para
@@ -193,7 +193,8 @@ msgstr "Predefinito: 1-4MB"
 #: database_tuning.xml:98
 #, no-c-format
 msgid "Adjust up for large dbs, complex queries, lots of RAM"
-msgstr "Aumentate per database di grandi dimensioni, query complesse, molta RAM"
+msgstr ""
+"Aumentate per database di grandi dimensioni, query complesse, molta RAM"
 
 #. Tag: para
 #: database_tuning.xml:103
@@ -216,8 +217,8 @@ msgid ""
 "- the memory size used for VACUUM, CREATE INDEX, etc."
 msgstr ""
 "<link xlink:href=\"http://www.postgresql.org/docs/current/static/runtime-"
-"config-resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</link> -"
-" la dimensione della memoria utilizzata per VACUUM, CREATE INDEX, ecc."
+"config-resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</link> "
+"- la dimensione della memoria utilizzata per VACUUM, CREATE INDEX, ecc."
 
 #. Tag: para
 #: database_tuning.xml:122

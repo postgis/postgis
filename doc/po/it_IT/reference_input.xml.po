@@ -254,8 +254,9 @@ msgid ""
 "Makes a collection Geometry from the Well-Known-Text (WKT) representation "
 "with the given SRID. If SRID is not given, it defaults to 0."
 msgstr ""
-"Crea una collezione di geometrie dalla rappresentazione Well-Known-Text (WKT)"
-" con il SRID indicato. Se SRID non è indicato, il valore predefinito è 0."
+"Crea una collezione di geometrie dalla rappresentazione Well-Known-Text "
+"(WKT) con il SRID indicato. Se SRID non è indicato, il valore predefinito è "
+"0."
 
 #. Tag: para
 #: reference_input.xml:198 reference_input.xml:519 reference_input.xml:580
@@ -1258,8 +1259,8 @@ msgid ""
 ", <xref linkend=\"ST_GeomFromGeoHash\"/>, <xref "
 "linkend=\"ST_PointFromGeoHash\"/>"
 msgstr ""
-", <xref linkend=\"ST_GeomFromGeoHash\"/>, <xref linkend=\"ST_PointFromGeoHash"
-"\"/>"
+", <xref linkend=\"ST_GeomFromGeoHash\"/>, <xref "
+"linkend=\"ST_PointFromGeoHash\"/>"
 
 #. Tag: refpurpose
 #: reference_input.xml:1210
@@ -1305,8 +1306,8 @@ msgid ""
 ",<xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref "
 "linkend=\"ST_PointFromGeoHash\"/>"
 msgstr ""
-",<xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_PointFromGeoHash"
-"\"/>"
+",<xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref "
+"linkend=\"ST_PointFromGeoHash\"/>"
 
 #. Tag: refpurpose
 #: reference_input.xml:1249
@@ -1582,8 +1583,8 @@ msgid ""
 "com/TWKB/Specification/blob/master/twkb.md\">Tiny Well-Known Binary</"
 "link>\") geometry representation."
 msgstr ""
-"Crea un'istanza di geometria da una rappresentazione geometrica TWKB (\""
-"<link xlink:href=\"https://github.com/TWKB/Specification/blob/master/twkb."
+"Crea un'istanza di geometria da una rappresentazione geometrica TWKB "
+"(\"<link xlink:href=\"https://github.com/TWKB/Specification/blob/master/twkb."
 "md\">Tiny Well Known Binary</link>\")."
 
 #. Tag: para
@@ -1708,8 +1709,8 @@ msgid ""
 ", <xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref "
 "linkend=\"ST_GeomFromGeoHash\"/>"
 msgstr ""
-", <xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_GeomFromGeoHash"
-"\"/>"
+", <xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref "
+"linkend=\"ST_GeomFromGeoHash\"/>"
 
 #. Tag: refpurpose
 #: reference_input.xml:1579
@@ -1724,8 +1725,8 @@ msgid ""
 "Creates a table based on the structure of FlatGeobuf data. (<link xlink:"
 "href=\"http://flatgeobuf.org\">http://flatgeobuf.org</link>)."
 msgstr ""
-"Crea una tabella basata sulla struttura dei dati di FlatGeobuf. (<link "
-"xlink:href=\"http://flatgeobuf.org\">http://flatgeobuf.org</link>)."
+"Crea una tabella basata sulla struttura dei dati di FlatGeobuf. (<link xlink:"
+"href=\"http://flatgeobuf.org\">http://flatgeobuf.org</link>)."
 
 #. Tag: para
 #: reference_input.xml:1599
@@ -1764,9 +1765,9 @@ msgid ""
 "Reads FlatGeobuf data (<link xlink:href=\"http://flatgeobuf.org\">http://"
 "flatgeobuf.org</link>). NOTE: PostgreSQL bytea cannot exceed 1GB."
 msgstr ""
-"Legge i dati FlatGeobuf (<link xlink:href=\"http://flatgeobuf.org\""
-">http://flatgeobuf.org</link>). NOTA: i bytea di PostgreSQL non possono "
-"superare 1 GB."
+"Legge i dati FlatGeobuf (<link xlink:href=\"http://flatgeobuf.org\">http://"
+"flatgeobuf.org</link>). NOTA: i bytea di PostgreSQL non possono superare 1 "
+"GB."
 
 #. Tag: para
 #: reference_input.xml:1632

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-12 22:08+0000\n"
+"POT-Creation-Date: 2023-09-13 13:07+0000\n"
 "PO-Revision-Date: 2023-09-13 03:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -548,12 +548,6 @@ msgstr ""
 "以下列表显示了常用参数：有关完整列表，请使用 <command>--help</command> 或 "
 "<command>--help=short</command>参数。"
 
-#. Tag: term
-#: installation.xml:333
-#, no-c-format
-msgid "--with-library-minor-version"
-msgstr "使用库次要版本（--with-library-minor-version）"
-
 #. Tag: para
 #: installation.xml:335
 #, no-c-format
@@ -571,12 +565,6 @@ msgstr ""
 "pg_upgrade 更容易，缺点是您只能在服务器中安装一个版本的 PostGIS 3 系列。 要获"
 "取文件的旧行为（包括次要版本）：例如 <code>postgis-3.0</code> 将此开关添加到"
 "您的配置语句中。"
-
-#. Tag: term
-#: installation.xml:348
-#, no-c-format
-msgid "--prefix=PREFIX"
-msgstr "安装路径（--prefix=PREFIX）"
 
 #. Tag: para
 #: installation.xml:350
@@ -602,12 +590,6 @@ msgstr ""
 "xlink:href=\"http://trac.osgeo.org/postgis/ticket/635\"> http://trac.osgeo."
 "org/postgis/ticket/635 </link>。"
 
-#. Tag: term
-#: installation.xml:370
-#, no-c-format
-msgid "--with-pgconfig=FILE"
-msgstr "使用pgconfig=文件（--with-pgconfig=FILE）"
-
 #. Tag: para
 #: installation.xml:372
 #, no-c-format
@@ -622,12 +604,6 @@ msgstr ""
 "够定位PostgreSQL安装目录。使用此参数 （<command>--with-pgconfig=/path/to/"
 "pg_config</command>）可以手动指定 PostGIS 的特定 PostgreSQL 的安装目录。"
 
-#. Tag: term
-#: installation.xml:384
-#, no-c-format
-msgid "--with-gdalconfig=FILE"
-msgstr "使用gdalconfig=文件（--with-gdalconfig=FILE）"
-
 #. Tag: para
 #: installation.xml:386
 #, no-c-format
@@ -641,12 +617,6 @@ msgstr ""
 "GDAL是必需的库，提供栅格支持 <command>gdal-config</command>所需的功能，以使软"
 "件安装能够找到 GDAL装目录。使用此参数 （<command>--with-gdalconfig=/path/to/"
 "gdal-config</command>）手动指定 PostGIS 将针对其构建的特定 GDAL的安装目录。"
-
-#. Tag: term
-#: installation.xml:398
-#, no-c-format
-msgid "--with-geosconfig=FILE"
-msgstr "使用geosconfig=文件（--with-geosconfig=FILE）"
 
 #. Tag: para
 #: installation.xml:400
@@ -663,12 +633,6 @@ msgstr ""
 "geosconfig=/path/to/geos-config</command>） 手动指定要用于 PostGIS 构建的特"
 "定 GEOS的安装目录。"
 
-#. Tag: term
-#: installation.xml:412
-#, no-c-format
-msgid "--with-xml2config=FILE"
-msgstr "使用xml2config=文件（--with-xml2config=FILE）"
-
 #. Tag: para
 #: installation.xml:414
 #, no-c-format
@@ -681,17 +645,11 @@ msgid ""
 "(<command>&gt;--with-xml2config=/path/to/xml2-config</command>) to manually "
 "specify a particular LibXML installation that PostGIS will build against."
 msgstr ""
-"LibXML 是执行 GeomFromKML/GML 过程所需的库。通常情况下，如果您已安装 "
-"libxml，它将被找到，但如果没有或者您想使用特定版本，您需要指定一个特定的 "
-"<filename>xml2-config</filename> 配置文件，以便让软件安装程序找到 LibXML "
-"安装目录。使用这个参数 (<command>&gt;--with-xml2config=/path/to/"
-"xml2-config</command>) 来手动指定 PostGIS 将构建的特定 LibXML 安装。"
-
-#. Tag: term
-#: installation.xml:430
-#, no-c-format
-msgid "--with-projdir=DIR"
-msgstr "使用projdir=DIR（--with-projdir=DIR）"
+"LibXML 是执行 GeomFromKML/GML 过程所需的库。通常情况下，如果您已安装 libxml，"
+"它将被找到，但如果没有或者您想使用特定版本，您需要指定一个特定的 "
+"<filename>xml2-config</filename> 配置文件，以便让软件安装程序找到 LibXML 安装"
+"目录。使用这个参数 (<command>&gt;--with-xml2config=/path/to/xml2-config</"
+"command>) 来手动指定 PostGIS 将构建的特定 LibXML 安装。"
 
 #. Tag: para
 #: installation.xml:432
@@ -704,23 +662,11 @@ msgstr ""
 "Proj是PostGIS必不可少的投影库。使用此参数 （<command>--with-projdir=/path/to/"
 "projdir</command>）手动指定要用于 PostGIS 构建的特定 Proj 的安装目录。"
 
-#. Tag: term
-#: installation.xml:442
-#, no-c-format
-msgid "--with-libiconv=DIR"
-msgstr "使用libiconv=DIR（--with-libiconv=DIR）"
-
 #. Tag: para
 #: installation.xml:444
 #, no-c-format
 msgid "Directory where iconv is installed."
 msgstr "iconv的安装目录。"
-
-#. Tag: term
-#: installation.xml:451
-#, no-c-format
-msgid "--with-jsondir=DIR"
-msgstr "使用jsondir=DIR（--with-jsondir=DIR）"
 
 #. Tag: para
 #: installation.xml:453
@@ -737,12 +683,6 @@ msgstr ""
 "（<command>--with-jsondir=/path/to/jsondir</command>） 手动指定要用于 "
 "PostGIS 构建的特定 JSON-C的安装目录。"
 
-#. Tag: term
-#: installation.xml:463
-#, no-c-format
-msgid "--with-pcredir=DIR"
-msgstr "使用pcredir=DIR（--with-pcredir=DIR）"
-
 #. Tag: para
 #: installation.xml:465
 #, no-c-format
@@ -758,12 +698,6 @@ msgstr ""
 "(<command>--with-pcredir=/path/to/pcredir</command>) 手动指定 PostGIS 将构建"
 "的特定 PCRE 的安装目录。"
 
-#. Tag: term
-#: installation.xml:475
-#, no-c-format
-msgid "--with-gui"
-msgstr "使用gui（--with-gui）"
-
 #. Tag: para
 #: installation.xml:477
 #, no-c-format
@@ -774,23 +708,11 @@ msgstr ""
 "编译数据导入GUI（需要 GTK+2.0）。此参数为 shp2pgsql 创建一个名为 shp2pgsql-"
 "gui 的图形用户界面。"
 
-#. Tag: term
-#: installation.xml:484
-#, no-c-format
-msgid "--without-raster"
-msgstr "禁用栅格支持（--without-raster）"
-
 #. Tag: para
 #: installation.xml:486
 #, no-c-format
 msgid "Compile without raster support."
 msgstr "在没有栅格功能的情况下进行编译。"
-
-#. Tag: term
-#: installation.xml:492
-#, no-c-format
-msgid "--without-topology"
-msgstr "禁用拓扑支持（--without-topology）"
 
 #. Tag: para
 #: installation.xml:494
@@ -801,12 +723,6 @@ msgid ""
 msgstr ""
 "在没有拓扑支持的情况下进行编译。 拓扑所需的所有逻辑都是在postgis-"
 "&last_release_version; 库中创建的，因此没有关联的库。"
-
-#. Tag: term
-#: installation.xml:501
-#, no-c-format
-msgid "--with-gettext=no"
-msgstr "禁用 gettext 支持（--with-gettext=no）"
 
 #. Tag: para
 #: installation.xml:503
@@ -827,12 +743,6 @@ msgstr ""
 "osgeo.org/postgis/ticket/748</link>。 注意：关闭此功能不会消除许多功能。 它用"
 "于 GUI 加载器中的内部帮助/标签功能，这些功能尚未记录，处于实验阶段。"
 
-#. Tag: term
-#: installation.xml:512
-#, no-c-format
-msgid "--with-sfcgal=PATH"
-msgstr "--with-sfcgal=PATH"
-
 #. Tag: para
 #: installation.xml:514
 #, no-c-format
@@ -843,12 +753,6 @@ msgid ""
 msgstr ""
 "默认情况下，如果没有此开关，PostGIS 将不会安装 sfcgal 支持。 <varname>PATH</"
 "varname> 是一个可选参数，允许指定 sfcgal-config 的备用 PATH。"
-
-#. Tag: term
-#: installation.xml:521
-#, no-c-format
-msgid "--without-phony-revision"
-msgstr "--without-phony-revision"
 
 #. Tag: para
 #: installation.xml:523
@@ -1088,9 +992,8 @@ msgid ""
 "<varname>postgis_topology</varname> as available extensions in PgAdmin -&gt; "
 "extensions."
 msgstr ""
-"完成此操作后，您应该在 PgAdmin&gt; 中看到 "
-"<varname>postgis</varname>、<varname>postgis_topology</varname> "
-"作为可用扩展。 扩展。"
+"完成此操作后，您应该在 PgAdmin&gt; 中看到 <varname>postgis</varname>、"
+"<varname>postgis_topology</varname> 作为可用扩展。 扩展。"
 
 #. Tag: para
 #: installation.xml:636

@@ -590,7 +590,8 @@ msgstr "分割后"
 msgid ""
 "Split a MultiLineString by a Point, where the point lies exactly on both "
 "LineStrings elements."
-msgstr "将一个多线串（MultiLineString）通过一个点分割，其中这个点正好位于两个线串元素"
+msgstr ""
+"将一个多线串（MultiLineString）通过一个点分割，其中这个点正好位于两个线串元素"
 "上。"
 
 #. Tag: para

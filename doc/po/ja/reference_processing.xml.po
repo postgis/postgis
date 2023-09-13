@@ -1180,8 +1180,8 @@ msgid ""
 "points, and must be greater than zero."
 msgstr ""
 "ST_GeneratePointsは、入力の面の内側に、与えられた数の疑似乱数によってマルチポ"
-"イントを生成します。決定的な点列を生成する場合には任意パラメータ<varname>seed"
-"</varname>を使います。この際、0より大きい数を指定します。"
+"イントを生成します。決定的な点列を生成する場合には任意パラメータ"
+"<varname>seed</varname>を使います。この際、0より大きい数を指定します。"
 
 #. Tag: para
 #: reference_processing.xml:1061 reference_processing.xml:1136
@@ -1202,7 +1202,8 @@ msgstr "Enhanced: 3.0.0 seedパラメータの追加"
 msgid ""
 "Generated a multipoint consisting of 12 Points overlaid on top of original "
 "polygon using a random seed value 1996"
-msgstr "乱数シード値に1996を使った、元のポリゴンの上に重なった12個のポイントの生成"
+msgstr ""
+"乱数シード値に1996を使った、元のポリゴンの上に重なった12個のポイントの生成"
 
 #. Tag: para
 #: reference_processing.xml:1078
@@ -1210,7 +1211,8 @@ msgstr "乱数シード値に1996を使った、元のポリゴンの上に重�
 msgid ""
 "Given a table of polygons s, return 12 individual points per polygon. "
 "Results will be different each time you run."
-msgstr "ポリゴンテーブル s があって、ポリゴンごとに12の個別のポイントが返されます。結"
+msgstr ""
+"ポリゴンテーブル s があって、ポリゴンごとに12の個別のポイントが返されます。結"
 "果は実行するたびに異なります。"
 
 #. Tag: refpurpose

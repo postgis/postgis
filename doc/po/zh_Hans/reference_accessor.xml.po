@@ -1337,10 +1337,10 @@ msgid ""
 "ST_Endpoint(g)</code>) and <xref linkend=\"ST_IsSimple\"/> (does not self "
 "intersect)."
 msgstr ""
-"如果这个<varname>线串</varname>（LINESTRING）既是封闭的（即 <xref linkend="
-"\"ST_IsClosed\"/> 返回真，即 <code>ST_StartPoint(g) ~= "
-"ST_Endpoint(g)</code>），又是简单的（即没有自交，即 <xref linkend="
-"\"ST_IsSimple\"/> 返回真），则返回 <varname>TRUE</varname>。"
+"如果这个<varname>线串</varname>（LINESTRING）既是封闭的（即 <xref "
+"linkend=\"ST_IsClosed\"/> 返回真，即 <code>ST_StartPoint(g) ~= "
+"ST_Endpoint(g)</code>），又是简单的（即没有自交，即 <xref "
+"linkend=\"ST_IsSimple\"/> 返回真），则返回 <varname>TRUE</varname>。"
 
 #. Tag: para
 #: reference_accessor.xml:1274
@@ -1568,9 +1568,8 @@ msgid ""
 "or MULTI*). For non-empty atomic geometries returns 1. For empty geometries "
 "returns 0."
 msgstr ""
-"该函数返回几何集合（GEOMETRYCOLLECTION 或 "
-"MULTI*）中的元素数量。对于非空的原子几何体，它返回 1。对于空的几何体，它返回 "
-"0。"
+"该函数返回几何集合（GEOMETRYCOLLECTION 或 MULTI*）中的元素数量。对于非空的原"
+"子几何体，它返回 1。对于空的几何体，它返回 0。"
 
 #. Tag: para
 #: reference_accessor.xml:1571

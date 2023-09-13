@@ -1180,8 +1180,8 @@ msgid ""
 "SQL-MM defines the result of <code>ST_IsClosed(NULL)</code> to be 0, while "
 "PostGIS returns <varname>NULL</varname>."
 msgstr ""
-"SQL-MMでは<code>ST_IsClosed(NULL)</code>の結果は0と定義されていますが、PostGI"
-"Sでは<varname>NULL</varname>を返します。"
+"SQL-MMでは<code>ST_IsClosed(NULL)</code>の結果は0と定義されていますが、"
+"PostGISでは<varname>NULL</varname>を返します。"
 
 #. Tag: title
 #: reference_accessor.xml:995
@@ -1387,10 +1387,10 @@ msgid ""
 "ST_Endpoint(g)</code>) and <xref linkend=\"ST_IsSimple\"/> (does not self "
 "intersect)."
 msgstr ""
-"この<varname>LINESTRING</varname>が<xref linkend=\"ST_IsClosed\""
-"/>(<code>ST_StartPoint(g) ~= ST_Endpoint(g)</code>)かつ<xref linkend="
-"\"ST_IsSimple\""
-"/>(自己交差していない)場合には<varname>TRUE</varname>を返します。"
+"この<varname>LINESTRING</varname>が<xref linkend=\"ST_IsClosed\"/"
+">(<code>ST_StartPoint(g) ~= ST_Endpoint(g)</code>)かつ<xref "
+"linkend=\"ST_IsSimple\"/>(自己交差していない)場合には<varname>TRUE</varname>"
+"を返します。"
 
 #. Tag: para
 #: reference_accessor.xml:1274
@@ -1542,7 +1542,8 @@ msgstr ""
 msgid ""
 "pg_total_relation_size - includes, the table, the toasted tables, and the "
 "indexes."
-msgstr "pg_total_relation_size - テーブル、TOASTテーブル、インデックスを含みます。"
+msgstr ""
+"pg_total_relation_size - テーブル、TOASTテーブル、インデックスを含みます。"
 
 #. Tag: para
 #: reference_accessor.xml:1416

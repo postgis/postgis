@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-12 22:08+0000\n"
+"POT-Creation-Date: 2023-09-13 13:07+0000\n"
 "PO-Revision-Date: 2023-09-13 05:59+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -575,12 +575,6 @@ msgstr ""
 "<command>--help</command>または<command>--help=short</command>パラメータを"
 "使って下さい。"
 
-#. Tag: term
-#: installation.xml:333
-#, no-c-format
-msgid "--with-library-minor-version"
-msgstr "--with-library-minor-version"
-
 #. Tag: para
 #: installation.xml:335
 #, no-c-format
@@ -600,12 +594,6 @@ msgstr ""
 "ん。<code>postgis-3.0</code>といったようにマイナーバージョンをファイル名に含"
 "む古い振る舞いにしたいなら、コンフィギュレーション実行の際に次のスイッチを追"
 "加します。"
-
-#. Tag: term
-#: installation.xml:348
-#, no-c-format
-msgid "--prefix=PREFIX"
-msgstr "--prefix=PREFIX"
 
 #. Tag: para
 #: installation.xml:350
@@ -632,12 +620,6 @@ msgstr ""
 "trac.osgeo.org/postgis/ticket/635\">http://trac.osgeo.org/postgis/"
 "ticket/635</link>をご覧ください。"
 
-#. Tag: term
-#: installation.xml:370
-#, no-c-format
-msgid "--with-pgconfig=FILE"
-msgstr "--with-pgconfig=FILE"
-
 #. Tag: para
 #: installation.xml:372
 #, no-c-format
@@ -653,12 +635,6 @@ msgstr ""
 "PostGISの対象とする特定のPostgreSQLのインストール先を手動で指定する場合に、こ"
 "のパラメータ(<command>--with-pgconfig=/path/to/pg_config</command>)を使いま"
 "す。"
-
-#. Tag: term
-#: installation.xml:384
-#, no-c-format
-msgid "--with-gdalconfig=FILE"
-msgstr "--with-gdalconfig=FILE"
 
 #. Tag: para
 #: installation.xml:386
@@ -676,12 +652,6 @@ msgstr ""
 "合に、このパラメータ (<command>--with-gdalconfig=/path/to/gdal-config</"
 "command>)を使います。"
 
-#. Tag: term
-#: installation.xml:398
-#, no-c-format
-msgid "--with-geosconfig=FILE"
-msgstr "--with-geosconfig=FILE"
-
 #. Tag: para
 #: installation.xml:400
 #, no-c-format
@@ -698,12 +668,6 @@ msgstr ""
 "このパラメータ (<command>--with-geosconfig=/path/to/geos-config</command>)を"
 "使います。"
 
-#. Tag: term
-#: installation.xml:412
-#, no-c-format
-msgid "--with-xml2config=FILE"
-msgstr "--with-xml2config=FILE"
-
 #. Tag: para
 #: installation.xml:414
 #, no-c-format
@@ -718,16 +682,10 @@ msgid ""
 msgstr ""
 "LibXMLはGeomFromKML/GML処理を行うのに必須のライブラリです。通常はlibxmlをイン"
 "ストールしているなら発見されますが、発見できない場合や特定の版を使用したい場"
-"合は、<filename>xml2-config</filename>を指定してインストールスクリプトにLibXM"
-"Lのインストール先ディレクトリを伝えます。PostGISのビルドに使う特定のLibXMLを"
-"手動で指定する場合に、このパラメータ (<command>&gt;--with-xml2config=/path/"
-"to/xml2-config</command>)を使います。"
-
-#. Tag: term
-#: installation.xml:430
-#, no-c-format
-msgid "--with-projdir=DIR"
-msgstr "--with-projdir=DIR"
+"合は、<filename>xml2-config</filename>を指定してインストールスクリプトに"
+"LibXMLのインストール先ディレクトリを伝えます。PostGISのビルドに使う特定の"
+"LibXMLを手動で指定する場合に、このパラメータ (<command>&gt;--with-"
+"xml2config=/path/to/xml2-config</command>)を使います。"
 
 #. Tag: para
 #: installation.xml:432
@@ -741,23 +699,11 @@ msgstr ""
 "のインストールディレクトリを手動で指定する場合は、このパラメータ (<command>--"
 "with-projdir=/path/to/projdir</command>)を使います。"
 
-#. Tag: term
-#: installation.xml:442
-#, no-c-format
-msgid "--with-libiconv=DIR"
-msgstr "--with-libiconv=DIR"
-
 #. Tag: para
 #: installation.xml:444
 #, no-c-format
 msgid "Directory where iconv is installed."
 msgstr "iconvのインストール先ディレクトリを指定します。"
-
-#. Tag: term
-#: installation.xml:451
-#, no-c-format
-msgid "--with-jsondir=DIR"
-msgstr "--with-jsondir=DIR"
 
 #. Tag: para
 #: installation.xml:453
@@ -774,12 +720,6 @@ msgstr ""
 "ルドに使う特定のJSON-Cを手動で指定する場合に、このパラメータ (<command>--"
 "with-jsondir=/path/to/jsondir</command>)を使います。"
 
-#. Tag: term
-#: installation.xml:463
-#, no-c-format
-msgid "--with-pcredir=DIR"
-msgstr "--with-pcredir=DIR"
-
 #. Tag: para
 #: installation.xml:465
 #, no-c-format
@@ -795,12 +735,6 @@ msgstr ""
 "ルド対象としている特定のPCREを手動で指定する場合に、このパラメータ "
 "(<command>--with-pcredir=/path/to/pcredir</command>)を使います。"
 
-#. Tag: term
-#: installation.xml:475
-#, no-c-format
-msgid "--with-gui"
-msgstr "--with-gui"
-
 #. Tag: para
 #: installation.xml:477
 #, no-c-format
@@ -812,23 +746,11 @@ msgstr ""
 "て、shp2pgsql-guiという、shp2pgsqlのグラフィカルユーザインタフェースが作成さ"
 "れます。"
 
-#. Tag: term
-#: installation.xml:484
-#, no-c-format
-msgid "--without-raster"
-msgstr "--without-raster"
-
 #. Tag: para
 #: installation.xml:486
 #, no-c-format
 msgid "Compile without raster support."
 msgstr "ラスタ機能なしでコンパイルします。"
-
-#. Tag: term
-#: installation.xml:492
-#, no-c-format
-msgid "--without-topology"
-msgstr "--without-topology"
 
 #. Tag: para
 #: installation.xml:494
@@ -840,12 +762,6 @@ msgstr ""
 "トポロジ対応を無くしてコンパイルします。トポロジに必要なロジックは全て"
 "postgis-&last_release_version;ライブラリ内に作られるので、関連ライブラリはあ"
 "りません。"
-
-#. Tag: term
-#: installation.xml:501
-#, no-c-format
-msgid "--with-gettext=no"
-msgstr "--with-gettext=no"
 
 #. Tag: para
 #: installation.xml:503
@@ -868,12 +784,6 @@ msgstr ""
 "なるわけではありません。まだ文書化されていなくて試験段階であるGUIローダにおけ"
 "る内部のヘルプ/ラベル機能に使われています。"
 
-#. Tag: term
-#: installation.xml:512
-#, no-c-format
-msgid "--with-sfcgal=PATH"
-msgstr "--with-sfcgal=PATH"
-
 #. Tag: para
 #: installation.xml:514
 #, no-c-format
@@ -885,12 +795,6 @@ msgstr ""
 "デフォルトでは、このスイッチなしではSFCGAL対応でインストールされません。"
 "<varname>PATH</varname>は、sfcgal-configへのパスを指定することができる追加的"
 "な引数です。"
-
-#. Tag: term
-#: installation.xml:521
-#, no-c-format
-msgid "--without-phony-revision"
-msgstr "--without-phony-revision"
 
 #. Tag: para
 #: installation.xml:523

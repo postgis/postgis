@@ -52,10 +52,10 @@ msgstr ""
 "Le versioni attuali di PostgreSQL (compresa la 9.6) soffrono di una "
 "debolezza dell'ottimizzatore di query per quanto riguarda le tabelle TOAST. "
 "Le tabelle TOAST sono una sorta di \"stanza di estensione\" utilizzata per "
-"memorizzare valori di grandi dimensioni (nel senso della dimensione dei dati)"
-" che non si adattano alle normali pagine di dati (come testi lunghi, "
-"immagini o geometrie complesse con molti vertici), si veda <link xlink:href="
-"\"http://www.postgresql.org/docs/current/static/storage-toast.html\">la "
+"memorizzare valori di grandi dimensioni (nel senso della dimensione dei "
+"dati) che non si adattano alle normali pagine di dati (come testi lunghi, "
+"immagini o geometrie complesse con molti vertici), si veda <link xlink:"
+"href=\"http://www.postgresql.org/docs/current/static/storage-toast.html\">la "
 "documentazione PostgreSQL per TOAST</link> per maggiori informazioni)."
 
 #. Tag: para
@@ -125,8 +125,8 @@ msgid ""
 "pipermail/postgis-devel/2017-June/026209.html</link>"
 msgstr ""
 "e una discussione più recente su PostGIS <link xlink:href=\"https://lists."
-"osgeo.org/pipermail/postgis-devel/2017-June/026209.html\">https://lists.osgeo"
-".org/pipermail/postgis-devel/2017-June/026209.html</link>"
+"osgeo.org/pipermail/postgis-devel/2017-June/026209.html\">https://lists."
+"osgeo.org/pipermail/postgis-devel/2017-June/026209.html</link>"
 
 #. Tag: title
 #: performance_tips.xml:45
