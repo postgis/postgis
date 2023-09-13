@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-05 06:08+0000\n"
+"PO-Revision-Date: 2023-09-13 03:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/using_postgis_datamanxml/zh_Hans/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #: using_postgis_dataman.xml:3
@@ -3483,7 +3483,7 @@ msgstr "原始模式。不要删除<varname>gid</varname>字段或转义列名�
 #: using_postgis_dataman.xml:2065
 #, no-c-format
 msgid "-m filename"
-msgstr ""
+msgstr "-m 文件名"
 
 #. Tag: para
 #: using_postgis_dataman.xml:2067
