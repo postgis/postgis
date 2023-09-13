@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-15 01:28+0000\n"
-"PO-Revision-Date: 2023-09-07 12:33+0000\n"
+"PO-Revision-Date: 2023-09-13 10:51+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "performance_tipsxml/it/>\n"
@@ -17,13 +17,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #: performance_tips.xml:3
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Performance Tips"
-msgstr "Consigli per migliori prestazioni"
+msgstr "Suggerimenti per le prestazioni"
 
 #. Tag: title
 #: performance_tips.xml:6
@@ -39,7 +39,7 @@ msgstr "Descrizione del problema"
 
 #. Tag: para
 #: performance_tips.xml:11
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Current PostgreSQL versions (including 9.6) suffer from a query optimizer "
 "weakness regarding TOAST tables. TOAST tables are a kind of \"extension "
@@ -49,18 +49,18 @@ msgid ""
 "docs/current/static/storage-toast.html\">the PostgreSQL Documentation for "
 "TOAST</link> for more information)."
 msgstr ""
-"Le attuali versioni di PostgreSQL (compresa la versione 8.0) sono affette da "
-"un difetto del query optimizer riguardante le tabelle TOAST. Le tabelle "
-"TOAST sono una sorta di \"spazio aggiuntivo\" usato per memorizzare valori "
-"di grandi dimensioni (nel senso di dimensioni dei dati) che non possono "
-"essere salvati in normali pagine (per esempio lunghi testi, immagini o "
-"geometrie con molti vertici). Vedi <link xlink:href=\"http://www.postgresql."
-"org/docs/current/static/storage-toast.html\">la documentazione PostgreSQL "
-"sulle tabelle TOAST</link> per maggiori informazioni)."
+"Le versioni attuali di PostgreSQL (compresa la 9.6) soffrono di una "
+"debolezza dell'ottimizzatore di query per quanto riguarda le tabelle TOAST. "
+"Le tabelle TOAST sono una sorta di \"stanza di estensione\" utilizzata per "
+"memorizzare valori di grandi dimensioni (nel senso della dimensione dei dati)"
+" che non si adattano alle normali pagine di dati (come testi lunghi, "
+"immagini o geometrie complesse con molti vertici), si veda <link xlink:href="
+"\"http://www.postgresql.org/docs/current/static/storage-toast.html\">la "
+"documentazione PostgreSQL per TOAST</link> per maggiori informazioni)."
 
 #. Tag: para
 #: performance_tips.xml:19
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The problem appears if you happen to have a table with rather large "
 "geometries, but not too many rows of them (like a table containing the "
@@ -69,12 +69,12 @@ msgid ""
 "table itself had about 80 rows and used only 3 data pages, but the TOAST "
 "table used 8225 pages."
 msgstr ""
-"Il problema si presenta nel caso di tabelle contenenti geometrie di grandi "
-"dimensioni ma poche righe (per esempio una tabella contenente i confini di "
-"tutti gli stati europei ad alta risoluzione). In questo caso infatti la "
-"tabella in se è di piccole dimensioni ma usa molto spazio TOAST. Nel nostro "
-"esempio la tabella conteneva circa 80 righe e utilizzava solo 3 pagine di "
-"dati, ma la tabella TOAST ne utilizzava 8225."
+"Il problema si presenta se si ha una tabella con geometrie piuttosto grandi, "
+"ma non troppe righe (come una tabella contenente i confini di tutti i paesi "
+"europei in alta risoluzione). In questo caso, la tabella stessa è piccola, "
+"ma utilizza molto spazio TOAST. Nel nostro caso di esempio, la tabella "
+"stessa aveva circa 80 righe e utilizzava solo 3 pagine di dati, ma la "
+"tabella TOAST utilizzava 8225 pagine."
 
 #. Tag: para
 #: performance_tips.xml:26
@@ -124,6 +124,9 @@ msgid ""
 "pipermail/postgis-devel/2017-June/026209.html\">https://lists.osgeo.org/"
 "pipermail/postgis-devel/2017-June/026209.html</link>"
 msgstr ""
+"e una discussione più recente su PostGIS <link xlink:href=\"https://lists."
+"osgeo.org/pipermail/postgis-devel/2017-June/026209.html\">https://lists.osgeo"
+".org/pipermail/postgis-devel/2017-June/026209.html</link>"
 
 #. Tag: title
 #: performance_tips.xml:45
@@ -308,7 +311,7 @@ msgstr ""
 
 #. Tag: para
 #: performance_tips.xml:126
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "In case of large tables, it may be wise to divide this UPDATE into smaller "
 "portions by constraining the UPDATE to a part of the table via a WHERE "
@@ -318,11 +321,11 @@ msgid ""
 "geometries, restricting the UPDATE by \"WHERE dimension(geom)&gt;2\" skips "
 "re-writing of geometries that already are in 2D."
 msgstr ""
-"Nel caso di grandi tabelle può essere sensato dividere l'UPDATE in porzioni "
-"più piccole, usando la clausola WHERE con la chiave primaria o un altro "
-"criterio flessibile per attualizzare solo una parte della tabella , ed "
-"eseguendo un semplice \"VACUUM;\" tra gli UPDATE. Questo accorgimento "
-"ridurrà drasticamente il bisogno lo spazio temporaneo sul disco. Inoltre, se "
-"la colonna geometrica contiene geometrie con diverse dimensioni, si può "
-"limitare l'UPDATE con \"WHERE dimension(the_geom)&gt;2\", evitando così di "
-"riscrivere le geometrie che sono già in 2D."
+"Nel caso di tabelle di grandi dimensioni, può essere opportuno dividere "
+"l'UPDATE in porzioni più piccole, vincolando l'UPDATE a una parte della "
+"tabella tramite una clausola WHERE e la chiave primaria o un altro criterio "
+"fattibile ed eseguendo un semplice \"VACUUM;\" tra gli UPDATE. In questo "
+"modo si riduce drasticamente la necessità di spazio temporaneo su disco. "
+"Inoltre, se si hanno geometrie di dimensioni miste, limitando "
+"l'AGGIORNAMENTO con \"WHERE dimension(geom)&gt;2\" si evita di riscrivere le "
+"geometrie che sono già in 2D."
