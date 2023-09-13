@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-13 00:23+0000\n"
+"PO-Revision-Date: 2023-09-13 03:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_rasterxml/it/>\n"
@@ -22,7 +22,7 @@ msgstr ""
 #: reference_raster.xml:3
 #, no-c-format
 msgid "Raster Reference"
-msgstr ""
+msgstr "Riferimento raster"
 
 #. Tag: para
 #: reference_raster.xml:5
@@ -55,6 +55,8 @@ msgid ""
 "For loading rasters from raster files please refer to <xref "
 "linkend=\"RT_Loading_Rasters\"/>"
 msgstr ""
+"Per il caricamento di raster da file raster, fare riferimento a <xref "
+"linkend=\"RT_Loading_Rasters\"/>"
 
 #. Tag: para
 #: reference_raster.xml:12
@@ -63,12 +65,14 @@ msgid ""
 "For the examples in this reference we will be using a raster table of dummy "
 "rasters - Formed with the following code"
 msgstr ""
+"Per gli esempi di questa guida si utilizzerà una tabella di raster fittizi, "
+"formata con il seguente codice"
 
 #. Tag: title
 #: reference_raster.xml:15
 #, no-c-format
 msgid "Raster Support Data types"
-msgstr ""
+msgstr "Supporto raster Tipi di dati"
 
 #. Tag: para
 #: reference_raster.xml:17
@@ -77,6 +81,8 @@ msgid ""
 "This section lists the PostgreSQL data types specifically created to support "
 "raster functionality."
 msgstr ""
+"Questa sezione elenca i tipi di dati PostgreSQL creati appositamente per "
+"supportare le funzionalità raster."
 
 #. Tag: refpurpose
 #: reference_raster.xml:25
@@ -85,6 +91,9 @@ msgid ""
 "A spatial datatype with two fields - geom (holding a geometry object) and "
 "val (holding a double precision pixel value from a raster band)."
 msgstr ""
+"Un tipo di dato spaziale con due campi: geom (che contiene un oggetto "
+"geometrico) e val (che contiene un valore di pixel a doppia precisione da "
+"una banda raster)."
 
 #. Tag: title
 #: reference_raster.xml:30 reference_raster.xml:49 reference_raster.xml:121
@@ -179,6 +188,12 @@ msgid ""
 "by the ST_DumpAsPolygon and Raster intersection family of functions as an "
 "output type to explode a raster band into geometry polygons."
 msgstr ""
+"geomval è un tipo di dati composto costituito da un oggetto geometrico "
+"referenziato dal campo .geom e da val, un valore a doppia precisione che "
+"rappresenta il valore del pixel in una particolare posizione geometrica in "
+"una banda raster. Viene utilizzato dalla famiglia di funzioni "
+"ST_DumpAsPolygon e Raster intersection come tipo di output per esplodere una "
+"banda raster in poligoni geometrici."
 
 #. Tag: title
 #: reference_raster.xml:37 reference_raster.xml:107 reference_raster.xml:157
@@ -267,6 +282,8 @@ msgid ""
 "<refpurpose>A composite type used as input into the ST_AddBand function "
 "defining the attributes and initial value of the new band.</refpurpose>"
 msgstr ""
+"<refpurpose>Un tipo composito usato come input nella funzione ST_AddBand che "
+"definisce gli attributi e il valore iniziale della nuova banda.</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:50
@@ -275,6 +292,8 @@ msgid ""
 "<para>A composite type used as input into the ST_AddBand function defining "
 "the attributes and initial value of the new band.</para>"
 msgstr ""
+"<para>Un tipo composito usato come input nella funzione ST_AddBand che "
+"definisce gli attributi e il valore iniziale della nuova banda.</para>"
 
 #. Tag: term
 #: reference_raster.xml:55
@@ -1137,9 +1156,9 @@ msgstr ""
 
 #. Tag: term
 #: reference_raster.xml:1069
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "geom"
-msgstr "geomval"
+msgstr "geom"
 
 #. Tag: para
 #: reference_raster.xml:1070
