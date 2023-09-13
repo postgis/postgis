@@ -5,10 +5,10 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-08-03 01:03+0000\n"
-"PO-Revision-Date: 2023-09-11 19:39+0000\n"
+"PO-Revision-Date: 2023-09-13 16:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
-"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/xsl-"
-"config/it/>\n"
+"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
+"xsl-config/it/>\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -33,19 +33,19 @@ msgstr "Le seguenti funzioni PostGIS sono quelle aggiunte o migliorate."
 #: xsl-config.xml:53
 #, no-c-format
 msgid "Functions new in PostGIS %"
-msgstr ""
+msgstr "Funzioni nuove in PostGIS %"
 
 #. Tag: para
 #: xsl-config.xml:56
 #, no-c-format
 msgid "Functions enhanced in PostGIS %"
-msgstr ""
+msgstr "Funzioni migliorate in PostGIS %"
 
 #. Tag: para
 #: xsl-config.xml:59
 #, no-c-format
 msgid "Functions changed in PostGIS %"
-msgstr ""
+msgstr "Funzioni modificate in PostGIS %"
 
 #. Tag: para
 #: xsl-config.xml:70
@@ -65,6 +65,8 @@ msgstr "Questo metodo supporta le Curve e le Circular String."
 msgid ""
 "For geography this is a thin wrapper around the geometry implementation."
 msgstr ""
+"Per la geografia si tratta di un sottile involucro attorno "
+"all'implementazione della geometria."
 
 #. Tag: para
 #: xsl-config.xml:88
@@ -162,7 +164,7 @@ msgstr "Funzione finestra"
 #: xsl-config.xml:181
 #, no-c-format
 msgid "Requires GEOS (3.9,3.10,3.11,3.12) or higher"
-msgstr ""
+msgstr "Richiede GEOS (3.9,3.10,3.11,3.12) o versioni successive"
 
 #. Tag: para
 #: xsl-config.xml:184
