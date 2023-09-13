@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-13 00:23+0000\n"
+"PO-Revision-Date: 2023-09-13 10:51+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_processingxml/it/>\n"
@@ -885,7 +885,7 @@ msgstr ""
 #: reference_processing.xml:901
 #, no-c-format
 msgid "Availability: 2.1.0"
-msgstr ""
+msgstr "Disponibilità: 2.1.0"
 
 #. Tag: para
 #: reference_processing.xml:903
