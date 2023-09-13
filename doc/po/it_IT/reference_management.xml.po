@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-13 00:23+0000\n"
+"PO-Revision-Date: 2023-09-13 10:51+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_managementxml/it/>\n"
@@ -35,9 +35,9 @@ msgstr ""
 
 #. Tag: refpurpose
 #: reference_management.xml:16
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Adds a geometry column to an existing table."
-msgstr "Rimuove una colonna geometry da una tabella spaziale"
+msgstr "Aggiunge una colonna geometrica a una tabella esistente."
 
 #. Tag: title
 #: reference_management.xml:97 reference_management.xml:193
@@ -330,13 +330,13 @@ msgstr ""
 
 #. Tag: para
 #: reference_management.xml:365
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>enforce_dims_geom</varname> - ensures every geometry has the same "
 "dimension (see <xref linkend=\"ST_NDims\"/>)"
 msgstr ""
-"<varname>enforce_dims_the_geom</varname> - assicura che tutte le geometrie "
-"hanno la stessa dimensione (vedi <xref linkend=\"ST_NDims\"/>)"
+"<varname>enforce_dims_geom</varname> - assicura che ogni geometria abbia la "
+"stessa dimensione (vedere <xref linkend=\"ST_NDims\"/>)"
 
 #. Tag: para
 #: reference_management.xml:370
@@ -505,13 +505,17 @@ msgid ""
 "DDL but there is no equivalent PostGIS management function to do so in one "
 "go."
 msgstr ""
+"Se si è sbagliata la proiezione (o la si è inserita come sconosciuta) nel "
+"caricamento e si vuole trasformare in web mercator in un colpo solo, è "
+"possibile farlo con il DDL, ma non esiste una funzione equivalente di "
+"gestione di PostGIS per farlo in un colpo solo."
 
 #. Tag: para
 #: reference_management.xml:517
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
 "linkend=\"ST_GeomFromEWKT\"/>"
 msgstr ""
-", <xref linkend=\"DropGeometryTable\"/>, <xref linkend=\"geometry_columns\"/"
-">, <xref linkend=\"Manual_Register_Spatial_Column\"/>"
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
+"linkend=\"ST_GeomFromEWKT\"/>"
