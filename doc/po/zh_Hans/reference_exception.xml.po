@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-11 19:20+0000\n"
-"PO-Revision-Date: 2023-09-04 02:39+0000\n"
+"PO-Revision-Date: 2023-09-13 03:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_exceptionxml/zh_Hans/>\n"
@@ -15,13 +15,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #: reference_exception.xml:3
 #, no-c-format
 msgid "Exceptional Functions"
-msgstr ""
+msgstr "特殊函数"
 
 #. Tag: para
 #: reference_exception.xml:4
@@ -30,7 +30,8 @@ msgid ""
 "These functions are rarely used functions that should only be used if your "
 "data is corrupted in someway. They are used for troubleshooting corruption "
 "and also fixing things that should under normal circumstances, never happen."
-msgstr ""
+msgstr "这些函数是极少使用的函数，只有在您的数据以某种方式受损时才应该使用。它们用于"
+"排除数据损坏问题，以及修复在正常情况下不应该发生的情况。"
 
 #. Tag: refpurpose
 #: reference_exception.xml:11
