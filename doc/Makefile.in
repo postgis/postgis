@@ -576,6 +576,10 @@ check-xml: requirements_not_met_xmllint
 check-cheatsheets: requirements_not_met_xmllint
 else
 check-xml: postgis-out.xml
+	# Fail early if cannot find required RelaxNG
+	xmlcatalog "" "http://docbook.org/xml/5.0/rng/docbook.rng"
+	# Fail early if cannot find required DTD
+	xmlcatalog "" "http://docbook.org/xml/5.0/dtd/docbook.dtd"
 	# TODO: --schematron http://docbook.org/xml/5.0/sch/docbook.sch
 	# See https://trac.osgeo.org/postgis/ticket/5532
 	$(XMLLINT) --noout --nonet \
