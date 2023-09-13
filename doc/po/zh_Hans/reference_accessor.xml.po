@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-12 14:55+0000\n"
+"PO-Revision-Date: 2023-09-13 03:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_accessorxml/zh_Hans/>\n"
@@ -1139,6 +1139,8 @@ msgid ""
 "SQL-MM defines the result of <code>ST_IsClosed(NULL)</code> to be 0, while "
 "PostGIS returns <varname>NULL</varname>."
 msgstr ""
+"SQL-MM 定义了 <code>ST_IsClosed(NULL)</code> 的结果为 0，而 PostGIS 返回 "
+"<varname>NULL</varname>。"
 
 #. Tag: title
 #: reference_accessor.xml:995
@@ -1335,6 +1337,10 @@ msgid ""
 "ST_Endpoint(g)</code>) and <xref linkend=\"ST_IsSimple\"/> (does not self "
 "intersect)."
 msgstr ""
+"如果这个<varname>线串</varname>（LINESTRING）既是封闭的（即 <xref linkend="
+"\"ST_IsClosed\"/> 返回真，即 <code>ST_StartPoint(g) ~= "
+"ST_Endpoint(g)</code>），又是简单的（即没有自交，即 <xref linkend="
+"\"ST_IsSimple\"/> 返回真），则返回 <varname>TRUE</varname>。"
 
 #. Tag: para
 #: reference_accessor.xml:1274
@@ -1349,6 +1355,8 @@ msgid ""
 "SQL-MM defines the result of <code>ST_IsRing(NULL)</code> to be 0, while "
 "PostGIS returns <varname>NULL</varname>."
 msgstr ""
+"SQL-MM 定义了 <code>ST_IsRing(NULL)</code> 的结果为 0，而 PostGIS 返回 "
+"<varname>NULL</varname>。"
 
 #. Tag: para
 #: reference_accessor.xml:1291
@@ -1560,6 +1568,9 @@ msgid ""
 "or MULTI*). For non-empty atomic geometries returns 1. For empty geometries "
 "returns 0."
 msgstr ""
+"该函数返回几何集合（GEOMETRYCOLLECTION 或 "
+"MULTI*）中的元素数量。对于非空的原子几何体，它返回 1。对于空的几何体，它返回 "
+"0。"
 
 #. Tag: para
 #: reference_accessor.xml:1571
