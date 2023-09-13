@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-07-20 04:36+0000\n"
+"PO-Revision-Date: 2023-09-13 05:59+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_rasterxml/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #: reference_raster.xml:3
@@ -296,7 +296,7 @@ msgstr ""
 #: reference_raster.xml:55
 #, no-c-format
 msgid "index integer"
-msgstr ""
+msgstr "index integer"
 
 #. Tag: para
 #: reference_raster.xml:60
@@ -313,7 +313,7 @@ msgstr ""
 #: reference_raster.xml:67 reference_raster.xml:227
 #, no-c-format
 msgid "pixeltype text"
-msgstr ""
+msgstr "pixeltype text"
 
 #. Tag: para
 #: reference_raster.xml:72
@@ -329,7 +329,7 @@ msgstr ""
 #: reference_raster.xml:79
 #, no-c-format
 msgid "initialvalue double precision"
-msgstr ""
+msgstr "initialvalue double precision"
 
 #. Tag: para
 #: reference_raster.xml:84
@@ -341,7 +341,7 @@ msgstr "新しいバンドに設定する初期値。"
 #: reference_raster.xml:91 reference_raster.xml:231
 #, no-c-format
 msgid "nodataval double precision"
-msgstr ""
+msgstr "nodataval double precision"
 
 #. Tag: para
 #: reference_raster.xml:96
@@ -359,9 +359,8 @@ msgstr ""
 msgid ""
 "<refpurpose>A composite type for use when needing to express a raster and a "
 "band index of that raster.</refpurpose>"
-msgstr ""
-"<refpurpose>ラスタとそのバンドインデクスを表現する必要がある時に使われる複合"
-"型。</refpurpose>"
+msgstr "<refpurpose>ラスタとそのバンドインデックスを表現する必要がある時に使われる複"
+"合型。</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:122
@@ -369,15 +368,14 @@ msgstr ""
 msgid ""
 "<para>A composite type for use when needing to express a raster and a band "
 "index of that raster.</para>"
-msgstr ""
-"<para>ラスタとそのバンドインデクスを表現する必要がある時に使われる複合型。</"
-"para>"
+msgstr "<para>ラスタとそのバンドインデックスを表現する必要がある時に使われる複合型。<"
+"/para>"
 
 #. Tag: term
 #: reference_raster.xml:128
 #, no-c-format
 msgid "rast raster"
-msgstr ""
+msgstr "rast raster"
 
 #. Tag: para
 #: reference_raster.xml:133
@@ -389,7 +387,7 @@ msgstr "問題にするラスタ。"
 #: reference_raster.xml:140 reference_raster.xml:215 reference_raster.xml:360
 #, no-c-format
 msgid "nband integer"
-msgstr ""
+msgstr "nband integer"
 
 #. Tag: para
 #: reference_raster.xml:145
@@ -500,7 +498,7 @@ msgstr "再分類対象バンドの番号。"
 #: reference_raster.xml:219
 #, no-c-format
 msgid "reclassexpr text"
-msgstr ""
+msgstr "reclassexpr text"
 
 #. Tag: para
 #: reference_raster.xml:220
@@ -573,7 +571,7 @@ msgstr ""
 #: reference_raster.xml:263
 #, no-c-format
 msgid "count integer"
-msgstr ""
+msgstr "count integer"
 
 #. Tag: para
 #: reference_raster.xml:268
@@ -585,7 +583,7 @@ msgstr "統計情報で使ったピクセルの数。"
 #: reference_raster.xml:275
 #, no-c-format
 msgid "sum double precision"
-msgstr ""
+msgstr "sum double precision"
 
 #. Tag: para
 #: reference_raster.xml:280
@@ -597,7 +595,7 @@ msgstr "統計情報で使ったピクセルの値の合計。"
 #: reference_raster.xml:287
 #, no-c-format
 msgid "mean double precision"
-msgstr ""
+msgstr "mean double precision"
 
 #. Tag: para
 #: reference_raster.xml:292
@@ -609,7 +607,7 @@ msgstr "統計情報で使ったピクセルの値の平均。"
 #: reference_raster.xml:299
 #, no-c-format
 msgid "stddev double precision"
-msgstr ""
+msgstr "stddev double precision"
 
 #. Tag: para
 #: reference_raster.xml:304
@@ -621,7 +619,7 @@ msgstr "統計情報で使ったピクセルの値の標準偏差。"
 #: reference_raster.xml:311
 #, no-c-format
 msgid "min double precision"
-msgstr ""
+msgstr "min double precision"
 
 #. Tag: para
 #: reference_raster.xml:316
@@ -633,7 +631,7 @@ msgstr "統計情報で使ったピクセルの値の最小値。"
 #: reference_raster.xml:323
 #, no-c-format
 msgid "max double precision"
-msgstr ""
+msgstr "max double precision"
 
 #. Tag: para
 #: reference_raster.xml:328
@@ -678,7 +676,7 @@ msgstr "処理する入力ラスタごとのバンドを示す1始まりの値�
 #: reference_raster.xml:372
 #, no-c-format
 msgid "uniontype text"
-msgstr ""
+msgstr "uniontype text"
 
 #. Tag: para
 #: reference_raster.xml:377
@@ -1577,9 +1575,9 @@ msgid ""
 "value in the given index location. If no index is specified, the band is "
 "added to the end."
 msgstr ""
-"与えられたタイプで、与えられた初期値にした新しいバンドを、与えられたインデク"
-"ス位置に追加したラスタを返します。インデクス位置を指定していない場合には、バ"
-"ンドは末尾に追加されます。"
+"与えられたタイプで、与えられた初期値にした新しいバンドを、与えられたインデッ"
+"クス位置に追加したラスタを返します。インデックス位置を指定していない場合には"
+"、バンドは末尾に追加されます。"
 
 #. Tag: para
 #: reference_raster.xml:1380
@@ -1595,6 +1593,15 @@ msgid ""
 "is specified, then the initial value is set to the highest value allowed by "
 "the pixel type."
 msgstr ""
+"指定した位置(index)に、指定したタイプの、指定した初期値を持ち、指定したNODATA"
+"値を持つ、追加された新しいバンドを持つラスタを返します。インデックス位置を指"
+"定していない場合には、バンドは末尾に追加されます。<varname>fromband</varname>"
+"が指定されない場合には、1番バンドと仮定します。ピクセルタイプは<xref linkend="
+"\"RT_ST_BandPixelType\"/>で指定されているピクセルタイプの文字列表現です。既存"
+"のインデックスが指定された場合には、バンドのインデックス &gt;= "
+"指定インデックス となるバンドのインデックスは1ずつ足されます。初期値としてピ"
+"クセルタイプの最大値を超えた値が指定された場合には、初期値にピクセルタイプの"
+"許容最大値が指定されます。"
 
 #. Tag: para
 #: reference_raster.xml:1384
@@ -1605,9 +1612,9 @@ msgid ""
 "at the time when the band described by that addbandarg is being added to the "
 "raster. See the Multiple New Bands example below."
 msgstr ""
-"<xref linkend=\"addbandarg\"/>の配列を取る版 (一つ目の版)では、指定した"
-"addbandargのインデクス値は、addbandargで示されるバンドがラスタに追加される時"
-"のラスタとの相対値です。下の複数バンドの例を参照してください。"
+"<xref linkend=\"addbandarg\"/>の配列を取る版 (一つ目の版)では、指定したaddban"
+"dargのインデックス値は、addbandargで示されるバンドがラスタに追加される時のラ"
+"スタとの相対値です。下の複数バンドの例を参照してください。"
 
 #. Tag: para
 #: reference_raster.xml:1388
@@ -2307,8 +2314,7 @@ msgstr ""
 msgid ""
 "pg_total_relation_size - includes, the table, the toasted tables, and the "
 "indexes."
-msgstr ""
-"pg_total_relation_size - テーブル、TOASTテーブル、インデクスを含みます。"
+msgstr "pg_total_relation_size - テーブル、TOASTテーブル、インデックスを含みます。"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2181
@@ -4868,6 +4874,12 @@ msgid ""
 "and set it to <varname>libproj.dll</varname> (if you are using proj 4.6.1). "
 "You'll have to restart your PostgreSQL service/daemon after this change."
 msgstr ""
+"変換機能が思ったように働かない場合には、環境変数PROJSOをPostGISが使用する投影"
+"変換ライブラリの.soまたは.dllに指定する必要があるかも知れません。ファイル名の"
+"指定だけ必要です。Windowsでの例として、コントロールパネル-&gt;システム-&gt;シ"
+"ステムの詳細設定-&gt;環境変数で、<varname>PROJSO</varname>という名前のシステ"
+"ム変数を追加して、<varname>libproj.dll</varname> (Proj 4.6.1を使用している場"
+"合)を設定します。変更後はPostgreSQLサービス/デーモンを再起動します。"
 
 #. Tag: para
 #: reference_raster.xml:5204
@@ -5226,7 +5238,7 @@ msgstr ""
 #: reference_raster.xml:5657
 #, no-c-format
 msgid "width double precision[]"
-msgstr ""
+msgstr "width double precision[]"
 
 #. Tag: para
 #: reference_raster.xml:5658
@@ -5252,7 +5264,7 @@ msgstr ""
 #: reference_raster.xml:5662
 #, no-c-format
 msgid "bins integer"
-msgstr ""
+msgstr "bins integer"
 
 #. Tag: para
 #: reference_raster.xml:5663
@@ -5269,7 +5281,7 @@ msgstr ""
 #: reference_raster.xml:5667
 #, no-c-format
 msgid "right boolean"
-msgstr ""
+msgstr "right boolean"
 
 #. Tag: para
 #: reference_raster.xml:5668
@@ -6716,9 +6728,8 @@ msgstr ""
 msgid ""
 "Callback function version - Returns a one-band raster given one or more "
 "input rasters, band indexes and one user-specified callback function."
-msgstr ""
-"コールバック関数版 - 一つ以上の入力ラスタ、バンドインデクスと一つのユーザ定義"
-"コールバック関数から、一つのバンドからなるラスタを返します。"
+msgstr "コールバック関数版 - 一つ以上の入力ラスタ、バンドインデックスと一つのユーザ定"
+"義コールバック関数から、一つのバンドからなるラスタを返します。"
 
 #. Tag: para
 #: reference_raster.xml:7375
@@ -6726,8 +6737,7 @@ msgstr ""
 msgid ""
 "Returns a one-band raster given one or more input rasters, band indexes and "
 "one user-specified callback function."
-msgstr ""
-"一つ以上の入力ラスタ、バンドインデクスと一つのユーザ定義コールバック関数か"
+msgstr "一つ以上の入力ラスタ、バンドインデックスと一つのユーザ定義コールバック関数か"
 "ら、一つのバンドからなるラスタを返します。"
 
 #. Tag: term
@@ -7665,8 +7675,9 @@ msgid ""
 "positions of the pixels."
 msgstr ""
 "数式の中で使える語は、元バンドのピクセル値を参照する <varname>[rast1.val]</"
-"varname>, <varname>[rast2.val]</varname>、1始まりの列/行インデクスを参照する"
-"<varname>[rast1.x]</varname>, <varname>[rast1.y]</varname>などです。"
+"varname>, <varname>[rast2."
+"val]</varname>、1始まりの列/行インデックスを参照する<varname>[rast1.x]</"
+"varname>, <varname>[rast1.y]</varname>などです。"
 
 #. Tag: title
 #: reference_raster.xml:8136
@@ -8179,10 +8190,11 @@ msgid ""
 "html\">http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html</link> and then "
 "prepared in the <xref linkend=\"RT_ST_Rescale\"/> examples"
 msgstr ""
-"単一タイルとしてロードされたカトリーナのラスタを使った例です。<link xlink:"
-"href=\"http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html\">http://trac."
-"osgeo.org/gdal/wiki/frmts_wtkraster.html</link>に説明があります。また、<xref "
-"linkend=\"RT_ST_Rescale\"/>の例で準備を行っています。"
+"単一タイルとしてロードされたカトリーナのラスタを使った例です。<link "
+"xlink:href=\"http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html\""
+">http://trac.osgeo.org/gdal/wiki/frmts_wtkraster."
+"html</link>に説明があります。また、<xref linkend=\"RT_ST_Rescale\""
+"/>の例で準備を行っています"
 
 #. Tag: para
 #: reference_raster.xml:8680
@@ -9488,7 +9500,7 @@ msgstr ""
 msgid ""
 "This operand will make use of any indexes that may be available on the "
 "rasters."
-msgstr "これのオペランドは、ラスタで使用できるインデクスを使用します。"
+msgstr "これのオペランドは、ラスタで使用できるインデックスを使用します。"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10282
@@ -9580,9 +9592,9 @@ msgid ""
 "rasters. Use <xref linkend=\"RT_Raster_Same\"/> instead. This operator "
 "exists mostly so one can group by the raster column."
 msgstr ""
-"これのオペランドは、ラスタで利用できるインデクスを使いません。代わりに<xref "
-"linkend=\"RT_Raster_Same\"/>を使います。この演算子はラスタカラムのGROUP BYに"
-"使うのがほとんどです。"
+"これのオペランドは、ラスタで利用できるインデックスを使いません。"
+"代わりに<xref linkend=\"RT_Raster_Same\"/>を使います。"
+"この演算子はラスタカラムのGROUP BYに使うのがほとんどです。"
 
 #. Tag: refpurpose
 #: reference_raster.xml:10419
@@ -9611,7 +9623,7 @@ msgstr ""
 #: reference_raster.xml:10469 reference_raster.xml:10589
 #, no-c-format
 msgid "This operand will use spatial indexes on the rasters."
-msgstr "これのオペランドは、ラスタのインデクスを使用します。"
+msgstr "これのオペランドは、ラスタのインデックスを使用します。"
 
 #. Tag: para
 #: reference_raster.xml:10471
@@ -9727,7 +9739,7 @@ msgstr ""
 msgid ""
 "This function will make use of any indexes that may be available on the "
 "rasters."
-msgstr "この関数はラスタで利用できるインデクスを使用します。"
+msgstr "この関数はラスタで利用できるインデックスを使用します。"
 
 #. Tag: para
 #: reference_raster.xml:10665
@@ -9911,7 +9923,7 @@ msgstr ""
 #: reference_raster.xml:10995
 #, no-c-format
 msgid "This function does NOT use any indexes."
-msgstr "この関数はインデクスを*使いません*。"
+msgstr "この関数はインデックスを*使いません*。"
 
 #. Tag: para
 #: reference_raster.xml:11001
