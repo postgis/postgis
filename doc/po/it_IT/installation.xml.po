@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-08 07:58+0000\n"
+"PO-Revision-Date: 2023-09-13 13:07+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "installationxml/it/>\n"
@@ -61,7 +61,7 @@ msgstr ""
 #: installation.xml:24
 #, no-c-format
 msgid "Compiling and Install from Source"
-msgstr ""
+msgstr "Compilazione e installazione da sorgente"
 
 #. Tag: para
 #: installation.xml:27
@@ -86,6 +86,12 @@ msgid ""
 "xlink:href=\"http://trac.osgeo.org/postgis/wiki/DevWikiMain\">PostGIS Dev "
 "Wiki</link>."
 msgstr ""
+"Questa sezione include istruzioni generali per la compilazione; se si sta "
+"compilando per Windows o altri sistemi operativi, si può trovare un aiuto "
+"più dettagliato in <link xlink:href=\"https://trac.osgeo.org/postgis/wiki/"
+"UsersWikiInstall\">Guide di compilazione fornite dagli utenti di PostGIS</"
+"link> e <link xlink:href=\"http://trac.osgeo.org/postgis/wiki/DevWikiMain\""
+">PostGIS Dev Wiki</link>."
 
 #. Tag: para
 #: installation.xml:34
@@ -95,10 +101,13 @@ msgid ""
 "trac.osgeo.org/postgis/wiki/UsersWikiPackages\">PostGIS Pre-built Packages</"
 "link>"
 msgstr ""
+"I pacchetti precostruiti per vari sistemi operativi sono elencati in <link "
+"xlink:href=\"https://trac.osgeo.org/postgis/wiki/UsersWikiPackages\""
+">Pacchetti precostruiti PostGIS</link>"
 
 #. Tag: para
 #: installation.xml:35
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you are a windows user, you can get stable builds via Stackbuilder or "
 "<link xlink:href=\"https://postgis.net/windows_downloads\">PostGIS Windows "
@@ -108,14 +117,13 @@ msgid ""
 "happens. You can use these to experiment with the in progress releases of "
 "PostGIS"
 msgstr ""
-"Se siete un utente Windows, potete reperire le versioni stabili tramite "
-"Stackbuilder o la pagina <link xlink:href=\"http://www.postgis.org/download/"
-"windows/\">PostGIS Windows download</link>. Inoltre potete scaricare <link "
-"xlink:href=\"http://www.postgis.org/download/windows/experimental.php\">le "
-"ultimissime versioni sperimentati per Windows</link>, che vengono create una "
-"o due volte alla settimana, quando ci sono aggiornamenti interessanti. "
-"Potete utilizzare queste versioni per fare prove con le versioni in via di "
-"sviluppo di PostGIS"
+"Se siete utenti di Windows, potete ottenere le build stabili tramite "
+"Stackbuilder o <link xlink:href=\"https://postgis.net/windows_downloads\">il "
+"sito di download di PostGIS Windows</link> Abbiamo anche <link xlink:href="
+"\"https://postgis.net/windows_downloads\">c build sperimentali di Windows "
+"molto all'avanguardia</link> che vengono create di solito una o due volte "
+"alla settimana o ogni volta che succede qualcosa di interessante. È "
+"possibile utilizzarle per sperimentare le versioni in corso di PostGIS"
 
 #. Tag: para
 #: installation.xml:40
@@ -127,6 +135,12 @@ msgid ""
 "against PostgreSQL versions &min_postgres_version; - &max_postgres_version;. "
 "Earlier versions of PostgreSQL are <emphasis>not</emphasis> supported."
 msgstr ""
+"Il modulo PostGIS è un'estensione del server backend PostgreSQL. Come tale, "
+"PostGIS &last_release_version; <emphasis>richiede</emphasis> l'accesso "
+"completo alle intestazioni del server PostgreSQL per essere compilato. Può "
+"essere compilato con le versioni di PostgreSQL &min_postgres_version; - "
+"&max_postgres_version;. Le versioni precedenti di PostgreSQL non sono "
+"<emphasis></emphasis> supportate."
 
 #. Tag: para
 #: installation.xml:48
@@ -136,6 +150,9 @@ msgid ""
 "PostgreSQL. <link xlink:href=\"https://www.postgresql.org\"> https://www."
 "postgresql.org </link> ."
 msgstr ""
+"Se non avete ancora installato PostgreSQL, consultate le guide "
+"all'installazione di PostgreSQL. <link xlink:href=\"https://www.postgresql."
+"org\"> https://www.postgresql.org </link> ."
 
 #. Tag: para
 #: installation.xml:58
@@ -185,6 +202,8 @@ msgid ""
 "Retrieve the PostGIS source archive from the downloads website <link xlink:"
 "href=\"&postgis_download_url;\"> &postgis_download_url; </link>"
 msgstr ""
+"Recuperare l'archivio sorgente di PostGIS dal sito web dei download <link "
+"xlink:href=\"&postgis_download_url;\"> &postgis_download_url; </link>"
 
 #. Tag: para
 #: installation.xml:91
@@ -212,19 +231,19 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:111
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Change into the newly created <varname>postgis</varname> directory to "
 "continue the installation."
 msgstr ""
-"Entrate nella cartella appena creata, <varname>postgis-&last_release_version;"
-"</varname>, per proseguire con l'installazione."
+"Passare alla cartella <varname>postgis</varname> appena creata per "
+"continuare l'installazione."
 
 #. Tag: title
 #: installation.xml:120
 #, no-c-format
 msgid "Install Requirements"
-msgstr ""
+msgstr "Requisiti di installazione"
 
 #. Tag: para
 #: installation.xml:122
@@ -248,6 +267,10 @@ msgid ""
 "PostgreSQL is available from <link xlink:href=\"https://www.postgresql."
 "org\"> https://www.postgresql.org </link> ."
 msgstr ""
+"PostgreSQL &min_postgres_version; - &max_postgres_version;. È necessaria "
+"un'installazione completa di PostgreSQL (comprese le intestazioni del server)"
+". PostgreSQL è disponibile presso <link xlink:href=\"https://www.postgresql."
+"org\"> https://www.postgresql.org </link> ."
 
 #. Tag: para
 #: installation.xml:141
@@ -258,6 +281,10 @@ msgid ""
 "UsersWikiPostgreSQLPostGIS\">https://trac.osgeo.org/postgis/wiki/"
 "UsersWikiPostgreSQLPostGIS</link>"
 msgstr ""
+"Per una matrice di supporto completa di PostgreSQL / PostGIS e per la "
+"matrice di supporto di PostGIS/GEOS, consultare <link xlink:href=\"https"
+"://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS\">https://trac."
+"osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS</link>"
 
 #. Tag: para
 #: installation.xml:147
@@ -296,6 +323,10 @@ msgid ""
 "available for download from <link xlink:href=\"https://proj.org/\"> https://"
 "proj.org/ </link> ."
 msgstr ""
+"Libreria di riproiezione Proj. È necessario Proj 6.1 o superiore. La "
+"libreria Proj viene utilizzata per fornire il supporto alla riproiezione "
+"delle coordinate all'interno di PostGIS. Proj è disponibile per il download "
+"da <link xlink:href=\"https://proj.org/\"> https://proj.org/ </link> ."
 
 #. Tag: para
 #: installation.xml:177
@@ -306,6 +337,10 @@ msgid ""
 "for download from <link xlink:href=\"https://libgeos.org/\"> https://libgeos."
 "org </link>."
 msgstr ""
+"Libreria geometrica GEOS, versione 3.6 o superiore, ma GEOS 3.12+ è "
+"necessario per sfruttare appieno tutte le nuove funzioni e caratteristiche. "
+"GEOS è disponibile per il download da <link xlink:href=\"https://libgeos.org/"
+"\"> https://libgeos.org </link>."
 
 #. Tag: para
 #: installation.xml:185
@@ -316,6 +351,11 @@ msgid ""
 "download from <link xlink:href=\"https://gitlab.gnome.org/GNOME/libxml2/-/"
 "releases\">https://gitlab.gnome.org/GNOME/libxml2/-/releases</link>."
 msgstr ""
+"LibXML2, versione 2.5.x o superiore. LibXML2 è attualmente utilizzato in "
+"alcune funzioni di importazione (ST_GeomFromGML e ST_GeomFromKML). LibXML2 è "
+"disponibile per il download da <link xlink:href=\"https://gitlab.gnome.org/"
+"GNOME/libxml2/-/releases\">https://gitlab.gnome.org/GNOME/libxml2/-/"
+"releases</link>."
 
 #. Tag: para
 #: installation.xml:192
@@ -326,6 +366,10 @@ msgid ""
 "<link xlink:href=\"https://github.com/json-c/json-c/releases\">https://"
 "github.com/json-c/json-c/releases/</link>."
 msgstr ""
+"JSON-C, versione 0.9 o superiore. JSON-C viene attualmente utilizzato per "
+"importare GeoJSON tramite la funzione ST_GeomFromGeoJson. JSON-C è "
+"disponibile per il download da <link xlink:href=\"https://github.com/json-c/"
+"json-c/releases\">https://github.com/json-c/json-c/releases/</link>."
 
 #. Tag: para
 #: installation.xml:200
@@ -335,6 +379,9 @@ msgid ""
 "support. <link xlink:href=\"https://gdal.org/download.html\">https://gdal."
 "org/download.html</link>."
 msgstr ""
+"GDAL, è richiesta la versione 2+, la 3+ è preferibile. È necessario per il "
+"supporto dei raster. <link xlink:href=\"https://gdal.org/download.html\""
+">https://gdal.org/download.html</link>."
 
 #. Tag: para
 #: installation.xml:208
@@ -362,6 +409,9 @@ msgid ""
 "Also make sure to enable the drivers you want to use as described in <xref "
 "linkend=\"raster_configuration\"/>."
 msgstr ""
+"GDAL (pseudo-opzionale) solo se non si vuole il raster si può omettere. "
+"Assicurarsi inoltre di abilitare i driver che si desidera utilizzare come "
+"descritto in <xref linkend=\"raster_configuration\"/>."
 
 #. Tag: para
 #: installation.xml:229
@@ -391,6 +441,18 @@ msgid ""
 "xlink:href=\"https://gitlab.com/Oslandia/SFCGAL/\">https://gitlab.com/"
 "Oslandia/SFCGAL/</link>."
 msgstr ""
+"SFCGAL, versione 1.3.1 (o superiore), 1.4.1 o superiore è consigliato e "
+"richiesto per poter utilizzare tutte le funzionalità. SFCGAL può essere "
+"utilizzato per fornire ulteriori funzioni di analisi avanzata 2D e 3D a "
+"PostGIS cf <xref linkend=\"reference_sfcgal\"/>. Inoltre, consente di "
+"utilizzare SFCGAL anziché GEOS per alcune funzioni 2D fornite da entrambi i "
+"backend (come ST_Intersection o ST_Area, ad esempio). Una variabile di "
+"configurazione PostgreSQL <code>postgis.backend</code> permette all'utente "
+"finale di controllare quale backend vuole usare se SFCGAL è installato (GEOS "
+"di default). Nota: SFCGAL 1.2 richiede almeno CGAL 4.3 e Boost 1.54 (cfr. "
+"<link xlink:href=\"https://oslandia.gitlab.io/SFCGAL/dev.html\""
+">https://oslandia.gitlab.io/SFCGAL/dev.html</link>) <link xlink:href=\"https"
+"://gitlab.com/Oslandia/SFCGAL/\">https://gitlab.com/Oslandia/SFCGAL/</link>."
 
 #. Tag: para
 #: installation.xml:247
@@ -403,6 +465,12 @@ msgid ""
 "a PCRE library, or you pass in a valid <varname>--with-pcre-dir=/path/to/"
 "pcre</varname> during configure."
 msgstr ""
+"Per costruire <xref linkend=\"Address_Standardizer\"/> è necessario anche "
+"PCRE <link xlink:href=\"http://www.pcre.org\">http://www.pcre.org</link> ("
+"che generalmente è già installato sui sistemi nix). <xref linkend="
+"\"Address_Standardizer\"/> sarà costruito automaticamente se rileva una "
+"libreria PCRE o se si passa un <varname>--with-pcre-dir=/path/to/pcre</"
+"varname> valido durante la configurazione."
 
 #. Tag: para
 #: installation.xml:254
@@ -417,6 +485,16 @@ msgid ""
 "PostgreSQL installation. To disable this and use GEOS instead use the "
 "<varname>--without-wagyu</varname> during the configure step."
 msgstr ""
+"Per abilitare ST_AsMVT sono necessari la libreria protobuf-c 1.1.0 o "
+"superiore (per l'uso) e il compilatore protoc-c (per la costruzione). "
+"Inoltre, è necessario pkg-config per verificare la versione minima corretta "
+"di protobuf-c. Vedere <link xlink:href=\"https://github.com/protobuf-c/"
+"protobuf-c\">protobuf-c</link>. Per impostazione predefinita, Postgis "
+"utilizza Wagyu per convalidare più velocemente i poligoni MVT, che richiede "
+"un compilatore c++11. Utilizzerà CXXFLAGS e lo stesso compilatore "
+"dell'installazione di PostgreSQL. Per disabilitare questa funzione e "
+"utilizzare invece GEOS, utilizzare l'opzione <varname>--without-wagyu</"
+"varname> durante la fase di configurazione."
 
 #. Tag: para
 #: installation.xml:263
@@ -471,9 +549,9 @@ msgstr ""
 
 #. Tag: title
 #: installation.xml:305
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Build configuration"
-msgstr "Configurazione"
+msgstr "Configurazione della compilazione"
 
 #. Tag: para
 #: installation.xml:307
@@ -520,7 +598,7 @@ msgstr ""
 #: installation.xml:333
 #, no-c-format
 msgid "--with-library-minor-version"
-msgstr ""
+msgstr "--with-library-minor-version"
 
 #. Tag: para
 #: installation.xml:335
@@ -534,24 +612,33 @@ msgid ""
 "the minor version: e.g. <code>postgis-3.0</code> add this switch to your "
 "configure statement."
 msgstr ""
+"A partire da PostGIS 3.0, i file di libreria generati per impostazione "
+"predefinita non avranno più la versione minore come parte del nome del file. "
+"Questo significa che tutte le librerie di PostGIS 3 finiranno con "
+"<code>postgis-3</code>. Questo è stato fatto per rendere più semplice "
+"l'aggiornamento di pg_upgrade, con l'inconveniente di poter installare una "
+"sola versione di PostGIS 3 nel proprio server. Per ottenere il vecchio "
+"comportamento dei file che includono la versione minore: per esempio "
+"<code>postgis-3.0</code> aggiungere questo switch alla dichiarazione "
+"configure."
 
 #. Tag: term
 #: installation.xml:348
 #, no-c-format
 msgid "--prefix=PREFIX"
-msgstr ""
+msgstr "--prefix=PREFIX"
 
 #. Tag: para
 #: installation.xml:350
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This is the location the PostGIS loader executables and shared libs will be "
 "installed. By default, this location is the same as the detected PostgreSQL "
 "installation."
 msgstr ""
-"Questo è il percorso in cui saranno installate le librerie PostGIS e gli "
-"script SQL. Come default, questo percorso coincide con quello rilevato per "
-"l'installazione di PostgreSQL."
+"Questa è la posizione in cui verranno installati gli eseguibili del "
+"caricatore PostGIS e le librerie condivise. Per impostazione predefinita, "
+"questo percorso è lo stesso dell'installazione di PostgreSQL rilevata."
 
 #. Tag: para
 #: installation.xml:357
@@ -572,7 +659,7 @@ msgstr ""
 #: installation.xml:370
 #, no-c-format
 msgid "--with-pgconfig=FILE"
-msgstr ""
+msgstr "--with-pgconfig=FILE"
 
 #. Tag: para
 #: installation.xml:372
