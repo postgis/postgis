@@ -3,12 +3,20 @@
     - main
   before_script:
     - apt-get update -qq && apt-get install -y
-        bison flex
-        postgresql-15 postgresql-server-dev-15
-        build-essential autoconf libtool libcunit1-dev
-        xsltproc docbook-xsl docbook-mathml dblatex
-        libproj-dev libgdal-dev libgeos-dev libjson-c-dev
-        libprotobuf-c1 libprotobuf-c-dev protobuf-c-compiler
+        autoconf
+        bison
+        build-essential
+        flex
+        libgdal-dev
+        libgeos-dev
+        libjson-c-dev
+        libproj-dev
+        libprotobuf-c1
+        libprotobuf-c-dev
+        libtool
+        postgresql-15
+        postgresql-server-dev-15
+        protobuf-c-compiler
     - lsb_release -a
     - uname -a
     - service postgresql start
