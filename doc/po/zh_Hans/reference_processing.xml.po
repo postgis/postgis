@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-08 04:20+0000\n"
+"PO-Revision-Date: 2023-09-13 03:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_processingxml/zh_Hans/>\n"
@@ -1130,7 +1130,8 @@ msgstr ", <xref linkend=\"ST_SimplifyVW\"/>"
 msgid ""
 "Generates a multipoint of random points contained in a Polygon or "
 "MultiPolygon."
-msgstr ""
+msgstr "生成一个包含在多边形（Polygon）或多重多边形（MultiPolygon）内的随机点的多点对"
+"象。"
 
 #. Tag: para
 #: reference_processing.xml:1054
@@ -1141,6 +1142,9 @@ msgid ""
 "<varname>seed</varname> is used to regenerate a deterministic sequence of "
 "points, and must be greater than zero."
 msgstr ""
+"ST_GeneratePoints "
+"生成一个包含指定数量伪随机点的多点对象，这些点位于输入区域内。可选的 "
+"<varname>seed</varname> 用于重新生成一个确定性的点序列，必须大于零。"
 
 #. Tag: para
 #: reference_processing.xml:1061 reference_processing.xml:1136
@@ -1161,7 +1165,7 @@ msgstr "增强：3.0.0，添加种子参数"
 msgid ""
 "Generated a multipoint consisting of 12 Points overlaid on top of original "
 "polygon using a random seed value 1996"
-msgstr ""
+msgstr "使用随机种子值 1996，在原始多边形上生成了一个包含 12 个点的多点对象"
 
 #. Tag: para
 #: reference_processing.xml:1078
@@ -1169,7 +1173,7 @@ msgstr ""
 msgid ""
 "Given a table of polygons s, return 12 individual points per polygon. "
 "Results will be different each time you run."
-msgstr ""
+msgstr "给定一个多边形表 s，返回每个多边形 12 个单独的点。每次运行结果都会不同。"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1093
@@ -1311,7 +1315,7 @@ msgstr "合并不同方向的线。"
 #: reference_processing.xml:1240
 #, no-c-format
 msgid "Lines are not merged across intersections with degree &gt; 2."
-msgstr ""
+msgstr "在交点的度数大于2时，线段不会合并。"
 
 #. Tag: para
 #: reference_processing.xml:1248
