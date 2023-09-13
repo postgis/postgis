@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2022-11-01 14:52+0000\n"
+"PO-Revision-Date: 2023-09-13 05:59+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "using_postgis_datamanxml/ja/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #: using_postgis_dataman.xml:3
@@ -3673,7 +3673,7 @@ msgstr ""
 #: using_postgis_dataman.xml:2065
 #, no-c-format
 msgid "-m filename"
-msgstr ""
+msgstr "-m filename"
 
 #. Tag: para
 #: using_postgis_dataman.xml:2067
