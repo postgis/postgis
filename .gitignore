@@ -40,6 +40,7 @@ doc/Makefile.comments
 doc/**.xsl.xml
 *.tag
 doc/postgis-nospecial.xml
+doc/postgis-nospecial.xml.in
 doc/po/*/*.xml
 doc/po/*/*.xml.in
 doc/po/*/html
@@ -48,6 +49,7 @@ doc/po/*/xsl
 doc/po/*/*_comments.sql
 doc/postgis_comments.sql
 doc/postgis-out.xml
+doc/postgis-out.xml.in
 doc/raster_comments.sql
 doc/postgis_gardentest_*.sql
 doc/raster_gardentest_*.sql
