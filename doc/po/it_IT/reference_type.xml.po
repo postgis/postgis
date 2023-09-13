@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-13 00:23+0000\n"
+"PO-Revision-Date: 2023-09-13 22:33+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_typexml/it/>\n"
@@ -21,21 +21,19 @@ msgstr ""
 
 #. Tag: title
 #: reference_type.xml:3
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "PostGIS Geometry/Geography/Box Data Types"
-msgstr "PostgreSQL PostGIS tipi Geometry/Geography/Box"
+msgstr "Tipi di dati PostGIS Geometria/Geografia/Box"
 
 #. Tag: para
 #: reference_type.xml:5
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This section lists the custom PostgreSQL data types installed by PostGIS to "
 "represent spatial data."
 msgstr ""
-"Questa sezione illustra i tipi di dati di PostgreSQL che vengono installati "
-"da Postgis. Vengono illustrati anche i metodi per eseguire il cast tra "
-"diversi tipi, cosa particolarmente importante per la realizzazione di "
-"funzioni proprie."
+"Questa sezione elenca i tipi di dati PostgreSQL personalizzati installati da "
+"PostGIS per rappresentare i dati spaziali."
 
 #. Tag: para
 #: reference_type.xml:8
@@ -50,6 +48,15 @@ msgid ""
 "automatic conversion of a function argument to a type supported by the "
 "function."
 msgstr ""
+"Ogni tipo di dati descrive il suo comportamento di conversione di tipo. Un "
+"<link xlink:href=\"https://www.postgresql.org/docs/current/sql-expressions."
+"html#SQL-SYNTAX-TYPE-CASTS\">cast di tipo</link> converte i valori di un "
+"tipo di dati in un altro tipo. PostgreSQL consente di definire il "
+"comportamento di conversione per i tipi personalizzati, insieme alle "
+"funzioni utilizzate per convertire i valori del tipo. I cast possono avere "
+"un comportamento <emphasis role=\"bold\">automatico</emphasis>, che consente "
+"la conversione automatica di un argomento di funzione in un tipo supportato "
+"dalla funzione."
 
 #. Tag: para
 #: reference_type.xml:14
@@ -65,6 +72,16 @@ msgid ""
 "function\" error. To prevent the error use an explicit cast to the desired "
 "box type."
 msgstr ""
+"Alcuni cast hanno <emphasis role=\"bold\">un comportamento esplicito</"
+"emphasis>, il che significa che il cast deve essere specificato usando la "
+"sintassi <varname>CAST(myval As sometype)</varname> o "
+"<varname>myval::sometype</varname>. Il casting esplicito evita il problema "
+"dei cast ambigui, che possono verificarsi quando si utilizza una funzione "
+"sovraccaricata che non supporta un determinato tipo. Ad esempio, una "
+"funzione può accettare un box2d o un box3d, ma non una geometria. Poiché la "
+"geometria ha un cast automatico per entrambi i tipi di box, questo produce "
+"un errore di \"funzione ambigua\". Per evitare l'errore, utilizzare un cast "
+"esplicito al tipo di box desiderato."
 
 #. Tag: para
 #: reference_type.xml:24
@@ -73,6 +90,8 @@ msgid ""
 "All data types can be cast to <varname>text</varname>, so this does not need "
 "to be specified explicitly."
 msgstr ""
+"Tutti i tipi di dati possono essere convertiti in <varname>text</varname>, "
+"quindi non è necessario specificarlo esplicitamente."
 
 #. Tag: refpurpose
 #: reference_type.xml:32
