@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-07-20 04:36+0000\n"
+"PO-Revision-Date: 2023-09-13 05:59+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_processingxml/ja/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #: reference_processing.xml:3
@@ -1168,7 +1168,7 @@ msgstr ", <xref linkend=\"ST_SimplifyVW\"/>"
 msgid ""
 "Generates a multipoint of random points contained in a Polygon or "
 "MultiPolygon."
-msgstr ""
+msgstr "ポリゴン内やマルチポリゴン内にランダムなマルチポイントを生成します。"
 
 #. Tag: para
 #: reference_processing.xml:1054
@@ -1179,6 +1179,9 @@ msgid ""
 "<varname>seed</varname> is used to regenerate a deterministic sequence of "
 "points, and must be greater than zero."
 msgstr ""
+"ST_GeneratePointsは、入力の面の内側に、与えられた数の疑似乱数によってマルチポ"
+"イントを生成します。決定的な点列を生成する場合には任意パラメータ<varname>seed"
+"</varname>を使います。この際、0より大きい数を指定します。"
 
 #. Tag: para
 #: reference_processing.xml:1061 reference_processing.xml:1136
@@ -1199,7 +1202,7 @@ msgstr "Enhanced: 3.0.0 seedパラメータの追加"
 msgid ""
 "Generated a multipoint consisting of 12 Points overlaid on top of original "
 "polygon using a random seed value 1996"
-msgstr ""
+msgstr "乱数シード値に1996を使った、元のポリゴンの上に重なった12個のポイントの生成"
 
 #. Tag: para
 #: reference_processing.xml:1078
@@ -1207,7 +1210,8 @@ msgstr ""
 msgid ""
 "Given a table of polygons s, return 12 individual points per polygon. "
 "Results will be different each time you run."
-msgstr ""
+msgstr "ポリゴンテーブル s があって、ポリゴンごとに12の個別のポイントが返されます。結"
+"果は実行するたびに異なります。"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1093
@@ -1352,7 +1356,7 @@ msgstr "異なる向きのラインのマージ。"
 #: reference_processing.xml:1240
 #, no-c-format
 msgid "Lines are not merged across intersections with degree &gt; 2."
-msgstr ""
+msgstr "インタセクト位置で方向数 &gt; 2 となるラインはマージされません。"
 
 #. Tag: para
 #: reference_processing.xml:1248
