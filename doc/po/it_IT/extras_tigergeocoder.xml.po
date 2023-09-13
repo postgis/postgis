@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-13 00:23+0000\n"
+"PO-Revision-Date: 2023-09-13 10:51+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "extras_tigergeocoderxml/it/>\n"
@@ -338,7 +338,7 @@ msgstr ""
 #: extras_tigergeocoder.xml:1042
 #, no-c-format
 msgid "Availability: 2.1.0"
-msgstr ""
+msgstr "Disponibilità: 2.1.0"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:145
