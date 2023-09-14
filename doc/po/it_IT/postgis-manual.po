@@ -6,19 +6,21 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-14 17:40+0000\n"
-"PO-Revision-Date: 2023-09-14 17:40+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Language: it\n"
+"PO-Revision-Date: 2023-09-14 18:08+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/it/>\n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #, no-c-format
 msgid "Address Standardizer"
-msgstr ""
+msgstr "Standardizzatore di indirizzi"
 
 #. Tag: para
 #, no-c-format
@@ -28,6 +30,11 @@ msgid ""
 "<link xlink:href=\"http://sourceforge.net/p/pagc/code/360/tree/branches/sew-"
 "refactor/postgresql\">PAGC PostgreSQL Address Standardizer</link>)."
 msgstr ""
+"Si tratta di un fork del <link xlink:href=\"http://www.pagcgeo.org/docs/html/"
+"pagc-11.html\">PAGC standardizer</link> (il codice originale per questa "
+"parte era <link xlink:href=\"http://sourceforge.net/p/pagc/code/360/tree/"
+"branches/sew-refactor/postgresql\">PAGC PostgreSQL Address "
+"Standardizer</link>)."
 
 #. Tag: para
 #, no-c-format
@@ -36,6 +43,9 @@ msgid ""
 "address and normalizes it based on a set of rules stored in a table and "
 "helper lex and gaz tables."
 msgstr ""
+"Il normalizzatore di indirizzi è un parser di indirizzi a riga singola che "
+"prende un indirizzo in ingresso e lo normalizza in base a un insieme di "
+"regole memorizzate in una tabella e in tabelle helper lex e gaz."
 
 #. Tag: para
 #, no-c-format
@@ -48,6 +58,14 @@ msgid ""
 "contains gaz, lex, and rules tables for US data. This extensions can be "
 "installed via: <code>CREATE EXTENSION address_standardizer_data_us;</code>"
 msgstr ""
+"Il codice è integrato in un'unica libreria di estensioni PostgreSQL chiamata "
+"<code>address_standardizer</code> che può essere installata con <code>CREATE "
+"EXTENSION address_standardizer;</code>. Oltre all'estensione "
+"address_standardizer, è stata creata un'estensione di esempio per i dati "
+"chiamata <code>address_standardizer_data_us</code> che contiene tabelle gaz, "
+"lex e regole per i dati degli Stati Uniti. Questa estensione può essere "
+"installata tramite: <code>CREATE EXTENSION "
+"address_standardizer_data_us;</code>"
 
 #. Tag: para
 #, no-c-format
@@ -55,6 +73,8 @@ msgid ""
 "The code for this extension can be found in the PostGIS <filename>extensions/"
 "address_standardizer</filename> and is currently self-contained."
 msgstr ""
+"Il codice di questa estensione si trova in PostGIS <filename>extensions/"
+"address_standardizer</filename> ed è attualmente autonomo."
 
 #. Tag: para
 #, no-c-format
@@ -62,11 +82,13 @@ msgid ""
 "For installation instructions refer to: <xref "
 "linkend=\"installing_pagc_address_standardizer\"/>."
 msgstr ""
+"Per le istruzioni di installazione consultare: <xref linkend="
+"\"installing_pagc_address_standardizer\"/>."
 
 #. Tag: title
 #, no-c-format
 msgid "How the Parser Works"
-msgstr ""
+msgstr "Come funziona il parser"
 
 #. Tag: para
 #, no-c-format
