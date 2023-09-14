@@ -330,6 +330,8 @@ postgis-out.xml: postgis.xml Makefile $(XML_INPUTS) Makefile
 ifeq ($(XMLLINT),)
 postgis-nospecial.xml: requirements_not_met_xmllint
 postgis-out.xml: requirements_not_met_xmllint
+check-xml: requirements_not_met_xmllint
+check-cheatsheets: requirements_not_met_xmllint
 endif
 
 chunked-html: $(html_builddir)/postgis$(DOCSUFFIX)/docbook.css
@@ -583,10 +585,10 @@ check-regress:
 
 check-unit: check-xml
 
-ifeq ($(XMLLINT),)
-check-xml: requirements_not_met_xmllint
-check-cheatsheets: requirements_not_met_xmllint
-else
+ifeq ($(XMLCATALOG),)
+check-xml: requirements_not_met_xmlcatalog
+endif
+
 check-xml: postgis-out.xml
 	# Fail early if cannot find required RelaxNG
 	$(XMLCATALOG) "" "http://docbook.org/xml/5.0/rng/docbook.rng"
@@ -599,14 +601,10 @@ check-xml: postgis-out.xml
 		--relaxng http://docbook.org/xml/5.0/rng/docbook.rng \
 		$<
 
-
 check-cheatsheets: cheatsheets
 	for f in $(html_builddir)/*_cheatsheet-en.html; do \
 		$(abs_top_srcdir)/utils/check_localized_cheatsheets.sh $${f} en $(patsubst -%,%,$(DOCSUFFIX)) || exit 1; \
 	done
-
-endif
-
 
 requirements_not_met_xsltproc:
 	@echo
@@ -626,6 +624,15 @@ requirements_not_met_xmllint:
 	@echo "Install xmllint and then re-run configure."
 	@echo
 	@false
+
+requirements_not_met_xmlcatalog:
+	@echo
+	@echo "configure was unable to find 'xmlcatalog' which is required"
+	@echo "to check the postgis documentation."
+	@echo "Install xmlcatalog and then re-run configure."
+	@echo
+	@false
+
 
 requirements_not_met_xslbase:
 	@echo
