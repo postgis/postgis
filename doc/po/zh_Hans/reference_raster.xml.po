@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-06 05:32+0000\n"
+"PO-Revision-Date: 2023-09-14 03:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_rasterxml/zh_Hans/>\n"
@@ -15,13 +15,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #: reference_raster.xml:3
 #, no-c-format
 msgid "Raster Reference"
-msgstr ""
+msgstr "栅格参考"
 
 #. Tag: para
 #: reference_raster.xml:5
@@ -32,6 +32,9 @@ msgid ""
 "are other functions which are required support functions to the raster "
 "objects which are not of use to a general user."
 msgstr ""
+"下面给出的功能是 PostGIS Raster 用户可能需要的功能，并且当前在 PostGIS "
+"Raster 中可用。 "
+"还有一些其他功能是栅格对象所需的支持功能，但对一般用户来说没有用处。"
 
 #. Tag: para
 #: reference_raster.xml:9
@@ -39,7 +42,7 @@ msgstr ""
 msgid ""
 "<varname>raster</varname> is a new PostGIS type for storing and analyzing "
 "raster data."
-msgstr ""
+msgstr "<varname>raster</varname> 是一种新的 PostGIS 类型，用于存储和分析栅格数据。"
 
 #. Tag: para
 #: reference_raster.xml:10
@@ -47,7 +50,7 @@ msgstr ""
 msgid ""
 "For loading rasters from raster files please refer to <xref "
 "linkend=\"RT_Loading_Rasters\"/>"
-msgstr ""
+msgstr "有关从光栅文件加载光栅的信息，请参阅<xref linkend=\"RT_Loading_Rasters\"/>"
 
 #. Tag: para
 #: reference_raster.xml:12
@@ -55,13 +58,13 @@ msgstr ""
 msgid ""
 "For the examples in this reference we will be using a raster table of dummy "
 "rasters - Formed with the following code"
-msgstr ""
+msgstr "对于本参考文献中的示例，我们将使用虚拟栅格的栅格表 - 由以下代码组成"
 
 #. Tag: title
 #: reference_raster.xml:15
 #, no-c-format
 msgid "Raster Support Data types"
-msgstr ""
+msgstr "栅格支持数据类型"
 
 #. Tag: para
 #: reference_raster.xml:17
@@ -69,7 +72,7 @@ msgstr ""
 msgid ""
 "This section lists the PostgreSQL data types specifically created to support "
 "raster functionality."
-msgstr ""
+msgstr "本节列出了专门为支持栅格功能而创建的 PostgreSQL 数据类型。"
 
 #. Tag: refpurpose
 #: reference_raster.xml:25
@@ -77,7 +80,8 @@ msgstr ""
 msgid ""
 "A spatial datatype with two fields - geom (holding a geometry object) and "
 "val (holding a double precision pixel value from a raster band)."
-msgstr ""
+msgstr "具有两个字段的空间数据类型 - geom（保存几何对象）和 "
+"val（保存栅格带中的双精度像素值）。"
 
 #. Tag: title
 #: reference_raster.xml:30 reference_raster.xml:49 reference_raster.xml:121
@@ -172,6 +176,9 @@ msgid ""
 "by the ST_DumpAsPolygon and Raster intersection family of functions as an "
 "output type to explode a raster band into geometry polygons."
 msgstr ""
+"geomval 是一种复合数据类型，由 .geom 字段引用的几何对象和 val 组成，val "
+"是一个双精度值，表示栅格带中特定几何位置处的像素值。 ST_DumpAsPolygon "
+"和栅格交集函数系列使用它作为输出类型，将栅格带分解为几何多边形。"
 
 #. Tag: title
 #: reference_raster.xml:37 reference_raster.xml:107 reference_raster.xml:157
@@ -259,7 +266,8 @@ msgstr "相关信息"
 msgid ""
 "<refpurpose>A composite type used as input into the ST_AddBand function "
 "defining the attributes and initial value of the new band.</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>用作 ST_AddBand "
+"函数的输入的复合类型，定义新波段的属性和初始值。</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:50
@@ -267,13 +275,13 @@ msgstr ""
 msgid ""
 "<para>A composite type used as input into the ST_AddBand function defining "
 "the attributes and initial value of the new band.</para>"
-msgstr ""
+msgstr "<para>用作 ST_AddBand 函数的输入的复合类型，定义新波段的属性和初始值。</para>"
 
 #. Tag: term
 #: reference_raster.xml:55
 #, no-c-format
 msgid "index integer"
-msgstr ""
+msgstr "index integer"
 
 #. Tag: para
 #: reference_raster.xml:60
@@ -282,13 +290,14 @@ msgid ""
 "1-based value indicating the position where the new band will be added "
 "amongst the raster's bands. If NULL, the new band will be added at the end "
 "of the raster's bands."
-msgstr ""
+msgstr "从 1 开始的值，指示新波段将添加到栅格波段中的位置。 如果为 "
+"NULL，则新波段将添加到栅格波段的末尾。"
 
 #. Tag: term
 #: reference_raster.xml:67 reference_raster.xml:227
 #, no-c-format
 msgid "pixeltype text"
-msgstr ""
+msgstr "pixeltype text"
 
 #. Tag: para
 #: reference_raster.xml:72
@@ -296,25 +305,26 @@ msgstr ""
 msgid ""
 "Pixel type of the new band. One of defined pixel types as described in <xref "
 "linkend=\"RT_ST_BandPixelType\"/>."
-msgstr ""
+msgstr "新波段的像素类型。 <xref linkend=\"RT_ST_BandPixelType\"/> "
+"中描述的已定义像素类型之一。"
 
 #. Tag: term
 #: reference_raster.xml:79
 #, no-c-format
 msgid "initialvalue double precision"
-msgstr ""
+msgstr "初始值双精度"
 
 #. Tag: para
 #: reference_raster.xml:84
 #, no-c-format
 msgid "Initial value that all pixels of new band will be set to."
-msgstr ""
+msgstr "新波段的所有像素将设置为的初始值。"
 
 #. Tag: term
 #: reference_raster.xml:91 reference_raster.xml:231
 #, no-c-format
 msgid "nodataval double precision"
-msgstr ""
+msgstr "nodataval 双精度"
 
 #. Tag: para
 #: reference_raster.xml:96
@@ -322,7 +332,7 @@ msgstr ""
 msgid ""
 "NODATA value of the new band. If NULL, the new band will not have a NODATA "
 "value assigned."
-msgstr ""
+msgstr "新波段的 NODATA 值。 如果为 NULL，则新波段将不会分配 NODATA 值。"
 
 #. Tag: refpurpose
 #: reference_raster.xml:117
@@ -330,7 +340,7 @@ msgstr ""
 msgid ""
 "<refpurpose>A composite type for use when needing to express a raster and a "
 "band index of that raster.</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>需要表达栅格和该栅格的波段索引时使用的复合类型。</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:122
@@ -338,37 +348,37 @@ msgstr ""
 msgid ""
 "<para>A composite type for use when needing to express a raster and a band "
 "index of that raster.</para>"
-msgstr ""
+msgstr "<para>需要表达栅格和该栅格的波段索引时使用的复合类型。</para>"
 
 #. Tag: term
 #: reference_raster.xml:128
 #, no-c-format
 msgid "rast raster"
-msgstr ""
+msgstr "rast raster"
 
 #. Tag: para
 #: reference_raster.xml:133
 #, no-c-format
 msgid "The raster in question/"
-msgstr ""
+msgstr "有问题的栅格/"
 
 #. Tag: term
 #: reference_raster.xml:140 reference_raster.xml:215 reference_raster.xml:360
 #, no-c-format
 msgid "nband integer"
-msgstr ""
+msgstr "nband integer"
 
 #. Tag: para
 #: reference_raster.xml:145
 #, no-c-format
 msgid "1-based value indicating the band of raster"
-msgstr ""
+msgstr "从 1 开始的值，表示栅格的波段"
 
 #. Tag: refpurpose
 #: reference_raster.xml:167
 #, no-c-format
 msgid "raster spatial data type."
-msgstr ""
+msgstr "栅格空间数据类型。"
 
 #. Tag: para
 #: reference_raster.xml:172
@@ -379,6 +389,9 @@ msgid ""
 "1 or more bands each having a set of pixel values. Rasters can be "
 "georeferenced."
 msgstr ""
+"栅格是一种空间数据类型，用于表示栅格数据，例如从 "
+"JPEG、TIFF、PNG、数字高程模型导入的栅格数据。 每个栅格都有 1 "
+"个或多个波段，每个波段都有一组像素值。 栅格可以进行地理参考。"
 
 #. Tag: para
 #: reference_raster.xml:175
@@ -389,6 +402,9 @@ msgid ""
 "linkend=\"RT_ST_ConvexHull\"/> of the raster. This auto casting may be "
 "removed in the near future so don't rely on it."
 msgstr ""
+"需要使用 GDAL 支持来编译 PostGIS。 目前栅格可以隐式转换为几何类型，"
+"但转换返回栅格的 <xref linkend=\"RT_ST_ConvexHull\"/>。 "
+"此自动铸造可能会在不久的将来被删除，因此不要依赖它。"
 
 #. Tag: title
 #: reference_raster.xml:181
@@ -434,7 +450,8 @@ msgstr "自动"
 msgid ""
 "<refpurpose>A composite type used as input into the ST_Reclass function "
 "defining the behavior of reclassification.</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>用作定义重新分类行为的 ST_Reclass "
+"函数的输入的复合类型。</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:212
@@ -442,19 +459,19 @@ msgstr ""
 msgid ""
 "<para>A composite type used as input into the ST_Reclass function defining "
 "the behavior of reclassification.</para>"
-msgstr ""
+msgstr "<para>用作定义重新分类行为的 ST_Reclass 函数的输入的复合类型。</para>"
 
 #. Tag: para
 #: reference_raster.xml:216
 #, no-c-format
 msgid "The band number of band to reclassify."
-msgstr ""
+msgstr "要重新分类的波段的波段号。"
 
 #. Tag: term
 #: reference_raster.xml:219
 #, no-c-format
 msgid "reclassexpr text"
-msgstr ""
+msgstr "reclassexpr text"
 
 #. Tag: para
 #: reference_raster.xml:220
@@ -465,12 +482,15 @@ msgid ""
 "values. ( means &gt;, ) means less than, ] &lt; or equal, [ means &gt; or "
 "equal"
 msgstr ""
+"由逗号分隔的 range:map_range 映射组成的范围表达式。 "
+"：定义映射，定义如何将旧波段值映射到新波段值。 ( 表示 >，) 表示<，] 表示< "
+"或=，[ 表示 > 或="
 
 #. Tag: para
 #: reference_raster.xml:222
 #, no-c-format
 msgid "( notation is optional so a-b means the same as (a-b)"
-msgstr ""
+msgstr "( 符号是可选的，因此 a-b 与 (a-b) 的含义相同"
 
 #. Tag: para
 #: reference_raster.xml:228
@@ -478,7 +498,7 @@ msgstr ""
 msgid ""
 "One of defined pixel types as described in <xref "
 "linkend=\"RT_ST_BandPixelType\"/>"
-msgstr ""
+msgstr "<xref linkend=\"RT_ST_BandPixelType\"/>中描述的已定义像素类型之一"
 
 #. Tag: para
 #: reference_raster.xml:232
@@ -486,19 +506,19 @@ msgstr ""
 msgid ""
 "Value to treat as no data. For image outputs that support transparency, "
 "these will be blank."
-msgstr ""
+msgstr "视为无数据的值。 对于支持透明度的图像输出，这些将为空白。"
 
 #. Tag: title
 #: reference_raster.xml:237
 #, no-c-format
 msgid "Example: Reclassify band 2 as an 8BUI where 255 is nodata value"
-msgstr ""
+msgstr "示例：将波段 2 重新分类为 8BUI，其中 255 是无数据值"
 
 #. Tag: title
 #: reference_raster.xml:241
 #, no-c-format
 msgid "Example: Reclassify band 1 as an 1BB and no nodata value defined"
-msgstr ""
+msgstr "示例：将波段 1 重新分类为 1BB 并且未定义 nodata 值"
 
 #. Tag: refpurpose
 #: reference_raster.xml:253
@@ -506,7 +526,7 @@ msgstr ""
 msgid ""
 "A composite type returned by the ST_SummaryStats and ST_SummaryStatsAgg "
 "functions."
-msgstr ""
+msgstr "ST_SummaryStats 和 ST_SummaryStatsAgg 函数返回的复合类型。"
 
 #. Tag: para
 #: reference_raster.xml:258
@@ -515,84 +535,86 @@ msgid ""
 "A composite type returned by the <xref linkend=\"RT_ST_SummaryStats\"/> and "
 "<xref linkend=\"RT_ST_SummaryStatsAgg\"/> functions."
 msgstr ""
+"<xref linkend=\"RT_ST_SummaryStats\"/> 和 <xref linkend="
+"\"RT_ST_SummaryStatsAgg\"/> 函数返回的复合类型。"
 
 #. Tag: term
 #: reference_raster.xml:263
 #, no-c-format
 msgid "count integer"
-msgstr ""
+msgstr "count integer"
 
 #. Tag: para
 #: reference_raster.xml:268
 #, no-c-format
 msgid "Number of pixels counted for the summary statistics."
-msgstr ""
+msgstr "摘要统计数据的像素数。"
 
 #. Tag: term
 #: reference_raster.xml:275
 #, no-c-format
 msgid "sum double precision"
-msgstr ""
+msgstr "sum double precision"
 
 #. Tag: para
 #: reference_raster.xml:280
 #, no-c-format
 msgid "Sum of all counted pixel values."
-msgstr ""
+msgstr "所有计数像素值的总和。"
 
 #. Tag: term
 #: reference_raster.xml:287
 #, no-c-format
 msgid "mean double precision"
-msgstr ""
+msgstr "mean double precision"
 
 #. Tag: para
 #: reference_raster.xml:292
 #, no-c-format
 msgid "Arithmetic mean of all counted pixel values."
-msgstr ""
+msgstr "所有计数像素值的算术平均值。"
 
 #. Tag: term
 #: reference_raster.xml:299
 #, no-c-format
 msgid "stddev double precision"
-msgstr ""
+msgstr "stddev double precision"
 
 #. Tag: para
 #: reference_raster.xml:304
 #, no-c-format
 msgid "Standard deviation of all counted pixel values."
-msgstr ""
+msgstr "所有计数像素值的标准偏差。"
 
 #. Tag: term
 #: reference_raster.xml:311
 #, no-c-format
 msgid "min double precision"
-msgstr ""
+msgstr "min double precision"
 
 #. Tag: para
 #: reference_raster.xml:316
 #, no-c-format
 msgid "Minimum value of counted pixel values."
-msgstr ""
+msgstr "计数像素值的最小值。"
 
 #. Tag: term
 #: reference_raster.xml:323
 #, no-c-format
 msgid "max double precision"
-msgstr ""
+msgstr "max double precision"
 
 #. Tag: para
 #: reference_raster.xml:328
 #, no-c-format
 msgid "Maximum value of counted pixel values."
-msgstr ""
+msgstr "计数像素值的最大值。"
 
 #. Tag: para
 #: reference_raster.xml:341
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SummaryStatsAgg\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SummaryStatsAgg\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:350
@@ -601,7 +623,8 @@ msgid ""
 "<refpurpose>A composite type used as input into the ST_Union function "
 "defining the bands to be processed and behavior of the UNION operation.</"
 "refpurpose>"
-msgstr ""
+msgstr "<refpurpose>用作 ST_Union 函数的输入的复合类型，定义要处理的波段和 UNION "
+"操作的行为。</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:355
@@ -609,19 +632,20 @@ msgstr ""
 msgid ""
 "<para>A composite type used as input into the ST_Union function defining the "
 "bands to be processed and behavior of the UNION operation.</para>"
-msgstr ""
+msgstr "<para>用作 ST_Union 函数的输入的复合类型，定义要处理的波段和 UNION "
+"操作的行为。</para>"
 
 #. Tag: para
 #: reference_raster.xml:365
 #, no-c-format
 msgid "1-based value indicating the band of each input raster to be processed."
-msgstr ""
+msgstr "从 1 开始的值，指示要处理的每个输入栅格的波段。"
 
 #. Tag: term
 #: reference_raster.xml:372
 #, no-c-format
 msgid "uniontype text"
-msgstr ""
+msgstr "uniontype text"
 
 #. Tag: para
 #: reference_raster.xml:377
@@ -629,13 +653,13 @@ msgstr ""
 msgid ""
 "Type of UNION operation. One of defined types as described in <xref "
 "linkend=\"RT_ST_Union\"/>."
-msgstr ""
+msgstr "UNION 操作的类型。<xref linkend=\"RT_ST_Union\"/> 中描述的已定义类型之一。"
 
 #. Tag: title
 #: reference_raster.xml:399
 #, no-c-format
 msgid "Raster Management"
-msgstr ""
+msgstr "栅格管理"
 
 #. Tag: refpurpose
 #: reference_raster.xml:404
@@ -647,6 +671,9 @@ msgid ""
 "loaded with data for the constraints to be inferred. Returns true if the "
 "constraint setting was accomplished and issues a notice otherwise."
 msgstr ""
+"将栅格约束添加到已加载的栅格表中，用于特定列，该列约束了空间参考、比例、块大"
+"小、对齐、波段、波段类型以及一个标志，用于表示栅格列是否被规则地分块。表必须"
+"加载数据才能推断出约束。如果约束设置成功，则返回 true，否则会发出通知。"
 
 #. Tag: para
 #: reference_raster.xml:537
@@ -658,6 +685,10 @@ msgid ""
 "resides in. The <varname>srid</varname> must be an integer value reference "
 "to an entry in the SPATIAL_REF_SYS table."
 msgstr ""
+"在栅格列上生成约束，用于显示 <varname>raster_columns</varname> "
+"栅格目录中的信息。<varname> rastschema</varname> "
+"是表所在的表模式的名称。<varname>srid</varname> 必须是对 SPATIAL_REF_SYS "
+"表中条目的整数值引用。"
 
 #. Tag: para
 #: reference_raster.xml:542
@@ -665,7 +696,7 @@ msgstr ""
 msgid ""
 "<varname>raster2pgsql</varname> loader uses this function to register raster "
 "tables"
-msgstr ""
+msgstr "<varname>raster2pgsql</varname> 加载器使用此函数来注册栅格表"
 
 #. Tag: para
 #: reference_raster.xml:543
@@ -673,27 +704,29 @@ msgstr ""
 msgid ""
 "Valid constraint names to pass in: refer to <xref "
 "linkend=\"RT_Raster_Columns\"/> for more details."
-msgstr ""
+msgstr "要传入的有效约束名称：有关更多详细信息，请参阅<xref linkend="
+"\"RT_Raster_Columns\"/>。"
 
 #. Tag: para
 #: reference_raster.xml:545
 #, no-c-format
 msgid "<varname>blocksize</varname> sets both X and Y blocksize"
-msgstr ""
+msgstr "<varname>blocksize </varname>设置 X 和 Y 块大小"
 
 #. Tag: para
 #: reference_raster.xml:546
 #, no-c-format
 msgid ""
 "<varname>blocksize_x</varname> sets X tile (width in pixels of each tile)"
-msgstr ""
+msgstr "<varname>blocksize_x </varname>设置 X "
+"个图块（每个图块的宽度（以像素为单位））"
 
 #. Tag: para
 #: reference_raster.xml:547
 #, no-c-format
 msgid ""
 "<varname>blocksize_y</varname> sets Y tile (height in pixels of each tile)"
-msgstr ""
+msgstr "<varname>blocksize_y</varname> 设置 Y 图块（每个图块的像素高度）"
 
 #. Tag: para
 #: reference_raster.xml:548
@@ -701,13 +734,13 @@ msgstr ""
 msgid ""
 "<varname>extent</varname> computes extent of whole table and applys "
 "constraint all rasters must be within that extent"
-msgstr ""
+msgstr "<varname>extent</varname>计算整个表的范围并应用约束所有栅格必须在该范围内"
 
 #. Tag: para
 #: reference_raster.xml:550
 #, no-c-format
 msgid "<varname>num_bands</varname> number of bands"
-msgstr ""
+msgstr "<varname>num_bands</varname> 波段数量"
 
 #. Tag: para
 #: reference_raster.xml:551
@@ -715,7 +748,8 @@ msgstr ""
 msgid ""
 "<varname>pixel_types</varname> reads array of pixel types for each band "
 "ensure all band n have same pixel type"
-msgstr ""
+msgstr "<varname>Pixel_types</varname> 读取每个波段的像素类型数组，确保所有波段 n "
+"具有相同的像素类型"
 
 #. Tag: para
 #: reference_raster.xml:552
@@ -725,6 +759,8 @@ msgid ""
 "can be spatially the same) and coverage tile (raster is aligned to a "
 "coverage) constraints"
 msgstr ""
+"<varname>Regular_blocking </varname>设置空间唯一（两个栅格不能在空间上相同）"
+"和覆盖图块（栅格与覆盖范围对齐）约束"
 
 #. Tag: para
 #: reference_raster.xml:553
@@ -734,18 +770,21 @@ msgid ""
 "meaning any two tiles you compare will return true for. Refer to <xref "
 "linkend=\"RT_ST_SameAlignment\"/>."
 msgstr ""
+"<varname>Same_alignment</varname> 确保它们都具有相同的对齐方式，"
+"这意味着您比较的任何两个图块都将返回 true。 请参阅 <xref linkend="
+"\"RT_ST_SameAlignment\"/>。"
 
 #. Tag: para
 #: reference_raster.xml:554
 #, no-c-format
 msgid "<varname>srid</varname> ensures all have same srid"
-msgstr ""
+msgstr "<varname>srid</varname> 确保所有人都有相同的 srid"
 
 #. Tag: para
 #: reference_raster.xml:555
 #, no-c-format
 msgid "More -- any listed as inputs into the above functions"
-msgstr ""
+msgstr "More--任何列为上述函数输入的内容"
 
 #. Tag: para
 #: reference_raster.xml:558
@@ -754,7 +793,8 @@ msgid ""
 "This function infers the constraints from the data already present in the "
 "table. As such for it to work, you must create the raster column first and "
 "then load it with data."
-msgstr ""
+msgstr "该函数根据表中已有的数据推断约束。 "
+"因此，要使其正常工作，您必须首先创建栅格列，然后向其加载数据。"
 
 #. Tag: para
 #: reference_raster.xml:563
@@ -763,7 +803,8 @@ msgid ""
 "If you need to load more data in your tables after you have already applied "
 "constraints, you may want to run the DropRasterConstraints if the extent of "
 "your data has changed."
-msgstr ""
+msgstr "如果在应用约束后需要在表中加载更多数据，并且数据范围已更改，则可能需要运行 "
+"DropRasterConstraints。"
 
 #. Tag: para
 #: reference_raster.xml:567 reference_raster.xml:716 reference_raster.xml:792
@@ -792,13 +833,13 @@ msgstr "可用性: 2.0.0"
 #: reference_raster.xml:571
 #, no-c-format
 msgid "Examples: Apply all possible constraints on column based on data"
-msgstr ""
+msgstr "示例：根据数据对列应用所有可能的约束"
 
 #. Tag: title
 #: reference_raster.xml:577
 #, no-c-format
 msgid "Examples: Apply single constraint"
-msgstr ""
+msgstr "示例：应用单一约束"
 
 #. Tag: para
 #: reference_raster.xml:585
@@ -808,6 +849,9 @@ msgid ""
 ">, <xref linkend=\"RT_DropRasterConstraints\"/>, <xref "
 "linkend=\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_AddBand\"/>, <xref linkend=\"RT_ST_MakeEmptyRaster\"/"
+">, <xref linkend=\"RT_DropRasterConstraints\"/>, <xref linkend="
+"\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:593
@@ -815,7 +859,8 @@ msgstr ""
 msgid ""
 "Drops PostGIS raster constraints that refer to a raster table column. Useful "
 "if you need to reload data or update your raster column data."
-msgstr ""
+msgstr "删除引用栅格表列的 PostGIS 栅格约束。 "
+"如果您需要重新加载数据或更新栅格列数据，则非常有用。"
 
 #. Tag: para
 #: reference_raster.xml:710
@@ -826,12 +871,15 @@ msgid ""
 "need to load more data or update your raster column data. You do not need to "
 "do this if you want to get rid of a raster table or a raster column."
 msgstr ""
+"删除引用由<xref linkend=\"RT_AddRasterConstraints\"/>添加的栅格表列的 "
+"PostGIS 栅格约束。 如果您需要加载更多数据或更新栅格列数据，则非常有用。 "
+"如果您想要删除栅格表或栅格列，则无需执行此操作。"
 
 #. Tag: para
 #: reference_raster.xml:712
 #, no-c-format
 msgid "To drop a raster table use the standard"
-msgstr ""
+msgstr "要删除栅格表，请使用标准"
 
 #. Tag: para
 #: reference_raster.xml:713
@@ -839,7 +887,7 @@ msgstr ""
 msgid ""
 "To drop just a raster column and leave the rest of the table, use standard "
 "SQL"
-msgstr ""
+msgstr "要仅删除栅格列并保留表的其余部分，请使用标准 SQL"
 
 #. Tag: para
 #: reference_raster.xml:714
@@ -851,6 +899,9 @@ msgid ""
 "<varname>raster_columns</varname> catalog, but there will be no other "
 "information about it aside from the column name and table."
 msgstr ""
+"如果删除列或表，该表将从 <varname>raster_columns</varname> 目录中消失。 "
+"但是，如果仅删除约束，则栅格列仍将列在<varname> raster_columns "
+"</varname>目录中，但除了列名称和表之外，不会有任何其他信息。"
 
 #. Tag: title
 #: reference_raster.xml:719 reference_raster.xml:796 reference_raster.xml:893
@@ -918,7 +969,7 @@ msgstr "示例"
 #: reference_raster.xml:734
 #, no-c-format
 msgid "Tag a raster column as being an overview of another."
-msgstr ""
+msgstr "将栅格列标记为另一栅格列的概述。"
 
 #. Tag: para
 #: reference_raster.xml:778
@@ -926,7 +977,8 @@ msgstr ""
 msgid ""
 "Adds constraints on a raster column that are used to display information in "
 "the <varname>raster_overviews</varname> raster catalog."
-msgstr ""
+msgstr "添加对栅格列的约束，用于显示<varname> raster_overviews</varname> "
+"栅格目录中的信息。"
 
 #. Tag: para
 #: reference_raster.xml:782
@@ -934,7 +986,8 @@ msgstr ""
 msgid ""
 "The <varname>ovfactor</varname> parameter represents the scale multiplier in "
 "the overview column: higher overview factors have lower resolution."
-msgstr ""
+msgstr "<varname>ovfactor</varname> "
+"参数表示概览列中的比例乘数：概览因子越高，分辨率越低。"
 
 #. Tag: para
 #: reference_raster.xml:786
@@ -944,6 +997,8 @@ msgid ""
 "parameters are omitted, the first table found scanning the "
 "<varname>search_path</varname> will be used."
 msgstr ""
+"当省略<varname> ovschema </varname>和<varname> refschema </varname>参数时，"
+"将使用扫描 <varname>search_path </varname>找到的第一个表。"
 
 #. Tag: para
 #: reference_raster.xml:804
@@ -952,12 +1007,14 @@ msgid ""
 ", <xref linkend=\"RT_DropOverviewConstraints\"/>, <xref "
 "linkend=\"RT_CreateOverview\"/>, <xref linkend=\"RT_AddRasterConstraints\"/>"
 msgstr ""
+", <xref linkend=\"RT_DropOverviewConstraints\"/>, <xref linkend="
+"\"RT_CreateOverview\"/>, <xref linkend=\"RT_AddRasterConstraints\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:817
 #, no-c-format
 msgid "Untag a raster column from being an overview of another."
-msgstr ""
+msgstr "取消栅格列作为另一栅格列概览的标记。"
 
 #. Tag: para
 #: reference_raster.xml:847
@@ -966,7 +1023,8 @@ msgid ""
 "Remove from a raster column the constraints used to show it as being an "
 "overview of another in the <varname>raster_overviews</varname> raster "
 "catalog."
-msgstr ""
+msgstr "从栅格列中删除用于将其显示为<varname> raster_overviews "
+"</varname>栅格目录中另一个栅格列的概述的约束。"
 
 #. Tag: para
 #: reference_raster.xml:852
@@ -975,6 +1033,8 @@ msgid ""
 "When the <varname>ovschema</varname> parameter is omitted, the first table "
 "found scanning the <varname>search_path</varname> will be used."
 msgstr ""
+"当省略 <varname>ovschema </varname>参数时，将使用扫描 <varname>search_path "
+"</varname>找到的第一个表。"
 
 #. Tag: para
 #: reference_raster.xml:864
@@ -983,12 +1043,14 @@ msgid ""
 ", <xref linkend=\"RT_AddOverviewConstraints\"/>, <xref "
 "linkend=\"RT_DropRasterConstraints\"/>"
 msgstr ""
+", <xref linkend=\"RT_AddOverviewConstraints\"/>, <xref linkend="
+"\"RT_DropRasterConstraints\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:875
 #, no-c-format
 msgid "Reports the version of the GDAL library in use by PostGIS."
-msgstr ""
+msgstr "报告 PostGIS 使用的 GDAL 库的版本。"
 
 #. Tag: para
 #: reference_raster.xml:889
@@ -996,19 +1058,20 @@ msgstr ""
 msgid ""
 "Reports the version of the GDAL library in use by PostGIS. Will also check "
 "and report if GDAL can find its data files."
-msgstr ""
+msgstr "报告 PostGIS 使用的 GDAL 库的版本。 还将检查并报告 GDAL "
+"是否可以找到其数据文件。"
 
 #. Tag: refpurpose
 #: reference_raster.xml:909
 #, no-c-format
 msgid "Reports full raster library build date."
-msgstr ""
+msgstr "报告完整的栅格库构建日期。"
 
 #. Tag: para
 #: reference_raster.xml:925
 #, no-c-format
 msgid "Reports raster build date"
-msgstr ""
+msgstr "报告栅格构建日期"
 
 #. Tag: refpurpose
 #: reference_raster.xml:945
@@ -1016,13 +1079,13 @@ msgstr ""
 msgid ""
 "<refpurpose>Reports full raster version and build configuration infos.</"
 "refpurpose>"
-msgstr ""
+msgstr "<refpurpose>报告完整的栅格版本和构建配置信息。</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:962
 #, no-c-format
 msgid "<para>Reports full raster version and build configuration infos.</para>"
-msgstr ""
+msgstr "<para>报告完整的栅格版本和构建配置信息。</para>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:984
@@ -1030,7 +1093,8 @@ msgstr ""
 msgid ""
 "Returns a list of raster formats supported by PostGIS through GDAL. Only "
 "those formats with can_write=True can be used by ST_AsGDALRaster"
-msgstr ""
+msgstr "通过 GDAL 返回 PostGIS 支持的栅格格式列表。 ST_AsGDALRaster 仅可使用 "
+"can_write=True 的格式"
 
 #. Tag: para
 #: reference_raster.xml:1004
@@ -1045,12 +1109,19 @@ msgid ""
 "varname>, <varname>description</varname> and set of <varname>VALUE</varname> "
 "for each creator option for the specific driver."
 msgstr ""
+"返回 GDAL 支持的每种格式的栅格格式短名称、长名称和创建者选项的列表。 "
+"使用短名称作为 <xref linkend=\"RT_ST_AsGDALRaster\""
+"/><varname>格式</varname>参数中的输入。 选项根据编译 libgdal "
+"所使用的驱动程序而有所不同。<varname> create_options </varname>返回 XML "
+"格式的 CreationOptionList/Option 集，其中包含特定驱动程序的每个创建者选项的名"
+"称和可选<varname>类型</varname>、<varname>描述</varname>以及<varname> VALUE</"
+"varname> 集。"
 
 #. Tag: para
 #: reference_raster.xml:1009
 #, no-c-format
 msgid "Changed: 2.5.0 - add can_read and can_write columns."
-msgstr ""
+msgstr "更改：2.5.0 - 添加 can_read 和 can_write 列。"
 
 #. Tag: para
 #: reference_raster.xml:1010
@@ -1058,7 +1129,8 @@ msgstr ""
 msgid ""
 "Changed: 2.0.6, 2.1.3 - by default no drivers are enabled, unless GUC or "
 "Environment variable gdal_enabled_drivers is set."
-msgstr ""
+msgstr "更改：2.0.6、2.1.3 - 默认情况下不启用任何驱动程序，除非设置了 GUC 或环境变量 "
+"gdal_enabled_drivers。"
 
 #. Tag: para
 #: reference_raster.xml:1011 reference_raster.xml:1607
@@ -1066,19 +1138,19 @@ msgstr ""
 #: reference_raster.xml:6485 reference_raster.xml:6565
 #, no-c-format
 msgid "Availability: 2.0.0 - requires GDAL &gt;= 1.6.0."
-msgstr ""
+msgstr "可用性：2.0.0 - 需要 GDAL >= 1.6.0。"
 
 #. Tag: title
 #: reference_raster.xml:1016
 #, no-c-format
 msgid "Examples: List of Drivers"
-msgstr ""
+msgstr "示例：驱动程序列表"
 
 #. Tag: title
 #: reference_raster.xml:1020
 #, no-c-format
 msgid "Example: List of options for each driver"
-msgstr ""
+msgstr "示例：每个驱动程序的选项列表"
 
 #. Tag: para
 #: reference_raster.xml:1029
@@ -1087,6 +1159,8 @@ msgid ""
 ", <xref linkend=\"ST_SRID\"/>, <xref "
 "linkend=\"postgis_gdal_enabled_drivers\"/>"
 msgstr ""
+", <xref linkend=\"ST_SRID\"/>, <xref linkend=\"postgis_gdal_enabled_drivers\""
+"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1037
@@ -1097,6 +1171,10 @@ msgid ""
 "highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
 "contouring algorithm</link>.</refpurpose>"
 msgstr ""
+"<refpurpose>使用 <link xlink:href=\"https://gdal.org/api/gdal_alg."
+"html?highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLC"
+"onstList16GDALProgressFuncPv\"> GDAL "
+"轮廓算法</link>从提供的栅格波段生成一组矢量轮廓。</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:1058
@@ -1107,6 +1185,10 @@ msgid ""
 "highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
 "contouring algorithm</link>.</para>"
 msgstr ""
+"<para>使用<link xlink:href=\"https://gdal.org/api/gdal_alg."
+"html?highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLC"
+"onstList16GDALProgressFuncPv\"> GDAL "
+"轮廓算法</link>从提供的栅格带生成一组矢量轮廓。</para>"
 
 #. Tag: para
 #: reference_raster.xml:1061
@@ -1116,42 +1198,44 @@ msgid ""
 "<varname>level_interval</varname> and <varname>level_base</varname> "
 "parameters are ignored."
 msgstr ""
+"当<varname>fixed_levels</varname>参数为非空数组时，<varname>level_interval</v"
+"arname>和<varname>level_base</varname>参数被忽略。"
 
 #. Tag: para
 #: reference_raster.xml:1065
 #, no-c-format
 msgid "Return values are a set of records with the following attributes:"
-msgstr ""
+msgstr "返回值是一组具有以下属性的记录："
 
 #. Tag: term
 #: reference_raster.xml:1069
 #, no-c-format
 msgid "geom"
-msgstr ""
+msgstr "geom"
 
 #. Tag: para
 #: reference_raster.xml:1070
 #, no-c-format
 msgid "The geometry of the contour line."
-msgstr ""
+msgstr "轮廓线的几何形状。"
 
 #. Tag: term
 #: reference_raster.xml:1072
 #, no-c-format
 msgid "<term>id</term>"
-msgstr ""
+msgstr "<term>id</term>"
 
 #. Tag: para
 #: reference_raster.xml:1073
 #, no-c-format
 msgid "A unique identifier given to the contour line by GDAL."
-msgstr ""
+msgstr "GDAL 赋予轮廓线的唯一标识符。"
 
 #. Tag: term
 #: reference_raster.xml:1075
 #, no-c-format
 msgid "value"
-msgstr ""
+msgstr "value"
 
 #. Tag: para
 #: reference_raster.xml:1076
@@ -1159,7 +1243,7 @@ msgstr ""
 msgid ""
 "The raster value the line represents. For an elevation DEM input, this would "
 "be the elevation of the output contour."
-msgstr ""
+msgstr "该线代表的栅格值。 对于高程 DEM 输入，这将是输出等高线的高程。"
 
 #. Tag: para
 #: reference_raster.xml:1079 reference_raster.xml:1167
@@ -1182,7 +1266,8 @@ msgid ""
 "Interpolates a gridded surface based on an input set of 3-d points, using "
 "the X- and Y-values to position the points on the grid and the Z-value of "
 "the points as the surface elevation."
-msgstr ""
+msgstr "基于输入的 3 维点集插值网格表面，使用 X 和 Y 值在网格上定位点，并使用点的 Z "
+"值作为表面高程。"
 
 #. Tag: para
 #: reference_raster.xml:1124
@@ -1199,18 +1284,25 @@ msgid ""
 "are calculated, see the <link xlink:href=\"https://gdal.org/tutorials/"
 "gdal_grid_tut.html\">GDAL grid tutorial</link>."
 msgstr ""
+"基于输入的 3 维点集插值网格表面，使用 X 和 Y 值在网格上定位点，并使用点的 Z "
+"值作为表面高程。 "
+"有五种可用的插值算法：反距离、反距离最近邻、移动平均、最近邻和线性插值。 "
+"有关算法及其参数的更多详细信息，请参阅 <link xlink:href=\"https://gdal.org/"
+"programs/gdal_grid.html#interpolation-algorithms\"> gdal_grid 文档</link>。 "
+"有关如何计算插值的更多信息，请参阅<link xlink:href=\"https://gdal.org/"
+"tutorials/gdal_grid_tut.html\"> GDAL 网格教程</link>。"
 
 #. Tag: para
 #: reference_raster.xml:1138
 #, no-c-format
 msgid "Input parameters are:"
-msgstr ""
+msgstr "输入参数为："
 
 #. Tag: term
 #: reference_raster.xml:1142
 #, no-c-format
 msgid "input_points"
-msgstr ""
+msgstr "input_points"
 
 #. Tag: para
 #: reference_raster.xml:1143
@@ -1218,13 +1310,13 @@ msgstr ""
 msgid ""
 "The points to drive the interpolation. Any geometry with Z-values is "
 "acceptable, all points in the input will be used."
-msgstr ""
+msgstr "驱动插值的点。 任何具有 Z 值的几何图形都是可接受的，将使用输入中的所有点。"
 
 #. Tag: term
 #: reference_raster.xml:1147
 #, no-c-format
 msgid "algorithm_options"
-msgstr ""
+msgstr "algorithm_options"
 
 #. Tag: para
 #: reference_raster.xml:1148
@@ -1235,12 +1327,15 @@ msgid ""
 "algorithms\">gdal_grid</link>. For example, for an inverse-distance "
 "interpolation with a smoothing of 2, you would use \"invdist:smoothing=2.0\""
 msgstr ""
+"定义算法和算法选项的字符串，采用<link xlink:href=\"https://gdal.org/programs/"
+"gdal_grid.html#interpolation-algorithms\"> gdal_grid </link>使用的格式。 "
+"例如，对于平滑度为 2 的反距离插值，您可以使用“invdist:smoothing=2.0”"
 
 #. Tag: term
 #: reference_raster.xml:1154
 #, no-c-format
 msgid "template"
-msgstr ""
+msgstr "template"
 
 #. Tag: para
 #: reference_raster.xml:1155
@@ -1249,13 +1344,14 @@ msgid ""
 "A raster template to drive the geometry of the output raster. The width, "
 "height, pixel size, spatial extent and pixel type will be read from this "
 "template."
-msgstr ""
+msgstr "用于驱动输出栅格几何形状的栅格模板。 "
+"宽度、高度、像素大小、空间范围和像素类型将从该模板中读取。"
 
 #. Tag: term
 #: reference_raster.xml:1160
 #, no-c-format
 msgid "template_band_num"
-msgstr ""
+msgstr "template_band_num"
 
 #. Tag: para
 #: reference_raster.xml:1161
@@ -1263,13 +1359,14 @@ msgstr ""
 msgid ""
 "By default the first band in the template raster is used to drive the output "
 "raster, but that can be adjusted with this parameter."
-msgstr ""
+msgstr "默认情况下，模板栅格中的第一个波段用于驱动输出栅格，但可以使用此参数进行调整"
+"。"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1191
 #, no-c-format
 msgid "Change the SRID of all rasters in the user-specified column and table."
-msgstr ""
+msgstr "更改用户指定的列和表中所有栅格的 SRID。"
 
 #. Tag: para
 #: reference_raster.xml:1220
@@ -1278,7 +1375,8 @@ msgid ""
 "Change the SRID of all rasters in the user-specified column and table. The "
 "function will drop all appropriate column constraints (extent, alignment and "
 "SRID) before changing the SRID of the specified column's rasters."
-msgstr ""
+msgstr "更改用户指定的列和表中所有栅格的 SRID。 在更改指定列栅格的 SRID "
+"之前，该函数将删除所有适当的列约束（范围、对齐方式和 SRID）。"
 
 #. Tag: para
 #: reference_raster.xml:1225
@@ -1286,7 +1384,7 @@ msgstr ""
 msgid ""
 "The data (band pixel values) of the rasters are not touched by this "
 "function. Only the raster's metadata is changed."
-msgstr ""
+msgstr "此函数不会触及栅格的数据（波段像素值）。 仅栅格的元数据发生更改。"
 
 #. Tag: para
 #: reference_raster.xml:1230 reference_raster.xml:1900
@@ -1315,7 +1413,7 @@ msgstr "可用性：2.1.0"
 #: reference_raster.xml:1243
 #, no-c-format
 msgid "Create an reduced resolution version of a given raster coverage."
-msgstr ""
+msgstr "创建给定栅格覆盖范围的降低分辨率版本。"
 
 #. Tag: para
 #: reference_raster.xml:1265
@@ -1326,6 +1424,9 @@ msgid ""
 "extent with a lower resolution (pixel size will be 1/<varname>factor</"
 "varname> of the original in both directions)."
 msgstr ""
+"使用源表中重新采样的图块创建一个概览表。 "
+"输出图块将具有与输入图块相同的大小，并以较低的分辨率覆盖相同的空间范围（"
+"像素大小在两个方向上都是原始图块的 1/<varname>因子</varname>）。"
 
 #. Tag: para
 #: reference_raster.xml:1272
@@ -1333,7 +1434,8 @@ msgstr ""
 msgid ""
 "The overview table will be made available in the <varname>raster_overviews</"
 "varname> catalog and will have raster constraints enforced."
-msgstr ""
+msgstr "概览表将在<varname> raster_overviews "
+"</varname>目录中提供，并将强制执行栅格约束。"
 
 #. Tag: para
 #: reference_raster.xml:1278 reference_raster.xml:1959
@@ -1344,6 +1446,9 @@ msgid ""
 "'CubicSpline', and 'Lanczos'. Refer to: <link xlink:href=\"http://www.gdal."
 "org/gdalwarp.html\">GDAL Warp resampling methods</link> for more details."
 msgstr ""
+"算法选项有：“NearestNeighbor”、“Bilinear”、“Cubic”、“CubicSpline”和“Lanczos”"
+"。 有关更多详细信息，请参阅：<link xlink:href=\"http://www.gdal.org/gdalwarp."
+"html\">GDAL Warp 重采样方法</link>。"
 
 #. Tag: para
 #: reference_raster.xml:1280 reference_raster.xml:1961
@@ -1357,13 +1462,13 @@ msgstr "可用性：2.2.0"
 #: reference_raster.xml:1284
 #, no-c-format
 msgid "Output to generally better quality but slower to product format"
-msgstr ""
+msgstr "输出质量通常较好，但产品格式较慢"
 
 #. Tag: para
 #: reference_raster.xml:1287
 #, no-c-format
 msgid "Output to faster to process default nearest neighbor"
-msgstr ""
+msgstr "输出到更快地处理默认最近邻"
 
 #. Tag: para
 #: reference_raster.xml:1293
@@ -1373,12 +1478,14 @@ msgid ""
 "linkend=\"RT_AddRasterConstraints\"/>, <xref linkend=\"RT_Raster_Overviews\"/"
 ">"
 msgstr ""
+", <xref linkend=\"RT_AddOverviewConstraints\"/>, <xref linkend="
+"\"RT_AddRasterConstraints\"/>, <xref linkend=\"RT_Raster_Overviews\"/>"
 
 #. Tag: title
 #: reference_raster.xml:1304
 #, no-c-format
 msgid "Raster Constructors"
-msgstr ""
+msgstr "栅格构造器"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1309
@@ -1387,7 +1494,8 @@ msgid ""
 "Returns a raster with the new band(s) of given type added with given initial "
 "value in the given index location. If no index is specified, the band is "
 "added to the end."
-msgstr ""
+msgstr "返回一个栅格，其中在给定索引位置添加了给定类型的新波段和给定初始值。 "
+"如果未指定索引，则将带添加到末尾。"
 
 #. Tag: para
 #: reference_raster.xml:1380
@@ -1403,6 +1511,12 @@ msgid ""
 "is specified, then the initial value is set to the highest value allowed by "
 "the pixel type."
 msgstr ""
+"返回一个栅格，其中在给定位置（索引）、给定类型、给定初始值和给定 nodata "
+"值中添加了新波段。 如果未指定索引，则将带添加到末尾。 如果未指定 "
+"<varname>fromband</varname>，则假定为 band 1。 像素类型是 <xref linkend="
+"\"RT_ST_BandPixelType\"/> 中指定的像素类型之一的字符串表示形式。 "
+"如果指定了现有索引，则所有&gt;=该索引的后续波段都会增加 1。如果指定的初始值大"
+"于像素类型的最大值，则初始值将设置为像素类型允许的最高值。"
 
 #. Tag: para
 #: reference_raster.xml:1384
@@ -1413,6 +1527,9 @@ msgid ""
 "at the time when the band described by that addbandarg is being added to the "
 "raster. See the Multiple New Bands example below."
 msgstr ""
+"对于采用 <xref linkend=\"addbandarg\"/>数组的格式（格式 1），特定addbandarg "
+"的索引值与该 addbandarg 描述的波段添加到栅格时的栅格相关。 "
+"请参阅下面的多个新波段示例。"
 
 #. Tag: para
 #: reference_raster.xml:1388
@@ -1422,6 +1539,8 @@ msgid ""
 "<varname>torast</varname> is NULL then the <varname>fromband</varname> band "
 "of each raster in the array is accumulated into a new raster."
 msgstr ""
+"对于采用栅格数组的格式（格式 5），如果<varname> torast</varname>为 NULL，"
+"则数组中每个栅格的<varname> fromband </varname>波段将累积到新栅格中。"
 
 #. Tag: para
 #: reference_raster.xml:1392
@@ -1431,36 +1550,39 @@ msgid ""
 "the value must include the full path to the raster file. The file must also "
 "be accessible to the postgres server process."
 msgstr ""
+"对于采用 <varname>outdbfile </varname>的格式（格式6 和 "
+"7），该值必须包含栅格文件的完整路径。 该文件还必须可供 postgres "
+"服务器进程访问。"
 
 #. Tag: para
 #: reference_raster.xml:1396
 #, no-c-format
 msgid "Enhanced: 2.1.0 support for addbandarg added."
-msgstr ""
+msgstr "增强：2.1.0 添加了对 addbandarg 的支持。"
 
 #. Tag: para
 #: reference_raster.xml:1397
 #, no-c-format
 msgid "Enhanced: 2.1.0 support for new out-db bands added."
-msgstr ""
+msgstr "增强：2.1.0 添加了对新的 out-db波段的支持。"
 
 #. Tag: title
 #: reference_raster.xml:1401
 #, no-c-format
 msgid "Examples: Single New Band"
-msgstr ""
+msgstr "示例：单个新波段"
 
 #. Tag: title
 #: reference_raster.xml:1409
 #, no-c-format
 msgid "Examples: Multiple New Bands"
-msgstr ""
+msgstr "示例：多个新波段"
 
 #. Tag: title
 #: reference_raster.xml:1417
 #, no-c-format
 msgid "Examples: New Out-db band"
-msgstr ""
+msgstr "示例：新的 Out-db 波段"
 
 #. Tag: para
 #: reference_raster.xml:1423
@@ -1470,12 +1592,15 @@ msgid ""
 "linkend=\"RT_ST_MakeEmptyRaster\"/>, <xref linkend=\"RT_ST_MetaData\"/>, "
 "<xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_Reclass\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_BandPixelType\"/>, <xref linkend="
+"\"RT_ST_MakeEmptyRaster\"/>, <xref linkend=\"RT_ST_MetaData\"/>, <xref "
+"linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_Reclass\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1437
 #, no-c-format
 msgid "Converts a PostGIS geometry to a PostGIS raster."
-msgstr ""
+msgstr "将 PostGIS 几何图形转换为 PostGIS 栅格。"
 
 #. Tag: para
 #: reference_raster.xml:1589
@@ -1484,7 +1609,8 @@ msgid ""
 "Converts a PostGIS geometry to a PostGIS raster. The many variants offers "
 "three groups of possibilities for setting the alignment and pixelsize of the "
 "resulting raster."
-msgstr ""
+msgstr "将一个 PostGIS 几何对象转换为 PostGIS 栅格。这些不同的变体提供了三组可能性，"
+"用于设置生成的栅格的对齐方式和像素大小。"
 
 #. Tag: para
 #: reference_raster.xml:1591
@@ -1497,6 +1623,10 @@ msgid ""
 "reference raster by joining the table containing the geometry with the table "
 "containing the reference raster."
 msgstr ""
+"第一组由前两个变体组成，生成具有与所提供的参考栅格相同的对齐方式（<varname>sc"
+"alex</varname>、<varname>scaley</varname>、<varname>gridx</varname> 和 "
+"<varname>gridy</varname>）、像素类型和节点数据值的栅格。 "
+"通常，您可以通过将包含几何图形的表与包含参考栅格的表连接来传递此参考栅格。"
 
 #. Tag: para
 #: reference_raster.xml:1593
@@ -1511,6 +1641,13 @@ msgid ""
 "<varname>scalex</varname> &amp; <varname>scaley</varname> arguments to "
 "double precision so that PostgreSQL choose the right variant."
 msgstr ""
+"第二组，由四个变体组成，允许您通过提供像素大小的参数（<varname>scalex </"
+"varname> &amp; <varname>scaley </varname>以及 <varname>skewx </varname> &amp;"
+" <varname>skewy</varname>）来设置栅格的尺寸。生成的栅格的<varname>宽度</"
+"varname> &amp; "
+"<varname>高度</varname>将根据几何对象的范围进行调整。在大多数情况下，"
+"您必须将整数的 <varname>scalex </varname> &amp; <varname>scaley</varname> "
+"参数强制转换为双精度，以便 PostgreSQL 选择正确的变体。"
 
 #. Tag: para
 #: reference_raster.xml:1595
@@ -1523,6 +1660,10 @@ msgid ""
 "<varname>skewx</varname> &amp; <varname>skewy</varname>) of the resulting "
 "raster will be adjusted to fit the extent of the geometry."
 msgstr ""
+"第三组，由四个变体组成，允许您通过提供栅格的尺寸（<varname>宽度</varname> "
+"&amp; <varname>高度</varname>）来固定栅格的尺寸。生成的栅格的像素大小参数（<v"
+"arname>scalex</varname> &amp; <varname>scaley</varname> 以及 <varname>skewx</"
+"varname> &amp; <varname>skewy</varname>）将被调整以适应几何对象的范围。"
 
 #. Tag: para
 #: reference_raster.xml:1597
@@ -1534,6 +1675,10 @@ msgid ""
 "upper left corner (<varname>upperleftx</varname> &amp; <varname>upperlefty</"
 "varname>)."
 msgstr ""
+"这两个最后两组中的前两个变体允许您使用对齐网格的任意角（<varname>gridx </"
+"varname> &amp; <varname>gridy</varname>）指定对齐方式，而最后两个变体则使用左"
+"上角（<varname>upperleftx</varname> &amp; "
+"<varname>upperlefty</varname>）指定对齐方式。"
 
 #. Tag: para
 #: reference_raster.xml:1599
@@ -1546,6 +1691,10 @@ msgid ""
 "(<varname>nodataval</varname>). If not provided pixeltyped defaults to 8BUI, "
 "values to 1 and nodataval to 0."
 msgstr ""
+"每组变体都允许生成单波段栅格或多波段栅格。 要生成多波段栅格，"
+"必须提供像素类型数组 (<varname>pixeltype[]</varname>)、初始值数组 "
+"(<varname>value</varname>) 和 nodata 值数组 (<varname>nodataval</varname>)。 "
+"如果未提供，pixeltyped 默认为 8BUI，值为 1，nodataval 为 0。"
 
 #. Tag: para
 #: reference_raster.xml:1601
@@ -1555,7 +1704,8 @@ msgid ""
 "geometry. The only exception is for variants with a reference raster. In "
 "this case the resulting raster will get the same SRID as the reference "
 "raster."
-msgstr ""
+msgstr "输出栅格将与源几何具有相同的空间参考。 唯一的例外是具有参考栅格的变体。 "
+"在这种情况下，生成的栅格将获得与参考栅格相同的 SRID。"
 
 #. Tag: para
 #: reference_raster.xml:1603
@@ -1566,6 +1716,9 @@ msgid ""
 "touched by lines or polygons will be burned. Not just those on the line "
 "render path, or whose center point is within the polygon."
 msgstr ""
+"可选的参数 <varname>touched</varname> 默认值为 false，并映射到 GDAL 中的 "
+"ALL_TOUCHED 栅格化选项，该选项确定由线或多边形接触的像素是否会被设置值。不仅"
+"仅是那些在线渲染路径上的像素，或者它们的中心点位于多边形内的像素。"
 
 #. Tag: para
 #: reference_raster.xml:1605
@@ -1576,6 +1729,9 @@ msgid ""
 "linkend=\"RT_ST_AsPNG\"/> and other <xref linkend=\"RT_ST_AsGDALRaster\"/> "
 "family of functions."
 msgstr ""
+"当与 <xref linkend=\"RT_ST_AsPNG\"/>和其他 <xref linkend=\"RT_ST_AsGDALRaster"
+"\"/> 系列函数结合使用时，这对于直接从数据库渲染几何图形的 jpeg 和 png "
+"特别有用。"
 
 #. Tag: para
 #: reference_raster.xml:1609
@@ -1583,25 +1739,26 @@ msgstr ""
 msgid ""
 "Not yet capable of rendering complex geometry types such as curves, TINS, "
 "and PolyhedralSurfaces, but should be able too once GDAL can."
-msgstr ""
+msgstr "目前还无法渲染复杂的几何类型，例如曲线、TINS 和多面体曲面，但一旦 GDAL "
+"可以了，也应该可以了。"
 
 #. Tag: title
 #: reference_raster.xml:1614
 #, no-c-format
 msgid "Examples: Output geometries as PNG files"
-msgstr ""
+msgstr "示例：将几何图形输出为 PNG 文件"
 
 #. Tag: para
 #: reference_raster.xml:1620
 #, no-c-format
 msgid "black circle"
-msgstr ""
+msgstr "黑色圆圈"
 
 #. Tag: para
 #: reference_raster.xml:1630
 #, no-c-format
 msgid "example from buffer rendered with just PostGIS"
-msgstr ""
+msgstr "仅使用 PostGIS 渲染的缓冲区的示例"
 
 #. Tag: para
 #: reference_raster.xml:1640
@@ -1611,6 +1768,9 @@ msgid ""
 "<xref linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_AsPNG\"/>, "
 "<xref linkend=\"RT_ST_AsJPEG\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 msgstr ""
+", <xref linkend=\"ST_Buffer\"/>, <xref linkend=\"RT_ST_GDALDrivers\"/>, "
+"<xref linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_AsPNG\"/>, "
+"<xref linkend=\"RT_ST_AsJPEG\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1647
@@ -1618,7 +1778,7 @@ msgstr ""
 msgid ""
 "Returns one or more bands of an existing raster as a new raster. Useful for "
 "building new rasters from existing rasters."
-msgstr ""
+msgstr "返回现有栅格的一个或多个波段作为新栅格。 对于从现有栅格构建新栅格非常有用。"
 
 #. Tag: para
 #: reference_raster.xml:1676
@@ -1631,6 +1791,10 @@ msgid ""
 "bands are returned. Used as a helper function in various functions such as "
 "for deleting a band."
 msgstr ""
+"返回现有栅格的一个或多个波段作为新栅格。 对于从现有栅格构建新栅格或仅导出栅格"
+"的选定波段或重新排列栅格中波段的顺序非常有用。 "
+"如果未指定波段或栅格中不存在任何指定波段，则返回所有波段。 "
+"用作各种功能中的辅助功能，例如删除波段。"
 
 #. Tag: para
 #: reference_raster.xml:1678
@@ -1644,24 +1808,30 @@ msgid ""
 "<code>ST_Band(rast, '{1,2,3}'::int[]);</code> since the <code>text</code> "
 "list of bands form may be removed in future versions of PostGIS."
 msgstr ""
+"对于函数的<code>nbands</code>作为文本变体，默认分隔符是<code>,</code>，这意味"
+"着您可以请求<code>'1,2,3'</code>，如果您想使用不同的分隔符，可以使用 "
+"<code>ST_Band(rast, '1@2@3', "
+"'@')</code>。对于请求多个波段，我们强烈建议您使用这个函数的数组形式，例如 "
+"<code>ST_Band(rast, '{1,2,3}'::int[]);</code>，因为 <code>text</code> "
+"格式的波段列表可能会在将来的 PostGIS 版本中被移除。"
 
 #. Tag: para
 #: reference_raster.xml:1698
 #, no-c-format
 msgid "original (column rast)"
-msgstr ""
+msgstr "原始（列栅格）"
 
 #. Tag: para
 #: reference_raster.xml:1707
 #, no-c-format
 msgid "dupe_band"
-msgstr ""
+msgstr "双波段"
 
 #. Tag: para
 #: reference_raster.xml:1716
 #, no-c-format
 msgid "sing_band"
-msgstr ""
+msgstr "单波段"
 
 #. Tag: para
 #: reference_raster.xml:1730
@@ -1670,12 +1840,14 @@ msgid ""
 ", <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_Reclass\"/>, "
 "<xref linkend=\"RT_reference\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_Reclass\"/>, "
+"<xref linkend=\"RT_reference\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1737
 #, no-c-format
 msgid "Cover georeferenced area with a grid of empty raster tiles."
-msgstr ""
+msgstr "用空栅格图块网格覆盖地理参考区域。"
 
 #. Tag: para
 #: reference_raster.xml:1762
@@ -1690,6 +1862,14 @@ msgid ""
 "<varname>scalex</varname>, <varname>upperlefty</varname> + <varname>height</"
 "varname> * <varname>scaley</varname>)."
 msgstr ""
+"使用 <xref linkend=\"RT_ST_MakeEmptyRaster\"/> "
+"创建一组栅格瓦片。栅格维度由宽度（<varname>width</varname>）&amp; 高度（<varn"
+"ame>height</varname>）确定，而瓦片维度则由瓦片宽度（<varname>tilewidth</varna"
+"me>）&amp; 瓦片高度（<varname>tileheight</varname>）确定。覆盖的地理参考区域"
+"从左上角（<varname>upperleftx</varname>，<varname>upperlefty</varname>）延伸"
+"到右下角（<varname>upperleftx</varname> +<varname> width</varname> * "
+"<varname>scalex</varname>，<varname>upperlefty</varname> + <varname>height "
+"</varname>* <varname>scaley</varname>）。"
 
 #. Tag: para
 #: reference_raster.xml:1763
@@ -1698,7 +1878,8 @@ msgid ""
 "Note that scaley is generally negative for rasters and scalex is generally "
 "positive. So lower right corner will have a lower y value and higher x value "
 "than the upper left corner."
-msgstr ""
+msgstr "请注意，对于栅格，scaley 通常为负值，scalex 通常为正值。 所以右下角的 y "
+"值会比左上角低，x 值会比左上角高。"
 
 #. Tag: para
 #: reference_raster.xml:1764
@@ -1710,7 +1891,7 @@ msgstr "可用性：2.4.0"
 #: reference_raster.xml:1768 reference_raster.xml:8760
 #, no-c-format
 msgid "Examples Basic"
-msgstr ""
+msgstr "基本示例"
 
 #. Tag: para
 #: reference_raster.xml:1769
@@ -1718,7 +1899,8 @@ msgstr ""
 msgid ""
 "Create 16 tiles in a 4x4 grid to cover the WGS84 area from upper left corner "
 "(22, 77) to lower right corner (55, 33)."
-msgstr ""
+msgstr "在 4x4 网格中创建 16 个图块，以覆盖从左上角 (22, 77) 到右下角 (55, 33) 的 "
+"WGS84 区域。"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1784
@@ -1730,6 +1912,10 @@ msgid ""
 "a new raster with the same size, alignment and SRID. If srid is left out, "
 "the spatial ref is set to unknown (0)."
 msgstr ""
+"返回一个空白栅格（不包含波段），其具有给定的尺寸（宽度和高度）、左上角 X 和 "
+"Y 坐标、像素大小和旋转参数（scalex、scaley、skewx 和 "
+"skewy），以及参考系统（SRID）。如果传递了一个栅格，则返回一个具有相同大小、"
+"对齐方式和 SRID 的新栅格。如果省略了 SRID，则空间参考将设置为未知（0）。"
 
 #. Tag: para
 #: reference_raster.xml:1818
@@ -1740,6 +1926,10 @@ msgid ""
 "X (upperleftx), upper left Y (upperlefty), pixel size and rotation (scalex, "
 "scaley, skewx &amp; skewy) and reference system (srid)."
 msgstr ""
+"返回一个空白栅格（没有波段），其具有给定的尺寸（宽度和高度）并以空间（或世界"
+"）坐标进行地理参考，具有左上角 X 坐标（upperleftx）、左上角 Y "
+"坐标（upperlefty）、像素大小和旋转参数（scalex、scaley、skewx 和 "
+"skewy），以及参考系统（SRID）。"
 
 #. Tag: para
 #: reference_raster.xml:1821
@@ -1749,6 +1939,8 @@ msgid ""
 "(pixelsize). scalex is set to this argument and scaley is set to the "
 "negative value of this argument. skewx and skewy are set to 0."
 msgstr ""
+"最后一个版本使用单个参数来指定像素大小（pixelsize）。 scalex 设置为此参数，"
+"scaley 设置为此参数的负值。 skewx 和 skewy 设置为 0。"
 
 #. Tag: para
 #: reference_raster.xml:1823
@@ -1756,7 +1948,7 @@ msgstr ""
 msgid ""
 "If an existing raster is passed in, it returns a new raster with the same "
 "meta data settings (without the bands)."
-msgstr ""
+msgstr "如果传入现有栅格，它将返回具有相同元数据设置（不带波段）的新栅格。"
 
 #. Tag: para
 #: reference_raster.xml:1825
@@ -1767,6 +1959,10 @@ msgid ""
 "linkend=\"RT_ST_AddBand\"/> to define bands and <xref "
 "linkend=\"RT_ST_SetValue\"/> to set initial pixel values."
 msgstr ""
+"如果未指定 srid，则默认为 "
+"0。创建空栅格后，您可能想要向其中添加波段并可能对其进行编辑。 参考 <xref "
+"linkend=\"RT_ST_AddBand\"/>定义波段，参考 <xref linkend=\"RT_ST_SetValue\""
+"/>设置初始像素值。"
 
 #. Tag: para
 #: reference_raster.xml:1838
@@ -1776,6 +1972,9 @@ msgid ""
 "<xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_SetValue\"/>, <xref "
 "linkend=\"RT_ST_SkewX\"/>, , <xref linkend=\"RT_ST_SkewY\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_MetaData\"/>, <xref linkend=\"RT_ST_ScaleX\"/>, "
+"<xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_SetValue\"/>, <xref "
+"linkend=\"RT_ST_SkewX\"/>, , <xref linkend=\"RT_ST_SkewY\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1846
@@ -1783,7 +1982,8 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns a set of rasters resulting from the split of the input "
 "raster based upon the desired dimensions of the output rasters.</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>返回根据输出栅格的所需维度分割输入栅格而产生的一组栅格。</refpurp"
+"ose>"
 
 #. Tag: para
 #: reference_raster.xml:1886
@@ -1791,7 +1991,7 @@ msgstr ""
 msgid ""
 "<para>Returns a set of rasters resulting from the split of the input raster "
 "based upon the desired dimensions of the output rasters.</para>"
-msgstr ""
+msgstr "<para>返回根据输出栅格的所需维度分割输入栅格而产生的一组栅格。</para>"
 
 #. Tag: para
 #: reference_raster.xml:1890
@@ -1804,6 +2004,11 @@ msgid ""
 "NODATA values. If raster band(s) do not have NODATA value(s) specified, one "
 "can be specified by setting <varname>nodataval</varname>."
 msgstr ""
+"如果 <varname>padwithnodata</varname> = "
+"FALSE，则栅格右侧和底侧的边缘切片可能具有与其余切片不同的维度。 如果 "
+"<varname>padwithnodata</varname> = TRUE，则所有图块将具有相同的维度，"
+"并且边缘图块可能会用 NODATA 值填充。 如果栅格波段未指定 NODATA 值，"
+"则可以通过设置<varname> nodataval</varname>来指定 NODATA 值。"
 
 #. Tag: para
 #: reference_raster.xml:1895
@@ -1811,20 +2016,20 @@ msgstr ""
 msgid ""
 "If a specified band of the input raster is out-of-db, the corresponding band "
 "in the output rasters will also be out-of-db."
-msgstr ""
+msgstr "如果输入栅格的指定波段处于数据库外，则输出栅格中的相应波段也将处于数据库外。"
 
 #. Tag: para
 #: reference_raster.xml:1914
 #, no-c-format
 msgid ", <xref linkend=\"RT_Retile\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_Retile\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1925
 #, no-c-format
 msgid ""
 "Return a set of configured tiles from an arbitrarily tiled raster coverage."
-msgstr ""
+msgstr "从任意平铺的栅格覆盖范围返回一组配置的平铺。"
 
 #. Tag: para
 #: reference_raster.xml:1951
@@ -1836,12 +2041,16 @@ msgid ""
 "data coming from the specified raster coverage (<varname>tab</varname>, "
 "<varname>col</varname>)."
 msgstr ""
+"返回一组具有指定比例 (<varname>sfx</varname>, <varname>sfy</varname>) "
+"和最大尺寸 (<varname>tw</varname>, <varname>th</varname>) "
+"并使用来自指定栅格覆盖范围 (<varname>tab</varname>, <varname>col</varname>) "
+"的数据覆盖指定范围 (<varname>ext</varname>) 的图块。"
 
 #. Tag: refpurpose
 #: reference_raster.xml:1976
 #, no-c-format
 msgid "Returns a raster from a supported GDAL raster file."
-msgstr ""
+msgstr "从受支持的 GDAL 栅格文件返回栅格。"
 
 #. Tag: para
 #: reference_raster.xml:1993
@@ -1850,6 +2059,8 @@ msgid ""
 "Returns a raster from a supported GDAL raster file. <varname>gdaldata</"
 "varname> is of type bytea and should be the contents of the GDAL raster file."
 msgstr ""
+"从受支持的 GDAL 栅格文件返回栅格。 <varname>gdaldata</varname> 是 bytea "
+"类型，应该是 GDAL 栅格文件的内容。"
 
 #. Tag: para
 #: reference_raster.xml:1997
@@ -1859,12 +2070,14 @@ msgid ""
 "assign the SRID from the GDAL raster. If <varname>srid</varname> is "
 "provided, the value provided will override any automatically assigned SRID."
 msgstr ""
+"如果 <varname>srid</varname> 为 NULL，该函数将尝试自动从 GDAL 栅格分配 SRID。"
+" 如果提供了 <varname>srid</varname>，则提供的值将覆盖任何自动分配的 SRID。"
 
 #. Tag: title
 #: reference_raster.xml:2022
 #, no-c-format
 msgid "Raster Accessors"
-msgstr ""
+msgstr "栅格访问器"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2027
@@ -1872,7 +2085,8 @@ msgstr ""
 msgid ""
 "Returns the georeference meta data in GDAL or ESRI format as commonly seen "
 "in a world file. Default is GDAL."
-msgstr ""
+msgstr "返回 GDAL 或 ESRI 格式的地理配准元数据，如世界文件中常见的格式。 默认为 "
+"GDAL。"
 
 #. Tag: para
 #: reference_raster.xml:2043
@@ -1883,42 +2097,45 @@ msgid ""
 "World_file\">world file</link>. Default is GDAL if no type specified. type "
 "is string 'GDAL' or 'ESRI'."
 msgstr ""
+"返回地理配准元数据，包括 GDAL 或 ESRI 格式的回车符，如<link xlink:href=\"http"
+"://en.wikipedia.org/wiki/World_file\">世界文件</link>中常见的那样。 "
+"如果未指定类型，则默认为 GDAL。 类型是字符串“GDAL”或“ESRI”。"
 
 #. Tag: para
 #: reference_raster.xml:2045 reference_raster.xml:4504
 #, no-c-format
 msgid "Difference between format representations is as follows:"
-msgstr ""
+msgstr "格式表示的区别如下："
 
 #. Tag: para
 #: reference_raster.xml:2046 reference_raster.xml:4505
 #, no-c-format
 msgid "<varname>GDAL</varname>:"
-msgstr ""
+msgstr "<varname>GDAL</varname>:"
 
 #. Tag: para
 #: reference_raster.xml:2048 reference_raster.xml:4507
 #, no-c-format
 msgid "<varname>ESRI</varname>:"
-msgstr ""
+msgstr "<varname>ESRI</varname>:"
 
 #. Tag: para
 #: reference_raster.xml:2060
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2067
 #, no-c-format
 msgid "Returns the height of the raster in pixels."
-msgstr ""
+msgstr "返回栅格的高度（以像素为单位）。"
 
 #. Tag: para
 #: reference_raster.xml:2082
 #, no-c-format
 msgid "Returns the height of the raster."
-msgstr ""
+msgstr "返回栅格的高度（以像素为单位）。"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2101
@@ -1926,7 +2143,8 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns true if the raster is empty (width = 0 and height = 0). "
 "Otherwise, returns false.</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>如果栅格为空（宽度 = 0 且高度 = 0），则返回 true。 否则，返回 "
+"false。</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:2116
@@ -1934,7 +2152,8 @@ msgstr ""
 msgid ""
 "<para>Returns true if the raster is empty (width = 0 and height = 0). "
 "Otherwise, returns false.</para>"
-msgstr ""
+msgstr "<para>如果栅格为空（宽度 = 0 且高度 = 0），则返回 true。 否则，返回 "
+"false。</para>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2138
@@ -1942,13 +2161,13 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns the amount of space (in bytes) the raster takes.</"
 "refpurpose>"
-msgstr ""
+msgstr "<refpurpose>返回栅格占用的空间量（以字节为单位）。</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:2153
 #, no-c-format
 msgid "<para>Returns the amount of space (in bytes) the raster takes.</para>"
-msgstr ""
+msgstr "<para>返回栅格占用的空间量（以字节为单位）。</para>"
 
 #. Tag: para
 #: reference_raster.xml:2154
@@ -1957,6 +2176,8 @@ msgid ""
 "This is a nice compliment to PostgreSQL built in functions pg_column_size, "
 "pg_size_pretty, pg_relation_size, pg_total_relation_size."
 msgstr ""
+"这是对 PostgreSQL 内置函数 pg_column_size、pg_size_pretty、pg_relation_size、"
+"pg_total_relation_size 的一个很好的补充。"
 
 #. Tag: para
 #: reference_raster.xml:2155
@@ -1967,6 +2188,9 @@ msgid ""
 "table contribution and large geometries are stored in TOAST tables. "
 "pg_column_size might return lower because it returns the compressed size."
 msgstr ""
+"给出表的字节大小的 pg_relation_size 可能返回小于 ST_MemSize 的字节大小。 "
+"这是因为 pg_relation_size 不会添加 toasted 表贡献，并且大型几何图形存储在 "
+"TOAST 表中。 pg_column_size 可能返回较低的值，因为它返回压缩后的大小。"
 
 #. Tag: para
 #: reference_raster.xml:2157
@@ -1982,7 +2206,7 @@ msgstr "pg_total_relation_size - 包括表、压缩表和索引。"
 msgid ""
 "Returns basic meta data about a raster object such as pixel size, rotation "
 "(skew), upper, lower left, etc."
-msgstr ""
+msgstr "返回有关栅格对象的基本元数据，例如像素大小、旋转（倾斜）、左上、左下等。"
 
 #. Tag: para
 #: reference_raster.xml:2196
@@ -1992,32 +2216,35 @@ msgid ""
 "(skew), upper, lower left, etc. Columns returned: upperleftx | upperlefty | "
 "width | height | scalex | scaley | skewx | skewy | srid | numbands"
 msgstr ""
+"返回有关栅格对象的基本元数据，例如像素大小、旋转（倾斜）、左上、左下等。返回"
+"的列： upperleftx | upperlefty | width | height | scalex | scaley | skewx | "
+"skewy | srid | numbands"
 
 #. Tag: para
 #: reference_raster.xml:2209 reference_raster.xml:5338
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_NumBands\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_NumBands\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2216
 #, no-c-format
 msgid ""
 "<refpurpose>Returns the number of bands in the raster object.</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>返回栅格对象中的波段数。</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:2231
 #, no-c-format
 msgid "<para>Returns the number of bands in the raster object.</para>"
-msgstr ""
+msgstr "<para>返回栅格对象中的波段数。</para>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2250
 #, no-c-format
 msgid ""
 "Returns the pixel height in geometric units of the spatial reference system."
-msgstr ""
+msgstr "返回空间参考系统的几何单位的像素高度。"
 
 #. Tag: para
 #: reference_raster.xml:2265
@@ -2026,7 +2253,8 @@ msgid ""
 "Returns the height of a pixel in geometric units of the spatial reference "
 "system. In the common case where there is no skew, the pixel height is just "
 "the scale ratio between geometric coordinates and raster pixels."
-msgstr ""
+msgstr "以空间参考系统的几何单位返回像素的高度。 "
+"在没有倾斜的常见情况下，像素高度只是几何坐标与光栅像素之间的比例。"
 
 #. Tag: para
 #: reference_raster.xml:2267
@@ -2034,19 +2262,19 @@ msgstr ""
 msgid ""
 "Refer to <xref linkend=\"RT_ST_PixelWidth\"/> for a diagrammatic "
 "visualization of the relationship."
-msgstr ""
+msgstr "请参阅 <xref linkend=\"RT_ST_PixelWidth\"/> 以直观地了解该关系。"
 
 #. Tag: title
 #: reference_raster.xml:2271 reference_raster.xml:2331
 #, no-c-format
 msgid "Examples: Rasters with no skew"
-msgstr ""
+msgstr "示例：无倾斜的栅格"
 
 #. Tag: title
 #: reference_raster.xml:2278 reference_raster.xml:2338
 #, no-c-format
 msgid "Examples: Rasters with skew different than 0"
-msgstr ""
+msgstr "示例：倾斜度不为 0 的栅格"
 
 #. Tag: para
 #: reference_raster.xml:2287 reference_raster.xml:2347
@@ -2056,13 +2284,15 @@ msgid ""
 ", <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, <xref "
 "linkend=\"RT_ST_SkewX\"/>, <xref linkend=\"RT_ST_SkewY\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, <xref "
+"linkend=\"RT_ST_SkewX\"/>, <xref linkend=\"RT_ST_SkewY\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2300
 #, no-c-format
 msgid ""
 "Returns the pixel width in geometric units of the spatial reference system."
-msgstr ""
+msgstr "返回空间参考系统的几何单位的像素宽度。"
 
 #. Tag: para
 #: reference_raster.xml:2315
@@ -2071,25 +2301,26 @@ msgid ""
 "Returns the width of a pixel in geometric units of the spatial reference "
 "system. In the common case where there is no skew, the pixel width is just "
 "the scale ratio between geometric coordinates and raster pixels."
-msgstr ""
+msgstr "返回空间参考系统的几何单位中像素的宽度。 "
+"在没有倾斜的常见情况下，像素宽度只是几何坐标与光栅像素之间的比例。"
 
 #. Tag: para
 #: reference_raster.xml:2317
 #, no-c-format
 msgid "The following diagram demonstrates the relationship:"
-msgstr ""
+msgstr "下图展示了这种关系："
 
 #. Tag: para
 #: reference_raster.xml:2324
 #, no-c-format
 msgid "Pixel Width: Pixel size in the i direction"
-msgstr ""
+msgstr "像素宽度：i方向的像素大小"
 
 #. Tag: para
 #: reference_raster.xml:2324
 #, no-c-format
 msgid "Pixel Height: Pixel size in the j direction"
-msgstr ""
+msgstr "像素高度：j方向的像素大小"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2354
@@ -2097,7 +2328,7 @@ msgstr ""
 msgid ""
 "Returns the X component of the pixel width in units of coordinate reference "
 "system."
-msgstr ""
+msgstr "返回像素宽度的 X 分量（以坐标参考系为单位）。"
 
 #. Tag: para
 #: reference_raster.xml:2369
@@ -2107,12 +2338,14 @@ msgid ""
 "system. Refer to <link xlink:href=\"http://en.wikipedia.org/wiki/"
 "World_file\">World File</link> for more details."
 msgstr ""
+"返回像素宽度的 X 分量（以坐标参考系为单位）。 有关更多详细信息，请参阅 <link "
+"xlink:href=\"http://en.wikipedia.org/wiki/World_file\">世界文件</link> 。"
 
 #. Tag: para
 #: reference_raster.xml:2371
 #, no-c-format
 msgid "Changed: 2.0.0. In WKTRaster versions this was called ST_PixelSizeX."
-msgstr ""
+msgstr "更改：2.0.0。 在 WKTRaster 版本中，这称为 ST_PixelSizeX。"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2391
@@ -2120,7 +2353,7 @@ msgstr ""
 msgid ""
 "Returns the Y component of the pixel height in units of coordinate reference "
 "system."
-msgstr ""
+msgstr "返回像素高度的 Y 分量（以坐标参考系为单位）。"
 
 #. Tag: para
 #: reference_raster.xml:2406
@@ -2130,12 +2363,15 @@ msgid ""
 "system. May be negative. Refer to <link xlink:href=\"http://en.wikipedia.org/"
 "wiki/World_file\">World File</link> for more details."
 msgstr ""
+"返回像素高度的 Y 分量（以坐标参考系为单位）。 可能是负值。 有关更多详细信息，"
+"请参阅<link xlink:href=\"http://en.wikipedia.org/wiki/World_file\">世界文件</"
+"link> 。"
 
 #. Tag: para
 #: reference_raster.xml:2409
 #, no-c-format
 msgid "Changed: 2.0.0. In WKTRaster versions this was called ST_PixelSizeY."
-msgstr ""
+msgstr "更改：2.0.0。 在 WKTRaster 版本中，这称为 ST_PixelSizeY。"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2429
@@ -2143,7 +2379,8 @@ msgstr ""
 msgid ""
 "Returns the raster's upper left corner as geometric X and Y (longitude and "
 "latitude) given a column and row. Column and row starts at 1."
-msgstr ""
+msgstr "在给定列和行的情况下，以几何 X 和 Y（经度和纬度）形式返回栅格的左上角。 "
+"列和行从 1 开始。"
 
 #. Tag: para
 #: reference_raster.xml:2446
