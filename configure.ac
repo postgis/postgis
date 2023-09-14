@@ -282,8 +282,8 @@ if test "x$XSLBASE" = "x"; then
   dnl html/docbook.xsl or the first directory
 	dnl that matches from the following list
 	SEARCHPATH="
-    http://cdn.docbook.org/release/xsl/current
-    http://docbook.sourceforge.net/release/xsl-ns
+		http://cdn.docbook.org/release/xsl/current
+		http://docbook.sourceforge.net/release/xsl-ns/current
 		/usr/share/sgml/docbook/xsl-stylesheets
 		/usr/share/xml/docbook/stylesheet/docbook-xsl-ns
 		/usr/share/xml/docbook/stylesheet/docbook-xsl
