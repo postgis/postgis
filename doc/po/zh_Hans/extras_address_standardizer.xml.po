@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-12 14:55+0000\n"
+"PO-Revision-Date: 2023-09-14 03:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/extras_address_standardizerxml/zh_Hans/>\n"
@@ -454,7 +454,7 @@ msgstr ""
 #: extras_address_standardizer.xml:537
 #, no-c-format
 msgid "<term>id</term>"
-msgstr ""
+msgstr "<term>id</term>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:163 extras_address_standardizer.xml:497
