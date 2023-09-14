@@ -6,6 +6,7 @@
         autoconf
         bison
         build-essential
+        docbook-xsl-ns
         flex
         libgdal-dev
         libgeos-dev
@@ -14,11 +15,11 @@
         libprotobuf-c1
         libprotobuf-c-dev
         libtool
+        libxml2-utils
         postgresql-15
         postgresql-server-dev-15
         protobuf-c-compiler
-    - lsb_release -a
-    - uname -a
+        xsltproc
     - service postgresql start
     - su -l postgres -c "createuser -s `whoami`"
   script:
