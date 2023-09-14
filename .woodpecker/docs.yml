@@ -34,6 +34,7 @@ steps:
       path: *when_path_full
   check-xml:
     image: *test_image
+    pull: true
     group: check-xml-and-build-images
     commands:
       - make -C build-docs/doc check
@@ -41,6 +42,7 @@ steps:
       path: *when_path
   build-images:
     image: *test_image
+    pull: true
     group: check-xml-and-build-images
     commands:
       - make -C build-docs/doc images
@@ -48,6 +50,7 @@ steps:
       path: *when_path_full
   build-html:
     image: *test_image
+    pull: true
     group: output
     commands:
       - make -C build-docs/doc html
@@ -55,6 +58,7 @@ steps:
       path: *when_path
   build-cheatsheets:
     image: *test_image
+    pull: true
     group: output
     commands:
       - make -C build-docs/doc/ cheatsheets
@@ -62,6 +66,7 @@ steps:
       path: *when_path_full
   build-chunked-html:
     image: *test_image
+    pull: true
     group: output
     commands:
       - make -C build-docs/doc html
@@ -69,6 +74,7 @@ steps:
       path: *when_path
   build-pdf:
     image: *test_image
+    pull: true
     group: output
     commands:
       - make -C build-docs/doc/ pdf
@@ -79,6 +85,7 @@ steps:
 ### TARGET check-xml
   check-xml-it_IT:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/it_IT local-check-xml
     group: localized-check-xml
@@ -88,6 +95,7 @@ steps:
           - "doc/po/it_IT/*.po"
   check-xml-pt_BR:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/pt_BR local-check-xml
     group: localized-check-xml
@@ -97,6 +105,7 @@ steps:
           - "doc/po/pt_BR/*.po"
   check-xml-fr:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/fr local-check-xml
     group: localized-check-xml
@@ -106,6 +115,7 @@ steps:
           - "doc/po/fr/*.po"
   check-xml-es:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/es local-check-xml
     group: localized-check-xml
@@ -115,6 +125,7 @@ steps:
           - "doc/po/es/*.po"
   check-xml-pl:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/pl local-check-xml
     group: localized-check-xml
@@ -124,6 +135,7 @@ steps:
           - "doc/po/pl/*.po"
   check-xml-ko_KR:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ko_KR local-check-xml
     group: localized-check-xml
@@ -133,6 +145,7 @@ steps:
           - "doc/po/ko_KR/*.po"
   check-xml-de:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/de local-check-xml
     group: localized-check-xml
@@ -142,6 +155,7 @@ steps:
           - "doc/po/de/*.po"
   check-xml-ja:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ja local-check-xml
     group: localized-check-xml
@@ -151,6 +165,7 @@ steps:
           - "doc/po/ja/*.po"
   check-xml-ru:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ru local-check-xml
     group: localized-check-xml
@@ -160,6 +175,7 @@ steps:
           - "doc/po/ru/*.po"
   check-xml-zh_Hans:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/zh_Hans local-check-xml
     group: localized-check-xml
@@ -169,6 +185,7 @@ steps:
           - "doc/po/zh_Hans/*.po"
   check-xml-ro:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ro local-check-xml
     group: localized-check-xml
@@ -179,6 +196,7 @@ steps:
 ### TARGET html
   html-it_IT:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/it_IT local-html
     group: localized-html
@@ -188,6 +206,7 @@ steps:
           - "doc/po/it_IT/*.po"
   html-pt_BR:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/pt_BR local-html
     group: localized-html
@@ -197,6 +216,7 @@ steps:
           - "doc/po/pt_BR/*.po"
   html-fr:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/fr local-html
     group: localized-html
@@ -206,6 +226,7 @@ steps:
           - "doc/po/fr/*.po"
   html-es:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/es local-html
     group: localized-html
@@ -215,6 +236,7 @@ steps:
           - "doc/po/es/*.po"
   html-pl:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/pl local-html
     group: localized-html
@@ -224,6 +246,7 @@ steps:
           - "doc/po/pl/*.po"
   html-ko_KR:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ko_KR local-html
     group: localized-html
@@ -233,6 +256,7 @@ steps:
           - "doc/po/ko_KR/*.po"
   html-de:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/de local-html
     group: localized-html
@@ -242,6 +266,7 @@ steps:
           - "doc/po/de/*.po"
   html-ja:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ja local-html
     group: localized-html
@@ -251,6 +276,7 @@ steps:
           - "doc/po/ja/*.po"
   html-ru:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ru local-html
     group: localized-html
@@ -260,6 +286,7 @@ steps:
           - "doc/po/ru/*.po"
   html-zh_Hans:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/zh_Hans local-html
     group: localized-html
@@ -269,6 +296,7 @@ steps:
           - "doc/po/zh_Hans/*.po"
   html-ro:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ro local-html
     group: localized-html
@@ -279,6 +307,7 @@ steps:
 ### TARGET cheatsheets
   cheatsheets-it_IT:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/it_IT local-cheatsheets
     group: localized-cheatsheets
@@ -288,6 +317,7 @@ steps:
           - "doc/po/it_IT/*.po"
   cheatsheets-pt_BR:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/pt_BR local-cheatsheets
     group: localized-cheatsheets
@@ -297,6 +327,7 @@ steps:
           - "doc/po/pt_BR/*.po"
   cheatsheets-fr:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/fr local-cheatsheets
     group: localized-cheatsheets
@@ -306,6 +337,7 @@ steps:
           - "doc/po/fr/*.po"
   cheatsheets-es:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/es local-cheatsheets
     group: localized-cheatsheets
@@ -315,6 +347,7 @@ steps:
           - "doc/po/es/*.po"
   cheatsheets-pl:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/pl local-cheatsheets
     group: localized-cheatsheets
@@ -324,6 +357,7 @@ steps:
           - "doc/po/pl/*.po"
   cheatsheets-ko_KR:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ko_KR local-cheatsheets
     group: localized-cheatsheets
@@ -333,6 +367,7 @@ steps:
           - "doc/po/ko_KR/*.po"
   cheatsheets-de:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/de local-cheatsheets
     group: localized-cheatsheets
@@ -342,6 +377,7 @@ steps:
           - "doc/po/de/*.po"
   cheatsheets-ja:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ja local-cheatsheets
     group: localized-cheatsheets
@@ -351,6 +387,7 @@ steps:
           - "doc/po/ja/*.po"
   cheatsheets-ru:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ru local-cheatsheets
     group: localized-cheatsheets
@@ -360,6 +397,7 @@ steps:
           - "doc/po/ru/*.po"
   cheatsheets-zh_Hans:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/zh_Hans local-cheatsheets
     group: localized-cheatsheets
@@ -369,6 +407,7 @@ steps:
           - "doc/po/zh_Hans/*.po"
   cheatsheets-ro:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ro local-cheatsheets
     group: localized-cheatsheets
@@ -379,6 +418,7 @@ steps:
 ### TARGET check-cheatsheets
   check-cheatsheets-it_IT:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/it_IT local-check-cheatsheets
     group: localized-check-cheatsheets
@@ -388,6 +428,7 @@ steps:
           - "doc/po/it_IT/*.po"
   check-cheatsheets-pt_BR:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/pt_BR local-check-cheatsheets
     group: localized-check-cheatsheets
@@ -397,6 +438,7 @@ steps:
           - "doc/po/pt_BR/*.po"
   check-cheatsheets-fr:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/fr local-check-cheatsheets
     group: localized-check-cheatsheets
@@ -406,6 +448,7 @@ steps:
           - "doc/po/fr/*.po"
   check-cheatsheets-es:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/es local-check-cheatsheets
     group: localized-check-cheatsheets
@@ -415,6 +458,7 @@ steps:
           - "doc/po/es/*.po"
   check-cheatsheets-pl:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/pl local-check-cheatsheets
     group: localized-check-cheatsheets
@@ -424,6 +468,7 @@ steps:
           - "doc/po/pl/*.po"
   check-cheatsheets-ko_KR:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ko_KR local-check-cheatsheets
     group: localized-check-cheatsheets
@@ -433,6 +478,7 @@ steps:
           - "doc/po/ko_KR/*.po"
   check-cheatsheets-de:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/de local-check-cheatsheets
     group: localized-check-cheatsheets
@@ -442,6 +488,7 @@ steps:
           - "doc/po/de/*.po"
   check-cheatsheets-ja:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ja local-check-cheatsheets
     group: localized-check-cheatsheets
@@ -451,6 +498,7 @@ steps:
           - "doc/po/ja/*.po"
   check-cheatsheets-ru:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ru local-check-cheatsheets
     group: localized-check-cheatsheets
@@ -460,6 +508,7 @@ steps:
           - "doc/po/ru/*.po"
   check-cheatsheets-zh_Hans:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/zh_Hans local-check-cheatsheets
     group: localized-check-cheatsheets
@@ -469,6 +518,7 @@ steps:
           - "doc/po/zh_Hans/*.po"
   check-cheatsheets-ro:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ro local-check-cheatsheets
     group: localized-check-cheatsheets
@@ -479,6 +529,7 @@ steps:
 ### TARGET pdf
   pdf-it_IT:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/it_IT local-pdf
     group: localized-pdf
@@ -488,6 +539,7 @@ steps:
           - "doc/po/it_IT/*.po"
   pdf-pt_BR:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/pt_BR local-pdf
     group: localized-pdf
@@ -497,6 +549,7 @@ steps:
           - "doc/po/pt_BR/*.po"
   pdf-fr:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/fr local-pdf
     group: localized-pdf
@@ -506,6 +559,7 @@ steps:
           - "doc/po/fr/*.po"
   pdf-es:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/es local-pdf
     group: localized-pdf
@@ -515,6 +569,7 @@ steps:
           - "doc/po/es/*.po"
   pdf-pl:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/pl local-pdf
     group: localized-pdf
@@ -524,6 +579,7 @@ steps:
           - "doc/po/pl/*.po"
   pdf-ko_KR:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ko_KR local-pdf
     group: localized-pdf
@@ -533,6 +589,7 @@ steps:
           - "doc/po/ko_KR/*.po"
   pdf-de:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/de local-pdf
     group: localized-pdf
@@ -542,6 +599,7 @@ steps:
           - "doc/po/de/*.po"
   pdf-ja:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ja local-pdf
     group: localized-pdf
@@ -551,6 +609,7 @@ steps:
           - "doc/po/ja/*.po"
   pdf-ru:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ru local-pdf
     group: localized-pdf
@@ -560,6 +619,7 @@ steps:
           - "doc/po/ru/*.po"
   pdf-zh_Hans:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/zh_Hans local-pdf
     group: localized-pdf
@@ -569,6 +629,7 @@ steps:
           - "doc/po/zh_Hans/*.po"
   pdf-ro:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ro local-pdf
     group: localized-pdf
