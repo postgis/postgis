@@ -6,14 +6,16 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-14 17:40+0000\n"
-"PO-Revision-Date: 2023-09-14 17:40+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2023-09-14 20:23+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #, no-c-format
@@ -2390,7 +2392,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&gt;"
-msgstr ""
+msgstr "&gt;"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5720,6 +5722,8 @@ msgid ""
 "If use tolerance &gt; 0 and there is more than one edge near the point then "
 "an exception is thrown."
 msgstr ""
+"Si la tolérance d'utilisation &gt ; 0 et qu'il y a plus d'une arête près du "
+"point, une exception est levée."
 
 #. Tag: para
 #, no-c-format
@@ -5860,6 +5864,8 @@ msgid ""
 "If use tolerance &gt; 0 and there is more than one node near the point then "
 "an exception is thrown."
 msgstr ""
+"Si la tolérance d'utilisation &gt ; 0 et qu'il y a plus d'un nœud près du "
+"point, une exception est levée."
 
 #. Tag: para
 #, no-c-format
@@ -7611,6 +7617,10 @@ msgid ""
 "PostgreSQL is available from <link xlink:href=\"https://www.postgresql."
 "org\"> https://www.postgresql.org </link> ."
 msgstr ""
+"PostgreSQL &min_postgres_version ; - &max_postgres_version ;. Une "
+"installation complète de PostgreSQL (y compris les en-têtes du serveur) est "
+"nécessaire. PostgreSQL est disponible à partir de <link xlink:href=\"https"
+"://www.postgresql.org\"> https://www.postgresql.org </link> ."
 
 #. Tag: para
 #, no-c-format
@@ -7673,6 +7683,10 @@ msgid ""
 "for download from <link xlink:href=\"https://libgeos.org/\"> https://libgeos."
 "org </link>."
 msgstr ""
+"Bibliothèque géométrique GEOS, version 3.6 ou supérieure, mais GEOS 3.12+ "
+"est nécessaire pour profiter pleinement de toutes les nouvelles fonctions et "
+"caractéristiques. GEOS peut être téléchargé à partir de <link xlink:href="
+"\"https://libgeos.org/\"> https://libgeos.org </link>."
 
 #. Tag: para
 #, no-c-format
@@ -8008,6 +8022,15 @@ msgid ""
 "(<command>&gt;--with-xml2config=/path/to/xml2-config</command>) to manually "
 "specify a particular LibXML installation that PostGIS will build against."
 msgstr ""
+"LibXML est la bibliothèque requise pour les processus GeomFromKML/GML. Elle "
+"est normalement trouvée si libxml est installé, mais si ce n'est pas le cas "
+"ou si vous souhaitez qu'une version spécifique soit utilisée, vous devrez "
+"indiquer à PostGIS un fichier confi <filename>xml2-config</filename> "
+"spécifique pour permettre aux installations logicielles de localiser le "
+"répertoire d'installation de LibXML. Utilisez ce paramètre (<command>&gt"
+";--with-xml2config=/path/to/xml2-config</command>) pour spécifier "
+"manuellement une installation LibXML particulière avec laquelle PostGIS sera "
+"construit."
 
 #. Tag: para
 #, no-c-format
@@ -8357,6 +8380,9 @@ msgid ""
 "<varname>postgis_topology</varname> as available extensions in PgAdmin -&gt; "
 "extensions."
 msgstr ""
+"Une fois que vous avez fait cela, vous devriez voir <varname>postgis</"
+"varname>, <varname>postgis_topology</varname> comme extensions disponibles "
+"dans PgAdmin -&gt; extensions."
 
 #. Tag: para
 #, no-c-format
@@ -9471,6 +9497,14 @@ msgid ""
 "clicking <emphasis>Advanced System Settings -&gt;Advanced-&gt;Environment "
 "Variables</emphasis> and adding new system variables."
 msgstr ""
+"Sous Windows, si vous fonctionnez en tant que service, vous pouvez définir "
+"des variables système auxquelles vous pouvez accéder, sous Windows 7, en "
+"cliquant avec le bouton droit de la souris sur Ordinateur -&gt;Propriétés - "
+"Paramètres système avancés ou, dans l'explorateur, en naviguant jusqu'à "
+"<varname>Panneau de configuration - Tous les éléments du panneau de "
+"configuration - Système</varname>. Cliquez ensuite sur <emphasis>Advanced "
+"System Settings -&gt;Advanced-&gt;Environment Variables</emphasis> et "
+"ajoutez de nouvelles variables système."
 
 #. Tag: para
 #, no-c-format
@@ -9982,6 +10016,10 @@ msgid ""
 "postgis_restore. Unexpected errors, if any, will be printed to the standard "
 "error stream by psql. Keep a log of those."
 msgstr ""
+"Restaurez votre sauvegarde dans votre nouvelle base de données "
+"<varname>newdb</varname> à l'aide de postgis_restore. Les erreurs "
+"inattendues, s'il y en a, seront imprimées par psql dans le flux d'erreurs "
+"standard. Conservez un journal de ces erreurs."
 
 #. Tag: para
 #, no-c-format
@@ -10020,6 +10058,16 @@ msgid ""
 "invariant to hold and possibly also its primary key ( when multiple invalid "
 "SRIDS get converted to the same reserved SRID value )."
 msgstr ""
+"Certains enregistrements personnalisés de spatial_ref_sys dans le fichier "
+"dump ont une valeur SRID invalide. Les valeurs SRID valides sont supérieures "
+"à 0 et inférieures à 999000. Les valeurs comprises entre 999000 et 999999 "
+"sont réservées à un usage interne, tandis que les valeurs &gt ; 999999 ne "
+"peuvent pas être utilisées du tout. Tous vos enregistrements personnalisés "
+"avec des SRID invalides seront conservés, avec les valeurs &gt ; 999999 "
+"déplacées dans la plage réservée, mais la table spatial_ref_sys perdrait une "
+"contrainte de contrôle qui protège cet invariant et peut-être aussi sa clé "
+"primaire (lorsque plusieurs SRIDS invalides sont convertis en la même valeur "
+"SRID réservée)."
 
 #. Tag: para
 #, no-c-format
@@ -10029,6 +10077,11 @@ msgid ""
 "new srid (see <xref linkend=\"UpdateGeometrySRID\"/>), delete the invalid "
 "entry from spatial_ref_sys and re-construct the check(s) with:"
 msgstr ""
+"Pour résoudre ce problème, vous devez copier votre SRS personnalisé vers un "
+"SRID avec une valeur valide (peut-être dans la plage 910000..910999), "
+"convertir toutes vos tables vers le nouveau SRID (voir <xref linkend="
+"\"UpdateGeometrySRID\"/>), supprimer l'entrée invalide de spatial_ref_sys et "
+"reconstruire le(s) contrôle(s) avec :"
 
 #. Tag: para
 #, no-c-format
@@ -10038,6 +10091,11 @@ msgid ""
 "IGN </link> cartography, you will have probably SRIDs out of range and you "
 "will see, when importing your database, issues like this :"
 msgstr ""
+"Si vous mettez à jour une ancienne base de données contenant une "
+"cartographie française <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Institut_g%C3%A9ographique_national\"> IGN </link>, vous aurez probablement "
+"des SRID hors limites et vous verrez, lors de l'importation de votre base de "
+"données, des problèmes comme celui-ci :"
 
 #. Tag: para
 #, no-c-format
@@ -10046,6 +10104,9 @@ msgid ""
 "IGN from the sql which is resulting from postgis_restore. So, after having "
 "run :"
 msgstr ""
+"Dans ce cas, vous pouvez essayer les étapes suivantes : d'abord supprimer "
+"complètement l'IGN du sql qui résulte de postgis_restore. Ainsi, après avoir "
+"exécuté :"
 
 #. Tag: para
 #, no-c-format
