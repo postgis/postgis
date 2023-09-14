@@ -295,23 +295,28 @@ if test "x$XSLBASE" = "x"; then
 		/usr/share/xsl/docbook-xsl
 		"
 	for p in ${SEARCHPATH}; do
-    if expr "${p}" : / >/dev/null; then
-      AC_MSG_CHECKING([for html/docbook.xsl in directory $p...])
-      if test -r "${p}"/html/docbook.xsl; then
-        XSLBASE_AUTO="${p}"
-        AC_MSG_RESULT([found])
-        break
-      fi
-      AC_MSG_RESULT([not found])
-    elif test "x$XMLCATALOG" != "x"; then
-      AC_MSG_CHECKING([for html/docbook.xsl in URI $p...])
-      if $XMLCATALOG '' "${p}/html/docbook.xsl" >/dev/null; then
-        XSLBASE_AUTO="${p}"
-        AC_MSG_RESULT([found])
-        break
-      fi
-      AC_MSG_RESULT([not found])
-    fi
+    case "${p}" in
+      "/*")
+        AC_MSG_CHECKING([for html/docbook.xsl in directory $p...])
+        if test -r "${p}"/html/docbook.xsl; then
+          XSLBASE_AUTO="${p}"
+          AC_MSG_RESULT([found])
+          break
+        fi
+        AC_MSG_RESULT([not found])
+        ;;
+      *)
+        if test "x$XMLCATALOG" != "x"; then
+          AC_MSG_CHECKING([for html/docbook.xsl in URI $p...])
+          if $XMLCATALOG '' "${p}/html/docbook.xsl" >/dev/null; then
+            XSLBASE_AUTO="${p}"
+            AC_MSG_RESULT([found])
+            break
+          fi
+          AC_MSG_RESULT([not found])
+        fi
+        ;;
+    esac
 	done
 
 	dnl Check to see if the automatically searched paths above located a
