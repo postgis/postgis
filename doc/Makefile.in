@@ -111,7 +111,10 @@ XSLTPROC_CHUNKED_HTML_OPTS = \
 	--stringparam img.src.path ../ \
 	--stringparam html.stylesheet ../style.css
 
-DOCBOOK_XSLBASE=http://cdn.docbook.org/release/xsl/current
+# FIXME: the official URI would be http://cdn.docbook.org/release/xsl/current/
+# but see https://trac.osgeo.org/postgis/ticket/5539
+#DOCBOOK_XSLBASE=http://cdn.docbook.org/release/xsl/current
+DOCBOOK_XSLBASE=http://docbook.sourceforge.net/release/xsl-ns
 HTML_DOCBOOK_XSL=$(DOCBOOK_XSLBASE)/html/docbook.xsl
 CHUNK_HTML_DOCBOOK_XSL=$(DOCBOOK_XSLBASE)/html/chunk.xsl
 
