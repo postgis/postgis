@@ -9,6 +9,7 @@ export PROJECTS=/projects
 # Don't convert paths
 # See https://trac.osgeo.org/postgis/ticket/5436#comment:5
 export MSYS2_ARG_CONV_EXCL=/config/tags
+export XML_CATALOG_FILES="/projects/docbook/docbook-5.0.1/catalog.xml"
 
 if  [[ "${OVERRIDE}" == '' ]] ; then
 	export GEOS_VER=3.12.0
