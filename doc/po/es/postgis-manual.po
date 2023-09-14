@@ -8,8 +8,8 @@ msgstr ""
 "POT-Creation-Date: 2023-09-14 17:40+0000\n"
 "PO-Revision-Date: 2023-09-14 23:56+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
-"Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/es/>\n"
+"Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -80,11 +80,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"For installation instructions refer to: <xref "
-"linkend=\"installing_pagc_address_standardizer\"/>."
+"For installation instructions refer to: <xref linkend="
+"\"installing_pagc_address_standardizer\"/>."
 msgstr ""
-"Para instrucciones de instalación, consulte: <xref "
-"linkend=\"installing_pagc_address_standardizer\"/>."
+"Para instrucciones de instalación, consulte: <xref linkend="
+"\"installing_pagc_address_standardizer\"/>."
 
 #. Tag: title
 #, no-c-format
@@ -200,11 +200,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The token numbers denote the output reference number in the <xref "
-"linkend=\"rulestab\"/>."
+"The token numbers denote the output reference number in the <xref linkend="
+"\"rulestab\"/>."
 msgstr ""
-"Los números de token indican el número de referencia de salida<xref "
-"linkend=\"rulestab\"/>"
+"Los números de token indican el número de referencia de salida<xref linkend="
+"\"rulestab\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -502,8 +502,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Numbers for corresponding output tokens are listed in <xref "
-"linkend=\"stdaddr\"/>."
+"Numbers for corresponding output tokens are listed in <xref linkend=\"stdaddr"
+"\"/>."
 msgstr ""
 
 #. Tag: title
@@ -533,8 +533,8 @@ msgstr "AMPERS"
 #. Tag: para
 #, no-c-format
 msgid ""
-"(13). The ampersand (&amp;) is frequently used to abbreviate the word "
-"\"and\"."
+"(13). The ampersand (&amp;) is frequently used to abbreviate the word \"and"
+"\"."
 msgstr ""
 "(13). El ampersand (&amp;) se utiliza frecuentemente para abreviar la letra "
 "\"y\"."
@@ -1258,11 +1258,11 @@ msgstr "Ver también"
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"rulestab\"/>, <xref linkend=\"lextab\"/>, <xref "
-"linkend=\"gaztab\"/>, <xref linkend=\"Pagc_Normalize_Address\"/>"
+", <xref linkend=\"rulestab\"/>, <xref linkend=\"lextab\"/>, <xref linkend="
+"\"gaztab\"/>, <xref linkend=\"Pagc_Normalize_Address\"/>"
 msgstr ""
-", <xref linkend=\"rulestab\"/>, <xref linkend=\"lextab\"/>, <xref "
-"linkend=\"gaztab\"/>, <xref linkend=\"Pagc_Normalize_Address\"/>"
+", <xref linkend=\"rulestab\"/>, <xref linkend=\"lextab\"/>, <xref linkend="
+"\"gaztab\"/>, <xref linkend=\"Pagc_Normalize_Address\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -1604,8 +1604,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "For instructions on how to enable the extension in your database and also to "
-"load data using it, refer to <xref "
-"linkend=\"install_tiger_geocoder_extension\"/>."
+"load data using it, refer to <xref linkend=\"install_tiger_geocoder_extension"
+"\"/>."
 msgstr ""
 
 #. Tag: para
@@ -1776,9 +1776,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This is useful for minimizing index bloat that may confuse the query planner "
-"or take up unnecessary space. Use in combination with <xref "
-"linkend=\"Install_Missing_Indexes\"/> to add just the indexes used by the "
-"geocoder."
+"or take up unnecessary space. Use in combination with <xref linkend="
+"\"Install_Missing_Indexes\"/> to add just the indexes used by the geocoder."
 msgstr ""
 
 #. Tag: para
@@ -1916,8 +1915,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"Pprint_Addy\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
-"linkend=\"ST_SnapToGrid\"/>, <xref linkend=\"ST_X\"/>, <xref "
-"linkend=\"ST_Y\"/>"
+"linkend=\"ST_SnapToGrid\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y"
+"\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -2021,8 +2020,8 @@ msgstr ""
 msgid ""
 "This function uses the census <varname>tract</varname> which is not loaded "
 "by default. If you have already loaded your state table, you can load tract "
-"as well as bg, and tabblock using the <xref "
-"linkend=\"Loader_Generate_Census_Script\"/> script."
+"as well as bg, and tabblock using the <xref linkend="
+"\"Loader_Generate_Census_Script\"/> script."
 msgstr ""
 
 #. Tag: para
@@ -2205,8 +2204,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"Loader_Generate_Nation_Script\"/>, <xref "
-"linkend=\"Drop_State_Tables_Generate_Script\"/>"
+", <xref linkend=\"Loader_Generate_Nation_Script\"/>, <xref linkend="
+"\"Drop_State_Tables_Generate_Script\"/>"
 msgstr ""
 ", <xref linkend=\"Loader_Generate_Nation_Script\"/>, <xref linkend="
 "\"Drop_State_Tables_Generate_Script\"/>"
@@ -2273,8 +2272,8 @@ msgstr ""
 msgid ""
 "If you were running <varname>tiger_2010</varname> version and you want to "
 "reload as state with newer tiger data, you'll need to for the very first "
-"load generate and run drop statements <xref "
-"linkend=\"Drop_Nation_Tables_Generate_Script\"/> before you run this script."
+"load generate and run drop statements <xref linkend="
+"\"Drop_Nation_Tables_Generate_Script\"/> before you run this script."
 msgstr ""
 
 #. Tag: para
@@ -2457,8 +2456,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<varname>address_alphanumeric</varname> Full street number even if it has "
-"alpha characters like 17R. Parsing of this is better using <xref "
-"linkend=\"Pagc_Normalize_Address\"/> function. Availability: PostGIS 2.4.0."
+"alpha characters like 17R. Parsing of this is better using <xref linkend="
+"\"Pagc_Normalize_Address\"/> function. Availability: PostGIS 2.4.0."
 msgstr ""
 
 #. Tag: para
@@ -2497,8 +2496,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"There are slight variations in casing and formatting over the <xref "
-"linkend=\"Normalize_Address\"/>."
+"There are slight variations in casing and formatting over the <xref linkend="
+"\"Normalize_Address\"/>."
 msgstr ""
 
 #. Tag: para
@@ -2535,8 +2534,8 @@ msgid ""
 "batch geocoding to call generate a normaddy in batch mode, you are "
 "encouraged to directly call the address_standardizer standardize_address "
 "function as shown below which is similar exercise to what we did in <xref "
-"linkend=\"Normalize_Address\"/> that uses data created in <xref "
-"linkend=\"Geocode\"/>."
+"linkend=\"Normalize_Address\"/> that uses data created in <xref linkend="
+"\"Geocode\"/>."
 msgstr ""
 
 #. Tag: para
@@ -2685,8 +2684,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"Geocode\"/>, <xref "
-"linkend=\"Loader_Generate_Nation_Script\"/>"
+", <xref linkend=\"Geocode\"/>, <xref linkend=\"Loader_Generate_Nation_Script"
+"\"/>"
 msgstr ""
 ", <xref linkend=\"Geocode\"/>, <xref linkend=\"Loader_Generate_Nation_Script"
 "\"/>"
@@ -2723,11 +2722,11 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This function relies on Tiger data as well as the installation of the "
-"PostGIS topology module. For more information, refer to <xref "
-"linkend=\"Topology\"/> and <xref linkend=\"installation_configuration\"/>. "
-"If you have not loaded data covering the region of interest, then no "
-"topology records will be created. This function will also fail if you have "
-"not created a topology using the topology functions."
+"PostGIS topology module. For more information, refer to <xref linkend="
+"\"Topology\"/> and <xref linkend=\"installation_configuration\"/>. If you "
+"have not loaded data covering the region of interest, then no topology "
+"records will be created. This function will also fail if you have not "
+"created a topology using the topology functions."
 msgstr ""
 
 #. Tag: para
@@ -2842,9 +2841,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Sandro Santilli's presentation at PostGIS Day Paris 2011 conference gives a "
-"good synopsis of PostGIS Topology and where it is headed <link xlink:"
-"href=\"http://strk.kbt.io/projects/postgis/Paris2011_TopologyWithPostGIS_2_0."
-"pdf\">Topology with PostGIS 2.0 slide deck</link>."
+"good synopsis of PostGIS Topology and where it is headed <link xlink:href="
+"\"http://strk.kbt.io/projects/postgis/Paris2011_TopologyWithPostGIS_2_0.pdf"
+"\">Topology with PostGIS 2.0 slide deck</link>."
 msgstr ""
 "La presentación de Sandro Santilli en la conferencia PostGIS Day Paris 2011 "
 "da una buena sinopsis de la Topología PostGIS y hacia donde se dirige <link "
@@ -2856,17 +2855,17 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Vincent Picavet provides a good synopsis and overview of what is Topology, "
-"how is it used, and various FOSS4G tools that support it in <link xlink:"
-"href=\"https://gitlab.com/Oslandia/documentation/presentations/-/blob/"
-"master/2012/pgconf_eu_2012/pgconfeu2012_vincent_picavet_postgis_topology."
-"pdf\">PostGIS Topology PGConf EU 2012</link>."
+"how is it used, and various FOSS4G tools that support it in <link xlink:href="
+"\"https://gitlab.com/Oslandia/documentation/presentations/-/blob/master/2012/"
+"pgconf_eu_2012/pgconfeu2012_vincent_picavet_postgis_topology.pdf\">PostGIS "
+"Topology PGConf EU 2012</link>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"An example of a topologically based GIS database is the <link xlink:"
-"href=\"https://www.census.gov/geo/maps-data/data/tiger.html\">US Census "
+"An example of a topologically based GIS database is the <link xlink:href="
+"\"https://www.census.gov/geo/maps-data/data/tiger.html\">US Census "
 "Topologically Integrated Geographic Encoding and Referencing System (TIGER)</"
 "link> database. If you want to experiment with PostGIS topology and need "
 "some data, check out <xref linkend=\"Topology_Load_Tiger\"/>."
@@ -2875,8 +2874,8 @@ msgstr ""
 "datos del <link xlink:href=\"https://www.census.gov/geo/maps-data/data/tiger."
 "html\">Sistema de Codificación y Referencia Geográfica Topologicamente "
 "Integrado del Censo de US (TIGER)</link> . Si desea experimentar con la "
-"topología de PostGIS y nesesita algunos datos, ver <xref "
-"linkend=\"Topology_Load_Tiger\"/>."
+"topología de PostGIS y nesesita algunos datos, ver <xref linkend="
+"\"Topology_Load_Tiger\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -2931,8 +2930,8 @@ msgid ""
 msgstr ""
 "El soporte de topología se crea de manera predeterminada a partir de PostGIS "
 "2.0, y se puede deshabilitar especificando la opción de configuración --"
-"without-topology en tiempo de compilación como se describe en <xref "
-"linkend=\"postgis_installation\"/>"
+"without-topology en tiempo de compilación como se describe en <xref linkend="
+"\"postgis_installation\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -3203,12 +3202,12 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"topoelementarray\"/>, <xref linkend=\"topogeometry\"/>, "
-"<xref linkend=\"TopoGeom_addElement\"/>, <xref "
-"linkend=\"TopoGeom_remElement\"/>"
+"<xref linkend=\"TopoGeom_addElement\"/>, <xref linkend=\"TopoGeom_remElement"
+"\"/>"
 msgstr ""
 ", <xref linkend=\"topoelementarray\"/>, <xref linkend=\"topogeometry\"/>, "
-"<xref linkend=\"TopoGeom_addElement\"/>, <xref "
-"linkend=\"TopoGeom_remElement\"/>"
+"<xref linkend=\"TopoGeom_addElement\"/>, <xref linkend=\"TopoGeom_remElement"
+"\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -3227,11 +3226,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"GetTopoGeomElementArray\"/>, <xref "
-"linkend=\"TopoElementArray_Agg\"/>"
+", <xref linkend=\"GetTopoGeomElementArray\"/>, <xref linkend="
+"\"TopoElementArray_Agg\"/>"
 msgstr ""
-", <xref linkend=\"GetTopoGeomElementArray\"/>, <xref "
-"linkend=\"TopoElementArray_Agg\"/>"
+", <xref linkend=\"GetTopoGeomElementArray\"/>, <xref linkend="
+"\"TopoElementArray_Agg\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -3622,8 +3621,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The geometry of the node indicated as the starting node for an edge does not "
-"match the first point of the edge geometry. See <xref "
-"linkend=\"ST_StartPoint\"/>."
+"match the first point of the edge geometry. See <xref linkend=\"ST_StartPoint"
+"\"/>."
 msgstr ""
 
 #. Tag: entry
@@ -3701,8 +3700,8 @@ msgstr ""
 #. Tag: entry
 #, no-c-format
 msgid ""
-"Signed identifier of an edge, identifying the ring. See <xref "
-"linkend=\"GetRingEdges\"/>."
+"Signed identifier of an edge, identifying the ring. See <xref linkend="
+"\"GetRingEdges\"/>."
 msgstr ""
 
 #. Tag: entry
@@ -4548,9 +4547,8 @@ msgstr ""
 msgid ""
 "Removes an edge, and if the removed edge separates two faces deletes one "
 "face and modifies the other face to cover the space of both. Preferentially "
-"keeps the face on the right, to be consistent with <xref "
-"linkend=\"ST_AddEdgeModFace\"/>. Returns the id of the face which is "
-"preserved."
+"keeps the face on the right, to be consistent with <xref linkend="
+"\"ST_AddEdgeModFace\"/>. Returns the id of the face which is preserved."
 msgstr ""
 
 #. Tag: para
@@ -4913,8 +4911,8 @@ msgstr "Realizado por el módulo GEOS."
 #, no-c-format
 msgid "These examples use edges we created in <xref linkend=\"AddEdge\"/>"
 msgstr ""
-"Estos ejemplos utilizan los bordes que hemos creado en <xref "
-"linkend=\"AddEdge\"/>"
+"Estos ejemplos utilizan los bordes que hemos creado en <xref linkend="
+"\"AddEdge\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -5770,13 +5768,11 @@ msgstr "Se trata de un flujo de trabajo autónomo completo"
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref "
-"linkend=\"CreateTopoGeom\"/>, <xref linkend=\"TopologySummary\"/>, <xref "
-"linkend=\"clearTopoGeom\"/>"
+", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref linkend=\"CreateTopoGeom"
+"\"/>, <xref linkend=\"TopologySummary\"/>, <xref linkend=\"clearTopoGeom\"/>"
 msgstr ""
-", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref "
-"linkend=\"CreateTopoGeom\"/>, <xref linkend=\"TopologySummary\"/>, <xref "
-"linkend=\"clearTopoGeom\"/>"
+", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref linkend=\"CreateTopoGeom"
+"\"/>, <xref linkend=\"TopologySummary\"/>, <xref linkend=\"clearTopoGeom\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5809,8 +5805,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Converts a <xref linkend=\"topogeometry\"/> to a <xref "
-"linkend=\"topoelement\"/>."
+"Converts a <xref linkend=\"topogeometry\"/> to a <xref linkend=\"topoelement"
+"\"/>."
 msgstr ""
 
 #. Tag: para
@@ -6144,13 +6140,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The table, if given, is expected to have an \"arc_id\" field of type "
-"\"serial\" and an \"edge_id\" of type integer; the code will query the table "
-"for \"edge_id\" so it is recommended to add an index on that field."
+"The table, if given, is expected to have an \"arc_id\" field of type \"serial"
+"\" and an \"edge_id\" of type integer; the code will query the table for "
+"\"edge_id\" so it is recommended to add an index on that field."
 msgstr ""
-"Se espera que la tabla, si se da, tenga un campo \"arc_id\" de tipo "
-"\"serial\" y un \"edge_id\" de tipo entero; el código consultará la tabla "
-"para \"edge_id\", por lo que se recomienda agregar un índice en ese campo."
+"Se espera que la tabla, si se da, tenga un campo \"arc_id\" de tipo \"serial"
+"\" y un \"edge_id\" de tipo entero; el código consultará la tabla para "
+"\"edge_id\", por lo que se recomienda agregar un índice en ese campo."
 
 #. Tag: para
 #, no-c-format
@@ -6450,9 +6446,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Once PostGIS is installed, it needs to be enabled (<xref "
-"linkend=\"create_spatial_db\"/>) or upgraded (<xref linkend=\"upgrading\"/>) "
-"in each individual database you want to use it in."
+"Once PostGIS is installed, it needs to be enabled (<xref linkend="
+"\"create_spatial_db\"/>) or upgraded (<xref linkend=\"upgrading\"/>) in each "
+"individual database you want to use it in."
 msgstr ""
 "Una vez instalado PostGIS, es necesario habilitarlo (<xref linkend="
 "\"create_spatial_db\"/>) o actualizarlo (<xref linkend=\"upgrading\"/>) en "
@@ -6479,10 +6475,9 @@ msgstr ""
 msgid ""
 "This section includes general compilation instructions, if you are compiling "
 "for Windows etc or another OS, you may find additional more detailed help at "
-"<link xlink:href=\"https://trac.osgeo.org/postgis/wiki/"
-"UsersWikiInstall\">PostGIS User contributed compile guides</link> and <link "
-"xlink:href=\"http://trac.osgeo.org/postgis/wiki/DevWikiMain\">PostGIS Dev "
-"Wiki</link>."
+"<link xlink:href=\"https://trac.osgeo.org/postgis/wiki/UsersWikiInstall"
+"\">PostGIS User contributed compile guides</link> and <link xlink:href="
+"\"http://trac.osgeo.org/postgis/wiki/DevWikiMain\">PostGIS Dev Wiki</link>."
 msgstr ""
 
 #. Tag: para
@@ -6507,8 +6502,8 @@ msgstr ""
 "Si eres usuario de Windows, puedes obtener versiones estables compiladas via "
 "Stackbuilder o el <link xlink:href=\"http://www.postgis.org/download/windows/"
 "\"> sitio de descargas de PostGIS para Windows</link> También tenemos <link "
-"xlink:href=\"http://www.postgis.org/download/windows/experimental."
-"php\">versiones experimentales para Windows </link> que son publicadas "
+"xlink:href=\"http://www.postgis.org/download/windows/experimental.php"
+"\">versiones experimentales para Windows </link> que son publicadas "
 "normalmente una o dos veces por semana o cuando ocurre algo interesante. "
 "Puedes utilizar éstas para experimentar con las versiones de desarrollo de "
 "PostGIS"
@@ -6592,9 +6587,9 @@ msgid ""
 "gitea/postgis/postgis/\"> https://git.osgeo.org/gitea/postgis/postgis/ </"
 "link> ."
 msgstr ""
-"De forma alternativa se puede obtener el código fuente del  <link xlink:"
-"href=\"https://git-scm.com/\"> git </link>  repositorio <link xlink:"
-"href=\"https://git.osgeo.org/gitea/postgis/postgis/\"> https://git.osgeo.org/"
+"De forma alternativa se puede obtener el código fuente del  <link xlink:href="
+"\"https://git-scm.com/\"> git </link>  repositorio <link xlink:href="
+"\"https://git.osgeo.org/gitea/postgis/postgis/\"> https://git.osgeo.org/"
 "gitea/postgis/postgis/ </link> ."
 
 #. Tag: para
@@ -6626,8 +6621,8 @@ msgstr "Requerido"
 msgid ""
 "PostgreSQL &min_postgres_version; - &max_postgres_version;. A complete "
 "installation of PostgreSQL (including server headers) is required. "
-"PostgreSQL is available from <link xlink:href=\"https://www.postgresql."
-"org\"> https://www.postgresql.org </link> ."
+"PostgreSQL is available from <link xlink:href=\"https://www.postgresql.org"
+"\"> https://www.postgresql.org </link> ."
 msgstr ""
 
 #. Tag: para
@@ -6746,10 +6741,10 @@ msgstr ""
 msgid ""
 "SFCGAL, version 1.3.1 (or higher), 1.4.1 or higher is recommended and "
 "required to be able to use all functionality. SFCGAL can be used to provide "
-"additional 2D and 3D advanced analysis functions to PostGIS cf <xref "
-"linkend=\"reference_sfcgal\"/>. And also allow to use SFCGAL rather than "
-"GEOS for some 2D functions provided by both backends (like ST_Intersection "
-"or ST_Area, for instance). A PostgreSQL configuration variable <code>postgis."
+"additional 2D and 3D advanced analysis functions to PostGIS cf <xref linkend="
+"\"reference_sfcgal\"/>. And also allow to use SFCGAL rather than GEOS for "
+"some 2D functions provided by both backends (like ST_Intersection or "
+"ST_Area, for instance). A PostgreSQL configuration variable <code>postgis."
 "backend</code> allow end user to control which backend he want to use if "
 "SFCGAL is installed (GEOS by default). Nota: SFCGAL 1.2 require at least "
 "CGAL 4.3 and Boost 1.54 (cf: <link xlink:href=\"https://oslandia.gitlab.io/"
@@ -6763,10 +6758,10 @@ msgstr ""
 msgid ""
 "In order to build the <xref linkend=\"Address_Standardizer\"/> you will also "
 "need PCRE <link xlink:href=\"http://www.pcre.org\">http://www.pcre.org</"
-"link> (which generally is already installed on nix systems). <xref "
-"linkend=\"Address_Standardizer\"/> will automatically be built if it detects "
-"a PCRE library, or you pass in a valid <varname>--with-pcre-dir=/path/to/"
-"pcre</varname> during configure."
+"link> (which generally is already installed on nix systems). <xref linkend="
+"\"Address_Standardizer\"/> will automatically be built if it detects a PCRE "
+"library, or you pass in a valid <varname>--with-pcre-dir=/path/to/pcre</"
+"varname> during configure."
 msgstr ""
 
 #. Tag: para
@@ -6774,12 +6769,12 @@ msgstr ""
 msgid ""
 "To enable ST_AsMVT protobuf-c library 1.1.0 or higher (for usage) and the "
 "protoc-c compiler (for building) are required. Also, pkg-config is required "
-"to verify the correct minimum version of protobuf-c. See <link xlink:"
-"href=\"https://github.com/protobuf-c/protobuf-c\">protobuf-c</link>. By "
-"default, Postgis will use Wagyu to validate MVT polygons faster which "
-"requires a c++11 compiler. It will use CXXFLAGS and the same compiler as the "
-"PostgreSQL installation. To disable this and use GEOS instead use the "
-"<varname>--without-wagyu</varname> during the configure step."
+"to verify the correct minimum version of protobuf-c. See <link xlink:href="
+"\"https://github.com/protobuf-c/protobuf-c\">protobuf-c</link>. By default, "
+"Postgis will use Wagyu to validate MVT polygons faster which requires a c+"
+"+11 compiler. It will use CXXFLAGS and the same compiler as the PostgreSQL "
+"installation. To disable this and use GEOS instead use the <varname>--"
+"without-wagyu</varname> during the configure step."
 msgstr ""
 
 #. Tag: para
@@ -6808,13 +6803,13 @@ msgstr ""
 #, no-c-format
 msgid ""
 "DBLatex (<filename>dblatex</filename>) is required for building the "
-"documentation in PDF format. DBLatex is available from <link xlink:"
-"href=\"http://dblatex.sourceforge.net/\"> http://dblatex.sourceforge.net/ </"
+"documentation in PDF format. DBLatex is available from <link xlink:href="
+"\"http://dblatex.sourceforge.net/\"> http://dblatex.sourceforge.net/ </"
 "link> ."
 msgstr ""
 "DBLatex (<filename>dblatex</filename>) necesario para construir la "
-"documentación en formato PDF. DBLatex esta disponible en <link xlink:"
-"href=\"http://dblatex.sourceforge.net/\"> http://dblatex.sourceforge.net/ </"
+"documentación en formato PDF. DBLatex esta disponible en <link xlink:href="
+"\"http://dblatex.sourceforge.net/\"> http://dblatex.sourceforge.net/ </"
 "link> ."
 
 #. Tag: para
@@ -7220,8 +7215,8 @@ msgid ""
 "<code>make check</code> uses psql to run tests and as such can use psql "
 "environment variables. Common ones useful to override are <varname>PGUSER</"
 "varname>,<varname>PGPORT</varname>, and <varname>PGHOST</varname>. Refer to "
-"<link xlink:href=\"https://www.postgresql.org/docs/current/libpq-envars."
-"html\">psql environment variables</link>"
+"<link xlink:href=\"https://www.postgresql.org/docs/current/libpq-envars.html"
+"\">psql environment variables</link>"
 msgstr ""
 
 #. Tag: para
@@ -7560,28 +7555,28 @@ msgid ""
 "The <code>address_standardizer</code> extension used to be a separate "
 "package that required separate download. From PostGIS 2.2 on, it is now "
 "bundled in. For more information about the address_standardize, what it "
-"does, and how to configure it for your needs, refer to <xref "
-"linkend=\"Address_Standardizer\"/>."
+"does, and how to configure it for your needs, refer to <xref linkend="
+"\"Address_Standardizer\"/>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This standardizer can be used in conjunction with the PostGIS packaged tiger "
-"geocoder extension as a replacement for the <xref "
-"linkend=\"Normalize_Address\"/> discussed. To use as replacement refer to "
-"<xref linkend=\"tiger_pagc_address_standardizing\"/>. You can also use it as "
-"a building block for your own geocoder or use it to standardize your "
-"addresses for easier compare of addresses."
+"geocoder extension as a replacement for the <xref linkend=\"Normalize_Address"
+"\"/> discussed. To use as replacement refer to <xref linkend="
+"\"tiger_pagc_address_standardizing\"/>. You can also use it as a building "
+"block for your own geocoder or use it to standardize your addresses for "
+"easier compare of addresses."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "The address standardizer relies on PCRE which is usually already installed "
-"on many Nix systems, but you can download the latest at: <link xlink:"
-"href=\"http://www.pcre.org\">http://www.pcre.org</link>. If during <xref "
-"linkend=\"installation_configuration\"/>, PCRE is found, then the address "
+"on many Nix systems, but you can download the latest at: <link xlink:href="
+"\"http://www.pcre.org\">http://www.pcre.org</link>. If during <xref linkend="
+"\"installation_configuration\"/>, PCRE is found, then the address "
 "standardizer extension will automatically be built. If you have a custom "
 "pcre install you want to use instead, pass to configure <code>--with-"
 "pcredir=/path/to/pcre</code> where <filename>/path/to/pcre</filename> is the "
@@ -7726,9 +7721,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If present the <xref linkend=\"Geocode\"/> function can use it if a boundary "
-"filter is added to limit to just zips in that boundary. The <xref "
-"linkend=\"Reverse_Geocode\"/> function uses it if the returned address is "
-"missing a zip, which often happens with highway reverse geocoding."
+"filter is added to limit to just zips in that boundary. The <xref linkend="
+"\"Reverse_Geocode\"/> function uses it if the returned address is missing a "
+"zip, which often happens with highway reverse geocoding."
 msgstr ""
 
 #. Tag: para
@@ -7837,15 +7832,15 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Once you install this extension in the same database as you have installed "
-"<code>postgis_tiger_geocoder</code>, then the <xref "
-"linkend=\"Pagc_Normalize_Address\"/> can be used instead of <xref "
-"linkend=\"Normalize_Address\"/>. This extension is tiger agnostic, so can be "
-"used with other data sources such as international addresses. The tiger "
-"geocoder extension does come packaged with its own custom versions of <xref "
-"linkend=\"rulestab\"/> ( <code>tiger.pagc_rules</code>) , <xref "
-"linkend=\"gaztab\"/> (<code>tiger.pagc_gaz</code>), and <xref "
-"linkend=\"lextab\"/> (<code>tiger.pagc_lex</code>). These you can add and "
-"update to improve your standardizing experience for your own needs."
+"<code>postgis_tiger_geocoder</code>, then the <xref linkend="
+"\"Pagc_Normalize_Address\"/> can be used instead of <xref linkend="
+"\"Normalize_Address\"/>. This extension is tiger agnostic, so can be used "
+"with other data sources such as international addresses. The tiger geocoder "
+"extension does come packaged with its own custom versions of <xref linkend="
+"\"rulestab\"/> ( <code>tiger.pagc_rules</code>) , <xref linkend=\"gaztab\"/> "
+"(<code>tiger.pagc_gaz</code>), and <xref linkend=\"lextab\"/> (<code>tiger."
+"pagc_lex</code>). These you can add and update to improve your standardizing "
+"experience for your own needs."
 msgstr ""
 
 #. Tag: title
@@ -7861,9 +7856,9 @@ msgid ""
 "state into its own separate set of state tables. Each state table inherits "
 "from the tables defined in <varname>tiger</varname> schema so that its "
 "sufficient to just query those tables to access all the data and drop a set "
-"of state tables at any time using the <xref "
-"linkend=\"Drop_State_Tables_Generate_Script\"/> if you need to reload a "
-"state or just don't need a state anymore."
+"of state tables at any time using the <xref linkend="
+"\"Drop_State_Tables_Generate_Script\"/> if you need to reload a state or "
+"just don't need a state anymore."
 msgstr ""
 "El proceso de carga, descarga datos desde el sitio web del censo de las "
 "respectivas naciones de los estados pedidos, extrae los ficheros, y carga "
@@ -7990,12 +7985,12 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Next drop all nation tables and load up the new ones. Generate a drop script "
-"with this SQL statement as detailed in <xref "
-"linkend=\"Drop_Nation_Tables_Generate_Script\"/>"
+"with this SQL statement as detailed in <xref linkend="
+"\"Drop_Nation_Tables_Generate_Script\"/>"
 msgstr ""
 "Después, elimina todas las tabals de naciones y carga las nuevas. Genera un "
-"script drop con esta sentencia SQL como se detalla en <xref "
-"linkend=\"Drop_Nation_Tables_Generate_Script\"/>"
+"script drop con esta sentencia SQL como se detalla en <xref linkend="
+"\"Drop_Nation_Tables_Generate_Script\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -8034,8 +8029,8 @@ msgstr ""
 msgid ""
 "You can have a mix of different year state tables and can upgrade each state "
 "separately. Before you upgrade a state you first need to drop the prior year "
-"state tables for that state using <xref "
-"linkend=\"Drop_State_Tables_Generate_Script\"/>."
+"state tables for that state using <xref linkend="
+"\"Drop_State_Tables_Generate_Script\"/>."
 msgstr ""
 
 #. Tag: title
@@ -8358,9 +8353,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"If you are running PostGIS 3 or above, then you should use the <xref "
-"linkend=\"PostGIS_Extensions_Upgrade\"/> function to upgrade to the latest "
-"version you have installed."
+"If you are running PostGIS 3 or above, then you should use the <xref linkend="
+"\"PostGIS_Extensions_Upgrade\"/> function to upgrade to the latest version "
+"you have installed."
 msgstr ""
 
 #. Tag: para
@@ -8537,9 +8532,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Do a fresh install of PostGIS in a new database -- we'll refer to this "
-"database as <varname>newdb</varname>. Please refer to <xref "
-"linkend=\"create_new_db\"/> and <xref linkend=\"create_new_db_extensions\"/> "
-"for instructions on how to do this."
+"database as <varname>newdb</varname>. Please refer to <xref linkend="
+"\"create_new_db\"/> and <xref linkend=\"create_new_db_extensions\"/> for "
+"instructions on how to do this."
 msgstr ""
 
 #. Tag: para
@@ -8614,10 +8609,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"If you are upgrading an old database containing french <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/Institut_g%C3%A9ographique_national\"> "
-"IGN </link> cartography, you will have probably SRIDs out of range and you "
-"will see, when importing your database, issues like this :"
+"If you are upgrading an old database containing french <link xlink:href="
+"\"https://en.wikipedia.org/wiki/Institut_g%C3%A9ographique_national\"> IGN </"
+"link> cartography, you will have probably SRIDs out of range and you will "
+"see, when importing your database, issues like this :"
 msgstr ""
 
 #. Tag: para
@@ -8660,9 +8655,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"For general details about optimizing PostgreSQL, refer to <link xlink:"
-"href=\"https://wiki.postgresql.org/wiki/"
-"Tuning_Your_PostgreSQL_Server\">Tuning your PostgreSQL Server</link>."
+"For general details about optimizing PostgreSQL, refer to <link xlink:href="
+"\"https://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server\">Tuning "
+"your PostgreSQL Server</link>."
 msgstr ""
 
 #. Tag: para
@@ -10136,8 +10131,8 @@ msgstr ""
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
-"Last but not least, <link xlink:href=\"http://www.postgresql."
-"org\">PostgreSQL</link>, the giant that PostGIS stands on. Much of the speed "
+"Last but not least, <link xlink:href=\"http://www.postgresql.org"
+"\">PostgreSQL</link>, the giant that PostGIS stands on. Much of the speed "
 "and flexibility of PostGIS would not be possible without the extensibility, "
 "great query planner, GIST index, and plethora of SQL features provided by "
 "PostgreSQL."
@@ -10167,21 +10162,21 @@ msgstr "Descripcion del problema"
 #, fuzzy, no-c-format
 msgid ""
 "Current PostgreSQL versions (including 9.6) suffer from a query optimizer "
-"weakness regarding TOAST tables. TOAST tables are a kind of \"extension "
-"room\" used to store large (in the sense of data size) values that do not "
-"fit into normal data pages (like long texts, images or complex geometries "
-"with lots of vertices), see <link xlink:href=\"http://www.postgresql.org/"
-"docs/current/static/storage-toast.html\">the PostgreSQL Documentation for "
-"TOAST</link> for more information)."
+"weakness regarding TOAST tables. TOAST tables are a kind of \"extension room"
+"\" used to store large (in the sense of data size) values that do not fit "
+"into normal data pages (like long texts, images or complex geometries with "
+"lots of vertices), see <link xlink:href=\"http://www.postgresql.org/docs/"
+"current/static/storage-toast.html\">the PostgreSQL Documentation for TOAST</"
+"link> for more information)."
 msgstr ""
 "Versiones actuales de PostgreSQL (incluyendo la 8.0) tienen algunas "
 "debilidades en la optimización de consultas respecto a tablas TOAST. Las "
 "tablas TOAST son una especie de \"cámara de extensiones\" utilizadas para "
 "almacenar valores grandes (en sentido de tamaño de datos) que no se pueden "
 "mostrar en paginas de datos (como textos largos, imágenes o geometrías "
-"complejas con muchos vértices). Para mas información visita <link xlink:"
-"href=\"http://www.postgresql.org/docs/current/static/storage-toast."
-"html\">the PostgreSQL Documentation for TOAST</link>"
+"complejas con muchos vértices). Para mas información visita <link xlink:href="
+"\"http://www.postgresql.org/docs/current/static/storage-toast.html\">the "
+"PostgreSQL Documentation for TOAST</link>"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -10226,15 +10221,15 @@ msgstr ""
 msgid ""
 "To see whether your suffer from this issue, use the \"EXPLAIN ANALYZE\" "
 "postgresql command. For more information and the technical details, you can "
-"read the thread on the PostgreSQL performance mailing list: <link xlink:"
-"href=\"http://archives.postgresql.org/pgsql-performance/2005-02/msg00030."
-"php\">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</"
+"read the thread on the PostgreSQL performance mailing list: <link xlink:href="
+"\"http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php"
+"\">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</"
 "link>"
 msgstr ""
-"Para comprobar si padeces de este error, utiliza el comando \"EXPLAIN "
-"ANALYZE\" postgresql. Para obtener más información y los detalles técnicos, "
-"puedes leer el hilo en la lista de correo de rendimiento postgres: http://"
-"archives.postgresql.org/pgsql-performance/2005-02/msg00030.php"
+"Para comprobar si padeces de este error, utiliza el comando \"EXPLAIN ANALYZE"
+"\" postgresql. Para obtener más información y los detalles técnicos, puedes "
+"leer el hilo en la lista de correo de rendimiento postgres: http://archives."
+"postgresql.org/pgsql-performance/2005-02/msg00030.php"
 
 #. Tag: para
 #, no-c-format
@@ -10555,8 +10550,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The functions and operators given below are PostGIS functions/operators that "
-"take as input or return as output a <link "
-"linkend=\"PostGIS_Geography\">geography</link> data type object."
+"take as input or return as output a <link linkend=\"PostGIS_Geography"
+"\">geography</link> data type object."
 msgstr ""
 
 #. Tag: para
@@ -10621,8 +10616,8 @@ msgstr ""
 msgid ""
 "The functions given below are PostGIS functions that take as input or return "
 "as output the box* family of PostGIS spatial types. The box family of types "
-"consists of <link linkend=\"box2d_type\">box2d</link>, and <link "
-"linkend=\"box3d_type\">box3d</link>"
+"consists of <link linkend=\"box2d_type\">box2d</link>, and <link linkend="
+"\"box3d_type\">box3d</link>"
 msgstr ""
 
 #. Tag: section
@@ -11025,13 +11020,13 @@ msgstr "&M_support;"
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
-", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref "
-"linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, "
-"<xref linkend=\"ST_Envelope\"/>"
+", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref linkend="
+"\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, <xref "
+"linkend=\"ST_Envelope\"/>"
 msgstr ""
-", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref "
-"linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, "
-"<xref linkend=\"geometry_overlaps_nd\"/>"
+", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref linkend="
+"\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, <xref "
+"linkend=\"geometry_overlaps_nd\"/>"
 
 #. Tag: refpurpose
 #, fuzzy, no-c-format
@@ -11160,8 +11155,8 @@ msgstr "Ejemplos de superficies poliedricas, MDT y triángulos"
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
-"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_GeometryN\"/>"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
+"\"ST_Collect\"/>, <xref linkend=\"ST_GeometryN\"/>"
 msgstr ""
 ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
 "\"ST_Collect\"/>, <xref linkend=\"ST_GeometryN\"/>"
@@ -11208,8 +11203,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"To obtain a single geometry containing the coordinates use <xref "
-"linkend=\"ST_Points\"/>."
+"To obtain a single geometry containing the coordinates use <xref linkend="
+"\"ST_Points\"/>."
 msgstr ""
 
 #. Tag: para
@@ -11230,9 +11225,8 @@ msgstr "Ejemplos Estándar"
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
-"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_DumpRings\"/>, <xref "
-"linkend=\"ST_Points\"/>"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
+"\"/>, <xref linkend=\"ST_DumpRings\"/>, <xref linkend=\"ST_Points\"/>"
 msgstr ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 "linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
@@ -11286,11 +11280,11 @@ msgstr "Ejemplos de superficies poliedricas, MDT y triángulos"
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
-"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_DumpRings\"/>"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
+"\"/>, <xref linkend=\"ST_DumpRings\"/>"
 msgstr ""
-", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
-"linkend=\"ST_NumInteriorRing\"/>,"
+", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Dump\"/>, <xref linkend="
+"\"ST_NumInteriorRing\"/>,"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -11343,9 +11337,9 @@ msgstr ""
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
-"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
-"linkend=\"ST_InteriorRingN\"/>"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
+"\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_InteriorRingN"
+"\"/>"
 msgstr ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 "linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
@@ -11504,8 +11498,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This function does not support MULTIPOLYGONs. For MULTIPOLYGONs use in "
-"conjunction with <xref linkend=\"ST_GeometryN\"/> or <xref "
-"linkend=\"ST_Dump\"/>"
+"conjunction with <xref linkend=\"ST_GeometryN\"/> or <xref linkend=\"ST_Dump"
+"\"/>"
 msgstr ""
 "Esta función no admite MULTIPOLÍGONOS. Para MULTIPOLÍGONOS, utilícela junto "
 "con <xref linkend=\"ST_GeometryN\"/> o <xref linkend=\"ST_Dump\"/>"
@@ -11658,8 +11652,8 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 8.2.6, 8.3.5"
 #, fuzzy, no-c-format
 msgid ""
 ", <xref linkend=\"ST_BuildArea\"/>, <xref linkend=\"ST_Collect\"/>, <xref "
-"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_NumInteriorRing\"/>, <xref "
-"linkend=\"ST_NumInteriorRings\"/>"
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_NumInteriorRing\"/>, <xref linkend="
+"\"ST_NumInteriorRings\"/>"
 msgstr ""
 ", <xref linkend=\"ST_M\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/"
 ">, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
@@ -11920,13 +11914,13 @@ msgstr ""
 msgid ""
 "Returns true if this Geometry has no anomalous geometric points, such as "
 "self-intersection or self-tangency. For more information on the OGC's "
-"definition of geometry simplicity and validity, refer to <link "
-"linkend=\"OGC_Validity\">\"Ensuring OpenGIS compliancy of geometries\"</link>"
+"definition of geometry simplicity and validity, refer to <link linkend="
+"\"OGC_Validity\">\"Ensuring OpenGIS compliancy of geometries\"</link>"
 msgstr ""
 "Devuelve TRUE si la geometría no tiene puntos geométricos anómalos, como "
 "auto intersecciones o tangencias. Para mas información sobre la definición "
-"del OGC de simplicidad y validez geométrica, visita el enlace <link "
-"linkend=\"OGC_Validity\">\"Ensuring OpenGIS compliancy of geometries\"</link>"
+"del OGC de simplicidad y validez geométrica, visita el enlace <link linkend="
+"\"OGC_Validity\">\"Ensuring OpenGIS compliancy of geometries\"</link>"
 
 #. Tag: para
 #, no-c-format
@@ -11993,8 +11987,8 @@ msgstr "Devuelve el tipo de geometría del valor de ST_Geometry."
 #, no-c-format
 msgid ""
 "This complements the PostgreSQL built-in <link xlink:href=\"https://www."
-"postgresql.org/docs/current/functions-admin.html#FUNCTIONS-ADMIN-"
-"DBOBJECT\">database object functions</link> pg_column_size, pg_size_pretty, "
+"postgresql.org/docs/current/functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT"
+"\">database object functions</link> pg_column_size, pg_size_pretty, "
 "pg_relation_size, pg_total_relation_size."
 msgstr ""
 
@@ -12322,8 +12316,8 @@ msgstr ""
 msgid ""
 "Returns a MultiPoint containing all the coordinates of a geometry. Duplicate "
 "points are preserved, including the start and end points of ring geometries. "
-"(If desired, duplicate points can be removed by calling <xref "
-"linkend=\"ST_RemoveRepeatedPoints\"/> on the result)."
+"(If desired, duplicate points can be removed by calling <xref linkend="
+"\"ST_RemoveRepeatedPoints\"/> on the result)."
 msgstr ""
 
 #. Tag: para
@@ -12695,11 +12689,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns the estimated extent of a spatial table as a <xref "
-"linkend=\"box2d_type\"/>. The current schema is used if not specified. The "
-"estimated extent is taken from the geometry column's statistics. This is "
-"usually much faster than computing the exact extent of the table using <xref "
-"linkend=\"ST_Extent\"/> or <xref linkend=\"ST_3DExtent\"/>."
+"Returns the estimated extent of a spatial table as a <xref linkend="
+"\"box2d_type\"/>. The current schema is used if not specified. The estimated "
+"extent is taken from the geometry column's statistics. This is usually much "
+"faster than computing the exact extent of the table using <xref linkend="
+"\"ST_Extent\"/> or <xref linkend=\"ST_3DExtent\"/>."
 msgstr ""
 
 #. Tag: para
@@ -12779,11 +12773,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Pre version 1.3, ST_Expand was used in conjunction with <xref "
-"linkend=\"ST_Distance\"/> to do indexable distance queries. For example, "
-"<code>geom &amp;&amp; ST_Expand('POINT(10 20)', 10) AND ST_Distance(geom, "
-"'POINT(10 20)') &lt; 10</code>. This has been replaced by the simpler and "
-"more efficient <xref linkend=\"ST_DWithin\"/> function."
+"Pre version 1.3, ST_Expand was used in conjunction with <xref linkend="
+"\"ST_Distance\"/> to do indexable distance queries. For example, <code>geom "
+"&amp;&amp; ST_Expand('POINT(10 20)', 10) AND ST_Distance(geom, 'POINT(10 "
+"20)') &lt; 10</code>. This has been replaced by the simpler and more "
+"efficient <xref linkend=\"ST_DWithin\"/> function."
 msgstr ""
 
 #. Tag: para
@@ -12946,8 +12940,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
-"linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
+"\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -12987,8 +12981,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
-"linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
+"\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -13007,9 +13001,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref "
-"linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
-"linkend=\"ST_ZMin\"/>"
+", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
+"\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -13028,9 +13021,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref "
-"linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
-"linkend=\"ST_ZMax\"/>"
+", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
+"\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -13050,8 +13042,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
-"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref "
-"linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
+"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin"
+"\"/>, <xref linkend=\"ST_ZMax\"/>"
 msgstr ""
 
 #. Tag: title
@@ -13075,13 +13067,12 @@ msgstr ""
 #, no-c-format
 msgid ""
 "A window function that returns a cluster number for each input geometry, "
-"using the 2D <link xlink:href=\"https://en.wikipedia.org/wiki/"
-"DBSCAN\">Density-based spatial clustering of applications with noise "
-"(DBSCAN)</link> algorithm. Unlike <xref linkend=\"ST_ClusterKMeans\"/>, it "
-"does not require the number of clusters to be specified, but instead uses "
-"the desired <link linkend=\"ST_Distance\">distance</link> (<varname>eps</"
-"varname>) and density (<varname>minpoints</varname>) parameters to determine "
-"each cluster."
+"using the 2D <link xlink:href=\"https://en.wikipedia.org/wiki/DBSCAN"
+"\">Density-based spatial clustering of applications with noise (DBSCAN)</"
+"link> algorithm. Unlike <xref linkend=\"ST_ClusterKMeans\"/>, it does not "
+"require the number of clusters to be specified, but instead uses the desired "
+"<link linkend=\"ST_Distance\">distance</link> (<varname>eps</varname>) and "
+"density (<varname>minpoints</varname>) parameters to determine each cluster."
 msgstr ""
 
 #. Tag: para
@@ -13092,16 +13083,16 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"A \"core\" geometry, that is within <varname>eps</varname> <link "
-"linkend=\"ST_Distance\">distance</link> of at least <varname>minpoints</"
-"varname> input geometries (including itself); or"
+"A \"core\" geometry, that is within <varname>eps</varname> <link linkend="
+"\"ST_Distance\">distance</link> of at least <varname>minpoints</varname> "
+"input geometries (including itself); or"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"A \"border\" geometry, that is within <varname>eps</varname> <link "
-"linkend=\"ST_Distance\">distance</link> of a core geometry."
+"A \"border\" geometry, that is within <varname>eps</varname> <link linkend="
+"\"ST_Distance\">distance</link> of a core geometry."
 msgstr ""
 
 #. Tag: para
@@ -13149,10 +13140,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClusterKMeans\"/>, <xref "
-"linkend=\"ST_ClusterIntersecting\"/>, <xref "
-"linkend=\"ST_ClusterIntersectingWin\"/>, <xref linkend=\"ST_ClusterWithin\"/"
-">, <xref linkend=\"ST_ClusterWithinWin\"/>"
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend="
+"\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterIntersectingWin\"/>, "
+"<xref linkend=\"ST_ClusterWithin\"/>, <xref linkend=\"ST_ClusterWithinWin\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -13172,8 +13162,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClusterWithin\"/>, <xref "
-"linkend=\"ST_ClusterWithinWin\"/>"
+", <xref linkend=\"ST_ClusterWithin\"/>, <xref linkend=\"ST_ClusterWithinWin"
+"\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -13202,12 +13192,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns <link xlink:href=\"https://en.wikipedia.org/wiki/K-"
-"means_clustering\">K-means</link> cluster number for each input geometry. "
-"The distance used for clustering is the distance between the centroids for "
-"2D geometries, and distance between bounding box centers for 3D geometries. "
-"For POINT inputs, M coordinate will be treated as weight of input and has to "
-"be larger than 0."
+"Returns <link xlink:href=\"https://en.wikipedia.org/wiki/K-means_clustering"
+"\">K-means</link> cluster number for each input geometry. The distance used "
+"for clustering is the distance between the centroids for 2D geometries, and "
+"distance between bounding box centers for 3D geometries. For POINT inputs, M "
+"coordinate will be treated as weight of input and has to be larger than 0."
 msgstr ""
 
 #. Tag: para
@@ -13249,9 +13238,9 @@ msgstr ""
 msgid ""
 "Example: Clustering a preaggregated planetary-scale data population dataset "
 "using 3D clusering and weighting. Identify at least 20 regions based on "
-"<link xlink:href=\"https://data.humdata.org/dataset/kontur-population-"
-"dataset\">Kontur Population Data</link> that do not span more than 3000 km "
-"from their center:"
+"<link xlink:href=\"https://data.humdata.org/dataset/kontur-population-dataset"
+"\">Kontur Population Data</link> that do not span more than 3000 km from "
+"their center:"
 msgstr ""
 
 #. Tag: para
@@ -13266,10 +13255,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClusterIntersectingWin\"/>, <xref "
-"linkend=\"ST_ClusterWithinWin\"/>, <xref linkend=\"ST_ClusterIntersecting\"/"
-">, <xref linkend=\"ST_ClusterWithin\"/>, <xref linkend=\"ST_Subdivide\"/>, "
-"<xref linkend=\"ST_Force_3D\"/>, <xref linkend=\"ST_Force_4D\"/>,"
+", <xref linkend=\"ST_ClusterIntersectingWin\"/>, <xref linkend="
+"\"ST_ClusterWithinWin\"/>, <xref linkend=\"ST_ClusterIntersecting\"/>, <xref "
+"linkend=\"ST_ClusterWithin\"/>, <xref linkend=\"ST_Subdivide\"/>, <xref "
+"linkend=\"ST_Force_3D\"/>, <xref linkend=\"ST_Force_4D\"/>,"
 msgstr ""
 
 #. Tag: refpurpose
@@ -13298,9 +13287,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClusterDBSCAN\"/>, <xref "
-"linkend=\"ST_ClusterIntersecting\"/>, <xref "
-"linkend=\"ST_ClusterIntersectingWin\"/>"
+", <xref linkend=\"ST_ClusterDBSCAN\"/>, <xref linkend="
+"\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterIntersectingWin\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -13323,16 +13311,15 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"ST_ClusterWithinWin is equivalent to running <xref "
-"linkend=\"ST_ClusterDBSCAN\"/> with <code>minpoints := 0</code>."
+"ST_ClusterWithinWin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN"
+"\"/> with <code>minpoints := 0</code>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClusterDBSCAN\"/>, <xref "
-"linkend=\"ST_ClusterIntersecting\"/>, <xref "
-"linkend=\"ST_ClusterIntersectingWin\"/>,"
+", <xref linkend=\"ST_ClusterDBSCAN\"/>, <xref linkend="
+"\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterIntersectingWin\"/>,"
 msgstr ""
 
 #. Tag: title
@@ -13686,9 +13673,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "While not OGC-compliant, <varname>ST_MakePoint</varname> is faster and more "
-"precise than <xref linkend=\"ST_GeomFromText\"/> and <xref "
-"linkend=\"ST_PointFromText\"/>. It is also easier to use for numeric "
-"coordinate values."
+"precise than <xref linkend=\"ST_GeomFromText\"/> and <xref linkend="
+"\"ST_PointFromText\"/>. It is also easier to use for numeric coordinate "
+"values."
 msgstr ""
 
 #. Tag: para
@@ -13782,13 +13769,12 @@ msgstr ""
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
-"This function does not accept MultiLineStrings. Use <xref "
-"linkend=\"ST_LineMerge\"/> to generate a LineString, or <xref "
-"linkend=\"ST_Dump\"/> to extract LineStrings."
+"This function does not accept MultiLineStrings. Use <xref linkend="
+"\"ST_LineMerge\"/> to generate a LineString, or <xref linkend=\"ST_Dump\"/> "
+"to extract LineStrings."
 msgstr ""
-"Esta función no acepta una MULTILINESTRING. Utiliza <xref "
-"linkend=\"ST_LineMerge\"/> o <xref linkend=\"ST_Dump\"/> para generar una "
-"linestring."
+"Esta función no acepta una MULTILINESTRING. Utiliza <xref linkend="
+"\"ST_LineMerge\"/> o <xref linkend=\"ST_Dump\"/> para generar una linestring."
 
 #. Tag: title
 #, fuzzy, no-c-format
@@ -13803,8 +13789,8 @@ msgstr "Crea un LineString desde una cadena de polilínea codificada."
 #. Tag: para
 #, no-c-format
 msgid ""
-"Create a Polygon from an open LineString, using <xref "
-"linkend=\"ST_StartPoint\"/> and <xref linkend=\"ST_AddPoint\"/> to close it."
+"Create a Polygon from an open LineString, using <xref linkend=\"ST_StartPoint"
+"\"/> and <xref linkend=\"ST_AddPoint\"/> to close it."
 msgstr ""
 
 #. Tag: para
@@ -13832,13 +13818,13 @@ msgstr "Contruye un donut con un agujero de hormiga"
 msgid ""
 "Create a set of province boundaries with holes representing lakes. The input "
 "is a table of province Polygons/MultiPolygons and a table of water "
-"linestrings. Lines forming lakes are determined by using <xref "
-"linkend=\"ST_IsClosed\"/>. The province linework is extracted by using <xref "
-"linkend=\"ST_Boundary\"/>. As required by <code>ST_MakePolygon</code>, the "
-"boundary is forced to be a single LineString by using <xref "
-"linkend=\"ST_LineMerge\"/>. (However, note that if a province has more than "
-"one region or has islands this will produce an invalid polygon.) Using a "
-"LEFT JOIN ensures all provinces are included even if they have no lakes."
+"linestrings. Lines forming lakes are determined by using <xref linkend="
+"\"ST_IsClosed\"/>. The province linework is extracted by using <xref linkend="
+"\"ST_Boundary\"/>. As required by <code>ST_MakePolygon</code>, the boundary "
+"is forced to be a single LineString by using <xref linkend=\"ST_LineMerge\"/"
+">. (However, note that if a province has more than one region or has islands "
+"this will produce an invalid polygon.) Using a LEFT JOIN ensures all "
+"provinces are included even if they have no lakes."
 msgstr ""
 
 #. Tag: para
@@ -13925,12 +13911,12 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref "
-"linkend=\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
+"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
+"\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
 msgstr ""
 ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref "
-"linkend=\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
+"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
+"\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -13949,8 +13935,8 @@ msgstr ""
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
-", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
-"linkend=\"ST_PointZM\"/>"
+", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref linkend="
+"\"ST_PointZM\"/>"
 msgstr ""
 ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
 "linkend=\"ST_SRID\"/>"
@@ -13972,8 +13958,8 @@ msgstr ""
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
-", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointZ\"/>, <xref "
-"linkend=\"ST_PointZM\"/>"
+", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
+"\"ST_PointZM\"/>"
 msgstr ""
 ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
 "linkend=\"ST_SRID\"/>"
@@ -13995,8 +13981,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
-"linkend=\"ST_PointZ\"/>, <xref linkend=\"ST_SetSRID\"/>"
+", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref linkend="
+"\"ST_PointZ\"/>, <xref linkend=\"ST_SetSRID\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -14575,8 +14561,8 @@ msgstr ""
 msgid ""
 "This function does not ensure that the result is valid. In particular, a "
 "collection containing adjacent or overlapping Polygons will create an "
-"invalid MultiPolygon. This situation can be checked with <xref "
-"linkend=\"ST_IsValid\"/> and repaired with <xref linkend=\"ST_MakeValid\"/>."
+"invalid MultiPolygon. This situation can be checked with <xref linkend="
+"\"ST_IsValid\"/> and repaired with <xref linkend=\"ST_MakeValid\"/>."
 msgstr ""
 
 #. Tag: para
@@ -15572,11 +15558,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The returned geometry might lose its simplicity (see <xref "
-"linkend=\"ST_IsSimple\"/>)."
+"The returned geometry might lose its simplicity (see <xref linkend="
+"\"ST_IsSimple\"/>)."
 msgstr ""
-"La geometría devuelta podría perder su simplicidad (ver <xref "
-"linkend=\"ST_IsSimple\"/>)."
+"La geometría devuelta podría perder su simplicidad (ver <xref linkend="
+"\"ST_IsSimple\"/>)."
 
 #. Tag: para
 #, no-c-format
@@ -15658,11 +15644,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The returned geometry might lose its simplicity (see <xref "
-"linkend=\"ST_IsSimple\"/>) and validity (see <xref linkend=\"ST_IsValid\"/>)."
+"The returned geometry might lose its simplicity (see <xref linkend="
+"\"ST_IsSimple\"/>) and validity (see <xref linkend=\"ST_IsValid\"/>)."
 msgstr ""
-"La geometría devuelta puede perder su simplicidad (ver <xref "
-"linkend=\"ST_IsSimple\"/>) y su validez (ver <xref linkend=\"ST_IsValid\"/>)."
+"La geometría devuelta puede perder su simplicidad (ver <xref linkend="
+"\"ST_IsSimple\"/>) y su validez (ver <xref linkend=\"ST_IsValid\"/>)."
 
 #. Tag: para
 #, no-c-format
@@ -15844,8 +15830,8 @@ msgid ""
 "to control caching."
 msgstr ""
 "Devuelve TRUE si el bbox de la geometría está almacenado en caché, FALSE de "
-"lo contrario. Utilice <xref linkend=\"PostGIS_AddBBox\"/> y <xref "
-"linkend=\"PostGIS_DropBBox\"/> para controlar el almacenamiento en caché."
+"lo contrario. Utilice <xref linkend=\"PostGIS_AddBBox\"/> y <xref linkend="
+"\"PostGIS_DropBBox\"/> para controlar el almacenamiento en caché."
 
 #. Tag: para
 #, no-c-format
@@ -15973,8 +15959,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Enabled GDAL specified drivers can be specified by the driver's short-name "
-"or code. Driver short-names or codes can be found at <link xlink:"
-"href=\"http://www.gdal.org/formats_list.html\">GDAL Raster Formats</link>. "
+"or code. Driver short-names or codes can be found at <link xlink:href="
+"\"http://www.gdal.org/formats_list.html\">GDAL Raster Formats</link>. "
 "Multiple drivers can be specified by putting a space between each driver."
 msgstr ""
 
@@ -16131,10 +16117,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "A string configuration to set options used when working with an out-db "
-"raster. <link xlink:href=\"http://trac.osgeo.org/gdal/wiki/"
-"ConfigOptions\">Configuration options</link> control things like how much "
-"space GDAL allocates to local data cache, whether to read overviews, and "
-"what access keys to use for remote out-db data sources."
+"raster. <link xlink:href=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions"
+"\">Configuration options</link> control things like how much space GDAL "
+"allocates to local data cache, whether to read overviews, and what access "
+"keys to use for remote out-db data sources."
 msgstr ""
 
 #. Tag: para
@@ -16234,9 +16220,8 @@ msgid ""
 "Throws an error if WKT is not a MULTILINESTRING. Forces MULTIPOLYGON output "
 "even when result is really only composed by a single POLYGON; use <link "
 "linkend=\"ST_BdPolyFromText\">ST_BdPolyFromText</link> if you're sure a "
-"single POLYGON will result from operation, or see <link "
-"linkend=\"ST_BuildArea\">ST_BuildArea()</link> for a postgis-specific "
-"approach."
+"single POLYGON will result from operation, or see <link linkend="
+"\"ST_BuildArea\">ST_BuildArea()</link> for a postgis-specific approach."
 msgstr ""
 "Envia un error si el WKT no es una MULTILINESTRING. Fuerza  una salida "
 "MULTIPOLYGON aunque el resultado este compuesto por un único POLYGON; puedes "
@@ -16990,8 +16975,8 @@ msgstr ""
 msgid ""
 "If an SRID is not specified, it defaults to 0. <varname>NULL</varname> is "
 "returned if the input <varname>bytea</varname> does not represent a "
-"<varname>LINESTRING</varname> geometry. This an alias for <xref "
-"linkend=\"ST_LineFromWKB\"/>."
+"<varname>LINESTRING</varname> geometry. This an alias for <xref linkend="
+"\"ST_LineFromWKB\"/>."
 msgstr ""
 "Si no se especifica un SRID, el valor predeterminado es 0.<varname>NULL</"
 "varname>  se devuelve si la entrada <varname>bytea</varname> no representa "
@@ -17113,11 +17098,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_GeomFromGeoHash\"/>, <xref "
-"linkend=\"ST_PointFromGeoHash\"/>"
+", <xref linkend=\"ST_GeomFromGeoHash\"/>, <xref linkend=\"ST_PointFromGeoHash"
+"\"/>"
 msgstr ""
-", <xref linkend=\"ST_GeomFromGeoHash\"/>, <xref "
-"linkend=\"ST_PointFromGeoHash\"/>"
+", <xref linkend=\"ST_GeomFromGeoHash\"/>, <xref linkend=\"ST_PointFromGeoHash"
+"\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -17155,11 +17140,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-",<xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref "
-"linkend=\"ST_PointFromGeoHash\"/>"
+",<xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_PointFromGeoHash"
+"\"/>"
 msgstr ""
-",<xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref "
-"linkend=\"ST_PointFromGeoHash\"/>"
+",<xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_PointFromGeoHash"
+"\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -17326,17 +17311,17 @@ msgid ""
 msgstr ""
 "Si no tienes activado el soporte de JSON-C, tendrás un mensaje error en vez "
 "de ver la salida. Para activar el soporte JSON-C, ejecuta configure --with-"
-"jsondir=/path/to/json-c. Para mas detalles ve a <xref "
-"linkend=\"installation_configuration\"/>."
+"jsondir=/path/to/json-c. Para mas detalles ve a <xref linkend="
+"\"installation_configuration\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_AsGeoJSON\"/>, <xref "
-"linkend=\"installation_configuration\"/>"
+", <xref linkend=\"ST_AsGeoJSON\"/>, <xref linkend="
+"\"installation_configuration\"/>"
 msgstr ""
-", <xref linkend=\"ST_AsGeoJSON\"/>, <xref "
-"linkend=\"installation_configuration\"/>"
+", <xref linkend=\"ST_AsGeoJSON\"/>, <xref linkend="
+"\"installation_configuration\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -17395,8 +17380,8 @@ msgstr ", <xref linkend=\"ST_AsKML\"/>"
 #, no-c-format
 msgid ""
 "Creates a geometry instance from a TWKB (\"<link xlink:href=\"https://github."
-"com/TWKB/Specification/blob/master/twkb.md\">Tiny Well-Known Binary</"
-"link>\") geometry representation."
+"com/TWKB/Specification/blob/master/twkb.md\">Tiny Well-Known Binary</link>"
+"\") geometry representation."
 msgstr ""
 "Crea una instancia de geometría de una representación geométrica TWKB "
 "(\"<link xlink:href=\"https://github.com/TWKB/Specification/blob/master/twkb."
@@ -17406,8 +17391,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The <varname>ST_GeomFromTWKB</varname> function, takes a a TWKB (\"<link "
-"xlink:href=\"https://github.com/TWKB/Specification/blob/master/twkb."
-"md\">Tiny Well-Known Binary</link>\") geometry representation (WKB) and "
+"xlink:href=\"https://github.com/TWKB/Specification/blob/master/twkb.md"
+"\">Tiny Well-Known Binary</link>\") geometry representation (WKB) and "
 "creates an instance of the appropriate geometry type."
 msgstr ""
 "La función <varname>ST_GeomFromTWKB</varname> toma un TWKB (\"<link xlink:"
@@ -17497,11 +17482,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref "
-"linkend=\"ST_GeomFromGeoHash\"/>"
+", <xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_GeomFromGeoHash"
+"\"/>"
 msgstr ""
-", <xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref "
-"linkend=\"ST_GeomFromGeoHash\"/>"
+", <xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_GeomFromGeoHash"
+"\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -17511,8 +17496,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Creates a table based on the structure of FlatGeobuf data. (<link xlink:"
-"href=\"http://flatgeobuf.org\">http://flatgeobuf.org</link>)."
+"Creates a table based on the structure of FlatGeobuf data. (<link xlink:href="
+"\"http://flatgeobuf.org\">http://flatgeobuf.org</link>)."
 msgstr ""
 
 #. Tag: para
@@ -17632,11 +17617,11 @@ msgstr ""
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
-", <xref linkend=\"ST_3DLineInterpolatePoint\"/>, <xref "
-"linkend=\"ST_LineLocatePoint\"/>"
+", <xref linkend=\"ST_3DLineInterpolatePoint\"/>, <xref linkend="
+"\"ST_LineLocatePoint\"/>"
 msgstr ""
-", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref "
-"linkend=\"ST_LineMerge\"/>"
+", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
+"\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -17671,11 +17656,11 @@ msgstr ""
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
-", <xref linkend=\"ST_LineInterpolatePoints\"/>, <xref "
-"linkend=\"ST_LineLocatePoint\"/>"
+", <xref linkend=\"ST_LineInterpolatePoints\"/>, <xref linkend="
+"\"ST_LineLocatePoint\"/>"
 msgstr ""
-", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref "
-"linkend=\"ST_LineMerge\"/>"
+", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
+"\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -17689,8 +17674,8 @@ msgid ""
 "interval. The first argument must be a LINESTRING. The second argument is a "
 "float8 between 0 and 1 representing the spacing between the points as a "
 "fraction of line length. If the third argument is false, at most one point "
-"will be constructed (which is equivalent to <xref "
-"linkend=\"ST_LineInterpolatePoint\"/>.)"
+"will be constructed (which is equivalent to <xref linkend="
+"\"ST_LineInterpolatePoint\"/>.)"
 msgstr ""
 
 #. Tag: para
@@ -17720,8 +17705,8 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid ""
 "Returns a float between 0 and 1 representing the location of the closest "
-"point on a LineString to the given Point, as a fraction of <link "
-"linkend=\"ST_Length2D\">2d line</link> length."
+"point on a LineString to the given Point, as a fraction of <link linkend="
+"\"ST_Length2D\">2d line</link> length."
 msgstr ""
 "Devuelve un float entre 0 y 1 que representa la ubicación del punto más "
 "cercano en la cadena de línea al punto dado, como una fracción de la "
@@ -17730,13 +17715,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"You can use the returned location to extract a Point (<xref "
-"linkend=\"ST_LineInterpolatePoint\"/>) or a substring (<xref "
-"linkend=\"ST_LineSubstring\"/>)."
+"You can use the returned location to extract a Point (<xref linkend="
+"\"ST_LineInterpolatePoint\"/>) or a substring (<xref linkend="
+"\"ST_LineSubstring\"/>)."
 msgstr ""
-"Puede utilizar la ubicación devuelta para extraer un punto (<xref "
-"linkend=\"ST_LineInterpolatePoint\"/>) o una subcadena (<xref "
-"linkend=\"ST_LineSubstring\"/>)."
+"Puede utilizar la ubicación devuelta para extraer un punto (<xref linkend="
+"\"ST_LineInterpolatePoint\"/>) o una subcadena (<xref linkend="
+"\"ST_LineSubstring\"/>)."
 
 #. Tag: para
 #, no-c-format
@@ -17776,8 +17761,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If <varname>startfraction</varname> and <varname>endfraction</varname> have "
-"the same value this is equivalent to <xref "
-"linkend=\"ST_LineInterpolatePoint\"/>."
+"the same value this is equivalent to <xref linkend=\"ST_LineInterpolatePoint"
+"\"/>."
 msgstr ""
 "Si <varname>startfraction</varname> y <varname>endfraction</varname> tienen "
 "el mismo valor, esto equivale a <xref linkend=\"ST_LineInterpolatePoint\"/>."
@@ -17842,11 +17827,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref "
-"linkend=\"ST_LineMerge\"/>"
+", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
+"\"/>"
 msgstr ""
-", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref "
-"linkend=\"ST_LineMerge\"/>"
+", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
+"\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -17904,8 +17889,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_LocateBetweenElevations\"/>, <xref "
-"linkend=\"ST_InterpolatePoint\"/>"
+", <xref linkend=\"ST_LocateBetweenElevations\"/>, <xref linkend="
+"\"ST_InterpolatePoint\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -18109,8 +18094,8 @@ msgid ""
 "correctly because they inherit the typmod behavior of their parent table "
 "column. Views that use geometry functions that output other geometries will "
 "need to be cast to typmod geometries for these view geometry columns to be "
-"registered correctly in geometry_columns. Refer to <xref "
-"linkend=\"Manual_Register_Spatial_Column\"/>."
+"registered correctly in geometry_columns. Refer to <xref linkend="
+"\"Manual_Register_Spatial_Column\"/>."
 msgstr ""
 "Cambiado: 2.0.0 Las Vistas ya no pueden ser registradas manualmente en "
 "geometry_columns, no obstante las vistas se que construyan a partir de "
@@ -18529,12 +18514,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_GeomFromText\"/>, <xref "
-"linkend=\"ST_GeographyFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"ST_Transform\"/>"
+", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_GeographyFromText"
+"\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ""
-", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_GeographyFromText\""
-"/>, <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>"
+", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_GeographyFromText"
+"\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -18574,10 +18558,9 @@ msgstr ""
 msgid ""
 "Azimuth can be used in conjunction with <xref linkend=\"ST_Translate\"/> to "
 "shift an object along its perpendicular axis. See the "
-"<varname>upgis_lineshift()</varname> function in the <link xlink:"
-"href=\"http://trac.osgeo.org/postgis/wiki/"
-"UsersWikiplpgsqlfunctions\">PostGIS wiki</link> for an implementation of "
-"this."
+"<varname>upgis_lineshift()</varname> function in the <link xlink:href="
+"\"http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions\">PostGIS "
+"wiki</link> for an implementation of this."
 msgstr ""
 
 #. Tag: para
@@ -18694,8 +18677,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"If you have a 3D Geometry, you may prefer to use <xref "
-"linkend=\"ST_3DClosestPoint\"/>."
+"If you have a 3D Geometry, you may prefer to use <xref linkend="
+"\"ST_3DClosestPoint\"/>."
 msgstr ""
 
 #. Tag: para
@@ -18872,8 +18855,8 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DistanceSphere\"/>, "
 "<xref linkend=\"ST_Distance_Spheroid\"/>, <xref linkend=\"ST_MaxDistance\"/"
-">, <xref linkend=\"ST_HausdorffDistance\"/>, <xref "
-"linkend=\"ST_FrechetDistance\"/>, <xref linkend=\"ST_Transform\"/>"
+">, <xref linkend=\"ST_HausdorffDistance\"/>, <xref linkend="
+"\"ST_FrechetDistance\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -19479,9 +19462,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"To avoid validity issues caused by precision loss, <xref "
-"linkend=\"ST_ReducePrecision\"/> can reduce coordinate precision while "
-"ensuring that polygonal geometry remains valid."
+"To avoid validity issues caused by precision loss, <xref linkend="
+"\"ST_ReducePrecision\"/> can reduce coordinate precision while ensuring that "
+"polygonal geometry remains valid."
 msgstr ""
 
 #. Tag: para
@@ -19932,12 +19915,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Computes the <link xlink:href=\"https://en.wikipedia.org/wiki/"
-"Alpha_shape\">Alpha-Shape</link> of the points in a geometry. An alpha-shape "
-"is a (usually) concave polygonal geometry which contains all the vertices of "
-"the input, and whose vertices are a subset of the input vertices. An alpha-"
-"shape provides a closer fit to the shape of the input than the shape "
-"produced by the <link linkend=\"ST_ConvexHull\">convex hull</link>."
+"Computes the <link xlink:href=\"https://en.wikipedia.org/wiki/Alpha_shape"
+"\">Alpha-Shape</link> of the points in a geometry. An alpha-shape is a "
+"(usually) concave polygonal geometry which contains all the vertices of the "
+"input, and whose vertices are a subset of the input vertices. An alpha-shape "
+"provides a closer fit to the shape of the input than the shape produced by "
+"the <link linkend=\"ST_ConvexHull\">convex hull</link>."
 msgstr ""
 
 #. Tag: para
@@ -19984,22 +19967,22 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Alpha-shape of a MultiPoint (same example As <xref "
-"linkend=\"ST_OptimalAlphaShape\"/>)"
+"Alpha-shape of a MultiPoint (same example As <xref linkend="
+"\"ST_OptimalAlphaShape\"/>)"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Alpha-shape of a MultiPoint, allowing holes (same example as <xref "
-"linkend=\"ST_OptimalAlphaShape\"/>)"
+"Alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="
+"\"ST_OptimalAlphaShape\"/>)"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Alpha-shape of a MultiPoint, allowing holes (same example as <xref "
-"linkend=\"ST_ConcaveHull\"/>)"
+"Alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="
+"\"ST_ConcaveHull\"/>)"
 msgstr ""
 
 #. Tag: para
@@ -20129,9 +20112,9 @@ msgstr ""
 msgid ""
 "A minkowski sum of two geometries A and B is the set of all points that are "
 "the sum of any point in A and B. Minkowski sums are often used in motion "
-"planning and computer-aided design. More details on <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/Minkowski_addition\">Wikipedia "
-"Minkowski addition</link>."
+"planning and computer-aided design. More details on <link xlink:href="
+"\"https://en.wikipedia.org/wiki/Minkowski_addition\">Wikipedia Minkowski "
+"addition</link>."
 msgstr ""
 
 #. Tag: para
@@ -20214,8 +20197,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Optimal alpha-shape of a MultiPoint (same example as <xref "
-"linkend=\"ST_AlphaShape\"/>)"
+"Optimal alpha-shape of a MultiPoint (same example as <xref linkend="
+"\"ST_AlphaShape\"/>)"
 msgstr ""
 
 #. Tag: para
@@ -20317,9 +20300,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "When closed surfaces are created with WKT, they are treated as areal rather "
-"than solid. To make them solid, you need to use <xref "
-"linkend=\"ST_MakeSolid\"/>. Areal geometries have no volume. Here is an "
-"example to demonstrate."
+"than solid. To make them solid, you need to use <xref linkend=\"ST_MakeSolid"
+"\"/>. Areal geometries have no volume. Here is an example to demonstrate."
 msgstr ""
 
 #. Tag: para
@@ -20368,10 +20350,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Extent\"/>, <xref linkend=\"ST_Geometry_Overabove\"/>, "
-"<xref linkend=\"ST_Geometry_Overright\"/>, <xref "
-"linkend=\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/"
-">, <xref linkend=\"ST_Geometry_Contain\"/>, <xref "
-"linkend=\"ST_Geometry_Contained\"/>"
+"<xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
+"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
+"linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -20408,13 +20389,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"overlaps_box2df_box2df\"/>, <xref "
-"linkend=\"contains_geometry_box2df\"/>, <xref "
-"linkend=\"contains_box2df_geometry\"/>, <xref "
-"linkend=\"contains_box2df_box2df\"/>, <xref "
-"linkend=\"is_contained_geometry_box2df\"/>, <xref "
-"linkend=\"is_contained_box2df_geometry\"/>, <xref "
-"linkend=\"is_contained_box2df_box2df\"/>"
+", <xref linkend=\"overlaps_box2df_box2df\"/>, <xref linkend="
+"\"contains_geometry_box2df\"/>, <xref linkend=\"contains_box2df_geometry\"/"
+">, <xref linkend=\"contains_box2df_box2df\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -20460,13 +20440,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref "
-"linkend=\"contains_geometry_box2df\"/>, <xref "
-"linkend=\"contains_box2df_geometry\"/>, <xref "
-"linkend=\"contains_box2df_box2df\"/>, <xref "
-"linkend=\"is_contained_geometry_box2df\"/>, <xref "
-"linkend=\"is_contained_box2df_geometry\"/>, <xref "
-"linkend=\"is_contained_box2df_box2df\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"contains_geometry_box2df\"/>, <xref linkend=\"contains_box2df_geometry\"/"
+">, <xref linkend=\"contains_box2df_box2df\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -20573,9 +20552,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref "
-"linkend=\"ST_Geometry_Overright\"/>, <xref linkend=\"ST_Geometry_Overbelow\"/"
-">"
+", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref linkend="
+"\"ST_Geometry_Overright\"/>, <xref linkend=\"ST_Geometry_Overbelow\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -20596,8 +20574,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref "
-"linkend=\"ST_Geometry_Overright\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
+", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref linkend="
+"\"ST_Geometry_Overright\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -20619,8 +20597,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref "
-"linkend=\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
+", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref linkend="
+"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -20692,8 +20670,8 @@ msgid ""
 "same coordinates, in the same order, are considered equal by this operator. "
 "For \"spatial equality\", that ignores things like coordinate order, and can "
 "detect features that cover the same spatial area with different "
-"representations, use <xref linkend=\"ST_OrderingEquals\"/> or <xref "
-"linkend=\"ST_Equals\"/>"
+"representations, use <xref linkend=\"ST_OrderingEquals\"/> or <xref linkend="
+"\"ST_Equals\"/>"
 msgstr ""
 
 #. Tag: para
@@ -20708,8 +20686,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Changed: 2.4.0, in prior versions this was bounding box equality not a "
-"geometric equality. If you need bounding box equality, use <xref "
-"linkend=\"ST_Geometry_Same\"/> instead."
+"geometric equality. If you need bounding box equality, use <xref linkend="
+"\"ST_Geometry_Same\"/> instead."
 msgstr ""
 
 #. Tag: para
@@ -20771,13 +20749,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref "
-"linkend=\"overlaps_box2df_box2df\"/>, <xref "
-"linkend=\"contains_geometry_box2df\"/>, <xref "
-"linkend=\"contains_box2df_geometry\"/>, <xref "
-"linkend=\"contains_box2df_box2df\"/>, <xref "
-"linkend=\"is_contained_box2df_geometry\"/>, <xref "
-"linkend=\"is_contained_box2df_box2df\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
+"\"contains_box2df_box2df\"/>, <xref linkend=\"is_contained_box2df_geometry\"/"
+">, <xref linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -20799,13 +20775,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref "
-"linkend=\"overlaps_box2df_box2df\"/>, <xref "
-"linkend=\"contains_geometry_box2df\"/>, <xref "
-"linkend=\"contains_box2df_geometry\"/>, <xref "
-"linkend=\"contains_box2df_box2df\"/>, <xref "
-"linkend=\"is_contained_geometry_box2df\"/>, <xref "
-"linkend=\"is_contained_box2df_box2df\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
+"\"contains_box2df_box2df\"/>, <xref linkend=\"is_contained_geometry_box2df\"/"
+">, <xref linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -20827,13 +20801,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref "
-"linkend=\"overlaps_box2df_box2df\"/>, <xref "
-"linkend=\"contains_geometry_box2df\"/>, <xref "
-"linkend=\"contains_box2df_geometry\"/>, <xref "
-"linkend=\"contains_box2df_box2df\"/>, <xref "
-"linkend=\"is_contained_geometry_box2df\"/>, <xref "
-"linkend=\"is_contained_box2df_geometry\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
+"\"contains_box2df_box2df\"/>, <xref linkend=\"is_contained_geometry_box2df\"/"
+">, <xref linkend=\"is_contained_box2df_geometry\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -20854,8 +20826,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Geometry_Overright\"/>, <xref "
-"linkend=\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
+", <xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
+"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -20911,13 +20883,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref "
-"linkend=\"overlaps_box2df_box2df\"/>, <xref "
-"linkend=\"contains_box2df_geometry\"/>, <xref "
-"linkend=\"contains_box2df_box2df\"/>, <xref "
-"linkend=\"is_contained_geometry_box2df\"/>, <xref "
-"linkend=\"is_contained_box2df_geometry\"/>, <xref "
-"linkend=\"is_contained_box2df_box2df\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_box2df_geometry\"/>, "
+"<xref linkend=\"contains_box2df_box2df\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -20939,13 +20910,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref "
-"linkend=\"overlaps_box2df_box2df\"/>, <xref "
-"linkend=\"contains_geometry_box2df\"/>, <xref "
-"linkend=\"contains_box2df_box2df\"/>, <xref "
-"linkend=\"is_contained_geometry_box2df\"/>, <xref "
-"linkend=\"is_contained_box2df_geometry\"/>, <xref "
-"linkend=\"is_contained_box2df_box2df\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_box2df\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -20967,13 +20937,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref "
-"linkend=\"overlaps_box2df_box2df\"/>, <xref "
-"linkend=\"contains_geometry_box2df\"/>, <xref "
-"linkend=\"contains_box2df_geometry\"/>, <xref "
-"linkend=\"is_contained_geometry_box2df\"/>, <xref "
-"linkend=\"is_contained_box2df_geometry\"/>, <xref "
-"linkend=\"is_contained_box2df_box2df\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -21001,8 +20970,8 @@ msgid ""
 "geometric equality to only checking for bounding box equality. To complicate "
 "things it also depends on if you have done a hard or soft upgrade which "
 "behavior your database has. To find out which behavior your database has you "
-"can run the query below. To check for true equality use <xref "
-"linkend=\"ST_OrderingEquals\"/> or <xref linkend=\"ST_Equals\"/>."
+"can run the query below. To check for true equality use <xref linkend="
+"\"ST_OrderingEquals\"/> or <xref linkend=\"ST_Equals\"/>."
 msgstr ""
 
 #. Tag: para
@@ -21150,8 +21119,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
-"linkend=\"ST_IsValidTrajectory\"/>"
+", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
+"\"ST_IsValidTrajectory\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -21164,8 +21133,8 @@ msgstr ""
 msgid ""
 "The <varname>&lt;#&gt;</varname> operator returns distance between two "
 "floating point bounding boxes, possibly reading them from a spatial index "
-"(PostgreSQL 9.1+ required). Useful for doing nearest neighbor <emphasis "
-"role=\"strong\">approximate</emphasis> distance ordering."
+"(PostgreSQL 9.1+ required). Useful for doing nearest neighbor <emphasis role="
+"\"strong\">approximate</emphasis> distance ordering."
 msgstr ""
 
 #. Tag: para
@@ -21206,8 +21175,8 @@ msgstr ""
 msgid ""
 "The <varname>&lt;&lt;-&gt;&gt;</varname> operator returns the n-D "
 "(euclidean) distance between the centroids of the bounding boxes of two "
-"geometries. Useful for doing nearest neighbor <emphasis "
-"role=\"strong\">approximate</emphasis> distance ordering."
+"geometries. Useful for doing nearest neighbor <emphasis role=\"strong"
+"\">approximate</emphasis> distance ordering."
 msgstr ""
 
 #. Tag: para
@@ -21295,8 +21264,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Using the <parameter>maxdecimaldigits</parameter> parameter can cause output "
-"geometry to become invalid. To avoid this use <xref "
-"linkend=\"ST_ReducePrecision\"/> with a suitable gridsize first."
+"geometry to become invalid. To avoid this use <xref linkend="
+"\"ST_ReducePrecision\"/> with a suitable gridsize first."
 msgstr ""
 
 #. Tag: para
@@ -21592,8 +21561,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Return a FlatGeobuf representation (<link xlink:href=\"http://flatgeobuf."
-"org\">http://flatgeobuf.org</link>) of a set of rows corresponding to a "
+"Return a FlatGeobuf representation (<link xlink:href=\"http://flatgeobuf.org"
+"\">http://flatgeobuf.org</link>) of a set of rows corresponding to a "
 "FeatureCollection. NOTE: PostgreSQL bytea cannot exceed 1GB."
 msgstr ""
 
@@ -21639,8 +21608,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a geometry as a GeoJSON \"geometry\", or a row as a GeoJSON "
-"\"feature\". (See the <link xlink:href=\"https://tools.ietf.org/html/"
+"Returns a geometry as a GeoJSON \"geometry\", or a row as a GeoJSON \"feature"
+"\". (See the <link xlink:href=\"https://tools.ietf.org/html/"
 "rfc7946\">GeoJSON specifications RFC 7946</link>). 2D and 3D Geometries are "
 "both supported. GeoJSON only support SFS 1.1 geometry types (no curve "
 "support for example)."
@@ -21694,8 +21663,8 @@ msgid ""
 "Hand Rule, and some clients require this orientation. This can be ensured by "
 "using <xref linkend=\"ST_ForcePolygonCCW\"/>. The specification also "
 "requires that geometry be in the WGS84 coordinate system (SRID = 4326). If "
-"necessary geometry can be projected into WGS84 using <xref "
-"linkend=\"ST_Transform\"/>: <code>ST_Transform( geom, 4326 )</code>."
+"necessary geometry can be projected into WGS84 using <xref linkend="
+"\"ST_Transform\"/>: <code>ST_Transform( geom, 4326 )</code>."
 msgstr ""
 
 #. Tag: para
@@ -21905,9 +21874,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Requires PostGIS be compiled with Proj support. Use <xref "
-"linkend=\"PostGIS_Full_Version\"/> to confirm you have proj support compiled "
-"in."
+"Requires PostGIS be compiled with Proj support. Use <xref linkend="
+"\"PostGIS_Full_Version\"/> to confirm you have proj support compiled in."
 msgstr ""
 "Requiere que PostGIS sea compilado con soporte de Proj. Utilice <xref "
 "linkend=\"PostGIS_Full_Version\"/> para confirmar que ha compilado el "
@@ -22131,13 +22099,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Transforms a geometry into the coordinate space of a MVT (<link xlink:"
-"href=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</link>) "
-"tile, clipping it to the tile bounds if required. The geometry must be in "
-"the coordinate system of the target map (using <xref "
-"linkend=\"ST_Transform\"/> if needed). Commonly this is <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/Web_Mercator_projection\">Web Mercator</"
-"link> (SRID:3857)."
+"Transforms a geometry into the coordinate space of a MVT (<link xlink:href="
+"\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</link>) tile, "
+"clipping it to the tile bounds if required. The geometry must be in the "
+"coordinate system of the target map (using <xref linkend=\"ST_Transform\"/> "
+"if needed). Commonly this is <link xlink:href=\"https://en.wikipedia.org/"
+"wiki/Web_Mercator_projection\">Web Mercator</link> (SRID:3857)."
 msgstr ""
 
 #. Tag: para
@@ -22216,8 +22183,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_TileEnvelope\"/>, <xref "
-"linkend=\"PostGIS_Wagyu_Version\"/>"
+", <xref linkend=\"ST_TileEnvelope\"/>, <xref linkend=\"PostGIS_Wagyu_Version"
+"\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -22382,8 +22349,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns the geometry in TWKB (Tiny Well-Known Binary) format. TWKB is a "
-"<link xlink:href=\"https://github.com/TWKB/Specification/blob/master/twkb."
-"md\">compressed binary format</link> with a focus on minimizing the size of "
+"<link xlink:href=\"https://github.com/TWKB/Specification/blob/master/twkb.md"
+"\">compressed binary format</link> with a focus on minimizing the size of "
 "the output."
 msgstr ""
 
@@ -22459,8 +22426,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a geometry as an X3D xml formatted node element <link xlink:"
-"href=\"http://www.web3d.org/standards/number/19776-1\">http://www.web3d.org/"
+"Returns a geometry as an X3D xml formatted node element <link xlink:href="
+"\"http://www.web3d.org/standards/number/19776-1\">http://www.web3d.org/"
 "standards/number/19776-1</link>. If <varname>maxdecimaldigits</varname> "
 "(precision) is not specified then defaults to 15."
 msgstr ""
@@ -22708,8 +22675,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Computes a <link xlink:href=\"http://en.wikipedia.org/wiki/"
-"Geohash\">GeoHash</link> representation of a geometry. A GeoHash encodes a "
+"Computes a <link xlink:href=\"http://en.wikipedia.org/wiki/Geohash"
+"\">GeoHash</link> representation of a geometry. A GeoHash encodes a "
 "geographic Point into a text form that is sortable and searchable based on "
 "prefixing. A shorter GeoHash is a less precise representation of a point. It "
 "can be thought of as a box that contains the point."
@@ -22754,8 +22721,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_PointFromGeoHash\"/>, <xref "
-"linkend=\"ST_Box2dFromGeoHash\"/>"
+", <xref linkend=\"ST_PointFromGeoHash\"/>, <xref linkend="
+"\"ST_Box2dFromGeoHash\"/>"
 msgstr ""
 
 #. Tag: title
@@ -22990,9 +22957,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
-"linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
-"linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
-"linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
+"linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref linkend="
+"\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref linkend="
+"\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -23100,8 +23067,8 @@ msgstr ""
 msgid ""
 "If the the input and blade do not intersect due to numerical precision "
 "issues, the input may not be split as expected. To avoid this situation it "
-"may be necessary to snap the input to the blade first, using <xref "
-"linkend=\"ST_Snap\"/> with a small tolerance."
+"may be necessary to snap the input to the blade first, using <xref linkend="
+"\"ST_Snap\"/> with a small tolerance."
 msgstr ""
 
 #. Tag: para
@@ -23309,9 +23276,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Another use of this function is to node and dissolve a collection of "
-"linestrings which cross or overlap to make them <link "
-"linkend=\"Simple_Geometry\">simple</link>. (<xref linkend=\"ST_Node\"/> also "
-"does this, but it does not provide the <code>gridSize</code> option.)"
+"linestrings which cross or overlap to make them <link linkend="
+"\"Simple_Geometry\">simple</link>. (<xref linkend=\"ST_Node\"/> also does "
+"this, but it does not provide the <code>gridSize</code> option.)"
 msgstr ""
 
 #. Tag: para
@@ -23671,8 +23638,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>, <xref "
-"linkend=\"ST_MakeValid\"/>"
+"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>, <xref linkend="
+"\"ST_MakeValid\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -23860,8 +23827,8 @@ msgid ""
 "The number of vertices doubles with each iteration, so the result geometry "
 "may have many more points than the input. To reduce the number of points use "
 "a simplification function on the result (see <xref linkend=\"ST_Simplify\"/"
-">, <xref linkend=\"ST_SimplifyPreserveTopology\"/> and <xref "
-"linkend=\"ST_SimplifyVW\"/>)."
+">, <xref linkend=\"ST_SimplifyPreserveTopology\"/> and <xref linkend="
+"\"ST_SimplifyVW\"/>)."
 msgstr ""
 
 #. Tag: para
@@ -23903,8 +23870,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref "
-"linkend=\"ST_SimplifyVW\"/>"
+", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
+"\"ST_SimplifyVW\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -24075,8 +24042,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ConcaveHull\"/>, <xref "
-"linkend=\"ST_MinimumBoundingCircle\"/>"
+", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend="
+"\"ST_MinimumBoundingCircle\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -24141,9 +24108,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref "
-"linkend=\"ST_ConstrainedDelaunayTriangles\"/>, <xref "
-"linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_ConvexHull\"/>"
+", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref linkend="
+"\"ST_ConstrainedDelaunayTriangles\"/>, <xref linkend=\"ST_VoronoiLines\"/>, "
+"<xref linkend=\"ST_ConvexHull\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -24541,8 +24508,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_MinimumBoundingRadius\"/>, <xref "
-"linkend=\"ST_LargestEmptyCircle\"/>, <xref linkend=\"ST_LongestLine\"/>"
+", <xref linkend=\"ST_MinimumBoundingRadius\"/>, <xref linkend="
+"\"ST_LargestEmptyCircle\"/>, <xref linkend=\"ST_LongestLine\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -24567,8 +24534,8 @@ msgstr "Disponibilidad: 2.3.0"
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_MinimumBoundingCircle\"/>, <xref "
-"linkend=\"ST_LongestLine\"/>"
+", <xref linkend=\"ST_MinimumBoundingCircle\"/>, <xref linkend="
+"\"ST_LongestLine\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -24792,8 +24759,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This function creates polygons covering all delimited areas. If the result "
-"is intended to form a valid polygonal geometry, use <xref "
-"linkend=\"ST_BuildArea\"/> to prevent holes being filled."
+"is intended to form a valid polygonal geometry, use <xref linkend="
+"\"ST_BuildArea\"/> to prevent holes being filled."
 msgstr ""
 
 #. Tag: para
@@ -24961,8 +24928,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Note that returned geometry might lose its simplicity (see <xref "
-"linkend=\"ST_IsSimple\"/>)"
+"Note that returned geometry might lose its simplicity (see <xref linkend="
+"\"ST_IsSimple\"/>)"
 msgstr ""
 
 #. Tag: para
@@ -24980,8 +24947,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref "
-"linkend=\"ST_SimplifyVW\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/>"
+", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
+"\"ST_SimplifyVW\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -25121,9 +25088,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Simplify\"/>, <xref "
-"linkend=\"ST_SimplifyPreserveTopology\"/>, Topology <xref "
-"linkend=\"TP_ST_Simplify\"/>"
+", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
+"\"ST_SimplifyPreserveTopology\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/"
+">"
 msgstr ""
 
 #. Tag: refpurpose
@@ -25219,8 +25186,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ConstrainedDelaunayTriangles\"/>, <xref "
-"linkend=\"ST_Tesselate\"/>"
+", <xref linkend=\"ST_ConstrainedDelaunayTriangles\"/>, <xref linkend="
+"\"ST_Tesselate\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -25395,8 +25362,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_CoverageUnion\"/>, <xref "
-"linkend=\"ST_CoverageSimplify\"/>"
+", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageSimplify"
+"\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -25462,17 +25429,16 @@ msgstr ""
 msgid ""
 "An aggregate function which unions a set of polygons forming a polygonal "
 "coverage. The result is a polygonal geometry covering the same area as the "
-"coverage. This function produces the same result as <xref "
-"linkend=\"ST_Union\"/>, but uses the coverage structure to compute the union "
-"much faster."
+"coverage. This function produces the same result as <xref linkend=\"ST_Union"
+"\"/>, but uses the coverage structure to compute the union much faster."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If the input is not a valid coverage there may be unexpected artifacts in "
-"the output (such as unmerged or overlapping polygons). Use <xref "
-"linkend=\"ST_CoverageInvalidEdges\"/> to determine if a coverage is valid."
+"the output (such as unmerged or overlapping polygons). Use <xref linkend="
+"\"ST_CoverageInvalidEdges\"/> to determine if a coverage is valid."
 msgstr ""
 
 #. Tag: para
@@ -25509,8 +25475,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"For loading rasters from raster files please refer to <xref "
-"linkend=\"RT_Loading_Rasters\"/>"
+"For loading rasters from raster files please refer to <xref linkend="
+"\"RT_Loading_Rasters\"/>"
 msgstr ""
 
 #. Tag: para
@@ -25708,8 +25674,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"One of defined pixel types as described in <xref "
-"linkend=\"RT_ST_BandPixelType\"/>"
+"One of defined pixel types as described in <xref linkend="
+"\"RT_ST_BandPixelType\"/>"
 msgstr ""
 
 #. Tag: para
@@ -25836,8 +25802,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Type of UNION operation. One of defined types as described in <xref "
-"linkend=\"RT_ST_Union\"/>."
+"Type of UNION operation. One of defined types as described in <xref linkend="
+"\"RT_ST_Union\"/>."
 msgstr ""
 
 #. Tag: title
@@ -25875,8 +25841,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Valid constraint names to pass in: refer to <xref "
-"linkend=\"RT_Raster_Columns\"/> for more details."
+"Valid constraint names to pass in: refer to <xref linkend=\"RT_Raster_Columns"
+"\"/> for more details."
 msgstr ""
 
 #. Tag: para
@@ -25971,8 +25937,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_AddBand\"/>, <xref linkend=\"RT_ST_MakeEmptyRaster\"/"
-">, <xref linkend=\"RT_DropRasterConstraints\"/>, <xref "
-"linkend=\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_SRID\"/>"
+">, <xref linkend=\"RT_DropRasterConstraints\"/>, <xref linkend="
+"\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -26043,8 +26009,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_DropOverviewConstraints\"/>, <xref "
-"linkend=\"RT_CreateOverview\"/>, <xref linkend=\"RT_AddRasterConstraints\"/>"
+", <xref linkend=\"RT_DropOverviewConstraints\"/>, <xref linkend="
+"\"RT_CreateOverview\"/>, <xref linkend=\"RT_AddRasterConstraints\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -26070,8 +26036,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_AddOverviewConstraints\"/>, <xref "
-"linkend=\"RT_DropRasterConstraints\"/>"
+", <xref linkend=\"RT_AddOverviewConstraints\"/>, <xref linkend="
+"\"RT_DropRasterConstraints\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -26158,8 +26124,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_SRID\"/>, <xref "
-"linkend=\"postgis_gdal_enabled_drivers\"/>"
+", <xref linkend=\"ST_SRID\"/>, <xref linkend=\"postgis_gdal_enabled_drivers"
+"\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -26167,8 +26133,8 @@ msgstr ""
 msgid ""
 "<refpurpose>Generates a set of vector contours from the provided raster "
 "band, using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
-"contouring algorithm</link>.</refpurpose>"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv"
+"\">GDAL contouring algorithm</link>.</refpurpose>"
 msgstr ""
 
 #. Tag: para
@@ -26176,8 +26142,8 @@ msgstr ""
 msgid ""
 "<para>Generates a set of vector contours from the provided raster band, "
 "using the <link xlink:href=\"https://gdal.org/api/gdal_alg.html?"
-"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv\">GDAL "
-"contouring algorithm</link>.</para>"
+"highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv"
+"\">GDAL contouring algorithm</link>.</para>"
 msgstr ""
 
 #. Tag: para
@@ -26231,11 +26197,11 @@ msgid ""
 "the points as the surface elevation. There are five interpolation algorithms "
 "available: inverse distance, inverse distance nearest-neighbor, moving "
 "average, nearest neighbor, and linear interpolation. See the <link xlink:"
-"href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
-"algorithms\">gdal_grid documentation</link> for more details on the "
-"algorithms and their parameters. For more information on how interpolations "
-"are calculated, see the <link xlink:href=\"https://gdal.org/tutorials/"
-"gdal_grid_tut.html\">GDAL grid tutorial</link>."
+"href=\"https://gdal.org/programs/gdal_grid.html#interpolation-algorithms"
+"\">gdal_grid documentation</link> for more details on the algorithms and "
+"their parameters. For more information on how interpolations are calculated, "
+"see the <link xlink:href=\"https://gdal.org/tutorials/gdal_grid_tut.html"
+"\">GDAL grid tutorial</link>."
 msgstr ""
 
 #. Tag: para
@@ -26356,9 +26322,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_AddOverviewConstraints\"/>, <xref "
-"linkend=\"RT_AddRasterConstraints\"/>, <xref linkend=\"RT_Raster_Overviews\"/"
-">"
+", <xref linkend=\"RT_AddOverviewConstraints\"/>, <xref linkend="
+"\"RT_AddRasterConstraints\"/>, <xref linkend=\"RT_Raster_Overviews\"/>"
 msgstr ""
 
 #. Tag: title
@@ -26441,9 +26406,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_BandPixelType\"/>, <xref "
-"linkend=\"RT_ST_MakeEmptyRaster\"/>, <xref linkend=\"RT_ST_MetaData\"/>, "
-"<xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_Reclass\"/>"
+", <xref linkend=\"RT_ST_BandPixelType\"/>, <xref linkend="
+"\"RT_ST_MakeEmptyRaster\"/>, <xref linkend=\"RT_ST_MetaData\"/>, <xref "
+"linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_Reclass\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -26537,9 +26502,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This is particularly useful for rendering jpegs and pngs of geometries "
-"directly from the database when using in combination with <xref "
-"linkend=\"RT_ST_AsPNG\"/> and other <xref linkend=\"RT_ST_AsGDALRaster\"/> "
-"family of functions."
+"directly from the database when using in combination with <xref linkend="
+"\"RT_ST_AsPNG\"/> and other <xref linkend=\"RT_ST_AsGDALRaster\"/> family of "
+"functions."
 msgstr ""
 
 #. Tag: para
@@ -26701,8 +26666,8 @@ msgstr ""
 msgid ""
 "If no srid is specified it defaults to 0. After you create an empty raster "
 "you probably want to add bands to it and maybe edit it. Refer to <xref "
-"linkend=\"RT_ST_AddBand\"/> to define bands and <xref "
-"linkend=\"RT_ST_SetValue\"/> to set initial pixel values."
+"linkend=\"RT_ST_AddBand\"/> to define bands and <xref linkend="
+"\"RT_ST_SetValue\"/> to set initial pixel values."
 msgstr ""
 
 #. Tag: para
@@ -26988,8 +26953,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns the X component of the pixel width in units of coordinate reference "
-"system. Refer to <link xlink:href=\"http://en.wikipedia.org/wiki/"
-"World_file\">World File</link> for more details."
+"system. Refer to <link xlink:href=\"http://en.wikipedia.org/wiki/World_file"
+"\">World File</link> for more details."
 msgstr ""
 
 #. Tag: para
@@ -27039,8 +27004,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref "
-"linkend=\"RT_ST_SetSkew\"/>"
+", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref linkend="
+"\"RT_ST_SetSkew\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -27078,8 +27043,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref "
-"linkend=\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewX\"/>"
+", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref linkend="
+"\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewX\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -27117,8 +27082,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_RasterToWorldCoordX\"/>, <xref "
-"linkend=\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewY\"/>"
+", <xref linkend=\"RT_ST_RasterToWorldCoordX\"/>, <xref linkend="
+"\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewY\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -27279,9 +27244,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_WorldToRasterCoordY\"/>, <xref "
-"linkend=\"RT_ST_RasterToWorldCoordX\"/>, <xref "
-"linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref linkend=\"RT_ST_SRID\"/>"
+", <xref linkend=\"RT_ST_WorldToRasterCoordY\"/>, <xref linkend="
+"\"RT_ST_RasterToWorldCoordX\"/>, <xref linkend=\"RT_ST_RasterToWorldCoordY\"/"
+">, <xref linkend=\"RT_ST_SRID\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -27310,8 +27275,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref "
-"linkend=\"RT_ST_SRID\"/>"
+", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref linkend=\"RT_ST_SRID"
+"\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -27435,9 +27400,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_NumBands\"/>, <xref "
-"linkend=\"RT_ST_SetBandNoDataValue\"/>, <xref "
-"linkend=\"RT_ST_SetBandIsNoData\"/>"
+", <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend="
+"\"RT_ST_SetBandNoDataValue\"/>, <xref linkend=\"RT_ST_SetBandIsNoData\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -27620,11 +27584,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_PixelAsPolygons\"/>, <xref "
-"linkend=\"RT_ST_PixelAsPoint\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/>, "
-"<xref linkend=\"RT_ST_PixelAsCentroid\"/>, <xref "
-"linkend=\"RT_ST_PixelAsCentroids\"/>, <xref linkend=\"RT_ST_Intersection\"/"
-">, <xref linkend=\"ST_AsText\"/>"
+", <xref linkend=\"RT_ST_PixelAsPolygons\"/>, <xref linkend="
+"\"RT_ST_PixelAsPoint\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
+"linkend=\"RT_ST_PixelAsCentroid\"/>, <xref linkend=\"RT_ST_PixelAsCentroids"
+"\"/>, <xref linkend=\"RT_ST_Intersection\"/>, <xref linkend=\"ST_AsText\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -27678,10 +27641,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref "
-"linkend=\"RT_ST_PixelAsPoint\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/>, "
-"<xref linkend=\"RT_ST_PixelAsCentroid\"/>, <xref "
-"linkend=\"RT_ST_PixelAsCentroids\"/>, <xref linkend=\"ST_AsText\"/>"
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPoint\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
+"linkend=\"RT_ST_PixelAsCentroid\"/>, <xref linkend=\"RT_ST_PixelAsCentroids"
+"\"/>, <xref linkend=\"ST_AsText\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -27699,10 +27662,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref "
-"linkend=\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/"
-">, <xref linkend=\"RT_ST_PixelAsCentroid\"/>, <xref "
-"linkend=\"RT_ST_PixelAsCentroids\"/>"
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
+"linkend=\"RT_ST_PixelAsCentroid\"/>, <xref linkend=\"RT_ST_PixelAsCentroids"
+"\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -27725,10 +27688,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref "
-"linkend=\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, "
-"<xref linkend=\"RT_ST_PixelAsCentroid\"/>, <xref "
-"linkend=\"RT_ST_PixelAsCentroids\"/>"
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, <xref "
+"linkend=\"RT_ST_PixelAsCentroid\"/>, <xref linkend=\"RT_ST_PixelAsCentroids"
+"\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -27753,10 +27716,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref "
-"linkend=\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, "
-"<xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
-"linkend=\"RT_ST_PixelAsCentroids\"/>"
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, <xref "
+"linkend=\"RT_ST_PixelAsPoints\"/>, <xref linkend=\"RT_ST_PixelAsCentroids\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -27779,10 +27741,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref "
-"linkend=\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, "
-"<xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
-"linkend=\"RT_ST_PixelAsCentroid\"/>"
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, <xref "
+"linkend=\"RT_ST_PixelAsPoints\"/>, <xref linkend=\"RT_ST_PixelAsCentroid\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -27816,11 +27777,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The allowed values of the <varname>resample</varname> parameter are "
-"\"nearest\" which performs the default nearest-neighbor resampling, and "
-"\"bilinear\" which performs a <link xlink:href=\"https://en.wikipedia.org/"
-"wiki/Bilinear_interpolation\">bilinear interpolation</link> to estimate the "
-"value between pixel centers."
+"The allowed values of the <varname>resample</varname> parameter are \"nearest"
+"\" which performs the default nearest-neighbor resampling, and \"bilinear\" "
+"which performs a <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Bilinear_interpolation\">bilinear interpolation</link> to estimate the value "
+"between pixel centers."
 msgstr ""
 
 #. Tag: para
@@ -27840,9 +27801,9 @@ msgid ""
 ">, <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend=\"RT_ST_ScaleX\"/"
 ">, <xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, "
 "<xref linkend=\"RT_ST_UpperLeftY\"/>, <xref linkend=\"RT_ST_SRID\"/>, <xref "
-"linkend=\"ST_AsText\"/>, <xref linkend=\"ST_Point\"/>, <xref "
-"linkend=\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
-"linkend=\"ST_Intersection\"/>"
+"linkend=\"ST_AsText\"/>, <xref linkend=\"ST_Point\"/>, <xref linkend="
+"\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref linkend="
+"\"ST_Intersection\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -27904,9 +27865,9 @@ msgstr ""
 msgid ""
 "The <varname>resample</varname> parameter can be set to \"nearest\" to copy "
 "the values from the cell each vertex falls within, or \"bilinear\" to use "
-"<link xlink:href=\"https://en.wikipedia.org/wiki/"
-"Bilinear_interpolation\">bilinear interpolation</link> to calculate a value "
-"that takes neighboring cells into account also."
+"<link xlink:href=\"https://en.wikipedia.org/wiki/Bilinear_interpolation"
+"\">bilinear interpolation</link> to calculate a value that takes neighboring "
+"cells into account also."
 msgstr ""
 
 #. Tag: para
@@ -27978,9 +27939,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_Min4ma\"/>, <xref linkend=\"RT_ST_Max4ma\"/>, <xref "
-"linkend=\"RT_ST_Sum4ma\"/>, <xref linkend=\"RT_ST_Mean4ma\"/>, <xref "
-"linkend=\"RT_ST_Range4ma\"/>, <xref linkend=\"RT_ST_Distinct4ma\"/>, <xref "
-"linkend=\"RT_ST_StdDev4ma\"/>"
+"linkend=\"RT_ST_Sum4ma\"/>, <xref linkend=\"RT_ST_Mean4ma\"/>, <xref linkend="
+"\"RT_ST_Range4ma\"/>, <xref linkend=\"RT_ST_Distinct4ma\"/>, <xref linkend="
+"\"RT_ST_StdDev4ma\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -28106,8 +28067,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_SetValue\"/>, <xref "
-"linkend=\"RT_ST_PixelAsPolygons\"/>"
+", <xref linkend=\"RT_ST_SetValue\"/>, <xref linkend=\"RT_ST_PixelAsPolygons"
+"\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -28248,8 +28209,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Sets the georeference X and Y skew (or rotation parameter). If only one is "
-"passed in, sets X and Y to the same value. Refer to <link xlink:"
-"href=\"http://en.wikipedia.org/wiki/World_file\">World File</link> for more "
+"passed in, sets X and Y to the same value. Refer to <link xlink:href="
+"\"http://en.wikipedia.org/wiki/World_file\">World File</link> for more "
 "details."
 msgstr ""
 
@@ -28785,9 +28746,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_NumBands\"/>, <xref "
-"linkend=\"RT_ST_SetBandNoDataValue\"/>, <xref linkend=\"RT_ST_BandIsNoData\"/"
-">"
+", <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend="
+"\"RT_ST_SetBandNoDataValue\"/>, <xref linkend=\"RT_ST_BandIsNoData\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -28888,8 +28848,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref "
-"linkend=\"RT_ST_SetBandNoDataValue\"/>"
+", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref linkend="
+"\"RT_ST_SetBandNoDataValue\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -29011,8 +28971,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref "
-"linkend=\"RT_ST_SummaryStatsAgg\"/>"
+", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref linkend="
+"\"RT_ST_SummaryStatsAgg\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -29046,9 +29006,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref "
-"linkend=\"RT_ST_SummaryStatsAgg\"/>, <xref "
-"linkend=\"RT_ST_SetBandNoDataValue\"/>"
+", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref linkend="
+"\"RT_ST_SummaryStatsAgg\"/>, <xref linkend=\"RT_ST_SetBandNoDataValue\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -29353,14 +29312,14 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"One way to export raster into another format is using <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/static/lo-funcs."
-"html\">PostgreSQL large object export functions</link>. We'lll repeat the "
-"prior example but also exporting. Note for this you'll need to have super "
-"user access to db since it uses server side lo functions. It will also "
-"export to path on server network. If you need export locally, use the psql "
-"equivalent lo_ functions which export to the local file system instead of "
-"the server file system."
+"One way to export raster into another format is using <link xlink:href="
+"\"https://www.postgresql.org/docs/current/static/lo-funcs.html\">PostgreSQL "
+"large object export functions</link>. We'lll repeat the prior example but "
+"also exporting. Note for this you'll need to have super user access to db "
+"since it uses server side lo functions. It will also export to path on "
+"server network. If you need export locally, use the psql equivalent lo_ "
+"functions which export to the local file system instead of the server file "
+"system."
 msgstr ""
 
 #. Tag: title
@@ -29432,9 +29391,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_GDALDrivers\"/>, <xref "
-"linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_AsPNG\"/>, <xref "
-"linkend=\"RT_ST_AsTIFF\"/>"
+", <xref linkend=\"RT_ST_GDALDrivers\"/>, <xref linkend=\"RT_ST_AsGDALRaster"
+"\"/>, <xref linkend=\"RT_ST_AsPNG\"/>, <xref linkend=\"RT_ST_AsTIFF\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -29480,9 +29438,9 @@ msgid ""
 "(look at create_options for PNG of <xref linkend=\"RT_ST_GDALDrivers\"/>). "
 "For PNG valid one is only ZLEVEL (amount of time to spend on compression -- "
 "default 6) e.g. ARRAY['ZLEVEL=9']. WORLDFILE is not allowed since the "
-"function would have to output two outputs. Refer to <link xlink:"
-"href=\"http://www.gdal.org/frmt_various.html\">GDAL Raster format options</"
-"link> for more details."
+"function would have to output two outputs. Refer to <link xlink:href="
+"\"http://www.gdal.org/frmt_various.html\">GDAL Raster format options</link> "
+"for more details."
 msgstr ""
 
 #. Tag: para
@@ -29505,11 +29463,11 @@ msgstr ""
 msgid ""
 "Returns the selected bands of the raster as a single Tagged Image File "
 "Format (TIFF). If no band is specified, will try to use all bands. This is a "
-"wrapper around <xref linkend=\"RT_ST_AsGDALRaster\"/>. Use <xref "
-"linkend=\"RT_ST_AsGDALRaster\"/> if you need to export as less common raster "
-"types. There are many variants of the function with many options. If no "
-"spatial reference SRS text is present, the spatial reference of the raster "
-"is used. These are itemized below:"
+"wrapper around <xref linkend=\"RT_ST_AsGDALRaster\"/>. Use <xref linkend="
+"\"RT_ST_AsGDALRaster\"/> if you need to export as less common raster types. "
+"There are many variants of the function with many options. If no spatial "
+"reference SRS text is present, the spatial reference of the raster is used. "
+"These are itemized below:"
 msgstr ""
 
 #. Tag: para
@@ -29531,10 +29489,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<varname>options</varname> text Array of GDAL create options as defined for "
-"GTiff (look at create_options for GTiff of <xref "
-"linkend=\"RT_ST_GDALDrivers\"/>). or refer to <link xlink:href=\"http://www."
-"gdal.org/frmt_various.html\">GDAL Raster format options</link> for more "
-"details."
+"GTiff (look at create_options for GTiff of <xref linkend=\"RT_ST_GDALDrivers"
+"\"/>). or refer to <link xlink:href=\"http://www.gdal.org/frmt_various.html"
+"\">GDAL Raster format options</link> for more details."
 msgstr ""
 
 #. Tag: para
@@ -29819,8 +29776,8 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"RT_ST_AsRaster\"/> <xref linkend=\"RT_ST_MapAlgebra\"/>, "
 "<xref linkend=\"RT_ST_Grayscale\"/> <xref linkend=\"RT_ST_NumBands\"/>, "
-"<xref linkend=\"RT_ST_Reclass\"/>, <xref "
-"linkend=\"RT_ST_SetBandNoDataValue\"/>, <xref linkend=\"RT_ST_Union\"/>"
+"<xref linkend=\"RT_ST_Reclass\"/>, <xref linkend=\"RT_ST_SetBandNoDataValue"
+"\"/>, <xref linkend=\"RT_ST_Union\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -29947,8 +29904,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "To get more control on the resulting extent or on what to return when "
-"encountering a nodata value, use the two rasters version of <xref "
-"linkend=\"RT_ST_MapAlgebraExpr2\"/>."
+"encountering a nodata value, use the two rasters version of <xref linkend="
+"\"RT_ST_MapAlgebraExpr2\"/>."
 msgstr ""
 
 #. Tag: para
@@ -29962,9 +29919,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"ST_Intersection should be used in conjunction with <xref "
-"linkend=\"RT_ST_Intersects\"/> and an index on the raster column and/or the "
-"geometry column."
+"ST_Intersection should be used in conjunction with <xref linkend="
+"\"RT_ST_Intersects\"/> and an index on the raster column and/or the geometry "
+"column."
 msgstr ""
 
 #. Tag: para
@@ -29983,9 +29940,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_Intersects\"/>, <xref "
-"linkend=\"RT_ST_MapAlgebraExpr2\"/>, <xref linkend=\"RT_ST_Clip\"/>, <xref "
-"linkend=\"ST_AsText\"/>"
+", <xref linkend=\"RT_ST_Intersects\"/>, <xref linkend="
+"\"RT_ST_MapAlgebraExpr2\"/>, <xref linkend=\"RT_ST_Clip\"/>, <xref linkend="
+"\"ST_AsText\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -30636,9 +30593,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_MapAlgebraFct\"/>, <xref "
-"linkend=\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_GeoReference\"/>, "
-"<xref linkend=\"RT_ST_Value\"/>"
+", <xref linkend=\"RT_ST_MapAlgebraFct\"/>, <xref linkend="
+"\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_GeoReference\"/>, <xref "
+"linkend=\"RT_ST_Value\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -30819,8 +30776,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_BandPixelType\"/>, <xref "
-"linkend=\"RT_ST_GeoReference\"/>, <xref linkend=\"RT_ST_SetValue\"/>"
+", <xref linkend=\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_GeoReference"
+"\"/>, <xref linkend=\"RT_ST_SetValue\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -31039,8 +30996,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Examples utilize the katrina raster loaded as a single tile described in "
-"<link xlink:href=\"http://trac.osgeo.org/gdal/wiki/frmts_wtkraster."
-"html\">http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html</link> and then "
+"<link xlink:href=\"http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html"
+"\">http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html</link> and then "
 "prepared in the <xref linkend=\"RT_ST_Rescale\"/> examples"
 msgstr ""
 
@@ -31152,10 +31109,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "In order for rasters to be unioned, they must all have the same alignment. "
-"Use <xref linkend=\"RT_ST_SameAlignment\"/> and <xref "
-"linkend=\"RT_ST_NotSameAlignmentReason\"/> for more details and help. One "
-"way to fix alignment issues is to use <xref linkend=\"RT_ST_Resample\"/> and "
-"use the same reference raster for alignment."
+"Use <xref linkend=\"RT_ST_SameAlignment\"/> and <xref linkend="
+"\"RT_ST_NotSameAlignmentReason\"/> for more details and help. One way to fix "
+"alignment issues is to use <xref linkend=\"RT_ST_Resample\"/> and use the "
+"same reference raster for alignment."
 msgstr ""
 
 #. Tag: para
@@ -31243,8 +31200,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Use of Variant 1 is discouraged since <xref "
-"linkend=\"RT_ST_MapAlgebraFctNgb\"/> has been deprecated as of 2.1.0."
+"Use of Variant 1 is discouraged since <xref linkend=\"RT_ST_MapAlgebraFctNgb"
+"\"/> has been deprecated as of 2.1.0."
 msgstr ""
 
 #. Tag: para
@@ -31586,17 +31543,16 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If <varname>interpolate_nodata</varname> is TRUE, values for NODATA pixels "
-"from the input raster will be interpolated using <xref "
-"linkend=\"RT_ST_InvDistWeight4ma\"/> before computing the hillshade "
-"illumination."
+"from the input raster will be interpolated using <xref linkend="
+"\"RT_ST_InvDistWeight4ma\"/> before computing the hillshade illumination."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"For more information about Hillshade, please refer to <link xlink:"
-"href=\"http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?"
-"TopicName=How%20Hillshade%20works\">How hillshade works</link>."
+"For more information about Hillshade, please refer to <link xlink:href="
+"\"http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How"
+"%20Hillshade%20works\">How hillshade works</link>."
 msgstr ""
 
 #. Tag: para
@@ -31659,8 +31615,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If <varname>interpolate_nodata</varname> is TRUE, values for NODATA pixels "
-"from the input raster will be interpolated using <xref "
-"linkend=\"RT_ST_InvDistWeight4ma\"/> before computing the surface slope."
+"from the input raster will be interpolated using <xref linkend="
+"\"RT_ST_InvDistWeight4ma\"/> before computing the surface slope."
 msgstr ""
 
 #. Tag: para
@@ -32382,8 +32338,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_NotSameAlignmentReason\"/>, <xref "
-"linkend=\"RT_ST_MakeEmptyRaster\"/>"
+", <xref linkend=\"RT_ST_NotSameAlignmentReason\"/>, <xref linkend="
+"\"RT_ST_MakeEmptyRaster\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -32688,19 +32644,19 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Let's first address the SysV Ubuntu case where we add <emphasis "
-"role=\"strong\">ulimit -H -n 262144</emphasis> and <emphasis "
-"role=\"strong\">ulimit -n 131072</emphasis> to <emphasis role=\"strong\">/"
-"etc/init.d/postgresql</emphasis>."
+"Let's first address the SysV Ubuntu case where we add <emphasis role=\"strong"
+"\">ulimit -H -n 262144</emphasis> and <emphasis role=\"strong\">ulimit -n "
+"131072</emphasis> to <emphasis role=\"strong\">/etc/init.d/postgresql</"
+"emphasis>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Now to address the systemd Ubuntu case. We will add <emphasis "
-"role=\"strong\">LimitNOFILE=131072</emphasis> to every <emphasis "
-"role=\"strong\">/lib/systemd/system/postgresql*.service</emphasis> file in "
-"the <emphasis role=\"strong\">[Service]</emphasis> section."
+"Now to address the systemd Ubuntu case. We will add <emphasis role=\"strong"
+"\">LimitNOFILE=131072</emphasis> to every <emphasis role=\"strong\">/lib/"
+"systemd/system/postgresql*.service</emphasis> file in the <emphasis role="
+"\"strong\">[Service]</emphasis> section."
 msgstr ""
 
 #. Tag: para
@@ -32973,9 +32929,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_Contains\"/>, <xref "
-"linkend=\"ST_Covers\"/>, <xref linkend=\"ST_CoveredBy\"/>, <xref "
-"linkend=\"ST_Equals\"/>, <xref linkend=\"ST_Relate\"/>, <xref "
-"linkend=\"ST_Within\"/>"
+"linkend=\"ST_Covers\"/>, <xref linkend=\"ST_CoveredBy\"/>, <xref linkend="
+"\"ST_Equals\"/>, <xref linkend=\"ST_Relate\"/>, <xref linkend=\"ST_Within\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -33007,9 +32962,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Generally this function should be used instead of <xref "
-"linkend=\"ST_Within\"/>, since it has a simpler definition which does not "
-"have the quirk that \"boundaries are not within their geometry\"."
+"Generally this function should be used instead of <xref linkend=\"ST_Within"
+"\"/>, since it has a simpler definition which does not have the quirk that "
+"\"boundaries are not within their geometry\"."
 msgstr ""
 
 #. Tag: para
@@ -33060,9 +33015,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Generally this function should be used instead of <xref "
-"linkend=\"ST_Contains\"/>, since it has a simpler definition which does not "
-"have the quirk that \"geometries do not contain their boundary\"."
+"Generally this function should be used instead of <xref linkend=\"ST_Contains"
+"\"/>, since it has a simpler definition which does not have the quirk that "
+"\"geometries do not contain their boundary\"."
 msgstr ""
 
 #. Tag: para
@@ -33248,10 +33203,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"This function call does not use indexes. A negated <xref "
-"linkend=\"ST_Intersects\"/> predicate can be used as a more performant "
-"alternative that uses indexes: <code>ST_Disjoint(A,B) = NOT ST_Intersects(A,"
-"B)</code>"
+"This function call does not use indexes. A negated <xref linkend="
+"\"ST_Intersects\"/> predicate can be used as a more performant alternative "
+"that uses indexes: <code>ST_Disjoint(A,B) = NOT ST_Intersects(A,B)</code>"
 msgstr ""
 
 #. Tag: para
@@ -33638,8 +33592,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "These functions allow testing and evaluating the spatial (topological) "
-"relationship between two geometries, as defined by the <link xlink:"
-"href=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-"
+"relationship between two geometries, as defined by the <link xlink:href="
+"\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-"
 "Intersection Model</link> (DE-9IM)."
 msgstr ""
 
@@ -33661,13 +33615,13 @@ msgid ""
 "non-empty\") and '*' (meaning \"any value\"). Common spatial relationships "
 "are provided by the named functions <xref linkend=\"ST_Contains\"/>, <xref "
 "linkend=\"ST_ContainsProperly\"/>, <xref linkend=\"ST_Covers\"/>, <xref "
-"linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Crosses\"/>, <xref "
-"linkend=\"ST_Disjoint\"/>, <xref linkend=\"ST_Equals\"/>, <xref "
-"linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Overlaps\"/>, <xref "
-"linkend=\"ST_Touches\"/>, and <xref linkend=\"ST_Within\"/>. Using an "
-"explicit pattern allows testing multiple conditions of intersects, crosses, "
-"etc in one step. It also allows testing spatial relationships which do not "
-"have a named spatial relationship function. For example, the relationship "
+"linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Crosses\"/>, <xref linkend="
+"\"ST_Disjoint\"/>, <xref linkend=\"ST_Equals\"/>, <xref linkend="
+"\"ST_Intersects\"/>, <xref linkend=\"ST_Overlaps\"/>, <xref linkend="
+"\"ST_Touches\"/>, and <xref linkend=\"ST_Within\"/>. Using an explicit "
+"pattern allows testing multiple conditions of intersects, crosses, etc in "
+"one step. It also allows testing spatial relationships which do not have a "
+"named spatial relationship function. For example, the relationship "
 "\"Interior-Intersects\" has the DE-9IM pattern <code>T********</code>, which "
 "is not evaluated by any named predicate."
 msgstr ""
@@ -33813,10 +33767,10 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_RelateMatch\"/>, <xref linkend=\"ST_Contains\"/>, <xref "
 "linkend=\"ST_ContainsProperly\"/>, <xref linkend=\"ST_Covers\"/>, <xref "
-"linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Crosses\"/>, <xref "
-"linkend=\"ST_Disjoint\"/>, <xref linkend=\"ST_Equals\"/>, <xref "
-"linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Overlaps\"/>, <xref "
-"linkend=\"ST_Touches\"/>, <xref linkend=\"ST_Within\"/>"
+"linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Crosses\"/>, <xref linkend="
+"\"ST_Disjoint\"/>, <xref linkend=\"ST_Equals\"/>, <xref linkend="
+"\"ST_Intersects\"/>, <xref linkend=\"ST_Overlaps\"/>, <xref linkend="
+"\"ST_Touches\"/>, <xref linkend=\"ST_Within\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -33828,8 +33782,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Tests if a <link xlink:href=\"http://en.wikipedia.org/wiki/"
-"DE-9IM\">Dimensionally Extended 9-Intersection Model</link> (DE-9IM) "
+"Tests if a <link xlink:href=\"http://en.wikipedia.org/wiki/DE-9IM"
+"\">Dimensionally Extended 9-Intersection Model</link> (DE-9IM) "
 "<varname>intersectionMatrix</varname> value satisfies an "
 "<varname>intersectionMatrixPattern</varname>. Intersection matrix values can "
 "be computed by <xref linkend=\"ST_Relate\"/>."
@@ -34023,8 +33977,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DFullyWithin\"/>, <xref "
-"linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_Distance\"/>, <xref "
-"linkend=\"ST_3DMaxDistance\"/>, <xref linkend=\"ST_Transform\"/>"
+"linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_Distance\"/>, <xref linkend="
+"\"ST_3DMaxDistance\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -34212,19 +34166,18 @@ msgstr ""
 msgid ""
 "The SRID of the input geometry is ignored, and the SRID of the output "
 "geometry will be set to zero unless a value is provided via the optional "
-"<varname>to_srid</varname> parameter. When using <xref "
-"linkend=\"ST_TransformPipeline\"/> the pipeline is executed in a forward "
-"direction. Using `ST_InverseTransformPipeline()` the pipeline is executed in "
-"the inverse direction."
+"<varname>to_srid</varname> parameter. When using <xref linkend="
+"\"ST_TransformPipeline\"/> the pipeline is executed in a forward direction. "
+"Using `ST_InverseTransformPipeline()` the pipeline is executed in the "
+"inverse direction."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Transforms using pipelines are a specialised version of <xref "
-"linkend=\"ST_Transform\"/>. In most cases `ST_Transform` will choose the "
-"correct operations to convert between coordinate systems, and should be "
-"preferred."
+"Transforms using pipelines are a specialised version of <xref linkend="
+"\"ST_Transform\"/>. In most cases `ST_Transform` will choose the correct "
+"operations to convert between coordinate systems, and should be preferred."
 msgstr ""
 
 #. Tag: para
@@ -34342,9 +34295,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Requires PostGIS be compiled with PROJ support. Use <xref "
-"linkend=\"PostGIS_Full_Version\"/> to confirm you have PROJ support compiled "
-"in."
+"Requires PostGIS be compiled with PROJ support. Use <xref linkend="
+"\"PostGIS_Full_Version\"/> to confirm you have PROJ support compiled in."
 msgstr ""
 
 #. Tag: para
@@ -34437,8 +34389,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>, <xref "
-"linkend=\"UpdateGeometrySRID\"/>, <xref linkend=\"ST_TransformPipeline\"/>"
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>, <xref linkend="
+"\"UpdateGeometrySRID\"/>, <xref linkend=\"ST_TransformPipeline\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -34495,9 +34447,9 @@ msgid ""
 "The SRID of the input geometry is ignored, and the SRID of the output "
 "geometry will be set to zero unless a value is provided via the optional "
 "<varname>to_srid</varname> parameter. When using `ST_TransformPipeline()` "
-"the pipeline is executed in a forward direction. Using <xref "
-"linkend=\"ST_InverseTransformPipeline\"/> the pipeline is executed in the "
-"inverse direction."
+"the pipeline is executed in a forward direction. Using <xref linkend="
+"\"ST_InverseTransformPipeline\"/> the pipeline is executed in the inverse "
+"direction."
 msgstr ""
 
 #. Tag: para
@@ -34678,9 +34630,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Inputs must be valid trajectories as checked by <xref "
-"linkend=\"ST_IsValidTrajectory\"/>. Null is returned if the trajectories do "
-"not overlap in their M ranges."
+"Inputs must be valid trajectories as checked by <xref linkend="
+"\"ST_IsValidTrajectory\"/>. Null is returned if the trajectories do not "
+"overlap in their M ranges."
 msgstr ""
 
 #. Tag: para
@@ -34713,8 +34665,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
-"linkend=\"ST_AddMeasure\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
+", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
+"\"ST_AddMeasure\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -34734,16 +34686,16 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Inputs must be valid trajectories as checked by <xref "
-"linkend=\"ST_IsValidTrajectory\"/>. False is returned if the trajectories do "
-"not overlap in their M ranges."
+"Inputs must be valid trajectories as checked by <xref linkend="
+"\"ST_IsValidTrajectory\"/>. False is returned if the trajectories do not "
+"overlap in their M ranges."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
-"linkend=\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
+", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
+"\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
 msgstr ""
 
 #. Tag: title
@@ -34761,16 +34713,16 @@ msgid ""
 msgstr ""
 "Este módulo y las funciones asociadas pl/pgsql se han implementado para "
 "proporcionar soporte a bloqueos extensos que son requeridos por la "
-"especificación <link xlink:href=\"http://www.opengeospatial.org/standards/"
-"wfs\">Web Feature Service</link>"
+"especificación <link xlink:href=\"http://www.opengeospatial.org/standards/wfs"
+"\">Web Feature Service</link>"
 
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
-"For the locking mechanism to operate correctly the <emphasis "
-"role=\"bold\">serializable</emphasis> <link xlink:href=\"http://www."
-"postgresql.org/docs/current/static/transaction-iso.html\"> transaction "
-"isolation level</link> must be used."
+"For the locking mechanism to operate correctly the <emphasis role=\"bold"
+"\">serializable</emphasis> <link xlink:href=\"http://www.postgresql.org/docs/"
+"current/static/transaction-iso.html\"> transaction isolation level</link> "
+"must be used."
 msgstr ""
 "Los usuarios deben usar <link xlink:href=\"http://www.postgresql.org/docs/"
 "current/static/transaction-iso.html\">el nivel de transacción en serie</"
@@ -34949,8 +34901,8 @@ msgid ""
 "transformations</link>."
 msgstr ""
 "Esta función modifica la posición y la forma de las geometrías usando <link "
-"xlink:href=\"https://en.wikipedia.org/wiki/"
-"Affine_transformation\">transformación afín</link>."
+"xlink:href=\"https://en.wikipedia.org/wiki/Affine_transformation"
+"\">transformación afín</link>."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -35278,14 +35230,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Each data type describes its type casting behavior. A <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/sql-expressions.html#SQL-"
-"SYNTAX-TYPE-CASTS\">type cast</link> converts values of one data type into "
-"another type. PostgreSQL allows defining casting behavior for custom types, "
-"along with the functions used to convert type values. Casts can have "
-"<emphasis role=\"bold\">automatic</emphasis> behavior, which allows "
-"automatic conversion of a function argument to a type supported by the "
-"function."
+"Each data type describes its type casting behavior. A <link xlink:href="
+"\"https://www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-"
+"TYPE-CASTS\">type cast</link> converts values of one data type into another "
+"type. PostgreSQL allows defining casting behavior for custom types, along "
+"with the functions used to convert type values. Casts can have <emphasis "
+"role=\"bold\">automatic</emphasis> behavior, which allows automatic "
+"conversion of a function argument to a type supported by the function."
 msgstr ""
 
 #. Tag: para
@@ -35375,8 +35326,8 @@ msgstr ""
 "<varname>box3d</varname> es un tipo de datos espaciales PostGIS que se "
 "utiliza para representar el cuadro delimitador tridimensional que encierra "
 "una geometría o una colección de geometrías. Por ejemplo, la función "
-"agregada <xref linkend=\"ST_3DExtent\"/> devuelve un objeto "
-"<varname>box3d</varname>."
+"agregada <xref linkend=\"ST_3DExtent\"/> devuelve un objeto <varname>box3d</"
+"varname>."
 
 #. Tag: para
 #, no-c-format
@@ -35663,8 +35614,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Allowed <varname>flags</varname> are documented in <xref "
-"linkend=\"ST_IsValidDetail\"/>."
+"Allowed <varname>flags</varname> are documented in <xref linkend="
+"\"ST_IsValidDetail\"/>."
 msgstr ""
 
 #. Tag: para
@@ -35716,9 +35667,9 @@ msgstr ""
 msgid ""
 "The <varname>params</varname> argument can be used to supply an options "
 "string to select the method to use for building valid geometry. The options "
-"string is in the format \"method=linework|structure keepcollapsed=true|"
-"false\". If no \"params\" argument is provided, the \"linework\" algorithm "
-"will be used as the default."
+"string is in the format \"method=linework|structure keepcollapsed=true|false"
+"\". If no \"params\" argument is provided, the \"linework\" algorithm will "
+"be used as the default."
 msgstr ""
 
 #. Tag: para
@@ -35859,10 +35810,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref "
-"linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/"
-">, <xref linkend=\"PostGIS_PROJ_Version\"/>, <xref "
-"linkend=\"PostGIS_Version\"/>"
+", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
+"\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
+"linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -35888,10 +35838,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref "
-"linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/"
-">, <xref linkend=\"PostGIS_PROJ_Version\"/>, <xref "
-"linkend=\"PostGIS_Wagyu_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
+", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
+"\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
+"linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Wagyu_Version\"/"
+">, <xref linkend=\"PostGIS_Version\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -35909,9 +35859,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_Lib_Version\"/>, <xref "
-"linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/"
-">, <xref linkend=\"PostGIS_Version\"/>"
+", <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend="
+"\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, "
+"<xref linkend=\"PostGIS_Version\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -35958,9 +35908,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_Lib_Version\"/>, <xref "
-"linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_GEOS_Version\"/"
-">, <xref linkend=\"PostGIS_Version\"/>"
+", <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend="
+"\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref "
+"linkend=\"PostGIS_Version\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -35987,9 +35937,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref "
-"linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/"
-">, <xref linkend=\"PostGIS_Version\"/>"
+", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
+"\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, "
+"<xref linkend=\"PostGIS_Version\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -36014,9 +35964,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref "
-"linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/"
-">, <xref linkend=\"PostGIS_Version\"/>"
+", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
+"\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
+"linkend=\"PostGIS_Version\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -36034,10 +35984,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref "
-"linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, "
-"<xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
-"linkend=\"PostGIS_Version\"/>"
+", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
+"\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, <xref "
+"linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -36067,10 +36016,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"If the output of this function doesn't match the output of <xref "
-"linkend=\"PostGIS_Scripts_Released\"/> you probably missed to properly "
-"upgrade an existing database. See the <link linkend=\"upgrading\">Upgrading</"
-"link> section for more info."
+"If the output of this function doesn't match the output of <xref linkend="
+"\"PostGIS_Scripts_Released\"/> you probably missed to properly upgrade an "
+"existing database. See the <link linkend=\"upgrading\">Upgrading</link> "
+"section for more info."
 msgstr ""
 
 #. Tag: para
@@ -36081,8 +36030,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_Scripts_Released\"/>, <xref "
-"linkend=\"PostGIS_Version\"/>"
+", <xref linkend=\"PostGIS_Scripts_Released\"/>, <xref linkend="
+"\"PostGIS_Version\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -36109,8 +36058,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_Scripts_Installed\"/>, <xref "
-"linkend=\"PostGIS_Lib_Version\"/>"
+", <xref linkend=\"PostGIS_Scripts_Installed\"/>, <xref linkend="
+"\"PostGIS_Lib_Version\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -36128,9 +36077,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref "
-"linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/"
-">, <xref linkend=\"PostGIS_PROJ_Version\"/>"
+", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
+"\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
+"linkend=\"PostGIS_PROJ_Version\"/>"
 msgstr ""
 
 #. Tag: title
@@ -36599,9 +36548,9 @@ msgid ""
 "www.chiark.greenend.org.uk/~sgtatham/bugs.html\">How to Report Bugs "
 "Effectively</link> before filing a new report."
 msgstr ""
-"Puede leer la documentación de Simon Tatham acerca de <link xlink:"
-"href=\"http://www.chiark.greenend.org.uk/~sgtatham/bugs.html\">Cómo informar "
-"de errores de manera eficiente</link> antes de rellenar un nuevo informe."
+"Puede leer la documentación de Simon Tatham acerca de <link xlink:href="
+"\"http://www.chiark.greenend.org.uk/~sgtatham/bugs.html\">Cómo informar de "
+"errores de manera eficiente</link> antes de rellenar un nuevo informe."
 
 #. Tag: title
 #, no-c-format
@@ -36643,8 +36592,8 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid ""
 "If your changes are more extensive, a patch is definitely preferred. This is "
-"a four step process on Unix (assuming you already have <link xlink:"
-"href=\"https://git-scm.com/\">git</link> installed):"
+"a four step process on Unix (assuming you already have <link xlink:href="
+"\"https://git-scm.com/\">git</link> installed):"
 msgstr ""
 "Si sus cambios son más extensos, es preferible un envío por Subversion. Este "
 "es un proceso en cuatro pasos en Unix (suponiendo que tiene instalado ya "
@@ -36728,15 +36677,14 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The Open Geospatial Consortium (OGC) developed the <link xlink:"
-"href=\"https://www.ogc.org/standards/sfa\"><emphasis>Simple Features Access</"
+"The Open Geospatial Consortium (OGC) developed the <link xlink:href="
+"\"https://www.ogc.org/standards/sfa\"><emphasis>Simple Features Access</"
 "emphasis></link> standard (SFA) to provide a model for geospatial data. It "
 "defines the fundamental spatial type of <emphasis role=\"bold\">Geometry</"
 "emphasis>, along with operations which manipulate and transform geometry "
 "values to perform spatial analysis tasks. PostGIS implements the OGC "
-"Geometry model as the PostgreSQL data types <link "
-"linkend=\"PostGIS_Geometry\">geometry</link> and <link "
-"linkend=\"PostGIS_Geography\">geography</link>."
+"Geometry model as the PostgreSQL data types <link linkend=\"PostGIS_Geometry"
+"\">geometry</link> and <link linkend=\"PostGIS_Geography\">geography</link>."
 msgstr ""
 
 #. Tag: para
@@ -36744,21 +36692,19 @@ msgstr ""
 msgid ""
 "Geometry is an <emphasis>abstract</emphasis> type. Geometry values belong to "
 "one of its <emphasis>concrete</emphasis> subtypes which represent various "
-"kinds and dimensions of geometric shapes. These include the <emphasis "
-"role=\"bold\">atomic</emphasis> types <link linkend=\"Point\">Point</link>, "
-"<link linkend=\"LineString\">LineString</link>, <link "
-"linkend=\"LinearRing\">LinearRing</link> and <link "
-"linkend=\"Polygon\">Polygon</link>, and the <emphasis "
-"role=\"bold\">collection</emphasis> types <link "
-"linkend=\"MultiPoint\">MultiPoint</link>, <link "
-"linkend=\"MultiLineString\">MultiLineString</link>, <link "
-"linkend=\"MultiPolygon\">MultiPolygon</link> and <link "
-"linkend=\"GeometryCollection\">GeometryCollection</link>. The <link xlink:"
-"href=\"https://portal.ogc.org/files/?artifact_id=25355\"><emphasis>Simple "
-"Features Access - Part 1: Common architecture v1.2.1</emphasis></link> adds "
-"subtypes for the structures <link "
-"linkend=\"PolyhedralSurface\">PolyhedralSurface</link>, <link "
-"linkend=\"Triangle\">Triangle</link> and <link linkend=\"TIN\">TIN</link>."
+"kinds and dimensions of geometric shapes. These include the <emphasis role="
+"\"bold\">atomic</emphasis> types <link linkend=\"Point\">Point</link>, <link "
+"linkend=\"LineString\">LineString</link>, <link linkend=\"LinearRing"
+"\">LinearRing</link> and <link linkend=\"Polygon\">Polygon</link>, and the "
+"<emphasis role=\"bold\">collection</emphasis> types <link linkend="
+"\"MultiPoint\">MultiPoint</link>, <link linkend=\"MultiLineString"
+"\">MultiLineString</link>, <link linkend=\"MultiPolygon\">MultiPolygon</"
+"link> and <link linkend=\"GeometryCollection\">GeometryCollection</link>. "
+"The <link xlink:href=\"https://portal.ogc.org/files/?"
+"artifact_id=25355\"><emphasis>Simple Features Access - Part 1: Common "
+"architecture v1.2.1</emphasis></link> adds subtypes for the structures <link "
+"linkend=\"PolyhedralSurface\">PolyhedralSurface</link>, <link linkend="
+"\"Triangle\">Triangle</link> and <link linkend=\"TIN\">TIN</link>."
 msgstr ""
 
 #. Tag: para
@@ -36820,8 +36766,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"An important property of geometry values is their spatial <emphasis "
-"role=\"bold\">extent</emphasis> or <emphasis role=\"bold\">bounding box</"
+"An important property of geometry values is their spatial <emphasis role="
+"\"bold\">extent</emphasis> or <emphasis role=\"bold\">bounding box</"
 "emphasis>, which the OGC model calls <emphasis role=\"bold\">envelope</"
 "emphasis>. This is the 2 or 3-dimensional box which encloses the coordinates "
 "of a geometry. It is an efficient way to represent a geometry's extent in "
@@ -36833,11 +36779,11 @@ msgstr ""
 msgid ""
 "The geometry model allows evaluating topological spatial relationships as "
 "described in <xref linkend=\"DE-9IM\"/>. To support this the concepts of "
-"<emphasis role=\"bold\">interior</emphasis>, <emphasis "
-"role=\"bold\">boundary</emphasis> and <emphasis role=\"bold\">exterior</"
-"emphasis> are defined for each geometry type. Geometries are topologically "
-"closed, so they always contain their boundary. The boundary is a geometry of "
-"dimension one less than that of the geometry itself."
+"<emphasis role=\"bold\">interior</emphasis>, <emphasis role=\"bold"
+"\">boundary</emphasis> and <emphasis role=\"bold\">exterior</emphasis> are "
+"defined for each geometry type. Geometries are topologically closed, so they "
+"always contain their boundary. The boundary is a geometry of dimension one "
+"less than that of the geometry itself."
 msgstr ""
 
 #. Tag: para
@@ -36985,10 +36931,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"A TIN is a collection of non-overlapping <link "
-"linkend=\"Triangle\">Triangle</link>s representing a <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/"
-"Triangulated_irregular_network\">Triangulated Irregular Network</link>."
+"A TIN is a collection of non-overlapping <link linkend=\"Triangle"
+"\">Triangle</link>s representing a <link xlink:href=\"https://en.wikipedia."
+"org/wiki/Triangulated_irregular_network\">Triangulated Irregular Network</"
+"link>."
 msgstr ""
 
 #. Tag: title
@@ -37196,8 +37142,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Input and output of WKT is provided by the functions <xref "
-"linkend=\"ST_AsText\"/> and <xref linkend=\"ST_GeomFromText\"/>:"
+"Input and output of WKT is provided by the functions <xref linkend="
+"\"ST_AsText\"/> and <xref linkend=\"ST_GeomFromText\"/>:"
 msgstr ""
 
 #. Tag: para
@@ -37240,8 +37186,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Input and output of WKB is provided by the functions <xref "
-"linkend=\"ST_AsBinary\"/> and <xref linkend=\"ST_GeomFromWKB\"/>:"
+"Input and output of WKB is provided by the functions <xref linkend="
+"\"ST_AsBinary\"/> and <xref linkend=\"ST_GeomFromWKB\"/>:"
 msgstr ""
 
 #. Tag: para
@@ -37260,10 +37206,10 @@ msgstr ""
 msgid ""
 "PostGIS implements the OGC Simple Features model by defining a PostgreSQL "
 "data type called <varname>geometry</varname>. It represents all of the "
-"geometry subtypes by using an internal type code (see <xref "
-"linkend=\"GeometryType\"/> and <xref linkend=\"ST_GeometryType\"/>). This "
-"allows modelling spatial features as rows of tables defined with a column of "
-"type <varname>geometry</varname>."
+"geometry subtypes by using an internal type code (see <xref linkend="
+"\"GeometryType\"/> and <xref linkend=\"ST_GeometryType\"/>). This allows "
+"modelling spatial features as rows of tables defined with a column of type "
+"<varname>geometry</varname>."
 msgstr ""
 
 #. Tag: para
@@ -37282,8 +37228,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"PostGIS follows the SFA standard by prefixing spatial functions with "
-"\"ST_\". This was intended to stand for \"Spatial and Temporal\", but the "
+"PostGIS follows the SFA standard by prefixing spatial functions with \"ST_"
+"\". This was intended to stand for \"Spatial and Temporal\", but the "
 "temporal part of the standard was never developed. Instead it can be "
 "interpreted as \"Spatial Type\"."
 msgstr ""
@@ -37301,8 +37247,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "To make querying geometry efficient PostGIS defines various kinds of spatial "
-"indexes, and spatial operators to use them. See <xref linkend=\"build-"
-"indexes\"/> and <xref linkend=\"using-query-indexes\"/> for details."
+"indexes, and spatial operators to use them. See <xref linkend=\"build-indexes"
+"\"/> and <xref linkend=\"using-query-indexes\"/> for details."
 msgstr ""
 
 #. Tag: title
@@ -37600,8 +37546,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"You can create a table to store geography data using the <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/sql-createtable.html\">CREATE "
+"You can create a table to store geography data using the <link xlink:href="
+"\"https://www.postgresql.org/docs/current/sql-createtable.html\">CREATE "
 "TABLE</link> SQL statement with a column of type <varname>geography</"
 "varname>. The following example creates a table with a geography column "
 "storing 2D LineStrings in the WGS84 geodetic coordinate system (SRID 4326):"
@@ -37808,13 +37754,13 @@ msgstr ""
 msgid ""
 "Refer to <xref linkend=\"PostGIS_TypeFunctionMatrix\"/> for compare between "
 "what is supported for Geography vs. Geometry. For a brief listing and "
-"description of Geography functions, refer to <xref "
-"linkend=\"PostGIS_GeographyFunctions\"/>"
+"description of Geography functions, refer to <xref linkend="
+"\"PostGIS_GeographyFunctions\"/>"
 msgstr ""
 "Para tener una comparación entre lo que esta soportado entre Geography y "
 "Geometry ve a  <xref linkend=\"PostGIS_TypeFunctionMatrix\"/>. Para obtener "
-"una lista con la descripción de las funciones Geography ve a <xref "
-"linkend=\"PostGIS_GeographyFunctions\"/>"
+"una lista con la descripción de las funciones Geography ve a <xref linkend="
+"\"PostGIS_GeographyFunctions\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -37985,9 +37931,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">(a)</emphasis> and <emphasis role=\"bold\">(c)</"
-"emphasis> are simple <varname>LINESTRING</varname>s. <emphasis "
-"role=\"bold\">(b)</emphasis> and <emphasis role=\"bold\">(d)</emphasis> are "
-"not simple. <emphasis role=\"bold\">(c)</emphasis> is a closed Linear Ring."
+"emphasis> are simple <varname>LINESTRING</varname>s. <emphasis role=\"bold"
+"\">(b)</emphasis> and <emphasis role=\"bold\">(d)</emphasis> are not simple. "
+"<emphasis role=\"bold\">(c)</emphasis> is a closed Linear Ring."
 msgstr ""
 
 #. Tag: emphasis
@@ -38022,8 +37968,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">(e)</emphasis> and <emphasis role=\"bold\">(f)</"
-"emphasis> are simple <varname>MULTILINESTRING</varname>s. <emphasis "
-"role=\"bold\">(g)</emphasis> is not simple."
+"emphasis> are simple <varname>MULTILINESTRING</varname>s. <emphasis role="
+"\"bold\">(g)</emphasis> is not simple."
 msgstr ""
 
 #. Tag: emphasis
@@ -38181,8 +38127,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">(n)</emphasis> is a valid <varname>MULTIPOLYGON</"
-"varname>. <emphasis role=\"bold\">(o)</emphasis> and <emphasis "
-"role=\"bold\">(p)</emphasis> are invalid."
+"varname>. <emphasis role=\"bold\">(o)</emphasis> and <emphasis role=\"bold"
+"\">(p)</emphasis> are invalid."
 msgstr ""
 
 #. Tag: emphasis
@@ -38310,10 +38256,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"A <link xlink:href=\"https://en.wikipedia.org/wiki/"
-"Spatial_reference_system\">Spatial Reference System</link> (SRS) (also "
-"called a Coordinate Reference System (CRS)) defines how geometry is "
-"referenced to locations on the Earth's surface. There are three types of SRS:"
+"A <link xlink:href=\"https://en.wikipedia.org/wiki/Spatial_reference_system"
+"\">Spatial Reference System</link> (SRS) (also called a Coordinate Reference "
+"System (CRS)) defines how geometry is referenced to locations on the Earth's "
+"surface. There are three types of SRS:"
 msgstr ""
 
 #. Tag: para
@@ -38349,9 +38295,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "There are many different spatial reference systems in use. Common SRSes are "
-"standardized in the European Petroleum Survey Group <link xlink:"
-"href=\"http://www.epsg.org/\">EPSG database</link>. For convenience PostGIS "
-"(and many other spatial systems) refers to SRS definitions using an integer "
+"standardized in the European Petroleum Survey Group <link xlink:href="
+"\"http://www.epsg.org/\">EPSG database</link>. For convenience PostGIS (and "
+"many other spatial systems) refers to SRS definitions using an integer "
 "identifier called a SRID."
 msgstr ""
 
@@ -38361,23 +38307,23 @@ msgid ""
 "A geometry is associated with a Spatial Reference System by its SRID value, "
 "which is accessed by <xref linkend=\"ST_SRID\"/>. The SRID for a geometry "
 "can be assigned using <xref linkend=\"ST_SetSRID\"/>. Some geometry "
-"constructor functions allow supplying a SRID (such as <xref "
-"linkend=\"ST_Point\"/> and <xref linkend=\"ST_MakeEnvelope\"/>). The <link "
-"linkend=\"EWKB_EWKT\">EWKT</link> format supports SRIDs with the "
-"<code>SRID=n;</code> prefix."
+"constructor functions allow supplying a SRID (such as <xref linkend="
+"\"ST_Point\"/> and <xref linkend=\"ST_MakeEnvelope\"/>). The <link linkend="
+"\"EWKB_EWKT\">EWKT</link> format supports SRIDs with the <code>SRID=n;</"
+"code> prefix."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Spatial functions processing pairs of geometries (such as <link "
-"linkend=\"Overlay_Functions\">overlay</link> and <link "
-"linkend=\"Spatial_Relationships\">relationship</link> functions) require "
-"that the input geometries are in the same spatial reference system (have the "
-"same SRID). Geometry data can be transformed into a different spatial "
-"reference system using <xref linkend=\"ST_Transform\"/> and <xref "
-"linkend=\"ST_TransformPipeline\"/>. Geometry returned from functions has the "
-"same SRS as the input geometries."
+"Spatial functions processing pairs of geometries (such as <link linkend="
+"\"Overlay_Functions\">overlay</link> and <link linkend="
+"\"Spatial_Relationships\">relationship</link> functions) require that the "
+"input geometries are in the same spatial reference system (have the same "
+"SRID). Geometry data can be transformed into a different spatial reference "
+"system using <xref linkend=\"ST_Transform\"/> and <xref linkend="
+"\"ST_TransformPipeline\"/>. Geometry returned from functions has the same "
+"SRS as the input geometries."
 msgstr ""
 
 #. Tag: title
@@ -38562,8 +38508,8 @@ msgid ""
 "US states use State Plane spatial reference systems (meter or feet based) - "
 "usually one or 2 exists per state. Most of the meter-based ones are in the "
 "core set, but many of the feet-based ones or ESRI-created ones will need to "
-"be copied from <link xlink:href=\"http://spatialreference."
-"org\">spatialreference.org</link>."
+"be copied from <link xlink:href=\"http://spatialreference.org"
+"\">spatialreference.org</link>."
 msgstr ""
 
 #. Tag: para
@@ -38596,8 +38542,8 @@ msgstr "Crear una tabla espacial"
 #. Tag: para
 #, no-c-format
 msgid ""
-"You can create a table to store geometry data using the <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/sql-createtable.html\">CREATE "
+"You can create a table to store geometry data using the <link xlink:href="
+"\"https://www.postgresql.org/docs/current/sql-createtable.html\">CREATE "
 "TABLE</link> SQL statement with a column of type <varname>geometry</"
 "varname>. The following example creates a table with a geometry column "
 "storing 2D (XY) LineStrings in the BC-Albers coordinate system (SRID 3005):"
@@ -38606,8 +38552,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The <varname>geometry</varname> type supports two optional <emphasis "
-"role=\"bold\">type modifiers</emphasis>:"
+"The <varname>geometry</varname> type supports two optional <emphasis role="
+"\"bold\">type modifiers</emphasis>:"
 msgstr ""
 
 #. Tag: para
@@ -38965,9 +38911,9 @@ msgid ""
 "SQL format. Use this for very large data sets."
 msgstr ""
 "Utiliza el formato \"dump\" de PostgreSQL en la salida de datos. Esto puede "
-"combinarse con -a, -c, y -d. Es mucho mas rápido cargar este fichero "
-"\"dump\" que utilizando en comando SQL \"INSERT\" por defecto. Utiliza esto "
-"ara grandes conjuntos de datos."
+"combinarse con -a, -c, y -d. Es mucho mas rápido cargar este fichero \"dump"
+"\" que utilizando en comando SQL \"INSERT\" por defecto. Utiliza esto ara "
+"grandes conjuntos de datos."
 
 #. Tag: term
 #, no-c-format
@@ -39106,8 +39052,8 @@ msgstr "<term>-e</term>"
 msgid ""
 "Execute each statement on its own, without using a transaction. This allows "
 "loading of the majority of good data when there are some bad geometries that "
-"generate errors. Note that this cannot be used with the -D flag as the "
-"\"dump\" format always uses a transaction."
+"generate errors. Note that this cannot be used with the -D flag as the \"dump"
+"\" format always uses a transaction."
 msgstr ""
 "Ejecuta cada sentencia una por una, sin utilizar una transacción. Esto "
 "permite cargar la mayoría de datos correctos cuando existen algunas "
@@ -39324,8 +39270,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The most common spatial query will probably be a \"frame-based\" query, used "
-"by client software, like data browsers and web mappers, to grab a \"map "
-"frame\" worth of data for display."
+"by client software, like data browsers and web mappers, to grab a \"map frame"
+"\" worth of data for display."
 msgstr ""
 
 #. Tag: para
@@ -39553,8 +39499,8 @@ msgstr ""
 msgid ""
 "See also the <link xlink:href=\"https://postgis.net/workshops/postgis-intro/"
 "indexing.html\">PostGIS Workshop section on spatial indexes</link>, and the "
-"<link xlink:href=\"https://www.postgresql.org/docs/current/indexes."
-"html\">PostgreSQL manual</link>."
+"<link xlink:href=\"https://www.postgresql.org/docs/current/indexes.html"
+"\">PostgreSQL manual</link>."
 msgstr ""
 
 #. Tag: title
@@ -39572,8 +39518,8 @@ msgid ""
 "performance. Other implementations of GiST are used to speed up searches on "
 "all kinds of irregular data structures (integer arrays, spectral data, etc) "
 "which are not amenable to normal B-Tree indexing. For more information see "
-"the <link xlink:href=\"https://www.postgresql.org/docs/current/gist."
-"html\">PostgreSQL manual</link>."
+"the <link xlink:href=\"https://www.postgresql.org/docs/current/gist.html"
+"\">PostgreSQL manual</link>."
 msgstr ""
 
 #. Tag: para
@@ -39632,9 +39578,9 @@ msgid ""
 "indexing very large tables on columns which have a correlation with their "
 "physical location within the table. In addition to spatial indexing, BRIN "
 "can speed up searches on various kinds of attribute data structures "
-"(integer, arrays etc). For more information see the <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/brin.html\">PostgreSQL "
-"manual</link>."
+"(integer, arrays etc). For more information see the <link xlink:href="
+"\"https://www.postgresql.org/docs/current/brin.html\">PostgreSQL manual</"
+"link>."
 msgstr ""
 
 #. Tag: para
@@ -39969,9 +39915,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"For more information see the Postgres manual section on <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/runtime-config-query."
-"html\">Query Planning</link>."
+"For more information see the Postgres manual section on <link xlink:href="
+"\"https://www.postgresql.org/docs/current/runtime-config-query.html\">Query "
+"Planning</link>."
 msgstr ""
 
 #. Tag: title
@@ -40074,8 +40020,8 @@ msgid ""
 "Extended 9-Intersection Model</link> (DE-9IM) describes the spatial "
 "relationship between two geometries by specifying the dimensions of the 9 "
 "intersections between the above sets for each geometry. The intersection "
-"dimensions can be formally represented in a 3x3 <emphasis "
-"role=\"bold\">intersection matrix</emphasis>."
+"dimensions can be formally represented in a 3x3 <emphasis role=\"bold"
+"\">intersection matrix</emphasis>."
 msgstr ""
 
 #. Tag: para
@@ -40285,11 +40231,11 @@ msgid ""
 "defines a set of <emphasis>named spatial relationship predicates</emphasis>. "
 "PostGIS provides these as the functions <xref linkend=\"ST_Contains\"/>, "
 "<xref linkend=\"ST_Crosses\"/>, <xref linkend=\"ST_Disjoint\"/>, <xref "
-"linkend=\"ST_Equals\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
-"linkend=\"ST_Overlaps\"/>, <xref linkend=\"ST_Touches\"/>, <xref "
-"linkend=\"ST_Within\"/>. It also defines the non-standard relationship "
-"predicates <xref linkend=\"ST_Covers\"/>, <xref linkend=\"ST_CoveredBy\"/>, "
-"and <xref linkend=\"ST_ContainsProperly\"/>."
+"linkend=\"ST_Equals\"/>, <xref linkend=\"ST_Intersects\"/>, <xref linkend="
+"\"ST_Overlaps\"/>, <xref linkend=\"ST_Touches\"/>, <xref linkend=\"ST_Within"
+"\"/>. It also defines the non-standard relationship predicates <xref linkend="
+"\"ST_Covers\"/>, <xref linkend=\"ST_CoveredBy\"/>, and <xref linkend="
+"\"ST_ContainsProperly\"/>."
 msgstr ""
 
 #. Tag: para
@@ -40399,9 +40345,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"To test a particular spatial relationship, an <emphasis "
-"role=\"bold\">intersection matrix pattern</emphasis> is used. This is the "
-"matrix representation augmented with the additional symbols <literal>{T,*}</"
+"To test a particular spatial relationship, an <emphasis role=\"bold"
+"\">intersection matrix pattern</emphasis> is used. This is the matrix "
+"representation augmented with the additional symbols <literal>{T,*}</"
 "literal>:"
 msgstr ""
 
@@ -40432,8 +40378,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "For the second example, the intersection matrix pattern specifying a line "
-"partly inside and partly outside a polygon is '<emphasis "
-"role=\"bold\">102101FF2</emphasis>':"
+"partly inside and partly outside a polygon is '<emphasis role=\"bold"
+"\">102101FF2</emphasis>':"
 msgstr ""
 
 #. Tag: title
@@ -40455,11 +40401,11 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Spatial operators include the bounding box operators (of which the most "
-"commonly used is <xref linkend=\"geometry_overlaps\"/>; see <xref "
-"linkend=\"operators-bbox\"/> for the full list) and the distance operators "
-"used in nearest-neighbor queries (the most common being <xref "
-"linkend=\"geometry_distance_knn\"/>; see <xref linkend=\"operators-"
-"distance\"/> for the full list.)"
+"commonly used is <xref linkend=\"geometry_overlaps\"/>; see <xref linkend="
+"\"operators-bbox\"/> for the full list) and the distance operators used in "
+"nearest-neighbor queries (the most common being <xref linkend="
+"\"geometry_distance_knn\"/>; see <xref linkend=\"operators-distance\"/> for "
+"the full list.)"
 msgstr ""
 
 #. Tag: para
@@ -40467,15 +40413,14 @@ msgstr ""
 msgid ""
 "Index-aware functions automatically add a bounding box operator to the "
 "spatial condition. Index-aware functions include the named spatial "
-"relationship predicates <xref linkend=\"ST_Contains\"/>, <xref "
-"linkend=\"ST_ContainsProperly\"/>, <xref linkend=\"ST_CoveredBy\"/>, <xref "
-"linkend=\"ST_Covers\"/>, <xref linkend=\"ST_Crosses\"/>, <xref "
-"linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Overlaps\"/>, <xref "
-"linkend=\"ST_Touches\"/>, <xref linkend=\"ST_Within\"/>, <xref "
-"linkend=\"ST_Within\"/>, and <xref linkend=\"ST_3DIntersects\"/>, and the "
-"distance predicates <xref linkend=\"ST_DWithin\"/>, <xref "
-"linkend=\"ST_DFullyWithin\"/>, <xref linkend=\"ST_3DDFullyWithin\"/>, and "
-"<xref linkend=\"ST_3DDWithin\"/> .)"
+"relationship predicates <xref linkend=\"ST_Contains\"/>, <xref linkend="
+"\"ST_ContainsProperly\"/>, <xref linkend=\"ST_CoveredBy\"/>, <xref linkend="
+"\"ST_Covers\"/>, <xref linkend=\"ST_Crosses\"/>, <xref linkend="
+"\"ST_Intersects\"/>, <xref linkend=\"ST_Overlaps\"/>, <xref linkend="
+"\"ST_Touches\"/>, <xref linkend=\"ST_Within\"/>, <xref linkend=\"ST_Within\"/"
+">, and <xref linkend=\"ST_3DIntersects\"/>, and the distance predicates "
+"<xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DFullyWithin\"/>, <xref "
+"linkend=\"ST_3DDFullyWithin\"/>, and <xref linkend=\"ST_3DDWithin\"/> .)"
 msgstr ""
 
 #. Tag: para
@@ -40583,9 +40528,9 @@ msgid ""
 "Note that in order to answer this query we have to calculate the area of "
 "every polygon. If we were doing this a lot it would make sense to add an "
 "area column to the table that could be indexed for performance. By ordering "
-"the results in a descending direction, and them using the PostgreSQL "
-"\"LIMIT\" command we can easily select just the largest value without using "
-"an aggregate function like MAX()."
+"the results in a descending direction, and them using the PostgreSQL \"LIMIT"
+"\" command we can easily select just the largest value without using an "
+"aggregate function like MAX()."
 msgstr ""
 
 #. Tag: para
@@ -41143,28 +41088,27 @@ msgstr ""
 msgid ""
 "There are many functions to help with that goal. If you are creating rasters "
 "not as a derivative of other rasters, you will want to start with: <xref "
-"linkend=\"RT_ST_MakeEmptyRaster\"/>, followed by <xref "
-"linkend=\"RT_ST_AddBand\"/>"
+"linkend=\"RT_ST_MakeEmptyRaster\"/>, followed by <xref linkend="
+"\"RT_ST_AddBand\"/>"
 msgstr ""
 "Existen muchas funciones de ayuda. Si no estas creando rasters con derivados "
-"de otro raster, entonces deberías comenzar con: <xref "
-"linkend=\"RT_ST_MakeEmptyRaster\"/>, seguido de <xref "
-"linkend=\"RT_ST_AddBand\"/>"
+"de otro raster, entonces deberías comenzar con: <xref linkend="
+"\"RT_ST_MakeEmptyRaster\"/>, seguido de <xref linkend=\"RT_ST_AddBand\"/>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "You can also create rasters from geometries. To achieve that you'll want to "
 "use <xref linkend=\"RT_ST_AsRaster\"/> perhaps accompanied with other "
-"functions such as <xref linkend=\"RT_ST_Union\"/> or <xref "
-"linkend=\"RT_ST_MapAlgebraFct2\"/> or any of the family of other map algebra "
+"functions such as <xref linkend=\"RT_ST_Union\"/> or <xref linkend="
+"\"RT_ST_MapAlgebraFct2\"/> or any of the family of other map algebra "
 "functions."
 msgstr ""
 "También puedes crear rasters a partir de geometrias. Para conseguir esto "
 "deberás utilizar <xref linkend=\"RT_ST_AsRaster\"/> quizás acompañado de "
-"otras funciones como <xref linkend=\"RT_ST_Union\"/> o <xref "
-"linkend=\"RT_ST_MapAlgebraFct2\"/> o cualquier otra de la familia de "
-"funciones de álgebra de mapas."
+"otras funciones como <xref linkend=\"RT_ST_Union\"/> o <xref linkend="
+"\"RT_ST_MapAlgebraFct2\"/> o cualquier otra de la familia de funciones de "
+"álgebra de mapas."
 
 #. Tag: para
 #, no-c-format
@@ -41175,8 +41119,8 @@ msgid ""
 msgstr ""
 "Incluso hay muchas más opciones para crear nuevas tablas raster a partir de "
 "las tablas existentes. Por ejemplo, puede crear una tabla raster en una "
-"proyección diferente de una existente utilizando <xref "
-"linkend=\"RT_ST_Transform\"/>"
+"proyección diferente de una existente utilizando <xref linkend="
+"\"RT_ST_Transform\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -41213,8 +41157,8 @@ msgstr ""
 msgid ""
 "Apply raster constraints using <xref linkend=\"RT_AddRasterConstraints\"/>"
 msgstr ""
-"Aplica las restricciones raster con <xref "
-"linkend=\"RT_AddRasterConstraints\"/>"
+"Aplica las restricciones raster con <xref linkend=\"RT_AddRasterConstraints"
+"\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -41234,12 +41178,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Efficient use of cloud stored rasters requires the use of a \"cloud "
-"optimized\" format. The most well-known and widely used is the \"<link xlink:"
-"href=\"https://gdal.org/drivers/raster/cog.html\">cloud optimized GeoTIFF</"
-"link>\" format. Using a non-cloud format, like a JPEG, or an un-tiled TIFF "
-"will result in very poor performance, as the system will have to download "
-"the entire raster each time it needs to access a subset."
+"Efficient use of cloud stored rasters requires the use of a \"cloud optimized"
+"\" format. The most well-known and widely used is the \"<link xlink:href="
+"\"https://gdal.org/drivers/raster/cog.html\">cloud optimized GeoTIFF</link>"
+"\" format. Using a non-cloud format, like a JPEG, or an un-tiled TIFF will "
+"result in very poor performance, as the system will have to download the "
+"entire raster each time it needs to access a subset."
 msgstr ""
 
 #. Tag: para
@@ -41258,9 +41202,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Once the table is loaded, you need to give the database permission to read "
-"from remote rasters, by setting two permissions, <xref "
-"linkend=\"postgis_enable_outdb_rasters\"/> and <xref "
-"linkend=\"postgis_gdal_enabled_drivers\"/>."
+"from remote rasters, by setting two permissions, <xref linkend="
+"\"postgis_enable_outdb_rasters\"/> and <xref linkend="
+"\"postgis_gdal_enabled_drivers\"/>."
 msgstr ""
 
 #. Tag: para
@@ -41275,10 +41219,9 @@ msgstr ""
 msgid ""
 "For non-public rasters, you may have to provide access keys to read from the "
 "cloud rasters. The same keys you used to write the <varname>raster2pgsql</"
-"varname> call can be set for use inside the database, with the <xref "
-"linkend=\"postgis_gdal_vsi_options\"/> configuration. Note that multiple "
-"options can be set by space-separating the <varname>key=value</varname> "
-"pairs."
+"varname> call can be set for use inside the database, with the <xref linkend="
+"\"postgis_gdal_vsi_options\"/> configuration. Note that multiple options can "
+"be set by space-separating the <varname>key=value</varname> pairs."
 msgstr ""
 
 #. Tag: para
@@ -41362,8 +41305,8 @@ msgid ""
 msgstr ""
 "Si has creado tus tablas sin el cargador o has olvidado especificar la "
 "variable <varname>-C</varname> del comando de carga durante la carga, puedes "
-"hacer cumplir las restricciones por defecto utilizando <xref "
-"linkend=\"RT_AddRasterConstraints\"/>, de este modo el catálogo "
+"hacer cumplir las restricciones por defecto utilizando <xref linkend="
+"\"RT_AddRasterConstraints\"/>, de este modo el catálogo "
 "<varname>raster_columns</varname> guardará la información mas común de tus "
 "teselas raster."
 
@@ -41410,8 +41353,8 @@ msgid ""
 "Should be an entry in the <xref linkend=\"spatial_ref_sys\"/>."
 msgstr ""
 "<varname>srid</varname> El identificador del sistema de referencia espacial "
-"del raster. Debe ser una de las entradas de la tabla  <xref "
-"linkend=\"spatial_ref_sys\"/>."
+"del raster. Debe ser una de las entradas de la tabla  <xref linkend="
+"\"spatial_ref_sys\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -41424,8 +41367,8 @@ msgstr ""
 "<varname>scale_x</varname> Escala entre las coordenadas espaciales "
 "geométricas y el pixel. Esto esta disponible únicamente si todas las teselas "
 "de la columna raster tienen el mismo valor <varname>scale_x</varname> y se "
-"aplica la restricción. Para mas detalles visita <xref "
-"linkend=\"RT_ST_ScaleX\"/> ."
+"aplica la restricción. Para mas detalles visita <xref linkend=\"RT_ST_ScaleX"
+"\"/> ."
 
 #. Tag: para
 #, no-c-format
@@ -41459,19 +41402,19 @@ msgid ""
 "raster tile . Refer to <xref linkend=\"RT_ST_Height\"/> for more details."
 msgstr ""
 "<varname>blocksize_y</varname> Es el ancho (numero de pixeles en vertical "
-"hacia abajo) de cada tesela raster.Para mas detalles visita <xref "
-"linkend=\"RT_ST_Height\"/>."
+"hacia abajo) de cada tesela raster.Para mas detalles visita <xref linkend="
+"\"RT_ST_Height\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>same_alignment</varname> A boolean that is true if all the raster "
-"tiles have the same alignment . Refer to <xref "
-"linkend=\"RT_ST_SameAlignment\"/> for more details."
+"tiles have the same alignment . Refer to <xref linkend=\"RT_ST_SameAlignment"
+"\"/> for more details."
 msgstr ""
 "<varname>same_alignment</varname> Valor booleano que valdrá \"True\" si "
-"todas las teselas raster tienen el mismo alineamiento. Visita <xref "
-"linkend=\"RT_ST_SameAlignment\"/> para más información."
+"todas las teselas raster tienen el mismo alineamiento. Visita <xref linkend="
+"\"RT_ST_SameAlignment\"/> para más información."
 
 #. Tag: para
 #, no-c-format
@@ -41503,8 +41446,8 @@ msgid ""
 msgstr ""
 "<varname>pixel_types</varname> Un array definiendo el tipo de pixel de cada "
 "banda. Tendrás el mismo numero de elementos en este array que el numero de "
-"bandas. Los pixel_types son uno de los definidos en <xref "
-"linkend=\"RT_ST_BandPixelType\"/>."
+"bandas. Los pixel_types son uno de los definidos en <xref linkend="
+"\"RT_ST_BandPixelType\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -41513,8 +41456,8 @@ msgid ""
 "denoting the <varname>nodata_value</varname> for each band. You will have "
 "the same number of elements in this array as you have number of bands. These "
 "numbers define the pixel value for each band that should be ignored for most "
-"operations. This is similar information provided by <xref "
-"linkend=\"RT_ST_BandNoDataValue\"/>."
+"operations. This is similar information provided by <xref linkend="
+"\"RT_ST_BandNoDataValue\"/>."
 msgstr ""
 "<varname>nodata_values</varname> Un array de números de doble precisión que "
 "define el valor <varname>nodata_value</varname> de cada banda. En este array "
@@ -41541,15 +41484,15 @@ msgid ""
 "<varname>extent</varname> This is the extent of all the raster rows in your "
 "raster set. If you plan to load more data that will change the extent of the "
 "set, you'll want to run the <xref linkend=\"RT_DropRasterConstraints\"/> "
-"function before load and then reapply constraints with <xref "
-"linkend=\"RT_AddRasterConstraints\"/> after load."
+"function before load and then reapply constraints with <xref linkend="
+"\"RT_AddRasterConstraints\"/> after load."
 msgstr ""
 "<varname>extent</varname> Esta es la extensión de todas las columnas raster "
 "en tu conjunto raster. Si planeas cargar mas datos que cambiarán la "
-"extensión del conjunto, deberás ejecutar la función <xref "
-"linkend=\"RT_DropRasterConstraints\"/> antes de la carga y después de la "
-"carga restablecer las restricciones con <xref "
-"linkend=\"RT_AddRasterConstraints\"/>."
+"extensión del conjunto, deberás ejecutar la función <xref linkend="
+"\"RT_DropRasterConstraints\"/> antes de la carga y después de la carga "
+"restablecer las restricciones con <xref linkend=\"RT_AddRasterConstraints\"/"
+">."
 
 #. Tag: para
 #, no-c-format
@@ -41901,12 +41844,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"You can download the latest PostgreSQL JDBC drivers from <link xlink:"
-"href=\"http://jdbc.postgresql.org/download.html\">http://jdbc.postgresql.org/"
+"You can download the latest PostgreSQL JDBC drivers from <link xlink:href="
+"\"http://jdbc.postgresql.org/download.html\">http://jdbc.postgresql.org/"
 "download.html</link>"
 msgstr ""
-"Puedes descargar el último driver PostgreSQL JDBC desde <link xlink:"
-"href=\"http://jdbc.postgresql.org/download.html\">http://jdbc.postgresql.org/"
+"Puedes descargar el último driver PostgreSQL JDBC desde <link xlink:href="
+"\"http://jdbc.postgresql.org/download.html\">http://jdbc.postgresql.org/"
 "download.html</link>"
 
 #. Tag: para
