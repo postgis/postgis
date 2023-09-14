@@ -6,14 +6,16 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-14 17:40+0000\n"
-"PO-Revision-Date: 2023-09-14 17:40+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2023-09-14 23:56+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #, no-c-format
@@ -2201,11 +2203,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"Loader_Generate_Nation_Script\"/>, <xref "
 "linkend=\"Drop_State_Tables_Generate_Script\"/>"
-msgstr ", <xref linkend=\"Missing_Indexes_Generate_Script\"/>"
+msgstr ""
+", <xref linkend=\"Loader_Generate_Nation_Script\"/>, <xref linkend="
+"\"Drop_State_Tables_Generate_Script\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -2679,11 +2683,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"Geocode\"/>, <xref "
 "linkend=\"Loader_Generate_Nation_Script\"/>"
-msgstr ", <xref linkend=\"Missing_Indexes_Generate_Script\"/>"
+msgstr ""
+", <xref linkend=\"Geocode\"/>, <xref linkend=\"Loader_Generate_Nation_Script"
+"\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -6448,8 +6454,9 @@ msgid ""
 "linkend=\"create_spatial_db\"/>) or upgraded (<xref linkend=\"upgrading\"/>) "
 "in each individual database you want to use it in."
 msgstr ""
-"Una vez que se instala PostGIS, es necesario habilitarlo en cada base de "
-"datos en la que desee utilizarlo."
+"Una vez instalado PostGIS, es necesario habilitarlo (<xref linkend="
+"\"create_spatial_db\"/>) o actualizarlo (<xref linkend=\"upgrading\"/>) en "
+"cada base de datos individual en la que desee utilizarlo."
 
 #. Tag: title
 #, no-c-format
@@ -7389,15 +7396,15 @@ msgstr ""
 "actual."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you configured PostGIS using non-standard PostgreSQL, GEOS, or Proj "
 "locations, you may need to add their library locations to the "
 "<varname>LD_LIBRARY_PATH</varname> environment variable."
 msgstr ""
-"Si has configurado PostGIS con instalaciones de PostgreSQL, GEOS, o Proj4 en "
-"directorios personalizados, necesitaras añadir las localizaciones de las "
-"librerías personalizadas en la variable de entorno LD_LIBRARY_PATH."
+"Si ha configurado PostGIS utilizando ubicaciones no estándar de PostgreSQL, "
+"GEOS o Proj, puede que necesite añadir sus ubicaciones de biblioteca a la "
+"variable de entorno <varname>LD_LIBRARY_PATH</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -11052,7 +11059,7 @@ msgid "Returns the topological dimension of a geometry."
 msgstr "Devuelve la dimensión de las coordenadas del valor de ST_Geometry."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Return the topological dimension of this Geometry object, which must be less "
 "than or equal to the coordinate dimension. OGC SPEC s2.1.1.1 - returns 0 for "
@@ -11061,12 +11068,12 @@ msgid ""
 "<varname>GEOMETRYCOLLECTION</varname>. If the dimension is unknown (e.g. for "
 "an empty <varname>GEOMETRYCOLLECTION</varname>) 0 is returned."
 msgstr ""
-"La dimensión inherente del objeto Geometry, la cual debe ser menor o igual a "
-"la dimensión de coordenadas. En la Especificación OGC s2.1.1.1 - devuelve 0 "
-"para un <varname>POINT</varname>, 1 para una <varname>LINESTRING</varname>, "
-"2 para un <varname>POLYGON</varname>, y la dimensión mayor de los "
-"componentes de una  <varname>GEOMETRYCOLLECTION</varname>. Si es desconocida "
-"(geometría vacía) se devuelve null."
+"Devuelve la dimensión topológica de este objeto Geometría, que debe ser "
+"menor o igual que la dimensión de coordenadas. OGC SPEC s2.1.1.1 - devuelve "
+"0 para <varname>POINT</varname>, 1 para <varname>LINESTRING</varname>, 2 "
+"para <varname>POLYGON</varname>, y la mayor dimensión de los componentes de "
+"una <varname>GEOMETRYCOLLECTION</varname>. Si se desconoce la dimensión (por "
+"ejemplo, para una <varname>GEOMETRYCOLLECTION</varname> vacía) se devuelve 0."
 
 #. Tag: para
 #, no-c-format
@@ -11151,20 +11158,22 @@ msgid "Polyhedral Surfaces, TIN and Triangle Examples"
 msgstr "Ejemplos de superficies poliedricas, MDT y triángulos"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
 "linkend=\"ST_Collect\"/>, <xref linkend=\"ST_GeometryN\"/>"
 msgstr ""
-", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
-"linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
+"\"ST_Collect\"/>, <xref linkend=\"ST_GeometryN\"/>"
 
 #. Tag: refpurpose
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the coordinates "
 "in a geometry."
-msgstr "Devuelve un resumen de texto del contenido de la geometría."
+msgstr ""
+"Devuelve un conjunto de <varname>geometry_dump</varname> filas para las "
+"coordenadas de una geometría."
 
 #. Tag: para
 #, no-c-format
@@ -11229,11 +11238,13 @@ msgstr ""
 "linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 
 #. Tag: refpurpose
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the segments in a "
 "geometry."
-msgstr "Devuelve un resumen de texto del contenido de la geometría."
+msgstr ""
+"Devuelve un conjunto de <varname>geometry_dump</varname> filas para los "
+"segmentos de una geometría."
 
 #. Tag: para
 #, no-c-format
@@ -11245,13 +11256,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "the <parameter>geom</parameter> field <varname>LINESTRING</varname>s "
 "represent the segments of the supplied geometry."
 msgstr ""
-"Devuelve <varname>TRUE</varname> si esta <varname>LINESTRING</varname> es "
-"simple y cerrada."
+"el campo <parameter>geom</parameter> <varname> LINESTRING</varname>s "
+"representan los segmentos de la geometría suministrada."
 
 #. Tag: para
 #, no-c-format
@@ -11490,14 +11501,14 @@ msgstr ""
 "poligono. No funcionará con MULTIPOLYGON"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This function does not support MULTIPOLYGONs. For MULTIPOLYGONs use in "
 "conjunction with <xref linkend=\"ST_GeometryN\"/> or <xref "
 "linkend=\"ST_Dump\"/>"
 msgstr ""
-"Esto no funcionara con MULTIPOLYGONs. Para MULTIPOLYGONs utilizaba junto a "
-"ST_Dump."
+"Esta función no admite MULTIPOLÍGONOS. Para MULTIPOLÍGONOS, utilícela junto "
+"con <xref linkend=\"ST_GeometryN\"/> o <xref linkend=\"ST_Dump\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -11542,13 +11553,13 @@ msgstr ""
 "Versiones anteriormente implementadas era de tipo 0-based."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "To extract all elements of a geometry, <xref linkend=\"ST_Dump\"/> is more "
 "efficient and works for atomic geometries."
 msgstr ""
-"Si quieres extraer todas las geometrías de una geometría, ST_Dump es mas "
-"eficiente y funcionará con geometrías simples."
+"Para extraer todos los elementos de una geometría, <xref linkend=\"ST_Dump\"/"
+"> es más eficaz y funciona para geometrías atómicas."
 
 #. Tag: para
 #, no-c-format
@@ -12218,13 +12229,13 @@ msgid "Index is 1-based."
 msgstr "El índice está basado en 1."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you want to extract all elements of a geometry <xref linkend=\"ST_Dump\"/"
 "> is more efficient."
 msgstr ""
-"Si desea extraer todas las geometrías, de una geometría, ST_Dump es más "
-"eficiente."
+"Si desea extraer todos los elementos de una geometría <xref linkend=\"ST_Dump"
+"\"/> es más eficaz."
 
 #. Tag: para
 #, no-c-format
@@ -13645,14 +13656,15 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
 "linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_MakePoint\"/>, <xref "
 "linkend=\"ST_Point\"/>"
 msgstr ""
-", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/>, <xref "
-"linkend=\"ST_MakePoint\"/>"
+", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
+"linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_MakePoint\"/>, <xref "
+"linkend=\"ST_Point\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -17761,14 +17773,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If <varname>startfraction</varname> and <varname>endfraction</varname> have "
 "the same value this is equivalent to <xref "
 "linkend=\"ST_LineInterpolatePoint\"/>."
 msgstr ""
-"Si ' Start ' y ' End ' tienen el mismo valor, esto equivale a <xref "
-"linkend=\"ST_LineInterpolatePoint\"/>."
+"Si <varname>startfraction</varname> y <varname>endfraction</varname> tienen "
+"el mismo valor, esto equivale a <xref linkend=\"ST_LineInterpolatePoint\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -17911,16 +17923,16 @@ msgstr ""
 "coinciden con la medida especificada. No se admiten elementos poligonales."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If the <varname>offset</varname> is provided, the result is offset to the "
 "left or right of the input line by the specified distance. A positive offset "
 "will be to the left, and a negative one to the right."
 msgstr ""
-"Si se proporciona un desplazamiento, el resultado se desplazará a la "
-"izquierda o a la derecha de la línea de entrada por el número de unidades "
-"especificado. Un desplazamiento positivo será a la izquierda, y uno negativo "
-"a la derecha."
+"Si se proporciona <varname>offset</varname>, el resultado se desplaza a la "
+"izquierda o a la derecha de la línea de entrada la distancia especificada. "
+"Un desplazamiento positivo será hacia la izquierda, y uno negativo hacia la "
+"derecha."
 
 #. Tag: para
 #, no-c-format
@@ -17959,10 +17971,9 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_LocateBetweenElevations\"/>"
-msgstr ""
-", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
+msgstr ", <xref linkend=\"ST_LocateBetweenElevations\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -17982,10 +17993,9 @@ msgid "Availability: 1.4.0"
 msgstr "Disponibilidad: 1.4.0"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_LocateBetween\"/>"
-msgstr ""
-", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
+msgstr ", <xref linkend=\"ST_LocateBetween\"/>"
 
 #. Tag: refpurpose
 #, fuzzy, no-c-format
@@ -18227,19 +18237,18 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Ensures geometry columns have appropriate type modifiers or spatial "
 "constraints to ensure they are registered correctly in the "
 "<varname>geometry_columns</varname> view. By default will convert all "
 "geometry columns with no type modifier to ones with type modifiers."
 msgstr ""
-"Asegura que las columnas de geometría se define con modificadores de tipo o "
-"tienen restricciones espaciales apropiadas Esto asegura que se registrarán "
+"Asegura que las columnas de geometría tienen los modificadores de tipo o "
+"restricciones espaciales apropiados para asegurar que se registran "
 "correctamente en la vista <varname>geometry_columns</varname>. Por defecto "
-"se convertirán todas las columnas de geometría sin modificador de tipo a "
-"modificadores de tipo. Para conseguir el comportamiento del sistema antiguo "
-"selecciona <varname>use_typmod = false</varname>"
+"convertirá todas las columnas de geometría sin modificador de tipo en otras "
+"con modificadores de tipo."
 
 #. Tag: para
 #, no-c-format
@@ -18419,11 +18428,13 @@ msgstr ""
 "equivalente para hacerlo de una sola vez."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
 "linkend=\"ST_GeomFromEWKT\"/>"
-msgstr ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>"
+msgstr ""
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
+"linkend=\"ST_GeomFromEWKT\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -18516,14 +18527,14 @@ msgid "If your data is in geography already:"
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_GeomFromText\"/>, <xref "
 "linkend=\"ST_GeographyFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
 "linkend=\"ST_Transform\"/>"
 msgstr ""
-", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"ST_LongestLine\"/>, <xref "
-"linkend=\"ST_MaxDistance\"/>"
+", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_GeographyFromText\""
+"/>, <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -34897,7 +34908,7 @@ msgid "Sets lock/authorization for a row in a table."
 msgstr "Configura el bloqueo/autorización para una fila específica de la tabla"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Sets lock/authorization for a specific row in a table. "
 "<varname>an_auth_token</varname> is a text value. <varname>expire_dt</"
@@ -34905,10 +34916,11 @@ msgid ""
 "emphasis>. Returns 1 if lock has been assigned, 0 otherwise (i.e. row is "
 "already locked by another auth.)"
 msgstr ""
-"Configura el bloqueo/autorización para una fila específica de la tabla &lt;"
-"authid&gt; es un valor de texto, &lt;expires&gt; es un valor de tiempo que "
-"por defecto es now()+1hora. Devuelve 1 si se asignó el bloqueo, 0 en otro "
-"caso (ya bloqueado por otra autorización)"
+"Establece el bloqueo/autorización para una fila específica de una tabla. "
+"<varname>an_auth_token</varname> es un valor de texto. <varname>expire_dt</"
+"varname> es una marca de tiempo que por defecto es <emphasis>now() + 1 hora</"
+"emphasis>. Devuelve 1 si se ha asignado el bloqueo, 0 en caso contrario (es "
+"decir, la fila ya está bloqueada por otro auth.)"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -35303,16 +35315,17 @@ msgid "The type representing a 2-dimensional bounding box."
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>box2d</varname> is a spatial data type used to represent the two-"
 "dimensional bounding box enclosing a geometry or collection of geometries. "
 "For example, the <xref linkend=\"ST_Extent\"/> aggregate function returns a "
 "<varname>box2d</varname> object."
 msgstr ""
-"box3d es un tipo de dato espacial usado para representar la caja que "
-"contiene una geometría o un grupo de geometrías. ST_3DExtent devuelve un "
-"objecto box3d."
+"<varname>box2d</varname> es un tipo de dato espacial utilizado para "
+"representar el cuadro delimitador bidimensional que encierra una geometría o "
+"una colección de geometrías. Por ejemplo, la función agregada <xref linkend="
+"\"ST_Extent\"/> devuelve un objeto <varname>box2d</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -35352,16 +35365,18 @@ msgid "The type representing a 3-dimensional bounding box."
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>box3d</varname> is a PostGIS spatial data type used to represent "
 "the three-dimensional bounding box enclosing a geometry or collection of "
 "geometries. For example, the <xref linkend=\"ST_3DExtent\"/> aggregate "
 "function returns a <varname>box3d</varname> object."
 msgstr ""
-"box3d es un tipo de dato espacial usado para representar la caja que "
-"contiene una geometría o un grupo de geometrías. ST_3DExtent devuelve un "
-"objecto box3d."
+"<varname>box3d</varname> es un tipo de datos espaciales PostGIS que se "
+"utiliza para representar el cuadro delimitador tridimensional que encierra "
+"una geometría o una colección de geometrías. Por ejemplo, la función "
+"agregada <xref linkend=\"ST_3DExtent\"/> devuelve un objeto "
+"<varname>box3d</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -35396,13 +35411,14 @@ msgstr ""
 "un sistema de coordenadas de Tierra esférica."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>geometry</varname> is a fundamental PostGIS spatial data type used "
 "to represent a feature in planar (Euclidean) coordinate systems."
 msgstr ""
-"geometry es un tipo de datos postgis fundamental, usado para representar una "
-"feature en un sistema de coordenadas euclidiano."
+"<varname>geometry</varname> es un tipo de dato espacial fundamental de "
+"PostGIS que se utiliza para representar una característica en sistemas de "
+"coordenadas planas (euclidianas)."
 
 #. Tag: para
 #, no-c-format
@@ -35475,14 +35491,15 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>geography</varname> is a spatial data type used to represent a "
 "feature in geodetic coordinate systems. Geodetic coordinate systems model "
 "the earth using an ellipsoid."
 msgstr ""
-"geography es un tipo de dato espacial usado para representar una feature en "
-"un sistema de coordenadas de Tierra esférica."
+"<varname>geografía</varname> es un tipo de dato espacial utilizado para "
+"representar un elemento en sistemas de coordenadas geodésicas. Los sistemas "
+"de coordenadas geodésicas modelan la Tierra mediante un elipsoide."
 
 #. Tag: para
 #, no-c-format
