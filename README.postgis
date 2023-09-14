@@ -43,7 +43,19 @@ this to work.
 
 For apt-based systems you can run this command to install the below dependencies (except for GTK):
 
-  sudo apt-get install libproj-dev libgeos-dev libxml2-dev gettext libjson-c-dev libgdal-dev libsfcgal-dev libprotobuf-c-dev protobuf-c-compiler
+  sudo apt-get install \
+    docbook-xsl-ns \
+    gettext \
+    libgdal-dev \
+    libgeos-dev \
+    libjson-c-dev \
+    libproj-dev \
+    libprotobuf-c-dev \
+    libsfcgal-dev \
+    libxml2-dev \
+    libxml2-utils \
+    protobuf-c-compiler \
+    xsltproc
 
 * PROJ4 (Required, Version 6.1 or higher):
 
