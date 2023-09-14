@@ -7,7 +7,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
 "PO-Revision-Date: 2023-09-14 10:50+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_rasterxml/zh_Hans/>\n"
 "Language: zh_Hans\n"
@@ -2683,7 +2683,7 @@ msgstr "<refpurpose>返回栅格的宽度（以像素为单位）。</refpurpose
 #: reference_raster.xml:2851
 #, no-c-format
 msgid "<para>Returns the width of the raster in pixels.</para>"
-msgstr ""
+msgstr "<para>返回栅格的宽度（以像素为单位）。</para>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2872
@@ -2692,7 +2692,8 @@ msgid ""
 "Returns the upper left corner as column and row given geometric X and Y "
 "(longitude and latitude) or a point geometry expressed in the spatial "
 "reference coordinate system of the raster."
-msgstr ""
+msgstr "给定几何 X 和 "
+"Y（经度和纬度）或以栅格的空间参考坐标系表示的点几何，将左上角作为列和行返回。"
 
 #. Tag: para
 #: reference_raster.xml:2895
@@ -2704,6 +2705,9 @@ msgid ""
 "extent of the raster. Geometric X and Y must be expressed in the spatial "
 "reference coordinate system of the raster."
 msgstr ""
+"在给定几何 X 和 Y（经度和纬度）或点几何的情况下，将左上角作为列和行返回。 "
+"无论几何 X 和 Y 或点几何是否位于栅格范围之外，此函数都会起作用。 "
+"几何X和Y必须在栅格的空间参考坐标系中表示。"
 
 #. Tag: para
 #: reference_raster.xml:2914
@@ -2713,6 +2717,9 @@ msgid ""
 "linkend=\"RT_ST_RasterToWorldCoordX\"/>, <xref "
 "linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_WorldToRasterCoordY\"/>, <xref linkend="
+"\"RT_ST_RasterToWorldCoordX\"/>, <xref linkend=\"RT_ST_RasterToWorldCoordY\"/"
+">, <xref linkend=\"RT_ST_SRID\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2927
@@ -2721,7 +2728,8 @@ msgid ""
 "Returns the column in the raster of the point geometry (pt) or a X and Y "
 "world coordinate (xw, yw) represented in world spatial reference system of "
 "raster."
-msgstr ""
+msgstr "返回栅格中点几何 (pt) 的列或以栅格世界空间参考系表示的 X 和 Y 世界坐标 (xw, "
+"yw)。"
 
 #. Tag: para
 #: reference_raster.xml:2957
@@ -2733,12 +2741,15 @@ msgid ""
 "sufficient. World coordinates are in the spatial reference coordinate system "
 "of the raster."
 msgstr ""
+"返回点几何 (pt) 或 X 和 Y 世界坐标 (xw, yw) 的栅格中的列。 "
+"一个点，或者（如果栅格倾斜，则需要 xw 和 yw 世界坐标）。 如果栅格没有倾斜，"
+"则 xw 就足够了。 世界坐标位于栅格的空间参考坐标系中。"
 
 #. Tag: para
 #: reference_raster.xml:2959
 #, no-c-format
 msgid "Changed: 2.1.0 In prior versions, this was called ST_World2RasterCoordX"
-msgstr ""
+msgstr "更改：2.1.0 在之前的版本中，这称为 ST_World2RasterCoordX"
 
 #. Tag: para
 #: reference_raster.xml:2971 reference_raster.xml:3026
@@ -2747,6 +2758,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref "
 "linkend=\"RT_ST_SRID\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref linkend=\"RT_ST_SRID\""
+"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2982
@@ -2754,7 +2767,8 @@ msgstr ""
 msgid ""
 "Returns the row in the raster of the point geometry (pt) or a X and Y world "
 "coordinate (xw, yw) represented in world spatial reference system of raster."
-msgstr ""
+msgstr "返回点几何图形 (pt) 的栅格中的行或以栅格的世界空间参考系表示的 X 和 Y "
+"世界坐标 (xw, yw)。"
 
 #. Tag: para
 #: reference_raster.xml:3012
@@ -2766,18 +2780,21 @@ msgid ""
 "sufficient. World coordinates are in the spatial reference coordinate system "
 "of the raster."
 msgstr ""
+"返回点几何 (pt) 或 X 和 Y 世界坐标 (xw, yw) 的栅格中的行。 "
+"一个点，或者（如果栅格倾斜，则需要 xw 和 yw 世界坐标）。 如果栅格没有倾斜，"
+"则 xw 就足够了。 世界坐标位于栅格的空间参考坐标系中。"
 
 #. Tag: para
 #: reference_raster.xml:3014
 #, no-c-format
 msgid "Changed: 2.1.0 In prior versions, this was called ST_World2RasterCoordY"
-msgstr ""
+msgstr "更改：2.1.0 在之前的版本中，这称为 ST_World2RasterCoordY"
 
 #. Tag: title
 #: reference_raster.xml:3033
 #, no-c-format
 msgid "Raster Band Accessors"
-msgstr ""
+msgstr "栅格波段访问器"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3037
@@ -2785,7 +2802,7 @@ msgstr ""
 msgid ""
 "Returns basic meta data for a specific raster band. band num 1 is assumed if "
 "none-specified."
-msgstr ""
+msgstr "返回特定栅格波段的基本元数据。 如果未指定，则假定波段编号为 1。"
 
 #. Tag: para
 #: reference_raster.xml:3058
@@ -2794,18 +2811,20 @@ msgid ""
 "Returns basic meta data about a raster band. Columns returned: pixeltype, "
 "nodatavalue, isoutdb, path, outdbbandnum, filesize, filetimestamp."
 msgstr ""
+"返回有关栅格波段的基本元数据。 返回的列：pixeltype、nodatavalue、isoutdb、pat"
+"h、outdbbandnum、filesize、filetimestamp。"
 
 #. Tag: para
 #: reference_raster.xml:3061
 #, no-c-format
 msgid "If raster contains no bands then an error is thrown."
-msgstr ""
+msgstr "如果栅格不包含波段，则会引发错误。"
 
 #. Tag: para
 #: reference_raster.xml:3067
 #, no-c-format
 msgid "If band has no NODATA value, nodatavalue are NULL."
-msgstr ""
+msgstr "如果 band 没有 NODATA 值，则 nodatavalue 为 NULL。"
 
 #. Tag: para
 #: reference_raster.xml:3072
@@ -2815,6 +2834,8 @@ msgid ""
 "NULL. If outdb access is disabled, filesize and filetimestamp will also be "
 "NULL."
 msgstr ""
+"如果 isoutdb 为 False，则路径、outdbbandnum、文件大小和文件时间戳为 NULL。 "
+"如果禁用 outdb 访问，则文件大小和文件时间戳也将为 NULL。"
 
 #. Tag: para
 #: reference_raster.xml:3077
@@ -2824,6 +2845,8 @@ msgid ""
 "<emphasis>filesize</emphasis> and <emphasis>filetimestamp</emphasis> for "
 "outdb rasters."
 msgstr ""
+"增强：2.5.0 包括<emphasis> outdbbandnum</emphasis>、<emphasis>文件大小</empha"
+"sis>和<emphasis>文件时间戳</emphasis> for outdb 栅格。"
 
 #. Tag: title
 #: reference_raster.xml:3081 reference_raster.xml:4260
@@ -2832,7 +2855,7 @@ msgstr ""
 #: reference_raster.xml:9683 reference_raster.xml:9811
 #, no-c-format
 msgid "Examples: Variant 1"
-msgstr ""
+msgstr "示例：格式 1"
 
 #. Tag: title
 #: reference_raster.xml:3088 reference_raster.xml:4273
@@ -2841,13 +2864,13 @@ msgstr ""
 #: reference_raster.xml:9816
 #, no-c-format
 msgid "Examples: Variant 2"
-msgstr ""
+msgstr "示例：格式2"
 
 #. Tag: para
 #: reference_raster.xml:3097
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_BandPixelType\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_BandPixelType\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3104
@@ -2855,19 +2878,19 @@ msgstr ""
 msgid ""
 "Returns the value in a given band that represents no data. If no band num 1 "
 "is assumed."
-msgstr ""
+msgstr "返回表示无数据的给定波段中的值。如果没有指定波段编号，默认为波段1。"
 
 #. Tag: para
 #: reference_raster.xml:3120
 #, no-c-format
 msgid "Returns the value that represents no data for the band"
-msgstr ""
+msgstr "返回表示该波段中无数据的数值"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3140
 #, no-c-format
 msgid "Returns true if the band is filled with only nodata values."
-msgstr ""
+msgstr "如果波段仅填充无数据值，则返回 true。"
 
 #. Tag: para
 #: reference_raster.xml:3161
@@ -2879,6 +2902,9 @@ msgid ""
 "the isnodata flag for the band. The default value for this parameter is "
 "FALSE, if not specified."
 msgstr ""
+"如果波段仅填充无数据值，则返回 true。 如果未指定，则假定波段为1。 "
+"如果最后一个参数为 TRUE，则逐像素检查整个波段。 否则，该函数仅返回该带的 "
+"isnodata 标志的值。 如果未指定，此参数的默认值为 FALSE。"
 
 #. Tag: para
 #: reference_raster.xml:3171
@@ -2889,6 +2915,10 @@ msgid ""
 "true, by using ST_SetBandIsNodata(), or ST_SetBandNodataValue() with TRUE as "
 "last argument. See <xref linkend=\"RT_ST_SetBandIsNoData\"/>."
 msgstr ""
+"如果标志位为 \"dirty\"（即，使用 TRUE "
+"作为最后一个参数和不使用它的结果不同），您应该更新栅格，将该标志设置为 true，"
+"可以使用 ST_SetBandIsNodata() 或 ST_SetBandNodataValue()，并将 TRUE "
+"作为最后一个参数。请参阅 <xref linkend=\"RT_ST_SetBandIsNoData\"/>。"
 
 #. Tag: para
 #: reference_raster.xml:3187
@@ -2898,6 +2928,8 @@ msgid ""
 "linkend=\"RT_ST_SetBandNoDataValue\"/>, <xref "
 "linkend=\"RT_ST_SetBandIsNoData\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend="
+"\"RT_ST_SetBandNoDataValue\"/>, <xref linkend=\"RT_ST_SetBandIsNoData\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3194
@@ -2905,7 +2937,7 @@ msgstr ""
 msgid ""
 "Returns system file path to a band stored in file system. If no bandnum "
 "specified, 1 is assumed."
-msgstr ""
+msgstr "返回存储在文件系统中的波段的系统文件路径。 如果未指定 bandnum，则假定为 1。"
 
 #. Tag: para
 #: reference_raster.xml:3210
@@ -2913,7 +2945,7 @@ msgstr ""
 msgid ""
 "Returns system file path to a band. Throws an error if called with an in db "
 "band."
-msgstr ""
+msgstr "返回指定波段的系统文件路径。如果调用时使用数据库中的波段，则会抛出错误。"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3229
@@ -2921,7 +2953,7 @@ msgstr ""
 msgid ""
 "Returns the file size of a band stored in file system. If no bandnum "
 "specified, 1 is assumed."
-msgstr ""
+msgstr "返回文件系统中存储的波段的文件大小。 如果未指定 bandnum，则假定为 1。"
 
 #. Tag: para
 #: reference_raster.xml:3245
@@ -2929,7 +2961,8 @@ msgstr ""
 msgid ""
 "Returns the file size of a band stored in file system. Throws an error if "
 "called with an in db band, or if outdb access is not enabled."
-msgstr ""
+msgstr "返回文件系统中存储的波段的文件大小。 如果使用 in db band 调用，或者未启用 "
+"outdb 访问，则会引发错误。"
 
 #. Tag: para
 #: reference_raster.xml:3247
@@ -2939,6 +2972,8 @@ msgid ""
 "ST_BandFileTimestamp() so a client can determine if the filename of a outdb "
 "raster as seen by it is the same as the one seen by the server."
 msgstr ""
+"此函数通常与 ST_BandPath() 和 ST_BandFileTimestamp() 结合使用，"
+"以便客户端可以确定它看到的 outdb 栅格文件名是否与服务器看到的文件名相同。"
 
 #. Tag: para
 #: reference_raster.xml:3249 reference_raster.xml:3285
@@ -2955,7 +2990,7 @@ msgstr "可用性：2.5.0"
 msgid ""
 "Returns the file timestamp of a band stored in file system. If no bandnum "
 "specified, 1 is assumed."
-msgstr ""
+msgstr "返回文件系统中存储的波段的文件时间戳。 如果未指定 bandnum，则假定为 1。"
 
 #. Tag: para
 #: reference_raster.xml:3281
@@ -2965,6 +3000,9 @@ msgid ""
 "UTC) of a band stored in file system. Throws an error if called with an in "
 "db band, or if outdb access is not enabled."
 msgstr ""
+"返回文件系统中存储的波段的文件时间戳（自 1970 年 1 月 1 日 00:00:00 UTC "
+"以来的秒数）。 如果使用 in db band 调用，或者未启用 outdb "
+"访问，则会引发错误。"
 
 #. Tag: para
 #: reference_raster.xml:3283
@@ -2974,6 +3012,8 @@ msgid ""
 "ST_BandFileSize() so a client can determine if the filename of a outdb "
 "raster as seen by it is the same as the one seen by the server."
 msgstr ""
+"此函数通常与 ST_BandPath() 和 ST_BandFileSize() 结合使用，"
+"以便客户端可以确定它所看到的 outdb 栅格的文件名是否与服务器所看到的相同。"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3299
@@ -2981,7 +3021,7 @@ msgstr ""
 msgid ""
 "Returns the type of pixel for given band. If no bandnum specified, 1 is "
 "assumed."
-msgstr ""
+msgstr "返回给定波段的像素类型。 如果未指定 bandnum，则假定为 1。"
 
 #. Tag: para
 #: reference_raster.xml:3315
@@ -2989,92 +3029,92 @@ msgstr ""
 msgid ""
 "Returns name describing data type and size of values stored in each cell of "
 "given band."
-msgstr ""
+msgstr "返回描述给定带区每个单元格中存储的数据类型和值大小的名称。"
 
 #. Tag: para
 #: reference_raster.xml:3316
 #, no-c-format
 msgid "There are 11 pixel types. Pixel Types supported are as follows:"
-msgstr ""
+msgstr "有 11 种像素类型。 支持的像素类型如下："
 
 #. Tag: para
 #: reference_raster.xml:3319
 #, no-c-format
 msgid "1BB - 1-bit boolean"
-msgstr ""
+msgstr "1BB - 1 位布尔值"
 
 #. Tag: para
 #: reference_raster.xml:3323
 #, no-c-format
 msgid "2BUI - 2-bit unsigned integer"
-msgstr ""
+msgstr "2BUI - 2 位无符号整数"
 
 #. Tag: para
 #: reference_raster.xml:3327
 #, no-c-format
 msgid "4BUI - 4-bit unsigned integer"
-msgstr ""
+msgstr "4BUI - 4位无符号整数"
 
 #. Tag: para
 #: reference_raster.xml:3331
 #, no-c-format
 msgid "8BSI - 8-bit signed integer"
-msgstr ""
+msgstr "8BSI - 8 位有符号整数"
 
 #. Tag: para
 #: reference_raster.xml:3334
 #, no-c-format
 msgid "8BUI - 8-bit unsigned integer"
-msgstr ""
+msgstr "8BUI - 8 位无符号整数"
 
 #. Tag: para
 #: reference_raster.xml:3337
 #, no-c-format
 msgid "16BSI - 16-bit signed integer"
-msgstr ""
+msgstr "16BSI - 16 位有符号整数"
 
 #. Tag: para
 #: reference_raster.xml:3340
 #, no-c-format
 msgid "16BUI - 16-bit unsigned integer"
-msgstr ""
+msgstr "16BUI - 16 位无符号整数"
 
 #. Tag: para
 #: reference_raster.xml:3343
 #, no-c-format
 msgid "32BSI - 32-bit signed integer"
-msgstr ""
+msgstr "32BSI - 32 位有符号整数"
 
 #. Tag: para
 #: reference_raster.xml:3346
 #, no-c-format
 msgid "32BUI - 32-bit unsigned integer"
-msgstr ""
+msgstr "32BUI - 32 位无符号整数"
 
 #. Tag: para
 #: reference_raster.xml:3349
 #, no-c-format
 msgid "32BF - 32-bit float"
-msgstr ""
+msgstr "32BF - 32 位浮点数"
 
 #. Tag: para
 #: reference_raster.xml:3352
 #, no-c-format
 msgid "64BF - 64-bit float"
-msgstr ""
+msgstr "64BF - 64 位浮点数"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3374
 #, no-c-format
 msgid ""
 "<refpurpose>Returns the minimum value this pixeltype can store.</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>返回此像素类型可以存储的最小值。</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:3388
 #, no-c-format
 msgid "<para>Returns the minimum value this pixeltype can store.</para>"
-msgstr ""
+msgstr "<para>返回此像素类型可以存储的最小值。</para>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3407
@@ -3082,7 +3122,8 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns true if there is no band with given band number. If no "
 "band number is specified, then band number 1 is assumed.</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>如果不存在具有给定波段编号的波段，则返回 true。 "
+"如果未指定波段号，则假定波段号为 1。</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:3423
@@ -3090,13 +3131,14 @@ msgstr ""
 msgid ""
 "<para>Returns true if there is no band with given band number. If no band "
 "number is specified, then band number 1 is assumed.</para>"
-msgstr ""
+msgstr "<para>如果不存在具有给定波段编号的波段，则返回 true。 如果未指定波段号，"
+"则假定波段号为 1。</para>"
 
 #. Tag: title
 #: reference_raster.xml:3444
 #, no-c-format
 msgid "Raster Pixel Accessors and Setters"
-msgstr ""
+msgstr "栅格像素访问器和设置器"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3449
@@ -3104,7 +3146,7 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns the polygon geometry that bounds the pixel for a "
 "particular row and column.</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>返回限定特定行和列的像素的多边形几何形状。</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:3466
@@ -3112,7 +3154,7 @@ msgstr ""
 msgid ""
 "<para>Returns the polygon geometry that bounds the pixel for a particular "
 "row and column.</para>"
-msgstr ""
+msgstr "<para>返回限定特定行和列的像素的多边形几何形状。</para>"
 
 #. Tag: para
 #: reference_raster.xml:3479
@@ -3124,6 +3166,10 @@ msgid ""
 "linkend=\"RT_ST_PixelAsCentroids\"/>, <xref linkend=\"RT_ST_Intersection\"/"
 ">, <xref linkend=\"ST_AsText\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_PixelAsPolygons\"/>, <xref linkend="
+"\"RT_ST_PixelAsPoint\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
+"linkend=\"RT_ST_PixelAsCentroid\"/>, <xref linkend=\"RT_ST_PixelAsCentroids\""
+"/>, <xref linkend=\"RT_ST_Intersection\"/>, <xref linkend=\"ST_AsText\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3495
@@ -3131,7 +3177,7 @@ msgstr ""
 msgid ""
 "Returns the polygon geometry that bounds every pixel of a raster band along "
 "with the value, the X and the Y raster coordinates of each pixel."
-msgstr ""
+msgstr "返回包围栅格带的每个像素的多边形几何图形以及每个像素的值、X 和 Y 栅格坐标。"
 
 #. Tag: para
 #: reference_raster.xml:3512
@@ -3140,7 +3186,8 @@ msgid ""
 "Returns the polygon geometry that bounds every pixel of a raster band along "
 "with the value (double precision), the X and the Y raster coordinates "
 "(integers) of each pixel."
-msgstr ""
+msgstr "返回包围栅格带的每个像素的多边形几何图形以及每个像素的值（双精度）、X 和 Y "
+"栅格坐标（整数）。"
 
 #. Tag: para
 #: reference_raster.xml:3514 reference_raster.xml:3620
@@ -3151,6 +3198,9 @@ msgid ""
 ">, <parameter>val</parameter> double precision, <parameter>x</parameter> "
 "integer, <parameter>y</parameter> integers."
 msgstr ""
+"返回记录格式：<parameter>geom</parameter> <xref linkend=\"geometry\"/>，<para"
+"meter>val</parameter>双精度，<parameter>x</parameter>整数，<parameter>y</para"
+"meter>整数。"
 
 #. Tag: para
 #: reference_raster.xml:3518 reference_raster.xml:3624
@@ -3160,6 +3210,8 @@ msgid ""
 "When <parameter>exclude_nodata_value</parameter> = TRUE, only those pixels "
 "whose values are not NODATA are returned as points."
 msgstr ""
+"当<parameter> except_nodata_value</parameter> = TRUE 时，仅将那些值不是 "
+"NODATA 的像素作为点返回。"
 
 #. Tag: para
 #: reference_raster.xml:3524
@@ -3169,19 +3221,21 @@ msgid ""
 "different than ST_DumpAsPolygons where each geometry represents one or more "
 "pixels with the same pixel value."
 msgstr ""
+"ST_PixelAsPolygons 为每个像素返回一个多边形几何图形。 这与 ST_DumpAsPolygons "
+"不同，其中每个几何图形代表一个或多个具有相同像素值的像素。"
 
 #. Tag: para
 #: reference_raster.xml:3530
 #, no-c-format
 msgid "Enhanced: 2.1.0 exclude_nodata_value optional argument was added."
-msgstr ""
+msgstr "增强：2.1.0 添加了 except_nodata_value 可选参数。"
 
 #. Tag: para
 #: reference_raster.xml:3531 reference_raster.xml:3629
 #: reference_raster.xml:3728
 #, no-c-format
 msgid "Changed: 2.1.1 Changed behavior of exclude_nodata_value."
-msgstr ""
+msgstr "更改：2.1.1 更改了 except_nodata_value 的行为。"
 
 #. Tag: para
 #: reference_raster.xml:3541
@@ -3192,6 +3246,10 @@ msgid ""
 "<xref linkend=\"RT_ST_PixelAsCentroid\"/>, <xref "
 "linkend=\"RT_ST_PixelAsCentroids\"/>, <xref linkend=\"ST_AsText\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPoint\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
+"linkend=\"RT_ST_PixelAsCentroid\"/>, <xref linkend=\"RT_ST_PixelAsCentroids\""
+"/>, <xref linkend=\"ST_AsText\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3556
@@ -3199,13 +3257,13 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns a point geometry of the pixel's upper-left corner.</"
 "refpurpose>"
-msgstr ""
+msgstr "<refpurpose>返回像素左上角的点几何形状。</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:3573
 #, no-c-format
 msgid "<para>Returns a point geometry of the pixel's upper-left corner.</para>"
-msgstr ""
+msgstr "<para>返回像素左上角的点几何形状。</para>"
 
 #. Tag: para
 #: reference_raster.xml:3584
@@ -3216,6 +3274,10 @@ msgid ""
 ">, <xref linkend=\"RT_ST_PixelAsCentroid\"/>, <xref "
 "linkend=\"RT_ST_PixelAsCentroids\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
+"linkend=\"RT_ST_PixelAsCentroid\"/>, <xref linkend=\"RT_ST_PixelAsCentroids\""
+"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3599
@@ -3226,6 +3288,8 @@ msgid ""
 "coordinates of the point geometry are of the pixel's upper-left corner.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>返回栅格波段的每个像素的点几何图形以及每个像素的值、X 和 Y "
+"栅格坐标。 点几何的坐标是像素的左上角。</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:3616
@@ -3234,7 +3298,8 @@ msgid ""
 "<para>Returns a point geometry for each pixel of a raster band along with "
 "the value, the X and the Y raster coordinates of each pixel. The coordinates "
 "of the point geometry are of the pixel's upper-left corner.</para>"
-msgstr ""
+msgstr "<para>返回栅格波段的每个像素的点几何图形以及每个像素的值、X 和 Y 栅格坐标。 "
+"点几何的坐标是像素的左上角。</para>"
 
 #. Tag: para
 #: reference_raster.xml:3639
@@ -3245,6 +3310,10 @@ msgid ""
 "<xref linkend=\"RT_ST_PixelAsCentroid\"/>, <xref "
 "linkend=\"RT_ST_PixelAsCentroids\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, <xref "
+"linkend=\"RT_ST_PixelAsCentroid\"/>, <xref linkend=\"RT_ST_PixelAsCentroids\""
+"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3654
@@ -3252,7 +3321,7 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns the centroid (point geometry) of the area represented by "
 "a pixel.</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>返回像素表示的区域的质心（点几何）。</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:3671
@@ -3260,13 +3329,13 @@ msgstr ""
 msgid ""
 "<para>Returns the centroid (point geometry) of the area represented by a "
 "pixel.</para>"
-msgstr ""
+msgstr "<para>返回像素表示的区域的质心（点几何）。</para>"
 
 #. Tag: para
 #: reference_raster.xml:3672 reference_raster.xml:3727
 #, no-c-format
 msgid "Enhanced: 3.2.0 Faster now implemented in C."
-msgstr ""
+msgstr "增强：3.2.0 Faster 现在用 C 实现。"
 
 #. Tag: para
 #: reference_raster.xml:3683
@@ -3277,6 +3346,9 @@ msgid ""
 "<xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
 "linkend=\"RT_ST_PixelAsCentroids\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, <xref "
+"linkend=\"RT_ST_PixelAsPoints\"/>, <xref linkend=\"RT_ST_PixelAsCentroids\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3698
@@ -3287,6 +3359,8 @@ msgid ""
 "The point geometry is the centroid of the area represented by a pixel.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>返回栅格波段的每个像素的质心（点几何）以及每个像素的值、X 和 Y "
+"栅格坐标。 点几何是像素表示的区域的质心。</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:3715
@@ -3295,7 +3369,8 @@ msgid ""
 "<para>Returns the centroid (point geometry) for each pixel of a raster band "
 "along with the value, the X and the Y raster coordinates of each pixel. The "
 "point geometry is the centroid of the area represented by a pixel.</para>"
-msgstr ""
+msgstr "<para>返回栅格波段的每个像素的质心（点几何）以及每个像素的值、X 和 Y "
+"栅格坐标。 点几何是像素表示的区域的质心。</para>"
 
 #. Tag: para
 #: reference_raster.xml:3739
@@ -3306,6 +3381,9 @@ msgid ""
 "<xref linkend=\"RT_ST_PixelAsPoints\"/>, <xref "
 "linkend=\"RT_ST_PixelAsCentroid\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend="
+"\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, <xref "
+"linkend=\"RT_ST_PixelAsPoints\"/>, <xref linkend=\"RT_ST_PixelAsCentroid\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3754
@@ -3318,6 +3396,11 @@ msgid ""
 "intersect and return value. If <varname>exclude_nodata_value</varname> is "
 "not passed in then reads it from metadata of raster."
 msgstr ""
+"返回指定列 x、行 y 像素或特定几何点处给定波段的值。波段编号从 1 "
+"开始，如果未指定，则默认为 1。如果将参数 <varname>exclude_nodata_value</"
+"varname> 设置为 false，则所有像素都被认为与 <varname>nodata</varname> "
+"像素相交并返回其值。如果未传递参数 "
+"<varname>exclude_nodata_value</varname>，则从栅格的元数据中读取该值。"
 
 #. Tag: para
 #: reference_raster.xml:3794
@@ -3326,7 +3409,8 @@ msgid ""
 "Returns the value of a given band in a given columnx, rowy pixel or at a "
 "given geometry point. Band numbers start at 1 and band is assumed to be 1 if "
 "not specified."
-msgstr ""
+msgstr "返回给定列 x、行 y "
+"像素或给定几何点处给定波段的值。波段编号从1开始，如果未指定波段，则默认为1。"
 
 #. Tag: para
 #: reference_raster.xml:3795
@@ -3337,6 +3421,9 @@ msgid ""
 "<varname>exclude_nodata_value</varname> is set to false, then all pixels are "
 "considered."
 msgstr ""
+"如果<varname> except_nodata_value </varname>设置为 "
+"true，则仅考虑非<varname>节点数据</varname>像素。 如果 "
+"<varname>except_nodata_value </varname>设置为 false，则考虑所有像素。"
 
 #. Tag: para
 #: reference_raster.xml:3796
@@ -3348,18 +3435,22 @@ msgid ""
 "wiki/Bilinear_interpolation\">bilinear interpolation</link> to estimate the "
 "value between pixel centers."
 msgstr ""
+"<varname>重采样</varname> "
+"参数的允许值为“nearest”（执行默认的最近邻重采样）和“bilinear”（执行 <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/Bilinear_interpolation\""
+">双线性插值</link> 以估计像素中心之间的值）。"
 
 #. Tag: para
 #: reference_raster.xml:3798
 #, no-c-format
 msgid "Enhanced: 3.2.0 resample optional argument was added."
-msgstr ""
+msgstr "增强：添加了 3.2.0 重新采样可选参数。"
 
 #. Tag: para
 #: reference_raster.xml:3799
 #, no-c-format
 msgid "Enhanced: 2.0.0 exclude_nodata_value optional argument was added."
-msgstr ""
+msgstr "增强：2.0.0 添加了 except_nodata_value 可选参数。"
 
 #. Tag: para
 #: reference_raster.xml:3817
@@ -3373,6 +3464,13 @@ msgid ""
 "linkend=\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
 "linkend=\"ST_Intersection\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_DumpAsPolygons\"/>, <xref linkend=\"RT_ST_NumBands\"/"
+">, <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref linkend=\"RT_ST_ScaleX\"/"
+">, <xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_ST_UpperLeftX\"/>, "
+"<xref linkend=\"RT_ST_UpperLeftY\"/>, <xref linkend=\"RT_ST_SRID\"/>, <xref "
+"linkend=\"ST_AsText\"/>, <xref linkend=\"ST_Point\"/>, <xref linkend="
+"\"ST_MakeEnvelope\"/>, <xref linkend=\"ST_Intersects\"/>, <xref linkend="
+"\"ST_Intersection\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3839
@@ -3382,6 +3480,8 @@ msgid ""
 "pixel specified by a columnx and rowy or a geometric point expressed in the "
 "same spatial reference coordinate system as the raster."
 msgstr ""
+"返回由 columnx 和 rowy 指定的给定带像素的最接近的非<varname> NODATA "
+"</varname>值或以与栅格相同的空间参考坐标系表示的几何点。"
 
 #. Tag: para
 #: reference_raster.xml:3882
@@ -3393,6 +3493,10 @@ msgid ""
 "varname>, the function will find the nearest pixel to the columnx, rowy "
 "pixel or geometric point whose value is not <varname>NODATA</varname>."
 msgstr ""
+"返回给定列 x、行y像素或特定几何点中给定带的最接近的非<varname> NODATA "
+"</varname>值。 如果列x、行y像素或指定几何点处的像素为<varname>NODATA</varname"
+">，则函数将查找距离列x、行y像素或值为非<varname>NODATA</varname>的几何点最近"
+"的像素。"
 
 #. Tag: para
 #: reference_raster.xml:3885 reference_raster.xml:4057
@@ -3404,18 +3508,22 @@ msgid ""
 "intersect and return value. If <varname>exclude_nodata_value</varname> is "
 "not passed in then reads it from metadata of raster."
 msgstr ""
+"Band 编号从 1 开始，如果未指定，则<varname> bandnum </varname>假定为 1。 "
+"如果<varname> except_nodata_value </varname>设置为 false，"
+"则所有包含<varname> nodata </varname>像素的像素都被视为相交并返回值。 "
+"如果<varname>exclude_nodata_value</varname>未传入，则从栅格的元数据中读取它。"
 
 #. Tag: para
 #: reference_raster.xml:3890
 #, no-c-format
 msgid "ST_NearestValue is a drop-in replacement for ST_Value."
-msgstr ""
+msgstr "ST_NearestValue 是 ST_Value 的直接替代品。"
 
 #. Tag: para
 #: reference_raster.xml:3907
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Value\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_Value\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3918
@@ -3424,7 +3532,8 @@ msgid ""
 "Returns a geometry with the same X/Y coordinates as the input geometry, and "
 "values from the raster copied into the Z dimension using the requested "
 "resample algorithm."
-msgstr ""
+msgstr "返回与输入几何图形具有相同 X/Y 坐标的几何图形，"
+"并使用请求的重采样算法将栅格中的值复制到 Z 维度。"
 
 #. Tag: para
 #: reference_raster.xml:3936
@@ -3433,7 +3542,8 @@ msgid ""
 "Returns a geometry with the same X/Y coordinates as the input geometry, and "
 "values from the raster copied into the Z dimensions using the requested "
 "resample algorithm."
-msgstr ""
+msgstr "返回与输入几何图形具有相同 X/Y 坐标的几何图形，"
+"并使用请求的重采样算法将栅格中的值复制到 Z 维度。"
 
 #. Tag: para
 #: reference_raster.xml:3937 reference_raster.xml:3980
@@ -3445,12 +3555,16 @@ msgid ""
 "Bilinear_interpolation\">bilinear interpolation</link> to calculate a value "
 "that takes neighboring cells into account also."
 msgstr ""
+"<varname>重采样</varname> 参数可以设置为 \"nearest\""
+"，以复制每个顶点所在单元格的值，或者设置为 \"bilinear\"，以使用<link xlink "
+":href=\"https://en.wikipedia.org/wiki/Bilinear_interpolation\""
+">双线性插值</link>来计算考虑到相邻单元格的值。"
 
 #. Tag: para
 #: reference_raster.xml:3950
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetM\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SetM\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:3961
@@ -3459,7 +3573,8 @@ msgid ""
 "Returns a geometry with the same X/Y coordinates as the input geometry, and "
 "values from the raster copied into the M dimension using the requested "
 "resample algorithm."
-msgstr ""
+msgstr "返回与输入几何图形具有相同 X/Y 坐标的几何图形，"
+"并使用请求的重采样算法将栅格中的值复制到 M 维度。"
 
 #. Tag: para
 #: reference_raster.xml:3979
@@ -3468,13 +3583,14 @@ msgid ""
 "Returns a geometry with the same X/Y coordinates as the input geometry, and "
 "values from the raster copied into the M dimensions using the requested "
 "resample algorithm."
-msgstr ""
+msgstr "返回与输入几何图形具有相同 X/Y 坐标的几何图形，"
+"并使用请求的重采样算法将栅格中的值复制到 M 维度。"
 
 #. Tag: para
 #: reference_raster.xml:3993
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetZ\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SetZ\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:4003
@@ -3485,6 +3601,9 @@ msgid ""
 "a geometric point expressed in the same spatial reference coordinate system "
 "as the raster."
 msgstr ""
+"返回给定波段像素周围非 <varname>NODATA</varname> 值的二维双精度数组，"
+"该给定波段像素由 columnX 和 rowY "
+"或以与栅格相同的空间参考坐标系表示的几何点指定。"
 
 #. Tag: para
 #: reference_raster.xml:4054
@@ -3500,6 +3619,12 @@ msgid ""
 "interest. The center value of the 2-D array will be the value at the pixel "
 "specified by the columnX and rowY or the geometric point."
 msgstr ""
+"返回一个二维双精度数组，其中包含围绕给定波段的像素的非<varname>NODATA</varnam"
+"e>值。这可以通过指定列X和行Y，或者使用与栅格相同的空间参考坐标系统表示的几何"
+"点来完成。参数<varname>distanceX</varname>和<varname>distanceY</varname>定义"
+"了X和Y轴上指定像素周围的像素数量，例如，我想获取我感兴趣的像素周围X轴方向上3"
+"个像素距离和Y轴方向上2个像素距离内的所有值。二维数组的中心值将是由列X和行Y或"
+"几何点指定的像素的值。"
 
 #. Tag: para
 #: reference_raster.xml:4061
@@ -3510,6 +3635,10 @@ msgid ""
 "<varname>distanceX</varname> and <varname>distanceY</varname> of 1, the "
 "returning array will be 3x3."
 msgstr ""
+"返回的二维数组沿每个轴的元素数量为 2 * "
+"(<varname>distanceX</varname>|<varname>distanceY</varname>) 1。因此，对于 "
+"<varname>distanceX </varname>和 <varname>distanceY </varname>为 1，"
+"返回的数组将为 3x3。"
 
 #. Tag: para
 #: reference_raster.xml:4066
@@ -3517,7 +3646,8 @@ msgstr ""
 msgid ""
 "The 2-D array output can be passed to any of the raster processing builtin "
 "functions, e.g. ST_Min4ma, ST_Sum4ma, ST_Mean4ma."
-msgstr ""
+msgstr "二维数组输出可以传递给任何栅格处理内置函数，例如 "
+"ST_Min4ma、ST_Sum4ma、ST_Mean4ma。"
 
 #. Tag: para
 #: reference_raster.xml:4086
@@ -3528,6 +3658,10 @@ msgid ""
 "linkend=\"RT_ST_Range4ma\"/>, <xref linkend=\"RT_ST_Distinct4ma\"/>, <xref "
 "linkend=\"RT_ST_StdDev4ma\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_Min4ma\"/>, <xref linkend=\"RT_ST_Max4ma\"/>, <xref "
+"linkend=\"RT_ST_Sum4ma\"/>, <xref linkend=\"RT_ST_Mean4ma\"/>, <xref linkend="
+"\"RT_ST_Range4ma\"/>, <xref linkend=\"RT_ST_Distinct4ma\"/>, <xref linkend="
+"\"RT_ST_StdDev4ma\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:4104
@@ -3536,7 +3670,8 @@ msgid ""
 "Returns modified raster resulting from setting the value of a given band in "
 "a given columnx, rowy pixel or the pixels that intersect a particular "
 "geometry. Band numbers start at 1 and assumed to be 1 if not specified."
-msgstr ""
+msgstr "返回修改后的栅格，其结果是将给定波段中的值设置为指定列x、行y像素或与特定几何"
+"图形相交的像素。波段编号从1开始，如果未指定波段，则默认为1。"
 
 #. Tag: para
 #: reference_raster.xml:4142
@@ -3545,7 +3680,8 @@ msgid ""
 "Returns modified raster resulting from setting the specified pixels' values "
 "to new value for the designated band given the raster's row and column or a "
 "geometry. If no band is specified, then band 1 is assumed."
-msgstr ""
+msgstr "返回修改后的栅格，该栅格是通过将指定像素的值设置为给定栅格的行和列或几何图形"
+"的指定波段的新值而产生的。 如果未指定波段，则假定为 1。"
 
 #. Tag: para
 #: reference_raster.xml:4145
@@ -3555,19 +3691,21 @@ msgid ""
 "type, not just point. The geometry variant is a wrapper around the geomval[] "
 "variant of ST_SetValues()"
 msgstr ""
+"增强：2.1.0 ST_SetValue() 的 几何变体现在支持任何几何类型，而不仅仅是点。 "
+"几何变体是 ST_SetValues() 的 geomval[] 变体的包装"
 
 #. Tag: para
 #: reference_raster.xml:4157 reference_raster.xml:10202
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_DumpAsPolygons\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_DumpAsPolygons\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:4164
 #, no-c-format
 msgid ""
 "Returns modified raster resulting from setting the values of a given band."
-msgstr ""
+msgstr "返回通过设置给定波段的值而产生的修改后的栅格。"
 
 #. Tag: para
 #: reference_raster.xml:4227
@@ -3577,6 +3715,8 @@ msgid ""
 "value(s) for the designated band. <varname>columnx</varname> and "
 "<varname>rowy</varname> are 1-indexed."
 msgstr ""
+"返回通过将指定波段的指定像素设置为新值而产生的修改后的栅格。 "
+"<varname>columnx </varname>和 <varname>rowy </varname>是 从1 开始索引的。"
 
 #. Tag: para
 #: reference_raster.xml:4231
@@ -3586,6 +3726,8 @@ msgid ""
 "NODATA will not be set with the corresponding value in <varname>newvalueset</"
 "varname>."
 msgstr ""
+"如果<varname>keepnodata</varname>为TRUE，那些值为NODATA的像素将不会被设置为<v"
+"arname>newvalueset</varname>中的相应值。"
 
 #. Tag: para
 #: reference_raster.xml:4235
@@ -3598,6 +3740,10 @@ msgid ""
 "<varname>newvalueset</varname> from being set (due to PostgreSQL not "
 "permitting ragged/jagged arrays). See example Variant 1."
 msgstr ""
+"对于变体1，要设置的特定像素由<varname>columnx</varname>、<varname>rowy</varna"
+"me>像素坐标和<varname>newvalueset</varname>数组的尺寸决定。<varname>noset</va"
+"rname>可以用来防止设置具有<varname>newvalueset</varname>中存在的值的像素（因"
+"为PostgreSQL不允许不规则数组）。请参见变体1的示例。"
 
 #. Tag: para
 #: reference_raster.xml:4239
@@ -3608,6 +3754,9 @@ msgid ""
 "array. Elements in <varname>newvalueset</varname> with the "
 "<varname>nosetvalue</varname> value with be skipped. See example Variant 2."
 msgstr ""
+"变体2与变体1类似，但是使用简单的双精度<varname>nosetvalue</varname>而不是布尔"
+"型的<varname>noset</varname>数组。<varname>newvalueset</varname>中具有<varnam"
+"e>nosetvalue</varname>值的元素将被跳过。请参见变体2的示例。"
 
 #. Tag: para
 #: reference_raster.xml:4243
@@ -3618,6 +3767,9 @@ msgid ""
 "<varname>width</varname> and <varname>height</varname>. See example Variant "
 "3."
 msgstr ""
+"对于变体3，要设置的特定像素由<varname>columnx</varname>、<varname>rowy</varna"
+"me>像素坐标、<varname>宽度</varname>和<varname>高度</varname>决定。请参见变体"
+"3的示例。"
 
 #. Tag: para
 #: reference_raster.xml:4247
@@ -3625,7 +3777,8 @@ msgstr ""
 msgid ""
 "Variant 4 is the same as Variant 3 with the exception that it assumes that "
 "the first band's pixels of <varname>rast</varname> will be set."
-msgstr ""
+msgstr "变体4与变体3相同，唯一的区别是它假定将设置<varname>rast</varname>的第一个波段"
+"的像素。"
 
 #. Tag: para
 #: reference_raster.xml:4251
@@ -3638,18 +3791,22 @@ msgid ""
 "geometries are converted to rasters and then iterated through in one pass. "
 "See example Variant 5."
 msgstr ""
+"对于变体5，将使用<xref linkend=\"geomval\"/>数组来确定要设置的特定像素。如果"
+"数组中的所有几何图形都是点类型或多点类型，函数将使用一种快捷方式，其中每个点"
+"的经度和纬度用于直接设置像素。否则，几何图形将转换为栅格，然后一次迭代通过它"
+"们。请参见变体5的示例。"
 
 #. Tag: title
 #: reference_raster.xml:4282 reference_raster.xml:5255
 #, no-c-format
 msgid "Examples: Variant 3"
-msgstr ""
+msgstr "示例：变体3"
 
 #. Tag: title
 #: reference_raster.xml:4291
 #, no-c-format
 msgid "Examples: Variant 5"
-msgstr ""
+msgstr "示例：变体5"
 
 #. Tag: para
 #: reference_raster.xml:4295
@@ -3657,13 +3814,13 @@ msgstr ""
 msgid ""
 "The following shows that geomvals later in the array can overwrite prior "
 "geomvals"
-msgstr ""
+msgstr "下面显示了数组中后面的 geomvals 可以覆盖前面的 geomvals"
 
 #. Tag: para
 #: reference_raster.xml:4298
 #, no-c-format
 msgid "This example is the opposite of the prior example"
-msgstr ""
+msgstr "这个例子与前面的例子相反"
 
 #. Tag: para
 #: reference_raster.xml:4306
@@ -3672,12 +3829,14 @@ msgid ""
 ", <xref linkend=\"RT_ST_SetValue\"/>, <xref "
 "linkend=\"RT_ST_PixelAsPolygons\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_SetValue\"/>, <xref linkend=\"RT_ST_PixelAsPolygons\""
+"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:4317
 #, no-c-format
 msgid "Get the values of the specified band as a 2-dimension array."
-msgstr ""
+msgstr "获取指定 band（波段） 的值作为二维数组。"
 
 #. Tag: para
 #: reference_raster.xml:4354
@@ -3687,6 +3846,8 @@ msgid ""
 "row, second is column). If <varname>nband</varname> is NULL or not provided, "
 "all raster bands are processed."
 msgstr ""
+"获取指定 band 的值作为二维数组（第一个索引是行，第二个索引是列）。 如果 "
+"<varname>nband</varname> 为 NULL 或未提供，则处理所有栅格波段。"
 
 #. Tag: para
 #: reference_raster.xml:4372
@@ -3694,6 +3855,7 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"RT_ST_SetValue\"/>, <xref linkend=\"RT_ST_SetValues\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_SetValue\"/>, <xref linkend=\"RT_ST_SetValues\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:4384
@@ -3701,7 +3863,7 @@ msgstr ""
 msgid ""
 "Get the columnx, rowy coordinates of the pixel whose value equals the search "
 "value."
-msgstr ""
+msgstr "获取值等于搜索值的像素的列x、行y坐标。"
 
 #. Tag: para
 #: reference_raster.xml:4451
@@ -3709,13 +3871,13 @@ msgstr ""
 msgid ""
 "Get the columnx, rowy coordinates of the pixel whose value equals the search "
 "value. If no band is specified, then band 1 is assumed."
-msgstr ""
+msgstr "获取值等于搜索值的像素的列x、行y坐标。 如果未指定波段，则假定为波段 1。"
 
 #. Tag: title
 #: reference_raster.xml:4468
 #, no-c-format
 msgid "Raster Editors"
-msgstr ""
+msgstr "栅格编辑器"
 
 #. Tag: refpurpose
 #: reference_raster.xml:4473
