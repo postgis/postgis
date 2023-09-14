@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-13 00:23+0000\n"
+"PO-Revision-Date: 2023-09-14 10:50+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_accessorxml/it/>\n"
@@ -23,13 +23,13 @@ msgstr ""
 #: reference_accessor.xml:3
 #, no-c-format
 msgid "Geometry Accessors"
-msgstr ""
+msgstr "Accessori alla geometria"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:9
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the type of a geometry as text."
-msgstr "Restituisce il tipo di geometria per il valore ST_Geometry."
+msgstr "Restituisce il tipo di geometria come testo."
 
 #. Tag: title
 #: reference_accessor.xml:22 reference_accessor.xml:79
@@ -59,12 +59,12 @@ msgstr "Descrizione"
 
 #. Tag: para
 #: reference_accessor.xml:24
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns the type of the geometry as a string. Eg: 'LINESTRING', 'POLYGON', "
 "'MULTIPOINT', etc."
 msgstr ""
-"Restituisce il tipo di geometria come stringa. Per esempio: 'LINESTRING', "
+"Restituisce il tipo di geometria come stringa. Ad esempio: 'LINESTRING', "
 "'POLYGON', 'MULTIPOINT', ecc."
 
 #. Tag: para
@@ -75,6 +75,9 @@ msgid ""
 "of which this Geometry instance is a member. The name of the instantiable "
 "subtype of Geometry is returned as a string."
 msgstr ""
+"OGC SPEC s2.1.1.1 - Restituisce il nome del sottotipo istanziabile di "
+"Geometry di cui questa istanza di Geometry è membro. Il nome del sottotipo "
+"istanziabile di Geometry viene restituito come stringa."
 
 #. Tag: para
 #: reference_accessor.xml:33
@@ -215,9 +218,9 @@ msgstr "Si veda anche"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:65
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the boundary of a geometry."
-msgstr "Restituisce il tipo di geometria per il valore ST_Geometry."
+msgstr "Restituisce il confine di una geometria."
 
 #. Tag: para
 #: reference_accessor.xml:81
@@ -230,6 +233,12 @@ msgid ""
 "representational geometry primitives as discussed in the OGC SPEC, section "
 "3.12.2."
 msgstr ""
+"Restituisce la chiusura del confine combinatorio di questa geometria. Il "
+"confine combinatorio è definito come descritto nella sezione 3.12.3.2 di OGC "
+"SPEC. Poiché il risultato di questa funzione è una chiusura, e quindi "
+"topologicamente chiusa, il confine risultante può essere rappresentato "
+"utilizzando le primitive della geometria rappresentativa descritte nella "
+"sezione 3.12.2 di OGC SPEC."
 
 #. Tag: para
 #: reference_accessor.xml:88
@@ -259,13 +268,15 @@ msgstr "&sfs_compliant; OGC SPEC s2.1.1.1"
 #: reference_accessor.xml:93
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.17"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.17"
 
 #. Tag: para
 #: reference_accessor.xml:95
 #, no-c-format
 msgid "Enhanced: 2.1.0 support for Triangle was introduced"
 msgstr ""
+"Miglioramento: nella versione 2.1.0 è stato introdotto il supporto per "
+"Triangle"
 
 #. Tag: para
 #: reference_accessor.xml:96
@@ -273,18 +284,20 @@ msgstr ""
 msgid ""
 "Changed: 3.2.0 support for TIN, does not use geos, does not linearize curves"
 msgstr ""
+"Modificato: dalla versione 3.2.0 supporta TIN, non usa geos, non linearizza "
+"le curve"
 
 #. Tag: para
 #: reference_accessor.xml:111
 #, no-c-format
 msgid "Linestring with boundary points overlaid"
-msgstr ""
+msgstr "Linestring con sovrapposizione dei punti di confine"
 
 #. Tag: para
 #: reference_accessor.xml:123
 #, no-c-format
 msgid "polygon holes with boundary multilinestring"
-msgstr ""
+msgstr "buchi di poligoni con confini multilinestring"
 
 #. Tag: para
 #: reference_accessor.xml:140
@@ -292,12 +305,13 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_MakePolygon\"/>"
 msgstr ""
+", <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_MakePolygon\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:148
 #, no-c-format
 msgid "Returns the diagonal of a geometry's bounding box."
-msgstr ""
+msgstr "Restituisce la diagonale del rettangolo di confine di una geometria."
 
 #. Tag: para
 #: reference_accessor.xml:165
@@ -308,6 +322,11 @@ msgid ""
 "each dimension in its start point and the maximum values in its end point. "
 "If the input geometry is empty, the diagonal line is a LINESTRING EMPTY."
 msgstr ""
+"Restituisce la diagonale del rettangolo di selezione della geometria fornita "
+"come una LineString. La diagonale è una LineString a 2 punti con i valori "
+"minimi di ciascuna dimensione nel punto iniziale e i valori massimi nel "
+"punto finale. Se la geometria di input è vuota, la diagonale è una "
+"LINESTRING EMPTY."
 
 #. Tag: para
 #: reference_accessor.xml:172
@@ -319,6 +338,11 @@ msgid ""
 "either case, the bounding box of the returned diagonal line always covers "
 "the input geometry."
 msgstr ""
+"Il parametro opzionale <varname>fits</varname> specifica se è necessario il "
+"miglior adattamento. Se false, può essere accettata la diagonale di un "
+"rettangolo di selezione un po' più grande (che è più veloce da calcolare per "
+"geometrie con molti vertici). In entrambi i casi, il rettangolo di selezione "
+"della linea diagonale restituita copre sempre la geometria in ingresso."
 
 #. Tag: para
 #: reference_accessor.xml:180
@@ -327,6 +351,8 @@ msgid ""
 "The returned geometry retains the SRID and dimensionality (Z and M presence) "
 "of the input geometry."
 msgstr ""
+"La geometria restituita conserva il SRID e la dimensionalità (presenza di Z "
+"e M) della geometria di input."
 
 #. Tag: para
 #: reference_accessor.xml:185
@@ -336,6 +362,9 @@ msgid ""
 "will be formally invalid (no interior). The result is still topologically "
 "valid."
 msgstr ""
+"Nei casi degenerati (cioè con un solo vertice in ingresso) la linestring "
+"restituita sarà formalmente non valida (nessun interno). Il risultato è "
+"comunque topologicamente valido."
 
 #. Tag: para
 #: reference_accessor.xml:191
@@ -352,15 +381,15 @@ msgstr "&M_support;"
 
 #. Tag: para
 #: reference_accessor.xml:203
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref "
 "linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, "
 "<xref linkend=\"ST_Envelope\"/>"
 msgstr ""
-", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_M\"/>, <xref "
-"linkend=\"ST_X\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/"
-">, <xref linkend=\"ST_Z\"/>"
+", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref linkend="
+"\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, <xref "
+"linkend=\"ST_Envelope\"/>"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:219
@@ -380,6 +409,7 @@ msgstr ""
 #, no-c-format
 msgid "This is the MM compliant alias name for <xref linkend=\"ST_NDims\"/>"
 msgstr ""
+"Questo è il nome dell'alias conforme a MM per <xref linkend=\"ST_NDims\"/>"
 
 #. Tag: para
 #: reference_accessor.xml:239
