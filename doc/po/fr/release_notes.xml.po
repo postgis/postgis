@@ -6,13 +6,14 @@
 # Regina Obe <regina@arrival3d.com>, 2022.
 # Vincent Bre <vincent.bre@oslandia.com>, 2023.
 # Pierre Cardinal <pierre.cardinal@sympatico.ca>, 2023.
+# Sandro Santilli <strk@kbt.io>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-08-23 15:35+0000\n"
-"PO-Revision-Date: 2023-07-03 18:19+0000\n"
-"Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
+"PO-Revision-Date: 2023-09-14 10:50+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "release_notesxml/fr/>\n"
 "Language: fr\n"
@@ -20,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #: release_notes.xml:3
@@ -108,7 +109,7 @@ msgstr ""
 #: release_notes.xml:22
 #, no-c-format
 msgid "New features"
-msgstr ""
+msgstr "Nouvelles fonctionnalités"
 
 #. Tag: para
 #: release_notes.xml:23
@@ -254,7 +255,7 @@ msgstr ""
 #: release_notes.xml:44
 #, no-c-format
 msgid "Enhancements"
-msgstr ""
+msgstr "Améliorations"
 
 #. Tag: para
 #: release_notes.xml:45
@@ -386,7 +387,7 @@ msgstr ""
 #: release_notes.xml:67
 #, no-c-format
 msgid "Breaking Changes"
-msgstr ""
+msgstr "Changements avec rupture"
 
 #. Tag: para
 #: release_notes.xml:68
