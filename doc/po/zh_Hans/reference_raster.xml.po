@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: build-pg 13\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-12 22:08+0000\n"
-"PO-Revision-Date: 2023-09-14 03:23+0000\n"
+"PO-Revision-Date: 2023-09-14 05:15+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/reference_rasterxml/zh_Hans/>\n"
@@ -2394,6 +2394,10 @@ msgid ""
 "the raster assuming the raster's grid is applicable outside the raster's "
 "bounds."
 msgstr ""
+"在给定列和行的情况下，以几何 X 和 Y（经度和纬度）形式返回左上角。 返回的 X "
+"和 Y 采用地理参考栅格的几何单位。 列和行的编号从 1 开始，但如果向任一参数传递"
+"零、负数或大于栅格相应维度的数字，则假定栅格网格适用于栅格边界之外，"
+"它将返回栅格外部的坐标 。"
 
 #. Tag: para
 #: reference_raster.xml:2467
@@ -2402,6 +2406,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref "
 "linkend=\"RT_ST_SetSkew\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref linkend="
+"\"RT_ST_SetSkew\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2478
@@ -2409,7 +2415,7 @@ msgstr ""
 msgid ""
 "Returns the geometric X coordinate upper left of a raster, column and row. "
 "Numbering of columns and rows starts at 1."
-msgstr ""
+msgstr "返回栅格、列和行左上角的几何 X 坐标。 列和行的编号从 1 开始。"
 
 #. Tag: para
 #: reference_raster.xml:2501
@@ -2422,6 +2428,9 @@ msgid ""
 "or right with the assumption that the skew and pixel sizes are same as "
 "selected raster."
 msgstr ""
+"返回栅格列中一行的左上角 X 坐标，以地理参考栅格的几何单位表示。列和行的编号从"
+"1开始，但如果传入一个负数或大于栅格中列的数量的数字，它将给出栅格文件外部左侧"
+"或右侧的坐标，假设倾斜度和像素大小与所选的栅格相同。"
 
 #. Tag: para
 #: reference_raster.xml:2506
@@ -2432,12 +2441,14 @@ msgid ""
 "ST_SkewX and row and column. An error will be raised if you give just the X "
 "column for a skewed raster."
 msgstr ""
+"对于非倾斜栅格，提供 X 列就足够了。 对于倾斜栅格，地理参考坐标是 ST_ScaleX "
+"和 ST_SkewX 以及行和列的函数。 如果您只为倾斜栅格提供 X 列，则会出现错误。"
 
 #. Tag: para
 #: reference_raster.xml:2510
 #, no-c-format
 msgid "Changed: 2.1.0 In prior versions, this was called ST_Raster2WorldCoordX"
-msgstr ""
+msgstr "更改：2.1.0 在之前的版本中，这称为 ST_Raster2WorldCoordX"
 
 #. Tag: para
 #: reference_raster.xml:2526
@@ -2446,6 +2457,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref "
 "linkend=\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewX\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref linkend="
+"\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewX\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2533
@@ -2453,7 +2466,7 @@ msgstr ""
 msgid ""
 "Returns the geometric Y coordinate upper left corner of a raster, column and "
 "row. Numbering of columns and rows starts at 1."
-msgstr ""
+msgstr "返回栅格、列和行的左上角的几何 Y 坐标。 列和行的编号从 1 开始。"
 
 #. Tag: para
 #: reference_raster.xml:2556
@@ -2466,6 +2479,9 @@ msgid ""
 "left or right with the assumption that the skew and pixel sizes are same as "
 "selected raster tile."
 msgstr ""
+"以地理参考栅格的几何单位返回栅格列行的左上角 Y 坐标。 列和行的编号从 1 开始，"
+"但如果您传入负数或高于栅格中的列/行数的数字，它会为您提供栅格文件外部向左或向"
+"右的坐标，并假设倾斜和像素 尺寸与选定的栅格图块相同。"
 
 #. Tag: para
 #: reference_raster.xml:2561
@@ -2476,12 +2492,14 @@ msgid ""
 "ST_SkewY and row and column. An error will be raised if you give just the Y "
 "row for a skewed raster."
 msgstr ""
+"对于非倾斜栅格，提供 Y 列就足够了。 对于倾斜栅格，地理参考坐标是 ST_ScaleY "
+"和 ST_SkewY 以及行和列的函数。 如果您仅给出倾斜栅格的 Y 行，则会出现错误。"
 
 #. Tag: para
 #: reference_raster.xml:2565
 #, no-c-format
 msgid "Changed: 2.1.0 In prior versions, this was called ST_Raster2WorldCoordY"
-msgstr ""
+msgstr "更改：2.1.0 在之前的版本中，这称为 ST_Raster2WorldCoordY"
 
 #. Tag: para
 #: reference_raster.xml:2580
@@ -2490,12 +2508,14 @@ msgid ""
 ", <xref linkend=\"RT_ST_RasterToWorldCoordX\"/>, <xref "
 "linkend=\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewY\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_RasterToWorldCoordX\"/>, <xref linkend="
+"\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewY\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2587
 #, no-c-format
 msgid "Returns the rotation of the raster in radian."
-msgstr ""
+msgstr "返回栅格的旋转弧度。"
 
 #. Tag: para
 #: reference_raster.xml:2602
@@ -2505,18 +2525,21 @@ msgid ""
 "have uniform rotation, NaN is returned. Refer to <link xlink:href=\"http://"
 "en.wikipedia.org/wiki/World_file\">World File</link> for more details."
 msgstr ""
+"返回栅格的均匀旋转弧度。 如果栅格没有均匀旋转，则返回 NaN。 "
+"有关更多详细信息，请参阅 <link xlink:href=\"http://en.wikipedia.org/wiki/"
+"World_file\">世界文件</link>。"
 
 #. Tag: para
 #: reference_raster.xml:2615
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetScale\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SetScale\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2622
 #, no-c-format
 msgid "Returns the georeference X skew (or rotation parameter)."
-msgstr ""
+msgstr "返回地理参考 X 倾斜（或旋转参数）。"
 
 #. Tag: para
 #: reference_raster.xml:2637
@@ -2526,18 +2549,20 @@ msgid ""
 "xlink:href=\"http://en.wikipedia.org/wiki/World_file\">World File</link> for "
 "more details."
 msgstr ""
+"返回地理参考 X 倾斜（或旋转参数）。 有关更多详细信息，请参阅<link xlink:href="
+"\"http://en.wikipedia.org/wiki/World_file\">世界文件</link>。"
 
 #. Tag: para
 #: reference_raster.xml:2651
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SkewY\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SkewY\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2658
 #, no-c-format
 msgid "Returns the georeference Y skew (or rotation parameter)."
-msgstr ""
+msgstr "返回地理参考 Y 倾斜（或旋转参数）。"
 
 #. Tag: para
 #: reference_raster.xml:2673
@@ -2547,12 +2572,14 @@ msgid ""
 "xlink:href=\"http://en.wikipedia.org/wiki/World_file\">World File</link> for "
 "more details."
 msgstr ""
+"返回地理参考 Y 倾斜（或旋转参数）。 有关更多详细信息，请参阅<link xlink:href="
+"\"http://en.wikipedia.org/wiki/World_file\">世界文件</link>。"
 
 #. Tag: para
 #: reference_raster.xml:2687
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SkewX\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SkewX\"/>, <xref linkend=\"RT_ST_SetSkew\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2694
@@ -2560,7 +2587,7 @@ msgstr ""
 msgid ""
 "Returns the spatial reference identifier of the raster as defined in "
 "spatial_ref_sys table."
-msgstr ""
+msgstr "返回在spatial_ref_sys表中定义的栅格的空间参考标识符。"
 
 #. Tag: para
 #: reference_raster.xml:2709
@@ -2568,7 +2595,7 @@ msgstr ""
 msgid ""
 "Returns the spatial reference identifier of the raster object as defined in "
 "the spatial_ref_sys table."
-msgstr ""
+msgstr "返回在 Spatial_ref_sys 表中定义的栅格对象的空间参考标识符。"
 
 #. Tag: para
 #: reference_raster.xml:2710
@@ -2576,7 +2603,7 @@ msgstr ""
 msgid ""
 "From PostGIS 2.0+ the srid of a non-georeferenced raster/geometry is 0 "
 "instead of the prior -1."
-msgstr ""
+msgstr "从 PostGIS 2.0 开始，非地理参考栅格/几何图形的 srid 为 0，而不是之前的 -1。"
 
 #. Tag: para
 #: reference_raster.xml:2722
@@ -2590,13 +2617,13 @@ msgstr ", <xref linkend=\"ST_SRID\"/>"
 msgid ""
 "<refpurpose>Returns a text summary of the contents of the raster.</"
 "refpurpose>"
-msgstr ""
+msgstr "<refpurpose>返回栅格内容的文本摘要。</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:2744
 #, no-c-format
 msgid "<para>Returns a text summary of the contents of the raster.</para>"
-msgstr ""
+msgstr "<para>返回栅格内容的文本摘要。</para>"
 
 #. Tag: para
 #: reference_raster.xml:2756
@@ -2605,6 +2632,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_BandMetaData\"/>, <xref linkend=\"ST_Summary\"/> "
 "<xref linkend=\"ST_Extent\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_BandMetaData\"/>, <xref linkend=\"ST_Summary\"/> "
+"<xref linkend=\"ST_Extent\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2768
@@ -2612,7 +2641,7 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns the upper left X coordinate of raster in projected "
 "spatial ref.</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>返回投影空间参考中栅格的左上角 X 坐标。</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:2783
@@ -2620,13 +2649,13 @@ msgstr ""
 msgid ""
 "<para>Returns the upper left X coordinate of raster in projected spatial ref."
 "</para>"
-msgstr ""
+msgstr "<para>返回投影空间参考中栅格的左上角 X 坐标。</para>"
 
 #. Tag: para
 #: reference_raster.xml:2795 reference_raster.xml:2829
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_GeoReference\"/>, <xref linkend=\"RT_Box3D\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_GeoReference\"/>, <xref linkend=\"RT_Box3D\"/>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2802
@@ -2634,7 +2663,7 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns the upper left Y coordinate of raster in projected "
 "spatial ref.</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>返回投影空间参考中栅格的左上角 Y 坐标。</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:2817
@@ -2642,13 +2671,13 @@ msgstr ""
 msgid ""
 "<para>Returns the upper left Y coordinate of raster in projected spatial ref."
 "</para>"
-msgstr ""
+msgstr "<para>返回投影空间参考中栅格的左上角 Y 坐标。</para>"
 
 #. Tag: refpurpose
 #: reference_raster.xml:2836
 #, no-c-format
 msgid "<refpurpose>Returns the width of the raster in pixels.</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>返回栅格的宽度（以像素为单位）。</refpurpose>"
 
 #. Tag: para
 #: reference_raster.xml:2851
