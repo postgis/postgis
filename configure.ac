@@ -205,6 +205,12 @@ if test "x$XSLTPROC" = "x"; then
   CAN_BUILD_COMMENTS=no
 fi
 
+AC_PATH_PROG([XMLCATALOG], [xmlcatalog], [])
+if test "x$XMLCATALOG" = "x"; then
+	AC_MSG_WARN([xmlcatalog is not installed so documentation cannot be built])
+	CAN_BUILD_COMMENTS=no
+fi
+
 AC_PATH_PROG([XML2POT], [xml2pot], [])
 if test "x$XML2POT" = "x"; then
 	AC_MSG_WARN([xml2pot is not installed so translations cannot be updated])
