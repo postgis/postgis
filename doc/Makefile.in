@@ -323,6 +323,11 @@ postgis-out.xml: postgis.xml Makefile $(XML_INPUTS) Makefile
 	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g;s'@@POSTGIS_DOWNLOAD_URL@@'${POSTGIS_DOWNLOAD_URL}'g;" $< > $@.in
 	$(XMLLINT) $(XSLTPROC_PATH_OPT) --noent -o $@ $@.in
 
+ifeq ($(XMLLINT),)
+postgis-nospecial.xml: requirements_not_met_xmllint
+postgis-out.xml: requirements_not_met_xmllint
+endif
+
 chunked-html: $(html_builddir)/postgis$(DOCSUFFIX)/docbook.css
 $(html_builddir)/postgis$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
@@ -610,11 +615,8 @@ requirements_not_met_xsltproc:
 requirements_not_met_xmllint:
 	@echo
 	@echo "configure was unable to find 'xmllint' which is required"
-	@echo "to build the documentation."
-	@echo "Install xmllint and then re-run configure. Alternatively "
-	@echo "refer to online manual:"
-	@echo
-	@echo "  http://postgis.net/documentation"
+	@echo "to build the postgis comments and documentation."
+	@echo "Install xmllint and then re-run configure."
 	@echo
 	@false
 
