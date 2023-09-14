@@ -26,7 +26,7 @@ include ../../Makefile
 # XML gettext tools
 PO2XML=po2xml
 
-$(XML_SOURCES): %.xml: %.xml.po $(abs_srcdir)/%.xml
+$(XML_SOURCES): %.xml: postgis-manual.po $(abs_srcdir)/%.xml
 	$(PO2XML) $(abs_srcdir)/$@ $< > $@.tmp
 	mv $@.tmp $@
 

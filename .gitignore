@@ -41,6 +41,7 @@ doc/**.xsl.xml
 *.tag
 doc/postgis-nospecial.xml
 doc/postgis-nospecial.xml.in
+doc/*.xml.pot
 doc/po/*/*.xml
 doc/po/*/*.xml.in
 doc/po/*/html

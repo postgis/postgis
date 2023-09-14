@@ -119,6 +119,7 @@ CHUNK_HTML_DOCBOOK_XSL=$(DOCBOOK_XSLBASE)/html/chunk.xsl
 DBLATEX=@DBLATEX@
 
 # Gettext for translated documentation
+MSGCAT=@MSGCAT@
 MSGMERGE=@MSGMERGE@
 MSGINIT=@MSGINIT@
 MSGATTRIB=@MSGATTRIB@
@@ -230,8 +231,9 @@ XML_GENERATED_SOURCES = \
 
 XML_INPUTS = $(XML_SOURCES) $(XML_GENERATED_SOURCES) $(TAG_GENERATED_SOURCES)
 
-# TODO: should these be XML_SOURCES ?
-XML_INPUTS_POT = $(XML_SOURCES:%.xml=$(srcdir)/po/templates/%.xml.pot)
+XML_SOURCE_POTS = $(XML_SOURCES:%.xml=%.xml.pot)
+
+XML_UNIFIED_POT = $(srcdir)/po/templates/postgis-manual.pot
 
 GENERATED_COMMENT_FILES = $(patsubst \
 	$(srcdir)/xsl/%.xsl, \
@@ -247,13 +249,19 @@ GENERATED_CHEATSHEET_FILES = $(patsubst \
 
 VPATH = $(srcdir)
 
-.PHONY: $(XML_INPUTS_POT)
 ifeq ($(XML2POT),)
-$(XML_INPUTS_POT): requirements_not_met_xml2pot
+$(XML_SOURCE_POTS): requirements_not_met_xml2pot
 else
-$(XML_INPUTS_POT): $(srcdir)/po/templates/%.xml.pot: %.xml
-	@$(XML2POT) $< > $@.tmp;
-	@$(abs_srcdir)/po/strip_untranslatable.sh $@.tmp;
+$(XML_SOURCE_POTS): %.xml.pot: %.xml
+	$(XML2POT) $< > $@
+	$(abs_srcdir)/po/strip_untranslatable.sh $@
+endif
+
+# Update translation template
+update-pot: $(XML_UNIFIED_POT)
+
+$(XML_UNIFIED_POT): $(XML_SOURCE_POTS)
+	$(MSGCAT) --use-first --no-location -o $@.tmp $(XML_SOURCE_POTS)
 	@if test -f $@; then \
     changed=`diff $@.tmp $@ \
 			| grep -v '^[<>] "POT-Creation-Date:' \
@@ -267,28 +275,23 @@ $(XML_INPUTS_POT): $(srcdir)/po/templates/%.xml.pot: %.xml
     fi; \
   fi;
 	@if test -e $@.tmp; then mv $@.tmp $@; fi
-endif
-
-# Update translation templates
-update-pot: $(XML_INPUTS_POT)
 
 # Creates or updates translation files
 ifeq ($(MSGMERGE),)
 update-po: requirements_not_met_msgmerge
 else
-update-po: $(XML_INPUTS_POT)
+update-po: $(XML_UNIFIED_POT)
 	@for lang in $(translations); do \
-    echo "Creating po files for language $$lang..." ; \
-    for pot in $(XML_INPUTS_POT); do \
-      mkdir -p $(srcdir)/po/$$lang; \
-      po=$(srcdir)/po/$$lang/`basename $$pot .pot`.po; \
-      if test -f $$po; then \
-        $(MSGMERGE) --no-fuzzy-matching --update $$po $$pot && \
-				$(MSGATTRIB) --no-obsolete -o $$po $$po || exit 1; \
-      else \
-        $(MSGINIT) -i $$pot -o $$po -l $$lang --no-translator || exit 1; \
-      fi; \
-    done; \
+    mkdir -p $(srcdir)/po/$$lang; \
+		po=$(srcdir)/po/$$lang/`basename $(XML_UNIFIED_POT) .pot`.po; \
+		if test -f $$po; then \
+			echo "Updating po file for language $$lang..." ; \
+			$(MSGMERGE) --no-fuzzy-matching --update $$po $(XML_UNIFIED_POT) && \
+			$(MSGATTRIB) --no-obsolete -o $$po $$po || exit 1; \
+		else \
+			echo "Creating po file for language $$lang..." ; \
+			$(MSGINIT) -i $(XML_UNIFIED_POT) -o $$po -l $$lang --no-translator || exit 1; \
+		fi; \
   done
 endif
 
@@ -458,7 +461,7 @@ cheatsheet-install: $(GENERATED_CHEATSHEET_FILES)
 cheatsheet-clean:
 	rm -f $(GENERATED_CHEATSHEET_FILES)
 
-clean: images-clean html-clean pdf-clean epub-clean cheatsheet-clean
+clean: images-clean html-clean pdf-clean epub-clean cheatsheet-clean clean-pot
 	rm -f images # work around https://trac.osgeo.org/postgis/ticket/5422
 	rm -f $(XML_GENERATED_SOURCES)
 	rm -f postgis-nospecial.xml postgis-nospecial.xml.in
@@ -469,6 +472,9 @@ clean: images-clean html-clean pdf-clean epub-clean cheatsheet-clean
 	rm -f raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
 	rm -f *.tmp
 	$(MAKE) clean-localized
+
+clean-pot:
+	rm -f *.pot
 
 distclean: clean
 	$(MAKE) -C $(images_builddir) distclean
