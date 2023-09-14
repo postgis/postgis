@@ -64,7 +64,23 @@ task:
   alias: test-macos
   test_script:
     - brew update
-    - brew install autoconf automake libtool gpp pkg-config gdal geos json-c pcre2 postgresql@14 proj protobuf-c sfcgal cunit
+    - brew install
+        autoconf
+        automake
+        cunit
+        docbook
+        docbook-xsl
+        gdal
+        geos
+        gpp
+        json-c
+        libtool
+        pcre2
+        pkg-config
+        postgresql@14
+        proj
+        protobuf-c
+        sfcgal
     - ./autogen.sh
     - ./configure --without-gui --without-interrupt-tests --without-topology --without-raster  --with-sfcgal --with-address-standardizer --with-protobuf --with-pgconfig=/opt/homebrew/opt/postgresql@14/bin/pg_config
     - brew services start postgresql@14
