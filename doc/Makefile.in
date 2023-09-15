@@ -236,6 +236,12 @@ XML_SOURCE_POTS = $(XML_SOURCES:%.xml=%.xml.pot)
 
 XML_UNIFIED_POT = $(srcdir)/po/templates/postgis-manual.pot
 
+PO_FILES = $(patsubst \
+	%, \
+	$(srcdir)/po/%/postgis-manual.po, \
+	$(translations) \
+)
+
 GENERATED_COMMENT_FILES = $(patsubst \
 	$(srcdir)/xsl/%.xsl, \
 	%, \
@@ -278,23 +284,23 @@ $(XML_UNIFIED_POT): $(XML_SOURCE_POTS)
 	@if test -e $@.tmp; then mv $@.tmp $@; fi
 
 # Creates or updates translation files
+update-po: $(PO_FILES)
+
 ifeq ($(MSGMERGE),)
-update-po: requirements_not_met_msgmerge
-else
-update-po: $(XML_UNIFIED_POT)
-	@for lang in $(translations); do \
-    mkdir -p $(srcdir)/po/$$lang; \
-		po=$(srcdir)/po/$$lang/`basename $(XML_UNIFIED_POT) .pot`.po; \
-		if test -f $$po; then \
-			echo "Updating po file for language $$lang..." ; \
-			$(MSGMERGE) --no-fuzzy-matching --update $$po $(XML_UNIFIED_POT) && \
-			$(MSGATTRIB) --no-obsolete -o $$po $$po || exit 1; \
-		else \
-			echo "Creating po file for language $$lang..." ; \
-			$(MSGINIT) -i $(XML_UNIFIED_POT) -o $$po -l $$lang --no-translator || exit 1; \
-		fi; \
-  done
+$(PO_FILES): requirements_not_met_msgmerge
 endif
+
+$(PO_FILES): $(XML_UNIFIED_POT)
+	@mkdir -p `dirname $@`
+	@lang=`basename $$(dirname $@)`; \
+	if test -f $@; then \
+		echo "Updating po file for language $$lang..." ; \
+		$(MSGMERGE) --no-fuzzy-matching --update $@ $(XML_UNIFIED_POT) && \
+		$(MSGATTRIB) --no-obsolete -o $@ $@ || exit 1; \
+	else \
+		echo "Creating po file for language $$lang..." ; \
+		$(MSGINIT) -i $(XML_UNIFIED_POT) -o $@ -l $$lang --no-translator || exit 1; \
+	fi;
 
 ifeq ($(XSLTPROC),)
 $(XSL_GENERATED_SOURCES): requirements_not_met_xsltproc
