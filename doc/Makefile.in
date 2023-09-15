@@ -7,7 +7,7 @@
 #
 # PostGIS documentation build Makefile
 #
-# Copyright 2003-2022 Sandro Santilli <strk@kbt.io>
+# Copyright 2003-2023 Sandro Santilli <strk@kbt.io>
 # Copyright 2004-2012 Paul Ramsey <pramsey@cleverelephant.ca>
 # Copyright 2009-2022 Regina Obe <lr@pcorp.us>
 # Copyright 2008-2010 Mark Cave-Ayland
@@ -121,6 +121,7 @@ DBLATEX=@DBLATEX@
 
 # Gettext for translated documentation
 MSGCAT=@MSGCAT@
+MSGCOMM=@MSGCOMM@
 MSGMERGE=@MSGMERGE@
 MSGINIT=@MSGINIT@
 MSGATTRIB=@MSGATTRIB@
@@ -256,13 +257,33 @@ GENERATED_CHEATSHEET_FILES = $(patsubst \
 
 VPATH = $(srcdir)
 
+ifeq ($(MSGMERGE),)
+$(PO_FILES): requirements_not_met_msgmerge
+endif
+
+ifeq ($(MSGATTRIB),)
+$(PO_FILES): requirements_not_met_msgattrib
+endif
+
+ifeq ($(MSGCOMM),)
+$(PO_FILES): requirements_not_met_msgcomm
+endif
+
+ifeq ($(MSGCAT),)
+$(XML_UNIFIED_POT): requirements_not_met_msgcat
+endif
+
+ifeq ($(MSGINIT),)
+$(PO_FILES): requirements_not_met_msginit
+endif
+
 ifeq ($(XML2POT),)
 $(XML_SOURCE_POTS): requirements_not_met_xml2pot
-else
+endif
+
 $(XML_SOURCE_POTS): %.xml.pot: %.xml
 	$(XML2POT) $< > $@
 	$(abs_srcdir)/po/strip_untranslatable.sh $@
-endif
 
 # Update translation template
 update-pot: $(XML_UNIFIED_POT)
@@ -286,20 +307,23 @@ $(XML_UNIFIED_POT): $(XML_SOURCE_POTS)
 # Creates or updates translation files
 update-po: $(PO_FILES)
 
-ifeq ($(MSGMERGE),)
-$(PO_FILES): requirements_not_met_msgmerge
-endif
-
 $(PO_FILES): $(XML_UNIFIED_POT)
 	@mkdir -p `dirname $@`
 	@lang=`basename $$(dirname $@)`; \
 	if test -f $@; then \
-		echo "Updating po file for language $$lang..." ; \
-		$(MSGMERGE) --no-fuzzy-matching --update $@ $(XML_UNIFIED_POT) && \
-		$(MSGATTRIB) --no-obsolete -o $@ $@ || exit 1; \
+		$(MSGMERGE) --no-fuzzy-matching -q -o $@.tmp $@ $(XML_UNIFIED_POT) || exit 1; \
+		$(MSGATTRIB) --no-obsolete -o $@.tmp $@.tmp || exit 1; \
+		if test -n "$$($(MSGCOMM) --unique $@.tmp $@ | tail -1)"; then \
+			mv $@.tmp $@; \
+			echo "$@ updated"; \
+		else \
+			echo "$@ unchanged"; \
+			touch $@; \
+			rm -f $@.tmp; \
+		fi; \
 	else \
-		echo "Creating po file for language $$lang..." ; \
 		$(MSGINIT) -i $(XML_UNIFIED_POT) -o $@ -l $$lang --no-translator || exit 1; \
+		echo "$@ created"; \
 	fi;
 
 ifeq ($(XSLTPROC),)
@@ -651,11 +675,17 @@ requirements_not_met_xslbase:
 	@echo "  http://postgis.net/documentation"
 	@echo
 
+requirements_not_met_msginit: requirements_not_met_gettext
+requirements_not_met_msgattrib: requirements_not_met_gettext
+requirements_not_met_msgcat: requirements_not_met_gettext
+requirements_not_met_msgcomm: requirements_not_met_gettext
+requirements_not_met_msgmerge: requirements_not_met_gettext
 requirements_not_met_gettext:
 	@echo
-	@echo "configure was unable to find both gettext's 'msgmerge' utility program."
+	@echo "configure was unable to find gettext utility programs."
 	@echo "To update the translation templates, install gettext and then re-run configure."
 	@echo
+	@false
 
 requirements_not_met_xml2pot:
 	@echo
