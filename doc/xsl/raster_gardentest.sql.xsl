@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:pgis="http://www.postgis.org/pgis">
-<!-- ********************************************************************
+<xsl:stylesheet version="1.0"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:db="http://docbook.org/ns/docbook" xmlns:pgis="http://postgis.net/pgis"
+><!-- ********************************************************************
  ********************************************************************
 	 Copyright 2010, Regina Obe
 	 License: BSD-3-Clause
@@ -8,7 +10,7 @@
 			using a garden variety of rasters.  Its intent is to flag major crashes.
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='testversion'>3.4.0</xsl:variable>
+	<xsl:variable name='testversion'>3.5.0</xsl:variable>
 	<xsl:variable name='fnexclude'>AddRasterColumn AddRasterConstraints DropRasterConstraints DropRasterColumn DropRasterTable</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
 
@@ -31,7 +33,7 @@
 	<xsl:variable name='var_rastercolumn'>'rast'</xsl:variable>
 	<xsl:variable name='var_rastertable'>'pgis_rgarden_1bb'</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
-	<xsl:variable name='var_logtable'>raster_garden_log34</xsl:variable>
+	<xsl:variable name='var_logtable'>raster_garden_log35</xsl:variable>
 	<xsl:variable name='var_pixeltypes'>{8BUI,1BB}</xsl:variable>
 	<xsl:variable name='var_pixelvalues'>{255,0}</xsl:variable>
 	<xsl:variable name='var_algorithm'>'Lanczos'</xsl:variable>
@@ -131,9 +133,10 @@ DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />;
 CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, log_label text, spatial_class text DEFAULT 'raster', func text, g1 text, g2 text, log_start timestamp, log_end timestamp, log_sql text);
 DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />_output;
 CREATE TABLE <xsl:value-of select="$var_logtable" />_output(logid integer PRIMARY KEY, log_output xml);
-            <xsl:apply-templates select="/db:book/db:chapter[@xml:id='RT_reference']" />
+						<xsl:apply-templates select="/db:book/db:chapter[@xml:id='RT_reference']" />
+            <xsl:apply-templates select="/db:book/db:chapter[@xml:id='RT_reference']/db:section[contains(@xml:id, 'Type')]" />
         </xsl:template>
-	<xsl:template match='chapter'>
+	<xsl:template match='db:chapter'>
 <!-- define a table we call pgis_rgarden_mega that will contain a raster column with a band for all types of pixels we support -->
 DROP TABLE IF EXISTS pgis_rgarden_mega;
 CREATE TABLE pgis_rgarden_mega(rid serial PRIMARY KEY, rast raster);
@@ -189,7 +192,7 @@ COMMIT;
 
 
 <!--Start test on operators  -->
-	<xsl:for-each select="db:sect1[contains(@xml:id,'RT_Operator')]//db:refentry">
+	<xsl:for-each select="db:section[contains(@xml:id,'RT_Operator')]/db:refentry">
 		<xsl:sort select="@id"/>
 		<xsl:for-each select="db:refsynopsisdiv/db:funcsynopsis/db:funcprototype">
 			<xsl:variable name='fnname'><xsl:value-of select="db:funcdef/db:function"/></xsl:variable>
@@ -239,7 +242,7 @@ COMMIT;
 <!--End test on operators -->
 
 <!-- Start regular function checks excluding operators -->
-		<xsl:for-each select="db:sect1[not(contains(@xml:id,'Operator'))]/db:refentry">
+		<xsl:for-each select="db:section[not(contains(@xml:id,'Operator'))]/db:refentry">
 		<xsl:sort select="@id"/>
 
 			<xsl:for-each select="db:refsynopsisdiv/db:funcsynopsis/db:funcprototype">

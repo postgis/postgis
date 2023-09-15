@@ -604,7 +604,7 @@ else
 garden: postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
 endif
 
-%_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql: xsl/postgis_gardentest.sql.xsl postgis-out.xml
+%_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql: xsl/%_gardentest.sql.xsl postgis-out.xml
 	$(XSLTPROC) -o $@ $(XSLTPROC_PATH_OPT) $^
 
 check: check-unit

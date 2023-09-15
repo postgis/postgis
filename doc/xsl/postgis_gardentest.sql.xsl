@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:pgis="http://www.postgis.org/pgis">
+<xsl:stylesheet version="1.0"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:db="http://docbook.org/ns/docbook" xmlns:pgis="http://postgis.net/pgis"
+>
 <!-- ********************************************************************
  ********************************************************************
 	 Copyright 2008-2010, Regina Obe
@@ -8,7 +11,7 @@
 			using a garden variety of geometries.  Its intent is to flag major crashes.
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='testversion'>3.4.0</xsl:variable>
+	<xsl:variable name='testversion'>3.5.0</xsl:variable>
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
 	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
 	<!--This is just a place holder to state functions not supported or tested separately -->
@@ -33,7 +36,7 @@
 	<xsl:variable name='var_matrix'>'FF1FF0102'</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
 	<xsl:variable name='var_geom_name'>the_geom</xsl:variable>
-	<xsl:variable name='var_logtable'>postgis_garden_log34</xsl:variable>
+	<xsl:variable name='var_logtable'>postgis_garden_log35</xsl:variable>
 	<xsl:variable name='var_logupdatesql'>UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp()
 		FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
 		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;</xsl:variable>
@@ -330,7 +333,7 @@ CREATE TABLE <xsl:value-of select="$var_logtable" />_output(logid integer PRIMAR
                 <xsl:apply-templates select="/db:book/db:chapter[@xml:id='reference']" />
         </xsl:template>
 
-	<xsl:template match='chapter'>
+	<xsl:template match='db:chapter'>
 <!--Start Test table creation, insert, analyze crash test, drop -->
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset[not(contains(@createtable,'false'))]">
 			<xsl:variable name='log_label'>table Test <xsl:value-of select="@GeometryType" /></xsl:variable>
@@ -468,7 +471,7 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 <!--End Test table creation, insert, drop  -->
 
 <!--Start test on operators  -->
-	<xsl:for-each select="db:sect1[contains(@xml:id,'Operator') and not(contains($fnexclude,db:funcdef/db:function))]/db:refentry">
+	<xsl:for-each select="db:section[contains(@xml:id,'Operator') and not(contains($fnexclude,db:funcdef/db:function))]/db:refentry">
 		<xsl:sort select="@id"/>
 		<xsl:for-each select="db:refsynopsisdiv/db:funcsynopsis/db:funcprototype">
 			<xsl:variable name='fnname'><xsl:value-of select="db:funcdef/db:function"/></xsl:variable>
@@ -521,7 +524,7 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 	</xsl:for-each>
 <!--End test on operators -->
 <!-- Start regular function checks excluding operators -->
-		<xsl:for-each select="db:sect1[not(contains(@xml:id,'Operator'))]//db:refentry">
+		<xsl:for-each select="db:section[not(contains(@xml:id,'Operator'))]//db:refentry">
 		<xsl:sort select="@id"/>
 
 			<xsl:for-each select="db:refsynopsisdiv/db:funcsynopsis/db:funcprototype">
