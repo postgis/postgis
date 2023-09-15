@@ -267,6 +267,7 @@ endif
 
 ifeq ($(MSGCOMM),)
 $(PO_FILES): requirements_not_met_msgcomm
+$(XML_UNIFIED_POT): requirements_not_met_msgcomm
 endif
 
 ifeq ($(MSGCAT),)
@@ -289,13 +290,9 @@ $(XML_SOURCE_POTS): %.xml.pot: %.xml
 update-pot: $(XML_UNIFIED_POT)
 
 $(XML_UNIFIED_POT): $(XML_SOURCE_POTS)
-	$(MSGCAT) --use-first --no-location -o $@.tmp $(XML_SOURCE_POTS)
+	@$(MSGCAT) --use-first --no-location -o $@.tmp $(XML_SOURCE_POTS)
 	@if test -f $@; then \
-    changed=`diff $@.tmp $@ \
-			| grep -v '^[<>] "POT-Creation-Date:' \
-			| grep -v '^[<>] "Report-Msgid-Bugs-To:' \
-			| wc -l`; \
-    if expr $${changed} \> 3 >/dev/null; then \
+    if test -n "$$($(MSGCOMM) --unique $@.tmp $@ | tail -1)"; then \
       echo "$@ updated"; \
     else \
       echo "$@ unchanged"; \
