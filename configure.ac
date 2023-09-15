@@ -288,6 +288,7 @@ if test "x$XSLBASE" = "x"; then
 	dnl that matches from the following list
 	SEARCHPATH="
 		http://cdn.docbook.org/release/xsl/current
+		https://cdn.docbook.org/release/xsl/current
 		http://docbook.sourceforge.net/release/xsl-ns/current
 		/usr/share/sgml/docbook/xsl-stylesheets
 		/usr/share/xml/docbook/stylesheet/docbook-xsl-ns
