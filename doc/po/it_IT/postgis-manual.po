@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-14 17:40+0000\n"
-"PO-Revision-Date: 2023-09-15 14:23+0000\n"
+"PO-Revision-Date: 2023-09-15 18:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/it/>\n"
@@ -23745,6 +23745,9 @@ msgid ""
 "If <varname>preserveEndPoints</varname> is true, the endpoints of Polygon "
 "rings are not smoothed. The endpoints of LineStrings are always preserved."
 msgstr ""
+"Se <varname>preserveEndPoints</varname> è vero, i punti finali degli anelli "
+"poligonali non vengono smussati. I punti finali delle stringhe di linee sono "
+"sempre conservati."
 
 #. Tag: para
 #, no-c-format
@@ -23755,6 +23758,11 @@ msgid ""
 ">, <xref linkend=\"ST_SimplifyPreserveTopology\"/> and <xref linkend="
 "\"ST_SimplifyVW\"/>)."
 msgstr ""
+"Il numero di vertici raddoppia a ogni iterazione, quindi la geometria "
+"risultante può avere molti più punti di quella in ingresso. Per ridurre il "
+"numero di punti, utilizzare una funzione di semplificazione sul risultato ("
+"vedere <xref linkend=\"ST_Simplify\"/>, <xref linkend="
+"\"ST_SimplifyPreserveTopology\"/> e <xref linkend=\"ST_SimplifyVW\"/>)."
 
 #. Tag: para
 #, no-c-format
