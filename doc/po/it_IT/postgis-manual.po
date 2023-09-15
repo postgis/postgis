@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-14 17:40+0000\n"
-"PO-Revision-Date: 2023-09-15 11:23+0000\n"
+"PO-Revision-Date: 2023-09-15 14:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/it/>\n"
@@ -220,6 +220,9 @@ msgid ""
 "is text (token number <code>0</code>): Refers to building number or name. "
 "Unparsed building identifiers and types. Generally blank for most addresses."
 msgstr ""
+"è un testo (numero di token <code>0</code>): Si riferisce al numero o al "
+"nome dell'edificio. Identificatori e tipi di edifici non analizzati. "
+"Generalmente vuoto per la maggior parte degli indirizzi."
 
 #. Tag: term
 #, no-c-format
@@ -23596,7 +23599,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Create a donut from two circular polygons"
-msgstr ""
+msgstr "Creare una ciambella da due poligoni circolari"
 
 #. Tag: para
 #, no-c-format
@@ -23606,11 +23609,15 @@ msgid ""
 "linkend=\"ST_BdPolyFromText\"/>, <xref linkend=\"ST_BdMPolyFromText\"/> "
 "(wrappers to this function with standard OGC interface)"
 msgstr ""
+", <xref linkend=\"ST_MakePolygon\"/>, <xref linkend=\"ST_MakeValid\"/>, "
+"<xref linkend=\"ST_Node\"/>, <xref linkend=\"ST_Polygonize\"/>, <xref "
+"linkend=\"ST_BdPolyFromText\"/>, <xref linkend=\"ST_BdMPolyFromText\"/> ("
+"wrapper a questa funzione con interfaccia standard OGC)"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the geometric center of a geometry."
-msgstr ""
+msgstr "Restituisce il centro geometrico di una geometria."
 
 #. Tag: para
 #, no-c-format
@@ -23628,6 +23635,18 @@ msgid ""
 "supplied, they are converted to linestring with CurveToLine first, then same "
 "than for <varname>LINESTRING</varname>"
 msgstr ""
+"Calcola un punto che è il centro di massa geometrico di una geometria. Per "
+"[<varname>MULTI</varname>]<varname>POINT</varname>s, il centroide è la media "
+"aritmetica delle coordinate immesse. Per "
+"[<varname>MULTI</varname>]<varname>LINESTRING</varname>s, il centroide viene "
+"calcolato utilizzando la lunghezza ponderata di ciascun segmento di linea. "
+"Per [<varname>MULTI</varname>]<varname>POLYGON</varname>s, il centroide "
+"viene calcolato in termini di area. Se viene fornita una geometria vuota, "
+"viene restituita una <varname>GEOMETRYCOLLECTION</varname> vuota. Se viene "
+"fornito <varname>NULL</varname> viene restituito <varname>NULL</varname>. Se "
+"vengono fornite <varname>CIRCULARSTRING</varname> o <varname>COMPOUNDCURVE</"
+"varname>, queste vengono convertite in linestring con CurveToLine e poi come "
+"per <varname>LINESTRING</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -23636,6 +23655,9 @@ msgid ""
 "component Geometries of highest dimension (since the lower-dimension "
 "geometries contribute zero \"weight\" to the centroid)."
 msgstr ""
+"Per gli input a dimensione mista, il risultato è uguale al centroide delle "
+"geometrie componenti di dimensione più elevata (poiché le geometrie di "
+"dimensione inferiore contribuiscono al centroide con un \"peso\" nullo)."
 
 #. Tag: para
 #, no-c-format
@@ -23645,6 +23667,11 @@ msgid ""
 "centroid of a C-shaped polygon. To construct a point guaranteed to lie in "
 "the interior of a polygon use <xref linkend=\"ST_PointOnSurface\"/>."
 msgstr ""
+"Si noti che per le geometrie poligonali il centroide non si trova "
+"necessariamente all'interno del poligono. Ad esempio, si veda la figura "
+"seguente del centroide di un poligono a forma di C. Per costruire un punto "
+"con garanzia di giacenza nell'interno di un poligono si usa <xref linkend="
+"\"ST_PointOnSurface\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -41609,6 +41636,11 @@ msgid ""
 "legacy large object support. To use first launch your psql commandline "
 "connected to your database."
 msgstr ""
+"Purtroppo PSQL non ha una funzionalità integrata facile da usare per "
+"l'output dei binari. Si tratta di un piccolo hack che si appoggia al "
+"supporto per gli oggetti di grandi dimensioni di PostgreSQL, piuttosto "
+"datato. Per usarlo, lanciate prima la riga di comando di psql collegata al "
+"vostro database."
 
 #. Tag: para
 #, no-c-format
