@@ -212,7 +212,7 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS)
 	stringbuffer_append(&sb, pji.version);
 #endif
 
-#if POSTGIS_PROJ_VERSION >= 70
+#if POSTGIS_PROJ_VERSION >= 71
 
 	stringbuffer_aprintf(&sb,
 		" NETWORK_ENABLED=%s",

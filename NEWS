@@ -27,6 +27,7 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
  - #5479, postgis_full_version() and postgis_gdal_version() sometimes
           warn of deprecated SRID: 2163 (Regina Obe)
  - Include elevation in output of ST_Contour when in polygonal mode (Paul Ramsey)
+ - #5482, New Proj output is only available for proj 7.1+ (Regina Obe)
 
 * Enhancements *
 
