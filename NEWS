@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Honor --without-gui when configuring the shapefile loader (Chris Mayo)
  - [topology] Check deletion results when healing edges (Paul Ramsey and Maksim Korotkov)
  - #5728, Use portable formats for geometry and topology diagnostics (Sandro Santilli)
  - #5850, [topology] Fix closed-line processing in debug builds (Sandro Santilli)
