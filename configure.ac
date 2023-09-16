@@ -1189,7 +1189,7 @@ dnl ===========================================================================
 
 AC_ARG_WITH([gui],
 	[AS_HELP_STRING([--with-gui], [compile the data import GUI (requires GTK+2.0)])],
-	[GUI="yes"], [GUI="no"])
+	[GUI="$withval"], [GUI="no"])
 
 if test "x$GUI" = "xyes"; then
 	AC_MSG_RESULT([GUI: Build requested, checking for dependencies (GTK+2.0)])
