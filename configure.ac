@@ -211,6 +211,15 @@ if test "x$XMLCATALOG" = "x"; then
 	CAN_BUILD_COMMENTS=no
 fi
 
+AC_PATH_PROG([XMLLINT], [xmllint], [])
+if test "x$XMLLINT" = "x"; then
+	dnl AC_MSG_WARN([xmllint is not installed so documentation cannot be checked])
+	AC_MSG_WARN([xmlcatalog is not installed so documentation cannot be built])
+	CAN_BUILD_COMMENTS=no
+fi
+
+
+
 AC_PATH_PROG([XML2POT], [xml2pot], [])
 if test "x$XML2POT" = "x"; then
 	AC_MSG_WARN([xml2pot is not installed so translations cannot be updated])
@@ -265,12 +274,6 @@ if test "x$DBTOEPUB" = "x"; then
   CAN_BUILD_EPUB=no
 fi
 AC_SUBST(CAN_BUILD_EPUB)
-
-AC_PATH_PROG([XMLLINT], [xmllint], [])
-if test "x$XMLLINT" = "x"; then
-	AC_MSG_WARN([xmllint is not installed so documentation cannot be checked])
-fi
-
 
 dnl
 dnl Allow the user to specify the location of the html/docbook.xsl stylesheet
@@ -1749,9 +1752,9 @@ dnl ===========================================================================
 EXTENSIONS=""
 if test "x$PG_CONFIG" != "xno"; then
   if test \
-          "x$XSLTPROC" != "x" -o \
           -e doc/postgis_comments.sql -a \
-          -e doc/raster_comments.sql;
+          -e doc/raster_comments.sql -o \
+          "$CAN_BUILD_COMMENTS" = "yes"
   then
       AC_MSG_RESULT([enabling PostgreSQL extension support...])
       EXTENSIONS=extensions
