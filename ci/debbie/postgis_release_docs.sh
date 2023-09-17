@@ -113,7 +113,7 @@ make -C ../doc/po/ja local-pdf-install
 make -C ../doc/po/fr local-pdf-install
 make -C ../doc/po/de local-pdf-install
 #make -C ../doc/po/zh_Hans local-pdf-install
-make -C ../doc/po/ko_KR local-pdf-install
+#make -C ../doc/po/ko_KR local-pdf-install
 
 # build comments files
 make -C ../doc/po/ja comments
