@@ -361,6 +361,32 @@ fi
 
 AC_SUBST([XSLBASE])
 
+dnl
+dnl Ensure DocBook RelaxNG can be found
+dnl
+DOCBOOK5_RNG=http://docbook.org/xml/5.0/rng/docbook.rng
+if test "x$XMLCATALOG" = "x"; then
+  DOCBOOK5_RNG=
+else
+  if $XMLCATALOG '' "${DOCBOOK5_RNG}" > /dev/null; then :
+  else DOCBOOK5_RNG=
+  fi
+fi
+AC_SUBST([DOCBOOK5_RNG])
+
+dnl
+dnl Ensure DocBook DTD can be found
+dnl
+DOCBOOK5_DTD=http://docbook.org/xml/5.0/rng/docbook.dtd
+if test "x$XMLCATALOG" = "x"; then
+  DOCBOOK5_DTD=
+else
+  if $XMLCATALOG '' "${DOCBOOK5_DTD}" > /dev/null; then :
+  else DOCBOOK5_DTD=
+  fi
+fi
+AC_SUBST([DOCBOOK5_DTD])
+
 dnl ===========================================================================
 dnl Detect if pkg-config installed
 dnl ===========================================================================

@@ -62,6 +62,8 @@ INSTALL_DATA=@INSTALL_DATA@
 XMLCATALOG=@XMLCATALOG@
 XSLTPROC=@XSLTPROC@
 XSLBASE=@XSLBASE@
+DOCBOOK5_RNG=@DOCBOOK5_RNG@
+DOCBOOK5_DTD=@DOCBOOK5_DTD@
 CAN_UPDATE_TRANSLATIONS=@CAN_UPDATE_TRANSLATIONS@
 XMLLINT=@XMLLINT@
 CAN_BUILD_COMMENTS=@CAN_BUILD_COMMENTS@
@@ -271,6 +273,14 @@ endif
 
 ifeq ($(XMLCATALOG),)
 check-xml: requirements_not_met_xmlcatalog
+CAN_CHECK_XML = no
+endif
+
+ifeq ($(DOCBOOK5_RNG),)
+CAN_CHECK_XML = no
+endif
+
+ifeq ($(DOCBOOK5_DTD),)
 CAN_CHECK_XML = no
 endif
 
@@ -630,15 +640,11 @@ check-regress:
 check-unit: $(CHECK_UNIT_TARGET)
 
 check-xml: postgis-out.xml
-	# Fail early if cannot find required RelaxNG
-	$(XMLCATALOG) "" "http://docbook.org/xml/5.0/rng/docbook.rng"
-	# Fail early if cannot find required DTD
-	$(XMLCATALOG) "" "http://docbook.org/xml/5.0/dtd/docbook.dtd"
 	# TODO: --schematron http://docbook.org/xml/5.0/sch/docbook.sch
 	# See https://trac.osgeo.org/postgis/ticket/5532
 	$(XMLLINT) --noout --nonet \
 		--valid --loaddtd \
-		--relaxng http://docbook.org/xml/5.0/rng/docbook.rng \
+		--relaxng $(DOCBOOK5_RNG) \
 		$<
 
 check-cheatsheets: cheatsheets
