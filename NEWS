@@ -1,5 +1,10 @@
-PostGIS 3.4.0
+PostGIS 3.5.0dev
 xxxx/xx/xx
+
+* Breaking Changes *
+
+  - xmllint is now required to build comments and documentation
+  - DocBook5 XSL is now required to build html documentation
 
 * New Features *
 
