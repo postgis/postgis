@@ -294,7 +294,7 @@ Datum geometry_to_jsonb(PG_FUNCTION_ARGS)
 	}
 	geojson = lwgeom_to_geojson(lwgeom, srs, 15, 0);
 	lwgeom_free(lwgeom);
-	PG_RETURN_DATUM(DirectFunctionCall1(jsonb_in, PointerGetDatum(pstrdup(geojson->data))));
+	PG_RETURN_DATUM(DirectFunctionCall1(jsonb_in, PointerGetDatum(text_to_cstring(geojson))));
 }
 
 
