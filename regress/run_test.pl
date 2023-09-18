@@ -1525,12 +1525,6 @@ sub load_sql_file
 	my $file = shift;
 	my $strict = shift;
 
-	if ( $strict && ! -e $file )
-	{
-		fail "Unable to find $file";
-		return 0;
-	}
-
 	if ( -e $file )
 	{
 		# ON_ERROR_STOP is used by psql to return non-0 on an error
@@ -1548,6 +1542,12 @@ sub load_sql_file
 			return 0;
 		}
 	}
+	elsif ( $strict )
+	{
+		fail "Unable to find $file";
+		return 0;
+	}
+
 	return 1;
 }
 
