@@ -1,0 +1,8 @@
+@@ -286,6 +286,7 @@
+ 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+ 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+ 	const char *srs = NULL;
++	char *cstr;
+ 	lwvarlena_t *geojson;
+ 	if (lwgeom->srid != SRID_UNKNOWN)
+ 	{

@@ -8,6 +8,8 @@ xxxx/xx/xx
            (Bas Couwenberg)
   - #5385, Postgres malloc assertion fail when using pg_cancel_backend
            with ST_AsMVT (Regina Obe, Paul Ramsey)
+ - Fix JsonB casting issue (Paul Ramsey)
+
 
 * Breaking Changes *
   - #5385, Take out interruptability of ST_AsMVT
