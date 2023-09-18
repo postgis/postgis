@@ -39,15 +39,13 @@ DATA_built = \
 # Scripts making up the extension file
 # NOTE: order matters
 EXTENSION_SCRIPTS = \
-	sql/rtpostgis.sql \
-	sql/raster_comments.sql
+	sql/rtpostgis.sql
 
 # Scripts making up the extension minor upgrade file
 # NOTE: order matters
 EXTENSION_UPGRADE_SCRIPTS = \
 	../postgis_extension_helper.sql \
 	sql/rtpostgis_upgrade.sql \
-	../../doc/raster_comments.sql \
 	../postgis_extension_helper_uninstall.sql
 
 # Scripts making up the extension upgrade-from-unpackaged file
@@ -111,12 +109,6 @@ sql/rtpostgis_upgrade_for_extension.sql: ../../postgis/common_before_upgrade.sql
 sql/rtpostgis_upgrade_for_extension.sql.in: sql/rtpostgis_for_extension.sql ../../utils/create_upgrade.pl | sql
 	$(PERL) @top_srcdir@/utils/create_upgrade.pl $< > $@
 
-
-../../doc/raster_comments.sql:
-	$(MAKE) -C ../../doc comments
-
-sql/raster_comments.sql: ../../doc/raster_comments.sql | sql
-	cp $< $@
 
 sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: $(EXTENSION_UPGRADE_SCRIPTS) | sql
 	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@

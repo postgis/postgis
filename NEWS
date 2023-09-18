@@ -3,6 +3,7 @@ xxxx/xx/xx
 
 * Breaking Changes *
 
+  - #5536, comments are not anymore included in PostGIS extensions
   - xmllint is now required to build comments and documentation
   - DocBook5 XSL is now required to build html documentation
 

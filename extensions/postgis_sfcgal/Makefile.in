@@ -42,8 +42,7 @@ EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS = \
 # Scripts making up the extension file
 # NOTE: order matters
 EXTENSION_SCRIPTS = \
-	sql/sfcgal.sql \
-	sql/sfcgal_comments.sql
+	sql/sfcgal.sql
 
 EXTRA_CLEAN = sql
 
@@ -65,12 +64,6 @@ sql/$(EXTENSION)--$(EXTVERSION).sql: $(EXTENSION_SCRIPTS) | sql
 sql/sfcgal.sql: ../../sfcgal/sfcgal.sql | sql
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
-../../doc/sfcgal_comments.sql:
-	$(MAKE) -C ../../doc comments
-
-sql/sfcgal_comments.sql: ../../doc/sfcgal_comments.sql | sql
-	cp $< $@
-
 sql/$(EXTENSION)--unpackaged.sql: Makefile | sql
 	echo "-- Nothing to do here" > $@
 
@@ -87,7 +80,7 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql/sfcgal.sql sql/$(EXTENSION)
 sql/sfcgal_upgrade.sql : ../../sfcgal/sfcgal_upgrade.sql | sql
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
-sql/sfcgal_upgrade_minor.sql: ../postgis_extension_helper.sql sql/sfcgal_upgrade.sql ../../doc/sfcgal_comments.sql ../postgis_extension_helper_uninstall.sql | sql
+sql/sfcgal_upgrade_minor.sql: ../postgis_extension_helper.sql sql/sfcgal_upgrade.sql ../postgis_extension_helper_uninstall.sql | sql
 	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
 	cat $^ >> $@
 

@@ -77,7 +77,7 @@ expected/test-upgrade.out: sql/test-upgrade.sql | expected
 sql/test-pagc_normalize_address.sql: sql_bits/test_tuples_only_unaligned.sql.in ../../extras/tiger_geocoder/regress/pagc_normalize_address_regress.sql | sql
 	cat $^ > $@
 
-sql/$(EXTENSION)_pre.sql: sql/tiger_geocoder.sql  sql_bits/mark_editable_objects.sql.in sql_bits/tiger_geocoder_comments.sql | sql
+sql/$(EXTENSION)_pre.sql: sql/tiger_geocoder.sql  sql_bits/mark_editable_objects.sql.in | sql
 	cat $^ > $@
 
 sql/$(EXTENSION).sql: sql/$(EXTENSION)_pre.sql ../../utils/create_or_replace_to_create.pl
@@ -85,7 +85,7 @@ sql/$(EXTENSION).sql: sql/$(EXTENSION)_pre.sql ../../utils/create_or_replace_to_
 		| $(PERL) @top_srcdir@/utils/create_or_replace_to_create.pl sql/$(EXTENSION)_pre.sql \
 		> $@
 
-sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/tiger_geocoder_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in sql_bits/tiger_geocoder_comments.sql | sql
+sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/tiger_geocoder_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in | sql
 	cat $^ > $@
 	echo "SELECT postgis_extension_drop_if_exists('${EXTENSION}', 'DROP SCHEMA tiger_data');" >> $@
 	cat @srcdir@/../postgis_extension_helper_uninstall.sql  >> $@
@@ -177,13 +177,6 @@ sql/tiger_geocoder.sql: sql/tiger_geocoder.sql.in
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
 sql/add_search_path.sql: sql_bits/add_search_path.sql.in | sql
-	cp $< $@
-
-../../doc/tiger_geocoder_comments.sql:
-	$(MAKE) -C ../../doc comments
-
-sql_bits/tiger_geocoder_comments.sql: ../../doc/tiger_geocoder_comments.sql
-	mkdir -p sql_bits
 	cp $< $@
 
 #hardcode for now

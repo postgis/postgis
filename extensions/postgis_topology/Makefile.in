@@ -10,8 +10,7 @@ MODULEPATH    = $$libdir/$(EXTENSION)-@POSTGIS_MAJOR_VERSION@
 EXTENSION_SCRIPTS = \
 	extlock.sql \
 	sql/topology.sql \
-	sql_bits/mark_editable_objects.sql.in \
-	sql/topology_comments.sql
+	sql_bits/mark_editable_objects.sql.in
 
 ifeq (@LIBINCLUDEMINORVERSION@,yes)
 MODULEPATH=$$libdir/$(EXTENSION)-$(MINORVERSION)
@@ -46,7 +45,6 @@ EXTENSION_UPGRADE_SCRIPTS = \
 	sql_bits/remove_from_extension.sql.in \
 	sql/topology_upgrade.sql \
 	sql_bits/mark_editable_objects.sql.in \
-	sql/topology_comments.sql \
 	../postgis_extension_helper_uninstall.sql
 
 EXTRA_CLEAN = sql/
@@ -70,12 +68,6 @@ sql/$(EXTENSION)--$(EXTVERSION).sql: $(EXTENSION_SCRIPTS) | sql
 # to create schema by setting schema to topology in control
 sql/topology.sql: ../../topology/topology.sql | sql
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' -e '/^CREATE SCHEMA/d;'  $< > $@
-
-../../doc/topology_comments.sql:
-	$(MAKE) -C ../../doc comments
-
-sql/topology_comments.sql: ../../doc/topology_comments.sql | sql
-	cp $< $@
 
 sql/$(EXTENSION)--unpackaged.sql: Makefile | sql
 	echo "-- Nothing to do here" > $@

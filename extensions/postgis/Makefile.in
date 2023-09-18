@@ -41,7 +41,6 @@ DATA_built = \
 # NOTE: order matters
 EXTENSION_SCRIPTS = \
 	sql/postgis_for_extension.sql \
-	../../doc/postgis_comments.sql \
 	sql/spatial_ref_sys_config_dump.sql \
 	sql/spatial_ref_sys.sql
 
@@ -51,7 +50,6 @@ EXTENSION_UPGRADE_SCRIPTS = \
 	../postgis_extension_helper.sql \
 	sql/raster_unpackage.sql \
 	sql/postgis_upgrade.sql \
-	../../doc/postgis_comments.sql \
 	sql/spatial_ref_sys.sql \
 	sql/spatial_ref_sys_config_dump.sql \
 	../postgis_extension_helper_uninstall.sql
@@ -109,9 +107,6 @@ sql:
 #strip BEGIN/COMMIT since these are not allowed in extensions
 sql/spatial_ref_sys.sql: ../../spatial_ref_sys.sql | sql
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
-
-../../doc/postgis_comments.sql:
-	$(MAKE) -C ../../doc comments
 
 sql/spatial_ref_sys_config_dump.sql: ../../spatial_ref_sys.sql ../../utils/create_spatial_ref_sys_config_dump.pl | sql
 	$(PERL) @top_srcdir@/utils/create_spatial_ref_sys_config_dump.pl $< > $@
