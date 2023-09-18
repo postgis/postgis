@@ -207,8 +207,7 @@ fi
 
 AC_PATH_PROG([XMLCATALOG], [xmlcatalog], [])
 if test "x$XMLCATALOG" = "x"; then
-	AC_MSG_WARN([xmlcatalog is not installed so documentation cannot be built])
-	CAN_BUILD_COMMENTS=no
+	AC_MSG_WARN([xmlcatalog is not installed so documentation cannot be checked])
 fi
 
 AC_PATH_PROG([XMLLINT], [xmllint], [])
@@ -222,7 +221,7 @@ fi
 
 AC_PATH_PROG([XML2POT], [xml2pot], [])
 if test "x$XML2POT" = "x"; then
-	AC_MSG_WARN([xml2pot is not installed so translations cannot be updated])
+	AC_MSG_WARN([xml2pot is not installed so translation template cannot be updated])
 fi
 
 AC_PATH_PROG([MSGMERGE], [msgmerge], [])
@@ -331,7 +330,7 @@ if test "x$XSLBASE" = "x"; then
 	dnl Check to see if the automatically searched paths above located a
 	dnl valid Docbook stylesheet
 	if test "x$XSLBASE_AUTO" = "x"; then
-		AC_MSG_WARN([could not locate Docbook stylesheets required to build the documentation])
+		AC_MSG_WARN([could not locate Docbook stylesheets required to build the html documentation])
 	fi
 else
 	dnl The user specified an alternate directory so make sure everything
@@ -1772,20 +1771,14 @@ DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST
 
 dnl ===========================================================================
 dnl See if we have the requirements for building the extensions, namely
-dnl the xlstproc tool for generating the comments SQL file.
+dnl the pg_config support
 dnl ===========================================================================
 
 EXTENSIONS=""
 if test "x$PG_CONFIG" != "xno"; then
-  if test \
-          -e doc/postgis_comments.sql -a \
-          -e doc/raster_comments.sql -o \
-          "$CAN_BUILD_COMMENTS" = "yes"
-  then
-      AC_MSG_RESULT([enabling PostgreSQL extension support...])
-      EXTENSIONS=extensions
-      AC_SUBST([EXTENSIONS])
-  fi
+    AC_MSG_RESULT([enabling PostgreSQL extension support...])
+    EXTENSIONS=extensions
+    AC_SUBST([EXTENSIONS])
 fi
 
 INSTALL_EXTENSION_UPGRADES=yes
