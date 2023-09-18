@@ -316,7 +316,7 @@ CHECK_UNIT_TARGET = check-xml
 endif
 
 
-$(XML_SOURCE_POTS): %.xml.pot: %.xml
+$(XML_SOURCE_POTS): %.xml.pot: %.xml po/strip_untranslatable.sh
 	$(XML2POT) $< > $@
 	$(abs_srcdir)/po/strip_untranslatable.sh $@
 
