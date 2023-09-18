@@ -280,7 +280,7 @@ Datum geometry_to_jsonb(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 	lwvarlena_t *geojson = lwgeom_to_geojson(lwgeom, NULL, 15, 0);
 	lwgeom_free(lwgeom);
-	PG_RETURN_DATUM(DirectFunctionCall1(jsonb_in, PointerGetDatum(pstrdup(geojson->data))));
+	PG_RETURN_DATUM(DirectFunctionCall1(jsonb_in, PointerGetDatum(text_to_cstring(geojson))));
 }
 
 
