@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-14 17:40+0000\n"
+"POT-Creation-Date: 2023-09-18 22:57+0000\n"
 "PO-Revision-Date: 2023-09-14 17:40+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -206,11 +206,6 @@ msgstr ""
 msgid "&address_standardizer_required;"
 msgstr "&address_standardizer_required;"
 
-#. Tag: term
-#, no-c-format
-msgid "building"
-msgstr "building"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -221,11 +216,6 @@ msgstr ""
 "파싱되지 않은 건물 식별자 및 유형입니다. 주소 대부분의 경우 일반적으로 비어 "
 "있습니다."
 
-#. Tag: term
-#, no-c-format
-msgid "house_num"
-msgstr "house_num"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -235,11 +225,6 @@ msgstr ""
 "문자형(토큰 번호 <code>1</code>)입니다: 도로의 번지수입니다. 예: <code>75 "
 "State Street</code> 의 <emphasis>75</emphasis> 번지"
 
-#. Tag: term
-#, no-c-format
-msgid "predir"
-msgstr "predir"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -248,11 +233,6 @@ msgid ""
 msgstr ""
 "문자형(토큰 번호 <code>2</code>)입니다: North, South, East, West 등과 같이 방"
 "향을 나타내는 도로명 접두사(STREET NAME PRE-DIRECTIONAL)입니다."
-
-#. Tag: term
-#, no-c-format
-msgid "qual"
-msgstr "qual"
 
 #. Tag: para
 #, no-c-format
@@ -264,11 +244,6 @@ msgstr ""
 "MODIFIER)입니다. 예: <code>3715 OLD HIGHWAY 99</code> 에서 <emphasis>OLD</"
 "emphasis>"
 
-#. Tag: term
-#, no-c-format
-msgid "pretype"
-msgstr "pretype"
-
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>4</code>): STREET PREFIX TYPE"
@@ -276,20 +251,10 @@ msgstr ""
 "문자형(토큰 번호 <code>4</code>)입니다: 도로 접두사 유형(STREET PREFIX TYPE)"
 "입니다."
 
-#. Tag: term
-#, no-c-format
-msgid "name"
-msgstr "name"
-
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>5</code>): STREET NAME"
 msgstr "문자형(토큰 번호 <code>5</code>)입니다: 도로명(STREET NAME)입니다."
-
-#. Tag: term
-#, no-c-format
-msgid "suftype"
-msgstr "suftype"
 
 #. Tag: para
 #, no-c-format
@@ -302,11 +267,6 @@ msgstr ""
 "(STREET POST TYPE)입니다. 도로명의 몸통 뒤에 붙는 도로 유형을 뜻합니다. 예: "
 "<code>75 State Street</code> 에서 <emphasis>STREET</emphasis>"
 
-#. Tag: term
-#, no-c-format
-msgid "sufdir"
-msgstr "sufdir"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -318,11 +278,6 @@ msgstr ""
 "POST-DIRECTIONAL)입니다. 도로명 뒤에 붙어 방향을 나타내는 수식어입니다. 예: "
 "<code>3715 TENTH AVENUE WEST</code> 에서 <emphasis>WEST</emphasis>"
 
-#. Tag: term
-#, no-c-format
-msgid "ruralroute"
-msgstr "ruralroute"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -330,30 +285,15 @@ msgid ""
 "emphasis> in <code>RR 7</code>."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "extra"
-msgstr "extra"
-
 #. Tag: para
 #, no-c-format
 msgid "is text: Extra information like Floor number."
 msgstr "문자형입니다: 층수 같은 추가 정보입니다."
 
-#. Tag: term
-#, no-c-format
-msgid "city"
-msgstr "city"
-
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>10</code>): Example Boston."
 msgstr "문자형(토큰 번호 <code>10</code>)입니다: 예: 보스턴 시"
-
-#. Tag: term
-#, no-c-format
-msgid "state"
-msgstr "state"
 
 #. Tag: para
 #, no-c-format
@@ -361,20 +301,10 @@ msgid ""
 "is text (token number <code>11</code>): Example <code>MASSACHUSETTS</code>"
 msgstr "문자형(토큰 번호 <code>11</code>)입니다: 예: 매사추세츠 주"
 
-#. Tag: term
-#, no-c-format
-msgid "country"
-msgstr "country"
-
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>12</code>): Example <code>USA</code>"
 msgstr "문자형(토큰 번호 <code>12</code>)입니다: 예: <code>USA</code>"
-
-#. Tag: term
-#, no-c-format
-msgid "postcode"
-msgstr "postcode"
 
 #. Tag: para
 #, no-c-format
@@ -385,11 +315,6 @@ msgstr ""
 "문자형(토큰 번호 <code>13</code>) 우편번호(postal code, zip code)입니다: 예: "
 "<code>02109</code>"
 
-#. Tag: term
-#, no-c-format
-msgid "<term>box</term>"
-msgstr "<term>box</term>"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -398,11 +323,6 @@ msgid ""
 msgstr ""
 "문자형(토큰 번호 <code>14</code>, <code>15</code>) 사서함 번호(POSTAL BOX "
 "NUMBER)입니다: 예: <code>02109</code>"
-
-#. Tag: term
-#, no-c-format
-msgid "unit"
-msgstr "unit"
 
 #. Tag: para
 #, no-c-format
@@ -465,20 +385,10 @@ msgstr ""
 "규칙 테이블은 최소한 다음 열들을 가지고 있어야만 하지만, 사용자의 용처에 따"
 "라 더 많은 열을 추가할 수도 있습니다."
 
-#. Tag: term
-#, no-c-format
-msgid "<term>id</term>"
-msgstr "<term>id</term>"
-
 #. Tag: para
 #, no-c-format
 msgid "Primary key of table"
 msgstr "테이블의 기본 키"
-
-#. Tag: term
-#, no-c-format
-msgid "rule"
-msgstr "rule"
 
 #. Tag: para
 #, no-c-format
@@ -551,11 +461,6 @@ msgstr ""
 msgid "Form-Based Input Tokens"
 msgstr "서식 기반 입력 토큰"
 
-#. Tag: term
-#, no-c-format
-msgid "AMPERS"
-msgstr "AMPERS"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -563,40 +468,20 @@ msgid ""
 "\"."
 msgstr "(13). 앰퍼샌드(&amp;)는 단어 \"and\"를 축약하는 데 자주 쓰입니다."
 
-#. Tag: term
-#, no-c-format
-msgid "DASH"
-msgstr "DASH"
-
 #. Tag: para
 #, no-c-format
 msgid "(9). A punctuation character."
 msgstr "(9). 구두법(句讀法; punctuation) 문자입니다."
-
-#. Tag: term
-#, no-c-format
-msgid "DOUBLE"
-msgstr "DOUBLE"
 
 #. Tag: para
 #, no-c-format
 msgid "(21). A sequence of two letters. Often used as identifiers."
 msgstr "(21). 문자 2개의 배열입니다. 식별자로 종종 쓰입니다."
 
-#. Tag: term
-#, no-c-format
-msgid "FRACT"
-msgstr "FRACT"
-
 #. Tag: para
 #, no-c-format
 msgid "(25). Fractions are sometimes used in civic numbers or unit numbers."
 msgstr "(25). 분수는 가끔 가구 번호 또는 동호수에 쓰입니다."
-
-#. Tag: term
-#, no-c-format
-msgid "MIXED"
-msgstr "MIXED"
 
 #. Tag: para
 #, no-c-format
@@ -606,20 +491,10 @@ msgid ""
 msgstr ""
 "(23). 문자와 숫자 모두를 담고 있는 영숫자 스트링입니다. 식별자로 쓰입니다."
 
-#. Tag: term
-#, no-c-format
-msgid "NUMBER"
-msgstr "NUMBER"
-
 #. Tag: para
 #, no-c-format
 msgid "(0). A string of digits."
 msgstr "(0). 숫자 스트링입니다."
-
-#. Tag: term
-#, no-c-format
-msgid "<term>ORD</term>"
-msgstr "<term>ORD</term>"
 
 #. Tag: para
 #, no-c-format
@@ -630,11 +505,6 @@ msgstr "(15). \"First\" 또는 \"1st\" 같은 표현입니다. 도로명에 자�
 #, no-c-format
 msgid "(18). A single letter."
 msgstr "(18). 단일 문자입니다."
-
-#. Tag: term
-#, no-c-format
-msgid "WORD"
-msgstr "WORD"
 
 #. Tag: para
 #, no-c-format
@@ -649,11 +519,6 @@ msgstr ""
 msgid "Function-based Input Tokens"
 msgstr "기능 기반 입력 토큰"
 
-#. Tag: term
-#, no-c-format
-msgid "BOXH"
-msgstr "BOXH"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -662,11 +527,6 @@ msgid ""
 msgstr ""
 "(14). 우편사서함을 표시하는 데 쓰이는 단어입니다. 예를 들어 <emphasis>Box</"
 "emphasis> 또는 <emphasis>PO Box</emphasis> 처럼 말이죠."
-
-#. Tag: term
-#, no-c-format
-msgid "BUILDH"
-msgstr "BUILDH"
 
 #. Tag: para
 #, no-c-format
@@ -678,11 +538,6 @@ msgstr ""
 "(19). 일반적으로 접두사의 형태인, 건물 또는 건물군을 표시하는 데 쓰이는 단어"
 "입니다. 예: <emphasis>Tower 7A</emphasis> 에서 <emphasis>Tower</emphasis>"
 
-#. Tag: term
-#, no-c-format
-msgid "BUILDT"
-msgstr "BUILDT"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -693,11 +548,6 @@ msgstr ""
 "일반적으로 접미사의 형태인, 건물 또는 건물군을 표시하는 데 쓰이는 단어 및 약"
 "어입니다. 예: <emphasis>Shopping Centre</emphasis>"
 
-#. Tag: term
-#, no-c-format
-msgid "DIRECT"
-msgstr "DIRECT"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -706,22 +556,12 @@ msgid ""
 msgstr ""
 "(22). 방향을 표시하는 데 쓰이는 단어입니다. 예: <emphasis>North</emphasis>"
 
-#. Tag: term
-#, no-c-format
-msgid "MILE"
-msgstr "MILE"
-
 #. Tag: para
 #, no-c-format
 msgid "(20). Words used to denote milepost addresses."
 msgstr ""
 "(20). 거리표(어떤 지점까지의 거리를 나타내는 도로가의 푯말; milepost) 주소를 "
 "표시하는 데 쓰이는 단어입니다."
-
-#. Tag: term
-#, no-c-format
-msgid "ROAD"
-msgstr "ROAD"
 
 #. Tag: para
 #, no-c-format
@@ -732,11 +572,6 @@ msgstr ""
 "(6). 고속도로와 도로를 표시하는 데 쓰이는 단어 및 약어입니다. 예: "
 "<emphasis>Interstate 5</emphasis> 에서 <emphasis>Interstate</emphasis>"
 
-#. Tag: term
-#, no-c-format
-msgid "<term>RR</term>"
-msgstr "<term>RR</term>"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -746,11 +581,6 @@ msgstr ""
 "(8). 지방 우편물 배달 노선(rural route)을 표시하는 데 쓰이는 단어 및 약어입니"
 "다. <emphasis>RR</emphasis>."
 
-#. Tag: term
-#, no-c-format
-msgid "TYPE"
-msgstr "TYPE"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -759,11 +589,6 @@ msgid ""
 msgstr ""
 "(2). 도로 유형을 표시하는 데 쓰이는 단어 및 약어입니다. 예: <emphasis>ST</"
 "emphasis> 또는 <emphasis>AVE</emphasis>"
-
-#. Tag: term
-#, no-c-format
-msgid "UNITH"
-msgstr "UNITH"
 
 #. Tag: para
 #, no-c-format
@@ -779,30 +604,15 @@ msgstr ""
 msgid "Postal Type Input Tokens"
 msgstr "우편 유형 입력 토큰"
 
-#. Tag: term
-#, no-c-format
-msgid "QUINT"
-msgstr "QUINT"
-
 #. Tag: para
 #, no-c-format
 msgid "(28). A 5 digit number. Identifies a Zip Code"
 msgstr "(28). 다섯 자리 숫자입니다. 집코드(Zip Code)를 식별합니다."
 
-#. Tag: term
-#, no-c-format
-msgid "QUAD"
-msgstr "QUAD"
-
 #. Tag: para
 #, no-c-format
 msgid "(29). A 4 digit number. Identifies ZIP4."
 msgstr "(29). 네 자리 숫자입니다. ZIP4를 식별합니다."
-
-#. Tag: term
-#, no-c-format
-msgid "<term>PCH</term>"
-msgstr "<term>PCH</term>"
 
 #. Tag: para
 #, no-c-format
@@ -812,11 +622,6 @@ msgid ""
 msgstr ""
 "(27). 문자, 숫자, 문자 순서로 이루어진 문자 3개의 배열입니다. 캐나다 우편 번"
 "호의 처음 세 문자인 FSA를 식별합니다."
-
-#. Tag: term
-#, no-c-format
-msgid "<term>PCT</term>"
-msgstr "<term>PCT</term>"
 
 #. Tag: para
 #, no-c-format
@@ -840,11 +645,6 @@ msgid ""
 msgstr ""
 "STOPWORD는 WORD와 결합합니다. 규칙 상 복수의 WORD 및 STOPWORD 스트링을 단일 "
 "WORD 토큰으로 표현할 것입니다."
-
-#. Tag: term
-#, no-c-format
-msgid "STOPWORD"
-msgstr "STOPWORD"
 
 #. Tag: para
 #, no-c-format
@@ -915,30 +715,15 @@ msgstr ""
 "\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://www."
 "pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link> 에서 발췌)"
 
-#. Tag: term
-#, no-c-format
-msgid "CITY"
-msgstr "CITY"
-
 #. Tag: para
 #, no-c-format
 msgid "(token number \"10\"). Example \"Albany\""
 msgstr "(토큰 번호 \"10\"). 예: \"Albany\""
 
-#. Tag: term
-#, no-c-format
-msgid "STATE"
-msgstr "STATE"
-
 #. Tag: para
 #, no-c-format
 msgid "(token number \"11\"). Example \"NY\""
 msgstr "(토큰 번호 \"11\"). 예: \"NY\""
-
-#. Tag: term
-#, no-c-format
-msgid "NATION"
-msgstr "NATION"
 
 #. Tag: para
 #, no-c-format
@@ -948,11 +733,6 @@ msgid ""
 msgstr ""
 "(토큰 번호 \"12\"). 이 속성은 대부분의 참조 파일에서 쓰이지 않습니다. 예: "
 "\"USA\""
-
-#. Tag: term
-#, no-c-format
-msgid "POSTAL"
-msgstr "POSTAL"
 
 #. Tag: para
 #, no-c-format
@@ -991,16 +771,6 @@ msgstr ""
 "<emphasis role=\"bold\">MICRO_C 출력 토큰</emphasis> (<link xlink:href="
 "\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://www."
 "pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link> 에서 발췌)."
-
-#. Tag: term
-#, no-c-format
-msgid "HOUSE"
-msgstr "HOUSE"
-
-#. Tag: term
-#, no-c-format
-msgid "street"
-msgstr "street"
 
 #. Tag: emphasis
 #, no-c-format
@@ -1059,11 +829,6 @@ msgstr ""
 "\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://www."
 "pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link> 에서 발췌)."
 
-#. Tag: term
-#, no-c-format
-msgid "BLDNG"
-msgstr "BLDNG"
-
 #. Tag: para
 #, no-c-format
 msgid "(token number <code>0</code>): Unparsed building identifiers and types."
@@ -1075,11 +840,6 @@ msgid ""
 "(token number <code>14</code>): The <emphasis role=\"bold\">BOX</emphasis> "
 "in <code>BOX 3B</code>"
 msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "BOXT"
-msgstr "BOXT"
 
 #. Tag: para
 #, no-c-format
@@ -1108,11 +868,6 @@ msgstr ""
 "(토큰 번호 <code>16</code>): <code>APT 3B</code> 에서 <emphasis role=\"bold"
 "\">APT</emphasis>"
 
-#. Tag: term
-#, no-c-format
-msgid "UNITT"
-msgstr "UNITT"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -1121,11 +876,6 @@ msgid ""
 msgstr ""
 "(토큰 번호 <code>17</code>): <code>APT 3B</code> 에서 <emphasis role=\"bold"
 "\">3B</emphasis>"
-
-#. Tag: term
-#, no-c-format
-msgid "UNKNWN"
-msgstr "UNKNWN"
 
 #. Tag: para
 #, no-c-format
@@ -1163,40 +913,20 @@ msgstr ""
 "어휘 목록 테이블은 최소한 다음 열을 가지고 있어야 합니다. 사용자 지정 열을 추"
 "가할 수도 있습니다."
 
-#. Tag: term
-#, no-c-format
-msgid "<term>seq</term>"
-msgstr "<term>seq</term>"
-
 #. Tag: para
 #, no-c-format
 msgid "integer: definition number?"
 msgstr "정수형: 정의 번호?"
-
-#. Tag: term
-#, no-c-format
-msgid "word"
-msgstr "word"
 
 #. Tag: para
 #, no-c-format
 msgid "text: the input word"
 msgstr "문자형: 입력 단어"
 
-#. Tag: term
-#, no-c-format
-msgid "stdword"
-msgstr "stdword"
-
 #. Tag: para
 #, no-c-format
 msgid "text: the standardized replacement word"
 msgstr "문자형: 표준화된 대체 단어"
-
-#. Tag: term
-#, no-c-format
-msgid "token"
-msgstr "token"
 
 #. Tag: para
 #, no-c-format
@@ -1285,11 +1015,6 @@ msgstr ""
 msgid "Elements returned in the json document are"
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "input_tokens"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -1299,21 +1024,11 @@ msgid ""
 "inputs can be categorized as more than one thing."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "rules"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "The set of rules matching the input and the corresponding score for each. "
 "The first rule (highest scoring) is what is used for standardization"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "<term>stdaddr</term>"
 msgstr ""
 
 #. Tag: para
@@ -24711,16 +24426,6 @@ msgstr ""
 msgid "Concave Hull of a MultiPoint, allowing holes"
 msgstr ""
 
-#. Tag: varname
-#, no-c-format
-msgid "polygon_hull"
-msgstr ""
-
-#. Tag: varname
-#, no-c-format
-msgid "points_hull"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -26377,11 +26082,6 @@ msgstr ""
 "<para>새로운 밴드의 속성 및 초기값을 정의하는 ST_AddBand 함수의 입력물로 이용"
 "되는 복합 데이터형입니다.</para>"
 
-#. Tag: term
-#, no-c-format
-msgid "index integer"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -26392,11 +26092,6 @@ msgstr ""
 "래스터의 밴드들 사이 어떤 위치에 새 밴드를 추가할지 지시하는 1-기반 값입니"
 "다. NULL일 경우, 래스터 밴드의 마지막에 새 밴드를 추가할 것입니다."
 
-#. Tag: term
-#, no-c-format
-msgid "pixeltype text"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -26406,20 +26101,10 @@ msgstr ""
 "<xref linkend=\"RT_ST_BandPixelType\"/> 에서 설명하고 있는 픽셀 유형들 가운"
 "데 하나입니다."
 
-#. Tag: term
-#, no-c-format
-msgid "initialvalue double precision"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "Initial value that all pixels of new band will be set to."
 msgstr "새 밴드의 모든 픽셀들을 설정하게 될 초기값입니다."
-
-#. Tag: term
-#, no-c-format
-msgid "nodataval double precision"
-msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -26448,20 +26133,10 @@ msgstr ""
 "<para>래스터 및 해당 래스터의 밴드 인덱스를 표현해야 할 경우 쓰이는 복합 데이"
 "터형입니다.</para>"
 
-#. Tag: term
-#, no-c-format
-msgid "rast raster"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "The raster in question/"
 msgstr "해당 래스터를 지정합니다."
-
-#. Tag: term
-#, no-c-format
-msgid "nband integer"
-msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -26517,11 +26192,6 @@ msgstr ""
 #, no-c-format
 msgid "The band number of band to reclassify."
 msgstr "재분류할 밴드의 밴드 개수입니다."
-
-#. Tag: term
-#, no-c-format
-msgid "reclassexpr text"
-msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -26674,11 +26344,6 @@ msgstr ""
 #, no-c-format
 msgid "1-based value indicating the band of each input raster to be processed."
 msgstr "공간 처리할 각 입력 래스터의 밴드를 지시하는 1-기반 값입니다."
-
-#. Tag: term
-#, no-c-format
-msgid "uniontype text"
-msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -27114,11 +26779,6 @@ msgstr ""
 msgid "A unique identifier given to the contour line by GDAL."
 msgstr ""
 
-#. Tag: term
-#, fuzzy, no-c-format
-msgid "value"
-msgstr "ST_Value"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -27154,21 +26814,11 @@ msgstr ""
 msgid "Input parameters are:"
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "input_points"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "The points to drive the interpolation. Any geometry with Z-values is "
 "acceptable, all points in the input will be used."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "algorithm_options"
 msgstr ""
 
 #. Tag: para
@@ -27180,22 +26830,12 @@ msgid ""
 "interpolation with a smoothing of 2, you would use \"invdist:smoothing=2.0\""
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "template"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "A raster template to drive the geometry of the output raster. The width, "
 "height, pixel size, spatial extent and pixel type will be read from this "
 "template."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "template_band_num"
 msgstr ""
 
 #. Tag: para
@@ -30467,11 +30107,6 @@ msgstr ""
 "셀의 개수를 구하려면 <varname>exclude_nodata_value</varname> 를 거짓으로 설정"
 "하십시오."
 
-#. Tag: term
-#, no-c-format
-msgid "width double precision[]"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -30490,11 +30125,6 @@ msgstr ""
 "예시: 빈 9개, width [a, b, c]는 [a, b, c, a, b, c, a, b, c]로 출력될 것입니"
 "다."
 
-#. Tag: term
-#, no-c-format
-msgid "bins integer"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -30504,11 +30134,6 @@ msgid ""
 msgstr ""
 "분류 단계(breakout)의 개수: 따로 설정할 경우 함수가 반환하는 레코드의 개수입"
 "니다. 따로 설정하지 않을 경우 분류 단계의 개수를 자동으로 계산합니다."
-
-#. Tag: term
-#, no-c-format
-msgid "right boolean"
-msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -31779,11 +31404,6 @@ msgstr ""
 "래스터 1개 이상, 밴드 인덱스, 그리고 사용자 지정 콜백 함수 1개를 입력받아 밴"
 "드 1개를 가진 래스터를 반환합니다."
 
-#. Tag: term
-#, no-c-format
-msgid "rast,rast1,rast2, rastbandargset"
-msgstr "rast, rast1, rast2, rastbandargset"
-
 #. Tag: para
 #, no-c-format
 msgid "Rasters on which the map algebra process is evaluated."
@@ -31798,11 +31418,6 @@ msgstr ""
 "<varname>rastbandargset</varname> 은 많은 래스터 그리고/또는 많은 밴드에 대"
 "해 맵 대수 연산을 이용할 수 있도록 해줍니다. 변종 1 예시를 참조하십시오."
 
-#. Tag: term
-#, no-c-format
-msgid "nband, nband1, nband2"
-msgstr "nband, nband1, nband2"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -31813,11 +31428,6 @@ msgstr ""
 "평가할 래스터의 밴드 개수입니다. nband는 밴드를 나타내는 정수 또는 정수 배열"
 "이 될 수 있습니다. nband1은 rast1에 있는 밴드이며 nband2는 래스터 2개/밴드 2"
 "개일 경우 rast2에 있는 밴드입니다."
-
-#. Tag: term
-#, no-c-format
-msgid "callbackfunc"
-msgstr "callbackfunc"
 
 #. Tag: para
 #, no-c-format
@@ -31861,11 +31471,6 @@ msgid ""
 "a <type>regprocedure</type>."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "mask"
-msgstr "mask"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -31876,11 +31481,6 @@ msgid ""
 "the pixel value of that value in the neighborhood position."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "weighted"
-msgstr "weighted"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -31890,11 +31490,6 @@ msgid ""
 msgstr ""
 "mask 값에 가중치를 적용해야 할지(원래 값으로 곱해야 할지) 말지(mask를 입력받"
 "는 최초 버전에만 적용할지)를 표시하는 불 값(참/거짓)입니다."
-
-#. Tag: term
-#, no-c-format
-msgid "pixeltype"
-msgstr "pixeltype"
 
 #. Tag: para
 #, no-c-format
@@ -31922,11 +31517,6 @@ msgstr ""
 "출력 래스터의 픽셀 유형은 <xref linkend=\"RT_ST_BandPixelType\"/> 목록에 존재"
 "하는 유형 가운데 하나이거나, 생략되거나, NULL로 설정돼야만 합니다."
 
-#. Tag: term
-#, no-c-format
-msgid "extenttype"
-msgstr "extenttype"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -31935,11 +31525,6 @@ msgid ""
 msgstr ""
 "사용할 수 있는 값은 INTERSECTION(기본값), UNION, FIRST(래스터 1개를 입력받는 "
 "변종들의 기본값), SECOND, LAST, CUSTOM입니다."
-
-#. Tag: term
-#, no-c-format
-msgid "customextent"
-msgstr "customextent"
 
 #. Tag: para
 #, no-c-format
@@ -31951,11 +31536,6 @@ msgstr ""
 "<varname>customextent</varname> 를 입력받아야만 합니다. 변종 1의 4번째 예시"
 "를 참조하십시오."
 
-#. Tag: term
-#, no-c-format
-msgid "distancex"
-msgstr "distancex"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -31963,11 +31543,6 @@ msgid ""
 "resulting matrix would be <code>2*distancex + 1</code>.If not specified only "
 "the reference cell is considered (neighborhood of 0)."
 msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "distancey"
-msgstr "distancey"
 
 #. Tag: para
 #, no-c-format
@@ -31979,11 +31554,6 @@ msgstr ""
 "참조 셀에서 나온 Y 방향의 픽셀 단위 거리입니다. 결과 매트릭스의 높이는 "
 "<code>2*distancey + 1</code> 일 것입니다. 따로 설정하지 않으면 참조 셀만 (이"
 "웃 셀의 개수가 0) 고려합니다."
-
-#. Tag: term
-#, no-c-format
-msgid "userargs"
-msgstr "userargs"
 
 #. Tag: para
 #, no-c-format
@@ -32241,11 +31811,6 @@ msgstr ""
 "척, 기울기 및 픽셀 모서리가) 정렬될 것입니다. <varname>extenttype</varname> "
 "파라미터가 출력 래스터의 범위를 정의할 것입니다."
 
-#. Tag: term
-#, no-c-format
-msgid "expression"
-msgstr "표현식(expression)"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -32309,11 +31874,6 @@ msgstr ""
 "<varname>SECOND</varname> - 새 래스터의 범위는 두 번째 래스터의 범위와 동일합"
 "니다."
 
-#. Tag: term
-#, no-c-format
-msgid "nodata1expr"
-msgstr "nodata1expr"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -32325,11 +31885,6 @@ msgstr ""
 "<varname>rast2</varname> 의 픽셀들이 값을 가지고 있을 때 어떤 것을 반환할지 "
 "정의하는 상수만, 또는 <varname>rast2</varname> 와만 관련된 대수 표현식입니다."
 
-#. Tag: term
-#, no-c-format
-msgid "nodata2expr"
-msgstr "nodata2expr"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -32340,11 +31895,6 @@ msgstr ""
 "<varname>rast2</varname> 의 픽셀들이 NODATA 값이고 공간적으로 상응하는 "
 "<varname>rast1</varname> 의 픽셀들이 값을 가지고 있을 때 어떤 것을 반환할지 "
 "정의하는 상수만, 또는 <varname>rast1</varname> 과만 관련된 대수 표현식입니다."
-
-#. Tag: term
-#, no-c-format
-msgid "nodatanodataval"
-msgstr "nodatanodataval"
 
 #. Tag: para
 #, no-c-format
@@ -32899,20 +32449,10 @@ msgstr ""
 "가 픽셀의 이웃 값을 숫자의 배열로 입력받아, 각 픽셀에 대해 사용자 함수의 결과"
 "값을 반환해서, 현재 처리중인 픽셀의 픽셀 값을 함수 결과값으로 대체합니다."
 
-#. Tag: term
-#, no-c-format
-msgid "rast"
-msgstr "rast"
-
 #. Tag: para
 #, no-c-format
 msgid "Raster on which the user function is evaluated."
 msgstr "사용자 함수를 평가하는 데 쓰이는 래스터"
-
-#. Tag: term
-#, no-c-format
-msgid "band"
-msgstr "band"
 
 #. Tag: para
 #, no-c-format
@@ -32934,30 +32474,15 @@ msgstr ""
 "픽셀 유형을 기본값으로 삼을 것입니다. 결과값이 픽셀 유형의 허용치보다 클 경"
 "우 결과값의 길이를 허용치에 맞춰 줄입니다."
 
-#. Tag: term
-#, no-c-format
-msgid "ngbwidth"
-msgstr "ngbwidth"
-
 #. Tag: para
 #, no-c-format
 msgid "The width of the neighborhood, in cells."
 msgstr "이웃(neighborhood)의 셀 단위 너비"
 
-#. Tag: term
-#, no-c-format
-msgid "ngbheight"
-msgstr "ngbheight"
-
 #. Tag: para
 #, no-c-format
 msgid "The height of the neighborhood, in cells."
 msgstr "이웃(neighborhood)의 셀 단위 높이"
-
-#. Tag: term
-#, no-c-format
-msgid "onerastngbuserfunc"
-msgstr "onerastngbuserfunc"
 
 #. Tag: para
 #, no-c-format
@@ -32968,11 +32493,6 @@ msgid ""
 msgstr ""
 "래스터의 단일 밴드의 근접 픽셀에 적용할 PL/pgSQL 또는 psql 사용자 함수입니"
 "다. 첫 번째 요소가 사각형 픽셀 이웃을 표현하는 2차원 숫자 배열입니다."
-
-#. Tag: term
-#, no-c-format
-msgid "nodatamode"
-msgstr "nodatamode"
 
 #. Tag: para
 #, no-c-format
@@ -33014,11 +32534,6 @@ msgstr ""
 "'value': 이웃에서 맞닥뜨린 어떤 NODATA 값도 참조 픽셀(이웃의 한가운데 있는 픽"
 "셀)로 대체합니다. 이 값이 NODATA일 경우, (영향을 받는 이웃에 대해) 'NULL'과 "
 "동일한 습성을 보인다는 점에 주의하십시오."
-
-#. Tag: term
-#, no-c-format
-msgid "args"
-msgstr "args"
 
 #. Tag: para
 #, no-c-format
@@ -35730,26 +35245,6 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Geometries intersect if their DE-9IM Intersection Matrix matches one of:"
-msgstr ""
-
-#. Tag: code
-#, no-c-format
-msgid "T********"
-msgstr ""
-
-#. Tag: code
-#, no-c-format
-msgid "*T*******"
-msgstr ""
-
-#. Tag: code
-#, no-c-format
-msgid "***T*****"
-msgstr ""
-
-#. Tag: code
-#, no-c-format
-msgid "****T****"
 msgstr ""
 
 #. Tag: para
@@ -40790,11 +40285,6 @@ msgstr "<varname>SPATIAL_REF_SYS</varname> 테이블 정의는 다음과 같습�
 msgid "The columns are:"
 msgstr "다음과 같은 명령행 옵션이 있습니다:"
 
-#. Tag: term
-#, no-c-format
-msgid "srid"
-msgstr ""
-
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
@@ -40803,11 +40293,6 @@ msgid ""
 "database."
 msgstr ""
 "데이터베이스 내부에서 공간 참조 시스템(SRS)을 고유하게 식별하는 정수값입니다."
-
-#. Tag: term
-#, no-c-format
-msgid "auth_name"
-msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -40819,21 +40304,11 @@ msgstr ""
 "해당 참조 시스템을 위해 인용되는 표준 또는 표준들 본체의 명칭입니다. 예를 들"
 "어 \"EPSG\"는 유효한 <varname>AUTH_NAME</varname> 이라고 할 수 있습니다."
 
-#. Tag: term
-#, no-c-format
-msgid "auth_srid"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "The ID of the Spatial Reference System as defined by the Authority cited in "
 "the <varname>auth_name</varname>. In the case of EPSG, this is the EPSG code."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "srtext"
 msgstr ""
 
 #. Tag: para
@@ -40851,11 +40326,6 @@ msgid ""
 "For a discussion of SRS WKT, see the OGC standard <link xlink:href=\"http://"
 "docs.opengeospatial.org/is/12-063r5/12-063r5.html\">Well-known text "
 "representation of coordinate reference systems</link>."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "proj4text"
 msgstr ""
 
 #. Tag: para
@@ -41122,11 +40592,6 @@ msgstr ""
 "열 생성 및 삭제와 같은 작업은 OpenGIS가 정의한 특별한 과정을 거쳐 이루어집니"
 "다."
 
-#. Tag: term
-#, no-c-format
-msgid "f_table_catalog, f_table_schema, f_table_name"
-msgstr ""
-
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
@@ -41141,20 +40606,10 @@ msgstr ""
 "\"의 경우 PostgreSQL 스키마 명칭이 사용됩니다(기본값은 <varname>public</"
 "varname> 입니다)."
 
-#. Tag: term
-#, fuzzy, no-c-format
-msgid "f_geometry_column"
-msgstr "\\d geometry_columns"
-
 #. Tag: para
 #, no-c-format
 msgid "The name of the geometry column in the feature table."
 msgstr "피처 테이블이 담고 있는 도형 열의 명칭입니다."
-
-#. Tag: term
-#, no-c-format
-msgid "coord_dimension"
-msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -41170,11 +40625,6 @@ msgid ""
 msgstr ""
 "해당 테이블이 담고 있는 도형의 좌표가 사용하는 공간 좌표 시스템의 ID로, "
 "<varname>SPATIAL_REF_SYS</varname> 를 참조하는 외래 키(foreign key)입니다."
-
-#. Tag: term
-#, no-c-format
-msgid "type"
-msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -41359,11 +40809,6 @@ msgstr ""
 msgid "(c|a|d|p) These are mutually exclusive options:"
 msgstr "c|a|d|p -- 이들은 상호배타적인 옵션들입니다:"
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-c</term>"
-msgstr "<term>-c</term>"
-
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
@@ -41372,11 +40817,6 @@ msgid ""
 msgstr ""
 "새 테이블을 생성한 다음 shapefile의 데이터로 해당 테이블을 채웁니다. "
 "<emphasis>이것이 기본 모드입니다.</emphasis>"
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-a</term>"
-msgstr "<term>-a</term>"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -41389,11 +40829,6 @@ msgstr ""
 "서 복수의 파일을 로드하려면, 파일들이 동일한 속성 및 동일한 데이터 유형을 담"
 "고 있어야 한다는 점을 주의하십시오."
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-d</term>"
-msgstr "<term>-d</term>"
-
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
@@ -41402,11 +40837,6 @@ msgid ""
 msgstr ""
 "기존 데이터베이스 테이블을 삭제(drop)한 다음 shapefile의 데이터를 가진 새 테"
 "이블을 생성합니다."
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-p</term>"
-msgstr "<term>-p</term>"
 
 #. Tag: para
 #, no-c-format
@@ -41418,20 +40848,10 @@ msgstr ""
 "테이블을 생성하는 SQL 코드만 생성하고, 어떤 실제 데이터도 추가하지 않습니다. "
 "테이블 생성과 데이터 로드 단계를 완전히 분리해야 할 경우 사용할 수 있습니다."
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-?</term>"
-msgstr "<term>-?</term>"
-
 #. Tag: para
 #, no-c-format
 msgid "Display help screen."
 msgstr "도움말 화면을 표출합니다."
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-D</term>"
-msgstr "<term>-D</term>"
 
 #. Tag: para
 #, no-c-format
@@ -41445,11 +40865,6 @@ msgstr ""
 "형식보다 훨씬 빨리 로드할 수 있습니다. 대용량 데이터셋의 경우 이 옵션을 사용"
 "하십시오."
 
-#. Tag: term
-#, fuzzy, no-c-format
-msgid "-s [&lt;FROM_SRID&gt;:]&lt;SRID&gt;"
-msgstr "-s [&lt;FROM_SRID%gt;:]&lt;SRID&gt;"
-
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
@@ -41461,11 +40876,6 @@ msgstr ""
 "FROM_SRID를 쓰도록 설정하는 옵션도 있습니다. 이런 경우 도형이 목표 SRID로 재"
 "투영될 것입니다. FROM_SRID는 -D 옵션과 함께 사용될 수 없습니다."
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-k</term>"
-msgstr "<term>-k</term>"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -41474,11 +40884,6 @@ msgid ""
 msgstr ""
 "식별자의 대소문자(열, 스키마 및 속성)를 유지합니다. shapefile 안의 속성은 모"
 "두 대문자라는 점을 주의하십시오."
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-i</term>"
-msgstr "<term>-i</term>"
 
 #. Tag: para
 #, no-c-format
@@ -41489,20 +40894,10 @@ msgstr ""
 "DBF 헤더 서명이 64비트 bigint 형식을 보장하더라도, 모든 정수를 표준 32비트 정"
 "수로 강제 변환하고 64비트 bigint 형식을 생성하지 않습니다."
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-I</term>"
-msgstr "<term>-I</term>"
-
 #. Tag: para
 #, no-c-format
 msgid "Create a GiST index on the geometry column."
 msgstr "도형 열에 GiST 인덱스를 생성합니다."
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-m</term>"
-msgstr "<term>-m</term>"
 
 #. Tag: para
 #, no-c-format
@@ -41517,11 +40912,6 @@ msgstr ""
 "두 명칭으로 이루어진 하나 이상의 행으로, 행 맨 앞과 맨 뒤에는 공백이 없어야 "
 "합니다. 다음은 그 예시입니다:"
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-S</term>"
-msgstr "<term>-S</term>"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -41532,11 +40922,6 @@ msgstr ""
 "다중(multi) 도형 대신 단순 도형을 생성합니다. 이 옵션은 모든 도형이 실제로 단"
 "일형(예: 단일 외곽선을 가진 다중 폴리곤 또는 단일 꼭짓점을 가진 다중 포인트)"
 "일 경우에만 작동합니다."
-
-#. Tag: term
-#, no-c-format
-msgid "-t &lt;dimensionality&gt;"
-msgstr "-t &lt;dimensionality&gt;"
 
 #. Tag: para
 #, no-c-format
@@ -41558,11 +40943,6 @@ msgstr ""
 "질 것입니다. 입력물이 지정된 차원수보다 높은 차원일 경우, 필요 없는 차원은 제"
 "거될 것입니다."
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-w</term>"
-msgstr "<term>-w</term>"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -41571,11 +40951,6 @@ msgid ""
 msgstr ""
 "WKB 대신 WKT 형식으로 출력합니다. 정확도가 부족하기 때문에 좌표가 이동될 가능"
 "성이 있다는 점을 주의하십시오."
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-e</term>"
-msgstr "<term>-e</term>"
 
 #. Tag: para
 #, no-c-format
@@ -41589,11 +40964,6 @@ msgstr ""
 "몇몇 망가진 도형이 있을 경우 이 옵션을 사용하면 괜찮은 데이터 대다수를 로드"
 "할 수 있습니다. \"덤프\" 형식은 항상 상호처리를 이용하기 때문에 -D 플래그와 "
 "함께 사용할 수 없다는 점을 주의하십시오."
-
-#. Tag: term
-#, no-c-format
-msgid "-W &lt;encoding&gt;"
-msgstr "-W &lt;encoding&gt;"
 
 #. Tag: para
 #, no-c-format
@@ -41610,21 +40980,11 @@ msgstr ""
 "을 데이터베이스 내부에서 이용하도록 설정된 어떤 인코딩으로든 재변환할 수 있습"
 "니다."
 
-#. Tag: term
-#, no-c-format
-msgid "-N &lt;policy&gt;"
-msgstr "-N &lt;policy&gt;"
-
 #. Tag: para
 #, no-c-format
 msgid "NULL geometries handling policy (insert*,skip,abort)"
 msgstr ""
 "NULL 도형 처리 방침 -- insert*(상관없이 삽입), skip(건너뛰기), abort(중단)"
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-n</term>"
-msgstr "<term>-n</term>"
 
 #. Tag: para
 #, no-c-format
@@ -41639,11 +40999,6 @@ msgstr ""
 "가지고 있지만 도형을 빼고 속성 데이터만 필요한 경우에만 이 플래그를 설정해야 "
 "합니다."
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-G</term>"
-msgstr "<term>-G</term>"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -41652,11 +41007,6 @@ msgid ""
 msgstr ""
 "(경도/위도가 필요한) 도형 대신 WGS84 경위도(SRID=4326)를 쓰는 지리형을 이용합"
 "니다."
-
-#. Tag: term
-#, no-c-format
-msgid "-T &lt;tablespace&gt;"
-msgstr "-T &lt;tablespace&gt;"
 
 #. Tag: para
 #, no-c-format
@@ -41669,11 +41019,6 @@ msgstr ""
 "아니라면 여전히 인덱스가 기본 테이블스페이스를 이용할 것입니다. PostgreSQL 문"
 "서는 사용자 지정 테이블스페이스가 필요한 경우를 잘 설명하고 있습니다."
 
-#. Tag: term
-#, no-c-format
-msgid "-X &lt;tablespace&gt;"
-msgstr "-X &lt;tablespace&gt;"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -41683,11 +41028,6 @@ msgstr ""
 "새 테이블의 인덱스를 위한 테이블스페이스를 지정합니다. 이 옵션은 기본 키"
 "(primary key) 인덱스에 적용되며, -I 플래그를 함께 사용하는 경우 GiST 공간 인"
 "덱스에도 적용됩니다."
-
-#. Tag: term
-#, fuzzy, no-c-format
-msgid "<term>-Z</term>"
-msgstr "<term>-c</term>"
 
 #. Tag: para
 #, no-c-format
@@ -41757,20 +41097,10 @@ msgstr ""
 "SQL 문법을 쓰면 됩니다. 공간 제약의 경우, 다음 유용한 연산자들을 쓸 수 있습니"
 "다."
 
-#. Tag: term
-#, no-c-format
-msgid "ST_Intersects"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "This function tells whether two geometries share any space."
 msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "<term>=</term>"
-msgstr "<term>=</term>"
 
 #. Tag: para
 #, no-c-format
@@ -41867,60 +41197,30 @@ msgstr ""
 msgid "The commandline options are:"
 msgstr "다음과 같은 명령행 옵션이 있습니다:"
 
-#. Tag: term
-#, no-c-format
-msgid "-f &lt;filename&gt;"
-msgstr "-f &lt;filename&gt;"
-
 #. Tag: para
 #, no-c-format
 msgid "Write the output to a particular filename."
 msgstr "특정 파일명으로 출력물을 작성합니다."
-
-#. Tag: term
-#, no-c-format
-msgid "-h &lt;host&gt;"
-msgstr "-h &lt;host&gt;"
 
 #. Tag: para
 #, no-c-format
 msgid "The database host to connect to."
 msgstr "연결할 데이터베이스 호스트를 설정합니다."
 
-#. Tag: term
-#, no-c-format
-msgid "-p &lt;port&gt;"
-msgstr "-p &lt;port&gt;"
-
 #. Tag: para
 #, no-c-format
 msgid "The port to connect to on the database host."
 msgstr "데이터베이스 호스트 연결시 사용할 포트를 설정합니다."
-
-#. Tag: term
-#, no-c-format
-msgid "-P &lt;password&gt;"
-msgstr "-P &lt;password&gt;"
 
 #. Tag: para
 #, no-c-format
 msgid "The password to use when connecting to the database."
 msgstr "데이터베이스 연결에 사용할 비밀번호를 설정합니다."
 
-#. Tag: term
-#, no-c-format
-msgid "-u &lt;user&gt;"
-msgstr "-u &lt;user&gt;"
-
 #. Tag: para
 #, no-c-format
 msgid "The username to use when connecting to the database."
 msgstr "데이터베이스 연결에 사용할 사용자명을 설정합니다."
-
-#. Tag: term
-#, no-c-format
-msgid "-g &lt;geometry column&gt;"
-msgstr "-g &lt;geometry column&gt;"
 
 #. Tag: para
 #, no-c-format
@@ -41930,11 +41230,6 @@ msgid ""
 msgstr ""
 "복수의 도형 열을 가진 테이블일 경우, shapefile 작성에 이용될 도형 열을 설정합"
 "니다."
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-b</term>"
-msgstr "<term>-b</term>"
 
 #. Tag: para
 #, no-c-format
@@ -41946,11 +41241,6 @@ msgstr ""
 "만, 테이블 안에 있는 비(非) 도형 속성 가운데 하나라도 텍스트로 작성할 캐스트"
 "(cast)가 부족할 경우 실행되지 않을 것입니다."
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-r</term>"
-msgstr "<term>-r</term>"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -41959,11 +41249,6 @@ msgid ""
 msgstr ""
 "로(raw) 모드입니다. <varname>gid</varname> 필드를 삭제하거나, 열 명칭을 제외"
 "하지 않습니다."
-
-#. Tag: term
-#, no-c-format
-msgid "-m filename"
-msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -43346,11 +42631,6 @@ msgid ""
 "catalogs"
 msgstr "래스터 공간 처리: 래스터 카탈로그에 제대로 등록하기 위한 제약조건 적용"
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-C</term>"
-msgstr "<term>-C</term>"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -43359,11 +42639,6 @@ msgid ""
 msgstr ""
 "<varname>raster_columns</varname> 뷰에 래스터를 제대로 등록하기 위한 SRID, 픽"
 "셀 크기 등의 래스터 제약조건을 적용합니다."
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-x</term>"
-msgstr "<term>-x</term>"
 
 #. Tag: para
 #, no-c-format
@@ -43391,11 +42666,6 @@ msgid ""
 msgstr ""
 "래스터 공간 처리: 입력 래스터 데이터셋을 조작하는 데 쓰이는 선택적 파라미터"
 
-#. Tag: term
-#, no-c-format
-msgid "-s &lt;SRID&gt;"
-msgstr "-s &lt;SRID&gt;"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -43404,11 +42674,6 @@ msgid ""
 msgstr ""
 "출력 래스터에 지정된 SRID를 부여합니다. 기존에 없거나 0값인 경우, 적절한 SRID"
 "를 결정하기 위해 래스터의 메타데이터를 확인할 것입니다."
-
-#. Tag: term
-#, no-c-format
-msgid "-b BAND"
-msgstr "-b BAND"
 
 #. Tag: para
 #, no-c-format
@@ -43420,11 +42685,6 @@ msgstr ""
 "래스터에서 밴드의 (1-기반) 인덱스를 추출합니다. 하나 이상의 밴드 인덱스가 있"
 "을 경우, 쉼표(,)로 구분하십시오. 지정하지 않는 경우 래스터의 모든 밴드를 추출"
 "합니다."
-
-#. Tag: term
-#, no-c-format
-msgid "-t TILE_SIZE"
-msgstr "-t TILE_SIZE"
 
 #. Tag: para
 #, no-c-format
@@ -43439,11 +42699,6 @@ msgstr ""
 "설정하면 로더가 첫 번째 래스터를 이용해 적당한 크기를 계산해서 모든 래스터에 "
 "적용합니다."
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-P</term>"
-msgstr "<term>-P</term>"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -43452,11 +42707,6 @@ msgid ""
 msgstr ""
 "맨 오른쪽 및 맨 아래 타일들의 여백을 메꿔넣어(padding) 모든 타일이 동일한 너"
 "비와 높이를 갖도록 보장합니다."
-
-#. Tag: term
-#, no-c-format
-msgid "-R, --register"
-msgstr "-R, --register"
 
 #. Tag: para
 #, no-c-format
@@ -43471,11 +42721,6 @@ msgid ""
 msgstr ""
 "데이터베이스에 래스터의 (픽셀이 아니라) 메타데이터 및 경로 위치만 저장될 것입"
 "니다."
-
-#. Tag: term
-#, no-c-format
-msgid "-l OVERVIEW_FACTOR"
-msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -43496,11 +42741,6 @@ msgstr ""
 "되어, -R 플래그의 영향을 받지 않습니다. 사용자가 생성한 SQL 파일이 주 테이블"
 "과 오버뷰 테이블을 모두 담게 될 것이라는 점에 주의하십시오."
 
-#. Tag: term
-#, no-c-format
-msgid "-N NODATA"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "NODATA value to use on bands without a NODATA value."
@@ -43511,40 +42751,20 @@ msgstr "\"NODATA\" 값이 없는 밴드에 사용할 NODATA 값입니다."
 msgid "Optional parameters used to manipulate database objects"
 msgstr "데이터베이스 객체를 조작하는 데 이용되는 선택적 파라미터들"
 
-#. Tag: term
-#, no-c-format
-msgid "-f COLUMN"
-msgstr "-f COLUMN"
-
 #. Tag: para
 #, no-c-format
 msgid "Specify name of destination raster column, default is 'rast'"
 msgstr "저장될 래스터 열의 명칭을 설정합니다. 기본값은 'rast'입니다."
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-F</term>"
-msgstr "<term>-F</term>"
 
 #. Tag: para
 #, no-c-format
 msgid "Add a column with the name of the file"
 msgstr "파일명을 담은 열을 추가합니다."
 
-#. Tag: term
-#, no-c-format
-msgid "-n COLUMN"
-msgstr "-n COLUMN"
-
 #. Tag: para
 #, no-c-format
 msgid "Specify the name of the filename column. Implies -F."
 msgstr "파일명 열의 명칭을 설정합니다. -F 플래그와 함께 써야 합니다."
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-q</term>"
-msgstr "<term>-q</term>"
 
 #. Tag: para
 #, no-c-format
@@ -43555,11 +42775,6 @@ msgstr "PostgreSQL 식별자를 따옴표로 감쌉니다."
 #, no-c-format
 msgid "Create a GiST index on the raster column."
 msgstr "래스터 열에 GiST 인덱스를 생성합니다."
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-M</term>"
-msgstr "<term>-M</term>"
 
 #. Tag: para
 #, no-c-format
@@ -43574,11 +42789,6 @@ msgid ""
 "database and those junk rows are not marked as empty tiles."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "-T tablespace"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -43590,11 +42800,6 @@ msgstr ""
 "(기본 키를 포함한) 인덱스들이 여전히 기본 테이블스페이스를 사용할 것이라는 점"
 "에 주의하십시오."
 
-#. Tag: term
-#, no-c-format
-msgid "-X tablespace"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -43603,11 +42808,6 @@ msgid ""
 msgstr ""
 "테이블의 새 인덱스 용 테이블스페이스를 설정합니다. -I 플래그를 함께 사용하면 "
 "기본 키와 공간 인덱스에 함께 적용됩니다."
-
-#. Tag: term
-#, no-c-format
-msgid "-Y max_rows_per_copy=50"
-msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -43622,11 +42822,6 @@ msgid "Execute each statement individually, do not use a transaction."
 msgstr ""
 "각 선언문을 개별적으로 실행하며, 상호처리(transaction)를 이용하지 않습니다."
 
-#. Tag: term
-#, no-c-format
-msgid "-E ENDIAN"
-msgstr "-E ENDIAN"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -43636,11 +42831,6 @@ msgstr ""
 "생성된 래스터 바이너리 산출물의 메모리 내부 데이터 순서(endianness)를 조정합"
 "니다. XDR은 0, 기본값인 NDR은 1로 설정하십시오. 현재, NDR 산출물만 지원합니"
 "다."
-
-#. Tag: term
-#, no-c-format
-msgid "-V version"
-msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -44588,3 +43778,491 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid "building"
+#~ msgstr "building"
+
+#, no-c-format
+#~ msgid "house_num"
+#~ msgstr "house_num"
+
+#, no-c-format
+#~ msgid "predir"
+#~ msgstr "predir"
+
+#, no-c-format
+#~ msgid "qual"
+#~ msgstr "qual"
+
+#, no-c-format
+#~ msgid "pretype"
+#~ msgstr "pretype"
+
+#, no-c-format
+#~ msgid "name"
+#~ msgstr "name"
+
+#, no-c-format
+#~ msgid "suftype"
+#~ msgstr "suftype"
+
+#, no-c-format
+#~ msgid "sufdir"
+#~ msgstr "sufdir"
+
+#, no-c-format
+#~ msgid "ruralroute"
+#~ msgstr "ruralroute"
+
+#, no-c-format
+#~ msgid "extra"
+#~ msgstr "extra"
+
+#, no-c-format
+#~ msgid "city"
+#~ msgstr "city"
+
+#, no-c-format
+#~ msgid "state"
+#~ msgstr "state"
+
+#, no-c-format
+#~ msgid "country"
+#~ msgstr "country"
+
+#, no-c-format
+#~ msgid "postcode"
+#~ msgstr "postcode"
+
+#, no-c-format
+#~ msgid "<term>box</term>"
+#~ msgstr "<term>box</term>"
+
+#, no-c-format
+#~ msgid "unit"
+#~ msgstr "unit"
+
+#, no-c-format
+#~ msgid "<term>id</term>"
+#~ msgstr "<term>id</term>"
+
+#, no-c-format
+#~ msgid "rule"
+#~ msgstr "rule"
+
+#, no-c-format
+#~ msgid "AMPERS"
+#~ msgstr "AMPERS"
+
+#, no-c-format
+#~ msgid "DASH"
+#~ msgstr "DASH"
+
+#, no-c-format
+#~ msgid "DOUBLE"
+#~ msgstr "DOUBLE"
+
+#, no-c-format
+#~ msgid "FRACT"
+#~ msgstr "FRACT"
+
+#, no-c-format
+#~ msgid "MIXED"
+#~ msgstr "MIXED"
+
+#, no-c-format
+#~ msgid "NUMBER"
+#~ msgstr "NUMBER"
+
+#, no-c-format
+#~ msgid "<term>ORD</term>"
+#~ msgstr "<term>ORD</term>"
+
+#, no-c-format
+#~ msgid "WORD"
+#~ msgstr "WORD"
+
+#, no-c-format
+#~ msgid "BOXH"
+#~ msgstr "BOXH"
+
+#, no-c-format
+#~ msgid "BUILDH"
+#~ msgstr "BUILDH"
+
+#, no-c-format
+#~ msgid "BUILDT"
+#~ msgstr "BUILDT"
+
+#, no-c-format
+#~ msgid "DIRECT"
+#~ msgstr "DIRECT"
+
+#, no-c-format
+#~ msgid "MILE"
+#~ msgstr "MILE"
+
+#, no-c-format
+#~ msgid "ROAD"
+#~ msgstr "ROAD"
+
+#, no-c-format
+#~ msgid "<term>RR</term>"
+#~ msgstr "<term>RR</term>"
+
+#, no-c-format
+#~ msgid "TYPE"
+#~ msgstr "TYPE"
+
+#, no-c-format
+#~ msgid "UNITH"
+#~ msgstr "UNITH"
+
+#, no-c-format
+#~ msgid "QUINT"
+#~ msgstr "QUINT"
+
+#, no-c-format
+#~ msgid "QUAD"
+#~ msgstr "QUAD"
+
+#, no-c-format
+#~ msgid "<term>PCH</term>"
+#~ msgstr "<term>PCH</term>"
+
+#, no-c-format
+#~ msgid "<term>PCT</term>"
+#~ msgstr "<term>PCT</term>"
+
+#, no-c-format
+#~ msgid "STOPWORD"
+#~ msgstr "STOPWORD"
+
+#, no-c-format
+#~ msgid "CITY"
+#~ msgstr "CITY"
+
+#, no-c-format
+#~ msgid "STATE"
+#~ msgstr "STATE"
+
+#, no-c-format
+#~ msgid "NATION"
+#~ msgstr "NATION"
+
+#, no-c-format
+#~ msgid "POSTAL"
+#~ msgstr "POSTAL"
+
+#, no-c-format
+#~ msgid "HOUSE"
+#~ msgstr "HOUSE"
+
+#, no-c-format
+#~ msgid "street"
+#~ msgstr "street"
+
+#, no-c-format
+#~ msgid "BLDNG"
+#~ msgstr "BLDNG"
+
+#, no-c-format
+#~ msgid "BOXT"
+#~ msgstr "BOXT"
+
+#, no-c-format
+#~ msgid "UNITT"
+#~ msgstr "UNITT"
+
+#, no-c-format
+#~ msgid "UNKNWN"
+#~ msgstr "UNKNWN"
+
+#, no-c-format
+#~ msgid "<term>seq</term>"
+#~ msgstr "<term>seq</term>"
+
+#, no-c-format
+#~ msgid "word"
+#~ msgstr "word"
+
+#, no-c-format
+#~ msgid "stdword"
+#~ msgstr "stdword"
+
+#, no-c-format
+#~ msgid "token"
+#~ msgstr "token"
+
+#, fuzzy, no-c-format
+#~ msgid "value"
+#~ msgstr "ST_Value"
+
+#, no-c-format
+#~ msgid "rast,rast1,rast2, rastbandargset"
+#~ msgstr "rast, rast1, rast2, rastbandargset"
+
+#, no-c-format
+#~ msgid "nband, nband1, nband2"
+#~ msgstr "nband, nband1, nband2"
+
+#, no-c-format
+#~ msgid "callbackfunc"
+#~ msgstr "callbackfunc"
+
+#, no-c-format
+#~ msgid "mask"
+#~ msgstr "mask"
+
+#, no-c-format
+#~ msgid "weighted"
+#~ msgstr "weighted"
+
+#, no-c-format
+#~ msgid "pixeltype"
+#~ msgstr "pixeltype"
+
+#, no-c-format
+#~ msgid "extenttype"
+#~ msgstr "extenttype"
+
+#, no-c-format
+#~ msgid "customextent"
+#~ msgstr "customextent"
+
+#, no-c-format
+#~ msgid "distancex"
+#~ msgstr "distancex"
+
+#, no-c-format
+#~ msgid "distancey"
+#~ msgstr "distancey"
+
+#, no-c-format
+#~ msgid "userargs"
+#~ msgstr "userargs"
+
+#, no-c-format
+#~ msgid "expression"
+#~ msgstr "표현식(expression)"
+
+#, no-c-format
+#~ msgid "nodata1expr"
+#~ msgstr "nodata1expr"
+
+#, no-c-format
+#~ msgid "nodata2expr"
+#~ msgstr "nodata2expr"
+
+#, no-c-format
+#~ msgid "nodatanodataval"
+#~ msgstr "nodatanodataval"
+
+#, no-c-format
+#~ msgid "rast"
+#~ msgstr "rast"
+
+#, no-c-format
+#~ msgid "band"
+#~ msgstr "band"
+
+#, no-c-format
+#~ msgid "ngbwidth"
+#~ msgstr "ngbwidth"
+
+#, no-c-format
+#~ msgid "ngbheight"
+#~ msgstr "ngbheight"
+
+#, no-c-format
+#~ msgid "onerastngbuserfunc"
+#~ msgstr "onerastngbuserfunc"
+
+#, no-c-format
+#~ msgid "nodatamode"
+#~ msgstr "nodatamode"
+
+#, no-c-format
+#~ msgid "args"
+#~ msgstr "args"
+
+#, fuzzy, no-c-format
+#~ msgid "f_geometry_column"
+#~ msgstr "\\d geometry_columns"
+
+#, no-c-format
+#~ msgid "<term>-c</term>"
+#~ msgstr "<term>-c</term>"
+
+#, no-c-format
+#~ msgid "<term>-a</term>"
+#~ msgstr "<term>-a</term>"
+
+#, no-c-format
+#~ msgid "<term>-d</term>"
+#~ msgstr "<term>-d</term>"
+
+#, no-c-format
+#~ msgid "<term>-p</term>"
+#~ msgstr "<term>-p</term>"
+
+#, no-c-format
+#~ msgid "<term>-?</term>"
+#~ msgstr "<term>-?</term>"
+
+#, no-c-format
+#~ msgid "<term>-D</term>"
+#~ msgstr "<term>-D</term>"
+
+#, fuzzy, no-c-format
+#~ msgid "-s [&lt;FROM_SRID&gt;:]&lt;SRID&gt;"
+#~ msgstr "-s [&lt;FROM_SRID%gt;:]&lt;SRID&gt;"
+
+#, no-c-format
+#~ msgid "<term>-k</term>"
+#~ msgstr "<term>-k</term>"
+
+#, no-c-format
+#~ msgid "<term>-i</term>"
+#~ msgstr "<term>-i</term>"
+
+#, no-c-format
+#~ msgid "<term>-I</term>"
+#~ msgstr "<term>-I</term>"
+
+#, no-c-format
+#~ msgid "<term>-m</term>"
+#~ msgstr "<term>-m</term>"
+
+#, no-c-format
+#~ msgid "<term>-S</term>"
+#~ msgstr "<term>-S</term>"
+
+#, no-c-format
+#~ msgid "-t &lt;dimensionality&gt;"
+#~ msgstr "-t &lt;dimensionality&gt;"
+
+#, no-c-format
+#~ msgid "<term>-w</term>"
+#~ msgstr "<term>-w</term>"
+
+#, no-c-format
+#~ msgid "<term>-e</term>"
+#~ msgstr "<term>-e</term>"
+
+#, no-c-format
+#~ msgid "-W &lt;encoding&gt;"
+#~ msgstr "-W &lt;encoding&gt;"
+
+#, no-c-format
+#~ msgid "-N &lt;policy&gt;"
+#~ msgstr "-N &lt;policy&gt;"
+
+#, no-c-format
+#~ msgid "<term>-n</term>"
+#~ msgstr "<term>-n</term>"
+
+#, no-c-format
+#~ msgid "<term>-G</term>"
+#~ msgstr "<term>-G</term>"
+
+#, no-c-format
+#~ msgid "-T &lt;tablespace&gt;"
+#~ msgstr "-T &lt;tablespace&gt;"
+
+#, no-c-format
+#~ msgid "-X &lt;tablespace&gt;"
+#~ msgstr "-X &lt;tablespace&gt;"
+
+#, fuzzy, no-c-format
+#~ msgid "<term>-Z</term>"
+#~ msgstr "<term>-c</term>"
+
+#, no-c-format
+#~ msgid "<term>=</term>"
+#~ msgstr "<term>=</term>"
+
+#, no-c-format
+#~ msgid "-f &lt;filename&gt;"
+#~ msgstr "-f &lt;filename&gt;"
+
+#, no-c-format
+#~ msgid "-h &lt;host&gt;"
+#~ msgstr "-h &lt;host&gt;"
+
+#, no-c-format
+#~ msgid "-p &lt;port&gt;"
+#~ msgstr "-p &lt;port&gt;"
+
+#, no-c-format
+#~ msgid "-P &lt;password&gt;"
+#~ msgstr "-P &lt;password&gt;"
+
+#, no-c-format
+#~ msgid "-u &lt;user&gt;"
+#~ msgstr "-u &lt;user&gt;"
+
+#, no-c-format
+#~ msgid "-g &lt;geometry column&gt;"
+#~ msgstr "-g &lt;geometry column&gt;"
+
+#, no-c-format
+#~ msgid "<term>-b</term>"
+#~ msgstr "<term>-b</term>"
+
+#, no-c-format
+#~ msgid "<term>-r</term>"
+#~ msgstr "<term>-r</term>"
+
+#, no-c-format
+#~ msgid "<term>-C</term>"
+#~ msgstr "<term>-C</term>"
+
+#, no-c-format
+#~ msgid "<term>-x</term>"
+#~ msgstr "<term>-x</term>"
+
+#, no-c-format
+#~ msgid "-s &lt;SRID&gt;"
+#~ msgstr "-s &lt;SRID&gt;"
+
+#, no-c-format
+#~ msgid "-b BAND"
+#~ msgstr "-b BAND"
+
+#, no-c-format
+#~ msgid "-t TILE_SIZE"
+#~ msgstr "-t TILE_SIZE"
+
+#, no-c-format
+#~ msgid "<term>-P</term>"
+#~ msgstr "<term>-P</term>"
+
+#, no-c-format
+#~ msgid "-R, --register"
+#~ msgstr "-R, --register"
+
+#, no-c-format
+#~ msgid "-f COLUMN"
+#~ msgstr "-f COLUMN"
+
+#, no-c-format
+#~ msgid "<term>-F</term>"
+#~ msgstr "<term>-F</term>"
+
+#, no-c-format
+#~ msgid "-n COLUMN"
+#~ msgstr "-n COLUMN"
+
+#, no-c-format
+#~ msgid "<term>-q</term>"
+#~ msgstr "<term>-q</term>"
+
+#, no-c-format
+#~ msgid "<term>-M</term>"
+#~ msgstr "<term>-M</term>"
+
+#, no-c-format
+#~ msgid "-E ENDIAN"
+#~ msgstr "-E ENDIAN"

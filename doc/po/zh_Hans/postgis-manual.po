@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-14 17:40+0000\n"
+"POT-Creation-Date: 2023-09-18 22:57+0000\n"
 "PO-Revision-Date: 2023-09-15 02:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -164,21 +164,11 @@ msgstr ""
 msgid "&address_standardizer_required;"
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "building"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "is text (token number <code>0</code>): Refers to building number or name. "
 "Unparsed building identifiers and types. Generally blank for most addresses."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "house_num"
 msgstr ""
 
 #. Tag: para
@@ -188,21 +178,11 @@ msgid ""
 "street. Example <emphasis>75</emphasis> in <code>75 State Street</code>."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "predir"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "is text (token number <code>2</code>): STREET NAME PRE-DIRECTIONAL such as "
 "North, South, East, West etc."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "qual"
 msgstr ""
 
 #. Tag: para
@@ -212,29 +192,14 @@ msgid ""
 "<emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "pretype"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>4</code>): STREET PREFIX TYPE"
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "name"
-msgstr "Name"
-
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>5</code>): STREET NAME"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "suftype"
 msgstr ""
 
 #. Tag: para
@@ -245,22 +210,12 @@ msgid ""
 "emphasis> in <code>75 State Street</code>."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "sufdir"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "is text (token number <code>7</code>): STREET POST-DIRECTIONAL A directional "
 "modifier that follows the street name.. Example <emphasis>WEST</emphasis> in "
 "<code>3715 TENTH AVENUE WEST</code>."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "ruralroute"
 msgstr ""
 
 #. Tag: para
@@ -270,29 +225,14 @@ msgid ""
 "emphasis> in <code>RR 7</code>."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "extra"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "is text: Extra information like Floor number."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "city"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>10</code>): Example Boston."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "state"
 msgstr ""
 
 #. Tag: para
@@ -301,19 +241,9 @@ msgid ""
 "is text (token number <code>11</code>): Example <code>MASSACHUSETTS</code>"
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "country"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>12</code>): Example <code>USA</code>"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "postcode"
 msgstr ""
 
 #. Tag: para
@@ -323,21 +253,11 @@ msgid ""
 "<code>02109</code>"
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "<term>box</term>"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "is text POSTAL BOX NUMBER (token number <code>14 and 15</code>): Example "
 "<code>02109</code>"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "unit"
 msgstr ""
 
 #. Tag: para
@@ -386,19 +306,9 @@ msgid ""
 "allowed to add more for your own uses."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "<term>id</term>"
-msgstr "<term>id</term>"
-
 #. Tag: para
 #, no-c-format
 msgid "Primary key of table"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "rule"
 msgstr ""
 
 #. Tag: para
@@ -454,11 +364,6 @@ msgstr ""
 msgid "Form-Based Input Tokens"
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "AMPERS"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -466,19 +371,9 @@ msgid ""
 "\"."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "DASH"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "(9). A punctuation character."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "DOUBLE"
 msgstr ""
 
 #. Tag: para
@@ -486,20 +381,10 @@ msgstr ""
 msgid "(21). A sequence of two letters. Often used as identifiers."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "FRACT"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "(25). Fractions are sometimes used in civic numbers or unit numbers."
 msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "MIXED"
-msgstr "MIXED"
 
 #. Tag: para
 #, no-c-format
@@ -508,19 +393,9 @@ msgid ""
 "identifiers."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "NUMBER"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "(0). A string of digits."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "<term>ORD</term>"
 msgstr ""
 
 #. Tag: para
@@ -531,11 +406,6 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "(18). A single letter."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "WORD"
 msgstr ""
 
 #. Tag: para
@@ -550,21 +420,11 @@ msgstr ""
 msgid "Function-based Input Tokens"
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "BOXH"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "(14). Words used to denote post office boxes. For example <emphasis>Box</"
 "emphasis> or <emphasis>PO Box</emphasis>."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "BUILDH"
 msgstr ""
 
 #. Tag: para
@@ -575,11 +435,6 @@ msgid ""
 "emphasis>."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "BUILDT"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -588,11 +443,6 @@ msgid ""
 "emphasis>."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "DIRECT"
-msgstr "DIRECT"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -600,19 +450,9 @@ msgid ""
 "emphasis>."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "MILE"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "(20). Words used to denote milepost addresses."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "ROAD"
 msgstr ""
 
 #. Tag: para
@@ -622,11 +462,6 @@ msgid ""
 "the <emphasis>Interstate</emphasis> in <emphasis>Interstate 5</emphasis>"
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "<term>RR</term>"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -634,21 +469,11 @@ msgid ""
 "emphasis>."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "TYPE"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "(2). Words and abbreviation used to denote street typess. For example: "
 "<emphasis>ST</emphasis> or <emphasis>AVE</emphasis>."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "UNITH"
 msgstr ""
 
 #. Tag: para
@@ -663,19 +488,9 @@ msgstr ""
 msgid "Postal Type Input Tokens"
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "QUINT"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "(28). A 5 digit number. Identifies a Zip Code"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "QUAD"
 msgstr ""
 
 #. Tag: para
@@ -683,21 +498,11 @@ msgstr ""
 msgid "(29). A 4 digit number. Identifies ZIP4."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "<term>PCH</term>"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "(27). A 3 character sequence of letter number letter. Identifies an FSA, the "
 "first 3 characters of a Canadian postal code."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "<term>PCT</term>"
 msgstr ""
 
 #. Tag: para
@@ -717,11 +522,6 @@ msgstr ""
 msgid ""
 "STOPWORDS combine with WORDS. In rules a string of multiple WORDs and "
 "STOPWORDs will be represented by a single WORD token."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "STOPWORD"
 msgstr ""
 
 #. Tag: para
@@ -779,19 +579,9 @@ msgid ""
 "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "CITY"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "(token number \"10\"). Example \"Albany\""
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "STATE"
 msgstr ""
 
 #. Tag: para
@@ -799,21 +589,11 @@ msgstr ""
 msgid "(token number \"11\"). Example \"NY\""
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "NATION"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "(token number \"12\"). This attribute is not used in most reference files. "
 "Example \"USA\""
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "POSTAL"
 msgstr ""
 
 #. Tag: para
@@ -843,16 +623,6 @@ msgid ""
 "<emphasis role=\"bold\">MICRO_C output tokens</emphasis> (excerpted from "
 "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
 "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "HOUSE"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "street"
 msgstr ""
 
 #. Tag: emphasis
@@ -901,11 +671,6 @@ msgid ""
 "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "BLDNG"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "(token number <code>0</code>): Unparsed building identifiers and types."
@@ -916,11 +681,6 @@ msgstr ""
 msgid ""
 "(token number <code>14</code>): The <emphasis role=\"bold\">BOX</emphasis> "
 "in <code>BOX 3B</code>"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "BOXT"
 msgstr ""
 
 #. Tag: para
@@ -944,21 +704,11 @@ msgid ""
 "in <code>APT 3B</code>"
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "UNITT"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "(token number <code>17</code>): The <emphasis role=\"bold\">3B</emphasis> in "
 "<code>APT 3B</code>"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "UNKNWN"
 msgstr ""
 
 #. Tag: para
@@ -988,19 +738,9 @@ msgstr ""
 msgid "A lex has at least the following columns in the table. You may add"
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "<term>seq</term>"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "integer: definition number?"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "word"
 msgstr ""
 
 #. Tag: para
@@ -1008,19 +748,9 @@ msgstr ""
 msgid "text: the input word"
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "stdword"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "text: the standardized replacement word"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "token"
 msgstr ""
 
 #. Tag: para
@@ -1102,11 +832,6 @@ msgstr ""
 msgid "Elements returned in the json document are"
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "input_tokens"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -1116,21 +841,11 @@ msgid ""
 "inputs can be categorized as more than one thing."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "rules"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "The set of rules matching the input and the corresponding score for each. "
 "The first rule (highest scoring) is what is used for standardization"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "<term>stdaddr</term>"
 msgstr ""
 
 #. Tag: para
@@ -24902,16 +24617,6 @@ msgstr "多点的凹壳"
 msgid "Concave Hull of a MultiPoint, allowing holes"
 msgstr "多点的凹面外壳，允许有孔"
 
-#. Tag: varname
-#, no-c-format
-msgid "polygon_hull"
-msgstr "polygon_hull"
-
-#. Tag: varname
-#, no-c-format
-msgid "points_hull"
-msgstr "points_hull"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -26709,11 +26414,6 @@ msgid ""
 msgstr ""
 "<para>用作 ST_AddBand 函数的输入的复合类型，定义新波段的属性和初始值。</para>"
 
-#. Tag: term
-#, no-c-format
-msgid "index integer"
-msgstr "index integer"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -26724,11 +26424,6 @@ msgstr ""
 "从 1 开始的值，指示新波段将添加到栅格波段中的位置。 如果为 NULL，则新波段将添"
 "加到栅格波段的末尾。"
 
-#. Tag: term
-#, no-c-format
-msgid "pixeltype text"
-msgstr "pixeltype text"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -26738,20 +26433,10 @@ msgstr ""
 "新波段的像素类型。 <xref linkend=\"RT_ST_BandPixelType\"/> 中描述的已定义像素"
 "类型之一。"
 
-#. Tag: term
-#, no-c-format
-msgid "initialvalue double precision"
-msgstr "初始值双精度"
-
 #. Tag: para
 #, no-c-format
 msgid "Initial value that all pixels of new band will be set to."
 msgstr "新波段的所有像素将设置为的初始值。"
-
-#. Tag: term
-#, no-c-format
-msgid "nodataval double precision"
-msgstr "nodataval 双精度"
 
 #. Tag: para
 #, no-c-format
@@ -26775,20 +26460,10 @@ msgid ""
 "index of that raster.</para>"
 msgstr "<para>需要表达栅格和该栅格的波段索引时使用的复合类型。</para>"
 
-#. Tag: term
-#, no-c-format
-msgid "rast raster"
-msgstr "rast raster"
-
 #. Tag: para
 #, no-c-format
 msgid "The raster in question/"
 msgstr "有问题的栅格/"
-
-#. Tag: term
-#, no-c-format
-msgid "nband integer"
-msgstr "nband integer"
 
 #. Tag: para
 #, no-c-format
@@ -26844,11 +26519,6 @@ msgstr "<para>用作定义重新分类行为的 ST_Reclass 函数的输入的复
 #, no-c-format
 msgid "The band number of band to reclassify."
 msgstr "要重新分类的波段的波段号。"
-
-#. Tag: term
-#, no-c-format
-msgid "reclassexpr text"
-msgstr "reclassexpr text"
 
 #. Tag: para
 #, no-c-format
@@ -26995,11 +26665,6 @@ msgstr ""
 #, no-c-format
 msgid "1-based value indicating the band of each input raster to be processed."
 msgstr "从 1 开始的值，指示要处理的每个输入栅格的波段。"
-
-#. Tag: term
-#, no-c-format
-msgid "uniontype text"
-msgstr "uniontype text"
 
 #. Tag: para
 #, no-c-format
@@ -27441,11 +27106,6 @@ msgstr "轮廓线的几何形状。"
 msgid "A unique identifier given to the contour line by GDAL."
 msgstr "GDAL 赋予轮廓线的唯一标识符。"
 
-#. Tag: term
-#, no-c-format
-msgid "value"
-msgstr "value"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -27489,11 +27149,6 @@ msgstr ""
 msgid "Input parameters are:"
 msgstr "输入参数为："
 
-#. Tag: term
-#, no-c-format
-msgid "input_points"
-msgstr "input_points"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -27501,11 +27156,6 @@ msgid ""
 "acceptable, all points in the input will be used."
 msgstr ""
 "驱动插值的点。 任何具有 Z 值的几何图形都是可接受的，将使用输入中的所有点。"
-
-#. Tag: term
-#, no-c-format
-msgid "algorithm_options"
-msgstr "algorithm_options"
 
 #. Tag: para
 #, no-c-format
@@ -27519,11 +27169,6 @@ msgstr ""
 "gdal_grid.html#interpolation-algorithms\"> gdal_grid </link>使用的格式。 例"
 "如，对于平滑度为 2 的反距离插值，您可以使用“invdist:smoothing=2.0”"
 
-#. Tag: term
-#, no-c-format
-msgid "template"
-msgstr "template"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -27533,11 +27178,6 @@ msgid ""
 msgstr ""
 "用于驱动输出栅格几何形状的栅格模板。 宽度、高度、像素大小、空间范围和像素类型"
 "将从该模板中读取。"
-
-#. Tag: term
-#, no-c-format
-msgid "template_band_num"
-msgstr "template_band_num"
 
 #. Tag: para
 #, no-c-format
@@ -30562,11 +30202,6 @@ msgid ""
 "count all pixels."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "width double precision[]"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -30581,22 +30216,12 @@ msgid ""
 "b, c, a, b, c]"
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "bins integer"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "Number of breakouts -- this is the number of records you'll get back from "
 "the function if specified. If not specified then the number of breakouts is "
 "autocomputed."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "right boolean"
 msgstr ""
 
 #. Tag: para
@@ -31614,11 +31239,6 @@ msgid ""
 "one user-specified callback function."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "rast,rast1,rast2, rastbandargset"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "Rasters on which the map algebra process is evaluated."
@@ -31631,22 +31251,12 @@ msgid ""
 "on many rasters and/or many bands. See example Variant 1."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "nband, nband1, nband2"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "Band numbers of the raster to be evaluated. nband can be an integer or "
 "integer[] denoting the bands. nband1 is band on rast1 and nband2 is band on "
 "rast2 for hte 2 raster/2band case."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "callbackfunc"
 msgstr ""
 
 #. Tag: para
@@ -31691,11 +31301,6 @@ msgid ""
 "a <type>regprocedure</type>."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "mask"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -31706,22 +31311,12 @@ msgid ""
 "the pixel value of that value in the neighborhood position."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "weighted"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "boolean (true/false) to denote if a mask value should be weighted "
 "(multiplied by original value) or not (only applies to proto that takes a "
 "mask)."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "pixeltype"
 msgstr ""
 
 #. Tag: para
@@ -31742,11 +31337,6 @@ msgid ""
 "linkend=\"RT_ST_BandPixelType\"/> or left out or set to NULL."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "extenttype"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -31754,21 +31344,11 @@ msgid ""
 "raster variants), SECOND, LAST, CUSTOM."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "customextent"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "If <varname>extentype</varname> is CUSTOM, a raster must be provided for "
 "<varname>customextent</varname>. See example 4 of Variant 1."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "distancex"
 msgstr ""
 
 #. Tag: para
@@ -31779,22 +31359,12 @@ msgid ""
 "the reference cell is considered (neighborhood of 0)."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "distancey"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "The distance in pixels from reference cell in y direction. Height of "
 "resulting matrix would be <code>2*distancey + 1</code> .If not specified "
 "only the reference cell is considered (neighborhood of 0)."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "userargs"
 msgstr ""
 
 #. Tag: para
@@ -32010,11 +31580,6 @@ msgid ""
 "<varname>extenttype</varname> parameter."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "expression"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -32064,11 +31629,6 @@ msgid ""
 "one of the second raster."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "nodata1expr"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -32077,22 +31637,12 @@ msgid ""
 "are nodata values and spatially corresponding rast2 pixels have values."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "nodata2expr"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "An algebraic expression involving only <varname>rast1</varname> or a "
 "constant that defines what to return when pixels of <varname>rast2</varname> "
 "are nodata values and spatially corresponding rast1 pixels have values."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "nodatanodataval"
 msgstr ""
 
 #. Tag: para
@@ -32537,19 +32087,9 @@ msgid ""
 "replacing pixel value of currently inspected pixel with the function result."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "rast"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "Raster on which the user function is evaluated."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "band"
 msgstr ""
 
 #. Tag: para
@@ -32567,29 +32107,14 @@ msgid ""
 "the pixeltype."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "ngbwidth"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "The width of the neighborhood, in cells."
 msgstr ""
 
-#. Tag: term
-#, no-c-format
-msgid "ngbheight"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "The height of the neighborhood, in cells."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "onerastngbuserfunc"
 msgstr ""
 
 #. Tag: para
@@ -32598,11 +32123,6 @@ msgid ""
 "PLPGSQL/psql user function to apply to neighborhood pixels of a single band "
 "of a raster. The first element is a 2-dimensional array of numbers "
 "representing the rectangular pixel neighborhood"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "nodatamode"
 msgstr ""
 
 #. Tag: para
@@ -32635,11 +32155,6 @@ msgid ""
 "the reference pixel (the one in the center of the neighborhood). Note that "
 "if this value is NODATA, the behavior is the same as 'NULL' (for the "
 "affected neighborhood)"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "args"
 msgstr ""
 
 #. Tag: para
@@ -35049,26 +34564,6 @@ msgstr "用数学术语来说：<emphasis>ST_Intersects(A, B) ⇔ A ⋂ B ≠ �
 msgid ""
 "Geometries intersect if their DE-9IM Intersection Matrix matches one of:"
 msgstr "如果几何图形的 DE-9IM 交集矩阵与以下之一匹配，则几何图形相交："
-
-#. Tag: code
-#, no-c-format
-msgid "T********"
-msgstr "T********"
-
-#. Tag: code
-#, no-c-format
-msgid "*T*******"
-msgstr "*T*******"
-
-#. Tag: code
-#, no-c-format
-msgid "***T*****"
-msgstr "***T*****"
-
-#. Tag: code
-#, no-c-format
-msgid "****T****"
-msgstr "****T****"
 
 #. Tag: para
 #, no-c-format
@@ -40701,11 +40196,6 @@ msgstr "<varname>spatial_ref_sys</varname>表定义为："
 msgid "The columns are:"
 msgstr "这些列是："
 
-#. Tag: term
-#, no-c-format
-msgid "srid"
-msgstr "srid"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -40715,11 +40205,6 @@ msgid ""
 msgstr ""
 "唯一标识数据库内<link xlink:href=\"http://en.wikipedia.org/wiki/SRID\">空间参"
 "考系统</link>(SRS)的整数代码。"
-
-#. Tag: term
-#, no-c-format
-msgid "auth_name"
-msgstr "auth_name"
 
 #. Tag: para
 #, no-c-format
@@ -40731,11 +40216,6 @@ msgstr ""
 "该参考系统引用的标准或标准机构的名称。例如，“EPSG”是有效的"
 "<varname>auth_name</varname>。"
 
-#. Tag: term
-#, no-c-format
-msgid "auth_srid"
-msgstr "auth_srid"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -40744,11 +40224,6 @@ msgid ""
 msgstr ""
 "由<varname>auth_name</varname>中引用的权威机构定义的空间参考系统的ID。对于"
 "EPSG，这是EPSG代码。"
-
-#. Tag: term
-#, no-c-format
-msgid "srtext"
-msgstr "srtext"
 
 #. Tag: para
 #, no-c-format
@@ -40766,11 +40241,6 @@ msgid ""
 msgstr ""
 "有关SRS WKT的详细信息，请参阅 OGC 标准<link xlink:href=\"http://docs."
 "opengeospatial.org/is/12-063r5/12-063r5.html\">参考系的已知文本表示</link>。"
-
-#. Tag: term
-#, no-c-format
-msgid "proj4text"
-msgstr "proj4text"
 
 #. Tag: para
 #, no-c-format
@@ -41050,11 +40520,6 @@ msgstr ""
 "的系统目录表中读取的视图。这可确保空间元数据信息始终与当前定义的表或视图一"
 "致。视图结构为:"
 
-#. Tag: term
-#, no-c-format
-msgid "f_table_catalog, f_table_schema, f_table_name"
-msgstr "f_table_catalog, f_table_schema, f_table_name"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -41067,20 +40532,10 @@ msgstr ""
 "空。对于“schema”，使用 PostgreSQL 模式名称（默认为<varname>public</"
 "varname>）。"
 
-#. Tag: term
-#, no-c-format
-msgid "f_geometry_column"
-msgstr "f_geometry_column"
-
 #. Tag: para
 #, no-c-format
 msgid "The name of the geometry column in the feature table."
 msgstr "要素表中几何列的名称。"
-
-#. Tag: term
-#, no-c-format
-msgid "coord_dimension"
-msgstr "coord_dimension"
 
 #. Tag: para
 #, no-c-format
@@ -41096,11 +40551,6 @@ msgid ""
 msgstr ""
 "用于此表中的坐标几何的空间参考系的 ID。它是对引用<varname>spatial_ref_sys</"
 "varname>表的外键引用（请参见<xref linkend=\"spatial_ref_sys_table\"/>）。"
-
-#. Tag: term
-#, no-c-format
-msgid "type"
-msgstr "type"
 
 #. Tag: para
 #, no-c-format
@@ -41269,22 +40719,12 @@ msgstr ""
 msgid "(c|a|d|p) These are mutually exclusive options:"
 msgstr "（c|a|d|p）这些是相互排斥的选项："
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-c</term>"
-msgstr "<term>-c</term>"
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "Creates a new table and populates it from the Shapefile. <emphasis>This is "
 "the default mode.</emphasis>"
 msgstr "创建一个新表并从Shapefile文件填充它。<emphasis>这是默认模式</emphasis>"
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-a</term>"
-msgstr "<term>-a</term>"
 
 #. Tag: para
 #, no-c-format
@@ -41296,22 +40736,12 @@ msgstr ""
 "将数据从Shapefile文件添加到数据库表中。如果使用此选项加载多个文件，则这些文件"
 "必须具有相同的属性和相同的数据类型。"
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-d</term>"
-msgstr "<term>-d</term>"
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "Drops the database table before creating a new table with the data in the "
 "Shapefile."
 msgstr "在创建包含 shapefile 中的数据的新表之前，请先删除数据库表。"
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-p</term>"
-msgstr "<term>-p</term>"
 
 #. Tag: para
 #, no-c-format
@@ -41323,20 +40753,10 @@ msgstr ""
 "它只生成用于表创建的SQL代码，不添加任何实际数据。 如果要将表创建与数据加载完"
 "全分开，请使用此模式。"
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-?</term>"
-msgstr "<term>-?</term>"
-
 #. Tag: para
 #, no-c-format
 msgid "Display help screen."
 msgstr "显示帮助屏幕。"
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-D</term>"
-msgstr "<term>-D</term>"
 
 #. Tag: para
 #, no-c-format
@@ -41348,11 +40768,6 @@ msgstr ""
 "对输出数据使用 PostgreSQL 转储格式。此模式与 -a、-c 和 -d 结合使用。 它的加载"
 "速度比默认的“插入”SQL格式快得多。通常将其用于大型数据集。"
 
-#. Tag: term
-#, no-c-format
-msgid "-s [&lt;FROM_SRID&gt;:]&lt;SRID&gt;"
-msgstr "-s [&lt;FROM_SRID&gt;:]&lt;SRID&gt;"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -41363,11 +40778,6 @@ msgstr ""
 "使用指定的 SRID 创建并填充几何表。（可选）指定输入shapefile文件使用给定的 "
 "FROM_SRID，在这种情况下，几何图形将被重新投影到目标 SRID。"
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-k</term>"
-msgstr "<term>-k</term>"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -41376,11 +40786,6 @@ msgid ""
 msgstr ""
 "保留标识符的大小写（列、架构和属性）。请注意，Shapefile文件中的属性都是大写"
 "的。"
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-i</term>"
-msgstr "<term>-i</term>"
 
 #. Tag: para
 #, no-c-format
@@ -41391,20 +40796,10 @@ msgstr ""
 "将所有整数强制为标准 32 位整数，不要创建 64 位 bigint，即使DBF标头签名似乎可"
 "以保证这一点。"
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-I</term>"
-msgstr "<term>-I</term>"
-
 #. Tag: para
 #, no-c-format
 msgid "Create a GiST index on the geometry column."
 msgstr "在几何列上生成 GiST 索引。"
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-m</term>"
-msgstr "<term>-m</term>"
 
 #. Tag: para
 #, no-c-format
@@ -41418,11 +40813,6 @@ msgstr ""
 "个字符的 DBF 列名的映射。文件的内容是由空格分隔的两个名称的一行或多行，并且没"
 "有尾随或前导空格。 例如："
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-S</term>"
-msgstr "<term>-S</term>"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -41432,11 +40822,6 @@ msgid ""
 msgstr ""
 "生成简单的几何图形而不是多个几何图形。仅当所有几何图形实际上都是单一的时才会"
 "成功（即具有单个壳的 MULTIPOLYGON，或具有单个顶点的 MULTIPOINT）。"
-
-#. Tag: term
-#, no-c-format
-msgid "-t &lt;dimensionality&gt;"
-msgstr "-t &lt;维度&gt;"
 
 #. Tag: para
 #, no-c-format
@@ -41456,11 +40841,6 @@ msgstr ""
 "如果输入的维度少于指定的维度，则输出将用零填充这些维度。 如果输入具有指定的更"
 "多维度，则不需要的维度将被删除。"
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-w</term>"
-msgstr "<term>-w</term>"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -41469,11 +40849,6 @@ msgid ""
 msgstr ""
 "使输出格式为 WKT 而不是 WKB。 重要的是要注意，精度可能会降低，并且可能会出现"
 "坐标波动。"
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-e</term>"
-msgstr "<term>-e</term>"
 
 #. Tag: para
 #, no-c-format
@@ -41486,11 +40861,6 @@ msgstr ""
 "单独执行每个语句，而不使用事务。当存在一些产生错误的不良几何形状时，这允许加"
 "载大多数好的数据。请注意，这不能与 -D 标志一起使用，因为“转储”格式始终使用事"
 "务。"
-
-#. Tag: term
-#, no-c-format
-msgid "-W &lt;encoding&gt;"
-msgstr "-W &lt;编码&gt;"
 
 #. Tag: para
 #, no-c-format
@@ -41505,20 +40875,10 @@ msgstr ""
 "为 UTF8。生成的 SQL 输出将包含<code>SET CLIENT_ENCODING to UTF8</code>命令，"
 "以便后端能够从 UTF8 重新转换为数据库配置为内部使用的任何编码。"
 
-#. Tag: term
-#, no-c-format
-msgid "-N &lt;policy&gt;"
-msgstr "-N &lt;策略&gt;"
-
 #. Tag: para
 #, no-c-format
 msgid "NULL geometries handling policy (insert*,skip,abort)"
 msgstr "选择 NULL几何操作策略（插入*、跳过、中止）"
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-n</term>"
-msgstr "<term>-n</term>"
 
 #. Tag: para
 #, no-c-format
@@ -41532,11 +40892,6 @@ msgstr ""
 "式 并仅加载 DBF。因此，仅当您设置了完整的 shapefile 并且只需要属性数据而不需"
 "要几何图形时，才需要设置此标志。"
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-G</term>"
-msgstr "<term>-G</term>"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -41545,11 +40900,6 @@ msgid ""
 msgstr ""
 "地理类型不使用几何类型，而是使用 WGS84 经度和纬度 （SRID=4326）（需要经度纬度"
 "数据）"
-
-#. Tag: term
-#, no-c-format
-msgid "-T &lt;tablespace&gt;"
-msgstr "-T &lt;表空间&gt;"
 
 #. Tag: para
 #, no-c-format
@@ -41561,11 +40911,6 @@ msgstr ""
 "指定新表的表空间。索引仍将使用 默认表空间，除非还使用 -X 参数。The "
 "PostgreSQL 文档对何时使用自定义表空间有很好的描述。"
 
-#. Tag: term
-#, no-c-format
-msgid "-X &lt;tablespace&gt;"
-msgstr "-X &lt;表空间&gt;"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -41574,11 +40919,6 @@ msgid ""
 msgstr ""
 "指定新表上的索引要使用的表空间。 它适用于主键索引，如果 -I 一起使用，则也适用"
 "于 GiST 空间索引。"
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-Z</term>"
-msgstr "<term>-Z</term>"
 
 #. Tag: para
 #, no-c-format
@@ -41643,20 +40983,10 @@ msgstr ""
 "有时需要某种限制来减少返回的记录数量。对于基于属性的限制，请使用与非空间表相"
 "同的 SQL 语法。在空间限制的情况下，以下函数很有用："
 
-#. Tag: term
-#, no-c-format
-msgid "ST_Intersects"
-msgstr "ST_Intersects"
-
 #. Tag: para
 #, no-c-format
 msgid "This function tells whether two geometries share any space."
 msgstr "此函数指示两个几何图形是否共享任何空间。"
-
-#. Tag: term
-#, no-c-format
-msgid "<term>=</term>"
-msgstr "<term>=</term>"
 
 #. Tag: para
 #, no-c-format
@@ -41744,60 +41074,30 @@ msgstr ""
 msgid "The commandline options are:"
 msgstr "命令行选项包括："
 
-#. Tag: term
-#, no-c-format
-msgid "-f &lt;filename&gt;"
-msgstr "-f &lt;文件名&gt;"
-
 #. Tag: para
 #, no-c-format
 msgid "Write the output to a particular filename."
 msgstr "将输出写入特定文件名。"
-
-#. Tag: term
-#, no-c-format
-msgid "-h &lt;host&gt;"
-msgstr "-h &lt;主机&gt;"
 
 #. Tag: para
 #, no-c-format
 msgid "The database host to connect to."
 msgstr "要连接到的数据库的主机名。"
 
-#. Tag: term
-#, no-c-format
-msgid "-p &lt;port&gt;"
-msgstr "-p &lt;端口&gt;"
-
 #. Tag: para
 #, no-c-format
 msgid "The port to connect to on the database host."
 msgstr "要连接到的数据库的端口。"
-
-#. Tag: term
-#, no-c-format
-msgid "-P &lt;password&gt;"
-msgstr "-P &lt;密码&gt;"
 
 #. Tag: para
 #, no-c-format
 msgid "The password to use when connecting to the database."
 msgstr "用于连接到数据库的密码。"
 
-#. Tag: term
-#, no-c-format
-msgid "-u &lt;user&gt;"
-msgstr "-u &lt;用户名&gt;"
-
 #. Tag: para
 #, no-c-format
 msgid "The username to use when connecting to the database."
 msgstr "要连接到数据库的用户名。"
-
-#. Tag: term
-#, no-c-format
-msgid "-g &lt;geometry column&gt;"
-msgstr "-g &lt;几何列&gt;"
 
 #. Tag: para
 #, no-c-format
@@ -41805,11 +41105,6 @@ msgid ""
 "In the case of tables with multiple geometry columns, the geometry column to "
 "use when writing the shape file."
 msgstr "对于具有多个几何列的表，写入形状文件时要使用的几何列。"
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-b</term>"
-msgstr "<term>-b</term>"
 
 #. Tag: para
 #, no-c-format
@@ -41820,22 +41115,12 @@ msgstr ""
 "使用二进制游标。 这将使操作更快，但如果表中的任何非几何属性缺少文本转换，则该"
 "操作将不起作用。"
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-r</term>"
-msgstr "<term>-r</term>"
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "Raw mode. Do not drop the <varname>gid</varname> field, or escape column "
 "names."
 msgstr "原始模式。不要删除<varname>gid</varname>字段或转义列名称。"
-
-#. Tag: term
-#, no-c-format
-msgid "-m filename"
-msgstr "-m 文件名"
 
 #. Tag: para
 #, no-c-format
@@ -43416,11 +42701,6 @@ msgid ""
 "catalogs"
 msgstr "栅格处理：应用约束以在栅格目录中正确注册"
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-C</term>"
-msgstr "<term>-C</term>"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -43429,11 +42709,6 @@ msgid ""
 msgstr ""
 "应用栅格约束——srid、像素大小等，以确保栅格在<varname>raster_columns</"
 "varname> 视图中正确配准。"
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-x</term>"
-msgstr "<term>-x</term>"
 
 #. Tag: para
 #, no-c-format
@@ -43456,11 +42731,6 @@ msgid ""
 "dataset"
 msgstr "栅格处理：用于操作输入栅格数据集的可选参数"
 
-#. Tag: term
-#, no-c-format
-msgid "-s &lt;SRID&gt;"
-msgstr "-s &lt;SRID&gt;"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -43469,11 +42739,6 @@ msgid ""
 msgstr ""
 "使用指定的 SRID 分配输出栅格。 如果未提供或为零，则将检查栅格的元数据以确定适"
 "当的 SRID。"
-
-#. Tag: term
-#, no-c-format
-msgid "-b BAND"
-msgstr "-b BAND"
 
 #. Tag: para
 #, no-c-format
@@ -43484,11 +42749,6 @@ msgid ""
 msgstr ""
 "从栅格中提取的波段索引（从 1 开始）。 对于多个波段索引，用逗号（,）分隔。 如"
 "果未指定，则将提取栅格的所有波段。"
-
-#. Tag: term
-#, no-c-format
-msgid "-t TILE_SIZE"
-msgstr "-t TILE_SIZE"
 
 #. Tag: para
 #, no-c-format
@@ -43502,22 +42762,12 @@ msgstr ""
 "表示为 WIDTHxHEIGHT 或设置为值“auto”，以允许加载程序使用第一个栅格计算适当的"
 "切片大小并将其应用于所有栅格。"
 
-#. Tag: term
-#, no-c-format
-msgid "<term>-P</term>"
-msgstr "<term>-P</term>"
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "Pad right-most and bottom-most tiles to guarantee that all tiles have the "
 "same width and height."
 msgstr "填充最右侧和最底部的图块，以保证所有图块具有相同的宽度和高度。"
-
-#. Tag: term
-#, no-c-format
-msgid "-R, --register"
-msgstr "-R, --register"
 
 #. Tag: para
 #, no-c-format
@@ -43530,11 +42780,6 @@ msgid ""
 "Only the metadata of the raster and path location to the raster is stored in "
 "the database (not the pixels)."
 msgstr "仅栅格的元数据和栅格的路径位置存储在数据库中（而不是像素）。"
-
-#. Tag: term
-#, no-c-format
-msgid "-l OVERVIEW_FACTOR"
-msgstr "-l OVERVIEW_FACTOR"
 
 #. Tag: para
 #, no-c-format
@@ -43553,11 +42798,6 @@ msgstr ""
 "换为基表名称。 创建的概述存储在数据库中，不受-R影响。 请注意，生成的 sql 文件"
 "将包含主表和概览表。"
 
-#. Tag: term
-#, no-c-format
-msgid "-N NODATA"
-msgstr "-N NODATA"
-
 #. Tag: para
 #, no-c-format
 msgid "NODATA value to use on bands without a NODATA value."
@@ -43568,40 +42808,20 @@ msgstr "NODATA 值用于没有 NODATA 值的带。"
 msgid "Optional parameters used to manipulate database objects"
 msgstr "用于操作数据库对象的可选参数"
 
-#. Tag: term
-#, no-c-format
-msgid "-f COLUMN"
-msgstr "-f COLUMN"
-
 #. Tag: para
 #, no-c-format
 msgid "Specify name of destination raster column, default is 'rast'"
 msgstr "指定目标栅格列的名称，默认为“rast”"
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-F</term>"
-msgstr "<term>-F</term>"
 
 #. Tag: para
 #, no-c-format
 msgid "Add a column with the name of the file"
 msgstr "添加包含文件名的列"
 
-#. Tag: term
-#, no-c-format
-msgid "-n COLUMN"
-msgstr "-n COLUMN"
-
 #. Tag: para
 #, no-c-format
 msgid "Specify the name of the filename column. Implies -F."
 msgstr "指定文件名列的名称。 意味着-F。"
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-q</term>"
-msgstr "<term>-q</term>"
 
 #. Tag: para
 #, no-c-format
@@ -43612,11 +42832,6 @@ msgstr "将 PostgreSQL 标识符括在引号中。"
 #, no-c-format
 msgid "Create a GiST index on the raster column."
 msgstr "在栅格列上创建 GiST 索引。"
-
-#. Tag: term
-#, no-c-format
-msgid "<term>-M</term>"
-msgstr "<term>-M</term>"
 
 #. Tag: para
 #, no-c-format
@@ -43633,11 +42848,6 @@ msgstr ""
 "保留空的瓦片并跳过每个光栅波段的NODATA值检查。请注意，这样可以节省检查的时"
 "间，但可能会导致数据库中出现更多的垃圾行，并且这些垃圾行不会标记为空的瓦片。"
 
-#. Tag: term
-#, no-c-format
-msgid "-T tablespace"
-msgstr "-T tablespace"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -43648,22 +42858,12 @@ msgstr ""
 "指定新表的表空间。 请注意，索引（包括主键）仍将使用默认表空间，除非还使用了 -"
 "X 标志。"
 
-#. Tag: term
-#, no-c-format
-msgid "-X tablespace"
-msgstr "-X tablespace"
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "Specify the tablespace for the table's new index. This applies to the "
 "primary key and the spatial index if the -I flag is used."
 msgstr "指定表的新索引的表空间。 如果使用 -I 标志，这适用于主键和空间索引。"
-
-#. Tag: term
-#, no-c-format
-msgid "-Y max_rows_per_copy=50"
-msgstr "-Y max_rows_per_copy=50"
 
 #. Tag: para
 #, no-c-format
@@ -43679,11 +42879,6 @@ msgstr ""
 msgid "Execute each statement individually, do not use a transaction."
 msgstr "单独执行每条语句，不使用事务。"
 
-#. Tag: term
-#, no-c-format
-msgid "-E ENDIAN"
-msgstr "-E ENDIAN"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -43692,11 +42887,6 @@ msgid ""
 msgstr ""
 "控制生成的光栅二进制输出的字节顺序； 为 XDR 指定 0，为 NDR 指定 1（默认）； "
 "现在仅支持 NDR 输出"
-
-#. Tag: term
-#, no-c-format
-msgid "-V version"
-msgstr "-V version"
 
 #. Tag: para
 #, no-c-format
@@ -44616,3 +43806,339 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid "name"
+#~ msgstr "Name"
+
+#, no-c-format
+#~ msgid "<term>id</term>"
+#~ msgstr "<term>id</term>"
+
+#, no-c-format
+#~ msgid "MIXED"
+#~ msgstr "MIXED"
+
+#, no-c-format
+#~ msgid "DIRECT"
+#~ msgstr "DIRECT"
+
+#, no-c-format
+#~ msgid "polygon_hull"
+#~ msgstr "polygon_hull"
+
+#, no-c-format
+#~ msgid "points_hull"
+#~ msgstr "points_hull"
+
+#, no-c-format
+#~ msgid "index integer"
+#~ msgstr "index integer"
+
+#, no-c-format
+#~ msgid "pixeltype text"
+#~ msgstr "pixeltype text"
+
+#, no-c-format
+#~ msgid "initialvalue double precision"
+#~ msgstr "初始值双精度"
+
+#, no-c-format
+#~ msgid "nodataval double precision"
+#~ msgstr "nodataval 双精度"
+
+#, no-c-format
+#~ msgid "rast raster"
+#~ msgstr "rast raster"
+
+#, no-c-format
+#~ msgid "nband integer"
+#~ msgstr "nband integer"
+
+#, no-c-format
+#~ msgid "reclassexpr text"
+#~ msgstr "reclassexpr text"
+
+#, no-c-format
+#~ msgid "uniontype text"
+#~ msgstr "uniontype text"
+
+#, no-c-format
+#~ msgid "value"
+#~ msgstr "value"
+
+#, no-c-format
+#~ msgid "input_points"
+#~ msgstr "input_points"
+
+#, no-c-format
+#~ msgid "algorithm_options"
+#~ msgstr "algorithm_options"
+
+#, no-c-format
+#~ msgid "template"
+#~ msgstr "template"
+
+#, no-c-format
+#~ msgid "template_band_num"
+#~ msgstr "template_band_num"
+
+#, no-c-format
+#~ msgid "T********"
+#~ msgstr "T********"
+
+#, no-c-format
+#~ msgid "*T*******"
+#~ msgstr "*T*******"
+
+#, no-c-format
+#~ msgid "***T*****"
+#~ msgstr "***T*****"
+
+#, no-c-format
+#~ msgid "****T****"
+#~ msgstr "****T****"
+
+#, no-c-format
+#~ msgid "srid"
+#~ msgstr "srid"
+
+#, no-c-format
+#~ msgid "auth_name"
+#~ msgstr "auth_name"
+
+#, no-c-format
+#~ msgid "auth_srid"
+#~ msgstr "auth_srid"
+
+#, no-c-format
+#~ msgid "srtext"
+#~ msgstr "srtext"
+
+#, no-c-format
+#~ msgid "proj4text"
+#~ msgstr "proj4text"
+
+#, no-c-format
+#~ msgid "f_table_catalog, f_table_schema, f_table_name"
+#~ msgstr "f_table_catalog, f_table_schema, f_table_name"
+
+#, no-c-format
+#~ msgid "f_geometry_column"
+#~ msgstr "f_geometry_column"
+
+#, no-c-format
+#~ msgid "coord_dimension"
+#~ msgstr "coord_dimension"
+
+#, no-c-format
+#~ msgid "type"
+#~ msgstr "type"
+
+#, no-c-format
+#~ msgid "<term>-c</term>"
+#~ msgstr "<term>-c</term>"
+
+#, no-c-format
+#~ msgid "<term>-a</term>"
+#~ msgstr "<term>-a</term>"
+
+#, no-c-format
+#~ msgid "<term>-d</term>"
+#~ msgstr "<term>-d</term>"
+
+#, no-c-format
+#~ msgid "<term>-p</term>"
+#~ msgstr "<term>-p</term>"
+
+#, no-c-format
+#~ msgid "<term>-?</term>"
+#~ msgstr "<term>-?</term>"
+
+#, no-c-format
+#~ msgid "<term>-D</term>"
+#~ msgstr "<term>-D</term>"
+
+#, no-c-format
+#~ msgid "-s [&lt;FROM_SRID&gt;:]&lt;SRID&gt;"
+#~ msgstr "-s [&lt;FROM_SRID&gt;:]&lt;SRID&gt;"
+
+#, no-c-format
+#~ msgid "<term>-k</term>"
+#~ msgstr "<term>-k</term>"
+
+#, no-c-format
+#~ msgid "<term>-i</term>"
+#~ msgstr "<term>-i</term>"
+
+#, no-c-format
+#~ msgid "<term>-I</term>"
+#~ msgstr "<term>-I</term>"
+
+#, no-c-format
+#~ msgid "<term>-m</term>"
+#~ msgstr "<term>-m</term>"
+
+#, no-c-format
+#~ msgid "<term>-S</term>"
+#~ msgstr "<term>-S</term>"
+
+#, no-c-format
+#~ msgid "-t &lt;dimensionality&gt;"
+#~ msgstr "-t &lt;维度&gt;"
+
+#, no-c-format
+#~ msgid "<term>-w</term>"
+#~ msgstr "<term>-w</term>"
+
+#, no-c-format
+#~ msgid "<term>-e</term>"
+#~ msgstr "<term>-e</term>"
+
+#, no-c-format
+#~ msgid "-W &lt;encoding&gt;"
+#~ msgstr "-W &lt;编码&gt;"
+
+#, no-c-format
+#~ msgid "-N &lt;policy&gt;"
+#~ msgstr "-N &lt;策略&gt;"
+
+#, no-c-format
+#~ msgid "<term>-n</term>"
+#~ msgstr "<term>-n</term>"
+
+#, no-c-format
+#~ msgid "<term>-G</term>"
+#~ msgstr "<term>-G</term>"
+
+#, no-c-format
+#~ msgid "-T &lt;tablespace&gt;"
+#~ msgstr "-T &lt;表空间&gt;"
+
+#, no-c-format
+#~ msgid "-X &lt;tablespace&gt;"
+#~ msgstr "-X &lt;表空间&gt;"
+
+#, no-c-format
+#~ msgid "<term>-Z</term>"
+#~ msgstr "<term>-Z</term>"
+
+#, no-c-format
+#~ msgid "ST_Intersects"
+#~ msgstr "ST_Intersects"
+
+#, no-c-format
+#~ msgid "<term>=</term>"
+#~ msgstr "<term>=</term>"
+
+#, no-c-format
+#~ msgid "-f &lt;filename&gt;"
+#~ msgstr "-f &lt;文件名&gt;"
+
+#, no-c-format
+#~ msgid "-h &lt;host&gt;"
+#~ msgstr "-h &lt;主机&gt;"
+
+#, no-c-format
+#~ msgid "-p &lt;port&gt;"
+#~ msgstr "-p &lt;端口&gt;"
+
+#, no-c-format
+#~ msgid "-P &lt;password&gt;"
+#~ msgstr "-P &lt;密码&gt;"
+
+#, no-c-format
+#~ msgid "-u &lt;user&gt;"
+#~ msgstr "-u &lt;用户名&gt;"
+
+#, no-c-format
+#~ msgid "-g &lt;geometry column&gt;"
+#~ msgstr "-g &lt;几何列&gt;"
+
+#, no-c-format
+#~ msgid "<term>-b</term>"
+#~ msgstr "<term>-b</term>"
+
+#, no-c-format
+#~ msgid "<term>-r</term>"
+#~ msgstr "<term>-r</term>"
+
+#, no-c-format
+#~ msgid "-m filename"
+#~ msgstr "-m 文件名"
+
+#, no-c-format
+#~ msgid "<term>-C</term>"
+#~ msgstr "<term>-C</term>"
+
+#, no-c-format
+#~ msgid "<term>-x</term>"
+#~ msgstr "<term>-x</term>"
+
+#, no-c-format
+#~ msgid "-s &lt;SRID&gt;"
+#~ msgstr "-s &lt;SRID&gt;"
+
+#, no-c-format
+#~ msgid "-b BAND"
+#~ msgstr "-b BAND"
+
+#, no-c-format
+#~ msgid "-t TILE_SIZE"
+#~ msgstr "-t TILE_SIZE"
+
+#, no-c-format
+#~ msgid "<term>-P</term>"
+#~ msgstr "<term>-P</term>"
+
+#, no-c-format
+#~ msgid "-R, --register"
+#~ msgstr "-R, --register"
+
+#, no-c-format
+#~ msgid "-l OVERVIEW_FACTOR"
+#~ msgstr "-l OVERVIEW_FACTOR"
+
+#, no-c-format
+#~ msgid "-N NODATA"
+#~ msgstr "-N NODATA"
+
+#, no-c-format
+#~ msgid "-f COLUMN"
+#~ msgstr "-f COLUMN"
+
+#, no-c-format
+#~ msgid "<term>-F</term>"
+#~ msgstr "<term>-F</term>"
+
+#, no-c-format
+#~ msgid "-n COLUMN"
+#~ msgstr "-n COLUMN"
+
+#, no-c-format
+#~ msgid "<term>-q</term>"
+#~ msgstr "<term>-q</term>"
+
+#, no-c-format
+#~ msgid "<term>-M</term>"
+#~ msgstr "<term>-M</term>"
+
+#, no-c-format
+#~ msgid "-T tablespace"
+#~ msgstr "-T tablespace"
+
+#, no-c-format
+#~ msgid "-X tablespace"
+#~ msgstr "-X tablespace"
+
+#, no-c-format
+#~ msgid "-Y max_rows_per_copy=50"
+#~ msgstr "-Y max_rows_per_copy=50"
+
+#, no-c-format
+#~ msgid "-E ENDIAN"
+#~ msgstr "-E ENDIAN"
+
+#, no-c-format
+#~ msgid "-V version"
+#~ msgstr "-V version"
