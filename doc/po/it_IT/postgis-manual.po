@@ -6,10 +6,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-18 22:57+0000\n"
-"PO-Revision-Date: 2023-09-17 02:23+0000\n"
+"PO-Revision-Date: 2023-09-19 01:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
-"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/it/>\n"
+"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/it/>\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -239,16 +239,18 @@ msgid ""
 "is text (token number <code>3</code>): STREET NAME PRE-MODIFIER Example "
 "<emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>."
 msgstr ""
+"è un testo (numero di token <code>3</code>): NOME STRADA PRE-MODIFICATORE "
+"Esempio <emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>."
 
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>4</code>): STREET PREFIX TYPE"
-msgstr ""
+msgstr "è un testo (numero di token <code>4</code>): TIPO DI PREFISSO STRADALE"
 
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>5</code>): STREET NAME"
-msgstr ""
+msgstr "è un testo (numero di token <code>5</code>): NOME DELLA STRADA"
 
 #. Tag: para
 #, no-c-format
@@ -257,6 +259,9 @@ msgid ""
 "street type following the root street name. Example <emphasis>STREET</"
 "emphasis> in <code>75 State Street</code>."
 msgstr ""
+"è un testo (numero di token <code>6</code>): TIPO DI STRADA, ad esempio St, "
+"Ave, Cir. Un tipo di strada che segue il nome della via principale. Esempio "
+"<emphasis>STREET</emphasis> in <code>75 State Street</code>."
 
 #. Tag: para
 #, no-c-format
@@ -265,6 +270,9 @@ msgid ""
 "modifier that follows the street name.. Example <emphasis>WEST</emphasis> in "
 "<code>3715 TENTH AVENUE WEST</code>."
 msgstr ""
+"è un testo (numero di token <code>7</code>): STREET POST-DIRECTIONAL "
+"Modificatore direzionale che segue il nome della strada. Esempio "
+"<emphasis>WEST</emphasis> in <code>3715 TENTH AVENUE WEST</code>."
 
 #. Tag: para
 #, no-c-format
@@ -272,27 +280,31 @@ msgid ""
 "is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>7</"
 "emphasis> in <code>RR 7</code>."
 msgstr ""
+"è un testo (numero di token <code>8</code>): PERCORSO RURALE . Esempio "
+"<emphasis>7</emphasis> in <code>RR 7</code>."
 
 #. Tag: para
 #, no-c-format
 msgid "is text: Extra information like Floor number."
-msgstr ""
+msgstr "è un testo: Informazioni extra come il numero del piano."
 
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>10</code>): Example Boston."
-msgstr ""
+msgstr "è un testo (numero di token <code>10</code>): Esempio Boston."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "is text (token number <code>11</code>): Example <code>MASSACHUSETTS</code>"
 msgstr ""
+"è un testo (numero di token <code>11</code>): Esempio "
+"<code>MASSACHUSETTS</code>"
 
 #. Tag: para
 #, no-c-format
 msgid "is text (token number <code>12</code>): Example <code>USA</code>"
-msgstr ""
+msgstr "è un testo (numero di token <code>12</code>): Esempio <code>USA</code>"
 
 #. Tag: para
 #, no-c-format
@@ -300,6 +312,8 @@ msgid ""
 "is text POSTAL CODE (ZIP CODE) (token number <code>13</code>): Example "
 "<code>02109</code>"
 msgstr ""
+"è il testo CODICE POSTALE (CAP) (numero di token <code>13</code>): Esempio "
+"<code>02109</code>"
 
 #. Tag: para
 #, no-c-format
@@ -307,6 +321,8 @@ msgid ""
 "is text POSTAL BOX NUMBER (token number <code>14 and 15</code>): Example "
 "<code>02109</code>"
 msgstr ""
+"è il testo NUMERO DI CASELLA POSTALE (numero di token <code>14 e 15</code>): "
+"Esempio <code>02109</code>"
 
 #. Tag: para
 #, no-c-format
@@ -314,11 +330,13 @@ msgid ""
 "is text Apartment number or Suite Number (token number <code>17</code>): "
 "Example <emphasis>3B</emphasis> in <code>APT 3B</code>."
 msgstr ""
+"è il testo Numero di appartamento o numero di suite (numero di token "
+"<code>17</code>): Esempio <emphasis>3B</emphasis> in <code>APT 3B</code>."
 
 #. Tag: title
 #, no-c-format
 msgid "Address Standardizer Tables"
-msgstr ""
+msgstr "Tabelle dello standardizzatore degli indirizzi"
 
 #. Tag: para
 #, no-c-format
@@ -330,6 +348,13 @@ msgid ""
 "custom geocoder. The names of these tables get passed into the address "
 "standardizer functions."
 msgstr ""
+"Questa sezione elenca i formati delle tabelle PostgreSQL utilizzate da "
+"address_standardizer per normalizzare gli indirizzi. Si noti che non è "
+"necessario che queste tabelle abbiano lo stesso nome di quelle a cui si fa "
+"riferimento qui. È possibile avere tabelle lex, gaz e rules diverse per ogni "
+"Paese, ad esempio, o per il proprio geocoder personalizzato. I nomi di "
+"queste tabelle vengono passati nelle funzioni di normalizzazione degli "
+"indirizzi."
 
 #. Tag: para
 #, no-c-format
@@ -337,6 +362,8 @@ msgid ""
 "The packaged extension <varname>address_standardizer_data_us</varname> "
 "contains data for standardizing US addresses."
 msgstr ""
+"L'estensione confezionata <varname>address_standardizer_data_us</varname> "
+"contiene i dati per la standardizzazione degli indirizzi statunitensi."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -346,6 +373,12 @@ msgid ""
 "tokens followed by -1 (terminator) followed by set of output tokens followed "
 "by -1 followed by number denoting kind of rule followed by ranking of rule."
 msgstr ""
+"La tabella delle regole contiene un insieme di regole che mappano i token "
+"della sequenza di input dell'indirizzo in una sequenza di output "
+"standardizzata. Una regola è definita come un insieme di token di ingresso "
+"seguiti da -1 (terminatore) seguito da un insieme di token di uscita seguiti "
+"da -1 seguito da un numero che denota il tipo di regola seguito da una "
+"classificazione della regola."
 
 #. Tag: para
 #, no-c-format
@@ -353,11 +386,13 @@ msgid ""
 "A rules table must have at least the following columns, though you are "
 "allowed to add more for your own uses."
 msgstr ""
+"Una tabella delle regole deve avere almeno le seguenti colonne, anche se è "
+"possibile aggiungerne altre per i propri usi."
 
 #. Tag: para
 #, no-c-format
 msgid "Primary key of table"
-msgstr ""
+msgstr "Chiave primaria della tabella"
 
 #. Tag: para
 #, no-c-format
@@ -366,6 +401,9 @@ msgid ""
 "pagcgeo.org/docs/html/pagc-12.html#--r-rec--\">PAGC Address Standardizer "
 "Rule records</link>."
 msgstr ""
+"campo di testo che indica la regola. I dettagli si trovano in <link "
+"xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-rec--\""
+">Regole di normalizzazione degli indirizzi del PAGC</link>."
 
 #. Tag: para
 #, no-c-format
@@ -376,6 +414,12 @@ msgid ""
 "representing a rule type, followed by an integer representing the rank of "
 "the rule. The rules are ranked from 0 (lowest) to 17 (highest)."
 msgstr ""
+"Una regola consiste in un insieme di numeri interi non negativi che "
+"rappresentano i token di input, terminati da un -1, seguiti da un numero "
+"uguale di numeri interi non negativi che rappresentano gli attributi "
+"postali, terminati da un -1, seguiti da un numero intero che rappresenta un "
+"tipo di regola, seguito da un numero intero che rappresenta il rango della "
+"regola. Le regole sono classificate da 0 (minimo) a 17 (massimo)."
 
 #. Tag: para
 #, no-c-format
@@ -24091,11 +24135,15 @@ msgid ""
 "tolerance, using an iterative algorithm. If the accuracy distance is not "
 "specified a reasonable default is used."
 msgstr ""
+"Il centro del cerchio viene determinato con una determinata precisione "
+"specificata da una distanza di tolleranza, utilizzando un algoritmo "
+"iterativo. Se la distanza di precisione non è specificata, viene utilizzato "
+"un valore predefinito ragionevole."
 
 #. Tag: para
 #, no-c-format
 msgid "Returns a record with fields:"
-msgstr ""
+msgstr "Restituisce un record con i campi:"
 
 #. Tag: para
 #, no-c-format
@@ -24103,16 +24151,18 @@ msgid ""
 "To find the largest empty circle in the interior of a polygon, see <xref "
 "linkend=\"ST_MaximumInscribedCircle\"/>."
 msgstr ""
+"Per trovare il cerchio vuoto più grande all'interno di un poligono, vedere "
+"<xref linkend=\"ST_MaximumInscribedCircle\"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.4.0."
-msgstr ""
+msgstr "Disponibilità: 3.4.0."
 
 #. Tag: para
 #, no-c-format
 msgid "Largest Empty Circle within a set of lines."
-msgstr ""
+msgstr "Il più grande cerchio vuoto all'interno di un insieme di linee."
 
 #. Tag: para
 #, no-c-format
@@ -24121,6 +24171,9 @@ msgid ""
 "polygon. The constraint polygon boundary must be included as an obstacle, as "
 "well as specified as the constraint for the circle center."
 msgstr ""
+"Cerchio vuoto più grande all'interno di un insieme di punti, vincolato a "
+"rientrare in un poligono. Il confine del poligono di vincolo deve essere "
+"incluso come ostacolo e specificato come vincolo per il centro del cerchio."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -24145,6 +24198,13 @@ msgid ""
 "increasing the number of segments. For applications where an approximation "
 "is not suitable <xref linkend=\"ST_MinimumBoundingRadius\"/> may be used."
 msgstr ""
+"Il cerchio di delimitazione è approssimato da un poligono con un valore "
+"predefinito di 48 segmenti per quarto di cerchio. Poiché il poligono è "
+"un'approssimazione del cerchio limite minimo, alcuni punti della geometria "
+"di input potrebbero non essere contenuti nel poligono. L'approssimazione può "
+"essere migliorata aumentando il numero di segmenti. Per le applicazioni in "
+"cui un'approssimazione non è adatta si può utilizzare <xref linkend="
+"\"ST_MinimumBoundingRadius\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -24152,6 +24212,8 @@ msgid ""
 "Use with <xref linkend=\"ST_Collect\"/> to get the minimum bounding circle "
 "of a set of geometries."
 msgstr ""
+"Si può usare con <xref linkend=\"ST_Collect\"/> per ottenere il cerchio "
+"minimo di delimitazione di un insieme di geometrie."
 
 #. Tag: para
 #, no-c-format
@@ -24159,6 +24221,8 @@ msgid ""
 "To compute two points lying on the mimimum circle (the \"maximum diameter\") "
 "use <xref linkend=\"ST_LongestLine\"/>."
 msgstr ""
+"Per calcolare due punti che giacciono sulla circonferenza minima (il "
+"\"diametro massimo\") si può usare <xref linkend=\"ST_LongestLine\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -24167,6 +24231,9 @@ msgid ""
 "Bounding Circle is referred to as the <emphasis>Reock compactness score</"
 "emphasis>."
 msgstr ""
+"Il rapporto tra l'area di un poligono divisa per l'area del suo Circolo "
+"Minimo Vincolato è indicato come il punteggio di compattezza "
+"<emphasis>Reock</emphasis>."
 
 #. Tag: para
 #, no-c-format
@@ -24174,6 +24241,8 @@ msgid ""
 "Minimum bounding circle of a point and linestring. Using 8 segs to "
 "approximate a quarter circle"
 msgstr ""
+"Cerchio minimo di un punto e di una linea. Utilizzo di 8 segmenti per "
+"approssimare un quarto di cerchio"
 
 #. Tag: para
 #, no-c-format
@@ -24188,6 +24257,8 @@ msgid ""
 "Returns the center point and radius of the smallest circle that contains a "
 "geometry."
 msgstr ""
+"Restituisce il punto centrale e il raggio del cerchio più piccolo che "
+"contiene una geometria."
 
 #. Tag: para
 #, no-c-format
@@ -24195,11 +24266,13 @@ msgid ""
 "Computes the center point and radius of the smallest circle that contains a "
 "geometry. Returns a record with fields:"
 msgstr ""
+"Calcola il punto centrale e il raggio del cerchio più piccolo che contiene "
+"una geometria. Restituisce un record con i campi:"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability - 2.3.0"
-msgstr ""
+msgstr "Disponibilità: 2.3.0"
 
 #. Tag: para
 #, no-c-format
