@@ -7,6 +7,8 @@ YYYY/MM/DD
           what it intends to do (Jelte Fennema)
  - #5494, Fix double-upgrade with view using st_dwithin(text, ...)
           (Sandro Santilli)
+ - Fix JsonB casting issue (Paul Ramsey)
+
 
 PostGIS 3.3.4
 2023/07/28
