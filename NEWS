@@ -15,6 +15,7 @@ xxxx/xx/xx
 * Enhancements *
 
   - #5531, documentation format upgraded to DocBook 5 (Sandro Santilli)
+  - #5543, allow building without documentation (Sandro Santilli)
 
 
 PostGIS 3.4.0
