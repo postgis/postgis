@@ -11,6 +11,9 @@ sed -e '/^#\. Tag: programlisting$/,/^$/d' \
     -e '/^#\. Tag: funcsynopsis$/,/^$/d' \
     -e '/^#\. Tag: refname$/,/^$/d' \
     -e '/^#\. Tag: funcprototype$/,/^$/d' \
+    -e '/^#\. Tag: function$/,/^$/d' \
     -e '/^#\. Tag: option$/,/^$/d' \
+    -e '/^#\. Tag: varname$/,/^$/d' \
+    -e '/^#\. Tag: code$/,/^$/d' \
     -i $1
 
