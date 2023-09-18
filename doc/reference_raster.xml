@@ -83,10 +83,10 @@ VALUES (1,
 
                     <variablelist>
                         <varlistentry>
-                            <term>
+                            <term><varname>
                                 index
                                 integer
-                            </term>
+                            </varname></term>
                             <listitem>
                                 <para>
                                     1-based value indicating the position where the new band will be added amongst the raster's bands. If NULL, the new band will be added at the end of the raster's bands.
@@ -95,10 +95,10 @@ VALUES (1,
                         </varlistentry>
 
                         <varlistentry>
-                            <term>
+                            <term><varname>
                                 pixeltype
                                 text
-                            </term>
+                            </varname></term>
                             <listitem>
                                 <para>
                     Pixel type of the new band. One of defined pixel types as described in <xref linkend="RT_ST_BandPixelType"/>.
@@ -107,10 +107,10 @@ VALUES (1,
                         </varlistentry>
 
                         <varlistentry>
-                            <term>
+                            <term><varname>
                                 initialvalue
                                 double precision
-                            </term>
+                            </varname></term>
                             <listitem>
                                 <para>
                     Initial value that all pixels of new band will be set to.
@@ -119,10 +119,10 @@ VALUES (1,
                         </varlistentry>
 
                         <varlistentry>
-                            <term>
+                            <term><varname>
                                 nodataval
                                 double precision
-                            </term>
+                            </varname></term>
                             <listitem>
                                 <para>
                     NODATA value of the new band. If NULL, the new band will not have a NODATA value assigned.
@@ -156,10 +156,10 @@ VALUES (1,
                     <variablelist>
 
                         <varlistentry>
-                            <term>
+                            <term><varname>
                                 rast
                                 raster
-                            </term>
+                            </varname></term>
                             <listitem>
                                 <para>
                     The raster in question/
@@ -168,10 +168,10 @@ VALUES (1,
                         </varlistentry>
 
                         <varlistentry>
-                            <term>
+                            <term><varname>
                                 nband
                                 integer
-                            </term>
+                            </varname></term>
                             <listitem>
                                 <para>
                                     1-based value indicating the band of raster
@@ -243,11 +243,11 @@ VALUES (1,
             <para>A composite type used as input into the ST_Reclass function defining the behavior of reclassification.</para>
             <variablelist>
                 <varlistentry>
-                    <term>nband integer</term>
+                    <term><varname>nband integer</varname></term>
                     <listitem><para>The band number of band to reclassify.</para></listitem>
                 </varlistentry>
                 <varlistentry>
-                    <term>reclassexpr text</term>
+                    <term><varname>reclassexpr text</varname></term>
                     <listitem><para>range expression consisting of comma delimited range:map_range mappings. : to define mapping that defines how to map old band values to new band values. ( means &gt;, ) means less than, ] &lt; or equal, [ means &gt; or equal</para>
                         <para><programlisting><![CDATA[[
 1. [a-b] = a <= x <= b
@@ -263,11 +263,11 @@ VALUES (1,
 
                 </varlistentry>
                 <varlistentry>
-                    <term>pixeltype text</term>
+                    <term><varname>pixeltype text</varname></term>
                     <listitem><para>One of defined pixel types as described in <xref linkend="RT_ST_BandPixelType"/></para></listitem>
                 </varlistentry>
                 <varlistentry>
-                    <term>nodataval double precision</term>
+                    <term><varname>nodataval double precision</varname></term>
                     <listitem><para>Value to treat as no data.  For image outputs that support transparency, these will be blank.</para></listitem>
                 </varlistentry>
             </variablelist>
@@ -396,10 +396,10 @@ VALUES (1,
 
                     <variablelist>
                         <varlistentry>
-                            <term>
+                            <term><varname>
                                 nband
                                 integer
-                            </term>
+                            </varname></term>
                             <listitem>
                                 <para>
                                     1-based value indicating the band of each input raster to be processed.
@@ -408,10 +408,10 @@ VALUES (1,
                         </varlistentry>
 
                         <varlistentry>
-                            <term>
+                            <term><varname>
                                 uniontype
                                 text
-                            </term>
+                            </varname></term>
                             <listitem>
                                 <para>
                     Type of UNION operation. One of defined types as described in <xref linkend="RT_ST_Union"/>.
@@ -1360,13 +1360,13 @@ WHERE short_name = 'GTiff') As g;
             Return values are a set of records with the following attributes:
         </para>
         <variablelist>
-            <varlistentry><term>geom</term>
+            <varlistentry><term><varname>geom</varname></term>
                 <listitem><para>The geometry of the contour line.</para></listitem>
             </varlistentry>
-            <varlistentry><term>id</term>
+            <varlistentry><term><varname>id</varname></term>
                 <listitem><para>A unique identifier given to the contour line by GDAL.</para></listitem>
             </varlistentry>
-            <varlistentry><term>value</term>
+            <varlistentry><term><varname>value</varname></term>
                 <listitem><para>The raster value the line represents. For an elevation DEM input, this would be the elevation of the output contour.</para></listitem>
             </varlistentry>
         </variablelist>
@@ -1438,25 +1438,25 @@ FROM c;</programlisting>
             Input parameters are:
         </para>
         <variablelist>
-            <varlistentry><term>input_points</term>
+            <varlistentry><term><varname>input_points</varname></term>
                 <listitem><para>The points to drive the interpolation. Any
                     geometry with Z-values is acceptable, all points in the
                     input will be used.</para></listitem>
             </varlistentry>
-            <varlistentry><term>algorithm_options</term>
+            <varlistentry><term><varname>algorithm_options</varname></term>
                 <listitem><para>A string defining the algorithm and
                     algorithm options, in the format used by <link xlink:href="https://gdal.org/programs/gdal_grid.html#interpolation-algorithms">gdal_grid</link>.
                     For example, for an inverse-distance interpolation with a
                     smoothing of 2, you would use "invdist:smoothing=2.0"
                 </para></listitem>
             </varlistentry>
-            <varlistentry><term>template</term>
+            <varlistentry><term><varname>template</varname></term>
                 <listitem><para>A raster template to drive the geometry of the
                     output raster. The width, height, pixel size, spatial extent
                     and pixel type will be read from this template.
                 </para></listitem>
             </varlistentry>
-            <varlistentry><term>template_band_num</term>
+            <varlistentry><term><varname>template_band_num</varname></term>
                 <listitem><para>By default the first band in the template raster
                     is used to drive the output raster, but that can be adjusted
                     with this parameter.
@@ -8044,17 +8044,17 @@ FROM foo;
 
                 <variablelist>
                     <varlistentry>
-                        <term>width double precision[]</term>
+                        <term><varname>width</varname></term>
                         <listitem><para>width: an array indicating the width of each category/bin. If the number of bins is greater than the number of widths, the widths are repeated. </para>
                         <para>Example: 9 bins, widths are [a, b, c] will have the output be [a, b, c, a, b, c, a, b, c]</para></listitem>
                     </varlistentry>
                     <varlistentry>
-                        <term>bins integer</term>
+                        <term><varname>bins</varname></term>
                         <listitem><para>Number of breakouts -- this is the number of records you'll get back from the function if specified. If not specified
                             then the number of breakouts is autocomputed.</para></listitem>
                     </varlistentry>
                     <varlistentry>
-                        <term>right boolean</term>
+                        <term><varname>right</varname></term>
                         <listitem><para>compute the histogram from the right rather than from the left (default). This changes the criteria for evaluating a value x from [a, b) to (a, b]</para></listitem>
                     </varlistentry>
                 </variablelist>
@@ -10309,7 +10309,7 @@ FROM (
 
                     <variablelist>
                         <varlistentry>
-                            <term>rast,rast1,rast2, rastbandargset</term>
+                            <term><varname>rast,rast1,rast2, rastbandargset</varname></term>
                             <listitem>
                                 <para>
                                     Rasters on which the map algebra process is evaluated.</para><para><varname>rastbandargset</varname> allows the use of a map algebra operation on many rasters and/or many bands. See example Variant 1.
@@ -10317,7 +10317,7 @@ FROM (
                             </listitem>
                         </varlistentry>
                         <varlistentry>
-                            <term>nband, nband1, nband2</term>
+                            <term><varname>nband, nband1, nband2</varname></term>
                             <listitem>
                                 <para>
                                     Band numbers of the raster to be evaluated. nband can be an integer or integer[] denoting the bands. nband1 is band on rast1 and nband2 is band on rast2 for hte 2 raster/2band case.
@@ -10325,7 +10325,7 @@ FROM (
                             </listitem>
                         </varlistentry>
                         <varlistentry>
-                            <term>callbackfunc</term>
+                            <term><varname>callbackfunc</varname></term>
                             <listitem>
                                 <para>
                                     The <varname>callbackfunc</varname> parameter must be the name and signature of an SQL or PL/pgSQL function, cast to a regprocedure. An example PL/pgSQL function example is:
@@ -10360,7 +10360,7 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
                         </varlistentry>
 
                         <varlistentry>
-                            <term>mask</term>
+                            <term><varname>mask</varname></term>
                             <listitem>
                                 <para>
                                     An n-dimensional array (matrix) of numbers used to filter what cells get passed to map algebra call-back function. 0 means a neighbor cell value should be treated as no-data and 1 means value should be treated as data.  If weight is set to true, then the values, are used as multipliers to multiple the pixel value of that value in the neighborhood position.
@@ -10369,7 +10369,7 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
                         </varlistentry>
 
                         <varlistentry>
-                            <term>weighted</term>
+                            <term><varname>weighted</varname></term>
                             <listitem>
                                 <para>
                                     boolean (true/false) to denote if a mask value should be weighted (multiplied by original value) or not (only applies to proto that takes a mask).
@@ -10378,7 +10378,7 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
                         </varlistentry>
 
                         <varlistentry>
-                            <term>pixeltype</term>
+                            <term><varname>pixeltype</varname></term>
                             <listitem>
                                 <para>
                                     If <varname>pixeltype</varname> is passed in, the one band of the new raster will be of that pixeltype. If pixeltype is passed NULL or left out, the new raster band will have the same pixeltype as the specified band of the first raster (for extent types: INTERSECTION, UNION, FIRST, CUSTOM) or the specified band of the appropriate raster (for extent types: SECOND, LAST).  If in doubt, always specify <varname>pixeltype</varname>.
@@ -10390,7 +10390,7 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
                         </varlistentry>
 
                         <varlistentry>
-                            <term>extenttype</term>
+                            <term><varname>extenttype</varname></term>
                             <listitem>
                                 <para>
                                     Possible values are INTERSECTION (default), UNION, FIRST (default for one raster variants), SECOND, LAST, CUSTOM.
@@ -10399,7 +10399,7 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
                         </varlistentry>
 
                         <varlistentry>
-                            <term>customextent</term>
+                            <term><varname>customextent</varname></term>
                             <listitem>
                                 <para>
                                     If <varname>extentype</varname> is CUSTOM, a raster must be provided for <varname>customextent</varname>. See example 4 of Variant 1.
@@ -10408,7 +10408,7 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
                         </varlistentry>
 
                         <varlistentry>
-                            <term>distancex</term>
+                            <term><varname>distancex</varname></term>
                             <listitem>
                                 <para>
                                     The distance in pixels from the reference cell in x direction. So width of resulting matrix would be <code>2*distancex + 1</code>.If not specified only the reference cell is considered (neighborhood of 0).
@@ -10417,7 +10417,7 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
                         </varlistentry>
 
                         <varlistentry>
-                            <term>distancey</term>
+                            <term><varname>distancey</varname></term>
                             <listitem>
                                 <para>
                                     The distance in pixels from reference cell in y direction. Height of resulting matrix would be <code>2*distancey + 1</code> .If not specified only the reference cell is considered (neighborhood of 0).
@@ -10426,7 +10426,7 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
                         </varlistentry>
 
                         <varlistentry>
-                            <term>userargs</term>
+                            <term><varname>userargs</varname></term>
                             <listitem>
                                 <para>
                                     The third argument to the <varname>callbackfunc</varname> is a <type>variadic text</type> array. All trailing text arguments are passed through to the specified <varname>callbackfunc</varname>, and are contained in the <varname>userargs</varname> argument.
@@ -10859,7 +10859,7 @@ FROM foo;
 
                     <variablelist>
                         <varlistentry>
-                            <term>expression</term>
+                            <term><varname>expression</varname></term>
                             <listitem>
                                 <para>
                                     A PostgreSQL algebraic expression involving the two rasters and PostgreSQL defined functions/operators that will define the pixel value when pixels intersect. e.g. (([rast1] + [rast2])/2.0)::integer
@@ -10867,7 +10867,7 @@ FROM foo;
                             </listitem>
                         </varlistentry>
                         <varlistentry>
-                            <term>pixeltype</term>
+                            <term><varname>pixeltype</varname></term>
                             <listitem>
                                 <para>
                                     The resulting pixel type of the output raster.  Must be one listed in <xref linkend="RT_ST_BandPixelType"/>, left out or set to NULL.  If not passed in or set to NULL, will default to the pixeltype of the first raster.
@@ -10875,7 +10875,7 @@ FROM foo;
                             </listitem>
                         </varlistentry>
                         <varlistentry>
-                            <term>extenttype</term>
+                            <term><varname>extenttype</varname></term>
                             <listitem>
                                 <para>
                                     Controls the extent of resulting raster
@@ -10906,7 +10906,7 @@ FROM foo;
                             </listitem>
                         </varlistentry>
                         <varlistentry>
-                            <term>nodata1expr</term>
+                            <term><varname>nodata1expr</varname></term>
                             <listitem>
                                 <para>
                                     An algebraic expression involving only <varname>rast2</varname> or a constant that defines what to return when pixels of <varname>rast1</varname> are nodata values and spatially corresponding rast2 pixels have values.
@@ -10914,7 +10914,7 @@ FROM foo;
                             </listitem>
                         </varlistentry>
                         <varlistentry>
-                            <term>nodata2expr</term>
+                            <term><varname>nodata2expr</varname></term>
                             <listitem>
                                 <para>
                                     An algebraic expression involving only <varname>rast1</varname> or a constant that defines what to return when pixels of <varname>rast2</varname> are nodata values and spatially corresponding rast1 pixels have values.
@@ -10922,7 +10922,7 @@ FROM foo;
                             </listitem>
                         </varlistentry>
                         <varlistentry>
-                            <term>nodatanodataval</term>
+                            <term><varname>nodatanodataval</varname></term>
                             <listitem>
                                 <para>
                                     A numeric constant to return when spatially corresponding rast1 and rast2 pixels are both nodata values.
@@ -11242,7 +11242,7 @@ WHERE rid=167;
 
                     <variablelist>
                         <varlistentry>
-                            <term>expression</term>
+                            <term><varname>expression</varname></term>
                             <listitem>
                                 <para>
                                     A PostgreSQL algebraic expression involving the two rasters and PostgreSQL defined functions/operators that will define the pixel value when pixels intersect. e.g. (([rast1] + [rast2])/2.0)::integer
@@ -11251,7 +11251,7 @@ WHERE rid=167;
                         </varlistentry>
 
                         <varlistentry>
-                            <term>pixeltype</term>
+                            <term><varname>pixeltype</varname></term>
                             <listitem>
                                 <para>
                                     The resulting pixel type of the output raster.  Must be one listed in <xref linkend="RT_ST_BandPixelType"/>, left out or set to NULL.  If not passed in or set to NULL, will default to the pixeltype of the first raster.
@@ -11260,7 +11260,7 @@ WHERE rid=167;
                         </varlistentry>
 
                         <varlistentry>
-                            <term>extenttype</term>
+                            <term><varname>extenttype</varname></term>
                             <listitem>
                                 <para>Controls the extent of resulting raster</para>
                                 <orderedlist>
@@ -11289,7 +11289,7 @@ WHERE rid=167;
                         </varlistentry>
 
                         <varlistentry>
-                            <term>nodata1expr</term>
+                            <term><varname>nodata1expr</varname></term>
                             <listitem>
                                 <para>
                                     An algebraic expression involving only <varname>rast2</varname> or a constant that defines what to return when pixels of <varname>rast1</varname> are nodata values and spatially corresponding rast2 pixels have values.
@@ -11298,7 +11298,7 @@ WHERE rid=167;
                         </varlistentry>
 
                         <varlistentry>
-                            <term>nodata2expr</term>
+                            <term><varname>nodata2expr</varname></term>
                             <listitem>
                                 <para>
                                     An algebraic expression involving only <varname>rast1</varname> or a constant that defines what to return when pixels of <varname>rast2</varname> are nodata values and spatially corresponding rast1 pixels have values.
@@ -11307,7 +11307,7 @@ WHERE rid=167;
                         </varlistentry>
 
                         <varlistentry>
-                            <term>nodatanodataval</term>
+                            <term><varname>nodatanodataval</varname></term>
                             <listitem>
                                 <para>
                                     A numeric constant to return when spatially corresponding rast1 and rast2 pixels are both nodata values.
@@ -12101,31 +12101,31 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast, 3,
 
                     <variablelist>
                         <varlistentry>
-                            <term>rast</term>
+                            <term><varname>rast</varname></term>
                             <listitem><para>Raster on which the user function is evaluated.</para></listitem>
                         </varlistentry>
                         <varlistentry>
-                            <term>band</term>
+                            <term><varname>band</varname></term>
                             <listitem><para>Band number of the raster to be evaluated. Default to 1.</para></listitem>
                         </varlistentry>
                         <varlistentry>
-                            <term>pixeltype</term>
+                            <term><varname>pixeltype</varname></term>
                             <listitem><para>The resulting pixel type of the output raster.  Must be one listed in <xref linkend="RT_ST_BandPixelType"/> or left out or set to NULL.  If not passed in or set to NULL, will default to the pixeltype of the <varname>rast</varname>. Results are truncated if they are larger than what is allowed for the pixeltype.</para></listitem>
                         </varlistentry>
                         <varlistentry>
-                            <term>ngbwidth</term>
+                            <term><varname>ngbwidth</varname></term>
                             <listitem><para>The width of the neighborhood, in cells.</para></listitem>
                         </varlistentry>
                         <varlistentry>
-                            <term>ngbheight</term>
+                            <term><varname>ngbheight</varname></term>
                             <listitem><para>The height of the neighborhood, in cells.</para></listitem>
                         </varlistentry>
                         <varlistentry>
-                            <term>onerastngbuserfunc</term>
+                            <term><varname>onerastngbuserfunc</varname></term>
                             <listitem><para>PLPGSQL/psql user function to apply to neighborhood pixels of a single band of a raster. The first element is a 2-dimensional array of numbers representing the rectangular pixel neighborhood</para></listitem>
                         </varlistentry>
                         <varlistentry>
-                            <term>nodatamode</term>
+                            <term><varname>nodatamode</varname></term>
                             <listitem>
                                 <para>Defines what value to pass to the function for a neighborhood pixel that is nodata or NULL</para>
                                 <para>'ignore': any NODATA values encountered in the neighborhood are ignored by the computation -- this flag must be sent to the user callback function, and the user function decides how to ignore it.</para>
@@ -12134,7 +12134,7 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast, 3,
                             </listitem>
                         </varlistentry>
                         <varlistentry>
-                            <term>args</term>
+                            <term><varname>args</varname></term>
                             <listitem><para>Arguments to pass into the user function.</para></listitem>
                         </varlistentry>
                     </variablelist>

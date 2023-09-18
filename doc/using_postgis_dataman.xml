@@ -1408,7 +1408,7 @@ SELECT valid, reason, ST_AsText(location) AS location
 
 	  <variablelist>
 		<varlistentry>
-		  <term>srid</term>
+		  <term><varname>srid</varname></term>
 
 		  <listitem>
 			<para>An integer code that uniquely identifies the <link xlink:href="http://en.wikipedia.org/wiki/SRID">Spatial
@@ -1417,7 +1417,7 @@ SELECT valid, reason, ST_AsText(location) AS location
 		</varlistentry>
 
 		<varlistentry>
-		  <term>auth_name</term>
+		  <term><varname>auth_name</varname></term>
 
 		  <listitem>
 			<para>The name of the standard or standards body that is being
@@ -1427,7 +1427,7 @@ SELECT valid, reason, ST_AsText(location) AS location
 		</varlistentry>
 
 		<varlistentry>
-		  <term>auth_srid</term>
+		  <term><varname>auth_srid</varname></term>
 
 		  <listitem>
 			<para>The ID of the Spatial Reference System as defined by the
@@ -1437,7 +1437,7 @@ SELECT valid, reason, ST_AsText(location) AS location
 		</varlistentry>
 
 		<varlistentry>
-		  <term>srtext</term>
+		  <term><varname>srtext</varname></term>
 
 		  <listitem>
 			<para>The Well-Known Text representation of the Spatial Reference
@@ -1466,7 +1466,7 @@ SELECT valid, reason, ST_AsText(location) AS location
 		</varlistentry>
 
 		<varlistentry>
-		  <term>proj4text</term>
+		  <term><varname>proj4text</varname></term>
 
 		  <listitem>
 			<para>PostGIS uses the PROJ library to provide coordinate
@@ -1651,7 +1651,7 @@ VALUES ( 990000,
 
 	  <variablelist>
 		<varlistentry>
-		  <term>f_table_catalog, f_table_schema, f_table_name</term>
+		  <term><varname>f_table_catalog, f_table_schema, f_table_name</varname></term>
 
 		  <listitem>
 			<para>The fully qualified name of the feature table containing the
@@ -1662,7 +1662,7 @@ VALUES ( 990000,
 		</varlistentry>
 
 		<varlistentry>
-		  <term>f_geometry_column</term>
+		  <term><varname>f_geometry_column</varname></term>
 
 		  <listitem>
 			<para>The name of the geometry column in the feature table.</para>
@@ -1670,7 +1670,7 @@ VALUES ( 990000,
 		</varlistentry>
 
 		<varlistentry>
-		  <term>coord_dimension</term>
+		  <term><varname>coord_dimension</varname></term>
 
 		  <listitem>
 			<para>The coordinate dimension (2, 3 or 4) of the column.</para>
@@ -1678,7 +1678,7 @@ VALUES ( 990000,
 		</varlistentry>
 
 		<varlistentry>
-		  <term>srid</term>
+		  <term><varname>srid</varname></term>
 
 		  <listitem>
 			<para>The ID of the spatial reference system used for the
@@ -1689,7 +1689,7 @@ VALUES ( 990000,
 		</varlistentry>
 
 		<varlistentry>
-		  <term>type</term>
+		  <term><varname>type</varname></term>
 
 		  <listitem>
 			<para>The type of the spatial object. To restrict the spatial
@@ -1884,7 +1884,7 @@ COMMIT;</programlisting>
         <para>
           <variablelist>
             <varlistentry>
-              <term>-c</term>
+              <term><option>-c</option></term>
               <listitem>
                 <para>
                   Creates a new table and populates it from the Shapefile. <emphasis>This is the
@@ -1894,7 +1894,7 @@ COMMIT;</programlisting>
             </varlistentry>
 
             <varlistentry>
-              <term>-a</term>
+              <term><option>-a</option></term>
               <listitem>
                 <para>
                   Appends data from the Shapefile into the database table. Note that to use this
@@ -1905,7 +1905,7 @@ COMMIT;</programlisting>
             </varlistentry>
 
             <varlistentry>
-              <term>-d</term>
+              <term><option>-d</option></term>
               <listitem>
                 <para>
                   Drops the database table before creating a new table with the data in the Shapefile.
@@ -1914,7 +1914,7 @@ COMMIT;</programlisting>
             </varlistentry>
 
             <varlistentry>
-              <term>-p</term>
+              <term><option>-p</option></term>
               <listitem>
                 <para>
                   Only produces the table creation SQL code, without adding any actual data. This
@@ -1929,7 +1929,7 @@ COMMIT;</programlisting>
     </varlistentry>
 
     <varlistentry>
-      <term>-?</term>
+      <term><option>-?</option></term>
       <listitem>
         <para>
           Display help screen.
@@ -1938,7 +1938,7 @@ COMMIT;</programlisting>
     </varlistentry>
 
     <varlistentry>
-      <term>-D</term>
+      <term><option>-D</option></term>
       <listitem>
         <para>
           Use the PostgreSQL "dump" format for the output data. This can be combined with -a, -c and
@@ -1949,7 +1949,7 @@ COMMIT;</programlisting>
     </varlistentry>
 
     <varlistentry>
-      <term>-s [&lt;FROM_SRID&gt;:]&lt;SRID&gt;</term>
+      <term><option>-s [&lt;FROM_SRID&gt;:]&lt;SRID&gt;</option></term>
       <listitem>
         <para>
           Creates and populates the geometry tables with the specified SRID.
@@ -1961,7 +1961,7 @@ COMMIT;</programlisting>
     </varlistentry>
 
     <varlistentry>
-      <term>-k</term>
+      <term><option>-k</option></term>
       <listitem>
         <para>
           Keep identifiers' case (column, schema and attributes). Note that attributes in Shapefile
@@ -1971,7 +1971,7 @@ COMMIT;</programlisting>
     </varlistentry>
 
     <varlistentry>
-      <term>-i</term>
+      <term><option>-i</option></term>
       <listitem>
         <para>
           Coerce all integers to standard 32-bit integers, do not create 64-bit bigints, even if the
@@ -1981,7 +1981,7 @@ COMMIT;</programlisting>
     </varlistentry>
 
     <varlistentry>
-      <term>-I</term>
+      <term><option>-I</option></term>
       <listitem>
         <para>
           Create a GiST index on the geometry column.
@@ -1990,7 +1990,7 @@ COMMIT;</programlisting>
     </varlistentry>
 
     <varlistentry>
-      <term>-m</term>
+      <term><option>-m</option></term>
       <listitem>
         <para>
           -m <filename>a_file_name</filename>  Specify a file containing a set of mappings of (long) column
@@ -2004,7 +2004,7 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
     </varlistentry>
 
     <varlistentry>
-      <term>-S </term>
+      <term><option>-S</option></term>
       <listitem>
         <para>
           Generate simple geometries instead of MULTI geometries.  Will only succeed if
@@ -2015,7 +2015,7 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
     </varlistentry>
 
      <varlistentry>
-      <term>-t &lt;dimensionality&gt;</term>
+      <term><option>-t &lt;dimensionality&gt;</option></term>
       <listitem>
         <para>
           Force the output geometry to have the specified dimensionality. Use the following
@@ -2030,7 +2030,7 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
     </varlistentry>
 
     <varlistentry>
-      <term>-w</term>
+      <term><option>-w</option></term>
       <listitem>
         <para>
           Output WKT format, instead of WKB.  Note that this can
@@ -2040,7 +2040,7 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
     </varlistentry>
 
     <varlistentry>
-      <term>-e</term>
+      <term><option>-e</option></term>
       <listitem>
         <para>
           Execute each statement on its own, without using a transaction.
@@ -2052,7 +2052,7 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
     </varlistentry>
 
     <varlistentry>
-      <term>-W &lt;encoding&gt;</term>
+      <term><option>-W &lt;encoding&gt;</option></term>
       <listitem>
         <para>
           Specify encoding of the input data (dbf file). When used, all attributes of the dbf are
@@ -2064,7 +2064,7 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
     </varlistentry>
 
     <varlistentry>
-      <term>-N &lt;policy&gt;</term>
+      <term><option>-N &lt;policy&gt;</option></term>
       <listitem>
         <para>
            NULL geometries handling policy (insert*,skip,abort)
@@ -2072,7 +2072,7 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
       </listitem>
     </varlistentry>
     <varlistentry>
-      <term>-n</term>
+      <term><option>-n</option></term>
       <listitem>
         <para>
           -n  Only import DBF file.  If your data has no corresponding shapefile, it will automatically switch to this mode
@@ -2082,7 +2082,7 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
     </varlistentry>
 
 	<varlistentry>
-	  <term>-G</term>
+	  <term><option>-G</option></term>
 	  <listitem>
 		<para>
 			Use geography type instead of geometry (requires lon/lat data) in WGS84 long lat (SRID=4326)
@@ -2090,7 +2090,7 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
 	  </listitem>
 	</varlistentry>
     <varlistentry>
-      <term>-T &lt;tablespace&gt;</term>
+      <term><option>-T &lt;tablespace&gt;</option></term>
       <listitem>
         <para>
           Specify the tablespace for the new table.  Indexes will still use the
@@ -2100,7 +2100,7 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
       </listitem>
     </varlistentry>
     <varlistentry>
-      <term>-X &lt;tablespace&gt;</term>
+      <term><option>-X &lt;tablespace&gt;</option></term>
       <listitem>
         <para>
           Specify the tablespace for the new table's indexes.  This applies to
@@ -2109,7 +2109,7 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
       </listitem>
     </varlistentry>
     <varlistentry>
-      <term>-Z</term>
+      <term><option>-Z</option></term>
       <listitem>
         <para>
           When used, this flag will prevent the generation of <code>ANALYZE</code> statements.
@@ -2175,7 +2175,7 @@ road_id | geom                                    | road_name
 
 	  <variablelist>
 		<varlistentry>
-		  <term>ST_Intersects</term>
+		  <term><function>ST_Intersects</function></term>
 
 		  <listitem>
 			<para>This function tells whether two geometries share any space.</para>
@@ -2183,7 +2183,7 @@ road_id | geom                                    | road_name
 		</varlistentry>
 
 		<varlistentry>
-		  <term>=</term>
+		  <term><code>=</code></term>
 
 		  <listitem>
 			<para>This tests whether two geometries are
@@ -2255,7 +2255,7 @@ pgsql2shp [<options>] <database> <query>
 
 	  <variablelist>
 		<varlistentry>
-		  <term>-f &lt;filename&gt;</term>
+		  <term><option>-f &lt;filename&gt;</option></term>
 
 		  <listitem>
 			<para>Write the output to a particular filename.</para>
@@ -2263,7 +2263,7 @@ pgsql2shp [<options>] <database> <query>
 		</varlistentry>
 
 		<varlistentry>
-		  <term>-h &lt;host&gt;</term>
+		  <term><option>-h &lt;host&gt;</option></term>
 
 		  <listitem>
 			<para>The database host to connect to.</para>
@@ -2271,7 +2271,7 @@ pgsql2shp [<options>] <database> <query>
 		</varlistentry>
 
 		<varlistentry>
-		  <term>-p &lt;port&gt;</term>
+		  <term><option>-p &lt;port&gt;</option></term>
 
 		  <listitem>
 			<para>The port to connect to on the database host.</para>
@@ -2279,7 +2279,7 @@ pgsql2shp [<options>] <database> <query>
 		</varlistentry>
 
 		<varlistentry>
-		  <term>-P &lt;password&gt;</term>
+		  <term><option>-P &lt;password&gt;</option></term>
 
 		  <listitem>
 			<para>The password to use when connecting to the database.</para>
@@ -2287,7 +2287,7 @@ pgsql2shp [<options>] <database> <query>
 		</varlistentry>
 
 		<varlistentry>
-		  <term>-u &lt;user&gt;</term>
+		  <term><option>-u &lt;user&gt;</option></term>
 
 		  <listitem>
 			<para>The username to use when connecting to the database.</para>
@@ -2295,7 +2295,7 @@ pgsql2shp [<options>] <database> <query>
 		</varlistentry>
 
 		<varlistentry>
-		  <term>-g &lt;geometry column&gt;</term>
+		  <term><option>-g &lt;geometry column&gt;</option></term>
 
 		  <listitem>
 			<para>In the case of tables with multiple geometry columns, the
@@ -2304,7 +2304,7 @@ pgsql2shp [<options>] <database> <query>
 		</varlistentry>
 
 		<varlistentry>
-		  <term>-b</term>
+		  <term><option>-b</option></term>
 
 		  <listitem>
 			<para>Use a binary cursor. This will make the operation faster,
@@ -2314,7 +2314,7 @@ pgsql2shp [<options>] <database> <query>
 		</varlistentry>
 
 		<varlistentry>
-		  <term>-r</term>
+		  <term><option>-r</option></term>
 
 		  <listitem>
 			<para>Raw mode. Do not drop the <varname>gid</varname> field, or
@@ -2323,7 +2323,7 @@ pgsql2shp [<options>] <database> <query>
 		</varlistentry>
 
 		<varlistentry>
-		  <term>-m filename</term>
+		  <term><option>-m filename</option></term>
 		  <listitem>
 			<para> Remap identifiers to ten character names.
 			The content of the file is lines of two symbols separated by

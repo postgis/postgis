@@ -75,7 +75,7 @@ Available GDAL raster formats:
 
     <variablelist>
          <varlistentry>
-          <term>-?</term>
+          <term><option>-?</option></term>
           <listitem>
             <para>
               Display help screen.  Help will also display if you don't pass in any arguments.
@@ -84,7 +84,7 @@ Available GDAL raster formats:
         </varlistentry>
 
        <varlistentry>
-          <term>-G</term>
+          <term><option>-G</option></term>
           <listitem>
             <para>
              Print the supported raster formats.
@@ -98,7 +98,7 @@ Available GDAL raster formats:
             <para>
               <variablelist>
                 <varlistentry>
-                  <term>-c</term>
+                  <term><option>-c</option></term>
                   <listitem>
                     <para>
                       Create new table and populate it with raster(s), <emphasis>this is the default mode</emphasis>
@@ -107,7 +107,7 @@ Available GDAL raster formats:
                 </varlistentry>
 
                 <varlistentry>
-                  <term>-a</term>
+                  <term><option>-a</option></term>
                   <listitem>
                     <para>
                       Append raster(s) to an existing table.
@@ -116,7 +116,7 @@ Available GDAL raster formats:
                 </varlistentry>
 
                 <varlistentry>
-                  <term>-d</term>
+                  <term><option>-d</option></term>
                   <listitem>
                     <para>
                       Drop table, create new one and populate it with raster(s)
@@ -125,7 +125,7 @@ Available GDAL raster formats:
                 </varlistentry>
 
                 <varlistentry>
-                  <term>-p</term>
+                  <term><option>-p</option></term>
                   <listitem>
                     <para>
                       Prepare mode, only create the table.
@@ -143,7 +143,7 @@ Available GDAL raster formats:
 				<para>
 					<variablelist>
 						<varlistentry>
-							<term>-C </term>
+							<term><option>-C </option></term>
 							<listitem>
 								<para>
 									Apply raster constraints -- srid, pixelsize etc. to ensure raster is properly registered in <varname>raster_columns</varname> view.
@@ -151,7 +151,7 @@ Available GDAL raster formats:
 							</listitem>
 						</varlistentry>
 					   <varlistentry>
-							<term>-x </term>
+							<term><option>-x </option></term>
 							<listitem>
 								<para>
 									Disable setting the max extent constraint.  Only applied if -C flag is also used.
@@ -159,7 +159,7 @@ Available GDAL raster formats:
 							</listitem>
 						</varlistentry>
 						<varlistentry>
-							<term>-r </term>
+							<term><option>-r</option></term>
 							<listitem>
 								<para>
 									Set the constraints (spatially unique and coverage tile) for regular blocking.  Only applied if -C flag is also used.
@@ -177,7 +177,7 @@ Available GDAL raster formats:
             <para>
             <variablelist>
                 <varlistentry>
-                    <term>-s &lt;SRID&gt;</term>
+                    <term><option>-s &lt;SRID&gt;</option></term>
                     <listitem>
                         <para>
                             Assign output raster with specified SRID.  If not provided or is zero, raster's metadata will be checked to determine an appropriate SRID.
@@ -186,7 +186,7 @@ Available GDAL raster formats:
                 </varlistentry>
 
                 <varlistentry>
-                    <term>-b BAND</term>
+                    <term><option>-b BAND</option></term>
                     <listitem>
                         <para>
                            Index (1-based) of band to extract from raster.  For more than one band index, separate with comma (,).  If unspecified,
@@ -196,7 +196,7 @@ Available GDAL raster formats:
                 </varlistentry>
 
                 <varlistentry>
-                    <term>-t TILE_SIZE</term>
+                    <term><option>-t TILE_SIZE</option></term>
                     <listitem>
                         <para>
                             Cut raster into tiles to be inserted one per table row.  <varname>TILE_SIZE</varname> is expressed as WIDTHxHEIGHT or set to the value "auto" to allow the loader to compute an appropriate tile size using the first raster and applied to all rasters.
@@ -205,7 +205,7 @@ Available GDAL raster formats:
                 </varlistentry>
 
                 <varlistentry>
-                    <term>-P</term>
+                    <term><option>-P</option></term>
                     <listitem>
                         <para>
                             Pad right-most and bottom-most tiles to guarantee that all tiles
@@ -217,7 +217,7 @@ Available GDAL raster formats:
 
 
                 <varlistentry>
-                    <term>-R, --register</term>
+                    <term><option>-R, --register</option></term>
                     <listitem>
                         <para>Register the raster as a filesystem (out-db) raster.</para>
                         <para>Only the metadata of the raster and path location to the raster is stored in the database (not the pixels).</para>
@@ -225,7 +225,7 @@ Available GDAL raster formats:
                 </varlistentry>
 
                 <varlistentry>
-                    <term>-l OVERVIEW_FACTOR</term>
+                    <term><option>-l OVERVIEW_FACTOR</option></term>
 										<listitem><para>Create overview of the raster.  For more than
      one factor, separate with comma(,).  Overview table name follows
 		 the pattern o_<varname>overview factor</varname>_<varname>table</varname>, where <varname>overview factor</varname> is a placeholder for numerical overview factor and <varname>table</varname> is replaced with the base table name.  Created overview is
@@ -234,7 +234,7 @@ Available GDAL raster formats:
                 </varlistentry>
 
 								<varlistentry>
-									<term>-N NODATA</term>
+									<term><option>-N NODATA</option></term>
 									<listitem>
 										<para>
 											NODATA value to use on bands without a NODATA value.
@@ -253,7 +253,7 @@ Available GDAL raster formats:
             <para>
               <variablelist>
                 <varlistentry>
-                  <term>-f COLUMN</term>
+                  <term><option>-f COLUMN</option></term>
                   <listitem>
                     <para>Specify name of destination raster column, default is 'rast'
                     </para>
@@ -261,28 +261,28 @@ Available GDAL raster formats:
                 </varlistentry>
 
                 <varlistentry>
-                  <term>-F</term>
+                  <term><option>-F</option></term>
                   <listitem>
                     <para>Add a column with the name of the file</para>
                   </listitem>
                 </varlistentry>
 
                 <varlistentry>
-                  <term>-n COLUMN</term>
+                  <term><option>-n COLUMN</option></term>
                   <listitem>
                     <para>Specify the name of the filename column. Implies -F.</para>
                   </listitem>
                 </varlistentry>
 
                <varlistentry>
-                  <term>-q</term>
+                  <term><option>-q</option></term>
                   <listitem>
                     <para>Wrap PostgreSQL identifiers in quotes.</para>
                   </listitem>
                 </varlistentry>
 
                 <varlistentry>
-                  <term>-I</term>
+                  <term><option>-I</option></term>
                   <listitem>
                     <para>
                       Create a GiST index on the raster column.
@@ -291,7 +291,7 @@ Available GDAL raster formats:
                 </varlistentry>
 
                 <varlistentry>
-                  <term>-M</term>
+                  <term><option>-M</option></term>
                   <listitem>
                     <para>
                       Vacuum analyze the raster table.
@@ -301,7 +301,7 @@ Available GDAL raster formats:
 
 
                 <varlistentry>
-                  <term>-k</term>
+                  <term><option>-k</option></term>
                   <listitem>
                     <para>
                         Keeps empty tiles and skips NODATA value checks for each raster band.
@@ -312,7 +312,7 @@ Available GDAL raster formats:
 
 
                 <varlistentry>
-                  <term>-T tablespace</term>
+                  <term><option>-T tablespace</option></term>
                   <listitem>
                     <para>
                       Specify the tablespace for the new table.
@@ -323,7 +323,7 @@ Available GDAL raster formats:
                 </varlistentry>
 
                 <varlistentry>
-                  <term>-X tablespace</term>
+                  <term><option>-X tablespace</option></term>
                   <listitem>
                     <para>
                       Specify the tablespace for the table's new index.
@@ -334,7 +334,7 @@ Available GDAL raster formats:
                  </varlistentry>
 
                <varlistentry>
-                  <term>-Y  max_rows_per_copy=50</term>
+                  <term><option>-Y  max_rows_per_copy=50</option></term>
                   <listitem>
                     <para>
                       Use copy statements instead of insert statements.  Optionally specify <varname>max_rows_per_copy</varname>;
@@ -348,17 +348,17 @@ Available GDAL raster formats:
         </varlistentry>
 
         <varlistentry>
-            <term>-e</term>
+            <term><option>-e</option></term>
             <listitem><para>Execute each statement individually, do not use a transaction.</para></listitem>
         </varlistentry>
 
         <varlistentry>
-            <term>-E ENDIAN</term>
+            <term><option>-E ENDIAN</option></term>
             <listitem><para>Control endianness of generated binary output of raster; specify 0 for XDR and 1 for NDR (default); only NDR output is supported now</para></listitem>
         </varlistentry>
 
         <varlistentry>
-            <term>-V version</term>
+            <term><option>-V version</option></term>
             <listitem><para>Specify version of output format.  Default  is 0.  Only 0 is supported at this time.</para></listitem>
         </varlistentry>
     </variablelist>

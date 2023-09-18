@@ -56,80 +56,80 @@ into includes in the future for easier maintenance.</para></listitem>
 			<para>&address_standardizer_required;</para>
 				<variablelist>
 					<varlistentry>
-							<term>building</term>
+							<term><varname>building</varname></term>
 							<listitem>
 								<para> is text (token number <code>0</code>):  Refers to building number or name. Unparsed building identifiers and types. Generally blank for most addresses.</para>
 							</listitem>
 					</varlistentry>
-					<varlistentry><term>house_num</term>
+					<varlistentry><term><varname>house_num</varname></term>
 						<listitem>
 							<para>is a text (token number <code>1</code>): This is the street number on a street. Example <emphasis>75</emphasis> in <code>75 State Street</code>.</para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>predir</term><listitem>
+					<varlistentry><term><varname>predir</varname></term><listitem>
 							<para> is text (token number <code>2</code>): STREET NAME PRE-DIRECTIONAL such as North, South, East, West etc.</para>
 					</listitem></varlistentry>
-					<varlistentry><term>qual</term>
+					<varlistentry><term><varname>qual</varname></term>
 						<listitem>
 								<para>is text (token number <code>3</code>): STREET NAME PRE-MODIFIER Example <emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>.</para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>pretype</term>
+					<varlistentry><term><varname>pretype</varname></term>
 						<listitem>
 								<para> is text (token number <code>4</code>): STREET PREFIX TYPE</para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>name</term>
+					<varlistentry><term><varname>name</varname></term>
 							<listitem>
 								<para>is text (token number <code>5</code>): STREET NAME</para>
 							</listitem>
 					</varlistentry>
-					<varlistentry><term>suftype</term>
+					<varlistentry><term><varname>suftype</varname></term>
 						<listitem>
 							<para>is text (token number <code>6</code>): STREET POST TYPE e.g. St, Ave, Cir.  A street type following the root street name. Example <emphasis>STREET</emphasis> in <code>75 State Street</code>.</para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>sufdir</term>
+					<varlistentry><term><varname>sufdir</varname></term>
 						<listitem>
 							<para>is text (token number <code>7</code>): STREET POST-DIRECTIONAL A directional modifier that follows the street name.. Example <emphasis>WEST</emphasis> in <code>3715 TENTH AVENUE WEST</code>.</para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>ruralroute</term>
+					<varlistentry><term><varname>ruralroute</varname></term>
 						<listitem>
 							<para>is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>7</emphasis> in <code>RR 7</code>.</para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>extra</term>
+					<varlistentry><term><varname>extra</varname></term>
 						<listitem>
 							<para>is text: Extra information like Floor number.</para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>city</term>
+					<varlistentry><term><varname>city</varname></term>
 						<listitem>
 							<para>is text (token number <code>10</code>): Example Boston.</para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>state</term>
+					<varlistentry><term><varname>state</varname></term>
 						<listitem>
 							<para>is text (token number <code>11</code>):  Example <code>MASSACHUSETTS</code></para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>country</term>
+					<varlistentry><term><varname>country</varname></term>
 						<listitem>
 							<para>is text (token number <code>12</code>):  Example <code>USA</code></para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>postcode</term>
+					<varlistentry><term><varname>postcode</varname></term>
 						<listitem>
 							<para>is text POSTAL CODE (ZIP CODE) (token number <code>13</code>):  Example <code>02109</code></para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>box</term>
+					<varlistentry><term><varname>box</varname></term>
 						<listitem>
 							<para>is text POSTAL BOX NUMBER (token number <code>14 and 15</code>):  Example <code>02109</code></para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>unit</term>
+					<varlistentry><term><varname>unit</varname></term>
 						<listitem>
 							<para>is text Apartment number or Suite Number (token number <code>17</code>):  Example <emphasis>3B</emphasis> in <code>APT 3B</code>.</para>
 						</listitem>
@@ -159,12 +159,12 @@ into includes in the future for easier maintenance.</para></listitem>
 
 					<variablelist>
 						<varlistentry>
-								<term>id</term>
+								<term><varname>id</varname></term>
 								<listitem>
 									<para>Primary key of table</para>
 								</listitem>
 						</varlistentry>
-						<varlistentry><term>rule</term>
+						<varlistentry><term><varname>rule</varname></term>
 							<listitem>
 								<para>text field denoting the rule. Details at <link xlink:href="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-rec--">PAGC Address Standardizer Rule records</link>.</para>
 								<para>A rule consists of a set of non-negative integers representing input tokens, terminated by a -1, followed by an equal number of non-negative integers representing postal attributes, terminated by a -1, followed by an integer representing a rule type, followed by an integer representing the rank of the rule. The rules are ranked from 0 (lowest) to 17 (highest).</para>
@@ -180,63 +180,63 @@ into includes in the future for easier maintenance.</para></listitem>
 				<para><emphasis role="bold">Form-Based Input Tokens</emphasis></para>
 				<variablelist>
 						<varlistentry>
-								<term>AMPERS</term>
+								<term><varname>AMPERS</varname></term>
 								<listitem>
 									<para>(13). The ampersand (&amp;) is frequently used to abbreviate the word "and".</para>
 								</listitem>
 						</varlistentry>
 
 						<varlistentry>
-								<term>DASH</term>
+								<term><varname>DASH</varname></term>
 								<listitem>
 									<para>(9). A punctuation character.</para>
 								</listitem>
 						</varlistentry>
 
 						<varlistentry>
-								<term>DOUBLE</term>
+								<term><varname>DOUBLE</varname></term>
 								<listitem>
 									<para>(21). A sequence of two letters. Often used as identifiers.</para>
 								</listitem>
 						</varlistentry>
 
 						<varlistentry>
-								<term>FRACT</term>
+								<term><varname>FRACT</varname></term>
 								<listitem>
 									<para>(25). Fractions are sometimes used in civic numbers or unit numbers.</para>
 								</listitem>
 						</varlistentry>
 
 						<varlistentry>
-							<term>MIXED</term>
+							<term><varname>MIXED</varname></term>
 							<listitem>
 								<para>(23). An alphanumeric string that contains both letters and digits. Used for identifiers.</para>
 							</listitem>
 						</varlistentry>
 
 						<varlistentry>
-							<term>NUMBER</term>
+							<term><varname>NUMBER</varname></term>
 							<listitem>
 								<para>(0). A string of digits.</para>
 							</listitem>
 						</varlistentry>
 
 						<varlistentry>
-							<term>ORD</term>
+							<term><varname>ORD</varname></term>
 							<listitem>
 								<para>(15). Representations such as First or 1st. Often used in street names.</para>
 							</listitem>
 						</varlistentry>
 
 						<varlistentry>
-							<term>ORD</term>
+							<term><varname>ORD</varname></term>
 							<listitem>
 								<para>(18). A single letter.</para>
 							</listitem>
 						</varlistentry>
 
 						<varlistentry>
-							<term>WORD</term>
+							<term><varname>WORD</varname></term>
 							<listitem>
 								<para>(1). A word is a string of letters of arbitrary length. A single letter can be both a SINGLE and a WORD.</para>
 							</listitem>
@@ -246,63 +246,63 @@ into includes in the future for easier maintenance.</para></listitem>
 				<para><emphasis role="bold">Function-based Input Tokens</emphasis></para>
 				<variablelist>
 						<varlistentry>
-								<term>BOXH</term>
+								<term><varname>BOXH</varname></term>
 								<listitem>
 									<para>(14). Words used to denote post office boxes. For example <emphasis>Box</emphasis> or <emphasis>PO Box</emphasis>.</para>
 								</listitem>
 						</varlistentry>
 
 						<varlistentry>
-								<term>BUILDH</term>
+								<term><varname>BUILDH</varname></term>
 								<listitem>
 									<para>(19). Words used to denote buildings or building complexes, usually as a prefix. For example: <emphasis>Tower</emphasis> in <emphasis>Tower 7A</emphasis>.</para>
 								</listitem>
 						</varlistentry>
 
 						<varlistentry>
-								<term>BUILDT</term>
+								<term><varname>BUILDT</varname></term>
 								<listitem>
 									<para>(24). Words and abbreviations used to denote buildings or building complexes, usually as a suffix. For example: <emphasis>Shopping Centre</emphasis>.</para>
 								</listitem>
 						</varlistentry>
 
 						<varlistentry>
-								<term>DIRECT</term>
+								<term><varname>DIRECT</varname></term>
 								<listitem>
 									<para>(22). Words used to denote directions, for example <emphasis>North</emphasis>.</para>
 								</listitem>
 						</varlistentry>
 
 						<varlistentry>
-								<term>MILE</term>
+								<term><varname>MILE</varname></term>
 								<listitem>
 									<para>(20). Words used to denote milepost addresses.</para>
 								</listitem>
 						</varlistentry>
 
 						<varlistentry>
-								<term>ROAD</term>
+								<term><varname>ROAD</varname></term>
 								<listitem>
 									<para>(6). Words and abbreviations used to denote highways and roads. For example: the <emphasis>Interstate</emphasis> in <emphasis>Interstate 5</emphasis></para>
 								</listitem>
 						</varlistentry>
 
 						<varlistentry>
-								<term>RR</term>
+								<term><varname>RR</varname></term>
 								<listitem>
 									<para>(8). Words and abbreviations used to denote rural routes. <emphasis>RR</emphasis>.</para>
 								</listitem>
 						</varlistentry>
 
 						<varlistentry>
-								<term>TYPE</term>
+								<term><varname>TYPE</varname></term>
 								<listitem>
 									<para>(2). Words and abbreviation used to denote street typess. For example: <emphasis>ST</emphasis> or <emphasis>AVE</emphasis>.</para>
 								</listitem>
 						</varlistentry>
 
 						<varlistentry>
-								<term>UNITH</term>
+								<term><varname>UNITH</varname></term>
 								<listitem>
 									<para>(16). Words and abbreviation used to denote internal subaddresses. For example, <emphasis>APT</emphasis> or <emphasis>UNIT</emphasis>.</para>
 								</listitem>
@@ -312,28 +312,28 @@ into includes in the future for easier maintenance.</para></listitem>
 				<para><emphasis role="bold">Postal Type Input Tokens</emphasis></para>
 				<variablelist>
 						<varlistentry>
-								<term>QUINT</term>
+								<term><varname>QUINT</varname></term>
 								<listitem>
 									<para>(28). A 5 digit number. Identifies a Zip Code</para>
 								</listitem>
 						</varlistentry>
 
 						<varlistentry>
-								<term>QUAD</term>
+								<term><varname>QUAD</varname></term>
 								<listitem>
 									<para>(29). A 4 digit number. Identifies ZIP4.</para>
 								</listitem>
 						</varlistentry>
 
 						<varlistentry>
-								<term>PCH</term>
+								<term><varname>PCH</varname></term>
 								<listitem>
 									<para>(27). A 3 character sequence of letter number letter. Identifies an FSA, the first 3 characters of a Canadian postal code.</para>
 								</listitem>
 						</varlistentry>
 
 						<varlistentry>
-								<term>PCT</term>
+								<term><varname>PCT</varname></term>
 								<listitem>
 									<para>(26). A 3 character sequence of number letter number. Identifies an LDU, the last 3 characters of a Canadian postal code.</para>
 								</listitem>
@@ -344,7 +344,7 @@ into includes in the future for easier maintenance.</para></listitem>
 					<para>STOPWORDS combine with WORDS. In rules a string of multiple WORDs and STOPWORDs will be represented by a single WORD token.</para>
 					<variablelist>
 						<varlistentry>
-								<term>STOPWORD</term>
+								<term><varname>STOPWORD</varname></term>
 								<listitem>
 									<para>(7). A word with low lexical significance, that can be omitted in parsing. For example: <emphasis>THE</emphasis>.</para>
 								</listitem>
@@ -367,25 +367,25 @@ into includes in the future for easier maintenance.</para></listitem>
 				<para><emphasis role="bold">MACRO_C output tokens</emphasis> (excerpted from <link xlink:href="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>.</para>
                 <variablelist>
                     <varlistentry>
-                            <term>CITY</term>
+                            <term><varname>CITY</varname></term>
                             <listitem>
                                 <para>(token number "10"). Example "Albany"</para>
                             </listitem>
                     </varlistentry>
                     <varlistentry>
-                            <term>STATE</term>
+                            <term><varname>STATE</varname></term>
                             <listitem>
                                 <para>(token number "11"). Example "NY"</para>
                             </listitem>
                     </varlistentry>
                     <varlistentry>
-                            <term>NATION</term>
+                            <term><varname>NATION</varname></term>
                             <listitem>
                                 <para>(token number "12").  This attribute is not used in most reference files. Example "USA"</para>
                             </listitem>
                     </varlistentry>
                      <varlistentry>
-                            <term>POSTAL</term>
+                            <term><varname>POSTAL</varname></term>
                             <listitem>
                                 <para>(token number "13").  (SADS elements "ZIP CODE" , "PLUS 4" ). This attribute is used for both the US Zip and the Canadian Postal Codes.</para>
                             </listitem>
@@ -396,35 +396,35 @@ into includes in the future for easier maintenance.</para></listitem>
 				<para>(token number = "<emphasis role="bold">1</emphasis>"). The class of rules for parsing full MICRO clauses (such as House, street, sufdir, predir, pretyp, suftype, qualif) (ie ARC_C plus CIVIC_C). These rules are not used in the build phase.</para>
 				<para><emphasis role="bold">MICRO_C output tokens</emphasis> (excerpted from <link xlink:href="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>.</para>
                 <variablelist>
-                    <varlistentry><term>HOUSE</term>
+                    <varlistentry><term><varname>HOUSE</varname></term>
 						<listitem>
 							<para>is a text (token number <code>1</code>): This is the street number on a street. Example <emphasis>75</emphasis> in <code>75 State Street</code>.</para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>predir</term><listitem>
+					<varlistentry><term><varname>predir</varname></term><listitem>
 							<para> is text (token number <code>2</code>): STREET NAME PRE-DIRECTIONAL such as North, South, East, West etc.</para>
 					</listitem></varlistentry>
-					<varlistentry><term>qual</term>
+					<varlistentry><term><varname>qual</varname></term>
 						<listitem>
 								<para>is text (token number <code>3</code>): STREET NAME PRE-MODIFIER Example <emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>.</para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>pretype</term>
+					<varlistentry><term><varname>pretype</varname></term>
 						<listitem>
 								<para> is text (token number <code>4</code>): STREET PREFIX TYPE</para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>street</term>
+					<varlistentry><term><varname>street</varname></term>
 							<listitem>
 								<para>is text (token number <code>5</code>): STREET NAME</para>
 							</listitem>
 					</varlistentry>
-					<varlistentry><term>suftype</term>
+					<varlistentry><term><varname>suftype</varname></term>
 						<listitem>
 							<para>is text (token number <code>6</code>): STREET POST TYPE e.g. St, Ave, Cir.  A street type following the root street name. Example <emphasis>STREET</emphasis> in <code>75 State Street</code>.</para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>sufdir</term>
+					<varlistentry><term><varname>sufdir</varname></term>
 						<listitem>
 							<para>is text (token number <code>7</code>): STREET POST-DIRECTIONAL A directional modifier that follows the street name.. Example <emphasis>WEST</emphasis> in <code>3715 TENTH AVENUE WEST</code>.</para>
 						</listitem>
@@ -442,37 +442,37 @@ into includes in the future for easier maintenance.</para></listitem>
 
 				<para><emphasis role="bold">EXTRA_C output tokens</emphasis> (excerpted from <link xlink:href="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>.</para>
                 <variablelist>
-                    <varlistentry><term>BLDNG</term>
+                    <varlistentry><term><varname>BLDNG</varname></term>
 						<listitem>
 							<para>(token number <code>0</code>):  Unparsed building identifiers and types.</para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>BOXH</term>
+					<varlistentry><term><varname>BOXH</varname></term>
 						<listitem>
 							<para>(token number <code>14</code>): The <emphasis role="bold">BOX</emphasis> in <code>BOX 3B</code></para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>BOXT</term>
+					<varlistentry><term><varname>BOXT</varname></term>
 						<listitem>
 							<para>(token number <code>15</code>): The <emphasis role="bold">3B</emphasis> in <code>BOX 3B</code></para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>RR</term>
+					<varlistentry><term><varname>RR</varname></term>
 						<listitem>
 							<para>(token number <code>8</code>): The <emphasis role="bold">RR</emphasis> in <code>RR 7</code></para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>UNITH</term>
+					<varlistentry><term><varname>UNITH</varname></term>
 						<listitem>
 							<para>(token number <code>16</code>): The <emphasis role="bold">APT</emphasis> in <code>APT 3B</code></para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>UNITT</term>
+					<varlistentry><term><varname>UNITT</varname></term>
 						<listitem>
 							<para>(token number <code>17</code>): The <emphasis role="bold">3B</emphasis> in <code>APT 3B</code></para>
 						</listitem>
 					</varlistentry>
-					<varlistentry><term>UNKNWN</term>
+					<varlistentry><term><varname>UNKNWN</varname></term>
 						<listitem>
 							<para>(token number <code>9</code>): An otherwise unclassified output.</para>
 						</listitem>
@@ -493,28 +493,28 @@ into includes in the future for easier maintenance.</para></listitem>
 				<para>A lex has at least the following columns in the table. You may add</para>
 					<variablelist>
 						<varlistentry>
-								<term>id</term>
+								<term><varname>id</varname></term>
 								<listitem>
 									<para>Primary key of table</para>
 								</listitem>
 						</varlistentry>
-						<varlistentry><term>seq</term>
+						<varlistentry><term><varname>seq</varname></term>
 							<listitem>
 								<para>integer: definition number?</para>
 							</listitem>
 						</varlistentry>
 
-						<varlistentry><term>word</term>
+						<varlistentry><term><varname>word</varname></term>
 							<listitem>
 								<para>text: the input word</para>
 							</listitem>
 						</varlistentry>
-						<varlistentry><term>stdword</term>
+						<varlistentry><term><varname>stdword</varname></term>
 							<listitem>
 								<para>text: the standardized replacement word</para>
 							</listitem>
 						</varlistentry>
-						<varlistentry><term>token</term>
+						<varlistentry><term><varname>token</varname></term>
 							<listitem>
 								<para>integer: the kind of word it is.  Only if it is used in this context will it be replaced. Refer to <link xlink:href="http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--">PAGC Tokens</link>.</para>
 							</listitem>
@@ -535,27 +535,27 @@ into includes in the future for easier maintenance.</para></listitem>
 				<para>A gaz table has at least the following columns in the table. You may add more columns if you wish for your own purposes.</para>
 					<variablelist>
 						<varlistentry>
-								<term>id</term>
+								<term><varname>id</varname></term>
 								<listitem>
 									<para>Primary key of table</para>
 								</listitem>
 						</varlistentry>
-						<varlistentry><term>seq</term>
+						<varlistentry><term><varname>seq</varname></term>
 							<listitem>
 								<para>integer: definition number? - identifer used for that instance of the word</para>
 							</listitem>
 						</varlistentry>
-						<varlistentry><term>word</term>
+						<varlistentry><term><varname>word</varname></term>
 							<listitem>
 								<para>text: the input word</para>
 							</listitem>
 						</varlistentry>
-						<varlistentry><term>stdword</term>
+						<varlistentry><term><varname>stdword</varname></term>
 							<listitem>
 								<para>text: the standardized replacement word</para>
 							</listitem>
 						</varlistentry>
-						<varlistentry><term>token</term>
+						<varlistentry><term><varname>token</varname></term>
 							<listitem>
 								<para>integer: the kind of word it is.  Only if it is used in this context will it be replaced. Refer to <link xlink:href="http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--">PAGC Tokens</link>.</para>
 							</listitem>
@@ -601,7 +601,7 @@ into includes in the future for easier maintenance.</para></listitem>
             <para>Elements returned in the json document are </para>
             <variablelist>
 						<varlistentry>
-                            <term>input_tokens</term>
+                            <term><varname>input_tokens</varname></term>
                             <listitem>
                                 <para>For each word in the input address, returns the position of the word,
                                     token categorization of the word, and the standard word it is mapped to.
@@ -609,13 +609,13 @@ into includes in the future for easier maintenance.</para></listitem>
                                     as more than one thing. </para>
                             </listitem>
 						</varlistentry>
-						<varlistentry><term>rules</term>
+						<varlistentry><term><varname>rules</varname></term>
 							<listitem>
 								<para>The set of rules matching the input and the corresponding score for each. The first rule (highest scoring) is
                                 what is used for standardization</para>
 							</listitem>
 						</varlistentry>
-						<varlistentry><term>stdaddr</term>
+						<varlistentry><term><varname>stdaddr</varname></term>
 							<listitem>
 								<para>The standardized address elements <xref linkend="stdaddr"/> that would be returned when running <xref linkend="standardize_address"/></para>
 							</listitem>
