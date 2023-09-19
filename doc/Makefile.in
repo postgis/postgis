@@ -286,6 +286,7 @@ endif
 
 ifeq ($(MSGMERGE),)
 $(PO_FILES): requirements_not_met_msgmerge
+$(XML_UNIFIED_POT): requirements_not_met_msgmerge
 endif
 
 ifeq ($(MSGATTRIB),)
