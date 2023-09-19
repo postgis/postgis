@@ -328,7 +328,7 @@ $(XML_UNIFIED_POT): $(XML_SOURCE_POTS)
 	@$(MSGCAT) --use-first --no-location -o $@.tmp $(XML_SOURCE_POTS)
 	@if test -f $@; then \
     if test -n "$$($(MSGCOMM) --unique $@.tmp $@ | tail -1)"; then \
-      $(MSGMERGE) -U $@.tmp $@ || exit 1; \
+      $(MSGMERGE) -U $@ $@.tmp || exit 1; \
       echo "$@ updated"; \
     else \
       echo "$@ unchanged"; \
