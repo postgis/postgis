@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-18 22:57+0000\n"
-"PO-Revision-Date: 2023-09-19 01:23+0000\n"
+"PO-Revision-Date: 2023-09-19 06:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/it/>\n"
@@ -225,6 +225,8 @@ msgid ""
 "is a text (token number <code>1</code>): This is the street number on a "
 "street. Example <emphasis>75</emphasis> in <code>75 State Street</code>."
 msgstr ""
+"è un testo (numero di token <code>1</code>): È il numero civico di una "
+"strada. Esempio <emphasis>75</emphasis> in <code>75 State Street</code>."
 
 #. Tag: para
 #, no-c-format
@@ -232,6 +234,8 @@ msgid ""
 "is text (token number <code>2</code>): STREET NAME PRE-DIRECTIONAL such as "
 "North, South, East, West etc."
 msgstr ""
+"è un testo (numero di token <code>2</code>): NOME DELLA STRADA PRE-DIRETTIVO "
+"come Nord, Sud, Est, Ovest ecc."
 
 #. Tag: para
 #, no-c-format
@@ -429,6 +433,10 @@ msgid ""
 "emphasis> to the output sequence <emphasis>STREET STREET SUFTYP SUFDIR "
 "QUALIF</emphasis>. The rule is an ARC_C rule of rank 6."
 msgstr ""
+"Così, per esempio, la regola <code>2 0 2 22 3 -1 5 5 6 7 3 -1 2 6</code> "
+"mappa la sequenza di token di uscita <emphasis>TYPE NUMBER TYPE DIRECT "
+"QUALIF</emphasis> alla sequenza di uscita <emphasis>STREET STREET SUFTYP "
+"SUFDIR QUALIF</emphasis>. La regola è una regola ARC_C di rango 6."
 
 #. Tag: para
 #, no-c-format
@@ -436,11 +444,13 @@ msgid ""
 "Numbers for corresponding output tokens are listed in <xref linkend=\"stdaddr"
 "\"/>."
 msgstr ""
+"I numeri dei corrispondenti token di uscita sono elencati in <xref linkend="
+"\"stdaddr\"/>."
 
 #. Tag: title
 #, no-c-format
 msgid "Input Tokens"
-msgstr ""
+msgstr "Gettoni di ingresso"
 
 #. Tag: para
 #, no-c-format
@@ -450,11 +460,15 @@ msgid ""
 "www.pagcgeo.org/docs/html/pagc-12.html#ss12.2\">PAGC Input Tokens</link> are "
 "as follows:"
 msgstr ""
+"Ogni regola inizia con una serie di token di input seguiti da un terminatore "
+"<code>-1</code>. I token di input validi estratti da <link xlink:href=\"http"
+"://www.pagcgeo.org/docs/html/pagc-12.html#ss12.2\">PAGC Input Tokens</link> "
+"sono i seguenti:"
 
 #. Tag: emphasis
 #, no-c-format
 msgid "Form-Based Input Tokens"
-msgstr ""
+msgstr "Gettoni di ingresso basati su moduli"
 
 #. Tag: para
 #, no-c-format
@@ -462,21 +476,25 @@ msgid ""
 "(13). The ampersand (&amp;) is frequently used to abbreviate the word \"and"
 "\"."
 msgstr ""
+"(13). L'ampersand (&amp;) è spesso usato per abbreviare la parola \"e\"."
 
 #. Tag: para
 #, no-c-format
 msgid "(9). A punctuation character."
-msgstr ""
+msgstr "(9). Un carattere di punteggiatura."
 
 #. Tag: para
 #, no-c-format
 msgid "(21). A sequence of two letters. Often used as identifiers."
 msgstr ""
+"(21). Una sequenza di due lettere. Spesso utilizzato come identificativo."
 
 #. Tag: para
 #, no-c-format
 msgid "(25). Fractions are sometimes used in civic numbers or unit numbers."
 msgstr ""
+"(25). Le frazioni sono talvolta utilizzate nei numeri civici o nelle unità "
+"di misura."
 
 #. Tag: para
 #, no-c-format
@@ -484,21 +502,24 @@ msgid ""
 "(23). An alphanumeric string that contains both letters and digits. Used for "
 "identifiers."
 msgstr ""
+"(23). Una stringa alfanumerica che contiene sia lettere che cifre. Si usa "
+"per gli identificatori."
 
 #. Tag: para
 #, no-c-format
 msgid "(0). A string of digits."
-msgstr ""
+msgstr "(0). Una stringa di cifre."
 
 #. Tag: para
 #, no-c-format
 msgid "(15). Representations such as First or 1st. Often used in street names."
 msgstr ""
+"(15). Rappresentazioni come First o 1st. Spesso usato nei nomi delle strade."
 
 #. Tag: para
 #, no-c-format
 msgid "(18). A single letter."
-msgstr ""
+msgstr "(18). Una sola lettera."
 
 #. Tag: para
 #, no-c-format
@@ -506,11 +527,13 @@ msgid ""
 "(1). A word is a string of letters of arbitrary length. A single letter can "
 "be both a SINGLE and a WORD."
 msgstr ""
+"(1). Una parola è una stringa di lettere di lunghezza arbitraria. Una "
+"singola lettera può essere sia una SINGOLA che una PAROLA."
 
 #. Tag: emphasis
 #, no-c-format
 msgid "Function-based Input Tokens"
-msgstr ""
+msgstr "Gettoni di ingresso basati su funzioni"
 
 #. Tag: para
 #, no-c-format
@@ -518,6 +541,8 @@ msgid ""
 "(14). Words used to denote post office boxes. For example <emphasis>Box</"
 "emphasis> or <emphasis>PO Box</emphasis>."
 msgstr ""
+"(14). Parole usate per indicare le caselle postali. Ad esempio "
+"<emphasis>Box</emphasis> o <emphasis>PO Box</emphasis>."
 
 #. Tag: para
 #, no-c-format
@@ -526,6 +551,9 @@ msgid ""
 "prefix. For example: <emphasis>Tower</emphasis> in <emphasis>Tower 7A</"
 "emphasis>."
 msgstr ""
+"(19). Parole utilizzate per indicare edifici o complessi di edifici, di "
+"solito come prefisso. Ad esempio: <emphasis>Torre</emphasis> in "
+"<emphasis>Torre 7A</emphasis>."
 
 #. Tag: para
 #, no-c-format
@@ -534,6 +562,9 @@ msgid ""
 "complexes, usually as a suffix. For example: <emphasis>Shopping Centre</"
 "emphasis>."
 msgstr ""
+"(24). Parole e abbreviazioni utilizzate per indicare edifici o complessi di "
+"edifici, di solito come suffisso. Ad esempio: <emphasis>Centro "
+"commerciale</emphasis>."
 
 #. Tag: para
 #, no-c-format
@@ -541,11 +572,13 @@ msgid ""
 "(22). Words used to denote directions, for example <emphasis>North</"
 "emphasis>."
 msgstr ""
+"(22). Parole usate per indicare le direzioni, ad esempio "
+"<emphasis>Nord</emphasis>."
 
 #. Tag: para
 #, no-c-format
 msgid "(20). Words used to denote milepost addresses."
-msgstr ""
+msgstr "(20). Parole usate per indicare gli indirizzi delle pietre miliari."
 
 #. Tag: para
 #, no-c-format
@@ -553,6 +586,9 @@ msgid ""
 "(6). Words and abbreviations used to denote highways and roads. For example: "
 "the <emphasis>Interstate</emphasis> in <emphasis>Interstate 5</emphasis>"
 msgstr ""
+"(6). Parole e abbreviazioni utilizzate per indicare autostrade e strade. Ad "
+"esempio: la <emphasis>Interstate</emphasis> in <emphasis>Interstate "
+"5</emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -560,6 +596,8 @@ msgid ""
 "(8). Words and abbreviations used to denote rural routes. <emphasis>RR</"
 "emphasis>."
 msgstr ""
+"(8). Parole e abbreviazioni utilizzate per indicare i percorsi rurali. "
+"<emphasis>RR</emphasis>."
 
 #. Tag: para
 #, no-c-format
@@ -567,6 +605,8 @@ msgid ""
 "(2). Words and abbreviation used to denote street typess. For example: "
 "<emphasis>ST</emphasis> or <emphasis>AVE</emphasis>."
 msgstr ""
+"(2). Parole e abbreviazioni utilizzate per indicare le tipologie di strada. "
+"Ad esempio: <emphasis>ST</emphasis> o <emphasis>AVE</emphasis>."
 
 #. Tag: para
 #, no-c-format
@@ -574,21 +614,23 @@ msgid ""
 "(16). Words and abbreviation used to denote internal subaddresses. For "
 "example, <emphasis>APT</emphasis> or <emphasis>UNIT</emphasis>."
 msgstr ""
+"(16). Parole e abbreviazioni usate per indicare i sottoindirizzi interni. Ad "
+"esempio, <emphasis>APT</emphasis> o <emphasis>UNIT</emphasis>."
 
 #. Tag: emphasis
 #, no-c-format
 msgid "Postal Type Input Tokens"
-msgstr ""
+msgstr "Gettoni di ingresso di tipo postale"
 
 #. Tag: para
 #, no-c-format
 msgid "(28). A 5 digit number. Identifies a Zip Code"
-msgstr ""
+msgstr "(28). Un numero di 5 cifre. Identifica un codice postale"
 
 #. Tag: para
 #, no-c-format
 msgid "(29). A 4 digit number. Identifies ZIP4."
-msgstr ""
+msgstr "(29). Un numero di 4 cifre. Identifica il CAP4."
 
 #. Tag: para
 #, no-c-format
@@ -596,6 +638,8 @@ msgid ""
 "(27). A 3 character sequence of letter number letter. Identifies an FSA, the "
 "first 3 characters of a Canadian postal code."
 msgstr ""
+"(27). Una sequenza di 3 caratteri di lettera numero lettera. Identifica un "
+"FSA, i primi 3 caratteri di un codice postale canadese."
 
 #. Tag: para
 #, no-c-format
@@ -603,11 +647,13 @@ msgid ""
 "(26). A 3 character sequence of number letter number. Identifies an LDU, the "
 "last 3 characters of a Canadian postal code."
 msgstr ""
+"(26). Una sequenza di 3 caratteri di numero lettera numero. Identifica una "
+"LDU, gli ultimi 3 caratteri di un codice postale canadese."
 
 #. Tag: emphasis
 #, no-c-format
 msgid "Stopwords"
-msgstr ""
+msgstr "Parole d'ordine"
 
 #. Tag: para
 #, no-c-format
@@ -24377,21 +24423,25 @@ msgstr ""
 msgid ""
 "Enhanced: 2.5 - added support for GEOMETRYCOLLECTION and MULTILINESTRING"
 msgstr ""
+"Migliorato: 2.5 - aggiunto il supporto per GEOMETRYCOLLECTION e "
+"MULTILINESTRING"
 
 #. Tag: para
 #, no-c-format
 msgid "Compute an open buffer around roads"
-msgstr ""
+msgstr "Calcolo di un buffer aperto intorno alle strade"
 
 #. Tag: para
 #, no-c-format
 msgid "15, 'quad_segs=4 join=round' original line and its offset 15 units."
 msgstr ""
+"15, 'quad_segs=4 join=round' linea originale e il suo spostamento di 15 "
+"unità."
 
 #. Tag: para
 #, no-c-format
 msgid "-15, 'quad_segs=4 join=round' original line and its offset -15 units"
-msgstr ""
+msgstr "-15, 'quad_segs=4 join=round' linea originale e suo offset -15 unità"
 
 #. Tag: para
 #, no-c-format
@@ -24399,6 +24449,8 @@ msgid ""
 "double-offset to get more curvy, note the first reverses direction, so -30 + "
 "15 = -15"
 msgstr ""
+"doppio offset per ottenere una maggiore curvatura, notare che il primo "
+"inverte la direzione, quindi -30 + 15 = -15"
 
 #. Tag: para
 #, no-c-format
@@ -24406,21 +24458,23 @@ msgid ""
 "double-offset to get more curvy,combined with regular offset 15 to get "
 "parallel lines. Overlaid with original."
 msgstr ""
+"doppio offset per ottenere una maggiore curvatura, combinato con l'offset "
+"regolare 15 per ottenere linee parallele. Sovrapposto all'originale."
 
 #. Tag: para
 #, no-c-format
 msgid "15, 'quad_segs=4 join=bevel' shown with original line"
-msgstr ""
+msgstr "15, 'quad_segs=4 join=bevel' mostrato con la linea originale"
 
 #. Tag: para
 #, no-c-format
 msgid "15,-15 collected, join=mitre mitre_limit=2.1"
-msgstr ""
+msgstr "15,-15 raccolto, join=mitre mitre mitre_limit=2.1"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes a point guaranteed to lie in a polygon, or on a geometry."
-msgstr ""
+msgstr "Calcola un punto che si trova in un poligono o su una geometria."
 
 #. Tag: para
 #, no-c-format
@@ -24429,11 +24483,14 @@ msgid ""
 "interior of a surface (POLYGON, MULTIPOLYGON, and CURVED POLYGON). In "
 "PostGIS this function also works on line and point geometries."
 msgstr ""
+"Restituisce un <varname>POINT</varname> che è garantito essere all'interno "
+"di una superficie (POLYGON, MULTIPOLYGON e CURVED POLYGON). In PostGIS "
+"questa funzione funziona anche su geometrie di linee e punti."
 
 #. Tag: para
 #, no-c-format
 msgid "&sfs_compliant; s3.2.14.2 // s3.2.18.2"
-msgstr ""
+msgstr "&sfs_compliant; s3.2.14.2 // s3.2.18.2"
 
 #. Tag: para
 #, no-c-format
@@ -24444,6 +24501,11 @@ msgid ""
 "seem to support this function only for surfaces. SQL Server 2008 supports "
 "all common geometry types."
 msgstr ""
+"&sqlmm_compliant; SQL-MM 3: 8.1.5, 9.5.6. Le specifiche definiscono "
+"ST_PointOnSurface solo per le geometrie di superficie. PostGIS estende la "
+"funzione per supportare tutti i tipi di geometria più comuni. Altri database "
+"(Oracle, DB2, ArcSDE) sembrano supportare questa funzione solo per le "
+"superfici. SQL Server 2008 supporta tutti i tipi di geometria più comuni."
 
 #. Tag: para
 #, no-c-format
@@ -24472,11 +24534,14 @@ msgid ""
 "is guaranteed to lie within polygons, whereas the point computed by <xref "
 "linkend=\"ST_Centroid\"/> may be outside."
 msgstr ""
+"<emphasis role=\"bold\">Esempio:</emphasis> Il risultato di "
+"ST_PointOnSurface è garantito all'interno dei poligoni, mentre il punto "
+"calcolato da <xref linkend=\"ST_Centroid\"/> può essere esterno."
 
 #. Tag: para
 #, no-c-format
 msgid "Red: point on surface; Green: centroid"
-msgstr ""
+msgstr "Rosso: punto sulla superficie; verde: centroide"
 
 #. Tag: para
 #, no-c-format
@@ -24489,6 +24554,8 @@ msgid ""
 "Computes a collection of polygons formed from the linework of a set of "
 "geometries."
 msgstr ""
+"Calcola un insieme di poligoni formati dalle linee di un insieme di "
+"geometrie."
 
 #. Tag: para
 #, no-c-format
@@ -24497,6 +24564,9 @@ msgid ""
 "of a set of geometries. If the input linework does not form any polygons, an "
 "empty GeometryCollection is returned."
 msgstr ""
+"Crea una GeometryCollection contenente i poligoni formati dalle linee di un "
+"insieme di geometrie. Se le linee di input non formano alcun poligono, viene "
+"restituita una GeometryCollection vuota."
 
 #. Tag: para
 #, no-c-format
@@ -24505,6 +24575,9 @@ msgid ""
 "is intended to form a valid polygonal geometry, use <xref linkend="
 "\"ST_BuildArea\"/> to prevent holes being filled."
 msgstr ""
+"Questa funzione crea poligoni che coprono tutte le aree delimitate. Se il "
+"risultato è destinato a formare una geometria poligonale valida, utilizzare "
+"<xref linkend=\"ST_BuildArea\"/> per evitare che vengano riempiti dei buchi."
 
 #. Tag: para
 #, no-c-format
@@ -24513,6 +24586,9 @@ msgid ""
 "properly. To ensure input is noded use <xref linkend=\"ST_Node\"/> on the "
 "input geometry before polygonizing."
 msgstr ""
+"Affinché questa funzione funzioni correttamente, il tracciato di input deve "
+"essere nodato. Per assicurarsi che lo sia, utilizzare <xref linkend=\"ST_Node"
+"\"/> sulla geometria di input prima di poligonare."
 
 #. Tag: para
 #, no-c-format
@@ -24521,16 +24597,19 @@ msgid ""
 "<xref linkend=\"ST_Dump\"/> to convert the polygonized result into separate "
 "polygons."
 msgstr ""
+"Le GeometryCollections possono essere difficili da gestire con strumenti "
+"esterni. Utilizzare <xref linkend=\"ST_Dump\"/> per convertire il risultato "
+"poligonizzato in poligoni separati."
 
 #. Tag: para
 #, no-c-format
 msgid "Polygonized result"
-msgstr ""
+msgstr "Risultato poligonizzato"
 
 #. Tag: para
 #, no-c-format
 msgid "Polygonizing a table of linestrings:"
-msgstr ""
+msgstr "Poligonatura di una tabella di linee:"
 
 #. Tag: para
 #, no-c-format
@@ -24541,6 +24620,8 @@ msgstr ""
 #, no-c-format
 msgid "Returns a valid geometry with points rounded to a grid tolerance."
 msgstr ""
+"Restituisce una geometria valida con punti arrotondati alla tolleranza della "
+"griglia."
 
 #. Tag: para
 #, no-c-format
@@ -24548,6 +24629,9 @@ msgid ""
 "Returns a valid geometry with all points rounded to the provided grid "
 "tolerance, and features below the tolerance removed."
 msgstr ""
+"Restituisce una geometria valida con tutti i punti arrotondati alla "
+"tolleranza della griglia fornita e gli elementi al di sotto della tolleranza "
+"rimossi."
 
 #. Tag: para
 #, no-c-format
@@ -24555,21 +24639,24 @@ msgid ""
 "Unlike <xref linkend=\"ST_SnapToGrid\"/> the returned geometry will be "
 "valid, with no ring self-intersections or collapsed components."
 msgstr ""
+"A differenza di <xref linkend=\"ST_SnapToGrid\"/>, la geometria restituita "
+"sarà valida, senza autointersecazioni di anelli o componenti collassati."
 
 #. Tag: para
 #, no-c-format
 msgid "Precision reduction can be used to:"
-msgstr ""
+msgstr "La riduzione di precisione può essere utilizzata per:"
 
 #. Tag: para
 #, no-c-format
 msgid "match coordinate precision to the data accuracy"
-msgstr ""
+msgstr "abbinare la precisione delle coordinate all'accuratezza dei dati"
 
 #. Tag: para
 #, no-c-format
 msgid "reduce the number of coordinates needed to represent a geometry"
 msgstr ""
+"ridurre il numero di coordinate necessarie per rappresentare una geometria"
 
 #. Tag: para
 #, no-c-format
@@ -24578,6 +24665,9 @@ msgid ""
 "formats such as WKT, GeoJSON or KML when the number of output decimal places "
 "is limited)."
 msgstr ""
+"garantire un output geometrico valido in formati che utilizzano una "
+"precisione inferiore (ad esempio, formati di testo come WKT, GeoJSON o KML "
+"quando il numero di cifre decimali in uscita è limitato)."
 
 #. Tag: para
 #, no-c-format
@@ -24585,16 +24675,20 @@ msgid ""
 "export valid geometry to systems which use lower or limited precision (e.g. "
 "SDE, Oracle tolerance value)"
 msgstr ""
+"esportare geometrie valide in sistemi che utilizzano una precisione "
+"inferiore o limitata (ad es. SDE, valore di tolleranza Oracle)"
 
 #. Tag: para
 #, no-c-format
 msgid "Precision reduction can reduce number of vertices"
-msgstr ""
+msgstr "La riduzione della precisione può ridurre il numero di vertici"
 
 #. Tag: para
 #, no-c-format
 msgid "Precision reduction splits polygons if needed to ensure validity"
 msgstr ""
+"La riduzione di precisione divide i poligoni, se necessario, per garantire "
+"la validità"
 
 #. Tag: para
 #, no-c-format
@@ -24607,6 +24701,8 @@ msgid ""
 "Returns a collection containing paths shared by the two input linestrings/"
 "multilinestrings."
 msgstr ""
+"Restituisce un insieme contenente i percorsi condivisi dalle due stringhe/"
+"multilinghe in ingresso."
 
 #. Tag: para
 #, no-c-format
@@ -24616,16 +24712,20 @@ msgid ""
 "collection, those going in the opposite direction are in the second element. "
 "The paths themselves are given in the direction of the first geometry."
 msgstr ""
+"Restituisce un insieme contenente i percorsi condivisi dalle due geometrie "
+"in ingresso. Quelli che vanno nella stessa direzione sono nel primo elemento "
+"della collezione, quelli che vanno nella direzione opposta sono nel secondo "
+"elemento. I percorsi stessi sono dati nella direzione della prima geometria."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Finding shared paths"
-msgstr ""
+msgstr "Esempi: Trovare percorsi condivisi"
 
 #. Tag: para
 #, no-c-format
 msgid "A multilinestring and a linestring"
-msgstr ""
+msgstr "Una multilinestring e una linestring"
 
 #. Tag: para
 #, no-c-format
@@ -24633,6 +24733,8 @@ msgid ""
 "The shared path of multilinestring and linestring overlaid with original "
 "geometries."
 msgstr ""
+"Il percorso condiviso di multilinestring e linestring sovrapposto alle "
+"geometrie originali."
 
 #. Tag: para
 #, no-c-format
@@ -24647,6 +24749,8 @@ msgid ""
 "Returns a simplified version of a geometry, using the Douglas-Peucker "
 "algorithm."
 msgstr ""
+"Restituisce una versione semplificata di una geometria, utilizzando "
+"l'algoritmo di Douglas-Peucker."
 
 #. Tag: para
 #, no-c-format
@@ -24657,6 +24761,11 @@ msgid ""
 "simplification occurs on a object-by-object basis you can also feed a "
 "GeometryCollection to this function."
 msgstr ""
+"Restituisce una versione \"semplificata\" della geometria data, utilizzando "
+"l'algoritmo di Douglas-Peucker. In realtà, funziona solo con (multi)linee e "
+"(multi)poligoni, ma può essere tranquillamente richiamato con qualsiasi tipo "
+"di geometria. Poiché la semplificazione avviene oggetto per oggetto, è "
+"possibile fornire a questa funzione anche una collezione di geometrie."
 
 #. Tag: para
 #, no-c-format
@@ -24668,6 +24777,13 @@ msgid ""
 "engines, to avoid having large numbers of very small objects disappear from "
 "a map leaving surprising gaps."
 msgstr ""
+"Il flag \"conserva collassato\" conserva gli oggetti che altrimenti "
+"sarebbero troppo piccoli data la tolleranza. Ad esempio, una linea lunga 1 "
+"metro semplificata con una tolleranza di 10 metri. Se l'argomento "
+"<varname>preserveCollapsed</varname> è specificato come true, la linea non "
+"scomparirà. Questo flag è utile per i motori di rendering, per evitare che "
+"un gran numero di oggetti molto piccoli scompaia da una mappa lasciando "
+"vuoti sorprendenti."
 
 #. Tag: para
 #, no-c-format
@@ -24675,6 +24791,8 @@ msgid ""
 "Note that returned geometry might lose its simplicity (see <xref linkend="
 "\"ST_IsSimple\"/>)"
 msgstr ""
+"Si noti che la geometria restituita potrebbe perdere la sua semplicità (si "
+"veda <xref linkend=\"ST_IsSimple\"/>)"
 
 #. Tag: para
 #, no-c-format
