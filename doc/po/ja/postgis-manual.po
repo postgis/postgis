@@ -6,14 +6,16 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-18 22:57+0000\n"
-"PO-Revision-Date: 2023-09-14 17:40+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2023-09-19 03:23+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 5.0\n"
 
 #. Tag: title
 #, no-c-format
@@ -18990,7 +18992,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 0.8.2, Z and M supported added in 1.1.1"
-msgstr "Availability: 0.8.2 Z軸とM軸のサポートが1.1.1で追加されました。"
+msgstr "Availability: 0.8.2 Z軸とM軸のサポートが1.1.1で追加されました"
 
 #. Tag: para
 #, no-c-format
@@ -19210,7 +19212,7 @@ msgstr "Changed: 2.1.0 2.0.xではST_Line_Substringと呼ばれていました�
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.1.0, Z and M supported added in 1.1.1"
-msgstr "Availability: 1.1.0 Z軸とM軸のサポートが1.1.1で追加されました。"
+msgstr "Availability: 1.1.0 Z軸とM軸のサポートが1.1.1で追加されました"
 
 #. Tag: para
 #, no-c-format
@@ -19666,7 +19668,7 @@ msgstr ""
 "引数で<varname>use_typmod=false</varname>を渡す必要があります。これが実行され"
 "ると、型修飾子なしのジオメトリカラムが生成され、三つの制約が定義されます。特"
 "に、これは、テーブルに属するすべてのジオメトリカラムが少なくとも三つの制約を"
-"持つことを意味します。"
+"持つことを意味します:"
 
 #. Tag: para
 #, no-c-format
@@ -19792,24 +19794,23 @@ msgid ""
 "Insert geometries into roads table with a SRID set already using <link "
 "linkend=\"ST_GeomFromEWKT\">EWKT format</link>:"
 msgstr ""
-"ジオメトリを、<link linkend=\"ST_GeomFromEWKT\">EWKT書式</link>を使って、SRID"
-"を持つ道路テーブルに挿入します。"
+"ジオメトリを、<link linkend=\"ST_GeomFromEWKT\""
+">EWKT書式</link>を使って、SRIDを持つ道路テーブルに挿入します:"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This will change the srid of the roads table to 4326 from whatever it was "
 "before:"
-msgstr ""
-"これにより道路テーブルが、以前がどんなSRIDであっても、4326に変更されます。"
+msgstr "これにより道路テーブルが、以前がどんなSRIDであっても、4326に変更されます:"
 
 #. Tag: para
 #, no-c-format
 msgid "The prior example is equivalent to this DDL statement:"
 msgstr ""
-"上述の例と、次のDDL手続き (訳注: DDLはData Definition Languageの略で、データ"
-"構造の操作を行う言語を指し、この場合は CREATE TABLEやALTER TABLE等が該当しま"
-"す)とは同じです。"
+"上述の例と、次のDDL手続き (訳注: DDLはData Definition "
+"Languageの略で、データ構造の操作を行う言語を指し、この場合は CREATE "
+"TABLEやALTER TABLE等が該当します)とは同じです:"
 
 #. Tag: para
 #, no-c-format
@@ -19945,7 +19946,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "If your data is in geography already:"
-msgstr "ジオグラフィのデータが既にある場合。"
+msgstr "ジオグラフィのデータが既にある場合:"
 
 #. Tag: para
 #, no-c-format
@@ -20277,7 +20278,7 @@ msgid ""
 "improvements for planar to better handle large or many vertex geometries"
 msgstr ""
 "Availability: 1.5.0 1.5でジオグラフィ対応が導入されました。大きいジオメトリや"
-"頂点の多いジオメトリについての速度が改善しました。"
+"頂点の多いジオメトリについての速度が改善しました"
 
 #. Tag: para
 #, no-c-format
@@ -20455,8 +20456,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Changed: 2.2.0 In prior versions this used to be called ST_Distance_Sphere"
-msgstr ""
-"Changed: 2.2.0 前の版ではこの関数はST_Distance_Sphereと呼ばれていました。"
+msgstr "Changed: 2.2.0 前の版ではこの関数はST_Distance_Sphereと呼ばれていました"
 
 #. Tag: para
 #, no-c-format
@@ -20495,8 +20495,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.2.0 In prior versions this was called ST_Distance_Spheroid"
-msgstr ""
-"Changed: 2.2.0 前の版ではこの関数はST_Distance_Sphereと呼ばれていました。"
+msgstr "Changed: 2.2.0 前の版ではこの関数はST_Distance_Sphereと呼ばれていました"
 
 #. Tag: para
 #, no-c-format
@@ -20567,7 +20566,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.4.0 - requires GEOS &gt;= 3.7.0"
-msgstr "Availability: 2.4.0 - GEOS 3.7.0以上が必要です。"
+msgstr "Availability: 2.4.0 - GEOS &gt;= 3.7.0が必要です"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -20699,8 +20698,8 @@ msgid ""
 msgstr ""
 "Changed: 2.0.0 大幅な変更 -- 以前の版ではジオグラフィのPOLYGONやMULTIPOLYGON"
 "への適用によってPOLYGONやMULTIPOLYGONの周囲長を返しました。2.0.0版ではジオメ"
-"トリの挙動に従うため0を返すように変更しました。ポリゴンの周囲長を求める場合"
-"は、ST_Perimeterを使います。"
+"トリの挙動に従うため0を返すように変更しました。ポリゴンの周囲長を求める場合は"
+"、ST_Perimeterを使います"
 
 #. Tag: para
 #, no-c-format
@@ -20796,7 +20795,7 @@ msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 7.1, 10.3"
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.0.0 In prior versions this used to be called ST_Length3D"
-msgstr "Changed: 2.0.0 以前の版ではST_Length3Dと呼ばれていました。"
+msgstr "Changed: 2.0.0 以前の版ではST_Length3Dと呼ばれていました"
 
 #. Tag: para
 #, no-c-format
@@ -20828,7 +20827,8 @@ msgid ""
 "value as follows:"
 msgstr ""
 "回転楕円体面上のジオメトリの周長を返します。この関数は、ジオメトリの座標が経"
-"度/緯度で、投影変換なしで長さを求めたい場合に使います。"
+"度/緯度で、投影変換なしで長さを求めたい場合に使います。回転楕円体は次のように"
+"文字列値で指定します:"
 
 #. Tag: literallayout
 #, no-c-format
@@ -47156,9 +47156,7 @@ msgstr ""
 msgid ""
 "Create a table with a raster column to hold the new raster records which can "
 "be accomplished with:"
-msgstr ""
-"新しいラスタ行を保持するためのラスタカラムを持つテーブルを生成します。次を実"
-"行します。"
+msgstr "新しいラスタ行を保持するためのラスタカラムを持つテーブルを生成します:"
 
 #. Tag: para
 #, no-c-format
@@ -47170,7 +47168,7 @@ msgid ""
 msgstr ""
 "この目標で助けとなる関数は多数あります。他のラスタの派生でないラスタを生成す"
 "る場合、<xref linkend=\"RT_ST_MakeEmptyRaster\"/>と<xref linkend="
-"\"RT_ST_AddBand\"/>を順次実行して作業を開始します。"
+"\"RT_ST_AddBand\"/>を順次実行して作業を開始します"
 
 #. Tag: para
 #, no-c-format
@@ -47194,17 +47192,16 @@ msgid ""
 "projection from an existing one using <xref linkend=\"RT_ST_Transform\"/>"
 msgstr ""
 "既存テーブルから新しいラスタテーブルを生成するための多数の選択肢があります。"
-"たとえば、<xref linkend=\"RT_ST_Transform\"/>を使って、既存テーブルから異なる"
-"投影法のラスタテーブルを生成します。"
+"たとえば、<xref linkend=\"RT_ST_Transform\""
+"/>を使って、既存テーブルから異なる投影法のラスタテーブルを生成します"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Once you are done populating your table initially, you'll want to create a "
 "spatial index on the raster column with something like:"
-msgstr ""
-"はじめにテーブルにデータを入れたら、ラスタカラムに空間インデクスを生成したく"
-"なるでしょう。次のようにします。"
+msgstr "はじめにテーブルにデータを入れたら、ラスタカラムに空間インデクスを生成したく"
+"なるでしょう:"
 
 #. Tag: para
 #, no-c-format
@@ -47230,8 +47227,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Apply raster constraints using <xref linkend=\"RT_AddRasterConstraints\"/>"
-msgstr ""
-"<xref linkend=\"RT_AddRasterConstraints\"/>を用いてラスタ制約を適用します。"
+msgstr "<xref linkend=\"RT_AddRasterConstraints\"/>を用いてラスタ制約を適用します"
 
 #. Tag: title
 #, no-c-format
