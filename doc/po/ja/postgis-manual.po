@@ -27143,23 +27143,23 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "PointOnSurface of a <varname>MULTIPOINT</varname>"
-msgstr "<varname>MULTIPOINT</varname>のPointOnSurface"
+msgid "Point on surface of a <varname>MULTIPOINT</varname>"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "PointOnSurface of a <varname>LINESTRING</varname>"
-msgstr "<varname>LINESTRING</varname>のPointOnSurface"
+msgid "Point on surface of a <varname>LINESTRING</varname>"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "PointOnSurface of a <varname>POLYGON</varname>"
-msgstr "<varname>POLYGON</varname>のPointOnSurface"
+msgid "Point on surface of a <varname>POLYGON</varname>"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "PointOnSurface of a <varname>GEOMETRYCOLLECTION</varname>"
-msgstr "<varname>GEOMETRYCOLLECTION</varname>のPointOnSurface"
+msgid "Point on surface of a <varname>GEOMETRYCOLLECTION</varname>"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -48067,6 +48067,22 @@ msgstr "2.5次元/3次元対応"
 #, no-c-format
 msgid "Supports geography"
 msgstr "ジオグラフィ対応"
+
+#, no-c-format
+#~ msgid "PointOnSurface of a <varname>MULTIPOINT</varname>"
+#~ msgstr "<varname>MULTIPOINT</varname>のPointOnSurface"
+
+#, no-c-format
+#~ msgid "PointOnSurface of a <varname>LINESTRING</varname>"
+#~ msgstr "<varname>LINESTRING</varname>のPointOnSurface"
+
+#, no-c-format
+#~ msgid "PointOnSurface of a <varname>POLYGON</varname>"
+#~ msgstr "<varname>POLYGON</varname>のPointOnSurface"
+
+#, no-c-format
+#~ msgid "PointOnSurface of a <varname>GEOMETRYCOLLECTION</varname>"
+#~ msgstr "<varname>GEOMETRYCOLLECTION</varname>のPointOnSurface"
 
 #, no-c-format
 #~ msgid ""

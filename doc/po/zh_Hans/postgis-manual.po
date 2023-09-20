@@ -25003,23 +25003,23 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "PointOnSurface of a <varname>MULTIPOINT</varname>"
-msgstr "<varname>多点</varname>表面上的点"
+msgid "Point on surface of a <varname>MULTIPOINT</varname>"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "PointOnSurface of a <varname>LINESTRING</varname>"
-msgstr "<varname>线串</varname>表面上的点"
+msgid "Point on surface of a <varname>LINESTRING</varname>"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "PointOnSurface of a <varname>POLYGON</varname>"
-msgstr "<varname>面</varname>表面上的点"
+msgid "Point on surface of a <varname>POLYGON</varname>"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "PointOnSurface of a <varname>GEOMETRYCOLLECTION</varname>"
-msgstr "<varname>几何集合</varname>表面上的点"
+msgid "Point on surface of a <varname>GEOMETRYCOLLECTION</varname>"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -43765,6 +43765,22 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid "PointOnSurface of a <varname>MULTIPOINT</varname>"
+#~ msgstr "<varname>多点</varname>表面上的点"
+
+#, no-c-format
+#~ msgid "PointOnSurface of a <varname>LINESTRING</varname>"
+#~ msgstr "<varname>线串</varname>表面上的点"
+
+#, no-c-format
+#~ msgid "PointOnSurface of a <varname>POLYGON</varname>"
+#~ msgstr "<varname>面</varname>表面上的点"
+
+#, no-c-format
+#~ msgid "PointOnSurface of a <varname>GEOMETRYCOLLECTION</varname>"
+#~ msgstr "<varname>几何集合</varname>表面上的点"
 
 #, no-c-format
 #~ msgid ""

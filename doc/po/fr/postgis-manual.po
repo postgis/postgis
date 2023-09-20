@@ -28399,23 +28399,23 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "PointOnSurface of a <varname>MULTIPOINT</varname>"
-msgstr "PointOnSurface d'un <varname>MULTIPOINT</varname>"
+msgid "Point on surface of a <varname>MULTIPOINT</varname>"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "PointOnSurface of a <varname>LINESTRING</varname>"
-msgstr "PointOnSurface d'une <varname>LINESTRING</varname>"
+msgid "Point on surface of a <varname>LINESTRING</varname>"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "PointOnSurface of a <varname>POLYGON</varname>"
-msgstr "PointOnSurface d'un <varname>POLYGON</varname>"
+msgid "Point on surface of a <varname>POLYGON</varname>"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "PointOnSurface of a <varname>GEOMETRYCOLLECTION</varname>"
-msgstr "PointOnSurface d'une <varname>GEOMETRYCOLLECTION</varname>"
+msgid "Point on surface of a <varname>GEOMETRYCOLLECTION</varname>"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -50310,6 +50310,22 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid "PointOnSurface of a <varname>MULTIPOINT</varname>"
+#~ msgstr "PointOnSurface d'un <varname>MULTIPOINT</varname>"
+
+#, no-c-format
+#~ msgid "PointOnSurface of a <varname>LINESTRING</varname>"
+#~ msgstr "PointOnSurface d'une <varname>LINESTRING</varname>"
+
+#, no-c-format
+#~ msgid "PointOnSurface of a <varname>POLYGON</varname>"
+#~ msgstr "PointOnSurface d'un <varname>POLYGON</varname>"
+
+#, no-c-format
+#~ msgid "PointOnSurface of a <varname>GEOMETRYCOLLECTION</varname>"
+#~ msgstr "PointOnSurface d'une <varname>GEOMETRYCOLLECTION</varname>"
 
 #, no-c-format
 #~ msgid ""
