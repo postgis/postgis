@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-18 22:57+0000\n"
-"PO-Revision-Date: 2023-09-19 03:23+0000\n"
+"PO-Revision-Date: 2023-09-20 04:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -14213,7 +14213,7 @@ msgstr "Enhanced: 3.1.0 3次元ジオメトリと重みに対応するように�
 #. Tag: para
 #, no-c-format
 msgid "Generate dummy set of parcels for examples:"
-msgstr "例としてダミーの区画の集合を生成します。"
+msgstr "例としてダミーの区画の集合を生成します:"
 
 #. Tag: para
 #, no-c-format
@@ -14223,7 +14223,7 @@ msgstr "クラスタ番号 (cid)による色付けを施した区画"
 #. Tag: para
 #, no-c-format
 msgid "Partitioning parcel clusters by type:"
-msgstr "タイプ別による区画の分割"
+msgstr "タイプ別による区画の分割:"
 
 #. Tag: para
 #, no-c-format
@@ -14234,10 +14234,11 @@ msgid ""
 "\">Kontur Population Data</link> that do not span more than 3000 km from "
 "their center:"
 msgstr ""
-"例: 3次元クラスタリングと重み付けを使った、事前集計した地球規模の人口データ"
-"セットのクラスタリング。<link xlink:href=\"https://data.humdata.org/dataset/"
-"kontur-population-dataset\">Kontur Population Data</link>に基づいて、中心から"
-"3000km以下となる、少なくとも 20 の地域が識別されます。"
+"例: 3次元クラスタリングと重み付けを使った、事前集計した地球規模の人口データセ"
+"ットのクラスタリング。<link xlink:href=\"https://data.humdata.org/dataset/"
+"kontur-population-dataset\">Kontur Population "
+"Data</link>に基づいて、中心から3000km以下となる、少なくとも 20 "
+"の地域が識別されます:"
 
 #. Tag: para
 #, no-c-format
@@ -19008,12 +19009,12 @@ msgstr "ラインストリングの20% (0.20)位置の補完ポイント"
 #. Tag: para
 #, no-c-format
 msgid "The mid-point of a 3D line:"
-msgstr "3次元ラインの中間点"
+msgstr "3次元ラインの中間点:"
 
 #. Tag: para
 #, no-c-format
 msgid "The closest point on a line to a point:"
-msgstr "ライン上のポイントに最も近いポイント"
+msgstr "ライン上のポイントに最も近いポイント:"
 
 #. Tag: para
 #, no-c-format
