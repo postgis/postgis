@@ -5,11 +5,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-18 22:57+0000\n"
+"POT-Creation-Date: 2023-09-20 07:32+0000\n"
 "PO-Revision-Date: 2023-09-20 04:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -7559,11 +7559,6 @@ msgstr ""
 "メントを作成する必要はありません。コメントはCREATE EXTENSIONによるインストー"
 "ルの一部として取り込まれます。"
 
-#. Tag: command
-#, no-c-format
-msgid "make comments"
-msgstr "make comments"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -7590,11 +7585,6 @@ msgid ""
 msgstr ""
 "HTMLとPDFのビルド済みのものは<link xlink:href=\"http://www.postgis.us/"
 "study_guides\">PostGIS / PostgreSQL Study Guides</link>にあります。"
-
-#. Tag: command
-#, no-c-format
-msgid "make cheatsheets"
-msgstr "make cheatsheets"
 
 #. Tag: title
 #, no-c-format
@@ -7818,11 +7808,6 @@ msgstr "テスト"
 msgid "If you wish to test the PostGIS build, run"
 msgstr "PostGISのテストを行うには、次のコマンドを実行します。"
 
-#. Tag: command
-#, no-c-format
-msgid "make check"
-msgstr "make check"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -7921,11 +7906,6 @@ msgstr "インストール"
 msgid "To install PostGIS, type"
 msgstr "PostGISをインストールするには、次のコマンドを実行します。"
 
-#. Tag: command
-#, no-c-format
-msgid "make install"
-msgstr "make install"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -7973,11 +7953,6 @@ msgstr ""
 "先に<command>make comments</command>を実行して<filename>postgis_comments."
 "sql</filename>, <filename>raster_comments.sql</filename>を生成していた場合"
 "は、次のコマンドを実行すると、これらのSQLファイルがインストールされます。"
-
-#. Tag: command
-#, no-c-format
-msgid "make comments-install"
-msgstr "make comments-install"
 
 #. Tag: para
 #, no-c-format
@@ -14234,11 +14209,10 @@ msgid ""
 "\">Kontur Population Data</link> that do not span more than 3000 km from "
 "their center:"
 msgstr ""
-"例: 3次元クラスタリングと重み付けを使った、事前集計した地球規模の人口データセ"
-"ットのクラスタリング。<link xlink:href=\"https://data.humdata.org/dataset/"
-"kontur-population-dataset\">Kontur Population "
-"Data</link>に基づいて、中心から3000km以下となる、少なくとも 20 "
-"の地域が識別されます:"
+"例: 3次元クラスタリングと重み付けを使った、事前集計した地球規模の人口データ"
+"セットのクラスタリング。<link xlink:href=\"https://data.humdata.org/dataset/"
+"kontur-population-dataset\">Kontur Population Data</link>に基づいて、中心から"
+"3000km以下となる、少なくとも 20 の地域が識別されます:"
 
 #. Tag: para
 #, no-c-format
@@ -19795,23 +19769,24 @@ msgid ""
 "Insert geometries into roads table with a SRID set already using <link "
 "linkend=\"ST_GeomFromEWKT\">EWKT format</link>:"
 msgstr ""
-"ジオメトリを、<link linkend=\"ST_GeomFromEWKT\""
-">EWKT書式</link>を使って、SRIDを持つ道路テーブルに挿入します:"
+"ジオメトリを、<link linkend=\"ST_GeomFromEWKT\">EWKT書式</link>を使って、SRID"
+"を持つ道路テーブルに挿入します:"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This will change the srid of the roads table to 4326 from whatever it was "
 "before:"
-msgstr "これにより道路テーブルが、以前がどんなSRIDであっても、4326に変更されます:"
+msgstr ""
+"これにより道路テーブルが、以前がどんなSRIDであっても、4326に変更されます:"
 
 #. Tag: para
 #, no-c-format
 msgid "The prior example is equivalent to this DDL statement:"
 msgstr ""
-"上述の例と、次のDDL手続き (訳注: DDLはData Definition "
-"Languageの略で、データ構造の操作を行う言語を指し、この場合は CREATE "
-"TABLEやALTER TABLE等が該当します)とは同じです:"
+"上述の例と、次のDDL手続き (訳注: DDLはData Definition Languageの略で、データ"
+"構造の操作を行う言語を指し、この場合は CREATE TABLEやALTER TABLE等が該当しま"
+"す)とは同じです:"
 
 #. Tag: para
 #, no-c-format
@@ -20457,7 +20432,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Changed: 2.2.0 In prior versions this used to be called ST_Distance_Sphere"
-msgstr "Changed: 2.2.0 前の版ではこの関数はST_Distance_Sphereと呼ばれていました"
+msgstr ""
+"Changed: 2.2.0 前の版ではこの関数はST_Distance_Sphereと呼ばれていました"
 
 #. Tag: para
 #, no-c-format
@@ -20496,7 +20472,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.2.0 In prior versions this was called ST_Distance_Spheroid"
-msgstr "Changed: 2.2.0 前の版ではこの関数はST_Distance_Sphereと呼ばれていました"
+msgstr ""
+"Changed: 2.2.0 前の版ではこの関数はST_Distance_Sphereと呼ばれていました"
 
 #. Tag: para
 #, no-c-format
@@ -20699,8 +20676,8 @@ msgid ""
 msgstr ""
 "Changed: 2.0.0 大幅な変更 -- 以前の版ではジオグラフィのPOLYGONやMULTIPOLYGON"
 "への適用によってPOLYGONやMULTIPOLYGONの周囲長を返しました。2.0.0版ではジオメ"
-"トリの挙動に従うため0を返すように変更しました。ポリゴンの周囲長を求める場合は"
-"、ST_Perimeterを使います"
+"トリの挙動に従うため0を返すように変更しました。ポリゴンの周囲長を求める場合"
+"は、ST_Perimeterを使います"
 
 #. Tag: para
 #, no-c-format
@@ -42132,11 +42109,6 @@ msgstr ""
 msgid "Clone the PostGIS' git repository. On Unix, type:"
 msgstr "PostGISのgitリポジトリを複製します。UNIXでは次のように入力します。"
 
-#. Tag: command
-#, no-c-format
-msgid "git clone https://git.osgeo.org/gitea/postgis/postgis.git"
-msgstr "git clone https://git.osgeo.org/gitea/postgis/postgis.git"
-
 #. Tag: para
 #, no-c-format
 msgid "This will be stored in the directory postgis"
@@ -42150,11 +42122,6 @@ msgid ""
 msgstr ""
 "お使いのテキストエディタで文書に変更を加えます。Unixでは、たとえば次のように"
 "します。"
-
-#. Tag: command
-#, no-c-format
-msgid "vim doc/postgis.xml"
-msgstr "vim doc/postgis.xml"
 
 #. Tag: para
 #, no-c-format
@@ -42174,11 +42141,6 @@ msgid ""
 msgstr ""
 "文書のマスタコピーからパッチファイルを作成します。Unixでは次のように入力しま"
 "す。"
-
-#. Tag: command
-#, no-c-format
-msgid "git diff doc/postgis.xml &gt; doc.patch"
-msgstr "git diff doc/postgis.xml &gt; doc.patch"
 
 #. Tag: para
 #, no-c-format
@@ -47193,15 +47155,16 @@ msgid ""
 "projection from an existing one using <xref linkend=\"RT_ST_Transform\"/>"
 msgstr ""
 "既存テーブルから新しいラスタテーブルを生成するための多数の選択肢があります。"
-"たとえば、<xref linkend=\"RT_ST_Transform\""
-"/>を使って、既存テーブルから異なる投影法のラスタテーブルを生成します"
+"たとえば、<xref linkend=\"RT_ST_Transform\"/>を使って、既存テーブルから異なる"
+"投影法のラスタテーブルを生成します"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Once you are done populating your table initially, you'll want to create a "
 "spatial index on the raster column with something like:"
-msgstr "はじめにテーブルにデータを入れたら、ラスタカラムに空間インデクスを生成したく"
+msgstr ""
+"はじめにテーブルにデータを入れたら、ラスタカラムに空間インデクスを生成したく"
 "なるでしょう:"
 
 #. Tag: para
@@ -47228,7 +47191,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Apply raster constraints using <xref linkend=\"RT_AddRasterConstraints\"/>"
-msgstr "<xref linkend=\"RT_AddRasterConstraints\"/>を用いてラスタ制約を適用します"
+msgstr ""
+"<xref linkend=\"RT_AddRasterConstraints\"/>を用いてラスタ制約を適用します"
 
 #. Tag: title
 #, no-c-format
@@ -48105,6 +48069,38 @@ msgstr "2.5次元/3次元対応"
 #, no-c-format
 msgid "Supports geography"
 msgstr "ジオグラフィ対応"
+
+#, no-c-format
+#~ msgid "make comments"
+#~ msgstr "make comments"
+
+#, no-c-format
+#~ msgid "make cheatsheets"
+#~ msgstr "make cheatsheets"
+
+#, no-c-format
+#~ msgid "make check"
+#~ msgstr "make check"
+
+#, no-c-format
+#~ msgid "make install"
+#~ msgstr "make install"
+
+#, no-c-format
+#~ msgid "make comments-install"
+#~ msgstr "make comments-install"
+
+#, no-c-format
+#~ msgid "git clone https://git.osgeo.org/gitea/postgis/postgis.git"
+#~ msgstr "git clone https://git.osgeo.org/gitea/postgis/postgis.git"
+
+#, no-c-format
+#~ msgid "vim doc/postgis.xml"
+#~ msgstr "vim doc/postgis.xml"
+
+#, no-c-format
+#~ msgid "git diff doc/postgis.xml &gt; doc.patch"
+#~ msgstr "git diff doc/postgis.xml &gt; doc.patch"
 
 #, no-c-format
 #~ msgid "building"

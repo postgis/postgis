@@ -5,11 +5,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-18 22:57+0000\n"
+"POT-Creation-Date: 2023-09-20 07:32+0000\n"
 "PO-Revision-Date: 2023-09-19 06:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
-"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/it/>\n"
+"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/it/>\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -302,8 +302,8 @@ msgstr "è un testo (numero di token <code>10</code>): Esempio Boston."
 msgid ""
 "is text (token number <code>11</code>): Example <code>MASSACHUSETTS</code>"
 msgstr ""
-"è un testo (numero di token <code>11</code>): Esempio "
-"<code>MASSACHUSETTS</code>"
+"è un testo (numero di token <code>11</code>): Esempio <code>MASSACHUSETTS</"
+"code>"
 
 #. Tag: para
 #, no-c-format
@@ -405,9 +405,9 @@ msgid ""
 "pagcgeo.org/docs/html/pagc-12.html#--r-rec--\">PAGC Address Standardizer "
 "Rule records</link>."
 msgstr ""
-"campo di testo che indica la regola. I dettagli si trovano in <link "
-"xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-rec--\""
-">Regole di normalizzazione degli indirizzi del PAGC</link>."
+"campo di testo che indica la regola. I dettagli si trovano in <link xlink:"
+"href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-rec--\">Regole di "
+"normalizzazione degli indirizzi del PAGC</link>."
 
 #. Tag: para
 #, no-c-format
@@ -461,9 +461,9 @@ msgid ""
 "as follows:"
 msgstr ""
 "Ogni regola inizia con una serie di token di input seguiti da un terminatore "
-"<code>-1</code>. I token di input validi estratti da <link xlink:href=\"http"
-"://www.pagcgeo.org/docs/html/pagc-12.html#ss12.2\">PAGC Input Tokens</link> "
-"sono i seguenti:"
+"<code>-1</code>. I token di input validi estratti da <link xlink:href="
+"\"http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.2\">PAGC Input Tokens</"
+"link> sono i seguenti:"
 
 #. Tag: emphasis
 #, no-c-format
@@ -563,8 +563,8 @@ msgid ""
 "emphasis>."
 msgstr ""
 "(24). Parole e abbreviazioni utilizzate per indicare edifici o complessi di "
-"edifici, di solito come suffisso. Ad esempio: <emphasis>Centro "
-"commerciale</emphasis>."
+"edifici, di solito come suffisso. Ad esempio: <emphasis>Centro commerciale</"
+"emphasis>."
 
 #. Tag: para
 #, no-c-format
@@ -572,8 +572,8 @@ msgid ""
 "(22). Words used to denote directions, for example <emphasis>North</"
 "emphasis>."
 msgstr ""
-"(22). Parole usate per indicare le direzioni, ad esempio "
-"<emphasis>Nord</emphasis>."
+"(22). Parole usate per indicare le direzioni, ad esempio <emphasis>Nord</"
+"emphasis>."
 
 #. Tag: para
 #, no-c-format
@@ -587,8 +587,8 @@ msgid ""
 "the <emphasis>Interstate</emphasis> in <emphasis>Interstate 5</emphasis>"
 msgstr ""
 "(6). Parole e abbreviazioni utilizzate per indicare autostrade e strade. Ad "
-"esempio: la <emphasis>Interstate</emphasis> in <emphasis>Interstate "
-"5</emphasis>"
+"esempio: la <emphasis>Interstate</emphasis> in <emphasis>Interstate 5</"
+"emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -6516,11 +6516,6 @@ msgstr ""
 "commenti se si installa dal tar. I commenti sono inclusi anche "
 "nell'installazione di CREATE EXTENSION."
 
-#. Tag: command
-#, no-c-format
-msgid "make comments"
-msgstr "make comments"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -6549,11 +6544,6 @@ msgstr ""
 "Ne potete scaricare alcuni già pronti sia in formato HTML che PDF dalla "
 "pagina <link xlink:href=\"http://www.postgis.us/study_guides\">PostGIS / "
 "PostgreSQL Study Guides</link>"
-
-#. Tag: command
-#, no-c-format
-msgid "make cheatsheets"
-msgstr "make cheatsheets"
 
 #. Tag: title
 #, no-c-format
@@ -6784,11 +6774,6 @@ msgstr "Test"
 msgid "If you wish to test the PostGIS build, run"
 msgstr "Se volete eseguire un test sul PostGIS compilato, eseguite"
 
-#. Tag: command
-#, no-c-format
-msgid "make check"
-msgstr "make check"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -6890,11 +6875,6 @@ msgstr "Installazione"
 msgid "To install PostGIS, type"
 msgstr "Per installare PostGIS, digitate"
 
-#. Tag: command
-#, no-c-format
-msgid "make install"
-msgstr "make install"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -6942,11 +6922,6 @@ msgstr ""
 "Se avete eseguito il comando <command>make comments</command> per generare i "
 "file <filename>postgis_comments.sql</filename> e <filename>raster_comments."
 "sql</filename>, installate i file SQL eseguendo"
-
-#. Tag: command
-#, no-c-format
-msgid "make comments-install"
-msgstr "make comments-install"
 
 #. Tag: para
 #, no-c-format
@@ -36347,11 +36322,6 @@ msgstr ""
 msgid "Clone the PostGIS' git repository. On Unix, type:"
 msgstr "Ottieni un clone del repository git di PostGIS. In Unix, digita:"
 
-#. Tag: command
-#, no-c-format
-msgid "git clone https://git.osgeo.org/gitea/postgis/postgis.git"
-msgstr "git clone https://git.osgeo.org/gitea/postgis/postgis.git"
-
 #. Tag: para
 #, no-c-format
 msgid "This will be stored in the directory postgis"
@@ -36365,11 +36335,6 @@ msgid ""
 msgstr ""
 "Apportare le modifiche alla documentazione con l'editor di testo preferito. "
 "In Unix, ad esempio, digitare:"
-
-#. Tag: command
-#, no-c-format
-msgid "vim doc/postgis.xml"
-msgstr "vim doc/postgis.xml"
 
 #. Tag: para
 #, no-c-format
@@ -36390,11 +36355,6 @@ msgid ""
 msgstr ""
 "Produrre una patch, cioè un file contenente le differenze rispetto alla "
 "copia master della documentazione. In Unix, digitare:"
-
-#. Tag: command
-#, no-c-format
-msgid "git diff doc/postgis.xml &gt; doc.patch"
-msgstr "git diff doc/postgis.xml &gt; doc.patch"
 
 #. Tag: para
 #, no-c-format
@@ -41207,6 +41167,38 @@ msgstr "Supporta il 2.5/3D"
 #, no-c-format
 msgid "Supports geography"
 msgstr "Supporta il tipo geography"
+
+#, no-c-format
+#~ msgid "make comments"
+#~ msgstr "make comments"
+
+#, no-c-format
+#~ msgid "make cheatsheets"
+#~ msgstr "make cheatsheets"
+
+#, no-c-format
+#~ msgid "make check"
+#~ msgstr "make check"
+
+#, no-c-format
+#~ msgid "make install"
+#~ msgstr "make install"
+
+#, no-c-format
+#~ msgid "make comments-install"
+#~ msgstr "make comments-install"
+
+#, no-c-format
+#~ msgid "git clone https://git.osgeo.org/gitea/postgis/postgis.git"
+#~ msgstr "git clone https://git.osgeo.org/gitea/postgis/postgis.git"
+
+#, no-c-format
+#~ msgid "vim doc/postgis.xml"
+#~ msgstr "vim doc/postgis.xml"
+
+#, no-c-format
+#~ msgid "git diff doc/postgis.xml &gt; doc.patch"
+#~ msgstr "git diff doc/postgis.xml &gt; doc.patch"
 
 #, no-c-format
 #~ msgid "building"

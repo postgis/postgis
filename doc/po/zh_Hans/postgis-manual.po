@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-18 22:57+0000\n"
+"POT-Creation-Date: 2023-09-20 07:32+0000\n"
 "PO-Revision-Date: 2023-09-15 02:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -6538,11 +6538,6 @@ msgstr ""
 "的 tar.gz 中，因此如果从 tar 包中安装，则无需进行注释。 注释包含在 CREATE "
 "EXTENSION 安装中。"
 
-#. Tag: command
-#, no-c-format
-msgid "make comments"
-msgstr "发表评论"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -6568,11 +6563,6 @@ msgid ""
 msgstr ""
 "预构建的HTML和PDF版本可以在<link xlink:href=\"http://www.postgis.us/"
 "study_guides\">PostGIS / PostgreSQL学习指南</link>中找到"
-
-#. Tag: command
-#, no-c-format
-msgid "make cheatsheets"
-msgstr "制作备忘单"
 
 #. Tag: title
 #, no-c-format
@@ -6771,11 +6761,6 @@ msgstr "测试"
 msgid "If you wish to test the PostGIS build, run"
 msgstr "要测试 PostGIS，请运行以下命令"
 
-#. Tag: command
-#, no-c-format
-msgid "make check"
-msgstr "进行检查"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -6868,11 +6853,6 @@ msgstr "安装"
 msgid "To install PostGIS, type"
 msgstr "要安装 PostGIS，请运行以下命令"
 
-#. Tag: command
-#, no-c-format
-msgid "make install"
-msgstr "进行安装"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -6916,11 +6896,6 @@ msgstr ""
 "如果之前生成了<command>make 注释</command>，请运行以下命令来安装这些 SQL 文"
 "件：<filename>postgis_comments.sql</filename>,<filename>raster_comments.sql</"
 "filename>"
-
-#. Tag: command
-#, no-c-format
-msgid "make comments-install"
-msgstr "评论脚本-安装"
 
 #. Tag: para
 #, no-c-format
@@ -38207,11 +38182,6 @@ msgstr ""
 msgid "Clone the PostGIS' git repository. On Unix, type:"
 msgstr ""
 
-#. Tag: command
-#, no-c-format
-msgid "git clone https://git.osgeo.org/gitea/postgis/postgis.git"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "This will be stored in the directory postgis"
@@ -38222,11 +38192,6 @@ msgstr ""
 msgid ""
 "Make your changes to the documentation with your favorite text editor. On "
 "Unix, type (for example):"
-msgstr ""
-
-#. Tag: command
-#, no-c-format
-msgid "vim doc/postgis.xml"
 msgstr ""
 
 #. Tag: para
@@ -38242,11 +38207,6 @@ msgstr ""
 msgid ""
 "Make a patch file containing the differences from the master copy of the "
 "documentation. On Unix, type:"
-msgstr ""
-
-#. Tag: command
-#, no-c-format
-msgid "git diff doc/postgis.xml &gt; doc.patch"
 msgstr ""
 
 #. Tag: para
@@ -43806,6 +43766,26 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid "make comments"
+#~ msgstr "发表评论"
+
+#, no-c-format
+#~ msgid "make cheatsheets"
+#~ msgstr "制作备忘单"
+
+#, no-c-format
+#~ msgid "make check"
+#~ msgstr "进行检查"
+
+#, no-c-format
+#~ msgid "make install"
+#~ msgstr "进行安装"
+
+#, no-c-format
+#~ msgid "make comments-install"
+#~ msgstr "评论脚本-安装"
 
 #, no-c-format
 #~ msgid "name"
