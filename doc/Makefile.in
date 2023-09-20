@@ -286,7 +286,6 @@ endif
 
 ifeq ($(MSGMERGE),)
 $(PO_FILES): requirements_not_met_msgmerge
-$(XML_UNIFIED_POT): requirements_not_met_msgmerge
 endif
 
 ifeq ($(MSGATTRIB),)
@@ -328,14 +327,14 @@ $(XML_UNIFIED_POT): $(XML_SOURCE_POTS)
 	@$(MSGCAT) --sort-by-file --use-first --no-location -o $@.tmp $(XML_SOURCE_POTS)
 	@if test -f $@; then \
     if test -n "$$($(MSGCOMM) --unique $@.tmp $@ | tail -1)"; then \
-      $(MSGMERGE) -U $@ $@.tmp || exit 1; \
       echo "$@ updated"; \
     else \
       echo "$@ unchanged"; \
+      rm -f $@.tmp; \
     fi; \
-    rm -f $@.tmp; \
-  else \
-		mv $@.tmp $@; \
+  fi; \
+  if test -f $@.tmp; then \
+    mv $@.tmp $@; \
   fi;
 
 # Creates or updates translation files
