@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-20 07:32+0000\n"
+"POT-Creation-Date: 2023-09-20 07:42+0000\n"
 "PO-Revision-Date: 2023-09-15 02:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -25401,11 +25401,10 @@ msgstr "计算保证位于多边形或几何体上的点。"
 #, no-c-format
 msgid ""
 "Returns a <varname>POINT</varname> which is guaranteed to lie in the "
-"interior of a surface (POLYGON, MULTIPOLYGON, and CURVED POLYGON). In "
-"PostGIS this function also works on line and point geometries."
+"interior of a surface (<varname>POLYGON</varname>, <varname>MULTIPOLYGON</"
+"varname>, and <varname>CURVEPOLYGON</varname>). In PostGIS this function "
+"also works on line and point geometries."
 msgstr ""
-"返回保证位于曲面内部的<varname>点</varname>（POLYGON、MULTIPOLYGON 和 CURVED "
-"POLYGON）。 在 PostGIS 中，此函数也适用于线和点几何图形。"
 
 #. Tag: para
 #, no-c-format
@@ -43766,6 +43765,15 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a <varname>POINT</varname> which is guaranteed to lie in the "
+#~ "interior of a surface (POLYGON, MULTIPOLYGON, and CURVED POLYGON). In "
+#~ "PostGIS this function also works on line and point geometries."
+#~ msgstr ""
+#~ "返回保证位于曲面内部的<varname>点</varname>（POLYGON、MULTIPOLYGON 和 "
+#~ "CURVED POLYGON）。 在 PostGIS 中，此函数也适用于线和点几何图形。"
 
 #, no-c-format
 #~ msgid "make comments"

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-20 07:32+0000\n"
+"POT-Creation-Date: 2023-09-20 07:42+0000\n"
 "PO-Revision-Date: 2023-09-14 20:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -28849,13 +28849,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns a <varname>POINT</varname> which is guaranteed to lie in the "
-"interior of a surface (POLYGON, MULTIPOLYGON, and CURVED POLYGON). In "
-"PostGIS this function also works on line and point geometries."
+"interior of a surface (<varname>POLYGON</varname>, <varname>MULTIPOLYGON</"
+"varname>, and <varname>CURVEPOLYGON</varname>). In PostGIS this function "
+"also works on line and point geometries."
 msgstr ""
-"Renvoie un <varname>POINT</varname> dont il est garanti qu'il se trouve à "
-"l'intérieur d'une surface (POLYGON, MULTIPOLYGON et CURVED POLYGON). Dans "
-"PostGIS, cette fonction fonctionne également pour les géométries de lignes "
-"et de points."
 
 #. Tag: para
 #, no-c-format
@@ -50313,6 +50310,17 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a <varname>POINT</varname> which is guaranteed to lie in the "
+#~ "interior of a surface (POLYGON, MULTIPOLYGON, and CURVED POLYGON). In "
+#~ "PostGIS this function also works on line and point geometries."
+#~ msgstr ""
+#~ "Renvoie un <varname>POINT</varname> dont il est garanti qu'il se trouve à "
+#~ "l'intérieur d'une surface (POLYGON, MULTIPOLYGON et CURVED POLYGON). Dans "
+#~ "PostGIS, cette fonction fonctionne également pour les géométries de "
+#~ "lignes et de points."
 
 #, no-c-format
 #~ msgid "make comments"

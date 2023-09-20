@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-20 07:32+0000\n"
+"POT-Creation-Date: 2023-09-20 07:42+0000\n"
 "PO-Revision-Date: 2023-09-20 04:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -27543,12 +27543,10 @@ msgstr "ポリゴン内またはジオメトリ上にあるのが保証された
 #, no-c-format
 msgid ""
 "Returns a <varname>POINT</varname> which is guaranteed to lie in the "
-"interior of a surface (POLYGON, MULTIPOLYGON, and CURVED POLYGON). In "
-"PostGIS this function also works on line and point geometries."
+"interior of a surface (<varname>POLYGON</varname>, <varname>MULTIPOLYGON</"
+"varname>, and <varname>CURVEPOLYGON</varname>). In PostGIS this function "
+"also works on line and point geometries."
 msgstr ""
-"サーフェス (POLYGON、MULTIPOLYGON、CURVED POLYGON)内部にあることが保証された"
-"<varname>POINT</varname>を返します。PostGISでは、この関数はラインジオメトリと"
-"ポイントジオメトリ上でも動作します。"
 
 #. Tag: para
 #, no-c-format
@@ -48069,6 +48067,16 @@ msgstr "2.5次元/3次元対応"
 #, no-c-format
 msgid "Supports geography"
 msgstr "ジオグラフィ対応"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a <varname>POINT</varname> which is guaranteed to lie in the "
+#~ "interior of a surface (POLYGON, MULTIPOLYGON, and CURVED POLYGON). In "
+#~ "PostGIS this function also works on line and point geometries."
+#~ msgstr ""
+#~ "サーフェス (POLYGON、MULTIPOLYGON、CURVED POLYGON)内部にあることが保証され"
+#~ "た<varname>POINT</varname>を返します。PostGISでは、この関数はラインジオメ"
+#~ "トリとポイントジオメトリ上でも動作します。"
 
 #, no-c-format
 #~ msgid "make comments"
