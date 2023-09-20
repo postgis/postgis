@@ -6,10 +6,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-20 07:42+0000\n"
-"PO-Revision-Date: 2023-09-19 06:23+0000\n"
+"PO-Revision-Date: 2023-09-20 10:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
-"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/it/>\n"
+"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/it/>\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -24107,22 +24107,22 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Point on surface of a <varname>MULTIPOINT</varname>"
-msgstr ""
+msgstr "Punto sulla superficie di <varname>MULTIPOINT</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid "Point on surface of a <varname>LINESTRING</varname>"
-msgstr ""
+msgstr "Punto sulla superficie di un <varname>LINESTRING</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid "Point on surface of a <varname>POLYGON</varname>"
-msgstr ""
+msgstr "Punto sulla superficie di un <varname>POLYGON</varname>"
 
 #. Tag: para
 #, no-c-format
 msgid "Point on surface of a <varname>GEOMETRYCOLLECTION</varname>"
-msgstr ""
+msgstr "Punto sulla superficie di una <varname>GEOMETRYCOLLECTION</varname>"
 
 #. Tag: para
 #, no-c-format
