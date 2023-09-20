@@ -15,5 +15,6 @@ sed -e '/^#\. Tag: programlisting$/,/^$/d' \
     -e '/^#\. Tag: option$/,/^$/d' \
     -e '/^#\. Tag: varname$/,/^$/d' \
     -e '/^#\. Tag: code$/,/^$/d' \
+    -e '/^#\. Tag: command$/,/^$/d' \
     -i $1
 
