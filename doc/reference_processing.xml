@@ -2187,7 +2187,7 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
         <title>Description</title>
 
         <para>Returns a <varname>POINT</varname> which is guaranteed to lie in the interior of a surface
-        (POLYGON, MULTIPOLYGON, and CURVED POLYGON).
+        (<varname>POLYGON</varname>, <varname>MULTIPOLYGON</varname>, and <varname>CURVEPOLYGON</varname>).
         In PostGIS this function also works on line and point geometries.
         </para>
 
