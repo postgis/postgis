@@ -2213,7 +2213,7 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
                       <imagedata fileref="images/st_pointonsurface01.png"/>
                     </imageobject>
 
-                    <caption><para>PointOnSurface of a
+                    <caption><para>Point on surface of a
                     <varname>MULTIPOINT</varname></para></caption>
                   </mediaobject>
                 </informalfigure></para></entry>
@@ -2224,7 +2224,7 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
                       <imagedata fileref="images/st_pointonsurface02.png"/>
                     </imageobject>
 
-                    <caption><para>PointOnSurface of a
+                    <caption><para>Point on surface of a
                     <varname>LINESTRING</varname></para></caption>
                   </mediaobject>
                 </informalfigure></para></entry>
@@ -2237,7 +2237,7 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
                       <imagedata fileref="images/st_pointonsurface03.png"/>
                     </imageobject>
 
-                    <caption><para>PointOnSurface of a
+                    <caption><para>Point on surface of a
                     <varname>POLYGON</varname></para></caption>
                   </mediaobject>
                 </informalfigure></para></entry>
@@ -2248,7 +2248,7 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
                       <imagedata fileref="images/st_pointonsurface04.png"/>
                     </imageobject>
 
-                    <caption><para>PointOnSurface of a
+                    <caption><para>Point on surface of a
                     <varname>GEOMETRYCOLLECTION</varname></para></caption>
                   </mediaobject>
                 </informalfigure></para></entry>
