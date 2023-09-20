@@ -157,22 +157,23 @@ endif
 all: $(BUILD_TARGET)
 
 XML_SOURCES = \
-    extras_address_standardizer.xml \
+	administration.xml \
+	database_tuning.xml \
+	extras_address_standardizer.xml \
 	extras_historytable.xml \
 	extras_tigergeocoder.xml \
 	extras_topology.xml \
 	extras.xml \
 	installation.xml \
-	administration.xml \
-	database_tuning.xml \
 	introduction.xml \
 	performance_tips.xml \
-	postgis.xml \
 	postgis_special.xml \
+	postgis.xml \
 	reference_accessor.xml \
 	reference_bbox.xml \
 	reference_cluster.xml \
 	reference_constructor.xml \
+	reference_coverage.xml \
 	reference_editor.xml \
 	reference_exception.xml \
 	reference_guc.xml \
@@ -180,14 +181,13 @@ XML_SOURCES = \
 	reference_lrs.xml \
 	reference_management.xml \
 	reference_measure.xml \
-	reference_sfcgal.xml \
 	reference_operator.xml \
 	reference_output.xml \
 	reference_overlay.xml \
 	reference_processing.xml \
-	reference_coverage.xml \
 	reference_raster.xml \
 	reference_relationship.xml \
+	reference_sfcgal.xml \
 	reference_srs.xml \
 	reference_trajectory.xml \
 	reference_transaction.xml \
@@ -325,7 +325,7 @@ $(XML_SOURCE_POTS): %.xml.pot: %.xml po/strip_untranslatable.sh
 update-pot: $(XML_UNIFIED_POT)
 
 $(XML_UNIFIED_POT): $(XML_SOURCE_POTS)
-	@$(MSGCAT) --use-first --no-location -o $@.tmp $(XML_SOURCE_POTS)
+	@$(MSGCAT) --sort-by-file --use-first --no-location -o $@.tmp $(XML_SOURCE_POTS)
 	@if test -f $@; then \
     if test -n "$$($(MSGCOMM) --unique $@.tmp $@ | tail -1)"; then \
       $(MSGMERGE) -U $@ $@.tmp || exit 1; \
