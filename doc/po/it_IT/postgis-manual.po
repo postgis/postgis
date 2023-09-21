@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-20 07:42+0000\n"
-"PO-Revision-Date: 2023-09-20 10:23+0000\n"
+"PO-Revision-Date: 2023-09-21 22:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/it/>\n"
@@ -25017,7 +25017,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Standard deviation of all counted pixel values."
-msgstr ""
+msgstr "Deviazione standard di tutti i valori dei pixel contati."
 
 #. Tag: term
 #, no-c-format
@@ -25027,7 +25027,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Minimum value of counted pixel values."
-msgstr ""
+msgstr "Valore minimo dei valori dei pixel contati."
 
 #. Tag: term
 #, no-c-format
@@ -25037,12 +25037,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Maximum value of counted pixel values."
-msgstr ""
+msgstr "Valore massimo dei valori dei pixel contati."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SummaryStatsAgg\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_SummaryStatsAgg\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -25051,6 +25051,9 @@ msgid ""
 "defining the bands to be processed and behavior of the UNION operation.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Un tipo composito usato come input nella funzione ST_Union che "
+"definisce le bande da elaborare e il comportamento dell'operazione "
+"UNION.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -25058,11 +25061,15 @@ msgid ""
 "<para>A composite type used as input into the ST_Union function defining the "
 "bands to be processed and behavior of the UNION operation.</para>"
 msgstr ""
+"<para>Un tipo composito usato come input nella funzione ST_Union che "
+"definisce le bande da elaborare e il comportamento dell'operazione "
+"UNION.</para>"
 
 #. Tag: para
 #, no-c-format
 msgid "1-based value indicating the band of each input raster to be processed."
 msgstr ""
+"Valore a base 1 che indica la banda di ciascun raster di input da elaborare."
 
 #. Tag: para
 #, no-c-format
@@ -25070,11 +25077,13 @@ msgid ""
 "Type of UNION operation. One of defined types as described in <xref linkend="
 "\"RT_ST_Union\"/>."
 msgstr ""
+"Tipo di operazione UNION. Uno dei tipi definiti, come descritto in <xref "
+"linkend=\"RT_ST_Union\"/>."
 
 #. Tag: title
 #, no-c-format
 msgid "Raster Management"
-msgstr ""
+msgstr "Gestione dei raster"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -25085,6 +25094,12 @@ msgid ""
 "loaded with data for the constraints to be inferred. Returns true if the "
 "constraint setting was accomplished and issues a notice otherwise."
 msgstr ""
+"Aggiunge vincoli raster a una tabella raster caricata per una colonna "
+"specifica che vincola il rif spaziale, la scala, la dimensione del blocco, "
+"l'allineamento, le bande, il tipo di banda e un flag per indicare se la "
+"colonna raster è regolarmente bloccata. La tabella deve essere caricata con "
+"i dati per poter dedurre i vincoli. Restituisce true se l'impostazione dei "
+"vincoli è stata eseguita, altrimenti emette un avviso."
 
 #. Tag: para
 #, no-c-format
@@ -25095,6 +25110,11 @@ msgid ""
 "resides in. The <varname>srid</varname> must be an integer value reference "
 "to an entry in the SPATIAL_REF_SYS table."
 msgstr ""
+"Genera vincoli su una colonna raster che vengono utilizzati per visualizzare "
+"le informazioni nel catalogo raster <varname>raster_columns</varname>. "
+"<varname> rastschema</varname> è il nome dello schema della tabella in cui "
+"risiede la tabella. <varname> srid</varname> deve essere un valore intero di "
+"riferimento a una voce della tabella SPATIAL_REF_SYS."
 
 #. Tag: para
 #, no-c-format
@@ -25102,6 +25122,8 @@ msgid ""
 "<varname>raster2pgsql</varname> loader uses this function to register raster "
 "tables"
 msgstr ""
+"<varname>raster2pgsql</varname> loader utilizza questa funzione per "
+"registrare le tabelle raster"
 
 #. Tag: para
 #, no-c-format
@@ -25109,23 +25131,30 @@ msgid ""
 "Valid constraint names to pass in: refer to <xref linkend=\"RT_Raster_Columns"
 "\"/> for more details."
 msgstr ""
+"Nomi di vincoli validi da inserire: fare riferimento a <xref linkend="
+"\"RT_Raster_Columns\"/> per maggiori dettagli."
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>blocksize</varname> sets both X and Y blocksize"
 msgstr ""
+"<varname>blocksize</varname> imposta sia la dimensione del blocco X che Y"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>blocksize_x</varname> sets X tile (width in pixels of each tile)"
 msgstr ""
+"<varname>blocksize_x</varname> imposta il riquadro X (larghezza in pixel di "
+"ogni riquadro)"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>blocksize_y</varname> sets Y tile (height in pixels of each tile)"
 msgstr ""
+"<varname>blocksize_y</varname> imposta il riquadro Y (altezza in pixel di "
+"ogni riquadro)"
 
 #. Tag: para
 #, no-c-format
@@ -25133,11 +25162,13 @@ msgid ""
 "<varname>extent</varname> computes extent of whole table and applys "
 "constraint all rasters must be within that extent"
 msgstr ""
+"<varname>extent</varname> calcola l'estensione dell'intera tabella e applica "
+"il vincolo che tutti i raster devono rientrare in tale estensione"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>num_bands</varname> number of bands"
-msgstr ""
+msgstr "<varname>num_bands</varname> numero di bande"
 
 #. Tag: para
 #, no-c-format
@@ -25145,6 +25176,8 @@ msgid ""
 "<varname>pixel_types</varname> reads array of pixel types for each band "
 "ensure all band n have same pixel type"
 msgstr ""
+"<varname>pixel_types</varname> legge l'array di tipi di pixel per ogni "
+"banda, assicurando che tutte le bande n abbiano lo stesso tipo di pixel"
 
 #. Tag: para
 #, no-c-format
@@ -25153,6 +25186,9 @@ msgid ""
 "can be spatially the same) and coverage tile (raster is aligned to a "
 "coverage) constraints"
 msgstr ""
+"<varname>regular_blocking</varname> imposta i vincoli di unicità spaziale ("
+"non ci sono due raster uguali dal punto di vista spaziale) e di copertura ("
+"il raster è allineato a una copertura)"
 
 #. Tag: para
 #, no-c-format
@@ -25161,16 +25197,20 @@ msgid ""
 "meaning any two tiles you compare will return true for. Refer to <xref "
 "linkend=\"RT_ST_SameAlignment\"/>."
 msgstr ""
+"<varname>same_alignment</varname> assicura che tutte le tessere abbiano lo "
+"stesso allineamento, il che significa che ogni due tessere confrontate "
+"restituiranno true. Fare riferimento a <xref linkend=\"RT_ST_SameAlignment\""
+"/>."
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>srid</varname> ensures all have same srid"
-msgstr ""
+msgstr "<varname>srid</varname> assicura che tutti abbiano lo stesso srid"
 
 #. Tag: para
 #, no-c-format
 msgid "More -- any listed as inputs into the above functions"
-msgstr ""
+msgstr "Altro -- tutti quelli elencati come input delle funzioni precedenti"
 
 #. Tag: para
 #, no-c-format
@@ -25179,6 +25219,9 @@ msgid ""
 "table. As such for it to work, you must create the raster column first and "
 "then load it with data."
 msgstr ""
+"Questa funzione infonde i vincoli dai dati già presenti nella tabella. Per "
+"questo motivo, affinché funzioni, è necessario creare prima la colonna "
+"raster e poi caricarla con i dati."
 
 #. Tag: para
 #, no-c-format
@@ -25187,16 +25230,20 @@ msgid ""
 "constraints, you may want to run the DropRasterConstraints if the extent of "
 "your data has changed."
 msgstr ""
+"Se è necessario caricare altri dati nelle tabelle dopo aver applicato i "
+"vincoli, è possibile eseguire DropRasterConstraints se l'estensione dei dati "
+"è cambiata."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Apply all possible constraints on column based on data"
 msgstr ""
+"Esempi: Applicare tutti i possibili vincoli alle colonne in base ai dati"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Apply single constraint"
-msgstr ""
+msgstr "Esempi: Applicare un singolo vincolo"
 
 #. Tag: para
 #, no-c-format
@@ -25215,6 +25262,9 @@ msgid ""
 "Drops PostGIS raster constraints that refer to a raster table column. Useful "
 "if you need to reload data or update your raster column data."
 msgstr ""
+"Elimina i vincoli raster di PostGIS che fanno riferimento a una colonna "
+"della tabella raster. Utile se è necessario ricaricare i dati o aggiornare i "
+"dati delle colonne raster."
 
 #. Tag: para
 #, no-c-format
@@ -25224,11 +25274,16 @@ msgid ""
 "need to load more data or update your raster column data. You do not need to "
 "do this if you want to get rid of a raster table or a raster column."
 msgstr ""
+"Elimina i vincoli raster di PostGIS che fanno riferimento a una colonna "
+"della tabella raster, aggiunti da <xref linkend=\"RT_AddRasterConstraints\"/"
+">. Utile se è necessario caricare altri dati o aggiornare i dati delle "
+"colonne raster. Non è necessario eseguire questa operazione se si vuole "
+"eliminare una tabella raster o una colonna raster."
 
 #. Tag: para
 #, no-c-format
 msgid "To drop a raster table use the standard"
-msgstr ""
+msgstr "Per eliminare una tabella raster, utilizzare il comando standard"
 
 #. Tag: para
 #, no-c-format
@@ -25236,6 +25291,8 @@ msgid ""
 "To drop just a raster column and leave the rest of the table, use standard "
 "SQL"
 msgstr ""
+"Per eliminare solo una colonna raster e lasciare il resto della tabella, "
+"utilizzare l'SQL standard"
 
 #. Tag: para
 #, no-c-format
@@ -25246,11 +25303,16 @@ msgid ""
 "<varname>raster_columns</varname> catalog, but there will be no other "
 "information about it aside from the column name and table."
 msgstr ""
+"la tabella scomparirà dal catalogo <varname>raster_columns</varname> se la "
+"colonna o la tabella vengono eliminate. Tuttavia, se vengono eliminati solo "
+"i vincoli, la colonna raster sarà ancora elencata nel catalogo "
+"<varname>raster_columns</varname>, ma non ci saranno altre informazioni su "
+"di essa, a parte il nome della colonna e la tabella."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tag a raster column as being an overview of another."
-msgstr ""
+msgstr "Etichetta una colonna raster come panoramica di un'altra."
 
 #. Tag: para
 #, no-c-format
@@ -25258,6 +25320,9 @@ msgid ""
 "Adds constraints on a raster column that are used to display information in "
 "the <varname>raster_overviews</varname> raster catalog."
 msgstr ""
+"Aggiunge vincoli su una colonna raster che vengono utilizzati per "
+"visualizzare le informazioni nel catalogo raster "
+"<varname>raster_overviews</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -25265,6 +25330,9 @@ msgid ""
 "The <varname>ovfactor</varname> parameter represents the scale multiplier in "
 "the overview column: higher overview factors have lower resolution."
 msgstr ""
+"Il parametro <varname>ovfactor</varname> rappresenta il moltiplicatore di "
+"scala nella colonna della panoramica: fattori di panoramica più alti hanno "
+"una risoluzione inferiore."
 
 #. Tag: para
 #, no-c-format
@@ -25273,6 +25341,9 @@ msgid ""
 "parameters are omitted, the first table found scanning the "
 "<varname>search_path</varname> will be used."
 msgstr ""
+"Quando i parametri <varname>ovschema</varname> e <varname>refschema</"
+"varname> sono omessi, verrà utilizzata la prima tabella trovata scansionando "
+"il percorso <varname>search_path</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -25280,11 +25351,13 @@ msgid ""
 ", <xref linkend=\"RT_DropOverviewConstraints\"/>, <xref linkend="
 "\"RT_CreateOverview\"/>, <xref linkend=\"RT_AddRasterConstraints\"/>"
 msgstr ""
+", <xref linkend=\"RT_DropOverviewConstraints\"/>, <xref linkend="
+"\"RT_CreateOverview\"/>, <xref linkend=\"RT_AddRasterConstraints\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Untag a raster column from being an overview of another."
-msgstr ""
+msgstr "Disetichetta una colonna raster come panoramica di un'altra."
 
 #. Tag: para
 #, no-c-format
@@ -25293,6 +25366,9 @@ msgid ""
 "overview of another in the <varname>raster_overviews</varname> raster "
 "catalog."
 msgstr ""
+"Rimuove da una colonna raster i vincoli utilizzati per mostrarla come "
+"panoramica di un'altra nel catalogo raster "
+"<varname>raster_overviews</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -25300,6 +25376,9 @@ msgid ""
 "When the <varname>ovschema</varname> parameter is omitted, the first table "
 "found scanning the <varname>search_path</varname> will be used."
 msgstr ""
+"Quando il parametro <varname>ovschema</varname> viene omesso, verrà "
+"utilizzata la prima tabella trovata scansionando il percorso "
+"<varname>search_path</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -25311,7 +25390,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Reports the version of the GDAL library in use by PostGIS."
-msgstr ""
+msgstr "Riporta la versione della libreria GDAL utilizzata da PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -25319,16 +25398,18 @@ msgid ""
 "Reports the version of the GDAL library in use by PostGIS. Will also check "
 "and report if GDAL can find its data files."
 msgstr ""
+"Riporta la versione della libreria GDAL in uso da PostGIS. Controlla e "
+"segnala anche se GDAL riesce a trovare i suoi file di dati."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Reports full raster library build date."
-msgstr ""
+msgstr "Riporta la data di creazione della libreria raster completa."
 
 #. Tag: para
 #, no-c-format
 msgid "Reports raster build date"
-msgstr ""
+msgstr "Riporta la data di creazione del raster"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -25336,11 +25417,15 @@ msgid ""
 "<refpurpose>Reports full raster version and build configuration infos.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Riporta la versione completa del raster e le informazioni sulla "
+"configurazione della build.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid "<para>Reports full raster version and build configuration infos.</para>"
 msgstr ""
+"<para>Riporta la versione completa del raster e le informazioni sulla "
+"configurazione della build.</para>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -25348,6 +25433,9 @@ msgid ""
 "Returns a list of raster formats supported by PostGIS through GDAL. Only "
 "those formats with can_write=True can be used by ST_AsGDALRaster"
 msgstr ""
+"Restituisce un elenco dei formati raster supportati da PostGIS attraverso "
+"GDAL. Solo i formati con can_write=True possono essere utilizzati da "
+"ST_AsGDALRaste"
 
 #. Tag: para
 #, no-c-format
@@ -25361,6 +25449,15 @@ msgid ""
 "varname>, <varname>description</varname> and set of <varname>VALUE</varname> "
 "for each creator option for the specific driver."
 msgstr ""
+"Restituisce un elenco di formati raster nome_corto, nome_lungo e opzioni del "
+"creatore di ciascun formato supportato da GDAL. Utilizzare il nome_breve "
+"come input nel parametro <varname>format</varname> di <xref linkend="
+"\"RT_ST_AsGDALRaster\"/>. Le opzioni variano a seconda dei driver con cui è "
+"stata compilata libgdal. <varname>create_options</varname> restituisce un "
+"insieme formattato xml di CreationOptionList/Option composto da nome e "
+"<varname>tipo</varname>, <varname>descrizione</varname> e insieme di "
+"<varname>VALUE</varname> per ogni opzione di creazione per il driver "
+"specifico."
 
 #. Tag: para
 #, no-c-format
