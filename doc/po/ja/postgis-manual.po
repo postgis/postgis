@@ -6,10 +6,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-20 07:42+0000\n"
-"PO-Revision-Date: 2023-09-20 04:23+0000\n"
+"PO-Revision-Date: 2023-09-21 07:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1409,7 +1409,7 @@ msgid ""
 msgstr ""
 "個々の規則は、入力トークン順列、終端を示す<code>-1</code>の順です。<link "
 "xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.2\">PAGC "
-"Input Tokens</link>から引用した正当な入力トークンは次の通りです。"
+"Input Tokens</link>から引用した正当な入力トークンは次の通りです:"
 
 #. Tag: emphasis
 #, no-c-format
@@ -27120,6 +27120,10 @@ msgid ""
 "varname>, and <varname>CURVEPOLYGON</varname>). In PostGIS this function "
 "also works on line and point geometries."
 msgstr ""
+"サーフェス (<varname>POLYGON</varname>、<varname>MULTIPOLYGON</varname>、<var"
+"name>CURVEPOLYGON</varname>)の内部にあることを保証された<varname>POINT</varna"
+"me>を返します。PostGISでは、この関数はラインジオメトリやポイントジオメトリで"
+"も動作します。"
 
 #. Tag: para
 #, no-c-format
@@ -27144,22 +27148,22 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Point on surface of a <varname>MULTIPOINT</varname>"
-msgstr ""
+msgstr "<varname>MULTIPOINT</varname>に対するサーフェス上の点"
 
 #. Tag: para
 #, no-c-format
 msgid "Point on surface of a <varname>LINESTRING</varname>"
-msgstr ""
+msgstr "<varname>LINESTRING</varname>に対するサーフェス上の点"
 
 #. Tag: para
 #, no-c-format
 msgid "Point on surface of a <varname>POLYGON</varname>"
-msgstr ""
+msgstr "<varname>POLYGON</varname>に対するサーフェス上の点"
 
 #. Tag: para
 #, no-c-format
 msgid "Point on surface of a <varname>GEOMETRYCOLLECTION</varname>"
-msgstr ""
+msgstr "<varname>GEOMETRYCOLLECTION</varname>に対するサーフェス上の点"
 
 #. Tag: para
 #, no-c-format
