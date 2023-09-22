@@ -3,8 +3,14 @@ xxxx/xx/xx
 
 * Breaking Changes *
 
-  - #5546, TopoGeometry <> TopoGeometry is now ambiguous, replace with
-           tg1::int[] <> tg2::int[] to get older behavior
+  - #5546, TopoGeometry <> TopoGeometry is now ambiguous, to get
+           the old behaviour, assuming your TopoGeometry objects
+           are named tg1 and tg2, use: (
+              id(tg1) <> id(tg2) OR
+              topology_id(tg1) <> topology_id(tg2) OR
+              layer_id(tg1) <> layer_id(tg2) OR
+              type(tg1) <> type(tg2)
+           )
   - #5536, comments are not anymore included in PostGIS extensions
   - xmllint is now required to build comments and documentation
   - DocBook5 XSL is now required to build html documentation
