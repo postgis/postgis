@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-20 07:42+0000\n"
-"PO-Revision-Date: 2023-09-22 09:23+0000\n"
+"PO-Revision-Date: 2023-09-22 13:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/it/>\n"
@@ -1115,6 +1115,8 @@ msgid ""
 "Assumed to be US or CA based on: postcode as US or Canada state/province as "
 "US or Canada else US"
 msgstr ""
+"Si presume che sia USA o CA in base a: codice postale come USA o Canada "
+"stato/provincia come USA o Canada altro USA"
 
 #. Tag: term
 #, no-c-format
@@ -1659,6 +1661,8 @@ msgid ""
 "STOPWORDS combine with WORDS. In rules a string of multiple WORDs and "
 "STOPWORDs will be represented by a single WORD token."
 msgstr ""
+"Le STOPWORDS si combinano con le WORDS. Nelle regole, una stringa di più "
+"PAROLE e STOPWORD sarà rappresentata da un singolo token PAROLA."
 
 #. Tag: para
 #, no-c-format
@@ -1666,11 +1670,13 @@ msgid ""
 "(7). A word with low lexical significance, that can be omitted in parsing. "
 "For example: <emphasis>THE</emphasis>."
 msgstr ""
+"(7). Una parola di scarso significato lessicale, che può essere omessa nel "
+"parsing. Ad esempio: <emphasis>IL</emphasis>."
 
 #. Tag: title
 #, no-c-format
 msgid "Output Tokens"
-msgstr ""
+msgstr "Gettoni di uscita"
 
 #. Tag: para
 #, no-c-format
@@ -1681,11 +1687,16 @@ msgid ""
 "dependent on kind of rule. Output tokens valid for each rule type are listed "
 "in <xref linkend=\"rule_types_rank\"/>."
 msgstr ""
+"Dopo il primo -1 (terminatore), seguono i token di uscita e il loro ordine, "
+"seguito da un terminatore <code>-1</code>. I numeri dei corrispondenti token "
+"di uscita sono elencati in <xref linkend=\"stdaddr\"/>. I numeri ammessi "
+"dipendono dal tipo di regola. I token di uscita validi per ogni tipo di "
+"regola sono elencati in <xref linkend=\"rule_types_rank\"/>."
 
 #. Tag: title
 #, no-c-format
 msgid "Rule Types and Rank"
-msgstr ""
+msgstr "Tipi di regole e rango"
 
 #. Tag: para
 #, no-c-format
@@ -1694,11 +1705,14 @@ msgid ""
 "following, followed by a rule rank. The rules are ranked from 0 (lowest) to "
 "17 (highest)."
 msgstr ""
+"La parte finale della regola è il tipo di regola, indicato da una delle "
+"seguenti lettere, seguita da un grado della regola. Le regole sono "
+"classificate da 0 (minimo) a 17 (massimo)."
 
 #. Tag: emphasis
 #, no-c-format
 msgid "MACRO_C"
-msgstr ""
+msgstr "MACRO_C"
 
 #. Tag: para
 #, no-c-format
@@ -1706,6 +1720,9 @@ msgid ""
 "(token number = \"<emphasis role=\"bold\">0</emphasis>\"). The class of "
 "rules for parsing MACRO clauses such as <emphasis>PLACE STATE ZIP</emphasis>"
 msgstr ""
+"(numero di token = \"<emphasis role=\"bold\">0</emphasis>\"). La classe di "
+"regole per il parsing di clausole MACRO come <emphasis>PLACE STATE "
+"ZIP</emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -1714,16 +1731,19 @@ msgid ""
 "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
 "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
 msgstr ""
+"<emphasis role=\"bold\">MACRO_C output tokens</emphasis> (estratto da <link "
+"xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\""
+">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
 
 #. Tag: para
 #, no-c-format
 msgid "(token number \"10\"). Example \"Albany\""
-msgstr ""
+msgstr "(numero di token \"10\"). Esempio \"Albany\""
 
 #. Tag: para
 #, no-c-format
 msgid "(token number \"11\"). Example \"NY\""
-msgstr ""
+msgstr "(numero di token \"11\"). Esempio \"NY\""
 
 #. Tag: para
 #, no-c-format
@@ -1731,6 +1751,8 @@ msgid ""
 "(token number \"12\"). This attribute is not used in most reference files. "
 "Example \"USA\""
 msgstr ""
+"(numero di token \"12\"). Questo attributo non viene utilizzato nella "
+"maggior parte dei file di riferimento. Esempio \"USA\""
 
 #. Tag: para
 #, no-c-format
@@ -1738,6 +1760,9 @@ msgid ""
 "(token number \"13\"). (SADS elements \"ZIP CODE\" , \"PLUS 4\" ). This "
 "attribute is used for both the US Zip and the Canadian Postal Codes."
 msgstr ""
+"(numero di token \"13\"). (elementi SADS \"ZIP CODE\" , \"PLUS 4\" ). Questo "
+"attributo è utilizzato sia per i codici postali statunitensi che per quelli "
+"canadesi."
 
 #. Tag: emphasis
 #, no-c-format
@@ -26619,6 +26644,8 @@ msgid ""
 "Returns the spatial reference identifier of the raster object as defined in "
 "the spatial_ref_sys table."
 msgstr ""
+"Restituisce l'identificatore di riferimento spaziale dell'oggetto raster "
+"come definito nella tabella spatial_ref_sys."
 
 #. Tag: para
 #, no-c-format
@@ -26626,6 +26653,8 @@ msgid ""
 "From PostGIS 2.0+ the srid of a non-georeferenced raster/geometry is 0 "
 "instead of the prior -1."
 msgstr ""
+"Da PostGIS 2.0+ lo srid di un raster/geometria non georeferenziato è 0 "
+"invece del precedente -1."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -26633,11 +26662,13 @@ msgid ""
 "<refpurpose>Returns a text summary of the contents of the raster.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Restituisce un testo riassuntivo del contenuto del "
+"raster.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid "<para>Returns a text summary of the contents of the raster.</para>"
-msgstr ""
+msgstr "<para>Restituisce un testo riassuntivo del contenuto del raster.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -26645,6 +26676,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_BandMetaData\"/>, <xref linkend=\"ST_Summary\"/> "
 "<xref linkend=\"ST_Extent\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_BandMetaData\"/>, <xref linkend=\"ST_Summary\"/> "
+"<xref linkend=\"ST_Extent\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -26652,6 +26685,8 @@ msgid ""
 "<refpurpose>Returns the upper left X coordinate of raster in projected "
 "spatial ref.</refpurpose>"
 msgstr ""
+"<refpurpose>Restituisce la coordinata X superiore sinistra del raster in "
+"proiezione spaziale.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -26659,6 +26694,8 @@ msgid ""
 "<para>Returns the upper left X coordinate of raster in projected spatial ref."
 "</para>"
 msgstr ""
+"<para>Restituisce la coordinata X superiore sinistra del raster in "
+"proiezione spaziale.</para>"
 
 #. Tag: para
 #, no-c-format
