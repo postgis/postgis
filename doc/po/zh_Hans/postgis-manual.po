@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-20 07:42+0000\n"
-"PO-Revision-Date: 2023-09-15 02:23+0000\n"
+"PO-Revision-Date: 2023-09-22 09:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
@@ -658,7 +658,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Performance Tuning"
-msgstr ""
+msgstr "性能调优"
 
 #. Tag: para
 #, no-c-format
@@ -668,6 +668,9 @@ msgid ""
 "are usually large, so memory-related optimizations generally have more of an "
 "impact on PostGIS than other types of PostgreSQL queries."
 msgstr ""
+"PostGIS 性能的调优与任何 PostgreSQL 工作负载的调优非常相似。 "
+"唯一需要额外考虑的是，几何图形和栅格通常很大，因此与内存相关的优化通常对 "
+"PostGIS 的影响比其他类型的 PostgreSQL 查询更大。"
 
 #. Tag: para
 #, no-c-format
@@ -8451,7 +8454,7 @@ msgstr ""
 #. Tag: term
 #, no-c-format
 msgid "Raúl Marín Rodríguez"
-msgstr "劳尔·马林·罗德里格斯"
+msgstr "Raúl Marín Rodríguez"
 
 #. Tag: para
 #, no-c-format
@@ -8464,7 +8467,7 @@ msgstr ""
 #. Tag: term
 #, no-c-format
 msgid "Regina Obe"
-msgstr "里贾纳·奥贝"
+msgstr "Regina Obe"
 
 #. Tag: para
 #, no-c-format
@@ -8479,7 +8482,7 @@ msgstr ""
 #. Tag: term
 #, no-c-format
 msgid "Darafei Praliaskouski"
-msgstr "达拉菲·普拉利亚斯库斯基"
+msgstr "Darafei Praliaskouski"
 
 #. Tag: para
 #, no-c-format
@@ -8492,7 +8495,7 @@ msgstr ""
 #. Tag: term
 #, no-c-format
 msgid "Paul Ramsey (Chair)"
-msgstr "保罗·拉姆齐（主席）"
+msgstr "Paul Ramsey（主席）"
 
 #. Tag: para
 #, no-c-format
@@ -8510,7 +8513,7 @@ msgstr ""
 #. Tag: term
 #, no-c-format
 msgid "Sandro Santilli"
-msgstr "桑德罗·桑蒂利"
+msgstr "Sandro Santilli"
 
 #. Tag: para
 #, no-c-format
@@ -8531,7 +8534,7 @@ msgstr "当前的核心贡献者"
 #. Tag: term
 #, no-c-format
 msgid "Nicklas Avén"
-msgstr "尼克拉斯·阿文"
+msgstr "Nicklas Avén"
 
 #. Tag: para
 #, no-c-format
@@ -8546,7 +8549,7 @@ msgstr ""
 #. Tag: term
 #, no-c-format
 msgid "Dan Baston"
-msgstr "丹·巴斯顿"
+msgstr "Dan Baston"
 
 #. Tag: para
 #, no-c-format
@@ -8558,7 +8561,7 @@ msgstr "几何聚类功能添加、其他几何算法增强、GEOS 增强和一�
 #. Tag: term
 #, no-c-format
 msgid "Martin Davis"
-msgstr "马丁·戴维斯"
+msgstr "Martin Davis"
 
 #. Tag: para
 #, no-c-format
@@ -8568,7 +8571,7 @@ msgstr "GEOS 增强功能和文档"
 #. Tag: term
 #, no-c-format
 msgid "Björn Harrtell"
-msgstr "比约恩·哈特尔"
+msgstr "Björn Harrtell"
 
 #. Tag: para
 #, no-c-format
@@ -8580,7 +8583,7 @@ msgstr "MapBox Vector Tile和GeoBuf函数，Gogs测试和GitLab实验。"
 #. Tag: term
 #, no-c-format
 msgid "Aliaksandr Kalenik"
-msgstr "阿利亚克桑德·卡莱尼克"
+msgstr "Aliaksandr Kalenik"
 
 #. Tag: para
 #, no-c-format
@@ -8595,7 +8598,7 @@ msgstr "过去的核心贡献者"
 #. Tag: term
 #, no-c-format
 msgid "Bborie Park"
-msgstr "博里公园"
+msgstr "Bborie Park"
 
 #. Tag: para
 #, no-c-format
@@ -8604,13 +8607,13 @@ msgid ""
 "user support, general bug fixing, testing on various OS (Slackware, Mac, "
 "Windows, and more)"
 msgstr ""
-"前 PSC 成员。 光栅打开，与GDAL集成，光栅加载器，用户支持，常见纠错，在各种操"
-"作系统（Slackware，Mac，Windows等）上进行测试"
+"前 PSC 成员。 栅格，与GDAL集成，栅格加载器，用户支持，常见纠错，在各种操作系"
+"统（Slackware，Mac，Windows等）上进行测试"
 
 #. Tag: term
 #, no-c-format
 msgid "Mark Cave-Ayland"
-msgstr "马克·凯夫-艾兰"
+msgstr "Mark Cave-Ayland"
 
 #. Tag: para
 #, no-c-format
@@ -8625,17 +8628,17 @@ msgstr ""
 #. Tag: term
 #, no-c-format
 msgid "Jorge Arévalo"
-msgstr "豪尔赫·阿雷瓦洛"
+msgstr "Jorge Arévalo"
 
 #. Tag: para
 #, no-c-format
 msgid "Raster development, GDAL driver support, loader"
-msgstr "光栅开发，GDAL驱动功能，加载器"
+msgstr "栅格开发，GDAL驱动功能，加载器"
 
 #. Tag: term
 #, no-c-format
 msgid "Olivier Courtin"
-msgstr "奥利维尔·考廷"
+msgstr "Olivier Courtin"
 
 #. Tag: para
 #, no-c-format
@@ -8647,7 +8650,7 @@ msgstr "（荣誉）XML（KML， GML）/GEOJSON 输入/输出函数、3D 对应�
 #. Tag: term
 #, no-c-format
 msgid "Chris Hodgson"
-msgstr "克里斯·霍奇森"
+msgstr "Chris Hodgson"
 
 #. Tag: para
 #, no-c-format
@@ -8659,7 +8662,7 @@ msgstr "前 PSC 成员。一般开发，站点和构建机器人维护，OSGeo�
 #. Tag: term
 #, no-c-format
 msgid "Mateusz Loskot"
-msgstr "马特乌斯·洛斯科特"
+msgstr "Mateusz Loskot"
 
 #. Tag: para
 #, no-c-format
@@ -8673,7 +8676,7 @@ msgstr ""
 #. Tag: term
 #, no-c-format
 msgid "Kevin Neufeld"
-msgstr "凯文·诺伊菲尔德"
+msgstr "Kevin Neufeld"
 
 #. Tag: para
 #, no-c-format
@@ -8688,7 +8691,7 @@ msgstr ""
 #. Tag: term
 #, no-c-format
 msgid "Dave Blasby"
-msgstr "戴夫·布拉斯比"
+msgstr "Dave Blasby"
 
 #. Tag: para
 #, no-c-format
@@ -8702,7 +8705,7 @@ msgstr ""
 #. Tag: term
 #, no-c-format
 msgid "Jeff Lounsbury"
-msgstr "杰夫·朗斯伯里"
+msgstr "Jeff Lounsbury"
 
 #. Tag: para
 #, no-c-format
@@ -8712,7 +8715,7 @@ msgstr "shapefile loader/dumper 的原始开发人员。"
 #. Tag: term
 #, no-c-format
 msgid "Mark Leslie"
-msgstr "马克·莱斯利"
+msgstr "Mark Leslie"
 
 #. Tag: para
 #, no-c-format
@@ -8724,7 +8727,7 @@ msgstr "持续维护和开发核心功能。增强的曲线功能。形状文件
 #. Tag: term
 #, no-c-format
 msgid "Pierre Racine"
-msgstr "皮埃尔·拉辛"
+msgstr "Pierre Racine"
 
 #. Tag: para
 #, no-c-format
@@ -8736,7 +8739,7 @@ msgstr "后 GIS 栅格实现设计。 光栅架构、原型设计和编程辅助
 #. Tag: term
 #, no-c-format
 msgid "David Zwarg"
-msgstr "大卫·兹瓦格"
+msgstr "David Zwarg"
 
 #. Tag: para
 #, no-c-format
@@ -8756,72 +8759,72 @@ msgstr "个人"
 #. Tag: member
 #, no-c-format
 msgid "Alex Bodnaru"
-msgstr "亚历克斯·博德纳鲁"
+msgstr "Alex Bodnaru"
 
 #. Tag: member
 #, no-c-format
 msgid "Alex Mayrhofer"
-msgstr "亚历克斯·迈尔霍弗"
+msgstr "Alex Mayrhofer"
 
 #. Tag: member
 #, no-c-format
 msgid "Andrea Peri"
-msgstr "安德里亚·佩里"
+msgstr "Andrea Peri"
 
 #. Tag: member
 #, no-c-format
 msgid "Andreas Forø Tollefsen"
-msgstr "安德烈亚斯·福罗·托勒夫森"
+msgstr "Andreas Forø Tollefsen"
 
 #. Tag: member
 #, no-c-format
 msgid "Andreas Neumann"
-msgstr "安德烈亚斯·诺依曼"
+msgstr "Andreas Neumann"
 
 #. Tag: member
 #, no-c-format
 msgid "Andrew Gierth"
-msgstr "安德鲁·吉尔斯"
+msgstr "Andrew Gierth"
 
 #. Tag: member
 #, no-c-format
 msgid "Anne Ghisla"
-msgstr "安妮·吉斯拉"
+msgstr "Anne Ghisla"
 
 #. Tag: member
 #, no-c-format
 msgid "Antoine Bajolet"
-msgstr "安托万·巴约莱特"
+msgstr "Antoine Bajolet"
 
 #. Tag: member
 #, no-c-format
 msgid "Arthur Lesuisse"
-msgstr "亚瑟·勒苏伊斯"
+msgstr "Arthur Lesuisse"
 
 #. Tag: member
 #, no-c-format
 msgid "Artur Zakirov"
-msgstr "阿图尔·扎基罗夫"
+msgstr "Artur Zakirov"
 
 #. Tag: member
 #, no-c-format
 msgid "Barbara Phillipot"
-msgstr "芭芭拉·菲利波特"
+msgstr "Barbara Phillipot"
 
 #. Tag: member
 #, no-c-format
 msgid "Ben Jubb"
-msgstr "本·朱布"
+msgstr "Ben Jubb"
 
 #. Tag: member
 #, no-c-format
 msgid "Bernhard Reiter"
-msgstr "伯恩哈德·赖特"
+msgstr "Bernhard Reiter"
 
 #. Tag: member
 #, no-c-format
 msgid "Björn Esser"
-msgstr "比约恩·埃瑟"
+msgstr "Björn Esser"
 
 #. Tag: member
 #, no-c-format
@@ -8831,42 +8834,42 @@ msgstr "Brian Hamlin"
 #. Tag: member
 #, no-c-format
 msgid "Bruce Rindahl"
-msgstr "布鲁斯·林达尔"
+msgstr "Bruce Rindahl"
 
 #. Tag: member
 #, no-c-format
 msgid "Bruno Wolff III"
-msgstr "布鲁诺·沃尔夫三世"
+msgstr "Bruno Wolff III"
 
 #. Tag: member
 #, no-c-format
 msgid "Bryce L. Nordgren"
-msgstr "布莱斯·诺德格伦"
+msgstr "Bryce L. Nordgren"
 
 #. Tag: member
 #, no-c-format
 msgid "Carl Anderson"
-msgstr "卡尔·安德森"
+msgstr "Carl Anderson"
 
 #. Tag: member
 #, no-c-format
 msgid "Charlie Savage"
-msgstr "查理·萨维奇"
+msgstr "Charlie Savage"
 
 #. Tag: member
 #, no-c-format
 msgid "Christian Schroeder"
-msgstr "克里斯蒂安·施罗德"
+msgstr "Christian Schroeder"
 
 #. Tag: member
 #, no-c-format
 msgid "Christoph Berg"
-msgstr "克里斯托夫·伯格"
+msgstr "Christoph Berg"
 
 #. Tag: member
 #, no-c-format
 msgid "Christoph Moench-Tegeder"
-msgstr "克里斯托夫·莫恩奇-泰格德"
+msgstr "Christoph Moench-Tegeder"
 
 #. Tag: member
 #, no-c-format
@@ -8876,457 +8879,457 @@ msgstr "Dane Springmeyer"
 #. Tag: member
 #, no-c-format
 msgid "Daryl Herzmann"
-msgstr "达里尔·赫兹曼"
+msgstr "Daryl Herzmann"
 
 #. Tag: member
 #, no-c-format
 msgid "Dave Fuhry"
-msgstr "戴夫·福里"
+msgstr "Dave Fuhry"
 
 #. Tag: member
 #, no-c-format
 msgid "David Garnier"
-msgstr "大卫·卡尼尔"
+msgstr "David Garnier"
 
 #. Tag: member
 #, no-c-format
 msgid "David Skea"
-msgstr "大卫·斯凯"
+msgstr "David Skea"
 
 #. Tag: member
 #, no-c-format
 msgid "David Techer"
-msgstr "大卫·特彻"
+msgstr "David Techer"
 
 #. Tag: member
 #, no-c-format
 msgid "Dmitry Vasilyev"
-msgstr "德米特里·瓦西里耶夫"
+msgstr "Dmitry Vasilyev"
 
 #. Tag: member
 #, no-c-format
 msgid "Eduin Carrillo"
-msgstr "爱杜因·卡里略"
+msgstr "Eduin Carrillo"
 
 #. Tag: member
 #, no-c-format
 msgid "Esteban Zimanyi"
-msgstr "埃斯特万·齐曼伊"
+msgstr "Esteban Zimanyi"
 
 #. Tag: member
 #, no-c-format
 msgid "Eugene Antimirov"
-msgstr "尤金·安蒂米罗夫"
+msgstr "Eugene Antimirov"
 
 #. Tag: member
 #, no-c-format
 msgid "Even Rouault"
-msgstr "甚至鲁奥特"
+msgstr "Even Rouault"
 
 #. Tag: member
 #, no-c-format
 msgid "Florian Weimer"
-msgstr "弗洛里安·魏默"
+msgstr "Florian Weimer"
 
 #. Tag: member
 #, no-c-format
 msgid "Frank Warmerdam"
-msgstr "弗兰克·沃默丹"
+msgstr "Frank Warmerdam"
 
 #. Tag: member
 #, no-c-format
 msgid "George Silva"
-msgstr "乔治·席尔瓦"
+msgstr "George Silva"
 
 #. Tag: member
 #, no-c-format
 msgid "Gerald Fenoy"
-msgstr "杰拉尔德·费诺伊"
+msgstr "Gerald Fenoy"
 
 #. Tag: member
 #, no-c-format
 msgid "Gino Lucrezi"
-msgstr "吉诺·卢克雷齐"
+msgstr "Gino Lucrezi"
 
 #. Tag: member
 #, no-c-format
 msgid "Greg Troxel"
-msgstr "格雷格·特罗克塞尔"
+msgstr "Greg Troxel"
 
 #. Tag: member
 #, no-c-format
 msgid "Guillaume Lelarge"
-msgstr "纪尧姆·利奥格"
+msgstr "Guillaume Lelarge"
 
 #. Tag: member
 #, no-c-format
 msgid "Giuseppe Broccolo"
-msgstr "朱塞佩·布罗科洛"
+msgstr "Giuseppe Broccolo"
 
 #. Tag: member
 #, no-c-format
 msgid "Han Wang"
-msgstr "王晗"
+msgstr "Han Wang"
 
 #. Tag: member
 #, no-c-format
 msgid "Haribabu Kommi"
-msgstr "哈里巴布科米"
+msgstr "Haribabu Kommi"
 
 #. Tag: member
 #, no-c-format
 msgid "Havard Tveite"
-msgstr "哈佛特维特"
+msgstr "Havard Tveite"
 
 #. Tag: member
 #, no-c-format
 msgid "IIDA Tetsushi"
-msgstr "饭田哲志"
+msgstr "IIDA Tetsushi"
 
 #. Tag: member
 #, no-c-format
 msgid "Ingvild Nystuen"
-msgstr "英格维尔德·奈斯图恩"
+msgstr "Ingvild Nystuen"
 
 #. Tag: member
 #, no-c-format
 msgid "Jackie Leng"
-msgstr "冷成龙"
+msgstr "Jackie Leng"
 
 #. Tag: member
 #, no-c-format
 msgid "James Marca"
-msgstr "詹姆斯·马卡"
+msgstr "James Marca"
 
 #. Tag: member
 #, no-c-format
 msgid "Jan Katins"
-msgstr "扬·卡廷斯"
+msgstr "Jan Katins"
 
 #. Tag: member
 #, no-c-format
 msgid "Jason Smith"
-msgstr "杰森·史密斯"
+msgstr "Jason Smith"
 
 #. Tag: member
 #, no-c-format
 msgid "Jeff Adams"
-msgstr "杰夫·亚当斯"
+msgstr "Jeff Adams"
 
 #. Tag: member
 #, no-c-format
 msgid "Jelte Fennema"
-msgstr "杰尔特芬尼玛"
+msgstr "Jelte Fennema"
 
 #. Tag: member
 #, no-c-format
 msgid "Jim Jones"
-msgstr "吉姆·琼斯"
+msgstr "Jim Jones"
 
 #. Tag: member
 #, no-c-format
 msgid "Joe Conway"
-msgstr "乔·康威"
+msgstr "Joe Conway"
 
 #. Tag: member
 #, no-c-format
 msgid "Jonne Savolainen"
-msgstr "乔恩·萨沃莱宁"
+msgstr "Jonne Savolainen"
 
 #. Tag: member
 #, no-c-format
 msgid "Jose Carlos Martinez Llari"
-msgstr "何塞·卡洛斯·马丁内斯·拉里"
+msgstr "Jose Carlos Martinez Llari"
 
 #. Tag: member
 #, no-c-format
 msgid "Jörg Habenicht"
-msgstr "约尔格·哈贝尼希特"
+msgstr "Jörg Habenicht"
 
 #. Tag: member
 #, no-c-format
 msgid "Julien Rouhaud"
-msgstr "朱利安·鲁霍"
+msgstr "Julien Rouhaud"
 
 #. Tag: member
 #, no-c-format
 msgid "Kashif Rasul"
-msgstr "卡希夫·拉苏尔"
+msgstr "Kashif Rasul"
 
 #. Tag: member
 #, no-c-format
 msgid "Klaus Foerster"
-msgstr "克劳斯·福斯特"
+msgstr "Klaus Foerster"
 
 #. Tag: member
 #, no-c-format
 msgid "Kris Jurka"
-msgstr "克里斯·尤尔卡"
+msgstr "Kris Jurka"
 
 #. Tag: member
 #, no-c-format
 msgid "Laurenz Albe"
-msgstr "劳伦兹·阿尔贝"
+msgstr "Laurenz Albe"
 
 #. Tag: member
 #, no-c-format
 msgid "Lars Roessiger"
-msgstr "拉尔斯·罗斯西格"
+msgstr "Lars Roessiger"
 
 #. Tag: member
 #, no-c-format
 msgid "Leo Hsu"
-msgstr "徐磊"
+msgstr "Leo Hsu"
 
 #. Tag: member
 #, no-c-format
 msgid "Loïc Bartoletti"
-msgstr "洛伊茨·巴托莱蒂"
+msgstr "Loïc Bartoletti"
 
 #. Tag: member
 #, no-c-format
 msgid "Loic Dachary"
-msgstr "洛伊克·达卡里"
+msgstr "Loic Dachary"
 
 #. Tag: member
 #, no-c-format
 msgid "Luca S. Percich"
-msgstr "卢卡·S.珀西奇"
+msgstr "Luca S. Percich"
 
 #. Tag: member
 #, no-c-format
 msgid "Lucas C. Villa Real"
-msgstr "卢卡斯·C·维拉里尔"
+msgstr "Lucas C. Villa Real"
 
 #. Tag: member
 #, no-c-format
 msgid "Maria Arias de Reyna"
-msgstr "玛丽亚·阿里亚斯·德·雷纳"
+msgstr "Maria Arias de Reyna"
 
 #. Tag: member
 #, no-c-format
 msgid "Marc Ducobu"
-msgstr "马克·杜科布"
+msgstr "Marc Ducobu"
 
 #. Tag: member
 #, no-c-format
 msgid "Mark Sondheim"
-msgstr "马克·桑德海姆"
+msgstr "Mark Sondheim"
 
 #. Tag: member
 #, no-c-format
 msgid "Markus Schaber"
-msgstr "马库斯·沙伯"
+msgstr "Markus Schaber"
 
 #. Tag: member
 #, no-c-format
 msgid "Markus Wanner"
-msgstr "马库斯·万纳"
+msgstr "Markus Wanner"
 
 #. Tag: member
 #, no-c-format
 msgid "Matt Amos"
-msgstr "马特·阿莫斯"
+msgstr "Matt Amos"
 
 #. Tag: member
 #, no-c-format
 msgid "Matt Bretl"
-msgstr "马特·布雷特尔"
+msgstr "Matt Bretl"
 
 #. Tag: member
 #, no-c-format
 msgid "Matthias Bay"
-msgstr "马蒂亚斯湾"
+msgstr "Matthias Bay"
 
 #. Tag: member
 #, no-c-format
 msgid "Maxime Guillaud"
-msgstr "马克西姆·纪尧德"
+msgstr "Maxime Guillaud"
 
 #. Tag: member
 #, no-c-format
 msgid "Maxime van Noppen"
-msgstr "马克西姆·范·诺彭"
+msgstr "Maxime van Noppen"
 
 #. Tag: member
 #, no-c-format
 msgid "Maxime Schoemans"
-msgstr "马克西姆·舒曼斯"
+msgstr "Maxime Schoemans"
 
 #. Tag: member
 #, no-c-format
 msgid "Michael Fuhr"
-msgstr "迈克尔·福尔"
+msgstr "Michael Fuhr"
 
 #. Tag: member
 #, no-c-format
 msgid "Mike Toews"
-msgstr "迈克·托斯"
+msgstr "Mike Toews"
 
 #. Tag: member
 #, no-c-format
 msgid "Nathan Wagner"
-msgstr "内森·瓦格纳"
+msgstr "Nathan Wagner"
 
 #. Tag: member
 #, no-c-format
 msgid "Nathaniel Clay"
-msgstr "纳撒尼尔·克莱"
+msgstr "Nathaniel Clay"
 
 #. Tag: member
 #, no-c-format
 msgid "Nikita Shulga"
-msgstr "尼基塔·舒尔加"
+msgstr "Nikita Shulga"
 
 #. Tag: member
 #, no-c-format
 msgid "Norman Vine"
-msgstr "诺曼藤"
+msgstr "Norman Vine"
 
 #. Tag: member
 #, no-c-format
 msgid "Patricia Tozer"
-msgstr "帕特里夏·托泽"
+msgstr "Patricia Tozer"
 
 #. Tag: member
 #, no-c-format
 msgid "Rafal Magda"
-msgstr "拉法尔·玛格达"
+msgstr "Rafal Magda"
 
 #. Tag: member
 #, no-c-format
 msgid "Ralph Mason"
-msgstr "拉尔夫·梅森"
+msgstr "Ralph Mason"
 
 #. Tag: member
 #, no-c-format
 msgid "Rémi Cura"
-msgstr "雷米·库拉"
+msgstr "Rémi Cura"
 
 #. Tag: member
 #, no-c-format
 msgid "Richard Greenwood"
-msgstr "理查德·格林伍德"
+msgstr "Richard Greenwood"
 
 #. Tag: member
 #, no-c-format
 msgid "Robert Coup"
-msgstr "罗伯特·库普"
+msgstr "Robert Coup"
 
 #. Tag: member
 #, no-c-format
 msgid "Roger Crew"
-msgstr "罗杰·克鲁"
+msgstr "Roger Crew"
 
 #. Tag: member
 #, no-c-format
 msgid "Ron Mayer"
-msgstr "罗恩·梅耶"
+msgstr "Ron Mayer"
 
 #. Tag: member
 #, no-c-format
 msgid "Sebastiaan Couwenberg"
-msgstr "塞巴斯蒂安·库文伯格"
+msgstr "Sebastiaan Couwenberg"
 
 #. Tag: member
 #, no-c-format
 msgid "Sergei Shoulbakov"
-msgstr "谢尔盖·舒尔巴科夫"
+msgstr "Sergei Shoulbakov"
 
 #. Tag: member
 #, no-c-format
 msgid "Sergey Fedoseev"
-msgstr "谢尔盖·费多谢夫"
+msgstr "Sergey Fedoseev"
 
 #. Tag: member
 #, no-c-format
 msgid "Shinichi Sugiyama"
-msgstr "杉山真一"
+msgstr "Shinichi Sugiyama"
 
 #. Tag: member
 #, no-c-format
 msgid "Shoaib Burq"
-msgstr "绍艾布·伯克"
+msgstr "Shoaib Burq"
 
 #. Tag: member
 #, no-c-format
 msgid "Silvio Grosso"
-msgstr "西尔维奥·格罗索"
+msgstr "Silvio Grosso"
 
 #. Tag: member
 #, no-c-format
 msgid "Stefan Corneliu Petrea"
-msgstr "斯特凡·科内留·佩特雷亚"
+msgstr "Stefan Corneliu Petrea"
 
 #. Tag: member
 #, no-c-format
 msgid "Steffen Macke"
-msgstr "斯蒂芬·麦克"
+msgstr "Steffen Macke"
 
 #. Tag: member
 #, no-c-format
 msgid "Stepan Kuzmin"
-msgstr "斯捷潘·库兹明"
+msgstr "Stepan Kuzmin"
 
 #. Tag: member
 #, no-c-format
 msgid "Stephen Frost"
-msgstr "斯蒂芬·弗罗斯特"
+msgstr "Stephen Frost"
 
 #. Tag: member
 #, no-c-format
 msgid "Steven Ottens"
-msgstr "史蒂文·奥滕斯"
+msgstr "Steven Ottens"
 
 #. Tag: member
 #, no-c-format
 msgid "Talha Rizwan"
-msgstr "塔拉·里兹万"
+msgstr "Talha Rizwan"
 
 #. Tag: member
 #, no-c-format
 msgid "Teramoto Ikuhiro"
-msgstr "寺本郁弘"
+msgstr "Teramoto Ikuhiro"
 
 #. Tag: member
 #, no-c-format
 msgid "Tom Glancy"
-msgstr "汤姆·格兰西"
+msgstr "Tom Glancy"
 
 #. Tag: member
 #, no-c-format
 msgid "Tom van Tilburg"
-msgstr "汤姆·范·蒂尔堡"
+msgstr "Tom van Tilburg"
 
 #. Tag: member
 #, no-c-format
 msgid "Victor Collod"
-msgstr "维克多·科洛德"
+msgstr "Victor Collod"
 
 #. Tag: member
 #, no-c-format
 msgid "Vincent Bre"
-msgstr "文森特·布雷"
+msgstr "Vincent Bre"
 
 #. Tag: member
 #, no-c-format
 msgid "Vincent Mora"
-msgstr "文森特·莫拉"
+msgstr "Vincent Mora"
 
 #. Tag: member
 #, no-c-format
 msgid "Vincent Picavet"
-msgstr "文森特·皮卡维特"
+msgstr "Vincent Picavet"
 
 #. Tag: member
 #, no-c-format
 msgid "Volf Tomáš"
-msgstr "沃尔夫·托马斯"
+msgstr "Volf Tomáš"
 
 #. Tag: term
 #, no-c-format
 msgid "Corporate Sponsors"
-msgstr "企业"
+msgstr "企业团体"
 
 #. Tag: para
 #, no-c-format
@@ -9349,7 +9352,7 @@ msgstr "Arrival 3D"
 #. Tag: link
 #, no-c-format
 msgid "Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it)"
-msgstr "意大利自由地理信息协会（GFOSS.it）"
+msgstr "Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it)"
 
 #. Tag: link
 #, no-c-format
@@ -9394,12 +9397,12 @@ msgstr "Crunchy Data"
 #. Tag: link
 #, no-c-format
 msgid "City of Boston (DND)"
-msgstr "波士顿市 (DND)"
+msgstr "City of Boston (DND)"
 
 #. Tag: link
 #, no-c-format
 msgid "City of Helsinki"
-msgstr "赫尔辛基市"
+msgstr "City of Helsinki"
 
 #. Tag: link
 #, no-c-format
@@ -9464,22 +9467,22 @@ msgstr "Maponics"
 #. Tag: link
 #, no-c-format
 msgid "Michigan Tech Research Institute"
-msgstr "密歇根理工学院"
+msgstr "Michigan Tech Research Institute"
 
 #. Tag: link
 #, no-c-format
 msgid "Natural Resources Canada"
-msgstr "加拿大自然资源部"
+msgstr "Natural Resources Canada"
 
 #. Tag: simpara
 #, no-c-format
 msgid "Norwegian Forest and Landscape Institue"
-msgstr "挪威森林和景观研究所"
+msgstr "Norwegian Forest and Landscape Institue"
 
 #. Tag: link
 #, no-c-format
 msgid "Norwegian Institute of Bioeconomy Research (NIBIO)"
-msgstr "挪威生物经济研究所 (NIBIO)"
+msgstr "Norwegian Institute of Bioeconomy Research (NIBIO)"
 
 #. Tag: link
 #, no-c-format
@@ -9514,7 +9517,7 @@ msgstr "Refractions Research"
 #. Tag: link
 #, no-c-format
 msgid "Regione Toscana - SITA"
-msgstr "托斯卡纳 - SITA"
+msgstr "Regione Toscana - SITA"
 
 #. Tag: link
 #, no-c-format
@@ -9529,22 +9532,22 @@ msgstr "Sirius Corporation plc"
 #. Tag: link
 #, no-c-format
 msgid "Stadt Uster"
-msgstr "乌斯特市"
+msgstr "Stadt Uster"
 
 #. Tag: link
 #, no-c-format
 msgid "UC Davis Center for Vectorborne Diseases"
-msgstr "加州大学戴维斯分校传染病中心"
+msgstr "UC Davis Center for Vectorborne Diseases"
 
 #. Tag: link
 #, no-c-format
 msgid "Université Laval"
-msgstr "拉瓦尔大学"
+msgstr "Université Laval"
 
 #. Tag: link
 #, no-c-format
 msgid "U.S. Department of State (HIU)"
-msgstr "美国国务院 (HIU)"
+msgstr "U.S. Department of State (HIU)"
 
 #. Tag: link
 #, no-c-format
