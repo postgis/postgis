@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-20 07:42+0000\n"
-"PO-Revision-Date: 2023-09-21 22:23+0000\n"
+"PO-Revision-Date: 2023-09-22 09:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/it/>\n"
@@ -25831,6 +25831,10 @@ msgid ""
 "this case the resulting raster will get the same SRID as the reference "
 "raster."
 msgstr ""
+"Il raster di uscita avrà lo stesso riferimento spaziale della geometria di "
+"origine. L'unica eccezione è rappresentata dalle varianti con un raster di "
+"riferimento. In questo caso il raster risultante avrà lo stesso SRID del "
+"raster di riferimento."
 
 #. Tag: para
 #, no-c-format
@@ -25840,6 +25844,11 @@ msgid ""
 "touched by lines or polygons will be burned. Not just those on the line "
 "render path, or whose center point is within the polygon."
 msgstr ""
+"Il parametro opzionale <varname>touched</varname> è predefinito a false e "
+"corrisponde all'opzione di rasterizzazione GDAL ALL_TOUCHED, che determina "
+"se i pixel toccati da linee o poligoni saranno bruciati. Non solo quelli sul "
+"percorso di rendering della linea o il cui punto centrale è all'interno del "
+"poligono."
 
 #. Tag: para
 #, no-c-format
@@ -25849,6 +25858,10 @@ msgid ""
 "\"RT_ST_AsPNG\"/> and other <xref linkend=\"RT_ST_AsGDALRaster\"/> family of "
 "functions."
 msgstr ""
+"È particolarmente utile per il rendering di jpeg e png di geometrie "
+"direttamente dal database quando si usa in combinazione con <xref linkend="
+"\"RT_ST_AsPNG\"/> e altre funzioni della famiglia <xref linkend="
+"\"RT_ST_AsGDALRaster\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -25856,21 +25869,23 @@ msgid ""
 "Not yet capable of rendering complex geometry types such as curves, TINS, "
 "and PolyhedralSurfaces, but should be able too once GDAL can."
 msgstr ""
+"Non è ancora in grado di renderizzare tipi di geometrie complesse come "
+"curve, TINS e superfici poliedriche, ma dovrebbe esserlo quando GDAL lo farà."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Output geometries as PNG files"
-msgstr ""
+msgstr "Esempi: Geometrie in uscita come file PNG"
 
 #. Tag: para
 #, no-c-format
 msgid "black circle"
-msgstr ""
+msgstr "cerchio nero"
 
 #. Tag: para
 #, no-c-format
 msgid "example from buffer rendered with just PostGIS"
-msgstr ""
+msgstr "esempio di buffer renderizzato solo con PostGIS"
 
 #. Tag: para
 #, no-c-format
@@ -25889,6 +25904,8 @@ msgid ""
 "Returns one or more bands of an existing raster as a new raster. Useful for "
 "building new rasters from existing rasters."
 msgstr ""
+"Restituisce una o più bande di un raster esistente come un nuovo raster. "
+"Utile per costruire nuovi raster da raster esistenti."
 
 #. Tag: para
 #, no-c-format
@@ -25900,6 +25917,13 @@ msgid ""
 "bands are returned. Used as a helper function in various functions such as "
 "for deleting a band."
 msgstr ""
+"Restituisce una o più bande di un raster esistente come un nuovo raster. "
+"Utile per creare nuovi raster da raster esistenti o per esportare solo bande "
+"selezionate di un raster o riorganizzare l'ordine delle bande in un raster. "
+"Se non viene specificata alcuna banda o se una delle bande specificate non "
+"esiste nel raster, vengono restituite tutte le bande. Utilizzata come "
+"funzione ausiliaria in varie funzioni, ad esempio per l'eliminazione di una "
+"banda."
 
 #. Tag: para
 #, no-c-format
@@ -25912,6 +25936,14 @@ msgid ""
 "<code>ST_Band(rast, '{1,2,3}'::int[]);</code> since the <code>text</code> "
 "list of bands form may be removed in future versions of PostGIS."
 msgstr ""
+"Per le <code>bande</code> come variante testuale della funzione, il "
+"delimitatore predefinito è <code>,</code> il che significa che si può "
+"chiedere <code>'1,2,3'</code> e se si volesse usare un delimitatore diverso "
+"si dovrebbe fare <code>ST_Band(rast, '1@2@3', '@')</code>. Per richiedere "
+"più bande, si consiglia vivamente di utilizzare la forma array di questa "
+"funzione, ad esempio <code>ST_Band(rast, '{1,2,3}'::int[]);</code> poiché la "
+"forma <code>testo</code> elenco di bande potrebbe essere rimossa nelle "
+"versioni future di PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -25934,11 +25966,13 @@ msgid ""
 ", <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_Reclass\"/>, "
 "<xref linkend=\"RT_reference\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_NumBands\"/>, <xref linkend=\"RT_ST_Reclass\"/>, "
+"<xref linkend=\"RT_reference\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Cover georeferenced area with a grid of empty raster tiles."
-msgstr ""
+msgstr "Copre l'area georeferenziata con una griglia di tessere raster vuote."
 
 #. Tag: para
 #, no-c-format
@@ -25952,6 +25986,15 @@ msgid ""
 "<varname>scalex</varname>, <varname>upperlefty</varname> + <varname>height</"
 "varname> * <varname>scaley</varname>)."
 msgstr ""
+"Creare un insieme di mattonelle raster con <xref linkend="
+"\"RT_ST_MakeEmptyRaster\"/>. La dimensione della griglia è <varname>width</"
+"varname> &amp; <varname> height</varname>. La dimensione della piastrella è "
+"<varname>tilewidth</varname> &amp; <varname> tileheight</varname>. L'area "
+"coperta georeferenziata va dall'angolo superiore sinistro "
+"(<varname>upperleftx</varname>, <varname>upperlefty</varname>) all'angolo "
+"inferiore destro (<varname>upperleftx</varname> + <varname>width</varname> * "
+"<varname>scalex</varname>, <varname>upperlefty</varname> + <varname>height</"
+"varname> * <varname>scaley</varname>)."
 
 #. Tag: para
 #, no-c-format
@@ -25960,11 +26003,14 @@ msgid ""
 "positive. So lower right corner will have a lower y value and higher x value "
 "than the upper left corner."
 msgstr ""
+"Si noti che scaley è generalmente negativo per i raster e scalex è "
+"generalmente positivo. Quindi l'angolo in basso a destra avrà un valore y "
+"più basso e un valore x più alto rispetto all'angolo in alto a sinistra."
 
 #. Tag: title
 #, no-c-format
 msgid "Examples Basic"
-msgstr ""
+msgstr "Esempi di base"
 
 #. Tag: para
 #, no-c-format
@@ -25972,6 +26018,8 @@ msgid ""
 "Create 16 tiles in a 4x4 grid to cover the WGS84 area from upper left corner "
 "(22, 77) to lower right corner (55, 33)."
 msgstr ""
+"Creare 16 piastrelle in una griglia 4x4 per coprire l'area WGS84 dall'angolo "
+"superiore sinistro (22, 77) all'angolo inferiore destro (55, 33)."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -25982,6 +26030,12 @@ msgid ""
 "a new raster with the same size, alignment and SRID. If srid is left out, "
 "the spatial ref is set to unknown (0)."
 msgstr ""
+"Restituisce un raster vuoto (senza bande) di dimensioni date (larghezza &amp;"
+" altezza), X e Y in alto a sinistra, dimensioni dei pixel e rotazione ("
+"scalex, scaley, skewx &amp; skewy) e sistema di riferimento (srid). Se viene "
+"passato un raster, restituisce un nuovo raster con le stesse dimensioni, "
+"allineamento e SRID. Se srid viene omesso, il sistema di riferimento "
+"spaziale viene impostato su sconosciuto (0)."
 
 #. Tag: para
 #, no-c-format
@@ -25991,6 +26045,11 @@ msgid ""
 "X (upperleftx), upper left Y (upperlefty), pixel size and rotation (scalex, "
 "scaley, skewx &amp; skewy) and reference system (srid)."
 msgstr ""
+"Restituisce un raster vuoto (senza banda) di dimensioni date (larghezza &amp;"
+" altezza) e georeferenziato in coordinate spaziali (o mondiali) con X "
+"superiore sinistro (upperleftx), Y superiore sinistro (upperlefty), "
+"dimensioni dei pixel e rotazione (scalex, scaley, skewx &amp; skewy) e "
+"sistema di riferimento (srid)."
 
 #. Tag: para
 #, no-c-format
@@ -25999,6 +26058,10 @@ msgid ""
 "(pixelsize). scalex is set to this argument and scaley is set to the "
 "negative value of this argument. skewx and skewy are set to 0."
 msgstr ""
+"L'ultima versione utilizza un singolo parametro per specificare la "
+"dimensione del pixel (pixelsize). scalex è impostato su questo argomento e "
+"scaley è impostato sul valore negativo di questo argomento. skewx e skewy "
+"sono impostati a 0."
 
 #. Tag: para
 #, no-c-format
@@ -26006,6 +26069,8 @@ msgid ""
 "If an existing raster is passed in, it returns a new raster with the same "
 "meta data settings (without the bands)."
 msgstr ""
+"Se viene passato un raster esistente, viene restituito un nuovo raster con "
+"le stesse impostazioni dei metadati (senza le bande)."
 
 #. Tag: para
 #, no-c-format
@@ -26015,6 +26080,11 @@ msgid ""
 "linkend=\"RT_ST_AddBand\"/> to define bands and <xref linkend="
 "\"RT_ST_SetValue\"/> to set initial pixel values."
 msgstr ""
+"Se non viene specificata alcuna srid, l'impostazione predefinita è 0. Dopo "
+"aver creato un raster vuoto, probabilmente si desidera aggiungervi delle "
+"bande e forse modificarlo. Fare riferimento a <xref linkend=\"RT_ST_AddBand\""
+"/> per definire le bande e a <xref linkend=\"RT_ST_SetValue\"/> per "
+"impostare i valori iniziali dei pixel."
 
 #. Tag: para
 #, no-c-format
@@ -26033,6 +26103,9 @@ msgid ""
 "<refpurpose>Returns a set of rasters resulting from the split of the input "
 "raster based upon the desired dimensions of the output rasters.</refpurpose>"
 msgstr ""
+"<refpurpose>Restituisce un insieme di raster risultanti dalla suddivisione "
+"del raster di input in base alle dimensioni desiderate dei raster di "
+"output.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -26040,6 +26113,9 @@ msgid ""
 "<para>Returns a set of rasters resulting from the split of the input raster "
 "based upon the desired dimensions of the output rasters.</para>"
 msgstr ""
+"<para>Restituisce un insieme di raster risultanti dalla suddivisione del "
+"raster di input in base alle dimensioni desiderate dei raster di "
+"output.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -26051,6 +26127,13 @@ msgid ""
 "NODATA values. If raster band(s) do not have NODATA value(s) specified, one "
 "can be specified by setting <varname>nodataval</varname>."
 msgstr ""
+"Se <varname>padwithnodata</varname> = FALSE, le tessere dei bordi sui lati "
+"destro e inferiore del raster possono avere dimensioni diverse dal resto "
+"delle tessere. Se <varname>padwithnodata</varname> = TRUE, tutte le tessere "
+"avranno le stesse dimensioni, con la possibilità che le tessere dei bordi "
+"vengano imbottite con valori NODATA. Se le bande del raster non hanno valori "
+"NODATA specificati, è possibile specificarne uno impostando "
+"<varname>nodataval</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -26058,17 +26141,21 @@ msgid ""
 "If a specified band of the input raster is out-of-db, the corresponding band "
 "in the output rasters will also be out-of-db."
 msgstr ""
+"Se una banda specificata del raster di input è fuori-db, anche la banda "
+"corrispondente nei raster di output sarà fuori-db."
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_Retile\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_Retile\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Return a set of configured tiles from an arbitrarily tiled raster coverage."
 msgstr ""
+"Restituisce un insieme di piastrelle configurate da una copertura raster "
+"piastrellata arbitrariamente."
 
 #. Tag: para
 #, no-c-format
@@ -26079,11 +26166,16 @@ msgid ""
 "data coming from the specified raster coverage (<varname>tab</varname>, "
 "<varname>col</varname>)."
 msgstr ""
+"Restituisce un insieme di tessere con la scala specificata (<varname>sfx</"
+"varname>, <varname>sfy</varname>) e la dimensione massima (<varname>tw</"
+"varname>, <varname>th</varname>) e che coprono l'estensione specificata "
+"(<varname>ext</varname>) con dati provenienti dalla copertura raster "
+"specificata (<varname>tab</varname>, <varname>col</varname>)."
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a raster from a supported GDAL raster file."
-msgstr ""
+msgstr "Restituisce un raster da un file raster GDAL supportato."
 
 #. Tag: para
 #, no-c-format
@@ -26091,6 +26183,8 @@ msgid ""
 "Returns a raster from a supported GDAL raster file. <varname>gdaldata</"
 "varname> is of type bytea and should be the contents of the GDAL raster file."
 msgstr ""
+"Restituisce un raster da un file raster GDAL supportato. <varname>gdaldata</"
+"varname> è di tipo bytea e deve essere il contenuto del file raster GDAL."
 
 #. Tag: para
 #, no-c-format
@@ -26099,11 +26193,15 @@ msgid ""
 "assign the SRID from the GDAL raster. If <varname>srid</varname> is "
 "provided, the value provided will override any automatically assigned SRID."
 msgstr ""
+"Se <varname>srid</varname> è NULL, la funzione cercherà di assegnare "
+"automaticamente il SRID dal raster GDAL. Se <varname>srid</varname> è "
+"fornito, il valore fornito sovrascrive qualsiasi SRID assegnato "
+"automaticamente."
 
 #. Tag: title
 #, no-c-format
 msgid "Raster Accessors"
-msgstr ""
+msgstr "Accessori raster"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -26111,6 +26209,8 @@ msgid ""
 "Returns the georeference meta data in GDAL or ESRI format as commonly seen "
 "in a world file. Default is GDAL."
 msgstr ""
+"Restituisce i metadati di georeferenziazione in formato GDAL o ESRI, come si "
+"vede comunemente in un file world. L'impostazione predefinita è GDAL."
 
 #. Tag: para
 #, no-c-format
@@ -26120,11 +26220,16 @@ msgid ""
 "World_file\">world file</link>. Default is GDAL if no type specified. type "
 "is string 'GDAL' or 'ESRI'."
 msgstr ""
+"Restituisce i meta-dati di georeferenziazione, compreso il ritorno a capo, "
+"in formato GDAL o ESRI, come si vede comunemente in un <link xlink:href="
+"\"http://en.wikipedia.org/wiki/World_file\">file del mondo</link>. "
+"L'impostazione predefinita è GDAL se non viene specificato il tipo. il tipo "
+"è la stringa 'GDAL' o 'ESRI'."
 
 #. Tag: para
 #, no-c-format
 msgid "Difference between format representations is as follows:"
-msgstr ""
+msgstr "La differenza tra le rappresentazioni di formato è la seguente:"
 
 #. Tag: para
 #, no-c-format
@@ -26144,12 +26249,12 @@ msgstr ", <xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the height of the raster in pixels."
-msgstr ""
+msgstr "Restituisce l'altezza del raster in pixel."
 
 #. Tag: para
 #, no-c-format
 msgid "Returns the height of the raster."
-msgstr ""
+msgstr "Restituisce l'altezza del raster."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -26157,6 +26262,8 @@ msgid ""
 "<refpurpose>Returns true if the raster is empty (width = 0 and height = 0). "
 "Otherwise, returns false.</refpurpose>"
 msgstr ""
+"<refpurpose>Restituisce true se il raster è vuoto (larghezza = 0 e altezza = "
+"0). Altrimenti, restituisce false.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -26164,6 +26271,8 @@ msgid ""
 "<para>Returns true if the raster is empty (width = 0 and height = 0). "
 "Otherwise, returns false.</para>"
 msgstr ""
+"<para>Restituisce true se il raster è vuoto (larghezza = 0 e altezza = 0). "
+"Altrimenti, restituisce false.</para>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -26171,11 +26280,14 @@ msgid ""
 "<refpurpose>Returns the amount of space (in bytes) the raster takes.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>Restituisce la quantità di spazio (in byte) occupato dal "
+"raster.</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid "<para>Returns the amount of space (in bytes) the raster takes.</para>"
 msgstr ""
+"<para>Restituisce la quantità di spazio (in byte) occupato dal raster.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -26183,6 +26295,8 @@ msgid ""
 "This is a nice compliment to PostgreSQL built in functions pg_column_size, "
 "pg_size_pretty, pg_relation_size, pg_total_relation_size."
 msgstr ""
+"È un bel complemento alle funzioni di PostgreSQL pg_column_size, "
+"pg_size_pretty, pg_relation_size, pg_total_relation_size."
 
 #. Tag: para
 #, no-c-format
