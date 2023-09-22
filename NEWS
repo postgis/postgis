@@ -3,6 +3,8 @@ xxxx/xx/xx
 
 * Breaking Changes *
 
+  - #5546, TopoGeometry <> TopoGeometry is now ambiguous, replace with
+           tg1::int[] <> tg2::int[] to get older behavior
   - #5536, comments are not anymore included in PostGIS extensions
   - xmllint is now required to build comments and documentation
   - DocBook5 XSL is now required to build html documentation
