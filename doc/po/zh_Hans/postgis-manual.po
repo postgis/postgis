@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-20 07:42+0000\n"
-"PO-Revision-Date: 2023-09-25 09:16+0000\n"
+"PO-Revision-Date: 2023-09-25 11:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
@@ -31250,7 +31250,7 @@ msgstr ""
 "进行重分类。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "This function is not like <xref linkend=\"RT_ST_ColorMap\"/> with the "
 "<varname>grayscale</varname> keyword as ST_ColorMap operates on only one "
@@ -31258,21 +31258,25 @@ msgid ""
 "the following equation for converting RGB to Grayscale: 0.2989 * RED + "
 "0.5870 * GREEN + 0.1140 * BLUE"
 msgstr ""
+"此函数与带有<varname>灰度</varname>关键字的<xref linkend=\"RT_ST_ColorMap\"/"
+"> 不同，因为 ST_ColorMap 仅在一个波段上运行，而此函数需要 RGB 的三个波段。 "
+"此函数应用以下公式将 RGB 转换为灰度： 0.2989 * RED 0.5870 * GREEN 0.1140 * "
+"BLUE"
 
 #. Tag: para
 #, no-c-format
 msgid "original_png"
-msgstr ""
+msgstr "original_png"
 
 #. Tag: para
 #, no-c-format
 msgid "grayscale_png"
-msgstr ""
+msgstr "grayscale_png"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Reclass\"/>, <xref linkend=\"RT_ST_ColorMap\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_Reclass\"/>, <xref linkend=\"RT_ST_ColorMap\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31280,7 +31284,8 @@ msgid ""
 "<refpurpose>Returns a raster or a set of geometry-pixelvalue pairs "
 "representing the shared portion of two rasters or the geometrical "
 "intersection of a vectorization of the raster and a geometry.</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>返回一个栅格或一组几何像素值对，表示两个栅格的共享部分或栅格矢量"
+"化和几何图形的几何交集。</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -31288,7 +31293,8 @@ msgid ""
 "<para>Returns a raster or a set of geometry-pixelvalue pairs representing "
 "the shared portion of two rasters or the geometrical intersection of a "
 "vectorization of the raster and a geometry.</para>"
-msgstr ""
+msgstr "<para>返回一个栅格或一组几何像素值对，表示两个栅格的共享部分或栅格矢量化和几"
+"何图形的几何交集。</para>"
 
 #. Tag: para
 #, no-c-format
@@ -31302,6 +31308,12 @@ msgid ""
 "results by the proper usage of <xref linkend=\"RT_ST_Intersects\"/> in the "
 "WHERE clause."
 msgstr ""
+"前三个变体返回一组 geomval，在向量空间中工作。 首先将栅格矢量化（使用<xref "
+"linkend=\"RT_ST_DumpAsPolygons\"/>）为一组 geomval 行，然后使用 <xref "
+"linkend=\"ST_Intersection\"/> (geometry, Geometry) PostGIS "
+"函数将这些行与几何相交。 仅与栅格的无数据值区域相交的几何将返回空几何。 "
+"通常通过在 WHERE 子句中正确使用 <xref linkend=\"RT_ST_Intersects\""
+"/>将它们从结果中排除。"
 
 #. Tag: para
 #, no-c-format
@@ -31310,6 +31322,9 @@ msgid ""
 "geomval by surrounding them with parenthesis and adding '.geom' or '.val' at "
 "the end of the expression. e.g. (ST_Intersection(rast, geom)).geom"
 msgstr ""
+"您可以通过用括号将它们括起来并在表达式末尾添加“.geom”或“.val”"
+"来访问几何图形和生成的 geomval 集的值部分。 例如 (ST_Intersection(rast, "
+"geom)).geom"
 
 #. Tag: para
 #, no-c-format
@@ -31317,7 +31332,8 @@ msgid ""
 "The other variants, returning a raster, works in raster space. They are "
 "using the two rasters version of ST_MapAlgebraExpr to perform the "
 "intersection."
-msgstr ""
+msgstr "其他变体返回光栅，在光栅空间中工作。 他们使用 ST_MapAlgebraExpr "
+"的两个栅格版本来执行交集。"
 
 #. Tag: para
 #, no-c-format
@@ -31330,6 +31346,11 @@ msgid ""
 "words, any pixel intersecting with a nodata value pixel becomes a nodata "
 "value pixel in the result."
 msgstr ""
+"生成的栅格范围对应于两个栅格范围的几何交集。 "
+"生成的栅格包含“BAND1”、“BAND2”或“BOTH”波段，遵循作为<varname> returnband "
+"</varname>参数传递的内容。 "
+"任何波段中存在的无数据值区域都会导致结果的每个波段中出现无数据值区域。 "
+"换句话说，与无数据值像素相交的任何像素都成为结果中的无数据值像素。"
 
 #. Tag: para
 #, no-c-format
@@ -31345,6 +31366,14 @@ msgid ""
 "an array of nodata value can also accept a single value which will be "
 "assigned to each requested band."
 msgstr ""
+"由 ST_Intersection 生成的栅格必须为不相交的区域分配 nodata 值。 "
+"您可以通过提供一个包含一个或两个 nodata 值的 <varname>nodataval[] </"
+"varname>数组来定义或替换任何结果频段的 nodata "
+"值，具体取决于您是否请求“BAND1”、“BAND2”或“BOTH”频段。 "
+"数组中的第一个值替换第一个带中的无数据值，第二个值替换第二个带中的无数据值。 "
+"如果一个输入带没有定义 nodata 值并且没有以数组形式提供，则使用 "
+"ST_MinPossibleValue 函数选择一个。 所有接受 nodata "
+"值数组的变体也可以接受单个值，该值将分配给每个请求的带。"
 
 #. Tag: para
 #, no-c-format
@@ -31353,6 +31382,9 @@ msgid ""
 "need an intersection between a raster and geometry that returns a raster, "
 "refer to <xref linkend=\"RT_ST_Clip\"/>."
 msgstr ""
+"在所有变体中，如果未指定波段编号，则假定波段 1。 "
+"如果您需要栅格和返回栅格的几何图形之间的交集，请参阅 <xref linkend="
+"\"RT_ST_Clip\"/>。"
 
 #. Tag: para
 #, no-c-format
@@ -31361,6 +31393,8 @@ msgid ""
 "encountering a nodata value, use the two rasters version of <xref linkend="
 "\"RT_ST_MapAlgebraExpr2\"/>."
 msgstr ""
+"要更好地控制结果范围或遇到无数据值时返回的内容，请使用 <xref linkend="
+"\"RT_ST_MapAlgebraExpr2\"/>的两个栅格版本。"
 
 #. Tag: para
 #, no-c-format
@@ -31369,6 +31403,8 @@ msgid ""
 "space, use <xref linkend=\"RT_ST_Clip\"/>. ST_Clip works on multiple bands "
 "rasters and does not return a band corresponding to the rasterized geometry."
 msgstr ""
+"要计算栅格波段与栅格空间中几何图形的交集，请使用 <xref linkend=\"RT_ST_Clip\""
+"/>。 ST_Clip 适用于多波段栅格，并且不返回与栅格化几何对应的波段。"
 
 #. Tag: para
 #, no-c-format
@@ -31377,6 +31413,8 @@ msgid ""
 "\"RT_ST_Intersects\"/> and an index on the raster column and/or the geometry "
 "column."
 msgstr ""
+"ST_Intersection 应与 <xref linkend=\"RT_ST_Intersects\"/> "
+"以及栅格列和/或几何列上的索引结合使用。"
 
 #. Tag: para
 #, no-c-format
@@ -31384,12 +31422,13 @@ msgid ""
 "Enhanced: 2.0.0 - Intersection in the raster space was introduced. In "
 "earlier pre-2.0.0 versions, only intersection performed in vector space were "
 "supported."
-msgstr ""
+msgstr "增强：2.0.0 - 引入了光栅空间中的交集。 在 2.0.0 "
+"之前的早期版本中，仅支持在向量空间中执行交集。"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Geometry, Raster -- resulting in geometry vals"
-msgstr ""
+msgstr "示例：几何、光栅——产生几何值"
 
 #. Tag: para
 #, no-c-format
@@ -31398,32 +31437,36 @@ msgid ""
 "\"RT_ST_MapAlgebraExpr2\"/>, <xref linkend=\"RT_ST_Clip\"/>, <xref linkend="
 "\"ST_AsText\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_Intersects\"/>, <xref linkend=\"RT_ST_MapAlgebraExpr2"
+"\"/>, <xref linkend=\"RT_ST_Clip\"/>, <xref linkend=\"ST_AsText\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Callback function version - Returns a one-band raster given one or more "
 "input rasters, band indexes and one user-specified callback function."
-msgstr ""
+msgstr "回调函数版本 - "
+"给定一个或多个输入栅格、波段索引和一个用户指定的回调函数，返回单波段栅格。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Returns a one-band raster given one or more input rasters, band indexes and "
 "one user-specified callback function."
-msgstr ""
+msgstr "给定一个或多个输入栅格、波段索引和一个用户指定的回调函数，返回单波段栅格。"
 
 #. Tag: para
 #, no-c-format
 msgid "Rasters on which the map algebra process is evaluated."
-msgstr ""
+msgstr "评估地图代数过程的栅格。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>rastbandargset</varname> allows the use of a map algebra operation "
 "on many rasters and/or many bands. See example Variant 1."
-msgstr ""
+msgstr "<varname>rastbandargset "
+"</varname>允许在许多栅格和/或许多波段上使用地图代数运算。 请参见示例变体 1。"
 
 #. Tag: para
 #, no-c-format
@@ -31432,6 +31475,8 @@ msgid ""
 "integer[] denoting the bands. nband1 is band on rast1 and nband2 is band on "
 "rast2 for hte 2 raster/2band case."
 msgstr ""
+"要评估的栅格的波段号。 nband 可以是表示波段的整数或整数[]。 对于 hte 2 "
+"raster/2band 情况，nband1 是 rast1 上的波段，nband2 是 rast2 上的波段。"
 
 #. Tag: para
 #, no-c-format
@@ -31440,6 +31485,8 @@ msgid ""
 "of an SQL or PL/pgSQL function, cast to a regprocedure. An example PL/pgSQL "
 "function example is:"
 msgstr ""
+"<varname>callbackfunc</varname> 参数必须是 SQL 或 PL/pgSQL 函数的名称和签名，"
+"转换为 regprocedure。 PL/pgSQL 函数示例如下："
 
 #. Tag: para
 #, no-c-format
