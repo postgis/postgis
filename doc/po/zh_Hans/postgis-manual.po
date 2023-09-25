@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-20 07:42+0000\n"
+"POT-Creation-Date: 2023-09-25 14:15+0000\n"
 "PO-Revision-Date: 2023-09-25 11:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -668,9 +668,9 @@ msgid ""
 "are usually large, so memory-related optimizations generally have more of an "
 "impact on PostGIS than other types of PostgreSQL queries."
 msgstr ""
-"PostGIS 性能的调优与任何 PostgreSQL 工作负载的调优非常相似。 "
-"唯一需要额外考虑的是，几何图形和栅格通常很大，因此与内存相关的优化通常对 "
-"PostGIS 的影响比其他类型的 PostgreSQL 查询更大。"
+"PostGIS 性能的调优与任何 PostgreSQL 工作负载的调优非常相似。 唯一需要额外考虑"
+"的是，几何图形和栅格通常很大，因此与内存相关的优化通常对 PostGIS 的影响比其他"
+"类型的 PostgreSQL 查询更大。"
 
 #. Tag: para
 #, no-c-format
@@ -680,8 +680,8 @@ msgid ""
 "your PostgreSQL Server</link>."
 msgstr ""
 "有关优化 PostgreSQL 的一般详细信息，请参阅 <link xlink:href=\"https://wiki."
-"postgresql.org/wiki/Tuning_Your_PostgreSQL_Server\">调整 PostgreSQL "
-"服务器</link>。"
+"postgresql.org/wiki/Tuning_Your_PostgreSQL_Server\">调整 PostgreSQL 服务器</"
+"link>。"
 
 #. Tag: para
 #, no-c-format
@@ -690,16 +690,17 @@ msgid ""
 "touching <code>postgresql.conf</code> or <code>postgresql.auto.conf</code> "
 "by using the <code>ALTER SYSTEM</code> command."
 msgstr ""
-"对于 PostgreSQL 9.4+，可以使用<code> ALTER SYSTEM</code> "
-"命令在服务器级别设置配置，而无需触及 <code>postgresql.conf</code> 或 "
-"<code>postgresql.auto.conf</code>。"
+"对于 PostgreSQL 9.4+，可以使用<code> ALTER SYSTEM</code> 命令在服务器级别设置"
+"配置，而无需触及 <code>postgresql.conf</code> 或 <code>postgresql.auto.conf</"
+"code>。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "In addition to the Postgres settings, PostGIS has some custom settings which "
 "are listed in <xref linkend=\"PostGIS_GUC\"/>."
-msgstr "除了 Postgres 设置之外，PostGIS 还有一些自定义设置，请参见<xref linkend="
+msgstr ""
+"除了 Postgres 设置之外，PostGIS 还有一些自定义设置，请参见<xref linkend="
 "\"PostGIS_GUC\"/>。"
 
 #. Tag: title
@@ -730,9 +731,9 @@ msgid ""
 "force the planner to only analyze tables for constraint consideration if "
 "they are in an inherited hierarchy and not pay the planner penalty otherwise."
 msgstr ""
-"这通常用于表分区。默认设置为 \"partition\"，适用于 PostgreSQL 8.4 及更高版本"
-"，因为它将强制查询规划器仅在表处于继承层次结构中时分析约束考虑，否则将不会对"
-"规划器产生影响。"
+"这通常用于表分区。默认设置为 \"partition\"，适用于 PostgreSQL 8.4 及更高版"
+"本，因为它将强制查询规划器仅在表处于继承层次结构中时分析约束考虑，否则将不会"
+"对规划器产生影响。"
 
 #. Tag: link
 #, no-c-format
@@ -749,7 +750,8 @@ msgstr "默认值：PostgreSQL 9.6 中约为 128MB"
 msgid ""
 "Set to about 25% to 40% of available RAM. On windows you may not be able to "
 "set as high."
-msgstr "将其设置为可用RAM的约 25% 到 40%。在 Windows 上，您可能无法设置得那么高。"
+msgstr ""
+"将其设置为可用RAM的约 25% 到 40%。在 Windows 上，您可能无法设置得那么高。"
 
 #. Tag: para
 #, no-c-format
@@ -761,9 +763,9 @@ msgid ""
 "processes you can have for parallel queries."
 msgstr ""
 "<link xlink:href=\"https://www.postgresql.org/docs/current/static/runtime-"
-"config-resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes </"
-"link>此设置仅适用于 PostgreSQL 9.4 +。 对于 PostgreSQL 9."
-"6+，此设置具有额外的重要性，因为它控制并行查询可以拥有的最大进程数。"
+"config-resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes </link>"
+"此设置仅适用于 PostgreSQL 9.4 +。 对于 PostgreSQL 9.6+，此设置具有额外的重要"
+"性，因为它控制并行查询可以拥有的最大进程数。"
 
 #. Tag: para
 #, no-c-format
@@ -790,8 +792,8 @@ msgid ""
 "memory used for sort operations and complex queries"
 msgstr ""
 "<link xlink:href=\"http://www.postgresql.org/docs/current/static/runtime-"
-"config-resource.html#GUC-WORK-MEM\">work_mem</link> - "
-"设置用于排序操作和复杂查询的内存大小"
+"config-resource.html#GUC-WORK-MEM\">work_mem</link> - 设置用于排序操作和复杂"
+"查询的内存大小"
 
 #. Tag: para
 #, no-c-format
@@ -821,8 +823,8 @@ msgid ""
 "- the memory size used for VACUUM, CREATE INDEX, etc."
 msgstr ""
 "<link xlink:href=\"http://www.postgresql.org/docs/current/static/runtime-"
-"config-resource.html#GUC-MAINTENANCE-WORK-MEM\">Maintenance_work_mem</link> -"
-" 用于 VACUUM、CREATE INDEX 等的内存大小。"
+"config-resource.html#GUC-MAINTENANCE-WORK-MEM\">Maintenance_work_mem</link> "
+"- 用于 VACUUM、CREATE INDEX 等的内存大小。"
 
 #. Tag: para
 #, no-c-format
@@ -839,8 +841,9 @@ msgstr "通常太低 - 占用 I/O，在交换内存时锁定对象"
 msgid ""
 "Recommend 32MB to 1GB on production servers w/lots of RAM, but depends on "
 "the # of concurrent users. If you have lots of RAM and few developers:"
-msgstr "建议在具有/大量 RAM 的生产服务器上使用 32 MB 到 1GB，但取决于并发用户数。 "
-"如果您有大量 RAM 而开发人员很少："
+msgstr ""
+"建议在具有/大量 RAM 的生产服务器上使用 32 MB 到 1GB，但取决于并发用户数。 如"
+"果您有大量 RAM 而开发人员很少："
 
 #. Tag: link
 #, no-c-format
@@ -861,10 +864,9 @@ msgid ""
 msgstr ""
 "此设置仅适用于 PostgreSQL 9.6+，并且只会影响 PostGIS 2.3 +，因为只有 PostGIS "
 "2.3+ 支持并行查询。 如果设置为高于 0，则某些查询（例如涉及 "
-"<code>ST_Intersects "
-"</code>等关系函数的查询）可以使用多个进程，并且运行速度可以提高两倍以上。 "
-"如果您有大量空闲处理器，则应将其值更改为您拥有的处理器数量。 还要确保将 "
-"<code>max_worker_processes </code>提高到至少与此数字一样高。"
+"<code>ST_Intersects </code>等关系函数的查询）可以使用多个进程，并且运行速度可"
+"以提高两倍以上。 如果您有大量空闲处理器，则应将其值更改为您拥有的处理器数"
+"量。 还要确保将 <code>max_worker_processes </code>提高到至少与此数字一样高。"
 
 #. Tag: para
 #, no-c-format
@@ -882,11 +884,10 @@ msgid ""
 "may be inefficient. Setting this value to 0, which is the default, disables "
 "parallel query execution."
 msgstr ""
-"设置由单个<varname> Gather </varname>节点启动的最大工作进程数。"
-"并行工作进程来自<varname> max_worker_processes </varname>建立的进程池。请注意"
-"，在运行时，请求的工作进程数量可能实际上无法使用。如果出现这种情况，计划将以"
-"比预期更少的工作进程运行，这可能效率低下。将此值设置为默认值 0 "
-"将禁用并行查询执行。"
+"设置由单个<varname> Gather </varname>节点启动的最大工作进程数。并行工作进程来"
+"自<varname> max_worker_processes </varname>建立的进程池。请注意，在运行时，请"
+"求的工作进程数量可能实际上无法使用。如果出现这种情况，计划将以比预期更少的工"
+"作进程运行，这可能效率低下。将此值设置为默认值 0 将禁用并行查询执行。"
 
 #. Tag: title
 #, no-c-format
@@ -901,9 +902,9 @@ msgid ""
 "PostGIS binary releases, but are usually PL/pgSQL based or standard shell "
 "scripts that can be run as is."
 msgstr ""
-"本章记录了 PostGIS 源 tarball 和源存储库的 extras 文件夹中的功能。 "
-"这些并不总是与 PostGIS 二进制版本一起打包，但通常是基于 PL/pgSQL "
-"或可以按原样运行的标准 shell 脚本。"
+"本章记录了 PostGIS 源 tarball 和源存储库的 extras 文件夹中的功能。 这些并不总"
+"是与 PostGIS 二进制版本一起打包，但通常是基于 PL/pgSQL 或可以按原样运行的标"
+"准 shell 脚本。"
 
 #. Tag: chapter
 #, no-c-format
@@ -924,9 +925,9 @@ msgid ""
 "refactor/postgresql\">PAGC PostgreSQL Address Standardizer</link>)."
 msgstr ""
 "这是 <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-11.html\">PAGC "
-"标准化器</link>的一个分支（这部分的原始代码是 <link xlink:href=\"http"
-"://sourceforge.net/p/pagc/code/360/tree/branches/sew-refactor/postgresql\""
-">PAGC PostgreSQL 地址标准化器</link>）。"
+"标准化器</link>的一个分支（这部分的原始代码是 <link xlink:href=\"http://"
+"sourceforge.net/p/pagc/code/360/tree/branches/sew-refactor/postgresql\">PAGC "
+"PostgreSQL 地址标准化器</link>）。"
 
 #. Tag: para
 #, no-c-format
@@ -934,7 +935,8 @@ msgid ""
 "The address standardizer is a single line address parser that takes an input "
 "address and normalizes it based on a set of rules stored in a table and "
 "helper lex and gaz tables."
-msgstr "地址标准化器是一个单行地址解析器，它获取输入地址并根据存储在表以及辅助 lex "
+msgstr ""
+"地址标准化器是一个单行地址解析器，它获取输入地址并根据存储在表以及辅助 lex "
 "和 gaz 表中的一组规则对其进行规范化。"
 
 #. Tag: para
@@ -948,12 +950,11 @@ msgid ""
 "contains gaz, lex, and rules tables for US data. This extensions can be "
 "installed via: <code>CREATE EXTENSION address_standardizer_data_us;</code>"
 msgstr ""
-"该代码内置于一个名为 <code>address_standardizer</code> 的 PostgreSQL "
-"扩展库中，可以使用<code> CREATE EXTENSION address_standardizer;</code> 安装。"
-" 除了address_standardizer "
-"扩展之外，还构建了一个名为<code>address_standardizer_data_us</code> "
-"扩展的示例数据扩展，其中包含US 数据的gaz、lex 和规则表。 "
-"该扩展可以通过以下方式安装：<code>CREATE EXTENSION "
+"该代码内置于一个名为 <code>address_standardizer</code> 的 PostgreSQL 扩展库"
+"中，可以使用<code> CREATE EXTENSION address_standardizer;</code> 安装。 除了"
+"address_standardizer 扩展之外，还构建了一个名为"
+"<code>address_standardizer_data_us</code> 扩展的示例数据扩展，其中包含US 数据"
+"的gaz、lex 和规则表。 该扩展可以通过以下方式安装：<code>CREATE EXTENSION "
 "address_standardizer_data_us;</code>"
 
 #. Tag: para
@@ -962,16 +963,17 @@ msgid ""
 "The code for this extension can be found in the PostGIS <filename>extensions/"
 "address_standardizer</filename> and is currently self-contained."
 msgstr ""
-"此扩展的代码可以在<filename> PostGIS extensions/address_standardizer "
-"</filename>中找到，并且当前是独立的。"
+"此扩展的代码可以在<filename> PostGIS extensions/address_standardizer </"
+"filename>中找到，并且当前是独立的。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "For installation instructions refer to: <xref linkend="
 "\"installing_pagc_address_standardizer\"/>."
-msgstr "有关安装说明，请参阅：<xref linkend=\"installing_pagc_address_standardizer\""
-"/>。"
+msgstr ""
+"有关安装说明，请参阅：<xref linkend=\"installing_pagc_address_standardizer\"/"
+">。"
 
 #. Tag: title
 #, no-c-format
@@ -988,8 +990,8 @@ msgid ""
 "introduced in the future."
 msgstr ""
 "解析器从右到左工作，首先查看邮政编码、州/省、城市的宏观元素，然后查看微观元素"
-"以确定我们是否正在处理门牌号、街道、十字路口或地标。 "
-"目前，它不查找国家/地区代码或名称，但将来可能会引入。"
+"以确定我们是否正在处理门牌号、街道、十字路口或地标。 目前，它不查找国家/地区"
+"代码或名称，但将来可能会引入。"
 
 #. Tag: term
 #, no-c-format
@@ -1053,8 +1055,9 @@ msgstr ""
 msgid ""
 "A composite type that consists of the elements of an address. This is the "
 "return type for <varname>standardize_address</varname> function."
-msgstr "由地址元素组成的复合类型。 这是<varname> standardize_address "
-"</varname>函数的返回类型。"
+msgstr ""
+"由地址元素组成的复合类型。 这是<varname> standardize_address </varname>函数的"
+"返回类型。"
 
 #. Tag: title
 #, no-c-format
@@ -1069,8 +1072,8 @@ msgid ""
 "for elements are borrowed from <link xlink:href=\"http://www.pagcgeo.org/"
 "docs/html/pagc-12.html#ss12.1\">PAGC Postal Attributes</link>."
 msgstr ""
-"由地址元素组成的复合类型。 这是 <xref linkend=\"standardize_address\"/> "
-"函数的返回类型。 一些元素描述借用自<link xlink:href=\"http://www.pagcgeo.org/"
+"由地址元素组成的复合类型。 这是 <xref linkend=\"standardize_address\"/> 函数"
+"的返回类型。 一些元素描述借用自<link xlink:href=\"http://www.pagcgeo.org/"
 "docs/html/pagc-12.html#ss12.1\"> PAGC 邮政属性</link>。"
 
 #. Tag: para
@@ -1090,8 +1093,9 @@ msgstr "&address_standardizer_required;"
 msgid ""
 "is text (token number <code>0</code>): Refers to building number or name. "
 "Unparsed building identifiers and types. Generally blank for most addresses."
-msgstr "是文本（标记编号 <code>0</code>）：指建筑物编号或名称。 "
-"未解析的建筑物标识符和类型。 大多数地址通常为空白。"
+msgstr ""
+"是文本（标记编号 <code>0</code>）：指建筑物编号或名称。 未解析的建筑物标识符"
+"和类型。 大多数地址通常为空白。"
 
 #. Tag: para
 #, no-c-format
@@ -1107,7 +1111,8 @@ msgstr ""
 msgid ""
 "is text (token number <code>2</code>): STREET NAME PRE-DIRECTIONAL such as "
 "North, South, East, West etc."
-msgstr "是文本（标记编号 <code>2</code>）：街道名称预指示，例如北、南、东、西等。"
+msgstr ""
+"是文本（标记编号 <code>2</code>）：街道名称预指示，例如北、南、东、西等。"
 
 #. Tag: para
 #, no-c-format
@@ -1135,9 +1140,9 @@ msgid ""
 "street type following the root street name. Example <emphasis>STREET</"
 "emphasis> in <code>75 State Street</code>."
 msgstr ""
-"这是文本（标记号码为 <code>6</code>）：街道后缀类型，例如 "
-"St、Ave、Cir。这是跟在根街道名称后面的街道类型。例如，在 <code>75 State "
-"Street</code> 中的 <emphasis>STREET</emphasis>。"
+"这是文本（标记号码为 <code>6</code>）：街道后缀类型，例如 St、Ave、Cir。这是"
+"跟在根街道名称后面的街道类型。例如，在 <code>75 State Street</code> 中的 "
+"<emphasis>STREET</emphasis>。"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -1146,9 +1151,9 @@ msgid ""
 "modifier that follows the street name.. Example <emphasis>WEST</emphasis> in "
 "<code>3715 TENTH AVENUE WEST</code>."
 msgstr ""
-"是文本（标记编号 <code>7</code>）：STREET POST-DIRECTIONAL "
-"街道名称后面的方向修饰符。示例<code> 3715 TENTH AVENUE WEST</code> 中的 "
-"<emphasis>WEST</emphasis>。"
+"是文本（标记编号 <code>7</code>）：STREET POST-DIRECTIONAL 街道名称后面的方向"
+"修饰符。示例<code> 3715 TENTH AVENUE WEST</code> 中的 <emphasis>WEST</"
+"emphasis>。"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -1173,7 +1178,8 @@ msgstr "这是文本（标记号码为 <code>10</code>）：例如，波士顿�
 #, no-c-format
 msgid ""
 "is text (token number <code>11</code>): Example <code>MASSACHUSETTS</code>"
-msgstr "这是文本（标记号码为 <code>11</code>）：例如，<code>MASSACHUSETTS</code>"
+msgstr ""
+"这是文本（标记号码为 <code>11</code>）：例如，<code>MASSACHUSETTS</code>"
 
 #. Tag: para
 #, no-c-format
@@ -1185,16 +1191,18 @@ msgstr "这是文本（标记号码为 <code>12</code>）：例如，<code>USA</
 msgid ""
 "is text POSTAL CODE (ZIP CODE) (token number <code>13</code>): Example "
 "<code>02109</code>"
-msgstr "这是文本（标记号码为 <code>13</code>）：邮政编码（ZIP "
-"CODE）的示例：<code>02109</code>"
+msgstr ""
+"这是文本（标记号码为 <code>13</code>）：邮政编码（ZIP CODE）的示例："
+"<code>02109</code>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "is text POSTAL BOX NUMBER (token number <code>14 and 15</code>): Example "
 "<code>02109</code>"
-msgstr "这是文本（标记号码为 <code>14 和 "
-"15</code>）：邮政信箱号码的示例：<code>02109</code>"
+msgstr ""
+"这是文本（标记号码为 <code>14 和 15</code>）：邮政信箱号码的示例："
+"<code>02109</code>"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -1220,17 +1228,18 @@ msgid ""
 "custom geocoder. The names of these tables get passed into the address "
 "standardizer functions."
 msgstr ""
-"本节列出了 address_standardizer 用于规范化地址的 PostgreSQL 表格式。 "
-"请注意，这些表的名称不需要与此处引用的名称相同。 例如，您可以为每个国家/"
-"地区或您的自定义地理编码器设置不同的 lex、gaz、规则表。 "
-"这些表的名称被传递到地址标准化器函数中。"
+"本节列出了 address_standardizer 用于规范化地址的 PostgreSQL 表格式。 请注意，"
+"这些表的名称不需要与此处引用的名称相同。 例如，您可以为每个国家/地区或您的自"
+"定义地理编码器设置不同的 lex、gaz、规则表。 这些表的名称被传递到地址标准化器"
+"函数中。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "The packaged extension <varname>address_standardizer_data_us</varname> "
 "contains data for standardizing US addresses."
-msgstr "打包的扩展<varname>address_standardizer_data_us</varname>包含用于标准化美国地"
+msgstr ""
+"打包的扩展<varname>address_standardizer_data_us</varname>包含用于标准化美国地"
 "址的数据。"
 
 #. Tag: refpurpose
@@ -1242,8 +1251,8 @@ msgid ""
 "by -1 followed by number denoting kind of rule followed by ranking of rule."
 msgstr ""
 "规则表包含一组规则，将地址输入序列标记映射到标准化的输出序列。规则被定义为一"
-"组输入标记，后跟 -1（终止符），然后是一组输出标记，后跟 "
-"-1，后跟表示规则类型的数字，最后是规则的排名。"
+"组输入标记，后跟 -1（终止符），然后是一组输出标记，后跟 -1，后跟表示规则类型"
+"的数字，最后是规则的排名。"
 
 #. Tag: para
 #, no-c-format
@@ -1276,10 +1285,9 @@ msgid ""
 "representing a rule type, followed by an integer representing the rank of "
 "the rule. The rules are ranked from 0 (lowest) to 17 (highest)."
 msgstr ""
-"一条规则由一组表示输入标记的非负整数组成，以 -1 "
-"结束，然后是相同数量的非负整数，表示邮政属性，以 -1 "
-"结束，然后是表示规则类型的整数，最后是表示规则排名的整数。规则的排名从 "
-"0（最低）到 17（最高）。"
+"一条规则由一组表示输入标记的非负整数组成，以 -1 结束，然后是相同数量的非负整"
+"数，表示邮政属性，以 -1 结束，然后是表示规则类型的整数，最后是表示规则排名的"
+"整数。规则的排名从 0（最低）到 17（最高）。"
 
 #. Tag: para
 #, no-c-format
@@ -1289,10 +1297,10 @@ msgid ""
 "emphasis> to the output sequence <emphasis>STREET STREET SUFTYP SUFDIR "
 "QUALIF</emphasis>. The rule is an ARC_C rule of rank 6."
 msgstr ""
-"例如，规则 <code>2 0 2 22 3 -1 5 5 6 7 3 -1 2 6 </"
-"code>映射到输出标记序列<emphasis> TYPE NUMBER TYPE DIRECT QUALIF</"
-"emphasis>到输出序列 <emphasis>STREET STREET SUFTYP SUFDIR QUALIF</emphasis>。"
-" 该规则是等级 6 的 ARC_C 规则。"
+"例如，规则 <code>2 0 2 22 3 -1 5 5 6 7 3 -1 2 6 </code>映射到输出标记序列"
+"<emphasis> TYPE NUMBER TYPE DIRECT QUALIF</emphasis>到输出序列 "
+"<emphasis>STREET STREET SUFTYP SUFDIR QUALIF</emphasis>。 该规则是等级 6 的 "
+"ARC_C 规则。"
 
 #. Tag: para
 #, no-c-format
@@ -1314,9 +1322,9 @@ msgid ""
 "www.pagcgeo.org/docs/html/pagc-12.html#ss12.2\">PAGC Input Tokens</link> are "
 "as follows:"
 msgstr ""
-"每个规则都以一组输入标记开始，后跟终止符 <code>-1</code>。 从<link "
-"xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.2\"> PAGC "
-"输入令牌</link>中摘录的有效输入令牌如下："
+"每个规则都以一组输入标记开始，后跟终止符 <code>-1</code>。 从<link xlink:"
+"href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.2\"> PAGC 输入令牌"
+"</link>中摘录的有效输入令牌如下："
 
 #. Tag: emphasis
 #, no-c-format
@@ -1404,8 +1412,9 @@ msgid ""
 "(24). Words and abbreviations used to denote buildings or building "
 "complexes, usually as a suffix. For example: <emphasis>Shopping Centre</"
 "emphasis>."
-msgstr "(24).用于表示建筑物或建筑群的单词和缩写，通常作为后缀。 "
-"例如：<emphasis>购物中心</emphasis>。"
+msgstr ""
+"(24).用于表示建筑物或建筑群的单词和缩写，通常作为后缀。 例如：<emphasis>购物"
+"中心</emphasis>。"
 
 #. Tag: para
 #, no-c-format
@@ -1473,16 +1482,18 @@ msgstr "(29). 一个4位数字，用于识别 ZIP4 编码。"
 msgid ""
 "(27). A 3 character sequence of letter number letter. Identifies an FSA, the "
 "first 3 characters of a Canadian postal code."
-msgstr "(27). 由字母、数字和字母组成的3个字符序列。用于识别 "
-"FSA，即加拿大邮政编码的前3个字符。"
+msgstr ""
+"(27). 由字母、数字和字母组成的3个字符序列。用于识别 FSA，即加拿大邮政编码的前"
+"3个字符。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "(26). A 3 character sequence of number letter number. Identifies an LDU, the "
 "last 3 characters of a Canadian postal code."
-msgstr "(26). 由数字、字母和数字组成的3个字符序列。用于识别 "
-"LDU，即加拿大邮政编码的最后3个字符。"
+msgstr ""
+"(26). 由数字、字母和数字组成的3个字符序列。用于识别 LDU，即加拿大邮政编码的最"
+"后3个字符。"
 
 #. Tag: emphasis
 #, no-c-format
@@ -1494,15 +1505,17 @@ msgstr "停用词"
 msgid ""
 "STOPWORDS combine with WORDS. In rules a string of multiple WORDs and "
 "STOPWORDs will be represented by a single WORD token."
-msgstr "STOPWORDS 与 WORDS 结合。 在规则中，多个 WORD 和 STOPWORD "
-"组成的字符串将由单个 WORD 标记表示。"
+msgstr ""
+"STOPWORDS 与 WORDS 结合。 在规则中，多个 WORD 和 STOPWORD 组成的字符串将由单"
+"个 WORD 标记表示。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "(7). A word with low lexical significance, that can be omitted in parsing. "
 "For example: <emphasis>THE</emphasis>."
-msgstr "(7). 具有低词汇重要性的词，可以在解析中省略。例如：<emphasis>THE</emphasis>。"
+msgstr ""
+"(7). 具有低词汇重要性的词，可以在解析中省略。例如：<emphasis>THE</emphasis>。"
 
 #. Tag: title
 #, no-c-format
@@ -1518,10 +1531,10 @@ msgid ""
 "dependent on kind of rule. Output tokens valid for each rule type are listed "
 "in <xref linkend=\"rule_types_rank\"/>."
 msgstr ""
-"在第一个 -1（终止符）之后，跟随输出标记及其顺序，然后是终止符<code> "
-"-1</code>。 <xref linkend=\"stdaddr\"/>中列出了相应输出标记的编号。 "
-"允许的内容取决于规则的类型。<xref linkend=\"rule_types_rank\""
-"/>部分列出了对每种规则类型有效的输出标记。"
+"在第一个 -1（终止符）之后，跟随输出标记及其顺序，然后是终止符<code> -1</"
+"code>。 <xref linkend=\"stdaddr\"/>中列出了相应输出标记的编号。 允许的内容取"
+"决于规则的类型。<xref linkend=\"rule_types_rank\"/>部分列出了对每种规则类型有"
+"效的输出标记。"
 
 #. Tag: title
 #, no-c-format
@@ -1534,13 +1547,9 @@ msgid ""
 "The final part of the rule is the rule type which is denoted by one of the "
 "following, followed by a rule rank. The rules are ranked from 0 (lowest) to "
 "17 (highest)."
-msgstr "规则的最后部分是规则类型，由以下之一表示，后跟规则等级。 规则的排名从 "
-"0（最低）到 17（最高）。"
-
-#. Tag: emphasis
-#, no-c-format
-msgid "MACRO_C"
-msgstr "MACRO_C"
+msgstr ""
+"规则的最后部分是规则类型，由以下之一表示，后跟规则等级。 规则的排名从 0（最"
+"低）到 17（最高）。"
 
 #. Tag: para
 #, no-c-format
@@ -1548,19 +1557,17 @@ msgid ""
 "(token number = \"<emphasis role=\"bold\">0</emphasis>\"). The class of "
 "rules for parsing MACRO clauses such as <emphasis>PLACE STATE ZIP</emphasis>"
 msgstr ""
-"（令牌编号=“<emphasis role=\"bold\">0</emphasis>”）。 用于解析 MACRO 子句（"
-"例如<emphasis> PLACE STATE ZIP</emphasis>）的规则类"
+"（令牌编号=“<emphasis role=\"bold\">0</emphasis>”）。 用于解析 MACRO 子句（例"
+"如<emphasis> PLACE STATE ZIP</emphasis>）的规则类"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"<emphasis role=\"bold\">MACRO_C output tokens</emphasis> (excerpted from "
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+"<emphasis role=\"bold\"><varname>MACRO_C</varname> output tokens</emphasis> "
+"(excerpted from <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
+"link>."
 msgstr ""
-"<emphasis role=\"bold\">MACRO_C 输出令牌</emphasis>（摘自<link xlink:href="
-"\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://www."
-"pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -1584,13 +1591,9 @@ msgstr "（令牌编号“12”）。 大多数参考文件中不使用此属性
 msgid ""
 "(token number \"13\"). (SADS elements \"ZIP CODE\" , \"PLUS 4\" ). This "
 "attribute is used for both the US Zip and the Canadian Postal Codes."
-msgstr "（令牌编号“13”）。 （SADS 元素“ZIP CODE”、“PLUS 4”）。 "
-"此属性用于美国邮政编码和加拿大邮政编码。"
-
-#. Tag: emphasis
-#, no-c-format
-msgid "MICRO_C"
-msgstr "MICRO_C"
+msgstr ""
+"（令牌编号“13”）。 （SADS 元素“ZIP CODE”、“PLUS 4”）。 此属性用于美国邮政编码"
+"和加拿大邮政编码。"
 
 #. Tag: para
 #, no-c-format
@@ -1600,25 +1603,18 @@ msgid ""
 "pretyp, suftype, qualif) (ie ARC_C plus CIVIC_C). These rules are not used "
 "in the build phase."
 msgstr ""
-"（令牌编号=“<emphasis role=\"bold\">1</emphasis>”）。 用于解析完整 MICRO "
-"子句（例如 House、street、sufdir、predir、pretyp、suftype、qualif）的规则类（"
-"即 ARC_C 加 CIVIC_C）。 这些规则不会在构建阶段使用。"
+"（令牌编号=“<emphasis role=\"bold\">1</emphasis>”）。 用于解析完整 MICRO 子句"
+"（例如 House、street、sufdir、predir、pretyp、suftype、qualif）的规则类（即 "
+"ARC_C 加 CIVIC_C）。 这些规则不会在构建阶段使用。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"<emphasis role=\"bold\">MICRO_C output tokens</emphasis> (excerpted from "
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+"<emphasis role=\"bold\"><varname>MICRO_C</varname> output tokens</emphasis> "
+"(excerpted from <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
+"link>."
 msgstr ""
-"<emphasis role=\"bold\">MICRO_C 输出令牌</emphasis> （摘自<link xlink:href="
-"\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://www."
-"pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>。"
-
-#. Tag: emphasis
-#, no-c-format
-msgid "ARC_C"
-msgstr "ARC_C"
 
 #. Tag: para
 #, no-c-format
@@ -1627,27 +1623,18 @@ msgid ""
 "rules for parsing MICRO clauses, excluding the HOUSE attribute. As such uses "
 "same set of output tokens as MICRO_C minus the HOUSE token."
 msgstr ""
-"（令牌编号=“<emphasis role=\"bold\">2</emphasis>”）。 用于解析 MICRO "
-"子句的规则类，不包括 HOUSE 属性。 因此，使用与 MICRO_C "
-"相同的一组输出令牌减去 HOUSE 令牌。"
-
-#. Tag: emphasis
-#, no-c-format
-msgid "CIVIC_C"
-msgstr "CIVIC_C"
+"（令牌编号=“<emphasis role=\"bold\">2</emphasis>”）。 用于解析 MICRO 子句的规"
+"则类，不包括 HOUSE 属性。 因此，使用与 MICRO_C 相同的一组输出令牌减去 HOUSE "
+"令牌。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "(token number = \"<emphasis role=\"bold\">3</emphasis>\"). The class of "
 "rules for parsing the HOUSE attribute."
-msgstr "（令牌编号=“<emphasis role=\"bold\">3</emphasis>”）。 用于解析 HOUSE "
-"属性的规则类。"
-
-#. Tag: emphasis
-#, no-c-format
-msgid "EXTRA_C"
-msgstr "EXTRA_C"
+msgstr ""
+"（令牌编号=“<emphasis role=\"bold\">3</emphasis>”）。 用于解析 HOUSE 属性的规"
+"则类。"
 
 #. Tag: para
 #, no-c-format
@@ -1656,20 +1643,17 @@ msgid ""
 "rules for parsing EXTRA attributes - attributes excluded from geocoding. "
 "These rules are not used in the build phase."
 msgstr ""
-"（令牌编号=“<emphasis role=\"bold\">4</emphasis>”）。 "
-"用于解析额外属性的规则类 - 从地理编码中排除的属性。 "
-"这些规则不会在构建阶段使用。"
+"（令牌编号=“<emphasis role=\"bold\">4</emphasis>”）。 用于解析额外属性的规则"
+"类 - 从地理编码中排除的属性。 这些规则不会在构建阶段使用。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"<emphasis role=\"bold\">EXTRA_C output tokens</emphasis> (excerpted from "
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+"<emphasis role=\"bold\"><varname>EXTRA_C</varname> output tokens</emphasis> "
+"(excerpted from <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
+"link>."
 msgstr ""
-"<emphasis role=\"bold\">EXTRA_C 输出令牌</emphasis> （摘自 <link xlink:href="
-"\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://www."
-"pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -1700,8 +1684,8 @@ msgid ""
 "(token number <code>8</code>): The <emphasis role=\"bold\">RR</emphasis> in "
 "<code>RR 7</code>"
 msgstr ""
-"（令牌编号 <code>8</code>）：<code>RR 7</code> 中的 <emphasis role=\"bold\""
-">RR</emphasis>"
+"（令牌编号 <code>8</code>）：<code>RR 7</code> 中的 <emphasis role=\"bold"
+"\">RR</emphasis>"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -1709,8 +1693,8 @@ msgid ""
 "(token number <code>16</code>): The <emphasis role=\"bold\">APT</emphasis> "
 "in <code>APT 3B</code>"
 msgstr ""
-"（令牌编号 <code>16</code>）：<code>APT 3B</code>中的 <emphasis role=\"bold\""
-">APT</emphasis>"
+"（令牌编号 <code>16</code>）：<code>APT 3B</code>中的 <emphasis role=\"bold"
+"\">APT</emphasis>"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -1718,8 +1702,8 @@ msgid ""
 "(token number <code>17</code>): The <emphasis role=\"bold\">3B</emphasis> in "
 "<code>APT 3B</code>"
 msgstr ""
-"（令牌编号 <code>17</code>）：<code>APT 3B </code>中的<emphasis role=\"bold\""
-"> 3B</emphasis>"
+"（令牌编号 <code>17</code>）：<code>APT 3B </code>中的<emphasis role=\"bold"
+"\"> 3B</emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -1798,8 +1782,8 @@ msgid ""
 "these with State Names and associated abbreviations."
 msgstr ""
 "gaz（地名词典的缩写）表用于标准化地名，并将该输入与称为“<xref linkend="
-"\"rule_input_tokens\"/>”的部分和 (b) 标准化表示相关联。 "
-"例如，如果您在美国，您可以加载州名称和相关缩写。"
+"\"rule_input_tokens\"/>”的部分和 (b) 标准化表示相关联。 例如，如果您在美国，"
+"您可以加载州名称和相关缩写。"
 
 #. Tag: para
 #, no-c-format
@@ -1835,10 +1819,10 @@ msgid ""
 "<xref linkend=\"gaztab\"/>, and <xref linkend=\"rulestab\"/> table names and "
 "an address."
 msgstr ""
-"这是一个用于调试地址标准化器规则和 lex/gaz 映射的函数。 它返回一个 json "
-"格式的文本，其中包括匹配规则、令牌映射以及使用 <xref linkend=\"lextab\""
-"/>的表名称、<xref linkend=\"gaztab\"/>和<xref linkend=\"rulestab\"/"
-">的表名称和地址的输入地址的最佳标准化地址<xref linkend=\"stdaddr\"/> 形式。"
+"这是一个用于调试地址标准化器规则和 lex/gaz 映射的函数。 它返回一个 json 格式"
+"的文本，其中包括匹配规则、令牌映射以及使用 <xref linkend=\"lextab\"/>的表名"
+"称、<xref linkend=\"gaztab\"/>和<xref linkend=\"rulestab\"/>的表名称和地址的"
+"输入地址的最佳标准化地址<xref linkend=\"stdaddr\"/> 形式。"
 
 #. Tag: para
 #, no-c-format
@@ -1879,7 +1863,8 @@ msgstr ""
 msgid ""
 "The set of rules matching the input and the corresponding score for each. "
 "The first rule (highest scoring) is what is used for standardization"
-msgstr "与输入匹配的规则集以及每个规则对应的分数。 第一条规则（最高分）用于标准化"
+msgstr ""
+"与输入匹配的规则集以及每个规则对应的分数。 第一条规则（最高分）用于标准化"
 
 #. Tag: para
 #, no-c-format
@@ -1945,11 +1930,11 @@ msgid ""
 "emphasis>, <emphasis>state</emphasis>, <emphasis>zip</emphasis>, "
 "<emphasis>zipplus</emphasis>, <emphasis>country</emphasis>."
 msgstr ""
-"Returns 将地址作为输入，并返回由字段 <emphasis>num</emphasis>、<emphasis>stre"
-"et</emphasis>、<emphasis>street2</emphasis>、<emphasis>address1</emphasis>、<"
-"emphasis>city</emphasis>、<emphasis>state</emphasis>、<emphasis>zip</emphasis"
-">、<emphasis>zipplus</emphasis>、<emphasis>country "
-"</emphasis>组成的记录输出。"
+"Returns 将地址作为输入，并返回由字段 <emphasis>num</emphasis>、"
+"<emphasis>street</emphasis>、<emphasis>street2</emphasis>、"
+"<emphasis>address1</emphasis>、<emphasis>city</emphasis>、<emphasis>state</"
+"emphasis>、<emphasis>zip</emphasis>、<emphasis>zipplus</emphasis>、"
+"<emphasis>country </emphasis>组成的记录输出。"
 
 #. Tag: para
 #, no-c-format
@@ -1997,10 +1982,9 @@ msgid ""
 "street</code>, and a macro consisting of standard postal second line of an "
 "address e.g <code>city, state postal_code country</code>."
 msgstr ""
-"变体 2：将地址分为 2 部分。 由 "
-"<varname>micro</varname>第一行邮政地址组成的微信，例如 <code>house_num "
-"street</code>，以及由地址的标准邮政第二行组成的宏，例如 <code>city, state "
-"postal_code country</code>。"
+"变体 2：将地址分为 2 部分。 由 <varname>micro</varname>第一行邮政地址组成的微"
+"信，例如 <code>house_num street</code>，以及由地址的标准邮政第二行组成的宏，"
+"例如 <code>city, state postal_code country</code>。"
 
 #. Tag: para
 #, no-c-format
@@ -2022,8 +2006,9 @@ msgstr ""
 msgid ""
 "Make easier to read we'll dump output using hstore extension CREATE "
 "EXTENSION hstore; you need to install"
-msgstr "为了更容易阅读，我们将使用 hstore 扩展转储输出 CREATE EXTENSION hstore; "
-"你需要安装"
+msgstr ""
+"为了更容易阅读，我们将使用 hstore 扩展转储输出 CREATE EXTENSION hstore; 你需"
+"要安装"
 
 #. Tag: para
 #, no-c-format
@@ -2166,15 +2151,16 @@ msgid ""
 "link> released by the US Census Bureau."
 msgstr ""
 "一个基于 plpgsql 的地理编码器，旨在与美国人口普查局发布的<link xlink:href="
-"\"http://www.census.gov/geo/www/tiger/\"> "
-"TIGER（拓扑集成地理编码和参考系统）/线路和主地址数据库导出</link>配合使用。"
+"\"http://www.census.gov/geo/www/tiger/\"> TIGER（拓扑集成地理编码和参考系"
+"统）/线路和主地址数据库导出</link>配合使用。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "There are four components to the geocoder: the data loader functions, the "
 "address normalizer, the address geocoder, and the reverse geocoder."
-msgstr "地理编码器有四个组件：数据加载器函数、地址标准化器、地址地理编码器和反向地理"
+msgstr ""
+"地理编码器有四个组件：数据加载器函数、地址标准化器、地址地理编码器和反向地理"
 "编码器。"
 
 #. Tag: para
@@ -2183,7 +2169,8 @@ msgid ""
 "Although it is designed specifically for the US, a lot of the concepts and "
 "functions are applicable and can be adapted to work with other country "
 "address and road networks."
-msgstr "尽管它是专门为美国设计的，但许多概念和功能都是适用的，并且可以适应其他国家的"
+msgstr ""
+"尽管它是专门为美国设计的，但许多概念和功能都是适用的，并且可以适应其他国家的"
 "地址和道路网络。"
 
 #. Tag: para
@@ -2212,12 +2199,10 @@ msgid ""
 msgstr ""
 "另一个名为 <varname>tiger_data</varname> 的模式也被创建，它存储了加载器从人口"
 "普查网站下载并加载到数据库中的每个州的所有人口普查数据。在当前的模型中，每组"
-"州的表都以州的代码为前缀，例如 "
-"<varname>ma_addr</varname>、<varname>ma_edges</varname> "
-"等，具有强制执行只包括该州数据的约束。每个这些表都继承自 <varname>tiger "
-"schema</varname> 中的表 "
-"<varname>addr</varname>、<varname>faces</varname>、<varname>edges</varname> "
-"等。"
+"州的表都以州的代码为前缀，例如 <varname>ma_addr</varname>、"
+"<varname>ma_edges</varname> 等，具有强制执行只包括该州数据的约束。每个这些表"
+"都继承自 <varname>tiger schema</varname> 中的表 <varname>addr</varname>、"
+"<varname>faces</varname>、<varname>edges</varname> 等。"
 
 #. Tag: para
 #, no-c-format
@@ -2228,9 +2213,9 @@ msgid ""
 "schema for each state, as long as all the tables inherit from the tables in "
 "the <varname>tiger</varname> schema."
 msgstr ""
-"所有地理编码函数仅引用基表，因此不需要将数据模式称为<varname>tiger_data</varn"
-"ame>，也不要求数据不能进一步划分为其他模式——例如，每个州有不同的模式，"
-"只要所有表 从 <varname>Tiger </varname>模式中的表继承。"
+"所有地理编码函数仅引用基表，因此不需要将数据模式称为<varname>tiger_data</"
+"varname>，也不要求数据不能进一步划分为其他模式——例如，每个州有不同的模式，只"
+"要所有表 从 <varname>Tiger </varname>模式中的表继承。"
 
 #. Tag: para
 #, no-c-format
@@ -2256,16 +2241,16 @@ msgstr ""
 "如果您使用 Tiger 地理编码器 (tiger_2010)，则可以使用 extras/tiger 中随附的 "
 "upload_geocoder.bat / .sh 脚本升级脚本。 <varname>Tiger_2010 </varname>和 "
 "<varname>Tiger_2011+</varname> 之间的一个主要变化是 <varname>county</"
-"varname> 和 <varname>state</varname>表不再按州细分。 如果您有 Tiger_2010 "
-"的数据并希望替换为 Tiger_2015，请参阅<xref linkend=\"upgrade_tiger_geocoder\""
-"/>”"
+"varname> 和 <varname>state</varname>表不再按州细分。 如果您有 Tiger_2010 的数"
+"据并希望替换为 Tiger_2015，请参阅<xref linkend=\"upgrade_tiger_geocoder\"/>”"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "New in PostGIS 2.2.0 release is support for Tiger 2015 data and inclusion of "
 "Address Standardizer as part of PostGIS."
-msgstr "PostGIS 2.2.0 版本中的新功能是支持 Tiger 2015 数据并将地址标准化器包含为 "
+msgstr ""
+"PostGIS 2.2.0 版本中的新功能是支持 Tiger 2015 数据并将地址标准化器包含为 "
 "PostGIS 的一部分。"
 
 #. Tag: para
@@ -2305,10 +2290,9 @@ msgid ""
 "the given address and likeliness of the location. The higher the rating "
 "number the worse the result."
 msgstr ""
-"该项目的目标是构建一个功能齐全的地理编码器，"
-"可以处理任意美国地址字符串并使用标准化的 TIGER "
-"人口普查数据，生成反映给定地址位置和位置可能性的点几何和评级。 "
-"评级数字越高，结果越差。"
+"该项目的目标是构建一个功能齐全的地理编码器，可以处理任意美国地址字符串并使用"
+"标准化的 TIGER 人口普查数据，生成反映给定地址位置和位置可能性的点几何和评"
+"级。 评级数字越高，结果越差。"
 
 #. Tag: para
 #, no-c-format
@@ -2317,8 +2301,8 @@ msgid ""
 "is useful for deriving the street address and cross streets of a GPS "
 "location."
 msgstr ""
-"PostGIS 2.0.0 中引入的<varname>reverse_geocode </varname>函数对于导出GPS "
-"位置的街道地址和交叉街道非常有用。"
+"PostGIS 2.0.0 中引入的<varname>reverse_geocode </varname>函数对于导出GPS 位置"
+"的街道地址和交叉街道非常有用。"
 
 #. Tag: para
 #, no-c-format
@@ -2326,8 +2310,9 @@ msgid ""
 "The geocoder should be simple for anyone familiar with PostGIS to install "
 "and use, and should be easily installable and usable on all platforms "
 "supported by PostGIS."
-msgstr "对于熟悉 PostGIS 的任何人来说，地理编码器都应该易于安装和使用，"
-"并且应该可以在 PostGIS 支持的所有平台上轻松安装和使用。"
+msgstr ""
+"对于熟悉 PostGIS 的任何人来说，地理编码器都应该易于安装和使用，并且应该可以"
+"在 PostGIS 支持的所有平台上轻松安装和使用。"
 
 #. Tag: para
 #, no-c-format
@@ -2341,7 +2326,8 @@ msgstr "尽管存在格式和拼写错误，但它应该足够强大，能够正
 msgid ""
 "It should be extensible enough to be used with future data updates, or "
 "alternate data sources with a minimum of coding changes."
-msgstr "它应该具有足够的可扩展性，以便与未来的数据更新一起使用，或者以最少的编码更改"
+msgstr ""
+"它应该具有足够的可扩展性，以便与未来的数据更新一起使用，或者以最少的编码更改"
 "来替代数据源。"
 
 #. Tag: para
@@ -2349,16 +2335,18 @@ msgstr "它应该具有足够的可扩展性，以便与未来的数据更新一
 msgid ""
 "The <varname>tiger</varname> schema must be added to the database search "
 "path for the functions to work properly."
-msgstr "必须将 <varname>Tiger "
-"</varname>模式添加到数据库搜索路径中，函数才能正常工作。"
+msgstr ""
+"必须将 <varname>Tiger </varname>模式添加到数据库搜索路径中，函数才能正常工"
+"作。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "There are a couple other open source geocoders for PostGIS, that unlike "
 "tiger geocoder have the advantage of multi-country geocoding support"
-msgstr "PostGIS 还有其他几个开源地理编码器，与 Tiger "
-"地理编码器不同，它们具有多国家地理编码支持的优势"
+msgstr ""
+"PostGIS 还有其他几个开源地理编码器，与 Tiger 地理编码器不同，它们具有多国家地"
+"理编码支持的优势"
 
 #. Tag: para
 #, no-c-format
@@ -2374,11 +2362,10 @@ msgid ""
 msgstr ""
 "<link xlink:href=\"http://wiki.openstreetmap.org/wiki/Nominatim\">Nominatim "
 "</link> 使用 OpenStreetMap 地名词典格式的数据。 它需要 osm2pgsql 来加载数据、"
-"PostgreSQL 8.4 +和 PostGIS 1.5+ 才能运行。 "
-"它被打包为Web服务接口，并且似乎被设计为作为Web服务来调用。 就像 Tiger "
-"地理编码器一样，它同时具有地理编码器和反向地理编码器组件。 从文档来看，"
-"尚不清楚它是否具有像 Tiger 地理编码器一样的纯 SQL 接口，或者大量逻辑是否在 "
-"Web 接口中实现。"
+"PostgreSQL 8.4 +和 PostGIS 1.5+ 才能运行。 它被打包为Web服务接口，并且似乎被"
+"设计为作为Web服务来调用。 就像 Tiger 地理编码器一样，它同时具有地理编码器和反"
+"向地理编码器组件。 从文档来看，尚不清楚它是否具有像 Tiger 地理编码器一样的纯 "
+"SQL 接口，或者大量逻辑是否在 Web 接口中实现。"
 
 #. Tag: para
 #, no-c-format
@@ -2391,11 +2378,10 @@ msgid ""
 "has a reverse geocoder among some other neat features."
 msgstr ""
 "<link xlink:href=\"http://www.gisgraphy.com/\">GIS Graphy </link>还利用 "
-"PostGIS，并且像 Nominatim 一样使用 OpenStreetMap (OSM) 数据。 "
-"它配备了一个加载器来加载 OSM 数据，并且与 Nominatim "
-"类似，不仅能够进行美国地理编码。 与 Nominatim 非常相似，它作为 Web "
-"服务运行并依赖于 Java 1.5、Servlet 应用程序、Solr。 GisGraphy "
-"是跨平台的，并且还具有反向地理编码器以及其他一些简洁的功能。"
+"PostGIS，并且像 Nominatim 一样使用 OpenStreetMap (OSM) 数据。 它配备了一个加"
+"载器来加载 OSM 数据，并且与 Nominatim 类似，不仅能够进行美国地理编码。 与 "
+"Nominatim 非常相似，它作为 Web 服务运行并依赖于 Java 1.5、Servlet 应用程序、"
+"Solr。 GisGraphy 是跨平台的，并且还具有反向地理编码器以及其他一些简洁的功能。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -2404,9 +2390,9 @@ msgid ""
 "indexes on tiger schema and user specified schema. Defaults schema to "
 "<varname>tiger_data</varname> if no schema is specified.</refpurpose>"
 msgstr ""
-"<refpurpose>生成一个脚本，删除 Tiger "
-"架构和用户指定架构上的所有非主键和非唯一索引。 如果未指定架构，"
-"则默认架构为<varname> Tiger_data</varname>。</refpurpose>"
+"<refpurpose>生成一个脚本，删除 Tiger 架构和用户指定架构上的所有非主键和非唯一"
+"索引。 如果未指定架构，则默认架构为<varname> Tiger_data</varname>。</"
+"refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -2415,8 +2401,8 @@ msgid ""
 "indexes on tiger schema and user specified schema. Defaults schema to "
 "<varname>tiger_data</varname> if no schema is specified.</para>"
 msgstr ""
-"<para>生成一个脚本，删除 Tiger 架构和用户指定架构上的所有非主键和非唯一索引。"
-" 如果未指定架构，则默认架构为 <varname>Tiger_data</varname>。</para>"
+"<para>生成一个脚本，删除 Tiger 架构和用户指定架构上的所有非主键和非唯一索"
+"引。 如果未指定架构，则默认架构为 <varname>Tiger_data</varname>。</para>"
 
 #. Tag: para
 #, no-c-format
@@ -2426,8 +2412,8 @@ msgid ""
 "\"Install_Missing_Indexes\"/> to add just the indexes used by the geocoder."
 msgstr ""
 "这对于最大限度地减少索引膨胀很有用，索引膨胀可能会混淆查询规划器或占用不必要"
-"的空间。 与 <xref linkend=\"Install_Missing_Indexes\""
-"/>结合使用，仅添加地理编码器使用的索引。"
+"的空间。 与 <xref linkend=\"Install_Missing_Indexes\"/>结合使用，仅添加地理编"
+"码器使用的索引。"
 
 #. Tag: para
 #, no-c-format
@@ -2446,9 +2432,9 @@ msgid ""
 "with <varname>county_all</varname>, <varname>state_all</varname> or state "
 "code followed by <varname>county</varname> or <varname>state</varname>."
 msgstr ""
-"生成一个脚本，删除指定架构中以<varname> "
-"County_all</varname>、<varname>state_all</varname> 或state代码开头，后跟<varn"
-"ame>county</varname>或<varname>state</varname>的所有表。"
+"生成一个脚本，删除指定架构中以<varname> County_all</varname>、"
+"<varname>state_all</varname> 或state代码开头，后跟<varname>county</varname>或"
+"<varname>state</varname>的所有表。"
 
 #. Tag: para
 #, no-c-format
@@ -2476,8 +2462,8 @@ msgid ""
 "prefixed with the state abbreviation. Defaults schema to "
 "<varname>tiger_data</varname> if no schema is specified."
 msgstr ""
-"生成一个脚本，该脚本删除指定架构中以state缩写为前缀的所有表。 "
-"如果未指定架构，则默认架构为 <varname>Tiger_data</varname>。"
+"生成一个脚本，该脚本删除指定架构中以state缩写为前缀的所有表。 如果未指定架"
+"构，则默认架构为 <varname>Tiger_data</varname>。"
 
 #. Tag: para
 #, no-c-format
@@ -2488,9 +2474,9 @@ msgid ""
 "useful for dropping tables of a state just before you reload a state in case "
 "something went wrong during your previous load."
 msgstr ""
-"生成一个脚本，该脚本删除指定架构中以state缩写为前缀的所有表。 "
-"如果未指定架构，则默认架构为 <varname>Tiger_data</varname>。 "
-"此函数对于在重新加载状态之前删除状态表非常有用，以防在上次加载期间出现问题。"
+"生成一个脚本，该脚本删除指定架构中以state缩写为前缀的所有表。 如果未指定架"
+"构，则默认架构为 <varname>Tiger_data</varname>。 此函数对于在重新加载状态之前"
+"删除状态表非常有用，以防在上次加载期间出现问题。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -2503,9 +2489,9 @@ msgid ""
 "NULL)"
 msgstr ""
 "将地址作为字符串（或其他标准化地址）输入，并输出一组可能的位置，其中包括 NAD "
-"83 长纬度中的点几何图形、每个位置的标准化地址以及评级。 "
-"评级越低，匹配的可能性越大。 结果首先按最低评分排序。 "
-"可以选择传入最大结果数，默认为10，以及restrict_region（默认为NULL）"
+"83 长纬度中的点几何图形、每个位置的标准化地址以及评级。 评级越低，匹配的可能"
+"性越大。 结果首先按最低评分排序。 可以选择传入最大结果数，默认为10，以及"
+"restrict_region（默认为NULL）"
 
 #. Tag: para
 #, no-c-format
@@ -2522,12 +2508,11 @@ msgid ""
 "located on."
 msgstr ""
 "将地址作为字符串（或已经标准化的地址）并输出一组可能的位置，其中包括 NAD 83 "
-"经纬度中的点几何形状、每个位置的<varname>标准化地址</varname> (addy) "
-"以及评级。 评级越低，匹配的可能性越大。 结果首先按最低评分排序。 使用 Tiger "
-"数据（edges、faces、addr）、PostgreSQL 模糊字符串匹配（soundex、levenshtein）"
-"和 PostGIS 线插值函数沿 Tiger 边缘插值地址。 "
-"评级越高，地理编码正确的可能性就越小。 "
-"地理编码点默认为从中心线到街道地址所在一侧 (L/R) 的偏移 10 米。"
+"经纬度中的点几何形状、每个位置的<varname>标准化地址</varname> (addy) 以及评"
+"级。 评级越低，匹配的可能性越大。 结果首先按最低评分排序。 使用 Tiger 数据"
+"（edges、faces、addr）、PostgreSQL 模糊字符串匹配（soundex、levenshtein）和 "
+"PostGIS 线插值函数沿 Tiger 边缘插值地址。 评级越高，地理编码正确的可能性就越"
+"小。 地理编码点默认为从中心线到街道地址所在一侧 (L/R) 的偏移 10 米。"
 
 #. Tag: para
 #, no-c-format
@@ -2554,9 +2539,9 @@ msgid ""
 "machine with 2GB ram running PostgreSQL 9.1rc1/PostGIS 2.0 loaded with all "
 "of MA,MN,CA, RI state Tiger data loaded."
 msgstr ""
-"下面的示例计时是在一台 3.0 GHZ 单处理器 Windows 7 计算机上进行的，"
-"该计算机具有 2GB 内存，运行 PostgreSQL 9.1rc1/PostGIS 2.0，加载了所有 "
-"MA、MN、CA、RI state Tiger 数据。"
+"下面的示例计时是在一台 3.0 GHZ 单处理器 Windows 7 计算机上进行的，该计算机具"
+"有 2GB 内存，运行 PostgreSQL 9.1rc1/PostGIS 2.0，加载了所有 MA、MN、CA、RI "
+"state Tiger 数据。"
 
 #. Tag: para
 #, no-c-format
@@ -2574,8 +2559,9 @@ msgstr "即使 zip 没有传入地理编码器也可以猜测（大约需要 122
 msgid ""
 "Can handle misspellings and provides more than one possible solution with "
 "ratings and takes longer (500ms)."
-msgstr "可以处理拼写错误，并提供不止一种可能的解决方案和评级，并且需要更长的时间（500"
-"ms）。"
+msgstr ""
+"可以处理拼写错误，并提供不止一种可能的解决方案和评级，并且需要更长的时间"
+"（500ms）。"
 
 #. Tag: para
 #, no-c-format
@@ -2584,8 +2570,8 @@ msgid ""
 "<varname>max_results=1</varname>. Only process those not yet geocoded (have "
 "no rating)."
 msgstr ""
-"用于对地址进行批量地理编码。 最简单的方法是设置 "
-"<varname>max_results=1</varname>。 仅处理尚未地理编码的内容（没有评级）。"
+"用于对地址进行批量地理编码。 最简单的方法是设置 <varname>max_results=1</"
+"varname>。 仅处理尚未地理编码的内容（没有评级）。"
 
 #. Tag: title
 #, no-c-format
@@ -2600,8 +2586,8 @@ msgid ""
 "\"/>"
 msgstr ""
 ", <xref linkend=\"Pprint_Addy\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
-"linkend=\"ST_SnapToGrid\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\""
-"/>"
+"linkend=\"ST_SnapToGrid\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y"
+"\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -2616,11 +2602,11 @@ msgid ""
 "(soundex, levenshtein)."
 msgstr ""
 "接收 2 条相交的街道以及state、city、zip，并输出位于交叉路口的第一个交叉街道上"
-"的一组可能位置，还包括一个 geomout 作为 NAD 83 "
-"经纬度中的点位置，一个<varname>标准化地址</varname> (addy "
-"）每个位置以及评级。 评级越低，匹配的可能性越大。 结果首先按最低评分排序。 "
-"可以选择传入最大结果，默认为 10。使用 Tiger 数据（edges、faces、addr）、"
-"PostgreSQL 模糊字符串匹配（soundex、levenshtein）。"
+"的一组可能位置，还包括一个 geomout 作为 NAD 83 经纬度中的点位置，一个"
+"<varname>标准化地址</varname> (addy ）每个位置以及评级。 评级越低，匹配的可能"
+"性越大。 结果首先按最低评分排序。 可以选择传入最大结果，默认为 10。使用 "
+"Tiger 数据（edges、faces、addr）、PostgreSQL 模糊字符串匹配（soundex、"
+"levenshtein）。"
 
 #. Tag: para
 #, no-c-format
@@ -2639,11 +2625,10 @@ msgstr ""
 "该函数接受两条交叉的街道、一个state、city、zip作为输入，并输出位于交叉口上的"
 "第一条街道上的可能位置集合。每个位置包括 NAD 83 经纬度的点几何、每个位置的规"
 "范化地址以及评分。评分越低，匹配度越高。结果按照评分从低到高排序。还可以选择"
-"传入最大结果数，默认为 "
-"10。函数返回每个结果的<varname>标准化地址</varname>（addy）、NAD 83 经纬度的"
-"点位置（geomout）以及评分。评分越低，匹配度越高。结果按照评分从低到高排序。"
-"此函数使用 Tiger 数据（edges、faces、addr）和 PostgreSQL "
-"模糊字符串匹配（soundex、levenshtein）进行计算"
+"传入最大结果数，默认为 10。函数返回每个结果的<varname>标准化地址</"
+"varname>（addy）、NAD 83 经纬度的点位置（geomout）以及评分。评分越低，匹配度"
+"越高。结果按照评分从低到高排序。此函数使用 Tiger 数据（edges、faces、addr）"
+"和 PostgreSQL 模糊字符串匹配（soundex、levenshtein）进行计算"
 
 #. Tag: para
 #, no-c-format
@@ -2652,9 +2637,9 @@ msgid ""
 "machine with 2GB ram running PostgreSQL 9.0/PostGIS 1.5 loaded with all of "
 "MA state Tiger data loaded. Currently a bit slow (3000 ms)"
 msgstr ""
-"下面的示例计时是在一台 3.0 GHZ 单处理器 Windows 7 计算机上进行的，"
-"该计算机具有 2GB RAM，运行 PostgreSQL 9.0/PostGIS 1.5，并加载了所有 MA 状态 "
-"Tiger 数据。 目前有点慢（3000 毫秒）"
+"下面的示例计时是在一台 3.0 GHZ 单处理器 Windows 7 计算机上进行的，该计算机具"
+"有 2GB RAM，运行 PostgreSQL 9.0/PostGIS 1.5，并加载了所有 MA 状态 Tiger 数"
+"据。 目前有点慢（3000 毫秒）"
 
 #. Tag: para
 #, no-c-format
@@ -2662,8 +2647,8 @@ msgid ""
 "Testing on Windows 2003 64-bit 8GB on PostGIS 2.0 PostgreSQL 64-bit Tiger "
 "2011 data loaded -- (41ms)"
 msgstr ""
-"在 Windows 2003 64 位 8GB 上测试 PostGIS 2.0 PostgreSQL 64 位 Tiger 2011 "
-"数据加载 -- (41ms)"
+"在 Windows 2003 64 位 8GB 上测试 PostGIS 2.0 PostgreSQL 64 位 Tiger 2011 数据"
+"加载 -- (41ms)"
 
 #. Tag: para
 #, no-c-format
@@ -2671,8 +2656,8 @@ msgid ""
 "Even if zip is not passed in the geocoder can guess (took about 3500 ms on "
 "the windows 7 box), on the windows 2003 64-bit 741 ms"
 msgstr ""
-"即使没有在地理编码器中传递 zip，也可以猜测（在 Windows 7 上大约花费了 3500 "
-"毫秒），在 Windows 2003 64 位上花费了 741 毫秒"
+"即使没有在地理编码器中传递 zip，也可以猜测（在 Windows 7 上大约花费了 3500 毫"
+"秒），在 Windows 2003 64 位上花费了 741 毫秒"
 
 #. Tag: para
 #, no-c-format
@@ -2692,9 +2677,8 @@ msgid ""
 "Settings allow you to toggle debugging of functions. Later plans will be to "
 "control rating with settings. Current list of settings are as follows:"
 msgstr ""
-"返回存储在 Tiger.geocode_settings 表中的特定设置的值。 "
-"设置允许您切换功能的调试。 稍后的计划将是通过设置来控制评级。 "
-"当前设置列表如下："
+"返回存储在 Tiger.geocode_settings 表中的特定设置的值。 设置允许您切换功能的调"
+"试。 稍后的计划将是通过设置来控制评级。 当前设置列表如下："
 
 #. Tag: para
 #, no-c-format
@@ -2703,8 +2687,8 @@ msgid ""
 "geocode_settings_default. Use customized settingsa are in geocode_settings "
 "and only contain those that have been set by user."
 msgstr ""
-"更改：2.2.0：默认设置现在保存在名为 geocode_settings_default 的表中。 "
-"使用自定义设置a位于geocode_settings中，并且仅包含用户设置的设置。"
+"更改：2.2.0：默认设置现在保存在名为 geocode_settings_default 的表中。 使用自"
+"定义设置a位于geocode_settings中，并且仅包含用户设置的设置。"
 
 #. Tag: title
 #, no-c-format
@@ -2716,15 +2700,17 @@ msgstr "返回调试设置示例"
 msgid ""
 "Returns census tract or field from tract table of where the geometry is "
 "located. Default to returning short name of tract."
-msgstr "从几何图形所在的区域表中返回人口普查区域或字段。 默认返回区域的短名称。"
+msgstr ""
+"从几何图形所在的区域表中返回人口普查区域或字段。 默认返回区域的短名称。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Given a geometry will return the census tract location of that geometry. NAD "
 "83 long lat is assumed if no spatial ref sys is specified."
-msgstr "给定一个几何图形将返回该几何图形的人口普查区位置。 如果未指定空间参考系统，"
-"则假定 NAD 83经纬度。"
+msgstr ""
+"给定一个几何图形将返回该几何图形的人口普查区位置。 如果未指定空间参考系统，则"
+"假定 NAD 83经纬度。"
 
 #. Tag: para
 #, no-c-format
@@ -2734,10 +2720,9 @@ msgid ""
 "as well as bg, and tabblock using the <xref linkend="
 "\"Loader_Generate_Census_Script\"/> script."
 msgstr ""
-"此函数使用人口普查的 "
-"<varname>tract</varname>，默认情况下不会加载。如果您已经加载了state表，"
-"可以使用 <xref linkend=\"Loader_Generate_Census_Script\"/> 脚本加载 tract、"
-"bg 和 tabblock。"
+"此函数使用人口普查的 <varname>tract</varname>，默认情况下不会加载。如果您已经"
+"加载了state表，可以使用 <xref linkend=\"Loader_Generate_Census_Script\"/> 脚"
+"本加载 tract、bg 和 tabblock。"
 
 #. Tag: para
 #, no-c-format
@@ -2762,7 +2747,8 @@ msgstr "&gt;"
 msgid ""
 "Finds all tables with key columns used in geocoder joins and filter "
 "conditions that are missing used indexes on those columns and will add them."
-msgstr "查找具有在地理编码器连接和过滤条件中使用的键列的所有表，这些表缺少这些列上使"
+msgstr ""
+"查找具有在地理编码器连接和过滤条件中使用的键列的所有表，这些表缺少这些列上使"
 "用的索引，并将添加它们。"
 
 #. Tag: para
@@ -2778,13 +2764,13 @@ msgid ""
 "generating the create index script, also executes it. It is called as part "
 "of the <filename>update_geocode.sql</filename> upgrade script."
 msgstr ""
-"查找<varname> Tiger </varname>和 <varname>Tiger_data </varname>架构中的所有表"
-"，其中包含在地理编码器连接和过滤器中使用的关键列，这些列上缺少索引，并将输出 "
-"SQL DDL 来定义这些表的索引，然后执行生成的脚本。 这是一个辅助函数，它添加了使"
-"查询更快所需的新索引，而这些索引可能在加载过程中丢失。 此函数是<xref linkend="
-"\"Missing_Indexes_Generate_Script\""
-"/>的配套函数，除了生成创建索引脚本之外，还执行它。 它作为 "
-"<filename>update_geocode.sql </filename>升级脚本的一部分被调用。"
+"查找<varname> Tiger </varname>和 <varname>Tiger_data </varname>架构中的所有"
+"表，其中包含在地理编码器连接和过滤器中使用的关键列，这些列上缺少索引，并将输"
+"出 SQL DDL 来定义这些表的索引，然后执行生成的脚本。 这是一个辅助函数，它添加"
+"了使查询更快所需的新索引，而这些索引可能在加载过程中丢失。 此函数是<xref "
+"linkend=\"Missing_Indexes_Generate_Script\"/>的配套函数，除了生成创建索引脚本"
+"之外，还执行它。 它作为 <filename>update_geocode.sql </filename>升级脚本的一"
+"部分被调用。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -2807,9 +2793,9 @@ msgid ""
 "stage and load into <varname>tiger_data</varname> schema. Each state script "
 "is returned as a separate record."
 msgstr ""
-"生成一个用于指定平台和指定州的 shell 脚本，该脚本将下载 Tiger "
-"数据中的人口普查州 <varname>tract</varname>、分组区块 <varname>bg</varname> "
-"和 <varname>tabblocks</varname> 数据表，然后将这些数据表分阶段加载到 "
+"生成一个用于指定平台和指定州的 shell 脚本，该脚本将下载 Tiger 数据中的人口普"
+"查州 <varname>tract</varname>、分组区块 <varname>bg</varname> 和 "
+"<varname>tabblocks</varname> 数据表，然后将这些数据表分阶段加载到 "
 "<varname>tiger_data</varname> 模式中。每个州的脚本将作为一个单独的记录返回。"
 
 #. Tag: para
@@ -2820,9 +2806,9 @@ msgid ""
 "data. Note the smallest unit it does is a whole state. It will only process "
 "the files in the staging and temp folders."
 msgstr ""
-"它在 Linux 上使用 unzip（默认情况下在 Windows 上使用 7-zip），并使用 wget "
-"进行下载。它使用 <xref linkend=\"shp2pgsql_usage\"/> 来加载数据。请注意，它的"
-"最小处理单元是整个州。它只会处理暂存和临时文件夹中的文件。"
+"它在 Linux 上使用 unzip（默认情况下在 Windows 上使用 7-zip），并使用 wget 进"
+"行下载。它使用 <xref linkend=\"shp2pgsql_usage\"/> 来加载数据。请注意，它的最"
+"小处理单元是整个州。它只会处理暂存和临时文件夹中的文件。"
 
 #. Tag: para
 #, no-c-format
@@ -2836,8 +2822,9 @@ msgstr "它使用以下控制表来控制进程和不同的操作系统 shell �
 msgid ""
 "<varname>loader_variables</varname> keeps track of various variables such as "
 "census site, year, data and staging schemas"
-msgstr "<varname>loader_variables</varname> "
-"跟踪各种变量，例如人口普查站点、年份、数据和暂存模式"
+msgstr ""
+"<varname>loader_variables</varname> 跟踪各种变量，例如人口普查站点、年份、数"
+"据和暂存模式"
 
 #. Tag: para
 #, no-c-format
@@ -2846,9 +2833,8 @@ msgid ""
 "the various executables are located. Comes with windows and linux. More can "
 "be added."
 msgstr ""
-"<varname>loader_platform</varname> "
-"各种平台的配置文件以及各种可执行文件所在的位置。 自带windows和linux。 "
-"还可以添加更多。"
+"<varname>loader_platform</varname> 各种平台的配置文件以及各种可执行文件所在的"
+"位置。 自带windows和linux。 还可以添加更多。"
 
 #. Tag: para
 #, no-c-format
@@ -2862,9 +2848,9 @@ msgid ""
 msgstr ""
 "<varname>loader_lookuptables</varname> 每条记录定义一种表（州、县）、是否处理"
 "其中的记录以及如何加载它们。定义每个记录的导入数据、暂存数据、添加、删除列、"
-"索引和约束的步骤。 每个表都以状态为前缀，并继承自 Tiger 模式中的表。 例如 "
-"创建从<varname>tiger.faces</varname>继承的<varname>tiger_data."
-"ma_faces</varname>"
+"索引和约束的步骤。 每个表都以状态为前缀，并继承自 Tiger 模式中的表。 例如 创"
+"建从<varname>tiger.faces</varname>继承的<varname>tiger_data.ma_faces</"
+"varname>"
 
 #. Tag: para
 #, no-c-format
@@ -2873,8 +2859,8 @@ msgid ""
 "2.0.0 alpha5, you'll need to run this on the states you have already done to "
 "get these additional tables."
 msgstr ""
-"包含此逻辑，但如果您在 PostGIS 2.0.0 alpha5 之前安装了 Tiger "
-"地理编码器，则需要在已完成的状态上运行此逻辑以获得这些附加表。"
+"包含此逻辑，但如果您在 PostGIS 2.0.0 alpha5 之前安装了 Tiger 地理编码器，则需"
+"要在已完成的状态上运行此逻辑以获得这些附加表。"
 
 #. Tag: para
 #, no-c-format
@@ -2898,8 +2884,8 @@ msgid ""
 "block groups, and blocks tables."
 msgstr ""
 "为指定平台的指定状态生成 shell 脚本，该脚本将下载 Tiger 数据、暂存并加载到 "
-"<varname>Tiger_data</varname> 模式中。 每个状态脚本都作为单独的记录返回。 "
-"最新版本支持 Tiger 2010 结构变化，还加载人口普查区、区块组和区块表。"
+"<varname>Tiger_data</varname> 模式中。 每个状态脚本都作为单独的记录返回。 最"
+"新版本支持 Tiger 2010 结构变化，还加载人口普查区、区块组和区块表。"
 
 #. Tag: para
 #, no-c-format
@@ -2920,18 +2906,19 @@ msgid ""
 "this by downloading the files yourself. It will only process the files in "
 "the staging and temp folders."
 msgstr ""
-"它在 Linux 上使用 unzip（在 Windows 上默认为 7-zip）和 wget 来进行下载。 "
-"它使用<xref linkend=\"shp2pgsql_usage\"/>来加载数据。 "
-"请注意，它的最小单位是整个状态，但您可以通过自己下载文件来覆盖它。 "
-"它只会处理暂存文件夹和临时文件夹中的文件。"
+"它在 Linux 上使用 unzip（在 Windows 上默认为 7-zip）和 wget 来进行下载。 它使"
+"用<xref linkend=\"shp2pgsql_usage\"/>来加载数据。 请注意，它的最小单位是整个"
+"状态，但您可以通过自己下载文件来覆盖它。 它只会处理暂存文件夹和临时文件夹中的"
+"文件。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Availability: 2.0.0 to support Tiger 2010 structured data and load census "
 "tract (tract), block groups (bg), and blocks (tabblocks) tables ."
-msgstr "可用性：2.0.0支持Tiger "
-"2010结构化数据并加载人口普查区（tract）、区块组（bg）和区块（tabblocks）表。"
+msgstr ""
+"可用性：2.0.0支持Tiger 2010结构化数据并加载人口普查区（tract）、区块组（bg）"
+"和区块（tabblocks）表。"
 
 #. Tag: para
 #, no-c-format
@@ -2941,9 +2928,9 @@ msgid ""
 "&gt; Query Editor - &gt; Max. characters per column</emphasis> to larger "
 "than 50000 characters."
 msgstr ""
-"如果您使用 pgAdmin 3，请注意默认情况下 pgAdmin 3 会截断长文本。 "
-"要修复此问题，请更改<emphasis>文件File -&gt; Options -&gt;Query Tool -&gt; "
-"Query Editor -&gt;Max.每列</emphasis>字符数大于 50000 个字符。"
+"如果您使用 pgAdmin 3，请注意默认情况下 pgAdmin 3 会截断长文本。 要修复此问"
+"题，请更改<emphasis>文件File -&gt; Options -&gt;Query Tool -&gt; Query "
+"Editor -&gt;Max.每列</emphasis>字符数大于 50000 个字符。"
 
 #. Tag: para
 #, no-c-format
@@ -2986,12 +2973,11 @@ msgid ""
 "<varname>county_lookup</varname>, <varname>state</varname> tables in "
 "<varname>tiger</varname> schema."
 msgstr ""
-"为指定平台生成 shell 脚本，将 "
-"<varname>County_all</varname>、<varname>county_all_lookup</varname>、"
-"<varname>state_all </varname>表加载到 <varname>Tiger_data</varname> 架构中。 "
-"它们分别继承自<varname>tiger </varname>模式中的 "
-"<varname>County</varname>、<varname>county_lookup</varname>、<varname>state</"
-"varname> 表。"
+"为指定平台生成 shell 脚本，将 <varname>County_all</varname>、"
+"<varname>county_all_lookup</varname>、<varname>state_all </varname>表加载到 "
+"<varname>Tiger_data</varname> 架构中。 它们分别继承自<varname>tiger </"
+"varname>模式中的 <varname>County</varname>、<varname>county_lookup</"
+"varname>、<varname>state</varname> 表。"
 
 #. Tag: para
 #, no-c-format
@@ -2999,8 +2985,8 @@ msgid ""
 "It uses unzip on Linux (7-zip on Windows by default) and wget to do the "
 "downloading. It uses <xref linkend=\"shp2pgsql_usage\"/> to load in the data."
 msgstr ""
-"它在 Linux 上使用 unzip（在 Windows 上默认为 7-zip）和 wget 来进行下载。 "
-"它使用<xref linkend=\"shp2pgsql_usage\"/>来加载数据。"
+"它在 Linux 上使用 unzip（在 Windows 上默认为 7-zip）和 wget 来进行下载。 它使"
+"用<xref linkend=\"shp2pgsql_usage\"/>来加载数据。"
 
 #. Tag: para
 #, no-c-format
@@ -3010,9 +2996,9 @@ msgid ""
 "loader_lookuptables</varname> to control the process and different OS shell "
 "syntax variations."
 msgstr ""
-"它使用以下控制表 <varname>Tiger.loader_platform</varname>、"
-"<varname>tiger.loader_variables </varname>和<varname> Tiger."
-"loader_lookuptables</varname> 来控制进程和不同操作系统 shell 语法变化。"
+"它使用以下控制表 <varname>Tiger.loader_platform</varname>、<varname>tiger."
+"loader_variables </varname>和<varname> Tiger.loader_lookuptables</varname> 来"
+"控制进程和不同操作系统 shell 语法变化。"
 
 #. Tag: para
 #, no-c-format
@@ -3021,9 +3007,8 @@ msgid ""
 "the various executables are located. Comes with windows and linux/unix. More "
 "can be added."
 msgstr ""
-"<varname>loader_platform</varname> "
-"各种平台的配置文件以及各种可执行文件所在的位置。 带有 windows 和 linux/unix。"
-" 还可以添加更多。"
+"<varname>loader_platform</varname> 各种平台的配置文件以及各种可执行文件所在的"
+"位置。 带有 windows 和 linux/unix。 还可以添加更多。"
 
 #. Tag: para
 #, no-c-format
@@ -3032,16 +3017,17 @@ msgid ""
 "when enabled, zcta5 data is loaded as a single table called zcta5_all as "
 "part of the nation script load."
 msgstr ""
-"增强：2.4.1 邮政编码 5 制表区域 (zcta5) 加载步骤已修复，启用后，zcta5 "
-"数据将作为名为 zcta5_all 的单个表加载，作为国家脚本加载的一部分。"
+"增强：2.4.1 邮政编码 5 制表区域 (zcta5) 加载步骤已修复，启用后，zcta5 数据将"
+"作为名为 zcta5_all 的单个表加载，作为国家脚本加载的一部分。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If you want zip code 5 tabulation area (zcta5) to be included in your nation "
 "script load, do the following:"
-msgstr "如果您希望将邮政编码 5 制表区域 (zcta5) "
-"包含在您的国家脚本加载中，请执行以下操作："
+msgstr ""
+"如果您希望将邮政编码 5 制表区域 (zcta5) 包含在您的国家脚本加载中，请执行以下"
+"操作："
 
 #. Tag: para
 #, no-c-format
@@ -3052,8 +3038,8 @@ msgid ""
 "\"Drop_Nation_Tables_Generate_Script\"/> before you run this script."
 msgstr ""
 "如果您运行的是<varname> Tiger_2010 </varname>版本，并且想要使用较新的 Tiger "
-"数据重新加载为状态，则在运行此脚本之前，您需要首先加载生成并运行 drop "
-"语句<xref linkend=\"Drop_Nation_Tables_Generate_Script\"/>。"
+"数据重新加载为状态，则在运行此脚本之前，您需要首先加载生成并运行 drop 语句"
+"<xref linkend=\"Drop_Nation_Tables_Generate_Script\"/>。"
 
 #. Tag: para
 #, no-c-format
@@ -3076,8 +3062,9 @@ msgid ""
 "Finds all tables with key columns used in geocoder joins that are missing "
 "indexes on those columns and will output the SQL DDL to define the index for "
 "those tables."
-msgstr "查找具有在地理编码器联接中使用的键列的所有表，这些表缺少这些列上的索引，"
-"并将输出 SQL DDL 来定义这些表的索引。"
+msgstr ""
+"查找具有在地理编码器联接中使用的键列的所有表，这些表缺少这些列上的索引，并将"
+"输出 SQL DDL 来定义这些表的索引。"
 
 #. Tag: para
 #, no-c-format
@@ -3091,12 +3078,12 @@ msgid ""
 "indexes being used. If this function outputs nothing, it means all your "
 "tables have what we think are the key indexes already in place."
 msgstr ""
-"查找 <varname>tiger</varname> 和<varname> Tiger_data</varname> "
-"架构中的所有表，其中包含在地理编码器联接中使用的关键列，这些列上缺少索引，"
-"并将输出 SQL DDL 来定义这些表的索引。 这是一个辅助函数，它添加了使查询更快所"
-"需的新索引，而这些索引可能在加载过程中丢失。 "
-"随着地理编码器的改进，该函数将更新以适应正在使用的新索引。 "
-"如果此函数没有输出任何内容，则意味着您的所有表都具有我们认为的关键索引。"
+"查找 <varname>tiger</varname> 和<varname> Tiger_data</varname> 架构中的所有"
+"表，其中包含在地理编码器联接中使用的关键列，这些列上缺少索引，并将输出 SQL "
+"DDL 来定义这些表的索引。 这是一个辅助函数，它添加了使查询更快所需的新索引，而"
+"这些索引可能在加载过程中丢失。 随着地理编码器的改进，该函数将更新以适应正在使"
+"用的新索引。 如果此函数没有输出任何内容，则意味着您的所有表都具有我们认为的关"
+"键索引。"
 
 #. Tag: para
 #, no-c-format
@@ -3126,9 +3113,9 @@ msgid ""
 "data is required aside from what is packaged with the geocoder."
 msgstr ""
 "给定文本街道地址，返回复合的<varname>norm_addy</varname>类型，该类型具有道路"
-"后缀、前缀和标准化类型、街道、街道名称等，分为单独的字段。 "
-"这是地理编码过程中将所有地址转换为标准化邮政形式的第一步。 "
-"除了地理编码器打包的数据之外，不需要其他数据。"
+"后缀、前缀和标准化类型、街道、街道名称等，分为单独的字段。 这是地理编码过程中"
+"将所有地址转换为标准化邮政形式的第一步。 除了地理编码器打包的数据之外，不需要"
+"其他数据。"
 
 #. Tag: para
 #, no-c-format
@@ -3142,15 +3129,16 @@ msgid ""
 msgstr ""
 "此函数仅使用使用 Tiger_geocoder 预加载并位于<varname>tiger</varname>模式中的"
 "各种方向/状态/后缀查找表，因此不需要您下载tiger普查数据或任何其他附加数据来使"
-"用它。 您可能会发现需要向<varname> Tiger</varname> "
-"模式中的各种查找表添加更多缩写或替代命名。"
+"用它。 您可能会发现需要向<varname> Tiger</varname> 模式中的各种查找表添加更多"
+"缩写或替代命名。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "It uses various control lookup tables located in <varname>tiger</varname> "
 "schema to normalize the input address."
-msgstr "它使用位于<varname> tiger</varname> 模式中的各种控制查找表来标准化输入地址。"
+msgstr ""
+"它使用位于<varname> tiger</varname> 模式中的各种控制查找表来标准化输入地址。"
 
 #. Tag: para
 #, no-c-format
@@ -3159,8 +3147,8 @@ msgid ""
 "function in this order where () indicates a field required by the geocoder, "
 "[] indicates an optional field:"
 msgstr ""
-"该函数返回的<varname>norm_addy</varname>类型对象中的字段按以下顺序排列，其中("
-")表示地理编码器所需的字段，[]表示可选字段："
+"该函数返回的<varname>norm_addy</varname>类型对象中的字段按以下顺序排列，其中"
+"()表示地理编码器所需的字段，[]表示可选字段："
 
 #. Tag: para
 #, no-c-format
@@ -3262,7 +3250,8 @@ msgstr ""
 msgid ""
 "<varname>zip4</varname> last 4 digits of a 9 digit zip code. Availability: "
 "PostGIS 2.4.0."
-msgstr "<varname>zip4</varname>9 位邮政编码的最后 4 位数字。 可用性：PostGIS 2.4.0。"
+msgstr ""
+"<varname>zip4</varname>9 位邮政编码的最后 4 位数字。 可用性：PostGIS 2.4.0。"
 
 #. Tag: para
 #, no-c-format
@@ -3271,17 +3260,18 @@ msgid ""
 "alpha characters like 17R. Parsing of this is better using <xref linkend="
 "\"Pagc_Normalize_Address\"/> function. Availability: PostGIS 2.4.0."
 msgstr ""
-"<varname>address_alphanumeric</varname> 完整的街道号码，即使它具有字母字符（"
-"如 17R）。 对此的解析最好使用<xref linkend=\"Pagc_Normalize_Address\"/> "
-"函数。 可用性：PostGIS 2.4.0。"
+"<varname>address_alphanumeric</varname> 完整的街道号码，即使它具有字母字符"
+"（如 17R）。 对此的解析最好使用<xref linkend=\"Pagc_Normalize_Address\"/> 函"
+"数。 可用性：PostGIS 2.4.0。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Output select fields. Use <xref linkend=\"Pprint_Addy\"/> if you want a "
 "pretty textual output."
-msgstr "输出选择字段。 如果您想要漂亮的文本输出，请使用 <xref linkend=\"Pprint_Addy\""
-"/>。"
+msgstr ""
+"输出选择字段。 如果您想要漂亮的文本输出，请使用 <xref linkend=\"Pprint_Addy"
+"\"/>。"
 
 #. Tag: para
 #, no-c-format
@@ -3312,11 +3302,10 @@ msgid ""
 "alternative namings to the various lookup tables in the <varname>tiger</"
 "varname> schema."
 msgstr ""
-"该函数仅使用各种 pagc_* 查找表，这些表由 Tiger_geocoder "
-"预加载并位于<varname> Tiger</varname> "
-"模式中，因此不需要您下载tiger普查数据或任何其他附加数据来使用它。 "
-"您可能会发现需要向 <varname>Tiger</varname> "
-"模式中的各种查找表添加更多缩写或替代命名。"
+"该函数仅使用各种 pagc_* 查找表，这些表由 Tiger_geocoder 预加载并位于"
+"<varname> Tiger</varname> 模式中，因此不需要您下载tiger普查数据或任何其他附加"
+"数据来使用它。 您可能会发现需要向 <varname>Tiger</varname> 模式中的各种查找表"
+"添加更多缩写或替代命名。"
 
 #. Tag: para
 #, no-c-format
@@ -3341,8 +3330,8 @@ msgid ""
 "bit richer than norm_addy since its designed to support international "
 "addresses (including country). standardaddr equivalent fields are:"
 msgstr ""
-"目前，address_standardizer 扩展的本机 standardaddr 比norm_addy "
-"丰富一些，因为它旨在支持国际地址（包括国家/地区）。 standardaddr 等效字段是："
+"目前，address_standardizer 扩展的本机 standardaddr 比norm_addy 丰富一些，因为"
+"它旨在支持国际地址（包括国家/地区）。 standardaddr 等效字段是："
 
 #. Tag: para
 #, no-c-format
@@ -3366,12 +3355,12 @@ msgid ""
 "linkend=\"Normalize_Address\"/> that uses data created in <xref linkend="
 "\"Geocode\"/>."
 msgstr ""
-"批量调用。 目前，postgis_tiger_geocoder 包装 address_standardizer "
-"的方式存在速度问题。 这些问题有望在以后的版本中得到解决。 "
-"为了解决这些问题，如果您需要批量地理编码的速度以批量模式调用生成normaddy，"
-"建议您直接调用address_standardizer standardize_address函数，如下所示，"
-"这与我们在<xref linkend=\"Normalize_Address\"/>中所做的类似，使用在<xref "
-"linkend=\"Geocode\"/>中创建的数据 。"
+"批量调用。 目前，postgis_tiger_geocoder 包装 address_standardizer 的方式存在"
+"速度问题。 这些问题有望在以后的版本中得到解决。 为了解决这些问题，如果您需要"
+"批量地理编码的速度以批量模式调用生成normaddy，建议您直接调用"
+"address_standardizer standardize_address函数，如下所示，这与我们在<xref "
+"linkend=\"Normalize_Address\"/>中所做的类似，使用在<xref linkend=\"Geocode\"/"
+">中创建的数据 。"
 
 #. Tag: para
 #, no-c-format
@@ -3385,8 +3374,8 @@ msgid ""
 "print representation of it. Usually used in conjunction with "
 "normalize_address."
 msgstr ""
-"给定一个<varname>norm_addy</varname>复合类型对象，返回它的漂亮的打印表示。 "
-"通常与normalize_address结合使用。"
+"给定一个<varname>norm_addy</varname>复合类型对象，返回它的漂亮的打印表示。 通"
+"常与normalize_address结合使用。"
 
 #. Tag: para
 #, no-c-format
@@ -3395,8 +3384,8 @@ msgid ""
 "print representation of it. No other data is required aside from what is "
 "packaged with the geocoder."
 msgstr ""
-"给定一个<varname>norm_addy</varname>复合类型对象，返回它的漂亮的打印表示。 "
-"除了地理编码器打包的数据之外，不需要其他数据。"
+"给定一个<varname>norm_addy</varname>复合类型对象，返回它的漂亮的打印表示。 除"
+"了地理编码器打包的数据之外，不需要其他数据。"
 
 #. Tag: para
 #, no-c-format
@@ -3435,9 +3424,9 @@ msgid ""
 "address is most likely the right one."
 msgstr ""
 "获取已知空间参考中的几何点并返回一条记录，其中包含理论上可能的地址数组和十字"
-"街道数组。 如果 include_strnum_range = true，则包括交叉街道中的街道范围。 "
-"如果未传入，则 include_strnum_range 默认为 "
-"false。地址根据点最接近的道路进行排序，因此第一个地址很可能是正确的地址。"
+"街道数组。 如果 include_strnum_range = true，则包括交叉街道中的街道范围。 如"
+"果未传入，则 include_strnum_range 默认为 false。地址根据点最接近的道路进行排"
+"序，因此第一个地址很可能是正确的地址。"
 
 #. Tag: para
 #, no-c-format
@@ -3455,10 +3444,10 @@ msgid ""
 msgstr ""
 "为什么我们说理论地址而不是实际地址。 Tiger 数据没有真实地址，只有街道范围。 "
 "因此，理论地址是基于街道范围的内插地址。 例如，插入我的地址之一会返回 26 "
-"Court St. 和 26 Court Sq.，尽管不存在 26 Court Sq. 这样的地方。 "
-"这是因为一个点可能位于 2 条街道的拐角处，因此逻辑会沿着两条街道进行插值。 该"
-"逻辑还假设地址沿着街道均匀分布，这当然是错误的，因为您可以让市政建筑占据街道"
-"范围的很大一部分，而其余建筑物则聚集在末端。"
+"Court St. 和 26 Court Sq.，尽管不存在 26 Court Sq. 这样的地方。 这是因为一个"
+"点可能位于 2 条街道的拐角处，因此逻辑会沿着两条街道进行插值。 该逻辑还假设地"
+"址沿着街道均匀分布，这当然是错误的，因为您可以让市政建筑占据街道范围的很大一"
+"部分，而其余建筑物则聚集在末端。"
 
 #. Tag: para
 #, no-c-format
@@ -3466,8 +3455,9 @@ msgid ""
 "Note: Hmm this function relies on Tiger data. If you have not loaded data "
 "covering the region of this point, then hmm you will get a record filled "
 "with NULLS."
-msgstr "注意：嗯，这个功能依赖于 Tiger 数据。 如果您还没有加载覆盖该点区域的数据，"
-"那么您将得到一条充满 NULL 的记录。"
+msgstr ""
+"注意：嗯，这个功能依赖于 Tiger 数据。 如果您还没有加载覆盖该点区域的数据，那"
+"么您将得到一条充满 NULL 的记录。"
 
 #. Tag: para
 #, no-c-format
@@ -3480,7 +3470,8 @@ msgid ""
 "<varname>intpt</varname> is an array of points: These are the center line "
 "points on the street closest to the input point. There are as many points as "
 "there are addresses."
-msgstr "<varname>intpt </varname>是一个点数组：这些是街道上最接近输入点的中心线点。 "
+msgstr ""
+"<varname>intpt </varname>是一个点数组：这些是街道上最接近输入点的中心线点。 "
 "有多少个地址就有多少个点。"
 
 #. Tag: para
@@ -3492,10 +3483,9 @@ msgid ""
 "in the case when a point is at the corner of 2 or 3 streets, or the point is "
 "somewhere on the road and not off to the side."
 msgstr ""
-"<varname>addy</varname> "
-"是一个norm_addy（规范化地址）数组：这些是适合输入点的可能地址数组。 "
-"数组中的第一个最有可能。 一般来说应该只有一个，除非某个点位于 2 或 3 "
-"条街道的拐角处，或者该点位于道路上的某个位置而不是在侧面。"
+"<varname>addy</varname> 是一个norm_addy（规范化地址）数组：这些是适合输入点的"
+"可能地址数组。 数组中的第一个最有可能。 一般来说应该只有一个，除非某个点位于 "
+"2 或 3 条街道的拐角处，或者该点位于道路上的某个位置而不是在侧面。"
 
 #. Tag: para
 #, no-c-format
@@ -3503,8 +3493,9 @@ msgid ""
 "<varname>street</varname> an array of varchar: These are cross streets (or "
 "the street) (streets that intersect or are the street the point is projected "
 "to be on)."
-msgstr "<varname>street varchar</varname> "
-"数组：这些是交叉街道（或街道）（相交的街道或者是点投影所在的街道）。"
+msgstr ""
+"<varname>street varchar</varname> 数组：这些是交叉街道（或街道）（相交的街道"
+"或者是点投影所在的街道）。"
 
 #. Tag: para
 #, no-c-format
@@ -3536,7 +3527,8 @@ msgid ""
 "Here we choose not to include the address ranges for the cross streets and "
 "picked a location really really close to a corner of 2 streets thus could be "
 "known by two different addresses."
-msgstr "在这里，我们选择不包括十字路口的地址范围，并选择了一个非常靠近两条街道拐角处"
+msgstr ""
+"在这里，我们选择不包括十字路口的地址范围，并选择了一个非常靠近两条街道拐角处"
 "的位置，因此可以通过两个不同的地址来识别。"
 
 #. Tag: para
@@ -3544,8 +3536,9 @@ msgstr "在这里，我们选择不包括十字路口的地址范围，并选择
 msgid ""
 "For this one we reuse our geocoded example from <xref linkend=\"Geocode\"/> "
 "and we only want the primary address and at most 2 cross streets."
-msgstr "对于这一点，我们重用<xref linkend=\"Geocode\"/> 中的地理编码示例，"
-"并且只需要主要地址和最多 2 个交叉街道。"
+msgstr ""
+"对于这一点，我们重用<xref linkend=\"Geocode\"/> 中的地理编码示例，并且只需要"
+"主要地址和最多 2 个交叉街道。"
 
 #. Tag: para
 #, no-c-format
@@ -3562,8 +3555,9 @@ msgid ""
 "Loads a defined region of tiger data into a PostGIS Topology and "
 "transforming the tiger data to spatial reference of the topology and "
 "snapping to the precision tolerance of the topology."
-msgstr "将tiger数据的定义区域加载到 PostGIS "
-"拓扑中，并将老虎数据转换为拓扑的空间参考，并捕捉到拓扑的精度公差。"
+msgstr ""
+"将tiger数据的定义区域加载到 PostGIS 拓扑中，并将老虎数据转换为拓扑的空间参"
+"考，并捕捉到拓扑的精度公差。"
 
 #. Tag: para
 #, no-c-format
@@ -3576,10 +3570,9 @@ msgid ""
 "future be more easily reconciled with tiger data. Returns summary details "
 "about the process."
 msgstr ""
-"将定义的tiger数据区域加载到 PostGIS 拓扑中。 "
-"面、节点和边将转换为目标拓扑的空间参考系统，点将捕捉到目标拓扑的容差。 "
-"创建的面、节点、边与原始 Tiger 数据面、节点、边保持相同的 ID，"
-"以便数据集将来可以更轻松地与 Tiger 数据进行协调。 "
+"将定义的tiger数据区域加载到 PostGIS 拓扑中。 面、节点和边将转换为目标拓扑的空"
+"间参考系统，点将捕捉到目标拓扑的容差。 创建的面、节点、边与原始 Tiger 数据"
+"面、节点、边保持相同的 ID，以便数据集将来可以更轻松地与 Tiger 数据进行协调。 "
 "返回有关流程的摘要详细信息。"
 
 #. Tag: para
@@ -3588,7 +3581,8 @@ msgid ""
 "This would be useful for example for redistricting data where you require "
 "the newly formed polygons to follow the center lines of streets and for the "
 "resulting polygons not to overlap."
-msgstr "例如，这对于重新划分数据非常有用，在这种情况下，您需要新形成的多边形遵循街道"
+msgstr ""
+"例如，这对于重新划分数据非常有用，在这种情况下，您需要新形成的多边形遵循街道"
 "的中心线，并且生成的多边形不重叠。"
 
 #. Tag: para
@@ -3602,9 +3596,9 @@ msgid ""
 "created a topology using the topology functions."
 msgstr ""
 "该功能依赖Tiger数据以及PostGIS拓扑模块的安装。 有关更多信息，请参阅<xref "
-"linkend=\"Topology\"/>和<xref linkend=\"installation_configuration\"/>。 "
-"如果您尚未加载覆盖感兴趣区域的数据，则不会创建任何拓扑记录。 "
-"如果您没有使用拓扑函数创建拓扑，此函数也会失败。"
+"linkend=\"Topology\"/>和<xref linkend=\"installation_configuration\"/>。 如果"
+"您尚未加载覆盖感兴趣区域的数据，则不会创建任何拓扑记录。 如果您没有使用拓扑函"
+"数创建拓扑，此函数也会失败。"
 
 #. Tag: para
 #, no-c-format
@@ -3613,7 +3607,8 @@ msgid ""
 "transformation the edges points don't quite line up or overlap. To remedy "
 "the situation you may want to increase or lower the precision if you get "
 "topology validation failures."
-msgstr "大多数拓扑验证错误都是由于公差问题造成的，即变换后边缘点没有完全对齐或重叠。 "
+msgstr ""
+"大多数拓扑验证错误都是由于公差问题造成的，即变换后边缘点没有完全对齐或重叠。 "
 "为了纠正这种情况，如果拓扑验证失败，您可能需要提高或降低精度。"
 
 #. Tag: para
@@ -3636,10 +3631,9 @@ msgid ""
 "is to have several more. This is the table to look into to define the region "
 "bounds. e.g <varname>tiger.place</varname>, <varname>tiger.county</varname>"
 msgstr ""
-"<varname>Region_type </varname>边界区域的类型。 "
-"目前仅支持<varname>地方</varname>和<varname>县</varname>。 计划是再多几个。 "
-"这是用于定义区域边界的表格。 例如，<varname>tiger."
-"place</varname>、<varname>tiger.county</varname>"
+"<varname>Region_type </varname>边界区域的类型。 目前仅支持<varname>地方</"
+"varname>和<varname>县</varname>。 计划是再多几个。 这是用于定义区域边界的表"
+"格。 例如，<varname>tiger.place</varname>、<varname>tiger.county</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -3650,10 +3644,10 @@ msgid ""
 "county it is the <varname>cntyidfp</varname> column in <varname>tiger."
 "county</varname>"
 msgstr ""
-"<varname>Region_id</varname> 这就是 TIGER 所说的大地水准面。 "
-"它是表中区域的唯一标识符。 对于 place，它是<varname> Tiger.place</varname> "
-"中的<varname> plcidfp </varname>列。 对于county，它是 <varname>Tiger.county</"
-"varname> 中的<varname> cntyidfp </varname>列"
+"<varname>Region_id</varname> 这就是 TIGER 所说的大地水准面。 它是表中区域的唯"
+"一标识符。 对于 place，它是<varname> Tiger.place</varname> 中的<varname> "
+"plcidfp </varname>列。 对于county，它是 <varname>Tiger.county</varname> 中的"
+"<varname> cntyidfp </varname>列"
 
 #. Tag: title
 #, no-c-format
@@ -3667,8 +3661,8 @@ msgid ""
 "with tolerance 0.25 feet and then load in Boston city tiger faces, edges, "
 "nodes."
 msgstr ""
-"在 Mass State Plane Feet (2249) 中创建马萨诸塞州波士顿的拓扑，容差为 0.25 "
-"英尺，然后加载到波士顿城市tiger面、边缘、节点。"
+"在 Mass State Plane Feet (2249) 中创建马萨诸塞州波士顿的拓扑，容差为 0.25 英"
+"尺，然后加载到波士顿城市tiger面、边缘、节点。"
 
 #. Tag: title
 #, no-c-format
@@ -3707,17 +3701,18 @@ msgid ""
 "plans will be to control rating with settings. Current list of settings are "
 "listed in <xref linkend=\"Get_Geocode_Setting\"/>."
 msgstr ""
-"设置存储在<varname> Tiger.geocode_settings </varname>表中的特定设置的值。 "
-"设置允许您切换功能的调试。 稍后的计划将是通过设置来控制评级。 "
-"当前设置列表列在 <xref linkend=\"Get_Geocode_Setting\"/> 中。"
+"设置存储在<varname> Tiger.geocode_settings </varname>表中的特定设置的值。 设"
+"置允许您切换功能的调试。 稍后的计划将是通过设置来控制评级。 当前设置列表列在 "
+"<xref linkend=\"Get_Geocode_Setting\"/> 中。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If you run <xref linkend=\"Geocode\"/> when this function is true, the "
 "NOTICE log will output timing and queries."
-msgstr "如果您在该函数为 true 时运行<xref linkend=\"Geocode\"/>，则 NOTICE "
-"日志将输出计时和查询。"
+msgstr ""
+"如果您在该函数为 true 时运行<xref linkend=\"Geocode\"/>，则 NOTICE 日志将输出"
+"计时和查询。"
 
 #. Tag: title
 #, no-c-format
@@ -29271,15 +29266,16 @@ msgid ""
 "in 'GDAL' or 'ESRI' format. Default is GDAL. If 6 coordinates are not "
 "provided will return null."
 msgstr ""
-"在一次调用中设置 Georeference 6 地理配准参数。 接受“GDAL”或“ESRI”格式的输入。"
-" 默认为 GDAL。 如果未提供 6 个坐标，则返回 null。"
+"在一次调用中设置 Georeference 6 地理配准参数。 接受“GDAL”或“ESRI”格式的输"
+"入。 默认为 GDAL。 如果未提供 6 个坐标，则返回 null。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If the raster has out-db bands, changing the georeference may result in "
 "incorrect access of the band's externally stored data."
-msgstr "如果栅格具有数据库外波段，则更改地理参考可能会导致无法正确访问该波段的外部存"
+msgstr ""
+"如果栅格具有数据库外波段，则更改地理参考可能会导致无法正确访问该波段的外部存"
 "储数据。"
 
 #. Tag: para
@@ -29287,7 +29283,8 @@ msgstr "如果栅格具有数据库外波段，则更改地理参考可能会导
 msgid ""
 "Enhanced: 2.1.0 Addition of ST_SetGeoReference(raster, double "
 "precision, ...) variant"
-msgstr "增强：2.1.0 添加 ST_SetGeoReference(raster, double precision, ...) 变体"
+msgstr ""
+"增强：2.1.0 添加 ST_SetGeoReference(raster, double precision, ...) 变体"
 
 #. Tag: para
 #, no-c-format
@@ -29326,8 +29323,9 @@ msgid ""
 "Sets the X and Y size of pixels in units of coordinate reference system. "
 "Number units/pixel width/height. If only one unit passed in, assumed X and Y "
 "are the same number."
-msgstr "以坐标参考系为单位设置像素的 X 和 Y 大小。 数字单位/像素宽度/高度。 "
-"如果只传入一个单位，则假设 X 和 Y 是相同的数字。"
+msgstr ""
+"以坐标参考系为单位设置像素的 X 和 Y 大小。 数字单位/像素宽度/高度。 如果只传"
+"入一个单位，则假设 X 和 Y 是相同的数字。"
 
 #. Tag: para
 #, no-c-format
@@ -29340,19 +29338,19 @@ msgid ""
 "input raster. ST_SetScale do not modify the width, nor the height of the "
 "raster."
 msgstr ""
-"ST_SetScale 与<xref linkend=\"RT_ST_Rescale\"/> 的不同之处在于 ST_SetScale "
-"不会对栅格重新采样以匹配栅格范围。 "
-"它仅更改栅格的元数据（或地理参考）以纠正最初错误指定的缩放比例。 ST_Rescale "
-"会生成具有不同宽度和高度的栅格，计算结果以适合输入栅格的地理范围。 "
-"ST_SetScale 不修改栅格的宽度或高度。"
+"ST_SetScale 与<xref linkend=\"RT_ST_Rescale\"/> 的不同之处在于 ST_SetScale 不"
+"会对栅格重新采样以匹配栅格范围。 它仅更改栅格的元数据（或地理参考）以纠正最初"
+"错误指定的缩放比例。 ST_Rescale 会生成具有不同宽度和高度的栅格，计算结果以适"
+"合输入栅格的地理范围。 ST_SetScale 不修改栅格的宽度或高度。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 In WKTRaster versions this was called ST_SetPixelSize. This "
 "was changed in 2.0.0."
-msgstr "更改：2.0.0 在 WKTRaster 版本中，这称为 ST_SetPixelSize。 这在 2.0.0 "
-"中发生了变化。"
+msgstr ""
+"更改：2.0.0 在 WKTRaster 版本中，这称为 ST_SetPixelSize。 这在 2.0.0 中发生了"
+"变化。"
 
 #. Tag: para
 #, no-c-format
@@ -29364,8 +29362,9 @@ msgstr ", <xref linkend=\"RT_ST_ScaleY\"/>, <xref linkend=\"RT_Box3D\"/>"
 msgid ""
 "Sets the georeference X and Y skew (or rotation parameter). If only one is "
 "passed in, sets X and Y to the same value."
-msgstr "设置地理参考 X 和 Y 倾斜（或旋转参数）。 "
-"如果只传入一个，则将X和Y设置为相同的值。"
+msgstr ""
+"设置地理参考 X 和 Y 倾斜（或旋转参数）。 如果只传入一个，则将X和Y设置为相同的"
+"值。"
 
 #. Tag: para
 #, no-c-format
@@ -29375,9 +29374,9 @@ msgid ""
 "\"http://en.wikipedia.org/wiki/World_file\">World File</link> for more "
 "details."
 msgstr ""
-"设置地理参考 X 和 Y 倾斜（或旋转参数）。 "
-"如果只传入一个，则将X和Y设置为相同的值。 有关更多详细信息，请参阅<link "
-"xlink:href=\"http://en.wikipedia.org/wiki/World_file\">世界文件</link>。"
+"设置地理参考 X 和 Y 倾斜（或旋转参数）。 如果只传入一个，则将X和Y设置为相同的"
+"值。 有关更多详细信息，请参阅<link xlink:href=\"http://en.wikipedia.org/wiki/"
+"World_file\">世界文件</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -29406,7 +29405,8 @@ msgid ""
 "This function does not transform the raster in any way - it simply sets meta "
 "data defining the spatial ref of the coordinate reference system that it's "
 "currently in. Useful for transformations later."
-msgstr "此函数不会以任何方式转换栅格 - 它只是设置定义其当前所在坐标参考系统的空间参考"
+msgstr ""
+"此函数不会以任何方式转换栅格 - 它只是设置定义其当前所在坐标参考系统的空间参考"
 "的元数据。对于以后的转换很有用。"
 
 #. Tag: para
@@ -29511,7 +29511,8 @@ msgstr "默认值是“NearestNeighbor”，它速度最快，但插值效果最
 msgid ""
 "A maxerror percent of 0.125 is used if no <varname>maxerr</varname> is "
 "specified."
-msgstr "如果未指定<varname> maxerr</varname>，则使用 0.125 的 maxerror 百分比。"
+msgstr ""
+"如果未指定<varname> maxerr</varname>，则使用 0.125 的 maxerror 百分比。"
 
 #. Tag: para
 #, no-c-format
@@ -29535,7 +29536,8 @@ msgstr "增强：3.4.0 添加了最大和最小重采样选项"
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Resize\"/>, <xref linkend=\"RT_ST_Transform\"/>"
-msgstr ", <xref linkend=\"RT_ST_Resize\"/>, <xref linkend=\"RT_ST_Transform\"/>"
+msgstr ""
+", <xref linkend=\"RT_ST_Resize\"/>, <xref linkend=\"RT_ST_Transform\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -29546,16 +29548,17 @@ msgid ""
 "algorithm. Default is NearestNeighbor."
 msgstr ""
 "通过仅调整栅格的比例（或像素大小）来重新采样栅格。 新的像素值是使用 "
-"NearestNeighbor（英语或美式拼写）、Bilinear、Cubic、CubicSpline、 "
-"Lanczos、Max或Min重采样算法计算的。 默认为NearestNeighbor。"
+"NearestNeighbor（英语或美式拼写）、Bilinear、Cubic、CubicSpline、 Lanczos、"
+"Max或Min重采样算法计算的。 默认为NearestNeighbor。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Resample a raster by adjusting only its scale (or pixel size). New pixel "
 "values are computed using one of the following resampling algorithms:"
-msgstr "通过仅调整栅格的比例（或像素大小）来重新采样栅格。 "
-"使用以下重采样算法之一计算新像素值："
+msgstr ""
+"通过仅调整栅格的比例（或像素大小）来重新采样栅格。 使用以下重采样算法之一计算"
+"新像素值："
 
 #. Tag: para
 #, no-c-format
@@ -29563,8 +29566,8 @@ msgid ""
 "<varname>scalex</varname> and <varname>scaley</varname> define the new pixel "
 "size. scaley must often be negative to get well oriented raster."
 msgstr ""
-"<varname>scalex </varname>和<varname>scaley </varname>定义新的像素大小。 "
-"为了获得良好定向的栅格，scaley 通常必须为负值。"
+"<varname>scalex </varname>和<varname>scaley </varname>定义新的像素大小。 为了"
+"获得良好定向的栅格，scaley 通常必须为负值。"
 
 #. Tag: para
 #, no-c-format
@@ -29586,9 +29589,9 @@ msgid ""
 "no <varname>maxerr</varname> is specified, which is the same value used in "
 "GDAL gdalwarp utility. If set to zero, no approximation takes place."
 msgstr ""
-"<varname>maxerr </varname>是重采样算法进行变换近似的阈值（以像素为单位）。 "
-"如果未指定 <varname>maxerr</varname>，则使用默认值 0.125，该值与 GDAL "
-"gdalwarp 实用程序中使用的值相同。 如果设置为零，则不会发生近似。"
+"<varname>maxerr </varname>是重采样算法进行变换近似的阈值（以像素为单位）。 如"
+"果未指定 <varname>maxerr</varname>，则使用默认值 0.125，该值与 GDAL gdalwarp "
+"实用程序中使用的值相同。 如果设置为零，则不会发生近似。"
 
 #. Tag: para
 #, no-c-format
@@ -29601,11 +29604,10 @@ msgid ""
 "the input raster. ST_SetScale do not modify the width, nor the height of the "
 "raster."
 msgstr ""
-"ST_Rescale 与<xref linkend=\"RT_ST_SetScale\"/>的不同之处在于 ST_SetScale "
-"不会对栅格重新采样以匹配栅格范围。 ST_SetScale "
-"仅更改栅格的元数据（或地理参考）以纠正最初错误指定的缩放比例。 ST_Rescale "
-"会生成具有不同宽度和高度的栅格，计算结果以适合输入栅格的地理范围。 "
-"ST_SetScale 不修改栅格的宽度或高度。"
+"ST_Rescale 与<xref linkend=\"RT_ST_SetScale\"/>的不同之处在于 ST_SetScale 不"
+"会对栅格重新采样以匹配栅格范围。 ST_SetScale 仅更改栅格的元数据（或地理参考）"
+"以纠正最初错误指定的缩放比例。 ST_Rescale 会生成具有不同宽度和高度的栅格，计"
+"算结果以适合输入栅格的地理范围。 ST_SetScale 不修改栅格的宽度或高度。"
 
 #. Tag: para
 #, no-c-format
@@ -29639,8 +29641,8 @@ msgid ""
 "Default is NearestNeighbor."
 msgstr ""
 "通过仅调整栅格的倾斜（或旋转参数）来重采样栅格。 新的像素值是使用 "
-"NearestNeighbor（英语或美式拼写）、Bilinear、Cubic、CubicSpline或 Lanczos "
-"重采样算法计算的。 默认为NearestNeighbor。"
+"NearestNeighbor（英语或美式拼写）、Bilinear、Cubic、CubicSpline或 Lanczos 重"
+"采样算法计算的。 默认为NearestNeighbor。"
 
 #. Tag: para
 #, no-c-format
@@ -29651,10 +29653,9 @@ msgid ""
 "default is NearestNeighbor which is the fastest but results in the worst "
 "interpolation."
 msgstr ""
-"通过仅调整栅格的倾斜（或旋转参数）来重采样栅格。 "
-"新的像素值是使用NearestNeighbor （英语或美式拼写）、Bilinear, Cubic, "
-"CubicSpline或 Lanczos 重采样算法计算的。 "
-"默认值是“NearestNeighbor”，它速度最快，但插值效果最差。"
+"通过仅调整栅格的倾斜（或旋转参数）来重采样栅格。 新的像素值是使用"
+"NearestNeighbor （英语或美式拼写）、Bilinear, Cubic, CubicSpline或 Lanczos 重"
+"采样算法计算的。 默认值是“NearestNeighbor”，它速度最快，但插值效果最差。"
 
 #. Tag: para
 #, no-c-format
@@ -29686,11 +29687,10 @@ msgid ""
 "input raster. ST_SetSkew do not modify the width, nor the height of the "
 "raster."
 msgstr ""
-"ST_Reskew 与 <xref linkend=\"RT_ST_SetSkew\"/> 的不同之处在于 ST_SetSkew "
-"不会对栅格重新采样以匹配栅格范围。 ST_SetSkew "
-"仅更改栅格的元数据（或地理参考）以纠正最初错误指定的倾斜。 ST_Reskew "
-"会生成具有不同宽度和高度的栅格，计算结果以适合输入栅格的地理范围。 "
-"ST_SetSkew 不修改栅格的宽度或高度。"
+"ST_Reskew 与 <xref linkend=\"RT_ST_SetSkew\"/> 的不同之处在于 ST_SetSkew 不会"
+"对栅格重新采样以匹配栅格范围。 ST_SetSkew 仅更改栅格的元数据（或地理参考）以"
+"纠正最初错误指定的倾斜。 ST_Reskew 会生成具有不同宽度和高度的栅格，计算结果以"
+"适合输入栅格的地理范围。 ST_SetSkew 不修改栅格的宽度或高度。"
 
 #. Tag: para
 #, no-c-format
@@ -29716,9 +29716,9 @@ msgid ""
 "using the NearestNeighbor (english or american spelling), Bilinear, Cubic, "
 "CubicSpline or Lanczos resampling algorithm. Default is NearestNeighbor."
 msgstr ""
-"通过将栅格捕捉到网格来重采样栅格。 "
-"新的像素值是使用NearestNeighbor（英语或美式拼写）、Bilinear, Cubic, "
-"CubicSpline 或 Lanczos 重采样算法计算的。 默认为NearestNeighbor。"
+"通过将栅格捕捉到网格来重采样栅格。 新的像素值是使用NearestNeighbor（英语或美"
+"式拼写）、Bilinear, Cubic, CubicSpline 或 Lanczos 重采样算法计算的。 默认为"
+"NearestNeighbor。"
 
 #. Tag: para
 #, no-c-format
@@ -29730,11 +29730,11 @@ msgid ""
 "algorithm. The default is NearestNeighbor which is the fastest but results "
 "in the worst interpolation."
 msgstr ""
-"通过将栅格图像重新采样，将其对齐到由任意像素角点（gridx &amp; "
-"gridy）定义的网格，可选地使用像素大小（scalex &amp; scaley）。新的像素值是使"
-"用最近邻（NearestNeighbor，英式或美式拼写）、双线性（Bilinear）、三次样条（Cu"
-"bic）、立方样条（CubicSpline）或兰索斯（Lanczos）重新采样算法计算的。默认情况"
-"下使用最近邻（NearestNeighbor），这是最快但插值效果最差的算法。"
+"通过将栅格图像重新采样，将其对齐到由任意像素角点（gridx &amp; gridy）定义的网"
+"格，可选地使用像素大小（scalex &amp; scaley）。新的像素值是使用最近邻"
+"（NearestNeighbor，英式或美式拼写）、双线性（Bilinear）、三次样条（Cubic）、"
+"立方样条（CubicSpline）或兰索斯（Lanczos）重新采样算法计算的。默认情况下使用"
+"最近邻（NearestNeighbor），这是最快但插值效果最差的算法。"
 
 #. Tag: para
 #, no-c-format
@@ -29744,15 +29744,16 @@ msgid ""
 "of the new raster and it does not have to be inside or on the edge of the "
 "new raster extent."
 msgstr ""
-"<varname>gridx </varname>和 <varname>gridy </varname>定义新网格的任意像素角。"
-" 这不一定是新栅格的左上角，也不必位于新栅格范围的内部或边缘。"
+"<varname>gridx </varname>和 <varname>gridy </varname>定义新网格的任意像素"
+"角。 这不一定是新栅格的左上角，也不必位于新栅格范围的内部或边缘。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "You can optionally define the pixel size of the new grid with "
 "<varname>scalex</varname> and <varname>scaley</varname>."
-msgstr "您可以选择使用<varname>scalex</varname>和<varname>scaley</varname>定义新网格"
+msgstr ""
+"您可以选择使用<varname>scalex</varname>和<varname>scaley</varname>定义新网格"
 "的像素大小。"
 
 #. Tag: para
@@ -29760,7 +29761,8 @@ msgstr "您可以选择使用<varname>scalex</varname>和<varname>scaley</varnam
 msgid ""
 "Use <xref linkend=\"RT_ST_Resample\"/> if you need more control over the "
 "grid parameters."
-msgstr "如果您需要对网格参数进行更多控制，请使用 <xref linkend=\"RT_ST_Resample\"/>。"
+msgstr ""
+"如果您需要对网格参数进行更多控制，请使用 <xref linkend=\"RT_ST_Resample\"/>。"
 
 #. Tag: para
 #, no-c-format
@@ -29788,9 +29790,9 @@ msgid ""
 "in exact number of pixels or a percentage of the raster's width/height. The "
 "extent of the the new raster will be the same as the extent of the provided "
 "raster."
-msgstr "将栅格大小调整为新的宽度/高度。 "
-"新的宽度/高度可以以精确的像素数或栅格宽度/高度的百分比来指定。 "
-"新栅格的范围将与提供的栅格的范围相同。"
+msgstr ""
+"将栅格大小调整为新的宽度/高度。 新的宽度/高度可以以精确的像素数或栅格宽度/高"
+"度的百分比来指定。 新栅格的范围将与提供的栅格的范围相同。"
 
 #. Tag: para
 #, no-c-format
@@ -29801,8 +29803,8 @@ msgid ""
 "interpolation."
 msgstr ""
 "新的像素值是使用NearestNeighbor（英语或美式拼写）、Bilinear, Cubic, "
-"CubicSpline或 Lanczos 重采样算法计算的。 "
-"默认值是“NearestNeighbor”，它速度最快，但插值效果最差。"
+"CubicSpline或 Lanczos 重采样算法计算的。 默认值是“NearestNeighbor”，它速度最"
+"快，但插值效果最差。"
 
 #. Tag: para
 #, no-c-format
@@ -29814,7 +29816,8 @@ msgstr "变体 1 期望输出栅格的实际宽度/高度。"
 msgid ""
 "Variant 2 expects decimal values between zero (0) and one (1) indicating the "
 "percentage of the input raster's width/height."
-msgstr "变体 2 期望零 (0) 和一 (1) 之间的十进制值，表示输入栅格宽度/高度的百分比。"
+msgstr ""
+"变体 2 期望零 (0) 和一 (1) 之间的十进制值，表示输入栅格宽度/高度的百分比。"
 
 #. Tag: para
 #, no-c-format
@@ -29822,8 +29825,9 @@ msgid ""
 "Variant 3 takes either the actual width/height of the output raster or a "
 "textual percentage (\"20%\") indicating the percentage of the input raster's "
 "width/height."
-msgstr "变体3可以接受输出栅格图像的实际宽度/高度，也可以接受文本百分比（例如 \"20%\""
-"），表示输入栅格图像宽度/高度的百分比。"
+msgstr ""
+"变体3可以接受输出栅格图像的实际宽度/高度，也可以接受文本百分比（例如 \"20%"
+"\"），表示输入栅格图像宽度/高度的百分比。"
 
 #. Tag: para
 #, no-c-format
@@ -29883,9 +29887,9 @@ msgid ""
 "the spatial reference system (SRID) of the reference raster and be aligned "
 "(ST_SameAlignment = TRUE) to the reference raster."
 msgstr ""
-"与其他变体不同，变体 3 需要参考栅格作为<varname>alignto</varname>。 "
-"转换后的栅格将转换为参考栅格的空间参考系统 (SRID)，并与参考栅格对齐 ("
-"ST_SameAlignment = TRUE)。"
+"与其他变体不同，变体 3 需要参考栅格作为<varname>alignto</varname>。 转换后的"
+"栅格将转换为参考栅格的空间参考系统 (SRID)，并与参考栅格对齐 "
+"(ST_SameAlignment = TRUE)。"
 
 #. Tag: para
 #, no-c-format
@@ -29898,12 +29902,11 @@ msgid ""
 "and set it to <varname>libproj.dll</varname> (if you are using proj 4.6.1). "
 "You'll have to restart your PostgreSQL service/daemon after this change."
 msgstr ""
-"如果您发现转换支持无法正常工作，您可能需要将环境变量 PROJSO 设置为 PostGIS "
-"正在使用的 .so 或 .dll 投影库。 只需要文件名即可。 例如，在 Windows 上，"
-"您可以在控制面板 -&gt; 系统 -&gt; 环境变量中添加一个名为 <varname>PROJSO</"
-"varname> 的系统变量并将其设置为 <varname>libproj.dll</varname>（"
-"如果您使用的是 proj 4.6.1）。 进行此更改后，您必须重新启动 PostgreSQL "
-"服务/守护程序。"
+"如果您发现转换支持无法正常工作，您可能需要将环境变量 PROJSO 设置为 PostGIS 正"
+"在使用的 .so 或 .dll 投影库。 只需要文件名即可。 例如，在 Windows 上，您可以"
+"在控制面板 -&gt; 系统 -&gt; 环境变量中添加一个名为 <varname>PROJSO</varname> "
+"的系统变量并将其设置为 <varname>libproj.dll</varname>（如果您使用的是 proj "
+"4.6.1）。 进行此更改后，您必须重新启动 PostgreSQL 服务/守护程序。"
 
 #. Tag: para
 #, no-c-format
@@ -29911,7 +29914,8 @@ msgid ""
 "When transforming a coverage of tiles, you almost always want to use a "
 "reference raster to insure same alignment and no gaps in your tiles as "
 "demonstrated in example: Variant 3."
-msgstr "在转换图块覆盖范围时，您几乎总是希望使用参考栅格来确保图块中的对齐方式相同并"
+msgstr ""
+"在转换图块覆盖范围时，您几乎总是希望使用参考栅格来确保图块中的对齐方式相同并"
 "且没有间隙，如示例所示：变体 3。"
 
 #. Tag: para
@@ -29941,8 +29945,9 @@ msgstr "使用双线性算法而不是 NN 默认值 (wgs_84_bilin) 转换为 wgs
 msgid ""
 "The following shows the difference between using ST_Transform(raster, srid) "
 "and ST_Transform(raster, alignto)"
-msgstr "下面展示了使用 ST_Transform(raster, srid) 和 ST_Transform(raster,alignto) "
-"之间的区别"
+msgstr ""
+"下面展示了使用 ST_Transform(raster, srid) 和 ST_Transform(raster,alignto) 之"
+"间的区别"
 
 #. Tag: para
 #, no-c-format
@@ -29971,8 +29976,8 @@ msgid ""
 "if no band is specified. To mark a band as having no nodata value, set the "
 "nodata value = NULL."
 msgstr ""
-"设置代表无数据的给定波段的值。 如果未指定波段，则假定为波段 1。 "
-"要将波段标记为没有 nodata 值，请设置 nodata 值 = NULL。"
+"设置代表无数据的给定波段的值。 如果未指定波段，则假定为波段 1。 要将波段标记"
+"为没有 nodata 值，请设置 nodata 值 = NULL。"
 
 #. Tag: para
 #, no-c-format
@@ -30000,8 +30005,8 @@ msgid ""
 "> is different using TRUE as last argument and without using it"
 msgstr ""
 "将带的isnodata标志设置为true。如果未指定，将假定为第1带。只有在被认为是脏标志"
-"时才应调用此函数。也就是说，当调用 <xref linkend=\"RT_ST_BandIsNoData\"/> "
-"作为最后一个参数使用 TRUE 和不使用 TRUE 时的结果不同时"
+"时才应调用此函数。也就是说，当调用 <xref linkend=\"RT_ST_BandIsNoData\"/> 作"
+"为最后一个参数使用 TRUE 和不使用 TRUE 时的结果不同时"
 
 #. Tag: para
 #, no-c-format
@@ -30032,8 +30037,8 @@ msgid ""
 "where the external raster resides."
 msgstr ""
 "如果<varname>force</varname>设置为true，则不会进行任何测试来确保外部栅格文件"
-"和PostGIS栅格之间的兼容性（例如对齐、像素支持）。 "
-"此模式适用于外部栅格所在的文件系统更改。"
+"和PostGIS栅格之间的兼容性（例如对齐、像素支持）。 此模式适用于外部栅格所在的"
+"文件系统更改。"
 
 #. Tag: para
 #, no-c-format
@@ -30041,8 +30046,9 @@ msgid ""
 "Internally, this method replaces the PostGIS raster's band at index "
 "<varname>band</varname> with a new band instead of updating the existing "
 "path information."
-msgstr "在内部，此方法将索引<varname>band</varname>处的 PostGIS "
-"栅格波段替换为新波段，而不是更新现有的路径信息。"
+msgstr ""
+"在内部，此方法将索引<varname>band</varname>处的 PostGIS 栅格波段替换为新波"
+"段，而不是更新现有的路径信息。"
 
 #. Tag: para
 #, no-c-format
@@ -30059,8 +30065,9 @@ msgstr "更新out-db band的external band编号"
 msgid ""
 "Updates an out-db band's external band number. This does not touch the "
 "external raster file associated with the out-db band"
-msgstr "更新 out-db band 的外部 band 编号。 这不会触及与 out-db band "
-"关联的外部栅格文件"
+msgstr ""
+"更新 out-db band 的外部 band 编号。 这不会触及与 out-db band 关联的外部栅格文"
+"件"
 
 #. Tag: para
 #, no-c-format
@@ -30071,8 +30078,8 @@ msgid ""
 "around in the external raster file."
 msgstr ""
 "如果<varname>force</varname>设置为true，则不会进行任何测试来确保外部栅格文件"
-"和PostGIS栅格之间的兼容性（例如对齐、像素支持）。 "
-"此模式适用于在外部栅格文件中移动波段的情况。"
+"和PostGIS栅格之间的兼容性（例如对齐、像素支持）。 此模式适用于在外部栅格文件"
+"中移动波段的情况。"
 
 #. Tag: para
 #, no-c-format
@@ -30099,7 +30106,8 @@ msgstr ""
 msgid ""
 "Returns the number of pixels in a given band of a raster or raster coverage. "
 "If no band is specified <varname>nband</varname> defaults to 1."
-msgstr "返回栅格或栅格覆盖范围的给定波段中的像素数。 如果未指定 band，则<varname> "
+msgstr ""
+"返回栅格或栅格覆盖范围的给定波段中的像素数。 如果未指定 band，则<varname> "
 "nband </varname>默认为 1。"
 
 #. Tag: para
@@ -30110,9 +30118,9 @@ msgid ""
 "raster. Set <varname>exclude_nodata_value</varname> to false to get count "
 "all pixels"
 msgstr ""
-"如果<varname> excex_nodata_value </varname>设置为 true，"
-"则仅计算值不等于栅格<varname> nodata </varname>值的像素。 将<varname> "
-"except_nodata_value</varname> 设置为 false 以计算所有像素"
+"如果<varname> excex_nodata_value </varname>设置为 true，则仅计算值不等于栅格"
+"<varname> nodata </varname>值的像素。 将<varname> except_nodata_value</"
+"varname> 设置为 false 以计算所有像素"
 
 #. Tag: para
 #, no-c-format
@@ -30147,7 +30155,8 @@ msgstr ""
 msgid ""
 "Returns the number of pixels in a given band of a set of rasters. If no band "
 "is specified <varname>nband</varname> defaults to 1."
-msgstr "返回一组栅格的给定波段中的像素数。 如果未指定 band，则 <varname>nband </"
+msgstr ""
+"返回一组栅格的给定波段中的像素数。 如果未指定 band，则 <varname>nband </"
 "varname>默认为 1。"
 
 #. Tag: para
@@ -30168,8 +30177,8 @@ msgid ""
 "By default will sample all pixels. To get faster response, set "
 "<varname>sample_percent</varname> to value between zero (0) and one (1)"
 msgstr ""
-"默认情况下将对所有像素进行采样。 要获得更快的响应，"
-"请将<varname>sample_percent </varname>设置为零 (0) 到一 (1) 之间的值"
+"默认情况下将对所有像素进行采样。 要获得更快的响应，请将"
+"<varname>sample_percent </varname>设置为零 (0) 到一 (1) 之间的值"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -30177,7 +30186,8 @@ msgid ""
 "Returns a set of record summarizing a raster or raster coverage data "
 "distribution separate bin ranges. Number of bins are autocomputed if not "
 "specified."
-msgstr "返回一组记录，总结了栅格或栅格覆盖数据分布，其中包括分离的分箱范围。如果未指"
+msgstr ""
+"返回一组记录，总结了栅格或栅格覆盖数据分布，其中包括分离的分箱范围。如果未指"
 "定，将自动计算分箱数。"
 
 #. Tag: para
@@ -30187,8 +30197,8 @@ msgid ""
 "raster band for each bin. If no band is specified <varname>nband</varname> "
 "defaults to 1."
 msgstr ""
-"返回每个 bin 给定栅格波段的记录集，其中包含最小值、最大值、计数、百分比。 "
-"如果未指定 band，则 <varname>nband </varname>默认为 1。"
+"返回每个 bin 给定栅格波段的记录集，其中包含最小值、最大值、计数、百分比。 如"
+"果未指定 band，则 <varname>nband </varname>默认为 1。"
 
 #. Tag: para
 #, no-c-format
@@ -30197,16 +30207,17 @@ msgid ""
 "varname> value . Set <varname>exclude_nodata_value</varname> to false to get "
 "count all pixels."
 msgstr ""
-"默认情况下，仅考虑不等于<varname>nodata</varname>的像素值。 "
-"将<varname>except_nodata_value </varname>设置为 false 以计算所有像素。"
+"默认情况下，仅考虑不等于<varname>nodata</varname>的像素值。 将"
+"<varname>except_nodata_value </varname>设置为 false 以计算所有像素。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "width: an array indicating the width of each category/bin. If the number of "
 "bins is greater than the number of widths, the widths are repeated."
-msgstr "width：一个数组，指示每个category/bin 的宽度。 "
-"如果箱的数量大于宽度的数量，则宽度会重复。"
+msgstr ""
+"width：一个数组，指示每个category/bin 的宽度。 如果箱的数量大于宽度的数量，则"
+"宽度会重复。"
 
 #. Tag: para
 #, no-c-format
@@ -30221,16 +30232,18 @@ msgid ""
 "Number of breakouts -- this is the number of records you'll get back from "
 "the function if specified. If not specified then the number of breakouts is "
 "autocomputed."
-msgstr "分组数量——这是您将从函数中返回的记录数（如果指定）。 "
-"如果未指定，则自动计算分组数量。"
+msgstr ""
+"分组数量——这是您将从函数中返回的记录数（如果指定）。 如果未指定，则自动计算分"
+"组数量。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "compute the histogram from the right rather than from the left (default). "
 "This changes the criteria for evaluating a value x from [a, b) to (a, b]"
-msgstr "从右侧而不是从左侧计算直方图（默认）。 这将评估值 x 的标准从 [a, b) 更改为 ("
-"a, b]"
+msgstr ""
+"从右侧而不是从左侧计算直方图（默认）。 这将评估值 x 的标准从 [a, b) 更改为 "
+"(a, b]"
 
 #. Tag: para
 #, no-c-format
@@ -30265,8 +30278,8 @@ msgid ""
 "context of the sample or population. Thus, a value could be examined to be "
 "at the raster's 25%, 50%, 75% percentile.</refpurpose>"
 msgstr ""
-"<refpurpose>计算样本或总体上下文中栅格或栅格表覆盖范围的分位数。 因此，"
-"可以检查某个值是否位于栅格的 25%、50%、75% 百分位处。</refpurpose>"
+"<refpurpose>计算样本或总体上下文中栅格或栅格表覆盖范围的分位数。 因此，可以检"
+"查某个值是否位于栅格的 25%、50%、75% 百分位处。</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -30275,16 +30288,17 @@ msgid ""
 "of the sample or population. Thus, a value could be examined to be at the "
 "raster's 25%, 50%, 75% percentile.</para>"
 msgstr ""
-"<para>计算样本或总体上下文中栅格或栅格表覆盖范围的分位数。 因此，"
-"可以检查某个值是否位于栅格的 25%、50%、75% 百分位处。</para>"
+"<para>计算样本或总体上下文中栅格或栅格表覆盖范围的分位数。 因此，可以检查某个"
+"值是否位于栅格的 25%、50%、75% 百分位处。</para>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If <varname>exclude_nodata_value</varname> is set to false, will also count "
 "pixels with no data."
-msgstr "如果<varname> except_nodata_value</varname> 设置为 "
-"false，还将对没有数据的像素进行计数。"
+msgstr ""
+"如果<varname> except_nodata_value</varname> 设置为 false，还将对没有数据的像"
+"素进行计数。"
 
 #. Tag: para
 #, no-c-format
@@ -30306,7 +30320,8 @@ msgid ""
 "Returns summarystats consisting of count, sum, mean, stddev, min, max for a "
 "given raster band of a raster or raster coverage. Band 1 is assumed is no "
 "band is specified."
-msgstr "返回一组总结统计信息，包括给定栅格或栅格覆盖的栅格带的计数、总和、均值、标准"
+msgstr ""
+"返回一组总结统计信息，包括给定栅格或栅格覆盖的栅格带的计数、总和、均值、标准"
 "差、最小值和最大值。如果未指定带号，则假定为带1。"
 
 #. Tag: para
@@ -30316,9 +30331,9 @@ msgid ""
 "stddev, min, max for a given raster band of a raster or raster coverage. If "
 "no band is specified <varname>nband</varname> defaults to 1."
 msgstr ""
-"返回栅格或栅格覆盖范围的给定栅格波段的<xref linkend=\"summarystats\""
-"/>统计信息，其中包含计数、总和、平均值、标准差、最小值、最大值。 如果未指定 "
-"band，则 <varname>nband</varname> 默认为 1。"
+"返回栅格或栅格覆盖范围的给定栅格波段的<xref linkend=\"summarystats\"/>统计信"
+"息，其中包含计数、总和、平均值、标准差、最小值、最大值。 如果未指定 band，则 "
+"<varname>nband</varname> 默认为 1。"
 
 #. Tag: para
 #, no-c-format
@@ -30335,8 +30350,9 @@ msgstr ""
 msgid ""
 "By default will sample all pixels. To get faster response, set "
 "<varname>sample_percent</varname> to lower than 1"
-msgstr "默认情况下将对所有像素进行采样。 "
-"为了获得更快的响应，请将<varname>sample_percent</varname>设置为低于1"
+msgstr ""
+"默认情况下将对所有像素进行采样。 为了获得更快的响应，请将"
+"<varname>sample_percent</varname>设置为低于1"
 
 #. Tag: para
 #, no-c-format
@@ -30344,8 +30360,8 @@ msgid ""
 "Changed: 3.1.0 ST_SummaryStats(rastertable, rastercolumn, ...) variants are "
 "removed. Use <xref linkend=\"RT_ST_SummaryStatsAgg\"/> instead."
 msgstr ""
-"更改：3.1.0 ST_SummaryStats(rastertable, rastercolumn, ...) 变体已删除。 "
-"请改用 <xref linkend=\"RT_ST_SummaryStatsAgg\"/>。"
+"更改：3.1.0 ST_SummaryStats(rastertable, rastercolumn, ...) 变体已删除。 请改"
+"用 <xref linkend=\"RT_ST_SummaryStatsAgg\"/>。"
 
 #. Tag: title
 #, no-c-format
@@ -30364,9 +30380,8 @@ msgid ""
 "Buildings and aerial Tiles (tiles each 150x150 pixels ~ 134,000 tiles), "
 "~102,000 building records"
 msgstr ""
-"此示例在 64 位 PostGIS 窗口上花费了 574 "
-"毫秒，包含所有波士顿建筑物和空中图块（每个图块 150x150 像素 ~ 134,000 "
-"个图块），约 102,000 个建筑记录"
+"此示例在 64 位 PostGIS 窗口上花费了 574 毫秒，包含所有波士顿建筑物和空中图块"
+"（每个图块 150x150 像素 ~ 134,000 个图块），约 102,000 个建筑记录"
 
 #. Tag: title
 #, no-c-format
@@ -30388,8 +30403,9 @@ msgid ""
 "Aggregate. Returns summarystats consisting of count, sum, mean, stddev, min, "
 "max for a given raster band of a set of raster. Band 1 is assumed is no band "
 "is specified."
-msgstr "总计的。 返回一组栅格的给定栅格波段的摘要统计信息，其中包含计数、总和、平均值"
-"、标准差、最小值、最大值。 如果未指定带号，则假定为带1。"
+msgstr ""
+"总计的。 返回一组栅格的给定栅格波段的摘要统计信息，其中包含计数、总和、平均"
+"值、标准差、最小值、最大值。 如果未指定带号，则假定为带1。"
 
 #. Tag: para
 #, no-c-format
@@ -30407,8 +30423,8 @@ msgid ""
 "By default will sample all pixels. To get faster response, set "
 "<varname>sample_percent</varname> to value between 0 and 1"
 msgstr ""
-"默认情况下将对所有像素进行采样。 "
-"为了获得更快的响应，请将<varname>sample_percent</varname>设置为0到1之间的值"
+"默认情况下将对所有像素进行采样。 为了获得更快的响应，请将"
+"<varname>sample_percent</varname>设置为0到1之间的值"
 
 #. Tag: para
 #, no-c-format
@@ -30429,9 +30445,8 @@ msgid ""
 "pixel are output and pixel band values are rounded to the nearest integer."
 msgstr ""
 "返回一组记录，其中包含像素带值以及具有给定值集的栅格（或栅格覆盖范围）给定带"
-"中的像素数计数。 如果未指定波段，则默认为波段 "
-"1。默认情况下，不计算节点数据值像素。 "
-"输出像素中的所有其他值，并将像素带值四舍五入到最接近的整数。"
+"中的像素数计数。 如果未指定波段，则默认为波段 1。默认情况下，不计算节点数据值"
+"像素。 输出像素中的所有其他值，并将像素带值四舍五入到最接近的整数。"
 
 #. Tag: para
 #, no-c-format
@@ -30453,8 +30468,8 @@ msgid ""
 "that pixel band value"
 msgstr ""
 "如果未指定波段，则 <varname>nband </varname>默认为 1。如果未指定<varname>搜索"
-"值</varname>，将返回在栅格或栅格覆盖范围中找到的所有像素值。 "
-"如果给定一个搜索值，将返回一个整数，而不是表示具有该像素带值的像素计数的记录"
+"值</varname>，将返回在栅格或栅格覆盖范围中找到的所有像素值。 如果给定一个搜索"
+"值，将返回一个整数，而不是表示具有该像素带值的像素计数的记录"
 
 #. Tag: para
 #, no-c-format
@@ -30535,8 +30550,9 @@ msgstr ""
 msgid ""
 "This is useful in binary cursors to pull data out of the database without "
 "converting it to a string representation."
-msgstr "这在二进制游标中非常有用，可以从数据库中提取数据而不将其转换为字符串表示形式"
-"。"
+msgstr ""
+"这在二进制游标中非常有用，可以从数据库中提取数据而不将其转换为字符串表示形"
+"式。"
 
 #. Tag: para
 #, no-c-format
@@ -30576,9 +30592,9 @@ msgid ""
 "to raster/doc/RFC2-WellKnownBinaryFormat located in the PostGIS source "
 "folder for details of the representation."
 msgstr ""
-"返回栅格的十六进制表示形式的二进制表示形式。 如果 <varname>outasin </"
-"varname>为 TRUE，则 out-db 带将被视为 in-db。 有关表示的详细信息，请参阅位于 "
-"PostGIS 源文件夹中的 raster/doc/RFC2-WellKnownBinaryFormat。"
+"返回栅格的十六进制表示形式的二进制表示形式。 如果 <varname>outasin </varname>"
+"为 TRUE，则 out-db 带将被视为 in-db。 有关表示的详细信息，请参阅位于 PostGIS "
+"源文件夹中的 raster/doc/RFC2-WellKnownBinaryFormat。"
 
 #. Tag: para
 #, no-c-format
@@ -30587,9 +30603,8 @@ msgid ""
 "If the client does not have access to the raster file underlying an out-db "
 "band, set <varname>outasin</varname> to TRUE."
 msgstr ""
-"默认情况下，十六进制 WKB 输出包含 out-db band 的外部文件路径。 "
-"如果客户端无权访问 out-db band 下的栅格文件，请将 <varname>outasin </"
-"varname>设置为 TRUE。"
+"默认情况下，十六进制 WKB 输出包含 out-db band 的外部文件路径。 如果客户端无权"
+"访问 out-db band 下的栅格文件，请将 <varname>outasin </varname>设置为 TRUE。"
 
 #. Tag: para
 #, no-c-format
@@ -30622,8 +30637,8 @@ msgid ""
 "supported by your library."
 msgstr ""
 "<varname>format </varname>格式来输出。 这取决于 libgdal 库中编译的驱动程序。 "
-"通常可用的有“JPEG”、“GTIff”、“PNG”。 使用 <xref linkend=\"RT_ST_GDALDrivers\""
-"/>获取您的库支持的格式列表。"
+"通常可用的有“JPEG”、“GTIff”、“PNG”。 使用 <xref linkend=\"RT_ST_GDALDrivers"
+"\"/>获取您的库支持的格式列表。"
 
 #. Tag: para
 #, no-c-format
@@ -30632,17 +30647,18 @@ msgid ""
 "dependent on the format. Refer to <link xlink:href=\"http://www.gdal.org/"
 "frmt_various.html\">GDAL Raster format options</link> for more details."
 msgstr ""
-"<varname>options</varname> GDAL 选项的文本数组。 有效选项取决于格式。 "
-"有关更多详细信息，请参阅 <link xlink:href=\"http://www.gdal.org/frmt_various."
-"html\">GDAL 栅格格式选项</link>。"
+"<varname>options</varname> GDAL 选项的文本数组。 有效选项取决于格式。 有关更"
+"多详细信息，请参阅 <link xlink:href=\"http://www.gdal.org/frmt_various.html"
+"\">GDAL 栅格格式选项</link>。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>srs</varname> The proj4text or srtext (from spatial_ref_sys) to "
 "embed in the image"
-msgstr "<varname>srs</varname> 要嵌入图像中的 proj4text 或 "
-"srtext（来自Spatial_ref_sys）"
+msgstr ""
+"<varname>srs</varname> 要嵌入图像中的 proj4text 或 srtext（来自"
+"Spatial_ref_sys）"
 
 #. Tag: title
 #, no-c-format
@@ -30667,11 +30683,11 @@ msgid ""
 "system."
 msgstr ""
 "将栅格导出为另一种格式的一种方法是使用 <link xlink:href=\"https://www."
-"postgresql.org/docs/current/static/lo-funcs.html\">PostgreSQL "
-"大对象导出函数</link>。 我们将重复前面的示例，但也会导出。 "
-"请注意，您需要拥有对数据库的超级用户访问权限，因为它使用服务器端 lo 函数。 "
-"它还将导出到服务器网络上的路径。 如果需要本地导出，请使用 psql 等效的 lo_ "
-"函数，该函数导出到本地文件系统而不是服务器文件系统。"
+"postgresql.org/docs/current/static/lo-funcs.html\">PostgreSQL 大对象导出函数"
+"</link>。 我们将重复前面的示例，但也会导出。 请注意，您需要拥有对数据库的超级"
+"用户访问权限，因为它使用服务器端 lo 函数。 它还将导出到服务器网络上的路径。 "
+"如果需要本地导出，请使用 psql 等效的 lo_ 函数，该函数导出到本地文件系统而不是"
+"服务器文件系统。"
 
 #. Tag: title
 #, no-c-format
@@ -30681,7 +30697,8 @@ msgstr "GTIFF 输出示例"
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_GDALDrivers\"/>, <xref linkend=\"RT_ST_SRID\"/>"
-msgstr ", <xref linkend=\"RT_ST_GDALDrivers\"/>, <xref linkend=\"RT_ST_SRID\"/>"
+msgstr ""
+", <xref linkend=\"RT_ST_GDALDrivers\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -30691,9 +30708,9 @@ msgid ""
 "3 bands, then only the first band is used. If only 3 bands then all 3 bands "
 "are used and mapped to RGB."
 msgstr ""
-"将光栅图块选定的波段作为单个联合摄影导出组 (JPEG) 图像（字节数组）返回。 "
-"如果未指定波段且有 1 个或 3 个以上波段，则仅使用第一个波段。 如果只有 3 "
-"个波段，则使用所有 3 个波段并将其映射到 RGB。"
+"将光栅图块选定的波段作为单个联合摄影导出组 (JPEG) 图像（字节数组）返回。 如果"
+"未指定波段且有 1 个或 3 个以上波段，则仅使用第一个波段。 如果只有 3 个波段，"
+"则使用所有 3 个波段并将其映射到 RGB。"
 
 #. Tag: para
 #, no-c-format
@@ -30705,10 +30722,10 @@ msgid ""
 "all 3 bands are used. There are many variants of the function with many "
 "options. These are itemized below:"
 msgstr ""
-"将栅格的选定波段作为单个联合摄影导出组图像 (JPEG) 返回。 "
-"如果需要导出为不太常见的栅格类型，请使用 <xref linkend=\"RT_ST_AsGDALRaster\""
-"/>。 如果未指定波段且有 1 个或 3 个以上波段，则仅使用第一个波段。 如果有 3 "
-"个波段，则使用所有 3 个波段。 该功能有许多变体和许多选项。 以下逐项列出："
+"将栅格的选定波段作为单个联合摄影导出组图像 (JPEG) 返回。 如果需要导出为不太常"
+"见的栅格类型，请使用 <xref linkend=\"RT_ST_AsGDALRaster\"/>。 如果未指定波段"
+"且有 1 个或 3 个以上波段，则仅使用第一个波段。 如果有 3 个波段，则使用所有 3 "
+"个波段。 该功能有许多变体和许多选项。 以下逐项列出："
 
 #. Tag: para
 #, no-c-format
@@ -30722,9 +30739,9 @@ msgid ""
 "for JPEG) and the order of the bands is RGB. e.g ARRAY[3,2,1] means map band "
 "3 to Red, band 2 to green and band 1 to blue"
 msgstr ""
-"<varname>nbands </varname>是要导出的波段数组（请注意，JPEG 的最大值为 3），"
-"波段的顺序为 RGB。 例如 ARRAY[3,2,1] 表示将波段 3 映射到红色，将波段 2 "
-"映射到绿色，将波段 1 映射到蓝色"
+"<varname>nbands </varname>是要导出的波段数组（请注意，JPEG 的最大值为 3），波"
+"段的顺序为 RGB。 例如 ARRAY[3,2,1] 表示将波段 3 映射到红色，将波段 2 映射到绿"
+"色，将波段 1 映射到蓝色"
 
 #. Tag: para
 #, no-c-format
@@ -30744,11 +30761,10 @@ msgid ""
 "format options</link> for more details."
 msgstr ""
 "<varname>options</varname> text 为 JPEG 定义的 GDAL 选项数组（请查看 JPEG "
-"<xref linkend=\"RT_ST_GDALDrivers\"/> 的 create_options）。 对于 JPEG，"
-"有效的是 <varname>PROGRESSIVE</varname> ON 或 OFF，<varname>QUALITY </"
-"varname>的范围为 0 到 100，默认为 75。有关更多详细信息，请参阅<link "
-"xlink:href=\"http://www.gdal.org/frmt_various.html\"> GDAL 光栅格式选项</"
-"link> 。"
+"<xref linkend=\"RT_ST_GDALDrivers\"/> 的 create_options）。 对于 JPEG，有效的"
+"是 <varname>PROGRESSIVE</varname> ON 或 OFF，<varname>QUALITY </varname>的范"
+"围为 0 到 100，默认为 75。有关更多详细信息，请参阅<link xlink:href=\"http://"
+"www.gdal.org/frmt_various.html\"> GDAL 光栅格式选项</link> 。"
 
 #. Tag: title
 #, no-c-format
@@ -30761,8 +30777,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_GDALDrivers\"/>, <xref linkend=\"RT_ST_AsGDALRaster"
 "\"/>, <xref linkend=\"RT_ST_AsPNG\"/>, <xref linkend=\"RT_ST_AsTIFF\"/>"
 msgstr ""
-", <xref linkend=\"RT_ST_GDALDrivers\"/>, <xref linkend=\"RT_ST_AsGDALRaster\""
-"/>, <xref linkend=\"RT_ST_AsPNG\"/>, <xref linkend=\"RT_ST_AsTIFF\"/>"
+", <xref linkend=\"RT_ST_GDALDrivers\"/>, <xref linkend=\"RT_ST_AsGDALRaster"
+"\"/>, <xref linkend=\"RT_ST_AsPNG\"/>, <xref linkend=\"RT_ST_AsTIFF\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -30773,10 +30789,9 @@ msgid ""
 "bands specified, then only band 1 is used. Bands are mapped to RGB or RGBA "
 "space."
 msgstr ""
-"将栅格图块选定的波段作为单个便携式网络图形 (PNG) 图像（字节数组）返回。 "
-"如果栅格中有 1、3 或 4 个波段且未指定波段，则使用所有波段。 如果有 2 "
-"个以上或多于 4 个波段且未指定波段，则仅使用波段 1。 波段映射到 RGB 或 RGBA "
-"空间。"
+"将栅格图块选定的波段作为单个便携式网络图形 (PNG) 图像（字节数组）返回。 如果"
+"栅格中有 1、3 或 4 个波段且未指定波段，则使用所有波段。 如果有 2 个以上或多"
+"于 4 个波段且未指定波段，则仅使用波段 1。 波段映射到 RGB 或 RGBA 空间。"
 
 #. Tag: para
 #, no-c-format
@@ -30788,10 +30803,10 @@ msgid ""
 "many options. If no <varname>srid</varname> is specified then then srid of "
 "the raster is used. These are itemized below:"
 msgstr ""
-"将栅格的选定波段作为单个便携式网络图形图像 (PNG) 返回。 "
-"如果需要导出为不太常见的栅格类型，请使用<xref linkend=\"RT_ST_AsGDALRaster\""
-"/>。 如果未指定波段，则导出前 3 个波段。 该功能有许多变体和许多选项。 "
-"如果未指定<varname> srid</varname>，则使用栅格的 srid。 以下逐项列出："
+"将栅格的选定波段作为单个便携式网络图形图像 (PNG) 返回。 如果需要导出为不太常"
+"见的栅格类型，请使用<xref linkend=\"RT_ST_AsGDALRaster\"/>。 如果未指定波段，"
+"则导出前 3 个波段。 该功能有许多变体和许多选项。 如果未指定<varname> srid</"
+"varname>，则使用栅格的 srid。 以下逐项列出："
 
 #. Tag: para
 #, no-c-format
@@ -30800,9 +30815,9 @@ msgid ""
 "for PNG) and the order of the bands is RGBA. e.g ARRAY[3,2,1] means map band "
 "3 to Red, band 2 to green and band 1 to blue"
 msgstr ""
-"<varname>nbands</varname> 是要导出的波段数组（请注意，PNG 的最大值为 4），"
-"波段的顺序为 RGBA。 例如 ARRAY[3,2,1] 表示将波段 3 映射到红色，将波段 2 "
-"映射到绿色，将波段 1 映射到蓝色"
+"<varname>nbands</varname> 是要导出的波段数组（请注意，PNG 的最大值为 4），波"
+"段的顺序为 RGBA。 例如 ARRAY[3,2,1] 表示将波段 3 映射到红色，将波段 2 映射到"
+"绿色，将波段 1 映射到蓝色"
 
 #. Tag: para
 #, no-c-format
@@ -30824,10 +30839,10 @@ msgid ""
 msgstr ""
 "<varname>options </varname> text 为 PNG 定义的 GDAL 选项数组（请查看 <xref "
 "linkend=\"RT_ST_GDALDrivers\"/> 的 PNG 的 create_options）。 对于 PNG 来说，"
-"有效的只是 ZLEVEL（压缩所花费的时间——默认 6），例如 数组['ZLEVEL=9']。 "
-"不允许 WORLDFILE，因为该函数必须输出两个输出。 有关更多详细信息，请参阅 "
-"<link xlink:href=\"http://www.gdal.org/frmt_various.html\">GDAL "
-"栅格格式选项</link>。"
+"有效的只是 ZLEVEL（压缩所花费的时间——默认 6），例如 数组['ZLEVEL=9']。 不允"
+"许 WORLDFILE，因为该函数必须输出两个输出。 有关更多详细信息，请参阅 <link "
+"xlink:href=\"http://www.gdal.org/frmt_various.html\">GDAL 栅格格式选项</"
+"link>。"
 
 #. Tag: para
 #, no-c-format
@@ -30844,8 +30859,9 @@ msgid ""
 "Return the raster selected bands as a single TIFF image (byte array). If no "
 "band is specified or any of specified bands does not exist in the raster, "
 "then will try to use all bands."
-msgstr "将栅格选定的波段作为单个 TIFF 图像（字节数组）返回。 "
-"如果未指定波段或栅格中不存在任何指定波段，则将尝试使用所有波段。"
+msgstr ""
+"将栅格选定的波段作为单个 TIFF 图像（字节数组）返回。 如果未指定波段或栅格中不"
+"存在任何指定波段，则将尝试使用所有波段。"
 
 #. Tag: para
 #, no-c-format
@@ -30858,11 +30874,11 @@ msgid ""
 "reference SRS text is present, the spatial reference of the raster is used. "
 "These are itemized below:"
 msgstr ""
-"以单个标记图像文件格式 (TIFF) 返回栅格的选定波段。 "
-"如果未指定波段，将尝试使用所有波段。 这是 <xref linkend=\"RT_ST_AsGDALRaster"
-"\"/> 的包装。 如果需要导出为不太常见的栅格类型，请使用 <xref linkend="
-"\"RT_ST_AsGDALRaster\"/>。 该功能有许多变体和许多选项。 如果不存在空间参考 "
-"SRS 文本，则使用栅格的空间参考。 以下逐项列出："
+"以单个标记图像文件格式 (TIFF) 返回栅格的选定波段。 如果未指定波段，将尝试使用"
+"所有波段。 这是 <xref linkend=\"RT_ST_AsGDALRaster\"/> 的包装。 如果需要导出"
+"为不太常见的栅格类型，请使用 <xref linkend=\"RT_ST_AsGDALRaster\"/>。 该功能"
+"有许多变体和许多选项。 如果不存在空间参考 SRS 文本，则使用栅格的空间参考。 以"
+"下逐项列出："
 
 #. Tag: para
 #, no-c-format
@@ -30871,9 +30887,9 @@ msgid ""
 "for PNG) and the order of the bands is RGB. e.g ARRAY[3,2,1] means map band "
 "3 to Red, band 2 to green and band 1 to blue"
 msgstr ""
-"<varname>nbands</varname> 是要导出的波段数组（请注意，PNG 的最大值为 3），"
-"波段的顺序为 RGB。 例如 ARRAY[3,2,1] 表示将波段 3 映射到红色，将波段 2 "
-"映射到绿色，将波段 1 映射到蓝色"
+"<varname>nbands</varname> 是要导出的波段数组（请注意，PNG 的最大值为 3），波"
+"段的顺序为 RGB。 例如 ARRAY[3,2,1] 表示将波段 3 映射到红色，将波段 2 映射到绿"
+"色，将波段 1 映射到蓝色"
 
 #. Tag: para
 #, no-c-format
@@ -30881,8 +30897,8 @@ msgid ""
 "<varname>compression</varname> Compression expression -- JPEG90 (or some "
 "other percent), LZW, JPEG, DEFLATE9."
 msgstr ""
-"<varname>compression</varname>Compression表达式——JPEG90（或其他百分比）、LZW"
-"、JPEG、DEFLATE9。"
+"<varname>compression</varname>Compression表达式——JPEG90（或其他百分比）、"
+"LZW、JPEG、DEFLATE9。"
 
 #. Tag: para
 #, no-c-format
@@ -30892,17 +30908,18 @@ msgid ""
 "\"/>). or refer to <link xlink:href=\"http://www.gdal.org/frmt_various.html"
 "\">GDAL Raster format options</link> for more details."
 msgstr ""
-"<varname>options</varname> text 为 GTiff 定义的 GDAL 创建选项数组（"
-"请查看<xref linkend=\"RT_ST_GDALDrivers\"/> 的 GTiff 的 create_options）。 "
-"或参阅<link xlink:href=\"http://www.gdal.org/frmt_various.html\"> GDAL "
-"栅格格式选项</link>了解更多详细信息。"
+"<varname>options</varname> text 为 GTiff 定义的 GDAL 创建选项数组（请查看"
+"<xref linkend=\"RT_ST_GDALDrivers\"/> 的 GTiff 的 create_options）。 或参阅"
+"<link xlink:href=\"http://www.gdal.org/frmt_various.html\"> GDAL 栅格格式选项"
+"</link>了解更多详细信息。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>srid</varname> srid of spatial_ref_sys of the raster. This is used "
 "to populate the georeference information"
-msgstr "<varname>srid </varname>栅格的spatial_ref_sys 的srid。 这用于填充地理参考信息"
+msgstr ""
+"<varname>srid </varname>栅格的spatial_ref_sys 的srid。 这用于填充地理参考信息"
 
 #. Tag: title
 #, no-c-format
@@ -30928,16 +30945,17 @@ msgid ""
 "specified, all bands are processed. If <varname>crop</varname> is not "
 "specified or TRUE, the output raster is cropped."
 msgstr ""
-"返回由输入几何图形裁剪的栅格。 如果未指定波段号，则处理所有波段。 "
-"如果<varname>裁剪</varname>未指定或为 TRUE，则输出栅格将被裁剪。"
+"返回由输入几何图形裁剪的栅格。 如果未指定波段号，则处理所有波段。 如果"
+"<varname>裁剪</varname>未指定或为 TRUE，则输出栅格将被裁剪。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Returns a raster that is clipped by the input geometry <varname>geom</"
 "varname>. If band index is not specified, all bands are processed."
-msgstr "返回由输入几何体<varname> geom</varname> 裁剪的栅格。 "
-"如果未指定波段索引，则处理所有波段。"
+msgstr ""
+"返回由输入几何体<varname> geom</varname> 裁剪的栅格。 如果未指定波段索引，则"
+"处理所有波段。"
 
 #. Tag: para
 #, no-c-format
@@ -30952,12 +30970,12 @@ msgid ""
 "variants accepting an array of nodata values also accept a single value "
 "which will be assigned to each band."
 msgstr ""
-"ST_Clip 生成的栅格必须为剪切区域分配一个节点数据值，每个波段一个。 "
-"如果未提供任何内容，并且输入栅格未定义 nodata 值，则生成的栅格的 nodata "
-"值将设置为 ST_MinPossibleValue(ST_BandPixelType(rast, band))。 "
-"当数组中的nodata值的数量小于波段的数量时，数组中的最后一个值用于剩余的波段。 "
-"如果节点数据值的数量大于波段数量，则忽略多余的节点数据值。 "
-"所有接受节点数据值数组的变体也接受将分配给每个波段的单个值。"
+"ST_Clip 生成的栅格必须为剪切区域分配一个节点数据值，每个波段一个。 如果未提供"
+"任何内容，并且输入栅格未定义 nodata 值，则生成的栅格的 nodata 值将设置为 "
+"ST_MinPossibleValue(ST_BandPixelType(rast, band))。 当数组中的nodata值的数量"
+"小于波段的数量时，数组中的最后一个值用于剩余的波段。 如果节点数据值的数量大于"
+"波段数量，则忽略多余的节点数据值。 所有接受节点数据值数组的变体也接受将分配给"
+"每个波段的单个值。"
 
 #. Tag: para
 #, no-c-format
@@ -30967,10 +30985,10 @@ msgid ""
 "varname>and <varname>rast</varname> extents. If <varname>crop</varname> is "
 "set to false, the new raster gets the same extent as <varname>rast</varname>."
 msgstr ""
-"如果未指定 <varname>crop</varname> 参数，默认为 true，"
-"这意味着输出的栅格图像将被裁剪为 <varname>geom</varname> 和 <varname>rast</"
-"varname> 边界的交集部分。如果将 <varname>crop</varname> 设置为 false，"
-"则新的栅格图像将具有与 <varname>rast</varname> 相同的范围。"
+"如果未指定 <varname>crop</varname> 参数，默认为 true，这意味着输出的栅格图像"
+"将被裁剪为 <varname>geom</varname> 和 <varname>rast</varname> 边界的交集部"
+"分。如果将 <varname>crop</varname> 设置为 false，则新的栅格图像将具有与 "
+"<varname>rast</varname> 相同的范围。"
 
 #. Tag: para
 #, no-c-format
@@ -30985,8 +31003,8 @@ msgid ""
 "Orthos</link>. Coordinates are in Massachusetts State Plane Meters."
 msgstr ""
 "此处的示例使用 MassGIS 网站<link xlink:href=\"http://www.mass.gov/mgis/"
-"colororthos2008.htm\"> MassGIS Aerial Orthos</link> "
-"上提供的马萨诸塞州航空数据。 坐标采用马萨诸塞州平面米。"
+"colororthos2008.htm\"> MassGIS Aerial Orthos</link> 上提供的马萨诸塞州航空数"
+"据。 坐标采用马萨诸塞州平面米。"
 
 #. Tag: title
 #, no-c-format
@@ -31025,16 +31043,17 @@ msgid ""
 ", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Intersection\"/"
 ">"
 msgstr ""
-", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Intersection\""
-"/>"
+", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Intersection\"/"
+">"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Creates a new raster of up to four 8BUI bands (grayscale, RGB, RGBA) from "
 "the source raster and a specified band. Band 1 is assumed if not specified."
-msgstr "根据源栅格和指定波段创建最多四个 8BUI 波段（灰度、RGB、RGBA）的新栅格。 "
-"如果未指定，则假定为波段 1。"
+msgstr ""
+"根据源栅格和指定波段创建最多四个 8BUI 波段（灰度、RGB、RGBA）的新栅格。 如果"
+"未指定，则假定为波段 1。"
 
 #. Tag: para
 #, no-c-format
@@ -31045,9 +31064,9 @@ msgid ""
 "number of color components defined in <varname>colormap</varname>."
 msgstr ""
 "将<varname>colormap</varname>应用于<varname> rast</varname> 的 "
-"<varname>nband </varname>处的波段，从而生成最多由四个 8BUI 波段组成的新栅格。"
-" 新栅格中的 8BUI "
-"波段数量由<varname>colormap</varname>中定义的颜色分量数量决定。"
+"<varname>nband </varname>处的波段，从而生成最多由四个 8BUI 波段组成的新栅"
+"格。 新栅格中的 8BUI 波段数量由<varname>colormap</varname>中定义的颜色分量数"
+"量决定。"
 
 #. Tag: para
 #, no-c-format
@@ -31059,8 +31078,9 @@ msgstr "如果未指定 <varname>nband</varname>，则假定为波段 1。"
 msgid ""
 "<varname>colormap</varname> can be a keyword of a pre-defined colormap or a "
 "set of lines defining the value and the color components."
-msgstr "<varname>colormap</varname> "
-"可以是预定义颜色图的关键字或定义值和颜色分量的一组线。"
+msgstr ""
+"<varname>colormap</varname> 可以是预定义颜色图的关键字或定义值和颜色分量的一"
+"组线。"
 
 #. Tag: para
 #, no-c-format
@@ -31073,31 +31093,34 @@ msgid ""
 "<varname>grayscale</varname> or <varname>greyscale</varname> for a one 8BUI "
 "band raster of shades of gray."
 msgstr ""
-"<varname>grayscale</varname>或<varname>greyscale</varname>的一个 8BUI "
-"波段栅格的灰度。"
+"<varname>grayscale</varname>或<varname>greyscale</varname>的一个 8BUI 波段栅"
+"格的灰度。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>pseudocolor</varname> for a four 8BUI (RGBA) band raster with "
 "colors going from blue to green to red."
-msgstr "<varname>pseudocolor</varname>四 8BUI (RGBA) "
-"波段栅格的伪彩色，颜色从蓝色到绿色再到红色。"
+msgstr ""
+"<varname>pseudocolor</varname>四 8BUI (RGBA) 波段栅格的伪彩色，颜色从蓝色到绿"
+"色再到红色。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>fire</varname> for a four 8BUI (RGBA) band raster with colors going "
 "from black to red to pale yellow."
-msgstr "<varname>fire</varname>为四 8BUI (RGBA) 波段栅格，颜色从黑色到红色到浅黄色。"
+msgstr ""
+"<varname>fire</varname>为四 8BUI (RGBA) 波段栅格，颜色从黑色到红色到浅黄色。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>bluered</varname> for a four 8BUI (RGBA) band raster with colors "
 "going from blue to pale white to red."
-msgstr "<varname>bluered</varname> 表示四 8BUI (RGBA) "
-"波段栅格，颜色从蓝色到浅白色再到红色。"
+msgstr ""
+"<varname>bluered</varname> 表示四 8BUI (RGBA) 波段栅格，颜色从蓝色到浅白色再"
+"到红色。"
 
 #. Tag: para
 #, no-c-format
@@ -31114,11 +31137,11 @@ msgid ""
 msgstr ""
 "用户可以通过 <varname>colormap</varname> 参数传递一组条目（每行一个）来指定自"
 "定义的颜色映射。每个条目通常包括五个值：像素值以及相应的红色、绿色、蓝色、"
-"Alpha 组件（颜色组件的取值范围在 0 到 255 "
-"之间）。可以使用百分比值代替像素值，其中 0% 和 100% 分别表示栅格带中找到的最"
-"小值和最大值。值可以使用逗号（','）、制表符、冒号（':'）和/或空格分隔。"
-"像素值可以设置为 <emphasis>nv</emphasis>、<emphasis>null</emphasis> 或 "
-"<emphasis>nodata</emphasis>，表示 NODATA 值。以下是一个示例。"
+"Alpha 组件（颜色组件的取值范围在 0 到 255 之间）。可以使用百分比值代替像素"
+"值，其中 0% 和 100% 分别表示栅格带中找到的最小值和最大值。值可以使用逗号"
+"（','）、制表符、冒号（':'）和/或空格分隔。像素值可以设置为 <emphasis>nv</"
+"emphasis>、<emphasis>null</emphasis> 或 <emphasis>nodata</emphasis>，表示 "
+"NODATA 值。以下是一个示例。"
 
 #. Tag: para
 #, no-c-format
@@ -31140,7 +31163,8 @@ msgstr "<varname>方法</varname>的有效关键字："
 msgid ""
 "<varname>INTERPOLATE</varname> to use linear interpolation to smoothly blend "
 "the colors between the given pixel values"
-msgstr "<varname>INTERPOLATE</varname> 使用线性插值来平滑地混合给定像素值之间的颜色"
+msgstr ""
+"<varname>INTERPOLATE</varname> 使用线性插值来平滑地混合给定像素值之间的颜色"
 
 #. Tag: para
 #, no-c-format
@@ -31149,8 +31173,8 @@ msgid ""
 "the colormap. Pixels whose value does not match a colormap entry will be set "
 "to 0 0 0 0 (RGBA)"
 msgstr ""
-"<varname>EXACT</varname> 仅严格匹配颜色图中找到的像素值。 "
-"值与颜色图条目不匹配的像素将被设置为 0 0 0 0 (RGBA)"
+"<varname>EXACT</varname> 仅严格匹配颜色图中找到的像素值。 值与颜色图条目不匹"
+"配的像素将被设置为 0 0 0 0 (RGBA)"
 
 #. Tag: para
 #, no-c-format
@@ -31165,8 +31189,8 @@ msgid ""
 "A great reference for colormaps is <link xlink:href=\"http://www."
 "colorbrewer2.org\">ColorBrewer</link>."
 msgstr ""
-"<link xlink:href=\"http://www.colorbrewer2.org\">ColorBrewer "
-"</link>是色彩图的一个很好的参考。"
+"<link xlink:href=\"http://www.colorbrewer2.org\">ColorBrewer </link>是色彩图"
+"的一个很好的参考。"
 
 #. Tag: para
 #, no-c-format
@@ -31228,8 +31252,8 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"RT_ST_AsRaster\"/> <xref linkend=\"RT_ST_MapAlgebra\"/>, "
 "<xref linkend=\"RT_ST_Grayscale\"/> <xref linkend=\"RT_ST_NumBands\"/>, "
-"<xref linkend=\"RT_ST_Reclass\"/>, <xref linkend=\"RT_ST_SetBandNoDataValue\""
-"/>, <xref linkend=\"RT_ST_Union\"/>"
+"<xref linkend=\"RT_ST_Reclass\"/>, <xref linkend=\"RT_ST_SetBandNoDataValue"
+"\"/>, <xref linkend=\"RT_ST_Union\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31245,9 +31269,9 @@ msgid ""
 "rasters). Any input band whose pixel type is not 8BUI will be reclassified "
 "using <xref linkend=\"RT_ST_Reclass\"/>."
 msgstr ""
-"给定三个输入波段（来自一个或多个栅格），创建一个具有 8BUI 波段的栅格。 "
-"任何像素类型不是 8BUI 的输入波段都将使用 <xref linkend=\"RT_ST_Reclass\"/> "
-"进行重分类。"
+"给定三个输入波段（来自一个或多个栅格），创建一个具有 8BUI 波段的栅格。 任何像"
+"素类型不是 8BUI 的输入波段都将使用 <xref linkend=\"RT_ST_Reclass\"/> 进行重分"
+"类。"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -31259,9 +31283,8 @@ msgid ""
 "0.5870 * GREEN + 0.1140 * BLUE"
 msgstr ""
 "此函数与带有<varname>灰度</varname>关键字的<xref linkend=\"RT_ST_ColorMap\"/"
-"> 不同，因为 ST_ColorMap 仅在一个波段上运行，而此函数需要 RGB 的三个波段。 "
-"此函数应用以下公式将 RGB 转换为灰度： 0.2989 * RED 0.5870 * GREEN 0.1140 * "
-"BLUE"
+"> 不同，因为 ST_ColorMap 仅在一个波段上运行，而此函数需要 RGB 的三个波段。 此"
+"函数应用以下公式将 RGB 转换为灰度： 0.2989 * RED 0.5870 * GREEN 0.1140 * BLUE"
 
 #. Tag: para
 #, no-c-format
@@ -31276,7 +31299,8 @@ msgstr "grayscale_png"
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Reclass\"/>, <xref linkend=\"RT_ST_ColorMap\"/>"
-msgstr ", <xref linkend=\"RT_ST_Reclass\"/>, <xref linkend=\"RT_ST_ColorMap\"/>"
+msgstr ""
+", <xref linkend=\"RT_ST_Reclass\"/>, <xref linkend=\"RT_ST_ColorMap\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31284,7 +31308,8 @@ msgid ""
 "<refpurpose>Returns a raster or a set of geometry-pixelvalue pairs "
 "representing the shared portion of two rasters or the geometrical "
 "intersection of a vectorization of the raster and a geometry.</refpurpose>"
-msgstr "<refpurpose>返回一个栅格或一组几何像素值对，表示两个栅格的共享部分或栅格矢量"
+msgstr ""
+"<refpurpose>返回一个栅格或一组几何像素值对，表示两个栅格的共享部分或栅格矢量"
 "化和几何图形的几何交集。</refpurpose>"
 
 #. Tag: para
@@ -31293,7 +31318,8 @@ msgid ""
 "<para>Returns a raster or a set of geometry-pixelvalue pairs representing "
 "the shared portion of two rasters or the geometrical intersection of a "
 "vectorization of the raster and a geometry.</para>"
-msgstr "<para>返回一个栅格或一组几何像素值对，表示两个栅格的共享部分或栅格矢量化和几"
+msgstr ""
+"<para>返回一个栅格或一组几何像素值对，表示两个栅格的共享部分或栅格矢量化和几"
 "何图形的几何交集。</para>"
 
 #. Tag: para
@@ -31310,10 +31336,9 @@ msgid ""
 msgstr ""
 "前三个变体返回一组 geomval，在向量空间中工作。 首先将栅格矢量化（使用<xref "
 "linkend=\"RT_ST_DumpAsPolygons\"/>）为一组 geomval 行，然后使用 <xref "
-"linkend=\"ST_Intersection\"/> (geometry, Geometry) PostGIS "
-"函数将这些行与几何相交。 仅与栅格的无数据值区域相交的几何将返回空几何。 "
-"通常通过在 WHERE 子句中正确使用 <xref linkend=\"RT_ST_Intersects\""
-"/>将它们从结果中排除。"
+"linkend=\"ST_Intersection\"/> (geometry, Geometry) PostGIS 函数将这些行与几何"
+"相交。 仅与栅格的无数据值区域相交的几何将返回空几何。 通常通过在 WHERE 子句中"
+"正确使用 <xref linkend=\"RT_ST_Intersects\"/>将它们从结果中排除。"
 
 #. Tag: para
 #, no-c-format
@@ -31322,9 +31347,8 @@ msgid ""
 "geomval by surrounding them with parenthesis and adding '.geom' or '.val' at "
 "the end of the expression. e.g. (ST_Intersection(rast, geom)).geom"
 msgstr ""
-"您可以通过用括号将它们括起来并在表达式末尾添加“.geom”或“.val”"
-"来访问几何图形和生成的 geomval 集的值部分。 例如 (ST_Intersection(rast, "
-"geom)).geom"
+"您可以通过用括号将它们括起来并在表达式末尾添加“.geom”或“.val”来访问几何图形和"
+"生成的 geomval 集的值部分。 例如 (ST_Intersection(rast, geom)).geom"
 
 #. Tag: para
 #, no-c-format
@@ -31332,8 +31356,9 @@ msgid ""
 "The other variants, returning a raster, works in raster space. They are "
 "using the two rasters version of ST_MapAlgebraExpr to perform the "
 "intersection."
-msgstr "其他变体返回光栅，在光栅空间中工作。 他们使用 ST_MapAlgebraExpr "
-"的两个栅格版本来执行交集。"
+msgstr ""
+"其他变体返回光栅，在光栅空间中工作。 他们使用 ST_MapAlgebraExpr 的两个栅格版"
+"本来执行交集。"
 
 #. Tag: para
 #, no-c-format
@@ -31346,11 +31371,10 @@ msgid ""
 "words, any pixel intersecting with a nodata value pixel becomes a nodata "
 "value pixel in the result."
 msgstr ""
-"生成的栅格范围对应于两个栅格范围的几何交集。 "
-"生成的栅格包含“BAND1”、“BAND2”或“BOTH”波段，遵循作为<varname> returnband "
-"</varname>参数传递的内容。 "
-"任何波段中存在的无数据值区域都会导致结果的每个波段中出现无数据值区域。 "
-"换句话说，与无数据值像素相交的任何像素都成为结果中的无数据值像素。"
+"生成的栅格范围对应于两个栅格范围的几何交集。 生成的栅格包"
+"含“BAND1”、“BAND2”或“BOTH”波段，遵循作为<varname> returnband </varname>参数传"
+"递的内容。 任何波段中存在的无数据值区域都会导致结果的每个波段中出现无数据值区"
+"域。 换句话说，与无数据值像素相交的任何像素都成为结果中的无数据值像素。"
 
 #. Tag: para
 #, no-c-format
@@ -31366,14 +31390,13 @@ msgid ""
 "an array of nodata value can also accept a single value which will be "
 "assigned to each requested band."
 msgstr ""
-"由 ST_Intersection 生成的栅格必须为不相交的区域分配 nodata 值。 "
-"您可以通过提供一个包含一个或两个 nodata 值的 <varname>nodataval[] </"
-"varname>数组来定义或替换任何结果频段的 nodata "
-"值，具体取决于您是否请求“BAND1”、“BAND2”或“BOTH”频段。 "
-"数组中的第一个值替换第一个带中的无数据值，第二个值替换第二个带中的无数据值。 "
-"如果一个输入带没有定义 nodata 值并且没有以数组形式提供，则使用 "
-"ST_MinPossibleValue 函数选择一个。 所有接受 nodata "
-"值数组的变体也可以接受单个值，该值将分配给每个请求的带。"
+"由 ST_Intersection 生成的栅格必须为不相交的区域分配 nodata 值。 您可以通过提"
+"供一个包含一个或两个 nodata 值的 <varname>nodataval[] </varname>数组来定义或"
+"替换任何结果频段的 nodata 值，具体取决于您是否请求“BAND1”、“BAND2”或“BOTH”频"
+"段。 数组中的第一个值替换第一个带中的无数据值，第二个值替换第二个带中的无数据"
+"值。 如果一个输入带没有定义 nodata 值并且没有以数组形式提供，则使用 "
+"ST_MinPossibleValue 函数选择一个。 所有接受 nodata 值数组的变体也可以接受单个"
+"值，该值将分配给每个请求的带。"
 
 #. Tag: para
 #, no-c-format
@@ -31382,9 +31405,8 @@ msgid ""
 "need an intersection between a raster and geometry that returns a raster, "
 "refer to <xref linkend=\"RT_ST_Clip\"/>."
 msgstr ""
-"在所有变体中，如果未指定波段编号，则假定波段 1。 "
-"如果您需要栅格和返回栅格的几何图形之间的交集，请参阅 <xref linkend="
-"\"RT_ST_Clip\"/>。"
+"在所有变体中，如果未指定波段编号，则假定波段 1。 如果您需要栅格和返回栅格的几"
+"何图形之间的交集，请参阅 <xref linkend=\"RT_ST_Clip\"/>。"
 
 #. Tag: para
 #, no-c-format
@@ -31403,8 +31425,8 @@ msgid ""
 "space, use <xref linkend=\"RT_ST_Clip\"/>. ST_Clip works on multiple bands "
 "rasters and does not return a band corresponding to the rasterized geometry."
 msgstr ""
-"要计算栅格波段与栅格空间中几何图形的交集，请使用 <xref linkend=\"RT_ST_Clip\""
-"/>。 ST_Clip 适用于多波段栅格，并且不返回与栅格化几何对应的波段。"
+"要计算栅格波段与栅格空间中几何图形的交集，请使用 <xref linkend=\"RT_ST_Clip"
+"\"/>。 ST_Clip 适用于多波段栅格，并且不返回与栅格化几何对应的波段。"
 
 #. Tag: para
 #, no-c-format
@@ -31413,8 +31435,8 @@ msgid ""
 "\"RT_ST_Intersects\"/> and an index on the raster column and/or the geometry "
 "column."
 msgstr ""
-"ST_Intersection 应与 <xref linkend=\"RT_ST_Intersects\"/> "
-"以及栅格列和/或几何列上的索引结合使用。"
+"ST_Intersection 应与 <xref linkend=\"RT_ST_Intersects\"/> 以及栅格列和/或几何"
+"列上的索引结合使用。"
 
 #. Tag: para
 #, no-c-format
@@ -31422,8 +31444,9 @@ msgid ""
 "Enhanced: 2.0.0 - Intersection in the raster space was introduced. In "
 "earlier pre-2.0.0 versions, only intersection performed in vector space were "
 "supported."
-msgstr "增强：2.0.0 - 引入了光栅空间中的交集。 在 2.0.0 "
-"之前的早期版本中，仅支持在向量空间中执行交集。"
+msgstr ""
+"增强：2.0.0 - 引入了光栅空间中的交集。 在 2.0.0 之前的早期版本中，仅支持在向"
+"量空间中执行交集。"
 
 #. Tag: title
 #, no-c-format
@@ -31437,23 +31460,26 @@ msgid ""
 "\"RT_ST_MapAlgebraExpr2\"/>, <xref linkend=\"RT_ST_Clip\"/>, <xref linkend="
 "\"ST_AsText\"/>"
 msgstr ""
-", <xref linkend=\"RT_ST_Intersects\"/>, <xref linkend=\"RT_ST_MapAlgebraExpr2"
-"\"/>, <xref linkend=\"RT_ST_Clip\"/>, <xref linkend=\"ST_AsText\"/>"
+", <xref linkend=\"RT_ST_Intersects\"/>, <xref linkend="
+"\"RT_ST_MapAlgebraExpr2\"/>, <xref linkend=\"RT_ST_Clip\"/>, <xref linkend="
+"\"ST_AsText\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Callback function version - Returns a one-band raster given one or more "
 "input rasters, band indexes and one user-specified callback function."
-msgstr "回调函数版本 - "
-"给定一个或多个输入栅格、波段索引和一个用户指定的回调函数，返回单波段栅格。"
+msgstr ""
+"回调函数版本 - 给定一个或多个输入栅格、波段索引和一个用户指定的回调函数，返回"
+"单波段栅格。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Returns a one-band raster given one or more input rasters, band indexes and "
 "one user-specified callback function."
-msgstr "给定一个或多个输入栅格、波段索引和一个用户指定的回调函数，返回单波段栅格。"
+msgstr ""
+"给定一个或多个输入栅格、波段索引和一个用户指定的回调函数，返回单波段栅格。"
 
 #. Tag: para
 #, no-c-format
@@ -31465,8 +31491,9 @@ msgstr "评估地图代数过程的栅格。"
 msgid ""
 "<varname>rastbandargset</varname> allows the use of a map algebra operation "
 "on many rasters and/or many bands. See example Variant 1."
-msgstr "<varname>rastbandargset "
-"</varname>允许在许多栅格和/或许多波段上使用地图代数运算。 请参见示例变体 1。"
+msgstr ""
+"<varname>rastbandargset </varname>允许在许多栅格和/或许多波段上使用地图代数运"
+"算。 请参见示例变体 1。"
 
 #. Tag: para
 #, no-c-format
@@ -44649,6 +44676,56 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid "MACRO_C"
+#~ msgstr "MACRO_C"
+
+#, no-c-format
+#~ msgid ""
+#~ "<emphasis role=\"bold\">MACRO_C output tokens</emphasis> (excerpted from "
+#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+#~ msgstr ""
+#~ "<emphasis role=\"bold\">MACRO_C 输出令牌</emphasis>（摘自<link xlink:href="
+#~ "\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://www."
+#~ "pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>。"
+
+#, no-c-format
+#~ msgid "MICRO_C"
+#~ msgstr "MICRO_C"
+
+#, no-c-format
+#~ msgid ""
+#~ "<emphasis role=\"bold\">MICRO_C output tokens</emphasis> (excerpted from "
+#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+#~ msgstr ""
+#~ "<emphasis role=\"bold\">MICRO_C 输出令牌</emphasis> （摘自<link xlink:"
+#~ "href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://"
+#~ "www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>。"
+
+#, no-c-format
+#~ msgid "ARC_C"
+#~ msgstr "ARC_C"
+
+#, no-c-format
+#~ msgid "CIVIC_C"
+#~ msgstr "CIVIC_C"
+
+#, no-c-format
+#~ msgid "EXTRA_C"
+#~ msgstr "EXTRA_C"
+
+#, no-c-format
+#~ msgid ""
+#~ "<emphasis role=\"bold\">EXTRA_C output tokens</emphasis> (excerpted from "
+#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+#~ msgstr ""
+#~ "<emphasis role=\"bold\">EXTRA_C 输出令牌</emphasis> （摘自 <link xlink:"
+#~ "href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://"
+#~ "www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>。"
 
 #, no-c-format
 #~ msgid "PointOnSurface of a <varname>MULTIPOINT</varname>"

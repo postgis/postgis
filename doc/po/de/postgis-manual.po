@@ -5,11 +5,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-20 07:42+0000\n"
+"POT-Creation-Date: 2023-09-25 14:15+0000\n"
 "PO-Revision-Date: 2023-09-22 19:23+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
-"Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/de/>\n"
+"Language-Team: German <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1460,11 +1460,6 @@ msgstr ""
 "einem Rang für die Regel, durch eines der folgenden Wörter angegeben. Die "
 "Regeln sind von 0 (niedrigster Rang) bis 17 (höchster Rang) gereiht."
 
-#. Tag: emphasis
-#, no-c-format
-msgid "MACRO_C"
-msgstr "MACRO_C"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -1477,13 +1472,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<emphasis role=\"bold\">MACRO_C output tokens</emphasis> (excerpted from "
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+"<emphasis role=\"bold\"><varname>MACRO_C</varname> output tokens</emphasis> "
+"(excerpted from <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
+"link>."
 msgstr ""
-"<emphasis role=\"bold\">MACRO_C Ausgabe-Token</emphasis> (ein Auszug von "
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
 
 #. Tag: para
 #, no-c-format
@@ -1514,11 +1507,6 @@ msgstr ""
 "Attribut wird für die Postleitzahlen-Codes der USA (ZIP-Code) und Kanada "
 "(Postal Code) verwendet."
 
-#. Tag: emphasis
-#, no-c-format
-msgid "MICRO_C"
-msgstr "MICRO_C"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -1535,18 +1523,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<emphasis role=\"bold\">MICRO_C output tokens</emphasis> (excerpted from "
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+"<emphasis role=\"bold\"><varname>MICRO_C</varname> output tokens</emphasis> "
+"(excerpted from <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
+"link>."
 msgstr ""
-"<emphasis role=\"bold\">MICRO_C Ausgabe-Token</emphasis> (ein Auszug von "
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
-
-#. Tag: emphasis
-#, no-c-format
-msgid "ARC_C"
-msgstr "ARC_C"
 
 #. Tag: para
 #, no-c-format
@@ -1559,11 +1540,6 @@ msgstr ""
 "zum Parsen von MICRO Klauseln ausgenommen dem Attribut \"HOUSE\". Verwendet "
 "dieselben Ausgabetoken wie MICRO_C, abzüglich dem HOUSE Token."
 
-#. Tag: emphasis
-#, no-c-format
-msgid "CIVIC_C"
-msgstr "CIVIC_C"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -1572,11 +1548,6 @@ msgid ""
 msgstr ""
 "(Token-Nummer = \"<emphasis role=\"bold\">3</emphasis>\"). Die Klassenregeln "
 "zum parsen des HOUSE Attributs."
-
-#. Tag: emphasis
-#, no-c-format
-msgid "EXTRA_C"
-msgstr "EXTRA_C"
 
 #. Tag: para
 #, no-c-format
@@ -1592,13 +1563,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<emphasis role=\"bold\">EXTRA_C output tokens</emphasis> (excerpted from "
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+"<emphasis role=\"bold\"><varname>EXTRA_C</varname> output tokens</emphasis> "
+"(excerpted from <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
+"link>."
 msgstr ""
-"<emphasis role=\"bold\">EXTRA_C Ausgabe-Token</emphasis> (ein Auszug von "
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
 
 #. Tag: para
 #, no-c-format
@@ -45746,6 +45715,56 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid "MACRO_C"
+#~ msgstr "MACRO_C"
+
+#, no-c-format
+#~ msgid ""
+#~ "<emphasis role=\"bold\">MACRO_C output tokens</emphasis> (excerpted from "
+#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+#~ msgstr ""
+#~ "<emphasis role=\"bold\">MACRO_C Ausgabe-Token</emphasis> (ein Auszug von "
+#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+
+#, no-c-format
+#~ msgid "MICRO_C"
+#~ msgstr "MICRO_C"
+
+#, no-c-format
+#~ msgid ""
+#~ "<emphasis role=\"bold\">MICRO_C output tokens</emphasis> (excerpted from "
+#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+#~ msgstr ""
+#~ "<emphasis role=\"bold\">MICRO_C Ausgabe-Token</emphasis> (ein Auszug von "
+#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+
+#, no-c-format
+#~ msgid "ARC_C"
+#~ msgstr "ARC_C"
+
+#, no-c-format
+#~ msgid "CIVIC_C"
+#~ msgstr "CIVIC_C"
+
+#, no-c-format
+#~ msgid "EXTRA_C"
+#~ msgstr "EXTRA_C"
+
+#, no-c-format
+#~ msgid ""
+#~ "<emphasis role=\"bold\">EXTRA_C output tokens</emphasis> (excerpted from "
+#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+#~ msgstr ""
+#~ "<emphasis role=\"bold\">EXTRA_C Ausgabe-Token</emphasis> (ein Auszug von "
+#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
 
 #, no-c-format
 #~ msgid "make comments"

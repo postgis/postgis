@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-20 07:42+0000\n"
+"POT-Creation-Date: 2023-09-25 14:15+0000\n"
 "PO-Revision-Date: 2023-09-14 17:40+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -1328,11 +1328,6 @@ msgid ""
 "17 (highest)."
 msgstr ""
 
-#. Tag: emphasis
-#, no-c-format
-msgid "MACRO_C"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -1343,9 +1338,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<emphasis role=\"bold\">MACRO_C output tokens</emphasis> (excerpted from "
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+"<emphasis role=\"bold\"><varname>MACRO_C</varname> output tokens</emphasis> "
+"(excerpted from <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
+"link>."
 msgstr ""
 
 #. Tag: para
@@ -1372,11 +1368,6 @@ msgid ""
 "attribute is used for both the US Zip and the Canadian Postal Codes."
 msgstr ""
 
-#. Tag: emphasis
-#, no-c-format
-msgid "MICRO_C"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -1389,14 +1380,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<emphasis role=\"bold\">MICRO_C output tokens</emphasis> (excerpted from "
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
-msgstr ""
-
-#. Tag: emphasis
-#, no-c-format
-msgid "ARC_C"
+"<emphasis role=\"bold\"><varname>MICRO_C</varname> output tokens</emphasis> "
+"(excerpted from <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
+"link>."
 msgstr ""
 
 #. Tag: para
@@ -1407,21 +1394,11 @@ msgid ""
 "same set of output tokens as MICRO_C minus the HOUSE token."
 msgstr ""
 
-#. Tag: emphasis
-#, no-c-format
-msgid "CIVIC_C"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "(token number = \"<emphasis role=\"bold\">3</emphasis>\"). The class of "
 "rules for parsing the HOUSE attribute."
-msgstr ""
-
-#. Tag: emphasis
-#, no-c-format
-msgid "EXTRA_C"
 msgstr ""
 
 #. Tag: para
@@ -1435,9 +1412,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<emphasis role=\"bold\">EXTRA_C output tokens</emphasis> (excerpted from "
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+"<emphasis role=\"bold\"><varname>EXTRA_C</varname> output tokens</emphasis> "
+"(excerpted from <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
+"link>."
 msgstr ""
 
 #. Tag: para

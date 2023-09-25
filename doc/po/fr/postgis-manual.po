@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-20 07:42+0000\n"
+"POT-Creation-Date: 2023-09-25 14:15+0000\n"
 "PO-Revision-Date: 2023-09-14 20:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -1728,11 +1728,6 @@ msgstr ""
 "des éléments suivants, suivi du rang de la règle. Les règles sont classées "
 "de 0 (la plus faible) à 17 (la plus élevée)."
 
-#. Tag: emphasis
-#, no-c-format
-msgid "MACRO_C"
-msgstr "MACRO_C"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -1746,13 +1741,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<emphasis role=\"bold\">MACRO_C output tokens</emphasis> (excerpted from "
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+"<emphasis role=\"bold\"><varname>MACRO_C</varname> output tokens</emphasis> "
+"(excerpted from <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
+"link>."
 msgstr ""
-"<emphasis role=\"bold\">MACRO_C output tokens</emphasis> (extrait de <link "
-"xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
 
 #. Tag: para
 #, no-c-format
@@ -1783,11 +1776,6 @@ msgstr ""
 "attribut est utilisé à la fois pour le code postal américain et le code "
 "postal canadien."
 
-#. Tag: emphasis
-#, no-c-format
-msgid "MICRO_C"
-msgstr "MICRO_C"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -1804,18 +1792,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<emphasis role=\"bold\">MICRO_C output tokens</emphasis> (excerpted from "
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+"<emphasis role=\"bold\"><varname>MICRO_C</varname> output tokens</emphasis> "
+"(excerpted from <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
+"link>."
 msgstr ""
-"<emphasis role=\"bold\">MICRO_C output tokens</emphasis> (extrait de <link "
-"xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
-
-#. Tag: emphasis
-#, no-c-format
-msgid "ARC_C"
-msgstr "ARC_C"
 
 #. Tag: para
 #, no-c-format
@@ -1829,11 +1810,6 @@ msgstr ""
 "En tant que telle, elle utilise le même ensemble de jetons de sortie que "
 "MICRO_C, à l'exception du jeton HOUSE."
 
-#. Tag: emphasis
-#, no-c-format
-msgid "CIVIC_C"
-msgstr "CIVIC_C"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -1842,11 +1818,6 @@ msgid ""
 msgstr ""
 "(numéro du jeton = \"<emphasis role=\"bold\">3</emphasis>\"). La classe de "
 "règles pour l'analyse de l'attribut HOUSE."
-
-#. Tag: emphasis
-#, no-c-format
-msgid "EXTRA_C"
-msgstr "EXTRA_C"
 
 #. Tag: para
 #, no-c-format
@@ -1862,13 +1833,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<emphasis role=\"bold\">EXTRA_C output tokens</emphasis> (excerpted from "
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+"<emphasis role=\"bold\"><varname>EXTRA_C</varname> output tokens</emphasis> "
+"(excerpted from <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
+"link>."
 msgstr ""
-"<emphasis role=\"bold\">EXTRA_C output tokens</emphasis> (extrait de <link "
-"xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
 
 #. Tag: para
 #, no-c-format
@@ -50310,6 +50279,56 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid "MACRO_C"
+#~ msgstr "MACRO_C"
+
+#, no-c-format
+#~ msgid ""
+#~ "<emphasis role=\"bold\">MACRO_C output tokens</emphasis> (excerpted from "
+#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+#~ msgstr ""
+#~ "<emphasis role=\"bold\">MACRO_C output tokens</emphasis> (extrait de "
+#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+
+#, no-c-format
+#~ msgid "MICRO_C"
+#~ msgstr "MICRO_C"
+
+#, no-c-format
+#~ msgid ""
+#~ "<emphasis role=\"bold\">MICRO_C output tokens</emphasis> (excerpted from "
+#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+#~ msgstr ""
+#~ "<emphasis role=\"bold\">MICRO_C output tokens</emphasis> (extrait de "
+#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+
+#, no-c-format
+#~ msgid "ARC_C"
+#~ msgstr "ARC_C"
+
+#, no-c-format
+#~ msgid "CIVIC_C"
+#~ msgstr "CIVIC_C"
+
+#, no-c-format
+#~ msgid "EXTRA_C"
+#~ msgstr "EXTRA_C"
+
+#, no-c-format
+#~ msgid ""
+#~ "<emphasis role=\"bold\">EXTRA_C output tokens</emphasis> (excerpted from "
+#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+#~ msgstr ""
+#~ "<emphasis role=\"bold\">EXTRA_C output tokens</emphasis> (extrait de "
+#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
 
 #, no-c-format
 #~ msgid "PointOnSurface of a <varname>MULTIPOINT</varname>"

@@ -5,11 +5,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-20 07:42+0000\n"
+"POT-Creation-Date: 2023-09-25 14:15+0000\n"
 "PO-Revision-Date: 2023-09-22 13:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
-"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/it/>\n"
+"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/it/>\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1709,11 +1709,6 @@ msgstr ""
 "seguenti lettere, seguita da un grado della regola. Le regole sono "
 "classificate da 0 (minimo) a 17 (massimo)."
 
-#. Tag: emphasis
-#, no-c-format
-msgid "MACRO_C"
-msgstr "MACRO_C"
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -1721,19 +1716,17 @@ msgid ""
 "rules for parsing MACRO clauses such as <emphasis>PLACE STATE ZIP</emphasis>"
 msgstr ""
 "(numero di token = \"<emphasis role=\"bold\">0</emphasis>\"). La classe di "
-"regole per il parsing di clausole MACRO come <emphasis>PLACE STATE "
-"ZIP</emphasis>"
+"regole per il parsing di clausole MACRO come <emphasis>PLACE STATE ZIP</"
+"emphasis>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"<emphasis role=\"bold\">MACRO_C output tokens</emphasis> (excerpted from "
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+"<emphasis role=\"bold\"><varname>MACRO_C</varname> output tokens</emphasis> "
+"(excerpted from <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
+"link>."
 msgstr ""
-"<emphasis role=\"bold\">MACRO_C output tokens</emphasis> (estratto da <link "
-"xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\""
-">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
 
 #. Tag: para
 #, no-c-format
@@ -1764,11 +1757,6 @@ msgstr ""
 "attributo è utilizzato sia per i codici postali statunitensi che per quelli "
 "canadesi."
 
-#. Tag: emphasis
-#, no-c-format
-msgid "MICRO_C"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -1781,14 +1769,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<emphasis role=\"bold\">MICRO_C output tokens</emphasis> (excerpted from "
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
-msgstr ""
-
-#. Tag: emphasis
-#, no-c-format
-msgid "ARC_C"
+"<emphasis role=\"bold\"><varname>MICRO_C</varname> output tokens</emphasis> "
+"(excerpted from <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
+"link>."
 msgstr ""
 
 #. Tag: para
@@ -1799,21 +1783,11 @@ msgid ""
 "same set of output tokens as MICRO_C minus the HOUSE token."
 msgstr ""
 
-#. Tag: emphasis
-#, no-c-format
-msgid "CIVIC_C"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "(token number = \"<emphasis role=\"bold\">3</emphasis>\"). The class of "
 "rules for parsing the HOUSE attribute."
-msgstr ""
-
-#. Tag: emphasis
-#, no-c-format
-msgid "EXTRA_C"
 msgstr ""
 
 #. Tag: para
@@ -1827,9 +1801,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<emphasis role=\"bold\">EXTRA_C output tokens</emphasis> (excerpted from "
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
-"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+"<emphasis role=\"bold\"><varname>EXTRA_C</varname> output tokens</emphasis> "
+"(excerpted from <link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12."
+"html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
+"link>."
 msgstr ""
 
 #. Tag: para
@@ -25077,8 +25052,8 @@ msgid ""
 "refpurpose>"
 msgstr ""
 "<refpurpose>Un tipo composito usato come input nella funzione ST_Union che "
-"definisce le bande da elaborare e il comportamento dell'operazione "
-"UNION.</refpurpose>"
+"definisce le bande da elaborare e il comportamento dell'operazione UNION.</"
+"refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -25087,8 +25062,8 @@ msgid ""
 "bands to be processed and behavior of the UNION operation.</para>"
 msgstr ""
 "<para>Un tipo composito usato come input nella funzione ST_Union che "
-"definisce le bande da elaborare e il comportamento dell'operazione "
-"UNION.</para>"
+"definisce le bande da elaborare e il comportamento dell'operazione UNION.</"
+"para>"
 
 #. Tag: para
 #, no-c-format
@@ -25211,9 +25186,9 @@ msgid ""
 "can be spatially the same) and coverage tile (raster is aligned to a "
 "coverage) constraints"
 msgstr ""
-"<varname>regular_blocking</varname> imposta i vincoli di unicità spaziale ("
-"non ci sono due raster uguali dal punto di vista spaziale) e di copertura ("
-"il raster è allineato a una copertura)"
+"<varname>regular_blocking</varname> imposta i vincoli di unicità spaziale "
+"(non ci sono due raster uguali dal punto di vista spaziale) e di copertura "
+"(il raster è allineato a una copertura)"
 
 #. Tag: para
 #, no-c-format
@@ -25224,8 +25199,8 @@ msgid ""
 msgstr ""
 "<varname>same_alignment</varname> assicura che tutte le tessere abbiano lo "
 "stesso allineamento, il che significa che ogni due tessere confrontate "
-"restituiranno true. Fare riferimento a <xref linkend=\"RT_ST_SameAlignment\""
-"/>."
+"restituiranno true. Fare riferimento a <xref linkend=\"RT_ST_SameAlignment\"/"
+">."
 
 #. Tag: para
 #, no-c-format
@@ -25346,8 +25321,8 @@ msgid ""
 "the <varname>raster_overviews</varname> raster catalog."
 msgstr ""
 "Aggiunge vincoli su una colonna raster che vengono utilizzati per "
-"visualizzare le informazioni nel catalogo raster "
-"<varname>raster_overviews</varname>."
+"visualizzare le informazioni nel catalogo raster <varname>raster_overviews</"
+"varname>."
 
 #. Tag: para
 #, no-c-format
@@ -25392,8 +25367,8 @@ msgid ""
 "catalog."
 msgstr ""
 "Rimuove da una colonna raster i vincoli utilizzati per mostrarla come "
-"panoramica di un'altra nel catalogo raster "
-"<varname>raster_overviews</varname>."
+"panoramica di un'altra nel catalogo raster <varname>raster_overviews</"
+"varname>."
 
 #. Tag: para
 #, no-c-format
@@ -26055,12 +26030,12 @@ msgid ""
 "a new raster with the same size, alignment and SRID. If srid is left out, "
 "the spatial ref is set to unknown (0)."
 msgstr ""
-"Restituisce un raster vuoto (senza bande) di dimensioni date (larghezza &amp;"
-" altezza), X e Y in alto a sinistra, dimensioni dei pixel e rotazione ("
-"scalex, scaley, skewx &amp; skewy) e sistema di riferimento (srid). Se viene "
-"passato un raster, restituisce un nuovo raster con le stesse dimensioni, "
-"allineamento e SRID. Se srid viene omesso, il sistema di riferimento "
-"spaziale viene impostato su sconosciuto (0)."
+"Restituisce un raster vuoto (senza bande) di dimensioni date (larghezza "
+"&amp; altezza), X e Y in alto a sinistra, dimensioni dei pixel e rotazione "
+"(scalex, scaley, skewx &amp; skewy) e sistema di riferimento (srid). Se "
+"viene passato un raster, restituisce un nuovo raster con le stesse "
+"dimensioni, allineamento e SRID. Se srid viene omesso, il sistema di "
+"riferimento spaziale viene impostato su sconosciuto (0)."
 
 #. Tag: para
 #, no-c-format
@@ -26070,8 +26045,8 @@ msgid ""
 "X (upperleftx), upper left Y (upperlefty), pixel size and rotation (scalex, "
 "scaley, skewx &amp; skewy) and reference system (srid)."
 msgstr ""
-"Restituisce un raster vuoto (senza banda) di dimensioni date (larghezza &amp;"
-" altezza) e georeferenziato in coordinate spaziali (o mondiali) con X "
+"Restituisce un raster vuoto (senza banda) di dimensioni date (larghezza "
+"&amp; altezza) e georeferenziato in coordinate spaziali (o mondiali) con X "
 "superiore sinistro (upperleftx), Y superiore sinistro (upperlefty), "
 "dimensioni dei pixel e rotazione (scalex, scaley, skewx &amp; skewy) e "
 "sistema di riferimento (srid)."
@@ -26107,8 +26082,8 @@ msgid ""
 msgstr ""
 "Se non viene specificata alcuna srid, l'impostazione predefinita è 0. Dopo "
 "aver creato un raster vuoto, probabilmente si desidera aggiungervi delle "
-"bande e forse modificarlo. Fare riferimento a <xref linkend=\"RT_ST_AddBand\""
-"/> per definire le bande e a <xref linkend=\"RT_ST_SetValue\"/> per "
+"bande e forse modificarlo. Fare riferimento a <xref linkend=\"RT_ST_AddBand"
+"\"/> per definire le bande e a <xref linkend=\"RT_ST_SetValue\"/> per "
 "impostare i valori iniziali dei pixel."
 
 #. Tag: para
@@ -26129,8 +26104,8 @@ msgid ""
 "raster based upon the desired dimensions of the output rasters.</refpurpose>"
 msgstr ""
 "<refpurpose>Restituisce un insieme di raster risultanti dalla suddivisione "
-"del raster di input in base alle dimensioni desiderate dei raster di "
-"output.</refpurpose>"
+"del raster di input in base alle dimensioni desiderate dei raster di output."
+"</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -26139,8 +26114,8 @@ msgid ""
 "based upon the desired dimensions of the output rasters.</para>"
 msgstr ""
 "<para>Restituisce un insieme di raster risultanti dalla suddivisione del "
-"raster di input in base alle dimensioni desiderate dei raster di "
-"output.</para>"
+"raster di input in base alle dimensioni desiderate dei raster di output.</"
+"para>"
 
 #. Tag: para
 #, no-c-format
@@ -26305,8 +26280,8 @@ msgid ""
 "<refpurpose>Returns the amount of space (in bytes) the raster takes.</"
 "refpurpose>"
 msgstr ""
-"<refpurpose>Restituisce la quantità di spazio (in byte) occupato dal "
-"raster.</refpurpose>"
+"<refpurpose>Restituisce la quantità di spazio (in byte) occupato dal raster."
+"</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -26662,13 +26637,14 @@ msgid ""
 "<refpurpose>Returns a text summary of the contents of the raster.</"
 "refpurpose>"
 msgstr ""
-"<refpurpose>Restituisce un testo riassuntivo del contenuto del "
-"raster.</refpurpose>"
+"<refpurpose>Restituisce un testo riassuntivo del contenuto del raster.</"
+"refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid "<para>Returns a text summary of the contents of the raster.</para>"
-msgstr "<para>Restituisce un testo riassuntivo del contenuto del raster.</para>"
+msgstr ""
+"<para>Restituisce un testo riassuntivo del contenuto del raster.</para>"
 
 #. Tag: para
 #, no-c-format
@@ -41413,6 +41389,20 @@ msgstr "Supporta il 2.5/3D"
 #, no-c-format
 msgid "Supports geography"
 msgstr "Supporta il tipo geography"
+
+#, no-c-format
+#~ msgid "MACRO_C"
+#~ msgstr "MACRO_C"
+
+#, no-c-format
+#~ msgid ""
+#~ "<emphasis role=\"bold\">MACRO_C output tokens</emphasis> (excerpted from "
+#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
+#~ msgstr ""
+#~ "<emphasis role=\"bold\">MACRO_C output tokens</emphasis> (estratto da "
+#~ "<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+#~ "\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>."
 
 #, no-c-format
 #~ msgid ""
