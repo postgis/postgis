@@ -1,4 +1,4 @@
-PostGIS 3.4.1
+PostGIS 3.4.1dev
 xxxx/xx/xx
 This version requires PostgreSQL 12-16, GEOS 3.6 or higher, and Proj 6.1+.
 To take advantage of all features, GEOS 3.12+ is needed.
@@ -7,6 +7,8 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
 * Bug Fixes *
 
 
+ - #5548, Fix box-filtered validity check of topologies with edge-less faces
+          (Sandro Santilli)
  - #5485, Fix postgis script on OpenBSD (Sandro Santilli)
  - #5516, Fix upgrade with views using deprecated function, among which:
           ST_AddBand (#5509), ST_AsGeoJSON (#5523) ST_AsKML (#5524)

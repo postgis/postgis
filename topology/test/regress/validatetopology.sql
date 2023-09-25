@@ -195,5 +195,16 @@ SELECT '#5403.1', * FROM topology.ValidateTopology(
 );
 ROLLBACK;
 
+-- See https://trac.osgeo.org/postgis/ticket/5548
+BEGIN;
+SELECT NULL FROM topology.CreateTopology('t5548');
+SELECT '#5548.0', topology.TopoGeo_addPolygon('t5548',
+  'POLYGON((0 0, 5 10, 10 0,0 0))');
+DELETE FROM t5548.edge;
+DELETE FROM t5548.node;
+SELECT '#5548.1', * FROM topology.ValidateTopology('t5548',
+  ST_MakeEnvelope(2,2,4,4));
+ROLLBACK;
+
 SELECT NULL FROM topology.DropTopology('city_data');
 

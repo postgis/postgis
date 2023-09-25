@@ -882,6 +882,7 @@ BEGIN
     )
     AND e.edge_id IS NULL
   LOOP --{
+    invalid_faces := array_append(invalid_faces, rec.id1);
     retrec.error = 'face without edges';
     retrec.id1 = rec.id1;
     retrec.id2 = NULL;
