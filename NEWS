@@ -2,6 +2,8 @@ PostGIS 3.3.5dev
 YYYY/MM/DD
 
 * Bug Fixes and Enhancements *
+ - #5548, Fix box-filtered validity check of topologies with edge-less faces
+          (Sandro Santilli)
  - #5442, [postgis_tiger_geocoder,postgis_topology]
           Database search_path does not do
           what it intends to do (Jelte Fennema)
