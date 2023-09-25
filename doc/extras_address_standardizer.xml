@@ -362,9 +362,9 @@ into includes in the future for easier maintenance.</para></listitem>
 			<refsection xml:id="rule_types_rank"><title>Rule Types and Rank</title>
 				<para>The final part of the rule is the rule type which is denoted by one of the following, followed by a rule rank.  The rules are ranked from 0 (lowest) to 17 (highest).</para>
 
-				<para><emphasis role="bold">MACRO_C</emphasis></para>
+				<para><emphasis role="bold"><varname>MACRO_C</varname></emphasis></para>
 				<para>(token number = "<emphasis role="bold">0</emphasis>"). The class of rules for parsing MACRO clauses such as <emphasis>PLACE STATE ZIP</emphasis></para>
-				<para><emphasis role="bold">MACRO_C output tokens</emphasis> (excerpted from <link xlink:href="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>.</para>
+				<para><emphasis role="bold"><varname>MACRO_C</varname> output tokens</emphasis> (excerpted from <link xlink:href="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>.</para>
                 <variablelist>
                     <varlistentry>
                             <term><varname>CITY</varname></term>
@@ -392,9 +392,9 @@ into includes in the future for easier maintenance.</para></listitem>
                     </varlistentry>
                 </variablelist>
 
-               <para><emphasis role="bold">MICRO_C</emphasis></para>
+               <para><emphasis role="bold"><varname>MICRO_C</varname></emphasis></para>
 				<para>(token number = "<emphasis role="bold">1</emphasis>"). The class of rules for parsing full MICRO clauses (such as House, street, sufdir, predir, pretyp, suftype, qualif) (ie ARC_C plus CIVIC_C). These rules are not used in the build phase.</para>
-				<para><emphasis role="bold">MICRO_C output tokens</emphasis> (excerpted from <link xlink:href="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>.</para>
+				<para><emphasis role="bold"><varname>MICRO_C</varname> output tokens</emphasis> (excerpted from <link xlink:href="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>.</para>
                 <variablelist>
                     <varlistentry><term><varname>HOUSE</varname></term>
 						<listitem>
@@ -431,16 +431,16 @@ into includes in the future for easier maintenance.</para></listitem>
 					</varlistentry>
                 </variablelist>
 
-				<para><emphasis role="bold">ARC_C</emphasis></para>
+				<para><emphasis role="bold"><varname>ARC_C</varname></emphasis></para>
 				<para>(token number = "<emphasis role="bold">2</emphasis>"). The class of rules for parsing MICRO clauses, excluding the HOUSE attribute. As such uses same set of output tokens as MICRO_C minus the HOUSE token.</para>
 
-				<para><emphasis role="bold">CIVIC_C</emphasis></para>
+				<para><emphasis role="bold"><varname>CIVIC_C</varname></emphasis></para>
 				<para>(token number = "<emphasis role="bold">3</emphasis>"). The class of rules for parsing the HOUSE attribute.</para>
 
-				<para><emphasis role="bold">EXTRA_C</emphasis></para>
+				<para><emphasis role="bold"><varname>EXTRA_C</varname></emphasis></para>
 				<para>(token number = "<emphasis role="bold">4</emphasis>"). The class of rules for parsing EXTRA attributes - attributes excluded from geocoding. These rules are not used in the build phase.</para>
 
-				<para><emphasis role="bold">EXTRA_C output tokens</emphasis> (excerpted from <link xlink:href="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>.</para>
+				<para><emphasis role="bold"><varname>EXTRA_C</varname> output tokens</emphasis> (excerpted from <link xlink:href="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>.</para>
                 <variablelist>
                     <varlistentry><term><varname>BLDNG</varname></term>
 						<listitem>
