@@ -7,7 +7,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-25 14:15+0000\n"
 "PO-Revision-Date: 2023-09-26 09:23+0000\n"
-"Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
+"Last-Translator: Wang Dapeng <wangdapeng20191008@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
 "Language: zh_Hans\n"
@@ -127,7 +127,7 @@ msgstr "创建空间数据库"
 #. Tag: title
 #, no-c-format
 msgid "Spatially enable database using EXTENSION"
-msgstr "使用「扩展（EXTENSION）」来在数据库上启用空间能力"
+msgstr "使用扩展（EXTENSION）启用空间数据库"
 
 #. Tag: para
 #, no-c-format
@@ -10504,9 +10504,10 @@ msgid ""
 "to <link xlink:href=\"https://postgis.net\">https://postgis.net</link>."
 msgstr ""
 "本作品已获得<link xlink:href=\"http://creativecommons.org/licenses/by-sa/3.0/"
-"\">创作共用署名-相同方式共享 3.0 许可。</link>。请随意使用这份材料，任何您喜"
-"欢的方式，但我们要求您将荣誉归于 PostGIS 项目，尽可能提供返回<link xlink:"
-"href=\"https://postgis.net\">https://postgis.net</link>的链接。"
+"\">创作共用署名-相同方式共享 3.0 "
+"许可</link>。请随意使用这份材料，任何您喜欢的方式，但我们要求您将荣誉归于 "
+"PostGIS 项目，尽可能提供返回<link xlink:href=\"https://postgis.net\""
+">https://postgis.net</link>的链接。"
 
 #. Tag: title
 #, no-c-format
@@ -35700,7 +35701,7 @@ msgid ""
 "Intersection Model</link> (DE-9IM)."
 msgstr ""
 "这些函数允许测试和评估两个几何图形之间的空间（拓扑）关系，如<link xlink:href="
-"\"http://en.wikipedia.org/wiki/DE-9IM\">维度扩展 9 相交模型</link> (DE-9IM) "
+"\"http://en.wikipedia.org/wiki/DE-9IM\">维度扩展 九交模型</link> (DE-9IM) "
 "所定义。"
 
 #. Tag: para
@@ -42213,7 +42214,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Using SQL to Load Data"
-msgstr "使用SOL加载数据"
+msgstr "使用SQL加载数据"
 
 #. Tag: para
 #, no-c-format
