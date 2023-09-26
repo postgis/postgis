@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-25 14:15+0000\n"
-"PO-Revision-Date: 2023-09-25 11:23+0000\n"
+"PO-Revision-Date: 2023-09-26 02:30+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
@@ -31531,6 +31531,14 @@ msgid ""
 "<varname>userargs</varname> is for passing through any user-specified "
 "arguments."
 msgstr ""
+"<varname>Callbackfunc</varname> 必须具有三个参数：一个 3 维双精度数组、一个 "
+"2 维整数数组和一个可变的 1 维文本数组。 "
+"第一个参数<varname>value</varname>是所有输入栅格的值集（双精度）。 三个维度（"
+"其中索引从 1 开始）是：栅格编号、行 y、列 x。 "
+"第二个参数<varname>position</varname>是输出栅格和输入栅格的像素位置集。 "
+"外部维度（索引从 0 开始）是栅格#。 外部维度索引 0 "
+"处的位置是输出栅格的像素位置。 对于每个外部维度，内部维度中有两个元素用于 X "
+"和 Y。第三个参数 <varname>userargs </varname>用于传递任何用户指定的参数。"
 
 #. Tag: para
 #, no-c-format
@@ -31540,6 +31548,9 @@ msgid ""
 "type> type. To pass the above example PL/pgSQL function as an argument, the "
 "SQL for the argument is:"
 msgstr ""
+"将<type> regprocedure </type>参数传递给 SQL 函数需要传递完整的函数签名，"
+"然后转换为<type> regprocedure </type>类型。 要将上述示例 PL/pgSQL "
+"函数作为参数传递，参数的 SQL 为："
 
 #. Tag: para
 #, no-c-format
@@ -31547,7 +31558,8 @@ msgid ""
 "Note that the argument contains the name of the function, the types of the "
 "function arguments, quotes around the name and argument types, and a cast to "
 "a <type>regprocedure</type>."
-msgstr ""
+msgstr "请注意，参数包含函数名称、函数参数类型、名称和参数类型周围的引号以及对 "
+"<type>regprocedure </type>的强制转换。"
 
 #. Tag: para
 #, no-c-format
@@ -31558,6 +31570,9 @@ msgid ""
 "weight is set to true, then the values, are used as multipliers to multiple "
 "the pixel value of that value in the neighborhood position."
 msgstr ""
+"n 维数字数组（矩阵），用于过滤传递给映射代数回调函数的单元格。 0 "
+"表示相邻像元值应被视为无数据，1 表示值应被视为数据。 如果权重设置为 "
+"true，则这些值将用作乘数，以乘以邻域位置中该值的像素值。"
 
 #. Tag: para
 #, no-c-format
@@ -31565,7 +31580,8 @@ msgid ""
 "boolean (true/false) to denote if a mask value should be weighted "
 "(multiplied by original value) or not (only applies to proto that takes a "
 "mask)."
-msgstr ""
+msgstr "布尔值（true/"
+"false）表示掩码值是否应该加权（乘以原始值）（仅适用于采用掩码的原型）。"
 
 #. Tag: para
 #, no-c-format
@@ -31577,6 +31593,11 @@ msgid ""
 "specified band of the appropriate raster (for extent types: SECOND, LAST). "
 "If in doubt, always specify <varname>pixeltype</varname>."
 msgstr ""
+"如果传入<varname>像素类型</varname>，则新栅格的一个波段将属于该像素类型。 "
+"如果将像素类型传递为 NULL 或省略，则新栅格波段将具有与第一个栅格的指定波段（"
+"对于范围类型：INTERSECTION、UNION、FIRST、CUSTOM）或相应栅格的指定波段（对于"
+"范围）相同的像素类型。 类型：第二个、最后一个）。 "
+"如果有疑问，请始终指定<varname>像素类型</varname>。"
 
 #. Tag: para
 #, no-c-format
@@ -31584,13 +31605,16 @@ msgid ""
 "The resulting pixel type of the output raster must be one listed in <xref "
 "linkend=\"RT_ST_BandPixelType\"/> or left out or set to NULL."
 msgstr ""
+"输出栅格的结果像素类型必须是<xref linkend=\"RT_ST_BandPixelType\"/> "
+"中列出的类型，或者省略或设置为 NULL。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Possible values are INTERSECTION (default), UNION, FIRST (default for one "
 "raster variants), SECOND, LAST, CUSTOM."
-msgstr ""
+msgstr "可能的值为 INTERSECTION（默认）、UNION、FIRST（一个栅格变体的默认值）、SECOND"
+"、LAST、CUSTOM。"
 
 #. Tag: para
 #, no-c-format
@@ -31598,6 +31622,8 @@ msgid ""
 "If <varname>extentype</varname> is CUSTOM, a raster must be provided for "
 "<varname>customextent</varname>. See example 4 of Variant 1."
 msgstr ""
+"如果<varname>extenttype</varname>是CUSTOM，则必须为<varname>customextent</var"
+"name>提供栅格。 请参见变体 1 的示例 4。"
 
 #. Tag: para
 #, no-c-format
@@ -31606,6 +31632,8 @@ msgid ""
 "resulting matrix would be <code>2*distancex + 1</code>.If not specified only "
 "the reference cell is considered (neighborhood of 0)."
 msgstr ""
+"x 方向上距参考单元格的距离（以像素为单位）。 因此，结果矩阵的宽度将为 "
+"<code>2*distancex + 1</code>。如果未指定，则仅考虑参考单元（0 的邻域）。"
 
 #. Tag: para
 #, no-c-format
@@ -31614,6 +31642,8 @@ msgid ""
 "resulting matrix would be <code>2*distancey + 1</code> .If not specified "
 "only the reference cell is considered (neighborhood of 0)."
 msgstr ""
+"y 方向上距参考单元的距离（以像素为单位）。 结果矩阵的高度将为 <code>2*"
+"distancey + 1</code> 。如果未指定，则仅考虑参考单元格（0 的邻域）。"
 
 #. Tag: para
 #, no-c-format
@@ -31623,6 +31653,9 @@ msgid ""
 "through to the specified <varname>callbackfunc</varname>, and are contained "
 "in the <varname>userargs</varname> argument."
 msgstr ""
+"<varname>callbackfunc </varname>的第三个参数是一个<type>可变文本</type>数组。"
+" 所有尾随文本参数都传递到指定的<varname>callbackfunc</varname>，并包含在 "
+"<varname>userargs</varname> 参数中。"
 
 #. Tag: para
 #, no-c-format
@@ -31632,14 +31665,19 @@ msgid ""
 "Arguments\" section of <link xlink:href=\"http://www.postgresql.org/docs/"
 "current/static/xfunc-sql.html\">Query Language (SQL) Functions</link>."
 msgstr ""
+"有关 VARIADIC 关键字的更多信息，请参阅 PostgreSQL 文档和<link xlink:href="
+"\"http://www.postgresql.org/docs/current/static/xfunc-sql.html\">查询语言 "
+"(SQL) 函数</link>的“具有可变参数数量的 SQL 函数”部分。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <type>text[]</type> argument to the <varname>callbackfunc</varname> is "
 "required, regardless of whether you choose to pass any arguments to the "
 "callback function for processing or not."
 msgstr ""
+"无论您是否选择将任何参数传递给回调函数进行处理，<varname>callbackfunc</"
+"varname> 的 <type>text[] </type>参数都是必需的。"
 
 #. Tag: para
 #, no-c-format
@@ -31648,102 +31686,105 @@ msgid ""
 "use of a map algebra operation on many rasters and/or many bands. See "
 "example Variant 1."
 msgstr ""
+"变体 1 接受<varname> rastbandarg</varname> "
+"数组，允许在许多栅格和/或许多波段上使用地图代数运算。 请参见示例变体 1。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Variants 2 and 3 operate upon one or more bands of one raster. See example "
 "Variant 2 and 3."
-msgstr ""
+msgstr "变体 2 和 3 对一个栅格的一个或多个波段进行操作。 请参阅示例变体 2 和 3。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Variant 4 operate upon two rasters with one band per raster. See example "
 "Variant 4."
-msgstr ""
+msgstr "变体 4 对两个栅格进行操作，每个栅格一个波段。 请参见示例变体 4。"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.2.0: Ability to add a mask"
-msgstr ""
+msgstr "可用性：2.2.0：能够添加遮罩"
 
 #. Tag: para
 #, no-c-format
 msgid "One raster, one band"
-msgstr ""
+msgstr "一个栅格，一个波段"
 
 #. Tag: para
 #, no-c-format
 msgid "One raster, several bands"
-msgstr ""
+msgstr "一个栅格，多个波段"
 
 #. Tag: para
 #, no-c-format
 msgid "Several rasters, several bands"
-msgstr ""
+msgstr "多个栅格，多个波段"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Complete example of tiles of a coverage with neighborhood. This query only "
 "works with PostgreSQL 9.1 or higher."
-msgstr ""
+msgstr "邻域覆盖图块的完整示例。 此查询仅适用于 PostgreSQL 9.1 或更高版本。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Example like the prior one for tiles of a coverage with neighborhood but "
 "works with PostgreSQL 9.0."
-msgstr ""
+msgstr "示例类似于前一个具有邻域覆盖范围的图块，但适用于 PostgreSQL 9.0。"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Variants 2 and 3"
-msgstr ""
+msgstr "示例：变体 2 和 3"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Variant 4"
-msgstr ""
+msgstr "示例：变体4"
 
 #. Tag: para
 #, no-c-format
 msgid "Two rasters, two bands"
-msgstr ""
+msgstr "两个栅格，两个波段"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Using Masks"
-msgstr ""
+msgstr "示例：使用掩模"
 
 #. Tag: para
 #, no-c-format
 msgid "original"
-msgstr ""
+msgstr "原始的"
 
 #. Tag: para
 #, no-c-format
 msgid "no mask mean value (same as having all 1s in mask matrix)"
-msgstr ""
+msgstr "无掩模均值（与遮罩矩阵中全为1相同）"
 
 #. Tag: para
 #, no-c-format
 msgid "mask only consider neighbors, exclude center"
-msgstr ""
+msgstr "掩模 只考虑邻居，排除中心"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "mask weighted only consider neighbors, exclude center multi other pixel "
 "values by 2"
-msgstr ""
+msgstr "掩模加权仅考虑相邻像素，排除中心像素，并将其他像素值乘以2"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_Union\"/>, <xref linkend=\"RT_ST_MapAlgebra_expr\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_Union\"/>, <xref linkend=\"RT_ST_MapAlgebra_expr\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31752,18 +31793,22 @@ msgid ""
 "input rasters, band indexes and one or more user-specified SQL expressions.</"
 "refpurpose>"
 msgstr ""
+"<refpurpose>表达式版本 - 在给定一两个输入栅格、"
+"波段索引和一个或多个用户指定的 SQL "
+"表达式的情况下，返回单波段栅格。</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<para>Expression version - Returns a one-band raster given one or two input "
 "rasters, band indexes and one or more user-specified SQL expressions.</para>"
-msgstr ""
+msgstr "<para>表达式版本 - 在给定一两个输入栅格、波段索引和一个或多个用户指定的 SQL "
+"表达式的情况下，返回单波段栅格。</para>"
 
 #. Tag: title
 #, no-c-format
 msgid "Description: Variants 1 and 2 (one raster)"
-msgstr ""
+msgstr "描述：变体 1 和 2（一个栅格）"
 
 #. Tag: para
 #, no-c-format
@@ -31774,6 +31819,10 @@ msgid ""
 "provided, band 1 is assumed. The new raster will have the same georeference, "
 "width, and height as the original raster but will only have one band."
 msgstr ""
+"通过应用由输入栅格 (<varname>rast</varname>) 上的<varname>expression</"
+"varname>定义的有效 PostgreSQL 代数运算来创建新的单波段栅格。 如果未提供 "
+"<varname>nband</varname>，则假定为波段 1。 "
+"新栅格将具有与原始栅格相同的地理参考、宽度和高度，但只有一个波段。"
 
 #. Tag: para
 #, no-c-format
@@ -31782,38 +31831,41 @@ msgid ""
 "a band of that pixeltype. If pixeltype is passed NULL, then the new raster "
 "band will have the same pixeltype as the input <varname>rast</varname> band."
 msgstr ""
+"如果传入<varname>像素类型</varname>，则新栅格将具有该像素类型的波段。 "
+"如果将像素类型传递为 "
+"NULL，则新的栅格带将具有与输入<varname>栅格</varname>带相同的像素类型。"
 
 #. Tag: para
 #, no-c-format
 msgid "Keywords permitted for <varname>expression</varname>"
-msgstr ""
+msgstr "允许<varname>expression</varname>的关键字"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>[rast]</varname> - Pixel value of the pixel of interest"
-msgstr ""
+msgstr "<varname>[rast]</varname> - 感兴趣像素的像素值"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>[rast.val]</varname> - Pixel value of the pixel of interest"
-msgstr ""
+msgstr "<varname>[rast.val]</varname>- 感兴趣像素的像素值"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>[rast.x]</varname> - 1-based pixel column of the pixel of interest"
-msgstr ""
+msgstr "<varname>[rast.x]</varname> - 感兴趣像素的基于 1 的像素列"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>[rast.y]</varname> - 1-based pixel row of the pixel of interest"
-msgstr ""
+msgstr "<varname>[rast.y]</varname> - 感兴趣像素的从 1 开始的像素行"
 
 #. Tag: title
 #, no-c-format
 msgid "Description: Variants 3 and 4 (two raster)"
-msgstr ""
+msgstr "描述：变体 3 和 4（两个栅格）"
 
 #. Tag: para
 #, no-c-format
@@ -31827,6 +31879,12 @@ msgid ""
 "raster. The resulting raster will have the extent defined by the "
 "<varname>extenttype</varname> parameter."
 msgstr ""
+"通过对两个输入栅格波段<varname> rast1</varname>， (<varname>rast2</varname>) "
+"上的<varname>expression</varname>定义的两个波段应用有效的 PostgreSQL "
+"代数运算，创建一个新的单波段栅格。 如果没有<varname> band1</varname>，"
+"则指定<varname> band2</varname>，则假定为 band 1。 "
+"生成的栅格将在第一个栅格定义的网格上对齐（比例、倾斜和像素角）。 "
+"生成的栅格将具有由<varname>extenttype </varname>参数定义的范围。"
 
 #. Tag: para
 #, no-c-format
@@ -31835,6 +31893,9 @@ msgid ""
 "defined functions/operators that will define the pixel value when pixels "
 "intersect. e.g. (([rast1] + [rast2])/2.0)::integer"
 msgstr ""
+"涉及两个栅格的 PostgreSQL 代数表达式和 PostgreSQL "
+"定义的函数/运算符，用于定义像素相交时的像素值。 例如 (([rast1] [rast2])/2."
+"0)::integer"
 
 #. Tag: para
 #, no-c-format
@@ -31843,39 +31904,43 @@ msgid ""
 "linkend=\"RT_ST_BandPixelType\"/>, left out or set to NULL. If not passed in "
 "or set to NULL, will default to the pixeltype of the first raster."
 msgstr ""
+"输出栅格的结果像素类型。 必须是<xref linkend=\"RT_ST_BandPixelType\"/> "
+"中列出的一项，可省略或设置为 NULL。 如果未传入或设置为 "
+"NULL，将默认为第一个栅格的像素类型。"
 
 #. Tag: para
 #, no-c-format
 msgid "Controls the extent of resulting raster"
-msgstr ""
+msgstr "控制生成的栅格的范围"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>INTERSECTION</varname> - The extent of the new raster is the "
 "intersection of the two rasters. This is the default."
-msgstr ""
+msgstr "<varname>INTERSECTION</varname> - 新栅格的范围是两个栅格的交集。 "
+"这是默认设置。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>UNION</varname> - The extent of the new raster is the union of the "
 "two rasters."
-msgstr ""
+msgstr "<varname>UNION</varname> - 新栅格的范围是两个栅格的并集。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>FIRST</varname> - The extent of the new raster is the same as the "
 "one of the first raster."
-msgstr ""
+msgstr "<varname>FIRST</varname> - 新栅格的范围与第一个栅格的范围相同。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>SECOND</varname> - The extent of the new raster is the same as the "
 "one of the second raster."
-msgstr ""
+msgstr "<varname>SECOND</varname> - 新栅格的范围与第二个栅格的范围相同。"
 
 #. Tag: para
 #, no-c-format
@@ -31884,6 +31949,8 @@ msgid ""
 "constant that defines what to return when pixels of <varname>rast1</varname> "
 "are nodata values and spatially corresponding rast2 pixels have values."
 msgstr ""
+"仅涉及<varname> rast2 </varname>的代数表达式或定义当 <varname>rast1</"
+"varname> 的像素为无数据值并且空间对应的 rast2 像素具有值时返回的内容的常量。"
 
 #. Tag: para
 #, no-c-format
@@ -31892,13 +31959,16 @@ msgid ""
 "constant that defines what to return when pixels of <varname>rast2</varname> "
 "are nodata values and spatially corresponding rast1 pixels have values."
 msgstr ""
+"仅涉及 <varname>rast1 </varname>常量的代数表达式，该常量定义当 "
+"<varname>rast2 </varname>的像素为无数据值且空间对应的 rast1 "
+"像素具有值时返回的内容。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "A numeric constant to return when spatially corresponding rast1 and rast2 "
 "pixels are both nodata values."
-msgstr ""
+msgstr "当空间对应的 rast1 和 rast2 像素均为无数据值时要返回的数值常量。"
 
 #. Tag: para
 #, no-c-format
@@ -31906,20 +31976,23 @@ msgid ""
 "Keywords permitted in <varname>expression</varname>, <varname>nodata1expr</"
 "varname> and <varname>nodata2expr</varname>"
 msgstr ""
+"<varname>expression</varname>、<varname>nodata1expr</varname> 和 "
+"<varname>nodata2expr</varname> 中允许使用的关键字"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>[rast1]</varname> - Pixel value of the pixel of interest from "
 "<varname>rast1</varname>"
-msgstr ""
+msgstr "<varname>[rast1]</varname> - <varname>rast1 </varname>中感兴趣的像素的像素值"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>[rast1.val]</varname> - Pixel value of the pixel of interest from "
 "<varname>rast1</varname>"
-msgstr ""
+msgstr "<varname>[rast1.val] </varname>-<varname> rast1 "
+"</varname>中感兴趣像素的像素值"
 
 #. Tag: para
 #, no-c-format
@@ -31927,6 +32000,8 @@ msgid ""
 "<varname>[rast1.x]</varname> - 1-based pixel column of the pixel of interest "
 "from <varname>rast1</varname>"
 msgstr ""
+"<varname>[rast1.x]</varname> - 来自<varname> rast1 </"
+"varname>的感兴趣像素的基于 1 的像素列"
 
 #. Tag: para
 #, no-c-format
@@ -31934,20 +32009,23 @@ msgid ""
 "<varname>[rast1.y]</varname> - 1-based pixel row of the pixel of interest "
 "from <varname>rast1</varname>"
 msgstr ""
+"<varname>[rast1.y] </varname>- 来自 <varname>rast1</varname> "
+"的感兴趣像素的基于 1 的像素行"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>[rast2]</varname> - Pixel value of the pixel of interest from "
 "<varname>rast2</varname>"
-msgstr ""
+msgstr "<varname>[rast2] </varname>-<varname> rast2</varname> 中感兴趣像素的像素值"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>[rast2.val]</varname> - Pixel value of the pixel of interest from "
 "<varname>rast2</varname>"
-msgstr ""
+msgstr "<varname>[rast2.val] </varname>-<varname> rast2</varname> "
+"中感兴趣像素的像素值"
 
 #. Tag: para
 #, no-c-format
@@ -31955,6 +32033,8 @@ msgid ""
 "<varname>[rast2.x]</varname> - 1-based pixel column of the pixel of interest "
 "from <varname>rast2</varname>"
 msgstr ""
+"<varname>[rast2.x] </varname>- 来自 <varname>rast2 </"
+"varname>的感兴趣像素的基于 1 的像素列"
 
 #. Tag: para
 #, no-c-format
@@ -31962,21 +32042,23 @@ msgid ""
 "<varname>[rast2.y]</varname> - 1-based pixel row of the pixel of interest "
 "from <varname>rast2</varname>"
 msgstr ""
+"<varname>[rast2.y] </varname>- 来自<varname> rast2 </"
+"varname>的感兴趣像素的基于 1 的像素行"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Variants 1 and 2"
-msgstr ""
+msgstr "示例：变体1和2"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Variant 3 and 4"
-msgstr ""
+msgstr "示例：变体3和4"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Union\"/>, <xref linkend=\"RT_ST_MapAlgebra\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_Union\"/>, <xref linkend=\"RT_ST_MapAlgebra\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31985,13 +32067,16 @@ msgid ""
 "valid PostgreSQL algebraic operation on the input raster band and of "
 "pixeltype provided. Band 1 is assumed if no band is specified."
 msgstr ""
+"1 栅格波段版本：通过对输入栅格波段和提供的像素类型应用有效的 PostgreSQL "
+"代数运算来创建新的单波段栅格。 如果未指定波段，则假定为波段 1。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "is deprecated as of 2.1.0. Use <xref linkend=\"RT_ST_MapAlgebra_expr\"/> "
 "instead."
-msgstr ""
+msgstr "自 2.1.0 起已弃用。 使用 <xref linkend=\"RT_ST_MapAlgebra_expr\""
+"/>（表达式版本）代替。"
 
 #. Tag: para
 #, no-c-format
@@ -32002,6 +32087,10 @@ msgid ""
 "specified band 1 is assumed. The new raster will have the same georeference, "
 "width, and height as the original raster but will only have one band."
 msgstr ""
+"通过应用由输入栅格 (<varname>rast</varname>) 上的<varname>expression</"
+"varname>的有效 PostgreSQL 代数运算来创建新的单波段栅格。 "
+"如果未指定<varname>波段</varname>，则假定为波段 1。 "
+"新栅格将具有与原始栅格相同的地理参考、宽度和高度，但只有一个波段。"
 
 #. Tag: para
 #, no-c-format
@@ -32011,37 +32100,43 @@ msgid ""
 "to the 1-based pixel column index, <varname>[rast.y]</varname> to refer to "
 "the 1-based pixel row index."
 msgstr ""
+"在表达式中，您可以使用术语<varname> [rast] "
+"</varname>来引用原始波段的像素值，<varname>[rast.x] </varname>来引用基于 1 "
+"的像素列索引，<varname>[rast.y] </varname>来引用基于 1 的像素列索引。 "
+"像素行索引。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Create a new 1 band raster from our original that is a function of modulo 2 "
 "of the original raster band."
-msgstr ""
+msgstr "根据原始栅格创建一个新的 1 波段栅格，该栅格是原始栅格波段的模 2 的函数。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Create a new 1 band raster of pixel-type 2BUI from our original that is "
 "reclassified and set the nodata value to be 0."
-msgstr ""
+msgstr "从我们重新分类的原始栅格中创建一个新的像素类型 2BUI 的 1 波段栅格，并将 "
+"nodata 值设置为 0。"
 
 #. Tag: para
 #, no-c-format
 msgid "original (column rast_view)"
-msgstr ""
+msgstr "原始（rast_view 列）"
 
 #. Tag: para
 #, no-c-format
 msgid "rast_view_ma"
-msgstr ""
+msgstr "rast_view_ma"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Create a new 3 band raster same pixel type from our original 3 band raster "
 "with first band altered by map algebra and remaining 2 bands unaltered."
-msgstr ""
+msgstr "从原始 3 波段栅格创建一个与像素类型相同的新 3 "
+"波段栅格，其中第一个波段由地图代数更改，其余 2 个波段保持不变。"
 
 #. Tag: para
 #, no-c-format
@@ -32050,6 +32145,9 @@ msgid ""
 "\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_GeoReference\"/>, <xref "
 "linkend=\"RT_ST_Value\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_MapAlgebraFct\"/>, <xref linkend="
+"\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_GeoReference\"/>, <xref "
+"linkend=\"RT_ST_Value\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32062,6 +32160,11 @@ msgid ""
 "by the \"extenttype\" parameter. Values for \"extenttype\" can be: "
 "INTERSECTION, UNION, FIRST, SECOND."
 msgstr ""
+"2 栅格波段版本：通过对提供的两个输入栅格波段和像素类型应用有效的 PostgreSQL "
+"代数运算来创建新的单波段栅格。 如果未指定波段编号，则假定每个栅格的波段 1。 "
+"生成的栅格将在第一个栅格定义的网格上对齐（比例、倾斜和像素角），并具有由“exte"
+"nttype”参数定义的范围。 "
+"“extenttype”的值可以是：INTERSECTION、UNION、FIRST、SECOND。"
 
 #. Tag: para
 #, no-c-format
@@ -32071,6 +32174,9 @@ msgid ""
 "specified, then the new raster band will have the same pixeltype as the "
 "input <varname>rast1</varname> band."
 msgstr ""
+"如果传入<varname>pixeltype</varname>，则新栅格将具有该像素类型的波段。 "
+"如果将像素类型传递为 NULL 或未指定像素类型，则新的栅格波段将具有与输入 "
+"<varname>rast1 </varname>波段相同的像素类型。"
 
 #. Tag: para
 #, no-c-format
@@ -32080,57 +32186,60 @@ msgid ""
 "x]</varname>, <varname>[rast1.y]</varname> etc. to refer to the column / row "
 "positions of the pixels."
 msgstr ""
+"使用术语 <varname>[rast1.val]</varname> <varname> [rast2.val]</varname> "
+"指代原始栅格波段的像素值，使用<varname> [rast1.x]</varname>、<varname>[rast1."
+"y] </varname>等指代像素的列/行位置。"
 
 #. Tag: title
 #, no-c-format
 msgid "Example: 2 Band Intersection and Union"
-msgstr ""
+msgstr "示例：2 条波段的交集和并集"
 
 #. Tag: para
 #, no-c-format
 msgid "mapalgebra intersection"
-msgstr ""
+msgstr "交集代数"
 
 #. Tag: para
 #, no-c-format
 msgid "map algebra union"
-msgstr ""
+msgstr "地图代数并集"
 
 #. Tag: title
 #, no-c-format
 msgid "Example: Overlaying rasters on a canvas as separate bands"
-msgstr ""
+msgstr "示例：将栅格作为单独的波段覆盖在画布上"
 
 #. Tag: para
 #, no-c-format
 msgid "rast1"
-msgstr ""
+msgstr "rast1"
 
 #. Tag: para
 #, no-c-format
 msgid "rast2"
-msgstr ""
+msgstr "rast2"
 
 #. Tag: para
 #, no-c-format
 msgid "rast3"
-msgstr ""
+msgstr "rast3"
 
 #. Tag: para
 #, no-c-format
 msgid "final_rast"
-msgstr ""
+msgstr "final_rast"
 
 #. Tag: title
 #, no-c-format
 msgid ""
 "Example: Overlay 2 meter boundary of select parcels over an aerial imagery"
-msgstr ""
+msgstr "示例：将选定地块的 2 米边界叠加在航空图像上"
 
 #. Tag: para
 #, no-c-format
 msgid "The blue lines are the boundaries of select parcels"
-msgstr ""
+msgstr "蓝线是选定地块的边界"
 
 #. Tag: para
 #, no-c-format
@@ -32141,6 +32250,11 @@ msgid ""
 "<xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Union\"/>, <xref "
 "linkend=\"ST_Union\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_AddBand\"/>, <xref linkend=\"RT_ST_AsPNG\"/>, <xref "
+"linkend=\"RT_ST_AsRaster\"/>, <xref linkend=\"RT_ST_MapAlgebraFct\"/>, <xref "
+"linkend=\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_GeoReference\"/>, "
+"<xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Union\"/>, <xref "
+"linkend=\"ST_Union\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32149,12 +32263,15 @@ msgid ""
 "PostgreSQL function on the input raster band and of pixeltype prodived. Band "
 "1 is assumed if no band is specified."
 msgstr ""
+"1 波段版本 - 通过在输入栅格波段和提供的像素类型上应用有效的 PostgreSQL "
+"函数来创建新的单波段栅格。 如果未指定波段，则假定为波段 1。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "is deprecated as of 2.1.0. Use <xref linkend=\"RT_ST_MapAlgebra\"/> instead."
-msgstr ""
+msgstr "自 2.1.0 起已弃用。 使用<xref linkend=\"RT_ST_MapAlgebra\""
+"/>（回调函数版本）代替。"
 
 #. Tag: para
 #, no-c-format
@@ -32165,6 +32282,10 @@ msgid ""
 "1 is assumed. The new raster will have the same georeference, width, and "
 "height as the original raster but will only have one band."
 msgstr ""
+"创建一个新的单波段栅格，该栅格是通过在输入栅格 (<varname>rast</varname>) "
+"上应用<varname> oneerasteruserfunc</varname> 指定的有效 PostgreSQL "
+"函数而形成的。 如果未指定<varname>波段</varname>，则假定为波段 1。 "
+"新栅格将具有与原始栅格相同的地理参考、宽度和高度，但只有一个波段。"
 
 #. Tag: para
 #, no-c-format
@@ -32173,6 +32294,9 @@ msgid ""
 "signature of a SQL or PL/pgSQL function, cast to a regprocedure. A very "
 "simple and quite useless PL/pgSQL function example is:"
 msgstr ""
+"<varname>oneerasteruserfunc</varname> 参数必须是 SQL 或 PL/pgSQL "
+"函数的名称和签名，转换为 regprocedure。 一个非常简单且无用的 PL/pgSQL "
+"函数示例是："
 
 #. Tag: para
 #, no-c-format
@@ -32185,6 +32309,12 @@ msgid ""
 "parameters to <xref linkend=\"RT_ST_MapAlgebraFct\"/> shall be passed "
 "through to the <varname>userfunction</varname>."
 msgstr ""
+"<varname>userfunction</varname>可以接受两个或三个参数：一个浮点值、一个可选的"
+"整数数组和一个可变文本数组。 "
+"第一个参数是单个栅格像元的值（无论栅格数据类型如何）。 "
+"第二个参数是当前处理单元的位置，格式为“{x,y}”。 第三个参数指示 <xref linkend="
+"\"RT_ST_MapAlgebraFct\"/> "
+"的所有剩余参数应传递给<varname>userfunction</varname>。"
 
 #. Tag: para
 #, no-c-format
@@ -32194,6 +32324,9 @@ msgid ""
 "type> type. To pass the above example PL/pgSQL function as an argument, the "
 "SQL for the argument is:"
 msgstr ""
+"将 <type>regprodedure </type>参数传递给 SQL 函数需要传递完整的函数签名，"
+"然后转换为 <type>regprocedure</type> 类型。 要将上述示例 PL/pgSQL "
+"函数作为参数传递，参数的 SQL 为："
 
 #. Tag: para
 #, no-c-format
@@ -32204,14 +32337,20 @@ msgid ""
 "<varname>userfunction</varname>, and are contained in the <varname>args</"
 "varname> argument."
 msgstr ""
+"<varname>userfunction</varname>的第三个参数是一个<type>可变文本</type>数组。 "
+"任何<xref linkend=\"RT_ST_MapAlgebraFct\"/> "
+"调用的所有尾随文本参数都会传递到指定的<varname>userfunction</varname>，"
+"并包含在<varname> args </varname>参数中。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <type>text[]</type> argument to the <varname>userfunction</varname> is "
 "required, regardless of whether you choose to pass any arguments to your "
 "user function for processing or not."
 msgstr ""
+"无论您是否选择将任何参数传递给<varname>userfunction</varname>进行处理，"
+"用户函数的 <type>text[] </type>参数都是必需的。"
 
 #. Tag: para
 #, no-c-format
@@ -32219,12 +32358,13 @@ msgid ""
 "Create a new 1 band raster of pixel-type 2BUI from our original that is "
 "reclassified and set the nodata value to a passed parameter to the user "
 "function (0)."
-msgstr ""
+msgstr "从我们的原始栅格中创建一个新的像素类型 2BUI 的 1 波段栅格，并将其重新分类，"
+"并将 nodata 值设置为传递给用户函数的参数 (0)。"
 
 #. Tag: para
 #, no-c-format
 msgid "original (column rast-view)"
-msgstr ""
+msgstr "原始（rast-view列）"
 
 #. Tag: para
 #, no-c-format
@@ -32232,6 +32372,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_GeoReference"
 "\"/>, <xref linkend=\"RT_ST_SetValue\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_BandPixelType\"/>, <xref linkend=\"RT_ST_GeoReference"
+"\"/>, <xref linkend=\"RT_ST_SetValue\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32241,6 +32383,9 @@ msgid ""
 "Band 1 is assumed if no band is specified. Extent type defaults to "
 "INTERSECTION if not specified."
 msgstr ""
+"2 波段版本 - 通过在提供的 2 个输入栅格波段和像素类型上应用有效的 PostgreSQL "
+"函数来创建新的单波段栅格。 如果未指定波段，则假定为波段 1。 如果未指定，"
+"范围类型默认为 INTERSECTION。"
 
 #. Tag: para
 #, no-c-format
@@ -32252,6 +32397,11 @@ msgid ""
 "new raster will have the same georeference, width, and height as the "
 "original rasters but will only have one band."
 msgstr ""
+"创建一个新的单波段栅格，该栅格是通过对输入栅格<varname> "
+"rast1</varname>、<varname>rast2</varname> 应用由<varname>tworastuserfunc </"
+"varname>指定的有效 PostgreSQL 函数而形成的。 如果未指定<varname> band1</"
+"varname> 或<varname> band2</varname>，则假定为 band 1。 "
+"新栅格将具有与原始栅格相同的地理参考、宽度和高度，但只有一个波段。"
 
 #. Tag: para
 #, no-c-format
@@ -32261,6 +32411,9 @@ msgid ""
 "new raster band will have the same pixeltype as the input <varname>rast1</"
 "varname> band."
 msgstr ""
+"如果传入<varname>pixeltype</varname>，则新栅格将具有该像素类型的波段。 "
+"如果将像素类型传递为 NULL 或省略，则新的栅格波段将具有与输入 <varname>rast1</"
+"varname> 波段相同的像素类型。"
 
 #. Tag: para
 #, no-c-format
@@ -32269,6 +32422,8 @@ msgid ""
 "signature of an SQL or PL/pgSQL function, cast to a regprocedure. An example "
 "PL/pgSQL function example is:"
 msgstr ""
+"<varname>Tworastuserfunc </varname>参数必须是 SQL 或 PL/pgSQL "
+"函数的名称和签名，转换为 regprocedure。 PL/pgSQL 函数示例如下："
 
 #. Tag: para
 #, no-c-format
@@ -32283,6 +32438,13 @@ msgid ""
 "parameters to <xref linkend=\"RT_ST_MapAlgebraFct2\"/> shall be passed "
 "through to the <varname>tworastuserfunc</varname>."
 msgstr ""
+"<varname>Tworastuserfunc </varname>可以接受三个或四个参数：一个双精度值、一个"
+"双精度值、一个可选的整数数组和一个可变文本数组。 第一个参数是<varname> rast1 "
+"</varname>中单个栅格像元的值（无论栅格数据类型如何）。 第二个参数是 "
+"<varname>rast2 </varname>中的单个栅格像元值。 "
+"第三个参数是当前处理单元的位置，格式为“{x,y}”。 第四个参数指示<xref linkend="
+"\"RT_ST_MapAlgebraFct2\"/> "
+"的所有剩余参数均应传递给<varname>tworastuserfunc</varname>。"
 
 #. Tag: para
 #, no-c-format
@@ -32293,29 +32455,35 @@ msgid ""
 "<varname>tworastuserfunc</varname>, and are contained in the "
 "<varname>userargs</varname> argument."
 msgstr ""
+"<varname>Tworastuserfunc </varname>的第四个参数是<type>可变文本</type>数组。 "
+"任何 <xref linkend=\"RT_ST_MapAlgebraFct2\"/> "
+"调用的所有尾随文本参数都会传递到指定的<varname>tworastuserfunc</varname>，"
+"并包含在 <varname>userargs </varname>参数中。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <type>text[]</type> argument to the <varname>tworastuserfunc</varname> "
 "is required, regardless of whether you choose to pass any arguments to your "
 "user function for processing or not."
 msgstr ""
+"无论您是否选择将任何参数传递给用户函数进行处理，<varname>tworastuserfunc </"
+"varname>的 <type>text[] </type>参数都是必需的。"
 
 #. Tag: para
 #, no-c-format
 msgid "map bands overlay (canvas) (R: small road, G: circle, B: big road)"
-msgstr ""
+msgstr "地图带叠加（画布）（R：小路，G：圆形，B：大路）"
 
 #. Tag: title
 #, no-c-format
 msgid "User Defined function that takes extra args"
-msgstr ""
+msgstr "需要额外参数的用户定义函数"
 
 #. Tag: para
 #, no-c-format
 msgid "user defined with extra args and different bands from same raster"
-msgstr ""
+msgstr "用户使用额外参数和来自同一栅格的不同波段定义"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32324,6 +32492,8 @@ msgid ""
 "function. Return a raster which values are the result of a PLPGSQL user "
 "function involving a neighborhood of values from the input raster band."
 msgstr ""
+"1-波段版本：使用用户定义的 PostgreSQL 函数映射代数最近邻。 返回一个栅格，"
+"其值是涉及输入栅格波段值的邻域的 PLPGSQL 用户函数的结果。"
 
 #. Tag: para
 #, no-c-format
@@ -32334,16 +32504,19 @@ msgid ""
 "array of numbers, for each pixel, returns the result from the user function, "
 "replacing pixel value of currently inspected pixel with the function result."
 msgstr ""
+"（一个栅格版本）返回一个栅格，其值是涉及输入栅格波段值的邻域的 PLPGSQL "
+"用户函数的结果。 用户函数将像素值的邻域作为数字数组，对于每个像素，返回用户函"
+"数的结果，用函数结果替换当前检查像素的像素值。"
 
 #. Tag: para
 #, no-c-format
 msgid "Raster on which the user function is evaluated."
-msgstr ""
+msgstr "评估用户函数的栅格。"
 
 #. Tag: para
 #, no-c-format
 msgid "Band number of the raster to be evaluated. Default to 1."
-msgstr ""
+msgstr "要评估的栅格的波段号。 默认为 1。"
 
 #. Tag: para
 #, no-c-format
@@ -32354,16 +32527,20 @@ msgid ""
 "varname>. Results are truncated if they are larger than what is allowed for "
 "the pixeltype."
 msgstr ""
+"输出栅格的结果像素类型。 必须是<xref linkend=\"RT_ST_BandPixelType\"/> "
+"中列出的一项，或者省略或设置为 NULL。 如果未传入或设置为 NULL，将默认为 "
+"<varname>rast </varname>的像素类型。 "
+"如果结果大于像素类型允许的值，则会被截断。"
 
 #. Tag: para
 #, no-c-format
 msgid "The width of the neighborhood, in cells."
-msgstr ""
+msgstr "邻域的宽度（以单元格为单位）。"
 
 #. Tag: para
 #, no-c-format
 msgid "The height of the neighborhood, in cells."
-msgstr ""
+msgstr "邻域的高度（以单元格为单位）。"
 
 #. Tag: para
 #, no-c-format
@@ -32371,14 +32548,15 @@ msgid ""
 "PLPGSQL/psql user function to apply to neighborhood pixels of a single band "
 "of a raster. The first element is a 2-dimensional array of numbers "
 "representing the rectangular pixel neighborhood"
-msgstr ""
+msgstr "PLPGSQL/psql 用户函数应用于栅格单个波段的邻域像素。 "
+"第一个元素是表示矩形像素邻域的二维数字数组"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Defines what value to pass to the function for a neighborhood pixel that is "
 "nodata or NULL"
-msgstr ""
+msgstr "定义要为无数据或 NULL 的邻域像素传递给函数的值"
 
 #. Tag: para
 #, no-c-format
@@ -32386,7 +32564,8 @@ msgid ""
 "'ignore': any NODATA values encountered in the neighborhood are ignored by "
 "the computation -- this flag must be sent to the user callback function, and "
 "the user function decides how to ignore it."
-msgstr ""
+msgstr "'ignore'：计算忽略在邻域中遇到的任何 NODATA 值 - "
+"该标志必须发送到用户回调函数，并且用户函数决定如何忽略它。"
 
 #. Tag: para
 #, no-c-format
@@ -32394,7 +32573,8 @@ msgid ""
 "'NULL': any NODATA values encountered in the neighborhood will cause the "
 "resulting pixel to be NULL -- the user callback function is skipped in this "
 "case."
-msgstr ""
+msgstr "“NULL”：在邻域中遇到的任何 NODATA 值都将导致结果像素为 "
+"NULL——在这种情况下将跳过用户回调函数。"
 
 #. Tag: para
 #, no-c-format
@@ -32404,11 +32584,13 @@ msgid ""
 "if this value is NODATA, the behavior is the same as 'NULL' (for the "
 "affected neighborhood)"
 msgstr ""
+"“value”：在邻域中遇到的任何 NODATA 值都将替换为参考像素（邻域中心的像素）。 "
+"请注意，如果该值为 NODATA，则行为与“NULL”相同（对于受影响的邻域）"
 
 #. Tag: para
 #, no-c-format
 msgid "Arguments to pass into the user function."
-msgstr ""
+msgstr "要传递给用户函数的参数。"
 
 #. Tag: para
 #, no-c-format
@@ -32418,22 +32600,27 @@ msgid ""
 "\">http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html</link> and then "
 "prepared in the <xref linkend=\"RT_ST_Rescale\"/> examples"
 msgstr ""
+"示例利用 <link xlink:href=\"http://trac.osgeo.org/gdal/wiki/frmts_wtkraster."
+"html\">http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html</link> "
+"中描述的作为单个图块加载的卡特里娜栅格，然后在 <xref linkend=\"RT_ST_Rescale"
+"\"/> 示例中准备"
 
 #. Tag: para
 #, no-c-format
 msgid "First band of our raster"
-msgstr ""
+msgstr "我们栅格的第一个波段"
 
 #. Tag: para
 #, no-c-format
 msgid "new raster after averaging pixels withing 4x4 pixels of each other"
-msgstr ""
+msgstr "对彼此之间 4x4 像素的像素进行平均后的新栅格"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_MapAlgebraExpr\"/>, <xref linkend=\"RT_ST_Rescale\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_MapAlgebraExpr\"/>, <xref linkend=\"RT_ST_Rescale\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32443,6 +32630,9 @@ msgid ""
 "All other bands are returned unchanged. Use case: convert a 16BUI band to a "
 "8BUI and so forth for simpler rendering as viewable formats."
 msgstr ""
+"创建由从原始数据重新分类的波段类型组成的新栅格。 nband 是要更改的波段。 "
+"如果未指定 nband，则假定为 1。所有其他波段均按原样返回。 使用案例：将 16BUI "
+"波段转换为 8BUI 等，以便更简单地呈现为可视格式。"
 
 #. Tag: para
 #, no-c-format
@@ -32455,6 +32645,11 @@ msgid ""
 "unchanged. Refer to <xref linkend=\"reclassarg\"/> for description of valid "
 "reclassification expressions."
 msgstr ""
+"通过对输入栅格 (<varname>rast</varname>) 应用由 <varname>reclassexpr</"
+"varname> 定义的有效 PostgreSQL 代数运算来创建新栅格。 "
+"如果未指定<varname>波段</varname>，则假定为波段 1。 "
+"新栅格将具有与原始栅格相同的地理参考、宽度和高度。 未指定的波段将保持不变。 "
+"有关有效重分类表达式的说明，请参阅 <xref linkend=\"reclassarg\"/>。"
 
 #. Tag: para
 #, no-c-format
