@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-25 14:15+0000\n"
-"PO-Revision-Date: 2023-09-27 03:14+0000\n"
+"PO-Revision-Date: 2023-09-27 09:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
@@ -109,8 +109,8 @@ msgid ""
 msgstr ""
 "在 Windows 上，如果您作为服务运行，则可以通过系统变量进行设置，对于 Windows "
 "7，您可以通过右键单击计算机 -&gt; 属性高级系统设置或在资源管理器中导航至 "
-"<varname>Control Panel\\All 控制面板项目\\系统</varname>。 然后点击<emphasis>"
-"高级系统设置-&gt;高级->环境变量</emphasis>并添加新的系统变量。"
+"<varname>控制面板\\所有 控制面板项目\\系统</varname>。 然后点击<emphasis>高级"
+"系统设置-&gt;高级->环境变量</emphasis>并添加新的系统变量。"
 
 #. Tag: para
 #, no-c-format
@@ -327,8 +327,8 @@ msgid ""
 "<xref linkend=\"create_new_db_extensions\"/> and then restore your backup on "
 "top of this new database."
 msgstr ""
-"在这种情况下，必须备份数据库，按照第 <xref linkend=\"create_new_db_extensions"
-"\"/>节 “使用扩展启用空间数据库”中所述生成新数据库，然后将备份还原到新数据库。"
+"在这种情况下，必须备份数据库，按照 <xref linkend=\"create_new_db_extensions\""
+"/>中所述生成新数据库，然后将备份还原到新数据库。"
 
 #. Tag: para
 #, no-c-format
@@ -356,9 +356,9 @@ msgid ""
 "the backup just has <code>CREATE EXTENSION postgis</code> and thus picks up "
 "the newest latest version during restore."
 msgstr ""
-"如果您最初安装 PostGIS 时没有指定版本，则通常可以在恢复之前跳过 postgis 扩展"
-"的重新安装，因为备份只有 <code>CREATE EXTENSION postgis</code> ，因此在恢复期"
-"间会选择最新的最新版本。"
+"如果您最初安装 PostGIS 时没有指定版本，则通常可以在恢复之前跳过 postgis "
+"扩展的重新安装，因为备份只有 <code>CREATE EXTENSION postgis</code> "
+"，因此在恢复期间会选择最新版本。"
 
 #. Tag: para
 #, no-c-format
@@ -374,7 +374,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Soft Upgrade Pre 9.1+ or without extensions"
-msgstr "之前或非扩展软升级"
+msgstr "9.1之前版本或者无扩展软升级"
 
 #. Tag: para
 #, no-c-format
@@ -490,8 +490,8 @@ msgid ""
 "href=\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows Hard "
 "upgrade</link>."
 msgstr ""
-"有关 Windows 的其他信息，请参阅 Windows <link xlink:href=\"http://trac.osgeo."
-"org/postgis/wiki/UsersWikiWinUpgrade\">Windows 硬升级</link>。"
+"有关 Windows 的其他信息，请参阅 <link xlink:href=\"http://trac.osgeo.org/"
+"postgis/wiki/UsersWikiWinUpgrade\">Windows 硬升级</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -7427,9 +7427,9 @@ msgid ""
 "available for download from <link xlink:href=\"https://proj.org/\"> https://"
 "proj.org/ </link> ."
 msgstr ""
-"项目重投影库。需要项目 6.1 或更高版本。Proj 库用于在 PostGIS 中提供坐标重投影"
-"支持。Proj 可以从<link xlink:href=\"https://proj.org/\"> https://proj.org/ </"
-"link> 下载。"
+"Proj重投影库。需要项目 6.1 或更高版本。Proj 库用于在 PostGIS "
+"中提供坐标重投影支持。Proj 可以从<link xlink:href=\"https://proj.org/\"> "
+"https://proj.org/ </link> 下载。"
 
 #. Tag: para
 #, no-c-format
@@ -7475,9 +7475,9 @@ msgid ""
 "support. <link xlink:href=\"https://gdal.org/download.html\">https://gdal."
 "org/download.html</link>."
 msgstr ""
-"GDAL，版本 2+ 是必需的，版本 3+ 是首选。 这是光栅支持所必需的。<link xlink:"
-"href=\"https://gdal.org/download.html\">https://gdal.org/download.html</"
-"link>。"
+"GDAL，版本 2+ 是必需的，版本 3+ 是首选。 这是栅格支持所必需的。<link "
+"xlink:href=\"https://gdal.org/download.html\">https://gdal.org/download."
+"html</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -7502,7 +7502,7 @@ msgid ""
 "Also make sure to enable the drivers you want to use as described in <xref "
 "linkend=\"raster_configuration\"/>."
 msgstr ""
-"GDAL（伪可选）仅当您不需要光栅时才可以将其省略。另请确保启用您要使用的驱动程"
+"GDAL（伪可选）仅当您不需要栅格时才可以将其省略。另请确保启用您要使用的驱动程"
 "序，如<xref linkend=\"raster_configuration\"/>中所述。"
 
 #. Tag: para
@@ -8213,9 +8213,9 @@ msgid ""
 "available in your PostgreSQL instance. The address_standardizer tests will "
 "also kick in if you built postgis with address_standardizer support:"
 msgstr ""
-"对于 tiger geocoder，请确保您的 PostgreSQL 实例中具有可用的 postgis 和 "
-"fuzzystrmatch 扩展。如果您在address_standardizer支持下构建了postgis，"
-"address_standardizer测试也将启动："
+"对于 tiger 地理编码器，请确保您的 PostgreSQL 实例中具有可用的 postgis 和 "
+"fuzzystrmatch 扩展。如果您在address_standardizer支持下构建了postgis，address_"
+"standardizer测试也将启动："
 
 #. Tag: para
 #, no-c-format
@@ -8369,7 +8369,7 @@ msgstr "输出应类似于以下内容"
 #. Tag: title
 #, no-c-format
 msgid "Installing, Upgrading Tiger Geocoder, and loading data"
-msgstr "安装、升级 Tiger Geocoder并加载数据"
+msgstr "安装、升级 Tiger地理编码器并加载数据"
 
 #. Tag: para
 #, no-c-format
@@ -8383,18 +8383,18 @@ msgid ""
 "for windows, the postgis_tiger_geocoder extension files will work on any OS "
 "since the extension is an SQL/plpgsql only extension."
 msgstr ""
-"像Tiger geocoder这样的附加组件可能未包含在您的PostGIS分发中。如果您缺少tiger "
-"geocoder扩展或想要比您的安装提供的更新版本，那么可以使用适用于您PostgreSQL版"
-"本的<filename>share/extension/postgis_tiger_geocoder.*</filename>文件，这些文"
-"件可以从<link xlink:href=\"http://postgis.net/windows_downloads/\">Windows未"
-"发布版本</link>部分的软件包中获取。尽管这些软件包是为Windows准备的，但"
-"postgis_tiger_geocoder扩展文件将在任何操作系统上工作，因为该扩展只是一个SQL/"
-"plpgsql扩展。"
+"像Tiger地理编码器这样的附加组件可能未包含在您的PostGIS分发中。"
+"如果您缺少tiger 地理编码器扩展或想要比您的安装提供的更新版本，那么可以使用适"
+"用于您PostgreSQL版本的<filename>share/extension/"
+"postgis_tiger_geocoder.*</filename>文件，这些文件可以从<link xlink:href="
+"\"http://postgis.net/windows_downloads/\">Windows未发布版本</link>部分的软件"
+"包中获取。尽管这些软件包是为Windows准备的，但postgis_tiger_geocoder扩展文件将"
+"在任何操作系统上工作，因为该扩展只是一个SQL/plpgsql扩展。"
 
 #. Tag: title
 #, no-c-format
 msgid "Tiger Geocoder Enabling your PostGIS database"
-msgstr "在 PostGIS 数据库中启用Tiger Geocoder"
+msgstr "在 PostGIS 数据库中启用Tiger地理编码器"
 
 #. Tag: para
 #, no-c-format
@@ -8625,7 +8625,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Using Address Standardizer Extension with Tiger geocoder"
-msgstr "将地址标准化器扩展与 Tiger geocoder结合使用"
+msgstr "将地址标准化器扩展与 Tiger 地理编码器结合使用"
 
 #. Tag: para
 #, no-c-format
@@ -8798,7 +8798,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Upgrading your Tiger Geocoder Install and Data"
-msgstr "升级您的 Tiger Geocoder 安装和数据"
+msgstr "升级您的 Tiger 地理编码器 安装和数据"
 
 #. Tag: para
 #, no-c-format
@@ -11219,10 +11219,10 @@ msgid ""
 "<parameter>path</parameter> denotes the position of the component inside the "
 "collection."
 msgstr ""
-"对于基本几何类型（POINT、LINESTRING、POLYGON），返回单个记录，其中包含空"
-"<parameter>路径</parameter> 数组，输入几何图形为 <parameter>geom</"
-"parameter>。对于集合或多几何体，将为每个集合组件返回一条记录，并且<parameter>"
-"路径</parameter>表示组件在集合内的位置。"
+"对于基本几何类型（POINT、LINESTRING、POLYGON），返回单个记录，其中包含空<para"
+"meter>path</parameter> 数组，输入几何图形为 <parameter>geom</parameter>。对于"
+"集合或多几何体，将为每个集合组件返回一条记录，并且<parameter>路径</parameter>"
+"表示组件在集合内的位置。"
 
 #. Tag: para
 #, no-c-format
@@ -11291,9 +11291,8 @@ msgstr ""
 msgid ""
 "the <parameter>geom</parameter> field <varname>POINT</varname>s represent "
 "the coordinates of the supplied geometry."
-msgstr ""
-"<parameter>geom</parameter>字段<varname>POINT</varname>s表示所提供几何图形的"
-"坐标。"
+msgstr "<parameter>geom</parameter>字段<varname>POINT</varname>表示所提供几何图形的坐"
+"标。"
 
 #. Tag: para
 #, no-c-format
@@ -11529,7 +11528,7 @@ msgstr "3D 线串(LineString)端点"
 #. Tag: para
 #, no-c-format
 msgid "End point of a CircularString"
-msgstr "CircularString 的端点"
+msgstr "圆弧 的端点"
 
 #. Tag: para
 #, no-c-format
@@ -12184,8 +12183,8 @@ msgid ""
 "not a collection/MULTI type. 2.0.0+ now returns 1 for single geometries e.g "
 "POLYGON, LINESTRING, POINT."
 msgstr ""
-"更改：2.0.0 在之前的版本中，如果几何图形不是集合/MULTI 类型，则会返回 NULL。 "
-"2.0.0 现在对于单个几何图形返回 1，例如 POLYGON、LINESTRING、POINT。"
+"更改：2.0.0 在之前的版本中，如果几何图形不是collection/MULTI 类型，则会返回 "
+"NULL。 2.0.0 现在对于单个几何图形返回 1，例如 POLYGON、LINESTRING、POINT。"
 
 #. Tag: para
 #, no-c-format
@@ -14282,12 +14281,13 @@ msgid ""
 "that has the SRID and extent of the \"Zoom Level zero\" square within which "
 "the XYZ tile system is inscribed."
 msgstr ""
-"默认情况下，切片封套位于<link xlink:href=\"https://en.wikipedia.org/wiki/"
+"默认情况下，切片范围位于<link xlink:href=\"https://en.wikipedia.org/wiki/"
 "Web_Mercator_projection\">Web Mercator</link>坐标系 (SRID:3857) 中，使用 Web "
-"墨卡托系统的标准范围（-20037508.342789、20037508.342789）。这是 MVT 图块最常"
-"用的坐标系。 可选的<varname>bounds</varname>参数可用于在任何坐标系中生成图"
-"块。 它是一个几何体，具有 SRID 和“缩放级别零”正方形的范围，XYZ 图块系统内切在"
-"该正方形内。"
+"墨卡托系统的标准范围（-20037508.342789、20037508.342789）。这是 MVT "
+"图块最常用的坐标系。 "
+"可选的<varname>bounds</varname>参数可用于在任何坐标系中生成图块。 "
+"它是一个几何体，具有 SRID 和“缩放级别零”正方形的范围，XYZ "
+"图块系统内切在该正方形内。"
 
 #. Tag: para
 #, no-c-format
@@ -14884,9 +14884,9 @@ msgid ""
 "parameter is omitted or is -1 the point is appended to the end of the "
 "LineString."
 msgstr ""
-"在索引<parameter>位置</parameter>之前向LineString 添加一个点（使用从 0 开始的"
-"索引）。如果<parameter>位置</parameter>参数被省略或为 -1，则该点将附加到 "
-"LineString 的末尾。"
+"在索引<parameter>position</parameter>之前向LineString 添加一个点（使用从 0 "
+"开始的索引）。如果<parameter>position</parameter>参数被省略或为 -1，"
+"则该点将附加到 LineString 的末尾。"
 
 #. Tag: para
 #, no-c-format
@@ -15352,7 +15352,7 @@ msgid ""
 "respectively."
 msgstr ""
 "强制几何体进入 XYZM 模式。 如果没有 Z 值或 M 值，则添加 <parameter>Z值</"
-"parameter> 和<parameter>M值</parameter> 值。"
+"parameter> 和<parameter>M值</parameter> 。"
 
 #. Tag: para
 #, no-c-format
@@ -35947,9 +35947,10 @@ msgid ""
 "<varname>intersectionMatrixPattern</varname>. Intersection matrix values can "
 "be computed by <xref linkend=\"ST_Relate\"/>."
 msgstr ""
-"测试<link xlink:href=\"http://en.wikipedia.org/wiki/DE-9IM\">维度扩展 9 交集"
-"模型</link> (DE-9IM) <varname>交集矩阵</varname>值是否满足<varname>交集矩阵模"
-"式</varname>。 交集矩阵值可以通过<xref linkend=\"ST_Relate\"/> 计算。"
+"测试<link xlink:href=\"http://en.wikipedia.org/wiki/DE-9IM\">维度扩展 九 "
+"交模型</link> (DE-9IM) "
+"<varname>交集矩阵</varname>值是否满足<varname>交集矩阵模式</varname>。 "
+"交集矩阵值可以通过<xref linkend=\"ST_Relate\"/> 计算。"
 
 #. Tag: para
 #, no-c-format
@@ -38629,10 +38630,10 @@ msgid ""
 "(<varname>reason</varname>) stating a reason why it is invalid and a "
 "geometry (<varname>location</varname>) pointing out where it is invalid."
 msgstr ""
-"返回一个 <varname>valid_detail</varname> 行，其中包含一个布尔值（<varname>有"
-"效</varname>），说明几何图形是否有效；一个 varchar（<varname>原因</"
-"varname>），说明其无效原因；以及一个几何图形（<varname>位置</varname>），指出"
-"其无效位置。"
+"返回一个 <varname>valid_detail</varname> "
+"行，其中包含一个boolean（<varname>有效</varname>），说明几何图形是否有效；"
+"一个 varchar（<varname>原因</varname>），说明其无效原因；以及一个 "
+"geometry（<varname>位置</varname>），指出其无效位置。"
 
 #. Tag: para
 #, no-c-format
@@ -39861,18 +39862,19 @@ msgid ""
 "linkend=\"PolyhedralSurface\">PolyhedralSurface</link>, <link linkend="
 "\"Triangle\">Triangle</link> and <link linkend=\"TIN\">TIN</link>."
 msgstr ""
-"几何是一种<emphasis>抽象</emphasis>类型。几何值属于其<emphasis>具体</"
-"emphasis>子类型之一。子类型表示各种类型和各种尺寸的几何形状。其中包括"
-"<emphasis role=\"bold\">基本</emphasis>类型<link linkend=\"Point\">点</"
-"link>, <link linkend=\"LineString\">线</link>, <link linkend=\"LinearRing\">"
-"线性环</link> 和 <link linkend=\"Polygon\">面</link>, 以及<emphasis role="
-"\"bold\">集合</emphasis>类型<link linkend=\"MultiPoint\">多点</link>, <link "
-"linkend=\"MultiLineString\">多线</link>, <link linkend=\"MultiPolygon\">多面"
-"</link> 和 <link linkend=\"GeometryCollection\">几何对象集合</link>。<link "
-"xlink:href=\"https://portal.ogc.org/files/?artifact_id=25355\"><emphasis>简"
-"单 功能访问 - 第一部分:通用体系结构v1.2.1</emphasis></link> 为结构<link "
-"linkend=\"PolyhedralSurface\">PolyhedralSurface</link>, <link linkend="
-"\"Triangle\">Triangle</link>和<link linkend=\"TIN\">TIN</link>添加了子类型。"
+"几何是一种<emphasis>抽象</emphasis>类型。几何值属于其<emphasis>具体</emphasis"
+">子类型之一。子类型表示各种类型和各种维度的几何形状。其中包括<emphasis role="
+"\"bold\">基本</emphasis>类型<link linkend=\"Point\">点</link>, <link linkend="
+"\"LineString\">线</link>, <link linkend=\"LinearRing\">线性环</link> 和 "
+"<link linkend=\"Polygon\">面</link>, 以及<emphasis role=\"bold\">集合</"
+"emphasis>类型<link linkend=\"MultiPoint\">多点</link>, <link linkend="
+"\"MultiLineString\">多线</link>, <link linkend=\"MultiPolygon\">多面</link> "
+"和 <link linkend=\"GeometryCollection\">几何对象集合</link>。<link "
+"xlink:href=\"https://portal.ogc.org/files/?artifact_id=25355\""
+"><emphasis>简单 功能访问 - 第一部分:通用体系结构v1.2.1</emphasis></link> "
+"为结构<link linkend=\"PolyhedralSurface\">PolyhedralSurface</link>, <link "
+"linkend=\"Triangle\">Triangle</link>和<link linkend=\"TIN\""
+">TIN</link>添加了子类型。"
 
 #. Tag: para
 #, no-c-format
@@ -39975,11 +39977,11 @@ msgid ""
 "always contain their boundary. The boundary is a geometry of dimension one "
 "less than that of the geometry itself."
 msgstr ""
-"几何模型允许评估拓扑空间关系，如<xref linkend=\"DE-9IM\"/>中所述。为了支持这"
-"一点，为每种几何类型定义了<emphasis role=\"bold\">内部</emphasis>, <emphasis "
-"role=\"bold\">boundary外部</emphasis>和<emphasis role=\"bold\">边界</"
-"emphasis>的概念。几何图形在拓扑上是封闭的，因此它们总是包含它们的边界。边界是"
-"比几何体本身小一维的几何体。"
+"几何模型允许评估拓扑空间关系，如<xref linkend=\"DE-9IM\""
+"/>中所述。为了支持这一点，为每种几何类型定义了<emphasis role=\"bold\">内部</"
+"emphasis>, <emphasis role=\"bold\">外部</emphasis>和<emphasis role=\"bold\">"
+"边界</emphasis>的概念。几何图形在拓扑上是封闭的，因此它们总是包含它们的边界。"
+"边界是比几何体本身小一维的几何体。"
 
 #. Tag: para
 #, no-c-format
@@ -41240,8 +41242,8 @@ msgid ""
 "<emphasis>closed</emphasis> and referred to as a Linear Ring."
 msgstr ""
 "如果<varname>LINESTRING</varname>不两次穿过同一点（端点除外），则该 "
-"LINESTRING 很<emphasis>simple</emphasis>。如果简单线串的端点相同，则称为"
-"<emphasis>闭合线</emphasis>并称为线性环。"
+"LINESTRING 很<emphasis>简单</emphasis>。如果简单线串的端点相同，则称为<emphas"
+"is>闭合线</emphasis>并称为线性环。"
 
 #. Tag: emphasis
 #, no-c-format
@@ -41319,8 +41321,8 @@ msgid ""
 "<varname>POLYGON</varname>s are formed from linear rings, so valid polygonal "
 "geometry is always <emphasis>simple</emphasis>."
 msgstr ""
-"<varname>POLYGON</varname>s 是由线性环形成的，所以常见的多边形几何总是"
-"<emphasis>简单</emphasis>的。"
+"<varname>POLYGON</varname>是由线性环形成的，所以常见的多边形几何总是<emphasis"
+">简单</emphasis>的。"
 
 #. Tag: para
 #, no-c-format
@@ -41356,9 +41358,9 @@ msgid ""
 "Validity is defined by rules that allow polygonal geometry to model planar "
 "areas unambiguously."
 msgstr ""
-"几何有效性主要适用于二维几何形状（<varname>POLYGON</varname>s和"
-"<varname>MULTIPOLYGON</varname>s）。有效性是由允许多边形几何形状明确地模拟平"
-"面区域的规则定义的。"
+"几何有效性主要适用于二维几何形状（<varname>POLYGON</varname>和<varname>MULTIP"
+"OLYGON</varname>）。有效性是由允许多边形几何形状明确地模拟平面区域的规则定义"
+"的。"
 
 #. Tag: para
 #, no-c-format
@@ -41410,9 +41412,9 @@ msgid ""
 "represented as a valid <varname>MULTIPOLYGON</varname>."
 msgstr ""
 "<emphasis role=\"bold\">(h)</emphasis>和<emphasis role=\"bold\">(i)</"
-"emphasis> 是有效的<varname>POLYGON</varname>s。<emphasis role=\"bold\">(j-"
-"m)</emphasis> 是无效的。<emphasis role=\"bold\">(j)</emphasis>可以表示为有效"
-"的<varname>MULTIPOLYGON</varname>。"
+"emphasis> 是有效的<varname>POLYGON</varname>。<emphasis role=\"bold\">(j-m)</"
+"emphasis> 是无效的。<emphasis role=\"bold\""
+">(j)</emphasis>可以表示为有效的<varname>MULTIPOLYGON</varname>。"
 
 #. Tag: emphasis
 #, no-c-format
@@ -41452,7 +41454,7 @@ msgstr "<varname>MULTIPOLYGON</varname>以下条件是<emphasis>有效</emphasis
 #. Tag: para
 #, no-c-format
 msgid "its element <varname>POLYGON</varname>s are valid"
-msgstr "其元素 <varname>POLYGON</varname>s有效"
+msgstr "其元素 <varname>POLYGON</varname>有效"
 
 #. Tag: para
 #, no-c-format
@@ -41505,9 +41507,9 @@ msgid ""
 "equivalently, have at least two distinct points.) Note that non-simple (self-"
 "intersecting) lines are valid."
 msgstr ""
-"对于线性几何，唯一的有效性规则是<varname>LINESTRING</varname>s必须至少有两个"
-"点并且具有非零长度（或等效地，至少有两个不同的点。请注意，非简单（自相交）线"
-"是有效的。"
+"对于线性几何，唯一的有效性规则是<varname>LINESTRING</varname>必须至少有两个点"
+"并且具有非零长度（或等效地，至少有两个不同的点。请注意，非简单（自相交）线是"
+"有效的。"
 
 #. Tag: para
 #, no-c-format
@@ -41564,7 +41566,7 @@ msgid ""
 "one of the techniques below to ensure the data you are processing is valid."
 msgstr ""
 "如果在调用 PostGIS 函数时遇到意外错误消息 （例如“GEOS Intersection（） 抛出了"
-"一个错误！),应首先确认函数参数是否有效。如果无效，请考虑使用以下技术之一来验"
+"一个错误！”),应首先确认函数参数是否有效。如果无效，请考虑使用以下技术之一来验"
 "证您正在处理的数据。"
 
 #. Tag: para
@@ -42346,9 +42348,8 @@ msgstr ""
 msgid ""
 "Coerce all integers to standard 32-bit integers, do not create 64-bit "
 "bigints, even if the DBF header signature appears to warrant it."
-msgstr ""
-"将所有整数强制为标准 32 位整数，不要创建 64 位 bigint，即使DBF标头签名似乎可"
-"以保证这一点。"
+msgstr "将所有整数强制为标准 32 位整数，不要创建 64 "
+"位大整数，即使DBF标头签名似乎可以保证这一点。"
 
 #. Tag: para
 #, no-c-format
@@ -42828,7 +42829,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The syntax for building a GiST index on a \"geometry\" column is as follows:"
-msgstr "在“几何”列上构建 GiST 索引的语法如下："
+msgstr "在“geometry”列上构建 GiST 索引的语法如下："
 
 #. Tag: para
 #, no-c-format
@@ -43013,8 +43014,8 @@ msgstr ""
 msgid ""
 "The <code>geography</code> datatype is supported for BRIN indexing. The "
 "syntax for building a BRIN index on a geography column is:"
-msgstr ""
-"BRIN 索引支持<code>地理</code>数据类型。在地理列上构建 BRIN 索引的语法是："
+msgstr "BRIN 索引支持<code>geography</code>数据类型。在geography列上构建 BRIN "
+"索引的语法是："
 
 #. Tag: para
 #, no-c-format
@@ -43139,7 +43140,7 @@ msgid ""
 "GiST index on a \"geometry\" column is as follows:"
 msgstr ""
 "一旦 GIS 数据表超过几千行，就可以使用 SP-GiST 索引来加速数据的空间搜索。 "
-"在“几何”列上构建 SP-GiST 索引的语法如下："
+"在“geometry”列上构建 SP-GiST 索引的语法如下："
 
 #. Tag: para
 #, no-c-format
@@ -43254,11 +43255,11 @@ msgid ""
 "forget to run <command>SET ENABLE_SEQSCAN TO ON;</command> so that the "
 "planner will operate normally for other queries."
 msgstr ""
-"如果清理没有帮助，您可以使用命令<command>SET ENABLE_SEQSCAN TO OFF;</"
-"command>; 暂时强制规划器使用索引信息。 通过这种方式，您可以检查规划器是否能够"
-"为您的查询生成索引加速查询计划。您应该仅使用此命令进行调试；一般来说，规划者"
-"比你更了解何时使用索引。运行查询后，不要忘记运行<command>SET ENABLE_SEQSCAN "
-"TO ON;</command>； 以便规划器能够正常运行其他查询。"
+"如果清理没有帮助，您可以使用命令<command>SET ENABLE_SEQSCAN TO "
+"OFF;</command>暂时强制规划器使用索引信息。 通过这种方式，您可以检查规划器是否"
+"能够为您的查询生成索引加速查询计划。您应该仅使用此命令进行调试；一般来说，规"
+"划者比你更了解何时使用索引。运行查询后，不要忘记运行<command>SET "
+"ENABLE_SEQSCAN TO ON;</command> 以便规划器能够正常运行其他查询。"
 
 #. Tag: para
 #, no-c-format
@@ -43338,7 +43339,7 @@ msgstr "空间关系显示两个几何图形如何相互关联。用于查询几
 #. Tag: title
 #, no-c-format
 msgid "Dimensionally Extended 9-Intersection Model"
-msgstr "维度扩展9交模型（Dimensionally Extended 9-Intersection Model）"
+msgstr "维度扩展九交模型（Dimensionally Extended 9-Intersection Model）"
 
 #. Tag: para
 #, no-c-format
@@ -43376,9 +43377,9 @@ msgid ""
 "is the two endpoints. For <varname>POLYGON</varname>s, the boundary is the "
 "linework of the exterior and interior rings."
 msgstr ""
-"几何的边界是下一个较低维度的几何的集合。 对于维数为 0 的 <varname>POINT</"
-"varname>s，边界是空集。<varname>LINESTRING</varname>的边界是两个端点。 对于"
-"<varname>POLYGON</varname>s，边界是外环和内环的线条。"
+"几何的边界是下一个较低维度的几何的集合。 对于维数为 0 的 <varname>POINT</varn"
+"ame>，边界是空集。<varname>LINESTRING</varname>的边界是两个端点。 "
+"对于<varname>POLYGON</varname>，边界是外环和内环的线条。"
 
 #. Tag: glossterm
 #, no-c-format
@@ -43394,9 +43395,9 @@ msgid ""
 "between the endpoints. For <varname>POLYGON</varname>s, the interior is the "
 "areal surface inside the polygon."
 msgstr ""
-"几何图形的内部是几何图形中不在边界内的那些点。对于<varname>POINT</varname>s来"
-"说，内部就是点本身。<varname>LINESTRING</varname>的内部是端点之间的点集。 对"
-"于<varname>POLYGON</varname>s，内部是多边形内的面。"
+"几何图形的内部是几何图形中不在边界内的那些点。对于<varname>POINT</varname>来"
+"说，内部就是点本身。<varname>LINESTRING</varname>的内部是端点之间的点集。 "
+"对于<varname>POLYGON</varname>，内部是多边形内的面。"
 
 #. Tag: glossterm
 #, no-c-format
@@ -43423,10 +43424,10 @@ msgid ""
 "dimensions can be formally represented in a 3x3 <emphasis role=\"bold"
 "\">intersection matrix</emphasis>."
 msgstr ""
-"The <link xlink:href=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally "
-"Extended 9-Intersection Model</link> (DE-9IM)通过指定每个几何图形的上述集合之"
-"间的 9 个相交的维度来描述两个几何图形之间的空间关系。交集维度可以正式表示为 "
-"3x3 <emphasis role=\"bold\">交集矩阵</emphasis>。"
+"<link xlink:href=\"http://en.wikipedia.org/wiki/DE-9IM\">九交模型</link> (DE-"
+"9IM)通过指定每个几何图形的上述集合之间的 9 "
+"个相交的维度来描述两个几何图形之间的空间关系。交集维度可以正式表示为 3x3 "
+"<emphasis role=\"bold\">交集矩阵</emphasis>。"
 
 #. Tag: para
 #, no-c-format
@@ -43736,11 +43737,11 @@ msgid ""
 "<varname>GEOMETRYCOLLECTION</varname>s of <varname>[MULTI]POINT</varname>s, "
 "<varname>[MULTI]LINESTRING</varname>s, etc.)."
 msgstr ""
-"两步解决方案是首先计算空间相交 (<xref linkend=\"ST_Intersection\"/>)的道路线"
-"对的实际交叉点 (<xref linkend=\"ST_Intersects\"/>)，然后检查交叉点的 <xref "
-"linkend=\"ST_GeometryType\"/> 是否为“<varname>LINESTRING</varname>”（正确处理"
-"返回 <varname>GEOMETRYCOLLECTION</varname>s、<varname>[MULTI]POINT</"
-"varname>s、<varname>[MULTI]LINESTRING</varname>s等情况）。"
+"两步解决方案是首先计算空间相交 (<xref linkend=\"ST_Intersection\"/>)"
+"的道路线对的实际交叉点 (<xref linkend=\"ST_Intersects\"/>)，然后检查交叉点的 "
+"<xref linkend=\"ST_GeometryType\"/> 是否为“<varname>LINESTRING</varname>”（"
+"正确处理返回 <varname>GEOMETRYCOLLECTION</varname>、<varname>[MULTI]POINT</va"
+"rname>、<varname>[MULTI]LINESTRING</varname>等情况）。"
 
 #. Tag: para
 #, no-c-format
