@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-25 14:15+0000\n"
-"PO-Revision-Date: 2023-09-26 09:23+0000\n"
-"Last-Translator: Wang Dapeng <wangdapeng20191008@gmail.com>\n"
+"PO-Revision-Date: 2023-09-27 03:14+0000\n"
+"Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
 "Language: zh_Hans\n"
@@ -2524,9 +2524,9 @@ msgid ""
 "NULL)"
 msgstr ""
 "将地址作为字符串（或其他标准化地址）输入，并输出一组可能的位置，其中包括 NAD "
-"83 长纬度中的点几何图形、每个位置的标准化地址以及评级。 评级越低，匹配的可能"
-"性越大。 结果首先按最低评分排序。 可以选择传入最大结果数，默认为10，以及"
-"restrict_region（默认为NULL）"
+"83经纬度中的点几何图形、每个位置的标准化地址以及评级。 "
+"评级越低，匹配的可能性越大。 结果首先按最低评分排序。 "
+"可以选择传入最大结果数，默认为10，以及restrict_region（默认为NULL）"
 
 #. Tag: para
 #, no-c-format
@@ -3979,7 +3979,7 @@ msgstr "几何"
 #. Tag: entry
 #, no-c-format
 msgid "automatic"
-msgstr "自动"
+msgstr "automatic"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -8369,7 +8369,7 @@ msgstr "输出应类似于以下内容"
 #. Tag: title
 #, no-c-format
 msgid "Installing, Upgrading Tiger Geocoder, and loading data"
-msgstr "安装、升级 Tiger Geocoder 并加载数据"
+msgstr "安装、升级 Tiger Geocoder并加载数据"
 
 #. Tag: para
 #, no-c-format
@@ -8625,7 +8625,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Using Address Standardizer Extension with Tiger geocoder"
-msgstr "在 PostGIS 数据库中启用 Tiger 地理编码器：使用扩展名"
+msgstr "将地址标准化器扩展与 Tiger geocoder结合使用"
 
 #. Tag: para
 #, no-c-format
@@ -8671,7 +8671,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Required tools for tiger data loading"
-msgstr "加载tiger所需的工具"
+msgstr "Tiger数据加载所需工具"
 
 #. Tag: para
 #, no-c-format
@@ -8798,7 +8798,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Upgrading your Tiger Geocoder Install and Data"
-msgstr "升级 Tiger 地理编码器和数据"
+msgstr "升级您的 Tiger Geocoder 安装和数据"
 
 #. Tag: para
 #, no-c-format
@@ -9016,8 +9016,8 @@ msgid ""
 "documentation, alignment of PostGIS with PostgreSQL releases, X3D support, "
 "TIGER geocoder support, management functions."
 msgstr ""
-"构建机器人维护，Windows和实验性构建，文档，与PostgreSQL的协调，X3D支持，"
-"Tiger Geocoder功能，功能管理。"
+"Buildbot 维护、Windows 生产和实验构建、文档、PostGIS 与 PostgreSQL "
+"版本的对齐、X3D 支持、TIGER 地理编码器支持、管理功能。"
 
 #. Tag: term
 #, no-c-format
@@ -9063,8 +9063,8 @@ msgid ""
 "with GEOS releases, topology support, and raster framework and low level API "
 "functions."
 msgstr ""
-"纠错和维护、构建机器人维护、git 镜像管理、功能管理、新 GEOS 功能的集成、与 "
-"GEOS 版本的协调、拓扑功能、光框架和低级 API 函数。"
+"Bug 修复和维护、buildbot 维护、git 镜像管理、管理功能、新 GEOS "
+"功能的集成以及与 GEOS 版本的一致性、拓扑支持以及栅格框架和低级 API 功能。"
 
 #. Tag: title
 #, no-c-format
@@ -14598,7 +14598,7 @@ msgstr ", <xref linkend=\"ST_SquareGrid\"/>, <xref linkend=\"ST_Hexagon\"/>"
 msgid ""
 "Returns the input letters rendered as geometry with a default start position "
 "at the origin and default text height of 100."
-msgstr "返回以几何图形绘制的文本，默认起始位置为原点，默认高度为 100。"
+msgstr "返回渲染为几何图形的输入字母，默认起始位置位于原点，默认文本高度为 100。"
 
 #. Tag: para
 #, no-c-format
@@ -16738,7 +16738,7 @@ msgstr "这些函数从各种文本或二进制格式创建几何对象。"
 #. Tag: title
 #, no-c-format
 msgid "Well-Known Text (WKT)"
-msgstr "Well-Known Text (WKT)"
+msgstr "已知文本 (WKT)"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -23978,7 +23978,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Computes a geometry representing the point-set union of the input geometries."
-msgstr "计算表示输入几何图形的点集合并的几何图形。"
+msgstr "计算表示输入几何图形的点集并集的几何图形。"
 
 #. Tag: para
 #, no-c-format
@@ -28486,8 +28486,7 @@ msgstr ""
 msgid ""
 "Returns system file path to a band stored in file system. If no bandnum "
 "specified, 1 is assumed."
-msgstr ""
-"返回存储在文件系统中的波段的系统文件路径。 如果未指定 bandnum，则假定为 1。"
+msgstr "返回存储在文件系统中的波段的系统文件路径。 如果未指定波段号，则假定为 1。"
 
 #. Tag: para
 #, no-c-format
@@ -28502,7 +28501,7 @@ msgstr ""
 msgid ""
 "Returns the file size of a band stored in file system. If no bandnum "
 "specified, 1 is assumed."
-msgstr "返回文件系统中存储的波段的文件大小。 如果未指定 bandnum，则假定为 1。"
+msgstr "返回文件系统中存储的波段的文件大小。 如果未指定波段号，则假定为 1。"
 
 #. Tag: para
 #, no-c-format
@@ -28528,8 +28527,7 @@ msgstr ""
 msgid ""
 "Returns the file timestamp of a band stored in file system. If no bandnum "
 "specified, 1 is assumed."
-msgstr ""
-"返回文件系统中存储的波段的文件时间戳。 如果未指定 bandnum，则假定为 1。"
+msgstr "返回文件系统中存储的波段的文件时间戳。 如果未指定 波段号，则假定为 1。"
 
 #. Tag: para
 #, no-c-format
@@ -28556,7 +28554,7 @@ msgstr ""
 msgid ""
 "Returns the type of pixel for given band. If no bandnum specified, 1 is "
 "assumed."
-msgstr "返回给定波段的像素类型。 如果未指定 bandnum，则假定为 1。"
+msgstr "返回给定波段的像素类型。 如果未指定 波段号，则假定为 1。"
 
 #. Tag: para
 #, no-c-format
@@ -30701,7 +30699,7 @@ msgid ""
 "are one of those supported by your compiled library. Use ST_GDALDrivers() to "
 "get a list of formats supported by your library."
 msgstr ""
-"以指定的 GDAL 栅格格式返回栅格图块。 光栅格式是编译库支持的格式之一。 使用 "
+"以指定的 GDAL 栅格格式返回栅格图块。 栅格格式是编译库支持的格式之一。 使用 "
 "ST_GDALDrivers() 获取您的库支持的格式列表。"
 
 #. Tag: para
@@ -30791,9 +30789,9 @@ msgid ""
 "3 bands, then only the first band is used. If only 3 bands then all 3 bands "
 "are used and mapped to RGB."
 msgstr ""
-"将光栅图块选定的波段作为单个联合摄影导出组 (JPEG) 图像（字节数组）返回。 如果"
-"未指定波段且有 1 个或 3 个以上波段，则仅使用第一个波段。 如果只有 3 个波段，"
-"则使用所有 3 个波段并将其映射到 RGB。"
+"将栅格图块选定的波段作为单个联合摄影导出组 (JPEG) 图像（字节数组）返回。 "
+"如果未指定波段且有 1 个或 3 个以上波段，则仅使用第一个波段。 如果只有 3 "
+"个波段，则使用所有 3 个波段并将其映射到 RGB。"
 
 #. Tag: para
 #, no-c-format
@@ -33592,8 +33590,8 @@ msgstr ""
 msgid ""
 "Returns a set of geomval (geom,val) rows, from a given raster band. If no "
 "band number is specified, band num defaults to 1."
-msgstr "从给定的栅格带中返回一组 geomval (geom,val) 行。 如果未指定 band 编号，则 "
-"band num 默认为 1。"
+msgstr "从给定的栅格带中返回一组 geomval (geom,val) 行。 如果未指定波段 编号，"
+"则波段编号默认为 1。"
 
 #. Tag: para
 #, no-c-format
@@ -38365,7 +38363,7 @@ msgstr "<entry>geometry</entry>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "The type representing a 3-dimensional bounding box."
-msgstr "表示二维边界框的类型。"
+msgstr "表示三维边界框的类型。"
 
 #. Tag: para
 #, no-c-format
@@ -43340,7 +43338,7 @@ msgstr "空间关系显示两个几何图形如何相互关联。用于查询几
 #. Tag: title
 #, no-c-format
 msgid "Dimensionally Extended 9-Intersection Model"
-msgstr "维度扩展9相交模型（Dimensionally Extended 9-Intersection Model）"
+msgstr "维度扩展9交模型（Dimensionally Extended 9-Intersection Model）"
 
 #. Tag: para
 #, no-c-format
@@ -44639,7 +44637,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Raster Catalogs"
-msgstr "光栅目录"
+msgstr "栅格目录"
 
 #. Tag: para
 #, no-c-format
@@ -44881,7 +44879,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Raster Overviews"
-msgstr "光栅概述"
+msgstr "栅格概述"
 
 #. Tag: para
 #, no-c-format
