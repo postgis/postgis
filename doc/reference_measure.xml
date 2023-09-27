@@ -1180,7 +1180,7 @@ ST_3DLength
 			longitude/latitude and a length is desired without reprojection.
 			The spheroid is specified by a text value	as follows:</para>
 
-		<literallayout><![CDATA[[
+		<literallayout><![CDATA[
 SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]
 ]]> </literallayout>
 		<para>For example:</para>

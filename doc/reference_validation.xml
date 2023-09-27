@@ -152,7 +152,7 @@ The optional <varname>flags</varname> parameter is a bitfield. It can have the f
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting><![CDATA[[
+		<programlisting><![CDATA[
 
 --First 3 Rejects from a successful quintuplet experiment
 SELECT gid, reason(ST_IsValidDetail(geom)), ST_AsText(location(ST_IsValidDetail(geom))) as location
@@ -249,7 +249,7 @@ validity_info
 --------------------------
 Self-intersection[150 150]
         </programlisting>
-		<programlisting><![CDATA[[
+		<programlisting><![CDATA[
 
 --First 3 Rejects from a successful quintuplet experiment
 SELECT gid, ST_IsValidReason(geom) as validity_info

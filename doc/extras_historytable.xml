@@ -36,7 +36,7 @@
 <programlisting>SELECT * FROM roads_history WHERE roads_pk = 111;</programlisting>
 
 <para>Or, to retrieve a view of the roads table at any point in the past:</para>
-<programlisting><![CDATA[[
+<programlisting><![CDATA[
 SELECT * FROM roads_history
     WHERE date_added < 'January 1, 2001' AND
         ( date_deleted >= 'January 1, 2001' OR date_deleted IS NULL );

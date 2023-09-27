@@ -494,7 +494,7 @@ F000000000000000000000000000000000000000000000000');
 
 
 	<para>javascript will look something like this where $ variable you replace with query result</para>
-	<programlisting><![CDATA[[
+	<programlisting><![CDATA[
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=geometry"></script>
 <script type="text/javascript">
 	 flightPath = new google.maps.Polyline({
@@ -889,7 +889,7 @@ SELECT ST_AsGML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
 	  </refsection>
 		<refsection>
 		<title>Examples: Version 3</title>
-		<programlisting><![CDATA[[
+		<programlisting><![CDATA[
 -- Flip coordinates and output extended EPSG (16 | 1)--
 SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)',4326), 5, 17);
 			st_asgml
@@ -897,7 +897,7 @@ SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)',4326), 
 		<gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>6.34535 5.23423</gml:pos></gml:Point>
 
 ]]></programlisting>
-		<programlisting><![CDATA[[
+		<programlisting><![CDATA[
 -- Output the envelope (32) --
 SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 32);
 		st_asgml
@@ -909,7 +909,7 @@ SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 32);
 
 ]]></programlisting>
 
-		<programlisting><![CDATA[[
+		<programlisting><![CDATA[
 -- Output the envelope (32) , reverse (lat lon instead of lon lat) (16), long srs (1)= 32 | 16 | 1 = 49 --
 SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 49);
 	st_asgml
@@ -921,7 +921,7 @@ SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 49);
 
 ]]></programlisting>
 
-		<programlisting><![CDATA[[
+		<programlisting><![CDATA[
 -- Polyhedral Example --
 SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
 ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
@@ -1052,7 +1052,7 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting><![CDATA[[
+		<programlisting><![CDATA[
 SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
 
 		st_askml
@@ -1238,7 +1238,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
             <title>Examples</title>
 
             <para>Converting a <varname>POINT</varname> to MARC21/XML formated as hdddmmss (default)</para>
-            <programlisting><![CDATA[[
+            <programlisting><![CDATA[
 
 
                 SELECT ST_AsMARC21('SRID=4326;POINT(-4.504289 54.253312)'::geometry);
@@ -1260,7 +1260,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 ]]></programlisting>
 
             <para>Converting a <varname>POLYGON</varname> to MARC21/XML formated in decimal degrees</para>
-            <programlisting><![CDATA[[
+            <programlisting><![CDATA[
 
 
                 SELECT ST_AsMARC21('SRID=4326;POLYGON((-4.5792388916015625 54.18172660239091,-4.56756591796875 54.196993557130355,-4.546623229980469 54.18313300502024,-4.5792388916015625 54.18172660239091))'::geometry,'hddd.dddd');
@@ -1280,7 +1280,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 ]]></programlisting>
 
             <para>Converting a <varname>GEOMETRYCOLLECTION</varname> to MARC21/XML formated in decimal minutes. The geometries order in the MARC21/XML output correspond to their order in the collection.</para>
-            <programlisting><![CDATA[[
+            <programlisting><![CDATA[
 
 
                 SELECT ST_AsMARC21('SRID=4326;GEOMETRYCOLLECTION(POLYGON((13.1 52.65,13.516666666666667 52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52.65)),POINT(-4.5 54.25))'::geometry,'hdddmm.mmmm');
@@ -1486,7 +1486,7 @@ SELECT ST_AsMVTGeom(
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting><![CDATA[[
+		<programlisting><![CDATA[
 WITH mvtgeom AS
 (
   SELECT ST_AsMVTGeom(geom, ST_TileEnvelope(12, 513, 412), extent => 4096, buffer => 64) AS geom, name, description
@@ -1770,7 +1770,7 @@ SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;
 
 	  <refsection>
 		<title>Example: Create a fully functional X3D document - This will generate a cube that is viewable in FreeWrl and other X3D viewers.</title>
-		<programlisting><![CDATA[[
+		<programlisting><![CDATA[
 SELECT '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN" "http://www.web3d.org/specifications/x3d-3.0.dtd">
 <X3D>
@@ -1816,7 +1816,7 @@ SELECT '<?xml version="1.0" encoding="UTF-8"?>
             <link xlink:href="http://postgis.net/docs/support/viewers/x3d_viewer.htm">x3d scene viewer</link>
             and click Show
          </para>
-         <programlisting><![CDATA[[
+         <programlisting><![CDATA[
 SELECT string_agg('<Shape>' || ST_AsX3D(ST_Extrude(geom, 0,0, i*0.5)) ||
     '<Appearance>
           <Material diffuseColor="' || (0.01*i)::text || ' 0.8 0.2" specularColor="' || (0.05*i)::text || ' 0 0.5"/>
@@ -1835,7 +1835,7 @@ FROM ST_Subdivide(ST_Letters('PostGIS'),20) WITH ORDINALITY AS f(geom,i);
       </refsection>
 	   <refsection>
 		<title>Example: An Octagon elevated 3 Units and decimal precision of 6</title>
-		<programlisting><![CDATA[[
+		<programlisting><![CDATA[
 SELECT ST_AsX3D(
 ST_Translate(
     ST_Force_3d(
@@ -1852,7 +1852,7 @@ x3dfrag
 	  </refsection>
 	  <refsection>
 		<title>Example: TIN</title>
-		<programlisting><![CDATA[[
+		<programlisting><![CDATA[
 SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((
                 0 0 0,
                 0 0 1,
@@ -1873,7 +1873,7 @@ SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((
 	  </refsection>
 	  <refsection>
 		<title>Example: Closed multilinestring (the boundary of a polygon with holes)</title>
-		<programlisting><![CDATA[[
+		<programlisting><![CDATA[
 SELECT ST_AsX3D(
 		    ST_GeomFromEWKT('MULTILINESTRING((20 0 10,16 -12 10,0 -16 10,-12 -12 10,-20 0 10,-12 16 10,0 24 10,16 16 10,20 0 10),
   (12 0 10,8 8 10,0 12 10,-8 8 10,-8 0 10,-8 -4 10,0 -8 10,8 -4 10,12 0 10))')

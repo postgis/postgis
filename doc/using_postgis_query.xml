@@ -426,7 +426,7 @@ WHERE a.id != b.id
           specifying a line partly inside and partly outside a polygon is
           '<emphasis role="bold">102101FF2</emphasis>':</para>
 
-          <programlisting><![CDATA[[
+          <programlisting><![CDATA[
 -- Find wharves partly on a lake's shoreline
 SELECT a.lake_id, b.wharf_id
 FROM lakes a, wharfs b
@@ -480,7 +480,7 @@ WHERE a.geom && b.geom
     operation. For example, the following query would be quite slow on a
     large table:</para>
 
-	  <programlisting><![CDATA[[
+	  <programlisting><![CDATA[
 SELECT geom
 FROM geom_table
 WHERE ST_Distance( geom, 'SRID=312;POINT(100000 200000)' ) < 100
@@ -715,7 +715,7 @@ kilometers
 		  </question>
 
 		  <answer>
-			<programlisting><![CDATA[[
+			<programlisting><![CDATA[
 SELECT gid, name, ST_Area(geom) AS area
 FROM bc_municipality
 WHERE ST_NRings(geom) > 1
