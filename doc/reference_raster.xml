@@ -249,7 +249,7 @@ VALUES (1,
                 <varlistentry>
                     <term><varname>reclassexpr text</varname></term>
                     <listitem><para>range expression consisting of comma delimited range:map_range mappings. : to define mapping that defines how to map old band values to new band values. ( means &gt;, ) means less than, ] &lt; or equal, [ means &gt; or equal</para>
-                        <para><programlisting><![CDATA[[
+                        <para><programlisting><![CDATA[
 1. [a-b] = a <= x <= b
 
 2. (a-b] = a < x <= b
@@ -1214,7 +1214,7 @@ WHERE short_name = 'JPEG') As g;
 (9 rows)
 </programlisting>
 
-<programlisting><![CDATA[[
+<programlisting><![CDATA[
 
 -- raw xml output for creator options for GeoTiff --
 SELECT create_options
@@ -4932,7 +4932,7 @@ WHERE rid=2;
    2 |    253 |     78 |     70
                 </programlisting>
 
-                <programlisting><![CDATA[[
+                <programlisting><![CDATA[
 
 --- Get all values in bands 1,2,3 of each pixel --
 SELECT x, y, ST_Value(rast, 1, x, y) As b1val,
@@ -4955,7 +4955,7 @@ WHERE rid =  2 AND x <= ST_Width(rast) AND y <= ST_Height(rast);
 
 ]]></programlisting>
 
-                <programlisting><![CDATA[[
+                <programlisting><![CDATA[
 
 --- Get all values in bands 1,2,3 of each pixel same as above but returning the upper left point point of each pixel --
 SELECT ST_AsText(ST_SetSRID(
@@ -4976,7 +4976,7 @@ WHERE rid =  2 AND x <= ST_Width(rast) AND y <= ST_Height(rast);
 :
 
 ]]></programlisting>
-                <programlisting><![CDATA[[
+                <programlisting><![CDATA[
 
 --- Get a polygon formed by union of all pixels
     that fall in a particular value range and intersect particular polygon --
@@ -5013,7 +5013,7 @@ WHERE
 
 ]]></programlisting>
 
-                <programlisting><![CDATA[[
+                <programlisting><![CDATA[
 
 --- Checking all the pixels of a large raster tile can take a long time.
 --- You can dramatically improve speed at some lose of precision by orders of magnitude
@@ -5583,7 +5583,7 @@ FROM ST_SetValues(
             <refsection>
                 <title>Examples</title>
 
-                <programlisting><![CDATA[[
+                <programlisting><![CDATA[
 
                 -- Geometry example
 SELECT (foo.geomval).val, ST_AsText(ST_Union((foo.geomval).geom))
@@ -5719,7 +5719,7 @@ GROUP BY (foo.geomval).val;
             <refsection>
                 <title>Examples: Variant 1</title>
 
-                <programlisting><![CDATA[[
+                <programlisting><![CDATA[
 
 /*
 The ST_SetValues() does the following...
@@ -5764,7 +5764,7 @@ ORDER BY 1, 2;
 
 ]]></programlisting>
 
-                <programlisting><![CDATA[[
+                <programlisting><![CDATA[
 
 /*
 The ST_SetValues() does the following...
@@ -8328,7 +8328,7 @@ FROM (SELECT rid, band, ST_SummaryStats(rast, band) As stats
                 <title>Example: Summarize pixels that intersect buildings of interest</title>
                 <para>This example took 574ms on PostGIS windows 64-bit with all of Boston Buildings
 and aerial Tiles (tiles each 150x150 pixels ~ 134,000 tiles), ~102,000 building records</para>
-                <programlisting><![CDATA[[
+                <programlisting><![CDATA[
 WITH
 -- our features of interest
    feat AS (SELECT gid As building_id, geom_26986 As geom FROM buildings AS b
@@ -9005,7 +9005,7 @@ SELECT ST_AsHexWKB(rast) As rastbin FROM dummy_rast WHERE rid=1;
             <refsection>
                 <title>JPEG Output Example, multiple tiles as single raster</title>
 
-                <programlisting><![CDATA[[
+                <programlisting><![CDATA[
 SELECT ST_AsGDALRaster(ST_Union(rast), 'JPEG', ARRAY['QUALITY=50']) As rastjpg
 FROM dummy_rast
 WHERE rast && ST_MakeEnvelope(10, 10, 11, 11);
@@ -9019,7 +9019,7 @@ WHERE rast && ST_MakeEnvelope(10, 10, 11, 11);
                 We'lll repeat the prior example but also exporting.  Note for this you'll need to have super user access to db since it uses server side lo functions.
                 It will also export to path on server network.  If you need export locally,
                 use the psql equivalent lo_ functions which export to the local file system instead of the server file system.</para>
-                <programlisting><![CDATA[[
+                <programlisting><![CDATA[
 DROP TABLE IF EXISTS tmp_out ;
 
 CREATE TABLE tmp_out AS
@@ -11723,7 +11723,7 @@ WHERE rid = 2;
                     </programlisting>
 
                     <para>Create a new 1 band raster of pixel-type 2BUI from our original that is reclassified and set the nodata value to a passed parameter to the user function (0).</para>
-                    <programlisting><![CDATA[[
+                    <programlisting><![CDATA[
 ALTER TABLE dummy_rast ADD COLUMN map_rast2 raster;
 CREATE FUNCTION classify_fct(pixel float, pos integer[], variadic args text[])
 RETURNS float
@@ -11918,7 +11918,7 @@ Note that the argument contains the name of the function, the types of the funct
 
                 <refsection>
                     <title>Example: Overlaying rasters on a canvas as separate bands</title>
-                    <programlisting><![CDATA[[
+                    <programlisting><![CDATA[
 
 -- define our user defined function --
 CREATE OR REPLACE FUNCTION raster_mapalgebra_union(
@@ -14307,7 +14307,7 @@ MULTIPOLYGON(((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.8
           <refsection>
             <title>Examples</title>
 
-            <programlisting><![CDATA[[
+            <programlisting><![CDATA[
 SELECT A.rid As a_rid, B.rid As b_rid, A.rast &< B.rast As overleft
  FROM dummy_rast AS A CROSS JOIN dummy_rast AS B;
 
@@ -14368,7 +14368,7 @@ a_rid | b_rid | overleft
           <refsection>
             <title>Examples</title>
 
-            <programlisting><![CDATA[[
+            <programlisting><![CDATA[
 SELECT A.rid As a_rid, B.rid As b_rid, A.rast &> B.rast As overright
  FROM dummy_rast AS A CROSS JOIN dummy_rast AS B;
 

@@ -2125,7 +2125,7 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
     this:
   </para>
 
-  <programlisting><![CDATA[[
+  <programlisting><![CDATA[
 # shp2pgsql -c -D -s 4269 -i -I shaperoads.shp myschema.roadstable > roads.sql
 # psql -d roadsdb -f roads.sql
 ]]></programlisting>
@@ -2224,7 +2224,7 @@ WHERE ST_Intersects(roads_geom, 'SRID=312;POLYGON((...))');</programlisting>
 	  comparison.</para>
 		<para>Using a "BOX3D" object for the frame, such a query looks like this:</para>
 
-	  <programlisting><![CDATA[[
+	  <programlisting><![CDATA[
 SELECT ST_AsText(roads_geom) AS geom
 FROM roads
 WHERE
@@ -2243,11 +2243,11 @@ WHERE
 	  to the database and converts a table (possibly defined by a query) into
 	  a shape file. The basic syntax is:</para>
 
-	  <programlisting><![CDATA[[
+	  <programlisting><![CDATA[
 pgsql2shp [<options>] <database> [<schema>.]<table>
 ]]></programlisting>
 
-	  <programlisting><![CDATA[[
+	  <programlisting><![CDATA[
 pgsql2shp [<options>] <database> <query>
 ]]></programlisting>
 

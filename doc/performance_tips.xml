@@ -66,7 +66,7 @@ UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(geom));</programlisting>
       <para>Now change your query to use the &amp;&amp; operator against bbox
       instead of geom_column, like:</para>
 
-      <programlisting><![CDATA[[
+      <programlisting><![CDATA[
 SELECT geom_column
 FROM mytable
 WHERE bbox && ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);

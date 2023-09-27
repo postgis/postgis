@@ -509,7 +509,7 @@ FROM (SELECT ST_Translate(ST_Force_3DZ(ST_LineToCurve(ST_Buffer(ST_Point(x,y),1)
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting><![CDATA[[
+		<programlisting><![CDATA[
 
 --Return all features that fall reside or partly reside in a US national atlas coordinate bounding box
 --It is assumed here that the geometries are stored with SRID = 2163 (US National atlas equal area)

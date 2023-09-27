@@ -432,7 +432,7 @@ A query to cut a LineString into sections of length 100 or shorter.
 It uses <varname>generate_series()</varname> with a CROSS JOIN LATERAL
 to produce the equivalent of a FOR loop.
 </para>
-<programlisting><![CDATA[[
+<programlisting><![CDATA[
 
 WITH data(id, geom) AS (VALUES
         ( 'A', 'LINESTRING( 0 0, 200 0)'::geometry ),

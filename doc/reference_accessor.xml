@@ -1244,7 +1244,7 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 	  <refsection>
 		<title>Standard Examples</title>
 
-		<programlisting><![CDATA[[
+		<programlisting><![CDATA[
 --Extracting a subset of points from a 3d multipoint
 SELECT n, ST_AsEWKT(ST_GeometryN(geom, n)) As geomewkt
 FROM (

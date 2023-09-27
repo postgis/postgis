@@ -721,7 +721,7 @@ LINESTRING(44.7994523421035 82.5156766227011,85 85)
         and new records for each subdivided result geometry are inserted.
         </para>
 
-<programlisting><![CDATA[[
+<programlisting><![CDATA[
 
 WITH complex_areas_to_subdivide AS (
     DELETE from polygons_table

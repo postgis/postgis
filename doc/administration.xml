@@ -392,7 +392,7 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
 		entry from spatial_ref_sys and re-construct the check(s) with:
     </para>
 
-    <programlisting><![CDATA[[
+    <programlisting><![CDATA[
 ALTER TABLE spatial_ref_sys ADD CONSTRAINT spatial_ref_sys_srid_check check (srid > 0 AND srid < 999000 );
 ]]></programlisting>
 

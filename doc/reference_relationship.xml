@@ -1166,7 +1166,7 @@ FROM (SELECT
 <para><emphasis role="bold">Example:</emphasis>
       Finds all streets that cross
       </para>
-<programlisting><![CDATA[[
+<programlisting><![CDATA[
 
 SELECT s1.gid, s2.gid, ST_LineCrossingDirection(s1.geom, s2.geom)
   FROM streets s1 CROSS JOIN streets s2

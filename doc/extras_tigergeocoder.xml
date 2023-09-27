@@ -1273,7 +1273,7 @@ result
 </programlisting>
 
 <para>For this one we reuse our geocoded example from <xref linkend="Geocode"/> and we only want the primary address and at most 2 cross streets.</para>
-<programlisting><![CDATA[[
+<programlisting><![CDATA[
 SELECT actual_addr, lon, lat, pprint_addy((rg).addy[1]) As int_addr1,
     (rg).street[1] As cross1, (rg).street[2] As cross2
 FROM (SELECT address As actual_addr, lon, lat,
