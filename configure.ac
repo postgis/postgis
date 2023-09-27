@@ -275,7 +275,7 @@ fi
 AC_SUBST(CAN_BUILD_EPUB)
 
 dnl
-dnl Allow the user to specify the location of the html/docbook.xsl stylesheet
+dnl Allow the user to specify the location of the xhtml5/docbook.xsl stylesheet
 dnl
 
 AC_ARG_WITH([xsldir],
@@ -286,7 +286,7 @@ XSLBASE_AUTO=""
 if test "x$XSLBASE" = "x"; then
 	dnl If the user did not specify a directory for the docbook
 	dnl stylesheet, choose the first uri that can resolve
-  dnl html/docbook.xsl or the first directory
+  dnl xhtml5/docbook.xsl or the first directory
 	dnl that matches from the following list
 	SEARCHPATH="
 		http://cdn.docbook.org/release/xsl/current
@@ -305,8 +305,8 @@ if test "x$XSLBASE" = "x"; then
 	for p in ${SEARCHPATH}; do
     case "${p}" in
       "/*")
-        AC_MSG_CHECKING([for html/docbook.xsl in directory $p...])
-        if test -r "${p}"/html/docbook.xsl; then
+        AC_MSG_CHECKING([for xhtml5/docbook.xsl in directory $p...])
+        if test -r "${p}"/xhtml5/docbook.xsl; then
           XSLBASE_AUTO="${p}"
           AC_MSG_RESULT([found])
           break
@@ -315,8 +315,8 @@ if test "x$XSLBASE" = "x"; then
         ;;
       *)
         if test "x$XMLCATALOG" != "x"; then
-          AC_MSG_CHECKING([for html/docbook.xsl in URI $p...])
-          if $XMLCATALOG '' "${p}/html/docbook.xsl" >/dev/null; then
+          AC_MSG_CHECKING([for xhtml5/docbook.xsl in URI $p...])
+          if $XMLCATALOG '' "${p}/xhtml5/docbook.xsl" >/dev/null; then
             XSLBASE_AUTO="${p}"
             AC_MSG_RESULT([found])
             break
@@ -339,8 +339,8 @@ else
 		AC_MSG_ERROR([the docbook stylesheet directory specified using --with-xsldir does not exist])
 	fi
 
-	if test ! -f "$XSLBASE/html/docbook.xsl"; then
-		AC_MSG_ERROR([the docbook stylesheet directory specified using --with-xsldir does not contain the html/docbook.xsl file])
+	if test ! -f "$XSLBASE/xhtml5/docbook.xsl"; then
+		AC_MSG_ERROR([the docbook stylesheet directory specified using --with-xsldir does not contain the xhtml5/docbook.xsl file])
 	fi
 fi
 
