@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-25 14:15+0000\n"
+"POT-Creation-Date: 2023-09-28 10:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -16986,22 +16986,9 @@ msgid ""
 "value as follows:"
 msgstr ""
 
-#. Tag: literallayout
-#, no-c-format
-msgid ""
-"<![CDATA[[\n"
-"SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]\n"
-"]]>"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "For example:"
-msgstr ""
-
-#. Tag: literallayout
-#, no-c-format
-msgid "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
 msgstr ""
 
 #. Tag: para
