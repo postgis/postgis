@@ -127,12 +127,6 @@ h5 {
 table, td {
     border-collapse: collapse;
 }
-ul.toc {
-    padding-left: 0;
-}
-ul.toc li {
-    list-style-type: none;
-}
 
 
 /* 3. Block Formatted ----------------------------------------------------- */
@@ -283,6 +277,13 @@ table.informaltable {
 }
 table.informaltable td, th {
     padding: 0.2em 0.4em 0.2em 0.4em;
+}
+
+ul.toc {
+    padding-left: 0;
+}
+ul.toc li {
+    list-style-type: none;
 }
 
 .pdparam {
