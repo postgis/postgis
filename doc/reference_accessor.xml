@@ -3129,4 +3129,95 @@ SELECT ST_Zmflag(ST_GeomFromEWKT('POINT(1 2 3 4)'));
 	  </refsection>
 	</refentry>
 
+    <refentry xml:id="ST_HasZ">
+  <refnamediv>
+    <refname>ST_HasZ</refname>
+    <refpurpose>Checks if a geometry has a Z dimension.</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+        <funcdef>boolean <function>ST_HasZ</function></funcdef>
+        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsection>
+    <title>Description</title>
+
+    <para>Checks if the input geometry has a Z dimension and returns a boolean value. If the geometry has a Z dimension, it returns true; otherwise, it returns false.</para>
+
+    <para>Geometry objects with a Z dimension typically represent three-dimensional (3D) geometries, while those without it are two-dimensional (2D) geometries.</para>
+
+    <para>This function is useful for determining if a geometry has elevation or height information.</para>
+  </refsection>
+
+  <refsection>
+    <title>Examples</title>
+
+    <programlisting>SELECT ST_HasZ(ST_GeomFromText('POINT(1 2 3)'));
+ --result
+ true
+</programlisting>
+    <programlisting>SELECT ST_HasZ(ST_GeomFromText('LINESTRING(0 0, 1 1)'));
+ --result
+ false
+</programlisting>
+  </refsection>
+
+  <refsection>
+    <title>See Also</title>
+    <para><xref linkend="ST_Zmflag"/></para>
+    <para><xref linkend="ST_HasM"/></para>
+  </refsection>
+</refentry>
+
+<refentry xml:id="ST_HasM">
+  <refnamediv>
+    <refname>ST_HasM</refname>
+    <refpurpose>Checks if a geometry has an M (measure) dimension.</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+        <funcdef>boolean <function>ST_HasM</function></funcdef>
+        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsection>
+    <title>Description</title>
+
+    <para>Checks if the input geometry has an M (measure) dimension and returns a boolean value. If the geometry has an M dimension, it returns true; otherwise, it returns false.</para>
+
+    <para>Geometry objects with an M dimension typically represent measurements or additional data associated with spatial features.</para>
+
+    <para>This function is useful for determining if a geometry includes measure information.</para>
+  </refsection>
+
+  <refsection>
+    <title>Examples</title>
+
+    <programlisting>SELECT ST_HasM(ST_GeomFromText('POINTM(1 2 3)'));
+ --result
+ true
+</programlisting>
+    <programlisting>SELECT ST_HasM(ST_GeomFromText('LINESTRING(0 0, 1 1)'));
+ --result
+ false
+</programlisting>
+  </refsection>
+
+  <refsection>
+    <title>See Also</title>
+    <para><xref linkend="ST_Zmflag"/></para>
+    <para><xref linkend="ST_HasZ"/></para>
+  </refsection>
+</refentry>
+
+
   </section>
