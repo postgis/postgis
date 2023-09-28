@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-25 14:15+0000\n"
+"POT-Creation-Date: 2023-09-28 10:07+0000\n"
 "PO-Revision-Date: 2023-09-14 20:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -22009,23 +22009,10 @@ msgstr ""
 "qu'une longueur est souhaitée sans reprojection. Le sphéroïde est spécifié "
 "par une valeur textuelle comme suit :"
 
-#. Tag: literallayout
-#, no-c-format
-msgid ""
-"<![CDATA[[\n"
-"SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]\n"
-"]]>"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid "For example:"
 msgstr "Par exemple :"
-
-#. Tag: literallayout
-#, no-c-format
-msgid "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
-msgstr "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
 
 #. Tag: para
 #, no-c-format
@@ -50279,6 +50266,10 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
+#~ msgstr "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
 
 #, no-c-format
 #~ msgid "MACRO_C"

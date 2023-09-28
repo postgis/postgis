@@ -5,11 +5,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-25 14:15+0000\n"
+"POT-Creation-Date: 2023-09-28 10:07+0000\n"
 "PO-Revision-Date: 2023-09-27 09:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1659,9 +1659,9 @@ msgid ""
 "html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
 "link>."
 msgstr ""
-"<emphasis role=\"bold\"><varname>MACRO_C</varname>出力トークン</emphasis> ("
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\""
-">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>から抜粋)。"
+"<emphasis role=\"bold\"><varname>MACRO_C</varname>出力トークン</emphasis> "
+"(<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>から抜粋)。"
 
 #. Tag: para
 #, no-c-format
@@ -1712,9 +1712,9 @@ msgid ""
 "html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
 "link>."
 msgstr ""
-"<emphasis role=\"bold\"><varname>MICRO_C</varname>出力トークン</emphasis> ("
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\""
-">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>から抜粋)。"
+"<emphasis role=\"bold\"><varname>MICRO_C</varname>出力トークン</emphasis> "
+"(<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>から抜粋)。"
 
 #. Tag: para
 #, no-c-format
@@ -1754,9 +1754,9 @@ msgid ""
 "html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
 "link>."
 msgstr ""
-"<emphasis role=\"bold\"><varname>EXTRA_C</varname>出力トークン</emphasis> ("
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--\""
-">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>から抜粋)。"
+"<emphasis role=\"bold\"><varname>EXTRA_C</varname>出力トークン</emphasis> "
+"(<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--"
+"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>から抜粋)。"
 
 #. Tag: para
 #, no-c-format
@@ -21068,26 +21068,10 @@ msgstr ""
 "度/緯度で、投影変換なしで長さを求めたい場合に使います。回転楕円体は次のように"
 "文字列値で指定します:"
 
-#. Tag: literallayout
-#, no-c-format
-msgid ""
-"<![CDATA[[\n"
-"SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]\n"
-"]]>"
-msgstr ""
-"<![CDATA[[\n"
-"SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]\n"
-"]]>"
-
 #. Tag: para
 #, no-c-format
 msgid "For example:"
 msgstr "例:"
-
-#. Tag: literallayout
-#, no-c-format
-msgid "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
-msgstr "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
 
 #. Tag: para
 #, no-c-format
@@ -48049,6 +48033,20 @@ msgstr "2.5次元/3次元対応"
 #, no-c-format
 msgid "Supports geography"
 msgstr "ジオグラフィ対応"
+
+#, no-c-format
+#~ msgid ""
+#~ "<![CDATA[[\n"
+#~ "SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]\n"
+#~ "]]>"
+#~ msgstr ""
+#~ "<![CDATA[[\n"
+#~ "SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]\n"
+#~ "]]>"
+
+#, no-c-format
+#~ msgid "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
+#~ msgstr "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
 
 #, no-c-format
 #~ msgid "MACRO_C"

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-25 14:15+0000\n"
+"POT-Creation-Date: 2023-09-28 10:07+0000\n"
 "PO-Revision-Date: 2023-09-22 19:23+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Korean <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -19454,23 +19454,10 @@ msgstr ""
 "위도이며 재투영하지 않고 길이를 얻고 싶을 때 유용합니다. 이 타원체는 개별적"
 "인 데이터베이스 유형으로 다음과 같이 작성할 수 있습니다:"
 
-#. Tag: literallayout
-#, no-c-format
-msgid ""
-"<![CDATA[[\n"
-"SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]\n"
-"]]>"
-msgstr ""
-
 #. Tag: para
 #, fuzzy, no-c-format
 msgid "For example:"
 msgstr "도형 예시"
-
-#. Tag: literallayout
-#, no-c-format
-msgid "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
-msgstr "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -43710,6 +43697,10 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
+#~ msgstr "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
 
 #, no-c-format
 #~ msgid "MACRO_C"

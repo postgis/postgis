@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-25 14:15+0000\n"
+"POT-Creation-Date: 2023-09-28 10:07+0000\n"
 "PO-Revision-Date: 2023-09-28 08:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -327,8 +327,8 @@ msgid ""
 "<xref linkend=\"create_new_db_extensions\"/> and then restore your backup on "
 "top of this new database."
 msgstr ""
-"在这种情况下，必须备份数据库，按照 <xref linkend=\"create_new_db_extensions\""
-"/>中所述生成新数据库，然后将备份还原到新数据库。"
+"在这种情况下，必须备份数据库，按照 <xref linkend=\"create_new_db_extensions"
+"\"/>中所述生成新数据库，然后将备份还原到新数据库。"
 
 #. Tag: para
 #, no-c-format
@@ -356,9 +356,9 @@ msgid ""
 "the backup just has <code>CREATE EXTENSION postgis</code> and thus picks up "
 "the newest latest version during restore."
 msgstr ""
-"如果您最初安装 PostGIS 时没有指定版本，则通常可以在恢复之前跳过 postgis "
-"扩展的重新安装，因为备份只有 <code>CREATE EXTENSION postgis</code> "
-"，因此在恢复期间会选择最新版本。"
+"如果您最初安装 PostGIS 时没有指定版本，则通常可以在恢复之前跳过 postgis 扩展"
+"的重新安装，因为备份只有 <code>CREATE EXTENSION postgis</code> ，因此在恢复期"
+"间会选择最新版本。"
 
 #. Tag: para
 #, no-c-format
@@ -1140,9 +1140,9 @@ msgid ""
 "street type following the root street name. Example <emphasis>STREET</"
 "emphasis> in <code>75 State Street</code>."
 msgstr ""
-"这是文本（标记号码为 <code>6</code>）：街道后缀类型，例如 "
-"St、Ave、Cir。这是跟在根街道名称后面的街道类型。例如，<emphasis>STREET</"
-"emphasis> 位于 <code>75 State Street</code>中。"
+"这是文本（标记号码为 <code>6</code>）：街道后缀类型，例如 St、Ave、Cir。这是"
+"跟在根街道名称后面的街道类型。例如，<emphasis>STREET</emphasis> 位于 "
+"<code>75 State Street</code>中。"
 
 #. Tag: para
 #, no-c-format
@@ -1151,9 +1151,9 @@ msgid ""
 "modifier that follows the street name.. Example <emphasis>WEST</emphasis> in "
 "<code>3715 TENTH AVENUE WEST</code>."
 msgstr ""
-"是文本（标记编号 <code>7</code>）：STREET POST-DIRECTIONAL "
-"街道名称后面的方向修饰符。示例<emphasis>WEST</emphasis> 位于<code>3715 TENTH "
-"AVENUE WEST</code>中。"
+"是文本（标记编号 <code>7</code>）：STREET POST-DIRECTIONAL 街道名称后面的方向"
+"修饰符。示例<emphasis>WEST</emphasis> 位于<code>3715 TENTH AVENUE WEST</code>"
+"中。"
 
 #. Tag: para
 #, no-c-format
@@ -1569,8 +1569,8 @@ msgid ""
 "link>."
 msgstr ""
 "<emphasis role=\"bold\"><varname>MACRO_C</varname> 输出标记</emphasis>（摘自 "
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12. html#--r-typ--\""
-">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>。"
+"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12. html#--r-typ--"
+"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -1619,8 +1619,8 @@ msgid ""
 "link>."
 msgstr ""
 "<emphasis role=\"bold\"><varname>MICRO_C</varname> 输出令牌</emphasis>（摘自 "
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12. html#--r-typ--\""
-">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>。"
+"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12. html#--r-typ--"
+"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -1661,8 +1661,8 @@ msgid ""
 "link>."
 msgstr ""
 "<emphasis role=\"bold\"><varname>EXTRA_C</varname> 输出令牌</emphasis>（摘自 "
-"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12. html#--r-typ--\""
-">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>。"
+"<link xlink:href=\"http://www.pagcgeo.org/docs/html/pagc-12. html#--r-typ--"
+"\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -1711,8 +1711,8 @@ msgid ""
 "(token number <code>17</code>): The <emphasis role=\"bold\">3B</emphasis> in "
 "<code>APT 3B</code>"
 msgstr ""
-"（令牌编号 <code>17</code>）： <emphasis role=\"bold\">3B</"
-"emphasis>位于<code>APT 3B</code>中"
+"（令牌编号 <code>17</code>）： <emphasis role=\"bold\">3B</emphasis>位于"
+"<code>APT 3B</code>中"
 
 #. Tag: para
 #, no-c-format
@@ -2040,18 +2040,18 @@ msgid ""
 "trail of what changes have been made, by whom, and what the past state of "
 "the data is?"
 msgstr ""
-"假设您有一个数据表，表示特定地理要素的当前状态。 "
-"包裹表、道路表、果树表，等等。 一般来说，GIS "
-"工具将表理解为可以在其中更新、插入和删除行的单个实体。 如何允许常见的 GIS 工"
-"具处理您的数据，同时保留对已进行哪些更改、由谁进行更改以及数据过去状态的审核"
-"跟踪？"
+"假设您有一个数据表，表示特定地理要素的当前状态。 包裹表、道路表、果树表，等"
+"等。 一般来说，GIS 工具将表理解为可以在其中更新、插入和删除行的单个实体。 如"
+"何允许常见的 GIS 工具处理您的数据，同时保留对已进行哪些更改、由谁进行更改以及"
+"数据过去状态的审核跟踪？"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This <varname>history_table</varname> extra module provides some utility "
 "functions for creating and maintaining history."
-msgstr "这个<varname>history_table</varname>额外模块提供了一些用于创建和维护历史记录"
+msgstr ""
+"这个<varname>history_table</varname>额外模块提供了一些用于创建和维护历史记录"
 "的实用函数。"
 
 #. Tag: para
@@ -2062,8 +2062,8 @@ msgid ""
 "plpgsql and located in the <varname>extras/history_table</varname> of "
 "PostGIS source tar balls and source repository."
 msgstr ""
-"<varname>history_table</varname> 也在 PostGIS 1.5 中打包，但在 PostGIS 2.0 "
-"中添加到文档中。 该包是用 plpgsql 编写的，位于 PostGIS 源 tar 包和源存储库的 "
+"<varname>history_table</varname> 也在 PostGIS 1.5 中打包，但在 PostGIS 2.0 中"
+"添加到文档中。 该包是用 plpgsql 编写的，位于 PostGIS 源 tar 包和源存储库的 "
 "<varname>extras/history_table</varname> 中。"
 
 #. Tag: para
@@ -2072,7 +2072,8 @@ msgid ""
 "If you have a table 'roads', this module will maintain a 'roads_history' "
 "side table, which contains all the columns of the parent table, and the "
 "following additional columns:"
-msgstr "如果您有一个表“roads”，则此模块将维护一个“roads_history”侧表，其中包含父表的"
+msgstr ""
+"如果您有一个表“roads”，则此模块将维护一个“roads_history”侧表，其中包含父表的"
 "所有列以及以下附加列："
 
 #. Tag: para
@@ -2083,16 +2084,17 @@ msgid ""
 "to NULL, a unique 'history_id', a 'last_operation' of 'INSERT' and "
 "'active_user' set."
 msgstr ""
-"当您将新记录插入“roads”时，一条记录会自动插入到“roads_history”中，其中“date_a"
-"dded”填写“date_deleted”设置为NULL，一个唯一的“history_id”，“last_operation”为"
-"“INSERT”， “active_user”设置。"
+"当您将新记录插入“roads”时，一条记录会自动插入到“roads_history”中，其"
+"中“date_added”填写“date_deleted”设置为NULL，一个唯一"
+"的“history_id”，“last_operation”为“INSERT”， “active_user”设置。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "When you delete a record in 'roads', the record in the history table is "
 "*not* deleted, but the 'date_deleted' is set to the current date."
-msgstr "当您删除“roads”中的记录时，历史表中的记录不会被删除，但“date_deleted”会设置为"
+msgstr ""
+"当您删除“roads”中的记录时，历史表中的记录不会被删除，但“date_deleted”会设置为"
 "当前日期。"
 
 #. Tag: para
@@ -2144,7 +2146,8 @@ msgid ""
 "Registers a table in the history_information table for tracking and also "
 "adds in side line history table and insert, update, delete rules on the "
 "table."
-msgstr "在history_information表中注册一个表用于跟踪，同时添加边线历史表以及在该表上插"
+msgstr ""
+"在history_information表中注册一个表用于跟踪，同时添加边线历史表以及在该表上插"
 "入、更新、删除规则。"
 
 #. Tag: para
@@ -2156,10 +2159,9 @@ msgid ""
 "insert, update, delete rules on the table. Any inserts,updates,deletes of "
 "the geometry are recorded in the history table."
 msgstr ""
-"在history_information表中注册一个表用于跟踪，"
-"并在与原始表相同的架构中添加与表同名但以 <varname>history</varname> "
-"为前缀的副线历史表。 在表中放入插入、更新、删除规则。 "
-"几何图形的任何插入、更新、删除都记录在历史表中。"
+"在history_information表中注册一个表用于跟踪，并在与原始表相同的架构中添加与表"
+"同名但以 <varname>history</varname> 为前缀的副线历史表。 在表中放入插入、更"
+"新、删除规则。 几何图形的任何插入、更新、删除都记录在历史表中。"
 
 #. Tag: para
 #, no-c-format
@@ -2168,9 +2170,8 @@ msgid ""
 "<varname>geometry_columns</varname> and fails if the geometry column is not "
 "present in <varname>geometry_columns</varname> table."
 msgstr ""
-"此函数当前依赖于在<varname>geometry_columns</varname> "
-"中注册的几何列，如果<varname>geometry_columns</varname> "
-"表中不存在该几何列，则会失败。"
+"此函数当前依赖于在<varname>geometry_columns</varname> 中注册的几何列，如果"
+"<varname>geometry_columns</varname> 表中不存在该几何列，则会失败。"
 
 #. Tag: title
 #, no-c-format
@@ -2524,9 +2525,9 @@ msgid ""
 "NULL)"
 msgstr ""
 "将地址作为字符串（或其他标准化地址）输入，并输出一组可能的位置，其中包括 NAD "
-"83经纬度中的点几何图形、每个位置的标准化地址以及评级。 "
-"评级越低，匹配的可能性越大。 结果首先按最低评分排序。 "
-"可以选择传入最大结果数，默认为10，以及restrict_region（默认为NULL）"
+"83经纬度中的点几何图形、每个位置的标准化地址以及评级。 评级越低，匹配的可能性"
+"越大。 结果首先按最低评分排序。 可以选择传入最大结果数，默认为10，以及"
+"restrict_region（默认为NULL）"
 
 #. Tag: para
 #, no-c-format
@@ -3666,10 +3667,9 @@ msgid ""
 "is to have several more. This is the table to look into to define the region "
 "bounds. e.g <varname>tiger.place</varname>, <varname>tiger.county</varname>"
 msgstr ""
-"<varname>Region_type </varname>边界区域的类型。 "
-"目前仅支持<varname>place</varname>和<varname>county</varname>。 "
-"计划是再多几个。 这是用于定义区域边界的表格。 例如，<varname>tiger."
-"place</varname>、<varname>tiger.county</varname>"
+"<varname>Region_type </varname>边界区域的类型。 目前仅支持<varname>place</"
+"varname>和<varname>county</varname>。 计划是再多几个。 这是用于定义区域边界的"
+"表格。 例如，<varname>tiger.place</varname>、<varname>tiger.county</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -4859,10 +4859,10 @@ msgid ""
 "<varname>face</varname>, <varname>node</varname>,and <varname>relation</"
 "varname> are created in the schema. It returns the id of the topology."
 msgstr ""
-"创建名为<varname>topology_name</varname>的新拓扑模式并将其注册到<varname>topo"
-"logy.topology</varname>表中。 拓扑必须具有唯一的名称。 拓扑表（<varname>edge_"
-"data</varname>、<varname>face</varname>、<varname>node</varname>和<varname>re"
-"lation</varname>）在模式中创建。它返回拓扑的 id。"
+"创建名为<varname>topology_name</varname>的新拓扑模式并将其注册到"
+"<varname>topology.topology</varname>表中。 拓扑必须具有唯一的名称。 拓扑表"
+"（<varname>edge_data</varname>、<varname>face</varname>、<varname>node</"
+"varname>和<varname>relation</varname>）在模式中创建。它返回拓扑的 id。"
 
 #. Tag: para
 #, no-c-format
@@ -6177,9 +6177,9 @@ msgid ""
 "linestring geometry and returns the edgeid of the new or existing record. "
 "The newly added edge has \"universe\" face on both sides and links to itself."
 msgstr ""
-"使用指定的线串几何图形将边添加到边表，并将关联节点添加到指定<varname>toponame"
-"</varname>模式的节点表，并返回新记录或现有记录的edgeid。 "
-"新添加的边两侧都有“宇宙”面，并与其自身相连。"
+"使用指定的线串几何图形将边添加到边表，并将关联节点添加到指定"
+"<varname>toponame</varname>模式的节点表，并返回新记录或现有记录的edgeid。 新"
+"添加的边两侧都有“宇宙”面，并与其自身相连。"
 
 #. Tag: para
 #, no-c-format
@@ -7428,9 +7428,9 @@ msgid ""
 "available for download from <link xlink:href=\"https://proj.org/\"> https://"
 "proj.org/ </link> ."
 msgstr ""
-"Proj重投影库。需要项目 6.1 或更高版本。Proj 库用于在 PostGIS "
-"中提供坐标重投影支持。Proj 可以从<link xlink:href=\"https://proj.org/\"> "
-"https://proj.org/ </link> 下载。"
+"Proj重投影库。需要项目 6.1 或更高版本。Proj 库用于在 PostGIS 中提供坐标重投影"
+"支持。Proj 可以从<link xlink:href=\"https://proj.org/\"> https://proj.org/ </"
+"link> 下载。"
 
 #. Tag: para
 #, no-c-format
@@ -7476,9 +7476,9 @@ msgid ""
 "support. <link xlink:href=\"https://gdal.org/download.html\">https://gdal."
 "org/download.html</link>."
 msgstr ""
-"GDAL，版本 2+ 是必需的，版本 3+ 是首选。 这是栅格支持所必需的。<link "
-"xlink:href=\"https://gdal.org/download.html\">https://gdal.org/download."
-"html</link>。"
+"GDAL，版本 2+ 是必需的，版本 3+ 是首选。 这是栅格支持所必需的。<link xlink:"
+"href=\"https://gdal.org/download.html\">https://gdal.org/download.html</"
+"link>。"
 
 #. Tag: para
 #, no-c-format
@@ -8215,8 +8215,8 @@ msgid ""
 "also kick in if you built postgis with address_standardizer support:"
 msgstr ""
 "对于 tiger 地理编码器，请确保您的 PostgreSQL 实例中具有可用的 postgis 和 "
-"fuzzystrmatch 扩展。如果您在address_standardizer支持下构建了postgis，address_"
-"standardizer测试也将启动："
+"fuzzystrmatch 扩展。如果您在address_standardizer支持下构建了postgis，"
+"address_standardizer测试也将启动："
 
 #. Tag: para
 #, no-c-format
@@ -8384,13 +8384,13 @@ msgid ""
 "for windows, the postgis_tiger_geocoder extension files will work on any OS "
 "since the extension is an SQL/plpgsql only extension."
 msgstr ""
-"像Tiger地理编码器这样的附加组件可能未包含在您的PostGIS分发中。"
-"如果您缺少tiger 地理编码器扩展或想要比您的安装提供的更新版本，那么可以使用适"
-"用于您PostgreSQL版本的<filename>share/extension/"
-"postgis_tiger_geocoder.*</filename>文件，这些文件可以从<link xlink:href="
-"\"http://postgis.net/windows_downloads/\">Windows未发布版本</link>部分的软件"
-"包中获取。尽管这些软件包是为Windows准备的，但postgis_tiger_geocoder扩展文件将"
-"在任何操作系统上工作，因为该扩展只是一个SQL/plpgsql扩展。"
+"像Tiger地理编码器这样的附加组件可能未包含在您的PostGIS分发中。如果您缺少"
+"tiger 地理编码器扩展或想要比您的安装提供的更新版本，那么可以使用适用于您"
+"PostgreSQL版本的<filename>share/extension/postgis_tiger_geocoder.*</filename>"
+"文件，这些文件可以从<link xlink:href=\"http://postgis.net/windows_downloads/"
+"\">Windows未发布版本</link>部分的软件包中获取。尽管这些软件包是为Windows准备"
+"的，但postgis_tiger_geocoder扩展文件将在任何操作系统上工作，因为该扩展只是一"
+"个SQL/plpgsql扩展。"
 
 #. Tag: title
 #, no-c-format
@@ -9017,8 +9017,8 @@ msgid ""
 "documentation, alignment of PostGIS with PostgreSQL releases, X3D support, "
 "TIGER geocoder support, management functions."
 msgstr ""
-"Buildbot 维护、Windows 生产和实验构建、文档、PostGIS 与 PostgreSQL "
-"版本的对齐、X3D 支持、TIGER 地理编码器支持、管理功能。"
+"Buildbot 维护、Windows 生产和实验构建、文档、PostGIS 与 PostgreSQL 版本的对"
+"齐、X3D 支持、TIGER 地理编码器支持、管理功能。"
 
 #. Tag: term
 #, no-c-format
@@ -9064,8 +9064,8 @@ msgid ""
 "with GEOS releases, topology support, and raster framework and low level API "
 "functions."
 msgstr ""
-"Bug 修复和维护、buildbot 维护、git 镜像管理、管理功能、新 GEOS "
-"功能的集成以及与 GEOS 版本的一致性、拓扑支持以及栅格框架和低级 API 功能。"
+"Bug 修复和维护、buildbot 维护、git 镜像管理、管理功能、新 GEOS 功能的集成以及"
+"与 GEOS 版本的一致性、拓扑支持以及栅格框架和低级 API 功能。"
 
 #. Tag: title
 #, no-c-format
@@ -10505,10 +10505,9 @@ msgid ""
 "to <link xlink:href=\"https://postgis.net\">https://postgis.net</link>."
 msgstr ""
 "本作品已获得<link xlink:href=\"http://creativecommons.org/licenses/by-sa/3.0/"
-"\">创作共用署名-相同方式共享 3.0 "
-"许可</link>。请随意使用这份材料，任何您喜欢的方式，但我们要求您将荣誉归于 "
-"PostGIS 项目，尽可能提供返回<link xlink:href=\"https://postgis.net\""
-">https://postgis.net</link>的链接。"
+"\">创作共用署名-相同方式共享 3.0 许可</link>。请随意使用这份材料，任何您喜欢"
+"的方式，但我们要求您将荣誉归于 PostGIS 项目，尽可能提供返回<link xlink:href="
+"\"https://postgis.net\">https://postgis.net</link>的链接。"
 
 #. Tag: title
 #, no-c-format
@@ -10532,8 +10531,8 @@ msgid ""
 "same way as SQL aggregate function such as <code>sum</code> and "
 "<code>average</code>."
 msgstr ""
-"下面的函数是空间聚合函数，其使用方式与 SQL 聚合函数（例如<code> sum</code> "
-"和<code>average</code>）相同。"
+"下面的函数是空间聚合函数，其使用方式与 SQL 聚合函数（例如<code> sum</code> 和"
+"<code>average</code>）相同。"
 
 #. Tag: title
 #, no-c-format
@@ -10554,8 +10553,8 @@ msgid ""
 "code> clause."
 msgstr ""
 "下面的函数是空间窗口函数，其使用方式与 SQL 窗口函数（例如<code> "
-"row_number()</code>、<code>lead()</code>和 <code>lag()</code>）相同。 "
-"它们后面必须跟<code>有 OVER() </code>子句。"
+"row_number()</code>、<code>lead()</code>和 <code>lag()</code>）相同。 它们后"
+"面必须跟<code>有 OVER() </code>子句。"
 
 #. Tag: title
 #, no-c-format
@@ -10599,10 +10598,10 @@ msgid ""
 "transform - (favoring UTM, Lambert Azimuthal (North/South), and falling back "
 "on mercator in worst case scenario)"
 msgstr ""
-"带有 (T) 的函数不是本机大地测量函数，并且使用与几何之间的 ST_Transform "
-"调用来执行操作。 因此，当越过日期变更线、极点以及覆盖多个 UTM "
-"区域的大型几何图形或几何图形对时，它们可能不会按预期运行。 基本变换 - （"
-"有利于 UTM、兰伯特方位角（北/南），并在最坏的情况下依靠墨卡托）"
+"带有 (T) 的函数不是本机大地测量函数，并且使用与几何之间的 ST_Transform 调用来"
+"执行操作。 因此，当越过日期变更线、极点以及覆盖多个 UTM 区域的大型几何图形或"
+"几何图形对时，它们可能不会按预期运行。 基本变换 - （有利于 UTM、兰伯特方位角"
+"（北/南），并在最坏的情况下依靠墨卡托）"
 
 #. Tag: section
 #, no-c-format
@@ -10621,8 +10620,8 @@ msgid ""
 "take as input or return as output a <xref linkend=\"raster\"/> data type "
 "object. Listed in alphabetical order."
 msgstr ""
-"下面给出的函数和运算符是 PostGIS 函数/运算符，它们将<xref linkend=\"raster\""
-"/>数据类型对象作为输入或返回作为输出。 按字母顺序列出。"
+"下面给出的函数和运算符是 PostGIS 函数/运算符，它们将<xref linkend=\"raster\"/"
+">数据类型对象作为输入或返回作为输出。 按字母顺序列出。"
 
 #. Tag: section
 #, no-c-format
@@ -10647,8 +10646,8 @@ msgid ""
 "link> or <link linkend=\"geomval\">geomval</link> data type object."
 msgstr ""
 "下面给出的函数是 PostGIS 函数，它们将一组或单个 <link linkend=\"geometry_dump"
-"\">Geometry_dump</link> 或 <link linkend=\"geomval\">geomval</link> "
-"数据类型对象作为输入或返回作为输出。"
+"\">Geometry_dump</link> 或 <link linkend=\"geomval\">geomval</link> 数据类型"
+"对象作为输入或返回作为输出。"
 
 #. Tag: title
 #, no-c-format
@@ -10663,9 +10662,9 @@ msgid ""
 "consists of <link linkend=\"box2d_type\">box2d</link>, and <link linkend="
 "\"box3d_type\">box3d</link>"
 msgstr ""
-"下面给出的函数是 PostGIS 函数，它们将 Box* 系列 PostGIS "
-"空间类型作为输入或返回作为输出。 box 系列类型由<link linkend=\"box2d_type\"> "
-"box2d </link>和 <link linkend=\"box3d_type\">box3d </link>组成"
+"下面给出的函数是 PostGIS 函数，它们将 Box* 系列 PostGIS 空间类型作为输入或返"
+"回作为输出。 box 系列类型由<link linkend=\"box2d_type\"> box2d </link>和 "
+"<link linkend=\"box3d_type\">box3d </link>组成"
 
 #. Tag: section
 #, no-c-format
@@ -10704,8 +10703,9 @@ msgstr "&list_curved_geometry_functions;"
 msgid ""
 "The functions given below are PostGIS functions that can use CIRCULARSTRING, "
 "CURVEPOLYGON, and other curved geometry types"
-msgstr "下面给出的函数是 PostGIS 函数，可以使用 CIRCULARSTRING、CURVEPOLYGON "
-"和其他曲线几何类型"
+msgstr ""
+"下面给出的函数是 PostGIS 函数，可以使用 CIRCULARSTRING、CURVEPOLYGON 和其他曲"
+"线几何类型"
 
 #. Tag: title
 #, no-c-format
@@ -10722,7 +10722,8 @@ msgstr "&list_polyhedral_geometry_functions;"
 msgid ""
 "The functions given below are PostGIS functions that can use "
 "POLYHEDRALSURFACE, POLYHEDRALSURFACEM geometries"
-msgstr "下面给出的函数是可以使用 POLYHEDRALSURFACE、POLYHEDRALSURFACEM 几何图形的 "
+msgstr ""
+"下面给出的函数是可以使用 POLYHEDRALSURFACE、POLYHEDRALSURFACEM 几何图形的 "
 "PostGIS 函数"
 
 #. Tag: title
@@ -10736,8 +10737,9 @@ msgid ""
 "Below is an alphabetical listing of spatial specific functions in PostGIS "
 "and the kinds of spatial types they work with or OGC/SQL compliance they try "
 "to conform to."
-msgstr "下面按字母顺序列出了 PostGIS "
-"中的空间特殊函数以及它们使用的空间类型或它们试图遵守的 OGC/SQL 合规性。"
+msgstr ""
+"下面按字母顺序列出了 PostGIS 中的空间特殊函数以及它们使用的空间类型或它们试图"
+"遵守的 OGC/SQL 合规性。"
 
 #. Tag: simpara
 #, no-c-format
@@ -10746,9 +10748,9 @@ msgid ""
 "matrix_checkmark.png\"/></imageobject></inlinemediaobject> means the "
 "function works with the type or subtype natively."
 msgstr ""
-"A <inlinemediaobject><imageobject><imagedata fileref=\"images"
-"/matrix_checkmark.png\""
-"/></imageobject></inlinemediaobject>表示该函数本身适用于类型或子类型。"
+"A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
+"matrix_checkmark.png\"/></imageobject></inlinemediaobject>表示该函数本身适用"
+"于类型或子类型。"
 
 #. Tag: simpara
 #, no-c-format
@@ -10759,12 +10761,12 @@ msgid ""
 "\"best srid\" spatial ref and then cast back. Results may not be as expected "
 "for large areas or areas at poles and may accumulate floating point junk."
 msgstr ""
-"A <inlinemediaobject><imageobject><imagedata fileref=\"images"
-"/matrix_transform.png\"/></imageobject></inlinemediaobject> "
-"意味着它可以工作，但会使用内置的转换操作，通过将其强制转换为几何类型、转换到“"
-"最佳 SRID（空间参考ID）”空间参考，然后再次强制转换回来。对于大面积地区或极地"
-"地区，结果可能不如预期，并且可能会累积浮点数的误差。这是在地理数据处理中可能"
-"遇到的一些注意事项。"
+"A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
+"matrix_transform.png\"/></imageobject></inlinemediaobject> 意味着它可以工作，"
+"但会使用内置的转换操作，通过将其强制转换为几何类型、转换到“最佳 SRID（空间参"
+"考ID）”空间参考，然后再次强制转换回来。对于大面积地区或极地地区，结果可能不如"
+"预期，并且可能会累积浮点数的误差。这是在地理数据处理中可能遇到的一些注意事"
+"项。"
 
 #. Tag: simpara
 #, no-c-format
@@ -10774,9 +10776,9 @@ msgid ""
 "works with the type because of a auto-cast to another such as to box3d "
 "rather than direct type support."
 msgstr ""
-"A <inlinemediaobject><imageobject><imagedata fileref=\"images/matrix_autocast"
-".png\"/></imageobject></inlinemediaobject>表示该函数适用于该类型，因为它会自"
-"动转换为另一个类型（例如 box3d），而不是直接类型支持。"
+"A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
+"matrix_autocast.png\"/></imageobject></inlinemediaobject>表示该函数适用于该类"
+"型，因为它会自动转换为另一个类型（例如 box3d），而不是直接类型支持。"
 
 #. Tag: simpara
 #, no-c-format
@@ -10785,9 +10787,9 @@ msgid ""
 "matrix_sfcgal_required.png\"/></imageobject></inlinemediaobject> means the "
 "function only available if PostGIS compiled with SFCGAL support."
 msgstr ""
-"A <inlinemediaobject><imageobject><imagedata fileref=\"images"
-"/matrix_sfcgal_required.png\"/></imageobject></"
-"inlinemediaobject>表示该功能仅在使用 SFCGAL 支持编译 PostGIS 时可用。"
+"A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
+"matrix_sfcgal_required.png\"/></imageobject></inlinemediaobject>表示该功能仅"
+"在使用 SFCGAL 支持编译 PostGIS 时可用。"
 
 #. Tag: simpara
 #, no-c-format
@@ -10797,10 +10799,10 @@ msgid ""
 "function support is provided by SFCGAL if PostGIS compiled with SFCGAL "
 "support, otherwise GEOS/built-in support."
 msgstr ""
-"A <inlinemediaobject><imageobject><imagedata fileref=\"images"
-"/matrix_sfcgal_enhanced.png\"/></imageobject></inlinemediaobject>表示如果 "
-"PostGIS 使用 SFCGAL 支持编译，则功能支持由 SFCGAL 提供，否则 GEOS/built-"
-"in支持。"
+"A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
+"matrix_sfcgal_enhanced.png\"/></imageobject></inlinemediaobject>表示如果 "
+"PostGIS 使用 SFCGAL 支持编译，则功能支持由 SFCGAL 提供，否则 GEOS/built-in支"
+"持。"
 
 #. Tag: simpara
 #, no-c-format
@@ -11220,10 +11222,10 @@ msgid ""
 "<parameter>path</parameter> denotes the position of the component inside the "
 "collection."
 msgstr ""
-"对于基本几何类型（POINT、LINESTRING、POLYGON），返回单个记录，其中包含空<para"
-"meter>path</parameter> 数组，输入几何图形为 <parameter>geom</parameter>。对于"
-"集合或多几何体，将为每个集合组件返回一条记录，并且<parameter>路径</parameter>"
-"表示组件在集合内的位置。"
+"对于基本几何类型（POINT、LINESTRING、POLYGON），返回单个记录，其中包含空"
+"<parameter>path</parameter> 数组，输入几何图形为 <parameter>geom</"
+"parameter>。对于集合或多几何体，将为每个集合组件返回一条记录，并且<parameter>"
+"路径</parameter>表示组件在集合内的位置。"
 
 #. Tag: para
 #, no-c-format
@@ -11292,7 +11294,8 @@ msgstr ""
 msgid ""
 "the <parameter>geom</parameter> field <varname>POINT</varname>s represent "
 "the coordinates of the supplied geometry."
-msgstr "<parameter>geom</parameter>字段<varname>POINT</varname>表示所提供几何图形的坐"
+msgstr ""
+"<parameter>geom</parameter>字段<varname>POINT</varname>表示所提供几何图形的坐"
 "标。"
 
 #. Tag: para
@@ -14284,11 +14287,10 @@ msgid ""
 msgstr ""
 "默认情况下，切片范围位于<link xlink:href=\"https://en.wikipedia.org/wiki/"
 "Web_Mercator_projection\">Web Mercator</link>坐标系 (SRID:3857) 中，使用 Web "
-"墨卡托系统的标准范围（-20037508.342789、20037508.342789）。这是 MVT "
-"图块最常用的坐标系。 "
-"可选的<varname>bounds</varname>参数可用于在任何坐标系中生成图块。 "
-"它是一个几何体，具有 SRID 和“缩放级别零”正方形的范围，XYZ "
-"图块系统内切在该正方形内。"
+"墨卡托系统的标准范围（-20037508.342789、20037508.342789）。这是 MVT 图块最常"
+"用的坐标系。 可选的<varname>bounds</varname>参数可用于在任何坐标系中生成图"
+"块。 它是一个几何体，具有 SRID 和“缩放级别零”正方形的范围，XYZ 图块系统内切在"
+"该正方形内。"
 
 #. Tag: para
 #, no-c-format
@@ -14599,7 +14601,8 @@ msgstr ", <xref linkend=\"ST_SquareGrid\"/>, <xref linkend=\"ST_Hexagon\"/>"
 msgid ""
 "Returns the input letters rendered as geometry with a default start position "
 "at the origin and default text height of 100."
-msgstr "返回渲染为几何图形的输入字母，默认起始位置位于原点，默认文本高度为 100。"
+msgstr ""
+"返回渲染为几何图形的输入字母，默认起始位置位于原点，默认文本高度为 100。"
 
 #. Tag: para
 #, no-c-format
@@ -14885,9 +14888,9 @@ msgid ""
 "parameter is omitted or is -1 the point is appended to the end of the "
 "LineString."
 msgstr ""
-"在索引<parameter>position</parameter>之前向LineString 添加一个点（使用从 0 "
-"开始的索引）。如果<parameter>position</parameter>参数被省略或为 -1，"
-"则该点将附加到 LineString 的末尾。"
+"在索引<parameter>position</parameter>之前向LineString 添加一个点（使用从 0 开"
+"始的索引）。如果<parameter>position</parameter>参数被省略或为 -1，则该点将附"
+"加到 LineString 的末尾。"
 
 #. Tag: para
 #, no-c-format
@@ -19856,26 +19859,10 @@ msgstr ""
 "返回椭球体面上几何图形的周长。 当几何图形的坐标为经度/纬度并且您希望查找没有"
 "投影的长度时，请使用此函数。椭球体由文本值指定，如下所示："
 
-#. Tag: literallayout
-#, no-c-format
-msgid ""
-"<![CDATA[[\n"
-"SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]\n"
-"]]>"
-msgstr ""
-"<![CDATA[[\n"
-"SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]\n"
-"]]>"
-
 #. Tag: para
 #, no-c-format
 msgid "For example:"
 msgstr "例如："
-
-#. Tag: literallayout
-#, no-c-format
-msgid "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
-msgstr "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
 
 #. Tag: para
 #, no-c-format
@@ -25570,8 +25557,8 @@ msgid ""
 "varname>, and <varname>CURVEPOLYGON</varname>). In PostGIS this function "
 "also works on line and point geometries."
 msgstr ""
-"返回保证位于曲面内部的<varname>POINT</varname>（<varname>POLYGON</varname>、<"
-"varname>MULTIPOLYGON</varname> 和 <varname>CURVEPOLYGON</varname>） 。 在 "
+"返回保证位于曲面内部的<varname>POINT</varname>（<varname>POLYGON</varname>、"
+"<varname>MULTIPOLYGON</varname> 和 <varname>CURVEPOLYGON</varname>） 。 在 "
 "PostGIS 中，此函数也适用于线和点几何图形。"
 
 #. Tag: para
@@ -26189,8 +26176,8 @@ msgid ""
 "considered equivalent. Robustness of the algorithm can be improved by "
 "supplying a nonzero tolerance distance. (default = 0.0)"
 msgstr ""
-"<varname>tolerance</varname>：顶点被视为相等的距离。 "
-"通过提供非零容差距离可以提高算法的稳健性。 （默认 = 0.0）"
+"<varname>tolerance</varname>：顶点被视为相等的距离。 通过提供非零容差距离可以"
+"提高算法的稳健性。 （默认 = 0.0）"
 
 #. Tag: para
 #, no-c-format
@@ -26941,12 +26928,12 @@ msgid ""
 "varname>, <varname>description</varname> and set of <varname>VALUE</varname> "
 "for each creator option for the specific driver."
 msgstr ""
-"返回 GDAL 支持的每种格式的栅格格式短名称、长名称和创建者选项的列表。 "
-"使用短名称作为<varname>格式</varname>参数 <xref linkend=\"RT_ST_AsGDALRaster"
-"\"/>中的输入。 选项根据编译 libgdal 所使用的驱动程序而有所不同。<varname> "
+"返回 GDAL 支持的每种格式的栅格格式短名称、长名称和创建者选项的列表。 使用短名"
+"称作为<varname>格式</varname>参数 <xref linkend=\"RT_ST_AsGDALRaster\"/>中的"
+"输入。 选项根据编译 libgdal 所使用的驱动程序而有所不同。<varname> "
 "create_options </varname>返回 XML 格式的 CreationOptionList/Option 集，其中包"
-"含特定驱动程序的每个创建者选项的名称和可选<varname>type</varname>、<varname>d"
-"escription</varname>以及<varname> VALUE</varname> 集。"
+"含特定驱动程序的每个创建者选项的名称和可选<varname>type</varname>、"
+"<varname>description</varname>以及<varname> VALUE</varname> 集。"
 
 #. Tag: para
 #, no-c-format
@@ -27152,9 +27139,9 @@ msgid ""
 "extent with a lower resolution (pixel size will be 1/<varname>factor</"
 "varname> of the original in both directions)."
 msgstr ""
-"使用源表中重新采样的图块创建一个概览表。 "
-"输出图块将具有与输入图块相同的大小，并以较低的分辨率覆盖相同的空间范围（"
-"像素大小在两个方向上都是原始图块的 1/<varname>factor</varname>）。"
+"使用源表中重新采样的图块创建一个概览表。 输出图块将具有与输入图块相同的大小，"
+"并以较低的分辨率覆盖相同的空间范围（像素大小在两个方向上都是原始图块的 1/"
+"<varname>factor</varname>）。"
 
 #. Tag: para
 #, no-c-format
@@ -28487,7 +28474,8 @@ msgstr ""
 msgid ""
 "Returns system file path to a band stored in file system. If no bandnum "
 "specified, 1 is assumed."
-msgstr "返回存储在文件系统中的波段的系统文件路径。 如果未指定波段号，则假定为 1。"
+msgstr ""
+"返回存储在文件系统中的波段的系统文件路径。 如果未指定波段号，则假定为 1。"
 
 #. Tag: para
 #, no-c-format
@@ -28911,9 +28899,9 @@ msgid ""
 "<varname>exclude_nodata_value</varname> is set to false, then all pixels are "
 "considered."
 msgstr ""
-"如果<varname> except_nodata_value </varname>设置为 "
-"true，则仅考虑非<varname>nodata</varname>像素。 如果 "
-"<varname>except_nodata_value </varname>设置为 false，则考虑所有像素。"
+"如果<varname> except_nodata_value </varname>设置为 true，则仅考虑非"
+"<varname>nodata</varname>像素。 如果 <varname>except_nodata_value </varname>"
+"设置为 false，则考虑所有像素。"
 
 #. Tag: para
 #, no-c-format
@@ -29230,9 +29218,9 @@ msgid ""
 "<varname>width</varname> and <varname>height</varname>. See example Variant "
 "3."
 msgstr ""
-"对于变体3，要设置的特定像素由<varname>columnx</varname>、<varname>rowy</varna"
-"me>像素坐标、<varname>width</varname>和<varname>height</varname>决定。请参见"
-"变体3的示例。"
+"对于变体3，要设置的特定像素由<varname>columnx</varname>、<varname>rowy</"
+"varname>像素坐标、<varname>width</varname>和<varname>height</varname>决定。请"
+"参见变体3的示例。"
 
 #. Tag: para
 #, no-c-format
@@ -29535,9 +29523,9 @@ msgid ""
 "must have the same SRID."
 msgstr ""
 "使用指定的重新采样算法、新的尺寸（width&amp;height）、一个网格角点（gridx "
-"&amp; gridy），以及一组栅格地理参考属性（scalex、scaley、skewx &amp; skewy）"
-"，这些属性可以自己定义，也可以从另一个栅格图像中借用。如果使用参考栅格图像，"
-"那么这两个栅格图像必须具有相同的空间参考ID（SRID）。"
+"&amp; gridy），以及一组栅格地理参考属性（scalex、scaley、skewx &amp; "
+"skewy），这些属性可以自己定义，也可以从另一个栅格图像中借用。如果使用参考栅格"
+"图像，那么这两个栅格图像必须具有相同的空间参考ID（SRID）。"
 
 #. Tag: para
 #, no-c-format
@@ -30790,9 +30778,9 @@ msgid ""
 "3 bands, then only the first band is used. If only 3 bands then all 3 bands "
 "are used and mapped to RGB."
 msgstr ""
-"将栅格图块选定的波段作为单个联合摄影导出组 (JPEG) 图像（字节数组）返回。 "
-"如果未指定波段且有 1 个或 3 个以上波段，则仅使用第一个波段。 如果只有 3 "
-"个波段，则使用所有 3 个波段并将其映射到 RGB。"
+"将栅格图块选定的波段作为单个联合摄影导出组 (JPEG) 图像（字节数组）返回。 如果"
+"未指定波段且有 1 个或 3 个以上波段，则仅使用第一个波段。 如果只有 3 个波段，"
+"则使用所有 3 个波段并将其映射到 RGB。"
 
 #. Tag: para
 #, no-c-format
@@ -31364,10 +31352,10 @@ msgid ""
 "the following equation for converting RGB to Grayscale: 0.2989 * RED + "
 "0.5870 * GREEN + 0.1140 * BLUE"
 msgstr ""
-"此函数与<xref linkend=\"RT_ST_ColorMap\""
-"/>不同，ST_ColorMap带有<varname>grayscale</varname>关键字，因为 ST_ColorMap "
-"仅在一个波段上运行，而此函数需要 RGB 的三个波段。 此函数应用以下公式将 RGB "
-"转换为灰度： 0.2989 * RED 0.5870 * GREEN 0.1140 * BLUE"
+"此函数与<xref linkend=\"RT_ST_ColorMap\"/>不同，ST_ColorMap带有"
+"<varname>grayscale</varname>关键字，因为 ST_ColorMap 仅在一个波段上运行，而此"
+"函数需要 RGB 的三个波段。 此函数应用以下公式将 RGB 转换为灰度： 0.2989 * RED "
+"0.5870 * GREEN 0.1140 * BLUE"
 
 #. Tag: para
 #, no-c-format
@@ -31615,13 +31603,12 @@ msgid ""
 "arguments."
 msgstr ""
 "<varname>Callbackfunc</varname> 必须具有三个参数：一个 3 维双精度数组、一个 "
-"2 维整数数组和一个可变的 1 维文本数组。 "
-"第一个参数<varname>value</varname>是所有输入栅格的值集（双精度）。 三个维度（"
-"其中索引从 1 开始）是：栅格编号、行 y、列 x。 "
-"第二个参数<varname>position</varname>是输出栅格和输入栅格的像素位置集。 "
-"外部维度（索引从 0 开始）是栅格#。 外部维度索引 0 "
-"处的位置是输出栅格的像素位置。 对于每个外部维度，内部维度中有两个元素用于 X "
-"和 Y。第三个参数 <varname>userargs </varname>用于传递任何用户指定的参数。"
+"2 维整数数组和一个可变的 1 维文本数组。 第一个参数<varname>value</varname>是"
+"所有输入栅格的值集（双精度）。 三个维度（其中索引从 1 开始）是：栅格编号、行 "
+"y、列 x。 第二个参数<varname>position</varname>是输出栅格和输入栅格的像素位置"
+"集。 外部维度（索引从 0 开始）是栅格#。 外部维度索引 0 处的位置是输出栅格的像"
+"素位置。 对于每个外部维度，内部维度中有两个元素用于 X 和 Y。第三个参数 "
+"<varname>userargs </varname>用于传递任何用户指定的参数。"
 
 #. Tag: para
 #, no-c-format
@@ -31631,9 +31618,9 @@ msgid ""
 "type> type. To pass the above example PL/pgSQL function as an argument, the "
 "SQL for the argument is:"
 msgstr ""
-"将<type> regprocedure </type>参数传递给 SQL 函数需要传递完整的函数签名，"
-"然后转换为<type> regprocedure </type>类型。 要将上述示例 PL/pgSQL "
-"函数作为参数传递，参数的 SQL 为："
+"将<type> regprocedure </type>参数传递给 SQL 函数需要传递完整的函数签名，然后"
+"转换为<type> regprocedure </type>类型。 要将上述示例 PL/pgSQL 函数作为参数传"
+"递，参数的 SQL 为："
 
 #. Tag: para
 #, no-c-format
@@ -31641,7 +31628,8 @@ msgid ""
 "Note that the argument contains the name of the function, the types of the "
 "function arguments, quotes around the name and argument types, and a cast to "
 "a <type>regprocedure</type>."
-msgstr "请注意，参数包含函数名称、函数参数类型、名称和参数类型周围的引号以及对 "
+msgstr ""
+"请注意，参数包含函数名称、函数参数类型、名称和参数类型周围的引号以及对 "
 "<type>regprocedure </type>的强制转换。"
 
 #. Tag: para
@@ -31653,9 +31641,9 @@ msgid ""
 "weight is set to true, then the values, are used as multipliers to multiple "
 "the pixel value of that value in the neighborhood position."
 msgstr ""
-"n 维数字数组（矩阵），用于过滤传递给映射代数回调函数的单元格。 0 "
-"表示相邻像元值应被视为无数据，1 表示值应被视为数据。 如果权重设置为 "
-"true，则这些值将用作乘数，以乘以邻域位置中该值的像素值。"
+"n 维数字数组（矩阵），用于过滤传递给映射代数回调函数的单元格。 0 表示相邻像元"
+"值应被视为无数据，1 表示值应被视为数据。 如果权重设置为 true，则这些值将用作"
+"乘数，以乘以邻域位置中该值的像素值。"
 
 #. Tag: para
 #, no-c-format
@@ -31663,8 +31651,9 @@ msgid ""
 "boolean (true/false) to denote if a mask value should be weighted "
 "(multiplied by original value) or not (only applies to proto that takes a "
 "mask)."
-msgstr "布尔值（true/"
-"false）表示掩码值是否应该加权（乘以原始值）（仅适用于采用掩码的原型）。"
+msgstr ""
+"布尔值（true/false）表示掩码值是否应该加权（乘以原始值）（仅适用于采用掩码的"
+"原型）。"
 
 #. Tag: para
 #, no-c-format
@@ -31676,11 +31665,11 @@ msgid ""
 "specified band of the appropriate raster (for extent types: SECOND, LAST). "
 "If in doubt, always specify <varname>pixeltype</varname>."
 msgstr ""
-"如果传入<varname>像素类型</varname>，则新栅格的一个波段将属于该像素类型。 "
-"如果将像素类型传递为 NULL 或省略，则新栅格波段将具有与第一个栅格的指定波段（"
-"对于范围类型：INTERSECTION、UNION、FIRST、CUSTOM）或相应栅格的指定波段（对于"
-"范围）相同的像素类型。 类型：第二个、最后一个）。 "
-"如果有疑问，请始终指定<varname>像素类型</varname>。"
+"如果传入<varname>像素类型</varname>，则新栅格的一个波段将属于该像素类型。 如"
+"果将像素类型传递为 NULL 或省略，则新栅格波段将具有与第一个栅格的指定波段（对"
+"于范围类型：INTERSECTION、UNION、FIRST、CUSTOM）或相应栅格的指定波段（对于范"
+"围）相同的像素类型。 类型：第二个、最后一个）。 如果有疑问，请始终指定"
+"<varname>像素类型</varname>。"
 
 #. Tag: para
 #, no-c-format
@@ -31688,16 +31677,17 @@ msgid ""
 "The resulting pixel type of the output raster must be one listed in <xref "
 "linkend=\"RT_ST_BandPixelType\"/> or left out or set to NULL."
 msgstr ""
-"输出栅格的结果像素类型必须是<xref linkend=\"RT_ST_BandPixelType\"/> "
-"中列出的类型，或者省略或设置为 NULL。"
+"输出栅格的结果像素类型必须是<xref linkend=\"RT_ST_BandPixelType\"/> 中列出的"
+"类型，或者省略或设置为 NULL。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Possible values are INTERSECTION (default), UNION, FIRST (default for one "
 "raster variants), SECOND, LAST, CUSTOM."
-msgstr "可能的值为 INTERSECTION（默认）、UNION、FIRST（一个栅格变体的默认值）、SECOND"
-"、LAST、CUSTOM。"
+msgstr ""
+"可能的值为 INTERSECTION（默认）、UNION、FIRST（一个栅格变体的默认值）、"
+"SECOND、LAST、CUSTOM。"
 
 #. Tag: para
 #, no-c-format
@@ -31705,8 +31695,8 @@ msgid ""
 "If <varname>extentype</varname> is CUSTOM, a raster must be provided for "
 "<varname>customextent</varname>. See example 4 of Variant 1."
 msgstr ""
-"如果<varname>extenttype</varname>是CUSTOM，则必须为<varname>customextent</var"
-"name>提供栅格。 请参见变体 1 的示例 4。"
+"如果<varname>extenttype</varname>是CUSTOM，则必须为<varname>customextent</"
+"varname>提供栅格。 请参见变体 1 的示例 4。"
 
 #. Tag: para
 #, no-c-format
@@ -31725,8 +31715,8 @@ msgid ""
 "resulting matrix would be <code>2*distancey + 1</code> .If not specified "
 "only the reference cell is considered (neighborhood of 0)."
 msgstr ""
-"y 方向上距参考单元的距离（以像素为单位）。 结果矩阵的高度将为 <code>2*"
-"distancey + 1</code> 。如果未指定，则仅考虑参考单元格（0 的邻域）。"
+"y 方向上距参考单元的距离（以像素为单位）。 结果矩阵的高度将为 "
+"<code>2*distancey + 1</code> 。如果未指定，则仅考虑参考单元格（0 的邻域）。"
 
 #. Tag: para
 #, no-c-format
@@ -31736,8 +31726,8 @@ msgid ""
 "through to the specified <varname>callbackfunc</varname>, and are contained "
 "in the <varname>userargs</varname> argument."
 msgstr ""
-"<varname>callbackfunc </varname>的第三个参数是一个<type>可变文本</type>数组。"
-" 所有尾随文本参数都传递到指定的<varname>callbackfunc</varname>，并包含在 "
+"<varname>callbackfunc </varname>的第三个参数是一个<type>可变文本</type>数"
+"组。 所有尾随文本参数都传递到指定的<varname>callbackfunc</varname>，并包含在 "
 "<varname>userargs</varname> 参数中。"
 
 #. Tag: para
@@ -31759,8 +31749,8 @@ msgid ""
 "required, regardless of whether you choose to pass any arguments to the "
 "callback function for processing or not."
 msgstr ""
-"无论您是否选择将任何参数传递给回调函数进行处理， <type>text[] "
-"</type>参数在<varname>callbackfunc</varname>都是必需的。"
+"无论您是否选择将任何参数传递给回调函数进行处理， <type>text[] </type>参数在"
+"<varname>callbackfunc</varname>都是必需的。"
 
 #. Tag: para
 #, no-c-format
@@ -31769,15 +31759,16 @@ msgid ""
 "use of a map algebra operation on many rasters and/or many bands. See "
 "example Variant 1."
 msgstr ""
-"变体 1 接受<varname> rastbandarg</varname> "
-"数组，允许在许多栅格和/或许多波段上使用地图代数运算。 请参见示例变体 1。"
+"变体 1 接受<varname> rastbandarg</varname> 数组，允许在许多栅格和/或许多波段"
+"上使用地图代数运算。 请参见示例变体 1。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Variants 2 and 3 operate upon one or more bands of one raster. See example "
 "Variant 2 and 3."
-msgstr "变体 2 和 3 对一个栅格的一个或多个波段进行操作。 请参阅示例变体 2 和 3。"
+msgstr ""
+"变体 2 和 3 对一个栅格的一个或多个波段进行操作。 请参阅示例变体 2 和 3。"
 
 #. Tag: para
 #, no-c-format
@@ -31876,16 +31867,16 @@ msgid ""
 "input rasters, band indexes and one or more user-specified SQL expressions.</"
 "refpurpose>"
 msgstr ""
-"<refpurpose>表达式版本 - 在给定一两个输入栅格、"
-"波段索引和一个或多个用户指定的 SQL "
-"表达式的情况下，返回单波段栅格。</refpurpose>"
+"<refpurpose>表达式版本 - 在给定一两个输入栅格、波段索引和一个或多个用户指定"
+"的 SQL 表达式的情况下，返回单波段栅格。</refpurpose>"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<para>Expression version - Returns a one-band raster given one or two input "
 "rasters, band indexes and one or more user-specified SQL expressions.</para>"
-msgstr "<para>表达式版本 - 在给定一两个输入栅格、波段索引和一个或多个用户指定的 SQL "
+msgstr ""
+"<para>表达式版本 - 在给定一两个输入栅格、波段索引和一个或多个用户指定的 SQL "
 "表达式的情况下，返回单波段栅格。</para>"
 
 #. Tag: title
@@ -31904,8 +31895,8 @@ msgid ""
 msgstr ""
 "通过应用由输入栅格 (<varname>rast</varname>) 上的<varname>expression</"
 "varname>定义的有效 PostgreSQL 代数运算来创建新的单波段栅格。 如果未提供 "
-"<varname>nband</varname>，则假定为波段 1。 "
-"新栅格将具有与原始栅格相同的地理参考、宽度和高度，但只有一个波段。"
+"<varname>nband</varname>，则假定为波段 1。 新栅格将具有与原始栅格相同的地理参"
+"考、宽度和高度，但只有一个波段。"
 
 #. Tag: para
 #, no-c-format
@@ -31914,9 +31905,9 @@ msgid ""
 "a band of that pixeltype. If pixeltype is passed NULL, then the new raster "
 "band will have the same pixeltype as the input <varname>rast</varname> band."
 msgstr ""
-"如果传入<varname>像素类型</varname>，则新栅格将具有该像素类型的波段。 "
-"如果将像素类型传递为 "
-"NULL，则新的栅格带将具有与输入<varname>栅格</varname>带相同的像素类型。"
+"如果传入<varname>像素类型</varname>，则新栅格将具有该像素类型的波段。 如果将"
+"像素类型传递为 NULL，则新的栅格带将具有与输入<varname>栅格</varname>带相同的"
+"像素类型。"
 
 #. Tag: para
 #, no-c-format
@@ -31963,11 +31954,11 @@ msgid ""
 "<varname>extenttype</varname> parameter."
 msgstr ""
 "通过对两个输入栅格波段<varname> rast1</varname>， (<varname>rast2</varname>) "
-"上的<varname>expression</varname>定义的两个波段应用有效的 PostgreSQL "
-"代数运算，创建一个新的单波段栅格。 如果没有<varname> band1</varname>，"
-"则指定<varname> band2</varname>，则假定为 band 1。 "
-"生成的栅格将在第一个栅格定义的网格上对齐（比例、倾斜和像素角）。 "
-"生成的栅格将具有由<varname>extenttype </varname>参数定义的范围。"
+"上的<varname>expression</varname>定义的两个波段应用有效的 PostgreSQL 代数运"
+"算，创建一个新的单波段栅格。 如果没有<varname> band1</varname>，则指定"
+"<varname> band2</varname>，则假定为 band 1。 生成的栅格将在第一个栅格定义的网"
+"格上对齐（比例、倾斜和像素角）。 生成的栅格将具有由<varname>extenttype </"
+"varname>参数定义的范围。"
 
 #. Tag: para
 #, no-c-format
@@ -31976,9 +31967,8 @@ msgid ""
 "defined functions/operators that will define the pixel value when pixels "
 "intersect. e.g. (([rast1] + [rast2])/2.0)::integer"
 msgstr ""
-"涉及两个栅格的 PostgreSQL 代数表达式和 PostgreSQL "
-"定义的函数/运算符，用于定义像素相交时的像素值。 例如 (([rast1] [rast2])/2."
-"0)::integer"
+"涉及两个栅格的 PostgreSQL 代数表达式和 PostgreSQL 定义的函数/运算符，用于定义"
+"像素相交时的像素值。 例如 (([rast1] [rast2])/2.0)::integer"
 
 #. Tag: para
 #, no-c-format
@@ -31987,9 +31977,9 @@ msgid ""
 "linkend=\"RT_ST_BandPixelType\"/>, left out or set to NULL. If not passed in "
 "or set to NULL, will default to the pixeltype of the first raster."
 msgstr ""
-"输出栅格的结果像素类型。 必须是<xref linkend=\"RT_ST_BandPixelType\"/> "
-"中列出的一项，可省略或设置为 NULL。 如果未传入或设置为 "
-"NULL，将默认为第一个栅格的像素类型。"
+"输出栅格的结果像素类型。 必须是<xref linkend=\"RT_ST_BandPixelType\"/> 中列出"
+"的一项，可省略或设置为 NULL。 如果未传入或设置为 NULL，将默认为第一个栅格的像"
+"素类型。"
 
 #. Tag: para
 #, no-c-format
@@ -32001,8 +31991,9 @@ msgstr "控制生成的栅格的范围"
 msgid ""
 "<varname>INTERSECTION</varname> - The extent of the new raster is the "
 "intersection of the two rasters. This is the default."
-msgstr "<varname>INTERSECTION</varname> - 新栅格的范围是两个栅格的交集。 "
-"这是默认设置。"
+msgstr ""
+"<varname>INTERSECTION</varname> - 新栅格的范围是两个栅格的交集。 这是默认设"
+"置。"
 
 #. Tag: para
 #, no-c-format
@@ -32043,8 +32034,8 @@ msgid ""
 "are nodata values and spatially corresponding rast1 pixels have values."
 msgstr ""
 "仅涉及 <varname>rast1 </varname>常量的代数表达式，该常量定义当 "
-"<varname>rast2 </varname>的像素为无数据值且空间对应的 rast1 "
-"像素具有值时返回的内容。"
+"<varname>rast2 </varname>的像素为无数据值且空间对应的 rast1 像素具有值时返回"
+"的内容。"
 
 #. Tag: para
 #, no-c-format
@@ -32067,15 +32058,17 @@ msgstr ""
 msgid ""
 "<varname>[rast1]</varname> - Pixel value of the pixel of interest from "
 "<varname>rast1</varname>"
-msgstr "<varname>[rast1]</varname> - <varname>rast1 </varname>中感兴趣的像素的像素值"
+msgstr ""
+"<varname>[rast1]</varname> - <varname>rast1 </varname>中感兴趣的像素的像素值"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>[rast1.val]</varname> - Pixel value of the pixel of interest from "
 "<varname>rast1</varname>"
-msgstr "<varname>[rast1.val] </varname>-<varname> rast1 "
-"</varname>中感兴趣像素的像素值"
+msgstr ""
+"<varname>[rast1.val] </varname>-<varname> rast1 </varname>中感兴趣像素的像素"
+"值"
 
 #. Tag: para
 #, no-c-format
@@ -32083,8 +32076,8 @@ msgid ""
 "<varname>[rast1.x]</varname> - 1-based pixel column of the pixel of interest "
 "from <varname>rast1</varname>"
 msgstr ""
-"<varname>[rast1.x]</varname> - 来自<varname> rast1 </"
-"varname>的感兴趣像素的基于 1 的像素列"
+"<varname>[rast1.x]</varname> - 来自<varname> rast1 </varname>的感兴趣像素的基"
+"于 1 的像素列"
 
 #. Tag: para
 #, no-c-format
@@ -32092,23 +32085,25 @@ msgid ""
 "<varname>[rast1.y]</varname> - 1-based pixel row of the pixel of interest "
 "from <varname>rast1</varname>"
 msgstr ""
-"<varname>[rast1.y] </varname>- 来自 <varname>rast1</varname> "
-"的感兴趣像素的基于 1 的像素行"
+"<varname>[rast1.y] </varname>- 来自 <varname>rast1</varname> 的感兴趣像素的基"
+"于 1 的像素行"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>[rast2]</varname> - Pixel value of the pixel of interest from "
 "<varname>rast2</varname>"
-msgstr "<varname>[rast2] </varname>-<varname> rast2</varname> 中感兴趣像素的像素值"
+msgstr ""
+"<varname>[rast2] </varname>-<varname> rast2</varname> 中感兴趣像素的像素值"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>[rast2.val]</varname> - Pixel value of the pixel of interest from "
 "<varname>rast2</varname>"
-msgstr "<varname>[rast2.val] </varname>-<varname> rast2</varname> "
-"中感兴趣像素的像素值"
+msgstr ""
+"<varname>[rast2.val] </varname>-<varname> rast2</varname> 中感兴趣像素的像素"
+"值"
 
 #. Tag: para
 #, no-c-format
@@ -32116,8 +32111,8 @@ msgid ""
 "<varname>[rast2.x]</varname> - 1-based pixel column of the pixel of interest "
 "from <varname>rast2</varname>"
 msgstr ""
-"<varname>[rast2.x] </varname>- 来自 <varname>rast2 </"
-"varname>的感兴趣像素的基于 1 的像素列"
+"<varname>[rast2.x] </varname>- 来自 <varname>rast2 </varname>的感兴趣像素的基"
+"于 1 的像素列"
 
 #. Tag: para
 #, no-c-format
@@ -32125,8 +32120,8 @@ msgid ""
 "<varname>[rast2.y]</varname> - 1-based pixel row of the pixel of interest "
 "from <varname>rast2</varname>"
 msgstr ""
-"<varname>[rast2.y] </varname>- 来自<varname> rast2 </"
-"varname>的感兴趣像素的基于 1 的像素行"
+"<varname>[rast2.y] </varname>- 来自<varname> rast2 </varname>的感兴趣像素的基"
+"于 1 的像素行"
 
 #. Tag: title
 #, no-c-format
@@ -32141,7 +32136,8 @@ msgstr "示例：变体3和4"
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Union\"/>, <xref linkend=\"RT_ST_MapAlgebra\"/>"
-msgstr ", <xref linkend=\"RT_ST_Union\"/>, <xref linkend=\"RT_ST_MapAlgebra\"/>"
+msgstr ""
+", <xref linkend=\"RT_ST_Union\"/>, <xref linkend=\"RT_ST_MapAlgebra\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32150,16 +32146,17 @@ msgid ""
 "valid PostgreSQL algebraic operation on the input raster band and of "
 "pixeltype provided. Band 1 is assumed if no band is specified."
 msgstr ""
-"1 栅格波段版本：通过对输入栅格波段和提供的像素类型应用有效的 PostgreSQL "
-"代数运算来创建新的单波段栅格。 如果未指定波段，则假定为波段 1。"
+"1 栅格波段版本：通过对输入栅格波段和提供的像素类型应用有效的 PostgreSQL 代数"
+"运算来创建新的单波段栅格。 如果未指定波段，则假定为波段 1。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "is deprecated as of 2.1.0. Use <xref linkend=\"RT_ST_MapAlgebra_expr\"/> "
 "instead."
-msgstr "自 2.1.0 起已弃用。 使用 <xref linkend=\"RT_ST_MapAlgebra_expr\""
-"/>（表达式版本）代替。"
+msgstr ""
+"自 2.1.0 起已弃用。 使用 <xref linkend=\"RT_ST_MapAlgebra_expr\"/>（表达式版"
+"本）代替。"
 
 #. Tag: para
 #, no-c-format
@@ -32171,9 +32168,9 @@ msgid ""
 "width, and height as the original raster but will only have one band."
 msgstr ""
 "通过应用由输入栅格 (<varname>rast</varname>) 上的<varname>expression</"
-"varname>的有效 PostgreSQL 代数运算来创建新的单波段栅格。 "
-"如果未指定<varname>波段</varname>，则假定为波段 1。 "
-"新栅格将具有与原始栅格相同的地理参考、宽度和高度，但只有一个波段。"
+"varname>的有效 PostgreSQL 代数运算来创建新的单波段栅格。 如果未指定<varname>"
+"波段</varname>，则假定为波段 1。 新栅格将具有与原始栅格相同的地理参考、宽度和"
+"高度，但只有一个波段。"
 
 #. Tag: para
 #, no-c-format
@@ -32183,24 +32180,25 @@ msgid ""
 "to the 1-based pixel column index, <varname>[rast.y]</varname> to refer to "
 "the 1-based pixel row index."
 msgstr ""
-"在表达式中，您可以使用术语<varname> [rast] "
-"</varname>来引用原始波段的像素值，<varname>[rast.x] </varname>来引用基于 1 "
-"的像素列索引，<varname>[rast.y] </varname>来引用基于 1 的像素列索引。 "
-"像素行索引。"
+"在表达式中，您可以使用术语<varname> [rast] </varname>来引用原始波段的像素值，"
+"<varname>[rast.x] </varname>来引用基于 1 的像素列索引，<varname>[rast.y] </"
+"varname>来引用基于 1 的像素列索引。 像素行索引。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Create a new 1 band raster from our original that is a function of modulo 2 "
 "of the original raster band."
-msgstr "根据原始栅格创建一个新的 1 波段栅格，该栅格是原始栅格波段的模 2 的函数。"
+msgstr ""
+"根据原始栅格创建一个新的 1 波段栅格，该栅格是原始栅格波段的模 2 的函数。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Create a new 1 band raster of pixel-type 2BUI from our original that is "
 "reclassified and set the nodata value to be 0."
-msgstr "从我们重新分类的原始栅格中创建一个新的像素类型 2BUI 的 1 波段栅格，并将 "
+msgstr ""
+"从我们重新分类的原始栅格中创建一个新的像素类型 2BUI 的 1 波段栅格，并将 "
 "nodata 值设置为 0。"
 
 #. Tag: para
@@ -32218,8 +32216,9 @@ msgstr "rast_view_ma"
 msgid ""
 "Create a new 3 band raster same pixel type from our original 3 band raster "
 "with first band altered by map algebra and remaining 2 bands unaltered."
-msgstr "从原始 3 波段栅格创建一个与像素类型相同的新 3 "
-"波段栅格，其中第一个波段由地图代数更改，其余 2 个波段保持不变。"
+msgstr ""
+"从原始 3 波段栅格创建一个与像素类型相同的新 3 波段栅格，其中第一个波段由地图"
+"代数更改，其余 2 个波段保持不变。"
 
 #. Tag: para
 #, no-c-format
@@ -32245,9 +32244,9 @@ msgid ""
 msgstr ""
 "2 栅格波段版本：通过对提供的两个输入栅格波段和像素类型应用有效的 PostgreSQL "
 "代数运算来创建新的单波段栅格。 如果未指定波段编号，则假定每个栅格的波段 1。 "
-"生成的栅格将在第一个栅格定义的网格上对齐（比例、倾斜和像素角），并具有由“exte"
-"nttype”参数定义的范围。 "
-"“extenttype”的值可以是：INTERSECTION、UNION、FIRST、SECOND。"
+"生成的栅格将在第一个栅格定义的网格上对齐（比例、倾斜和像素角），并具有"
+"由“extenttype”参数定义的范围。 “extenttype”的值可以是：INTERSECTION、UNION、"
+"FIRST、SECOND。"
 
 #. Tag: para
 #, no-c-format
@@ -32257,8 +32256,8 @@ msgid ""
 "specified, then the new raster band will have the same pixeltype as the "
 "input <varname>rast1</varname> band."
 msgstr ""
-"如果传入<varname>pixeltype</varname>，则新栅格将具有该像素类型的波段。 "
-"如果将像素类型传递为 NULL 或未指定像素类型，则新的栅格波段将具有与输入 "
+"如果传入<varname>pixeltype</varname>，则新栅格将具有该像素类型的波段。 如果将"
+"像素类型传递为 NULL 或未指定像素类型，则新的栅格波段将具有与输入 "
 "<varname>rast1 </varname>波段相同的像素类型。"
 
 #. Tag: para
@@ -32269,9 +32268,9 @@ msgid ""
 "x]</varname>, <varname>[rast1.y]</varname> etc. to refer to the column / row "
 "positions of the pixels."
 msgstr ""
-"使用术语 <varname>[rast1.val]</varname> <varname> [rast2.val]</varname> "
-"指代原始栅格波段的像素值，使用<varname> [rast1.x]</varname>、<varname>[rast1."
-"y] </varname>等指代像素的列/行位置。"
+"使用术语 <varname>[rast1.val]</varname> <varname> [rast2.val]</varname> 指代"
+"原始栅格波段的像素值，使用<varname> [rast1.x]</varname>、<varname>[rast1.y] "
+"</varname>等指代像素的列/行位置。"
 
 #. Tag: title
 #, no-c-format
@@ -32346,15 +32345,16 @@ msgid ""
 "PostgreSQL function on the input raster band and of pixeltype prodived. Band "
 "1 is assumed if no band is specified."
 msgstr ""
-"1 波段版本 - 通过在输入栅格波段和提供的像素类型上应用有效的 PostgreSQL "
-"函数来创建新的单波段栅格。 如果未指定波段，则假定为波段 1。"
+"1 波段版本 - 通过在输入栅格波段和提供的像素类型上应用有效的 PostgreSQL 函数来"
+"创建新的单波段栅格。 如果未指定波段，则假定为波段 1。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "is deprecated as of 2.1.0. Use <xref linkend=\"RT_ST_MapAlgebra\"/> instead."
-msgstr "自 2.1.0 起已弃用。 使用<xref linkend=\"RT_ST_MapAlgebra\""
-"/>（回调函数版本）代替。"
+msgstr ""
+"自 2.1.0 起已弃用。 使用<xref linkend=\"RT_ST_MapAlgebra\"/>（回调函数版本）"
+"代替。"
 
 #. Tag: para
 #, no-c-format
@@ -32365,10 +32365,10 @@ msgid ""
 "1 is assumed. The new raster will have the same georeference, width, and "
 "height as the original raster but will only have one band."
 msgstr ""
-"创建一个新的单波段栅格，该栅格是通过在输入栅格 (<varname>rast</varname>) "
-"上应用<varname> oneerasteruserfunc</varname> 指定的有效 PostgreSQL "
-"函数而形成的。 如果未指定<varname>波段</varname>，则假定为波段 1。 "
-"新栅格将具有与原始栅格相同的地理参考、宽度和高度，但只有一个波段。"
+"创建一个新的单波段栅格，该栅格是通过在输入栅格 (<varname>rast</varname>) 上应"
+"用<varname> oneerasteruserfunc</varname> 指定的有效 PostgreSQL 函数而形成"
+"的。 如果未指定<varname>波段</varname>，则假定为波段 1。 新栅格将具有与原始栅"
+"格相同的地理参考、宽度和高度，但只有一个波段。"
 
 #. Tag: para
 #, no-c-format
@@ -32377,9 +32377,8 @@ msgid ""
 "signature of a SQL or PL/pgSQL function, cast to a regprocedure. A very "
 "simple and quite useless PL/pgSQL function example is:"
 msgstr ""
-"<varname>oneerasteruserfunc</varname> 参数必须是 SQL 或 PL/pgSQL "
-"函数的名称和签名，转换为 regprocedure。 一个非常简单且无用的 PL/pgSQL "
-"函数示例是："
+"<varname>oneerasteruserfunc</varname> 参数必须是 SQL 或 PL/pgSQL 函数的名称和"
+"签名，转换为 regprocedure。 一个非常简单且无用的 PL/pgSQL 函数示例是："
 
 #. Tag: para
 #, no-c-format
@@ -32393,11 +32392,10 @@ msgid ""
 "through to the <varname>userfunction</varname>."
 msgstr ""
 "<varname>userfunction</varname>可以接受两个或三个参数：一个浮点值、一个可选的"
-"整数数组和一个可变文本数组。 "
-"第一个参数是单个栅格像元的值（无论栅格数据类型如何）。 "
-"第二个参数是当前处理单元的位置，格式为“{x,y}”。 第三个参数指示 <xref linkend="
-"\"RT_ST_MapAlgebraFct\"/> "
-"的所有剩余参数应传递给<varname>userfunction</varname>。"
+"整数数组和一个可变文本数组。 第一个参数是单个栅格像元的值（无论栅格数据类型如"
+"何）。 第二个参数是当前处理单元的位置，格式为“{x,y}”。 第三个参数指示 <xref "
+"linkend=\"RT_ST_MapAlgebraFct\"/> 的所有剩余参数应传递给"
+"<varname>userfunction</varname>。"
 
 #. Tag: para
 #, no-c-format
@@ -32407,9 +32405,9 @@ msgid ""
 "type> type. To pass the above example PL/pgSQL function as an argument, the "
 "SQL for the argument is:"
 msgstr ""
-"将 <type>regprodedure </type>参数传递给 SQL 函数需要传递完整的函数签名，"
-"然后转换为 <type>regprocedure</type> 类型。 要将上述示例 PL/pgSQL "
-"函数作为参数传递，参数的 SQL 为："
+"将 <type>regprodedure </type>参数传递给 SQL 函数需要传递完整的函数签名，然后"
+"转换为 <type>regprocedure</type> 类型。 要将上述示例 PL/pgSQL 函数作为参数传"
+"递，参数的 SQL 为："
 
 #. Tag: para
 #, no-c-format
@@ -32421,9 +32419,9 @@ msgid ""
 "varname> argument."
 msgstr ""
 "<varname>userfunction</varname>的第三个参数是一个<type>可变文本</type>数组。 "
-"任何<xref linkend=\"RT_ST_MapAlgebraFct\"/> "
-"调用的所有尾随文本参数都会传递到指定的<varname>userfunction</varname>，"
-"并包含在<varname> args </varname>参数中。"
+"任何<xref linkend=\"RT_ST_MapAlgebraFct\"/> 调用的所有尾随文本参数都会传递到"
+"指定的<varname>userfunction</varname>，并包含在<varname> args </varname>参数"
+"中。"
 
 #. Tag: para
 #, no-c-format
@@ -32432,8 +32430,8 @@ msgid ""
 "required, regardless of whether you choose to pass any arguments to your "
 "user function for processing or not."
 msgstr ""
-"无论您是否选择将任何参数传递给userfunction进行处理， <type>text[] "
-"</type>参数在<varname>userfunction</varname>都是必需的。"
+"无论您是否选择将任何参数传递给userfunction进行处理， <type>text[] </type>参数"
+"在<varname>userfunction</varname>都是必需的。"
 
 #. Tag: para
 #, no-c-format
@@ -32441,8 +32439,9 @@ msgid ""
 "Create a new 1 band raster of pixel-type 2BUI from our original that is "
 "reclassified and set the nodata value to a passed parameter to the user "
 "function (0)."
-msgstr "从我们的原始栅格中创建一个新的像素类型 2BUI 的 1 波段栅格，并将其重新分类，"
-"并将 nodata 值设置为传递给用户函数的参数 (0)。"
+msgstr ""
+"从我们的原始栅格中创建一个新的像素类型 2BUI 的 1 波段栅格，并将其重新分类，并"
+"将 nodata 值设置为传递给用户函数的参数 (0)。"
 
 #. Tag: para
 #, no-c-format
@@ -32467,8 +32466,8 @@ msgid ""
 "INTERSECTION if not specified."
 msgstr ""
 "2 波段版本 - 通过在提供的 2 个输入栅格波段和像素类型上应用有效的 PostgreSQL "
-"函数来创建新的单波段栅格。 如果未指定波段，则假定为波段 1。 如果未指定，"
-"范围类型默认为 INTERSECTION。"
+"函数来创建新的单波段栅格。 如果未指定波段，则假定为波段 1。 如果未指定，范围"
+"类型默认为 INTERSECTION。"
 
 #. Tag: para
 #, no-c-format
@@ -32480,11 +32479,11 @@ msgid ""
 "new raster will have the same georeference, width, and height as the "
 "original rasters but will only have one band."
 msgstr ""
-"创建一个新的单波段栅格，该栅格是通过对输入栅格<varname> "
-"rast1</varname>、<varname>rast2</varname> 应用由<varname>tworastuserfunc </"
-"varname>指定的有效 PostgreSQL 函数而形成的。 如果未指定<varname> band1</"
-"varname> 或<varname> band2</varname>，则假定为 band 1。 "
-"新栅格将具有与原始栅格相同的地理参考、宽度和高度，但只有一个波段。"
+"创建一个新的单波段栅格，该栅格是通过对输入栅格<varname> rast1</varname>、"
+"<varname>rast2</varname> 应用由<varname>tworastuserfunc </varname>指定的有效 "
+"PostgreSQL 函数而形成的。 如果未指定<varname> band1</varname> 或<varname> "
+"band2</varname>，则假定为 band 1。 新栅格将具有与原始栅格相同的地理参考、宽度"
+"和高度，但只有一个波段。"
 
 #. Tag: para
 #, no-c-format
@@ -32494,8 +32493,8 @@ msgid ""
 "new raster band will have the same pixeltype as the input <varname>rast1</"
 "varname> band."
 msgstr ""
-"如果传入<varname>pixeltype</varname>，则新栅格将具有该像素类型的波段。 "
-"如果将像素类型传递为 NULL 或省略，则新的栅格波段将具有与输入 <varname>rast1</"
+"如果传入<varname>pixeltype</varname>，则新栅格将具有该像素类型的波段。 如果将"
+"像素类型传递为 NULL 或省略，则新的栅格波段将具有与输入 <varname>rast1</"
 "varname> 波段相同的像素类型。"
 
 #. Tag: para
@@ -32505,8 +32504,8 @@ msgid ""
 "signature of an SQL or PL/pgSQL function, cast to a regprocedure. An example "
 "PL/pgSQL function example is:"
 msgstr ""
-"<varname>Tworastuserfunc </varname>参数必须是 SQL 或 PL/pgSQL "
-"函数的名称和签名，转换为 regprocedure。 PL/pgSQL 函数示例如下："
+"<varname>Tworastuserfunc </varname>参数必须是 SQL 或 PL/pgSQL 函数的名称和签"
+"名，转换为 regprocedure。 PL/pgSQL 函数示例如下："
 
 #. Tag: para
 #, no-c-format
@@ -32524,10 +32523,9 @@ msgstr ""
 "<varname>Tworastuserfunc </varname>可以接受三个或四个参数：一个双精度值、一个"
 "双精度值、一个可选的整数数组和一个可变文本数组。 第一个参数是<varname> rast1 "
 "</varname>中单个栅格像元的值（无论栅格数据类型如何）。 第二个参数是 "
-"<varname>rast2 </varname>中的单个栅格像元值。 "
-"第三个参数是当前处理单元的位置，格式为“{x,y}”。 第四个参数指示<xref linkend="
-"\"RT_ST_MapAlgebraFct2\"/> "
-"的所有剩余参数均应传递给<varname>tworastuserfunc</varname>。"
+"<varname>rast2 </varname>中的单个栅格像元值。 第三个参数是当前处理单元的位"
+"置，格式为“{x,y}”。 第四个参数指示<xref linkend=\"RT_ST_MapAlgebraFct2\"/> 的"
+"所有剩余参数均应传递给<varname>tworastuserfunc</varname>。"
 
 #. Tag: para
 #, no-c-format
@@ -32539,9 +32537,9 @@ msgid ""
 "<varname>userargs</varname> argument."
 msgstr ""
 "<varname>Tworastuserfunc </varname>的第四个参数是<type>可变文本</type>数组。 "
-"任何 <xref linkend=\"RT_ST_MapAlgebraFct2\"/> "
-"调用的所有尾随文本参数都会传递到指定的<varname>tworastuserfunc</varname>，"
-"并包含在 <varname>userargs </varname>参数中。"
+"任何 <xref linkend=\"RT_ST_MapAlgebraFct2\"/> 调用的所有尾随文本参数都会传递"
+"到指定的<varname>tworastuserfunc</varname>，并包含在 <varname>userargs </"
+"varname>参数中。"
 
 #. Tag: para
 #, no-c-format
@@ -32550,8 +32548,8 @@ msgid ""
 "is required, regardless of whether you choose to pass any arguments to your "
 "user function for processing or not."
 msgstr ""
-"无论您是否选择将任何参数传递给用户函数进行处理，<type>text[] "
-"</type>参数在<varname>tworastuserfunc</varname>都是必需的。"
+"无论您是否选择将任何参数传递给用户函数进行处理，<type>text[] </type>参数在"
+"<varname>tworastuserfunc</varname>都是必需的。"
 
 #. Tag: para
 #, no-c-format
@@ -32575,8 +32573,8 @@ msgid ""
 "function. Return a raster which values are the result of a PLPGSQL user "
 "function involving a neighborhood of values from the input raster band."
 msgstr ""
-"1-波段版本：使用用户定义的 PostgreSQL 函数映射代数最近邻。 返回一个栅格，"
-"其值是涉及输入栅格波段值的邻域的 PLPGSQL 用户函数的结果。"
+"1-波段版本：使用用户定义的 PostgreSQL 函数映射代数最近邻。 返回一个栅格，其值"
+"是涉及输入栅格波段值的邻域的 PLPGSQL 用户函数的结果。"
 
 #. Tag: para
 #, no-c-format
@@ -32587,9 +32585,9 @@ msgid ""
 "array of numbers, for each pixel, returns the result from the user function, "
 "replacing pixel value of currently inspected pixel with the function result."
 msgstr ""
-"（一个栅格版本）返回一个栅格，其值是涉及输入栅格波段值的邻域的 PLPGSQL "
-"用户函数的结果。 用户函数将像素值的邻域作为数字数组，对于每个像素，返回用户函"
-"数的结果，用函数结果替换当前检查像素的像素值。"
+"（一个栅格版本）返回一个栅格，其值是涉及输入栅格波段值的邻域的 PLPGSQL 用户函"
+"数的结果。 用户函数将像素值的邻域作为数字数组，对于每个像素，返回用户函数的结"
+"果，用函数结果替换当前检查像素的像素值。"
 
 #. Tag: para
 #, no-c-format
@@ -32610,10 +32608,10 @@ msgid ""
 "varname>. Results are truncated if they are larger than what is allowed for "
 "the pixeltype."
 msgstr ""
-"输出栅格的结果像素类型。 必须是<xref linkend=\"RT_ST_BandPixelType\"/> "
-"中列出的一项，或者省略或设置为 NULL。 如果未传入或设置为 NULL，将默认为 "
-"<varname>rast </varname>的像素类型。 "
-"如果结果大于像素类型允许的值，则会被截断。"
+"输出栅格的结果像素类型。 必须是<xref linkend=\"RT_ST_BandPixelType\"/> 中列出"
+"的一项，或者省略或设置为 NULL。 如果未传入或设置为 NULL，将默认为 "
+"<varname>rast </varname>的像素类型。 如果结果大于像素类型允许的值，则会被截"
+"断。"
 
 #. Tag: para
 #, no-c-format
@@ -32631,8 +32629,9 @@ msgid ""
 "PLPGSQL/psql user function to apply to neighborhood pixels of a single band "
 "of a raster. The first element is a 2-dimensional array of numbers "
 "representing the rectangular pixel neighborhood"
-msgstr "PLPGSQL/psql 用户函数应用于栅格单个波段的邻域像素。 "
-"第一个元素是表示矩形像素邻域的二维数字数组"
+msgstr ""
+"PLPGSQL/psql 用户函数应用于栅格单个波段的邻域像素。 第一个元素是表示矩形像素"
+"邻域的二维数字数组"
 
 #. Tag: para
 #, no-c-format
@@ -32647,8 +32646,9 @@ msgid ""
 "'ignore': any NODATA values encountered in the neighborhood are ignored by "
 "the computation -- this flag must be sent to the user callback function, and "
 "the user function decides how to ignore it."
-msgstr "'ignore'：计算忽略在邻域中遇到的任何 NODATA 值 - "
-"该标志必须发送到用户回调函数，并且用户函数决定如何忽略它。"
+msgstr ""
+"'ignore'：计算忽略在邻域中遇到的任何 NODATA 值 - 该标志必须发送到用户回调函"
+"数，并且用户函数决定如何忽略它。"
 
 #. Tag: para
 #, no-c-format
@@ -32656,8 +32656,9 @@ msgid ""
 "'NULL': any NODATA values encountered in the neighborhood will cause the "
 "resulting pixel to be NULL -- the user callback function is skipped in this "
 "case."
-msgstr "“NULL”：在邻域中遇到的任何 NODATA 值都将导致结果像素为 "
-"NULL——在这种情况下将跳过用户回调函数。"
+msgstr ""
+"“NULL”：在邻域中遇到的任何 NODATA 值都将导致结果像素为 NULL——在这种情况下将跳"
+"过用户回调函数。"
 
 #. Tag: para
 #, no-c-format
@@ -32684,9 +32685,9 @@ msgid ""
 "prepared in the <xref linkend=\"RT_ST_Rescale\"/> examples"
 msgstr ""
 "示例利用 <link xlink:href=\"http://trac.osgeo.org/gdal/wiki/frmts_wtkraster."
-"html\">http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html</link> "
-"中描述的作为单个图块加载的卡特里娜栅格，然后在 <xref linkend=\"RT_ST_Rescale"
-"\"/> 示例中准备"
+"html\">http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html</link> 中描述的作"
+"为单个图块加载的卡特里娜栅格，然后在 <xref linkend=\"RT_ST_Rescale\"/> 示例中"
+"准备"
 
 #. Tag: para
 #, no-c-format
@@ -32713,9 +32714,9 @@ msgid ""
 "All other bands are returned unchanged. Use case: convert a 16BUI band to a "
 "8BUI and so forth for simpler rendering as viewable formats."
 msgstr ""
-"创建由从原始数据重新分类的波段类型组成的新栅格。 nband 是要更改的波段。 "
-"如果未指定 nband，则假定为 1。所有其他波段均按原样返回。 使用案例：将 16BUI "
-"波段转换为 8BUI 等，以便更简单地呈现为可视格式。"
+"创建由从原始数据重新分类的波段类型组成的新栅格。 nband 是要更改的波段。 如果"
+"未指定 nband，则假定为 1。所有其他波段均按原样返回。 使用案例：将 16BUI 波段"
+"转换为 8BUI 等，以便更简单地呈现为可视格式。"
 
 #. Tag: para
 #, no-c-format
@@ -32729,10 +32730,10 @@ msgid ""
 "reclassification expressions."
 msgstr ""
 "通过对输入栅格 (<varname>rast</varname>) 应用由 <varname>reclassexpr</"
-"varname> 定义的有效 PostgreSQL 代数运算来创建新栅格。 "
-"如果未指定<varname>波段</varname>，则假定为波段 1。 "
-"新栅格将具有与原始栅格相同的地理参考、宽度和高度。 未指定的波段将保持不变。 "
-"有关有效重分类表达式的说明，请参阅 <xref linkend=\"reclassarg\"/>。"
+"varname> 定义的有效 PostgreSQL 代数运算来创建新栅格。 如果未指定<varname>波段"
+"</varname>，则假定为波段 1。 新栅格将具有与原始栅格相同的地理参考、宽度和高"
+"度。 未指定的波段将保持不变。 有关有效重分类表达式的说明，请参阅 <xref "
+"linkend=\"reclassarg\"/>。"
 
 #. Tag: para
 #, no-c-format
@@ -32741,17 +32742,17 @@ msgid ""
 "varname>. If <varname>reclassargset</varname> is passed in then each "
 "reclassarg defines behavior of each band generated."
 msgstr ""
-"新栅格的波段将具有<varname> Pixeltype </varname>的像素类型。 "
-"如果传入<varname> reclassargset</varname>，则每个 reclassarg "
-"定义生成的每个带的行为。"
+"新栅格的波段将具有<varname> Pixeltype </varname>的像素类型。 如果传入"
+"<varname> reclassargset</varname>，则每个 reclassarg 定义生成的每个带的行为。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Create a new raster from the original where band 2 is converted from 8BUI to "
 "4BUI and all values from 101-254 are set to nodata value."
-msgstr "从原始栅格创建一个新栅格，其中波段 2 从 8BUI 转换为 4BUI，并且 101-254 "
-"中的所有值都设置为 nodata 值。"
+msgstr ""
+"从原始栅格创建一个新栅格，其中波段 2 从 8BUI 转换为 4BUI，并且 101-254 中的所"
+"有值都设置为 nodata 值。"
 
 #. Tag: title
 #, no-c-format
@@ -32766,9 +32767,9 @@ msgid ""
 "<varname>reclassarg</varname> argument which can take as input an indefinite "
 "number of reclassargs (theoretically as many bands as you have)"
 msgstr ""
-"从原始栅格创建一个新栅格，其中波段 1、2、3 分别转换为 1BB、4BUI、4BUI "
-"并重新分类。 请注意，这使用可变的<varname>reclassarg</varname>参数，该参数可"
-"以将不确定数量的重新分类参数作为输入（理论上与您拥有的波段一样多）"
+"从原始栅格创建一个新栅格，其中波段 1、2、3 分别转换为 1BB、4BUI、4BUI 并重新"
+"分类。 请注意，这使用可变的<varname>reclassarg</varname>参数，该参数可以将不"
+"确定数量的重新分类参数作为输入（理论上与您拥有的波段一样多）"
 
 #. Tag: title
 #, no-c-format
@@ -32781,7 +32782,8 @@ msgstr "示例：高级将单波段 32BF 栅格映射到多个可见波段"
 msgid ""
 "Create a new 3 band (8BUI,8BUI,8BUI viewable raster) from a raster that has "
 "only one 32bf band"
-msgstr "从只有一个 32bf 波段的栅格创建一个新的 3 波段（8BUI、8BUI、8BUI 可查看栅格）"
+msgstr ""
+"从只有一个 32bf 波段的栅格创建一个新的 3 波段（8BUI、8BUI、8BUI 可查看栅格）"
 
 #. Tag: para
 #, no-c-format
@@ -32810,10 +32812,9 @@ msgid ""
 "<varname>uniontype</varname> which is one of the following: LAST (default), "
 "FIRST, MIN, MAX, COUNT, SUM, MEAN, RANGE."
 msgstr ""
-"将一组栅格切片的并集返回为由至少一个波段组成的单个栅格。 "
-"生成的栅格范围是整个栅格集的范围。 在交集的情况下，结果值由<varname> "
-"uniontype</varname> "
-"定义，它是以下之一：LAST（默认）、FIRST、MIN、MAX、COUNT、SUM、MEAN、RANGE。"
+"将一组栅格切片的并集返回为由至少一个波段组成的单个栅格。 生成的栅格范围是整个"
+"栅格集的范围。 在交集的情况下，结果值由<varname> uniontype</varname> 定义，它"
+"是以下之一：LAST（默认）、FIRST、MIN、MAX、COUNT、SUM、MEAN、RANGE。"
 
 #. Tag: para
 #, no-c-format
@@ -32844,15 +32845,17 @@ msgstr "可用性：2.1.0 引入了 ST_Union(rast, unionarg) 变体。"
 msgid ""
 "Enhanced: 2.1.0 ST_Union(rast) (variant 1) unions all bands of all input "
 "rasters. Prior versions of PostGIS assumed the first band."
-msgstr "增强：2.1.0 ST_Union(rast)（变体 1）合并所有输入栅格的所有波段。 PostGIS "
-"的早期版本采用第一个波段。"
+msgstr ""
+"增强：2.1.0 ST_Union(rast)（变体 1）合并所有输入栅格的所有波段。 PostGIS 的早"
+"期版本采用第一个波段。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Enhanced: 2.1.0 ST_Union(rast, uniontype) (variant 4) unions all bands of "
 "all input rasters."
-msgstr "增强：2.1.0 ST_Union(rast, uniontype)（变体 4）合并所有输入栅格的所有波段。"
+msgstr ""
+"增强：2.1.0 ST_Union(rast, uniontype)（变体 4）合并所有输入栅格的所有波段。"
 
 #. Tag: title
 #, no-c-format
@@ -32871,7 +32874,8 @@ msgstr "示例：返回多波段栅格，它是与几何体相交的图块的并
 msgid ""
 "Here we use the longer syntax if we only wanted a subset of bands or we want "
 "to change order of bands"
-msgstr "如果我们只想要波段的子集或者想要更改波段的顺序，则这里我们使用更长的语法"
+msgstr ""
+"如果我们只想要波段的子集或者想要更改波段的顺序，则这里我们使用更长的语法"
 
 #. Tag: para
 #, no-c-format
@@ -32905,24 +32909,27 @@ msgstr "计算像素邻域中唯一像素值的数量。"
 msgid ""
 "Variant 1 is a specialized callback function for use as a callback parameter "
 "to <xref linkend=\"RT_ST_MapAlgebraFctNgb\"/>."
-msgstr "格式 1 是一个专门的回调函数，用作<xref linkend=\"RT_ST_MapAlgebraFctNgb\""
-"/>的回调参数。"
+msgstr ""
+"格式 1 是一个专门的回调函数，用作<xref linkend=\"RT_ST_MapAlgebraFctNgb\"/>的"
+"回调参数。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Variant 2 is a specialized callback function for use as a callback parameter "
 "to <xref linkend=\"RT_ST_MapAlgebra\"/>."
-msgstr "格式 2 是一个专门的回调函数，用作<xref linkend=\"RT_ST_MapAlgebra\""
-"/>（回调函数版本）的回调参数。"
+msgstr ""
+"格式 2 是一个专门的回调函数，用作<xref linkend=\"RT_ST_MapAlgebra\"/>（回调函"
+"数版本）的回调参数。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Use of Variant 1 is discouraged since <xref linkend=\"RT_ST_MapAlgebraFctNgb"
 "\"/> has been deprecated as of 2.1.0."
-msgstr "不鼓励使用格式 1，因为 <xref linkend=\"RT_ST_MapAlgebraFctNgb\"/> 自 2.1.0 "
-"起已被弃用。"
+msgstr ""
+"不鼓励使用格式 1，因为 <xref linkend=\"RT_ST_MapAlgebraFctNgb\"/> 自 2.1.0 起"
+"已被弃用。"
 
 #. Tag: para
 #, no-c-format
@@ -32968,11 +32975,10 @@ msgid ""
 "If not specified and the pixel of interest has a value, that value is "
 "returned."
 msgstr ""
-"有两个可选参数可以通过 <varname>userargs </varname>传递。 "
-"第一个参数是反距离加权方程中使用的介于 0 和 1 之间的功率因数（"
-"下面方程中的变量 k）。 如果未指定，则默认值为 "
-"1。第二个参数是仅当感兴趣像素的值包含在邻域的插值中时应用的权重百分比。 "
-"如果未指定并且感兴趣的像素具有值，则返回该值。"
+"有两个可选参数可以通过 <varname>userargs </varname>传递。 第一个参数是反距离"
+"加权方程中使用的介于 0 和 1 之间的功率因数（下面方程中的变量 k）。 如果未指"
+"定，则默认值为 1。第二个参数是仅当感兴趣像素的值包含在邻域的插值中时应用的权"
+"重百分比。 如果未指定并且感兴趣的像素具有值，则返回该值。"
 
 #. Tag: para
 #, no-c-format
@@ -32989,8 +32995,9 @@ msgstr "k = 功率因数，0 到 1 之间的实数"
 msgid ""
 "This function is a specialized callback function for use as a callback "
 "parameter to <xref linkend=\"RT_ST_MapAlgebra\"/>."
-msgstr "该函数是一个专门的回调函数，用作 <xref linkend=\"RT_ST_MapAlgebra\""
-"/>（回调函数版本）的回调参数。"
+msgstr ""
+"该函数是一个专门的回调函数，用作 <xref linkend=\"RT_ST_MapAlgebra\"/>（回调函"
+"数版本）的回调参数。"
 
 #. Tag: para
 #, no-c-format
@@ -33082,7 +33089,8 @@ msgstr ""
 msgid ""
 "Raster processing function that returns the minimum distance (in number of "
 "pixels) between the pixel of interest and a neighboring pixel with value."
-msgstr "返回感兴趣像素与具有值的相邻像素之间的最小距离（以像素数为单位）的栅格处理函"
+msgstr ""
+"返回感兴趣像素与具有值的相邻像素之间的最小距离（以像素数为单位）的栅格处理函"
 "数。"
 
 #. Tag: para
@@ -33090,7 +33098,8 @@ msgstr "返回感兴趣像素与具有值的相邻像素之间的最小距离（
 msgid ""
 "Return the shortest distance (in number of pixels) between the pixel of "
 "interest and the closest pixel with value in the neighborhood."
-msgstr "返回感兴趣的像素与邻域中具有值的最近像素之间的最短距离（以像素数为单位）。"
+msgstr ""
+"返回感兴趣的像素与邻域中具有值的最近像素之间的最短距离（以像素数为单位）。"
 
 #. Tag: para
 #, no-c-format
@@ -33101,8 +33110,8 @@ msgid ""
 "particularly useful when the neighborhood is sparsely populated."
 msgstr ""
 "此函数的目的是提供信息丰富的数据点，帮助从<xref linkend="
-"\"RT_ST_InvDistWeight4ma\"/>推断感兴趣像素的插值的有用性。 "
-"当社区人口稀少时，此功能特别有用。"
+"\"RT_ST_InvDistWeight4ma\"/>推断感兴趣像素的插值的有用性。 当社区人口稀少时，"
+"此功能特别有用。"
 
 #. Tag: para
 #, no-c-format
@@ -33176,32 +33185,36 @@ msgstr "返回高程栅格波段的坡向（默认以度为单位）。 对于�
 msgid ""
 "Returns the aspect (in degrees by default) of an elevation raster band. "
 "Utilizes map algebra and applies the aspect equation to neighboring pixels."
-msgstr "返回高程栅格波段的坡向（默认以度为单位）。 "
-"利用地图代数并将长宽比方程应用于相邻像素。"
+msgstr ""
+"返回高程栅格波段的坡向（默认以度为单位）。 利用地图代数并将长宽比方程应用于相"
+"邻像素。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>units</varname> indicates the units of the aspect. Possible values "
 "are: RADIANS, DEGREES (default)."
-msgstr "<varname>units</varname> "
-"表示坡度的单位。可能的取值有：RADIANS（弧度），DEGREES（度，默认值）。"
+msgstr ""
+"<varname>units</varname> 表示坡度的单位。可能的取值有：RADIANS（弧度），"
+"DEGREES（度，默认值）。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "When <varname>units</varname> = RADIANS, values are between 0 and 2 * pi "
 "radians measured clockwise from North."
-msgstr "当<varname>units</varname> = RADIANS 时，值介于 0 到 2 * pi "
-"弧度之间，从北向顺时针测量。"
+msgstr ""
+"当<varname>units</varname> = RADIANS 时，值介于 0 到 2 * pi 弧度之间，从北向"
+"顺时针测量。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "When <varname>units</varname> = DEGREES, values are between 0 and 360 "
 "degrees measured clockwise from North."
-msgstr "当<varname>units</varname> = DEGREES 时，值介于 0 到 360 "
-"度之间（从北向顺时针测量）。"
+msgstr ""
+"当<varname>units</varname> = DEGREES 时，值介于 0 到 360 度之间（从北向顺时针"
+"测量）。"
 
 #. Tag: para
 #, no-c-format
@@ -33219,11 +33232,10 @@ msgid ""
 "Guide - Aspect Images</link>."
 msgstr ""
 "有关坡度、坡向和山体阴影的更多信息，请参阅 <link xlink:href=\"http://webhelp."
-"esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works\""
-">ESRI - 山体阴影的工作原理</link>和 <link xlink:href=\"http://e2b.erdas.com/"
-"fieldguide/wwhelp/wwhimpl/common/html/wwhelp."
-"htm?context=FieldGuide&amp;file=Aspect_Images.html\">ERDAS 现场指南 - "
-"坡向图像</link>。"
+"esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works"
+"\">ESRI - 山体阴影的工作原理</link>和 <link xlink:href=\"http://e2b.erdas."
+"com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?context=FieldGuide&amp;"
+"file=Aspect_Images.html\">ERDAS 现场指南 - 坡向图像</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -33231,15 +33243,16 @@ msgid ""
 "Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional "
 "<varname>interpolate_nodata</varname> function parameter"
 msgstr ""
-"增强：2.1.0 使用 ST_MapAlgebra() 并添加可选的<varname> interpolate_nodata "
-"</varname>函数参数"
+"增强：2.1.0 使用 ST_MapAlgebra() 并添加可选的<varname> interpolate_nodata </"
+"varname>函数参数"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Changed: 2.1.0 In prior versions, return values were in radians. Now, return "
 "values default to degrees"
-msgstr "更改：2.1.0 在之前的版本中，返回值以弧度为单位。 现在，返回值默认为度数"
+msgstr ""
+"更改：2.1.0 在之前的版本中，返回值以弧度为单位。 现在，返回值默认为度数"
 
 #. Tag: para
 #, no-c-format
@@ -33274,32 +33287,35 @@ msgid ""
 "applies the hill shade equation to neighboring pixels. Return pixel values "
 "are between 0 and 255."
 msgstr ""
-"使用方位角、高度、亮度和比例输入返回高程栅格带的假设照明。 "
-"利用地图代数并将山体阴影方程应用于相邻像素。 返回像素值介于 0 到 255 之间。"
+"使用方位角、高度、亮度和比例输入返回高程栅格带的假设照明。 利用地图代数并将山"
+"体阴影方程应用于相邻像素。 返回像素值介于 0 到 255 之间。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>azimuth</varname> is a value between 0 and 360 degrees measured "
 "clockwise from North."
-msgstr "<varname>方位角（azimuth）</varname>是从北向顺时针测量的 0 到 360 "
-"度之间的值。"
+msgstr ""
+"<varname>方位角（azimuth）</varname>是从北向顺时针测量的 0 到 360 度之间的"
+"值。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>altitude</varname> is a value between 0 and 90 degrees where 0 "
 "degrees is at the horizon and 90 degrees is directly overhead."
-msgstr "<varname>高度（altitude）</varname>是 0 到 90 度之间的值，其中 0 "
-"度位于地平线，90 度位于正上方。"
+msgstr ""
+"<varname>高度（altitude）</varname>是 0 到 90 度之间的值，其中 0 度位于地平"
+"线，90 度位于正上方。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>max_bright</varname> is a value between 0 and 255 with 0 as no "
 "brightness and 255 as max brightness."
-msgstr "<varname>亮度（max_bright）</varname>是 0 到 255 之间的值，其中 0 "
-"表示无亮度，255 表示最大亮度。"
+msgstr ""
+"<varname>亮度（max_bright）</varname>是 0 到 255 之间的值，其中 0 表示无亮"
+"度，255 表示最大亮度。"
 
 #. Tag: para
 #, no-c-format
@@ -33317,9 +33333,9 @@ msgid ""
 "from the input raster will be interpolated using <xref linkend="
 "\"RT_ST_InvDistWeight4ma\"/> before computing the hillshade illumination."
 msgstr ""
-"如果<varname> interpolate_nodata</varname> 为 "
-"TRUE，则在计算山体阴影照明之前，将使用<xref linkend=\"RT_ST_InvDistWeight4ma"
-"\"/>对输入栅格中的 NODATA 像素值进行插值。"
+"如果<varname> interpolate_nodata</varname> 为 TRUE，则在计算山体阴影照明之"
+"前，将使用<xref linkend=\"RT_ST_InvDistWeight4ma\"/>对输入栅格中的 NODATA 像"
+"素值进行插值。"
 
 #. Tag: para
 #, no-c-format
@@ -33329,16 +33345,17 @@ msgid ""
 "%20Hillshade%20works\">How hillshade works</link>."
 msgstr ""
 "有关山体阴影的更多信息，请参阅<link xlink:href=\"http://webhelp.esri.com/"
-"arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works\""
-">山体阴影的工作原理</link>。"
+"arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works\">山体阴影的工"
+"作原理</link>。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Changed: 2.1.0 In prior versions, azimuth and altitude were expressed in "
 "radians. Now, azimuth and altitude are expressed in degrees"
-msgstr "更改：2.1.0 在之前的版本中，方位角和高度以弧度表示。 "
-"现在，方位角和高度以度表示"
+msgstr ""
+"更改：2.1.0 在之前的版本中，方位角和高度以弧度表示。 现在，方位角和高度以度表"
+"示"
 
 #. Tag: para
 #, no-c-format
@@ -33386,16 +33403,18 @@ msgstr "返回高程栅格带的坡度（默认以度为单位）。 对于分�
 msgid ""
 "Returns the slope (in degrees by default) of an elevation raster band. "
 "Utilizes map algebra and applies the slope equation to neighboring pixels."
-msgstr "返回高程栅格带的坡度（默认以度为单位）。 "
-"利用地图代数并将斜率方程应用于相邻像素。"
+msgstr ""
+"返回高程栅格带的坡度（默认以度为单位）。 利用地图代数并将斜率方程应用于相邻像"
+"素。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>units</varname> indicates the units of the slope. Possible values "
 "are: RADIANS, DEGREES (default), PERCENT."
-msgstr "<varname>units</varname>表示斜率的单位。 "
-"可能的值为：弧度、度（默认）、百分比。"
+msgstr ""
+"<varname>units</varname>表示斜率的单位。 可能的值为：弧度、度（默认）、百分"
+"比。"
 
 #. Tag: para
 #, no-c-format
@@ -33404,9 +33423,9 @@ msgid ""
 "from the input raster will be interpolated using <xref linkend="
 "\"RT_ST_InvDistWeight4ma\"/> before computing the surface slope."
 msgstr ""
-"如果<varname> interpolate_nodata </varname>为 TRUE，则在计算表面坡度之前，"
-"将使用 <xref linkend=\"RT_ST_InvDistWeight4ma\"/>对输入栅格中的 NODATA "
-"像素值进行插值。"
+"如果<varname> interpolate_nodata </varname>为 TRUE，则在计算表面坡度之前，将"
+"使用 <xref linkend=\"RT_ST_InvDistWeight4ma\"/>对输入栅格中的 NODATA 像素值进"
+"行插值。"
 
 #. Tag: para
 #, no-c-format
@@ -33421,9 +33440,8 @@ msgstr ""
 "有关坡度、坡向和山体阴影的更多信息，请参阅<link xlink:href=\"http://webhelp."
 "esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works\"> "
 "ESRI - 山体阴影的工作原理</link>和 <link xlink:href=\"http://e2b.erdas.com/"
-"fieldguide/wwhelp/wwhimpl/common/html/wwhelp."
-"htm?context=FieldGuide&amp;file=Slope_Images.html\">ERDAS 现场指南 - "
-"坡度图像</link>。"
+"fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?context=FieldGuide&amp;"
+"file=Slope_Images.html\">ERDAS 现场指南 - 坡度图像</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -33432,8 +33450,8 @@ msgid ""
 "varname>, <varname>scale</varname>, <varname>interpolate_nodata</varname> "
 "function parameters"
 msgstr ""
-"增强：2.1.0 使用 ST_MapAlgebra() 并添加可选<varname>units</varname>、<varname"
-">scale</varname>、<varname>interpolate_nodata</varname> 函数参数"
+"增强：2.1.0 使用 ST_MapAlgebra() 并添加可选<varname>units</varname>、"
+"<varname>scale</varname>、<varname>interpolate_nodata</varname> 函数参数"
 
 #. Tag: para
 #, no-c-format
@@ -33485,7 +33503,8 @@ msgid ""
 "Terrain Ruggedness Index is calculated by comparing a central pixel with its "
 "neighbors, taking the absolute values of the differences, and averaging the "
 "result."
-msgstr "地形坚固性指数是通过将中心像素与其相邻像素进行比较、取差异的绝对值并对结果求"
+msgstr ""
+"地形坚固性指数是通过将中心像素与其相邻像素进行比较、取差异的绝对值并对结果求"
 "平均值来计算的。"
 
 #. Tag: para
@@ -33521,8 +33540,8 @@ msgid ""
 "((<varname>MINX</varname>, <varname>MINY</varname>), (<varname>MAXX</"
 "varname>, <varname>MAXY</varname>))"
 msgstr ""
-"多边形由边界框的角点定义 ((<varname>MINX</varname>, <varname>MINY</varname>)"
-", (<varname>MAXX</varname>, <varname>MAXY</varname>))"
+"多边形由边界框的角点定义 ((<varname>MINX</varname>, <varname>MINY</"
+"varname>), (<varname>MAXX</varname>, <varname>MAXY</varname>))"
 
 #. Tag: para
 #, no-c-format
@@ -33530,8 +33549,8 @@ msgid ""
 "Changed: 2.0.0 In pre-2.0 versions, there used to be a box2d instead of "
 "box3d. Since box2d is a deprecated type, this was changed to box3d."
 msgstr ""
-"更改：2.0.0 在 2.0 之前的版本中，曾经有 box2d 而不是 box3d。 由于 box2d "
-"是已弃用的类型，因此已更改为 box3d。"
+"更改：2.0.0 在 2.0 之前的版本中，曾经有 box2d 而不是 box3d。 由于 box2d 是已"
+"弃用的类型，因此已更改为 box3d。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -33541,9 +33560,8 @@ msgid ""
 "the same result as ST_Envelope so only useful for irregularly shaped or "
 "skewed rasters."
 msgstr ""
-"返回栅格的凸包几何形状，包括等于 BandNoDataValue 的像素值。 "
-"对于规则形状和非倾斜栅格，这给出与 ST_Envelope "
-"相同的结果，因此仅对不规则形状或倾斜栅格有用。"
+"返回栅格的凸包几何形状，包括等于 BandNoDataValue 的像素值。 对于规则形状和非"
+"倾斜栅格，这给出与 ST_Envelope 相同的结果，因此仅对不规则形状或倾斜栅格有用。"
 
 #. Tag: para
 #, no-c-format
@@ -33553,9 +33571,9 @@ msgid ""
 "less the same result as ST_Envelope so only useful for irregularly shaped or "
 "skewed rasters."
 msgstr ""
-"返回栅格的凸包几何形状，包括 NoDataBandValue 带像素。 "
-"对于规则形状和非倾斜栅格，这或多或少会产生与 ST_Envelope "
-"相同的结果，因此仅对不规则形状或倾斜栅格有用。"
+"返回栅格的凸包几何形状，包括 NoDataBandValue 带像素。 对于规则形状和非倾斜栅"
+"格，这或多或少会产生与 ST_Envelope 相同的结果，因此仅对不规则形状或倾斜栅格有"
+"用。"
 
 #. Tag: para
 #, no-c-format
@@ -33564,8 +33582,8 @@ msgid ""
 "raster so the answer is subtly different from ST_ConvexHull which does not "
 "floor."
 msgstr ""
-"ST_Envelope 将坐标向下取整，因此在栅格周围添加了一小部分缓冲区，"
-"因此结果与不对坐标向下取整的 ST_ConvexHull 稍有不同。"
+"ST_Envelope 将坐标向下取整，因此在栅格周围添加了一小部分缓冲区，因此结果与不"
+"对坐标向下取整的 ST_ConvexHull 稍有不同。"
 
 #. Tag: para
 #, no-c-format
@@ -33591,8 +33609,9 @@ msgstr ""
 msgid ""
 "Returns a set of geomval (geom,val) rows, from a given raster band. If no "
 "band number is specified, band num defaults to 1."
-msgstr "从给定的栅格带中返回一组 geomval (geom,val) 行。 如果未指定波段 编号，"
-"则波段编号默认为 1。"
+msgstr ""
+"从给定的栅格带中返回一组 geomval (geom,val) 行。 如果未指定波段 编号，则波段"
+"编号默认为 1。"
 
 #. Tag: para
 #, no-c-format
@@ -33602,9 +33621,9 @@ msgid ""
 "the union of all pixels for that band that have the same pixel value denoted "
 "by val."
 msgstr ""
-"这是一个集合返回函数（SRF）。 它返回一组 geomval 行，由几何图形 (geom) "
-"和像素带值 (val) 组成。 每个多边形是该带的所有像素的并集，这些像素具有由 val "
-"表示的相同像素值。"
+"这是一个集合返回函数（SRF）。 它返回一组 geomval 行，由几何图形 (geom) 和像素"
+"带值 (val) 组成。 每个多边形是该带的所有像素的并集，这些像素具有由 val 表示的"
+"相同像素值。"
 
 #. Tag: para
 #, no-c-format
@@ -33613,8 +33632,8 @@ msgid ""
 "GROUP BY in that it creates new rows. For example it can be used to expand a "
 "single raster into multiple POLYGONS/MULTIPOLYGONS."
 msgstr ""
-"ST_DumpAsPolygon 对于多边形化栅格很有用。 它与 GROUP BY 相反，它创建新行。 "
-"例如，它可用于将单个栅格扩展为多个 POLYGONS/MULTIPOLYGONS。"
+"ST_DumpAsPolygon 对于多边形化栅格很有用。 它与 GROUP BY 相反，它创建新行。 例"
+"如，它可用于将单个栅格扩展为多个 POLYGONS/MULTIPOLYGONS。"
 
 #. Tag: para
 #, no-c-format
@@ -33633,7 +33652,8 @@ msgstr "可用性：需要 GDAL 1.7 或更高版本。"
 msgid ""
 "If there is a no data value set for a band, pixels with that value will not "
 "be returned except in the case of exclude_nodata_value=false."
-msgstr "如果没有为波段设置数据值，则不会返回具有该值的像素，除非 "
+msgstr ""
+"如果没有为波段设置数据值，则不会返回具有该值的像素，除非 "
 "except_nodata_value=false。"
 
 #. Tag: para
@@ -33641,7 +33661,8 @@ msgstr "如果没有为波段设置数据值，则不会返回具有该值的像
 msgid ""
 "If you only care about count of pixels with a given value in a raster, it is "
 "faster to use <xref linkend=\"RT_ST_ValueCount\"/>."
-msgstr "如果您只关心栅格中具有给定值的像素计数，则使用 <xref linkend="
+msgstr ""
+"如果您只关心栅格中具有给定值的像素计数，则使用 <xref linkend="
 "\"RT_ST_ValueCount\"/> 速度更快。"
 
 #. Tag: para
@@ -33650,8 +33671,8 @@ msgid ""
 "This is different than ST_PixelAsPolygons where one geometry is returned for "
 "each pixel regardless of pixel value."
 msgstr ""
-"这与 ST_PixelAsPolygons 不同，在 ST_PixelAsPolygons "
-"中，无论像素值如何，都会为每个像素返回一个几何图形。"
+"这与 ST_PixelAsPolygons 不同，在 ST_PixelAsPolygons 中，无论像素值如何，都会"
+"为每个像素返回一个几何图形。"
 
 #. Tag: para
 #, no-c-format
@@ -33673,8 +33694,9 @@ msgid ""
 "Returns the polygon representation of the extent of the raster in spatial "
 "coordinate units defined by srid. It is a float8 minimum bounding box "
 "represented as a polygon."
-msgstr "返回栅格范围的多边形表示形式（以 srid 定义的空间坐标单位表示）。 "
-"它是一个表示为多边形的 float8 最小边界框。"
+msgstr ""
+"返回栅格范围的多边形表示形式（以 srid 定义的空间坐标单位表示）。 它是一个表示"
+"为多边形的 float8 最小边界框。"
 
 #. Tag: para
 #, no-c-format
@@ -33687,8 +33709,8 @@ msgid ""
 msgstr ""
 "多边形由边界框的角点定义((<varname>MINX</varname>, <varname>MINY</varname>), "
 "(<varname>MINX</varname>, <varname>MAXY</varname>), (<varname>MAXX</"
-"varname>, <varname>MAXY</varname>), (<varname>MAXX</varname>, "
-"<varname>MINY</varname>), (<varname>MINX</varname>, <varname>MINY</varname>))"
+"varname>, <varname>MAXY</varname>), (<varname>MAXX</varname>, <varname>MINY</"
+"varname>), (<varname>MINX</varname>, <varname>MINY</varname>))"
 
 #. Tag: para
 #, no-c-format
@@ -33706,8 +33728,8 @@ msgid ""
 "Return the convex hull geometry of the raster excluding NODATA pixels. If "
 "<varname>nband</varname> is NULL, all bands of the raster are considered."
 msgstr ""
-"返回栅格的凸包几何形状（不包括 NODATA 像素）。 如果 <varname>nband </"
-"varname>为 NULL，则考虑栅格的所有波段。"
+"返回栅格的凸包几何形状（不包括 NODATA 像素）。 如果 <varname>nband </varname>"
+"为 NULL，则考虑栅格的所有波段。"
 
 #. Tag: para
 #, no-c-format
@@ -33724,7 +33746,8 @@ msgid ""
 "Returns a multipolygon geometry formed by the union of pixels that have a "
 "pixel value that is not no data value. If no band number is specified, band "
 "num defaults to 1."
-msgstr "返回由具有非无数据值的像素值的像素并集形成的多多边形几何体。 如果未指定波段 "
+msgstr ""
+"返回由具有非无数据值的像素值的像素并集形成的多多边形几何体。 如果未指定波段 "
 "编号，则 波段 编号默认为 1。"
 
 #. Tag: para
@@ -33789,10 +33812,9 @@ msgid ""
 "of raster B, or more accurately, overlaps or is NOT to the right of the "
 "bounding box of raster B."
 msgstr ""
-"<varname>&amp;&lt;</varname> 运算符在栅格 A 的边界框与栅格 B "
-"的边界框重叠或位于栅格 B 的边界框的左侧时返回 "
-"<varname>TRUE</varname>，或者更准确地说，在栅格 B "
-"的边界框的右侧没有重叠时返回 TRUE。"
+"<varname>&amp;&lt;</varname> 运算符在栅格 A 的边界框与栅格 B 的边界框重叠或位"
+"于栅格 B 的边界框的左侧时返回 <varname>TRUE</varname>，或者更准确地说，在栅"
+"格 B 的边界框的右侧没有重叠时返回 TRUE。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -33808,18 +33830,18 @@ msgid ""
 "of raster B, or more accurately, overlaps or is NOT to the left of the "
 "bounding box of raster B."
 msgstr ""
-"<varname>&amp;&gt;</varname> 运算符在栅格 A 的边界框与栅格 B "
-"的边界框重叠或位于栅格 B 的边界框的右侧时返回 "
-"<varname>TRUE</varname>，或者更准确地说，在栅格 B "
-"的边界框的左侧没有重叠时返回 TRUE。"
+"<varname>&amp;&gt;</varname> 运算符在栅格 A 的边界框与栅格 B 的边界框重叠或位"
+"于栅格 B 的边界框的右侧时返回 <varname>TRUE</varname>，或者更准确地说，在栅"
+"格 B 的边界框的左侧没有重叠时返回 TRUE。"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is the same as B's. Uses "
 "double precision bounding box."
-msgstr "如果 A 的边界框与 B 的边界框相同，则返回 <varname>TRUE</varname>。 "
-"使用双精度边界框。"
+msgstr ""
+"如果 A 的边界框与 B 的边界框相同，则返回 <varname>TRUE</varname>。 使用双精度"
+"边界框。"
 
 #. Tag: para
 #, no-c-format
@@ -33831,8 +33853,8 @@ msgid ""
 "ORDER BY clause)."
 msgstr ""
 "<varname>&#61;</varname> 运算符在栅格 A 的边界框与栅格 B 的边界框相同时返回 "
-"<varname>TRUE</varname>。PostgreSQL 使用为栅格定义的 =、&lt; 和 &gt; "
-"运算符来执行栅格的内部排序和比较（例如，在 GROUP BY 或 ORDER BY 子句中）。"
+"<varname>TRUE</varname>。PostgreSQL 使用为栅格定义的 =、&lt; 和 &gt; 运算符来"
+"执行栅格的内部排序和比较（例如，在 GROUP BY 或 ORDER BY 子句中）。"
 
 #. Tag: para
 #, no-c-format
@@ -33849,8 +33871,9 @@ msgstr ""
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is contained by B's. "
 "Uses double precision bounding box."
-msgstr "如果 A 的边界框包含在 B 的边界框中，则返回 <varname>TRUE</varname>。 "
-"使用双精度边界框。"
+msgstr ""
+"如果 A 的边界框包含在 B 的边界框中，则返回 <varname>TRUE</varname>。 使用双精"
+"度边界框。"
 
 #. Tag: para
 #, no-c-format
@@ -33859,8 +33882,8 @@ msgid ""
 "bounding box of raster/geometry A is contained by bounding box of raster/"
 "geometr B."
 msgstr ""
-"<varname>@</varname> 运算符在栅格/几何体 A 的边界框被栅格/几何体 B "
-"的边界框包含时返回 <varname>TRUE</varname>。"
+"<varname>@</varname> 运算符在栅格/几何体 A 的边界框被栅格/几何体 B 的边界框包"
+"含时返回 <varname>TRUE</varname>。"
 
 #. Tag: para
 #, no-c-format
@@ -33892,7 +33915,8 @@ msgid ""
 "Very useful usecase is for taking two sets of single band rasters that are "
 "of the same chunk but represent different themes and creating a multi-band "
 "raster"
-msgstr "非常有用的用例是获取两组具有相同块但代表不同主题的单波段栅格并创建多波段栅格"
+msgstr ""
+"非常有用的用例是获取两组具有相同块但代表不同主题的单波段栅格并创建多波段栅格"
 
 #. Tag: para
 #, no-c-format
@@ -33904,8 +33928,9 @@ msgstr ", <xref linkend=\"RT_Raster_EQ\"/>"
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is contains B's. Uses "
 "double precision bounding box."
-msgstr "如果 A 的边界框包含 B 的边界框，则返回<varname> TRUE</varname>。 "
-"使用双精度边界框。"
+msgstr ""
+"如果 A 的边界框包含 B 的边界框，则返回<varname> TRUE</varname>。 使用双精度边"
+"界框。"
 
 #. Tag: para
 #, no-c-format
@@ -33914,8 +33939,8 @@ msgid ""
 "bounding box of raster/geometry A is contains bounding box of raster/geometr "
 "B."
 msgstr ""
-"如果栅格/几何 A 的边界框包含栅格/几何 B 的边界框，则<varname> ~</varname> "
-"运算符返回 <varname>TRUE</varname>。"
+"如果栅格/几何 A 的边界框包含栅格/几何 B 的边界框，则<varname> ~</varname> 运"
+"算符返回 <varname>TRUE</varname>。"
 
 #. Tag: title
 #, no-c-format
@@ -33928,7 +33953,8 @@ msgid ""
 "Return true if no points of raster rastB lie in the exterior of raster rastA "
 "and at least one point of the interior of rastB lies in the interior of "
 "rastA."
-msgstr "如果栅格 rastB 中没有点位于栅格 rastA 的外部且 rastB 的内部至少有一个点位于 "
+msgstr ""
+"如果栅格 rastB 中没有点位于栅格 rastA 的外部且 rastB 的内部至少有一个点位于 "
 "rastA 的内部，则返回 true。"
 
 #. Tag: para
@@ -33941,10 +33967,10 @@ msgid ""
 "number is provided, only those pixels with value (not NODATA) are considered "
 "in the test."
 msgstr ""
-"栅格 rastA 包含 rastB 当且仅当 rastB 中没有点位于 rastA 的外部且 rastB "
-"的内部至少有一个点位于 rastA 的内部时。 如果未提供波段编号（或设置为 "
-"NULL），则测试中仅考虑栅格的凸包。 "
-"如果提供了波段编号，则测试中仅考虑那些具有值（而不是 NODATA）的像素。"
+"栅格 rastA 包含 rastB 当且仅当 rastB 中没有点位于 rastA 的外部且 rastB 的内部"
+"至少有一个点位于 rastA 的内部时。 如果未提供波段编号（或设置为 NULL），则测试"
+"中仅考虑栅格的凸包。 如果提供了波段编号，则测试中仅考虑那些具有值（而不是 "
+"NODATA）的像素。"
 
 #. Tag: para
 #, no-c-format
@@ -33961,8 +33987,8 @@ msgid ""
 "ST_Contains(geometry, ST_Polygon(raster))."
 msgstr ""
 "要测试栅格和几何图形的空间关系，请在栅格上使用 ST_Polygon，例如 "
-"ST_Contains（ST_Polygon（raster），geometry）或 "
-"ST_Contains（geometry，ST_Polygon（raster））。"
+"ST_Contains（ST_Polygon（raster），geometry）或 ST_Contains（geometry，"
+"ST_Polygon（raster））。"
 
 #. Tag: para
 #, no-c-format
@@ -33970,8 +33996,8 @@ msgid ""
 "ST_Contains() is the inverse of ST_Within(). So, ST_Contains(rastA, rastB) "
 "implies ST_Within(rastB, rastA)."
 msgstr ""
-"ST_Contains() 是 ST_Within() 的逆函数。 因此，ST_Contains(rastA, rastB) "
-"意味着 ST_Within(rastB, rastA)。"
+"ST_Contains() 是 ST_Within() 的逆函数。 因此，ST_Contains(rastA, rastB) 意味"
+"着 ST_Within(rastB, rastA)。"
 
 #. Tag: para
 #, no-c-format
@@ -33983,7 +34009,8 @@ msgstr ", <xref linkend=\"RT_ST_Within\"/>"
 msgid ""
 "Return true if rastB intersects the interior of rastA but not the boundary "
 "or exterior of rastA."
-msgstr "如果 rastB 与 rastA 的内部相交，但不与 rastA 的边界或外部相交，则返回 true。"
+msgstr ""
+"如果 rastB 与 rastA 的内部相交，但不与 rastA 的边界或外部相交，则返回 true。"
 
 #. Tag: para
 #, no-c-format
@@ -33995,9 +34022,8 @@ msgid ""
 "(not NODATA) are considered in the test."
 msgstr ""
 "如果 rastB 与 rastA 的内部相交，但不与 rastA 的边界或外部相交，则栅格 rastA "
-"正确包含 rastB。 如果未提供波段编号（或设置为 "
-"NULL），则测试中仅考虑栅格的凸包。 "
-"如果提供了波段编号，则测试中仅考虑那些具有值（而不是 NODATA）的像素。"
+"正确包含 rastB。 如果未提供波段编号（或设置为 NULL），则测试中仅考虑栅格的凸"
+"包。 如果提供了波段编号，则测试中仅考虑那些具有值（而不是 NODATA）的像素。"
 
 #. Tag: para
 #, no-c-format
@@ -34034,9 +34060,9 @@ msgid ""
 "is provided, only those pixels with value (not NODATA) are considered in the "
 "test."
 msgstr ""
-"栅格 rastA 覆盖 rastB 当且仅当 rastB 中没有点位于 rastA 的外部。 "
-"如果未提供波段编号（或设置为 NULL），则测试中仅考虑栅格的凸包。 "
-"如果提供了波段编号，则测试中仅考虑那些具有值（而不是 NODATA）的像素。"
+"栅格 rastA 覆盖 rastB 当且仅当 rastB 中没有点位于 rastA 的外部。 如果未提供波"
+"段编号（或设置为 NULL），则测试中仅考虑栅格的凸包。 如果提供了波段编号，则测"
+"试中仅考虑那些具有值（而不是 NODATA）的像素。"
 
 #. Tag: para
 #, no-c-format
@@ -34046,8 +34072,8 @@ msgid ""
 "ST_Covers(geometry, ST_Polygon(raster))."
 msgstr ""
 "要测试栅格和几何图形的空间关系，请在栅格上使用 ST_Polygon，例如 "
-"ST_Covers（ST_Polygon（raster），geometry）或 "
-"ST_Covers（geometry，ST_Polygon（raster））。"
+"ST_Covers（ST_Polygon（raster），geometry）或 ST_Covers（geometry，"
+"ST_Polygon（raster））。"
 
 #. Tag: para
 #, no-c-format
@@ -34068,9 +34094,9 @@ msgid ""
 "number is provided, only those pixels with value (not NODATA) are considered "
 "in the test."
 msgstr ""
-"当且仅当 rastA 中没有点位于 rastB 的外部时，栅格 rastA 才会被 rastB 覆盖。 "
-"如果未提供波段编号（或设置为 NULL），则测试中仅考虑栅格的凸包。 "
-"如果提供了波段编号，则测试中仅考虑那些具有值（而不是 NODATA）的像素。"
+"当且仅当 rastA 中没有点位于 rastB 的外部时，栅格 rastA 才会被 rastB 覆盖。 如"
+"果未提供波段编号（或设置为 NULL），则测试中仅考虑栅格的凸包。 如果提供了波段"
+"编号，则测试中仅考虑那些具有值（而不是 NODATA）的像素。"
 
 #. Tag: para
 #, no-c-format
@@ -34102,9 +34128,9 @@ msgid ""
 "provided, only those pixels with value (not NODATA) are considered in the "
 "test."
 msgstr ""
-"如果栅格 rastA 和 rastB 不共享任何空间，则它们是脱节的。 如果未提供波段编号（"
-"或设置为 NULL），则测试中仅考虑栅格的凸包。 "
-"如果提供了波段编号，则测试中仅考虑那些具有值（而不是 NODATA）的像素。"
+"如果栅格 rastA 和 rastB 不共享任何空间，则它们是脱节的。 如果未提供波段编号"
+"（或设置为 NULL），则测试中仅考虑栅格的凸包。 如果提供了波段编号，则测试中仅"
+"考虑那些具有值（而不是 NODATA）的像素。"
 
 #. Tag: para
 #, no-c-format
@@ -34133,9 +34159,9 @@ msgid ""
 "is considered in the test. If the band number is provided, only those pixels "
 "with value (not NODATA) are considered in the test."
 msgstr ""
-"如果栅格 rastA 与栅格 rastB 空间相交，则返回 true。 如果未提供波段编号（"
-"或设置为 NULL），则测试中仅考虑栅格的凸包。 "
-"如果提供了波段编号，则测试中仅考虑那些具有值（而不是 NODATA）的像素。"
+"如果栅格 rastA 与栅格 rastB 空间相交，则返回 true。 如果未提供波段编号（或设"
+"置为 NULL），则测试中仅考虑栅格的凸包。 如果提供了波段编号，则测试中仅考虑那"
+"些具有值（而不是 NODATA）的像素。"
 
 #. Tag: para
 #, no-c-format
@@ -34161,7 +34187,8 @@ msgstr ", <xref linkend=\"RT_ST_Disjoint\"/>"
 msgid ""
 "Return true if raster rastA and rastB intersect but one does not completely "
 "contain the other."
-msgstr "如果栅格 rastA 和 rastB 相交，但其中一个不完全包含另一个，则返回 true。"
+msgstr ""
+"如果栅格 rastA 和 rastB 相交，但其中一个不完全包含另一个，则返回 true。"
 
 #. Tag: para
 #, no-c-format
@@ -34174,8 +34201,8 @@ msgid ""
 msgstr ""
 "如果栅格 rastA 在空间上与栅格 rastB 重叠，则返回 true。 这意味着 rastA 和 "
 "rastB 相交，但其中一个不完全包含另一个。 如果未提供波段编号（或设置为 "
-"NULL），则测试中仅考虑栅格的凸包。 "
-"如果提供了波段编号，则测试中仅考虑那些具有值（而不是 NODATA）的像素。"
+"NULL），则测试中仅考虑栅格的凸包。 如果提供了波段编号，则测试中仅考虑那些具有"
+"值（而不是 NODATA）的像素。"
 
 #. Tag: para
 #, no-c-format
@@ -34191,7 +34218,8 @@ msgstr ""
 msgid ""
 "Return true if raster rastA and rastB have at least one point in common but "
 "their interiors do not intersect."
-msgstr "如果栅格 rastA 和 rastB 至少有一个共同点但它们的内部不相交，则返回 true。"
+msgstr ""
+"如果栅格 rastA 和 rastB 至少有一个共同点但它们的内部不相交，则返回 true。"
 
 #. Tag: para
 #, no-c-format
@@ -34204,9 +34232,9 @@ msgid ""
 "test."
 msgstr ""
 "如果栅格 rastA 在空间上接触栅格 rastB，则返回 true。 这意味着 rastA 和 rastB "
-"至少有一个共同点，但它们的内部不相交。 如果未提供波段编号（或设置为 "
-"NULL），则测试中仅考虑栅格的凸包。 "
-"如果提供了波段编号，则测试中仅考虑那些具有值（而不是 NODATA）的像素。"
+"至少有一个共同点，但它们的内部不相交。 如果未提供波段编号（或设置为 NULL），"
+"则测试中仅考虑栅格的凸包。 如果提供了波段编号，则测试中仅考虑那些具有值（而不"
+"是 NODATA）的像素。"
 
 #. Tag: para
 #, no-c-format
@@ -34238,9 +34266,9 @@ msgid ""
 "alignment issue."
 msgstr ""
 "非聚合版本（变体 1 和 2）：如果两个栅格（直接提供或使用左上角、比例、倾斜和 "
-"srid 的值制作）具有相同的比例、倾斜、srid 以及至少其中之一，则返回 true "
-"，一个栅格的任何像素的四个角落在另一个栅格的网格的任何角上。 "
-"如果不这样做则返回 false 并详细说明对齐问题的通知。"
+"srid 的值制作）具有相同的比例、倾斜、srid 以及至少其中之一，则返回 true ，一"
+"个栅格的任何像素的四个角落在另一个栅格的网格的任何角上。 如果不这样做则返回 "
+"false 并详细说明对齐问题的通知。"
 
 #. Tag: para
 #, no-c-format
@@ -34251,8 +34279,8 @@ msgid ""
 "operates on rows of data, in the same way the SUM() and AVG() functions do."
 msgstr ""
 "聚合版本（变体 3）：从一组栅格中，如果该组中的所有栅格都对齐，则返回 true。 "
-"ST_SameAlignment() 函数是 PostgreSQL 术语中的“聚合”函数。 "
-"这意味着它对数据行进行操作，与 SUM() 和 AVG() 函数的操作方式相同。"
+"ST_SameAlignment() 函数是 PostgreSQL 术语中的“聚合”函数。 这意味着它对数据行"
+"进行操作，与 SUM() 和 AVG() 函数的操作方式相同。"
 
 #. Tag: para
 #, no-c-format
@@ -34278,7 +34306,8 @@ msgstr ""
 msgid ""
 "<refpurpose>Returns text stating if rasters are aligned and if not aligned, "
 "a reason why.</refpurpose>"
-msgstr "<refpurpose>返回说明栅格是否对齐的文本，如果未对齐，则说明原因。</refpurpose>"
+msgstr ""
+"<refpurpose>返回说明栅格是否对齐的文本，如果未对齐，则说明原因。</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -34305,7 +34334,8 @@ msgid ""
 "Return true if no points of raster rastA lie in the exterior of raster rastB "
 "and at least one point of the interior of rastA lies in the interior of "
 "rastB."
-msgstr "如果栅格 rastA 中没有点位于栅格 rastB 的外部且 rastA 的内部至少有一个点位于 "
+msgstr ""
+"如果栅格 rastA 中没有点位于栅格 rastB 的外部且 rastA 的内部至少有一个点位于 "
 "rastB 的内部，则返回 true。"
 
 #. Tag: para
@@ -34318,10 +34348,10 @@ msgid ""
 "number is provided, only those pixels with value (not NODATA) are considered "
 "in the test."
 msgstr ""
-"栅格 rastA 位于 rastB 内当且仅当 rastA 中没有点位于 rastB 的外部且 rastA "
-"内部的至少一个点位于 rastB 的内部时。 如果未提供波段编号（或设置为 "
-"NULL），则测试中仅考虑栅格的凸包。 "
-"如果提供了波段编号，则测试中仅考虑那些具有值（而不是 NODATA）的像素。"
+"栅格 rastA 位于 rastB 内当且仅当 rastA 中没有点位于 rastB 的外部且 rastA 内部"
+"的至少一个点位于 rastB 的内部时。 如果未提供波段编号（或设置为 NULL），则测试"
+"中仅考虑栅格的凸包。 如果提供了波段编号，则测试中仅考虑那些具有值（而不是 "
+"NODATA）的像素。"
 
 #. Tag: para
 #, no-c-format
@@ -34331,8 +34361,8 @@ msgid ""
 "ST_Within(geometry, ST_Polygon(raster))."
 msgstr ""
 "要测试栅格和几何图形的空间关系，请在栅格上使用 ST_Polygon，例如 "
-"ST_Within（ST_Polygon（raster），geometry）或 "
-"ST_Within（geometry，ST_Polygon（raster））。"
+"ST_Within（ST_Polygon（raster），geometry）或 ST_Within（geometry，"
+"ST_Polygon（raster））。"
 
 #. Tag: para
 #, no-c-format
@@ -34368,9 +34398,9 @@ msgid ""
 "provided, only those pixels with value (not NODATA) are considered in the "
 "test."
 msgstr ""
-"如果栅格 rastA 和 rastB 彼此之间的距离在指定距离内，则返回 true。 "
-"如果未提供波段编号（或设置为 NULL），则测试中仅考虑栅格的凸包。 "
-"如果提供了波段编号，则测试中仅考虑那些具有值（而不是 NODATA）的像素。"
+"如果栅格 rastA 和 rastB 彼此之间的距离在指定距离内，则返回 true。 如果未提供"
+"波段编号（或设置为 NULL），则测试中仅考虑栅格的凸包。 如果提供了波段编号，则"
+"测试中仅考虑那些具有值（而不是 NODATA）的像素。"
 
 #. Tag: para
 #, no-c-format
@@ -34378,8 +34408,9 @@ msgid ""
 "The distance is specified in units defined by the spatial reference system "
 "of the rasters. For this function to make sense, the source rasters must "
 "both be of the same coordinate projection, having the same SRID."
-msgstr "距离以栅格空间参考系定义的单位指定。 为了使此函数有意义，"
-"源栅格必须具有相同的坐标投影并具有相同的 SRID。"
+msgstr ""
+"距离以栅格空间参考系定义的单位指定。 为了使此函数有意义，源栅格必须具有相同的"
+"坐标投影并具有相同的 SRID。"
 
 #. Tag: para
 #, no-c-format
@@ -34411,9 +34442,9 @@ msgid ""
 "number is provided, only those pixels with value (not NODATA) are considered "
 "in the test."
 msgstr ""
-"如果栅格 rastA 和 rastB 彼此完全在指定距离内，则返回 true。 "
-"如果未提供波段编号（或设置为 NULL），则测试中仅考虑栅格的凸包。 "
-"如果提供了波段编号，则测试中仅考虑那些具有值（而不是 NODATA）的像素。"
+"如果栅格 rastA 和 rastB 彼此完全在指定距离内，则返回 true。 如果未提供波段编"
+"号（或设置为 NULL），则测试中仅考虑栅格的凸包。 如果提供了波段编号，则测试中"
+"仅考虑那些具有值（而不是 NODATA）的像素。"
 
 #. Tag: para
 #, no-c-format
@@ -34458,9 +34489,9 @@ msgid ""
 "thousands, millions), opening that file becomes extremely slow (especially "
 "if that file happens to be on a network drive such as NFS)."
 msgstr ""
-"当 GDAL 打开一个文件时，GDAL 会立即扫描该文件的目录以构建其他文件的目录。 "
-"如果此目录包含许多文件（例如数千、数百万），则打开该文件会变得非常慢（"
-"特别是如果该文件恰好位于 NFS 等网络驱动器上）。"
+"当 GDAL 打开一个文件时，GDAL 会立即扫描该文件的目录以构建其他文件的目录。 如"
+"果此目录包含许多文件（例如数千、数百万），则打开该文件会变得非常慢（特别是如"
+"果该文件恰好位于 NFS 等网络驱动器上）。"
 
 #. Tag: para
 #, no-c-format
@@ -34472,10 +34503,10 @@ msgid ""
 "varname> to disable directory scanning."
 msgstr ""
 "为了控制此行为，GDAL 提供了以下环境变量： <link xlink:href=\"https://trac."
-"osgeo.org/gdal/wiki/ConfigOptions#GDAL_DISABLE_READDIR_ON_OPEN\""
-">GDAL_DISABLE_READDIR_ON_OPEN</link>。 将 "
-"<varname>GDAL_DISABLE_READDIR_ON_OPEN</varname> 设置为<varname> TRUE "
-"</varname>以禁用目录扫描。"
+"osgeo.org/gdal/wiki/ConfigOptions#GDAL_DISABLE_READDIR_ON_OPEN"
+"\">GDAL_DISABLE_READDIR_ON_OPEN</link>。 将 "
+"<varname>GDAL_DISABLE_READDIR_ON_OPEN</varname> 设置为<varname> TRUE </"
+"varname>以禁用目录扫描。"
 
 #. Tag: para
 #, no-c-format
@@ -34490,8 +34521,8 @@ msgstr ""
 "在 Ubuntu 中（假设您使用的是 PostgreSQL 的 Ubuntu 软件包），可以设置 "
 "<varname>GDAL_DISABLE_READDIR_ON_OPEN </varname>在 <emphasis>/etc/postgresql/"
 "POSTGRESQL_VERSION/CLUSTER_NAME/environment </emphasis>中（其中 "
-"POSTGRESQL_VERSION 是 PostgreSQL 的版本，例如 9.6，CLUSTER_NAME "
-"是集群的名称，例如 9.6）。 主数据库）。 您还可以在此处设置 PostGIS 环境变量。"
+"POSTGRESQL_VERSION 是 PostgreSQL 的版本，例如 9.6，CLUSTER_NAME 是集群的名"
+"称，例如 9.6）。 主数据库）。 您还可以在此处设置 PostGIS 环境变量。"
 
 #. Tag: title
 #, no-c-format
@@ -34510,11 +34541,10 @@ msgid ""
 "in that dataset)."
 msgstr ""
 "Linux 和 PostgreSQL 允许的最大打开文件数通常是相对保守的（通常是每个进程最多 "
-"1024 "
-"个打开文件），这是基于这样一种假设而设置的，即系统主要由人类用户使用。然而，"
-"对于 Out-DB栅格数据，一个有效的查询很容易超过这个限制（例如，一个包含了 10 年"
-"的栅格数据集，每天都有一个栅格包含了最低和最高温度数据，我们想要知道该数据集"
-"中某个像素的绝对最小和最大值）。"
+"1024 个打开文件），这是基于这样一种假设而设置的，即系统主要由人类用户使用。然"
+"而，对于 Out-DB栅格数据，一个有效的查询很容易超过这个限制（例如，一个包含了 "
+"10 年的栅格数据集，每天都有一个栅格包含了最低和最高温度数据，我们想要知道该数"
+"据集中某个像素的绝对最小和最大值）。"
 
 #. Tag: para
 #, no-c-format
@@ -34529,14 +34559,13 @@ msgid ""
 "<emphasis>/etc/postgresql/POSTGRESQL_VERSION/CLUSTER_NAME/postgresql.conf</"
 "emphasis> in Ubuntu environments)."
 msgstr ""
-"最简单的更改是以下 PostgreSQL 设置：<link xlink:href=\"https://www.postgresql"
-".org/docs/current/static/runtime-config-resource.html#GUC-MAX-FILES-PER-"
-"PROCESS\">max_files_per_process</link>。 默认设置为 1000，这对于Out-"
-"DB栅格来说太低了。 安全的起始值可能是 "
-"65536，但这实际上取决于您的数据集以及针对这些数据集运行的查询。 "
-"此设置只能在服务器启动时进行，并且可能只能在 PostgreSQL 配置文件中进行（例如 "
-"Ubuntu 环境中的 <emphasis>/etc/postgresql/POSTGRESQL_VERSION/CLUSTER_NAME/"
-"postgresql.conf</emphasis> ）。"
+"最简单的更改是以下 PostgreSQL 设置：<link xlink:href=\"https://www."
+"postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAX-"
+"FILES-PER-PROCESS\">max_files_per_process</link>。 默认设置为 1000，这对于"
+"Out-DB栅格来说太低了。 安全的起始值可能是 65536，但这实际上取决于您的数据集以"
+"及针对这些数据集运行的查询。 此设置只能在服务器启动时进行，并且可能只能在 "
+"PostgreSQL 配置文件中进行（例如 Ubuntu 环境中的 <emphasis>/etc/postgresql/"
+"POSTGRESQL_VERSION/CLUSTER_NAME/postgresql.conf</emphasis> ）。"
 
 #. Tag: para
 #, no-c-format
@@ -34572,8 +34601,9 @@ msgstr "您可以通过以下示例检查整个系统当前最大打开文件数
 msgid ""
 "If the value returned is not large enough, add a file to <emphasis>/etc/"
 "sysctl.d/</emphasis> as per the following example:"
-msgstr "如果返回的值不够大，请按照以下示例将文件添加到 <emphasis>/etc/sysctl.d/ "
-"</emphasis>中："
+msgstr ""
+"如果返回的值不够大，请按照以下示例将文件添加到 <emphasis>/etc/sysctl.d/ </"
+"emphasis>中："
 
 #. Tag: title
 #, no-c-format
@@ -34593,8 +34623,9 @@ msgid ""
 "To see what the current PostgreSQL service processes are using for maximum "
 "number of open files, do as per the following example (make sure to have "
 "PostgreSQL running):"
-msgstr "要查看当前 PostgreSQL 服务进程使用的最大打开文件数，请按照以下示例执行操作（"
-"确保 PostgreSQL 正在运行）："
+msgstr ""
+"要查看当前 PostgreSQL 服务进程使用的最大打开文件数，请按照以下示例执行操作"
+"（确保 PostgreSQL 正在运行）："
 
 #. Tag: para
 #, no-c-format
@@ -34603,9 +34634,9 @@ msgid ""
 "It doesn't matter which PostgreSQL process, any of them will do. The "
 "response we are interested in is <emphasis>Max open files</emphasis>."
 msgstr ""
-"在上面的示例中，我们检查了进程 31718 的打开文件限制。无论是哪个 PostgreSQL "
-"进程，它们中的任何一个都可以。 "
-"我们感兴趣的响应是<emphasis>最大打开文件数</emphasis>。"
+"在上面的示例中，我们检查了进程 31718 的打开文件限制。无论是哪个 PostgreSQL 进"
+"程，它们中的任何一个都可以。 我们感兴趣的响应是<emphasis>最大打开文件数</"
+"emphasis>。"
 
 #. Tag: para
 #, no-c-format
@@ -34616,10 +34647,10 @@ msgid ""
 "<varname>max_files_per_process</varname>. In our example, we set "
 "<varname>max_files_per_process</varname> to 65536."
 msgstr ""
-"我们希望将<emphasis>最大打开文件数</emphasis>的<emphasis>软限制</emphasis>和<"
-"emphasis>硬限制</emphasis>增加到大于我们为 PostgreSQL 设置 "
-"<varname>max_files_per_process</varname> 指定的值。 在我们的示例中，"
-"我们将<varname> max_files_per_process </varname>设置为 65536。"
+"我们希望将<emphasis>最大打开文件数</emphasis>的<emphasis>软限制</emphasis>和"
+"<emphasis>硬限制</emphasis>增加到大于我们为 PostgreSQL 设置 "
+"<varname>max_files_per_process</varname> 指定的值。 在我们的示例中，我们将"
+"<varname> max_files_per_process </varname>设置为 65536。"
 
 #. Tag: para
 #, no-c-format
@@ -34630,11 +34661,10 @@ msgid ""
 "postgresql</emphasis> (SysV) or <emphasis role=\"strong\">/lib/systemd/"
 "system/postgresql*.service</emphasis> (systemd)."
 msgstr ""
-"在 Ubuntu 中（假设您使用 Ubuntu 的 PostgreSQL "
-"软件包），更改<emphasis>软限制</emphasis>和<emphasis>硬限制</"
-"emphasis>的最简单方法是编辑 <emphasis role=\"strong\">/etc/init.d/postgresql "
-"</emphasis>(SysV) 或<emphasis role=\"strong\"> /lib/systemd/system/"
-"postgresql*.service</emphasis>（系统）。"
+"在 Ubuntu 中（假设您使用 Ubuntu 的 PostgreSQL 软件包），更改<emphasis>软限制"
+"</emphasis>和<emphasis>硬限制</emphasis>的最简单方法是编辑 <emphasis role="
+"\"strong\">/etc/init.d/postgresql </emphasis>(SysV) 或<emphasis role=\"strong"
+"\"> /lib/systemd/system/postgresql*.service</emphasis>（系统）。"
 
 #. Tag: para
 #, no-c-format
@@ -34646,8 +34676,8 @@ msgid ""
 msgstr ""
 "让我们首先解决 SysV Ubuntu 的情况，其中我们将<emphasis role=\"strong\"> "
 "ulimit -H -n 262144 </emphasis>和 <emphasis role=\"strong\">ulimit -n 131072 "
-"</emphasis>添加到 <emphasis role=\"strong\">/etc/init.d/"
-"postgresql</emphasis>。"
+"</emphasis>添加到 <emphasis role=\"strong\">/etc/init.d/postgresql</"
+"emphasis>。"
 
 #. Tag: para
 #, no-c-format
@@ -34659,8 +34689,8 @@ msgid ""
 msgstr ""
 "现在来解决 Ubuntu 中的 systemd 问题。我们将在每个<emphasis role=\"strong\">/"
 "lib/systemd/system/postgresql*.service</emphasis>文件的 <emphasis role="
-"\"strong\">[Service]</emphasis>部分中添加 <emphasis role=\"strong\""
-">LimitNOFILE=131072</emphasis>。"
+"\"strong\">[Service]</emphasis>部分中添加 <emphasis role=\"strong"
+"\">LimitNOFILE=131072</emphasis>。"
 
 #. Tag: para
 #, no-c-format
@@ -35700,8 +35730,8 @@ msgid ""
 "Intersection Model</link> (DE-9IM)."
 msgstr ""
 "这些函数允许测试和评估两个几何图形之间的空间（拓扑）关系，如<link xlink:href="
-"\"http://en.wikipedia.org/wiki/DE-9IM\">维度扩展 九交模型</link> (DE-9IM) "
-"所定义。"
+"\"http://en.wikipedia.org/wiki/DE-9IM\">维度扩展 九交模型</link> (DE-9IM) 所"
+"定义。"
 
 #. Tag: para
 #, no-c-format
@@ -35827,8 +35857,9 @@ msgstr ""
 msgid ""
 "<code>2</code>: <emphasis role=\"bold\">Endpoint</emphasis> - all endpoints "
 "are in the Boundary."
-msgstr "<code>2</code>：<emphasis role=\"bold\">Endpoint</emphasis> - "
-"所有端点都在边界内。"
+msgstr ""
+"<code>2</code>：<emphasis role=\"bold\">Endpoint</emphasis> - 所有端点都在边"
+"界内。"
 
 #. Tag: para
 #, no-c-format
@@ -35912,8 +35943,8 @@ msgid ""
 "[aB:bB] is <code>0</code>."
 msgstr ""
 "使用<emphasis role=\"bold\">Endpoint</emphasis>规则 (2)，重复端点位于 "
-"MultiLineString 的<emphasis role=\"bold\">边界</emphasis>中，因此 DE-9IM "
-"矩阵条目 [aB:bI] 为<code> F</code>，[aB:bB] 为<code> 0</code>。"
+"MultiLineString 的<emphasis role=\"bold\">边界</emphasis>中，因此 DE-9IM 矩阵"
+"条目 [aB:bI] 为<code> F</code>，[aB:bB] 为<code> 0</code>。"
 
 #. Tag: para
 #, no-c-format
@@ -35947,10 +35978,9 @@ msgid ""
 "<varname>intersectionMatrixPattern</varname>. Intersection matrix values can "
 "be computed by <xref linkend=\"ST_Relate\"/>."
 msgstr ""
-"测试<link xlink:href=\"http://en.wikipedia.org/wiki/DE-9IM\">维度扩展 九 "
-"交模型</link> (DE-9IM) "
-"<varname>交集矩阵</varname>值是否满足<varname>交集矩阵模式</varname>。 "
-"交集矩阵值可以通过<xref linkend=\"ST_Relate\"/> 计算。"
+"测试<link xlink:href=\"http://en.wikipedia.org/wiki/DE-9IM\">维度扩展 九 交模"
+"型</link> (DE-9IM) <varname>交集矩阵</varname>值是否满足<varname>交集矩阵模式"
+"</varname>。 交集矩阵值可以通过<xref linkend=\"ST_Relate\"/> 计算。"
 
 #. Tag: para
 #, no-c-format
@@ -38630,10 +38660,10 @@ msgid ""
 "(<varname>reason</varname>) stating a reason why it is invalid and a "
 "geometry (<varname>location</varname>) pointing out where it is invalid."
 msgstr ""
-"返回一个 <varname>valid_detail</varname> "
-"行，其中包含一个boolean（<varname>有效</varname>），说明几何图形是否有效；"
-"一个 varchar（<varname>原因</varname>），说明其无效原因；以及一个 "
-"geometry（<varname>位置</varname>），指出其无效位置。"
+"返回一个 <varname>valid_detail</varname> 行，其中包含一个boolean（<varname>有"
+"效</varname>），说明几何图形是否有效；一个 varchar（<varname>原因</"
+"varname>），说明其无效原因；以及一个 geometry（<varname>位置</varname>），指"
+"出其无效位置。"
 
 #. Tag: para
 #, no-c-format
@@ -39263,9 +39293,8 @@ msgid ""
 "To take advantage of all features, GEOS 3.12+ is needed. To take advantage "
 "of all SFCGAL featurs, SFCGAL 1.4.1+ is needed."
 msgstr ""
-"此版本需要 PostgreSQL 12-16、GEOS 3.6 或更高版本以及 Proj 6.1 。 "
-"要利用所有功能，需要 GEOS 3.12。 要利用 SFCGAL 的所有功能，需要 SFCGAL 1.4."
-"1。"
+"此版本需要 PostgreSQL 12-16、GEOS 3.6 或更高版本以及 Proj 6.1 。 要利用所有功"
+"能，需要 GEOS 3.12。 要利用 SFCGAL 的所有功能，需要 SFCGAL 1.4.1。"
 
 #. Tag: para
 #, no-c-format
@@ -39303,9 +39332,8 @@ msgid ""
 "upgrade scripts except for the ANY--currentversion. If you use this, you can "
 "install select upgrades using the postgis commandline tool"
 msgstr ""
-"--disable-extension-upgrades-install，将跳过安装除 ANY--current "
-"版本之外的所有扩展升级脚本。 如果您使用它，您可以使用 postgis "
-"命令行工具安装选择升级"
+"--disable-extension-upgrades-install，将跳过安装除 ANY--current 版本之外的所"
+"有扩展升级脚本。 如果您使用它，您可以使用 postgis 命令行工具安装选择升级"
 
 #. Tag: para
 #, no-c-format
@@ -39327,8 +39355,8 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5055\">5055</link>, "
 "complete manual internationalization (Sandro Santilli)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5055\""
-">5055</link>，完成手册国际化工作（Sandro Santilli）"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5055\">5055</link>，"
+"完成手册国际化工作（Sandro Santilli）"
 
 #. Tag: para
 #, no-c-format
@@ -39374,9 +39402,9 @@ msgid ""
 "<link xlink:href=\"https://github.com/postgis/postgis/pull/705\">705</link>, "
 "ST_Transform: Support PROJ pipelines (Robert Coup, Koordinates)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5006\">5006</link>、"
-" <link xlink:href=\"https://github.com/postgis/postgis/pull/705\""
-">705</link>、ST_Transform：支持 PROJ 管道（Robert Coup、Koitudes）"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5006\">5006</"
+"link>、 <link xlink:href=\"https://github.com/postgis/postgis/"
+"pull/705\">705</link>、ST_Transform：支持 PROJ 管道（Robert Coup、Koitudes）"
 
 #. Tag: para
 #, no-c-format
@@ -39402,8 +39430,8 @@ msgid ""
 "<link xlink:href=\"https://github.com/postgis/postgis/pull/703\">703</link>, "
 "[postgis_raster] Add min/max resampling as options (Christian Schroeder)"
 msgstr ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/703\""
-">703</link>、[postgis_raster] 添加最小/最大重采样选项（Christian Schroeder）"
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/703\">703</link>、"
+"[postgis_raster] 添加最小/最大重采样选项（Christian Schroeder）"
 
 #. Tag: para
 #, no-c-format
@@ -39447,9 +39475,9 @@ msgid ""
 "link>ST_LargestEmptyCircle, exposes extra semantics on circle finding. Geos "
 "3.9+ required(Martin Davis)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5373\""
-">5373</link>ST_LargestEmptyCircle，公开有关圆查找的额外语义。 需要 Geos 3."
-"9+（Martin Davis）"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5373\">5373</"
+"link>ST_LargestEmptyCircle，公开有关圆查找的额外语义。 需要 Geos "
+"3.9+（Martin Davis）"
 
 #. Tag: para
 #, no-c-format
@@ -39475,8 +39503,8 @@ msgid ""
 "New coverage functions ST_CoverageInvalidEdges, ST_CoverageSimplify, "
 "ST_CoverageUnion (Paul Ramsey)"
 msgstr ""
-"新的覆盖函数 ST_CoverageInvalidEdges、ST_CoverageSimplify、ST_CoverageUnion ("
-"Paul Ramsey)"
+"新的覆盖函数 ST_CoverageInvalidEdges、ST_CoverageSimplify、ST_CoverageUnion "
+"(Paul Ramsey)"
 
 #. Tag: title
 #, no-c-format
@@ -39499,8 +39527,8 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5092\">5092</link>, "
 "reduce number of upgrade paths installed on system (Sandro Santilli)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5092\""
-">5092</link>，减少系统上安装的升级路径数量（Sandro Santilli）"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5092\">5092</link>，"
+"减少系统上安装的升级路径数量（Sandro Santilli）"
 
 #. Tag: para
 #, no-c-format
@@ -39517,7 +39545,8 @@ msgstr ""
 msgid ""
 "Honour --mandir (and --prefix) configure switch for man pages install path "
 "(Sandro Santilli)"
-msgstr "Honor --mandir （和 --prefix）配置手册页安装路径开关（Sandro Santilli）"
+msgstr ""
+"Honor --mandir （和 --prefix）配置手册页安装路径开关（Sandro Santilli）"
 
 #. Tag: para
 #, no-c-format
@@ -39525,8 +39554,8 @@ msgid ""
 "Honour --htmldir (and --docdir and --prefix) configure switch for html pages "
 "install path (Sandro Santilli)"
 msgstr ""
-"Honor --htmldir （以及 --docdir 和 --prefix）配置 html 页面安装路径的开关 ("
-"Sandro Santilli)"
+"Honor --htmldir （以及 --docdir 和 --prefix）配置 html 页面安装路径的开关 "
+"(Sandro Santilli)"
 
 #. Tag: para
 #, no-c-format
@@ -39558,8 +39587,8 @@ msgid ""
 "<link xlink:href=\"https://github.com/postgis/postgis/pull/718\">718</link>, "
 "ST_QuantizeCoordinates(): speed-up implementation (Even Rouault)"
 msgstr ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/718\""
-">718</link>、ST_QuantizeCooperatives()：加速实现（Even Rouault）"
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/718\">718</link>、"
+"ST_QuantizeCooperatives()：加速实现（Even Rouault）"
 
 #. Tag: para
 #, no-c-format
@@ -39613,9 +39642,9 @@ msgid ""
 "ST_ClosestPoint, ST_ShortestLine, ST_LineSubString support for geography "
 "type (MobilityDB Esteban Zimanyi, Maxime Schoemans, Paul Ramsey)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5266\""
-">5266</link>、ST_ClosestPoint、ST_ShortestLine、ST_LineSubString "
-"支持地理类型（MobilityDB Esteban Zimanyi、Maxime Schoemans、Paul Ramsey）"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5266\">5266</link>、"
+"ST_ClosestPoint、ST_ShortestLine、ST_LineSubString 支持地理类型（MobilityDB "
+"Esteban Zimanyi、Maxime Schoemans、Paul Ramsey）"
 
 #. Tag: title
 #, no-c-format
@@ -39642,10 +39671,10 @@ msgid ""
 "Santilli)"
 msgstr ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</link>、"
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/734\""
-">734</link>、postgis_full_version() 和 postgis_proj_version() 现在输出有关 "
-"proj 网络配置和数据路径的更多信息。 如果与运行时不同，也会显示 GEOS "
-"编译时版本（Paul Ramsey、Sandro Santilli）"
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/734\">734</link>、"
+"postgis_full_version() 和 postgis_proj_version() 现在输出有关 proj 网络配置和"
+"数据路径的更多信息。 如果与运行时不同，也会显示 GEOS 编译时版本（Paul "
+"Ramsey、Sandro Santilli）"
 
 #. Tag: para
 #, no-c-format
@@ -39665,8 +39694,9 @@ msgid ""
 "pgtopo_export)"
 msgstr ""
 "实用程序现在安装在操作系统 bin 或用户指定的 --bindir 和 --prefix 中，而不是 "
-"postgresql bin 中，并且扩展名被删除，Windows 上除外（postgis、postgis_restore"
-"、shp2pgsql、raster2pgsql、pgsql2shp、pgtopo_import、pgtopo_export）"
+"postgresql bin 中，并且扩展名被删除，Windows 上除外（postgis、"
+"postgis_restore、shp2pgsql、raster2pgsql、pgsql2shp、pgtopo_import、"
+"pgtopo_export）"
 
 #. Tag: title
 #, no-c-format
@@ -39702,8 +39732,8 @@ msgid ""
 "already been fixed."
 msgstr ""
 "如果您没有使用最新版本，则值得先查看其<link xlink:href=\"https://git.osgeo."
-"org/gitea/postgis/postgis/raw/branch/master/NEWS\""
-">版本变更日志</link>，以了解您的错误是否已得到修复。"
+"org/gitea/postgis/postgis/raw/branch/master/NEWS\">版本变更日志</link>，以了"
+"解您的错误是否已得到修复。"
 
 #. Tag: para
 #, no-c-format
@@ -39714,10 +39744,10 @@ msgid ""
 "the database to see if it is a known one, and if it is please add any new "
 "information you have about it."
 msgstr ""
-"使用 <link xlink:href=\"http://trac.osgeo.org/postgis/\">PostGIS "
-"错误跟踪器</link>将确保您的报告不会被丢弃，并让您随时了解其处理过程。 在报告"
-"新错误之前，请查询数据库以查看它是否是已知错误，如果是，请添加您所掌握的有关"
-"它的任何新信息。"
+"使用 <link xlink:href=\"http://trac.osgeo.org/postgis/\">PostGIS 错误跟踪器</"
+"link>将确保您的报告不会被丢弃，并让您随时了解其处理过程。 在报告新错误之前，"
+"请查询数据库以查看它是否是已知错误，如果是，请添加您所掌握的有关它的任何新信"
+"息。"
 
 #. Tag: para
 #, no-c-format
@@ -39726,9 +39756,8 @@ msgid ""
 "www.chiark.greenend.org.uk/~sgtatham/bugs.html\">How to Report Bugs "
 "Effectively</link> before filing a new report."
 msgstr ""
-"在提交新报告之前，您可能需要阅读 Simon Tatham 关于<link xlink:href=\"http"
-"://www.chiark.greenend.org.uk/~sgtatham/bugs.html\">如何有效报告错误</link> "
-"。"
+"在提交新报告之前，您可能需要阅读 Simon Tatham 关于<link xlink:href=\"http://"
+"www.chiark.greenend.org.uk/~sgtatham/bugs.html\">如何有效报告错误</link> 。"
 
 #. Tag: title
 #, no-c-format
@@ -39741,8 +39770,9 @@ msgid ""
 "The documentation should accurately reflect the features and behavior of the "
 "software. If it doesn't, it could be because of a software bug or because "
 "the documentation is in error or deficient."
-msgstr "文档应准确反映软件的功能和行为。 "
-"如果没有，可能是因为软件错误或文档错误或缺陷。"
+msgstr ""
+"文档应准确反映软件的功能和行为。 如果没有，可能是因为软件错误或文档错误或缺"
+"陷。"
 
 #. Tag: para
 #, no-c-format
@@ -39750,15 +39780,16 @@ msgid ""
 "Documentation issues can also be reported to the <link xlink:href=\"http://"
 "trac.osgeo.org/postgis\">PostGIS bug tracker</link>."
 msgstr ""
-"文档问题也可以报告给 <link xlink:href=\"http://trac.osgeo.org/postgis\""
-">PostGIS bug 跟踪器</link>。"
+"文档问题也可以报告给 <link xlink:href=\"http://trac.osgeo.org/postgis"
+"\">PostGIS bug 跟踪器</link>。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If your revision is trivial, just describe it in a new bug tracker issue, "
 "being specific about its location in the documentation."
-msgstr "如果您的修订很简单，只需在新的错误跟踪器问题中对其进行描述，并具体说明其在文"
+msgstr ""
+"如果您的修订很简单，只需在新的错误跟踪器问题中对其进行描述，并具体说明其在文"
 "档中的位置。"
 
 #. Tag: para
@@ -39768,8 +39799,8 @@ msgid ""
 "a four step process on Unix (assuming you already have <link xlink:href="
 "\"https://git-scm.com/\">git</link> installed):"
 msgstr ""
-"如果您的更改更广泛，那么补丁绝对是首选。 这是 Unix 上的四步过程（"
-"假设您已经安装了 <link xlink:href=\"https://git-scm.com/\">git</link> ）："
+"如果您的更改更广泛，那么补丁绝对是首选。 这是 Unix 上的四步过程（假设您已经安"
+"装了 <link xlink:href=\"https://git-scm.com/\">git</link> ）："
 
 #. Tag: para
 #, no-c-format
@@ -39794,8 +39825,9 @@ msgid ""
 "Note that the documentation is written in DocBook XML rather than HTML, so "
 "if you are not familiar with it please follow the example of the rest of the "
 "documentation."
-msgstr "请注意，该文档是用 DocBook XML 而不是 HTML "
-"编写的，因此如果您不熟悉它，请按照文档其余部分的示例进行操作。"
+msgstr ""
+"请注意，该文档是用 DocBook XML 而不是 HTML 编写的，因此如果您不熟悉它，请按照"
+"文档其余部分的示例进行操作。"
 
 #. Tag: para
 #, no-c-format
@@ -39862,19 +39894,18 @@ msgid ""
 "linkend=\"PolyhedralSurface\">PolyhedralSurface</link>, <link linkend="
 "\"Triangle\">Triangle</link> and <link linkend=\"TIN\">TIN</link>."
 msgstr ""
-"几何是一种<emphasis>抽象</emphasis>类型。几何值属于其<emphasis>具体</emphasis"
-">子类型之一。子类型表示各种类型和各种维度的几何形状。其中包括<emphasis role="
-"\"bold\">基本</emphasis>类型<link linkend=\"Point\">点</link>, <link linkend="
-"\"LineString\">线</link>, <link linkend=\"LinearRing\">线性环</link> 和 "
-"<link linkend=\"Polygon\">面</link>, 以及<emphasis role=\"bold\">集合</"
-"emphasis>类型<link linkend=\"MultiPoint\">多点</link>, <link linkend="
-"\"MultiLineString\">多线</link>, <link linkend=\"MultiPolygon\">多面</link> "
-"和 <link linkend=\"GeometryCollection\">几何对象集合</link>。<link "
-"xlink:href=\"https://portal.ogc.org/files/?artifact_id=25355\""
-"><emphasis>简单 功能访问 - 第一部分:通用体系结构v1.2.1</emphasis></link> "
-"为结构<link linkend=\"PolyhedralSurface\">PolyhedralSurface</link>, <link "
-"linkend=\"Triangle\">Triangle</link>和<link linkend=\"TIN\""
-">TIN</link>添加了子类型。"
+"几何是一种<emphasis>抽象</emphasis>类型。几何值属于其<emphasis>具体</"
+"emphasis>子类型之一。子类型表示各种类型和各种维度的几何形状。其中包括"
+"<emphasis role=\"bold\">基本</emphasis>类型<link linkend=\"Point\">点</"
+"link>, <link linkend=\"LineString\">线</link>, <link linkend=\"LinearRing\">"
+"线性环</link> 和 <link linkend=\"Polygon\">面</link>, 以及<emphasis role="
+"\"bold\">集合</emphasis>类型<link linkend=\"MultiPoint\">多点</link>, <link "
+"linkend=\"MultiLineString\">多线</link>, <link linkend=\"MultiPolygon\">多面"
+"</link> 和 <link linkend=\"GeometryCollection\">几何对象集合</link>。<link "
+"xlink:href=\"https://portal.ogc.org/files/?artifact_id=25355\"><emphasis>简"
+"单 功能访问 - 第一部分:通用体系结构v1.2.1</emphasis></link> 为结构<link "
+"linkend=\"PolyhedralSurface\">PolyhedralSurface</link>, <link linkend="
+"\"Triangle\">Triangle</link>和<link linkend=\"TIN\">TIN</link>添加了子类型。"
 
 #. Tag: para
 #, no-c-format
@@ -39977,11 +40008,11 @@ msgid ""
 "always contain their boundary. The boundary is a geometry of dimension one "
 "less than that of the geometry itself."
 msgstr ""
-"几何模型允许评估拓扑空间关系，如<xref linkend=\"DE-9IM\""
-"/>中所述。为了支持这一点，为每种几何类型定义了<emphasis role=\"bold\">内部</"
-"emphasis>, <emphasis role=\"bold\">外部</emphasis>和<emphasis role=\"bold\">"
-"边界</emphasis>的概念。几何图形在拓扑上是封闭的，因此它们总是包含它们的边界。"
-"边界是比几何体本身小一维的几何体。"
+"几何模型允许评估拓扑空间关系，如<xref linkend=\"DE-9IM\"/>中所述。为了支持这"
+"一点，为每种几何类型定义了<emphasis role=\"bold\">内部</emphasis>, <emphasis "
+"role=\"bold\">外部</emphasis>和<emphasis role=\"bold\">边界</emphasis>的概"
+"念。几何图形在拓扑上是封闭的，因此它们总是包含它们的边界。边界是比几何体本身"
+"小一维的几何体。"
 
 #. Tag: para
 #, no-c-format
@@ -41242,8 +41273,8 @@ msgid ""
 "<emphasis>closed</emphasis> and referred to as a Linear Ring."
 msgstr ""
 "如果<varname>LINESTRING</varname>不两次穿过同一点（端点除外），则该 "
-"LINESTRING 很<emphasis>简单</emphasis>。如果简单线串的端点相同，则称为<emphas"
-"is>闭合线</emphasis>并称为线性环。"
+"LINESTRING 很<emphasis>简单</emphasis>。如果简单线串的端点相同，则称为"
+"<emphasis>闭合线</emphasis>并称为线性环。"
 
 #. Tag: emphasis
 #, no-c-format
@@ -41254,9 +41285,9 @@ msgid ""
 "<emphasis role=\"bold\">(c)</emphasis> is a closed Linear Ring."
 msgstr ""
 "<emphasis role=\"bold\">(a)</emphasis> 和<emphasis role=\"bold\">(c)</"
-"emphasis> 是简单的<varname>LINESTRING</varname>. <emphasis role=\"bold\""
-">(b)</emphasis> 和 <emphasis role=\"bold\">(d)</emphasis> 不简单。 <emphasis "
-"role=\"bold\">(c)</emphasis> 是一个封闭的线性环。"
+"emphasis> 是简单的<varname>LINESTRING</varname>. <emphasis role=\"bold"
+"\">(b)</emphasis> 和 <emphasis role=\"bold\">(d)</emphasis> 不简单。 "
+"<emphasis role=\"bold\">(c)</emphasis> 是一个封闭的线性环。"
 
 #. Tag: emphasis
 #, no-c-format
@@ -41321,8 +41352,8 @@ msgid ""
 "<varname>POLYGON</varname>s are formed from linear rings, so valid polygonal "
 "geometry is always <emphasis>simple</emphasis>."
 msgstr ""
-"<varname>POLYGON</varname>是由线性环形成的，所以常见的多边形几何总是<emphasis"
-">简单</emphasis>的。"
+"<varname>POLYGON</varname>是由线性环形成的，所以常见的多边形几何总是"
+"<emphasis>简单</emphasis>的。"
 
 #. Tag: para
 #, no-c-format
@@ -41358,9 +41389,9 @@ msgid ""
 "Validity is defined by rules that allow polygonal geometry to model planar "
 "areas unambiguously."
 msgstr ""
-"几何有效性主要适用于二维几何形状（<varname>POLYGON</varname>和<varname>MULTIP"
-"OLYGON</varname>）。有效性是由允许多边形几何形状明确地模拟平面区域的规则定义"
-"的。"
+"几何有效性主要适用于二维几何形状（<varname>POLYGON</varname>和"
+"<varname>MULTIPOLYGON</varname>）。有效性是由允许多边形几何形状明确地模拟平面"
+"区域的规则定义的。"
 
 #. Tag: para
 #, no-c-format
@@ -41413,8 +41444,8 @@ msgid ""
 msgstr ""
 "<emphasis role=\"bold\">(h)</emphasis>和<emphasis role=\"bold\">(i)</"
 "emphasis> 是有效的<varname>POLYGON</varname>。<emphasis role=\"bold\">(j-m)</"
-"emphasis> 是无效的。<emphasis role=\"bold\""
-">(j)</emphasis>可以表示为有效的<varname>MULTIPOLYGON</varname>。"
+"emphasis> 是无效的。<emphasis role=\"bold\">(j)</emphasis>可以表示为有效的"
+"<varname>MULTIPOLYGON</varname>。"
 
 #. Tag: emphasis
 #, no-c-format
@@ -42071,10 +42102,10 @@ msgid ""
 "metadata information is always consistent with the currently defined tables "
 "and views. The view structure is:"
 msgstr ""
-"<emphasis>适用于SQL的OGC简单要素规范</emphasis>定义了用于描述<varname>GEOMETR"
-"Y_COLUMNS</varname>结构的元数据表。在 PostGIS 中，<varname>geometry_columns</"
-"varname>是从数据库的系统目录表中读取的视图。这可确保空间元数据信息始终与当前"
-"定义的表或视图一致。视图结构为:"
+"<emphasis>适用于SQL的OGC简单要素规范</emphasis>定义了用于描述"
+"<varname>GEOMETRY_COLUMNS</varname>结构的元数据表。在 PostGIS 中，"
+"<varname>geometry_columns</varname>是从数据库的系统目录表中读取的视图。这可确"
+"保空间元数据信息始终与当前定义的表或视图一致。视图结构为:"
 
 #. Tag: para
 #, no-c-format
@@ -42348,8 +42379,9 @@ msgstr ""
 msgid ""
 "Coerce all integers to standard 32-bit integers, do not create 64-bit "
 "bigints, even if the DBF header signature appears to warrant it."
-msgstr "将所有整数强制为标准 32 位整数，不要创建 64 "
-"位大整数，即使DBF标头签名似乎可以保证这一点。"
+msgstr ""
+"将所有整数强制为标准 32 位整数，不要创建 64 位大整数，即使DBF标头签名似乎可以"
+"保证这一点。"
 
 #. Tag: para
 #, no-c-format
@@ -43014,8 +43046,9 @@ msgstr ""
 msgid ""
 "The <code>geography</code> datatype is supported for BRIN indexing. The "
 "syntax for building a BRIN index on a geography column is:"
-msgstr "BRIN 索引支持<code>geography</code>数据类型。在geography列上构建 BRIN "
-"索引的语法是："
+msgstr ""
+"BRIN 索引支持<code>geography</code>数据类型。在geography列上构建 BRIN 索引的"
+"语法是："
 
 #. Tag: para
 #, no-c-format
@@ -43255,11 +43288,11 @@ msgid ""
 "forget to run <command>SET ENABLE_SEQSCAN TO ON;</command> so that the "
 "planner will operate normally for other queries."
 msgstr ""
-"如果清理没有帮助，您可以使用命令<command>SET ENABLE_SEQSCAN TO "
-"OFF;</command>暂时强制规划器使用索引信息。 通过这种方式，您可以检查规划器是否"
-"能够为您的查询生成索引加速查询计划。您应该仅使用此命令进行调试；一般来说，规"
-"划者比你更了解何时使用索引。运行查询后，不要忘记运行<command>SET "
-"ENABLE_SEQSCAN TO ON;</command> 以便规划器能够正常运行其他查询。"
+"如果清理没有帮助，您可以使用命令<command>SET ENABLE_SEQSCAN TO OFF;</command>"
+"暂时强制规划器使用索引信息。 通过这种方式，您可以检查规划器是否能够为您的查询"
+"生成索引加速查询计划。您应该仅使用此命令进行调试；一般来说，规划者比你更了解"
+"何时使用索引。运行查询后，不要忘记运行<command>SET ENABLE_SEQSCAN TO ON;</"
+"command> 以便规划器能够正常运行其他查询。"
 
 #. Tag: para
 #, no-c-format
@@ -43377,9 +43410,9 @@ msgid ""
 "is the two endpoints. For <varname>POLYGON</varname>s, the boundary is the "
 "linework of the exterior and interior rings."
 msgstr ""
-"几何的边界是下一个较低维度的几何的集合。 对于维数为 0 的 <varname>POINT</varn"
-"ame>，边界是空集。<varname>LINESTRING</varname>的边界是两个端点。 "
-"对于<varname>POLYGON</varname>，边界是外环和内环的线条。"
+"几何的边界是下一个较低维度的几何的集合。 对于维数为 0 的 <varname>POINT</"
+"varname>，边界是空集。<varname>LINESTRING</varname>的边界是两个端点。 对于"
+"<varname>POLYGON</varname>，边界是外环和内环的线条。"
 
 #. Tag: glossterm
 #, no-c-format
@@ -43396,8 +43429,8 @@ msgid ""
 "areal surface inside the polygon."
 msgstr ""
 "几何图形的内部是几何图形中不在边界内的那些点。对于<varname>POINT</varname>来"
-"说，内部就是点本身。<varname>LINESTRING</varname>的内部是端点之间的点集。 "
-"对于<varname>POLYGON</varname>，内部是多边形内的面。"
+"说，内部就是点本身。<varname>LINESTRING</varname>的内部是端点之间的点集。 对"
+"于<varname>POLYGON</varname>，内部是多边形内的面。"
 
 #. Tag: glossterm
 #, no-c-format
@@ -43424,10 +43457,10 @@ msgid ""
 "dimensions can be formally represented in a 3x3 <emphasis role=\"bold"
 "\">intersection matrix</emphasis>."
 msgstr ""
-"<link xlink:href=\"http://en.wikipedia.org/wiki/DE-9IM\">九交模型</link> (DE-"
-"9IM)通过指定每个几何图形的上述集合之间的 9 "
-"个相交的维度来描述两个几何图形之间的空间关系。交集维度可以正式表示为 3x3 "
-"<emphasis role=\"bold\">交集矩阵</emphasis>。"
+"<link xlink:href=\"http://en.wikipedia.org/wiki/DE-9IM\">九交模型</link> "
+"(DE-9IM)通过指定每个几何图形的上述集合之间的 9 个相交的维度来描述两个几何图形"
+"之间的空间关系。交集维度可以正式表示为 3x3 <emphasis role=\"bold\">交集矩阵</"
+"emphasis>。"
 
 #. Tag: para
 #, no-c-format
@@ -43737,11 +43770,11 @@ msgid ""
 "<varname>GEOMETRYCOLLECTION</varname>s of <varname>[MULTI]POINT</varname>s, "
 "<varname>[MULTI]LINESTRING</varname>s, etc.)."
 msgstr ""
-"两步解决方案是首先计算空间相交 (<xref linkend=\"ST_Intersection\"/>)"
-"的道路线对的实际交叉点 (<xref linkend=\"ST_Intersects\"/>)，然后检查交叉点的 "
-"<xref linkend=\"ST_GeometryType\"/> 是否为“<varname>LINESTRING</varname>”（"
-"正确处理返回 <varname>GEOMETRYCOLLECTION</varname>、<varname>[MULTI]POINT</va"
-"rname>、<varname>[MULTI]LINESTRING</varname>等情况）。"
+"两步解决方案是首先计算空间相交 (<xref linkend=\"ST_Intersection\"/>)的道路线"
+"对的实际交叉点 (<xref linkend=\"ST_Intersects\"/>)，然后检查交叉点的 <xref "
+"linkend=\"ST_GeometryType\"/> 是否为“<varname>LINESTRING</varname>”（正确处理"
+"返回 <varname>GEOMETRYCOLLECTION</varname>、<varname>[MULTI]POINT</varname>、"
+"<varname>[MULTI]LINESTRING</varname>等情况）。"
 
 #. Tag: para
 #, no-c-format
@@ -45309,8 +45342,8 @@ msgid ""
 "standards/sfs\">OGC Simple Features Implementation Specification for SQL 1.1."
 "</link>"
 msgstr ""
-"此方法实现了 <link xlink:href=\"http://www.opengeospatial.org/standards/sfs\""
-">SQL 1.1 的 OGC 简单功能规范。</link>"
+"此方法实现了 <link xlink:href=\"http://www.opengeospatial.org/standards/sfs"
+"\">SQL 1.1 的 OGC 简单功能规范。</link>"
 
 #. Tag: para
 #, no-c-format
@@ -45363,6 +45396,20 @@ msgstr "2.5/3D 支持"
 #, no-c-format
 msgid "Supports geography"
 msgstr "支持地理"
+
+#, no-c-format
+#~ msgid ""
+#~ "<![CDATA[[\n"
+#~ "SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]\n"
+#~ "]]>"
+#~ msgstr ""
+#~ "<![CDATA[[\n"
+#~ "SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]\n"
+#~ "]]>"
+
+#, no-c-format
+#~ msgid "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
+#~ msgstr "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
 
 #, no-c-format
 #~ msgid "MACRO_C"
