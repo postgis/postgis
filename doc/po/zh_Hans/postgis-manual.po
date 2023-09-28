@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-25 14:15+0000\n"
-"PO-Revision-Date: 2023-09-27 09:23+0000\n"
+"PO-Revision-Date: 2023-09-28 08:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
@@ -3079,7 +3079,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Generate script script to load nation data Windows."
-msgstr "生成加载国家数据Windows的脚本脚本。"
+msgstr "生成脚本来加载Windows的国家数据。"
 
 #. Tag: para
 #, no-c-format
@@ -3666,9 +3666,10 @@ msgid ""
 "is to have several more. This is the table to look into to define the region "
 "bounds. e.g <varname>tiger.place</varname>, <varname>tiger.county</varname>"
 msgstr ""
-"<varname>Region_type </varname>边界区域的类型。 目前仅支持<varname>地方</"
-"varname>和<varname>县</varname>。 计划是再多几个。 这是用于定义区域边界的表"
-"格。 例如，<varname>tiger.place</varname>、<varname>tiger.county</varname>"
+"<varname>Region_type </varname>边界区域的类型。 "
+"目前仅支持<varname>place</varname>和<varname>county</varname>。 "
+"计划是再多几个。 这是用于定义区域边界的表格。 例如，<varname>tiger."
+"place</varname>、<varname>tiger.county</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -4858,10 +4859,10 @@ msgid ""
 "<varname>face</varname>, <varname>node</varname>,and <varname>relation</"
 "varname> are created in the schema. It returns the id of the topology."
 msgstr ""
-"创建名为<varname>topology_name</varname>的新拓扑模式并将其注册到"
-"<varname>topology.topology</varname>表中。 拓扑必须具有唯一的名称。 拓扑表"
-"（<varname>edge_data</varname>、<varname>面</varname>、<varname>节点</"
-"varname>和<varname>关系</varname>）在模式中创建。它返回拓扑的 id。"
+"创建名为<varname>topology_name</varname>的新拓扑模式并将其注册到<varname>topo"
+"logy.topology</varname>表中。 拓扑必须具有唯一的名称。 拓扑表（<varname>edge_"
+"data</varname>、<varname>face</varname>、<varname>node</varname>和<varname>re"
+"lation</varname>）在模式中创建。它返回拓扑的 id。"
 
 #. Tag: para
 #, no-c-format
@@ -5727,7 +5728,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If tolerance = 0, the function uses ST_Intersects otherwise uses ST_DWithin."
-msgstr "如果容差 = 0，则该函数使用 ST_Intersects，否则使用 ST_DWithin。"
+msgstr "如果tolerance = 0，则该函数使用 ST_Intersects，否则使用 ST_DWithin。"
 
 #. Tag: para
 #, no-c-format
@@ -5831,8 +5832,8 @@ msgid ""
 "tolerance. If tolerance = 0 means exact intersection, otherwise retrieves "
 "the node from an interval."
 msgstr ""
-"给定拓扑、POINT 和容差，该函数返回一个整数（id-node）。 如果公差 = 0 表示精确"
-"交集，否则从区间中检索节点。"
+"给定拓扑（ topology）、POINT 和容差（tolerance），该函数返回一个整数（id-"
+"node）。 如果公差 = 0 表示精确交集，否则从区间中检索节点。"
 
 #. Tag: para
 #, no-c-format
@@ -6176,9 +6177,9 @@ msgid ""
 "linestring geometry and returns the edgeid of the new or existing record. "
 "The newly added edge has \"universe\" face on both sides and links to itself."
 msgstr ""
-"使用指定的线串几何图形将边添加到边表，并将关联节点添加到指定<varname>拓扑名称"
-"</varname>模式的节点表，并返回新记录或现有记录的edgeid。 新添加的边两侧都"
-"有“宇宙”面，并与其自身相连。"
+"使用指定的线串几何图形将边添加到边表，并将关联节点添加到指定<varname>toponame"
+"</varname>模式的节点表，并返回新记录或现有记录的edgeid。 "
+"新添加的边两侧都有“宇宙”面，并与其自身相连。"
 
 #. Tag: para
 #, no-c-format
@@ -18118,7 +18119,7 @@ msgstr "更改：2.1.0。 在 2.0.x 之前，这称为 ST_Line_Interpolate_Point
 #. Tag: para
 #, no-c-format
 msgid "A LineString with the interpolated point at 20% position (0.20)"
-msgstr "插值点位于 20% 位置 (0.20) 的 LineString"
+msgstr "插值点位于 20% 位置 (0.20) 的线串"
 
 #. Tag: para
 #, no-c-format
@@ -19973,12 +19974,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "linestring and point -- both 3d and 2d longest line"
-msgstr "线串和点——3d 和 2d 最长的线"
+msgstr "linestring和point——3d 和 2d 最长的线"
 
 #. Tag: para
 #, no-c-format
 msgid "linestring and multipoint -- both 3d and 2d longest line"
-msgstr "线串和多点——3d 和 2d 最长线"
+msgstr "linestring和multipoint——3d 和 2d 最长线"
 
 #. Tag: para
 #, no-c-format
@@ -20329,7 +20330,7 @@ msgstr "Point 和 LineString 之间的最短线"
 #. Tag: para
 #, no-c-format
 msgid "Shortest line between Polygons"
-msgstr "多边形之间的最短线"
+msgstr "Polygons之间的最短线"
 
 #. Tag: para
 #, no-c-format
@@ -24619,12 +24620,12 @@ msgstr "结果具有 Z 和 M 维度（如果存在）的插值。"
 #. Tag: para
 #, no-c-format
 msgid "Smoothing a triangle:"
-msgstr "平滑三角形："
+msgstr "平滑triangle（三角形）："
 
 #. Tag: para
 #, no-c-format
 msgid "Smoothing a Polygon using 1, 2 and 3 iterations:"
-msgstr "使用 1、2 和 3 次迭代平滑多边形："
+msgstr "使用 1、2 和 3 次迭代平滑Polygon："
 
 #. Tag: para
 #, no-c-format
@@ -25987,7 +25988,7 @@ msgstr "多边形的内壳"
 #. Tag: para
 #, no-c-format
 msgid "Outer hull simplification of a MultiPolygon, with segmentization"
-msgstr "MultiPolygon 的外壳简化，具有分段功能"
+msgstr "多多边形 的外壳简化，具有分段功能"
 
 #. Tag: para
 #, no-c-format
@@ -26188,8 +26189,8 @@ msgid ""
 "considered equivalent. Robustness of the algorithm can be improved by "
 "supplying a nonzero tolerance distance. (default = 0.0)"
 msgstr ""
-"<varname>容差</varname>：顶点被视为相等的距离。 通过提供非零容差距离可以提高"
-"算法的稳健性。 （默认 = 0.0）"
+"<varname>tolerance</varname>：顶点被视为相等的距离。 "
+"通过提供非零容差距离可以提高算法的稳健性。 （默认 = 0.0）"
 
 #. Tag: para
 #, no-c-format
@@ -26940,12 +26941,12 @@ msgid ""
 "varname>, <varname>description</varname> and set of <varname>VALUE</varname> "
 "for each creator option for the specific driver."
 msgstr ""
-"返回 GDAL 支持的每种格式的栅格格式短名称、长名称和创建者选项的列表。 使用短名"
-"称作为 <xref linkend=\"RT_ST_AsGDALRaster\"/><varname>格式</varname>参数中的"
-"输入。 选项根据编译 libgdal 所使用的驱动程序而有所不同。<varname> "
+"返回 GDAL 支持的每种格式的栅格格式短名称、长名称和创建者选项的列表。 "
+"使用短名称作为<varname>格式</varname>参数 <xref linkend=\"RT_ST_AsGDALRaster"
+"\"/>中的输入。 选项根据编译 libgdal 所使用的驱动程序而有所不同。<varname> "
 "create_options </varname>返回 XML 格式的 CreationOptionList/Option 集，其中包"
-"含特定驱动程序的每个创建者选项的名称和可选<varname>类型</varname>、<varname>"
-"描述</varname>以及<varname> VALUE</varname> 集。"
+"含特定驱动程序的每个创建者选项的名称和可选<varname>type</varname>、<varname>d"
+"escription</varname>以及<varname> VALUE</varname> 集。"
 
 #. Tag: para
 #, no-c-format
@@ -27151,9 +27152,9 @@ msgid ""
 "extent with a lower resolution (pixel size will be 1/<varname>factor</"
 "varname> of the original in both directions)."
 msgstr ""
-"使用源表中重新采样的图块创建一个概览表。 输出图块将具有与输入图块相同的大小，"
-"并以较低的分辨率覆盖相同的空间范围（像素大小在两个方向上都是原始图块的 1/"
-"<varname>因子</varname>）。"
+"使用源表中重新采样的图块创建一个概览表。 "
+"输出图块将具有与输入图块相同的大小，并以较低的分辨率覆盖相同的空间范围（"
+"像素大小在两个方向上都是原始图块的 1/<varname>factor</varname>）。"
 
 #. Tag: para
 #, no-c-format
@@ -28910,9 +28911,9 @@ msgid ""
 "<varname>exclude_nodata_value</varname> is set to false, then all pixels are "
 "considered."
 msgstr ""
-"如果<varname> except_nodata_value </varname>设置为 true，则仅考虑非<varname>"
-"节点数据</varname>像素。 如果 <varname>except_nodata_value </varname>设置为 "
-"false，则考虑所有像素。"
+"如果<varname> except_nodata_value </varname>设置为 "
+"true，则仅考虑非<varname>nodata</varname>像素。 如果 "
+"<varname>except_nodata_value </varname>设置为 false，则考虑所有像素。"
 
 #. Tag: para
 #, no-c-format
@@ -29229,9 +29230,9 @@ msgid ""
 "<varname>width</varname> and <varname>height</varname>. See example Variant "
 "3."
 msgstr ""
-"对于变体3，要设置的特定像素由<varname>columnx</varname>、<varname>rowy</"
-"varname>像素坐标、<varname>宽度</varname>和<varname>高度</varname>决定。请参"
-"见变体3的示例。"
+"对于变体3，要设置的特定像素由<varname>columnx</varname>、<varname>rowy</varna"
+"me>像素坐标、<varname>width</varname>和<varname>height</varname>决定。请参见"
+"变体3的示例。"
 
 #. Tag: para
 #, no-c-format
@@ -29533,10 +29534,10 @@ msgid ""
 "borrowed from another raster. If using a reference raster, the two rasters "
 "must have the same SRID."
 msgstr ""
-"使用指定的重新采样算法、新的尺寸（宽度&amp;高度）、一个网格角点（gridx &amp; "
-"gridy），以及一组栅格地理参考属性（scalex、scaley、skewx &amp; skewy），这些"
-"属性可以自己定义，也可以从另一个栅格图像中借用。如果使用参考栅格图像，那么这"
-"两个栅格图像必须具有相同的空间参考ID（SRID）。"
+"使用指定的重新采样算法、新的尺寸（width&amp;height）、一个网格角点（gridx "
+"&amp; gridy），以及一组栅格地理参考属性（scalex、scaley、skewx &amp; skewy）"
+"，这些属性可以自己定义，也可以从另一个栅格图像中借用。如果使用参考栅格图像，"
+"那么这两个栅格图像必须具有相同的空间参考ID（SRID）。"
 
 #. Tag: para
 #, no-c-format
@@ -31090,7 +31091,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Examples: 1 band clipping"
-msgstr "示例：1 波段剪辑"
+msgstr "示例：单波段剪辑"
 
 #. Tag: para
 #, no-c-format
@@ -31106,7 +31107,7 @@ msgstr "裁剪后"
 #, no-c-format
 msgid ""
 "Examples: 1 band clipping with no crop and add back other bands unchanged"
-msgstr "示例：1 个波段裁剪，不进行裁剪，然后添加回其他波段不变"
+msgstr "示例：裁剪未裁剪的单波段，并将其他波段不变添加回去"
 
 #. Tag: para
 #, no-c-format
@@ -31237,7 +31238,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Valid keywords for <varname>method</varname>:"
-msgstr "<varname>方法</varname>的有效关键字："
+msgstr "<varname>method</varname>的有效关键字："
 
 #. Tag: para
 #, no-c-format
@@ -31364,7 +31365,7 @@ msgid ""
 "0.5870 * GREEN + 0.1140 * BLUE"
 msgstr ""
 "此函数与<xref linkend=\"RT_ST_ColorMap\""
-"/>不同，ST_ColorMap带有<varname>灰度</varname>关键字，因为 ST_ColorMap "
+"/>不同，ST_ColorMap带有<varname>grayscale</varname>关键字，因为 ST_ColorMap "
 "仅在一个波段上运行，而此函数需要 RGB 的三个波段。 此函数应用以下公式将 RGB "
 "转换为灰度： 0.2989 * RED 0.5870 * GREEN 0.1140 * BLUE"
 
@@ -32904,7 +32905,7 @@ msgstr "计算像素邻域中唯一像素值的数量。"
 msgid ""
 "Variant 1 is a specialized callback function for use as a callback parameter "
 "to <xref linkend=\"RT_ST_MapAlgebraFctNgb\"/>."
-msgstr "变体 1 是一个专门的回调函数，用作<xref linkend=\"RT_ST_MapAlgebraFctNgb\""
+msgstr "格式 1 是一个专门的回调函数，用作<xref linkend=\"RT_ST_MapAlgebraFctNgb\""
 "/>的回调参数。"
 
 #. Tag: para
@@ -32912,7 +32913,7 @@ msgstr "变体 1 是一个专门的回调函数，用作<xref linkend=\"RT_ST_Ma
 msgid ""
 "Variant 2 is a specialized callback function for use as a callback parameter "
 "to <xref linkend=\"RT_ST_MapAlgebra\"/>."
-msgstr "变体 2 是一个专门的回调函数，用作<xref linkend=\"RT_ST_MapAlgebra\""
+msgstr "格式 2 是一个专门的回调函数，用作<xref linkend=\"RT_ST_MapAlgebra\""
 "/>（回调函数版本）的回调参数。"
 
 #. Tag: para
@@ -32920,13 +32921,13 @@ msgstr "变体 2 是一个专门的回调函数，用作<xref linkend=\"RT_ST_Ma
 msgid ""
 "Use of Variant 1 is discouraged since <xref linkend=\"RT_ST_MapAlgebraFctNgb"
 "\"/> has been deprecated as of 2.1.0."
-msgstr "不鼓励使用变体 1，因为 <xref linkend=\"RT_ST_MapAlgebraFctNgb\"/> 自 2.1.0 "
+msgstr "不鼓励使用格式 1，因为 <xref linkend=\"RT_ST_MapAlgebraFctNgb\"/> 自 2.1.0 "
 "起已被弃用。"
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.1.0 Addition of Variant 2"
-msgstr "增强：2.1.0 添加变体 2"
+msgstr "增强：2.1.0 添加格式 2"
 
 #. Tag: para
 #, no-c-format
@@ -33013,7 +33014,7 @@ msgstr "计算像素邻域中的最大像素值。"
 msgid ""
 "For Variant 2, a substitution value for NODATA pixels can be specified by "
 "passing that value to userargs."
-msgstr "对于变体 2，可以通过将该值传递给 userargs 来指定 NODATA 像素的替换值。"
+msgstr "对于格式 2，可以通过将该值传递给 userargs 来指定 NODATA 像素的替换值。"
 
 #. Tag: para
 #, no-c-format
@@ -35826,9 +35827,8 @@ msgstr ""
 msgid ""
 "<code>2</code>: <emphasis role=\"bold\">Endpoint</emphasis> - all endpoints "
 "are in the Boundary."
-msgstr ""
-"<code>2</code>：<emphasis role=\"bold\">端点</emphasis> - 所有端点都在边界"
-"内。"
+msgstr "<code>2</code>：<emphasis role=\"bold\">Endpoint</emphasis> - "
+"所有端点都在边界内。"
 
 #. Tag: para
 #, no-c-format
@@ -35911,9 +35911,9 @@ msgid ""
 "MultiLineString, so the DE-9IM matrix entry [aB:bI] is <code>F</code> and "
 "[aB:bB] is <code>0</code>."
 msgstr ""
-"使用<emphasis role=\"bold\">端点</emphasis>规则 (2)，重复端点位于 "
-"MultiLineString 的<emphasis role=\"bold\">边界</emphasis>中，因此 DE-9IM 矩阵"
-"条目 [aB:bI] 为<code> F</code>，[aB:bB] 为<code> 0</code>。"
+"使用<emphasis role=\"bold\">Endpoint</emphasis>规则 (2)，重复端点位于 "
+"MultiLineString 的<emphasis role=\"bold\">边界</emphasis>中，因此 DE-9IM "
+"矩阵条目 [aB:bI] 为<code> F</code>，[aB:bB] 为<code> 0</code>。"
 
 #. Tag: para
 #, no-c-format
@@ -41254,9 +41254,9 @@ msgid ""
 "<emphasis role=\"bold\">(c)</emphasis> is a closed Linear Ring."
 msgstr ""
 "<emphasis role=\"bold\">(a)</emphasis> 和<emphasis role=\"bold\">(c)</"
-"emphasis> 是简单的<varname>LINESTRING</varname>s. <emphasis role=\"bold"
-"\">(b)</emphasis> 和 <emphasis role=\"bold\">(d)</emphasis> 不简单。 "
-"<emphasis role=\"bold\">(c)</emphasis> 是一个封闭的线性环。"
+"emphasis> 是简单的<varname>LINESTRING</varname>. <emphasis role=\"bold\""
+">(b)</emphasis> 和 <emphasis role=\"bold\">(d)</emphasis> 不简单。 <emphasis "
+"role=\"bold\">(c)</emphasis> 是一个封闭的线性环。"
 
 #. Tag: emphasis
 #, no-c-format
@@ -41297,7 +41297,7 @@ msgid ""
 "\"bold\">(g)</emphasis> is not simple."
 msgstr ""
 "<emphasis role=\"bold\">(e)</emphasis> 和<emphasis role=\"bold\">(f)</"
-"emphasis> 是简单的 <varname>MULTILINESTRING</varname>s。<emphasis role=\"bold"
+"emphasis> 是简单的 <varname>MULTILINESTRING</varname>。<emphasis role=\"bold"
 "\">(g)</emphasis>不简单。"
 
 #. Tag: emphasis
@@ -41965,10 +41965,10 @@ msgid ""
 "varname>. The following example creates a table with a geometry column "
 "storing 2D (XY) LineStrings in the BC-Albers coordinate system (SRID 3005):"
 msgstr ""
-"您可以使用带有 type 列的 <link xlink:href=\"https://www.postgresql.org/docs/"
-"current/sql-createtable.html\">CREATE TABLE</link> SQL 语句创建一个表来存储几"
-"何数据 <varname>几何</varname>。 以下示例创建一个表，其中的几何列存储 BC-"
-"Albers 坐标系 (SRID 3005) 中的 2D (XY) LineString："
+"您可以使用SQL语句中的<link xlink:href=\"https://www.postgresql.org/docs/"
+"current/sql-createtable.html\">CREATE TABLE</link>语句创建一个用于存储几何数"
+"据的表，其中包括一个<varname>geometry</varname>类型的列。以下示例创建了一个带"
+"有几何列的表，该列存储BC-Albers坐标系统（SRID 3005）中的2D（XY）LineStrings："
 
 #. Tag: para
 #, no-c-format
@@ -42071,10 +42071,10 @@ msgid ""
 "metadata information is always consistent with the currently defined tables "
 "and views. The view structure is:"
 msgstr ""
-"<emphasis>适用于SQL的OGC简单要素规范</emphasis>定义了用于描述<varname>几何列"
-"</varname>结构的元数据表。在 PostGIS 中，<varname>几何列</varname>是从数据库"
-"的系统目录表中读取的视图。这可确保空间元数据信息始终与当前定义的表或视图一"
-"致。视图结构为:"
+"<emphasis>适用于SQL的OGC简单要素规范</emphasis>定义了用于描述<varname>GEOMETR"
+"Y_COLUMNS</varname>结构的元数据表。在 PostGIS 中，<varname>geometry_columns</"
+"varname>是从数据库的系统目录表中读取的视图。这可确保空间元数据信息始终与当前"
+"定义的表或视图一致。视图结构为:"
 
 #. Tag: para
 #, no-c-format
