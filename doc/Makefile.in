@@ -107,7 +107,6 @@ XSLTPROC_COMMONOPTS= \
 	--param table.borders.with.css 1 \
 	--stringparam chunker.output.encoding UTF-8 \
 	--stringparam chunker.output.indent no \
-	--stringparam html.ext .html \
 	--stringparam saxon.character.representation decimal \
 	$(XSLTPROCFLAGS)
 
@@ -116,8 +115,8 @@ XSLTPROC_CHUNKED_HTML_OPTS = \
 	--stringparam img.src.path ../ \
 	--stringparam html.stylesheet ../style.css
 
-HTML_DOCBOOK_XSL=$(XSLBASE)/xhtml5/docbook.xsl
-CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/xhtml5/chunk.xsl
+HTML_DOCBOOK_XSL=$(XSLBASE)/html/docbook.xsl
+CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/html/chunk.xsl
 
 # DBLatex's dblatex script for PDF generation from DocBook
 DBLATEX=@DBLATEX@
