@@ -115,7 +115,7 @@ XSLTPROC_CHUNKED_HTML_OPTS = \
 	--stringparam img.src.path ../ \
 	--stringparam html.stylesheet ../style.css
 
-HTML_DOCBOOK_XSL=$(XSLBASE)/html/docbook.xsl
+HTML_DOCBOOK_XSL=xsl/docbook-html-utf8.xsl
 CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/html/chunk.xsl
 
 # DBLatex's dblatex script for PDF generation from DocBook

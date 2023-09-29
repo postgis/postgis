@@ -56,6 +56,7 @@ doc/postgis_gardentest_*.sql
 doc/raster_gardentest_*.sql
 doc/tiger_geocoder_comments.sql
 doc/topology_comments.sql
+doc/xsl/docbook-html-utf8.xsl
 extensions/Makefile
 extensions/address_standardizer/Makefile
 extensions/address_standardizer/mk-st-regexp

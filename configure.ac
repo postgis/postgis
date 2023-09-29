@@ -1825,6 +1825,7 @@ AC_CONFIG_FILES([GNUmakefile
    regress/loader/Makefile
    doc/Makefile
    doc/Makefile.comments
+   doc/xsl/docbook-html-utf8.xsl
    $TRANSLATIONS_MAKEFILE_LIST
    doc/html/images/Makefile
    utils/Makefile
