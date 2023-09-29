@@ -3152,6 +3152,10 @@ SELECT ST_Zmflag(ST_GeomFromEWKT('POINT(1 2 3 4)'));
     <para>Geometry objects with a Z dimension typically represent three-dimensional (3D) geometries, while those without it are two-dimensional (2D) geometries.</para>
 
     <para>This function is useful for determining if a geometry has elevation or height information.</para>
+
+    <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+    <para>&Z_support;</para>
+    <para>&M_support;</para>
   </refsection>
 
   <refsection>
@@ -3197,6 +3201,10 @@ SELECT ST_Zmflag(ST_GeomFromEWKT('POINT(1 2 3 4)'));
     <para>Geometry objects with an M dimension typically represent measurements or additional data associated with spatial features.</para>
 
     <para>This function is useful for determining if a geometry includes measure information.</para>
+
+    <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+    <para>&Z_support;</para>
+    <para>&M_support;</para>
   </refsection>
 
   <refsection>
