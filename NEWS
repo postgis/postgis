@@ -19,6 +19,7 @@ xxxx/xx/xx
 
   - #5055, add explicit <> geometry operator to prevent non-unique
            error with <> and != (Paul Ramsey)
+  - Add ST_HasZ/ST_HasM (Loïc Bartoletti)
 
 * Enhancements *
 
