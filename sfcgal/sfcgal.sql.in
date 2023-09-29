@@ -198,7 +198,6 @@ CREATE OR REPLACE FUNCTION CG_YMonotonePartition(g1 geometry)
        COST 100;
 COMMIT;
 
--- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_ApproxConvexPartition(g1 geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME', 'sfcgal_approxconvexpartition'
@@ -226,6 +225,22 @@ COMMIT;
 CREATE OR REPLACE FUNCTION CG_ExtrudeStraightSkeleton(g1 geometry, top_height float8, body_height float8 DEFAULT 0.0)
        RETURNS geometry
        AS 'MODULE_PATHNAME', 'sfcgal_extrudestraightskeleton'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+COMMIT;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION ST_Visibility(polygon geometry, pointA geometry, pointB geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME', 'sfcgal_visibility_segment'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+COMMIT;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION ST_Visibility(polygon geometry, point geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME', 'sfcgal_visibility_point'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 COMMIT;
