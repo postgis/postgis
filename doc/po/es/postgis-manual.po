@@ -12347,6 +12347,65 @@ msgstr ""
 msgid ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 
+#. Tag: refpurpose
+#, no-c-format
+msgid "Checks if a geometry has a Z dimension."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Checks if the input geometry has a Z dimension and returns a boolean value. "
+"If the geometry has a Z dimension, it returns true; otherwise, it returns "
+"false."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Geometry objects with a Z dimension typically represent three-dimensional "
+"(3D) geometries, while those without it are two-dimensional (2D) geometries."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This function is useful for determining if a geometry has elevation or "
+"height information."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.5.0"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Checks if a geometry has an M (measure) dimension."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Checks if the input geometry has an M (measure) dimension and returns a "
+"boolean value. If the geometry has an M dimension, it returns true; "
+"otherwise, it returns false."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Geometry objects with an M dimension typically represent measurements or "
+"additional data associated with spatial features."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This function is useful for determining if a geometry includes measure "
+"information."
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid "Bounding Box Functions"
