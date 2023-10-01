@@ -105,13 +105,13 @@ XSLTPROC_COMMONOPTS= \
 	--param header.rule 0 \
 	--param footer.rule 0 \
 	--param table.borders.with.css 1 \
-	--stringparam chunker.output.encoding UTF-8 \
-	--stringparam chunker.output.indent no \
 	--stringparam html.ext .html \
 	--stringparam saxon.character.representation decimal \
 	$(XSLTPROCFLAGS)
 
 XSLTPROC_CHUNKED_HTML_OPTS = \
+	--stringparam chunker.output.encoding UTF-8 \
+	--stringparam chunker.output.indent yes \
 	--stringparam admon.graphics.path ../images/ \
 	--stringparam img.src.path ../ \
 	--stringparam html.stylesheet ../style.css
