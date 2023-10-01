@@ -74,7 +74,7 @@ if [[ "$POSTGIS_MICRO_VERSION" == *"dev"* ]]; then
 fi
 
 make cheatsheets
-make -e chunked-html-web # TODO: do we really want this too in the doc-html-*.tar.gz package ?
+make -e chunked-html # TODO: do we really want this too in the doc-html-*.tar.gz package ?
 make html-localized # TODO: do we really want this too in the doc-html-*.tar.gz package ?
 
 package="doc-html-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.tar.gz"
@@ -85,8 +85,8 @@ cp $package ${STUFF_DIR}
 make html-assets-install
 make html-install
 make html-install-localized
-make chunked-html-web-install
-make chunked-html-web-install-localized
+make chunked-html-install
+make chunked-html-install-localized
 make cheatsheet-install
 make cheatsheet-install-localized
 
