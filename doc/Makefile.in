@@ -395,28 +395,16 @@ chunked-html: $(html_builddir)/postgis$(DOCSUFFIX)/docbook.css
 $(html_builddir)/postgis$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		$(XSLTPROC_CHUNKED_HTML_OPTS) \
+		$(XSLTPROCFLAGS) \
 		--output $(dir $@) \
 		$(CHUNK_HTML_DOCBOOK_XSL) \
 		$<
 
-chunked-html-web: $(html_builddir)/postgis-web$(DOCSUFFIX)/docbook.css
-$(html_builddir)/postgis-web$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile
-	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
-		$(XSLTPROC_CHUNKED_HTML_OPTS) \
-		--output $(dir $@) \
-		--stringparam html.script ga.js \
-		$(CHUNK_HTML_DOCBOOK_XSL) \
-		$<
-
+# TODO: drop this, replace with a generic CSS handling both mobile and # desktop
 HTML_BITS = $(wildcard html/*.html)
 chunked-html-web-mobile: $(html_builddir)/postgis-web-mobile$(DOCSUFFIX)/docbook.css
 $(html_builddir)/postgis-web-mobile$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile
-	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
-		$(XSLTPROC_CHUNKED_HTML_OPTS) \
-		--output $(dir $@) \
-		--stringparam html.script ga.js \
-		$(CHUNK_HTML_DOCBOOK_XSL) \
-		$<
+	$(MAKE) chunked-html
 	$(PERL) -pi -e 's/<head>/<head><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">/g' $(HTML_BITS)
 
 html: $(html_builddir)/postgis$(DOCSUFFIX).html

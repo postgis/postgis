@@ -29,6 +29,9 @@ Make targets
 
 ``make chunked-html``
   generates a separate html file for every chapter or section break
+  You can use CHUNKED_HTML_USER_OPTS environment variable to tweak
+  the output, for example:
+  > make chunked-html XSLTPROCFLAGS="--stringparam html.script custom.js
 
 ``make pdf``
   generates a single PDF file with the PostGIS version as a filename
