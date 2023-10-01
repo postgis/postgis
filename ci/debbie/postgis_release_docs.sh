@@ -90,18 +90,20 @@ make chunked-html-install-localized
 make cheatsheet-install
 make cheatsheet-install-localized
 
-# Strip out the "postgis-web-" suffix
+# Strip out the "postgis-" suffix
 # from chunked html directories, backing
 # up any previous target directory
-for f in ${HTML_DIR}/postgis-web-*; do
-  if test -e $f; then
-    nf=$(echo $f| sed 's/postgis-web-//');
-    if test -e $nf; then
-      rm -rf $nf.old
-      mv -v $nf $nf.old
-    fi
-    mv -v $f $nf;
+for f in $(
+  find ${HTML_DIR} -type d \
+    -maxdepth 1 -mindepth 1 \
+    -name 'postgis-*'
+); do
+  nf=$(echo $f| sed 's/postgis-//');
+  if test -e $nf; then
+    rm -rf $nf.old
+    mv -v $nf $nf.old
   fi
+  mv -v $f $nf;
 done
 
 
