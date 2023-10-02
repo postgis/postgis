@@ -585,13 +585,6 @@ chunked-html-install: chunked-html
 chunked-html-uninstall:
 	rm -rf $(DESTDIR)$(htmldir)/postgis$(DOCSUFFIX)/
 
-chunked-html-web-install: chunked-html-web
-	mkdir -p $(DESTDIR)$(htmldir)
-	cp -R $(html_builddir)/postgis-web$(DOCSUFFIX) $(DESTDIR)$(htmldir)/
-
-chunked-html-web-uninstall:
-	rm -rf $(DESTDIR)$(htmldir)/postgis-web$(DOCSUFFIX)/
-
 chunked-html-web-mobile-install: chunked-html-web-mobile
 	mkdir -p $(DESTDIR)$(htmldir)
 	cp -R $(html_builddir)/postgis-web-mobile$(DOCSUFFIX) $(DESTDIR)$(htmldir)/
