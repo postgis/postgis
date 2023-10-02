@@ -6,10 +6,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-28 10:07+0000\n"
-"PO-Revision-Date: 2023-09-27 09:23+0000\n"
+"PO-Revision-Date: 2023-10-02 04:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -13481,7 +13481,7 @@ msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Checks if a geometry has a Z dimension."
-msgstr ""
+msgstr "ジオメトリがZ値を持っているかどうかを確認します。"
 
 #. Tag: para
 #, no-c-format
@@ -13490,30 +13490,34 @@ msgid ""
 "If the geometry has a Z dimension, it returns true; otherwise, it returns "
 "false."
 msgstr ""
+"入力ジオメトリがZ値を持っているかどうかを確認して、真偽値を返します。ジオメト"
+"リがZ値を持っている場合にはTRUEを返し、そうでない場合にはFALSEを返します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Geometry objects with a Z dimension typically represent three-dimensional "
 "(3D) geometries, while those without it are two-dimensional (2D) geometries."
-msgstr ""
+msgstr "通常は、Z値を持つジオメトリオブジェクトは3次元 (3D)ジオメトリを表現し、"
+"Z値を持たないものは2次元 (2D)ジオメトリとなります。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This function is useful for determining if a geometry has elevation or "
 "height information."
-msgstr ""
+msgstr "この関数はジオメトリが標高や高さに関する情報を持つかどうかを判断するのに使い"
+"ます。"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.5.0"
-msgstr ""
+msgstr "Availability: 3.5.0"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Checks if a geometry has an M (measure) dimension."
-msgstr ""
+msgstr "ジオメトリがM値をもっているかどうかを確認します。"
 
 #. Tag: para
 #, no-c-format
@@ -13522,20 +13526,23 @@ msgid ""
 "boolean value. If the geometry has an M dimension, it returns true; "
 "otherwise, it returns false."
 msgstr ""
+"入力ジオメトリがM値を持っているかどうかを確認して、真偽値を返します。ジオメト"
+"リがM値を持っている場合にはTRUEを返し、そうでない場合にはFALSEを返します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Geometry objects with an M dimension typically represent measurements or "
 "additional data associated with spatial features."
-msgstr ""
+msgstr "M次元を持つジオメトリオブジェクトは通常、空間地物に関連付けられた計測値または"
+"追加データを表現します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This function is useful for determining if a geometry includes measure "
 "information."
-msgstr ""
+msgstr "この関数はジオメトリがM値に関する情報を持つかどうかを判断するのに使います。"
 
 #. Tag: title
 #, no-c-format
