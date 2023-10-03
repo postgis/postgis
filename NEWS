@@ -15,7 +15,7 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.5.0+ is needed.
            ) (Sandro Santilli)
   - #5536, comments are not anymore included in PostGIS extensions
     (Sandro Santilli)
-  - xmllint is now required to build comments and 
+  - xmllint is now required to build comments and
     (Sandro Santilli)
   - DocBook5 XSL is now required to build html documentation
     (Sandro Santilli)
@@ -27,6 +27,7 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.5.0+ is needed.
            error with <> and != (Paul Ramsey)
   - Add ST_HasZ/ST_HasM (Loïc Bartoletti)
   - GT-123, postgis_sfcgal: CG_YMonotonePartition, CG_ApproxConvexPartition, CG_GreeneApproxConvexPartition and CG_OptimalConvexPartition (Loïc Bartoletti)
+  - GT-157, postgis_sfcgal: Add ST_ExtrudeStraightSkeleton (Loïc Bartoletti)
 
 * Enhancements *
 

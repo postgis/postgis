@@ -846,10 +846,9 @@ select ST_DelaunayTriangles(
 			</informaltable>
 	  </refsection>
         <refsection>
-                <title>See Also</title>
-
-                <para><xref linkend="ST_AsX3D"/></para>
-        </refsection>
+		<title>See Also</title>
+                <para><xref linkend="ST_AsX3D"/>, <xref linkend="ST_ExtrudeStraightSkeleton" /></para>
+	  </refsection>
 	</refentry>
 
 	<refentry xml:id="ST_ForceLHR">
@@ -1263,6 +1262,10 @@ MULTIPOLYGON(
 			</informaltable>
 	  </refsection>
 
+      <refsection>
+		<title>See Also</title>
+                <para><xref linkend="ST_ExtrudeStraightSkeleton" /></para>
+	  </refsection>
 	</refentry>
 
 
@@ -1644,6 +1647,53 @@ MULTIPOLYGON(
       <refsection>
 		<title>See Also</title>
                 <para><xref linkend="CG_YMonotonePartition" />, <xref linkend="CG_ApproxConvexPartition" />, <xref linkend="CG_GreeneApproxConvexPartition" /></para>
+	  </refsection>
+
+	</refentry>
+    <refentry xml:id="ST_ExtrudeStraightSkeleton">
+	  <refnamediv>
+		<refname>ST_ExtrudeStraightSkeleton</refname>
+
+		<refpurpose>Straight Skeleton Extrusion</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_ExtrudeStraightSkeleton</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                        <paramdef><type>float </type> <parameter>roof_height</parameter></paramdef>
+                        <paramdef choice="opt"><type>float </type> <parameter>body_height = 0</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+        <title>Description</title>
+
+          <para>Computes an extrusion with a maximal height of the polygon geometry.
+          </para>
+
+        <note><para>
+	Perhaps the first (historically) use-case of straight skeletons: given a polygonal roof, the straight skeleton directly gives the layout of each tent. If each skeleton edge is lifted from the plane a height equal to its offset distance, the resulting roof is "correct" in that water will always fall down to the contour edges (the roof's border), regardless of where it falls on the roof.
+	The function computes this extrusion aka "roof" on a polygon. If the argument body_height > 0, so the polygon is extruded like with ST_Extrude(polygon, 0, 0, body_height). The result is an union of these polyhedralsurfaces.
+        </para></note>
+
+
+		<para>Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
+		<para>&sfcgal_required;</para>
+	  </refsection>
+
+	  <refsection>
+	      <title>Examples</title>
+<para>
+         <programlisting>SELECT ST_AsText(ST_ExtrudeStraightSkeleton('POLYGON (( 0 0, 5 0, 5 5, 4 5, 4 4, 0 4, 0 0 ), (1 1, 1 2,2 2, 2 1, 1 1))', 3.0, 2.0));</programlisting>
+          <screen>POLYHEDRALSURFACE Z (((0 0 0,0 4 0,4 4 0,4 5 0,5 5 0,5 0 0,0 0 0),(1 1 0,2 1 0,2 2 0,1 2 0,1 1 0)),((0 0 0,0 0 2,0 4 2,0 4 0,0 0 0)),((0 4 0,0 4 2,4 4 2,4 4 0,0 4 0)),((4 4 0,4 4 2,4 5 2,4 5 0,4 4 0)),((4 5 0,4 5 2,5 5 2,5 5 0,4 5 0)),((5 5 0,5 5 2,5 0 2,5 0 0,5 5 0)),((5 0 0,5 0 2,0 0 2,0 0 0,5 0 0)),((1 1 0,1 1 2,2 1 2,2 1 0,1 1 0)),((2 1 0,2 1 2,2 2 2,2 2 0,2 1 0)),((2 2 0,2 2 2,1 2 2,1 2 0,2 2 0)),((1 2 0,1 2 2,1 1 2,1 1 0,1 2 0)),((4 5 2,5 5 2,4 4 2,4 5 2)),((2 1 2,5 0 2,0 0 2,2 1 2)),((5 5 2,5 0 2,4 4 2,5 5 2)),((2 1 2,0 0 2,1 1 2,2 1 2)),((1 2 2,1 1 2,0 0 2,1 2 2)),((0 4 2,2 2 2,1 2 2,0 4 2)),((0 4 2,1 2 2,0 0 2,0 4 2)),((4 4 2,5 0 2,2 2 2,4 4 2)),((4 4 2,2 2 2,0 4 2,4 4 2)),((2 2 2,5 0 2,2 1 2,2 2 2)),((0.5 2.5 2.5,0 0 2,0.5 0.5 2.5,0.5 2.5 2.5)),((1 3 3,0 4 2,0.5 2.5 2.5,1 3 3)),((0.5 2.5 2.5,0 4 2,0 0 2,0.5 2.5 2.5)),((2.5 0.5 2.5,5 0 2,3.5 1.5 3.5,2.5 0.5 2.5)),((0 0 2,5 0 2,2.5 0.5 2.5,0 0 2)),((0.5 0.5 2.5,0 0 2,2.5 0.5 2.5,0.5 0.5 2.5)),((4.5 3.5 2.5,5 5 2,4.5 4.5 2.5,4.5 3.5 2.5)),((3.5 2.5 3.5,3.5 1.5 3.5,4.5 3.5 2.5,3.5 2.5 3.5)),((4.5 3.5 2.5,5 0 2,5 5 2,4.5 3.5 2.5)),((3.5 1.5 3.5,5 0 2,4.5 3.5 2.5,3.5 1.5 3.5)),((5 5 2,4 5 2,4.5 4.5 2.5,5 5 2)),((4.5 4.5 2.5,4 4 2,4.5 3.5 2.5,4.5 4.5 2.5)),((4.5 4.5 2.5,4 5 2,4 4 2,4.5 4.5 2.5)),((3 3 3,0 4 2,1 3 3,3 3 3)),((3.5 2.5 3.5,4.5 3.5 2.5,3 3 3,3.5 2.5 3.5)),((3 3 3,4 4 2,0 4 2,3 3 3)),((4.5 3.5 2.5,4 4 2,3 3 3,4.5 3.5 2.5)),((2 1 2,1 1 2,0.5 0.5 2.5,2 1 2)),((2.5 0.5 2.5,2 1 2,0.5 0.5 2.5,2.5 0.5 2.5)),((1 1 2,1 2 2,0.5 2.5 2.5,1 1 2)),((0.5 0.5 2.5,1 1 2,0.5 2.5 2.5,0.5 0.5 2.5)),((1 3 3,2 2 2,3 3 3,1 3 3)),((0.5 2.5 2.5,1 2 2,1 3 3,0.5 2.5 2.5)),((1 3 3,1 2 2,2 2 2,1 3 3)),((2 2 2,2 1 2,2.5 0.5 2.5,2 2 2)),((3.5 2.5 3.5,3 3 3,3.5 1.5 3.5,3.5 2.5 3.5)),((3.5 1.5 3.5,2 2 2,2.5 0.5 2.5,3.5 1.5 3.5)),((3 3 3,2 2 2,3.5 1.5 3.5,3 3 3)))</screen>
+        </para>
+	  </refsection>
+      <refsection>
+		<title>See Also</title>
+                <para><xref linkend="ST_Extrude" />, <xref linkend="ST_StraightSkeleton" /></para>
 	  </refsection>
 
 	</refentry>

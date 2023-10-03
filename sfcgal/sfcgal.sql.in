@@ -191,6 +191,7 @@ CREATE OR REPLACE FUNCTION ST_OptimalAlphaShape(g1 geometry, allow_holes boolean
 COMMIT;
 
 -- Availability: 3.5.0
+<<<<<<< HEAD
 CREATE OR REPLACE FUNCTION CG_YMonotonePartition(g1 geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME', 'sfcgal_ymonotonepartition'
@@ -222,3 +223,10 @@ CREATE OR REPLACE FUNCTION CG_OptimalConvexPartition(g1 geometry)
        COST 100;
 COMMIT;
 
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION ST_ExtrudeStraightSkeleton(g1 geometry, top_height float8, body_height float8 DEFAULT 0.0)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME', 'sfcgal_extrudestraightskeleton'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+COMMIT;
