@@ -400,13 +400,6 @@ $(html_builddir)/postgis$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile
 		$(CHUNK_HTML_DOCBOOK_XSL) \
 		$<
 
-# TODO: drop this, replace with a generic CSS handling both mobile and # desktop
-HTML_BITS = $(wildcard html/*.html)
-chunked-html-web-mobile: $(html_builddir)/postgis-web-mobile$(DOCSUFFIX)/docbook.css
-$(html_builddir)/postgis-web-mobile$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile
-	$(MAKE) chunked-html
-	$(PERL) -pi -e 's/<head>/<head><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">/g' $(HTML_BITS)
-
 html: $(html_builddir)/postgis$(DOCSUFFIX).html
 
 %-localized:
@@ -493,8 +486,6 @@ html-clean:
 	rm -f $(html_builddir)/docbook.css
 	rm -f $(html_builddir)/postgis$(DOCSUFFIX).html
 	rm -rf $(html_builddir)/postgis$(DOCSUFFIX)/
-	rm -rf $(html_builddir)/postgis-web$(DOCSUFFIX)/
-	rm -rf $(html_builddir)/postgis-web-mobile$(DOCSUFFIX)/
 
 pdf-clean:
 	rm -f postgis*$(DOCSUFFIX).pdf
@@ -584,13 +575,6 @@ chunked-html-install: chunked-html
 
 chunked-html-uninstall:
 	rm -rf $(DESTDIR)$(htmldir)/postgis$(DOCSUFFIX)/
-
-chunked-html-web-mobile-install: chunked-html-web-mobile
-	mkdir -p $(DESTDIR)$(htmldir)
-	cp -R $(html_builddir)/postgis-web-mobile$(DOCSUFFIX) $(DESTDIR)$(htmldir)/
-
-chunked-html-web-mobile-uninstall:
-	rm -rf $(DESTDIR)$(htmldir)/postgis-web-mobile$(DOCSUFFIX)/
 
 html-assets-install: images-install
 	$(INSTALL_DATA) $(abs_srcdir)/html/style.css $(DESTDIR)$(htmldir)/
