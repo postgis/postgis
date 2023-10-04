@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-28 10:07+0000\n"
-"PO-Revision-Date: 2023-10-02 04:23+0000\n"
+"PO-Revision-Date: 2023-10-04 07:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -59,7 +59,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "If you want to enable offline raster:"
-msgstr "データベース外ラスタを有効にするには次のようにします。"
+msgstr "データベース外ラスタを有効にするには次のようにします:"
 
 #. Tag: para
 #, no-c-format
@@ -73,21 +73,19 @@ msgstr ""
 msgid ""
 "In order to enable all GDAL drivers available in your GDAL install, set this "
 "environment variable as follows"
-msgstr ""
-"インストールしたGDALのドライバを有効にするには、次の環境変数を設定します。"
+msgstr "インストールしたGDALのドライバを有効にするには、次の環境変数を設定します:"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If you want to only enable specific drivers, set your environment variable "
 "as follows:"
-msgstr ""
-"一部のドライバのみ有効にしたい場合には、環境変数を次のように設定します。"
+msgstr "一部のドライバのみ有効にしたい場合には、環境変数を次のように設定します:"
 
 #. Tag: para
 #, no-c-format
 msgid "If you are on windows, do not quote the driver list"
-msgstr "Windows上の場合は、ドライバリストに引用符をつけないで下さい。"
+msgstr "Windows上の場合は、ドライバリストに引用符をつけないで下さい"
 
 #. Tag: para
 #, no-c-format
@@ -166,7 +164,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Run the following SQL snippet in the database you want to enable spatially:"
-msgstr "空間データベースにしたいデータベース上で次のSQLを実行します。"
+msgstr "空間データベースにしたいデータベース上で次のSQLを実行します:"
 
 #. Tag: title
 #, no-c-format
@@ -238,7 +236,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Run the following Shell commands in your terminal:"
-msgstr "ターミナルで次のシェルコマンドを実行します。"
+msgstr "ターミナルで次のシェルコマンドを実行します:"
 
 #. Tag: title
 #, no-c-format
@@ -332,7 +330,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "If you are running PostGIS 2.5 or lower, then do the following:"
-msgstr "PostGIS 2.5以前を実行している場合には、次のようにします。"
+msgstr "PostGIS 2.5以前を実行している場合には、次のようにします:"
 
 #. Tag: para
 #, no-c-format
@@ -341,7 +339,7 @@ msgid ""
 "upgrade to the latest, you can explicitly specify the version as follows:"
 msgstr ""
 "インストールされたPostGISに複数のバージョンがあり、最新版にアップグレードした"
-"くない場合には、明示的なバージョンの指定ができます。次のようにします。"
+"くない場合には、明示的なバージョンの指定ができます。次のようにします:"
 
 #. Tag: para
 #, no-c-format
@@ -362,7 +360,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "If you get a notice message like:"
-msgstr "次のようなメッセージを得ることがあります。"
+msgstr "次のようなメッセージを得ることがあります:"
 
 #. Tag: para
 #, no-c-format
@@ -373,10 +371,10 @@ msgid ""
 "in that case you can append \"next\" to the version string, and next time "
 "you'll need to drop the \"next\" suffix again:"
 msgstr ""
-"この場合は、全てアップデートされていて、安全に無視できます。SVN版から次版 (新"
-"しい版番号を得ていないもの)にアップグレードしようと<emphasis role=\"bold\">し"
-"ない限り</emphasis>、\"next\"を版文字列に追加できます。ただし、次回に\"next"
-"\"を削除する必要があります。"
+"この場合は、全てアップデートされていて、安全に無視できます。SVN版から次版 "
+"(新しい版番号を得ていないもの)にアップグレードしようと<emphasis role=\"bold\""
+">しない限り</emphasis>、\"next\"を版文字列に追加できますが、次回に\"next"
+"\"を削除する必要があります:"
 
 #. Tag: para
 #, no-c-format
@@ -397,9 +395,10 @@ msgid ""
 "will have a new extension <emphasis>postgis_raster</emphasis> which you can "
 "safely drop, if you don't need raster support. You can drop as follows:"
 msgstr ""
-"PostGISエクステンションを3.0.0より前からアップグレードする場合には、ラスタ機"
-"能が不要なら、安全に削除できる新しい <emphasis>postgis_raster</emphasis>エク"
-"ステンションを持つことになります。次のようにします。"
+"PostGISエクステンションを3.0."
+"0より前からアップグレードする場合には、ラスタ機能が不要なら、"
+"安全に削除できる新しい <emphasis>postgis_raster</emphasis>エクステンションを"
+"持つことになります。次のようにします:"
 
 #. Tag: title
 #, no-c-format
@@ -414,7 +413,7 @@ msgid ""
 "you'll get messages like:"
 msgstr ""
 "PostGISをエクステンションを使わずにインストールした人向けです。エクステンショ"
-"ンを使っていてこの方法を使うと、次のようなメッセージが現れます。"
+"ンを使っていてこの方法を使うと、次のようなメッセージが現れます:"
 
 #. Tag: para
 #, no-c-format
@@ -434,9 +433,10 @@ msgid ""
 "<filename>*_upgrade.sql</filename> files in the installation folders. You "
 "can list them all with:"
 msgstr ""
-"コンパイルとインストール (make install)の実行後に、インストール先フォルダ内に"
-"ある<filename>*_upgrade.sql</filename>のファイルの集合を見つけておくべきで"
-"す。次のコマンドで一覧を得られます。"
+"コンパイルとインストール (make "
+"install)の実行後に、インストール先フォルダ内にある<filename>*_upgrade.sql</fi"
+"lename>のファイルの集合を見つけておくべきです。次のコマンドで一覧を得られます"
+":"
 
 #. Tag: para
 #, no-c-format
@@ -455,14 +455,13 @@ msgid ""
 msgstr ""
 "同じ手続きをラスタ、トポロジ、SFCGALエクステンションに適用します。それぞれの"
 "ファイル名は<filename>rtpostgis_upgrade.sql</filename>, "
-"<filename>topology_upgrade.sql</filename>, <filename>sfcgal_upgrade.sql</"
-"filename>になります。次のように実行します。"
+"<filename>topology_upgrade.sql</filename>, <filename>sfcgal_upgrade."
+"sql</filename>になります。必要な場合は次のように実行します:"
 
 #. Tag: para
 #, no-c-format
 msgid "You are advised to switch to an extension based install by running"
-msgstr ""
-"エクステンションによるインストールに変更した方が良いです。次のようにします。"
+msgstr "エクステンションによるインストールに変更した方が良いです。次のようにします:"
 
 #. Tag: para
 #, no-c-format
@@ -534,7 +533,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "The Procedure is as follows:"
-msgstr "手続きは次の通りです。"
+msgstr "手続きは次の通りです:"
 
 #. Tag: para
 #, no-c-format
@@ -607,7 +606,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Errors may arise in the following cases:"
-msgstr "エラーは次の場合に起こりえます。"
+msgstr "エラーは次の場合に起こりえます:"
 
 #. Tag: para
 #, no-c-format
@@ -761,7 +760,7 @@ msgstr "起動時"
 #. Tag: para
 #, no-c-format
 msgid "These settings are configured in <code>postgresql.conf</code>:"
-msgstr "次に示す設定は<code>postgresql.conf</code>にあります。"
+msgstr "次に示す設定は<code>postgresql.conf</code>にあります:"
 
 #. Tag: link
 #, no-c-format
