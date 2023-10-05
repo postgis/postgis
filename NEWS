@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - Correct the coverage examples in the manual (Martin Davis)
   - Correct the ST_LargestEmptyCircle example (Regina Obe)
   - #5632, Handle empty geometries correctly in the 2D GiST index (Paul Ramsey)
   - Keep ST_AsMARC21 format checks within the format buffer (Even Rouault)
