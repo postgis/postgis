@@ -304,7 +304,7 @@ if test "x$XSLBASE" = "x"; then
 		"
 	for p in ${SEARCHPATH}; do
     case "${p}" in
-      "/*")
+      /*)
         AC_MSG_CHECKING([for xhtml5/docbook.xsl in directory $p...])
         if test -r "${p}"/xhtml5/docbook.xsl; then
           XSLBASE_AUTO="${p}"
