@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-28 10:07+0000\n"
-"PO-Revision-Date: 2023-10-04 07:23+0000\n"
+"PO-Revision-Date: 2023-10-05 05:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -891,9 +891,8 @@ msgstr "デフォルト: 16-64MB"
 #. Tag: para
 #, no-c-format
 msgid "Generally too low - ties up I/O, locks objects while swapping memory"
-msgstr ""
-"一般的には低すぎます - メモリスワップの間、入出力が拘束され、オブジェクトが"
-"ロックされます。"
+msgstr "一般的には低すぎます - "
+"メモリスワップの間、入出力が拘束され、オブジェクトがロックされます"
 
 #. Tag: para
 #, no-c-format
@@ -902,8 +901,8 @@ msgid ""
 "the # of concurrent users. If you have lots of RAM and few developers:"
 msgstr ""
 "たくさんのRAMを持つ本番サーバでは32MBから1GBが推奨ですが、同時接続ユーザ数に"
-"依存します。たくさんのRAMを持ち、少数の開発者しかいない場合は次のようにしま"
-"す。"
+"依存します。たくさんのRAMを持ち、少数の開発者しかいない場合は次のようにします"
+":"
 
 #. Tag: link
 #, no-c-format
@@ -34742,9 +34741,8 @@ msgstr "例: 単一バンドで32BFのラスタをの可視ラスタへの高度
 msgid ""
 "Create a new 3 band (8BUI,8BUI,8BUI viewable raster) from a raster that has "
 "only one 32bf band"
-msgstr ""
-"32BFバンドを一つ持つだけのラスタから三つのバンド (8BUI, 8BUI, 8BUI可視ラスタ)"
-"を生成します。"
+msgstr "32BFバンドを一つ持つだけのラスタから三つのバンド (8BUI, 8BUI, "
+"8BUI可視ラスタ)を生成します"
 
 #. Tag: para
 #, no-c-format
