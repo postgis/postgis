@@ -93,7 +93,7 @@ SELECT id, ST_AsText(ST_CoverageInvalidEdges(geom) OVER ())
   1 | LINESTRING (40 110, 100 70)
   2 | MULTILINESTRING ((100 130, 140 120, 140 160, 100 190), (40 110, 50 80, 74 110.5))
   3 | LINESTRING (140 80, 140 190)
-  3 | null
+  4 | null
       </programlisting>
 
       <programlisting>-- Test entire table for coverage validity
@@ -205,7 +205,7 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
   1 | POLYGON ((160 150, 110 130, 50 10, 10 60, 20 170, 90 190, 160 150), (40 160, 66 125, 90 170, 40 160))
   2 | POLYGON ((40 160, 66 125, 90 170, 40 160))
   3 | POLYGON ((110 130, 160 50, 50 10, 110 130))
-  3 | POLYGON ((160 150, 160 50, 110 130, 160 150))
+  4 | POLYGON ((160 150, 160 50, 110 130, 160 150))
       </programlisting>
     </refsection>
 
