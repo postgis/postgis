@@ -95,7 +95,7 @@ Returns a measure at the closest point of approach of two trajectories.
 
 			<para>
 Returns the smallest measure at which points interpolated along the given
-trajectories are at the smallest distance.
+trajectories are the least distance apart.
       </para>
 			<para>
 Inputs must be valid trajectories as
@@ -104,8 +104,7 @@ the trajectories do not overlap in their M ranges.
 			</para>
 
 			<para>
-See <xref linkend="ST_LocateAlong"/> for getting the actual points at
-the given measure.
+To obtain the actual points at the computed measure use <xref linkend="ST_LocateAlong"/> .
 			</para>
 
 			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
@@ -129,18 +128,19 @@ WITH inp AS ( SELECT
 ), cpa AS (
   SELECT ST_ClosestPointOfApproach(a,b) m FROM inp
 ), points AS (
-  SELECT ST_Force3DZ(ST_GeometryN(ST_LocateAlong(a,m),1)) pa,
-         ST_Force3DZ(ST_GeometryN(ST_LocateAlong(b,m),1)) pb
+  SELECT ST_GeometryN(ST_LocateAlong(a,m),1) pa,
+         ST_GeometryN(ST_LocateAlong(b,m),1) pb
   FROM inp, cpa
 )
 SELECT to_timestamp(m) t,
-       ST_Distance(pa,pb) distance
+       ST_Distance(pa,pb) distance,
+       ST_AsText(pa, 2) AS pa, ST_AsText(pb, 2) AS pb
 FROM points, cpa;
 
-               t               |     distance
--------------------------------+------------------
- 2015-05-26 10:45:31.034483+02 | 1.96036833151395
-</programlisting>
+               t               |      distance      |                  pa                  |                   pb                   
+-------------------------------+--------------------+--------------------------------------+----------------------------------------
+ 2015-05-26 10:45:31.034483-07 | 1.9603683315139542 | POINT ZM (7.59 0 3.79 1432662331.03) | POINT ZM (9.1 1.24 3.93 1432662331.03)
+ </programlisting>
 		  </refsection>
 
 		  <refsection>
@@ -177,7 +177,7 @@ Returns the distance between the closest point of approach of two trajectories.
 			<title>Description</title>
 
 			<para>
-Returns the minimum distance two moving objects have ever been each other.
+Returns the distance (in 2D) between two trajectories at their closest point of approach.
       </para>
 			<para>
 Inputs must be valid trajectories as checked by
