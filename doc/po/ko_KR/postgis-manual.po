@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-28 10:07+0000\n"
+"POT-Creation-Date: 2023-10-06 06:13+0000\n"
 "PO-Revision-Date: 2023-09-22 19:23+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Korean <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -34015,12 +34015,27 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"Because of floating robustness failures, geometries don't always intersect "
+"as you'd expect them to after geometric processing. For example the closest "
+"point on a linestring to a geometry may not lie on the linestring. For these "
+"kind of issues where a distance of a centimeter you want to just consider as "
+"intersecting, use <xref linkend=\"ST_3DDWithin\"/>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Changed: 3.0.0 SFCGAL backend removed, GEOS backend supports TINs."
 msgstr ""
 
 #. Tag: title
 #, no-c-format
 msgid "TIN Examples"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_Intersects\"/>"
 msgstr ""
 
 #. Tag: refpurpose

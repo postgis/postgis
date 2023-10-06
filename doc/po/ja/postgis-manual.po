@@ -5,11 +5,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-28 10:07+0000\n"
+"POT-Creation-Date: 2023-10-06 06:13+0000\n"
 "PO-Revision-Date: 2023-10-05 05:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -73,14 +73,16 @@ msgstr ""
 msgid ""
 "In order to enable all GDAL drivers available in your GDAL install, set this "
 "environment variable as follows"
-msgstr "インストールしたGDALのドライバを有効にするには、次の環境変数を設定します:"
+msgstr ""
+"インストールしたGDALのドライバを有効にするには、次の環境変数を設定します:"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If you want to only enable specific drivers, set your environment variable "
 "as follows:"
-msgstr "一部のドライバのみ有効にしたい場合には、環境変数を次のように設定します:"
+msgstr ""
+"一部のドライバのみ有効にしたい場合には、環境変数を次のように設定します:"
 
 #. Tag: para
 #, no-c-format
@@ -371,10 +373,10 @@ msgid ""
 "in that case you can append \"next\" to the version string, and next time "
 "you'll need to drop the \"next\" suffix again:"
 msgstr ""
-"この場合は、全てアップデートされていて、安全に無視できます。SVN版から次版 "
-"(新しい版番号を得ていないもの)にアップグレードしようと<emphasis role=\"bold\""
-">しない限り</emphasis>、\"next\"を版文字列に追加できますが、次回に\"next"
-"\"を削除する必要があります:"
+"この場合は、全てアップデートされていて、安全に無視できます。SVN版から次版 (新"
+"しい版番号を得ていないもの)にアップグレードしようと<emphasis role=\"bold\">し"
+"ない限り</emphasis>、\"next\"を版文字列に追加できますが、次回に\"next\"を削除"
+"する必要があります:"
 
 #. Tag: para
 #, no-c-format
@@ -395,10 +397,9 @@ msgid ""
 "will have a new extension <emphasis>postgis_raster</emphasis> which you can "
 "safely drop, if you don't need raster support. You can drop as follows:"
 msgstr ""
-"PostGISエクステンションを3.0."
-"0より前からアップグレードする場合には、ラスタ機能が不要なら、"
-"安全に削除できる新しい <emphasis>postgis_raster</emphasis>エクステンションを"
-"持つことになります。次のようにします:"
+"PostGISエクステンションを3.0.0より前からアップグレードする場合には、ラスタ機"
+"能が不要なら、安全に削除できる新しい <emphasis>postgis_raster</emphasis>エク"
+"ステンションを持つことになります。次のようにします:"
 
 #. Tag: title
 #, no-c-format
@@ -433,10 +434,9 @@ msgid ""
 "<filename>*_upgrade.sql</filename> files in the installation folders. You "
 "can list them all with:"
 msgstr ""
-"コンパイルとインストール (make "
-"install)の実行後に、インストール先フォルダ内にある<filename>*_upgrade.sql</fi"
-"lename>のファイルの集合を見つけておくべきです。次のコマンドで一覧を得られます"
-":"
+"コンパイルとインストール (make install)の実行後に、インストール先フォルダ内に"
+"ある<filename>*_upgrade.sql</filename>のファイルの集合を見つけておくべきで"
+"す。次のコマンドで一覧を得られます:"
 
 #. Tag: para
 #, no-c-format
@@ -455,13 +455,14 @@ msgid ""
 msgstr ""
 "同じ手続きをラスタ、トポロジ、SFCGALエクステンションに適用します。それぞれの"
 "ファイル名は<filename>rtpostgis_upgrade.sql</filename>, "
-"<filename>topology_upgrade.sql</filename>, <filename>sfcgal_upgrade."
-"sql</filename>になります。必要な場合は次のように実行します:"
+"<filename>topology_upgrade.sql</filename>, <filename>sfcgal_upgrade.sql</"
+"filename>になります。必要な場合は次のように実行します:"
 
 #. Tag: para
 #, no-c-format
 msgid "You are advised to switch to an extension based install by running"
-msgstr "エクステンションによるインストールに変更した方が良いです。次のようにします:"
+msgstr ""
+"エクステンションによるインストールに変更した方が良いです。次のようにします:"
 
 #. Tag: para
 #, no-c-format
@@ -891,8 +892,9 @@ msgstr "デフォルト: 16-64MB"
 #. Tag: para
 #, no-c-format
 msgid "Generally too low - ties up I/O, locks objects while swapping memory"
-msgstr "一般的には低すぎます - "
-"メモリスワップの間、入出力が拘束され、オブジェクトがロックされます"
+msgstr ""
+"一般的には低すぎます - メモリスワップの間、入出力が拘束され、オブジェクトが"
+"ロックされます"
 
 #. Tag: para
 #, no-c-format
@@ -901,8 +903,8 @@ msgid ""
 "the # of concurrent users. If you have lots of RAM and few developers:"
 msgstr ""
 "たくさんのRAMを持つ本番サーバでは32MBから1GBが推奨ですが、同時接続ユーザ数に"
-"依存します。たくさんのRAMを持ち、少数の開発者しかいない場合は次のようにします"
-":"
+"依存します。たくさんのRAMを持ち、少数の開発者しかいない場合は次のようにしま"
+"す:"
 
 #. Tag: link
 #, no-c-format
@@ -13496,15 +13498,17 @@ msgstr ""
 msgid ""
 "Geometry objects with a Z dimension typically represent three-dimensional "
 "(3D) geometries, while those without it are two-dimensional (2D) geometries."
-msgstr "通常は、Z値を持つジオメトリオブジェクトは3次元 (3D)ジオメトリを表現し、"
-"Z値を持たないものは2次元 (2D)ジオメトリとなります。"
+msgstr ""
+"通常は、Z値を持つジオメトリオブジェクトは3次元 (3D)ジオメトリを表現し、Z値を"
+"持たないものは2次元 (2D)ジオメトリとなります。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This function is useful for determining if a geometry has elevation or "
 "height information."
-msgstr "この関数はジオメトリが標高や高さに関する情報を持つかどうかを判断するのに使い"
+msgstr ""
+"この関数はジオメトリが標高や高さに関する情報を持つかどうかを判断するのに使い"
 "ます。"
 
 #. Tag: para
@@ -13532,7 +13536,8 @@ msgstr ""
 msgid ""
 "Geometry objects with an M dimension typically represent measurements or "
 "additional data associated with spatial features."
-msgstr "M次元を持つジオメトリオブジェクトは通常、空間地物に関連付けられた計測値または"
+msgstr ""
+"M次元を持つジオメトリオブジェクトは通常、空間地物に関連付けられた計測値または"
 "追加データを表現します。"
 
 #. Tag: para
@@ -13540,7 +13545,8 @@ msgstr "M次元を持つジオメトリオブジェクトは通常、空間地�
 msgid ""
 "This function is useful for determining if a geometry includes measure "
 "information."
-msgstr "この関数はジオメトリがM値に関する情報を持つかどうかを判断するのに使います。"
+msgstr ""
+"この関数はジオメトリがM値に関する情報を持つかどうかを判断するのに使います。"
 
 #. Tag: title
 #, no-c-format
@@ -34741,8 +34747,9 @@ msgstr "例: 単一バンドで32BFのラスタをの可視ラスタへの高度
 msgid ""
 "Create a new 3 band (8BUI,8BUI,8BUI viewable raster) from a raster that has "
 "only one 32bf band"
-msgstr "32BFバンドを一つ持つだけのラスタから三つのバンド (8BUI, 8BUI, "
-"8BUI可視ラスタ)を生成します"
+msgstr ""
+"32BFバンドを一つ持つだけのラスタから三つのバンド (8BUI, 8BUI, 8BUI可視ラスタ)"
+"を生成します"
 
 #. Tag: para
 #, no-c-format
@@ -36797,6 +36804,16 @@ msgstr "&index_aware;"
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"Because of floating robustness failures, geometries don't always intersect "
+"as you'd expect them to after geometric processing. For example the closest "
+"point on a linestring to a geometry may not lie on the linestring. For these "
+"kind of issues where a distance of a centimeter you want to just consider as "
+"intersecting, use <xref linkend=\"ST_3DDWithin\"/>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Changed: 3.0.0 SFCGAL backend removed, GEOS backend supports TINs."
 msgstr ""
 "Changed: 3.0.0 SFCGALバックエンドが削除され、GEOSバックエンドではTINに対応し"
@@ -36806,6 +36823,11 @@ msgstr ""
 #, no-c-format
 msgid "TIN Examples"
 msgstr "TINの例"
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_Intersects\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
