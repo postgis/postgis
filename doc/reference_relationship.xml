@@ -39,7 +39,8 @@
         returns true, then the geometries also spatially intersect.
         Disjoint implies false for spatial intersection.</para>
 
-            <note><para>&index_aware;</para></note>
+      <note><para>&index_aware;</para></note>
+      <note><para>Because of floating robustness failures, geometries don't always intersect as you'd expect them to after geometric processing. For example the closest point on a linestring to a geometry may not lie on the linestring. For these kind of issues where a distance of a centimeter you want to just consider as intersecting, use <xref linkend="ST_3DDWithin"/>.</para></note>
 
       <para role="changed" conformance="3.0.0">Changed: 3.0.0 SFCGAL backend removed, GEOS backend supports TINs.</para>
       <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
@@ -69,7 +70,7 @@
 
     <refsection>
       <title>See Also</title>
-      <para><xref linkend="ST_Intersects"/></para>
+      <para><xref linkend="ST_3DDWithin"/>, <xref linkend="ST_Intersects"/></para>
     </refsection>
   </refentry>
 
