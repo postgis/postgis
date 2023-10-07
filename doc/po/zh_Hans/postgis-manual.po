@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-10-06 06:13+0000\n"
-"PO-Revision-Date: 2023-09-28 08:23+0000\n"
+"PO-Revision-Date: 2023-10-07 03:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
@@ -12703,7 +12703,7 @@ msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Checks if a geometry has a Z dimension."
-msgstr ""
+msgstr "检查几何体是否具有 Z 维度。"
 
 #. Tag: para
 #, no-c-format
@@ -12711,31 +12711,33 @@ msgid ""
 "Checks if the input geometry has a Z dimension and returns a boolean value. "
 "If the geometry has a Z dimension, it returns true; otherwise, it returns "
 "false."
-msgstr ""
+msgstr "检查输入几何体是否具有 Z维度并返回布尔值。 如果几何体有 Z 维度，则返回 true；"
+" 否则，返回 false。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Geometry objects with a Z dimension typically represent three-dimensional "
 "(3D) geometries, while those without it are two-dimensional (2D) geometries."
-msgstr ""
+msgstr "具有 Z 维度的几何对象通常表示三维 (3D) 几何图形，而没有 Z "
+"维度的几何对象则表示二维 (2D) 几何图形。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This function is useful for determining if a geometry has elevation or "
 "height information."
-msgstr ""
+msgstr "此函数对于确定几何图形是否具有高程或高度信息非常有用。"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.5.0"
-msgstr ""
+msgstr "可用性：3.5.0"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Checks if a geometry has an M (measure) dimension."
-msgstr ""
+msgstr "检查几何体是否具有 M（测量）维度。"
 
 #. Tag: para
 #, no-c-format
@@ -12743,21 +12745,22 @@ msgid ""
 "Checks if the input geometry has an M (measure) dimension and returns a "
 "boolean value. If the geometry has an M dimension, it returns true; "
 "otherwise, it returns false."
-msgstr ""
+msgstr "检查输入几何图形是否具有 M（度量）维度并返回布尔值。 如果几何体具有 M 维度，"
+"则返回 true； 否则，返回 false。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Geometry objects with an M dimension typically represent measurements or "
 "additional data associated with spatial features."
-msgstr ""
+msgstr "具有 M 维度的几何对象通常表示与空间特征相关的测量值或附加数据。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This function is useful for determining if a geometry includes measure "
 "information."
-msgstr ""
+msgstr "此函数对于确定几何图形是否包含测量信息非常有用。"
 
 #. Tag: title
 #, no-c-format
@@ -34805,6 +34808,9 @@ msgid ""
 "kind of issues where a distance of a centimeter you want to just consider as "
 "intersecting, use <xref linkend=\"ST_3DDWithin\"/>."
 msgstr ""
+"由于浮点数精度问题，几何处理后，几何体不会总是像您期望的那样相交。例如，到几"
+"何体上的线串的最近点可能不位于线串上。对于这种情况，如果您希望将一厘米的距离"
+"视为相交，可以使用<xref linkend=\"ST_3DDWithin\"/> 函数。"
 
 #. Tag: para
 #, no-c-format
@@ -34819,7 +34825,7 @@ msgstr "TIN示例"
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Intersects\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Intersects\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
