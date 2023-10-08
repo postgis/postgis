@@ -17,11 +17,19 @@ steps:
   regress-pg12:
     image: *test-image
     group: build
+    environment:
+      - PGVER=12
+      - POSTGIS_REGRESS_DB_OWNER=postgis_reg_unprivileged_user
+      - RUNTESTFLAGS=--after-create-db-script $${CI_WORKSPACE}/regress/hooks/configure-pgextwlist.sql
     commands:
-      - PGVER=12 sh ci/dronie/postgis_regress.sh
+      - sh ci/dronie/postgis_regress.sh
 
   regress-pg15:
     image: *test-image
     group: build
+    environment:
+      - PGVER=15
+      - POSTGIS_REGRESS_DB_OWNER=postgis_reg_unprivileged_user
+      - RUNTESTFLAGS=--after-create-db-script $${CI_WORKSPACE}/regress/hooks/configure-pgextwlist.sql
     commands:
-      - PGVER=15 sh ci/dronie/postgis_regress.sh
+      - sh ci/dronie/postgis_regress.sh
