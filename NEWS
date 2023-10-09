@@ -1,10 +1,11 @@
-PostGIS 3.0.10
+PostGIS 3.0.10dev
 xxxx/xx/xx
 
 * Bug Fixes *
 
   - #5450, Fix macro expansion recursion on powerpc architectures.
            (Bas Couwenberg)
+  - #5568, Improve robustness of topology face split handling (Sandro Santilli)
 
 PostGIS 3.0.9
 2023/05/29
