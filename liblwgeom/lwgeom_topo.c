@@ -1908,7 +1908,12 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
   LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " split face %" LWTFMT_ELEMID " (mbr_only:%d)",
            sedge, face, mbr_only);
 
-  /* Construct a polygon using edges of the ring */
+  /*
+   * Construct a polygon using edges of the ring
+   *
+   * NOTE: this possibily includes dangling edges
+   *
+   */
   LWPOLY *shell = _lwt_MakeRingShell(topo, signed_edge_ids,
                                      num_signed_edge_ids);
   if ( ! shell ) {
@@ -2055,7 +2060,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
 	  lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
 	  return -2;
   }
-  LWDEBUGF(1, "_lwt_AddFaceSplit: lwt_be_getEdgeByFace returned %d edges", numfaceedges);
+  LWDEBUGF(1, "_lwt_AddFaceSplit: lwt_be_getEdgeByFace(%d) returned %d edges", face, numfaceedges);
 
   if ( numfaceedges )
   {
@@ -2072,70 +2077,68 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
       int contains;
       POINT2D ep;
 
-      /* (2.1) skip edges whose ID is in the list of boundary edges ? */
+      /* (2.1) skip edges whose ID is in the list of boundary edges */
       for ( j=0; j<num_signed_edge_ids; ++j )
       {
-        int seid = signed_edge_ids[j];
+        int seid = signed_edge_ids[j]; /* signed ring edge id */
         if ( seid == e->edge_id )
         {
-          /* IDEA: remove entry from signed_edge_ids ? */
-          LWDEBUGF(1, "Edge %d is a forward edge of the new ring", e->edge_id);
+          /* IDEA: remove entry from signed_edge_ids, to speed next loop ? */
+          LWDEBUGF(1, "Edge %d is a known forward edge of the new ring", e->edge_id);
           forward_edges[forward_edges_count].edge_id = e->edge_id;
           forward_edges[forward_edges_count++].face_left = newface.face_id;
           found++;
-          if ( found == 2 ) break;
+          if ( found == 2 ) break; /* both edge sides are found on the ring */
         }
         else if ( -seid == e->edge_id )
         {
-          /* IDEA: remove entry from signed_edge_ids ? */
-          LWDEBUGF(1, "Edge %d is a backward edge of the new ring", e->edge_id);
+          /* IDEA: remove entry from signed_edge_ids, to speed next loop ? */
+          LWDEBUGF(1, "Edge %d is a known backward edge of the new ring", e->edge_id);
           backward_edges[backward_edges_count].edge_id = e->edge_id;
           backward_edges[backward_edges_count++].face_right = newface.face_id;
           found++;
-          if ( found == 2 ) break;
+          if ( found == 2 ) break; /* both edge sides are found on the ring */
         }
       }
       if ( found ) continue;
+      LWDEBUGF(1, "Edge %d is not a known edge of the new ring", e->edge_id);
 
-      /* We need to check only a single point
-       * (to avoid collapsed elements of the shell polygon
-       * giving false positive).
-       * The point but must not be an endpoint.
-       */
-      if ( ! _lwt_GetInteriorEdgePoint(e->geom, &ep) )
+      /* Check if the edge is now binding a different face */
+
+      if ( ! getPoint2d_p(e->geom->points, 0, &ep) )
       {
         lwfree(signed_edge_ids);
         lwpoly_free(shell);
         lwfree(forward_edges); /* contents owned by edges */
         lwfree(backward_edges); /* contents owned by edges */
         _lwt_release_edges(edges, numfaceedges);
-        lwerror("Could not find interior point for edge %d: %s",
-                e->edge_id, lwgeom_geos_errmsg);
+        lwerror("Edge %d is empty", e->edge_id);
         return -2;
       }
 
       /* IDEA: check that bounding box shortcut is taken, or use
        *       shellbox to do it here */
-      contains = ptarray_contains_point(pa, &ep) == LW_INSIDE;
-      if ( contains == 2 )
-      LWDEBUGF(1, "Edge %d %scontained in new ring", e->edge_id,
-                  (contains?"":"not "));
+      contains = ptarray_contains_point(pa, &ep);
 
-      /* (2.2) skip edges (NOT, if newface_outside) contained in shell */
+      LWDEBUGF(1, "Edge %d first point %s new ring",
+          e->edge_id, (contains == LW_INSIDE ? "inside" :
+           contains == LW_OUTSIDE ? "outside" : "on boundary of"));
+
+      /* (2.2) skip edges (NOT, if newface_outside) contained in ring */
       if ( newface_outside )
       {
-        if ( contains )
+        if ( contains != LW_OUTSIDE )
         {
-          LWDEBUGF(1, "Edge %d contained in an hole of the new face",
+          LWDEBUGF(1, "Edge %d not outside of the new ring, not updating it",
                       e->edge_id);
           continue;
         }
       }
       else
       {
-        if ( ! contains )
+        if ( contains != LW_INSIDE )
         {
-          LWDEBUGF(1, "Edge %d not contained in the face shell",
+          LWDEBUGF(1, "Edge %d not inside the new ring, not updating it",
                       e->edge_id);
           continue;
         }
