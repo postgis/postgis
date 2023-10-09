@@ -15,8 +15,8 @@ if  [[ "${OVERRIDE}" == '' ]] ; then
 	export GEOS_VER=3.12.0
 	export GDAL_VER=3.7.1
 	export PROJ_VER=8.2.1
-	export SFCGAL_VER=1.4.1
-	export CGAL_VER=5.3
+	export SFCGAL_VER=1.5.0
+	export CGAL_VER=5.6
 	export ICON_VER=1.17
 	export ZLIB_VER=1.2.13
 	export PROTOBUF_VER=3.2.0
