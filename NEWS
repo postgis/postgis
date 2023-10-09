@@ -2,6 +2,7 @@ PostGIS 3.1.10dev
 xxxx/xx/xx
 
 * Bug Fixes *
+  - #5568, Improve robustness of topology face split handling (Sandro Santilli)
   - #5494, Fix double-upgrade with view using st_dwithin(text, ...)
            (Sandro Santilli)
   - #5450, Fix macro expansion recursion on powerpc architectures
