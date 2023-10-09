@@ -7,6 +7,8 @@ Additional features are enabled if you are running GEOS 3.9+
 Proj 6.1+, and PostgreSQL 14+.
 
 * Bug Fixes and Enhancements *
+
+  - #5568, Improve robustness of topology face split handling (Sandro Santilli)
   - #5548, Fix box-filtered validity check of topologies with edge-less faces
            (Sandro Santilli)
   - #5494, Fix double-upgrade with view using st_dwithin(text, ...)
@@ -25,6 +27,7 @@ Proj 6.1+, and PostgreSQL 14+.
 
 
 * Breaking Changes *
+
     - #5385, Take out interruptability of ST_AsMVT
              as it causes backend crash under intense conditions
             (Regina Obe, Paul Ramsey)
