@@ -10,7 +10,7 @@
   <section xml:id="install_short_version">
 	<title>Short Version</title>
 	<para>To compile assuming you have all the dependencies in your search path:</para>
-	<programlisting>tar -xvfz postgis-&last_release_version;.tar.gz
+	<programlisting>tar -xvzf postgis-&last_release_version;.tar.gz
 cd postgis-&last_release_version;
 ./configure
 make
