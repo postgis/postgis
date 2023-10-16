@@ -149,9 +149,22 @@ distclean-local: clean-local
 		rm -f sfcgal/Makefile; \
 	fi
 
+# capitalized TAGS is to follow the GNU Coding Standards, see
+# https://www.gnu.org/prep/standards/html_node/Standard-Targets.html
+TAGS:
+	ctags \
+		--exclude=build \
+		--exclude=ci \
+		--exclude=doc \
+		--exclude=.git \
+		--exclude=regress \
+		--exclude=utils \
+		--recurse=yes
+
 maintainer-clean-local: distclean-local
 	rm -f configure
 	rm -Rf build-aux
+	rm -f tags
 
 maintainer-clean:
 	@echo '------------------------------------------------------'
