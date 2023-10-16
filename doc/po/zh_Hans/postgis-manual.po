@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-10-06 06:13+0000\n"
-"PO-Revision-Date: 2023-10-07 03:23+0000\n"
-"Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
+"PO-Revision-Date: 2023-10-16 10:23+0000\n"
+"Last-Translator: Wang Dapeng <wangdapeng20191008@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
 "Language: zh_Hans\n"
@@ -7255,11 +7255,12 @@ msgid ""
 "happens. You can use these to experiment with the in progress releases of "
 "PostGIS"
 msgstr ""
-"如果您是 Windows 用户，您可以通过 Stackbuilder 或 <link xlink:href=\"https://"
-"postgis.net/windows_downloads\">PostGIS Windows下载站点</link>获得稳定的版"
-"本。我们还有非常前沿的<link xlink:href=\"https://postgis.net/"
-"windows_downloads\">Windows实验性版本</link>，通常每周构建一次或两次，或者每"
-"当发生任何令人兴奋的事情时构建。 您可以使用这些来试验正在进行的 PostGIS 版本"
+"如果您是 Windows 用户，您可以通过 Stackbuilder 或 <link xlink:href=\"https"
+"://postgis.net/windows_downloads\">PostGIS "
+"Windows下载站点</link>获得稳定的版本。我们还有非常前沿的<link xlink:href="
+"\"https://postgis.net/windows_downloads\">Windows实验性版本</link>，通常每周"
+"构建一次，或者在有令人兴奋的新变化发生时构建。你可以使用这些版本来尝试正在进"
+"行中的PostGIS发布"
 
 #. Tag: para
 #, no-c-format
@@ -7302,8 +7303,9 @@ msgid ""
 "closed or similar things) try this trick. This will require recompiling your "
 "PostgreSQL from scratch, of course."
 msgstr ""
-"这是针对与旧开发工具的虚假C++异常交互的解决方法。如果您遇到奇怪的问题（后端意"
-"外关闭或类似的事情），请尝试此技巧。当然，这需要从头开始重新编译 PostgreSQL。"
+"这是解决与旧开发工具不正常交互的虚假C++异常的一种变通方法。如果你遇到奇怪的问"
+"题（例如，后端意外关闭或类似的问题），尝试这个技巧。当然，这将需要重新从头编"
+"译你的PostgreSQL。"
 
 #. Tag: para
 #, no-c-format
@@ -7333,9 +7335,8 @@ msgstr ""
 msgid ""
 "This will create a directory called <varname>postgis-&last_release_version;</"
 "varname> in the current working directory."
-msgstr ""
-"这将在当前目录下创建一个位置。<varname>postgis-&last_release_version;</"
-"varname>。"
+msgstr "这将在当前工作目录中创建一个名为 <varname>postgis-&last_release_version;</"
+"varname> 的目录。"
 
 #. Tag: para
 #, no-c-format
@@ -7354,7 +7355,7 @@ msgstr ""
 msgid ""
 "Change into the newly created <varname>postgis</varname> directory to "
 "continue the installation."
-msgstr "转到新创建的目录并继续安装。<varname>postgis</varname>。"
+msgstr "切换到新创建的 <varname>postgis</varname>目录以继续安装。"
 
 #. Tag: title
 #, no-c-format
@@ -8051,8 +8052,9 @@ msgid ""
 "<varname>postgis_topology</varname> as available extensions in PgAdmin -&gt; "
 "extensions."
 msgstr ""
-"完成此操作后，您应该在 PgAdmin&gt; 中看到 <varname>postgis</varname>、"
-"<varname>postgis_topology</varname> 作为可用扩展。 扩展。"
+"完成这一步后，你应该在 PgAdmin&gt; 中看到 "
+"<varname>postgis</varname>、<varname>postgis_topology</varname> "
+"作为可用的扩展。"
 
 #. Tag: para
 #, no-c-format
@@ -8091,7 +8093,7 @@ msgstr ""
 msgid ""
 "In psql you can use to see what versions you have installed and also what "
 "schema they are installed."
-msgstr "在 psql 中，您可以查看哪些版本安装在哪些架构上。"
+msgstr "在 psql 中，你可以使用以下命令来查看你已安装的版本以及它们所在的模式。"
 
 #. Tag: para
 #, no-c-format
@@ -8127,9 +8129,10 @@ msgid ""
 "Installing using `unpackaged` was removed in PostgreSQL 13, so you are "
 "advised to switch to an extension build before upgrading to PostgreSQL 13."
 msgstr ""
-"如果你在不使用我们出色的扩展机制的情况下安装了&last_release_version;，你可以"
-"运行命令来打包每个扩展的功能，并修改它以基于扩展。 在 PostgreSQL 13 中，未打"
-"包的安装已被删除，因此您应该在升级到 PostgreSQL 13 之前更改它以构建扩展。"
+"如果你在没有使用扩展系统的情况下安装了&last_release_version;版本，你可以通过"
+"运行以下命令将其转换为基于扩展的安装方式，以将函数打包到各自的扩展中。"
+"在PostgreSQL 13中已移除了使用`unpackaged`安装方式，"
+"因此建议在升级到PostgreSQL 13之前切换到扩展构建方式。"
 
 #. Tag: title
 #, no-c-format
@@ -8887,12 +8890,13 @@ msgid ""
 "of PostgreSQL which is running, connect to the database using psql and run "
 "this query:"
 msgstr ""
-"检查您是否安装了PostgreSQL &min_postgres_version; 或更高版本，以及您是否使用"
-"与您正在运行的PostgreSQL相同版本的源代码进行编译。当PostgreSQL已经由（Linux）"
-"发行版安装时，或者如果PostgreSQL之前已安装并被遗忘时，可能会发生混淆。 "
-"PostGIS 在 PostgreSQL&min_postgres_version; 及更高版本上运行。如果您使用旧版"
-"本，您将收到一条奇怪且意外的错误消息。 要检查您运行的是哪个版本的 "
-"PostgreSQL，请使用 psql 连接到数据库并运行以下查询："
+"请确保已安装 PostgreSQL&min_postgres_version; 或更新版本，"
+"并且你正在使用与正在运行的 PostgreSQL 版本相同的 PostgreSQL "
+"源代码进行编译。当你的（Linux）发行版已经安装了 PostgreSQL，"
+"或者以其他方式安装了 PostgreSQL 但忘记了时，可能会出现混淆。PostGIS 只能与 "
+"PostgreSQL&min_postgres_version; "
+"或更新版本一起使用，如果使用较旧版本，可能会出现奇怪且意想不到的错误消息。"
+"要检查正在运行的 PostgreSQL 版本，可以使用 psql 连接到数据库并运行以下查询："
 
 #. Tag: para
 #, no-c-format
@@ -9239,9 +9243,8 @@ msgstr "Dave Blasby"
 msgid ""
 "The original developer/Co-founder of PostGIS. Dave wrote the server side "
 "objects, index bindings, and many of the server side analytical functions."
-msgstr ""
-"PostGIS的原始开发者/联合创始人。描述服务器端对象、索引绑定和许多服务器端分析"
-"函数。"
+msgstr "PostGIS的原始开发者/联合创始人。编写了服务器端对象、索引绑定和许多服务器端分"
+"析函数。"
 
 #. Tag: term
 #, no-c-format
@@ -10139,8 +10142,9 @@ msgid ""
 "support in 2.0.0. It happened."
 msgstr ""
 "<link xlink:href=\"http://www.pledgebank.com/postgistopology\"><emphasis "
-"role=\"bold\">postgistopology</emphasis></link>-10多个赞助商每人贡献了250美元"
-"来构建 toTopoGeometry 函数并增强 2.0.0 中的拓扑支持。它发生了。"
+"role=\"bold\">postgistopology</emphasis></link>-"
+"有10位赞助商每人捐赠了250美元来构建 \"toTopoGeometry\" 函数并加强2.0."
+"0版本中的拓扑支持。这一目标已经实现。"
 
 #. Tag: para
 #, no-c-format
@@ -10151,9 +10155,9 @@ msgid ""
 "issues on windows. It happened."
 msgstr ""
 "<link xlink:href=\"http://www.pledgebank.com/postgis64windows\"><emphasis "
-"role=\"bold\">postgis64windows</emphasis></link>-20个不同的赞助商每人捐款 "
-"100 美元，用于支付在 Windows 上解决 PostGIS 64 位问题所需的工作费用。它发生"
-"了。"
+"role=\"bold\""
+">postgis64windows</emphasis></link>-大约20位赞助商每人捐赠了100美元，"
+"用以支付在Windows上解决PostGIS 64位问题所需的工作。这一目标已经实现。"
 
 #. Tag: term
 #, no-c-format
@@ -10165,7 +10169,7 @@ msgstr "重要的支持库"
 msgid ""
 "The <link xlink:href=\"https://libgeos.org\">GEOS</link> geometry operations "
 "library"
-msgstr "几何计算器<link xlink:href=\"https://libgeos.org\">GEOS</link>"
+msgstr "<link xlink:href=\"https://libgeos.org\">GEOS</link>几何操作库"
 
 #. Tag: para
 #, no-c-format
@@ -10184,7 +10188,7 @@ msgstr ""
 msgid ""
 "The <link xlink:href=\"https://www.proj4.org\">PROJ</link> cartographic "
 "projection library"
-msgstr "地图投影库 <link xlink:href=\"https://www.proj4.org\">PROJ</link>"
+msgstr "<link xlink:href=\"https://www.proj4.org\">PROJ</link>地图投影库"
 
 #. Tag: para
 #, no-c-format
@@ -10195,10 +10199,9 @@ msgid ""
 "great query planner, GIST index, and plethora of SQL features provided by "
 "PostgreSQL."
 msgstr ""
-"最后但并非最不重要的一点是<link xlink:href=\"http://www.postgresql.org"
-"\">PostgreSQL</link>，PostGIS所依赖的巨人。如果没有 PostgreSQL 提供的可扩展"
-"性、出色的查询规划器、GIST 索引和大量 SQL 功能，PostGIS 的大部分速度和灵活性"
-"都是不可能实现的。"
+"最后但同样重要的是，PostGIS所依赖的庞然大物<link xlink:href=\"http://www."
+"postgresql.org\">PostgreSQL</link>。PostGIS的速度和灵活性很大程度上得益于Post"
+"greSQL提供的可扩展性、强大的查询规划器、GIST索引以及丰富的SQL功能。"
 
 #. Tag: title
 #, no-c-format
