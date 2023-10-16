@@ -1,4 +1,4 @@
 include @srcdir@/../Makefile.local
 DBLATEX_EXTRA_OPTIONS = -b xetex
-DOCSUFFIX=-ru
+DOCSUFFIX=-uk
 srcdir=@srcdir@
