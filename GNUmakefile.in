@@ -17,6 +17,7 @@ POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
 POSTGIS_FULL_VERSION=$(POSTGIS_MAJOR_VERSION).$(POSTGIS_MINOR_VERSION).$(POSTGIS_MICRO_VERSION)
 
+CTAGS = ctags
 PERL = @PERL@
 top_srcdir = @top_srcdir@
 top_builddir = @top_builddir@
@@ -149,10 +150,13 @@ distclean-local: clean-local
 		rm -f sfcgal/Makefile; \
 	fi
 
-# capitalized TAGS is to follow the GNU Coding Standards, see
+# GNU Coding Standards wants capitalized TAGS:
 # https://www.gnu.org/prep/standards/html_node/Standard-Targets.html
-TAGS:
-	ctags \
+# But for ctags a lowercase is normally used:
+# https://git.savannah.gnu.org/cgit/bash.git/tree/Makefile.in#n823
+.PHONY: tags
+tags:
+	cd $(top_srcdir) && $(CTAGS) \
 		--exclude=build \
 		--exclude=ci \
 		--exclude=doc \
