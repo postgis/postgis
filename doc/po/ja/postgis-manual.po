@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-10-06 06:13+0000\n"
-"PO-Revision-Date: 2023-10-16 05:23+0000\n"
+"PO-Revision-Date: 2023-10-16 10:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -36627,8 +36627,7 @@ msgstr ""
 msgid ""
 "The major change to make is the Linux kernel's open files limits. There are "
 "two parts to this:"
-msgstr ""
-"主な変更はLinuxカーネルのファイルを開く制限です。次の通り、二つに分かれます。"
+msgstr "主な変更はLinuxカーネルのファイルを開く制限です。次の通り、二つに分かれます:"
 
 #. Tag: para
 #, no-c-format
@@ -36650,9 +36649,8 @@ msgstr "<title>システム全体で開くことができるファイルの最�
 msgid ""
 "You can inspect the current maximum number of open files for the entire "
 "system with the following example:"
-msgstr ""
-"次の例で、システム全体の、現在の開くことができるファイルの最大値を調べること"
-"ができます。"
+msgstr "次の例で、システム全体の、現在の開くことができるファイルの最大値を調べること"
+"ができます:"
 
 #. Tag: para
 #, no-c-format
@@ -36811,6 +36809,11 @@ msgid ""
 "kind of issues where a distance of a centimeter you want to just consider as "
 "intersecting, use <xref linkend=\"ST_3DDWithin\"/>."
 msgstr ""
+"浮動小数点数のロバスト性の障害のため、ジオメトリ処理後に期待するようなインタ"
+"セクトが常にあるわけではないことになります。たとえば、ジオメトリに対するライ"
+"ンストリング上の最接近点がラインストリング上に無いことがあります。インタセク"
+"トと考えたいのにセンチメートル程度の距離があると、この問題は発生しますが、こ"
+"の種の問題への対応には、<xref linkend=\"ST_3DDWithin\"/>を使います。"
 
 #. Tag: para
 #, no-c-format
