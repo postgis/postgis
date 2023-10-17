@@ -92,7 +92,8 @@ die "$me:\tUnable to find 'pg_dump' on the path.\n" if ! `pg_dump --version`;
 die "$me:\tUnable to find 'pg_restore' on the path.\n" if ! `pg_restore --version`;
 die "$me:\tUnable to open dump file '$dumpfile'.\n" if ! -r $dumpfile;
 
-print STDERR "Converting $dumpfile to ASCII on stdout...\n";
+print STDERR "Converting $dumpfile to ASCII on stdout...\n"
+  if $DEBUG;
 
 STDOUT->autoflush(1);
 
@@ -100,7 +101,8 @@ STDOUT->autoflush(1);
 # Load the signatures of things to skip.
 #
 
-print STDERR "  Reading list of functions to ignore...\n";
+print STDERR "  Reading list of functions to ignore...\n"
+  if $DEBUG;
 
 my %skip = ();
 while(my $l = <DATA>) {
@@ -116,7 +118,8 @@ while(my $l = <DATA>) {
 #
 
 if(!defined($POSTGIS_TOC)) {
-  print STDERR "  Writing manifest of things to read from dump file...\n";
+  print STDERR "  Writing manifest of things to read from dump file...\n"
+    if $DEBUG;
 
   open( DUMP, "pg_restore -f - -l $dumpfile |" ) || die "$me:\tCannot open dump file '$dumpfile'\n";
 } else {
@@ -135,7 +138,8 @@ while( my $l = <DUMP> ) {
 		if ( $l =~ / TABLE DATA ([^ ]*) spatial_ref_sys / )
 		{
 			$POSTGIS_SCHEMA = $1;
-			print STDERR "Setting postgis schema to $POSTGIS_SCHEMA, as found in the dump";
+			print STDERR "  Setting postgis schema to $POSTGIS_SCHEMA, as found in the dump\n"
+			  if $DEBUG;
 		}
 	}
 
@@ -154,7 +158,8 @@ close(DUMP) || die "$me: pg_restore returned an error\n";
 # Convert the dump file into an ASCII file, stripping out the
 # unwanted bits.
 #
-print STDERR "  Writing ASCII to stdout...\n";
+print STDERR "  Writing ASCII to stdout...\n"
+  if $DEBUG;
 open( INPUT, "pg_restore -f - -L $manifest $dumpfile |") || die "$me:\tCan't run pg_restore\n";
 
 if ( defined $POSTGIS_SCHEMA ) {
