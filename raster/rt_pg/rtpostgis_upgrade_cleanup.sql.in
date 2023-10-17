@@ -277,23 +277,32 @@ SELECT _postgis_drop_function_by_signature('_st_summarystats(raster,int, boolean
 SELECT _postgis_drop_function_by_signature('_st_summarystats(text, text,integer, boolean, double precision)');
 
 -- remove TYPE quantile
-SELECT _postgis_drop_function_by_signature('st_quantile(raster, int, boolean, double precision[])');
-SELECT _postgis_drop_function_by_signature('st_quantile(raster, int, double precision[])');
-SELECT _postgis_drop_function_by_signature('st_quantile(raster, double precision[])');
+SELECT _postgis_drop_function_by_signature('st_approxquantile(raster, double precision[])');
+SELECT _postgis_drop_function_by_signature('st_approxquantile(raster, double precision, double precision[])');
 SELECT _postgis_drop_function_by_signature('st_approxquantile(raster, int, boolean, double precision, double precision[])');
 SELECT _postgis_drop_function_by_signature('st_approxquantile(raster, int, double precision, double precision[])');
-SELECT _postgis_drop_function_by_signature('st_approxquantile(raster, double precision, double precision[])');
-SELECT _postgis_drop_function_by_signature('st_approxquantile(raster, double precision[])');
-SELECT _postgis_drop_function_by_signature('st_quantile(text, text, int, boolean, double precision[])');
-SELECT _postgis_drop_function_by_signature('st_quantile(text, text, int, double precision[])');
-SELECT _postgis_drop_function_by_signature('st_quantile(text, text, double precision[])');
+SELECT _postgis_drop_function_by_signature('st_approxquantile(text, text, boolean, double precision)', '3.1.0'); -- See https://trac.osgeo.org/postgis/ticket/5578
+SELECT _postgis_drop_function_by_signature('st_approxquantile(text, text, double precision[])');
+SELECT _postgis_drop_function_by_signature('st_approxquantile(text, text, double precision)', '3.1.0'); -- See https://trac.osgeo.org/postgis/ticket/5578
+SELECT _postgis_drop_function_by_signature('st_approxquantile(text, text, double precision, double precision[])');
+SELECT _postgis_drop_function_by_signature('st_approxquantile(text, text, double precision, double precision)', '3.1.0'); -- See https://trac.osgeo.org/postgis/ticket/5578
 SELECT _postgis_drop_function_by_signature('st_approxquantile(text, text, int, boolean, double precision, double precision[])');
 SELECT _postgis_drop_function_by_signature('st_approxquantile(text, text, int, double precision, double precision[])');
-SELECT _postgis_drop_function_by_signature('st_approxquantile(text, text, double precision, double precision[])');
-SELECT _postgis_drop_function_by_signature('st_approxquantile(text, text, double precision[])');
+SELECT _postgis_drop_function_by_signature('st_approxquantile(text, text, integer, boolean, double precision, double precision)', '3.1.0'); -- See https://trac.osgeo.org/postgis/ticket/5578
+SELECT _postgis_drop_function_by_signature('st_approxquantile(text, text, integer, double precision, double precision)', '3.1.0'); -- See https://trac.osgeo.org/postgis/ticket/5578
+SELECT _postgis_drop_function_by_signature('st_quantile(raster, double precision[])');
+SELECT _postgis_drop_function_by_signature('st_quantile(raster, int, boolean, double precision[])');
 SELECT _postgis_drop_function_by_signature('_st_quantile(raster, int, boolean, double precision, double precision[])');
+SELECT _postgis_drop_function_by_signature('st_quantile(raster, int, double precision[])');
+SELECT _postgis_drop_function_by_signature('st_quantile(text, text, boolean, double precision)'); -- see https://trac.osgeo.org/postgis/ticket/5579
+SELECT _postgis_drop_function_by_signature('st_quantile(text, text, double precision[])');
+SELECT _postgis_drop_function_by_signature('st_quantile(text, text, double precision)'); -- see https://trac.osgeo.org/postgis/ticket/5579
+SELECT _postgis_drop_function_by_signature('st_quantile(text, text, int, boolean, double precision[])');
 SELECT _postgis_drop_function_by_signature('_st_quantile(text, text, int, boolean, double precision, double precision[])');
--- this cannot be drop until the quantile deprecated functions are gon
+SELECT _postgis_drop_function_by_signature('st_quantile(text, text, int, boolean, double precision)'); -- see https://trac.osgeo.org/postgis/ticket/5579
+SELECT _postgis_drop_function_by_signature('st_quantile(text, text, int, double precision[])');
+SELECT _postgis_drop_function_by_signature('st_quantile(text, text, int, double precision)'); -- see https://trac.osgeo.org/postgis/ticket/5579
+-- this cannot be drop until the quantile deprecated functions are gone
 DROP TYPE IF EXISTS quantile;
 
 -- remove TYPE valuecount
