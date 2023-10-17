@@ -196,6 +196,10 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
   files=`'ls' ${EXT}--* | grep -v -- '--.*--' | sed "s/^${EXT}--\(.*\)\.sql/\1/"`
   for fname in $files; do
     from_version="$fname"
+    if test "$from_version" = "unpackaged"; then
+      # We deal with unpackaged tests separately
+      continue;
+    fi
     UPGRADE_PATH="${from_version}--${to_version_param}"
     test_label="${EXT} extension upgrade ${UPGRADE_PATH}"
     if expr $to_version_param : ':auto' >/dev/null; then
