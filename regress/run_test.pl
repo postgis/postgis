@@ -51,7 +51,7 @@ our $DB = $ENV{"POSTGIS_REGRESS_DB"} || "postgis_reg";
 our $REGDIR = $ENV{"POSTGIS_REGRESS_DIR"} || abs_path(dirname($0));
 our $TOP_SOURCEDIR = ${REGDIR} . '/..';
 our $ABS_TOP_SOURCEDIR = abs_path(${TOP_SOURCEDIR});
-our $TOP_BUILDDIR = $ENV{"POSTGIS_TOP_BUILD_DIR"} || ${TOP_SOURCEDIR};
+our $TOP_BUILDDIR = $ENV{"POSTGIS_TOP_BUILD_DIR"};
 our $sysdiff = !system("diff --strip-trailing-cr $0 $0 2> /dev/null");
 
 ##################################################################
@@ -146,6 +146,20 @@ sub findOrDie
     print STDERR "Unable to find $exec executable.\n";
     print STDERR "PATH is " . $ENV{"PATH"} . "\n";
     die "HINT: use POSTGIS_TOP_BUILD_DIR env or --build-dir switch the specify top build dir.\n";
+}
+
+
+# If build dir is not given, try to guess
+if ( "${TOP_BUILDDIR}" eq "" )
+{
+    foreach my $d ( $ENV{'PWD'}, "${TOP_SOURCEDIR}" )
+    {
+        if ( -e ${d} . '/postgis_revision.h' )
+        {
+            $TOP_BUILDDIR="${d}";
+            last;
+        }
+    }
 }
 
 # Prepend scripts' build dirs to path
