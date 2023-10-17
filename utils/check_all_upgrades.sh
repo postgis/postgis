@@ -6,7 +6,7 @@ CTBDIR=`pg_config --sharedir`/contrib/
 TMPDIR=/tmp/check_all_upgrades-$$-tmp
 PGVER=`pg_config --version | awk '{print $2}'`
 PGVER_MAJOR=$(echo "${PGVER}" | sed 's/\.[^\.]*//' | sed 's/\(alpha\|beta\|rc\).*//' )
-CHECK_UNPACKAGED=1
+SKIP_LABEL_REGEXP=
 echo "INFO: PostgreSQL version: ${PGVER} [${PGVER_MAJOR}]"
 
 BUILDDIR=$PWD # TODO: allow override ?
@@ -22,14 +22,15 @@ usage() {
   echo "Usage: $0 [-s] <to_version>"
   echo "Options:"
   echo "\t-s  Stop on first failure"
-  echo "\t--skip-unpackaged  Do not test upgrades from unpackaged"
+  echo "\t--skip <regexp>  Do not run tests with label matching given extended regexp"
 }
 
 while test -n "$1"; do
   if test "$1" = "-s"; then
     EXIT_ON_FIRST_FAILURE=1
-  elif test "$1" = "--skip-unpackaged"; then
-    CHECK_UNPAKAGED=0
+  elif test "$1" = "--skip"; then
+    shift
+    SKIP_LABEL_REGEXP=$1
   elif test -z "$to_version_param"; then
     to_version_param="$1"
   else
@@ -118,6 +119,20 @@ EOF
   echo "${minsupported}"
 }
 
+kept_label()
+{
+  label=$1
+
+  if test -n "${SKIP_LABEL_REGEXP}"; then
+    if echo "${label}" | egrep -q "${SKIP_LABEL_REGEXP}"; then
+      echo "SKIP: $label (matches regexp '${SKIP_LABEL_REGEXP}')"
+      return 1;
+    fi
+  fi
+
+  return 0;
+}
+
 compatible_upgrade()
 {
   label=$1
@@ -191,7 +206,7 @@ USERTESTFLAGS="\
   --after-upgrade-script ${SRCDIR}/regress/hooks/hook-after-upgrade.sql \
 "
 
-for EXT in ${INSTALLED_EXTENSIONS}; do
+for EXT in ${INSTALLED_EXTENSIONS}; do #{
   if test "${EXT}" = "postgis"; then
     REGDIR=${BUILDDIR}/regress
   elif test "${EXT}" = "postgis_topology"; then
@@ -217,6 +232,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
     if expr $to_version_param : ':auto' >/dev/null; then
       test_label="${test_label} ($to_version)"
     fi
+    kept_label "${test_label}" || continue
     compatible_upgrade "${test_label}" ${from_version} ${to_version} || continue
     path=$( psql -XAtc "
         SELECT path
@@ -239,62 +255,83 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
     }
   done
 
+  if ! kept_label "unpackaged"; then
+    echo "SKIP: ${EXT} script-based upgrades (disabled by commandline)"
+    continue;
+  fi
+
   # Check unpackaged->extension upgrades
-  if test $CHECK_UNPACKAGED != 0; then
-    for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`; do
-      UPGRADE_PATH="unpackaged${majmin}--${to_version_param}"
-      test_label="${EXT} extension upgrade ${UPGRADE_PATH}"
-      if expr $to_version_param : ':auto' >/dev/null; then
-        test_label="${test_label} ($to_version)"
-      fi
-      compatible_upgrade "${test_label}" ${majmin} ${to_version} || continue
-      path=$( psql -XAtc "
-          SELECT path
-          FROM pg_catalog.pg_extension_update_paths('${EXT}')
-          WHERE source = 'unpackaged'
-          AND target = '${to_version}'
-      " ) || exit 1
-      if test -z "${path}"; then
-        echo "SKIP: ${test_label} (no upgrade path from unpackaged to ${to_version} known by postgresql)"
-        continue
-      fi
+  for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`; do
+    UPGRADE_PATH="unpackaged${majmin}--${to_version_param}"
+    test_label="${EXT} extension upgrade ${UPGRADE_PATH}"
+    if expr $to_version_param : ':auto' >/dev/null; then
+      test_label="${test_label} ($to_version)"
+    fi
+    kept_label "${test_label}" || continue
+    compatible_upgrade "${test_label}" ${majmin} ${to_version} || continue
+    path=$( psql -XAtc "
+        SELECT path
+        FROM pg_catalog.pg_extension_update_paths('${EXT}')
+        WHERE source = 'unpackaged'
+        AND target = '${to_version}'
+    " ) || exit 1
+    if test -z "${path}"; then
+      echo "SKIP: ${test_label} (no upgrade path from unpackaged to ${to_version} known by postgresql)"
+      continue
+    fi
+    echo "Testing ${test_label}"
+    RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
+    make -C ${REGDIR} check ${MAKE_ARGS} && {
+      echo "PASS: ${test_label}"
+    } || {
+      echo "FAIL: ${test_label}"
+      failed
+    }
+  done
+
+  # Check unpackaged->unpackaged upgrades (if target version == current version)
+  CURRENTVERSION=`grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.'`
+
+  if test "${to_version}" != "${CURRENTVERSION}"; then #{
+    echo "SKIP: ${EXT} script-based upgrades (${to_version_param} [${to_version}] does not match built version ${CURRENTVERSION})"
+    continue
+  fi #}
+
+  for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`
+  do #{
+    UPGRADE_PATH="unpackaged${majmin}--:auto"
+    test_label="${EXT} script soft upgrade ${UPGRADE_PATH}"
+    if expr $to_version_param : ':auto' >/dev/null; then
+      test_label="${test_label} ($to_version)"
+    fi
+
+    compatible_upgrade "${test_label}" ${majmin} ${to_version} || continue
+
+    if kept_label "${test_label}"; then #{
       echo "Testing ${test_label}"
-      RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
+      RUNTESTFLAGS="-v --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
       make -C ${REGDIR} check ${MAKE_ARGS} && {
         echo "PASS: ${test_label}"
       } || {
         echo "FAIL: ${test_label}"
         failed
       }
-    done
-  fi
-
-  # Check unpackaged->unpackaged upgrades
-  if test $CHECK_UNPACKAGED != 0; then
-    CURRENTVERSION=`grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.'`
-    if test "${to_version}" = "${CURRENTVERSION}"; then
-      for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`
-      do #{
-        UPGRADE_PATH="unpackaged${majmin}--:auto"
-        test_label="${EXT} script-based upgrade ${UPGRADE_PATH}"
-        if expr $to_version_param : ':auto' >/dev/null; then
-          test_label="${test_label} ($to_version)"
-        fi
-        compatible_upgrade "${test_label}" ${majmin} ${to_version} || continue
-        echo "Testing ${test_label}"
-        RUNTESTFLAGS="-v --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-        make -C ${REGDIR} check ${MAKE_ARGS} && {
-          echo "PASS: ${test_label}"
-        } || {
-          echo "FAIL: ${test_label}"
-          failed
-        }
-      done #}
-    else #}{
-      echo "SKIP: ${EXT} script-based upgrades (${to_version_param} [${to_version}] does not match built version ${CURRENTVERSION})"
     fi #}
-  fi
 
-done
+    test_label="${EXT} script hard upgrade ${UPGRADE_PATH}"
+    if kept_label "${test_label}"; then #{
+      echo "Testing ${test_label}"
+      RUNTESTFLAGS="-v --dumprestore --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
+      make -C ${REGDIR} check ${MAKE_ARGS} && {
+        echo "PASS: ${test_label}"
+      } || {
+        echo "FAIL: ${test_label}"
+        failed
+      }
+    fi #}
+
+  done #}
+
+done #}
 
 exit $failures
