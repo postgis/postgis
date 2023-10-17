@@ -6,7 +6,7 @@ CTBDIR=`pg_config --sharedir`/contrib/
 TMPDIR=/tmp/check_all_upgrades-$$-tmp
 PGVER=`pg_config --version | awk '{print $2}'`
 PGVER_MAJOR=$(echo "${PGVER}" | sed 's/\.[^\.]*//' | sed 's/\(alpha\|beta\|rc\).*//' )
-CHECK_UNPACKAGED=0
+CHECK_UNPACKAGED=1
 echo "INFO: PostgreSQL version: ${PGVER} [${PGVER_MAJOR}]"
 
 BUILDDIR=$PWD # TODO: allow override ?
@@ -18,16 +18,29 @@ cd - > /dev/null
 # This is useful to run database queries
 export PGDATABASE=template1
 
+usage() {
+  echo "Usage: $0 [-s] <to_version>"
+  echo "Options:"
+  echo "\t-s  Stop on first failure"
+  echo "\t--skip-unpackaged  Do not test upgrades from unpackaged"
+}
 
-if test "$1" = "-s"; then
-  EXIT_ON_FIRST_FAILURE=1
+while test -n "$1"; do
+  if test "$1" = "-s"; then
+    EXIT_ON_FIRST_FAILURE=1
+  elif test "$1" = "--skip-unpackaged"; then
+    CHECK_UNPAKAGED=0
+  elif test -z "$to_version_param"; then
+    to_version_param="$1"
+  else
+    usage >&2
+    exit 1
+  fi
   shift
-fi
+done
 
-if test -z "$1"; then
-  echo "Usage: $0 [-s] <to_version>" >&2
-  echo "Options:" >&2
-  echo "\t-s  Stop on first failure" >&2
+if test -z "$to_version_param"; then
+  usage >&2
   exit 1
 fi
 
@@ -141,7 +154,6 @@ report_missing_versions()
 }
 
 
-to_version_param="$1"
 to_version=$to_version_param
 if expr $to_version : ':auto' >/dev/null; then
   to_version=`psql -XAtc "select default_version from pg_available_extensions where name = 'postgis'"` || exit 1
