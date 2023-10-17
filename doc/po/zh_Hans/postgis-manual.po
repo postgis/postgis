@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-10-06 06:13+0000\n"
-"PO-Revision-Date: 2023-10-17 04:23+0000\n"
+"PO-Revision-Date: 2023-10-17 08:23+0000\n"
 "Last-Translator: Wang Dapeng <wangdapeng20191008@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
@@ -5733,7 +5733,7 @@ msgstr "如果tolerance = 0，则该函数使用 ST_Intersects，否则使用 ST
 #. Tag: para
 #, no-c-format
 msgid "Performed by the GEOS module."
-msgstr "它是通过GEOS模块实现的。"
+msgstr "这个函数是由 GEOS 模块执行的。"
 
 #. Tag: para
 #, no-c-format
@@ -25876,10 +25876,10 @@ msgid ""
 "simplification occurs on a object-by-object basis you can also feed a "
 "GeometryCollection to this function."
 msgstr ""
-"使用 Douglas-Peucker 算法返回给定几何图形的“简化”版本。 实际上只会对（多）线"
-"和（多）多边形执行某些操作，但您可以使用任何类型的几何体安全地调用它。 由于简"
-"化是在逐个对象的基础上进行的，因此您还可以将 GeometryCollection 提供给此函"
-"数。"
+"使用 Douglas-Peucker 算法返回给定几何图形的“简化”版本的函数。这个函数的目标是"
+"避免创建无效的派生几何（尤其是多边形）。通常，这个函数会用于(多)线和(多)多边"
+"形，但你也可以安全地将任何类型的几何图形传递给它。由于简化是以对象为单位进行"
+"的，因此你还可以将 GeometryCollection（几何对象的集合）传递给此函数。"
 
 #. Tag: para
 #, no-c-format
@@ -25891,10 +25891,10 @@ msgid ""
 "engines, to avoid having large numbers of very small objects disappear from "
 "a map leaving surprising gaps."
 msgstr ""
-"“保留折叠”标志将保留在给定容差的情况下太小的对象。 例如，将 1m 长的线简化为 "
-"10m 公差。 如果将<varname> preserveCollapsed </varname>参数指定为 true，则该"
-"线不会消失。 该标志对于渲染引擎很有用，可以避免大量非常小的对象从地图上消失，"
-"留下令人惊讶的间隙。"
+"\"保留已折叠\" 标志将保留在给定容差下本来会被认为太小而被删除的对象。例如，"
+"使用 10 米的容差对 1 米长的线进行简化。如果指定了 "
+"<varname>preserveCollapsed</varname> 参数为 true，则该线将不会消失。这个标志"
+"对于渲染引擎非常有用，以避免在地图上有大量非常小的对象消失，留下意外的空隙。"
 
 #. Tag: para
 #, no-c-format
