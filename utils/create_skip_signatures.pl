@@ -200,7 +200,7 @@ while (<>)
 		my $origline = $_;
 		my $line = $origline;
 
-		$line =~ s/ *ALTER FUNCTION (.*) RENAME TO .*_deprecated_by_postgis_.*/\1/;
+		$line =~ s/ *ALTER FUNCTION (.*) RENAME TO .*_deprecated_by_postgis_.*/$1/;
 
 		handle_function_signature($line);
 	}
@@ -213,7 +213,7 @@ while (<>)
 		my $origline = $_;
 		my $line = $origline;
 
-		$line =~ s/SELECT _postgis_drop_function_by_signature\('([^']*)'\);/\1/;
+		$line =~ s/SELECT _postgis_drop_function_by_signature\('([^']*)'\);/$1/;
 
 		handle_function_signature($line);
 	}
