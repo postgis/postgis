@@ -75,15 +75,12 @@ sub strip_argument_names {
 		my $a = $_;
 
 		#print "  XXX arg: $a\n";
-		# If the arg is composed by multiple words
-		# drop the first, unless it's a reserved word
-		if ( $a =~ m/([^ ]*) (.*)/ )
+		# Drop all but reserved words from multi-word arg
+		while ( $a =~ m/^([^ ]*) (.*)/ )
 		{
-			unless ( $reserved_sql_word{$1} )
-			{
-				$a = $2;
-				#print "  XXX arg became: $a\n";
-			}
+			last if $reserved_sql_word{$1};
+			$a = $2;
+			#print "  XXX arg became: $a\n";
 		}
 		push @out, $a;
 	}
