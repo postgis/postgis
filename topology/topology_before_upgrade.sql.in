@@ -13,34 +13,20 @@
 -- argument names changed --
 -- we might want to take toTopoGeom one out before release since
 -- I don't think too many people installed the bad name
-SELECT NULL FROM _postgis_drop_function_by_signature('
-topology.toTopoGeom(Geometry, varchar, int, float8)
-');
+SELECT _postgis_drop_function_by_signature('topology.toTopoGeom(Geometry, varchar, int, float8)');
 
 -- used to be in public, will now be moved to topology
-SELECT NULL FROM _postgis_drop_function_by_signature('
-public.postgis_topology_scripts_installed()
-');
+SELECT _postgis_drop_function_by_signature('public.postgis_topology_scripts_installed()');
 
 -- Removed in 2.2.0 when topology API moved to liblwgeom
-SELECT NULL FROM _postgis_drop_function_by_signature('
-topology._ST_RemEdgeCheck(varchar, integer, integer, integer, integer)
-', '2.2.0');
+SELECT _postgis_drop_function_by_signature('topology._ST_RemEdgeCheck(varchar, integer, integer, integer, integer)', '2.2.0');
 -- Removed in 2.2.0 when topology API moved to liblwgeom
-SELECT NULL FROM _postgis_drop_function_by_signature('
-topology._ST_AddFaceSplit(varchar, integer, integer, boolean)
-', '2.2.0');
+SELECT _postgis_drop_function_by_signature('topology._ST_AddFaceSplit(varchar, integer, integer, boolean)', '2.2.0');
 
 -- Added optional bbox parameter in 3.2.0
-SELECT NULL FROM _postgis_drop_function_by_signature('
-topology.validatetopology(varchar)
-', '3.2.0');
+SELECT _postgis_drop_function_by_signature('topology.validatetopology(varchar)', '3.2.0');
 
 -- Merged the two function into one with both allowEdgeSplitting and setContainingFace parameters
 -- being optional (3.2.0)
-SELECT NULL FROM _postgis_drop_function_by_signature('
-topology.AddNode(varchar, geometry)
-', '3.2.0');
-SELECT NULL FROM _postgis_drop_function_by_signature('
-topology.AddNode(varchar, geometry, boolean, boolean)
-', '3.2.0');
+SELECT _postgis_drop_function_by_signature('topology.AddNode(varchar, geometry)', '3.2.0');
+SELECT _postgis_drop_function_by_signature('topology.AddNode(varchar, geometry, boolean, boolean)', '3.2.0');

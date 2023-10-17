@@ -205,12 +205,12 @@ while (<>)
 	# Deprecated function signature using
 	# _postgis_drop_function_by_signature
 	# EXAMPLE: SELECT _postgis_drop_function_by_signature('pgis_geometry_union_finalfn(internal)');
-	elsif ( /SELECT _postgis_drop_function_by_signature\('[^']*'\);/ )
+	elsif ( /SELECT _postgis_drop_function_by_signature\('[^']*'/ )
 	{
 		my $origline = $_;
 		my $line = $origline;
 
-		$line =~ s/SELECT _postgis_drop_function_by_signature\('([^']*)'\);/$1/;
+		$line =~ s/.*SELECT _postgis_drop_function_by_signature\('([^']*)'.*/$1/;
 
 		handle_function_signature($line);
 	}
