@@ -122,14 +122,6 @@ sub handle_function_signature {
 	my @args = split('\s*,\s*', $args);
 	@args = canonicalize_args(@args);
 
-	print "COMMENT FUNCTION $name(" . join(', ', @args) .")\n";
-
-	# Example manifest line for comments on function with inout params:
-	# 4247; 0 0 COMMENT public FUNCTION testinoutmix(INOUT "inout" double precision, second integer, OUT thirdout integer, fourth integer) strk
-
-	# Example manifest line for function with inout params:
-	# 955; 1255 27730785 FUNCTION public testinoutmix(double precision, integer, integer) strk
-
 	# No inout indicator or out parameters for function signatures
 	my @inonly_args = clean_inout_arguments(@args);
 
@@ -148,7 +140,6 @@ while (<>)
 	{
 		my $t = lc($1);
 		$t =~ s/topology\.//g;
-		print "COMMENT TYPE $t\n";
 		print "TYPE $t\n";
 	}
 
@@ -164,8 +155,6 @@ while (<>)
 		$args =~ s/topology\.//g;
 		my @args = split('\s*,\s*', $args);
 		@args = canonicalize_args(@args);
-
-		print "COMMENT AGGREGATE $name(" . join(', ', @args) . ")\n";
 
 		# For *aggregate* signature we are supposed to strip
 		# also argument names, which aint easy
