@@ -171,9 +171,17 @@ SELECT _postgis_drop_function_by_signature('ST_AsBinary(text)'); -- deprecated i
 SELECT _postgis_drop_function_by_signature('postgis_uses_stats()'); -- deprecated in 2.0
 SELECT _postgis_drop_function_by_signature('ST_GeneratePoints(geometry, numeric)'); -- numeric -> integer
 
--- Old accum aggregate support type, removed in 2.5.0
--- See #4035
-DROP TYPE IF EXISTS pgis_abs CASCADE;
+-- Old accum aggregate support type, removed in 2.5.0 See #4035
+SELECT _postgis_drop_function_by_signature('pgis_abs_in(cstring)', '2.5.0');
+SELECT _postgis_drop_function_by_signature('pgis_abs_out(pgis_abs)', '2.5.0');
+SELECT _postgis_drop_function_by_signature('pgis_geometry_accum_finalfn(pgis_abs)', '2.5.0');
+SELECT _postgis_drop_function_by_signature('pgis_geometry_accum_transfn(pgis_abs, geometry)', '2.5.0');
+SELECT _postgis_drop_function_by_signature('pgis_geometry_collect_finalfn(pgis_abs)', '2.5.0');
+SELECT _postgis_drop_function_by_signature('pgis_geometry_makeline_finalfn(pgis_abs)', '2.5.0');
+SELECT _postgis_drop_function_by_signature('pgis_geometry_polygonize_finalfn(pgis_abs)', '2.5.0');
+SELECT _postgis_drop_function_by_signature('pgis_geometry_union_finalfn(pgis_abs)', '2.5.0');
+DROP TYPE IF EXISTS pgis_abs CASCADE; -- TODO: use a _postgis_drop_type ?
+
 
 SELECT _postgis_drop_function_by_signature('st_astwkb(geometry, integer, bigint, bool, bool)'); -- temporarely introduced before 2.2.0 final
 SELECT _postgis_drop_function_by_signature('pgis_twkb_accum_transfn(internal, geometry, integer)'); -- temporarely introduced before 2.2.0 final
