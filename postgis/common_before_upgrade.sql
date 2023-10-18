@@ -102,8 +102,14 @@ BEGIN
 		INTO proc;
 
 	EXCEPTION
-	WHEN undefined_function THEN
+	WHEN undefined_function OR undefined_object THEN
 		RAISE DEBUG 'Deprecated function % does not exist', function_signature;
+		RETURN;
+	WHEN others THEN
+		GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
+		RAISE WARNING 'Could not check deprecated function % existance, got % (%), assuming it does not exist',
+			function_signature, SQLERRM, SQLSTATE
+		USING DETAIL = detail;
 		RETURN;
 	END;
 
