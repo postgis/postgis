@@ -4,6 +4,7 @@
 # PostGIS - Spatial Types for PostgreSQL
 # http://postgis.net
 #
+# Copyright (C) 2004-2023 Sandro Santilli <strk@kbt.io>
 # Copyright (C) 2011 OpenGeo.org
 # Copyright (C) 2009 Paul Ramsey <pramsey@cleverelephant.ca>
 #
@@ -21,6 +22,7 @@
 #
 # Tested on:
 #
+#    pg-12/pgis-2.5.9 => pg-12/pgis-3.5.0dev
 #    pg-8.4.9/pgis-1.4.3    => pg-8.4.9/pgis-2.0.0SVN
 #    pg-8.4.9/pgis-2.0.0SVN => pg-8.4.9/pgis-2.0.0SVN
 #    pg-8.4.9/pgis-2.0.0SVN => pg-9.1.2/pgis-2.0.0SVN
@@ -130,7 +132,11 @@ while( my $l = <DUMP> ) {
 
   next if $l =~ /^\;/;
   my $sigHR = linesignature($l);
-  my $sig = $sigHR; $sig =~ s/\s//g;
+  my $sig = $sigHR;
+  # always skip associated comments associated to objects,
+  # see https://trac.osgeo.org/postgis/ticket/3078
+  $sig =~ s/^COMMENT//g;
+  $sig =~ s/\s//g;
   $hasTopology = 1 if $sig eq 'SCHEMAtopology';
 
 	if ( not defined ($POSTGIS_SCHEMA) )
@@ -402,6 +408,21 @@ sub linesignature {
   if( $line =~ /^(\d+)\; (\d+) (\d+) FK (\w+) (\w+) (.*) (\w*)/ ) {
     $sig = "FK " . $4 . " " . $6;
   }
+  # We strip argument names from function comments
+  elsif ( $line =~ /COMMENT \w+ FUNCTION ([^\(]*)\((.*)\)/ )
+  {
+    my $name = $1;
+    my $args = $2;
+    my @args = split('\s*,\s*', $args);
+
+    # No inout indicator or out parameters for function signatures
+    my @inonly_args = clean_inout_arguments(@args);
+
+    # For *function* signature we are supposed to strip argument names
+    my @unnamed_args = strip_argument_names(@inonly_args);
+
+    $sig = "COMMENT FUNCTION $name(" . join(', ', @unnamed_args) . ")";
+  }
   elsif( $line =~ /^(\d+)\; (\d+) (\d+) (\w+) - (\w+) (.*) (\w*)/ ) {
     $sig = $4 . " " . $5 . " " . $6;
   }
@@ -490,6 +511,66 @@ clamp_srid
   return $newsrid;
 }
 
+# Example:
+#  INPUT: inout first double precision, second integer, OUT third text, fourth bool
+# OUTPUT: first double precision, second integer, fourth bool
+sub clean_inout_arguments {
+	my @args = @_;
+	my @out;
+	#print STDERR "DEBUG: to inout strip: " . join(',', @args) . "\n";
+	foreach ( @args )
+	{
+		my $a = $_;
+
+		#print "  XXX arg: [$a]\n";
+		# If the arg is composed by multiple words
+		# check for out and inout indicators
+		if ( $a =~ m/([^ ]*) (.*)/ )
+		{
+			# Skip from the first out parameter onward
+			last if $1 eq 'OUT';
+
+			# Hide the inout indicator
+			$a = $2 if $1 eq 'INOUT';
+		}
+		#print "  XXX arg became: $a\n";
+		push @out, $a;
+	}
+	#print STDERR "DEBUG: inout striped: " . join(',', @out) . "\n";
+	return @out;
+}
+
+# Remove argument names from array of arguments
+# Example:
+#  INPUT: int,named double precision,named text
+# OUTPUT: int,double precision,text
+sub strip_argument_names {
+	my @args = @_;
+  my %reserved_sql_word = (
+    'timestamp' => 1,
+    'double' => 1,
+    'character' => 1
+  );
+	my @out;
+	#print "XXX to strip: " . join(',', @args) . "\n";
+	foreach ( @args )
+	{
+		my $a = $_;
+
+		#print "  XXX arg: $a\n";
+		# Drop all but reserved words from multi-word arg
+		while ( $a =~ m/^([^ ]*) (.*)/ )
+		{
+			last if $reserved_sql_word{$1};
+			$a = $2;
+			#print "  XXX arg became: $a\n";
+		}
+		push @out, $a;
+	}
+	#print "XXX striped: " . join(',', @out) . "\n";
+	return @out;
+}
+
 
 ######################################################################
 # Here are all the signatures we want to skip but we cannot derive
@@ -561,73 +642,6 @@ CAST (path AS geometry)
 CAST (point AS geometry)
 CAST (polygon AS geometry)
 CAST (text AS geometry)
-COMMENT DOMAIN topoelement
-COMMENT DOMAIN topoelementarray
-COMMENT FUNCTION addrasterconstraints(rastschema name, rasttable name, rastcolumn name, VARIADIC constraints text[])
-COMMENT FUNCTION addrasterconstraints(rasttable name, rastcolumn name, VARIADIC constraints text[])
-COMMENT FUNCTION droprasterconstraints(rastschema name, rasttable name, rastcolumn name, VARIADIC constraints text[])
-COMMENT FUNCTION lockrow(text, text, text, text, timestamp without time zone)
-COMMENT FUNCTION lockrow(text, text, text, timestamp without time zone)
-COMMENT FUNCTION st_clusterkmeans(geom geometry, k integer)
-COMMENT FUNCTION st_concavehull(param_geom geometry, param_pctconvex double precision, param_allow_holes boolean)
-COMMENT FUNCTION st_difference(geom1 geometry, geom2 geometry)
-COMMENT FUNCTION st_distinct4ma(matrix double precision[], nodatamode text, VARIADIC args text[])
-COMMENT FUNCTION st_distinct4ma(value double precision[], pos integer[], VARIADIC userargs text[])
-COMMENT FUNCTION st_gdaldrivers(OUT idx integer, OUT short_name text, OUT long_name text, OUT can_read boolean, OUT can_write boolean, OUT create_options text)
-COMMENT FUNCTION st_hexagongrid(size double precision, bounds geometry, OUT geom geometry, OUT i integer, OUT j integer)
-COMMENT FUNCTION st_histogram(rast raster, nband integer, bins integer, "right" boolean, OUT min double precision, OUT max double precision, OUT count bigint, OUT percent double precision)
-COMMENT FUNCTION st_histogram(rast raster, nband integer, bins integer, width double precision[], "right" boolean, OUT min double precision, OUT max double precision, OUT count bigint, OUT percent double precision)
-COMMENT FUNCTION st_histogram(rast raster, nband integer, exclude_nodata_value boolean, bins integer, "right" boolean, OUT min double precision, OUT max double precision, OUT count bigint, OUT percent double precision)
-COMMENT FUNCTION st_histogram(rast raster, nband integer, exclude_nodata_value boolean, bins integer, width double precision[], "right" boolean, OUT min double precision, OUT max double precision, OUT count bigint, OUT percent double precision)
-COMMENT FUNCTION st_intersection(geom1 geometry, geom2 geometry)
-COMMENT FUNCTION st_invdistweight4ma(value double precision[], pos integer[], VARIADIC userargs text[])
-COMMENT FUNCTION st_mapalgebrafctngb(rast raster, band integer, pixeltype text, ngbwidth integer, ngbheight integer, onerastngbuserfunc regprocedure, nodatamode text, VARIADIC args text[])
-COMMENT FUNCTION st_mapalgebrafct(rast1 raster, band1 integer, rast2 raster, band2 integer, tworastuserfunc regprocedure, pixeltype text, extenttype text, VARIADIC userargs text[])
-COMMENT FUNCTION st_mapalgebrafct(rast1 raster, rast2 raster, tworastuserfunc regprocedure, pixeltype text, extenttype text, VARIADIC userargs text[])
-COMMENT FUNCTION st_mapalgebrafct(rast raster, band integer, onerastuserfunc regprocedure, VARIADIC args text[])
-COMMENT FUNCTION st_mapalgebrafct(rast raster, band integer, pixeltype text, onerastuserfunc regprocedure, VARIADIC args text[])
-COMMENT FUNCTION st_mapalgebrafct(rast raster, onerastuserfunc regprocedure, VARIADIC args text[])
-COMMENT FUNCTION st_mapalgebrafct(rast raster, pixeltype text, onerastuserfunc regprocedure, VARIADIC args text[])
-COMMENT FUNCTION st_mapalgebra(rast1 raster, nband1 integer, rast2 raster, nband2 integer, callbackfunc regprocedure, pixeltype text, extenttype text, customextent raster, distancex integer, distancey integer, VARIADIC userargs text[])
-COMMENT FUNCTION st_mapalgebra(rastbandargset rastbandarg[], callbackfunc regprocedure, pixeltype text, extenttype text, customextent raster, distancex integer, distancey integer, VARIADIC userargs text[])
-COMMENT FUNCTION st_mapalgebra(rast raster, nband integer, callbackfunc regprocedure, mask double precision[], weighted boolean, pixeltype text, extenttype text, customextent raster, VARIADIC userargs text[])
-COMMENT FUNCTION st_mapalgebra(rast raster, nband integer, callbackfunc regprocedure, pixeltype text, extenttype text, customextent raster, distancex integer, distancey integer, VARIADIC userargs text[])
-COMMENT FUNCTION st_mapalgebra(rast raster, nband integer[], callbackfunc regprocedure, pixeltype text, extenttype text, customextent raster, distancex integer, distancey integer, VARIADIC userargs text[])
-COMMENT FUNCTION st_max4ma(matrix double precision[], nodatamode text, VARIADIC args text[])
-COMMENT FUNCTION st_max4ma(value double precision[], pos integer[], VARIADIC userargs text[])
-COMMENT FUNCTION st_maximuminscribedcircle(geometry, OUT center geometry, OUT nearest geometry, OUT radius double precision)
-COMMENT FUNCTION st_mean4ma(matrix double precision[], nodatamode text, VARIADIC args text[])
-COMMENT FUNCTION st_mean4ma(value double precision[], pos integer[], VARIADIC userargs text[])
-COMMENT FUNCTION st_metadata(rast raster, OUT upperleftx double precision, OUT upperlefty double precision, OUT width integer, OUT height integer, OUT scalex double precision, OUT scaley double precision, OUT skewx double precision, OUT skewy double precision, OUT srid integer, OUT numbands integer)
-COMMENT FUNCTION st_min4ma(matrix double precision[], nodatamode text, VARIADIC args text[])
-COMMENT FUNCTION st_min4ma(value double precision[], pos integer[], VARIADIC userargs text[])
-COMMENT FUNCTION st_mindist4ma(value double precision[], pos integer[], VARIADIC userargs text[])
-COMMENT FUNCTION st_minimumboundingradius(geometry, OUT center geometry, OUT radius double precision)
-COMMENT FUNCTION st_quantile(rast raster, nband integer, exclude_nodata_value boolean, quantiles double precision[], OUT quantile double precision, OUT value double precision)
-COMMENT FUNCTION st_quantile(rast raster, nband integer, quantiles double precision[], OUT quantile double precision, OUT value double precision)
-COMMENT FUNCTION st_quantile(rast raster, quantiles double precision[], OUT quantile double precision, OUT value double precision)
-COMMENT FUNCTION st_range4ma(matrix double precision[], nodatamode text, VARIADIC args text[])
-COMMENT FUNCTION st_range4ma(value double precision[], pos integer[], VARIADIC userargs text[])
-COMMENT FUNCTION st_rastertoworldcoord(rast raster, columnx integer, rowy integer, OUT longitude double precision, OUT latitude double precision)
-COMMENT FUNCTION st_reclass(rast raster, VARIADIC reclassargset reclassarg[])
-COMMENT FUNCTION st_setvalues(rast raster, nband integer, x integer, y integer, newvalueset double precision[], noset boolean[], keepnodata boolean)
-COMMENT FUNCTION st_setvalues(rast raster, nband integer, x integer, y integer, newvalueset double precision[], nosetvalue double precision, keepnodata boolean)
-COMMENT FUNCTION st_squaregrid(size double precision, bounds geometry, OUT geom geometry, OUT i integer, OUT j integer)
-COMMENT FUNCTION st_stddev4ma(matrix double precision[], nodatamode text, VARIADIC args text[])
-COMMENT FUNCTION st_stddev4ma(value double precision[], pos integer[], VARIADIC userargs text[])
-COMMENT FUNCTION st_subdivide(geom geometry, maxvertices integer)
-COMMENT FUNCTION st_sum4ma(matrix double precision[], nodatamode text, VARIADIC args text[])
-COMMENT FUNCTION st_sum4ma(value double precision[], pos integer[], VARIADIC userargs text[])
-COMMENT FUNCTION st_symdifference(geom1 geometry, geom2 geometry)
-COMMENT FUNCTION st_valuecount(rastertable text, rastercolumn text, nband integer, exclude_nodata_value boolean, searchvalues double precision[], roundto double precision, OUT value double precision, OUT count integer)
-COMMENT FUNCTION st_valuecount(rastertable text, rastercolumn text, nband integer, searchvalues double precision[], roundto double precision, OUT value double precision, OUT count integer)
-COMMENT FUNCTION st_valuecount(rastertable text, rastercolumn text, searchvalues double precision[], roundto double precision, OUT value double precision, OUT count integer)
-COMMENT FUNCTION st_valuecount(rast raster, nband integer, exclude_nodata_value boolean, searchvalues double precision[], roundto double precision, OUT value double precision, OUT count integer)
-COMMENT FUNCTION st_valuecount(rast raster, nband integer, searchvalues double precision[], roundto double precision, OUT value double precision, OUT count integer)
-COMMENT FUNCTION st_valuecount(rast raster, searchvalues double precision[], roundto double precision, OUT value double precision, OUT count integer)
-COMMENT FUNCTION st_worldtorastercoord(rast raster, longitude double precision, latitude double precision, OUT columnx integer, OUT rowy integer)
-COMMENT FUNCTION st_worldtorastercoord(rast raster, pt geometry, OUT columnx integer, OUT rowy integer)
-COMMENT SCHEMA topology
 CONSTRAINT layer layer_pkey
 CONSTRAINT layer layer_schema_name_table_name_feature_column_key
 CONSTRAINT spatial_ref_sys spatial_ref_sys_pkey
