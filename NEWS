@@ -7,8 +7,8 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
 * Bug Fixes *
 
 
- - #5574, #5575, #5576, #5577, #5578, #5579,
-          Fix restore of postgis dumps (Sandro Santilli)
+ - #5574, #5575, #5576, #5577, #5578, #5579, #5569
+          Fix restore of postgis dumps since 2.1 (Sandro Santilli)
  - #5568, Improve robustness of topology face split handling (Sandro Santilli)
  - #5548, Fix box-filtered validity check of topologies with edge-less faces
           (Sandro Santilli)
