@@ -136,6 +136,9 @@ while( my $l = <DUMP> ) {
   # always skip associated comments associated to objects,
   # see https://trac.osgeo.org/postgis/ticket/3078
   $sig =~ s/^COMMENT//g;
+  # always skip shelltype when type is skipped
+  # see https://trac.osgeo.org/postgis/ticket/5569#comment:16
+  $sig =~ s/^SHELLTYPE/TYPE/g;
   $sig =~ s/\s//g;
   $hasTopology = 1 if $sig eq 'SCHEMAtopology';
 
