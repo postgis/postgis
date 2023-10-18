@@ -132,6 +132,7 @@ while( my $l = <DUMP> ) {
 
   next if $l =~ /^\;/;
   my $sigHR = linesignature($l);
+  next unless length($sigHR);
   my $sig = $sigHR;
   # always skip associated comments associated to objects,
   # see https://trac.osgeo.org/postgis/ticket/3078
