@@ -1356,6 +1356,33 @@ WHERE short_name = 'GTiff') As g;
             When the <varname>fixed_levels</varname> parameter is a non-empty
             array, the <varname>level_interval</varname> and <varname>level_base</varname> parameters are ignored.
         </para>
+
+        <para>
+            Input parameters are:
+        </para>
+        <variablelist>
+            <varlistentry><term><varname>rast</varname></term>
+                <listitem><para>The raster to generate the contour of</para></listitem>
+            </varlistentry>
+            <varlistentry><term><varname>bandnumber</varname></term>
+                <listitem><para>The band to generate the contour of</para></listitem>
+            </varlistentry>
+            <varlistentry><term><varname>level_interval</varname></term>
+                <listitem><para>The elevation interval between contours generated</para></listitem>
+            </varlistentry>
+            <varlistentry><term><varname>level_base</varname></term>
+                <listitem><para>The "base" relative to which contour intervals are applied,
+                this is normally zero, but could be different.
+                To generate 10m contours at 5, 15, 25, ... the LEVEL_BASE would be 5.</para></listitem>
+            </varlistentry>
+            <varlistentry><term><varname>fixed_levels</varname></term>
+                <listitem><para>The elevation interval between contours generated</para></listitem>
+            </varlistentry>
+            <varlistentry><term><varname>polygonize</varname></term>
+                <listitem><para>If <literal>true</literal>, contour polygons will be created, rather than polygon lines.</para></listitem>
+            </varlistentry>
+        </variablelist>
+
         <para>
             Return values are a set of records with the following attributes:
         </para>
