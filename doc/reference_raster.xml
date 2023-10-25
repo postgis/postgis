@@ -1334,11 +1334,11 @@ WHERE short_name = 'GTiff') As g;
           <funcprototype>
             <funcdef>setof record <function>ST_Contour</function></funcdef>
             <paramdef><type>raster </type><parameter>rast</parameter></paramdef>
-            <paramdef><type>integer </type><parameter>bandnumber</parameter></paramdef>
-            <paramdef><type>double precision </type><parameter>level_interval</parameter></paramdef>
-            <paramdef><type>double precision </type><parameter>level_base</parameter></paramdef>
-            <paramdef><type>double precision[] </type><parameter>fixed_levels</parameter></paramdef>
-            <paramdef><type>boolean </type><parameter>polygonize</parameter></paramdef>
+            <paramdef choice="opt"><type>integer </type><parameter>bandnumber=1</parameter></paramdef>
+            <paramdef choice="opt"><type>double precision </type><parameter>level_interval=100.0</parameter></paramdef>
+            <paramdef choice="opt"><type>double precision </type><parameter>level_base=0.0</parameter></paramdef>
+            <paramdef choice="opt"><type>double precision[] </type><parameter>fixed_levels=ARRAY[]</parameter></paramdef>
+            <paramdef choice="opt"><type>boolean </type><parameter>polygonize=false</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
