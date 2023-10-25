@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-10-06 06:13+0000\n"
-"PO-Revision-Date: 2023-10-25 04:23+0000\n"
-"Last-Translator: Wang Dapeng <wangdapeng20191008@gmail.com>\n"
+"PO-Revision-Date: 2023-10-25 06:23+0000\n"
+"Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
 "Language: zh_Hans\n"
@@ -6733,16 +6733,16 @@ msgstr ""
 "元素）的拓扑 element_id、element_type。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns a set of element_id,element_type (topoelements) corresponding to "
 "primitive topology elements <xref linkend=\"topoelement\"/> (1: nodes, 2: "
 "edges, 3: faces) that a given topogeometry object in <varname>toponame</"
 "varname> schema is composed of."
 msgstr ""
-"返回一组element_id和element_type（topoelements），对应于指定的位于 "
-"<varname>toponame</varname> 模式中的拓扑几何对象所由之原始拓扑元素 <xref "
-"linkend=\"topoelement\"/>（1：节点，2：边，3：面）。"
+"返回一组与基本拓扑元素<xref linkend=\"topoelement\"/>（1：节点，2：边，3：面"
+"）对应的element_id、element_type（topoelements），这些元素组成了<varname>topo"
+"name</varname>模式中的给定拓扑几何对象。"
 
 #. Tag: para
 #, no-c-format
@@ -7078,13 +7078,13 @@ msgstr ""
 "过图层并单独处理这些图层。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Invoking <filename>pgtopo_export</filename> with the <code>--help</code> (or "
 "<code>-h</code> for short) switch will always print short usage string."
 msgstr ""
-"使用<code>--help </code>（或简称 <code>-h</code>）命令调用 "
-"<filename>pgtopo_export</filename> 将始终打印简短的用法字符串。"
+"调用 <filename>pgtopo_export</filename>时使用 <code>--help</code>（或缩写的 "
+"<code>-h</code>）指令将始终打印简短的用法说明字符串。"
 
 #. Tag: para
 #, no-c-format
@@ -11970,16 +11970,16 @@ msgid "Tests if a LineString is closed and simple."
 msgstr "检测线串是闭合的还是简单的。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if this <varname>LINESTRING</varname> is "
 "both <xref linkend=\"ST_IsClosed\"/> (<code>ST_StartPoint(g) ~= "
 "ST_Endpoint(g)</code>) and <xref linkend=\"ST_IsSimple\"/> (does not self "
 "intersect)."
 msgstr ""
-"如果这个 <varname>LINESTRING</varname> 既是 <xref linkend=\"ST_IsClosed\""
-"/>（<code>ST_StartPoint(g) ~= ST_Endpoin(g)</code>）又是 <xref linkend="
-"\"ST_IsSimple\"/>（不自交），则返回 <varname>TRUE</varname>。"
+"返回 <varname>TRUE</varname>，当<varname>LINESTRING</varname> 同时满足 <xref "
+"linkend=\"ST_IsClosed\"/>（即 <code>ST_StartPoint(g) ~= "
+"ST_Endpoint(g)</code>）和 <xref linkend=\"ST_IsSimple\"/>（即不自交）时。"
 
 #. Tag: para
 #, no-c-format
