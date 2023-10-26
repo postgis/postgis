@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-08-12 00:40+0000\n"
+"POT-Creation-Date: 2023-10-26 10:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -662,437 +662,443 @@ msgstr ""
 #. Tag: member
 #: introduction.xml:260
 #, no-c-format
-msgid "Haribabu Kommi"
+msgid "Hans Lemuet"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:261
 #, no-c-format
-msgid "Havard Tveite"
+msgid "Haribabu Kommi"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:262
 #, no-c-format
-msgid "IIDA Tetsushi"
+msgid "Havard Tveite"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:263
 #, no-c-format
-msgid "Ingvild Nystuen"
+msgid "IIDA Tetsushi"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:264
 #, no-c-format
-msgid "Jackie Leng"
+msgid "Ingvild Nystuen"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:265
 #, no-c-format
-msgid "James Marca"
+msgid "Jackie Leng"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:266
 #, no-c-format
-msgid "Jan Katins"
+msgid "James Marca"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:267
 #, no-c-format
-msgid "Jason Smith"
+msgid "Jan Katins"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:268
 #, no-c-format
-msgid "Jeff Adams"
+msgid "Jason Smith"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:269
 #, no-c-format
-msgid "Jelte Fennema"
+msgid "Jeff Adams"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:270
 #, no-c-format
-msgid "Jim Jones"
+msgid "Jelte Fennema"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:271
 #, no-c-format
-msgid "Joe Conway"
+msgid "Jim Jones"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:272
 #, no-c-format
-msgid "Jonne Savolainen"
+msgid "Joe Conway"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:273
 #, no-c-format
-msgid "Jose Carlos Martinez Llari"
+msgid "Jonne Savolainen"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:274
 #, no-c-format
-msgid "Jörg Habenicht"
+msgid "Jose Carlos Martinez Llari"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:275
 #, no-c-format
-msgid "Julien Rouhaud"
+msgid "Jörg Habenicht"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:276
 #, no-c-format
-msgid "Kashif Rasul"
+msgid "Julien Rouhaud"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:277
 #, no-c-format
-msgid "Klaus Foerster"
+msgid "Kashif Rasul"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:278
 #, no-c-format
-msgid "Kris Jurka"
+msgid "Klaus Foerster"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:279
 #, no-c-format
-msgid "Laurenz Albe"
+msgid "Kris Jurka"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:280
 #, no-c-format
-msgid "Lars Roessiger"
+msgid "Laurenz Albe"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:281
 #, no-c-format
-msgid "Leo Hsu"
+msgid "Lars Roessiger"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:282
 #, no-c-format
-msgid "Loïc Bartoletti"
+msgid "Leo Hsu"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:283
 #, no-c-format
-msgid "Loic Dachary"
+msgid "Loïc Bartoletti"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:284
 #, no-c-format
-msgid "Luca S. Percich"
+msgid "Loic Dachary"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:285
 #, no-c-format
-msgid "Lucas C. Villa Real"
+msgid "Luca S. Percich"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:286
 #, no-c-format
-msgid "Maria Arias de Reyna"
+msgid "Lucas C. Villa Real"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:287
 #, no-c-format
-msgid "Marc Ducobu"
+msgid "Maria Arias de Reyna"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:288
 #, no-c-format
-msgid "Mark Sondheim"
+msgid "Marc Ducobu"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:289
 #, no-c-format
-msgid "Markus Schaber"
+msgid "Mark Sondheim"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:290
 #, no-c-format
-msgid "Markus Wanner"
+msgid "Markus Schaber"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:291
 #, no-c-format
-msgid "Matt Amos"
+msgid "Markus Wanner"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:292
 #, no-c-format
-msgid "Matt Bretl"
+msgid "Matt Amos"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:293
 #, no-c-format
-msgid "Matthias Bay"
+msgid "Matt Bretl"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:294
 #, no-c-format
-msgid "Maxime Guillaud"
+msgid "Matthias Bay"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:295
 #, no-c-format
-msgid "Maxime van Noppen"
+msgid "Maxime Guillaud"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:296
 #, no-c-format
-msgid "Maxime Schoemans"
+msgid "Maxime van Noppen"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:297
 #, no-c-format
-msgid "Michael Fuhr"
+msgid "Maxime Schoemans"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:298
 #, no-c-format
-msgid "Mike Toews"
+msgid "Michael Fuhr"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:299
 #, no-c-format
-msgid "Nathan Wagner"
+msgid "Mike Toews"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:300
 #, no-c-format
-msgid "Nathaniel Clay"
+msgid "Nathan Wagner"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:301
 #, no-c-format
-msgid "Nikita Shulga"
+msgid "Nathaniel Clay"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:302
 #, no-c-format
-msgid "Norman Vine"
+msgid "Nikita Shulga"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:303
 #, no-c-format
-msgid "Patricia Tozer"
+msgid "Norman Vine"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:304
 #, no-c-format
-msgid "Rafal Magda"
+msgid "Patricia Tozer"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:305
 #, no-c-format
-msgid "Ralph Mason"
+msgid "Rafal Magda"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:306
 #, no-c-format
-msgid "Rémi Cura"
+msgid "Ralph Mason"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:307
 #, no-c-format
-msgid "Richard Greenwood"
+msgid "Rémi Cura"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:308
 #, no-c-format
-msgid "Robert Coup"
+msgid "Richard Greenwood"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:309
 #, no-c-format
-msgid "Roger Crew"
+msgid "Robert Coup"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:310
 #, no-c-format
-msgid "Ron Mayer"
+msgid "Roger Crew"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:311
 #, no-c-format
-msgid "Sebastiaan Couwenberg"
+msgid "Ron Mayer"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:312
 #, no-c-format
-msgid "Sergei Shoulbakov"
+msgid "Sebastiaan Couwenberg"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:313
 #, no-c-format
-msgid "Sergey Fedoseev"
+msgid "Sergei Shoulbakov"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:314
 #, no-c-format
-msgid "Shinichi Sugiyama"
+msgid "Sergey Fedoseev"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:315
 #, no-c-format
-msgid "Shoaib Burq"
+msgid "Shinichi Sugiyama"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:316
 #, no-c-format
-msgid "Silvio Grosso"
+msgid "Shoaib Burq"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:317
 #, no-c-format
-msgid "Stefan Corneliu Petrea"
+msgid "Silvio Grosso"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:318
 #, no-c-format
-msgid "Steffen Macke"
+msgid "Stefan Corneliu Petrea"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:319
 #, no-c-format
-msgid "Stepan Kuzmin"
+msgid "Steffen Macke"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:320
 #, no-c-format
-msgid "Stephen Frost"
+msgid "Stepan Kuzmin"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:321
 #, no-c-format
-msgid "Steven Ottens"
+msgid "Stephen Frost"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:322
 #, no-c-format
-msgid "Talha Rizwan"
+msgid "Steven Ottens"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:323
 #, no-c-format
-msgid "Teramoto Ikuhiro"
+msgid "Talha Rizwan"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:324
 #, no-c-format
-msgid "Tom Glancy"
+msgid "Teramoto Ikuhiro"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:325
 #, no-c-format
-msgid "Tom van Tilburg"
+msgid "Tom Glancy"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:326
 #, no-c-format
-msgid "Victor Collod"
+msgid "Tom van Tilburg"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:327
 #, no-c-format
-msgid "Vincent Bre"
+msgid "Victor Collod"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:328
 #, no-c-format
-msgid "Vincent Mora"
+msgid "Vincent Bre"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:329
 #, no-c-format
-msgid "Vincent Picavet"
+msgid "Vincent Mora"
 msgstr ""
 
 #. Tag: member
 #: introduction.xml:330
 #, no-c-format
+msgid "Vincent Picavet"
+msgstr ""
+
+#. Tag: member
+#: introduction.xml:331
+#, no-c-format
 msgid "Volf Tomáš"
 msgstr ""
 
 #. Tag: term
-#: introduction.xml:337
+#: introduction.xml:338
 #, no-c-format
 msgid "Corporate Sponsors"
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:340
+#: introduction.xml:341
 #, no-c-format
 msgid ""
 "These are corporate entities that have contributed developer time, hosting, "
@@ -1100,271 +1106,271 @@ msgid ""
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:343
+#: introduction.xml:344
 #, no-c-format
 msgid "Aiven"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:344
+#: introduction.xml:345
 #, no-c-format
 msgid "Arrival 3D"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:345
+#: introduction.xml:346
 #, no-c-format
 msgid "Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it)"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:346
+#: introduction.xml:347
 #, no-c-format
 msgid "AusVet"
 msgstr ""
 
 #. Tag: simpara
-#: introduction.xml:347
+#: introduction.xml:348
 #, no-c-format
 msgid "Avencia"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:348
+#: introduction.xml:349
 #, no-c-format
 msgid "Azavea"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:349
+#: introduction.xml:350
 #, no-c-format
 msgid "Boundless"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:350
+#: introduction.xml:351
 #, no-c-format
 msgid "Cadcorp"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:351
+#: introduction.xml:352
 #, no-c-format
 msgid "Camptocamp"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:352
+#: introduction.xml:353
 #, no-c-format
 msgid "Carto"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:353
+#: introduction.xml:354
 #, no-c-format
 msgid "Crunchy Data"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:354
+#: introduction.xml:355
 #, no-c-format
 msgid "City of Boston (DND)"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:355
+#: introduction.xml:356
 #, no-c-format
 msgid "City of Helsinki"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:356
+#: introduction.xml:357
 #, no-c-format
 msgid "Clever Elephant Solutions"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:357
+#: introduction.xml:358
 #, no-c-format
 msgid "Cooperativa Alveo"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:358
+#: introduction.xml:359
 #, no-c-format
 msgid "Deimos Space"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:359
+#: introduction.xml:360
 #, no-c-format
 msgid "Faunalia"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:360
+#: introduction.xml:361
 #, no-c-format
 msgid "Geographic Data BC"
 msgstr ""
 
 #. Tag: simpara
-#: introduction.xml:361
+#: introduction.xml:362
 #, no-c-format
 msgid "Hunter Systems Group"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:362
+#: introduction.xml:363
 #, no-c-format
 msgid "ISciences, LLC"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:363
+#: introduction.xml:364
 #, no-c-format
 msgid "Kontur"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:364
+#: introduction.xml:365
 #, no-c-format
 msgid "Lidwala Consulting Engineers"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:365
+#: introduction.xml:366
 #, no-c-format
 msgid "LISAsoft"
 msgstr ""
 
 #. Tag: simpara
-#: introduction.xml:366
+#: introduction.xml:367
 #, no-c-format
 msgid "Logical Tracking &amp; Tracing International AG"
 msgstr ""
 
 #. Tag: simpara
-#: introduction.xml:367
+#: introduction.xml:368
 #, no-c-format
 msgid "Maponics"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:368
+#: introduction.xml:369
 #, no-c-format
 msgid "Michigan Tech Research Institute"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:369
+#: introduction.xml:370
 #, no-c-format
 msgid "Natural Resources Canada"
 msgstr ""
 
 #. Tag: simpara
-#: introduction.xml:370
+#: introduction.xml:371
 #, no-c-format
 msgid "Norwegian Forest and Landscape Institue"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:371
+#: introduction.xml:372
 #, no-c-format
 msgid "Norwegian Institute of Bioeconomy Research (NIBIO)"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:372
+#: introduction.xml:373
 #, no-c-format
 msgid "OSGeo"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:373
+#: introduction.xml:374
 #, no-c-format
 msgid "Oslandia"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:374
+#: introduction.xml:375
 #, no-c-format
 msgid "Palantir Technologies"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:375
+#: introduction.xml:376
 #, no-c-format
 msgid "Paragon Corporation"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:376
+#: introduction.xml:377
 #, no-c-format
 msgid "R3 GIS"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:377
+#: introduction.xml:378
 #, no-c-format
 msgid "Refractions Research"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:378
+#: introduction.xml:379
 #, no-c-format
 msgid "Regione Toscana - SITA"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:379
+#: introduction.xml:380
 #, no-c-format
 msgid "Safe Software"
 msgstr ""
 
 #. Tag: simpara
-#: introduction.xml:380
+#: introduction.xml:381
 #, no-c-format
 msgid "Sirius Corporation plc"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:381
+#: introduction.xml:382
 #, no-c-format
 msgid "Stadt Uster"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:382
+#: introduction.xml:383
 #, no-c-format
 msgid "UC Davis Center for Vectorborne Diseases"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:383
+#: introduction.xml:384
 #, no-c-format
 msgid "Université Laval"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:384
+#: introduction.xml:385
 #, no-c-format
 msgid "U.S. Department of State (HIU)"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:385
+#: introduction.xml:386
 #, no-c-format
 msgid "Zonar Systems"
 msgstr ""
 
 #. Tag: term
-#: introduction.xml:392
+#: introduction.xml:393
 #, no-c-format
 msgid "Crowd Funding Campaigns"
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:395
+#: introduction.xml:396
 #, no-c-format
 msgid ""
 "Crowd funding campaigns are campaigns we run to get badly wanted features "
@@ -1379,7 +1385,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:396
+#: introduction.xml:397
 #, no-c-format
 msgid ""
 "PostGIS 2.0.0 was the first release we tried this strategy. We used <ulink "
@@ -1388,7 +1394,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:397
+#: introduction.xml:398
 #, no-c-format
 msgid ""
 "<ulink url=\"http://www.pledgebank.com/postgistopology\"><emphasis "
@@ -1398,7 +1404,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:398
+#: introduction.xml:399
 #, no-c-format
 msgid ""
 "<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis "
@@ -1408,13 +1414,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: introduction.xml:403
+#: introduction.xml:404
 #, no-c-format
 msgid "Important Support Libraries"
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:406
+#: introduction.xml:407
 #, no-c-format
 msgid ""
 "The <ulink url=\"https://libgeos.org\">GEOS</ulink> geometry operations "
@@ -1422,7 +1428,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:409
+#: introduction.xml:410
 #, no-c-format
 msgid ""
 "The <ulink url=\"https://gdal.org\">GDAL</ulink> Geospatial Data Abstraction "
@@ -1432,7 +1438,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:414
+#: introduction.xml:415
 #, no-c-format
 msgid ""
 "The <ulink url=\"https://www.proj4.org\">PROJ</ulink> cartographic "
@@ -1440,7 +1446,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:417
+#: introduction.xml:418
 #, no-c-format
 msgid ""
 "Last but not least, <ulink url=\"http://www.postgresql.org\">PostgreSQL</"

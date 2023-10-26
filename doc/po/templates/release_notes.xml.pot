@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-08-12 03:32+0000\n"
+"POT-Creation-Date: 2023-10-26 10:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -35,16 +35,16 @@ msgstr ""
 #. Tag: para
 #: release_notes.xml:7
 #, no-c-format
-msgid "2023/08/13"
+msgid "2023/08/15"
 msgstr ""
 
 #. Tag: para
 #: release_notes.xml:8
 #, no-c-format
 msgid ""
-"This version requires PostgreSQL 12 or higher, GEOS 3.6 or higher, and Proj "
-"6.1+. To take advantage of all features, GEOS 3.12+ is needed. To take "
-"advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed."
+"This version requires PostgreSQL 12-16, GEOS 3.6 or higher, and Proj 6.1+. "
+"To take advantage of all features, GEOS 3.12+ is needed. To take advantage "
+"of all SFCGAL featurs, SFCGAL 1.4.1+ is needed."
 msgstr ""
 
 #. Tag: para
@@ -73,14 +73,37 @@ msgstr ""
 msgid "Vincent Bre (French Team)"
 msgstr ""
 
-#. Tag: title
+#. Tag: para
+#: release_notes.xml:16
+#, no-c-format
+msgid "There are 2 new ./configure switches:"
+msgstr ""
+
+#. Tag: para
 #: release_notes.xml:17
+#, no-c-format
+msgid ""
+"--disable-extension-upgrades-install, will skip installing all the extension "
+"upgrade scripts except for the ANY--currentversion. If you use this, you can "
+"install select upgrades using the postgis commandline tool"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:18
+#, no-c-format
+msgid ""
+"--without-pgconfig, will build just the commandline tools raster2pgsql and "
+"shp2pgsql even if PostgreSQL is not installed"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:22
 #, no-c-format
 msgid "New features"
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:18
+#: release_notes.xml:23
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5055\">5055</ulink>, "
@@ -88,7 +111,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:19
+#: release_notes.xml:24
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5052\">5052</ulink>, "
@@ -96,7 +119,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:21
+#: release_notes.xml:26
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</ulink>, "
@@ -104,14 +127,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:22
+#: release_notes.xml:27
 #, no-c-format
 msgid ""
 "New install-extension-upgrades command in postgis script (Sandro Santilli)"
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:23
+#: release_notes.xml:28
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5257\">5257</ulink>, "
@@ -121,7 +144,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:24
+#: release_notes.xml:29
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5006\">5006</ulink>, "
@@ -130,7 +153,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:25
+#: release_notes.xml:30
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5283\">5283</ulink>, "
@@ -138,7 +161,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:26
+#: release_notes.xml:31
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5286\">5286</ulink>, "
@@ -146,7 +169,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:27
+#: release_notes.xml:32
 #, no-c-format
 msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/703\">703</ulink>, "
@@ -154,7 +177,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:28
+#: release_notes.xml:33
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5336\">5336</ulink>, "
@@ -162,7 +185,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:29
+#: release_notes.xml:34
 #, no-c-format
 msgid ""
 "Allow singleton geometry to be inserted into Geometry(Multi*) columns (Paul "
@@ -170,7 +193,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:30
+#: release_notes.xml:35
 #, no-c-format
 msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/721\">721</ulink>, New "
@@ -178,7 +201,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:31
+#: release_notes.xml:36
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5397\">5397</ulink>, "
@@ -186,7 +209,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:32
+#: release_notes.xml:37
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5373\">5373</"
@@ -195,7 +218,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:33
+#: release_notes.xml:38
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</ulink>, "
@@ -203,7 +226,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:34
+#: release_notes.xml:39
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5267\">5267</ulink>, "
@@ -211,7 +234,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:35
+#: release_notes.xml:40
 #, no-c-format
 msgid ""
 "New coverage functions ST_CoverageInvalidEdges, ST_CoverageSimplify, "
@@ -219,13 +242,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: release_notes.xml:39
+#: release_notes.xml:44
 #, no-c-format
 msgid "Enhancements"
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:40
+#: release_notes.xml:45
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5194\">5194</ulink>, do "
@@ -233,7 +256,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:41
+#: release_notes.xml:46
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5092\">5092</ulink>, "
@@ -241,7 +264,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:42
+#: release_notes.xml:47
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/635\">635</ulink>, honour "
@@ -249,7 +272,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:43
+#: release_notes.xml:48
 #, no-c-format
 msgid ""
 "Honour --mandir (and --prefix) configure switch for man pages install path "
@@ -257,7 +280,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:44
+#: release_notes.xml:49
 #, no-c-format
 msgid ""
 "Honour --htmldir (and --docdir and --prefix) configure switch for html pages "
@@ -265,7 +288,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:46
+#: release_notes.xml:51
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5447\">5447</ulink> "
@@ -274,7 +297,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:48
+#: release_notes.xml:53
 #, no-c-format
 msgid ""
 "[postgis_topology] Speed up check of topology faces without edges (Sandro "
@@ -282,7 +305,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:49
+#: release_notes.xml:54
 #, no-c-format
 msgid ""
 "[postgis_topology] Speed up coincident nodes check in topology validation "
@@ -290,7 +313,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:50
+#: release_notes.xml:55
 #, no-c-format
 msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/718\">718</ulink>, "
@@ -298,7 +321,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:51
+#: release_notes.xml:56
 #, no-c-format
 msgid ""
 "Repair spatial planner stats to use computed selectivity for contains/within "
@@ -306,7 +329,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:52
+#: release_notes.xml:57
 #, no-c-format
 msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/734\">734</ulink>, "
@@ -315,7 +338,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:53
+#: release_notes.xml:58
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5177\">5177</ulink>, "
@@ -324,14 +347,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:55
+#: release_notes.xml:60
 #, no-c-format
 msgid ""
 "ST_Project signature for geometry, and two-point signature (Paul Ramsey)"
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:56
+#: release_notes.xml:61
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/4913\">4913</ulink>, "
@@ -340,7 +363,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:58
+#: release_notes.xml:63
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5266\">5266</ulink>, "
@@ -349,13 +372,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: release_notes.xml:62
+#: release_notes.xml:67
 #, no-c-format
 msgid "Breaking Changes"
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:63
+#: release_notes.xml:68
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5229\">5229</ulink>, Drop "
@@ -363,7 +386,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:64
+#: release_notes.xml:69
 #, no-c-format
 msgid ""
 "<ulink url=\"https://trac.osgeo.org/postgis/ticket/5306\">5306</ulink>, "
@@ -375,7 +398,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:68
+#: release_notes.xml:73
 #, no-c-format
 msgid ""
 "<ulink url=\"https://github.com/postgis/postgis/pull/5447\">5447</ulink>, "
@@ -383,7 +406,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: release_notes.xml:70
+#: release_notes.xml:75
 #, no-c-format
 msgid ""
 "Utilities now installed in OS bin or user specified --bindir and --prefix "
