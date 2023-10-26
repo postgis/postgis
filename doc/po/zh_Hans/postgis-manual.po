@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-10-06 06:13+0000\n"
-"PO-Revision-Date: 2023-10-25 06:23+0000\n"
+"PO-Revision-Date: 2023-10-26 08:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
@@ -13276,9 +13276,8 @@ msgid ""
 "\"ST_Distance\">distance</link> of at least <varname>minpoints</varname> "
 "input geometries (including itself); or"
 msgstr ""
-"“核心”几何体，位于至少 <varname>minpoints</varname> 个输入几何体（包括其自"
-"身）的 <varname>eps</varname> <link linkend=\"ST_Distance\">距离</link> 内； "
-"或者"
+"在<varname>eps</varname> <link linkend=\"ST_Distance\">距离</link>内的“核心”"
+"几何图形，至少有<varname>minpoints</varname>个输入几何图形（包括它自己）；或"
 
 #. Tag: para
 #, no-c-format
@@ -13516,8 +13515,8 @@ msgid ""
 "ST_ClusterWithin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN\"/"
 "> with <code>minpoints := 0</code>."
 msgstr ""
-"ST_ClusterWithin 相当于以 <code>minpoints := 0 </code>运行<xref linkend="
-"\"ST_ClusterDBSCAN\"/>。"
+"ST_ClusterWithin 相当于使用 <xref linkend=\"ST_ClusterDBSCAN\"/> 且设置 "
+"<code>minpoints := 0</code>。"
 
 #. Tag: para
 #, no-c-format
@@ -13554,8 +13553,8 @@ msgid ""
 "ST_ClusterWithinWin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN"
 "\"/> with <code>minpoints := 0</code>."
 msgstr ""
-"ST_ClusterWithinWin 相当于以<code> minpoints := 0 </code>运行 <xref linkend="
-"\"ST_ClusterDBSCAN\"/>。"
+"ST_ClusterWithinWin 相当于使用 <xref linkend=\"ST_ClusterDBSCAN\"/> 且设置 "
+"<code>minpoints := 0</code>。"
 
 #. Tag: para
 #, no-c-format
@@ -41344,8 +41343,8 @@ msgid ""
 "coordinates (<varname>POINT</varname>s) are equal (have identical coordinate "
 "values)."
 msgstr ""
-"如果没有两个坐标（<varname>POINT</varname>）的坐标值相同（具有相同的坐标"
-"值），那么<varname>MULTIPOINT</varname>是<emphasis>简单的</emphasis>。"
+"<varname>MULTIPOINT</varname>是<emphasis>简单的</emphasis>，如果没有两个坐标"
+"（<varname>POINT</varname>）的坐标值相同（具有相同的坐标值）。"
 
 #. Tag: para
 #, no-c-format
@@ -43389,13 +43388,13 @@ msgid ""
 "(for SSD) or 2.0 (for fast magnetic disks). Decreasing the value makes the "
 "planner more likely to use index scans."
 msgstr ""
-"如果 <command>SET ENABLE_SEQSCAN TO OFF;</command> 帮助您的查询运行得更快，则"
-"您的 Postgres 可能未针对您的硬件进行调整。 如果您发现规划器对顺序扫描与索引扫"
-"描的成本有误，请尝试减少 <code>postgresql.conf</code> 中的 "
-"<varname>RANDOM_PAGE_COST</varname> 值，或使用 <command>SET RANDOM_PAGE_COST "
-"TO 1.1;</command>。 <varname>RANDOM_PAGE_COST</varname> 的默认值为 4.0。 尝试"
-"将其设置为 1.1（对于 SSD）或 2.0（对于快速磁盘）。 减小该值使规划器更有可能使"
-"用索引扫描。"
+"如果 <command>SET ENABLE_SEQSCAN TO OFF;</command> 帮助您的查询运行得更快，"
+"则您的 Postgres 可能未针对您的硬件进行调整。 "
+"如果您发现规划器对顺序扫描与索引扫描的成本有误，请尝试减小 "
+"<varname>RANDOM_PAGE_COST</varname> 值（位于 <code>postgresql."
+"conf</code>中），或使用 <command>SET RANDOM_PAGE_COST TO 1.1;</command>。 "
+"<varname>RANDOM_PAGE_COST</varname> 的默认值为 4.0。 尝试将其设置为 1.1（"
+"对于 SSD）或 2.0（对于快速磁盘）。 减小该值使规划器更有可能使用索引扫描。"
 
 #. Tag: para
 #, no-c-format
@@ -43556,10 +43555,10 @@ msgid ""
 "F}</literal>:"
 msgstr ""
 "对于几何图形<emphasis>g</emphasis>，<emphasis>内部</emphasis>、<emphasis>边界"
-"</emphasis>和<emphasis>外部</emphasis>使用符号<emphasis>I(g)</emphasis>、"
-"<emphasis>B(g)</emphasis>和<emphasis>E(g)</emphasis>表示。 此外，"
-"<emphasis>dim(s)</emphasis> 表示域为 <literal>{0,1,2,F}</literal>的集合"
-"<emphasis>s</emphasis> ："
+"</emphasis>和<emphasis>外部</emphasis>使用符号<emphasis>I(g)</emphasis>、<emp"
+"hasis>B(g)</emphasis>和<emphasis>E(g)</emphasis>表示。 "
+"此外，<emphasis>dim(s)</emphasis> 表示集合<emphasis>s</emphasis> （域为 "
+"<literal>{0,1,2,F}</literal>）："
 
 #. Tag: para
 #, no-c-format
@@ -44044,10 +44043,10 @@ msgid ""
 "specified point, ie. one <varname>ST_Distance()</varname> calculation is "
 "computed for <emphasis role=\"bold\">every</emphasis> row in the table."
 msgstr ""
-"此查询选择 <code>geom_table</code> 中距离该点 100 个单位 (100000, 200000) 以"
-"内的所有几何图形。 它会很慢，因为它正在计算表中每个点与指定点之间的距离，"
-"即。 为表中的<emphasis role=\"bold\">每一</emphasis> 行进行一次"
-"<varname>ST_Distance()</varname> 计算。"
+"此查询选择 <code>geom_table</code> 中距离该点 (100000, 200000) 100 个单位 "
+"以内的所有几何图形。 它会很慢，因为它正在计算表中每个点与指定点之间的距离，即"
+"为进行<varname>ST_Distance()</varname> 计算（对表中的<emphasis role=\"bold\""
+">每一行</emphasis>）。"
 
 #. Tag: para
 #, no-c-format
@@ -44735,10 +44734,11 @@ msgid ""
 "\"postgis_gdal_vsi_options\"/> configuration. Note that multiple options can "
 "be set by space-separating the <varname>key=value</varname> pairs."
 msgstr ""
-"对于非公共栅格，您可能必须提供访问密钥才能从云栅格中读取。 您可以使用 <xref "
-"linkend=\"postgis_gdal_vsi_options\"/>配置将用于编写<varname> raster2pgsql </"
-"varname>调用的相同键设置为在数据库内部使用。 请注意，可以通过空格分隔"
-"<varname>键=值对</varname>来设置多个选项。"
+"对于非公开的栅格数据，你可能需要提供访问密钥来从云端栅格数据中读取。"
+"你可以将写入 <varname>raster2pgsql</varname> "
+"调用时使用的相同密钥设置为在数据库内部使用，使用 <xref linkend="
+"\"postgis_gdal_vsi_options\"/> 配置。请注意，可以通过用空格分隔 "
+"<varname>key=value</varname> 对来设置多个选项。"
 
 #. Tag: para
 #, no-c-format
