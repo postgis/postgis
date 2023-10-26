@@ -44,6 +44,7 @@ doc/raster_gardentest_*.sql
 doc/tiger_geocoder_comments.sql
 doc/topology_comments.sql
 extensions/Makefile
+extensions/postgis_extension_helper.sql
 extensions/address_standardizer/Makefile
 extensions/address_standardizer/mk-st-regexp
 extensions/address_standardizer/address_standardizer--*.sql
