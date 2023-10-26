@@ -9,6 +9,13 @@
 #
 #############################################################################
 
+srcdir = @srcdir@
+SQLPP = @SQLPP@
+PERL=@PERL@
+VPATH := $(srcdir)
+
+SCRIPTS_BUILT = postgis_extension_helper.sql
+
 SUBDIRS = postgis
 SUBDIRS += postgis_tiger_geocoder
 ifeq (@RASTER@,raster)
@@ -31,12 +38,23 @@ all clean distclean install uninstall installcheck install-extension-upgrades-fr
 		$(MAKE) -C "$${DIR}" $@ || exit 1; \
 	done
 
+all: $(SCRIPTS_BUILT)
+
 distclean: distclean-local
 
 distclean-local:
 	rm -f Makefile
 
-
 check check-unit check-regress:
 	@echo "Nothing to check"
 
+# Generate any .sql file from .sql.in files by running them through the SQL pre-processor
+%.sql: %.sql.in
+	$(SQLPP) -I@top_builddir@/postgis -I@top_srcdir@ $< > $@.tmp
+	grep -v '^#' $@.tmp > $@;
+	rm -f $@.tmp
+
+clean: clean-local
+
+clean-local:
+	rm -f $(SCRIPTS_BUILT)

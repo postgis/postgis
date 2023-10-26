@@ -109,7 +109,7 @@ endif
 
 # Generate any .sql file from .sql.in files by running them through the SQL pre-processor
 %.sql: %.sql.in
-	$(SQLPP) -I@top_builddir@/postgis $< > $@.tmp
+	$(SQLPP) -I@top_builddir@/postgis -I@top_srcdir@ $< > $@.tmp
 	grep -v '^#' $@.tmp | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" > $@
 	rm -f $@.tmp
