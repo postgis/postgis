@@ -48,6 +48,8 @@ distclean-local:
 check check-unit check-regress:
 	@echo "Nothing to check"
 
+postgis_extension_helper.sql: ../libpgcommon/sql/AddToSearchPath.sql.inc
+
 # Generate any .sql file from .sql.in files by running them through the SQL pre-processor
 %.sql: %.sql.in
 	$(SQLPP) -I@top_builddir@/postgis -I@top_srcdir@ $< > $@.tmp

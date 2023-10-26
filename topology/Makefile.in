@@ -153,6 +153,7 @@ topology.sql: \
 	sql/topogeometry/topogeom_edit.sql.in \
 	sql/topogeometry/simplify.sql.in \
 	sql/predicates.sql.in \
+	../libpgcommon/sql/AddToSearchPath.sql.inc \
 	../postgis/sqldefines.h \
 	../postgis_revision.h
 
