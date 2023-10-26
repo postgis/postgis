@@ -280,6 +280,7 @@ if test "x$XSLBASE" = "x"; then
 		/usr/share/xsl/docbook-xsl
 		"
 	for p in ${SEARCHPATH}; do
+		AC_MSG_CHECKING([for html/docbook.xsl in directory $p...])
 		if test -r "${p}"/html/docbook.xsl; then
 			XSLBASE_AUTO="${p}"
 			break
