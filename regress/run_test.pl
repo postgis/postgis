@@ -51,7 +51,7 @@ our $DB = $ENV{"POSTGIS_REGRESS_DB"} || "postgis_reg";
 our $REGDIR = $ENV{"POSTGIS_REGRESS_DIR"} || abs_path(dirname($0));
 our $TOP_SOURCEDIR = ${REGDIR} . '/..';
 our $ABS_TOP_SOURCEDIR = abs_path(${TOP_SOURCEDIR});
-our $TOP_BUILDDIR = $ENV{"POSTGIS_TOP_BUILD_DIR"} || ${TOP_SOURCEDIR};
+our $TOP_BUILDDIR = $ENV{"POSTGIS_TOP_BUILD_DIR"};
 our $sysdiff = !system("diff --strip-trailing-cr $0 $0 2> /dev/null");
 
 ##################################################################
@@ -130,12 +130,12 @@ sub findOrDie
 {
     my $exec = shift;
     my $verbose = shift;
-    printf "Checking for %s ... ", $exec if $verbose;
+    printf "Checking for %s ... ", $exec if $verbose gt 1;
     foreach my $d ( split /:/, $ENV{PATH} )
     {
         my $path = $d . '/' . $exec;
         if ( -x $path ) {
-            if ( $verbose ) {
+            if ( $verbose gt 1 ) {
                 print "found";
                 print " ($path)" if $verbose gt 1;
                 print "\n";
@@ -146,6 +146,20 @@ sub findOrDie
     print STDERR "Unable to find $exec executable.\n";
     print STDERR "PATH is " . $ENV{"PATH"} . "\n";
     die "HINT: use POSTGIS_TOP_BUILD_DIR env or --build-dir switch the specify top build dir.\n";
+}
+
+
+# If build dir is not given, try to guess
+if ( "${TOP_BUILDDIR}" eq "" )
+{
+    foreach my $d ( $ENV{'PWD'}, "${TOP_SOURCEDIR}" )
+    {
+        if ( -e ${d} . '/postgis_revision.h' )
+        {
+            $TOP_BUILDDIR="${d}";
+            last;
+        }
+    }
 }
 
 # Prepend scripts' build dirs to path
@@ -1525,12 +1539,6 @@ sub load_sql_file
 	my $file = shift;
 	my $strict = shift;
 
-	if ( $strict && ! -e $file )
-	{
-		fail "Unable to find $file";
-		return 0;
-	}
-
 	if ( -e $file )
 	{
 		# ON_ERROR_STOP is used by psql to return non-0 on an error
@@ -1548,6 +1556,12 @@ sub load_sql_file
 			return 0;
 		}
 	}
+	elsif ( $strict )
+	{
+		fail "Unable to find $file";
+		return 0;
+	}
+
 	return 1;
 }
 
