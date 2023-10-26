@@ -283,8 +283,10 @@ if test "x$XSLBASE" = "x"; then
 		AC_MSG_CHECKING([for html/docbook.xsl in directory $p...])
 		if test -r "${p}"/html/docbook.xsl; then
 			XSLBASE_AUTO="${p}"
+			AC_MSG_RESULT([found])
 			break
 		fi
+		AC_MSG_RESULT([not found])
 	done
 
 	dnl Check to see if the automatically searched paths above located a
