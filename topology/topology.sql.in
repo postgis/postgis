@@ -1300,7 +1300,7 @@ AS  $$SELECT ARRAY[topo.id,topo.layer_id]::topology.topoelement;$$;
 --
 -- Availability: 3.4.0
 -- }{
-CREATE CAST (topogeometry AS int[]) WITH FUNCTION TopoElement(topogeometry) AS ASSIGNMENT;
+CREATE CAST (topology.TopoGeometry AS int[]) WITH FUNCTION topology.TopoElement(topology.TopoGeometry) AS ASSIGNMENT;
 --} TopoGeometry(int[])
 
 --{
