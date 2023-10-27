@@ -438,7 +438,7 @@ if ( $OPT_DUMPRESTORE )
     print "Creating db '${DB}'\n";
     $rv = create_db();
     if ( ! $rv ) {
-        fail("Could not create db ${DB}", $REGRESS_LOG);
+        fail("Could not create db ${DB} (create_db returned $rv)", $REGRESS_LOG);
         die;
     }
 
@@ -1527,6 +1527,8 @@ sub create_db
 		print "Running after-create-db-script $hook\n";
 		die unless load_sql_file($hook, 1);
 	}
+
+	return 1;
 }
 
 sub create_spatial
