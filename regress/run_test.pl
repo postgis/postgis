@@ -83,6 +83,7 @@ my $OPT_EXPECT = 0;
 my $OPT_EXTENSIONS = 0;
 my $OPT_LEGACY = 0;
 my @OPT_HOOK_AFTER_CREATE;
+my @OPT_HOOK_AFTER_CREATE_DB;
 my @OPT_HOOK_AFTER_RESTORE;
 my @OPT_HOOK_BEFORE_DUMP;
 my @OPT_HOOK_BEFORE_TEST;
@@ -115,6 +116,7 @@ GetOptions (
 	'schema=s' => \$OPT_SCHEMA,
 	'build-dir=s' => \$TOP_BUILDDIR,
 	'after-create-script=s' => \@OPT_HOOK_AFTER_CREATE,
+	'after-create-db-script=s' => \@OPT_HOOK_AFTER_CREATE_DB,
 	'after-test-script=s' => \@OPT_HOOK_AFTER_TEST,
 	'before-uninstall-script=s' => \@OPT_HOOK_BEFORE_UNINSTALL,
 	'before-test-script=s' => \@OPT_HOOK_BEFORE_TEST,
@@ -736,6 +738,9 @@ Options:
                   to find binaries and scripts
   --after-create-script <path>
                   script to load after spatial db creation
+                  (multiple switches supported, to be run in given order)
+  --after-create-db-script <path>
+                  script to load after db creation
                   (multiple switches supported, to be run in given order)
   --before-uninstall-script <path>
                   script to load before spatial extension uninstall
@@ -1514,7 +1519,14 @@ sub create_db
 		$createcmd .= " --owner $DB_OWNER";
 	}
 	$createcmd .= " $DB > $REGRESS_LOG";
-	return not system($createcmd);
+
+	return 0 if system($createcmd);
+
+	foreach my $hook (@OPT_HOOK_AFTER_CREATE_DB)
+	{
+		print "Running after-create-db-script $hook\n";
+		die unless load_sql_file($hook, 1);
+	}
 }
 
 sub create_spatial
