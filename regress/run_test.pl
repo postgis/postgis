@@ -49,7 +49,8 @@ BEGIN {
 
 our $DB = $ENV{"POSTGIS_REGRESS_DB"} || "postgis_reg";
 our $REGDIR = $ENV{"POSTGIS_REGRESS_DIR"} || abs_path(dirname($0));
-our $DB_ROLE_EXT_MKR = $ENV{"POSTGIS_REGRESS_ROLE_EXT_CREATOR"};
+our $DB_OWNER = $ENV{"POSTGIS_REGRESS_DB_OWNER"};
+our $DB_ROLE_EXT_MKR = $ENV{"POSTGIS_REGRESS_ROLE_EXT_CREATOR"} || $DB_OWNER;
 
 our $TOP_SOURCEDIR = ${REGDIR} . '/..';
 our $ABS_TOP_SOURCEDIR = abs_path(${TOP_SOURCEDIR});
@@ -761,12 +762,16 @@ Environment Variables:
   POSTGIS_REGRESS_DB
                   Name of database to create and use for regression tests.
                   Defaults to "postgis_reg"
+  POSTGIS_REGRESS_DB_OWNER
+                  PostgreSQL role to become owner of the regress db.
+                  Defaults to connecting user (determined by libpq env
+                  variables)
+  POSTGIS_REGRESS_ROLE_EXT_CREATOR
+                  PostgreSQL role to switch to for creating the
+                  postgis extensions. Defaults to POSTGIS_REGRESS_DB_OWNER
   POSTGIS_REGRESS_DIR
                   Base directory of regress tests. Defaults to
                   name of directory containing this script.
-  POSTGIS_REGRESS_ROLE_EXT_CREATOR
-                  PostgreSQL role to switch to for creating the
-                  postgis extensions.
 
 };
 
@@ -1503,7 +1508,10 @@ sub create_db
 {
 	my $createcmd = "createdb --encoding=UTF-8 --template=template0 --lc-collate=C";
 	if ( $pgvernum ge 150000 ) {
-		$createcmd .= " --locale=C --locale-provider=libc"
+		$createcmd .= " --locale=C --locale-provider=libc";
+	}
+	if ( $DB_OWNER ) {
+		$createcmd .= " --owner $DB_OWNER";
 	}
 	$createcmd .= " $DB > $REGRESS_LOG";
 	return not system($createcmd);
