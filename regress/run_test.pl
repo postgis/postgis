@@ -1518,7 +1518,7 @@ sub create_db
 	if ( $DB_OWNER ) {
 		$createcmd .= " --owner $DB_OWNER";
 	}
-	$createcmd .= " $DB > $REGRESS_LOG";
+	$createcmd .= " $DB > $REGRESS_LOG 2>&1";
 
 	return 0 if system($createcmd);
 
