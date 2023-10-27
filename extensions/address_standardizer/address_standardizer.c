@@ -18,9 +18,9 @@
 PG_MODULE_MAGIC;
 #endif
 
+Datum debug_standardize_address(PG_FUNCTION_ARGS);
 Datum standardize_address(PG_FUNCTION_ARGS);
 Datum standardize_address1(PG_FUNCTION_ARGS);
-Datum debug_standardize_address(PG_FUNCTION_ARGS);
 
 /*
  * The signature for standardize_address follows. The lextab, gaztab and
@@ -59,20 +59,19 @@ PG_FUNCTION_INFO_V1(debug_standardize_address);
 Datum
 debug_standardize_address(PG_FUNCTION_ARGS)
 {
-    STANDARDIZER        *std;
-    char                *lextab;
-    char                *gaztab;
-    char                *rultab;
-    char                *micro;
-    char                *macro;
-    STDADDR             *stdaddr;
-	int k;
-    char rule_in[100];
+	STANDARDIZER        *std;
+	char                *lextab;
+	char                *gaztab;
+	char                *rultab;
+	char                *micro;
+	StringInfo macro = makeStringInfo();
+	STDADDR             *stdaddr;
+	char rule_in[100];
 	char rule_out[100];
 	char temp[100];
-    int stz_no , n ;
+	int stz_no , n ;
 	DEF *__def__ ;
-    STZ **__stz_list__;
+	STZ **__stz_list__;
 	STAND_PARAM *ms;
 	STZ_PARAM *__stz_info__ ;
 	int lex_pos;
@@ -84,7 +83,7 @@ debug_standardize_address(PG_FUNCTION_ARGS)
 	Datum datrul;
 	bool isnull;
 	Datum values[1];
-  	Oid argtypes[1];
+  Oid argtypes[1];
 	int spi_result;
 	int spi_conn_ret;
 	/**stop: variables for filtering rules **/
@@ -95,13 +94,14 @@ debug_standardize_address(PG_FUNCTION_ARGS)
 
 	appendStringInfoChar(result, '{');
 
-    lextab = text_to_cstring(PG_GETARG_TEXT_P(0));
-    gaztab = text_to_cstring(PG_GETARG_TEXT_P(1));
-    rultab = text_to_cstring(PG_GETARG_TEXT_P(2));
-    micro  = text_to_cstring(PG_GETARG_TEXT_P(3));
+	lextab = text_to_cstring(PG_GETARG_TEXT_P(0));
+	gaztab = text_to_cstring(PG_GETARG_TEXT_P(1));
+	rultab = text_to_cstring(PG_GETARG_TEXT_P(2));
+	micro  = text_to_cstring(PG_GETARG_TEXT_P(3));
 
 	if ( (PG_NARGS()  > 4) && (!PG_ARGISNULL(4)) ) {
-		macro  = text_to_cstring(PG_GETARG_TEXT_P(4));
+		initStringInfo(macro);
+		appendStringInfo(macro, "%s",  text_to_cstring(PG_GETARG_TEXT_P(4)));
 	}
 	else {
 		ADDRESS             *paddr;
@@ -140,27 +140,22 @@ debug_standardize_address(PG_FUNCTION_ARGS)
 		if (! paddr-> address1)
 			elog(ERROR, "standardize_address() could not parse the address into components.");
 
-		k = 1;
-		if (paddr->city) k += strlen(paddr->city) + 1;
-		if (paddr->st)   k += strlen(paddr->st)   + 1;
-		if (paddr->zip)  k += strlen(paddr->zip)  + 1;
-		if (paddr->cc)   k += strlen(paddr->cc)   + 1;
 
 		/* create micro and macro from paddr */
 		micro = pstrdup(paddr->address1);
-		macro = (char *) palloc(k * sizeof(char));
-		*macro = '\0';
-		if (paddr->city) { strcat(macro, paddr->city); strcat(macro, ","); }
-		if (paddr->st  ) { strcat(macro, paddr->st  ); strcat(macro, ","); }
-		if (paddr->zip ) { strcat(macro, paddr->zip ); strcat(macro, ","); }
-		if (paddr->cc  ) { strcat(macro, paddr->cc  ); strcat(macro, ","); }
+		initStringInfo(macro);
+
+		if (paddr->city) { appendStringInfo(macro, "%s,", paddr->city); }
+		if (paddr->st  ) { appendStringInfo(macro, "%s,", paddr->st); }
+		if (paddr->zip ) { appendStringInfo(macro, "%s,", paddr->zip); }
+		if (paddr->cc  ) { appendStringInfo(macro, "%s,", paddr->cc); }
 	}
 	appendStringInfoString(result, "\"micro\":");
 	appendStringInfo(result, "%s", quote_identifier(micro));
 	appendStringInfoString(result, ",");
 
 	appendStringInfoString(result, "\"macro\":");
-	appendStringInfo(result, "%s", quote_identifier(macro));
+	appendStringInfo(result, "%s", quote_identifier(macro->data));
 	appendStringInfoString(result, ",");
 
 	std = GetStdUsingFCInfo(fcinfo, lextab, gaztab, rultab);
@@ -168,8 +163,8 @@ debug_standardize_address(PG_FUNCTION_ARGS)
 		elog(ERROR, "%s failed to create the address standardizer object!",  __func__);
 	}
 
-	elog(DEBUG2, "%s: calling std_standardize_mm('%s', '%s')", __func__ , micro, macro);
-    stdaddr = std_standardize_mm( std, micro, macro, 0 );
+	elog(DEBUG2, "%s: calling std_standardize_mm('%s', '%s')", __func__ , micro, macro->data);
+    stdaddr = std_standardize_mm( std, micro, macro->data, 0 );
 
 	ms = std->misc_stand;
 	__stz_info__ = ms->stz_info ;
@@ -259,6 +254,7 @@ debug_standardize_address(PG_FUNCTION_ARGS)
 			sprintf(temp, "%d", k2);
 			strcat(rule_out, temp);
 
+
 			appendStringInfo(result, "{\"pos\": %u,", lex_pos);
 			appendStringInfo(result, "\"input-token-code\": %d,",  __def__->Type);
 			appendStringInfo(result, "\"input-token\": %s,", quote_identifier( in_symb_name( __def__->Type ) ) );
@@ -282,7 +278,7 @@ debug_standardize_address(PG_FUNCTION_ARGS)
 		strcat(temp, " -1 %");
 		 /* execute */
  		values[0] = CStringGetDatum(temp);
-  		spi_result = SPI_execute_plan(plan, values, NULL, true, 1);
+  	spi_result = SPI_execute_plan(plan, values, NULL, true, 1);
 
 		//MemoryContextSwitchTo( oldcontext ); /* switch back */
 		if ( spi_result != SPI_OK_SELECT )
@@ -336,9 +332,9 @@ debug_standardize_address(PG_FUNCTION_ARGS)
 	appendStringInfoChar(result, ']');
 	elog(DEBUG2, "%s: setup values json", __func__);
 	appendStringInfoString(result, ",\"stdaddr\": {");
-    if (stdaddr) {
-        appendStringInfo(result, "\"building\": %s", (stdaddr->building ?
-				quote_identifier(pstrdup(stdaddr->building)) : "null") );
+	if (stdaddr) {
+			appendStringInfo(result, "\"building\": %s", (stdaddr->building ?
+			quote_identifier(pstrdup(stdaddr->building)) : "null") );
 
 		appendStringInfo(result, ",\"house_num\": %s", (stdaddr->house_num ?
 				quote_identifier(pstrdup(stdaddr->house_num)) : "null") );
@@ -384,11 +380,11 @@ debug_standardize_address(PG_FUNCTION_ARGS)
 
 		appendStringInfo(result, ",\"unit\": %s", (stdaddr->unit ?
 			quote_identifier(pstrdup(stdaddr->unit)) : "null") );
-    }
-    stdaddr_free(stdaddr);
-	appendStringInfoString(result, "}");
-	appendStringInfoString(result, "}");
-	PG_RETURN_TEXT_P(cstring_to_text_with_len(result->data, result->len));
+		}
+		stdaddr_free(stdaddr);
+		appendStringInfoString(result, "}");
+		appendStringInfoString(result, "}");
+		PG_RETURN_TEXT_P(cstring_to_text_with_len(result->data, result->len));
 }
 
 PG_FUNCTION_INFO_V1(standardize_address);
@@ -486,7 +482,7 @@ Datum standardize_address1(PG_FUNCTION_ARGS)
     char                *rultab;
     char                *addr;
     char                *micro;
-    char                *macro;
+		StringInfo macro = makeStringInfo();
     Datum                result;
     STDADDR             *stdaddr;
     char               **values;
@@ -544,29 +540,23 @@ Datum standardize_address1(PG_FUNCTION_ARGS)
     if (! paddr-> address1)
         elog(ERROR, "standardize_address() could not parse the address into components.");
 
-    k = 1;
-    if (paddr->city) k += strlen(paddr->city) + 1;
-    if (paddr->st)   k += strlen(paddr->st)   + 1;
-    if (paddr->zip)  k += strlen(paddr->zip)  + 1;
-    if (paddr->cc)   k += strlen(paddr->cc)   + 1;
 
     /* create micro and macro from paddr */
     micro = pstrdup(paddr->address1);
-    macro = (char *) palloc(k * sizeof(char));
+		initStringInfo(macro);
 
-    *macro = '\0';
-    if (paddr->city) { strcat(macro, paddr->city); strcat(macro, ","); }
-    if (paddr->st  ) { strcat(macro, paddr->st  ); strcat(macro, ","); }
-    if (paddr->zip ) { strcat(macro, paddr->zip ); strcat(macro, ","); }
-    if (paddr->cc  ) { strcat(macro, paddr->cc  ); strcat(macro, ","); }
+		if (paddr->city) { appendStringInfo(macro, "%s,", paddr->city); }
+		if (paddr->st  ) { appendStringInfo(macro, "%s,", paddr->st); }
+		if (paddr->zip ) { appendStringInfo(macro, "%s,", paddr->zip); }
+		if (paddr->cc  ) { appendStringInfo(macro, "%s,", paddr->cc); }
 
     DBG("calling GetStdUsingFCInfo(fcinfo, '%s', '%s', '%s')", lextab, gaztab, rultab);
     std = GetStdUsingFCInfo(fcinfo, lextab, gaztab, rultab);
     if (!std)
         elog(ERROR, "standardize_address() failed to create the address standardizer object!");
 
-    DBG("calling std_standardize_mm('%s', '%s')", micro, macro);
-    stdaddr = std_standardize_mm( std, micro, macro, 0 );
+    DBG("calling std_standardize_mm('%s', '%s')", micro, macro->data);
+    stdaddr = std_standardize_mm( std, micro, macro->data, 0 );
 
     DBG("back from fetch_stdaddr");
 
