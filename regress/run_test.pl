@@ -1733,7 +1733,7 @@ sub upgrade_extension_sql
 
     my $sql = '';
     if ( "${libver}" eq "${to}" ) {
-        if ( semver_lessthan($to, "3.3.0") ) {
+        if ( semver_lessthan($to, "3.4.0") ) {
             $sql .= "ALTER EXTENSION $extname UPDATE TO '${to}next'; ";
         } else {
             $sql .= "ALTER EXTENSION $extname UPDATE TO 'ANY'; ";
