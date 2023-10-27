@@ -35,6 +35,8 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
  - Include elevation in output of ST_Contour when in polygonal mode (Paul Ramsey)
  - #5482, New Proj output is only available for proj 7.1+ (Regina Obe)
  - Fix JsonB casting issue (Paul Ramsey)
+ - #5535, Cleanup String handling in debug_standardize_address
+          and standardize_address (Regina Obe)
 
 * Enhancements *
 
