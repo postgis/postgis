@@ -49,6 +49,8 @@ BEGIN {
 
 our $DB = $ENV{"POSTGIS_REGRESS_DB"} || "postgis_reg";
 our $REGDIR = $ENV{"POSTGIS_REGRESS_DIR"} || abs_path(dirname($0));
+our $DB_ROLE_EXT_MKR = $ENV{"POSTGIS_REGRESS_ROLE_EXT_CREATOR"};
+
 our $TOP_SOURCEDIR = ${REGDIR} . '/..';
 our $ABS_TOP_SOURCEDIR = abs_path(${TOP_SOURCEDIR});
 our $TOP_BUILDDIR = $ENV{"POSTGIS_TOP_BUILD_DIR"};
@@ -755,6 +757,17 @@ Options:
   --after-test-script <path>
                   script to load after each test run
                   (multiple switches supported, to be run in given order)
+Environment Variables:
+  POSTGIS_REGRESS_DB
+                  Name of database to create and use for regression tests.
+                  Defaults to "postgis_reg"
+  POSTGIS_REGRESS_DIR
+                  Base directory of regress tests. Defaults to
+                  name of directory containing this script.
+  POSTGIS_REGRESS_ROLE_EXT_CREATOR
+                  PostgreSQL role to switch to for creating the
+                  postgis extensions.
+
 };
 
 }
@@ -1499,7 +1512,7 @@ sub create_db
 sub create_spatial
 {
     my ($cmd, $rv);
-    print "Creating database '$DB' \n";
+    print "Creating database '$DB'.\n";
 
     $rv = create_db();
 
@@ -1570,6 +1583,11 @@ sub prepare_spatial_extensions
 {
 	# ON_ERROR_STOP is used by psql to return non-0 on an error
 	my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
+
+	if ( $DB_ROLE_EXT_MKR ) {
+		print "Using role '$DB_ROLE_EXT_MKR' for spatial extensions creation.\n";
+		$psql_opts .= " -c \"set role='$DB_ROLE_EXT_MKR'\"";
+	}
 
 	my $sql = "CREATE SCHEMA IF NOT EXISTS ${OPT_SCHEMA}";
 	my $cmd = "psql $psql_opts -c \"". $sql . "\" $DB >> $REGRESS_LOG 2>&1";
