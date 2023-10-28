@@ -623,6 +623,7 @@ F000000000000000000000000000000000000000000000000');
 				<paramdef choice="opt"><type>text </type> <parameter>geom_column=""</parameter></paramdef>
 				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=9</parameter></paramdef>
 				<paramdef choice="opt"><type>boolean </type> <parameter>pretty_bool=false</parameter></paramdef>
+                <paramdef choice="opt"><type>text </type> <parameter>id_column=''</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
@@ -703,6 +704,8 @@ Conversely, passing the parameter will save column type lookups.
 			  </itemizedlist>
 			</para>
 
+            <para>The <varname>id_column</varname> parameter is used to set the "id" member of the returned GeoJSON features. As per GeoJSON RFC, this SHOULD be used whenever a feature has a commonly used identifier, such as a primary key. When not specified, the produced features will not get an "id" member and any columns other than the geometry, including any potential keys, will just end up inside the feature’s "properties" member.</para>
+
             <para>The GeoJSON specification states that polygons are oriented using the Right-Hand Rule,
             and some clients require this orientation.
             This can be ensured by using <xref linkend="ST_ForcePolygonCCW"/>.
@@ -727,6 +730,7 @@ Conversely, passing the parameter will save column type lookups.
 			<para role="changed" conformance="2.0.0">Changed: 2.0.0 support default args and named args.</para>
 			<para role="changed" conformance="3.0.0">Changed: 3.0.0 support records as input</para>
 			<para role="changed" conformance="3.0.0">Changed: 3.0.0 output SRID if not EPSG:4326.</para>
+            <para role="changed" conformance="3.5.0">Changed: 3.5.0 allow specifying the column containing the feature id</para>
 			<para>&Z_support;</para>
 	  </refsection>
 
@@ -736,34 +740,20 @@ Conversely, passing the parameter will save column type lookups.
 <para>Generate a FeatureCollection:</para>
 <programlisting>SELECT json_build_object(
     'type', 'FeatureCollection',
-    'features', json_agg(ST_AsGeoJSON(t.*)::json)
+    'features', json_agg(ST_AsGeoJSON(t.*, id_column => 'id')::json)
     )
 FROM ( VALUES (1, 'one', 'POINT(1 1)'::geometry),
               (2, 'two', 'POINT(2 2)'),
               (3, 'three', 'POINT(3 3)')
      ) as t(id, name, geom);</programlisting>
-<screen>{"type" : "FeatureCollection", "features" : [{"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "properties": {"id": 1, "name": "one"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[2,2]}, "properties": {"id": 2, "name": "two"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[3,3]}, "properties": {"id": 3, "name": "three"}}]}</screen>
+<screen>{"type" : "FeatureCollection", "features" : [{"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "id": 1, "properties": {"name": "one"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[2,2]}, "id": 2, "properties": {"name": "two"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[3,3]}, "id": 3, "properties": {"name": "three"}}]}</screen>
 
 <para>Generate a Feature:</para>
-		<programlisting>SELECT ST_AsGeoJSON(t.*)
+		<programlisting>SELECT ST_AsGeoJSON(t.*, id_column => 'id')
 FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programlisting>
 <screen>                                                  st_asgeojson
 -----------------------------------------------------------------------------------------------------------------
- {"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "properties": {"id": 1, "name": "one"}}
-</screen>
-
-<para>An alternate way to generate Features with an <varname>id</varname> property
-is to use JSONB functions and operators:</para>
-		<programlisting>SELECT jsonb_build_object(
-    'type',       'Feature',
-    'id',         id,
-    'geometry',   ST_AsGeoJSON(geom)::jsonb,
-    'properties', to_jsonb( t.* ) - 'id' - 'geom'
-    ) AS json
-FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programlisting>
-<screen>                                                  json
------------------------------------------------------------------------------------------------------------------
- {"id": 1, "type": "Feature", "geometry": {"type": "Point", "coordinates": [1, 1]}, "properties": {"name": "one"}}
+ {"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "id": 1, "properties": {"name": "one"}}
 </screen>
 
 <para>Don't forget to transform your data to WGS84 longitude, latitude to conform with the GeoJSON specification:</para>

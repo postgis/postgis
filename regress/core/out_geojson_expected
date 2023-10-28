@@ -27,4 +27,11 @@ gj04|4|{"d": "2004-04-04", "f": 4.4, "g": {"type": "GeometryCollection", "geomet
 gj04|5|{"d": "2005-05-05", "f": 5.5, "g": {"type": "Point", "coordinates": []}, "i": 5, "t": "five"}
 gj04|6|{"d": "2006-06-06", "f": 6.6, "g": null, "i": 6, "t": "six"}
 gj04|7|{"d": "2007-07-07", "f": 7.7, "g": {"type": "GeometryCollection", "geometries": [{"type": "Point", "coordinates": []}, {"type": "Point", "coordinates": [1, 2]}]}, "i": 7, "t": "seven"}
+gj05|1|{"type": "Feature", "geometry": {"type":"Point","coordinates":[42,42]}, "id": 1, "properties": {"f": 1.1, "t": "one", "d": "2001-01-01"}}
+gj05|2|{"type": "Feature", "geometry": {"type":"LineString","coordinates":[[42,42],[45,45]]}, "id": 2, "properties": {"f": 2.2, "t": "two", "d": "2002-02-02"}}
+gj05|3|{"type": "Feature", "geometry": {"type":"Polygon","coordinates":[[[42,42],[45,45],[45,42],[42,42]]]}, "id": 3, "properties": {"f": 3.3, "t": "three", "d": "2003-03-03"}}
+gj05|4|{"type": "Feature", "geometry": {"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[42,42]}]}, "id": 4, "properties": {"f": 4.4, "t": "four", "d": "2004-04-04"}}
+gj05|5|{"type": "Feature", "geometry": {"type":"Point","coordinates":[]}, "id": 5, "properties": {"f": 5.5, "t": "five", "d": "2005-05-05"}}
+gj05|6|{"type": "Feature", "geometry": {"type": null}, "id": 6, "properties": {"f": 6.6, "t": "six", "d": "2006-06-06"}}
+gj05|7|{"type": "Feature", "geometry": {"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[]},{"type":"Point","coordinates":[1,2]}]}, "id": 7, "properties": {"f": 7.7, "t": "seven", "d": "2007-07-07"}}
 4695|{"type": "Feature", "geometry": {"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:2227"}},"coordinates":[0,1]}, "properties": {"v": 1}}

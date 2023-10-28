@@ -22,6 +22,11 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.5.0+ is needed.
   - #5602, Drop support for GEOS 3.6 and 3.7 (Regina Obe)
   - #5571, Improve ST_GeneratePoints performance, but old
            seeded pseudo random points will need to be regenerated.
+  - #5596, GH-749, Allow promoting column as an id 
+          in ST_AsGeoJson(record,..).
+          Views and materialized views that use the ST_AsGeoJSON(record ..)
+          will need rebuilding to upgrade to new signature
+          (Jan Tojnar)
 
 * New Features *
 
