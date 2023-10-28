@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Place the test utility interpreter directive on the first line (Jan Tojnar)
  - Release temporary allocations in the shapefile loader and dumper (Laurențiu Nicola)
  - Use the SQL argument name k in the ST_ClusterKMeans synopsis (Dan Levy)
  - Fix the link to the geography performance article (Laurențiu Nicola)
