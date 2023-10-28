@@ -58,6 +58,7 @@ static void array_to_json_internal(Datum array, StringInfo result,
 static void composite_to_geojson(FunctionCallInfo fcinfo,
 				 Datum composite,
 				 char *geom_column_name,
+				 char *id_column_name,
 				 int32 maxdecimaldigits,
 				 StringInfo result,
 				 bool use_line_feeds,
@@ -91,8 +92,10 @@ ST_AsGeoJsonRow(PG_FUNCTION_ARGS)
 	text        *geom_column_text = PG_GETARG_TEXT_P(1);
 	int32       maxdecimaldigits = PG_GETARG_INT32(2);
 	bool		do_pretty = PG_GETARG_BOOL(3);
+	text        *id_column_text = PG_GETARG_TEXT_P(4);
 	StringInfo	result;
 	char        *geom_column = text_to_cstring(geom_column_text);
+	char        *id_column = text_to_cstring(id_column_text);
 	Oid geom_oid = InvalidOid;
 	Oid geog_oid = InvalidOid;
 
@@ -103,10 +106,12 @@ ST_AsGeoJsonRow(PG_FUNCTION_ARGS)
 
 	if (strlen(geom_column) == 0)
 		geom_column = NULL;
+	if (strlen(id_column) == 0)
+		id_column = NULL;
 
 	result = makeStringInfo();
 
-	composite_to_geojson(fcinfo, array, geom_column, maxdecimaldigits, result, do_pretty, geom_oid, geog_oid);
+	composite_to_geojson(fcinfo, array, geom_column, id_column, maxdecimaldigits, result, do_pretty, geom_oid, geog_oid);
 
 	PG_RETURN_TEXT_P(cstring_to_text_with_len(result->data, result->len));
 }
@@ -118,6 +123,7 @@ static void
 composite_to_geojson(FunctionCallInfo fcinfo,
 		     Datum composite,
 		     char *geom_column_name,
+		     char *id_column_name,
 		     int32 maxdecimaldigits,
 		     StringInfo result,
 		     bool use_line_feeds,
@@ -134,7 +140,9 @@ composite_to_geojson(FunctionCallInfo fcinfo,
 	bool		needsep = false;
 	const char *sep;
 	StringInfo	props = makeStringInfo();
+	StringInfo	id = makeStringInfo();
 	bool		geom_column_found = false;
+	bool		id_column_found = false;
 
 	sep = use_line_feeds ? ",\n " : ", ";
 
@@ -161,6 +169,7 @@ composite_to_geojson(FunctionCallInfo fcinfo,
 		Oid			outfuncoid;
 		Form_pg_attribute att = TupleDescAttr(tupdesc, i);
 		bool        is_geom_column = false;
+		bool        is_id_column = false;
 
 		if (att->attisdropped)
 			continue;
@@ -171,6 +180,9 @@ composite_to_geojson(FunctionCallInfo fcinfo,
 			is_geom_column = (strcmp(attname, geom_column_name) == 0);
 		else
 			is_geom_column = (att->atttypid == geom_oid || att->atttypid == geog_oid);
+
+		if (id_column_name)
+			is_id_column = (strcmp(attname, id_column_name) == 0);
 
 		if ((!geom_column_found) && is_geom_column)
 		{
@@ -193,6 +205,22 @@ composite_to_geojson(FunctionCallInfo fcinfo,
 			{
 				appendStringInfoString(result, "{\"type\": null}");
 			}
+		}
+		else if (is_id_column)
+		{
+			id_column_found = true;
+
+			val = heap_getattr(tuple, i + 1, tupdesc, &isnull);
+
+			if (isnull)
+			{
+				tcategory = JSONTYPE_NULL;
+				outfuncoid = InvalidOid;
+			}
+			else
+				json_categorize_type(att->atttypid, &tcategory, &outfuncoid);
+
+			datum_to_json(val, isnull, id, tcategory, outfuncoid, false);
 		}
 		else
 		{
@@ -221,6 +249,17 @@ composite_to_geojson(FunctionCallInfo fcinfo,
 		ereport(ERROR,
 				(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 				 errmsg("geometry column is missing")));
+
+	if (id_column_name)
+	{
+		if (!id_column_found)
+			ereport(ERROR,
+					(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+					 errmsg("Specified id column \"%s\" is missing", id_column_name)));
+
+		appendStringInfoString(result, ", \"id\": ");
+		appendStringInfo(result, "%s", id->data);
+	}
 
 	appendStringInfoString(result, ", \"properties\": {");
 	appendStringInfo(result, "%s", props->data);

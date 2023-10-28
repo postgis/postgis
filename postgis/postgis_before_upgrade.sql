@@ -173,3 +173,9 @@ BEGIN
 END;
 $$;
 
+-- FUNCTION ST_AsGeoJson added `id_column` optional argument in 3.5.0.
+SELECT _postgis_drop_function_by_identity
+	(
+	'ST_AsGeoJson',
+	'r record, geom_column text, maxdecimaldigits integer, pretty_bool boolean'
+	);

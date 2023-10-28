@@ -35,6 +35,9 @@ SELECT 'gj03', i, to_json(g.*) AS rj3
 SELECT 'gj04', i, to_jsonb(g.*) AS rj4
 	FROM g ORDER BY i;
 
+SELECT 'gj05', i, ST_AsGeoJSON(g.*, id_column => 'i') AS gj5
+	FROM g ORDER BY i;
+
 SELECT '4695', ST_ASGeoJSON(a.*) FROM
 (
     SELECT 1 as v, ST_SetSRID(ST_Point(0,1),2227) as g
