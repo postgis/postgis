@@ -108,7 +108,7 @@ For apt-based systems you can run this command to install the below dependencies
 * SFCGAL 1.4.1+ is requires for additional functionality ST_AlphaShape, ST_OptimalAlphaShape,
   and ST_3DConvexhull
 
-  https://gitlab.com/Oslandia/SFCGAL
+  https://gitlab.com/sfcgal/SFCGAL
 
 * protobuf-c (Optional, Version 1.1.0 or higher)
 
