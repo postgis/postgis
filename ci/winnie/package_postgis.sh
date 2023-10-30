@@ -214,7 +214,7 @@ echo "LIBICONV VERSION: ${ICON_VER} http://ftp.gnu.org/gnu/libiconv/libiconv-${I
 if [ -n "$SFCGAL_VER"  ]; then
     echo "CGAL VERSION: ${CGAL_VER} http://www.cgal.org" >> $verfile
     echo "BOOST VERSION: ${BOOST_VER} http://www.boost.org" >> $verfile
-    echo "SFCGAL VERSION: ${SFCGAL_VER} http://www.sfcgal.org https://github.com/Oslandia/SFCGAL" >> $verfile
+    echo "SFCGAL VERSION: ${SFCGAL_VER} http://www.sfcgal.org https://gitlab.com/sfcgal/SFCGAL" >> $verfile
 fi;
 
 if [ -f ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/gdal_depends.txt ]; then
