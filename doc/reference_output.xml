@@ -612,7 +612,7 @@ F000000000000000000000000000000000000000000000000');
 	  <refnamediv>
 		<refname>ST_AsGeoJSON</refname>
 
-		<refpurpose>Return a geometry as a GeoJSON element.</refpurpose>
+		<refpurpose>Return a geometry or feature in GeoJSON format.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -620,7 +620,7 @@ F000000000000000000000000000000000000000000000000');
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
 				<paramdef><type>record </type> <parameter>feature</parameter></paramdef>
-				<paramdef choice="opt"><type>text </type> <parameter>geomcolumnname</parameter></paramdef>
+				<paramdef choice="opt"><type>text </type> <parameter>geom_column=""</parameter></paramdef>
 				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=9</parameter></paramdef>
 				<paramdef choice="opt"><type>boolean </type> <parameter>pretty_bool=false</parameter></paramdef>
 			</funcprototype>
@@ -642,10 +642,32 @@ F000000000000000000000000000000000000000000000000');
 	  <refsection>
 		<title>Description</title>
 
-		  <para>Returns a geometry as a GeoJSON "geometry", or a row as a GeoJSON "feature".
-          (See the <link xlink:href="https://tools.ietf.org/html/rfc7946">GeoJSON specifications RFC 7946</link>).
- 2D and 3D Geometries are both supported.
- GeoJSON only support SFS 1.1 geometry types (no curve support for example).</para>
+        <para>
+Returns a geometry as a GeoJSON "geometry" object,
+or a row as a GeoJSON "feature" object.
+        </para>
+
+        <para>
+The resulting GeoJSON geometry and feature representations conform
+with the <link xlink:href="https://tools.ietf.org/html/rfc7946">GeoJSON
+specifications RFC 7946</link>, except when the parsed geometries
+are referenced with a CRS other than WGS84 longitude and latitude
+(<link xlink:href="https://epsg.io/4326">EPSG:4326</link>, <link
+xlink:href="http://epsg.io/4326.gml">urn:ogc:def:crs:OGC::CRS84</link>);
+the GeoJSON geometry object will then have a short CRS SRID identifier
+attached by default.
+
+2D and 3D Geometries are both supported.
+GeoJSON only supports SFS 1.1 geometry types
+(no curve support for example).
+        </para>
+
+        <para>
+The <varname>geom_column</varname> parameter is used to distinguish
+between multiple geometry columns.
+If omitted, the first geometry column in the record will be determined.
+Conversely, passing the parameter will save column type lookups.
+</para>
 
 			<para>The <varname>maxdecimaldigits</varname> argument may be used to reduce the maximum number of decimal places used in output (defaults to 9). If you are using EPSG:4326 and are outputting the geometry only for display, <varname>maxdecimaldigits</varname>=6 can be a good choice for many maps.</para>
 
