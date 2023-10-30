@@ -42,7 +42,7 @@ all: $(SCRIPTS_BUILT)
 
 distclean: distclean-local
 
-distclean-local:
+distclean-local: clean-local
 	rm -f Makefile
 
 check check-unit check-regress:
