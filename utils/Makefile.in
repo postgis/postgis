@@ -61,6 +61,21 @@ DROP_FILES = \
 	$(top_builddir)/raster/rt_pg/uninstall_rtpostgis.sql \
 	$(top_builddir)/topology/uninstall_topology.sql
 
+$(top_builddir)/postgis/uninstall_postgis.sql:
+	$(MAKE) -C ../postgis uninstall_postgis.sql
+
+$(top_builddir)/postgis/uninstall_legacy.sql:
+	$(MAKE) -C ../postgis uninstall_legacy.sql
+
+$(top_builddir)/sfcgal/uninstall_sfcgal.sql:
+	$(MAKE) -C ../sfcgal uninstall_sfcgal.sql
+
+$(top_builddir)/raster/rt_pg/uninstall_rtpostgis.sql:
+	$(MAKE) -C ../raster/rt_pg uninstall_rtpostgis.sql
+
+$(top_builddir)/topology/uninstall_topology.sql:
+	$(MAKE) -C ../topology/ uninstall_topology.sql
+
 postgis_restore_data.hardcoded: postgis_restore.pl.in Makefile
 	sed -e '1,/^__END__/d' $< \
 		| sort -u \
