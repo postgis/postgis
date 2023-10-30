@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-10-06 06:13+0000\n"
+"POT-Creation-Date: 2023-10-30 18:01+0000\n"
 "PO-Revision-Date: 2023-09-22 19:23+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://weblate.osgeo.org/projects/"
@@ -9552,6 +9552,11 @@ msgstr ""
 #. Tag: member
 #, no-c-format
 msgid "Han Wang"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Hans Lemuet"
 msgstr ""
 
 #. Tag: member
@@ -21723,17 +21728,37 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
-msgid "Return a geometry as a GeoJSON element."
+msgid "Return a geometry or feature in GeoJSON format."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a geometry as a GeoJSON \"geometry\", or a row as a GeoJSON \"feature"
-"\". (See the <link xlink:href=\"https://tools.ietf.org/html/"
-"rfc7946\">GeoJSON specifications RFC 7946</link>). 2D and 3D Geometries are "
-"both supported. GeoJSON only support SFS 1.1 geometry types (no curve "
-"support for example)."
+"Returns a geometry as a GeoJSON \"geometry\" object, or a row as a GeoJSON "
+"\"feature\" object."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The resulting GeoJSON geometry and feature representations conform with the "
+"<link xlink:href=\"https://tools.ietf.org/html/rfc7946\">GeoJSON "
+"specifications RFC 7946</link>, except when the parsed geometries are "
+"referenced with a CRS other than WGS84 longitude and latitude (<link xlink:"
+"href=\"https://epsg.io/4326\">EPSG:4326</link>, <link xlink:href=\"http://"
+"epsg.io/4326.gml\">urn:ogc:def:crs:OGC::CRS84</link>); the GeoJSON geometry "
+"object will then have a short CRS SRID identifier attached by default. 2D "
+"and 3D Geometries are both supported. GeoJSON only supports SFS 1.1 geometry "
+"types (no curve support for example)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <varname>geom_column</varname> parameter is used to distinguish between "
+"multiple geometry columns. If omitted, the first geometry column in the "
+"record will be determined. Conversely, passing the parameter will save "
+"column type lookups."
 msgstr ""
 
 #. Tag: para
@@ -26400,6 +26425,41 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Input parameters are:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The raster to generate the contour of"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The band to generate the contour of"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The elevation interval between contours generated"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The \"base\" relative to which contour intervals are applied, this is "
+"normally zero, but could be different. To generate 10m contours at 5, 15, "
+"25, ... the LEVEL_BASE would be 5."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If <literal>true</literal>, contour polygons will be created, rather than "
+"polygon lines."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Return values are a set of records with the following attributes:"
 msgstr ""
 
@@ -26441,11 +26501,6 @@ msgid ""
 "their parameters. For more information on how interpolations are calculated, "
 "see the <link xlink:href=\"https://gdal.org/tutorials/gdal_grid_tut.html"
 "\">GDAL grid tutorial</link>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Input parameters are:"
 msgstr ""
 
 #. Tag: para
@@ -37012,7 +37067,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns the smallest measure at which points interpolated along the given "
-"trajectories are at the smallest distance."
+"trajectories are the least distance apart."
 msgstr ""
 
 #. Tag: para
@@ -37026,8 +37081,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"See <xref linkend=\"ST_LocateAlong\"/> for getting the actual points at the "
-"given measure."
+"To obtain the actual points at the computed measure use <xref linkend="
+"\"ST_LocateAlong\"/> ."
 msgstr ""
 
 #. Tag: para
@@ -37047,7 +37102,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns the minimum distance two moving objects have ever been each other."
+"Returns the distance (in 2D) between two trajectories at their closest point "
+"of approach."
 msgstr ""
 
 #. Tag: para

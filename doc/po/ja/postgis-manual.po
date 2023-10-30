@@ -5,11 +5,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-10-06 06:13+0000\n"
+"POT-Creation-Date: 2023-10-30 18:01+0000\n"
 "PO-Revision-Date: 2023-10-16 10:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -10168,6 +10168,11 @@ msgstr "Giuseppe Broccolo"
 #, no-c-format
 msgid "Han Wang"
 msgstr "Han Wang"
+
+#. Tag: member
+#, no-c-format
+msgid "Hans Lemuet"
+msgstr ""
 
 #. Tag: member
 #, no-c-format
@@ -23388,23 +23393,38 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
-msgid "Return a geometry as a GeoJSON element."
-msgstr "ジオメトリをGeoJSON要素として返します。"
+msgid "Return a geometry or feature in GeoJSON format."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a geometry as a GeoJSON \"geometry\", or a row as a GeoJSON \"feature"
-"\". (See the <link xlink:href=\"https://tools.ietf.org/html/"
-"rfc7946\">GeoJSON specifications RFC 7946</link>). 2D and 3D Geometries are "
-"both supported. GeoJSON only support SFS 1.1 geometry types (no curve "
-"support for example)."
+"Returns a geometry as a GeoJSON \"geometry\" object, or a row as a GeoJSON "
+"\"feature\" object."
 msgstr ""
-"ジオメトリをGeoJSONのgeometryとして返すか、行をGeoJSONのfeatureとして返しま"
-"す (<link xlink:href=\"https://tools.ietf.org/html/rfc7946\">GeoJSON "
-"specifications RFC 7946</link>をご覧下さい)。2次元と3次元の両方のジオメトリに"
-"対応します。GeoJSONはSFS 1.1のジオメトリタイプにのみ対応します (たとえば曲線"
-"には対応していません)。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The resulting GeoJSON geometry and feature representations conform with the "
+"<link xlink:href=\"https://tools.ietf.org/html/rfc7946\">GeoJSON "
+"specifications RFC 7946</link>, except when the parsed geometries are "
+"referenced with a CRS other than WGS84 longitude and latitude (<link xlink:"
+"href=\"https://epsg.io/4326\">EPSG:4326</link>, <link xlink:href=\"http://"
+"epsg.io/4326.gml\">urn:ogc:def:crs:OGC::CRS84</link>); the GeoJSON geometry "
+"object will then have a short CRS SRID identifier attached by default. 2D "
+"and 3D Geometries are both supported. GeoJSON only supports SFS 1.1 geometry "
+"types (no curve support for example)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <varname>geom_column</varname> parameter is used to distinguish between "
+"multiple geometry columns. If omitted, the first geometry column in the "
+"record will be determined. Conversely, passing the parameter will save "
+"column type lookups."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -28686,6 +28706,41 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Input parameters are:"
+msgstr "入力パラメータは次の通りです。"
+
+#. Tag: para
+#, no-c-format
+msgid "The raster to generate the contour of"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The band to generate the contour of"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The elevation interval between contours generated"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The \"base\" relative to which contour intervals are applied, this is "
+"normally zero, but could be different. To generate 10m contours at 5, 15, "
+"25, ... the LEVEL_BASE would be 5."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If <literal>true</literal>, contour polygons will be created, rather than "
+"polygon lines."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Return values are a set of records with the following attributes:"
 msgstr "返り値は次に示す属性を持つ行の集合です。"
 
@@ -28740,11 +28795,6 @@ msgstr ""
 "algorithms\">gdal_grid documentation</link>を参照して下さい。どのように補間計"
 "算が行われているかの詳細情報については<link xlink:href=\"https://gdal.org/"
 "tutorials/gdal_grid_tut.html\">GDAL grid tutorial</link>をご覧下さい。"
-
-#. Tag: para
-#, no-c-format
-msgid "Input parameters are:"
-msgstr "入力パラメータは次の通りです。"
 
 #. Tag: para
 #, no-c-format
@@ -36627,7 +36677,8 @@ msgstr ""
 msgid ""
 "The major change to make is the Linux kernel's open files limits. There are "
 "two parts to this:"
-msgstr "主な変更はLinuxカーネルのファイルを開く制限です。次の通り、二つに分かれます:"
+msgstr ""
+"主な変更はLinuxカーネルのファイルを開く制限です。次の通り、二つに分かれます:"
 
 #. Tag: para
 #, no-c-format
@@ -36649,7 +36700,8 @@ msgstr "<title>システム全体で開くことができるファイルの最�
 msgid ""
 "You can inspect the current maximum number of open files for the entire "
 "system with the following example:"
-msgstr "次の例で、システム全体の、現在の開くことができるファイルの最大値を調べること"
+msgstr ""
+"次の例で、システム全体の、現在の開くことができるファイルの最大値を調べること"
 "ができます:"
 
 #. Tag: para
@@ -39892,10 +39944,8 @@ msgstr "二つのトラジェクトリの最接近時の距離を返します。
 #, no-c-format
 msgid ""
 "Returns the smallest measure at which points interpolated along the given "
-"trajectories are at the smallest distance."
+"trajectories are the least distance apart."
 msgstr ""
-"与えられたトラジェクトリに沿って補間された最小距離となる点のM値の最小値を返し"
-"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -39910,11 +39960,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"See <xref linkend=\"ST_LocateAlong\"/> for getting the actual points at the "
-"given measure."
+"To obtain the actual points at the computed measure use <xref linkend="
+"\"ST_LocateAlong\"/> ."
 msgstr ""
-"与えられたM値における実際の点を得るには<xref linkend=\"ST_LocateAlong\"/>を参"
-"照して下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -39935,8 +39983,9 @@ msgstr "二つのトラジェクトリの最接近する時の距離を返しま
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns the minimum distance two moving objects have ever been each other."
-msgstr "二つの移動体の相手までの距離の最小値を返します。"
+"Returns the distance (in 2D) between two trajectories at their closest point "
+"of approach."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -48121,6 +48170,45 @@ msgstr "2.5次元/3次元対応"
 #, no-c-format
 msgid "Supports geography"
 msgstr "ジオグラフィ対応"
+
+#, no-c-format
+#~ msgid "Return a geometry as a GeoJSON element."
+#~ msgstr "ジオメトリをGeoJSON要素として返します。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a geometry as a GeoJSON \"geometry\", or a row as a GeoJSON "
+#~ "\"feature\". (See the <link xlink:href=\"https://tools.ietf.org/html/"
+#~ "rfc7946\">GeoJSON specifications RFC 7946</link>). 2D and 3D Geometries "
+#~ "are both supported. GeoJSON only support SFS 1.1 geometry types (no curve "
+#~ "support for example)."
+#~ msgstr ""
+#~ "ジオメトリをGeoJSONのgeometryとして返すか、行をGeoJSONのfeatureとして返し"
+#~ "ます (<link xlink:href=\"https://tools.ietf.org/html/rfc7946\">GeoJSON "
+#~ "specifications RFC 7946</link>をご覧下さい)。2次元と3次元の両方のジオメト"
+#~ "リに対応します。GeoJSONはSFS 1.1のジオメトリタイプにのみ対応します (たとえ"
+#~ "ば曲線には対応していません)。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns the smallest measure at which points interpolated along the given "
+#~ "trajectories are at the smallest distance."
+#~ msgstr ""
+#~ "与えられたトラジェクトリに沿って補間された最小距離となる点のM値の最小値を"
+#~ "返します。"
+
+#, no-c-format
+#~ msgid ""
+#~ "See <xref linkend=\"ST_LocateAlong\"/> for getting the actual points at "
+#~ "the given measure."
+#~ msgstr ""
+#~ "与えられたM値における実際の点を得るには<xref linkend=\"ST_LocateAlong\"/>"
+#~ "を参照して下さい。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns the minimum distance two moving objects have ever been each other."
+#~ msgstr "二つの移動体の相手までの距離の最小値を返します。"
 
 #, no-c-format
 #~ msgid ""

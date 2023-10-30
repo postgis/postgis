@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-10-06 06:13+0000\n"
+"POT-Creation-Date: 2023-10-30 18:01+0000\n"
 "PO-Revision-Date: 2023-09-14 20:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -10647,6 +10647,11 @@ msgstr "Giuseppe Broccolo"
 #, no-c-format
 msgid "Han Wang"
 msgstr "Han Wang"
+
+#. Tag: member
+#, no-c-format
+msgid "Hans Lemuet"
+msgstr ""
 
 #. Tag: member
 #, no-c-format
@@ -24409,24 +24414,38 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
-msgid "Return a geometry as a GeoJSON element."
-msgstr "Renvoie une géométrie sous la forme d'un élément GeoJSON."
+msgid "Return a geometry or feature in GeoJSON format."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a geometry as a GeoJSON \"geometry\", or a row as a GeoJSON \"feature"
-"\". (See the <link xlink:href=\"https://tools.ietf.org/html/"
-"rfc7946\">GeoJSON specifications RFC 7946</link>). 2D and 3D Geometries are "
-"both supported. GeoJSON only support SFS 1.1 geometry types (no curve "
-"support for example)."
+"Returns a geometry as a GeoJSON \"geometry\" object, or a row as a GeoJSON "
+"\"feature\" object."
 msgstr ""
-"Renvoie une géométrie sous la forme d'une \"géométrie\" GeoJSON, ou une "
-"ligne sous la forme d'une \"caractéristique\" GeoJSON. (Voir le <link xlink:"
-"href=\"https://tools.ietf.org/html/rfc7946\">spécifications GeoJSON RFC "
-"7946</link>). Les géométries 2D et 3D sont toutes deux supportées. GeoJSON "
-"ne supporte que les types de géométrie SFS 1.1 (pas de support des courbes "
-"par exemple)."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The resulting GeoJSON geometry and feature representations conform with the "
+"<link xlink:href=\"https://tools.ietf.org/html/rfc7946\">GeoJSON "
+"specifications RFC 7946</link>, except when the parsed geometries are "
+"referenced with a CRS other than WGS84 longitude and latitude (<link xlink:"
+"href=\"https://epsg.io/4326\">EPSG:4326</link>, <link xlink:href=\"http://"
+"epsg.io/4326.gml\">urn:ogc:def:crs:OGC::CRS84</link>); the GeoJSON geometry "
+"object will then have a short CRS SRID identifier attached by default. 2D "
+"and 3D Geometries are both supported. GeoJSON only supports SFS 1.1 geometry "
+"types (no curve support for example)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <varname>geom_column</varname> parameter is used to distinguish between "
+"multiple geometry columns. If omitted, the first geometry column in the "
+"record will be determined. Conversely, passing the parameter will save "
+"column type lookups."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -29996,6 +30015,41 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Input parameters are:"
+msgstr "Les paramètres d'entrée sont :"
+
+#. Tag: para
+#, no-c-format
+msgid "The raster to generate the contour of"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The band to generate the contour of"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The elevation interval between contours generated"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The \"base\" relative to which contour intervals are applied, this is "
+"normally zero, but could be different. To generate 10m contours at 5, 15, "
+"25, ... the LEVEL_BASE would be 5."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If <literal>true</literal>, contour polygons will be created, rather than "
+"polygon lines."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Return values are a set of records with the following attributes:"
 msgstr ""
 "La valeur de retour est un ensemble de résultats avec les attributs "
@@ -30055,11 +30109,6 @@ msgstr ""
 "détails sur ces algorithmes et leurs paramètres. Pour plus d'informations "
 "sur le calcul des interpolations, voir le <link xlink:href=\"https://gdal."
 "org/tutorials/gdal_grid_tut.html\">tutorial GDAL grid</link>."
-
-#. Tag: para
-#, no-c-format
-msgid "Input parameters are:"
-msgstr "Les paramètres d'entrée sont :"
 
 #. Tag: para
 #, no-c-format
@@ -41681,10 +41730,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns the smallest measure at which points interpolated along the given "
-"trajectories are at the smallest distance."
+"trajectories are the least distance apart."
 msgstr ""
-"Retourne la plus petite mesure à laquelle les points interpolés le long des "
-"trajectoires données sont à la plus petite distance."
 
 #. Tag: para
 #, no-c-format
@@ -41700,11 +41747,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"See <xref linkend=\"ST_LocateAlong\"/> for getting the actual points at the "
-"given measure."
+"To obtain the actual points at the computed measure use <xref linkend="
+"\"ST_LocateAlong\"/> ."
 msgstr ""
-"Voir <xref linkend=\"ST_LocateAlong\"/> pour obtenir les points réels à la "
-"mesure donnée."
 
 #. Tag: para
 #, no-c-format
@@ -41727,10 +41772,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns the minimum distance two moving objects have ever been each other."
+"Returns the distance (in 2D) between two trajectories at their closest point "
+"of approach."
 msgstr ""
-"Renvoie la distance minimale à laquelle deux objets en mouvement ont pu se "
-"trouver l'un par rapport à l'autre."
 
 #. Tag: para
 #, no-c-format
@@ -50340,6 +50384,48 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid "Return a geometry as a GeoJSON element."
+#~ msgstr "Renvoie une géométrie sous la forme d'un élément GeoJSON."
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a geometry as a GeoJSON \"geometry\", or a row as a GeoJSON "
+#~ "\"feature\". (See the <link xlink:href=\"https://tools.ietf.org/html/"
+#~ "rfc7946\">GeoJSON specifications RFC 7946</link>). 2D and 3D Geometries "
+#~ "are both supported. GeoJSON only support SFS 1.1 geometry types (no curve "
+#~ "support for example)."
+#~ msgstr ""
+#~ "Renvoie une géométrie sous la forme d'une \"géométrie\" GeoJSON, ou une "
+#~ "ligne sous la forme d'une \"caractéristique\" GeoJSON. (Voir le <link "
+#~ "xlink:href=\"https://tools.ietf.org/html/rfc7946\">spécifications GeoJSON "
+#~ "RFC 7946</link>). Les géométries 2D et 3D sont toutes deux supportées. "
+#~ "GeoJSON ne supporte que les types de géométrie SFS 1.1 (pas de support "
+#~ "des courbes par exemple)."
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns the smallest measure at which points interpolated along the given "
+#~ "trajectories are at the smallest distance."
+#~ msgstr ""
+#~ "Retourne la plus petite mesure à laquelle les points interpolés le long "
+#~ "des trajectoires données sont à la plus petite distance."
+
+#, no-c-format
+#~ msgid ""
+#~ "See <xref linkend=\"ST_LocateAlong\"/> for getting the actual points at "
+#~ "the given measure."
+#~ msgstr ""
+#~ "Voir <xref linkend=\"ST_LocateAlong\"/> pour obtenir les points réels à "
+#~ "la mesure donnée."
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns the minimum distance two moving objects have ever been each other."
+#~ msgstr ""
+#~ "Renvoie la distance minimale à laquelle deux objets en mouvement ont pu "
+#~ "se trouver l'un par rapport à l'autre."
 
 #, no-c-format
 #~ msgid "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
