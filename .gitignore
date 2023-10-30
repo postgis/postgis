@@ -185,6 +185,7 @@ libpgcommon/Makefile
 libpgcommon/cunit/Makefile
 utils/Makefile
 utils/postgis_restore.pl
+utils/postgis_restore_data.*
 doc/sfcgal_comments.sql
 postgis/sfcgal.sql
 postgis/uninstall_sfcgal.sql

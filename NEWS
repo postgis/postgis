@@ -2,6 +2,7 @@ PostGIS 3.3.5dev
 YYYY/MM/DD
 
 * Bug Fixes and Enhancements *
+ - #5598, Fix restore of 3.3 dumps (Sandro Santilli)
  - #5568, Improve robustness of topology face split handling (Sandro Santilli)
  - #5548, Fix box-filtered validity check of topologies with edge-less faces
           (Sandro Santilli)

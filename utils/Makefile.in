@@ -27,6 +27,9 @@ PGXS := @PGXS@
 include $(PGXS)
 
 VPATH := @srcdir@
+top_srcdir = @top_srcdir@
+top_builddir = @top_builddir@
+
 
 SHELL = @SHELL@
 INSTALL = $(SHELL) @top_srcdir@/build-aux/install-sh
@@ -47,37 +50,62 @@ SRID_USER_MAXIMUM = @SRID_USR_MAX@
 all: postgis_restore.pl
 
 DROP_FILES = \
-  ../raster/rt_pg/rtpostgis_upgrade_cleanup.sql.in \
-  ../raster/rt_pg/rtpostgis_drop.sql.in \
-  ../postgis/postgis_after_upgrade.sql \
-  ../postgis/postgis_before_upgrade.sql
+	$(top_srcdir)/raster/rt_pg/rtpostgis_upgrade_cleanup.sql.in \
+	$(top_srcdir)/raster/rt_pg/rtpostgis_drop.sql.in \
+	$(top_srcdir)/topology/topology_after_upgrade.sql.in \
+	$(top_srcdir)/topology/topology_before_upgrade.sql.in \
+	$(top_builddir)/postgis/uninstall_postgis.sql \
+	$(top_builddir)/postgis/uninstall_legacy.sql \
+	$(top_builddir)/postgis/postgis_upgrade.sql \
+	$(top_builddir)/sfcgal/uninstall_sfcgal.sql \
+	$(top_builddir)/raster/rt_pg/uninstall_rtpostgis.sql \
+	$(top_builddir)/topology/uninstall_topology.sql
 
-update-restore:
-	tac postgis_restore.pl.in | sed '/^__END__/q' | grep -v '^__END__' \
-    > postgis_restore_data
-	grep '^DROP FUNCTION IF EXISTS' $(DROP_FILES) | \
-    cut -d: -f2 | sed 's/^DROP FUNCTION IF EXISTS //' | \
-    sed 's/ *, */,/g' | \
-    sed 's/ *( */(/g' | \
-    sed 's/ *) */)/g' | \
-    tr '[A-Z]' '[a-z]' | \
-    sed 's/varchar/character varying/g' | \
-    sed 's/float8/double precision/g' | \
-    sed 's/\<int\>/integer/g' | \
-    sed 's/\<int4\>/integer/g' | \
-    sed 's/\<int8\>/bigint/g' | \
-    sed 's/\(.*\); *\(--.*\)\?/FUNCTION \1/' >> postgis_restore_data
-	cat postgis_restore.pl.in | sed '/^__END__/q' > postgis_restore.pl.in.new
-	cat postgis_restore_data | sort -u >> postgis_restore.pl.in.new
-	mv postgis_restore.pl.in.new postgis_restore.pl.in
-	rm -f postgis_restore_data
+postgis_restore_data.hardcoded: postgis_restore.pl.in Makefile
+	sed -e '1,/^__END__/d' $< \
+		| sort -u \
+		> $@
 
-postgis_restore.pl: postgis_restore.pl.in
-	sed 's,@SRID_MAXIMUM@,$(SRID_MAXIMUM),g;s,@SRID_USER_MAXIMUM@,$(SRID_USER_MAXIMUM),' $< >$@
+postgis_restore_data.generated: $(DROP_FILES) Makefile create_skip_signatures.pl
+	$(PERL) @top_srcdir@/utils/create_skip_signatures.pl $(DROP_FILES) \
+		| sort \
+		> $@
+
+postgis_restore.pl: postgis_restore.pl.in postgis_restore_data.hardcoded postgis_restore_data.generated Makefile
+	cat $< \
+		| sed '/^__END__/q' \
+		| sed 's,@SRID_MAXIMUM@,$(SRID_MAXIMUM),g;s,@SRID_USER_MAXIMUM@,$(SRID_USER_MAXIMUM),' \
+		> postgis_restore.pl
+	cat postgis_restore_data.hardcoded postgis_restore_data.generated \
+		| sort -u >> postgis_restore.pl
 	chmod +x $@
+
+postgis_restore_data.needlessly-hardcoded: postgis_restore_data.hardcoded postgis_restore_data.generated
+	comm -12 postgis_restore_data.hardcoded postgis_restore_data.generated > $@
+
+postgis_restore-check: postgis_restore_data.needlessly-hardcoded
+	@if test -s $<; then { \
+		echo "Needlessly hardcoded signatures found postgis_restore.pl.in:"; \
+		sed 's/^/  /' $<; \
+		echo "Use 'make postgis_restore-clean' to fix that"; \
+	} >&2 && false; fi
+
+
+postgis_restore-clean: postgis_restore_data.needlessly-hardcoded
+	mv $(srcdir)/postgis_restore.pl.in $(srcdir)/postgis_restore.pl.in~
+	grep -Fxvf $< $(srcdir)/postgis_restore.pl.in~ > $(srcdir)/postgis_restore.pl.in
+
+clean: clean-local
+
+clean-local:
+	rm -f postgis_restore_data.*
 
 distclean: clean
 	rm -f Makefile
 
-# And there's nothing to check
-check check-unit check-regress:
+# There's nothing to check for regress
+check-regress:
+
+check: check-unit
+
+check-unit: postgis_restore-check
