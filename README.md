@@ -9,7 +9,7 @@
 | **Berrie** | **Berrie64** |
 |  [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run/label=berrie&build=last:${params.reference=refs/heads/stable-3.3})](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie/) |  [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run/label=berrie64&build=last:${params.reference=refs/heads/stable-3.3})](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie64/) | ||
 | **GitHub** | **GitLab** |
-| [![CI](https://github.com/postgis/postgis/workflows/CI/badge.svg?branch=stable-3.3)](https://github.com/postgis/postgis/actions?query=branch%3Astable-3.3) | [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/stable-3.3/pipeline.svg)](https://gitlab.com/postgis/postgis/commits/stable-3.3) ||
+| [![CI](https://github.com/postgis/postgis/workflows/CI/badge.svg?branch%3Astable-3.3)](https://github.com/postgis/postgis/actions?query=branch%3Astable-3.3) | [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/stable-3.3/pipeline.svg)](https://gitlab.com/postgis/postgis/commits/stable-3.3) ||
 
 This file is here to play nicely with modern code repository facilities.
 Actual readme is [here](README.postgis).
