@@ -92,5 +92,5 @@ task:
   matrix:
     macos_instance:
       image: ghcr.io/cirruslabs/macos-ventura-base:latest
-    macos_instance:
-      image: ghcr.io/cirruslabs/macos-monterey-base:latest
+  #  macos_instance:
+  #    image: ghcr.io/cirruslabs/macos-monterey-base:latest
