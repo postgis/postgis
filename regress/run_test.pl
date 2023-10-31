@@ -772,7 +772,7 @@ Environment Variables:
                   Defaults to connecting user (determined by libpq env
                   variables)
   POSTGIS_REGRESS_ROLE_EXT_CREATOR
-                  PostgreSQL role to switch to for creating the
+                  PostgreSQL role to switch to for creating/upgrading the
                   postgis extensions. Defaults to POSTGIS_REGRESS_DB_OWNER
   POSTGIS_REGRESS_DIR
                   Base directory of regress tests. Defaults to
@@ -1841,6 +1841,11 @@ sub upgrade_spatial_extensions
     my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
     my $sql;
     my $upgrade_via_function = 0;
+
+    if ( $DB_ROLE_EXT_MKR ) {
+      print "Using role '$DB_ROLE_EXT_MKR' for spatial extensions upgrade.\n";
+      $psql_opts .= " -c \"set role='$DB_ROLE_EXT_MKR'\"";
+    }
 
     if ( $OPT_UPGRADE_TO =~ /!$/ )
     {
