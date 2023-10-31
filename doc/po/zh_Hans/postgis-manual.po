@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-10-30 18:01+0000\n"
-"PO-Revision-Date: 2023-10-26 08:23+0000\n"
+"PO-Revision-Date: 2023-10-31 09:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
@@ -9517,7 +9517,7 @@ msgstr "Han Wang"
 #. Tag: member
 #, no-c-format
 msgid "Hans Lemuet"
-msgstr ""
+msgstr "Hans Lemuet"
 
 #. Tag: member
 #, no-c-format
@@ -22045,14 +22045,15 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return a geometry or feature in GeoJSON format."
-msgstr ""
+msgstr "以GeoJSON格式返回一个几何体或要素。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Returns a geometry as a GeoJSON \"geometry\" object, or a row as a GeoJSON "
 "\"feature\" object."
-msgstr ""
+msgstr "返回一个几何体作为GeoJSON中的 “geometry” 对象，或者返回一行作为GeoJSON中的 "
+"“feature”对象。"
 
 #. Tag: para
 #, no-c-format
@@ -22067,6 +22068,13 @@ msgid ""
 "and 3D Geometries are both supported. GeoJSON only supports SFS 1.1 geometry "
 "types (no curve support for example)."
 msgstr ""
+"生成的GeoJSON几何体和要素遵循 <link xlink:href=\"https://tools.ietf.org/html/"
+"rfc7946\">GeoJSON规范RFC "
+"7946</link>，但当解析的几何体使用WGS84经度和纬度之外的CRS（如 <link "
+"xlink:href=\"https://epsg.io/4326\">EPSG:4326</link>，<link xlink:href=\"http"
+"://epsg.io/4326.gml\">urn:ogc:def:crs:OGC::CRS84</link>）进行引用时，"
+"GeoJSON几何对象将默认附加一个短的CRS SRID标识符。支持2D和3D几何。"
+"GeoJSON仅支持SFS 1.1几何类型（例如，不支持曲线）。"
 
 #. Tag: para
 #, no-c-format
@@ -22076,6 +22084,8 @@ msgid ""
 "record will be determined. Conversely, passing the parameter will save "
 "column type lookups."
 msgstr ""
+"<varname>geom_column</varname> 参数用于区分多个几何列。如果省略该参数，将确定"
+"记录中的第一个几何列。相反，传递该参数将节省列类型查找。"
 
 #. Tag: para
 #, no-c-format
@@ -27100,17 +27110,17 @@ msgstr "输入参数为："
 #. Tag: para
 #, no-c-format
 msgid "The raster to generate the contour of"
-msgstr ""
+msgstr "生成等高线的栅格"
 
 #. Tag: para
 #, no-c-format
 msgid "The band to generate the contour of"
-msgstr ""
+msgstr "用于生成等高线的波段"
 
 #. Tag: para
 #, no-c-format
 msgid "The elevation interval between contours generated"
-msgstr ""
+msgstr "生成的等高线之间的高程间隔"
 
 #. Tag: para
 #, no-c-format
@@ -27119,13 +27129,15 @@ msgid ""
 "normally zero, but could be different. To generate 10m contours at 5, 15, "
 "25, ... the LEVEL_BASE would be 5."
 msgstr ""
+"用于应用等高线间隔的 “基准”通常为零，但也可以是不同的值。要生成高程为10米的等"
+"高线，间隔为5、15、25、...，LEVEL_BASE 将设为5。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If <literal>true</literal>, contour polygons will be created, rather than "
 "polygon lines."
-msgstr ""
+msgstr "如果 <literal>true</literal>，将创建等高线多边形，而不是多边形线。"
 
 #. Tag: para
 #, no-c-format
@@ -37787,7 +37799,7 @@ msgstr "返回两条轨迹最接近点处的测量值。"
 msgid ""
 "Returns the smallest measure at which points interpolated along the given "
 "trajectories are the least distance apart."
-msgstr ""
+msgstr "返回沿着给定轨迹插值的点之间距离最短的最小度量值。"
 
 #. Tag: para
 #, no-c-format
@@ -37804,7 +37816,7 @@ msgstr ""
 msgid ""
 "To obtain the actual points at the computed measure use <xref linkend="
 "\"ST_LocateAlong\"/> ."
-msgstr ""
+msgstr "要获取计算得到的度量值上的实际点，请使用 <xref linkend=\"ST_LocateAlong\"/>。"
 
 #. Tag: para
 #, no-c-format
@@ -37827,7 +37839,7 @@ msgstr "返回两条轨迹的最近接近点之间的距离。"
 msgid ""
 "Returns the distance (in 2D) between two trajectories at their closest point "
 "of approach."
-msgstr ""
+msgstr "返回两条轨迹在它们最接近的相交点处的距离（在二维空间中）。"
 
 #. Tag: para
 #, no-c-format
