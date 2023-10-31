@@ -331,26 +331,41 @@ DROP FUNCTION _postgis_package_object(text, text);
 DO LANGUAGE 'plpgsql' \$BODY\$
 DECLARE
 	rec RECORD;
+	sql TEXT;
 BEGIN
 
-	-- Check ownership of extension functions
-	-- matches ownership of extension itself
+	-- Check extension functions are all owned by a superuser
 	FOR rec IN
 		SELECT
 			p.oid,
 			p.proowner,
-			e.extowner
+			e.extowner,
+			r.rolsuper
 		FROM pg_catalog.pg_depend AS d
 			INNER JOIN pg_catalog.pg_extension AS e ON (d.refobjid = e.oid)
 			INNER JOIN pg_catalog.pg_proc AS p ON (d.objid = p.oid)
+			INNER JOIN pg_catalog.pg_roles AS r ON (r.oid = p.proowner)
 		WHERE d.refclassid = 'pg_catalog.pg_extension'::pg_catalog.regclass
 		AND deptype = 'e'
 		AND e.extname = '${extname}'
 		AND d.classid = 'pg_catalog.pg_proc'::pg_catalog.regclass
-		AND p.proowner != e.extowner
 	LOOP
-		RAISE EXCEPTION 'Function % is owned by % but extension is owned by %',
-				rec.oid::regprocedure, rec.proowner::regrole, rec.extowner::regrole;
+		IF NOT rec.rolsuper THEN
+			RAISE EXCEPTION 'Function % is owned by non-superuser %',
+					rec.oid::regprocedure, rec.proowner::regrole;
+		END IF;
+		IF NOT rec.proowner = rec.extowner THEN
+			RAISE NOTICE
+					'Changing ownership of function % from % to % to match ext',
+					rec.oid::regprocedure, rec.proowner::regrole,
+					rec.extowner::regrole;
+			sql := format(
+				'ALTER FUNCTION %s OWNER TO %I',
+				rec.oid::regprocedure,
+				rec.extowner::regrole
+			);
+			EXECUTE sql;
+		END IF;
 	END LOOP;
 
 	-- TODO: check ownership of more objects ?
