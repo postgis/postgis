@@ -6,10 +6,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-10-30 18:01+0000\n"
-"PO-Revision-Date: 2023-10-16 10:23+0000\n"
+"PO-Revision-Date: 2023-10-31 03:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -10172,7 +10172,7 @@ msgstr "Han Wang"
 #. Tag: member
 #, no-c-format
 msgid "Hans Lemuet"
-msgstr ""
+msgstr "Hans Lemuet"
 
 #. Tag: member
 #, no-c-format
@@ -23394,7 +23394,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return a geometry or feature in GeoJSON format."
-msgstr ""
+msgstr "GeoJSON形式のジオメトリまたは地物を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -23402,6 +23402,8 @@ msgid ""
 "Returns a geometry as a GeoJSON \"geometry\" object, or a row as a GeoJSON "
 "\"feature\" object."
 msgstr ""
+"ジオメトリについてはGeoJSONの\"geometry\"オブジェクトとして返し、"
+"行についてGeoJSONの\"feature\"オブジェクトとして返します。"
 
 #. Tag: para
 #, no-c-format
@@ -23416,6 +23418,14 @@ msgid ""
 "and 3D Geometries are both supported. GeoJSON only supports SFS 1.1 geometry "
 "types (no curve support for example)."
 msgstr ""
+"GeoJSONのジオメトリと地物の表現は、<link xlink:href=\"https://tools.ietf.org/"
+"html/rfc7946\">GeoJSON specifications RFC 7946</link>に準拠しますが、"
+"入力ジオメトリのCRSががWGS84経度緯度 (<link xlink:href=\"https://epsg.io/"
+"4326\">EPSG:4326</link>, <link xlink:href=\"http://epsg.io/4326.gml\""
+">urn:ogc:def:crs:OGC::CRS84</link>)以外の時は準拠しません。"
+"GeoJSONのgeometryオブジェクトに短いCRS SRID識別子がデフォルトで追加されます。"
+"2次元と3次元のジオメトリの両方に対応します。GeoJSONはSFS "
+"1.1ジオメトリタイプにのみ対応します (たとえば曲線には対応していません)。"
 
 #. Tag: para
 #, no-c-format
@@ -23425,6 +23435,9 @@ msgid ""
 "record will be determined. Conversely, passing the parameter will save "
 "column type lookups."
 msgstr ""
+"<varname>geom_column</varname>パラメータは複数のジオメトリカラムを区別するた"
+"めに使われます。省略すると、レコードの最初のジオメトリカラムに決定されます。"
+"逆にパラメータを渡すとカラムの型の調査が省かれます。"
 
 #. Tag: para
 #, no-c-format
@@ -28707,22 +28720,22 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Input parameters are:"
-msgstr "入力パラメータは次の通りです。"
+msgstr "入力パラメータは次の通りです:"
 
 #. Tag: para
 #, no-c-format
 msgid "The raster to generate the contour of"
-msgstr ""
+msgstr "等高線を生成するラスタ"
 
 #. Tag: para
 #, no-c-format
 msgid "The band to generate the contour of"
-msgstr ""
+msgstr "等高線を生成するバンド"
 
 #. Tag: para
 #, no-c-format
 msgid "The elevation interval between contours generated"
-msgstr ""
+msgstr "生成する等高線の標高間隔"
 
 #. Tag: para
 #, no-c-format
@@ -28731,13 +28744,17 @@ msgid ""
 "normally zero, but could be different. To generate 10m contours at 5, 15, "
 "25, ... the LEVEL_BASE would be 5."
 msgstr ""
+"等高線の標高間隔に適用される相対値の「基礎値」です。通常は0ですが、そうでない"
+"場合もあります。10m等高線であって、5, 15, 25 ..."
+"で等高線を生成する場合には、LEVEL_BASEは5になります。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If <literal>true</literal>, contour polygons will be created, rather than "
 "polygon lines."
-msgstr ""
+msgstr "<literal>true</literal> "
+"の場合には、等高線ポリゴンが作られます。ラインストリングではありません。"
 
 #. Tag: para
 #, no-c-format
@@ -39945,7 +39962,8 @@ msgstr "二つのトラジェクトリの最接近時の距離を返します。
 msgid ""
 "Returns the smallest measure at which points interpolated along the given "
 "trajectories are the least distance apart."
-msgstr ""
+msgstr "与えられたトラジェクトリに沿って補間された最小距離となる点のM値の最小値を返し"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -39962,7 +39980,8 @@ msgstr ""
 msgid ""
 "To obtain the actual points at the computed measure use <xref linkend="
 "\"ST_LocateAlong\"/> ."
-msgstr ""
+msgstr "計算されたM値で実際のポイントを得るには<xref linkend=\"ST_LocateAlong\""
+"/>を使います。"
 
 #. Tag: para
 #, no-c-format
@@ -39985,7 +40004,7 @@ msgstr "二つのトラジェクトリの最接近する時の距離を返しま
 msgid ""
 "Returns the distance (in 2D) between two trajectories at their closest point "
 "of approach."
-msgstr ""
+msgstr "二つのトラジェクトリの最接近する時の (2次元)距離を返します。"
 
 #. Tag: para
 #, no-c-format
