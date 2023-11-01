@@ -394,9 +394,10 @@ SELECT gps.track_id, ST_MakeLine(gps.geom) As geom
 		<refsection>
 			<title>Description</title>
 
-			<para>Creates a 2D, 3D Z or 4D ZM Point geometry.</para>
+			<para>Creates a 2D XY, 3D XYZ or 4D XYZM Point geometry.
+			Use <xref linkend="ST_MakePointM"/> to make points with XYM coordinates.</para>
 
-			<para>Use <xref linkend="ST_MakePointM"/> to make points with XYM coordinates.</para>
+			<para>Use <xref linkend="ST_SetSRID"/> to specify a SRID for the created point.</para>
 
 			<para>
 			While not OGC-compliant, <varname>ST_MakePoint</varname> is
@@ -406,21 +407,27 @@ SELECT gps.track_id, ST_MakeLine(gps.geom) As geom
 
 			<note><para>For geodetic coordinates, <varname>X</varname> is longitude and <varname>Y</varname> is latitude</para></note>
 
+			<note><para>
+			The functions 
+			<xref linkend="ST_Point"/>, <xref linkend="ST_PointZ"/>, <xref linkend="ST_PointM"/>, and <xref linkend="ST_PointZM"/> 
+			can be used to create points with a given SRID.
+			</para></note>
+
 			<para>&Z_support;</para>
 		</refsection>
 
 		<refsection>
 		<title>Examples</title>
-		 <programlisting>--Return point with unknown SRID
+		 <programlisting>-- Create a point with unknown SRID
 SELECT ST_MakePoint(-71.1043443253471, 42.3150676015829);
 
---Return point marked as WGS 84 long lat
+-- Create a point in the WGS 84 geodetic CRS
 SELECT ST_SetSRID(ST_MakePoint(-71.1043443253471, 42.3150676015829),4326);
 
---Return a 3D point (e.g. has altitude)
+-- Create a 3D point (e.g. has altitude)
 SELECT ST_MakePoint(1, 2,1.5);
 
---Get z of point
+-- Get z of point
 SELECT ST_Z(ST_MakePoint(1, 2,1.5));
 result
 -------
@@ -428,7 +435,10 @@ result
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_GeomFromText"/>, <xref linkend="ST_PointFromText"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_MakePointM"/></para>
+			<para>
+			<xref linkend="ST_GeomFromText"/>, <xref linkend="ST_PointFromText"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_MakePointM"/>,
+			<xref linkend="ST_Point"/>, <xref linkend="ST_PointZ"/>, <xref linkend="ST_PointM"/>, <xref linkend="ST_PointZM"/>
+ 			</para>
 		</refsection>
 	</refentry>
 
@@ -453,11 +463,18 @@ result
 		<refsection>
 			<title>Description</title>
 
-			<para>Creates a point with X, Y and M (measure) coordinates. </para>
+			<para>Creates a point with X, Y and M (measure) ordinates. 
+			Use <xref linkend="ST_MakePoint"/> to make points with XY, XYZ, or XYZM coordinates.</para>
 
-			<para>Use <xref linkend="ST_MakePoint"/> to make points with XY, XYZ, or XYZM coordinates.</para>
+			<para>Use <xref linkend="ST_SetSRID"/> to specify a SRID for the created point.</para>
 
 			<note><para>For geodetic coordinates, <varname>X</varname> is longitude and <varname>Y</varname> is latitude</para></note>
+
+			<note><para>
+			The functions 
+			<xref linkend="ST_PointM"/>, and <xref linkend="ST_PointZM"/> 
+			can be used to create points with an M value and a given SRID.
+			</para></note>
 
 		</refsection>
 
@@ -495,7 +512,8 @@ result
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_AsEWKT"/>, <xref linkend="ST_MakePoint"/>, <xref linkend="ST_SetSRID"/></para>
+			<para><xref linkend="ST_MakePoint"/>, <xref linkend="ST_SetSRID"/>,
+			<xref linkend="ST_PointM"/>, <xref linkend="ST_PointZM"/></para>
 		</refsection>
 	</refentry>
 
@@ -703,14 +721,16 @@ then they must be reprojected before casting to a geography.
 In this example a point in Pennsylvania State Plane feet (SRID 2273)
 is projected to WGS84 (SRID 4326).</para>
 <programlisting>
-SELECT ST_Transform(ST_SetSRID( ST_Point( 3637510, 3014852 ), 2273), 4326)::geography;</programlisting>
+SELECT ST_Transform( ST_Point( 3637510, 3014852, 2273), 4326)::geography;</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="PostGIS_Geography"/>, <xref linkend="ST_MakePoint"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_Transform"/>, <xref linkend="ST_PointZ"/>, <xref linkend="ST_PointM"/>, <xref linkend="ST_PointZM"/></para>
+		<para><xref linkend="PostGIS_Geography"/>, <xref linkend="ST_MakePoint"/>, 
+			<xref linkend="ST_PointZ"/>, <xref linkend="ST_PointM"/>, <xref linkend="ST_PointZM"/>, 
+			<xref linkend="ST_SetSRID"/>, <xref linkend="ST_Transform"/></para>
 	  </refsection>
 	</refentry>
 
