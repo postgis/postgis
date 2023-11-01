@@ -700,21 +700,22 @@ FROM provinces p;
 		<title>Examples: Geometry</title>
 
         <programlisting>SELECT ST_Point( -71.104, 42.315);</programlisting>
-        <programlisting>SELECT ST_SetSRID(ST_Point( -71.104, 42.315),4326);</programlisting>
 
-        <para>New in 3.2.0: With SRID specified</para>
+        <para>Creating a point with SRID specified:</para>
 		<programlisting>SELECT ST_Point( -71.104, 42.315, 4326);</programlisting>
+
+        <para>Alternative way of specifying SRID:</para>
+        <programlisting>SELECT ST_SetSRID( ST_Point( -71.104, 42.315), 4326);</programlisting>
 	  </refsection>
 
 	  <refsection>
 		<title>Examples: Geography</title>
-        <para>Pre-PostGIS 3.2 syntax</para>
-        <programlisting>SELECT CAST( ST_SetSRID(ST_Point( -71.104, 42.315), 4326) AS geography);</programlisting>
-        <para>3.2 and on you can include the srid</para>
-		<programlisting>SELECT CAST( ST_Point( -71.104, 42.315, 4326) AS geography);</programlisting>
 
-		<para>PostgreSQL also provides the <varname>::</varname> short-hand for casting</para>
+		<para>Create <link linkend="PostGIS_Geography">geography</link> points using the <varname>::</varname> cast syntax:</para>
 		<programlisting>SELECT ST_Point( -71.104, 42.315, 4326)::geography;</programlisting>
+
+        <para>Pre-PostGIS 3.2 code, using <varname>CAST</varname>:</para>
+        <programlisting>SELECT CAST( ST_SetSRID(ST_Point( -71.104, 42.315), 4326) AS geography);</programlisting>
 
 <para>If the point coordinates are not in a geodetic coordinate system (such as WGS84),
 then they must be reprojected before casting to a geography.
@@ -728,7 +729,7 @@ SELECT ST_Transform( ST_Point( 3637510, 3014852, 2273), 4326)::geography;</progr
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="PostGIS_Geography"/>, <xref linkend="ST_MakePoint"/>, 
+		<para><xref linkend="ST_MakePoint"/>, 
 			<xref linkend="ST_PointZ"/>, <xref linkend="ST_PointM"/>, <xref linkend="ST_PointZM"/>, 
 			<xref linkend="ST_SetSRID"/>, <xref linkend="ST_Transform"/></para>
 	  </refsection>
