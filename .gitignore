@@ -11,6 +11,7 @@
 *.orig
 *.gcda
 *.gcno
+astyle
 gmon.out
 postgis_revision.h
 aclocal.m4
