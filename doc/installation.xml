@@ -184,7 +184,7 @@ sh autogen.sh
 
 	  <listitem>
 		<para>
-		  GEOS geometry library, version 3.6 or greater, but GEOS 3.12+ is required to take full advantage of all the new functions and features. GEOS is available for download from
+		  GEOS geometry library, version &min_geos_version; or greater, but GEOS 3.12+ is required to take full advantage of all the new functions and features. GEOS is available for download from
 		  <link xlink:href="https://libgeos.org/">
 			https://libgeos.org
 		  </link>.

@@ -1,8 +1,8 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 =================================================================
 
-:Version: 3.4.0rc2
-:Date: 2023-08-11
+:Version: 3.5.0dev
+:Date: 2023-11-01
 :Website: https://postgis.net
 
 This distribution contains a module which implements GIS simple features, ties
@@ -64,7 +64,7 @@ For apt-based systems you can run this command to install the below dependencies
 
     https://proj.org
 
-* GEOS (Required, Version 3.6 or higher)
+* GEOS (Required, Version 3.8 or higher)
   - 3.12+ for ST_CoverageSimplify and ST_CoverageInvalidEdges
   - 3.11+ for improved ST_ConcaveHull, ST_lineMerge,
     and new functions ST_SimplifyPolygonHull, ST_TriangulatePolygon

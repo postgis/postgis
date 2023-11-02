@@ -30,7 +30,7 @@ jobs:
         # Run tests with different dependency combinations
         - { tag: latest, mode: tests }
         - { tag: pg13-geos38-gdal31-proj71, mode: tests }
-        - { tag: pg12-geos37-gdal30-proj611, mode: tests }
+        - { tag: pg12-geos38-gdal30-proj611, mode: tests }
 
     runs-on: ubuntu-latest
     steps:
