@@ -800,10 +800,10 @@ GEOS_NUMERIC_PATCH_VERSION=`printf "%02d" $GEOS_PATCH_VERSION`
 GEOS_NUMERIC_MINOR_VERSION=`printf "%02d" $GEOS_MINOR_VERSION`
 POSTGIS_GEOS_VERSION="$GEOS_MAJOR_VERSION$GEOS_NUMERIC_MINOR_VERSION$GEOS_NUMERIC_PATCH_VERSION"
 
-dnl Ensure that we are using GEOS >= 3.6.0
+dnl Ensure that we are using GEOS >= 3.8.0
 AC_MSG_RESULT([checking GEOS version... $GEOS_FULL_VERSION])
-if test ! "$POSTGIS_GEOS_VERSION" -ge 30600; then
-	AC_MSG_ERROR([PostGIS requires GEOS >= 3.6.0])
+if test ! "$POSTGIS_GEOS_VERSION" -ge 30800; then
+	AC_MSG_ERROR([PostGIS requires GEOS >= 3.8.0])
 fi
 
 dnl Extract the linker and include flags

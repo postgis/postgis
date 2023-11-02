@@ -271,15 +271,6 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(ST_FrechetDistance);
 Datum ST_FrechetDistance(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 30700
-
-	lwpgerror("The GEOS version this PostGIS binary "
-					"was compiled against (%d) doesn't support "
-					"'GEOSFechetDistance' function (3.7.0+ required)",
-					POSTGIS_GEOS_VERSION);
-	PG_RETURN_NULL();
-
-#else /* POSTGIS_GEOS_VERSION >= 30700 */
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	GEOSGeometry *g1;
@@ -326,8 +317,6 @@ Datum ST_FrechetDistance(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_FLOAT8(result);
-
-#endif /* POSTGIS_GEOS_VERSION >= 30700 */
 }
 
 

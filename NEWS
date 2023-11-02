@@ -10,10 +10,14 @@ xxxx/xx/xx
               topology_id(tg1) <> topology_id(tg2) OR
               layer_id(tg1) <> layer_id(tg2) OR
               type(tg1) <> type(tg2)
-           )
+           ) (Sandro Santilli)
   - #5536, comments are not anymore included in PostGIS extensions
-  - xmllint is now required to build comments and documentation
+    (Sandro Santilli)
+  - xmllint is now required to build comments and 
+    (Sandro Santilli)
   - DocBook5 XSL is now required to build html documentation
+    (Sandro Santilli)
+  - #5602, Drop support for GEOS 3.6 and 3.7 (Regina Obe)
 
 * New Features *
 

@@ -43,9 +43,11 @@ TESTS += \
 	$(top_srcdir)/regress/core/estimatedextent \
 	$(top_srcdir)/regress/core/forcecurve \
 	$(top_srcdir)/regress/core/flatgeobuf \
+	$(top_srcdir)/regress/core/frechet \
 	$(top_srcdir)/regress/core/geography \
 	$(top_srcdir)/regress/core/geometric_median \
   $(top_srcdir)/regress/core/geos_noop \
+	$(top_srcdir)/regress/core/geos38 \
 	$(top_srcdir)/regress/core/hausdorff \
 	$(top_srcdir)/regress/core/in_flatgeobuf \
 	$(top_srcdir)/regress/core/in_geohash \
@@ -145,19 +147,6 @@ TESTS += \
 TESTS_SLOW = \
 	$(top_srcdir)/regress/core/concave_hull_hard \
 	$(top_srcdir)/regress/core/knn_recheck
-
-ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 30700),1)
-	# GEOS-3.7 adds:
-	# ST_FrechetDistance
-	TESTS += \
-		$(top_srcdir)/regress/core/frechet
-endif
-
-ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 30800),1)
-	# GEOS-3.8 adds stable pointonsurface implementation
-	TESTS += \
-		$(top_srcdir)/regress/core/geos38
-endif
 
 ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 30900),1)
 	# GEOS-3.9 adds stable maximuminscribedcircle implementation

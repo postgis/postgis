@@ -465,7 +465,6 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
  *
  */
 
-#if POSTGIS_GEOS_VERSION >= 30800
 /*
  * For CoverageUnion and CoverageSimplify, clean up
  * the start of a collection if things fail in mid-stream.
@@ -481,7 +480,6 @@ coverage_destroy_geoms(GEOSGeometry **geoms, uint32 ngeoms)
 			GEOSGeom_destroy(geoms[i]);
 	}
 }
-#endif
 
 #if POSTGIS_GEOS_VERSION >= 31200
 
@@ -795,15 +793,6 @@ Datum ST_CoverageUnion(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_CoverageUnion);
 Datum ST_CoverageUnion(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 30800
-	lwpgerror("The GEOS version this PostGIS binary "
-		"was compiled against (%d) doesn't support "
-		"'GEOSCoverageUnion' function (3.8.0+ required)",
-		POSTGIS_GEOS_VERSION);
-	PG_RETURN_NULL();
-
-#else /* POSTGIS_GEOS_VERSION >= 30800 */
-
 	GSERIALIZED *result = NULL;
 
 	Datum value;
@@ -867,7 +856,6 @@ Datum ST_CoverageUnion(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(geos_result);
 
 	PG_RETURN_POINTER(result);
-#endif
 }
 
 

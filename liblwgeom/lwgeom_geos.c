@@ -176,16 +176,11 @@ ptarray_from_GEOSCoordSeq(const GEOSCoordSequence* cs, uint8_t want3d)
 #else
 	for (i = 0; i < size; i++)
 	{
-#if POSTGIS_GEOS_VERSION < 30800
-		GEOSCoordSeq_getX(cs, i, &(point.x));
-		GEOSCoordSeq_getY(cs, i, &(point.y));
-		if (dims >= 3) GEOSCoordSeq_getZ(cs, i, &(point.z));
-#else
 		if (dims >= 3)
 			GEOSCoordSeq_getXYZ(cs, i, &(point.x), &(point.y), &(point.z));
 		else
 			GEOSCoordSeq_getXY(cs, i, &(point.x), &(point.y));
-#endif
+
 		ptarray_set_point4d(pa, i, &point);
 	}
 
@@ -331,16 +326,10 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY* pa, uint8_t fix_ring)
 			LWDEBUGF(4, "Point: %g,%g", p2d->x, p2d->y);
 		}
 
-#if POSTGIS_GEOS_VERSION < 30800
-		GEOSCoordSeq_setX(sq, i, p2d->x);
-		GEOSCoordSeq_setY(sq, i, p2d->y);
-		if (dims == 3) GEOSCoordSeq_setZ(sq, i, p3d->z);
-#else
 		if (dims == 3)
 			GEOSCoordSeq_setXYZ(sq, i, p2d->x, p2d->y, p3d->z);
 		else
 			GEOSCoordSeq_setXY(sq, i, p2d->x, p2d->y);
-#endif
 
 	}
 
@@ -355,12 +344,8 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY* pa, uint8_t fix_ring)
 			p2d = getPoint2d_cp(pa, 0);
 		for (i = pa->npoints; i < pa->npoints + append_points; i++)
 		{
-#if POSTGIS_GEOS_VERSION < 30800
-			GEOSCoordSeq_setX(sq, i, p2d->x);
-			GEOSCoordSeq_setY(sq, i, p2d->y);
-#else
+
 			GEOSCoordSeq_setXY(sq, i, p2d->x, p2d->y);
-#endif
 
 			if (dims == 3) GEOSCoordSeq_setZ(sq, i, p3d->z);
 		}
@@ -388,28 +373,11 @@ GBOX2GEOS(const GBOX* box)
 	GEOSCoordSequence* seq = GEOSCoordSeq_create(5, 2);
 	if (!seq) return NULL;
 
-#if POSTGIS_GEOS_VERSION < 30800
-	GEOSCoordSeq_setX(seq, 0, box->xmin);
-	GEOSCoordSeq_setY(seq, 0, box->ymin);
-
-	GEOSCoordSeq_setX(seq, 1, box->xmax);
-	GEOSCoordSeq_setY(seq, 1, box->ymin);
-
-	GEOSCoordSeq_setX(seq, 2, box->xmax);
-	GEOSCoordSeq_setY(seq, 2, box->ymax);
-
-	GEOSCoordSeq_setX(seq, 3, box->xmin);
-	GEOSCoordSeq_setY(seq, 3, box->ymax);
-
-	GEOSCoordSeq_setX(seq, 4, box->xmin);
-	GEOSCoordSeq_setY(seq, 4, box->ymin);
-#else
 	GEOSCoordSeq_setXY(seq, 0, box->xmin, box->ymin);
 	GEOSCoordSeq_setXY(seq, 1, box->xmax, box->ymin);
 	GEOSCoordSeq_setXY(seq, 2, box->xmax, box->ymax);
 	GEOSCoordSeq_setXY(seq, 3, box->xmin, box->ymax);
 	GEOSCoordSeq_setXY(seq, 4, box->xmin, box->ymin);
-#endif
 
 	ring = GEOSGeom_createLinearRing(seq);
 	if (!ring)
@@ -468,10 +436,6 @@ LWGEOM2GEOS(const LWGEOM* lwgeom, uint8_t autofix)
 			else
 			{
 				LWPOINT* lwp = (LWPOINT*)lwgeom;
-	#if POSTGIS_GEOS_VERSION < 30800
-				sq = ptarray_to_GEOSCoordSeq(lwp->point, 0);
-				g = GEOSGeom_createPoint(sq);
-	#else
 				if (lwgeom_has_z(lwgeom))
 				{
 					sq = ptarray_to_GEOSCoordSeq(lwp->point, 0);
@@ -482,7 +446,6 @@ LWGEOM2GEOS(const LWGEOM* lwgeom, uint8_t autofix)
 					const POINT2D* p = getPoint2d_cp(lwp->point, 0);
 					g = GEOSGeom_createPointFromXY(p->x, p->y);
 				}
-	#endif
 			}
 			if (!g) return NULL;
 			break;
@@ -628,12 +591,7 @@ make_geos_point(double x, double y)
 
 	if (!seq) return NULL;
 
-#if POSTGIS_GEOS_VERSION < 30800
-	GEOSCoordSeq_setX(seq, 0, x);
-	GEOSCoordSeq_setY(seq, 0, y);
-#else
 	GEOSCoordSeq_setXY(seq, 0, x, y);
-#endif
 
 	geom = GEOSGeom_createPoint(seq);
 	if (!geom) GEOSCoordSeq_destroy(seq);
@@ -648,15 +606,8 @@ make_geos_segment(double x1, double y1, double x2, double y2)
 
 	if (!seq) return NULL;
 
-#if POSTGIS_GEOS_VERSION < 30800
-	GEOSCoordSeq_setX(seq, 0, x1);
-	GEOSCoordSeq_setY(seq, 0, y1);
-	GEOSCoordSeq_setX(seq, 1, x2);
-	GEOSCoordSeq_setY(seq, 1, y2);
-#else
 	GEOSCoordSeq_setXY(seq, 0, x1, y1);
 	GEOSCoordSeq_setXY(seq, 1, x2, y2);
-#endif
 
 	geom = GEOSGeom_createLineString(seq);
 	if (!geom) GEOSCoordSeq_destroy(seq);
@@ -759,13 +710,7 @@ lwgeom_intersection_prec(const LWGEOM* geom1, const LWGEOM* geom2, double prec)
 	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_FREE_AND_FAIL(g1);
 
 	if ( prec >= 0) {
-#if POSTGIS_GEOS_VERSION < 30900
-		lwgeom_geos_error_minversion("Fixed-precision intersection", "3.9");
-		GEOS_FREE_AND_FAIL(g1, g2);
-		return NULL;
-#else
 		g3 = GEOSIntersectionPrec(g1, g2, prec);
-#endif
 	}
 	else
 	{
@@ -1169,254 +1114,6 @@ lwgeom_clip_by_rect(const LWGEOM *geom1, double x1, double y1, double x2, double
 }
 
 /* ------------ BuildArea stuff ---------------------------------------------------------------------{ */
-#if POSTGIS_GEOS_VERSION < 30800
-typedef struct Face_t
-{
-	const GEOSGeometry* geom;
-	GEOSGeometry* env;
-	double envarea;
-	struct Face_t* parent; /* if this face is an hole of another one, or NULL */
-} Face;
-
-static Face* newFace(const GEOSGeometry* g);
-static void delFace(Face* f);
-static unsigned int countParens(const Face* f);
-static void findFaceHoles(Face** faces, int nfaces);
-
-static Face*
-newFace(const GEOSGeometry* g)
-{
-	Face* f = lwalloc(sizeof(Face));
-	f->geom = g;
-	f->env = GEOSEnvelope(f->geom);
-	GEOSArea(f->env, &f->envarea);
-	f->parent = NULL;
-	return f;
-}
-
-static unsigned int
-countParens(const Face* f)
-{
-	unsigned int pcount = 0;
-	while (f->parent)
-	{
-		++pcount;
-		f = f->parent;
-	}
-	return pcount;
-}
-
-/* Destroy the face and release memory associated with it */
-static void
-delFace(Face* f)
-{
-	GEOSGeom_destroy(f->env);
-	lwfree(f);
-}
-
-static int
-compare_by_envarea(const void* g1, const void* g2)
-{
-	Face* f1 = *(Face**)g1;
-	Face* f2 = *(Face**)g2;
-	double n1 = f1->envarea;
-	double n2 = f2->envarea;
-
-	if (n1 < n2) return 1;
-	if (n1 > n2) return -1;
-	return 0;
-}
-
-/* Find holes of each face */
-static void
-findFaceHoles(Face** faces, int nfaces)
-{
-	int i, j, h;
-
-	/* We sort by envelope area so that we know holes are only after their shells */
-	qsort(faces, nfaces, sizeof(Face*), compare_by_envarea);
-	for (i = 0; i < nfaces; ++i)
-	{
-		Face* f = faces[i];
-		int nholes = GEOSGetNumInteriorRings(f->geom);
-		LWDEBUGF(2, "Scanning face %d with env area %g and %d holes", i, f->envarea, nholes);
-		for (h = 0; h < nholes; ++h)
-		{
-			const GEOSGeometry* hole = GEOSGetInteriorRingN(f->geom, h);
-			LWDEBUGF(2,
-				 "Looking for hole %d/%d of face %d among %d other faces",
-				 h + 1,
-				 nholes,
-				 i,
-				 nfaces - i - 1);
-			for (j = i + 1; j < nfaces; ++j)
-			{
-				const GEOSGeometry* f2er;
-				Face* f2 = faces[j];
-				if (f2->parent) continue; /* hole already assigned */
-				f2er = GEOSGetExteriorRing(f2->geom);
-				/* TODO: can be optimized as the ring would have the same vertices, possibly in
-				 * different order. Maybe comparing number of points could already be useful. */
-				if (GEOSEquals(f2er, hole))
-				{
-					LWDEBUGF(2, "Hole %d/%d of face %d is face %d", h + 1, nholes, i, j);
-					f2->parent = f;
-					break;
-				}
-			}
-		}
-	}
-}
-
-static GEOSGeometry*
-collectFacesWithEvenAncestors(Face** faces, int nfaces)
-{
-	GEOSGeometry** geoms = lwalloc(sizeof(GEOSGeometry*) * nfaces);
-	GEOSGeometry* ret;
-	unsigned int ngeoms = 0;
-	int i;
-
-	for (i = 0; i < nfaces; ++i)
-	{
-		Face* f = faces[i];
-		if (countParens(f) % 2) continue; /* we skip odd parents geoms */
-		geoms[ngeoms++] = GEOSGeom_clone(f->geom);
-	}
-
-	ret = GEOSGeom_createCollection(GEOS_MULTIPOLYGON, geoms, ngeoms);
-	lwfree(geoms);
-	return ret;
-}
-
-GEOSGeometry*
-LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
-{
-	GEOSGeometry* tmp;
-	GEOSGeometry *geos_result, *shp;
-	GEOSGeometry const* vgeoms[1];
-	uint32_t i, ngeoms;
-	int srid = GEOSGetSRID(geom_in);
-	Face** geoms;
-#if POSTGIS_DEBUG_LEVEL >= 3
-	LWGEOM *geos_geom;
-	char *geom_ewkt;
-#endif
-
-	vgeoms[0] = geom_in;
-	geos_result = GEOSPolygonize(vgeoms, 1);
-
-	LWDEBUGF(3, "GEOSpolygonize returned @ %p", geos_result);
-
-	/* Null return from GEOSpolygonize (an exception) */
-	if (!geos_result) return 0;
-
-		/* We should now have a collection */
-#if PARANOIA_LEVEL > 0
-	if (GEOSGeomTypeId(geos_result) != COLLECTIONTYPE)
-	{
-		GEOSGeom_destroy(geos_result);
-		lwerror("%s [%d] Unexpected return from GEOSpolygonize", __FILE__, __LINE__);
-		return 0;
-	}
-#endif
-
-	ngeoms = GEOSGetNumGeometries(geos_result);
-
-#if POSTGIS_DEBUG_LEVEL >= 3
-	LWDEBUGF(3, "GEOSpolygonize: ngeoms in polygonize output: %d", ngeoms);
-	geos_geom = GEOS2LWGEOM(geos_result, 0);
-	geom_ewkt = lwgeom_to_ewkt(geos_geom);
-	LWDEBUGF(3, "GEOSpolygonize: polygonized:%s", geom_ewkt);
-	lwgeom_free(geos_geom);
-	lwfree(geom_ewkt);
-#endif
-
-	/* No geometries in collection, early out */
-	if (ngeoms == 0)
-	{
-		GEOSSetSRID(geos_result, srid);
-		return geos_result;
-	}
-
-	/* Return first geometry if we only have one in collection, to avoid the unnecessary Geometry clone below. */
-	if (ngeoms == 1)
-	{
-		tmp = (GEOSGeometry*)GEOSGetGeometryN(geos_result, 0);
-		if (!tmp)
-		{
-			GEOSGeom_destroy(geos_result);
-			return 0; /* exception */
-		}
-		shp = GEOSGeom_clone(tmp);
-		GEOSGeom_destroy(geos_result); /* only safe after the clone above */
-		GEOSSetSRID(shp, srid);
-		return shp;
-	}
-
-	LWDEBUGF(2, "Polygonize returned %d geoms", ngeoms);
-
-	/*
-	 * Polygonizer returns a polygon for each face in the built topology.
-	 *
-	 * This means that for any face with holes we'll have other faces representing each hole. We can imagine a
-	 * parent-child relationship between these faces.
-	 *
-	 * In order to maximize the number of visible rings in output we only use those faces which have an even number
-	 * of parents.
-	 *
-	 * Example:
-	 *
-	 *   +---------------+
-	 *   |     L0        |  L0 has no parents
-	 *   |  +---------+  |
-	 *   |  |   L1    |  |  L1 is an hole of L0
-	 *   |  |  +---+  |  |
-	 *   |  |  |L2 |  |  |  L2 is an hole of L1 (which is an hole of L0)
-	 *   |  |  |   |  |  |
-	 *   |  |  +---+  |  |
-	 *   |  +---------+  |
-	 *   |               |
-	 *   +---------------+
-	 *
-	 * See http://trac.osgeo.org/postgis/ticket/1806
-	 *
-	 */
-
-	/* Prepare face structures for later analysis */
-	geoms = lwalloc(sizeof(Face**) * ngeoms);
-	for (i = 0; i < ngeoms; ++i)
-		geoms[i] = newFace(GEOSGetGeometryN(geos_result, i));
-
-	/* Find faces representing other faces holes */
-	findFaceHoles(geoms, ngeoms);
-
-	/* Build a MultiPolygon composed only by faces with an even number of ancestors */
-	tmp = collectFacesWithEvenAncestors(geoms, ngeoms);
-
-	/* Cleanup face structures */
-	for (i = 0; i < ngeoms; ++i)
-		delFace(geoms[i]);
-	lwfree(geoms);
-
-	/* Faces referenced memory owned by geos_result. It is safe to destroy geos_result after deleting them. */
-	GEOSGeom_destroy(geos_result);
-
-	/* Run a single overlay operation to dissolve shared edges */
-	shp = GEOSUnionCascaded(tmp);
-	if (!shp)
-	{
-		GEOSGeom_destroy(tmp);
-		return 0; /* exception */
-	}
-
-	GEOSGeom_destroy(tmp);
-
-	GEOSSetSRID(shp, srid);
-
-	return shp;
-}
-#endif
-
 LWGEOM*
 lwgeom_buildarea(const LWGEOM* geom)
 {
@@ -1434,11 +1131,7 @@ lwgeom_buildarea(const LWGEOM* geom)
 
 	if (!(g1 = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
 
-#if POSTGIS_GEOS_VERSION < 30800
-	g3 = LWGEOM_GEOS_buildArea(g1);
-#else
 	g3 = GEOSBuildArea(g1);
-#endif
 
 	if (!g3) GEOS_FREE_AND_FAIL(g1);
 	GEOSSetSRID(g3, srid);
@@ -1832,12 +1525,8 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 			if (x >= bbox.xmax || y >= bbox.ymax) continue;
 
 			gseq = GEOSCoordSeq_create(1, 2);
-#if POSTGIS_GEOS_VERSION < 30800
-			GEOSCoordSeq_setX(gseq, 0, x);
-			GEOSCoordSeq_setY(gseq, 0, y);
-#else
 			GEOSCoordSeq_setXY(gseq, 0, x, y);
-#endif
+
 			gpt = GEOSGeom_createPoint(gseq);
 
 			contains = GEOSPreparedIntersects(gprep, gpt);
