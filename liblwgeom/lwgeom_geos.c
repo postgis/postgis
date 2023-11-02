@@ -710,7 +710,13 @@ lwgeom_intersection_prec(const LWGEOM* geom1, const LWGEOM* geom2, double prec)
 	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_FREE_AND_FAIL(g1);
 
 	if ( prec >= 0) {
+#if POSTGIS_GEOS_VERSION < 30900
+		lwgeom_geos_error_minversion("Fixed-precision intersection", "3.9");
+		GEOS_FREE_AND_FAIL(g1, g2);
+		return NULL;
+#else
 		g3 = GEOSIntersectionPrec(g1, g2, prec);
+#endif
 	}
 	else
 	{
