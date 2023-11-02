@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-10-30 18:01+0000\n"
+"POT-Creation-Date: 2023-11-02 18:50+0000\n"
 "PO-Revision-Date: 2023-10-14 20:23+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -6972,15 +6972,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"GEOS geometry library, version 3.6 or greater, but GEOS 3.12+ is required to "
-"take full advantage of all the new functions and features. GEOS is available "
-"for download from <link xlink:href=\"https://libgeos.org/\"> https://libgeos."
-"org </link>."
-msgstr ""
-"Libreria geometrica GEOS, versione 3.6 o superiore, ma GEOS 3.12+ è "
-"necessario per sfruttare appieno tutte le nuove funzioni e caratteristiche. "
-"GEOS è disponibile per il download da <link xlink:href=\"https://libgeos.org/"
+"GEOS geometry library, version &min_geos_version; or greater, but GEOS 3.12+ "
+"is required to take full advantage of all the new functions and features. "
+"GEOS is available for download from <link xlink:href=\"https://libgeos.org/"
 "\"> https://libgeos.org </link>."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -7068,23 +7064,10 @@ msgid ""
 "ST_Area, for instance). A PostgreSQL configuration variable <code>postgis."
 "backend</code> allow end user to control which backend he want to use if "
 "SFCGAL is installed (GEOS by default). Nota: SFCGAL 1.2 require at least "
-"CGAL 4.3 and Boost 1.54 (cf: <link xlink:href=\"https://oslandia.gitlab.io/"
-"SFCGAL/dev.html\">https://oslandia.gitlab.io/SFCGAL/dev.html</link>) <link "
-"xlink:href=\"https://gitlab.com/Oslandia/SFCGAL/\">https://gitlab.com/"
-"Oslandia/SFCGAL/</link>."
+"CGAL 4.3 and Boost 1.54 (cf: <link xlink:href=\"https://sfcgal.org\">https://"
+"sfcgal.org</link>) <link xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/"
+"\">https://gitlab.com/sfcgal/SFCGAL/</link>."
 msgstr ""
-"SFCGAL, versione 1.3.1 (o superiore), 1.4.1 o superiore è consigliato e "
-"richiesto per poter utilizzare tutte le funzionalità. SFCGAL può essere "
-"utilizzato per fornire ulteriori funzioni di analisi avanzata 2D e 3D a "
-"PostGIS cf <xref linkend=\"reference_sfcgal\"/>. Inoltre, consente di "
-"utilizzare SFCGAL anziché GEOS per alcune funzioni 2D fornite da entrambi i "
-"backend (come ST_Intersection o ST_Area, ad esempio). Una variabile di "
-"configurazione PostgreSQL <code>postgis.backend</code> permette all'utente "
-"finale di controllare quale backend vuole usare se SFCGAL è installato (GEOS "
-"di default). Nota: SFCGAL 1.2 richiede almeno CGAL 4.3 e Boost 1.54 (cfr. "
-"<link xlink:href=\"https://oslandia.gitlab.io/SFCGAL/dev.html\">https://"
-"oslandia.gitlab.io/SFCGAL/dev.html</link>) <link xlink:href=\"https://gitlab."
-"com/Oslandia/SFCGAL/\">https://gitlab.com/Oslandia/SFCGAL/</link>."
 
 #. Tag: para
 #, no-c-format
@@ -13572,14 +13555,16 @@ msgid "Creates a 2D, 3DZ or 4D Point."
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Creates a 2D, 3D Z or 4D ZM Point geometry."
-msgstr "Crea una BOX2D definita dalle geometrie dei punti dati."
+#, no-c-format
+msgid ""
+"Creates a 2D XY, 3D XYZ or 4D XYZM Point geometry. Use <xref linkend="
+"\"ST_MakePointM\"/> to make points with XYM coordinates."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Use <xref linkend=\"ST_MakePointM\"/> to make points with XYM coordinates."
+"Use <xref linkend=\"ST_SetSRID\"/> to specify a SRID for the created point."
 msgstr ""
 
 #. Tag: para
@@ -13601,11 +13586,19 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
-"<xref linkend=\"ST_MakePointM\"/>"
+"The functions <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointZ\"/>, "
+"<xref linkend=\"ST_PointM\"/>, and <xref linkend=\"ST_PointZM\"/> can be "
+"used to create points with a given SRID."
 msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 ", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
-"<xref linkend=\"ST_MakePointM\"/>"
+"<xref linkend=\"ST_MakePointM\"/>, <xref linkend=\"ST_Point\"/>, <xref "
+"linkend=\"ST_PointZ\"/>, <xref linkend=\"ST_PointM\"/>, <xref linkend="
+"\"ST_PointZM\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -13614,14 +13607,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Creates a point with X, Y and M (measure) coordinates."
+msgid ""
+"Creates a point with X, Y and M (measure) ordinates. Use <xref linkend="
+"\"ST_MakePoint\"/> to make points with XY, XYZ, or XYZM coordinates."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Use <xref linkend=\"ST_MakePoint\"/> to make points with XY, XYZ, or XYZM "
-"coordinates."
+"The functions <xref linkend=\"ST_PointM\"/>, and <xref linkend=\"ST_PointZM"
+"\"/> can be used to create points with an M value and a given SRID."
 msgstr ""
 
 #. Tag: para
@@ -13648,8 +13643,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
-msgstr ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
+msgid ""
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
+"linkend=\"ST_PointZM\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -13781,7 +13778,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "New in 3.2.0: With SRID specified"
+msgid "Creating a point with SRID specified:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Alternative way of specifying SRID:"
 msgstr ""
 
 #. Tag: title
@@ -13791,18 +13793,14 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Pre-PostGIS 3.2 syntax"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "3.2 and on you can include the srid"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
 msgid ""
-"PostgreSQL also provides the <varname>::</varname> short-hand for casting"
+"Create <link linkend=\"PostGIS_Geography\">geography</link> points using the "
+"<varname>::</varname> cast syntax:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Pre-PostGIS 3.2 code, using <varname>CAST</varname>:"
 msgstr ""
 
 #. Tag: para
@@ -13817,13 +13815,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
-"\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
+", <xref linkend=\"ST_PointZ\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
+"linkend=\"ST_PointZM\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref linkend="
+"\"ST_Transform\"/>"
 msgstr ""
-", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
-"\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -41533,6 +41528,73 @@ msgstr "Supporta il 2.5/3D"
 #, no-c-format
 msgid "Supports geography"
 msgstr "Supporta il tipo geography"
+
+#, no-c-format
+#~ msgid ""
+#~ "GEOS geometry library, version 3.6 or greater, but GEOS 3.12+ is required "
+#~ "to take full advantage of all the new functions and features. GEOS is "
+#~ "available for download from <link xlink:href=\"https://libgeos.org/\"> "
+#~ "https://libgeos.org </link>."
+#~ msgstr ""
+#~ "Libreria geometrica GEOS, versione 3.6 o superiore, ma GEOS 3.12+ è "
+#~ "necessario per sfruttare appieno tutte le nuove funzioni e "
+#~ "caratteristiche. GEOS è disponibile per il download da <link xlink:href="
+#~ "\"https://libgeos.org/\"> https://libgeos.org </link>."
+
+#, no-c-format
+#~ msgid ""
+#~ "SFCGAL, version 1.3.1 (or higher), 1.4.1 or higher is recommended and "
+#~ "required to be able to use all functionality. SFCGAL can be used to "
+#~ "provide additional 2D and 3D advanced analysis functions to PostGIS cf "
+#~ "<xref linkend=\"reference_sfcgal\"/>. And also allow to use SFCGAL rather "
+#~ "than GEOS for some 2D functions provided by both backends (like "
+#~ "ST_Intersection or ST_Area, for instance). A PostgreSQL configuration "
+#~ "variable <code>postgis.backend</code> allow end user to control which "
+#~ "backend he want to use if SFCGAL is installed (GEOS by default). Nota: "
+#~ "SFCGAL 1.2 require at least CGAL 4.3 and Boost 1.54 (cf: <link xlink:href="
+#~ "\"https://oslandia.gitlab.io/SFCGAL/dev.html\">https://oslandia.gitlab.io/"
+#~ "SFCGAL/dev.html</link>) <link xlink:href=\"https://gitlab.com/Oslandia/"
+#~ "SFCGAL/\">https://gitlab.com/Oslandia/SFCGAL/</link>."
+#~ msgstr ""
+#~ "SFCGAL, versione 1.3.1 (o superiore), 1.4.1 o superiore è consigliato e "
+#~ "richiesto per poter utilizzare tutte le funzionalità. SFCGAL può essere "
+#~ "utilizzato per fornire ulteriori funzioni di analisi avanzata 2D e 3D a "
+#~ "PostGIS cf <xref linkend=\"reference_sfcgal\"/>. Inoltre, consente di "
+#~ "utilizzare SFCGAL anziché GEOS per alcune funzioni 2D fornite da entrambi "
+#~ "i backend (come ST_Intersection o ST_Area, ad esempio). Una variabile di "
+#~ "configurazione PostgreSQL <code>postgis.backend</code> permette "
+#~ "all'utente finale di controllare quale backend vuole usare se SFCGAL è "
+#~ "installato (GEOS di default). Nota: SFCGAL 1.2 richiede almeno CGAL 4.3 e "
+#~ "Boost 1.54 (cfr. <link xlink:href=\"https://oslandia.gitlab.io/SFCGAL/dev."
+#~ "html\">https://oslandia.gitlab.io/SFCGAL/dev.html</link>) <link xlink:"
+#~ "href=\"https://gitlab.com/Oslandia/SFCGAL/\">https://gitlab.com/Oslandia/"
+#~ "SFCGAL/</link>."
+
+#, fuzzy, no-c-format
+#~ msgid "Creates a 2D, 3D Z or 4D ZM Point geometry."
+#~ msgstr "Crea una BOX2D definita dalle geometrie dei punti dati."
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
+#~ "<xref linkend=\"ST_MakePointM\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
+#~ "<xref linkend=\"ST_MakePointM\"/>"
+
+#, no-c-format
+#~ msgid ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
+#~ msgstr ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
+#~ "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
+#~ "\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
+#~ "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
+#~ "\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
 
 #, no-c-format
 #~ msgid "MACRO_C"

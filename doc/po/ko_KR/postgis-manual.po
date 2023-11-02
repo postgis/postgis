@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-10-30 18:01+0000\n"
+"POT-Creation-Date: 2023-11-02 18:50+0000\n"
 "PO-Revision-Date: 2023-10-14 20:23+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Korean <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -7386,10 +7386,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"GEOS geometry library, version 3.6 or greater, but GEOS 3.12+ is required to "
-"take full advantage of all the new functions and features. GEOS is available "
-"for download from <link xlink:href=\"https://libgeos.org/\"> https://libgeos."
-"org </link>."
+"GEOS geometry library, version &min_geos_version; or greater, but GEOS 3.12+ "
+"is required to take full advantage of all the new functions and features. "
+"GEOS is available for download from <link xlink:href=\"https://libgeos.org/"
+"\"> https://libgeos.org </link>."
 msgstr ""
 
 #. Tag: para
@@ -7469,10 +7469,9 @@ msgid ""
 "ST_Area, for instance). A PostgreSQL configuration variable <code>postgis."
 "backend</code> allow end user to control which backend he want to use if "
 "SFCGAL is installed (GEOS by default). Nota: SFCGAL 1.2 require at least "
-"CGAL 4.3 and Boost 1.54 (cf: <link xlink:href=\"https://oslandia.gitlab.io/"
-"SFCGAL/dev.html\">https://oslandia.gitlab.io/SFCGAL/dev.html</link>) <link "
-"xlink:href=\"https://gitlab.com/Oslandia/SFCGAL/\">https://gitlab.com/"
-"Oslandia/SFCGAL/</link>."
+"CGAL 4.3 and Boost 1.54 (cf: <link xlink:href=\"https://sfcgal.org\">https://"
+"sfcgal.org</link>) <link xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/"
+"\">https://gitlab.com/sfcgal/SFCGAL/</link>."
 msgstr ""
 
 #. Tag: para
@@ -13687,14 +13686,16 @@ msgid "Creates a 2D, 3DZ or 4D Point."
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Creates a 2D, 3D Z or 4D ZM Point geometry."
-msgstr "주어진 포인트 도형들로 정의되는 BOX2D를 생성합니다."
+#, no-c-format
+msgid ""
+"Creates a 2D XY, 3D XYZ or 4D XYZM Point geometry. Use <xref linkend="
+"\"ST_MakePointM\"/> to make points with XYM coordinates."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Use <xref linkend=\"ST_MakePointM\"/> to make points with XYM coordinates."
+"Use <xref linkend=\"ST_SetSRID\"/> to specify a SRID for the created point."
 msgstr ""
 
 #. Tag: para
@@ -13716,11 +13717,19 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
-"<xref linkend=\"ST_MakePointM\"/>"
+"The functions <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointZ\"/>, "
+"<xref linkend=\"ST_PointM\"/>, and <xref linkend=\"ST_PointZM\"/> can be "
+"used to create points with a given SRID."
 msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 ", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
-"<xref linkend=\"ST_MakePointM\"/>"
+"<xref linkend=\"ST_MakePointM\"/>, <xref linkend=\"ST_Point\"/>, <xref "
+"linkend=\"ST_PointZ\"/>, <xref linkend=\"ST_PointM\"/>, <xref linkend="
+"\"ST_PointZM\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, fuzzy, no-c-format
@@ -13728,15 +13737,17 @@ msgid "Creates a Point from X, Y and M values."
 msgstr "x, y 좌표 및 단위를 가진 포인트를 생성합니다."
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Creates a point with X, Y and M (measure) coordinates."
-msgstr "x, y 좌표 및 단위를 가진 포인트를 생성합니다."
+#, no-c-format
+msgid ""
+"Creates a point with X, Y and M (measure) ordinates. Use <xref linkend="
+"\"ST_MakePoint\"/> to make points with XY, XYZ, or XYZM coordinates."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Use <xref linkend=\"ST_MakePoint\"/> to make points with XY, XYZ, or XYZM "
-"coordinates."
+"The functions <xref linkend=\"ST_PointM\"/>, and <xref linkend=\"ST_PointZM"
+"\"/> can be used to create points with an M value and a given SRID."
 msgstr ""
 
 #. Tag: para
@@ -13763,8 +13774,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
-msgstr ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
+msgid ""
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
+"linkend=\"ST_PointZM\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -13903,7 +13916,12 @@ msgstr "예시: 도형"
 
 #. Tag: para
 #, no-c-format
-msgid "New in 3.2.0: With SRID specified"
+msgid "Creating a point with SRID specified:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Alternative way of specifying SRID:"
 msgstr ""
 
 #. Tag: title
@@ -13913,18 +13931,14 @@ msgstr "예시: 지리형"
 
 #. Tag: para
 #, no-c-format
-msgid "Pre-PostGIS 3.2 syntax"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "3.2 and on you can include the srid"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
 msgid ""
-"PostgreSQL also provides the <varname>::</varname> short-hand for casting"
+"Create <link linkend=\"PostGIS_Geography\">geography</link> points using the "
+"<varname>::</varname> cast syntax:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Pre-PostGIS 3.2 code, using <varname>CAST</varname>:"
 msgstr ""
 
 #. Tag: para
@@ -13939,13 +13953,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
-"\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
+", <xref linkend=\"ST_PointZ\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
+"linkend=\"ST_PointZM\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref linkend="
+"\"ST_Transform\"/>"
 msgstr ""
-", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
-"\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -43827,6 +43838,36 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, fuzzy, no-c-format
+#~ msgid "Creates a 2D, 3D Z or 4D ZM Point geometry."
+#~ msgstr "주어진 포인트 도형들로 정의되는 BOX2D를 생성합니다."
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
+#~ "<xref linkend=\"ST_MakePointM\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
+#~ "<xref linkend=\"ST_MakePointM\"/>"
+
+#, fuzzy, no-c-format
+#~ msgid "Creates a point with X, Y and M (measure) coordinates."
+#~ msgstr "x, y 좌표 및 단위를 가진 포인트를 생성합니다."
+
+#, no-c-format
+#~ msgid ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
+#~ msgstr ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
+#~ "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
+#~ "\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
+#~ "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
+#~ "\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
 
 #, no-c-format
 #~ msgid "SPHEROID[\"GRS_1980\",6378137,298.257222101]"

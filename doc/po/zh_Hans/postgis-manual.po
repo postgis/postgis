@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-10-30 18:01+0000\n"
+"POT-Creation-Date: 2023-11-02 18:50+0000\n"
 "PO-Revision-Date: 2023-10-31 09:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -7436,14 +7436,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"GEOS geometry library, version 3.6 or greater, but GEOS 3.12+ is required to "
-"take full advantage of all the new functions and features. GEOS is available "
-"for download from <link xlink:href=\"https://libgeos.org/\"> https://libgeos."
-"org </link>."
+"GEOS geometry library, version &min_geos_version; or greater, but GEOS 3.12+ "
+"is required to take full advantage of all the new functions and features. "
+"GEOS is available for download from <link xlink:href=\"https://libgeos.org/"
+"\"> https://libgeos.org </link>."
 msgstr ""
-"几何库 GEOS 3.6 或更高版本是必需的，但需要 GEOS 3.12 或更高版本才能充分利用所"
-"有功能和特性。 您可以从 <link xlink:href=\"https://libgeos.org/\"> https://"
-"libgeos.org </link>下载 GEOS。"
 
 #. Tag: para
 #, no-c-format
@@ -7527,20 +7524,10 @@ msgid ""
 "ST_Area, for instance). A PostgreSQL configuration variable <code>postgis."
 "backend</code> allow end user to control which backend he want to use if "
 "SFCGAL is installed (GEOS by default). Nota: SFCGAL 1.2 require at least "
-"CGAL 4.3 and Boost 1.54 (cf: <link xlink:href=\"https://oslandia.gitlab.io/"
-"SFCGAL/dev.html\">https://oslandia.gitlab.io/SFCGAL/dev.html</link>) <link "
-"xlink:href=\"https://gitlab.com/Oslandia/SFCGAL/\">https://gitlab.com/"
-"Oslandia/SFCGAL/</link>."
+"CGAL 4.3 and Boost 1.54 (cf: <link xlink:href=\"https://sfcgal.org\">https://"
+"sfcgal.org</link>) <link xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/"
+"\">https://gitlab.com/sfcgal/SFCGAL/</link>."
 msgstr ""
-"建议使用 SFCGAL 版本 1.3.1（或更高版本）、1.4.1 或更高版本，以便能够使用所有"
-"功能。SFCGAL 可用于为 PostGIS 提供额外的 2D 和 3D 高级分析功能，参见<xref "
-"linkend=\"reference_sfcgal\"/>。并且还允许对两个后端提供的某些 2D 函数（例如 "
-"ST_Intersection 或 ST_Area）使用 SFCGAL 而不是 GEOS。如果安装了 SFCGAL（默认"
-"为 GEOS），PostgreSQL 配置变量 <code>postgis.backend</code>允许最终用户控制他"
-"想要使用哪个后端。注：SFCGAL 1.2 至少需要 CGAL 4.3 和 Boost 1.54（参见："
-"<link xlink:href=\"https://oslandia.gitlab.io/SFCGAL/dev.html\">https://"
-"oslandia.gitlab.io/SFCGAL/dev.html</link>）<link xlink:href=\"https://gitlab."
-"com/Oslandia/SFCGAL/\">https://gitlab.com/Oslandia/SFCGAL/</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -13915,14 +13902,16 @@ msgstr "创建 2D、3DZ 或 4D 点。"
 
 #. Tag: para
 #, no-c-format
-msgid "Creates a 2D, 3D Z or 4D ZM Point geometry."
-msgstr "生成 2D、3D （XYZ） 和 4D （XYZM） 点。"
+msgid ""
+"Creates a 2D XY, 3D XYZ or 4D XYZM Point geometry. Use <xref linkend="
+"\"ST_MakePointM\"/> to make points with XYM coordinates."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Use <xref linkend=\"ST_MakePointM\"/> to make points with XYM coordinates."
-msgstr "使用 <xref linkend=\"ST_MakePointM\"/>创建具有 XYM 坐标的点。"
+"Use <xref linkend=\"ST_SetSRID\"/> to specify a SRID for the created point."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -13946,11 +13935,19 @@ msgstr "对于大地坐标，<varname>X</varname>是经度， <varname>Y</varnam
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
-"<xref linkend=\"ST_MakePointM\"/>"
+"The functions <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointZ\"/>, "
+"<xref linkend=\"ST_PointM\"/>, and <xref linkend=\"ST_PointZM\"/> can be "
+"used to create points with a given SRID."
 msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 ", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
-"<xref linkend=\"ST_MakePointM\"/>"
+"<xref linkend=\"ST_MakePointM\"/>, <xref linkend=\"ST_Point\"/>, <xref "
+"linkend=\"ST_PointZ\"/>, <xref linkend=\"ST_PointM\"/>, <xref linkend="
+"\"ST_PointZM\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -13959,16 +13956,17 @@ msgstr "根据 X、Y 和 M 值创建一个点。"
 
 #. Tag: para
 #, no-c-format
-msgid "Creates a point with X, Y and M (measure) coordinates."
-msgstr "从 X、Y、M（测量）值生成点。"
+msgid ""
+"Creates a point with X, Y and M (measure) ordinates. Use <xref linkend="
+"\"ST_MakePoint\"/> to make points with XY, XYZ, or XYZM coordinates."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Use <xref linkend=\"ST_MakePoint\"/> to make points with XY, XYZ, or XYZM "
-"coordinates."
+"The functions <xref linkend=\"ST_PointM\"/>, and <xref linkend=\"ST_PointZM"
+"\"/> can be used to create points with an M value and a given SRID."
 msgstr ""
-"使用 <xref linkend=\"ST_MakePoint\"/> 创建具有 XY、XYZ、XYZM 坐标的点。"
 
 #. Tag: para
 #, no-c-format
@@ -13995,8 +13993,10 @@ msgstr "获取生成点的 M 值。"
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
-msgstr ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
+msgid ""
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
+"linkend=\"ST_PointZM\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14146,8 +14146,13 @@ msgstr "示例：几何"
 
 #. Tag: para
 #, no-c-format
-msgid "New in 3.2.0: With SRID specified"
-msgstr "3.2.0 中的新功能：可以指定 SRID"
+msgid "Creating a point with SRID specified:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Alternative way of specifying SRID:"
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -14156,19 +14161,15 @@ msgstr "示例：地理"
 
 #. Tag: para
 #, no-c-format
-msgid "Pre-PostGIS 3.2 syntax"
-msgstr "PostGIS 3.2 之前的语法"
-
-#. Tag: para
-#, no-c-format
-msgid "3.2 and on you can include the srid"
-msgstr "在 3.2 中，它可以包含 SRID"
-
-#. Tag: para
-#, no-c-format
 msgid ""
-"PostgreSQL also provides the <varname>::</varname> short-hand for casting"
-msgstr "PostgreSQL 还提供了用于转换的<varname>::</varname>简写"
+"Create <link linkend=\"PostGIS_Geography\">geography</link> points using the "
+"<varname>::</varname> cast syntax:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Pre-PostGIS 3.2 code, using <varname>CAST</varname>:"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -14185,13 +14186,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
-"\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
+", <xref linkend=\"ST_PointZ\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
+"linkend=\"ST_PointZM\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref linkend="
+"\"ST_Transform\"/>"
 msgstr ""
-", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
-"\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22052,7 +22050,8 @@ msgstr "以GeoJSON格式返回一个几何体或要素。"
 msgid ""
 "Returns a geometry as a GeoJSON \"geometry\" object, or a row as a GeoJSON "
 "\"feature\" object."
-msgstr "返回一个几何体作为GeoJSON中的 “geometry” 对象，或者返回一行作为GeoJSON中的 "
+msgstr ""
+"返回一个几何体作为GeoJSON中的 “geometry” 对象，或者返回一行作为GeoJSON中的 "
 "“feature”对象。"
 
 #. Tag: para
@@ -22069,11 +22068,10 @@ msgid ""
 "types (no curve support for example)."
 msgstr ""
 "生成的GeoJSON几何体和要素遵循 <link xlink:href=\"https://tools.ietf.org/html/"
-"rfc7946\">GeoJSON规范RFC "
-"7946</link>，但当解析的几何体使用WGS84经度和纬度之外的CRS（如 <link "
-"xlink:href=\"https://epsg.io/4326\">EPSG:4326</link>，<link xlink:href=\"http"
-"://epsg.io/4326.gml\">urn:ogc:def:crs:OGC::CRS84</link>）进行引用时，"
-"GeoJSON几何对象将默认附加一个短的CRS SRID标识符。支持2D和3D几何。"
+"rfc7946\">GeoJSON规范RFC 7946</link>，但当解析的几何体使用WGS84经度和纬度之外"
+"的CRS（如 <link xlink:href=\"https://epsg.io/4326\">EPSG:4326</link>，<link "
+"xlink:href=\"http://epsg.io/4326.gml\">urn:ogc:def:crs:OGC::CRS84</link>）进"
+"行引用时，GeoJSON几何对象将默认附加一个短的CRS SRID标识符。支持2D和3D几何。"
 "GeoJSON仅支持SFS 1.1几何类型（例如，不支持曲线）。"
 
 #. Tag: para
@@ -37816,7 +37814,8 @@ msgstr ""
 msgid ""
 "To obtain the actual points at the computed measure use <xref linkend="
 "\"ST_LocateAlong\"/> ."
-msgstr "要获取计算得到的度量值上的实际点，请使用 <xref linkend=\"ST_LocateAlong\"/>。"
+msgstr ""
+"要获取计算得到的度量值上的实际点，请使用 <xref linkend=\"ST_LocateAlong\"/>。"
 
 #. Tag: para
 #, no-c-format
@@ -45542,6 +45541,102 @@ msgstr "2.5/3D 支持"
 #, no-c-format
 msgid "Supports geography"
 msgstr "支持地理"
+
+#, no-c-format
+#~ msgid ""
+#~ "GEOS geometry library, version 3.6 or greater, but GEOS 3.12+ is required "
+#~ "to take full advantage of all the new functions and features. GEOS is "
+#~ "available for download from <link xlink:href=\"https://libgeos.org/\"> "
+#~ "https://libgeos.org </link>."
+#~ msgstr ""
+#~ "几何库 GEOS 3.6 或更高版本是必需的，但需要 GEOS 3.12 或更高版本才能充分利"
+#~ "用所有功能和特性。 您可以从 <link xlink:href=\"https://libgeos.org/\"> "
+#~ "https://libgeos.org </link>下载 GEOS。"
+
+#, no-c-format
+#~ msgid ""
+#~ "SFCGAL, version 1.3.1 (or higher), 1.4.1 or higher is recommended and "
+#~ "required to be able to use all functionality. SFCGAL can be used to "
+#~ "provide additional 2D and 3D advanced analysis functions to PostGIS cf "
+#~ "<xref linkend=\"reference_sfcgal\"/>. And also allow to use SFCGAL rather "
+#~ "than GEOS for some 2D functions provided by both backends (like "
+#~ "ST_Intersection or ST_Area, for instance). A PostgreSQL configuration "
+#~ "variable <code>postgis.backend</code> allow end user to control which "
+#~ "backend he want to use if SFCGAL is installed (GEOS by default). Nota: "
+#~ "SFCGAL 1.2 require at least CGAL 4.3 and Boost 1.54 (cf: <link xlink:href="
+#~ "\"https://oslandia.gitlab.io/SFCGAL/dev.html\">https://oslandia.gitlab.io/"
+#~ "SFCGAL/dev.html</link>) <link xlink:href=\"https://gitlab.com/Oslandia/"
+#~ "SFCGAL/\">https://gitlab.com/Oslandia/SFCGAL/</link>."
+#~ msgstr ""
+#~ "建议使用 SFCGAL 版本 1.3.1（或更高版本）、1.4.1 或更高版本，以便能够使用所"
+#~ "有功能。SFCGAL 可用于为 PostGIS 提供额外的 2D 和 3D 高级分析功能，参见"
+#~ "<xref linkend=\"reference_sfcgal\"/>。并且还允许对两个后端提供的某些 2D 函"
+#~ "数（例如 ST_Intersection 或 ST_Area）使用 SFCGAL 而不是 GEOS。如果安装了 "
+#~ "SFCGAL（默认为 GEOS），PostgreSQL 配置变量 <code>postgis.backend</code>允"
+#~ "许最终用户控制他想要使用哪个后端。注：SFCGAL 1.2 至少需要 CGAL 4.3 和 "
+#~ "Boost 1.54（参见：<link xlink:href=\"https://oslandia.gitlab.io/SFCGAL/"
+#~ "dev.html\">https://oslandia.gitlab.io/SFCGAL/dev.html</link>）<link xlink:"
+#~ "href=\"https://gitlab.com/Oslandia/SFCGAL/\">https://gitlab.com/Oslandia/"
+#~ "SFCGAL/</link>。"
+
+#, no-c-format
+#~ msgid "Creates a 2D, 3D Z or 4D ZM Point geometry."
+#~ msgstr "生成 2D、3D （XYZ） 和 4D （XYZM） 点。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Use <xref linkend=\"ST_MakePointM\"/> to make points with XYM coordinates."
+#~ msgstr "使用 <xref linkend=\"ST_MakePointM\"/>创建具有 XYM 坐标的点。"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
+#~ "<xref linkend=\"ST_MakePointM\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
+#~ "<xref linkend=\"ST_MakePointM\"/>"
+
+#, no-c-format
+#~ msgid "Creates a point with X, Y and M (measure) coordinates."
+#~ msgstr "从 X、Y、M（测量）值生成点。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Use <xref linkend=\"ST_MakePoint\"/> to make points with XY, XYZ, or XYZM "
+#~ "coordinates."
+#~ msgstr ""
+#~ "使用 <xref linkend=\"ST_MakePoint\"/> 创建具有 XY、XYZ、XYZM 坐标的点。"
+
+#, no-c-format
+#~ msgid ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
+#~ msgstr ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
+
+#, no-c-format
+#~ msgid "New in 3.2.0: With SRID specified"
+#~ msgstr "3.2.0 中的新功能：可以指定 SRID"
+
+#, no-c-format
+#~ msgid "Pre-PostGIS 3.2 syntax"
+#~ msgstr "PostGIS 3.2 之前的语法"
+
+#, no-c-format
+#~ msgid "3.2 and on you can include the srid"
+#~ msgstr "在 3.2 中，它可以包含 SRID"
+
+#, no-c-format
+#~ msgid ""
+#~ "PostgreSQL also provides the <varname>::</varname> short-hand for casting"
+#~ msgstr "PostgreSQL 还提供了用于转换的<varname>::</varname>简写"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
+#~ "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
+#~ "\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
+#~ "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
+#~ "\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
 
 #, no-c-format
 #~ msgid "Return a geometry as a GeoJSON element."
