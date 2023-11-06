@@ -6,10 +6,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-02 18:50+0000\n"
-"PO-Revision-Date: 2023-10-31 03:23+0000\n"
+"PO-Revision-Date: 2023-11-06 05:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -7960,6 +7960,9 @@ msgid ""
 "GEOS is available for download from <link xlink:href=\"https://libgeos.org/"
 "\"> https://libgeos.org </link>."
 msgstr ""
+"ジオメトリライブラリGEOSの新しい関数と機能の利点を完全に得るには&min_geos_ver"
+"sion;以上で、GEOS 3.12以上が必要です。GEOSは <link xlink:href=\"https"
+"://libgeos.org/\">https://libgeos.org/</link>からダウンロードできます。"
 
 #. Tag: para
 #, no-c-format
@@ -8050,6 +8053,18 @@ msgid ""
 "sfcgal.org</link>) <link xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/"
 "\">https://gitlab.com/sfcgal/SFCGAL/</link>."
 msgstr ""
+"全ての機能を使用できるようにするためには、SFCGAL 1.3.1 (以上)、1.4."
+"1以上が推奨であり、必要です。SFCGALは、<xref linkend=\"reference_sfcgal\"/>の"
+"ような、追加の2次元、3次元の高度な解析機能をPostGISに提供するために使うことが"
+"できます。また、両方のバックエンドから提供されている2次元関数 (ST_Intersectio"
+"nやST_Areaなど)に、GEOSでなくSFCGALを使用することができるようになります。Post"
+"greSQLのコンフィギュレーション変数である<code>postgis."
+"backend</code>によって、SFCGALがインストールされている場合にエンドユーザがど"
+"のバックエンドを使いたいかを制御することができるようになります "
+"(デフォルトはGEOS)。ご注意: SFCGAL 1.2は少なくともCGAL 4.3とBoost 1.54 "
+"が必要です (<link xlink:href=\"https://sfcgal.org\">https://sfcgal.org</"
+"link> 参照) <link xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/\""
+">https://gitlab.com/sfcgal/SFCGAL/</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -14780,12 +14795,16 @@ msgid ""
 "Creates a 2D XY, 3D XYZ or 4D XYZM Point geometry. Use <xref linkend="
 "\"ST_MakePointM\"/> to make points with XYM coordinates."
 msgstr ""
+"XY 2次元、XYZ 3次元、XYZM 4次元のポイントジオメトリを生成します。"
+"XYM座標のポイントを生成するには <xref linkend=\"ST_MakePointM\"/> "
+"を使用します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Use <xref linkend=\"ST_SetSRID\"/> to specify a SRID for the created point."
-msgstr ""
+msgstr "生成したポイントのSRIDを指定するには<xref linkend=\"ST_SetSRID\""
+"/>を使います。"
 
 #. Tag: para
 #, no-c-format
@@ -14815,6 +14834,9 @@ msgid ""
 "<xref linkend=\"ST_PointM\"/>, and <xref linkend=\"ST_PointZM\"/> can be "
 "used to create points with a given SRID."
 msgstr ""
+"<xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
+"\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\""
+"/>関数を使用すると、与えられたSRIDを持つポイントを生成することができます。"
 
 #. Tag: para
 #, no-c-format
@@ -14824,6 +14846,10 @@ msgid ""
 "linkend=\"ST_PointZ\"/>, <xref linkend=\"ST_PointM\"/>, <xref linkend="
 "\"ST_PointZM\"/>"
 msgstr ""
+", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
+"<xref linkend=\"ST_MakePointM\"/>, <xref linkend=\"ST_Point\"/>, <xref "
+"linkend=\"ST_PointZ\"/>, <xref linkend=\"ST_PointM\"/>, <xref linkend="
+"\"ST_PointZM\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14836,6 +14862,8 @@ msgid ""
 "Creates a point with X, Y and M (measure) ordinates. Use <xref linkend="
 "\"ST_MakePoint\"/> to make points with XY, XYZ, or XYZM coordinates."
 msgstr ""
+"X, Y, M座標値を持つポイントを生成します。XY, XYZ, "
+"XYZM座標のポイントを生成するには<xref linkend=\"ST_MakePoint\"/>を使います。"
 
 #. Tag: para
 #, no-c-format
@@ -14843,6 +14871,8 @@ msgid ""
 "The functions <xref linkend=\"ST_PointM\"/>, and <xref linkend=\"ST_PointZM"
 "\"/> can be used to create points with an M value and a given SRID."
 msgstr ""
+"<xref linkend=\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>関数を使うと、与"
+"えられたSRIDを持ち、M値を持つポイントを生成することができます。"
 
 #. Tag: para
 #, no-c-format
@@ -14874,6 +14904,8 @@ msgid ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
 "linkend=\"ST_PointZM\"/>"
 msgstr ""
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
+"linkend=\"ST_PointZM\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -15031,12 +15063,12 @@ msgstr "例: ジオメトリ"
 #. Tag: para
 #, no-c-format
 msgid "Creating a point with SRID specified:"
-msgstr ""
+msgstr "指定したSRIDを持つポイントの生成:"
 
 #. Tag: para
 #, no-c-format
 msgid "Alternative way of specifying SRID:"
-msgstr ""
+msgstr "SRIDを指定する別の方法:"
 
 #. Tag: title
 #, no-c-format
@@ -15049,11 +15081,13 @@ msgid ""
 "Create <link linkend=\"PostGIS_Geography\">geography</link> points using the "
 "<varname>::</varname> cast syntax:"
 msgstr ""
+"<link linkend=\"PostGIS_Geography\">ジオグラフィ</link>のポイントを、"
+"キャストの書き方 <varname>::</varname> を使って生成します:"
 
 #. Tag: para
 #, no-c-format
 msgid "Pre-PostGIS 3.2 code, using <varname>CAST</varname>:"
-msgstr ""
+msgstr "PostGIS 3.2より前のコードでは<varname>CAST</varname>を使います:"
 
 #. Tag: para
 #, no-c-format
@@ -15074,6 +15108,9 @@ msgid ""
 "linkend=\"ST_PointZM\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref linkend="
 "\"ST_Transform\"/>"
 msgstr ""
+", <xref linkend=\"ST_PointZ\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
+"linkend=\"ST_PointZM\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref linkend="
+"\"ST_Transform\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
