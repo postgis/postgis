@@ -809,6 +809,23 @@ fi
 dnl Extract the linker and include flags
 GEOS_LDFLAGS=`$GEOSCONFIG --clibs`
 GEOS_CPPFLAGS=`$GEOSCONFIG --cflags`
+
+#
+# MacOS with XCode > 15 now requires rpath entries for
+# libraries like GEOS/Proj that might be flexibly installed
+# with movability expected
+#
+case $host_os in
+    darwin*)
+				GEOS_RPATH=`echo $GEOS_LDFLAGS | $PERL -nle 'print "$1" if /\-L ?(\S+) /'`
+				AC_MSG_RESULT([checking for GEOS_RPATH under MacOS... $GEOS_RPATH])
+				if test "x$GEOS_RPATH" != "x"; then
+				  # Add the rpath setting to the LDFLAGS
+					GEOS_LDFLAGS="$GEOS_LDFLAGS -Wl,-rpath,$GEOS_RPATH"
+				fi
+				;;
+esac
+
 AC_SUBST([GEOS_LDFLAGS])
 AC_SUBST([GEOS_CPPFLAGS])
 
@@ -954,7 +971,7 @@ elif test ! -z "$PKG_CONFIG"; then
 		[
 			PROJ_CPPFLAGS="$PROJ_CFLAGS"
 			PROJ_LDFLAGS="$PROJ_LIBS"
-			POSTGIS_PROJ_VERSION=`$PKG_CONFIG proj --modversion | sed 's/\([[0-9]]\).*\([[0-9]]\).*\([[0-9]]\)/\1\2/'`
+			POSTGIS_PROJ_VERSION=`$PKG_CONFIG proj --modversion | $PERL -nle 'print "$1$2" if /(\d).*(\d).*(\d)/'`
 		],
 		[
 			PROJ_LDFLAGS="-lproj"
@@ -963,6 +980,23 @@ else
 	dnl To keep compatibility with PROJ pre 4.8, default to lproj
 	PROJ_LDFLAGS="-lproj"
 fi
+
+
+#
+# MacOS with XCode > 15 now requires rpath entries for
+# libraries like GEOS/Proj that might be flexibly installed
+# with movability expected
+#
+case $host_os in
+    darwin*)
+				PROJ_RPATH=`echo $PROJ_LDFLAGS | $PERL -nle 'print "$1" if /\-L ?(\S+) /'`
+				AC_MSG_RESULT([checking for PROJ_RPATH under MacOS... $PROJ_RPATH])
+					if test "x$PROJ_RPATH" != "x"; then
+				  # Add the rpath setting to the LDFLAGS
+					PROJ_LDFLAGS="$PROJ_LDFLAGS -Wl,-rpath,$PROJ_RPATH"
+				fi
+				;;
+esac
 
 
 dnl Check that we can find the proj_api.h header file
