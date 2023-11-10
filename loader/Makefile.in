@@ -29,7 +29,7 @@ CFLAGS= -I$(top_srcdir)/liblwgeom -I$(top_builddir)/liblwgeom @CPPFLAGS@ @CFLAGS
 SHELL = @SHELL@
 LIBTOOL = @LIBTOOL@
 
-LDFLAGS = @LDFLAGS@
+LDFLAGS = @LDFLAGS@ @PROJ_LDFLAGS@ @GEOS_LDFLAGS@
 
 # Filenames with extension as determined by the OS
 POSTGIS-CLI=postgis
