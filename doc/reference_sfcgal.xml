@@ -847,7 +847,7 @@ select ST_DelaunayTriangles(
 	  </refsection>
         <refsection>
 		<title>See Also</title>
-                <para><xref linkend="ST_AsX3D"/>, <xref linkend="ST_ExtrudeStraightSkeleton" /></para>
+                <para><xref linkend="ST_AsX3D"/>, <xref linkend="CG_ExtrudeStraightSkeleton" /></para>
 	  </refsection>
 	</refentry>
 
@@ -1264,7 +1264,7 @@ MULTIPOLYGON(
 
       <refsection>
 		<title>See Also</title>
-                <para><xref linkend="ST_ExtrudeStraightSkeleton" /></para>
+                <para><xref linkend="CG_ExtrudeStraightSkeleton" /></para>
 	  </refsection>
 	</refentry>
 
@@ -1650,9 +1650,9 @@ MULTIPOLYGON(
 	  </refsection>
 
 	</refentry>
-    <refentry xml:id="ST_ExtrudeStraightSkeleton">
+    <refentry xml:id="CG_ExtrudeStraightSkeleton">
 	  <refnamediv>
-		<refname>ST_ExtrudeStraightSkeleton</refname>
+		<refname>CG_ExtrudeStraightSkeleton</refname>
 
 		<refpurpose>Straight Skeleton Extrusion</refpurpose>
 	  </refnamediv>
@@ -1660,7 +1660,7 @@ MULTIPOLYGON(
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>geometry <function>ST_ExtrudeStraightSkeleton</function></funcdef>
+			<funcdef>geometry <function>CG_ExtrudeStraightSkeleton</function></funcdef>
 			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
                         <paramdef><type>float </type> <parameter>roof_height</parameter></paramdef>
                         <paramdef choice="opt"><type>float </type> <parameter>body_height = 0</parameter></paramdef>
@@ -1687,7 +1687,7 @@ MULTIPOLYGON(
 	  <refsection>
 	      <title>Examples</title>
 <para>
-         <programlisting>SELECT ST_AsText(ST_ExtrudeStraightSkeleton('POLYGON (( 0 0, 5 0, 5 5, 4 5, 4 4, 0 4, 0 0 ), (1 1, 1 2,2 2, 2 1, 1 1))', 3.0, 2.0));</programlisting>
+         <programlisting>SELECT ST_AsText(CG_ExtrudeStraightSkeleton('POLYGON (( 0 0, 5 0, 5 5, 4 5, 4 4, 0 4, 0 0 ), (1 1, 1 2,2 2, 2 1, 1 1))', 3.0, 2.0));</programlisting>
           <screen>POLYHEDRALSURFACE Z (((0 0 0,0 4 0,4 4 0,4 5 0,5 5 0,5 0 0,0 0 0),(1 1 0,2 1 0,2 2 0,1 2 0,1 1 0)),((0 0 0,0 0 2,0 4 2,0 4 0,0 0 0)),((0 4 0,0 4 2,4 4 2,4 4 0,0 4 0)),((4 4 0,4 4 2,4 5 2,4 5 0,4 4 0)),((4 5 0,4 5 2,5 5 2,5 5 0,4 5 0)),((5 5 0,5 5 2,5 0 2,5 0 0,5 5 0)),((5 0 0,5 0 2,0 0 2,0 0 0,5 0 0)),((1 1 0,1 1 2,2 1 2,2 1 0,1 1 0)),((2 1 0,2 1 2,2 2 2,2 2 0,2 1 0)),((2 2 0,2 2 2,1 2 2,1 2 0,2 2 0)),((1 2 0,1 2 2,1 1 2,1 1 0,1 2 0)),((4 5 2,5 5 2,4 4 2,4 5 2)),((2 1 2,5 0 2,0 0 2,2 1 2)),((5 5 2,5 0 2,4 4 2,5 5 2)),((2 1 2,0 0 2,1 1 2,2 1 2)),((1 2 2,1 1 2,0 0 2,1 2 2)),((0 4 2,2 2 2,1 2 2,0 4 2)),((0 4 2,1 2 2,0 0 2,0 4 2)),((4 4 2,5 0 2,2 2 2,4 4 2)),((4 4 2,2 2 2,0 4 2,4 4 2)),((2 2 2,5 0 2,2 1 2,2 2 2)),((0.5 2.5 2.5,0 0 2,0.5 0.5 2.5,0.5 2.5 2.5)),((1 3 3,0 4 2,0.5 2.5 2.5,1 3 3)),((0.5 2.5 2.5,0 4 2,0 0 2,0.5 2.5 2.5)),((2.5 0.5 2.5,5 0 2,3.5 1.5 3.5,2.5 0.5 2.5)),((0 0 2,5 0 2,2.5 0.5 2.5,0 0 2)),((0.5 0.5 2.5,0 0 2,2.5 0.5 2.5,0.5 0.5 2.5)),((4.5 3.5 2.5,5 5 2,4.5 4.5 2.5,4.5 3.5 2.5)),((3.5 2.5 3.5,3.5 1.5 3.5,4.5 3.5 2.5,3.5 2.5 3.5)),((4.5 3.5 2.5,5 0 2,5 5 2,4.5 3.5 2.5)),((3.5 1.5 3.5,5 0 2,4.5 3.5 2.5,3.5 1.5 3.5)),((5 5 2,4 5 2,4.5 4.5 2.5,5 5 2)),((4.5 4.5 2.5,4 4 2,4.5 3.5 2.5,4.5 4.5 2.5)),((4.5 4.5 2.5,4 5 2,4 4 2,4.5 4.5 2.5)),((3 3 3,0 4 2,1 3 3,3 3 3)),((3.5 2.5 3.5,4.5 3.5 2.5,3 3 3,3.5 2.5 3.5)),((3 3 3,4 4 2,0 4 2,3 3 3)),((4.5 3.5 2.5,4 4 2,3 3 3,4.5 3.5 2.5)),((2 1 2,1 1 2,0.5 0.5 2.5,2 1 2)),((2.5 0.5 2.5,2 1 2,0.5 0.5 2.5,2.5 0.5 2.5)),((1 1 2,1 2 2,0.5 2.5 2.5,1 1 2)),((0.5 0.5 2.5,1 1 2,0.5 2.5 2.5,0.5 0.5 2.5)),((1 3 3,2 2 2,3 3 3,1 3 3)),((0.5 2.5 2.5,1 2 2,1 3 3,0.5 2.5 2.5)),((1 3 3,1 2 2,2 2 2,1 3 3)),((2 2 2,2 1 2,2.5 0.5 2.5,2 2 2)),((3.5 2.5 3.5,3 3 3,3.5 1.5 3.5,3.5 2.5 3.5)),((3.5 1.5 3.5,2 2 2,2.5 0.5 2.5,3.5 1.5 3.5)),((3 3 3,2 2 2,3.5 1.5 3.5,3 3 3)))</screen>
         </para>
 	  </refsection>

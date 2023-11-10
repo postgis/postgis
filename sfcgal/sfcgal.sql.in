@@ -191,7 +191,6 @@ CREATE OR REPLACE FUNCTION ST_OptimalAlphaShape(g1 geometry, allow_holes boolean
 COMMIT;
 
 -- Availability: 3.5.0
-<<<<<<< HEAD
 CREATE OR REPLACE FUNCTION CG_YMonotonePartition(g1 geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME', 'sfcgal_ymonotonepartition'
