@@ -28,7 +28,7 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.5.0+ is needed.
   - Add ST_HasZ/ST_HasM (Loïc Bartoletti)
   - GT-123, postgis_sfcgal: CG_YMonotonePartition, CG_ApproxConvexPartition, CG_GreeneApproxConvexPartition and CG_OptimalConvexPartition (Loïc Bartoletti)
   - GT-157, postgis_sfcgal: Add ST_ExtrudeStraightSkeleton (Loïc Bartoletti)
-  - postgis_sfcgal: ST_Visibility (Loïc Bartoletti)
+  - postgis_sfcgal: CG_Visibility (Loïc Bartoletti)
 
 * Enhancements *
 
