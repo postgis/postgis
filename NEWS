@@ -37,6 +37,7 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
  - Fix JsonB casting issue (Paul Ramsey)
  - #5535, Cleanup String handling in debug_standardize_address
           and standardize_address (Regina Obe)
+ - #5605, Fix regression failure with GEOS 3.13, main branch (Regina Obe)
 
 * Enhancements *
 
