@@ -239,7 +239,7 @@ CREATE OR REPLACE FUNCTION CG_Visibility(polygon geometry, pointA geometry, poin
 COMMIT;
 
 -- Availability: 3.5.0
-CREATE OR REPLACE FUNCTION ST_Visibility(polygon geometry, point geometry)
+CREATE OR REPLACE FUNCTION CG_Visibility(polygon geometry, point geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME', 'sfcgal_visibility_point'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
