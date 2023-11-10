@@ -1585,7 +1585,8 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 		<title>Examples - A single geometry with srsName</title>
 		<programlisting><![CDATA[
 SELECT ST_GeomFromGML($$
-    <gml:LineString srsName="EPSG:4269">
+    <gml:LineString xmlns:gml="http://www.opengis.net/gml" 
+			srsName="EPSG:4269">
         <gml:coordinates>
             -71.16028,42.258729 -71.160837,42.259112 -71.161143,42.25932
         </gml:coordinates>
@@ -1619,7 +1620,7 @@ $$);
 		<title>Examples - Polyhedral Surface</title>
 		<programlisting><![CDATA[
 SELECT ST_AsEWKT(ST_GeomFromGML('
-<gml:PolyhedralSurface>
+<gml:PolyhedralSurface xmlns:gml="http://www.opengis.net/gml">
 <gml:polygonPatches>
   <gml:PolygonPatch>
     <gml:exterior>
