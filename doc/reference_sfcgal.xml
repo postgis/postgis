@@ -1697,4 +1697,80 @@ MULTIPOLYGON(
 	  </refsection>
 
 	</refentry>
+
+    <refentry xml:id="ST_Visibility">
+        <refnamediv>
+            <refname>ST_Visibility</refname>
+
+            <refpurpose>Compute a visibility polygon from a point or a segment in a polygon geometry</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>ST_Visibility</function></funcdef>
+                    <paramdef><type>polygon</type> <parameter>geom</parameter></paramdef>
+                    <paramdef><type>point</type> <parameter>geom</parameter></paramdef>
+                </funcprototype>
+                <funcprototype>
+                    <funcdef>geometry <function>ST_Visibility</function></funcdef>
+                    <paramdef><type>polygon</type> <parameter>geom</parameter></paramdef>
+                    <paramdef><type>point1</type> <parameter>geom</parameter></paramdef>
+                    <paramdef><type>point2</type> <parameter>geom</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+            <para>&sfcgal_required;</para>
+            <para>&Z_support;</para>
+            <para>&P_support;</para>
+            <para>&T_support;</para>
+        </refsection>
+
+        <refsection><title>Examples</title>
+            <programlisting>SELECT ST_Visibility('Polygon ((1981593 5199143, 1981593 5199284, 1981737 5199284, 1981737 5199143, 1981593 5199143),(1981674 5199213, 1981674 5199155, 1981720 5199156, 1981719 5199214, 1981674 5199213),(1981673 5199269, 1981673 5199221, 1981700 5199222, 1981698 5199241, 1981708 5199241, 1981708 5199223, 1981718 5199224, 1981716 5199277, 1981673 5199269),(1981610 5199211, 1981610 5199154, 1981667 5199155, 1981665 5199185, 1981646 5199185, 1981645 5199212, 1981610 5199211),(1981608 5199262, 1981609 5199219, 1981664 5199221, 1981662 5199264, 1981608 5199262))'::geometry, 'Point (1981658 5199203)');</programlisting>
+
+            <programlisting>SELECT ST_Visibility('Polygon ((1981593 5199143, 1981593 5199284, 1981737 5199284, 1981737 5199143, 1981593 5199143),(1981674 5199213, 1981674 5199155, 1981720 5199156, 1981719 5199214, 1981674 5199213),(1981673 5199269, 1981673 5199221, 1981700 5199222, 1981698 5199241, 1981708 5199241, 1981708 5199223, 1981718 5199224, 1981716 5199277, 1981673 5199269),(1981610 5199211, 1981610 5199154, 1981667 5199155, 1981665 5199185, 1981646 5199185, 1981645 5199212, 1981610 5199211),(1981608 5199262, 1981609 5199219, 1981664 5199221, 1981662 5199264, 1981608 5199262))'::geometry,'Point (1981646 5199185)'::geometry, 'Point (1981665 5199185)');</programlisting>
+            <informaltable>
+                <tgroup cols="3">
+                    <tbody>
+                        <row>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/st_visibility01.png"/>
+                                            </imageobject>
+                                            <caption><para>Original polygon</para></caption>
+                                        </mediaobject>
+                                </informalfigure></para>
+                            </entry>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/st_visibility02.png"/>
+                                            </imageobject>
+                                            <caption><para>Visibility from the point</para></caption>
+                                        </mediaobject>
+                                </informalfigure></para>
+                            </entry>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/st_visibility03.png"/>
+                                            </imageobject>
+                                            <caption><para>Visibility from the segment</para></caption>
+                                        </mediaobject>
+                                </informalfigure></para>
+                            </entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </informaltable>
+        </refsection>
+
+    </refentry>
 </section>
