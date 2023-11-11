@@ -1071,13 +1071,21 @@ sh nation_script_load.sh</programlisting>
 				<programlisting>SELECT count(*) FROM tiger_data.county_all;</programlisting>
 <screen> count
 -------
-  3235
+  3234
 (1 row)</screen>
 				<programlisting>SELECT count(*) FROM tiger_data.state_all;</programlisting>
 <screen>
  count
 -------
     56
+(1 row)
+</screen>
+<para>This will only have data is you marked zcta5 to be loaded</para>
+				<programlisting>SELECT count(*) FROM tiger_data.zcta5_all;</programlisting>
+<screen>
+ count
+-------
+  37371
 (1 row)
 </screen>
       </listitem>
@@ -1105,6 +1113,7 @@ vacuum (analyze, verbose) tiger.place;
 vacuum (analyze, verbose) tiger.cousub;
 vacuum (analyze, verbose) tiger.county;
 vacuum (analyze, verbose) tiger.state;
+vacuum (analyze, verbose) tiger.zcta5;
 vacuum (analyze, verbose) tiger.zip_lookup_base;
 vacuum (analyze, verbose) tiger.zip_state;
 vacuum (analyze, verbose) tiger.zip_state_loc;</programlisting>
