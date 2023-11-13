@@ -375,12 +375,12 @@ SELECT  'Ending <xsl:value-of select="db:funcdef/db:function" />(<xsl:value-of s
 					  <xsl:when test="$numparamgeoms > '0'">
 						SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$pix1type" />, <xsl:value-of select="@GeometryType" />';
 			<!-- If input is geometry show ewkt rep -->
-			  <xsl:if test="contains(funcdef, 'raster ') or contains(funcdef, 'geometry ')">
+			  <xsl:if test="contains(db:funcdef, 'raster ') or contains(db:funcdef, 'geometry ')">
 	 <!-- If output is raster or geometry show ewkt convexhull rep -->
 			SELECT ST_ConvexHull(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />) )
 			</xsl:if>
 	<!-- else just output it -->
-			<xsl:if test="not(contains(funcdef, 'raster ') or contains(funcdef, 'geometry ') )">
+			<xsl:if test="not(contains(db:funcdef, 'raster ') or contains(db:funcdef, 'geometry ') )">
 		SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
 			</xsl:if>
 			, ST_AsEWKT(rast1.rast::geometry) As ref1_geom, ST_AsEWKT(rast2.rast::geometry) As ref2_geom
@@ -558,8 +558,8 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 			<xsl:if test="count(db:paramdef/parameter) &gt; 0"> </xsl:if>
 			<xsl:for-each select="db:paramdef">
 				<xsl:choose>
-					<xsl:when test="count(parameter) &gt; 0">
-						<xsl:value-of select="parameter" />
+					<xsl:when test="count(db:paramdef/parameter) &gt; 0">
+						<xsl:value-of select="db:paramdef/parameter" />
 					</xsl:when>
 				</xsl:choose>
 				<xsl:if test="position()&lt;last()"><xsl:text>, </xsl:text></xsl:if>
