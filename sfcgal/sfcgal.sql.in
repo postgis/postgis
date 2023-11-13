@@ -190,7 +190,7 @@ CREATE OR REPLACE FUNCTION ST_OptimalAlphaShape(g1 geometry, allow_holes boolean
        COST 100;
 COMMIT;
 
--- Availability: 3.4.0
+-- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_YMonotonePartition(g1 geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME', 'sfcgal_ymonotonepartition'
@@ -198,7 +198,7 @@ CREATE OR REPLACE FUNCTION CG_YMonotonePartition(g1 geometry)
        COST 100;
 COMMIT;
 
--- Availability: 3.4.0
+-- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_ApproxConvexPartition(g1 geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME', 'sfcgal_approxconvexpartition'
@@ -206,7 +206,7 @@ CREATE OR REPLACE FUNCTION CG_ApproxConvexPartition(g1 geometry)
        COST 100;
 COMMIT;
 
--- Availability: 3.4.0
+-- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_GreeneApproxConvexPartition(g1 geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME', 'sfcgal_greeneapproxconvexpartition'
@@ -214,7 +214,7 @@ CREATE OR REPLACE FUNCTION CG_GreeneApproxConvexPartition(g1 geometry)
        COST 100;
 COMMIT;
 
--- Availability: 3.4.0
+-- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_OptimalConvexPartition(g1 geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME', 'sfcgal_optimalconvexpartition'

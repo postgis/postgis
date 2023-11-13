@@ -1461,7 +1461,7 @@ MULTIPOLYGON(
         </para></note>
 
 
-		<para>Availability: 3.4.0 - requires SFCGAL &gt;= 1.5.0.</para>
+		<para>Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
 		<para>&sfcgal_required;</para>
 	  </refsection>
 
@@ -1515,7 +1515,7 @@ MULTIPOLYGON(
         </para></note>
 
 
-		<para>Availability: 3.4.0 - requires SFCGAL &gt;= 1.5.0.</para>
+		<para>Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
 		<para>&sfcgal_required;</para>
 	  </refsection>
 
@@ -1568,7 +1568,7 @@ MULTIPOLYGON(
         </para></note>
 
 
-		<para>Availability: 3.4.0 - requires SFCGAL &gt;= 1.5.0.</para>
+		<para>Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
 		<para>&sfcgal_required;</para>
 	  </refsection>
 
@@ -1622,7 +1622,7 @@ MULTIPOLYGON(
         </para></note>
 
 
-		<para>Availability: 3.4.0 - requires SFCGAL &gt;= 1.5.0.</para>
+		<para>Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
 		<para>&sfcgal_required;</para>
 	  </refsection>
 
