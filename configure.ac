@@ -2,7 +2,9 @@ dnl **********************************************************************
 dnl *
 dnl * PostGIS - Spatial Types for PostgreSQL
 dnl * http://postgis.net
-dnl * Copyright 2008 Mark Cave-Ayland
+dnl *
+dnl * Copyright (C) 2010-2023 Sandro Santilli <strk@kbt.io>
+dnl * Copyright (C) 2008 Mark Cave-Ayland
 dnl *
 dnl * This is free software; you can redistribute and/or modify it under
 dnl * the terms of the GNU General Public Licence. See the COPYING file.
@@ -487,12 +489,12 @@ fi
 AC_SUBST([ICONV_LDFLAGS])
 AC_SUBST([ICONV_CFLAGS])
 
-LIBLWGEOM_ONLY="no"
-AC_SUBST([LIBLWGEOM_ONLY])
-
 dnl ===========================================================================
 dnl Detect the version of PostgreSQL installed on the system, if needed
 dnl ===========================================================================
+
+SUPPORT_POSTGRESQL=yes
+AC_SUBST([SUPPORT_POSTGRESQL])
 
 AC_ARG_VAR(PG_CONFIG, [PostgreSQL configure command to determine Postgres version to build against.])
 AC_ARG_WITH([pgconfig],
@@ -500,7 +502,7 @@ AC_ARG_WITH([pgconfig],
 	[PG_CONFIG="$withval"], [])
 
 if test "x$PG_CONFIG" = "xno"; then
-	LIBLWGEOM_ONLY="yes"
+	SUPPORT_POSTGRESQL="no"
 	AC_MSG_RESULT([PostgreSQL support disabled])
 
 elif test "x$PG_CONFIG" = "x"; then
@@ -524,7 +526,7 @@ else
 	fi
 fi
 
-if test "x$LIBLWGEOM_ONLY" = "xno"; then
+if test "x$SUPPORT_POSTGRESQL" = "xyes"; then dnl {
 
   dnl ===========================================================================
   dnl Ensure that $PG_CONFIG --pgxs points to a valid file. This is because some
@@ -643,7 +645,7 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   AC_SUBST([POSTGIS_PGSQL_HR_VERSION])
   AC_SUBST([HAVE_SPGIST])
 
-fi dnl LIBLWGEOM_ONLY != no
+fi dnl } SUPPORT_POSTGRESQL = yes
 
 
 dnl ===========================================================================
@@ -1909,7 +1911,7 @@ if test "x$SFCGAL" = "xsfcgal"; then
     AC_MSG_RESULT([  SFCGAL config:        ${SFCGAL_CONFIG}])
     AC_MSG_RESULT([  SFCGAL version:       ${SFCGAL_VERSION}])
 fi
-if test "x$LIBLWGEOM_ONLY" = "xno"; then
+if test "x$SUPPORT_POSTGRESQL" = "xyes"; then
   AC_MSG_RESULT([  PostgreSQL config:    ${PG_CONFIG}])
   AC_MSG_RESULT([  PostgreSQL version:   ${PGSQL_FULL_VERSION}])
 else

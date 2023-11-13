@@ -5,7 +5,7 @@
 #-----------------------------------------------------
 
 SUBDIRS = liblwgeom @RASTER@ loader
-ifeq (@LIBLWGEOM_ONLY@,no)
+ifeq (@SUPPORT_POSTGRESQL@,yes)
 SUBDIRS += @DEPS_SUBDIR@ libpgcommon postgis regress @TOPOLOGY@ @SFCGAL@ utils doc @EXTENSIONS@
 endif
 
@@ -55,7 +55,7 @@ endif
 
 all: postgis_revision.h
 
-ifeq (@LIBLWGEOM_ONLY@,no)
+ifeq (@SUPPORT_POSTGRESQL@,yes)
 ifeq ($(CAN_BUILD_COMMENTS),yes)
 install: comments-install
 uninstall: comments-uninstall
@@ -71,7 +71,7 @@ test: check
 
 check: check-unit docs-check check-lint
 
-ifeq (@LIBLWGEOM_ONLY@,no)
+ifeq (@SUPPORT_POSTGRESQL@,yes)
 check: check-regress
 endif
 
