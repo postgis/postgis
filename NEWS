@@ -6,6 +6,7 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
 
 * Bug Fixes *
 
+ - #5541, Fix --without-gui configure switch (Chris Mayo)
  - #5558, Fix uninitialized variable in ST_AsMVTGeom (Sandro Santilli)
  - #5590, Fix script-based load of topology.sql (Sandro Santilli)
  - #5574, #5575, #5576, #5577, #5578, #5579, #5569
