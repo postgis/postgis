@@ -222,3 +222,10 @@ CREATE OR REPLACE FUNCTION CG_OptimalConvexPartition(g1 geometry)
        COST 100;
 COMMIT;
 
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION ST_ExtrudeStraightSkeleton(g1 geometry, top_height float8, body_height float8 DEFAULT 0.0)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME', 'sfcgal_extrudestraightskeleton'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+COMMIT;

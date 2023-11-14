@@ -57,6 +57,7 @@ Datum sfcgal_ymonotonepartition(PG_FUNCTION_ARGS);
 Datum sfcgal_approxconvexpartition(PG_FUNCTION_ARGS);
 Datum sfcgal_greeneapproxconvexpartition(PG_FUNCTION_ARGS);
 Datum sfcgal_optimalconvexpartition(PG_FUNCTION_ARGS);
+Datum sfcgal_extrudestraigthskeleton(PG_FUNCTION_ARGS);
 
 /* Initialize sfcgal with PostGIS error handlers */
 void sfcgal_postgis_init(void);

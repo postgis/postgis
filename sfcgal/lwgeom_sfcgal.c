@@ -861,3 +861,42 @@ Datum sfcgal_optimalconvexpartition(PG_FUNCTION_ARGS)
 #endif
 }
 
+PG_FUNCTION_INFO_V1(sfcgal_extrudestraightskeleton);
+Datum sfcgal_extrudestraightskeleton(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 10500
+  lwpgerror("The SFCGAL version this PostGIS binary "
+	          "was compiled against (%d) doesn't support "
+	          "'sfcgal_extrude_straigth_skeleton' function (1.5.0+ required)",
+	          POSTGIS_SFCGAL_VERSION);
+	          PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 10500 */
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom;
+	sfcgal_geometry_t *result;
+  double building_height, roof_height;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(input);
+	geom = POSTGIS2SFCGALGeometry(input);
+	PG_FREE_IF_COPY(input, 0);
+
+	roof_height = PG_GETARG_FLOAT8(1);
+	building_height = PG_GETARG_FLOAT8(2);
+	if(building_height <= 0.0 ) {
+		result = sfcgal_geometry_extrude_straight_skeleton(geom, roof_height);
+	}
+	else {
+		result = sfcgal_geometry_extrude_polygon_straight_skeleton(geom, building_height, roof_height);
+	}
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
