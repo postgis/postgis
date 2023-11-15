@@ -229,3 +229,19 @@ CREATE OR REPLACE FUNCTION CG_ExtrudeStraightSkeleton(g1 geometry, top_height fl
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 COMMIT;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_Visibility(polygon geometry, pointA geometry, pointB geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME', 'sfcgal_visibility_segment'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+COMMIT;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_Visibility(polygon geometry, point geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME', 'sfcgal_visibility_point'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+COMMIT;

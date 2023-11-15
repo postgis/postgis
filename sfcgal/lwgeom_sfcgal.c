@@ -900,3 +900,79 @@ Datum sfcgal_extrudestraightskeleton(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(output);
 #endif
 }
+
+PG_FUNCTION_INFO_V1(sfcgal_visibility_point);
+Datum sfcgal_visibility_point(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 10500
+  lwpgerror("The SFCGAL version this PostGIS binary "
+	          "was compiled against (%d) doesn't support "
+	          "'sfcgal_visibility_point' function (1.5.0+ required)",
+	          POSTGIS_SFCGAL_VERSION);
+	          PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 10500 */
+	GSERIALIZED *input0, *input1, *output;
+	sfcgal_geometry_t *polygon, *point;
+	sfcgal_geometry_t *result;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input0 = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(input0);
+	input1 = PG_GETARG_GSERIALIZED_P(1);
+	polygon = POSTGIS2SFCGALGeometry(input0);
+	PG_FREE_IF_COPY(input0, 0);
+	point = POSTGIS2SFCGALGeometry(input1);
+	PG_FREE_IF_COPY(input1, 1);
+
+	result = sfcgal_geometry_visibility_point(polygon, point);
+	sfcgal_geometry_delete(polygon);
+	sfcgal_geometry_delete(point);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_visibility_segment);
+Datum sfcgal_visibility_segment(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_SFCGAL_VERSION < 10500
+  lwpgerror("The SFCGAL version this PostGIS binary "
+	          "was compiled against (%d) doesn't support "
+	          "'sfcgal_visibility_segment' function (1.5.0+ required)",
+	          POSTGIS_SFCGAL_VERSION);
+	          PG_RETURN_NULL();
+#else /* POSTGIS_SFCGAL_VERSION >= 10500 */
+	GSERIALIZED *input0, *input1, *input2, *output;
+	sfcgal_geometry_t *polygon, *pointA, *pointB;
+	sfcgal_geometry_t *result;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input0 = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(input0);
+	input1 = PG_GETARG_GSERIALIZED_P(1);
+	input2 = PG_GETARG_GSERIALIZED_P(2);
+	polygon = POSTGIS2SFCGALGeometry(input0);
+	PG_FREE_IF_COPY(input0, 0);
+	pointA = POSTGIS2SFCGALGeometry(input1);
+	PG_FREE_IF_COPY(input1, 1);
+	pointB = POSTGIS2SFCGALGeometry(input2);
+	PG_FREE_IF_COPY(input1, 2);
+
+	result = sfcgal_geometry_visibility_segment(polygon, pointA, pointB);
+	sfcgal_geometry_delete(polygon);
+	sfcgal_geometry_delete(pointA);
+	sfcgal_geometry_delete(pointB);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
+	PG_RETURN_POINTER(output);
+#endif
+}
