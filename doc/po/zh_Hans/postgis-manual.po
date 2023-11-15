@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-14 05:23+0000\n"
-"PO-Revision-Date: 2023-11-10 10:39+0000\n"
+"PO-Revision-Date: 2023-11-15 09:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
@@ -7934,7 +7934,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This will only have data is you marked zcta5 to be loaded"
-msgstr ""
+msgstr "只有在你标记了 zcta5 被加载时才会有数据"
 
 #. Tag: para
 #, no-c-format
@@ -36342,7 +36342,7 @@ msgstr "沿 Z 方向拉伸的 LineString 会生成 PolyhedralSurfaceZ"
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_ExtrudeStraightSkeleton\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_ExtrudeStraightSkeleton\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -36616,12 +36616,12 @@ msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes y-monotone partition of the polygon geometry"
-msgstr ""
+msgstr "计算多边形几何的 y 单调分割"
 
 #. Tag: para
 #, no-c-format
 msgid "Computes y-monotone partition of the polygon geometry."
-msgstr ""
+msgstr "计算多边形几何图形的 y-单调分割。"
 
 #. Tag: para
 #, no-c-format
@@ -36634,11 +36634,15 @@ msgid ""
 "algorithm does not guarantee a bound on the number of polygons produced with "
 "respect to the optimal number."
 msgstr ""
+"多边形 P 的一个划分是指一组多边形，这些多边形的内部不相交，"
+"并且这些多边形的并集等于原始多边形 P 的内部。一个 y-单调多边形是指其顶点 v1,…"
+",vn 可以划分成两个链 v1,…,vk 和 vk,…,vn,v1，使得任何水平线最多与其中一条链相"
+"交一次。该算法不能保证在产生的多边形数量上达到最优数量的界限。"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0."
-msgstr ""
+msgstr "可用性：3.5.0 - 需要 SFCGAL &gt;= 1.5.0。"
 
 #. Tag: para
 #, no-c-format
@@ -36648,6 +36652,9 @@ msgid ""
 "\"CG_GreeneApproxConvexPartition\"/> and <xref linkend="
 "\"CG_OptimalConvexPartition\"/>)"
 msgstr ""
+"Y-单调分割（与 <xref linkend=\"CG_ApproxConvexPartition\"/>、<xref linkend="
+"\"CG_GreeneApproxConvexPartition\"/> 和 <xref linkend="
+"\"CG_OptimalConvexPartition\"/> 相同的示例）"
 
 #. Tag: para
 #, no-c-format
@@ -36655,18 +36662,20 @@ msgid ""
 ", <xref linkend=\"CG_GreeneApproxConvexPartition\"/>, <xref linkend="
 "\"CG_OptimalConvexPartition\"/>"
 msgstr ""
+", <xref linkend=\"CG_GreeneApproxConvexPartition\"/>, <xref linkend="
+"\"CG_OptimalConvexPartition\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes approximal convex partition of the polygon geometry"
-msgstr ""
+msgstr "计算多边形几何图形的近似凸分割"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Computes approximal convex partition of the polygon geometry (using a "
 "triangulation)."
-msgstr ""
+msgstr "计算多边形几何图形的近似凸分割（使用三角剖分）。"
 
 #. Tag: para
 #, no-c-format
@@ -36684,6 +36693,13 @@ msgid ""
 "Though the triangulation-based approximation algorithm often results in "
 "fewer convex pieces, this is not always the case."
 msgstr ""
+"多边形 P 的一个划分是指一组多边形，这些多边形的内部不相交，"
+"并且这些多边形的并集等于原始多边形 P 的内部。CG_ApproxConvexPartition 和 "
+"CG_GreeneApproxConvexPartition 函数生成近似最优的凸分割。这两个函数通过首先将"
+"多边形分解为更简单的多边形来生成凸分解；CG_ApproxConvexPartition "
+"使用三角剖分，而 CG_GreeneApproxConvexPartition 使用一个单调分割。这两个函数"
+"都保证它们生成的凸片段数不会超过最优数量的四倍，但它们在运行时复杂性上有所不"
+"同。尽管基于三角剖分的近似算法通常会产生较少的凸片段，但并非总是如此。"
 
 #. Tag: para
 #, no-c-format
@@ -36692,11 +36708,14 @@ msgid ""
 "\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_GreeneApproxConvexPartition"
 "\"/> and <xref linkend=\"CG_OptimalConvexPartition\"/>)"
 msgstr ""
+"近似凸分割（与 <xref linkend=\"CG_YMonotonePartition\"/>、<xref linkend="
+"\"CG_GreeneApproxConvexPartition\"/> 和 <xref linkend="
+"\"CG_OptimalConvexPartition\"/> 相同的示例）"
 
 #. Tag: para
 #, no-c-format
 msgid "Computes approximal monotone convex partition of the polygon geometry."
-msgstr ""
+msgstr "计算多边形几何图形的近似单调凸分割。"
 
 #. Tag: para
 #, no-c-format
@@ -36705,6 +36724,9 @@ msgid ""
 "\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_ApproxConvexPartition\"/> "
 "and <xref linkend=\"CG_OptimalConvexPartition\"/>)"
 msgstr ""
+"格林近似凸分割（与 <xref linkend=\"CG_YMonotonePartition\"/>、<xref linkend="
+"\"CG_ApproxConvexPartition\"/> 和 <xref linkend=\"CG_OptimalConvexPartition\""
+"/> 相同的示例）"
 
 #. Tag: para
 #, no-c-format
@@ -36712,16 +36734,18 @@ msgid ""
 ", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
 "\"CG_OptimalConvexPartition\"/>"
 msgstr ""
+", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
+"\"CG_OptimalConvexPartition\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes an optimal convex partition of the polygon geometry"
-msgstr ""
+msgstr "计算多边形几何图形的最优凸分割"
 
 #. Tag: para
 #, no-c-format
 msgid "Computes an optimal convex partition of the polygon geometry."
-msgstr ""
+msgstr "计算多边形几何图形的最优凸分割。"
 
 #. Tag: para
 #, no-c-format
@@ -36731,6 +36755,9 @@ msgid ""
 "interior of the original polygon P. CG_OptimalConvexPartition produces a "
 "partition that is optimal in the number of pieces."
 msgstr ""
+"多边形 P 的一个划分是指一组多边形，这些多边形的内部不相交，"
+"并且这些多边形的并集等于原始多边形 P 的内部。CG_OptimalConvexPartition "
+"生成的划分在片段数量上是最优的。"
 
 #. Tag: para
 #, no-c-format
@@ -36739,6 +36766,9 @@ msgid ""
 "\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_ApproxConvexPartition\"/> "
 "and <xref linkend=\"CG_GreeneApproxConvexPartition\"/>)"
 msgstr ""
+"最优凸分割（与 <xref linkend=\"CG_YMonotonePartition\"/>、<xref linkend="
+"\"CG_ApproxConvexPartition\"/> 和 <xref linkend="
+"\"CG_GreeneApproxConvexPartition\"/> 相同的示例）"
 
 #. Tag: para
 #, no-c-format
@@ -36746,16 +36776,18 @@ msgid ""
 ", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
 "\"CG_GreeneApproxConvexPartition\"/>"
 msgstr ""
+", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
+"\"CG_GreeneApproxConvexPartition\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Straight Skeleton Extrusion"
-msgstr ""
+msgstr "直线骨架外凸"
 
 #. Tag: para
 #, no-c-format
 msgid "Computes an extrusion with a maximal height of the polygon geometry."
-msgstr ""
+msgstr "计算多边形几何图形的最大高度拉伸。"
 
 #. Tag: para
 #, no-c-format
@@ -36770,11 +36802,17 @@ msgid ""
 "with ST_Extrude(polygon, 0, 0, body_height). The result is an union of these "
 "polyhedralsurfaces."
 msgstr ""
+"或许是直线骨架的最早应用案例之一：给定一个多边形屋顶，直线骨架直接提供了每个"
+"建筑物的布局。如果将每个骨架边沿其偏移距离从平面抬升到相应的高度，得到的屋顶"
+"是“正确”的，因为水将始终流向轮廓边缘（屋顶的边界），无论它在屋顶的哪个位置下"
+"落。该函数计算多边形的这种挤出，又称“屋顶”。如果参数 body_height > 0，"
+"则多边形就像使用 ST_Extrude(polygon, 0, 0, body_height) "
+"一样挤出。结果是这些多面体表面的并集。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_StraightSkeleton\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_StraightSkeleton\"/>"
 
 #. Tag: title
 #, no-c-format
