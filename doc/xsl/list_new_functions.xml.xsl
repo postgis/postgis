@@ -59,7 +59,7 @@
 				<xsl:variable name='tag_role' select="$tag_node/@role" />
 
 				<!-- { -->
-				<xsl:if test="$chap//para[@role=$tag_role and starts-with(./@conformance, $ver)]">
+				<xsl:if test="$chap//db:para[@role=$tag_role and starts-with(./@conformance, $ver)]">
 
 				<para>
 				<xsl:value-of select="substring-before($tag_para, '%')" />
@@ -71,10 +71,13 @@
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in
 						 a variable to be tagged unto each function comment	-->
 					<xsl:for-each select="$chap//db:refentry">
+
 						<xsl:sort select="db:refnamediv/db:refname"/>
+
 						<xsl:variable name='comment'>
 							<xsl:value-of select="normalize-space(translate(translate(db:refnamediv/db:refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
 						</xsl:variable>
+
 						<xsl:variable name="refid">
 							<xsl:value-of select="@id" />
 						</xsl:variable>
@@ -84,8 +87,8 @@
 						</xsl:variable>
 
 						<!-- For each section if there is note about availability in this version -->
-						<xsl:for-each select="refsection">
-							<xsl:for-each select=".//para[@role=$tag_role and starts-with(./@conformance, $ver)]">
+						<xsl:for-each select="db:refsection">
+							<xsl:for-each select=".//db:para[@role=$tag_role and starts-with(./@conformance, $ver)]">
 								<listitem>
 									<simpara>
 										<link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /><xsl:text> </xsl:text> <xsl:value-of select="$comment" />
