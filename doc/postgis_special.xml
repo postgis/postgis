@@ -88,9 +88,6 @@
           <simpara>A <inlinemediaobject><imageobject><imagedata fileref="images/matrix_sfcgal_required.png"/></imageobject></inlinemediaobject> means the function only available if PostGIS compiled with SFCGAL support.</simpara>
         </listitem>
         <listitem>
-          <simpara>A <inlinemediaobject><imageobject><imagedata fileref="images/matrix_sfcgal_enhanced.png"/></imageobject></inlinemediaobject> means the function support is provided by SFCGAL if PostGIS compiled with SFCGAL support, otherwise GEOS/built-in support.</simpara>
-        </listitem>
-        <listitem>
           <simpara>geom - Basic 2D geometry support (x,y).</simpara>
         </listitem>
         <listitem>
