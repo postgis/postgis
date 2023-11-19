@@ -1416,9 +1416,9 @@ MULTIPOLYGON(
         </refsection>
 
         <refsection><title>Examples</title>
-            <programlisting>SELECT CG_Visibility('Polygon ((1981593 5199143, 1981593 5199284, 1981737 5199284, 1981737 5199143, 1981593 5199143),(1981674 5199213, 1981674 5199155, 1981720 5199156, 1981719 5199214, 1981674 5199213),(1981673 5199269, 1981673 5199221, 1981700 5199222, 1981698 5199241, 1981708 5199241, 1981708 5199223, 1981718 5199224, 1981716 5199277, 1981673 5199269),(1981610 5199211, 1981610 5199154, 1981667 5199155, 1981665 5199185, 1981646 5199185, 1981645 5199212, 1981610 5199211),(1981608 5199262, 1981609 5199219, 1981664 5199221, 1981662 5199264, 1981608 5199262))'::geometry, 'Point (1981658 5199203)');</programlisting>
+            <programlisting>SELECT CG_Visibility('POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150))'::geometry, 'POINT(91 87)'::geometry);</programlisting>
 
-            <programlisting>SELECT CG_Visibility('Polygon ((1981593 5199143, 1981593 5199284, 1981737 5199284, 1981737 5199143, 1981593 5199143),(1981674 5199213, 1981674 5199155, 1981720 5199156, 1981719 5199214, 1981674 5199213),(1981673 5199269, 1981673 5199221, 1981700 5199222, 1981698 5199241, 1981708 5199241, 1981708 5199223, 1981718 5199224, 1981716 5199277, 1981673 5199269),(1981610 5199211, 1981610 5199154, 1981667 5199155, 1981665 5199185, 1981646 5199185, 1981645 5199212, 1981610 5199211),(1981608 5199262, 1981609 5199219, 1981664 5199221, 1981662 5199264, 1981608 5199262))'::geometry,'Point (1981646 5199185)'::geometry, 'Point (1981665 5199185)');</programlisting>
+            <programlisting>SELECT CG_Visibility('POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150))'::geometry,'POINT(78.5 68)'::geometry, 'POINT(98.5 68)'::geometry);</programlisting>
             <informaltable>
                 <tgroup cols="3">
                     <tbody>
@@ -1539,23 +1539,41 @@ MULTIPOLYGON(
         </para></note>
 
 
-		<para>Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
+		<para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
 		<para>&sfcgal_required;</para>
 	  </refsection>
 
 	  <refsection>
 	      <title>Examples</title>
 <para>
-    <informalfigure>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/st_ymonotonepartition01.png" />
-        </imageobject>
-        <caption><para>Y-Monotone Partition (same example As <xref linkend="CG_ApproxConvexPartition" />,  <xref linkend="CG_GreeneApproxConvexPartition" /> and <xref linkend="CG_OptimalConvexPartition" />)</para></caption>
-      </mediaobject>
-    </informalfigure>
-         <programlisting>SELECT ST_AsText(CG_YMonotonePartition('POLYGON((391 374, 240 431, 252 340, 374 320, 289 214, 134 390, 68 186, 154 259, 161 107, 435 108, 208 148, 295 160, 421 212, 441 303, 391 374))'::geometry));</programlisting>
-          <screen>GEOMETRYCOLLECTION(POLYGON((134 390,68 186,154 259,134 390)),POLYGON((289 214,134 390,154 259,161 107,435 108,208 148,295 160,421 212,289 214)),POLYGON((391 374,240 431,252 340,374 320,289 214,421 212,441 303,391 374)))</screen>
+           <informaltable>
+                <tgroup cols="2">
+                    <tbody>
+                        <row>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/cg_ymonotonepartition01.png"/>
+                                            </imageobject>
+                                            <caption><para>Original polygon</para></caption>
+                                        </mediaobject>
+                                </informalfigure></para>
+                            </entry>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/cg_ymonotonepartition02.png"/>
+                                            </imageobject>
+                                            <caption><para>Y-Monotone Partition (same example As <xref linkend="CG_ApproxConvexPartition" />,  <xref linkend="CG_GreeneApproxConvexPartition" /> and <xref linkend="CG_OptimalConvexPartition" />)</para></caption>
+                                        </mediaobject>
+                                </informalfigure></para>
+                            </entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </informaltable>
+         <programlisting>SELECT ST_AsText(CG_YMonotonePartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
+          <screen>GEOMETRYCOLLECTION(POLYGON((32 159,0 45,41 86,32 159)),POLYGON((107 61,32 159,41 86,45 1,177 2,67 24,109 31,170 60,107 61)),POLYGON((156 150,83 181,89 131,148 120,107 61,170 60,180 110,156 150)))</screen>
         </para>
 	  </refsection>
       <refsection>
@@ -1593,7 +1611,7 @@ MULTIPOLYGON(
         </para></note>
 
 
-		<para>Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
+		<para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
 		<para>&sfcgal_required;</para>
 	  </refsection>
 
@@ -1603,13 +1621,13 @@ MULTIPOLYGON(
     <informalfigure>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/st_approxconvexpartition01.png" />
+          <imagedata fileref="images/cg_approxconvexpartition01.png" />
         </imageobject>
         <caption><para>Approximal Convex Partition (same example As <xref linkend="CG_YMonotonePartition" />,  <xref linkend="CG_GreeneApproxConvexPartition" /> and <xref linkend="CG_OptimalConvexPartition" />)</para></caption>
       </mediaobject>
     </informalfigure>
-         <programlisting>SELECT ST_AsText(CG_ApproxConvexPartition('POLYGON((391 374, 240 431, 252 340, 374 320, 289 214, 134 390, 68 186, 154 259, 161 107, 435 108, 208 148, 295 160, 421 212, 441 303, 391 374))'::geometry));</programlisting>
-          <screen>GEOMETRYCOLLECTION(POLYGON((391 374,240 431,252 340,374 320,391 374)),POLYGON((134 390,68 186,154 259,134 390)),POLYGON((289 214,134 390,154 259,289 214)),POLYGON((161 107,435 108,208 148,161 107)),POLYGON((154 259,161 107,208 148,154 259)),POLYGON((289 214,154 259,208 148,295 160,289 214)),POLYGON((374 320,289 214,295 160,421 212,374 320)),POLYGON((391 374,374 320,421 212,441 303,391 374)))</screen>
+         <programlisting>SELECT ST_AsText(CG_ApproxConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
+          <screen>GEOMETRYCOLLECTION(POLYGON((156 150,83 181,89 131,148 120,156 150)),POLYGON((32 159,0 45,41 86,32 159)),POLYGON((107 61,32 159,41 86,107 61)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,41 86,67 24,109 31,107 61)),POLYGON((148 120,107 61,109 31,170 60,148 120)),POLYGON((156 150,148 120,170 60,180 110,156 150)))</screen>
         </para>
 	  </refsection>
       <refsection>
@@ -1646,7 +1664,7 @@ MULTIPOLYGON(
         </para></note>
 
 
-		<para>Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
+		<para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
 		<para>&sfcgal_required;</para>
 	  </refsection>
 
@@ -1656,13 +1674,13 @@ MULTIPOLYGON(
     <informalfigure>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/st_greeneapproxconvexpartition01.png" />
+          <imagedata fileref="images/cg_greeneapproxconvexpartition01.png" />
         </imageobject>
         <caption><para>Greene Approximal Convex Partition (same example As <xref linkend="CG_YMonotonePartition" />,  <xref linkend="CG_ApproxConvexPartition" /> and <xref linkend="CG_OptimalConvexPartition" />)</para></caption>
       </mediaobject>
     </informalfigure>
-         <programlisting>SELECT ST_AsText(CG_GreeneApproxConvexPartition('POLYGON((391 374, 240 431, 252 340, 374 320, 289 214, 134 390, 68 186, 154 259, 161 107, 435 108, 208 148, 295 160, 421 212, 441 303, 391 374))'::geometry));</programlisting>
-          <screen>GEOMETRYCOLLECTION(POLYGON((134 390,68 186,154 259,134 390)),POLYGON((161 107,435 108,208 148,161 107)),POLYGON((208 148,295 160,421 212,289 214,208 148)),POLYGON((154 259,161 107,208 148,154 259)),POLYGON((289 214,134 390,154 259,208 148,289 214)),POLYGON((374 320,289 214,421 212,374 320)),POLYGON((374 320,421 212,441 303,391 374,374 320)),POLYGON((391 374,240 431,252 340,374 320,391 374)))</screen>
+         <programlisting>SELECT ST_AsText(CG_GreeneApproxConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
+          <screen>GEOMETRYCOLLECTION(POLYGON((32 159,0 45,41 86,32 159)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((67 24,109 31,170 60,107 61,67 24)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,32 159,41 86,67 24,107 61)),POLYGON((148 120,107 61,170 60,148 120)),POLYGON((148 120,170 60,180 110,156 150,148 120)),POLYGON((156 150,83 181,89 131,148 120,156 150)))</screen>
         </para>
 	  </refsection>
       <refsection>
@@ -1700,7 +1718,7 @@ MULTIPOLYGON(
         </para></note>
 
 
-		<para>Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
+		<para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
 		<para>&sfcgal_required;</para>
 	  </refsection>
 
@@ -1710,13 +1728,13 @@ MULTIPOLYGON(
     <informalfigure>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/st_optimalconvexpartition01.png" />
+          <imagedata fileref="images/cg_optimalconvexpartition01.png" />
         </imageobject>
         <caption><para>Optimal Convex Partition (same example As <xref linkend="CG_YMonotonePartition" />,  <xref linkend="CG_ApproxConvexPartition" /> and <xref linkend="CG_GreeneApproxConvexPartition" />)</para></caption>
       </mediaobject>
     </informalfigure>
-         <programlisting>SELECT ST_AsText(CG_OptimalConvexPartition('POLYGON((391 374, 240 431, 252 340, 374 320, 289 214, 134 390, 68 186, 154 259, 161 107, 435 108, 208 148, 295 160, 421 212, 441 303, 391 374))'::geometry));</programlisting>
-          <screen>GEOMETRYCOLLECTION(POLYGON((391 374,240 431,252 340,374 320,391 374)),POLYGON((134 390,68 186,154 259,134 390)),POLYGON((161 107,435 108,208 148,161 107)),POLYGON((154 259,161 107,208 148,154 259)),POLYGON((289 214,134 390,154 259,208 148,295 160,289 214)),POLYGON((374 320,289 214,295 160,421 212,441 303,374 320)),POLYGON((391 374,374 320,441 303,391 374)))</screen>
+         <programlisting>SELECT ST_AsText(CG_OptimalConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
+          <screen>GEOMETRYCOLLECTION(POLYGON((156 150,83 181,89 131,148 120,156 150)),POLYGON((32 159,0 45,41 86,32 159)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,32 159,41 86,67 24,109 31,107 61)),POLYGON((148 120,107 61,109 31,170 60,180 110,148 120)),POLYGON((156 150,148 120,180 110,156 150)))</screen>
         </para>
 	  </refsection>
       <refsection>
@@ -1755,7 +1773,7 @@ MULTIPOLYGON(
         </para></note>
 
 
-		<para>Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
+		<para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
 		<para>&sfcgal_required;</para>
 	  </refsection>
 

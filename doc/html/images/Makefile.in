@@ -38,6 +38,9 @@ STATIC_IMAGES_SRC = $(wildcard $(srcdir)/static/*.png $(srcdir)/static/*.gif)
 STATIC_IMAGES = $(subst $(srcdir)/static/,,$(STATIC_IMAGES_SRC))
 
 GENERATED_IMAGES= \
+  cg_approxconvexpartition01.png \
+	cg_greeneapproxconvexpartition01.png \
+	cg_optimalconvexpartition.png \
   cg_visibility01.png \
 	cg_visibility02.png \
 	cg_visibility03.png \
