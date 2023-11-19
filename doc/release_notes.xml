@@ -7,7 +7,7 @@
         <para>This release works with PostgreSQL 9.6-14.</para>
         <simplesect>
             <title>Bug Fixes</title>
-               <para>Release date: 2023/11/18</para>
+               <para>Release date: 2023/11/19</para>
                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5568">5568</ulink>, Improve robustness of topology face split handling (Sandro Santilli)</para>
               <para><ulink url="https://trac.osgeo.org/postgis/ticket/5494">5494</ulink>, Fix double-upgrade with view using st_dwithin(text, ...)
                         (Sandro Santilli)</para>
