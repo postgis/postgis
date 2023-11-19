@@ -44,6 +44,8 @@ GENERATED_IMAGES= \
   cg_visibility01.png \
 	cg_visibility02.png \
 	cg_visibility03.png \
+	cg_ymonotonepartition01.png \
+	cg_ymonotonepartition02.png \
 	de9im01.png \
 	de9im02.png \
 	st_alphashape01.png \
