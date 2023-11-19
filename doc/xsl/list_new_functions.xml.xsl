@@ -35,9 +35,6 @@
 			</xsl:variable>
 
 			<section>
-			<xsl:attribute name="xml:id">
-				<xsl:value-of select="concat('NewFunctions_', $ver_id)" />
-			</xsl:attribute>
 
 				<xsl:variable name="header" select="document('xsl-config.xml')//list_new_functions/per_version_header" />
 
@@ -79,7 +76,7 @@
 						</xsl:variable>
 
 						<xsl:variable name="refid">
-							<xsl:value-of select="@id" />
+							<xsl:value-of select="@xml:id" />
 						</xsl:variable>
 
 						<xsl:variable name="refname">
