@@ -1,5 +1,5 @@
 PostGIS 3.1.10
-2023/11/18
+2023/11/19
 
 * Bug Fixes *
   - #5568, Improve robustness of topology face split handling (Sandro Santilli)
@@ -10,6 +10,7 @@ PostGIS 3.1.10
   - #5385, Postgres malloc assertion fail when using pg_cancel_backend
            with ST_AsMVT (Regina Obe, Paul Ramsey)
  - Fix JsonB casting issue (Paul Ramsey)
+ - #5616, Fix to find docbook on newer docbook installs (Regina Obe)
 
 
 * Breaking Changes *

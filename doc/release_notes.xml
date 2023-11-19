@@ -16,6 +16,7 @@
               <para><ulink url="https://trac.osgeo.org/postgis/ticket/5385">5385</ulink>, Postgres malloc assertion fail when using pg_cancel_backend
                         with ST_AsMVT (Regina Obe, Paul Ramsey)</para>
               <para>Fix JsonB casting issue (Paul Ramsey)</para>
+              <para><ulink url="https://trac.osgeo.org/postgis/ticket/5616">5616</ulink>,  Fix to find docbook on newer docbook installs (Regina Obe)</para>
         </simplesect>
     </sect1>
     <sect1>
