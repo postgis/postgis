@@ -40,7 +40,7 @@ STATIC_IMAGES = $(subst $(srcdir)/static/,,$(STATIC_IMAGES_SRC))
 GENERATED_IMAGES= \
   cg_approxconvexpartition01.png \
 	cg_greeneapproxconvexpartition01.png \
-	cg_optimalconvexpartition.png \
+	cg_optimalconvexpartition01.png \
   cg_visibility01.png \
 	cg_visibility02.png \
 	cg_visibility03.png \
