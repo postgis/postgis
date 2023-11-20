@@ -4,6 +4,61 @@
     <subtitle>Release Notes</subtitle>
         <sect1>
             <title>PostGIS 3.4.0</title>
+            <para>2023/11/19</para>
+            <para>This version requires PostgreSQL 12-16, GEOS 3.6 or higher, and Proj 6.1+.
+            To take advantage of all features, GEOS 3.12+ is needed.
+            To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.</para>
+            <para>NOTE: GEOS 3.12.1 details at <ulink url="https://libgeos.org/posts/2023-11-11-geos-3-12-1-released/">GEOS 3.12.1 release notes</ulink></para>
+             <simplesect>
+                <title>Bug Fixes</title>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5541">5541</ulink>, Fix --without-gui configure switch (Chris Mayo)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5558">5558</ulink>, Fix uninitialized variable in ST_AsMVTGeom (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5590">5590</ulink>, Fix script-based load of topology.sql (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5574">5574</ulink>, #5575, #5576, #5577, #5578, #5579, #5569
+                        Fix restore of postgis dumps since 2.1 (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5568">5568</ulink>, Improve robustness of topology face split handling (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5548">5548</ulink>, Fix box-filtered validity check of topologies with edge-less faces
+                        (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5485">5485</ulink>, Fix postgis script on OpenBSD (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5516">5516</ulink>, Fix upgrade with views using deprecated function, among which:
+                        ST_AddBand (#5509), ST_AsGeoJSON (#5523) ST_AsKML (#5524)
+                        ST_Aspect (#5491), ST_BandIsNoData (#5510), ST_BandMetadata (#5502),
+                        ST_BandNoDataValue (#5503), ST_BandPath (#5511),
+                        ST_BandPixelType (#5512), ST_Clip (#5488), ST_Count (#5517),
+                        ST_GeoReference (#5514), ST_Intersects(raster, ...) (#5489),
+                        ST_LineCrossingDirection (#5518)
+                        ST_MakeEmptyRaster (#5508), ST_MapAlgebraFCT (#5500),
+                        ST_Polygon(raster, ...) (#5507), ST_SetBandIsNoData (#5505),
+                        ST_SetBandNoDataValue (#5506), ST_SetGeoreference (#5504),
+                        ST_SetValue (#5519),
+                        ST_Slope (#5490), ST_SummaryStats (#5515), ST_TileEnvelope (#5499)
+                        ST_Value (#5513, #5484), toTopoGeom (#5526).
+                        (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5494">5494</ulink>, Fix double-upgrade with view using st_dwithin(text, ...)
+                        (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5479">5479</ulink>, postgis_full_version() and postgis_gdal_version() sometimes
+                        warn of deprecated SRID: 2163 (Regina Obe)</para>
+                <para>Include elevation in output of ST_Contour when in polygonal mode (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5482">5482</ulink>, New Proj output is only available for proj 7.1+ (Regina Obe)</para>
+                <para>Fix JsonB casting issue (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5535">5535</ulink>, Cleanup String handling in debug_standardize_address
+                        and standardize_address (Regina Obe)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5605">5605</ulink>, Fix regression failure with GEOS 3.13, main branch (Regina Obe)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5603">5603</ulink>, [postgis_tiger_geocoder] Change to load 2023 Census Tiger/Line (Regina Obe)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5525">5525</ulink>, [postgis_tiger_geocoder],[postgis_topology] Regression failure
+                        when installed by non-superuser (Regina Obe, Sandro Santilli)</para>
+             </simplesect>
+
+            <simplesect>
+                <title>Enhancements</title>
+                  <para><ulink url="https://trac.osgeo.org/postgis/ticket/5492">5492</ulink>, Have postgis script report presence of deprecated functions
+                  (Sandro Santilli)</para>
+                  <para><ulink url="https://trac.osgeo.org/postgis/ticket/5493">5493</ulink>, Always try to drop deprecated function on upgrade
+                  (Sandro Santilli)</para>
+             </simplesect>
+        </sect1>
+        <sect1>
+            <title>PostGIS 3.4.0</title>
             <para>2023/08/15</para>
             <para>This version requires PostgreSQL 12-16, GEOS 3.6 or higher, and Proj 6.1+.
             To take advantage of all features, GEOS 3.12+ is needed.
