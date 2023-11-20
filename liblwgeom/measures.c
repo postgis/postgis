@@ -2487,7 +2487,7 @@ project_pt(const POINT2D *P, double distance, double azimuth, POINT2D *R)
 	double dx = cos(slope) * distance;
 	double dy = sin(slope) * distance;
 	R->x = P->x + dx;
-	R->y = P->x + dy;
+	R->y = P->y + dy;
 	return LW_TRUE;
 }
 
