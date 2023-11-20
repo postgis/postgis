@@ -17,6 +17,7 @@ Proj 6.1+, and PostgreSQL 15+.
           (Sandro Santilli)
  - Fix JsonB casting issue (Paul Ramsey)
  - #5616, Fix to find docbook on newer docbook installs (Regina Obe)
+ - #5605, Fix regression failure with GEOS 3.13, main branch (Regina Obe)
 
 
 PostGIS 3.3.4
