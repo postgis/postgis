@@ -1278,9 +1278,9 @@ SELECT ST_AsText(ST_Multi('POLYGON ((10 30, 30 30, 30 10, 10 10, 10 30))'));
             <title>Example: Projected point at 100,000 meters and bearing 45 degrees </title>
 
 <programlisting>
-SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, radians(45.0)));
+SELECT ST_AsText(ST_LineExtend('LINESTRING(0 0, 0 10)'::geometry, 5, 6));
 --------------------------------------------
- POINT(0.635231029125537 0.639472334729198)
+LINESTRING(0 -6,0 0,0 10,0 15)
 </programlisting>
           </refsection>
 
