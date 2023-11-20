@@ -12,7 +12,7 @@ export MSYS2_ARG_CONV_EXCL=/config/tags
 export XML_CATALOG_FILES="/projects/docbook/docbook-5.0.1/catalog.xml"
 
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.12.0
+	export GEOS_VER=3.13
 	export GDAL_VER=3.7.1
 	export PROJ_VER=8.2.1
 	export SFCGAL_VER=1.5.0
