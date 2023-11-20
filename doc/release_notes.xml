@@ -47,6 +47,8 @@
                 <para><ulink url="https://trac.osgeo.org/postgis/ticket/5603">5603</ulink>, [postgis_tiger_geocoder] Change to load 2023 Census Tiger/Line (Regina Obe)</para>
                 <para><ulink url="https://trac.osgeo.org/postgis/ticket/5525">5525</ulink>, [postgis_tiger_geocoder],[postgis_topology] Regression failure
                         when installed by non-superuser (Regina Obe, Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5581">5581</ulink>, ST_Project(geometry, float, float) is using
+          longitudes as latitudes (Regina obe)</para>
              </simplesect>
 
             <simplesect>

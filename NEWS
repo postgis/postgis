@@ -42,6 +42,8 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
  - #5603, [postgis_tiger_geocoder] Change to load 2023 Census Tiger/Line (Regina Obe)
  - #5525, [postgis_tiger_geocoder],[postgis_topology] Regression failure
           when installed by non-superuser (Regina Obe, Sandro Santilli)
+ - #5581, ST_Project(geometry, float, float) is using
+          longitudes as latitudes (Regina obe)
 
 * Enhancements *
 
