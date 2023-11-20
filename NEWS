@@ -1,17 +1,22 @@
-PostGIS 3.3.5dev
-YYYY/MM/DD
+PostGIS 3.3.5
+2023/11/19
+This version requires PostgreSQL 11-16, GEOS 3.6 or higher, and Proj 4.9+
+Additional features are enabled if you are running GEOS 3.9+
+ (and ST_MakeValid enhancements with 3.10+),
+Proj 6.1+, and PostgreSQL 15+.
 
 * Bug Fixes and Enhancements *
  - #5598, Fix restore of 3.3 dumps (Sandro Santilli)
  - #5568, Improve robustness of topology face split handling (Sandro Santilli)
  - #5548, Fix box-filtered validity check of topologies with edge-less faces
           (Sandro Santilli)
- - #5442, [postgis_tiger_geocoder,postgis_topology]
+ - #5442,#5525 [postgis_tiger_geocoder,postgis_topology]
           Database search_path does not do
-          what it intends to do (Jelte Fennema)
+          what it intends to do (Jelte Fennema, Sandro Santilli, Regina Obe)
  - #5494, Fix double-upgrade with view using st_dwithin(text, ...)
           (Sandro Santilli)
  - Fix JsonB casting issue (Paul Ramsey)
+ - #5616, Fix to find docbook on newer docbook installs (Regina Obe)
 
 
 PostGIS 3.3.4

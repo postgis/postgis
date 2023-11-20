@@ -29,7 +29,8 @@ BEGIN
 
 	RAISE NOTICE 'cur_search_path from pg_db_role_setting is %', var_cur_search_path;
 
-	IF var_cur_search_path IS NULL THEN
+	-- only run this test if person creating the extension is a super user
+	IF var_cur_search_path IS NULL AND (SELECT rolsuper FROM pg_roles where rolname = CURRENT_USER) THEN
 		SELECT setting
 		INTO var_cur_search_path
 		FROM pg_file_settings
