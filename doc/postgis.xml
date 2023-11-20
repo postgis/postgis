@@ -14,7 +14,7 @@
 <!ENTITY last_proj_release_version "9.0.1">
 <!ENTITY last_geos_release_version "3.11.1">
 <!ENTITY min_postgres_version "11">
-<!ENTITY max_postgres_version "15">
+<!ENTITY max_postgres_version "16">
 
 <!ENTITY introduction SYSTEM "introduction.xml">
 <!ENTITY installation SYSTEM "installation.xml">
