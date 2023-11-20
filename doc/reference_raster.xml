@@ -7709,12 +7709,6 @@ select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected true
                     </para>
                 </note>
 
-                <note>
-                    <para>
-                        Internally, this method replaces the PostGIS raster's band at index <varname>band</varname> with a new band instead of updating the existing path information.
-                    </para>
-                </note>
-
                 <para role="availability" conformance="2.5.0">Availability: 2.5.0</para>
             </refsection>
 
