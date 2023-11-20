@@ -1,11 +1,12 @@
-PostGIS 3.0.10dev
-xxxx/xx/xx
+PostGIS 3.0.10
+2023/11/19
 
 * Bug Fixes *
 
   - #5450, Fix macro expansion recursion on powerpc architectures.
            (Bas Couwenberg)
   - #5568, Improve robustness of topology face split handling (Sandro Santilli)
+  - #5616, Fix to find docbook on newer docbook installs (Regina Obe)
 
 PostGIS 3.0.9
 2023/05/29
