@@ -226,6 +226,7 @@ if test "x$XSLBASE" = "x"; then
 	SEARCHPATH="
 		/usr/share/sgml/docbook/xsl-stylesheets
 		/usr/share/xml/docbook/stylesheet/docbook-xsl
+		/usr/share/xml/docbook/stylesheet/docbook-xsl-ns
 		/usr/share/xml/docbook/stylesheet/nwalsh
 		/usr/share/sgml/docbook/stylesheet/xsl/nwalsh
 		/opt/local/share/xsl/docbook-xsl

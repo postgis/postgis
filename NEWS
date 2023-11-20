@@ -1,5 +1,5 @@
-PostGIS 3.2.6dev
-2023/xx/xx
+PostGIS 3.2.6
+2023/11/19
 
 This version requires PostgreSQL 9.6-15, GEOS 3.6 or higher, and Proj 4.9+
 Additional features are enabled if you are running GEOS 3.9+
@@ -24,6 +24,7 @@ Proj 6.1+, and PostgreSQL 14+.
            using pg_cancel_backend with ST_AsMVT
            (Regina Obe, Paul Ramsey)
  - Fix JsonB casting issue (Paul Ramsey)
+ - #5616, Fix to find docbook on newer docbook installs (Regina Obe)
 
 
 * Breaking Changes *
