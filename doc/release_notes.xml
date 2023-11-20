@@ -2,8 +2,21 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+      <sect1>
+        <title>Release 3.0.10</title>
+        <para>Release date: 2023/11/19</para>
+        <para>This is a bug and security release. This version requires PostgreSQL 9.5+-13 and GEOS &gt;= 3.6+
+              Additional features and enhancements enabled if you are running Proj6+, PostgreSQL 12+, and GEOS 3.8</para>
+        <simplesect>
+          <title>Bug Fixes</title>
+ <para><ulink url="https://trac.osgeo.org/postgis/ticket/"></ulink>5450, Fix macro expansion recursion on powerpc architectures.
+           (Bas Couwenberg)</para>
+ <para><ulink url="https://trac.osgeo.org/postgis/ticket/"></ulink>5568, Improve robustness of topology face split handling (Sandro Santilli)</para>
+ <para><ulink url="https://trac.osgeo.org/postgis/ticket/"></ulink>5616, Fix to find docbook on newer docbook installs (Regina Obe)</para>
+        </simplesect>
+    </sect1>
     <sect1>
-        <title>Release 3.0.8</title>
+        <title>Release 3.0.9</title>
         <para>Release date: 2023/05/29</para>
         <para>This is a bug and security release. This version requires PostgreSQL 9.5+-13 and GEOS &gt;= 3.6+
               Additional features and enhancements enabled if you are running Proj6+, PostgreSQL 12+, and GEOS 3.8</para>
