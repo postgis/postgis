@@ -1505,10 +1505,10 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 	{
 		for (j = 0; j < sample_height; j++)
 		{
+			int intersects = 0;
 			double xmin = i * sample_cell_size;
 			double ymin = j * sample_cell_size;
 			GEOSGeometry *gcell = lwpoly_to_points_makepoly(xmin, ymin, sample_cell_size);
-			char intersects;
 			intersects = GEOSPreparedIntersects(gprep, gcell);
 			if (intersects == 2)
 			{
@@ -1520,7 +1520,9 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 			}
 			if (intersects == 1)
 			{
-				cells[num_cells++] = (CellCorner){ xmin, ymin };
+				cells[num_cells].x = xmin;
+				cells[num_cells].y = ymin;
+				num_cells++;
 			}
 			GEOSGeom_destroy(gcell);
 		}
