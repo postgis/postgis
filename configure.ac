@@ -765,7 +765,7 @@ dnl ===========================================================================
 dnl
 dnl Set the min version number here
 dnl
-GEOS_MIN_VERSION=3.13.0
+GEOS_MIN_VERSION=3.8.0
 GEOS_MIN_VERSION_NUMERIC=`echo $GEOS_MIN_VERSION | $PERL -nle 'printf "%d%02d%02d\n",$1,$2,$3 if /(\d+)\.(\d+)\.(\d+)/'`
 
 AC_ARG_WITH([geosconfig],
