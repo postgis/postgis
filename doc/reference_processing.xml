@@ -1277,20 +1277,9 @@ result
         <funcsynopsis>
           <funcprototype>
             <funcdef>geometry <function>ST_GeneratePoints</function></funcdef>
-            <paramdef>
-                <parameter>g</parameter>
-                <type>geometry</type>
-            </paramdef>
-            <paramdef>
-                <parameter>npoints</parameter>
-                <type>integer</type>
-            </paramdef>
-          </funcprototype>
-          <funcprototype>
-            <funcdef>geometry <function>ST_GeneratePoints</function></funcdef>
-            <paramdef> <type>geometry</type> <parameter>g</parameter> </paramdef>
-            <paramdef> <type>integer</type> <parameter>npoints</parameter> </paramdef>
-            <paramdef> <type>integer</type> <parameter>seed = 0</parameter> </paramdef>
+            <paramdef><type>geometry</type> <parameter>g</parameter></paramdef>
+            <paramdef><type>integer</type> <parameter>npoints</parameter></paramdef>
+            <paramdef choice="opt"><type>integer</type> <parameter>seed = 0</parameter></paramdef>
           </funcprototype>
 
         </funcsynopsis>
