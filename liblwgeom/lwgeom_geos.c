@@ -1568,9 +1568,10 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 			contains = GEOSPreparedIntersectsXY(gprep, x, y);
 #else
 			{
-				GEOSCoordSequence* gseq = GEOSCoordSeq_create(1, 2);;
-				GEOSGeometry* gpt = GEOSGeom_createPoint(gseq);
+				GEOSGeometry *gpt;
+				GEOSCoordSequence *gseq = GEOSCoordSeq_create(1, 2);;
 				GEOSCoordSeq_setXY(gseq, 0, x, y);
+				gpt = GEOSGeom_createPoint(gseq);
 				contains = GEOSPreparedIntersects(gprep, gpt);
 				GEOSGeom_destroy(gpt);
 			}
