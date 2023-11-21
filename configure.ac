@@ -762,55 +762,97 @@ dnl ===========================================================================
 dnl Detect the version of GEOS installed on the system
 dnl ===========================================================================
 
+dnl
+dnl Set the min version number here
+dnl
+GEOS_MIN_VERSION=3.13.0
+GEOS_MIN_VERSION_NUMERIC=`echo $GEOS_MIN_VERSION | $PERL -nle 'printf "%d%02d%02d\n",$1,$2,$3 if /(\d+)\.(\d+)\.(\d+)/'`
+
 AC_ARG_WITH([geosconfig],
 	[AS_HELP_STRING([--with-geosconfig=FILE], [specify an alternative geos-config file])],
 	[GEOSCONFIG="$withval"], [GEOSCONFIG=""])
 
-if test "x$GEOSCONFIG" = "x"; then
-	dnl GEOSCONFIG was not specified, so search within the current path
-	AC_PATH_PROG([GEOSCONFIG], [geos-config])
+if test ! -z "$GEOSCONFIG"; then
 
-	dnl If we couldn't find geos-config, display an error
-	if test "x$GEOSCONFIG" = "x"; then
-		AC_MSG_ERROR([could not find geos-config within the current path. You may need to try re-running configure with a --with-geosconfig parameter.])
-	fi
-else
-	dnl GEOSCONFIG was specified; display a message to the user
-	if test "x$GEOSCONFIG" = "xyes"; then
-		AC_MSG_ERROR([you must specify a parameter to --with-geosconfig, e.g. --with-geosconfig=/path/to/geos-config])
-	else
-		if test -f $GEOSCONFIG; then
-			AC_MSG_RESULT([Using user-specified geos-config file: $GEOSCONFIG])
+	dnl the --with-geosconfig argument was set
+	AC_MSG_CHECKING([that $GEOSCONFIG exists])
+	if test -f "$GEOSCONFIG"; then
+		AC_MSG_RESULT([yes])
+		AC_MSG_CHECKING([that $GEOSCONFIG is executable])
+		if test -x "$GEOSCONFIG"; then
+			AC_MSG_RESULT([yes])
 		else
-			AC_MSG_ERROR([the user-specified geos-config file $GEOSCONFIG does not exist])
+			AC_MSG_RESULT([no])
+			AC_MSG_ERROR([use --with-geosconfig=/path/to/executable/geos-config])
+		fi
+	else
+		AC_MSG_RESULT([no])
+		AC_MSG_ERROR([use --with-geosconfig=/path/to/geos-config])
+	fi
+
+	dnl a usable geos-config was specified
+	GEOS_VERSION=`$GEOSCONFIG --version`
+	GEOS_LDFLAGS=`$GEOSCONFIG --clibs`
+	GEOS_CPPFLAGS=`$GEOSCONFIG --cflags`
+	GEOS_CONFIG_SRC=$GEOSCONFIG
+
+else
+
+	dnl the --with-geosconfig argument was NOT set
+	if test ! -z "$PKG_CONFIG"; then
+		dnl look in pkg-config first
+		dnl GEOS_LDFLAGS and GEOS_CPPFLAGS get set automatically
+		PKG_CHECK_MODULES([GEOS], [geos >= $GEOS_MIN_VERSION], [
+				GEOS_VERSION=`$PKG_CONFIG geos --modversion`
+				GEOS_LDFLAGS=`$PKG_CONFIG geos --libs`
+				GEOS_CPPFLAGS=`$PKG_CONFIG geos --cflags`
+				GEOS_PKGCONFIG=yes
+				GEOS_CONFIG_SRC="$PKG_CONFIG geos"
+			], [])
+	fi
+
+	if test -z "$GEOS_PKGCONFIG"; then
+		dnl pkg-config failed, so try to use geos-config from path
+		AC_MSG_CHECKING([geos-config on the path])
+		AC_PATH_PROG([GEOSCONFIG], [geos-config])
+		AC_MSG_RESULT([Found geos-config file: $GEOSCONFIG])
+		if test ! -z "$GEOSCONFIG"; then
+			AC_MSG_ERROR([could not find geos-config on the current path, try using the --with-geosconfig parameter.])
+		else
+			AC_MSG_RESULT([yes])
+			GEOS_VERSION=`$GEOSCONFIG --version`
+			GEOS_LDFLAGS=`$GEOSCONFIG --clibs`
+			GEOS_CPPFLAGS=`$GEOSCONFIG --cflags`
+			GEOS_CONFIG_SRC="$GEOSCONFIG"
 		fi
 	fi
 fi
 
-dnl Extract the version information from geos_config
-dnl Note: we extract the major & minor separately, ensure they are numeric,
-dnl and then combine to give the final version.
-dnl This is to guard against user error...
-GEOS_MAJOR_VERSION=`$GEOSCONFIG --version | cut -d. -f1 | sed 's/[[^0-9]]//g'`
-GEOS_MINOR_VERSION=`$GEOSCONFIG --version | cut -d. -f2 | sed 's/[[^0-9]]//g'`
-GEOS_PATCH_VERSION=`$GEOSCONFIG --version | cut -d. -f3 | sed 's/[[^0-9]]//g'`
-if test "x$GEOS_PATCH_VERSION" = "x"; then
-	GEOS_PATCH_VERSION="0";
-fi
-GEOS_FULL_VERSION=`$GEOSCONFIG --version`
-GEOS_NUMERIC_PATCH_VERSION=`printf "%02d" $GEOS_PATCH_VERSION`
-GEOS_NUMERIC_MINOR_VERSION=`printf "%02d" $GEOS_MINOR_VERSION`
-POSTGIS_GEOS_VERSION="$GEOS_MAJOR_VERSION$GEOS_NUMERIC_MINOR_VERSION$GEOS_NUMERIC_PATCH_VERSION"
+dnl
+dnl Convert human form (3.1.12) of version
+dnl    to numeric form (30112) for version checking
+dnl
+POSTGIS_GEOS_VERSION=`echo $GEOS_VERSION | $PERL -nle 'printf "%d%02d%02d\n",$1,$2,$3 if /(\d+)\.(\d+)\.(\d+)/'`
 
-dnl Ensure that we are using GEOS >= 3.8.0
-AC_MSG_RESULT([checking GEOS version... $GEOS_FULL_VERSION])
-if test ! "$POSTGIS_GEOS_VERSION" -ge 30800; then
-	AC_MSG_ERROR([PostGIS requires GEOS >= 3.8.0])
-fi
+AC_MSG_CHECKING([GEOS version])
+AC_MSG_RESULT([$GEOS_VERSION])
 
-dnl Extract the linker and include flags
-GEOS_LDFLAGS=`$GEOSCONFIG --clibs`
-GEOS_CPPFLAGS=`$GEOSCONFIG --cflags`
+AC_MSG_CHECKING([GEOS numeric version])
+AC_MSG_RESULT([$POSTGIS_GEOS_VERSION])
+
+AC_MSG_CHECKING([GEOS link flags])
+AC_MSG_RESULT([$GEOS_LDFLAGS])
+
+AC_MSG_CHECKING([GEOS compile flags])
+AC_MSG_RESULT([$GEOS_CPPFLAGS])
+
+dnl Ensure that we are using GEOS >= GEOS_MIN_VERSION
+AC_MSG_CHECKING([GEOS version is supported])
+if test "$POSTGIS_GEOS_VERSION" -ge "$GEOS_MIN_VERSION_NUMERIC"; then
+	AC_MSG_RESULT([yes])
+else
+	AC_MSG_ERROR([PostGIS requires GEOS >= $GEOS_MIN_VERSION])
+fi
 
 #
 # MacOS with XCode > 15 now requires rpath entries for
@@ -828,9 +870,6 @@ case $host_os in
 				;;
 esac
 
-AC_SUBST([GEOS_LDFLAGS])
-AC_SUBST([GEOS_CPPFLAGS])
-
 dnl Ensure that we can parse geos_c.h
 CPPFLAGS_SAVE="$CPPFLAGS"
 CPPFLAGS="$GEOS_CPPFLAGS"
@@ -846,8 +885,11 @@ AC_CHECK_LIB([geos_c], [initGEOS],
 	[])
 LIBS="$LIBS_SAVE"
 
+
 AC_DEFINE_UNQUOTED([POSTGIS_GEOS_VERSION], [$POSTGIS_GEOS_VERSION], [GEOS library version])
 AC_SUBST([POSTGIS_GEOS_VERSION])
+AC_SUBST([GEOS_LDFLAGS])
+AC_SUBST([GEOS_CPPFLAGS])
 
 
 dnl ===========================================================================
@@ -973,7 +1015,7 @@ elif test ! -z "$PKG_CONFIG"; then
 		[
 			PROJ_CPPFLAGS="$PROJ_CFLAGS"
 			PROJ_LDFLAGS="$PROJ_LIBS"
-			POSTGIS_PROJ_VERSION=`$PKG_CONFIG proj --modversion | $PERL -nle 'print "$1$2" if /(\d).*(\d).*(\d)/'`
+			POSTGIS_PROJ_VERSION=`$PKG_CONFIG proj --modversion | $PERL -nle 'print "$1$2" if /(\d+)\.(\d+)\.(\d+)/'`
 		],
 		[
 			PROJ_LDFLAGS="-lproj"
@@ -1120,7 +1162,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 
 	CPPFLAGS_SAVE="$CPPFLAGS"
 	LDFLAGS_SAVE="$LDFLAGS"
-        LIBS_SAVE="$LIBS"
+	LIBS_SAVE="$LIBS"
 
 	dnl Try pkgconfig first
 	if test -n "$PKG_CONFIG"; then
@@ -1901,8 +1943,8 @@ fi
 
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Dependencies -------------- ])
-AC_MSG_RESULT([  GEOS config:          ${GEOSCONFIG}])
-AC_MSG_RESULT([  GEOS version:         ${GEOS_FULL_VERSION}])
+AC_MSG_RESULT([  GEOS config:          ${GEOS_CONFIG_SRC}])
+AC_MSG_RESULT([  GEOS version:         ${GEOS_VERSION}])
 if test "x$RASTER" = "xraster"; then
     AC_MSG_RESULT([  GDAL config:          ${GDAL_CONFIG}])
     AC_MSG_RESULT([  GDAL version:         ${GDAL_FULL_VERSION}])
@@ -1974,7 +2016,7 @@ AC_MSG_RESULT()
 
 if test "$POSTGIS_GEOS_VERSION" -lt 31200; then
 AC_MSG_WARN([ --------- GEOS VERSION WARNING ------------ ])
-AC_MSG_WARN([  You are building against GEOS ${GEOS_FULL_VERSION}.])
+AC_MSG_WARN([  You are building against GEOS ${GEOS_VERSION}.])
 AC_MSG_WARN([])
 AC_MSG_WARN([  To take advantage of _all_ the features of ])
 AC_MSG_WARN([  PostGIS, GEOS 3.12.0 or higher is required.])
