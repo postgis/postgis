@@ -468,3 +468,4 @@ ERROR:  Geometry contains invalid coordinates
 makepolygon-null-holes|4
 #6159|t
 #5357|LINESTRING(38.903876 55.336448,38.903875 55.336448)
+#5571|t

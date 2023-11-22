@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - #5571, Avoid excessive ST_GeneratePoints allocation for narrow polygons (Paul Ramsey)
  - #5148, [raster] Align the clipping mask to the source raster (sergei sh)
  - Honor --without-gui when configuring the shapefile loader (Chris Mayo)
  - [topology] Check deletion results when healing edges (Paul Ramsey and Maksim Korotkov)

@@ -1511,3 +1511,8 @@ RESET client_min_messages;
 
 -- #5357
 SELECT '#5357', ST_AsText(ST_LineFromEncodedPolyline('__nphBgcoeiA?@', 6), 6);
+
+-- #5571: limit sampling-grid allocation for a narrow polygon
+SELECT '#5571', ST_GeneratePoints(
+	'POLYGON((0 0, 1 1, 1 1.000000002, 0 0.000000002, 0 0))', 1, 12345
+) IS NOT NULL;
