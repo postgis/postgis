@@ -1748,8 +1748,9 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 		return NULL;
 	}
 
-	/* Gross up our test set a bit to increase odds of getting coverage in one pass */
-	sample_npoints = npoints * bbox_area / area;
+	/* Gross up our test set a bit (but not too much) to increase
+	 * odds of getting coverage in one pass */
+	sample_npoints = npoints * FP_MIN(bbox_area / area, 10000.0);
 
 	/* We're going to generate points using a sample grid as described
 	 * http://lin-ear-th-inking.blogspot.ca/2010/05/more-random-points-in-jts.html to try and get a more uniform
