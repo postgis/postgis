@@ -38,7 +38,7 @@
 		<varlistentry>
 		<term>Regina Obe</term>
 		<listitem>
-			<para>Buildbot Maintenance, Windows production and experimental builds, documentation, alignment of
+			<para>CI and website maintenance, Windows production and experimental builds, documentation, alignment of
 			PostGIS with PostgreSQL releases, X3D support, TIGER geocoder support, management functions.</para>
 		</listitem>
 		</varlistentry>
@@ -46,7 +46,7 @@
 		<varlistentry>
 			<term>Darafei Praliaskouski</term>
 			<listitem>
-				<para>Index improvements, bug fixing and geometry/geography function improvements, SFCGAL, raster, GitHub curation, and bot maintenance.</para>
+				<para>Index improvements, bug fixing and geometry/geography function improvements, SFCGAL, raster, GitHub curation, and ci maintenance.</para>
 			</listitem>
 		</varlistentry>
 
@@ -62,7 +62,7 @@
 		<varlistentry>
 		<term>Sandro Santilli</term>
 		<listitem>
-			<para>Bug fixes and maintenance, buildbot maintenance, git mirror management, management functions, integration of new GEOS functionality and alignment with GEOS releases, topology support, and raster framework and low level API functions.</para>
+			<para>Bug fixes and maintenance, ci maintenance, git mirror management, management functions, integration of new GEOS functionality and alignment with GEOS releases, topology support, and raster framework and low level API functions.</para>
 		</listitem>
 		</varlistentry>
 
@@ -75,6 +75,13 @@
 			<term>Nicklas Avén</term>
 			<listitem>
 			  <para>Distance function enhancements (including 3D distance and relationship functions) and additions, Tiny WKB (TWKB) output format and general user support</para>
+			</listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Loïc Bartoletti</term>
+			<listitem>
+			  <para>SFCGAL enhancments and maintenance and ci support</para>
 			</listitem>
 		</varlistentry>
 
@@ -97,7 +104,7 @@
 			<term>Björn Harrtell</term>
 
 			<listitem>
-			  <para>MapBox Vector Tile and GeoBuf functions. Gogs testing and GitLab experimentation.</para>
+			  <para>MapBox Vector Tile, GeoBuf, and Flatgeobuf functions. Gitea testing and GitLab experimentation.</para>
 			</listitem>
 		</varlistentry>
 
@@ -280,7 +287,6 @@
 					<member>Laurenz Albe</member>
 					<member>Lars Roessiger</member>
 					<member>Leo Hsu</member>
-					<member>Loïc Bartoletti</member>
 					<member>Loic Dachary</member>
 					<member>Luca S. Percich</member>
 					<member>Lucas C. Villa Real</member>
