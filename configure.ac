@@ -802,24 +802,25 @@ else
 	if test ! -z "$PKG_CONFIG"; then
 		dnl look in pkg-config first
 		dnl GEOS_LDFLAGS and GEOS_CPPFLAGS get set automatically
-		PKG_CHECK_MODULES([GEOS], [geos], [
+
+			PKG_CHECK_MODULES([GEOS], [geos], [
 				GEOS_VERSION=`$PKG_CONFIG geos --modversion`
 				GEOS_LDFLAGS=`$PKG_CONFIG geos --libs`
 				GEOS_CPPFLAGS=`$PKG_CONFIG geos --cflags`
 				GEOS_PKGCONFIG=yes
 				GEOS_CONFIG_SRC="$PKG_CONFIG geos"
-			], [])
+			], [
+				AC_MSG_RESULT([checking for geos-config on the path...])
+
+			])
 	fi
 
 	if test -z "$GEOS_PKGCONFIG"; then
 		dnl pkg-config failed, so try to use geos-config from path
-		AC_MSG_CHECKING([geos-config on the path])
 		AC_PATH_PROG([GEOSCONFIG], [geos-config])
-		AC_MSG_RESULT([Found geos-config file: $GEOSCONFIG])
-		if test ! -z "$GEOSCONFIG"; then
+		if test -z "$GEOSCONFIG"; then
 			AC_MSG_ERROR([could not find geos-config on the current path, try using the --with-geosconfig parameter.])
 		else
-			AC_MSG_RESULT([yes])
 			GEOS_VERSION=`$GEOSCONFIG --version`
 			GEOS_LDFLAGS=`$GEOSCONFIG --clibs`
 			GEOS_CPPFLAGS=`$GEOSCONFIG --cflags`
@@ -884,7 +885,6 @@ AC_CHECK_LIB([geos_c], [initGEOS],
 	[AC_MSG_ERROR([could not find libgeos_c - you may need to specify the directory of a geos-config file using --with-geosconfig])],
 	[])
 LIBS="$LIBS_SAVE"
-
 
 AC_DEFINE_UNQUOTED([POSTGIS_GEOS_VERSION], [$POSTGIS_GEOS_VERSION], [GEOS library version])
 AC_SUBST([POSTGIS_GEOS_VERSION])
