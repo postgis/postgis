@@ -73,9 +73,15 @@
 	<variablelist>
 		<varlistentry>
 			<term>Nicklas Avén</term>
-
 			<listitem>
 			  <para>Distance function enhancements (including 3D distance and relationship functions) and additions, Tiny WKB (TWKB) output format and general user support</para>
+			</listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Loïc Bartoletti</term>
+			<listitem>
+			  <para>SFCGAL enhancments and maintenance and ci support</para>
 			</listitem>
 		</varlistentry>
 
@@ -378,10 +384,10 @@
 		<term>Important Support Libraries</term>
 
 		<listitem>
-		  <para>The <ulink url="https://geos.osgeo.org">GEOS</ulink>
+		  <para>The <link url="https://libgeos.org">GEOS</link>
 		  geometry operations library</para>
 
-		  <para>The <ulink url="https://www.gdal.org">GDAL</ulink>
+		  <para>The <ulink url="https://gdal.org">GDAL</ulink>
 		  Geospatial Data Abstraction Library used to
 		  power much of the raster functionality introduced in PostGIS 2. In kind, improvements needed in GDAL
 		  to support PostGIS are contributed back to the GDAL project.</para>
@@ -389,7 +395,7 @@
 		  <para>The <ulink url="https://www.proj4.org">PROJ</ulink>
 		  cartographic projection library</para>
 
-		  <para>Last but not least, <ulink url="http://www.postgresql.org">PostgreSQL</ulink>,
+		  <para>Last but not least, <ulink url="https://www.postgresql.org">PostgreSQL</ulink>,
 		  the giant that PostGIS stands on.  Much of the speed and flexibility of PostGIS would not be possible without
 		  the extensibility, great query planner, GIST index, and plethora of SQL features provided by PostgreSQL.</para>
 		</listitem>
