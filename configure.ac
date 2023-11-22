@@ -802,7 +802,7 @@ else
 	if test ! -z "$PKG_CONFIG"; then
 		dnl look in pkg-config first
 		dnl GEOS_LDFLAGS and GEOS_CPPFLAGS get set automatically
-		PKG_CHECK_MODULES([GEOS], [geos >= $GEOS_MIN_VERSION], [
+		PKG_CHECK_MODULES([GEOS], [geos], [
 				GEOS_VERSION=`$PKG_CONFIG geos --modversion`
 				GEOS_LDFLAGS=`$PKG_CONFIG geos --libs`
 				GEOS_CPPFLAGS=`$PKG_CONFIG geos --cflags`
