@@ -384,7 +384,7 @@
 		<term>Important Support Libraries</term>
 
 		<listitem>
-		  <para>The <link url="https://libgeos.org">GEOS</link>
+		  <para>The <ulink url="https://libgeos.org">GEOS</ulink>
 		  geometry operations library</para>
 
 		  <para>The <ulink url="https://gdal.org">GDAL</ulink>
