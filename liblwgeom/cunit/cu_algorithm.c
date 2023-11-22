@@ -1658,11 +1658,11 @@ static void test_point_density(void)
 	/* Check if the 1000th point is the expected value.
 	 * Note that if the RNG is not portable, this test may fail. */
 	pt = (LWPOINT*)mpt->geoms[999];
-	// ewkt = lwgeom_to_ewkt((LWGEOM*)pt);
+	// char* ewkt = lwgeom_to_ewkt((LWGEOM*)pt);
 	// printf("%s\n", ewkt);
 	// lwfree(ewkt);
-	CU_ASSERT_DOUBLE_EQUAL(lwpoint_get_x(pt), 0.801167838758, 1e-11);
-	CU_ASSERT_DOUBLE_EQUAL(lwpoint_get_y(pt), 0.345281131175, 1e-11);
+	CU_ASSERT_DOUBLE_EQUAL(lwpoint_get_x(pt), 0.363667838758, 1e-11);
+	CU_ASSERT_DOUBLE_EQUAL(lwpoint_get_y(pt), 0.782781131175, 1e-11);
 	lwmpoint_free(mpt);
 	pt = NULL;
 

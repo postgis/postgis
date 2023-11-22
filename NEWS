@@ -20,6 +20,8 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.5.0+ is needed.
   - DocBook5 XSL is now required to build html documentation
     (Sandro Santilli)
   - #5602, Drop support for GEOS 3.6 and 3.7 (Regina Obe)
+  - #5571, Improve ST_GeneratePoints performance, but old
+           seeded pseudo random points will need to be regenerated.
 
 * New Features *
 

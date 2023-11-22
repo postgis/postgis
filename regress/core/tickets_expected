@@ -384,7 +384,7 @@ equals211|t
 equals212|t
 equals213|t
 #4299|t
-#4304|t|t|t|t
+#4304|t|t|t
 ERROR:  BOX3D_construct: args can not be empty points
 ERROR:  BOX2D_construct: args can not be empty points
 #4176|t

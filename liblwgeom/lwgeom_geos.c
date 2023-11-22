@@ -1399,10 +1399,31 @@ lwgeom_offsetcurve(const LWGEOM* geom, double size, int quadsegs, int joinStyle,
 	return result;
 }
 
+static GEOSGeometry*
+lwpoly_to_points_makepoly(double xmin, double ymin, double cell_size)
+{
+	GEOSCoordSequence *cs = GEOSCoordSeq_create(5, 2);
+	GEOSCoordSeq_setXY(cs, 0, xmin, ymin);
+	GEOSCoordSeq_setXY(cs, 1, xmin + cell_size, ymin);
+	GEOSCoordSeq_setXY(cs, 2, xmin + cell_size, ymin + cell_size);
+	GEOSCoordSeq_setXY(cs, 3, xmin, ymin + cell_size);
+	GEOSCoordSeq_setXY(cs, 4, xmin, ymin);
+	return GEOSGeom_createPolygon(GEOSGeom_createLinearRing(cs), NULL, 0);
+}
+
 LWMPOINT*
 lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 {
-	double area, bbox_area, bbox_width, bbox_height;
+
+	typedef struct CellCorner {
+		double x;
+		double y;
+	} CellCorner;
+
+	CellCorner* cells;
+	uint32_t num_cells = 0;
+
+	double area, bbox_area, bbox_width, bbox_height, area_ratio;
 	GBOX bbox;
 	const LWGEOM* lwgeom = (LWGEOM*)lwpoly;
 	uint32_t sample_npoints, sample_sqrt, sample_width, sample_height;
@@ -1413,15 +1434,10 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 	uint32_t npoints_tested = 0;
 	GEOSGeometry* g;
 	const GEOSPreparedGeometry* gprep;
-	GEOSGeometry* gpt;
-	GEOSCoordSequence* gseq;
 	LWMPOINT* mpt;
 	int32_t srid = lwgeom_get_srid(lwgeom);
 	int done = 0;
-	int* cells;
-	const size_t size = 2 * sizeof(int);
-	char tmp[2 * sizeof(int)];
-	const size_t stride = 2 * sizeof(int);
+
 
 	if (lwgeom_get_type(lwgeom) != POLYGONTYPE)
 	{
@@ -1447,15 +1463,20 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 		return NULL;
 	}
 
-	/* Gross up our test set a bit to increase odds of getting coverage in one pass */
-	sample_npoints = npoints * bbox_area / area;
+	/* Gross up our test set a bit to increase odds of getting coverage
+	 * in one pass. For narrow inputs, it is possible we will get
+	 * no hits at all. A fall-back approach might use a random stab-line
+	 * to find pairs of edges that bound interior area, and generate a point
+	 * between those edges, in the case that this gridding system
+	 * does not generate the desired number of points */
+	area_ratio = FP_MIN(bbox_area / area, 10000.0);
+	sample_npoints = npoints * area_ratio;
 
 	/* We're going to generate points using a sample grid as described
-	 * http://lin-ear-th-inking.blogspot.ca/2010/05/more-random-points-in-jts.html to try and get a more uniform
-	 * "random" set of points. So we have to figure out how to stick a grid into our box */
-	sample_sqrt = lround(sqrt(sample_npoints));
-	if (sample_sqrt == 0)
-		sample_sqrt = 1;
+	 * http://lin-ear-th-inking.blogspot.ca/2010/05/more-random-points-in-jts.html
+	 * to try and get a more uniform "random" set of points. So we have to figure
+	 *  out how to stick a grid into our box */
+	sample_sqrt = ceil(sqrt(sample_npoints));
 
 	/* Calculate the grids we're going to randomize within */
 	if (bbox_width > bbox_height)
@@ -1481,8 +1502,38 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 	}
 	gprep = GEOSPrepare(g);
 
-	/* Get an empty multi-point ready to return */
-	mpt = lwmpoint_construct_empty(srid, 0, 0);
+
+	/* Now we fill in an array of cells, only using cells that actually
+	 * intersect the geometry of interest, and finally weshuffle that array,
+	 * so we can visit the cells in random order to avoid visual ugliness
+	 * caused by visiting them sequentially */
+	cells = lwalloc(sizeof(CellCorner) * sample_height * sample_width);
+	for (i = 0; i < sample_width; i++)
+	{
+		for (j = 0; j < sample_height; j++)
+		{
+			int intersects = 0;
+			double xmin = i * sample_cell_size;
+			double ymin = j * sample_cell_size;
+			GEOSGeometry *gcell = lwpoly_to_points_makepoly(xmin, ymin, sample_cell_size);
+			intersects = GEOSPreparedIntersects(gprep, gcell);
+			if (intersects == 2)
+			{
+				GEOSGeom_destroy(gcell);
+				GEOSPreparedGeom_destroy(gprep);
+				GEOSGeom_destroy(g);
+				lwerror("%s: GEOS exception on GEOSPreparedIntersects: %s", __func__, lwgeom_geos_errmsg);
+				return NULL;
+			}
+			if (intersects == 1)
+			{
+				cells[num_cells].x = xmin;
+				cells[num_cells].y = ymin;
+				num_cells++;
+			}
+			GEOSGeom_destroy(gcell);
+		}
+	}
 
 	/* Initiate random number generator.
 	 * Repeatable numbers are generated with seed values >= 1.
@@ -1490,63 +1541,57 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 	 * Unix time (seconds) and process ID. */
 	lwrandom_set_seed(seed);
 
-	/* Now we fill in an array of cells, and then shuffle that array, */
-	/* so we can visit the cells in random order to avoid visual ugliness */
-	/* caused by visiting them sequentially */
-	cells = lwalloc(2 * sizeof(int) * sample_height * sample_width);
-	for (i = 0; i < sample_width; i++)
-	{
-		for (j = 0; j < sample_height; j++)
-		{
-			cells[2 * (i * sample_height + j)] = i;
-			cells[2 * (i * sample_height + j) + 1] = j;
-		}
-	}
-
 	/* Fisher-Yates shuffle */
-	n = sample_height * sample_width;
+	n = num_cells;
 	if (n > 1)
 	{
 		for (i = n - 1; i > 0; i--)
 		{
-			size_t j = (size_t)(lwrandom_uniform() * (i + 1));
-
-			memcpy(tmp, (char *)cells + j * stride, size);
-			memcpy((char *)cells + j * stride, (char *)cells + i * stride, size);
-			memcpy((char *)cells + i * stride, tmp, size);
+			CellCorner tmp;
+			j = (uint32_t)(lwrandom_uniform() * (i + 1));
+			memcpy(     &tmp, cells + j, sizeof(CellCorner));
+			memcpy(cells + j, cells + i, sizeof(CellCorner));
+			memcpy(cells + i,      &tmp, sizeof(CellCorner));
 		}
 	}
+
+	/* Get an empty multi-point ready to return */
+	mpt = lwmpoint_construct_empty(srid, 0, 0);
 
 	/* Start testing points */
 	while (npoints_generated < npoints)
 	{
 		iterations++;
-		for (i = 0; i < sample_width * sample_height; i++)
+		for (i = 0; i < num_cells; i++)
 		{
 			int contains = 0;
-			double y = bbox.ymin + cells[2 * i] * sample_cell_size;
-			double x = bbox.xmin + cells[2 * i + 1] * sample_cell_size;
+			double y = cells[i].y;
+			double x = cells[i].x;
 			x += lwrandom_uniform() * sample_cell_size;
 			y += lwrandom_uniform() * sample_cell_size;
 			if (x >= bbox.xmax || y >= bbox.ymax) continue;
 
-			gseq = GEOSCoordSeq_create(1, 2);
-			GEOSCoordSeq_setXY(gseq, 0, x, y);
-
-			gpt = GEOSGeom_createPoint(gseq);
-
-			contains = GEOSPreparedIntersects(gprep, gpt);
-
-			GEOSGeom_destroy(gpt);
+#if POSTGIS_GEOS_VERSION >= 31200
+			contains = GEOSPreparedIntersectsXY(gprep, x, y);
+#else
+			{
+				GEOSGeometry *gpt;
+				GEOSCoordSequence *gseq = GEOSCoordSeq_create(1, 2);;
+				GEOSCoordSeq_setXY(gseq, 0, x, y);
+				gpt = GEOSGeom_createPoint(gseq);
+				contains = GEOSPreparedIntersects(gprep, gpt);
+				GEOSGeom_destroy(gpt);
+			}
+#endif
 
 			if (contains == 2)
 			{
 				GEOSPreparedGeom_destroy(gprep);
 				GEOSGeom_destroy(g);
-				lwerror("%s: GEOS exception on PreparedContains: %s", __func__, lwgeom_geos_errmsg);
+				lwerror("%s: GEOS exception on GEOSPreparedIntersects: %s", __func__, lwgeom_geos_errmsg);
 				return NULL;
 			}
-			if (contains)
+			if (contains == 1)
 			{
 				npoints_generated++;
 				mpt = lwmpoint_add_lwpoint(mpt, lwpoint_make2d(srid, x, y));
