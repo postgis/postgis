@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-14 05:23+0000\n"
+"POT-Creation-Date: 2023-11-22 04:19+0000\n"
 "PO-Revision-Date: 2023-09-14 20:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -9379,13 +9379,10 @@ msgstr "Regina Obe"
 #. Tag: para
 #, no-c-format
 msgid ""
-"Buildbot Maintenance, Windows production and experimental builds, "
+"CI and website maintenance, Windows production and experimental builds, "
 "documentation, alignment of PostGIS with PostgreSQL releases, X3D support, "
 "TIGER geocoder support, management functions."
 msgstr ""
-"Maintenance du robot de build, Build de production et expérimental pour "
-"Windows, documentation, Alignement de PostGIS avec les publications "
-"PostgreSQL, support X3D, support du géocoder TIGER, fonctions de gestion."
 
 #. Tag: term
 #, no-c-format
@@ -9396,11 +9393,8 @@ msgstr "Darafei Praliaskouski"
 #, no-c-format
 msgid ""
 "Index improvements, bug fixing and geometry/geography function improvements, "
-"SFCGAL, raster, GitHub curation, and bot maintenance."
+"SFCGAL, raster, GitHub curation, and ci maintenance."
 msgstr ""
-"Améliorations des index, correction de bugs et améliorations des fonctions "
-"geometry/geography, SFCGAL, raster, nettoyage de GitHub, maintenance du "
-"robot de build."
 
 #. Tag: term
 #, no-c-format
@@ -9430,15 +9424,10 @@ msgstr "Sandro Santilli"
 #. Tag: para
 #, no-c-format
 msgid ""
-"Bug fixes and maintenance, buildbot maintenance, git mirror management, "
-"management functions, integration of new GEOS functionality and alignment "
-"with GEOS releases, topology support, and raster framework and low level API "
-"functions."
+"Bug fixes and maintenance, ci maintenance, git mirror management, management "
+"functions, integration of new GEOS functionality and alignment with GEOS "
+"releases, topology support, and raster framework and low level API functions."
 msgstr ""
-"Maintenance et correction de bugs, maintenance du robot de build, gestion du "
-"miroir git, fonctions de gestions, intégration des fonctionnalités GEOS et "
-"alignement avec les publications GEOS, support des topologies, raster et "
-"fonctions de l'API bas-niveau."
 
 #. Tag: title
 #, no-c-format
@@ -9460,6 +9449,16 @@ msgstr ""
 "Améliorations et ajouts de fonctions de distance (notamment fonctions de "
 "distance 3D et relations), format de sortie Tiny WKB (TWKB) et support "
 "utilisateur"
+
+#. Tag: term
+#, no-c-format
+msgid "Loïc Bartoletti"
+msgstr "Loïc Bartoletti"
+
+#. Tag: para
+#, no-c-format
+msgid "SFCGAL enhancments and maintenance and ci support"
+msgstr ""
 
 #. Tag: term
 #, no-c-format
@@ -9493,11 +9492,9 @@ msgstr "Björn Harrtell"
 #. Tag: para
 #, no-c-format
 msgid ""
-"MapBox Vector Tile and GeoBuf functions. Gogs testing and GitLab "
-"experimentation."
+"MapBox Vector Tile, GeoBuf, and Flatgeobuf functions. Gitea testing and "
+"GitLab experimentation."
 msgstr ""
-"Fonctions MapBox Vector Tile et GeoBuf. Tests Gogs et expérimentations "
-"GitLab."
 
 #. Tag: term
 #, no-c-format
@@ -10019,11 +10016,6 @@ msgstr "Lars Roessiger"
 #, no-c-format
 msgid "Leo Hsu"
 msgstr "Leo Hsu"
-
-#. Tag: member
-#, no-c-format
-msgid "Loïc Bartoletti"
-msgstr "Loïc Bartoletti"
 
 #. Tag: member
 #, no-c-format
@@ -11266,19 +11258,6 @@ msgstr ""
 "matrix_sfcgal_required.png\"/></imageobject></inlinemediaobject> signifie "
 "que la fonction n'est disponible que si PostGIS a été compilé avec le "
 "support SFCGAL."
-
-#. Tag: simpara
-#, no-c-format
-msgid ""
-"A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
-"matrix_sfcgal_enhanced.png\"/></imageobject></inlinemediaobject> means the "
-"function support is provided by SFCGAL if PostGIS compiled with SFCGAL "
-"support, otherwise GEOS/built-in support."
-msgstr ""
-"Un <inlinemediaobject><imageobject><imagedata fileref=\"images/"
-"matrix_sfcgal_enhanced.png\"/></imageobject></inlinemediaobject> signifie "
-"que le support de la fonction est fourni par SFCGAL si PostGIS a été compilé "
-"avec le support SFCGAL, sinon le support GEOS/intégré."
 
 #. Tag: simpara
 #, no-c-format
@@ -32732,17 +32711,6 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Internally, this method replaces the PostGIS raster's band at index "
-"<varname>band</varname> with a new band instead of updating the existing "
-"path information."
-msgstr ""
-"En interne, cette méthode remplacement la bande du raster PostGIS à l'index "
-"<varname>band</varname> avec la nouvelle bande, au lieu de mettre à jour les "
-"informations de chemin existantes."
-
-#. Tag: para
-#, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetBandIndex\"/>"
 msgstr ", <xref linkend=\"RT_ST_SetBandIndex\"/>"
 
@@ -32772,6 +32740,17 @@ msgstr ""
 "la compatibilité (e.g., l'alignement, le support des pixels) entre le "
 "fichier raster externe et le raster PostGIS. Ce mode est destiné aux cas où "
 "les bandes sont déplacées dans le fichier raster externe."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Internally, this method replaces the PostGIS raster's band at index "
+"<varname>band</varname> with a new band instead of updating the existing "
+"path information."
+msgstr ""
+"En interne, cette méthode remplacement la bande du raster PostGIS à l'index "
+"<varname>band</varname> avec la nouvelle bande, au lieu de mettre à jour les "
+"informations de chemin existantes."
 
 #. Tag: para
 #, no-c-format
@@ -40300,6 +40279,27 @@ msgstr ", <xref linkend=\"ST_DelaunayTriangles\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
+"Compute a visibility polygon from a point or a segment in a polygon geometry"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Visibility from the point"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Visibility from the segment"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
 "Computes the volume of a 3D solid. If applied to surface (even closed) "
 "geometries will return 0."
 msgstr ""
@@ -40349,11 +40349,6 @@ msgid ""
 "that any horizontal line intersects either chain at most once. This "
 "algorithm does not guarantee a bound on the number of polygons produced with "
 "respect to the optimal number."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0."
 msgstr ""
 
 #. Tag: para
@@ -49815,6 +49810,57 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid ""
+#~ "Buildbot Maintenance, Windows production and experimental builds, "
+#~ "documentation, alignment of PostGIS with PostgreSQL releases, X3D "
+#~ "support, TIGER geocoder support, management functions."
+#~ msgstr ""
+#~ "Maintenance du robot de build, Build de production et expérimental pour "
+#~ "Windows, documentation, Alignement de PostGIS avec les publications "
+#~ "PostgreSQL, support X3D, support du géocoder TIGER, fonctions de gestion."
+
+#, no-c-format
+#~ msgid ""
+#~ "Index improvements, bug fixing and geometry/geography function "
+#~ "improvements, SFCGAL, raster, GitHub curation, and bot maintenance."
+#~ msgstr ""
+#~ "Améliorations des index, correction de bugs et améliorations des "
+#~ "fonctions geometry/geography, SFCGAL, raster, nettoyage de GitHub, "
+#~ "maintenance du robot de build."
+
+#, no-c-format
+#~ msgid ""
+#~ "Bug fixes and maintenance, buildbot maintenance, git mirror management, "
+#~ "management functions, integration of new GEOS functionality and alignment "
+#~ "with GEOS releases, topology support, and raster framework and low level "
+#~ "API functions."
+#~ msgstr ""
+#~ "Maintenance et correction de bugs, maintenance du robot de build, gestion "
+#~ "du miroir git, fonctions de gestions, intégration des fonctionnalités "
+#~ "GEOS et alignement avec les publications GEOS, support des topologies, "
+#~ "raster et fonctions de l'API bas-niveau."
+
+#, no-c-format
+#~ msgid ""
+#~ "MapBox Vector Tile and GeoBuf functions. Gogs testing and GitLab "
+#~ "experimentation."
+#~ msgstr ""
+#~ "Fonctions MapBox Vector Tile et GeoBuf. Tests Gogs et expérimentations "
+#~ "GitLab."
+
+#, no-c-format
+#~ msgid ""
+#~ "A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
+#~ "matrix_sfcgal_enhanced.png\"/></imageobject></inlinemediaobject> means "
+#~ "the function support is provided by SFCGAL if PostGIS compiled with "
+#~ "SFCGAL support, otherwise GEOS/built-in support."
+#~ msgstr ""
+#~ "Un <inlinemediaobject><imageobject><imagedata fileref=\"images/"
+#~ "matrix_sfcgal_enhanced.png\"/></imageobject></inlinemediaobject> signifie "
+#~ "que le support de la fonction est fourni par SFCGAL si PostGIS a été "
+#~ "compilé avec le support SFCGAL, sinon le support GEOS/intégré."
 
 #, no-c-format
 #~ msgid "&database_tuning;"

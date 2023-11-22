@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-14 05:23+0000\n"
+"POT-Creation-Date: 2023-11-22 04:19+0000\n"
 "PO-Revision-Date: 2023-09-25 16:23+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Russian <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -6996,7 +6996,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Buildbot Maintenance, Windows production and experimental builds, "
+"CI and website maintenance, Windows production and experimental builds, "
 "documentation, alignment of PostGIS with PostgreSQL releases, X3D support, "
 "TIGER geocoder support, management functions."
 msgstr ""
@@ -7010,7 +7010,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Index improvements, bug fixing and geometry/geography function improvements, "
-"SFCGAL, raster, GitHub curation, and bot maintenance."
+"SFCGAL, raster, GitHub curation, and ci maintenance."
 msgstr ""
 
 #. Tag: term
@@ -7036,10 +7036,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Bug fixes and maintenance, buildbot maintenance, git mirror management, "
-"management functions, integration of new GEOS functionality and alignment "
-"with GEOS releases, topology support, and raster framework and low level API "
-"functions."
+"Bug fixes and maintenance, ci maintenance, git mirror management, management "
+"functions, integration of new GEOS functionality and alignment with GEOS "
+"releases, topology support, and raster framework and low level API functions."
 msgstr ""
 
 #. Tag: title
@@ -7058,6 +7057,16 @@ msgid ""
 "Distance function enhancements (including 3D distance and relationship "
 "functions) and additions, Tiny WKB (TWKB) output format and general user "
 "support"
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Loïc Bartoletti"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "SFCGAL enhancments and maintenance and ci support"
 msgstr ""
 
 #. Tag: term
@@ -7090,8 +7099,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"MapBox Vector Tile and GeoBuf functions. Gogs testing and GitLab "
-"experimentation."
+"MapBox Vector Tile, GeoBuf, and Flatgeobuf functions. Gitea testing and "
+"GitLab experimentation."
 msgstr ""
 
 #. Tag: term
@@ -7588,11 +7597,6 @@ msgstr ""
 #. Tag: member
 #, no-c-format
 msgid "Leo Hsu"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Loïc Bartoletti"
 msgstr ""
 
 #. Tag: member
@@ -8642,15 +8646,6 @@ msgid ""
 "A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
 "matrix_sfcgal_required.png\"/></imageobject></inlinemediaobject> means the "
 "function only available if PostGIS compiled with SFCGAL support."
-msgstr ""
-
-#. Tag: simpara
-#, no-c-format
-msgid ""
-"A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
-"matrix_sfcgal_enhanced.png\"/></imageobject></inlinemediaobject> means the "
-"function support is provided by SFCGAL if PostGIS compiled with SFCGAL "
-"support, otherwise GEOS/built-in support."
 msgstr ""
 
 #. Tag: simpara
@@ -25263,14 +25258,6 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Internally, this method replaces the PostGIS raster's band at index "
-"<varname>band</varname> with a new band instead of updating the existing "
-"path information."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetBandIndex\"/>"
 msgstr ""
 
@@ -25293,6 +25280,14 @@ msgid ""
 "compatibility (e.g. alignment, pixel support) between the external raster "
 "file and the PostGIS raster. This mode is intended for where bands are moved "
 "around in the external raster file."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Internally, this method replaces the PostGIS raster's band at index "
+"<varname>band</varname> with a new band instead of updating the existing "
+"path information."
 msgstr ""
 
 #. Tag: para
@@ -31082,6 +31077,27 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
+"Compute a visibility polygon from a point or a segment in a polygon geometry"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Visibility from the point"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Visibility from the segment"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
 "Computes the volume of a 3D solid. If applied to surface (even closed) "
 "geometries will return 0."
 msgstr ""
@@ -31124,11 +31140,6 @@ msgid ""
 "that any horizontal line intersects either chain at most once. This "
 "algorithm does not guarantee a bound on the number of polygons produced with "
 "respect to the optimal number."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0."
 msgstr ""
 
 #. Tag: para

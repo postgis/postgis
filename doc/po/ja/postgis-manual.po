@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-14 05:23+0000\n"
+"POT-Creation-Date: 2023-11-22 04:19+0000\n"
 "PO-Revision-Date: 2023-11-06 05:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -8976,12 +8976,10 @@ msgstr "Regina Obe"
 #. Tag: para
 #, no-c-format
 msgid ""
-"Buildbot Maintenance, Windows production and experimental builds, "
+"CI and website maintenance, Windows production and experimental builds, "
 "documentation, alignment of PostGIS with PostgreSQL releases, X3D support, "
 "TIGER geocoder support, management functions."
 msgstr ""
-"Buildbotのメンテナンス、Windows版と試験版のビルド、ドキュメンテーション、"
-"PostgreSQLとの調整、X3D対応、Tiger Geocoder機能、関数管理。"
 
 #. Tag: term
 #, no-c-format
@@ -8992,10 +8990,8 @@ msgstr "Darafei Praliaskouskiさん"
 #, no-c-format
 msgid ""
 "Index improvements, bug fixing and geometry/geography function improvements, "
-"SFCGAL, raster, GitHub curation, and bot maintenance."
+"SFCGAL, raster, GitHub curation, and ci maintenance."
 msgstr ""
-"インデックス改善、誤り修正とジオメトリ/ジオグラフィ関数の改善、SFCGAL、ラス"
-"タ、GitHubキュレーション、Botのメンテナンス。"
 
 #. Tag: term
 #, no-c-format
@@ -9024,14 +9020,10 @@ msgstr "Sandro Santilli"
 #. Tag: para
 #, no-c-format
 msgid ""
-"Bug fixes and maintenance, buildbot maintenance, git mirror management, "
-"management functions, integration of new GEOS functionality and alignment "
-"with GEOS releases, topology support, and raster framework and low level API "
-"functions."
+"Bug fixes and maintenance, ci maintenance, git mirror management, management "
+"functions, integration of new GEOS functionality and alignment with GEOS "
+"releases, topology support, and raster framework and low level API functions."
 msgstr ""
-"誤り修正とメンテナンス、ビルドボットのメンテナンス、gitミラーの管理、関数管"
-"理、GEOSの新機能の統合、GEOSリリースとの調整、トポロジ機能、ラスタフレーム"
-"ワークと低水準API関数。"
 
 #. Tag: title
 #, no-c-format
@@ -9052,6 +9044,16 @@ msgid ""
 msgstr ""
 "距離関数の強化 (3次元距離、関係関数を含む)と追加、Tiny WKB出力書式（TWKB）と"
 "一般的なユーザサポート。"
+
+#. Tag: term
+#, no-c-format
+msgid "Loïc Bartoletti"
+msgstr "Loïc Bartoletti"
+
+#. Tag: para
+#, no-c-format
+msgid "SFCGAL enhancments and maintenance and ci support"
+msgstr ""
 
 #. Tag: term
 #, no-c-format
@@ -9085,9 +9087,9 @@ msgstr "Björn Harrtell"
 #. Tag: para
 #, no-c-format
 msgid ""
-"MapBox Vector Tile and GeoBuf functions. Gogs testing and GitLab "
-"experimentation."
-msgstr "MapBox Vector Tile関数とGeoBuf関数、Gogsの試験とGitLabの実験。"
+"MapBox Vector Tile, GeoBuf, and Flatgeobuf functions. Gitea testing and "
+"GitLab experimentation."
+msgstr ""
 
 #. Tag: term
 #, no-c-format
@@ -9601,11 +9603,6 @@ msgstr "Lars Roessiger"
 #, no-c-format
 msgid "Leo Hsu"
 msgstr "Leo Hsu"
-
-#. Tag: member
-#, no-c-format
-msgid "Loïc Bartoletti"
-msgstr "Loïc Bartoletti"
 
 #. Tag: member
 #, no-c-format
@@ -10803,19 +10800,6 @@ msgstr ""
 "<inlinemediaobject><imageobject><imagedata fileref=\"images/"
 "matrix_sfcgal_required.png\"/></imageobject></inlinemediaobject>は、PostGISを"
 "SFCGAL対応でコンパイルした場合にのみ利用可能な関数です。"
-
-#. Tag: simpara
-#, no-c-format
-msgid ""
-"A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
-"matrix_sfcgal_enhanced.png\"/></imageobject></inlinemediaobject> means the "
-"function support is provided by SFCGAL if PostGIS compiled with SFCGAL "
-"support, otherwise GEOS/built-in support."
-msgstr ""
-"<inlinemediaobject><imageobject><imagedata fileref=\"images/"
-"matrix_sfcgal_enhanced.png\"/></imageobject></inlinemediaobject>は、PostGISを"
-"SFCGAL対応でコンパイルした場合には、SFCGALが提供し、その他の場合には、GEOSま"
-"たは組み込み関数で対応します。"
 
 #. Tag: simpara
 #, no-c-format
@@ -31367,16 +31351,6 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Internally, this method replaces the PostGIS raster's band at index "
-"<varname>band</varname> with a new band instead of updating the existing "
-"path information."
-msgstr ""
-"内部的には、このメソッドは、存在するパス情報を更新する替わりに、PostGISラスタ"
-"の<varname>band</varname>で指定したバンドを新しいバンドに置き換えます。"
-
-#. Tag: para
-#, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetBandIndex\"/>"
 msgstr ", <xref linkend=\"RT_ST_SetBandIndex\"/>"
 
@@ -31405,6 +31379,16 @@ msgstr ""
 "<varname>force</varname>がTRUEの場合には、外部ラスタファイルとPostGISラスタと"
 "の互換性 (例：アラインメント、ピクセル対応)確認のためのテストを行いません。こ"
 "のモードは、バンドが外部ラスタファイル内で移動する場所を対象としています。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Internally, this method replaces the PostGIS raster's band at index "
+"<varname>band</varname> with a new band instead of updating the existing "
+"path information."
+msgstr ""
+"内部的には、このメソッドは、存在するパス情報を更新する替わりに、PostGISラスタ"
+"の<varname>band</varname>で指定したバンドを新しいバンドに置き換えます。"
 
 #. Tag: para
 #, no-c-format
@@ -38672,6 +38656,27 @@ msgstr ", <xref linkend=\"ST_DelaunayTriangles\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
+"Compute a visibility polygon from a point or a segment in a polygon geometry"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Visibility from the point"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Visibility from the segment"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
 "Computes the volume of a 3D solid. If applied to surface (even closed) "
 "geometries will return 0."
 msgstr ""
@@ -38718,11 +38723,6 @@ msgid ""
 "that any horizontal line intersects either chain at most once. This "
 "algorithm does not guarantee a bound on the number of polygons produced with "
 "respect to the optimal number."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0."
 msgstr ""
 
 #. Tag: para
@@ -47708,6 +47708,52 @@ msgstr "2.5次元/3次元対応"
 #, no-c-format
 msgid "Supports geography"
 msgstr "ジオグラフィ対応"
+
+#, no-c-format
+#~ msgid ""
+#~ "Buildbot Maintenance, Windows production and experimental builds, "
+#~ "documentation, alignment of PostGIS with PostgreSQL releases, X3D "
+#~ "support, TIGER geocoder support, management functions."
+#~ msgstr ""
+#~ "Buildbotのメンテナンス、Windows版と試験版のビルド、ドキュメンテーション、"
+#~ "PostgreSQLとの調整、X3D対応、Tiger Geocoder機能、関数管理。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Index improvements, bug fixing and geometry/geography function "
+#~ "improvements, SFCGAL, raster, GitHub curation, and bot maintenance."
+#~ msgstr ""
+#~ "インデックス改善、誤り修正とジオメトリ/ジオグラフィ関数の改善、SFCGAL、ラ"
+#~ "スタ、GitHubキュレーション、Botのメンテナンス。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Bug fixes and maintenance, buildbot maintenance, git mirror management, "
+#~ "management functions, integration of new GEOS functionality and alignment "
+#~ "with GEOS releases, topology support, and raster framework and low level "
+#~ "API functions."
+#~ msgstr ""
+#~ "誤り修正とメンテナンス、ビルドボットのメンテナンス、gitミラーの管理、関数"
+#~ "管理、GEOSの新機能の統合、GEOSリリースとの調整、トポロジ機能、ラスタフレー"
+#~ "ムワークと低水準API関数。"
+
+#, no-c-format
+#~ msgid ""
+#~ "MapBox Vector Tile and GeoBuf functions. Gogs testing and GitLab "
+#~ "experimentation."
+#~ msgstr "MapBox Vector Tile関数とGeoBuf関数、Gogsの試験とGitLabの実験。"
+
+#, no-c-format
+#~ msgid ""
+#~ "A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
+#~ "matrix_sfcgal_enhanced.png\"/></imageobject></inlinemediaobject> means "
+#~ "the function support is provided by SFCGAL if PostGIS compiled with "
+#~ "SFCGAL support, otherwise GEOS/built-in support."
+#~ msgstr ""
+#~ "<inlinemediaobject><imageobject><imagedata fileref=\"images/"
+#~ "matrix_sfcgal_enhanced.png\"/></imageobject></inlinemediaobject>は、"
+#~ "PostGISをSFCGAL対応でコンパイルした場合には、SFCGALが提供し、その他の場合"
+#~ "には、GEOSまたは組み込み関数で対応します。"
 
 #, no-c-format
 #~ msgid "&database_tuning;"

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-14 05:23+0000\n"
+"POT-Creation-Date: 2023-11-22 04:19+0000\n"
 "PO-Revision-Date: 2023-11-16 06:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -8381,12 +8381,10 @@ msgstr "Regina Obe"
 #. Tag: para
 #, no-c-format
 msgid ""
-"Buildbot Maintenance, Windows production and experimental builds, "
+"CI and website maintenance, Windows production and experimental builds, "
 "documentation, alignment of PostGIS with PostgreSQL releases, X3D support, "
 "TIGER geocoder support, management functions."
 msgstr ""
-"Buildbot 维护、Windows 生产和实验构建、文档、PostGIS 与 PostgreSQL 版本的对"
-"齐、X3D 支持、TIGER 地理编码器支持、管理功能。"
 
 #. Tag: term
 #, no-c-format
@@ -8397,9 +8395,8 @@ msgstr "Darafei Praliaskouski"
 #, no-c-format
 msgid ""
 "Index improvements, bug fixing and geometry/geography function improvements, "
-"SFCGAL, raster, GitHub curation, and bot maintenance."
+"SFCGAL, raster, GitHub curation, and ci maintenance."
 msgstr ""
-"索引改进、纠错和几何/地理功能改进、SFCGAL、栅格、GitHub 策展、机器人维护。"
 
 #. Tag: term
 #, no-c-format
@@ -8427,13 +8424,10 @@ msgstr "Sandro Santilli"
 #. Tag: para
 #, no-c-format
 msgid ""
-"Bug fixes and maintenance, buildbot maintenance, git mirror management, "
-"management functions, integration of new GEOS functionality and alignment "
-"with GEOS releases, topology support, and raster framework and low level API "
-"functions."
+"Bug fixes and maintenance, ci maintenance, git mirror management, management "
+"functions, integration of new GEOS functionality and alignment with GEOS "
+"releases, topology support, and raster framework and low level API functions."
 msgstr ""
-"Bug 修复和维护、buildbot 维护、git 镜像管理、管理功能、新 GEOS 功能的集成以及"
-"与 GEOS 版本的一致性、拓扑支持以及栅格框架和低级 API 功能。"
 
 #. Tag: title
 #, no-c-format
@@ -8454,6 +8448,16 @@ msgid ""
 msgstr ""
 "距离函数增强（包括 3D 距离和关系函数）和附加功能、Tiny WKB (TWKB) 输出格式和"
 "一般用户支持"
+
+#. Tag: term
+#, no-c-format
+msgid "Loïc Bartoletti"
+msgstr "Loïc Bartoletti"
+
+#. Tag: para
+#, no-c-format
+msgid "SFCGAL enhancments and maintenance and ci support"
+msgstr ""
 
 #. Tag: term
 #, no-c-format
@@ -8485,9 +8489,9 @@ msgstr "Björn Harrtell"
 #. Tag: para
 #, no-c-format
 msgid ""
-"MapBox Vector Tile and GeoBuf functions. Gogs testing and GitLab "
-"experimentation."
-msgstr "MapBox Vector Tile和GeoBuf函数，Gogs测试和GitLab实验。"
+"MapBox Vector Tile, GeoBuf, and Flatgeobuf functions. Gitea testing and "
+"GitLab experimentation."
+msgstr ""
 
 #. Tag: term
 #, no-c-format
@@ -8994,11 +8998,6 @@ msgstr "Lars Roessiger"
 #, no-c-format
 msgid "Leo Hsu"
 msgstr "Leo Hsu"
-
-#. Tag: member
-#, no-c-format
-msgid "Loïc Bartoletti"
-msgstr "Loïc Bartoletti"
 
 #. Tag: member
 #, no-c-format
@@ -10161,19 +10160,6 @@ msgstr ""
 "A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
 "matrix_sfcgal_required.png\"/></imageobject></inlinemediaobject>表示该功能仅"
 "在使用 SFCGAL 支持编译 PostGIS 时可用。"
-
-#. Tag: simpara
-#, no-c-format
-msgid ""
-"A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
-"matrix_sfcgal_enhanced.png\"/></imageobject></inlinemediaobject> means the "
-"function support is provided by SFCGAL if PostGIS compiled with SFCGAL "
-"support, otherwise GEOS/built-in support."
-msgstr ""
-"A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
-"matrix_sfcgal_enhanced.png\"/></imageobject></inlinemediaobject>表示如果 "
-"PostGIS 使用 SFCGAL 支持编译，则功能支持由 SFCGAL 提供，否则 GEOS/built-in支"
-"持。"
 
 #. Tag: simpara
 #, no-c-format
@@ -29638,16 +29624,6 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Internally, this method replaces the PostGIS raster's band at index "
-"<varname>band</varname> with a new band instead of updating the existing "
-"path information."
-msgstr ""
-"在内部，此方法将索引<varname>band</varname>处的 PostGIS 栅格波段替换为新波"
-"段，而不是更新现有的路径信息。"
-
-#. Tag: para
-#, no-c-format
 msgid ", <xref linkend=\"RT_ST_SetBandIndex\"/>"
 msgstr ", <xref linkend=\"RT_ST_SetBandIndex\"/>"
 
@@ -29676,6 +29652,16 @@ msgstr ""
 "如果<varname>force</varname>设置为true，则不会进行任何测试来确保外部栅格文件"
 "和PostGIS栅格之间的兼容性（例如对齐、像素支持）。 此模式适用于在外部栅格文件"
 "中移动波段的情况。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Internally, this method replaces the PostGIS raster's band at index "
+"<varname>band</varname> with a new band instead of updating the existing "
+"path information."
+msgstr ""
+"在内部，此方法将索引<varname>band</varname>处的 PostGIS 栅格波段替换为新波"
+"段，而不是更新现有的路径信息。"
 
 #. Tag: para
 #, no-c-format
@@ -36588,6 +36574,27 @@ msgstr ", <xref linkend=\"ST_DelaunayTriangles\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
+"Compute a visibility polygon from a point or a segment in a polygon geometry"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0."
+msgstr "可用性：3.5.0 - 需要 SFCGAL &gt;= 1.5.0。"
+
+#. Tag: para
+#, no-c-format
+msgid "Visibility from the point"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Visibility from the segment"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
 "Computes the volume of a 3D solid. If applied to surface (even closed) "
 "geometries will return 0."
 msgstr "计算 3D 实体的体积。 如果应用于表面（甚至闭合）几何图形将返回 0。"
@@ -36634,15 +36641,10 @@ msgid ""
 "algorithm does not guarantee a bound on the number of polygons produced with "
 "respect to the optimal number."
 msgstr ""
-"多边形 P 的一个划分是指一组多边形，这些多边形的内部不相交，"
-"并且这些多边形的并集等于原始多边形 P 的内部。一个 y-单调多边形是指其顶点 v1,…"
-",vn 可以划分成两个链 v1,…,vk 和 vk,…,vn,v1，使得任何水平线最多与其中一条链相"
-"交一次。该算法不能保证在产生的多边形数量上达到最优数量的界限。"
-
-#. Tag: para
-#, no-c-format
-msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0."
-msgstr "可用性：3.5.0 - 需要 SFCGAL &gt;= 1.5.0。"
+"多边形 P 的一个划分是指一组多边形，这些多边形的内部不相交，并且这些多边形的并"
+"集等于原始多边形 P 的内部。一个 y-单调多边形是指其顶点 v1,…,vn 可以划分成两个"
+"链 v1,…,vk 和 vk,…,vn,v1，使得任何水平线最多与其中一条链相交一次。该算法不能"
+"保证在产生的多边形数量上达到最优数量的界限。"
 
 #. Tag: para
 #, no-c-format
@@ -36693,13 +36695,13 @@ msgid ""
 "Though the triangulation-based approximation algorithm often results in "
 "fewer convex pieces, this is not always the case."
 msgstr ""
-"多边形 P 的一个划分是指一组多边形，这些多边形的内部不相交，"
-"并且这些多边形的并集等于原始多边形 P 的内部。CG_ApproxConvexPartition 和 "
+"多边形 P 的一个划分是指一组多边形，这些多边形的内部不相交，并且这些多边形的并"
+"集等于原始多边形 P 的内部。CG_ApproxConvexPartition 和 "
 "CG_GreeneApproxConvexPartition 函数生成近似最优的凸分割。这两个函数通过首先将"
-"多边形分解为更简单的多边形来生成凸分解；CG_ApproxConvexPartition "
-"使用三角剖分，而 CG_GreeneApproxConvexPartition 使用一个单调分割。这两个函数"
-"都保证它们生成的凸片段数不会超过最优数量的四倍，但它们在运行时复杂性上有所不"
-"同。尽管基于三角剖分的近似算法通常会产生较少的凸片段，但并非总是如此。"
+"多边形分解为更简单的多边形来生成凸分解；CG_ApproxConvexPartition 使用三角剖"
+"分，而 CG_GreeneApproxConvexPartition 使用一个单调分割。这两个函数都保证它们"
+"生成的凸片段数不会超过最优数量的四倍，但它们在运行时复杂性上有所不同。尽管基"
+"于三角剖分的近似算法通常会产生较少的凸片段，但并非总是如此。"
 
 #. Tag: para
 #, no-c-format
@@ -36725,8 +36727,8 @@ msgid ""
 "and <xref linkend=\"CG_OptimalConvexPartition\"/>)"
 msgstr ""
 "格林近似凸分割（与 <xref linkend=\"CG_YMonotonePartition\"/>、<xref linkend="
-"\"CG_ApproxConvexPartition\"/> 和 <xref linkend=\"CG_OptimalConvexPartition\""
-"/> 相同的示例）"
+"\"CG_ApproxConvexPartition\"/> 和 <xref linkend=\"CG_OptimalConvexPartition"
+"\"/> 相同的示例）"
 
 #. Tag: para
 #, no-c-format
@@ -36755,9 +36757,9 @@ msgid ""
 "interior of the original polygon P. CG_OptimalConvexPartition produces a "
 "partition that is optimal in the number of pieces."
 msgstr ""
-"多边形 P 的一个划分是指一组多边形，这些多边形的内部不相交，"
-"并且这些多边形的并集等于原始多边形 P 的内部。CG_OptimalConvexPartition "
-"生成的划分在片段数量上是最优的。"
+"多边形 P 的一个划分是指一组多边形，这些多边形的内部不相交，并且这些多边形的并"
+"集等于原始多边形 P 的内部。CG_OptimalConvexPartition 生成的划分在片段数量上是"
+"最优的。"
 
 #. Tag: para
 #, no-c-format
@@ -36805,9 +36807,9 @@ msgstr ""
 "或许是直线骨架的最早应用案例之一：给定一个多边形屋顶，直线骨架直接提供了每个"
 "建筑物的布局。如果将每个骨架边沿其偏移距离从平面抬升到相应的高度，得到的屋顶"
 "是“正确”的，因为水将始终流向轮廓边缘（屋顶的边界），无论它在屋顶的哪个位置下"
-"落。该函数计算多边形的这种挤出，又称“屋顶”。如果参数 body_height > 0，"
-"则多边形就像使用 ST_Extrude(polygon, 0, 0, body_height) "
-"一样挤出。结果是这些多面体表面的并集。"
+"落。该函数计算多边形的这种挤出，又称“屋顶”。如果参数 body_height > 0，则多边"
+"形就像使用 ST_Extrude(polygon, 0, 0, body_height) 一样挤出。结果是这些多面体"
+"表面的并集。"
 
 #. Tag: para
 #, no-c-format
@@ -45149,6 +45151,50 @@ msgstr "2.5/3D 支持"
 #, no-c-format
 msgid "Supports geography"
 msgstr "支持地理"
+
+#, no-c-format
+#~ msgid ""
+#~ "Buildbot Maintenance, Windows production and experimental builds, "
+#~ "documentation, alignment of PostGIS with PostgreSQL releases, X3D "
+#~ "support, TIGER geocoder support, management functions."
+#~ msgstr ""
+#~ "Buildbot 维护、Windows 生产和实验构建、文档、PostGIS 与 PostgreSQL 版本的"
+#~ "对齐、X3D 支持、TIGER 地理编码器支持、管理功能。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Index improvements, bug fixing and geometry/geography function "
+#~ "improvements, SFCGAL, raster, GitHub curation, and bot maintenance."
+#~ msgstr ""
+#~ "索引改进、纠错和几何/地理功能改进、SFCGAL、栅格、GitHub 策展、机器人维护。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Bug fixes and maintenance, buildbot maintenance, git mirror management, "
+#~ "management functions, integration of new GEOS functionality and alignment "
+#~ "with GEOS releases, topology support, and raster framework and low level "
+#~ "API functions."
+#~ msgstr ""
+#~ "Bug 修复和维护、buildbot 维护、git 镜像管理、管理功能、新 GEOS 功能的集成"
+#~ "以及与 GEOS 版本的一致性、拓扑支持以及栅格框架和低级 API 功能。"
+
+#, no-c-format
+#~ msgid ""
+#~ "MapBox Vector Tile and GeoBuf functions. Gogs testing and GitLab "
+#~ "experimentation."
+#~ msgstr "MapBox Vector Tile和GeoBuf函数，Gogs测试和GitLab实验。"
+
+#, no-c-format
+#~ msgid ""
+#~ "A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
+#~ "matrix_sfcgal_enhanced.png\"/></imageobject></inlinemediaobject> means "
+#~ "the function support is provided by SFCGAL if PostGIS compiled with "
+#~ "SFCGAL support, otherwise GEOS/built-in support."
+#~ msgstr ""
+#~ "A <inlinemediaobject><imageobject><imagedata fileref=\"images/"
+#~ "matrix_sfcgal_enhanced.png\"/></imageobject></inlinemediaobject>表示如果 "
+#~ "PostGIS 使用 SFCGAL 支持编译，则功能支持由 SFCGAL 提供，否则 GEOS/built-in"
+#~ "支持。"
 
 #, no-c-format
 #~ msgid "&database_tuning;"
