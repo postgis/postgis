@@ -7,6 +7,9 @@ Proj 6.1+, and PostgreSQL 15+.
 
 * Bug Fixes and Enhancements *
 
+ - #5571, Memory over-allocation for narrow inputs (Paul Ramsey)
+
+
 PostGIS 3.3.5
 2023/11/19
 This version requires PostgreSQL 11-16, GEOS 3.6 or higher, and Proj 4.9+
