@@ -1463,13 +1463,19 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 		return NULL;
 	}
 
-	/* Gross up our test set a bit to increase odds of getting coverage in one pass */
+	/* Gross up our test set a bit to increase odds of getting coverage
+	 * in one pass. For narrow inputs, it is possible we will get
+	 * no hits at all. A fall-back approach might use a random stab-line
+	 * to find pairs of edges that bound interior area, and generate a point
+	 * between those edges, in the case that this gridding system
+	 * does not generate the desired number of points */
 	area_ratio = FP_MIN(bbox_area / area, 10000.0);
 	sample_npoints = npoints * area_ratio;
 
 	/* We're going to generate points using a sample grid as described
-	 * http://lin-ear-th-inking.blogspot.ca/2010/05/more-random-points-in-jts.html to try and get a more uniform
-	 * "random" set of points. So we have to figure out how to stick a grid into our box */
+	 * http://lin-ear-th-inking.blogspot.ca/2010/05/more-random-points-in-jts.html
+	 * to try and get a more uniform "random" set of points. So we have to figure
+	 *  out how to stick a grid into our box */
 	sample_sqrt = ceil(sqrt(sample_npoints));
 
 	/* Calculate the grids we're going to randomize within */
@@ -1497,9 +1503,10 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 	gprep = GEOSPrepare(g);
 
 
-	/* Now we fill in an array of cells, and then shuffle that array, */
-	/* so we can visit the cells in random order to avoid visual ugliness */
-	/* caused by visiting them sequentially */
+	/* Now we fill in an array of cells, only using cells that actually
+	 * intersect the geometry of interest, and finally weshuffle that array,
+	 * so we can visit the cells in random order to avoid visual ugliness
+	 * caused by visiting them sequentially */
 	cells = lwalloc(sizeof(CellCorner) * sample_height * sample_width);
 	for (i = 0; i < sample_width; i++)
 	{
