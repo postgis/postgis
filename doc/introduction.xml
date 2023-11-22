@@ -79,6 +79,13 @@
 		</varlistentry>
 
 		<varlistentry>
+			<term>Loïc Bartoletti</term>
+			<listitem>
+			  <para>SFCGAL enhancements and maintenance and ci support</para>
+			</listitem>
+		</varlistentry>
+
+		<varlistentry>
 			<term>Dan Baston</term>
 
 			<listitem>
@@ -281,7 +288,6 @@
 					<member>Laurenz Albe</member>
 					<member>Lars Roessiger</member>
 					<member>Leo Hsu</member>
-					<member>Loïc Bartoletti</member>
 					<member>Loic Dachary</member>
 					<member>Luca S. Percich</member>
 					<member>Lucas C. Villa Real</member>
@@ -416,7 +422,7 @@
 		  <para>The <ulink url="https://www.proj4.org">PROJ</ulink>
 		  cartographic projection library</para>
 
-		  <para>Last but not least, <ulink url="http://www.postgresql.org">PostgreSQL</ulink>,
+		  <para>Last but not least, <ulink url="https://www.postgresql.org">PostgreSQL</ulink>,
 		  the giant that PostGIS stands on.  Much of the speed and flexibility of PostGIS would not be possible without
 		  the extensibility, great query planner, GIST index, and plethora of SQL features provided by PostgreSQL.</para>
 		</listitem>
