@@ -28,9 +28,10 @@
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
-#include "liblwgeom_internal.h"         /* For FP comparators. */
+#include "liblwgeom_internal.h" /* For FP comparators. */
 #include "lwgeom_cache.h"
 #include "lwgeom_rtree.h"
+#include "lwgeom_functions_analytic.h"
 
 
 /* Prototypes */
@@ -61,7 +62,6 @@ RTreeFree(RTREE_NODE* root)
 		RTreeFree(root->leftNode);
 	if (root->rightNode)
 		RTreeFree(root->rightNode);
-	lwfree(root->interval);
 	if (root->segment)
 	{
 		lwline_free(root->segment);
@@ -98,7 +98,7 @@ RTreeCacheClear(RTREE_POLY_CACHE* cache)
  * Returns 1 if min < value <= max, 0 otherwise.
 */
 static uint32
-IntervalIsContained(RTREE_INTERVAL* interval, double value)
+IntervalIsContained(const RTREE_INTERVAL* interval, double value)
 {
 	return FP_CONTAINS_INCL(interval->min, value, interval->max) ? 1 : 0;
 }
@@ -106,40 +106,17 @@ IntervalIsContained(RTREE_INTERVAL* interval, double value)
 /**
 * Creates an interval with the total extents of the two given intervals.
 */
-static RTREE_INTERVAL*
-RTreeMergeIntervals(RTREE_INTERVAL *inter1, RTREE_INTERVAL *inter2)
+static void
+RTreeMergeIntervals(
+	const RTREE_INTERVAL *inter1,
+	const RTREE_INTERVAL *inter2,
+	RTREE_INTERVAL *result)
 {
-	RTREE_INTERVAL *interval;
-
-	POSTGIS_DEBUGF(2, "RTreeMergeIntervals called with %p, %p", inter1, inter2);
-
-	interval = lwalloc(sizeof(RTREE_INTERVAL));
-	interval->max = FP_MAX(inter1->max, inter2->max);
-	interval->min = FP_MIN(inter1->min, inter2->min);
-
-	POSTGIS_DEBUGF(3, "interval min = %8.3f, max = %8.3f", interval->min, interval->max);
-
-	return interval;
+	result->max = FP_MAX(inter1->max, inter2->max);
+	result->min = FP_MIN(inter1->min, inter2->min);
+	return;
 }
 
-/**
-* Creates an interval given the min and max values, in arbitrary order.
-*/
-static RTREE_INTERVAL*
-RTreeCreateInterval(double value1, double value2)
-{
-	RTREE_INTERVAL *interval;
-
-	POSTGIS_DEBUGF(2, "RTreeCreateInterval called with %8.3f, %8.3f", value1, value2);
-
-	interval = lwalloc(sizeof(RTREE_INTERVAL));
-	interval->max = FP_MAX(value1, value2);
-	interval->min = FP_MIN(value1, value2);
-
-	POSTGIS_DEBUGF(3, "interval min = %8.3f, max = %8.3f", interval->min, interval->max);
-
-	return interval;
-}
 
 /**
 * Creates an interior node given the children.
@@ -154,8 +131,11 @@ RTreeCreateInteriorNode(RTREE_NODE* left, RTREE_NODE* right)
 	parent = lwalloc(sizeof(RTREE_NODE));
 	parent->leftNode = left;
 	parent->rightNode = right;
-	parent->interval = RTreeMergeIntervals(left->interval, right->interval);
 	parent->segment = NULL;
+
+	RTreeMergeIntervals(
+		&(left->interval), &(right->interval),
+		&(parent->interval));
 
 	POSTGIS_DEBUGF(3, "RTreeCreateInteriorNode returning %p", parent);
 
@@ -200,7 +180,8 @@ RTreeCreateLeafNode(POINTARRAY* pa, uint32_t startPoint)
 	line = lwline_construct(SRID_UNKNOWN, NULL, npa);
 
 	parent = lwalloc(sizeof(RTREE_NODE));
-	parent->interval = RTreeCreateInterval(value1, value2);
+	parent->interval.min = FP_MIN(value1, value2);
+	parent->interval.max = FP_MAX(value1, value2);
 	parent->segment = line;
 	parent->leftNode = NULL;
 	parent->rightNode = NULL;
@@ -350,9 +331,9 @@ RTreeBuilder(const LWGEOM* lwgeom, GeomCache* cache)
 		currentCache->ringIndices = lwalloc(sizeof(RTREE_NODE *) * nrings);
 		/*
 		** Load the array in geometry order, each outer ring followed by the inner rings
-                ** associated with that outer ring
+		** associated with that outer ring
 		*/
-                i = 0;
+		i = 0;
 		for ( p = 0; p < mpoly->ngeoms; p++ )
 		{
 			for ( r = 0; r < mpoly->geoms[p]->nrings; r++ )
@@ -456,7 +437,7 @@ LWMLINE *RTreeFindLineSegments(RTREE_NODE *root, double value)
 
 	result = NULL;
 
-	if (!IntervalIsContained(root->interval, value))
+	if (!IntervalIsContained(&(root->interval), value))
 	{
 		POSTGIS_DEBUGF(3, "RTreeFindLineSegments %p: not contained.", root);
 
@@ -514,4 +495,181 @@ LWMLINE *RTreeFindLineSegments(RTREE_NODE *root, double value)
 }
 
 
+
+/*
+ * return -1 iff point is outside ring pts
+ * return 1 iff point is inside ring pts
+ * return 0 iff point is on ring pts
+ */
+static int point_in_ring_rtree(RTREE_NODE *root, const POINT2D *point)
+{
+	int wn = 0;
+	uint32_t i;
+	double side;
+	const POINT2D *seg1;
+	const POINT2D *seg2;
+	LWMLINE *lines;
+
+	POSTGIS_DEBUG(2, "point_in_ring called.");
+
+	lines = RTreeFindLineSegments(root, point->y);
+	if (!lines)
+		return -1;
+
+	for (i=0; i<lines->ngeoms; i++)
+	{
+		seg1 = getPoint2d_cp(lines->geoms[i]->points, 0);
+		seg2 = getPoint2d_cp(lines->geoms[i]->points, 1);
+
+		side = determineSide(seg1, seg2, point);
+
+		POSTGIS_DEBUGF(3, "segment: (%.8f, %.8f),(%.8f, %.8f)", seg1->x, seg1->y, seg2->x, seg2->y);
+		POSTGIS_DEBUGF(3, "side result: %.8f", side);
+		POSTGIS_DEBUGF(3, "counterclockwise wrap %d, clockwise wrap %d", FP_CONTAINS_BOTTOM(seg1->y, point->y, seg2->y), FP_CONTAINS_BOTTOM(seg2->y, point->y, seg1->y));
+
+		/* zero length segments are ignored. */
+		if (((seg2->x - seg1->x)*(seg2->x - seg1->x) + (seg2->y - seg1->y)*(seg2->y - seg1->y)) < 1e-12*1e-12)
+		{
+			POSTGIS_DEBUG(3, "segment is zero length... ignoring.");
+			continue;
+		}
+
+		/* a point on the boundary of a ring is not contained. */
+		/* WAS: if (fabs(side) < 1e-12), see #852 */
+		if (side == 0.0)
+		{
+			if (isOnSegment(seg1, seg2, point) == 1)
+			{
+				POSTGIS_DEBUGF(3, "point on ring boundary between points %d, %d", i, i+1);
+				return 0;
+			}
+		}
+
+		/*
+		 * If the point is to the left of the line, and it's rising,
+		 * then the line is to the right of the point and
+		 * circling counter-clockwise, so increment.
+		 */
+		if ((seg1->y <= point->y) && (point->y < seg2->y) && (side > 0))
+		{
+			POSTGIS_DEBUG(3, "incrementing winding number.");
+			++wn;
+		}
+		/*
+		 * If the point is to the right of the line, and it's falling,
+		 * then the line is to the right of the point and circling
+		 * clockwise, so decrement.
+		 */
+		else if ((seg2->y <= point->y) && (point->y < seg1->y) && (side < 0))
+		{
+			POSTGIS_DEBUG(3, "decrementing winding number.");
+			--wn;
+		}
+	}
+
+	POSTGIS_DEBUGF(3, "winding number %d", wn);
+
+	if (wn == 0)
+		return -1;
+	return 1;
+}
+
+/*
+ * return -1 if point outside polygon
+ * return 0 if point on boundary
+ * return 1 if point inside polygon
+ *
+ * Expected **root order is each exterior ring followed by its holes, eg. EIIEIIEI
+ */
+static int
+point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int *ringCounts, LWPOINT *point)
+{
+	int i, p, r, in_ring;
+	const POINT2D *pt;
+	int result = -1;
+
+	POSTGIS_DEBUGF(2, "point_in_multipolygon_rtree called for %p %d %p.", root, polyCount, point);
+
+	pt = getPoint2d_cp(point->point, 0);
+
+	/* assume bbox short-circuit has already been attempted */
+
+	i = 0; /* the current index into the root array */
+
+	/* is the point inside any of the sub-polygons? */
+	for ( p = 0; p < polyCount; p++ )
+	{
+		in_ring = point_in_ring_rtree(root[i], pt);
+		POSTGIS_DEBUGF(4, "point_in_multipolygon_rtree: exterior ring (%d), point_in_ring returned %d", p, in_ring);
+		if ( in_ring == -1 ) /* outside the exterior ring */
+		{
+			POSTGIS_DEBUG(3, "point_in_multipolygon_rtree: outside exterior ring.");
+		}
+		else if ( in_ring == 0 ) /* on the boundary */
+		{
+			POSTGIS_DEBUGF(3, "point_in_multipolygon_rtree: on edge of exterior ring %d", p);
+			return 0;
+		}
+		else
+		{
+			result = in_ring;
+
+			for(r = 1; r < ringCounts[p]; r++)
+			{
+				in_ring = point_in_ring_rtree(root[i+r], pt);
+				POSTGIS_DEBUGF(4, "point_in_multipolygon_rtree: interior ring (%d), point_in_ring returned %d", r, in_ring);
+				if (in_ring == 1) /* inside a hole => outside the polygon */
+				{
+					POSTGIS_DEBUGF(3, "point_in_multipolygon_rtree: within hole %d of exterior ring %d", r, p);
+					result = -1;
+					break;
+				}
+				if (in_ring == 0) /* on the edge of a hole */
+				{
+					POSTGIS_DEBUGF(3, "point_in_multipolygon_rtree: on edge of hole %d of exterior ring %d", r, p);
+					return 0;
+				}
+			}
+			/* if we have a positive result, we can short-circuit and return it */
+			if (result != -1)
+			{
+				return result;
+			}
+		}
+		/* increment the index by the total number of rings in the sub-poly */
+		/* we do this here in case we short-cutted out of the poly before looking at all the rings */
+		i += ringCounts[p];
+	}
+
+	return result; /* -1 = outside, 0 = boundary, 1 = inside */
+}
+
+
+/* Utility function that checks a LWPOINT and a GSERIALIZED poly against a cache.
+ * Serialized poly may be a multipart.
+ */
+int
+pip_short_circuit(RTREE_POLY_CACHE *poly_cache, LWPOINT *point, const GSERIALIZED *gpoly)
+{
+	int result;
+
+	if (poly_cache && poly_cache->ringIndices)
+	{
+		result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCounts, point);
+	}
+	else
+	{
+		LWGEOM* poly = lwgeom_from_gserialized(gpoly);
+		if (lwgeom_get_type(poly) == POLYGONTYPE)
+		{
+			result = point_in_polygon(lwgeom_as_lwpoly(poly), point);
+		}
+		else
+		{
+			result = point_in_multipolygon(lwgeom_as_lwmpoly(poly), point);
+		}
+		lwgeom_free(poly);
+	}
+	return result;
+}
 

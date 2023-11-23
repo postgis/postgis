@@ -45,7 +45,7 @@ RTREE_INTERVAL;
 */
 typedef struct rtree_node
 {
-	RTREE_INTERVAL *interval;
+	RTREE_INTERVAL interval;
 	struct rtree_node *leftNode;
 	struct rtree_node *rightNode;
 	LWLINE *segment;
@@ -81,5 +81,7 @@ LWMLINE *RTreeFindLineSegments(RTREE_NODE *root, double value);
 * builds a new one and returns that.
 */
 RTREE_POLY_CACHE *GetRtreeCache(FunctionCallInfo fcinfo, SHARED_GSERIALIZED *g1);
+
+int pip_short_circuit(RTREE_POLY_CACHE *poly_cache, LWPOINT *point, const GSERIALIZED *gpoly);
 
 #endif /* !defined _LWGEOM_RTREE_H */

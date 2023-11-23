@@ -133,34 +133,6 @@ is_point(const GSERIALIZED* g)
 	return type == POINTTYPE || type == MULTIPOINTTYPE;
 }
 
-/* Utility function that checks a LWPOINT and a GSERIALIZED poly against a cache.
- * Serialized poly may be a multipart.
- */
-static int
-pip_short_circuit(RTREE_POLY_CACHE *poly_cache, LWPOINT *point, const GSERIALIZED *gpoly)
-{
-	int result;
-
-	if ( poly_cache && poly_cache->ringIndices )
-	{
-        result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCounts, point);
-	}
-	else
-	{
-		LWGEOM* poly = lwgeom_from_gserialized(gpoly);
-		if ( lwgeom_get_type(poly) == POLYGONTYPE )
-		{
-			result = point_in_polygon(lwgeom_as_lwpoly(poly), point);
-		}
-		else
-		{
-			result = point_in_multipolygon(lwgeom_as_lwmpoly(poly), point);
-		}
-		lwgeom_free(poly);
-	}
-
-	return result;
-}
 
 /**
  *  @brief Compute the Hausdorff distance thanks to the corresponding GEOS function
@@ -2858,19 +2830,23 @@ POSTGIS2GEOS(const GSERIALIZED *pglwgeom)
 	return ret;
 }
 
-uint32_t array_nelems_not_null(ArrayType* array) {
-    ArrayIterator iterator;
-    Datum value;
-    bool isnull;
-    uint32_t nelems_not_null = 0;
+static uint32_t
+array_nelems_not_null(ArrayType* array)
+{
+	ArrayIterator iterator;
+	Datum value;
+	bool isnull;
+	uint32_t nelems_not_null = 0;
 	iterator = array_create_iterator(array, 0, NULL);
-	while(array_iterate(iterator, &value, &isnull) )
-        if (!isnull)
-            nelems_not_null++;
+	while(array_iterate(iterator, &value, &isnull))
+	{
+		if (!isnull)
+			nelems_not_null++;
+	}
 
-    array_free_iterator(iterator);
+	array_free_iterator(iterator);
 
-    return nelems_not_null;
+	return nelems_not_null;
 }
 
 /* ARRAY2LWGEOM: Converts the non-null elements of a Postgres array into a LWGEOM* array */

@@ -47,8 +47,6 @@ Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS);
 Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS);
 Datum ST_3DDistance(PG_FUNCTION_ARGS);
 
-uint32_t array_nelems_not_null(ArrayType* array);
-
 
 /* Return NULL on GEOS error
  *

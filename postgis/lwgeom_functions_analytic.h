@@ -29,8 +29,8 @@
 ** Public prototypes for analytic functions.
 */
 
-int point_in_polygon_rtree(RTREE_NODE **root, int ringCount, LWPOINT *point);
-int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int *ringCounts, LWPOINT *point);
 int point_in_polygon(LWPOLY *polygon, LWPOINT *point);
 int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *pont);
+double determineSide(const POINT2D *seg1, const POINT2D *seg2, const POINT2D *point);
+int isOnSegment(const POINT2D *seg1, const POINT2D *seg2, const POINT2D *point);
 
