@@ -1288,6 +1288,7 @@ MULTIPOLYGON(
 	  <refsection>
 		<title>Description</title>
 		<para>Takes as input a surface such a  MULTI(POLYGON) or POLYHEDRALSURFACE and returns a TIN representation via the process of tessellation using triangles.</para>
+		<note><para><xref linkend="ST_TriangulatePolygon" /> does similar to this function except that it returns a geometry collection of polygons instead of a TIN and also only works with 2D geometries.</para></note>
 		<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
@@ -1376,7 +1377,7 @@ MULTIPOLYGON(
 		<refsection>
                 <title>See Also</title>
 
-                <para><xref linkend="ST_ConstrainedDelaunayTriangles"/>, <xref linkend="ST_DelaunayTriangles"/></para>
+                <para><xref linkend="ST_ConstrainedDelaunayTriangles"/>, <xref linkend="ST_DelaunayTriangles"/>, <xref linkend="ST_TriangulatePolygon"/></para>
           </refsection>
 
 

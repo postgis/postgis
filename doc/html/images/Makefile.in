@@ -186,6 +186,7 @@ GENERATED_IMAGES= \
 	st_polygonize01.png \
 	st_polygonize02.png \
 	st_triangulatepolygon01.png \
+	st_triangulatepolygon02.png \
 	st_segmentize01.png \
 	st_sharedpaths01.png \
 	st_sharedpaths02.png \
