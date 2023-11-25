@@ -1275,12 +1275,12 @@ SELECT ST_AsText(ST_Multi('POLYGON ((10 30, 30 30, 30 10, 10 10, 10 30))'));
           </refsection>
 
           <refsection>
-            <title>Example: Projected point at 100,000 meters and bearing 45 degrees </title>
+            <title>Example: Extends a line 5 units forward and 6 units backward</title>
 
 <programlisting>
 SELECT ST_AsText(ST_LineExtend('LINESTRING(0 0, 0 10)'::geometry, 5, 6));
 --------------------------------------------
-LINESTRING(0 -5,0 0,0 10,0 15)
+LINESTRING(0 -6,0 0,0 10,0 15)
 </programlisting>
           </refsection>
 
