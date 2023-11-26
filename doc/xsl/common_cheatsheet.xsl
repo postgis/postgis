@@ -107,10 +107,10 @@
 					<xsl:value-of select="db:refnamediv/db:refname" />
 				</a>
 			</span>
-		<xsl:if test="$ref//para[@role=$new_tag and starts-with(./@conformance, $postgis_version)]">
+		<xsl:if test="$ref//db:para[@role=$new_tag and starts-with(@conformance, $postgis_version)]">
 			&nbsp;<sup>1</sup>
 		</xsl:if>
-		<xsl:if test="$ref//para[@role=$enhanced_tag and starts-with(./@conformance, $postgis_version)]">
+		<xsl:if test="$ref//db:para[@role=$enhanced_tag and starts-with(@conformance, $postgis_version)]">
 			&nbsp;<sup>2</sup>
 		</xsl:if>
 		<xsl:if test="$ref/descendant::*[@conformance=$sqlmm_conformance_tag]">
