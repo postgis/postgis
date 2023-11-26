@@ -18,8 +18,6 @@
 	<xsl:include href="common_utils.xsl" />
 	<xsl:include href="common_cheatsheet.xsl" />
 
-  <xsl:variable name="chapter_id" select='"RT_reference"' />
-
 	<xsl:output method="html" />
 
 <xsl:template match="/">
