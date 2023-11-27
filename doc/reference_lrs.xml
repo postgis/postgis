@@ -478,7 +478,7 @@ geom_sub | LINESTRING(-102.530462 36.819064,-86.817324 39.585927)
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_Length"/>, <xref linkend="ST_LineInterpolatePoint"/>, <xref linkend="ST_LineMerge"/></para>
+			<para><xref linkend="ST_Length"/>, <xref linkend="ST_LineExtend"/>, <xref linkend="ST_LineInterpolatePoint"/>, <xref linkend="ST_LineMerge"/></para>
 		  </refsection>
 	</refentry>
 

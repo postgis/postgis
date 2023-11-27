@@ -805,55 +805,6 @@ SELECT  ST_AsEWKT(ST_Force4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1,
 	  </refsection>
 	</refentry>
 
-	<refentry xml:id="ST_ForcePolygonCCW">
-		<refnamediv>
-			<refname>
-				ST_ForcePolygonCCW
-			</refname>
-			<refpurpose>
-				Orients all exterior rings counter-clockwise and all interior rings clockwise.
-			</refpurpose>
-		</refnamediv>
-
-		<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-					<funcdef>
-						geometry
-						<function>ST_ForcePolygonCCW</function>
-					</funcdef>
-					<paramdef>
-						<type>geometry</type>
-						<parameter>geom</parameter>
-					</paramdef>
-				</funcprototype>
-			</funcsynopsis>
-		</refsynopsisdiv>
-
-		<refsection>
-			<title>Description</title>
-
-			<para>
-				Forces (Multi)Polygons to use a counter-clockwise orientation for
-				their exterior ring, and a clockwise orientation for their interior
-				rings.  Non-polygonal geometries are returned unchanged.
-			</para>
-
-			<para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
-			<para>&Z_support;</para>
-			<para>&M_support;</para>
-		</refsection>
-
-		<refsection>
-			<title>See Also</title>
-			<para>
-				<xref linkend="ST_ForcePolygonCW"/>,
-				<xref linkend="ST_IsPolygonCCW"/>,
-				<xref linkend="ST_IsPolygonCW"/>
-			</para>
-		</refsection>
-	</refentry>
-
 	<refentry xml:id="ST_Force_Collection">
 	  <refnamediv>
 		<refname>ST_ForceCollection</refname>
@@ -934,6 +885,109 @@ GEOMETRYCOLLECTION(
 
 		<para><xref linkend="ST_AsEWKT"/>,  <xref linkend="ST_Force2D"/>, <xref linkend="ST_Force_3DM"/>, <xref linkend="ST_Force_3D"/>, <xref linkend="ST_GeomFromEWKT"/></para>
 	  </refsection>
+	</refentry>
+
+
+	<refentry xml:id="ST_ForceCurve">
+		<refnamediv>
+			<refname>ST_ForceCurve</refname>
+
+			<refpurpose>Upcast a geometry into its curved type, if applicable.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>geometry
+						<function>ST_ForceCurve</function></funcdef>
+						<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>
+                        Turns a geometry into its curved representation, if applicable:
+                        lines become compoundcurves, multilines become multicurves
+                        polygons become curvepolygons multipolygons become multisurfaces. If the geometry input is already a curved representation returns back same as input.
+                        </para>
+
+		        <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+			<para>&Z_support;</para>
+				<!-- Optionally mention Circular String Support -->
+				<para>&curve_support;</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_AsText(
+  ST_ForceCurve(
+	'POLYGON((0 0 2, 5 0 2, 0 5 2, 0 0 2),(1 1 2, 1 3 2, 3 1 2, 1 1 2))'::geometry
+  )
+);
+                              st_astext
+----------------------------------------------------------------------
+ CURVEPOLYGON Z ((0 0 2,5 0 2,0 5 2,0 0 2),(1 1 2,1 3 2,3 1 2,1 1 2))
+(1 row)</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="ST_LineToCurve"/></para>
+		</refsection>
+	</refentry>
+
+	<refentry xml:id="ST_ForcePolygonCCW">
+		<refnamediv>
+			<refname>
+				ST_ForcePolygonCCW
+			</refname>
+			<refpurpose>
+				Orients all exterior rings counter-clockwise and all interior rings clockwise.
+			</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>
+						geometry
+						<function>ST_ForcePolygonCCW</function>
+					</funcdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>geom</parameter>
+					</paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>
+				Forces (Multi)Polygons to use a counter-clockwise orientation for
+				their exterior ring, and a clockwise orientation for their interior
+				rings.  Non-polygonal geometries are returned unchanged.
+			</para>
+
+			<para role="availability" conformance="2.4.0">Availability: 2.4.0</para>
+			<para>&Z_support;</para>
+			<para>&M_support;</para>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para>
+				<xref linkend="ST_ForcePolygonCW"/>,
+				<xref linkend="ST_IsPolygonCCW"/>,
+				<xref linkend="ST_IsPolygonCW"/>
+			</para>
+		</refsection>
 	</refentry>
 
 	<refentry xml:id="ST_ForcePolygonCW">
@@ -1083,58 +1137,55 @@ GEOMETRYCOLLECTION(
 		</refsection>
 	</refentry>
 
-	<refentry xml:id="ST_ForceCurve">
-		<refnamediv>
-			<refname>ST_ForceCurve</refname>
+    <refentry xml:id="ST_LineExtend">
+          <refnamediv>
+            <refname>ST_LineExtend</refname>
 
-			<refpurpose>Upcast a geometry into its curved type, if applicable.</refpurpose>
-		</refnamediv>
+            <refpurpose>Returns a line extended forwards and backwards by specified distances.</refpurpose>
+          </refnamediv>
 
-		<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-					<funcdef>geometry
-						<function>ST_ForceCurve</function></funcdef>
-						<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-		</refsynopsisdiv>
+          <refsynopsisdiv>
+            <funcsynopsis>
+              <funcprototype>
+                <funcdef>geometry <function>ST_LineExtend</function></funcdef>
+                <paramdef><type>geometry </type>
+                <parameter>line</parameter></paramdef>
+                <paramdef><type>float </type>
+                <parameter>distance_forward</parameter></paramdef>
+                <paramdef choice="opt"><type>float</type> <parameter>distance_backward=0.0</parameter></paramdef>
+              </funcprototype>
+            </funcsynopsis>
+          </refsynopsisdiv>
 
-		<refsection>
-			<title>Description</title>
+          <refsection>
+            <title>Description</title>
 
-			<para>
-                        Turns a geometry into its curved representation, if applicable:
-                        lines become compoundcurves, multilines become multicurves
-                        polygons become curvepolygons multipolygons become multisurfaces. If the geometry input is already a curved representation returns back same as input.
-                        </para>
+            <para>Returns a line extended forwards and backwards by adding new start (and end) points at the given distance(s). 
+			A distance of zero does not add a point. 
+			Only non-negative distances are allowed. 
+			The direction(s) of the added point(s) is determined by the first (and last) two distinct points of the line.
+			Duplicate points are ignored.
+			</para>
 
-		        <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
-			<para>&Z_support;</para>
-				<!-- Optionally mention Circular String Support -->
-				<para>&curve_support;</para>
-		</refsection>
+            <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
 
-		<refsection>
-			<title>Examples</title>
+          </refsection>
 
-			<programlisting>SELECT ST_AsText(
-  ST_ForceCurve(
-	'POLYGON((0 0 2, 5 0 2, 0 5 2, 0 0 2),(1 1 2, 1 3 2, 3 1 2, 1 1 2))'::geometry
-  )
-);
-                              st_astext
-----------------------------------------------------------------------
- CURVEPOLYGON Z ((0 0 2,5 0 2,0 5 2,0 0 2),(1 1 2,1 3 2,3 1 2,1 1 2))
-(1 row)</programlisting>
-		</refsection>
+          <refsection>
+            <title>Example: Extends a line 5 units forward and 6 units backward</title>
 
-		<refsection>
-			<title>See Also</title>
+<programlisting>
+SELECT ST_AsText(ST_LineExtend('LINESTRING(0 0, 0 10)'::geometry, 5, 6));
+--------------------------------------------
+LINESTRING(0 -6,0 0,0 10,0 15)
+</programlisting>
+          </refsection>
 
-			<para><xref linkend="ST_LineToCurve"/></para>
-		</refsection>
-	</refentry>
+          <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_LineSubstring"/>, <xref linkend="ST_LocateAlong"/>, <xref linkend="ST_Project"/></para>
+          </refsection>
+    </refentry>
 
     <refentry xml:id="ST_LineToCurve">
       <refnamediv>
@@ -1200,7 +1251,6 @@ FROM (SELECT ST_Translate(ST_Force3D(ST_Boundary(ST_Buffer(ST_Point(1,3), 2,2)))
       <!-- Optionally add a "See Also" section -->
       <refsection>
         <title>See Also</title>
-
         <para><xref linkend="ST_CurveToLine"/></para>
       </refsection>
     </refentry>
@@ -1244,75 +1294,6 @@ SELECT ST_AsText(ST_Multi('POLYGON ((10 30, 30 30, 30 10, 10 10, 10 30))'));
 			<para><xref linkend="ST_AsText"/></para>
 		</refsection>
 	</refentry>
-
-    <refentry xml:id="ST_LineExtend">
-          <refnamediv>
-            <refname>ST_LineExtend</refname>
-
-            <refpurpose>Returns a line extended forwards and backwards by specified distance(s).</refpurpose>
-          </refnamediv>
-
-          <refsynopsisdiv>
-            <funcsynopsis>
-              <funcprototype>
-                <funcdef>geometry <function>ST_LineExtend</function></funcdef>
-                <paramdef><type>geometry </type>
-                <parameter>line</parameter></paramdef>
-                <paramdef><type>float </type>
-                <parameter>distance_forward</parameter></paramdef>
-                <paramdef choice="opt"><type>float</type> <parameter>distance_backward=0.0</parameter></paramdef>
-              </funcprototype>
-            </funcsynopsis>
-          </refsynopsisdiv>
-
-          <refsection>
-            <title>Description</title>
-
-            <para>Returns a line extended forwards and backwards by adding new start (and end) points at the given distance(s). 
-			A distance of zero does not add a point. 
-			Only non-negative distances are allowed. 
-			The direction(s) of the added point(s) is determined by the first (and last) two distinct points of the line.
-			Duplicate points are ignored.
-			</para>
-
-            <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
-
-          </refsection>
-
-          <refsection>
-            <title>Example: Extends a line 5 units forward and 6 units backward</title>
-
-<programlisting>
-SELECT ST_AsText(ST_LineExtend('LINESTRING(0 0, 0 10)'::geometry, 5, 6));
---------------------------------------------
-LINESTRING(0 -6,0 0,0 10,0 15)
-</programlisting>
-          </refsection>
-
-          <refsection>
-            <title>See Also</title>
-
-            <para><xref linkend="ST_LocateAlong"/>, <xref linkend="ST_Project"/></para>
-          </refsection>
-    </refentry>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
