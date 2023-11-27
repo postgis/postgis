@@ -1249,7 +1249,7 @@ SELECT ST_AsText(ST_Multi('POLYGON ((10 30, 30 30, 30 10, 10 10, 10 30))'));
           <refnamediv>
             <refname>ST_LineExtend</refname>
 
-            <refpurpose>Returns a line with the last and first segments extended the specified distance(s).</refpurpose>
+            <refpurpose>Returns a line extended forwards and backwards by specified distance(s).</refpurpose>
           </refnamediv>
 
           <refsynopsisdiv>
@@ -1268,7 +1268,12 @@ SELECT ST_AsText(ST_Multi('POLYGON ((10 30, 30 30, 30 10, 10 10, 10 30))'));
           <refsection>
             <title>Description</title>
 
-            <para>Returns a line with the last and first segments extended the specified distance(s). Distance of zero carries out no extension. Only non-negative distances are allowed. The first (and last) two distinct points in a line are used to determine the direction of projection, duplicate points are ignored.</para>
+            <para>Returns a line extended forwards and backwards by adding new start (and end) points at the given distance(s). 
+			A distance of zero does not add a point. 
+			Only non-negative distances are allowed. 
+			The direction(s) of the added point(s) is determined by the first (and last) two distinct points of the line.
+			Duplicate points are ignored.
+			</para>
 
             <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
 
