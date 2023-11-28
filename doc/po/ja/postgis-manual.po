@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-26 01:47+0000\n"
-"PO-Revision-Date: 2023-11-28 03:04+0000\n"
+"PO-Revision-Date: 2023-11-28 05:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -9668,6 +9668,9 @@ msgid ""
 "documentation, alignment of PostGIS with PostgreSQL releases, X3D support, "
 "TIGER geocoder support, management functions."
 msgstr ""
+"継続的インテグレーションとウェブサイトのメンテナンス、Windows版と試験版のビル"
+"ド、ドキュメンテーション、PostgreSQLとの調整、X3D対応、Tiger "
+"Geocoder機能、関数管理。"
 
 #. Tag: term
 #, no-c-format
@@ -9680,6 +9683,8 @@ msgid ""
 "Index improvements, bug fixing and geometry/geography function improvements, "
 "SFCGAL, raster, GitHub curation, and ci maintenance."
 msgstr ""
+"インデックス改善、誤り修正とジオメトリ/ジオグラフィ関数の改善、SFCGAL、ラスタ"
+"、GitHubキュレーション、継続的インテグレーション対応。"
 
 #. Tag: term
 #, no-c-format
@@ -9712,6 +9717,9 @@ msgid ""
 "functions, integration of new GEOS functionality and alignment with GEOS "
 "releases, topology support, and raster framework and low level API functions."
 msgstr ""
+"誤り修正とメンテナンス、継続的インテグレーション対応、gitミラーの管理、関数管"
+"理、GEOSの新機能の統合、GEOSリリースとの調整、トポロジ機能、ラスタフレームワ"
+"ークと低水準API関数。"
 
 #. Tag: title
 #, no-c-format
@@ -9741,7 +9749,7 @@ msgstr "Loïc Bartoletti"
 #. Tag: para
 #, no-c-format
 msgid "SFCGAL enhancments and maintenance and ci support"
-msgstr ""
+msgstr "SFCGAL機能強化とメインテナンスと継続的インテグレーション対応"
 
 #. Tag: term
 #, no-c-format
@@ -9777,7 +9785,8 @@ msgstr "Björn Harrtell"
 msgid ""
 "MapBox Vector Tile, GeoBuf, and Flatgeobuf functions. Gitea testing and "
 "GitLab experimentation."
-msgstr ""
+msgstr "MapBoxベクタタイル関数、GeoBuf関数、Flatgeobuf "
+"関数。Giteaの試験とGitLabの実験。"
 
 #. Tag: term
 #, no-c-format
@@ -16611,7 +16620,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Example: Extends a line 5 units forward and 6 units backward"
-msgstr ""
+msgstr "例: ラインを前方に5単位延長し、後方に6単位延長する"
 
 #. Tag: para
 #, no-c-format
@@ -27827,7 +27836,7 @@ msgstr "ポリゴンの三角分割"
 #. Tag: title
 #, no-c-format
 msgid "Same example as ST_Tesselate"
-msgstr ""
+msgstr "ST_Tesselateと同じ例"
 
 #. Tag: para
 #, no-c-format
@@ -27842,13 +27851,14 @@ msgstr "元のポリゴン"
 #. Tag: para
 #, no-c-format
 msgid "Triangulated Polygon"
-msgstr ""
+msgstr "三角分割したポリゴン"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_DelaunayTriangles\"/>, <xref linkend=\"ST_Tesselate\"/>"
 msgstr ""
+", <xref linkend=\"ST_DelaunayTriangles\"/>, <xref linkend=\"ST_Tesselate\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39333,7 +39343,8 @@ msgstr ""
 msgid ""
 "does similar to this function except that it returns a geometry collection "
 "of polygons instead of a TIN and also only works with 2D geometries."
-msgstr ""
+msgstr "はこの関数に似ていますが、TINの代わりにジオメトリコレクションを返す点と2次元"
+"ジオメトリだけで機能する点とは除きます。"
 
 #. Tag: para
 #, no-c-format
@@ -39361,12 +39372,14 @@ msgid ""
 ", <xref linkend=\"ST_DelaunayTriangles\"/>, <xref linkend="
 "\"ST_TriangulatePolygon\"/>"
 msgstr ""
+", <xref linkend=\"ST_DelaunayTriangles\"/>, <xref linkend="
+"\"ST_TriangulatePolygon\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Compute a visibility polygon from a point or a segment in a polygon geometry"
-msgstr ""
+msgstr "ポリゴンジオメトリ内のポイント又は辺から可視領域ポリゴンを計算する"
 
 #. Tag: para
 #, no-c-format
@@ -39376,12 +39389,12 @@ msgstr "Availability: 3.5.0 - SFCGAL &gt;= 1.5.0が必要です。"
 #. Tag: para
 #, no-c-format
 msgid "Visibility from the point"
-msgstr ""
+msgstr "ポイントからの可視領域"
 
 #. Tag: para
 #, no-c-format
 msgid "Visibility from the segment"
-msgstr ""
+msgstr "辺からの可視領域"
 
 #. Tag: refpurpose
 #, no-c-format
