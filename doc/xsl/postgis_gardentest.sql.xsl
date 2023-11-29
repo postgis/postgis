@@ -311,11 +311,24 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 					ORDER BY i, j, i*j)</pgis:gset>
 
 		<pgis:gset ID="Collection of Empties" GeometryType="GEOMETRY" createtable="false">(SELECT ST_Collect(ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326), ST_GeomFromText('POLYGON EMPTY',4326)) As the_geom
-			UNION ALL SELECT ST_COLLECT(ST_GeomFromText('POLYGON EMPTY',4326),ST_GeomFromText('TRIANGLE EMPTY',4326))  As the_geom
 			UNION ALL SELECT ST_Collect(ST_GeomFromText('POINT EMPTY',4326), ST_GeomFromText('MULTIPOINT EMPTY',4326)) As the_geom
 		)</pgis:gset>
 		<pgis:gset ID="POLYGON EMPTY" GeometryType="POLYGON" createtable="false">(SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom)</pgis:gset>
+		<pgis:gset ID="Collection of Empties Basic" GeometryType="GEOMETRY" createtable="false">(SELECT ST_Collect(ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326), ST_GeomFromText('POLYGON EMPTY',4326)) As the_geom
+			UNION ALL SELECT ST_Collect(ST_GeomFromText('POINT EMPTY',4326), ST_GeomFromText('MULTIPOINT EMPTY',4326)) As the_geom
+			UNION ALL SELECT ST_Collect(ST_GeomFromText('LINESTRING EMPTY',4326), ST_GeomFromText('MULTILINESTRING EMPTY',4326)) As the_geom
+		)</pgis:gset>
 
+		<pgis:gset ID="TIN / TRIANGLE EMPTY" GeometryType="GEOMETRY" createtable="false">(SELECT ST_GeomFromText('TRIANGLE EMPTY',4326) As the_geom
+			UNION ALL SELECT ST_GeomFromText('TIN EMPTY',4326) As the_geom
+		)</pgis:gset>
+
+		<pgis:gset ID="TINZ / TRIANGLEZ EMPTY" GeometryType="GEOMETRY" createtable="false">(SELECT ST_GeomFromText('TINZ EMPTY',4326) As the_geom
+			UNION ALL SELECT ST_GeomFromText('TRIANGLEZ EMPTY',4326) As the_geom
+		)</pgis:gset>
+
+		<pgis:gset ID="POLYGON EMPTY" GeometryType="POLYGON" createtable="false">(SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom)</pgis:gset>
+		<pgis:gset ID="LINESTRING EMPTY with NON-EMPTY" GeometryType="POLYGON" createtable="false">(SELECT ST_Collect(ARRAY[ST_GeomFromText('LINESTRING(0 0, 1 1)'), ST_GeomFromText('LINESTRING EMPTY')]) As the_geom)</pgis:gset>
 
 	<pgis:gardencrashers>
 
