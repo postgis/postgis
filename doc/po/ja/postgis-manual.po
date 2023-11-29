@@ -5,11 +5,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-26 01:47+0000\n"
+"POT-Creation-Date: 2023-11-29 04:00+0000\n"
 "PO-Revision-Date: 2023-11-28 05:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -9669,8 +9669,8 @@ msgid ""
 "TIGER geocoder support, management functions."
 msgstr ""
 "継続的インテグレーションとウェブサイトのメンテナンス、Windows版と試験版のビル"
-"ド、ドキュメンテーション、PostgreSQLとの調整、X3D対応、Tiger "
-"Geocoder機能、関数管理。"
+"ド、ドキュメンテーション、PostgreSQLとの調整、X3D対応、Tiger Geocoder機能、関"
+"数管理。"
 
 #. Tag: term
 #, no-c-format
@@ -9683,8 +9683,8 @@ msgid ""
 "Index improvements, bug fixing and geometry/geography function improvements, "
 "SFCGAL, raster, GitHub curation, and ci maintenance."
 msgstr ""
-"インデックス改善、誤り修正とジオメトリ/ジオグラフィ関数の改善、SFCGAL、ラスタ"
-"、GitHubキュレーション、継続的インテグレーション対応。"
+"インデックス改善、誤り修正とジオメトリ/ジオグラフィ関数の改善、SFCGAL、ラス"
+"タ、GitHubキュレーション、継続的インテグレーション対応。"
 
 #. Tag: term
 #, no-c-format
@@ -9718,8 +9718,8 @@ msgid ""
 "releases, topology support, and raster framework and low level API functions."
 msgstr ""
 "誤り修正とメンテナンス、継続的インテグレーション対応、gitミラーの管理、関数管"
-"理、GEOSの新機能の統合、GEOSリリースとの調整、トポロジ機能、ラスタフレームワ"
-"ークと低水準API関数。"
+"理、GEOSの新機能の統合、GEOSリリースとの調整、トポロジ機能、ラスタフレーム"
+"ワークと低水準API関数。"
 
 #. Tag: title
 #, no-c-format
@@ -9785,8 +9785,9 @@ msgstr "Björn Harrtell"
 msgid ""
 "MapBox Vector Tile, GeoBuf, and Flatgeobuf functions. Gitea testing and "
 "GitLab experimentation."
-msgstr "MapBoxベクタタイル関数、GeoBuf関数、Flatgeobuf "
-"関数。Giteaの試験とGitLabの実験。"
+msgstr ""
+"MapBoxベクタタイル関数、GeoBuf関数、Flatgeobuf 関数。Giteaの試験とGitLabの実"
+"験。"
 
 #. Tag: term
 #, no-c-format
@@ -10225,6 +10226,11 @@ msgstr "James Marca"
 #, no-c-format
 msgid "Jan Katins"
 msgstr "Jan Katins"
+
+#. Tag: member
+#, no-c-format
+msgid "Jan Tojnar"
+msgstr ""
 
 #. Tag: member
 #, no-c-format
@@ -16429,30 +16435,6 @@ msgstr "Changed: 3.1.0. 0でないZ値とM値を指定できるようになり�
 
 #. Tag: refpurpose
 #, no-c-format
-msgid ""
-"Orients all exterior rings counter-clockwise and all interior rings "
-"clockwise."
-msgstr "全ての外環を反時計回りに、全ての内環を時計回りに、それぞれ強制します。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Forces (Multi)Polygons to use a counter-clockwise orientation for their "
-"exterior ring, and a clockwise orientation for their interior rings. Non-"
-"polygonal geometries are returned unchanged."
-msgstr ""
-"(マルチ)ポリゴンに対して、外環を反時計回りに、内環を時計回りに強制します。ポ"
-"リゴンでないジオメトリは、変更されずに返されます。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
-msgstr ""
-", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
-
-#. Tag: refpurpose
-#, no-c-format
 msgid "Convert the geometry into a GEOMETRYCOLLECTION."
 msgstr "ジオメトリをジオメトリコレクションに変換します。"
 
@@ -16478,6 +16460,48 @@ msgstr ""
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_Collection."
 msgstr "Changed: 2.1.0 2.0.xの間はST_Force_Collectionと呼ばれていました。"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Upcast a geometry into its curved type, if applicable."
+msgstr "該当する場合は、ジオメトリを曲線タイプに変換します。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Turns a geometry into its curved representation, if applicable: lines become "
+"compoundcurves, multilines become multicurves polygons become curvepolygons "
+"multipolygons become multisurfaces. If the geometry input is already a "
+"curved representation returns back same as input."
+msgstr ""
+"可能ならジオメトリを曲線表現に変更します。ラインは複合曲線になり、マルチライ"
+"ンはマルチ曲線になり、ポリゴンは曲線ポリゴンになり、マルチポリゴンはマルチ"
+"サーフェスになります。入力ジオメトリが既に曲線表現であるなら、入力と同じ値が"
+"返されます。"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Orients all exterior rings counter-clockwise and all interior rings "
+"clockwise."
+msgstr "全ての外環を反時計回りに、全ての内環を時計回りに、それぞれ強制します。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Forces (Multi)Polygons to use a counter-clockwise orientation for their "
+"exterior ring, and a clockwise orientation for their interior rings. Non-"
+"polygonal geometries are returned unchanged."
+msgstr ""
+"(マルチ)ポリゴンに対して、外環を反時計回りに、内環を時計回りに強制します。ポ"
+"リゴンでないジオメトリは、変更されずに返されます。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
+msgstr ""
+", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -16544,21 +16568,28 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
-msgid "Upcast a geometry into its curved type, if applicable."
-msgstr "該当する場合は、ジオメトリを曲線タイプに変換します。"
+msgid "Returns a line extended forwards and backwards by specified distances."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Turns a geometry into its curved representation, if applicable: lines become "
-"compoundcurves, multilines become multicurves polygons become curvepolygons "
-"multipolygons become multisurfaces. If the geometry input is already a "
-"curved representation returns back same as input."
+"Returns a line extended forwards and backwards by adding new start (and end) "
+"points at the given distance(s). A distance of zero does not add a point. "
+"Only non-negative distances are allowed. The direction(s) of the added "
+"point(s) is determined by the first (and last) two distinct points of the "
+"line. Duplicate points are ignored."
 msgstr ""
-"可能ならジオメトリを曲線表現に変更します。ラインは複合曲線になり、マルチライ"
-"ンはマルチ曲線になり、ポリゴンは曲線ポリゴンになり、マルチポリゴンはマルチ"
-"サーフェスになります。入力ジオメトリが既に曲線表現であるなら、入力と同じ値が"
-"返されます。"
+
+#. Tag: title
+#, no-c-format
+msgid "Example: Extends a line 5 units forward and 6 units backward"
+msgstr "例: ラインを前方に5単位延長し、後方に6単位延長する"
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_Project\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -16596,36 +16627,6 @@ msgid ""
 msgstr ""
 "マルチ系ジオメトリを返します。ジオメトリが既にマルチ系なら変更せずに返しま"
 "す。"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Returns a line with the last and first segments extended the specified "
-"distance(s)."
-msgstr "最後の辺と最初の辺を指定した距離だけ延長されたラインを返します。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Returns a line with the last and first segments extended the specified "
-"distance(s). Distance of zero carries out no extension. Only non-negative "
-"distances are allowed. The first (and last) two distinct points in a line "
-"are used to determine the direction of projection, duplicate points are "
-"ignored."
-msgstr ""
-"最後の辺と最初の辺を指定した距離だけ延長されたラインを返します。距離が0の時は"
-"延長されません。非負の距離だけが許されます。ラインの最初 (と最後)の二つの異な"
-"るポイントで延長する方向を決めます。重複するポイントは無視します。"
-
-#. Tag: title
-#, no-c-format
-msgid "Example: Extends a line 5 units forward and 6 units backward"
-msgstr "例: ラインを前方に5単位延長し、後方に6単位延長する"
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"ST_Project\"/>"
-msgstr ", <xref linkend=\"ST_Project\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19590,11 +19591,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
-"\"/>"
+", <xref linkend=\"ST_LineExtend\"/>, <xref linkend=\"ST_LineInterpolatePoint"
+"\"/>, <xref linkend=\"ST_LineMerge\"/>"
 msgstr ""
-", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
-"\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -23523,6 +23522,17 @@ msgstr "8: EPSG:4326でない場合にGeoJSON Short CRS (デフォルト)"
 #. Tag: para
 #, no-c-format
 msgid ""
+"The <varname>id_column</varname> parameter is used to set the \"id\" member "
+"of the returned GeoJSON features. As per GeoJSON RFC, this SHOULD be used "
+"whenever a feature has a commonly used identifier, such as a primary key. "
+"When not specified, the produced features will not get an \"id\" member and "
+"any columns other than the geometry, including any potential keys, will just "
+"end up inside the feature’s \"properties\" member."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "The GeoJSON specification states that polygons are oriented using the Right-"
 "Hand Rule, and some clients require this orientation. This can be ensured by "
 "using <xref linkend=\"ST_ForcePolygonCCW\"/>. The specification also "
@@ -23585,6 +23595,11 @@ msgstr "Changed: 3.0.0 EPSG:4326以外の場合のSRID出力。"
 
 #. Tag: para
 #, no-c-format
+msgid "Changed: 3.5.0 allow specifying the column containing the feature id"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Generate a FeatureCollection:"
 msgstr "FeatureCollectionの生成:"
 
@@ -23592,15 +23607,6 @@ msgstr "FeatureCollectionの生成:"
 #, no-c-format
 msgid "Generate a Feature:"
 msgstr "Featureの生成:"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"An alternate way to generate Features with an <varname>id</varname> property "
-"is to use JSONB functions and operators:"
-msgstr ""
-"<varname>id</varname>プロパティを持つFeatureを生成する別の方法には、JSONB関数"
-"と演算子の使用があります。"
 
 #. Tag: para
 #, no-c-format
@@ -39343,7 +39349,8 @@ msgstr ""
 msgid ""
 "does similar to this function except that it returns a geometry collection "
 "of polygons instead of a TIN and also only works with 2D geometries."
-msgstr "はこの関数に似ていますが、TINの代わりにジオメトリコレクションを返す点と2次元"
+msgstr ""
+"はこの関数に似ていますが、TINの代わりにジオメトリコレクションを返す点と2次元"
 "ジオメトリだけで機能する点とは除きます。"
 
 #. Tag: para
@@ -39447,8 +39454,8 @@ msgid ""
 "respect to the optimal number."
 msgstr ""
 "ポリゴンPの分割は、内部同士がインタセクトせず、結合すると元のポリゴンPの内部"
-"と同じになるようなポリゴンの集合です。Y単調のポリゴンとは、頂点v1,…vnが、v1,…"
-",vkとvk,…,vn,v1の二つのチェーンに、水平線がどちらかのチェーンに、たかだか1回"
+"と同じになるようなポリゴンの集合です。Y単調のポリゴンとは、頂点v1,…vnが、v1,"
+"…,vkとvk,…,vn,v1の二つのチェーンに、水平線がどちらかのチェーンに、たかだか1回"
 "インタセクトするようになるように分割することができるポリゴンです。このアルゴ"
 "リズムは、最適なポリゴン数に対して生成されるポリゴン数の限度を保証しません。"
 
@@ -39502,13 +39509,13 @@ msgid ""
 "fewer convex pieces, this is not always the case."
 msgstr ""
 "ポリゴンPの分割は、内部同士がインタセクトせず、結合すると元のポリゴンPの内部"
-"と同じになるようなポリゴンの集合です。CG_ApproxConvexPartition関数とCG_Greene"
-"ApproxConvexPartition関数は、概ね最適な凸分割を生成します。両方の関数は、最初"
-"にポリゴンをより単純なポリゴンに分解したうえで凸分解を行います。CG_ApproxConv"
-"exPartitionは三角形を使い、CG_GreeneApproxConvexPartitionは単調分割を使います"
-"。両方の関数は、凸分割の要素数について最適数の4倍を超えないことを保証しますが"
-"、実行時の複雑さが異なります。三角形ベースの近似アルゴリズムでは、しばしば、"
-"凸要素が少なくなりますが、常にそうなるとは限りません。"
+"と同じになるようなポリゴンの集合です。CG_ApproxConvexPartition関数と"
+"CG_GreeneApproxConvexPartition関数は、概ね最適な凸分割を生成します。両方の関"
+"数は、最初にポリゴンをより単純なポリゴンに分解したうえで凸分解を行います。"
+"CG_ApproxConvexPartitionは三角形を使い、CG_GreeneApproxConvexPartitionは単調"
+"分割を使います。両方の関数は、凸分割の要素数について最適数の4倍を超えないこと"
+"を保証しますが、実行時の複雑さが異なります。三角形ベースの近似アルゴリズムで"
+"は、しばしば、凸要素が少なくなりますが、常にそうなるとは限りません。"
 
 #. Tag: para
 #, no-c-format
@@ -39534,8 +39541,8 @@ msgid ""
 "and <xref linkend=\"CG_OptimalConvexPartition\"/>)"
 msgstr ""
 "グリーン近似凸分割 (<xref linkend=\"CG_YMonotonePartition\"/>, <xref linkend="
-"\"CG_ApproxConvexPartition\"/>, <xref linkend=\"CG_OptimalConvexPartition\""
-"/>と同じ例です)"
+"\"CG_ApproxConvexPartition\"/>, <xref linkend=\"CG_OptimalConvexPartition\"/>"
+"と同じ例です)"
 
 #. Tag: para
 #, no-c-format
@@ -39616,9 +39623,9 @@ msgstr ""
 "ルトンの個々のエッジは平面からオフセット距離分引き上げられ、水が、屋根のどこ"
 "に落ちるか関係なく、常に輪郭のエッジ (屋根の境界線)に落ちるという点で、結果の"
 "屋根は「正しい」ものになります。この関数はこのポリゴンの押出し、別名「屋根」"
-"を計算します。引数のbody_height が body_height > 0 "
-"となる場合には、ポリゴンはST_Extrude(polygon, 0, 0, body_height)で押し出され"
-"るようになります。結果はこれらの多面体サーフェスの結合となります。"
+"を計算します。引数のbody_height が body_height > 0 となる場合には、ポリゴンは"
+"ST_Extrude(polygon, 0, 0, body_height)で押し出されるようになります。結果はこ"
+"れらの多面体サーフェスの結合となります。"
 
 #. Tag: para
 #, no-c-format
@@ -48472,6 +48479,44 @@ msgstr "2.5次元/3次元対応"
 #, no-c-format
 msgid "Supports geography"
 msgstr "ジオグラフィ対応"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a line with the last and first segments extended the specified "
+#~ "distance(s)."
+#~ msgstr "最後の辺と最初の辺を指定した距離だけ延長されたラインを返します。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a line with the last and first segments extended the specified "
+#~ "distance(s). Distance of zero carries out no extension. Only non-negative "
+#~ "distances are allowed. The first (and last) two distinct points in a line "
+#~ "are used to determine the direction of projection, duplicate points are "
+#~ "ignored."
+#~ msgstr ""
+#~ "最後の辺と最初の辺を指定した距離だけ延長されたラインを返します。距離が0の"
+#~ "時は延長されません。非負の距離だけが許されます。ラインの最初 (と最後)の二"
+#~ "つの異なるポイントで延長する方向を決めます。重複するポイントは無視します。"
+
+#, no-c-format
+#~ msgid ", <xref linkend=\"ST_Project\"/>"
+#~ msgstr ", <xref linkend=\"ST_Project\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend="
+#~ "\"ST_LineMerge\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend="
+#~ "\"ST_LineMerge\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "An alternate way to generate Features with an <varname>id</varname> "
+#~ "property is to use JSONB functions and operators:"
+#~ msgstr ""
+#~ "<varname>id</varname>プロパティを持つFeatureを生成する別の方法には、JSONB"
+#~ "関数と演算子の使用があります。"
 
 #, no-c-format
 #~ msgid ""

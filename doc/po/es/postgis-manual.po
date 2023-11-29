@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-26 01:47+0000\n"
+"POT-Creation-Date: 2023-11-29 04:00+0000\n"
 "PO-Revision-Date: 2023-09-22 19:23+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -9171,6 +9171,11 @@ msgstr ""
 
 #. Tag: member
 #, no-c-format
+msgid "Jan Tojnar"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
 msgid "Jason Smith"
 msgstr ""
 
@@ -14805,34 +14810,6 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
-msgid ""
-"Orients all exterior rings counter-clockwise and all interior rings "
-"clockwise."
-msgstr ""
-"Orienta todos los aros exteriores en sentido contrario a las agujas del "
-"reloj y todos los aros interiores en sentido horario."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Forces (Multi)Polygons to use a counter-clockwise orientation for their "
-"exterior ring, and a clockwise orientation for their interior rings. Non-"
-"polygonal geometries are returned unchanged."
-msgstr ""
-"Fuerza (Multi)polígonos a utilizar una orientación en sentido contrario a "
-"las manecillas del reloj para su anillo exterior, y una orientación en el "
-"sentido de las agujas del reloj para sus anillos interiores. Las geometrías "
-"no poligonales se devuelven sin cambios."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
-msgstr ""
-", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
-
-#. Tag: refpurpose
-#, no-c-format
 msgid "Convert the geometry into a GEOMETRYCOLLECTION."
 msgstr "Convertir la geometría en una GEOMETRYCOLLECTION."
 
@@ -14858,6 +14835,53 @@ msgstr ""
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_Collection."
 msgstr "Cambiado: 2.1.0. Hasta la 2.0.x esto se llamaba ST_Force_Collection."
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Upcast a geometry into its curved type, if applicable."
+msgstr "Relanzar una geometría en su tipo curvo, si corresponde."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Turns a geometry into its curved representation, if applicable: lines become "
+"compoundcurves, multilines become multicurves polygons become curvepolygons "
+"multipolygons become multisurfaces. If the geometry input is already a "
+"curved representation returns back same as input."
+msgstr ""
+"Convierte una geometría en su representación curvada, si corresponde: las "
+"líneas se convierten en curvas compuestas, las multilíneas se convierten en "
+"polígonos multicurvos se convierten en polígonos de curvas los "
+"multipolígonos se convierten en multisuperficies. Si la entrada de geometría "
+"es ya una representación curvada regresa igual que la entrada."
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Orients all exterior rings counter-clockwise and all interior rings "
+"clockwise."
+msgstr ""
+"Orienta todos los aros exteriores en sentido contrario a las agujas del "
+"reloj y todos los aros interiores en sentido horario."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Forces (Multi)Polygons to use a counter-clockwise orientation for their "
+"exterior ring, and a clockwise orientation for their interior rings. Non-"
+"polygonal geometries are returned unchanged."
+msgstr ""
+"Fuerza (Multi)polígonos a utilizar una orientación en sentido contrario a "
+"las manecillas del reloj para su anillo exterior, y una orientación en el "
+"sentido de las agujas del reloj para sus anillos interiores. Las geometrías "
+"no poligonales se devuelven sin cambios."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
+msgstr ""
+", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14934,22 +14958,28 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
-msgid "Upcast a geometry into its curved type, if applicable."
-msgstr "Relanzar una geometría en su tipo curvo, si corresponde."
+msgid "Returns a line extended forwards and backwards by specified distances."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Turns a geometry into its curved representation, if applicable: lines become "
-"compoundcurves, multilines become multicurves polygons become curvepolygons "
-"multipolygons become multisurfaces. If the geometry input is already a "
-"curved representation returns back same as input."
+"Returns a line extended forwards and backwards by adding new start (and end) "
+"points at the given distance(s). A distance of zero does not add a point. "
+"Only non-negative distances are allowed. The direction(s) of the added "
+"point(s) is determined by the first (and last) two distinct points of the "
+"line. Duplicate points are ignored."
 msgstr ""
-"Convierte una geometría en su representación curvada, si corresponde: las "
-"líneas se convierten en curvas compuestas, las multilíneas se convierten en "
-"polígonos multicurvos se convierten en polígonos de curvas los "
-"multipolígonos se convierten en multisuperficies. Si la entrada de geometría "
-"es ya una representación curvada regresa igual que la entrada."
+
+#. Tag: title
+#, no-c-format
+msgid "Example: Extends a line 5 units forward and 6 units backward"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_Project\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14980,33 +15010,6 @@ msgstr "Devuelve la geometría como una geometría MULTI*."
 msgid ""
 "Returns the geometry as a MULTI* geometry collection. If the geometry is "
 "already a collection, it is returned unchanged."
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Returns a line with the last and first segments extended the specified "
-"distance(s)."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Returns a line with the last and first segments extended the specified "
-"distance(s). Distance of zero carries out no extension. Only non-negative "
-"distances are allowed. The first (and last) two distinct points in a line "
-"are used to determine the direction of projection, duplicate points are "
-"ignored."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Example: Extends a line 5 units forward and 6 units backward"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"ST_Project\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -17791,11 +17794,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
-"\"/>"
+", <xref linkend=\"ST_LineExtend\"/>, <xref linkend=\"ST_LineInterpolatePoint"
+"\"/>, <xref linkend=\"ST_LineMerge\"/>"
 msgstr ""
-", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
-"\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -21014,6 +21015,17 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"The <varname>id_column</varname> parameter is used to set the \"id\" member "
+"of the returned GeoJSON features. As per GeoJSON RFC, this SHOULD be used "
+"whenever a feature has a commonly used identifier, such as a primary key. "
+"When not specified, the produced features will not get an \"id\" member and "
+"any columns other than the geometry, including any potential keys, will just "
+"end up inside the feature’s \"properties\" member."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "The GeoJSON specification states that polygons are oriented using the Right-"
 "Hand Rule, and some clients require this orientation. This can be ensured by "
 "using <xref linkend=\"ST_ForcePolygonCCW\"/>. The specification also "
@@ -21067,19 +21079,17 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Changed: 3.5.0 allow specifying the column containing the feature id"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Generate a FeatureCollection:"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid "Generate a Feature:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"An alternate way to generate Features with an <varname>id</varname> property "
-"is to use JSONB functions and operators:"
 msgstr ""
 
 #. Tag: para
@@ -41481,6 +41491,14 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend="
+#~ "\"ST_LineMerge\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend="
+#~ "\"ST_LineMerge\"/>"
 
 #, no-c-format
 #~ msgid ""

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-26 01:47+0000\n"
+"POT-Creation-Date: 2023-11-29 04:00+0000\n"
 "PO-Revision-Date: 2023-11-28 12:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
@@ -9036,7 +9036,8 @@ msgstr "Darafei Praliaskouski"
 msgid ""
 "Index improvements, bug fixing and geometry/geography function improvements, "
 "SFCGAL, raster, GitHub curation, and ci maintenance."
-msgstr "索引改进，故障修复和几何/地理函数改进，SFCGAL，栅格，GitHub维护，以及持续集成"
+msgstr ""
+"索引改进，故障修复和几何/地理函数改进，SFCGAL，栅格，GitHub维护，以及持续集成"
 "维护。"
 
 #. Tag: term
@@ -9068,7 +9069,8 @@ msgid ""
 "Bug fixes and maintenance, ci maintenance, git mirror management, management "
 "functions, integration of new GEOS functionality and alignment with GEOS "
 "releases, topology support, and raster framework and low level API functions."
-msgstr "错误修复和维护，持续集成维护，Git镜像管理，管理功能，集成新的GEOS功能并与GEOS"
+msgstr ""
+"错误修复和维护，持续集成维护，Git镜像管理，管理功能，集成新的GEOS功能并与GEOS"
 "发布对齐，拓扑支持，以及栅格框架和底层API函数。"
 
 #. Tag: title
@@ -9565,6 +9567,11 @@ msgstr "James Marca"
 #, no-c-format
 msgid "Jan Katins"
 msgstr "Jan Katins"
+
+#. Tag: member
+#, no-c-format
+msgid "Jan Tojnar"
+msgstr ""
 
 #. Tag: member
 #, no-c-format
@@ -15466,30 +15473,6 @@ msgstr "更改： 3.1.0. 现在可以指定非零 Z 和 M 值。"
 
 #. Tag: refpurpose
 #, no-c-format
-msgid ""
-"Orients all exterior rings counter-clockwise and all interior rings "
-"clockwise."
-msgstr "将所有外环逆时针定向，将所有内环顺时针定向。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Forces (Multi)Polygons to use a counter-clockwise orientation for their "
-"exterior ring, and a clockwise orientation for their interior rings. Non-"
-"polygonal geometries are returned unchanged."
-msgstr ""
-"强制（多）多边形对其外环使用逆时针方向，对其内环使用顺时针方向。 非多边形几何"
-"保持不变。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
-msgstr ""
-", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
-
-#. Tag: refpurpose
-#, no-c-format
 msgid "Convert the geometry into a GEOMETRYCOLLECTION."
 msgstr "将几何图形转换为几何集合（GEOMETRYCOLLECTION）。"
 
@@ -15513,6 +15496,47 @@ msgstr ""
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_Collection."
 msgstr "更改： 2.1.0 。在 2.0.x 期间，它被称为ST_Force_Collection。"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Upcast a geometry into its curved type, if applicable."
+msgstr "如果适用，将一个几何图形上升到其曲线类型。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Turns a geometry into its curved representation, if applicable: lines become "
+"compoundcurves, multilines become multicurves polygons become curvepolygons "
+"multipolygons become multisurfaces. If the geometry input is already a "
+"curved representation returns back same as input."
+msgstr ""
+"将几何图形转换为其曲线表示形式（如果适用）：直线变为复合曲线，多线变为多曲"
+"线，多边形变为曲线多边形，多重多边形变为多重曲面。 如果几何输入已经是曲线表"
+"示，则返回与输入相同的值。"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Orients all exterior rings counter-clockwise and all interior rings "
+"clockwise."
+msgstr "将所有外环逆时针定向，将所有内环顺时针定向。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Forces (Multi)Polygons to use a counter-clockwise orientation for their "
+"exterior ring, and a clockwise orientation for their interior rings. Non-"
+"polygonal geometries are returned unchanged."
+msgstr ""
+"强制（多）多边形对其外环使用逆时针方向，对其内环使用顺时针方向。 非多边形几何"
+"保持不变。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
+msgstr ""
+", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -15579,20 +15603,28 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
-msgid "Upcast a geometry into its curved type, if applicable."
-msgstr "如果适用，将一个几何图形上升到其曲线类型。"
+msgid "Returns a line extended forwards and backwards by specified distances."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Turns a geometry into its curved representation, if applicable: lines become "
-"compoundcurves, multilines become multicurves polygons become curvepolygons "
-"multipolygons become multisurfaces. If the geometry input is already a "
-"curved representation returns back same as input."
+"Returns a line extended forwards and backwards by adding new start (and end) "
+"points at the given distance(s). A distance of zero does not add a point. "
+"Only non-negative distances are allowed. The direction(s) of the added "
+"point(s) is determined by the first (and last) two distinct points of the "
+"line. Duplicate points are ignored."
 msgstr ""
-"将几何图形转换为其曲线表示形式（如果适用）：直线变为复合曲线，多线变为多曲"
-"线，多边形变为曲线多边形，多重多边形变为多重曲面。 如果几何输入已经是曲线表"
-"示，则返回与输入相同的值。"
+
+#. Tag: title
+#, no-c-format
+msgid "Example: Extends a line 5 units forward and 6 units backward"
+msgstr "例如：将一条线向前延伸5个单位，向后延伸6个单位"
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_Project\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -15628,36 +15660,6 @@ msgid ""
 "already a collection, it is returned unchanged."
 msgstr ""
 "以 MULTI* 几何集合的形式返回几何图形。 如果几何图形已经是集合，则原样返回。"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Returns a line with the last and first segments extended the specified "
-"distance(s)."
-msgstr "返回一条线，其中最后一段和第一段延伸了指定的距离。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Returns a line with the last and first segments extended the specified "
-"distance(s). Distance of zero carries out no extension. Only non-negative "
-"distances are allowed. The first (and last) two distinct points in a line "
-"are used to determine the direction of projection, duplicate points are "
-"ignored."
-msgstr ""
-"返回一条线，其中最后一段和第一段延伸了指定的距离。 距离为零时不进行扩展。 仅"
-"允许非负距离。 一条线上的第一个（和最后一个）两个不同的点用于确定延伸的方向，"
-"重复的点将被忽略。"
-
-#. Tag: title
-#, no-c-format
-msgid "Example: Extends a line 5 units forward and 6 units backward"
-msgstr "例如：将一条线向前延伸5个单位，向后延伸6个单位"
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"ST_Project\"/>"
-msgstr ", <xref linkend=\"ST_Project\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -18459,11 +18461,9 @@ msgstr "地理实现沿球体表面进行测量，而几何实现沿线进行测
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
-"\"/>"
+", <xref linkend=\"ST_LineExtend\"/>, <xref linkend=\"ST_LineInterpolatePoint"
+"\"/>, <xref linkend=\"ST_LineMerge\"/>"
 msgstr ""
-", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
-"\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22167,6 +22167,17 @@ msgstr "8：GeoJSON 短 CRS，如果不是 EPSG：4326（默认）"
 #. Tag: para
 #, no-c-format
 msgid ""
+"The <varname>id_column</varname> parameter is used to set the \"id\" member "
+"of the returned GeoJSON features. As per GeoJSON RFC, this SHOULD be used "
+"whenever a feature has a commonly used identifier, such as a primary key. "
+"When not specified, the produced features will not get an \"id\" member and "
+"any columns other than the geometry, including any potential keys, will just "
+"end up inside the feature’s \"properties\" member."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "The GeoJSON specification states that polygons are oriented using the Right-"
 "Hand Rule, and some clients require this orientation. This can be ensured by "
 "using <xref linkend=\"ST_ForcePolygonCCW\"/>. The specification also "
@@ -22228,6 +22239,11 @@ msgstr "更改：3.0.0 输出 SRID（如果不是 EPSG：4326）。"
 
 #. Tag: para
 #, no-c-format
+msgid "Changed: 3.5.0 allow specifying the column containing the feature id"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Generate a FeatureCollection:"
 msgstr "生成特征集合："
 
@@ -22235,15 +22251,6 @@ msgstr "生成特征集合："
 #, no-c-format
 msgid "Generate a Feature:"
 msgstr "生成一个特征："
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"An alternate way to generate Features with an <varname>id</varname> property "
-"is to use JSONB functions and operators:"
-msgstr ""
-"生成具有<varname> id </varname>属性的功能的另一种方法是使用 JSONB 函数和运算"
-"符："
 
 #. Tag: para
 #, no-c-format
@@ -37206,8 +37213,9 @@ msgstr ""
 msgid ""
 "does similar to this function except that it returns a geometry collection "
 "of polygons instead of a TIN and also only works with 2D geometries."
-msgstr "与此函数类似，但返回一个多边形的几何集合而不是三角形网，并且仅适用于二维几何"
-"。"
+msgstr ""
+"与此函数类似，但返回一个多边形的几何集合而不是三角形网，并且仅适用于二维几"
+"何。"
 
 #. Tag: para
 #, no-c-format
@@ -45818,6 +45826,44 @@ msgstr "2.5/3D 支持"
 #, no-c-format
 msgid "Supports geography"
 msgstr "支持地理"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a line with the last and first segments extended the specified "
+#~ "distance(s)."
+#~ msgstr "返回一条线，其中最后一段和第一段延伸了指定的距离。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a line with the last and first segments extended the specified "
+#~ "distance(s). Distance of zero carries out no extension. Only non-negative "
+#~ "distances are allowed. The first (and last) two distinct points in a line "
+#~ "are used to determine the direction of projection, duplicate points are "
+#~ "ignored."
+#~ msgstr ""
+#~ "返回一条线，其中最后一段和第一段延伸了指定的距离。 距离为零时不进行扩展。 "
+#~ "仅允许非负距离。 一条线上的第一个（和最后一个）两个不同的点用于确定延伸的"
+#~ "方向，重复的点将被忽略。"
+
+#, no-c-format
+#~ msgid ", <xref linkend=\"ST_Project\"/>"
+#~ msgstr ", <xref linkend=\"ST_Project\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend="
+#~ "\"ST_LineMerge\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend="
+#~ "\"ST_LineMerge\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "An alternate way to generate Features with an <varname>id</varname> "
+#~ "property is to use JSONB functions and operators:"
+#~ msgstr ""
+#~ "生成具有<varname> id </varname>属性的功能的另一种方法是使用 JSONB 函数和运"
+#~ "算符："
 
 #, no-c-format
 #~ msgid ""

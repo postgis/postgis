@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-26 01:47+0000\n"
+"POT-Creation-Date: 2023-11-29 04:00+0000\n"
 "PO-Revision-Date: 2023-09-22 19:23+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Polish <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -8087,6 +8087,11 @@ msgstr ""
 
 #. Tag: member
 #, no-c-format
+msgid "Jan Tojnar"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
 msgid "Jason Smith"
 msgstr ""
 
@@ -13297,27 +13302,6 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
-msgid ""
-"Orients all exterior rings counter-clockwise and all interior rings "
-"clockwise."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Forces (Multi)Polygons to use a counter-clockwise orientation for their "
-"exterior ring, and a clockwise orientation for their interior rings. Non-"
-"polygonal geometries are returned unchanged."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
 msgid "Convert the geometry into a GEOMETRYCOLLECTION."
 msgstr ""
 
@@ -13338,6 +13322,41 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_Collection."
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Upcast a geometry into its curved type, if applicable."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Turns a geometry into its curved representation, if applicable: lines become "
+"compoundcurves, multilines become multicurves polygons become curvepolygons "
+"multipolygons become multisurfaces. If the geometry input is already a "
+"curved representation returns back same as input."
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Orients all exterior rings counter-clockwise and all interior rings "
+"clockwise."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Forces (Multi)Polygons to use a counter-clockwise orientation for their "
+"exterior ring, and a clockwise orientation for their interior rings. Non-"
+"polygonal geometries are returned unchanged."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -13395,16 +13414,27 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
-msgid "Upcast a geometry into its curved type, if applicable."
+msgid "Returns a line extended forwards and backwards by specified distances."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Turns a geometry into its curved representation, if applicable: lines become "
-"compoundcurves, multilines become multicurves polygons become curvepolygons "
-"multipolygons become multisurfaces. If the geometry input is already a "
-"curved representation returns back same as input."
+"Returns a line extended forwards and backwards by adding new start (and end) "
+"points at the given distance(s). A distance of zero does not add a point. "
+"Only non-negative distances are allowed. The direction(s) of the added "
+"point(s) is determined by the first (and last) two distinct points of the "
+"line. Duplicate points are ignored."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Example: Extends a line 5 units forward and 6 units backward"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_Project\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -13436,33 +13466,6 @@ msgstr ""
 msgid ""
 "Returns the geometry as a MULTI* geometry collection. If the geometry is "
 "already a collection, it is returned unchanged."
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Returns a line with the last and first segments extended the specified "
-"distance(s)."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Returns a line with the last and first segments extended the specified "
-"distance(s). Distance of zero carries out no extension. Only non-negative "
-"distances are allowed. The first (and last) two distinct points in a line "
-"are used to determine the direction of projection, duplicate points are "
-"ignored."
-msgstr ""
-
-#. Tag: title
-#, no-c-format
-msgid "Example: Extends a line 5 units forward and 6 units backward"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"ST_Project\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -15882,8 +15885,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
-"\"/>"
+", <xref linkend=\"ST_LineExtend\"/>, <xref linkend=\"ST_LineInterpolatePoint"
+"\"/>, <xref linkend=\"ST_LineMerge\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -19070,6 +19073,17 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"The <varname>id_column</varname> parameter is used to set the \"id\" member "
+"of the returned GeoJSON features. As per GeoJSON RFC, this SHOULD be used "
+"whenever a feature has a commonly used identifier, such as a primary key. "
+"When not specified, the produced features will not get an \"id\" member and "
+"any columns other than the geometry, including any potential keys, will just "
+"end up inside the feature’s \"properties\" member."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "The GeoJSON specification states that polygons are oriented using the Right-"
 "Hand Rule, and some clients require this orientation. This can be ensured by "
 "using <xref linkend=\"ST_ForcePolygonCCW\"/>. The specification also "
@@ -19123,19 +19137,17 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Changed: 3.5.0 allow specifying the column containing the feature id"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Generate a FeatureCollection:"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid "Generate a Feature:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"An alternate way to generate Features with an <varname>id</varname> property "
-"is to use JSONB functions and operators:"
 msgstr ""
 
 #. Tag: para
