@@ -5054,6 +5054,7 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(geom geometry, maxdecimaldigits integer 
 
 -- Availability: 3.0.0
 -- Changed: 3.5.0 add id_column='' parameter
+-- Replaces ST_AsGeoJson(record, text, integer, bool) deprecated in 3.5.0
 CREATE OR REPLACE FUNCTION ST_AsGeoJson(r record, geom_column text DEFAULT '', maxdecimaldigits integer DEFAULT 9, pretty_bool boolean DEFAULT false, id_column text DEFAULT '')
 	RETURNS text
 	AS 'MODULE_PATHNAME','ST_AsGeoJsonRow'

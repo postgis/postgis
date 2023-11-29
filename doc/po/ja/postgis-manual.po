@@ -6,10 +6,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-26 01:47+0000\n"
-"PO-Revision-Date: 2023-11-06 05:23+0000\n"
+"PO-Revision-Date: 2023-11-28 05:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -9184,7 +9184,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This will only have data is you marked zcta5 to be loaded"
-msgstr ""
+msgstr "これはロードするzcta5に印を付けたデータだけが含まれます"
 
 #. Tag: para
 #, no-c-format
@@ -9668,6 +9668,9 @@ msgid ""
 "documentation, alignment of PostGIS with PostgreSQL releases, X3D support, "
 "TIGER geocoder support, management functions."
 msgstr ""
+"継続的インテグレーションとウェブサイトのメンテナンス、Windows版と試験版のビル"
+"ド、ドキュメンテーション、PostgreSQLとの調整、X3D対応、Tiger "
+"Geocoder機能、関数管理。"
 
 #. Tag: term
 #, no-c-format
@@ -9680,6 +9683,8 @@ msgid ""
 "Index improvements, bug fixing and geometry/geography function improvements, "
 "SFCGAL, raster, GitHub curation, and ci maintenance."
 msgstr ""
+"インデックス改善、誤り修正とジオメトリ/ジオグラフィ関数の改善、SFCGAL、ラスタ"
+"、GitHubキュレーション、継続的インテグレーション対応。"
 
 #. Tag: term
 #, no-c-format
@@ -9712,6 +9717,9 @@ msgid ""
 "functions, integration of new GEOS functionality and alignment with GEOS "
 "releases, topology support, and raster framework and low level API functions."
 msgstr ""
+"誤り修正とメンテナンス、継続的インテグレーション対応、gitミラーの管理、関数管"
+"理、GEOSの新機能の統合、GEOSリリースとの調整、トポロジ機能、ラスタフレームワ"
+"ークと低水準API関数。"
 
 #. Tag: title
 #, no-c-format
@@ -9741,7 +9749,7 @@ msgstr "Loïc Bartoletti"
 #. Tag: para
 #, no-c-format
 msgid "SFCGAL enhancments and maintenance and ci support"
-msgstr ""
+msgstr "SFCGAL機能強化とメインテナンスと継続的インテグレーション対応"
 
 #. Tag: term
 #, no-c-format
@@ -9777,7 +9785,8 @@ msgstr "Björn Harrtell"
 msgid ""
 "MapBox Vector Tile, GeoBuf, and Flatgeobuf functions. Gitea testing and "
 "GitLab experimentation."
-msgstr ""
+msgstr "MapBoxベクタタイル関数、GeoBuf関数、Flatgeobuf "
+"関数。Giteaの試験とGitLabの実験。"
 
 #. Tag: term
 #, no-c-format
@@ -16611,7 +16620,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Example: Extends a line 5 units forward and 6 units backward"
-msgstr ""
+msgstr "例: ラインを前方に5単位延長し、後方に6単位延長する"
 
 #. Tag: para
 #, no-c-format
@@ -27166,7 +27175,7 @@ msgstr "15, 'quad_segs=4 join=round' 元のラインと15単位ずらしたラ�
 #. Tag: para
 #, no-c-format
 msgid "-15, 'quad_segs=4 join=round' original line and its offset -15 units"
-msgstr "-15, 'quad_segs=4 join=round' 元のラインと-15単位ずらしたライン。"
+msgstr "-15, 'quad_segs=4 join=round' 元のラインと-15単位ずらしたライン"
 
 #. Tag: para
 #, no-c-format
@@ -27827,7 +27836,7 @@ msgstr "ポリゴンの三角分割"
 #. Tag: title
 #, no-c-format
 msgid "Same example as ST_Tesselate"
-msgstr ""
+msgstr "ST_Tesselateと同じ例"
 
 #. Tag: para
 #, no-c-format
@@ -27842,13 +27851,14 @@ msgstr "元のポリゴン"
 #. Tag: para
 #, no-c-format
 msgid "Triangulated Polygon"
-msgstr ""
+msgstr "三角分割したポリゴン"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_DelaunayTriangles\"/>, <xref linkend=\"ST_Tesselate\"/>"
 msgstr ""
+", <xref linkend=\"ST_DelaunayTriangles\"/>, <xref linkend=\"ST_Tesselate\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39107,7 +39117,7 @@ msgstr "ラインストリングをZ方向に押し出したPolyhedralSurfaceZ"
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_ExtrudeStraightSkeleton\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_ExtrudeStraightSkeleton\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39333,7 +39343,8 @@ msgstr ""
 msgid ""
 "does similar to this function except that it returns a geometry collection "
 "of polygons instead of a TIN and also only works with 2D geometries."
-msgstr ""
+msgstr "はこの関数に似ていますが、TINの代わりにジオメトリコレクションを返す点と2次元"
+"ジオメトリだけで機能する点とは除きます。"
 
 #. Tag: para
 #, no-c-format
@@ -39361,27 +39372,29 @@ msgid ""
 ", <xref linkend=\"ST_DelaunayTriangles\"/>, <xref linkend="
 "\"ST_TriangulatePolygon\"/>"
 msgstr ""
+", <xref linkend=\"ST_DelaunayTriangles\"/>, <xref linkend="
+"\"ST_TriangulatePolygon\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Compute a visibility polygon from a point or a segment in a polygon geometry"
-msgstr ""
+msgstr "ポリゴンジオメトリ内のポイント又は辺から可視領域ポリゴンを計算する"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0."
-msgstr ""
+msgstr "Availability: 3.5.0 - SFCGAL &gt;= 1.5.0が必要です。"
 
 #. Tag: para
 #, no-c-format
 msgid "Visibility from the point"
-msgstr ""
+msgstr "ポイントからの可視領域"
 
 #. Tag: para
 #, no-c-format
 msgid "Visibility from the segment"
-msgstr ""
+msgstr "辺からの可視領域"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39415,12 +39428,12 @@ msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes y-monotone partition of the polygon geometry"
-msgstr ""
+msgstr "ポリゴンジオメトリのY単調分割を計算します"
 
 #. Tag: para
 #, no-c-format
 msgid "Computes y-monotone partition of the polygon geometry."
-msgstr ""
+msgstr "ポリゴンジオメトリのY単調分割を計算します。"
 
 #. Tag: para
 #, no-c-format
@@ -39433,6 +39446,11 @@ msgid ""
 "algorithm does not guarantee a bound on the number of polygons produced with "
 "respect to the optimal number."
 msgstr ""
+"ポリゴンPの分割は、内部同士がインタセクトせず、結合すると元のポリゴンPの内部"
+"と同じになるようなポリゴンの集合です。Y単調のポリゴンとは、頂点v1,…vnが、v1,…"
+",vkとvk,…,vn,v1の二つのチェーンに、水平線がどちらかのチェーンに、たかだか1回"
+"インタセクトするようになるように分割することができるポリゴンです。このアルゴ"
+"リズムは、最適なポリゴン数に対して生成されるポリゴン数の限度を保証しません。"
 
 #. Tag: para
 #, no-c-format
@@ -39442,6 +39460,9 @@ msgid ""
 "\"CG_GreeneApproxConvexPartition\"/> and <xref linkend="
 "\"CG_OptimalConvexPartition\"/>)"
 msgstr ""
+"Y単調分割 (<xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
+"\"CG_GreeneApproxConvexPartition\"/>, <xref linkend="
+"\"CG_OptimalConvexPartition\"/>と同じ例です)"
 
 #. Tag: para
 #, no-c-format
@@ -39449,18 +39470,20 @@ msgid ""
 ", <xref linkend=\"CG_GreeneApproxConvexPartition\"/>, <xref linkend="
 "\"CG_OptimalConvexPartition\"/>"
 msgstr ""
+", <xref linkend=\"CG_GreeneApproxConvexPartition\"/>, <xref linkend="
+"\"CG_OptimalConvexPartition\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes approximal convex partition of the polygon geometry"
-msgstr ""
+msgstr "ポリゴンジオメトリの近似凸分割を計算します"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Computes approximal convex partition of the polygon geometry (using a "
 "triangulation)."
-msgstr ""
+msgstr "ポリゴンジオメトリの近似凸分割を計算します (三角形分割を使います)。"
 
 #. Tag: para
 #, no-c-format
@@ -39478,6 +39501,14 @@ msgid ""
 "Though the triangulation-based approximation algorithm often results in "
 "fewer convex pieces, this is not always the case."
 msgstr ""
+"ポリゴンPの分割は、内部同士がインタセクトせず、結合すると元のポリゴンPの内部"
+"と同じになるようなポリゴンの集合です。CG_ApproxConvexPartition関数とCG_Greene"
+"ApproxConvexPartition関数は、概ね最適な凸分割を生成します。両方の関数は、最初"
+"にポリゴンをより単純なポリゴンに分解したうえで凸分解を行います。CG_ApproxConv"
+"exPartitionは三角形を使い、CG_GreeneApproxConvexPartitionは単調分割を使います"
+"。両方の関数は、凸分割の要素数について最適数の4倍を超えないことを保証しますが"
+"、実行時の複雑さが異なります。三角形ベースの近似アルゴリズムでは、しばしば、"
+"凸要素が少なくなりますが、常にそうなるとは限りません。"
 
 #. Tag: para
 #, no-c-format
@@ -39486,11 +39517,14 @@ msgid ""
 "\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_GreeneApproxConvexPartition"
 "\"/> and <xref linkend=\"CG_OptimalConvexPartition\"/>)"
 msgstr ""
+"近似凸分割 (<xref linkend=\"CG_YMonotonePartition\"/>, <xref linkend="
+"\"CG_GreeneApproxConvexPartition\"/>および<xref linkend="
+"\"CG_OptimalConvexPartition\"/>と同じ例です)"
 
 #. Tag: para
 #, no-c-format
 msgid "Computes approximal monotone convex partition of the polygon geometry."
-msgstr ""
+msgstr "ポリゴンジオメトリの近似的な単調凸分割を計算します。"
 
 #. Tag: para
 #, no-c-format
@@ -39499,6 +39533,9 @@ msgid ""
 "\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_ApproxConvexPartition\"/> "
 "and <xref linkend=\"CG_OptimalConvexPartition\"/>)"
 msgstr ""
+"グリーン近似凸分割 (<xref linkend=\"CG_YMonotonePartition\"/>, <xref linkend="
+"\"CG_ApproxConvexPartition\"/>, <xref linkend=\"CG_OptimalConvexPartition\""
+"/>と同じ例です)"
 
 #. Tag: para
 #, no-c-format
@@ -39506,16 +39543,18 @@ msgid ""
 ", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
 "\"CG_OptimalConvexPartition\"/>"
 msgstr ""
+", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
+"\"CG_OptimalConvexPartition\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes an optimal convex partition of the polygon geometry"
-msgstr ""
+msgstr "ポリゴンジオメトリの最適凸分割を計算します"
 
 #. Tag: para
 #, no-c-format
 msgid "Computes an optimal convex partition of the polygon geometry."
-msgstr ""
+msgstr "ポリゴンジオメトリの最適凸分割を計算します。"
 
 #. Tag: para
 #, no-c-format
@@ -39525,6 +39564,9 @@ msgid ""
 "interior of the original polygon P. CG_OptimalConvexPartition produces a "
 "partition that is optimal in the number of pieces."
 msgstr ""
+"ポリゴンPの分割は、内部同士がインタセクトせず、結合すると元のポリゴンPの内部"
+"と同じになるようなポリゴンの集合です。CG_OptimalConvexPartitionは、分割要素数"
+"について最適な分割を生成します。"
 
 #. Tag: para
 #, no-c-format
@@ -39533,6 +39575,9 @@ msgid ""
 "\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_ApproxConvexPartition\"/> "
 "and <xref linkend=\"CG_GreeneApproxConvexPartition\"/>)"
 msgstr ""
+"最適凸分割 (<xref linkend=\"CG_YMonotonePartition\"/>, <xref linkend="
+"\"CG_ApproxConvexPartition\"/>, <xref linkend="
+"\"CG_GreeneApproxConvexPartition\"/>と同じ例)"
 
 #. Tag: para
 #, no-c-format
@@ -39540,16 +39585,18 @@ msgid ""
 ", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
 "\"CG_GreeneApproxConvexPartition\"/>"
 msgstr ""
+", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
+"\"CG_GreeneApproxConvexPartition\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Straight Skeleton Extrusion"
-msgstr ""
+msgstr "ストレートスケルトンの押し出し"
 
 #. Tag: para
 #, no-c-format
 msgid "Computes an extrusion with a maximal height of the polygon geometry."
-msgstr ""
+msgstr "ポリゴンジオメトリの最大高での押出しを計算します。"
 
 #. Tag: para
 #, no-c-format
@@ -39564,11 +39611,19 @@ msgid ""
 "with ST_Extrude(polygon, 0, 0, body_height). The result is an union of these "
 "polyhedralsurfaces."
 msgstr ""
+"ストレートスケルトンの (歴史上の)最初の使用例は、おそらく、ポリゴンの屋根を与"
+"えて、ストレートスケルトンでテントの配置を得るというものだったでしょう。スケ"
+"ルトンの個々のエッジは平面からオフセット距離分引き上げられ、水が、屋根のどこ"
+"に落ちるか関係なく、常に輪郭のエッジ (屋根の境界線)に落ちるという点で、結果の"
+"屋根は「正しい」ものになります。この関数はこのポリゴンの押出し、別名「屋根」"
+"を計算します。引数のbody_height が body_height > 0 "
+"となる場合には、ポリゴンはST_Extrude(polygon, 0, 0, body_height)で押し出され"
+"るようになります。結果はこれらの多面体サーフェスの結合となります。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_StraightSkeleton\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_StraightSkeleton\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -47187,7 +47242,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "The -G commands outputs a list something like"
-msgstr "-Gコマンドの出力は次のようになります。"
+msgstr "-Gコマンドの出力は次のようになります"
 
 #. Tag: title
 #, no-c-format

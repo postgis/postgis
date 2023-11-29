@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-26 01:47+0000\n"
-"PO-Revision-Date: 2023-11-16 06:23+0000\n"
+"PO-Revision-Date: 2023-11-28 12:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
@@ -9023,6 +9023,8 @@ msgid ""
 "documentation, alignment of PostGIS with PostgreSQL releases, X3D support, "
 "TIGER geocoder support, management functions."
 msgstr ""
+"持续集成和网站维护，Windows生产和实验构建，文档编写，将PostGIS与PostgreSQL发"
+"布版本对齐，X3D支持，TIGER地理编码支持，管理功能。"
 
 #. Tag: term
 #, no-c-format
@@ -9034,7 +9036,8 @@ msgstr "Darafei Praliaskouski"
 msgid ""
 "Index improvements, bug fixing and geometry/geography function improvements, "
 "SFCGAL, raster, GitHub curation, and ci maintenance."
-msgstr ""
+msgstr "索引改进，故障修复和几何/地理函数改进，SFCGAL，栅格，GitHub维护，以及持续集成"
+"维护。"
 
 #. Tag: term
 #, no-c-format
@@ -9065,7 +9068,8 @@ msgid ""
 "Bug fixes and maintenance, ci maintenance, git mirror management, management "
 "functions, integration of new GEOS functionality and alignment with GEOS "
 "releases, topology support, and raster framework and low level API functions."
-msgstr ""
+msgstr "错误修复和维护，持续集成维护，Git镜像管理，管理功能，集成新的GEOS功能并与GEOS"
+"发布对齐，拓扑支持，以及栅格框架和底层API函数。"
 
 #. Tag: title
 #, no-c-format
@@ -9095,7 +9099,7 @@ msgstr "Loïc Bartoletti"
 #. Tag: para
 #, no-c-format
 msgid "SFCGAL enhancments and maintenance and ci support"
-msgstr ""
+msgstr "SFCGAL 的增强和维护以及持续集成支持"
 
 #. Tag: term
 #, no-c-format
@@ -9129,7 +9133,7 @@ msgstr "Björn Harrtell"
 msgid ""
 "MapBox Vector Tile, GeoBuf, and Flatgeobuf functions. Gitea testing and "
 "GitLab experimentation."
-msgstr ""
+msgstr "MapBox 矢量瓦片、GeoBuf 和 Flatgeobuf 函数。Gitea 测试和 GitLab 实验。"
 
 #. Tag: term
 #, no-c-format
@@ -15648,7 +15652,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Example: Extends a line 5 units forward and 6 units backward"
-msgstr ""
+msgstr "例如：将一条线向前延伸5个单位，向后延伸6个单位"
 
 #. Tag: para
 #, no-c-format
@@ -26258,7 +26262,7 @@ msgstr "多边形三角剖分"
 #. Tag: title
 #, no-c-format
 msgid "Same example as ST_Tesselate"
-msgstr ""
+msgstr "同样的例子，如ST_Tesselate"
 
 #. Tag: para
 #, no-c-format
@@ -26273,13 +26277,14 @@ msgstr "原始多边形"
 #. Tag: para
 #, no-c-format
 msgid "Triangulated Polygon"
-msgstr ""
+msgstr "三角形多边形"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_DelaunayTriangles\"/>, <xref linkend=\"ST_Tesselate\"/>"
 msgstr ""
+", <xref linkend=\"ST_DelaunayTriangles\"/>, <xref linkend=\"ST_Tesselate\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37201,7 +37206,8 @@ msgstr ""
 msgid ""
 "does similar to this function except that it returns a geometry collection "
 "of polygons instead of a TIN and also only works with 2D geometries."
-msgstr ""
+msgstr "与此函数类似，但返回一个多边形的几何集合而不是三角形网，并且仅适用于二维几何"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -37229,12 +37235,14 @@ msgid ""
 ", <xref linkend=\"ST_DelaunayTriangles\"/>, <xref linkend="
 "\"ST_TriangulatePolygon\"/>"
 msgstr ""
+", <xref linkend=\"ST_DelaunayTriangles\"/>, <xref linkend="
+"\"ST_TriangulatePolygon\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Compute a visibility polygon from a point or a segment in a polygon geometry"
-msgstr ""
+msgstr "计算一个从点或多边形几何中的线段生成的可见性多边形"
 
 #. Tag: para
 #, no-c-format
@@ -37244,12 +37252,12 @@ msgstr "可用性：3.5.0 - 需要 SFCGAL &gt;= 1.5.0。"
 #. Tag: para
 #, no-c-format
 msgid "Visibility from the point"
-msgstr ""
+msgstr "从点的视角来看，可见性"
 
 #. Tag: para
 #, no-c-format
 msgid "Visibility from the segment"
-msgstr ""
+msgstr "从线段的视角来看，可见性"
 
 #. Tag: refpurpose
 #, no-c-format
