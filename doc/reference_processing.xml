@@ -1668,8 +1668,8 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
         <title>Examples</title>
 
 <programlisting>SELECT radius,
-       ST_AsText(center) AS center,
-       ST_AsText(nearest) AS nearest
+      center,
+      nearest
   FROM ST_LargestEmptyCircle(
         'MULTILINESTRING (
           (10 100, 60 180, 130 150, 190 160),
@@ -1686,13 +1686,14 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
     </informalfigure>
 
 <programlisting>SELECT radius,
-       ST_AsText(center) AS center,
-       ST_AsText(nearest) AS nearest
+       center,
+       nearest
   FROM ST_LargestEmptyCircle(
-         St_Collect(
-           'MULTIPOINT ((70 50), (60 130), (130 150), (80 90))',
-           'POLYGON ((90 190, 10 100, 60 10, 190 40, 120 100, 190 180, 90 190))'),
-         'POLYGON ((90 190, 10 100, 60 10, 190 40, 120 100, 190 180, 90 190))'
+         ST_Collect(
+           'MULTIPOINT ((70 50), (60 130), (130 150), (80 90))'::geometry,
+           'POLYGON ((90 190, 10 100, 60 10, 190 40, 120 100, 190 180, 90 190))'::geometry),
+           0,
+         'POLYGON ((90 190, 10 100, 60 10, 190 40, 120 100, 190 180, 90 190))'::geometry
        );</programlisting>
 
     <informalfigure>
