@@ -251,10 +251,10 @@ COMMIT;
 				<xsl:variable name='fnargs'><xsl:call-template name="listparams"><xsl:with-param name="func" select="." /></xsl:call-template></xsl:variable>
 				<xsl:variable name='fnname'><xsl:value-of select="db:funcdef/db:function"/></xsl:variable>
 				<xsl:variable name='fndef'><xsl:value-of select="db:funcdef"/></xsl:variable>
-				<xsl:variable name='numparams'><xsl:value-of select="count(db:paramdef/parameter)" /></xsl:variable>
-				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(db:paramdef/db:type[contains(text(),'geometry') or contains(text(),'geography') or contains(text(),'box') ]) + count(db:paramdef/parameter[contains(text(),'WKT')]) + count(db:paramdef/parameter[contains(text(),'geomgml')])" /></xsl:variable>
+				<xsl:variable name='numparams'><xsl:value-of select="count(db:paramdef/db:parameter)" /></xsl:variable>
+				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(db:paramdef/db:type[contains(text(),'geometry') or contains(text(),'geography') or contains(text(),'box') ]) + count(db:paramdef/db:parameter[contains(text(),'WKT')]) + count(db:paramdef/db:parameter[contains(text(),'geomgml')])" /></xsl:variable>
 				<xsl:variable name='numparamrasts'><xsl:value-of select="count(db:paramdef/db:type[contains(text(),'raster') ] )" /></xsl:variable>
-				<xsl:variable name='log_label'><xsl:value-of select="db:funcdef/db:function" />(<xsl:value-of select="$fnargs" />)</xsl:variable>
+				<xsl:variable name='log_label'><xsl:value-of select="db:funcdef/db:function" />(<xsl:value-of select="$fnargs" />) </xsl:variable>
 
 				<xsl:variable name="geoftype">
 				  <!--Conditionally instantiate a value to be assigned to the variable -->
@@ -416,150 +416,150 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 			<xsl:for-each select="db:paramdef">
 				<xsl:choose>
 				     <!-- ignore output parameters -->
-				    <xsl:when test="contains(parameter,'OUT')"></xsl:when>
-				    <xsl:when test="contains(parameter, 'algorithm')">
+				    <xsl:when test="contains(db:parameter,'OUT')"></xsl:when>
+				    <xsl:when test="contains(db:parameter, 'algorithm')">
 						<xsl:value-of select="$var_algorithm" />
 					</xsl:when>
 
-					<xsl:when test="contains(parameter, 'georefcoords')">
+					<xsl:when test="contains(db:parameter, 'georefcoords')">
 						<xsl:value-of select="$var_georefcoords" />
 					</xsl:when>
-					<xsl:when test="(type = 'integer[]'  )">
+					<xsl:when test="(db:type = 'integer[]'  )">
 						ARRAY[<xsl:value-of select="$var_integer1" />]
 					</xsl:when>
-					<xsl:when test="contains(parameter, 'index') or contains(parameter, 'band') or contains(parameter, 'nband')">
+					<xsl:when test="contains(db:parameter, 'index') or contains(db:parameter, 'band') or contains(db:parameter, 'nband')">
 						<xsl:value-of select="$var_band" />
 					</xsl:when>
-					<xsl:when test="contains(parameter, 'rastercolumn')">
+					<xsl:when test="contains(db:parameter, 'rastercolumn')">
 						<xsl:value-of select="$var_rastercolumn" />
 					</xsl:when>
-					<xsl:when test="contains(parameter, 'rastertable')">
+					<xsl:when test="contains(db:parameter, 'rastertable')">
 						<xsl:value-of select="$var_rastertable" />
 					</xsl:when>
-					<xsl:when test="contains(parameter, 'format')">
+					<xsl:when test="contains(db:parameter, 'format')">
 						<xsl:value-of select="$var_format" />
 					</xsl:when>
-					<xsl:when test="contains(parameter, 'options')">
+					<xsl:when test="contains(db:parameter, 'options')">
 						<xsl:value-of select="$var_options" />
 					</xsl:when>
-					<xsl:when test="contains(parameter, 'pt')">
+					<xsl:when test="contains(db:parameter, 'pt')">
 						<xsl:value-of select="$var_pt" />
 					</xsl:when>
-					<xsl:when test="contains(parameter, 'pixeltype')">
+					<xsl:when test="contains(db:parameter, 'pixeltype')">
 						<xsl:value-of select="$var_pixeltype" />
 					</xsl:when>
-					<xsl:when test="contains(parameter, 'distance')">
+					<xsl:when test="contains(db:parameter, 'distance')">
 						<xsl:value-of select="$var_distance" />
 					</xsl:when>
-					<xsl:when test="contains(parameter, 'srid')">
+					<xsl:when test="contains(db:parameter, 'srid')">
 						<xsl:value-of select="$var_srid" />
 					</xsl:when>
-					<xsl:when test="contains(parameter, 'position')">
+					<xsl:when test="contains(db:parameter, 'position')">
 						<xsl:value-of select="$var_position" />
 					</xsl:when>
-					<xsl:when test="contains(parameter, 'NDR')">
+					<xsl:when test="contains(db:parameter, 'NDR')">
 						'<xsl:value-of select="$var_NDRXDR" />'
 					</xsl:when>
-					<xsl:when test="contains(parameter, 'onerasteruserfunc')">
+					<xsl:when test="contains(db:parameter, 'onerasteruserfunc')">
 						<xsl:value-of select="$var_onerasteruserfunc" />
 					</xsl:when>
-					<xsl:when test="contains(parameter, 'version') and position() = 2">
+					<xsl:when test="contains(db:parameter, 'version') and position() = 2">
 						<xsl:value-of select="$var_version1" />
 					</xsl:when>
-					<xsl:when test="contains(parameter, 'addbandargset')">
+					<xsl:when test="contains(db:parameter, 'addbandargset')">
 						<xsl:value-of select="$var_addbandargset" />
 					</xsl:when>
-					<xsl:when test="(contains(type,'box') or type = 'geometry' or type = 'geometry ' or contains(type,'geometry set')) and (position() = 1 or count($func/paramdef/db:type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1')">
+					<xsl:when test="(contains(db:type,'box') or db:type = 'geometry' or db:type = 'geometry ' or contains(type,'geometry set')) and (position() = 1 or count($func/paramdef/db:type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1')">
 						<xsl:text>rast1.rast::geometry</xsl:text>
 					</xsl:when>
-					<xsl:when test="(type = 'geography' or type = 'geography ' or contains(type,'geography set')) and (position() = 1 or count($func/paramdef/db:type[contains(text(),'geography')]) = '1' )">
+					<xsl:when test="(db:type = 'geography' or db:type = 'geography ' or contains(db:type,'geography set')) and (position() = 1 or count($func/paramdef/db:type[contains(text(),'geography')]) = '1' )">
 						<xsl:text>rast1.rast::geometry::geography</xsl:text>
 					</xsl:when>
 
 
-					<xsl:when test="contains(type,'box') or type = 'geometry' or type = 'geometry '">
+					<xsl:when test="contains(db:type,'box') or db:type = 'geometry' or db:type = 'geometry '">
 						<xsl:text>rast2.rast::geometry</xsl:text>
 					</xsl:when>
-					<xsl:when test="type = 'geography' or type = 'geography '">
+					<xsl:when test="db:type = 'geography' or db:type = 'geography '">
 						<xsl:text>geography(rast2.rast::geometry)</xsl:text>
 					</xsl:when>
-					<xsl:when test="contains(type,'raster[]') and (position() = 1) ">
+					<xsl:when test="contains(db:type,'raster[]') and (position() = 1) ">
 						<xsl:text>ARRAY[rast1.rast]</xsl:text>
 					</xsl:when>
-					<xsl:when test="contains(type, 'raster[]') ">
+					<xsl:when test="contains(db:type, 'raster[]') ">
 						<xsl:text>ARRAY[rast2.rast]</xsl:text>
 					</xsl:when>
-					<xsl:when test="(type = 'raster' or type = 'raster ' or contains(type, 'raster set') or contains(type, 'setof raster') ) and (position() = 1) ">
+					<xsl:when test="(db:type = 'raster' or db:type = 'raster ' or contains(db:type, 'raster set') or contains(db:type, 'setof raster') ) and (position() = 1) ">
 						<xsl:text>rast1.rast</xsl:text>
 					</xsl:when>
-					<xsl:when test="type = 'raster' or type = 'raster ' or contains(type, 'raster set')or contains(type, 'setof raster')">
+					<xsl:when test="db:type = 'raster' or db:type = 'raster ' or contains(db:type, 'raster set') or contains(db:type, 'setof raster')">
 						<xsl:text>rast2.rast</xsl:text>
 					</xsl:when>
-					<xsl:when test="type = 'raster' or type = 'raster ' or contains(type, 'raster set') or contains(type, 'setof raster')">
+					<xsl:when test="db:type = 'raster' or db:type = 'raster ' or contains(db:type, 'raster set') or contains(db:type, 'setof raster')">
 						<xsl:text>rast2.rast</xsl:text>
 					</xsl:when>
-					<xsl:when test="contains(type, 'geometry[]') and count($func/paramdef/db:type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1'">
+					<xsl:when test="contains(db:type, 'geometry[]') and count($func/db:paramdef/db:type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1'">
 						ARRAY[foo1.the_geom]
 					</xsl:when>
-					<xsl:when test="contains(type, 'geometry[]')">
+					<xsl:when test="contains(db:type, 'geometry[]')">
 						ARRAY[foo2.the_geom]
 					</xsl:when>
-					<xsl:when test="contains(parameter, 'EWKT')">
+					<xsl:when test="contains(db:parameter, 'EWKT')">
 						<xsl:text>ST_AsEWKT(foo1.the_geom)</xsl:text>
 					</xsl:when>
-					<xsl:when test="contains(parameter, 'WKT')">
+					<xsl:when test="contains(db:parameter, 'WKT')">
 						<xsl:text>ST_AsText(foo1.the_geom)</xsl:text>
 					</xsl:when>
-					<xsl:when test="contains(parameter, 'EWKB')">
+					<xsl:when test="contains(db:parameter, 'EWKB')">
 						<xsl:text>ST_AsEWKB(foo1.the_geom)</xsl:text>
 					</xsl:when>
-					<xsl:when test="contains(type, 'bytea')">
+					<xsl:when test="contains(db:type, 'bytea')">
 						<xsl:text>ST_AsBinary(foo1.the_geom)</xsl:text>
 					</xsl:when>
-					<xsl:when test="contains(type, 'float') or contains(type, 'double')">
+					<xsl:when test="contains(db:type, 'float') or contains(db:type, 'double')">
 						<xsl:value-of select="$var_float1" />
 					</xsl:when>
-					<xsl:when test="contains(type, 'spheroid')">
+					<xsl:when test="contains(db:type, 'spheroid')">
 						<xsl:value-of select="$var_spheroid" />
 					</xsl:when>
-					<xsl:when test="contains(type, 'integer') and position() = 2">
+					<xsl:when test="contains(db:type, 'integer') and position() = 2">
 						<xsl:value-of select="$var_integer1" />
 					</xsl:when>
-					<xsl:when test="contains(type, 'integer')">
+					<xsl:when test="contains(db:type, 'integer')">
 						<xsl:value-of select="$var_integer2" />
 					</xsl:when>
-					<xsl:when test="contains(type,'reclassarg')">
+					<xsl:when test="contains(db:type,'reclassarg')">
 						<xsl:value-of select="$var_reclassarg" />
 					</xsl:when>
 
-					<xsl:when test="contains(type, 'text')">
+					<xsl:when test="contains(db:type, 'text')">
 						<xsl:value-of select="$var_text" />
 					</xsl:when>
-					<xsl:when test="contains(type, 'varchar')">
+					<xsl:when test="contains(db:type, 'varchar')">
 						<xsl:value-of select="$var_varchar" />
 					</xsl:when>
-					<xsl:when test="contains(type,'timestamp') or type = 'date'">
+					<xsl:when test="contains(db:type,'timestamp') or db:type = 'date'">
 						<xsl:text>'2009-01-01'</xsl:text>
 					</xsl:when>
-					<xsl:when test="contains(type,'boolean')">
+					<xsl:when test="contains(db:type,'boolean')">
 						<xsl:value-of select="$var_boolean" />
 					</xsl:when>
 				</xsl:choose>
 				<!-- put a comma before an arg if it is not the first argument in a function and it is not an OUT parameter nor does it precede an OUT parameter -->
-				<xsl:if test="position()&lt;last() and not(contains(parameter,'OUT')) and not(contains(following-sibling::paramdef[1],'OUT'))"><xsl:text>, </xsl:text></xsl:if>
+				<xsl:if test="position()&lt;last() and not(contains(db:parameter,'OUT')) and not(contains(following-sibling::db:paramdef[1],'OUT'))"><xsl:text>, </xsl:text></xsl:if>
 			</xsl:for-each>
 		</xsl:for-each>
 	</xsl:template>
 
-	<!--macro to pull out function parameter names so we can provide a pretty arg list prefix for each function -->
+	<!--macro to pull out function db:parameter names so we can provide a pretty arg list prefix for each function -->
 	<xsl:template name="listparams">
 		<xsl:param name="func" />
 		<xsl:for-each select="$func">
-			<xsl:if test="count(db:paramdef/parameter) &gt; 0"> </xsl:if>
+			<xsl:if test="count(db:paramdef/db:parameter) &gt; 0"> </xsl:if>
 			<xsl:for-each select="db:paramdef">
 				<xsl:choose>
-					<xsl:when test="count(db:paramdef/parameter) &gt; 0">
-						<xsl:value-of select="db:paramdef/parameter" />
+					<xsl:when test="count(db:parameter) &gt; 0">
+						<xsl:value-of select="db:parameter" />
 					</xsl:when>
 				</xsl:choose>
 				<xsl:if test="position()&lt;last()"><xsl:text>, </xsl:text></xsl:if>
