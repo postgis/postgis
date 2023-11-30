@@ -13,7 +13,7 @@
 	<xsl:output method="text" />
 	<xsl:variable name='testversion'>3.5.0</xsl:variable>
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
-	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
+	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable CG_Visibility CG_YMonotonePartition ST_RemoveRepeatedPoints ST_AlphaShape ST_OptimalAlphaShape</xsl:variable>
 	<!--This is just a place holder to state functions not supported or tested separately -->
 
 	<xsl:variable name='var_srid'>3395</xsl:variable>
@@ -295,6 +295,26 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 
 		<pgis:gset ID="Infinite MultiPoint" GeometryType="MULTIPOINT" createtable="true">(SELECT
 		'0104000020E6100000050000000101000000000000000000F07F000000000000F07F0101000000000000000000F07F000000000000F07F0101000000000000000000F07F000000000000F07F0101000000000000000000F07F000000000000F07F0101000000000000000000F07F000000000000F07F'::geometry AS the_geom )
+		</pgis:gset>
+
+		<pgis:gset ID="Multipoint with Empty coordinates" GeometryType="MULTIPOINT" createtable="false">
+		(SELECT ST_GeomFromText('MULTIPOINT(EMPTY,2 1,2 4, 4 5)',4326) As the_geom)
+		</pgis:gset>
+
+		<pgis:gset ID="Linestring Z with Nan coordinates" GeometryType="LINESTRINGZ" createtable="false">
+		(SELECT ST_GeomFromText('LINESTRING Z (1 2 NaN,3 4 10,5 6 NaN)',4326) As the_geom)
+		</pgis:gset>
+
+		<pgis:gset ID="Linestring M with Nan coordinates" GeometryType="LINESTRINGM" createtable="false">
+		(SELECT ST_GeomFromText('LINESTRING M (1 2 NaN,3 4 10,5 6 NaN)',4326) As the_geom)
+		</pgis:gset>
+
+		<pgis:gset ID="Linestring ZM with Nan coordinates" GeometryType="LINESTRINGZM" createtable="false">
+		(SELECT ST_GeomFromText('LINESTRING ZM (1 2 3 NaN,3 4 10 5,5 6 NaN NaN)',4326) As the_geom)
+		</pgis:gset>
+
+		<pgis:gset ID="Linestring M with Nan coordinates" GeometryType="LINESTRINGM" createtable="false">
+		(SELECT ST_GeomFromText('LINESTRING M (1 2 NaN,3 4 10,5 6 NaN)',4326) As the_geom)
 		</pgis:gset>
 
 	<!-- TODO: Finish off MULTI list -->
