@@ -2332,12 +2332,6 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (!lwgeom_isfinite(lwg))
-	{
-		elog(ERROR, "Geometry contains invalid coordinate");
-		PG_RETURN_NULL();
-	}
-
 	if (which < 0)
 	{
 		/* Use backward indexing for negative values */

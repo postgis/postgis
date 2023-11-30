@@ -3,6 +3,9 @@ xxxx/xx/xx
 
 * Bug Fixes *
 
+ - #5610, Regression fix: Allow Nan and infinity again
+          in ST_SetPoint (Regina Obe)
+
 PostGIS 3.0.10
 2023/11/19
 
