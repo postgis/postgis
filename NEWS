@@ -7,6 +7,8 @@ Additional features are enabled if you are running GEOS 3.9+
 Proj 6.1+, and PostgreSQL 14+.
 
 * Bug Fixes and Enhancements *
+ - #5610, Regression fix: Allow Nan and infinity again
+          in ST_SetPoint (Regina Obe)
 
 PostGIS 3.2.6
 2023/11/19
