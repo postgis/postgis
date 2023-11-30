@@ -590,6 +590,9 @@ point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int *ringCounts, L
 
 	POSTGIS_DEBUGF(2, "point_in_multipolygon_rtree called for %p %d %p.", root, polyCount, point);
 
+	/* empty is not within anything */
+	if (lwpoint_is_empty(point)) return -1;
+
 	pt = getPoint2d_cp(point->point, 0);
 
 	/* assume bbox short-circuit has already been attempted */

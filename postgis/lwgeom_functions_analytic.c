@@ -860,6 +860,9 @@ int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *point)
 
 	POSTGIS_DEBUG(2, "point_in_polygon called.");
 
+	/* empty is not within anything */
+	if (lwpoint_is_empty(point)) return -1;
+
 	getPoint2d_p(point->point, 0, &pt);
 	/* assume bbox short-circuit has already been attempted */
 
