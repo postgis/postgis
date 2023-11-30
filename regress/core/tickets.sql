@@ -1479,3 +1479,11 @@ SELECT '#5320', ST_SimplifyPreserveTopology('0106000020E864000001000000010300000
 
 DROP PROCEDURE IF EXISTS p_force_parellel_mode(text);
 SELECT '#5378', ST_SRID( ST_Buffer(ST_GeomFromText('POINT(-94 29.53)', 4269)::geography, 12)::geometry );
+
+SELECT '#5627' AS ticket, bool_and(ST_Intersects(
+    'MULTIPOINT(EMPTY,(-378 574))'::geometry,
+    geom))
+FROM (VALUES
+    ('MULTIPOLYGON(((-357 477,-392 574,-378 574,-357 477)))'::geometry),
+    ('MULTIPOLYGON(((-357 477,-392 574,-378 574,-357 477)))'::geometry))
+    AS geoms(geom);
