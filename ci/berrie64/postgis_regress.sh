@@ -6,7 +6,7 @@ set -e
 ## label is set by jenkins
 #export label=${label}
 
-export GEOS_VER=3.9.4
+export GEOS_VER=3.9.6
 export WORKSPACE=/home/jenkins/workspace
 export GEOS_PATH=${WORKSPACE}/geos/rel-${GEOS_VER}
 
