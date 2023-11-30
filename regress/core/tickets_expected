@@ -457,3 +457,4 @@ ERROR:  LWGEOM_addpoint: Invalid offset
 ERROR:  Line has no points
 ERROR:  Geometry contains invalid coordinates
 ERROR:  Geometry contains invalid coordinates
+#5627|t
