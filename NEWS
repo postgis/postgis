@@ -7,6 +7,8 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
 * Bug Fixes *
 
  - #5571, Memory over-allocation for narrow inputs (Paul Ramsey)
+ - #5610, Regression fix: Allow Nan and infinity again
+          in ST_SetPoint (Regina Obe)
 
 
 * Bug Fixes and Enhancments *
