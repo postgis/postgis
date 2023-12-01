@@ -299,7 +299,7 @@ lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl)
 			g1 = (LWGEOM *)lwg1;
 
 		if (lwgeom_is_empty(g1))
-			return LW_TRUE;
+			continue;
 
 		if (lw_dist2d_is_collection(g1))
 		{
@@ -329,10 +329,9 @@ lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl)
 			if (!g2->bbox)
 				lwgeom_add_bbox(g2);
 
-			/* If one of geometries is empty, return. True here only means continue searching. False would
-			 * have stopped the process*/
+			/* If one of geometries is empty, skip */
 			if (lwgeom_is_empty(g1) || lwgeom_is_empty(g2))
-				return LW_TRUE;
+				continue;
 
 			if ((dl->mode != DIST_MAX) && (!lw_dist2d_check_overlap(g1, g2)) &&
 			    (g1->type == LINETYPE || g1->type == POLYGONTYPE || g1->type == TRIANGLETYPE) &&
