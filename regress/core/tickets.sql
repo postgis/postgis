@@ -1469,3 +1469,12 @@ FROM (VALUES
     ('MULTIPOLYGON(((-357 477,-392 574,-378 574,-357 477)))'::geometry),
     ('MULTIPOLYGON(((-357 477,-392 574,-378 574,-357 477)))'::geometry))
     AS geoms(geom);
+
+SELECT '#5604',
+ ST_Distance(a2, a1),
+ ST_AsText(ST_ClosestPoint(a2, a1)),
+ ST_Distance(a1, a2),
+ ST_AsText(ST_ClosestPoint(a1, a2))
+FROM
+ST_GeomFromText('MULTIPOINT((-2 0), EMPTY)') AS a1,
+ST_GeomFromText('MULTIPOINT((1 0),(0 0))') AS a2;
