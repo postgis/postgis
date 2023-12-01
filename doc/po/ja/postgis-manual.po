@@ -6,10 +6,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-29 04:00+0000\n"
-"PO-Revision-Date: 2023-11-28 05:23+0000\n"
+"PO-Revision-Date: 2023-12-01 11:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -10230,7 +10230,7 @@ msgstr "Jan Katins"
 #. Tag: member
 #, no-c-format
 msgid "Jan Tojnar"
-msgstr ""
+msgstr "Jan Tojnar"
 
 #. Tag: member
 #, no-c-format
@@ -16569,7 +16569,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a line extended forwards and backwards by specified distances."
-msgstr ""
+msgstr "指定距離ぶん前後に延長されたラインを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -16580,6 +16580,10 @@ msgid ""
 "point(s) is determined by the first (and last) two distinct points of the "
 "line. Duplicate points are ignored."
 msgstr ""
+"新しい始点 (と終点)を与えられた距離を取って追加することで、指定距離ぶん前後に"
+"延長されたラインを返します。距離を0にした場合には、ポイントは追加されません。"
+"非負の距離値のみ受け付けます。追加ポイントの方向は始点(と終点の二つの異なるポ"
+"イントによって決定されます。重複ポイントは無視されます。"
 
 #. Tag: title
 #, no-c-format
@@ -16589,7 +16593,7 @@ msgstr "例: ラインを前方に5単位延長し、後方に6単位延長す�
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_Project\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_Project\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19594,6 +19598,8 @@ msgid ""
 ", <xref linkend=\"ST_LineExtend\"/>, <xref linkend=\"ST_LineInterpolatePoint"
 "\"/>, <xref linkend=\"ST_LineMerge\"/>"
 msgstr ""
+", <xref linkend=\"ST_LineExtend\"/>, <xref linkend=\"ST_LineInterpolatePoint"
+"\"/>, <xref linkend=\"ST_LineMerge\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -23529,6 +23535,12 @@ msgid ""
 "any columns other than the geometry, including any potential keys, will just "
 "end up inside the feature’s \"properties\" member."
 msgstr ""
+"<varname>id_column</varname>パラメータは、返されるGeoJSONの地物の\"id"
+"\"メンバの値設定に使われます。GeoJSON RFCによると、これは、主キーのように地物"
+"が共通して使用する識別子を持つときは常に*使うべき*とされています。指定しない"
+"場合には、生成される地物に\"id\"メンバが入りません"
+"。ジオメトリ以外のカラムは、潜在的なキーも含めて、地物の\"properties"
+"\"メンバ内に入ります。"
 
 #. Tag: para
 #, no-c-format
@@ -23596,7 +23608,7 @@ msgstr "Changed: 3.0.0 EPSG:4326以外の場合のSRID出力。"
 #. Tag: para
 #, no-c-format
 msgid "Changed: 3.5.0 allow specifying the column containing the feature id"
-msgstr ""
+msgstr "Changed: 3.5.0 地物のidを含むカラムを指定できるようになりました"
 
 #. Tag: para
 #, no-c-format
