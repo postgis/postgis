@@ -5,6 +5,8 @@ xxxx/xx/xx
  - #5610, Regression fix: Allow Nan and infinity again
           in ST_SetPoint (Regina Obe)
  - #5627, Handling of EMPTY components in PiP check (Paul Ramsey)
+ - #5604, Handle distance between collections with empty elements (Paul Ramsey)
+
 
 PostGIS 3.1.10
 2023/11/19
