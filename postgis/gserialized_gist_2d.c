@@ -878,6 +878,16 @@ Datum gserialized_gist_compress_2d(PG_FUNCTION_ARGS)
 	/* Extract our index key from the GiST entry. */
 	result = gserialized_datum_get_box2df_p(entry_in->key, &bbox_out);
 
+	if (result == LW_FAILURE)
+	{
+		/* Treat failure like NULL */
+		POSTGIS_DEBUG(4, "[GIST] leafkey is null");
+		gistentryinit(*entry_out, (Datum) 0, entry_in->rel,
+		              entry_in->page, entry_in->offset, false);
+		POSTGIS_DEBUG(4, "[GIST] returning copy of input");
+		PG_RETURN_POINTER(entry_out);
+	}
+
 	/* Is the bounding box empty? Done! */
 	if (box2df_is_empty(&bbox_out))
 	{
