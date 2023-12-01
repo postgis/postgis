@@ -1558,7 +1558,12 @@ cmp_point_x(const void *pa, const void *pb)
 	const POINT2D *pt1 = getPoint2d_cp(p1->point, 0);
 	const POINT2D *pt2 = getPoint2d_cp(p2->point, 0);
 
-	return (pt1->x > pt2->x) ? 1 : ((pt1->x < pt2->x) ? -1 : 0);
+	if (pt1 && pt2)
+		return (pt1->x > pt2->x) ? 1 : ((pt1->x < pt2->x) ? -1 : 0);
+
+	if (pt1) return -1;
+	if (pt2) return 1;
+	return 0;
 }
 
 static int
@@ -1570,7 +1575,12 @@ cmp_point_y(const void *pa, const void *pb)
 	const POINT2D *pt1 = getPoint2d_cp(p1->point, 0);
 	const POINT2D *pt2 = getPoint2d_cp(p2->point, 0);
 
-	return (pt1->y > pt2->y) ? 1 : ((pt1->y < pt2->y) ? -1 : 0);
+	if (pt1 && pt2)
+		return (pt1->y > pt2->y) ? 1 : ((pt1->y < pt2->y) ? -1 : 0);
+
+	if (pt1) return -1;
+	if (pt2) return 1;
+	return 0;
 }
 
 int
@@ -1633,6 +1643,7 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 					continue;
 
 				const POINT2D *pti = getPoint2d_cp(mpt->geoms[i]->point, 0);
+				if (!pti) continue;
 
 				/* check upcoming points if they're within tolerance of current one */
 				for (uint32_t j = i + 1; j < mpt->ngeoms; j++)
@@ -1641,6 +1652,7 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 						continue;
 
 					const POINT2D *ptj = getPoint2d_cp(mpt->geoms[j]->point, 0);
+					if (!ptj) continue;
 
 					/* check that the point is in the strip of tolerance around the point */
 					if ((dim ? ptj->x - pti->x : ptj->y - pti->y) > tolerance)
@@ -1653,6 +1665,17 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 						mpt->geoms[j] = NULL;
 						geometry_modified = LW_TRUE;
 					}
+				}
+			}
+
+			/* null out empties */
+			for (uint32_t j = 0; j < mpt->ngeoms; j++)
+			{
+				if (mpt->geoms[j] && lwpoint_is_empty(mpt->geoms[j]))
+				{
+					lwpoint_free(mpt->geoms[j]);
+					mpt->geoms[j] = NULL;
+					geometry_modified = LW_TRUE;
 				}
 			}
 
