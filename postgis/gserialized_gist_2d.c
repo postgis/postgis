@@ -560,6 +560,16 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 		{
 			result = box2df_from_gbox_p(&gbox, box2df);
 		}
+		else {
+			/* Oh dear, has someone fed us an empty? */
+			POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
+			gpart = (GSERIALIZED *)PG_DETOAST_DATUM(gsdatum);
+			if (gserialized_is_empty(gpart))
+			{
+				box2df_set_empty(box2df);
+				return LW_SUCCESS;
+			}
+		}
 	}
 
 	POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
@@ -868,10 +878,9 @@ Datum gserialized_gist_compress_2d(PG_FUNCTION_ARGS)
 	/* Extract our index key from the GiST entry. */
 	result = gserialized_datum_get_box2df_p(entry_in->key, &bbox_out);
 
-	/* Is the bounding box valid (non-empty, non-infinite)? If not, return input uncompressed. */
-	if ( result == LW_FAILURE )
+	/* Is the bounding box empty? Done! */
+	if (box2df_is_empty(&bbox_out))
 	{
-		box2df_set_empty(&bbox_out);
 		gistentryinit(*entry_out, PointerGetDatum(box2df_copy(&bbox_out)),
 		              entry_in->rel, entry_in->page, entry_in->offset, false);
 
