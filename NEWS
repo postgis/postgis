@@ -10,6 +10,7 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
  - #5610, Regression fix: Allow Nan and infinity again
           in ST_SetPoint (Regina Obe)
  - #5627, Handling of EMPTY components in PiP check (Paul Ramsey)
+ - #5629, Handling EMPTY components in repeated point removal (Paul Ramsey)
 
 
 * Bug Fixes and Enhancments *
