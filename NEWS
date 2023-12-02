@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - #5632, Handle empty geometries correctly in the 2D GiST index (Paul Ramsey)
  - #5649, Return NULL with a notice when a raster band cannot be read (Paul Ramsey)
  - Fix a format truncation warning in the shapefile loader (Sandro Santilli)
  - Use the correct argument widths in raster WKB diagnostics (Sandro Santilli)
