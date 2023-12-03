@@ -3268,6 +3268,19 @@ Datum ST_Split(PG_FUNCTION_ARGS)
 	lwgeom_in = lwgeom_from_gserialized(in);
 	lwblade_in = lwgeom_from_gserialized(blade_in);
 
+	if (!lwgeom_isfinite(lwgeom_in))
+	{
+		lwpgerror("Input Geometry contains invalid coordinates");
+		PG_RETURN_NULL();
+	}
+
+	if (!lwgeom_isfinite(lwblade_in))
+	{
+		lwpgerror("Blade Geometry contains invalid coordinates");
+		PG_RETURN_NULL();
+	}
+
+
 	lwgeom_out = lwgeom_split(lwgeom_in, lwblade_in);
 	lwgeom_free(lwgeom_in);
 	lwgeom_free(lwblade_in);
