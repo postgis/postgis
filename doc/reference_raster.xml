@@ -9377,6 +9377,7 @@ FROM dummy_rast WHERE rid=2;
                             <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
                             <paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
                             <paramdef choice="opt"><type>boolean </type> <parameter>crop=TRUE</parameter></paramdef>
+                            <paramdef choice="opt"><type>boolean </type> <parameter>touched=FALSE</parameter></paramdef>
                         </funcprototype>
 
                         <funcprototype>
@@ -9386,6 +9387,7 @@ FROM dummy_rast WHERE rid=2;
                             <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
                             <paramdef><type>double precision </type> <parameter>nodataval</parameter></paramdef>
                             <paramdef choice="opt"><type>boolean </type> <parameter>crop=TRUE</parameter></paramdef>
+                            <paramdef choice="opt"><type>boolean </type> <parameter>touched=FALSE</parameter></paramdef>
                         </funcprototype>
 
                         <funcprototype>
@@ -9394,6 +9396,7 @@ FROM dummy_rast WHERE rid=2;
                             <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
                             <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
                             <paramdef><type>boolean </type> <parameter>crop</parameter></paramdef>
+                            <paramdef choice="opt"><type>boolean </type> <parameter>touched=FALSE</parameter></paramdef>
                         </funcprototype>
 
                         <funcprototype>
@@ -9402,6 +9405,7 @@ FROM dummy_rast WHERE rid=2;
                             <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
                             <paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
                             <paramdef choice="opt"><type>boolean </type> <parameter>crop=TRUE</parameter></paramdef>
+                            <paramdef choice="opt"><type>boolean </type> <parameter>touched=FALSE</parameter></paramdef>
                         </funcprototype>
 
                         <funcprototype>
@@ -9410,6 +9414,7 @@ FROM dummy_rast WHERE rid=2;
                             <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
                             <paramdef><type>double precision </type> <parameter>nodataval</parameter></paramdef>
                             <paramdef choice="opt"><type>boolean </type> <parameter>crop=TRUE</parameter></paramdef>
+                            <paramdef choice="opt"><type>boolean </type> <parameter>touched=FALSE</parameter></paramdef>
                         </funcprototype>
 
                         <funcprototype>
@@ -9417,6 +9422,7 @@ FROM dummy_rast WHERE rid=2;
                             <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
                             <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
                             <paramdef><type>boolean </type> <parameter>crop</parameter></paramdef>
+                            <paramdef choice="opt"><type>boolean </type> <parameter>touched=FALSE</parameter></paramdef>
                         </funcprototype>
 
                     </funcsynopsis>
@@ -9434,21 +9440,35 @@ FROM dummy_rast WHERE rid=2;
                     </para>
 
                     <para>
-                        If <varname>crop</varname> is not specified, true is assumed meaning the output raster is cropped to the intersection of the <varname>geom</varname>and <varname>rast</varname> extents. If <varname>crop</varname> is set to false, the new raster gets the same extent as <varname>rast</varname>.
+                        If <varname>crop</varname> is not specified, true is assumed meaning the output raster is cropped to the intersection of the <varname>geom</varname>and <varname>rast</varname> extents. If <varname>crop</varname> is set to false, the new raster gets the same extent as <varname>rast</varname>.  If <varname>touched</varname> is set to true, then all pixels in the <varname>rast</varname> that intersect the geometry are selected.
                     </para>
-
+                    <note><para>The default behavior is touched=false, which will only select pixels where the center of the pixel is covered by the geometry.</para></note>
+	                <para role="enhanced" conformance="3.5.0">Enhanced: 3.5.0 - touched argument added.</para>
                     <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
 
                     <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Rewritten in C</para>
 
                     <para>
-                        Examples here use Massachusetts aerial data available on MassGIS site <link xlink:href="http://www.mass.gov/mgis/colororthos2008.htm">MassGIS Aerial Orthos</link>. Coordinates are in Massachusetts State Plane Meters.
+                        Examples here use Massachusetts aerial data available on MassGIS site <link xlink:href="https://www.mass.gov/info-details/massgis-data-20082009-aerial-imagery">MassGIS Aerial Orthos</link>.
                     </para>
                 </refsection>
 
+                <refsection><title>Examples: Comparing selecting all touched vs. not all touched</title>
+                        <programlisting><![CDATA[SELECT ST_Count(rast) AS count_pixels_in_orig, ST_Count(rast_touched) AS all_touched_pixels, ST_Count(rast_not_touched) AS default_clip
+FROM ST_AsRaster(ST_Letters('R'), scalex => 1.0, scaley => -1.0) AS r(rast) 
+    INNER JOIN ST_GeomFromText('LINESTRING(0 1, 5 6, 10 10)') AS g(geom)
+ ON ST_Intersects(r.rast,g.geom)
+ , ST_Clip(r.rast, g.geom, touched => true) AS rast_touched
+ , ST_Clip(r.rast, g.geom, touched => false) AS rast_not_touched;]]>
+ 
+ count_pixels_in_orig | all_touched_pixels | default_clip
+----------------------+--------------------+--------------
+                 2605 |                 16 |           10
+(1 row)
+ </programlisting>
+                </refsection>
                 <refsection>
-                    <title>Examples: 1 band clipping</title>
-
+                    <title>Examples: 1 band clipping (not touched)</title>
                     <programlisting>
 -- Clip the first band of an aerial tile by a 20 meter buffer.
 SELECT ST_Clip(rast, 1,
@@ -9619,6 +9639,7 @@ WHERE rid = 4;
                     <title>See Also</title>
                     <para>
                         <xref linkend="RT_ST_AddBand"/>,
+                        <xref linkend="RT_ST_Count"/>,
                         <xref linkend="RT_ST_MapAlgebra"/>,
                         <xref linkend="RT_ST_Intersection"/>
                     </para>

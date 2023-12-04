@@ -3013,6 +3013,10 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 	rt_band output_band = NULL;
 	double value;
 	int isnodata;
+	/** Used to send to GDAL if ALL_TOUCHED rasterization is requested **/
+	char **options = NULL;
+	/** How many options we have currently.  Right now we'll have at most 1, but that could change in future **/
+	int options_len = 0;
 
 	POSTGIS_RT_DEBUG(3, "Starting...");
 
@@ -3284,6 +3288,20 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 	wkb = lwgeom_to_wkb_varlena(geom, WKB_SFSQL);
 	lwgeom_free(geom);
 
+	/* we want to mark all pixels that are inside or touching the geometry - touched (5) */
+	if (!PG_ARGISNULL(5) && PG_GETARG_BOOL(5) == TRUE){
+			options_len = options_len + 1;
+			options = (char **) palloc(sizeof(char *) * options_len);
+			options[options_len - 1] = palloc(sizeof(char*) * (strlen("ALL_TOUCHED=TRUE") + 1));
+		 	strcpy(options[options_len - 1], "ALL_TOUCHED=TRUE");
+	}
+
+	if (options_len) {
+		options_len++;
+		options = (char **) repalloc(options, sizeof(char *) * options_len);
+		options[options_len - 1] = NULL;
+	}
+
 	/* rasterize geometry */
 	arg->mask = rt_raster_gdal_rasterize((unsigned char *)wkb->data,
 					     LWSIZE_GET(wkb->size) - LWVARHDRSZ,
@@ -3304,9 +3322,12 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 					     &(gt[3]),
 					     &(gt[2]),
 					     &(gt[4]),
-					     NULL);
+					     options);
 
 	pfree(wkb);
+
+	if (options_len) pfree(options);
+
 	if (arg->mask == NULL) {
 		rtpg_clip_arg_destroy(arg);
 		PG_FREE_IF_COPY(pgraster, 0);

@@ -27,6 +27,8 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.5.0+ is needed.
           Views and materialized views that use the ST_AsGeoJSON(record ..)
           will need rebuilding to upgrade to new signature
           (Jan Tojnar)
+  - #5496, ST_Clip all variants replaced, will require
+           rebuilding of materialized views that use them (Regina Obe)
 
 * New Features *
 
@@ -36,6 +38,7 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.5.0+ is needed.
   - GT-123, postgis_sfcgal: CG_YMonotonePartition, CG_ApproxConvexPartition, CG_GreeneApproxConvexPartition and CG_OptimalConvexPartition (Loïc Bartoletti)
   - GT-156, postgis_sfcgal: CG_Visibility (Loïc Bartoletti)
   - GT-157, postgis_sfcgal: Add ST_ExtrudeStraightSkeleton (Loïc Bartoletti)
+  - #5496, ST_Clip support for touched (Regina Obe)
 
 * Enhancements *
 

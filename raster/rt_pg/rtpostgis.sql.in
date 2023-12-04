@@ -6575,10 +6575,12 @@ CREATE AGGREGATE st_union(raster, text) (
 -----------------------------------------------------------------------
 
 -- Availability: 2.1.0
+-- Changed: 3.5.0 - added touched parameter
+-- Replaces _st_clip(raster, integer[], geometry, float8[], boolean) deprecated in 3.5.0
 CREATE OR REPLACE FUNCTION _st_clip(
 	rast raster, nband integer[],
 	geom geometry,
-	nodataval double precision[] DEFAULT NULL, crop boolean DEFAULT TRUE
+	nodataval float8[] DEFAULT NULL, crop boolean DEFAULT TRUE, touched boolean DEFAULT false
 )
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_clip'
@@ -6586,13 +6588,14 @@ CREATE OR REPLACE FUNCTION _st_clip(
 
 -- Availability: 2.0.0
 -- Changed: 2.1.0 - renamed the band parameter
--- Replaces st_clip(rast raster, band int, geom geometry, nodataval float8, crop boolean) deprecated in 2.1.0
+-- Changed: 3.5.0 - add touched parameter
+-- Replaces st_clip(raster, integer[], geometry, float8[], boolean) deprecated in 3.5.0
 CREATE OR REPLACE FUNCTION st_clip(
 	rast raster,
 	nband integer[],
 	geom geometry,
-	nodataval double precision[] DEFAULT NULL,
-	crop boolean DEFAULT TRUE
+	nodataval float8[],
+	crop boolean DEFAULT true, touched boolean DEFAULT false
 )
 	RETURNS raster
  	AS $$
@@ -6602,61 +6605,71 @@ CREATE OR REPLACE FUNCTION st_clip(
 			RETURN rast;
 		END IF;
 
-		RETURN @extschema@._ST_Clip($1, $2, $3, $4, $5);
+		RETURN @extschema@._ST_Clip(rast, nband, geom, nodataval, crop, touched);
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
 
 -- Availability: 2.0.0
+-- Changed: 3.5.0 - added touched parameter
+-- Replaces st_clip(raster, integer, geometry, float8, boolean) deprecated in 3.5.0
 CREATE OR REPLACE FUNCTION st_clip(
 	rast raster, nband integer,
 	geom geometry,
-	nodataval double precision, crop boolean DEFAULT TRUE
+	nodataval float8, crop boolean DEFAULT true, touched boolean DEFAULT false
 )
 	RETURNS raster AS
-	$$ SELECT @extschema@.ST_Clip($1, ARRAY[$2]::integer[], $3, ARRAY[$4]::double precision[], $5) $$
+	$$ SELECT @extschema@.ST_Clip(rast, ARRAY[nband]::integer[], geom, ARRAY[nodataval]::float8[], crop, touched) $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Availability: 2.0.0
 -- Changed: 2.1.0 -- renamed the band parameter
 -- Replaces st_clip(rast raster, band int, geom geometry, crop boolean) deprecated in 2.1.0
+-- Replaces st_clip(raster, integer, geometry, boolean) deprecated in 3.5.0
+-- Changed: 3.5.0 -- added touched parameter
 CREATE OR REPLACE FUNCTION st_clip(
 	rast raster,
 	nband integer,
 	geom geometry,
-	crop boolean
+	crop boolean DEFAULT true, touched boolean DEFAULT false
 )
 	RETURNS raster AS
-	$$ SELECT @extschema@.ST_Clip($1, ARRAY[$2]::integer[], $3, null::double precision[], $4) $$
+	$$ SELECT @extschema@.ST_Clip(rast, ARRAY[nband]::integer[], geom, null::double precision[], crop, touched) $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Availability: 2.0.0
+-- Changed: 3.5.0 - added touched parameter
+-- Replaces st_clip(raster, geometry, float8[], boolean) deprecated in 3.5.0 
 CREATE OR REPLACE FUNCTION st_clip(
 	rast raster,
 	geom geometry,
-	nodataval double precision[] DEFAULT NULL, crop boolean DEFAULT TRUE
+	nodataval float8[] DEFAULT NULL, crop boolean DEFAULT true, touched boolean DEFAULT false
 )
 	RETURNS raster AS
-	$$ SELECT @extschema@.ST_Clip($1, NULL, $2, $3, $4) $$
+	$$ SELECT @extschema@.ST_Clip(rast, NULL, geom, nodataval, crop, touched) $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Availability: 2.0.0
+-- Changed: 3.5.0 - added touched parameter
+-- Replaces st_clip(raster, geometry, float8, boolean) deprecated in 3.5.0
 CREATE OR REPLACE FUNCTION st_clip(
 	rast raster,
 	geom geometry,
-	nodataval double precision, crop boolean DEFAULT TRUE
+	nodataval double precision, crop boolean DEFAULT true, touched boolean DEFAULT false
 )
 	RETURNS raster AS
-	$$ SELECT @extschema@.ST_Clip($1, NULL, $2, ARRAY[$3]::double precision[], $4) $$
+	$$ SELECT @extschema@.ST_Clip(rast, NULL, geom, ARRAY[nodataval]::float8[], crop, touched) $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Availability: 2.0.0
+-- Availability: 3.5.0 - added touched parameter
+-- Replaces st_clip(raster, geometry, boolean) deprecated in 3.5.0
 CREATE OR REPLACE FUNCTION st_clip(
 	rast raster,
 	geom geometry,
-	crop boolean
+	crop boolean, touched boolean DEFAULT false
 )
 	RETURNS raster AS
-	$$ SELECT @extschema@.ST_Clip($1, NULL, $2, null::double precision[], $3) $$
+	$$ SELECT @extschema@.ST_Clip(rast, NULL, geom, null::float8[], crop, touched) $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -----------------------------------------------------------------------
