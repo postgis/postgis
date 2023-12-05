@@ -39,6 +39,10 @@ variables:
     - wait # for tee process to flush its buffers
     - echo "-- Summary of upgrade tests --"
     - egrep '(PASS|FAIL|SKIP|INFO|ERROR)' check.log
+    - echo "-- Upgrade tests with standard_conforming_strings off --"
+    - RUNTESTFLAGS="$${RUNTESTFLAGS} --after-create-db-script $${SRCDIR}/regress/hooks/standard-conforming-strings-off.sql"
+      MAKE_ARGS='TESTS=$${SRCDIR}/regress/core/regress'
+      $${SRCDIR}/utils/check_all_upgrades.sh -s :auto!
 
 clone:
   clone:
