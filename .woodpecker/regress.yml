@@ -100,7 +100,6 @@ steps:
       - <<: *steps-env
       - <<: *steps-start-postgresql
       - <<: *steps-pg-install
-      - <<: *steps-pg-install
       - <<: *steps-pg-test-install
 
   installcheck-pg15:
@@ -111,7 +110,6 @@ steps:
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
-      - <<: *steps-pg-install
       - <<: *steps-pg-install
       - <<: *steps-pg-test-install
 
