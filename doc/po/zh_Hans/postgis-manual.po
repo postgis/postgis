@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-29 04:00+0000\n"
-"PO-Revision-Date: 2023-11-28 12:23+0000\n"
+"PO-Revision-Date: 2023-12-07 02:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
@@ -9571,7 +9571,7 @@ msgstr "Jan Katins"
 #. Tag: member
 #, no-c-format
 msgid "Jan Tojnar"
-msgstr ""
+msgstr "Jan Tojnar"
 
 #. Tag: member
 #, no-c-format
@@ -15604,7 +15604,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a line extended forwards and backwards by specified distances."
-msgstr ""
+msgstr "返回一条线，向前和向后延伸指定的距离。"
 
 #. Tag: para
 #, no-c-format
@@ -15615,6 +15615,9 @@ msgid ""
 "point(s) is determined by the first (and last) two distinct points of the "
 "line. Duplicate points are ignored."
 msgstr ""
+"返回一条线，通过在给定的距离处添加新的起始点（和结束点），向前和向后延伸。距"
+"离为零不会添加点。只允许非负距离。所添加点的方向由线的第一个（和最后一个）不"
+"同的两个点确定。重复的点将被忽略。"
 
 #. Tag: title
 #, no-c-format
@@ -15624,7 +15627,7 @@ msgstr "例如：将一条线向前延伸5个单位，向后延伸6个单位"
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_Project\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_Project\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -18464,6 +18467,8 @@ msgid ""
 ", <xref linkend=\"ST_LineExtend\"/>, <xref linkend=\"ST_LineInterpolatePoint"
 "\"/>, <xref linkend=\"ST_LineMerge\"/>"
 msgstr ""
+", <xref linkend=\"ST_LineExtend\"/>, <xref linkend=\"ST_LineInterpolatePoint"
+"\"/>, <xref linkend=\"ST_LineMerge\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22174,6 +22179,11 @@ msgid ""
 "any columns other than the geometry, including any potential keys, will just "
 "end up inside the feature’s \"properties\" member."
 msgstr ""
+"<varname>id_column</varname> 参数用于设置返回的 GeoJSON 要素的 \"id\" 成员。"
+"根据 GeoJSON "
+"RFC，应该在要素具有常用标识符（例如主键）时使用此参数。当未指定时，"
+"生成的要素将不会有 \"id\" 成员，除了几何信息之外的任何列，包括任何可能的键，"
+"都将最终位于要素的 \"properties\" 成员内。"
 
 #. Tag: para
 #, no-c-format
@@ -22240,7 +22250,7 @@ msgstr "更改：3.0.0 输出 SRID（如果不是 EPSG：4326）。"
 #. Tag: para
 #, no-c-format
 msgid "Changed: 3.5.0 allow specifying the column containing the feature id"
-msgstr ""
+msgstr "更改：3.5.0 允许指定包含要素 ID 的列"
 
 #. Tag: para
 #, no-c-format
