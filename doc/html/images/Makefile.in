@@ -201,9 +201,13 @@ GENERATED_IMAGES= \
 	st_split02.png \
 	st_split03.png \
 	st_split04.png \
+	st_simplify01.png \
+	st_simplify02.png \
 	st_simplifypolygonhull01.png \
 	st_simplifypolygonhull02.png \
 	st_simplifypolygonhull03.png \
+	st_simplifypreservetopology01.png \
+	st_simplifypreservetopology02.png \
 	st_straightskeleton01.png \
 	st_approximatemedialaxis01.png \
 	st_subdivide01.png \

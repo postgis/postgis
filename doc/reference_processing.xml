@@ -2637,20 +2637,19 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
     <refentry xml:id="ST_Simplify">
       <refnamediv>
         <refname>ST_Simplify</refname>
-        <refpurpose>Returns a simplified version of a geometry, using
-                the Douglas-Peucker algorithm.</refpurpose>
+        <refpurpose>Returns a simplified representation of a geometry, using the Douglas-Peucker algorithm.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
         <funcsynopsis>
           <funcprototype>
             <funcdef>geometry <function>ST_Simplify</function></funcdef>
-            <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+            <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
             <paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
           </funcprototype>
           <funcprototype>
             <funcdef>geometry <function>ST_Simplify</function></funcdef>
-            <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+            <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
             <paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
             <paramdef><type>boolean</type> <parameter>preserveCollapsed</parameter></paramdef>
           </funcprototype>
@@ -2659,23 +2658,28 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
 
       <refsection>
         <title>Description</title>
-        <para>Returns a "simplified" version of the given geometry using
-                the Douglas-Peucker algorithm. Will actually do something only with
-                (multi)lines and (multi)polygons but you can safely call it with
-                any kind of geometry. Since simplification occurs on a
-                object-by-object basis you can also feed a GeometryCollection to
-                this function.</para>
+        <para>Computes a simplified representation of a geometry using the
+            <link xlink:href="https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm">Douglas-Peucker algorithm</link>. 
+            The simplification <varname>tolerance</varname> is a distance value, in the units of the input SRS.
+            Simplification removes vertices which are within the tolerance distance of the simplified linework.
+            The result may not be valid even if the input is.
+            </para>
+          <para>
+            The function can be called with any kind of geometry (including GeometryCollections), 
+            but only line and polygon elements are simplified.
+            Endpoints of linear geometry are preserved.
+            </para>
 
-    <para>The "preserve collapsed" flag will retain objects that would otherwise
-      be too small given the tolerance. For example, a 1m long line simplified with a 10m
-      tolerance. If <varname>preserveCollapsed</varname> argument is
-      specified as true, the line will not disappear.
-      This flag is useful for rendering engines, to avoid having large numbers of very
-      small objects disappear from a map leaving surprising gaps.</para>
+        <para>The <varname>preserveCollapsed</varname> flag retains small geometries that would otherwise
+          be removed at the given tolerance. For example, if a 1m long line is simplified with a 10m
+          tolerance, when <varname>preserveCollapsed</varname> is true the line will not disappear.
+          This flag is useful for rendering purposes, to prevent
+          very small features disappearing from a map.</para>
 
-        <note><para>Note that returned geometry might lose its
-                simplicity (see <xref linkend="ST_IsSimple"/>)</para></note>
-        <note><para>Note topology may not be preserved and may result in invalid geometries.  Use  (see <xref linkend="ST_SimplifyPreserveTopology"/>) to preserve topology.</para></note>
+        <note><para>The returned geometry may lose its simplicity (see <xref linkend="ST_IsSimple"/>), 
+         topology may not be preserved, and polygonal results may be invalid (see <xref linkend="ST_IsValid"/>).  
+         Use <xref linkend="ST_SimplifyPreserveTopology"/> to preserve topology and ensure validity.</para></note>
+        <note><para>This function does not preserve boundaries shared between polygons.  Use <xref linkend="ST_CoverageSimplify"/> if this is required.</para></note>
 
         <para role="availability" conformance="1.2.2">Availability: 1.2.2</para>
       </refsection>
@@ -2684,18 +2688,44 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
             <title>Examples</title>
             <para>A circle simplified too much becomes a triangle, medium an octagon, </para>
                 <programlisting>SELECT ST_Npoints(geom) AS np_before,
-       ST_NPoints(ST_Simplify(geom,0.1)) AS np01_notbadcircle,
-       ST_NPoints(ST_Simplify(geom,0.5)) AS np05_notquitecircle,
-       ST_NPoints(ST_Simplify(geom,1)) AS np1_octagon,
-       ST_NPoints(ST_Simplify(geom,10)) AS np10_triangle,
-       (ST_Simplify(geom,100) is null) AS  np100_geometrygoesaway
-  FROM
-    (SELECT ST_Buffer('POINT(1 3)', 10,12) As geom) AS foo;
+       ST_NPoints(ST_Simplify(geom, 0.1)) AS np01_notbadcircle,
+       ST_NPoints(ST_Simplify(geom, 0.5)) AS np05_notquitecircle,
+       ST_NPoints(ST_Simplify(geom, 1)) AS np1_octagon,
+       ST_NPoints(ST_Simplify(geom, 10)) AS np10_triangle,
+       (ST_Simplify(geom, 100) is null) AS  np100_geometrygoesaway
+  FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As geom) AS t;
 
  np_before | np01_notbadcircle | np05_notquitecircle | np1_octagon | np10_triangle | np100_geometrygoesaway
 -----------+-------------------+---------------------+-------------+---------------+------------------------
         49 |                33 |                  17 |           9 |             4 | t
-      </programlisting>
+</programlisting>
+
+    <para>Simplifying a set of lines.  Lines may intersect after simplification.</para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_simplify01.png"/>
+        </imageobject>
+      </mediaobject>
+    </informalfigure>
+    <programlisting>SELECT ST_Simplify(
+  'MULTILINESTRING ((20 180, 20 150, 50 150, 50 100, 110 150, 150 140, 170 120), (20 10, 80 30, 90 120), (90 120, 130 130), (130 130, 130 70, 160 40, 180 60, 180 90, 140 80), (50 40, 70 40, 80 70, 70 60, 60 60, 50 50, 50 40))',
+    40);
+</programlisting>
+
+    <para>Simplifying a MultiPolygon.  Polygonal results may be invalid</para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_simplify02.png"/>
+        </imageobject>
+      </mediaobject>
+    </informalfigure>
+    <programlisting>SELECT ST_Simplify(
+  'MULTIPOLYGON (((90 110, 80 180, 50 160, 10 170, 10 140, 20 110, 90 110)), ((40 80, 100 100, 120 160, 170 180, 190 70, 140 10, 110 40, 60 40, 40 80), (180 70, 170 110, 142.5 128.5, 128.5 77.5, 90 60, 180 70)))',
+    40);
+</programlisting>
+
           </refsection>
           <refsection>
             <title>See Also</title>
@@ -2703,6 +2733,7 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
     <xref linkend="ST_IsSimple"/>,
     <xref linkend="ST_SimplifyPreserveTopology"/>,
     <xref linkend="ST_SimplifyVW"/>,
+    <xref linkend="ST_CoverageSimplify"/>,
     Topology <xref linkend="TP_ST_Simplify"/></para>
           </refsection>
     </refentry>
@@ -2710,7 +2741,7 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
     <refentry xml:id="ST_SimplifyPreserveTopology">
       <refnamediv>
         <refname>ST_SimplifyPreserveTopology</refname>
-        <refpurpose>Returns a simplified and valid version of a geometry, using
+        <refpurpose>Returns a simplified and valid representation of a geometry, using
             the Douglas-Peucker algorithm.</refpurpose>
       </refnamediv>
 
@@ -2718,7 +2749,7 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
         <funcsynopsis>
           <funcprototype>
             <funcdef>geometry <function>ST_SimplifyPreserveTopology</function></funcdef>
-            <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+            <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
             <paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
@@ -2726,13 +2757,25 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
 
       <refsection>
         <title>Description</title>
-        <para>Returns a "simplified" version of the given geometry using
-            the Douglas-Peucker algorithm. Will avoid creating derived
-            geometries (polygons in particular) that are invalid. Will actually do something only with
-                (multi)lines and (multi)polygons but you can safely call it with
-                any kind of geometry. Since simplification occurs on a
-                object-by-object basis you can also feed a GeometryCollection to
-                this function.</para>
+        <para>Computes a simplified representation of a geometry using a variant of the
+            <link xlink:href="https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm">Douglas-Peucker algorithm</link> 
+            which limits simplification to ensure the result has the same topology as the input.  
+            The simplification <varname>tolerance</varname> is a distance value, in the units of the input SRS.
+            Simplification removes vertices which are within the tolerance distance
+            of the simplified linework, as long as topology is preserved.
+            The result will be valid and simple if the input is.
+            </para>
+          <para>
+            The function can be called with any kind of geometry (including GeometryCollections), 
+            but only line and polygon elements are simplified.
+            For polygonal inputs, the result will have the same number of rings (shells and holes),
+            and the rings will not cross.  Ring endpoints may be simplified.
+            For linear inputs, the result will have the same number of lines, and lines will not intersect
+            if they did not do so in the original geometry.
+            Endpoints of linear geometry are preserved.
+            </para>
+
+        <note><para>This function does not preserve boundaries shared between polygons.  Use <xref linkend="ST_CoverageSimplify"/> if this is required.</para></note>
 
         <para>Performed by the GEOS module.</para>
         <para role="availability" conformance="1.3.3">Availability: 1.3.3</para>
@@ -2740,22 +2783,54 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
 
           <refsection>
             <title>Examples</title>
-            <para>Same example as Simplify, but we see Preserve Topology prevents oversimplification.  The circle can at most become a square.</para>
+            <para>For the same example as <xref linkend="ST_Simplify"/>, ST_SimplifyPreserveTopology prevents oversimplification.  The circle can at most become a square.</para>
                 <programlisting>
-SELECT ST_Npoints(geom) As np_before, ST_NPoints(ST_SimplifyPreserveTopology(geom,0.1)) As np01_notbadcircle, ST_NPoints(ST_SimplifyPreserveTopology(geom,0.5)) As np05_notquitecircle,
-ST_NPoints(ST_SimplifyPreserveTopology(geom,1)) As np1_octagon, ST_NPoints(ST_SimplifyPreserveTopology(geom,10)) As np10_square,
-ST_NPoints(ST_SimplifyPreserveTopology(geom,100)) As  np100_stillsquare
-FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As geom) As foo;
+SELECT  ST_Npoints(geom) AS np_before, 
+        ST_NPoints(ST_SimplifyPreserveTopology(geom, 0.1)) AS np01_notbadcircle, 
+        ST_NPoints(ST_SimplifyPreserveTopology(geom, 0.5)) AS np05_notquitecircle,
+        ST_NPoints(ST_SimplifyPreserveTopology(geom, 1))   AS np1_octagon, 
+        ST_NPoints(ST_SimplifyPreserveTopology(geom, 10))  AS np10_square,
+        ST_NPoints(ST_SimplifyPreserveTopology(geom, 100)) AS np100_stillsquare
+FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) AS geom) AS t;
 
---result--
  np_before | np01_notbadcircle | np05_notquitecircle | np1_octagon | np10_square | np100_stillsquare
------------+-------------------+---------------------+-------------+---------------+-------------------
-        49 |                33 |                  17 |           9 |             5 |                 5
-                </programlisting>
+-----------+-------------------+---------------------+-------------+-------------+-------------------
+        49 |                33 |                  17 |           9 |           5 |                 5
+</programlisting>
+
+    <para>Simplifying a set of lines, preserving topology of non-intersecting lines.</para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_simplifypreservetopology01.png"/>
+        </imageobject>
+      </mediaobject>
+    </informalfigure>
+    <programlisting>SELECT ST_SimplifyPreserveTopology(
+  'MULTILINESTRING ((20 180, 20 150, 50 150, 50 100, 110 150, 150 140, 170 120), (20 10, 80 30, 90 120), (90 120, 130 130), (130 130, 130 70, 160 40, 180 60, 180 90, 140 80), (50 40, 70 40, 80 70, 70 60, 60 60, 50 50, 50 40))',
+    40);
+</programlisting>
+
+    <para>Simplifying a MultiPolygon, preserving topology of shells and holes.</para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_simplifypreservetopology02.png"/>
+        </imageobject>
+      </mediaobject>
+    </informalfigure>
+    <programlisting>SELECT ST_SimplifyPreserveTopology(
+  'MULTIPOLYGON (((90 110, 80 180, 50 160, 10 170, 10 140, 20 110, 90 110)), ((40 80, 100 100, 120 160, 170 180, 190 70, 140 10, 110 40, 60 40, 40 80), (180 70, 170 110, 142.5 128.5, 128.5 77.5, 90 60, 180 70)))',
+    40);
+</programlisting>
+
           </refsection>
+
           <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_Simplify"/></para>
+            <para><xref linkend="ST_Simplify"/>, 
+              <xref linkend="ST_SimplifyVW"/>,
+              <xref linkend="ST_CoverageSimplify"/></para>
           </refsection>
     </refentry>
 
@@ -2866,14 +2941,14 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As geom) As foo;
     <refentry xml:id="ST_SimplifyVW">
       <refnamediv>
         <refname>ST_SimplifyVW</refname>
-        <refpurpose>Returns a simplified version of a geometry, using the Visvalingam-Whyatt algorithm</refpurpose>
+        <refpurpose>Returns a simplified representation of a geometry, using the Visvalingam-Whyatt algorithm</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
         <funcsynopsis>
           <funcprototype>
             <funcdef>geometry <function>ST_SimplifyVW</function></funcdef>
-            <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+            <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
             <paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
@@ -2881,20 +2956,29 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As geom) As foo;
 
       <refsection>
         <title>Description</title>
-        <para> Returns a "simplified" version of the given geometry using the Visvalingam-Whyatt algorithm.
-        Will actually do something only with (multi)lines and (multi)polygons but you can safely call it with any kind of geometry.
-        Since simplification occurs on a object-by-object basis you can also feed a GeometryCollection to this function.</para>
+        <para> Returns a simplified representation of a geometry using the 
+        <link xlink:href="https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm">Visvalingam-Whyatt algorithm</link>.
+            The simplification <varname>tolerance</varname> is an area value, in the units of the input SRS.
+            Simplification removes vertices which form "corners" with an area less than the area tolerance.
+            The result may not be valid even if the input is.
+            </para>
+          <para>
+            The function can be called with any kind of geometry (including GeometryCollections), 
+            but only line and polygon elements are simplified.
+            Endpoints of linear geometry are preserved.
+            </para>
 
-        <note><para>Note that returned geometry might lose its
-                simplicity (see <xref linkend="ST_IsSimple"/>)</para></note>
-        <note><para>Note topology may not be preserved and may result in invalid geometries.  Use  (see <xref linkend="ST_SimplifyPreserveTopology"/>) to preserve topology.</para></note>
+        <note><para>The returned geometry may lose its simplicity (see <xref linkend="ST_IsSimple"/>), 
+         topology may not be preserved, and polygonal results may be invalid (see <xref linkend="ST_IsValid"/>).  
+         Use <xref linkend="ST_SimplifyPreserveTopology"/> to preserve topology and ensure validity.</para></note>
+        <note><para>This function does not preserve boundaries shared between polygons.  Use <xref linkend="ST_CoverageSimplify"/> if this is required.</para></note>
         <note><para>This function handles 3D and the third dimension will affect the result.</para></note>
         <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
       </refsection>
 
           <refsection>
             <title>Examples</title>
-            <para>A LineString is simplified with a minimum area threshold of 30.</para>
+            <para>A LineString is simplified with a minimum-area tolerance of 30.</para>
                 <programlisting>
 
 select ST_AsText(ST_SimplifyVW(geom,30)) simplified
@@ -2924,7 +3008,7 @@ LINESTRING(5 2,7 25,10 10)
         <funcsynopsis>
           <funcprototype>
             <funcdef>geometry <function>ST_SetEffectiveArea</function></funcdef>
-            <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+            <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
             <paramdef><type>float</type> <parameter>threshold = 0</parameter></paramdef>
             <paramdef><type>integer</type> <parameter>set_area = 1</parameter></paramdef>
           </funcprototype>
