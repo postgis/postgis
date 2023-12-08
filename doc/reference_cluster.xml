@@ -93,7 +93,7 @@
 							</mediaobject>
 						  </informalfigure>
   <programlisting><![CDATA[
-SELECT name, ST_ClusterDBSCAN(geom, eps := 50, minpoints := 2) over () AS cid
+SELECT name, ST_ClusterDBSCAN(geom, eps => 50, minpoints => 2) over () AS cid
 FROM boston_polys
 WHERE name > '' AND building > ''
 	AND ST_DWithin(geom,
@@ -140,7 +140,7 @@ WHERE name > '' AND building > ''
         </para>
 		    <programlisting>
 SELECT cid, ST_Collect(geom) AS cluster_geom, array_agg(parcel_id) AS ids_in_cluster FROM (
-    SELECT parcel_id, ST_ClusterDBSCAN(geom, eps := 0.5, minpoints := 5) over () AS cid, geom
+    SELECT parcel_id, ST_ClusterDBSCAN(geom, eps =&gt; 0.5, minpoints =&gt; 5) over () AS cid, geom
     FROM parcels) sq
 GROUP BY cid;
     </programlisting>
@@ -381,10 +381,10 @@ select
     ST_ClusterKMeans(
         ST_Force4D(
             ST_Transform(ST_Force3D(geom), 4978), -- cluster in 3D XYZ CRS
-            mvalue := population -- set clustering to be weighed by population
+            mvalue =&gt; population -- set clustering to be weighed by population
         ),
         20,                      -- aim to generate at least 20 clusters
-        max_radius := 3000000    -- but generate more to make each under 3000 km radius
+        max_radius =&gt; 3000000    -- but generate more to make each under 3000 km radius
     ) over () as cid
 from
     kontur_population;
@@ -447,7 +447,7 @@ from
         of at least one other geometry in the same cluster.
         Distances are Cartesian distances in the units of the SRID.
         </para>
-        <para>ST_ClusterWithin is equivalent to running <xref linkend="ST_ClusterDBSCAN"/> with <code>minpoints := 0</code>.</para>
+        <para>ST_ClusterWithin is equivalent to running <xref linkend="ST_ClusterDBSCAN"/> with <code>minpoints =&gt; 0</code>.</para>
 
         <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
         <para>&curve_support;</para>
@@ -511,7 +511,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
         of at least one other geometry in the same cluster.
         Distances are Cartesian distances in the units of the SRID.
         </para>
-        <para>ST_ClusterWithinWin is equivalent to running <xref linkend="ST_ClusterDBSCAN"/> with <code>minpoints := 0</code>.</para>
+        <para>ST_ClusterWithinWin is equivalent to running <xref linkend="ST_ClusterDBSCAN"/> with <code>minpoints =&gt; 0</code>.</para>
         <para role="availability" conformance="3.4.0">Availability: 3.4.0</para>
         <para>&curve_support;</para>
 
