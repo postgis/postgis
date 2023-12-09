@@ -2713,7 +2713,7 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
     40);
 </programlisting>
 
-    <para>Simplifying a MultiPolygon.  Polygonal results may be invalid</para>
+    <para>Simplifying a MultiPolygon.  Polygonal results may be invalid.</para>
     <informalfigure>
       <mediaobject>
         <imageobject>
@@ -2959,7 +2959,7 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) AS geom) AS t;
         <para> Returns a simplified representation of a geometry using the 
         <link xlink:href="https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm">Visvalingam-Whyatt algorithm</link>.
             The simplification <varname>tolerance</varname> is an area value, in the units of the input SRS.
-            Simplification removes vertices which form "corners" with an area less than the area tolerance.
+            Simplification removes vertices which form "corners" with area less than the tolerance.
             The result may not be valid even if the input is.
             </para>
           <para>
@@ -2980,15 +2980,40 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) AS geom) AS t;
             <title>Examples</title>
             <para>A LineString is simplified with a minimum-area tolerance of 30.</para>
                 <programlisting>
+SELECT ST_AsText(ST_SimplifyVW(geom,30)) simplified
+  FROM (SELECT 'LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry AS geom) AS t;
 
-select ST_AsText(ST_SimplifyVW(geom,30)) simplified
-FROM (SELECT  'LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry geom) As foo;
--result
  simplified
 ------------------------------
 LINESTRING(5 2,7 25,10 10)
+</programlisting>
 
-                </programlisting>
+    <para>Simplifying a line.</para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_simplifyvw01.png"/>
+        </imageobject>
+      </mediaobject>
+    </informalfigure>
+    <programlisting>SELECT ST_SimplifyVW(
+  'LINESTRING (10 10, 50 40, 30 70, 50 60, 70 80, 50 110, 100 100, 90 140, 100 180, 150 170, 170 140, 190 90, 180 40, 110 40, 150 20)',
+    1600);
+</programlisting>
+
+    <para>Simplifying a polygon.</para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_simplifyvw02.png"/>
+        </imageobject>
+      </mediaobject>
+    </informalfigure>
+    <programlisting>SELECT ST_Simplify(
+  'MULTIPOLYGON (((90 110, 80 180, 50 160, 10 170, 10 140, 20 110, 90 110)), ((40 80, 100 100, 120 160, 170 180, 190 70, 140 10, 110 40, 60 40, 40 80), (180 70, 170 110, 142.5 128.5, 128.5 77.5, 90 60, 180 70)))',
+    40);
+</programlisting>
+
           </refsection>
           <refsection>
             <title>See Also</title>

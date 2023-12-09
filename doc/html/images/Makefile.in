@@ -208,6 +208,8 @@ GENERATED_IMAGES= \
 	st_simplifypolygonhull03.png \
 	st_simplifypreservetopology01.png \
 	st_simplifypreservetopology02.png \
+	st_simplifyvw01.png \
+	st_simplifyvw02.png \
 	st_straightskeleton01.png \
 	st_approximatemedialaxis01.png \
 	st_subdivide01.png \
