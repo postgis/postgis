@@ -1071,7 +1071,7 @@ sh nation_script_load.sh</programlisting>
 				<programlisting>SELECT count(*) FROM tiger_data.county_all;</programlisting>
 <screen> count
 -------
-  3234
+  3235
 (1 row)</screen>
 				<programlisting>SELECT count(*) FROM tiger_data.state_all;</programlisting>
 <screen>
@@ -1080,12 +1080,12 @@ sh nation_script_load.sh</programlisting>
     56
 (1 row)
 </screen>
-<para>This will only have data is you marked zcta5 to be loaded</para>
+<para>This will only have data if you marked zcta5 to be loaded</para>
 				<programlisting>SELECT count(*) FROM tiger_data.zcta5_all;</programlisting>
 <screen>
  count
 -------
-  37371
+  33931
 (1 row)
 </screen>
       </listitem>
