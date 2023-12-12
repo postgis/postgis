@@ -50,6 +50,7 @@ echo PORT IS $PGPORT
 echo PGIS_REG_TMPDIR IS $PGIS_REG_TMPDIR
 export XSLTPROCFLAGS=
 cd ${POSTGIS_SRC}
+
 if [ -e ./GNUMakefile ]; then
 	make distclean
 fi
@@ -152,6 +153,11 @@ done
  cp -r extensions/*/*.dll ${PGPATHEDB}/lib
 
  make check RUNTESTFLAGS="--extension -v"
+
+if [ "$UPGRADE_TEST" == "1" ]; then
+  export CURRENTVERSION=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}
+  RUNTESTFLAGS='--extension' ${POSTGIS_SRC}/utils/check_all_upgrades.sh -s "${CURRENTVERSION}" --skip "unpackaged"
+fi
 
  #test address standardizer
  cd ${POSTGIS_SRC}
