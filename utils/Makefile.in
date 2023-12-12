@@ -45,6 +45,7 @@ all: $(SCRIPTS_built)
 DROP_FILES = \
 	$(top_srcdir)/raster/rt_pg/rtpostgis_upgrade_cleanup.sql.in \
 	$(top_srcdir)/raster/rt_pg/rtpostgis_drop.sql.in \
+	$(top_srcdir)/raster/rt_pg/rtpostgis_upgrade.sql \
 	$(top_srcdir)/topology/topology_after_upgrade.sql.in \
 	$(top_srcdir)/topology/topology_before_upgrade.sql.in \
 	$(top_builddir)/postgis/uninstall_postgis.sql \
