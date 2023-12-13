@@ -136,6 +136,7 @@
   &using_postgis_query;
   &performance_tips;
   &reference;
+  &reference_sfcgal;
   &extras_topology;
   &using_raster_dataman;
   &reference_raster;

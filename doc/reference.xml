@@ -36,7 +36,6 @@
   &reference_bbox;
   &reference_lrs;
   &reference_trajectory;
-  &reference_sfcgal;
   &reference_transaction;
   &reference_version;
   &reference_guc;

@@ -18,13 +18,13 @@
 
 	<!-- We deal only with the reference chapter -->
         <xsl:template match="/">
-                <xsl:apply-templates select="/db:book/db:chapter[@xml:id='reference']" />
+                <xsl:apply-templates select="/db:book/db:chapter[@xml:id='reference_sfcgal']" />
         </xsl:template>
 
         <xsl:template match="db:chapter">
 		<xsl:variable name="ap"><xsl:text>'</xsl:text></xsl:variable>
 <!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-		<xsl:for-each select="db:section[@xml:id='reference_sfcgal']/db:refentry">
+		<xsl:for-each select="db:section[not(contains(@xml:id,'Operator'))]/db:refentry">
 		  <xsl:variable name='plaincomment'>
 		  	<xsl:value-of select="normalize-space(translate(translate(db:refnamediv/db:refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
 		  </xsl:variable>

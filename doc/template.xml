@@ -56,8 +56,12 @@
     <!-- use this format if new function -->
 	<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 
-    <!--conditionally specify GEOS minimum version -->
-    <para role="geos_requirement" conformance="3.9.0">Requires GEOS &gt;= 3.9.0</para>
+  <!--conditionally specify GEOS minimum version -->
+  <para role="geos_requirement" conformance="3.9.0">Requires GEOS &gt;= 3.9.0</para>
+
+  <!--conditionally specify SFCGAL minimum version -->
+  <para role="sfcgal_requirement" conformance="1.5.0">Requires SFCGAL &gt;= 1.5.0</para>
+
 
 	<!-- use this format if not a new function but functionality enhanced -->
 	<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>

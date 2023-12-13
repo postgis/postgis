@@ -182,6 +182,9 @@
         <para role="requires_geos_3.9_or_higher">
 				Requires GEOS (3.9,3.10,3.11,3.12) or higher
         </para>
+        <para role="requires_sfcgal_1.5_or_higher">
+				Requires SFCGAL 1.5 or higher
+        </para>
         <para role="z_support">
 				2.5/3D support
         </para>

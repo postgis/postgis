@@ -9,6 +9,7 @@
 
 <xsl:variable name='new_tag' select='"availability"' />
 <xsl:variable name='geos_tag' select='"geos_requirement"' />
+<xsl:variable name='sfcgal_tag' select='"sfcgal_requirement"' />
 <xsl:variable name='enhanced_tag' select='"enhanced"' />
 <xsl:variable name='sqlmm_conformance_tag' select='"sqlmm"' />
 <xsl:variable name='Z_conformance_tag' select='"3d"' />
@@ -62,7 +63,7 @@
 		<xsl:variable name="col_func_count"><xsl:value-of select="count(descendant::*//db:funcprototype) div 1.65" /></xsl:variable>
 
     <!--count(preceding-sibling::*/db:refentry/db:refsynopsisdiv/db:funcsynopsis/db:funcprototype)-->
-		<xsl:for-each select="db:section[count(//db:funcprototype) &gt; 0 and not( contains(@xml:id,'sfcgal') )]">
+		<xsl:for-each select="db:section[count(//db:funcprototype) &gt; 0 ]">
 
 			 <xsl:apply-templates select="." />
 
@@ -118,6 +119,9 @@
 		</xsl:if>
 		<xsl:if test="contains(db:refsynopsisdiv/db:funcsynopsis,'geography') or contains(db:refsynopsisdiv/db:funcsynopsis/db:funcprototype/funcdef,'geography')">
 			&nbsp;<sup>G</sup>
+		</xsl:if>
+		<xsl:if test="$ref//db:para[@role=$sfcgal_tag and starts-with(./@conformance, '1.5')]">
+			&nbsp;<sup>cg1.5</sup>
 		</xsl:if>
 		<xsl:if test="$ref//db:para[@role=$geos_tag and starts-with(./@conformance, '3.9')]">
 			&nbsp;<sup>g3.9</sup>
