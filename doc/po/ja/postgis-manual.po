@@ -5,11 +5,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-29 04:00+0000\n"
+"POT-Creation-Date: 2023-12-13 03:42+0000\n"
 "PO-Revision-Date: 2023-12-01 11:23+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -9183,8 +9183,8 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "This will only have data is you marked zcta5 to be loaded"
-msgstr "これはロードするzcta5に印を付けたデータだけが含まれます"
+msgid "This will only have data if you marked zcta5 to be loaded"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -14378,10 +14378,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "ST_ClusterWithin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN\"/"
-"> with <code>minpoints := 0</code>."
+"> with <code>minpoints =&gt; 0</code>."
 msgstr ""
-"ST_ClusterWithinは<xref linkend=\"ST_ClusterDBSCAN\"/>を<code>minpoints := "
-"0</code>で実行するのと同じです。"
 
 #. Tag: para
 #, no-c-format
@@ -14419,10 +14417,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "ST_ClusterWithinWin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN"
-"\"/> with <code>minpoints := 0</code>."
+"\"/> with <code>minpoints =&gt; 0</code>."
 msgstr ""
-"ST_ClusterWithinWinは<xref linkend=\"ST_ClusterDBSCAN\"/>を<code>minpoints :"
-"= 0</code>で実行するのと同じです。"
 
 #. Tag: para
 #, no-c-format
@@ -23535,12 +23531,11 @@ msgid ""
 "any columns other than the geometry, including any potential keys, will just "
 "end up inside the feature’s \"properties\" member."
 msgstr ""
-"<varname>id_column</varname>パラメータは、返されるGeoJSONの地物の\"id"
-"\"メンバの値設定に使われます。GeoJSON RFCによると、これは、主キーのように地物"
-"が共通して使用する識別子を持つときは常に*使うべき*とされています。指定しない"
-"場合には、生成される地物に\"id\"メンバが入りません"
-"。ジオメトリ以外のカラムは、潜在的なキーも含めて、地物の\"properties"
-"\"メンバ内に入ります。"
+"<varname>id_column</varname>パラメータは、返されるGeoJSONの地物の\"id\"メンバ"
+"の値設定に使われます。GeoJSON RFCによると、これは、主キーのように地物が共通し"
+"て使用する識別子を持つときは常に*使うべき*とされています。指定しない場合に"
+"は、生成される地物に\"id\"メンバが入りません。ジオメトリ以外のカラムは、潜在"
+"的なキーも含めて、地物の\"properties\"メンバ内に入ります。"
 
 #. Tag: para
 #, no-c-format
@@ -27493,60 +27488,55 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Returns a simplified version of a geometry, using the Douglas-Peucker "
+"Returns a simplified representation of a geometry, using the Douglas-Peucker "
 "algorithm."
 msgstr ""
-"Douglas-Peukerアルゴリズムを使用して、与えられたジオメトリを簡略化したものを"
-"返します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a \"simplified\" version of the given geometry using the Douglas-"
-"Peucker algorithm. Will actually do something only with (multi)lines and "
-"(multi)polygons but you can safely call it with any kind of geometry. Since "
-"simplification occurs on a object-by-object basis you can also feed a "
-"GeometryCollection to this function."
+"Computes a simplified representation of a geometry using the <link xlink:"
+"href=\"https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas"
+"%E2%80%93Peucker_algorithm\">Douglas-Peucker algorithm</link>. The "
+"simplification <varname>tolerance</varname> is a distance value, in the "
+"units of the input SRS. Simplification removes vertices which are within the "
+"tolerance distance of the simplified linework. The result may not be valid "
+"even if the input is."
 msgstr ""
-"与えられたジオメトリを「簡略化」したものを返します。Douglas-Peukerアルゴリズ"
-"ムを使用します。(MULTI)LINEと(MULTI)POLYGONとで実際に動作をしますが、どのよう"
-"な種類のジオメトリでも安全に呼ぶことができます。簡略化はオブジェクトごとに行"
-"われるので、ジオメトリコレクションでこの関数を呼ぶことができます。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"The \"preserve collapsed\" flag will retain objects that would otherwise be "
-"too small given the tolerance. For example, a 1m long line simplified with a "
-"10m tolerance. If <varname>preserveCollapsed</varname> argument is specified "
-"as true, the line will not disappear. This flag is useful for rendering "
-"engines, to avoid having large numbers of very small objects disappear from "
-"a map leaving surprising gaps."
+"The function can be called with any kind of geometry (including "
+"GeometryCollections), but only line and polygon elements are simplified. "
+"Endpoints of linear geometry are preserved."
 msgstr ""
-"\"preserve collapsed\"フラグは、与えられた許容値としては小さ過ぎることになる"
-"オブジェクトを保持します。たとえば、1ｍのラインを許容値10mで単純化する場合な"
-"どです。<varname>preserveCollapsed</varname>引数がTRUEに指定されている場合に"
-"は、ラインは消滅しません。このフラグは、多数の隙間を残している地図を描画する"
-"際に、描画エンジンが多数の微細オブジェクトを消すことを避けるために使います。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Note that returned geometry might lose its simplicity (see <xref linkend="
-"\"ST_IsSimple\"/>)"
+"The <varname>preserveCollapsed</varname> flag retains small geometries that "
+"would otherwise be removed at the given tolerance. For example, if a 1m long "
+"line is simplified with a 10m tolerance, when <varname>preserveCollapsed</"
+"varname> is true the line will not disappear. This flag is useful for "
+"rendering purposes, to prevent very small features disappearing from a map."
 msgstr ""
-"返されるジオメトリは単純性 (<xref linkend=\"ST_IsSimple\"/>参照)を失うことが"
-"あります。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Note topology may not be preserved and may result in invalid geometries. Use "
-"(see <xref linkend=\"ST_SimplifyPreserveTopology\"/>) to preserve topology."
+"The returned geometry may lose its simplicity (see <xref linkend="
+"\"ST_IsSimple\"/>), topology may not be preserved, and polygonal results may "
+"be invalid (see <xref linkend=\"ST_IsValid\"/>). Use <xref linkend="
+"\"ST_SimplifyPreserveTopology\"/> to preserve topology and ensure validity."
 msgstr ""
-"トポロジは保存されているとは限らず、不正なジオメトリを返すことがあります。ト"
-"ポロジを保存するには<xref linkend=\"ST_SimplifyPreserveTopology\"/>を使いま"
-"す。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This function does not preserve boundaries shared between polygons. Use "
+"<xref linkend=\"ST_CoverageSimplify\"/> if this is required."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -27555,37 +27545,53 @@ msgstr "簡略化をやりすぎて三角形になった円、八角形になっ
 
 #. Tag: para
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
-"\"ST_SimplifyVW\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/>"
+msgid "Simplifying a set of lines. Lines may intersect after simplification."
 msgstr ""
-", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
-"\"ST_SimplifyVW\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/>"
 
-#. Tag: refpurpose
+#. Tag: para
 #, no-c-format
-msgid ""
-"Returns a simplified and valid version of a geometry, using the Douglas-"
-"Peucker algorithm."
+msgid "Simplifying a MultiPolygon. Polygonal results may be invalid."
 msgstr ""
-"Douglas-Peukerアルゴリズムを使用して、与えられたジオメトリを簡略化したものを"
-"返します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a \"simplified\" version of the given geometry using the Douglas-"
-"Peucker algorithm. Will avoid creating derived geometries (polygons in "
-"particular) that are invalid. Will actually do something only with "
-"(multi)lines and (multi)polygons but you can safely call it with any kind of "
-"geometry. Since simplification occurs on a object-by-object basis you can "
-"also feed a GeometryCollection to this function."
+", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
+"\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>, Topology <xref "
+"linkend=\"TP_ST_Simplify\"/>"
 msgstr ""
-"与えられたジオメトリを「簡略化」したものを返します。Douglas-Peukerアルゴリズ"
-"ムを使用します。不正な派生ジオメトリ (特にポリゴン)の生成を回避します。"
-"(MULTI)LINEと(MULTI)POLYGONとで実際に動作をしますが、どのような種類のジオメト"
-"リでも安全に呼ぶことができます。簡略化はオブジェクトごとに行われるので、ジオ"
-"メトリコレクションでこの関数を呼ぶことができます。"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Returns a simplified and valid representation of a geometry, using the "
+"Douglas-Peucker algorithm."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Computes a simplified representation of a geometry using a variant of the "
+"<link xlink:href=\"https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas"
+"%E2%80%93Peucker_algorithm\">Douglas-Peucker algorithm</link> which limits "
+"simplification to ensure the result has the same topology as the input. The "
+"simplification <varname>tolerance</varname> is a distance value, in the "
+"units of the input SRS. Simplification removes vertices which are within the "
+"tolerance distance of the simplified linework, as long as topology is "
+"preserved. The result will be valid and simple if the input is."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The function can be called with any kind of geometry (including "
+"GeometryCollections), but only line and polygon elements are simplified. For "
+"polygonal inputs, the result will have the same number of rings (shells and "
+"holes), and the rings will not cross. Ring endpoints may be simplified. For "
+"linear inputs, the result will have the same number of lines, and lines will "
+"not intersect if they did not do so in the original geometry. Endpoints of "
+"linear geometry are preserved."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -27595,11 +27601,27 @@ msgstr "Availability: 1.3.3"
 #. Tag: para
 #, no-c-format
 msgid ""
-"Same example as Simplify, but we see Preserve Topology prevents "
-"oversimplification. The circle can at most become a square."
+"For the same example as <xref linkend=\"ST_Simplify\"/>, "
+"ST_SimplifyPreserveTopology prevents oversimplification. The circle can at "
+"most become a square."
 msgstr ""
-"Simplyfyと同じ例ですが、トポロジ保存で簡略化の行きすぎを阻止します。円は最低"
-"でも四角形になります。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Simplifying a set of lines, preserving topology of non-intersecting lines."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Simplifying a MultiPolygon, preserving topology of shells and holes."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -27699,27 +27721,30 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Returns a simplified version of a geometry, using the Visvalingam-Whyatt "
-"algorithm"
+"Returns a simplified representation of a geometry, using the Visvalingam-"
+"Whyatt algorithm"
 msgstr ""
-"Visvalingam-Whyattアルゴリズムを使用して、入力ジオメトリを簡略化したジオメト"
-"リを返します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a \"simplified\" version of the given geometry using the Visvalingam-"
-"Whyatt algorithm. Will actually do something only with (multi)lines and "
-"(multi)polygons but you can safely call it with any kind of geometry. Since "
-"simplification occurs on a object-by-object basis you can also feed a "
-"GeometryCollection to this function."
+"Returns a simplified representation of a geometry using the <link xlink:href="
+"\"https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm"
+"\">Visvalingam-Whyatt algorithm</link>. The simplification "
+"<varname>tolerance</varname> is an area value, in the units of the input "
+"SRS. Simplification removes vertices which form \"corners\" with area less "
+"than the tolerance. The result may not be valid even if the input is."
 msgstr ""
-"Visvalingam-Whyattアルゴリズムを用いて、入力ジオメトリを「簡略化」したジオメ"
-"トリを返します。(マルチ)ラインと(マルチ)ポリゴンでのみ動作しますが、どの種類"
-"のジオメトリでも安全に呼ぶことができます。(MULTI)LINEと(MULTI)POLYGONとで実際"
-"に動作をしますが、どのような種類のジオメトリでも安全に呼ぶことができます。簡"
-"略化はオブジェクトごとに行われるので、ジオメトリコレクションでこの関数を呼ぶ"
-"ことができます。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The returned geometry may lose its simplicity (see <xref linkend="
+"\"ST_IsSimple\"/>), topology may not be preserved, and polygonal results may "
+"be invalid (see <xref linkend=\"ST_IsValid\"/>). Use <xref linkend="
+"\"ST_SimplifyPreserveTopology\"/> to preserve topology and ensure validity. "
+"<xref linkend=\"ST_CoverageSimplify\"/> also preserves topology and validity."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -27729,19 +27754,26 @@ msgstr "この関数は3次元を扱います。第3次元は結果に影響を�
 
 #. Tag: para
 #, no-c-format
-msgid "A LineString is simplified with a minimum area threshold of 30."
-msgstr "ラインストリングを最小範囲のしきい値を30で簡略化しています。"
+msgid "A LineString is simplified with a minimum-area tolerance of 30."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Simplifying a line."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Simplifying a polygon."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
-"\"ST_SimplifyPreserveTopology\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/"
-">"
+"\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_CoverageSimplify\"/>, "
+"Topology <xref linkend=\"TP_ST_Simplify\"/>"
 msgstr ""
-", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
-"\"ST_SimplifyPreserveTopology\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/"
-">"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -27788,6 +27820,25 @@ msgstr ""
 "(MULTI)LINEと(MULTI)POLYGONとで実際に動作をしますが、どのような種類のジオメト"
 "リでも安全に呼ぶことができます。簡略化はオブジェクトごとに行われるので、ジオ"
 "メトリコレクションでこの関数を呼ぶことができます。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Note that returned geometry might lose its simplicity (see <xref linkend="
+"\"ST_IsSimple\"/>)"
+msgstr ""
+"返されるジオメトリは単純性 (<xref linkend=\"ST_IsSimple\"/>参照)を失うことが"
+"あります。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Note topology may not be preserved and may result in invalid geometries. Use "
+"(see <xref linkend=\"ST_SimplifyPreserveTopology\"/>) to preserve topology."
+msgstr ""
+"トポロジは保存されているとは限らず、不正なジオメトリを返すことがあります。ト"
+"ポロジを保存するには<xref linkend=\"ST_SimplifyPreserveTopology\"/>を使いま"
+"す。"
 
 #. Tag: para
 #, no-c-format
@@ -33079,12 +33130,22 @@ msgid ""
 "If <varname>crop</varname> is not specified, true is assumed meaning the "
 "output raster is cropped to the intersection of the <varname>geom</"
 "varname>and <varname>rast</varname> extents. If <varname>crop</varname> is "
-"set to false, the new raster gets the same extent as <varname>rast</varname>."
+"set to false, the new raster gets the same extent as <varname>rast</"
+"varname>. If <varname>touched</varname> is set to true, then all pixels in "
+"the <varname>rast</varname> that intersect the geometry are selected."
 msgstr ""
-"<varname>crop</varname>が指定されていない場合には、TRUEと仮定され、出力ラスタ"
-"を <varname>geom</varname>範囲と<varname>rast</varname>範囲とのインタセクトし"
-"た範囲にクロップします。<varname>crop</varname>がFALSEに設定されている場合に"
-"は、新しいラスタは<varname>rast</varname>と同じ範囲になります。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The default behavior is touched=false, which will only select pixels where "
+"the center of the pixel is covered by the geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Enhanced: 3.5.0 - touched argument added."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -33095,17 +33156,19 @@ msgstr "Enhanced: 2.1.0 C言語で記述されました"
 #, no-c-format
 msgid ""
 "Examples here use Massachusetts aerial data available on MassGIS site <link "
-"xlink:href=\"http://www.mass.gov/mgis/colororthos2008.htm\">MassGIS Aerial "
-"Orthos</link>. Coordinates are in Massachusetts State Plane Meters."
+"xlink:href=\"https://www.mass.gov/info-details/massgis-data-20082009-aerial-"
+"imagery\">MassGIS Aerial Orthos</link>."
 msgstr ""
-"MassGISサイト<link xlink:href=\"http://www.mass.gov/mgis/colororthos2008.htm"
-"\">MassGIS Aerial Orthos</link>にあるマサチューセッツ空中写真データを使った例"
-"です。座標はメートル単位のマサチューセッツ州平面です。"
 
 #. Tag: title
 #, no-c-format
-msgid "Examples: 1 band clipping"
-msgstr "例: 1バンドの切り取り"
+msgid "Examples: Comparing selecting all touched vs. not all touched"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Examples: 1 band clipping (not touched)"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -33136,11 +33199,9 @@ msgstr "例: 全バンドの切り取り"
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Intersection\"/"
-">"
+", <xref linkend=\"RT_ST_Count\"/>, <xref linkend=\"RT_ST_MapAlgebra\"/>, "
+"<xref linkend=\"RT_ST_Intersection\"/>"
 msgstr ""
-", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Intersection\"/"
-">"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -48491,6 +48552,174 @@ msgstr "2.5次元/3次元対応"
 #, no-c-format
 msgid "Supports geography"
 msgstr "ジオグラフィ対応"
+
+#, no-c-format
+#~ msgid "This will only have data is you marked zcta5 to be loaded"
+#~ msgstr "これはロードするzcta5に印を付けたデータだけが含まれます"
+
+#, no-c-format
+#~ msgid ""
+#~ "ST_ClusterWithin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN"
+#~ "\"/> with <code>minpoints := 0</code>."
+#~ msgstr ""
+#~ "ST_ClusterWithinは<xref linkend=\"ST_ClusterDBSCAN\"/>を<code>minpoints :"
+#~ "= 0</code>で実行するのと同じです。"
+
+#, no-c-format
+#~ msgid ""
+#~ "ST_ClusterWithinWin is equivalent to running <xref linkend="
+#~ "\"ST_ClusterDBSCAN\"/> with <code>minpoints := 0</code>."
+#~ msgstr ""
+#~ "ST_ClusterWithinWinは<xref linkend=\"ST_ClusterDBSCAN\"/>を"
+#~ "<code>minpoints := 0</code>で実行するのと同じです。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a simplified version of a geometry, using the Douglas-Peucker "
+#~ "algorithm."
+#~ msgstr ""
+#~ "Douglas-Peukerアルゴリズムを使用して、与えられたジオメトリを簡略化したもの"
+#~ "を返します。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a \"simplified\" version of the given geometry using the Douglas-"
+#~ "Peucker algorithm. Will actually do something only with (multi)lines and "
+#~ "(multi)polygons but you can safely call it with any kind of geometry. "
+#~ "Since simplification occurs on a object-by-object basis you can also feed "
+#~ "a GeometryCollection to this function."
+#~ msgstr ""
+#~ "与えられたジオメトリを「簡略化」したものを返します。Douglas-Peukerアルゴリ"
+#~ "ズムを使用します。(MULTI)LINEと(MULTI)POLYGONとで実際に動作をしますが、ど"
+#~ "のような種類のジオメトリでも安全に呼ぶことができます。簡略化はオブジェクト"
+#~ "ごとに行われるので、ジオメトリコレクションでこの関数を呼ぶことができます。"
+
+#, no-c-format
+#~ msgid ""
+#~ "The \"preserve collapsed\" flag will retain objects that would otherwise "
+#~ "be too small given the tolerance. For example, a 1m long line simplified "
+#~ "with a 10m tolerance. If <varname>preserveCollapsed</varname> argument is "
+#~ "specified as true, the line will not disappear. This flag is useful for "
+#~ "rendering engines, to avoid having large numbers of very small objects "
+#~ "disappear from a map leaving surprising gaps."
+#~ msgstr ""
+#~ "\"preserve collapsed\"フラグは、与えられた許容値としては小さ過ぎることにな"
+#~ "るオブジェクトを保持します。たとえば、1ｍのラインを許容値10mで単純化する場"
+#~ "合などです。<varname>preserveCollapsed</varname>引数がTRUEに指定されている"
+#~ "場合には、ラインは消滅しません。このフラグは、多数の隙間を残している地図を"
+#~ "描画する際に、描画エンジンが多数の微細オブジェクトを消すことを避けるために"
+#~ "使います。"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
+#~ "\"ST_SimplifyVW\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
+#~ "\"ST_SimplifyVW\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a simplified and valid version of a geometry, using the Douglas-"
+#~ "Peucker algorithm."
+#~ msgstr ""
+#~ "Douglas-Peukerアルゴリズムを使用して、与えられたジオメトリを簡略化したもの"
+#~ "を返します。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a \"simplified\" version of the given geometry using the Douglas-"
+#~ "Peucker algorithm. Will avoid creating derived geometries (polygons in "
+#~ "particular) that are invalid. Will actually do something only with "
+#~ "(multi)lines and (multi)polygons but you can safely call it with any kind "
+#~ "of geometry. Since simplification occurs on a object-by-object basis you "
+#~ "can also feed a GeometryCollection to this function."
+#~ msgstr ""
+#~ "与えられたジオメトリを「簡略化」したものを返します。Douglas-Peukerアルゴリ"
+#~ "ズムを使用します。不正な派生ジオメトリ (特にポリゴン)の生成を回避します。"
+#~ "(MULTI)LINEと(MULTI)POLYGONとで実際に動作をしますが、どのような種類のジオ"
+#~ "メトリでも安全に呼ぶことができます。簡略化はオブジェクトごとに行われるの"
+#~ "で、ジオメトリコレクションでこの関数を呼ぶことができます。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Same example as Simplify, but we see Preserve Topology prevents "
+#~ "oversimplification. The circle can at most become a square."
+#~ msgstr ""
+#~ "Simplyfyと同じ例ですが、トポロジ保存で簡略化の行きすぎを阻止します。円は最"
+#~ "低でも四角形になります。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a simplified version of a geometry, using the Visvalingam-Whyatt "
+#~ "algorithm"
+#~ msgstr ""
+#~ "Visvalingam-Whyattアルゴリズムを使用して、入力ジオメトリを簡略化したジオメ"
+#~ "トリを返します。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a \"simplified\" version of the given geometry using the "
+#~ "Visvalingam-Whyatt algorithm. Will actually do something only with "
+#~ "(multi)lines and (multi)polygons but you can safely call it with any kind "
+#~ "of geometry. Since simplification occurs on a object-by-object basis you "
+#~ "can also feed a GeometryCollection to this function."
+#~ msgstr ""
+#~ "Visvalingam-Whyattアルゴリズムを用いて、入力ジオメトリを「簡略化」したジオ"
+#~ "メトリを返します。(マルチ)ラインと(マルチ)ポリゴンでのみ動作しますが、どの"
+#~ "種類のジオメトリでも安全に呼ぶことができます。(MULTI)LINEと(MULTI)POLYGON"
+#~ "とで実際に動作をしますが、どのような種類のジオメトリでも安全に呼ぶことがで"
+#~ "きます。簡略化はオブジェクトごとに行われるので、ジオメトリコレクションでこ"
+#~ "の関数を呼ぶことができます。"
+
+#, no-c-format
+#~ msgid "A LineString is simplified with a minimum area threshold of 30."
+#~ msgstr "ラインストリングを最小範囲のしきい値を30で簡略化しています。"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
+#~ "\"ST_SimplifyPreserveTopology\"/>, Topology <xref linkend=\"TP_ST_Simplify"
+#~ "\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
+#~ "\"ST_SimplifyPreserveTopology\"/>, Topology <xref linkend=\"TP_ST_Simplify"
+#~ "\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "If <varname>crop</varname> is not specified, true is assumed meaning the "
+#~ "output raster is cropped to the intersection of the <varname>geom</"
+#~ "varname>and <varname>rast</varname> extents. If <varname>crop</varname> "
+#~ "is set to false, the new raster gets the same extent as <varname>rast</"
+#~ "varname>."
+#~ msgstr ""
+#~ "<varname>crop</varname>が指定されていない場合には、TRUEと仮定され、出力ラ"
+#~ "スタを <varname>geom</varname>範囲と<varname>rast</varname>範囲とのインタ"
+#~ "セクトした範囲にクロップします。<varname>crop</varname>がFALSEに設定されて"
+#~ "いる場合には、新しいラスタは<varname>rast</varname>と同じ範囲になります。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Examples here use Massachusetts aerial data available on MassGIS site "
+#~ "<link xlink:href=\"http://www.mass.gov/mgis/colororthos2008.htm\">MassGIS "
+#~ "Aerial Orthos</link>. Coordinates are in Massachusetts State Plane Meters."
+#~ msgstr ""
+#~ "MassGISサイト<link xlink:href=\"http://www.mass.gov/mgis/colororthos2008."
+#~ "htm\">MassGIS Aerial Orthos</link>にあるマサチューセッツ空中写真データを"
+#~ "使った例です。座標はメートル単位のマサチューセッツ州平面です。"
+
+#, no-c-format
+#~ msgid "Examples: 1 band clipping"
+#~ msgstr "例: 1バンドの切り取り"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Intersection"
+#~ "\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Intersection"
+#~ "\"/>"
 
 #, no-c-format
 #~ msgid ""

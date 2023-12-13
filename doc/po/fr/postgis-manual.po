@@ -5,11 +5,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-29 04:00+0000\n"
+"POT-Creation-Date: 2023-12-13 03:42+0000\n"
 "PO-Revision-Date: 2023-11-29 16:23+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
-"Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
-"postgis-manual/fr/>\n"
+"Language-Team: French <https://weblate.osgeo.org/projects/postgis/postgis-"
+"manual/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1751,10 +1751,10 @@ msgid ""
 "html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
 "link>."
 msgstr ""
-"<emphasis role=\"bold\"><varname>MACRO_C</varname> jetons de sortie (\"output"
-" tokens\") </emphasis> (excepté pour <link xlink:href=\"http://www.pagcgeo."
-"org/docs/html/pagc-12.html#--r-typ--\">http://www.pagcgeo.org/docs/html/"
-"pagc-12.html#--r-typ--</link>."
+"<emphasis role=\"bold\"><varname>MACRO_C</varname> jetons de sortie "
+"(\"output tokens\") </emphasis> (excepté pour <link xlink:href=\"http://www."
+"pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://www.pagcgeo.org/docs/"
+"html/pagc-12.html#--r-typ--</link>."
 
 #. Tag: para
 #, no-c-format
@@ -1806,10 +1806,10 @@ msgid ""
 "html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
 "link>."
 msgstr ""
-"<emphasis role=\"bold\"><varname>MICRO_C</varname> jetons de sortie (\"output"
-" tokens\") </emphasis> (exceptés pour <link xlink:href=\"http://www.pagcgeo."
-"org/docs/html/pagc-12.html#--r-typ--\">http://www.pagcgeo.org/docs/html/"
-"pagc-12.html#--r-typ--</link>."
+"<emphasis role=\"bold\"><varname>MICRO_C</varname> jetons de sortie "
+"(\"output tokens\") </emphasis> (exceptés pour <link xlink:href=\"http://www."
+"pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://www.pagcgeo.org/docs/"
+"html/pagc-12.html#--r-typ--</link>."
 
 #. Tag: para
 #, no-c-format
@@ -1851,10 +1851,10 @@ msgid ""
 "html#--r-typ--\">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</"
 "link>."
 msgstr ""
-"<emphasis role=\"bold\"><varname>EXTRA_C</varname> jetons de sortie (\"output"
-" tokens\")</emphasis> (excepté pour <link xlink:href=\"http://www.pagcgeo."
-"org/docs/html/pagc-12.html#--r-typ--\">http://www.pagcgeo.org/docs/html/"
-"pagc-12.html#--r-typ--</link>."
+"<emphasis role=\"bold\"><varname>EXTRA_C</varname> jetons de sortie "
+"(\"output tokens\")</emphasis> (excepté pour <link xlink:href=\"http://www."
+"pagcgeo.org/docs/html/pagc-12.html#--r-typ--\">http://www.pagcgeo.org/docs/"
+"html/pagc-12.html#--r-typ--</link>."
 
 #. Tag: para
 #, no-c-format
@@ -8363,11 +8363,10 @@ msgid ""
 "GEOS is available for download from <link xlink:href=\"https://libgeos.org/"
 "\"> https://libgeos.org </link>."
 msgstr ""
-"La bibliothèque de géométrie GEOS, version &min_geos_version; ou "
-"supérieure, mais GEOS 3.12+ est nécessaire pour profiter pleinement de "
-"toutes les nouvelles fonctions et caractéristiques. GEOS peut être "
-"téléchargé à partir de <link xlink:href=\"https://libgeos.org/\"> https://"
-"libgeos.org </link>."
+"La bibliothèque de géométrie GEOS, version &min_geos_version; ou supérieure, "
+"mais GEOS 3.12+ est nécessaire pour profiter pleinement de toutes les "
+"nouvelles fonctions et caractéristiques. GEOS peut être téléchargé à partir "
+"de <link xlink:href=\"https://libgeos.org/\"> https://libgeos.org </link>."
 
 #. Tag: para
 #, no-c-format
@@ -8466,11 +8465,11 @@ msgstr ""
 "SFCGAL plutôt que GEOS pour certaines fonctions 2D fournies par les deux "
 "backends (comme ST_Intersection ou ST_Area, par exemple). Une variable de "
 "configuration PostgreSQL <code>postgis.backend</code> permet à l'utilisateur "
-"final de contrôler quel backend il veut utiliser si SFCGAL est installé ("
-"GEOS par défaut). Nota : SFCGAL 1.2 nécessite au minimum CGAL 4.3 et Boost "
-"1.54 (cf : <link xlink:href=\"https://sfcgal.org\">https://sfcgal.org</link>)"
-" <link xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/\">https://gitlab.com/"
-"sfcgal/SFCGAL/</link>."
+"final de contrôler quel backend il veut utiliser si SFCGAL est installé "
+"(GEOS par défaut). Nota : SFCGAL 1.2 nécessite au minimum CGAL 4.3 et Boost "
+"1.54 (cf : <link xlink:href=\"https://sfcgal.org\">https://sfcgal.org</"
+"link>) <link xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/\">https://gitlab."
+"com/sfcgal/SFCGAL/</link>."
 
 #. Tag: para
 #, no-c-format
@@ -9639,9 +9638,8 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "This will only have data is you marked zcta5 to be loaded"
+msgid "This will only have data if you marked zcta5 to be loaded"
 msgstr ""
-"Il n'y aura de données que si vous avez marqué zcta5 pour qu'il soit chargé"
 
 #. Tag: para
 #, no-c-format
@@ -10166,8 +10164,8 @@ msgid ""
 "SFCGAL, raster, GitHub curation, and ci maintenance."
 msgstr ""
 "Amélioration de l'index, correction de bugs et amélioration des fonctions de "
-"géométrie/géographie, SFCGAL, raster, curation GitHub, et maintenance ci ("
-"intégration continue)."
+"géométrie/géographie, SFCGAL, raster, curation GitHub, et maintenance ci "
+"(intégration continue)."
 
 #. Tag: term
 #, no-c-format
@@ -10201,9 +10199,9 @@ msgid ""
 "functions, integration of new GEOS functionality and alignment with GEOS "
 "releases, topology support, and raster framework and low level API functions."
 msgstr ""
-"Corrections de bugs et maintenance, maintenance des CI (intégration continue)"
-", gestion des miroirs git, fonctions de gestion, intégration de nouvelles "
-"fonctionnalités GEOS et alignement sur les versions GEOS, support "
+"Corrections de bugs et maintenance, maintenance des CI (intégration "
+"continue), gestion des miroirs git, fonctions de gestion, intégration de "
+"nouvelles fonctionnalités GEOS et alignement sur les versions GEOS, support "
 "topologique, framework raster et fonctions API de bas niveau."
 
 #. Tag: title
@@ -13537,8 +13535,8 @@ msgid ""
 "or MULTI*). For non-empty atomic geometries returns 1. For empty geometries "
 "returns 0."
 msgstr ""
-"Renvoie le nombre d'éléments d'une collection de géométries ("
-"GEOMETRYCOLLECTION ou MULTI*). Pour les géométries atomiques non vides, le "
+"Renvoie le nombre d'éléments d'une collection de géométries "
+"(GEOMETRYCOLLECTION ou MULTI*). Pour les géométries atomiques non vides, le "
 "résultat est 1. Pour les géométries vides, le résultat est 0."
 
 #. Tag: para
@@ -14770,8 +14768,8 @@ msgstr ""
 #, no-c-format
 msgid "An input geometry is added to a cluster if it is either:"
 msgstr ""
-"Une géométrie d'entrée est ajoutée à un cluster si elle est l'une ou l'autre "
-":"
+"Une géométrie d'entrée est ajoutée à un cluster si elle est l'une ou "
+"l'autre :"
 
 #. Tag: para
 #, no-c-format
@@ -14891,8 +14889,8 @@ msgid ""
 ", <xref linkend=\"ST_ClusterWithin\"/>, <xref linkend=\"ST_ClusterWithinWin"
 "\"/>"
 msgstr ""
-", <xref linkend=\"ST_ClusterWithin\"/>, <xref linkend=\"ST_ClusterWithinWin\""
-"/>"
+", <xref linkend=\"ST_ClusterWithin\"/>, <xref linkend=\"ST_ClusterWithinWin"
+"\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -15049,10 +15047,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "ST_ClusterWithin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN\"/"
-"> with <code>minpoints := 0</code>."
+"> with <code>minpoints =&gt; 0</code>."
 msgstr ""
-"ST_ClusterWithin est équivalent à l'exécution de <xref linkend="
-"\"ST_ClusterDBSCAN\"/> avec <code>minpoints := 0</code>."
 
 #. Tag: para
 #, no-c-format
@@ -15091,10 +15087,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "ST_ClusterWithinWin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN"
-"\"/> with <code>minpoints := 0</code>."
+"\"/> with <code>minpoints =&gt; 0</code>."
 msgstr ""
-"ST_ClusterWithinWin est équivalent à l'exécution de <xref linkend="
-"\"ST_ClusterDBSCAN\"/> avec <code>minpoints := 0</code>."
 
 #. Tag: para
 #, no-c-format
@@ -16540,8 +16534,8 @@ msgid ""
 ", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageSimplify"
 "\"/>"
 msgstr ""
-", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageSimplify\""
-"/>"
+", <xref linkend=\"ST_CoverageUnion\"/>, <xref linkend=\"ST_CoverageSimplify"
+"\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -16572,10 +16566,10 @@ msgid ""
 "be simplified."
 msgstr ""
 "La simplification utilise une variante de l'algorithme <link xlink:href="
-"\"https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm\""
-">Visvalingam-Whyatt</link>. Le paramètre <parameter>tolérance</parameter> a "
-"des unités de distance et est approximativement égal à la racine carrée des "
-"zones triangulaires à simplifier."
+"\"https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm"
+"\">Visvalingam-Whyatt</link>. Le paramètre <parameter>tolérance</parameter> "
+"a des unités de distance et est approximativement égal à la racine carrée "
+"des zones triangulaires à simplifier."
 
 #. Tag: para
 #, no-c-format
@@ -24094,7 +24088,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.2.0 -- KNN only available for PostgreSQL 9.1+"
-msgstr "Disponibilité : 2.2.0 -- KNN disponible uniquement pour PostgreSQL 9.1+"
+msgstr ""
+"Disponibilité : 2.2.0 -- KNN disponible uniquement pour PostgreSQL 9.1+"
 
 #. Tag: para
 #, no-c-format
@@ -24657,15 +24652,15 @@ msgid ""
 "types (no curve support for example)."
 msgstr ""
 "Les représentations de géométrie et d'entités GeoJSON résultantes sont "
-"conformes aux <link xlink:href=\"https://tools.ietf.org/html/rfc7946\""
-">spécifications GeoJSON RFC 7946</link>, sauf lorsque les géométries "
-"analysées sont référencées avec un CRS autre que la longitude et la latitude "
-"WGS84 (<link xlink:href=\"https://epsg. io/4326\">EPSG:4326</link>, <link "
-"xlink:href=\"http://epsg.io/4326.gml\">urn:ogc:def:crs:OGC::CRS84</link>) ; "
-"l'objet géométrique GeoJSON aura alors un identifiant SRID CRS court attaché "
-"par défaut. Les géométries 2D et 3D sont toutes deux supportées. GeoJSON ne "
-"supporte que les types de géométrie SFS 1.1 (pas de support pour les courbes "
-"par exemple)."
+"conformes aux <link xlink:href=\"https://tools.ietf.org/html/"
+"rfc7946\">spécifications GeoJSON RFC 7946</link>, sauf lorsque les "
+"géométries analysées sont référencées avec un CRS autre que la longitude et "
+"la latitude WGS84 (<link xlink:href=\"https://epsg. io/4326\">EPSG:4326</"
+"link>, <link xlink:href=\"http://epsg.io/4326.gml\">urn:ogc:def:crs:OGC::"
+"CRS84</link>) ; l'objet géométrique GeoJSON aura alors un identifiant SRID "
+"CRS court attaché par défaut. Les géométries 2D et 3D sont toutes deux "
+"supportées. GeoJSON ne supporte que les types de géométrie SFS 1.1 (pas de "
+"support pour les courbes par exemple)."
 
 #. Tag: para
 #, no-c-format
@@ -26981,9 +26976,9 @@ msgid ""
 "must-faster-unions-in-postgis-14.html</link>"
 msgstr ""
 "Le tableau ST_Union et ses variantes utilisent l'algorithme rapide d'union "
-"en cascade décrit dans <link xlink:href=\"http://blog.cleverelephant.ca/2009/"
-"01/must-faster-unions-in-postgis-14.html\">http://blog.cleverelephant.ca/"
-"2009/01/must-faster-unions-in-postgis-14.html</link>"
+"en cascade décrit dans <link xlink:href=\"http://blog.cleverelephant."
+"ca/2009/01/must-faster-unions-in-postgis-14.html\">http://blog."
+"cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html</link>"
 
 #. Tag: para
 #, no-c-format
@@ -27394,8 +27389,8 @@ msgid ""
 "polygons as well, use <xref linkend=\"ST_Polygonize\"/>."
 msgstr ""
 "Cette fonction convertit les anneaux intérieurs en trous. Pour transformer "
-"les anneaux intérieurs en polygones, utilisez <xref linkend=\"ST_Polygonize\""
-"/>."
+"les anneaux intérieurs en polygones, utilisez <xref linkend=\"ST_Polygonize"
+"\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -27442,8 +27437,8 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_MakePolygon\"/>, <xref linkend=\"ST_MakeValid\"/>, "
 "<xref linkend=\"ST_Node\"/>, <xref linkend=\"ST_Polygonize\"/>, <xref "
-"linkend=\"ST_BdPolyFromText\"/>, <xref linkend=\"ST_BdMPolyFromText\"/> ("
-"wrappers de cette fonction avec l'interface standard de l'OGC)"
+"linkend=\"ST_BdPolyFromText\"/>, <xref linkend=\"ST_BdMPolyFromText\"/> "
+"(wrappers de cette fonction avec l'interface standard de l'OGC)"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -27468,10 +27463,10 @@ msgid ""
 msgstr ""
 "Calcule un point qui est le centre de masse géométrique d'une géométrie. "
 "Pour [<varname>MULTI</varname>]<varname>POINT</varname>s, le centroïde est "
-"la moyenne arithmétique des coordonnées entrées. Pour les "
-"[<varname>MULTI</varname>]<varname>LINESTRING</varname>s, le centroïde est "
-"calculé en utilisant la longueur pondérée de chaque segment de ligne. Pour "
-"les [<varname>MULTI</varname>]<varname>POLYGON</varname>s, le centroïde est "
+"la moyenne arithmétique des coordonnées entrées. Pour les [<varname>MULTI</"
+"varname>]<varname>LINESTRING</varname>s, le centroïde est calculé en "
+"utilisant la longueur pondérée de chaque segment de ligne. Pour les "
+"[<varname>MULTI</varname>]<varname>POLYGON</varname>s, le centroïde est "
 "calculé en termes de surface. Si une géométrie vide est fournie, une "
 "<varname>GEOMETRYCOLLECTION</varname> vide est renvoyée. Si <varname>NULL</"
 "varname> est fourni, <varname>NULL</varname> est renvoyé. Si "
@@ -28964,64 +28959,55 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Returns a simplified version of a geometry, using the Douglas-Peucker "
+"Returns a simplified representation of a geometry, using the Douglas-Peucker "
 "algorithm."
 msgstr ""
-"Renvoie une version simplifiée d'une géométrie, en utilisant l'algorithme de "
-"Douglas-Peucker."
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a \"simplified\" version of the given geometry using the Douglas-"
-"Peucker algorithm. Will actually do something only with (multi)lines and "
-"(multi)polygons but you can safely call it with any kind of geometry. Since "
-"simplification occurs on a object-by-object basis you can also feed a "
-"GeometryCollection to this function."
+"Computes a simplified representation of a geometry using the <link xlink:"
+"href=\"https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas"
+"%E2%80%93Peucker_algorithm\">Douglas-Peucker algorithm</link>. The "
+"simplification <varname>tolerance</varname> is a distance value, in the "
+"units of the input SRS. Simplification removes vertices which are within the "
+"tolerance distance of the simplified linework. The result may not be valid "
+"even if the input is."
 msgstr ""
-"Renvoie une version \"simplifiée\" de la géométrie donnée en utilisant "
-"l'algorithme de Douglas-Peucker. Cette fonction ne fonctionne qu'avec les "
-"(multi)lignes et les (multi)polygones, mais vous pouvez l'appeler en toute "
-"sécurité avec n'importe quel type de géométrie. Comme la simplification se "
-"fait objet par objet, vous pouvez également utiliser une collection de "
-"géométries dans cette fonction."
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"The \"preserve collapsed\" flag will retain objects that would otherwise be "
-"too small given the tolerance. For example, a 1m long line simplified with a "
-"10m tolerance. If <varname>preserveCollapsed</varname> argument is specified "
-"as true, the line will not disappear. This flag is useful for rendering "
-"engines, to avoid having large numbers of very small objects disappear from "
-"a map leaving surprising gaps."
+"The function can be called with any kind of geometry (including "
+"GeometryCollections), but only line and polygon elements are simplified. "
+"Endpoints of linear geometry are preserved."
 msgstr ""
-"L'option \"preserve collapsed\" permet de conserver les objets qui seraient "
-"autrement trop petits compte tenu de la tolérance. Par exemple, une ligne de "
-"1 m de long simplifiée avec une tolérance de 10 m. Si l'argument "
-"<varname>preserveCollapsed</varname> est spécifié comme true, la ligne ne "
-"disparaîtra pas. Cet indicateur est utile pour les moteurs de rendu, afin "
-"d'éviter qu'un grand nombre d'objets très petits ne disparaissent d'une "
-"carte en laissant des vides surprenants."
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Note that returned geometry might lose its simplicity (see <xref linkend="
-"\"ST_IsSimple\"/>)"
+"The <varname>preserveCollapsed</varname> flag retains small geometries that "
+"would otherwise be removed at the given tolerance. For example, if a 1m long "
+"line is simplified with a 10m tolerance, when <varname>preserveCollapsed</"
+"varname> is true the line will not disappear. This flag is useful for "
+"rendering purposes, to prevent very small features disappearing from a map."
 msgstr ""
-"Notez que la géométrie retournée peut perdre sa simplicité (voir <xref "
-"linkend=\"ST_IsSimple\"/>)"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Note topology may not be preserved and may result in invalid geometries. Use "
-"(see <xref linkend=\"ST_SimplifyPreserveTopology\"/>) to preserve topology."
+"The returned geometry may lose its simplicity (see <xref linkend="
+"\"ST_IsSimple\"/>), topology may not be preserved, and polygonal results may "
+"be invalid (see <xref linkend=\"ST_IsValid\"/>). Use <xref linkend="
+"\"ST_SimplifyPreserveTopology\"/> to preserve topology and ensure validity."
 msgstr ""
-"Notez que la topologie peut ne pas être préservée et donner lieu à des "
-"géométries non valides. Utilisez (voir <xref linkend="
-"\"ST_SimplifyPreserveTopology\"/>) pour préserver la topologie."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This function does not preserve boundaries shared between polygons. Use "
+"<xref linkend=\"ST_CoverageSimplify\"/> if this is required."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -29030,39 +29016,53 @@ msgstr "Un cercle trop simplifié devient un triangle, moyennement un octogone,"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
-"\"ST_SimplifyVW\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/>"
+msgid "Simplifying a set of lines. Lines may intersect after simplification."
 msgstr ""
-", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
-"\"ST_SimplifyVW\"/>, Topologie <xref linkend=\"TP_ST_Simplify\"/>"
 
-#. Tag: refpurpose
+#. Tag: para
 #, no-c-format
-msgid ""
-"Returns a simplified and valid version of a geometry, using the Douglas-"
-"Peucker algorithm."
+msgid "Simplifying a MultiPolygon. Polygonal results may be invalid."
 msgstr ""
-"Renvoie une version simplifiée et valide d'une géométrie, en utilisant "
-"l'algorithme de Douglas-Peucker."
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a \"simplified\" version of the given geometry using the Douglas-"
-"Peucker algorithm. Will avoid creating derived geometries (polygons in "
-"particular) that are invalid. Will actually do something only with "
-"(multi)lines and (multi)polygons but you can safely call it with any kind of "
-"geometry. Since simplification occurs on a object-by-object basis you can "
-"also feed a GeometryCollection to this function."
+", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
+"\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>, Topology <xref "
+"linkend=\"TP_ST_Simplify\"/>"
 msgstr ""
-"Renvoie une version \"simplifiée\" de la géométrie donnée en utilisant "
-"l'algorithme de Douglas-Peucker. Évite de créer des géométries dérivées "
-"(polygones en particulier) qui ne sont pas valides. Cette fonction ne "
-"fonctionne qu'avec les (multi)lignes et les (multi)polygones, mais vous "
-"pouvez l'appeler en toute sécurité avec n'importe quel type de géométrie. "
-"Comme la simplification se produit objet par objet, vous pouvez également "
-"utiliser une collection de géométries dans cette fonction."
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Returns a simplified and valid representation of a geometry, using the "
+"Douglas-Peucker algorithm."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Computes a simplified representation of a geometry using a variant of the "
+"<link xlink:href=\"https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas"
+"%E2%80%93Peucker_algorithm\">Douglas-Peucker algorithm</link> which limits "
+"simplification to ensure the result has the same topology as the input. The "
+"simplification <varname>tolerance</varname> is a distance value, in the "
+"units of the input SRS. Simplification removes vertices which are within the "
+"tolerance distance of the simplified linework, as long as topology is "
+"preserved. The result will be valid and simple if the input is."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The function can be called with any kind of geometry (including "
+"GeometryCollections), but only line and polygon elements are simplified. For "
+"polygonal inputs, the result will have the same number of rings (shells and "
+"holes), and the rings will not cross. Ring endpoints may be simplified. For "
+"linear inputs, the result will have the same number of lines, and lines will "
+"not intersect if they did not do so in the original geometry. Endpoints of "
+"linear geometry are preserved."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -29072,11 +29072,27 @@ msgstr "Disponibilité : 1.3.3"
 #. Tag: para
 #, no-c-format
 msgid ""
-"Same example as Simplify, but we see Preserve Topology prevents "
-"oversimplification. The circle can at most become a square."
+"For the same example as <xref linkend=\"ST_Simplify\"/>, "
+"ST_SimplifyPreserveTopology prevents oversimplification. The circle can at "
+"most become a square."
 msgstr ""
-"Même exemple que Simplify, mais nous voyons que Preserve Topology empêche "
-"une simplification excessive. Le cercle peut au maximum devenir un carré."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Simplifying a set of lines, preserving topology of non-intersecting lines."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Simplifying a MultiPolygon, preserving topology of shells and holes."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -29186,27 +29202,30 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Returns a simplified version of a geometry, using the Visvalingam-Whyatt "
-"algorithm"
+"Returns a simplified representation of a geometry, using the Visvalingam-"
+"Whyatt algorithm"
 msgstr ""
-"Renvoie une version simplifiée d'une géométrie, en utilisant l'algorithme de "
-"Visvalingam-Whyatt"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a \"simplified\" version of the given geometry using the Visvalingam-"
-"Whyatt algorithm. Will actually do something only with (multi)lines and "
-"(multi)polygons but you can safely call it with any kind of geometry. Since "
-"simplification occurs on a object-by-object basis you can also feed a "
-"GeometryCollection to this function."
+"Returns a simplified representation of a geometry using the <link xlink:href="
+"\"https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm"
+"\">Visvalingam-Whyatt algorithm</link>. The simplification "
+"<varname>tolerance</varname> is an area value, in the units of the input "
+"SRS. Simplification removes vertices which form \"corners\" with area less "
+"than the tolerance. The result may not be valid even if the input is."
 msgstr ""
-"Renvoie une version \"simplifiée\" de la géométrie donnée en utilisant "
-"l'algorithme de Visvalingam-Whyatt. Cette fonction ne fonctionne qu'avec les "
-"(multi)lignes et les (multi)polygones, mais vous pouvez l'appeler en toute "
-"sécurité avec n'importe quel type de géométrie. Comme la simplification "
-"s'effectue objet par objet, vous pouvez également utiliser une collection de "
-"géométries dans cette fonction."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The returned geometry may lose its simplicity (see <xref linkend="
+"\"ST_IsSimple\"/>), topology may not be preserved, and polygonal results may "
+"be invalid (see <xref linkend=\"ST_IsValid\"/>). Use <xref linkend="
+"\"ST_SimplifyPreserveTopology\"/> to preserve topology and ensure validity. "
+"<xref linkend=\"ST_CoverageSimplify\"/> also preserves topology and validity."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -29217,19 +29236,26 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "A LineString is simplified with a minimum area threshold of 30."
-msgstr "Un LineString est simplifié avec un seuil de surface minimum de 30."
+msgid "A LineString is simplified with a minimum-area tolerance of 30."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Simplifying a line."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Simplifying a polygon."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
-"\"ST_SimplifyPreserveTopology\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/"
-">"
+"\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_CoverageSimplify\"/>, "
+"Topology <xref linkend=\"TP_ST_Simplify\"/>"
 msgstr ""
-", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
-"\"ST_SimplifyPreserveTopology\"/>, Topologie <xref linkend=\"TP_ST_Simplify"
-"\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -29281,6 +29307,25 @@ msgstr ""
 "mais vous pouvez l'appeler en toute sécurité avec n'importe quel type de "
 "géométrie. Comme la simplification se produit objet par objet, vous pouvez "
 "également utiliser une collection de géométries dans cette fonction."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Note that returned geometry might lose its simplicity (see <xref linkend="
+"\"ST_IsSimple\"/>)"
+msgstr ""
+"Notez que la géométrie retournée peut perdre sa simplicité (voir <xref "
+"linkend=\"ST_IsSimple\"/>)"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Note topology may not be preserved and may result in invalid geometries. Use "
+"(see <xref linkend=\"ST_SimplifyPreserveTopology\"/>) to preserve topology."
+msgstr ""
+"Notez que la topologie peut ne pas être préservée et donner lieu à des "
+"géométries non valides. Utilisez (voir <xref linkend="
+"\"ST_SimplifyPreserveTopology\"/>) pour préserver la topologie."
 
 #. Tag: para
 #, no-c-format
@@ -30362,9 +30407,10 @@ msgid ""
 "normally zero, but could be different. To generate 10m contours at 5, 15, "
 "25, ... the LEVEL_BASE would be 5."
 msgstr ""
-"La \"base\" par rapport à laquelle les intervalles de contour sont appliqués "
-"; elle est normalement égale à zéro, mais peut être différente. Pour générer "
-"des courbes de niveau de 10 m à 5, 15, 25, ... le LEVEL_BASE serait de 5."
+"La \"base\" par rapport à laquelle les intervalles de contour sont "
+"appliqués ; elle est normalement égale à zéro, mais peut être différente. "
+"Pour générer des courbes de niveau de 10 m à 5, 15, 25, ... le LEVEL_BASE "
+"serait de 5."
 
 #. Tag: para
 #, no-c-format
@@ -30598,11 +30644,11 @@ msgstr ""
 "nodata donnée. Si aucun index n'est spécifié, la bande est ajoutée à la fin. "
 "Si aucun <varname>fromband</varname> n'est spécifié, la bande 1 est "
 "supposée. Le type de pixel est une représentation sous forme de chaîne de "
-"l'un des types de pixels spécifiés dans <xref linkend=\"RT_ST_BandPixelType\""
-"/>. Si un index existant est spécifié, toutes les bandes suivantes &gt;= cet "
-"index sont incrémentées de 1. Si une valeur initiale supérieure à la valeur "
-"maximale du type de pixel est spécifiée, la valeur initiale est fixée à la "
-"valeur la plus élevée autorisée par le type de pixel."
+"l'un des types de pixels spécifiés dans <xref linkend=\"RT_ST_BandPixelType"
+"\"/>. Si un index existant est spécifié, toutes les bandes suivantes &gt;= "
+"cet index sont incrémentées de 1. Si une valeur initiale supérieure à la "
+"valeur maximale du type de pixel est spécifiée, la valeur initiale est fixée "
+"à la valeur la plus élevée autorisée par le type de pixel."
 
 #. Tag: para
 #, no-c-format
@@ -34856,13 +34902,22 @@ msgid ""
 "If <varname>crop</varname> is not specified, true is assumed meaning the "
 "output raster is cropped to the intersection of the <varname>geom</"
 "varname>and <varname>rast</varname> extents. If <varname>crop</varname> is "
-"set to false, the new raster gets the same extent as <varname>rast</varname>."
+"set to false, the new raster gets the same extent as <varname>rast</"
+"varname>. If <varname>touched</varname> is set to true, then all pixels in "
+"the <varname>rast</varname> that intersect the geometry are selected."
 msgstr ""
-"Si <varname>crop</varname> n'est pas spécifié, true est utilisé par défaut, "
-"signifiant que le raster de sortie est recadré à l'intersection des étendues "
-"de <varname>geom</varname>et <varname>rast</varname>. Si <varname>crop</"
-"varname> est défini à false, le nouveau raster a la même étendue que "
-"<varname>rast</varname>."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The default behavior is touched=false, which will only select pixels where "
+"the center of the pixel is covered by the geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Enhanced: 3.5.0 - touched argument added."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -34873,18 +34928,19 @@ msgstr "Amélioration : 2.1.0 Réécrit en C"
 #, no-c-format
 msgid ""
 "Examples here use Massachusetts aerial data available on MassGIS site <link "
-"xlink:href=\"http://www.mass.gov/mgis/colororthos2008.htm\">MassGIS Aerial "
-"Orthos</link>. Coordinates are in Massachusetts State Plane Meters."
+"xlink:href=\"https://www.mass.gov/info-details/massgis-data-20082009-aerial-"
+"imagery\">MassGIS Aerial Orthos</link>."
 msgstr ""
-"Les exemples présentés ici utilisent les données aériennes du Massachusetts "
-"disponibles sur le site MassGIS <link xlink:href=\"http://www.mass.gov/mgis/"
-"colororthos2008.htm\">MassGIS Aerial Orthos</link>. Les coordonnées sont "
-"exprimées en mètres (Massachusetts State Plane Meters)."
 
 #. Tag: title
 #, no-c-format
-msgid "Examples: 1 band clipping"
-msgstr "Exemples : Coupe d'une bande"
+msgid "Examples: Comparing selecting all touched vs. not all touched"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Examples: 1 band clipping (not touched)"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -34917,11 +34973,9 @@ msgstr "Exemples : Coupe de toutes les bandes"
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Intersection\"/"
-">"
+", <xref linkend=\"RT_ST_Count\"/>, <xref linkend=\"RT_ST_MapAlgebra\"/>, "
+"<xref linkend=\"RT_ST_Intersection\"/>"
 msgstr ""
-", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Intersection\"/"
-">"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -38995,8 +39049,8 @@ msgid ""
 "In mathematical terms: <emphasis>ST_Contains(A, B) ⇔ (A ⋂ B = B) ∧ (Int(A) ⋂ "
 "Int(B) ≠ ∅) </emphasis>"
 msgstr ""
-"En termes mathématiques : <emphasis>ST_Contains(A, B) ⇔ (A ⋂ B = B) ∧ (Int(A)"
-" ⋂ Int(B) ≠ ∅). </emphasis>"
+"En termes mathématiques : <emphasis>ST_Contains(A, B) ⇔ (A ⋂ B = B) ∧ "
+"(Int(A) ⋂ Int(B) ≠ ∅). </emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -39281,8 +39335,8 @@ msgstr ""
 msgid ""
 "In mathematical terms: <emphasis>ST_CoveredBy(A, B) ⇔ A ⋂ B = A </emphasis>"
 msgstr ""
-"En termes mathématiques : <emphasis>ST_CoveredBy(A, B) ⇔ A ⋂ B = A "
-"</emphasis>"
+"En termes mathématiques : <emphasis>ST_CoveredBy(A, B) ⇔ A ⋂ B = A </"
+"emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -39452,9 +39506,9 @@ msgid ""
 "&lt; max( dim( Int(A) ), dim( Int(B) ) )) ∧ (A ⋂ B ≠ A) ∧ (A ⋂ B ≠ B) </"
 "emphasis>"
 msgstr ""
-"En termes mathématiques : <emphasis>ST_Crosses(A, B) ⇔ (dim( Int(A) ⋂ Int(B) "
-") &lt; max( dim( Int(A) ), dim( Int(B) ) )) ∧ (A ⋂ B ≠ A) ∧ (A ⋂ B ≠ B) "
-"</emphasis>"
+"En termes mathématiques : <emphasis>ST_Crosses(A, B) ⇔ (dim( Int(A) ⋂ "
+"Int(B) ) &lt; max( dim( Int(A) ), dim( Int(B) ) )) ∧ (A ⋂ B ≠ A) ∧ (A ⋂ B ≠ "
+"B) </emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -39646,7 +39700,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "In mathematical terms: <emphasis>ST_Equals(A, B) ⇔ A = B </emphasis>"
-msgstr "En termes mathématiques : <emphasis>ST_Equals(A, B) ⇔ A = B </emphasis>"
+msgstr ""
+"En termes mathématiques : <emphasis>ST_Equals(A, B) ⇔ A = B </emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -39654,8 +39709,8 @@ msgid ""
 "The following relation holds: <emphasis>ST_Equals(A, B) ⇔ ST_Within(A,B) ∧ "
 "ST_Within(B,A) </emphasis>"
 msgstr ""
-"La relation suivante est valable : <emphasis>ST_Equals(A, B) ⇔ ST_Within(A,B)"
-" ∧ ST_Within(B,A) </emphasis>"
+"La relation suivante est valable : <emphasis>ST_Equals(A, B) ⇔ ST_Within(A,"
+"B) ∧ ST_Within(B,A) </emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -39716,8 +39771,8 @@ msgstr ""
 msgid ""
 "In mathematical terms: <emphasis>ST_Intersects(A, B) ⇔ A ⋂ B ≠ ∅ </emphasis>"
 msgstr ""
-"En termes mathématiques : <emphasis>ST_Intersects(A, B) ⇔ A ⋂ B ≠ ∅ "
-"</emphasis>"
+"En termes mathématiques : <emphasis>ST_Intersects(A, B) ⇔ A ⋂ B ≠ ∅ </"
+"emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -40478,8 +40533,8 @@ msgid ""
 "In mathematical terms: <emphasis>ST_Within(A, B) ⇔ (A ⋂ B = A) ∧ (Int(A) ⋂ "
 "Int(B) ≠ ∅) </emphasis>"
 msgstr ""
-"En termes mathématiques : <emphasis>ST_Within(A, B) ⇔ (A ⋂ B = A) ∧ (Int(A) ⋂"
-" Int(B) ≠ ∅). </emphasis>"
+"En termes mathématiques : <emphasis>ST_Within(A, B) ⇔ (A ⋂ B = A) ∧ (Int(A) "
+"⋂ Int(B) ≠ ∅). </emphasis>"
 
 #. Tag: para
 #, no-c-format
@@ -41663,8 +41718,8 @@ msgid ""
 "\"/> and <xref linkend=\"CG_OptimalConvexPartition\"/>)"
 msgstr ""
 "Partition convexe approximative (même exemple que <xref linkend="
-"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_GreeneApproxConvexPartition\""
-"/> et <xref linkend=\"CG_OptimalConvexPartition\"/>)"
+"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_GreeneApproxConvexPartition"
+"\"/> et <xref linkend=\"CG_OptimalConvexPartition\"/>)"
 
 #. Tag: para
 #, no-c-format
@@ -41764,8 +41819,8 @@ msgstr ""
 "droits : étant donné un toit polygonal, le squelette droit donne directement "
 "la disposition de chaque tente. Si chaque arête du squelette est soulevée du "
 "plan d'une hauteur égale à sa distance de décalage, le toit résultant est "
-"\"correct\" en ce sens que l'eau tombera toujours vers les bords du contour ("
-"la bordure du toit), quel que soit l'endroit où elle tombe sur le toit. La "
+"\"correct\" en ce sens que l'eau tombera toujours vers les bords du contour "
+"(la bordure du toit), quel que soit l'endroit où elle tombe sur le toit. La "
 "fonction calcule cette extrusion ou \"toit\" sur un polygone. Si l'argument "
 "hauteur_du_corps > 0, le polygone est extrudé comme avec ST_Extrude(polygon, "
 "0, 0, hauteur_du_corps). Le résultat est une union de ces polyhedralsurfaces."
@@ -44280,8 +44335,8 @@ msgid ""
 "NOTE: GEOS 3.12.0 details at <link xlink:href=\"https://libgeos.org/"
 "posts/2023-06-27-geos-3-12-released/\">GEOS 3.12.0 release notes</link>"
 msgstr ""
-"NOTE : GEOS 3.12.0 détails à <link xlink:href=\"https://libgeos.org/posts/"
-"2023-06-27-geos-3-12-released/\">GEOS 3.12.0 release notes</link>"
+"NOTE : GEOS 3.12.0 détails à <link xlink:href=\"https://libgeos.org/"
+"posts/2023-06-27-geos-3-12-released/\">GEOS 3.12.0 release notes</link>"
 
 #. Tag: para
 #, no-c-format
@@ -44516,8 +44571,8 @@ msgid ""
 "reduce number of upgrade paths installed on system (Sandro Santilli)"
 msgstr ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5092\">5092</link>, "
-"réduction du nombre de chemins de mise à niveau installés sur le système ("
-"Sandro Santilli)"
+"réduction du nombre de chemins de mise à niveau installés sur le système "
+"(Sandro Santilli)"
 
 #. Tag: para
 #, no-c-format
@@ -44556,8 +44611,8 @@ msgid ""
 "Santilli)"
 msgstr ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5447\">5447</link> "
-"Ajout de pages de manuel pour les utilitaires postgis et postgis_restore ("
-"Sandro Santilli)"
+"Ajout de pages de manuel pour les utilitaires postgis et postgis_restore "
+"(Sandro Santilli)"
 
 #. Tag: para
 #, no-c-format
@@ -48932,9 +48987,9 @@ msgid ""
 "two geometries and to classify the relationship between the two geometries "
 "based on the entries in the resulting 'intersection' matrix.\""
 msgstr ""
-"Selon le <link xlink:href=\"http://www.opengeospatial.org/standards/sfs\""
-">OpenGIS Simple Features Implementation Specification for SQL</link>, \"l"
-"'approche de base pour comparer deux géométries consiste à effectuer des "
+"Selon le <link xlink:href=\"http://www.opengeospatial.org/standards/sfs"
+"\">OpenGIS Simple Features Implementation Specification for SQL</link>, "
+"\"l'approche de base pour comparer deux géométries consiste à effectuer des "
 "tests par paire des intersections entre les intérieurs, les limites et les "
 "extérieurs des deux géométries et à classer la relation entre les deux "
 "géométries sur la base des entrées de la matrice \"intersection\" résultante."
@@ -49510,8 +49565,8 @@ msgid ""
 "\"geometry_distance_knn\"/>; see <xref linkend=\"operators-distance\"/> for "
 "the full list.)"
 msgstr ""
-"Les opérateurs spatiaux comprennent les opérateurs de boîte de délimitation ("
-"dont le plus couramment utilisé est <xref linkend=\"geometry_overlaps\"/> ; "
+"Les opérateurs spatiaux comprennent les opérateurs de boîte de délimitation "
+"(dont le plus couramment utilisé est <xref linkend=\"geometry_overlaps\"/> ; "
 "voir <xref linkend=\"operators-bbox\"/> pour la liste complète) et les "
 "opérateurs de distance utilisés dans les requêtes sur les plus proches "
 "voisins (le plus courant étant <xref linkend=\"geometry_distance_knn\"/> ; "
@@ -51213,6 +51268,183 @@ msgstr "Support 2.5/3D"
 #, no-c-format
 msgid "Supports geography"
 msgstr "Prise en charge du type geography"
+
+#, no-c-format
+#~ msgid "This will only have data is you marked zcta5 to be loaded"
+#~ msgstr ""
+#~ "Il n'y aura de données que si vous avez marqué zcta5 pour qu'il soit "
+#~ "chargé"
+
+#, no-c-format
+#~ msgid ""
+#~ "ST_ClusterWithin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN"
+#~ "\"/> with <code>minpoints := 0</code>."
+#~ msgstr ""
+#~ "ST_ClusterWithin est équivalent à l'exécution de <xref linkend="
+#~ "\"ST_ClusterDBSCAN\"/> avec <code>minpoints := 0</code>."
+
+#, no-c-format
+#~ msgid ""
+#~ "ST_ClusterWithinWin is equivalent to running <xref linkend="
+#~ "\"ST_ClusterDBSCAN\"/> with <code>minpoints := 0</code>."
+#~ msgstr ""
+#~ "ST_ClusterWithinWin est équivalent à l'exécution de <xref linkend="
+#~ "\"ST_ClusterDBSCAN\"/> avec <code>minpoints := 0</code>."
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a simplified version of a geometry, using the Douglas-Peucker "
+#~ "algorithm."
+#~ msgstr ""
+#~ "Renvoie une version simplifiée d'une géométrie, en utilisant l'algorithme "
+#~ "de Douglas-Peucker."
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a \"simplified\" version of the given geometry using the Douglas-"
+#~ "Peucker algorithm. Will actually do something only with (multi)lines and "
+#~ "(multi)polygons but you can safely call it with any kind of geometry. "
+#~ "Since simplification occurs on a object-by-object basis you can also feed "
+#~ "a GeometryCollection to this function."
+#~ msgstr ""
+#~ "Renvoie une version \"simplifiée\" de la géométrie donnée en utilisant "
+#~ "l'algorithme de Douglas-Peucker. Cette fonction ne fonctionne qu'avec les "
+#~ "(multi)lignes et les (multi)polygones, mais vous pouvez l'appeler en "
+#~ "toute sécurité avec n'importe quel type de géométrie. Comme la "
+#~ "simplification se fait objet par objet, vous pouvez également utiliser "
+#~ "une collection de géométries dans cette fonction."
+
+#, no-c-format
+#~ msgid ""
+#~ "The \"preserve collapsed\" flag will retain objects that would otherwise "
+#~ "be too small given the tolerance. For example, a 1m long line simplified "
+#~ "with a 10m tolerance. If <varname>preserveCollapsed</varname> argument is "
+#~ "specified as true, the line will not disappear. This flag is useful for "
+#~ "rendering engines, to avoid having large numbers of very small objects "
+#~ "disappear from a map leaving surprising gaps."
+#~ msgstr ""
+#~ "L'option \"preserve collapsed\" permet de conserver les objets qui "
+#~ "seraient autrement trop petits compte tenu de la tolérance. Par exemple, "
+#~ "une ligne de 1 m de long simplifiée avec une tolérance de 10 m. Si "
+#~ "l'argument <varname>preserveCollapsed</varname> est spécifié comme true, "
+#~ "la ligne ne disparaîtra pas. Cet indicateur est utile pour les moteurs de "
+#~ "rendu, afin d'éviter qu'un grand nombre d'objets très petits ne "
+#~ "disparaissent d'une carte en laissant des vides surprenants."
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
+#~ "\"ST_SimplifyVW\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
+#~ "\"ST_SimplifyVW\"/>, Topologie <xref linkend=\"TP_ST_Simplify\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a simplified and valid version of a geometry, using the Douglas-"
+#~ "Peucker algorithm."
+#~ msgstr ""
+#~ "Renvoie une version simplifiée et valide d'une géométrie, en utilisant "
+#~ "l'algorithme de Douglas-Peucker."
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a \"simplified\" version of the given geometry using the Douglas-"
+#~ "Peucker algorithm. Will avoid creating derived geometries (polygons in "
+#~ "particular) that are invalid. Will actually do something only with "
+#~ "(multi)lines and (multi)polygons but you can safely call it with any kind "
+#~ "of geometry. Since simplification occurs on a object-by-object basis you "
+#~ "can also feed a GeometryCollection to this function."
+#~ msgstr ""
+#~ "Renvoie une version \"simplifiée\" de la géométrie donnée en utilisant "
+#~ "l'algorithme de Douglas-Peucker. Évite de créer des géométries dérivées "
+#~ "(polygones en particulier) qui ne sont pas valides. Cette fonction ne "
+#~ "fonctionne qu'avec les (multi)lignes et les (multi)polygones, mais vous "
+#~ "pouvez l'appeler en toute sécurité avec n'importe quel type de géométrie. "
+#~ "Comme la simplification se produit objet par objet, vous pouvez également "
+#~ "utiliser une collection de géométries dans cette fonction."
+
+#, no-c-format
+#~ msgid ""
+#~ "Same example as Simplify, but we see Preserve Topology prevents "
+#~ "oversimplification. The circle can at most become a square."
+#~ msgstr ""
+#~ "Même exemple que Simplify, mais nous voyons que Preserve Topology empêche "
+#~ "une simplification excessive. Le cercle peut au maximum devenir un carré."
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a simplified version of a geometry, using the Visvalingam-Whyatt "
+#~ "algorithm"
+#~ msgstr ""
+#~ "Renvoie une version simplifiée d'une géométrie, en utilisant l'algorithme "
+#~ "de Visvalingam-Whyatt"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a \"simplified\" version of the given geometry using the "
+#~ "Visvalingam-Whyatt algorithm. Will actually do something only with "
+#~ "(multi)lines and (multi)polygons but you can safely call it with any kind "
+#~ "of geometry. Since simplification occurs on a object-by-object basis you "
+#~ "can also feed a GeometryCollection to this function."
+#~ msgstr ""
+#~ "Renvoie une version \"simplifiée\" de la géométrie donnée en utilisant "
+#~ "l'algorithme de Visvalingam-Whyatt. Cette fonction ne fonctionne qu'avec "
+#~ "les (multi)lignes et les (multi)polygones, mais vous pouvez l'appeler en "
+#~ "toute sécurité avec n'importe quel type de géométrie. Comme la "
+#~ "simplification s'effectue objet par objet, vous pouvez également utiliser "
+#~ "une collection de géométries dans cette fonction."
+
+#, no-c-format
+#~ msgid "A LineString is simplified with a minimum area threshold of 30."
+#~ msgstr "Un LineString est simplifié avec un seuil de surface minimum de 30."
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
+#~ "\"ST_SimplifyPreserveTopology\"/>, Topology <xref linkend=\"TP_ST_Simplify"
+#~ "\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
+#~ "\"ST_SimplifyPreserveTopology\"/>, Topologie <xref linkend="
+#~ "\"TP_ST_Simplify\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "If <varname>crop</varname> is not specified, true is assumed meaning the "
+#~ "output raster is cropped to the intersection of the <varname>geom</"
+#~ "varname>and <varname>rast</varname> extents. If <varname>crop</varname> "
+#~ "is set to false, the new raster gets the same extent as <varname>rast</"
+#~ "varname>."
+#~ msgstr ""
+#~ "Si <varname>crop</varname> n'est pas spécifié, true est utilisé par "
+#~ "défaut, signifiant que le raster de sortie est recadré à l'intersection "
+#~ "des étendues de <varname>geom</varname>et <varname>rast</varname>. Si "
+#~ "<varname>crop</varname> est défini à false, le nouveau raster a la même "
+#~ "étendue que <varname>rast</varname>."
+
+#, no-c-format
+#~ msgid ""
+#~ "Examples here use Massachusetts aerial data available on MassGIS site "
+#~ "<link xlink:href=\"http://www.mass.gov/mgis/colororthos2008.htm\">MassGIS "
+#~ "Aerial Orthos</link>. Coordinates are in Massachusetts State Plane Meters."
+#~ msgstr ""
+#~ "Les exemples présentés ici utilisent les données aériennes du "
+#~ "Massachusetts disponibles sur le site MassGIS <link xlink:href=\"http://"
+#~ "www.mass.gov/mgis/colororthos2008.htm\">MassGIS Aerial Orthos</link>. Les "
+#~ "coordonnées sont exprimées en mètres (Massachusetts State Plane Meters)."
+
+#, no-c-format
+#~ msgid "Examples: 1 band clipping"
+#~ msgstr "Exemples : Coupe d'une bande"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Intersection"
+#~ "\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Intersection"
+#~ "\"/>"
 
 #, no-c-format
 #~ msgid ""

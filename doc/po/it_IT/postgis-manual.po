@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-29 04:00+0000\n"
+"POT-Creation-Date: 2023-12-13 03:42+0000\n"
 "PO-Revision-Date: 2023-10-14 20:23+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -8235,7 +8235,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "This will only have data is you marked zcta5 to be loaded"
+msgid "This will only have data if you marked zcta5 to be loaded"
 msgstr ""
 
 #. Tag: para
@@ -13189,7 +13189,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "ST_ClusterWithin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN\"/"
-"> with <code>minpoints := 0</code>."
+"> with <code>minpoints =&gt; 0</code>."
 msgstr ""
 
 #. Tag: para
@@ -13220,7 +13220,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "ST_ClusterWithinWin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN"
-"\"/> with <code>minpoints := 0</code>."
+"\"/> with <code>minpoints =&gt; 0</code>."
 msgstr ""
 
 #. Tag: para
@@ -24437,59 +24437,54 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Returns a simplified version of a geometry, using the Douglas-Peucker "
+"Returns a simplified representation of a geometry, using the Douglas-Peucker "
 "algorithm."
 msgstr ""
-"Restituisce una versione semplificata di una geometria, utilizzando "
-"l'algoritmo di Douglas-Peucker."
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a \"simplified\" version of the given geometry using the Douglas-"
-"Peucker algorithm. Will actually do something only with (multi)lines and "
-"(multi)polygons but you can safely call it with any kind of geometry. Since "
-"simplification occurs on a object-by-object basis you can also feed a "
-"GeometryCollection to this function."
+"Computes a simplified representation of a geometry using the <link xlink:"
+"href=\"https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas"
+"%E2%80%93Peucker_algorithm\">Douglas-Peucker algorithm</link>. The "
+"simplification <varname>tolerance</varname> is a distance value, in the "
+"units of the input SRS. Simplification removes vertices which are within the "
+"tolerance distance of the simplified linework. The result may not be valid "
+"even if the input is."
 msgstr ""
-"Restituisce una versione \"semplificata\" della geometria data, utilizzando "
-"l'algoritmo di Douglas-Peucker. In realtà, funziona solo con (multi)linee e "
-"(multi)poligoni, ma può essere tranquillamente richiamato con qualsiasi tipo "
-"di geometria. Poiché la semplificazione avviene oggetto per oggetto, è "
-"possibile fornire a questa funzione anche una collezione di geometrie."
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"The \"preserve collapsed\" flag will retain objects that would otherwise be "
-"too small given the tolerance. For example, a 1m long line simplified with a "
-"10m tolerance. If <varname>preserveCollapsed</varname> argument is specified "
-"as true, the line will not disappear. This flag is useful for rendering "
-"engines, to avoid having large numbers of very small objects disappear from "
-"a map leaving surprising gaps."
+"The function can be called with any kind of geometry (including "
+"GeometryCollections), but only line and polygon elements are simplified. "
+"Endpoints of linear geometry are preserved."
 msgstr ""
-"Il flag \"conserva collassato\" conserva gli oggetti che altrimenti "
-"sarebbero troppo piccoli data la tolleranza. Ad esempio, una linea lunga 1 "
-"metro semplificata con una tolleranza di 10 metri. Se l'argomento "
-"<varname>preserveCollapsed</varname> è specificato come true, la linea non "
-"scomparirà. Questo flag è utile per i motori di rendering, per evitare che "
-"un gran numero di oggetti molto piccoli scompaia da una mappa lasciando "
-"vuoti sorprendenti."
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Note that returned geometry might lose its simplicity (see <xref linkend="
-"\"ST_IsSimple\"/>)"
+"The <varname>preserveCollapsed</varname> flag retains small geometries that "
+"would otherwise be removed at the given tolerance. For example, if a 1m long "
+"line is simplified with a 10m tolerance, when <varname>preserveCollapsed</"
+"varname> is true the line will not disappear. This flag is useful for "
+"rendering purposes, to prevent very small features disappearing from a map."
 msgstr ""
-"Si noti che la geometria restituita potrebbe perdere la sua semplicità (si "
-"veda <xref linkend=\"ST_IsSimple\"/>)"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Note topology may not be preserved and may result in invalid geometries. Use "
-"(see <xref linkend=\"ST_SimplifyPreserveTopology\"/>) to preserve topology."
+"The returned geometry may lose its simplicity (see <xref linkend="
+"\"ST_IsSimple\"/>), topology may not be preserved, and polygonal results may "
+"be invalid (see <xref linkend=\"ST_IsValid\"/>). Use <xref linkend="
+"\"ST_SimplifyPreserveTopology\"/> to preserve topology and ensure validity."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This function does not preserve boundaries shared between polygons. Use "
+"<xref linkend=\"ST_CoverageSimplify\"/> if this is required."
 msgstr ""
 
 #. Tag: para
@@ -24499,27 +24494,52 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
-"\"ST_SimplifyVW\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/>"
+msgid "Simplifying a set of lines. Lines may intersect after simplification."
 msgstr ""
 
-#. Tag: refpurpose
+#. Tag: para
 #, no-c-format
-msgid ""
-"Returns a simplified and valid version of a geometry, using the Douglas-"
-"Peucker algorithm."
+msgid "Simplifying a MultiPolygon. Polygonal results may be invalid."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a \"simplified\" version of the given geometry using the Douglas-"
-"Peucker algorithm. Will avoid creating derived geometries (polygons in "
-"particular) that are invalid. Will actually do something only with "
-"(multi)lines and (multi)polygons but you can safely call it with any kind of "
-"geometry. Since simplification occurs on a object-by-object basis you can "
-"also feed a GeometryCollection to this function."
+", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
+"\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>, Topology <xref "
+"linkend=\"TP_ST_Simplify\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Returns a simplified and valid representation of a geometry, using the "
+"Douglas-Peucker algorithm."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Computes a simplified representation of a geometry using a variant of the "
+"<link xlink:href=\"https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas"
+"%E2%80%93Peucker_algorithm\">Douglas-Peucker algorithm</link> which limits "
+"simplification to ensure the result has the same topology as the input. The "
+"simplification <varname>tolerance</varname> is a distance value, in the "
+"units of the input SRS. Simplification removes vertices which are within the "
+"tolerance distance of the simplified linework, as long as topology is "
+"preserved. The result will be valid and simple if the input is."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The function can be called with any kind of geometry (including "
+"GeometryCollections), but only line and polygon elements are simplified. For "
+"polygonal inputs, the result will have the same number of rings (shells and "
+"holes), and the rings will not cross. Ring endpoints may be simplified. For "
+"linear inputs, the result will have the same number of lines, and lines will "
+"not intersect if they did not do so in the original geometry. Endpoints of "
+"linear geometry are preserved."
 msgstr ""
 
 #. Tag: para
@@ -24530,8 +24550,26 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Same example as Simplify, but we see Preserve Topology prevents "
-"oversimplification. The circle can at most become a square."
+"For the same example as <xref linkend=\"ST_Simplify\"/>, "
+"ST_SimplifyPreserveTopology prevents oversimplification. The circle can at "
+"most become a square."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Simplifying a set of lines, preserving topology of non-intersecting lines."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Simplifying a MultiPolygon, preserving topology of shells and holes."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -24613,18 +24651,29 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Returns a simplified version of a geometry, using the Visvalingam-Whyatt "
-"algorithm"
+"Returns a simplified representation of a geometry, using the Visvalingam-"
+"Whyatt algorithm"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a \"simplified\" version of the given geometry using the Visvalingam-"
-"Whyatt algorithm. Will actually do something only with (multi)lines and "
-"(multi)polygons but you can safely call it with any kind of geometry. Since "
-"simplification occurs on a object-by-object basis you can also feed a "
-"GeometryCollection to this function."
+"Returns a simplified representation of a geometry using the <link xlink:href="
+"\"https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm"
+"\">Visvalingam-Whyatt algorithm</link>. The simplification "
+"<varname>tolerance</varname> is an area value, in the units of the input "
+"SRS. Simplification removes vertices which form \"corners\" with area less "
+"than the tolerance. The result may not be valid even if the input is."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The returned geometry may lose its simplicity (see <xref linkend="
+"\"ST_IsSimple\"/>), topology may not be preserved, and polygonal results may "
+"be invalid (see <xref linkend=\"ST_IsValid\"/>). Use <xref linkend="
+"\"ST_SimplifyPreserveTopology\"/> to preserve topology and ensure validity. "
+"<xref linkend=\"ST_CoverageSimplify\"/> also preserves topology and validity."
 msgstr ""
 
 #. Tag: para
@@ -24635,15 +24684,25 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "A LineString is simplified with a minimum area threshold of 30."
+msgid "A LineString is simplified with a minimum-area tolerance of 30."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Simplifying a line."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Simplifying a polygon."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
-"\"ST_SimplifyPreserveTopology\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/"
-">"
+"\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_CoverageSimplify\"/>, "
+"Topology <xref linkend=\"TP_ST_Simplify\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -24679,6 +24738,22 @@ msgid ""
 "you can safely call it with any kind of geometry. Since simplification "
 "occurs on a object-by-object basis you can also feed a GeometryCollection to "
 "this function."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Note that returned geometry might lose its simplicity (see <xref linkend="
+"\"ST_IsSimple\"/>)"
+msgstr ""
+"Si noti che la geometria restituita potrebbe perdere la sua semplicità (si "
+"veda <xref linkend=\"ST_IsSimple\"/>)"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Note topology may not be preserved and may result in invalid geometries. Use "
+"(see <xref linkend=\"ST_SimplifyPreserveTopology\"/>) to preserve topology."
 msgstr ""
 
 #. Tag: para
@@ -29210,7 +29285,21 @@ msgid ""
 "If <varname>crop</varname> is not specified, true is assumed meaning the "
 "output raster is cropped to the intersection of the <varname>geom</"
 "varname>and <varname>rast</varname> extents. If <varname>crop</varname> is "
-"set to false, the new raster gets the same extent as <varname>rast</varname>."
+"set to false, the new raster gets the same extent as <varname>rast</"
+"varname>. If <varname>touched</varname> is set to true, then all pixels in "
+"the <varname>rast</varname> that intersect the geometry are selected."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The default behavior is touched=false, which will only select pixels where "
+"the center of the pixel is covered by the geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Enhanced: 3.5.0 - touched argument added."
 msgstr ""
 
 #. Tag: para
@@ -29222,13 +29311,18 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Examples here use Massachusetts aerial data available on MassGIS site <link "
-"xlink:href=\"http://www.mass.gov/mgis/colororthos2008.htm\">MassGIS Aerial "
-"Orthos</link>. Coordinates are in Massachusetts State Plane Meters."
+"xlink:href=\"https://www.mass.gov/info-details/massgis-data-20082009-aerial-"
+"imagery\">MassGIS Aerial Orthos</link>."
 msgstr ""
 
 #. Tag: title
 #, no-c-format
-msgid "Examples: 1 band clipping"
+msgid "Examples: Comparing selecting all touched vs. not all touched"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Examples: 1 band clipping (not touched)"
 msgstr ""
 
 #. Tag: para
@@ -29260,8 +29354,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Intersection\"/"
-">"
+", <xref linkend=\"RT_ST_Count\"/>, <xref linkend=\"RT_ST_MapAlgebra\"/>, "
+"<xref linkend=\"RT_ST_Intersection\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -41731,6 +41825,46 @@ msgstr "Supporta il 2.5/3D"
 #, no-c-format
 msgid "Supports geography"
 msgstr "Supporta il tipo geography"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a simplified version of a geometry, using the Douglas-Peucker "
+#~ "algorithm."
+#~ msgstr ""
+#~ "Restituisce una versione semplificata di una geometria, utilizzando "
+#~ "l'algoritmo di Douglas-Peucker."
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a \"simplified\" version of the given geometry using the Douglas-"
+#~ "Peucker algorithm. Will actually do something only with (multi)lines and "
+#~ "(multi)polygons but you can safely call it with any kind of geometry. "
+#~ "Since simplification occurs on a object-by-object basis you can also feed "
+#~ "a GeometryCollection to this function."
+#~ msgstr ""
+#~ "Restituisce una versione \"semplificata\" della geometria data, "
+#~ "utilizzando l'algoritmo di Douglas-Peucker. In realtà, funziona solo con "
+#~ "(multi)linee e (multi)poligoni, ma può essere tranquillamente richiamato "
+#~ "con qualsiasi tipo di geometria. Poiché la semplificazione avviene "
+#~ "oggetto per oggetto, è possibile fornire a questa funzione anche una "
+#~ "collezione di geometrie."
+
+#, no-c-format
+#~ msgid ""
+#~ "The \"preserve collapsed\" flag will retain objects that would otherwise "
+#~ "be too small given the tolerance. For example, a 1m long line simplified "
+#~ "with a 10m tolerance. If <varname>preserveCollapsed</varname> argument is "
+#~ "specified as true, the line will not disappear. This flag is useful for "
+#~ "rendering engines, to avoid having large numbers of very small objects "
+#~ "disappear from a map leaving surprising gaps."
+#~ msgstr ""
+#~ "Il flag \"conserva collassato\" conserva gli oggetti che altrimenti "
+#~ "sarebbero troppo piccoli data la tolleranza. Ad esempio, una linea lunga "
+#~ "1 metro semplificata con una tolleranza di 10 metri. Se l'argomento "
+#~ "<varname>preserveCollapsed</varname> è specificato come true, la linea "
+#~ "non scomparirà. Questo flag è utile per i motori di rendering, per "
+#~ "evitare che un gran numero di oggetti molto piccoli scompaia da una mappa "
+#~ "lasciando vuoti sorprendenti."
 
 #, no-c-format
 #~ msgid ""

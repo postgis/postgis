@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-29 04:00+0000\n"
+"POT-Creation-Date: 2023-12-13 03:42+0000\n"
 "PO-Revision-Date: 2023-10-14 20:23+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Korean <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -8510,7 +8510,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "This will only have data is you marked zcta5 to be loaded"
+msgid "This will only have data if you marked zcta5 to be loaded"
 msgstr ""
 
 #. Tag: para
@@ -13323,7 +13323,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "ST_ClusterWithin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN\"/"
-"> with <code>minpoints := 0</code>."
+"> with <code>minpoints =&gt; 0</code>."
 msgstr ""
 
 #. Tag: para
@@ -13354,7 +13354,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "ST_ClusterWithinWin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN"
-"\"/> with <code>minpoints := 0</code>."
+"\"/> with <code>minpoints =&gt; 0</code>."
 msgstr ""
 
 #. Tag: para
@@ -24992,53 +24992,55 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Returns a simplified version of a geometry, using the Douglas-Peucker "
+"Returns a simplified representation of a geometry, using the Douglas-Peucker "
 "algorithm."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a \"simplified\" version of the given geometry using the Douglas-"
-"Peucker algorithm. Will actually do something only with (multi)lines and "
-"(multi)polygons but you can safely call it with any kind of geometry. Since "
-"simplification occurs on a object-by-object basis you can also feed a "
-"GeometryCollection to this function."
-msgstr ""
-"더글러스-패커(Douglas-Peucker) 알고리즘을 이용해서 입력 도형의 \"단순화\"된 "
-"버전을 반환합니다. 실제로는 [멀티]라인, [멀티]폴리곤과만 작동하지만, 어떤 종"
-"류의 도형도 입력할 수 있다고 해도 과언은 아닙니다. 객체별 기반으로 단순화 작"
-"업을 하기 때문에 이 함수에 도형 집합도 입력할 수 있습니다."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The \"preserve collapsed\" flag will retain objects that would otherwise be "
-"too small given the tolerance. For example, a 1m long line simplified with a "
-"10m tolerance. If <varname>preserveCollapsed</varname> argument is specified "
-"as true, the line will not disappear. This flag is useful for rendering "
-"engines, to avoid having large numbers of very small objects disappear from "
-"a map leaving surprising gaps."
+"Computes a simplified representation of a geometry using the <link xlink:"
+"href=\"https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas"
+"%E2%80%93Peucker_algorithm\">Douglas-Peucker algorithm</link>. The "
+"simplification <varname>tolerance</varname> is a distance value, in the "
+"units of the input SRS. Simplification removes vertices which are within the "
+"tolerance distance of the simplified linework. The result may not be valid "
+"even if the input is."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Note that returned geometry might lose its simplicity (see <xref linkend="
-"\"ST_IsSimple\"/>)"
+"The function can be called with any kind of geometry (including "
+"GeometryCollections), but only line and polygon elements are simplified. "
+"Endpoints of linear geometry are preserved."
 msgstr ""
-"반환되는 도형이 단순성을 잃을 수도 있다는 점에 주의하십시오(<xref linkend="
-"\"ST_IsSimple\"/> 참조)."
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Note topology may not be preserved and may result in invalid geometries. Use "
-"(see <xref linkend=\"ST_SimplifyPreserveTopology\"/>) to preserve topology."
+"The <varname>preserveCollapsed</varname> flag retains small geometries that "
+"would otherwise be removed at the given tolerance. For example, if a 1m long "
+"line is simplified with a 10m tolerance, when <varname>preserveCollapsed</"
+"varname> is true the line will not disappear. This flag is useful for "
+"rendering purposes, to prevent very small features disappearing from a map."
 msgstr ""
-"위상(topology)이 보전되지 않아 유효하지 않은 도형이 반환될 수도 있습니다. 위"
-"상을 유지하려면 <xref linkend=\"ST_SimplifyPreserveTopology\"/> 함수를 이용하"
-"십시오."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The returned geometry may lose its simplicity (see <xref linkend="
+"\"ST_IsSimple\"/>), topology may not be preserved, and polygonal results may "
+"be invalid (see <xref linkend=\"ST_IsValid\"/>). Use <xref linkend="
+"\"ST_SimplifyPreserveTopology\"/> to preserve topology and ensure validity."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This function does not preserve boundaries shared between polygons. Use "
+"<xref linkend=\"ST_CoverageSimplify\"/> if this is required."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -25047,33 +25049,53 @@ msgstr "원을 너무 단순화시키면 팔각형을 거쳐 삼각형이 되고
 
 #. Tag: para
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
-"\"ST_SimplifyVW\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/>"
+msgid "Simplifying a set of lines. Lines may intersect after simplification."
 msgstr ""
 
-#. Tag: refpurpose
+#. Tag: para
 #, no-c-format
-msgid ""
-"Returns a simplified and valid version of a geometry, using the Douglas-"
-"Peucker algorithm."
+msgid "Simplifying a MultiPolygon. Polygonal results may be invalid."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a \"simplified\" version of the given geometry using the Douglas-"
-"Peucker algorithm. Will avoid creating derived geometries (polygons in "
-"particular) that are invalid. Will actually do something only with "
-"(multi)lines and (multi)polygons but you can safely call it with any kind of "
-"geometry. Since simplification occurs on a object-by-object basis you can "
-"also feed a GeometryCollection to this function."
+", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
+"\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>, Topology <xref "
+"linkend=\"TP_ST_Simplify\"/>"
 msgstr ""
-"더글러스-패커(Douglas-Peucker) 알고리즘을 이용해서 입력 도형의 \"단순화\"된 "
-"버전을 반환합니다. 유효하지 않은 파생 도형(특히 폴리곤)을 생성하지 않을 것입"
-"니다. 실제로는 [멀티]라인, [멀티]폴리곤과만 작동하지만, 어떤 종류의 도형도 입"
-"력할 수 있다고 해도 과언은 아닙니다. 객체별 기반으로 단순화 작업을 하기 때문"
-"에 이 함수에 도형 집합도 입력할 수 있습니다."
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Returns a simplified and valid representation of a geometry, using the "
+"Douglas-Peucker algorithm."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Computes a simplified representation of a geometry using a variant of the "
+"<link xlink:href=\"https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas"
+"%E2%80%93Peucker_algorithm\">Douglas-Peucker algorithm</link> which limits "
+"simplification to ensure the result has the same topology as the input. The "
+"simplification <varname>tolerance</varname> is a distance value, in the "
+"units of the input SRS. Simplification removes vertices which are within the "
+"tolerance distance of the simplified linework, as long as topology is "
+"preserved. The result will be valid and simple if the input is."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The function can be called with any kind of geometry (including "
+"GeometryCollections), but only line and polygon elements are simplified. For "
+"polygonal inputs, the result will have the same number of rings (shells and "
+"holes), and the rings will not cross. Ring endpoints may be simplified. For "
+"linear inputs, the result will have the same number of lines, and lines will "
+"not intersect if they did not do so in the original geometry. Endpoints of "
+"linear geometry are preserved."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -25083,12 +25105,27 @@ msgstr "1.3.3 버전부터 사용할 수 있습니다."
 #. Tag: para
 #, no-c-format
 msgid ""
-"Same example as Simplify, but we see Preserve Topology prevents "
-"oversimplification. The circle can at most become a square."
+"For the same example as <xref linkend=\"ST_Simplify\"/>, "
+"ST_SimplifyPreserveTopology prevents oversimplification. The circle can at "
+"most become a square."
 msgstr ""
-"ST_Simplify 함수와 동일하지만, ST_SimplifyPreserveTopology는 과단순화"
-"(oversimplification)를 막아준다는 사실을 알 수 있습니다. 원을 단순화해도 기껏"
-"해야 사각형에서 끝납니다."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Simplifying a set of lines, preserving topology of non-intersecting lines."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Simplifying a MultiPolygon, preserving topology of shells and holes."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -25169,23 +25206,30 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Returns a simplified version of a geometry, using the Visvalingam-Whyatt "
-"algorithm"
+"Returns a simplified representation of a geometry, using the Visvalingam-"
+"Whyatt algorithm"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a \"simplified\" version of the given geometry using the Visvalingam-"
-"Whyatt algorithm. Will actually do something only with (multi)lines and "
-"(multi)polygons but you can safely call it with any kind of geometry. Since "
-"simplification occurs on a object-by-object basis you can also feed a "
-"GeometryCollection to this function."
+"Returns a simplified representation of a geometry using the <link xlink:href="
+"\"https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm"
+"\">Visvalingam-Whyatt algorithm</link>. The simplification "
+"<varname>tolerance</varname> is an area value, in the units of the input "
+"SRS. Simplification removes vertices which form \"corners\" with area less "
+"than the tolerance. The result may not be valid even if the input is."
 msgstr ""
-"비스베일링검-와이어트(Visvalingam-Whyatt) 알고리즘을 이용해서 입력 도형의 "
-"\"단순화\"된 버전을 반환합니다. 실제로는 [멀티]라인, [멀티]폴리곤과만 작동하"
-"지만, 어떤 종류의 도형도 입력할 수 있다고 해도 과언은 아닙니다. 객체별 기반으"
-"로 단순화 작업을 하기 때문에 이 함수에 도형 집합도 입력할 수 있습니다."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The returned geometry may lose its simplicity (see <xref linkend="
+"\"ST_IsSimple\"/>), topology may not be preserved, and polygonal results may "
+"be invalid (see <xref linkend=\"ST_IsValid\"/>). Use <xref linkend="
+"\"ST_SimplifyPreserveTopology\"/> to preserve topology and ensure validity. "
+"<xref linkend=\"ST_CoverageSimplify\"/> also preserves topology and validity."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -25196,20 +25240,26 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "A LineString is simplified with a minimum area threshold of 30."
+msgid "A LineString is simplified with a minimum-area tolerance of 30."
 msgstr ""
-"라인스트링을 최소 임계 면적(minimum area threshold) 30으로 단순화합니다."
+
+#. Tag: para
+#, no-c-format
+msgid "Simplifying a line."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Simplifying a polygon."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
-"\"ST_SimplifyPreserveTopology\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/"
-">"
+"\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_CoverageSimplify\"/>, "
+"Topology <xref linkend=\"TP_ST_Simplify\"/>"
 msgstr ""
-", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
-"\"ST_SimplifyPreserveTopology\"/>, 위상(topology) <xref linkend="
-"\"TP_ST_Simplify\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -25256,6 +25306,25 @@ msgstr ""
 "실제로는 [멀티]라인, [멀티]폴리곤과만 작동하지만, 어떤 종류의 도형도 입력할 "
 "수 있다고 해도 과언은 아닙니다. 객체별 기반으로 단순화 작업을 하기 때문에 이 "
 "함수에 도형 집합도 입력할 수 있습니다."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Note that returned geometry might lose its simplicity (see <xref linkend="
+"\"ST_IsSimple\"/>)"
+msgstr ""
+"반환되는 도형이 단순성을 잃을 수도 있다는 점에 주의하십시오(<xref linkend="
+"\"ST_IsSimple\"/> 참조)."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Note topology may not be preserved and may result in invalid geometries. Use "
+"(see <xref linkend=\"ST_SimplifyPreserveTopology\"/>) to preserve topology."
+msgstr ""
+"위상(topology)이 보전되지 않아 유효하지 않은 도형이 반환될 수도 있습니다. 위"
+"상을 유지하려면 <xref linkend=\"ST_SimplifyPreserveTopology\"/> 함수를 이용하"
+"십시오."
 
 #. Tag: para
 #, no-c-format
@@ -30365,13 +30434,22 @@ msgid ""
 "If <varname>crop</varname> is not specified, true is assumed meaning the "
 "output raster is cropped to the intersection of the <varname>geom</"
 "varname>and <varname>rast</varname> extents. If <varname>crop</varname> is "
-"set to false, the new raster gets the same extent as <varname>rast</varname>."
+"set to false, the new raster gets the same extent as <varname>rast</"
+"varname>. If <varname>touched</varname> is set to true, then all pixels in "
+"the <varname>rast</varname> that intersect the geometry are selected."
 msgstr ""
-"<varname>crop</varname> 을 설정하지 않을 경우, 참으로 가정합니다. "
-"<varname>geom</varname> 범위와 <varname>rast</varname> 범위가 교차하는 부분"
-"을 잘라낸 래스터를 출력한다는 의미입니다. <varname>crop</varname> 을 거짓으"
-"로 설정할 경우, 새 래스터의 범위는 <varname>rast</varname> 의 범위와 동일합니"
-"다."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The default behavior is touched=false, which will only select pixels where "
+"the center of the pixel is covered by the geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Enhanced: 3.5.0 - touched argument added."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -30382,18 +30460,19 @@ msgstr "개선 사항: 2.1.0 버전에서 C 언어로 다시 쓰였습니다."
 #, no-c-format
 msgid ""
 "Examples here use Massachusetts aerial data available on MassGIS site <link "
-"xlink:href=\"http://www.mass.gov/mgis/colororthos2008.htm\">MassGIS Aerial "
-"Orthos</link>. Coordinates are in Massachusetts State Plane Meters."
+"xlink:href=\"https://www.mass.gov/info-details/massgis-data-20082009-aerial-"
+"imagery\">MassGIS Aerial Orthos</link>."
 msgstr ""
-"이 예시는 MassGIS 사이트의 <link xlink:href=\"http://www.mass.gov/mgis/"
-"colororthos2008.htm\">MassGIS Aerial Orthos</link> 에서 다운로드할 수 있는 매"
-"사추세츠 항공사진 데이터를 이용합니다. 매사추세츠 주 미터 단위 평면의 좌표로 "
-"돼 있습니다."
 
 #. Tag: title
 #, no-c-format
-msgid "Examples: 1 band clipping"
-msgstr "예시: 밴드 1개 잘라내기"
+msgid "Examples: Comparing selecting all touched vs. not all touched"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Examples: 1 band clipping (not touched)"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -30425,11 +30504,9 @@ msgstr "예시: 모든 밴드 잘라내기"
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Intersection\"/"
-">"
+", <xref linkend=\"RT_ST_Count\"/>, <xref linkend=\"RT_ST_MapAlgebra\"/>, "
+"<xref linkend=\"RT_ST_Intersection\"/>"
 msgstr ""
-", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Intersection\"/"
-">"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -44055,6 +44132,109 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a \"simplified\" version of the given geometry using the Douglas-"
+#~ "Peucker algorithm. Will actually do something only with (multi)lines and "
+#~ "(multi)polygons but you can safely call it with any kind of geometry. "
+#~ "Since simplification occurs on a object-by-object basis you can also feed "
+#~ "a GeometryCollection to this function."
+#~ msgstr ""
+#~ "더글러스-패커(Douglas-Peucker) 알고리즘을 이용해서 입력 도형의 \"단순화"
+#~ "\"된 버전을 반환합니다. 실제로는 [멀티]라인, [멀티]폴리곤과만 작동하지만, "
+#~ "어떤 종류의 도형도 입력할 수 있다고 해도 과언은 아닙니다. 객체별 기반으로 "
+#~ "단순화 작업을 하기 때문에 이 함수에 도형 집합도 입력할 수 있습니다."
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a \"simplified\" version of the given geometry using the Douglas-"
+#~ "Peucker algorithm. Will avoid creating derived geometries (polygons in "
+#~ "particular) that are invalid. Will actually do something only with "
+#~ "(multi)lines and (multi)polygons but you can safely call it with any kind "
+#~ "of geometry. Since simplification occurs on a object-by-object basis you "
+#~ "can also feed a GeometryCollection to this function."
+#~ msgstr ""
+#~ "더글러스-패커(Douglas-Peucker) 알고리즘을 이용해서 입력 도형의 \"단순화"
+#~ "\"된 버전을 반환합니다. 유효하지 않은 파생 도형(특히 폴리곤)을 생성하지 않"
+#~ "을 것입니다. 실제로는 [멀티]라인, [멀티]폴리곤과만 작동하지만, 어떤 종류"
+#~ "의 도형도 입력할 수 있다고 해도 과언은 아닙니다. 객체별 기반으로 단순화 작"
+#~ "업을 하기 때문에 이 함수에 도형 집합도 입력할 수 있습니다."
+
+#, no-c-format
+#~ msgid ""
+#~ "Same example as Simplify, but we see Preserve Topology prevents "
+#~ "oversimplification. The circle can at most become a square."
+#~ msgstr ""
+#~ "ST_Simplify 함수와 동일하지만, ST_SimplifyPreserveTopology는 과단순화"
+#~ "(oversimplification)를 막아준다는 사실을 알 수 있습니다. 원을 단순화해도 "
+#~ "기껏해야 사각형에서 끝납니다."
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a \"simplified\" version of the given geometry using the "
+#~ "Visvalingam-Whyatt algorithm. Will actually do something only with "
+#~ "(multi)lines and (multi)polygons but you can safely call it with any kind "
+#~ "of geometry. Since simplification occurs on a object-by-object basis you "
+#~ "can also feed a GeometryCollection to this function."
+#~ msgstr ""
+#~ "비스베일링검-와이어트(Visvalingam-Whyatt) 알고리즘을 이용해서 입력 도형의 "
+#~ "\"단순화\"된 버전을 반환합니다. 실제로는 [멀티]라인, [멀티]폴리곤과만 작동"
+#~ "하지만, 어떤 종류의 도형도 입력할 수 있다고 해도 과언은 아닙니다. 객체별 "
+#~ "기반으로 단순화 작업을 하기 때문에 이 함수에 도형 집합도 입력할 수 있습니"
+#~ "다."
+
+#, no-c-format
+#~ msgid "A LineString is simplified with a minimum area threshold of 30."
+#~ msgstr ""
+#~ "라인스트링을 최소 임계 면적(minimum area threshold) 30으로 단순화합니다."
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
+#~ "\"ST_SimplifyPreserveTopology\"/>, Topology <xref linkend=\"TP_ST_Simplify"
+#~ "\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
+#~ "\"ST_SimplifyPreserveTopology\"/>, 위상(topology) <xref linkend="
+#~ "\"TP_ST_Simplify\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "If <varname>crop</varname> is not specified, true is assumed meaning the "
+#~ "output raster is cropped to the intersection of the <varname>geom</"
+#~ "varname>and <varname>rast</varname> extents. If <varname>crop</varname> "
+#~ "is set to false, the new raster gets the same extent as <varname>rast</"
+#~ "varname>."
+#~ msgstr ""
+#~ "<varname>crop</varname> 을 설정하지 않을 경우, 참으로 가정합니다. "
+#~ "<varname>geom</varname> 범위와 <varname>rast</varname> 범위가 교차하는 부"
+#~ "분을 잘라낸 래스터를 출력한다는 의미입니다. <varname>crop</varname> 을 거"
+#~ "짓으로 설정할 경우, 새 래스터의 범위는 <varname>rast</varname> 의 범위와 "
+#~ "동일합니다."
+
+#, no-c-format
+#~ msgid ""
+#~ "Examples here use Massachusetts aerial data available on MassGIS site "
+#~ "<link xlink:href=\"http://www.mass.gov/mgis/colororthos2008.htm\">MassGIS "
+#~ "Aerial Orthos</link>. Coordinates are in Massachusetts State Plane Meters."
+#~ msgstr ""
+#~ "이 예시는 MassGIS 사이트의 <link xlink:href=\"http://www.mass.gov/mgis/"
+#~ "colororthos2008.htm\">MassGIS Aerial Orthos</link> 에서 다운로드할 수 있"
+#~ "는 매사추세츠 항공사진 데이터를 이용합니다. 매사추세츠 주 미터 단위 평면"
+#~ "의 좌표로 돼 있습니다."
+
+#, no-c-format
+#~ msgid "Examples: 1 band clipping"
+#~ msgstr "예시: 밴드 1개 잘라내기"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Intersection"
+#~ "\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"RT_ST_MapAlgebra\"/>, <xref linkend=\"RT_ST_Intersection"
+#~ "\"/>"
 
 #, no-c-format
 #~ msgid ""
