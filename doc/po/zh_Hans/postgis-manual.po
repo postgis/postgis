@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-12-13 03:42+0000\n"
-"PO-Revision-Date: 2023-12-13 05:57+0000\n"
+"PO-Revision-Date: 2023-12-13 06:19+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
@@ -10933,6 +10933,14 @@ msgid ""
 "&reference_transaction; &reference_version; &reference_guc; "
 "&reference_troubleshooting;"
 msgstr ""
+"&reference_type; &reference_management; &reference_constructor; "
+"&reference_accessor; &reference_editor; &reference_validation; "
+"&reference_srs; &reference_input; &reference_output; &reference_operator; "
+"&reference_relationship; &reference_measure; &reference_overlay; "
+"&reference_processing; &reference_coverage; &reference_transformation; "
+"&reference_cluster; &reference_bbox; &reference_lrs; &reference_trajectory; "
+"&reference_transaction; &reference_version; &reference_guc; "
+"&reference_troubleshooting;"
 
 #. Tag: title
 #, no-c-format
@@ -26044,6 +26052,12 @@ msgid ""
 "tolerance distance of the simplified linework, as long as topology is "
 "preserved. The result will be valid and simple if the input is."
 msgstr ""
+"使用一种变体的<link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm\">Douglas-Peucker 算法</"
+"link> 计算几何图形的简化表示，该算法限制简化以确保结果具有与输入相同的拓扑。"
+"简化的<varname>tolerance</varname>是一个距离值，以输入SRS的单位为准。只要保留"
+"拓扑，简化会移除在简化线条的公差距离内的顶点。如果输入是有效和简单的，则结果"
+"也将是有效和简单的。"
 
 #. Tag: para
 #, no-c-format
@@ -26056,6 +26070,10 @@ msgid ""
 "not intersect if they did not do so in the original geometry. Endpoints of "
 "linear geometry are preserved."
 msgstr ""
+"该函数可用于任何类型的几何图形（包括GeometryCollections），但只有线和多边形元"
+"素会被简化。对于多边形输入，结果将具有相同数量的环（外壳和内环），并且这些环"
+"不会相交。环的端点可能会被简化。对于线性输入，结果将具有相同数量的线，如果在"
+"原始几何中它们不相交，则线也不会相交。线性几何的端点将被保留。"
 
 #. Tag: para
 #, no-c-format
@@ -26069,23 +26087,26 @@ msgid ""
 "ST_SimplifyPreserveTopology prevents oversimplification. The circle can at "
 "most become a square."
 msgstr ""
+"对于与<xref linkend=\"ST_Simplify\"/>相同的示例，ST_SimplifyPreserveTopology"
+"防止过度简化。圆最多可以变成一个正方形。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Simplifying a set of lines, preserving topology of non-intersecting lines."
-msgstr ""
+msgstr "简化一组线，保留非相交线的拓扑。"
 
 #. Tag: para
 #, no-c-format
 msgid "Simplifying a MultiPolygon, preserving topology of shells and holes."
-msgstr ""
+msgstr "简化一个MultiPolygon，保留外壳和内环的拓扑。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>"
 msgstr ""
+", <xref linkend=\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -26180,7 +26201,7 @@ msgstr ""
 msgid ""
 "Returns a simplified representation of a geometry, using the Visvalingam-"
 "Whyatt algorithm"
-msgstr ""
+msgstr "使用Visvalingam-Whyatt算法返回几何图形的简化表示"
 
 #. Tag: para
 #, no-c-format
@@ -26192,6 +26213,10 @@ msgid ""
 "SRS. Simplification removes vertices which form \"corners\" with area less "
 "than the tolerance. The result may not be valid even if the input is."
 msgstr ""
+"使用<link xlink:href=\"https://en.wikipedia.org/wiki/Visvalingam%E2%80%"
+"93Whyatt_algorithm\">Visvalingam-Whyatt 算法</link>返回几何图形的简化表示。简"
+"化的<varname>tolerance</varname>是一个面积值，以输入SRS的单位为准。简化会移除"
+"与面积小于公差的“拐角”形成的顶点。即使输入是有效的，结果可能也不是有效的。"
 
 #. Tag: para
 #, no-c-format
@@ -26202,6 +26227,11 @@ msgid ""
 "\"ST_SimplifyPreserveTopology\"/> to preserve topology and ensure validity. "
 "<xref linkend=\"ST_CoverageSimplify\"/> also preserves topology and validity."
 msgstr ""
+"返回的几何图形可能会失去其简单性（参见<xref linkend=\"ST_IsSimple\""
+"/>），拓扑可能不会被保留，并且多边形的结果可能是无效的（参见<xref linkend="
+"\"ST_IsValid\"/>）。使用<xref linkend=\"ST_SimplifyPreserveTopology\""
+"/>来保留拓扑并确保有效性。<xref linkend=\"ST_CoverageSimplify\""
+"/>也会保留拓扑和有效性。"
 
 #. Tag: para
 #, no-c-format
@@ -26212,17 +26242,17 @@ msgstr "该函数处理 3D，第三维将影响结果。"
 #. Tag: para
 #, no-c-format
 msgid "A LineString is simplified with a minimum-area tolerance of 30."
-msgstr ""
+msgstr "使用最小面积公差为30对LineString进行简化。"
 
 #. Tag: para
 #, no-c-format
 msgid "Simplifying a line."
-msgstr ""
+msgstr "对一条线进行简化。"
 
 #. Tag: para
 #, no-c-format
 msgid "Simplifying a polygon."
-msgstr ""
+msgstr "对多边形进行简化。"
 
 #. Tag: para
 #, no-c-format
@@ -26231,6 +26261,9 @@ msgid ""
 "\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_CoverageSimplify\"/>, "
 "Topology <xref linkend=\"TP_ST_Simplify\"/>"
 msgstr ""
+", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
+"\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_CoverageSimplify\"/>, "
+"Topology <xref linkend=\"TP_ST_Simplify\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31328,18 +31361,23 @@ msgid ""
 "varname>. If <varname>touched</varname> is set to true, then all pixels in "
 "the <varname>rast</varname> that intersect the geometry are selected."
 msgstr ""
+"如果未指定<varname>crop</varname>，则假定为true，表示输出栅格将被裁剪到<varna"
+"me>geom</varname>和<varname>rast</varname>范围的交集。如果将<varname>crop</va"
+"rname>设置为false，则新的栅格将具有与<varname>rast</varname>相同的范围。如果"
+"将<varname>touched</varname>设置为true，则选择与几何图形相交的<varname>rast</"
+"varname>中的所有像素。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "The default behavior is touched=false, which will only select pixels where "
 "the center of the pixel is covered by the geometry."
-msgstr ""
+msgstr "默认行为是touched=false，这将仅选择像素中心被几何图形覆盖的像素。"
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 3.5.0 - touched argument added."
-msgstr ""
+msgstr "增强版：3.5.0 - 添加了touched参数。"
 
 #. Tag: para
 #, no-c-format
@@ -31353,16 +31391,19 @@ msgid ""
 "xlink:href=\"https://www.mass.gov/info-details/massgis-data-20082009-aerial-"
 "imagery\">MassGIS Aerial Orthos</link>."
 msgstr ""
+"这里的示例使用马萨诸塞州航拍数据，该数据可在MassGIS网站的<link xlink:href="
+"\"https://www.mass.gov/info-details/massgis-data-20082009-aerial-imagery\""
+">MassGIS Aerial Orthos</link>页面上找到。"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Comparing selecting all touched vs. not all touched"
-msgstr ""
+msgstr "示例：比较选择所有相交的和不选择所有相交的情况"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: 1 band clipping (not touched)"
-msgstr ""
+msgstr "示例：1波段剪裁（不选择所有相交的像素）"
 
 #. Tag: para
 #, no-c-format
@@ -31396,6 +31437,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_Count\"/>, <xref linkend=\"RT_ST_MapAlgebra\"/>, "
 "<xref linkend=\"RT_ST_Intersection\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_Count\"/>, <xref linkend=\"RT_ST_MapAlgebra\"/>, "
+"<xref linkend=\"RT_ST_Intersection\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -36677,7 +36720,7 @@ msgstr "更改：2.2.0 在之前的版本中，这称为 ST_Point_Inside_Circle"
 #. Tag: title
 #, no-c-format
 msgid "SFCGAL Functions Reference"
-msgstr ""
+msgstr "SFCGAL函数参考"
 
 #. Tag: para
 #, no-c-format
@@ -36704,7 +36747,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "SFCGAL Management Functions"
-msgstr ""
+msgstr "SFCGAL管理函数"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -36750,14 +36793,14 @@ msgstr "<para>返回正在使用的 SFCGAL 的完整版本，包括 CGAL 和 Boo
 #. Tag: title
 #, no-c-format
 msgid "SFCGAL Accessors and Setters"
-msgstr ""
+msgstr "SFCGAL访问器和设置器"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "These functions access or set properties of geometries. Geometries primarily "
 "supported by these functions are TINS and Polyhedral Surfaces."
-msgstr ""
+msgstr "这些函数访问或设置几何图形的属性。这些函数主要支持TINS和多面体表面。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -36864,7 +36907,7 @@ msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
 #. Tag: title
 #, no-c-format
 msgid "SFCGAL Processing and Relationship Functions"
-msgstr ""
+msgstr "SFCGAL处理和关系函数"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37151,7 +37194,7 @@ msgstr "可用性：3.5.0 - 需要 SFCGAL &gt;= 1.5.0。"
 #. Tag: para
 #, no-c-format
 msgid "Requires SFCGAL &gt;= 1.5.0"
-msgstr ""
+msgstr "需要 SFCGAL 版本&gt;= 1.5.0"
 
 #. Tag: para
 #, no-c-format
@@ -45944,7 +45987,7 @@ msgstr "需要 GEOS (3.9,3.10,3.11,3.12) 或更高版本"
 #. Tag: para
 #, no-c-format
 msgid "Requires SFCGAL 1.5 or higher"
-msgstr ""
+msgstr "需要 SFCGAL 1.5 或更高版本"
 
 #. Tag: para
 #, no-c-format
