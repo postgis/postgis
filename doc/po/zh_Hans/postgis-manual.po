@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-12-13 03:42+0000\n"
-"PO-Revision-Date: 2023-12-07 02:23+0000\n"
+"PO-Revision-Date: 2023-12-13 05:57+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
@@ -8572,7 +8572,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This will only have data if you marked zcta5 to be loaded"
-msgstr ""
+msgstr "这将只包含数据，如果您标记了ZCTA5要加载"
 
 #. Tag: para
 #, no-c-format
@@ -13522,6 +13522,8 @@ msgid ""
 "ST_ClusterWithin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN\"/"
 "> with <code>minpoints =&gt; 0</code>."
 msgstr ""
+"ST_ClusterWithin相当于运行<xref linkend=\"ST_ClusterDBSCAN\"/"
+">使用<code>minpoints =&gt; 0</code>。"
 
 #. Tag: para
 #, no-c-format
@@ -13558,6 +13560,8 @@ msgid ""
 "ST_ClusterWithinWin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN"
 "\"/> with <code>minpoints =&gt; 0</code>."
 msgstr ""
+"ST_ClusterWithinWin等效于运行<xref linkend=\"ST_ClusterDBSCAN\"/"
+">使用<code>minpoints =&gt; 0</code>。"
 
 #. Tag: para
 #, no-c-format
@@ -25939,7 +25943,7 @@ msgstr ""
 msgid ""
 "Returns a simplified representation of a geometry, using the Douglas-Peucker "
 "algorithm."
-msgstr ""
+msgstr "返回几何图形的简化表示，使用 Douglas-Peucker算法。"
 
 #. Tag: para
 #, no-c-format
@@ -25952,6 +25956,11 @@ msgid ""
 "tolerance distance of the simplified linework. The result may not be valid "
 "even if the input is."
 msgstr ""
+"使用<link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm\">Douglas-Peucker算法</link>"
+"计算几何图形的简化表示。简化的<varname>tolerance</varname>是一个距离值，以输"
+"入SRS的单位为准。简化会移除在简化线条的公差距离内的顶点。即使输入是有效的，结"
+"果可能不是有效的。"
 
 #. Tag: para
 #, no-c-format
@@ -25959,7 +25968,8 @@ msgid ""
 "The function can be called with any kind of geometry (including "
 "GeometryCollections), but only line and polygon elements are simplified. "
 "Endpoints of linear geometry are preserved."
-msgstr ""
+msgstr "该函数可用于任何类型的几何图形（包括GeometryCollections），但只有线和多边形元"
+"素会被简化。线性几何的端点将被保留。"
 
 #. Tag: para
 #, no-c-format
@@ -25970,6 +25980,10 @@ msgid ""
 "varname> is true the line will not disappear. This flag is useful for "
 "rendering purposes, to prevent very small features disappearing from a map."
 msgstr ""
+"<varname>preserveCollapsed</varname>标志保留那些在给定公差下本应被移除的小几"
+"何图形。例如，如果将一个1米长的线条使用10米的公差进行简化，当<varname>preserv"
+"eCollapsed</varname>为true时，该线条将不会消失。这个标志对于渲染目的很有用，"
+"以防止地图上非常小的特征消失。"
 
 #. Tag: para
 #, no-c-format
@@ -25979,13 +25993,18 @@ msgid ""
 "be invalid (see <xref linkend=\"ST_IsValid\"/>). Use <xref linkend="
 "\"ST_SimplifyPreserveTopology\"/> to preserve topology and ensure validity."
 msgstr ""
+"返回的几何图形可能会失去其简单性（参见<xref linkend=\"ST_IsSimple\""
+"/>），拓扑可能不会被保留，并且多边形结果可能是无效的（参见<xref linkend="
+"\"ST_IsValid\"/>）。使用<xref linkend=\"ST_SimplifyPreserveTopology\""
+"/>来保留拓扑并确保有效性。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This function does not preserve boundaries shared between polygons. Use "
 "<xref linkend=\"ST_CoverageSimplify\"/> if this is required."
-msgstr ""
+msgstr "该函数不保留多边形之间共享的边界。如果需要保留共享边界，请使用<xref linkend="
+"\"ST_CoverageSimplify\"/>。"
 
 #. Tag: para
 #, no-c-format
@@ -25995,12 +26014,12 @@ msgstr "它是一个经过简化后变成三角形或八角形的圆，"
 #. Tag: para
 #, no-c-format
 msgid "Simplifying a set of lines. Lines may intersect after simplification."
-msgstr ""
+msgstr "简化一组线。简化后，线可能会相交。"
 
 #. Tag: para
 #, no-c-format
 msgid "Simplifying a MultiPolygon. Polygonal results may be invalid."
-msgstr ""
+msgstr "简化一个MultiPolygon。多边形的结果可能是无效的。"
 
 #. Tag: para
 #, no-c-format
@@ -26009,13 +26028,16 @@ msgid ""
 "\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>, Topology <xref "
 "linkend=\"TP_ST_Simplify\"/>"
 msgstr ""
+", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
+"\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>, Topology <xref "
+"linkend=\"TP_ST_Simplify\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns a simplified and valid representation of a geometry, using the "
 "Douglas-Peucker algorithm."
-msgstr ""
+msgstr "使用Douglas-Peucker算法返回几何图形的简化且有效表示。"
 
 #. Tag: para
 #, no-c-format
