@@ -12,6 +12,12 @@
 
 	<section xml:id="sfcgal_management">
 		<title>SFCGAL Management Functions</title>
+		<info>
+				<abstract>
+						<para>This section lists functions for determining version of SFCGAL and library dependencies you are running.</para>
+				</abstract>
+    </info>
+
 		<refentry xml:id="postgis_sfcgal_version">
 			<refnamediv>
 			<refname>postgis_sfcgal_version</refname>
@@ -79,9 +85,11 @@
 
 	<section xml:id="sfcgal_accessors">
 		<title>SFCGAL Accessors and Setters</title>
-		<abstract>
-		<para>These functions access or set properties of geometries. Geometries primarily supported by these functions are TINS and Polyhedral Surfaces.</para>
-		</abstract>
+		<info>
+				<abstract>
+						<para>These functions access or set properties of geometries. Geometries primarily supported by these functions are TINS and Polyhedral Surfaces.</para>
+				</abstract>
+    </info>
 
 		<refentry xml:id="ST_3DArea">
 			<refnamediv>
