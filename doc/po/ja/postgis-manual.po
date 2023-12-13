@@ -11629,17 +11629,9 @@ msgid ""
 "&reference_relationship; &reference_measure; &reference_overlay; "
 "&reference_processing; &reference_coverage; &reference_transformation; "
 "&reference_cluster; &reference_bbox; &reference_lrs; &reference_trajectory; "
-"&reference_sfcgal; &reference_transaction; &reference_version; "
-"&reference_guc; &reference_troubleshooting;"
+"&reference_transaction; &reference_version; &reference_guc; "
+"&reference_troubleshooting;"
 msgstr ""
-"&reference_type; &reference_management; &reference_constructor; "
-"&reference_accessor; &reference_editor; &reference_validation; "
-"&reference_srs; &reference_input; &reference_output; &reference_operator; "
-"&reference_relationship; &reference_measure; &reference_overlay; "
-"&reference_processing; &reference_coverage; &reference_transformation; "
-"&reference_cluster; &reference_bbox; &reference_lrs; &reference_trajectory; "
-"&reference_sfcgal; &reference_transaction; &reference_version; "
-"&reference_guc; &reference_troubleshooting;"
 
 #. Tag: title
 #, no-c-format
@@ -38769,8 +38761,8 @@ msgstr ""
 
 #. Tag: title
 #, no-c-format
-msgid "SFCGAL Functions"
-msgstr "SFCGAL関数"
+msgid "SFCGAL Functions Reference"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -38793,6 +38785,11 @@ msgstr ""
 "このライブラリのインストール手順はSFCGALサイト (<link xlink:href=\"http://"
 "www.sfcgal.org\">http://www.sfcgal.org</link>)にあります。機能を有効にするに"
 "は<code>create extension postgis_sfcgal</code>とします。"
+
+#. Tag: title
+#, no-c-format
+msgid "SFCGAL Management Functions"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -38837,6 +38834,18 @@ msgstr ""
 "<para>CGALとBoostのバージョンを含む、使用しているSFCGALの完全なバージョンを返"
 "します</para>"
 
+#. Tag: title
+#, no-c-format
+msgid "SFCGAL Accessors and Setters"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"These functions access or set properties of geometries. Geometries primarily "
+"supported by these functions are TINS and Polyhedral Surfaces."
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes area of 3D surface geometries. Will return 0 for solids."
@@ -38865,6 +38874,89 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
 "linkend=\"ST_Area\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Force LHR orientation"
+msgstr "LHR (Left Hand Rule)方向に強制します。"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Check if a surface is or not planar"
+msgstr "サーフェスが平面であるかないかをチェックします。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left "
+"out in 2.1 release."
+msgstr ""
+"Availability: 2.2.0: これは2.1.0のマニュアルに記述されていましたが、2.1版では"
+"偶然に外れてしまいました。"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Test if the geometry is a solid. No validity check is performed."
+msgstr ""
+"ジオメトリが立体であるかどうかをテストします。妥当性チェックは行いません。"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Cast the geometry into a solid. No check is performed. To obtain a valid "
+"solid, the input geometry must be a closed Polyhedral Surface or a closed "
+"TIN."
+msgstr ""
+"ジオメトリを立体にキャストします。チェックはしません。妥当な立体を得るには、"
+"入力ジオメトリは閉じた多面体サーフェスか閉じたTINでなければなりません。"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Determine surface orientation"
+msgstr "サーフェスの方向を判定します。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The function only applies to polygons. It returns -1 if the polygon is "
+"counterclockwise oriented and 1 if the polygon is clockwise oriented."
+msgstr ""
+"この関数はポリゴンのみ受け付けます。ポリゴンが反時計回りなら-1を返し、時計回"
+"りなら1を返します。"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Computes the volume of a 3D solid. If applied to surface (even closed) "
+"geometries will return 0."
+msgstr ""
+"3次元立体の体積を計算します。面ジオメトリは (閉じていても)0を返します。"
+
+#. Tag: para
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as ST_3DVolume)"
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (ST_3DVolumeと同じ)"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"When closed surfaces are created with WKT, they are treated as areal rather "
+"than solid. To make them solid, you need to use <xref linkend=\"ST_MakeSolid"
+"\"/>. Areal geometries have no volume. Here is an example to demonstrate."
+msgstr ""
+"WKTで閉じた面を生成した時、それは立体でなく面として扱われるます。立体にするに"
+"は<xref linkend=\"ST_MakeSolid\"/>を使います。面ジオメトリは堆積を持ちませ"
+"ん。例を挙げます。"
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
+msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
+
+#. Tag: title
+#, no-c-format
+msgid "SFCGAL Processing and Relationship Functions"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39112,6 +39204,73 @@ msgstr ", <xref linkend=\"ST_OptimalAlphaShape\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
+msgid "Computes approximal convex partition of the polygon geometry"
+msgstr "ポリゴンジオメトリの近似凸分割を計算します"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Computes approximal convex partition of the polygon geometry (using a "
+"triangulation)."
+msgstr "ポリゴンジオメトリの近似凸分割を計算します (三角形分割を使います)。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A partition of a polygon P is a set of polygons such that the interiors of "
+"the polygons do not intersect and the union of the polygons is equal to the "
+"interior of the original polygon P. CG_ApproxConvexPartition and "
+"CG_GreeneApproxConvexPartition functions produce approximately optimal "
+"convex partitions. Both these functions produce convex decompositions by "
+"first decomposing the polygon into simpler polygons; "
+"CG_ApproxConvexPartition uses a triangulation and "
+"CG_GreeneApproxConvexPartition a monotone partition. These two functions "
+"both guarantee that they will produce no more than four times the optimal "
+"number of convex pieces but they differ in their runtime complexities. "
+"Though the triangulation-based approximation algorithm often results in "
+"fewer convex pieces, this is not always the case."
+msgstr ""
+"ポリゴンPの分割は、内部同士がインタセクトせず、結合すると元のポリゴンPの内部"
+"と同じになるようなポリゴンの集合です。CG_ApproxConvexPartition関数と"
+"CG_GreeneApproxConvexPartition関数は、概ね最適な凸分割を生成します。両方の関"
+"数は、最初にポリゴンをより単純なポリゴンに分解したうえで凸分解を行います。"
+"CG_ApproxConvexPartitionは三角形を使い、CG_GreeneApproxConvexPartitionは単調"
+"分割を使います。両方の関数は、凸分割の要素数について最適数の4倍を超えないこと"
+"を保証しますが、実行時の複雑さが異なります。三角形ベースの近似アルゴリズムで"
+"は、しばしば、凸要素が少なくなりますが、常にそうなるとは限りません。"
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0."
+msgstr "Availability: 3.5.0 - SFCGAL &gt;= 1.5.0が必要です。"
+
+#. Tag: para
+#, no-c-format
+msgid "Requires SFCGAL &gt;= 1.5.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Approximal Convex Partition (same example As <xref linkend="
+"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_GreeneApproxConvexPartition"
+"\"/> and <xref linkend=\"CG_OptimalConvexPartition\"/>)"
+msgstr ""
+"近似凸分割 (<xref linkend=\"CG_YMonotonePartition\"/>, <xref linkend="
+"\"CG_GreeneApproxConvexPartition\"/>および<xref linkend="
+"\"CG_OptimalConvexPartition\"/>と同じ例です)"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_GreeneApproxConvexPartition\"/>, <xref linkend="
+"\"CG_OptimalConvexPartition\"/>"
+msgstr ""
+", <xref linkend=\"CG_GreeneApproxConvexPartition\"/>, <xref linkend="
+"\"CG_OptimalConvexPartition\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
 msgid "Compute the approximate medial axis of an areal geometry."
 msgstr "面ジオメトリの近似的な中心軸を計算します。"
 
@@ -39200,38 +39359,65 @@ msgstr ", <xref linkend=\"CG_ExtrudeStraightSkeleton\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
-msgid "Force LHR orientation"
-msgstr "LHR (Left Hand Rule)方向に強制します。"
+msgid "Straight Skeleton Extrusion"
+msgstr "ストレートスケルトンの押し出し"
 
-#. Tag: refpurpose
+#. Tag: para
 #, no-c-format
-msgid "Check if a surface is or not planar"
-msgstr "サーフェスが平面であるかないかをチェックします。"
+msgid "Computes an extrusion with a maximal height of the polygon geometry."
+msgstr "ポリゴンジオメトリの最大高での押出しを計算します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left "
-"out in 2.1 release."
+"Perhaps the first (historically) use-case of straight skeletons: given a "
+"polygonal roof, the straight skeleton directly gives the layout of each "
+"tent. If each skeleton edge is lifted from the plane a height equal to its "
+"offset distance, the resulting roof is \"correct\" in that water will always "
+"fall down to the contour edges (the roof's border), regardless of where it "
+"falls on the roof. The function computes this extrusion aka \"roof\" on a "
+"polygon. If the argument body_height > 0, so the polygon is extruded like "
+"with ST_Extrude(polygon, 0, 0, body_height). The result is an union of these "
+"polyhedralsurfaces."
 msgstr ""
-"Availability: 2.2.0: これは2.1.0のマニュアルに記述されていましたが、2.1版では"
-"偶然に外れてしまいました。"
+"ストレートスケルトンの (歴史上の)最初の使用例は、おそらく、ポリゴンの屋根を与"
+"えて、ストレートスケルトンでテントの配置を得るというものだったでしょう。スケ"
+"ルトンの個々のエッジは平面からオフセット距離分引き上げられ、水が、屋根のどこ"
+"に落ちるか関係なく、常に輪郭のエッジ (屋根の境界線)に落ちるという点で、結果の"
+"屋根は「正しい」ものになります。この関数はこのポリゴンの押出し、別名「屋根」"
+"を計算します。引数のbody_height が body_height > 0 となる場合には、ポリゴンは"
+"ST_Extrude(polygon, 0, 0, body_height)で押し出されるようになります。結果はこ"
+"れらの多面体サーフェスの結合となります。"
 
-#. Tag: refpurpose
+#. Tag: para
 #, no-c-format
-msgid "Test if the geometry is a solid. No validity check is performed."
-msgstr ""
-"ジオメトリが立体であるかどうかをテストします。妥当性チェックは行いません。"
+msgid ", <xref linkend=\"ST_StraightSkeleton\"/>"
+msgstr ", <xref linkend=\"ST_StraightSkeleton\"/>"
 
-#. Tag: refpurpose
+#. Tag: para
+#, no-c-format
+msgid "Computes approximal monotone convex partition of the polygon geometry."
+msgstr "ポリゴンジオメトリの近似的な単調凸分割を計算します。"
+
+#. Tag: para
 #, no-c-format
 msgid ""
-"Cast the geometry into a solid. No check is performed. To obtain a valid "
-"solid, the input geometry must be a closed Polyhedral Surface or a closed "
-"TIN."
+"Greene Approximal Convex Partition (same example As <xref linkend="
+"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_ApproxConvexPartition\"/> "
+"and <xref linkend=\"CG_OptimalConvexPartition\"/>)"
 msgstr ""
-"ジオメトリを立体にキャストします。チェックはしません。妥当な立体を得るには、"
-"入力ジオメトリは閉じた多面体サーフェスか閉じたTINでなければなりません。"
+"グリーン近似凸分割 (<xref linkend=\"CG_YMonotonePartition\"/>, <xref linkend="
+"\"CG_ApproxConvexPartition\"/>, <xref linkend=\"CG_OptimalConvexPartition\"/>"
+"と同じ例です)"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
+"\"CG_OptimalConvexPartition\"/>"
+msgstr ""
+", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
+"\"CG_OptimalConvexPartition\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39377,17 +39563,45 @@ msgstr ", <xref linkend=\"ST_AlphaShape\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
-msgid "Determine surface orientation"
-msgstr "サーフェスの方向を判定します。"
+msgid "Computes an optimal convex partition of the polygon geometry"
+msgstr "ポリゴンジオメトリの最適凸分割を計算します"
+
+#. Tag: para
+#, no-c-format
+msgid "Computes an optimal convex partition of the polygon geometry."
+msgstr "ポリゴンジオメトリの最適凸分割を計算します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"The function only applies to polygons. It returns -1 if the polygon is "
-"counterclockwise oriented and 1 if the polygon is clockwise oriented."
+"A partition of a polygon P is a set of polygons such that the interiors of "
+"the polygons do not intersect and the union of the polygons is equal to the "
+"interior of the original polygon P. CG_OptimalConvexPartition produces a "
+"partition that is optimal in the number of pieces."
 msgstr ""
-"この関数はポリゴンのみ受け付けます。ポリゴンが反時計回りなら-1を返し、時計回"
-"りなら1を返します。"
+"ポリゴンPの分割は、内部同士がインタセクトせず、結合すると元のポリゴンPの内部"
+"と同じになるようなポリゴンの集合です。CG_OptimalConvexPartitionは、分割要素数"
+"について最適な分割を生成します。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Optimal Convex Partition (same example As <xref linkend="
+"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_ApproxConvexPartition\"/> "
+"and <xref linkend=\"CG_GreeneApproxConvexPartition\"/>)"
+msgstr ""
+"最適凸分割 (<xref linkend=\"CG_YMonotonePartition\"/>, <xref linkend="
+"\"CG_ApproxConvexPartition\"/>, <xref linkend="
+"\"CG_GreeneApproxConvexPartition\"/>と同じ例)"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
+"\"CG_GreeneApproxConvexPartition\"/>"
+msgstr ""
+", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
+"\"CG_GreeneApproxConvexPartition\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39463,11 +39677,6 @@ msgstr "ポリゴンジオメトリ内のポイント又は辺から可視領域
 
 #. Tag: para
 #, no-c-format
-msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0."
-msgstr "Availability: 3.5.0 - SFCGAL &gt;= 1.5.0が必要です。"
-
-#. Tag: para
-#, no-c-format
 msgid "Visibility from the point"
 msgstr "ポイントからの可視領域"
 
@@ -39475,35 +39684,6 @@ msgstr "ポイントからの可視領域"
 #, no-c-format
 msgid "Visibility from the segment"
 msgstr "辺からの可視領域"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Computes the volume of a 3D solid. If applied to surface (even closed) "
-"geometries will return 0."
-msgstr ""
-"3次元立体の体積を計算します。面ジオメトリは (閉じていても)0を返します。"
-
-#. Tag: para
-#, no-c-format
-msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as ST_3DVolume)"
-msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (ST_3DVolumeと同じ)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"When closed surfaces are created with WKT, they are treated as areal rather "
-"than solid. To make them solid, you need to use <xref linkend=\"ST_MakeSolid"
-"\"/>. Areal geometries have no volume. Here is an example to demonstrate."
-msgstr ""
-"WKTで閉じた面を生成した時、それは立体でなく面として扱われるます。立体にするに"
-"は<xref linkend=\"ST_MakeSolid\"/>を使います。面ジオメトリは堆積を持ちませ"
-"ん。例を挙げます。"
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
-msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39543,167 +39723,6 @@ msgstr ""
 "Y単調分割 (<xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
 "\"CG_GreeneApproxConvexPartition\"/>, <xref linkend="
 "\"CG_OptimalConvexPartition\"/>と同じ例です)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-", <xref linkend=\"CG_GreeneApproxConvexPartition\"/>, <xref linkend="
-"\"CG_OptimalConvexPartition\"/>"
-msgstr ""
-", <xref linkend=\"CG_GreeneApproxConvexPartition\"/>, <xref linkend="
-"\"CG_OptimalConvexPartition\"/>"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid "Computes approximal convex partition of the polygon geometry"
-msgstr "ポリゴンジオメトリの近似凸分割を計算します"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Computes approximal convex partition of the polygon geometry (using a "
-"triangulation)."
-msgstr "ポリゴンジオメトリの近似凸分割を計算します (三角形分割を使います)。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A partition of a polygon P is a set of polygons such that the interiors of "
-"the polygons do not intersect and the union of the polygons is equal to the "
-"interior of the original polygon P. CG_ApproxConvexPartition and "
-"CG_GreeneApproxConvexPartition functions produce approximately optimal "
-"convex partitions. Both these functions produce convex decompositions by "
-"first decomposing the polygon into simpler polygons; "
-"CG_ApproxConvexPartition uses a triangulation and "
-"CG_GreeneApproxConvexPartition a monotone partition. These two functions "
-"both guarantee that they will produce no more than four times the optimal "
-"number of convex pieces but they differ in their runtime complexities. "
-"Though the triangulation-based approximation algorithm often results in "
-"fewer convex pieces, this is not always the case."
-msgstr ""
-"ポリゴンPの分割は、内部同士がインタセクトせず、結合すると元のポリゴンPの内部"
-"と同じになるようなポリゴンの集合です。CG_ApproxConvexPartition関数と"
-"CG_GreeneApproxConvexPartition関数は、概ね最適な凸分割を生成します。両方の関"
-"数は、最初にポリゴンをより単純なポリゴンに分解したうえで凸分解を行います。"
-"CG_ApproxConvexPartitionは三角形を使い、CG_GreeneApproxConvexPartitionは単調"
-"分割を使います。両方の関数は、凸分割の要素数について最適数の4倍を超えないこと"
-"を保証しますが、実行時の複雑さが異なります。三角形ベースの近似アルゴリズムで"
-"は、しばしば、凸要素が少なくなりますが、常にそうなるとは限りません。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Approximal Convex Partition (same example As <xref linkend="
-"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_GreeneApproxConvexPartition"
-"\"/> and <xref linkend=\"CG_OptimalConvexPartition\"/>)"
-msgstr ""
-"近似凸分割 (<xref linkend=\"CG_YMonotonePartition\"/>, <xref linkend="
-"\"CG_GreeneApproxConvexPartition\"/>および<xref linkend="
-"\"CG_OptimalConvexPartition\"/>と同じ例です)"
-
-#. Tag: para
-#, no-c-format
-msgid "Computes approximal monotone convex partition of the polygon geometry."
-msgstr "ポリゴンジオメトリの近似的な単調凸分割を計算します。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Greene Approximal Convex Partition (same example As <xref linkend="
-"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_ApproxConvexPartition\"/> "
-"and <xref linkend=\"CG_OptimalConvexPartition\"/>)"
-msgstr ""
-"グリーン近似凸分割 (<xref linkend=\"CG_YMonotonePartition\"/>, <xref linkend="
-"\"CG_ApproxConvexPartition\"/>, <xref linkend=\"CG_OptimalConvexPartition\"/>"
-"と同じ例です)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
-"\"CG_OptimalConvexPartition\"/>"
-msgstr ""
-", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
-"\"CG_OptimalConvexPartition\"/>"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid "Computes an optimal convex partition of the polygon geometry"
-msgstr "ポリゴンジオメトリの最適凸分割を計算します"
-
-#. Tag: para
-#, no-c-format
-msgid "Computes an optimal convex partition of the polygon geometry."
-msgstr "ポリゴンジオメトリの最適凸分割を計算します。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A partition of a polygon P is a set of polygons such that the interiors of "
-"the polygons do not intersect and the union of the polygons is equal to the "
-"interior of the original polygon P. CG_OptimalConvexPartition produces a "
-"partition that is optimal in the number of pieces."
-msgstr ""
-"ポリゴンPの分割は、内部同士がインタセクトせず、結合すると元のポリゴンPの内部"
-"と同じになるようなポリゴンの集合です。CG_OptimalConvexPartitionは、分割要素数"
-"について最適な分割を生成します。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Optimal Convex Partition (same example As <xref linkend="
-"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_ApproxConvexPartition\"/> "
-"and <xref linkend=\"CG_GreeneApproxConvexPartition\"/>)"
-msgstr ""
-"最適凸分割 (<xref linkend=\"CG_YMonotonePartition\"/>, <xref linkend="
-"\"CG_ApproxConvexPartition\"/>, <xref linkend="
-"\"CG_GreeneApproxConvexPartition\"/>と同じ例)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
-"\"CG_GreeneApproxConvexPartition\"/>"
-msgstr ""
-", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
-"\"CG_GreeneApproxConvexPartition\"/>"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid "Straight Skeleton Extrusion"
-msgstr "ストレートスケルトンの押し出し"
-
-#. Tag: para
-#, no-c-format
-msgid "Computes an extrusion with a maximal height of the polygon geometry."
-msgstr "ポリゴンジオメトリの最大高での押出しを計算します。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Perhaps the first (historically) use-case of straight skeletons: given a "
-"polygonal roof, the straight skeleton directly gives the layout of each "
-"tent. If each skeleton edge is lifted from the plane a height equal to its "
-"offset distance, the resulting roof is \"correct\" in that water will always "
-"fall down to the contour edges (the roof's border), regardless of where it "
-"falls on the roof. The function computes this extrusion aka \"roof\" on a "
-"polygon. If the argument body_height > 0, so the polygon is extruded like "
-"with ST_Extrude(polygon, 0, 0, body_height). The result is an union of these "
-"polyhedralsurfaces."
-msgstr ""
-"ストレートスケルトンの (歴史上の)最初の使用例は、おそらく、ポリゴンの屋根を与"
-"えて、ストレートスケルトンでテントの配置を得るというものだったでしょう。スケ"
-"ルトンの個々のエッジは平面からオフセット距離分引き上げられ、水が、屋根のどこ"
-"に落ちるか関係なく、常に輪郭のエッジ (屋根の境界線)に落ちるという点で、結果の"
-"屋根は「正しい」ものになります。この関数はこのポリゴンの押出し、別名「屋根」"
-"を計算します。引数のbody_height が body_height > 0 となる場合には、ポリゴンは"
-"ST_Extrude(polygon, 0, 0, body_height)で押し出されるようになります。結果はこ"
-"れらの多面体サーフェスの結合となります。"
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"ST_StraightSkeleton\"/>"
-msgstr ", <xref linkend=\"ST_StraightSkeleton\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -48545,6 +48564,11 @@ msgstr "GEOS (3.9,3.10,3.11,3.12) 以上"
 
 #. Tag: para
 #, no-c-format
+msgid "Requires SFCGAL 1.5 or higher"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "2.5/3D support"
 msgstr "2.5次元/3次元対応"
 
@@ -48552,6 +48576,30 @@ msgstr "2.5次元/3次元対応"
 #, no-c-format
 msgid "Supports geography"
 msgstr "ジオグラフィ対応"
+
+#, no-c-format
+#~ msgid ""
+#~ "&reference_type; &reference_management; &reference_constructor; "
+#~ "&reference_accessor; &reference_editor; &reference_validation; "
+#~ "&reference_srs; &reference_input; &reference_output; &reference_operator; "
+#~ "&reference_relationship; &reference_measure; &reference_overlay; "
+#~ "&reference_processing; &reference_coverage; &reference_transformation; "
+#~ "&reference_cluster; &reference_bbox; &reference_lrs; "
+#~ "&reference_trajectory; &reference_sfcgal; &reference_transaction; "
+#~ "&reference_version; &reference_guc; &reference_troubleshooting;"
+#~ msgstr ""
+#~ "&reference_type; &reference_management; &reference_constructor; "
+#~ "&reference_accessor; &reference_editor; &reference_validation; "
+#~ "&reference_srs; &reference_input; &reference_output; &reference_operator; "
+#~ "&reference_relationship; &reference_measure; &reference_overlay; "
+#~ "&reference_processing; &reference_coverage; &reference_transformation; "
+#~ "&reference_cluster; &reference_bbox; &reference_lrs; "
+#~ "&reference_trajectory; &reference_sfcgal; &reference_transaction; "
+#~ "&reference_version; &reference_guc; &reference_troubleshooting;"
+
+#, no-c-format
+#~ msgid "SFCGAL Functions"
+#~ msgstr "SFCGAL関数"
 
 #, no-c-format
 #~ msgid "This will only have data is you marked zcta5 to be loaded"

@@ -10930,17 +10930,9 @@ msgid ""
 "&reference_relationship; &reference_measure; &reference_overlay; "
 "&reference_processing; &reference_coverage; &reference_transformation; "
 "&reference_cluster; &reference_bbox; &reference_lrs; &reference_trajectory; "
-"&reference_sfcgal; &reference_transaction; &reference_version; "
-"&reference_guc; &reference_troubleshooting;"
+"&reference_transaction; &reference_version; &reference_guc; "
+"&reference_troubleshooting;"
 msgstr ""
-"&reference_type; &reference_management; &reference_constructor; "
-"&reference_accessor; &reference_editor; &reference_validation; "
-"&reference_srs; &reference_input; &reference_output; &reference_operator; "
-"&reference_relationship; &reference_measure; &reference_overlay; "
-"&reference_processing; &reference_coverage; &reference_transformation; "
-"&reference_cluster; &reference_bbox; &reference_lrs; &reference_trajectory; "
-"&reference_sfcgal; &reference_transaction; &reference_version; "
-"&reference_guc; &reference_troubleshooting;"
 
 #. Tag: title
 #, no-c-format
@@ -13522,8 +13514,8 @@ msgid ""
 "ST_ClusterWithin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN\"/"
 "> with <code>minpoints =&gt; 0</code>."
 msgstr ""
-"ST_ClusterWithin相当于运行<xref linkend=\"ST_ClusterDBSCAN\"/"
-">使用<code>minpoints =&gt; 0</code>。"
+"ST_ClusterWithin相当于运行<xref linkend=\"ST_ClusterDBSCAN\"/>使用"
+"<code>minpoints =&gt; 0</code>。"
 
 #. Tag: para
 #, no-c-format
@@ -13560,8 +13552,8 @@ msgid ""
 "ST_ClusterWithinWin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN"
 "\"/> with <code>minpoints =&gt; 0</code>."
 msgstr ""
-"ST_ClusterWithinWin等效于运行<xref linkend=\"ST_ClusterDBSCAN\"/"
-">使用<code>minpoints =&gt; 0</code>。"
+"ST_ClusterWithinWin等效于运行<xref linkend=\"ST_ClusterDBSCAN\"/>使用"
+"<code>minpoints =&gt; 0</code>。"
 
 #. Tag: para
 #, no-c-format
@@ -25956,11 +25948,10 @@ msgid ""
 "tolerance distance of the simplified linework. The result may not be valid "
 "even if the input is."
 msgstr ""
-"使用<link xlink:href=\"https://en.wikipedia.org/wiki/"
-"Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm\">Douglas-Peucker算法</link>"
-"计算几何图形的简化表示。简化的<varname>tolerance</varname>是一个距离值，以输"
-"入SRS的单位为准。简化会移除在简化线条的公差距离内的顶点。即使输入是有效的，结"
-"果可能不是有效的。"
+"使用<link xlink:href=\"https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas"
+"%E2%80%93Peucker_algorithm\">Douglas-Peucker算法</link>计算几何图形的简化表"
+"示。简化的<varname>tolerance</varname>是一个距离值，以输入SRS的单位为准。简化"
+"会移除在简化线条的公差距离内的顶点。即使输入是有效的，结果可能不是有效的。"
 
 #. Tag: para
 #, no-c-format
@@ -25968,7 +25959,8 @@ msgid ""
 "The function can be called with any kind of geometry (including "
 "GeometryCollections), but only line and polygon elements are simplified. "
 "Endpoints of linear geometry are preserved."
-msgstr "该函数可用于任何类型的几何图形（包括GeometryCollections），但只有线和多边形元"
+msgstr ""
+"该函数可用于任何类型的几何图形（包括GeometryCollections），但只有线和多边形元"
 "素会被简化。线性几何的端点将被保留。"
 
 #. Tag: para
@@ -25981,9 +25973,9 @@ msgid ""
 "rendering purposes, to prevent very small features disappearing from a map."
 msgstr ""
 "<varname>preserveCollapsed</varname>标志保留那些在给定公差下本应被移除的小几"
-"何图形。例如，如果将一个1米长的线条使用10米的公差进行简化，当<varname>preserv"
-"eCollapsed</varname>为true时，该线条将不会消失。这个标志对于渲染目的很有用，"
-"以防止地图上非常小的特征消失。"
+"何图形。例如，如果将一个1米长的线条使用10米的公差进行简化，当"
+"<varname>preserveCollapsed</varname>为true时，该线条将不会消失。这个标志对于"
+"渲染目的很有用，以防止地图上非常小的特征消失。"
 
 #. Tag: para
 #, no-c-format
@@ -25993,17 +25985,18 @@ msgid ""
 "be invalid (see <xref linkend=\"ST_IsValid\"/>). Use <xref linkend="
 "\"ST_SimplifyPreserveTopology\"/> to preserve topology and ensure validity."
 msgstr ""
-"返回的几何图形可能会失去其简单性（参见<xref linkend=\"ST_IsSimple\""
-"/>），拓扑可能不会被保留，并且多边形结果可能是无效的（参见<xref linkend="
-"\"ST_IsValid\"/>）。使用<xref linkend=\"ST_SimplifyPreserveTopology\""
-"/>来保留拓扑并确保有效性。"
+"返回的几何图形可能会失去其简单性（参见<xref linkend=\"ST_IsSimple\"/>），拓扑"
+"可能不会被保留，并且多边形结果可能是无效的（参见<xref linkend=\"ST_IsValid\"/"
+">）。使用<xref linkend=\"ST_SimplifyPreserveTopology\"/>来保留拓扑并确保有效"
+"性。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This function does not preserve boundaries shared between polygons. Use "
 "<xref linkend=\"ST_CoverageSimplify\"/> if this is required."
-msgstr "该函数不保留多边形之间共享的边界。如果需要保留共享边界，请使用<xref linkend="
+msgstr ""
+"该函数不保留多边形之间共享的边界。如果需要保留共享边界，请使用<xref linkend="
 "\"ST_CoverageSimplify\"/>。"
 
 #. Tag: para
@@ -36683,8 +36676,8 @@ msgstr "更改：2.2.0 在之前的版本中，这称为 ST_Point_Inside_Circle"
 
 #. Tag: title
 #, no-c-format
-msgid "SFCGAL Functions"
-msgstr "SFCGAL 函数"
+msgid "SFCGAL Functions Reference"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -36707,6 +36700,11 @@ msgstr ""
 "该库的安装说明可以在 SFCGAL 主页 (<link xlink:href=\"http://www.sfcgal.org"
 "\">http://www.sfcgal.org</link>) 上找到。 要启用这些功能，请使用<code>create "
 "extension postgis_sfcgal</code>。"
+
+#. Tag: title
+#, no-c-format
+msgid "SFCGAL Management Functions"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -36749,6 +36747,18 @@ msgid ""
 "versions</para>"
 msgstr "<para>返回正在使用的 SFCGAL 的完整版本，包括 CGAL 和 Boost 版本</para>"
 
+#. Tag: title
+#, no-c-format
+msgid "SFCGAL Accessors and Setters"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"These functions access or set properties of geometries. Geometries primarily "
+"supported by these functions are TINS and Polyhedral Surfaces."
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes area of 3D surface geometries. Will return 0 for solids."
@@ -36776,6 +36786,85 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
 "linkend=\"ST_Area\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Force LHR orientation"
+msgstr "强制 LHR 方向"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Check if a surface is or not planar"
+msgstr "检查表面是否平坦"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left "
+"out in 2.1 release."
+msgstr "可用性：2.2.0：这在 2.1.0 中已记录，但在 2.1 版本中意外遗漏。"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Test if the geometry is a solid. No validity check is performed."
+msgstr "测试几何体是否为实体。 不执行有效性检查。"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Cast the geometry into a solid. No check is performed. To obtain a valid "
+"solid, the input geometry must be a closed Polyhedral Surface or a closed "
+"TIN."
+msgstr ""
+"将几何体铸造成实体。 不执行任何检查。 要获得有效的实体，输入几何图形必须是闭"
+"合多面体曲面或闭合 TIN。"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Determine surface orientation"
+msgstr "确定表面方向"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The function only applies to polygons. It returns -1 if the polygon is "
+"counterclockwise oriented and 1 if the polygon is clockwise oriented."
+msgstr ""
+"该函数仅适用于多边形。 如果多边形是逆时针方向，则返回 -1；如果多边形是顺时针"
+"方向，则返回 1。"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Computes the volume of a 3D solid. If applied to surface (even closed) "
+"geometries will return 0."
+msgstr "计算 3D 实体的体积。 如果应用于表面（甚至闭合）几何图形将返回 0。"
+
+#. Tag: para
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as ST_3DVolume)"
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (与ST_3DVolume相同)"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"When closed surfaces are created with WKT, they are treated as areal rather "
+"than solid. To make them solid, you need to use <xref linkend=\"ST_MakeSolid"
+"\"/>. Areal geometries have no volume. Here is an example to demonstrate."
+msgstr ""
+"当使用 WKT 创建闭合曲面时，它们将被视为面而不是实体。 要使它们成为实体，您需"
+"要使用<xref linkend=\"ST_MakeSolid\"/>。 面积几何没有体积。 这里有一个例子来"
+"演示。"
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
+msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
+
+#. Tag: title
+#, no-c-format
+msgid "SFCGAL Processing and Relationship Functions"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37020,6 +37109,72 @@ msgstr ", <xref linkend=\"ST_OptimalAlphaShape\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
+msgid "Computes approximal convex partition of the polygon geometry"
+msgstr "计算多边形几何图形的近似凸分割"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Computes approximal convex partition of the polygon geometry (using a "
+"triangulation)."
+msgstr "计算多边形几何图形的近似凸分割（使用三角剖分）。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A partition of a polygon P is a set of polygons such that the interiors of "
+"the polygons do not intersect and the union of the polygons is equal to the "
+"interior of the original polygon P. CG_ApproxConvexPartition and "
+"CG_GreeneApproxConvexPartition functions produce approximately optimal "
+"convex partitions. Both these functions produce convex decompositions by "
+"first decomposing the polygon into simpler polygons; "
+"CG_ApproxConvexPartition uses a triangulation and "
+"CG_GreeneApproxConvexPartition a monotone partition. These two functions "
+"both guarantee that they will produce no more than four times the optimal "
+"number of convex pieces but they differ in their runtime complexities. "
+"Though the triangulation-based approximation algorithm often results in "
+"fewer convex pieces, this is not always the case."
+msgstr ""
+"多边形 P 的一个划分是指一组多边形，这些多边形的内部不相交，并且这些多边形的并"
+"集等于原始多边形 P 的内部。CG_ApproxConvexPartition 和 "
+"CG_GreeneApproxConvexPartition 函数生成近似最优的凸分割。这两个函数通过首先将"
+"多边形分解为更简单的多边形来生成凸分解；CG_ApproxConvexPartition 使用三角剖"
+"分，而 CG_GreeneApproxConvexPartition 使用一个单调分割。这两个函数都保证它们"
+"生成的凸片段数不会超过最优数量的四倍，但它们在运行时复杂性上有所不同。尽管基"
+"于三角剖分的近似算法通常会产生较少的凸片段，但并非总是如此。"
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0."
+msgstr "可用性：3.5.0 - 需要 SFCGAL &gt;= 1.5.0。"
+
+#. Tag: para
+#, no-c-format
+msgid "Requires SFCGAL &gt;= 1.5.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Approximal Convex Partition (same example As <xref linkend="
+"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_GreeneApproxConvexPartition"
+"\"/> and <xref linkend=\"CG_OptimalConvexPartition\"/>)"
+msgstr ""
+"近似凸分割（与 <xref linkend=\"CG_YMonotonePartition\"/>、<xref linkend="
+"\"CG_GreeneApproxConvexPartition\"/> 和 <xref linkend="
+"\"CG_OptimalConvexPartition\"/> 相同的示例）"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_GreeneApproxConvexPartition\"/>, <xref linkend="
+"\"CG_OptimalConvexPartition\"/>"
+msgstr ""
+", <xref linkend=\"CG_GreeneApproxConvexPartition\"/>, <xref linkend="
+"\"CG_OptimalConvexPartition\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
 msgid "Compute the approximate medial axis of an areal geometry."
 msgstr "计算几何区域的近似中轴。"
 
@@ -37108,35 +37263,63 @@ msgstr ", <xref linkend=\"CG_ExtrudeStraightSkeleton\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
-msgid "Force LHR orientation"
-msgstr "强制 LHR 方向"
+msgid "Straight Skeleton Extrusion"
+msgstr "直线骨架外凸"
 
-#. Tag: refpurpose
+#. Tag: para
 #, no-c-format
-msgid "Check if a surface is or not planar"
-msgstr "检查表面是否平坦"
+msgid "Computes an extrusion with a maximal height of the polygon geometry."
+msgstr "计算多边形几何图形的最大高度拉伸。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left "
-"out in 2.1 release."
-msgstr "可用性：2.2.0：这在 2.1.0 中已记录，但在 2.1 版本中意外遗漏。"
+"Perhaps the first (historically) use-case of straight skeletons: given a "
+"polygonal roof, the straight skeleton directly gives the layout of each "
+"tent. If each skeleton edge is lifted from the plane a height equal to its "
+"offset distance, the resulting roof is \"correct\" in that water will always "
+"fall down to the contour edges (the roof's border), regardless of where it "
+"falls on the roof. The function computes this extrusion aka \"roof\" on a "
+"polygon. If the argument body_height > 0, so the polygon is extruded like "
+"with ST_Extrude(polygon, 0, 0, body_height). The result is an union of these "
+"polyhedralsurfaces."
+msgstr ""
+"或许是直线骨架的最早应用案例之一：给定一个多边形屋顶，直线骨架直接提供了每个"
+"建筑物的布局。如果将每个骨架边沿其偏移距离从平面抬升到相应的高度，得到的屋顶"
+"是“正确”的，因为水将始终流向轮廓边缘（屋顶的边界），无论它在屋顶的哪个位置下"
+"落。该函数计算多边形的这种挤出，又称“屋顶”。如果参数 body_height > 0，则多边"
+"形就像使用 ST_Extrude(polygon, 0, 0, body_height) 一样挤出。结果是这些多面体"
+"表面的并集。"
 
-#. Tag: refpurpose
+#. Tag: para
 #, no-c-format
-msgid "Test if the geometry is a solid. No validity check is performed."
-msgstr "测试几何体是否为实体。 不执行有效性检查。"
+msgid ", <xref linkend=\"ST_StraightSkeleton\"/>"
+msgstr ", <xref linkend=\"ST_StraightSkeleton\"/>"
 
-#. Tag: refpurpose
+#. Tag: para
+#, no-c-format
+msgid "Computes approximal monotone convex partition of the polygon geometry."
+msgstr "计算多边形几何图形的近似单调凸分割。"
+
+#. Tag: para
 #, no-c-format
 msgid ""
-"Cast the geometry into a solid. No check is performed. To obtain a valid "
-"solid, the input geometry must be a closed Polyhedral Surface or a closed "
-"TIN."
+"Greene Approximal Convex Partition (same example As <xref linkend="
+"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_ApproxConvexPartition\"/> "
+"and <xref linkend=\"CG_OptimalConvexPartition\"/>)"
 msgstr ""
-"将几何体铸造成实体。 不执行任何检查。 要获得有效的实体，输入几何图形必须是闭"
-"合多面体曲面或闭合 TIN。"
+"格林近似凸分割（与 <xref linkend=\"CG_YMonotonePartition\"/>、<xref linkend="
+"\"CG_ApproxConvexPartition\"/> 和 <xref linkend=\"CG_OptimalConvexPartition"
+"\"/> 相同的示例）"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
+"\"CG_OptimalConvexPartition\"/>"
+msgstr ""
+", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
+"\"CG_OptimalConvexPartition\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37274,17 +37457,45 @@ msgstr ", <xref linkend=\"ST_AlphaShape\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
-msgid "Determine surface orientation"
-msgstr "确定表面方向"
+msgid "Computes an optimal convex partition of the polygon geometry"
+msgstr "计算多边形几何图形的最优凸分割"
+
+#. Tag: para
+#, no-c-format
+msgid "Computes an optimal convex partition of the polygon geometry."
+msgstr "计算多边形几何图形的最优凸分割。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"The function only applies to polygons. It returns -1 if the polygon is "
-"counterclockwise oriented and 1 if the polygon is clockwise oriented."
+"A partition of a polygon P is a set of polygons such that the interiors of "
+"the polygons do not intersect and the union of the polygons is equal to the "
+"interior of the original polygon P. CG_OptimalConvexPartition produces a "
+"partition that is optimal in the number of pieces."
 msgstr ""
-"该函数仅适用于多边形。 如果多边形是逆时针方向，则返回 -1；如果多边形是顺时针"
-"方向，则返回 1。"
+"多边形 P 的一个划分是指一组多边形，这些多边形的内部不相交，并且这些多边形的并"
+"集等于原始多边形 P 的内部。CG_OptimalConvexPartition 生成的划分在片段数量上是"
+"最优的。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Optimal Convex Partition (same example As <xref linkend="
+"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_ApproxConvexPartition\"/> "
+"and <xref linkend=\"CG_GreeneApproxConvexPartition\"/>)"
+msgstr ""
+"最优凸分割（与 <xref linkend=\"CG_YMonotonePartition\"/>、<xref linkend="
+"\"CG_ApproxConvexPartition\"/> 和 <xref linkend="
+"\"CG_GreeneApproxConvexPartition\"/> 相同的示例）"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
+"\"CG_GreeneApproxConvexPartition\"/>"
+msgstr ""
+", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
+"\"CG_GreeneApproxConvexPartition\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37358,11 +37569,6 @@ msgstr "计算一个从点或多边形几何中的线段生成的可见性多边
 
 #. Tag: para
 #, no-c-format
-msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0."
-msgstr "可用性：3.5.0 - 需要 SFCGAL &gt;= 1.5.0。"
-
-#. Tag: para
-#, no-c-format
 msgid "Visibility from the point"
 msgstr "从点的视角来看，可见性"
 
@@ -37370,34 +37576,6 @@ msgstr "从点的视角来看，可见性"
 #, no-c-format
 msgid "Visibility from the segment"
 msgstr "从线段的视角来看，可见性"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Computes the volume of a 3D solid. If applied to surface (even closed) "
-"geometries will return 0."
-msgstr "计算 3D 实体的体积。 如果应用于表面（甚至闭合）几何图形将返回 0。"
-
-#. Tag: para
-#, no-c-format
-msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as ST_3DVolume)"
-msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (与ST_3DVolume相同)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"When closed surfaces are created with WKT, they are treated as areal rather "
-"than solid. To make them solid, you need to use <xref linkend=\"ST_MakeSolid"
-"\"/>. Areal geometries have no volume. Here is an example to demonstrate."
-msgstr ""
-"当使用 WKT 创建闭合曲面时，它们将被视为面而不是实体。 要使它们成为实体，您需"
-"要使用<xref linkend=\"ST_MakeSolid\"/>。 面积几何没有体积。 这里有一个例子来"
-"演示。"
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
-msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37436,164 +37614,6 @@ msgstr ""
 "Y-单调分割（与 <xref linkend=\"CG_ApproxConvexPartition\"/>、<xref linkend="
 "\"CG_GreeneApproxConvexPartition\"/> 和 <xref linkend="
 "\"CG_OptimalConvexPartition\"/> 相同的示例）"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-", <xref linkend=\"CG_GreeneApproxConvexPartition\"/>, <xref linkend="
-"\"CG_OptimalConvexPartition\"/>"
-msgstr ""
-", <xref linkend=\"CG_GreeneApproxConvexPartition\"/>, <xref linkend="
-"\"CG_OptimalConvexPartition\"/>"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid "Computes approximal convex partition of the polygon geometry"
-msgstr "计算多边形几何图形的近似凸分割"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Computes approximal convex partition of the polygon geometry (using a "
-"triangulation)."
-msgstr "计算多边形几何图形的近似凸分割（使用三角剖分）。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A partition of a polygon P is a set of polygons such that the interiors of "
-"the polygons do not intersect and the union of the polygons is equal to the "
-"interior of the original polygon P. CG_ApproxConvexPartition and "
-"CG_GreeneApproxConvexPartition functions produce approximately optimal "
-"convex partitions. Both these functions produce convex decompositions by "
-"first decomposing the polygon into simpler polygons; "
-"CG_ApproxConvexPartition uses a triangulation and "
-"CG_GreeneApproxConvexPartition a monotone partition. These two functions "
-"both guarantee that they will produce no more than four times the optimal "
-"number of convex pieces but they differ in their runtime complexities. "
-"Though the triangulation-based approximation algorithm often results in "
-"fewer convex pieces, this is not always the case."
-msgstr ""
-"多边形 P 的一个划分是指一组多边形，这些多边形的内部不相交，并且这些多边形的并"
-"集等于原始多边形 P 的内部。CG_ApproxConvexPartition 和 "
-"CG_GreeneApproxConvexPartition 函数生成近似最优的凸分割。这两个函数通过首先将"
-"多边形分解为更简单的多边形来生成凸分解；CG_ApproxConvexPartition 使用三角剖"
-"分，而 CG_GreeneApproxConvexPartition 使用一个单调分割。这两个函数都保证它们"
-"生成的凸片段数不会超过最优数量的四倍，但它们在运行时复杂性上有所不同。尽管基"
-"于三角剖分的近似算法通常会产生较少的凸片段，但并非总是如此。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Approximal Convex Partition (same example As <xref linkend="
-"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_GreeneApproxConvexPartition"
-"\"/> and <xref linkend=\"CG_OptimalConvexPartition\"/>)"
-msgstr ""
-"近似凸分割（与 <xref linkend=\"CG_YMonotonePartition\"/>、<xref linkend="
-"\"CG_GreeneApproxConvexPartition\"/> 和 <xref linkend="
-"\"CG_OptimalConvexPartition\"/> 相同的示例）"
-
-#. Tag: para
-#, no-c-format
-msgid "Computes approximal monotone convex partition of the polygon geometry."
-msgstr "计算多边形几何图形的近似单调凸分割。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Greene Approximal Convex Partition (same example As <xref linkend="
-"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_ApproxConvexPartition\"/> "
-"and <xref linkend=\"CG_OptimalConvexPartition\"/>)"
-msgstr ""
-"格林近似凸分割（与 <xref linkend=\"CG_YMonotonePartition\"/>、<xref linkend="
-"\"CG_ApproxConvexPartition\"/> 和 <xref linkend=\"CG_OptimalConvexPartition"
-"\"/> 相同的示例）"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
-"\"CG_OptimalConvexPartition\"/>"
-msgstr ""
-", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
-"\"CG_OptimalConvexPartition\"/>"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid "Computes an optimal convex partition of the polygon geometry"
-msgstr "计算多边形几何图形的最优凸分割"
-
-#. Tag: para
-#, no-c-format
-msgid "Computes an optimal convex partition of the polygon geometry."
-msgstr "计算多边形几何图形的最优凸分割。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A partition of a polygon P is a set of polygons such that the interiors of "
-"the polygons do not intersect and the union of the polygons is equal to the "
-"interior of the original polygon P. CG_OptimalConvexPartition produces a "
-"partition that is optimal in the number of pieces."
-msgstr ""
-"多边形 P 的一个划分是指一组多边形，这些多边形的内部不相交，并且这些多边形的并"
-"集等于原始多边形 P 的内部。CG_OptimalConvexPartition 生成的划分在片段数量上是"
-"最优的。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Optimal Convex Partition (same example As <xref linkend="
-"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_ApproxConvexPartition\"/> "
-"and <xref linkend=\"CG_GreeneApproxConvexPartition\"/>)"
-msgstr ""
-"最优凸分割（与 <xref linkend=\"CG_YMonotonePartition\"/>、<xref linkend="
-"\"CG_ApproxConvexPartition\"/> 和 <xref linkend="
-"\"CG_GreeneApproxConvexPartition\"/> 相同的示例）"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
-"\"CG_GreeneApproxConvexPartition\"/>"
-msgstr ""
-", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
-"\"CG_GreeneApproxConvexPartition\"/>"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid "Straight Skeleton Extrusion"
-msgstr "直线骨架外凸"
-
-#. Tag: para
-#, no-c-format
-msgid "Computes an extrusion with a maximal height of the polygon geometry."
-msgstr "计算多边形几何图形的最大高度拉伸。"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Perhaps the first (historically) use-case of straight skeletons: given a "
-"polygonal roof, the straight skeleton directly gives the layout of each "
-"tent. If each skeleton edge is lifted from the plane a height equal to its "
-"offset distance, the resulting roof is \"correct\" in that water will always "
-"fall down to the contour edges (the roof's border), regardless of where it "
-"falls on the roof. The function computes this extrusion aka \"roof\" on a "
-"polygon. If the argument body_height > 0, so the polygon is extruded like "
-"with ST_Extrude(polygon, 0, 0, body_height). The result is an union of these "
-"polyhedralsurfaces."
-msgstr ""
-"或许是直线骨架的最早应用案例之一：给定一个多边形屋顶，直线骨架直接提供了每个"
-"建筑物的布局。如果将每个骨架边沿其偏移距离从平面抬升到相应的高度，得到的屋顶"
-"是“正确”的，因为水将始终流向轮廓边缘（屋顶的边界），无论它在屋顶的哪个位置下"
-"落。该函数计算多边形的这种挤出，又称“屋顶”。如果参数 body_height > 0，则多边"
-"形就像使用 ST_Extrude(polygon, 0, 0, body_height) 一样挤出。结果是这些多面体"
-"表面的并集。"
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"ST_StraightSkeleton\"/>"
-msgstr ", <xref linkend=\"ST_StraightSkeleton\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -45923,6 +45943,11 @@ msgstr "需要 GEOS (3.9,3.10,3.11,3.12) 或更高版本"
 
 #. Tag: para
 #, no-c-format
+msgid "Requires SFCGAL 1.5 or higher"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "2.5/3D support"
 msgstr "2.5/3D 支持"
 
@@ -45930,6 +45955,30 @@ msgstr "2.5/3D 支持"
 #, no-c-format
 msgid "Supports geography"
 msgstr "支持地理"
+
+#, no-c-format
+#~ msgid ""
+#~ "&reference_type; &reference_management; &reference_constructor; "
+#~ "&reference_accessor; &reference_editor; &reference_validation; "
+#~ "&reference_srs; &reference_input; &reference_output; &reference_operator; "
+#~ "&reference_relationship; &reference_measure; &reference_overlay; "
+#~ "&reference_processing; &reference_coverage; &reference_transformation; "
+#~ "&reference_cluster; &reference_bbox; &reference_lrs; "
+#~ "&reference_trajectory; &reference_sfcgal; &reference_transaction; "
+#~ "&reference_version; &reference_guc; &reference_troubleshooting;"
+#~ msgstr ""
+#~ "&reference_type; &reference_management; &reference_constructor; "
+#~ "&reference_accessor; &reference_editor; &reference_validation; "
+#~ "&reference_srs; &reference_input; &reference_output; &reference_operator; "
+#~ "&reference_relationship; &reference_measure; &reference_overlay; "
+#~ "&reference_processing; &reference_coverage; &reference_transformation; "
+#~ "&reference_cluster; &reference_bbox; &reference_lrs; "
+#~ "&reference_trajectory; &reference_sfcgal; &reference_transaction; "
+#~ "&reference_version; &reference_guc; &reference_troubleshooting;"
+
+#, no-c-format
+#~ msgid "SFCGAL Functions"
+#~ msgstr "SFCGAL 函数"
 
 #, no-c-format
 #~ msgid "This will only have data is you marked zcta5 to be loaded"

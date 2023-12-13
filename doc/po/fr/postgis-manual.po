@@ -12169,17 +12169,9 @@ msgid ""
 "&reference_relationship; &reference_measure; &reference_overlay; "
 "&reference_processing; &reference_coverage; &reference_transformation; "
 "&reference_cluster; &reference_bbox; &reference_lrs; &reference_trajectory; "
-"&reference_sfcgal; &reference_transaction; &reference_version; "
-"&reference_guc; &reference_troubleshooting;"
+"&reference_transaction; &reference_version; &reference_guc; "
+"&reference_troubleshooting;"
 msgstr ""
-"&reference_type; &reference_management; &reference_constructor; "
-"&reference_accessor; &reference_editor; &reference_validation; "
-"&reference_srs; &reference_input; &reference_output; &reference_operator; "
-"&reference_relationship; &reference_measure; &reference_overlay; "
-"&reference_processing; &reference_coverage; &reference_transformation; "
-"&reference_cluster; &reference_bbox; &reference_lrs; &reference_trajectory; "
-"&reference_sfcgal; &reference_transaction; &reference_version; "
-"&reference_guc; &reference_troubleshooting;"
 
 #. Tag: title
 #, no-c-format
@@ -40842,8 +40834,8 @@ msgstr ""
 
 #. Tag: title
 #, no-c-format
-msgid "SFCGAL Functions"
-msgstr "Fonctions SFCGAL"
+msgid "SFCGAL Functions Reference"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -40868,6 +40860,11 @@ msgstr ""
 "d'accueil de SFCGAL (<link xlink:href=\"http://www.sfcgal.org\">http://www."
 "sfcgal.org</link>). Pour activer les fonctions, utilisez <code>create "
 "extension postgis_sfcgal</code>."
+
+#. Tag: title
+#, no-c-format
+msgid "SFCGAL Management Functions"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40912,6 +40909,18 @@ msgstr ""
 "<para>Retourne la version complète de SFCGAL utilisée, y compris les "
 "versions CGAL et Boost</para>"
 
+#. Tag: title
+#, no-c-format
+msgid "SFCGAL Accessors and Setters"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"These functions access or set properties of geometries. Geometries primarily "
+"supported by these functions are TINS and Polyhedral Surfaces."
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes area of 3D surface geometries. Will return 0 for solids."
@@ -40941,6 +40950,95 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
 "linkend=\"ST_Area\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Force LHR orientation"
+msgstr "Force l'orientation LHR d'un objet"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Check if a surface is or not planar"
+msgstr "Vérifie si une surface est planaire ou non"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left "
+"out in 2.1 release."
+msgstr ""
+"Disponibilité : 2.2.0 : Ce point était documenté dans la version 2.1.0 mais "
+"a été accidentellement omis dans la version 2.1."
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Test if the geometry is a solid. No validity check is performed."
+msgstr ""
+"Teste si la géométrie est un solide. Aucun contrôle de validité n'est "
+"effectué."
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Cast the geometry into a solid. No check is performed. To obtain a valid "
+"solid, the input geometry must be a closed Polyhedral Surface or a closed "
+"TIN."
+msgstr ""
+"Transformer la géométrie dans un solide. Aucune vérification n'est "
+"effectuée. Pour obtenir un solide valide, la géométrie d'entrée doit être "
+"une surface polyédrique fermée ou un TIN fermé."
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Determine surface orientation"
+msgstr "Détermine l'orientation d'une surface"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The function only applies to polygons. It returns -1 if the polygon is "
+"counterclockwise oriented and 1 if the polygon is clockwise oriented."
+msgstr ""
+"Cette fonction ne s'applique qu'aux polygones. Elle renvoie -1 si le "
+"polygone est orienté dans le sens inverse des aiguilles d'une montre et 1 "
+"s'il est orienté dans le sens des aiguilles d'une montre."
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Computes the volume of a 3D solid. If applied to surface (even closed) "
+"geometries will return 0."
+msgstr ""
+"Calcule le volume d'un solide 3D. S'il est appliqué à des géométries de "
+"surface (même fermées), il renvoie 0."
+
+#. Tag: para
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as ST_3DVolume)"
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3 : 9.1 (identique à ST_3DVolume)"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"When closed surfaces are created with WKT, they are treated as areal rather "
+"than solid. To make them solid, you need to use <xref linkend=\"ST_MakeSolid"
+"\"/>. Areal geometries have no volume. Here is an example to demonstrate."
+msgstr ""
+"Lorsque des surfaces fermées sont créées avec WKT, elles sont traitées comme "
+"des surfaces aréolaires plutôt que comme des surfaces solides. Pour les "
+"rendre solides, vous devez utiliser <xref linkend=\"ST_MakeSolid\"/>. Les "
+"géométries aréolaires n'ont pas de volume. Voici un exemple pour le "
+"démontrer."
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
+msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
+
+#. Tag: title
+#, no-c-format
+msgid "SFCGAL Processing and Relationship Functions"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -41201,6 +41299,80 @@ msgstr ", <xref linkend=\"ST_OptimalAlphaShape\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
+msgid "Computes approximal convex partition of the polygon geometry"
+msgstr ""
+"Calcul de la partition convexe approximative de la géométrie du polygone"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Computes approximal convex partition of the polygon geometry (using a "
+"triangulation)."
+msgstr ""
+"Calcule la partition convexe approximative de la géométrie du polygone (à "
+"l'aide d'une triangulation)."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A partition of a polygon P is a set of polygons such that the interiors of "
+"the polygons do not intersect and the union of the polygons is equal to the "
+"interior of the original polygon P. CG_ApproxConvexPartition and "
+"CG_GreeneApproxConvexPartition functions produce approximately optimal "
+"convex partitions. Both these functions produce convex decompositions by "
+"first decomposing the polygon into simpler polygons; "
+"CG_ApproxConvexPartition uses a triangulation and "
+"CG_GreeneApproxConvexPartition a monotone partition. These two functions "
+"both guarantee that they will produce no more than four times the optimal "
+"number of convex pieces but they differ in their runtime complexities. "
+"Though the triangulation-based approximation algorithm often results in "
+"fewer convex pieces, this is not always the case."
+msgstr ""
+"Une partition d'un polygone P est un ensemble de polygones tels que les "
+"intérieurs des polygones ne se coupent pas et que l'union des polygones est "
+"égale à l'intérieur du polygone original P. Les fonctions "
+"CG_ApproxConvexPartition et CG_GreeneApproxConvexPartition produisent des "
+"partitions convexes approximativement optimales. Ces deux fonctions "
+"produisent des décompositions convexes en décomposant d'abord le polygone en "
+"polygones plus simples ; CG_ApproxConvexPartition utilise une triangulation "
+"et CG_GreeneApproxConvexPartition une partition monotone. Ces deux fonctions "
+"garantissent toutes deux qu'elles ne produiront pas plus de quatre fois le "
+"nombre optimal de pièces convexes, mais elles diffèrent par leur complexité "
+"d'exécution. Bien que l'algorithme d'approximation basé sur la triangulation "
+"produise souvent moins de pièces convexes, ce n'est pas toujours le cas."
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0."
+msgstr "Disponibilité : 3.5.0 - nécessite SFCGAL &gt;= 1.5.0."
+
+#. Tag: para
+#, no-c-format
+msgid "Requires SFCGAL &gt;= 1.5.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Approximal Convex Partition (same example As <xref linkend="
+"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_GreeneApproxConvexPartition"
+"\"/> and <xref linkend=\"CG_OptimalConvexPartition\"/>)"
+msgstr ""
+"Partition convexe approximative (même exemple que <xref linkend="
+"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_GreeneApproxConvexPartition"
+"\"/> et <xref linkend=\"CG_OptimalConvexPartition\"/>)"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_GreeneApproxConvexPartition\"/>, <xref linkend="
+"\"CG_OptimalConvexPartition\"/>"
+msgstr ""
+", <xref linkend=\"CG_GreeneApproxConvexPartition\"/>, <xref linkend="
+"\"CG_OptimalConvexPartition\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
 msgid "Compute the approximate medial axis of an areal geometry."
 msgstr "Calculer l'axe médian approximatif d'une géométrie aréolaire."
 
@@ -41295,40 +41467,69 @@ msgstr ", <xref linkend=\"CG_ExtrudeStraightSkeleton\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
-msgid "Force LHR orientation"
-msgstr "Force l'orientation LHR d'un objet"
+msgid "Straight Skeleton Extrusion"
+msgstr "Extrusion de squelette droit"
 
-#. Tag: refpurpose
+#. Tag: para
 #, no-c-format
-msgid "Check if a surface is or not planar"
-msgstr "Vérifie si une surface est planaire ou non"
+msgid "Computes an extrusion with a maximal height of the polygon geometry."
+msgstr ""
+"Calcule une extrusion avec une hauteur maximale de la géométrie du polygone."
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left "
-"out in 2.1 release."
+"Perhaps the first (historically) use-case of straight skeletons: given a "
+"polygonal roof, the straight skeleton directly gives the layout of each "
+"tent. If each skeleton edge is lifted from the plane a height equal to its "
+"offset distance, the resulting roof is \"correct\" in that water will always "
+"fall down to the contour edges (the roof's border), regardless of where it "
+"falls on the roof. The function computes this extrusion aka \"roof\" on a "
+"polygon. If the argument body_height > 0, so the polygon is extruded like "
+"with ST_Extrude(polygon, 0, 0, body_height). The result is an union of these "
+"polyhedralsurfaces."
 msgstr ""
-"Disponibilité : 2.2.0 : Ce point était documenté dans la version 2.1.0 mais "
-"a été accidentellement omis dans la version 2.1."
+"Il s'agit peut-être du premier cas d'utilisation (historique) des squelettes "
+"droits : étant donné un toit polygonal, le squelette droit donne directement "
+"la disposition de chaque tente. Si chaque arête du squelette est soulevée du "
+"plan d'une hauteur égale à sa distance de décalage, le toit résultant est "
+"\"correct\" en ce sens que l'eau tombera toujours vers les bords du contour "
+"(la bordure du toit), quel que soit l'endroit où elle tombe sur le toit. La "
+"fonction calcule cette extrusion ou \"toit\" sur un polygone. Si l'argument "
+"hauteur_du_corps > 0, le polygone est extrudé comme avec ST_Extrude(polygon, "
+"0, 0, hauteur_du_corps). Le résultat est une union de ces polyhedralsurfaces."
 
-#. Tag: refpurpose
+#. Tag: para
 #, no-c-format
-msgid "Test if the geometry is a solid. No validity check is performed."
-msgstr ""
-"Teste si la géométrie est un solide. Aucun contrôle de validité n'est "
-"effectué."
+msgid ", <xref linkend=\"ST_StraightSkeleton\"/>"
+msgstr ", <xref linkend=\"ST_StraightSkeleton\"/>"
 
-#. Tag: refpurpose
+#. Tag: para
+#, no-c-format
+msgid "Computes approximal monotone convex partition of the polygon geometry."
+msgstr ""
+"Calcule une partition convexe approximative monotone de la géométrie du "
+"polygone."
+
+#. Tag: para
 #, no-c-format
 msgid ""
-"Cast the geometry into a solid. No check is performed. To obtain a valid "
-"solid, the input geometry must be a closed Polyhedral Surface or a closed "
-"TIN."
+"Greene Approximal Convex Partition (same example As <xref linkend="
+"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_ApproxConvexPartition\"/> "
+"and <xref linkend=\"CG_OptimalConvexPartition\"/>)"
 msgstr ""
-"Transformer la géométrie dans un solide. Aucune vérification n'est "
-"effectuée. Pour obtenir un solide valide, la géométrie d'entrée doit être "
-"une surface polyédrique fermée ou un TIN fermé."
+"Partition convexe approximative de Greene (même exemple que <xref linkend="
+"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_ApproxConvexPartition\"/> et "
+"<xref linkend=\"CG_OptimalConvexPartition\"/>)"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
+"\"CG_OptimalConvexPartition\"/>"
+msgstr ""
+", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
+"\"CG_OptimalConvexPartition\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -41479,18 +41680,46 @@ msgstr ", <xref linkend=\"ST_AlphaShape\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
-msgid "Determine surface orientation"
-msgstr "Détermine l'orientation d'une surface"
+msgid "Computes an optimal convex partition of the polygon geometry"
+msgstr "Calcul d'une partition convexe optimale de la géométrie du polygone"
+
+#. Tag: para
+#, no-c-format
+msgid "Computes an optimal convex partition of the polygon geometry."
+msgstr "Calcul d'une partition convexe optimale de la géométrie du polygone."
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"The function only applies to polygons. It returns -1 if the polygon is "
-"counterclockwise oriented and 1 if the polygon is clockwise oriented."
+"A partition of a polygon P is a set of polygons such that the interiors of "
+"the polygons do not intersect and the union of the polygons is equal to the "
+"interior of the original polygon P. CG_OptimalConvexPartition produces a "
+"partition that is optimal in the number of pieces."
 msgstr ""
-"Cette fonction ne s'applique qu'aux polygones. Elle renvoie -1 si le "
-"polygone est orienté dans le sens inverse des aiguilles d'une montre et 1 "
-"s'il est orienté dans le sens des aiguilles d'une montre."
+"Une partition d'un polygone P est un ensemble de polygones tels que les "
+"intérieurs des polygones ne se croisent pas et que l'union des polygones est "
+"égale à l'intérieur du polygone original P. CG_OptimalConvexPartition "
+"produit une partition optimale en termes de nombre de morceaux."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Optimal Convex Partition (same example As <xref linkend="
+"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_ApproxConvexPartition\"/> "
+"and <xref linkend=\"CG_GreeneApproxConvexPartition\"/>)"
+msgstr ""
+"Partition convexe optimale (même exemple que <xref linkend="
+"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_ApproxConvexPartition\"/> et "
+"<xref linkend=\"CG_GreeneApproxConvexPartition\"/>)"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
+"\"CG_GreeneApproxConvexPartition\"/>"
+msgstr ""
+", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
+"\"CG_GreeneApproxConvexPartition\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -41570,11 +41799,6 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0."
-msgstr "Disponibilité : 3.5.0 - nécessite SFCGAL &gt;= 1.5.0."
-
-#. Tag: para
-#, no-c-format
 msgid "Visibility from the point"
 msgstr "Visibilité depuis le point"
 
@@ -41582,38 +41806,6 @@ msgstr "Visibilité depuis le point"
 #, no-c-format
 msgid "Visibility from the segment"
 msgstr "Visibilité depuis le segment"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid ""
-"Computes the volume of a 3D solid. If applied to surface (even closed) "
-"geometries will return 0."
-msgstr ""
-"Calcule le volume d'un solide 3D. S'il est appliqué à des géométries de "
-"surface (même fermées), il renvoie 0."
-
-#. Tag: para
-#, no-c-format
-msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as ST_3DVolume)"
-msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3 : 9.1 (identique à ST_3DVolume)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"When closed surfaces are created with WKT, they are treated as areal rather "
-"than solid. To make them solid, you need to use <xref linkend=\"ST_MakeSolid"
-"\"/>. Areal geometries have no volume. Here is an example to demonstrate."
-msgstr ""
-"Lorsque des surfaces fermées sont créées avec WKT, elles sont traitées comme "
-"des surfaces aréolaires plutôt que comme des surfaces solides. Pour les "
-"rendre solides, vous devez utiliser <xref linkend=\"ST_MakeSolid\"/>. Les "
-"géométries aréolaires n'ont pas de volume. Voici un exemple pour le "
-"démontrer."
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
-msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -41656,179 +41848,6 @@ msgstr ""
 "\"CG_ApproxConvexPartition\"/>, <xref linkend="
 "\"CG_GreeneApproxConvexPartition\"/> et <xref linkend="
 "\"CG_OptimalConvexPartition\"/>)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-", <xref linkend=\"CG_GreeneApproxConvexPartition\"/>, <xref linkend="
-"\"CG_OptimalConvexPartition\"/>"
-msgstr ""
-", <xref linkend=\"CG_GreeneApproxConvexPartition\"/>, <xref linkend="
-"\"CG_OptimalConvexPartition\"/>"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid "Computes approximal convex partition of the polygon geometry"
-msgstr ""
-"Calcul de la partition convexe approximative de la géométrie du polygone"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Computes approximal convex partition of the polygon geometry (using a "
-"triangulation)."
-msgstr ""
-"Calcule la partition convexe approximative de la géométrie du polygone (à "
-"l'aide d'une triangulation)."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A partition of a polygon P is a set of polygons such that the interiors of "
-"the polygons do not intersect and the union of the polygons is equal to the "
-"interior of the original polygon P. CG_ApproxConvexPartition and "
-"CG_GreeneApproxConvexPartition functions produce approximately optimal "
-"convex partitions. Both these functions produce convex decompositions by "
-"first decomposing the polygon into simpler polygons; "
-"CG_ApproxConvexPartition uses a triangulation and "
-"CG_GreeneApproxConvexPartition a monotone partition. These two functions "
-"both guarantee that they will produce no more than four times the optimal "
-"number of convex pieces but they differ in their runtime complexities. "
-"Though the triangulation-based approximation algorithm often results in "
-"fewer convex pieces, this is not always the case."
-msgstr ""
-"Une partition d'un polygone P est un ensemble de polygones tels que les "
-"intérieurs des polygones ne se coupent pas et que l'union des polygones est "
-"égale à l'intérieur du polygone original P. Les fonctions "
-"CG_ApproxConvexPartition et CG_GreeneApproxConvexPartition produisent des "
-"partitions convexes approximativement optimales. Ces deux fonctions "
-"produisent des décompositions convexes en décomposant d'abord le polygone en "
-"polygones plus simples ; CG_ApproxConvexPartition utilise une triangulation "
-"et CG_GreeneApproxConvexPartition une partition monotone. Ces deux fonctions "
-"garantissent toutes deux qu'elles ne produiront pas plus de quatre fois le "
-"nombre optimal de pièces convexes, mais elles diffèrent par leur complexité "
-"d'exécution. Bien que l'algorithme d'approximation basé sur la triangulation "
-"produise souvent moins de pièces convexes, ce n'est pas toujours le cas."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Approximal Convex Partition (same example As <xref linkend="
-"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_GreeneApproxConvexPartition"
-"\"/> and <xref linkend=\"CG_OptimalConvexPartition\"/>)"
-msgstr ""
-"Partition convexe approximative (même exemple que <xref linkend="
-"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_GreeneApproxConvexPartition"
-"\"/> et <xref linkend=\"CG_OptimalConvexPartition\"/>)"
-
-#. Tag: para
-#, no-c-format
-msgid "Computes approximal monotone convex partition of the polygon geometry."
-msgstr ""
-"Calcule une partition convexe approximative monotone de la géométrie du "
-"polygone."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Greene Approximal Convex Partition (same example As <xref linkend="
-"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_ApproxConvexPartition\"/> "
-"and <xref linkend=\"CG_OptimalConvexPartition\"/>)"
-msgstr ""
-"Partition convexe approximative de Greene (même exemple que <xref linkend="
-"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_ApproxConvexPartition\"/> et "
-"<xref linkend=\"CG_OptimalConvexPartition\"/>)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
-"\"CG_OptimalConvexPartition\"/>"
-msgstr ""
-", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
-"\"CG_OptimalConvexPartition\"/>"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid "Computes an optimal convex partition of the polygon geometry"
-msgstr "Calcul d'une partition convexe optimale de la géométrie du polygone"
-
-#. Tag: para
-#, no-c-format
-msgid "Computes an optimal convex partition of the polygon geometry."
-msgstr "Calcul d'une partition convexe optimale de la géométrie du polygone."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A partition of a polygon P is a set of polygons such that the interiors of "
-"the polygons do not intersect and the union of the polygons is equal to the "
-"interior of the original polygon P. CG_OptimalConvexPartition produces a "
-"partition that is optimal in the number of pieces."
-msgstr ""
-"Une partition d'un polygone P est un ensemble de polygones tels que les "
-"intérieurs des polygones ne se croisent pas et que l'union des polygones est "
-"égale à l'intérieur du polygone original P. CG_OptimalConvexPartition "
-"produit une partition optimale en termes de nombre de morceaux."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Optimal Convex Partition (same example As <xref linkend="
-"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_ApproxConvexPartition\"/> "
-"and <xref linkend=\"CG_GreeneApproxConvexPartition\"/>)"
-msgstr ""
-"Partition convexe optimale (même exemple que <xref linkend="
-"\"CG_YMonotonePartition\"/>, <xref linkend=\"CG_ApproxConvexPartition\"/> et "
-"<xref linkend=\"CG_GreeneApproxConvexPartition\"/>)"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
-"\"CG_GreeneApproxConvexPartition\"/>"
-msgstr ""
-", <xref linkend=\"CG_ApproxConvexPartition\"/>, <xref linkend="
-"\"CG_GreeneApproxConvexPartition\"/>"
-
-#. Tag: refpurpose
-#, no-c-format
-msgid "Straight Skeleton Extrusion"
-msgstr "Extrusion de squelette droit"
-
-#. Tag: para
-#, no-c-format
-msgid "Computes an extrusion with a maximal height of the polygon geometry."
-msgstr ""
-"Calcule une extrusion avec une hauteur maximale de la géométrie du polygone."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Perhaps the first (historically) use-case of straight skeletons: given a "
-"polygonal roof, the straight skeleton directly gives the layout of each "
-"tent. If each skeleton edge is lifted from the plane a height equal to its "
-"offset distance, the resulting roof is \"correct\" in that water will always "
-"fall down to the contour edges (the roof's border), regardless of where it "
-"falls on the roof. The function computes this extrusion aka \"roof\" on a "
-"polygon. If the argument body_height > 0, so the polygon is extruded like "
-"with ST_Extrude(polygon, 0, 0, body_height). The result is an union of these "
-"polyhedralsurfaces."
-msgstr ""
-"Il s'agit peut-être du premier cas d'utilisation (historique) des squelettes "
-"droits : étant donné un toit polygonal, le squelette droit donne directement "
-"la disposition de chaque tente. Si chaque arête du squelette est soulevée du "
-"plan d'une hauteur égale à sa distance de décalage, le toit résultant est "
-"\"correct\" en ce sens que l'eau tombera toujours vers les bords du contour "
-"(la bordure du toit), quel que soit l'endroit où elle tombe sur le toit. La "
-"fonction calcule cette extrusion ou \"toit\" sur un polygone. Si l'argument "
-"hauteur_du_corps > 0, le polygone est extrudé comme avec ST_Extrude(polygon, "
-"0, 0, hauteur_du_corps). Le résultat est une union de ces polyhedralsurfaces."
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"ST_StraightSkeleton\"/>"
-msgstr ", <xref linkend=\"ST_StraightSkeleton\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -51261,6 +51280,11 @@ msgstr "Nécessite GEOS (3.9,3.10,3.11,3.12) ou une version plus récente"
 
 #. Tag: para
 #, no-c-format
+msgid "Requires SFCGAL 1.5 or higher"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "2.5/3D support"
 msgstr "Support 2.5/3D"
 
@@ -51268,6 +51292,30 @@ msgstr "Support 2.5/3D"
 #, no-c-format
 msgid "Supports geography"
 msgstr "Prise en charge du type geography"
+
+#, no-c-format
+#~ msgid ""
+#~ "&reference_type; &reference_management; &reference_constructor; "
+#~ "&reference_accessor; &reference_editor; &reference_validation; "
+#~ "&reference_srs; &reference_input; &reference_output; &reference_operator; "
+#~ "&reference_relationship; &reference_measure; &reference_overlay; "
+#~ "&reference_processing; &reference_coverage; &reference_transformation; "
+#~ "&reference_cluster; &reference_bbox; &reference_lrs; "
+#~ "&reference_trajectory; &reference_sfcgal; &reference_transaction; "
+#~ "&reference_version; &reference_guc; &reference_troubleshooting;"
+#~ msgstr ""
+#~ "&reference_type; &reference_management; &reference_constructor; "
+#~ "&reference_accessor; &reference_editor; &reference_validation; "
+#~ "&reference_srs; &reference_input; &reference_output; &reference_operator; "
+#~ "&reference_relationship; &reference_measure; &reference_overlay; "
+#~ "&reference_processing; &reference_coverage; &reference_transformation; "
+#~ "&reference_cluster; &reference_bbox; &reference_lrs; "
+#~ "&reference_trajectory; &reference_sfcgal; &reference_transaction; "
+#~ "&reference_version; &reference_guc; &reference_troubleshooting;"
+
+#, no-c-format
+#~ msgid "SFCGAL Functions"
+#~ msgstr "Fonctions SFCGAL"
 
 #, no-c-format
 #~ msgid "This will only have data is you marked zcta5 to be loaded"
