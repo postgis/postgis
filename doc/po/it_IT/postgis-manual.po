@@ -33802,6 +33802,13 @@ msgstr ""
 msgid "SFCGAL Management Functions"
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"This section lists functions for determining version of SFCGAL and library "
+"dependencies you are running."
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid "<refpurpose>Returns the version of SFCGAL in use</refpurpose>"
