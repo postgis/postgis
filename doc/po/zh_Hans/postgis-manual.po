@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-12-13 03:42+0000\n"
-"PO-Revision-Date: 2023-12-13 06:19+0000\n"
+"PO-Revision-Date: 2023-12-14 08:23+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
@@ -36754,7 +36754,8 @@ msgstr "SFCGAL管理函数"
 msgid ""
 "This section lists functions for determining version of SFCGAL and library "
 "dependencies you are running."
-msgstr ""
+msgstr "这部分列出了几个函数,用于确定您当前环境中 SFCGAL "
+"的版本信息以及相关库文件的依赖关系。"
 
 #. Tag: refpurpose
 #, no-c-format
