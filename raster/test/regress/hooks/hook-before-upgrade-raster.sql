@@ -38,6 +38,19 @@ SELECT
 	ST_Value(r, ST_MakePoint(0, 0))
 FROM upgrade_test_raster;
 
+--- See https://trac.osgeo.org/postgis/ticket/5488
+CREATE VIEW upgrade_test_raster_view_st_clip AS
+SELECT
+       -- signature dropped in PostGIS-2.1.0
+       --st_clip(NULL::raster, NULL::int, NULL::geometry, NULL::float8[], NULL::boolean),
+       -- sig1 new in PostGIS-2.1.0
+       --st_clip(NULL::raster, NULL::int[], NULL::geometry, NULL::float8[], NULL::boolean),
+       st_clip(NULL::raster, NULL::int, NULL::geometry, NULL::float8, NULL::boolean) sig2,
+       st_clip(NULL::raster, NULL::int, NULL::geometry, NULL::boolean) sig3,
+       st_clip(NULL::raster, NULL::geometry, NULL::float8[], NULL::boolean) sig4,
+       st_clip(NULL::raster, NULL::geometry, NULL::float8, NULL::boolean) sig5,
+       st_clip(NULL::raster, NULL::geometry, NULL::boolean) sig6;
+
 -- See https://trac.osgeo.org/postgis/ticket/5489
 CREATE VIEW upgrade_test_raster_view_st_intersects AS
 SELECT

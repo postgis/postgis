@@ -13,17 +13,5 @@ DROP TABLE IF EXISTS upgrade_test;
 -- Drop any upgrade test data
 DROP SCHEMA IF EXISTS postgis_upgrade_test_data CASCADE;
 
--- Drop functions deprecated on upgrade
-DO LANGUAGE 'plpgsql' $DROPALL$
-DECLARE
-	rec pg_catalog.pg_proc;
-BEGIN
-	FOR rec IN
-		SELECT * FROM pg_catalog.pg_proc
-		WHERE proname ~ '_deprecated_by_postgis'
-	LOOP
-		RAISE NOTICE 'Dropping function %', rec.oid::regprocedure;
-		EXECUTE pg_catalog.format('DROP FUNCTION %s', rec.oid::regprocedure);
-	END LOOP;
-END;
-$DROPALL$;
+-- Drop deprecated functions
+\i :regdir/hooks/drop-deprecated-functions.sql
