@@ -106,6 +106,7 @@ XSLTPROC_COMMONOPTS= \
 	--param header.rule 0 \
 	--param footer.rule 0 \
 	--param table.borders.with.css 1 \
+	--stringparam docbook.css.source "" \
 	--stringparam html.ext .html \
 	--stringparam saxon.character.representation decimal \
 	$(XSLTPROCFLAGS)
@@ -392,8 +393,8 @@ postgis-out.xml: postgis.xml Makefile $(XML_INPUTS) Makefile
 	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g;s'@@POSTGIS_DOWNLOAD_URL@@'${POSTGIS_DOWNLOAD_URL}'g;" $< > $@.in
 	$(XMLLINT) $(XSLTPROC_PATH_OPT) --noent -o $@ $@.in
 
-chunked-html: $(html_builddir)/postgis$(DOCSUFFIX)/docbook.css
-$(html_builddir)/postgis$(DOCSUFFIX)/docbook.css: postgis-out.xml Makefile
+chunked-html: $(html_builddir)/postgis$(DOCSUFFIX)/index.html
+$(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		$(XSLTPROC_CHUNKED_HTML_OPTS) \
 		$(XSLTPROCFLAGS) \
@@ -484,7 +485,6 @@ images images-install images-uninstall images-clean:
 	$(MAKE) -C $(images_builddir) $@
 
 html-clean:
-	rm -f $(html_builddir)/docbook.css
 	rm -f $(html_builddir)/postgis$(DOCSUFFIX).html
 	rm -rf $(html_builddir)/postgis$(DOCSUFFIX)/
 
