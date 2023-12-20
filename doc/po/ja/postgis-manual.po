@@ -1,21 +1,22 @@
 # Japanese translations for postgis package.
 # Automatically generated, 2023.
 #
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-12-13 03:42+0000\n"
-"PO-Revision-Date: 2023-12-01 11:23+0000\n"
+"PO-Revision-Date: 2023-12-20 02:45+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.0\n"
+"X-Generator: Weblate 5.3\n"
 
 #. Tag: chapter
 #, no-c-format
@@ -11632,6 +11633,14 @@ msgid ""
 "&reference_transaction; &reference_version; &reference_guc; "
 "&reference_troubleshooting;"
 msgstr ""
+"&reference_type; &reference_management; &reference_constructor; "
+"&reference_accessor; &reference_editor; &reference_validation; "
+"&reference_srs; &reference_input; &reference_output; &reference_operator; "
+"&reference_relationship; &reference_measure; &reference_overlay; "
+"&reference_processing; &reference_coverage; &reference_transformation; "
+"&reference_cluster; &reference_bbox; &reference_lrs; &reference_trajectory; "
+"&reference_transaction; &reference_version; &reference_guc; "
+"&reference_troubleshooting;"
 
 #. Tag: title
 #, no-c-format
@@ -14372,6 +14381,8 @@ msgid ""
 "ST_ClusterWithin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN\"/"
 "> with <code>minpoints =&gt; 0</code>."
 msgstr ""
+"ST_ClusterWithin は、<xref linkend=\"ST_ClusterDBSCAN\"/> を <code>minpoints "
+"=&gt; 0</code> で実行するのと同じです。"
 
 #. Tag: para
 #, no-c-format
@@ -14411,6 +14422,8 @@ msgid ""
 "ST_ClusterWithinWin is equivalent to running <xref linkend=\"ST_ClusterDBSCAN"
 "\"/> with <code>minpoints =&gt; 0</code>."
 msgstr ""
+"ST_ClusterWithinWin は、<xref linkend=\"ST_ClusterDBSCAN\"/> を "
+"<code>minpoints =&gt; 0</code> で実行するのと同じです。"
 
 #. Tag: para
 #, no-c-format
@@ -27482,7 +27495,7 @@ msgstr ""
 msgid ""
 "Returns a simplified representation of a geometry, using the Douglas-Peucker "
 "algorithm."
-msgstr ""
+msgstr "Douglas-Peukerアルゴリズムを使用して、簡略化したジオメトリを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -27495,6 +27508,12 @@ msgid ""
 "tolerance distance of the simplified linework. The result may not be valid "
 "even if the input is."
 msgstr ""
+"単純化したジオメトリの表現を計算します。<link xlink:href=\"https://en."
+"wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm\">Douglas-"
+"Peucker algorithm</link> を使います。単純化の <varname>tolerance</varname> "
+"(許容値) は、距離の値で、単位は入力 SRS (空間参照系) の単位です。単純化によっ"
+"て、単純化された線の許容値距離内にある頂点は削除されます。入力が有効であって"
+"も結果が有効にならないことがあります。"
 
 #. Tag: para
 #, no-c-format
@@ -27503,6 +27522,9 @@ msgid ""
 "GeometryCollections), but only line and polygon elements are simplified. "
 "Endpoints of linear geometry are preserved."
 msgstr ""
+"この関数は、どの種類のジオメトリでも (GEOMETRYCOLLECTION であっても) 呼ぶこと"
+"ができますが、ライン要素とポリゴン要素だけが単純化されます。線ジオメトリの端"
+"点は保持されます。"
 
 #. Tag: para
 #, no-c-format
@@ -27552,6 +27574,9 @@ msgid ""
 "\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>, Topology <xref "
 "linkend=\"TP_ST_Simplify\"/>"
 msgstr ""
+", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
+"\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>, Topology <xref "
+"linkend=\"TP_ST_Simplify\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -27614,6 +27639,7 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>"
 msgstr ""
+", <xref linkend=\"ST_SimplifyVW\"/>, <xref linkend=\"ST_CoverageSimplify\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -27752,12 +27778,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Simplifying a line."
-msgstr ""
+msgstr "線の単純化。"
 
 #. Tag: para
 #, no-c-format
 msgid "Simplifying a polygon."
-msgstr ""
+msgstr "ポリゴンの単純化。"
 
 #. Tag: para
 #, no-c-format
@@ -27766,6 +27792,9 @@ msgid ""
 "\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_CoverageSimplify\"/>, "
 "Topology <xref linkend=\"TP_ST_Simplify\"/>"
 msgstr ""
+", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
+"\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_CoverageSimplify\"/>, "
+"Topology <xref linkend=\"TP_ST_Simplify\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -33126,18 +33155,26 @@ msgid ""
 "varname>. If <varname>touched</varname> is set to true, then all pixels in "
 "the <varname>rast</varname> that intersect the geometry are selected."
 msgstr ""
+"<varname>crop</varname> が指定されていない場合には、TRUE として扱われ、"
+"出力ラスタは <varname>geom</varname> と <varname>rast</varname> "
+"の範囲の共有領域で切り取ります。<varname>crop</varname> が FALSE "
+"に指定されている場合には、新しいラスタは <varname>rast</varname> "
+"と同じ範囲になります。<varname>touched</varname> が TRUE "
+"に指定されている場合には、ジオメトリとインタセクトする <varname>rast</"
+"varname> 内の全てのピクセルが選択されます。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "The default behavior is touched=false, which will only select pixels where "
 "the center of the pixel is covered by the geometry."
-msgstr ""
+msgstr "デフォルトの振る舞いは touched=false "
+"で、中心がジオメトリに含まれているピクセルを選択するだけです。"
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 3.5.0 - touched argument added."
-msgstr ""
+msgstr "Enhanced: 3.5.0 - 引数 touched を追加。"
 
 #. Tag: para
 #, no-c-format
@@ -33151,16 +33188,19 @@ msgid ""
 "xlink:href=\"https://www.mass.gov/info-details/massgis-data-20082009-aerial-"
 "imagery\">MassGIS Aerial Orthos</link>."
 msgstr ""
+"ここの例では、MassGIS サイト上の <link xlink:href=\"https://www.mass.gov/"
+"info-details/massgis-data-20082009-aerial-imagery\">MassGIS Aerial Orthos</"
+"link> にあるマサチューセッツ空中写真データを使っています。"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Comparing selecting all touched vs. not all touched"
-msgstr ""
+msgstr "例: 全ての touched と touchedでない との選択の比較"
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: 1 band clipping (not touched)"
-msgstr ""
+msgstr "例: 1バンドの切り取り (touched でない)"
 
 #. Tag: para
 #, no-c-format
@@ -33194,6 +33234,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_Count\"/>, <xref linkend=\"RT_ST_MapAlgebra\"/>, "
 "<xref linkend=\"RT_ST_Intersection\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_Count\"/>, <xref linkend=\"RT_ST_MapAlgebra\"/>, "
+"<xref linkend=\"RT_ST_Intersection\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -38762,7 +38804,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "SFCGAL Functions Reference"
-msgstr ""
+msgstr "SFCGAL 関数リファレンス"
 
 #. Tag: para
 #, no-c-format
@@ -38789,7 +38831,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "SFCGAL Management Functions"
-msgstr ""
+msgstr "SFCGAL 管理関数"
 
 #. Tag: para
 #, no-c-format
@@ -38844,14 +38886,15 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "SFCGAL Accessors and Setters"
-msgstr ""
+msgstr "SFCGAL アクセサとセッター"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "These functions access or set properties of geometries. Geometries primarily "
 "supported by these functions are TINS and Polyhedral Surfaces."
-msgstr ""
+msgstr "これらの関数はジオメトリのプロパティに対するアクセスと設定を行います。これら"
+"の関数が主に対応するジオメトリは、TIN と多面体サーフェスです。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -38963,7 +39006,7 @@ msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
 #. Tag: title
 #, no-c-format
 msgid "SFCGAL Processing and Relationship Functions"
-msgstr ""
+msgstr "SFCGAL 処理関数および関係関数"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39254,7 +39297,7 @@ msgstr "Availability: 3.5.0 - SFCGAL &gt;= 1.5.0が必要です。"
 #. Tag: para
 #, no-c-format
 msgid "Requires SFCGAL &gt;= 1.5.0"
-msgstr ""
+msgstr "SFCGAL &gt;= 1.5.0 が必要"
 
 #. Tag: para
 #, no-c-format
@@ -48572,7 +48615,7 @@ msgstr "GEOS (3.9,3.10,3.11,3.12) 以上"
 #. Tag: para
 #, no-c-format
 msgid "Requires SFCGAL 1.5 or higher"
-msgstr ""
+msgstr "SFCGAL 1.5以上が必要"
 
 #. Tag: para
 #, no-c-format
