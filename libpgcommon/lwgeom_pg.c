@@ -508,7 +508,7 @@ postgis_guc_find_option(const char *name)
 	 * the name field is first in config_generic.
 	 */
 #if POSTGIS_PGSQL_VERSION >= 160
-	res = (struct config_generic **) find_option((void *) &key, false, true, ERROR);
+	res = (struct config_generic **) find_option((void *) name, false, true, ERROR);
 #else
 	res = (struct config_generic **) bsearch((void *) &key,
 		 (void *) get_guc_variables(),

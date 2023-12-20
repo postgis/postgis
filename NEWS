@@ -13,6 +13,7 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
  - #5629, Handling EMPTY components in repeated point removal (Paul Ramsey)
  - #5604, Handle distance between collections with empty elements (Paul Ramsey)
  - #5635, Handle NaN points in ST_Split (Regina Obe)
+ - #5648, postgis_raster upgrade fails on PG16 (Ronan Dunklau)
 
 
 * Bug Fixes and Enhancments *
