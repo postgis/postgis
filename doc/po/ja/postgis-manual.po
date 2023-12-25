@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-12-13 03:42+0000\n"
-"PO-Revision-Date: 2023-12-20 02:45+0000\n"
+"PO-Revision-Date: 2023-12-25 03:45+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -9185,7 +9185,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This will only have data if you marked zcta5 to be loaded"
-msgstr ""
+msgstr "これはロードするzcta5に印を付けたデータだけが含まれます"
 
 #. Tag: para
 #, no-c-format
@@ -27535,6 +27535,11 @@ msgid ""
 "varname> is true the line will not disappear. This flag is useful for "
 "rendering purposes, to prevent very small features disappearing from a map."
 msgstr ""
+"<varname>preserveCollapsed</varname>フラグは、与えられた許容値では削除される"
+"小さいジオメトリを保持します。たとえば、10m許容値で1m長の線をたぬんかする場合"
+"に<varname>preserveCollapsed</varname>がTRUEの場合には、このラインが消えるこ"
+"とがありません。このフラグは、非常に小さい地物がマップから消えるのを防ぐため"
+"に、地図描画目的の際に使います。"
 
 #. Tag: para
 #, no-c-format
@@ -27544,6 +27549,11 @@ msgid ""
 "be invalid (see <xref linkend=\"ST_IsValid\"/>). Use <xref linkend="
 "\"ST_SimplifyPreserveTopology\"/> to preserve topology and ensure validity."
 msgstr ""
+"返されるジオメトリは単純性を喪失している場合があり (<xref linkend="
+"\"ST_IsSimple\"/>参照)、トポロジが保持されていないばあ外アリ、"
+"ポリゴンの結果が不正になる可能性があります (<xref linkend=\"ST_IsValid\""
+"/>参照)。トポロジを保全し、妥当性を確保するには、<xref linkend="
+"\"ST_SimplifyPreserveTopology\"/>を使います。"
 
 #. Tag: para
 #, no-c-format
@@ -27551,6 +27561,8 @@ msgid ""
 "This function does not preserve boundaries shared between polygons. Use "
 "<xref linkend=\"ST_CoverageSimplify\"/> if this is required."
 msgstr ""
+"この関数は、ポリゴン間で共有される境界は保持されません。保持するには<xref "
+"linkend=\"ST_CoverageSimplify\"/>を使います。"
 
 #. Tag: para
 #, no-c-format
@@ -27560,12 +27572,12 @@ msgstr "簡略化をやりすぎて三角形になった円、八角形になっ
 #. Tag: para
 #, no-c-format
 msgid "Simplifying a set of lines. Lines may intersect after simplification."
-msgstr ""
+msgstr "ラインの集合の簡略化。ラインは簡略化後のインタセクトする場合があります。"
 
 #. Tag: para
 #, no-c-format
 msgid "Simplifying a MultiPolygon. Polygonal results may be invalid."
-msgstr ""
+msgstr "MULTIPOLYGONの簡略化。ポリゴンの結果は不正になることがあります。"
 
 #. Tag: para
 #, no-c-format
@@ -27583,7 +27595,7 @@ msgstr ""
 msgid ""
 "Returns a simplified and valid representation of a geometry, using the "
 "Douglas-Peucker algorithm."
-msgstr ""
+msgstr "Douglas-Peuckerアルゴリズムを使用して、単純化した妥当なジオメトリを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -27597,6 +27609,13 @@ msgid ""
 "tolerance distance of the simplified linework, as long as topology is "
 "preserved. The result will be valid and simple if the input is."
 msgstr ""
+"<link xlink:href=\"https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%"
+"93Peucker_algorithm\">Douglas-Peucker algorithm</link>の一種を用いて単純化し"
+"たジオメトリを計算します。結果のトポロジが入力と同じになるように単純化を制限"
+"します。簡略化の<varname>tolerance</varname> (許容値)は距離値で、単位は入力SR"
+"Sの単位です。簡略化によって、トポロジが保持される限り、簡略化された線の許容距"
+"離値内の頂点が削除されます。入力が妥当かつ単純な場合には、結果は妥当かつ単純"
+"です。"
 
 #. Tag: para
 #, no-c-format
@@ -27609,6 +27628,10 @@ msgid ""
 "not intersect if they did not do so in the original geometry. Endpoints of "
 "linear geometry are preserved."
 msgstr ""
+"この関数は、どの種類のジオメトリ (GEOMETRYCOLLECTIONも含む)を引数にとっても呼"
+"ぶことができますが、ラインとポリゴン要素だけを単純化します。結果はリングの数"
+"は同じで、入力が相互にインタセクトしていないなら結果も相互にインタセクトしま"
+"せん。線ジオメトリの端点は保持されます。"
 
 #. Tag: para
 #, no-c-format
@@ -27622,17 +27645,19 @@ msgid ""
 "ST_SimplifyPreserveTopology prevents oversimplification. The circle can at "
 "most become a square."
 msgstr ""
+"<xref linkend=\"ST_Simplify\"/>と同じ例で、ST_SimplifyPreserveTopologyでは過"
+"単純化を防止します。円は少なくとも四角形にはします。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Simplifying a set of lines, preserving topology of non-intersecting lines."
-msgstr ""
+msgstr "非交差ラインのトポロジを保全した、ラインの集合の単純化を行います。"
 
 #. Tag: para
 #, no-c-format
 msgid "Simplifying a MultiPolygon, preserving topology of shells and holes."
-msgstr ""
+msgstr "外側リングと内側リングのトポロジを保全したMULTIPOLYGONを単純化します。"
 
 #. Tag: para
 #, no-c-format
@@ -27741,7 +27766,8 @@ msgstr ""
 msgid ""
 "Returns a simplified representation of a geometry, using the Visvalingam-"
 "Whyatt algorithm"
-msgstr ""
+msgstr "Visvalingam-Whyattアルゴリズムを使用して、入力ジオメトリを簡略化したジオメト"
+"リを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -27753,6 +27779,12 @@ msgid ""
 "SRS. Simplification removes vertices which form \"corners\" with area less "
 "than the tolerance. The result may not be valid even if the input is."
 msgstr ""
+"<link xlink:href=\"https://en.wikipedia.org/wiki/Visvalingam%E2%80%"
+"93Whyatt_algorithm\">Visvalingam-Whyattアルゴリズム</link>を使用して、入力ジ"
+"オメトリを簡略化したジオメトリを返します。<varname>tolerance</varname>は面積"
+"値で、単位は入力SRSの単位です。単純化によって、許容値より小さい面積の「角」と"
+"なる頂点が削除されます。入力が妥当な場合にでも、結果が不正になる場合がありま"
+"す。"
 
 #. Tag: para
 #, no-c-format
@@ -27763,6 +27795,12 @@ msgid ""
 "\"ST_SimplifyPreserveTopology\"/> to preserve topology and ensure validity. "
 "<xref linkend=\"ST_CoverageSimplify\"/> also preserves topology and validity."
 msgstr ""
+"返されるジオメトリは単純性を喪失している場合があり (<xref linkend="
+"\"ST_IsSimple\"/>を参照)、トポロジが保持されていない可能性があり、"
+"ポリゴンの結果が不正になる場合があります (<xref linkend=\"ST_IsValid\""
+"/>参照)。トポロジを保全し、妥当性を確保するには、<xref linkend="
+"\"ST_SimplifyPreserveTopology\"/>を使います。<xref linkend="
+"\"ST_CoverageSimplify\"/>でもトポロジ保全と妥当性確保ができます。"
 
 #. Tag: para
 #, no-c-format
@@ -27773,7 +27811,7 @@ msgstr "この関数は3次元を扱います。第3次元は結果に影響を�
 #. Tag: para
 #, no-c-format
 msgid "A LineString is simplified with a minimum-area tolerance of 30."
-msgstr ""
+msgstr "LINESTRINGは30の最小面積の許容値を30にして簡略化しています。"
 
 #. Tag: para
 #, no-c-format
@@ -38838,7 +38876,8 @@ msgstr "SFCGAL 管理関数"
 msgid ""
 "This section lists functions for determining version of SFCGAL and library "
 "dependencies you are running."
-msgstr ""
+msgstr "このセクションでは、SFCGALのバージョンとライブラリの依存関係を確認するための"
+"関数の一覧を示します。"
 
 #. Tag: refpurpose
 #, no-c-format
