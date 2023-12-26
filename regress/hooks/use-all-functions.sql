@@ -13,8 +13,8 @@ BEGIN
 							oid::regprocedure::text,
 							'double precision', 'float8'
 						),
-						'\(([^)])',
-						'(NULL::\1'
+						E'\\(([^)])',
+						E'(NULL::\\1'
 					),
 					',',
 					',NULL::',
