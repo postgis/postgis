@@ -29,7 +29,7 @@ DO $$
 DECLARE
 	pgver text;
 BEGIN
-	SELECT pg_catalog.substring(pg_catalog.version(), 'PostgreSQL ([0-9\.]+)') INTO pgver;
+	SELECT pg_catalog.substring(pg_catalog.version(), E'PostgreSQL ([0-9\\.]+)') INTO pgver;
 
 	IF POSTGIS_PGSQL_VERSION::text != ( SELECT CASE
 		WHEN pg_catalog.split_part(s,'.',1)::integer > 9
@@ -37,7 +37,7 @@ BEGIN
 		ELSE
 			pg_catalog.split_part(s,'.', 1) || pg_catalog.split_part(s,'.', 2)
 		END
-		FROM pg_catalog.substring(pg_catalog.version(), 'PostgreSQL ([0-9\.]+)') AS s )
+		FROM pg_catalog.substring(pg_catalog.version(), E'PostgreSQL ([0-9\\.]+)') AS s )
 	THEN
 		RAISE EXCEPTION 'PostGIS built for PostgreSQL % cannot be loaded in PostgreSQL %',
 			POSTGIS_PGSQL_HR_VERSION, pgver;
@@ -2961,7 +2961,7 @@ CREATE OR REPLACE FUNCTION _postgis_pgsql_version() RETURNS text
 AS $$
 	SELECT CASE WHEN pg_catalog.split_part(s,'.',1)::integer > 9 THEN pg_catalog.split_part(s,'.',1) || '0'
 	ELSE pg_catalog.split_part(s,'.', 1) || pg_catalog.split_part(s,'.', 2) END AS v
-	FROM pg_catalog.substring(version(), 'PostgreSQL ([0-9\.]+)') AS s;
+	FROM pg_catalog.substring(version(), E'PostgreSQL ([0-9\\.]+)') AS s;
 $$ LANGUAGE 'sql' STABLE;
 
 -- Availability: 2.5.0

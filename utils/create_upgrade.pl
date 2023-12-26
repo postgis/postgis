@@ -637,7 +637,7 @@ BEGIN
 
         new_name := pg_catalog.regexp_replace(
             rec.proc::text,
-            '_deprecated_by_postgis[^(]*\\(.*',
+            E'_deprecated_by_postgis[^(]*\\\\(.*',
             ''
         );
 

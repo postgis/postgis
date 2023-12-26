@@ -330,11 +330,11 @@ SELECT DISTINCT 'unexpected probin', proname || ':' || probin
 FROM pg_proc
 WHERE probin like '%postgis%'
   AND
-regexp_replace(probin, '(rt)?postgis(_[^-]*)?(-[0-9.]*)$', '\3')
+regexp_replace(probin, '(rt)?postgis(_[^-]*)?(-[0-9.]*)$', E'\\3')
 	!=
 (
 	SELECT
-regexp_replace(probin, '(rt)?postgis(_[^-]*)?(-[0-9.]*)$', '\3')
+regexp_replace(probin, '(rt)?postgis(_[^-]*)?(-[0-9.]*)$', E'\\3')
 	FROM pg_proc WHERE proname = 'postgis_lib_version'
 )
 ORDER BY 2;
@@ -347,7 +347,7 @@ WHERE (
 	probin like '%postgis%'
   OR (
 		probin is null and
-		oid::regprocedure::text like 'st\_%' or
+		oid::regprocedure::text like E'st\\_%' or
 		oid::regprocedure::text like 'postgis_%'
 	)
 )
@@ -358,7 +358,6 @@ AND proowner !=
 	FROM pg_proc WHERE proname = 'postgis_lib_version'
 )
 ORDER BY 2;
-
 
 SELECT 'UNEXPECTED', postgis_full_version()
 	WHERE postgis_full_version() LIKE '%UNPACKAGED%'
