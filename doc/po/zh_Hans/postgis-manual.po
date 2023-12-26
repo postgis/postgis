@@ -1,12 +1,13 @@
 # Chinese translations for postgis package.
 # Automatically generated, 2023.
 #
+# Zuochenwei <zuochenwei5@gmail.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-12-13 03:42+0000\n"
-"PO-Revision-Date: 2023-12-14 08:23+0000\n"
+"PO-Revision-Date: 2023-12-26 03:45+0000\n"
 "Last-Translator: Zuochenwei <zuochenwei5@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/postgis-manual/zh_Hans/>\n"
@@ -15,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.0\n"
+"X-Generator: Weblate 5.3\n"
 
 #. Tag: chapter
 #, no-c-format
@@ -36424,9 +36425,10 @@ msgid ""
 "equivalently, no points of A lie in the exterior of B), and the interiors of "
 "A and B have at least one point in common."
 msgstr ""
-"如果几何图形 A 位于几何图形 B 内，则返回 TRUE。当且仅当 A 的所有点都位于 B 内"
-"部（即位于 B 的内部或边界）时，A 位于 B 内（或者等效地，A 的任何点均位于 B 的"
-"外部）， A 和 B 的内部结构至少有一个共同点。"
+"如果几何对象 A 完全包含在几何对象 B 内部（即 A 的所有点都在 B "
+"的内部或边界上），并且 A 和 B 的内部至少有一个公共点，则返回 TRUE。等价地，A "
+"在 B 中，当且仅当 A 的所有点都位于 B 的内部（包括边界），且 A 和 B "
+"的内部至少有一个点重叠。"
 
 #. Tag: para
 #, no-c-format
