@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Remove the obsolete bounding-box KNN operator from the manual (Regina Obe)
  - Correct street type and unit terminology in the Address Standardizer manual (Mike Taves)
  - Regenerate topology SQL when layer or topology creation changes (Sandro Santilli)
  - Allow 300 milliseconds for the buffer interruption test (Regina Obe)
