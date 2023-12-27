@@ -2211,8 +2211,7 @@ SELECT b.tlid, b.mtfcc,
 			<refname>&lt;&lt;-&gt;&gt;</refname>
 
 			<refpurpose>
-Returns the n-D distance between the centroids of A and B bounding
-boxes.
+Returns the n-D distance between the A and B geometries or bounding boxes
 			</refpurpose>
 		  </refnamediv>
 
@@ -2266,64 +2265,7 @@ of a.geom
 		  <refsection>
 			<title>See Also</title>
 			<para>
-<xref linkend="geometry_distance_box_nd"/>,
 <xref linkend="geometry_distance_knn"/>
-      </para>
-		  </refsection>
-		</refentry>
-
-		<refentry xml:id="geometry_distance_box_nd">
-		  <refnamediv>
-			<refname>&lt;&lt;#&gt;&gt;</refname>
-
-			<refpurpose>
-Returns the n-D distance between A and B bounding boxes.
-			</refpurpose>
-		  </refnamediv>
-
-		  <refsynopsisdiv>
-			<funcsynopsis>
-			  <funcprototype>
-				<funcdef>double precision <function>&lt;&lt;#&gt;&gt;</function></funcdef>
-
-				<paramdef>
-				  <type>geometry </type>
-
-				  <parameter>A</parameter>
-				</paramdef>
-
-				<paramdef>
-				  <type>geometry </type>
-
-				  <parameter>B</parameter>
-				</paramdef>
-			  </funcprototype>
-			</funcsynopsis>
-		  </refsynopsisdiv>
-
-		  <refsection>
-			<title>Description</title>
-
-			<para>The <varname>&lt;&lt;#&gt;&gt;</varname> operator returns distance between two floating point bounding boxes, possibly reading them from a spatial index (PostgreSQL 9.1+ required).   Useful for doing nearest neighbor <emphasis role="strong">approximate</emphasis> distance ordering.</para>
-
-			<note><para>This operand will make use of any indexes that may be available on the
-			  geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator
-			  is in the ORDER BY clause.</para></note>
-			<note><para>
-Index only kicks in if one of the geometries is a constant e.g. ORDER BY
-(ST_GeomFromText('POINT(1 2)') &lt;&lt;#&gt;&gt; geom)  instead of g1.geom
-&lt;&lt;#&gt;&gt;.
-      </para></note>
-
-			 <para role="availability" conformance="2.2.0">Availability: 2.2.0 -- KNN only available for PostgreSQL 9.1+</para>
-
-		  </refsection>
-
-		  <refsection>
-			<title>See Also</title>
-			<para>
-<xref linkend="geometry_distance_centroid_nd"/>,
-<xref linkend="geometry_distance_box"/>
       </para>
 		  </refsection>
 		</refentry>

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-12-13 03:42+0000\n"
+"POT-Creation-Date: 2023-12-27 04:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -18396,7 +18396,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Returns the n-D distance between the centroids of A and B bounding boxes."
+"Returns the n-D distance between the A and B geometries or bounding boxes"
 msgstr ""
 
 #. Tag: para
@@ -18420,38 +18420,6 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.2.0 -- KNN only available for PostgreSQL 9.1+"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"geometry_distance_knn\"/>"
-msgstr ""
-
-#. Tag: refpurpose
-#, no-c-format
-msgid "Returns the n-D distance between A and B bounding boxes."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The <varname>&lt;&lt;#&gt;&gt;</varname> operator returns distance between "
-"two floating point bounding boxes, possibly reading them from a spatial "
-"index (PostgreSQL 9.1+ required). Useful for doing nearest neighbor "
-"<emphasis role=\"strong\">approximate</emphasis> distance ordering."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Index only kicks in if one of the geometries is a constant e.g. ORDER BY "
-"(ST_GeomFromText('POINT(1 2)') &lt;&lt;#&gt;&gt; geom) instead of g1.geom "
-"&lt;&lt;#&gt;&gt;."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ", <xref linkend=\"geometry_distance_box\"/>"
 msgstr ""
 
 #. Tag: title
