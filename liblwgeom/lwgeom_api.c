@@ -30,7 +30,6 @@
 
 #include <stdio.h>
 #include <assert.h>
-#include "../postgis_revision.h"
 
 #define xstr(s) str(s)
 #define str(s) #s
