@@ -1,5 +1,42 @@
 variables:
   test-image: &test-image docker.osgeo.org/postgis/build-test:trisquel3
+  steps-env: &steps-env
+    - export PATH=/usr/lib/postgresql/$${PGVER}/bin:$${PATH}
+    - export PGPORT=$$(grep ^port /etc/postgresql/$${PGVER}/main/postgresql.conf | awk '{print $$3}')
+    - export RUNTESTFLAGS="-v
+      --after-create-db-script $${CI_WORKSPACE}/regress/hooks/standard-conforming-strings-off.sql"
+    - export SRCDIR=$${CI_WORKSPACE}
+    - export BUILDDIR=$${SRCDIR}/build/pg$${PGVER}
+    - export CURRENTVERSION=$$(grep '^POSTGIS_' $${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.')
+    - pg_config --version
+  steps-start-postgresql: &steps-start-postgresql
+    - service postgresql start $${PGVER}
+    - psql -c 'select version()' template1
+  steps-pg-build: &steps-pg-build
+    - mkdir -p "$${BUILDDIR}"
+    - cd "$${BUILDDIR}"
+    - $${SRCDIR}/configure
+      --with-library-minor-version
+      --enable-lto
+      --enable-lto
+      CFLAGS="-O2 -Wall -fno-omit-frame-pointer -Werror"
+    - make -j
+  steps-pg-test-preinstall: &steps-pg-test-preinstall
+    - cd build/pg$${PGVER}
+    - make check
+  steps-pg-install: &steps-pg-install
+    - make -C build/pg$${PGVER} install
+  steps-pg-test-install: &steps-pg-test-install
+    - service postgresql start $${PGVER}
+    - make -C build/pg$${PGVER} installcheck
+  steps-pg-test-all-upgrades: &steps-pg-test-all-upgrades
+    - cd build/pg$${PGVER}
+    - mkfifo check.fifo
+    - tee check.log < check.fifo &
+    - $${SRCDIR}/utils/check_all_upgrades.sh -s $${CURRENTVERSION}! > check.fifo
+    - wait # for tee process to flush its buffers
+    - echo "-- Summary of upgrade tests --"
+    - egrep '(PASS|FAIL|SKIP|INFO|ERROR)' check.log
 
 clone:
   clone:
@@ -14,26 +51,64 @@ steps:
     commands:
       - ./autogen.sh
 
-  regress-pg11:
+  build-pg11:
     image: *test-image
     group: build
+    environment:
+      - PGVER=11
     commands:
-      - PGVER=11 sh ci/dronie/postgis_regress.sh
+      - <<: *steps-env
+      - <<: *steps-pg-build
 
-  regress-pg12:
+  build-pg15:
     image: *test-image
     group: build
+    environment:
+      - PGVER=15
     commands:
-      - PGVER=12 sh ci/dronie/postgis_regress.sh
+      - <<: *steps-env
+      - <<: *steps-pg-build
 
-  regress-pg14:
+  installcheck-pg11:
     image: *test-image
-    group: build
+    group: installcheck
+    environment:
+      - PGVER=11
     commands:
-      - PGVER=15 sh ci/dronie/postgis_regress.sh
+      - <<: *steps-env
+      - <<: *steps-start-postgresql
+      - <<: *steps-pg-install
+      - <<: *steps-pg-test-install
 
-  regress-pg15:
+  installcheck-pg15:
     image: *test-image
-    group: build
+    group: installcheck
+    environment:
+      - PGVER=15
     commands:
-      - PGVER=15 sh ci/dronie/postgis_regress.sh
+      - <<: *steps-env
+      - <<: *steps-start-postgresql
+      - <<: *steps-pg-install
+      - <<: *steps-pg-test-install
+
+  upgradecheck-pg11:
+    image: *test-image
+    group: upgradecheck
+    environment:
+      - PGVER=11
+    commands:
+      - <<: *steps-env
+      - <<: *steps-start-postgresql
+      - <<: *steps-pg-install
+      - <<: *steps-pg-test-all-upgrades
+
+  upgradecheck-pg15:
+    image: *test-image
+    group: upgradecheck
+    environment:
+      - PGVER=15
+    commands:
+      - <<: *steps-env
+      - <<: *steps-start-postgresql
+      - <<: *steps-pg-install
+      - <<: *steps-pg-test-all-upgrades
