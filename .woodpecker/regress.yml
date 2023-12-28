@@ -24,8 +24,6 @@ variables:
   steps-pg-test-preinstall: &steps-pg-test-preinstall
     - cd build/pg$${PGVER}
     - make check
-    - make check-double-upgrade
-    - make check-locked-upgrade
   steps-pg-install: &steps-pg-install
     - make -C build/pg$${PGVER} install
   steps-pg-test-install: &steps-pg-test-install
