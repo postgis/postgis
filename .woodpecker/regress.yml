@@ -4,7 +4,8 @@ variables:
     - export PATH=/usr/lib/postgresql/$${PGVER}/bin:$${PATH}
     - export PGPORT=$$(grep ^port /etc/postgresql/$${PGVER}/main/postgresql.conf | awk '{print $$3}')
     - export POSTGIS_REGRESS_DB_OWNER=postgis_reg_unprivileged_user
-    - export RUNTESTFLAGS="-v --after-create-db-script $${CI_WORKSPACE}/regress/hooks/configure-pgextwlist.sql"
+    - export RUNTESTFLAGS="-v"
+    #- export RUNTESTFLAGS="-v --after-create-db-script $${CI_WORKSPACE}/regress/hooks/configure-pgextwlist.sql"
     - export SRCDIR=$${CI_WORKSPACE}
     - export BUILDDIR=$${SRCDIR}/build/pg$${PGVER}
     - export CURRENTVERSION=$$(grep '^POSTGIS_' $${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.')
