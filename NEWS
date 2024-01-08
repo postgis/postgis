@@ -3,6 +3,7 @@ PostGIS 3.6.5dev
 
 * Fixes *
 
+- Avoid an implicit dependency on Abseil in FlatGeobuf (Paul Ramsey)
 - #5041, Generate valid SQL for the TIGER 2020 tract loader (Regina Obe)
 - [tiger_geocoder] Treat address fragments literally during normalization
   (Darafei Praliaskouski)
