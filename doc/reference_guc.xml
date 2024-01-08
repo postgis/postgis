@@ -261,7 +261,7 @@ SELECT pg_reload_conf();
 
   <refentry xml:id="postgis_gdal_vsi_options">
             <refnamediv>
-                <refname>postgis.gdal_config_options</refname>
+                <refname>postgis.gdal_vsi_options</refname>
                 <refpurpose>
                     A string configuration to set options used when working with an out-db raster.
                 </refpurpose>
@@ -282,12 +282,12 @@ SELECT pg_reload_conf();
                 <para>Set <varname>postgis.gdal_vsi_options</varname> for current session:</para>
 
                 <programlisting>
-SET postgis.gdal_config_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';
+SET postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';
                 </programlisting>
 
                 <para>Set <varname>postgis.gdal_vsi_options</varname> just for the <emphasis>current transaction</emphasis> using the <varname>LOCAL</varname> keyword:</para>
                 <programlisting>
-SET LOCAL postgis.gdal_config_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';
+SET LOCAL postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';
                 </programlisting>
             </refsection>
 
