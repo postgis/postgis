@@ -1526,3 +1526,4 @@ SELECT '#5604',
 FROM
 ST_GeomFromText('MULTIPOINT((-2 0), EMPTY)') AS a1,
 ST_GeomFromText('MULTIPOINT((1 0),(0 0))') AS a2;
+
