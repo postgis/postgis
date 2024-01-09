@@ -1526,3 +1526,23 @@ SELECT '#5604',
 FROM
 ST_GeomFromText('MULTIPOINT((-2 0), EMPTY)') AS a1,
 ST_GeomFromText('MULTIPOINT((1 0),(0 0))') AS a2;
+
+
+WITH g AS (
+SELECT
+ 'POINT EMPTY'::geometry AS emptypt,
+ 'MULTIPOINT(EMPTY,-392 574)'::geometry AS mixedemptypt,
+ 'POLYGON((-357 477,-392 574,-378 574,-357 477))'::geometry AS poly
+)
+SELECT '#5647' AS ticket,
+ 'intersects_empty '       || ST_Intersects(emptypt, poly),
+ 'within_empty '           || ST_Within(emptypt, poly),
+ 'contains_empty '         || ST_Contains(emptypt, poly),
+ 'coveredby_empty '        || ST_CoveredBy(emptypt, poly),
+ 'covers_empty '           || ST_Covers(poly, emptypt),
+ 'intersects_mixed_empty ' || ST_Intersects(mixedemptypt, poly),
+ 'within_mixed_empty '     || ST_Within(mixedemptypt, poly),
+ 'contains_mixed_empty '   || ST_Contains(mixedemptypt, poly),
+ 'coveredby_mixed_empty '  || ST_CoveredBy(mixedemptypt, poly),
+ 'covers_mixed_empty '     || ST_Covers(poly, mixedemptypt)
+FROM g, generate_series(1,2);
