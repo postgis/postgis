@@ -2629,23 +2629,10 @@ int lwpoly_covers_lwpoly(const LWPOLY *poly1, const LWPOLY *poly2)
 	/* check if all vertices of poly2 are inside poly1 */
 	for (i = 0; i < poly2->nrings; i++)
 	{
-
-		/* every other ring is a hole, check if point is inside the actual polygon */
-		if ( i % 2 == 0)
+		if (LW_FALSE == lwpoly_covers_pointarray(poly1, poly2->rings[i]))
 		{
-			if (LW_FALSE == lwpoly_covers_pointarray(poly1, poly2->rings[i]))
-			{
-				LWDEBUG(4,"returning false, geometry2 has point outside of geometry1");
-				return LW_FALSE;
-			}
-		}
-		else
-		{
-			if (LW_TRUE == lwpoly_covers_pointarray(poly1, poly2->rings[i]))
-			{
-				LWDEBUG(4,"returning false, geometry2 has point inside a hole of geometry1");
-				return LW_FALSE;
-			}
+			LWDEBUG(4,"returning false, geometry2 has point outside of geometry1");
+			return LW_FALSE;
 		}
 	}
 
