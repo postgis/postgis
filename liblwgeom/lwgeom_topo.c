@@ -5753,7 +5753,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
         continue;
       }
       nearby[nearbyindex++] = g;
-      ++nn;
+      nn = nn + 1;
     }
     LWDEBUGF(1, "Found %d isolated nodes closer than tolerance (%g)", nn, tol);
   }}

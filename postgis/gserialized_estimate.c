@@ -745,15 +745,15 @@ nd_box_ratio(const ND_BOX *b1, const ND_BOX *b2, int ndims)
 		double width2 = b2->max[d] - b2->min[d];
 		double imin, imax, iwidth;
 
-		vol1 *= width1;
-		vol2 *= width2;
+		vol1 = vol1 * width1;
+		vol2 = vol2 * width2;
 
 		imin = Max(b1->min[d], b2->min[d]);
 		imax = Min(b1->max[d], b2->max[d]);
 		iwidth = imax - imin;
 		iwidth = Max(0.0, iwidth);
 
-		ivol *= iwidth;
+		ivol = ivol * iwidth;
 	}
 
 	if ( vol2 == 0.0 )
@@ -1767,7 +1767,7 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 		}
 
 		/* Add feature volume (area) to our total */
-		total_sample_volume += tmp_volume;
+		total_sample_volume = total_sample_volume + tmp_volume;
 
 		/*
 		 * Move through all the overlaped histogram cells values and
