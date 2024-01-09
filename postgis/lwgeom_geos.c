@@ -1874,18 +1874,20 @@ Datum contains(PG_FUNCTION_ARGS)
 		else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE)
 		{
 			LWMPOINT* mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));
-			uint32_t i;
 			int found_completely_inside = LW_FALSE;
 
 			retval = LW_TRUE;
-			for (i = 0; i < mpoint->ngeoms; i++)
+			for (uint32_t i = 0; i < mpoint->ngeoms; i++)
 			{
+				int pip_result;
+				LWPOINT* pt = mpoint->geoms[i];
 				/* We need to find at least one point that's completely inside the
 				 * polygons (pip_result == 1).  As long as we have one point that's
 				 * completely inside, we can have as many as we want on the boundary
 				 * itself. (pip_result == 0)
 				 */
-				int pip_result = pip_short_circuit(cache, mpoint->geoms[i], gpoly);
+				if (lwpoint_is_empty(pt)) continue;
+				pip_result = pip_short_circuit(cache, pt, gpoly);
 				if (pip_result == 1)
 					found_completely_inside = LW_TRUE;
 
@@ -2084,8 +2086,9 @@ Datum covers(PG_FUNCTION_ARGS)
 			retval = LW_TRUE;
 			for (i = 0; i < mpoint->ngeoms; i++)
 			{
-				int pip_result = pip_short_circuit(cache, mpoint->geoms[i], gpoly);
-				if (pip_result == -1)
+				LWPOINT *pt = mpoint->geoms[i];
+				if (lwpoint_is_empty(pt)) continue;
+				if (pip_short_circuit(cache, pt, gpoly) == -1)
 				{
 					retval = LW_FALSE;
 					break;
@@ -2216,8 +2219,9 @@ Datum coveredby(PG_FUNCTION_ARGS)
 			retval = LW_TRUE;
 			for (i = 0; i < mpoint->ngeoms; i++)
 			{
-				int pip_result = pip_short_circuit(cache, mpoint->geoms[i], gpoly);
-				if (pip_result == -1)
+				LWPOINT *pt = mpoint->geoms[i];
+				if (lwpoint_is_empty(pt)) continue;
+				if (pip_short_circuit(cache, pt, gpoly) == -1)
 				{
 					retval = LW_FALSE;
 					break;
@@ -2374,13 +2378,12 @@ Datum ST_Intersects(PG_FUNCTION_ARGS)
 		else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE)
 		{
 			LWMPOINT* mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));
-			uint32_t i;
-
 			retval = LW_FALSE;
-			for (i = 0; i < mpoint->ngeoms; i++)
+			for (uint32_t i = 0; i < mpoint->ngeoms; i++)
 			{
-				int pip_result = pip_short_circuit(cache, mpoint->geoms[i], gpoly);
-				if (pip_result != -1) /* not outside */
+				LWPOINT *pt = mpoint->geoms[i];
+				if (lwpoint_is_empty(pt)) continue;
+				if (pip_short_circuit(cache, pt, gpoly) != -1) /* not outside */
 				{
 					retval = LW_TRUE;
 					break;
