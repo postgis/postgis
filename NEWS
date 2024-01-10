@@ -8,6 +8,7 @@ xxxx/xx/xx
  - #5627, Handling of EMPTY components in PiP check (Paul Ramsey)
  - #5604, Handle distance between collections with empty elements (Paul Ramsey)
  - #5635, Handle NaN points in ST_Split (Regina Obe)
+ - #5646, Crash on collections with empty members (Paul Ramsey)
 
 
 PostGIS 3.0.10
