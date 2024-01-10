@@ -14,6 +14,7 @@ Proj 6.1+, and PostgreSQL 14+.
  - #5604, Handle distance between collections with empty elements (Paul Ramsey)
  - #5635, Handle NaN points in ST_Split (Regina Obe)
  - Logic error in ST_Covers(geography) (Paul Ramsey)
+ - #5646, Crash on collections with empty members (Paul Ramsey)
 
 
 PostGIS 3.2.6
