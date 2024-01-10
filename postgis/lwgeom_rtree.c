@@ -602,6 +602,9 @@ point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int *ringCounts, L
 	/* is the point inside any of the sub-polygons? */
 	for ( p = 0; p < polyCount; p++ )
 	{
+		/* Skip empty polygons */
+		if( ringCounts[p] == 0 ) continue;
+
 		in_ring = point_in_ring_rtree(root[i], pt);
 		POSTGIS_DEBUGF(4, "point_in_multipolygon_rtree: exterior ring (%d), point_in_ring returned %d", p, in_ring);
 		if ( in_ring == -1 ) /* outside the exterior ring */
