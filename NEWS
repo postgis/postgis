@@ -16,6 +16,7 @@ Proj 6.1+, and PostgreSQL 15+.
  - #5635, Handle NaN points in ST_Split (Regina Obe)
  - #5648, postgis_raster upgrade fails on PG16 (Ronan Dunklau)
  - Logic error in ST_Covers(geography) (Paul Ramsey)
+ - #5646, Crash on collections with empty members (Paul Ramsey)
 
 
 PostGIS 3.3.5
