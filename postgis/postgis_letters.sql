@@ -146,4 +146,5 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
+SET standard_conforming_strings = ON
 IMMUTABLE _COST_MEDIUM PARALLEL SAFE;
