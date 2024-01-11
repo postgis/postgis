@@ -6838,7 +6838,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_srid(rastschema name, rasttab
 	SELECT
 		regexp_replace(
 			split_part(s.consrc, ' = ', 2),
-			'[\(\)]', '', 'g'
+			E'[\\(\\)]', '', 'g'
 		)::integer
 	FROM pg_class c, pg_namespace n, pg_attribute a
 		, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
@@ -6912,7 +6912,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_scale(rastschema name, rastta
 				),
 				'round(', ''
 			),
-			'[ ''''\(\)]', '', 'g'
+			E'[ ''''\\(\\)]', '', 'g'
 		)::text AS val
 	FROM pg_class c, pg_namespace n, pg_attribute a
 		, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
@@ -7001,7 +7001,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_blocksize(rastschema name, ra
 			ELSE
 				regexp_replace(
 					split_part(s.consrc, '= ', 2),
-					'[\(\)]', '', 'g'
+					E'[\\(\\)]', '', 'g'
 				)::integer
 			END
 	FROM pg_class c, pg_namespace n, pg_attribute a
@@ -7402,7 +7402,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_num_bands(rastschema name, ra
 	SELECT
 		regexp_replace(
 			split_part(s.consrc, ' = ', 2),
-			'[\(\)]', '', 'g'
+			E'[\\(\\)]', '', 'g'
 		)::integer
 	FROM pg_class c, pg_namespace n, pg_attribute a
 		, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
@@ -7471,7 +7471,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_pixel_types(rastschema name, 
 			both '''' from split_part(
 				regexp_replace(
 					split_part(s.consrc, ' = ', 2),
-					'[\(\)]', '', 'g'
+					E'[\\(\\)]', '', 'g'
 				),
 				'::', 1
 			)
@@ -7558,7 +7558,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_nodata_values(rastschema name
 			split_part(
 				regexp_replace(
 					split_part(s.consrc, ' = ', 2),
-					'[\(\)]', '', 'g'
+					E'[\\(\\)]', '', 'g'
 				),
 				'::', 1
 			)
@@ -7651,7 +7651,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_out_db(rastschema name, rastt
 			both '''' from split_part(
 				regexp_replace(
 					split_part(s.consrc, ' = ', 2),
-					'[\(\)]', '', 'g'
+					E'[\\(\\)]', '', 'g'
 				),
 				'::', 1
 			)

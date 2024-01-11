@@ -592,7 +592,7 @@ proj_version integer;
 err_str text;
 begin
 
-    select ((regexp_matches(postgis_proj_version(), '(\d+)\.\d+'))[1])::integer into proj_version;
+    select ((regexp_matches(postgis_proj_version(), E'(\\d+)\\.\\d+'))[1])::integer into proj_version;
     select ST_Transform('SRID=4326;POINT(180 95)'::geometry, 3395); -- fails
 
 exception
