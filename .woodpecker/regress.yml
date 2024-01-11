@@ -3,10 +3,9 @@ variables:
   steps-env: &steps-env
     - export PATH=/usr/lib/postgresql/$${PGVER}/bin:$${PATH}
     - export PGPORT=$$(grep ^port /etc/postgresql/$${PGVER}/main/postgresql.conf | awk '{print $$3}')
-    #- export POSTGIS_REGRESS_DB_OWNER=postgis_reg_unprivileged_user
-    #- export RUNTESTFLAGS="-v --after-create-db-script $${CI_WORKSPACE}/regress/hooks/configure-pgextwlist.sql"
-    - export RUNTESTFLAGS="-v"
     - export SRCDIR=$${CI_WORKSPACE}
+    - export RUNTESTFLAGS="-v
+      --after-create-db-script $${SRCDIR}/regress/hooks/standard-conforming-strings-off.sql"
     - export BUILDDIR=$${SRCDIR}/build/pg$${PGVER}
     - export CURRENTVERSION=$$(grep '^POSTGIS_' $${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.')
     - pg_config --version
@@ -38,10 +37,6 @@ variables:
     - wait # for tee process to flush its buffers
     - echo "-- Summary of upgrade tests --"
     - egrep '(PASS|FAIL|SKIP|INFO|ERROR)' check.log
-    - echo "-- Upgrade tests with standard_conforming_strings off --"
-    - RUNTESTFLAGS="$${RUNTESTFLAGS} --after-create-db-script $${SRCDIR}/regress/hooks/standard-conforming-strings-off.sql"
-      MAKE_ARGS='TESTS=$${SRCDIR}/regress/core/regress'
-      $${SRCDIR}/utils/check_all_upgrades.sh -s :auto!
 
 clone:
   clone:
