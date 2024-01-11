@@ -515,7 +515,7 @@ lw_dist3d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3D *dl)
 			g1 = (LWGEOM *)lwg1;
 
 		if (lwgeom_is_empty(g1))
-			return LW_TRUE;
+			continue;
 
 		if (lwgeom_is_collection(g1))
 		{
@@ -530,6 +530,9 @@ lw_dist3d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3D *dl)
 				g2 = c2->geoms[j];
 			else
 				g2 = (LWGEOM *)lwg2;
+
+			if (lwgeom_is_empty(g2))
+				continue;
 
 			if (lwgeom_is_collection(g2))
 			{
