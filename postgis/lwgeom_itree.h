@@ -18,19 +18,25 @@
  *
  **********************************************************************
  *
- * Copyright 2001-2011 Refractions Research Inc.
+ * Copyright 2024 Paul Ramsey <pramsey@cleverelephant.ca>
  *
  **********************************************************************/
 
+#pragma once
 
-#include "lwgeom_rtree.h"
+#include "liblwgeom.h"
+#include "lwgeom_cache.h"
+#include "intervaltree.h"
 
-/*
-** Public prototypes for analytic functions.
+/**
+* Checks for a cache hit against the provided geometry and returns
+* a pre-built index structure (RTREE_POLY_CACHE) if one exists. Otherwise
+* builds a new one and returns that.
 */
+IntervalTree * GetIntervalTree(FunctionCallInfo fcinfo, SHARED_GSERIALIZED *g1);
 
-int point_in_polygon(LWPOLY *polygon, LWPOINT *point);
-int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *pont);
-double determineSide(const POINT2D *seg1, const POINT2D *seg2, const POINT2D *point);
-int isOnSegment(const POINT2D *seg1, const POINT2D *seg2, const POINT2D *point);
+bool itree_pip_intersects(const IntervalTree *itree, const LWGEOM *lwpoints);
+bool itree_pip_contains(const IntervalTree *itree, const LWGEOM *lwpoints);
+bool itree_pip_covers(const IntervalTree *itree, const LWGEOM *lwpoints);
+
 

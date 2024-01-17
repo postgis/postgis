@@ -18,6 +18,7 @@
 #include "liblwgeom_internal.h"
 #include "lwgeodetic.h"
 #include "lwgeodetic_tree.h"
+#include "intervaltree.h"
 #include "cu_tester.h"
 
 
@@ -419,6 +420,191 @@ static void test_tree_circ_distance_threshold(void)
 
 }
 
+/***** Tests for IntervalTree *****/
+
+static void test_itree_once(
+	const char *polyWkt, double x, double y,
+	IntervalTreeResult iexp)
+{
+	LWPOINT *pt = lwpoint_make2d(SRID_DEFAULT, x, y);
+	LWGEOM *poly = lwgeom_from_wkt(polyWkt, LW_PARSER_CHECK_NONE);
+	if(!poly)
+		CU_FAIL_FATAL("unable to parse WKT");
+	IntervalTree *itree = itree_from_lwgeom(poly);
+	IntervalTreeResult irslt = itree_point_in_multipolygon(itree, pt);
+	itree_free(itree);
+	lwgeom_free(poly);
+	lwpoint_free(pt);
+	CU_ASSERT_EQUAL(irslt, iexp);
+}
+
+static void test_itree_square(void)
+{
+	const char *wktPoly =
+		"MULTIPOLYGON(((-1 -1, 0 -1, 1 -1, 1 0, 1 1, -1 1, -1 -1)))";
+
+	/* inside square */
+	test_itree_once(wktPoly, 0.5, 0.5, ITREE_INSIDE);
+	/* inside square at vertex */
+	test_itree_once(wktPoly, 0.0, 0.0, ITREE_INSIDE);
+	/* left of square */
+	test_itree_once(wktPoly, -3.0, 0.0, ITREE_OUTSIDE);
+	/* right of square */
+	test_itree_once(wktPoly, 3.0, 0.0, ITREE_OUTSIDE);
+	/* above square */
+	test_itree_once(wktPoly, 0.0, 3.0, ITREE_OUTSIDE);
+	/* on horizontal boundary */
+	test_itree_once(wktPoly, 0.0, 1.0, ITREE_BOUNDARY);
+	/* on vertical boundary */
+	test_itree_once(wktPoly, -1.0, 0.0, ITREE_BOUNDARY);
+}
+
+static void test_itree_hole(void)
+{
+	const char *wktPoly =
+		"POLYGON("
+		"(-10 -10, 0 -10, 10 -10, 10 0, 10 10, 0 10, -10 10, -10 -10),"
+		"(-5 -5, -5 0, -5 5, 5 5, 5 0, 5 -5, -5 -5))";
+
+	/* inside hole */
+	test_itree_once(wktPoly, 1.0, 1.0, ITREE_OUTSIDE);
+	/* inside hole at vertical vertex */
+	test_itree_once(wktPoly, 0.0, 0.0, ITREE_OUTSIDE);
+	/* left of hole */
+	test_itree_once(wktPoly, -7.0, 0.0, ITREE_INSIDE);
+	/* right of hole */
+	test_itree_once(wktPoly, 7.0, 0.0, ITREE_INSIDE);
+	/* left of hole at top edge */
+	test_itree_once(wktPoly, -7.0, 5.0, ITREE_INSIDE);
+	/* right of hole at bottom edge */
+	test_itree_once(wktPoly, 7.0, -5.0, ITREE_INSIDE);
+	/* above hole */
+	test_itree_once(wktPoly, 0.0, 7.0, ITREE_INSIDE);
+	/* on hole boundary */
+	test_itree_once(wktPoly, 0.0, 5.0, ITREE_BOUNDARY);
+	/* on hole corner */
+	test_itree_once(wktPoly, 5.0, 5.0, ITREE_BOUNDARY);
+}
+
+static void test_itree_hole_spike(void)
+{
+	const char *wktPoly =
+		"POLYGON("
+		"(-10 -10, 6 -10, 7 -10, 7.5 2, 8 -10, 9 -10, 10 -10, 10 10, -10 10, -10 2, -10 2, -10 -10),"
+		"(-5 -5, -5 5, 5 5, 5 -5, -5 -5))";
+
+	/* inside hole */
+	test_itree_once(wktPoly, 2.0, 2.0, ITREE_OUTSIDE);
+	/* inside hole */
+	test_itree_once(wktPoly, -2.0, -2.0, ITREE_OUTSIDE);
+	/* left of spike */
+	test_itree_once(wktPoly, 6.0, -2.0, ITREE_INSIDE);
+	/* right of spike */
+	test_itree_once(wktPoly, 9.0, -2.0, ITREE_INSIDE);
+	/* left of tip of spike */
+	test_itree_once(wktPoly, 6.0, 2.0, ITREE_INSIDE);
+	/* right of tip of spike */
+	test_itree_once(wktPoly, 9.0, 2.0, ITREE_INSIDE);
+	/* on spike tip */
+	test_itree_once(wktPoly, 7.5, 2.0, ITREE_BOUNDARY);
+	/* left of dupe vertex */
+	test_itree_once(wktPoly, -11, 2.0, ITREE_OUTSIDE);
+	/* right of dupe vertex */
+	test_itree_once(wktPoly, 11, 2.0, ITREE_OUTSIDE);
+}
+
+static void test_itree_multipoly_empty(void)
+{
+
+	/* outside empty */
+	const char *wktPoly = "POLYGON EMPTY";
+	test_itree_once(wktPoly, 2.0, 2.0, ITREE_OUTSIDE);
+
+	/* outside empty */
+	wktPoly = "MULTIPOLYGON EMPTY";
+	test_itree_once(wktPoly, 2.0, 2.0, ITREE_OUTSIDE);
+
+	/* outside collection of empty */
+	wktPoly = "MULTIPOLYGON(EMPTY, EMPTY, EMPTY)";
+	test_itree_once(wktPoly, 2.0, 2.0, ITREE_OUTSIDE);
+
+	/* mixed collection of empty and not */
+	wktPoly =
+		"MULTIPOLYGON(EMPTY,"
+		"((-10 -10, 6 -10, 7 -10, 7.5 2, 8 -10, 9 -10, 10 -10, 10 10, -10 10, -10 2, -10 2, -10 -10),"
+		"(-5 -5, -5 5, 5 5, 5 -5, -5 -5)))";
+
+	/* inside hole */
+	test_itree_once(wktPoly, 2.0, 2.0, ITREE_OUTSIDE);
+	/* inside hole */
+	test_itree_once(wktPoly, -2.0, -2.0, ITREE_OUTSIDE);
+	/* left of spike */
+	test_itree_once(wktPoly, 6.0, -2.0, ITREE_INSIDE);
+	/* right of spike */
+	test_itree_once(wktPoly, 9.0, -2.0, ITREE_INSIDE);
+	/* left of tip of spike */
+	test_itree_once(wktPoly, 6.0, 2.0, ITREE_INSIDE);
+	/* right of tip of spike */
+	test_itree_once(wktPoly, 9.0, 2.0, ITREE_INSIDE);
+	/* on spike tip */
+	test_itree_once(wktPoly, 7.5, 2.0, ITREE_BOUNDARY);
+	/* left of dupe vertex */
+	test_itree_once(wktPoly, -11, 2.0, ITREE_OUTSIDE);
+	/* right of dupe vertex */
+	test_itree_once(wktPoly, 11, 2.0, ITREE_OUTSIDE);
+
+	/* mixed collection of empty, empty in middle */
+	wktPoly =
+		"MULTIPOLYGON("
+		"((-10 -10, 6 -10, 7 -10, 7.5 2, 8 -10, 9 -10, 10 -10, 10 10, -10 10, -10 2, -10 2, -10 -10),"
+		"(-5 -5, -5 5, 5 5, 5 -5, -5 -5)),"
+		"EMPTY, ((-1 -1, 1 -1, 1 1, -1 1, -1 -1)))";
+
+	/* inside poly in hole */
+	test_itree_once(wktPoly, 0.0, 0.0, ITREE_INSIDE);
+	/* inside hole */
+	test_itree_once(wktPoly, 2.0, 2.0, ITREE_OUTSIDE);
+	/* inside hole */
+	test_itree_once(wktPoly, -2.0, -2.0, ITREE_OUTSIDE);
+	/* left of spike */
+	test_itree_once(wktPoly, 6.0, -2.0, ITREE_INSIDE);
+	/* right of spike */
+	test_itree_once(wktPoly, 9.0, -2.0, ITREE_INSIDE);
+	/* left of tip of spike */
+	test_itree_once(wktPoly, 6.0, 2.0, ITREE_INSIDE);
+	/* right of tip of spike */
+	test_itree_once(wktPoly, 9.0, 2.0, ITREE_INSIDE);
+	/* on spike tip */
+	test_itree_once(wktPoly, 7.5, 2.0, ITREE_BOUNDARY);
+	/* left of dupe vertex */
+	test_itree_once(wktPoly, -11, 2.0, ITREE_OUTSIDE);
+	/* right of dupe vertex */
+	test_itree_once(wktPoly, 11, 2.0, ITREE_OUTSIDE);
+}
+
+static void test_itree_degenerate_poly(void)
+{
+	/* collapsed polygon */
+	const char *wktPoly = "POLYGON((0 0, 0 0, 0 0, 0 0))";
+	test_itree_once(wktPoly, 2.0, 2.0, ITREE_OUTSIDE);
+
+	/* zero area polygon */
+	wktPoly = "POLYGON((0 0, 0 1, 0 1, 0 0))";
+	test_itree_once(wktPoly, 2.0, 2.0, ITREE_OUTSIDE);
+	test_itree_once(wktPoly, 0, 0.5, ITREE_BOUNDARY);
+	test_itree_once(wktPoly, 0, 1, ITREE_BOUNDARY);
+
+	/* zero area polygon */
+	wktPoly = "POLYGON((0 0, 0 1, 1 1, 2 2, 1 1, 0 1, 0 0))";
+	test_itree_once(wktPoly, 0.5, 0.5, ITREE_OUTSIDE);
+	test_itree_once(wktPoly, 1, 1, ITREE_BOUNDARY);
+
+	/* non finite coordinates */
+	wktPoly = "POLYGON((0 0, 0 NaN, 0 NaN, 0 0, 0 1, 0 0))";
+	test_itree_once(wktPoly, 2.0, 2.0, ITREE_OUTSIDE);
+	test_itree_once(wktPoly, 0, 0, ITREE_BOUNDARY);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -426,6 +612,11 @@ void tree_suite_setup(void);
 void tree_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("spatial_trees", NULL, NULL);
+	PG_ADD_TEST(suite, test_itree_square);
+	PG_ADD_TEST(suite, test_itree_hole);
+	PG_ADD_TEST(suite, test_itree_hole_spike);
+	PG_ADD_TEST(suite, test_itree_multipoly_empty);
+	PG_ADD_TEST(suite, test_itree_degenerate_poly);
 	PG_ADD_TEST(suite, test_tree_circ_create);
 	PG_ADD_TEST(suite, test_tree_circ_pip);
 	PG_ADD_TEST(suite, test_tree_circ_pip2);

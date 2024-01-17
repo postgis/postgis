@@ -174,7 +174,7 @@ Datum ST_DistanceRectTreeCached(PG_FUNCTION_ARGS)
 	if (tree_cache && tree_cache->gcache.argnum)
 	{
 		RECT_NODE *n;
-		RECT_NODE *n_cached = tree_cache->index;;
+		RECT_NODE *n_cached = tree_cache->index;
 		if (tree_cache->gcache.argnum == 1)
 		{
 			LWGEOM *lwg2 = lwgeom_from_gserialized(g2);

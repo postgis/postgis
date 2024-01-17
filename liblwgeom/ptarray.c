@@ -746,8 +746,10 @@ ptarray_is_closed_z(const POINTARRAY *in)
 }
 
 /**
-* Return 1 if the point is inside the POINTARRAY, -1 if it is outside,
-* and 0 if it is on the boundary.
+* Return LW_INSIDE if the point is inside the POINTARRAY,
+* LW_OUTSIDE if it is outside, and LW_BOUNDARY if it is on
+* the boundary.
+* LW_INSIDE == 1, LW_BOUNDARY == 0, LW_OUTSIDE == -1
 */
 int
 ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt)
@@ -755,6 +757,12 @@ ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt)
 	return ptarray_contains_point_partial(pa, pt, LW_TRUE, NULL);
 }
 
+
+/*
+ * The following is based on the "Fast Winding Number Inclusion of a Point
+ * in a Polygon" algorithm by Dan Sunday.
+ * http://softsurfer.com/Archive/algorithm_0103/algorithm_0103.htm#Winding%20Number
+ */
 int
 ptarray_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int check_closed, int *winding_number)
 {

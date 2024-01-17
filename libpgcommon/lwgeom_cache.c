@@ -34,7 +34,7 @@
 * the following kinds of objects:
 *
 *   geometries-with-trees
-*      PreparedGeometry, RTree, CIRC_TREE, RECT_TREE
+*      PreparedGeometry, IntervalTree, CIRC_TREE, RECT_TREE
 *
 * Each GenericCache* has a type, and after that
 * some data. Similar to generic LWGEOM*. Test that

@@ -227,14 +227,20 @@ void *
 lwalloc(size_t size)
 {
 	void *mem = lwalloc_var(size);
-	LWDEBUGF(5, "lwalloc: %d@%p", size, mem);
+	return mem;
+}
+
+void *
+lwalloc0(size_t size)
+{
+	void *mem = lwalloc_var(size);
+	memset(mem, 0, size);
 	return mem;
 }
 
 void *
 lwrealloc(void *mem, size_t size)
 {
-	LWDEBUGF(5, "lwrealloc: %d@%p", size, mem);
 	return lwrealloc_var(mem, size);
 }
 

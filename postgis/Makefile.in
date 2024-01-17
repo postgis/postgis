@@ -44,9 +44,6 @@ SQL_OBJS = \
 	legacy.sql \
 	legacy_minimal.sql
 
-GEOM_BACKEND_OBJ = lwgeom_geos.o
-
-BACKEND_OBJ=$(GEOM_BACKEND_OBJ)
 DATA_built=$(SQL_built)
 
 ifeq (@HAVE_SPGIST@,yes)
@@ -80,12 +77,12 @@ PG_OBJS= \
 	lwgeom_spheroid.o \
 	lwgeom_ogc.o \
 	lwgeom_functions_analytic.o \
-	lwgeom_inout.o \
 	lwgeom_functions_basic.o \
+	lwgeom_inout.o \
 	lwgeom_btree.o \
 	lwgeom_box.o \
 	lwgeom_box3d.o \
-	$(BACKEND_OBJ) \
+	lwgeom_geos.o \
 	lwgeom_geos_prepared.o \
 	lwgeom_geos_clean.o \
 	lwgeom_geos_relatematch.o \
@@ -104,9 +101,9 @@ PG_OBJS= \
 	lwgeom_functions_lrs.o \
 	lwgeom_functions_temporal.o \
 	lwgeom_rectree.o \
+	lwgeom_itree.o \
 	long_xact.o \
 	lwgeom_sqlmm.o \
-	lwgeom_rtree.o \
 	lwgeom_transform.o \
 	lwgeom_window.o \
 	gserialized_typmod.o \

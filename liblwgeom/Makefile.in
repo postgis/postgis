@@ -96,6 +96,7 @@ SA_OBJS = \
 	lwin_encoded_polyline.o \
 	lwutil.o \
 	lwhomogenize.o \
+	intervaltree.o \
 	lwalgorithm.o \
 	lwstroke.o \
 	lwlinearreferencing.o \
@@ -160,6 +161,7 @@ SA_HEADERS = \
 	lwgeom_log.h \
 	lwgeom_sfcgal.h \
 	lwinline.h \
+	intervaltree.h \
 	lwin_wkt.h \
 	lwin_wkt_parse.h \
 	lwout_twkb.h \

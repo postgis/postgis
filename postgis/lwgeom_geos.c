@@ -37,11 +37,10 @@
 #include "access/htup_details.h"
 
 /* PostGIS */
-#include "lwgeom_functions_analytic.h" /* for point_in_polygon */
 #include "lwgeom_geos.h"
 #include "liblwgeom.h"
 #include "liblwgeom_internal.h"
-#include "lwgeom_rtree.h"
+#include "lwgeom_itree.h"
 #include "lwgeom_geos_prepared.h"
 #include "lwgeom_accum.h"
 
@@ -1784,7 +1783,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can return FALSE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	        gserialized_get_gbox_p(geom2, &box2) )
+	     gserialized_get_gbox_p(geom2, &box2) )
 	{
 		if ( ! gbox_overlaps_2d(&box1, &box2) )
 		{
@@ -1836,7 +1835,7 @@ Datum contains(PG_FUNCTION_ARGS)
 	if (gserialized_is_empty(geom1) || gserialized_is_empty(geom2))
 		PG_RETURN_BOOL(false);
 
-	POSTGIS_DEBUG(3, "contains called.");
+	POSTGIS_DEBUGF(3, "Contains: type1: %d, type2: %d", gserialized_get_type(geom1), gserialized_get_type(geom2));
 
 	/*
 	** short-circuit 1: if geom2 bounding box is not completely inside
@@ -1855,64 +1854,12 @@ Datum contains(PG_FUNCTION_ARGS)
 	*/
 	if (is_poly(geom1) && is_point(geom2))
 	{
-		SHARED_GSERIALIZED *shared_gpoly = is_poly(geom1) ? shared_geom1 : shared_geom2;
-		SHARED_GSERIALIZED *shared_gpoint = is_point(geom1) ? shared_geom1 : shared_geom2;
-		const GSERIALIZED *gpoly = shared_gserialized_get(shared_gpoly);
-		const GSERIALIZED *gpoint = shared_gserialized_get(shared_gpoint);
-		RTREE_POLY_CACHE *cache = GetRtreeCache(fcinfo, shared_gpoly);
-		int retval;
-
-		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
-		if (gserialized_get_type(gpoint) == POINTTYPE)
-		{
-			LWGEOM* point = lwgeom_from_gserialized(gpoint);
-			int pip_result = pip_short_circuit(cache, lwgeom_as_lwpoint(point), gpoly);
-			lwgeom_free(point);
-
-			retval = (pip_result == 1); /* completely inside */
-		}
-		else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE)
-		{
-			LWMPOINT* mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));
-			int found_completely_inside = LW_FALSE;
-
-			retval = LW_TRUE;
-			for (uint32_t i = 0; i < mpoint->ngeoms; i++)
-			{
-				int pip_result;
-				LWPOINT* pt = mpoint->geoms[i];
-				/* We need to find at least one point that's completely inside the
-				 * polygons (pip_result == 1).  As long as we have one point that's
-				 * completely inside, we can have as many as we want on the boundary
-				 * itself. (pip_result == 0)
-				 */
-				if (lwpoint_is_empty(pt)) continue;
-				pip_result = pip_short_circuit(cache, pt, gpoly);
-				if (pip_result == 1)
-					found_completely_inside = LW_TRUE;
-
-				if (pip_result == -1) /* completely outside */
-				{
-					retval = LW_FALSE;
-					break;
-				}
-			}
-
-			retval = retval && found_completely_inside;
-			lwmpoint_free(mpoint);
-		}
-		else
-		{
-			/* Never get here */
-			elog(ERROR,"Type isn't point or multipoint!");
-			PG_RETURN_BOOL(false);
-		}
-
-		return retval > 0;
-	}
-	else
-	{
-		POSTGIS_DEBUGF(3, "Contains: type1: %d, type2: %d", gserialized_get_type(geom1), gserialized_get_type(geom2));
+		const GSERIALIZED *gpoint = shared_gserialized_get(shared_geom2);
+		LWGEOM *lwpt = lwgeom_from_gserialized(gpoint);
+		IntervalTree *itree = GetIntervalTree(fcinfo, shared_geom1);
+		bool result = itree_pip_contains(itree, lwpt);
+		lwgeom_free(lwpt);
+		PG_RETURN_BOOL(result);
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -1982,7 +1929,7 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can return FALSE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	        gserialized_get_gbox_p(geom2, &box2) )
+	     gserialized_get_gbox_p(geom2, &box2) )
 	{
 		if ( ! gbox_contains_2d(&box1, &box2) )
 			PG_RETURN_BOOL(false);
@@ -2037,6 +1984,7 @@ Datum covers(PG_FUNCTION_ARGS)
 	GBOX box1, box2;
 	PrepGeomCache *prep_cache;
 
+	POSTGIS_DEBUGF(3, "Covers: type1: %d, type2: %d", gserialized_get_type(geom1), gserialized_get_type(geom2));
 
 	/* A.Covers(Empty) == FALSE */
 	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
@@ -2049,7 +1997,7 @@ Datum covers(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can return FALSE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	        gserialized_get_gbox_p(geom2, &box2) )
+	     gserialized_get_gbox_p(geom2, &box2) )
 	{
 		if ( ! gbox_contains_2d(&box1, &box2) )
 		{
@@ -2062,53 +2010,12 @@ Datum covers(PG_FUNCTION_ARGS)
 	 */
 	if (is_poly(geom1) && is_point(geom2))
 	{
-		SHARED_GSERIALIZED *shared_gpoly = is_poly(geom1) ? shared_geom1 : shared_geom2;
-		SHARED_GSERIALIZED *shared_gpoint = is_point(geom1) ? shared_geom1 : shared_geom2;
-		const GSERIALIZED *gpoly = shared_gserialized_get(shared_gpoly);
-		const GSERIALIZED *gpoint = shared_gserialized_get(shared_gpoint);
-		RTREE_POLY_CACHE *cache = GetRtreeCache(fcinfo, shared_gpoly);
-		int retval;
-
-		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
-		if (gserialized_get_type(gpoint) == POINTTYPE)
-		{
-			LWGEOM* point = lwgeom_from_gserialized(gpoint);
-			int pip_result = pip_short_circuit(cache, lwgeom_as_lwpoint(point), gpoly);
-			lwgeom_free(point);
-
-			retval = (pip_result != -1); /* not outside */
-		}
-		else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE)
-		{
-			LWMPOINT* mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));
-			uint32_t i;
-
-			retval = LW_TRUE;
-			for (i = 0; i < mpoint->ngeoms; i++)
-			{
-				LWPOINT *pt = mpoint->geoms[i];
-				if (lwpoint_is_empty(pt)) continue;
-				if (pip_short_circuit(cache, pt, gpoly) == -1)
-				{
-					retval = LW_FALSE;
-					break;
-				}
-			}
-
-			lwmpoint_free(mpoint);
-		}
-		else
-		{
-			/* Never get here */
-			elog(ERROR,"Type isn't point or multipoint!");
-			PG_RETURN_NULL();
-		}
-
-		PG_RETURN_BOOL(retval);
-	}
-	else
-	{
-		POSTGIS_DEBUGF(3, "Covers: type1: %d, type2: %d", gserialized_get_type(geom1), gserialized_get_type(geom2));
+		const GSERIALIZED *gpoint = shared_gserialized_get(shared_geom2);
+		LWGEOM *lwpt = lwgeom_from_gserialized(gpoint);
+		IntervalTree *itree = GetIntervalTree(fcinfo, shared_geom1);
+		bool result = itree_pip_covers(itree, lwpt);
+		lwgeom_free(lwpt);
+		PG_RETURN_BOOL(result);
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -2171,6 +2078,8 @@ Datum coveredby(PG_FUNCTION_ARGS)
 
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
+	POSTGIS_DEBUGF(3, "CoveredBy: type1: %d, type2: %d", gserialized_get_type(geom1), gserialized_get_type(geom2));
+
 	/* A.CoveredBy(Empty) == FALSE */
 	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
 		PG_RETURN_BOOL(false);
@@ -2180,7 +2089,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	 * geom2 bounding box we can return FALSE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	        gserialized_get_gbox_p(geom2, &box2) )
+	     gserialized_get_gbox_p(geom2, &box2) )
 	{
 		if ( ! gbox_contains_2d(&box2, &box1) )
 		{
@@ -2195,53 +2104,12 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	 */
 	if (is_point(geom1) && is_poly(geom2))
 	{
-		SHARED_GSERIALIZED *shared_gpoly = is_poly(geom1) ? shared_geom1 : shared_geom2;
-		SHARED_GSERIALIZED *shared_gpoint = is_point(geom1) ? shared_geom1 : shared_geom2;
-		const GSERIALIZED *gpoly = shared_gserialized_get(shared_gpoly);
-		const GSERIALIZED *gpoint = shared_gserialized_get(shared_gpoint);
-		RTREE_POLY_CACHE *cache = GetRtreeCache(fcinfo, shared_gpoly);
-		int retval;
-
-		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
-		if (gserialized_get_type(gpoint) == POINTTYPE)
-		{
-			LWGEOM* point = lwgeom_from_gserialized(gpoint);
-			int pip_result = pip_short_circuit(cache, lwgeom_as_lwpoint(point), gpoly);
-			lwgeom_free(point);
-
-			retval = (pip_result != -1); /* not outside */
-		}
-		else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE)
-		{
-			LWMPOINT* mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));
-			uint32_t i;
-
-			retval = LW_TRUE;
-			for (i = 0; i < mpoint->ngeoms; i++)
-			{
-				LWPOINT *pt = mpoint->geoms[i];
-				if (lwpoint_is_empty(pt)) continue;
-				if (pip_short_circuit(cache, pt, gpoly) == -1)
-				{
-					retval = LW_FALSE;
-					break;
-				}
-			}
-
-			lwmpoint_free(mpoint);
-		}
-		else
-		{
-			/* Never get here */
-			elog(ERROR,"Type isn't point or multipoint!");
-			PG_RETURN_NULL();
-		}
-
-		PG_RETURN_BOOL(retval);
-	}
-	else
-	{
-		POSTGIS_DEBUGF(3, "CoveredBy: type1: %d, type2: %d", gserialized_get_type(geom1), gserialized_get_type(geom2));
+		const GSERIALIZED *gpoint = shared_gserialized_get(shared_geom1);
+		IntervalTree *itree = GetIntervalTree(fcinfo, shared_geom2);
+		LWGEOM *lwpt = lwgeom_from_gserialized(gpoint);
+		bool result = itree_pip_covers(itree, lwpt);
+		lwgeom_free(lwpt);
+		PG_RETURN_BOOL(result);
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -2291,7 +2159,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can return FALSE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	        gserialized_get_gbox_p(geom2, &box2) )
+	     gserialized_get_gbox_p(geom2, &box2) )
 	{
 		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
 		{
@@ -2347,7 +2215,7 @@ Datum ST_Intersects(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can return FALSE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	        gserialized_get_gbox_p(geom2, &box2) )
+	     gserialized_get_gbox_p(geom2, &box2) )
 	{
 		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
 			PG_RETURN_BOOL(false);
@@ -2355,51 +2223,19 @@ Datum ST_Intersects(PG_FUNCTION_ARGS)
 
 	/*
 	 * short-circuit 2: if the geoms are a point and a polygon,
-	 * call the point_outside_polygon function.
+	 * call the itree_pip_intersects function.
 	 */
-	if ((is_point(geom1) && is_poly(geom2)) || (is_poly(geom1) && is_point(geom2)))
+	if ((is_point(geom1) && is_poly(geom2)) ||
+	    (is_point(geom2) && is_poly(geom1)))
 	{
 		SHARED_GSERIALIZED *shared_gpoly = is_poly(geom1) ? shared_geom1 : shared_geom2;
 		SHARED_GSERIALIZED *shared_gpoint = is_point(geom1) ? shared_geom1 : shared_geom2;
-		const GSERIALIZED *gpoly = shared_gserialized_get(shared_gpoly);
 		const GSERIALIZED *gpoint = shared_gserialized_get(shared_gpoint);
-		RTREE_POLY_CACHE *cache = GetRtreeCache(fcinfo, shared_gpoly);
-		int retval;
-
-		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
-		if (gserialized_get_type(gpoint) == POINTTYPE)
-		{
-			LWGEOM* point = lwgeom_from_gserialized(gpoint);
-			int pip_result = pip_short_circuit(cache, lwgeom_as_lwpoint(point), gpoly);
-			lwgeom_free(point);
-
-			retval = (pip_result != -1); /* not outside */
-		}
-		else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE)
-		{
-			LWMPOINT* mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));
-			retval = LW_FALSE;
-			for (uint32_t i = 0; i < mpoint->ngeoms; i++)
-			{
-				LWPOINT *pt = mpoint->geoms[i];
-				if (lwpoint_is_empty(pt)) continue;
-				if (pip_short_circuit(cache, pt, gpoly) != -1) /* not outside */
-				{
-					retval = LW_TRUE;
-					break;
-				}
-			}
-
-			lwmpoint_free(mpoint);
-		}
-		else
-		{
-			/* Never get here */
-			elog(ERROR,"Type isn't point or multipoint!");
-			PG_RETURN_NULL();
-		}
-
-		PG_RETURN_BOOL(retval);
+		LWGEOM *lwpt = lwgeom_from_gserialized(gpoint);
+		IntervalTree *itree = GetIntervalTree(fcinfo, shared_gpoly);
+		bool result = itree_pip_intersects(itree, lwpt);
+		lwgeom_free(lwpt);
+		PG_RETURN_BOOL(result);
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -2468,7 +2304,7 @@ Datum touches(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can return FALSE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
-			gserialized_get_gbox_p(geom2, &box2) )
+	     gserialized_get_gbox_p(geom2, &box2) )
 	{
 		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
 		{
@@ -2525,7 +2361,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can return TRUE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	        gserialized_get_gbox_p(geom2, &box2) )
+	     gserialized_get_gbox_p(geom2, &box2) )
 	{
 		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
 		{
