@@ -44,9 +44,10 @@ TESTS += \
 	$(top_srcdir)/regress/core/forcecurve \
 	$(top_srcdir)/regress/core/flatgeobuf \
 	$(top_srcdir)/regress/core/frechet \
+	$(top_srcdir)/regress/core/generate_points \
 	$(top_srcdir)/regress/core/geography \
 	$(top_srcdir)/regress/core/geometric_median \
-  $(top_srcdir)/regress/core/geos_noop \
+	$(top_srcdir)/regress/core/geos_noop \
 	$(top_srcdir)/regress/core/geos38 \
 	$(top_srcdir)/regress/core/hausdorff \
 	$(top_srcdir)/regress/core/in_flatgeobuf \
