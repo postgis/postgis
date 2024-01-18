@@ -29,6 +29,7 @@
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 #include "lwrandom.h"
+#include "profile.h"
 
 #include <stdarg.h>
 #include <stdlib.h>
@@ -1400,7 +1401,7 @@ lwgeom_offsetcurve(const LWGEOM* geom, double size, int quadsegs, int joinStyle,
 }
 
 static GEOSGeometry*
-lwpoly_to_points_makepoly(double xmin, double ymin, double cell_size)
+lwpoly_to_points_make_cell(double xmin, double ymin, double cell_size)
 {
 	GEOSCoordSequence *cs = GEOSCoordSeq_create(5, 2);
 	GEOSCoordSeq_setXY(cs, 0, xmin, ymin);
@@ -1437,7 +1438,7 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 	LWMPOINT* mpt;
 	int32_t srid = lwgeom_get_srid(lwgeom);
 	int done = 0;
-
+	LWPOINT **points_generated;
 
 	if (lwgeom_get_type(lwgeom) != POLYGONTYPE)
 	{
@@ -1502,12 +1503,14 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 	}
 	gprep = GEOSPrepare(g);
 
+	/* START_PROFILING(); */
 
 	/* Now we fill in an array of cells, only using cells that actually
 	 * intersect the geometry of interest, and finally weshuffle that array,
 	 * so we can visit the cells in random order to avoid visual ugliness
 	 * caused by visiting them sequentially */
 	cells = lwalloc(sizeof(CellCorner) * sample_height * sample_width);
+
 	for (i = 0; i < sample_width; i++)
 	{
 		for (j = 0; j < sample_height; j++)
@@ -1515,11 +1518,11 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 			int intersects = 0;
 			double xmin = bbox.xmin + i * sample_cell_size;
 			double ymin = bbox.ymin + j * sample_cell_size;
-			GEOSGeometry *gcell = lwpoly_to_points_makepoly(xmin, ymin, sample_cell_size);
+			GEOSGeometry *gcell = lwpoly_to_points_make_cell(xmin, ymin, sample_cell_size);
 			intersects = GEOSPreparedIntersects(gprep, gcell);
+			GEOSGeom_destroy(gcell);
 			if (intersects == 2)
 			{
-				GEOSGeom_destroy(gcell);
 				GEOSPreparedGeom_destroy(gprep);
 				GEOSGeom_destroy(g);
 				lwerror("%s: GEOS exception on GEOSPreparedIntersects: %s", __func__, lwgeom_geos_errmsg);
@@ -1531,9 +1534,10 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 				cells[num_cells].y = ymin;
 				num_cells++;
 			}
-			GEOSGeom_destroy(gcell);
 		}
 	}
+
+	/* STOP_PROFILING(CellGeneration); */
 
 	/* Initiate random number generator.
 	 * Repeatable numbers are generated with seed values >= 1.
@@ -1555,8 +1559,8 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 		}
 	}
 
-	/* Get an empty multi-point ready to return */
-	mpt = lwmpoint_construct_empty(srid, 0, 0);
+	/* Get an empty array of points ready to return */
+	points_generated = lwalloc0(sizeof(LWGEOM*)*npoints);
 
 	/* Start testing points */
 	while (npoints_generated < npoints)
@@ -1583,7 +1587,6 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 				GEOSGeom_destroy(gpt);
 			}
 #endif
-
 			if (contains == 2)
 			{
 				GEOSPreparedGeom_destroy(gprep);
@@ -1593,8 +1596,7 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 			}
 			if (contains == 1)
 			{
-				npoints_generated++;
-				mpt = lwmpoint_add_lwpoint(mpt, lwpoint_make2d(srid, x, y));
+				points_generated[npoints_generated++] = lwpoint_make2d(srid, x, y);
 				if (npoints_generated == npoints)
 				{
 					done = 1;
@@ -1615,6 +1617,13 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 	GEOSPreparedGeom_destroy(gprep);
 	GEOSGeom_destroy(g);
 	lwfree(cells);
+
+	mpt = lwalloc0(sizeof(LWMPOINT));
+	mpt->type = MULTIPOINTTYPE;
+	mpt->geoms = points_generated;
+	mpt->ngeoms = npoints_generated;
+	mpt->maxgeoms = npoints;
+	mpt->srid = srid;
 
 	return mpt;
 }

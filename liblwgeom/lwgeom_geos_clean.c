@@ -36,7 +36,6 @@
 #include <assert.h>
 
 /* #define PARANOIA_LEVEL 2 */
-#undef LWGEOM_PROFILE_MAKEVALID
 
 LWGEOM* lwcollection_make_geos_friendly(LWCOLLECTION* g);
 LWGEOM* lwline_make_geos_friendly(LWLINE* line);
