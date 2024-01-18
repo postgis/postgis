@@ -1438,7 +1438,6 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 	LWMPOINT* mpt;
 	int32_t srid = lwgeom_get_srid(lwgeom);
 	int done = 0;
-	LWPOINT **points_generated;
 
 	if (lwgeom_get_type(lwgeom) != POLYGONTYPE)
 	{
@@ -1560,7 +1559,7 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 	}
 
 	/* Get an empty array of points ready to return */
-	points_generated = lwalloc0(sizeof(LWGEOM*)*npoints);
+	mpt = lwmpoint_construct_empty(srid, 0, 0);
 
 	/* Start testing points */
 	while (npoints_generated < npoints)
@@ -1596,7 +1595,8 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 			}
 			if (contains == 1)
 			{
-				points_generated[npoints_generated++] = lwpoint_make2d(srid, x, y);
+				mpt = lwmpoint_add_lwpoint(mpt, lwpoint_make2d(srid, x, y));
+				npoints_generated++;
 				if (npoints_generated == npoints)
 				{
 					done = 1;
@@ -1617,13 +1617,6 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 	GEOSPreparedGeom_destroy(gprep);
 	GEOSGeom_destroy(g);
 	lwfree(cells);
-
-	mpt = lwalloc0(sizeof(LWMPOINT));
-	mpt->type = MULTIPOINTTYPE;
-	mpt->geoms = points_generated;
-	mpt->ngeoms = npoints_generated;
-	mpt->maxgeoms = npoints;
-	mpt->srid = srid;
 
 	return mpt;
 }
