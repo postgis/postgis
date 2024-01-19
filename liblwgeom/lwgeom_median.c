@@ -171,12 +171,11 @@ init_guess(const POINT4D* points, uint32_t npoints)
 POINT4D*
 lwmpoint_extract_points_4d(const LWMPOINT* g, uint32_t* npoints, int* input_empty)
 {
-	uint32_t i;
 	uint32_t n = 0;
 	POINT4D* points = lwalloc(g->ngeoms * sizeof(POINT4D));
 	int has_m = lwgeom_has_m((LWGEOM*) g);
 
-	for (i = 0; i < g->ngeoms; i++)
+	for (uint32_t i = 0; i < g->ngeoms; i++)
 	{
 		LWGEOM* subg = lwcollection_getsubgeom((LWCOLLECTION*) g, i);
 		if (!lwgeom_is_empty(subg))
@@ -217,9 +216,11 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, uint32_t* npoints, int* input_empt
 		}
 	}
 
-#if PARANOIA_LEVEL > 0
-	/* check Z=0 for 2D inputs*/
-	if (!lwgeom_has_z((LWGEOM*) g)) for (i = 0; i < n; i++) assert(points[i].z == 0);
+#ifndef NDEBUG
+	/* check Z=0 for 2D inputs */
+	if (!lwgeom_has_z((LWGEOM*) g))
+		for (uint32_t i = 0; i < n; i++)
+			assert(points[i].z == 0);
 #endif
 
 	*npoints = n;

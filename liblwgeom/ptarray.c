@@ -578,20 +578,8 @@ ptarray_removePoint(POINTARRAY *pa, uint32_t which)
 
 	LWDEBUGF(3, "pa %x which %d", pa, which);
 
-#if PARANOIA_LEVEL > 0
-	if ( which > pa->npoints-1 )
-	{
-		lwerror("%s [%d] offset (%d) out of range (%d..%d)", __FILE__, __LINE__,
-		        which, 0, pa->npoints-1);
-		return NULL;
-	}
-
-	if ( pa->npoints < 3 )
-	{
-		lwerror("%s [%d] can't remove a point from a 2-vertex POINTARRAY", __FILE__, __LINE__);
-		return NULL;
-	}
-#endif
+	assert(which <= pa->npoints-1);
+	assert(pa->npoints >= 3);
 
 	ret = ptarray_construct(FLAGS_GET_Z(pa->flags),
 	                        FLAGS_GET_M(pa->flags), pa->npoints-1);

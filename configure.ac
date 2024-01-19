@@ -1300,8 +1300,11 @@ dnl Allow the developer to turn on expensive checks and debugging flags
 dnl with --enable-debug
 dnl
 
-AC_ARG_ENABLE([debug], AS_HELP_STRING([--enable-debug], [Enable debugging code and flags]),
+AC_ARG_ENABLE([debug], AS_HELP_STRING([--enable-debug], [Enable debugging flags]),
 	[ENABLE_DEBUG=1], [ENABLE_DEBUG=0])
+
+AC_ARG_ENABLE([assert], AS_HELP_STRING([--enable-assert], [Enable assertions and expensive correctness checks]),
+	[ENABLE_ASSERT=1], [ENABLE_ASSERT=0])
 
 dnl Allow the developer to turn on link time optimization is supported by compiler
 dnl with --enable-lto (for non-debug build)
@@ -1318,17 +1321,22 @@ AC_ARG_ENABLE(
 dnl Add -Wall to CFLAGS
 _LT_COMPILER_OPTION([if $compiler supports -Wall], [_cv_wall], [-Wall], [], [CFLAGS="$CFLAGS -Wall"], [])
 
+dnl We only turn on link-time optimizations for full production builds
+dnl because they make debugger use problematic
 if test $ENABLE_DEBUG -eq 1; then
-    AC_DEFINE([PARANOIA_LEVEL], [10], [Enable use of memory checks])
-    CFLAGS="$CFLAGS -g"
+  CFLAGS="$CFLAGS -g"
 else
-    AC_DEFINE([PARANOIA_LEVEL], [0], [Disable use of memory checks])
-    CPPFLAGS="-DNDEBUG $CPPFLAGS"
+  CFLAGS="$CFLAGS -O2"
+  if test $ENABLE_LTO -eq 1; then
+    _LT_COMPILER_OPTION([if $compiler supports -flto],[_cv_flto],[-flto],[],[CFLAGS="$CFLAGS -flto"],[])
+    _LT_LINKER_OPTION([if $compiler supports -flto],[_cv_flto],[[-flto]],[LDFLAGS="$LDFLAGS -flto"])
+  fi
+fi
 
-    if test $ENABLE_LTO -eq 1; then
-        _LT_COMPILER_OPTION([if $compiler supports -flto],[_cv_flto],[-flto],[],[CFLAGS="$CFLAGS -flto"],[])
-        _LT_LINKER_OPTION([if $compiler supports -flto],[_cv_flto],[[-flto]],[LDFLAGS="$LDFLAGS -flto"])
-    fi
+dnl If asserts are not requested, we need to disable them
+dnl and other safety checks with NDEBUG
+if test $ENABLE_ASSERT -eq 0; then
+  CPPFLAGS="-DNDEBUG $CPPFLAGS"
 fi
 
 AC_DEFINE([POSTGIS_DEBUG_LEVEL], [0], [Define debug level. Default 0])

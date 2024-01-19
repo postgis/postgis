@@ -27,9 +27,7 @@
  *
  **********************************************************************/
 
-#if PARANOIA_LEVEL > 0
 #include <assert.h>
-#endif
 
 inline static double
 distance2d_sqr_pt_pt(const POINT2D *p1, const POINT2D *p2)
@@ -79,11 +77,9 @@ getPoint_internal(const POINTARRAY *pa, uint32_t n)
 	size_t size;
 	uint8_t *ptr;
 
-#if PARANOIA_LEVEL > 0
 	assert(pa);
 	assert(n <= pa->npoints);
 	assert(n <= pa->maxpoints);
-#endif
 
 	size = ptarray_point_size(pa);
 	ptr = pa->serialized_pointlist + size * n;

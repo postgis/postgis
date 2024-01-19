@@ -7,9 +7,6 @@
    configure process */
 #define POSTGIS_DEBUG_LEVEL 0
 
-/* Define to 1 to enable memory checks in pointarray management. */
-#undef PARANOIA_LEVEL
-
 /* Define to 1 if translation of program messages to the user's native
    language is requested. */
 #undef ENABLE_NLS

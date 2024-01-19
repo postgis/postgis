@@ -327,22 +327,10 @@ point_interpolate(const POINT4D *p1,
 	double proportion;
 	int i = 0;
 
-#if PARANOIA_LEVEL > 0
-	if (!(ordinate == 'X' || ordinate == 'Y' || ordinate == 'Z' || ordinate == 'M'))
-	{
-		lwerror("Cannot interpolate over %c ordinate.", ordinate);
-		return LW_FAILURE;
-	}
-
-	if (FP_MIN(p1_value, p2_value) > interpolation_value || FP_MAX(p1_value, p2_value) < interpolation_value)
-	{
-		lwerror("Cannot interpolate to a value (%g) not between the input points (%g, %g).",
-			interpolation_value,
-			p1_value,
-			p2_value);
-		return LW_FAILURE;
-	}
-#endif
+	assert(ordinate == 'X' || ordinate == 'Y' ||
+	       ordinate == 'Z' || ordinate == 'M');
+	assert(FP_MIN(p1_value, p2_value) <= interpolation_value &&
+	       FP_MAX(p1_value, p2_value) >= interpolation_value);
 
 	proportion = (interpolation_value - p1_value) / (p2_value - p1_value);
 

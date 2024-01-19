@@ -414,7 +414,7 @@ lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWGEOM* blade_in)
 		return NULL;
 	}
 
-#if PARANOIA_LEVEL > 0
+#ifndef NDEBUG
 	if ( GEOSGeomTypeId(polygons) != COLLECTIONTYPE )
 	{
 		GEOSGeom_destroy(g1);

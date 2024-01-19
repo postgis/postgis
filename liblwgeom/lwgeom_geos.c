@@ -29,7 +29,6 @@
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 #include "lwrandom.h"
-#include "profile.h"
 
 #include <stdarg.h>
 #include <stdlib.h>

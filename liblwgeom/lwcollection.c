@@ -212,12 +212,11 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 	/* Allocate more space if we need it */
 	lwcollection_reserve(col, col->ngeoms + 1);
 
-#if PARANOIA_LEVEL > 1
+#ifndef NDEBUG
 	/* See http://trac.osgeo.org/postgis/ticket/2933 */
 	/* Make sure we don't already have a reference to this geom */
 	{
-		uint32_t i = 0;
-		for (i = 0; i < col->ngeoms; i++)
+		for (uint32_t i = 0; i < col->ngeoms; i++)
 		{
 			if (col->geoms[i] == geom)
 			{
