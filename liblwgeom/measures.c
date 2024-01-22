@@ -239,17 +239,6 @@ lw_dist2d_comp(const LWGEOM *lw1, const LWGEOM *lw2, DISTPTS *dl)
 }
 
 static int
-lw_dist2d_zero(DISTPTS *dl, const POINT2D *pt1, const POINT2D *pt2)
-{
-	dl->distance = 0.0;
-	if (pt1)
-		dl->p1 = *pt1;
-	if (pt2)
-		dl->p2 = *pt2;
-	return LW_TRUE;
-}
-
-static int
 lw_dist2d_is_collection(const LWGEOM *g)
 {
 	/* Differs from lwgeom_is_collection by not treating CURVEPOLYGON as collection */
@@ -653,6 +642,10 @@ lw_dist2d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS *dl)
 {
 	const POINT2D *p = getPoint2d_cp(point->point, 0);
 
+	/* Max distance? Check only outer ring.*/
+	if (dl->mode == DIST_MAX)
+		return lw_dist2d_pt_ptarray(p, poly->rings[0], dl);
+
 	/* Return distance to outer ring if not inside it */
 	if (ptarray_contains_point(poly->rings[0], p) == LW_OUTSIDE)
 		return lw_dist2d_pt_ptarray(p, poly->rings[0], dl);
@@ -668,7 +661,10 @@ lw_dist2d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS *dl)
 			return lw_dist2d_pt_ptarray(p, poly->rings[i], dl);
 
 	/* Is inside the polygon */
-	return lw_dist2d_zero(dl, p, p);
+	dl->distance = 0.0;
+	dl->p1.x = dl->p2.x = p->x;
+	dl->p1.y = dl->p2.y = p->y;
+	return LW_TRUE;
 }
 
 int
@@ -766,7 +762,12 @@ lw_dist2d_line_poly(LWLINE *line, LWPOLY *poly, DISTPTS *dl)
 
 	/* Not in hole, so inside polygon */
 	if (dl->mode == DIST_MIN)
-		return lw_dist2d_zero(dl, p, p);
+	{
+		dl->distance = 0.0;
+		dl->p1.x = dl->p2.x = pt->x;
+		dl->p1.y = dl->p2.y = pt->y;
+	}
+	return LW_TRUE;
 }
 
 int
