@@ -658,6 +658,13 @@ static LWCURVEPOLY* lwcurvepoly_from_wkb_state(wkb_parse_state *s)
 	if ( ngeoms == 0 )
 		return cp;
 
+	s->depth++;
+	if (s->depth >= LW_PARSER_MAX_DEPTH)
+	{
+		lwgeom_free((LWGEOM *)cp);
+		lwerror("Geometry has too many chained curves");
+		return NULL;
+	}
 	for ( i = 0; i < ngeoms; i++ )
 	{
 		geom = lwgeom_from_wkb_state(s);
@@ -669,6 +676,7 @@ static LWCURVEPOLY* lwcurvepoly_from_wkb_state(wkb_parse_state *s)
 			return NULL;
 		}
 	}
+	s->depth--;
 
 	return cp;
 }
