@@ -742,7 +742,7 @@ lw_dist2d_line_poly(LWLINE *line, LWPOLY *poly, DISTPTS *dl)
 	const POINT2D *pt = getPoint2d_cp(pa, 0);
 
 	/* Line has a pount outside poly. Check distance to outer ring only. */
-	if (ptarray_contains_point(poly->rings[0], pt) == LW_OUTSIDE)
+	if (ptarray_contains_point(poly->rings[0], pt) == LW_OUTSIDE || dl->mode == DIST_MAX)
 		return lw_dist2d_ptarray_ptarray(pa, poly->rings[0], dl);
 
 	for (uint32_t i = 1; i < poly->nrings; i++)
