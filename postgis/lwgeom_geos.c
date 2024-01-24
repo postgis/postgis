@@ -3519,8 +3519,6 @@ Datum ST_OrientedEnvelope(PG_FUNCTION_ARGS)
 }
 
 
-
-
 /**
 * Returns boolean true if the second argument
 * is fully contained in a buffer of the first
@@ -3542,6 +3540,11 @@ Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
 		elog(ERROR, "Tolerance cannot be less than zero\n");
 		PG_RETURN_NULL();
 	}
+
+	if (gserialized_is_empty(geom1) || gserialized_is_empty(geom2))
+		PG_RETURN_BOOL(false);
+
+	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 

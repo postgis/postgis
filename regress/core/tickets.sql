@@ -1527,3 +1527,13 @@ FROM
 ST_GeomFromText('MULTIPOINT((-2 0), EMPTY)') AS a1,
 ST_GeomFromText('MULTIPOINT((1 0),(0 0))') AS a2;
 
+SELECT '#5639','fullywithin' || id, ST_DFullyWithin(a, b, r)
+FROM (VALUES
+ (1, 'POLYGON((0 0, 1 0, 1 1, 1 0, 0 0))', 'POINT(1 2)', 2)
+,(2, 'POLYGON((0 0, 1 0, 1 1, 1 0, 0 0))', 'POINT(1 2)', 0.5)
+,(3, 'POLYGON((0 0, 1 0, 1 1, 1 0, 0 0))', 'LINESTRING(1.5 0.5, 2.5 0.5)', 1)
+,(4, 'POLYGON((0 0, 1 0, 1 1, 1 0, 0 0))', 'LINESTRING(1.5 0.5, 2.5 0.5)', 2)
+,(5, 'LINESTRING(0 0, 10 0)', 'LINESTRING(0 2, 10 4)', 1)
+,(6, 'LINESTRING(0 0, 10 0)', 'LINESTRING(0 2, 10 4)', 3)
+,(7, 'LINESTRING(0 0, 10 0)', 'LINESTRING(0 2, 10 4)', 4)
+) AS t(id, a, b, r);

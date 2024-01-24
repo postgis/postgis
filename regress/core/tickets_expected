@@ -470,3 +470,10 @@ ERROR:  Geometry contains invalid coordinates
 #5378|4269
 #5627|t
 #5604|2|POINT(0 0)|2|POINT(-2 0)
+#5639|fullywithin1|t
+#5639|fullywithin2|f
+#5639|fullywithin3|f
+#5639|fullywithin4|t
+#5639|fullywithin5|f
+#5639|fullywithin6|f
+#5639|fullywithin7|t
