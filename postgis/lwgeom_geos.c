@@ -3520,3 +3520,49 @@ Datum ST_OrientedEnvelope(PG_FUNCTION_ARGS)
 
 
 
+
+/**
+* Returns boolean true if the second argument
+* is fully contained in a buffer of the first
+* argument.
+*/
+Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(LWGEOM_dfullywithin);
+Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
+	double radius = PG_GETARG_FLOAT8(2);
+	GEOSGeometry *buffer1 = NULL;
+	GEOSGeometry *geos1 = NULL, *geos2 = NULL;
+	char contained;
+
+	if (radius < 0.0)
+	{
+		elog(ERROR, "Tolerance cannot be less than zero\n");
+		PG_RETURN_NULL();
+	}
+
+	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
+
+	geos1 = POSTGIS2GEOS(geom1);
+	geos2 = POSTGIS2GEOS(geom2);
+	if (!(geos1 && geos2))
+		HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
+
+	buffer1 = GEOSBuffer(geos1, radius, 16);
+	GEOSGeom_destroy(geos1);
+	if (!(buffer1))
+		HANDLE_GEOS_ERROR("Buffer operation failed");
+
+	contained = GEOSContains(buffer1, geos2);
+	GEOSGeom_destroy(buffer1);
+	GEOSGeom_destroy(geos2);
+
+	if (contained == 2) HANDLE_GEOS_ERROR("GEOSContains");
+
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
+	PG_RETURN_BOOL(contained == 1);
+}
