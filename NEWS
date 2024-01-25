@@ -27,6 +27,8 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.5.0+ is needed.
            (Jan Tojnar)
   - #5496, ST_Clip all variants replaced, will require
            rebuilding of materialized views that use them (Regina Obe)
+  - #5659, ST_DFullyWithin behaviour has changed to 
+           be ST_Contains(ST_Buffer(A, R), B) (Paul Ramsey)
 
 * New Features *
 
