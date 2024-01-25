@@ -67,7 +67,6 @@ Datum LWGEOM_closestpoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_shortestline2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_longestline2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_dwithin(PG_FUNCTION_ARGS);
-Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS);
 
 Datum LWGEOM_maxdistance3d(PG_FUNCTION_ARGS);
 Datum LWGEOM_mindistance3d(PG_FUNCTION_ARGS);
@@ -758,41 +757,6 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 	/*empty geometries cases should be right handled since return from underlying
 	 functions should be FLT_MAX which causes false as answer*/
 	PG_RETURN_BOOL(tolerance >= mindist);
-}
-
-/**
-Returns boolean describing if
-maximum 2d distance between objects in
-geom1 and geom2 is shorter than tolerance
-*/
-PG_FUNCTION_INFO_V1(LWGEOM_dfullywithin);
-Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
-{
-	double maxdist;
-	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
-	double tolerance = PG_GETARG_FLOAT8(2);
-	LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
-	LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
-
-	if (tolerance < 0)
-	{
-		elog(ERROR, "Tolerance cannot be less than zero\n");
-		PG_RETURN_NULL();
-	}
-
-	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
-
-	maxdist = lwgeom_maxdistance2d_tolerance(lwgeom1, lwgeom2, tolerance);
-
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
-
-	/*If function is feed with empty geometries we should return false*/
-	if (maxdist > -1)
-		PG_RETURN_BOOL(tolerance >= maxdist);
-
-	PG_RETURN_BOOL(LW_FALSE);
 }
 
 /**

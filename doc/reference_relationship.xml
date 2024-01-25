@@ -2102,7 +2102,7 @@ ST_DWithin(
     <refnamediv>
     <refname>ST_DFullyWithin</refname>
 
-    <refpurpose>Tests if two geometries are entirely within a given distance</refpurpose>
+    <refpurpose>Tests if a geometry is entirely inside a distance of another</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -2125,26 +2125,33 @@ ST_DWithin(
     <refsection>
     <title>Description</title>
 
-    <para>Returns true if the geometries are entirely within the specified distance
-    of one another. The distance is specified in units defined by the
-    spatial reference system of the geometries.  For this function to make
-    sense, the source geometries must both be of the same coordinate projection,
-    having the same SRID.</para>
+    <para>Returns true if <code>g2</code> is entirely within
+    <code>distance</code> of <code>g1</code>. Visually, the
+    condition is true if <code>g2</code> is contained within
+    a <code>distance</code> buffer of <code>g1</code>.
+    The distance is specified in units defined by the
+    spatial reference system of the geometries.</para>
 
     <note><para>&index_aware;</para></note>
 
     <para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
+    <para role="changed" conformance="3.5.0">Changed: 3.5.0 : the logic behind the function now uses a test of containment within a buffer, rather than the ST_MaxDistance algorithm. Results will differ from prior versions, but should be closer to user expectations.</para>
     </refsection>
 
     <refsection>
     <title>Examples</title>
-    <programlisting>postgis=# SELECT ST_DFullyWithin(geom_a, geom_b, 10) as DFullyWithin10, ST_DWithin(geom_a, geom_b, 10) as DWithin10, ST_DFullyWithin(geom_a, geom_b, 20) as DFullyWithin20 from
-    (select ST_GeomFromText('POINT(1 1)') as geom_a,ST_GeomFromText('LINESTRING(1 5, 2 7, 1 9, 14 12)') as geom_b) t1;
+    <programlisting>SELECT
+    ST_DFullyWithin(geom_a, geom_b, 10) AS DFullyWithin10,
+    ST_DWithin(geom_a, geom_b, 10) AS DWithin10,
+    ST_DFullyWithin(geom_a, geom_b, 20) AS DFullyWithin20
+FROM (VALUES
+    ('POINT(1 1)', 'LINESTRING(1 5, 2 7, 1 9, 14 12)')
+    ) AS v(geom_a, geom_b)
 
------------------
- DFullyWithin10 | DWithin10 | DFullyWithin20 |
----------------+----------+---------------+
- f             | t        | t             |  </programlisting>
+ dfullywithin10 | dwithin10 | dfullywithin20
+----------------+-----------+----------------
+ f              | t         | t
+</programlisting>
     </refsection>
 
     <refsection>
