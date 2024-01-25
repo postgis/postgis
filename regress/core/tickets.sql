@@ -1516,3 +1516,5 @@ SELECT '#5357', ST_AsText(ST_LineFromEncodedPolyline('__nphBgcoeiA?@', 6), 6);
 SELECT '#5571', ST_GeneratePoints(
 	'POLYGON((0 0, 1 1, 1 1.000000002, 0 0.000000002, 0 0))', 1, 12345
 ) IS NOT NULL;
+
+SELECT '#5597', ST_AsGeoJSON(r.*) from (values (null::geometry)) as r(geom);
