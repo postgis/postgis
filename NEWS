@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - #5597, Return a JSON null geometry for records with no geometry value (Paul Ramsey)
   - Check the projection returned by PROJ (Even Rouault)
   - #5728, Use portable format specifiers in geometry and topology diagnostics (Sandro Santilli)
   - Correct the documented default band for raster summary statistics (Martin Davis)
