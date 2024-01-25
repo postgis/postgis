@@ -1529,3 +1529,5 @@ RESET client_min_messages;
 
 -- #5357
 SELECT '#5357', ST_AsText(ST_LineFromEncodedPolyline('__nphBgcoeiA?@', 6), 6);
+
+SELECT '#5597', ST_AsGeoJSON(r.*) from (values (null::geometry)) as r(geom);
