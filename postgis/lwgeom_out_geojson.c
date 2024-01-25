@@ -203,7 +203,7 @@ composite_to_geojson(FunctionCallInfo fcinfo,
 			}
 			else
 			{
-				appendStringInfoString(result, "{\"type\": null}");
+				appendStringInfoString(result, "null");
 			}
 		}
 		else if (is_id_column)

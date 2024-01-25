@@ -477,3 +477,4 @@ ERROR:  Geometry contains invalid coordinates
 #5639|fullywithin5|f
 #5639|fullywithin6|f
 #5639|fullywithin7|t
+#5597|{"type": "Feature", "geometry": null, "properties": {}}

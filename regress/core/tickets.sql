@@ -1537,3 +1537,5 @@ FROM (VALUES
 ,(6, 'LINESTRING(0 0, 10 0)', 'LINESTRING(0 2, 10 4)', 3)
 ,(7, 'LINESTRING(0 0, 10 0)', 'LINESTRING(0 2, 10 4)', 4)
 ) AS t(id, a, b, r);
+
+SELECT '#5597', ST_AsGeoJSON(r.*) from (values (null::geometry)) as r(geom);
