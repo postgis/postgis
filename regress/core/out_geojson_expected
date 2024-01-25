@@ -11,7 +11,7 @@ gj02|2|{"type": "Feature", "geometry": {"type":"LineString","coordinates":[[42,4
 gj02|3|{"type": "Feature", "geometry": {"type":"Polygon","coordinates":[[[42,42],[45,45],[45,42],[42,42]]]}, "properties": {"i": 3, "f": 3.3, "t": "three", "d": "2003-03-03"}}
 gj02|4|{"type": "Feature", "geometry": {"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[42,42]}]}, "properties": {"i": 4, "f": 4.4, "t": "four", "d": "2004-04-04"}}
 gj02|5|{"type": "Feature", "geometry": {"type":"Point","coordinates":[]}, "properties": {"i": 5, "f": 5.5, "t": "five", "d": "2005-05-05"}}
-gj02|6|{"type": "Feature", "geometry": {"type": null}, "properties": {"i": 6, "f": 6.6, "t": "six", "d": "2006-06-06"}}
+gj02|6|{"type": "Feature", "geometry": null, "properties": {"i": 6, "f": 6.6, "t": "six", "d": "2006-06-06"}}
 gj02|7|{"type": "Feature", "geometry": {"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[]},{"type":"Point","coordinates":[1,2]}]}, "properties": {"i": 7, "f": 7.7, "t": "seven", "d": "2007-07-07"}}
 gj03|1|{"g":{"type":"Point","coordinates":[42,42]},"i":1,"f":1.1,"t":"one","d":"2001-01-01"}
 gj03|2|{"g":{"type":"LineString","coordinates":[[42,42],[45,45]]},"i":2,"f":2.2,"t":"two","d":"2002-02-02"}
@@ -32,6 +32,6 @@ gj05|2|{"type": "Feature", "geometry": {"type":"LineString","coordinates":[[42,4
 gj05|3|{"type": "Feature", "geometry": {"type":"Polygon","coordinates":[[[42,42],[45,45],[45,42],[42,42]]]}, "id": 3, "properties": {"f": 3.3, "t": "three", "d": "2003-03-03"}}
 gj05|4|{"type": "Feature", "geometry": {"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[42,42]}]}, "id": 4, "properties": {"f": 4.4, "t": "four", "d": "2004-04-04"}}
 gj05|5|{"type": "Feature", "geometry": {"type":"Point","coordinates":[]}, "id": 5, "properties": {"f": 5.5, "t": "five", "d": "2005-05-05"}}
-gj05|6|{"type": "Feature", "geometry": {"type": null}, "id": 6, "properties": {"f": 6.6, "t": "six", "d": "2006-06-06"}}
+gj05|6|{"type": "Feature", "geometry": null, "id": 6, "properties": {"f": 6.6, "t": "six", "d": "2006-06-06"}}
 gj05|7|{"type": "Feature", "geometry": {"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[]},{"type":"Point","coordinates":[1,2]}]}, "id": 7, "properties": {"f": 7.7, "t": "seven", "d": "2007-07-07"}}
 4695|{"type": "Feature", "geometry": {"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:2227"}},"coordinates":[0,1]}, "properties": {"v": 1}}
