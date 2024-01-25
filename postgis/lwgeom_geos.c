@@ -3558,7 +3558,7 @@ Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
 	if (!(buffer1))
 		HANDLE_GEOS_ERROR("Buffer operation failed");
 
-	contained = GEOSContains(buffer1, geos2);
+	contained = GEOSCovers(buffer1, geos2);
 	GEOSGeom_destroy(buffer1);
 	GEOSGeom_destroy(geos2);
 
