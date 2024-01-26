@@ -1,17 +1,17 @@
 # German translations for postgis package.
 # Automatically generated, 2023.
 #
-# Regina Obe <regina@arrival3d.com>, 2023.
+# Regina Obe <regina@arrival3d.com>, 2023, 2024.
 # DeepL <noreply-mt-deepl@weblate.org>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-01-26 18:34+0000\n"
-"PO-Revision-Date: 2024-01-22 18:45+0000\n"
-"Last-Translator: DeepL <noreply-mt-deepl@weblate.org>\n"
-"Language-Team: German <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/de/>\n"
+"PO-Revision-Date: 2024-01-26 19:28+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -13720,9 +13720,9 @@ msgstr ""
 "schneller."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5"
-msgstr "&sqlmm_konform; SQL-MM ISO/IEC 13249-3: 8.5"
+msgstr "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5"
 
 #. Tag: refpurpose
 #, fuzzy, no-c-format
@@ -20879,9 +20879,9 @@ msgstr ""
 "Verbessert: 3.0.0 - Unterstützung für POLYGON, TIN, TRIANGLE hinzugefügt."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1"
-msgstr "&sqlmm_konform; SQL-MM IEC 13249-3: 5.1"
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -21990,9 +21990,9 @@ msgstr ""
 "Einheiten (Einheiten des Koordinatenreferenzsystem) zurückgegeben."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3"
-msgstr "&sqlmm_konform; SQL-MM ISO/IEC 13249-3"
+msgstr "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3"
 
 #. Tag: para
 #, no-c-format
@@ -22422,9 +22422,9 @@ msgstr ""
 "wie ST_Length und ST_Length2D)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 7.1, 10.3"
-msgstr "&sqlmm_konform; SQL-MM IEC 13249-3: 7.1, 10.3"
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 7.1, 10.3"
 
 #. Tag: para
 #, no-c-format
@@ -22933,9 +22933,9 @@ msgstr ""
 "dimensionale Umfang zurückgegeben."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.1, 10.5"
-msgstr "&sqlmm_konform; SQL-MM ISO/IEC 13249-3: 8.1, 10.5"
+msgstr "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.1, 10.5"
 
 #. Tag: para
 #, no-c-format
@@ -25145,9 +25145,9 @@ msgstr ""
 "TINs."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 17.2"
-msgstr "&sqlmm_konform; SQL-MM IEC 13249-3: 17.2"
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 17.2"
 
 #. Tag: title
 #, no-c-format
@@ -41351,9 +41351,9 @@ msgstr ""
 "Berechnet die Fläche von 3D-Oberflächengeometrien. Gibt 0 für Solids zurück."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 8.1, 10.5"
-msgstr "&sqlmm_konform; SQL-MM IEC 13249-3: 8.1, 10.5"
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 8.1, 10.5"
 
 #. Tag: para
 #, fuzzy, no-c-format
