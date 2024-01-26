@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-01-26 18:34+0000\n"
-"PO-Revision-Date: 2024-01-26 19:28+0000\n"
+"PO-Revision-Date: 2024-01-26 19:57+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
@@ -41302,9 +41302,9 @@ msgid "<para>Returns the version of SFCGAL in use</para>"
 msgstr "<para>Gibt die verwendete Version von SFCGAL zurück</para>"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&sfcgal_required;"
-msgstr "&sfcgal_erforderlich;"
+msgstr "&sfcgal_required;"
 
 #. Tag: refpurpose
 #, fuzzy, no-c-format
