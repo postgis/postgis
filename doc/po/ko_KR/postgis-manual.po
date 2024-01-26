@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-12-27 04:20+0000\n"
+"POT-Creation-Date: 2024-01-26 18:34+0000\n"
 "PO-Revision-Date: 2023-10-14 20:23+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Korean <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -9339,6 +9339,11 @@ msgstr ""
 
 #. Tag: member
 #, no-c-format
+msgid "Chris Mayo"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
 msgid "Christian Schroeder"
 msgstr ""
 
@@ -9919,6 +9924,11 @@ msgstr ""
 #. Tag: simpara
 #, no-c-format
 msgid "Hunter Systems Group"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "INIA-CSIC"
 msgstr ""
 
 #. Tag: link
@@ -35515,17 +35525,26 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
-msgid "Tests if two geometries are entirely within a given distance"
+msgid "Tests if a geometry is entirely inside a distance of another"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns true if the geometries are entirely within the specified distance of "
-"one another. The distance is specified in units defined by the spatial "
-"reference system of the geometries. For this function to make sense, the "
-"source geometries must both be of the same coordinate projection, having the "
-"same SRID."
+"Returns true if <code>g2</code> is entirely within <code>distance</code> of "
+"<code>g1</code>. Visually, the condition is true if <code>g2</code> is "
+"contained within a <code>distance</code> buffer of <code>g1</code>. The "
+"distance is specified in units defined by the spatial reference system of "
+"the geometries."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Changed: 3.5.0 : the logic behind the function now uses a test of "
+"containment within a buffer, rather than the ST_MaxDistance algorithm. "
+"Results will differ from prior versions, but should be closer to user "
+"expectations."
 msgstr ""
 
 #. Tag: para
