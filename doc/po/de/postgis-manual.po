@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-01-26 18:34+0000\n"
-"PO-Revision-Date: 2024-01-27 03:05+0000\n"
+"PO-Revision-Date: 2024-01-27 03:24+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
@@ -12034,9 +12034,9 @@ msgid "PostGIS Polyhedral Surface Support Functions"
 msgstr "PostGIS-Funktionen zur Unterstützung polyedrischer Flächen"
 
 #. Tag: section
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&list_polyhedral_geometry_functions;"
-msgstr "&list_polyedrische_geometrische_Funktionen;"
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
