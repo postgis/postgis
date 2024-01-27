@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-01-26 18:34+0000\n"
-"PO-Revision-Date: 2024-01-26 19:57+0000\n"
+"PO-Revision-Date: 2024-01-27 03:05+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
@@ -11824,9 +11824,9 @@ msgid "PostGIS Aggregate Functions"
 msgstr "PostGIS-Aggregat-Funktionen"
 
 #. Tag: section
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&list_aggregates;"
-msgstr "&liste_aggregate;"
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -11845,9 +11845,9 @@ msgid "PostGIS Window Functions"
 msgstr "PostGIS-Fenster-Funktionen"
 
 #. Tag: section
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&list_window_functions;"
-msgstr "&Liste_Fenster_Funktionen;"
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
