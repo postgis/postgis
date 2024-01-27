@@ -65,7 +65,7 @@ static LWGEOM* parse_kml(xmlNodePtr xnode, bool *hasz);
 
 
 static inline bool
-is_kml_element(xmlNodePtr xn, const char *gml_name)
+is_kml_element(xmlNodePtr xn, const char *kml_name)
 {
 	char *colon_pos;
 	char *node_name;
@@ -82,7 +82,7 @@ is_kml_element(xmlNodePtr xn, const char *gml_name)
 	if (colon_pos)
 		node_name = colon_pos + 1;
 
-	return strcmp(node_name, gml_name) == 0;
+	return strcmp(node_name, kml_name) == 0;
 }
 
 
