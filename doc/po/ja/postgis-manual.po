@@ -7,10 +7,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-01-26 18:34+0000\n"
-"PO-Revision-Date: 2024-01-09 04:45+0000\n"
+"PO-Revision-Date: 2024-01-29 04:45+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -10085,7 +10085,7 @@ msgstr "Charlie Savage"
 #. Tag: member
 #, no-c-format
 msgid "Chris Mayo"
-msgstr ""
+msgstr "Chris Mayo"
 
 #. Tag: member
 #, no-c-format
@@ -10674,7 +10674,7 @@ msgstr "Hunter Systems Group"
 #. Tag: link
 #, no-c-format
 msgid "INIA-CSIC"
-msgstr ""
+msgstr "INIA-CSIC"
 
 #. Tag: link
 #, no-c-format
@@ -38756,7 +38756,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tests if a geometry is entirely inside a distance of another"
-msgstr ""
+msgstr "ジオメトリが完全に他のジオメトリの指定距離内にあるかどうかをテストします"
 
 #. Tag: para
 #, no-c-format
@@ -38767,6 +38767,9 @@ msgid ""
 "distance is specified in units defined by the spatial reference system of "
 "the geometries."
 msgstr ""
+"<code>g2</code>が完全に<code>g1</code>の<code>distance</code>で指定した距離内"
+"にある場合にTRUEを返します。見た目で言うと、<code>g2</code>が<code>g1</code>"
+"の<code>distance</code>ぶん膨らませたバッファに含まれる場合にTRUEを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -38776,6 +38779,9 @@ msgid ""
 "Results will differ from prior versions, but should be closer to user "
 "expectations."
 msgstr ""
+"Changed: 3.5.0 : この関数のロジックとしては、今のところ、バッファ内に包含する"
+"かどうかのテストを使っています。ST_MaxDistanceアルゴリズムではありません。前"
+"の版と結果が異なる可能性がありますが、ユーザの期待に近づくはずです。"
 
 #. Tag: para
 #, no-c-format
