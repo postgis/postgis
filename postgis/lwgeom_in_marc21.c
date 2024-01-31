@@ -64,7 +64,7 @@ Datum ST_GeomFromMARC21(PG_FUNCTION_ARGS) {
 	xml_size = VARSIZE_ANY_EXHDR(xml_input);
 
 	xmlInitParser();
-	xmldoc = xmlReadMemory(xml, xml_size, NULL, NULL, XML_PARSE_SAX1);
+	xmldoc = xmlReadMemory(xml, xml_size, NULL, NULL, 0);
 
 	if (!xmldoc || (xmlroot = xmlDocGetRootElement(xmldoc)) == NULL) {
 		xmlFreeDoc(xmldoc);
@@ -89,6 +89,26 @@ Datum ST_GeomFromMARC21(PG_FUNCTION_ARGS) {
 	lwgeom_free(lwgeom);
 
 	PG_RETURN_POINTER(geom);
+}
+
+static inline bool
+is_xml_element(xmlNodePtr xn, const char *xml_name)
+{
+	char *colon_pos, *node_name;
+
+	/* Not an element node, can't do anything */
+	if (!xn || xn->type != XML_ELEMENT_NODE)
+		return false;
+
+	/* If there's a colon in the element name, */
+	/* move past it before checking for equality with */
+	/* the element name we are looking for */
+	node_name = (char*)xn->name;
+	colon_pos = strchr(node_name, ':');
+	if (colon_pos)
+		node_name = colon_pos + 1;
+
+	return strcmp(node_name, xml_name) == 0;
 }
 
 static int is_literal_valid(const char *literal) {
@@ -381,7 +401,8 @@ parse_marc21(xmlNodePtr xnode) {
 	 * https://www.loc.gov/standards/marcxml/xml/spy/spy.html
 	 */
 
-	if (xmlStrcmp(xnode->name, (xmlChar*) "record")) lwpgerror("invalid MARC21/XML document. Root element <record> expected but <%s> found.",xnode->name);
+	if (!is_xml_element(xnode, "record"))
+		lwpgerror("invalid MARC21/XML document. Root element <record> expected but <%s> found.",xnode->name);
 
 	result_type = 0;
 	ngeoms = 0;
@@ -395,18 +416,23 @@ parse_marc21(xmlNodePtr xnode) {
 
 		if (datafield->type != XML_ELEMENT_NODE) continue;
 
-		if (xmlStrcmp(datafield->name, (xmlChar*) "datafield") != 0	|| xmlStrcmp(xmlGetProp(datafield, (xmlChar*) "tag"),(xmlChar*) "034") != 0) continue;
+		if (!is_xml_element(datafield, "datafield")	|| xmlStrcmp(xmlGetProp(datafield, (xmlChar*) "tag"),(xmlChar*) "034") != 0) continue;
 
 		POSTGIS_DEBUG(3, "  datafield found");
 
 		for (subfield = datafield->children; subfield != NULL; subfield = subfield->next) {
 
 			if (subfield->type != XML_ELEMENT_NODE)	continue;
-			if (xmlStrcmp(subfield->name, (xmlChar*) "subfield") != 0) continue;
+			if (!is_xml_element(subfield, "subfield"))
+				continue;
 
 			code = (char*) xmlGetProp(subfield, (xmlChar*) "code");
 
-			if ((strcmp(code, "d") != 0 && strcmp(code, "e") != 0 && strcmp(code, "f") != 0 && strcmp(code, "g")) != 0)	continue;
+			if ((strcmp(code, "d") != 0 &&
+			     strcmp(code, "e") != 0 &&
+			     strcmp(code, "f") != 0 &&
+			     strcmp(code, "g")) != 0)
+				continue;
 
 			literal = (char*) xmlNodeGetContent(subfield);
 
@@ -437,7 +463,8 @@ parse_marc21(xmlNodePtr xnode) {
 			double s = parse_geo_literal(ls);
 			geometry_type = 0;
 
-			if (ngeoms > 0)	lwgeoms = (LWGEOM**) lwrealloc(lwgeoms,	sizeof(LWGEOM*) * (ngeoms + 1));
+			if (ngeoms > 0)	lwgeoms = (LWGEOM**)
+				lwrealloc(lwgeoms,	sizeof(LWGEOM*) * (ngeoms + 1));
 
 			if (fabs(w - e) < 0.0000001f && fabs(n - s) < 0.0000001f) {
 
