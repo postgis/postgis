@@ -64,6 +64,28 @@ static LWGEOM* parse_kml(xmlNodePtr xnode, bool *hasz);
 #define KML_NS		((char *) "http://www.opengis.net/kml/2.2")
 
 
+static inline bool
+is_kml_element(xmlNodePtr xn, const char *kml_name)
+{
+	char *colon_pos;
+	char *node_name;
+
+	/* Not an element node, can't do anything */
+	if (!xn || xn->type != XML_ELEMENT_NODE)
+		return false;
+
+	/* If there's a colon in the element name, */
+	/* move past it before checking for equality with */
+	/* the element name we are looking for */
+	node_name = (char*)xn->name;
+	colon_pos = strchr(node_name, ':');
+	if (colon_pos)
+		node_name = colon_pos + 1;
+
+	return strcmp(node_name, kml_name) == 0;
+}
+
+
 /**
  * Ability to parse KML geometry fragment and to return an LWGEOM
  * or an error message.
@@ -88,7 +110,8 @@ Datum geom_from_kml(PG_FUNCTION_ARGS)
 
 	/* Begin to Parse XML doc */
 	xmlInitParser();
-	xmldoc = xmlReadMemory(xml, xml_size, NULL, NULL, XML_PARSE_SAX1);
+	xmldoc = xmlReadMemory(xml, xml_size, NULL, NULL, 0);
+	// xmldoc = xmlReadMemory(xml, xml_size, NULL, NULL, XML_PARSE_SAX1);
 	if (!xmldoc || (xmlroot = xmlDocGetRootElement(xmldoc)) == NULL)
 	{
 		xmlFreeDoc(xmldoc);
@@ -288,7 +311,7 @@ static POINTARRAY* parse_kml_coordinates(xmlNodePtr xnode, bool *hasz)
 	{
 		if (xnode->type != XML_ELEMENT_NODE) continue;
 		if (!is_kml_namespace(xnode, false)) continue;
-		if (strcmp((char *) xnode->name, "coordinates")) continue;
+		if (!is_kml_element(xnode, "coordinates")) continue;
 
 		found = true;
 		break;
@@ -404,14 +427,14 @@ static LWGEOM* parse_kml_polygon(xmlNodePtr xnode, bool *hasz)
 		/* Polygon/outerBoundaryIs */
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_kml_namespace(xa, false)) continue;
-		if (strcmp((char *) xa->name, "outerBoundaryIs")) continue;
+		if (!is_kml_element(xa, "outerBoundaryIs")) continue;
 
 		for (xb = xa->children ; xb != NULL ; xb = xb->next)
 		{
 
 			if (xb->type != XML_ELEMENT_NODE) continue;
 			if (!is_kml_namespace(xb, false)) continue;
-			if (strcmp((char *) xb->name, "LinearRing")) continue;
+			if (!is_kml_element(xb, "LinearRing")) continue;
 
 			ppa = (POINTARRAY**) lwalloc(sizeof(POINTARRAY*));
 			ppa[0] = parse_kml_coordinates(xb->children, hasz);
@@ -440,14 +463,14 @@ static LWGEOM* parse_kml_polygon(xmlNodePtr xnode, bool *hasz)
 		/* Polygon/innerBoundaryIs */
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_kml_namespace(xa, false)) continue;
-		if (strcmp((char *) xa->name, "innerBoundaryIs")) continue;
+		if (!is_kml_element(xa, "innerBoundaryIs")) continue;
 
 		for (xb = xa->children ; xb != NULL ; xb = xb->next)
 		{
 
 			if (xb->type != XML_ELEMENT_NODE) continue;
 			if (!is_kml_namespace(xb, false)) continue;
-			if (strcmp((char *) xb->name, "LinearRing")) continue;
+			if (!is_kml_element(xb, "LinearRing")) continue;
 
 			ppa = (POINTARRAY**) lwrealloc(ppa, sizeof(POINTARRAY*) * (ring + 1));
 			ppa[ring] = parse_kml_coordinates(xb->children, hasz);
@@ -491,10 +514,10 @@ static LWGEOM* parse_kml_multi(xmlNodePtr xnode, bool *hasz)
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_kml_namespace(xa, false)) continue;
 
-		if (	   !strcmp((char *) xa->name, "Point")
-		        || !strcmp((char *) xa->name, "LineString")
-		        || !strcmp((char *) xa->name, "Polygon")
-		        || !strcmp((char *) xa->name, "MultiGeometry"))
+		if (	   is_kml_element(xa, "Point")
+		        || is_kml_element(xa, "LineString")
+		        || is_kml_element(xa, "Polygon")
+		        || is_kml_element(xa, "MultiGeometry"))
 		{
 
 			if (xa->children == NULL) break;
@@ -518,16 +541,16 @@ static LWGEOM* parse_kml(xmlNodePtr xnode, bool *hasz)
 
 	if (xa == NULL) lwpgerror("invalid KML representation");
 
-	if (!strcmp((char *) xa->name, "Point"))
+	if (is_kml_element(xa, "Point"))
 		return parse_kml_point(xa, hasz);
 
-	if (!strcmp((char *) xa->name, "LineString"))
+	if (is_kml_element(xa, "LineString"))
 		return parse_kml_line(xa, hasz);
 
-	if (!strcmp((char *) xa->name, "Polygon"))
+	if (is_kml_element(xa, "Polygon"))
 		return parse_kml_polygon(xa, hasz);
 
-	if (!strcmp((char *) xa->name, "MultiGeometry"))
+	if (is_kml_element(xa, "MultiGeometry"))
 		return parse_kml_multi(xa, hasz);
 
 	lwpgerror("invalid KML representation");
