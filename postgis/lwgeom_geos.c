@@ -3530,6 +3530,8 @@ Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
+	LWGEOM *lwg1 = lwgeom_from_gserialized(geom1);
+	LWGEOM *lwg2 = lwgeom_from_gserialized(geom2);
 	double radius = PG_GETARG_FLOAT8(2);
 	GEOSGeometry *buffer1 = NULL;
 	GEOSGeometry *geos1 = NULL, *geos2 = NULL;
@@ -3541,15 +3543,20 @@ Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (gserialized_is_empty(geom1) || gserialized_is_empty(geom2))
+	if (lwgeom_is_empty(lwg1) || lwgeom_is_empty(lwg2))
+		PG_RETURN_BOOL(false);
+
+	if (!(lwgeom_isfinite(lwg1) && lwgeom_isfinite(lwg2)))
 		PG_RETURN_BOOL(false);
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
-	geos1 = POSTGIS2GEOS(geom1);
-	geos2 = POSTGIS2GEOS(geom2);
+	geos1 = LWGEOM2GEOS(lwg1, true);
+	geos2 = LWGEOM2GEOS(lwg2, true);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
 	if (!(geos1 && geos2))
 		HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
 
