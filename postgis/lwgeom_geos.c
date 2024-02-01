@@ -3543,6 +3543,8 @@ Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
+	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
+
 	if (lwgeom_is_empty(lwg1) || lwgeom_is_empty(lwg2))
 		PG_RETURN_BOOL(false);
 
@@ -3550,8 +3552,6 @@ Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(false);
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
-
-	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	geos1 = LWGEOM2GEOS(lwg1, true);
 	geos2 = LWGEOM2GEOS(lwg2, true);
