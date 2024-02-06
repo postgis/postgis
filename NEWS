@@ -1,3 +1,9 @@
+PostGIS 3.1.12
+xxxx/xx/xx
+
+* Bug Fixes *
+
+
 PostGIS 3.1.11
 2024/02/06
 
@@ -12,7 +18,6 @@ PostGIS 3.1.11
  - #5580, Handle empty collection components in 3d distance (Paul Ramsey)
  - #5639, ST_DFullyWithin line/poly error case (Paul Ramsey)
  - #5662, Change XML parsers to SAX2 (Paul Ramsey)
-
 
 PostGIS 3.1.10
 2023/11/19
