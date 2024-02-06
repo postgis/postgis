@@ -1,3 +1,10 @@
+
+PostGIS 2.5.10
+2024/02/06
+This emergency release addresses a behaviour change in RHEL libxml2
+
+  - #5662, Change XML parsers to SAX2 (Paul Ramsey)
+
 PostGIS 2.5.9
 2022/11/11
 This release works for PostgreSQL 9.4 thru PostgreSQL 12 and is the End-Of-Life release
