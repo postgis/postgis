@@ -1,5 +1,5 @@
-PostGIS 3.1.11dev
-xxxx/xx/xx
+PostGIS 3.1.11
+2024/02/06
 
 * Bug Fixes *
  - #5610, Regression fix: Allow Nan and infinity again
