@@ -134,7 +134,7 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB
 	{
 		/* Independent buffer to hold the coordinates, so we can put the npoints */
 		/* into the stream once we know how many points we actually have */
-		bytebuffer_init_with_size(&b, 3 * ndims * pa->npoints);
+		bytebuffer_init_with_size(&b, (size_t)3 * ndims * pa->npoints);
 		b_p = &b;
 	}
 	else

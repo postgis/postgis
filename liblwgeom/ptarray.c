@@ -440,8 +440,7 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, double gap_tolerance)
 		}
 	}
 
-	memcpy(getPoint_internal(pa1, pa1->npoints),
-	       getPoint_internal(pa2, poff), ptsize * npoints);
+	memcpy(getPoint_internal(pa1, pa1->npoints), getPoint_internal(pa2, poff), (size_t)ptsize * npoints);
 
 	pa1->npoints = ncap;
 
@@ -2853,28 +2852,16 @@ ptarray_scroll_in_place(POINTARRAY *pa, const POINT4D *pt)
 	/* TODO: reduce allocations */
 	tmp = ptarray_construct(FLAGS_GET_Z(pa->flags), FLAGS_GET_M(pa->flags), pa->npoints);
 
-	bzero(getPoint_internal(tmp, 0), ptsize * pa->npoints);
+	bzero(getPoint_internal(tmp, 0), (size_t)ptsize * pa->npoints);
 	/* Copy the block from found point to last point into the output array */
-	memcpy(
-		getPoint_internal(tmp, 0),
-		getPoint_internal(pa, it),
-		ptsize * ( pa->npoints - it )
-	);
+	memcpy(getPoint_internal(tmp, 0), getPoint_internal(pa, it), (size_t)ptsize * (pa->npoints - it));
 
 	/* Copy the block from second point to the found point into the last portion of the
    * return */
-	memcpy(
-		getPoint_internal(tmp, pa->npoints - it),
-		getPoint_internal(pa, 1),
-		ptsize * ( it )
-	);
+	memcpy(getPoint_internal(tmp, pa->npoints - it), getPoint_internal(pa, 1), (size_t)ptsize * it);
 
 	/* Copy the resulting pointarray back to source one */
-	memcpy(
-		getPoint_internal(pa, 0),
-		getPoint_internal(tmp, 0),
-		ptsize * ( pa->npoints )
-	);
+	memcpy(getPoint_internal(pa, 0), getPoint_internal(tmp, 0), (size_t)ptsize * pa->npoints);
 
 	ptarray_free(tmp);
 

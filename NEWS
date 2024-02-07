@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Use size_t for geometry and raster serialization size arithmetic (Even Rouault)
  - #5422, Build EPUB documentation with its images and stylesheet (Sandro Santilli)
  - #5431, Clean generated localized documentation files (Sandro Santilli)
  - Preserve topology functions used by dependent objects during upgrades (Sandro Santilli)

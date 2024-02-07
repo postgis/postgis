@@ -44,7 +44,7 @@ rt_band_from_wkb(
 	int pixbytes = 0;
 	uint8_t type = 0;
 	size_t sz = 0;
-	uint32_t v = 0;
+	size_t v = 0;
 
 	assert(NULL != ptr);
 	assert(NULL != end);
@@ -248,7 +248,7 @@ rt_band_from_wkb(
 			}
 
 			flipme = band->data.mem;
-			sz = width * height;
+			sz = (size_t)width * height;
 			for (v = 0; v < sz; ++v) {
 				flipper(flipme);
 				flipme += pixbytes;
@@ -264,7 +264,7 @@ rt_band_from_wkb(
 		uint8_t maxVal = band->pixtype == PT_1BB ? 1 : (band->pixtype == PT_2BUI ? 3 : 15);
 		uint8_t val;
 
-		sz = width*height;
+		sz = (size_t)width * height;
 		for (v = 0; v < sz; ++v) {
 			val = ((uint8_t*) band->data.mem)[v];
 			if (val > maxVal) {
