@@ -1083,8 +1083,8 @@ estimate_join_selectivity(const ND_STATS *s1, const ND_STATS *s2)
 
 	/* Q: What's the largest possible join size these relations can create? */
 	/* A: The product of the # of non-null rows in each relation. */
-	ntuples_not_null1 = s1->table_features * (s1->not_null_features / s1->sample_features);
-	ntuples_not_null2 = s2->table_features * (s2->not_null_features / s2->sample_features);
+	ntuples_not_null1 = s1->table_features * ((double)s1->not_null_features / s1->sample_features);
+	ntuples_not_null2 = s2->table_features * ((double)s2->not_null_features / s2->sample_features);
 	ntuples_max = ntuples_not_null1 * ntuples_not_null2;
 
 	/* Get the ndims as ints */
@@ -1663,7 +1663,7 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 				 * then take the appropriate root to get the estimated number of cells
 				 * on this axis (eg, pow(0.5) for 2d, pow(0.333) for 3d, pow(0.25) for 4d)
 				*/
-				histo_size[d] = (int)pow(histo_cells_target * histo_ndims * edge_ratio, 1/(double)histo_ndims);
+				histo_size[d] = (int)pow((double)histo_cells_target * histo_ndims * edge_ratio, 1/(double)histo_ndims);
 				/* If something goes awry, just give this dim one slot */
 				if ( ! histo_size[d] )
 					histo_size[d] = 1;
@@ -2028,7 +2028,7 @@ estimate_selectivity(const GBOX *box, const ND_STATS *nd_stats, int mode)
 		cell_count = nd_stats->value[nd_stats_value_index(nd_stats, at)];
 
 		/* Add the pro-rated count for this cell to the overall total */
-		total_count += cell_count * ratio;
+		total_count += (double)cell_count * ratio;
 		POSTGIS_DEBUGF(4, " cell (%d,%d), cell value %.6f, ratio %.6f", at[0], at[1], cell_count, ratio);
 	}
 	while ( nd_increment(&nd_ibox, nd_stats->ndims, at) );

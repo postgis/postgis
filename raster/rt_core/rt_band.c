@@ -301,12 +301,12 @@ rt_band_duplicate(rt_band band) {
 	/* online */
 	else {
 		uint8_t *data = NULL;
-		data = rtalloc(rt_pixtype_size(band->pixtype) * band->width * band->height);
+		data = rtalloc((size_t)rt_pixtype_size(band->pixtype) * band->width * band->height);
 		if (data == NULL) {
 			rterror("rt_band_duplicate: Out of memory allocating online band data");
 			return NULL;
 		}
-		memcpy(data, band->data.mem, rt_pixtype_size(band->pixtype) * band->width * band->height);
+		memcpy(data, band->data.mem, (size_t)rt_pixtype_size(band->pixtype) * band->width * band->height);
 
 		rtn = rt_band_new_inline(
 			band->width, band->height,
@@ -899,43 +899,43 @@ rt_band_set_pixel_line(
 		case PT_8BSI: {
 			uint8_t *ptr = data;
 			ptr += offset;
-			memcpy(ptr, vals, size * len);
+			memcpy(ptr, vals, (size_t)size * len);
 			break;
 		}
 		case PT_16BUI: {
 			uint16_t *ptr = (uint16_t *) data;
 			ptr += offset;
-			memcpy(ptr, vals, size * len);
+			memcpy(ptr, vals, (size_t)size * len);
 			break;
 		}
 		case PT_16BSI: {
 			int16_t *ptr = (int16_t *) data;
 			ptr += offset;
-			memcpy(ptr, vals, size * len);
+			memcpy(ptr, vals, (size_t)size * len);
 			break;
 		}
 		case PT_32BUI: {
 			uint32_t *ptr = (uint32_t *) data;
 			ptr += offset;
-			memcpy(ptr, vals, size * len);
+			memcpy(ptr, vals, (size_t)size * len);
 			break;
 		}
 		case PT_32BSI: {
 			int32_t *ptr = (int32_t *) data;
 			ptr += offset;
-			memcpy(ptr, vals, size * len);
+			memcpy(ptr, vals, (size_t)size * len);
 			break;
 		}
 		case PT_32BF: {
 			float *ptr = (float *) data;
 			ptr += offset;
-			memcpy(ptr, vals, size * len);
+			memcpy(ptr, vals, (size_t)size * len);
 			break;
 		}
 		case PT_64BF: {
 			double *ptr = (double *) data;
 			ptr += offset;
-			memcpy(ptr, vals, size * len);
+			memcpy(ptr, vals, (size_t)size * len);
 			break;
 		}
 		default: {
@@ -1188,16 +1188,16 @@ rt_errorstate rt_band_get_pixel_line(
 	}
 	RASTER_DEBUGF(4, "_nvals = %d", _nvals);
 
-	ptr = data + (offset * pixsize);
+	ptr = data + ((size_t)offset * pixsize);
 
-	_vals = rtalloc(_nvals * pixsize);
+	_vals = rtalloc((size_t)_nvals * pixsize);
 	if (_vals == NULL) {
 		rterror("rt_band_get_pixel_line: Could not allocate memory for pixel values");
 		return ES_ERROR;
 	}
 
 	/* copy pixels */
-	memcpy(_vals, ptr, _nvals * pixsize);
+	memcpy(_vals, ptr, (size_t)_nvals * pixsize);
 
 	*vals = _vals;
 	*nvals = _nvals;

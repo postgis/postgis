@@ -368,7 +368,7 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 
 	if( s->has_z ) ndims++;
 	if( s->has_m ) ndims++;
-	pa_size = npoints * ndims * WKB_DOUBLE_SIZE;
+	pa_size = (size_t)npoints * ndims * WKB_DOUBLE_SIZE;
 
 	/* Empty! */
 	if( npoints == 0 )

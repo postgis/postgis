@@ -645,7 +645,7 @@ static size_t gserialized2_from_lwpoint_size(const LWPOINT *point)
 	assert(point);
 
 	size += 4; /* Number of points (one or zero (empty)). */
-	size += point->point->npoints * FLAGS_NDIMS(point->flags) * sizeof(double);
+	size += sizeof(double) * point->point->npoints * FLAGS_NDIMS(point->flags);
 
 	LWDEBUGF(3, "point size = %d", size);
 
@@ -659,7 +659,7 @@ static size_t gserialized2_from_lwline_size(const LWLINE *line)
 	assert(line);
 
 	size += 4; /* Number of points (zero => empty). */
-	size += line->points->npoints * FLAGS_NDIMS(line->flags) * sizeof(double);
+	size += sizeof(double) * line->points->npoints * FLAGS_NDIMS(line->flags);
 
 	LWDEBUGF(3, "linestring size = %d", size);
 
@@ -673,7 +673,7 @@ static size_t gserialized2_from_lwtriangle_size(const LWTRIANGLE *triangle)
 	assert(triangle);
 
 	size += 4; /* Number of points (zero => empty). */
-	size += triangle->points->npoints * FLAGS_NDIMS(triangle->flags) * sizeof(double);
+	size += sizeof(double)* triangle->points->npoints * FLAGS_NDIMS(triangle->flags);
 
 	LWDEBUGF(3, "triangle size = %d", size);
 
@@ -710,7 +710,7 @@ static size_t gserialized2_from_lwcircstring_size(const LWCIRCSTRING *curve)
 	assert(curve);
 
 	size += 4; /* Number of points (zero => empty). */
-	size += curve->points->npoints * FLAGS_NDIMS(curve->flags) * sizeof(double);
+	size += sizeof(double) * curve->points->npoints * FLAGS_NDIMS(curve->flags);
 
 	LWDEBUGF(3, "circstring size = %d", size);
 
@@ -865,7 +865,7 @@ static size_t gserialized2_from_lwline(const LWLINE *line, uint8_t *buf)
 	/* Copy in the ordinates. */
 	if (line->points->npoints > 0)
 	{
-		size = line->points->npoints * ptsize;
+		size = (size_t)line->points->npoints * ptsize;
 		memcpy(loc, getPoint_internal(line->points, 0), size);
 		loc += size;
 	}
@@ -920,7 +920,7 @@ static size_t gserialized2_from_lwpoly(const LWPOLY *poly, uint8_t *buf)
 		if (FLAGS_GET_ZM(poly->flags) != FLAGS_GET_ZM(pa->flags))
 			lwerror("Dimensions mismatch in lwpoly");
 
-		pasize = pa->npoints * ptsize;
+		pasize = (size_t)pa->npoints * ptsize;
 		if ( pa->npoints > 0 )
 			memcpy(loc, getPoint_internal(pa, 0), pasize);
 		loc += pasize;
@@ -960,7 +960,7 @@ static size_t gserialized2_from_lwtriangle(const LWTRIANGLE *triangle, uint8_t *
 	/* Copy in the ordinates. */
 	if (triangle->points->npoints > 0)
 	{
-		size = triangle->points->npoints * ptsize;
+		size = (size_t)triangle->points->npoints * ptsize;
 		memcpy(loc, getPoint_internal(triangle->points, 0), size);
 		loc += size;
 	}
@@ -997,7 +997,7 @@ static size_t gserialized2_from_lwcircstring(const LWCIRCSTRING *curve, uint8_t 
 	/* Copy in the ordinates. */
 	if (curve->points->npoints > 0)
 	{
-		size = curve->points->npoints * ptsize;
+		size = (size_t)curve->points->npoints * ptsize;
 		memcpy(loc, getPoint_internal(curve->points, 0), size);
 		loc += size;
 	}
@@ -1231,7 +1231,7 @@ lwpoint_from_gserialized2_buffer(uint8_t *data_ptr, lwflags_t lwflags, size_t *s
 	else
 		point->point = ptarray_construct(FLAGS_GET_Z(lwflags), FLAGS_GET_M(lwflags), 0); /* Empty point */
 
-	data_ptr += npoints * FLAGS_NDIMS(lwflags) * sizeof(double);
+	data_ptr += sizeof(double) * npoints * FLAGS_NDIMS(lwflags);
 
 	if (size)
 		*size = data_ptr - start_ptr;
@@ -1264,7 +1264,7 @@ lwline_from_gserialized2_buffer(uint8_t *data_ptr, lwflags_t lwflags, size_t *si
 	else
 		line->points = ptarray_construct(FLAGS_GET_Z(lwflags), FLAGS_GET_M(lwflags), 0); /* Empty linestring */
 
-	data_ptr += FLAGS_NDIMS(lwflags) * npoints * sizeof(double);
+	data_ptr += sizeof(double) * FLAGS_NDIMS(lwflags) * npoints;
 
 	if (size)
 		*size = data_ptr - start_ptr;
@@ -1354,7 +1354,7 @@ lwtriangle_from_gserialized2_buffer(uint8_t *data_ptr, lwflags_t lwflags, size_t
 	else
 		triangle->points = ptarray_construct(FLAGS_GET_Z(lwflags), FLAGS_GET_M(lwflags), 0); /* Empty triangle */
 
-	data_ptr += FLAGS_NDIMS(lwflags) * npoints * sizeof(double);
+	data_ptr += sizeof(double) * FLAGS_NDIMS(lwflags) * npoints;
 
 	if (size)
 		*size = data_ptr - start_ptr;
@@ -1386,7 +1386,7 @@ lwcircstring_from_gserialized2_buffer(uint8_t *data_ptr, lwflags_t lwflags, size
 	else
 		circstring->points = ptarray_construct(FLAGS_GET_Z(lwflags), FLAGS_GET_M(lwflags), 0); /* Empty circularstring */
 
-	data_ptr += FLAGS_NDIMS(lwflags) * npoints * sizeof(double);
+	data_ptr += sizeof(double) * FLAGS_NDIMS(lwflags) * npoints;
 
 	if (size)
 		*size = data_ptr - start_ptr;
