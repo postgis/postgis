@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Keep ST_AsMARC21 format checks within the format buffer (Even Rouault)
  - Fix a format truncation warning in the shapefile loader (Sandro Santilli)
  - Use the correct argument widths in raster WKB diagnostics (Sandro Santilli)
  - #5749, Clarify the ST_IsSimple documentation (Regina Obe)
