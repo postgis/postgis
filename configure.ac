@@ -1585,9 +1585,15 @@ if test "x$with_raster" != "xno"; then
 	AC_ARG_WITH(
 		[gdalconfig],
 		AS_HELP_STRING([--with-gdalconfig=@<:@ARG@:>@],[specify location of gdal-config (ARG=path).  Only used with --with-raster]),
-		[GDAL_CONFIG="$withval"],
+		[
+			if test -f "$withval"; then
+				GDAL_CONFIG="$withval"
+			else
+				AC_MSG_ERROR([the user-specified gdal-config file $withval does not exist])
+			fi
+		],
 		[AC_PATH_PROG([GDAL_CONFIG], [gdal-config], [])]
-  )
+	)
 
 	AC_MSG_CHECKING([GDAL version])
 
