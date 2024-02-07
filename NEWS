@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - Use size_t for geometry and raster serialization size arithmetic (Even Rouault)
   - Correct additional topology debug formats for 64-bit values (Sandro Santilli)
   - Fix topology debug formatting for 64-bit counts and IDs (Sandro Santilli)
   - Correct spelling in the English function reference (Mike Taves)
