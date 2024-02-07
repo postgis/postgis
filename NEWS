@@ -1,5 +1,5 @@
 PostGIS 3.2.7
-xxxx/xx/xx
+2024/02/06
 
 This version requires PostgreSQL 9.6-15, GEOS 3.6 or higher, and Proj 4.9+
 Additional features are enabled if you are running GEOS 3.9+

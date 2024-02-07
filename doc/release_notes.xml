@@ -3,6 +3,23 @@
   <title>Appendix</title>
    <subtitle>Release Notes</subtitle>
     <sect1>
+      <title>PostGIS 3.2.7</title>
+      <para>2024/02/06</para>
+      <simplesect>
+        <title>Bug Fixes</title>
+        <para><ulink url="https://trac.osgeo.org/postgis/ticket/5610">5610</ulink>, Allow Nan and infinity again in ST_SetPoint (Regina Obe)</para>
+        <para><ulink url="https://trac.osgeo.org/postgis/ticket/5627">5627</ulink>, Handling of EMPTY components in PiP check (Paul Ramsey)</para>
+        <para><ulink url="https://trac.osgeo.org/postgis/ticket/5629">5629</ulink>, Handling EMPTY components in repeated point removal (Paul Ramsey)</para>
+        <para><ulink url="https://trac.osgeo.org/postgis/ticket/5604">5604</ulink>, Handle distance between collections with empty elements (Paul Ramsey)</para>
+        <para><ulink url="https://trac.osgeo.org/postgis/ticket/5635">5635</ulink>, Handle NaN points in ST_Split (Regina Obe)</para>
+        <para>Logic error in ST_Covers(geography) (Paul Ramsey)</para>
+        <para><ulink url="https://trac.osgeo.org/postgis/ticket/5646">5646</ulink>, Crash on collections with empty members (Paul Ramsey)</para>
+        <para><ulink url="https://trac.osgeo.org/postgis/ticket/5580">5580</ulink>, Handle empty collection components in 3d distance (Paul Ramsey)</para>
+        <para><ulink url="https://trac.osgeo.org/postgis/ticket/5639">5639</ulink>, ST_DFullyWithin line/poly error case (Paul Ramsey)</para>
+        <para><ulink url="https://trac.osgeo.org/postgis/ticket/5662">5662</ulink>, Change XML parsers to SAX2 (Paul Ramsey)</para>
+      </simplesect>
+    </sect1>
+    <sect1>
       <title>PostGIS 3.2.6</title>
       <para>2023/11/19</para>
       <para>This version requires PostgreSQL 9.6-15, GEOS 3.6 or higher, and Proj 4.9+
@@ -11,23 +28,23 @@
       Proj 6.1+, and PostgreSQL 14+.</para>
       <simplesect>
             <title>Bug Fixes</title>
-            <para><ulink url="https://trac.osgeo.org/postgis/ticket/"></ulink>5568, Improve robustness of topology face split handling (Sandro Santilli)</para>
-            <para><ulink url="https://trac.osgeo.org/postgis/ticket/"></ulink>5548, Fix box-filtered validity check of topologies with edge-less faces
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5568">5568</ulink>, Improve robustness of topology face split handling (Sandro Santilli)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5548">5548</ulink>, Fix box-filtered validity check of topologies with edge-less faces
                       (Sandro Santilli)</para>
-            <para><ulink url="https://trac.osgeo.org/postgis/ticket/"></ulink>5494, Fix double-upgrade with view using st_dwithin(text, ...)
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5494">5494</ulink>, Fix double-upgrade with view using st_dwithin(text, ...)
                       (Sandro Santilli)</para>
-            <para><ulink url="https://trac.osgeo.org/postgis/ticket/"></ulink>5450, Fix macro expansion recursion on powerpc architectures.
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5450">5450</ulink>, Fix macro expansion recursion on powerpc architectures.
                       (Bas Couwenberg)</para>
-            <para><ulink url="https://trac.osgeo.org/postgis/ticket/"></ulink>5403, [postgis_topology] Fix ValidateTopology(bbox)
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5403">5403</ulink>, [postgis_topology] Fix ValidateTopology(bbox)
                       without topology in search_path (Sandro Santilli)</para>
-            <para><ulink url="https://trac.osgeo.org/postgis/ticket/"></ulink>5410, [postgis_raster] ST_Value bilinear resample,
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5410">5410</ulink>, [postgis_raster] ST_Value bilinear resample,
                       don't throw an error if Band has no NODATA value
                       (Regina Obe)</para>
-            <para><ulink url="https://trac.osgeo.org/postgis/ticket/"></ulink>5385, Postgres malloc assertion fail when
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5385">5385</ulink>, Postgres malloc assertion fail when
                       using pg_cancel_backend with ST_AsMVT
                       (Regina Obe, Paul Ramsey)</para>
             <para>Fix JsonB casting issue (Paul Ramsey)</para>
-            <para><ulink url="https://trac.osgeo.org/postgis/ticket/"></ulink>5616, Fix to find docbook on newer docbook installs (Regina Obe)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5616">5616</ulink>, Fix to find docbook on newer docbook installs (Regina Obe)</para>
       </simplesect>
     </sect1>
     <sect1>
