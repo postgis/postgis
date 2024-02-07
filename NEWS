@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - Keep ST_AsMARC21 format checks within the format buffer (Even Rouault)
   - Fix a format truncation warning in the shapefile loader (Sandro Santilli)
   - Use the correct argument widths in raster WKB diagnostics (Sandro Santilli)
   - Correct the ST_Touches predicate formula (Martin Davis)
