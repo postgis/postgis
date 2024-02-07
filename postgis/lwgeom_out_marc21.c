@@ -197,8 +197,7 @@ lwgeom_to_marc21(const LWGEOM *geom, const char* format) {
 
 static int is_format_valid(const char* format){
 
-	char *int_part;
-	char *dec_part = strchr(format, '.');
+	const char *dec_part = strchr(format, '.');
 	if(!dec_part) dec_part = strchr(format, ',');
 
 	if(!dec_part) {
@@ -210,12 +209,14 @@ static int is_format_valid(const char* format){
 		}
 
 	} else {
+		char* int_part;
+		const size_t dec_part_len = strlen(dec_part);
+		const size_t int_part_len = (size_t)(dec_part - format);
+		if(int_part_len == 0 || dec_part_len<2)	return LW_FALSE;
 
-		if(strlen(dec_part)<2)	return LW_FALSE;
-
-		int_part = palloc(sizeof(char)*strlen(format));
-		memcpy(int_part, &format[0], strlen(format) - strlen(dec_part));
-		int_part[strlen(format) - strlen(dec_part)]='\0';
+		int_part = palloc(int_part_len + 1);
+		memcpy(int_part, &format[0], int_part_len);
+		int_part[int_part_len]='\0';
 
 		if (strcmp(int_part,"hddd") && strcmp(int_part,"ddd") &&
 			strcmp(int_part,"hdddmm") && strcmp(int_part,"dddmm") &&
@@ -226,9 +227,9 @@ static int is_format_valid(const char* format){
 
 		}
 
-		for (size_t i = 1; i < strlen(dec_part); i++) {
+		for (size_t i = 1; i < dec_part_len; i++) {
 
-			if(dec_part[i]!=int_part[strlen(int_part)-1]) {
+			if(dec_part[i]!=int_part[int_part_len-1]) {
 
 				pfree(int_part);
 				return LW_FALSE;
