@@ -2069,7 +2069,7 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 		 * Calculate delta between penalties of join "common entries" to
 		 * different groups.
 		 */
-		for (i = 0; i < commonEntriesCount; i++)
+		for (i = 0; i < (OffsetNumber)commonEntriesCount; i++)
 		{
 			box = (BOX2DF *) DatumGetPointer(entryvec->vector[
 												commonEntries[i].index].key);
@@ -2086,7 +2086,7 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 		/*
 		 * Distribute "common entries" between groups.
 		 */
-		for (i = 0; i < commonEntriesCount; i++)
+		for (i = 0; i < (OffsetNumber)commonEntriesCount; i++)
 		{
 			float right_penalty, left_penalty;
 			bool place_right = true;

@@ -2492,7 +2492,7 @@ spatial_index_read_extent(Oid idx_oid, int key_type, int att_num)
 	Relation idx_rel;
 	Buffer buffer;
 	Page page;
-	OffsetNumber offset;
+	unsigned long offset;
 	unsigned long offset_max;
 
 	if (!idx_oid)

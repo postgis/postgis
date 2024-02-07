@@ -550,7 +550,7 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_3d(PG_FUNCTION_ARGS)
 	 */
 	old_ctx = MemoryContextSwitchTo(in->traversalMemoryContext);
 
-	for (octant = 0; octant < in->nNodes; octant++)
+	for (octant = 0; octant < (uint8)in->nNodes; octant++)
 	{
 		CubeBox3D *next_cube_box = nextCubeBox3D(cube_box, centroid, octant);
 		bool flag = true;

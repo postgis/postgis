@@ -449,7 +449,7 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_2d(PG_FUNCTION_ARGS)
 	 */
 	old_ctx = MemoryContextSwitchTo(in->traversalMemoryContext);
 
-	for (quadrant = 0; quadrant < in->nNodes; quadrant++)
+	for (quadrant = 0; quadrant < (uint8)in->nNodes; quadrant++)
 	{
 		RectBox *next_rect_box = nextRectBox(rect_box, centroid, quadrant);
 		bool flag = true;
