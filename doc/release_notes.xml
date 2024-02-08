@@ -3,11 +3,29 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
         <sect1>
-            <title>PostGIS 3.4.0</title>
+            <title>PostGIS 3.4.2</title>
+            <para>2024/02/08</para>
+            <para>This version requires PostgreSQL 12-16, GEOS 3.6 or higher, and Proj 6.1+. To take advantage of all features, GEOS 3.12+ is needed. To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.</para>
+            <para>NOTE: GEOS 3.12.1 details at <ulink url="https://libgeos.org/posts/2023-11-11-geos-3-12-1-released/">GEOS 3.12.1 release notes</ulink></para>
+            <simplesect>
+                <title>Bug Fixes</title>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5633">5633</ulink>, Fix load, upgrade and usage with standard_conforming_strings set to off (Sandro Santilli, Regina Obe)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5571">5571</ulink>, Memory over-allocation for narrow inputs (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5610">5610</ulink>, Allow Nan and infinity again in ST_SetPoint (Regina Obe)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5627">5627</ulink>, Handling of EMPTY components in PiP check (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5629">5629</ulink>, Handling EMPTY components in repeated point removal (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5604">5604</ulink>, Handle distance between collections with empty elements (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5635">5635</ulink>, Handle NaN points in ST_Split (Regina Obe)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5648">5648</ulink>, postgis_raster upgrade fails on PG16 (Ronan Dunklau)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5646">5646</ulink>, Crash on collections with empty members (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5580">5580</ulink>, Handle empty collection components in 3d distance (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5639">5639</ulink>, ST_DFullyWithin line/poly error case (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5662">5662</ulink>, Change XML parsers to SAX2 (Paul Ramsey)</para>
+            </simplesect>
+        </sect1>
+        <sect1>
+            <title>PostGIS 3.4.1</title>
             <para>2023/11/19</para>
-            <para>This version requires PostgreSQL 12-16, GEOS 3.6 or higher, and Proj 6.1+.
-            To take advantage of all features, GEOS 3.12+ is needed.
-            To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.</para>
             <para>NOTE: GEOS 3.12.1 details at <ulink url="https://libgeos.org/posts/2023-11-11-geos-3-12-1-released/">GEOS 3.12.1 release notes</ulink></para>
              <simplesect>
                 <title>Bug Fixes</title>

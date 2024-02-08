@@ -1,5 +1,6 @@
-PostGIS 3.4.2dev
-xxxx/xx/xx
+PostGIS 3.4.2
+2024/02/08
+
 This version requires PostgreSQL 12-16, GEOS 3.6 or higher, and Proj 6.1+.
 To take advantage of all features, GEOS 3.12+ is needed.
 To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
@@ -21,13 +22,9 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
  - #5639, ST_DFullyWithin line/poly error case (Paul Ramsey)
  - #5662, Change XML parsers to SAX2 (Paul Ramsey)
 
-* Bug Fixes and Enhancments *
 
 PostGIS 3.4.1
 2023/11/19
-This version requires PostgreSQL 12-16, GEOS 3.6 or higher, and Proj 6.1+.
-To take advantage of all features, GEOS 3.12+ is needed.
-To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
 
 * Bug Fixes *
 
