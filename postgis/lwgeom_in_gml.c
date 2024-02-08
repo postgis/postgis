@@ -126,8 +126,8 @@ Datum geom_from_gml(PG_FUNCTION_ARGS)
 static inline bool
 is_gml_element(xmlNodePtr xn, const char *gml_name)
 {
-	char *colon_pos;
-	char *node_name;
+	const char *colon_pos;
+	const char *node_name;
 
 	/* Not an element node, can't do anything */
 	if (!xn || xn->type != XML_ELEMENT_NODE)
@@ -136,7 +136,7 @@ is_gml_element(xmlNodePtr xn, const char *gml_name)
 	/* If there's a colon in the element name, */
 	/* move past it before checking for equality with */
 	/* the element name we are looking for */
-	node_name = (char*)xn->name;
+	node_name = (const char*)xn->name;
 	colon_pos = strchr(node_name, ':');
 	if (colon_pos)
 		node_name = colon_pos + 1;
