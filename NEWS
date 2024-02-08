@@ -1,4 +1,12 @@
-PostGIS 3.3.6dev
+PostGIS 3.3.7
+xxxx/xx/xx
+
+* Bug Fixes and Enhancements *
+
+ -
+
+
+PostGIS 3.3.6
 2024/02/07
 
 This version requires PostgreSQL 11-16, GEOS 3.6 or higher, and Proj 4.9+
