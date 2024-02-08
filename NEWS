@@ -1,9 +1,17 @@
-PostGIS 3.4.2
-2024/02/08
+PostGIS 3.4.3
+xxxx/xx/xx
 
 This version requires PostgreSQL 12-16, GEOS 3.6 or higher, and Proj 6.1+.
 To take advantage of all features, GEOS 3.12+ is needed.
 To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
+
+* Bug Fixes *
+
+ -
+
+
+PostGIS 3.4.2
+2024/02/08
 
 * Bug Fixes *
 
