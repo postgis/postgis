@@ -67,8 +67,8 @@ static LWGEOM* parse_kml(xmlNodePtr xnode, bool *hasz);
 static inline bool
 is_kml_element(xmlNodePtr xn, const char *kml_name)
 {
-	char *colon_pos;
-	char *node_name;
+	const char *colon_pos;
+	const char *node_name;
 
 	/* Not an element node, can't do anything */
 	if (!xn || xn->type != XML_ELEMENT_NODE)
@@ -77,7 +77,7 @@ is_kml_element(xmlNodePtr xn, const char *kml_name)
 	/* If there's a colon in the element name, */
 	/* move past it before checking for equality with */
 	/* the element name we are looking for */
-	node_name = (char*)xn->name;
+	node_name = (const char*)xn->name;
 	colon_pos = strchr(node_name, ':');
 	if (colon_pos)
 		node_name = colon_pos + 1;
@@ -111,7 +111,6 @@ Datum geom_from_kml(PG_FUNCTION_ARGS)
 	/* Begin to Parse XML doc */
 	xmlInitParser();
 	xmldoc = xmlReadMemory(xml, xml_size, NULL, NULL, 0);
-	// xmldoc = xmlReadMemory(xml, xml_size, NULL, NULL, XML_PARSE_SAX1);
 	if (!xmldoc || (xmlroot = xmlDocGetRootElement(xmldoc)) == NULL)
 	{
 		xmlFreeDoc(xmldoc);
