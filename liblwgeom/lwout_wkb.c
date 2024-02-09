@@ -390,7 +390,7 @@ static size_t ptarray_to_wkb_size(const POINTARRAY *pa, uint8_t variant)
 		size += WKB_INT_SIZE;
 
 	/* size of the double list */
-	size += pa->npoints * dims * WKB_DOUBLE_SIZE;
+	size += (size_t)pa->npoints * dims * WKB_DOUBLE_SIZE;
 
 	return size;
 }
@@ -414,7 +414,7 @@ static uint8_t* ptarray_to_wkb_buf(const POINTARRAY *pa, uint8_t *buf, uint8_t v
 	/* is not hex, and output endian matches internal endian. */
 	if ( pa->npoints && (dims == pa_dims) && ! wkb_swap_bytes(variant) && ! (variant & WKB_HEX)  )
 	{
-		size_t size = pa->npoints * dims * WKB_DOUBLE_SIZE;
+		size_t size = (size_t)pa->npoints * dims * WKB_DOUBLE_SIZE;
 		memcpy(buf, getPoint_internal(pa, 0), size);
 		buf += size;
 	}

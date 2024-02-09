@@ -96,7 +96,7 @@ Datum ellipsoid_in(PG_FUNCTION_ARGS)
 	nitems = sscanf(str,"SPHEROID[\"%19[^\"]\",%lf,%lf]",
 	                sphere->name, &sphere->a, &rf);
 
-	if ( nitems==0)
+	if (nitems != 3)
 		nitems = sscanf(str,"SPHEROID(\"%19[^\"]\",%lf,%lf)",
 		                sphere->name, &sphere->a, &rf);
 

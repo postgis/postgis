@@ -158,7 +158,7 @@ strreplace(
 	while ((tmp = strstr(tmp, oldstr)) != NULL && found != limit)
 		found++, tmp += oldlen;
 
-	length = strlen(str) + found * (newlen - oldlen);
+	length = (int)strlen(str) + found * (newlen - oldlen);
 	if ((result = (char *) rtalloc(length + 1)) == NULL) {
 		rterror(_("strreplace: Not enough memory"));
 		found = -1;

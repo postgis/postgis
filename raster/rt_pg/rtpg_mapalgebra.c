@@ -5967,8 +5967,8 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
             width, height);
 
     /* Allocate room for the neighborhood. */
-    neighborData = (Datum *)palloc(winwidth * winheight * sizeof(Datum));
-    neighborNulls = (bool *)palloc(winwidth * winheight * sizeof(bool));
+    neighborData = (Datum *)palloc(sizeof(Datum) * winwidth * winheight);
+    neighborNulls = (bool *)palloc(sizeof(bool) * winwidth * winheight);
 
     /* The dimensions of the neighborhood array, for creating a multi-dimensional array. */
     neighborDims[0] = winwidth;

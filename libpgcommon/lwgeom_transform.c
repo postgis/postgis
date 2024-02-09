@@ -498,7 +498,7 @@ lwproj_lookup(int32_t srid_from, int32_t srid_to, LWPROJ **pj)
 		*pj = AddToPROJSRSCache(proj_cache, srid_from, srid_to);
 	}
 
-	return pj != NULL;
+	return *pj != NULL;
 }
 
 int

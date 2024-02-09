@@ -3368,14 +3368,14 @@ rt_raster_gdal_rasterize(
 			rt_band_get_nodata(oldband, &nodataval);
 
 		/* allocate data */
-		data = rtalloc(rt_pixtype_size(arg->pixtype[i]) * _width * _height);
+		data = rtalloc((size_t)rt_pixtype_size(arg->pixtype[i]) * _width * _height);
 		if (data == NULL) {
 			rterror("rt_raster_gdal_rasterize: Could not allocate memory for band data");
 			_rti_rasterize_arg_destroy(arg);
 			rt_raster_destroy(rast);
 			return NULL;
 		}
-		memset(data, 0, rt_pixtype_size(arg->pixtype[i]) * _width * _height);
+		memset(data, 0, (size_t)rt_pixtype_size(arg->pixtype[i]) * _width * _height);
 
 		/* create new band of correct type */
 		band = rt_band_new_inline(
