@@ -7,7 +7,7 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
 
 * Bug Fixes *
 
- -
+ - #5649, ST_Value should return NULL on missing band (Paul Ramsey)
 
 
 PostGIS 3.4.2
