@@ -209,7 +209,7 @@ Datum RASTER_getPixelValueResample(PG_FUNCTION_ARGS)
 	/* Fetch Nth band using 0-based internal index */
 	band = rt_raster_get_band(raster, bandnum - 1);
 	if (!band) {
-		elog(ERROR, "Could not find raster band of index %d when getting pixel "
+		elog(NOTICE, "Could not find raster band of index %d when getting pixel "
 					"value. Returning NULL", bandnum);
 		PG_RETURN_NULL();
 	}
