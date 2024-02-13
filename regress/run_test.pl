@@ -348,7 +348,24 @@ else
 	}
 }
 
+unless ( $OPT_NOCREATE )
+{
+    foreach my $hook (@OPT_HOOK_AFTER_CREATE)
+    {
+        print "Running after-create script $hook\n";
+        die unless load_sql_file($hook, 1);
+    }
+}
+
+
 my $libver = sql("select postgis_lib_version()");
+if ( ! $libver )
+{
+	`dropdb $DB`;
+	print "\nSomething went wrong (no PostGIS installed in $DB).\n";
+	print "For details, check $REGRESS_LOG\n\n";
+	exit(1);
+}
 
 sub compute_executor_slow_factor
 {
@@ -371,14 +388,6 @@ EOF
 }
 
 compute_executor_slow_factor;
-
-if ( ! $libver )
-{
-	`dropdb $DB`;
-	print "\nSomething went wrong (no PostGIS installed in $DB).\n";
-	print "For details, check $REGRESS_LOG\n\n";
-	exit(1);
-}
 
 sub staged_scripts_dir
 {
@@ -510,19 +519,14 @@ print "  PROJ: $projver\n" if $projver;
 print "  SFCGAL: $sfcgalver\n" if $sfcgalver;
 print "  GDAL: $gdalver\n" if $gdalver;
 
+# TODO: allow for custom reporting scripts
+
 
 ##################################################################
 # Run the tests
 ##################################################################
 
 print "\nRunning tests\n\n";
-
-foreach my $hook (@OPT_HOOK_AFTER_CREATE)
-{
-	start_test("after-create-script $hook");
-	show_progress();
-	pass() if load_sql_file($hook, 1);
-}
 
 foreach $TEST (@ARGV)
 {
