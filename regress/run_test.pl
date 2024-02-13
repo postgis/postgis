@@ -4,7 +4,7 @@
 # PostGIS - Spatial Types for PostgreSQL
 # http://postgis.net
 #
-# Copyright (C) 2012-2014 Sandro Santilli <strk@kbt.io>
+# Copyright (C) 2012-2024 Sandro Santilli <strk@kbt.io>
 # Copyright (C) 2014-2015 Regina Obe <lr@pcorp.us>
 # Copyright (C) 2012-2013 Paul Ramsey <pramsey@cleverelephant.ca>
 #
@@ -519,7 +519,8 @@ print "  PROJ: $projver\n" if $projver;
 print "  SFCGAL: $sfcgalver\n" if $sfcgalver;
 print "  GDAL: $gdalver\n" if $gdalver;
 
-# TODO: allow for custom reporting scripts
+# allow hook scripts to perform arbitrary reports via output of INFO strings
+system("grep INFO $REGRESS_LOG | sed 's/INFO://'");
 
 
 ##################################################################

@@ -52,3 +52,6 @@ BEGIN
 
 END;
 $BODY$ LANGUAGE 'plpgsql';
+
+
+SELECT 'INFO: Most PostGIS functions locked into view usage';
