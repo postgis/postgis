@@ -1843,7 +1843,7 @@ static LWGEOM* lwgeom_from_gml(const char* xml)
 
 	/* Begin to Parse XML doc */
 	xmlInitParser();
-        xmldoc = xmlReadMemory(xml, xml_size, NULL, NULL, XML_PARSE_SAX1);
+	xmldoc = xmlReadMemory(xml, xml_size, NULL, NULL, 0);
 	if (!xmldoc || (xmlroot = xmlDocGetRootElement(xmldoc)) == NULL)
 	{
 		xmlFreeDoc(xmldoc);
