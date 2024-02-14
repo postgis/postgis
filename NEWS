@@ -1,4 +1,10 @@
 
+PostGIS 2.5.11
+2024/02/14
+This Valentines Day release addresses an error in the last release
+which did not include the full repair patch.
+
+
 PostGIS 2.5.10
 2024/02/06
 This emergency release addresses a behaviour change in RHEL libxml2
