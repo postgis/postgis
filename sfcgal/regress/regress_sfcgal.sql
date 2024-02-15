@@ -43,3 +43,13 @@ SELECT 'ST_3DUnion (aggregate)', ABS(ST_Volume(ST_3DUnion(g))) - 40 < 1e-12 FROM
     UNION
     SELECT ST_Extrude(ST_GeomFromText('POLYGON((-1 -1 -2, 1 -1 -2, 1 1 -2, -1 1 -2, -1 -1 -2))'), 0, 0, 4) AS g
 ) AS f;
+
+SELECT 'CG_Distance', CG_Distance('LINESTRING(0.0 0.0,-1.0 -1.0)', 'LINESTRING(3.0 4.0,4.0 5.0)');
+SELECT 'CG_3DDistance', CG_3DDistance('LINESTRING(-1.0 0.0 2.0,1.0 0.0 3.0)', 'TRIANGLE((-4.0 0.0 1.0,4.0 0.0 1.0,0.0 4.0 1.0,-4.0 0.0 1.0))');
+SELECT 'CG_Area', CG_Area('Polygon ((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 1, 2 2, 1 2, 1 1), (3 3, 4 3, 4 4, 3 4, 3 3))');
+SELECT 'CG_Intersects', CG_Intersects('LINESTRING(0 0, 5 5)', 'LINESTRING(5 0, 0 5)');
+SELECT 'CG_3DIntersects', CG_3DIntersects('POINT(1.2 0.1 0)','POLYHEDRALSURFACE(((0 0 0,0.5 0.5 0,1 0 0,1 1 0,0 1 0,0 0 0)),((1 0 0,2 0 0,2 1 0,1 1 0,1 0 0),(1.2 0.2 0,1.2 0.8 0,1.8 0.8 0,1.8 0.2 0,1.2 0.2 0)))');
+SELECT 'CG_Intersection', ST_AsText(CG_Intersection('LINESTRING(0 0, 5 5)', 'LINESTRING(5 0, 0 5)'));
+SELECT 'CG_Difference', ST_AsText(CG_Difference('LINESTRING(0 0, 1 0)', 'LINESTRING(0.5 0, 0.7 0)'));
+SELECT 'CG_Union', ST_AsText(CG_Union('POINT(.5 0)', 'LINESTRING(-1 0,1 0)'));
+SELECT 'CG_Triangulate', ST_AsText(CG_Triangulate('POLYGON((0.0 0.0,1.0 0.0,1.0 1.0,0.0 1.0,0.0 0.0),(0.2 0.2,0.2 0.8,0.8 0.8,0.8 0.2,0.2 0.2))'));

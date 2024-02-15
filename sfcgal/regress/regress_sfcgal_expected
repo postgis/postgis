@@ -14,3 +14,12 @@ postgis_sfcgal_noop|33
 ST_3DConvexHull|80.9227
 ST_3DUnion|t
 ST_3DUnion (aggregate)|t
+CG_Distance|5
+CG_3DDistance|1
+CG_Area|23
+CG_Intersects|t
+CG_3DIntersects|t
+CG_Intersection|POINT(2.5 2.5)
+CG_Difference|MULTILINESTRING((0 0,0.5 0),(0.7 0,1 0))
+CG_Union|LINESTRING(-1 0,0.5 0,1 0)
+CG_Triangulate|TIN(((0.8 0.2,0.2 0.2,1 0,0.8 0.2)),((0.2 0.2,0 0,1 0,0.2 0.2)),((1 1,0.8 0.8,0.8 0.2,1 1)),((0 1,0 0,0.2 0.2,0 1)),((0 1,0.2 0.8,1 1,0 1)),((0 1,0.2 0.2,0.2 0.8,0 1)),((0.2 0.8,0.8 0.8,1 1,0.2 0.8)),((0.2 0.8,0.2 0.2,0.8 0.2,0.2 0.8)),((1 1,0.8 0.2,1 0,1 1)),((0.8 0.8,0.2 0.8,0.8 0.2,0.8 0.8)))
