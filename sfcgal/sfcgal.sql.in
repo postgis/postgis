@@ -52,10 +52,39 @@ CREATE OR REPLACE FUNCTION ST_3DIntersection(geom1 geometry, geom2 geometry)
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_Intersection(geom1 geometry, geom2 geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME','sfcgal_intersection'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_3DIntersects(geom1 geometry, geom2 geometry)
+       RETURNS boolean
+       AS 'MODULE_PATHNAME','sfcgal_intersects3D'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_Intersects(geom1 geometry, geom2 geometry)
+       RETURNS boolean
+       AS 'MODULE_PATHNAME','sfcgal_intersects'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+
+
 -- Availability: 2.2
 CREATE OR REPLACE FUNCTION ST_3DDifference(geom1 geometry, geom2 geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_difference3D'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_Difference(geom1 geometry, geom2 geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME','sfcgal_difference'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
@@ -73,6 +102,20 @@ CREATE AGGREGATE ST_3DUnion(geometry) (
        parallel = safe
 );
 
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_Union(geom1 geometry, geom2 geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME','sfcgal_union'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+
+-- Availability: 3.3.0
+CREATE AGGREGATE CG_Union(geometry) (
+       sfunc = CG_Union,
+       stype = geometry,
+       parallel = safe
+);
+
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Tesselate(geometry)
        RETURNS geometry
@@ -80,10 +123,38 @@ CREATE OR REPLACE FUNCTION ST_Tesselate(geometry)
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_Triangulate(geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME','sfcgal_triangulate'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_3DArea(geometry)
        RETURNS FLOAT8
        AS 'MODULE_PATHNAME','sfcgal_area3D'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_Area(geom1 geometry)
+       RETURNS FLOAT8
+       AS 'MODULE_PATHNAME','sfcgal_area'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_3DDistance(geometry, geometry)
+       RETURNS FLOAT8
+       AS 'MODULE_PATHNAME','sfcgal_distance3D'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_Distance(geometry, geometry)
+       RETURNS FLOAT8
+       AS 'MODULE_PATHNAME','sfcgal_distance'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
