@@ -122,7 +122,7 @@ SA_OBJS = \
 	lwgeom_geos_cluster.o \
 	lwgeom_geos_node.o \
 	lwgeom_geos_split.o \
-	lwgeom_topo.o \
+	topo/lwgeom_topo.o \
 	lwgeom_transform.o \
 	lwgeom_wrapx.o \
 	lwunionfind.o \
@@ -154,8 +154,8 @@ SA_HEADERS = \
 	liblwgeom_internal.h \
 	lwgeodetic.h \
 	lwgeodetic_tree.h \
-	liblwgeom_topo.h \
-	liblwgeom_topo_internal.h \
+	topo/liblwgeom_topo.h \
+	topo/liblwgeom_topo_internal.h \
 	lwgeom_log.h \
 	lwgeom_geos.h \
 	lwgeom_log.h \

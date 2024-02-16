@@ -27,7 +27,7 @@
 #include "../postgis_config.h"
 
 #include "liblwgeom_internal.h" /* for gbox_clone */
-#include "liblwgeom_topo.h"
+#include "topo/liblwgeom_topo.h"
 
 /*#define POSTGIS_DEBUG_LEVEL 1*/
 #include "lwgeom_log.h"
