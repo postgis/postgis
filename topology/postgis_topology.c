@@ -69,7 +69,7 @@ struct LWT_BE_DATA_T
    * in the database.
    * It will be used by SPI_execute calls to
    * make sure to see any data change occurring
-   * doring operations.
+   * during operations.
    */
   bool data_changed;
 
