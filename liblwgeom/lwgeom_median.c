@@ -177,7 +177,7 @@ lwmpoint_extract_points_4d(const LWMPOINT* g, uint32_t* npoints, int* input_empt
 
 	for (uint32_t i = 0; i < g->ngeoms; i++)
 	{
-		LWGEOM* subg = lwcollection_getsubgeom((LWCOLLECTION*) g, i);
+		const LWGEOM* subg = lwcollection_getsubgeom((LWCOLLECTION*) g, i);
 		if (!lwgeom_is_empty(subg))
 		{
 			*input_empty = LW_FALSE;

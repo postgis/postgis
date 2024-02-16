@@ -415,6 +415,7 @@ int lwline_is_closed(const LWLINE *line);
 int lwpoly_is_closed(const LWPOLY *poly);
 int lwcircstring_is_closed(const LWCIRCSTRING *curve);
 int lwcompound_is_closed(const LWCOMPOUND *curve);
+int lwcompound_is_valid(const LWCOMPOUND *curve);
 int lwpsurface_is_closed(const LWPSURFACE *psurface);
 int lwtin_is_closed(const LWTIN *tin);
 

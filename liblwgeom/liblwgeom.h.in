@@ -1209,7 +1209,7 @@ extern LWGEOM *lwgeom_homogenize(const LWGEOM *geom);
  * LWMULTIx and LWCOLLECTION functions
  ******************************************************************/
 
-LWGEOM *lwcollection_getsubgeom(LWCOLLECTION *col, int gnum);
+const LWGEOM *lwcollection_getsubgeom(LWCOLLECTION *col, uint32_t gnum);
 LWCOLLECTION* lwcollection_extract(const LWCOLLECTION *col, uint32_t type);
 
 
@@ -1340,6 +1340,8 @@ extern LWPOINT* lwcircstring_get_lwpoint(const LWCIRCSTRING *circ, uint32_t wher
 extern LWPOINT* lwcompound_get_startpoint(const LWCOMPOUND *lwcmp);
 extern LWPOINT* lwcompound_get_endpoint(const LWCOMPOUND *lwcmp);
 extern LWPOINT* lwcompound_get_lwpoint(const LWCOMPOUND *lwcmp, uint32_t where);
+extern uint32_t lwcompound_num_curves(const LWCOMPOUND *compound);
+extern const LWGEOM *lwcollection_getsubcurve(const LWCOMPOUND *compound, uint32_t gnum);
 
 extern double ptarray_length_2d(const POINTARRAY *pts);
 extern int pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring);

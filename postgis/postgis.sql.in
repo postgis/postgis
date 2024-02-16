@@ -6533,6 +6533,18 @@ CREATE OR REPLACE FUNCTION ST_LineToCurve(Geometry geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
+CREATE OR REPLACE FUNCTION ST_NumCurves(Geometry geometry)
+	RETURNS integer
+	AS 'MODULE_PATHNAME', 'ST_NumCurves'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
+CREATE OR REPLACE FUNCTION ST_CurveN(Geometry geometry, i integer)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_CurveN'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
 -------------------------------------------------------------------------------
 -- SQL/MM - SQL Functions on type ST_Point
 -------------------------------------------------------------------------------

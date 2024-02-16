@@ -30,37 +30,80 @@
 #include "lwgeom_log.h"
 
 
+uint32_t
+lwcompound_num_curves(const LWCOMPOUND *compound)
+{
+	if ( compound->type != COMPOUNDTYPE )
+		lwerror("%s only supports compound curves", __func__);
+	return compound->ngeoms;
+}
+
+const LWGEOM *
+lwcollection_getsubcurve(const LWCOMPOUND *compound, uint32_t curvenum)
+{
+	return (const LWGEOM *)compound->geoms[curvenum];
+}
 
 int
 lwcompound_is_closed(const LWCOMPOUND *compound)
 {
-	size_t size;
-	int npoints=0;
-
-	if ( lwgeom_has_z((LWGEOM*)compound) )
-	{
-		size = sizeof(POINT3D);
-	}
-	else
-	{
-		size = sizeof(POINT2D);
-	}
-
-	if ( compound->geoms[compound->ngeoms - 1]->type == CIRCSTRINGTYPE )
-	{
-		npoints = ((LWCIRCSTRING *)compound->geoms[compound->ngeoms - 1])->points->npoints;
-	}
-	else if (compound->geoms[compound->ngeoms - 1]->type == LINETYPE)
-	{
-		npoints = ((LWLINE *)compound->geoms[compound->ngeoms - 1])->points->npoints;
-	}
-
-	if ( memcmp(getPoint_internal( (POINTARRAY *)compound->geoms[0]->data, 0),
-	            getPoint_internal( (POINTARRAY *)compound->geoms[compound->ngeoms - 1]->data,
-	                               npoints - 1),
-	            size) )
-	{
+	int hasz = lwgeom_has_z(lwcompound_as_lwgeom(compound));
+	if (lwgeom_is_empty(lwcompound_as_lwgeom(compound)))
 		return LW_FALSE;
+
+	for (uint32_t i = 0; i < compound->ngeoms; i++)
+	{
+		uint32_t i_end = i == 0 ? compound->ngeoms - 1 : i - 1;
+		const LWLINE *geom_start = (LWLINE *)(compound->geoms[i]);
+		const LWLINE *geom_end = (LWLINE *)(compound->geoms[i_end]);
+		const POINTARRAY *pa_start = geom_start->points;
+		const POINTARRAY *pa_end = geom_end->points;
+		if (hasz)
+		{
+			const POINT3D *pt_start = getPoint3d_cp(pa_start, 0);
+			const POINT3D *pt_end = getPoint3d_cp(pa_end, pa_end->npoints-1);
+			if (!p3d_same(pt_start, pt_end))
+				return LW_FALSE;
+		}
+		else
+		{
+			const POINT2D *pt_start = getPoint2d_cp(pa_start, 0);
+			const POINT2D *pt_end = getPoint2d_cp(pa_end, pa_end->npoints-1);
+			if (!p2d_same(pt_start, pt_end))
+				return LW_FALSE;
+		}
+	}
+
+	return LW_TRUE;
+}
+
+int
+lwcompound_is_valid(const LWCOMPOUND *compound)
+{
+	int hasz = lwgeom_has_z(lwcompound_as_lwgeom(compound));
+	if (lwgeom_is_empty(lwcompound_as_lwgeom(compound)))
+		return LW_TRUE;
+
+	for (uint32_t i = 1; i < compound->ngeoms; i++)
+	{
+		const LWLINE *geom_start = (LWLINE *)(compound->geoms[i]);
+		const LWLINE *geom_end = (LWLINE *)(compound->geoms[i-1]);
+		const POINTARRAY *pa_start = geom_start->points;
+		const POINTARRAY *pa_end = geom_end->points;
+		if (hasz)
+		{
+			const POINT3D *pt_start = getPoint3d_cp(pa_start, 0);
+			const POINT3D *pt_end = getPoint3d_cp(pa_end, pa_end->npoints-1);
+			if (!p3d_same(pt_start, pt_end))
+				return LW_FALSE;
+		}
+		else
+		{
+			const POINT2D *pt_start = getPoint2d_cp(pa_start, 0);
+			const POINT2D *pt_end = getPoint2d_cp(pa_end, pa_end->npoints-1);
+			if (!p2d_same(pt_start, pt_end))
+				return LW_FALSE;
+		}
 	}
 
 	return LW_TRUE;
