@@ -3087,7 +3087,7 @@ cb_computeFaceMBR(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID face)
     sql,
     "SELECT ST_BoundingDiagonal(ST_Collect("
     "ST_BoundingDiagonal(geom, true)"
-    "), true) FROM \"%s\".edge "
+    "), true) FROM \"%s\".edge_data "
     "WHERE left_face != right_face AND "
     "( left_face = %" LWTFMT_ELEMID
     " OR right_face = %" LWTFMT_ELEMID
@@ -3342,7 +3342,7 @@ cb_getEdgeWithinBox2D(const LWT_BE_TOPOLOGY *topo, const GBOX *box, uint64_t *nu
     appendStringInfoString(sql, "SELECT ");
     addEdgeFields(sql, fields, 0);
   }
-  appendStringInfo(sql, " FROM \"%s\".edge", topo->name);
+  appendStringInfo(sql, " FROM \"%s\".edge_data", topo->name);
 
   if ( box )
   {
