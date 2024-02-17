@@ -703,7 +703,7 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPoint(atopology varchar, apoint g
 --  Add a LineString into a topology
 --
 -- }{
-CREATE OR REPLACE FUNCTION topology.TopoGeo_addLinestring(atopology varchar, aline geometry, tolerance float8 DEFAULT 0)
+CREATE OR REPLACE FUNCTION topology.TopoGeo_AddLinestring(atopology varchar, aline geometry, tolerance float8 DEFAULT 0)
 	RETURNS SETOF int AS
 	'MODULE_PATHNAME', 'TopoGeo_AddLinestring'
   LANGUAGE 'c' VOLATILE;
@@ -738,11 +738,13 @@ LANGUAGE 'plpgsql';
 --} TopoGeo_AddGeometry
 
 
-CREATE OR REPLACE FUNCTION topology._TopoGeo_addLinestringNoFace(atopology varchar, aline geometry, tolerance float8 DEFAULT 0)
+-- Internal function used by ST_CreateTopoGeo
+CREATE OR REPLACE FUNCTION topology._TopoGeo_AddLinestringNoFace(atopology varchar, aline geometry, tolerance float8 DEFAULT 0)
 	RETURNS void AS
 	'MODULE_PATHNAME', 'TopoGeo_AddLinestringNoFace'
   LANGUAGE 'c' VOLATILE STRICT;
 
+-- Internal function used by ST_CreateTopoGeo
 CREATE OR REPLACE FUNCTION topology._RegisterMissingFaces(atopology varchar)
 	RETURNS void AS
 	'MODULE_PATHNAME', 'RegisterMissingFaces'
