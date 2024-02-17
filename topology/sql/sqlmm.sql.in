@@ -539,10 +539,7 @@ BEGIN
   --
   FOR rec IN
     WITH linework AS ( SELECT geom FROM ST_Dump(nodededges) )
-    SELECT topology.TopoGeo_addLinestring(
-      atopology, geom, 0,
-      skipFaceSplitDetection => true
-    )
+    SELECT topology._TopoGeo_addLinestringNoFace(atopology, geom)
     FROM linework
     ORDER BY geom
   LOOP

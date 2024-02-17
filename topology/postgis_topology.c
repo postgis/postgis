@@ -5191,6 +5191,80 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
   SRF_RETURN_NEXT(funcctx, result);
 }
 
+/*  _TopoGeo_AddLinestringNoFace(atopology, point, tolerance) */
+Datum TopoGeo_AddLinestringNoFace(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(TopoGeo_AddLinestringNoFace);
+Datum TopoGeo_AddLinestringNoFace(PG_FUNCTION_ARGS)
+{
+  text* toponame_text;
+  char* toponame;
+  double tol;
+  int nelems;
+  GSERIALIZED *geom;
+  LWGEOM *lwgeom;
+  LWLINE *ln;
+  LWT_TOPOLOGY *topo;
+
+  toponame_text = PG_GETARG_TEXT_P(0);
+  toponame = text_to_cstring(toponame_text);
+  PG_FREE_IF_COPY(toponame_text, 0);
+
+  geom = PG_GETARG_GSERIALIZED_P(1);
+  lwgeom = lwgeom_from_gserialized(geom);
+  /* TODO: allow multilines too */
+  ln = lwgeom_as_lwline(lwgeom);
+  if ( ! ln )
+  {
+    {
+      char buf[32];
+      _lwtype_upper_name(lwgeom_get_type(lwgeom), buf, 32);
+      lwgeom_free(lwgeom);
+      PG_FREE_IF_COPY(geom, 1);
+      lwpgerror("Invalid geometry type (%s) passed to "
+                "TopoGeo_AddLinestringNoFace, expected LINESTRING", buf);
+      PG_RETURN_NULL();
+    }
+  }
+
+  tol = PG_GETARG_FLOAT8(2);
+  if ( tol < 0 )
+  {
+    PG_FREE_IF_COPY(geom, 1);
+    lwpgerror("Tolerance must be >=0");
+    PG_RETURN_NULL();
+  }
+
+  if ( SPI_OK_CONNECT != SPI_connect() )
+  {
+    lwpgerror("Could not connect to SPI");
+    PG_RETURN_NULL();
+  }
+
+  topo = lwt_LoadTopology(be_iface, toponame);
+  pfree(toponame);
+  if ( ! topo )
+  {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  POSTGIS_DEBUG(1, "Calling lwt_AddLineNoFace");
+  /* return discarded as we assume lwerror would raise an exception earlier
+   * in case of error
+   */
+  lwt_AddLineNoFace(topo, ln, tol, &nelems);
+  POSTGIS_DEBUG(1, "lwt_AddLineNoFace returned");
+  lwgeom_free(lwgeom);
+  PG_FREE_IF_COPY(geom, 1);
+  lwt_FreeTopology(topo);
+  POSTGIS_DEBUG(1, "TopoGeo_AddLinestringNoFace calling SPI_finish");
+
+  SPI_finish();
+
+  PG_RETURN_VOID();
+}
+
 /*  TopoGeo_AddPolygon(atopology, poly, tolerance) */
 Datum TopoGeo_AddPolygon(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(TopoGeo_AddPolygon);
