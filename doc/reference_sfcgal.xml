@@ -335,7 +335,16 @@
 	</section>
 
 	<section xml:id="sfcgal_processing">
-		<title>SFCGAL Processing and Relationship Functions</title>
+        <title>SFCGAL Processing and Relationship Functions</title>
+
+        &CG_Intersection;
+        &CG_Intersects;
+        &CG_3DIntersects;
+        &CG_Difference;
+        &CG_Distance;
+        &CG_3DDistance;
+        &CG_Area;
+
 		<refentry xml:id="ST_3DConvexHull">
 			<refnamediv>
 			<refname>ST_3DConvexHull</refname>
@@ -387,7 +396,7 @@
 			<title>See Also</title>
 			<para><xref linkend="ST_Letters"/>, <xref linkend="ST_AsX3D"/></para>
 			</refsection>
-		</refentry>
+        </refentry>
 
 		<refentry xml:id="ST_3DIntersection">
 			<refnamediv>

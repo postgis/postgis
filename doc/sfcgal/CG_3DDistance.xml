@@ -1,0 +1,46 @@
+<refentry xml:id="CG_3DDistance">
+    <refnamediv>
+        <refname>CG_3DDistance</refname>
+        <refpurpose>Computes the minimum 3D distance between two geometries</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>double precision <function>CG_3DDistance</function></funcdef>
+                <paramdef>
+                    <type>geometry</type>
+                    <parameter>geomA</parameter>
+                </paramdef>
+                <paramdef>
+                    <type>geometry</type>
+                    <parameter>geomB</parameter>
+                </paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+    <refsection>
+        <title>Description</title>
+        <para>Computes the minimum 3D distance between two geometries.</para>
+        <para>Performed by the SFCGAL module</para>
+        <note>
+            <para>NOTE: this function returns a double precision value representing the 3D distance.</para>
+        </note>
+        <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+        <para>&sfcgal_required;</para>
+        <!-- Optionally mention support for Triangles and TINS  -->
+        <para>&T_support;</para>
+    </refsection>
+    <refsection>
+        <title>Geometry Examples</title>
+        <programlisting>SELECT CG_3DDistance('LINESTRING(-1.0 0.0 2.0,1.0 0.0 3.0)', 'TRIANGLE((-4.0 0.0 1.0,4.0 0.0 1.0,0.0 4.0 1.0,-4.0 0.0 1.0))');
+ cg_3ddistance
+----------------
+              1
+(1 row)</programlisting>
+    </refsection>
+    <refsection>
+        <title>See Also</title>
+        <para><xref linkend="CG_Distance"/>, <xref linkend="ST_3DDistance"/></para>
+    </refsection>
+</refentry>
+

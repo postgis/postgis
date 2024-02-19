@@ -1,0 +1,40 @@
+<refentry xml:id="CG_Triangulate">
+    <refnamediv>
+        <refname>CG_Triangulate</refname>
+        <refpurpose>Triangulates a polygonal geometry</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>geometry <function>CG_Triangulate</function></funcdef>
+                <paramdef>
+                    <type>geometry</type>
+                    <parameter>geom</parameter>
+                </paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+    <refsection>
+        <title>Description</title>
+        <para>Triangulates a polygonal geometry.</para>
+        <para>Performed by the SFCGAL module</para>
+        <note>
+            <para>NOTE: this function returns a geometry representing the triangulated result.</para>
+        </note>
+        <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+        <para>&sfcgal_required;</para>
+    </refsection>
+    <refsection>
+        <title>Geometry Examples</title>
+        <programlisting>SELECT CG_Triangulate('POLYGON((0.0 0.0,1.0 0.0,1.0 1.0,0.0 1.0,0.0 0.0),(0.2 0.2,0.2 0.8,0.8 0.8,0.8 0.2,0.2 0.2))');
+ cg_triangulate
+----------------
+ TIN(((0.8 0.2,0.2 0.2,1 0,0.8 0.2)),((0.2 0.2,0 0,1 0,0.2 0.2)),((1 1,0.8 0.8,0.8 0.2,1 1)),((0 1,0 0,0.2 0.2,0 1)),((0 1,0.2 0.8,1 1,0 1)),((0 1,0.2 0.2,0.2 0.8,0 1)),((0.2 0.8,0.8 0.8,1 1,0.2 0.8)),((0.2 0.8,0.2 0.2,0.8 0.2,0.2 0.8)),((1 1,0.8 0.2,1 0,1 1)),((0.8 0.8,0.2 0.8,0.8 0.2,0.8 0.8)))
+
+(1 row)</programlisting>
+    </refsection>
+    <refsection>
+        <title>See Also</title>
+        <para><xref linkend="geometry_triangulate"/></para>
+    </refsection>
+</refentry>

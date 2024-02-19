@@ -90,6 +90,17 @@
 <!ENTITY list_window_functions SYSTEM "list_window_functions.xsl.xml">
 <!ENTITY table_body_function_support_matrix SYSTEM "table_body_function_support_matrix.xsl.xml">
 
+<!-- SFCGAL functions -->
+<!ENTITY CG_Intersection SYSTEM "sfcgal/CG_Intersection.xml">
+<!ENTITY CG_Intersects SYSTEM "sfcgal/CG_Intersects.xml">
+<!ENTITY CG_3DIntersects SYSTEM "sfcgal/CG_3DIntersects.xml">
+<!ENTITY CG_Difference SYSTEM "sfcgal/CG_Difference.xml">
+<!ENTITY CG_Distance SYSTEM "sfcgal/CG_Distance.xml">
+<!ENTITY CG_3DDistance SYSTEM "sfcgal/CG_3DDistance.xml">
+<!ENTITY CG_Area SYSTEM "sfcgal/CG_Area.xml">
+<!ENTITY CG_Union SYSTEM "sfcgal/CG_Union.xml">
+<!ENTITY CG_Triangulate SYSTEM "sfcgal/CG_Triangulate.xml">
+
 ]>
 
 <!-- Converted by db4-upgrade version 1.1 -->

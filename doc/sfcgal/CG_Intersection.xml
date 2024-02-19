@@ -1,0 +1,44 @@
+<refentry xml:id="CG_Intersection">
+    <refnamediv>
+        <refname>CG_Intersection</refname>
+        <refpurpose>Computes the intersection of two geometries</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>geometry <function>CG_Intersection</function></funcdef>
+                <paramdef>
+                    <type>geometry</type>
+                    <parameter>geomA</parameter>
+                </paramdef>
+                <paramdef>
+                    <type>geometry</type>
+                    <parameter>geomB</parameter>
+                </paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+    <refsection>
+        <title>Description</title>
+        <para>Computes the intersection of two geometries.</para>
+        <para>Performed by the SFCGAL module</para>
+        <note>
+            <para>NOTE: this function returns a geometry representing the intersection.</para>
+        </note>
+        <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+        <para>&sfcgal_required;</para>
+    </refsection>
+    <refsection>
+        <title>Geometry Examples</title>
+        <programlisting>SELECT ST_AsText(CG_Intersection('LINESTRING(0 0, 5 5)', 'LINESTRING(5 0, 0 5)'));
+ cg_intersection
+-----------------
+ POINT(2.5 2.5)
+(1 row)</programlisting>
+    </refsection>
+    <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_3DIntersection"/>, <xref linkend="ST_Intersection"/></para>
+    </refsection>
+</refentry>
+

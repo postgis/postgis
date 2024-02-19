@@ -1,0 +1,46 @@
+<refentry xml:id="CG_Difference">
+    <refnamediv>
+        <refname>CG_Difference</refname>
+        <refpurpose>Computes the geometric difference between two geometries</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>geometry <function>CG_Difference</function></funcdef>
+                <paramdef>
+                    <type>geometry</type>
+                    <parameter>geomA</parameter>
+                </paramdef>
+                <paramdef>
+                    <type>geometry</type>
+                    <parameter>geomB</parameter>
+                </paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+    <refsection>
+        <title>Description</title>
+        <para>Computes the geometric difference between two geometries.
+            The resulting geometry is a set of points that are present in geomA but not in geomB.</para>
+        <para>Performed by the SFCGAL module</para>
+        <note>
+            <para>NOTE: this function returns a geometry.</para>
+        </note>
+        <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+        <para>&sfcgal_required;</para>
+        <!-- Optionally mention support for Triangles and TINS  -->
+        <para>&T_support;</para>
+    </refsection>
+    <refsection>
+        <title>Geometry Examples</title>
+        <programlisting>SELECT ST_AsText(CG_Difference('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'::geometry, 'LINESTRING(0 0, 2 2)'::geometry));
+ cg_difference
+---------------
+ POLYGON((0 0,1 0,1 1,0 1,0 0))
+(1 row)</programlisting>
+    </refsection>
+    <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_3DDifference"/>, <xref linkend="ST_Difference"/></para>
+    </refsection>
+</refentry>
