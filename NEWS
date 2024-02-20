@@ -30,6 +30,9 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.5.0+ is needed.
   - #5659, ST_DFullyWithin behaviour has changed to
            be ST_Contains(ST_Buffer(A, R), B) (Paul Ramsey)
 
+* Deprecated signatures *
+  - GH-761, ST_StraightSkeleton => CG_StraightSkeleton (Loïc Bartoletti)
+
 * New Features *
 
   - #5055, add explicit <> geometry operator to prevent non-unique
@@ -56,8 +59,10 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.5.0+ is needed.
             use style.css instead (Chris Mayo)
   - Faster implementation of point-in-poly cached index (Paul Ramsey)
   - Improve performance of ST_GeneratePoints (Paul Ramsey)
-  - #5361, ST_CurveN, ST_NumCurves and consistency in 
+  - #5361, ST_CurveN, ST_NumCurves and consistency in
            accessors on curved geometry (Paul Ramsey)
+  - GH-761, postgis_sfcgal: Add an optional parameter to CG_StraightSkeleton
+            (was ST_StraightSkeleton) to use m as a distance in result (Hannes Janetzek, Loïc Bartoletti)
 
 
 PostGIS 3.4.0
