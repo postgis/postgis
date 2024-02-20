@@ -186,18 +186,18 @@ CREATE OR REPLACE FUNCTION ST_MinkowskiSum(geometry, geometry)
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
--- Availability: 3.4.0
-CREATE OR REPLACE FUNCTION ST_StraightSkeletonDistanceInM(geometry)
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION CG_StraightSkeleton(geometry, use_m_as_distance boolean DEFAULT false)
        RETURNS geometry
-       AS 'MODULE_PATHNAME','sfcgal_straight_skeleton_distance_in_m'
+       AS 'MODULE_PATHNAME','sfcgal_straight_skeleton'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_StraightSkeleton(geometry)
        RETURNS geometry
-       AS 'MODULE_PATHNAME','sfcgal_straight_skeleton'
-       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       AS 'SELECT @extschema@.CG_StraightSkeleton($1, false)'
+			 LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
 -- Availability: 2.2.0
