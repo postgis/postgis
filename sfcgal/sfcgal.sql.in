@@ -194,11 +194,14 @@ CREATE OR REPLACE FUNCTION CG_StraightSkeleton(geometry, use_m_as_distance boole
        COST 100;
 
 -- Availability: 2.1.0
+-- Deprecation in 3.1.0
 CREATE OR REPLACE FUNCTION ST_StraightSkeleton(geometry)
-       RETURNS geometry
-       AS 'SELECT @extschema@.CG_StraightSkeleton($1, false)'
-			 LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-       COST 100;
+RETURNS geometry AS $$
+	SELECT @extschema@._postgis_deprecate(
+		'ST_StraightSkeleton', 'CG_StraightSkeleton', '3.1.0');
+	SELECT @extschema@.CG_StraightSkeleton($1, false);
+$$
+LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_ApproximateMedialAxis(geometry)
