@@ -123,7 +123,6 @@ Datum sfcgal_union3D(PG_FUNCTION_ARGS);
 Datum sfcgal_volume(PG_FUNCTION_ARGS);
 Datum sfcgal_extrude(PG_FUNCTION_ARGS);
 Datum sfcgal_straight_skeleton(PG_FUNCTION_ARGS);
-Datum sfcgal_straight_skeleton_distance_in_m(PG_FUNCTION_ARGS);
 Datum sfcgal_approximate_medial_axis(PG_FUNCTION_ARGS);
 Datum sfcgal_is_planar(PG_FUNCTION_ARGS);
 Datum sfcgal_orientation(PG_FUNCTION_ARGS);
@@ -424,6 +423,7 @@ sfcgal_straight_skeleton(PG_FUNCTION_ARGS)
 	sfcgal_geometry_t *geom;
 	sfcgal_geometry_t *result;
 	srid_t srid;
+	bool use_m_as_distance;
 
 	sfcgal_postgis_init();
 
@@ -432,46 +432,32 @@ sfcgal_straight_skeleton(PG_FUNCTION_ARGS)
 	geom = POSTGIS2SFCGALGeometry(input);
 	PG_FREE_IF_COPY(input, 0);
 
-	result = sfcgal_geometry_straight_skeleton(geom);
+	use_m_as_distance = PG_GETARG_BOOL(1);
+	if ( ( POSTGIS_SFCGAL_VERSION < 10308) && use_m_as_distance) {
+		lwpgnotice("The SFCGAL version this PostGIS binary "
+							"was compiled against (%d) doesn't support "
+							"'is_measured' argument in straight_skeleton "
+							"function (1.3.8+ required) "
+						  "fallback to function not using m as distance.",
+							POSTGIS_SFCGAL_VERSION);
+		use_m_as_distance = false;
+	}
+
+  if ( use_m_as_distance )
+  {
+		result = sfcgal_geometry_straight_skeleton_distance_in_m(geom);
+	}
+  else
+	{
+		result = sfcgal_geometry_straight_skeleton(geom);
+	}
+
 	sfcgal_geometry_delete(geom);
 
 	output = SFCGALGeometry2POSTGIS(result, 0, srid);
 	sfcgal_geometry_delete(result);
 
 	PG_RETURN_POINTER(output);
-}
-
-PG_FUNCTION_INFO_V1(sfcgal_straight_skeleton_distance_in_m);
-Datum sfcgal_straight_skeleton_distance_in_m(PG_FUNCTION_ARGS)
-{
-#if POSTGIS_SFCGAL_VERSION < 10308
-	lwpgerror("The SFCGAL version this PostGIS binary "
-	          "was compiled against (%d) doesn't support "
-	          "'sfcgal_straight_skeleton_distance_in_m' "
-	          "function (1.3.8+ required)",
-	          POSTGIS_SFCGAL_VERSION);
-	          PG_RETURN_NULL();
-#else /* POSTGIS_SFCGAL_VERSION >= 10308 */
-	GSERIALIZED *input, *output;
-	sfcgal_geometry_t *geom;
-	sfcgal_geometry_t *result;
-	srid_t srid;
-
-	sfcgal_postgis_init();
-
-	input = PG_GETARG_GSERIALIZED_P(0);
-	srid = gserialized_get_srid(input);
-	geom = POSTGIS2SFCGALGeometry(input);
-	PG_FREE_IF_COPY(input, 0);
-
-	result = sfcgal_geometry_straight_skeleton_distance_in_m(geom);
-	sfcgal_geometry_delete(geom);
-
-	output = SFCGALGeometry2POSTGIS(result, 0, srid);
-	sfcgal_geometry_delete(result);
-
-	PG_RETURN_POINTER(output);
-#endif
 }
 
 PG_FUNCTION_INFO_V1(sfcgal_approximate_medial_axis);
