@@ -27,7 +27,7 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.5.0+ is needed.
            (Jan Tojnar)
   - #5496, ST_Clip all variants replaced, will require
            rebuilding of materialized views that use them (Regina Obe)
-  - #5659, ST_DFullyWithin behaviour has changed to 
+  - #5659, ST_DFullyWithin behaviour has changed to
            be ST_Contains(ST_Buffer(A, R), B) (Paul Ramsey)
 
 * New Features *
@@ -41,6 +41,9 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.5.0+ is needed.
   - GT-156, postgis_sfcgal: CG_Visibility (Loïc Bartoletti)
   - GT-157, postgis_sfcgal: Add ST_ExtrudeStraightSkeleton (Loïc Bartoletti)
   - #5496, ST_Clip support for touched (Regina Obe)
+  - GH-760, postgis_sfcgal: CG_Intersection, CG_3DIntersects, CG_Intersects,
+            CG_Difference, CG_Union (and aggregate), CG_Triangulate, CG_Area,
+            CG_3DDistance, CG_Distance (Loïc Bartoletti)
 
 * Enhancements *
 
