@@ -1,8 +1,9 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.8.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -15,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -30,6 +31,10 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
+
 #ifndef YY_WKT_YY_LWIN_WKT_PARSE_H_INCLUDED
 # define YY_WKT_YY_LWIN_WKT_PARSE_H_INCLUDED
 /* Debug traces.  */
@@ -40,43 +45,47 @@
 extern int wkt_yydebug;
 #endif
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    POINT_TOK = 258,
-    LINESTRING_TOK = 259,
-    POLYGON_TOK = 260,
-    MPOINT_TOK = 261,
-    MLINESTRING_TOK = 262,
-    MPOLYGON_TOK = 263,
-    MSURFACE_TOK = 264,
-    MCURVE_TOK = 265,
-    CURVEPOLYGON_TOK = 266,
-    COMPOUNDCURVE_TOK = 267,
-    CIRCULARSTRING_TOK = 268,
-    COLLECTION_TOK = 269,
-    RBRACKET_TOK = 270,
-    LBRACKET_TOK = 271,
-    COMMA_TOK = 272,
-    EMPTY_TOK = 273,
-    SEMICOLON_TOK = 274,
-    TRIANGLE_TOK = 275,
-    TIN_TOK = 276,
-    POLYHEDRALSURFACE_TOK = 277,
-    DOUBLE_TOK = 278,
-    DIMENSIONALITY_TOK = 279,
-    SRID_TOK = 280
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    POINT_TOK = 258,               /* POINT_TOK  */
+    LINESTRING_TOK = 259,          /* LINESTRING_TOK  */
+    POLYGON_TOK = 260,             /* POLYGON_TOK  */
+    MPOINT_TOK = 261,              /* MPOINT_TOK  */
+    MLINESTRING_TOK = 262,         /* MLINESTRING_TOK  */
+    MPOLYGON_TOK = 263,            /* MPOLYGON_TOK  */
+    MSURFACE_TOK = 264,            /* MSURFACE_TOK  */
+    MCURVE_TOK = 265,              /* MCURVE_TOK  */
+    CURVEPOLYGON_TOK = 266,        /* CURVEPOLYGON_TOK  */
+    COMPOUNDCURVE_TOK = 267,       /* COMPOUNDCURVE_TOK  */
+    CIRCULARSTRING_TOK = 268,      /* CIRCULARSTRING_TOK  */
+    COLLECTION_TOK = 269,          /* COLLECTION_TOK  */
+    RBRACKET_TOK = 270,            /* RBRACKET_TOK  */
+    LBRACKET_TOK = 271,            /* LBRACKET_TOK  */
+    COMMA_TOK = 272,               /* COMMA_TOK  */
+    EMPTY_TOK = 273,               /* EMPTY_TOK  */
+    SEMICOLON_TOK = 274,           /* SEMICOLON_TOK  */
+    TRIANGLE_TOK = 275,            /* TRIANGLE_TOK  */
+    TIN_TOK = 276,                 /* TIN_TOK  */
+    POLYHEDRALSURFACE_TOK = 277,   /* POLYHEDRALSURFACE_TOK  */
+    DOUBLE_TOK = 278,              /* DOUBLE_TOK  */
+    DIMENSIONALITY_TOK = 279,      /* DIMENSIONALITY_TOK  */
+    SRID_TOK = 280                 /* SRID_TOK  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
 union YYSTYPE
 {
-#line 112 "lwin_wkt_parse.y" /* yacc.c:1909  */
+#line 112 "lwin_wkt_parse.y"
 
 	int integervalue;
 	double doublevalue;
@@ -85,9 +94,9 @@ union YYSTYPE
 	POINT coordinatevalue;
 	POINTARRAY *ptarrayvalue;
 
-#line 89 "lwin_wkt_parse.h" /* yacc.c:1909  */
-};
+#line 98 "lwin_wkt_parse.h"
 
+};
 typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
@@ -110,6 +119,8 @@ struct YYLTYPE
 
 extern YYSTYPE wkt_yylval;
 extern YYLTYPE wkt_yylloc;
+
 int wkt_yyparse (void);
+
 
 #endif /* !YY_WKT_YY_LWIN_WKT_PARSE_H_INCLUDED  */

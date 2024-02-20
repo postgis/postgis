@@ -92,6 +92,7 @@ LWCOLLECTION *
 lwcollection_construct_empty(uint8_t type, int32_t srid, char hasz, char hasm)
 {
 	LWCOLLECTION *ret;
+
 	if( ! lwtype_is_collection(type) )
 	{
 		lwerror("Non-collection type specified in collection constructor!");

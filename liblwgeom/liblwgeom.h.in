@@ -894,9 +894,24 @@ extern void lwgeom_add_bbox_deep(LWGEOM *lwgeom, GBOX *gbox);
 extern const GBOX *lwgeom_get_bbox(const LWGEOM *lwgeom);
 
 /**
-* Determine whether a LWGEOM can contain sub-geometries or not
+* Determine whether a LWGEOM contains sub-geometries or not
+* This basically just checks that the struct has geoms/ngeoms
+* members, like all collections.
 */
 extern int lwgeom_is_collection(const LWGEOM *lwgeom);
+
+/**
+* Determine whether a Geometry is a bag of sub-geometries.
+* point/linestring/polygon/circularstring/compoundcurve/curvepolygon
+* are all unitary, they are not just bags of other geometries.
+*/
+extern int lwgeom_is_unitary(const LWGEOM *geom);
+
+/**
+* Is this a type that has rings enclosing an area, but is
+* not a collection of areas? (triangle, polygon, curvepolygon)
+*/
+extern int lwgeom_has_rings(const LWGEOM *geom);
 
 /**
 * Check if a LWGEOM has any non-finite (NaN or Inf) coordinates.

@@ -238,14 +238,18 @@ Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom;
-	int32 ret = 1;
+	int32 ret = 0;
 
 	lwgeom = lwgeom_from_gserialized(geom);
 	if (lwgeom_is_empty(lwgeom))
 	{
 		ret = 0;
 	}
-	else if (lwgeom_is_collection(lwgeom))
+	else if (lwgeom_is_unitary(lwgeom))
+	{
+		ret = 1;
+	}
+	else
 	{
 		LWCOLLECTION *col = lwgeom_as_lwcollection(lwgeom);
 		ret = col->ngeoms;
@@ -260,37 +264,33 @@ PG_FUNCTION_INFO_V1(LWGEOM_geometryn_collection);
 Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *result;
-	int type = gserialized_get_type(geom);
-	int32 idx;
-	LWCOLLECTION *coll;
-	LWGEOM *subgeom;
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+	GSERIALIZED *result = NULL;
+	int32 idx = PG_GETARG_INT32(1);
+	LWCOLLECTION *coll = NULL;
+	LWGEOM *subgeom = NULL;
 
-	POSTGIS_DEBUG(2, "LWGEOM_geometryn_collection called.");
-
-	/* elog(NOTICE, "GeometryN called"); */
-
-	idx = PG_GETARG_INT32(1);
-	idx -= 1; /* index is 1-based */
-
-	if (gserialized_is_empty(geom))
-	{
+	/* Empty returns NULL */
+	if (lwgeom_is_empty(lwgeom))
 		PG_RETURN_NULL();
+
+	/* Unitary geometries just reflect back */
+	if (lwgeom_is_unitary(lwgeom))
+	{
+		if ( idx == 1 )
+			PG_RETURN_POINTER(geom);
+		else
+			PG_RETURN_NULL();
 	}
 
-	/* call is valid on multi* geoms only */
-	if (type==POINTTYPE     || type==LINETYPE    || type==CIRCSTRINGTYPE ||
-	    type==COMPOUNDTYPE  || type==POLYGONTYPE ||
-	    type==CURVEPOLYTYPE || type==TRIANGLETYPE)
-	{
-		if ( idx == 0 ) PG_RETURN_POINTER(geom);
+	coll = lwgeom_as_lwcollection(lwgeom);
+	if (!coll)
+		elog(ERROR, "Unable to handle type %d in ST_GeometryN", lwgeom->type);
+
+	/* Handle out-of-range index value */
+	idx -= 1;
+	if ( idx < 0 || idx >= (int32) coll->ngeoms )
 		PG_RETURN_NULL();
-	}
-
-	coll = lwgeom_as_lwcollection(lwgeom_from_gserialized(geom));
-
-	if ( idx < 0 ) PG_RETURN_NULL();
-	if ( idx >= (int32) coll->ngeoms ) PG_RETURN_NULL();
 
 	subgeom = coll->geoms[idx];
 	subgeom->srid = coll->srid;
@@ -299,12 +299,9 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	if ( coll->bbox ) lwgeom_add_bbox(subgeom);
 
 	result = geometry_serialize(subgeom);
-
-	lwcollection_free(coll);
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
-
 	PG_RETURN_POINTER(result);
-
 }
 
 
@@ -344,21 +341,12 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *result;
 	POINTARRAY *extring;
-	LWGEOM *lwgeom;
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 	LWLINE *line;
 	GBOX *bbox=NULL;
-	int type = gserialized_get_type(geom);
 
-	POSTGIS_DEBUG(2, "LWGEOM_exteriorring_polygon called.");
-
-	if ( (type != POLYGONTYPE) &&
-	     (type != CURVEPOLYTYPE) &&
-	     (type != TRIANGLETYPE))
-	{
+	if ( ! lwgeom_has_rings(lwgeom) )
 		PG_RETURN_NULL();
-	}
-
-	lwgeom = lwgeom_from_gserialized(geom);
 
 	if( lwgeom_is_empty(lwgeom) )
 	{
@@ -367,7 +355,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 		                              lwgeom_has_m(lwgeom));
 		result = geometry_serialize(lwline_as_lwgeom(line));
 	}
-	else if ( type == POLYGONTYPE )
+	else if ( lwgeom->type == POLYGONTYPE )
 	{
 		LWPOLY *poly = lwgeom_as_lwpoly(lwgeom);
 
@@ -387,7 +375,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 
 		lwgeom_release((LWGEOM *)line);
 	}
-	else if ( type == TRIANGLETYPE )
+	else if ( lwgeom->type == TRIANGLETYPE )
 	{
 		LWTRIANGLE *triangle = lwgeom_as_lwtriangle(lwgeom);
 
@@ -425,35 +413,51 @@ PG_FUNCTION_INFO_V1(LWGEOM_numinteriorrings_polygon);
 Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
-	int type = gserialized_get_type(geom);
-	LWGEOM *lwgeom;
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+	int type = lwgeom->type;
 	int result = -1;
 
-	if ( (type != POLYGONTYPE) &&
-	     (type != CURVEPOLYTYPE) &&
-	     (type != TRIANGLETYPE))
-	{
+	if ( !lwgeom_has_rings(lwgeom) )
 		PG_RETURN_NULL();
-	}
 
-	lwgeom = lwgeom_from_gserialized(geom);
 	if ( lwgeom_is_empty(lwgeom) )
+		PG_RETURN_INT32(0);
+
+	/*
+	 * POLYGON and TRIANGLE have same underlying structure
+	 * with an array of nrings rings of POINTARRAY holding the
+	 * rings
+	 */
+	if (type == POLYGONTYPE || type == TRIANGLETYPE)
 	{
-		result = 0;
+		const LWPOLY *poly = lwgeom_as_lwpoly(lwgeom);
+		result = poly->nrings - 1;
 	}
+	/*
+	 * CURVEPOLYGON on the other hand is structured
+	 * like a collection with each ring represented by
+	 * a geometry in a list ngeoms long.
+	 */
+	else if (type == CURVEPOLYTYPE)
+	{
+		const LWCURVEPOLY *curv = lwgeom_as_lwcurvepoly(lwgeom);
+		result = curv->nrings - 1;
+	}
+	/*
+	 * If a new type is added to the zoo, we should error
+	 * out.
+	 */
 	else
 	{
-		const LWPOLY *poly = (LWPOLY*)lwgeom;
-		result = poly->nrings - 1;
+		elog(ERROR, "%s unsupported ring type %d", __func__, type);
 	}
 
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
-
 	if ( result < 0 )
 		PG_RETURN_NULL();
-
-	PG_RETURN_INT32(result);
+	else
+		PG_RETURN_INT32(result);
 }
 
 /**

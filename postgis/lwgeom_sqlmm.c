@@ -154,7 +154,7 @@ Datum ST_NumCurves(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWCOMPOUND *lwcmp = lwgeom_as_lwcompound(lwgeom_from_gserialized(geom));
 	if (!lwcmp)
-	 	elog(ERROR, "%s only accepts CompoundCurve", __func__);
+		PG_RETURN_NULL();
 
 	PG_RETURN_INT32(lwcompound_num_curves(lwcmp));
 }
@@ -167,13 +167,11 @@ Datum ST_CurveN(PG_FUNCTION_ARGS)
 	GSERIALIZED *ret = NULL;
 	int index = PG_GETARG_INT32(1);
 	LWCOMPOUND *lwcmp = lwgeom_as_lwcompound(lwgeom_from_gserialized(geom));
-	if (index < 1)
-		elog(ERROR, "%s requires positive, non-zero index", __func__);
-
 	if (!lwcmp)
-		elog(ERROR, "%s only accepts CompoundCurve", __func__);
-
-	subgeom = lwgeom_clone(lwcollection_getsubcurve(lwcmp, index));
+		PG_RETURN_NULL();
+	if (index < 1 || (uint32_t)index > lwcmp->ngeoms)
+		PG_RETURN_NULL();
+	subgeom = lwgeom_clone(lwcollection_getsubcurve(lwcmp, index-1));
 	ret = geometry_serialize(subgeom);
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(ret);

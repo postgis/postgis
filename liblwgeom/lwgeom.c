@@ -1100,7 +1100,48 @@ lwgeom_is_collection(const LWGEOM *geom)
 	return lwtype_is_collection(geom->type);
 }
 
-/** Return TRUE if the geometry may contain sub-geometries, i.e. it is a MULTI* or COMPOUNDCURVE */
+int
+lwgeom_is_unitary(const LWGEOM *geom)
+{
+	switch (geom->type)
+	{
+	case POINTTYPE:
+	case LINETYPE:
+	case POLYGONTYPE:
+	case CURVEPOLYTYPE:
+	case COMPOUNDTYPE:
+	case CIRCSTRINGTYPE:
+	case TRIANGLETYPE:
+		return LW_TRUE;
+		break;
+
+	default:
+		return LW_FALSE;
+	}
+}
+
+int
+lwgeom_has_rings(const LWGEOM *geom)
+{
+	switch (geom->type)
+	{
+	case POLYGONTYPE:
+	case CURVEPOLYTYPE:
+	case TRIANGLETYPE:
+		return LW_TRUE;
+		break;
+
+	default:
+		return LW_FALSE;
+	}
+}
+
+/**
+ * Return TRUE if the geometry is structured as a wrapper on a geoms/ngeoms
+ * list of sub-geometries.
+ * Use lwgeom_is_unitary to determine if the numgeometries/geometryn accessor
+ * pattery makes sense
+ */
 int
 lwtype_is_collection(uint8_t type)
 {
