@@ -1258,7 +1258,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
                 Return an approximate medial axis for the areal input based on
                 its straight skeleton. Uses an SFCGAL specific API when built against
                 a capable version (1.2.0+). Otherwise the function is just a wrapper
-                around ST_StraightSkeleton (slower case).
+                around CG_StraightSkeleton (slower case).
             </para>
 
             <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
@@ -1293,7 +1293,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
         <refsection>
             <title>See Also</title>
 
-            <para><xref linkend="ST_StraightSkeleton"/></para>
+            <para><xref linkend="CG_StraightSkeleton"/></para>
         </refsection>
 
     </refentry>
@@ -1526,7 +1526,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
         </refsection>
         <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_Extrude" />, <xref linkend="ST_StraightSkeleton" /></para>
+            <para><xref linkend="ST_Extrude" />, <xref linkend="CG_StraightSkeleton" /></para>
         </refsection>
 
     </refentry>
@@ -1854,6 +1854,72 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
         </refsection>
     </refentry>
 
+    <refentry xml:id="CG_StraightSkeleton">
+        <refnamediv>
+            <refname>CG_StraightSkeleton</refname>
+
+            <refpurpose>Compute a straight skeleton from a geometry</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>CG_StraightSkeleton</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    <paramdef choice="opt"><type>boolean </type> <parameter>use_distance_as_m = false</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+            <para role="sfcgal_requirement" conformance="1.3.8">Requires SFCGAL &gt;= 1.3.8 for option use_distance_as_m</para>
+            <para>&sfcgal_required;</para>
+            <para>&Z_support;</para>
+            <para>&P_support;</para>
+            <para>&T_support;</para>
+        </refsection>
+
+        <refsection><title>Examples</title>
+            <programlisting>SELECT CG_StraightSkeleton(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));</programlisting>
+            <programlisting>ST_AsText(CG_StraightSkeleton('POLYGON((0 0,1 0,1 1,0 1,0 0))', true);</programlisting>
+            <screen>MULTILINESTRING M ((0 0 0,0.5 0.5 0.5),(1 0 0,0.5 0.5 0.5),(1 1 0,0.5 0.5 0.5),(0 1 0,0.5 0.5 0.5))</screen>
+
+            <informaltable>
+                <tgroup cols="2">
+                    <tbody>
+                        <row>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/st_straightskeleton01.png"/>
+                                            </imageobject>
+                                            <caption><para>Original polygon</para></caption>
+                                        </mediaobject>
+                                </informalfigure></para>
+                            </entry>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/st_straightskeleton02.png"/>
+                                            </imageobject>
+                                            <caption><para>Straight Skeleton of polygon</para></caption>
+                                        </mediaobject>
+                                </informalfigure></para>
+                            </entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </informaltable>
+        </refsection>
+
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="CG_ExtrudeStraightSkeleton" /></para>
+        </refsection>
+    </refentry>
 
     <refentry xml:id="ST_StraightSkeleton">
         <refnamediv>
