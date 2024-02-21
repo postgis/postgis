@@ -1528,9 +1528,9 @@ FROM (SELECT ST_BuildArea(
         <programlisting>
 -- Returns 3
 SELECT ST_NumCurves('COMPOUNDCURVE(
-    LINESTRING(2 2, 2.5 2.5),
+    (2 2, 2.5 2.5),
     CIRCULARSTRING(2.5 2.5, 4.5 2.5, 3.5 3.5),
-    LINESTRING(3.5 3.5, 2.5 4.5, 3 5, 2 2)
+    (3.5 3.5, 2.5 4.5, 3 5, 2 2)
   )');
 
 -- Returns 0
@@ -1578,9 +1578,9 @@ SELECT ST_NumCurves('COMPOUNDCURVE EMPTY');
 
         <programlisting>
 SELECT ST_AsText(ST_CurveN('COMPOUNDCURVE(
-    LINESTRING(2 2, 2.5 2.5),
+    (2 2, 2.5 2.5),
     CIRCULARSTRING(2.5 2.5, 4.5 2.5, 3.5 3.5),
-    LINESTRING(3.5 3.5, 2.5 4.5, 3 5, 2 2)
+    (3.5 3.5, 2.5 4.5, 3 5, 2 2)
   )', 1));
         </programlisting>
       </refsection>

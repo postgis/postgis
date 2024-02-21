@@ -245,9 +245,9 @@ SELECT 'minpoints issues - fail', ST_GeomFromText('COMPOUNDCURVE((0 0),(0 0,1 1)
 WITH f(geom) AS (
 SELECT
   'COMPOUNDCURVE(
-    LINESTRING(2 2, 2.5 2.5),
+    (2 2, 2.5 2.5),
     CIRCULARSTRING(2.5 2.5, 4.5 2.5, 3.5 3.5),
-    LINESTRING(3.5 3.5, 2.5 4.5, 3 5, 2 2)
+    (3.5 3.5, 2.5 4.5, 3 5, 2 2)
   )'::geometry AS geom
 )
 SELECT 'curve accessors 01',
@@ -259,6 +259,7 @@ SELECT 'curve accessors 01',
   ST_GeometryType(ST_CurveN(geom,1)) as curven_1,
   ST_GeometryType(ST_CurveN(geom,2)) as curven_2,
   ST_GeometryType(ST_CurveN(geom,3)) as curven_3,
-  ST_GeometryType(ST_CurveN(geom,3)) as curven_4,
+  ST_GeometryType(ST_CurveN(geom,4)) as curven_4,
+  ST_GeometryType(ST_CurveN(geom,0)) as curven_0,
   ST_CurveN(ST_CurveN(geom,3), 1) as curven_3_curven_1
 FROM f;
