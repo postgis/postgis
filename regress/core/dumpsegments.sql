@@ -73,7 +73,27 @@ FROM (
      ) j;
 
 SELECT '#5240',  dp.path, ST_AsText(dp.geom)
-	FROM ( SELECT ST_GeomFromText('MULTIPOLYGON (((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)), EMPTY)', 4326) As the_geom ) As foo1, ST_DumpSegments(foo1.the_geom) AS dp;
+FROM ST_DumpSegments(ST_GeomFromText('MULTIPOLYGON (((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)), EMPTY)', 4326)) AS dp;
 
 SELECT '#5240',  dp.path, ST_AsText(dp.geom)
-	FROM ( SELECT ST_GeomFromText('MULTIPOLYGON (EMPTY, ((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)) )', 4326) As the_geom ) As foo1, ST_DumpSegments(foo1.the_geom) AS dp;
+FROM ST_DumpSegments(ST_GeomFromText('MULTIPOLYGON (EMPTY, ((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)) )', 4326)) AS dp;
+
+SELECT 'dumpsegments13', path, ST_AsText(geom)
+FROM st_dumpsegments(
+'MULTICURVE(COMPOUNDCURVE(
+  LINESTRING(1 1, 2 2, 3 3, 4 4, 5 5, 6 6, 7 7),
+  CIRCULARSTRING(7 7, 6 6, 5 5, 4 4, 3 3, 2 2, 1 1)),
+  CIRCULARSTRING EMPTY,
+  COMPOUNDCURVE(
+  LINESTRING(1 1, 2 2, 3 3, 4 4, 5 5, 6 6, 7 7),
+  CIRCULARSTRING(7 7, 6 6, 5 5, 4 4, 3 3, 2 2, 1 1)),
+  LINESTRING EMPTY)'
+);
+
+SELECT 'dumpsegments14', path, ST_AsText(geom)
+FROM st_dumpsegments(
+'MULTISURFACE(CURVEPOLYGON(COMPOUNDCURVE(
+  LINESTRING(1 1, 2 2, 3 3, 4 4, 5 5, 6 6, 7 7),
+  CIRCULARSTRING(7 7, 6 6, 5 5, 4 4, 3 3, 2 2, 1 1))
+  ))'
+);

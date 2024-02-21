@@ -487,8 +487,7 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 			}
 		}
 
-		if (lwgeom->type == COLLECTIONTYPE || lwgeom->type == MULTILINETYPE ||
-		    lwgeom->type == MULTIPOLYGONTYPE || lwgeom->type == TINTYPE || lwgeom->type == COMPOUNDTYPE)
+		if (lwgeom_is_collection(lwgeom))
 		{
 			lwcoll = (LWCOLLECTION *)node->geom;
 
