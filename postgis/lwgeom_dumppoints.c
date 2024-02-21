@@ -379,6 +379,7 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 		POINT4D pt_start, pt_end;
 		POINTARRAY *segment_pa;
 		LWLINE *segment;
+		uint8_t stride = 1;
 
 		node = &state->stack[state->stacklen - 1];
 		lwgeom = node->geom;
@@ -437,13 +438,13 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 					}
 					else
 					{
-						state->pt++;
+						state->pt += stride;
 						continue;
 					}
 				}
 			}
 
-			if (points)
+			if (points && ((state->pt % stride) == 0))
 			{
 				getPoint4d_p(points, state->pt, &pt_start);
 				getPoint4d_p(points, state->pt + 1, &pt_end);
@@ -454,7 +455,7 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 
 				segment = lwline_construct(lwgeom->srid, NULL, segment_pa);
 
-				state->pt++;
+				state->pt += stride;
 
 				state->path[state->pathlen] = Int32GetDatum(state->pt);
 				pathpt[0] = PointerGetDatum(construct_array(state->path,
