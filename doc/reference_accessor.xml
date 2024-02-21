@@ -772,7 +772,7 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
             <itemizedlist>
             <listitem>
                 <para>the <parameter>geom</parameter> field
-                    <varname>LINESTRING</varname>s represent the segments of the supplied geometry.
+                    <varname>LINESTRING</varname>s represent the linear segments of the supplied geometry, while the <varname>CIRCULARSTRING</varname>s represent the arc segments.
                 </para>
             </listitem>
             <listitem>
