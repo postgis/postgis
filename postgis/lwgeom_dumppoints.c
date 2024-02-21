@@ -376,26 +376,29 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 		LWLINE *line;
 		LWTRIANGLE *tri;
 		LWPOLY *poly;
-		POINT4D pt_start, pt_end;
+		POINT4D pts_out[3];
 		POINTARRAY *segment_pa;
-		LWLINE *segment;
+		LWGEOM *segment;
 		uint8_t stride = 1;
 
 		node = &state->stack[state->stacklen - 1];
 		lwgeom = node->geom;
 
-		if ( !lwgeom_is_empty(lwgeom) && (lwgeom->type == LINETYPE || lwgeom->type == TRIANGLETYPE || lwgeom->type == POLYGONTYPE) )
+		if (lwgeom->type == CIRCSTRINGTYPE)
+			stride =2 ;
+
+		if ( !lwgeom_is_empty(lwgeom) && (lwgeom->type == LINETYPE || lwgeom->type == TRIANGLETYPE || lwgeom->type == POLYGONTYPE || lwgeom->type == CIRCSTRINGTYPE) )
 		{
-			if (lwgeom->type == LINETYPE)
+			if (lwgeom->type == LINETYPE || lwgeom->type == CIRCSTRINGTYPE)
 			{
 				line = (LWLINE *)lwgeom;
 
-				if (state->pt < line->points->npoints - 1)
+				if (state->pt < (line->points->npoints - stride))
 				{
 					points = line->points;
 				}
 			}
-			if (lwgeom->type == TRIANGLETYPE)
+			else if (lwgeom->type == TRIANGLETYPE)
 			{
 				tri = (LWTRIANGLE *)lwgeom;
 
@@ -413,7 +416,7 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 					state->pathlen--;
 				}
 			}
-			if (lwgeom->type == POLYGONTYPE)
+			else if (lwgeom->type == POLYGONTYPE)
 			{
 				poly = (LWPOLY *)lwgeom;
 
@@ -446,18 +449,23 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 
 			if (points && ((state->pt % stride) == 0))
 			{
-				getPoint4d_p(points, state->pt, &pt_start);
-				getPoint4d_p(points, state->pt + 1, &pt_end);
+				segment_pa = ptarray_construct(lwgeom_has_z(lwgeom), lwgeom_has_m(lwgeom), stride+1);
+				for (uint32_t i = 0; i < stride+1; i++)
+				{
+					getPoint4d_p(points, state->pt+i, &pts_out[i]);
+					ptarray_set_point4d(segment_pa, i, &pts_out[i]);
+				}
 
-				segment_pa = ptarray_construct(lwgeom_has_z(lwgeom), lwgeom_has_m(lwgeom), 2);
-				ptarray_set_point4d(segment_pa, 0, &pt_start);
-				ptarray_set_point4d(segment_pa, 1, &pt_end);
-
-				segment = lwline_construct(lwgeom->srid, NULL, segment_pa);
+				if (stride == 1)
+					segment = lwline_as_lwgeom(lwline_construct(lwgeom->srid, NULL, segment_pa));
+				else if (stride == 2)
+					segment = lwcircstring_as_lwgeom(lwcircstring_construct(lwgeom->srid, NULL, segment_pa));
+				else
+					elog(ERROR, "%s got unexpected strid", __func__);
 
 				state->pt += stride;
 
-				state->path[state->pathlen] = Int32GetDatum(state->pt);
+				state->path[state->pathlen] = Int32GetDatum(state->pt / stride);
 				pathpt[0] = PointerGetDatum(construct_array(state->path,
 									    state->pathlen + 1,
 									    INT4OID,
@@ -480,7 +488,7 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 		}
 
 		if (lwgeom->type == COLLECTIONTYPE || lwgeom->type == MULTILINETYPE ||
-		    lwgeom->type == MULTIPOLYGONTYPE || lwgeom->type == TINTYPE)
+		    lwgeom->type == MULTIPOLYGONTYPE || lwgeom->type == TINTYPE || lwgeom->type == COMPOUNDTYPE)
 		{
 			lwcoll = (LWCOLLECTION *)node->geom;
 
