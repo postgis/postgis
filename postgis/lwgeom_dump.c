@@ -77,7 +77,6 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 	GEOMDUMPNODE *node;
 	TupleDesc tupdesc;
 	HeapTuple tuple;
-	AttInMetadata *attinmeta;
 	MemoryContext oldcontext, newcontext;
 	Datum result;
 	char address[256];
@@ -124,8 +123,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 		 * generate attribute metadata needed later to produce
 		 * tuples from raw C strings
 		 */
-		attinmeta = TupleDescGetAttInMetadata(tupdesc);
-		funcctx->attinmeta = attinmeta;
+		funcctx->attinmeta = TupleDescGetAttInMetadata(tupdesc);;
 
 		MemoryContextSwitchTo(oldcontext);
 	}
@@ -223,7 +221,6 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 	struct POLYDUMPSTATE *state;
 	TupleDesc tupdesc;
 	HeapTuple tuple;
-	AttInMetadata *attinmeta;
 	MemoryContext oldcontext, newcontext;
 	Datum result;
 	char address[256];
@@ -263,8 +260,7 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 		 * generate attribute metadata needed later to produce
 		 * tuples from raw C strings
 		 */
-		attinmeta = TupleDescGetAttInMetadata(tupdesc);
-		funcctx->attinmeta = attinmeta;
+		funcctx->attinmeta = TupleDescGetAttInMetadata(tupdesc);;
 
 		MemoryContextSwitchTo(oldcontext);
 	}
@@ -315,12 +311,6 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 
 }
 
-
-struct FLATCOLLECTIONDUMPSTATE
-{
-	int geomnum;
-	LWCOLLECTION *col;
-};
 
 /*
 * Break an object up into smaller objects of no more than N vertices

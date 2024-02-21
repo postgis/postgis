@@ -92,6 +92,7 @@ LWCOLLECTION *
 lwcollection_construct_empty(uint8_t type, int32_t srid, char hasz, char hasm)
 {
 	LWCOLLECTION *ret;
+
 	if( ! lwtype_is_collection(type) )
 	{
 		lwerror("Non-collection type specified in collection constructor!");
@@ -110,10 +111,10 @@ lwcollection_construct_empty(uint8_t type, int32_t srid, char hasz, char hasm)
 	return ret;
 }
 
-LWGEOM *
-lwcollection_getsubgeom(LWCOLLECTION *col, int gnum)
+const LWGEOM *
+lwcollection_getsubgeom(LWCOLLECTION *col, uint32_t gnum)
 {
-	return (LWGEOM *)col->geoms[gnum];
+	return (const LWGEOM *)col->geoms[gnum];
 }
 
 /**

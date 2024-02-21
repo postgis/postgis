@@ -1049,7 +1049,6 @@ static void test_isclosed(void)
 	CU_ASSERT(lwline_is_closed((LWLINE *) geom));
 	lwgeom_free(geom);
 
-
 	/* CIRCULARSTRING */
 
 	/* Not Closed on 2D */

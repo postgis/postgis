@@ -373,7 +373,7 @@ drawPolygon(char *output, LWPOLY *lwp, GEOMETRY_DRAW_CONTEXT *ctx)
  * @return the numbers of character written to *output
  */
 static size_t
-drawGeometry(char *output, LWGEOM *lwgeom, GEOMETRY_DRAW_CONTEXT *ctx)
+drawGeometry(char *output, const LWGEOM *lwgeom, GEOMETRY_DRAW_CONTEXT *ctx)
 {
 	char *ptr = output;
 	unsigned int i;

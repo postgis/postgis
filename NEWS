@@ -53,6 +53,8 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.5.0+ is needed.
             use style.css instead (Chris Mayo)
   - Faster implementation of point-in-poly cached index (Paul Ramsey)
   - Improve performance of ST_GeneratePoints (Paul Ramsey)
+  - #5361, ST_CurveN, ST_NumCurves and consistency in 
+           accessors on curved geometry (Paul Ramsey)
 
 
 PostGIS 3.4.0

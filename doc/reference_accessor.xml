@@ -772,7 +772,7 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
             <itemizedlist>
             <listitem>
                 <para>the <parameter>geom</parameter> field
-                    <varname>LINESTRING</varname>s represent the segments of the supplied geometry.
+                    <varname>LINESTRING</varname>s represent the linear segments of the supplied geometry, while the <varname>CIRCULARSTRING</varname>s represent the arc segments.
                 </para>
             </listitem>
             <listitem>
@@ -1458,10 +1458,7 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the Nth interior ring (hole) of a POLYGON geometry as a LINESTRING.
-			The index starts at 1.
-            Returns NULL if the geometry is not a polygon or the index is out
-			of range.  </para>
+		<para>Returns the Nth interior ring (hole) of a POLYGON geometry as a LINESTRING. The index starts at 1. Returns NULL if the geometry is not a polygon or the index is out of range.</para>
 
 		<!-- optionally mention that this function uses indexes if appropriate -->
 		<note>
@@ -1502,6 +1499,103 @@ FROM (SELECT ST_BuildArea(
 		</para>
 	  </refsection>
 	</refentry>
+
+    <refentry xml:id="ST_NumCurves">
+      <refnamediv>
+        <refname>ST_NumCurves</refname>
+        <refpurpose>Return the number of component curves in a CompoundCurve.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>integer <function>ST_NumCurves</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>a_compoundcurve</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+        <para>Return the number of component curves in a CompoundCurve, zero for an empty CompoundCurve, or NULL for a non-CompoundCurve input. </para>
+        <para>&sqlmm_compliant; SQL-MM 3: 8.2.6, 8.3.5</para>
+        <para>&Z_support;</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>
+-- Returns 3
+SELECT ST_NumCurves('COMPOUNDCURVE(
+    (2 2, 2.5 2.5),
+    CIRCULARSTRING(2.5 2.5, 4.5 2.5, 3.5 3.5),
+    (3.5 3.5, 2.5 4.5, 3 5, 2 2)
+  )');
+
+-- Returns 0
+SELECT ST_NumCurves('COMPOUNDCURVE EMPTY');
+        </programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+        <para>
+            <xref linkend="ST_CurveN"/>,
+            <xref linkend="ST_Dump"/>,
+            <xref linkend="ST_ExteriorRing"/>,
+            <xref linkend="ST_NumInteriorRings"/>,
+            <xref linkend="ST_NumGeometries"/>
+        </para>
+      </refsection>
+    </refentry>
+
+    <refentry xml:id="ST_CurveN">
+      <refnamediv>
+        <refname>ST_CurveN</refname>
+        <refpurpose>Returns the Nth component curve geometry of a CompoundCurve.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_CurveN</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>a_compoundcurve</parameter></paramdef>
+            <paramdef><type>integer </type> <parameter>index</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+        <para>Returns the Nth component curve geometry of a CompoundCurve. The index starts at 1. Returns NULL if the geometry is not a CompoundCurve or the index is out of range.</para>
+        <para>&sqlmm_compliant; SQL-MM 3: 8.2.6, 8.3.5</para>
+        <para>&Z_support;</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>
+SELECT ST_AsText(ST_CurveN('COMPOUNDCURVE(
+    (2 2, 2.5 2.5),
+    CIRCULARSTRING(2.5 2.5, 4.5 2.5, 3.5 3.5),
+    (3.5 3.5, 2.5 4.5, 3 5, 2 2)
+  )', 1));
+        </programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+        <para>
+            <xref linkend="ST_NumCurves"/>,
+            <xref linkend="ST_Dump"/>,
+            <xref linkend="ST_ExteriorRing"/>,
+            <xref linkend="ST_NumInteriorRings"/>,
+            <xref linkend="ST_NumGeometries"/>
+        </para>
+      </refsection>
+    </refentry>
 
 	<refentry xml:id="ST_IsClosed">
 	  <refnamediv>
