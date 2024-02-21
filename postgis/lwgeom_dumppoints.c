@@ -450,7 +450,7 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 			if (points && ((state->pt % stride) == 0))
 			{
 				segment_pa = ptarray_construct(lwgeom_has_z(lwgeom), lwgeom_has_m(lwgeom), stride+1);
-				for (uint32_t i = 0; i < stride+1; i++)
+				for (uint8_t i = 0; i < stride+1; i++)
 				{
 					getPoint4d_p(points, state->pt+i, &pts_out[i]);
 					ptarray_set_point4d(segment_pa, i, &pts_out[i]);
