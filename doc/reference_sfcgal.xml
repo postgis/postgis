@@ -953,7 +953,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
         </refsection>
         <refsection>
             <title>See Also</title>
-            <para><xref linkend="CG_3DUnion"/>, <xref linkend="ST_Union"/></para>
+            <para><xref linkend="ST_3DUnion"/>, <xref linkend="ST_Union"/></para>
         </refsection>
     </refentry>
 
@@ -2070,7 +2070,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
         </refsection>
         <refsection>
             <title>See Also</title>
-            <para><xref linkend="geometry_triangulate"/></para>
+            <para><xref linkend="ST_ConstrainedDelaunayTriangles"/>, <xref linkend="ST_DelaunayTriangles"/>, <xref linkend="ST_TriangulatePolygon"/></para>
         </refsection>
     </refentry>
 
