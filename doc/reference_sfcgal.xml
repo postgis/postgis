@@ -1,1821 +1,2227 @@
 <!-- Converted by db4-upgrade version 1.1 -->
 <chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="reference_sfcgal">
-  <title>SFCGAL Functions Reference</title>
-	<para>
-		SFCGAL is a C++ wrapper library around CGAL that provides advanced 2D and 3D spatial functions.
-		For robustness, geometry coordinates have an exact rational number representation.
-	</para>
-	<para>
-		Installation instructions for the library can be found on the SFCGAL home page (<link xlink:href="http://www.sfcgal.org">http://www.sfcgal.org</link>).
-		To enable the functions use <code>create extension postgis_sfcgal</code>.
-	</para>
+    <title>SFCGAL Functions Reference</title>
+    <para>
+        SFCGAL is a C++ wrapper library around CGAL that provides advanced 2D and 3D spatial functions.
+        For robustness, geometry coordinates have an exact rational number representation.
+    </para>
+    <para>
+        Installation instructions for the library can be found on the SFCGAL home page (<link xlink:href="http://www.sfcgal.org">http://www.sfcgal.org</link>).
+        To enable the functions use <code>create extension postgis_sfcgal</code>.
+    </para>
 
-	<section xml:id="sfcgal_management">
-		<title>SFCGAL Management Functions</title>
-		<info>
-				<abstract>
-						<para>This section lists functions for determining version of SFCGAL and library dependencies you are running.</para>
-				</abstract>
-    </info>
+    <section xml:id="sfcgal_management">
+        <title>SFCGAL Management Functions</title>
+        <info>
+            <abstract>
+                <para>This section lists functions for determining version of SFCGAL and library dependencies you are running.</para>
+            </abstract>
+        </info>
 
-		<refentry xml:id="postgis_sfcgal_version">
-			<refnamediv>
-			<refname>postgis_sfcgal_version</refname>
+        <refentry xml:id="postgis_sfcgal_version">
+            <refnamediv>
+                <refname>postgis_sfcgal_version</refname>
 
-			<refpurpose>Returns the version of SFCGAL in use</refpurpose>
-			</refnamediv>
+                <refpurpose>Returns the version of SFCGAL in use</refpurpose>
+            </refnamediv>
 
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>text <function>postgis_sfcgal_version</function></funcdef>
-													<void/>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>text <function>postgis_sfcgal_version</function></funcdef>
+                        <void/>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
 
-			<refsection>
-			<title>Description</title>
+            <refsection>
+                <title>Description</title>
 
-					<para>Returns the version of SFCGAL in use</para>
+                <para>Returns the version of SFCGAL in use</para>
 
-			<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
-			<para>&sfcgal_required;</para>
-			</refsection>
-			<refsection>
-					<title>See Also</title>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+                <para>&sfcgal_required;</para>
+            </refsection>
+            <refsection>
+                <title>See Also</title>
 
-					<para><xref linkend="postgis_sfcgal_full_version"/></para>
-			</refsection>
+                <para><xref linkend="postgis_sfcgal_full_version"/></para>
+            </refsection>
 
-		</refentry>
+        </refentry>
 
-		<refentry xml:id="postgis_sfcgal_full_version">
-			<refnamediv>
-			<refname>postgis_sfcgal_full_version</refname>
+        <refentry xml:id="postgis_sfcgal_full_version">
+            <refnamediv>
+                <refname>postgis_sfcgal_full_version</refname>
 
-			<refpurpose>Returns the full version of SFCGAL in use including CGAL and Boost versions</refpurpose>
-			</refnamediv>
+                <refpurpose>Returns the full version of SFCGAL in use including CGAL and Boost versions</refpurpose>
+            </refnamediv>
 
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>text <function>postgis_sfcgal_full_version</function></funcdef>
-													<void/>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>text <function>postgis_sfcgal_full_version</function></funcdef>
+                        <void/>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
 
-			<refsection>
-			<title>Description</title>
+            <refsection>
+                <title>Description</title>
 
-					<para>Returns the full version of SFCGAL in use including CGAL and Boost versions</para>
+                <para>Returns the full version of SFCGAL in use including CGAL and Boost versions</para>
 
-			<para role="availability" conformance="3.3.0">Availability: 3.3.0</para>
-			<para>&sfcgal_required;</para>
-			</refsection>
-			<refsection>
-					<title>See Also</title>
+                <para role="availability" conformance="3.3.0">Availability: 3.3.0</para>
+                <para>&sfcgal_required;</para>
+            </refsection>
+            <refsection>
+                <title>See Also</title>
 
-					<para><xref linkend="postgis_sfcgal_version"/></para>
-			</refsection>
+                <para><xref linkend="postgis_sfcgal_version"/></para>
+            </refsection>
 
-		</refentry>
-	</section>
+        </refentry>
+    </section>
 
-	<section xml:id="sfcgal_accessors">
-		<title>SFCGAL Accessors and Setters</title>
-		<info>
-				<abstract>
-						<para>These functions access or set properties of geometries. Geometries primarily supported by these functions are TINS and Polyhedral Surfaces.</para>
-				</abstract>
-    </info>
+    <section xml:id="sfcgal_accessors">
+        <title>SFCGAL Accessors and Setters</title>
+        <info>
+            <abstract>
+                <para>These functions access or set properties of geometries. Geometries primarily supported by these functions are TINS and Polyhedral Surfaces.</para>
+            </abstract>
+        </info>
 
-		<refentry xml:id="ST_3DArea">
-			<refnamediv>
-				<refname>ST_3DArea</refname>
+        <refentry xml:id="ST_ForceLHR">
+            <refnamediv>
+                <refname>ST_ForceLHR</refname>
 
-				<refpurpose>Computes area of 3D surface geometries.  Will return 0 for solids.</refpurpose>
-			</refnamediv>
+                <refpurpose>Force LHR orientation</refpurpose>
+            </refnamediv>
 
-			<refsynopsisdiv>
-				<funcsynopsis>
-					<funcprototype>
-					<funcdef>float<function>ST_3DArea</function></funcdef>
-					<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
-					</funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>geometry <function>ST_ForceLHR</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
 
-			<refsection>
-				<title>Description</title>
+            <refsection>
+                <title>Description</title>
 
-				<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
-				<para>&sfcgal_required;</para>
-						<para>&sqlmm_compliant; SQL-MM IEC 13249-3: 8.1, 10.5</para>
-				<para>&Z_support;</para>
-				<para>&P_support;</para>
-				<para>&T_support;</para>
-			</refsection>
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+                <para>&sfcgal_required;</para>
+                <para>&Z_support;</para>
+                <para>&P_support;</para>
+                <para>&T_support;</para>
+            </refsection>
 
-			<refsection><title>Examples</title>
-				<para>Note: By default a PolyhedralSurface built from WKT is a surface geometry, not solid.  It therefore has surface area.  Once converted to a solid, no area.</para>
-			<programlisting>SELECT ST_3DArea(geom) As cube_surface_area,
-			ST_3DArea(ST_MakeSolid(geom)) As solid_surface_area
-			FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-			((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
-			((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-			((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-			((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
-			((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);
+        </refentry>
 
-			cube_surface_area | solid_surface_area
-			-------------------+--------------------
-										6 |                  0    </programlisting>
+        <refentry xml:id="ST_IsPlanar">
+            <refnamediv>
+                <refname>ST_IsPlanar</refname>
 
-			</refsection>
-			<refsection>
-				<title>See Also</title>
-				<para><xref linkend="ST_Area"/>, <xref linkend="ST_MakeSolid"/>, <xref linkend="ST_IsSolid"/>, <xref linkend="ST_Area"/></para>
-			</refsection>
-		</refentry>
+                <refpurpose>Check if a surface is or not planar</refpurpose>
+            </refnamediv>
 
-		<refentry xml:id="ST_ForceLHR">
-			<refnamediv>
-			<refname>ST_ForceLHR</refname>
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>boolean <function>ST_IsPlanar</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
 
-			<refpurpose>Force LHR orientation</refpurpose>
-			</refnamediv>
+            <refsection>
+                <title>Description</title>
 
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>geometry <function>ST_ForceLHR</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
+                <para role="availability" conformance="2.2.0">Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left out in 2.1 release.</para>
+                <para>&sfcgal_required;</para>
+                <para>&Z_support;</para>
+                <para>&P_support;</para>
+                <para>&T_support;</para>
+            </refsection>
 
-			<refsection>
-			<title>Description</title>
+        </refentry>
 
-			<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
-			<para>&sfcgal_required;</para>
-			<para>&Z_support;</para>
-			<para>&P_support;</para>
-			<para>&T_support;</para>
-			</refsection>
+        <refentry xml:id="ST_IsSolid">
+            <refnamediv>
+                <refname>ST_IsSolid</refname>
 
-		</refentry>
+                <refpurpose>Test if the geometry is a solid. No validity check is performed.</refpurpose>
+            </refnamediv>
 
-    <refentry xml:id="ST_IsPlanar">
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>boolean <function>ST_IsSolid</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+                <para>&sfcgal_required;</para>
+                <para>&Z_support;</para>
+                <para>&P_support;</para>
+                <para>&T_support;</para>
+            </refsection>
+
+        </refentry>
+
+        <refentry xml:id="ST_MakeSolid">
+            <refnamediv>
+                <refname>ST_MakeSolid</refname>
+
+                <refpurpose>Cast the geometry into a solid. No check is performed. To obtain a valid solid, the input geometry must be a closed Polyhedral Surface or a closed TIN.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>geometry <function>ST_MakeSolid</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+                <para>&sfcgal_required;</para>
+                <para>&Z_support;</para>
+                <para>&P_support;</para>
+                <para>&T_support;</para>
+            </refsection>
+        </refentry>
+
+        <refentry xml:id="ST_Orientation">
+            <refnamediv>
+                <refname>ST_Orientation</refname>
+
+                <refpurpose>Determine surface orientation</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>integer <function>ST_Orientation</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>The function only applies to polygons. It returns -1 if the polygon is counterclockwise oriented and 1 if the polygon is clockwise oriented.</para>
+
+                <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+                <para>&sfcgal_required;</para>
+                <para>&Z_support;</para>
+            </refsection>
+
+        </refentry>
+
+        <refentry xml:id="CG_Area">
+            <refnamediv>
+                <refname>CG_Area</refname>
+                <refpurpose>Calculates the area of a geometry</refpurpose>
+            </refnamediv>
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>double precision <function>CG_Area</function></funcdef>
+                        <paramdef>
+                            <type>geometry</type>
+                            <parameter>geom</parameter>
+                        </paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+            <refsection>
+                <title>Description</title>
+                <para>Calculates the area of a geometry.</para>
+                <para>Performed by the SFCGAL module</para>
+                <note>
+                    <para>NOTE: this function returns a double precision value representing the area.</para>
+                </note>
+                <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+                <para>&sfcgal_required;</para>
+            </refsection>
+            <refsection>
+                <title>Geometry Examples</title>
+                <programlisting>SELECT CG_Area('Polygon ((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 1, 2 2, 1 2, 1 1), (3 3, 4 3, 4 4, 3 4, 3 3))');
+                cg_area
+                --------
+                25
+                (1 row)</programlisting>
+        </refsection>
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_3DArea"/>, <xref linkend="ST_Area"/></para>
+        </refsection>
+    </refentry>
+
+    <refentry xml:id="ST_3DArea">
         <refnamediv>
-        <refname>ST_IsPlanar</refname>
+            <refname>ST_3DArea</refname>
 
-        <refpurpose>Check if a surface is or not planar</refpurpose>
+            <refpurpose>Computes area of 3D surface geometries.  Will return 0 for solids.</refpurpose>
         </refnamediv>
 
         <refsynopsisdiv>
-        <funcsynopsis>
-            <funcprototype>
-            <funcdef>boolean <function>ST_IsPlanar</function></funcdef>
-            <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-            </funcprototype>
-        </funcsynopsis>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>float<function>ST_3DArea</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
         </refsynopsisdiv>
 
         <refsection>
+            <title>Description</title>
+
+            <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+            <para>&sfcgal_required;</para>
+            <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 8.1, 10.5</para>
+            <para>&Z_support;</para>
+            <para>&P_support;</para>
+            <para>&T_support;</para>
+        </refsection>
+
+        <refsection><title>Examples</title>
+            <para>Note: By default a PolyhedralSurface built from WKT is a surface geometry, not solid.  It therefore has surface area.  Once converted to a solid, no area.</para>
+            <programlisting>SELECT ST_3DArea(geom) As cube_surface_area,
+            ST_3DArea(ST_MakeSolid(geom)) As solid_surface_area
+            FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+            ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
+            ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+            ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+            ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
+            ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);
+
+            cube_surface_area | solid_surface_area
+            -------------------+--------------------
+            6 |                  0    </programlisting>
+
+    </refsection>
+    <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_Area"/>, <xref linkend="ST_MakeSolid"/>, <xref linkend="ST_IsSolid"/>, <xref linkend="ST_Area"/></para>
+    </refsection>
+</refentry>
+
+
+<refentry xml:id="ST_Volume">
+    <refnamediv>
+        <refname>ST_Volume</refname>
+
+        <refpurpose>Computes the volume of a 3D solid. If applied to surface (even closed) geometries will return 0.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>float <function>ST_Volume</function></funcdef>
+                <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
         <title>Description</title>
 
-        <para role="availability" conformance="2.2.0">Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left out in 2.1 release.</para>
+        <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
         <para>&sfcgal_required;</para>
         <para>&Z_support;</para>
         <para>&P_support;</para>
         <para>&T_support;</para>
+        <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as ST_3DVolume)</para>
+    </refsection>
+
+    <refsection>
+        <title>Example</title>
+        <para>When closed surfaces are created with WKT, they are treated as areal rather than solid.  To make them solid, you need to use <xref linkend="ST_MakeSolid"/>.
+        Areal geometries have no volume.  Here is an example to demonstrate.</para>
+    <programlisting>SELECT ST_Volume(geom) As cube_surface_vol,
+    ST_Volume(ST_MakeSolid(geom)) As solid_surface_vol
+    FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
+    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
+    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);
+
+    cube_surface_vol | solid_surface_vol
+    ------------------+-------------------
+    0 |                 1
+</programlisting>
+    </refsection>
+
+    <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="ST_3DArea"/>, <xref linkend="ST_MakeSolid"/>, <xref linkend="ST_IsSolid"/></para>
+    </refsection>
+
+</refentry>
+    </section>
+
+    <section xml:id="sfcgal_processing">
+        <title>SFCGAL Processing and Relationship Functions</title>
+
+        <refentry xml:id="CG_Intersection">
+            <refnamediv>
+                <refname>CG_Intersection</refname>
+                <refpurpose>Computes the intersection of two geometries</refpurpose>
+            </refnamediv>
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>geometry <function>CG_Intersection</function></funcdef>
+                        <paramdef>
+                            <type>geometry</type>
+                            <parameter>geomA</parameter>
+                        </paramdef>
+                        <paramdef>
+                            <type>geometry</type>
+                            <parameter>geomB</parameter>
+                        </paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+            <refsection>
+                <title>Description</title>
+                <para>Computes the intersection of two geometries.</para>
+                <para>Performed by the SFCGAL module</para>
+                <note>
+                    <para>NOTE: this function returns a geometry representing the intersection.</para>
+                </note>
+                <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+                <para>&sfcgal_required;</para>
+            </refsection>
+            <refsection>
+                <title>Geometry Examples</title>
+                <programlisting>SELECT ST_AsText(CG_Intersection('LINESTRING(0 0, 5 5)', 'LINESTRING(5 0, 0 5)'));
+                cg_intersection
+                -----------------
+                POINT(2.5 2.5)
+                (1 row)</programlisting>
+        </refsection>
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_3DIntersection"/>, <xref linkend="ST_Intersection"/></para>
+        </refsection>
+    </refentry>
+
+    <refentry xml:id="CG_Intersects">
+        <refnamediv>
+            <refname>CG_Intersects</refname>
+
+            <refpurpose>Tests if two geometries intersect (they have at least one point in common)</refpurpose>
+        </refnamediv>
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>boolean <function>CG_Intersects</function></funcdef>
+                    <paramdef>
+                        <type>geometry</type>
+                        <parameter>geomA</parameter>
+                    </paramdef>
+                    <paramdef>
+                        <type>geometry</type>
+                        <parameter>geomB</parameter>
+                    </paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+        <refsection>
+            <title>Description</title>
+            <para>Returns <varname>true</varname> if two geometries intersect.
+            Geometries intersect if they have any point in common.
+        </para>
+
+        <para>Performed by the SFCGAL module</para>
+        <note>
+            <para>NOTE: this is the "allowable" version that returns a
+            boolean, not an integer.</para>
+    </note>
+    <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+    <para>&sfcgal_required;</para>
+    <!-- Optionally mention support for Triangles and TINS  -->
+    <para>&T_support;</para>
+</refsection>
+<refsection>
+    <title>Geometry Examples</title>
+    <programlisting>SELECT CG_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);
+    cg_intersects
+    ---------------
+    f
+    (1 row)
+    SELECT CG_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
+    cg_intersects
+    ---------------
+    t
+    (1 row)
+</programlisting>
+    </refsection>
+    <refsection>
+        <title>See Also</title>
+        <para><xref linkend="CG_3DIntersects"/>, <xref linkend="ST_3DIntersects"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Disjoint"/></para>
+    </refsection>
+</refentry>
+
+<refentry xml:id="CG_3DIntersects">
+    <refnamediv>
+        <refname>CG_3DIntersects</refname>
+        <refpurpose>Tests if two 3D geometries intersect</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>boolean <function>CG_3DIntersects</function></funcdef>
+                <paramdef>
+                    <type>geometry</type>
+                    <parameter>geomA</parameter>
+                </paramdef>
+                <paramdef>
+                    <type>geometry</type>
+                    <parameter>geomB</parameter>
+                </paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+    <refsection>
+        <title>Description</title>
+        <para>Tests if two 3D geometries intersect. 3D geometries intersect if they have any point in common in the three-dimensional space.</para>
+        <para>Performed by the SFCGAL module</para>
+        <note>
+            <para>NOTE: this is the "allowable" version that returns a boolean, not an integer.</para>
+        </note>
+        <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+        <para>&sfcgal_required;</para>
+        <!-- Optionally mention support for Triangles and TINS  -->
+        <para>&T_support;</para>
+    </refsection>
+    <refsection>
+        <title>Geometry Examples</title>
+        <programlisting>SELECT CG_3DIntersects('POINT(1.2 0.1 0)','POLYHEDRALSURFACE(((0 0 0,0.5 0.5 0,1 0 0,1 1 0,0 1 0,0 0 0)),((1 0 0,2 0 0,2 1 0,1 1 0,1 0 0),(1.2 0.2 0,1.2 0.8 0,1.8 0.8 0,1.8 0.2 0,1.2 0.2 0)))');
+        cg_3dintersects
+        ---------------
+        t
+        (1 row)
+    </programlisting>
+</refsection>
+<refsection>
+    <title>See Also</title>
+    <para><xref linkend="CG_Intersects"/>, <xref linkend="ST_3DIntersects"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Disjoint"/></para>
+</refsection>
+</refentry>
+
+<refentry xml:id="CG_Difference">
+    <refnamediv>
+        <refname>CG_Difference</refname>
+        <refpurpose>Computes the geometric difference between two geometries</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>geometry <function>CG_Difference</function></funcdef>
+                <paramdef>
+                    <type>geometry</type>
+                    <parameter>geomA</parameter>
+                </paramdef>
+                <paramdef>
+                    <type>geometry</type>
+                    <parameter>geomB</parameter>
+                </paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+    <refsection>
+        <title>Description</title>
+        <para>Computes the geometric difference between two geometries.
+        The resulting geometry is a set of points that are present in geomA but not in geomB.</para>
+    <para>Performed by the SFCGAL module</para>
+    <note>
+        <para>NOTE: this function returns a geometry.</para>
+    </note>
+    <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+    <para>&sfcgal_required;</para>
+    <!-- Optionally mention support for Triangles and TINS  -->
+    <para>&T_support;</para>
+</refsection>
+<refsection>
+    <title>Geometry Examples</title>
+    <programlisting>SELECT ST_AsText(CG_Difference('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'::geometry, 'LINESTRING(0 0, 2 2)'::geometry));
+    cg_difference
+    ---------------
+    POLYGON((0 0,1 0,1 1,0 1,0 0))
+    (1 row)</programlisting>
+    </refsection>
+    <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_3DDifference"/>, <xref linkend="ST_Difference"/></para>
+    </refsection>
+</refentry>
+
+<refentry xml:id="ST_3DDifference">
+    <refnamediv>
+        <refname>ST_3DDifference</refname>
+
+        <refpurpose>Perform 3D difference</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>geometry <function>ST_3DDifference</function></funcdef>
+                <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+                <paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+        <title>Description</title>
+        <para>Returns that part of geom1 that is not part of geom2.</para>
+        <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+        <para>&sfcgal_required;</para>
+        <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1</para>
+        <para>&Z_support;</para>
+        <para>&P_support;</para>
+        <para>&T_support;</para>
+    </refsection>
+
+    <refsection>
+        <title>Examples</title>
+        <para>3D images were generated using PostGIS <xref linkend="ST_AsX3D"/> and rendering in HTML using <link xlink:href="http://www.x3dom.org">X3Dom HTML Javascript rendering library</link>.</para>
+        <informaltable>
+            <tgroup cols="2">
+                <tbody>
+                    <row>
+                        <entry><para>
+                                <programlisting>SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
+                                50, 'quad_segs=2'),0,0,30) AS geom1,
+                                ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
+                                50, 'quad_segs=1'),0,0,30) AS geom2;
+                            </programlisting>
+                            <informalfigure>
+                                <mediaobject>
+                                    <imageobject>
+                                        <imagedata fileref="images/st_3ddifference01.png"/>
+                                    </imageobject>
+                                    <caption><para>Original 3D geometries overlaid. geom2 is the part that will be removed.</para></caption>
+                                </mediaobject>
+                        </informalfigure></para>
+                    </entry>
+                    <entry><para>
+                            <programlisting>SELECT ST_3DDifference(geom1,geom2)
+                            FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
+                            50, 'quad_segs=2'),0,0,30) AS geom1,
+                            ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
+                            50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;</programlisting>
+                        <informalfigure>
+                            <mediaobject>
+                                <imageobject>
+                                    <imagedata fileref="images/st_3ddifference02.png"/>
+                                </imageobject>
+                                <caption><para>What's left after removing geom2</para></caption>
+                            </mediaobject>
+                    </informalfigure></para>
+                </entry>
+            </row>
+        </tbody>
+    </tgroup>
+</informaltable>
+
+    </refsection>
+
+    <refsection>
+        <title>See Also</title>
+
+        <para>
+            <xref linkend="ST_Extrude"/>,
+            <xref linkend="ST_AsX3D"/>,  <xref linkend="ST_3DIntersection"/>
+            <xref linkend="ST_3DUnion"/>
+        </para>
+    </refsection>
+</refentry>
+
+<refentry xml:id="CG_Distance">
+    <refnamediv>
+        <refname>CG_Distance</refname>
+        <refpurpose>Computes the minimum distance between two geometries</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>double precision <function>CG_Distance</function></funcdef>
+                <paramdef>
+                    <type>geometry</type>
+                    <parameter>geomA</parameter>
+                </paramdef>
+                <paramdef>
+                    <type>geometry</type>
+                    <parameter>geomB</parameter>
+                </paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+    <refsection>
+        <title>Description</title>
+        <para>Computes the minimum distance between two geometries.</para>
+        <para>Performed by the SFCGAL module</para>
+        <note>
+            <para>NOTE: this function returns a double precision value representing the distance.</para>
+        </note>
+        <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+        <para>&sfcgal_required;</para>
+        <!-- Optionally mention support for Triangles and TINS  -->
+        <para>&T_support;</para>
+    </refsection>
+    <refsection>
+        <title>Geometry Examples</title>
+        <programlisting>SELECT CG_Distance('LINESTRING(0.0 0.0,-1.0 -1.0)', 'LINESTRING(3.0 4.0,4.0 5.0)');
+        cg_distance
+        -------------
+        2.0
+        (1 row)</programlisting>
+</refsection>
+<refsection>
+    <title>See Also</title>
+    <para><xref linkend="CG_3DDistance"/>, <xref linkend="ST_Distance"/></para>
+</refsection>
+</refentry>
+
+<refentry xml:id="CG_3DDistance">
+    <refnamediv>
+        <refname>CG_3DDistance</refname>
+        <refpurpose>Computes the minimum 3D distance between two geometries</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>double precision <function>CG_3DDistance</function></funcdef>
+                <paramdef>
+                    <type>geometry</type>
+                    <parameter>geomA</parameter>
+                </paramdef>
+                <paramdef>
+                    <type>geometry</type>
+                    <parameter>geomB</parameter>
+                </paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+    <refsection>
+        <title>Description</title>
+        <para>Computes the minimum 3D distance between two geometries.</para>
+        <para>Performed by the SFCGAL module</para>
+        <note>
+            <para>NOTE: this function returns a double precision value representing the 3D distance.</para>
+        </note>
+        <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+        <para>&sfcgal_required;</para>
+        <!-- Optionally mention support for Triangles and TINS  -->
+        <para>&T_support;</para>
+    </refsection>
+    <refsection>
+        <title>Geometry Examples</title>
+        <programlisting>SELECT CG_3DDistance('LINESTRING(-1.0 0.0 2.0,1.0 0.0 3.0)', 'TRIANGLE((-4.0 0.0 1.0,4.0 0.0 1.0,0.0 4.0 1.0,-4.0 0.0 1.0))');
+        cg_3ddistance
+        ----------------
+        1
+        (1 row)</programlisting>
+</refsection>
+<refsection>
+    <title>See Also</title>
+    <para><xref linkend="CG_Distance"/>, <xref linkend="ST_3DDistance"/></para>
+</refsection>
+</refentry>
+
+
+<refentry xml:id="ST_3DConvexHull">
+    <refnamediv>
+        <refname>ST_3DConvexHull</refname>
+
+        <refpurpose>Computes the 3D convex hull of a geometry.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>geometry <function>ST_3DConvexHull</function></funcdef>
+                <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+        <title>Description</title>
+
+        <para role="availability" conformance="3.3.0">Availability: 3.3.0</para>
+        <para>&sfcgal_required;</para>
+        <para>&Z_support;</para>
+        <para>&P_support;</para>
+        <para>&T_support;</para>
+    </refsection>
+
+    <refsection>
+        <title>Examples</title>
+        <programlisting>SELECT ST_AsText(ST_3DConvexHull('LINESTRING Z(0 0 5, 1 5 3, 5 7 6, 9 5 3 , 5 7 5, 6 3 5)'::geometry));</programlisting>
+        <screen>POLYHEDRALSURFACE Z (((1 5 3,9 5 3,0 0 5,1 5 3)),((1 5 3,0 0 5,5 7 6,1 5 3)),((5 7 6,5 7 5,1 5 3,5 7 6)),((0 0 5,6 3 5,5 7 6,0 0 5)),((6 3 5,9 5 3,5 7 6,6 3 5)),((0 0 5,9 5 3,6 3 5,0 0 5)),((9 5 3,5 7 5,5 7 6,9 5 3)),((1 5 3,5 7 5,9 5 3,1 5 3)))</screen>
+
+        <programlisting>WITH f AS (SELECT i, ST_Extrude(geom, 0,0, i ) AS geom
+        FROM ST_Subdivide(ST_Letters('CH'),5) WITH ORDINALITY AS sd(geom,i)
+        )
+        SELECT ST_3DConvexHull(ST_Collect(f.geom) )
+        FROM f;</programlisting>
+    <para>
+        <informalfigure>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="images/st_3dconvexhull.png"/>
+                </imageobject>
+                <caption><para>Original geometry overlaid with 3D convex hull</para></caption>
+            </mediaobject>
+        </informalfigure>
+    </para>
+</refsection>
+<refsection>
+    <title>See Also</title>
+    <para><xref linkend="ST_Letters"/>, <xref linkend="ST_AsX3D"/></para>
+</refsection>
+    </refentry>
+
+    <refentry xml:id="ST_3DIntersection">
+        <refnamediv>
+            <refname>ST_3DIntersection</refname>
+
+            <refpurpose>Perform 3D intersection</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>ST_3DIntersection</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+                    <paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+            <para>Return a geometry that is the shared portion between geom1 and geom2.</para>
+            <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+            <para>&sfcgal_required;</para>
+            <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1</para>
+            <para>&Z_support;</para>
+            <para>&P_support;</para>
+            <para>&T_support;</para>
+        </refsection>
+
+        <refsection>
+            <title>Examples</title>
+            <para>3D images were generated using PostGIS <xref linkend="ST_AsX3D"/> and rendering in HTML using <link xlink:href="http://www.x3dom.org">X3Dom HTML Javascript rendering library</link>.</para>
+            <informaltable>
+                <tgroup cols="2">
+                    <tbody>
+                        <row>
+                            <entry><para>
+                                    <programlisting>SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
+                                    50, 'quad_segs=2'),0,0,30) AS geom1,
+                                    ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
+                                    50, 'quad_segs=1'),0,0,30) AS geom2;
+                                </programlisting>
+                                <informalfigure>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="images/st_3ddifference01.png"/>
+                                        </imageobject>
+                                        <caption><para>Original 3D geometries overlaid. geom2 is shown semi-transparent</para></caption>
+                                    </mediaobject>
+                            </informalfigure></para>
+                        </entry>
+                        <entry><para>
+                                <programlisting>SELECT ST_3DIntersection(geom1,geom2)
+                                FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
+                                50, 'quad_segs=2'),0,0,30) AS geom1,
+                                ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
+                                50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;</programlisting>
+                            <informalfigure>
+                                <mediaobject>
+                                    <imageobject>
+                                        <imagedata fileref="images/st_3dintersection01.png"/>
+                                    </imageobject>
+                                    <caption><para>Intersection of geom1 and geom2</para></caption>
+                                </mediaobject>
+                        </informalfigure></para>
+                    </entry>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+
+    <para>3D linestrings and polygons</para>
+    <programlisting>	SELECT ST_AsText(ST_3DIntersection(linestring, polygon)) As wkt
+    FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
+    CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS polygon;
+
+    wkt
+    --------------------------------
+    LINESTRING Z (1 1 8,0.5 0.5 8)
+</programlisting>
+
+<para>Cube (closed Polyhedral Surface) and Polygon Z</para>
+<programlisting>SELECT ST_AsText(ST_3DIntersection(
+ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'),
+'POLYGON Z ((0 0 0, 0 0 0.5, 0 0.5 0.5, 0 0.5 0, 0 0 0))'::geometry))</programlisting>
+            <screen>TIN Z (((0 0 0,0 0 0.5,0 0.5 0.5,0 0 0)),((0 0.5 0,0 0 0,0 0.5 0.5,0 0.5 0)))</screen>
+
+            <para>Intersection of 2 solids that result in volumetric intersection is also a solid (ST_Dimension returns 3)</para>
+            <programlisting>SELECT ST_AsText(ST_3DIntersection( ST_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),0,0,30),
+            ST_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),2,0,10) ));</programlisting>
+        <screen>POLYHEDRALSURFACE Z (((13.3333333333333 13.3333333333333 10,20 20 0,20 20 10,13.3333333333333 13.3333333333333 10)),
+        ((20 20 10,16.6666666666667 23.3333333333333 10,13.3333333333333 13.3333333333333 10,20 20 10)),
+        ((20 20 0,16.6666666666667 23.3333333333333 10,20 20 10,20 20 0)),
+        ((13.3333333333333 13.3333333333333 10,10 10 0,20 20 0,13.3333333333333 13.3333333333333 10)),
+        ((16.6666666666667 23.3333333333333 10,12 28 10,13.3333333333333 13.3333333333333 10,16.6666666666667 23.3333333333333 10)),
+        ((20 20 0,9.99999999999995 30 0,16.6666666666667 23.3333333333333 10,20 20 0)),
+        ((10 10 0,9.99999999999995 30 0,20 20 0,10 10 0)),((13.3333333333333 13.3333333333333 10,12 12 10,10 10 0,13.3333333333333 13.3333333333333 10)),
+        ((12 28 10,12 12 10,13.3333333333333 13.3333333333333 10,12 28 10)),
+        ((16.6666666666667 23.3333333333333 10,9.99999999999995 30 0,12 28 10,16.6666666666667 23.3333333333333 10)),
+        ((10 10 0,0 20 0,9.99999999999995 30 0,10 10 0)),
+        ((12 12 10,11 11 10,10 10 0,12 12 10)),((12 28 10,11 11 10,12 12 10,12 28 10)),
+        ((9.99999999999995 30 0,11 29 10,12 28 10,9.99999999999995 30 0)),((0 20 0,2 20 10,9.99999999999995 30 0,0 20 0)),
+        ((10 10 0,2 20 10,0 20 0,10 10 0)),((11 11 10,2 20 10,10 10 0,11 11 10)),((12 28 10,11 29 10,11 11 10,12 28 10)),
+        ((9.99999999999995 30 0,2 20 10,11 29 10,9.99999999999995 30 0)),((11 11 10,11 29 10,2 20 10,11 11 10)))</screen>
+
+</refsection>
+
+        </refentry>
+
+        <refentry xml:id="CG_Union">
+            <refnamediv>
+                <refname>CG_Union</refname>
+                <refpurpose>Computes the union of two geometries</refpurpose>
+            </refnamediv>
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>geometry <function>CG_Union</function></funcdef>
+                        <paramdef>
+                            <type>geometry</type>
+                            <parameter>geomA</parameter>
+                        </paramdef>
+                        <paramdef>
+                            <type>geometry</type>
+                            <parameter>geomB</parameter>
+                        </paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+            <refsection>
+                <title>Description</title>
+                <para>Computes the union of two geometries.</para>
+                <para>Performed by the SFCGAL module</para>
+                <note>
+                    <para>NOTE: this function returns a geometry representing the union.</para>
+                </note>
+                <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+                <para>&sfcgal_required;</para>
+            </refsection>
+            <refsection>
+                <title>Geometry Examples</title>
+                <programlisting>SELECT CG_Union('POINT(.5 0)', 'LINESTRING(-1 0,1 0)');
+                cg_union
+                -----------
+                LINESTRING(-1 0,0.5 0,1 0)
+                (1 row)</programlisting>
+        </refsection>
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="CG_3DUnion"/>, <xref linkend="ST_Union"/></para>
+        </refsection>
+    </refentry>
+
+    <refentry xml:id="ST_3DUnion">
+        <refnamediv>
+            <refname>ST_3DUnion</refname>
+
+            <refpurpose>Perform 3D union.</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>ST_3DUnion</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+                    <paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
+                </funcprototype>
+                <funcprototype>
+                    <funcdef>geometry <function>ST_3DUnion</function></funcdef>
+                    <paramdef><type>geometry set</type> <parameter>g1field</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+
+            <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+            <para role="availability" conformance="3.3.0">Availability: 3.3.0 aggregate variant was added</para>
+            <para>&sfcgal_required;</para>
+            <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1</para>
+            <para>&Z_support;</para>
+            <para>&P_support;</para>
+            <para>&T_support;</para>
+
+            <para>
+                <emphasis role="bold">Aggregate variant:</emphasis>
+                returns a geometry that is the 3D union of a rowset of geometries.
+                The ST_3DUnion() function is an "aggregate"
+                function in the terminology of PostgreSQL. That means that it
+                operates on rows of data, in the same way the SUM() and AVG()
+                functions do and like most aggregates, it also ignores NULL geometries.
+            </para>
+        </refsection>
+
+        <refsection>
+            <title>Examples</title>
+            <para>3D images were generated using PostGIS <xref linkend="ST_AsX3D"/> and rendering in HTML using <link xlink:href="http://www.x3dom.org">X3Dom HTML Javascript rendering library</link>.</para>
+            <informaltable>
+                <tgroup cols="2">
+                    <tbody>
+                        <row>
+                            <entry><para>
+                                    <programlisting>SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
+                                    50, 'quad_segs=2'),0,0,30) AS geom1,
+                                    ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
+                                    50, 'quad_segs=1'),0,0,30) AS geom2;
+                                </programlisting>
+                                <informalfigure>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="images/st_3ddifference01.png"/>
+                                        </imageobject>
+                                        <caption><para>Original 3D geometries overlaid. geom2 is the one with transparency.</para></caption>
+                                    </mediaobject>
+                            </informalfigure></para>
+                        </entry>
+                        <entry><para>
+                                <programlisting>SELECT ST_3DUnion(geom1,geom2)
+                                FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
+                                50, 'quad_segs=2'),0,0,30) AS geom1,
+                                ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
+                                50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;</programlisting>
+                            <informalfigure>
+                                <mediaobject>
+                                    <imageobject>
+                                        <imagedata fileref="images/st_3dunion01.png"/>
+                                    </imageobject>
+                                    <caption><para>Union of geom1 and geom2</para></caption>
+                                </mediaobject>
+                        </informalfigure></para>
+                    </entry>
+                </row>
+            </tbody>
+        </tgroup>
+    </informaltable>
+
+</refsection>
+
+<refsection>
+    <title>See Also</title>
+
+    <para>
+        <xref linkend="ST_Extrude"/>,
+        <xref linkend="ST_AsX3D"/>,  <xref linkend="ST_3DIntersection"/>
+        <xref linkend="ST_3DDifference"/>
+    </para>
+</refsection>
+        </refentry>
+
+        <refentry xml:id="ST_AlphaShape">
+            <refnamediv>
+                <refname>ST_AlphaShape</refname>
+
+                <refpurpose>Computes an Alpha-shape enclosing a geometry</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>geometry <function>ST_AlphaShape</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                        <paramdef choice="opt"><type>float </type> <parameter>alpha</parameter></paramdef>
+                        <paramdef choice="opt"><type>boolean </type> <parameter>allow_holes = false</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Computes the
+                <link xlink:href="https://en.wikipedia.org/wiki/Alpha_shape">Alpha-Shape</link>
+                of the points in a geometry.
+                An alpha-shape is a (usually) concave polygonal geometry which contains all the vertices of the input,
+                and whose vertices are a subset of the input vertices.
+                An alpha-shape provides a closer fit to the shape of the input
+                than the shape produced by the <link linkend="ST_ConvexHull">convex hull</link>.
+            </para>
+
+            <para>
+                The "closeness of fit" is controlled by the <varname>alpha</varname> parameter,
+                which can have values from 0 to infinity.
+                Smaller alpha values produce more concave results.
+                Alpha values greater than some data-dependent value produce the convex hull of the input.
+            </para>
+
+            <note><para>
+                    Following the CGAL implementation, the alpha value is the <emphasis>square</emphasis> of the radius of the disc used
+                    in the Alpha-Shape algorithm to "erode" the Delaunay Triangulation of the input points.
+                    See <link xlink:href="https://doc.cgal.org/latest/Alpha_shapes_2/index.html#Chapter_2D_Alpha_Shapes">CGAL Alpha-Shapes</link>
+                    for more information.
+                    This is different from the original definition of alpha-shapes,
+                    which defines alpha as the radius of the eroding disc.
+            </para></note>
+
+            <para>The computed shape does not contain holes unless the optional <varname>allow_holes</varname> argument is specified as true.
+        </para>
+
+        <para>
+            This function effectively computes a concave hull of a geometry in a similar way to <xref linkend="ST_ConcaveHull"/>,
+            but uses CGAL and a different algorithm.
+        </para>
+
+        <para role="availability" conformance="3.3.0">Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1.</para>
+        <para>&sfcgal_required;</para>
+    </refsection>
+
+    <refsection>
+        <title>Examples</title>
+        <para>
+            <informalfigure>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="images/st_alphashape01.png"/>
+                    </imageobject>
+                    <caption><para>Alpha-shape of a MultiPoint (same example As <xref linkend="ST_OptimalAlphaShape"/>)</para></caption>
+                </mediaobject>
+            </informalfigure>
+            <programlisting>SELECT ST_AsText(ST_AlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
+            (88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),
+            (81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
+            (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
+            (75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
+            (80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
+            (36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry,80.2));</programlisting>
+        <screen>POLYGON((89 53,91 50,87 42,90 30,88 29,84 19,78 16,73 16,65 16,53 18,43 19,
+        37 23,30 22,28 33,23 36,26 44,27 54,23 60,24 67,27 77,
+        24 82,26 85,34 86,39 88,45 90,49 95,52 98,57 97,
+        64 97,72 95,76 88,75 84,83 72,85 71,88 58,89 53))</screen>
+</para>
+<para>
+    <informalfigure>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="images/st_alphashape02.png"/>
+            </imageobject>
+            <caption><para>Alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="ST_OptimalAlphaShape"/>)</para></caption>
+        </mediaobject>
+    </informalfigure>
+    <programlisting>SELECT ST_AsText(ST_AlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
+    (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
+    (75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
+    (80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
+    (36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry, 100.1,true))</programlisting>
+<screen>POLYGON((89 53,91 50,87 42,90 30,84 19,78 16,73 16,65 16,53 18,43 19,30 22,28 33,23 36,
+26 44,27 54,23 60,24 67,27 77,24 82,26 85,34 86,39 88,45 90,49 95,52 98,57 97,64 97,72 95,
+76 88,75 84,83 72,85 71,88 58,89 53),(36 61,36 68,40 75,43 80,60 81,68 73,77 67,
+81 60,82 54,81 47,78 43,76 27,62 22,54 32,44 42,38 46,36 61))</screen>
+            </para>
+
+            <para>
+                <informalfigure>
+                    <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="images/st_alphashape03.png"/>
+                        </imageobject>
+                        <caption><para>Alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="ST_ConcaveHull"/>)</para></caption>
+                    </mediaobject>
+                </informalfigure>
+                <programlisting>SELECT ST_AsText(ST_AlphaShape(
+                'MULTIPOINT ((132 64), (114 64), (99 64), (81 64), (63 64), (57 49), (52 36), (46 20), (37 20), (26 20), (32 36), (39 55), (43 69), (50 84), (57 100), (63 118), (68 133), (74 149), (81 164), (88 180), (101 180), (112 180), (119 164), (126 149), (132 131), (139 113), (143 100), (150 84), (157 69), (163 51), (168 36), (174 20), (163 20), (150 20), (143 36), (139 49), (132 64), (99 151), (92 138), (88 124), (81 109), (74 93), (70 82), (83 82), (99 82), (112 82), (126 82), (121 96), (114 109), (110 122), (103 138), (99 151), (34 27), (43 31), (48 44), (46 58), (52 73), (63 73), (61 84), (72 71), (90 69), (101 76), (123 71), (141 62), (166 27), (150 33), (159 36), (146 44), (154 53), (152 62), (146 73), (134 76), (143 82), (141 91), (130 98), (126 104), (132 113), (128 127), (117 122), (112 133), (119 144), (108 147), (119 153), (110 171), (103 164), (92 171), (86 160), (88 142), (79 140), (72 124), (83 131), (79 118), (68 113), (63 102), (68 93), (35 45))'::geometry,102.2, true));</programlisting>
+            <screen>POLYGON((26 20,32 36,35 45,39 55,43 69,50 84,57 100,63 118,68 133,74 149,81 164,88 180,
+            101 180,112 180,119 164,126 149,132 131,139 113,143 100,150 84,157 69,163 51,168 36,
+            174 20,163 20,150 20,143 36,139 49,132 64,114 64,99 64,90 69,81 64,63 64,57 49,52 36,46 20,37 20,26 20),
+            (74 93,81 109,88 124,92 138,103 138,110 122,114 109,121 96,112 82,99 82,83 82,74 93))</screen>
+    </para>
+</refsection>
+<refsection>
+    <title>See Also</title>
+    <para><xref linkend="ST_ConcaveHull"/>, <xref linkend="ST_OptimalAlphaShape"/></para>
+</refsection>
+
+        </refentry>
+
+        <refentry xml:id="CG_ApproxConvexPartition">
+            <refnamediv>
+                <refname>CG_ApproxConvexPartition</refname>
+
+                <refpurpose>Computes approximal convex partition of the polygon geometry</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>geometry <function>CG_ApproxConvexPartition</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Computes approximal convex partition of the polygon geometry (using a triangulation).
+            </para>
+
+            <note><para>
+                    A partition of a polygon P is a set of polygons such that the interiors of the polygons do not intersect and the union of the polygons is equal to the interior of the original polygon P.
+                    CG_ApproxConvexPartition and CG_GreeneApproxConvexPartition functions produce approximately optimal convex partitions. Both these functions produce convex decompositions by first decomposing the polygon into simpler polygons; CG_ApproxConvexPartition uses a triangulation and CG_GreeneApproxConvexPartition a monotone partition. These two functions both guarantee that they will produce no more than four times the optimal number of convex pieces but they differ in their runtime complexities. Though the triangulation-based approximation algorithm often results in fewer convex pieces, this is not always the case.
+            </para></note>
+
+
+            <para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
+            <para role="sfcgal_requirement" conformance="1.5.0">Requires SFCGAL &gt;= 1.5.0</para>
+            <para>&sfcgal_required;</para>
+        </refsection>
+
+        <refsection>
+            <title>Examples</title>
+            <para>
+                <informalfigure>
+                    <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="images/cg_approxconvexpartition01.png" />
+                        </imageobject>
+                        <caption><para>Approximal Convex Partition (same example As <xref linkend="CG_YMonotonePartition" />,  <xref linkend="CG_GreeneApproxConvexPartition" /> and <xref linkend="CG_OptimalConvexPartition" />)</para></caption>
+                    </mediaobject>
+                </informalfigure>
+                <programlisting>SELECT ST_AsText(CG_ApproxConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
+                <screen>GEOMETRYCOLLECTION(POLYGON((156 150,83 181,89 131,148 120,156 150)),POLYGON((32 159,0 45,41 86,32 159)),POLYGON((107 61,32 159,41 86,107 61)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,41 86,67 24,109 31,107 61)),POLYGON((148 120,107 61,109 31,170 60,148 120)),POLYGON((156 150,148 120,170 60,180 110,156 150)))</screen>
+            </para>
+        </refsection>
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="CG_YMonotonePartition" />, <xref linkend="CG_GreeneApproxConvexPartition" />, <xref linkend="CG_OptimalConvexPartition" /></para>
         </refsection>
 
     </refentry>
 
-		<refentry xml:id="ST_IsSolid">
-			<refnamediv>
-			<refname>ST_IsSolid</refname>
+    <refentry xml:id="ST_ApproximateMedialAxis">
+        <refnamediv>
+            <refname>ST_ApproximateMedialAxis</refname>
 
-			<refpurpose>Test if the geometry is a solid. No validity check is performed.</refpurpose>
-			</refnamediv>
+            <refpurpose>Compute the approximate medial axis of an areal geometry.</refpurpose>
+        </refnamediv>
 
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>boolean <function>ST_IsSolid</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>ST_ApproximateMedialAxis</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
 
-			<refsection>
-			<title>Description</title>
+        <refsection>
+            <title>Description</title>
 
-			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
-			<para>&sfcgal_required;</para>
-			<para>&Z_support;</para>
-			<para>&P_support;</para>
-			<para>&T_support;</para>
-			</refsection>
+            <para>
+                Return an approximate medial axis for the areal input based on
+                its straight skeleton. Uses an SFCGAL specific API when built against
+                a capable version (1.2.0+). Otherwise the function is just a wrapper
+                around ST_StraightSkeleton (slower case).
+            </para>
 
-		</refentry>
+            <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+            <para>&sfcgal_required;</para>
+            <para>&Z_support;</para>
+            <para>&P_support;</para>
+            <para>&T_support;</para>
+        </refsection>
 
-		<refentry xml:id="ST_MakeSolid">
-			<refnamediv>
-				<refname>ST_MakeSolid</refname>
+        <refsection><title>Examples</title>
+            <programlisting>SELECT ST_ApproximateMedialAxis(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));</programlisting>
 
-				<refpurpose>Cast the geometry into a solid. No check is performed. To obtain a valid solid, the input geometry must be a closed Polyhedral Surface or a closed TIN.</refpurpose>
-			</refnamediv>
+            <informaltable>
+                <tgroup cols="1">
+                    <tbody>
+                        <row>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/st_approximatemedialaxis01.png"/>
+                                            </imageobject>
+                                            <caption><para>A polygon and its approximate medial axis</para></caption>
+                                        </mediaobject>
+                                </informalfigure></para>
+                            </entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </informaltable>
+        </refsection>
 
-			<refsynopsisdiv>
-				<funcsynopsis>
-					<funcprototype>
-					<funcdef>geometry <function>ST_MakeSolid</function></funcdef>
-					<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
-					</funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
+        <refsection>
+            <title>See Also</title>
 
-			<refsection>
-				<title>Description</title>
+            <para><xref linkend="ST_StraightSkeleton"/></para>
+        </refsection>
 
-				<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
-				<para>&sfcgal_required;</para>
-				<para>&Z_support;</para>
-				<para>&P_support;</para>
-				<para>&T_support;</para>
-			</refsection>
-		</refentry>
+    </refentry>
 
-		<refentry xml:id="ST_Orientation">
-			<refnamediv>
-			<refname>ST_Orientation</refname>
+    <refentry xml:id="ST_ConstrainedDelaunayTriangles">
+        <refnamediv>
+            <refname>ST_ConstrainedDelaunayTriangles</refname>
 
-			<refpurpose>Determine surface orientation</refpurpose>
-			</refnamediv>
+            <refpurpose>
+                Return a constrained Delaunay triangulation around the given input geometry.
+            </refpurpose>
+        </refnamediv>
 
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>integer <function>ST_Orientation</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>ST_ConstrainedDelaunayTriangles</function></funcdef>
+                    <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
 
-			<refsection>
-			<title>Description</title>
+        <refsection>
+            <title>Description</title>
 
-			<para>The function only applies to polygons. It returns -1 if the polygon is counterclockwise oriented and 1 if the polygon is clockwise oriented.</para>
+            <para>
+                Return a <link xlink:href="https://en.wikipedia.org/wiki/Constrained_Delaunay_triangulation">Constrained Delaunay
+                triangulation</link> around the vertices of the input geometry.
+                Output is a TIN.
+            </para>
+            <para>&sfcgal_required;</para>
+            <para role="availability" conformance="3.0.0">Availability: 3.0.0</para>
+            <para>&Z_support;</para>
+        </refsection>
+        <refsection>
+            <title>Examples</title>
+            <informaltable>
+                <tgroup cols="2">
+                    <tbody>
+                        <row>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/st_constraineddelaunaytriangles01.png"/>
+                                            </imageobject>
+                                            <caption><para>ST_ConstrainedDelaunayTriangles of 2 polygons</para></caption>
+                                        </mediaobject>
+                                    </informalfigure>
+                                    <programlisting>
+                                        select ST_ConstrainedDelaunayTriangles(
+                                        ST_Union(
+                                        'POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'::geometry,
+                                        ST_Buffer('POINT(110 170)'::geometry, 20)
+                                        )
+                                        );
+                                    </programlisting>
+                            </para></entry>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/st_constraineddelaunaytriangles02.png"/>
+                                            </imageobject>
+                                            <caption><para><xref linkend="ST_DelaunayTriangles"/>  of 2 polygons. Triangle edges cross polygon boundaries.</para></caption>
+                                        </mediaobject>
+                                    </informalfigure>
+                                    <programlisting>
+                                        select ST_DelaunayTriangles(
+                                        ST_Union(
+                                        'POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'::geometry,
+                                        ST_Buffer('POINT(110 170)'::geometry, 20)
+                                        )
+                                        );
+                                    </programlisting>
+                            </para></entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </informaltable>
+        </refsection>
+        <refsection>
+            <title>See Also</title>
+            <para>
+                <xref linkend="ST_DelaunayTriangles"/>,
+                <xref linkend="ST_TriangulatePolygon"/>,
+                <xref linkend="ST_Tesselate"/>,
+                <xref linkend="ST_ConcaveHull"/>,
+                <xref linkend="ST_Dump"/>
+            </para>
+        </refsection>
+    </refentry>
 
-			<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
-			<para>&sfcgal_required;</para>
-			<para>&Z_support;</para>
-			</refsection>
+    <refentry xml:id="ST_Extrude">
+        <refnamediv>
+            <refname>ST_Extrude</refname>
 
-		</refentry>
+            <refpurpose>Extrude a surface to a related volume</refpurpose>
+        </refnamediv>
 
-		<refentry xml:id="ST_Volume">
-			<refnamediv>
-			<refname>ST_Volume</refname>
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>ST_Extrude</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    <paramdef><type>float</type> <parameter>x</parameter></paramdef>
+                    <paramdef><type>float</type> <parameter>y</parameter></paramdef>
+                    <paramdef><type>float</type> <parameter>z</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
 
-			<refpurpose>Computes the volume of a 3D solid. If applied to surface (even closed) geometries will return 0.</refpurpose>
-			</refnamediv>
+        <refsection>
+            <title>Description</title>
 
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>float <function>ST_Volume</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
+            <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+            <para>&sfcgal_required;</para>
+            <para>&Z_support;</para>
+            <para>&P_support;</para>
+            <para>&T_support;</para>
+        </refsection>
 
-			<refsection>
-			<title>Description</title>
+        <refsection><title>Examples</title>
+            <para>3D images were generated using PostGIS <xref linkend="ST_AsX3D"/> and rendering in HTML using <link xlink:href="http://www.x3dom.org">X3Dom HTML Javascript rendering library</link>.</para>
 
-			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
-			<para>&sfcgal_required;</para>
-			<para>&Z_support;</para>
-			<para>&P_support;</para>
-			<para>&T_support;</para>
-					<para>&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as ST_3DVolume)</para>
-			</refsection>
+            <informaltable>
+                <tgroup cols="2">
+                    <tbody>
+                        <row>
+                            <entry><para>
+                                    <programlisting>SELECT ST_Buffer(ST_GeomFromText('POINT(100 90)'),
+                                    50, 'quad_segs=2'),0,0,30);</programlisting>
+                                <informalfigure>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="images/st_extrude01.png"/>
+                                        </imageobject>
+                                        <caption><para>Original octagon formed from buffering point</para></caption>
+                                    </mediaobject>
+                            </informalfigure></para>
+                        </entry>
+                        <entry><para>
+                                <programlisting>ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
+                                50, 'quad_segs=2'),0,0,30);</programlisting>
+                            <informalfigure>
+                                <mediaobject>
+                                    <imageobject>
+                                        <imagedata fileref="images/st_extrude02.png"/>
+                                    </imageobject>
+                                    <caption><para>Hexagon extruded 30 units along Z produces a PolyhedralSurfaceZ</para></caption>
+                                </mediaobject>
+                        </informalfigure></para>
+                    </entry>
+                </row>
 
-			<refsection>
-					<title>Example</title>
-					<para>When closed surfaces are created with WKT, they are treated as areal rather than solid.  To make them solid, you need to use <xref linkend="ST_MakeSolid"/>.
-					Areal geometries have no volume.  Here is an example to demonstrate.</para>
-					<programlisting>SELECT ST_Volume(geom) As cube_surface_vol,
-		ST_Volume(ST_MakeSolid(geom)) As solid_surface_vol
-		FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-			((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
-			((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-			((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-			((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
-			((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);
-
-	cube_surface_vol | solid_surface_vol
-	------------------+-------------------
-									0 |                 1
-					</programlisting>
-			</refsection>
-
-			<refsection>
-			<title>See Also</title>
-
-			<para><xref linkend="ST_3DArea"/>, <xref linkend="ST_MakeSolid"/>, <xref linkend="ST_IsSolid"/></para>
-			</refsection>
-
-		</refentry>
-	</section>
-
-	<section xml:id="sfcgal_processing">
-        <title>SFCGAL Processing and Relationship Functions</title>
-
-        &CG_Intersection;
-        &CG_Intersects;
-        &CG_3DIntersects;
-        &CG_Difference;
-        &CG_Distance;
-        &CG_3DDistance;
-        &CG_Area;
-
-		<refentry xml:id="ST_3DConvexHull">
-			<refnamediv>
-			<refname>ST_3DConvexHull</refname>
-
-			<refpurpose>Computes the 3D convex hull of a geometry.</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>geometry <function>ST_3DConvexHull</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-			<title>Description</title>
-
-			<para role="availability" conformance="3.3.0">Availability: 3.3.0</para>
-			<para>&sfcgal_required;</para>
-			<para>&Z_support;</para>
-			<para>&P_support;</para>
-			<para>&T_support;</para>
-			</refsection>
-
-			<refsection>
-					<title>Examples</title>
-					<programlisting>SELECT ST_AsText(ST_3DConvexHull('LINESTRING Z(0 0 5, 1 5 3, 5 7 6, 9 5 3 , 5 7 5, 6 3 5)'::geometry));</programlisting>
-						<screen>POLYHEDRALSURFACE Z (((1 5 3,9 5 3,0 0 5,1 5 3)),((1 5 3,0 0 5,5 7 6,1 5 3)),((5 7 6,5 7 5,1 5 3,5 7 6)),((0 0 5,6 3 5,5 7 6,0 0 5)),((6 3 5,9 5 3,5 7 6,6 3 5)),((0 0 5,9 5 3,6 3 5,0 0 5)),((9 5 3,5 7 5,5 7 6,9 5 3)),((1 5 3,5 7 5,9 5 3,1 5 3)))</screen>
-
-						<programlisting>WITH f AS (SELECT i, ST_Extrude(geom, 0,0, i ) AS geom
-	FROM ST_Subdivide(ST_Letters('CH'),5) WITH ORDINALITY AS sd(geom,i)
-				)
-				SELECT ST_3DConvexHull(ST_Collect(f.geom) )
-				FROM f;</programlisting>
-					<para>
-							<informalfigure>
-									<mediaobject>
-											<imageobject>
-													<imagedata fileref="images/st_3dconvexhull.png"/>
-											</imageobject>
-											<caption><para>Original geometry overlaid with 3D convex hull</para></caption>
-									</mediaobject>
-							</informalfigure>
-					</para>
-			</refsection>
-				<refsection>
-			<title>See Also</title>
-			<para><xref linkend="ST_Letters"/>, <xref linkend="ST_AsX3D"/></para>
-			</refsection>
+                <row>
+                    <entry><para>
+                            <programlisting>SELECT ST_GeomFromText('LINESTRING(50 50, 100 90, 95 150)')</programlisting>
+                            <informalfigure>
+                                <mediaobject>
+                                    <imageobject>
+                                        <imagedata fileref="images/st_extrude03.png"/>
+                                    </imageobject>
+                                    <caption><para>Original linestring</para></caption>
+                                </mediaobject>
+                        </informalfigure></para>
+                    </entry>
+                    <entry><para>
+                            <programlisting>SELECT ST_Extrude(
+                            ST_GeomFromText('LINESTRING(50 50, 100 90, 95 150)'),0,0,10));</programlisting>
+                        <informalfigure>
+                            <mediaobject>
+                                <imageobject>
+                                    <imagedata fileref="images/st_extrude04.png"/>
+                                </imageobject>
+                                <caption><para>LineString Extruded along Z produces a PolyhedralSurfaceZ</para></caption>
+                            </mediaobject>
+                    </informalfigure></para>
+                </entry>
+            </row>
+        </tbody>
+    </tgroup>
+</informaltable>
+            </refsection>
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="ST_AsX3D"/>, <xref linkend="CG_ExtrudeStraightSkeleton" /></para>
+            </refsection>
         </refentry>
 
-		<refentry xml:id="ST_3DIntersection">
-			<refnamediv>
-			<refname>ST_3DIntersection</refname>
-
-			<refpurpose>Perform 3D intersection</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>geometry <function>ST_3DIntersection</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
-				<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-			<title>Description</title>
-			<para>Return a geometry that is the shared portion between geom1 and geom2.</para>
-			<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
-			<para>&sfcgal_required;</para>
-					<para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1</para>
-			<para>&Z_support;</para>
-			<para>&P_support;</para>
-			<para>&T_support;</para>
-			</refsection>
-
-			<refsection>
-			<title>Examples</title>
-			<para>3D images were generated using PostGIS <xref linkend="ST_AsX3D"/> and rendering in HTML using <link xlink:href="http://www.x3dom.org">X3Dom HTML Javascript rendering library</link>.</para>
-							<informaltable>
-							<tgroup cols="2">
-							<tbody>
-								<row>
-									<entry><para>
-									<programlisting>SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
-	50, 'quad_segs=2'),0,0,30) AS geom1,
-					ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
-	50, 'quad_segs=1'),0,0,30) AS geom2;
-									</programlisting>
-									<informalfigure>
-											<mediaobject>
-												<imageobject>
-													<imagedata fileref="images/st_3ddifference01.png"/>
-												</imageobject>
-												<caption><para>Original 3D geometries overlaid. geom2 is shown semi-transparent</para></caption>
-											</mediaobject>
-										</informalfigure></para>
-								</entry>
-								<entry><para>
-								<programlisting>SELECT ST_3DIntersection(geom1,geom2)
-	FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
-	50, 'quad_segs=2'),0,0,30) AS geom1,
-					ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
-	50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;</programlisting>
-								<informalfigure>
-											<mediaobject>
-												<imageobject>
-													<imagedata fileref="images/st_3dintersection01.png"/>
-												</imageobject>
-												<caption><para>Intersection of geom1 and geom2</para></caption>
-											</mediaobject>
-										</informalfigure></para>
-								</entry>
-								</row>
-							</tbody>
-							</tgroup>
-					</informaltable>
-
-			<para>3D linestrings and polygons</para>
-			<programlisting>	SELECT ST_AsText(ST_3DIntersection(linestring, polygon)) As wkt
-	FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
-	CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS polygon;
-
-								wkt
-	--------------------------------
-	LINESTRING Z (1 1 8,0.5 0.5 8)
-			</programlisting>
-
-			<para>Cube (closed Polyhedral Surface) and Polygon Z</para>
-			<programlisting>SELECT ST_AsText(ST_3DIntersection(
-			ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'),
-		'POLYGON Z ((0 0 0, 0 0 0.5, 0 0.5 0.5, 0 0.5 0, 0 0 0))'::geometry))</programlisting>
-			<screen>TIN Z (((0 0 0,0 0 0.5,0 0.5 0.5,0 0 0)),((0 0.5 0,0 0 0,0 0.5 0.5,0 0.5 0)))</screen>
-
-			<para>Intersection of 2 solids that result in volumetric intersection is also a solid (ST_Dimension returns 3)</para>
-			<programlisting>SELECT ST_AsText(ST_3DIntersection( ST_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),0,0,30),
-	ST_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),2,0,10) ));</programlisting>
-		<screen>POLYHEDRALSURFACE Z (((13.3333333333333 13.3333333333333 10,20 20 0,20 20 10,13.3333333333333 13.3333333333333 10)),
-		((20 20 10,16.6666666666667 23.3333333333333 10,13.3333333333333 13.3333333333333 10,20 20 10)),
-		((20 20 0,16.6666666666667 23.3333333333333 10,20 20 10,20 20 0)),
-		((13.3333333333333 13.3333333333333 10,10 10 0,20 20 0,13.3333333333333 13.3333333333333 10)),
-		((16.6666666666667 23.3333333333333 10,12 28 10,13.3333333333333 13.3333333333333 10,16.6666666666667 23.3333333333333 10)),
-		((20 20 0,9.99999999999995 30 0,16.6666666666667 23.3333333333333 10,20 20 0)),
-		((10 10 0,9.99999999999995 30 0,20 20 0,10 10 0)),((13.3333333333333 13.3333333333333 10,12 12 10,10 10 0,13.3333333333333 13.3333333333333 10)),
-		((12 28 10,12 12 10,13.3333333333333 13.3333333333333 10,12 28 10)),
-		((16.6666666666667 23.3333333333333 10,9.99999999999995 30 0,12 28 10,16.6666666666667 23.3333333333333 10)),
-		((10 10 0,0 20 0,9.99999999999995 30 0,10 10 0)),
-		((12 12 10,11 11 10,10 10 0,12 12 10)),((12 28 10,11 11 10,12 12 10,12 28 10)),
-		((9.99999999999995 30 0,11 29 10,12 28 10,9.99999999999995 30 0)),((0 20 0,2 20 10,9.99999999999995 30 0,0 20 0)),
-		((10 10 0,2 20 10,0 20 0,10 10 0)),((11 11 10,2 20 10,10 10 0,11 11 10)),((12 28 10,11 29 10,11 11 10,12 28 10)),
-		((9.99999999999995 30 0,2 20 10,11 29 10,9.99999999999995 30 0)),((11 11 10,11 29 10,2 20 10,11 11 10)))</screen>
-
-			</refsection>
-
-		</refentry>
-
-		<refentry xml:id="ST_3DDifference">
-			<refnamediv>
-			<refname>ST_3DDifference</refname>
-
-			<refpurpose>Perform 3D difference</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>geometry <function>ST_3DDifference</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
-				<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-			<title>Description</title>
-			<para>Returns that part of geom1 that is not part of geom2.</para>
-			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
-			<para>&sfcgal_required;</para>
-					<para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1</para>
-			<para>&Z_support;</para>
-			<para>&P_support;</para>
-			<para>&T_support;</para>
-			</refsection>
-
-			<refsection>
-					<title>Examples</title>
-						<para>3D images were generated using PostGIS <xref linkend="ST_AsX3D"/> and rendering in HTML using <link xlink:href="http://www.x3dom.org">X3Dom HTML Javascript rendering library</link>.</para>
-							<informaltable>
-							<tgroup cols="2">
-							<tbody>
-								<row>
-									<entry><para>
-									<programlisting>SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
-	50, 'quad_segs=2'),0,0,30) AS geom1,
-					ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
-	50, 'quad_segs=1'),0,0,30) AS geom2;
-									</programlisting>
-									<informalfigure>
-											<mediaobject>
-												<imageobject>
-													<imagedata fileref="images/st_3ddifference01.png"/>
-												</imageobject>
-												<caption><para>Original 3D geometries overlaid. geom2 is the part that will be removed.</para></caption>
-											</mediaobject>
-										</informalfigure></para>
-								</entry>
-								<entry><para>
-								<programlisting>SELECT ST_3DDifference(geom1,geom2)
-	FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
-	50, 'quad_segs=2'),0,0,30) AS geom1,
-					ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
-	50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;</programlisting>
-								<informalfigure>
-											<mediaobject>
-												<imageobject>
-													<imagedata fileref="images/st_3ddifference02.png"/>
-												</imageobject>
-												<caption><para>What's left after removing geom2</para></caption>
-											</mediaobject>
-										</informalfigure></para>
-								</entry>
-								</row>
-							</tbody>
-							</tgroup>
-							</informaltable>
-
-			</refsection>
-
-				<refsection>
-					<title>See Also</title>
-
-					<para>
-							<xref linkend="ST_Extrude"/>,
-							<xref linkend="ST_AsX3D"/>,  <xref linkend="ST_3DIntersection"/>
-							<xref linkend="ST_3DUnion"/>
-					</para>
-				</refsection>
-		</refentry>
-
-		<refentry xml:id="ST_3DUnion">
-			<refnamediv>
-			<refname>ST_3DUnion</refname>
-
-			<refpurpose>Perform 3D union.</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>geometry <function>ST_3DUnion</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
-				<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
-				</funcprototype>
-				<funcprototype>
-				<funcdef>geometry <function>ST_3DUnion</function></funcdef>
-				<paramdef><type>geometry set</type> <parameter>g1field</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-			<title>Description</title>
-
-
-			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
-			<para role="availability" conformance="3.3.0">Availability: 3.3.0 aggregate variant was added</para>
-			<para>&sfcgal_required;</para>
-					<para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1</para>
-			<para>&Z_support;</para>
-			<para>&P_support;</para>
-			<para>&T_support;</para>
-
-					<para>
-							<emphasis role="bold">Aggregate variant:</emphasis>
-							returns a geometry that is the 3D union of a rowset of geometries.
-							The ST_3DUnion() function is an "aggregate"
-							function in the terminology of PostgreSQL. That means that it
-							operates on rows of data, in the same way the SUM() and AVG()
-							functions do and like most aggregates, it also ignores NULL geometries.
-					</para>
-			</refsection>
-
-				<refsection>
-					<title>Examples</title>
-						<para>3D images were generated using PostGIS <xref linkend="ST_AsX3D"/> and rendering in HTML using <link xlink:href="http://www.x3dom.org">X3Dom HTML Javascript rendering library</link>.</para>
-							<informaltable>
-							<tgroup cols="2">
-							<tbody>
-								<row>
-									<entry><para>
-									<programlisting>SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
-	50, 'quad_segs=2'),0,0,30) AS geom1,
-					ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
-	50, 'quad_segs=1'),0,0,30) AS geom2;
-									</programlisting>
-									<informalfigure>
-											<mediaobject>
-												<imageobject>
-													<imagedata fileref="images/st_3ddifference01.png"/>
-												</imageobject>
-												<caption><para>Original 3D geometries overlaid. geom2 is the one with transparency.</para></caption>
-											</mediaobject>
-										</informalfigure></para>
-								</entry>
-								<entry><para>
-								<programlisting>SELECT ST_3DUnion(geom1,geom2)
-	FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
-	50, 'quad_segs=2'),0,0,30) AS geom1,
-					ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
-	50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;</programlisting>
-								<informalfigure>
-											<mediaobject>
-												<imageobject>
-													<imagedata fileref="images/st_3dunion01.png"/>
-												</imageobject>
-												<caption><para>Union of geom1 and geom2</para></caption>
-											</mediaobject>
-										</informalfigure></para>
-								</entry>
-								</row>
-							</tbody>
-							</tgroup>
-							</informaltable>
-
-			</refsection>
-
-				<refsection>
-					<title>See Also</title>
-
-					<para>
-							<xref linkend="ST_Extrude"/>,
-							<xref linkend="ST_AsX3D"/>,  <xref linkend="ST_3DIntersection"/>
-							<xref linkend="ST_3DDifference"/>
-					</para>
-				</refsection>
-		</refentry>
-
-		<refentry xml:id="ST_AlphaShape">
-			<refnamediv>
-			<refname>ST_AlphaShape</refname>
-
-			<refpurpose>Computes an Alpha-shape enclosing a geometry</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>geometry <function>ST_AlphaShape</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-													<paramdef choice="opt"><type>float </type> <parameter>alpha</parameter></paramdef>
-													<paramdef choice="opt"><type>boolean </type> <parameter>allow_holes = false</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-					<title>Description</title>
-
-					<para>Computes the
-					<link xlink:href="https://en.wikipedia.org/wiki/Alpha_shape">Alpha-Shape</link>
-							of the points in a geometry.
-					An alpha-shape is a (usually) concave polygonal geometry which contains all the vertices of the input,
-					and whose vertices are a subset of the input vertices.
-					An alpha-shape provides a closer fit to the shape of the input
-					than the shape produced by the <link linkend="ST_ConvexHull">convex hull</link>.
-					</para>
-
-					<para>
-					The "closeness of fit" is controlled by the <varname>alpha</varname> parameter,
-					which can have values from 0 to infinity.
-					Smaller alpha values produce more concave results.
-					Alpha values greater than some data-dependent value produce the convex hull of the input.
-					</para>
-
-					<note><para>
-					Following the CGAL implementation, the alpha value is the <emphasis>square</emphasis> of the radius of the disc used
-					in the Alpha-Shape algorithm to "erode" the Delaunay Triangulation of the input points.
-					See <link xlink:href="https://doc.cgal.org/latest/Alpha_shapes_2/index.html#Chapter_2D_Alpha_Shapes">CGAL Alpha-Shapes</link>
-					for more information.
-					This is different from the original definition of alpha-shapes,
-					which defines alpha as the radius of the eroding disc.
-					</para></note>
-
-					<para>The computed shape does not contain holes unless the optional <varname>allow_holes</varname> argument is specified as true.
-					</para>
-
-					<para>
-					This function effectively computes a concave hull of a geometry in a similar way to <xref linkend="ST_ConcaveHull"/>,
-					but uses CGAL and a different algorithm.
-					</para>
-
-			<para role="availability" conformance="3.3.0">Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1.</para>
-			<para>&sfcgal_required;</para>
-			</refsection>
-
-			<refsection>
-					<title>Examples</title>
-	<para>
-			<informalfigure>
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="images/st_alphashape01.png"/>
-					</imageobject>
-					<caption><para>Alpha-shape of a MultiPoint (same example As <xref linkend="ST_OptimalAlphaShape"/>)</para></caption>
-				</mediaobject>
-			</informalfigure>
-					<programlisting>SELECT ST_AsText(ST_AlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
-									(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),
-									(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
-									(78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
-									(75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
-									(80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
-									(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry,80.2));</programlisting>
-						<screen>POLYGON((89 53,91 50,87 42,90 30,88 29,84 19,78 16,73 16,65 16,53 18,43 19,
-	37 23,30 22,28 33,23 36,26 44,27 54,23 60,24 67,27 77,
-	24 82,26 85,34 86,39 88,45 90,49 95,52 98,57 97,
-	64 97,72 95,76 88,75 84,83 72,85 71,88 58,89 53))</screen>
-					</para>
-			<para>
-					<informalfigure>
-					<mediaobject>
-							<imageobject>
-							<imagedata fileref="images/st_alphashape02.png"/>
-							</imageobject>
-							<caption><para>Alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="ST_OptimalAlphaShape"/>)</para></caption>
-					</mediaobject>
-					</informalfigure>
-							<programlisting>SELECT ST_AsText(ST_AlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
-									(78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
-									(75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
-									(80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
-									(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry, 100.1,true))</programlisting>
-							<screen>POLYGON((89 53,91 50,87 42,90 30,84 19,78 16,73 16,65 16,53 18,43 19,30 22,28 33,23 36,
-							26 44,27 54,23 60,24 67,27 77,24 82,26 85,34 86,39 88,45 90,49 95,52 98,57 97,64 97,72 95,
-							76 88,75 84,83 72,85 71,88 58,89 53),(36 61,36 68,40 75,43 80,60 81,68 73,77 67,
-							81 60,82 54,81 47,78 43,76 27,62 22,54 32,44 42,38 46,36 61))</screen>
-			</para>
-
-			<para>
-					<informalfigure>
-					<mediaobject>
-							<imageobject>
-							<imagedata fileref="images/st_alphashape03.png"/>
-							</imageobject>
-							<caption><para>Alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="ST_ConcaveHull"/>)</para></caption>
-					</mediaobject>
-					</informalfigure>
-							<programlisting>SELECT ST_AsText(ST_AlphaShape(
-							'MULTIPOINT ((132 64), (114 64), (99 64), (81 64), (63 64), (57 49), (52 36), (46 20), (37 20), (26 20), (32 36), (39 55), (43 69), (50 84), (57 100), (63 118), (68 133), (74 149), (81 164), (88 180), (101 180), (112 180), (119 164), (126 149), (132 131), (139 113), (143 100), (150 84), (157 69), (163 51), (168 36), (174 20), (163 20), (150 20), (143 36), (139 49), (132 64), (99 151), (92 138), (88 124), (81 109), (74 93), (70 82), (83 82), (99 82), (112 82), (126 82), (121 96), (114 109), (110 122), (103 138), (99 151), (34 27), (43 31), (48 44), (46 58), (52 73), (63 73), (61 84), (72 71), (90 69), (101 76), (123 71), (141 62), (166 27), (150 33), (159 36), (146 44), (154 53), (152 62), (146 73), (134 76), (143 82), (141 91), (130 98), (126 104), (132 113), (128 127), (117 122), (112 133), (119 144), (108 147), (119 153), (110 171), (103 164), (92 171), (86 160), (88 142), (79 140), (72 124), (83 131), (79 118), (68 113), (63 102), (68 93), (35 45))'::geometry,102.2, true));</programlisting>
-							<screen>POLYGON((26 20,32 36,35 45,39 55,43 69,50 84,57 100,63 118,68 133,74 149,81 164,88 180,
-							101 180,112 180,119 164,126 149,132 131,139 113,143 100,150 84,157 69,163 51,168 36,
-							174 20,163 20,150 20,143 36,139 49,132 64,114 64,99 64,90 69,81 64,63 64,57 49,52 36,46 20,37 20,26 20),
-							(74 93,81 109,88 124,92 138,103 138,110 122,114 109,121 96,112 82,99 82,83 82,74 93))</screen>
-			</para>
-			</refsection>
-				<refsection>
-			<title>See Also</title>
-									<para><xref linkend="ST_ConcaveHull"/>, <xref linkend="ST_OptimalAlphaShape"/></para>
-			</refsection>
-
-		</refentry>
-
-	<refentry xml:id="CG_ApproxConvexPartition">
-			<refnamediv>
-			<refname>CG_ApproxConvexPartition</refname>
-
-			<refpurpose>Computes approximal convex partition of the polygon geometry</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>geometry <function>CG_ApproxConvexPartition</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-					<title>Description</title>
-
-						<para>Computes approximal convex partition of the polygon geometry (using a triangulation).
-						</para>
-
-					<note><para>
-					A partition of a polygon P is a set of polygons such that the interiors of the polygons do not intersect and the union of the polygons is equal to the interior of the original polygon P.
-					CG_ApproxConvexPartition and CG_GreeneApproxConvexPartition functions produce approximately optimal convex partitions. Both these functions produce convex decompositions by first decomposing the polygon into simpler polygons; CG_ApproxConvexPartition uses a triangulation and CG_GreeneApproxConvexPartition a monotone partition. These two functions both guarantee that they will produce no more than four times the optimal number of convex pieces but they differ in their runtime complexities. Though the triangulation-based approximation algorithm often results in fewer convex pieces, this is not always the case.
-					</para></note>
-
-
-					<para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
-					<para role="sfcgal_requirement" conformance="1.5.0">Requires SFCGAL &gt;= 1.5.0</para>
-					<para>&sfcgal_required;</para>
-			</refsection>
-
-			<refsection>
-					<title>Examples</title>
-					<para>
-						<informalfigure>
-							<mediaobject>
-								<imageobject>
-									<imagedata fileref="images/cg_approxconvexpartition01.png" />
-								</imageobject>
-								<caption><para>Approximal Convex Partition (same example As <xref linkend="CG_YMonotonePartition" />,  <xref linkend="CG_GreeneApproxConvexPartition" /> and <xref linkend="CG_OptimalConvexPartition" />)</para></caption>
-							</mediaobject>
-						</informalfigure>
-								<programlisting>SELECT ST_AsText(CG_ApproxConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
-									<screen>GEOMETRYCOLLECTION(POLYGON((156 150,83 181,89 131,148 120,156 150)),POLYGON((32 159,0 45,41 86,32 159)),POLYGON((107 61,32 159,41 86,107 61)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,41 86,67 24,109 31,107 61)),POLYGON((148 120,107 61,109 31,170 60,148 120)),POLYGON((156 150,148 120,170 60,180 110,156 150)))</screen>
-					</para>
-			</refsection>
-				<refsection>
-			<title>See Also</title>
-									<para><xref linkend="CG_YMonotonePartition" />, <xref linkend="CG_GreeneApproxConvexPartition" />, <xref linkend="CG_OptimalConvexPartition" /></para>
-			</refsection>
-
-		</refentry>
-
-		<refentry xml:id="ST_ApproximateMedialAxis">
-			<refnamediv>
-			<refname>ST_ApproximateMedialAxis</refname>
-
-			<refpurpose>Compute the approximate medial axis of an areal geometry.</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>geometry <function>ST_ApproximateMedialAxis</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-			<title>Description</title>
-
-			<para>
-	Return an approximate medial axis for the areal input based on
-	its straight skeleton. Uses an SFCGAL specific API when built against
-	a capable version (1.2.0+). Otherwise the function is just a wrapper
-	around ST_StraightSkeleton (slower case).
-			</para>
-
-			<para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
-			<para>&sfcgal_required;</para>
-			<para>&Z_support;</para>
-			<para>&P_support;</para>
-			<para>&T_support;</para>
-			</refsection>
-
-			<refsection><title>Examples</title>
-				<programlisting>SELECT ST_ApproximateMedialAxis(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));</programlisting>
-
-			<informaltable>
-						<tgroup cols="1">
-						<tbody>
-							<row>
-							<entry><para><informalfigure>
-								<mediaobject>
-									<imageobject>
-									<imagedata fileref="images/st_approximatemedialaxis01.png"/>
-									</imageobject>
-									<caption><para>A polygon and its approximate medial axis</para></caption>
-								</mediaobject>
-								</informalfigure></para>
-							</entry>
-					</row>
-					</tbody>
-					</tgroup>
-				</informaltable>
-			</refsection>
-
-			<refsection>
-					<title>See Also</title>
-
-					<para><xref linkend="ST_StraightSkeleton"/></para>
-			</refsection>
-
-		</refentry>
-
-		<refentry xml:id="ST_ConstrainedDelaunayTriangles">
-			<refnamediv>
-				<refname>ST_ConstrainedDelaunayTriangles</refname>
-
-				<refpurpose>
-	Return a constrained Delaunay triangulation around the given input geometry.
-				</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-				<funcsynopsis>
-					<funcprototype>
-					<funcdef>geometry <function>ST_ConstrainedDelaunayTriangles</function></funcdef>
-					<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-					</funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-
-				<refsection>
-				<title>Description</title>
-
-				<para>
-	Return a <link xlink:href="https://en.wikipedia.org/wiki/Constrained_Delaunay_triangulation">Constrained Delaunay
-	triangulation</link> around the vertices of the input geometry.
-	Output is a TIN.
-				</para>
-				<para>&sfcgal_required;</para>
-				<para role="availability" conformance="3.0.0">Availability: 3.0.0</para>
-				<para>&Z_support;</para>
-			</refsection>
-					<refsection>
-			<title>Examples</title>
-				<informaltable>
-						<tgroup cols="2">
-						<tbody>
-							<row>
-								<entry><para><informalfigure>
-								<mediaobject>
-									<imageobject>
-									<imagedata fileref="images/st_constraineddelaunaytriangles01.png"/>
-									</imageobject>
-									<caption><para>ST_ConstrainedDelaunayTriangles of 2 polygons</para></caption>
-								</mediaobject>
-								</informalfigure>
-								<programlisting>
-	select ST_ConstrainedDelaunayTriangles(
-								ST_Union(
-												'POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'::geometry,
-												ST_Buffer('POINT(110 170)'::geometry, 20)
-										)
-						);
-					</programlisting>
-								</para></entry>
-								<entry><para><informalfigure>
-								<mediaobject>
-									<imageobject>
-									<imagedata fileref="images/st_constraineddelaunaytriangles02.png"/>
-									</imageobject>
-									<caption><para><xref linkend="ST_DelaunayTriangles"/>  of 2 polygons. Triangle edges cross polygon boundaries.</para></caption>
-								</mediaobject>
-								</informalfigure>
-								<programlisting>
-	select ST_DelaunayTriangles(
-								ST_Union(
-												'POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'::geometry,
-												ST_Buffer('POINT(110 170)'::geometry, 20)
-										)
-			);
-	</programlisting>
-								</para></entry>
-				</row>
-			</tbody>
-		</tgroup>
-	</informaltable>
-			</refsection>
-			<refsection>
-				<title>See Also</title>
-				<para>
-					<xref linkend="ST_DelaunayTriangles"/>,
-					<xref linkend="ST_TriangulatePolygon"/>,
-					<xref linkend="ST_Tesselate"/>,
-					<xref linkend="ST_ConcaveHull"/>,
-					<xref linkend="ST_Dump"/>
-				</para>
-			</refsection>
-		</refentry>
-
-		<refentry xml:id="ST_Extrude">
-			<refnamediv>
-			<refname>ST_Extrude</refname>
-
-			<refpurpose>Extrude a surface to a related volume</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>geometry <function>ST_Extrude</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-				<paramdef><type>float</type> <parameter>x</parameter></paramdef>
-				<paramdef><type>float</type> <parameter>y</parameter></paramdef>
-				<paramdef><type>float</type> <parameter>z</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-			<title>Description</title>
-
-			<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
-			<para>&sfcgal_required;</para>
-			<para>&Z_support;</para>
-			<para>&P_support;</para>
-			<para>&T_support;</para>
-			</refsection>
-
-			<refsection><title>Examples</title>
-						<para>3D images were generated using PostGIS <xref linkend="ST_AsX3D"/> and rendering in HTML using <link xlink:href="http://www.x3dom.org">X3Dom HTML Javascript rendering library</link>.</para>
-
-			<informaltable>
-						<tgroup cols="2">
-						<tbody>
-							<row>
-							<entry><para>
-							<programlisting>SELECT ST_Buffer(ST_GeomFromText('POINT(100 90)'),
-		50, 'quad_segs=2'),0,0,30);</programlisting>
-							<informalfigure>
-								<mediaobject>
-									<imageobject>
-									<imagedata fileref="images/st_extrude01.png"/>
-									</imageobject>
-									<caption><para>Original octagon formed from buffering point</para></caption>
-								</mediaobject>
-								</informalfigure></para>
-							</entry>
-							<entry><para>
-							<programlisting>ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
-	50, 'quad_segs=2'),0,0,30);</programlisting>
-							<informalfigure>
-								<mediaobject>
-									<imageobject>
-									<imagedata fileref="images/st_extrude02.png"/>
-									</imageobject>
-									<caption><para>Hexagon extruded 30 units along Z produces a PolyhedralSurfaceZ</para></caption>
-								</mediaobject>
-								</informalfigure></para>
-							</entry>
-							</row>
-
-						<row>
-							<entry><para>
-							<programlisting>SELECT ST_GeomFromText('LINESTRING(50 50, 100 90, 95 150)')</programlisting>
-							<informalfigure>
-								<mediaobject>
-									<imageobject>
-									<imagedata fileref="images/st_extrude03.png"/>
-									</imageobject>
-									<caption><para>Original linestring</para></caption>
-								</mediaobject>
-								</informalfigure></para>
-							</entry>
-							<entry><para>
-							<programlisting>SELECT ST_Extrude(
-	ST_GeomFromText('LINESTRING(50 50, 100 90, 95 150)'),0,0,10));</programlisting>
-							<informalfigure>
-								<mediaobject>
-									<imageobject>
-									<imagedata fileref="images/st_extrude04.png"/>
-									</imageobject>
-									<caption><para>LineString Extruded along Z produces a PolyhedralSurfaceZ</para></caption>
-								</mediaobject>
-								</informalfigure></para>
-							</entry>
-							</row>
-					</tbody>
-					</tgroup>
-				</informaltable>
-			</refsection>
-					<refsection>
-			<title>See Also</title>
-									<para><xref linkend="ST_AsX3D"/>, <xref linkend="CG_ExtrudeStraightSkeleton" /></para>
-			</refsection>
-		</refentry>
-
-		<refentry xml:id="CG_ExtrudeStraightSkeleton">
-			<refnamediv>
-			<refname>CG_ExtrudeStraightSkeleton</refname>
-
-			<refpurpose>Straight Skeleton Extrusion</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>geometry <function>CG_ExtrudeStraightSkeleton</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-													<paramdef><type>float </type> <parameter>roof_height</parameter></paramdef>
-													<paramdef choice="opt"><type>float </type> <parameter>body_height = 0</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-					<title>Description</title>
-
-						<para>Computes an extrusion with a maximal height of the polygon geometry.
-						</para>
-
-					<note><para>
-		Perhaps the first (historically) use-case of straight skeletons: given a polygonal roof, the straight skeleton directly gives the layout of each tent. If each skeleton edge is lifted from the plane a height equal to its offset distance, the resulting roof is "correct" in that water will always fall down to the contour edges (the roof's border), regardless of where it falls on the roof.
-		The function computes this extrusion aka "roof" on a polygon. If the argument body_height > 0, so the polygon is extruded like with ST_Extrude(polygon, 0, 0, body_height). The result is an union of these polyhedralsurfaces.
-					</para></note>
-
-
-			<para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
-			<para role="sfcgal_requirement" conformance="1.5.0">Requires SFCGAL &gt;= 1.5.0</para>
-			<para>&sfcgal_required;</para>
-			</refsection>
-
-			<refsection>
-					<title>Examples</title>
-	<para>
-					<programlisting>SELECT ST_AsText(CG_ExtrudeStraightSkeleton('POLYGON (( 0 0, 5 0, 5 5, 4 5, 4 4, 0 4, 0 0 ), (1 1, 1 2,2 2, 2 1, 1 1))', 3.0, 2.0));</programlisting>
-						<screen>POLYHEDRALSURFACE Z (((0 0 0,0 4 0,4 4 0,4 5 0,5 5 0,5 0 0,0 0 0),(1 1 0,2 1 0,2 2 0,1 2 0,1 1 0)),((0 0 0,0 0 2,0 4 2,0 4 0,0 0 0)),((0 4 0,0 4 2,4 4 2,4 4 0,0 4 0)),((4 4 0,4 4 2,4 5 2,4 5 0,4 4 0)),((4 5 0,4 5 2,5 5 2,5 5 0,4 5 0)),((5 5 0,5 5 2,5 0 2,5 0 0,5 5 0)),((5 0 0,5 0 2,0 0 2,0 0 0,5 0 0)),((1 1 0,1 1 2,2 1 2,2 1 0,1 1 0)),((2 1 0,2 1 2,2 2 2,2 2 0,2 1 0)),((2 2 0,2 2 2,1 2 2,1 2 0,2 2 0)),((1 2 0,1 2 2,1 1 2,1 1 0,1 2 0)),((4 5 2,5 5 2,4 4 2,4 5 2)),((2 1 2,5 0 2,0 0 2,2 1 2)),((5 5 2,5 0 2,4 4 2,5 5 2)),((2 1 2,0 0 2,1 1 2,2 1 2)),((1 2 2,1 1 2,0 0 2,1 2 2)),((0 4 2,2 2 2,1 2 2,0 4 2)),((0 4 2,1 2 2,0 0 2,0 4 2)),((4 4 2,5 0 2,2 2 2,4 4 2)),((4 4 2,2 2 2,0 4 2,4 4 2)),((2 2 2,5 0 2,2 1 2,2 2 2)),((0.5 2.5 2.5,0 0 2,0.5 0.5 2.5,0.5 2.5 2.5)),((1 3 3,0 4 2,0.5 2.5 2.5,1 3 3)),((0.5 2.5 2.5,0 4 2,0 0 2,0.5 2.5 2.5)),((2.5 0.5 2.5,5 0 2,3.5 1.5 3.5,2.5 0.5 2.5)),((0 0 2,5 0 2,2.5 0.5 2.5,0 0 2)),((0.5 0.5 2.5,0 0 2,2.5 0.5 2.5,0.5 0.5 2.5)),((4.5 3.5 2.5,5 5 2,4.5 4.5 2.5,4.5 3.5 2.5)),((3.5 2.5 3.5,3.5 1.5 3.5,4.5 3.5 2.5,3.5 2.5 3.5)),((4.5 3.5 2.5,5 0 2,5 5 2,4.5 3.5 2.5)),((3.5 1.5 3.5,5 0 2,4.5 3.5 2.5,3.5 1.5 3.5)),((5 5 2,4 5 2,4.5 4.5 2.5,5 5 2)),((4.5 4.5 2.5,4 4 2,4.5 3.5 2.5,4.5 4.5 2.5)),((4.5 4.5 2.5,4 5 2,4 4 2,4.5 4.5 2.5)),((3 3 3,0 4 2,1 3 3,3 3 3)),((3.5 2.5 3.5,4.5 3.5 2.5,3 3 3,3.5 2.5 3.5)),((3 3 3,4 4 2,0 4 2,3 3 3)),((4.5 3.5 2.5,4 4 2,3 3 3,4.5 3.5 2.5)),((2 1 2,1 1 2,0.5 0.5 2.5,2 1 2)),((2.5 0.5 2.5,2 1 2,0.5 0.5 2.5,2.5 0.5 2.5)),((1 1 2,1 2 2,0.5 2.5 2.5,1 1 2)),((0.5 0.5 2.5,1 1 2,0.5 2.5 2.5,0.5 0.5 2.5)),((1 3 3,2 2 2,3 3 3,1 3 3)),((0.5 2.5 2.5,1 2 2,1 3 3,0.5 2.5 2.5)),((1 3 3,1 2 2,2 2 2,1 3 3)),((2 2 2,2 1 2,2.5 0.5 2.5,2 2 2)),((3.5 2.5 3.5,3 3 3,3.5 1.5 3.5,3.5 2.5 3.5)),((3.5 1.5 3.5,2 2 2,2.5 0.5 2.5,3.5 1.5 3.5)),((3 3 3,2 2 2,3.5 1.5 3.5,3 3 3)))</screen>
-					</para>
-			</refsection>
-				<refsection>
-			<title>See Also</title>
-									<para><xref linkend="ST_Extrude" />, <xref linkend="ST_StraightSkeleton" /></para>
-			</refsection>
-
-	</refentry>
-
-	<refentry xml:id="CG_GreeneApproxConvexPartition">
-			<refnamediv>
-			<refname>CG_GreeneApproxConvexPartition</refname>
-
-			<refpurpose>Computes approximal convex partition of the polygon geometry</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>geometry <function>CG_GreeneApproxConvexPartition</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-					<title>Description</title>
-
-						<para>Computes approximal monotone convex partition of the polygon geometry.
-						</para>
-
-					<note><para>
-					A partition of a polygon P is a set of polygons such that the interiors of the polygons do not intersect and the union of the polygons is equal to the interior of the original polygon P.
-					CG_ApproxConvexPartition and CG_GreeneApproxConvexPartition functions produce approximately optimal convex partitions. Both these functions produce convex decompositions by first decomposing the polygon into simpler polygons; CG_ApproxConvexPartition uses a triangulation and CG_GreeneApproxConvexPartition a monotone partition. These two functions both guarantee that they will produce no more than four times the optimal number of convex pieces but they differ in their runtime complexities. Though the triangulation-based approximation algorithm often results in fewer convex pieces, this is not always the case.
-					</para></note>
-
-
-			<para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
-			<para role="sfcgal_requirement" conformance="1.5.0">Requires SFCGAL &gt;= 1.5.0</para>
-			<para>&sfcgal_required;</para>
-			</refsection>
-
-			<refsection>
-					<title>Examples</title>
-	<para>
-			<informalfigure>
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="images/cg_greeneapproxconvexpartition01.png" />
-					</imageobject>
-					<caption><para>Greene Approximal Convex Partition (same example As <xref linkend="CG_YMonotonePartition" />,  <xref linkend="CG_ApproxConvexPartition" /> and <xref linkend="CG_OptimalConvexPartition" />)</para></caption>
-				</mediaobject>
-			</informalfigure>
-					<programlisting>SELECT ST_AsText(CG_GreeneApproxConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
-						<screen>GEOMETRYCOLLECTION(POLYGON((32 159,0 45,41 86,32 159)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((67 24,109 31,170 60,107 61,67 24)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,32 159,41 86,67 24,107 61)),POLYGON((148 120,107 61,170 60,148 120)),POLYGON((148 120,170 60,180 110,156 150,148 120)),POLYGON((156 150,83 181,89 131,148 120,156 150)))</screen>
-					</para>
-			</refsection>
-				<refsection>
-			<title>See Also</title>
-									<para><xref linkend="CG_YMonotonePartition" />, <xref linkend="CG_ApproxConvexPartition" />, <xref linkend="CG_OptimalConvexPartition" /></para>
-			</refsection>
-
-		</refentry>
-
-
-		<refentry xml:id="ST_MinkowskiSum">
-			<refnamediv>
-			<refname>ST_MinkowskiSum</refname>
-
-			<refpurpose>Performs Minkowski sum</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>geometry <function>ST_MinkowskiSum</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
-				<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-			<title>Description</title>
-
-									<para>This function performs a 2D minkowski sum of a point, line or polygon with a polygon.</para>
-									<para>A minkowski sum of two geometries A and B is the set of all points that are the sum of any point in A and B. Minkowski sums are often used in motion planning and computer-aided design. More details on <link xlink:href="https://en.wikipedia.org/wiki/Minkowski_addition">Wikipedia Minkowski addition</link>.</para>
-									<para>The first parameter can be any 2D geometry (point, linestring, polygon). If a 3D geometry is passed, it will be converted to 2D by forcing Z to 0, leading to possible cases of invalidity. The second parameter must be a 2D polygon.</para>
-
-									<para>Implementation utilizes <link xlink:href="http://doc.cgal.org/latest/Minkowski_sum_2/">CGAL 2D Minkowskisum</link>.</para>
-
-
-			<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
-			<para>&sfcgal_required;</para>
-			</refsection>
-
-		<refsection><title>Examples</title>
-		<para>Minkowski Sum of Linestring and circle polygon where Linestring cuts thru the circle</para>
-							<informaltable>
-									<tgroup cols="2">
-											<tbody>
-												<row>
-													<entry>
-													<para>
-															<informalfigure>
-															<mediaobject>
-																<imageobject>
-																	<imagedata fileref="images/st_minkowskisum01.png"/>
-																</imageobject>
-																<caption><para>Before Summing</para></caption>
-															</mediaobject>
-															</informalfigure>
-																								</para>
-													</entry>
-													<entry>
-														<para>
-															<informalfigure>
-															<mediaobject>
-																<imageobject>
-																		<imagedata fileref="images/st_minkowskisum02.png"/>
-																</imageobject>
-																<caption><para>After summing</para></caption>
-															</mediaobject>
-															</informalfigure>
-																								</para>
-													</entry>
-											</row>
-											</tbody>
-									</tgroup>
-							</informaltable>
-							<programlisting>
-	SELECT ST_MinkowskiSum(line, circle))
-	FROM (SELECT
-			ST_MakeLine(ST_Point(10, 10),ST_Point(100, 100)) As line,
-			ST_Buffer(ST_GeomFromText('POINT(50 50)'), 30) As circle) As foo;
-
-	-- wkt --
-	MULTIPOLYGON(((30 59.9999999999999,30.5764415879031 54.1472903395161,32.2836140246614 48.5194970290472,35.0559116309237 43.3328930094119,38.7867965644036 38.7867965644035,43.332893009412 35.0559116309236,48.5194970290474 32.2836140246614,54.1472903395162 30.5764415879031,60.0000000000001 30,65.8527096604839 30.5764415879031,71.4805029709527 32.2836140246614,76.6671069905881 35.0559116309237,81.2132034355964 38.7867965644036,171.213203435596 128.786796564404,174.944088369076 133.332893009412,177.716385975339 138.519497029047,179.423558412097 144.147290339516,180 150,179.423558412097 155.852709660484,177.716385975339 161.480502970953,174.944088369076 166.667106990588,171.213203435596 171.213203435596,166.667106990588 174.944088369076,
-	161.480502970953 177.716385975339,155.852709660484 179.423558412097,150 180,144.147290339516 179.423558412097,138.519497029047 177.716385975339,133.332893009412 174.944088369076,128.786796564403 171.213203435596,38.7867965644035 81.2132034355963,35.0559116309236 76.667106990588,32.2836140246614 71.4805029709526,30.5764415879031 65.8527096604838,30 59.9999999999999)))
-							</programlisting>
-
-					<para>Minkowski Sum of a polygon and multipoint</para>
-							<informaltable>
-									<tgroup cols="2">
-											<tbody>
-												<row>
-													<entry>
-													<para>
-															<informalfigure>
-															<mediaobject>
-																<imageobject>
-																	<imagedata fileref="images/st_minkowskisum03.png"/>
-																</imageobject>
-																<caption><para>Before Summing</para></caption>
-															</mediaobject>
-															</informalfigure>
-														</para>
-													</entry>
-													<entry>
-														<para>
-															<informalfigure>
-															<mediaobject>
-																<imageobject>
-																		<imagedata fileref="images/st_minkowskisum04.png"/>
-																</imageobject>
-																<caption><para>After summing: polygon is duplicated and translated to position of points</para></caption>
-															</mediaobject>
-															</informalfigure>
-														</para>
-													</entry>
-											</row>
-											</tbody>
-									</tgroup>
-							</informaltable>
-							<programlisting>SELECT ST_MinkowskiSum(mp, poly)
-	FROM (SELECT 'MULTIPOINT(25 50,70 25)'::geometry As mp,
-		'POLYGON((130 150, 20 40, 50 60, 125 100, 130 150))'::geometry As poly
-			) As foo
-
-
-	-- wkt --
-	MULTIPOLYGON(
-			((70 115,100 135,175 175,225 225,70 115)),
-			((120 65,150 85,225 125,275 175,120 65))
-			)
-							</programlisting>
-				</refsection>
-
-		</refentry>
-
-		<refentry xml:id="ST_OptimalAlphaShape">
-			<refnamediv>
-			<refname>ST_OptimalAlphaShape</refname>
-
-			<refpurpose>Computes an Alpha-shape enclosing a geometry using an "optimal" alpha value.</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>geometry <function>ST_OptimalAlphaShape</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-													<paramdef choice="opt"><type>boolean </type> <parameter>allow_holes = false</parameter></paramdef>
-													<paramdef choice="opt"><type>integer </type> <parameter>nb_components = 1</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-					<title>Description</title>
-
-					<para>Computes the "optimal" alpha-shape of the points in a geometry.
-							The alpha-shape is computed using a value of α chosen so that:
-							</para>
-					<orderedlist>
-							<listitem>
-									<para>the number of polygon elements is equal to or smaller than <varname>nb_components</varname>
-											(which defaults to 1)</para>
-							</listitem>
-							<listitem>
-									<para>all input points are contained in the shape</para>
-							</listitem>
-					</orderedlist>
-					<para>
-							The result will not contain holes unless the optional <varname>allow_holes</varname> argument is specified as true.
-							</para>
-
-			<para role="availability" conformance="3.3.0">Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1.</para>
-			<para>&sfcgal_required;</para>
-			</refsection>
-
-			<refsection>
-				<title>Examples</title>
-					<para>
-							<informalfigure>
-							<mediaobject>
-									<imageobject>
-									<imagedata fileref="images/st_optimalalphashape01.png"/>
-									</imageobject>
-									<caption><para>Optimal alpha-shape of a MultiPoint (same example as <xref linkend="ST_AlphaShape"/>)</para></caption>
-							</mediaobject>
-							</informalfigure>
-									<programlisting>SELECT ST_AsText(ST_OptimalAlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
-									(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),
-									(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
-									(78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
-									(75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
-									(80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
-									(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry));</programlisting>
-									<screen>POLYGON((89 53,91 50,87 42,90 30,88 29,84 19,78 16,73 16,65 16,53 18,43 19,37 23,30 22,28 33,23 36,
-									26 44,27 54,23 60,24 67,27 77,24 82,26 85,34 86,39 88,45 90,49 95,52 98,57 97,64 97,72 95,76 88,75 84,75 77,83 72,85 71,83 64,88 58,89 53))</screen>
-					</para>
-
-					<para>
-							<informalfigure>
-							<mediaobject>
-									<imageobject>
-									<imagedata fileref="images/st_optimalalphashape02.png"/>
-									</imageobject>
-									<caption><para>Optimal alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="ST_AlphaShape"/>)</para></caption>
-							</mediaobject>
-							</informalfigure>
-									<programlisting>SELECT ST_AsText(ST_OptimalAlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
-									(78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
-									(75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
-									(80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
-									(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry, allow_holes =&gt; true));</programlisting>
-									<screen>POLYGON((89 53,91 50,87 42,90 30,88 29,84 19,78 16,73 16,65 16,53 18,43 19,37 23,30 22,28 33,23 36,26 44,27 54,23 60,24 67,27 77,24 82,26 85,34 86,39 88,45 90,49 95,52 98,57 97,64 97,72 95,76 88,75 84,75 77,83 72,85 71,83 64,88 58,89 53),(36 61,36 68,40 75,43 80,50 86,60 81,68 73,77 67,81 60,82 54,81 47,78 43,81 29,76 27,70 20,62 22,55 26,54 32,48 34,44 42,38 46,36 61))</screen>
-					</para>
-
-			</refsection>
-				<refsection>
-			<title>See Also</title>
-			<para><xref linkend="ST_ConcaveHull"/>, <xref linkend="ST_AlphaShape"/></para>
-			</refsection>
-
-		</refentry>
-
-		<refentry xml:id="CG_OptimalConvexPartition">
-			<refnamediv>
-			<refname>CG_OptimalConvexPartition</refname>
-
-			<refpurpose>Computes an optimal convex partition of the polygon geometry</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>geometry <function>CG_OptimalConvexPartition</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-					<title>Description</title>
-
-						<para>Computes an optimal convex partition of the polygon geometry.
-						</para>
-
-					<note><para>
-					A partition of a polygon P is a set of polygons such that the interiors of the polygons do not intersect and the union of the polygons is equal to the interior of the original polygon P.
-					CG_OptimalConvexPartition produces a partition that is optimal in the number of pieces.
-					</para></note>
-
-
-			<para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
-			<para role="sfcgal_requirement" conformance="1.5.0">Requires SFCGAL &gt;= 1.5.0</para>
-			<para>&sfcgal_required;</para>
-			</refsection>
-
-			<refsection>
-					<title>Examples</title>
-	<para>
-			<informalfigure>
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="images/cg_optimalconvexpartition01.png" />
-					</imageobject>
-					<caption><para>Optimal Convex Partition (same example As <xref linkend="CG_YMonotonePartition" />,  <xref linkend="CG_ApproxConvexPartition" /> and <xref linkend="CG_GreeneApproxConvexPartition" />)</para></caption>
-				</mediaobject>
-			</informalfigure>
-					<programlisting>SELECT ST_AsText(CG_OptimalConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
-						<screen>GEOMETRYCOLLECTION(POLYGON((156 150,83 181,89 131,148 120,156 150)),POLYGON((32 159,0 45,41 86,32 159)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,32 159,41 86,67 24,109 31,107 61)),POLYGON((148 120,107 61,109 31,170 60,180 110,148 120)),POLYGON((156 150,148 120,180 110,156 150)))</screen>
-					</para>
-			</refsection>
-				<refsection>
-			<title>See Also</title>
-									<para><xref linkend="CG_YMonotonePartition" />, <xref linkend="CG_ApproxConvexPartition" />, <xref linkend="CG_GreeneApproxConvexPartition" /></para>
-			</refsection>
-	</refentry>
-
-
-		<refentry xml:id="ST_StraightSkeleton">
-			<refnamediv>
-			<refname>ST_StraightSkeleton</refname>
-
-			<refpurpose>Compute a straight skeleton from a geometry</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>geometry <function>ST_StraightSkeleton</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-			<title>Description</title>
-
-			<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
-			<para>&sfcgal_required;</para>
-			<para>&Z_support;</para>
-			<para>&P_support;</para>
-			<para>&T_support;</para>
-			</refsection>
-
-			<refsection><title>Examples</title>
-				<programlisting>SELECT ST_StraightSkeleton(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));</programlisting>
-
-			<informaltable>
-						<tgroup cols="2">
-						<tbody>
-							<row>
-							<entry><para><informalfigure>
-								<mediaobject>
-									<imageobject>
-									<imagedata fileref="images/st_straightskeleton01.png"/>
-									</imageobject>
-									<caption><para>Original polygon</para></caption>
-								</mediaobject>
-								</informalfigure></para>
-							</entry>
-							<entry><para><informalfigure>
-								<mediaobject>
-									<imageobject>
-									<imagedata fileref="images/st_straightskeleton02.png"/>
-									</imageobject>
-									<caption><para>Straight Skeleton of polygon</para></caption>
-								</mediaobject>
-								</informalfigure></para>
-							</entry>
-					</row>
-					</tbody>
-					</tgroup>
-				</informaltable>
-			</refsection>
-
-				<refsection>
-			<title>See Also</title>
-									<para><xref linkend="CG_ExtrudeStraightSkeleton" /></para>
-			</refsection>
-		</refentry>
-
-
-		<refentry xml:id="ST_Tesselate">
-			<refnamediv>
-			<refname>ST_Tesselate</refname>
-
-			<refpurpose>Perform surface Tesselation of a polygon or polyhedralsurface and returns as a TIN or collection of TINS</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>geometry <function>ST_Tesselate</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-			<title>Description</title>
-			<para>Takes as input a surface such a  MULTI(POLYGON) or POLYHEDRALSURFACE and returns a TIN representation via the process of tessellation using triangles.</para>
-			<note><para><xref linkend="ST_TriangulatePolygon" /> does similar to this function except that it returns a geometry collection of polygons instead of a TIN and also only works with 2D geometries.</para></note>
-			<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
-			<para>&sfcgal_required;</para>
-			<para>&Z_support;</para>
-			<para>&P_support;</para>
-			<para>&T_support;</para>
-			</refsection>
-
-			<refsection><title>Examples</title>
-			<informaltable>
-						<tgroup cols="2">
-						<tbody>
-							<row>
-							<entry><para>
-							<programlisting>SELECT ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-			((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-			((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-			((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )');</programlisting>
-							<informalfigure>
-								<mediaobject>
-									<imageobject>
-									<imagedata fileref="images/st_tesselate01.png"/>
-									</imageobject>
-									<caption><para>Original Cube</para></caption>
-								</mediaobject>
-								</informalfigure></para>
-							</entry>
-							<entry><para>
-							<programlisting>SELECT ST_Tesselate(ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));</programlisting></para>
-			<para>ST_AsText output:</para>
-			<screen>TIN Z (((0 0 0,0 0 1,0 1 1,0 0 0)),((0 1 0,0 0 0,0 1 1,0 1 0)),
-		((0 0 0,0 1 0,1 1 0,0 0 0)),
-		((1 0 0,0 0 0,1 1 0,1 0 0)),((0 0 1,1 0 0,1 0 1,0 0 1)),
-		((0 0 1,0 0 0,1 0 0,0 0 1)),
-		((1 1 0,1 1 1,1 0 1,1 1 0)),((1 0 0,1 1 0,1 0 1,1 0 0)),
-		((0 1 0,0 1 1,1 1 1,0 1 0)),((1 1 0,0 1 0,1 1 1,1 1 0)),
-		((0 1 1,1 0 1,1 1 1,0 1 1)),((0 1 1,0 0 1,1 0 1,0 1 1)))</screen>
-						<para> <informalfigure>
-								<mediaobject>
-									<imageobject>
-									<imagedata fileref="images/st_tesselate02.png"/>
-									</imageobject>
-									<caption><para>Tesselated Cube with triangles colored</para></caption>
-								</mediaobject>
-								</informalfigure></para>
-							</entry>
-							</row>
-
-							<row>
-							<entry><para>
-							<programlisting>SELECT 'POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, 10 190 ))'::geometry;</programlisting>
-							<informalfigure>
-								<mediaobject>
-									<imageobject>
-									<imagedata fileref="images/st_tesselate03.png"/>
-									</imageobject>
-									<caption><para>Original polygon</para></caption>
-								</mediaobject>
-								</informalfigure></para>
-							</entry>
-							<entry><para>
-							<programlisting>SELECT
-		ST_Tesselate('POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, 10 190 ))'::geometry);</programlisting>
-		</para>
-		<para>ST_AsText output</para>
-		<screen>TIN(((80 130,50 160,80 70,80 130)),((50 160,10 190,10 70,50 160)),
-		((80 70,50 160,10 70,80 70)),((120 160,120 190,50 160,120 160)),
-	((120 190,10 190,50 160,120 190)))</screen>
-							<para><informalfigure>
-								<mediaobject>
-									<imageobject>
-									<imagedata fileref="images/st_tesselate04.png"/>
-									</imageobject>
-									<caption><para>Tesselated Polygon</para></caption>
-								</mediaobject>
-								</informalfigure></para>
-							</entry>
-							</row>
-					</tbody>
-					</tgroup>
-				</informaltable>
-			</refsection>
-
-			<refsection>
-									<title>See Also</title>
-
-									<para><xref linkend="ST_ConstrainedDelaunayTriangles"/>, <xref linkend="ST_DelaunayTriangles"/>, <xref linkend="ST_TriangulatePolygon"/></para>
-						</refsection>
-
-
-		</refentry>
-
-			<refentry xml:id="CG_Visibility">
-					<refnamediv>
-							<refname>CG_Visibility</refname>
-
-							<refpurpose>Compute a visibility polygon from a point or a segment in a polygon geometry</refpurpose>
-					</refnamediv>
-
-					<refsynopsisdiv>
-							<funcsynopsis>
-									<funcprototype>
-											<funcdef>geometry <function>CG_Visibility</function></funcdef>
-											<paramdef><type>geometry</type> <parameter>polygon</parameter></paramdef>
-											<paramdef><type>geometry</type> <parameter>point</parameter></paramdef>
-									</funcprototype>
-									<funcprototype>
-											<funcdef>geometry <function>CG_Visibility</function></funcdef>
-											<paramdef><type>geometry</type> <parameter>polygon</parameter></paramdef>
-											<paramdef><type>geometry</type> <parameter>pointA</parameter></paramdef>
-											<paramdef><type>geometry</type> <parameter>pointB</parameter></paramdef>
-									</funcprototype>
-							</funcsynopsis>
-					</refsynopsisdiv>
-
-					<refsection>
-							<title>Description</title>
-
-							<para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
-							<para role="sfcgal_requirement" conformance="1.5.0">Requires SFCGAL &gt;= 1.5.0</para>
-							<para>&sfcgal_required;</para>
-							<para>&Z_support;</para>
-							<para>&P_support;</para>
-							<para>&T_support;</para>
-					</refsection>
-
-					<refsection><title>Examples</title>
-							<programlisting>SELECT CG_Visibility('POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150))'::geometry, 'POINT(91 87)'::geometry);</programlisting>
-
-							<programlisting>SELECT CG_Visibility('POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150))'::geometry,'POINT(78.5 68)'::geometry, 'POINT(98.5 68)'::geometry);</programlisting>
-							<informaltable>
-									<tgroup cols="3">
-											<tbody>
-													<row>
-															<entry><para><informalfigure>
-																					<mediaobject>
-																							<imageobject>
-																									<imagedata fileref="images/cg_visibility01.png"/>
-																							</imageobject>
-																							<caption><para>Original polygon</para></caption>
-																					</mediaobject>
-																	</informalfigure></para>
-															</entry>
-															<entry><para><informalfigure>
-																					<mediaobject>
-																							<imageobject>
-																									<imagedata fileref="images/cg_visibility02.png"/>
-																							</imageobject>
-																							<caption><para>Visibility from the point</para></caption>
-																					</mediaobject>
-																	</informalfigure></para>
-															</entry>
-															<entry><para><informalfigure>
-																					<mediaobject>
-																							<imageobject>
-																									<imagedata fileref="images/cg_visibility03.png"/>
-																							</imageobject>
-																							<caption><para>Visibility from the segment</para></caption>
-																					</mediaobject>
-																	</informalfigure></para>
-															</entry>
-													</row>
-											</tbody>
-									</tgroup>
-							</informaltable>
-					</refsection>
-
-			</refentry>
-
-			<refentry xml:id="CG_YMonotonePartition">
-			<refnamediv>
-			<refname>CG_YMonotonePartition</refname>
-
-			<refpurpose>Computes y-monotone partition of the polygon geometry</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-				<funcdef>geometry <function>CG_YMonotonePartition</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-					<title>Description</title>
-
-						<para>Computes y-monotone partition of the polygon geometry.
-						</para>
-
-					<note><para>
-					A partition of a polygon P is a set of polygons such that the interiors of the polygons do not intersect and the union of the polygons is equal to the interior of the original polygon P.
-					A y-monotone polygon is a polygon whose vertices v1,…,vn can be divided into two chains v1,…,vk and vk,…,vn,v1, such that any horizontal line intersects either chain at most once. This algorithm does not guarantee a bound on the number of polygons produced with respect to the optimal number.
-					</para></note>
-
-
-			<para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
-			<para role="sfcgal_requirement" conformance="1.5.0">Requires SFCGAL &gt;= 1.5.0</para>
-			<para>&sfcgal_required;</para>
-			</refsection>
-
-			<refsection>
-					<title>Examples</title>
-	<para>
-						<informaltable>
-									<tgroup cols="2">
-											<tbody>
-													<row>
-															<entry><para><informalfigure>
-																					<mediaobject>
-																							<imageobject>
-																									<imagedata fileref="images/cg_ymonotonepartition01.png"/>
-																							</imageobject>
-																							<caption><para>Original polygon</para></caption>
-																					</mediaobject>
-																	</informalfigure></para>
-															</entry>
-															<entry><para><informalfigure>
-																					<mediaobject>
-																							<imageobject>
-																									<imagedata fileref="images/cg_ymonotonepartition02.png"/>
-																							</imageobject>
-																							<caption><para>Y-Monotone Partition (same example As <xref linkend="CG_ApproxConvexPartition" />,  <xref linkend="CG_GreeneApproxConvexPartition" /> and <xref linkend="CG_OptimalConvexPartition" />)</para></caption>
-																					</mediaobject>
-																	</informalfigure></para>
-															</entry>
-													</row>
-											</tbody>
-									</tgroup>
-							</informaltable>
-					<programlisting>SELECT ST_AsText(CG_YMonotonePartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
-						<screen>GEOMETRYCOLLECTION(POLYGON((32 159,0 45,41 86,32 159)),POLYGON((107 61,32 159,41 86,45 1,177 2,67 24,109 31,170 60,107 61)),POLYGON((156 150,83 181,89 131,148 120,107 61,170 60,180 110,156 150)))</screen>
-					</para>
-			</refsection>
-				<refsection>
-			<title>See Also</title>
-									<para><xref linkend="CG_ApproxConvexPartition" />, <xref linkend="CG_GreeneApproxConvexPartition" />, <xref linkend="CG_OptimalConvexPartition" /></para>
-			</refsection>
-
-		</refentry>
-	</section>
+        <refentry xml:id="CG_ExtrudeStraightSkeleton">
+            <refnamediv>
+                <refname>CG_ExtrudeStraightSkeleton</refname>
+
+                <refpurpose>Straight Skeleton Extrusion</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>geometry <function>CG_ExtrudeStraightSkeleton</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                        <paramdef><type>float </type> <parameter>roof_height</parameter></paramdef>
+                        <paramdef choice="opt"><type>float </type> <parameter>body_height = 0</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Computes an extrusion with a maximal height of the polygon geometry.
+            </para>
+
+            <note><para>
+                    Perhaps the first (historically) use-case of straight skeletons: given a polygonal roof, the straight skeleton directly gives the layout of each tent. If each skeleton edge is lifted from the plane a height equal to its offset distance, the resulting roof is "correct" in that water will always fall down to the contour edges (the roof's border), regardless of where it falls on the roof.
+                    The function computes this extrusion aka "roof" on a polygon. If the argument body_height > 0, so the polygon is extruded like with ST_Extrude(polygon, 0, 0, body_height). The result is an union of these polyhedralsurfaces.
+            </para></note>
+
+
+            <para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
+            <para role="sfcgal_requirement" conformance="1.5.0">Requires SFCGAL &gt;= 1.5.0</para>
+            <para>&sfcgal_required;</para>
+        </refsection>
+
+        <refsection>
+            <title>Examples</title>
+            <para>
+                <programlisting>SELECT ST_AsText(CG_ExtrudeStraightSkeleton('POLYGON (( 0 0, 5 0, 5 5, 4 5, 4 4, 0 4, 0 0 ), (1 1, 1 2,2 2, 2 1, 1 1))', 3.0, 2.0));</programlisting>
+                <screen>POLYHEDRALSURFACE Z (((0 0 0,0 4 0,4 4 0,4 5 0,5 5 0,5 0 0,0 0 0),(1 1 0,2 1 0,2 2 0,1 2 0,1 1 0)),((0 0 0,0 0 2,0 4 2,0 4 0,0 0 0)),((0 4 0,0 4 2,4 4 2,4 4 0,0 4 0)),((4 4 0,4 4 2,4 5 2,4 5 0,4 4 0)),((4 5 0,4 5 2,5 5 2,5 5 0,4 5 0)),((5 5 0,5 5 2,5 0 2,5 0 0,5 5 0)),((5 0 0,5 0 2,0 0 2,0 0 0,5 0 0)),((1 1 0,1 1 2,2 1 2,2 1 0,1 1 0)),((2 1 0,2 1 2,2 2 2,2 2 0,2 1 0)),((2 2 0,2 2 2,1 2 2,1 2 0,2 2 0)),((1 2 0,1 2 2,1 1 2,1 1 0,1 2 0)),((4 5 2,5 5 2,4 4 2,4 5 2)),((2 1 2,5 0 2,0 0 2,2 1 2)),((5 5 2,5 0 2,4 4 2,5 5 2)),((2 1 2,0 0 2,1 1 2,2 1 2)),((1 2 2,1 1 2,0 0 2,1 2 2)),((0 4 2,2 2 2,1 2 2,0 4 2)),((0 4 2,1 2 2,0 0 2,0 4 2)),((4 4 2,5 0 2,2 2 2,4 4 2)),((4 4 2,2 2 2,0 4 2,4 4 2)),((2 2 2,5 0 2,2 1 2,2 2 2)),((0.5 2.5 2.5,0 0 2,0.5 0.5 2.5,0.5 2.5 2.5)),((1 3 3,0 4 2,0.5 2.5 2.5,1 3 3)),((0.5 2.5 2.5,0 4 2,0 0 2,0.5 2.5 2.5)),((2.5 0.5 2.5,5 0 2,3.5 1.5 3.5,2.5 0.5 2.5)),((0 0 2,5 0 2,2.5 0.5 2.5,0 0 2)),((0.5 0.5 2.5,0 0 2,2.5 0.5 2.5,0.5 0.5 2.5)),((4.5 3.5 2.5,5 5 2,4.5 4.5 2.5,4.5 3.5 2.5)),((3.5 2.5 3.5,3.5 1.5 3.5,4.5 3.5 2.5,3.5 2.5 3.5)),((4.5 3.5 2.5,5 0 2,5 5 2,4.5 3.5 2.5)),((3.5 1.5 3.5,5 0 2,4.5 3.5 2.5,3.5 1.5 3.5)),((5 5 2,4 5 2,4.5 4.5 2.5,5 5 2)),((4.5 4.5 2.5,4 4 2,4.5 3.5 2.5,4.5 4.5 2.5)),((4.5 4.5 2.5,4 5 2,4 4 2,4.5 4.5 2.5)),((3 3 3,0 4 2,1 3 3,3 3 3)),((3.5 2.5 3.5,4.5 3.5 2.5,3 3 3,3.5 2.5 3.5)),((3 3 3,4 4 2,0 4 2,3 3 3)),((4.5 3.5 2.5,4 4 2,3 3 3,4.5 3.5 2.5)),((2 1 2,1 1 2,0.5 0.5 2.5,2 1 2)),((2.5 0.5 2.5,2 1 2,0.5 0.5 2.5,2.5 0.5 2.5)),((1 1 2,1 2 2,0.5 2.5 2.5,1 1 2)),((0.5 0.5 2.5,1 1 2,0.5 2.5 2.5,0.5 0.5 2.5)),((1 3 3,2 2 2,3 3 3,1 3 3)),((0.5 2.5 2.5,1 2 2,1 3 3,0.5 2.5 2.5)),((1 3 3,1 2 2,2 2 2,1 3 3)),((2 2 2,2 1 2,2.5 0.5 2.5,2 2 2)),((3.5 2.5 3.5,3 3 3,3.5 1.5 3.5,3.5 2.5 3.5)),((3.5 1.5 3.5,2 2 2,2.5 0.5 2.5,3.5 1.5 3.5)),((3 3 3,2 2 2,3.5 1.5 3.5,3 3 3)))</screen>
+            </para>
+        </refsection>
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_Extrude" />, <xref linkend="ST_StraightSkeleton" /></para>
+        </refsection>
+
+    </refentry>
+
+    <refentry xml:id="CG_GreeneApproxConvexPartition">
+        <refnamediv>
+            <refname>CG_GreeneApproxConvexPartition</refname>
+
+            <refpurpose>Computes approximal convex partition of the polygon geometry</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>CG_GreeneApproxConvexPartition</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <para>Computes approximal monotone convex partition of the polygon geometry.
+        </para>
+
+        <note><para>
+                A partition of a polygon P is a set of polygons such that the interiors of the polygons do not intersect and the union of the polygons is equal to the interior of the original polygon P.
+                CG_ApproxConvexPartition and CG_GreeneApproxConvexPartition functions produce approximately optimal convex partitions. Both these functions produce convex decompositions by first decomposing the polygon into simpler polygons; CG_ApproxConvexPartition uses a triangulation and CG_GreeneApproxConvexPartition a monotone partition. These two functions both guarantee that they will produce no more than four times the optimal number of convex pieces but they differ in their runtime complexities. Though the triangulation-based approximation algorithm often results in fewer convex pieces, this is not always the case.
+        </para></note>
+
+
+        <para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
+        <para role="sfcgal_requirement" conformance="1.5.0">Requires SFCGAL &gt;= 1.5.0</para>
+        <para>&sfcgal_required;</para>
+    </refsection>
+
+    <refsection>
+        <title>Examples</title>
+        <para>
+            <informalfigure>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="images/cg_greeneapproxconvexpartition01.png" />
+                    </imageobject>
+                    <caption><para>Greene Approximal Convex Partition (same example As <xref linkend="CG_YMonotonePartition" />,  <xref linkend="CG_ApproxConvexPartition" /> and <xref linkend="CG_OptimalConvexPartition" />)</para></caption>
+                </mediaobject>
+            </informalfigure>
+            <programlisting>SELECT ST_AsText(CG_GreeneApproxConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
+            <screen>GEOMETRYCOLLECTION(POLYGON((32 159,0 45,41 86,32 159)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((67 24,109 31,170 60,107 61,67 24)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,32 159,41 86,67 24,107 61)),POLYGON((148 120,107 61,170 60,148 120)),POLYGON((148 120,170 60,180 110,156 150,148 120)),POLYGON((156 150,83 181,89 131,148 120,156 150)))</screen>
+        </para>
+    </refsection>
+    <refsection>
+        <title>See Also</title>
+        <para><xref linkend="CG_YMonotonePartition" />, <xref linkend="CG_ApproxConvexPartition" />, <xref linkend="CG_OptimalConvexPartition" /></para>
+    </refsection>
+
+</refentry>
+
+
+<refentry xml:id="ST_MinkowskiSum">
+    <refnamediv>
+        <refname>ST_MinkowskiSum</refname>
+
+        <refpurpose>Performs Minkowski sum</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>geometry <function>ST_MinkowskiSum</function></funcdef>
+                <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+                <paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+        <title>Description</title>
+
+        <para>This function performs a 2D minkowski sum of a point, line or polygon with a polygon.</para>
+        <para>A minkowski sum of two geometries A and B is the set of all points that are the sum of any point in A and B. Minkowski sums are often used in motion planning and computer-aided design. More details on <link xlink:href="https://en.wikipedia.org/wiki/Minkowski_addition">Wikipedia Minkowski addition</link>.</para>
+        <para>The first parameter can be any 2D geometry (point, linestring, polygon). If a 3D geometry is passed, it will be converted to 2D by forcing Z to 0, leading to possible cases of invalidity. The second parameter must be a 2D polygon.</para>
+
+        <para>Implementation utilizes <link xlink:href="http://doc.cgal.org/latest/Minkowski_sum_2/">CGAL 2D Minkowskisum</link>.</para>
+
+
+        <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+        <para>&sfcgal_required;</para>
+    </refsection>
+
+    <refsection><title>Examples</title>
+        <para>Minkowski Sum of Linestring and circle polygon where Linestring cuts thru the circle</para>
+        <informaltable>
+            <tgroup cols="2">
+                <tbody>
+                    <row>
+                        <entry>
+                            <para>
+                                <informalfigure>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="images/st_minkowskisum01.png"/>
+                                        </imageobject>
+                                        <caption><para>Before Summing</para></caption>
+                                    </mediaobject>
+                                </informalfigure>
+                            </para>
+                        </entry>
+                        <entry>
+                            <para>
+                                <informalfigure>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="images/st_minkowskisum02.png"/>
+                                        </imageobject>
+                                        <caption><para>After summing</para></caption>
+                                    </mediaobject>
+                                </informalfigure>
+                            </para>
+                        </entry>
+                    </row>
+                </tbody>
+            </tgroup>
+        </informaltable>
+        <programlisting>
+            SELECT ST_MinkowskiSum(line, circle))
+            FROM (SELECT
+            ST_MakeLine(ST_Point(10, 10),ST_Point(100, 100)) As line,
+            ST_Buffer(ST_GeomFromText('POINT(50 50)'), 30) As circle) As foo;
+
+            -- wkt --
+            MULTIPOLYGON(((30 59.9999999999999,30.5764415879031 54.1472903395161,32.2836140246614 48.5194970290472,35.0559116309237 43.3328930094119,38.7867965644036 38.7867965644035,43.332893009412 35.0559116309236,48.5194970290474 32.2836140246614,54.1472903395162 30.5764415879031,60.0000000000001 30,65.8527096604839 30.5764415879031,71.4805029709527 32.2836140246614,76.6671069905881 35.0559116309237,81.2132034355964 38.7867965644036,171.213203435596 128.786796564404,174.944088369076 133.332893009412,177.716385975339 138.519497029047,179.423558412097 144.147290339516,180 150,179.423558412097 155.852709660484,177.716385975339 161.480502970953,174.944088369076 166.667106990588,171.213203435596 171.213203435596,166.667106990588 174.944088369076,
+            161.480502970953 177.716385975339,155.852709660484 179.423558412097,150 180,144.147290339516 179.423558412097,138.519497029047 177.716385975339,133.332893009412 174.944088369076,128.786796564403 171.213203435596,38.7867965644035 81.2132034355963,35.0559116309236 76.667106990588,32.2836140246614 71.4805029709526,30.5764415879031 65.8527096604838,30 59.9999999999999)))
+        </programlisting>
+
+        <para>Minkowski Sum of a polygon and multipoint</para>
+        <informaltable>
+            <tgroup cols="2">
+                <tbody>
+                    <row>
+                        <entry>
+                            <para>
+                                <informalfigure>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="images/st_minkowskisum03.png"/>
+                                        </imageobject>
+                                        <caption><para>Before Summing</para></caption>
+                                    </mediaobject>
+                                </informalfigure>
+                            </para>
+                        </entry>
+                        <entry>
+                            <para>
+                                <informalfigure>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="images/st_minkowskisum04.png"/>
+                                        </imageobject>
+                                        <caption><para>After summing: polygon is duplicated and translated to position of points</para></caption>
+                                    </mediaobject>
+                                </informalfigure>
+                            </para>
+                        </entry>
+                    </row>
+                </tbody>
+            </tgroup>
+        </informaltable>
+        <programlisting>SELECT ST_MinkowskiSum(mp, poly)
+        FROM (SELECT 'MULTIPOINT(25 50,70 25)'::geometry As mp,
+        'POLYGON((130 150, 20 40, 50 60, 125 100, 130 150))'::geometry As poly
+        ) As foo
+
+
+        -- wkt --
+        MULTIPOLYGON(
+        ((70 115,100 135,175 175,225 225,70 115)),
+        ((120 65,150 85,225 125,275 175,120 65))
+        )
+    </programlisting>
+</refsection>
+
+        </refentry>
+
+        <refentry xml:id="ST_OptimalAlphaShape">
+            <refnamediv>
+                <refname>ST_OptimalAlphaShape</refname>
+
+                <refpurpose>Computes an Alpha-shape enclosing a geometry using an "optimal" alpha value.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>geometry <function>ST_OptimalAlphaShape</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                        <paramdef choice="opt"><type>boolean </type> <parameter>allow_holes = false</parameter></paramdef>
+                        <paramdef choice="opt"><type>integer </type> <parameter>nb_components = 1</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Computes the "optimal" alpha-shape of the points in a geometry.
+                The alpha-shape is computed using a value of α chosen so that:
+            </para>
+            <orderedlist>
+                <listitem>
+                    <para>the number of polygon elements is equal to or smaller than <varname>nb_components</varname>
+                        (which defaults to 1)</para>
+                </listitem>
+                <listitem>
+                    <para>all input points are contained in the shape</para>
+                </listitem>
+            </orderedlist>
+            <para>
+                The result will not contain holes unless the optional <varname>allow_holes</varname> argument is specified as true.
+            </para>
+
+            <para role="availability" conformance="3.3.0">Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1.</para>
+            <para>&sfcgal_required;</para>
+        </refsection>
+
+        <refsection>
+            <title>Examples</title>
+            <para>
+                <informalfigure>
+                    <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="images/st_optimalalphashape01.png"/>
+                        </imageobject>
+                        <caption><para>Optimal alpha-shape of a MultiPoint (same example as <xref linkend="ST_AlphaShape"/>)</para></caption>
+                    </mediaobject>
+                </informalfigure>
+                <programlisting>SELECT ST_AsText(ST_OptimalAlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
+                (88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),
+                (81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
+                (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
+                (75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
+                (80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
+                (36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry));</programlisting>
+            <screen>POLYGON((89 53,91 50,87 42,90 30,88 29,84 19,78 16,73 16,65 16,53 18,43 19,37 23,30 22,28 33,23 36,
+            26 44,27 54,23 60,24 67,27 77,24 82,26 85,34 86,39 88,45 90,49 95,52 98,57 97,64 97,72 95,76 88,75 84,75 77,83 72,85 71,83 64,88 58,89 53))</screen>
+    </para>
+
+    <para>
+        <informalfigure>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="images/st_optimalalphashape02.png"/>
+                </imageobject>
+                <caption><para>Optimal alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="ST_AlphaShape"/>)</para></caption>
+            </mediaobject>
+        </informalfigure>
+        <programlisting>SELECT ST_AsText(ST_OptimalAlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
+        (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
+        (75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
+        (80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
+        (36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry, allow_holes =&gt; true));</programlisting>
+    <screen>POLYGON((89 53,91 50,87 42,90 30,88 29,84 19,78 16,73 16,65 16,53 18,43 19,37 23,30 22,28 33,23 36,26 44,27 54,23 60,24 67,27 77,24 82,26 85,34 86,39 88,45 90,49 95,52 98,57 97,64 97,72 95,76 88,75 84,75 77,83 72,85 71,83 64,88 58,89 53),(36 61,36 68,40 75,43 80,50 86,60 81,68 73,77 67,81 60,82 54,81 47,78 43,81 29,76 27,70 20,62 22,55 26,54 32,48 34,44 42,38 46,36 61))</screen>
+</para>
+
+            </refsection>
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="ST_ConcaveHull"/>, <xref linkend="ST_AlphaShape"/></para>
+            </refsection>
+
+        </refentry>
+
+        <refentry xml:id="CG_OptimalConvexPartition">
+            <refnamediv>
+                <refname>CG_OptimalConvexPartition</refname>
+
+                <refpurpose>Computes an optimal convex partition of the polygon geometry</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>geometry <function>CG_OptimalConvexPartition</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Computes an optimal convex partition of the polygon geometry.
+            </para>
+
+            <note><para>
+                    A partition of a polygon P is a set of polygons such that the interiors of the polygons do not intersect and the union of the polygons is equal to the interior of the original polygon P.
+                    CG_OptimalConvexPartition produces a partition that is optimal in the number of pieces.
+            </para></note>
+
+
+            <para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
+            <para role="sfcgal_requirement" conformance="1.5.0">Requires SFCGAL &gt;= 1.5.0</para>
+            <para>&sfcgal_required;</para>
+        </refsection>
+
+        <refsection>
+            <title>Examples</title>
+            <para>
+                <informalfigure>
+                    <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="images/cg_optimalconvexpartition01.png" />
+                        </imageobject>
+                        <caption><para>Optimal Convex Partition (same example As <xref linkend="CG_YMonotonePartition" />,  <xref linkend="CG_ApproxConvexPartition" /> and <xref linkend="CG_GreeneApproxConvexPartition" />)</para></caption>
+                    </mediaobject>
+                </informalfigure>
+                <programlisting>SELECT ST_AsText(CG_OptimalConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
+                <screen>GEOMETRYCOLLECTION(POLYGON((156 150,83 181,89 131,148 120,156 150)),POLYGON((32 159,0 45,41 86,32 159)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,32 159,41 86,67 24,109 31,107 61)),POLYGON((148 120,107 61,109 31,170 60,180 110,148 120)),POLYGON((156 150,148 120,180 110,156 150)))</screen>
+            </para>
+        </refsection>
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="CG_YMonotonePartition" />, <xref linkend="CG_ApproxConvexPartition" />, <xref linkend="CG_GreeneApproxConvexPartition" /></para>
+        </refsection>
+    </refentry>
+
+
+    <refentry xml:id="ST_StraightSkeleton">
+        <refnamediv>
+            <refname>ST_StraightSkeleton</refname>
+
+            <refpurpose>Compute a straight skeleton from a geometry</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>ST_StraightSkeleton</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+            <para>&sfcgal_required;</para>
+            <para>&Z_support;</para>
+            <para>&P_support;</para>
+            <para>&T_support;</para>
+        </refsection>
+
+        <refsection><title>Examples</title>
+            <programlisting>SELECT ST_StraightSkeleton(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));</programlisting>
+
+            <informaltable>
+                <tgroup cols="2">
+                    <tbody>
+                        <row>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/st_straightskeleton01.png"/>
+                                            </imageobject>
+                                            <caption><para>Original polygon</para></caption>
+                                        </mediaobject>
+                                </informalfigure></para>
+                            </entry>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/st_straightskeleton02.png"/>
+                                            </imageobject>
+                                            <caption><para>Straight Skeleton of polygon</para></caption>
+                                        </mediaobject>
+                                </informalfigure></para>
+                            </entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </informaltable>
+        </refsection>
+
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="CG_ExtrudeStraightSkeleton" /></para>
+        </refsection>
+    </refentry>
+
+
+    <refentry xml:id="ST_Tesselate">
+        <refnamediv>
+            <refname>ST_Tesselate</refname>
+
+            <refpurpose>Perform surface Tesselation of a polygon or polyhedralsurface and returns as a TIN or collection of TINS</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>ST_Tesselate</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+            <para>Takes as input a surface such a  MULTI(POLYGON) or POLYHEDRALSURFACE and returns a TIN representation via the process of tessellation using triangles.</para>
+            <note><para><xref linkend="ST_TriangulatePolygon" /> does similar to this function except that it returns a geometry collection of polygons instead of a TIN and also only works with 2D geometries.</para></note>
+            <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+            <para>&sfcgal_required;</para>
+            <para>&Z_support;</para>
+            <para>&P_support;</para>
+            <para>&T_support;</para>
+        </refsection>
+
+        <refsection><title>Examples</title>
+            <informaltable>
+                <tgroup cols="2">
+                    <tbody>
+                        <row>
+                            <entry><para>
+                                    <programlisting>SELECT ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+                                    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+                                    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+                                    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )');</programlisting>
+                                <informalfigure>
+                                    <mediaobject>
+                                        <imageobject>
+                                            <imagedata fileref="images/st_tesselate01.png"/>
+                                        </imageobject>
+                                        <caption><para>Original Cube</para></caption>
+                                    </mediaobject>
+                            </informalfigure></para>
+                        </entry>
+                        <entry><para>
+                                <programlisting>SELECT ST_Tesselate(ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+                                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+                                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+                                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));</programlisting></para>
+                        <para>ST_AsText output:</para>
+                        <screen>TIN Z (((0 0 0,0 0 1,0 1 1,0 0 0)),((0 1 0,0 0 0,0 1 1,0 1 0)),
+                        ((0 0 0,0 1 0,1 1 0,0 0 0)),
+                        ((1 0 0,0 0 0,1 1 0,1 0 0)),((0 0 1,1 0 0,1 0 1,0 0 1)),
+                        ((0 0 1,0 0 0,1 0 0,0 0 1)),
+                        ((1 1 0,1 1 1,1 0 1,1 1 0)),((1 0 0,1 1 0,1 0 1,1 0 0)),
+                        ((0 1 0,0 1 1,1 1 1,0 1 0)),((1 1 0,0 1 0,1 1 1,1 1 0)),
+                        ((0 1 1,1 0 1,1 1 1,0 1 1)),((0 1 1,0 0 1,1 0 1,0 1 1)))</screen>
+                    <para> <informalfigure>
+                            <mediaobject>
+                                <imageobject>
+                                    <imagedata fileref="images/st_tesselate02.png"/>
+                                </imageobject>
+                                <caption><para>Tesselated Cube with triangles colored</para></caption>
+                            </mediaobject>
+                    </informalfigure></para>
+                </entry>
+            </row>
+
+            <row>
+                <entry><para>
+                        <programlisting>SELECT 'POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, 10 190 ))'::geometry;</programlisting>
+                        <informalfigure>
+                            <mediaobject>
+                                <imageobject>
+                                    <imagedata fileref="images/st_tesselate03.png"/>
+                                </imageobject>
+                                <caption><para>Original polygon</para></caption>
+                            </mediaobject>
+                    </informalfigure></para>
+                </entry>
+                <entry><para>
+                        <programlisting>SELECT
+                        ST_Tesselate('POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, 10 190 ))'::geometry);</programlisting>
+                </para>
+                <para>ST_AsText output</para>
+                <screen>TIN(((80 130,50 160,80 70,80 130)),((50 160,10 190,10 70,50 160)),
+                ((80 70,50 160,10 70,80 70)),((120 160,120 190,50 160,120 160)),
+                ((120 190,10 190,50 160,120 190)))</screen>
+            <para><informalfigure>
+                    <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="images/st_tesselate04.png"/>
+                        </imageobject>
+                        <caption><para>Tesselated Polygon</para></caption>
+                    </mediaobject>
+            </informalfigure></para>
+        </entry>
+    </row>
+</tbody>
+                    </tgroup>
+                </informaltable>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+
+                <para><xref linkend="ST_ConstrainedDelaunayTriangles"/>, <xref linkend="ST_DelaunayTriangles"/>, <xref linkend="ST_TriangulatePolygon"/></para>
+            </refsection>
+
+
+        </refentry>
+
+        <refentry xml:id="CG_Triangulate">
+            <refnamediv>
+                <refname>CG_Triangulate</refname>
+                <refpurpose>Triangulates a polygonal geometry</refpurpose>
+            </refnamediv>
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>geometry <function>CG_Triangulate</function></funcdef>
+                        <paramdef>
+                            <type>geometry</type>
+                            <parameter>geom</parameter>
+                        </paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+            <refsection>
+                <title>Description</title>
+                <para>Triangulates a polygonal geometry.</para>
+                <para>Performed by the SFCGAL module</para>
+                <note>
+                    <para>NOTE: this function returns a geometry representing the triangulated result.</para>
+                </note>
+                <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+                <para>&sfcgal_required;</para>
+            </refsection>
+            <refsection>
+                <title>Geometry Examples</title>
+                <programlisting>SELECT CG_Triangulate('POLYGON((0.0 0.0,1.0 0.0,1.0 1.0,0.0 1.0,0.0 0.0),(0.2 0.2,0.2 0.8,0.8 0.8,0.8 0.2,0.2 0.2))');
+                cg_triangulate
+                ----------------
+                TIN(((0.8 0.2,0.2 0.2,1 0,0.8 0.2)),((0.2 0.2,0 0,1 0,0.2 0.2)),((1 1,0.8 0.8,0.8 0.2,1 1)),((0 1,0 0,0.2 0.2,0 1)),((0 1,0.2 0.8,1 1,0 1)),((0 1,0.2 0.2,0.2 0.8,0 1)),((0.2 0.8,0.8 0.8,1 1,0.2 0.8)),((0.2 0.8,0.2 0.2,0.8 0.2,0.2 0.8)),((1 1,0.8 0.2,1 0,1 1)),((0.8 0.8,0.2 0.8,0.8 0.2,0.8 0.8)))
+
+                (1 row)</programlisting>
+        </refsection>
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="geometry_triangulate"/></para>
+        </refsection>
+    </refentry>
+
+    <refentry xml:id="CG_Visibility">
+        <refnamediv>
+            <refname>CG_Visibility</refname>
+
+            <refpurpose>Compute a visibility polygon from a point or a segment in a polygon geometry</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>CG_Visibility</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>polygon</parameter></paramdef>
+                    <paramdef><type>geometry</type> <parameter>point</parameter></paramdef>
+                </funcprototype>
+                <funcprototype>
+                    <funcdef>geometry <function>CG_Visibility</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>polygon</parameter></paramdef>
+                    <paramdef><type>geometry</type> <parameter>pointA</parameter></paramdef>
+                    <paramdef><type>geometry</type> <parameter>pointB</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
+            <para role="sfcgal_requirement" conformance="1.5.0">Requires SFCGAL &gt;= 1.5.0</para>
+            <para>&sfcgal_required;</para>
+            <para>&Z_support;</para>
+            <para>&P_support;</para>
+            <para>&T_support;</para>
+        </refsection>
+
+        <refsection><title>Examples</title>
+            <programlisting>SELECT CG_Visibility('POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150))'::geometry, 'POINT(91 87)'::geometry);</programlisting>
+
+            <programlisting>SELECT CG_Visibility('POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150))'::geometry,'POINT(78.5 68)'::geometry, 'POINT(98.5 68)'::geometry);</programlisting>
+            <informaltable>
+                <tgroup cols="3">
+                    <tbody>
+                        <row>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/cg_visibility01.png"/>
+                                            </imageobject>
+                                            <caption><para>Original polygon</para></caption>
+                                        </mediaobject>
+                                </informalfigure></para>
+                            </entry>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/cg_visibility02.png"/>
+                                            </imageobject>
+                                            <caption><para>Visibility from the point</para></caption>
+                                        </mediaobject>
+                                </informalfigure></para>
+                            </entry>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/cg_visibility03.png"/>
+                                            </imageobject>
+                                            <caption><para>Visibility from the segment</para></caption>
+                                        </mediaobject>
+                                </informalfigure></para>
+                            </entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </informaltable>
+        </refsection>
+
+    </refentry>
+
+    <refentry xml:id="CG_YMonotonePartition">
+        <refnamediv>
+            <refname>CG_YMonotonePartition</refname>
+
+            <refpurpose>Computes y-monotone partition of the polygon geometry</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                    <funcdef>geometry <function>CG_YMonotonePartition</function></funcdef>
+                    <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <para>Computes y-monotone partition of the polygon geometry.
+        </para>
+
+        <note><para>
+                A partition of a polygon P is a set of polygons such that the interiors of the polygons do not intersect and the union of the polygons is equal to the interior of the original polygon P.
+                A y-monotone polygon is a polygon whose vertices v1,…,vn can be divided into two chains v1,…,vk and vk,…,vn,v1, such that any horizontal line intersects either chain at most once. This algorithm does not guarantee a bound on the number of polygons produced with respect to the optimal number.
+        </para></note>
+
+
+        <para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
+        <para role="sfcgal_requirement" conformance="1.5.0">Requires SFCGAL &gt;= 1.5.0</para>
+        <para>&sfcgal_required;</para>
+    </refsection>
+
+    <refsection>
+        <title>Examples</title>
+        <para>
+            <informaltable>
+                <tgroup cols="2">
+                    <tbody>
+                        <row>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/cg_ymonotonepartition01.png"/>
+                                            </imageobject>
+                                            <caption><para>Original polygon</para></caption>
+                                        </mediaobject>
+                                </informalfigure></para>
+                            </entry>
+                            <entry><para><informalfigure>
+                                        <mediaobject>
+                                            <imageobject>
+                                                <imagedata fileref="images/cg_ymonotonepartition02.png"/>
+                                            </imageobject>
+                                            <caption><para>Y-Monotone Partition (same example As <xref linkend="CG_ApproxConvexPartition" />,  <xref linkend="CG_GreeneApproxConvexPartition" /> and <xref linkend="CG_OptimalConvexPartition" />)</para></caption>
+                                        </mediaobject>
+                                </informalfigure></para>
+                            </entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </informaltable>
+            <programlisting>SELECT ST_AsText(CG_YMonotonePartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
+            <screen>GEOMETRYCOLLECTION(POLYGON((32 159,0 45,41 86,32 159)),POLYGON((107 61,32 159,41 86,45 1,177 2,67 24,109 31,170 60,107 61)),POLYGON((156 150,83 181,89 131,148 120,107 61,170 60,180 110,156 150)))</screen>
+        </para>
+    </refsection>
+    <refsection>
+        <title>See Also</title>
+        <para><xref linkend="CG_ApproxConvexPartition" />, <xref linkend="CG_GreeneApproxConvexPartition" />, <xref linkend="CG_OptimalConvexPartition" /></para>
+    </refsection>
+
+</refentry>
+    </section>
 </chapter>
