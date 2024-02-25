@@ -53,6 +53,7 @@ jobs:
 
     - name: Install dependencies
       run: |
+          sudo apt-get update
           sudo apt-get install -y g++ autoconf automake libgeos-dev libproj-dev libgdal-dev libjson-c-dev gettext libxml2-dev postgresql-server-dev-14 postgresql-client-14 libprotobuf-c-dev libprotoc-dev protobuf-c-compiler
 
     - name: Build
