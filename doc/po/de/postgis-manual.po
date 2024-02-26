@@ -3,13 +3,14 @@
 #
 # Regina Obe <regina@arrival3d.com>, 2023, 2024.
 # DeepL <noreply-mt-deepl@weblate.org>, 2024.
+# Andreas Schild <andreas.schild@bfw.gv.at>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-01-26 18:34+0000\n"
-"PO-Revision-Date: 2024-01-27 03:24+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2024-02-26 08:45+0000\n"
+"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/de/>\n"
 "Language: de\n"
@@ -35,16 +36,16 @@ msgid "Configuring raster support"
 msgstr "Konfigurieren der Rasterunterstützung"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you enabled raster support you may want to read below how to properly "
 "configure it."
 msgstr ""
-"Wenn Sie die Rasterunterstützung aktiviert haben, sollten Sie weiter unten "
-"lesen, wie Sie sie richtig konfigurieren."
+"Wenn die Rasterunterstützung aktiviert ist, sollte diese wie folgt "
+"konfiguriert werden."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "As of PostGIS 2.1.3, out-of-db rasters and all raster drivers are disabled "
 "by default. In order to re-enable these, you need to set the following "
@@ -53,13 +54,12 @@ msgid ""
 "For PostGIS 2.2, you can use the more cross-platform approach of setting the "
 "corresponding <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
-"Ab PostGIS 2.1.3 sind Out-of-DB-Raster und alle Rastertreiber standardmäßig "
-"deaktiviert. Um diese wieder zu aktivieren, müssen Sie die folgenden "
+"Ab PostGIS 2.1.3 sind out-of-db-Raster und alle Rastertreiber von vornherein "
+"deaktiviert. Um diese zu aktivieren, müssen Sie die folgenden "
 "Umgebungsvariablen <varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> und "
 "<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> in der Serverumgebung "
-"setzen. Für PostGIS 2.2 können Sie den plattformübergreifenderen Ansatz "
-"verwenden, indem Sie die entsprechenden <xref linkend=\"PostGIS_GUC\"/> "
-"setzen."
+"setzen. Ab PostGIS 2.2 können Sie einen plattformübergreifenderen Ansatz mit "
+"Hilfe der entsprechenden <xref linkend=\"PostGIS_GUC\"/> verwenden."
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -67,34 +67,34 @@ msgid "If you want to enable offline raster:"
 msgstr "Wenn Sie Offline-Raster aktivieren möchten:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Any other setting or no setting at all will disable out of db rasters."
 msgstr ""
-"Jede andere Einstellung oder gar keine Einstellung deaktiviert Out-of-DB-"
-"Raster."
+"Jede andere und auch keine Einstellung deaktiviert die out-of-db Raster."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "In order to enable all GDAL drivers available in your GDAL install, set this "
 "environment variable as follows"
 msgstr ""
-"Um alle GDAL-Treiber zu aktivieren, die in Ihrer GDAL-Installation verfügbar "
-"sind, setzen Sie diese Umgebungsvariable wie folgt"
+"Um alle installierten GDAL-Treiber zu aktivieren, muss diese "
+"Umgebungsvariable wie folgt gesetzt werden"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you want to only enable specific drivers, set your environment variable "
 "as follows:"
 msgstr ""
-"Wenn Sie nur bestimmte Treiber aktivieren möchten, setzen Sie Ihre "
-"Umgebungsvariable wie folgt:"
+"Wenn nur bestimmte Treiber aktiviert werden sollen, muss diese "
+"Umgebungsvariable wie folgt gesetzt werden:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "If you are on windows, do not quote the driver list"
-msgstr "Wenn Sie mit Windows arbeiten, zitieren Sie die Treiberliste nicht"
+msgstr ""
+"Unter Windows darf die Treiberliste nicht unter Hochkomma gestellt werden"
 
 #. Tag: para
 #, fuzzy, no-c-format
