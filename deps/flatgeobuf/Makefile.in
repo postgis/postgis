@@ -23,7 +23,11 @@
 # **********************************************************************/
 
 CXX = @FLATGEOBUF_CXX@
-CXXFLAGS =-I../../liblwgeom -Iinclude @CPPFLAGS@ @CXXFLAGS@ @PICFLAGS@
+# This ugly -Dflatbuffers=postgis_flatbuffers is to prevent potential subtle
+# clash with other flatbuffers copies that could come from GDAL or its
+# dependencies.
+CXXFLAGS =-I../../liblwgeom -Iinclude I$(top_builddir)/liblwgeom -I$(srcdir)/include @CPPFLAGS@ @CXXFLAGS@ @PICFLAGS@ -Dflatbuffers=postgis_flatbuffers
+
 LDFLAGS = @LDFLAGS@
 top_builddir = @top_builddir@
 libdir = @libdir@
