@@ -4,6 +4,7 @@ xxxx/xx/xx
 * Bug Fixes and Enhancements *
 
  - #5649, ST_Value should return NULL on missing band (Paul Ramsey)
+ - #5677, ST_Union(geom[]) should unary union single entry arrays (Paul Ramsey)
 
 
 PostGIS 3.3.6
