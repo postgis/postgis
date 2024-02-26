@@ -518,6 +518,9 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	if ( count == 0 )
 		PG_RETURN_NULL();
 
+	/* Ok, we really need GEOS now ;) */
+	initGEOS(lwpgnotice, lwgeom_geos_error);
+
 	/* One geom, good geom? Return it */
 	if ( count == 1 && nelems == 1 )
 	{
@@ -525,14 +528,18 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsign-compare"
 #endif
-		PG_RETURN_POINTER((GSERIALIZED *)(ARR_DATA_PTR(array)));
+		g = POSTGIS2GEOS((GSERIALIZED *)(ARR_DATA_PTR(array)));
 #if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
 #pragma GCC diagnostic pop
 #endif
+		g_union = GEOSUnaryUnion(g);
+		GEOSGeom_destroy(g);
+		if (!g_union) HANDLE_GEOS_ERROR("GEOSUnaryUnion");
+		GEOSSetSRID(g_union, srid);
+		gser_out = GEOS2POSTGIS(g_union, is3d);
+		GEOSGeom_destroy(g_union);
+		PG_RETURN_POINTER(gser_out);
 	}
-
-	/* Ok, we really need GEOS now ;) */
-	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	/*
 	** Collect the non-empty inputs and stuff them into a GEOS collection

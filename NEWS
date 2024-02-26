@@ -3,6 +3,7 @@ PostGIS 3.2.8
 
 * Bug Fixes  *
 
+ - #5677, ST_Union(geom[]) should unary union single entry arrays (Paul Ramsey)
 
 
 PostGIS 3.2.7
