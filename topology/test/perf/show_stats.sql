@@ -4,12 +4,16 @@ SELECT
   round(total_exec_time) tot_ms,
   substring(
     regexp_replace(
-      regexp_replace(query,'\n',' ','g'),
-      '  *',
-      ' ',
-      'g'
+      regexp_replace(
+        regexp_replace(
+          query,
+          E'--[^\n]*', '', 'g'
+        ),
+        '\n *', ' ','g'
+      ),
+      '  *', ' ', 'g'
     )
-    from 1 for 90
+    from 1 for 120
   ) query
 FROM pg_stat_statements
 ORDER BY total_exec_time desc;
