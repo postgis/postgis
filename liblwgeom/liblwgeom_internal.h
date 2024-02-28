@@ -251,6 +251,7 @@ void decode_geohash_bbox(char *geohash, double *lat, double *lon, int precision)
 */
 int p4d_same(const POINT4D *p1, const POINT4D *p2);
 int p3d_same(const POINT3D *p1, const POINT3D *p2);
+int p3dz_same(const POINT3DZ *p1, const POINT3DZ *p2);
 int p2d_same(const POINT2D *p1, const POINT2D *p2);
 
 /*

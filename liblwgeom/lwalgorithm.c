@@ -46,6 +46,14 @@ p3d_same(const POINT3D *p1, const POINT3D *p2)
 }
 
 int
+p3dz_same(const POINT3DZ *p1, const POINT3DZ *p2)
+{
+	return FP_EQUALS(p1->x, p2->x)
+	    && FP_EQUALS(p1->y, p2->y)
+	    && FP_EQUALS(p1->z, p2->z);
+}
+
+int
 p2d_same(const POINT2D *p1, const POINT2D *p2)
 {
 	return FP_EQUALS(p1->x, p2->x)

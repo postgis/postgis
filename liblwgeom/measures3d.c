@@ -31,7 +31,7 @@
 #include "lwgeom_log.h"
 
 static inline int
-get_3dvector_from_points(POINT3DZ *p1, POINT3DZ *p2, VECTOR3D *v)
+get_3dvector_from_points(const POINT3DZ *p1, const POINT3DZ *p2, VECTOR3D *v)
 {
 	v->x = p2->x - p1->x;
 	v->y = p2->y - p1->y;
@@ -41,13 +41,47 @@ get_3dvector_from_points(POINT3DZ *p1, POINT3DZ *p2, VECTOR3D *v)
 }
 
 static inline int
-get_3dcross_product(VECTOR3D *v1, VECTOR3D *v2, VECTOR3D *v)
+get_3dcross_product(const VECTOR3D *v1, const VECTOR3D *v2, VECTOR3D *v)
 {
 	v->x = (v1->y * v2->z) - (v1->z * v2->y);
 	v->y = (v1->z * v2->x) - (v1->x * v2->z);
 	v->z = (v1->x * v2->y) - (v1->y * v2->x);
 
 	return (!FP_IS_ZERO(v->x) || !FP_IS_ZERO(v->y) || !FP_IS_ZERO(v->z));
+}
+
+/**
+Finds a point on a plane from where the original point is perpendicular to the plane
+*/
+static double
+project_point_on_plane(const POINT3DZ *p, PLANE3D *pl, POINT3DZ *p0)
+{
+	/*In our plane definition we have a point on the plane and a normal vector (pl.pv), perpendicular to the plane
+	this vector will be parallel to the line between our inputted point above the plane and the point we are
+	searching for on the plane. So, we already have a direction from p to find p0, but we don't know the distance.
+	*/
+
+	VECTOR3D v1;
+	double f;
+
+	if (!get_3dvector_from_points(&(pl->pop), p, &v1))
+		return 0.0;
+
+	f = DOT(pl->pv, v1);
+	if (FP_IS_ZERO(f))
+	{
+		/* Point is in the plane */
+		*p0 = *p;
+		return 0;
+	}
+
+	f = -f / DOT(pl->pv, pl->pv);
+
+	p0->x = p->x + pl->pv.x * f;
+	p0->y = p->y + pl->pv.y * f;
+	p0->z = p->z + pl->pv.z * f;
+
+	return f;
 }
 
 /**
@@ -702,7 +736,7 @@ So far the only way to do 3D-calculations
 point to point calculation
 */
 int
-lw_dist3d_point_point(LWPOINT *point1, LWPOINT *point2, DISTPTS3D *dl)
+lw_dist3d_point_point(const LWPOINT *point1, const LWPOINT *point2, DISTPTS3D *dl)
 {
 	POINT3DZ p1;
 	POINT3DZ p2;
@@ -718,7 +752,7 @@ lw_dist3d_point_point(LWPOINT *point1, LWPOINT *point2, DISTPTS3D *dl)
 point to line calculation
 */
 int
-lw_dist3d_point_line(LWPOINT *point, LWLINE *line, DISTPTS3D *dl)
+lw_dist3d_point_line(const LWPOINT *point, const LWLINE *line, DISTPTS3D *dl)
 {
 	POINT3DZ p;
 	POINTARRAY *pa = line->points;
@@ -741,7 +775,7 @@ for max distance it is always point against boundary
 */
 
 int
-lw_dist3d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS3D *dl)
+lw_dist3d_point_poly(const LWPOINT *point, const LWPOLY *poly, DISTPTS3D *dl)
 {
 	POINT3DZ p, projp; /*projp is "point projected on plane"*/
 	PLANE3D plane;
@@ -767,7 +801,7 @@ lw_dist3d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS3D *dl)
 
 /* point to triangle calculation */
 int
-lw_dist3d_point_tri(LWPOINT *point, LWTRIANGLE *tri, DISTPTS3D *dl)
+lw_dist3d_point_tri(const LWPOINT *point, const LWTRIANGLE *tri, DISTPTS3D *dl)
 {
 	POINT3DZ p, projp; /*projp is "point projected on plane"*/
 	PLANE3D plane;
@@ -789,7 +823,7 @@ lw_dist3d_point_tri(LWPOINT *point, LWTRIANGLE *tri, DISTPTS3D *dl)
 
 /** line to line calculation */
 int
-lw_dist3d_line_line(LWLINE *line1, LWLINE *line2, DISTPTS3D *dl)
+lw_dist3d_line_line(const LWLINE *line1, const LWLINE *line2, DISTPTS3D *dl)
 {
 	POINTARRAY *pa1 = line1->points;
 	POINTARRAY *pa2 = line2->points;
@@ -800,7 +834,7 @@ lw_dist3d_line_line(LWLINE *line1, LWLINE *line2, DISTPTS3D *dl)
 
 /** line to polygon calculation */
 int
-lw_dist3d_line_poly(LWLINE *line, LWPOLY *poly, DISTPTS3D *dl)
+lw_dist3d_line_poly(const LWLINE *line, const LWPOLY *poly, DISTPTS3D *dl)
 {
 	PLANE3D plane;
 	LWDEBUG(2, "lw_dist3d_line_poly is called");
@@ -817,7 +851,7 @@ lw_dist3d_line_poly(LWLINE *line, LWPOLY *poly, DISTPTS3D *dl)
 
 /** line to triangle calculation */
 int
-lw_dist3d_line_tri(LWLINE *line, LWTRIANGLE *tri, DISTPTS3D *dl)
+lw_dist3d_line_tri(const LWLINE *line, const LWTRIANGLE *tri, DISTPTS3D *dl)
 {
 	PLANE3D plane;
 
@@ -833,7 +867,7 @@ lw_dist3d_line_tri(LWLINE *line, LWTRIANGLE *tri, DISTPTS3D *dl)
 
 /** polygon to polygon calculation */
 int
-lw_dist3d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS3D *dl)
+lw_dist3d_poly_poly(const LWPOLY *poly1, const LWPOLY *poly2, DISTPTS3D *dl)
 {
 	PLANE3D plane1, plane2;
 	int planedef1, planedef2;
@@ -874,7 +908,7 @@ lw_dist3d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS3D *dl)
 
 /** polygon to triangle calculation */
 int
-lw_dist3d_poly_tri(LWPOLY *poly, LWTRIANGLE *tri, DISTPTS3D *dl)
+lw_dist3d_poly_tri(const LWPOLY *poly, const LWTRIANGLE *tri, DISTPTS3D *dl)
 {
 	PLANE3D plane1, plane2;
 	int planedef1, planedef2;
@@ -915,7 +949,7 @@ lw_dist3d_poly_tri(LWPOLY *poly, LWTRIANGLE *tri, DISTPTS3D *dl)
 
 /** triangle to triangle calculation */
 int
-lw_dist3d_tri_tri(LWTRIANGLE *tri1, LWTRIANGLE *tri2, DISTPTS3D *dl)
+lw_dist3d_tri_tri(const LWTRIANGLE *tri1, const LWTRIANGLE *tri2, DISTPTS3D *dl)
 {
 	PLANE3D plane1, plane2;
 	int planedef1, planedef2;
@@ -959,7 +993,7 @@ lw_dist3d_tri_tri(LWTRIANGLE *tri1, LWTRIANGLE *tri2, DISTPTS3D *dl)
  * Returns distance between point and pointarray
  */
 int
-lw_dist3d_pt_ptarray(POINT3DZ *p, POINTARRAY *pa, DISTPTS3D *dl)
+lw_dist3d_pt_ptarray(const POINT3DZ *p, const POINTARRAY *pa, DISTPTS3D *dl)
 {
 	uint32_t t;
 	POINT3DZ start, end;
@@ -989,7 +1023,7 @@ If searching for min distance, this one finds the closest point on segment A-B f
 if searching for max distance it just sends p-A and p-B to pt-pt calculation
 */
 int
-lw_dist3d_pt_seg(POINT3DZ *p, POINT3DZ *A, POINT3DZ *B, DISTPTS3D *dl)
+lw_dist3d_pt_seg(const POINT3DZ *p, const POINT3DZ *A, const POINT3DZ *B, DISTPTS3D *dl)
 {
 	POINT3DZ c;
 	double r;
@@ -1045,7 +1079,7 @@ or most far away from each other
 depending on dl->mode (max or min)
 */
 int
-lw_dist3d_pt_pt(POINT3DZ *thep1, POINT3DZ *thep2, DISTPTS3D *dl)
+lw_dist3d_pt_pt(const POINT3DZ *thep1, const POINT3DZ *thep2, DISTPTS3D *dl)
 {
 	double dx = thep2->x - thep1->x;
 	double dy = thep2->y - thep1->y;
@@ -1085,7 +1119,7 @@ lw_dist3d_pt_pt(POINT3DZ *thep1, POINT3DZ *thep2, DISTPTS3D *dl)
 Finds all combinations of segments between two pointarrays
 */
 int
-lw_dist3d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2, DISTPTS3D *dl)
+lw_dist3d_ptarray_ptarray(const POINTARRAY *l1, const POINTARRAY *l2, DISTPTS3D *dl)
 {
 	uint32_t t, u;
 	POINT3DZ start, end;
@@ -1136,7 +1170,7 @@ lw_dist3d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2, DISTPTS3D *dl)
 Finds the two closest points on two linesegments
 */
 int
-lw_dist3d_seg_seg(POINT3DZ *s1p1, POINT3DZ *s1p2, POINT3DZ *s2p1, POINT3DZ *s2p2, DISTPTS3D *dl)
+lw_dist3d_seg_seg(const POINT3DZ *s1p1, const POINT3DZ *s1p2, const POINT3DZ *s2p1, const POINT3DZ *s2p2, DISTPTS3D *dl)
 {
 	VECTOR3D v1, v2, vl;
 	double s1k, s2k; /*two variables representing where on Line 1 (s1k) and where on Line 2 (s2k) a connecting line
@@ -1145,17 +1179,23 @@ lw_dist3d_seg_seg(POINT3DZ *s1p1, POINT3DZ *s1p2, POINT3DZ *s2p1, POINT3DZ *s2p2
 	double a, b, c, d, e, D;
 
 	/*s1p1 and s1p2 are the same point */
-	if ((s1p1->x == s1p2->x) && (s1p1->y == s1p2->y) && (s1p1->z == s1p2->z))
+	if (p3dz_same(s1p1, s1p2))
 	{
 		return lw_dist3d_pt_seg(s1p1, s2p1, s2p2, dl);
 	}
 	/*s2p1 and s2p2 are the same point */
-	if ((s2p1->x == s2p2->x) && (s2p1->y == s2p2->y) && (s2p1->z == s2p2->z))
+	if (p3dz_same(s2p1, s2p2))
 	{
 		dl->twisted = ((dl->twisted) * (-1));
 		return lw_dist3d_pt_seg(s2p1, s1p1, s1p2, dl);
 	}
-
+	/*s2p1 and s1p1 are the same point */
+	if (p3dz_same(s2p1, s1p1))
+	{
+		dl->distance = 0.0;
+		dl->p1 = dl->p2 = *s2p1;
+		return LW_TRUE;
+	}
 	/*
 		Here we use algorithm from softsurfer.com
 		that can be found here
@@ -1248,7 +1288,7 @@ If not we check from original point to the boundary.
 If the projected point is inside a hole of the polygon we check the distance to the boundary of that hole.
 */
 int
-lw_dist3d_pt_poly(POINT3DZ *p, LWPOLY *poly, PLANE3D *plane, POINT3DZ *projp, DISTPTS3D *dl)
+lw_dist3d_pt_poly(const POINT3DZ *p, const LWPOLY *poly, PLANE3D *plane, POINT3DZ *projp, DISTPTS3D *dl)
 {
 	uint32_t i;
 
@@ -1274,7 +1314,7 @@ lw_dist3d_pt_poly(POINT3DZ *p, LWPOLY *poly, PLANE3D *plane, POINT3DZ *projp, DI
 }
 
 int
-lw_dist3d_pt_tri(POINT3DZ *p, LWTRIANGLE *tri, PLANE3D *plane, POINT3DZ *projp, DISTPTS3D *dl)
+lw_dist3d_pt_tri(const POINT3DZ *p, const LWTRIANGLE *tri, PLANE3D *plane, POINT3DZ *projp, DISTPTS3D *dl)
 {
 	if (pt_in_ring_3d(projp, tri->points, plane))
 		/* if the projected point is inside the polygon the shortest distance is between that point and the
@@ -1290,7 +1330,7 @@ lw_dist3d_pt_tri(POINT3DZ *p, LWTRIANGLE *tri, PLANE3D *plane, POINT3DZ *projp, 
 
 /** Computes pointarray to polygon distance */
 int
-lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, PLANE3D *plane, DISTPTS3D *dl)
+lw_dist3d_ptarray_poly(const POINTARRAY *pa, const LWPOLY *poly, PLANE3D *plane, DISTPTS3D *dl)
 {
 	uint32_t i, j, k;
 	double f, s1, s2;
@@ -1370,7 +1410,7 @@ lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, PLANE3D *plane, DISTPTS3D *
 
 /** Computes pointarray to triangle distance */
 int
-lw_dist3d_ptarray_tri(POINTARRAY *pa, LWTRIANGLE *tri, PLANE3D *plane, DISTPTS3D *dl)
+lw_dist3d_ptarray_tri(const POINTARRAY *pa, const LWTRIANGLE *tri, PLANE3D *plane, DISTPTS3D *dl)
 {
 	uint32_t i;
 	double f, s1, s2;
@@ -1448,7 +1488,7 @@ lw_dist3d_ptarray_tri(POINTARRAY *pa, LWTRIANGLE *tri, PLANE3D *plane, DISTPTS3D
  * We use [3] breaks to contemplate the special case of 3d triangles
  */
 int
-define_plane(POINTARRAY *pa, PLANE3D *pl)
+define_plane(const POINTARRAY *pa, PLANE3D *pl)
 {
 	const uint32_t POL_BREAKS = 3;
 
@@ -1516,40 +1556,6 @@ define_plane(POINTARRAY *pa, PLANE3D *pl)
 	return (!FP_IS_ZERO(pl->pv.x) || !FP_IS_ZERO(pl->pv.y) || !FP_IS_ZERO(pl->pv.z));
 }
 
-/**
-
-Finds a point on a plane from where the original point is perpendicular to the plane
-*/
-double
-project_point_on_plane(POINT3DZ *p, PLANE3D *pl, POINT3DZ *p0)
-{
-	/*In our plane definition we have a point on the plane and a normal vector (pl.pv), perpendicular to the plane
-	this vector will be parallel to the line between our inputted point above the plane and the point we are
-	searching for on the plane. So, we already have a direction from p to find p0, but we don't know the distance.
-	*/
-
-	VECTOR3D v1;
-	double f;
-
-	if (!get_3dvector_from_points(&(pl->pop), p, &v1))
-		return 0.0;
-
-	f = DOT(pl->pv, v1);
-	if (FP_IS_ZERO(f))
-	{
-		/* Point is in the plane */
-		*p0 = *p;
-		return 0;
-	}
-
-	f = -f / DOT(pl->pv, pl->pv);
-
-	p0->x = p->x + pl->pv.x * f;
-	p0->y = p->y + pl->pv.y * f;
-	p0->z = p->z + pl->pv.z * f;
-
-	return f;
-}
 
 /**
  * pt_in_ring_3d(): crossing number test for a point in a polygon

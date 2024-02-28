@@ -1541,7 +1541,7 @@ FROM (VALUES
 SELECT '#5597', ST_AsGeoJSON(r.*) from (values (null::geometry)) as r(geom);
 
 SELECT '#5677',
- st_asewkt(
+ st_asewkt(st_normalize(
    st_union(
      array[
        st_geomfromtext(
@@ -1551,5 +1551,5 @@ SELECT '#5677',
          )'
        )
      ]
-   )
+   ))
  );
