@@ -74,11 +74,22 @@ BEGIN
   END;
 
   BEGIN
-    EXECUTE 'SELECT count(*) FROM ' || quote_ident(atopology)
-      || '.face' INTO STRICT n;
-    ret = ret || greatest(n-1,0) || ' faces, '; -- -1 is face=0
+    EXECUTE format(
+      $$
+    SELECT
+      count(*) FILTER (WHERE face_id > 0) p,
+      count(*) FILTER (WHERE face_id < 0) n
+    FROM %I.face
+      $$,
+      atopology)
+    INTO STRICT rec;
+    IF rec.n > 0 THEN
+      ret = ret || rec.p || '? faces (pending detection), ';
+    ELSE
+      ret = ret || rec.p || ' faces, ';
+    END IF;
   EXCEPTION
-    WHEN UNDEFINED_TABLE OR INVALID_SCHEMA_NAME THEN
+    WHEN UNDEFINED_TABLE OR UNDEFINED_COLUMN OR INVALID_SCHEMA_NAME THEN
       ret = ret || 'missing faces, ';
   END;
 

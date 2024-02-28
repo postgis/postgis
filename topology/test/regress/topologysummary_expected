@@ -57,6 +57,11 @@ Topology test (id 1, SRID 10, precision 20)
 0 nodes, 0 edges, 0 faces, 1 topogeoms in 1 layers
 Layer 1, type Puntal (1), 1 topogeoms
  Deploy: test.t.c
+--pivot face--
+Topology test (id 1, SRID 10, precision 20)
+0 nodes, 0 edges, 0? faces (pending detection), 1 topogeoms in 1 layers
+Layer 1, type Puntal (1), 1 topogeoms
+ Deploy: test.t.c
 --registered+missing--
 Topology test (id 1, SRID 10, precision 20)
 missing schema
