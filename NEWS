@@ -11,6 +11,8 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
  - #5677, ST_Union(geom[]) should unary union single entry arrays (Paul Ramsey)
  - #5679, Remove spurious COMMIT statements from sfcgal script
           (Sandro Santilli, Loïc Bartoletti)
+ - #5680, Fix populate_topology_layer with standard_conforming_strings
+          set to off (Sandro Santilli)
 
 
 PostGIS 3.4.2
