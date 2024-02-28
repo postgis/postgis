@@ -5,6 +5,8 @@ xxxx/xx/xx
 
  - #5649, ST_Value should return NULL on missing band (Paul Ramsey)
  - #5677, ST_Union(geom[]) should unary union single entry arrays (Paul Ramsey)
+ - #5679, Remove spurious COMMIT statements from sfcgal script
+          (Sandro Santilli, Loïc Bartoletti)
 
 
 PostGIS 3.3.6
