@@ -8,5 +8,13 @@ BEGIN
 		$$,
 		current_database()
 	);
+
+	EXECUTE format(
+		$$
+			ALTER DATABASE %I
+			SET escape_string_warning to on
+		$$,
+		current_database()
+	);
 END;
 $BODY$ LANGUAGE 'plpgsql';
