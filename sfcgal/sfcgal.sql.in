@@ -164,7 +164,6 @@ CREATE OR REPLACE FUNCTION ST_ConstrainedDelaunayTriangles(geometry)
        AS 'MODULE_PATHNAME', 'ST_ConstrainedDelaunayTriangles'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
-COMMIT;
 
 -- Availability: 3.3.0
 CREATE OR REPLACE FUNCTION ST_3DConvexHull(geometry)
@@ -172,7 +171,6 @@ CREATE OR REPLACE FUNCTION ST_3DConvexHull(geometry)
        AS 'MODULE_PATHNAME', 'sfcgal_convexhull3D'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
-COMMIT;
 
 -- Availability: 3.3.0
 CREATE OR REPLACE FUNCTION ST_AlphaShape(g1 geometry, alpha float8 DEFAULT 1.0, allow_holes boolean DEFAULT false)
@@ -180,7 +178,6 @@ CREATE OR REPLACE FUNCTION ST_AlphaShape(g1 geometry, alpha float8 DEFAULT 1.0, 
        AS 'MODULE_PATHNAME', 'sfcgal_alphashape'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
-COMMIT;
 
 -- Availability: 3.3.0
 CREATE OR REPLACE FUNCTION ST_OptimalAlphaShape(g1 geometry, allow_holes boolean DEFAULT false, nb_components int DEFAULT 1)
@@ -188,7 +185,6 @@ CREATE OR REPLACE FUNCTION ST_OptimalAlphaShape(g1 geometry, allow_holes boolean
        AS 'MODULE_PATHNAME', 'sfcgal_optimalalphashape'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
-COMMIT;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_YMonotonePartition(g1 geometry)
@@ -196,7 +192,6 @@ CREATE OR REPLACE FUNCTION CG_YMonotonePartition(g1 geometry)
        AS 'MODULE_PATHNAME', 'sfcgal_ymonotonepartition'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
-COMMIT;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_ApproxConvexPartition(g1 geometry)
@@ -204,7 +199,6 @@ CREATE OR REPLACE FUNCTION CG_ApproxConvexPartition(g1 geometry)
        AS 'MODULE_PATHNAME', 'sfcgal_approxconvexpartition'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
-COMMIT;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_GreeneApproxConvexPartition(g1 geometry)
@@ -212,7 +206,6 @@ CREATE OR REPLACE FUNCTION CG_GreeneApproxConvexPartition(g1 geometry)
        AS 'MODULE_PATHNAME', 'sfcgal_greeneapproxconvexpartition'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
-COMMIT;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_OptimalConvexPartition(g1 geometry)
@@ -220,7 +213,6 @@ CREATE OR REPLACE FUNCTION CG_OptimalConvexPartition(g1 geometry)
        AS 'MODULE_PATHNAME', 'sfcgal_optimalconvexpartition'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
-COMMIT;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_ExtrudeStraightSkeleton(g1 geometry, top_height float8, body_height float8 DEFAULT 0.0)
@@ -228,7 +220,6 @@ CREATE OR REPLACE FUNCTION CG_ExtrudeStraightSkeleton(g1 geometry, top_height fl
        AS 'MODULE_PATHNAME', 'sfcgal_extrudestraightskeleton'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
-COMMIT;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_Visibility(polygon geometry, pointA geometry, pointB geometry)
@@ -236,7 +227,6 @@ CREATE OR REPLACE FUNCTION CG_Visibility(polygon geometry, pointA geometry, poin
        AS 'MODULE_PATHNAME', 'sfcgal_visibility_segment'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
-COMMIT;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_Visibility(polygon geometry, point geometry)
@@ -244,4 +234,5 @@ CREATE OR REPLACE FUNCTION CG_Visibility(polygon geometry, point geometry)
        AS 'MODULE_PATHNAME', 'sfcgal_visibility_point'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
+
 COMMIT;
