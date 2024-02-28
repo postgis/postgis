@@ -142,6 +142,7 @@ topology.sql: \
 	sql/manage/FindLayer.sql.in \
 	sql/manage/FindTopology.sql.in \
 	sql/manage/ManageHelper.sql.in \
+	sql/manage/populate_topology_layer.sql.in \
 	sql/manage/RenameTopology.sql.in \
 	sql/manage/TopologySummary.sql.in \
 	sql/manage/ValidateTopologyRelation.sql.in \
