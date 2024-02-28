@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Repopulate topology layers when standard_conforming_strings is off (Sandro Santilli)
  - Clarify when ST_Split requires snapping the input (Martin Davis)
  - Document the ST_NumGeometries result for empty geometries (Martin Davis)
  - Correct the PAGC regression result for a directional street name (wangdapeng)
