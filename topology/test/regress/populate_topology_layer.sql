@@ -21,7 +21,8 @@ FROM topology.layer ORDER BY schema_name, table_name, feature_column;
 
 TRUNCATE topology.layer;
 
-SELECT 'populate', * FROM topology.Populate_Topology_Layer();
+SELECT 'populate', * FROM topology.Populate_Topology_Layer()
+ORDER BY schema_name, table_name, feature_column;
 
 SELECT 'only-before', * FROM ( SELECT * FROM topology.layer EXCEPT SELECT * FROM layer_backup ) x;
 SELECT 'only-after', * FROM ( SELECT * FROM layer_backup EXCEPT SELECT * FROM topology.layer ) x;
