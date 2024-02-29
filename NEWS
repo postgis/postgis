@@ -4,6 +4,7 @@ PostGIS 3.2.8
 * Bug Fixes  *
 
  - #5677, ST_Union(geom[]) should unary union single entry arrays (Paul Ramsey)
+ - #5589, ST_3DDistance error for shared first point (Paul Ramsey)
 
 
 PostGIS 3.2.7
