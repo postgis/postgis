@@ -908,6 +908,7 @@ sub drop_table
 sub sql
 {
 	my $sql = shift;
+	# TODO: capture or discard stderr ?
 	my $result = `psql -qtXA -d $DB -c 'SET search_path TO public,$OPT_SCHEMA' -c "$sql" | sed '/^SET\$/d'`;
 	$result =~ s/[\n\r]*$//;
 	$result;
@@ -1576,34 +1577,45 @@ sub create_spatial
 
 sub load_sql_file
 {
-	my $file = shift;
-	my $strict = shift;
+    my $file = shift;
+    my $strict = shift;
+    my $werror = shift;
 
-	if ( -e $file )
-	{
-		# ON_ERROR_STOP is used by psql to return non-0 on an error
-		my $psql_opts = "--quiet --no-psqlrc --variable ON_ERROR_STOP=true";
-		my $cmd = "psql $psql_opts -c 'CREATE SCHEMA IF NOT EXISTS $OPT_SCHEMA' ";
-		$cmd .= "-c 'SET search_path TO $OPT_SCHEMA,topology'";
-		$cmd .= " -v \"opt_dumprestore=${OPT_DUMPRESTORE}\"";
-		$cmd .= " -v \"regdir=$REGDIR\"";
-		$cmd .= " -Xf $file $DB >> $REGRESS_LOG 2>&1";
-		#print "  $file\n" if $VERBOSE;
-		my $rv = system($cmd);
-		if ( $rv )
-		{
-		  fail "Error encountered loading $file", $REGRESS_LOG;
-		  #exit 1;
-			return 0;
-		}
-	}
-	elsif ( $strict )
-	{
-		fail "Unable to find $file";
-		return 0;
-	}
+    my $tmplog = ${REGRESS_LOG} . '.tmp';
 
-	return 1;
+    if ( -e $file )
+    {
+        # ON_ERROR_STOP is used by psql to return non-0 on an error
+        my $psql_opts = "--quiet --no-psqlrc --variable ON_ERROR_STOP=true";
+        my $cmd = "psql $psql_opts -c 'CREATE SCHEMA IF NOT EXISTS $OPT_SCHEMA' ";
+        $cmd .= "-c 'SET search_path TO $OPT_SCHEMA,topology'";
+        $cmd .= " -v \"opt_dumprestore=${OPT_DUMPRESTORE}\"";
+        $cmd .= " -v \"regdir=$REGDIR\"";
+        $cmd .= " -Xf $file $DB 2>&1 | tee -a $REGRESS_LOG > $tmplog";
+        #print "  $file\n" if $VERBOSE;
+        my $rv = system($cmd);
+        if ( $rv )
+        {
+            fail "Error encountered loading $file", $tmplog;
+            return 0;
+        }
+
+        if ( $werror )
+        {
+            if ( system("grep -A3 WARNING $tmplog") == 0 )
+            {
+                fail "Warnings encountered loading $file", $tmplog;
+                return 0;
+            }
+        }
+    }
+    elsif ( $strict )
+    {
+        fail "Unable to find $file";
+        return 0;
+    }
+
+    return 1;
 }
 
 # Prepare the database for spatial operations (extension method)
@@ -1734,40 +1746,39 @@ sub prepare_spatial_extensions
 sub prepare_spatial
 {
 	my $version = shift;
+	my $werror = defined ($version) ? 0 : 1; # threat warnings as errors
 	my $scriptdir = scriptdir($version);
-	print "Loading unpackaged components from $scriptdir\n";
-
-	print "Loading PostGIS into '${DB}' \n";
+	print "Loading PostGIS in '${DB} using scripts from $scriptdir'\n";
 
 	# Load postgis.sql into the database
-	return 0 unless load_sql_file("${scriptdir}/postgis.sql", 1);
-	return 0 unless load_sql_file("${scriptdir}/postgis_comments.sql", 0);
-	return 0 unless load_sql_file("${scriptdir}/spatial_ref_sys.sql", 0);
+	return 0 unless load_sql_file("${scriptdir}/postgis.sql", 1, $werror);
+	return 0 unless load_sql_file("${scriptdir}/postgis_comments.sql", 0, $werror);
+	return 0 unless load_sql_file("${scriptdir}/spatial_ref_sys.sql", 0, $werror);
 	if ( $OPT_LEGACY )
 	{
 		print "Loading legacy.sql from $scriptdir\n";
-		return 0 unless load_sql_file("${scriptdir}/legacy.sql", 0);
+		return 0 unless load_sql_file("${scriptdir}/legacy.sql", 0, $werror);
 	}
 
 	if ( $OPT_WITH_TOPO )
 	{
 		print "Loading Topology into '${DB}'\n";
-		return 0 unless load_sql_file("${scriptdir}/topology.sql", 1);
-		return 0 unless load_sql_file("${scriptdir}/topology_comments.sql", 0);
+		return 0 unless load_sql_file("${scriptdir}/topology.sql", 1, $werror);
+		return 0 unless load_sql_file("${scriptdir}/topology_comments.sql", 0, $werror);
 	}
 
 	if ( $OPT_WITH_RASTER )
 	{
 		print "Loading Raster into '${DB}'\n";
-		return 0 unless load_sql_file("${scriptdir}/rtpostgis.sql", 1);
-		return 0 unless load_sql_file("${scriptdir}/raster_comments.sql", 0);
+		return 0 unless load_sql_file("${scriptdir}/rtpostgis.sql", 1, $werror);
+		return 0 unless load_sql_file("${scriptdir}/raster_comments.sql", 0, $werror);
 	}
 
 	if ( $OPT_WITH_SFCGAL )
 	{
 		print "Loading SFCGAL into '${DB}'\n";
-		return 0 unless load_sql_file("${scriptdir}/sfcgal.sql", 1);
-		return 0 unless load_sql_file("${scriptdir}/sfcgal_comments.sql", 0);
+		return 0 unless load_sql_file("${scriptdir}/sfcgal.sql", 1, $werror);
+		return 0 unless load_sql_file("${scriptdir}/sfcgal_comments.sql", 0, $werror);
 	}
 
 	return 1;
