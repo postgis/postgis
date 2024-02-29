@@ -3,6 +3,8 @@ xxxx/xx/xx
 
 * Bug Fixes *
 
+ - #5589, ST_3DDistance error for shared first point (Paul Ramsey)
+
 
 PostGIS 3.1.11
 2024/02/06
