@@ -204,6 +204,7 @@ clean:
 	rm -f $(LT_OBJS) $(SA_OBJS) $(NM_OBJS)
 	rm -f liblwgeom.la
 	rm -rf .libs
+	rm -rf topo/.libs
 
 distclean: clean
 	$(MAKE) -C cunit distclean
