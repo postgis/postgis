@@ -123,6 +123,7 @@ SA_OBJS = \
 	lwgeom_geos_node.o \
 	lwgeom_geos_split.o \
 	topo/lwgeom_topo.o \
+	topo/lwgeom_topo_polygonizer.o \
 	lwgeom_transform.o \
 	lwgeom_wrapx.o \
 	lwunionfind.o \

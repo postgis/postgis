@@ -31,6 +31,17 @@
 #include "liblwgeom.h"
 #include "liblwgeom_topo.h"
 
+#include <stdio.h>
+#include <inttypes.h> /* for PRId64 */
+#include <math.h>
+
+#ifdef WIN32
+# define LWTFMT_ELEMID "lld"
+#else
+# define LWTFMT_ELEMID PRId64
+#endif
+
+
 /************************************************************************
  *
  * Generic SQL handler
@@ -57,6 +68,14 @@ LWT_ISO_NODE *lwt_be_getNodeWithinDistance2D(LWT_TOPOLOGY *topo,
 					     int64_t limit);
 
 LWT_ISO_NODE *lwt_be_getNodeById(LWT_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t *numelems, int fields);
+
+LWT_ISO_EDGE *lwt_be_getEdgeWithinBox2D(const LWT_TOPOLOGY *topo, const GBOX *box, uint64_t *numelems, int fields, uint64_t limit);
+LWT_ISO_FACE *lwt_be_getFaceWithinBox2D(const LWT_TOPOLOGY *topo, const GBOX *box, uint64_t *numelems, int fields, uint64_t limit);
+
+void _lwt_release_faces(LWT_ISO_FACE *faces, int num_faces);
+void _lwt_release_edges(LWT_ISO_EDGE *edges, int num_edges);
+int lwt_be_updateEdgesById(LWT_TOPOLOGY* topo, const LWT_ISO_EDGE* edges, int numedges, int upd_fields);
+int lwt_be_insertFaces(LWT_TOPOLOGY *topo, LWT_ISO_FACE *face, uint64_t numelems);
 
 int lwt_be_ExistsCoincidentNode(LWT_TOPOLOGY* topo, LWPOINT* pt);
 int lwt_be_insertNodes(LWT_TOPOLOGY *topo, LWT_ISO_NODE *node, uint64_t numelems);
