@@ -1591,7 +1591,7 @@ sub load_sql_file
         $cmd .= "-c 'SET search_path TO $OPT_SCHEMA,topology'";
         $cmd .= " -v \"opt_dumprestore=${OPT_DUMPRESTORE}\"";
         $cmd .= " -v \"regdir=$REGDIR\"";
-        $cmd .= " -Xf $file $DB 2>&1 | tee -a $REGRESS_LOG > $tmplog";
+        $cmd .= " -Xf $file $DB > $tmplog 2>&1";
         #print "  $file\n" if $VERBOSE;
         my $rv = system($cmd);
         if ( $rv )
@@ -1608,6 +1608,8 @@ sub load_sql_file
                 return 0;
             }
         }
+
+        system("cat $tmplog >> $REGRESS_LOG");
     }
     elsif ( $strict )
     {
