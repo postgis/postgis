@@ -28,7 +28,7 @@
 
 #include "../postgis_config.h"
 
-#define POSTGIS_DEBUG_LEVEL 1
+/*#define POSTGIS_DEBUG_LEVEL 1*/
 #include "lwgeom_log.h"
 
 #include "liblwgeom_internal.h"
