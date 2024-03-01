@@ -899,6 +899,10 @@ fillFaceFields(LWT_ISO_FACE* face, HeapTuple row, TupleDesc rowdesc, int fields)
       face->mbr = NULL;
     }
   }
+  else
+  {
+      face->mbr = NULL;
+  }
 }
 
 /* return 0 on failure (null) 1 otherwise */
