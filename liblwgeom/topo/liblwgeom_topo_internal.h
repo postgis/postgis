@@ -48,6 +48,21 @@
  *
  ************************************************************************/
 
+/*
+ * Use in backend implementation to print error from backend
+ */
+
+#define PGTOPO_BE_ERROR() lwerror(\
+	"[%s:%s:%d] Backend error: %s", \
+	__FILE__, __func__, __LINE__, \
+	lwt_be_lastErrorMessage(topo->be_iface))
+
+#define PGTOPO_BE_ERRORF(msg, ...) lwerror(\
+	"[%s:%s:%d] Backend error (" msg "): %s", \
+	__FILE__, __func__, __LINE__, \
+	lwt_be_lastErrorMessage(topo->be_iface), \
+	__VA_ARGS__ )
+
 struct LWT_BE_IFACE_T
 {
   const LWT_BE_DATA *data;

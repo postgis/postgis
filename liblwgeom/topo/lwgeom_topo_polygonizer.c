@@ -241,7 +241,7 @@ _lwt_FetchAllEdges(LWT_TOPOLOGY *topo, int *numedges)
   *numedges = nelems;
   if (nelems == UINT64_MAX)
   {
-	  lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+	  PGTOPO_BE_ERROR();
 	  return NULL;
   }
   return edge;
@@ -304,7 +304,7 @@ _lwt_UpdateEdgeRingSideFace(LWT_TOPOLOGY *topo, LWT_EDGERING *ring,
     {
       lwfree( forward_edges );
       lwfree( backward_edges );
-      lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+      PGTOPO_BE_ERROR();
       return -1;
     }
     if ( ret != forward_edges_count )
@@ -327,7 +327,7 @@ _lwt_UpdateEdgeRingSideFace(LWT_TOPOLOGY *topo, LWT_EDGERING *ring,
     {
       lwfree( forward_edges );
       lwfree( backward_edges );
-      lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+      PGTOPO_BE_ERROR();
       return -1;
     }
     if ( ret != backward_edges_count )
@@ -595,7 +595,7 @@ _lwt_RegisterFaceOnEdgeSide(LWT_TOPOLOGY *topo, LWT_ISO_EDGE *edge,
     newface.mbr = NULL;
     if ( ret == -1 )
     {
-      lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+      PGTOPO_BE_ERROR();
       return -1;
     }
     if ( ret != 1 )
@@ -786,7 +786,7 @@ _lwt_CheckFacesExist(LWT_TOPOLOGY *topo)
   faces = lwt_be_getFaceWithinBox2D( topo, &qbox, &nelems, fields, 1);
   if (nelems == UINT64_MAX)
   {
-	  lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+	  PGTOPO_BE_ERROR();
 	  return -1;
   }
   if ( faces ) _lwt_release_faces(faces, nelems);
