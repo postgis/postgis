@@ -50,6 +50,7 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.5.0+ is needed.
 
 * Enhancements *
 
+  - #3587, faster load of big lines in topologies (Sandro Santilli)
   - #5670, faster ST_CreateTopoGeo (Sandro Santilli)
   - #5531, documentation format upgraded to DocBook 5 (Sandro Santilli)
   - #5543, allow building without documentation (Sandro Santilli)
