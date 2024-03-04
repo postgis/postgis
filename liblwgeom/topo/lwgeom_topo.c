@@ -5532,7 +5532,7 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
   if ( tol )
   {{
     tmp2 = lwline_remove_repeated_points(edge, tol);
-    LWDEBUGG(1, tmp2, "Repeated-point removed");
+    LWDEBUGG(2, tmp2, "Repeated-point removed");
     edge = lwgeom_as_lwline(tmp2);
     if ( tmp ) lwgeom_free(tmp);
     tmp = tmp2;
@@ -5896,7 +5896,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
   if ( nodes ) _lwt_release_nodes(nodes, numnodes);
   if ( edges ) _lwt_release_edges(edges, numedges);
 
-  LWDEBUGG(1, noded, "Finally-noded");
+  LWDEBUGG(2, noded, "Finally-noded");
 
   /* 3. For each (now-noded) segment, insert an edge */
   col = lwgeom_as_lwcollection(noded);
@@ -5956,7 +5956,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     ids[num++] = forward ? id : -id; /* TODO: skip duplicates */
   }
 
-  LWDEBUGG(1, noded, "Noded before free");
+  LWDEBUGG(2, noded, "Noded before free");
   lwgeom_free(noded);
 
   /* TODO: XXX remove duplicated ids if not done before */
