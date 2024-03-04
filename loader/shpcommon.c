@@ -274,13 +274,13 @@ colmap_read(const char *filename, colmap *map, char *errbuf, size_t errbuflen)
         map->dbffieldnames[curmapsize]);
       if ( ret < 0 ) {
         /* output error - TODO: report via perror? */
+        fclose(fptr);
         return 0;
       }
       if ( errbuflen <= (size_t)ret ) {
         /* output truncated */
         errbuf[errbuflen-1] = '\0';
       }
-      return 0;
     }}
 
     ++curmapsize;
