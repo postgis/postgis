@@ -268,13 +268,20 @@ colmap_read(const char *filename, colmap *map, char *errbuf, size_t errbuflen)
 
     /* Error out if the dbffieldname is > 10 chars */
     if (strlen(map->dbffieldnames[curmapsize]) > 10)
-    {
-      if ( errbuflen <= snprintf(errbuf, errbuflen,
+    {{
+      int ret = snprintf(errbuf, errbuflen,
         _("ERROR: column map file specifies a DBF field name \"%s\" which is longer than 10 characters"),
-        map->dbffieldnames[curmapsize])
-      ) errbuf[errbuflen-1] = '\0';
+        map->dbffieldnames[curmapsize]);
+      if ( ret < 0 ) {
+        /* output error - TODO: report via perror? */
+        return 0;
+      }
+      if ( errbuflen <= (size_t)ret ) {
+        /* output truncated */
+        errbuf[errbuflen-1] = '\0';
+      }
       return 0;
-    }
+    }}
 
     ++curmapsize;
   }
