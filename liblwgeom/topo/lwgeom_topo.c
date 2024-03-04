@@ -764,6 +764,7 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     GEOSFree(relate);
     GEOSGeom_destroy(eegg);
   }
+  LWDEBUGF(1, "No edge crossing detected amongh the %d candidate edges", num_edges);
   if ( edges ) _lwt_release_edges(edges, num_edges);
               /* would be NULL if num_edges was 0 */
 
