@@ -420,7 +420,7 @@ Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS)
 	if ( !lwgeom_has_rings(lwgeom) )
 		PG_RETURN_NULL();
 
-	if ( lwgeom_is_empty(lwgeom) )
+	if ( lwgeom_is_empty(lwgeom) || type == TRIANGLETYPE )
 		PG_RETURN_INT32(0);
 
 	/*
@@ -428,7 +428,7 @@ Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS)
 	 * with an array of nrings rings of POINTARRAY holding the
 	 * rings
 	 */
-	if (type == POLYGONTYPE || type == TRIANGLETYPE)
+	if (type == POLYGONTYPE )
 	{
 		const LWPOLY *poly = lwgeom_as_lwpoly(lwgeom);
 		result = poly->nrings - 1;

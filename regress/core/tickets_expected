@@ -479,3 +479,4 @@ ERROR:  Geometry contains invalid coordinates
 #5639|fullywithin7|t
 #5597|{"type": "Feature", "geometry": null, "properties": {}}
 #5677|POLYGON((0 0,0 10,20 22,20 30,30 30,30 20,22 20,10 0,0 0))
+#5686|0
