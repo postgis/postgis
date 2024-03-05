@@ -36,6 +36,7 @@
     - echo "Build dir is ${PWD}"
     - ${SRCDIR}/configure --without-raster CFLAGS="-Wall -fno-omit-frame-pointer -Werror"
     - make
+    - make -C liblwgeom check
     - su -c 'make' postgres # idempotence test, see #5099
     - RUNTESTFLAGS="-v --dumprestore" make check-regress
     - make install
