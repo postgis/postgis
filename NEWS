@@ -4,6 +4,7 @@ xxxx/xx/xx
 * Bug Fixes *
 
  - #5589, ST_3DDistance error for shared first point (Paul Ramsey)
+ - #5686, ST_NumInteriorRings and Triangle crash (Paul Ramsey)
 
 
 PostGIS 3.1.11
