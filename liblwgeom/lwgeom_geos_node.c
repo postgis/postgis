@@ -18,10 +18,14 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2011 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2011-2024 Sandro Santilli <strk@kbt.io>
  *
  **********************************************************************/
 
+#include "../postgis_config.h"
+
+/*#define POSTGIS_DEBUG_LEVEL 1*/
+#include "lwgeom_log.h"
 
 #include "lwgeom_geos.h"
 #include "liblwgeom_internal.h"
@@ -160,6 +164,7 @@ lwgeom_node(const LWGEOM* lwgeom_in)
 		lwerror("GEOSNode: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
+	LWDEBUGGEOS(1, gn, "Noded");
 
 	gm = GEOSLineMerge(gn);
 	GEOSGeom_destroy(gn);
@@ -168,6 +173,7 @@ lwgeom_node(const LWGEOM* lwgeom_in)
 		lwerror("GEOSLineMerge: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
+	LWDEBUGGEOS(1, gm, "LineMerged");
 
 	lines = GEOS2LWGEOM(gm, FLAGS_GET_Z(lwgeom_in->flags));
 	GEOSGeom_destroy(gm);
