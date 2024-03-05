@@ -10,6 +10,7 @@ xxxx/xx/xx
  - #5680, Fix populate_topology_layer with standard_conforming_strings
           set to off (Sandro Santilli)
  - #5589, ST_3DDistance error for shared first point (Paul Ramsey)
+ - #5686, ST_NumInteriorRings and Triangle crash (Paul Ramsey)
 
 
 PostGIS 3.3.6
