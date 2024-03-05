@@ -8,6 +8,8 @@
         build-essential
         docbook-xsl-ns
         flex
+        libcunit1
+        libcunit1-dev
         libgdal-dev
         libgeos-dev
         libjson-c-dev
