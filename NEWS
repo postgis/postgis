@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - #5685, Preserve noding results for lines with one distinct vertex (Sandro Santilli)
  - #5597, Return a JSON null geometry for records with no geometry value (Paul Ramsey)
  - Write angular unit conversions back to the point array (Robert Coup)
  - Check the projection returned by PROJ (Even Rouault)
