@@ -166,22 +166,52 @@ lwgeom_node(const LWGEOM* lwgeom_in)
 	}
 	LWDEBUGGEOS(1, gn, "Noded");
 
-	gm = GEOSLineMerge(gn);
-	GEOSGeom_destroy(gn);
-	if ( ! gm ) {
-		lwgeom_free(ep);
-		lwerror("GEOSLineMerge: %s", lwgeom_geos_errmsg);
-		return NULL;
-	}
-	LWDEBUGGEOS(1, gm, "LineMerged");
+	nl = GEOSGetNumGeometries(gn);
+	if ( nl > 1 )
+	{
+		gm = GEOSLineMerge(gn);
+		GEOSGeom_destroy(gn);
+		if ( ! gm ) {
+			lwgeom_free(ep);
+			lwerror("GEOSLineMerge: %s", lwgeom_geos_errmsg);
+			return NULL;
+		}
+		LWDEBUGGEOS(1, gm, "LineMerged");
+		gn = gm;
 
-	lines = GEOS2LWGEOM(gm, FLAGS_GET_Z(lwgeom_in->flags));
-	GEOSGeom_destroy(gm);
-	if ( ! lines ) {
-		lwgeom_free(ep);
-		lwerror("Error during GEOS2LWGEOM");
-		return NULL;
+		lines = GEOS2LWGEOM(gn, FLAGS_GET_Z(lwgeom_in->flags));
+		GEOSGeom_destroy(gn);
+		if ( ! lines ) {
+			lwgeom_free(ep);
+			lwerror("Error during GEOS2LWGEOM");
+			return NULL;
+		}
 	}
+	else if ( nl == 1 )
+	{
+		const GEOSGeometry *gc = GEOSGetGeometryN(gn, 0);
+		lines = GEOS2LWGEOM(gc, FLAGS_GET_Z(lwgeom_in->flags));
+		GEOSGeom_destroy(gn);
+		if ( ! lines ) {
+			lwgeom_free(ep);
+			lwerror("Error during GEOS2LWGEOM");
+			return NULL;
+		}
+	}
+	else
+	{
+		/* No geometries, don't bother with re-adding endpoints */
+		lines = GEOS2LWGEOM(gn, FLAGS_GET_Z(lwgeom_in->flags));
+		GEOSGeom_destroy(gn);
+		if ( ! lines ) {
+			lwgeom_free(ep);
+			lwerror("Error during GEOS2LWGEOM");
+			return NULL;
+		}
+		lwgeom_set_srid(lines, lwgeom_in->srid);
+		return (LWGEOM*)lines;
+	}
+
 
 	/*
 	 * Reintroduce endpoints from input, using split-line-by-point.

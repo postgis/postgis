@@ -61,6 +61,15 @@ static void test_lwgeom_node(void)
 "MULTILINESTRING((0 0,2.5 2.5),(0 5,2.5 2.5),(2.5 2.5,5 5,10 0),(10 0,11 0,12 0,20 0),(20 0,22 0),(2.5 2.5,5 0))",
 		tmp);
 	lwfree(tmp); lwgeom_free(out); lwgeom_free(in);
+
+	/* See https://trac.osgeo.org/postgis/ticket/5685 */
+	wkt = "LINESTRING(0 0,0 0)";
+	in = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
+	out = lwgeom_node(in);
+	/* printf("%s\n", lwgeom_to_ewkt(out)); */
+	CU_ASSERT_FATAL(out != NULL);
+	ASSERT_LWGEOM_EQUAL(in, out);
+	lwgeom_free(out); lwgeom_free(in);
 }
 
 static int
