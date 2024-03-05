@@ -437,7 +437,7 @@ Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS)
 	}
 
 	lwgeom = lwgeom_from_gserialized(geom);
-	if ( lwgeom_is_empty(lwgeom) )
+	if ( lwgeom_is_empty(lwgeom) || type == TRIANGLETYPE )
 	{
 		result = 0;
 	}
