@@ -157,8 +157,10 @@ ptarray_from_SFCGAL(const sfcgal_geometry_t *geom, int want3d)
 		else if (want3d)
 			point.z = 0.0;
 
+#if POSTGIS_SFCGAL_VERSION >= 10308
 		if (is_measured)
 			point.m = sfcgal_point_m(geom);
+#endif
 
 		ptarray_set_point4d(pa, 0, &point);
 	}
@@ -180,8 +182,10 @@ ptarray_from_SFCGAL(const sfcgal_geometry_t *geom, int want3d)
 			else if (want3d)
 				point.z = 0.0;
 
+#if POSTGIS_SFCGAL_VERSION >= 10308
 			if (is_measured)
 				point.m = sfcgal_point_m(pt);
+#endif
 
 			ptarray_set_point4d(pa, i, &point);
 		}
@@ -203,8 +207,10 @@ ptarray_from_SFCGAL(const sfcgal_geometry_t *geom, int want3d)
 			else if (want3d)
 				point.z = 0.0;
 
+#if POSTGIS_SFCGAL_VERSION >= 10308
 			if (is_measured)
 				point.m = sfcgal_point_m(pt);
+#endif
 
 			ptarray_set_point4d(pa, i, &point);
 		}
