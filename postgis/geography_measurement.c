@@ -538,11 +538,8 @@ Datum geography_area(PG_FUNCTION_ARGS)
 	if ( ! use_spheroid )
 		s.a = s.b = s.radius;
 
-	/* Calculate the area */
-	if ( use_spheroid )
-		area = lwgeom_area_spheroid(lwgeom, &s);
-	else
-		area = lwgeom_area_sphere(lwgeom, &s);
+	/* Calculate the area, using the given spheroid. */
+	area = lwgeom_area_spheroid(lwgeom, &s);
 
 	/* Clean up */
 	lwgeom_free(lwgeom);
