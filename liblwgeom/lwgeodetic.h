@@ -128,7 +128,6 @@ int lwline_covers_lwpoint(const LWLINE* lwline, const LWPOINT* lwpoint);
 int lwpoly_intersects_line(const LWPOLY* lwpoly, const POINTARRAY* line);
 int lwpoly_pt_outside(const LWPOLY *poly, POINT2D *pt_outside);
 int ptarray_point_in_ring(const POINTARRAY *pa, const POINT2D *pt_outside, const POINT2D *pt_to_test);
-double ptarray_area_sphere(const POINTARRAY *pa);
 double latitude_degrees_normalize(double lat);
 double longitude_degrees_normalize(double lon);
 double ptarray_length_spheroid(const POINTARRAY *pa, const SPHEROID *s);

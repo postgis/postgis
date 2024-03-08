@@ -1805,39 +1805,6 @@ lwgeom_segmentize_sphere(const LWGEOM *lwg_in, double max_seg_length)
 }
 
 
-/**
-* Returns the area of the ring (ring must be closed) in square radians (surface of
-* the sphere is 4*PI).
-*/
-double
-ptarray_area_sphere(const POINTARRAY *pa)
-{
-	uint32_t i;
-	const POINT2D *p;
-	GEOGRAPHIC_POINT a, b, c;
-	double area = 0.0;
-
-	/* Return zero on nonsensical inputs */
-	if ( ! pa || pa->npoints < 4 )
-		return 0.0;
-
-	p = getPoint2d_cp(pa, 0);
-	geographic_point_init(p->x, p->y, &a);
-	p = getPoint2d_cp(pa, 1);
-	geographic_point_init(p->x, p->y, &b);
-
-	for ( i = 2; i < pa->npoints-1; i++ )
-	{
-		p = getPoint2d_cp(pa, i);
-		geographic_point_init(p->x, p->y, &c);
-		area += sphere_signed_area(&a, &b, &c);
-		b = c;
-	}
-
-	return fabs(area);
-}
-
-
 static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY *pa2, const SPHEROID *s, double tolerance, int check_intersection)
 {
 	GEOGRAPHIC_EDGE e1, e2;
@@ -2029,67 +1996,14 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 
 
 /**
-* Calculate the area of an LWGEOM. Anything except POLYGON, MULTIPOLYGON
-* and GEOMETRYCOLLECTION return zero immediately. Multi's recurse, polygons
-* calculate external ring area and subtract internal ring area. A GBOX is
-* required to calculate an outside point.
+* Delegate to the spheroid function with a spherically
+* parameterized spheroid.
 */
 double lwgeom_area_sphere(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 {
-	int type;
-	double radius2 = spheroid->radius * spheroid->radius;
-
-	assert(lwgeom);
-
-	/* No area in nothing */
-	if ( lwgeom_is_empty(lwgeom) )
-		return 0.0;
-
-	/* Read the geometry type number */
-	type = lwgeom->type;
-
-	/* Anything but polygons and collections returns zero */
-	if ( ! ( type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE ) )
-		return 0.0;
-
-	/* Actually calculate area */
-	if ( type == POLYGONTYPE )
-	{
-		LWPOLY *poly = (LWPOLY*)lwgeom;
-		uint32_t i;
-		double area = 0.0;
-
-		/* Just in case there's no rings */
-		if ( poly->nrings < 1 )
-			return 0.0;
-
-		/* First, the area of the outer ring */
-		area += radius2 * ptarray_area_sphere(poly->rings[0]);
-
-		/* Subtract areas of inner rings */
-		for ( i = 1; i < poly->nrings; i++ )
-		{
-			area -= radius2 * ptarray_area_sphere(poly->rings[i]);
-		}
-		return area;
-	}
-
-	/* Recurse into sub-geometries to get area */
-	if ( type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE )
-	{
-		LWCOLLECTION *col = (LWCOLLECTION*)lwgeom;
-		uint32_t i;
-		double area = 0.0;
-
-		for ( i = 0; i < col->ngeoms; i++ )
-		{
-			area += lwgeom_area_sphere(col->geoms[i], spheroid);
-		}
-		return area;
-	}
-
-	/* Shouldn't get here. */
-	return 0.0;
+	SPHEROID s;
+	spheroid_init(&s, WGS84_RADIUS, WGS84_RADIUS);
+	return lwgeom_area_spheroid(lwgeom, &s);
 }
 
 
