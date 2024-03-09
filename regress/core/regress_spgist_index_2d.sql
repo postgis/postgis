@@ -19,7 +19,7 @@ BEGIN
   END LOOP;
   RETURN ret;
 END;
-$$;
+$$  SET search_path='pg_catalog,public';
 
 create table tbl_geomcollection (
 	k serial,
