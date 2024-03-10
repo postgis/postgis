@@ -15,6 +15,8 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
           set to off (Sandro Santilli)
  - #5589, ST_3DDistance error for shared first point (Paul Ramsey)
  - #5686, ST_NumInteriorRings and Triangle crash (Paul Ramsey)
+ - #5666, Build reproducibility: timestamps 
+          in extension upgrade SQL scripts (Jay Addison)
 
 
 PostGIS 3.4.2
