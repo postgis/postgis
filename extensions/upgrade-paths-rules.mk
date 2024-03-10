@@ -4,6 +4,8 @@ TAG_UPGRADE=$(EXTENSION)--TEMPLATED--TO--ANY.sql
 
 PG_SHAREDIR=$(shell $(PG_CONFIG) --sharedir)
 
+POSTGIS_BUILD_DATE=$(shell date $${SOURCE_DATE_EPOCH:+-d @$$SOURCE_DATE_EPOCH} -u "+%Y-%m-%d %H:%M:%S")
+
 install: install-upgrade-paths
 
 #
@@ -37,7 +39,7 @@ all: sql/$(TAG_UPGRADE)
 sql/$(TAG_UPGRADE): $(MAKEFILE_LIST) | sql
 	echo '-- Just tag extension $(EXTENSION) version as "ANY"' > $@
 	echo '-- Installed by $(EXTENSION) $(EXTVERSION)' >> $@
-	echo '-- Built on $(shell date)' >> $@
+	echo '-- Built on $(POSTGIS_BUILD_DATE)' >> $@
 
 uninstall: uninstall-upgrade-paths
 
