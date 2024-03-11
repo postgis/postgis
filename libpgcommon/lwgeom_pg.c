@@ -113,7 +113,7 @@ postgis_get_full_version_schema()
 	}
 
 	/* Execute the query, noting the readonly status of this SQL */
-	spi_result = SPI_execute(query, TRUE, 0);
+	spi_result = SPI_execute(query, true, 0);
 
 	if (spi_result != SPI_OK_SELECT || SPI_tuptable == NULL){
 		elog(ERROR, "%s: error executing query %d", __func__, spi_result);
