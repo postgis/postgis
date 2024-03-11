@@ -715,20 +715,6 @@ edge_point_side(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *p)
 }
 
 /**
-* Returns the angle in radians at point B of the triangle formed by A-B-C
-*/
-static double
-sphere_angle(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b,  const GEOGRAPHIC_POINT *c)
-{
-	POINT3D normal1, normal2;
-	robust_cross_product(b, a, &normal1);
-	robust_cross_product(b, c, &normal2);
-	normalize(&normal1);
-	normalize(&normal2);
-	return sphere_distance_cartesian(&normal1, &normal2);
-}
-
-/**
 * Returns true if the point p is on the great circle plane.
 * Forms the scalar triple product of A,B,p and if the volume of the
 * resulting parallelepiped is near zero the point p is on the
