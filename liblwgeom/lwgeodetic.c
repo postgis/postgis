@@ -729,44 +729,6 @@ sphere_angle(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b,  const GEOGRA
 }
 
 /**
-* Computes the spherical area of a triangle. If C is to the left of A/B,
-* the area is negative. If C is to the right of A/B, the area is positive.
-*
-* @param a The first triangle vertex.
-* @param b The second triangle vertex.
-* @param c The last triangle vertex.
-* @return the signed area in radians.
-*/
-static double
-sphere_signed_area(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, const GEOGRAPHIC_POINT *c)
-{
-	double angle_a, angle_b, angle_c;
-	double area_radians = 0.0;
-	int side;
-	GEOGRAPHIC_EDGE e;
-
-	angle_a = sphere_angle(b,a,c);
-	angle_b = sphere_angle(a,b,c);
-	angle_c = sphere_angle(b,c,a);
-
-	area_radians = angle_a + angle_b + angle_c - M_PI;
-
-	/* What's the direction of the B/C edge? */
-	e.start = *a;
-	e.end = *b;
-	side = edge_point_side(&e, c);
-
-	/* Co-linear points implies no area */
-	if ( side == 0 )
-		return 0.0;
-
-	/* Add the sign to the area */
-	return side * area_radians;
-}
-
-
-
-/**
 * Returns true if the point p is on the great circle plane.
 * Forms the scalar triple product of A,B,p and if the volume of the
 * resulting parallelepiped is near zero the point p is on the
