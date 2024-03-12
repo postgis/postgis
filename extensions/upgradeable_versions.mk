@@ -101,4 +101,5 @@ UPGRADEABLE_VERSIONS = \
 	3.3.6 \
 	3.4.0 \
 	3.4.1 \
-	3.4.2dev
+	3.4.2 \
+	3.4.3dev
