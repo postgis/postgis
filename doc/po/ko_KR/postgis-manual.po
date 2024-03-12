@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-01-26 18:34+0000\n"
+"POT-Creation-Date: 2024-03-12 16:22+0000\n"
 "PO-Revision-Date: 2023-10-14 20:23+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Korean <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -11286,13 +11286,12 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "the <parameter>geom</parameter> field <varname>LINESTRING</varname>s "
-"represent the segments of the supplied geometry."
+"represent the linear segments of the supplied geometry, while the "
+"<varname>CIRCULARSTRING</varname>s represent the arc segments."
 msgstr ""
-"<varname>LINESTRING</varname> 이 닫혀 있는 단순 도형인 경우 <varname>TRUE</"
-"varname> 를 반환합니다."
 
 #. Tag: para
 #, no-c-format
@@ -11689,6 +11688,38 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_M\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/"
 ">, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Return the number of component curves in a CompoundCurve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Return the number of component curves in a CompoundCurve, zero for an empty "
+"CompoundCurve, or NULL for a non-CompoundCurve input."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
+"linkend=\"ST_NumInteriorRings\"/>, <xref linkend=\"ST_NumGeometries\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Returns the Nth component curve geometry of a CompoundCurve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns the Nth component curve geometry of a CompoundCurve. The index "
+"starts at 1. Returns NULL if the geometry is not a CompoundCurve or the "
+"index is out of range."
+msgstr ""
 
 #. Tag: refpurpose
 #, fuzzy, no-c-format
@@ -35748,35 +35779,6 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
-msgid "Computes area of 3D surface geometries. Will return 0 for solids."
-msgstr "3차원 표면 도형의 면적을 계산합니다. 입체일 경우 0을 반환할 것입니다."
-
-#. Tag: para
-#, no-c-format
-msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 8.1, 10.5"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Note: By default a PolyhedralSurface built from WKT is a surface geometry, "
-"not solid. It therefore has surface area. Once converted to a solid, no area."
-msgstr ""
-"주의: 기본적으로 KWT로부터 빌드된 다면체 표면은 표면 도형이지 입체가 아닙니"
-"다. 따라서 표면 면적을 구할 수 있습니다. 입체로 변환하면, 면적을 구할 수 없습"
-"니다."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
-"linkend=\"ST_Area\"/>"
-msgstr ""
-", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
-"linkend=\"ST_Area\"/>"
-
-#. Tag: refpurpose
-#, no-c-format
 msgid "Force LHR orientation"
 msgstr "LHR(Left Hand Reverse; 시계 방향) 방향을 강제합니다."
 
@@ -35825,6 +35827,61 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
+msgid "Calculates the area of a geometry"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Calculates the area of a geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Performed by the SFCGAL module"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"NOTE: this function returns a double precision value representing the area."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_Area\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Computes area of 3D surface geometries. Will return 0 for solids."
+msgstr "3차원 표면 도형의 면적을 계산합니다. 입체일 경우 0을 반환할 것입니다."
+
+#. Tag: para
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 8.1, 10.5"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Note: By default a PolyhedralSurface built from WKT is a surface geometry, "
+"not solid. It therefore has surface area. Once converted to a solid, no area."
+msgstr ""
+"주의: 기본적으로 KWT로부터 빌드된 다면체 표면은 표면 도형이지 입체가 아닙니"
+"다. 따라서 표면 면적을 구할 수 있습니다. 입체로 변환하면, 면적을 구할 수 없습"
+"니다."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
+"linkend=\"ST_Area\"/>"
+msgstr ""
+", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
+"linkend=\"ST_Area\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
 msgid ""
 "Computes the volume of a 3D solid. If applied to surface (even closed) "
 "geometries will return 0."
@@ -35860,6 +35917,152 @@ msgid "SFCGAL Processing and Relationship Functions"
 msgstr ""
 
 #. Tag: refpurpose
+#, no-c-format
+msgid "Computes the intersection of two geometries"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Computes the intersection of two geometries."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "NOTE: this function returns a geometry representing the intersection."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_Intersection\"/>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_3DIntersects\"/>, <xref linkend=\"ST_Intersects\"/>, "
+"<xref linkend=\"ST_Disjoint\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Tests if two 3D geometries intersect"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Tests if two 3D geometries intersect. 3D geometries intersect if they have "
+"any point in common in the three-dimensional space."
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Computes the geometric difference between two geometries"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Computes the geometric difference between two geometries. The resulting "
+"geometry is a set of points that are present in geomA but not in geomB."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "NOTE: this function returns a geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_Difference\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Perform 3D difference"
+msgstr "3차원 차이를 수행합니다."
+
+#. Tag: para
+#, no-c-format
+msgid "Returns that part of geom1 that is not part of geom2."
+msgstr "geom2의 일부분이 아닌 geom1의 부분을 반환합니다."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"3D images were generated using PostGIS <xref linkend=\"ST_AsX3D\"/> and "
+"rendering in HTML using <link xlink:href=\"http://www.x3dom.org\">X3Dom HTML "
+"Javascript rendering library</link>."
+msgstr ""
+"PostGIS <xref linkend=\"ST_AsX3D\"/> 를 통해 3차원 영상을 생성한 다음 <link "
+"xlink:href=\"http://www.x3dom.org\">X3Dom HTML 자바스크립트 렌더링 라이브러리"
+"</link> 를 이용해서 HTML로 렌더링합니다."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Original 3D geometries overlaid. geom2 is the part that will be removed."
+msgstr "원본 3차원 도형들이 중첩합니다. geom2가 제거될 부분을 나타냅니다."
+
+#. Tag: para
+#, no-c-format
+msgid "What's left after removing geom2"
+msgstr "geom2를 제거하고 남은 부분"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
+"linkend=\"ST_3DUnion\"/>"
+msgstr ""
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
+"linkend=\"ST_3DUnion\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Computes the minimum distance between two geometries"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Computes the minimum distance between two geometries."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"NOTE: this function returns a double precision value representing the "
+"distance."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_Distance\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Computes the minimum 3D distance between two geometries"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Computes the minimum 3D distance between two geometries."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"NOTE: this function returns a double precision value representing the 3D "
+"distance."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_3DDistance\"/>"
+msgstr ""
+
+#. Tag: refpurpose
 #, fuzzy, no-c-format
 msgid "Computes the 3D convex hull of a geometry."
 msgstr "면 도형의 근사 중심축을 계산합니다."
@@ -35883,17 +36086,6 @@ msgstr "3차원 교차를 수행합니다."
 #, no-c-format
 msgid "Return a geometry that is the shared portion between geom1 and geom2."
 msgstr "geom1과 geom2가 공유하는 부분을 도형으로 반환합니다."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"3D images were generated using PostGIS <xref linkend=\"ST_AsX3D\"/> and "
-"rendering in HTML using <link xlink:href=\"http://www.x3dom.org\">X3Dom HTML "
-"Javascript rendering library</link>."
-msgstr ""
-"PostGIS <xref linkend=\"ST_AsX3D\"/> 를 통해 3차원 영상을 생성한 다음 <link "
-"xlink:href=\"http://www.x3dom.org\">X3Dom HTML 자바스크립트 렌더링 라이브러리"
-"</link> 를 이용해서 HTML로 렌더링합니다."
 
 #. Tag: para
 #, no-c-format
@@ -35926,33 +36118,18 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
-msgid "Perform 3D difference"
-msgstr "3차원 차이를 수행합니다."
-
-#. Tag: para
-#, no-c-format
-msgid "Returns that part of geom1 that is not part of geom2."
-msgstr "geom2의 일부분이 아닌 geom1의 부분을 반환합니다."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Original 3D geometries overlaid. geom2 is the part that will be removed."
-msgstr "원본 3차원 도형들이 중첩합니다. geom2가 제거될 부분을 나타냅니다."
-
-#. Tag: para
-#, no-c-format
-msgid "What's left after removing geom2"
-msgstr "geom2를 제거하고 남은 부분"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
-"linkend=\"ST_3DUnion\"/>"
+msgid "Computes the union of two geometries"
 msgstr ""
-", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
-"linkend=\"ST_3DUnion\"/>"
+
+#. Tag: para
+#, no-c-format
+msgid "Computes the union of two geometries."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "NOTE: this function returns a geometry representing the union."
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -36142,12 +36319,8 @@ msgid ""
 "Return an approximate medial axis for the areal input based on its straight "
 "skeleton. Uses an SFCGAL specific API when built against a capable version "
 "(1.2.0+). Otherwise the function is just a wrapper around "
-"ST_StraightSkeleton (slower case)."
+"CG_StraightSkeleton (slower case)."
 msgstr ""
-"입력 면 도형의 직선 골격을 바탕으로 근사 중심축(approximate medial axis)을 반"
-"환합니다. 사용 가능한 버전(1.2.0 이상)에 대해 빌드했을 때 SFCGAL에 특화된 API"
-"를 이용합니다. 그렇지 않을 경우 이 함수는 (더 느린) ST_StraightSkeleton 함수"
-"를 둘러싼 래퍼(wrapper)에 불과합니다."
 
 #. Tag: para
 #, no-c-format
@@ -36245,7 +36418,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"ST_StraightSkeleton\"/>"
+msgid ", <xref linkend=\"CG_StraightSkeleton\"/>"
 msgstr ""
 
 #. Tag: para
@@ -36444,6 +36617,11 @@ msgstr "도형으로부터 직선 골격(straight skeleton)을 계산합니다."
 
 #. Tag: para
 #, no-c-format
+msgid "Requires SFCGAL &gt;= 1.3.8 for option use_distance_as_m"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Straight Skeleton of polygon"
 msgstr "폴리곤의 직선 골격"
 
@@ -36497,6 +36675,22 @@ msgstr "다듬어진 폴리곤"
 msgid ""
 ", <xref linkend=\"ST_DelaunayTriangles\"/>, <xref "
 "linkend=\"ST_TriangulatePolygon\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Triangulates a polygonal geometry"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Triangulates a polygonal geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"NOTE: this function returns a geometry representing the triangulated result."
 msgstr ""
 
 #. Tag: refpurpose
@@ -44230,6 +44424,26 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "the <parameter>geom</parameter> field <varname>LINESTRING</varname>s "
+#~ "represent the segments of the supplied geometry."
+#~ msgstr ""
+#~ "<varname>LINESTRING</varname> 이 닫혀 있는 단순 도형인 경우 "
+#~ "<varname>TRUE</varname> 를 반환합니다."
+
+#, no-c-format
+#~ msgid ""
+#~ "Return an approximate medial axis for the areal input based on its "
+#~ "straight skeleton. Uses an SFCGAL specific API when built against a "
+#~ "capable version (1.2.0+). Otherwise the function is just a wrapper around "
+#~ "ST_StraightSkeleton (slower case)."
+#~ msgstr ""
+#~ "입력 면 도형의 직선 골격을 바탕으로 근사 중심축(approximate medial axis)"
+#~ "을 반환합니다. 사용 가능한 버전(1.2.0 이상)에 대해 빌드했을 때 SFCGAL에 특"
+#~ "화된 API를 이용합니다. 그렇지 않을 경우 이 함수는 (더 느린) "
+#~ "ST_StraightSkeleton 함수를 둘러싼 래퍼(wrapper)에 불과합니다."
 
 #, no-c-format
 #~ msgid ""
