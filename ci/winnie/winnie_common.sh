@@ -15,8 +15,8 @@ if  [[ "${OVERRIDE}" == '' ]] ; then
 	export GEOS_VER=3.13
 	export GDAL_VER=3.7.1
 	export PROJ_VER=8.2.1
-	export SFCGAL_VER=1.5.0
-	export CGAL_VER=5.6
+	export SFCGAL_VER=1.5.1
+	export CGAL_VER=5.6.1
 	export ICON_VER=1.17
 	export ZLIB_VER=1.2.13
 	export PROTOBUF_VER=3.2.0
@@ -58,11 +58,11 @@ fi;
 
 #set to something even if override is on but not set
 if  [[ "${CGAL_VER}" == '' ]] ; then
-  export CGAL_VER=5.3
+  export CGAL_VER=5.6.1
 fi;
 
 ##hard code versions of cgal etc. for now
-export CGAL_VER=5.3
+export CGAL_VER=5.6.1
 BOOST_VER=1.78.0
 export BOOST_VER_WU=1_78_0
 
