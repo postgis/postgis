@@ -1388,7 +1388,12 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="AddTopoGeometryColumn"/>, <xref linkend="CreateTopology"/>, <xref linkend="DropTopology"/></para>
+				<para>
+<xref linkend="TopoGeo_LoadGeometry"/>,
+<xref linkend="AddTopoGeometryColumn"/>,
+<xref linkend="CreateTopology"/>,
+<xref linkend="DropTopology"/>
+                </para>
 			</refsection>
 		</refentry>
 
@@ -1432,6 +1437,7 @@ An existing edge may be split by the snapped point.
 				<para>
 <xref linkend="TopoGeo_AddLineString"/>,
 <xref linkend="TopoGeo_AddPolygon"/>,
+<xref linkend="TopoGeo_LoadGeometry"/>,
 <xref linkend="AddNode"/>,
 <xref linkend="CreateTopology"/>
 </para>
@@ -1481,6 +1487,7 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
 				<para>
 <xref linkend="TopoGeo_AddPoint"/>,
 <xref linkend="TopoGeo_AddPolygon"/>,
+<xref linkend="TopoGeo_LoadGeometry"/>,
 <xref linkend="AddEdge"/>,
 <xref linkend="CreateTopology"/>
 				</para>
@@ -1530,7 +1537,57 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
 				<para>
 <xref linkend="TopoGeo_AddPoint"/>,
 <xref linkend="TopoGeo_AddLineString"/>,
+<xref linkend="TopoGeo_LoadGeometry"/>,
 <xref linkend="AddFace"/>,
+<xref linkend="CreateTopology"/>
+				</para>
+			</refsection>
+		</refentry>
+
+		<refentry xml:id="TopoGeo_LoadGeometry">
+			<refnamediv>
+				<refname>TopoGeo_LoadGeometry</refname>
+
+				<refpurpose>Load a geometry into an existing topology, snapping and splitting as needed.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>void <function>TopoGeo_LoadGeometry</function></funcdef>
+						<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>ageom</parameter></paramdef>
+						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Loads a geometry into an existing topology.
+The given geometry will snap to existing nodes or edges within given tolerance.
+Existing edges and faces may be split as a consequence of the load.
+                </para>
+
+                <note><para>
+Updating statistics about topologies being loaded via this function is
+up to caller, see <xref linkend="Topology_StatsManagement"/>.
+                </para></note>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+			</refsection>
+
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para>
+<xref linkend="TopoGeo_AddPoint"/>,
+<xref linkend="TopoGeo_AddLineString"/>,
+<xref linkend="TopoGeo_AddPolygon"/>,
 <xref linkend="CreateTopology"/>
 				</para>
 			</refsection>

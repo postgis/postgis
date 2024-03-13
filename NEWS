@@ -35,6 +35,7 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.5.0+ is needed.
 
 * New Features *
 
+  - #5667, TopoGeo_LoadGeometry (Sandro Santilli)
   - #5055, add explicit <> geometry operator to prevent non-unique
            error with <> and != (Paul Ramsey)
   - Add ST_HasZ/ST_HasM (Loïc Bartoletti)

@@ -1143,6 +1143,19 @@ int lwt_Polygonize(LWT_TOPOLOGY* topo);
 LWT_ELEMID* lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* poly, double tol,
                         int* nfaces);
 
+/**
+ * Load a geometry into the topology
+ *
+ * The given geometry will snap to existing nodes or edges within given
+ * tolerance. Existing edges or faces may be split by the geometry.
+ *
+ * @param topo the topology to operate on
+ * @param geom the geometry to add
+ * @param tol snap tolerance, the topology tolerance will be used if 0
+ *
+ */
+void lwt_LoadGeometry(LWT_TOPOLOGY* topo, LWGEOM* geom, double tol);
+
 /*******************************************************************
  *
  * ISO signatures here

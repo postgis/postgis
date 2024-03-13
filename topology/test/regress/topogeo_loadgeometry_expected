@@ -1,0 +1,5 @@
+point1|1 nodes|0 edges|0 faces
+mpoint1|2 nodes|0 edges|0 faces
+mline1|6 nodes|4 edges|0 faces
+mpoly1|8 nodes|8 edges|3 faces
+coll1|13 nodes|15 edges|6 faces

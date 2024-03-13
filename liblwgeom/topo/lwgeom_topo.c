@@ -155,7 +155,7 @@ lwt_be_getNodeById(LWT_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t *numelems
 
 LWT_ISO_NODE *
 lwt_be_getNodeWithinDistance2D(LWT_TOPOLOGY *topo,
-			       LWPOINT *pt,
+			       const LWPOINT *pt,
 			       double dist,
 			       uint64_t *numelems,
 			       int fields,
@@ -377,7 +377,7 @@ lwt_be_getRingEdges(LWT_TOPOLOGY *topo, LWT_ELEMID edge, uint64_t *numedges, uin
 }
 
 int
-lwt_be_ExistsCoincidentNode(LWT_TOPOLOGY* topo, LWPOINT* pt)
+lwt_be_ExistsCoincidentNode(LWT_TOPOLOGY* topo, const LWPOINT* pt)
 {
 	uint64_t exists = 0;
 	lwt_be_getNodeWithinDistance2D(topo, pt, 0, &exists, 0, -1);
@@ -390,7 +390,7 @@ lwt_be_ExistsCoincidentNode(LWT_TOPOLOGY* topo, LWPOINT* pt)
 }
 
 int
-lwt_be_ExistsEdgeIntersectingPoint(LWT_TOPOLOGY* topo, LWPOINT* pt)
+lwt_be_ExistsEdgeIntersectingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
 {
 	uint64_t exists = 0;
 	lwt_be_getEdgeWithinDistance2D(topo, pt, 0, &exists, 0, -1);
@@ -5987,10 +5987,45 @@ lwt_AddLineNoFace(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
 	return _lwt_AddLine(topo, line, tol, nedges, 0);
 }
 
+static void
+lwt_LoadPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
+{
+  _lwt_AddPoint(topo, point, tol, 1, NULL);
+}
+
+static void
+lwt_LoadLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol)
+{
+  LWT_ELEMID* ids;
+  int nedges;
+
+  /* TODO: avoid allocating edge ids */
+  ids = lwt_AddLine(topo, line, tol, &nedges);
+  if ( nedges > 0 ) lwfree(ids);
+}
+
+static void
+lwt_LoadPolygon(LWT_TOPOLOGY* topo, const LWPOLY* poly, double tol)
+{
+  uint32_t i;
+
+  /* Add each ring as an edge */
+  for ( i=0; i<poly->nrings; ++i )
+  {
+    LWLINE *line;
+    POINTARRAY *pa;
+
+    /* TODO: avoid the clone here */
+    pa = ptarray_clone(poly->rings[i]);
+    line = lwline_construct(topo->srid, NULL, pa);
+    lwt_LoadLine(topo, line, tol);
+    lwline_free(line);
+  }
+}
+
 LWT_ELEMID*
 lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* poly, double tol, int* nfaces)
 {
-  uint32_t i;
   *nfaces = -1; /* error condition, by default */
   int num;
   LWT_ISO_FACE *faces;
@@ -6005,26 +6040,7 @@ lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* poly, double tol, int* nfaces)
   if ( ! tol ) tol = _LWT_MINTOLERANCE( topo, (LWGEOM*)poly );
   LWDEBUGF(1, "Working tolerance:%.15g", tol);
 
-  /* Add each ring as an edge */
-  for ( i=0; i<poly->nrings; ++i )
-  {
-    LWLINE *line;
-    POINTARRAY *pa;
-    LWT_ELEMID *eids;
-    int nedges;
-
-    pa = ptarray_clone(poly->rings[i]);
-    line = lwline_construct(topo->srid, NULL, pa);
-    eids = lwt_AddLine( topo, line, tol, &nedges );
-    if ( nedges < 0 ) {
-      /* probably too late as lwt_AddLine invoked lwerror */
-      lwline_free(line);
-      lwerror("Error adding ring %d of polygon", i);
-      return NULL;
-    }
-    lwline_free(line);
-    lwfree(eids);
-  }
+  lwt_LoadPolygon(topo, poly, tol);
 
   /*
   -- Find faces covered by input polygon
@@ -6464,4 +6480,50 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
 
   _lwt_release_edges(closestEdge, 1);
   return containingFace;
+}
+
+void
+_lwt_LoadGeometryRecursive(LWT_TOPOLOGY* topo, LWGEOM* geom, double tol)
+{
+  switch (geom->type)
+  {
+    case POINTTYPE:
+      lwt_LoadPoint(topo, lwgeom_as_lwpoint(geom), tol);
+      return;
+
+    case LINETYPE:
+      lwt_LoadLine(topo, lwgeom_as_lwline(geom), tol);
+      return;
+
+    case POLYGONTYPE:
+      lwt_LoadPolygon(topo, lwgeom_as_lwpoly(geom), tol);
+      return;
+
+    case MULTILINETYPE:
+    case MULTIPOLYGONTYPE:
+    case MULTIPOINTTYPE:
+    case COLLECTIONTYPE:
+    {
+      LWCOLLECTION *coll;
+      uint32_t i;
+      coll = (LWCOLLECTION *)geom;
+      for (i=0; i<coll->ngeoms; i++)
+        _lwt_LoadGeometryRecursive(topo, coll->geoms[i], tol);
+      return;
+    }
+
+		default:
+		{
+			lwerror("%s: Unsupported geometry type: %s", __func__,
+			        lwtype_name(geom->type));
+			return;
+		}
+
+  }
+}
+
+void
+lwt_LoadGeometry(LWT_TOPOLOGY* topo, LWGEOM* geom, double tol)
+{
+	_lwt_LoadGeometryRecursive(topo, geom, tol);
 }

@@ -722,6 +722,19 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPolygon(atopology varchar, apoly 
 --} TopoGeo_AddPolygon
 
 --{
+--  TopoGeo_LoadGeometry(toponame, geom, tolerance)
+--
+--  Load a Geometry into a topology
+--
+-- Availability: 3.5.0
+--
+CREATE OR REPLACE FUNCTION topology.TopoGeo_LoadGeometry(atopology varchar, ageom geometry, tolerance float8 DEFAULT 0)
+	RETURNS void AS
+	'MODULE_PATHNAME', 'TopoGeo_LoadGeometry'
+  LANGUAGE 'c' VOLATILE;
+--} TopoGeo_LoadGeometry
+
+--{
 --  TopoGeo_AddGeometry(toponame, geom, tolerance)
 --
 --  Add a Geometry into a topology
@@ -731,7 +744,7 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddGeometry(atopology varchar, ageom
 $$
 DECLARE
 BEGIN
-	RAISE EXCEPTION 'TopoGeo_AddGeometry not implemented yet';
+	RAISE EXCEPTION 'TopoGeo_AddGeometry not implemented yet, use TopoGeo_LoadGeometry';
 END
 $$
 LANGUAGE 'plpgsql';

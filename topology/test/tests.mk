@@ -75,6 +75,7 @@ TESTS += \
 	$(top_srcdir)/topology/test/regress/topogeo_addlinestring.sql \
 	$(top_srcdir)/topology/test/regress/topogeo_addpoint.sql \
 	$(top_srcdir)/topology/test/regress/topogeo_addpolygon.sql \
+	$(top_srcdir)/topology/test/regress/topogeo_loadgeometry.sql \
 	$(top_srcdir)/topology/test/regress/topogeom_addtopogeom.sql \
 	$(top_srcdir)/topology/test/regress/topogeom_edit.sql \
 	$(top_srcdir)/topology/test/regress/topogeometry_srid.sql \
