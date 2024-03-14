@@ -2,7 +2,7 @@
     image: *test_image
     commands:
       - make -C build-docs/doc/po/@LANG@ local-@TARGET@
-    group: @GROUP@
+    #group: @GROUP@
     when:
       path:
         include:
