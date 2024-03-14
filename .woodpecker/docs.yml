@@ -35,7 +35,7 @@ steps:
   check-xml:
     image: *test_image
     pull: true
-    depends_on: check-xml-and-build-images
+    depends_on: prepare
     commands:
       - make -C build-docs/doc check
     when:
@@ -43,7 +43,7 @@ steps:
   build-images:
     image: *test_image
     pull: true
-    depends_on: check-xml-and-build-images
+    depends_on: prepare
     commands:
       - make -C build-docs/doc images
     when:
@@ -51,7 +51,7 @@ steps:
   build-html:
     image: *test_image
     pull: true
-    group: output
+    depends_on: build-images
     commands:
       - make -C build-docs/doc html
     when:
@@ -59,7 +59,7 @@ steps:
   build-cheatsheets:
     image: *test_image
     pull: true
-    group: output
+    depends_on: prepare
     commands:
       - make -C build-docs/doc/ cheatsheets
     when:
@@ -67,7 +67,7 @@ steps:
   build-chunked-html:
     image: *test_image
     pull: true
-    group: output
+    depends_on: build-images
     commands:
       - make -C build-docs/doc html
     when:
@@ -75,7 +75,7 @@ steps:
   build-pdf:
     image: *test_image
     pull: true
-    group: output
+    depends_on: build-images
     commands:
       - make -C build-docs/doc/ pdf
     when:
