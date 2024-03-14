@@ -43,7 +43,7 @@ variables:
     - egrep '(PASS|FAIL|SKIP|INFO|ERROR)' check.log
 
 clone:
-  clone:
+  git:
     image: woodpeckerci/plugin-git
     depth: 50
 
