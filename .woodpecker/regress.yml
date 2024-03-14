@@ -57,7 +57,7 @@ steps:
 
   build-pg12:
     image: *test-image
-    group: build
+    depends_on: build
     environment:
       - PGVER=12
     commands:
@@ -66,7 +66,7 @@ steps:
 
   build-pg15:
     image: *test-image
-    group: build
+    depends_on: build
     environment:
       - PGVER=15
     commands:
@@ -75,7 +75,7 @@ steps:
 
   check-pg12:
     image: *test-image
-    group: check
+    depends_on: check
     environment:
       - PGVER=12
     commands:
@@ -85,7 +85,7 @@ steps:
 
   check-pg15:
     image: *test-image
-    group: check
+    depends_on: check
     environment:
       - PGVER=15
     commands:
@@ -95,7 +95,7 @@ steps:
 
   installcheck-pg12:
     image: *test-image
-    group: installcheck
+    depends_on: installcheck
     environment:
       - PGVER=12
     commands:
@@ -106,7 +106,7 @@ steps:
 
   installcheck-pg15:
     image: *test-image
-    group: installcheck
+    depends_on: installcheck
     environment:
       - PGVER=15
     commands:
@@ -117,7 +117,7 @@ steps:
 
   upgradecheck-pg12:
     image: *test-image
-    group: upgradecheck
+    depends_on: upgradecheck
     environment:
       - PGVER=12
     commands:
@@ -128,7 +128,7 @@ steps:
 
   upgradecheck-pg15:
     image: *test-image
-    group: upgradecheck
+    depends_on: upgradecheck
     environment:
       - PGVER=15
     commands:
