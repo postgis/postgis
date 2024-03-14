@@ -1,12 +1,10 @@
   @TARGET@-@LANG@:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/@LANG@ local-@TARGET@
-    #group: @GROUP@
+    depends_on: @DEP@
     when:
       path:
         include:
-          # Localized assets
-          - "doc/po/@LANG@/Makefile.in"
           - "doc/po/@LANG@/*.po"
-          - "utils/check_localized_cheatsheets.sh"

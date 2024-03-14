@@ -39,7 +39,7 @@ variables:
     - egrep '(PASS|FAIL|SKIP|INFO|ERROR)' check.log
 
 clone:
-  clone:
+  git:
     image: woodpeckerci/plugin-git
     depth: 50
 
@@ -53,7 +53,7 @@ steps:
 
   build-pg12:
     image: *test-image
-    group: build
+    depends_on: autogen
     environment:
       - PGVER=12
     commands:
@@ -62,7 +62,7 @@ steps:
 
   build-pg15:
     image: *test-image
-    group: build
+    depends_on: autogen
     environment:
       - PGVER=15
     commands:
@@ -71,7 +71,7 @@ steps:
 
   check-pg12:
     image: *test-image
-    group: check
+    depends_on: build-pg12
     environment:
       - PGVER=12
     commands:
@@ -81,7 +81,7 @@ steps:
 
   check-pg15:
     image: *test-image
-    group: check
+    depends_on: build-pg15
     environment:
       - PGVER=15
     commands:
@@ -91,7 +91,7 @@ steps:
 
   installcheck-pg12:
     image: *test-image
-    group: installcheck
+    depends_on: build-pg12
     environment:
       - PGVER=12
     commands:
@@ -102,7 +102,7 @@ steps:
 
   installcheck-pg15:
     image: *test-image
-    group: installcheck
+    depends_on: build-pg15
     environment:
       - PGVER=15
     commands:
@@ -113,7 +113,7 @@ steps:
 
   upgradecheck-pg12:
     image: *test-image
-    group: upgradecheck
+    depends_on: build-pg12
     environment:
       - PGVER=12
     commands:
@@ -124,7 +124,7 @@ steps:
 
   upgradecheck-pg15:
     image: *test-image
-    group: upgradecheck
+    depends_on: build-pg15
     environment:
       - PGVER=15
     commands:

@@ -1,32 +1,22 @@
 variables:
   - &test_image 'docker.osgeo.org/postgis/build-test:trisquel3'
+  - common_doc_paths: &common_doc_paths
+      # related config files
+      - ".woodpecker/docs.yml"
+      # Makefiles
+      - "doc/Makefile.in"
+      - "doc/html/images/Makefile.in"
+      # XML sources
+      - "doc/*.xml"
+      # Internationalization Makefiles
+      - "doc/po/Makefile.local"
   - &when_path
       include:
-        # Common docs path
-        # related config files
-        - ".woodpecker/docs.yml"
-        # Makefiles
-        - "doc/Makefile.in"
-        - "doc/html/images/Makefile.in"
-        # XML sources
-        - "doc/*.xml"
-        # Internationalization Makefiles
-        - "doc/po/Makefile.local"
-        # END OF COMMON PATHS
+        - <<: *common_doc_paths
   - &when_path_full
       include:
-        # Common docs path
-        # related config files
-        - ".woodpecker/docs.yml"
-        # Makefiles
-        - "doc/Makefile.in"
-        - "doc/html/images/Makefile.in"
-        # XML sources
-        - "doc/*.xml"
-        # Internationalization Makefiles
-        - "doc/po/Makefile.local"
-        # END OF COMMON PATHS
-        # Localized assets
+        - <<: *common_doc_paths
+        # Any localized assets
         - "doc/po/*/Makefile.in"
         - "doc/po/*/*.po"
 
@@ -39,44 +29,53 @@ steps:
       - mkdir -p build-docs && cd build-docs
       - ../configure --without-pg --without-protobuf --without-raster
       - make postgis_revision.h
+      - xmllint --version
     when:
       path: *when_path_full
   check-xml:
     image: *test_image
+    pull: true
+    depends_on: prepare
     commands:
       - make -C build-docs/doc check
     when:
       path: *when_path
   build-images:
     image: *test_image
+    pull: true
+    depends_on: prepare
     commands:
       - make -C build-docs/doc images
     when:
-      path: *when_path
+      path: *when_path_full
   build-html:
     image: *test_image
-    group: output
+    pull: true
+    depends_on: check-xml
     commands:
       - make -C build-docs/doc html
     when:
       path: *when_path
   build-cheatsheets:
     image: *test_image
-    group: output
+    pull: true
+    depends_on: check-xml
     commands:
       - make -C build-docs/doc/ cheatsheets
     when:
-      path: *when_path_full
+      path: *when_path
   build-chunked-html:
     image: *test_image
-    group: output
+    pull: true
+    depends_on: check-xml
     commands:
       - make -C build-docs/doc html
     when:
       path: *when_path
   build-pdf:
     image: *test_image
-    group: output
+    pull: true
+    depends_on: [ build-images, check-xml ]
     commands:
       - make -C build-docs/doc/ pdf
     when:
@@ -86,350 +85,155 @@ steps:
 ### TARGET check-xml
   check-xml-ja:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ja local-check-xml
-    #group: localized-check-xml
+    depends_on: @DEP@
     when:
       path:
         include:
-          # Localized assets
-          - "doc/po/ja/Makefile.in"
           - "doc/po/ja/*.po"
-          - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
   check-xml-de:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/de local-check-xml
-    #group: localized-check-xml
+    depends_on: @DEP@
     when:
       path:
         include:
-          # Localized assets
-          - "doc/po/de/Makefile.in"
           - "doc/po/de/*.po"
-          - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
   check-xml-fr:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/fr local-check-xml
-    #group: localized-check-xml
+    depends_on: @DEP@
     when:
       path:
         include:
-          # Localized assets
-          - "doc/po/fr/Makefile.in"
           - "doc/po/fr/*.po"
-          - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
 ### TARGET html
   html-ja:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ja local-html
-    #group: localized-html
+    depends_on: @DEP@
     when:
       path:
         include:
-          # Localized assets
-          - "doc/po/ja/Makefile.in"
           - "doc/po/ja/*.po"
-          - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
   html-de:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/de local-html
-    #group: localized-html
+    depends_on: @DEP@
     when:
       path:
         include:
-          # Localized assets
-          - "doc/po/de/Makefile.in"
           - "doc/po/de/*.po"
-          - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
   html-fr:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/fr local-html
-    #group: localized-html
+    depends_on: @DEP@
     when:
       path:
         include:
-          # Localized assets
-          - "doc/po/fr/Makefile.in"
           - "doc/po/fr/*.po"
-          - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
 ### TARGET cheatsheets
   cheatsheets-ja:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ja local-cheatsheets
-    #group: localized-cheatsheets
+    depends_on: @DEP@
     when:
       path:
         include:
-          # Localized assets
-          - "doc/po/ja/Makefile.in"
           - "doc/po/ja/*.po"
-          - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
   cheatsheets-de:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/de local-cheatsheets
-    #group: localized-cheatsheets
+    depends_on: @DEP@
     when:
       path:
         include:
-          # Localized assets
-          - "doc/po/de/Makefile.in"
           - "doc/po/de/*.po"
-          - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
   cheatsheets-fr:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/fr local-cheatsheets
-    #group: localized-cheatsheets
+    depends_on: @DEP@
     when:
       path:
         include:
-          # Localized assets
-          - "doc/po/fr/Makefile.in"
           - "doc/po/fr/*.po"
-          - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
 ### TARGET check-cheatsheets
   check-cheatsheets-ja:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ja local-check-cheatsheets
-    #group: localized-check-cheatsheets
+    depends_on: @DEP@
     when:
       path:
         include:
-          # Localized assets
-          - "doc/po/ja/Makefile.in"
           - "doc/po/ja/*.po"
-          - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
   check-cheatsheets-de:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/de local-check-cheatsheets
-    #group: localized-check-cheatsheets
+    depends_on: @DEP@
     when:
       path:
         include:
-          # Localized assets
-          - "doc/po/de/Makefile.in"
           - "doc/po/de/*.po"
-          - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
   check-cheatsheets-fr:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/fr local-check-cheatsheets
-    #group: localized-check-cheatsheets
+    depends_on: @DEP@
     when:
       path:
         include:
-          # Localized assets
-          - "doc/po/fr/Makefile.in"
           - "doc/po/fr/*.po"
-          - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
 ### TARGET pdf
   pdf-ja:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/ja local-pdf
-    #group: localized-pdf
+    depends_on: @DEP@
     when:
       path:
         include:
-          # Localized assets
-          - "doc/po/ja/Makefile.in"
           - "doc/po/ja/*.po"
-          - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
   pdf-de:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/de local-pdf
-    #group: localized-pdf
+    depends_on: @DEP@
     when:
       path:
         include:
-          # Localized assets
-          - "doc/po/de/Makefile.in"
           - "doc/po/de/*.po"
-          - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
   pdf-fr:
     image: *test_image
+    pull: true
     commands:
       - make -C build-docs/doc/po/fr local-pdf
-    #group: localized-pdf
+    depends_on: @DEP@
     when:
       path:
         include:
-          # Localized assets
-          - "doc/po/fr/Makefile.in"
           - "doc/po/fr/*.po"
-          - "utils/check_localized_cheatsheets.sh"
-          # Common docs path
-          # related config files
-          - ".woodpecker/docs.yml"
-          # Makefiles
-          - "doc/Makefile.in"
-          - "doc/html/images/Makefile.in"
-          # XML sources
-          - "doc/*.xml"
-          # Internationalization Makefiles
-          - "doc/po/Makefile.local"
-          # END OF COMMON PATHS
