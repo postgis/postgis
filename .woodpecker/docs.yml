@@ -63,7 +63,7 @@ steps:
     commands:
       - make -C build-docs/doc/ cheatsheets
     when:
-      path: *when_path_full
+      path: *when_path
   build-chunked-html:
     image: *test_image
     pull: true
