@@ -23,7 +23,7 @@ do
         depends_on=check-xml
         ;;
       pdf)
-        depends_on=[ build-images, check-xml ]
+        depends_on="[ build-images, check-xml ]"
         ;;
       check-cheatsheets)
         depends_on=cheatsheets-${lang}
