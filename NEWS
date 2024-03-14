@@ -11,6 +11,8 @@ xxxx/xx/xx
           set to off (Sandro Santilli)
  - #5589, ST_3DDistance error for shared first point (Paul Ramsey)
  - #5686, ST_NumInteriorRings and Triangle crash (Paul Ramsey)
+ - #5671, Bug in ST_Area function with use_spheroid=false
+          (Paul Ramsey, Regina Obe)
 
 
 PostGIS 3.3.6
