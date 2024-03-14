@@ -20,10 +20,10 @@ do
         depends_on=prepare
         ;;
       html|cheatsheets)
-        depends_on=check-xml
+        depends_on=check-xml-${lang}
         ;;
       pdf)
-        depends_on="[ build-images, check-xml ]"
+        depends_on="[ build-images, check-xml-${lang} ]"
         ;;
       check-cheatsheets)
         depends_on=cheatsheets-${lang}
