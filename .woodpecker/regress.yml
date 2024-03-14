@@ -57,7 +57,7 @@ steps:
 
   build-pg12:
     image: *test-image
-    depends_on: build
+    depends_on: autogen
     environment:
       - PGVER=12
     commands:
@@ -66,7 +66,7 @@ steps:
 
   build-pg15:
     image: *test-image
-    depends_on: build
+    depends_on: autogen
     environment:
       - PGVER=15
     commands:
@@ -75,7 +75,7 @@ steps:
 
   check-pg12:
     image: *test-image
-    depends_on: check
+    depends_on: autogen
     environment:
       - PGVER=12
     commands:
@@ -85,7 +85,7 @@ steps:
 
   check-pg15:
     image: *test-image
-    depends_on: check
+    depends_on: autogen
     environment:
       - PGVER=15
     commands:
@@ -95,7 +95,7 @@ steps:
 
   installcheck-pg12:
     image: *test-image
-    depends_on: installcheck
+    depends_on: autogen
     environment:
       - PGVER=12
     commands:
@@ -106,7 +106,7 @@ steps:
 
   installcheck-pg15:
     image: *test-image
-    depends_on: installcheck
+    depends_on: autogen
     environment:
       - PGVER=15
     commands:
@@ -117,7 +117,7 @@ steps:
 
   upgradecheck-pg12:
     image: *test-image
-    depends_on: upgradecheck
+    depends_on: autogen
     environment:
       - PGVER=12
     commands:
@@ -128,7 +128,7 @@ steps:
 
   upgradecheck-pg15:
     image: *test-image
-    depends_on: upgradecheck
+    depends_on: autogen
     environment:
       - PGVER=15
     commands:
