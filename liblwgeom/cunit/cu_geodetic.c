@@ -1564,8 +1564,9 @@ static void test_lwgeom_area_sphere(void)
 	double area;
 	SPHEROID s;
 
-	/* Init to WGS84 */
-	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+	/* Init to Sphere */
+	spheroid_init(&s, WGS84_RADIUS, WGS84_RADIUS);
+	s.a = s.b = s.radius;
 
 	/* Simple case */
 	lwg = lwgeom_from_wkt("POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))", LW_PARSER_CHECK_NONE);
@@ -1577,17 +1578,17 @@ static void test_lwgeom_area_sphere(void)
 	/* Robustness tests, from ticket #3393 */
 	lwg = lwgeom_from_wkt("POLYGON((0 78.703946026663,0 0,179.999997913235 0,179.999997913235 -33.0888306884702,0 78.703946026663))", LW_PARSER_CHECK_NONE);
 	area = lwgeom_area_sphere(lwg, &s);
-	CU_ASSERT_DOUBLE_EQUAL(area, 127516467322130, 1.0);
+	CU_ASSERT_DOUBLE_EQUAL(area, 127516466960671, 1.0);
 	lwgeom_free(lwg);
 
 	lwg = lwgeom_from_wkt("POLYGON((0 78.703946026662,0 0,179.999997913235 0,179.999997913235 -33.0888306884702,0 78.703946026662))", LW_PARSER_CHECK_NONE);
 	area = lwgeom_area_sphere(lwg, &s);
-	CU_ASSERT_DOUBLE_EQUAL(area, 127516467322130, 1.0);
+	CU_ASSERT_DOUBLE_EQUAL(area, 127516466960671, 1.0);
 	lwgeom_free(lwg);
 
 	lwg = lwgeom_from_wkt("POLYGON((0 78.703946026664,0 0,179.999997913235 0,179.999997913235 -33.0888306884702,0 78.703946026664))", LW_PARSER_CHECK_NONE);
 	area = lwgeom_area_sphere(lwg, &s);
-	CU_ASSERT_DOUBLE_EQUAL(area, 127516467322130, 1.0);
+	CU_ASSERT_DOUBLE_EQUAL(area, 127516466960671, 1.0);
 	lwgeom_free(lwg);
 	/* end #3393 */
 }
