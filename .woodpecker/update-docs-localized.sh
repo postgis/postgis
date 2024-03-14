@@ -15,8 +15,21 @@ do
   echo "### TARGET ${target}"
   for lang in ${SUPPORTED_LANGUAGES};
   do
-    group=localized-${target}
-    sed "s/@LANG@/${lang}/;s/@TARGET@/${target}/;s/@GROUP@/${group}/" docs-localized.yml.in
+    case ${target} in
+      check-xml|html|cheatsheets)
+        depends_on=prepare
+        ;;
+      pdf)
+        depends_on=build-images
+        ;;
+      check-cheatsheets)
+        depends_on=cheatsheets-${lang}
+        ;;
+      *)
+        echo "Unexpected target ${target}" >&2
+        exit 1
+    esac
+    sed "s/@LANG@/${lang}/;s/@TARGET@/${target}/;s/@DEP@/${depends_on}/" docs-localized.yml.in
   done
 done
 
