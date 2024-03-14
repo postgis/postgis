@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-12 16:22+0000\n"
+"POT-Creation-Date: 2024-03-14 17:56+0000\n"
 "PO-Revision-Date: 2023-11-29 16:23+0000\n"
 "Last-Translator: Vincent Bre <vincent.bre@oslandia.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -5642,8 +5642,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
-msgstr ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
+msgid ""
+", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref "
+"linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5669,11 +5671,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddNode\"/>, <xref "
+", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref "
+"linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddNode\"/>, <xref "
 "linkend=\"CreateTopology\"/>"
 msgstr ""
-", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddNode\"/>, <xref "
-"linkend=\"CreateTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5711,11 +5712,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddEdge\"/>, <xref "
+", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref "
+"linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddEdge\"/>, <xref "
 "linkend=\"CreateTopology\"/>"
 msgstr ""
-", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddEdge\"/>, <xref "
-"linkend=\"CreateTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5744,11 +5744,36 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend=\"AddFace\"/>, "
-"<xref linkend=\"CreateTopology\"/>"
+", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref "
+"linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddFace\"/>, <xref "
+"linkend=\"CreateTopology\"/>"
 msgstr ""
-", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend=\"AddFace\"/>, "
-"<xref linkend=\"CreateTopology\"/>"
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Load a geometry into an existing topology, snapping and splitting as needed."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Loads a geometry into an existing topology. The given geometry will snap to "
+"existing nodes or edges within given tolerance. Existing edges and faces may "
+"be split as a consequence of the load."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.5.0"
+msgstr "Disponibilité : 3.5.0"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref "
+"linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"CreateTopology\"/>"
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -10728,6 +10753,11 @@ msgstr "Jackie Leng"
 
 #. Tag: member
 #, no-c-format
+msgid "James Addison"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
 msgid "James Marca"
 msgstr "James Marca"
 
@@ -14188,11 +14218,6 @@ msgid ""
 msgstr ""
 "Cette fonction est utile pour déterminer si une géométrie contient des "
 "informations sur l'altitude ou la hauteur."
-
-#. Tag: para
-#, no-c-format
-msgid "Availability: 3.5.0"
-msgstr "Disponibilité : 3.5.0"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -51592,6 +51617,36 @@ msgstr "Support 2.5/3D"
 #, no-c-format
 msgid "Supports geography"
 msgstr "Prise en charge du type geography"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddNode\"/>, "
+#~ "<xref linkend=\"CreateTopology\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddNode\"/>, "
+#~ "<xref linkend=\"CreateTopology\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddEdge\"/>, "
+#~ "<xref linkend=\"CreateTopology\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddEdge\"/>, "
+#~ "<xref linkend=\"CreateTopology\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend=\"AddFace\"/>, "
+#~ "<xref linkend=\"CreateTopology\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend=\"AddFace\"/>, "
+#~ "<xref linkend=\"CreateTopology\"/>"
 
 #, no-c-format
 #~ msgid ""

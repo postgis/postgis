@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-12 16:22+0000\n"
+"POT-Creation-Date: 2024-03-14 17:56+0000\n"
 "PO-Revision-Date: 2023-10-14 20:23+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Romanian <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -4238,7 +4238,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
+msgid ""
+", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref "
+"linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -4259,7 +4261,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddNode\"/>, <xref "
+", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref "
+"linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddNode\"/>, <xref "
 "linkend=\"CreateTopology\"/>"
 msgstr ""
 
@@ -4289,7 +4292,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"AddEdge\"/>, <xref "
+", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref "
+"linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddEdge\"/>, <xref "
 "linkend=\"CreateTopology\"/>"
 msgstr ""
 
@@ -4312,8 +4316,35 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend=\"AddFace\"/>, "
-"<xref linkend=\"CreateTopology\"/>"
+", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref "
+"linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddFace\"/>, <xref "
+"linkend=\"CreateTopology\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Load a geometry into an existing topology, snapping and splitting as needed."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Loads a geometry into an existing topology. The given geometry will snap to "
+"existing nodes or edges within given tolerance. Existing edges and faces may "
+"be split as a consequence of the load."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.5.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref "
+"linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"CreateTopology\"/>"
 msgstr ""
 
 #. Tag: title
@@ -8076,6 +8107,11 @@ msgstr ""
 
 #. Tag: member
 #, no-c-format
+msgid "James Addison"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
 msgid "James Marca"
 msgstr ""
 
@@ -10924,11 +10960,6 @@ msgstr ""
 msgid ""
 "This function is useful for determining if a geometry has elevation or "
 "height information."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Availability: 3.5.0"
 msgstr ""
 
 #. Tag: refpurpose
