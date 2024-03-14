@@ -16,11 +16,14 @@ do
   for lang in ${SUPPORTED_LANGUAGES};
   do
     case ${target} in
-      check-xml|html|cheatsheets)
+      check-xml)
         depends_on=prepare
         ;;
+      html|cheatsheets)
+        depends_on=check-xml
+        ;;
       pdf)
-        depends_on=build-images
+        depends_on=[ build-images, check-xml ]
         ;;
       check-cheatsheets)
         depends_on=cheatsheets-${lang}
