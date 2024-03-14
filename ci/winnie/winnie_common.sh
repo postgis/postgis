@@ -14,7 +14,7 @@ if  [[ "${OVERRIDE}" == '' ]] ; then
 	export GEOS_VER=3.12.1
 	export GDAL_VER=3.7.1
 	export PROJ_VER=8.2.1
-	export SFCGAL_VER=1.5.0
+	export SFCGAL_VER=1.5.1
 	export CGAL_VER=5.6
 	export ICON_VER=1.17
 	export ZLIB_VER=1.2.13
@@ -57,13 +57,13 @@ fi;
 
 #set to something even if override is on but not set
 if  [[ "${CGAL_VER}" == '' ]] ; then
-  export CGAL_VER=5.3
+  export CGAL_VER=5.6
 fi;
 
 ##hard code versions of cgal etc. for now
-export CGAL_VER=5.3
-BOOST_VER=1.78.0
-export BOOST_VER_WU=1_78_0
+export CGAL_VER=5.6
+BOOST_VER=1.84.0
+export BOOST_VER_WU=1_84_0
 
 
 export LZ4_PATH=${PROJECTS}/lz4/rel-lz4-${LZ4_VER}w${OS_BUILD}${GCC_TYPE}
