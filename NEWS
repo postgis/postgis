@@ -19,6 +19,8 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
           in extension upgrade SQL scripts (James Addison)
  - #5671, Bug in ST_Area function with use_spheroid=false
           (Paul Ramsey, Regina Obe)
+ - #5687, Don't rely on search_path to determine postgis schema
+           Fix for PG17 security change (Regina Obe)
 
 
 PostGIS 3.4.2
