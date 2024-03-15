@@ -451,7 +451,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/it_IT local-check-cheatsheets
-    depends_on: cheatsheets-it_IT
+    depends_on: [ cheatsheets-it_IT, build-cheatsheets ]
     when:
       path:
         include:
@@ -461,7 +461,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/pt_BR local-check-cheatsheets
-    depends_on: cheatsheets-pt_BR
+    depends_on: [ cheatsheets-pt_BR, build-cheatsheets ]
     when:
       path:
         include:
@@ -471,7 +471,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/fr local-check-cheatsheets
-    depends_on: cheatsheets-fr
+    depends_on: [ cheatsheets-fr, build-cheatsheets ]
     when:
       path:
         include:
@@ -481,7 +481,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/es local-check-cheatsheets
-    depends_on: cheatsheets-es
+    depends_on: [ cheatsheets-es, build-cheatsheets ]
     when:
       path:
         include:
@@ -491,7 +491,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/pl local-check-cheatsheets
-    depends_on: cheatsheets-pl
+    depends_on: [ cheatsheets-pl, build-cheatsheets ]
     when:
       path:
         include:
@@ -501,7 +501,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/ko_KR local-check-cheatsheets
-    depends_on: cheatsheets-ko_KR
+    depends_on: [ cheatsheets-ko_KR, build-cheatsheets ]
     when:
       path:
         include:
@@ -511,7 +511,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/de local-check-cheatsheets
-    depends_on: cheatsheets-de
+    depends_on: [ cheatsheets-de, build-cheatsheets ]
     when:
       path:
         include:
@@ -521,7 +521,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/ja local-check-cheatsheets
-    depends_on: cheatsheets-ja
+    depends_on: [ cheatsheets-ja, build-cheatsheets ]
     when:
       path:
         include:
@@ -531,7 +531,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/ru local-check-cheatsheets
-    depends_on: cheatsheets-ru
+    depends_on: [ cheatsheets-ru, build-cheatsheets ]
     when:
       path:
         include:
@@ -541,7 +541,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/zh_Hans local-check-cheatsheets
-    depends_on: cheatsheets-zh_Hans
+    depends_on: [ cheatsheets-zh_Hans, build-cheatsheets ]
     when:
       path:
         include:
@@ -551,7 +551,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/ro local-check-cheatsheets
-    depends_on: cheatsheets-ro
+    depends_on: [ cheatsheets-ro, build-cheatsheets ]
     when:
       path:
         include:
@@ -561,7 +561,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/uk local-check-cheatsheets
-    depends_on: cheatsheets-uk
+    depends_on: [ cheatsheets-uk, build-cheatsheets ]
     when:
       path:
         include:

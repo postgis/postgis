@@ -26,7 +26,7 @@ do
         depends_on="[ build-images, check-xml-${lang} ]"
         ;;
       check-cheatsheets)
-        depends_on=cheatsheets-${lang}
+        depends_on="[ cheatsheets-${lang}, build-cheatsheets ]"
         ;;
       *)
         echo "Unexpected target ${target}" >&2
