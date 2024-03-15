@@ -46,3 +46,9 @@ SELECT '#5299b' AS ticket, * FROM standardize_address('us_lex',  'us_gaz', 'us_r
  #5299b |          | 50        |        |      |         | GOLD PIECE | DRIVE   |        |            |       | BOSTON | MASSACHUSETTS |         | 02020    |     | 
 (1 row)
 
+SELECT '#5695a' AS ticket, * FROM standardize_address('us_lex', 'us_gaz', 'us_rules', 'ONE E PIMA ST STE 999, TUCSON, AZ');
+ ticket | building | house_num | predir | qual | pretype | name | suftype | sufdir | ruralroute | extra |  city  |  state  | country | postcode | box |   unit    
+--------+----------+-----------+--------+------+---------+------+---------+--------+------------+-------+--------+---------+---------+----------+-----+-----------
+ #5695a |          | 1         | EAST   |      |         | PIMA | STREET  |        |            |       | TUCSON | ARIZONA | USA     |          |     | SUITE 999
+(1 row)
+
