@@ -88,7 +88,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/ja local-check-xml
-    depends_on: @DEP@
+    depends_on: prepare
     when:
       path:
         include:
@@ -98,7 +98,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/de local-check-xml
-    depends_on: @DEP@
+    depends_on: prepare
     when:
       path:
         include:
@@ -108,7 +108,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/fr local-check-xml
-    depends_on: @DEP@
+    depends_on: prepare
     when:
       path:
         include:
@@ -119,7 +119,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/ja local-html
-    depends_on: @DEP@
+    depends_on: check-xml-ja
     when:
       path:
         include:
@@ -129,7 +129,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/de local-html
-    depends_on: @DEP@
+    depends_on: check-xml-de
     when:
       path:
         include:
@@ -139,7 +139,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/fr local-html
-    depends_on: @DEP@
+    depends_on: check-xml-fr
     when:
       path:
         include:
@@ -150,7 +150,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/ja local-cheatsheets
-    depends_on: @DEP@
+    depends_on: check-xml-ja
     when:
       path:
         include:
@@ -160,7 +160,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/de local-cheatsheets
-    depends_on: @DEP@
+    depends_on: check-xml-de
     when:
       path:
         include:
@@ -170,7 +170,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/fr local-cheatsheets
-    depends_on: @DEP@
+    depends_on: check-xml-fr
     when:
       path:
         include:
@@ -181,7 +181,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/ja local-check-cheatsheets
-    depends_on: @DEP@
+    depends_on: cheatsheets-ja
     when:
       path:
         include:
@@ -191,7 +191,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/de local-check-cheatsheets
-    depends_on: @DEP@
+    depends_on: cheatsheets-de
     when:
       path:
         include:
@@ -201,7 +201,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/fr local-check-cheatsheets
-    depends_on: @DEP@
+    depends_on: cheatsheets-fr
     when:
       path:
         include:
@@ -212,7 +212,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/ja local-pdf
-    depends_on: @DEP@
+    depends_on: [ build-images, check-xml-ja ]
     when:
       path:
         include:
@@ -222,7 +222,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/de local-pdf
-    depends_on: @DEP@
+    depends_on: [ build-images, check-xml-de ]
     when:
       path:
         include:
@@ -232,7 +232,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/fr local-pdf
-    depends_on: @DEP@
+    depends_on: [ build-images, check-xml-fr ]
     when:
       path:
         include:
