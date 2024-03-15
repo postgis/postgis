@@ -177,6 +177,11 @@ static void do_grid_test(const char *wkt_in, const char *wkt_out, double size)
 static void test_grid_in_place(void)
 {
 	do_grid_test(
+		"LINESTRING(0 0,1 1,1 1,1 1)",
+		"LINESTRING(0 0,1 1)",
+		0.001
+	);
+	do_grid_test(
 		"POINT ZM (5.1423999999 5.1423999999 5.1423999999 5.1423999999)",
 		"POINT(5.1424 5.1424 5.1424 5.1424)",
 		0.0001
