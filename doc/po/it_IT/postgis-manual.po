@@ -42146,7 +42146,7 @@ msgstr "Richiede GEOS (3.9,3.10,3.11,3.12) o versioni successive"
 #. Tag: para
 #, no-c-format
 msgid "Requires SFCGAL 1.5 or higher"
-msgstr ""
+msgstr "Richiede SFCGAL 1.5 o superiore"
 
 #. Tag: para
 #, no-c-format
