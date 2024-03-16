@@ -21,7 +21,8 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.4.1+ is needed.
           (Paul Ramsey, Regina Obe)
  - #5687, Don't rely on search_path to determine postgis schema
            Fix for PG17 security change (Regina Obe)
-
+ - #5695, [address_standardizer_data_us] standardize_address
+          incorrect handling of directionals (Regina Obe)
 
 PostGIS 3.4.2
 2024/02/08
