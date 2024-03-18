@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
-"PO-Revision-Date: 2024-03-18 03:45+0000\n"
+"PO-Revision-Date: 2024-03-18 09:45+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "postgis-manual/ja/>\n"
@@ -37724,8 +37724,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Geometries cross if their DE-9IM Intersection Matrix matches:"
-msgstr ""
-"DE-9IMインタセクション行列が次の通り合致するとジオメトリはクロスしています。"
+msgstr "DE-9IM交差行列が次の通り合致するとジオメトリはクロスしています:"
 
 #. Tag: para
 #, no-c-format
@@ -37974,9 +37973,7 @@ msgstr "数学用語では: <emphasis>ST_Intersects(A, B) ⇔ A ⋂ B ≠ ∅ </
 #, no-c-format
 msgid ""
 "Geometries intersect if their DE-9IM Intersection Matrix matches one of:"
-msgstr ""
-"DE-9IMインタセクション行列が次の通り合致するとジオメトリはインタセクトしてい"
-"ます。"
+msgstr "DE-9IM交差行列が次の通り合致するとジオメトリはインタセクトしています:"
 
 #. Tag: para
 #, no-c-format
@@ -38300,8 +38297,9 @@ msgid ""
 "Intersection Model</link> (DE-9IM)."
 msgstr ""
 "これらの関数で、二つのジオメトリに対する<link xlink:href=\"http://en."
-"wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-Intersection Model</"
-"link> (DE-9IM)で定義される空間 (トポロジ)関係のテストと評価が可能になります。"
+"wikipedia.org/wiki/DE-9IM\">次元拡張9交差モデル</link> (Dimensionally "
+"Extended 9-Intersection Model, DE-9IM)で定義される空間 "
+"(トポロジ)関係のテストと評価が可能になります。"
 
 #. Tag: para
 #, no-c-format
@@ -38412,10 +38410,11 @@ msgid ""
 "The <varname>boundaryNodeRule</varname> values are:"
 msgstr ""
 "<emphasis role=\"bold\">三つ目の形式:</emphasis> 二つ目の形式と同じですが、"
-"<emphasis role=\"bold\">境界ノード規則</emphasis>の指定ができる点が異なりま"
-"す。この規則によって、マルチラインストリングの端点がDE-9IMの内部または境界上"
-"にあると判定されるかどうかを細かく制御できます。<varname>boundaryNodeRule</"
-"varname>の値は次の通りです。"
+"<emphasis role=\"bold\""
+">境界ノード規則</emphasis>の指定ができる点が異なります。この規則によって"
+"、マルチラインストリングの端点がDE-9IMの内部または境界上にあると判定されるか"
+"どうかを細かく制御できます。<varname>boundaryNodeRule</varname>の値は次の通り"
+"です:"
 
 #. Tag: para
 #, no-c-format
@@ -38546,9 +38545,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Tests if a DE-9IM Intersection Matrix matches an Intersection Matrix pattern"
-msgstr ""
-"DE-9IMインタセクション行列がインタセクション行列パターンに合致するかどうかを"
-"見ます。"
+msgstr "DE-9IM交差行列が交差行列パターンに合致するかどうかを見ます。"
 
 #. Tag: para
 #, no-c-format
@@ -38559,10 +38556,11 @@ msgid ""
 "<varname>intersectionMatrixPattern</varname>. Intersection matrix values can "
 "be computed by <xref linkend=\"ST_Relate\"/>."
 msgstr ""
-"<link xlink:href=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally "
-"Extended 9-Intersection Model</link> (DE-9IM) <varname>intersectionMatrix</"
-"varname>の値が <varname>intersectionMatrixPattern</varname>を満たすかどうかを"
-"見ます。交差行列値は<xref linkend=\"ST_Relate\"/>で計算します。"
+"<link xlink:href=\"http://en.wikipedia.org/wiki/DE-9IM\""
+">次元拡張9交差モデル</link> (Dimensionally Extended 9-Intersection Model, DE-"
+"9IM) <varname>intersectionMatrix</varname>の値が "
+"<varname>intersectionMatrixPattern</varname>を満たすかどうかを見ます。"
+"交差行列値は<xref linkend=\"ST_Relate\"/>で計算します。"
 
 #. Tag: para
 #, no-c-format
@@ -38615,9 +38613,8 @@ msgstr ""
 msgid ""
 "This relationship holds if the DE-9IM Intersection Matrix for the two "
 "geometries matches one of:"
-msgstr ""
-"この関係は、二つのジオメトリのDE-9IM交差行列がどれか一つに合致すると、関係が"
-"保持されていることになります。"
+msgstr "この関係は、二つのジオメトリのDE-"
+"9IM交差行列がどれか一つに合致すると、関係が保持されていることになります:"
 
 #. Tag: markup
 #, no-c-format
@@ -46867,7 +46864,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Dimensionally Extended 9-Intersection Model"
-msgstr "Dimensionally Extended 9-Intersection Model"
+msgstr "次元拡張9交差モデル"
 
 #. Tag: para
 #, no-c-format
@@ -46957,10 +46954,11 @@ msgid ""
 "dimensions can be formally represented in a 3x3 <emphasis "
 "role=\"bold\">intersection matrix</emphasis>."
 msgstr ""
-"<link xlink:href=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally "
-"Extended 9-Intersection Model</link> (DE-9IM)は、二つのジオメトリの空間関係を"
-"九つの交差の次元を指定することで記述します。交差次元は3×3の<emphasis "
-"role=\"bold\">交差行列</emphasis>で正式に表現することができます。"
+"<link xlink:href=\"http://en.wikipedia.org/wiki/DE-9IM\""
+">次元拡張9交差モデル</link> (Dimensionally Extended 9-Intersection Model, DE-"
+"9IM)は、二つのジオメトリの空間関係を九つの交差の次元を指定することで記述しま"
+"す。交差次元は3×3の<emphasis role=\"bold\""
+">交差行列</emphasis>で正式に表現することができます。"
 
 #. Tag: para
 #, no-c-format
@@ -47344,8 +47342,9 @@ msgid ""
 "matrix. PostGIS provides the <xref linkend=\"ST_Relate\"/> function to do "
 "this:"
 msgstr ""
-"この要件は完全なDE-9IM交差行列の計算で満たすことができます。PostGISは、これを"
-"行う<xref linkend=\"ST_Relate\"/>関数を提供しています。次のようにします。"
+"この要件は完全なDE-9IM交差行列の計算で満たすことができます。PostGISは、"
+"これを行う<xref linkend=\"ST_Relate\""
+"/>関数を提供しています。次のようにします:"
 
 #. Tag: para
 #, no-c-format
