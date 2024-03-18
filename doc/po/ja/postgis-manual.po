@@ -7,10 +7,10 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-14 17:56+0000\n"
-"PO-Revision-Date: 2024-01-29 04:45+0000\n"
+"PO-Revision-Date: 2024-03-18 03:45+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
-"manual/ja/>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"postgis-manual/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -5347,6 +5347,8 @@ msgid ""
 ", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref "
 "linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
 msgstr ""
+", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref linkend=\"CreateTopology\""
+"/>, <xref linkend=\"DropTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5374,6 +5376,9 @@ msgid ""
 "linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddNode\"/>, <xref "
 "linkend=\"CreateTopology\"/>"
 msgstr ""
+", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend="
+"\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddNode\"/>, <xref linkend="
+"\"CreateTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5412,6 +5417,9 @@ msgid ""
 "linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddEdge\"/>, <xref "
 "linkend=\"CreateTopology\"/>"
 msgstr ""
+", <xref linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend="
+"\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddEdge\"/>, <xref linkend="
+"\"CreateTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5442,12 +5450,16 @@ msgid ""
 "linkend=\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddFace\"/>, <xref "
 "linkend=\"CreateTopology\"/>"
 msgstr ""
+", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend="
+"\"TopoGeo_LoadGeometry\"/>, <xref linkend=\"AddFace\"/>, <xref linkend="
+"\"CreateTopology\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Load a geometry into an existing topology, snapping and splitting as needed."
-msgstr ""
+msgstr "ジオメトリを既存のトポロジにロードし、必要に応じてスナップと分割を実行します"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -5456,6 +5468,9 @@ msgid ""
 "existing nodes or edges within given tolerance. Existing edges and faces may "
 "be split as a consequence of the load."
 msgstr ""
+"ジオメトリを既存のトポロジにロードします。与えられたジオメトリは、与えられた"
+"許容値の範囲内で、既存のノードまたはエッジにスナップします。既存のエッジとフ"
+"ェイスはロードの結果分割される場合があります。"
 
 #. Tag: para
 #, no-c-format
@@ -5468,6 +5483,8 @@ msgid ""
 ", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref "
 "linkend=\"TopoGeo_AddPolygon\"/>, <xref linkend=\"CreateTopology\"/>"
 msgstr ""
+", <xref linkend=\"TopoGeo_AddLineString\"/>, <xref linkend="
+"\"TopoGeo_AddPolygon\"/>, <xref linkend=\"CreateTopology\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -10260,7 +10277,7 @@ msgstr "Jackie Leng"
 #. Tag: member
 #, no-c-format
 msgid "James Addison"
-msgstr ""
+msgstr "James Addison"
 
 #. Tag: member
 #, no-c-format
@@ -12158,6 +12175,9 @@ msgid ""
 "represent the linear segments of the supplied geometry, while the "
 "<varname>CIRCULARSTRING</varname>s represent the arc segments."
 msgstr ""
+"<parameter>geom</parameter>フィールドの<varname>LINESTRING</varname>は与えら"
+"れたジオメトリの線分を表現し、<varname>CIRCULARSTRING</varname>は円弧線分を表"
+"現します。"
 
 #. Tag: para
 #, no-c-format
@@ -12568,14 +12588,15 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return the number of component curves in a CompoundCurve."
-msgstr ""
+msgstr "複合曲線内の曲線の数を返します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Return the number of component curves in a CompoundCurve, zero for an empty "
 "CompoundCurve, or NULL for a non-CompoundCurve input."
-msgstr ""
+msgstr "複合曲線内の曲線の数を返します。入力が空の複合曲線の場合には0を返し、複合曲線"
+"でない場合にはNULLを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -12583,11 +12604,13 @@ msgid ""
 ", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
 "linkend=\"ST_NumInteriorRings\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 msgstr ""
+", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
+"linkend=\"ST_NumInteriorRings\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the Nth component curve geometry of a CompoundCurve."
-msgstr ""
+msgstr "複合曲線のＮ番目の曲線ジオメトリを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -12596,6 +12619,8 @@ msgid ""
 "starts at 1. Returns NULL if the geometry is not a CompoundCurve or the "
 "index is out of range."
 msgstr ""
+"複合曲線のＮ番目の曲線ジオメトリを返します。インデックスは1始まりです。ジオメ"
+"トリが複合曲線でない場合やインデックスが範囲外の場合にはNULLを返します。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39122,28 +39147,28 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Calculates the area of a geometry"
-msgstr ""
+msgstr "ジオメトリの面積を計算します"
 
 #. Tag: para
 #, no-c-format
 msgid "Calculates the area of a geometry."
-msgstr ""
+msgstr "ジオメトリの面積を計算します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Performed by the SFCGAL module"
-msgstr ""
+msgstr "SFCGALモジュールによって実行されます"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "NOTE: this function returns a double precision value representing the area."
-msgstr ""
+msgstr "ご注意: この関数は、面積を表現する倍精度浮動小数点数を返します。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Area\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Area\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39212,22 +39237,22 @@ msgstr "SFCGAL 処理関数および関係関数"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the intersection of two geometries"
-msgstr ""
+msgstr "二つのジオメトリのインタセクトする (共有する)部分を計算します"
 
 #. Tag: para
 #, no-c-format
 msgid "Computes the intersection of two geometries."
-msgstr ""
+msgstr "二つのジオメトリのインタセクトする (共有する)部分を計算します。"
 
 #. Tag: para
 #, no-c-format
 msgid "NOTE: this function returns a geometry representing the intersection."
-msgstr ""
+msgstr "ご注意: この関数はインタセクトした部分を表現するジオメトリを返します。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Intersection\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Intersection\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -39235,11 +39260,13 @@ msgid ""
 ", <xref linkend=\"ST_3DIntersects\"/>, <xref linkend=\"ST_Intersects\"/>, "
 "<xref linkend=\"ST_Disjoint\"/>"
 msgstr ""
+", <xref linkend=\"ST_3DIntersects\"/>, <xref linkend=\"ST_Intersects\"/>, "
+"<xref linkend=\"ST_Disjoint\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tests if two 3D geometries intersect"
-msgstr ""
+msgstr "二つの3次元ジオメトリがインタセクトするかどうかをテストします"
 
 #. Tag: para
 #, no-c-format
@@ -39247,28 +39274,31 @@ msgid ""
 "Tests if two 3D geometries intersect. 3D geometries intersect if they have "
 "any point in common in the three-dimensional space."
 msgstr ""
+"二つの3次元ジオメトリがインタセクトするかどうかをテストします。3次元空間で共"
+"通する点が存在するなら、3次元ジオメトリはインタセクトしています。"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the geometric difference between two geometries"
-msgstr ""
+msgstr "二つのジオメトリの幾何学的な差を計算します"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Computes the geometric difference between two geometries. The resulting "
 "geometry is a set of points that are present in geomA but not in geomB."
-msgstr ""
+msgstr "二つのジオメトリの幾何学的な差を計算します。返されるジオメトリは、geomAに存在"
+"するがgeomBに存在しない点の集合です。"
 
 #. Tag: para
 #, no-c-format
 msgid "NOTE: this function returns a geometry."
-msgstr ""
+msgstr "ご注意: この関数はジオメトリを返します。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Difference\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Difference\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39314,46 +39344,46 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the minimum distance between two geometries"
-msgstr ""
+msgstr "二つのジオメトリの最小距離を返します"
 
 #. Tag: para
 #, no-c-format
 msgid "Computes the minimum distance between two geometries."
-msgstr ""
+msgstr "二つのジオメトリの最小距離を返します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "NOTE: this function returns a double precision value representing the "
 "distance."
-msgstr ""
+msgstr "ご注意: この関数は、距離を表現する倍精度浮動小数点数を返します。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Distance\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Distance\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the minimum 3D distance between two geometries"
-msgstr ""
+msgstr "二つのジオメトリの最小3次元距離を返します"
 
 #. Tag: para
 #, no-c-format
 msgid "Computes the minimum 3D distance between two geometries."
-msgstr ""
+msgstr "二つのジオメトリの最小3次元距離を返します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "NOTE: this function returns a double precision value representing the 3D "
 "distance."
-msgstr ""
+msgstr "ご注意: この関数は、3次元距離を表現する倍精度浮動小数点数を返します。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_3DDistance\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_3DDistance\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39410,17 +39440,17 @@ msgstr "二つの立体の共通部分もまた立体です (ST_Dimensionで3を
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the union of two geometries"
-msgstr ""
+msgstr "二つのジオメトリの結合を計算します"
 
 #. Tag: para
 #, no-c-format
 msgid "Computes the union of two geometries."
-msgstr ""
+msgstr "二つのジオメトリの結合を計算します。"
 
 #. Tag: para
 #, no-c-format
 msgid "NOTE: this function returns a geometry representing the union."
-msgstr ""
+msgstr "ご注意: この関数は結合を表現するジオメトリを返します。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39654,6 +39684,9 @@ msgid ""
 "(1.2.0+). Otherwise the function is just a wrapper around "
 "CG_StraightSkeleton (slower case)."
 msgstr ""
+"ストレートスケルトンを基に、実際の入力の近似的な中心軸を返します。可能な版(1."
+"2.0以上)でビルドするとSFCGAL独自APIを使います。そうでない場合には、"
+"CG_StraightSkeleton (遅い)関数をラッピングした関数となります。"
 
 #. Tag: para
 #, no-c-format
@@ -39761,7 +39794,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_StraightSkeleton\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_StraightSkeleton\"/>"
 
 #. Tag: para
 #, no-c-format
@@ -39982,7 +40015,7 @@ msgstr "ジオメトリからストレートスケルトンを計算します。
 #. Tag: para
 #, no-c-format
 msgid "Requires SFCGAL &gt;= 1.3.8 for option use_distance_as_m"
-msgstr ""
+msgstr "任意引数use_distance_as_mを使用するにはSFCGAL &gt;= 1.3.8が必要です"
 
 #. Tag: para
 #, no-c-format
@@ -40048,18 +40081,18 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Triangulates a polygonal geometry"
-msgstr ""
+msgstr "ポリゴンジオメトリを三角形にします"
 
 #. Tag: para
 #, no-c-format
 msgid "Triangulates a polygonal geometry."
-msgstr ""
+msgstr "ポリゴンジオメトリを三角形にします。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "NOTE: this function returns a geometry representing the triangulated result."
-msgstr ""
+msgstr "ご注意: この関数は三角形化した結果を表現するジオメトリを返します。"
 
 #. Tag: refpurpose
 #, no-c-format
