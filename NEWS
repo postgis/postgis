@@ -32,6 +32,8 @@ To take advantage of all SFCGAL featurs, SFCGAL 1.5.0+ is needed.
 
 * Deprecated signatures *
   - GH-761, ST_StraightSkeleton => CG_StraightSkeleton (Loïc Bartoletti)
+  - GT-189, All SFCGAL functions now use the prefix CG_, with the old onesusing
+            ST_ being deprecated. (Loïc Bartoletti)
 
 * New Features *
 
