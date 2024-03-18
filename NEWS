@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Allow 300 milliseconds for the buffer interruption test (Regina Obe)
  - Generate the garden tests from an out-of-tree build (Sandro Santilli)
  - Keep non-ASCII names and messages intact in ChangeLog (Sandro Santilli)
  - Run the protobuf compiler once per input during parallel builds (Sandro Santilli)
