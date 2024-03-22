@@ -271,6 +271,18 @@ static void test_lwgeom_split(void)
 	lwgeom_free(ret);
 	lwgeom_free(geom);
 	lwgeom_free(blade);
+
+	/* See #5698 -- robustness issue */
+	geom = lwgeom_from_wkt("LINESTRING(15.796760167740288 69.05714853429149,15.796760167739626 69.05714853429157,15.795906966300288 69.05725770093837)", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_FATAL(geom != NULL);
+	blade = lwpoint_as_lwgeom(lwline_get_lwpoint(lwgeom_as_lwline(geom), 1));
+	CU_ASSERT(blade != NULL);
+	ret = lwgeom_split(geom, blade);
+	CU_ASSERT_FATAL(ret != NULL);
+	ASSERT_INT_EQUAL( lwgeom_as_lwcollection(ret)->ngeoms, 2 );
+	lwgeom_free(ret);
+	lwgeom_free(geom);
+	lwgeom_free(blade);
 }
 
 static int

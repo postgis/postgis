@@ -247,12 +247,21 @@ lwvarlena_t *geohash_point(double longitude, double latitude, int precision);
 void decode_geohash_bbox(char *geohash, double *lat, double *lon, int precision);
 
 /*
-* Point comparisons
+* Point comparisons (FP tolerance based)
 */
 int p4d_same(const POINT4D *p1, const POINT4D *p2);
 int p3d_same(const POINT3D *p1, const POINT3D *p2);
 int p3dz_same(const POINT3DZ *p1, const POINT3DZ *p2);
 int p2d_same(const POINT2D *p1, const POINT2D *p2);
+
+/*
+ * Non-tolerance based equality for points
+ * whereas the p#d_same function are tolerance based
+ */
+#define P2D_SAME_STRICT(a,b) ((a)->x == (b)->x && (a)->y == (b)->y)
+#define P3DZ_SAME_STRICT(a,b) ((a)->x == (b)->x && (a)->y == (b)->y && (a)->z == (b)->z )
+#define P3DM_SAME_STRICT(a,b) ((a)->x == (b)->x && (a)->y == (b)->y && (a)->m == (b)->m )
+#define P4D_SAME_STRICT(a,b) ((a)->x == (b)->x && (a)->y == (b)->y && (a)->z == (b)->z && (a)->m == (b)->m )
 
 /*
 * Projections
