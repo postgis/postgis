@@ -240,7 +240,7 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
 	{
 		getPoint4d_p(ipa, i+1, &p2);
 		double dist_sqr = distance2d_sqr_pt_seg((POINT2D *)&pt, (POINT2D *)&p1, (POINT2D *)&p2);
-		LWDEBUGF(4, "Distance (squared) of point %g %g to segment %g %g, %g %g: %g",
+		LWDEBUGF(4, "Distance (squared) of point %.15g %.15g to segment %.15g %.15g, %.15g %.15g: %.15g",
 				 pt.x, pt.y,
 				 p1.x, p1.y,
 				 p2.x, p2.y,
@@ -256,7 +256,7 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
 	}
 
 	LWDEBUGF(3, "Closest segment: %d", seg);
-	LWDEBUGF(3, "mindist: %g", mindist_sqr);
+	LWDEBUGF(3, "mindist: %.15g", mindist_sqr);
 
 	/* No intersection */
 	if (mindist_sqr > 0)
@@ -280,11 +280,11 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
 	pt_projected.x = pt.x;
 	pt_projected.y = pt.y;
 
-	LWDEBUGF(3, "Projected point:(%g %g), seg:%d, p1:(%g %g), p2:(%g %g)", pt_projected.x, pt_projected.y, seg, p1.x, p1.y, p2.x, p2.y);
+	LWDEBUGF(3, "Projected point:(%.15g %.15g), seg:%d, p1:(%.15g %.15g), p2:(%.15g %.15g)", pt_projected.x, pt_projected.y, seg, p1.x, p1.y, p2.x, p2.y);
 
 	/* When closest point == an endpoint, this is a boundary intersection */
-	if ( ( (seg == nsegs-1) && p4d_same(&pt_projected, &p2) ) ||
-	     ( (seg == 0)       && p4d_same(&pt_projected, &p1) ) )
+	if ( ( (seg == nsegs-1) && P4D_SAME_STRICT(&pt_projected, &p2) ) ||
+	     ( (seg == 0)       && P4D_SAME_STRICT(&pt_projected, &p1) ) )
 	{
 		return 1;
 	}

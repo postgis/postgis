@@ -43,12 +43,6 @@
 # define LWTFMT_ELEMID PRId64
 #endif
 
-/* This is a non-tolerance based 2d equality for points
- * whereas the p2d_same function is tolerance based
- * TODO: move in higher headers ?
- */
-#define P2D_SAME_STRICT(a,b) ((a)->x == (b)->x && (a)->y == (b)->y)
-
 /*********************************************************************
  *
  * Backend iface
