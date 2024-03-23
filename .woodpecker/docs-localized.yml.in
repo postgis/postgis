@@ -6,6 +6,6 @@
     depends_on: @DEP@
     when:
       - event: [push, pull_request]
-        path:
+      - path:
         include:
           - "doc/po/@LANG@/*.po"
