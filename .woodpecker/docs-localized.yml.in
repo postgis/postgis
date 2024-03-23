@@ -6,7 +6,6 @@
     depends_on: @DEP@
     when:
         - path:
-          include:
-           - "doc/po/@LANG@/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/@LANG@/*.po"
+        - event: [push, pull_request]

@@ -99,10 +99,9 @@ steps:
     depends_on: prepare
     when:
         - path:
-          include:
-           - "doc/po/it_IT/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/it_IT/*.po"
+        - event: [push, pull_request]
   check-xml-pt_BR:
     image: *test_image
     pull: true
@@ -111,10 +110,9 @@ steps:
     depends_on: prepare
     when:
         - path:
-          include:
-           - "doc/po/pt_BR/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/pt_BR/*.po"
+        - event: [push, pull_request]
   check-xml-fr:
     image: *test_image
     pull: true
@@ -123,10 +121,9 @@ steps:
     depends_on: prepare
     when:
         - path:
-          include:
-           - "doc/po/fr/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/fr/*.po"
+        - event: [push, pull_request]
   check-xml-es:
     image: *test_image
     pull: true
@@ -135,10 +132,9 @@ steps:
     depends_on: prepare
     when:
         - path:
-          include:
-           - "doc/po/es/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/es/*.po"
+        - event: [push, pull_request]
   check-xml-pl:
     image: *test_image
     pull: true
@@ -147,10 +143,9 @@ steps:
     depends_on: prepare
     when:
         - path:
-          include:
-           - "doc/po/pl/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/pl/*.po"
+        - event: [push, pull_request]
   check-xml-ko_KR:
     image: *test_image
     pull: true
@@ -159,10 +154,9 @@ steps:
     depends_on: prepare
     when:
         - path:
-          include:
-           - "doc/po/ko_KR/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/ko_KR/*.po"
+        - event: [push, pull_request]
   check-xml-de:
     image: *test_image
     pull: true
@@ -171,10 +165,9 @@ steps:
     depends_on: prepare
     when:
         - path:
-          include:
-           - "doc/po/de/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/de/*.po"
+        - event: [push, pull_request]
   check-xml-ja:
     image: *test_image
     pull: true
@@ -183,10 +176,9 @@ steps:
     depends_on: prepare
     when:
         - path:
-          include:
-           - "doc/po/ja/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/ja/*.po"
+        - event: [push, pull_request]
   check-xml-ru:
     image: *test_image
     pull: true
@@ -195,10 +187,9 @@ steps:
     depends_on: prepare
     when:
         - path:
-          include:
-           - "doc/po/ru/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/ru/*.po"
+        - event: [push, pull_request]
   check-xml-zh_Hans:
     image: *test_image
     pull: true
@@ -207,10 +198,9 @@ steps:
     depends_on: prepare
     when:
         - path:
-          include:
-           - "doc/po/zh_Hans/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/zh_Hans/*.po"
+        - event: [push, pull_request]
   check-xml-ro:
     image: *test_image
     pull: true
@@ -219,10 +209,9 @@ steps:
     depends_on: prepare
     when:
         - path:
-          include:
-           - "doc/po/ro/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/ro/*.po"
+        - event: [push, pull_request]
   check-xml-uk:
     image: *test_image
     pull: true
@@ -231,10 +220,9 @@ steps:
     depends_on: prepare
     when:
         - path:
-          include:
-           - "doc/po/uk/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/uk/*.po"
+        - event: [push, pull_request]
 ### TARGET html
   html-it_IT:
     image: *test_image
@@ -244,10 +232,9 @@ steps:
     depends_on: check-xml-it_IT
     when:
         - path:
-          include:
-           - "doc/po/it_IT/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/it_IT/*.po"
+        - event: [push, pull_request]
   html-pt_BR:
     image: *test_image
     pull: true
@@ -256,10 +243,9 @@ steps:
     depends_on: check-xml-pt_BR
     when:
         - path:
-          include:
-           - "doc/po/pt_BR/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/pt_BR/*.po"
+        - event: [push, pull_request]
   html-fr:
     image: *test_image
     pull: true
@@ -268,10 +254,9 @@ steps:
     depends_on: check-xml-fr
     when:
         - path:
-          include:
-           - "doc/po/fr/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/fr/*.po"
+        - event: [push, pull_request]
   html-es:
     image: *test_image
     pull: true
@@ -280,10 +265,9 @@ steps:
     depends_on: check-xml-es
     when:
         - path:
-          include:
-           - "doc/po/es/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/es/*.po"
+        - event: [push, pull_request]
   html-pl:
     image: *test_image
     pull: true
@@ -292,10 +276,9 @@ steps:
     depends_on: check-xml-pl
     when:
         - path:
-          include:
-           - "doc/po/pl/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/pl/*.po"
+        - event: [push, pull_request]
   html-ko_KR:
     image: *test_image
     pull: true
@@ -304,10 +287,9 @@ steps:
     depends_on: check-xml-ko_KR
     when:
         - path:
-          include:
-           - "doc/po/ko_KR/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/ko_KR/*.po"
+        - event: [push, pull_request]
   html-de:
     image: *test_image
     pull: true
@@ -316,10 +298,9 @@ steps:
     depends_on: check-xml-de
     when:
         - path:
-          include:
-           - "doc/po/de/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/de/*.po"
+        - event: [push, pull_request]
   html-ja:
     image: *test_image
     pull: true
@@ -328,10 +309,9 @@ steps:
     depends_on: check-xml-ja
     when:
         - path:
-          include:
-           - "doc/po/ja/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/ja/*.po"
+        - event: [push, pull_request]
   html-ru:
     image: *test_image
     pull: true
@@ -340,10 +320,9 @@ steps:
     depends_on: check-xml-ru
     when:
         - path:
-          include:
-           - "doc/po/ru/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/ru/*.po"
+        - event: [push, pull_request]
   html-zh_Hans:
     image: *test_image
     pull: true
@@ -352,10 +331,9 @@ steps:
     depends_on: check-xml-zh_Hans
     when:
         - path:
-          include:
-           - "doc/po/zh_Hans/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/zh_Hans/*.po"
+        - event: [push, pull_request]
   html-ro:
     image: *test_image
     pull: true
@@ -364,10 +342,9 @@ steps:
     depends_on: check-xml-ro
     when:
         - path:
-          include:
-           - "doc/po/ro/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/ro/*.po"
+        - event: [push, pull_request]
   html-uk:
     image: *test_image
     pull: true
@@ -376,10 +353,9 @@ steps:
     depends_on: check-xml-uk
     when:
         - path:
-          include:
-           - "doc/po/uk/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/uk/*.po"
+        - event: [push, pull_request]
 ### TARGET cheatsheets
   cheatsheets-it_IT:
     image: *test_image
@@ -389,10 +365,9 @@ steps:
     depends_on: check-xml-it_IT
     when:
         - path:
-          include:
-           - "doc/po/it_IT/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/it_IT/*.po"
+        - event: [push, pull_request]
   cheatsheets-pt_BR:
     image: *test_image
     pull: true
@@ -401,10 +376,9 @@ steps:
     depends_on: check-xml-pt_BR
     when:
         - path:
-          include:
-           - "doc/po/pt_BR/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/pt_BR/*.po"
+        - event: [push, pull_request]
   cheatsheets-fr:
     image: *test_image
     pull: true
@@ -413,10 +387,9 @@ steps:
     depends_on: check-xml-fr
     when:
         - path:
-          include:
-           - "doc/po/fr/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/fr/*.po"
+        - event: [push, pull_request]
   cheatsheets-es:
     image: *test_image
     pull: true
@@ -425,10 +398,9 @@ steps:
     depends_on: check-xml-es
     when:
         - path:
-          include:
-           - "doc/po/es/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/es/*.po"
+        - event: [push, pull_request]
   cheatsheets-pl:
     image: *test_image
     pull: true
@@ -437,10 +409,9 @@ steps:
     depends_on: check-xml-pl
     when:
         - path:
-          include:
-           - "doc/po/pl/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/pl/*.po"
+        - event: [push, pull_request]
   cheatsheets-ko_KR:
     image: *test_image
     pull: true
@@ -449,10 +420,9 @@ steps:
     depends_on: check-xml-ko_KR
     when:
         - path:
-          include:
-           - "doc/po/ko_KR/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/ko_KR/*.po"
+        - event: [push, pull_request]
   cheatsheets-de:
     image: *test_image
     pull: true
@@ -461,10 +431,9 @@ steps:
     depends_on: check-xml-de
     when:
         - path:
-          include:
-           - "doc/po/de/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/de/*.po"
+        - event: [push, pull_request]
   cheatsheets-ja:
     image: *test_image
     pull: true
@@ -473,10 +442,9 @@ steps:
     depends_on: check-xml-ja
     when:
         - path:
-          include:
-           - "doc/po/ja/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/ja/*.po"
+        - event: [push, pull_request]
   cheatsheets-ru:
     image: *test_image
     pull: true
@@ -485,10 +453,9 @@ steps:
     depends_on: check-xml-ru
     when:
         - path:
-          include:
-           - "doc/po/ru/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/ru/*.po"
+        - event: [push, pull_request]
   cheatsheets-zh_Hans:
     image: *test_image
     pull: true
@@ -497,10 +464,9 @@ steps:
     depends_on: check-xml-zh_Hans
     when:
         - path:
-          include:
-           - "doc/po/zh_Hans/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/zh_Hans/*.po"
+        - event: [push, pull_request]
   cheatsheets-ro:
     image: *test_image
     pull: true
@@ -509,10 +475,9 @@ steps:
     depends_on: check-xml-ro
     when:
         - path:
-          include:
-           - "doc/po/ro/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/ro/*.po"
+        - event: [push, pull_request]
   cheatsheets-uk:
     image: *test_image
     pull: true
@@ -521,10 +486,9 @@ steps:
     depends_on: check-xml-uk
     when:
         - path:
-          include:
-           - "doc/po/uk/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/uk/*.po"
+        - event: [push, pull_request]
 ### TARGET check-cheatsheets
   check-cheatsheets-it_IT:
     image: *test_image
@@ -534,10 +498,9 @@ steps:
     depends_on: [ cheatsheets-it_IT, build-cheatsheets ]
     when:
         - path:
-          include:
-           - "doc/po/it_IT/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/it_IT/*.po"
+        - event: [push, pull_request]
   check-cheatsheets-pt_BR:
     image: *test_image
     pull: true
@@ -546,10 +509,9 @@ steps:
     depends_on: [ cheatsheets-pt_BR, build-cheatsheets ]
     when:
         - path:
-          include:
-           - "doc/po/pt_BR/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/pt_BR/*.po"
+        - event: [push, pull_request]
   check-cheatsheets-fr:
     image: *test_image
     pull: true
@@ -558,10 +520,9 @@ steps:
     depends_on: [ cheatsheets-fr, build-cheatsheets ]
     when:
         - path:
-          include:
-           - "doc/po/fr/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/fr/*.po"
+        - event: [push, pull_request]
   check-cheatsheets-es:
     image: *test_image
     pull: true
@@ -570,10 +531,9 @@ steps:
     depends_on: [ cheatsheets-es, build-cheatsheets ]
     when:
         - path:
-          include:
-           - "doc/po/es/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/es/*.po"
+        - event: [push, pull_request]
   check-cheatsheets-pl:
     image: *test_image
     pull: true
@@ -582,10 +542,9 @@ steps:
     depends_on: [ cheatsheets-pl, build-cheatsheets ]
     when:
         - path:
-          include:
-           - "doc/po/pl/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/pl/*.po"
+        - event: [push, pull_request]
   check-cheatsheets-ko_KR:
     image: *test_image
     pull: true
@@ -594,10 +553,9 @@ steps:
     depends_on: [ cheatsheets-ko_KR, build-cheatsheets ]
     when:
         - path:
-          include:
-           - "doc/po/ko_KR/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/ko_KR/*.po"
+        - event: [push, pull_request]
   check-cheatsheets-de:
     image: *test_image
     pull: true
@@ -606,10 +564,9 @@ steps:
     depends_on: [ cheatsheets-de, build-cheatsheets ]
     when:
         - path:
-          include:
-           - "doc/po/de/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/de/*.po"
+        - event: [push, pull_request]
   check-cheatsheets-ja:
     image: *test_image
     pull: true
@@ -618,10 +575,9 @@ steps:
     depends_on: [ cheatsheets-ja, build-cheatsheets ]
     when:
         - path:
-          include:
-           - "doc/po/ja/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/ja/*.po"
+        - event: [push, pull_request]
   check-cheatsheets-ru:
     image: *test_image
     pull: true
@@ -630,10 +586,9 @@ steps:
     depends_on: [ cheatsheets-ru, build-cheatsheets ]
     when:
         - path:
-          include:
-           - "doc/po/ru/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/ru/*.po"
+        - event: [push, pull_request]
   check-cheatsheets-zh_Hans:
     image: *test_image
     pull: true
@@ -642,10 +597,9 @@ steps:
     depends_on: [ cheatsheets-zh_Hans, build-cheatsheets ]
     when:
         - path:
-          include:
-           - "doc/po/zh_Hans/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/zh_Hans/*.po"
+        - event: [push, pull_request]
   check-cheatsheets-ro:
     image: *test_image
     pull: true
@@ -654,10 +608,9 @@ steps:
     depends_on: [ cheatsheets-ro, build-cheatsheets ]
     when:
         - path:
-          include:
-           - "doc/po/ro/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/ro/*.po"
+        - event: [push, pull_request]
   check-cheatsheets-uk:
     image: *test_image
     pull: true
@@ -666,10 +619,9 @@ steps:
     depends_on: [ cheatsheets-uk, build-cheatsheets ]
     when:
         - path:
-          include:
-           - "doc/po/uk/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/uk/*.po"
+        - event: [push, pull_request]
 ### TARGET pdf
   pdf-it_IT:
     image: *test_image
@@ -679,10 +631,9 @@ steps:
     depends_on: [ build-images, check-xml-it_IT ]
     when:
         - path:
-          include:
-           - "doc/po/it_IT/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/it_IT/*.po"
+        - event: [push, pull_request]
   pdf-pt_BR:
     image: *test_image
     pull: true
@@ -691,10 +642,9 @@ steps:
     depends_on: [ build-images, check-xml-pt_BR ]
     when:
         - path:
-          include:
-           - "doc/po/pt_BR/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/pt_BR/*.po"
+        - event: [push, pull_request]
   pdf-fr:
     image: *test_image
     pull: true
@@ -703,10 +653,9 @@ steps:
     depends_on: [ build-images, check-xml-fr ]
     when:
         - path:
-          include:
-           - "doc/po/fr/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/fr/*.po"
+        - event: [push, pull_request]
   pdf-es:
     image: *test_image
     pull: true
@@ -715,10 +664,9 @@ steps:
     depends_on: [ build-images, check-xml-es ]
     when:
         - path:
-          include:
-           - "doc/po/es/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/es/*.po"
+        - event: [push, pull_request]
   pdf-pl:
     image: *test_image
     pull: true
@@ -727,10 +675,9 @@ steps:
     depends_on: [ build-images, check-xml-pl ]
     when:
         - path:
-          include:
-           - "doc/po/pl/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/pl/*.po"
+        - event: [push, pull_request]
   pdf-ko_KR:
     image: *test_image
     pull: true
@@ -739,10 +686,9 @@ steps:
     depends_on: [ build-images, check-xml-ko_KR ]
     when:
         - path:
-          include:
-           - "doc/po/ko_KR/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/ko_KR/*.po"
+        - event: [push, pull_request]
   pdf-de:
     image: *test_image
     pull: true
@@ -751,10 +697,9 @@ steps:
     depends_on: [ build-images, check-xml-de ]
     when:
         - path:
-          include:
-           - "doc/po/de/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/de/*.po"
+        - event: [push, pull_request]
   pdf-ja:
     image: *test_image
     pull: true
@@ -763,10 +708,9 @@ steps:
     depends_on: [ build-images, check-xml-ja ]
     when:
         - path:
-          include:
-           - "doc/po/ja/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/ja/*.po"
+        - event: [push, pull_request]
   pdf-ru:
     image: *test_image
     pull: true
@@ -775,10 +719,9 @@ steps:
     depends_on: [ build-images, check-xml-ru ]
     when:
         - path:
-          include:
-           - "doc/po/ru/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/ru/*.po"
+        - event: [push, pull_request]
   pdf-zh_Hans:
     image: *test_image
     pull: true
@@ -787,10 +730,9 @@ steps:
     depends_on: [ build-images, check-xml-zh_Hans ]
     when:
         - path:
-          include:
-           - "doc/po/zh_Hans/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/zh_Hans/*.po"
+        - event: [push, pull_request]
   pdf-ro:
     image: *test_image
     pull: true
@@ -799,10 +741,9 @@ steps:
     depends_on: [ build-images, check-xml-ro ]
     when:
         - path:
-          include:
-           - "doc/po/ro/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/ro/*.po"
+        - event: [push, pull_request]
   pdf-uk:
     image: *test_image
     pull: true
@@ -811,7 +752,6 @@ steps:
     depends_on: [ build-images, check-xml-uk ]
     when:
         - path:
-          include:
-           - "doc/po/uk/*.po"
-          event: push
-          event: pull_request
+           include:
+            - "doc/po/uk/*.po"
+        - event: [push, pull_request]
