@@ -31,7 +31,7 @@ steps:
       - make postgis_revision.h
       - xmllint --version
     when:
-        - event: [tag, pull_request, push]
+        - event: push
           path: *when_path_full
           
   check-xml:
