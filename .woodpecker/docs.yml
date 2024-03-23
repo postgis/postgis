@@ -32,8 +32,7 @@ steps:
       - xmllint --version
     when:
         - event: [tag, pull_request, push]
-          path: 
-            - <<: *when_path_full
+          path: *when_path_full
           
   check-xml:
     image: *test_image
